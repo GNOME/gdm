@@ -1,5 +1,23 @@
 2007-10-27  William Jon McCann  <mccann@jhu.edu>
 
+	* gui/simple-greeter/gdm-user-chooser-widget.c:
+	(get_logged_in_pixbuf), (populate_model), (on_user_added),
+	(on_user_is_logged_in_changed), (name_cell_data_func),
+	(check_cell_data_func), (gdm_user_chooser_widget_init):
+	* gui/simple-greeter/gdm-user-manager.c: (reload_passwd),
+	(gdm_user_manager_class_init):
+	* gui/simple-greeter/gdm-user-manager.h:
+	* gui/simple-greeter/gdm-user-private.h:
+	* gui/simple-greeter/gdm-user.c: (gdm_user_get_property),
+	(gdm_user_class_init), (gdm_user_init), (gdm_user_is_logged_in),
+	(render_icon_from_home):
+	* gui/simple-greeter/gdm-user.h:
+	Add some baseline stuff for getting logged in status.
+	Add a new pixbuf column to show a checkmark for logged in users.
+	Also nicely serves as a way to indent the userlist.
+
+2007-10-27  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/simple-greeter/gdm-user-chooser-widget.c: (clear_selection),
 	(gdm_user_chooser_widget_set_chosen_user_name), (on_row_activated):
 	Clear the selection after a user is chosen

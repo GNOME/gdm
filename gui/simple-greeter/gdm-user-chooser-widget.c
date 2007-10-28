@@ -55,6 +55,7 @@ struct GdmUserChooserWidgetPrivate
 
         GdmUserManager     *manager;
 
+        GdkPixbuf          *logged_in_pixbuf;
         char               *chosen_user;
         gboolean            show_only_chosen;
         gboolean            show_other_user;
@@ -376,11 +377,29 @@ get_pixbuf_for_user (GdmUserChooserWidget *widget,
         return pixbuf;
 }
 
+static GdkPixbuf *
+get_logged_in_pixbuf (GdmUserChooserWidget *widget)
+{
+        GtkIconTheme *theme;
+        GdkPixbuf    *pixbuf;
+
+        theme = gtk_icon_theme_get_default ();
+        pixbuf = gtk_icon_theme_load_icon (theme,
+                                           "emblem-default",
+                                           ICON_SIZE / 3,
+                                           0,
+                                           NULL);
+
+        return pixbuf;
+}
+
 static gboolean
 populate_model (GdmUserChooserWidget *widget)
 {
         GtkTreeIter iter;
         GdkPixbuf  *pixbuf;
+
+        widget->priv->logged_in_pixbuf = get_logged_in_pixbuf (widget);
 
         pixbuf = get_pixbuf_for_user (widget, NULL);
 
@@ -390,6 +409,7 @@ populate_model (GdmUserChooserWidget *widget)
                             CHOOSER_LIST_PIXBUF_COLUMN, pixbuf,
                             CHOOSER_LIST_NAME_COLUMN, _("Other..."),
                             CHOOSER_LIST_TOOLTIP_COLUMN, _("Choose a different account"),
+                            CHOOSER_LIST_IS_LOGGED_IN_COLUMN, FALSE,
                             CHOOSER_LIST_ID_COLUMN, GDM_USER_CHOOSER_USER_OTHER,
                             -1);
 
@@ -398,6 +418,7 @@ populate_model (GdmUserChooserWidget *widget)
                             CHOOSER_LIST_PIXBUF_COLUMN, pixbuf,
                             CHOOSER_LIST_NAME_COLUMN, _("Guest"),
                             CHOOSER_LIST_TOOLTIP_COLUMN, _("Login as a temporary guest"),
+                            CHOOSER_LIST_IS_LOGGED_IN_COLUMN, FALSE,
                             CHOOSER_LIST_ID_COLUMN, GDM_USER_CHOOSER_USER_GUEST,
                             -1);
 
@@ -408,27 +429,6 @@ populate_model (GdmUserChooserWidget *widget)
         widget->priv->populate_id = 0;
         return FALSE;
 }
-
-#if 0
-static gboolean
-separator_func (GtkTreeModel *model,
-                GtkTreeIter  *iter,
-                gpointer      data)
-{
-        int   column = GPOINTER_TO_INT (data);
-        char *text;
-
-        gtk_tree_model_get (model, iter, column, &text, -1);
-
-        if (text != NULL && strcmp (text, "__separator") == 0) {
-                return TRUE;
-        }
-
-        g_free (text);
-
-        return FALSE;
-}
-#endif
 
 static int
 compare_user_names (char *name_a,
@@ -511,6 +511,7 @@ on_user_added (GdmUserManager       *manager,
                             CHOOSER_LIST_PIXBUF_COLUMN, pixbuf,
                             CHOOSER_LIST_NAME_COLUMN, gdm_user_get_real_name (user),
                             CHOOSER_LIST_TOOLTIP_COLUMN, tooltip,
+                            CHOOSER_LIST_IS_LOGGED_IN_COLUMN, gdm_user_is_logged_in (user),
                             CHOOSER_LIST_ID_COLUMN, gdm_user_get_user_name (user),
                             -1);
         g_free (tooltip);
@@ -559,6 +560,54 @@ on_user_removed (GdmUserManager       *manager,
         }
         if (found) {
                 gtk_list_store_remove (GTK_LIST_STORE (widget->priv->real_model), &iter);
+        }
+}
+
+static void
+on_user_is_logged_in_changed (GdmUserManager       *manager,
+                              GdmUser              *user,
+                              GdmUserChooserWidget *widget)
+{
+        GtkTreeIter iter;
+        gboolean    found;
+        const char *user_name;
+        gboolean    is_logged_in;
+
+        g_debug ("User logged in changed: %s", gdm_user_get_user_name (user));
+
+        found = FALSE;
+
+        user_name = gdm_user_get_user_name (user);
+        is_logged_in = gdm_user_is_logged_in (user);
+
+        if (gtk_tree_model_get_iter_first (widget->priv->real_model, &iter)) {
+
+                do {
+                        char *id;
+
+                        id = NULL;
+                        gtk_tree_model_get (widget->priv->real_model,
+                                            &iter,
+                                            CHOOSER_LIST_ID_COLUMN, &id,
+                                            -1);
+                        if (id == NULL) {
+                                continue;
+                        }
+
+                        found = (strcmp (id, user_name) == 0);
+
+                        if (found) {
+                                break;
+                        }
+
+                } while (gtk_tree_model_iter_next (widget->priv->real_model, &iter));
+        }
+
+        if (found) {
+                gtk_list_store_set (GTK_LIST_STORE (widget->priv->real_model),
+                                    &iter,
+                                    CHOOSER_LIST_IS_LOGGED_IN_COLUMN, is_logged_in,
+                                    -1);
         }
 }
 
@@ -624,7 +673,7 @@ name_cell_data_func (GtkTreeViewColumn    *tree_column,
                             -1);
 
         if (logged_in) {
-                markup = g_strdup_printf ("<b>%s</b>\n<i><small>%s</small></i>",
+                markup = g_strdup_printf ("<b>%s</b>\n<i><span size=\"x-small\">%s</span></i>",
                                           name,
                                           _("Currently logged in"));
         } else {
@@ -637,6 +686,32 @@ name_cell_data_func (GtkTreeViewColumn    *tree_column,
 
         g_free (markup);
         g_free (name);
+}
+
+static void
+check_cell_data_func (GtkTreeViewColumn    *tree_column,
+                      GtkCellRenderer      *cell,
+                      GtkTreeModel         *model,
+                      GtkTreeIter          *iter,
+                      GdmUserChooserWidget *widget)
+{
+        gboolean   logged_in;
+        GdkPixbuf *pixbuf;
+
+        gtk_tree_model_get (model,
+                            iter,
+                            CHOOSER_LIST_IS_LOGGED_IN_COLUMN, &logged_in,
+                            -1);
+
+        if (logged_in) {
+                pixbuf = widget->priv->logged_in_pixbuf;
+        } else {
+                pixbuf = NULL;
+        }
+
+        g_object_set (cell,
+                      "pixbuf", pixbuf,
+                      NULL);
 }
 
 static void
@@ -657,6 +732,10 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
         g_signal_connect (widget->priv->manager,
                           "user-removed",
                           G_CALLBACK (on_user_removed),
+                          widget);
+        g_signal_connect (widget->priv->manager,
+                          "user-is-logged-in-changed",
+                          G_CALLBACK (on_user_is_logged_in_changed),
                           widget);
 
         scrolled = gtk_scrolled_window_new (NULL, NULL);
@@ -709,21 +788,40 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
 
         gtk_tree_view_set_model (GTK_TREE_VIEW (widget->priv->treeview), widget->priv->sort_model);
 
+        /* CHECK COLUMN */
+        renderer = gtk_cell_renderer_pixbuf_new ();
+        column = gtk_tree_view_column_new ();
+        gtk_tree_view_column_pack_start (column, renderer, FALSE);
+        gtk_tree_view_append_column (GTK_TREE_VIEW (widget->priv->treeview), column);
+        gtk_tree_view_column_set_cell_data_func (column,
+                                                 renderer,
+                                                 (GtkTreeCellDataFunc) check_cell_data_func,
+                                                 widget,
+                                                 NULL);
+        g_object_set (renderer,
+                      "width", 128,
+                      "yalign", 0.5,
+                      "xalign", 0.5,
+                      NULL);
+
+        /* FACE COLUMN */
         renderer = gtk_cell_renderer_pixbuf_new ();
         column = gtk_tree_view_column_new ();
         gtk_tree_view_column_pack_start (column, renderer, FALSE);
         gtk_tree_view_append_column (GTK_TREE_VIEW (widget->priv->treeview), column);
 
-        g_object_set (renderer,
-                      "width", 128,
-                      "yalign", 0.5,
-                      "xalign", 1.0,
-                      NULL);
         gtk_tree_view_column_set_attributes (column,
                                              renderer,
                                              "pixbuf", CHOOSER_LIST_PIXBUF_COLUMN,
                                              NULL);
 
+        g_object_set (renderer,
+                      "width", 64,
+                      "yalign", 0.5,
+                      "xalign", 1.0,
+                      NULL);
+
+        /* NAME COLUMN */
         renderer = gtk_cell_renderer_text_new ();
         column = gtk_tree_view_column_new ();
         gtk_tree_view_column_pack_start (column, renderer, FALSE);
@@ -735,13 +833,6 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
                                                  NULL);
 
         gtk_tree_view_set_tooltip_column (GTK_TREE_VIEW (widget->priv->treeview), CHOOSER_LIST_TOOLTIP_COLUMN);
-
-#if 0
-        gtk_tree_view_set_row_separator_func (GTK_TREE_VIEW (widget->priv->treeview),
-                                              separator_func,
-                                              GINT_TO_POINTER (CHOOSER_LIST_ID_COLUMN),
-                                              NULL);
-#endif
 
         widget->priv->populate_id = g_idle_add ((GSourceFunc)populate_model, widget);
 }

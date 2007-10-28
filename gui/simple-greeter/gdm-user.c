@@ -52,12 +52,11 @@ enum {
         PROP_UID,
         PROP_HOME_DIR,
         PROP_SHELL,
-        PROP_SESSIONS
+        PROP_IS_LOGGED_IN,
 };
 
 enum {
         ICON_CHANGED,
-        SESSIONS_CHANGED,
         LAST_SIGNAL
 };
 
@@ -71,7 +70,7 @@ struct _GdmUser {
         char           *real_name;
         char           *home_dir;
         char           *shell;
-        GSList         *sessions;
+        gboolean        is_logged_in;
 };
 
 typedef struct _GdmUserClass
@@ -79,7 +78,6 @@ typedef struct _GdmUserClass
         GObjectClass parent_class;
 
         void (* icon_changed)     (GdmUser *user);
-        void (* sessions_changed) (GdmUser *user);
 } GdmUserClass;
 
 static void gdm_user_finalize     (GObject      *object);
@@ -139,25 +137,8 @@ gdm_user_get_property (GObject    *object,
         case PROP_SHELL:
                 g_value_set_string (value, user->shell);
                 break;
-        case PROP_SESSIONS:
-                if (user->sessions) {
-                        GValueArray *ar;
-                        GSList      *list;
-                        GValue       tmp = { 0 };
-
-                        ar = g_value_array_new (g_slist_length (user->sessions));
-                        g_value_init (&tmp, GDM_TYPE_USER);
-                        for (list = user->sessions; list; list = list->next) {
-                                g_value_set_object (&tmp, list->data);
-                                g_value_array_append (ar, &tmp);
-                                g_value_reset (&tmp);
-                        }
-
-                        g_value_take_boxed (value, ar);
-                } else {
-                        g_value_set_boxed (value, NULL);
-                }
-
+        case PROP_IS_LOGGED_IN:
+                g_value_set_boolean (value, user->is_logged_in);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
@@ -230,14 +211,6 @@ gdm_user_class_init (GdmUserClass *class)
                               NULL, NULL,
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE, 0);
-        signals [SESSIONS_CHANGED] =
-                g_signal_new ("sessions-changed",
-                              G_TYPE_FROM_CLASS (class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmUserClass, sessions_changed),
-                              NULL, NULL,
-                              g_cclosure_marshal_VOID__VOID,
-                              G_TYPE_NONE, 0);
 }
 
 static void
@@ -246,7 +219,7 @@ gdm_user_init (GdmUser *user)
         user->manager = NULL;
         user->user_name = NULL;
         user->real_name = NULL;
-        user->sessions = NULL;
+        user->is_logged_in = FALSE;
 }
 
 static void
@@ -356,46 +329,6 @@ _gdm_user_update (GdmUser             *user,
         g_object_thaw_notify (G_OBJECT (user));
 }
 
-void
-_gdm_user_add_session (GdmUser    *user,
-                       const char *ssid)
-{
-        g_return_if_fail (GDM_IS_USER (user));
-        g_return_if_fail (ssid != NULL);
-
-        if (! g_slist_find (user->sessions, ssid)) {
-                user->sessions = g_slist_append (user->sessions, g_strdup (ssid));
-                g_signal_emit (user, signals[SESSIONS_CHANGED], 0);
-        }
-}
-
-/**
- * _gdm_user_remove_session:
- * @user: the user to modify.
- * @ssid: the session id to remove
- *
- * Removes @ssid from the list of sessions @user is using, and emits the
- * "sessions-changed" signal, if necessary.
- *
- * Since: 1.0
- **/
-void
-_gdm_user_remove_session (GdmUser    *user,
-                          const char *ssid)
-{
-        GSList *li;
-
-        g_return_if_fail (GDM_IS_USER (user));
-        g_return_if_fail (ssid != NULL);
-
-        li = g_slist_find (user->sessions, ssid);
-        if (li != NULL) {
-                g_free (li->data);
-                user->sessions = g_slist_delete_link (user->sessions, li);
-                g_signal_emit (user, signals[SESSIONS_CHANGED], 0);
-        }
-}
-
 /**
  * _gdm_user_icon_changed:
  * @user: the user to emit the signal for.
@@ -435,12 +368,12 @@ gdm_user_get_uid (GdmUser *user)
 /**
  * gdm_user_get_real_name:
  * @user: the user object to examine.
- * 
+ *
  * Retrieves the display name of @user.
- * 
+ *
  * Returns: a pointer to an array of characters which must not be modified or
  *  freed, or %NULL.
- * 
+ *
  * Since: 1.0
  **/
 G_CONST_RETURN gchar *
@@ -454,12 +387,12 @@ gdm_user_get_real_name (GdmUser *user)
 /**
  * gdm_user_get_user_name:
  * @user: the user object to examine.
- * 
+ *
  * Retrieves the login name of @user.
- * 
+ *
  * Returns: a pointer to an array of characters which must not be modified or
  *  freed, or %NULL.
- * 
+ *
  * Since: 1.0
  **/
 
@@ -474,12 +407,12 @@ gdm_user_get_user_name (GdmUser *user)
 /**
  * gdm_user_get_home_directory:
  * @user: the user object to examine.
- * 
+ *
  * Retrieves the home directory of @user.
- * 
+ *
  * Returns: a pointer to an array of characters which must not be modified or
  *  freed, or %NULL.
- * 
+ *
  * Since: 1.0
  **/
 
@@ -494,12 +427,12 @@ gdm_user_get_home_directory (GdmUser *user)
 /**
  * gdm_user_get_shell:
  * @user: the user object to examine.
- * 
+ *
  * Retrieves the login shell of @user.
- * 
+ *
  * Returns: a pointer to an array of characters which must not be modified or
  *  freed, or %NULL.
- * 
+ *
  * Since: 1.0
  **/
 
@@ -511,42 +444,12 @@ gdm_user_get_shell (GdmUser *user)
         return user->shell;
 }
 
-/**
- * gdm_user_get_displays:
- * @user: the user object to examine.
- * 
- * Retrieves a new list of the displays that @user is logged in on. The list
- * itself must be freed with g_slist_free() when no longer needed.
- * 
- * Returns: a list of #GdmDisplay objects which must be freed with
- *  g_slist_free().
- * 
- * Since: 1.0
- **/
-GSList *
-gdm_user_get_sessions (GdmUser *user)
-{
-        g_return_val_if_fail (GDM_IS_USER (user), NULL);
-
-        return g_slist_copy (user->sessions);
-}
-
-/**
- * gdm_user_get_n_sessions:
- * @user: the user object to examine.
- *
- * Retrieves the number of sessions that @user is logged into.
- *
- * Returns: an unsigned integer.
- *
- * Since: 1.0
- **/
-guint
-gdm_user_get_n_sessions (GdmUser *user)
+gboolean
+gdm_user_is_logged_in (GdmUser *user)
 {
         g_return_val_if_fail (GDM_IS_USER (user), FALSE);
 
-        return g_slist_length (user->sessions);
+        return user->is_logged_in;
 }
 
 gint
@@ -645,7 +548,6 @@ render_icon_from_home (GdmUser     *user,
         GnomeVFSURI *uri;
         gboolean     is_local;
         gboolean     res;
-
 
         /* special case: look at parent of home to detect autofs
            this is so we don't try to trigger an automount */

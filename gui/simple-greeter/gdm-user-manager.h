@@ -46,10 +46,12 @@ typedef struct
 {
         GObjectClass   parent_class;
 
-        void          (* user_added)    (GdmUserManager *user_manager,
-                                         GdmUser        *user);
-        void          (* user_removed)  (GdmUserManager *user_manager,
-                                         GdmUser        *user);
+        void          (* user_added)                (GdmUserManager *user_manager,
+                                                     GdmUser        *user);
+        void          (* user_removed)              (GdmUserManager *user_manager,
+                                                     GdmUser        *user);
+        void          (* user_is_logged_in_changed) (GdmUserManager *user_manager,
+                                                     GdmUser        *user);
 } GdmUserManagerClass;
 
 typedef enum

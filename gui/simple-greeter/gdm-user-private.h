@@ -30,13 +30,11 @@
 
 G_BEGIN_DECLS
 
-void _gdm_user_update         (GdmUser             *user,
-                               const struct passwd *pwent);
-void _gdm_user_add_session    (GdmUser             *user,
-                               const char          *ssid);
-void _gdm_user_remove_session (GdmUser             *user,
-                               const char          *ssid);
-void _gdm_user_icon_changed   (GdmUser             *user);
+void _gdm_user_update           (GdmUser             *user,
+                                 const struct passwd *pwent);
+void _gdm_user_set_is_logged_in (GdmUser             *user,
+                                 gboolean             is_logged_in);
+void _gdm_user_icon_changed     (GdmUser             *user);
 
 G_END_DECLS
 

@@ -91,6 +91,7 @@ struct GdmUserManagerPrivate
 enum {
         USER_ADDED,
         USER_REMOVED,
+        USER_IS_LOGGED_IN_CHANGED,
         LAST_SIGNAL
 };
 
@@ -193,7 +194,7 @@ reload_passwd (GdmUserManager *manager)
 
         /* Make sure we keep users who are logged in no matter what. */
         for (list = old_users; list; list = list->next) {
-                if (gdm_user_get_n_sessions (list->data)) {
+                if (gdm_user_is_logged_in (list->data)) {
                         g_object_freeze_notify (G_OBJECT (list->data));
                         new_users = g_slist_prepend (new_users, g_object_ref (list->data));
                 }
@@ -341,6 +342,14 @@ gdm_user_manager_class_init (GdmUserManagerClass *klass)
                               G_TYPE_FROM_CLASS (klass),
                               G_SIGNAL_RUN_LAST,
                               G_STRUCT_OFFSET (GdmUserManagerClass, user_removed),
+                              NULL, NULL,
+                              g_cclosure_marshal_VOID__OBJECT,
+                              G_TYPE_NONE, 1, GDM_TYPE_USER);
+        signals [USER_IS_LOGGED_IN_CHANGED] =
+                g_signal_new ("user-is-logged-in-changed",
+                              G_TYPE_FROM_CLASS (klass),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmUserManagerClass, user_is_logged_in_changed),
                               NULL, NULL,
                               g_cclosure_marshal_VOID__OBJECT,
                               G_TYPE_NONE, 1, GDM_TYPE_USER);
