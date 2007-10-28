@@ -43,6 +43,8 @@ enum {
 
 #define GDM_USER_CHOOSER_WIDGET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_USER_CHOOSER_WIDGET, GdmUserChooserWidgetPrivate))
 
+#define ICON_SIZE 64
+
 struct GdmUserChooserWidgetPrivate
 {
         GtkWidget          *treeview;
@@ -359,11 +361,9 @@ get_pixbuf_for_user (GdmUserChooserWidget *widget,
 {
         GtkIconTheme *theme;
         GdkPixbuf    *pixbuf;
-        int           size;
 
         theme = gtk_icon_theme_get_default ();
-        gtk_icon_size_lookup (GTK_ICON_SIZE_DIALOG, &size, NULL);
-        pixbuf = gtk_icon_theme_load_icon (theme, "stock_person", size, 0, NULL);
+        pixbuf = gtk_icon_theme_load_icon (theme, "stock_person", ICON_SIZE, 0, NULL);
 
         return pixbuf;
 }
@@ -492,7 +492,7 @@ on_user_added (GdmUserManager       *manager,
 
         g_debug ("User added: %s", gdm_user_get_user_name (user));
 
-        pixbuf = get_pixbuf_for_user (widget, gdm_user_get_user_name (user));
+        pixbuf = gdm_user_render_icon (user, GTK_WIDGET (widget), ICON_SIZE);
 
         tooltip = g_strdup_printf ("%s: %s",
                                    _("Short Name"),

@@ -21,8 +21,13 @@
 #include <config.h>
 
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include <glib/gi18n.h>
-#include <gtk/gtkicontheme.h>
+#include <gtk/gtk.h>
+#include <libgnomevfs/gnome-vfs.h>
 
 #include "gdm-user-manager.h"
 #include "gdm-user-private.h"
@@ -30,6 +35,14 @@
 #define GDM_USER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), GDM_TYPE_USER, GdmUserClass))
 #define GDM_IS_USER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GDM_TYPE_USER))
 #define GDM_USER_GET_CLASS(object) (G_TYPE_INSTANCE_GET_CLASS ((object), GDM_TYPE_USER, GdmUserClass))
+
+#define GLOBAL_FACEDIR    DATADIR "/faces"
+#define MAX_ICON_SIZE     128
+#define MAX_FILE_SIZE     65536
+#define MINIMAL_UID       100
+#define RELAX_GROUP       TRUE
+#define RELAX_OTHER       TRUE
+#define DEFAULT_USER_ICON "stock_person"
 
 enum {
         PROP_0,
@@ -54,10 +67,10 @@ struct _GdmUser {
         GdmUserManager *manager;
 
         uid_t           uid;
-        gchar          *user_name;
-        gchar          *real_name;
-        gchar          *home_dir;
-        gchar          *shell;
+        char           *user_name;
+        char           *real_name;
+        char           *home_dir;
+        char           *shell;
         GSList         *sessions;
 };
 
@@ -74,7 +87,6 @@ static void gdm_user_finalize     (GObject      *object);
 static guint signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (GdmUser, gdm_user, G_TYPE_OBJECT);
-
 
 static void
 gdm_user_set_property (GObject      *object,
@@ -522,11 +534,11 @@ gdm_user_get_sessions (GdmUser *user)
 /**
  * gdm_user_get_n_sessions:
  * @user: the user object to examine.
- * 
+ *
  * Retrieves the number of sessions that @user is logged into.
- * 
+ *
  * Returns: an unsigned integer.
- * 
+ *
  * Since: 1.0
  **/
 guint
@@ -575,4 +587,262 @@ gdm_user_collate (GdmUser *user1,
                 return 0;
 
         return g_utf8_collate (str1, str2);
+}
+
+static gboolean
+check_user_file (const char *filename,
+                 uid_t       user,
+                 gssize      max_file_size,
+                 gboolean    relax_group,
+                 gboolean    relax_other)
+{
+        struct stat fileinfo;
+
+        if (max_file_size < 0) {
+                max_file_size = G_MAXSIZE;
+        }
+
+        /* Exists/Readable? */
+        if (stat (filename, &fileinfo) < 0) {
+                return FALSE;
+        }
+
+        /* Is a regular file */
+        if (G_UNLIKELY (!S_ISREG (fileinfo.st_mode))) {
+                return FALSE;
+        }
+
+        /* Owned by user? */
+        if (G_UNLIKELY (fileinfo.st_uid != user)) {
+                return FALSE;
+        }
+
+        /* Group not writable or relax_group? */
+        if (G_UNLIKELY ((fileinfo.st_mode & S_IWGRP) == S_IWGRP && !relax_group)) {
+                return FALSE;
+        }
+
+        /* Other not writable or relax_other? */
+        if (G_UNLIKELY ((fileinfo.st_mode & S_IWOTH) == S_IWOTH && !relax_other)) {
+                return FALSE;
+        }
+
+        /* Size is kosher? */
+        if (G_UNLIKELY (fileinfo.st_size > max_file_size)) {
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
+static GdkPixbuf *
+render_icon_from_home (GdmUser     *user,
+                       GtkWidget   *widget,
+                       gint         icon_size)
+{
+        GdkPixbuf *  retval;
+        char        *path;
+        GnomeVFSURI *uri;
+        gboolean     is_local;
+        gboolean     res;
+
+
+        /* special case: look at parent of home to detect autofs
+           this is so we don't try to trigger an automount */
+        path = g_path_get_dirname (user->home_dir);
+        uri = gnome_vfs_uri_new (path);
+        is_local = gnome_vfs_uri_is_local (uri);
+        gnome_vfs_uri_unref (uri);
+        g_free (path);
+
+        /* now check that home dir itself is local */
+        if (is_local) {
+                uri = gnome_vfs_uri_new (user->home_dir);
+                is_local = gnome_vfs_uri_is_local (uri);
+                gnome_vfs_uri_unref (uri);
+        }
+
+        /* only look at local home directories so we don't try to
+           read from remote (e.g. NFS) volumes */
+        if (!is_local) {
+                return NULL;
+        }
+
+        /* First, try "~/.face" */
+        path = g_build_filename (user->home_dir, ".face", NULL);
+        res = check_user_file (path,
+                               user->uid,
+                               MAX_FILE_SIZE,
+                               RELAX_GROUP,
+                               RELAX_OTHER);
+        if (res) {
+                retval = gdk_pixbuf_new_from_file_at_size (path,
+                                                           icon_size,
+                                                           icon_size,
+                                                           NULL);
+        } else {
+                retval = NULL;
+        }
+        g_free (path);
+
+        /* Next, try "~/.face.icon" */
+        if (retval == NULL) {
+                path = g_build_filename (user->home_dir,
+                                         ".face.icon",
+                                         NULL);
+                res = check_user_file (path,
+                                       user->uid,
+                                       MAX_FILE_SIZE,
+                                       RELAX_GROUP,
+                                       RELAX_OTHER);
+                if (res) {
+                        retval = gdk_pixbuf_new_from_file_at_size (path,
+                                                                   icon_size,
+                                                                   icon_size,
+                                                                   NULL);
+                } else {
+                        retval = NULL;
+                }
+
+                g_free (path);
+        }
+
+        /* Still nothing, try the user's personal GDM config */
+        if (retval == NULL) {
+                path = g_build_filename (user->home_dir,
+                                         ".gnome",
+                                         "gdm",
+                                         NULL);
+                res = check_user_file (path,
+                                       user->uid,
+                                       MAX_FILE_SIZE,
+                                       RELAX_GROUP,
+                                       RELAX_OTHER);
+                if (res) {
+                        GKeyFile *keyfile;
+                        char     *icon_path;
+
+                        keyfile = g_key_file_new ();
+                        g_key_file_load_from_file (keyfile,
+                                                   path,
+                                                   G_KEY_FILE_NONE,
+                                                   NULL);
+
+                        icon_path = g_key_file_get_string (keyfile,
+                                                           "face",
+                                                           "picture",
+                                                           NULL);
+                        res = check_user_file (icon_path,
+                                               user->uid,
+                                               MAX_FILE_SIZE,
+                                               RELAX_GROUP,
+                                               RELAX_OTHER);
+                        if (icon_path && res) {
+                                retval = gdk_pixbuf_new_from_file_at_size (path,
+                                                                           icon_size,
+                                                                           icon_size,
+                                                                           NULL);
+                        } else {
+                                retval = NULL;
+                        }
+
+                        g_free (icon_path);
+                        g_key_file_free (keyfile);
+                } else {
+                        retval = NULL;
+                }
+
+                g_free (path);
+        }
+
+        return retval;
+}
+
+GdkPixbuf *
+gdm_user_render_icon (GdmUser   *user,
+                      GtkWidget *widget,
+                      gint       icon_size)
+{
+        GdkPixbuf    *pixbuf;
+        char         *path;
+        char         *tmp;
+        GtkIconTheme *theme;
+        gboolean      res;
+
+        g_return_val_if_fail (GDM_IS_USER (user), NULL);
+        g_return_val_if_fail (widget == NULL || GTK_IS_WIDGET (widget), NULL);
+        g_return_val_if_fail (icon_size > 12, NULL);
+
+        pixbuf = render_icon_from_home (user, widget, icon_size);
+
+        if (pixbuf != NULL) {
+                return pixbuf;
+        }
+
+        /* Try ${GlobalFaceDir}/${username} */
+        path = g_build_filename (GLOBAL_FACEDIR, user->user_name, NULL);
+        res = check_user_file (path,
+                               user->uid,
+                               MAX_FILE_SIZE,
+                               RELAX_GROUP,
+                               RELAX_OTHER);
+        if (res) {
+                pixbuf = gdk_pixbuf_new_from_file_at_size (path,
+                                                           icon_size,
+                                                           icon_size,
+                                                           NULL);
+        } else {
+                pixbuf = NULL;
+        }
+
+        g_free (path);
+        if (pixbuf != NULL) {
+                return pixbuf;
+        }
+
+        /* Finally, ${GlobalFaceDir}/${username}.png */
+        tmp = g_strconcat (user->user_name, ".png", NULL);
+        path = g_build_filename (GLOBAL_FACEDIR, tmp, NULL);
+        g_free (tmp);
+        res = check_user_file (path,
+                               user->uid,
+                               MAX_FILE_SIZE,
+                               RELAX_GROUP,
+                               RELAX_OTHER);
+        if (res) {
+                pixbuf = gdk_pixbuf_new_from_file_at_size (path,
+                                                           icon_size,
+                                                           icon_size,
+                                                           NULL);
+        } else {
+                pixbuf = NULL;
+        }
+
+        g_free (path);
+        if (pixbuf != NULL) {
+                return pixbuf;
+        }
+
+        /* Nothing yet, use stock icon */
+        if (widget != NULL && gtk_widget_has_screen (widget)) {
+                theme = gtk_icon_theme_get_for_screen (gtk_widget_get_screen (widget));
+        } else {
+                theme = gtk_icon_theme_get_default ();
+        }
+
+        pixbuf = gtk_icon_theme_load_icon (theme,
+                                           DEFAULT_USER_ICON,
+                                           icon_size,
+                                           0,
+                                           NULL);
+
+        if (pixbuf == NULL) {
+                pixbuf = gtk_icon_theme_load_icon (theme,
+                                                   GTK_STOCK_MISSING_IMAGE,
+                                                   icon_size,
+                                                   0,
+                                                   NULL);
+        }
+
+        return pixbuf;
 }
