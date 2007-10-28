@@ -234,6 +234,14 @@ choose_selected_user (GdmUserChooserWidget *widget)
         choose_user_id (widget, id);
 }
 
+static void
+clear_selection (GdmUserChooserWidget *widget)
+{
+        GtkTreeSelection *selection;
+        selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget->priv->treeview));
+        gtk_tree_selection_unselect_all (selection);
+}
+
 void
 gdm_user_chooser_widget_set_chosen_user_name (GdmUserChooserWidget *widget,
                                               const char           *name)
@@ -241,9 +249,7 @@ gdm_user_chooser_widget_set_chosen_user_name (GdmUserChooserWidget *widget,
         g_return_if_fail (GDM_IS_USER_CHOOSER_WIDGET (widget));
 
         if (name == NULL) {
-                GtkTreeSelection *selection;
-                selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget->priv->treeview));
-                gtk_tree_selection_unselect_all (selection);
+                clear_selection (widget);
                 choose_user_id (widget, NULL);
         } else {
                 activate_name (widget, name);
@@ -353,6 +359,8 @@ on_row_activated (GtkTreeView          *tree_view,
         choose_selected_user (widget);
 
         g_signal_emit (widget, signals[USER_CHOSEN], 0);
+
+        clear_selection (widget);
 }
 
 static GdkPixbuf *
