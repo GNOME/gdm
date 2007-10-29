@@ -1,5 +1,16 @@
 2007-10-29  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-factory-slave.c: (run_greeter):
+	* daemon/gdm-product-slave.c: (setup_server):
+	* daemon/gdm-simple-slave.c: (run_greeter):
+	* daemon/gdm-slave.c: (gdm_slave_whack_temp_auth_file),
+	(create_temp_auth_file), (listify_hash), (get_script_environment),
+	(gdm_slave_run_script):
+	* daemon/gdm-slave.h:
+	Move the exec_script stuff to the base class.
+
+2007-10-29  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/gdm-greeter-server.c: (connection_filter_function):
 	Don't handle object messages in filter func.
 
