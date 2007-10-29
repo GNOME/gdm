@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.21.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-10-27 19:35+0200\n"
-"PO-Revision-Date: 2007-10-27 21:04+0200\n"
+"POT-Creation-Date: 2007-10-29 15:08+0100\n"
+"PO-Revision-Date: 2007-10-29 15:10+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian/Bokmaal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -47,23 +47,14 @@ msgstr "Slave for GNOME skjermhåndterer"
 msgid "Unable to authenticate user"
 msgstr "Kan ikke autentisere bruker"
 
-#: ../daemon/gdm-factory-slave.c:752 ../daemon/gdm-product-slave.c:814
-#: ../daemon/gdm-simple-slave.c:1148
-#, fuzzy
+#: ../daemon/gdm-factory-slave.c:765 ../daemon/gdm-product-slave.c:814
+#: ../daemon/gdm-simple-slave.c:1170
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
 "syslog to diagnose. In the meantime this display will be disabled.  Please "
 "restart GDM when the problem is corrected."
-msgstr ""
-"Kunne ikke starte X-tjeneren\n"
-"(ditt grafiske miljø)\n"
-"på grunn av en intern feil.\n"
-"Vennligst kontakt din systemadministrator\n"
-"eller sjekk din syslog for å finne ut hva\n"
-"som er feil. I mellomtiden vil denne\n"
-"skjermen deaktiveres. Vennligst start gdm på\n"
-"nytt når problemet er rettet."
+msgstr "Kunne ikke starte X-tjeneren (ditt grafiske miljø) på grunn av en intern feil. Vennligst kontakt din systemadministrator eller sjekk systemloggen for å finne ut hva som er feil. I mellomtiden vil denne skjermen deaktiveres. Vennligst start GDM på nytt når problemet er rettet."
 
 #: ../daemon/gdm-greeter-session.c:333
 #, c-format
@@ -78,7 +69,7 @@ msgstr "Gruppe %s eksisterer ikke"
 #: ../daemon/gdm-greeter-session.c:351 ../daemon/gdm-server.c:370
 #, c-format
 msgid "Couldn't set groupid to %d"
-msgstr "%s: Kunne ikke sette gruppe-ID til %d"
+msgstr "Kunne ikke sette gruppe-ID til %d"
 
 #: ../daemon/gdm-greeter-session.c:357 ../daemon/gdm-server.c:376
 #, c-format
@@ -112,7 +103,8 @@ msgstr "%s: kunne ikke koble til opphavsskjerm «%s»"
 #: ../daemon/gdm-server.c:359
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
-msgstr "Tjeneren skulle startes av bruker %s, men denne brukeren eksisterer ikke"
+msgstr ""
+"Tjeneren skulle startes av bruker %s, men denne brukeren eksisterer ikke"
 
 #: ../daemon/gdm-server.c:425
 #, c-format
@@ -152,11 +144,11 @@ msgstr ""
 
 #: ../daemon/gdm-session-worker.c:854
 msgid "general failure"
-msgstr ""
+msgstr "generell feil"
 
 #: ../daemon/gdm-session-worker.c:855
 msgid "out of memory"
-msgstr ""
+msgstr "ikke mer minne"
 
 #: ../daemon/gdm-session-worker.c:856
 msgid "application programmer error"
@@ -188,7 +180,7 @@ msgstr ""
 #: ../daemon/gdm-session-worker.c:1045
 #, c-format
 msgid "no user account available"
-msgstr ""
+msgstr "ingen brukerkonto tilgjengelig"
 
 #: ../daemon/gdm-session-worker.c:1093
 #, c-format
@@ -341,7 +333,7 @@ msgstr "XDMCP: Feil XDMCP versjon!"
 #: ../daemon/gdm-xdmcp-display-factory.c:2638
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:244
 msgid "XMDCP: Unable to parse address"
-msgstr ""
+msgstr "XDMCP: Kan ikke lese adressen"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:3036
 #, c-format
@@ -458,20 +450,20 @@ msgstr "Innstillinger for tjener"
 msgid "X Settings"
 msgstr "Innstillinger for X"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:640
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:656
 msgid "%l:%M:%S %p"
-msgstr ""
+msgstr "%l:%M:%S"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:640
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:656
 msgid "%l:%M %p"
-msgstr "%l:%M %p"
+msgstr "%l:%M"
 
 #. translators: replace %e with %d if, when the day of the
 #. *              month as a decimal number is a single digit, it
 #. *              should begin with a 0 in your locale (e.g. "May
 #. *              01" instead of "May  1").
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:646
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:662
 msgid "%a %b %e"
 msgstr "%a %b %e"
 
@@ -479,7 +471,7 @@ msgstr "%a %b %e"
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:651
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:667
 #, c-format
 msgid "%1$s, %2$s"
 msgstr "%1$s: %2$s"
@@ -489,52 +481,52 @@ msgid "Authentication Dialog"
 msgstr "Autentiseringsvindu"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:2
-msgid "Cancel"
-msgstr "Avbryt"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:3
 msgid "Computer Name"
 msgstr "Navn på datamaskin"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:4
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:3
 msgid "Disconnect"
 msgstr "Koble fra"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:4
 msgid "IP Address"
 msgstr "IP-adresse"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
 msgid "Log In"
 msgstr "Logg inn"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
 msgid "Network status"
 msgstr "Nettverksstatus"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
 msgid "Prompt:"
 msgstr "Spør:"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:9
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
 msgid "Restart"
 msgstr "Start på nytt"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:10
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:9
 msgid "Shut Down"
 msgstr "Slå av"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:11
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:10
 msgid "Suspend"
 msgstr "Hvilemodus"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:12
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:11
 msgid "Tue Oct 23 21:16:50 EDT 2007"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:13
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:12
 msgid "Version"
 msgstr "Versjon"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:13
+msgid "gtk-cancel"
+msgstr "gtk-cancel"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:14
 msgid "page 1"
@@ -564,20 +556,34 @@ msgstr "Forrige sesjon"
 msgid "System Default"
 msgstr "Systemforvalg"
 
-#: ../gui/simple-greeter/gdm-user.c:170
+#: ../gui/simple-greeter/gdm-user.c:163
 msgid "Manager"
 msgstr "Håndterer"
 
-#: ../gui/simple-greeter/gdm-user.c:171
+#: ../gui/simple-greeter/gdm-user.c:164
 msgid "The user manager object this user is controlled by."
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:381
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:522
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:410
+msgid "Other..."
+msgstr "Annen..."
+
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:411
+msgid "Choose a different account"
+msgstr "Velg en annen konto"
+
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:419
+msgid "Guest"
+msgstr "Gjest"
+
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:420
+msgid "Login as a temporary guest"
+msgstr "Logg inn som en midlertidig gjest"
+
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:506
 msgid "Short Name"
 msgstr "Kort navn"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:602
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:678
 msgid "Currently logged in"
 msgstr "Allerede logget inn"
-
