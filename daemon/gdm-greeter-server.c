@@ -666,14 +666,11 @@ connection_filter_function (DBusConnection *connection,
 
                 dbus_connection_unref (connection);
                 greeter_server->priv->greeter_connection = NULL;
-        } else if (dbus_message_is_signal (message, DBUS_INTERFACE_DBUS, "NameOwnerChanged")) {
 
-
-        } else {
-                return greeter_server_message_handler (connection, message, user_data);
+                return DBUS_HANDLER_RESULT_HANDLED;
         }
 
-        return DBUS_HANDLER_RESULT_HANDLED;
+        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 static dbus_bool_t
@@ -682,7 +679,7 @@ allow_user_function (DBusConnection *connection,
                      void           *data)
 {
         GdmGreeterServer *greeter_server = GDM_GREETER_SERVER (data);
-        struct passwd   *pwent;
+        struct passwd    *pwent;
 
         if (greeter_server->priv->user_name == NULL) {
                 return FALSE;

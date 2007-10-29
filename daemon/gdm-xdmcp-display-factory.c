@@ -2078,7 +2078,11 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                 }
 
                                 /* sanity check cookie */
-                                g_debug ("Reencoded cookie len:%d '%s'", (int) test_cookie->len, test_cookie->str);
+                                g_debug ("Original cookie len:%d '%s'; Reencoded cookie len:%d '%s'",
+                                         (int) cookie->len,
+                                         cookie->str,
+                                         (int) test_cookie->len,
+                                         test_cookie->str);
                                 g_assert (test_cookie->len == cookie->len);
                                 g_assert (strcmp (test_cookie->str, cookie->str) == 0);
                                 g_string_free (test_cookie, TRUE);

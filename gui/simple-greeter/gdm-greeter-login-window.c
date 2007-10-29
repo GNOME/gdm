@@ -784,6 +784,8 @@ gdm_greeter_login_window_constructor (GType                  type,
                                                                                                                       construct_properties));
 
 
+        load_theme (login_window);
+
         return G_OBJECT (login_window);
 }
 
@@ -895,7 +897,7 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                                          g_param_spec_boolean ("display-is-local",
                                                                "display is local",
                                                                "display is local",
-                                                               TRUE,
+                                                               FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
         g_type_class_add_private (klass, sizeof (GdmGreeterLoginWindowPrivate));
@@ -907,7 +909,6 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         login_window->priv = GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE (login_window);
 
         login_window->priv->clock_show_seconds = TRUE;
-        login_window->priv->display_is_local = TRUE;
 
         login_window->priv->user_chooser = gdm_user_chooser_widget_new ();
         gdm_user_chooser_widget_set_show_only_chosen (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
@@ -922,8 +923,6 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
                           login_window);
 
         gtk_widget_show_all (login_window->priv->user_chooser);
-
-        load_theme (login_window);
 
         gtk_window_set_keep_above (GTK_WINDOW (login_window), TRUE);
         gtk_window_set_opacity (GTK_WINDOW (login_window), 0.85);

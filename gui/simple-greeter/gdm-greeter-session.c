@@ -220,7 +220,7 @@ toggle_login_window (GdmSessionManager *manager,
                 gboolean is_local;
 
                 is_local = gdm_greeter_client_get_display_is_local (session->priv->client);
-
+                g_debug ("Starting a login window local:%d", is_local);
                 session->priv->login_window = gdm_greeter_login_window_new (is_local);
 
                 g_signal_connect (session->priv->login_window,

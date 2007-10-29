@@ -1,3 +1,20 @@
+2007-10-29  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/gdm-greeter-server.c: (connection_filter_function):
+	Don't handle object messages in filter func.
+
+	* daemon/gdm-xdmcp-display-factory.c: (gdm_xdmcp_handle_request):
+	Add debug for cookie.
+
+	* gui/simple-greeter/gdm-greeter-login-window.c:
+	(gdm_greeter_login_window_constructor),
+	(gdm_greeter_login_window_class_init),
+	(gdm_greeter_login_window_init):
+	Load theme in constructor so we get properties.
+
+	* gui/simple-greeter/gdm-greeter-session.c: (toggle_login_window):
+	Add debug.
+
 2007-10-27  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/simple-greeter/gdm-user-chooser-widget.c:
