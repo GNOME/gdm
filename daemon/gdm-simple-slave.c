@@ -735,6 +735,13 @@ on_greeter_connected (GdmGreeterServer *greeter_server,
 }
 
 static void
+setup_server (GdmSimpleSlave *slave)
+{
+        /* Set the busy cursor */
+        gdm_slave_set_busy_cursor (GDM_SLAVE (slave));
+}
+
+static void
 run_greeter (GdmSimpleSlave *slave)
 {
         gboolean       display_is_local;
@@ -768,27 +775,12 @@ run_greeter (GdmSimpleSlave *slave)
                 display_device = gdm_server_get_display_device (slave->priv->server);
         }
 
-        /* Set the busy cursor */
-        gdm_slave_set_busy_cursor (GDM_SLAVE (slave));
-
         /* FIXME: send a signal back to the master */
-
-#if 0
-
-        /* OK from now on it's really the user whacking us most likely,
-         * we have already started up well */
-        do_xfailed_on_xio_error = FALSE;
-#endif
 
         /* If XDMCP setup pinging */
         if ( ! display_is_local && slave->priv->ping_interval > 0) {
                 alarm (slave->priv->ping_interval);
         }
-
-#if 0
-        /* checkout xinerama */
-        gdm_screen_init (slave);
-#endif
 
         /* Run the init script. gdmslave suspends until script has terminated */
         gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", "gdm");
@@ -869,6 +861,7 @@ idle_connect_to_display (GdmSimpleSlave *slave)
         if (res) {
                 /* FIXME: handle wait-for-go */
 
+                setup_server (slave);
                 run_greeter (slave);
         } else {
                 if (slave->priv->connection_attempts >= MAX_CONNECT_ATTEMPTS) {

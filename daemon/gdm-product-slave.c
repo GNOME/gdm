@@ -435,38 +435,8 @@ setup_session_environment (GdmProductSlave *slave)
 static void
 setup_server (GdmProductSlave *slave)
 {
-        gboolean       display_is_local;
-        char          *display_name;
-        char          *auth_file;
-
-        g_object_get (slave,
-                      "display-is-local", &display_is_local,
-                      "display-name", &display_name,
-                      "display-x11-authority-file", &auth_file,
-                      NULL);
-
         /* Set the busy cursor */
         gdm_slave_set_busy_cursor (GDM_SLAVE (slave));
-
-        /* FIXME: send a signal back to the master */
-
-#if 0
-
-        /* OK from now on it's really the user whacking us most likely,
-         * we have already started up well */
-        do_xfailed_on_xio_error = FALSE;
-#endif
-
-#if 0
-        /* checkout xinerama */
-        gdm_screen_init (slave);
-#endif
-
-        /* Run the init script. gdmslave suspends until script has terminated */
-        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR"/Init", "gdm");
-
-        g_free (display_name);
-        g_free (auth_file);
 }
 
 static gboolean
