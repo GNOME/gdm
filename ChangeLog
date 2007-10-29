@@ -1,5 +1,72 @@
 2007-10-29  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/Makefile.am:
+	* daemon/gdm-product-slave.c: (on_session_opened),
+	(on_session_started), (on_session_exited), (on_session_died),
+	(slave_open_ck_session), (setup_session_environment),
+	(setup_session), (on_session_user_verified),
+	(on_session_user_verification_error), (on_session_info),
+	(on_session_problem), (on_session_info_query),
+	(on_session_secret_info_query), (on_relay_begin_verification),
+	(on_relay_begin_verification_for_user), (on_relay_answer),
+	(reset_session), (on_relay_open), (create_new_session),
+	(on_relay_cancelled), (gdm_product_slave_stop):
+	* daemon/gdm-session-direct.c: (gdm_session_direct_error_quark),
+	(send_dbus_string_signal),
+	(gdm_session_direct_user_verification_error_handler),
+	(gdm_session_direct_started_handler),
+	(gdm_session_direct_startup_error_handler),
+	(gdm_session_direct_exited_handler),
+	(gdm_session_direct_class_install_signals),
+	(gdm_session_direct_finalize), (gdm_session_direct_class_init),
+	(gdm_session_direct_handle_verified),
+	(gdm_session_direct_handle_verification_failed),
+	(gdm_session_direct_handle_username_changed),
+	(cancel_pending_query), (answer_pending_query),
+	(set_pending_query), (gdm_session_direct_handle_info_query),
+	(gdm_session_direct_handle_secret_info_query),
+	(gdm_session_direct_handle_info),
+	(gdm_session_direct_handle_problem),
+	(gdm_session_direct_handle_session_started),
+	(gdm_session_direct_handle_startup_failed),
+	(gdm_session_direct_handle_session_exited),
+	(gdm_session_direct_handle_session_died), (session_worker_message),
+	(handle_connection), (setup_server), (gdm_session_direct_init),
+	(gdm_session_direct_new), (worker_stopped), (worker_started),
+	(worker_exited), (worker_died), (start_worker),
+	(gdm_session_direct_open), (send_begin_verification),
+	(send_begin_verification_for_user),
+	(gdm_session_direct_begin_verification),
+	(send_environment_variable), (send_environment),
+	(gdm_session_direct_start_program), (gdm_session_direct_close),
+	(gdm_session_direct_is_running),
+	(gdm_session_direct_set_environment_variable),
+	(gdm_session_direct_answer_query),
+	(gdm_session_direct_get_username):
+	* daemon/gdm-session-direct.h:
+	* daemon/gdm-session-relay.h:
+	* daemon/gdm-session.c:
+	* daemon/gdm-session.h:
+	* daemon/gdm-simple-slave.c: (on_session_started),
+	(on_session_exited), (on_session_died), (add_user_authorization),
+	(slave_open_ck_session), (setup_session_environment),
+	(on_session_user_verified), (on_session_user_verification_error),
+	(on_session_info), (on_session_problem), (on_session_info_query),
+	(on_session_secret_info_query), (on_session_opened),
+	(create_new_session), (on_greeter_begin_verification),
+	(on_greeter_begin_verification_for_user), (on_greeter_answer),
+	(on_greeter_cancel), (on_greeter_connected),
+	(gdm_simple_slave_stop):
+	* daemon/gdm-slave.c:
+	* daemon/test-session.c: (on_open), (on_session_started),
+	(on_session_exited), (on_session_died), (on_user_verified),
+	(on_user_verification_error), (on_info_query), (on_info),
+	(on_problem), (on_secret_info_query), (import_environment), (main):
+	Rename GdmSession to GdmSessionDirect in preparation for adding
+	a GdmSession interface.  Naming is hard.
+
+2007-10-29  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/gdm-factory-slave.c: (setup_server), (run_greeter),
 	(idle_connect_to_display):
 	* daemon/gdm-product-slave.c: (setup_server):

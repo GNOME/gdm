@@ -48,7 +48,7 @@
 #include "gdm-product-slave-glue.h"
 
 #include "gdm-server.h"
-#include "gdm-session.h"
+#include "gdm-session-direct.h"
 
 #include "ck-connector.h"
 
@@ -84,7 +84,7 @@ struct GdmProductSlavePrivate
 
         CkConnector      *ckc;
         GdmServer        *server;
-        GdmSession       *session;
+        GdmSessionDirect       *session;
         DBusGProxy       *session_relay_proxy;
         DBusGConnection  *session_relay_connection;
         DBusGProxy       *product_display_proxy;
@@ -139,7 +139,7 @@ relay_session_opened (GdmProductSlave *slave)
 }
 
 static void
-on_session_opened (GdmSession      *session,
+on_session_opened (GdmSessionDirect      *session,
                    GdmProductSlave *slave)
 {
         g_debug ("session opened");
@@ -158,7 +158,7 @@ disconnect_relay (GdmProductSlave *slave)
 }
 
 static void
-on_session_started (GdmSession      *session,
+on_session_started (GdmSessionDirect      *session,
                     GPid             pid,
                     GdmProductSlave *slave)
 {
@@ -170,7 +170,7 @@ on_session_started (GdmSession      *session,
 }
 
 static void
-on_session_exited (GdmSession      *session,
+on_session_exited (GdmSessionDirect      *session,
                    int              exit_code,
                    GdmProductSlave *slave)
 {
@@ -180,7 +180,7 @@ on_session_exited (GdmSession      *session,
 }
 
 static void
-on_session_died (GdmSession *session,
+on_session_died (GdmSessionDirect *session,
                  int         signal_number,
                  GdmProductSlave   *slave)
 {
@@ -313,7 +313,7 @@ slave_open_ck_session (GdmProductSlave *slave,
 
         g_return_val_if_fail (GDM_IS_SLAVE (slave), FALSE);
 
-        username = gdm_session_get_username (slave->priv->session);
+        username = gdm_session_direct_get_username (slave->priv->session);
 
         x11_display_device = NULL;
 
@@ -403,28 +403,28 @@ setup_session_environment (GdmProductSlave *slave)
                       "display-x11-authority-file", &auth_file,
                       NULL);
 
-        gdm_session_set_environment_variable (slave->priv->session,
+        gdm_session_direct_set_environment_variable (slave->priv->session,
                                               "GDMSESSION",
                                               slave->priv->selected_session);
-        gdm_session_set_environment_variable (slave->priv->session,
+        gdm_session_direct_set_environment_variable (slave->priv->session,
                                               "DESKTOP_SESSION",
                                               slave->priv->selected_session);
 
-        gdm_session_set_environment_variable (slave->priv->session,
+        gdm_session_direct_set_environment_variable (slave->priv->session,
                                               "LANG",
                                               slave->priv->selected_language);
-        gdm_session_set_environment_variable (slave->priv->session,
+        gdm_session_direct_set_environment_variable (slave->priv->session,
                                               "GDM_LANG",
                                               slave->priv->selected_language);
 
-        gdm_session_set_environment_variable (slave->priv->session,
+        gdm_session_direct_set_environment_variable (slave->priv->session,
                                               "DISPLAY",
                                               display_name);
-        gdm_session_set_environment_variable (slave->priv->session,
+        gdm_session_direct_set_environment_variable (slave->priv->session,
                                               "XAUTHORITY",
                                               auth_file);
 
-        gdm_session_set_environment_variable (slave->priv->session,
+        gdm_session_direct_set_environment_variable (slave->priv->session,
                                               "PATH",
                                               "/bin:/usr/bin:" BINDIR);
 
@@ -447,7 +447,7 @@ setup_session (GdmProductSlave *slave)
         char    *filename;
         gboolean res;
 
-        username = gdm_session_get_username (slave->priv->session);
+        username = gdm_session_direct_get_username (slave->priv->session);
 
         g_debug ("%s%ssuccessfully authenticated\n",
                  username ? username : "",
@@ -468,7 +468,7 @@ setup_session (GdmProductSlave *slave)
                 return FALSE;
         }
 
-        gdm_session_start_program (slave->priv->session, command);
+        gdm_session_direct_start_program (slave->priv->session, command);
 
         g_free (filename);
         g_free (command);
@@ -553,7 +553,7 @@ gdm_product_slave_create_server (GdmProductSlave *slave)
 }
 
 static void
-on_session_user_verified (GdmSession      *session,
+on_session_user_verified (GdmSessionDirect      *session,
                           GdmProductSlave *slave)
 {
         GError  *error;
@@ -576,7 +576,7 @@ on_session_user_verified (GdmSession      *session,
 }
 
 static void
-on_session_user_verification_error (GdmSession      *session,
+on_session_user_verification_error (GdmSessionDirect      *session,
                                     GError          *error,
                                     GdmProductSlave *slave)
 {
@@ -584,7 +584,7 @@ on_session_user_verification_error (GdmSession      *session,
         GError  *local_error;
         gboolean res;
 
-        username = gdm_session_get_username (session);
+        username = gdm_session_direct_get_username (session);
 
         g_debug ("%s%scould not be successfully authenticated: %s\n",
                  username ? username : "",
@@ -607,7 +607,7 @@ on_session_user_verification_error (GdmSession      *session,
 }
 
 static void
-on_session_info (GdmSession      *session,
+on_session_info (GdmSessionDirect      *session,
                  const char      *text,
                  GdmProductSlave *slave)
 {
@@ -630,7 +630,7 @@ on_session_info (GdmSession      *session,
 }
 
 static void
-on_session_problem (GdmSession      *session,
+on_session_problem (GdmSessionDirect      *session,
                     const char      *text,
                     GdmProductSlave *slave)
 {
@@ -654,7 +654,7 @@ on_session_problem (GdmSession      *session,
 }
 
 static void
-on_session_info_query (GdmSession      *session,
+on_session_info_query (GdmSessionDirect      *session,
                        const char      *text,
                        GdmProductSlave *slave)
 {
@@ -677,7 +677,7 @@ on_session_info_query (GdmSession      *session,
 }
 
 static void
-on_session_secret_info_query (GdmSession      *session,
+on_session_secret_info_query (GdmSessionDirect      *session,
                               const char      *text,
                               GdmProductSlave *slave)
 {
@@ -711,7 +711,7 @@ on_relay_begin_verification (DBusGProxy *proxy,
         g_debug ("Relay BeginVerification");
 
         error = NULL;
-        res = gdm_session_begin_verification (slave->priv->session,
+        res = gdm_session_direct_begin_verification (slave->priv->session,
                                               NULL,
                                               &error);
         if (! res) {
@@ -732,7 +732,7 @@ on_relay_begin_verification_for_user (DBusGProxy *proxy,
         g_debug ("Relay BeginVerificationForUser");
 
         error = NULL;
-        res = gdm_session_begin_verification (slave->priv->session,
+        res = gdm_session_direct_begin_verification (slave->priv->session,
                                               username,
                                               &error);
         if (! res) {
@@ -750,7 +750,7 @@ on_relay_answer (DBusGProxy *proxy,
 
         g_debug ("Relay Answer");
 
-        gdm_session_answer_query (slave->priv->session, text);
+        gdm_session_direct_answer_query (slave->priv->session, text);
 }
 
 static void
@@ -790,8 +790,8 @@ reset_session (GdmProductSlave *slave)
                       "display-name", &display_name,
                       NULL);
 
-        gdm_session_close (slave->priv->session);
-        res = gdm_session_open (slave->priv->session,
+        gdm_session_direct_close (slave->priv->session);
+        res = gdm_session_direct_open (slave->priv->session,
                                 "gdm",
                                 "",
                                 display_name,
@@ -838,7 +838,7 @@ on_relay_open (DBusGProxy *proxy,
                       NULL);
 
         error = NULL;
-        res = gdm_session_open (slave->priv->session,
+        res = gdm_session_direct_open (slave->priv->session,
                                 "gdm",
                                 "",
                                 display_name,
@@ -855,7 +855,7 @@ on_relay_open (DBusGProxy *proxy,
 static void
 create_new_session (GdmProductSlave *slave)
 {
-        slave->priv->session = gdm_session_new ();
+        slave->priv->session = gdm_session_direct_new ();
 
         g_signal_connect (slave->priv->session,
                           "opened",
@@ -915,7 +915,7 @@ on_relay_cancelled (DBusGProxy *proxy,
         g_debug ("Relay cancelled");
 
         if (slave->priv->session != NULL) {
-                gdm_session_close (slave->priv->session);
+                gdm_session_direct_close (slave->priv->session);
                 g_object_unref (slave->priv->session);
         }
 
@@ -1133,7 +1133,7 @@ gdm_product_slave_stop (GdmSlave *slave)
         res = GDM_SLAVE_CLASS (gdm_product_slave_parent_class)->stop (slave);
 
         if (GDM_PRODUCT_SLAVE (slave)->priv->session != NULL) {
-                gdm_session_close (GDM_PRODUCT_SLAVE (slave)->priv->session);
+                gdm_session_direct_close (GDM_PRODUCT_SLAVE (slave)->priv->session);
                 g_object_unref (GDM_PRODUCT_SLAVE (slave)->priv->session);
                 GDM_PRODUCT_SLAVE (slave)->priv->session = NULL;
         }

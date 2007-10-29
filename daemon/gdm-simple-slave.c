@@ -48,7 +48,7 @@
 #include "gdm-simple-slave-glue.h"
 
 #include "gdm-server.h"
-#include "gdm-session.h"
+#include "gdm-session-direct.h"
 #include "gdm-greeter-server.h"
 #include "gdm-greeter-session.h"
 
@@ -84,7 +84,7 @@ struct GdmSimpleSlavePrivate
         GdmServer         *server;
         GdmGreeterServer  *greeter_server;
         GdmGreeterSession *greeter;
-        GdmSession        *session;
+        GdmSessionDirect  *session;
         DBusGConnection   *connection;
 };
 
@@ -99,9 +99,9 @@ static void     gdm_simple_slave_finalize       (GObject             *object);
 G_DEFINE_TYPE (GdmSimpleSlave, gdm_simple_slave, GDM_TYPE_SLAVE)
 
 static void
-on_session_started (GdmSession     *session,
-                    GPid            pid,
-                    GdmSimpleSlave *slave)
+on_session_started (GdmSessionDirect *session,
+                    GPid              pid,
+                    GdmSimpleSlave   *slave)
 {
         g_debug ("session started on pid %d\n", (int) pid);
 
@@ -109,7 +109,7 @@ on_session_started (GdmSession     *session,
 }
 
 static void
-on_session_exited (GdmSession     *session,
+on_session_exited (GdmSessionDirect     *session,
                    int             exit_code,
                    GdmSimpleSlave *slave)
 {
@@ -119,7 +119,7 @@ on_session_exited (GdmSession     *session,
 }
 
 static void
-on_session_died (GdmSession     *session,
+on_session_died (GdmSessionDirect     *session,
                  int             signal_number,
                  GdmSimpleSlave *slave)
 {
@@ -244,7 +244,7 @@ add_user_authorization (GdmSimpleSlave *slave,
         char    *username;
         gboolean ret;
 
-        username = gdm_session_get_username (slave->priv->session);
+        username = gdm_session_direct_get_username (slave->priv->session);
         ret = gdm_slave_add_user_authorization (GDM_SLAVE (slave),
                                                 username,
                                                 filename);
@@ -268,7 +268,7 @@ slave_open_ck_session (GdmSimpleSlave *slave,
 
         g_return_val_if_fail (GDM_IS_SLAVE (slave), FALSE);
 
-        username = gdm_session_get_username (slave->priv->session);
+        username = gdm_session_direct_get_username (slave->priv->session);
 
         x11_display_device = NULL;
 
@@ -354,33 +354,33 @@ setup_session_environment (GdmSimpleSlave *slave)
                 session_cookie = ck_connector_get_cookie (slave->priv->ckc);
         }
 
-        gdm_session_set_environment_variable (slave->priv->session,
+        gdm_session_direct_set_environment_variable (slave->priv->session,
                                               "GDMSESSION",
                                               slave->priv->selected_session);
-        gdm_session_set_environment_variable (slave->priv->session,
+        gdm_session_direct_set_environment_variable (slave->priv->session,
                                               "DESKTOP_SESSION",
                                               slave->priv->selected_session);
 
-        gdm_session_set_environment_variable (slave->priv->session,
+        gdm_session_direct_set_environment_variable (slave->priv->session,
                                               "LANG",
                                               slave->priv->selected_language);
-        gdm_session_set_environment_variable (slave->priv->session,
+        gdm_session_direct_set_environment_variable (slave->priv->session,
                                               "GDM_LANG",
                                               slave->priv->selected_language);
 
-        gdm_session_set_environment_variable (slave->priv->session,
+        gdm_session_direct_set_environment_variable (slave->priv->session,
                                               "DISPLAY",
                                               display_name);
-        gdm_session_set_environment_variable (slave->priv->session,
+        gdm_session_direct_set_environment_variable (slave->priv->session,
                                               "XAUTHORITY",
                                               auth_file);
         if (session_cookie != NULL) {
-                gdm_session_set_environment_variable (slave->priv->session,
+                gdm_session_direct_set_environment_variable (slave->priv->session,
                                                       "XDG_SESSION_COOKIE",
                                                       session_cookie);
         }
 
-        gdm_session_set_environment_variable (slave->priv->session,
+        gdm_session_direct_set_environment_variable (slave->priv->session,
                                               "PATH",
                                               "/bin:/usr/bin:" BINDIR);
 
@@ -391,7 +391,7 @@ setup_session_environment (GdmSimpleSlave *slave)
 }
 
 static void
-on_session_user_verified (GdmSession     *session,
+on_session_user_verified (GdmSessionDirect     *session,
                           GdmSimpleSlave *slave)
 {
         char    *username;
@@ -402,7 +402,7 @@ on_session_user_verified (GdmSession     *session,
         gdm_greeter_session_stop (slave->priv->greeter);
         gdm_greeter_server_stop (slave->priv->greeter_server);
 
-        username = gdm_session_get_username (session);
+        username = gdm_session_direct_get_username (session);
 
         g_debug ("%s%ssuccessfully authenticated\n",
                  username ? username : "",
@@ -423,7 +423,7 @@ on_session_user_verified (GdmSession     *session,
                 return;
         }
 
-        gdm_session_start_program (session, command);
+        gdm_session_direct_start_program (session, command);
 
         g_free (filename);
         g_free (command);
@@ -448,13 +448,13 @@ queue_greeter_reset (GdmSimpleSlave *slave)
 }
 
 static void
-on_session_user_verification_error (GdmSession     *session,
+on_session_user_verification_error (GdmSessionDirect     *session,
                                     GError         *error,
                                     GdmSimpleSlave *slave)
 {
         char *username;
 
-        username = gdm_session_get_username (session);
+        username = gdm_session_direct_get_username (session);
 
         g_debug ("could not successfully authenticate user '%s': %s",
                  username,
@@ -468,7 +468,7 @@ on_session_user_verification_error (GdmSession     *session,
 }
 
 static void
-on_session_info (GdmSession     *session,
+on_session_info (GdmSessionDirect     *session,
                  const char     *text,
                  GdmSimpleSlave *slave)
 {
@@ -477,7 +477,7 @@ on_session_info (GdmSession     *session,
 }
 
 static void
-on_session_problem (GdmSession     *session,
+on_session_problem (GdmSessionDirect     *session,
                     const char     *text,
                     GdmSimpleSlave *slave)
 {
@@ -486,7 +486,7 @@ on_session_problem (GdmSession     *session,
 }
 
 static void
-on_session_info_query (GdmSession     *session,
+on_session_info_query (GdmSessionDirect     *session,
                        const char     *text,
                        GdmSimpleSlave *slave)
 {
@@ -496,7 +496,7 @@ on_session_info_query (GdmSession     *session,
 }
 
 static void
-on_session_secret_info_query (GdmSession     *session,
+on_session_secret_info_query (GdmSessionDirect     *session,
                               const char     *text,
                               GdmSimpleSlave *slave)
 {
@@ -505,7 +505,7 @@ on_session_secret_info_query (GdmSession     *session,
 }
 
 static void
-on_session_opened (GdmSession     *session,
+on_session_opened (GdmSessionDirect     *session,
                    GdmSimpleSlave *slave)
 {
         gboolean res;
@@ -522,7 +522,7 @@ create_new_session (GdmSimpleSlave *slave)
 {
         g_debug ("Creating new session");
 
-        slave->priv->session = gdm_session_new ();
+        slave->priv->session = gdm_session_direct_new ();
 
         g_signal_connect (slave->priv->session,
                           "opened",
@@ -596,7 +596,7 @@ on_greeter_begin_verification (GdmGreeterServer *greeter_server,
 
         g_debug ("begin verification");
         error = NULL;
-        res = gdm_session_begin_verification (slave->priv->session,
+        res = gdm_session_direct_begin_verification (slave->priv->session,
                                               NULL,
                                               &error);
         if (! res) {
@@ -615,7 +615,7 @@ on_greeter_begin_verification_for_user (GdmGreeterServer *greeter_server,
 
         g_debug ("begin verification");
         error = NULL;
-        res = gdm_session_begin_verification (slave->priv->session,
+        res = gdm_session_direct_begin_verification (slave->priv->session,
                                               username,
                                               &error);
         if (! res) {
@@ -629,7 +629,7 @@ on_greeter_answer (GdmGreeterServer *greeter_server,
                    const char       *text,
                    GdmSimpleSlave   *slave)
 {
-        gdm_session_answer_query (slave->priv->session, text);
+        gdm_session_direct_answer_query (slave->priv->session, text);
 }
 
 static void
@@ -674,7 +674,7 @@ on_greeter_cancel (GdmGreeterServer *greeter_server,
                       NULL);
 
         if (slave->priv->session != NULL) {
-                gdm_session_close (slave->priv->session);
+                gdm_session_direct_close (slave->priv->session);
                 g_object_unref (slave->priv->session);
         }
 
@@ -686,7 +686,7 @@ on_greeter_cancel (GdmGreeterServer *greeter_server,
                 display_device = g_strdup ("");
         }
 
-        gdm_session_open (slave->priv->session,
+        gdm_session_direct_open (slave->priv->session,
                           "gdm",
                           "" /* hostname */,
                           display_name,
@@ -718,7 +718,7 @@ on_greeter_connected (GdmGreeterServer *greeter_server,
                 display_device = g_strdup ("");
         }
 
-        gdm_session_open (slave->priv->session,
+        gdm_session_direct_open (slave->priv->session,
                           "gdm",
                           "" /* hostname */,
                           display_name,
@@ -954,7 +954,7 @@ gdm_simple_slave_stop (GdmSlave *slave)
         }
 
         if (GDM_SIMPLE_SLAVE (slave)->priv->session != NULL) {
-                gdm_session_close (GDM_SIMPLE_SLAVE (slave)->priv->session);
+                gdm_session_direct_close (GDM_SIMPLE_SLAVE (slave)->priv->session);
                 g_object_unref (GDM_SIMPLE_SLAVE (slave)->priv->session);
                 GDM_SIMPLE_SLAVE (slave)->priv->session = NULL;
         }

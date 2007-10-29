@@ -50,7 +50,6 @@
 #include "gdm-slave-glue.h"
 
 #include "gdm-server.h"
-#include "gdm-session.h"
 
 #define GDM_SLAVE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SLAVE, GdmSlavePrivate))
 

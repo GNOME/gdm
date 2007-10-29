@@ -19,8 +19,8 @@
  */
 
 
-#ifndef __GDM_SESSION_SERVER_H
-#define __GDM_SESSION_SERVER_H
+#ifndef __GDM_SESSION_RELAY_H
+#define __GDM_SESSION_RELAY_H
 
 #include <glib-object.h>
 

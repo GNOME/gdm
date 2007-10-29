@@ -45,7 +45,7 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
-#include "gdm-session.h"
+#include "gdm-session-direct.h"
 #include "gdm-session-record.h"
 #include "gdm-session-worker-job.h"
 
@@ -53,7 +53,7 @@
 #define GDM_SESSION_DBUS_INTERFACE    "org.gnome.DisplayManager.Session"
 #define GDM_SESSION_DBUS_ERROR_CANCEL "org.gnome.DisplayManager.Session.Error.Cancel"
 
-struct _GdmSessionPrivate
+struct _GdmSessionDirectPrivate
 {
         GdmSessionWorkerJob *job;
         GPid                 session_pid;
@@ -92,17 +92,17 @@ enum {
         LAST_SIGNAL
 };
 
-static guint gdm_session_signals [LAST_SIGNAL];
+static guint gdm_session_direct_signals [LAST_SIGNAL];
 
-G_DEFINE_TYPE (GdmSession, gdm_session, G_TYPE_OBJECT);
+G_DEFINE_TYPE (GdmSessionDirect, gdm_session_direct, G_TYPE_OBJECT);
 
 GQuark
-gdm_session_error_quark (void)
+gdm_session_direct_error_quark (void)
 {
         static GQuark error_quark = 0;
 
         if (error_quark == 0)
-                error_quark = g_quark_from_static_string ("gdm-session");
+                error_quark = g_quark_from_static_string ("gdm-session-direct");
 
         return error_quark;
 }
@@ -133,7 +133,7 @@ send_dbus_message (DBusConnection *connection,
 }
 
 static void
-send_dbus_string_signal (GdmSession *session,
+send_dbus_string_signal (GdmSessionDirect *session,
                          const char *name,
                          const char *text)
 {
@@ -157,8 +157,8 @@ send_dbus_string_signal (GdmSession *session,
 }
 
 static void
-gdm_session_user_verification_error_handler (GdmSession      *session,
-                                             GError          *error)
+gdm_session_direct_user_verification_error_handler (GdmSessionDirect      *session,
+                                                    GError          *error)
 {
         gdm_session_record_failed (session->priv->session_pid,
                                    session->priv->username,
@@ -168,8 +168,8 @@ gdm_session_user_verification_error_handler (GdmSession      *session,
 }
 
 static void
-gdm_session_started_handler (GdmSession      *session,
-                             GPid             pid)
+gdm_session_direct_started_handler (GdmSessionDirect      *session,
+                                    GPid             pid)
 {
 
         gdm_session_record_login (session->priv->session_pid,
@@ -180,8 +180,8 @@ gdm_session_started_handler (GdmSession      *session,
 }
 
 static void
-gdm_session_startup_error_handler (GdmSession      *session,
-                                   GError          *error)
+gdm_session_direct_startup_error_handler (GdmSessionDirect      *session,
+                                          GError          *error)
 {
         gdm_session_record_login (session->priv->session_pid,
                                   session->priv->username,
@@ -191,8 +191,8 @@ gdm_session_startup_error_handler (GdmSession      *session,
 }
 
 static void
-gdm_session_exited_handler (GdmSession *session,
-                            int        exit_code)
+gdm_session_direct_exited_handler (GdmSessionDirect *session,
+                                   int        exit_code)
 {
         gdm_session_record_logout (session->priv->session_pid,
                                    session->priv->username,
@@ -202,38 +202,38 @@ gdm_session_exited_handler (GdmSession *session,
 }
 
 static void
-gdm_session_class_install_signals (GdmSessionClass *session_class)
+gdm_session_direct_class_install_signals (GdmSessionDirectClass *session_class)
 {
         GObjectClass *object_class;
 
         object_class = G_OBJECT_CLASS (session_class);
 
-        gdm_session_signals[OPENED] =
+        gdm_session_direct_signals[OPENED] =
                 g_signal_new ("opened",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionClass, opened),
+                              G_STRUCT_OFFSET (GdmSessionDirectClass, opened),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
-        gdm_session_signals[CLOSED] =
+        gdm_session_direct_signals[CLOSED] =
                 g_signal_new ("closed",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionClass, closed),
+                              G_STRUCT_OFFSET (GdmSessionDirectClass, closed),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
         session_class->user_verified = NULL;
-        gdm_session_signals[USER_VERIFIED] =
+        gdm_session_direct_signals[USER_VERIFIED] =
                 g_signal_new ("user-verified",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionClass, user_verified),
+                              G_STRUCT_OFFSET (GdmSessionDirectClass, user_verified),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,
@@ -241,24 +241,24 @@ gdm_session_class_install_signals (GdmSessionClass *session_class)
                               0);
         session_class->user_verified = NULL;
 
-        gdm_session_signals[USER_VERIFICATION_ERROR] =
+        gdm_session_direct_signals[USER_VERIFICATION_ERROR] =
                 g_signal_new ("user-verification-error",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionClass, user_verification_error),
+                              G_STRUCT_OFFSET (GdmSessionDirectClass, user_verification_error),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__POINTER,
                               G_TYPE_NONE,
                               1,
                               G_TYPE_POINTER);
-        session_class->user_verification_error = gdm_session_user_verification_error_handler;
+        session_class->user_verification_error = gdm_session_direct_user_verification_error_handler;
 
-        gdm_session_signals[INFO_QUERY] =
+        gdm_session_direct_signals[INFO_QUERY] =
                 g_signal_new ("info-query",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmSessionClass, info_query),
+                              G_STRUCT_OFFSET (GdmSessionDirectClass, info_query),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,
@@ -267,11 +267,11 @@ gdm_session_class_install_signals (GdmSessionClass *session_class)
                               G_TYPE_STRING);
         session_class->info_query = NULL;
 
-        gdm_session_signals[SECRET_INFO_QUERY] =
+        gdm_session_direct_signals[SECRET_INFO_QUERY] =
                 g_signal_new ("secret-info-query",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmSessionClass, secret_info_query),
+                              G_STRUCT_OFFSET (GdmSessionDirectClass, secret_info_query),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,
@@ -280,11 +280,11 @@ gdm_session_class_install_signals (GdmSessionClass *session_class)
                               G_TYPE_STRING);
         session_class->secret_info_query = NULL;
 
-        gdm_session_signals[INFO] =
+        gdm_session_direct_signals[INFO] =
                 g_signal_new ("info",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionClass, info),
+                              G_STRUCT_OFFSET (GdmSessionDirectClass, info),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,
@@ -293,11 +293,11 @@ gdm_session_class_install_signals (GdmSessionClass *session_class)
                               G_TYPE_STRING);
         session_class->info = NULL;
 
-        gdm_session_signals[PROBLEM] =
+        gdm_session_direct_signals[PROBLEM] =
                 g_signal_new ("problem",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionClass, problem),
+                              G_STRUCT_OFFSET (GdmSessionDirectClass, problem),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,
@@ -306,50 +306,50 @@ gdm_session_class_install_signals (GdmSessionClass *session_class)
                               G_TYPE_STRING);
         session_class->problem = NULL;
 
-        gdm_session_signals[SESSION_STARTED] =
+        gdm_session_direct_signals[SESSION_STARTED] =
                 g_signal_new ("session-started",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionClass, session_started),
+                              G_STRUCT_OFFSET (GdmSessionDirectClass, session_started),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__INT,
                               G_TYPE_NONE,
                               1,
                               G_TYPE_INT);
-        session_class->session_started = gdm_session_started_handler;
+        session_class->session_started = gdm_session_direct_started_handler;
 
-        gdm_session_signals[SESSION_STARTUP_ERROR] =
+        gdm_session_direct_signals[SESSION_STARTUP_ERROR] =
                 g_signal_new ("session-startup-error",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionClass, session_startup_error),
+                              G_STRUCT_OFFSET (GdmSessionDirectClass, session_startup_error),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__POINTER,
                               G_TYPE_NONE,
                               1,
                               G_TYPE_POINTER);
-        session_class->session_startup_error = gdm_session_startup_error_handler;
+        session_class->session_startup_error = gdm_session_direct_startup_error_handler;
 
-        gdm_session_signals[SESSION_EXITED] =
+        gdm_session_direct_signals[SESSION_EXITED] =
                 g_signal_new ("session-exited",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionClass, session_exited),
+                              G_STRUCT_OFFSET (GdmSessionDirectClass, session_exited),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__INT,
                               G_TYPE_NONE,
                               1,
                               G_TYPE_INT);
-        session_class->session_exited = gdm_session_exited_handler;
+        session_class->session_exited = gdm_session_direct_exited_handler;
 
-        gdm_session_signals[SESSION_DIED] =
+        gdm_session_direct_signals[SESSION_DIED] =
                 g_signal_new ("session-died",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionClass, session_died),
+                              G_STRUCT_OFFSET (GdmSessionDirectClass, session_died),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__INT,
@@ -360,16 +360,16 @@ gdm_session_class_install_signals (GdmSessionClass *session_class)
 }
 
 static void
-gdm_session_finalize (GObject *object)
+gdm_session_direct_finalize (GObject *object)
 {
-        GdmSession   *session;
+        GdmSessionDirect   *session;
         GObjectClass *parent_class;
 
-        session = GDM_SESSION (object);
+        session = GDM_SESSION_DIRECT (object);
 
         g_free (session->priv->username);
 
-        parent_class = G_OBJECT_CLASS (gdm_session_parent_class);
+        parent_class = G_OBJECT_CLASS (gdm_session_direct_parent_class);
 
         if (session->priv->environment != NULL) {
                 g_hash_table_destroy (session->priv->environment);
@@ -381,24 +381,24 @@ gdm_session_finalize (GObject *object)
 }
 
 static void
-gdm_session_class_init (GdmSessionClass *session_class)
+gdm_session_direct_class_init (GdmSessionDirectClass *session_class)
 {
         GObjectClass *object_class;
 
         object_class = G_OBJECT_CLASS (session_class);
 
-        object_class->finalize = gdm_session_finalize;
+        object_class->finalize = gdm_session_direct_finalize;
 
-        gdm_session_class_install_signals (session_class);
+        gdm_session_direct_class_install_signals (session_class);
 
         g_type_class_add_private (session_class,
-                                  sizeof (GdmSessionPrivate));
+                                  sizeof (GdmSessionDirectPrivate));
 }
 
 static DBusHandlerResult
-gdm_session_handle_verified (GdmSession     *session,
-                             DBusConnection *connection,
-                             DBusMessage    *message)
+gdm_session_direct_handle_verified (GdmSessionDirect     *session,
+                                    DBusConnection *connection,
+                                    DBusMessage    *message)
 {
         DBusMessage *reply;
 
@@ -410,16 +410,16 @@ gdm_session_handle_verified (GdmSession     *session,
 
         session->priv->is_verified = TRUE;
         g_signal_emit (session,
-                       gdm_session_signals[USER_VERIFIED],
+                       gdm_session_direct_signals[USER_VERIFIED],
                        0);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 static DBusHandlerResult
-gdm_session_handle_verification_failed (GdmSession     *session,
-                                        DBusConnection *connection,
-                                        DBusMessage    *message)
+gdm_session_direct_handle_verification_failed (GdmSessionDirect     *session,
+                                               DBusConnection *connection,
+                                               DBusMessage    *message)
 {
         DBusMessage *reply;
         DBusError    error;
@@ -439,13 +439,13 @@ gdm_session_handle_verification_failed (GdmSession     *session,
 
         g_debug ("Emitting 'verification-failed' signal");
 
-        gerror = g_error_new (GDM_SESSION_ERROR,
-                              GDM_SESSION_ERROR_AUTHENTICATING,
+        gerror = g_error_new (GDM_SESSION_DIRECT_ERROR,
+                              GDM_SESSION_DIRECT_ERROR_AUTHENTICATING,
                               "%s",
                               text);
 
         g_signal_emit (session,
-                       gdm_session_signals[USER_VERIFICATION_ERROR],
+                       gdm_session_direct_signals[USER_VERIFICATION_ERROR],
                        0, gerror);
         g_error_free (gerror);
 
@@ -453,9 +453,9 @@ gdm_session_handle_verification_failed (GdmSession     *session,
 }
 
 static DBusHandlerResult
-gdm_session_handle_username_changed (GdmSession     *session,
-                                     DBusConnection *connection,
-                                     DBusMessage    *message)
+gdm_session_direct_handle_username_changed (GdmSessionDirect     *session,
+                                            DBusConnection *connection,
+                                            DBusMessage    *message)
 {
         DBusMessage *reply;
         DBusError    error;
@@ -483,7 +483,7 @@ gdm_session_handle_username_changed (GdmSession     *session,
 }
 
 static void
-cancel_pending_query (GdmSession *session)
+cancel_pending_query (GdmSessionDirect *session)
 {
         DBusMessage    *reply;
 
@@ -505,7 +505,7 @@ cancel_pending_query (GdmSession *session)
 }
 
 static void
-answer_pending_query (GdmSession *session,
+answer_pending_query (GdmSessionDirect *session,
                       const char *answer)
 {
         DBusMessage    *reply;
@@ -525,7 +525,7 @@ answer_pending_query (GdmSession *session,
 }
 
 static void
-set_pending_query (GdmSession  *session,
+set_pending_query (GdmSessionDirect  *session,
                    DBusMessage *message)
 {
         g_assert (session->priv->message_pending_reply == NULL);
@@ -534,9 +534,9 @@ set_pending_query (GdmSession  *session,
 }
 
 static DBusHandlerResult
-gdm_session_handle_info_query (GdmSession     *session,
-                               DBusConnection *connection,
-                               DBusMessage    *message)
+gdm_session_direct_handle_info_query (GdmSessionDirect     *session,
+                                      DBusConnection *connection,
+                                      DBusMessage    *message)
 {
         DBusError    error;
         const char  *text;
@@ -552,16 +552,16 @@ gdm_session_handle_info_query (GdmSession     *session,
 
         g_debug ("Emitting 'info-query' signal");
         g_signal_emit (session,
-                       gdm_session_signals[INFO_QUERY],
+                       gdm_session_direct_signals[INFO_QUERY],
                        0, text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 static DBusHandlerResult
-gdm_session_handle_secret_info_query (GdmSession     *session,
-                                      DBusConnection *connection,
-                                      DBusMessage    *message)
+gdm_session_direct_handle_secret_info_query (GdmSessionDirect     *session,
+                                             DBusConnection *connection,
+                                             DBusMessage    *message)
 {
         DBusError    error;
         const char  *text;
@@ -578,16 +578,16 @@ gdm_session_handle_secret_info_query (GdmSession     *session,
         g_debug ("Emitting 'secret-info-query' signal");
 
         g_signal_emit (session,
-                       gdm_session_signals[SECRET_INFO_QUERY],
+                       gdm_session_direct_signals[SECRET_INFO_QUERY],
                        0, text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 static DBusHandlerResult
-gdm_session_handle_info (GdmSession     *session,
-                         DBusConnection *connection,
-                         DBusMessage    *message)
+gdm_session_direct_handle_info (GdmSessionDirect     *session,
+                                DBusConnection *connection,
+                                DBusMessage    *message)
 {
         DBusMessage *reply;
         DBusError    error;
@@ -606,16 +606,16 @@ gdm_session_handle_info (GdmSession     *session,
 
         g_debug ("Emitting 'info' signal");
         g_signal_emit (session,
-                       gdm_session_signals[INFO],
+                       gdm_session_direct_signals[INFO],
                        0, text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 static DBusHandlerResult
-gdm_session_handle_problem (GdmSession     *session,
-                            DBusConnection *connection,
-                            DBusMessage    *message)
+gdm_session_direct_handle_problem (GdmSessionDirect     *session,
+                                   DBusConnection *connection,
+                                   DBusMessage    *message)
 {
         DBusMessage *reply;
         DBusError    error;
@@ -634,15 +634,15 @@ gdm_session_handle_problem (GdmSession     *session,
 
         g_debug ("Emitting 'problem' signal");
         g_signal_emit (session,
-                       gdm_session_signals[PROBLEM],
+                       gdm_session_direct_signals[PROBLEM],
                        0, text);
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 static DBusHandlerResult
-gdm_session_handle_session_started (GdmSession     *session,
-                                    DBusConnection *connection,
-                                    DBusMessage    *message)
+gdm_session_direct_handle_session_started (GdmSessionDirect     *session,
+                                           DBusConnection *connection,
+                                           DBusMessage    *message)
 {
         DBusMessage *reply;
         DBusError    error;
@@ -666,16 +666,16 @@ gdm_session_handle_session_started (GdmSession     *session,
         session->priv->is_running = TRUE;
 
         g_signal_emit (session,
-                       gdm_session_signals[SESSION_STARTED],
+                       gdm_session_direct_signals[SESSION_STARTED],
                        0, pid);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 static DBusHandlerResult
-gdm_session_handle_startup_failed (GdmSession     *session,
-                                   DBusConnection *connection,
-                                   DBusMessage    *message)
+gdm_session_direct_handle_startup_failed (GdmSessionDirect     *session,
+                                          DBusConnection *connection,
+                                          DBusMessage    *message)
 {
         DBusMessage *reply;
         DBusError    error;
@@ -695,16 +695,16 @@ gdm_session_handle_startup_failed (GdmSession     *session,
         g_debug ("Emitting 'session-startup-error' signal");
 
         g_signal_emit (session,
-                       gdm_session_signals[SESSION_STARTUP_ERROR],
+                       gdm_session_direct_signals[SESSION_STARTUP_ERROR],
                        0, text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 static DBusHandlerResult
-gdm_session_handle_session_exited (GdmSession     *session,
-                                   DBusConnection *connection,
-                                   DBusMessage    *message)
+gdm_session_direct_handle_session_exited (GdmSessionDirect     *session,
+                                          DBusConnection *connection,
+                                          DBusMessage    *message)
 {
         DBusMessage *reply;
         DBusError    error;
@@ -726,16 +726,16 @@ gdm_session_handle_session_exited (GdmSession     *session,
 
         session->priv->is_running = FALSE;
         g_signal_emit (session,
-                       gdm_session_signals[SESSION_EXITED],
+                       gdm_session_direct_signals[SESSION_EXITED],
                        0, code);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 static DBusHandlerResult
-gdm_session_handle_session_died (GdmSession     *session,
-                                 DBusConnection *connection,
-                                 DBusMessage    *message)
+gdm_session_direct_handle_session_died (GdmSessionDirect     *session,
+                                        DBusConnection *connection,
+                                        DBusMessage    *message)
 {
         DBusMessage *reply;
         DBusError    error;
@@ -757,7 +757,7 @@ gdm_session_handle_session_died (GdmSession     *session,
 
         session->priv->is_running = FALSE;
         g_signal_emit (session,
-                       gdm_session_signals[SESSION_DIED],
+                       gdm_session_direct_signals[SESSION_DIED],
                        0, code);
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -767,30 +767,30 @@ session_worker_message (DBusConnection *connection,
                         DBusMessage    *message,
                         void           *user_data)
 {
-        GdmSession *session = GDM_SESSION (user_data);
+        GdmSessionDirect *session = GDM_SESSION_DIRECT (user_data);
 
         if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "Verified")) {
-                return gdm_session_handle_verified (session, connection, message);
+                return gdm_session_direct_handle_verified (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "VerificationFailed")) {
-                return gdm_session_handle_verification_failed (session, connection, message);
+                return gdm_session_direct_handle_verification_failed (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "UsernameChanged")) {
-                return gdm_session_handle_username_changed (session, connection, message);
+                return gdm_session_direct_handle_username_changed (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "InfoQuery")) {
-                return gdm_session_handle_info_query (session, connection, message);
+                return gdm_session_direct_handle_info_query (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SecretInfoQuery")) {
-                return gdm_session_handle_secret_info_query (session, connection, message);
+                return gdm_session_direct_handle_secret_info_query (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "Info")) {
-                return gdm_session_handle_info (session, connection, message);
+                return gdm_session_direct_handle_info (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "Problem")) {
-                return gdm_session_handle_problem (session, connection, message);
+                return gdm_session_direct_handle_problem (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SessionStarted")) {
-                return gdm_session_handle_session_started (session, connection, message);
+                return gdm_session_direct_handle_session_started (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "StartupFailed")) {
-                return gdm_session_handle_startup_failed (session, connection, message);
+                return gdm_session_direct_handle_startup_failed (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SessionExited")) {
-                return gdm_session_handle_session_exited (session, connection, message);
+                return gdm_session_direct_handle_session_exited (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SessionDied")) {
-                return gdm_session_handle_session_died (session, connection, message);
+                return gdm_session_direct_handle_session_died (session, connection, message);
         }
 
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -1004,7 +1004,7 @@ handle_connection (DBusServer      *server,
                    DBusConnection  *new_connection,
                    void            *user_data)
 {
-        GdmSession *session = GDM_SESSION (user_data);
+        GdmSessionDirect *session = GDM_SESSION_DIRECT (user_data);
 
         g_debug ("Handing new connection");
 
@@ -1032,12 +1032,12 @@ handle_connection (DBusServer      *server,
                                                       session);
 
                 g_debug ("Emitting opened signal");
-                g_signal_emit (session, gdm_session_signals [OPENED], 0);
+                g_signal_emit (session, gdm_session_direct_signals [OPENED], 0);
         }
 }
 
 static gboolean
-setup_server (GdmSession *session)
+setup_server (GdmSessionDirect *session)
 {
         DBusError   error;
         gboolean    ret;
@@ -1079,11 +1079,11 @@ setup_server (GdmSession *session)
 }
 
 static void
-gdm_session_init (GdmSession *session)
+gdm_session_direct_init (GdmSessionDirect *session)
 {
         session->priv = G_TYPE_INSTANCE_GET_PRIVATE (session,
-                                                     GDM_TYPE_SESSION,
-                                                     GdmSessionPrivate);
+                                                     GDM_TYPE_SESSION_DIRECT,
+                                                     GdmSessionDirectPrivate);
 
         session->priv->environment = g_hash_table_new_full (g_str_hash,
                                                             g_str_equal,
@@ -1093,26 +1093,26 @@ gdm_session_init (GdmSession *session)
         setup_server (session);
 }
 
-GdmSession *
-gdm_session_new (void)
+GdmSessionDirect *
+gdm_session_direct_new (void)
 {
-        GdmSession *session;
+        GdmSessionDirect *session;
 
-        session = g_object_new (GDM_TYPE_SESSION, NULL);
+        session = g_object_new (GDM_TYPE_SESSION_DIRECT, NULL);
 
         return session;
 }
 
 static void
 worker_stopped (GdmSessionWorkerJob *job,
-                GdmSession          *session)
+                GdmSessionDirect          *session)
 {
         g_debug ("Worker job stopped");
 }
 
 static void
 worker_started (GdmSessionWorkerJob *job,
-                GdmSession          *session)
+                GdmSessionDirect          *session)
 {
         g_debug ("Worker job started");
 }
@@ -1120,25 +1120,25 @@ worker_started (GdmSessionWorkerJob *job,
 static void
 worker_exited (GdmSessionWorkerJob *job,
                int                  code,
-               GdmSession          *session)
+               GdmSessionDirect          *session)
 {
         g_debug ("Worker job exited: %d", code);
 
         if (!session->priv->is_verified) {
                 GError *error;
 
-                error = g_error_new (GDM_SESSION_ERROR,
-                                     GDM_SESSION_ERROR_WORKER_DIED,
+                error = g_error_new (GDM_SESSION_DIRECT_ERROR,
+                                     GDM_SESSION_DIRECT_ERROR_WORKER_DIED,
                                      _("worker exited with status %d"),
                                      code);
 
                 g_signal_emit (session,
-                               gdm_session_signals [USER_VERIFICATION_ERROR],
+                               gdm_session_direct_signals [USER_VERIFICATION_ERROR],
                                0, error);
                 g_error_free (error);
         } else if (session->priv->is_running) {
                 g_signal_emit (session,
-                               gdm_session_signals [SESSION_EXITED],
+                               gdm_session_direct_signals [SESSION_EXITED],
                                0, code);
         }
 }
@@ -1146,29 +1146,29 @@ worker_exited (GdmSessionWorkerJob *job,
 static void
 worker_died (GdmSessionWorkerJob *job,
              int                  signum,
-             GdmSession          *session)
+             GdmSessionDirect          *session)
 {
         g_debug ("Worker job died: %d", signum);
 
         if (!session->priv->is_verified) {
                 GError *error;
-                error = g_error_new (GDM_SESSION_ERROR,
-                                     GDM_SESSION_ERROR_WORKER_DIED,
+                error = g_error_new (GDM_SESSION_DIRECT_ERROR,
+                                     GDM_SESSION_DIRECT_ERROR_WORKER_DIED,
                                      _("worker got signal '%s' and was subsequently killed"),
                                      g_strsignal (signum));
                 g_signal_emit (session,
-                               gdm_session_signals[USER_VERIFICATION_ERROR],
+                               gdm_session_direct_signals[USER_VERIFICATION_ERROR],
                                0, error);
                 g_error_free (error);
         } else if (session->priv->is_running) {
                 g_signal_emit (session,
-                               gdm_session_signals[SESSION_EXITED],
+                               gdm_session_direct_signals[SESSION_EXITED],
                                0, signum);
         }
 }
 
 static gboolean
-start_worker (GdmSession *session)
+start_worker (GdmSessionDirect *session)
 {
         gboolean res;
 
@@ -1197,12 +1197,12 @@ start_worker (GdmSession *session)
 }
 
 gboolean
-gdm_session_open (GdmSession  *session,
-                  const char  *service_name,
-                  const char  *hostname,
-                  const char  *x11_display_name,
-                  const char  *display_device,
-                  GError     **error)
+gdm_session_direct_open (GdmSessionDirect  *session,
+                         const char  *service_name,
+                         const char  *hostname,
+                         const char  *x11_display_name,
+                         const char  *display_device,
+                         GError     **error)
 {
         gboolean res;
 
@@ -1225,7 +1225,7 @@ gdm_session_open (GdmSession  *session,
 }
 
 static void
-send_begin_verification (GdmSession *session)
+send_begin_verification (GdmSessionDirect *session)
 {
         DBusMessage    *message;
         DBusMessageIter iter;
@@ -1250,7 +1250,7 @@ send_begin_verification (GdmSession *session)
 }
 
 static void
-send_begin_verification_for_user (GdmSession *session)
+send_begin_verification_for_user (GdmSessionDirect *session)
 {
         DBusMessage    *message;
         DBusMessageIter iter;
@@ -1276,9 +1276,9 @@ send_begin_verification_for_user (GdmSession *session)
 }
 
 gboolean
-gdm_session_begin_verification (GdmSession  *session,
-                                const char  *username,
-                                GError     **error)
+gdm_session_direct_begin_verification (GdmSessionDirect  *session,
+                                       const char  *username,
+                                       GError     **error)
 {
         g_return_val_if_fail (session != NULL, FALSE);
         g_return_val_if_fail (dbus_connection_get_is_connected (session->priv->worker_connection), FALSE);
@@ -1297,7 +1297,7 @@ gdm_session_begin_verification (GdmSession  *session,
 static void
 send_environment_variable (const char *key,
                            const char *value,
-                           GdmSession *session)
+                           GdmSessionDirect *session)
 {
         DBusMessage    *message;
         DBusMessageIter iter;
@@ -1318,7 +1318,7 @@ send_environment_variable (const char *key,
 }
 
 static void
-send_environment (GdmSession *session)
+send_environment (GdmSessionDirect *session)
 {
 
         g_hash_table_foreach (session->priv->environment,
@@ -1327,12 +1327,12 @@ send_environment (GdmSession *session)
 }
 
 void
-gdm_session_start_program (GdmSession *session,
-                           const char *command)
+gdm_session_direct_start_program (GdmSessionDirect *session,
+                                  const char *command)
 {
         g_return_if_fail (session != NULL);
         g_return_if_fail (session != NULL);
-        g_return_if_fail (gdm_session_is_running (session) == FALSE);
+        g_return_if_fail (gdm_session_direct_is_running (session) == FALSE);
         g_return_if_fail (command != NULL);
 
         send_environment (session);
@@ -1341,7 +1341,7 @@ gdm_session_start_program (GdmSession *session,
 }
 
 void
-gdm_session_close (GdmSession *session)
+gdm_session_direct_close (GdmSessionDirect *session)
 {
         g_return_if_fail (session != NULL);
 
@@ -1386,7 +1386,7 @@ gdm_session_close (GdmSession *session)
 }
 
 gboolean
-gdm_session_is_running (GdmSession *session)
+gdm_session_direct_is_running (GdmSessionDirect *session)
 {
         g_return_val_if_fail (session != NULL, FALSE);
 
@@ -1394,9 +1394,9 @@ gdm_session_is_running (GdmSession *session)
 }
 
 void
-gdm_session_set_environment_variable (GdmSession *session,
-                                      const char *key,
-                                      const char *value)
+gdm_session_direct_set_environment_variable (GdmSessionDirect *session,
+                                             const char *key,
+                                             const char *value)
 {
         g_return_if_fail (session != NULL);
         g_return_if_fail (session != NULL);
@@ -1409,8 +1409,8 @@ gdm_session_set_environment_variable (GdmSession *session,
 }
 
 void
-gdm_session_answer_query  (GdmSession *session,
-                           const char *answer)
+gdm_session_direct_answer_query  (GdmSessionDirect *session,
+                                  const char *answer)
 {
         g_return_if_fail (session != NULL);
 
@@ -1418,7 +1418,7 @@ gdm_session_answer_query  (GdmSession *session,
 }
 
 char *
-gdm_session_get_username (GdmSession *session)
+gdm_session_direct_get_username (GdmSessionDirect *session)
 {
         g_return_val_if_fail (session != NULL, NULL);
 
