@@ -29,6 +29,7 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 #define DBUS_API_SUBJECT_TO_CHANGE
+#include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
@@ -36,16 +37,15 @@
 
 #define GDM_GREETER_CLIENT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_CLIENT, GdmGreeterClientPrivate))
 
-#define SERVER_DBUS_PATH      "/org/gnome/DisplayManager/GreeterServer"
-#define SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.GreeterServer"
+#define GREETER_SERVER_DBUS_PATH      "/org/gnome/DisplayManager/GreeterServer"
+#define GREETER_SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.GreeterServer"
 
 #define GDM_DBUS_NAME              "org.gnome.DisplayManager"
 #define GDM_DBUS_DISPLAY_INTERFACE "org.gnome.DisplayManager.Display"
 
 struct GdmGreeterClientPrivate
 {
-        DBusGConnection  *connection;
-        DBusGProxy       *server_proxy;
+        DBusConnection   *connection;
         char             *address;
 
         char             *display_id;
@@ -63,6 +63,7 @@ enum {
         SECRET_INFO_QUERY,
         READY,
         RESET,
+        SELECTED_USER_CHANGED,
         LAST_SIGNAL
 };
 
@@ -96,32 +97,71 @@ gdm_greeter_client_get_display_is_local (GdmGreeterClient *client)
 }
 
 static void
-on_info (DBusGProxy       *proxy,
-         const char       *text,
-         GdmGreeterClient *client)
+emit_string_signal_for_message (GdmGreeterClient *client,
+                                const char       *name,
+                                DBusMessage      *message,
+                                int               signal)
 {
-        g_debug ("GREETER INFO: %s", text);
+        DBusError   error;
+        const char *text;
+        dbus_bool_t res;
 
-        g_signal_emit (client,
-                       gdm_greeter_client_signals[INFO],
-                       0, text);
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &text,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+
+                g_debug ("Recieved %s (%s)", name, text);
+
+                g_signal_emit (client,
+                               gdm_greeter_client_signals[signal],
+                               0, text);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
 }
 
 static void
-on_problem (DBusGProxy       *proxy,
-            const char       *text,
-            GdmGreeterClient *client)
+on_selected_user_changed (GdmGreeterClient *client,
+                          DBusMessage      *message)
 {
-        g_debug ("GREETER PROBLEM: %s", text);
-
-        g_signal_emit (client,
-                       gdm_greeter_client_signals[PROBLEM],
-                       0, text);
+        emit_string_signal_for_message (client, "SelectedUserChanged", message, SELECTED_USER_CHANGED);
 }
 
 static void
-on_ready (DBusGProxy       *proxy,
-          GdmGreeterClient *client)
+on_info_query (GdmGreeterClient *client,
+               DBusMessage      *message)
+{
+        emit_string_signal_for_message (client, "InfoQuery", message, INFO_QUERY);
+}
+
+static void
+on_secret_info_query (GdmGreeterClient *client,
+                      DBusMessage      *message)
+{
+        emit_string_signal_for_message (client, "SecretInfoQuery", message, SECRET_INFO_QUERY);
+}
+
+static void
+on_info (GdmGreeterClient *client,
+         DBusMessage      *message)
+{
+        emit_string_signal_for_message (client, "Info", message, INFO);
+}
+
+static void
+on_problem (GdmGreeterClient *client,
+            DBusMessage      *message)
+{
+        emit_string_signal_for_message (client, "Problem", message, PROBLEM);
+}
+
+static void
+on_ready (GdmGreeterClient *client,
+          DBusMessage      *message)
 {
         g_debug ("GREETER SERVER READY");
 
@@ -131,8 +171,8 @@ on_ready (DBusGProxy       *proxy,
 }
 
 static void
-on_reset (DBusGProxy       *proxy,
-          GdmGreeterClient *client)
+on_reset (GdmGreeterClient *client,
+          DBusMessage      *message)
 {
         g_debug ("GREETER RESET");
 
@@ -141,257 +181,240 @@ on_reset (DBusGProxy       *proxy,
                        0);
 }
 
-static void
-on_info_query (DBusGProxy       *proxy,
-               const char       *text,
-               GdmGreeterClient *client)
+static gboolean
+send_dbus_string_method (DBusConnection *connection,
+                         const char     *method,
+                         const char     *payload)
 {
-        g_debug ("GREETER Info query: %s", text);
+        DBusError       error;
+        DBusMessage    *message;
+        DBusMessage    *reply;
+        DBusMessageIter iter;
+        const char     *str;
 
-        g_signal_emit (client,
-                       gdm_greeter_client_signals[INFO_QUERY],
-                       0, text);
+        if (payload != NULL) {
+                str = payload;
+        } else {
+                str = "";
+        }
+
+        g_debug ("Calling %s", method);
+        message = dbus_message_new_method_call (NULL,
+                                                GREETER_SERVER_DBUS_PATH,
+                                                GREETER_SERVER_DBUS_INTERFACE,
+                                                method);
+        if (message == NULL) {
+                g_warning ("Couldn't allocate the D-Bus message");
+                return FALSE;
+        }
+
+        dbus_message_iter_init_append (message, &iter);
+        dbus_message_iter_append_basic (&iter,
+                                        DBUS_TYPE_STRING,
+                                        &str);
+
+        dbus_error_init (&error);
+        reply = dbus_connection_send_with_reply_and_block (connection,
+                                                           message,
+                                                           -1,
+                                                           &error);
+
+        dbus_message_unref (message);
+
+        if (dbus_error_is_set (&error)) {
+                g_warning ("%s %s raised: %s\n",
+                           method,
+                           error.name,
+                           error.message);
+                return FALSE;
+        }
+        dbus_message_unref (reply);
+        dbus_connection_flush (connection);
+
+        return TRUE;
 }
 
-static void
-on_secret_info_query (DBusGProxy       *proxy,
-                      const char       *text,
-                      GdmGreeterClient *client)
-{
-        g_debug ("GREETER Secret info query: %s", text);
 
-        g_signal_emit (client,
-                       gdm_greeter_client_signals[SECRET_INFO_QUERY],
-                       0, text);
+static gboolean
+send_dbus_void_method (DBusConnection *connection,
+                       const char     *method)
+{
+        DBusError       error;
+        DBusMessage    *message;
+        DBusMessage    *reply;
+
+        g_debug ("Calling %s", method);
+        message = dbus_message_new_method_call (NULL,
+                                                GREETER_SERVER_DBUS_PATH,
+                                                GREETER_SERVER_DBUS_INTERFACE,
+                                                method);
+        if (message == NULL) {
+                g_warning ("Couldn't allocate the D-Bus message");
+                return FALSE;
+        }
+
+        dbus_error_init (&error);
+        reply = dbus_connection_send_with_reply_and_block (connection,
+                                                           message,
+                                                           -1,
+                                                           &error);
+
+        dbus_message_unref (message);
+
+        if (dbus_error_is_set (&error)) {
+                g_warning ("%s %s raised: %s\n",
+                           method,
+                           error.name,
+                           error.message);
+                return FALSE;
+        }
+        dbus_message_unref (reply);
+        dbus_connection_flush (connection);
+
+        return TRUE;
 }
 
 void
 gdm_greeter_client_call_begin_verification (GdmGreeterClient *client)
 {
-        gboolean res;
-        GError  *error;
-
-        g_return_if_fail (GDM_IS_GREETER_CLIENT (client));
-
-        g_debug ("GREETER begin verification");
-
-        error = NULL;
-        res = dbus_g_proxy_call (client->priv->server_proxy,
-                                 "BeginVerification",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send BeginVerification: %s", error->message);
-                g_error_free (error);
-        }
+        send_dbus_void_method (client->priv->connection,
+                               "BeginVerification");
 }
-
 
 void
 gdm_greeter_client_call_begin_verification_for_user (GdmGreeterClient *client,
                                                      const char       *username)
 {
-        gboolean res;
-        GError  *error;
-
-        g_return_if_fail (GDM_IS_GREETER_CLIENT (client));
-
-        g_debug ("GREETER begin verification for user: '%s'", username);
-
-        error = NULL;
-        res = dbus_g_proxy_call (client->priv->server_proxy,
+        send_dbus_string_method (client->priv->connection,
                                  "BeginVerificationForUser",
-                                 &error,
-                                 G_TYPE_STRING, username,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send BeginVerificationForUser: %s", error->message);
-                g_error_free (error);
-        }
+                                 username);
 }
 
 void
 gdm_greeter_client_call_answer_query (GdmGreeterClient *client,
                                       const char       *text)
 {
-        gboolean res;
-        GError  *error;
-
-        g_debug ("GREETER answer");
-
-        error = NULL;
-        res = dbus_g_proxy_call (client->priv->server_proxy,
+        send_dbus_string_method (client->priv->connection,
                                  "AnswerQuery",
-                                 &error,
-                                 G_TYPE_STRING, text,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send AnswerQuery: %s", error->message);
-                g_error_free (error);
-        }
+                                 text);
 }
 
 void
 gdm_greeter_client_call_select_session (GdmGreeterClient *client,
                                         const char       *text)
 {
-        gboolean res;
-        GError  *error;
-
-        g_debug ("GREETER client selected: %s", text);
-
-        error = NULL;
-        res = dbus_g_proxy_call (client->priv->server_proxy,
+        send_dbus_string_method (client->priv->connection,
                                  "SelectSession",
-                                 &error,
-                                 G_TYPE_STRING, text,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send SelectSession: %s", error->message);
-                g_error_free (error);
-        }
+                                 text);
 }
 
 void
 gdm_greeter_client_call_select_language (GdmGreeterClient *client,
                                          const char       *text)
 {
-        gboolean res;
-        GError  *error;
-
-        g_debug ("GREETER client selected: %s", text);
-
-        error = NULL;
-        res = dbus_g_proxy_call (client->priv->server_proxy,
+        send_dbus_string_method (client->priv->connection,
                                  "SelectLanguage",
-                                 &error,
-                                 G_TYPE_STRING, text,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send SelectLanguage: %s", error->message);
-                g_error_free (error);
-        }
+                                 text);
 }
 
 void
 gdm_greeter_client_call_select_user (GdmGreeterClient *client,
                                      const char       *text)
 {
-        gboolean res;
-        GError  *error;
-
-        g_debug ("GREETER user selected: %s", text);
-
-        error = NULL;
-        res = dbus_g_proxy_call (client->priv->server_proxy,
+        send_dbus_string_method (client->priv->connection,
                                  "SelectUser",
-                                 &error,
-                                 G_TYPE_STRING, text,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send SelectUser: %s", error->message);
-                g_error_free (error);
-        }
+                                 text);
 }
 
 void
 gdm_greeter_client_call_select_hostname (GdmGreeterClient *client,
                                          const char       *text)
 {
-        gboolean res;
-        GError  *error;
-
-        g_debug ("GREETER hostname selected: %s", text);
-
-        error = NULL;
-        res = dbus_g_proxy_call (client->priv->server_proxy,
+        send_dbus_string_method (client->priv->connection,
                                  "SelectHostname",
-                                 &error,
-                                 G_TYPE_STRING, text,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send SelectHostname: %s", error->message);
-                g_error_free (error);
-        }
+                                 text);
 }
 
 void
 gdm_greeter_client_call_cancel (GdmGreeterClient *client)
 {
-        gboolean res;
-        GError  *error;
-
-        g_debug ("GREETER cancelled");
-
-        error = NULL;
-        res = dbus_g_proxy_call (client->priv->server_proxy,
-                                 "Cancel",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send Cancelled: %s", error->message);
-                g_error_free (error);
-        }
+        send_dbus_void_method (client->priv->connection,
+                               "Cancel");
 }
 
 void
 gdm_greeter_client_call_disconnect (GdmGreeterClient *client)
 {
-        gboolean res;
-        GError  *error;
+        send_dbus_void_method (client->priv->connection,
+                               "Disconnect");
+}
 
-        g_debug ("GREETER disconnected");
 
-        error = NULL;
-        res = dbus_g_proxy_call (client->priv->server_proxy,
-                                 "Disconnect",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to send Disconnected: %s", error->message);
-                g_error_free (error);
+static gboolean
+send_get_display_id (GdmGreeterClient *client,
+                     const char       *method,
+                     char            **answerp)
+{
+        DBusError       error;
+        DBusMessage    *message;
+        DBusMessage    *reply;
+        DBusMessageIter iter;
+        gboolean        ret;
+        const char     *answer;
+
+        ret = FALSE;
+
+        g_debug ("Calling %s", method);
+        message = dbus_message_new_method_call (NULL,
+                                                GREETER_SERVER_DBUS_PATH,
+                                                GREETER_SERVER_DBUS_INTERFACE,
+                                                method);
+        if (message == NULL) {
+                g_warning ("Couldn't allocate the D-Bus message");
+                return FALSE;
         }
+
+        dbus_error_init (&error);
+        reply = dbus_connection_send_with_reply_and_block (client->priv->connection,
+                                                           message,
+                                                           -1,
+                                                           &error);
+        dbus_message_unref (message);
+
+        if (dbus_error_is_set (&error)) {
+                g_warning ("%s %s raised: %s\n",
+                           method,
+                           error.name,
+                           error.message);
+                goto out;
+        }
+
+        dbus_message_iter_init (reply, &iter);
+        dbus_message_iter_get_basic (&iter, &answer);
+        if (answerp != NULL) {
+                *answerp = g_strdup (answer);
+        }
+        ret = TRUE;
+
+        dbus_message_unref (reply);
+        dbus_connection_flush (client->priv->connection);
+
+ out:
+
+        return ret;
 }
 
 char *
 gdm_greeter_client_call_get_display_id (GdmGreeterClient *client)
 {
-        gboolean res;
-        GError  *error;
-        char    *id;
+        char *display_id;
 
-        g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), NULL);
+        display_id = NULL;
+        send_get_display_id (client,
+                             "GetDisplayId",
+                             &display_id);
 
-        id = NULL;
-        error = NULL;
-        res = dbus_g_proxy_call (client->priv->server_proxy,
-                                 "GetDisplayId",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 DBUS_TYPE_G_OBJECT_PATH, &id,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to GetDisplayId: %s", error->message);
-                g_error_free (error);
-        }
-
-        return id;
-}
-
-static void
-proxy_destroyed (GObject *object,
-                 gpointer data)
-{
-        g_debug ("GREETER Proxy disconnected");
+        return display_id;
 }
 
 static void
@@ -441,12 +464,84 @@ cache_display_values (GdmGreeterClient *client)
         }
 }
 
+static DBusHandlerResult
+client_dbus_handle_message (DBusConnection *connection,
+                            DBusMessage    *message,
+                            void           *user_data,
+                            dbus_bool_t     local_interface)
+{
+        GdmGreeterClient *client = GDM_GREETER_CLIENT (user_data);
+
+#if 0
+        g_message ("obj_path=%s interface=%s method=%s destination=%s",
+                   dbus_message_get_path (message),
+                   dbus_message_get_interface (message),
+                   dbus_message_get_member (message),
+                   dbus_message_get_destination (message));
+#endif
+
+        g_return_val_if_fail (connection != NULL, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+        g_return_val_if_fail (message != NULL, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+
+        if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "InfoQuery")) {
+                on_info_query (client, message);
+        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "SecretInfoQuery")) {
+                on_secret_info_query (client, message);
+        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "Info")) {
+                on_info (client, message);
+        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "Problem")) {
+                on_problem (client, message);
+        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "Ready")) {
+                on_ready (client, message);
+        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "Reset")) {
+                on_reset (client, message);
+        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "SelectedUserChanged")) {
+                on_selected_user_changed (client, message);
+        }
+
+        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+}
+
+static DBusHandlerResult
+client_dbus_filter_function (DBusConnection *connection,
+                             DBusMessage    *message,
+                             void           *user_data)
+{
+        GdmGreeterClient *client = GDM_GREETER_CLIENT (user_data);
+        const char       *path;
+
+        path = dbus_message_get_path (message);
+
+        g_debug ("obj_path=%s interface=%s method=%s",
+                 dbus_message_get_path (message),
+                 dbus_message_get_interface (message),
+                 dbus_message_get_member (message));
+
+        if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")
+            && strcmp (path, DBUS_PATH_LOCAL) == 0) {
+
+                g_message ("Got disconnected from the session message bus");
+
+                dbus_connection_unref (connection);
+                client->priv->connection = NULL;
+
+        } else if (dbus_message_is_signal (message,
+                                           DBUS_INTERFACE_DBUS,
+                                           "NameOwnerChanged")) {
+                g_debug ("Name owner changed?");
+        } else {
+                return client_dbus_handle_message (connection, message, user_data, FALSE);
+        }
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
 gboolean
 gdm_greeter_client_start (GdmGreeterClient *client,
-                          GError           **error)
+                          GError          **error)
 {
-        gboolean ret;
-        GError  *local_error;
+        gboolean  ret;
+        DBusError local_error;
 
         g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
 
@@ -463,73 +558,29 @@ gdm_greeter_client_start (GdmGreeterClient *client,
 
         g_debug ("GREETER connecting to address: %s", client->priv->address);
 
-        local_error = NULL;
-        client->priv->connection = dbus_g_connection_open (client->priv->address, &local_error);
+        dbus_error_init (&local_error);
+        client->priv->connection = dbus_connection_open (client->priv->address, &local_error);
         if (client->priv->connection == NULL) {
-                if (local_error != NULL) {
-                        g_warning ("error opening connection: %s", local_error->message);
-                        g_propagate_error (error, local_error);
+                if (dbus_error_is_set (&local_error)) {
+                        g_warning ("error opening connection: %s", local_error.message);
+                        g_set_error (error,
+                                     GDM_GREETER_CLIENT_ERROR,
+                                     GDM_GREETER_CLIENT_ERROR_GENERIC,
+                                     local_error.message);
+                        dbus_error_free (&local_error);
                 } else {
                         g_warning ("Unable to open connection");
                 }
                 goto out;
         }
 
-        g_debug ("GREETER creating proxy for peer: %s", SERVER_DBUS_PATH);
-        client->priv->server_proxy = dbus_g_proxy_new_for_peer (client->priv->connection,
-                                                                SERVER_DBUS_PATH,
-                                                                SERVER_DBUS_INTERFACE);
-        if (client->priv->server_proxy == NULL) {
-                g_warning ("Unable to create proxy for peer");
-                g_set_error (error,
-                             GDM_GREETER_CLIENT_ERROR,
-                             GDM_GREETER_CLIENT_ERROR_GENERIC,
-                             "Unable to create proxy for peer");
+        dbus_connection_setup_with_g_main (client->priv->connection, NULL);
+        dbus_connection_set_exit_on_disconnect (client->priv->connection, TRUE);
 
-                /* FIXME: drop connection? */
-                goto out;
-        }
-
-        g_signal_connect (client->priv->server_proxy, "destroy", G_CALLBACK (proxy_destroyed), NULL);
-
-        /* FIXME: not sure why introspection isn't working */
-        dbus_g_proxy_add_signal (client->priv->server_proxy, "InfoQuery", G_TYPE_STRING, G_TYPE_INVALID);
-        dbus_g_proxy_add_signal (client->priv->server_proxy, "SecretInfoQuery", G_TYPE_STRING, G_TYPE_INVALID);
-        dbus_g_proxy_add_signal (client->priv->server_proxy, "Info", G_TYPE_STRING, G_TYPE_INVALID);
-        dbus_g_proxy_add_signal (client->priv->server_proxy, "Problem", G_TYPE_STRING, G_TYPE_INVALID);
-        dbus_g_proxy_add_signal (client->priv->server_proxy, "Ready", G_TYPE_INVALID);
-        dbus_g_proxy_add_signal (client->priv->server_proxy, "Reset", G_TYPE_INVALID);
-
-        dbus_g_proxy_connect_signal (client->priv->server_proxy,
-                                     "InfoQuery",
-                                     G_CALLBACK (on_info_query),
-                                     client,
-                                     NULL);
-        dbus_g_proxy_connect_signal (client->priv->server_proxy,
-                                     "SecretInfoQuery",
-                                     G_CALLBACK (on_secret_info_query),
-                                     client,
-                                     NULL);
-        dbus_g_proxy_connect_signal (client->priv->server_proxy,
-                                     "Info",
-                                     G_CALLBACK (on_info),
-                                     client,
-                                     NULL);
-        dbus_g_proxy_connect_signal (client->priv->server_proxy,
-                                     "Problem",
-                                     G_CALLBACK (on_problem),
-                                     client,
-                                     NULL);
-        dbus_g_proxy_connect_signal (client->priv->server_proxy,
-                                     "Ready",
-                                     G_CALLBACK (on_ready),
-                                     client,
-                                     NULL);
-        dbus_g_proxy_connect_signal (client->priv->server_proxy,
-                                     "Reset",
-                                     G_CALLBACK (on_reset),
-                                     client,
-                                     NULL);
+        dbus_connection_add_filter (client->priv->connection,
+                                    client_dbus_filter_function,
+                                    client,
+                                    NULL);
 
         cache_display_values (client);
 
@@ -691,6 +742,16 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
+        gdm_greeter_client_signals[SELECTED_USER_CHANGED] =
+                g_signal_new ("selected-user-changed",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmGreeterClientClass, selected_user_changed),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1, G_TYPE_STRING);
 }
 
 static void

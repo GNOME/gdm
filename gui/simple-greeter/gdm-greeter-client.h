@@ -57,6 +57,8 @@ typedef struct
                                           const char        *problem);
         void (* ready)                   (GdmGreeterClient  *client);
         void (* reset)                   (GdmGreeterClient  *client);
+        void (* selected_user_changed)   (GdmGreeterClient  *client,
+                                          const char        *username);
 
 } GdmGreeterClientClass;
 

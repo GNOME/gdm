@@ -311,6 +311,13 @@ send_dbus_string_method (DBusConnection *connection,
         DBusMessage    *message;
         DBusMessage    *reply;
         DBusMessageIter iter;
+        const char     *str;
+
+        if (payload != NULL) {
+                str = payload;
+        } else {
+                str = "";
+        }
 
         g_debug ("Calling %s", method);
         message = dbus_message_new_method_call (NULL,
@@ -325,7 +332,7 @@ send_dbus_string_method (DBusConnection *connection,
         dbus_message_iter_init_append (message, &iter);
         dbus_message_iter_append_basic (&iter,
                                         DBUS_TYPE_STRING,
-                                        &payload);
+                                        &str);
 
         dbus_error_init (&error);
         reply = dbus_connection_send_with_reply_and_block (connection,
@@ -488,11 +495,10 @@ gdm_session_worker_get_username (GdmSessionWorker  *worker,
         g_assert (worker->priv->pam_handle != NULL);
 
         if (pam_get_item (worker->priv->pam_handle, PAM_USER, &item) == PAM_SUCCESS) {
-                if (username) {
+                if (username != NULL) {
                         *username = g_strdup ((char *) item);
                         g_debug ("username is '%s'",
-                                 *username != NULL ? *username :
-                                 "<unset>");
+                                 *username != NULL ? *username : "<unset>");
                 }
                 return TRUE;
         }
@@ -665,6 +671,8 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
                 *response_text = NULL;
         }
 
+        gdm_session_worker_update_username (worker);
+
         g_debug ("received pam message of type %u with payload '%s'",
                  query->msg_style, query->msg);
 
@@ -703,7 +711,7 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
                 g_free (user_answer);
 
                 g_debug ("trying to get updated username");
-                gdm_session_worker_update_username (worker);
+
                 res = TRUE;
         }
 
@@ -1789,8 +1797,7 @@ worker_dbus_filter_function (DBusConnection *connection,
         if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")
             && strcmp (path, DBUS_PATH_LOCAL) == 0) {
 
-                g_message ("Got disconnected from the session message bus; "
-                           "retrying to reconnect every 10 seconds");
+                g_message ("Got disconnected from the server");
 
                 dbus_connection_unref (connection);
                 worker->priv->connection = NULL;

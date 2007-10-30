@@ -1,5 +1,41 @@
 2007-10-30  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-greeter-server.c: (send_dbus_message),
+	(send_dbus_string_signal),
+	(gdm_greeter_server_selected_user_changed), (do_introspect):
+	* daemon/gdm-greeter-server.h:
+	* daemon/gdm-session-worker.c: (send_dbus_string_method),
+	(gdm_session_worker_get_username),
+	(gdm_session_worker_process_pam_message),
+	(worker_dbus_filter_function):
+	* daemon/gdm-simple-slave.c: (on_session_selected_user_changed):
+	* gui/simple-greeter/gdm-greeter-client.c:
+	(emit_string_signal_for_message), (on_selected_user_changed),
+	(on_info_query), (on_secret_info_query), (on_info), (on_problem),
+	(on_ready), (on_reset), (send_dbus_string_method),
+	(send_dbus_void_method),
+	(gdm_greeter_client_call_begin_verification),
+	(gdm_greeter_client_call_begin_verification_for_user),
+	(gdm_greeter_client_call_answer_query),
+	(gdm_greeter_client_call_select_session),
+	(gdm_greeter_client_call_select_language),
+	(gdm_greeter_client_call_select_user),
+	(gdm_greeter_client_call_select_hostname),
+	(gdm_greeter_client_call_cancel),
+	(gdm_greeter_client_call_disconnect), (send_get_display_id),
+	(gdm_greeter_client_call_get_display_id),
+	(client_dbus_handle_message), (client_dbus_filter_function),
+	(gdm_greeter_client_start), (gdm_greeter_client_class_init):
+	* gui/simple-greeter/gdm-greeter-client.h:
+	* gui/simple-greeter/gdm-greeter-session.c: (on_info),
+	(on_problem), (on_ready), (on_reset), (on_selected_user_changed),
+	(on_info_query), (on_secret_info_query),
+	(gdm_greeter_session_init):
+	Convert the GreeterClient to use dbus instead of dbus-glib.  Add
+	support for the SelectedUserChanged signal.
+
+2007-10-30  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/simple-greeter/gdm-user-chooser-widget.c:
 	(gdm_user_chooser_widget_init):
 	Make checkbox column smaller.

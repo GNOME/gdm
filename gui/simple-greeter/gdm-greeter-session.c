@@ -67,7 +67,7 @@ on_info (GdmGreeterClient  *client,
          const char        *text,
          GdmGreeterSession *session)
 {
-        g_debug ("GREETER INFO: %s", text);
+        g_debug ("GreeterClient Info: %s", text);
 
         gdm_greeter_login_window_info (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
 }
@@ -77,7 +77,7 @@ on_problem (GdmGreeterClient  *client,
             const char        *text,
             GdmGreeterSession *session)
 {
-        g_debug ("GREETER PROBLEM: %s", text);
+        g_debug ("GreeterClient Problem: %s", text);
 
         gdm_greeter_login_window_problem (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
 }
@@ -86,7 +86,7 @@ static void
 on_ready (GdmGreeterClient  *client,
           GdmGreeterSession *session)
 {
-        g_debug ("GREETER SERVER READY");
+        g_debug ("GreeterClient Ready");
 
         gdm_greeter_login_window_ready (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
 }
@@ -95,9 +95,17 @@ static void
 on_reset (GdmGreeterClient  *client,
           GdmGreeterSession *session)
 {
-        g_debug ("GREETER RESET");
+        g_debug ("GreeterClient Reset");
 
         gdm_greeter_login_window_reset (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
+}
+
+static void
+on_selected_user_changed (GdmGreeterClient  *client,
+                          const char        *text,
+                          GdmGreeterSession *session)
+{
+        g_debug ("GreeterClient selected user changed: %s", text);
 }
 
 static void
@@ -105,7 +113,7 @@ on_info_query (GdmGreeterClient  *client,
                const char        *text,
                GdmGreeterSession *session)
 {
-        g_debug ("GREETER Info query: %s", text);
+        g_debug ("GreeterClient Info query: %s", text);
 
         gdm_greeter_login_window_info_query (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
 }
@@ -115,7 +123,7 @@ on_secret_info_query (GdmGreeterClient  *client,
                       const char        *text,
                       GdmGreeterSession *session)
 {
-        g_debug ("GREETER Secret info query: %s", text);
+        g_debug ("GreeterClient Secret info query: %s", text);
 
         gdm_greeter_login_window_secret_info_query (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
 }
@@ -518,6 +526,10 @@ gdm_greeter_session_init (GdmGreeterSession *session)
         g_signal_connect (session->priv->client,
                           "reset",
                           G_CALLBACK (on_reset),
+                          session);
+        g_signal_connect (session->priv->client,
+                          "selected-user-changed",
+                          G_CALLBACK (on_selected_user_changed),
                           session);
 
 }

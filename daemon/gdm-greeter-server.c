@@ -114,17 +114,25 @@ send_dbus_message (DBusConnection *connection,
         }
 
         sent = dbus_connection_send (connection, message, NULL);
+        dbus_connection_flush (connection);
 
         return sent;
 }
 
 static void
 send_dbus_string_signal (GdmGreeterServer *greeter_server,
-                         const char      *name,
-                         const char      *text)
+                         const char       *name,
+                         const char       *text)
 {
         DBusMessage    *message;
         DBusMessageIter iter;
+        const char     *str;
+
+        if (text != NULL) {
+                str = text;
+        } else {
+                str = "";
+        }
 
         g_return_if_fail (greeter_server != NULL);
 
@@ -133,8 +141,9 @@ send_dbus_string_signal (GdmGreeterServer *greeter_server,
                                            name);
 
         dbus_message_iter_init_append (message, &iter);
-        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &text);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &str);
 
+        g_debug ("Sending %s (%s)", name, str);
         if (! send_dbus_message (greeter_server->priv->greeter_connection, message)) {
                 g_debug ("Could not send %s signal", name);
         }
@@ -163,7 +172,7 @@ send_dbus_void_signal (GdmGreeterServer *greeter_server,
 
 gboolean
 gdm_greeter_server_info_query (GdmGreeterServer *greeter_server,
-                              const char      *text)
+                               const char       *text)
 {
         send_dbus_string_signal (greeter_server, "InfoQuery", text);
 
@@ -172,7 +181,7 @@ gdm_greeter_server_info_query (GdmGreeterServer *greeter_server,
 
 gboolean
 gdm_greeter_server_secret_info_query (GdmGreeterServer *greeter_server,
-                                     const char      *text)
+                                      const char       *text)
 {
         send_dbus_string_signal (greeter_server, "SecretInfoQuery", text);
         return TRUE;
@@ -180,7 +189,7 @@ gdm_greeter_server_secret_info_query (GdmGreeterServer *greeter_server,
 
 gboolean
 gdm_greeter_server_info (GdmGreeterServer *greeter_server,
-                        const char      *text)
+                         const char       *text)
 {
         send_dbus_string_signal (greeter_server, "Info", text);
         return TRUE;
@@ -188,7 +197,7 @@ gdm_greeter_server_info (GdmGreeterServer *greeter_server,
 
 gboolean
 gdm_greeter_server_problem (GdmGreeterServer *greeter_server,
-                           const char      *text)
+                            const char       *text)
 {
         send_dbus_string_signal (greeter_server, "Problem", text);
         return TRUE;
@@ -206,6 +215,13 @@ gdm_greeter_server_ready (GdmGreeterServer *greeter_server)
 {
         send_dbus_void_signal (greeter_server, "Ready");
         return TRUE;
+}
+
+void
+gdm_greeter_server_selected_user_changed (GdmGreeterServer *greeter_server,
+                                          const char       *username)
+{
+        send_dbus_string_signal (greeter_server, "SelectedUserChanged", username);
 }
 
 /* Note: Use abstract sockets like dbus does by default on Linux. Abstract
@@ -559,6 +575,9 @@ do_introspect (DBusConnection *connection,
                                "    </signal>\n"
                                "    <signal name=\"SecretInfoQuery\">\n"
                                "      <arg name=\"text\" type=\"s\"/>\n"
+                               "    </signal>\n"
+                               "    <signal name=\"SelectedUserChanged\">\n"
+                               "      <arg name=\"username\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"Ready\">\n"
                                "    </signal>\n"

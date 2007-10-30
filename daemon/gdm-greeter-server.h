@@ -63,24 +63,26 @@ typedef struct
         void (* disconnected)               (GdmGreeterServer  *greeter_server);
 } GdmGreeterServerClass;
 
-GType               gdm_greeter_server_get_type          (void);
-GdmGreeterServer *  gdm_greeter_server_new               (const char       *display_id);
+GType               gdm_greeter_server_get_type              (void);
+GdmGreeterServer *  gdm_greeter_server_new                   (const char       *display_id);
 
-gboolean            gdm_greeter_server_start             (GdmGreeterServer *greeter_server);
-gboolean            gdm_greeter_server_stop              (GdmGreeterServer *greeter_server);
-char *              gdm_greeter_server_get_address       (GdmGreeterServer *greeter_server);
+gboolean            gdm_greeter_server_start                 (GdmGreeterServer *greeter_server);
+gboolean            gdm_greeter_server_stop                  (GdmGreeterServer *greeter_server);
+char *              gdm_greeter_server_get_address           (GdmGreeterServer *greeter_server);
 
 
-gboolean            gdm_greeter_server_info_query        (GdmGreeterServer *greeter_server,
-                                                          const char       *text);
-gboolean            gdm_greeter_server_secret_info_query (GdmGreeterServer *greeter_server,
-                                                          const char       *text);
-gboolean            gdm_greeter_server_info              (GdmGreeterServer *greeter_server,
-                                                          const char       *text);
-gboolean            gdm_greeter_server_problem           (GdmGreeterServer *greeter_server,
-                                                          const char       *text);
-gboolean            gdm_greeter_server_reset             (GdmGreeterServer *greeter_server);
-gboolean            gdm_greeter_server_ready             (GdmGreeterServer *greeter_server);
+gboolean            gdm_greeter_server_info_query            (GdmGreeterServer *greeter_server,
+                                                              const char       *text);
+gboolean            gdm_greeter_server_secret_info_query     (GdmGreeterServer *greeter_server,
+                                                              const char       *text);
+gboolean            gdm_greeter_server_info                  (GdmGreeterServer *greeter_server,
+                                                              const char       *text);
+gboolean            gdm_greeter_server_problem               (GdmGreeterServer *greeter_server,
+                                                              const char       *text);
+gboolean            gdm_greeter_server_reset                 (GdmGreeterServer *greeter_server);
+gboolean            gdm_greeter_server_ready                 (GdmGreeterServer *greeter_server);
+void                gdm_greeter_server_selected_user_changed (GdmGreeterServer *greeter_server,
+                                                              const char       *text);
 
 G_END_DECLS
 

@@ -242,7 +242,7 @@ on_session_selected_user_changed (GdmSession     *session,
 {
         g_debug ("Selected user changed: %s", text);
 
-        /* FIXME: send this over to the greeter */
+        gdm_greeter_server_selected_user_changed (slave->priv->greeter_server, text);
 }
 
 
