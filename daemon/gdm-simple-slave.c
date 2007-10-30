@@ -28,8 +28,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
-#include <pwd.h>
-#include <grp.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -48,11 +46,10 @@
 #include "gdm-simple-slave-glue.h"
 
 #include "gdm-server.h"
+#include "gdm-session.h"
 #include "gdm-session-direct.h"
 #include "gdm-greeter-server.h"
 #include "gdm-greeter-session.h"
-
-#include "ck-connector.h"
 
 #define GDM_SIMPLE_SLAVE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SIMPLE_SLAVE, GdmSimpleSlavePrivate))
 
@@ -75,12 +72,6 @@ struct GdmSimpleSlavePrivate
         GPid               server_pid;
         guint              connection_attempts;
 
-        /* user selected */
-        char              *selected_session;
-        char              *selected_language;
-        char              *selected_user;
-
-        CkConnector       *ckc;
         GdmServer         *server;
         GdmGreeterServer  *greeter_server;
         GdmGreeterSession *greeter;
@@ -99,17 +90,16 @@ static void     gdm_simple_slave_finalize       (GObject             *object);
 G_DEFINE_TYPE (GdmSimpleSlave, gdm_simple_slave, GDM_TYPE_SLAVE)
 
 static void
-on_session_started (GdmSessionDirect *session,
-                    GPid              pid,
+on_session_started (GdmSession       *session,
                     GdmSimpleSlave   *slave)
 {
-        g_debug ("session started on pid %d\n", (int) pid);
+        g_debug ("session started");
 
         /* FIXME: should we do something here? */
 }
 
 static void
-on_session_exited (GdmSessionDirect     *session,
+on_session_exited (GdmSession     *session,
                    int             exit_code,
                    GdmSimpleSlave *slave)
 {
@@ -119,7 +109,7 @@ on_session_exited (GdmSessionDirect     *session,
 }
 
 static void
-on_session_died (GdmSessionDirect     *session,
+on_session_died (GdmSession     *session,
                  int             signal_number,
                  GdmSimpleSlave *slave)
 {
@@ -128,113 +118,6 @@ on_session_died (GdmSessionDirect     *session,
                  g_strsignal (signal_number));
 
         gdm_slave_stopped (GDM_SLAVE (slave));
-}
-
-static gboolean
-is_prog_in_path (const char *prog)
-{
-        char    *f;
-        gboolean ret;
-
-        f = g_find_program_in_path (prog);
-        ret = (f != NULL);
-        g_free (f);
-        return ret;
-}
-
-static gboolean
-get_session_command (const char *file,
-                     char      **command)
-{
-        GKeyFile   *key_file;
-        GError     *error;
-        char       *full_path;
-        char       *exec;
-        gboolean    ret;
-        gboolean    res;
-        const char *search_dirs[] = {
-                "/etc/X11/sessions/",
-                DMCONFDIR "/Sessions/",
-                DATADIR "/gdm/BuiltInSessions/",
-                DATADIR "/xsessions/",
-                NULL
-        };
-
-        exec = NULL;
-        ret = FALSE;
-        if (command != NULL) {
-                *command = NULL;
-        }
-
-        key_file = g_key_file_new ();
-
-        error = NULL;
-        full_path = NULL;
-        res = g_key_file_load_from_dirs (key_file,
-                                         file,
-                                         search_dirs,
-                                         &full_path,
-                                         G_KEY_FILE_NONE,
-                                         &error);
-        if (! res) {
-                g_debug ("File '%s' not found: %s", file, error->message);
-                g_error_free (error);
-                if (command != NULL) {
-                        *command = NULL;
-                }
-                goto out;
-        }
-
-        error = NULL;
-        res = g_key_file_get_boolean (key_file,
-                                      G_KEY_FILE_DESKTOP_GROUP,
-                                      G_KEY_FILE_DESKTOP_KEY_HIDDEN,
-                                      &error);
-        if (error == NULL && res) {
-                g_debug ("Session %s is marked as hidden", file);
-                goto out;
-        }
-
-        error = NULL;
-        exec = g_key_file_get_string (key_file,
-                                      G_KEY_FILE_DESKTOP_GROUP,
-                                      G_KEY_FILE_DESKTOP_KEY_TRY_EXEC,
-                                      &error);
-        if (exec == NULL) {
-                g_debug ("%s key not found", G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
-                goto out;
-        }
-
-        res = is_prog_in_path (exec);
-        g_free (exec);
-
-        if (! res) {
-                g_debug ("Command not found: %s", G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
-                goto out;
-        }
-
-        error = NULL;
-        exec = g_key_file_get_string (key_file,
-                                      G_KEY_FILE_DESKTOP_GROUP,
-                                      G_KEY_FILE_DESKTOP_KEY_EXEC,
-                                      &error);
-        if (error != NULL) {
-                g_debug ("%s key not found: %s",
-                         G_KEY_FILE_DESKTOP_KEY_EXEC,
-                         error->message);
-                g_error_free (error);
-                goto out;
-        }
-
-        if (command != NULL) {
-                *command = g_strdup (exec);
-        }
-        ret = TRUE;
-
-out:
-        g_free (exec);
-
-        return ret;
 }
 
 static gboolean
@@ -253,180 +136,25 @@ add_user_authorization (GdmSimpleSlave *slave,
         return ret;
 }
 
-static gboolean
-slave_open_ck_session (GdmSimpleSlave *slave,
-                       const char     *display_name,
-                       const char     *display_hostname,
-                       gboolean        display_is_local)
-{
-        char          *username;
-        char          *x11_display_device;
-        struct passwd *pwent;
-        gboolean       ret;
-        int            res;
-        DBusError      error;
-
-        g_return_val_if_fail (GDM_IS_SLAVE (slave), FALSE);
-
-        username = gdm_session_direct_get_username (slave->priv->session);
-
-        x11_display_device = NULL;
-
-        pwent = getpwnam (username);
-        if (pwent == NULL) {
-                return FALSE;
-        }
-
-        slave->priv->ckc = ck_connector_new ();
-        if (slave->priv->ckc == NULL) {
-                g_warning ("Couldn't create new ConsoleKit connector");
-                goto out;
-        }
-
-        if (slave->priv->server != NULL) {
-                x11_display_device = gdm_server_get_display_device (slave->priv->server);
-        }
-
-        if (x11_display_device == NULL) {
-                x11_display_device = g_strdup ("");
-        }
-
-        dbus_error_init (&error);
-        res = ck_connector_open_session_with_parameters (slave->priv->ckc,
-                                                         &error,
-                                                         "unix-user", &pwent->pw_uid,
-                                                         "x11-display", &display_name,
-                                                         "x11-display-device", &x11_display_device,
-                                                         "remote-host-name", &display_hostname,
-                                                         "is-local", &display_is_local,
-                                                         NULL);
-        g_free (x11_display_device);
-
-        if (! res) {
-                if (dbus_error_is_set (&error)) {
-                        g_warning ("%s\n", error.message);
-                        dbus_error_free (&error);
-                } else {
-                        g_warning ("cannot open CK session: OOM, D-Bus system bus not available,\n"
-                                   "ConsoleKit not available or insufficient privileges.\n");
-                }
-                goto out;
-        }
-
-        ret = TRUE;
-
- out:
-        return ret;
-}
-
 static void
-setup_session_environment (GdmSimpleSlave *slave)
-{
-        int         display_number;
-        char       *display_x11_cookie;
-        char       *display_name;
-        char       *display_hostname;
-        char       *auth_file;
-        const char *session_cookie;
-        gboolean    display_is_local;
-
-        display_name = NULL;
-        display_hostname = NULL;
-        display_x11_cookie = NULL;
-        auth_file = NULL;
-        session_cookie = NULL;
-        display_is_local = FALSE;
-
-        g_object_get (slave,
-                      "display-number", &display_number,
-                      "display-name", &display_name,
-                      "display-hostname", &display_hostname,
-                      "display-is-local", &display_is_local,
-                      "display-x11-cookie", &display_x11_cookie,
-                      NULL);
-
-        add_user_authorization (slave, &auth_file);
-
-        if (slave_open_ck_session (slave,
-                                   display_name,
-                                   display_hostname,
-                                   display_is_local)) {
-                session_cookie = ck_connector_get_cookie (slave->priv->ckc);
-        }
-
-        gdm_session_direct_set_environment_variable (slave->priv->session,
-                                              "GDMSESSION",
-                                              slave->priv->selected_session);
-        gdm_session_direct_set_environment_variable (slave->priv->session,
-                                              "DESKTOP_SESSION",
-                                              slave->priv->selected_session);
-
-        gdm_session_direct_set_environment_variable (slave->priv->session,
-                                              "LANG",
-                                              slave->priv->selected_language);
-        gdm_session_direct_set_environment_variable (slave->priv->session,
-                                              "GDM_LANG",
-                                              slave->priv->selected_language);
-
-        gdm_session_direct_set_environment_variable (slave->priv->session,
-                                              "DISPLAY",
-                                              display_name);
-        gdm_session_direct_set_environment_variable (slave->priv->session,
-                                              "XAUTHORITY",
-                                              auth_file);
-        if (session_cookie != NULL) {
-                gdm_session_direct_set_environment_variable (slave->priv->session,
-                                                      "XDG_SESSION_COOKIE",
-                                                      session_cookie);
-        }
-
-        gdm_session_direct_set_environment_variable (slave->priv->session,
-                                              "PATH",
-                                              "/bin:/usr/bin:" BINDIR);
-
-        g_free (display_name);
-        g_free (display_hostname);
-        g_free (display_x11_cookie);
-        g_free (auth_file);
-}
-
-static void
-on_session_user_verified (GdmSessionDirect     *session,
+on_session_user_verified (GdmSession     *session,
                           GdmSimpleSlave *slave)
 {
-        char    *username;
-        char    *command;
-        char    *filename;
-        gboolean res;
+        char *auth_file;
 
         gdm_greeter_session_stop (slave->priv->greeter);
         gdm_greeter_server_stop (slave->priv->greeter_server);
 
-        username = gdm_session_direct_get_username (session);
+        auth_file = NULL;
+        add_user_authorization (slave, &auth_file);
 
-        g_debug ("%s%ssuccessfully authenticated\n",
-                 username ? username : "",
-                 username ? " " : "");
-        g_free (username);
+        g_object_set (session,
+                      "user-x11-authority-file", auth_file,
+                      NULL);
 
-        if (slave->priv->selected_session != NULL) {
-                filename = g_strdup (slave->priv->selected_session);
-        } else {
-                filename = g_strdup ("gnome.desktop");
-        }
+        g_free (auth_file);
 
-        setup_session_environment (slave);
-
-        res = get_session_command (filename, &command);
-        if (! res) {
-                g_warning ("Could find session file: %s", filename);
-                return;
-        }
-
-        gdm_session_direct_start_program (session, command);
-
-        g_free (filename);
-        g_free (command);
+        gdm_session_start_session (session);
 }
 
 static gboolean
@@ -448,27 +176,17 @@ queue_greeter_reset (GdmSimpleSlave *slave)
 }
 
 static void
-on_session_user_verification_error (GdmSessionDirect     *session,
-                                    GError         *error,
+on_session_user_verification_error (GdmSession     *session,
+                                    const char     *message,
                                     GdmSimpleSlave *slave)
 {
-        char *username;
-
-        username = gdm_session_direct_get_username (session);
-
-        g_debug ("could not successfully authenticate user '%s': %s",
-                 username,
-                 error->message);
-
         gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to authenticate user"));
-
-        g_free (username);
 
         queue_greeter_reset (slave);
 }
 
 static void
-on_session_info (GdmSessionDirect     *session,
+on_session_info (GdmSession     *session,
                  const char     *text,
                  GdmSimpleSlave *slave)
 {
@@ -477,7 +195,7 @@ on_session_info (GdmSessionDirect     *session,
 }
 
 static void
-on_session_problem (GdmSessionDirect     *session,
+on_session_problem (GdmSession     *session,
                     const char     *text,
                     GdmSimpleSlave *slave)
 {
@@ -486,7 +204,7 @@ on_session_problem (GdmSessionDirect     *session,
 }
 
 static void
-on_session_info_query (GdmSessionDirect     *session,
+on_session_info_query (GdmSession     *session,
                        const char     *text,
                        GdmSimpleSlave *slave)
 {
@@ -496,7 +214,7 @@ on_session_info_query (GdmSessionDirect     *session,
 }
 
 static void
-on_session_secret_info_query (GdmSessionDirect     *session,
+on_session_secret_info_query (GdmSession     *session,
                               const char     *text,
                               GdmSimpleSlave *slave)
 {
@@ -505,7 +223,7 @@ on_session_secret_info_query (GdmSessionDirect     *session,
 }
 
 static void
-on_session_opened (GdmSessionDirect     *session,
+on_session_opened (GdmSession     *session,
                    GdmSimpleSlave *slave)
 {
         gboolean res;
@@ -518,17 +236,55 @@ on_session_opened (GdmSessionDirect     *session,
 }
 
 static void
+on_session_selected_user_changed (GdmSession     *session,
+                                  const char     *text,
+                                  GdmSimpleSlave *slave)
+{
+        g_debug ("Selected user changed: %s", text);
+
+        /* FIXME: send this over to the greeter */
+}
+
+
+static void
 create_new_session (GdmSimpleSlave *slave)
 {
+        gboolean       display_is_local;
+        char          *display_name;
+        char          *display_hostname;
+        char          *display_device;
+
         g_debug ("Creating new session");
 
-        slave->priv->session = gdm_session_direct_new ();
+        g_object_get (slave,
+                      "display-name", &display_name,
+                      "display-hostname", &display_hostname,
+                      "display-is-local", &display_is_local,
+                      NULL);
+
+        display_device = NULL;
+        if (slave->priv->server != NULL) {
+                display_device = gdm_server_get_display_device (slave->priv->server);
+        }
+
+        slave->priv->session = gdm_session_direct_new (display_name,
+                                                       display_hostname,
+                                                       display_device,
+                                                       display_is_local);
+        g_free (display_name);
+        g_free (display_device);
+        g_free (display_hostname);
 
         g_signal_connect (slave->priv->session,
                           "opened",
                           G_CALLBACK (on_session_opened),
                           slave);
-
+#if 0
+        g_signal_connect (slave->priv->session,
+                          "closed",
+                          G_CALLBACK (on_session_closed),
+                          slave);
+#endif
         g_signal_connect (slave->priv->session,
                           "info",
                           G_CALLBACK (on_session_info),
@@ -571,6 +327,11 @@ create_new_session (GdmSimpleSlave *slave)
                           "session-died",
                           G_CALLBACK (on_session_died),
                           slave);
+
+        g_signal_connect (slave->priv->session,
+                          "selected-user-changed",
+                          G_CALLBACK (on_session_selected_user_changed),
+                          slave);
 }
 
 static void
@@ -591,18 +352,8 @@ static void
 on_greeter_begin_verification (GdmGreeterServer *greeter_server,
                                GdmSimpleSlave   *slave)
 {
-        GError *error;
-        gboolean res;
-
         g_debug ("begin verification");
-        error = NULL;
-        res = gdm_session_direct_begin_verification (slave->priv->session,
-                                              NULL,
-                                              &error);
-        if (! res) {
-                g_warning ("Unable to begin verification: %s", error->message);
-                g_error_free (error);
-        }
+        gdm_session_begin_verification (GDM_SESSION (slave->priv->session));
 }
 
 static void
@@ -610,18 +361,9 @@ on_greeter_begin_verification_for_user (GdmGreeterServer *greeter_server,
                                         const char       *username,
                                         GdmSimpleSlave   *slave)
 {
-        GError *error;
-        gboolean res;
-
         g_debug ("begin verification");
-        error = NULL;
-        res = gdm_session_direct_begin_verification (slave->priv->session,
-                                              username,
-                                              &error);
-        if (! res) {
-                g_warning ("Unable to begin verification for user: %s", error->message);
-                g_error_free (error);
-        }
+        gdm_session_begin_verification_for_user (GDM_SESSION (slave->priv->session),
+                                                 username);
 }
 
 static void
@@ -629,7 +371,7 @@ on_greeter_answer (GdmGreeterServer *greeter_server,
                    const char       *text,
                    GdmSimpleSlave   *slave)
 {
-        gdm_session_direct_answer_query (slave->priv->session, text);
+        gdm_session_answer_query (GDM_SESSION (slave->priv->session), text);
 }
 
 static void
@@ -637,8 +379,7 @@ on_greeter_session_selected (GdmGreeterServer *greeter_server,
                              const char       *text,
                              GdmSimpleSlave   *slave)
 {
-        g_free (slave->priv->selected_session);
-        slave->priv->selected_session = g_strdup (text);
+        gdm_session_select_session (GDM_SESSION (slave->priv->session), text);
 }
 
 static void
@@ -646,8 +387,7 @@ on_greeter_language_selected (GdmGreeterServer *greeter_server,
                               const char       *text,
                               GdmSimpleSlave   *slave)
 {
-        g_free (slave->priv->selected_language);
-        slave->priv->selected_language = g_strdup (text);
+        gdm_session_select_language (GDM_SESSION (slave->priv->session), text);
 }
 
 static void
@@ -662,76 +402,36 @@ static void
 on_greeter_cancel (GdmGreeterServer *greeter_server,
                    GdmSimpleSlave   *slave)
 {
-        gboolean       display_is_local;
-        char          *display_name;
-        char          *display_device;
-
         g_debug ("Greeter cancelled");
 
-        g_object_get (slave,
-                      "display-name", &display_name,
-                      "display-is-local", &display_is_local,
-                      NULL);
-
         if (slave->priv->session != NULL) {
-                gdm_session_direct_close (slave->priv->session);
+                gdm_session_close (GDM_SESSION (slave->priv->session));
                 g_object_unref (slave->priv->session);
         }
 
         create_new_session (slave);
 
-        if (display_is_local) {
-                display_device = gdm_server_get_display_device (slave->priv->server);
-        } else {
-                display_device = g_strdup ("");
-        }
-
-        gdm_session_direct_open (slave->priv->session,
-                          "gdm",
-                          "" /* hostname */,
-                          display_name,
-                          display_device,
-                          NULL);
-
-        g_free (display_device);
-        g_free (display_name);
+        gdm_session_open (GDM_SESSION (slave->priv->session));
 }
 
 static void
 on_greeter_connected (GdmGreeterServer *greeter_server,
                       GdmSimpleSlave   *slave)
 {
-        gboolean       display_is_local;
-        char          *display_name;
-        char          *display_device;
-
-        g_object_get (slave,
-                      "display-name", &display_name,
-                      "display-is-local", &display_is_local,
-                      NULL);
+        gboolean display_is_local;
 
         g_debug ("Greeter started");
 
-        if (display_is_local) {
-                display_device = gdm_server_get_display_device (slave->priv->server);
-        } else {
-                display_device = g_strdup ("");
-        }
+        gdm_session_open (GDM_SESSION (slave->priv->session));
 
-        gdm_session_direct_open (slave->priv->session,
-                          "gdm",
-                          "" /* hostname */,
-                          display_name,
-                          display_device,
-                          NULL);
-        g_free (display_device);
+        g_object_get (slave,
+                      "display-is-local", &display_is_local,
+                      NULL);
 
         /* If XDMCP stop pinging */
         if ( ! display_is_local) {
                 alarm (0);
         }
-
-        g_free (display_name);
 }
 
 static void
@@ -954,7 +654,7 @@ gdm_simple_slave_stop (GdmSlave *slave)
         }
 
         if (GDM_SIMPLE_SLAVE (slave)->priv->session != NULL) {
-                gdm_session_direct_close (GDM_SIMPLE_SLAVE (slave)->priv->session);
+                gdm_session_close (GDM_SESSION (GDM_SIMPLE_SLAVE (slave)->priv->session));
                 g_object_unref (GDM_SIMPLE_SLAVE (slave)->priv->session);
                 GDM_SIMPLE_SLAVE (slave)->priv->session = NULL;
         }
@@ -1041,18 +741,7 @@ gdm_simple_slave_class_init (GdmSimpleSlaveClass *klass)
 static void
 gdm_simple_slave_init (GdmSimpleSlave *slave)
 {
-        const char * const *languages;
-
         slave->priv = GDM_SIMPLE_SLAVE_GET_PRIVATE (slave);
-
-        slave->priv->pid = -1;
-
-        languages = g_get_language_names ();
-        if (languages != NULL) {
-                slave->priv->selected_language = g_strdup (languages[0]);
-        }
-
-        slave->priv->selected_session = g_strdup ("gnome.desktop");
 }
 
 static void

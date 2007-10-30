@@ -33,33 +33,22 @@
 static GMainLoop *loop;
 
 static void
-on_open (GdmSessionDirect *session,
+on_open (GdmSession *session,
          const char *username)
 {
-        GError *error;
-        gboolean res;
-
         g_debug ("Got opened: begin auth for %s", username ? username : "(null)");
 
-        error = NULL;
-        res = gdm_session_direct_begin_verification (session,
-                                                     username,
-                                                     &error);
-        if (! res) {
-                g_warning ("Unable to begin verification: %s", error->message);
-                g_error_free (error);
-        }
+        gdm_session_begin_verification (session);
 }
 
 static void
-on_session_started (GdmSessionDirect *session,
-                    GPid        pid)
+on_session_started (GdmSession *session)
 {
-        g_print ("session started on pid %d\n", (int) pid);
+        g_print ("session started");
 }
 
 static void
-on_session_exited (GdmSessionDirect *session,
+on_session_exited (GdmSession *session,
                    int         exit_code)
 {
         g_print ("session exited with code %d\n", exit_code);
@@ -67,7 +56,7 @@ on_session_exited (GdmSessionDirect *session,
 }
 
 static void
-on_session_died (GdmSessionDirect *session,
+on_session_died (GdmSession *session,
                  int         signal_number)
 {
         g_print ("session died with signal %d, (%s)",
@@ -77,38 +66,36 @@ on_session_died (GdmSessionDirect *session,
 }
 
 static void
-on_user_verified (GdmSessionDirect *session)
+on_user_verified (GdmSession *session)
 {
         char *username;
-        const char *command = "/usr/bin/gedit /tmp/foo.log";
 
-        username = gdm_session_direct_get_username (session);
+        username = gdm_session_direct_get_username (GDM_SESSION_DIRECT (session));
 
         g_print ("%s%ssuccessfully authenticated\n",
                  username ? username : "", username ? " " : "");
         g_free (username);
 
-        gdm_session_direct_start_program (session, command);
+        gdm_session_start_session (session);
 }
 
 static void
-on_user_verification_error (GdmSessionDirect *session,
-                            GError     *error)
+on_user_verification_error (GdmSession *session,
+                            const char *message)
 {
         char *username;
 
-        username = gdm_session_direct_get_username (session);
+        username = gdm_session_direct_get_username (GDM_SESSION_DIRECT (session));
 
         g_print ("%s%scould not be successfully authenticated: %s\n",
                  username ? username : "", username ? " " : "",
-                 error->message);
-
+                 message);
         g_free (username);
         exit (1);
 }
 
 static void
-on_info_query (GdmSessionDirect *session,
+on_info_query (GdmSession *session,
                const char *query_text)
 {
         char answer[1024];
@@ -119,29 +106,29 @@ on_info_query (GdmSessionDirect *session,
         answer[strlen(answer) - 1] = '\0';
 
         if (answer[0] == '\0') {
-                gdm_session_direct_close (session);
+                gdm_session_close (session);
                 g_main_loop_quit (loop);
         } else {
-                gdm_session_direct_answer_query (session, answer);
+                gdm_session_answer_query (session, answer);
         }
 }
 
 static void
-on_info (GdmSessionDirect *session,
+on_info (GdmSession *session,
          const char *info)
 {
         g_print ("\n** NOTE: %s\n", info);
 }
 
 static void
-on_problem (GdmSessionDirect *session,
+on_problem (GdmSession *session,
             const char *problem)
 {
         g_print ("\n** WARNING: %s\n", problem);
 }
 
 static void
-on_secret_info_query (GdmSessionDirect *session,
+on_secret_info_query (GdmSession *session,
                       const char *query_text)
 {
         char           answer[1024];
@@ -166,23 +153,12 @@ on_secret_info_query (GdmSessionDirect *session,
 
         g_print ("\n");
 
-        gdm_session_direct_answer_query (session, answer);
+        gdm_session_answer_query (session, answer);
 }
 
 static void
 import_environment (GdmSessionDirect *session)
 {
-        if (g_getenv ("PATH") != NULL)
-                gdm_session_direct_set_environment_variable (session, "PATH",
-                                                             g_getenv ("PATH"));
-
-        if (g_getenv ("DISPLAY") != NULL)
-                gdm_session_direct_set_environment_variable (session, "DISPLAY",
-                                                             g_getenv ("DISPLAY"));
-
-        if (g_getenv ("XAUTHORITY") != NULL)
-                gdm_session_direct_set_environment_variable (session, "XAUTHORITY",
-                                                             g_getenv ("XAUTHORITY"));
 }
 
 int
@@ -190,8 +166,8 @@ main (int   argc,
       char *argv[])
 {
         GdmSessionDirect *session;
-        char       *username;
-        int         exit_code;
+        char             *username;
+        int               exit_code;
 
         exit_code = 0;
 
@@ -200,9 +176,12 @@ main (int   argc,
         g_type_init ();
 
         do {
-                g_message ("creating instance of 'user session' object...");
-                session = gdm_session_direct_new ();
-                g_message ("'user session' object created successfully");
+                g_debug ("creating instance of GdmSessionDirect object...");
+                session = gdm_session_direct_new (":0",
+                                                  g_get_host_name (),
+                                                  ttyname (STDIN_FILENO),
+                                                  TRUE);
+                g_debug ("GdmSessionDirect object created successfully");
 
                 if (argc <= 1) {
                         username = NULL;
@@ -210,12 +189,7 @@ main (int   argc,
                         username = argv[1];
                 }
 
-                gdm_session_direct_open (session,
-                                         "gdm",
-                                         "",
-                                         ":0",
-                                         ttyname (STDIN_FILENO),
-                                         NULL);
+                gdm_session_open (GDM_SESSION (session));
 
                 g_signal_connect (session, "opened",
                                   G_CALLBACK (on_open),
@@ -263,9 +237,9 @@ main (int   argc,
                 g_main_loop_run (loop);
                 g_main_loop_unref (loop);
 
-                g_message ("destroying previously created 'user session' object...");
+                g_message ("destroying previously created GdmSessionDirect object...");
                 g_object_unref (session);
-                g_message ("'user session' object destroyed successfully");
+                g_message ("GdmSessionDirect object destroyed successfully");
         } while (1);
 
         return exit_code;

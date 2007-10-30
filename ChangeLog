@@ -1,6 +1,121 @@
 2007-10-29  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/Makefile.am:
+	* daemon/gdm-factory-slave.c: (on_session_info),
+	(on_session_problem), (on_session_info_query),
+	(on_session_secret_info_query), (on_session_opened),
+	(on_session_user_verified), (on_session_user_verification_error),
+	(on_session_session_started), (create_product_display),
+	(on_session_relay_disconnected), (on_session_relay_connected),
+	(on_greeter_begin_verification),
+	(on_greeter_begin_verification_for_user), (on_greeter_answer),
+	(on_greeter_session_selected), (on_greeter_language_selected),
+	(on_greeter_user_selected), (on_greeter_cancel),
+	(gdm_factory_slave_start), (gdm_factory_slave_stop):
+	* daemon/gdm-product-slave.c: (setup_server),
+	(add_user_authorization), (setup_session),
+	(on_session_user_verified), (on_relay_start_session),
+	(on_relay_begin_verification),
+	(on_relay_begin_verification_for_user), (on_relay_answer),
+	(reset_session), (on_relay_open), (create_new_session),
+	(on_relay_cancelled), (connect_to_session_relay),
+	(gdm_product_slave_stop):
+	* daemon/gdm-session-direct.c: (on_user_verification_error),
+	(on_session_started), (on_session_startup_error),
+	(on_session_exited), (gdm_session_direct_handle_verified),
+	(gdm_session_direct_handle_verification_failed),
+	(gdm_session_direct_handle_username_changed),
+	(gdm_session_direct_handle_info_query),
+	(gdm_session_direct_handle_secret_info_query),
+	(gdm_session_direct_handle_info),
+	(gdm_session_direct_handle_problem),
+	(gdm_session_direct_handle_session_started),
+	(gdm_session_direct_handle_startup_failed),
+	(gdm_session_direct_handle_session_exited),
+	(gdm_session_direct_handle_session_died), (handle_connection),
+	(gdm_session_direct_init), (worker_exited), (worker_died),
+	(gdm_session_direct_open), (send_begin_verification),
+	(send_begin_verification_for_user),
+	(gdm_session_direct_begin_verification),
+	(gdm_session_direct_begin_verification_for_user),
+	(is_prog_in_path), (get_session_command_for_file),
+	(get_session_command), (open_ck_session),
+	(setup_session_environment), (gdm_session_direct_start_session),
+	(gdm_session_direct_close), (gdm_session_direct_answer_query),
+	(gdm_session_direct_cancel), (gdm_session_direct_get_username),
+	(gdm_session_direct_select_session),
+	(gdm_session_direct_select_language),
+	(gdm_session_direct_select_user),
+	(_gdm_session_direct_set_display_name),
+	(_gdm_session_direct_set_display_hostname),
+	(_gdm_session_direct_set_display_device),
+	(_gdm_session_direct_set_user_x11_authority_file),
+	(_gdm_session_direct_set_display_is_local),
+	(gdm_session_direct_set_property),
+	(gdm_session_direct_get_property), (gdm_session_direct_dispose),
+	(gdm_session_direct_finalize), (gdm_session_iface_init),
+	(gdm_session_direct_class_init), (gdm_session_direct_new):
+	* daemon/gdm-session-direct.h:
+	* daemon/gdm-session-private.h:
+	* daemon/gdm-session-relay.c: (gdm_session_relay_open),
+	(gdm_session_relay_close), (gdm_session_relay_begin_verification),
+	(gdm_session_relay_begin_verification_for_user),
+	(gdm_session_relay_answer_query),
+	(gdm_session_relay_select_session),
+	(gdm_session_relay_select_language),
+	(gdm_session_relay_select_user), (gdm_session_relay_cancel),
+	(gdm_session_relay_start_session), (handle_info_query),
+	(handle_secret_info_query), (handle_info), (handle_problem),
+	(handle_user_verified), (handle_user_verification_error),
+	(handle_session_started), (handle_session_stopped),
+	(handle_opened), (handle_reset), (do_introspect),
+	(handle_connection), (gdm_session_iface_init),
+	(gdm_session_relay_class_init):
+	* daemon/gdm-session-relay.h:
+	* daemon/gdm-session.c: (gdm_session_get_type), (gdm_session_open),
+	(gdm_session_close), (gdm_session_begin_verification),
+	(gdm_session_begin_verification_for_user),
+	(gdm_session_answer_query), (gdm_session_select_session),
+	(gdm_session_select_language), (gdm_session_select_user),
+	(gdm_session_cancel), (gdm_session_start_session),
+	(gdm_session_class_init), (_gdm_session_user_verified),
+	(_gdm_session_user_verification_error), (_gdm_session_info_query),
+	(_gdm_session_secret_info_query), (_gdm_session_info),
+	(_gdm_session_problem), (_gdm_session_session_started),
+	(_gdm_session_session_startup_error),
+	(_gdm_session_session_exited), (_gdm_session_session_died),
+	(_gdm_session_opened), (_gdm_session_closed),
+	(_gdm_session_selected_user_changed):
+	* daemon/gdm-session.h:
+	* daemon/gdm-simple-slave.c: (on_session_started),
+	(on_session_exited), (on_session_died), (on_session_user_verified),
+	(on_session_user_verification_error), (on_session_info),
+	(on_session_problem), (on_session_info_query),
+	(on_session_secret_info_query), (on_session_opened),
+	(on_session_selected_user_changed), (create_new_session),
+	(on_greeter_begin_verification),
+	(on_greeter_begin_verification_for_user), (on_greeter_answer),
+	(on_greeter_session_selected), (on_greeter_language_selected),
+	(on_greeter_cancel), (on_greeter_connected),
+	(gdm_simple_slave_stop), (gdm_simple_slave_init):
+	* daemon/test-session.c: (on_open), (on_session_started),
+	(on_session_exited), (on_session_died), (on_user_verified),
+	(on_user_verification_error), (on_info_query), (on_info),
+	(on_problem), (on_secret_info_query), (import_environment), (main):
+	Make SessionRelay and SessionDirect (was Session) implement a common
+	interface GdmSession.  Push some code that lived in the simple and product
+	slaves into the SessionDirect class.  Using an interface has a few
+	advantages besides ensuring consistency: makes it easier to do some
+	abstraction in the slave classes, makes it possible to more easily
+	implement other non-pam backends.
+
+	Add a stub for a selected-user-changed signal from the session interface.
+	This will be used to update the user selection in the greeter when the
+	user is set from the backend.
+
+2007-10-29  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/Makefile.am:
 	* daemon/gdm-product-slave.c: (on_session_opened),
 	(on_session_started), (on_session_exited), (on_session_died),
 	(slave_open_ck_session), (setup_session_environment),

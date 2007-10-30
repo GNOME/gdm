@@ -50,8 +50,6 @@
 #include "gdm-server.h"
 #include "gdm-session-direct.h"
 
-#include "ck-connector.h"
-
 extern char **environ;
 
 #define GDM_PRODUCT_SLAVE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_PRODUCT_SLAVE, GdmProductSlavePrivate))
@@ -82,7 +80,6 @@ struct GdmProductSlavePrivate
         char             *selected_language;
         char             *selected_user;
 
-        CkConnector      *ckc;
         GdmServer        *server;
         GdmSessionDirect       *session;
         DBusGProxy       *session_relay_proxy;
@@ -191,247 +188,6 @@ on_session_died (GdmSessionDirect *session,
         gdm_slave_stopped (GDM_SLAVE (slave));
 }
 
-static gboolean
-is_prog_in_path (const char *prog)
-{
-        char    *f;
-        gboolean ret;
-
-        f = g_find_program_in_path (prog);
-        ret = (f != NULL);
-        g_free (f);
-        return ret;
-}
-
-static gboolean
-get_session_command (const char *file,
-                     char      **command)
-{
-        GKeyFile   *key_file;
-        GError     *error;
-        char       *full_path;
-        char       *exec;
-        gboolean    ret;
-        gboolean    res;
-        const char *search_dirs[] = {
-                "/etc/X11/sessions/",
-                DMCONFDIR "/Sessions/",
-                DATADIR "/gdm/BuiltInSessions/",
-                DATADIR "/xsessions/",
-                NULL
-        };
-
-        exec = NULL;
-        ret = FALSE;
-        if (command != NULL) {
-                *command = NULL;
-        }
-
-        key_file = g_key_file_new ();
-
-        error = NULL;
-        full_path = NULL;
-        res = g_key_file_load_from_dirs (key_file,
-                                         file,
-                                         search_dirs,
-                                         &full_path,
-                                         G_KEY_FILE_NONE,
-                                         &error);
-        if (! res) {
-                g_debug ("File '%s' not found: %s", file, error->message);
-                g_error_free (error);
-                if (command != NULL) {
-                        *command = NULL;
-                }
-                goto out;
-        }
-
-        error = NULL;
-        res = g_key_file_get_boolean (key_file,
-                                      G_KEY_FILE_DESKTOP_GROUP,
-                                      G_KEY_FILE_DESKTOP_KEY_HIDDEN,
-                                      &error);
-        if (error == NULL && res) {
-                g_debug ("Session %s is marked as hidden", file);
-                goto out;
-        }
-
-        error = NULL;
-        exec = g_key_file_get_string (key_file,
-                                      G_KEY_FILE_DESKTOP_GROUP,
-                                      G_KEY_FILE_DESKTOP_KEY_TRY_EXEC,
-                                      &error);
-        if (exec == NULL) {
-                g_debug ("%s key not found", G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
-                goto out;
-        }
-
-        res = is_prog_in_path (exec);
-        g_free (exec);
-
-        if (! res) {
-                g_debug ("Command not found: %s", G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
-                goto out;
-        }
-
-        error = NULL;
-        exec = g_key_file_get_string (key_file,
-                                      G_KEY_FILE_DESKTOP_GROUP,
-                                      G_KEY_FILE_DESKTOP_KEY_EXEC,
-                                      &error);
-        if (error != NULL) {
-                g_debug ("%s key not found: %s",
-                         G_KEY_FILE_DESKTOP_KEY_EXEC,
-                         error->message);
-                g_error_free (error);
-                goto out;
-        }
-
-        if (command != NULL) {
-                *command = g_strdup (exec);
-        }
-        ret = TRUE;
-
-out:
-        g_free (exec);
-
-        return ret;
-}
-
-static gboolean
-slave_open_ck_session (GdmProductSlave *slave,
-                       const char      *display_name,
-                       const char      *display_hostname,
-                       gboolean         display_is_local)
-{
-        char          *username;
-        char          *x11_display_device;
-        struct passwd *pwent;
-        gboolean       ret;
-        int            res;
-        DBusError      error;
-
-        g_return_val_if_fail (GDM_IS_SLAVE (slave), FALSE);
-
-        username = gdm_session_direct_get_username (slave->priv->session);
-
-        x11_display_device = NULL;
-
-        pwent = getpwnam (username);
-        if (pwent == NULL) {
-                return FALSE;
-        }
-
-        slave->priv->ckc = ck_connector_new ();
-        if (slave->priv->ckc == NULL) {
-                g_warning ("Couldn't create new ConsoleKit connector");
-                goto out;
-        }
-
-        if (slave->priv->server != NULL) {
-                x11_display_device = gdm_server_get_display_device (slave->priv->server);
-        }
-
-        if (x11_display_device == NULL) {
-                x11_display_device = g_strdup ("");
-        }
-
-        dbus_error_init (&error);
-        res = ck_connector_open_session_with_parameters (slave->priv->ckc,
-                                                         &error,
-                                                         "unix-user", &pwent->pw_uid,
-                                                         "x11-display", &display_name,
-                                                         "x11-display-device", &x11_display_device,
-                                                         "remote-host-name", &display_hostname,
-                                                         "is-local", &display_is_local,
-                                                         NULL);
-        g_free (x11_display_device);
-
-        if (! res) {
-                if (dbus_error_is_set (&error)) {
-                        g_warning ("%s\n", error.message);
-                        dbus_error_free (&error);
-                } else {
-                        g_warning ("cannot open CK session: OOM, D-Bus system bus not available,\n"
-                                   "ConsoleKit not available or insufficient privileges.\n");
-                }
-                goto out;
-        }
-
-        ret = TRUE;
-
- out:
-        return ret;
-}
-
-static void
-setup_session_environment (GdmProductSlave *slave)
-{
-        int         display_number;
-        char       *display_x11_cookie;
-        char       *display_name;
-        char       *display_hostname;
-        char       *auth_file;
-        const char *session_cookie;
-        gboolean    display_is_local;
-
-        display_name = NULL;
-        display_hostname = NULL;
-        display_x11_cookie = NULL;
-        auth_file = NULL;
-        session_cookie = NULL;
-        display_is_local = FALSE;
-
-        g_object_get (slave,
-                      "display-number", &display_number,
-                      "display-name", &display_name,
-                      "display-hostname", &display_hostname,
-                      "display-is-local", &display_is_local,
-                      "display-x11-cookie", &display_x11_cookie,
-                      "display-x11-authority-file", &auth_file,
-                      NULL);
-
-        if (slave_open_ck_session (slave,
-                                   display_name,
-                                   display_hostname,
-                                   display_is_local)) {
-                session_cookie = ck_connector_get_cookie (slave->priv->ckc);
-        }
-
-        g_object_get (slave,
-                      "display-name", &display_name,
-                      "display-x11-authority-file", &auth_file,
-                      NULL);
-
-        gdm_session_direct_set_environment_variable (slave->priv->session,
-                                              "GDMSESSION",
-                                              slave->priv->selected_session);
-        gdm_session_direct_set_environment_variable (slave->priv->session,
-                                              "DESKTOP_SESSION",
-                                              slave->priv->selected_session);
-
-        gdm_session_direct_set_environment_variable (slave->priv->session,
-                                              "LANG",
-                                              slave->priv->selected_language);
-        gdm_session_direct_set_environment_variable (slave->priv->session,
-                                              "GDM_LANG",
-                                              slave->priv->selected_language);
-
-        gdm_session_direct_set_environment_variable (slave->priv->session,
-                                              "DISPLAY",
-                                              display_name);
-        gdm_session_direct_set_environment_variable (slave->priv->session,
-                                              "XAUTHORITY",
-                                              auth_file);
-
-        gdm_session_direct_set_environment_variable (slave->priv->session,
-                                              "PATH",
-                                              "/bin:/usr/bin:" BINDIR);
-
-        g_free (display_name);
-        g_free (auth_file);
-}
-
 static void
 setup_server (GdmProductSlave *slave)
 {
@@ -440,38 +196,44 @@ setup_server (GdmProductSlave *slave)
 }
 
 static gboolean
-setup_session (GdmProductSlave *slave)
+add_user_authorization (GdmProductSlave *slave,
+                        char           **filename)
 {
         char    *username;
-        char    *command;
-        char    *filename;
-        gboolean res;
+        gboolean ret;
 
         username = gdm_session_direct_get_username (slave->priv->session);
-
-        g_debug ("%s%ssuccessfully authenticated\n",
-                 username ? username : "",
-                 username ? " " : "");
+        ret = gdm_slave_add_user_authorization (GDM_SLAVE (slave),
+                                                username,
+                                                filename);
         g_free (username);
 
-        if (slave->priv->selected_session != NULL) {
-                filename = g_strdup (slave->priv->selected_session);
-        } else {
-                filename = g_strdup ("gnome.desktop");
+        return ret;
+}
+
+static gboolean
+setup_session (GdmProductSlave *slave)
+{
+        char *auth_file;
+        char *display_device;
+
+        auth_file = NULL;
+        add_user_authorization (slave, &auth_file);
+
+        display_device = NULL;
+        if (slave->priv->server != NULL) {
+                display_device = gdm_server_get_display_device (slave->priv->server);
         }
 
-        setup_session_environment (slave);
+        g_object_set (slave->priv->session,
+                      "display-device", display_device,
+                      "user-x11-authority-file", auth_file,
+                      NULL);
 
-        res = get_session_command (filename, &command);
-        if (! res) {
-                g_warning ("Could find session file: %s", filename);
-                return FALSE;
-        }
+        g_free (display_device);
+        g_free (auth_file);
 
-        gdm_session_direct_start_program (slave->priv->session, command);
-
-        g_free (filename);
-        g_free (command);
+        gdm_session_start_session (GDM_SESSION (slave->priv->session));
 
         return TRUE;
 }
@@ -571,7 +333,11 @@ on_session_user_verified (GdmSessionDirect      *session,
                 g_warning ("Unable to send UserVerified: %s", error->message);
                 g_error_free (error);
         }
+}
 
+static void
+on_relay_start_session (GdmProductSlave *slave)
+{
         gdm_product_slave_create_server (slave);
 }
 
@@ -705,19 +471,10 @@ on_relay_begin_verification (DBusGProxy *proxy,
                              gpointer    data)
 {
         GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
-        GError          *error;
-        gboolean         res;
 
         g_debug ("Relay BeginVerification");
 
-        error = NULL;
-        res = gdm_session_direct_begin_verification (slave->priv->session,
-                                              NULL,
-                                              &error);
-        if (! res) {
-                g_warning ("Unable to begin verification: %s", error->message);
-                g_error_free (error);
-        }
+        gdm_session_begin_verification (GDM_SESSION (slave->priv->session));
 }
 
 static void
@@ -726,19 +483,10 @@ on_relay_begin_verification_for_user (DBusGProxy *proxy,
                                       gpointer    data)
 {
         GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
-        GError          *error;
-        gboolean         res;
 
         g_debug ("Relay BeginVerificationForUser");
 
-        error = NULL;
-        res = gdm_session_direct_begin_verification (slave->priv->session,
-                                              username,
-                                              &error);
-        if (! res) {
-                g_warning ("Unable to begin verification for user: %s", error->message);
-                g_error_free (error);
-        }
+        gdm_session_begin_verification_for_user (GDM_SESSION (slave->priv->session), username);
 }
 
 static void
@@ -750,7 +498,7 @@ on_relay_answer (DBusGProxy *proxy,
 
         g_debug ("Relay Answer");
 
-        gdm_session_direct_answer_query (slave->priv->session, text);
+        gdm_session_answer_query (GDM_SESSION (slave->priv->session), text);
 }
 
 static void
@@ -782,29 +530,9 @@ on_relay_language_selected (DBusGProxy *proxy,
 static gboolean
 reset_session (GdmProductSlave *slave)
 {
-        char            *display_name;
-        gboolean         res;
-        GError          *error;
-
-        g_object_get (slave,
-                      "display-name", &display_name,
-                      NULL);
-
-        gdm_session_direct_close (slave->priv->session);
-        res = gdm_session_direct_open (slave->priv->session,
-                                "gdm",
-                                "",
-                                display_name,
-                                "/dev/console",
-                                &error);
-        if (! res) {
-                g_warning ("Unable to open session: %s", error->message);
-                g_error_free (error);
-        }
-
-        g_free (display_name);
-
-        return res;
+        gdm_session_close (GDM_SESSION (slave->priv->session));
+        gdm_session_open (GDM_SESSION (slave->priv->session));
+        return TRUE;
 }
 
 static void
@@ -827,35 +555,36 @@ on_relay_open (DBusGProxy *proxy,
                gpointer    data)
 {
         GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
-        char            *display_name;
-        gboolean         res;
-        GError          *error;
 
-        g_debug ("Relay open: opening session");
-
-        g_object_get (slave,
-                      "display-name", &display_name,
-                      NULL);
-
-        error = NULL;
-        res = gdm_session_direct_open (slave->priv->session,
-                                "gdm",
-                                "",
-                                display_name,
-                                "/dev/console",
-                                &error);
-        if (! res) {
-                g_warning ("Unable to open session: %s", error->message);
-                g_error_free (error);
-        }
-
-        g_free (display_name);
+        gdm_session_open (GDM_SESSION (slave->priv->session));
 }
 
 static void
 create_new_session (GdmProductSlave *slave)
 {
-        slave->priv->session = gdm_session_direct_new ();
+        gboolean       display_is_local;
+        char          *display_name;
+        char          *display_hostname;
+        char          *display_device;
+
+        g_debug ("Creating new session");
+
+        g_object_get (slave,
+                      "display-name", &display_name,
+                      "display-hostname", &display_hostname,
+                      "display-is-local", &display_is_local,
+                      NULL);
+
+        /* FIXME: we don't yet have a display device! */
+        display_device = g_strdup ("");
+
+        slave->priv->session = gdm_session_direct_new (display_name,
+                                                       display_hostname,
+                                                       display_device,
+                                                       display_is_local);
+        g_free (display_name);
+        g_free (display_hostname);
+        g_free (display_device);
 
         g_signal_connect (slave->priv->session,
                           "opened",
@@ -915,7 +644,7 @@ on_relay_cancelled (DBusGProxy *proxy,
         g_debug ("Relay cancelled");
 
         if (slave->priv->session != NULL) {
-                gdm_session_direct_close (slave->priv->session);
+                gdm_session_close (GDM_SESSION (slave->priv->session));
                 g_object_unref (slave->priv->session);
         }
 
@@ -1019,6 +748,9 @@ connect_to_session_relay (GdmProductSlave *slave)
         dbus_g_proxy_add_signal (slave->priv->session_relay_proxy,
                                  "Cancelled",
                                  G_TYPE_INVALID);
+        dbus_g_proxy_add_signal (slave->priv->session_relay_proxy,
+                                 "StartSession",
+                                 G_TYPE_INVALID);
 
         dbus_g_proxy_connect_signal (slave->priv->session_relay_proxy,
                                      "BeginVerification",
@@ -1058,6 +790,11 @@ connect_to_session_relay (GdmProductSlave *slave)
         dbus_g_proxy_connect_signal (slave->priv->session_relay_proxy,
                                      "Cancelled",
                                      G_CALLBACK (on_relay_cancelled),
+                                     slave,
+                                     NULL);
+        dbus_g_proxy_connect_signal (slave->priv->session_relay_proxy,
+                                     "StartSession",
+                                     G_CALLBACK (on_relay_start_session),
                                      slave,
                                      NULL);
 
@@ -1133,7 +870,7 @@ gdm_product_slave_stop (GdmSlave *slave)
         res = GDM_SLAVE_CLASS (gdm_product_slave_parent_class)->stop (slave);
 
         if (GDM_PRODUCT_SLAVE (slave)->priv->session != NULL) {
-                gdm_session_direct_close (GDM_PRODUCT_SLAVE (slave)->priv->session);
+                gdm_session_close (GDM_SESSION (GDM_PRODUCT_SLAVE (slave)->priv->session));
                 g_object_unref (GDM_PRODUCT_SLAVE (slave)->priv->session);
                 GDM_PRODUCT_SLAVE (slave)->priv->session = NULL;
         }

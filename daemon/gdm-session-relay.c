@@ -43,6 +43,7 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
+#include "gdm-session-private.h"
 #include "gdm-session-relay.h"
 
 #define GDM_SESSION_RELAY_DBUS_PATH      "/org/gnome/DisplayManager/SessionRelay"
@@ -62,16 +63,6 @@ enum {
 };
 
 enum {
-        USER_VERIFIED = 0,
-        USER_VERIFICATION_ERROR,
-        INFO,
-        PROBLEM,
-        INFO_QUERY,
-        SECRET_INFO_QUERY,
-        SESSION_STARTED,
-        SESSION_STOPPED,
-        OPENED,
-        CLOSED,
         CONNECTED,
         DISCONNECTED,
         LAST_SIGNAL
@@ -82,8 +73,13 @@ static guint signals [LAST_SIGNAL] = { 0, };
 static void     gdm_session_relay_class_init    (GdmSessionRelayClass *klass);
 static void     gdm_session_relay_init          (GdmSessionRelay      *session_relay);
 static void     gdm_session_relay_finalize      (GObject              *object);
+static void     gdm_session_iface_init          (GdmSessionIface      *iface);
 
-G_DEFINE_TYPE (GdmSessionRelay, gdm_session_relay, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_CODE (GdmSessionRelay,
+                         gdm_session_relay,
+                         G_TYPE_OBJECT,
+                         G_IMPLEMENT_INTERFACE (GDM_TYPE_SESSION,
+                                                gdm_session_iface_init))
 
 static gboolean
 send_dbus_message (DBusConnection *connection,
@@ -153,60 +149,84 @@ send_dbus_void_signal (GdmSessionRelay *session_relay,
         dbus_message_unref (message);
 }
 
-void
-gdm_session_relay_open (GdmSessionRelay *session_relay)
+static void
+gdm_session_relay_open (GdmSession *session)
 {
-        send_dbus_void_signal (session_relay, "Open");
+        GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
+        send_dbus_void_signal (impl, "Open");
 }
 
-void
-gdm_session_relay_begin_verification (GdmSessionRelay *session_relay)
+static void
+gdm_session_relay_close (GdmSession *session)
 {
+        GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
+        send_dbus_void_signal (impl, "Close");
+}
+
+static void
+gdm_session_relay_begin_verification (GdmSession *session)
+{
+        GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
         g_debug ("Sending signal BeginVerification");
-        send_dbus_void_signal (session_relay, "BeginVerification");
+        send_dbus_void_signal (impl, "BeginVerification");
 }
 
-void
-gdm_session_relay_begin_verification_for_user (GdmSessionRelay *session_relay,
-                                               const char      *username)
+static void
+gdm_session_relay_begin_verification_for_user (GdmSession *session,
+                                               const char *username)
 {
+        GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
         g_debug ("Sending signal BeginVerificationForUser");
-        send_dbus_string_signal (session_relay, "BeginVerificationForUser", username);
+        send_dbus_string_signal (impl, "BeginVerificationForUser", username);
 }
 
-void
-gdm_session_relay_answer_query (GdmSessionRelay *session_relay,
-                                const char      *text)
+static void
+gdm_session_relay_answer_query (GdmSession *session,
+                                const char *text)
 {
+        GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
         g_debug ("Sending signal AnswerQuery");
-        send_dbus_string_signal (session_relay, "AnswerQuery", text);
+        send_dbus_string_signal (impl, "AnswerQuery", text);
 }
 
-void
-gdm_session_relay_select_session (GdmSessionRelay *session_relay,
-                                  const char      *text)
+static void
+gdm_session_relay_select_session (GdmSession *session,
+                                  const char *text)
 {
-        send_dbus_string_signal (session_relay, "SessionSelected", text);
+        GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
+        send_dbus_string_signal (impl, "SessionSelected", text);
 }
 
-void
-gdm_session_relay_select_language (GdmSessionRelay *session_relay,
-                                   const char      *text)
+static void
+gdm_session_relay_select_language (GdmSession *session,
+                                   const char *text)
 {
-        send_dbus_string_signal (session_relay, "LanguageSelected", text);
+        GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
+        send_dbus_string_signal (impl, "LanguageSelected", text);
 }
 
-void
-gdm_session_relay_select_user (GdmSessionRelay *session_relay,
-                               const char      *text)
+static void
+gdm_session_relay_select_user (GdmSession *session,
+                               const char *text)
 {
-        send_dbus_string_signal (session_relay, "UserSelected", text);
+        GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
+        send_dbus_string_signal (impl, "UserSelected", text);
 }
 
-void
-gdm_session_relay_cancel (GdmSessionRelay *session_relay)
+static void
+gdm_session_relay_cancel (GdmSession *session)
 {
-        send_dbus_void_signal (session_relay, "Cancelled");
+        GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
+
+        send_dbus_void_signal (impl, "Cancelled");
+}
+
+static void
+gdm_session_relay_start_session (GdmSession *session)
+{
+        GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
+
+        send_dbus_void_signal (impl, "StartSession");
 }
 
 /* Note: Use abstract sockets like dbus does by default on Linux. Abstract
@@ -259,7 +279,7 @@ handle_info_query (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_signal_emit (session_relay, signals [INFO_QUERY], 0, text);
+        _gdm_session_info_query (GDM_SESSION (session_relay), text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -286,7 +306,7 @@ handle_secret_info_query (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_signal_emit (session_relay, signals [SECRET_INFO_QUERY], 0, text);
+        _gdm_session_secret_info_query (GDM_SESSION (session_relay), text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -313,7 +333,7 @@ handle_info (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_signal_emit (session_relay, signals [INFO], 0, text);
+        _gdm_session_info (GDM_SESSION (session_relay), text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -340,7 +360,7 @@ handle_problem (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_signal_emit (session_relay, signals [PROBLEM], 0, text);
+        _gdm_session_problem (GDM_SESSION (session_relay), text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -361,7 +381,7 @@ handle_user_verified (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_signal_emit (session_relay, signals [USER_VERIFIED], 0);
+        _gdm_session_user_verified (GDM_SESSION (session_relay));
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -382,7 +402,7 @@ handle_user_verification_error (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_signal_emit (session_relay, signals [USER_VERIFICATION_ERROR], 0);
+        _gdm_session_user_verification_error (GDM_SESSION (session_relay), NULL);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -403,7 +423,7 @@ handle_session_started (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_signal_emit (session_relay, signals [SESSION_STARTED], 0);
+        _gdm_session_session_started (GDM_SESSION (session_relay));
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -424,7 +444,9 @@ handle_session_stopped (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_signal_emit (session_relay, signals [SESSION_STOPPED], 0);
+#if 0
+        _gdm_session_session_stopped (GDM_SESSION (session_relay));
+#endif
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -445,7 +467,7 @@ handle_opened (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_signal_emit (session_relay, signals [OPENED], 0);
+        _gdm_session_opened (GDM_SESSION (session_relay));
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -466,8 +488,9 @@ handle_reset (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        /* FIXME: */
-        /*g_signal_emit (session_relay, signals [RESET], 0);*/
+#if 0
+        _gdm_session_reset (GDM_SESSION (session_relay));
+#endif
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -553,6 +576,10 @@ do_introspect (DBusConnection *connection,
                                "    <method name=\"Reset\">\n"
                                "    </method>\n"
                                "    <signal name=\"Open\">\n"
+                               "    </signal>\n"
+                               "    <signal name=\"Close\">\n"
+                               "    </signal>\n"
+                               "    <signal name=\"StartSession\">\n"
                                "    </signal>\n"
                                "    <signal name=\"BeginVerification\">\n"
                                "      <arg name=\"username\" type=\"s\"/>\n"
@@ -737,8 +764,6 @@ handle_connection (DBusServer      *server,
                                                       session_relay);
 
                 g_signal_emit (session_relay, signals[CONNECTED], 0);
-
-                gdm_session_relay_open (session_relay);
         }
 }
 
@@ -854,9 +879,25 @@ gdm_session_relay_constructor (GType                  type,
 }
 
 static void
+gdm_session_iface_init (GdmSessionIface *iface)
+{
+        iface->begin_verification = gdm_session_relay_begin_verification;
+        iface->begin_verification_for_user = gdm_session_relay_begin_verification_for_user;
+        iface->open = gdm_session_relay_open;
+        iface->close = gdm_session_relay_close;
+        iface->cancel = gdm_session_relay_cancel;
+        iface->start_session = gdm_session_relay_start_session;
+        iface->answer_query = gdm_session_relay_answer_query;
+        iface->select_session = gdm_session_relay_select_session;
+        iface->select_language = gdm_session_relay_select_language;
+        iface->select_user = gdm_session_relay_select_user;
+
+}
+
+static void
 gdm_session_relay_class_init (GdmSessionRelayClass *klass)
 {
-        GObjectClass    *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
         object_class->get_property = gdm_session_relay_get_property;
         object_class->set_property = gdm_session_relay_set_property;
@@ -865,91 +906,6 @@ gdm_session_relay_class_init (GdmSessionRelayClass *klass)
 
         g_type_class_add_private (klass, sizeof (GdmSessionRelayPrivate));
 
-        signals [USER_VERIFIED] =
-                g_signal_new ("user-verified",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionRelayClass, user_verified),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__VOID,
-                              G_TYPE_NONE,
-                              0);
-        signals [USER_VERIFICATION_ERROR] =
-                g_signal_new ("user-verification-error",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionRelayClass, user_verification_error),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__POINTER,
-                              G_TYPE_NONE,
-                              1,
-                              G_TYPE_POINTER);
-         signals [INFO_QUERY] =
-                g_signal_new ("info-query",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionRelayClass, info_query),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__STRING,
-                              G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
-        signals [SECRET_INFO_QUERY] =
-                g_signal_new ("secret-info-query",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionRelayClass, secret_info_query),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__STRING,
-                              G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
-        signals [INFO] =
-                g_signal_new ("info",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionRelayClass, info),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__STRING,
-                              G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
-        signals [PROBLEM] =
-                g_signal_new ("problem",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionRelayClass, problem),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__STRING,
-                              G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
-        signals [SESSION_STARTED] =
-                g_signal_new ("session-started",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionRelayClass, session_started),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__VOID,
-                              G_TYPE_NONE,
-                              0);
-        signals [OPENED] =
-                g_signal_new ("opened",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionRelayClass, opened),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__VOID,
-                              G_TYPE_NONE,
-                              0);
         signals [CONNECTED] =
                 g_signal_new ("connected",
                               G_OBJECT_CLASS_TYPE (object_class),
