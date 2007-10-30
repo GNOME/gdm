@@ -105,7 +105,7 @@ gdm_xdmcp_display_create_authority (GdmDisplay *display)
         cookie = g_string_new (NULL);
         gdm_generate_cookie (cookie);
 
-        g_debug ("Setting up access for %s", x11_display);
+        g_debug ("GdmXdmcpDisplay: Setting up access for %s", x11_display);
 
         /* gdm and xserver authfile can be the same, server will run as root */
         basename = g_strconcat (x11_display, ".Xauth", NULL);
@@ -119,13 +119,13 @@ gdm_xdmcp_display_create_authority (GdmDisplay *display)
                 goto out;
         }
 
-        g_debug ("Adding auth entry for xdmcp display:%d cookie:%s", display_num, cookie->str);
+        g_debug ("GdmXdmcpDisplay: Adding auth entry for xdmcp display:%d cookie:%s", display_num, cookie->str);
         authlist = NULL;
         if (! gdm_auth_add_entry_for_display (display_num, NULL, cookie, af, &authlist)) {
                 goto out;
         }
 
-        g_debug ("gdm_auth_secure_display: Setting up access");
+        g_debug ("GdmXdmcpDisplay: Setting up access");
 
         VE_IGNORE_EINTR (closeret = fclose (af));
         if (closeret < 0) {
@@ -134,7 +134,7 @@ gdm_xdmcp_display_create_authority (GdmDisplay *display)
                 goto out;
         }
 
-        g_debug ("Set up access for %s - %d entries",
+        g_debug ("GdmXdmcpDisplay: Set up access for %s - %d entries",
                  x11_display,
                  g_slist_length (authlist));
 
@@ -170,7 +170,7 @@ gdm_xdmcp_display_add_user_authorization (GdmDisplay *display,
 
         hostname = NULL;
         res = gdm_address_get_hostname (GDM_XDMCP_DISPLAY (display)->priv->remote_address, &hostname);
-        g_debug ("add user auth for xdmcp display: %s host:%s", username, hostname);
+        g_debug ("GdmXdmcpDisplay: add user auth for xdmcp display: %s host:%s", username, hostname);
         gdm_address_debug (GDM_XDMCP_DISPLAY (display)->priv->remote_address);
         g_free (hostname);
 

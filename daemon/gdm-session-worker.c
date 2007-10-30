@@ -319,7 +319,7 @@ send_dbus_string_method (DBusConnection *connection,
                 str = "";
         }
 
-        g_debug ("Calling %s", method);
+        g_debug ("GdmSessionWorker: Calling %s", method);
         message = dbus_message_new_method_call (NULL,
                                                 GDM_SESSION_DBUS_PATH,
                                                 GDM_SESSION_DBUS_INTERFACE,
@@ -365,7 +365,7 @@ send_dbus_int_method (DBusConnection *connection,
         DBusMessage    *reply;
         DBusMessageIter iter;
 
-        g_debug ("Calling %s", method);
+        g_debug ("GdmSessionWorker: Calling %s", method);
         message = dbus_message_new_method_call (NULL,
                                                 GDM_SESSION_DBUS_PATH,
                                                 GDM_SESSION_DBUS_INTERFACE,
@@ -407,7 +407,7 @@ send_user_verified (GdmSessionWorker *worker)
         DBusMessage    *message;
         DBusMessage    *reply;
 
-        g_debug ("Calling Verified");
+        g_debug ("GdmSessionWorker: Calling Verified");
         message = dbus_message_new_method_call (NULL,
                                                 GDM_SESSION_DBUS_PATH,
                                                 GDM_SESSION_DBUS_INTERFACE,
@@ -497,7 +497,7 @@ gdm_session_worker_get_username (GdmSessionWorker  *worker,
         if (pam_get_item (worker->priv->pam_handle, PAM_USER, &item) == PAM_SUCCESS) {
                 if (username != NULL) {
                         *username = g_strdup ((char *) item);
-                        g_debug ("username is '%s'",
+                        g_debug ("GdmSessionWorker: username is '%s'",
                                  *username != NULL ? *username : "<unset>");
                 }
                 return TRUE;
@@ -520,7 +520,7 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
                      (strcmp (worker->priv->username, username) == 0)))
                         goto out;
 
-                g_debug ("setting username to '%s'", username);
+                g_debug ("GdmSessionWorker: setting username to '%s'", username);
 
                 g_free (worker->priv->username);
                 worker->priv->username = username;
@@ -548,7 +548,7 @@ send_question_method (GdmSessionWorker *worker,
 
         ret = FALSE;
 
-        g_debug ("Calling %s", method);
+        g_debug ("GdmSessionWorker: Calling %s", method);
         message = dbus_message_new_method_call (NULL,
                                                 GDM_SESSION_DBUS_PATH,
                                                 GDM_SESSION_DBUS_INTERFACE,
@@ -673,7 +673,7 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
 
         gdm_session_worker_update_username (worker);
 
-        g_debug ("received pam message of type %u with payload '%s'",
+        g_debug ("GdmSessionWorker: received pam message of type %u with payload '%s'",
                  query->msg_style, query->msg);
 
         utf8_msg = convert_to_utf8 (query->msg);
@@ -696,7 +696,7 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
                 res = gdm_session_worker_report_problem (worker, utf8_msg);
                 break;
         default:
-                g_debug ("unknown query of type %u\n", query->msg_style);
+                g_debug ("GdmSessionWorker: unknown query of type %u\n", query->msg_style);
                 break;
         }
 
@@ -710,7 +710,7 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
 
                 g_free (user_answer);
 
-                g_debug ("trying to get updated username");
+                g_debug ("GdmSessionWorker: trying to get updated username");
 
                 res = TRUE;
         }
@@ -730,7 +730,7 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
         int                  return_value;
         int                  i;
 
-        g_debug ("%d new messages received from PAM\n", number_of_messages);
+        g_debug ("GdmSessionWorker: %d new messages received from PAM\n", number_of_messages);
 
         return_value = PAM_CONV_ERR;
 
@@ -785,7 +785,7 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
                 *responses = replies;
         }
 
-        g_debug ("PAM conversation returning %d: %s",
+        g_debug ("GdmSessionWorker: PAM conversation returning %d: %s",
                  return_value,
                  pam_strerror (worker->priv->pam_handle, return_value));
 
@@ -796,7 +796,7 @@ static void
 gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
                                      int               error_code)
 {
-        g_debug ("uninitializing PAM");
+        g_debug ("GdmSessionWorker: uninitializing PAM");
 
         if (worker->priv->pam_handle == NULL)
                 return;
@@ -840,7 +840,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
 
         g_assert (worker->priv->pam_handle == NULL);
 
-        g_debug ("initializing PAM");
+        g_debug ("GdmSessionWorker: initializing PAM");
 
         pam_conversation.conv = (GdmSessionWorkerPamNewMessagesFunc) gdm_session_worker_pam_new_messages_handler;
         pam_conversation.appdata_ptr = worker;
@@ -851,7 +851,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                                 &worker->priv->pam_handle);
 
         if (error_code != PAM_SUCCESS) {
-                g_debug ("could not initialize pam");
+                g_debug ("GdmSessionWorker: could not initialize pam");
                 /* we don't use pam_strerror here because it requires a valid
                  * pam handle, and if pam_start fails pam_handle is undefined
                  */
@@ -924,7 +924,7 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
         int error_code;
         int authentication_flags;
 
-        g_debug ("authenticating user");
+        g_debug ("GdmSessionWorker: authenticating user");
 
         authentication_flags = 0;
 
@@ -937,7 +937,7 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
         error_code = pam_authenticate (worker->priv->pam_handle, authentication_flags);
 
         if (error_code != PAM_SUCCESS) {
-                g_debug ("authentication returned %d: %s", error_code, pam_strerror (worker->priv->pam_handle, error_code));
+                g_debug ("GdmSessionWorker: authentication returned %d: %s", error_code, pam_strerror (worker->priv->pam_handle, error_code));
 
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
@@ -963,7 +963,7 @@ gdm_session_worker_authorize_user (GdmSessionWorker *worker,
         int error_code;
         int authentication_flags;
 
-        g_debug ("determining if authenticated user is authorized to session");
+        g_debug ("GdmSessionWorker: determining if authenticated user is authorized to session");
 
         authentication_flags = 0;
 
@@ -981,7 +981,7 @@ gdm_session_worker_authorize_user (GdmSessionWorker *worker,
                 error_code = pam_chauthtok (worker->priv->pam_handle, PAM_CHANGE_EXPIRED_AUTHTOK);
 
         if (error_code != PAM_SUCCESS) {
-                g_debug ("user is not authorized to log in: %s",
+                g_debug ("GdmSessionWorker: user is not authorized to log in: %s",
                          pam_strerror (worker->priv->pam_handle, error_code));
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
@@ -1180,7 +1180,7 @@ gdm_session_worker_verify_user (GdmSessionWorker  *worker,
         GError   *pam_error;
         gboolean  res;
 
-        g_debug ("Verifying user: %s host: %s service: %s display: %s tty: %s",
+        g_debug ("GdmSessionWorker: Verifying user: %s host: %s service: %s display: %s tty: %s",
                  username != NULL ? username : "(null)",
                  hostname != NULL ? hostname : "(null)",
                  service_name != NULL ? service_name : "(null)",
@@ -1206,7 +1206,7 @@ gdm_session_worker_verify_user (GdmSessionWorker  *worker,
                                                     password_is_required,
                                                     &pam_error);
         if (! res) {
-                g_debug ("Unable to verify user");
+                g_debug ("GdmSessionWorker: Unable to verify user");
                 g_propagate_error (error, pam_error);
                 return FALSE;
         }
@@ -1214,7 +1214,7 @@ gdm_session_worker_verify_user (GdmSessionWorker  *worker,
         /* we're authenticated.  Let's make sure we've been given
          * a valid username for the system
          */
-        g_debug ("trying to get updated username");
+        g_debug ("GdmSessionWorker: trying to get updated username");
         gdm_session_worker_update_username (worker);
 
         /* make sure the user is allowed to log in to this system
@@ -1235,7 +1235,7 @@ gdm_session_worker_verify_user (GdmSessionWorker  *worker,
                 return FALSE;
         }
 
-        g_debug ("verification process completed, creating reply...");
+        g_debug ("GdmSessionWorker: verification process completed, creating reply...");
 
         send_user_verified (worker);
 
@@ -1301,7 +1301,7 @@ session_worker_child_watch (GPid              pid,
                             int               status,
                             GdmSessionWorker *worker)
 {
-        g_debug ("child (pid:%d) done (%s:%d)",
+        g_debug ("GdmSessionWorker: child (pid:%d) done (%s:%d)",
                  (int) pid,
                  WIFEXITED (status) ? "status"
                  : WIFSIGNALED (status) ? "signal"
@@ -1353,10 +1353,10 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
         }
         worker->priv->is_running = TRUE;
 
-        g_debug ("querying pam for user environment");
+        g_debug ("GdmSessionWorker: querying pam for user environment");
         gdm_session_worker_update_environment_from_pam (worker);
 
-        g_debug ("opening user session with program '%s'",
+        g_debug ("GdmSessionWorker: opening user session with program '%s'",
                  worker->priv->arguments[0]);
 
         session_pid = fork ();
@@ -1375,12 +1375,12 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
                 char  *home_dir;
 
                 if (setuid (getuid ()) < 0) {
-                        g_debug ("could not reset uid - %s", g_strerror (errno));
+                        g_debug ("GdmSessionWorker: could not reset uid - %s", g_strerror (errno));
                         _exit (1);
                 }
 
                 if (setsid () < 0) {
-                        g_debug ("could not set pid '%u' as leader of new session and process group - %s",
+                        g_debug ("GdmSessionWorker: could not set pid '%u' as leader of new session and process group - %s",
                                  (guint) getpid (), g_strerror (errno));
                         _exit (2);
                 }
@@ -1401,7 +1401,7 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
                                      environment,
                                      TRUE);
 
-                g_debug ("child '%s' could not be started - %s",
+                g_debug ("GdmSessionWorker: child '%s' could not be started - %s",
                          worker->priv->arguments[0],
                          g_strerror (errno));
                 g_strfreev (environment);
@@ -1411,7 +1411,7 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
 
         worker->priv->child_pid = session_pid;
 
-        g_debug ("session opened creating reply...");
+        g_debug ("GdmSessionWorker: session opened creating reply...");
         g_assert (sizeof (GPid) <= sizeof (int));
 
         send_session_started (worker, session_pid);
@@ -1456,7 +1456,7 @@ gdm_session_worker_open (GdmSessionWorker    *worker,
         if (! res) {
                 g_assert (verification_error != NULL);
 
-                g_debug ("%s", verification_error->message);
+                g_debug ("GdmSessionWorker: %s", verification_error->message);
 
                 g_propagate_error (error, verification_error);
 
@@ -1470,7 +1470,7 @@ gdm_session_worker_open (GdmSessionWorker    *worker,
             !gdm_session_worker_open_user_session (worker, &verification_error)) {
                 g_assert (verification_error != NULL);
 
-                g_debug ("%s", verification_error->message);
+                g_debug ("GdmSessionWorker: %s", verification_error->message);
 
                 g_propagate_error (error, verification_error);
 
@@ -1586,7 +1586,7 @@ on_set_environment_variable (GdmSessionWorker *worker,
                                      DBUS_TYPE_STRING, &value,
                                      DBUS_TYPE_INVALID);
         if (res) {
-                g_debug ("set env: %s = %s", key, value);
+                g_debug ("GdmSessionWorker: set env: %s = %s", key, value);
                 gdm_session_worker_set_environment_variable (worker, key, value);
         } else {
                 g_warning ("Unable to get arguments: %s", error.message);
@@ -1608,7 +1608,7 @@ on_start_program (GdmSessionWorker *worker,
                                      DBUS_TYPE_STRING, &text,
                                      DBUS_TYPE_INVALID);
         if (res) {
-                g_debug ("start program: %s", text);
+                g_debug ("GdmSessionWorker: start program: %s", text);
 
                 gdm_session_worker_start_program (worker, text);
         } else {
@@ -1632,7 +1632,7 @@ open_idle (OpenData *data)
         GError  *error;
         gboolean res;
 
-        g_debug ("begin verification: %s %s", data->service, data->console);
+        g_debug ("GdmSessionWorker: begin verification: %s %s", data->service, data->console);
 
         error = NULL;
         res = gdm_session_worker_open (data->worker,
@@ -1643,7 +1643,7 @@ open_idle (OpenData *data)
                                        data->username,
                                        &error);
         if (! res) {
-                g_debug ("Verification failed: %s", error->message);
+                g_debug ("GdmSessionWorker: Verification failed: %s", error->message);
                 g_error_free (error);
                 send_user_verification_error (data->worker, error->message);
         }
@@ -1709,7 +1709,7 @@ on_begin_verification (GdmSessionWorker *worker,
                                      DBUS_TYPE_STRING, &hostname,
                                      DBUS_TYPE_INVALID);
         if (res) {
-                g_debug ("begin verification: %s %s", service, console);
+                g_debug ("GdmSessionWorker: begin verification: %s %s", service, console);
                 queue_open (worker, service, x11_display_name, console, hostname, NULL);
         } else {
                 g_warning ("Unable to get arguments: %s", error.message);
@@ -1739,7 +1739,7 @@ on_begin_verification_for_user (GdmSessionWorker *worker,
                                      DBUS_TYPE_STRING, &username,
                                      DBUS_TYPE_INVALID);
         if (res) {
-                g_debug ("begin verification: %s %s", service, console);
+                g_debug ("GdmSessionWorker: begin verification: %s %s", service, console);
                 queue_open (worker, service, x11_display_name, console, hostname, username);
         } else {
                 g_warning ("Unable to get arguments: %s", error.message);
@@ -1789,7 +1789,7 @@ worker_dbus_filter_function (DBusConnection *connection,
 
         path = dbus_message_get_path (message);
 
-        g_debug ("obj_path=%s interface=%s method=%s",
+        g_debug ("GdmSessionWorker: obj_path=%s interface=%s method=%s",
                  dbus_message_get_path (message),
                  dbus_message_get_interface (message),
                  dbus_message_get_member (message));
@@ -1805,7 +1805,7 @@ worker_dbus_filter_function (DBusConnection *connection,
         } else if (dbus_message_is_signal (message,
                                            DBUS_INTERFACE_DBUS,
                                            "NameOwnerChanged")) {
-                g_debug ("Name owner changed?");
+                g_debug ("GdmSessionWorker: Name owner changed?");
         } else {
                 return worker_dbus_handle_message (connection, message, user_data, FALSE);
         }
@@ -1828,7 +1828,7 @@ gdm_session_worker_constructor (GType                  type,
                                                                                                     n_construct_properties,
                                                                                                     construct_properties));
 
-        g_debug ("connecting to address: %s", worker->priv->server_address);
+        g_debug ("GdmSessionWorker: connecting to address: %s", worker->priv->server_address);
 
         dbus_error_init (&error);
         worker->priv->connection = dbus_connection_open (worker->priv->server_address, &error);

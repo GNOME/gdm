@@ -91,7 +91,7 @@ send_dbus_message (DBusConnection *connection,
         g_return_val_if_fail (message != NULL, FALSE);
 
         if (connection == NULL) {
-                g_debug ("There is no valid connection");
+                g_debug ("GdmSessionRelay: There is no valid connection");
                 return FALSE;
         }
 
@@ -124,7 +124,7 @@ send_dbus_string_signal (GdmSessionRelay *session_relay,
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &text);
 
         if (! send_dbus_message (session_relay->priv->session_connection, message)) {
-                g_debug ("Could not send %s signal", name);
+                g_debug ("GdmSessionRelay: Could not send %s signal", name);
         }
 
         dbus_message_unref (message);
@@ -143,7 +143,7 @@ send_dbus_void_signal (GdmSessionRelay *session_relay,
                                            name);
 
         if (! send_dbus_message (session_relay->priv->session_connection, message)) {
-                g_debug ("Could not send %s signal", name);
+                g_debug ("GdmSessionRelay: Could not send %s signal", name);
         }
 
         dbus_message_unref (message);
@@ -167,7 +167,7 @@ static void
 gdm_session_relay_begin_verification (GdmSession *session)
 {
         GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
-        g_debug ("Sending signal BeginVerification");
+        g_debug ("GdmSessionRelay: Sending signal BeginVerification");
         send_dbus_void_signal (impl, "BeginVerification");
 }
 
@@ -176,7 +176,7 @@ gdm_session_relay_begin_verification_for_user (GdmSession *session,
                                                const char *username)
 {
         GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
-        g_debug ("Sending signal BeginVerificationForUser");
+        g_debug ("GdmSessionRelay: Sending signal BeginVerificationForUser");
         send_dbus_string_signal (impl, "BeginVerificationForUser", username);
 }
 
@@ -185,7 +185,7 @@ gdm_session_relay_answer_query (GdmSession *session,
                                 const char *text)
 {
         GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
-        g_debug ("Sending signal AnswerQuery");
+        g_debug ("GdmSessionRelay: Sending signal AnswerQuery");
         send_dbus_string_signal (impl, "AnswerQuery", text);
 }
 
@@ -273,7 +273,7 @@ handle_info_query (GdmSessionRelay *session_relay,
                 g_warning ("ERROR: %s", error.message);
         }
 
-        g_debug ("InfoQuery: %s", text);
+        g_debug ("GdmSessionRelay: InfoQuery: %s", text);
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -300,7 +300,7 @@ handle_secret_info_query (GdmSessionRelay *session_relay,
                 g_warning ("ERROR: %s", error.message);
         }
 
-        g_debug ("SecretInfoQuery: %s", text);
+        g_debug ("GdmSessionRelay: SecretInfoQuery: %s", text);
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -327,7 +327,7 @@ handle_info (GdmSessionRelay *session_relay,
                 g_warning ("ERROR: %s", error.message);
         }
 
-        g_debug ("Info: %s", text);
+        g_debug ("GdmSessionRelay: Info: %s", text);
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -354,7 +354,7 @@ handle_problem (GdmSessionRelay *session_relay,
                 g_warning ("ERROR: %s", error.message);
         }
 
-        g_debug ("Problem: %s", text);
+        g_debug ("GdmSessionRelay: Problem: %s", text);
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -375,7 +375,7 @@ handle_user_verified (GdmSessionRelay *session_relay,
 
         dbus_error_init (&error);
 
-        g_debug ("UserVerified");
+        g_debug ("GdmSessionRelay: UserVerified");
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -396,7 +396,7 @@ handle_user_verification_error (GdmSessionRelay *session_relay,
 
         dbus_error_init (&error);
 
-        g_debug ("UserVerificationError");
+        g_debug ("GdmSessionRelay: UserVerificationError");
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -417,7 +417,7 @@ handle_session_started (GdmSessionRelay *session_relay,
 
         dbus_error_init (&error);
 
-        g_debug ("SessionStarted");
+        g_debug ("GdmSessionRelay: SessionStarted");
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -438,7 +438,7 @@ handle_session_stopped (GdmSessionRelay *session_relay,
 
         dbus_error_init (&error);
 
-        g_debug ("SessionStopped");
+        g_debug ("GdmSessionRelay: SessionStopped");
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -461,7 +461,7 @@ handle_opened (GdmSessionRelay *session_relay,
 
         dbus_error_init (&error);
 
-        g_debug ("Opened");
+        g_debug ("GdmSessionRelay: Opened");
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -482,7 +482,7 @@ handle_reset (GdmSessionRelay *session_relay,
 
         dbus_error_init (&error);
 
-        g_debug ("Reset");
+        g_debug ("GdmSessionRelay: Reset");
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -535,7 +535,7 @@ do_introspect (DBusConnection *connection,
         GString     *xml;
         char        *xml_string;
 
-        g_debug ("Do introspect");
+        g_debug ("GdmSessionRelay: Do introspect");
 
         /* standard header */
         xml = g_string_new ("<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\"\n"
@@ -635,7 +635,7 @@ session_relay_message_handler (DBusConnection  *connection,
         const char *dbus_interface   = dbus_message_get_interface (message);
         const char *dbus_member      = dbus_message_get_member (message);
 
-        g_debug ("session_relay_message_handler: destination=%s obj_path=%s interface=%s method=%s",
+        g_debug ("GdmSessionRelay: session_relay_message_handler: destination=%s obj_path=%s interface=%s method=%s",
                  dbus_destination ? dbus_destination : "(null)",
                  dbus_path        ? dbus_path        : "(null)",
                  dbus_interface   ? dbus_interface   : "(null)",
@@ -689,7 +689,7 @@ connection_filter_function (DBusConnection *connection,
         const char      *dbus_interface = dbus_message_get_interface (message);
         const char      *dbus_message   = dbus_message_get_member (message);
 
-        g_debug ("obj_path=%s interface=%s method=%s",
+        g_debug ("GdmSessionRelay: obj_path=%s interface=%s method=%s",
                  dbus_path      ? dbus_path      : "(null)",
                  dbus_interface ? dbus_interface : "(null)",
                  dbus_message   ? dbus_message   : "(null)");
@@ -697,7 +697,7 @@ connection_filter_function (DBusConnection *connection,
         if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")
             && strcmp (dbus_path, DBUS_PATH_LOCAL) == 0) {
 
-                g_debug ("Disconnected");
+                g_debug ("GdmSessionRelay: Disconnected");
 
                 dbus_connection_unref (connection);
                 session_relay->priv->session_connection = NULL;
@@ -732,7 +732,7 @@ handle_connection (DBusServer      *server,
 {
         GdmSessionRelay *session_relay = GDM_SESSION_RELAY (user_data);
 
-        g_debug ("Handling new connection");
+        g_debug ("GdmSessionRelay: Handling new connection");
 
         g_assert (session_relay->priv->session_connection == NULL);
 
@@ -746,7 +746,7 @@ handle_connection (DBusServer      *server,
                 dbus_connection_ref (new_connection);
                 dbus_connection_setup_with_g_main (new_connection, NULL);
 
-                g_debug ("session connection is %p", new_connection);
+                g_debug ("GdmSessionRelay: session connection is %p", new_connection);
 
                 dbus_connection_add_filter (new_connection,
                                             connection_filter_function,
@@ -777,7 +777,7 @@ gdm_session_relay_start (GdmSessionRelay *session_relay)
 
         ret = FALSE;
 
-        g_debug ("Creating D-Bus relay for session");
+        g_debug ("GdmSessionRelay: Creating D-Bus relay for session");
 
         address = generate_address ();
 
@@ -802,7 +802,7 @@ gdm_session_relay_start (GdmSessionRelay *session_relay)
         g_free (session_relay->priv->server_address);
         session_relay->priv->server_address = dbus_server_get_address (session_relay->priv->server);
 
-        g_debug ("D-Bus relay listening on %s", session_relay->priv->server_address);
+        g_debug ("GdmSessionRelay: D-Bus relay listening on %s", session_relay->priv->server_address);
 
  out:
 
@@ -816,7 +816,7 @@ gdm_session_relay_stop (GdmSessionRelay *session_relay)
 
         ret = FALSE;
 
-        g_debug ("Stopping session relay...");
+        g_debug ("GdmSessionRelay: Stopping session relay...");
 
         return ret;
 }

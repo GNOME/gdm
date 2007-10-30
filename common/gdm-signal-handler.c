@@ -103,15 +103,11 @@ signal_io_watch (GIOChannel       *ioc,
         gsize    bytes_read;
         int      i;
 
-        g_debug ("SIGNAL");
-
         block_signals_push ();
 
         g_io_channel_read_chars (ioc, buf, sizeof (buf), &bytes_read, NULL);
 
         is_fatal = FALSE;
-
-        g_debug ("Read %d chars", (int)bytes_read);
 
         for (i = 0; i < bytes_read; i++) {
                 int     signum;
@@ -120,17 +116,17 @@ signal_io_watch (GIOChannel       *ioc,
 
                 signum = (gint32)buf[i];
 
-                g_debug ("handling signal %d", signum);
+                g_debug ("GdmSignalHandler: handling signal %d", signum);
                 handlers = g_hash_table_lookup (handler->priv->lookup, GINT_TO_POINTER (signum));
 
-                g_debug ("Found %u callbacks", g_slist_length (handlers));
+                g_debug ("GdmSignalHandler: Found %u callbacks", g_slist_length (handlers));
                 for (l = handlers; l != NULL; l = l->next) {
                         gboolean      res;
                         CallbackData *data;
 
                         data = g_hash_table_lookup (handler->priv->id_lookup, l->data);
                         if (data != NULL) {
-                                g_debug ("running %d handler: %p", signum, data->func);
+                                g_debug ("GdmSignalHandler: running %d handler: %p", signum, data->func);
                                 res = data->func (signum, data->data);
                                 if (! res) {
                                         is_fatal = TRUE;
@@ -142,12 +138,12 @@ signal_io_watch (GIOChannel       *ioc,
         block_signals_pop ();
 
         if (is_fatal) {
-                g_debug ("Caught termination signal - exiting main loop");
+                g_debug ("GdmSignalHandler: Caught termination signal - exiting main loop");
                 g_main_loop_quit (handler->priv->main_loop);
                 return FALSE;
         }
 
-        g_debug ("Done handling signals");
+        g_debug ("GdmSignalHandler: Done handling signals");
 
         return TRUE;
 }
@@ -265,7 +261,7 @@ catch_signal (GdmSignalHandler *handler,
         struct sigaction  action;
         struct sigaction *old_action;
 
-        g_debug ("Registering for %d signals", signal_number);
+        g_debug ("GdmSignalHandler: Registering for %d signals", signal_number);
 
         action.sa_handler = signal_handler;
         sigemptyset (&action.sa_mask);
@@ -286,7 +282,7 @@ uncatch_signal (GdmSignalHandler *handler,
 {
         struct sigaction *old_action;
 
-        g_debug ("Unregistering for %d signals", signal_number);
+        g_debug ("GdmSignalHandler: Unregistering for %d signals", signal_number);
 
         old_action = g_hash_table_lookup (handler->priv->action_lookup,
                                           GINT_TO_POINTER (signal_number));
@@ -315,7 +311,7 @@ gdm_signal_handler_add (GdmSignalHandler    *handler,
         cdata->data = data;
         cdata->id = handler->priv->next_id++;
 
-        g_debug ("Adding handler %u: signum=%d %p", cdata->id, cdata->signal_number, cdata->func);
+        g_debug ("GdmSignalHandler: Adding handler %u: signum=%d %p", cdata->id, cdata->signal_number, cdata->func);
 
         if (g_hash_table_lookup (handler->priv->action_lookup, GINT_TO_POINTER (signal_number)) == NULL) {
                 catch_signal (handler, signal_number);
@@ -352,7 +348,7 @@ gdm_signal_handler_remove_and_free_data (GdmSignalHandler *handler,
                 uncatch_signal (handler, cdata->signal_number);
         }
 
-        g_debug ("Removing handler %u: signum=%d %p", cdata->signal_number, cdata->id, cdata->func);
+        g_debug ("GdmSignalHandler: Removing handler %u: signum=%d %p", cdata->signal_number, cdata->id, cdata->func);
         /* put changed list back in */
         g_hash_table_insert (handler->priv->lookup, GINT_TO_POINTER (cdata->signal_number), list);
 
@@ -487,7 +483,7 @@ gdm_signal_handler_finalize (GObject *object)
 
         handler = GDM_SIGNAL_HANDLER (object);
 
-        g_debug ("Finalizing signal handler");
+        g_debug ("GdmSignalHandler: Finalizing signal handler");
 
         g_return_if_fail (handler->priv != NULL);
         for (l = g_hash_table_get_values (handler->priv->lookup);

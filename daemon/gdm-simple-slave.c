@@ -93,7 +93,7 @@ static void
 on_session_started (GdmSession       *session,
                     GdmSimpleSlave   *slave)
 {
-        g_debug ("session started");
+        g_debug ("GdmSimpleSlave: session started");
 
         /* FIXME: should we do something here? */
 }
@@ -103,7 +103,7 @@ on_session_exited (GdmSession     *session,
                    int             exit_code,
                    GdmSimpleSlave *slave)
 {
-        g_debug ("session exited with code %d\n", exit_code);
+        g_debug ("GdmSimpleSlave: session exited with code %d\n", exit_code);
 
         gdm_slave_stopped (GDM_SLAVE (slave));
 }
@@ -113,7 +113,7 @@ on_session_died (GdmSession     *session,
                  int             signal_number,
                  GdmSimpleSlave *slave)
 {
-        g_debug ("session died with signal %d, (%s)",
+        g_debug ("GdmSimpleSlave: session died with signal %d, (%s)",
                  signal_number,
                  g_strsignal (signal_number));
 
@@ -190,7 +190,7 @@ on_session_info (GdmSession     *session,
                  const char     *text,
                  GdmSimpleSlave *slave)
 {
-        g_debug ("Info: %s", text);
+        g_debug ("GdmSimpleSlave: Info: %s", text);
         gdm_greeter_server_info (slave->priv->greeter_server, text);
 }
 
@@ -199,7 +199,7 @@ on_session_problem (GdmSession     *session,
                     const char     *text,
                     GdmSimpleSlave *slave)
 {
-        g_debug ("Problem: %s", text);
+        g_debug ("GdmSimpleSlave: Problem: %s", text);
         gdm_greeter_server_problem (slave->priv->greeter_server, text);
 }
 
@@ -209,7 +209,7 @@ on_session_info_query (GdmSession     *session,
                        GdmSimpleSlave *slave)
 {
 
-        g_debug ("Info query: %s", text);
+        g_debug ("GdmSimpleSlave: Info query: %s", text);
         gdm_greeter_server_info_query (slave->priv->greeter_server, text);
 }
 
@@ -218,7 +218,7 @@ on_session_secret_info_query (GdmSession     *session,
                               const char     *text,
                               GdmSimpleSlave *slave)
 {
-        g_debug ("Secret info query: %s", text);
+        g_debug ("GdmSimpleSlave: Secret info query: %s", text);
         gdm_greeter_server_secret_info_query (slave->priv->greeter_server, text);
 }
 
@@ -228,7 +228,7 @@ on_session_opened (GdmSession     *session,
 {
         gboolean res;
 
-        g_debug ("session opened");
+        g_debug ("GdmSimpleSlave: session opened");
         res = gdm_greeter_server_ready (slave->priv->greeter_server);
         if (! res) {
                 g_warning ("Unable to send ready");
@@ -240,7 +240,7 @@ on_session_selected_user_changed (GdmSession     *session,
                                   const char     *text,
                                   GdmSimpleSlave *slave)
 {
-        g_debug ("Selected user changed: %s", text);
+        g_debug ("GdmSimpleSlave: Selected user changed: %s", text);
 
         gdm_greeter_server_selected_user_changed (slave->priv->greeter_server, text);
 }
@@ -254,7 +254,7 @@ create_new_session (GdmSimpleSlave *slave)
         char          *display_hostname;
         char          *display_device;
 
-        g_debug ("Creating new session");
+        g_debug ("GdmSimpleSlave: Creating new session");
 
         g_object_get (slave,
                       "display-name", &display_name,
@@ -338,21 +338,21 @@ static void
 on_greeter_start (GdmGreeterSession *greeter,
                   GdmSimpleSlave    *slave)
 {
-        g_debug ("Greeter started");
+        g_debug ("GdmSimpleSlave: Greeter started");
 }
 
 static void
 on_greeter_stop (GdmGreeterSession *greeter,
                  GdmSimpleSlave    *slave)
 {
-        g_debug ("Greeter stopped");
+        g_debug ("GdmSimpleSlave: Greeter stopped");
 }
 
 static void
 on_greeter_begin_verification (GdmGreeterServer *greeter_server,
                                GdmSimpleSlave   *slave)
 {
-        g_debug ("begin verification");
+        g_debug ("GdmSimpleSlave: begin verification");
         gdm_session_begin_verification (GDM_SESSION (slave->priv->session));
 }
 
@@ -361,7 +361,7 @@ on_greeter_begin_verification_for_user (GdmGreeterServer *greeter_server,
                                         const char       *username,
                                         GdmSimpleSlave   *slave)
 {
-        g_debug ("begin verification");
+        g_debug ("GdmSimpleSlave: begin verification");
         gdm_session_begin_verification_for_user (GDM_SESSION (slave->priv->session),
                                                  username);
 }
@@ -395,14 +395,14 @@ on_greeter_user_selected (GdmGreeterServer *greeter_server,
                           const char       *text,
                           GdmSimpleSlave   *slave)
 {
-        g_debug ("Greeter user selected");
+        g_debug ("GdmSimpleSlave: Greeter user selected");
 }
 
 static void
 on_greeter_cancel (GdmGreeterServer *greeter_server,
                    GdmSimpleSlave   *slave)
 {
-        g_debug ("Greeter cancelled");
+        g_debug ("GdmSimpleSlave: Greeter cancelled");
 
         if (slave->priv->session != NULL) {
                 gdm_session_close (GDM_SESSION (slave->priv->session));
@@ -420,7 +420,7 @@ on_greeter_connected (GdmGreeterServer *greeter_server,
 {
         gboolean display_is_local;
 
-        g_debug ("Greeter started");
+        g_debug ("GdmSimpleSlave: Greeter started");
 
         gdm_session_open (GDM_SESSION (slave->priv->session));
 
@@ -452,7 +452,7 @@ run_greeter (GdmSimpleSlave *slave)
         char          *auth_file;
         char          *address;
 
-        g_debug ("Running greeter");
+        g_debug ("GdmSimpleSlave: Running greeter");
 
         display_is_local = FALSE;
         display_id = NULL;
@@ -469,7 +469,7 @@ run_greeter (GdmSimpleSlave *slave)
                       "display-x11-authority-file", &auth_file,
                       NULL);
 
-        g_debug ("Creating greeter for %s %s", display_name, display_hostname);
+        g_debug ("GdmSimpleSlave: Creating greeter for %s %s", display_name, display_hostname);
 
         if (slave->priv->server != NULL) {
                 display_device = gdm_server_get_display_device (slave->priv->server);
@@ -524,7 +524,7 @@ run_greeter (GdmSimpleSlave *slave)
 
         address = gdm_greeter_server_get_address (slave->priv->greeter_server);
 
-        g_debug ("Creating greeter on %s %s %s", display_name, display_device, display_hostname);
+        g_debug ("GdmSimpleSlave: Creating greeter on %s %s %s", display_name, display_device, display_hostname);
         slave->priv->greeter = gdm_greeter_session_new (display_name,
                                                         display_device,
                                                         display_hostname,
@@ -616,7 +616,7 @@ gdm_simple_slave_run (GdmSimpleSlave *slave)
                         exit (1);
                 }
 
-                g_debug ("Started X server");
+                g_debug ("GdmSimpleSlave: Started X server");
         } else {
                 g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
         }
@@ -643,7 +643,7 @@ gdm_simple_slave_stop (GdmSlave *slave)
 {
         gboolean res;
 
-        g_debug ("Stopping simple_slave");
+        g_debug ("GdmSimpleSlave: Stopping simple_slave");
 
         res = GDM_SLAVE_CLASS (gdm_simple_slave_parent_class)->stop (slave);
 

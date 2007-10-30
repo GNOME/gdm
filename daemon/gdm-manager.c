@@ -172,7 +172,7 @@ make_global_cookie (GdmManager *manager)
 void
 gdm_manager_start (GdmManager *manager)
 {
-        g_debug ("GDM starting to manage");
+        g_debug ("GdmManager: GDM starting to manage");
 
         if (! manager->priv->wait_for_go) {
                 gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
@@ -181,7 +181,7 @@ gdm_manager_start (GdmManager *manager)
         /* Accept remote connections */
         if (manager->priv->xdmcp_enabled && ! manager->priv->wait_for_go) {
                 if (manager->priv->xdmcp_factory != NULL) {
-                        g_debug ("Accepting XDMCP connections...");
+                        g_debug ("GdmManager: Accepting XDMCP connections...");
                         gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
                 }
         }
@@ -200,7 +200,7 @@ gdm_manager_set_wait_for_go (GdmManager *manager,
                         gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
 
                         if (manager->priv->xdmcp_enabled && manager->priv->xdmcp_factory != NULL) {
-                                g_debug ("Accepting XDMCP connections...");
+                                g_debug ("GdmManager: Accepting XDMCP connections...");
                                 gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
                         }
                 }
@@ -240,7 +240,7 @@ remove_displays_for_connection (GdmManager *manager,
         data.service_name = service_name;
         data.manager = manager;
 
-        g_debug ("Removing display for service name: %s", service_name);
+        g_debug ("GdmManager: Removing display for service name: %s", service_name);
 
         gdm_display_store_foreach_remove (manager->priv->display_store,
                                           (GdmDisplayStoreFunc)remove_display_for_connection,
@@ -258,7 +258,7 @@ bus_name_owner_changed (DBusGProxy  *bus_proxy,
                 remove_displays_for_connection (manager, old_service_name);
         }
 
-        g_debug ("NameOwnerChanged: service_name='%s', old_service_name='%s' new_service_name='%s'",
+        g_debug ("GdmManager: NameOwnerChanged: service_name='%s', old_service_name='%s' new_service_name='%s'",
                    service_name, old_service_name, new_service_name);
 }
 

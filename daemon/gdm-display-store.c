@@ -68,7 +68,7 @@ gdm_display_store_error_quark (void)
 void
 gdm_display_store_clear (GdmDisplayStore    *store)
 {
-        g_debug ("Clearing display store");
+        g_debug ("GdmDisplayStore: Clearing display store");
         g_hash_table_remove_all (store->priv->displays);
 }
 
@@ -76,7 +76,7 @@ gboolean
 gdm_display_store_remove (GdmDisplayStore    *store,
                           GdmDisplay         *display)
 {
-        g_warning ("Implement me");
+        g_warning ("GdmDisplayStore: Implement me");
         return FALSE;
 }
 
@@ -137,7 +137,7 @@ gdm_display_store_add (GdmDisplayStore *store,
 
         gdm_display_get_id (display, &id, NULL);
 
-        g_debug ("Adding display %s to store", id);
+        g_debug ("GdmDisplayStore: Adding display %s to store", id);
 
         g_hash_table_insert (store->priv->displays,
                              id,
@@ -178,7 +178,7 @@ gdm_display_store_class_init (GdmDisplayStoreClass *klass)
 static void
 display_unref (GdmDisplay *display)
 {
-        g_debug ("Unreffing display: %p", display);
+        g_debug ("GdmDisplayStore: Unreffing display: %p", display);
         g_object_unref (display);
 }
 

@@ -79,7 +79,7 @@ create_display_for_device (GdmLocalDisplayFactory *factory,
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
-#if 0
+#if 1
         display = gdm_static_factory_display_new (0, store);
 #else
         display = gdm_static_display_new (0);
@@ -108,7 +108,7 @@ create_displays_for_pci_devices (GdmLocalDisplayFactory *factory)
         gboolean    res;
         int         i;
 
-        g_debug ("Getting PCI seat devices");
+        g_debug ("GdmLocalDisplayFactory: Getting PCI seat devices");
 
         key = "info.bus";
         value = "pci";
@@ -156,7 +156,7 @@ create_displays_for_pci_devices (GdmLocalDisplayFactory *factory)
                 }
 
                 if (class_val == SEAT_PCI_DEVICE_CLASS) {
-                        g_debug ("Found device: %s", devices [i]);
+                        g_debug ("GdmLocalDisplayFactory: Found device: %s", devices [i]);
                         create_display_for_device (factory, device_proxy);
                 }
 

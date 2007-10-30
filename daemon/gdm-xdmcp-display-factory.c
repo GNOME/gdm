@@ -379,7 +379,7 @@ debug_addrinfo (struct addrinfo *ai)
 {
         char *str;
         str = ai_flags_str (ai);
-        g_debug ("XDMCP: addrinfo family=%s type=%s proto=%s flags=%s",
+        g_debug ("GdmXdmcpDisplayFactory: addrinfo family=%s type=%s proto=%s flags=%s",
                  ai_family_str (ai),
                  ai_type_str (ai),
                  ai_protocol_str (ai),
@@ -452,7 +452,7 @@ do_bind (guint                     port,
                         host = NULL;
                         serv = NULL;
                         gdm_address_get_numeric_info (addr, &host, &serv);
-                        g_debug ("XDMCP: Attempting to bind to host %s port %s", host, serv);
+                        g_debug ("GdmXdmcpDisplayFactory: Attempting to bind to host %s port %s", host, serv);
                         g_free (host);
                         g_free (serv);
                         gdm_address_free (addr);
@@ -517,7 +517,7 @@ setup_multicast (GdmXdmcpDisplayFactory *factory)
                                 ifreq.ifr_name[sizeof (ifreq.ifr_name) - 1] = '\0';
 
                                 if (ioctl (socktemp, SIOCGIFFLAGS, &ifreq) < 0) {
-                                        g_debug ("XDMCP: Could not get SIOCGIFFLAGS for %s",
+                                        g_debug ("GdmXdmcpDisplayFactory: Could not get SIOCGIFFLAGS for %s",
                                                  ifr[i].ifr_name);
                                 }
 
@@ -568,7 +568,7 @@ open_port (GdmXdmcpDisplayFactory *factory)
 {
         struct sockaddr_storage serv_sa = { 0 };
 
-        g_debug ("XDMCP: Start up on host %s, port %d",
+        g_debug ("GdmXdmcpDisplayFactory: Start up on host %s, port %d",
                  factory->priv->hostname,
                  factory->priv->port);
 
@@ -777,7 +777,7 @@ gdm_xdmcp_send_willing (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("XDMCP: Sending WILLING to %s", host);
+        g_debug ("GdmXdmcpDisplayFactory: Sending WILLING to %s", host);
         g_free (host);
 
         if (last_willing == 0 || time (NULL) - 3 > last_willing) {
@@ -845,7 +845,7 @@ gdm_xdmcp_send_unwilling (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("XDMCP: Sending UNWILLING to %s", host);
+        g_debug ("GdmXdmcpDisplayFactory: Sending UNWILLING to %s", host);
         g_warning (_("Denied XDMCP query from host %s"), host);
         g_free (host);
 
@@ -947,14 +947,14 @@ gdm_xdmcp_send_forward_query (GdmXdmcpDisplayFactory  *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (id->chosen_host, &host, NULL);
-        g_debug ("XDMCP: Sending forward query to %s",
+        g_debug ("GdmXdmcpDisplayFactory: Sending forward query to %s",
                    host);
         g_free (host);
 
         host = NULL;
         serv = NULL;
         gdm_address_get_numeric_info (display_address, &host, &serv);
-        g_debug ("gdm_xdmcp_send_forward_query: Query contains %s:%s",
+        g_debug ("GdmXdmcpDisplayFactory: Query contains %s:%s",
                  host, serv);
         g_free (host);
         g_free (serv);
@@ -1166,7 +1166,7 @@ gdm_forward_query_dispose (GdmXdmcpDisplayFactory *factory,
 
                 host = NULL;
                 gdm_address_get_numeric_info (q->dsp_address, &host, NULL);
-                g_debug ("gdm_forward_query_dispose: Disposing %s", host);
+                g_debug ("GdmXdmcpDisplayFactory: Disposing %s", host);
                 g_free (host);
         }
 
@@ -1252,7 +1252,7 @@ gdm_forward_query_lookup (GdmXdmcpDisplayFactory *factory,
                 serv = NULL;
                 gdm_address_get_numeric_info (q->dsp_address, &host, &serv);
 
-                g_debug ("gdm_forward_query_lookup: comparing %s:%s", host, serv);
+                g_debug ("GdmXdmcpDisplayFactory: comparing %s:%s", host, serv);
                 if (gdm_address_equal (q->dsp_address, address)) {
                         ret = q;
                         g_free (host);
@@ -1261,7 +1261,7 @@ gdm_forward_query_lookup (GdmXdmcpDisplayFactory *factory,
                 }
 
                 if (q->acctime > 0 &&  curtime > q->acctime + GDM_FORWARD_QUERY_TIMEOUT) {
-                        g_debug ("gdm_forward_query_lookup: Disposing stale forward query from %s:%s",
+                        g_debug ("GdmXdmcpDisplayFactory: Disposing stale forward query from %s:%s",
                                  host, serv);
 
                         gdm_forward_query_dispose (factory, q);
@@ -1278,7 +1278,7 @@ gdm_forward_query_lookup (GdmXdmcpDisplayFactory *factory,
 
                 host = NULL;
                 gdm_address_get_numeric_info (address, &host, NULL);
-                g_debug ("gdm_forward_query_lookup: Host %s not found",
+                g_debug ("GdmXdmcpDisplayFactory: Host %s not found",
                          host);
                 g_free (host);
         }
@@ -1452,7 +1452,7 @@ gdm_xdmcp_handle_forward_query (GdmXdmcpDisplayFactory *factory,
         for (i = 0 ; i < clnt_authlist.length ; i++) {
                 char *s = g_strndup ((char *) clnt_authlist.data[i].data,
                                      clnt_authlist.length);
-                g_debug ("gdm_xdmcp_handle_forward_query: authlist: %s", s);
+                g_debug ("GdmXdmcpDisplayFactory: authlist: %s", s);
                 g_free (s);
 
                 explen += 2 + clnt_authlist.data[i].length;
@@ -1476,7 +1476,7 @@ gdm_xdmcp_handle_forward_query (GdmXdmcpDisplayFactory *factory,
         host = NULL;
         serv = NULL;
         gdm_address_get_numeric_info (disp_address, &host, &serv);
-        g_debug ("gdm_xdmcp_handle_forward_query: Got FORWARD_QUERY for display: %s, port %s",
+        g_debug ("GdmXdmcpDisplayFactory: Got FORWARD_QUERY for display: %s, port %s",
                  host, serv);
         g_free (host);
         g_free (serv);
@@ -1515,7 +1515,7 @@ gdm_xdmcp_really_send_managed_forward (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("XDMCP: Sending MANAGED_FORWARD to %s", host);
+        g_debug ("GdmXdmcpDisplayFactory: Sending MANAGED_FORWARD to %s", host);
         g_free (host);
 
         set_address_for_request (origin, &addr);
@@ -1596,7 +1596,7 @@ gdm_xdmcp_send_got_managed_forward (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("XDMCP: Sending GOT_MANAGED_FORWARD to %s", host);
+        g_debug ("GdmXdmcpDisplayFactory: Sending GOT_MANAGED_FORWARD to %s", host);
         g_free (host);
 
         set_address_for_request (origin, &addr);
@@ -1730,7 +1730,7 @@ display_dispose_check (GdmXdmcpDisplayFactory *factory,
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
-        g_debug ("display_dispose_check (%s:%d)", hostname, display_num);
+        g_debug ("GdmXdmcpDisplayFactory: display_dispose_check (%s:%d)", hostname, display_num);
 
         data = g_new0 (RemoveHostData, 1);
         data->hostname = hostname;
@@ -1757,7 +1757,7 @@ gdm_xdmcp_send_decline (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("XMDCP: Sending DECLINE to %s", host);
+        g_debug ("GdmXdmcpDisplayFactory: Sending DECLINE to %s", host);
         g_free (host);
 
         authentype.data   = (CARD8 *) 0;
@@ -1803,7 +1803,7 @@ gdm_xdmcp_display_alloc (GdmXdmcpDisplayFactory *factory,
         GdmDisplay      *display;
         GdmDisplayStore *store;
 
-        g_debug ("Creating xdmcp display for %s:%d", hostname, displaynum);
+        g_debug ("GdmXdmcpDisplayFactory: Creating xdmcp display for %s:%d", hostname, displaynum);
 
         display = gdm_xdmcp_display_new (hostname,
                                          displaynum,
@@ -1862,7 +1862,7 @@ gdm_xdmcp_send_accept (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("XDMCP: Sending ACCEPT to %s with SessionID=%ld",
+        g_debug ("GdmXdmcpDisplayFactory: Sending ACCEPT to %s with SessionID=%ld",
                  host,
                  (long)session_id);
         g_free (host);
@@ -1891,7 +1891,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
 
         hostname = NULL;
         gdm_address_get_numeric_info (address, &hostname, NULL);
-        g_debug ("gdm_xdmcp_handle_request: Got REQUEST from %s", hostname);
+        g_debug ("GdmXdmcpDisplayFactory: Got REQUEST from %s", hostname);
 
         /* Check with tcp_wrappers if client is allowed to access */
         if (! gdm_xdmcp_host_allow (address)) {
@@ -2007,7 +2007,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
 
         {
                 char *s = g_strndup ((char *) clnt_manufacturer.data, clnt_manufacturer.length);
-                g_debug ("gdm_xdmcp_handle_request: xdmcp_pending=%d, MaxPending=%d, xdmcp_sessions=%d, MaxSessions=%d, ManufacturerID=%s",
+                g_debug ("GdmXdmcpDisplayFactory: xdmcp_pending=%d, MaxPending=%d, xdmcp_sessions=%d, MaxSessions=%d, ManufacturerID=%s",
                          factory->priv->num_pending_sessions,
                          factory->priv->max_pending_displays,
                          factory->priv->num_sessions,
@@ -2030,7 +2030,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                 display_dispose_check (factory, hostname, clnt_dspnum);
 
                 if (factory->priv->num_pending_sessions >= factory->priv->max_pending_displays) {
-                        g_debug ("gdm_xdmcp_handle_request: maximum pending");
+                        g_debug ("GdmXdmcpDisplayFactory: maximum pending");
                         /* Don't translate, this goes over the wire to servers where we
                          * don't know the charset or language, so it must be ascii */
                         gdm_xdmcp_send_decline (factory, address, "Maximum pending servers");
@@ -2078,7 +2078,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                 }
 
                                 /* sanity check cookie */
-                                g_debug ("Original cookie len:%d '%s'; Reencoded cookie len:%d '%s'",
+                                g_debug ("GdmXdmcpDisplayFactory: Original cookie len:%d '%s'; Reencoded cookie len:%d '%s'",
                                          (int) cookie->len,
                                          cookie->str,
                                          (int) test_cookie->len,
@@ -2087,8 +2087,8 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                 g_assert (strcmp (test_cookie->str, cookie->str) == 0);
                                 g_string_free (test_cookie, TRUE);
 
-                                g_debug ("Sending authorization key for display %s", cookie->str);
-                                g_debug ("Decoded cookie len %d", (int) binary_cookie->len);
+                                g_debug ("GdmXdmcpDisplayFactory: Sending authorization key for display %s", cookie->str);
+                                g_debug ("GdmXdmcpDisplayFactory: Decoded cookie len %d", (int) binary_cookie->len);
 
                                 session_number = gdm_xdmcp_display_get_session_number (GDM_XDMCP_DISPLAY (display));
 
@@ -2132,7 +2132,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                                 address,
                                                 "Maximum number of open sessions reached");
                 } else {
-                        g_debug ("Maximum number of open XDMCP sessions from host %s reached",
+                        g_debug ("GdmXdmcpDisplayFactory: Maximum number of open XDMCP sessions from host %s reached",
                                  hostname);
                         gdm_xdmcp_send_decline (factory,
                                                 address,
@@ -2200,7 +2200,7 @@ gdm_xdmcp_send_failed (GdmXdmcpDisplayFactory *factory,
         XdmcpHeader header;
         ARRAY8      status;
 
-        g_debug ("XDMCP: Sending FAILED to %ld", (long)sessid);
+        g_debug ("GdmXdmcpDisplayFactory: Sending FAILED to %ld", (long)sessid);
 
         /*
          * Don't translate, this goes over the wire to servers where we
@@ -2231,7 +2231,7 @@ gdm_xdmcp_send_refuse (GdmXdmcpDisplayFactory *factory,
         XdmcpHeader      header;
         GdmForwardQuery *fq;
 
-        g_debug ("XDMCP: Sending REFUSE to %ld",
+        g_debug ("GdmXdmcpDisplayFactory: Sending REFUSE to %ld",
                  (long)sessid);
 
         header.version = XDM_PROTOCOL_VERSION;
@@ -2271,7 +2271,7 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("gdm_xdmcp_handle_manage: Got MANAGE from %s", host);
+        g_debug ("GdmXdmcpDisplayFactory: Got MANAGE from %s", host);
 
         /* Check with tcp_wrappers if client is allowed to access */
         if (! gdm_xdmcp_host_allow (address)) {
@@ -2305,7 +2305,7 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
 
         {
                 char *s = g_strndup ((char *) clnt_dspclass.data, clnt_dspclass.length);
-                g_debug ("gdm_xdmcp-handle_manage: Got display=%d, SessionID=%ld Class=%s from %s",
+                g_debug ("GdmXdmcpDisplayFactory: Got display=%d, SessionID=%ld Class=%s from %s",
                          (int)clnt_dspnum,
                          (long)clnt_sessid,
                          s != NULL ? s : "",
@@ -2321,7 +2321,7 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
 
                 name = NULL;
                 gdm_display_get_x11_display_name (display, &name, NULL);
-                g_debug ("gdm_xdmcp_handle_manage: Looked up %s", name);
+                g_debug ("GdmXdmcpDisplayFactory: Looked up %s", name);
                 g_free (name);
 
 #if 0
@@ -2362,14 +2362,14 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
                 /* Start greeter/session */
                 if (! gdm_display_manage (display)) {
                         gdm_xdmcp_send_failed (factory, address, clnt_sessid);
-                        g_debug ("Failed to manage display");
+                        g_debug ("GdmXdmcpDisplayFactory: Failed to manage display");
                 }
         } else if (display != NULL &&
                    gdm_display_get_status (display) == GDM_DISPLAY_MANAGED) {
-                g_debug ("gdm_xdmcp_handle_manage: Session id %ld already managed",
+                g_debug ("GdmXdmcpDisplayFactory: Session id %ld already managed",
                          (long)clnt_sessid);
         } else {
-                g_warning ("gdm_xdmcp_handle_manage: Failed to look up session id %ld",
+                g_warning ("GdmXdmcpDisplayFactory: Failed to look up session id %ld",
                            (long)clnt_sessid);
                 gdm_xdmcp_send_refuse (factory, address, clnt_sessid);
         }
@@ -2390,7 +2390,7 @@ gdm_xdmcp_handle_managed_forward (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("gdm_xdmcp_handle_managed_forward: Got MANAGED_FORWARD from %s",
+        g_debug ("GdmXdmcpDisplayFactory: Got MANAGED_FORWARD from %s",
                    host);
 
         /* Check with tcp_wrappers if client is allowed to access */
@@ -2445,7 +2445,7 @@ gdm_xdmcp_handle_got_managed_forward (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("gdm_xdmcp_handle_got_managed_forward: Got MANAGED_FORWARD from %s",
+        g_debug ("GdmXdmcpDisplayFactory: Got MANAGED_FORWARD from %s",
                    host);
 
         if (! gdm_xdmcp_host_allow (address)) {
@@ -2504,7 +2504,7 @@ gdm_xdmcp_send_alive (GdmXdmcpDisplayFactory *factory,
                 }
         }
 
-        g_debug ("XDMCP: Sending ALIVE to %ld (running %d, sessid %ld)",
+        g_debug ("GdmXdmcpDisplayFactory: Sending ALIVE to %ld (running %d, sessid %ld)",
                  (long)sessid,
                  send_running,
                  (long)send_sessid);
@@ -2534,7 +2534,7 @@ gdm_xdmcp_handle_keepalive (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("XDMCP: Got KEEPALIVE from %s", host);
+        g_debug ("GdmXdmcpDisplayFactory: Got KEEPALIVE from %s", host);
 
         /* Check with tcp_wrappers if client is allowed to access */
         if (! gdm_xdmcp_host_allow (address)) {
@@ -2612,7 +2612,7 @@ decode_packet (GIOChannel             *source,
         char                   *port;
         int                     res;
 
-        g_debug ("decode_packet: GIOCondition %d", (int)cond);
+        g_debug ("GdmXdmcpDisplayFactory: decode_packet: GIOCondition %d", (int)cond);
 
         if ( ! (cond & G_IO_IN)) {
                 return TRUE;
@@ -2621,13 +2621,13 @@ decode_packet (GIOChannel             *source,
         ss_len = sizeof (clnt_ss);
         res = XdmcpFill (factory->priv->socket_fd, &factory->priv->buf, (XdmcpNetaddr)&clnt_ss, &ss_len);
         if G_UNLIKELY (! res) {
-                g_debug (_("XMCP: Could not create XDMCP buffer!"));
+                g_debug ("GdmXdmcpDisplayFactory: Could not create XDMCP buffer!");
                 return TRUE;
         }
 
         res = XdmcpReadHeader (&factory->priv->buf, &header);
         if G_UNLIKELY (! res) {
-                g_warning (_("XDMCP: Could not read XDMCP header!"));
+                g_warning (_("GdmXdmcpDisplayFactory: Could not read XDMCP header!"));
                 return TRUE;
         }
 
@@ -2649,7 +2649,7 @@ decode_packet (GIOChannel             *source,
         port = NULL;
         gdm_address_get_numeric_info (address, &host, &port);
 
-        g_debug ("XDMCP: Received opcode %s from client %s : %s",
+        g_debug ("GdmXdmcpDisplayFactory: Received opcode %s from client %s : %s",
                  opcode_string (header.opcode),
                  host,
                  port);
@@ -2692,7 +2692,7 @@ decode_packet (GIOChannel             *source,
                 break;
 
         default:
-                g_debug ("XDMCP: Unknown opcode from client %s : %s",
+                g_debug ("GdmXdmcpDisplayFactory: Unknown opcode from client %s : %s",
                          host,
                          port);
 
@@ -2722,7 +2722,7 @@ gdm_xdmcp_display_factory_start (GdmDisplayFactory *base_factory)
                 return ret;
         }
 
-        g_debug ("XDMCP: Starting to listen on XDMCP port");
+        g_debug ("GdmXdmcpDisplayFactory: Starting to listen on XDMCP port");
 
         ioc = g_io_channel_unix_new (factory->priv->socket_fd);
 

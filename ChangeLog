@@ -1,5 +1,152 @@
 2007-10-30  William Jon McCann  <mccann@jhu.edu>
 
+	* common/gdm-signal-handler.c: (signal_io_watch), (catch_signal),
+	(uncatch_signal), (gdm_signal_handler_add),
+	(gdm_signal_handler_remove_and_free_data),
+	(gdm_signal_handler_finalize):
+	* daemon/gdm-display-store.c: (gdm_display_store_clear),
+	(gdm_display_store_remove), (gdm_display_store_add),
+	(display_unref):
+	* daemon/gdm-factory-slave.c: (on_greeter_start),
+	(on_greeter_stop), (on_session_info), (on_session_problem),
+	(on_session_info_query), (on_session_secret_info_query),
+	(on_session_opened), (on_session_user_verified),
+	(on_session_user_verification_error), (on_session_session_started),
+	(create_product_display), (on_session_relay_disconnected),
+	(on_session_relay_connected), (on_greeter_begin_verification),
+	(on_greeter_begin_verification_for_user), (on_greeter_answer),
+	(on_greeter_connected), (run_greeter), (idle_connect_to_display),
+	(server_ready_cb), (gdm_factory_slave_run),
+	(gdm_factory_slave_start), (gdm_factory_slave_stop),
+	(gdm_factory_slave_finalize):
+	* daemon/gdm-greeter-server.c: (send_dbus_message),
+	(send_dbus_string_signal), (send_dbus_void_signal),
+	(handle_begin_verification), (handle_begin_verification_for_user),
+	(handle_answer_query), (handle_select_session),
+	(handle_select_hostname), (handle_select_language),
+	(handle_select_user), (do_introspect),
+	(connection_filter_function), (handle_connection),
+	(gdm_greeter_server_start), (gdm_greeter_server_stop):
+	* daemon/gdm-greeter-session.c: (listify_hash),
+	(open_greeter_session), (greeter_session_child_watch),
+	(spawn_child_setup), (start_dbus_daemon),
+	(gdm_greeter_session_spawn), (gdm_greeter_session_start),
+	(wait_on_child), (greeter_session_died),
+	(gdm_greeter_session_stop):
+	* daemon/gdm-local-display-factory.c: (create_display_for_device),
+	(create_displays_for_pci_devices):
+	* daemon/gdm-manager.c: (gdm_manager_start),
+	(gdm_manager_set_wait_for_go), (remove_displays_for_connection),
+	(bus_name_owner_changed):
+	* daemon/gdm-product-display.c:
+	(gdm_product_display_get_relay_address):
+	* daemon/gdm-product-slave.c: (on_session_opened),
+	(on_session_started), (on_session_exited), (on_session_died),
+	(gdm_product_slave_create_server), (on_session_user_verified),
+	(on_session_user_verification_error), (on_session_info),
+	(on_session_problem), (on_session_info_query),
+	(on_session_secret_info_query), (on_relay_begin_verification),
+	(on_relay_begin_verification_for_user), (on_relay_answer),
+	(on_relay_session_selected), (on_relay_language_selected),
+	(on_relay_user_selected), (create_new_session),
+	(on_relay_cancelled), (session_relay_proxy_destroyed),
+	(get_relay_address), (connect_to_session_relay),
+	(gdm_product_slave_stop):
+	* daemon/gdm-server.c: (_gdm_server_query_ck_for_display_device),
+	(emit_ready_idle), (connect_to_parent), (change_user),
+	(server_child_setup), (server_child_watch), (gdm_server_spawn),
+	(wait_on_child), (server_died), (gdm_server_stop):
+	* daemon/gdm-session-direct.c: (send_dbus_string_signal),
+	(gdm_session_direct_handle_verified),
+	(gdm_session_direct_handle_verification_failed),
+	(gdm_session_direct_handle_username_changed),
+	(cancel_pending_query), (gdm_session_direct_handle_info_query),
+	(gdm_session_direct_handle_secret_info_query),
+	(gdm_session_direct_handle_info),
+	(gdm_session_direct_handle_problem),
+	(gdm_session_direct_handle_session_started),
+	(gdm_session_direct_handle_startup_failed),
+	(gdm_session_direct_handle_session_exited),
+	(gdm_session_direct_handle_session_died), (do_introspect),
+	(session_message_handler), (allow_user_function),
+	(handle_connection), (setup_server), (worker_stopped),
+	(worker_started), (worker_exited), (worker_died),
+	(gdm_session_direct_open), (send_begin_verification),
+	(send_begin_verification_for_user), (send_environment_variable),
+	(get_session_command_for_file), (gdm_session_direct_close),
+	(_gdm_session_direct_set_display_device),
+	(gdm_session_direct_dispose):
+	* daemon/gdm-session-relay.c: (send_dbus_message),
+	(send_dbus_string_signal), (send_dbus_void_signal),
+	(gdm_session_relay_begin_verification),
+	(gdm_session_relay_begin_verification_for_user),
+	(gdm_session_relay_answer_query), (handle_info_query),
+	(handle_secret_info_query), (handle_info), (handle_problem),
+	(handle_user_verified), (handle_user_verification_error),
+	(handle_session_started), (handle_session_stopped),
+	(handle_opened), (handle_reset), (do_introspect),
+	(session_relay_message_handler), (connection_filter_function),
+	(handle_connection), (gdm_session_relay_start),
+	(gdm_session_relay_stop):
+	* daemon/gdm-session-worker-job.c:
+	(session_worker_job_child_watch), (gdm_session_worker_job_spawn),
+	(gdm_session_worker_job_start), (wait_on_child),
+	(session_worker_job_died), (gdm_session_worker_job_stop):
+	* daemon/gdm-session-worker.c: (send_dbus_string_method),
+	(send_dbus_int_method), (send_user_verified),
+	(gdm_session_worker_get_username),
+	(gdm_session_worker_update_username), (send_question_method),
+	(gdm_session_worker_process_pam_message),
+	(gdm_session_worker_pam_new_messages_handler),
+	(gdm_session_worker_uninitialize_pam),
+	(gdm_session_worker_initialize_pam),
+	(gdm_session_worker_authenticate_user),
+	(gdm_session_worker_authorize_user),
+	(gdm_session_worker_verify_user), (session_worker_child_watch),
+	(gdm_session_worker_open_user_session), (gdm_session_worker_open),
+	(on_set_environment_variable), (on_start_program), (open_idle),
+	(on_begin_verification), (on_begin_verification_for_user),
+	(worker_dbus_filter_function), (gdm_session_worker_constructor):
+	* daemon/gdm-simple-slave.c: (on_session_started),
+	(on_session_exited), (on_session_died), (on_session_info),
+	(on_session_problem), (on_session_info_query),
+	(on_session_secret_info_query), (on_session_opened),
+	(on_session_selected_user_changed), (create_new_session),
+	(on_greeter_start), (on_greeter_stop),
+	(on_greeter_begin_verification),
+	(on_greeter_begin_verification_for_user),
+	(on_greeter_user_selected), (on_greeter_cancel),
+	(on_greeter_connected), (run_greeter), (gdm_simple_slave_run),
+	(gdm_simple_slave_stop):
+	* daemon/gdm-slave-proxy.c: (child_watch), (spawn_slave),
+	(gdm_slave_proxy_stop), (gdm_slave_proxy_dispose):
+	* daemon/gdm-slave.c: (listify_hash), (gdm_slave_run_script),
+	(set_local_auth), (gdm_slave_connect_to_x11_display),
+	(display_proxy_destroyed_cb), (gdm_slave_real_start),
+	(gdm_slave_real_stop), (gdm_slave_start), (gdm_slave_stop),
+	(gdm_slave_constructor):
+	* daemon/gdm-static-factory-display.c:
+	(gdm_static_factory_display_create_product_display):
+	* daemon/gdm-xdmcp-display-factory.c: (debug_addrinfo), (do_bind),
+	(setup_multicast), (open_port), (gdm_xdmcp_send_willing),
+	(gdm_xdmcp_send_unwilling), (gdm_xdmcp_send_forward_query),
+	(gdm_forward_query_dispose), (gdm_forward_query_lookup),
+	(gdm_xdmcp_handle_forward_query),
+	(gdm_xdmcp_really_send_managed_forward),
+	(gdm_xdmcp_send_got_managed_forward), (display_dispose_check),
+	(gdm_xdmcp_send_decline), (gdm_xdmcp_display_alloc),
+	(gdm_xdmcp_send_accept), (gdm_xdmcp_handle_request),
+	(gdm_xdmcp_send_failed), (gdm_xdmcp_send_refuse),
+	(gdm_xdmcp_handle_manage), (gdm_xdmcp_handle_managed_forward),
+	(gdm_xdmcp_handle_got_managed_forward), (gdm_xdmcp_send_alive),
+	(gdm_xdmcp_handle_keepalive), (decode_packet),
+	(gdm_xdmcp_display_factory_start):
+	* daemon/gdm-xdmcp-display.c: (gdm_xdmcp_display_create_authority),
+	(gdm_xdmcp_display_add_user_authorization):
+	Prefix debug messages with class name to make output easier to read.
+
+2007-10-30  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/gdm-session-direct.c: (stop_worker),
 	(gdm_session_direct_close):
 	Make a stop_worker function for symmetry.

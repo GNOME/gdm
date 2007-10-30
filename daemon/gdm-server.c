@@ -125,7 +125,7 @@ _gdm_server_query_ck_for_display_device (GdmServer *server)
         command = g_strdup_printf (LIBEXECDIR "/ck-get-x11-display-device --display %s",
                                    server->priv->display_name);
 
-        g_debug ("Running helper %s", command);
+        g_debug ("GdmServer: Running helper %s", command);
         out = NULL;
         res = g_spawn_command_line_sync (command,
                                          &out,
@@ -137,7 +137,7 @@ _gdm_server_query_ck_for_display_device (GdmServer *server)
                 g_error_free (error);
         } else {
                 out = g_strstrip (out);
-                g_debug ("Got tty: '%s'", out);
+                g_debug ("GdmServer: Got tty: '%s'", out);
         }
 
         g_free (command);
@@ -161,7 +161,7 @@ gdm_server_get_display_device (GdmServer *server)
 static gboolean
 emit_ready_idle (GdmServer *server)
 {
-        g_debug ("Got USR1 from X server - emitting READY");
+        g_debug ("GdmServer: Got USR1 from X server - emitting READY");
 
         g_signal_emit (server, signals[READY], 0);
         return FALSE;
@@ -218,7 +218,7 @@ connect_to_parent (GdmServer *server)
         int maxtries;
         int openretries;
 
-        g_debug ("gdm_server_start: Connecting to parent display \'%s\'",
+        g_debug ("GdmServer: Connecting to parent display \'%s\'",
                    d->parent_disp);
 
         d->parent_dsp = NULL;
@@ -231,7 +231,7 @@ connect_to_parent (GdmServer *server)
                 d->parent_dsp = XOpenDisplay (d->parent_disp);
 
                 if G_UNLIKELY (d->parent_dsp == NULL) {
-                        g_debug ("gdm_server_start: Sleeping %d on a retry", 1+openretries*2);
+                        g_debug ("GdmServer: Sleeping %d on a retry", 1+openretries*2);
                         gdm_sleep_no_signal (1+openretries*2);
                         openretries++;
                 }
@@ -361,7 +361,7 @@ change_user (GdmServer *server)
                 _exit (1);
         }
 
-        g_debug ("Changing (uid:gid) for child process to (%d:%d)",
+        g_debug ("GdmServer: Changing (uid:gid) for child process to (%d:%d)",
                  pwent->pw_uid,
                  pwent->pw_gid);
 
@@ -412,7 +412,7 @@ server_child_setup (GdmServer *server)
         /* Log all output from spawned programs to a file */
         temp = g_strconcat (server->priv->display_name, ".log", NULL);
         logfile = g_build_filename (server->priv->log_dir, temp, NULL);
-        g_debug ("Opening logfile for server %s", logfile);
+        g_debug ("GdmServer: Opening logfile for server %s", logfile);
 
         VE_IGNORE_EINTR (g_unlink (logfile));
         VE_IGNORE_EINTR (logfd = open (logfile, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644));
@@ -565,7 +565,7 @@ server_child_watch (GPid       pid,
                     int        status,
                     GdmServer *server)
 {
-        g_debug ("child (pid:%d) done (%s:%d)",
+        g_debug ("GdmServer: child (pid:%d) done (%s:%d)",
                  (int) pid,
                  WIFEXITED (status) ? "status"
                  : WIFSIGNALED (status) ? "signal"
@@ -613,7 +613,7 @@ gdm_server_spawn (GdmServer  *server,
         env = get_server_environment (server);
 
         freeme = g_strjoinv (" ", argv);
-        g_debug ("Starting X server process: %s", freeme);
+        g_debug ("GdmServer: Starting X server process: %s", freeme);
         g_free (freeme);
 
         error = NULL;
@@ -640,7 +640,7 @@ gdm_server_spawn (GdmServer  *server,
         g_ptr_array_foreach (env, (GFunc)g_free, NULL);
         g_ptr_array_free (env, TRUE);
 
-        g_debug ("Started X server process %d - waiting for READY", (int)server->priv->pid);
+        g_debug ("GdmServer: Started X server process %d - waiting for READY", (int)server->priv->pid);
 
         server->priv->child_watch_id = g_child_watch_add (server->priv->pid,
                                                           (GChildWatchFunc)server_child_watch,
@@ -679,7 +679,7 @@ wait_on_child (int pid)
                 } else if (errno == ECHILD) {
                         ; /* do nothing, child already reaped */
                 } else {
-                        g_debug ("waitpid () should not fail");
+                        g_debug ("GdmServer: waitpid () should not fail");
                 }
         }
 
@@ -691,11 +691,11 @@ server_died (GdmServer *server)
 {
         int exit_status;
 
-        g_debug ("Waiting on process %d", server->priv->pid);
+        g_debug ("GdmServer: Waiting on process %d", server->priv->pid);
         exit_status = wait_on_child (server->priv->pid);
 
         if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
-                g_debug ("Wait on child process failed");
+                g_debug ("GdmServer: Wait on child process failed");
         } else {
                 /* exited normally */
         }
@@ -709,7 +709,7 @@ server_died (GdmServer *server)
                 g_object_notify (G_OBJECT (server), "display-device");
         }
 
-        g_debug ("Server died");
+        g_debug ("GdmServer: Server died");
 }
 
 gboolean
@@ -725,7 +725,7 @@ gdm_server_stop (GdmServer *server)
                 server->priv->child_watch_id = 0;
         }
 
-        g_debug ("Stopping server");
+        g_debug ("GdmServer: Stopping server");
 
         gdm_signal_pid (server->priv->pid, SIGTERM);
         server_died (server);

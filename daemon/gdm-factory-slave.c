@@ -96,14 +96,14 @@ static void
 on_greeter_start (GdmGreeterSession *greeter,
                   GdmFactorySlave   *slave)
 {
-        g_debug ("Greeter started");
+        g_debug ("GdmFactorySlave: Greeter started");
 }
 
 static void
 on_greeter_stop (GdmGreeterSession *greeter,
                  GdmFactorySlave   *slave)
 {
-        g_debug ("Greeter stopped");
+        g_debug ("GdmFactorySlave: Greeter stopped");
 }
 
 static void
@@ -111,7 +111,7 @@ on_session_info (GdmSession      *session,
                  const char      *text,
                  GdmFactorySlave *slave)
 {
-        g_debug ("Info: %s", text);
+        g_debug ("GdmFactorySlave: Info: %s", text);
         gdm_greeter_server_info (slave->priv->greeter_server, text);
 }
 
@@ -120,7 +120,7 @@ on_session_problem (GdmSession      *session,
                     const char      *text,
                     GdmFactorySlave *slave)
 {
-        g_debug ("Problem: %s", text);
+        g_debug ("GdmFactorySlave: Problem: %s", text);
         gdm_greeter_server_problem (slave->priv->greeter_server, text);
 }
 
@@ -130,7 +130,7 @@ on_session_info_query (GdmSession      *session,
                        GdmFactorySlave *slave)
 {
 
-        g_debug ("Info query: %s", text);
+        g_debug ("GdmFactorySlave: Info query: %s", text);
         gdm_greeter_server_info_query (slave->priv->greeter_server, text);
 }
 
@@ -139,7 +139,7 @@ on_session_secret_info_query (GdmSession      *session,
                               const char      *text,
                               GdmFactorySlave *slave)
 {
-        g_debug ("Secret info query: %s", text);
+        g_debug ("GdmFactorySlave: Secret info query: %s", text);
         gdm_greeter_server_secret_info_query (slave->priv->greeter_server, text);
 }
 
@@ -147,7 +147,7 @@ static void
 on_session_opened (GdmSession      *session,
                    GdmFactorySlave *slave)
 {
-        g_debug (" session opened");
+        g_debug ("GdmFactorySlave:  session opened");
 
         gdm_greeter_server_ready (slave->priv->greeter_server);
 }
@@ -156,7 +156,7 @@ static void
 on_session_user_verified (GdmSession *session,
                                 GdmFactorySlave *slave)
 {
-        g_debug (" session user verified");
+        g_debug ("GdmFactorySlave:  session user verified");
 
         gdm_greeter_server_reset (slave->priv->greeter_server);
 }
@@ -184,7 +184,7 @@ on_session_user_verification_error (GdmSession      *session,
                                     const char      *message,
                                     GdmFactorySlave *slave)
 {
-        g_debug ("could not successfully authenticate user: %s",
+        g_debug ("GdmFactorySlave: could not successfully authenticate user: %s",
                  message);
 
         gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to authenticate user"));
@@ -196,7 +196,7 @@ static void
 on_session_session_started (GdmSession      *session,
                             GdmFactorySlave *slave)
 {
-        g_debug ("Relay session started");
+        g_debug ("GdmFactorySlave: Relay session started");
         gdm_greeter_server_reset (slave->priv->greeter_server);
 }
 
@@ -212,13 +212,13 @@ create_product_display (GdmFactorySlave *slave)
 
         ret = FALSE;
 
-        g_debug ("Create product display");
+        g_debug ("GdmFactorySlave: Create product display");
 
         g_object_get (slave,
                       "display-id", &display_id,
                       NULL);
 
-        g_debug ("Connecting to display %s", display_id);
+        g_debug ("GdmFactorySlave: Connecting to display %s", display_id);
         slave->priv->factory_display_proxy = dbus_g_proxy_new_for_name (slave->priv->connection,
                                                                         GDM_DBUS_NAME,
                                                                         display_id,
@@ -262,7 +262,7 @@ static void
 on_session_relay_disconnected (GdmSessionRelay *session,
                                GdmFactorySlave *slave)
 {
-        g_debug ("Relay disconnected");
+        g_debug ("GdmFactorySlave: Relay disconnected");
 
         /* FIXME: do some kind of loop detection */
         gdm_greeter_server_reset (slave->priv->greeter_server);
@@ -273,7 +273,7 @@ static void
 on_session_relay_connected (GdmSessionRelay *session,
                             GdmFactorySlave *slave)
 {
-        g_debug ("Relay Connected");
+        g_debug ("GdmFactorySlave: Relay Connected");
 
         gdm_session_open (GDM_SESSION (slave->priv->session));
 }
@@ -282,7 +282,7 @@ static void
 on_greeter_begin_verification (GdmGreeterServer *greeter_server,
                                GdmFactorySlave  *slave)
 {
-        g_debug ("begin verification");
+        g_debug ("GdmFactorySlave: begin verification");
 
         gdm_session_begin_verification (GDM_SESSION (slave->priv->session));
 }
@@ -292,7 +292,7 @@ on_greeter_begin_verification_for_user (GdmGreeterServer *greeter_server,
                                         const char       *username,
                                         GdmFactorySlave  *slave)
 {
-        g_debug ("begin verification for user");
+        g_debug ("GdmFactorySlave: begin verification for user");
 
         gdm_session_begin_verification_for_user (GDM_SESSION (slave->priv->session),
                                                  username);
@@ -303,7 +303,7 @@ on_greeter_answer (GdmGreeterServer *greeter_server,
                    const char       *text,
                    GdmFactorySlave  *slave)
 {
-        g_debug ("Greeter answer");
+        g_debug ("GdmFactorySlave: Greeter answer");
         gdm_session_answer_query (GDM_SESSION (slave->priv->session), text);
 }
 
@@ -342,7 +342,7 @@ static void
 on_greeter_connected (GdmGreeterServer *greeter_server,
                       GdmFactorySlave  *slave)
 {
-        g_debug ("Greeter started");
+        g_debug ("GdmFactorySlave: Greeter started");
 
         create_product_display (slave);
 }
@@ -365,7 +365,7 @@ run_greeter (GdmFactorySlave *slave)
         char          *auth_file;
         char          *address;
 
-        g_debug ("Running greeter");
+        g_debug ("GdmFactorySlave: Running greeter");
 
         display_is_local = FALSE;
         display_id = NULL;
@@ -428,7 +428,7 @@ run_greeter (GdmFactorySlave *slave)
 
         address = gdm_greeter_server_get_address (slave->priv->greeter_server);
 
-        g_debug ("Creating greeter on %s %s", display_name, display_device);
+        g_debug ("GdmFactorySlave: Creating greeter on %s %s", display_name, display_device);
         slave->priv->greeter = gdm_greeter_session_new (display_name,
                                                         display_device,
                                                         display_hostname,
@@ -463,7 +463,7 @@ idle_connect_to_display (GdmFactorySlave *slave)
 
         slave->priv->connection_attempts++;
 
-        g_debug ("Connect to display");
+        g_debug ("GdmFactorySlave: Connect to display");
 
         res = gdm_slave_connect_to_x11_display (GDM_SLAVE (slave));
         if (res) {
@@ -485,7 +485,7 @@ static void
 server_ready_cb (GdmServer *server,
                  GdmFactorySlave  *slave)
 {
-        g_debug ("Server ready");
+        g_debug ("GdmFactorySlave: Server ready");
 
         g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
 }
@@ -526,7 +526,7 @@ gdm_factory_slave_run (GdmFactorySlave *slave)
                         exit (1);
                 }
 
-                g_debug ("Started X server");
+                g_debug ("GdmFactorySlave: Started X server");
         } else {
                 g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
         }
@@ -544,7 +544,7 @@ gdm_factory_slave_start (GdmSlave *slave)
 
         ret = FALSE;
 
-        g_debug ("Starting factory slave");
+        g_debug ("GdmFactorySlave: Starting factory slave");
 
         res = GDM_SLAVE_CLASS (gdm_factory_slave_parent_class)->start (slave);
 
@@ -605,7 +605,7 @@ gdm_factory_slave_stop (GdmSlave *slave)
 {
         gboolean res;
 
-        g_debug ("Stopping factory_slave");
+        g_debug ("GdmFactorySlave: Stopping factory_slave");
 
         res = GDM_SLAVE_CLASS (gdm_factory_slave_parent_class)->stop (slave);
 
@@ -740,7 +740,7 @@ gdm_factory_slave_finalize (GObject *object)
 
         factory_slave = GDM_FACTORY_SLAVE (object);
 
-        g_debug ("Finalizing slave");
+        g_debug ("GdmFactorySlave: Finalizing slave");
 
         g_return_if_fail (factory_slave->priv != NULL);
 

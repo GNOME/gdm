@@ -139,7 +139,7 @@ static void
 on_session_opened (GdmSessionDirect      *session,
                    GdmProductSlave *slave)
 {
-        g_debug ("session opened");
+        g_debug ("GdmProductSlave: session opened");
 
         relay_session_opened (slave);
 }
@@ -159,7 +159,7 @@ on_session_started (GdmSessionDirect      *session,
                     GPid             pid,
                     GdmProductSlave *slave)
 {
-        g_debug ("session started on pid %d", (int) pid);
+        g_debug ("GdmProductSlave: session started on pid %d", (int) pid);
 
         relay_session_started (slave);
 
@@ -171,7 +171,7 @@ on_session_exited (GdmSessionDirect      *session,
                    int              exit_code,
                    GdmProductSlave *slave)
 {
-        g_debug ("session exited with code %d", exit_code);
+        g_debug ("GdmProductSlave: session exited with code %d", exit_code);
 
         gdm_slave_stopped (GDM_SLAVE (slave));
 }
@@ -181,7 +181,7 @@ on_session_died (GdmSessionDirect *session,
                  int         signal_number,
                  GdmProductSlave   *slave)
 {
-        g_debug ("session died with signal %d, (%s)",
+        g_debug ("GdmProductSlave: session died with signal %d, (%s)",
                  signal_number,
                  g_strsignal (signal_number));
 
@@ -304,7 +304,7 @@ gdm_product_slave_create_server (GdmProductSlave *slave)
                         exit (1);
                 }
 
-                g_debug ("Started X server");
+                g_debug ("GdmProductSlave: Started X server");
         } else {
                 g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
         }
@@ -321,7 +321,7 @@ on_session_user_verified (GdmSessionDirect      *session,
         GError  *error;
         gboolean res;
 
-        g_debug ("Session user verified");
+        g_debug ("GdmProductSlave: Session user verified");
 
         error = NULL;
         res = dbus_g_proxy_call (slave->priv->session_relay_proxy,
@@ -352,7 +352,7 @@ on_session_user_verification_error (GdmSessionDirect      *session,
 
         username = gdm_session_direct_get_username (session);
 
-        g_debug ("%s%scould not be successfully authenticated: %s\n",
+        g_debug ("GdmProductSlave: %s%scould not be successfully authenticated: %s\n",
                  username ? username : "",
                  username ? " " : "",
                  error->message);
@@ -380,7 +380,7 @@ on_session_info (GdmSessionDirect      *session,
         GError *error;
         gboolean res;
 
-        g_debug ("Info: %s", text);
+        g_debug ("GdmProductSlave: Info: %s", text);
 
         error = NULL;
         res = dbus_g_proxy_call (slave->priv->session_relay_proxy,
@@ -403,7 +403,7 @@ on_session_problem (GdmSessionDirect      *session,
         GError *error;
         gboolean res;
 
-        g_debug ("Problem: %s", text);
+        g_debug ("GdmProductSlave: Problem: %s", text);
 
         error = NULL;
         res = dbus_g_proxy_call (slave->priv->session_relay_proxy,
@@ -427,7 +427,7 @@ on_session_info_query (GdmSessionDirect      *session,
         GError  *error;
         gboolean res;
 
-        g_debug ("Info query: %s", text);
+        g_debug ("GdmProductSlave: Info query: %s", text);
 
         error = NULL;
         res = dbus_g_proxy_call (slave->priv->session_relay_proxy,
@@ -451,7 +451,7 @@ on_session_secret_info_query (GdmSessionDirect      *session,
         gboolean res;
 
 
-        g_debug ("Secret info query: %s", text);
+        g_debug ("GdmProductSlave: Secret info query: %s", text);
 
         error = NULL;
         res = dbus_g_proxy_call (slave->priv->session_relay_proxy,
@@ -472,7 +472,7 @@ on_relay_begin_verification (DBusGProxy *proxy,
 {
         GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
 
-        g_debug ("Relay BeginVerification");
+        g_debug ("GdmProductSlave: Relay BeginVerification");
 
         gdm_session_begin_verification (GDM_SESSION (slave->priv->session));
 }
@@ -484,7 +484,7 @@ on_relay_begin_verification_for_user (DBusGProxy *proxy,
 {
         GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
 
-        g_debug ("Relay BeginVerificationForUser");
+        g_debug ("GdmProductSlave: Relay BeginVerificationForUser");
 
         gdm_session_begin_verification_for_user (GDM_SESSION (slave->priv->session), username);
 }
@@ -496,7 +496,7 @@ on_relay_answer (DBusGProxy *proxy,
 {
         GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
 
-        g_debug ("Relay Answer");
+        g_debug ("GdmProductSlave: Relay Answer");
 
         gdm_session_answer_query (GDM_SESSION (slave->priv->session), text);
 }
@@ -508,7 +508,7 @@ on_relay_session_selected (DBusGProxy *proxy,
 {
         GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
 
-        g_debug ("Session: %s", text);
+        g_debug ("GdmProductSlave: Session: %s", text);
 
         g_free (slave->priv->selected_session);
         slave->priv->selected_session = g_strdup (text);
@@ -521,7 +521,7 @@ on_relay_language_selected (DBusGProxy *proxy,
 {
         GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
 
-        g_debug ("Language: %s", text);
+        g_debug ("GdmProductSlave: Language: %s", text);
 
         g_free (slave->priv->selected_language);
         slave->priv->selected_language = g_strdup (text);
@@ -542,7 +542,7 @@ on_relay_user_selected (DBusGProxy *proxy,
 {
         GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
 
-        g_debug ("User: %s", text);
+        g_debug ("GdmProductSlave: User: %s", text);
 
         g_free (slave->priv->selected_user);
         slave->priv->selected_user = g_strdup (text);
@@ -567,7 +567,7 @@ create_new_session (GdmProductSlave *slave)
         char          *display_hostname;
         char          *display_device;
 
-        g_debug ("Creating new session");
+        g_debug ("GdmProductSlave: Creating new session");
 
         g_object_get (slave,
                       "display-name", &display_name,
@@ -641,7 +641,7 @@ on_relay_cancelled (DBusGProxy *proxy,
 {
         GdmProductSlave *slave = GDM_PRODUCT_SLAVE (data);
 
-        g_debug ("Relay cancelled");
+        g_debug ("GdmProductSlave: Relay cancelled");
 
         if (slave->priv->session != NULL) {
                 gdm_session_close (GDM_SESSION (slave->priv->session));
@@ -655,7 +655,7 @@ static void
 session_relay_proxy_destroyed (GObject         *object,
                                GdmProductSlave *slave)
 {
-        g_debug ("Session server relay destroyed");
+        g_debug ("GdmProductSlave: Session server relay destroyed");
 
         slave->priv->session_relay_proxy = NULL;
 }
@@ -681,7 +681,7 @@ get_relay_address (GdmProductSlave *slave)
         } else {
                 g_free (slave->priv->relay_address);
                 slave->priv->relay_address = g_strdup (text);
-                g_debug ("Got relay address: %s", slave->priv->relay_address);
+                g_debug ("GdmProductSlave: Got relay address: %s", slave->priv->relay_address);
         }
 
         g_free (text);
@@ -695,7 +695,7 @@ connect_to_session_relay (GdmProductSlave *slave)
 
         get_relay_address (slave);
 
-        g_debug ("connecting to session relay address: %s", slave->priv->relay_address);
+        g_debug ("GdmProductSlave: connecting to session relay address: %s", slave->priv->relay_address);
 
         dbus_error_init (&error);
         connection = dbus_connection_open_private (slave->priv->relay_address, &error);
@@ -712,7 +712,7 @@ connect_to_session_relay (GdmProductSlave *slave)
                 exit (1);
         }
 
-        g_debug ("creating session server proxy for peer: %s", SERVER_DBUS_PATH);
+        g_debug ("GdmProductSlave: creating session server proxy for peer: %s", SERVER_DBUS_PATH);
         slave->priv->session_relay_proxy = dbus_g_proxy_new_for_peer (slave->priv->session_relay_connection,
                                                                       SERVER_DBUS_PATH,
                                                                       SERVER_DBUS_INTERFACE);
@@ -865,7 +865,7 @@ gdm_product_slave_stop (GdmSlave *slave)
 {
         gboolean res;
 
-        g_debug ("Stopping product_slave");
+        g_debug ("GdmProductSlave: Stopping product_slave");
 
         res = GDM_SLAVE_CLASS (gdm_product_slave_parent_class)->stop (slave);
 

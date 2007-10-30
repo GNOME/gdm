@@ -127,7 +127,7 @@ gdm_product_display_get_relay_address (GdmProductDisplay *display,
 
         if (address != NULL) {
                 *address = g_strdup (display->priv->relay_address);
-                g_debug ("Returning address: %s", display->priv->relay_address);
+                g_debug ("GdmProductDisplay: Returning address: %s", display->priv->relay_address);
         }
 
         return TRUE;

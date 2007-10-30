@@ -91,7 +91,7 @@ session_worker_job_child_watch (GPid                 pid,
                                 int                  status,
                                 GdmSessionWorkerJob *job)
 {
-        g_debug ("child (pid:%d) done (%s:%d)",
+        g_debug ("GdmSessionWorkerJob: child (pid:%d) done (%s:%d)",
                  (int) pid,
                  WIFEXITED (status) ? "status"
                  : WIFSIGNALED (status) ? "signal"
@@ -152,7 +152,7 @@ gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job)
 
         ret = FALSE;
 
-        g_debug ("Running session_worker_job process: %s", session_worker_job->priv->command);
+        g_debug ("GdmSessionWorkerJob: Running session_worker_job process: %s", session_worker_job->priv->command);
 
         argv = NULL;
         if (! g_shell_parse_argv (session_worker_job->priv->command, NULL, &argv, &error)) {
@@ -185,7 +185,7 @@ gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job)
                            error->message);
                 g_error_free (error);
         } else {
-                g_debug ("gdm_slave_session_worker_job: SessionWorkerJob on pid %d", (int)session_worker_job->priv->pid);
+                g_debug ("GdmSessionWorkerJob: : SessionWorkerJob on pid %d", (int)session_worker_job->priv->pid);
         }
 
         session_worker_job->priv->child_watch_id = g_child_watch_add (session_worker_job->priv->pid,
@@ -209,7 +209,7 @@ gdm_session_worker_job_start (GdmSessionWorkerJob *session_worker_job)
 {
         gboolean    res;
 
-        g_debug ("Starting worker...");
+        g_debug ("GdmSessionWorkerJob: Starting worker...");
 
         res = gdm_session_worker_job_spawn (session_worker_job);
 
@@ -233,7 +233,7 @@ wait_on_child (int pid)
                 } else if (errno == ECHILD) {
                         ; /* do nothing, child already reaped */
                 } else {
-                        g_debug ("waitpid () should not fail");
+                        g_debug ("GdmSessionWorkerJob: waitpid () should not fail");
                 }
         }
 
@@ -245,11 +245,11 @@ session_worker_job_died (GdmSessionWorkerJob *session_worker_job)
 {
         int exit_status;
 
-        g_debug ("Waiting on process %d", session_worker_job->priv->pid);
+        g_debug ("GdmSessionWorkerJob: Waiting on process %d", session_worker_job->priv->pid);
         exit_status = wait_on_child (session_worker_job->priv->pid);
 
         if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
-                g_debug ("Wait on child process failed");
+                g_debug ("GdmSessionWorkerJob: Wait on child process failed");
         } else {
                 /* exited normally */
         }
@@ -257,7 +257,7 @@ session_worker_job_died (GdmSessionWorkerJob *session_worker_job)
         g_spawn_close_pid (session_worker_job->priv->pid);
         session_worker_job->priv->pid = -1;
 
-        g_debug ("SessionWorkerJob died");
+        g_debug ("GdmSessionWorkerJob: SessionWorkerJob died");
 }
 
 gboolean
@@ -274,7 +274,7 @@ gdm_session_worker_job_stop (GdmSessionWorkerJob *session_worker_job)
                 session_worker_job->priv->child_watch_id = 0;
         }
 
-        g_debug ("Stopping session_worker_job pid:%d", session_worker_job->priv->pid);
+        g_debug ("GdmSessionWorkerJob: Stopping job pid:%d", session_worker_job->priv->pid);
 
         gdm_signal_pid (session_worker_job->priv->pid, SIGTERM);
         session_worker_job_died (session_worker_job);

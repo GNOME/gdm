@@ -70,7 +70,7 @@ child_watch (GPid           pid,
              int            status,
              GdmSlaveProxy *slave)
 {
-        g_debug ("slave (pid:%d) done (%s:%d)",
+        g_debug ("GdmSlaveProxy: slave (pid:%d) done (%s:%d)",
                  (int) pid,
                  WIFEXITED (status) ? "status"
                  : WIFSIGNALED (status) ? "signal"
@@ -106,7 +106,7 @@ spawn_slave (GdmSlaveProxy *slave)
                 goto out;
         }
 
-        g_debug ("Running command: %s", slave->priv->command);
+        g_debug ("GdmSlaveProxy: Running command: %s", slave->priv->command);
 
         error = NULL;
         result = g_spawn_async_with_pipes (NULL,
@@ -130,7 +130,7 @@ spawn_slave (GdmSlaveProxy *slave)
 
         g_strfreev (argv);
 
-        g_debug ("Started slave with pid %d", slave->priv->pid);
+        g_debug ("GdmSlaveProxy: Started slave with pid %d", slave->priv->pid);
 
         slave->priv->child_watch_id = g_child_watch_add (slave->priv->pid,
                                                          (GChildWatchFunc)child_watch,
@@ -164,7 +164,7 @@ gdm_slave_proxy_start (GdmSlaveProxy *slave)
 gboolean
 gdm_slave_proxy_stop (GdmSlaveProxy *slave)
 {
-        g_debug ("Killing slave");
+        g_debug ("GdmSlaveProxy: Killing slave");
 
         kill_slave (slave);
 
@@ -230,7 +230,7 @@ gdm_slave_proxy_dispose (GObject *object)
 
         slave = GDM_SLAVE_PROXY (object);
 
-        g_debug ("Disposing slave proxy");
+        g_debug ("GdmSlaveProxy: Disposing slave proxy");
         if (slave->priv->child_watch_id > 0) {
                 g_source_remove (slave->priv->child_watch_id);
                 slave->priv->child_watch_id = 0;

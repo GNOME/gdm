@@ -160,7 +160,7 @@ send_dbus_string_signal (GdmSessionDirect *session,
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &text);
 
         if (! send_dbus_message (session->priv->worker_connection, message)) {
-                g_debug ("Could not send %s signal", name);
+                g_debug ("GdmSessionDirect: Could not send %s signal", name);
         }
 
         dbus_message_unref (message);
@@ -220,7 +220,7 @@ gdm_session_direct_handle_verified (GdmSessionDirect *session,
 {
         DBusMessage *reply;
 
-        g_debug ("Emitting 'user-verified' signal");
+        g_debug ("GdmSessionDirect: Emitting 'user-verified' signal");
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -253,7 +253,7 @@ gdm_session_direct_handle_verification_failed (GdmSessionDirect *session,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_debug ("Emitting 'verification-failed' signal");
+        g_debug ("GdmSessionDirect: Emitting 'verification-failed' signal");
 
         _gdm_session_user_verification_error (GDM_SESSION (session), NULL);
 
@@ -280,7 +280,7 @@ gdm_session_direct_handle_username_changed (GdmSessionDirect *session,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_debug ("changing username from '%s' to '%s'",
+        g_debug ("GdmSessionDirect: changing username from '%s' to '%s'",
                  session->priv->selected_user != NULL ? session->priv->selected_user : "<unset>",
                  (strlen (text)) ? text : "<unset>");
 
@@ -301,7 +301,7 @@ cancel_pending_query (GdmSessionDirect *session)
                 return;
         }
 
-        g_debug ("Cancelling pending query");
+        g_debug ("GdmSessionDirect: Cancelling pending query");
 
         reply = dbus_message_new_error (session->priv->message_pending_reply,
                                         GDM_SESSION_DBUS_ERROR_CANCEL,
@@ -360,7 +360,7 @@ gdm_session_direct_handle_info_query (GdmSessionDirect *session,
 
         set_pending_query (session, message);
 
-        g_debug ("Emitting 'info-query' signal");
+        g_debug ("GdmSessionDirect: Emitting 'info-query' signal");
         _gdm_session_info_query (GDM_SESSION (session), text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
@@ -383,7 +383,7 @@ gdm_session_direct_handle_secret_info_query (GdmSessionDirect *session,
 
         set_pending_query (session, message);
 
-        g_debug ("Emitting 'secret-info-query' signal");
+        g_debug ("GdmSessionDirect: Emitting 'secret-info-query' signal");
         _gdm_session_secret_info_query (GDM_SESSION (session), text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
@@ -409,7 +409,7 @@ gdm_session_direct_handle_info (GdmSessionDirect *session,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_debug ("Emitting 'info' signal");
+        g_debug ("GdmSessionDirect: Emitting 'info' signal");
         _gdm_session_info (GDM_SESSION (session), text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
@@ -435,7 +435,7 @@ gdm_session_direct_handle_problem (GdmSessionDirect *session,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_debug ("Emitting 'problem' signal");
+        g_debug ("GdmSessionDirect: Emitting 'problem' signal");
         _gdm_session_problem (GDM_SESSION (session), text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
@@ -461,7 +461,7 @@ gdm_session_direct_handle_session_started (GdmSessionDirect *session,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_debug ("Emitting 'session-started' signal with pid '%d'",
+        g_debug ("GdmSessionDirect: Emitting 'session-started' signal with pid '%d'",
                  pid);
 
         session->priv->session_pid = pid;
@@ -492,7 +492,7 @@ gdm_session_direct_handle_startup_failed (GdmSessionDirect *session,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_debug ("Emitting 'session-startup-error' signal");
+        g_debug ("GdmSessionDirect: Emitting 'session-startup-error' signal");
         _gdm_session_session_startup_error (GDM_SESSION (session), text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
@@ -518,7 +518,7 @@ gdm_session_direct_handle_session_exited (GdmSessionDirect *session,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_debug ("Emitting 'session-exited' signal with exit code '%d'",
+        g_debug ("GdmSessionDirect: Emitting 'session-exited' signal with exit code '%d'",
                  code);
 
         session->priv->is_running = FALSE;
@@ -547,7 +547,7 @@ gdm_session_direct_handle_session_died (GdmSessionDirect *session,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_debug ("Emitting 'session-died' signal with signal number '%d'",
+        g_debug ("GdmSessionDirect: Emitting 'session-died' signal with signal number '%d'",
                  code);
 
         session->priv->is_running = FALSE;
@@ -598,7 +598,7 @@ do_introspect (DBusConnection *connection,
         GString     *xml;
         char        *xml_string;
 
-        g_debug ("Do introspect");
+        g_debug ("GdmSessionDirect: Do introspect");
 
         /* standard header */
         xml = g_string_new ("<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\"\n"
@@ -730,7 +730,7 @@ session_message_handler (DBusConnection  *connection,
         } else if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected") &&
                    strcmp (dbus_message_get_path (message), DBUS_PATH_LOCAL) == 0) {
 
-                g_debug ("Disconnected here");
+                g_debug ("GdmSessionDirect: Disconnected");
 
                 /*dbus_connection_unref (connection);*/
 
@@ -788,7 +788,7 @@ allow_user_function (DBusConnection *connection,
                 return TRUE;
         }
 
-        g_debug ("User not allowed");
+        g_debug ("GdmSessionDirect: User not allowed");
 
         return FALSE;
 }
@@ -800,7 +800,7 @@ handle_connection (DBusServer      *server,
 {
         GdmSessionDirect *session = GDM_SESSION_DIRECT (user_data);
 
-        g_debug ("Handing new connection");
+        g_debug ("GdmSessionDirect: Handing new connection");
 
         if (session->priv->worker_connection == NULL) {
                 DBusObjectPathVTable vtable = { &session_unregister_handler,
@@ -812,7 +812,7 @@ handle_connection (DBusServer      *server,
                 dbus_connection_ref (new_connection);
                 dbus_connection_setup_with_g_main (new_connection, NULL);
 
-                g_debug ("worker connection is %p", new_connection);
+                g_debug ("GdmSessionDirect: worker connection is %p", new_connection);
                 dbus_connection_set_exit_on_disconnect (new_connection, FALSE);
 
                 dbus_connection_set_unix_user_function (new_connection,
@@ -825,7 +825,7 @@ handle_connection (DBusServer      *server,
                                                       &vtable,
                                                       session);
 
-                g_debug ("Emitting opened signal");
+                g_debug ("GdmSessionDirect: Emitting opened signal");
                 _gdm_session_opened (GDM_SESSION (session));
         }
 }
@@ -840,7 +840,7 @@ setup_server (GdmSessionDirect *session)
 
         ret = FALSE;
 
-        g_debug ("Creating D-Bus server for session");
+        g_debug ("GdmSessionDirect: Creating D-Bus server for session");
 
         address = generate_address ();
 
@@ -865,7 +865,7 @@ setup_server (GdmSessionDirect *session)
         g_free (session->priv->server_address);
         session->priv->server_address = dbus_server_get_address (session->priv->server);
 
-        g_debug ("D-Bus server listening on %s", session->priv->server_address);
+        g_debug ("GdmSessionDirect: D-Bus server listening on %s", session->priv->server_address);
 
  out:
 
@@ -919,14 +919,14 @@ static void
 worker_stopped (GdmSessionWorkerJob *job,
                 GdmSessionDirect    *session)
 {
-        g_debug ("Worker job stopped");
+        g_debug ("GdmSessionDirect: Worker job stopped");
 }
 
 static void
 worker_started (GdmSessionWorkerJob *job,
                 GdmSessionDirect    *session)
 {
-        g_debug ("Worker job started");
+        g_debug ("GdmSessionDirect: Worker job started");
 }
 
 static void
@@ -934,7 +934,7 @@ worker_exited (GdmSessionWorkerJob *job,
                int                  code,
                GdmSessionDirect    *session)
 {
-        g_debug ("Worker job exited: %d", code);
+        g_debug ("GdmSessionDirect: Worker job exited: %d", code);
 
         if (!session->priv->is_verified) {
                 char *msg;
@@ -952,7 +952,7 @@ worker_died (GdmSessionWorkerJob *job,
              int                  signum,
              GdmSessionDirect    *session)
 {
-        g_debug ("Worker job died: %d", signum);
+        g_debug ("GdmSessionDirect: Worker job died: %d", signum);
 
         if (!session->priv->is_verified) {
                 char *msg;
@@ -1016,7 +1016,7 @@ gdm_session_direct_open (GdmSession *session)
 
         g_return_if_fail (session != NULL);
 
-        g_debug ("Openning session");
+        g_debug ("GdmSessionDirect: Openning session");
 
         res = start_worker (impl);
 }
@@ -1027,7 +1027,7 @@ send_begin_verification (GdmSessionDirect *session)
         DBusMessage    *message;
         DBusMessageIter iter;
 
-        g_debug ("Beginning verification");
+        g_debug ("GdmSessionDirect: Beginning verification");
 
         message = dbus_message_new_signal (GDM_SESSION_DBUS_PATH,
                                            GDM_SESSION_DBUS_INTERFACE,
@@ -1040,7 +1040,7 @@ send_begin_verification (GdmSessionDirect *session)
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->display_hostname);
 
         if (! send_dbus_message (session->priv->worker_connection, message)) {
-                g_debug ("Could not send %s signal", "BeginVerification");
+                g_debug ("GdmSessionDirect: Could not send %s signal", "BeginVerification");
         }
 
         dbus_message_unref (message);
@@ -1052,7 +1052,7 @@ send_begin_verification_for_user (GdmSessionDirect *session)
         DBusMessage    *message;
         DBusMessageIter iter;
 
-        g_debug ("Beginning verification for user %s", session->priv->selected_user);
+        g_debug ("GdmSessionDirect: Beginning verification for user %s", session->priv->selected_user);
 
         message = dbus_message_new_signal (GDM_SESSION_DBUS_PATH,
                                            GDM_SESSION_DBUS_INTERFACE,
@@ -1066,7 +1066,7 @@ send_begin_verification_for_user (GdmSessionDirect *session)
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->selected_user);
 
         if (! send_dbus_message (session->priv->worker_connection, message)) {
-                g_debug ("Could not send %s signal", "BeginVerificationForUser");
+                g_debug ("GdmSessionDirect: Could not send %s signal", "BeginVerificationForUser");
         }
 
         dbus_message_unref (message);
@@ -1115,7 +1115,7 @@ send_environment_variable (const char       *key,
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &value);
 
         if (! send_dbus_message (session->priv->worker_connection, message)) {
-                g_debug ("Could not send %s signal", "SetEnvironmentVariable");
+                g_debug ("GdmSessionDirect: Could not send %s signal", "SetEnvironmentVariable");
         }
 
         dbus_message_unref (message);
@@ -1177,7 +1177,7 @@ get_session_command_for_file (const char *file,
                                          G_KEY_FILE_NONE,
                                          &error);
         if (! res) {
-                g_debug ("File '%s' not found: %s", file, error->message);
+                g_debug ("GdmSessionDirect: File '%s' not found: %s", file, error->message);
                 g_error_free (error);
                 if (command != NULL) {
                         *command = NULL;
@@ -1191,7 +1191,7 @@ get_session_command_for_file (const char *file,
                                       G_KEY_FILE_DESKTOP_KEY_HIDDEN,
                                       &error);
         if (error == NULL && res) {
-                g_debug ("Session %s is marked as hidden", file);
+                g_debug ("GdmSessionDirect: Session %s is marked as hidden", file);
                 goto out;
         }
 
@@ -1201,7 +1201,7 @@ get_session_command_for_file (const char *file,
                                       G_KEY_FILE_DESKTOP_KEY_TRY_EXEC,
                                       &error);
         if (exec == NULL) {
-                g_debug ("%s key not found", G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
+                g_debug ("GdmSessionDirect: %s key not found", G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
                 goto out;
         }
 
@@ -1209,7 +1209,7 @@ get_session_command_for_file (const char *file,
         g_free (exec);
 
         if (! res) {
-                g_debug ("Command not found: %s", G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
+                g_debug ("GdmSessionDirect: Command not found: %s", G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
                 goto out;
         }
 
@@ -1219,7 +1219,7 @@ get_session_command_for_file (const char *file,
                                       G_KEY_FILE_DESKTOP_KEY_EXEC,
                                       &error);
         if (error != NULL) {
-                g_debug ("%s key not found: %s",
+                g_debug ("GdmSessionDirect: %s key not found: %s",
                          G_KEY_FILE_DESKTOP_KEY_EXEC,
                          error->message);
                 g_error_free (error);
@@ -1386,7 +1386,7 @@ gdm_session_direct_close (GdmSession *session)
 
         g_return_if_fail (session != NULL);
 
-        g_debug ("Closing session");
+        g_debug ("GdmSessionDirect: Closing session");
 
         if (impl->priv->ckc != NULL) {
                 ck_connector_close_session (impl->priv->ckc, NULL);
@@ -1509,7 +1509,7 @@ static void
 _gdm_session_direct_set_display_device (GdmSessionDirect *session,
                                         const char       *name)
 {
-        g_debug ("Setting display device: %s", name);
+        g_debug ("GdmSessionDirect: Setting display device: %s", name);
         g_free (session->priv->display_device);
         session->priv->display_device = g_strdup (name);
 }
@@ -1600,7 +1600,7 @@ gdm_session_direct_dispose (GObject *object)
 
         session = GDM_SESSION_DIRECT (object);
 
-        g_debug ("Disposing session");
+        g_debug ("GdmSessionDirect: Disposing session");
 
         gdm_session_direct_close (GDM_SESSION (session));
 

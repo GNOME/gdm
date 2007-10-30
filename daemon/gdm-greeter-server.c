@@ -103,13 +103,13 @@ send_dbus_message (DBusConnection *connection,
         g_return_val_if_fail (message != NULL, FALSE);
 
         if (connection == NULL) {
-                g_debug ("There is no valid connection");
+                g_debug ("GreeterServer: There is no valid connection");
                 return FALSE;
         }
 
         is_connected = dbus_connection_get_is_connected (connection);
         if (! is_connected) {
-                g_warning ("Not connected!");
+                g_warning ("GreeterServer: Not connected!");
                 return FALSE;
         }
 
@@ -143,9 +143,9 @@ send_dbus_string_signal (GdmGreeterServer *greeter_server,
         dbus_message_iter_init_append (message, &iter);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &str);
 
-        g_debug ("Sending %s (%s)", name, str);
+        g_debug ("GreeterServer: Sending %s (%s)", name, str);
         if (! send_dbus_message (greeter_server->priv->greeter_connection, message)) {
-                g_debug ("Could not send %s signal", name);
+                g_debug ("GreeterServer: Could not send %s signal", name);
         }
 
         dbus_message_unref (message);
@@ -164,7 +164,7 @@ send_dbus_void_signal (GdmGreeterServer *greeter_server,
                                            name);
 
         if (! send_dbus_message (greeter_server->priv->greeter_connection, message)) {
-                g_debug ("Could not send %s signal", name);
+                g_debug ("GreeterServer: Could not send %s signal", name);
         }
 
         dbus_message_unref (message);
@@ -259,7 +259,7 @@ handle_begin_verification (GdmGreeterServer *greeter_server,
 {
         DBusMessage *reply;
 
-        g_debug ("BeginVerification");
+        g_debug ("GreeterServer: BeginVerification");
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -287,7 +287,7 @@ handle_begin_verification_for_user (GdmGreeterServer *greeter_server,
                 g_warning ("ERROR: %s", error.message);
         }
 
-        g_debug ("BeginVerificationForUser for '%s'", text);
+        g_debug ("GreeterServer: BeginVerificationForUser for '%s'", text);
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -314,7 +314,7 @@ handle_answer_query (GdmGreeterServer *greeter_server,
                 g_warning ("ERROR: %s", error.message);
         }
 
-        g_debug ("AnswerQuery");
+        g_debug ("GreeterServer: AnswerQuery");
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -341,7 +341,7 @@ handle_select_session (GdmGreeterServer *greeter_server,
                 g_warning ("ERROR: %s", error.message);
         }
 
-        g_debug ("SelectSession: %s", text);
+        g_debug ("GreeterServer: SelectSession: %s", text);
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -368,7 +368,7 @@ handle_select_hostname (GdmGreeterServer *greeter_server,
                 g_warning ("ERROR: %s", error.message);
         }
 
-        g_debug ("SelectHostname: %s", text);
+        g_debug ("GreeterServer: SelectHostname: %s", text);
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -395,7 +395,7 @@ handle_select_language (GdmGreeterServer *greeter_server,
                 g_warning ("ERROR: %s", error.message);
         }
 
-        g_debug ("SelectLanguage: %s", text);
+        g_debug ("GreeterServer: SelectLanguage: %s", text);
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -422,7 +422,7 @@ handle_select_user (GdmGreeterServer *greeter_server,
                 g_warning ("ERROR: %s", error.message);
         }
 
-        g_debug ("SelectUser: %s", text);
+        g_debug ("GreeterServer: SelectUser: %s", text);
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -522,7 +522,7 @@ do_introspect (DBusConnection *connection,
         GString     *xml;
         char        *xml_string;
 
-        g_debug ("Do introspect");
+        g_debug ("GreeterServer: Do introspect");
 
         /* standard header */
         xml = g_string_new ("<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\"\n"
@@ -673,7 +673,7 @@ connection_filter_function (DBusConnection *connection,
         const char       *dbus_interface = dbus_message_get_interface (message);
         const char       *dbus_message   = dbus_message_get_member (message);
 
-        g_debug ("obj_path=%s interface=%s method=%s",
+        g_debug ("GreeterServer: obj_path=%s interface=%s method=%s",
                  dbus_path      ? dbus_path      : "(null)",
                  dbus_interface ? dbus_interface : "(null)",
                  dbus_message   ? dbus_message   : "(null)");
@@ -681,7 +681,7 @@ connection_filter_function (DBusConnection *connection,
         if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")
             && strcmp (dbus_path, DBUS_PATH_LOCAL) == 0) {
 
-                g_debug ("Disconnected");
+                g_debug ("GreeterServer: Disconnected");
 
                 dbus_connection_unref (connection);
                 greeter_server->priv->greeter_connection = NULL;
@@ -723,7 +723,7 @@ handle_connection (DBusServer      *server,
 {
         GdmGreeterServer *greeter_server = GDM_GREETER_SERVER (user_data);
 
-        g_debug ("Handing new connection");
+        g_debug ("GreeterServer: Handing new connection");
 
         if (greeter_server->priv->greeter_connection == NULL) {
                 DBusObjectPathVTable vtable = { &greeter_server_unregister_handler,
@@ -735,7 +735,7 @@ handle_connection (DBusServer      *server,
                 dbus_connection_ref (new_connection);
                 dbus_connection_setup_with_g_main (new_connection, NULL);
 
-                g_debug ("greeter connection is %p", new_connection);
+                g_debug ("GreeterServer: greeter connection is %p", new_connection);
 
                 dbus_connection_add_filter (new_connection,
                                             connection_filter_function,
@@ -767,7 +767,7 @@ gdm_greeter_server_start (GdmGreeterServer *greeter_server)
 
         ret = FALSE;
 
-        g_debug ("Creating D-Bus server for greeter");
+        g_debug ("GreeterServer: Creating D-Bus server for greeter");
 
         address = generate_address ();
 
@@ -792,7 +792,7 @@ gdm_greeter_server_start (GdmGreeterServer *greeter_server)
         g_free (greeter_server->priv->server_address);
         greeter_server->priv->server_address = dbus_server_get_address (greeter_server->priv->server);
 
-        g_debug ("D-Bus server listening on %s", greeter_server->priv->server_address);
+        g_debug ("GreeterServer: D-Bus server listening on %s", greeter_server->priv->server_address);
 
  out:
 
@@ -806,7 +806,7 @@ gdm_greeter_server_stop (GdmGreeterServer *greeter_server)
 
         ret = FALSE;
 
-        g_debug ("Stopping greeter server...");
+        g_debug ("GreeterServer: Stopping greeter server...");
 
         return ret;
 }

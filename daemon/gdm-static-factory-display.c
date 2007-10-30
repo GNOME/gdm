@@ -93,7 +93,7 @@ gdm_static_factory_display_create_product_display (GdmStaticFactoryDisplay *disp
 
         num = get_next_display_number ();
 
-        g_debug ("Creating product display %d  address:%s", num, relay_address);
+        g_debug ("GdmStaticFactoryDisplay: Creating product display %d  address:%s", num, relay_address);
 
         product = gdm_product_display_new (num, relay_address);
 

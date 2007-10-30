@@ -116,7 +116,7 @@ listify_hash (const char *key,
 {
         char *str;
         str = g_strdup_printf ("%s=%s", key, value);
-        g_debug ("greeter environment: %s", str);
+        g_debug ("GdmGreeterSession: greeter environment: %s", str);
         g_ptr_array_add (env, str);
 }
 
@@ -161,7 +161,7 @@ open_greeter_session (GdmGreeterSession *greeter_session)
                 x11_display_device = "";
         }
 
-        g_debug ("Opening ConsoleKit session for user:%d x11-display:'%s' x11-display-device:'%s' remote-host-name:'%s' is-local:%d",
+        g_debug ("GdmGreeterSession: Opening ConsoleKit session for user:%d x11-display:'%s' x11-display-device:'%s' remote-host-name:'%s' is-local:%d",
                  pwent->pw_uid,
                  greeter_session->priv->x11_display_name,
                  x11_display_device,
@@ -296,7 +296,7 @@ greeter_session_child_watch (GPid               pid,
                              int                status,
                              GdmGreeterSession *greeter_session)
 {
-        g_debug ("child (pid:%d) done (%s:%d)",
+        g_debug ("GdmGreeterSession: child (pid:%d) done (%s:%d)",
                  (int) pid,
                  WIFEXITED (status) ? "status"
                  : WIFSIGNALED (status) ? "signal"
@@ -342,7 +342,7 @@ spawn_child_setup (SpawnChildData *data)
                 _exit (1);
         }
 
-        g_debug ("Changing (uid:gid) for child process to (%d:%d)",
+        g_debug ("GdmGreeterSession: Changing (uid:gid) for child process to (%d:%d)",
                  pwent->pw_uid,
                  grent->gr_gid);
 
@@ -378,7 +378,7 @@ spawn_child_setup (SpawnChildData *data)
         }
 
         if (setsid () < 0) {
-                g_debug ("could not set pid '%u' as leader of new session and process group - %s",
+                g_debug ("GdmGreeterSession: could not set pid '%u' as leader of new session and process group - %s",
                          (guint) getpid (), g_strerror (errno));
                 _exit (2);
         }
@@ -594,7 +594,7 @@ start_dbus_daemon (GdmGreeterSession *greeter_session)
         if (! res) {
                 g_warning ("Unable to parse D-Bus launch output");
         } else {
-                g_debug ("Started D-Bus daemon on pid %d", greeter_session->priv->dbus_pid);
+                g_debug ("GdmGreeterSession: Started D-Bus daemon on pid %d", greeter_session->priv->dbus_pid);
         }
  out:
         return res;
@@ -629,7 +629,7 @@ gdm_greeter_session_spawn (GdmGreeterSession *greeter_session)
         create_temp_auth_file (greeter_session);
 #endif
 
-        g_debug ("Running greeter_session process: %s", greeter_session->priv->command);
+        g_debug ("GdmGreeterSession: Running greeter_session process: %s", greeter_session->priv->command);
 
         open_greeter_session (greeter_session);
 
@@ -654,7 +654,7 @@ gdm_greeter_session_spawn (GdmGreeterSession *greeter_session)
                 g_error_free (error);
                 goto out;
         } else {
-                g_debug ("gdm_slave_greeter_session: GreeterSession on pid %d", (int)greeter_session->priv->pid);
+                g_debug ("GdmGreeterSession: GreeterSession on pid %d", (int)greeter_session->priv->pid);
         }
 
         greeter_session->priv->child_watch_id = g_child_watch_add (greeter_session->priv->pid,
@@ -677,7 +677,7 @@ gdm_greeter_session_start (GdmGreeterSession *greeter_session)
 {
         gboolean    res;
 
-        g_debug ("Starting greeter...");
+        g_debug ("GdmGreeterSession: Starting greeter...");
 
         res = gdm_greeter_session_spawn (greeter_session);
 
@@ -701,7 +701,7 @@ wait_on_child (int pid)
                 } else if (errno == ECHILD) {
                         ; /* do nothing, child already reaped */
                 } else {
-                        g_debug ("waitpid () should not fail");
+                        g_debug ("GdmGreeterSession: waitpid () should not fail");
                 }
         }
 
@@ -713,11 +713,11 @@ greeter_session_died (GdmGreeterSession *greeter_session)
 {
         int exit_status;
 
-        g_debug ("Waiting on process %d", greeter_session->priv->pid);
+        g_debug ("GdmGreeterSession: Waiting on process %d", greeter_session->priv->pid);
         exit_status = wait_on_child (greeter_session->priv->pid);
 
         if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
-                g_debug ("Wait on child process failed");
+                g_debug ("GdmGreeterSession: Wait on child process failed");
         } else {
                 /* exited normally */
         }
@@ -725,7 +725,7 @@ greeter_session_died (GdmGreeterSession *greeter_session)
         g_spawn_close_pid (greeter_session->priv->pid);
         greeter_session->priv->pid = -1;
 
-        g_debug ("GreeterSession died");
+        g_debug ("GdmGreeterSession: GreeterSession died");
 }
 
 gboolean
@@ -742,7 +742,7 @@ gdm_greeter_session_stop (GdmGreeterSession *greeter_session)
                 greeter_session->priv->child_watch_id = 0;
         }
 
-        g_debug ("Stopping greeter_session");
+        g_debug ("GdmGreeterSession: Stopping greeter_session");
 
         gdm_signal_pid (-1 * greeter_session->priv->pid, SIGTERM);
         greeter_session_died (greeter_session);

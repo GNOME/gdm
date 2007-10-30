@@ -158,7 +158,7 @@ listify_hash (const char *key,
 {
         char *str;
         str = g_strdup_printf ("%s=%s", key, value);
-        g_debug ("script environment: %s", str);
+        g_debug ("GdmSlave: script environment: %s", str);
         g_ptr_array_add (env, str);
 }
 
@@ -300,7 +300,7 @@ gdm_slave_run_script (GdmSlave   *slave,
 
         create_temp_auth_file (slave);
 
-        g_debug ("Running process: %s", script);
+        g_debug ("GdmSlave: Running process: %s", script);
         error = NULL;
         if (! g_shell_parse_argv (script, NULL, &argv, &error)) {
                 g_warning ("Could not parse command: %s", error->message);
@@ -327,7 +327,7 @@ gdm_slave_run_script (GdmSlave   *slave,
         gdm_slave_whack_temp_auth_file (slave);
 
         if (WIFEXITED (status)) {
-                g_debug ("Process exit status: %d", WEXITSTATUS (status));
+                g_debug ("GdmSlave: Process exit status: %d", WEXITSTATUS (status));
                 ret = WEXITSTATUS (status) != 0;
         } else {
                 ret = TRUE;
@@ -360,7 +360,7 @@ set_local_auth (GdmSlave *slave)
         GString *binary_cookie;
         GString *cookie;
 
-        g_debug ("Setting authorization key for display %s", slave->priv->display_x11_cookie);
+        g_debug ("GdmSlave: Setting authorization key for display %s", slave->priv->display_x11_cookie);
 
         cookie = g_string_new (slave->priv->display_x11_cookie);
         binary_cookie = g_string_new (NULL);
@@ -373,7 +373,7 @@ set_local_auth (GdmSlave *slave)
                 goto out;
         }
 
-        g_debug ("Decoded cookie len %d", (int) binary_cookie->len);
+        g_debug ("GdmSlave: Decoded cookie len %d", (int) binary_cookie->len);
 
         XSetAuthorization ("MIT-MAGIC-COOKIE-1",
                            (int) strlen ("MIT-MAGIC-COOKIE-1"),
@@ -397,7 +397,7 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
         /* We keep our own (windowless) connection (dsp) open to avoid the
          * X server resetting due to lack of active connections. */
 
-        g_debug ("Server is ready - opening display %s", slave->priv->display_name);
+        g_debug ("GdmSlave: Server is ready - opening display %s", slave->priv->display_name);
 
         g_setenv ("DISPLAY", slave->priv->display_name, TRUE);
         g_unsetenv ("XAUTHORITY"); /* just in case it's set */
@@ -424,7 +424,7 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
                 g_warning ("Unable to connect to display %s", slave->priv->display_name);
                 ret = FALSE;
         } else {
-                g_debug ("Connected to display %s", slave->priv->display_name);
+                g_debug ("GdmSlave: Connected to display %s", slave->priv->display_name);
                 ret = TRUE;
         }
 
@@ -435,7 +435,7 @@ static void
 display_proxy_destroyed_cb (DBusGProxy *display_proxy,
                             GdmSlave   *slave)
 {
-        g_debug ("Disconnected from display");
+        g_debug ("GdmSlave: Disconnected from display");
 
         slave->priv->display_proxy = NULL;
 }
@@ -447,11 +447,11 @@ gdm_slave_real_start (GdmSlave *slave)
         char    *id;
         GError  *error;
 
-        g_debug ("Starting slave");
+        g_debug ("GdmSlave: Starting slave");
 
         g_assert (slave->priv->display_proxy == NULL);
 
-        g_debug ("Creating proxy for %s", slave->priv->display_id);
+        g_debug ("GdmSlave: Creating proxy for %s", slave->priv->display_id);
         error = NULL;
         slave->priv->display_proxy = dbus_g_proxy_new_for_name_owner (slave->priv->connection,
                                                                       GDM_DBUS_NAME,
@@ -492,7 +492,7 @@ gdm_slave_real_start (GdmSlave *slave)
                 return FALSE;
         }
 
-        g_debug ("Got display id: %s", id);
+        g_debug ("GdmSlave: Got display id: %s", id);
 
         if (strcmp (id, slave->priv->display_id) != 0) {
                 g_critical ("Display ID doesn't match");
@@ -614,7 +614,7 @@ gdm_slave_real_start (GdmSlave *slave)
 static gboolean
 gdm_slave_real_stop (GdmSlave *slave)
 {
-        g_debug ("Stopping slave");
+        g_debug ("GdmSlave: Stopping slave");
 
         if (slave->priv->display_proxy != NULL) {
                 g_object_unref (slave->priv->display_proxy);
@@ -630,7 +630,7 @@ gdm_slave_start (GdmSlave *slave)
 
         g_return_val_if_fail (GDM_IS_SLAVE (slave), FALSE);
 
-        g_debug ("starting slave");
+        g_debug ("GdmSlave: starting slave");
 
         g_object_ref (slave);
         ret = GDM_SLAVE_GET_CLASS (slave)->start (slave);
@@ -646,7 +646,7 @@ gdm_slave_stop (GdmSlave *slave)
 
         g_return_val_if_fail (GDM_IS_SLAVE (slave), FALSE);
 
-        g_debug ("stopping slave");
+        g_debug ("GdmSlave: stopping slave");
 
         g_object_ref (slave);
         ret = GDM_SLAVE_GET_CLASS (slave)->stop (slave);
@@ -875,7 +875,7 @@ gdm_slave_constructor (GType                  type,
         }
 
         slave->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Slave%s", id);
-        g_debug ("Registering %s", slave->priv->id);
+        g_debug ("GdmSlave: Registering %s", slave->priv->id);
 
         res = register_slave (slave);
         if (! res) {
