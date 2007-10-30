@@ -247,7 +247,7 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         GtkWidget  *entry;
         GtkWidget  *label;
 
-        g_debug ("Resetting dialog");
+        g_debug ("GdmGreeterLoginWindow: Resetting dialog");
 
         entry = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-entry");
         gtk_entry_set_text (GTK_ENTRY (entry), "");
@@ -295,7 +295,7 @@ gdm_greeter_login_window_info (GdmGreeterLoginWindow *login_window,
 {
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
-        g_debug ("SIMPLE GREETER: info: %s", text);
+        g_debug ("GdmGreeterLoginWindow: info: %s", text);
 
         set_message (GDM_GREETER_LOGIN_WINDOW (login_window), text);
 
@@ -308,7 +308,7 @@ gdm_greeter_login_window_problem (GdmGreeterLoginWindow *login_window,
 {
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
-        g_debug ("SIMPLE GREETER: problem: %s", text);
+        g_debug ("GdmGreeterLoginWindow: problem: %s", text);
 
         set_message (GDM_GREETER_LOGIN_WINDOW (login_window), text);
 
@@ -324,7 +324,7 @@ gdm_greeter_login_window_info_query (GdmGreeterLoginWindow *login_window,
 
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
-        g_debug ("SIMPLE GREETER: info query: %s", text);
+        g_debug ("GdmGreeterLoginWindow: info query: %s", text);
 
         entry = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-entry");
         gtk_entry_set_text (GTK_ENTRY (entry), "");

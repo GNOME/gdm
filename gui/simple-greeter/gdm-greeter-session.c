@@ -67,7 +67,7 @@ on_info (GdmGreeterClient  *client,
          const char        *text,
          GdmGreeterSession *session)
 {
-        g_debug ("GreeterClient Info: %s", text);
+        g_debug ("GdmGreeterSession: Info: %s", text);
 
         gdm_greeter_login_window_info (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
 }
@@ -77,7 +77,7 @@ on_problem (GdmGreeterClient  *client,
             const char        *text,
             GdmGreeterSession *session)
 {
-        g_debug ("GreeterClient Problem: %s", text);
+        g_debug ("GdmGreeterSession: Problem: %s", text);
 
         gdm_greeter_login_window_problem (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
 }
@@ -86,7 +86,7 @@ static void
 on_ready (GdmGreeterClient  *client,
           GdmGreeterSession *session)
 {
-        g_debug ("GreeterClient Ready");
+        g_debug ("GdmGreeterSession: Ready");
 
         gdm_greeter_login_window_ready (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
 }
@@ -95,7 +95,7 @@ static void
 on_reset (GdmGreeterClient  *client,
           GdmGreeterSession *session)
 {
-        g_debug ("GreeterClient Reset");
+        g_debug ("GdmGreeterSession: Reset");
 
         gdm_greeter_login_window_reset (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
 }
@@ -105,7 +105,7 @@ on_selected_user_changed (GdmGreeterClient  *client,
                           const char        *text,
                           GdmGreeterSession *session)
 {
-        g_debug ("GreeterClient selected user changed: %s", text);
+        g_debug ("GdmGreeterSession: selected user changed: %s", text);
 }
 
 static void
@@ -113,7 +113,7 @@ on_info_query (GdmGreeterClient  *client,
                const char        *text,
                GdmGreeterSession *session)
 {
-        g_debug ("GreeterClient Info query: %s", text);
+        g_debug ("GdmGreeterSession: Info query: %s", text);
 
         gdm_greeter_login_window_info_query (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
 }
@@ -123,7 +123,7 @@ on_secret_info_query (GdmGreeterClient  *client,
                       const char        *text,
                       GdmGreeterSession *session)
 {
-        g_debug ("GreeterClient Secret info query: %s", text);
+        g_debug ("GdmGreeterSession: Secret info query: %s", text);
 
         gdm_greeter_login_window_secret_info_query (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
 }
@@ -228,7 +228,7 @@ toggle_login_window (GdmSessionManager *manager,
                 gboolean is_local;
 
                 is_local = gdm_greeter_client_get_display_is_local (session->priv->client);
-                g_debug ("Starting a login window local:%d", is_local);
+                g_debug ("GdmGreeterSession: Starting a login window local:%d", is_local);
                 session->priv->login_window = gdm_greeter_login_window_new (is_local);
 
                 g_signal_connect (session->priv->login_window,
@@ -280,7 +280,7 @@ launch_compiz (GdmGreeterSession *session)
         GError  *error;
         gboolean ret;
 
-        g_debug ("Launching compiz");
+        g_debug ("GdmGreeterSession: Launching compiz");
 
         ret = FALSE;
 
@@ -314,7 +314,7 @@ launch_metacity (GdmGreeterSession *session)
         GError  *error;
         gboolean ret;
 
-        g_debug ("Launching metacity");
+        g_debug ("GdmGreeterSession: Launching metacity");
 
         ret = FALSE;
 
@@ -346,7 +346,7 @@ start_settings_daemon (GdmGreeterSession *session)
         GError  *error;
         gboolean ret;
 
-        g_debug ("Launching settings daemon");
+        g_debug ("GdmGreeterSession: Launching settings daemon");
 
         ret = FALSE;
 
@@ -461,7 +461,7 @@ gdm_greeter_session_dispose (GObject *object)
 
         greeter_session = GDM_GREETER_SESSION (object);
 
-        g_debug ("Disposing greeter_session");
+        g_debug ("GdmGreeterSession: Disposing greeter_session");
 
         G_OBJECT_CLASS (gdm_greeter_session_parent_class)->dispose (object);
 }

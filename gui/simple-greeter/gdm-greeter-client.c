@@ -113,7 +113,7 @@ emit_string_signal_for_message (GdmGreeterClient *client,
                                      DBUS_TYPE_INVALID);
         if (res) {
 
-                g_debug ("Recieved %s (%s)", name, text);
+                g_debug ("GdmGreeterClient: Recieved %s (%s)", name, text);
 
                 g_signal_emit (client,
                                gdm_greeter_client_signals[signal],
@@ -163,7 +163,7 @@ static void
 on_ready (GdmGreeterClient *client,
           DBusMessage      *message)
 {
-        g_debug ("GREETER SERVER READY");
+        g_debug ("GdmGreeterClient: Ready");
 
         g_signal_emit (client,
                        gdm_greeter_client_signals[READY],
@@ -174,7 +174,7 @@ static void
 on_reset (GdmGreeterClient *client,
           DBusMessage      *message)
 {
-        g_debug ("GREETER RESET");
+        g_debug ("GdmGreeterClient: Reset");
 
         g_signal_emit (client,
                        gdm_greeter_client_signals[RESET],
@@ -198,7 +198,7 @@ send_dbus_string_method (DBusConnection *connection,
                 str = "";
         }
 
-        g_debug ("Calling %s", method);
+        g_debug ("GdmGreeterClient: Calling %s", method);
         message = dbus_message_new_method_call (NULL,
                                                 GREETER_SERVER_DBUS_PATH,
                                                 GREETER_SERVER_DBUS_INTERFACE,
@@ -243,7 +243,7 @@ send_dbus_void_method (DBusConnection *connection,
         DBusMessage    *message;
         DBusMessage    *reply;
 
-        g_debug ("Calling %s", method);
+        g_debug ("GdmGreeterClient: Calling %s", method);
         message = dbus_message_new_method_call (NULL,
                                                 GREETER_SERVER_DBUS_PATH,
                                                 GREETER_SERVER_DBUS_INTERFACE,
@@ -364,7 +364,7 @@ send_get_display_id (GdmGreeterClient *client,
 
         ret = FALSE;
 
-        g_debug ("Calling %s", method);
+        g_debug ("GdmGreeterClient: Calling %s", method);
         message = dbus_message_new_method_call (NULL,
                                                 GREETER_SERVER_DBUS_PATH,
                                                 GREETER_SERVER_DBUS_INTERFACE,
@@ -441,7 +441,7 @@ cache_display_values (GdmGreeterClient *client)
                 return;
         }
 
-        g_debug ("Creating proxy for %s", client->priv->display_id);
+        g_debug ("GdmGreeterClient: Creating proxy for %s", client->priv->display_id);
         display_proxy = dbus_g_proxy_new_for_name (connection,
                                                    GDM_DBUS_NAME,
                                                    client->priv->display_id,
@@ -512,7 +512,7 @@ client_dbus_filter_function (DBusConnection *connection,
 
         path = dbus_message_get_path (message);
 
-        g_debug ("obj_path=%s interface=%s method=%s",
+        g_debug ("GdmGreeterClient: obj_path=%s interface=%s method=%s",
                  dbus_message_get_path (message),
                  dbus_message_get_interface (message),
                  dbus_message_get_member (message));
@@ -528,7 +528,7 @@ client_dbus_filter_function (DBusConnection *connection,
         } else if (dbus_message_is_signal (message,
                                            DBUS_INTERFACE_DBUS,
                                            "NameOwnerChanged")) {
-                g_debug ("Name owner changed?");
+                g_debug ("GdmGreeterClient: Name owner changed?");
         } else {
                 return client_dbus_handle_message (connection, message, user_data, FALSE);
         }
@@ -556,7 +556,7 @@ gdm_greeter_client_start (GdmGreeterClient *client,
                 goto out;
         }
 
-        g_debug ("GREETER connecting to address: %s", client->priv->address);
+        g_debug ("GdmGreeterClient: connecting to address: %s", client->priv->address);
 
         dbus_error_init (&local_error);
         client->priv->connection = dbus_connection_open (client->priv->address, &local_error);
@@ -655,7 +655,7 @@ gdm_greeter_client_dispose (GObject *object)
 
         greeter_client = GDM_GREETER_CLIENT (object);
 
-        g_debug ("Disposing greeter_client");
+        g_debug ("GdmGreeterClient: Disposing greeter_client");
 
         G_OBJECT_CLASS (gdm_greeter_client_parent_class)->dispose (object);
 }

@@ -68,7 +68,7 @@ gdm_session_client_start (GdmSessionClient *client,
 
         g_return_val_if_fail (GDM_IS_SESSION_CLIENT (client), FALSE);
 
-        g_debug ("Starting client: %s", client->priv->name);
+        g_debug ("GdmSessionClient: Starting client: %s", client->priv->name);
 
         ret = FALSE;
 
@@ -113,7 +113,7 @@ gdm_session_client_stop (GdmSessionClient *client)
 {
         g_return_if_fail (GDM_IS_SESSION_CLIENT (client));
 
-        g_debug ("Stopping client: %s", client->priv->name);
+        g_debug ("GdmSessionClient: Stopping client: %s", client->priv->name);
         if (client->priv->pid > 0) {
                 gdm_signal_pid (client->priv->pid, SIGTERM);
                 client->priv->pid = 0;

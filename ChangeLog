@@ -1,5 +1,33 @@
 2007-10-30  William Jon McCann  <mccann@jhu.edu>
 
+	* gui/simple-greeter/gdm-greeter-background.c:
+	(cairo_surface_get_height), (update_surface), (load_image),
+	(update_background), (update_geometry),
+	(gdm_greeter_background_real_expose),
+	(gdm_greeter_background_real_configure):
+	* gui/simple-greeter/gdm-greeter-client.c:
+	(emit_string_signal_for_message), (on_ready), (on_reset),
+	(send_dbus_string_method), (send_dbus_void_method),
+	(send_get_display_id), (cache_display_values),
+	(client_dbus_filter_function), (gdm_greeter_client_start),
+	(gdm_greeter_client_dispose):
+	* gui/simple-greeter/gdm-greeter-login-window.c: (reset_dialog),
+	(gdm_greeter_login_window_info),
+	(gdm_greeter_login_window_problem),
+	(gdm_greeter_login_window_info_query):
+	* gui/simple-greeter/gdm-greeter-session.c: (on_info),
+	(on_problem), (on_ready), (on_reset), (on_selected_user_changed),
+	(on_info_query), (on_secret_info_query), (toggle_login_window),
+	(launch_compiz), (launch_metacity), (start_settings_daemon),
+	(gdm_greeter_session_dispose):
+	* gui/simple-greeter/gdm-session-client.c:
+	(gdm_session_client_start), (gdm_session_client_stop):
+	* gui/simple-greeter/gdm-session-manager.c:
+	(gdm_session_manager_load_autostart_dir), (_change_level):
+	Prefix debug messages with class name to make output easier to read.
+
+2007-10-30  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/gdm-local-display-factory.c: (create_display_for_device):
 	oops that sneaked in.
 

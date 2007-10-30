@@ -172,7 +172,7 @@ gdm_session_manager_load_autostart_dir  (GdmSessionManager *manager,
 
         g_return_if_fail (GDM_IS_SESSION_MANAGER (manager));
 
-        g_debug ("Looking for autostart files in: %s", path);
+        g_debug ("GdmSessionManager: Looking for autostart files in: %s", path);
 
         dir = g_dir_open (path, 0, NULL);
         if (dir == NULL) {
@@ -241,7 +241,7 @@ _change_level (GdmSessionManager *manager,
         GList *list;
         guint  old_level;
 
-        g_debug ("Changing level to %u", (guint)new_level);
+        g_debug ("GdmSessionManager: Changing level to %u", (guint)new_level);
 
         /* unlike some other run level systems
          * we do not run intermediate levels
@@ -259,7 +259,7 @@ _change_level (GdmSessionManager *manager,
 
         /* shutdown all running services that won't
          * be run in the new level */
-        g_debug ("Stopping old clients");
+        g_debug ("GdmSessionManager: Stopping old clients");
         for (list = old_clients; list; list = list->next) {
                 if (! g_list_find (new_clients, list->data)) {
                         GdmSessionClient *client;
@@ -269,7 +269,7 @@ _change_level (GdmSessionManager *manager,
         }
 
         /* run the off notifications for the new level */
-        g_debug ("Calling off notifications");
+        g_debug ("GdmSessionManager: Calling off notifications");
         for (list = old_notify; list; list = list->next) {
                 if (! g_list_find (new_notify, list->data)) {
                         NotifyData *ndata;
@@ -284,7 +284,7 @@ _change_level (GdmSessionManager *manager,
         g_signal_emit (manager, signals [LEVEL_CHANGED], 0, old_level, new_level);
 
         /* start up the new services for new level */
-        g_debug ("Starting new clients");
+        g_debug ("GdmSessionManager: Starting new clients");
         for (list = new_clients; list; list = list->next) {
                 if (! g_list_find (old_clients, list->data)) {
                         GdmSessionClient *client;
