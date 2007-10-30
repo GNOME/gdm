@@ -995,6 +995,20 @@ start_worker (GdmSessionDirect *session)
 }
 
 static void
+stop_worker (GdmSessionDirect *session)
+{
+        cancel_pending_query (session);
+
+        if (session->priv->worker_connection != NULL) {
+                dbus_connection_close (session->priv->worker_connection);
+                session->priv->worker_connection = NULL;
+        }
+
+        gdm_session_worker_job_stop (session->priv->job);
+        session->priv->job = NULL;
+}
+
+static void
 gdm_session_direct_open (GdmSession *session)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
@@ -1389,15 +1403,7 @@ gdm_session_direct_close (GdmSession *session)
                                                    impl->priv->display_device);
                 }
 
-                cancel_pending_query (impl);
-
-                if (impl->priv->worker_connection != NULL) {
-                        dbus_connection_close (impl->priv->worker_connection);
-                        impl->priv->worker_connection = NULL;
-                }
-
-                gdm_session_worker_job_stop (impl->priv->job);
-                impl->priv->job = NULL;
+                stop_worker (impl);
         }
 
         impl->priv->is_running = FALSE;

@@ -40,6 +40,7 @@
 #include <dbus/dbus-glib-lowlevel.h>
 
 #include "gdm-signal-handler.h"
+#include "gdm-common.h"
 #include "gdm-log.h"
 #include "gdm-session-worker.h"
 
@@ -127,6 +128,8 @@ main (int    argc,
         setlocale (LC_ALL, "");
 
         g_type_init ();
+
+        gdm_set_fatal_warnings_if_unstable ();
 
         context = g_option_context_new (_("GNOME Display Manager Session Worker"));
         g_option_context_add_main_entries (context, entries, NULL);

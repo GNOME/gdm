@@ -1,5 +1,14 @@
 2007-10-30  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-session-direct.c: (stop_worker),
+	(gdm_session_direct_close):
+	Make a stop_worker function for symmetry.
+
+	* daemon/session-worker-main.c: (main):
+	Add gdm_set_fatal_warnings_if_unstable
+
+2007-10-30  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/gdm-greeter-server.c: (send_dbus_message),
 	(send_dbus_string_signal),
 	(gdm_greeter_server_selected_user_changed), (do_introspect):
