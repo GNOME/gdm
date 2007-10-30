@@ -79,7 +79,7 @@ create_display_for_device (GdmLocalDisplayFactory *factory,
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
-#if 1
+#if 0
         display = gdm_static_factory_display_new (0, store);
 #else
         display = gdm_static_display_new (0);
