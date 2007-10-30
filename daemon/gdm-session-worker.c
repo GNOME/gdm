@@ -1774,9 +1774,11 @@ worker_dbus_handle_message (DBusConnection *connection,
                 on_begin_verification (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "BeginVerificationForUser")) {
                 on_begin_verification_for_user (worker, message);
+        } else {
+                return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
         }
 
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+        return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 static DBusHandlerResult
@@ -1797,7 +1799,7 @@ worker_dbus_filter_function (DBusConnection *connection,
         if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")
             && strcmp (path, DBUS_PATH_LOCAL) == 0) {
 
-                g_message ("Got disconnected from the server");
+                g_debug ("GdmSessionWorker: Got disconnected from the server");
 
                 dbus_connection_unref (connection);
                 worker->priv->connection = NULL;

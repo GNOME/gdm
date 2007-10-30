@@ -497,9 +497,11 @@ client_dbus_handle_message (DBusConnection *connection,
                 on_reset (client, message);
         } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "SelectedUserChanged")) {
                 on_selected_user_changed (client, message);
+        } else {
+                return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
         }
 
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+        return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 static DBusHandlerResult

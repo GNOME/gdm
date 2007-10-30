@@ -1,5 +1,28 @@
 2007-10-30  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-factory-slave.c: (on_session_user_verified):
+	* daemon/gdm-product-slave.c: (send_dbus_string_method),
+	(send_dbus_void_method), (relay_session_started),
+	(relay_session_opened), (on_session_opened), (disconnect_relay),
+	(on_session_started), (on_session_exited), (on_session_died),
+	(on_session_user_verified), (on_session_user_verification_error),
+	(on_session_info), (on_session_problem), (on_session_info_query),
+	(on_session_secret_info_query), (on_relay_begin_verification),
+	(on_relay_begin_verification_for_user), (on_relay_answer_query),
+	(on_relay_session_selected), (on_relay_language_selected),
+	(on_relay_user_selected), (on_relay_open),
+	(on_relay_start_session), (on_relay_cancelled),
+	(relay_dbus_handle_message), (relay_dbus_filter_function),
+	(connect_to_session_relay), (gdm_product_slave_init):
+	* daemon/gdm-session-worker.c: (worker_dbus_handle_message),
+	(worker_dbus_filter_function):
+	* gui/simple-greeter/gdm-greeter-client.c:
+	(client_dbus_handle_message):
+	Convert to libdbus.  Complete the migration to the new GdmSession
+	interface.
+
+2007-10-30  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/simple-greeter/gdm-greeter-background.c:
 	(cairo_surface_get_height), (update_surface), (load_image),
 	(update_background), (update_geometry),

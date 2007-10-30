@@ -153,10 +153,12 @@ on_session_opened (GdmSession      *session,
 }
 
 static void
-on_session_user_verified (GdmSession *session,
-                                GdmFactorySlave *slave)
+on_session_user_verified (GdmSession      *session,
+                          GdmFactorySlave *slave)
 {
         g_debug ("GdmFactorySlave:  session user verified");
+
+        gdm_session_start_session (session);
 
         gdm_greeter_server_reset (slave->priv->greeter_server);
 }
