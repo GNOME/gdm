@@ -150,7 +150,9 @@ record_set_host (UTMP       *u,
          * Set ut_host to hostname:$DISPLAY if remote, otherwise set
          * to $DISPLAY
          */
-        if ((host_name != NULL) && g_str_has_prefix (x11_display_name, ":")) {
+        if (host_name != NULL
+            && x11_display_name != NULL
+            && g_str_has_prefix (x11_display_name, ":")) {
                 hostname = g_strdup_printf ("%s%s", host_name, x11_display_name);
         } else {
                 hostname = g_strdup (x11_display_name);
@@ -178,11 +180,13 @@ record_set_line (UTMP       *u,
          * but remove the "/dev/" prefix.  If no device, then use the
          * $DISPLAY value.
          */
-        if (g_str_has_prefix (display_device, "/dev/")) {
+        if (display_device != NULL
+            && g_str_has_prefix (display_device, "/dev/")) {
                 strncpy (u->ut_line,
                          display_device + strlen ("/dev/"),
                          sizeof (u->ut_line));
-        } else if (g_str_has_prefix (x11_display_name, ":")) {
+        } else if (x11_display_name != NULL
+                   && g_str_has_prefix (x11_display_name, ":")) {
                 strncpy (u->ut_line,
                          x11_display_name,
                          sizeof (u->ut_line));

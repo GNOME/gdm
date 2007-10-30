@@ -1,5 +1,13 @@
 2007-10-30  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-session-direct.c: (send_begin_verification),
+	(send_begin_verification_for_user), (open_ck_session):
+	* daemon/gdm-session-record.c: (record_set_host),
+	(record_set_line):
+	Be careful about sending NULLs over DBus and etc.
+
+2007-10-30  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/gdm-session-worker.c: (send_dbus_string_method),
 	(send_dbus_int_method), (send_user_verified),
 	(send_question_method), (gdm_session_worker_start_program):

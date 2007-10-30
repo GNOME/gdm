@@ -1026,6 +1026,25 @@ send_begin_verification (GdmSessionDirect *session)
 {
         DBusMessage    *message;
         DBusMessageIter iter;
+        const char     *display_name;
+        const char     *display_device;
+        const char     *display_hostname;
+
+        if (session->priv->display_name != NULL) {
+                display_name = session->priv->display_name;
+        } else {
+                display_name = "";
+        }
+        if (session->priv->display_hostname != NULL) {
+                display_hostname = session->priv->display_hostname;
+        } else {
+                display_hostname = "";
+        }
+        if (session->priv->display_device != NULL) {
+                display_device = session->priv->display_device;
+        } else {
+                display_device = "";
+        }
 
         g_debug ("GdmSessionDirect: Beginning verification");
 
@@ -1035,9 +1054,9 @@ send_begin_verification (GdmSessionDirect *session)
 
         dbus_message_iter_init_append (message, &iter);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->service_name);
-        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->display_name);
-        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->display_device);
-        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->display_hostname);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_name);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_device);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_hostname);
 
         if (! send_dbus_message (session->priv->worker_connection, message)) {
                 g_debug ("GdmSessionDirect: Could not send %s signal", "BeginVerification");
@@ -1051,6 +1070,31 @@ send_begin_verification_for_user (GdmSessionDirect *session)
 {
         DBusMessage    *message;
         DBusMessageIter iter;
+        const char     *display_name;
+        const char     *display_device;
+        const char     *display_hostname;
+        const char     *selected_user;
+
+        if (session->priv->display_name != NULL) {
+                display_name = session->priv->display_name;
+        } else {
+                display_name = "";
+        }
+        if (session->priv->display_hostname != NULL) {
+                display_hostname = session->priv->display_hostname;
+        } else {
+                display_hostname = "";
+        }
+        if (session->priv->display_device != NULL) {
+                display_device = session->priv->display_device;
+        } else {
+                display_device = "";
+        }
+        if (session->priv->selected_user != NULL) {
+                selected_user = session->priv->selected_user;
+        } else {
+                selected_user = "";
+        }
 
         g_debug ("GdmSessionDirect: Beginning verification for user %s", session->priv->selected_user);
 
@@ -1060,10 +1104,10 @@ send_begin_verification_for_user (GdmSessionDirect *session)
 
         dbus_message_iter_init_append (message, &iter);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->service_name);
-        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->display_name);
-        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->display_device);
-        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->display_hostname);
-        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->selected_user);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_name);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_device);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_hostname);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &selected_user);
 
         if (! send_dbus_message (session->priv->worker_connection, message)) {
                 g_debug ("GdmSessionDirect: Could not send %s signal", "BeginVerificationForUser");
@@ -1261,6 +1305,25 @@ open_ck_session (GdmSessionDirect *session)
         gboolean       ret;
         int            res;
         DBusError      error;
+        const char     *display_name;
+        const char     *display_device;
+        const char     *display_hostname;
+
+        if (session->priv->display_name != NULL) {
+                display_name = session->priv->display_name;
+        } else {
+                display_name = "";
+        }
+        if (session->priv->display_hostname != NULL) {
+                display_hostname = session->priv->display_hostname;
+        } else {
+                display_hostname = "";
+        }
+        if (session->priv->display_device != NULL) {
+                display_device = session->priv->display_device;
+        } else {
+                display_device = "";
+        }
 
         pwent = getpwnam (session->priv->selected_user);
         if (pwent == NULL) {
@@ -1277,9 +1340,9 @@ open_ck_session (GdmSessionDirect *session)
         res = ck_connector_open_session_with_parameters (session->priv->ckc,
                                                          &error,
                                                          "unix-user", &pwent->pw_uid,
-                                                         "x11-display", &session->priv->display_name,
-                                                         "x11-display-device", &session->priv->display_device,
-                                                         "remote-host-name", &session->priv->display_hostname,
+                                                         "x11-display", &display_name,
+                                                         "x11-display-device", &display_device,
+                                                         "remote-host-name", &display_hostname,
                                                          "is-local", &session->priv->display_is_local,
                                                          NULL);
 
