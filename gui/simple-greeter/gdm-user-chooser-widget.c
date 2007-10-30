@@ -799,7 +799,7 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
                                                  widget,
                                                  NULL);
         g_object_set (renderer,
-                      "width", 128,
+                      "width", 96,
                       "yalign", 0.5,
                       "xalign", 0.5,
                       NULL);
