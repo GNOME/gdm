@@ -55,7 +55,7 @@ A subclass of GdmDisplay that represents a remote XDMCP display.
 ** GdmSlave
 
 A GdmSlave is an abstract class of object that performs work for a
-GdmDisplay.  A slave is a sub-process spawned by each GdmDisplay.  The
+GdmDisplay.  A Slave is run in a sub-process spawned by each GdmDisplay.  The
 slave communicates with the parent display using the D-Bus protocol.
 
 *** GdmSimpleSlave
@@ -88,11 +88,23 @@ provide the GdmGreeterServer D-Bus address to the subprocesses.
 
 ** GdmSession
 
-This class both drives the authentication process and runs the
-user session itself.  Once the authentication process is started
-the object will emit signals to request any required information.
-It also creates a D-Bus server on a private connection that it uses
-to communicate with a GdmSessionWorker subprocess.
+An interface used to control the authentication process and the user
+session itself.  Once the authentication process is started an object
+that implements this interface will emit signals to request any
+required information.
+
+*** GdmSessionDirect
+
+A class of object that implements the GdmSession interface.  It is
+used to start and directly control a GdmSessionWorker subprocess by
+creating a D-Bus server on a private connection.
+
+*** GdmSessionRelay
+
+A class of object that implements the GdmSession interface.  It is
+used to relay session controls to a remote listener.  In particular,
+it is used to relay messages between the GreeterServer in a
+GdmFactorySlave and the GdmSessionDirect in a GdmProductSlave.
 
 ** GdmSessionWorkerJob
 
@@ -105,10 +117,6 @@ This class handles the PAM conversation and relays the questions and
 messages to the GdmSession through the private D-Bus connection.  When
 the user is authenticated this subprocess "exec"s the user session.
 
-** GdmSessionRelay
-
-This class is used to relay messagse between the greeter in a
-GdmFactorySlave and the GdmSession in a GdmProductSlave.
 
 Local Variables:
 mode: outline
