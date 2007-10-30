@@ -343,10 +343,10 @@ send_dbus_string_method (DBusConnection *connection,
         dbus_message_unref (message);
 
         if (dbus_error_is_set (&error)) {
-                g_warning ("%s %s raised: %s\n",
-                           method,
-                           error.name,
-                           error.message);
+                g_debug ("%s %s raised: %s\n",
+                         method,
+                         error.name,
+                         error.message);
                 return FALSE;
         }
         dbus_message_unref (reply);
@@ -390,10 +390,10 @@ send_dbus_int_method (DBusConnection *connection,
         dbus_connection_flush (connection);
 
         if (dbus_error_is_set (&error)) {
-                g_warning ("%s %s raised: %s\n",
-                           method,
-                           error.name,
-                           error.message);
+                g_debug ("%s %s raised: %s\n",
+                         method,
+                         error.name,
+                         error.message);
                 return FALSE;
         }
 
@@ -427,9 +427,9 @@ send_user_verified (GdmSessionWorker *worker)
         dbus_connection_flush (worker->priv->connection);
 
         if (dbus_error_is_set (&error)) {
-                g_warning ("Verified %s raised: %s\n",
-                           error.name,
-                           error.message);
+                g_debug ("Verified %s raised: %s\n",
+                         error.name,
+                         error.message);
         }
 }
 
@@ -574,10 +574,10 @@ send_question_method (GdmSessionWorker *worker,
                 if (strcmp (error.name, GDM_SESSION_DBUS_ERROR_CANCEL) == 0) {
                         worker->priv->cancelled = TRUE;
                 }
-                g_warning ("%s %s raised: %s\n",
-                           method,
-                           error.name,
-                           error.message);
+                g_debug ("%s %s raised: %s\n",
+                         method,
+                         error.name,
+                         error.message);
                 goto out;
         }
 
@@ -1513,7 +1513,7 @@ gdm_session_worker_start_program (GdmSessionWorker *worker,
         if (! res) {
                 g_assert (start_error != NULL);
 
-                g_warning ("%s", start_error->message);
+                g_debug ("%s", start_error->message);
 
                 send_startup_failed (worker, start_error->message);
                 return FALSE;
