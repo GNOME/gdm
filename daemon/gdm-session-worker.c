@@ -1320,6 +1320,8 @@ session_worker_child_watch (GPid              pid,
                 send_session_died (worker, num);
         }
 
+        gdm_session_worker_uninitialize_pam (worker, PAM_SUCCESS);
+
         worker->priv->child_pid = -1;
 }
 
