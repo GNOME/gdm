@@ -9,6 +9,7 @@ SUBDIRS = 			\
 	gui 			\
 	utils 			\
 	docs			\
+	data			\
 	$(NULL)
 
 # add these when help gets added back
