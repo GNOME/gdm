@@ -198,7 +198,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 	    bin_exists (gdm_config_get_string (GDM_KEY_CONFIGURATOR))) {
 		w = gtk_image_menu_item_new_with_mnemonic (_("Confi_gure Login Manager..."));
 		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (w),
-			gtk_image_new_from_icon_name ("gdm-setup", GTK_ICON_SIZE_MENU));
+			gtk_image_new_from_icon_name ("gdmsetup", GTK_ICON_SIZE_MENU));
 
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
