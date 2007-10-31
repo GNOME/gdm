@@ -1,5 +1,12 @@
 2007-10-31  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-session-worker.c:
+	(gdm_session_worker_uninitialize_pam):
+	change error_code to status to make it clear
+	it isn't just for errors.
+
+2007-10-31  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/gdm-session-worker.c: (session_worker_child_watch):
 	make sure we close the session on logout
 	Patch from: Ray Strode <halfline@gmail.com>

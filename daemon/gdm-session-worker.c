@@ -794,7 +794,7 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
 
 static void
 gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
-                                     int               error_code)
+                                     int               status)
 {
         g_debug ("GdmSessionWorker: uninitializing PAM");
 
@@ -811,7 +811,7 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
                 worker->priv->is_running = FALSE;
         }
 
-        pam_end (worker->priv->pam_handle, error_code);
+        pam_end (worker->priv->pam_handle, status);
         worker->priv->pam_handle = NULL;
 }
 
