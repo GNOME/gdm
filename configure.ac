@@ -69,7 +69,7 @@ PKG_CHECK_MODULES(XLIB, x11, ,
     if test "x$no_x" = xyes; then
       AC_MSG_ERROR("no (requires X development libraries)")
     else
-      XLIB_LIBS="$X_PRE_LIBS $X_LIBS -lXau -lX11 lXext $X_EXTRA_LIBS"
+      XLIB_LIBS="$X_PRE_LIBS $X_LIBS -lXau -lX11 -lXext $X_EXTRA_LIBS"
       XLIB_CFLAGS=$X_CFLAGS
     fi])
 AC_SUBST(XLIB_CFLAGS)
