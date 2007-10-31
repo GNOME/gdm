@@ -1430,16 +1430,20 @@ gdm_session_direct_start_session (GdmSession *session)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
         char             *command;
+        char             *program;
 
         g_return_if_fail (session != NULL);
         g_return_if_fail (impl->priv->is_running == FALSE);
 
         command = get_session_command (impl);
+        program = g_strdup_printf (GDMCONFDIR "/Xsession \"%s\"", command);
+        g_free (command);
 
         setup_session_environment (impl);
         send_environment (impl);
 
-        send_dbus_string_signal (impl, "StartProgram", command);
+        send_dbus_string_signal (impl, "StartProgram", program);
+        g_free (program);
 }
 
 static void

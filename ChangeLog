@@ -1,5 +1,13 @@
 2007-10-31  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-session-direct.c: (gdm_session_direct_start_session):
+	This patch is sort of the minimum we need to get the session run
+	through Xsession (which makes sure ssh-agent/dbus/etc get
+	started).
+	Patch from: Ray Strode <halfline@gmail.com>
+
+2007-10-31  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/gdm-session-worker.c:
 	(gdm_session_worker_uninitialize_pam):
 	change error_code to status to make it clear
