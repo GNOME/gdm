@@ -1,6 +1,12 @@
 2007-10-31  William Jon McCann  <mccann@jhu.edu>
 
 	* configure.ac:
+	Add Xau and Xext to XLIB_LIBS when x11.pc isn't
+	found.  Fixes #492022 more
+
+2007-10-31  William Jon McCann  <mccann@jhu.edu>
+
+	* configure.ac:
 	* daemon/Makefile.am:
 	If x11.pc doesn't exist then try a fallback.
 	Fixes #492022

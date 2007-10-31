@@ -415,7 +415,7 @@ gdm_daemon_change_user (uid_t *uidp,
                 gdm_fail (_("The GDM group should not be root. Aborting!"));
         }
 
-        /* gid remains `gdm' */
+        /* gid remains 'gdm' */
         set_effective_user_group (uid, gid);
 
         if (uidp != NULL) {
@@ -429,12 +429,6 @@ gdm_daemon_change_user (uid_t *uidp,
         g_free (username);
         g_free (groupname);
 }
-
-/*
- * -------------------------------------
- * END Copyright status/holder unknown
- * -------------------------------------
- */
 
 static gboolean
 signal_cb (int      signo,
