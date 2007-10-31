@@ -21,6 +21,7 @@ INCLUDES = \
 	-DGDM_OLD_CONF=\"$(GDM_OLD_CONF)\"		\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(DAEMON_CFLAGS)				\
+	$(XLIB_CFLAGS)					\
 	$(WARN_CFLAGS)					\
 	$(DEBUG_CFLAGS)					\
 	-DLANG_CONFIG_FILE=\"$(LANG_CONFIG_FILE)\"	\
@@ -79,6 +80,7 @@ test_session_SOURCES = 		\
 	$(NULL)
 
 test_session_LDADD =		\
+	$(XLIB_LIBS)		\
 	$(DAEMON_LIBS)		\
 	$(PAM_LIBS)		\
 	$(top_builddir)/common/libgdmcommon.la	\
@@ -123,6 +125,7 @@ gdm_simple_slave_LDFLAGS =		\
 	$(NULL)
 
 gdm_simple_slave_LDADD = 			\
+	$(XLIB_LIBS)				\
 	$(DAEMON_LIBS)				\
 	$(EXTRA_DAEMON_LIBS)                    \
 	$(top_builddir)/common/libgdmcommon.la	\
@@ -154,6 +157,7 @@ gdm_factory_slave_LDFLAGS =		\
 	$(NULL)
 
 gdm_factory_slave_LDADD = 			\
+	$(XLIB_LIBS)				\
 	$(DAEMON_LIBS)				\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
@@ -186,6 +190,7 @@ gdm_product_slave_LDFLAGS =		\
 	$(NULL)
 
 gdm_product_slave_LDADD = 			\
+	$(XLIB_LIBS)				\
 	$(DAEMON_LIBS)				\
 	$(EXTRA_DAEMON_LIBS)                    \
 	$(top_builddir)/common/libgdmcommon.la	\
@@ -261,6 +266,7 @@ gdm_binary_LDFLAGS =				\
 	$(NULL)
 
 gdm_binary_LDADD = \
+	$(XLIB_LIBS)				\
 	$(DAEMON_LIBS)				\
 	$(XDMCP_LIBS)                           \
 	$(LIBWRAP_LIBS)                         \

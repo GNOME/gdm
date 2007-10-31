@@ -39,7 +39,6 @@ dnl ---------------------------------------------------------------------------
 dnl - Dependencies
 dnl ---------------------------------------------------------------------------
 
-X11_REQUIRED_VERSION=1.0.0
 DBUS_GLIB_REQUIRED_VERSION=0.74
 GLIB_REQUIRED_VERSION=2.13.0
 GTK_REQUIRED_VERSION=2.10.0
@@ -61,10 +60,20 @@ AC_SUBST(COMMON_LIBS)
 PKG_CHECK_MODULES(DAEMON,
         dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
         gobject-2.0 >= $GLIB_REQUIRED_VERSION
-        x11 >= $X11_REQUIRED_VERSION
 )
 AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
+
+PKG_CHECK_MODULES(XLIB, x11, ,
+  [AC_PATH_XTRA
+    if test "x$no_x" = xyes; then
+      AC_MSG_ERROR("no (requires X development libraries)")
+    else
+      XLIB_LIBS="$X_PRE_LIBS $X_LIBS -lX11 $X_EXTRA_LIBS"
+      XLIB_CFLAGS=$X_CFLAGS
+    fi])
+AC_SUBST(XLIB_CFLAGS)
+AC_SUBST(XLIB_LIBS)
 
 PKG_CHECK_MODULES(GTK,
         gtk+-2.0 >= $GTK_REQUIRED_VERSION

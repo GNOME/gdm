@@ -1,5 +1,12 @@
 2007-10-31  William Jon McCann  <mccann@jhu.edu>
 
+	* configure.ac:
+	* daemon/Makefile.am:
+	If x11.pc doesn't exist then try a fallback.
+	Fixes #492022
+
+2007-10-31  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/gdm-session-direct.c: (gdm_session_direct_start_session):
 	This patch is sort of the minimum we need to get the session run
 	through Xsession (which makes sure ssh-agent/dbus/etc get
