@@ -58,7 +58,6 @@ gdm.schemas.in: $(srcdir)/gdm.schemas.in.in
 		-e 's,[@]GDM_RBAC_SYSCMD_KEYS[@],$(GDM_RBAC_SYSCMD_KEYS),g' \
 		-e 's,[@]authdir[@],$(authdir),g' \
 		-e 's,[@]datadir[@],$(datadir),g' \
-		-e 's,[@]dmconfdir[@],$(dmconfdir),g' \
 		-e 's,[@]gdmconfdir[@],$(gdmconfdir),g' \
 		-e 's,[@]libdir[@],$(libdir),g' \
 		-e 's,[@]libexecdir[@],$(libexecdir),g' \
@@ -103,7 +102,7 @@ MAINTAINERCLEANFILES =			\
 uninstall-hook:
 	rm -f \
 	$(DESTDIR)$(GDM_CUSTOM_CONF) \
-	$(DESTDIR)$(confdir)/Xsession \
+	$(DESTDIR)$(gdmconfdir)/Xsession \
 	$(DESTDIR)$(initdir)/Default \
 	$(DESTDIR)$(postlogindir)/Default.sample \
 	$(DESTDIR)$(predir)/Default \
@@ -119,7 +118,7 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession
 		chmod 644 $(DESTDIR)$(GDM_CUSTOM_CONF); \
 	fi
 
-	$(INSTALL_SCRIPT) Xsession $(DESTDIR)$(confdir)/Xsession
+	$(INSTALL_SCRIPT) Xsession $(DESTDIR)$(gdmconfdir)/Xsession
 
 	if test '!' -d $(DESTDIR)$(initdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(initdir); \

@@ -2,7 +2,6 @@ NULL =
 
 SUBDIRS = 			\
 	data			\
-	config 			\
 	common 			\
 	daemon 			\
 	gui 			\
