@@ -1,13 +1,9 @@
 NULL =
 
-pixmapdir = $(datadir)/pixmaps
 confdir = $(gdmconfdir)
-gdmlocaledir = $(gdmconfdir)
-bisessdir = $(datadir)/gdm/BuiltInSessions
 instsessdir = $(datadir)/xsessions
 initdir = $(gdmconfdir)/Init
 authdir = $(localstatedir)/gdm
-gnomercdir = $(gdmconfdir)
 postdir = $(gdmconfdir)/PostSession
 predir = $(gdmconfdir)/PreSession
 postlogindir = $(gdmconfdir)/PostLogin
@@ -18,7 +14,6 @@ noinst_DATA = \
 	$(NULL)
 
 EXTRA_DIST = 			\
-	gdm.conf.in 		\
 	gdm.conf-custom.in 	\
 	Xsession.in 		\
 	gdm 			\
@@ -31,7 +26,6 @@ EXTRA_DIST = 			\
 
 CLEANFILES = 			\
 	Xsession		\
-	gdm.conf		\
 	gdm.conf-custom		\
 	Init			\
 	PreSession		\
@@ -42,33 +36,6 @@ Xsession: $(srcdir)/Xsession.in
 	sed	-e 's,[@]XSESSION_SHELL[@],$(XSESSION_SHELL),g' \
 		-e 's,[@]libexecdir[@],$(libexecdir),g' \
 		<$(srcdir)/Xsession.in >Xsession
-
-gdm.conf: $(srcdir)/gdm.conf.in
-	sed     -e 's,[@]GDM_CUSTOM_CONF[@],$(GDM_CUSTOM_CONF),g' \
-		-e 's,[@]GDM_USER_PATH[@],$(GDM_USER_PATH),g' \
-		-e 's,[@]HALT_COMMAND[@],$(HALT_COMMAND),g' \
-		-e 's,[@]REBOOT_COMMAND[@],$(REBOOT_COMMAND),g' \
-		-e 's,[@]SOUND_PROGRAM[@],$(SOUND_PROGRAM),g' \
-		-e 's,[@]SUSPEND_COMMAND[@],$(SUSPEND_COMMAND),g' \
-		-e 's,[@]XEVIE_OPTION[@],$(XEVIE_OPTION),g' \
-		-e 's,[@]ALWAYS_RESTART_SERVER[@],$(ALWAYS_RESTART_SERVER),g' \
-		-e 's,[@]X_CONFIG_OPTIONS[@],$(X_CONFIG_OPTIONS),g' \
-		-e 's,[@]X_SERVER[@],$(X_SERVER),g' \
-		-e 's,[@]X_XNEST_CMD[@],$(X_XNEST_CMD),g' \
-		-e 's,[@]X_XNEST_CONFIG_OPTIONS[@],$(X_XNEST_CONFIG_OPTIONS),g' \
-		-e 's,[@]X_XNEST_UNSCALED_FONTPATH[@],$(X_XNEST_UNSCALED_FONTPATH),g' \
-		-e 's,[@]GDM_RBAC_SYSCMD_KEYS[@],$(GDM_RBAC_SYSCMD_KEYS),g' \
-		-e 's,[@]authdir[@],$(authdir),g' \
-		-e 's,[@]datadir[@],$(datadir),g' \
-		-e 's,[@]dmconfdir[@],$(dmconfdir),g' \
-		-e 's,[@]gdmconfdir[@],$(gdmconfdir),g' \
-		-e 's,[@]libdir[@],$(libdir),g' \
-		-e 's,[@]libexecdir[@],$(libexecdir),g' \
-		-e 's,[@]gdmlocaledir[@],$(gdmlocaledir),g' \
-		-e 's,[@]logdir[@],$(logdir),g' \
-		-e 's,[@]pixmapdir[@],$(pixmapdir),g' \
-		-e 's,[@]sbindir[@],$(sbindir),g' \
-		<$(srcdir)/gdm.conf.in >gdm.conf
 
 gdm.conf-custom: $(srcdir)/gdm.conf-custom.in
 	sed	-e 's,[@]GDM_DEFAULTS_CONF[@],$(GDM_DEFAULTS_CONF),g' \
@@ -122,11 +89,6 @@ install-data-hook: gdm.conf gdm.conf-custom Xsession Init PostSession PreSession
 	$(INSTALL_DATA) gdm.conf `dirname $(DESTDIR)$(GDM_DEFAULTS_CONF)`/factory-`basename $(DESTDIR)$(GDM_DEFAULTS_CONF)`
 
 	$(INSTALL_SCRIPT) Xsession $(DESTDIR)$(confdir)/Xsession
-
-	if test '!' -d $(DESTDIR)$(bisessdir); then \
-		$(mkinstalldirs) $(DESTDIR)$(bisessdir); \
-		chmod 755 $(DESTDIR)$(bisessdir); \
-	fi
 
 	if test '!' -d $(DESTDIR)$(instsessdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(instsessdir); \
