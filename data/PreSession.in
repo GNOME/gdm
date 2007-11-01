@@ -21,7 +21,7 @@ gdmwhich () {
       fi
     fi
   done
-  IFS=$OLD_IFS 
+  IFS=$OLD_IFS
   echo "$OUTPUT"
 }
 
@@ -44,7 +44,7 @@ if [ "x$XSETROOT" != "x" ] ; then
 	# If we tried to load the themed backgroundcolor, but failed, then try loading plain color
 	if [ "x$CHECKBACKCOLOR" != "xOK" ] || [ "x$GDM_GREETER_TYPE" = "xPLAIN" ]; then
 
-		# Background type can be 0=None, 1=Image & Color, 2=Color, or 3=Image 
+		# Background type can be 0=None, 1=Image & Color, 2=Color, or 3=Image
 		BACKTYPE=`gdmflexiserver --command="GET_CONFIG greeter/BackgroundType $DISPLAY"`
 
 		# Skip if background type does not include a color

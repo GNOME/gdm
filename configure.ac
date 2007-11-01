@@ -1320,12 +1320,8 @@ data/pixmaps/Makefile
 data/pixmaps/16x16/Makefile
 data/pixmaps/32x32/Makefile
 data/pixmaps/48x48/Makefile
-config/Makefile
 common/Makefile
 po/Makefile.in
-config/Init
-config/PreSession
-config/PostSession
 ])
 
 dnl ---------------------------------------------------------------------------
