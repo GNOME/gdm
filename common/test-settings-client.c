@@ -54,8 +54,8 @@ test_settings_client (gpointer data)
         guint    notify_id;
 
         strval = NULL;
-        res = gdm_settings_client_get_string (GDM_KEY_GREETER, &strval);
-        g_debug ("Got res=%d %s=%s", res, GDM_KEY_GREETER, strval);
+        res = gdm_settings_client_get_string (GDM_KEY_WILLING, &strval);
+        g_debug ("Got res=%d %s=%s", res, GDM_KEY_WILLING, strval);
         g_free (strval);
 
         res = gdm_settings_client_get_boolean (GDM_KEY_XDMCP, &boolval);

@@ -82,6 +82,10 @@ gdm_settings_error_quark (void)
         return ret;
 }
 
+/*
+dbus-send --system --print-reply --dest=org.gnome.DisplayManager /org/gnome/DisplayManager/Settings org.gnome.DisplayManager.Settings.GetValue string:"xdmcp/Enable"
+*/
+
 gboolean
 gdm_settings_get_value (GdmSettings *settings,
                         const char  *key,
@@ -106,6 +110,10 @@ gdm_settings_get_value (GdmSettings *settings,
         return res;
 }
 
+/*
+dbus-send --system --print-reply --dest=org.gnome.DisplayManager /org/gnome/DisplayManager/Settings org.gnome.DisplayManager.Settings.SetValue string:"xdmcp/Enable" string:"false"
+*/
+
 gboolean
 gdm_settings_set_value (GdmSettings *settings,
                         const char  *key,
@@ -129,7 +137,7 @@ gdm_settings_set_value (GdmSettings *settings,
                 g_propagate_error (error, local_error);
         }
 
-        return FALSE;
+        return res;
 }
 
 static gboolean
