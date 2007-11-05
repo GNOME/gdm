@@ -1,3 +1,19 @@
+2007-11-05  William Jon McCann  <mccann@jhu.edu>
+
+	* gui/simple-greeter/gdm-user-chooser-widget.c: (choose_user_id),
+	(on_user_added), (on_user_removed), (on_user_is_logged_in_changed):
+	* gui/simple-greeter/gdm-user-manager.c:
+	(on_user_sessions_changed), (on_user_icon_changed), (create_user),
+	(add_new_user_for_pwent), (get_current_seat_id),
+	(get_uid_from_session_id), (seat_session_added),
+	(seat_session_removed), (on_proxy_destroy), (get_seat_proxy),
+	(gdm_user_manager_get_user), (reload_passwd),
+	(gdm_user_manager_init), (gdm_user_manager_finalize):
+	* gui/simple-greeter/gdm-user-private.h:
+	* gui/simple-greeter/gdm-user.c: (session_compare),
+	(_gdm_user_add_session), (_gdm_user_remove_session):
+	Use ConsoleKit to drive populate the list of sessions for each user.
+
 2007-11-04  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/simple-greeter/gdm-user-chooser-widget.c: (on_user_added),

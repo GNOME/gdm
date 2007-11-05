@@ -207,7 +207,7 @@ choose_user_id (GdmUserChooserWidget *widget,
                 const char           *id)
 {
 
-        g_debug ("Selection changed from:'%s' to:'%s'",
+        g_debug ("GdmUserChooserWidget: Selection changed from:'%s' to:'%s'",
                  widget->priv->chosen_user ? widget->priv->chosen_user : "",
                  id ? id : "");
 
@@ -498,7 +498,7 @@ on_user_added (GdmUserManager       *manager,
         GdkPixbuf    *pixbuf;
         char         *tooltip;
 
-        g_debug ("User added: %s", gdm_user_get_user_name (user));
+        g_debug ("GdmUserChooserWidget: User added: %s", gdm_user_get_user_name (user));
 
         pixbuf = gdm_user_render_icon (user, GTK_WIDGET (widget), ICON_SIZE);
 
@@ -530,7 +530,7 @@ on_user_removed (GdmUserManager       *manager,
         gboolean    found;
         const char *user_name;
 
-        g_debug ("User removed: %s", gdm_user_get_user_name (user));
+        g_debug ("GdmUserChooserWidget: User removed: %s", gdm_user_get_user_name (user));
 
         found = FALSE;
 
@@ -573,7 +573,7 @@ on_user_is_logged_in_changed (GdmUserManager       *manager,
         const char *user_name;
         gboolean    is_logged_in;
 
-        g_debug ("User logged in changed: %s", gdm_user_get_user_name (user));
+        g_debug ("GdmUserChooserWidget: User logged in changed: %s", gdm_user_get_user_name (user));
 
         found = FALSE;
 

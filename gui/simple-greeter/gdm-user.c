@@ -87,16 +87,35 @@ static guint signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (GdmUser, gdm_user, G_TYPE_OBJECT);
 
+static int
+session_compare (const char *a,
+                 const char *b)
+{
+        if (a == NULL) {
+                return 1;
+        } else if (b == NULL) {
+                return -1;
+        }
+
+        return strcmp (a, b);
+}
+
 void
 _gdm_user_add_session (GdmUser    *user,
                        const char *ssid)
 {
+        GSList *li;
+
         g_return_if_fail (GDM_IS_USER (user));
         g_return_if_fail (ssid != NULL);
 
-        if (! g_slist_find (user->sessions, ssid)) {
-                user->sessions = g_slist_append (user->sessions, g_strdup (ssid));
+        li = g_slist_find_custom (user->sessions, ssid, (GCompareFunc)session_compare);
+        if (li == NULL) {
+                g_debug ("GdmUser: adding session %s", ssid);
+                user->sessions = g_slist_prepend (user->sessions, g_strdup (ssid));
                 g_signal_emit (user, signals[SESSIONS_CHANGED], 0);
+        } else {
+                g_debug ("GdmUser: session already present: %s", ssid);
         }
 }
 
@@ -109,11 +128,14 @@ _gdm_user_remove_session (GdmUser    *user,
         g_return_if_fail (GDM_IS_USER (user));
         g_return_if_fail (ssid != NULL);
 
-        li = g_slist_find (user->sessions, ssid);
+        li = g_slist_find_custom (user->sessions, ssid, (GCompareFunc)session_compare);
         if (li != NULL) {
+                g_debug ("GdmUser: removing session %s", ssid);
                 g_free (li->data);
                 user->sessions = g_slist_delete_link (user->sessions, li);
                 g_signal_emit (user, signals[SESSIONS_CHANGED], 0);
+        } else {
+                g_debug ("GdmUser: session not found: %s", ssid);
         }
 }
 

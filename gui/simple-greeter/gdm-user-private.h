@@ -33,9 +33,9 @@ G_BEGIN_DECLS
 void _gdm_user_update           (GdmUser             *user,
                                  const struct passwd *pwent);
 void _gdm_user_add_session      (GdmUser             *user,
-                                 const char          *ssid);
+                                 const char          *session_id);
 void _gdm_user_remove_session   (GdmUser             *user,
-                                 const char          *ssid);
+                                 const char          *session_id);
 
 void _gdm_user_icon_changed     (GdmUser             *user);
 

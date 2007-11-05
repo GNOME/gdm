@@ -26,6 +26,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <signal.h>
+#include <errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -33,6 +34,10 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <glib-object.h>
+#define DBUS_API_SUBJECT_TO_CHANGE
+#include <dbus/dbus.h>
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
 
 #include <libgnomevfs/gnome-vfs.h>
 
@@ -40,6 +45,15 @@
 #include "gdm-user-private.h"
 
 #define GDM_USER_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_USER_MANAGER, GdmUserManagerPrivate))
+
+#define CK_NAME      "org.freedesktop.ConsoleKit"
+#define CK_PATH      "/org/freedesktop/ConsoleKit"
+#define CK_INTERFACE "org.freedesktop.ConsoleKit"
+
+#define CK_MANAGER_PATH      "/org/freedesktop/ConsoleKit/Manager"
+#define CK_MANAGER_INTERFACE "org.freedesktop.ConsoleKit.Manager"
+#define CK_SEAT_INTERFACE    "org.freedesktop.ConsoleKit.Seat"
+#define CK_SESSION_INTERFACE "org.freedesktop.ConsoleKit.Session"
 
 /* Prefs Defaults */
 #define DEFAULT_ALLOW_ROOT      TRUE
@@ -77,10 +91,12 @@
 struct GdmUserManagerPrivate
 {
         GHashTable            *users;
+        GHashTable            *sessions;
         GHashTable            *shells;
         GHashTable            *exclusions;
         GnomeVFSMonitorHandle *passwd_monitor;
         GnomeVFSMonitorHandle *shells_monitor;
+        DBusGProxy            *seat_proxy;
 
         guint                  reload_id;
         uid_t                  minimal_uid;
@@ -116,6 +132,320 @@ gdm_user_manager_error_quark (void)
         return ret;
 }
 
+static void
+on_user_sessions_changed (GdmUser        *user,
+                          GdmUserManager *manager)
+{
+        guint nsessions;
+
+        nsessions = gdm_user_get_num_sessions (user);
+
+        g_debug ("GdmUserManager: sessions changed user=%s num=%d",
+                 gdm_user_get_user_name (user),
+                 nsessions);
+
+        /* only signal on zero and one */
+        if (nsessions > 1) {
+                return;
+        }
+
+        g_signal_emit (manager, signals [USER_IS_LOGGED_IN_CHANGED], 0, user);
+}
+
+static void
+on_user_icon_changed (GdmUser        *user,
+                      GdmUserManager *manager)
+{
+        g_debug ("GdmUserManager: user icon changed");
+}
+
+static GdmUser *
+create_user (GdmUserManager *manager)
+{
+        GdmUser *user;
+
+        user = g_object_new (GDM_TYPE_USER, "manager", manager, NULL);
+        g_signal_connect (user,
+                          "sessions-changed",
+                          G_CALLBACK (on_user_sessions_changed),
+                          manager);
+        g_signal_connect (user,
+                          "icon-changed",
+                          G_CALLBACK (on_user_icon_changed),
+                          manager);
+        return user;
+}
+
+static GdmUser *
+add_new_user_for_pwent (GdmUserManager *manager,
+                        struct passwd  *pwent)
+{
+        GdmUser *user;
+
+        user = create_user (manager);
+        _gdm_user_update (user, pwent);
+        g_hash_table_insert (manager->priv->users,
+                             g_strdup (pwent->pw_name),
+                             user);
+        g_signal_emit (manager, signals[USER_ADDED], 0, user);
+
+        return user;
+}
+
+static char *
+get_current_seat_id (DBusGConnection *connection)
+{
+        DBusGProxy      *proxy;
+        GError          *error;
+        char            *session_id;
+        char            *seat_id;
+        gboolean         res;
+
+        proxy = NULL;
+        session_id = NULL;
+        seat_id = NULL;
+
+        proxy = dbus_g_proxy_new_for_name (connection,
+                                           CK_NAME,
+                                           CK_MANAGER_PATH,
+                                           CK_MANAGER_INTERFACE);
+        if (proxy == NULL) {
+                g_warning ("Failed to connect to the ConsoleKit session object");
+                goto out;
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 "GetCurrentSession",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 DBUS_TYPE_G_OBJECT_PATH,
+                                 &session_id,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("Failed to identify the current session: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        g_object_unref (proxy);
+
+        proxy = dbus_g_proxy_new_for_name (connection,
+                                           CK_NAME,
+                                           session_id,
+                                           CK_SESSION_INTERFACE);
+        if (proxy == NULL) {
+                g_warning ("Failed to connect to the ConsoleKit seat object");
+                goto out;
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 "GetSeatId",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 DBUS_TYPE_G_OBJECT_PATH, &seat_id,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("Failed to identify the current seat: %s", error->message);
+                g_error_free (error);
+        }
+
+ out:
+        if (proxy != NULL) {
+                g_object_unref (proxy);
+        }
+        g_free (session_id);
+
+        return seat_id;
+}
+
+static gboolean
+get_uid_from_session_id (const char *session_id,
+                         uid_t      *uidp)
+{
+        DBusGConnection *connection;
+        DBusGProxy      *proxy;
+        GError          *error;
+        int              uid;
+        gboolean         res;
+
+        error = NULL;
+        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (connection == NULL) {
+                g_warning ("Failed to connect to the D-Bus daemon: %s", error->message);
+                g_error_free (error);
+                return FALSE;
+        }
+
+        proxy = dbus_g_proxy_new_for_name (connection,
+                                           CK_NAME,
+                                           session_id,
+                                           CK_SESSION_INTERFACE);
+        if (proxy == NULL) {
+                g_warning ("Failed to connect to the ConsoleKit session object");
+                return FALSE;
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 "GetUnixUser",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_INT, &uid,
+                                 G_TYPE_INVALID);
+        g_object_unref (proxy);
+
+        if (! res) {
+                g_warning ("Failed to query the session: %s", error->message);
+                g_error_free (error);
+                return FALSE;
+        }
+
+        if (uidp != NULL) {
+                *uidp = (uid_t) uid;
+        }
+
+        return TRUE;
+}
+
+static void
+seat_session_added (DBusGProxy     *seat_proxy,
+                    const char     *session_id,
+                    GdmUserManager *manager)
+{
+        uid_t          uid;
+        gboolean       res;
+        struct passwd *pwent;
+        GdmUser       *user;
+
+        g_debug ("Session added: %s", session_id);
+
+        res = get_uid_from_session_id (session_id, &uid);
+        if (! res) {
+                g_warning ("Unable to lookup user for session");
+                return;
+        }
+
+        errno = 0;
+        pwent = getpwuid (uid);
+        if (pwent == NULL) {
+                g_warning ("Unable to lookup user id %d: %s", (int)uid, g_strerror (errno));
+                return;
+        }
+
+        user = g_hash_table_lookup (manager->priv->users, pwent->pw_name);
+        if (user == NULL) {
+                /* add the user */
+                user = add_new_user_for_pwent (manager, pwent);
+        }
+
+        g_debug ("GdmUserManager: Session added for %d", (int)uid);
+        g_hash_table_insert (manager->priv->sessions,
+                             g_strdup (session_id),
+                             g_strdup (gdm_user_get_user_name (user)));
+        _gdm_user_add_session (user, session_id);
+}
+
+static void
+seat_session_removed (DBusGProxy     *seat_proxy,
+                      const char     *session_id,
+                      GdmUserManager *manager)
+{
+        GdmUser *user;
+        char    *username;
+
+        g_debug ("Session removed: %s", session_id);
+
+        /* since the session object may already be gone
+         * we can't query CK directly */
+
+        username = g_hash_table_lookup (manager->priv->sessions, session_id);
+        if (username == NULL) {
+                return;
+        }
+
+        user = g_hash_table_lookup (manager->priv->users, username);
+        if (user == NULL) {
+                /* nothing to do */
+                return;
+        }
+
+        g_debug ("GdmUserManager: Session removed for %s", username);
+        _gdm_user_remove_session (user, session_id);
+}
+
+static void
+on_proxy_destroy (DBusGProxy     *proxy,
+                  GdmUserManager *manager)
+{
+        g_debug ("GdmUserManager: seat proxy destroyed");
+
+        manager->priv->seat_proxy = NULL;
+}
+
+static void
+get_seat_proxy (GdmUserManager *manager)
+{
+        DBusGConnection *connection;
+        DBusGProxy      *proxy;
+        GError          *error;
+        char            *seat_id;
+
+        g_assert (manager->priv->seat_proxy == NULL);
+
+        error = NULL;
+        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (connection == NULL) {
+                g_warning ("Failed to connect to the D-Bus daemon: %s", error->message);
+                g_error_free (error);
+                return;
+        }
+
+        seat_id = get_current_seat_id (connection);
+        if (seat_id == NULL) {
+                return;
+        }
+        g_debug ("GdmUserManager: Found current seat: %s", seat_id);
+
+        error = NULL;
+        proxy = dbus_g_proxy_new_for_name_owner (connection,
+                                                 CK_NAME,
+                                                 seat_id,
+                                                 CK_SEAT_INTERFACE,
+                                                 &error);
+        g_free (seat_id);
+
+        if (proxy == NULL) {
+                g_warning ("Failed to connect to the ConsoleKit seat object: %s", error->message);
+                g_error_free (error);
+                return;
+        }
+
+        g_signal_connect (proxy, "destroy", G_CALLBACK (on_proxy_destroy), manager);
+
+        dbus_g_proxy_add_signal (proxy,
+                                 "SessionAdded",
+                                 G_TYPE_STRING,
+                                 G_TYPE_INVALID);
+        dbus_g_proxy_add_signal (proxy,
+                                 "SessionRemoved",
+                                 G_TYPE_STRING,
+                                 G_TYPE_INVALID);
+        dbus_g_proxy_connect_signal (proxy,
+                                     "SessionAdded",
+                                     G_CALLBACK (seat_session_added),
+                                     manager,
+                                     NULL);
+        dbus_g_proxy_connect_signal (proxy,
+                                     "SessionRemoved",
+                                     G_CALLBACK (seat_session_removed),
+                                     manager,
+                                     NULL);
+        manager->priv->seat_proxy = proxy;
+
+}
+
 /**
  * gdm_manager_get_user:
  * @manager: the manager to query.
@@ -143,12 +473,7 @@ gdm_user_manager_get_user (GdmUserManager *manager,
                 pwent = getpwnam (username);
 
                 if (pwent != NULL) {
-                        user = g_object_new (GDM_TYPE_USER, "manager", manager, NULL);
-                        _gdm_user_update (user, pwent);
-                        g_hash_table_insert (manager->priv->users,
-                                             g_strdup (pwent->pw_name),
-                                             user);
-                        g_signal_emit (manager, signals[USER_ADDED], 0, user);
+                        user = add_new_user_for_pwent (manager, pwent);
                 }
         }
 
@@ -232,9 +557,7 @@ reload_passwd (GdmUserManager *manager)
                 }
 
                 if (user == NULL) {
-                        user = g_object_new (GDM_TYPE_USER,
-                                             "manager", manager,
-                                             NULL);
+                        user = create_user (manager);
                 } else {
                         g_object_ref (user);
                 }
@@ -392,6 +715,12 @@ gdm_user_manager_init (GdmUserManager *manager)
 
         manager->priv->minimal_uid = DEFAULT_MINIMAL_UID;
 
+        /* sessions */
+        manager->priv->sessions = g_hash_table_new_full (g_str_hash,
+                                                         g_str_equal,
+                                                         g_free,
+                                                         g_free);
+
         /* exclusions */
         manager->priv->exclusions = g_hash_table_new_full (g_str_hash,
                                                            g_str_equal,
@@ -452,7 +781,7 @@ gdm_user_manager_init (GdmUserManager *manager)
                                    gnome_vfs_result_to_string (result));
         }
 
-        /* FIXME: add ConsoleKit seat monitoring */
+        get_seat_proxy (manager);
 
         queue_reload_passwd (manager);
 
@@ -472,10 +801,16 @@ gdm_user_manager_finalize (GObject *object)
 
         g_return_if_fail (manager->priv != NULL);
 
+        if (manager->priv->seat_proxy != NULL) {
+                g_object_unref (manager->priv->seat_proxy);
+        }
+
         if (manager->priv->reload_id > 0) {
                 g_source_remove (manager->priv->reload_id);
                 manager->priv->reload_id = 0;
         }
+
+        g_hash_table_destroy (manager->priv->sessions);
 
         gnome_vfs_monitor_cancel (manager->priv->shells_monitor);
         g_hash_table_destroy (manager->priv->shells);
