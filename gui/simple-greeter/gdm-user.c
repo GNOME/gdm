@@ -78,6 +78,7 @@ typedef struct _GdmUserClass
         GObjectClass parent_class;
 
         void (* icon_changed)     (GdmUser *user);
+        void (* sessions_changed) (GdmUser *user);
 } GdmUserClass;
 
 static void gdm_user_finalize     (GObject      *object);
@@ -116,9 +117,8 @@ _gdm_user_remove_session (GdmUser    *user,
         }
 }
 
-void
-_gdm_user_remove_session (GdmUser    *user,
-                          const char *ssid)
+guint
+gdm_user_get_num_sessions (GdmUser    *user)
 {
         return g_slist_length (user->sessions);
 }
@@ -261,7 +261,7 @@ gdm_user_init (GdmUser *user)
         user->manager = NULL;
         user->user_name = NULL;
         user->real_name = NULL;
-        user->is_logged_in = FALSE;
+        user->sessions = NULL;
 }
 
 static void
@@ -484,14 +484,6 @@ gdm_user_get_shell (GdmUser *user)
         g_return_val_if_fail (GDM_IS_USER (user), NULL);
 
         return user->shell;
-}
-
-gboolean
-gdm_user_is_logged_in (GdmUser *user)
-{
-        g_return_val_if_fail (GDM_IS_USER (user), FALSE);
-
-        return user->is_logged_in;
 }
 
 gint

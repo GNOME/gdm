@@ -511,7 +511,7 @@ on_user_added (GdmUserManager       *manager,
                             CHOOSER_LIST_PIXBUF_COLUMN, pixbuf,
                             CHOOSER_LIST_NAME_COLUMN, gdm_user_get_real_name (user),
                             CHOOSER_LIST_TOOLTIP_COLUMN, tooltip,
-                            CHOOSER_LIST_IS_LOGGED_IN_COLUMN, gdm_user_is_logged_in (user),
+                            CHOOSER_LIST_IS_LOGGED_IN_COLUMN, gdm_user_get_num_sessions (user) > 0,
                             CHOOSER_LIST_ID_COLUMN, gdm_user_get_user_name (user),
                             -1);
         g_free (tooltip);
@@ -578,7 +578,7 @@ on_user_is_logged_in_changed (GdmUserManager       *manager,
         found = FALSE;
 
         user_name = gdm_user_get_user_name (user);
-        is_logged_in = gdm_user_is_logged_in (user);
+        is_logged_in = gdm_user_get_num_sessions (user) > 0;
 
         if (gtk_tree_model_get_iter_first (widget->priv->real_model, &iter)) {
 
