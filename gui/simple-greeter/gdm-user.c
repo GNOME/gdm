@@ -52,11 +52,11 @@ enum {
         PROP_UID,
         PROP_HOME_DIR,
         PROP_SHELL,
-        PROP_IS_LOGGED_IN,
 };
 
 enum {
         ICON_CHANGED,
+        SESSIONS_CHANGED,
         LAST_SIGNAL
 };
 
@@ -70,7 +70,7 @@ struct _GdmUser {
         char           *real_name;
         char           *home_dir;
         char           *shell;
-        gboolean        is_logged_in;
+        GSList         *sessions;
 };
 
 typedef struct _GdmUserClass
@@ -85,6 +85,43 @@ static void gdm_user_finalize     (GObject      *object);
 static guint signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (GdmUser, gdm_user, G_TYPE_OBJECT);
+
+void
+_gdm_user_add_session (GdmUser    *user,
+                       const char *ssid)
+{
+        g_return_if_fail (GDM_IS_USER (user));
+        g_return_if_fail (ssid != NULL);
+
+        if (! g_slist_find (user->sessions, ssid)) {
+                user->sessions = g_slist_append (user->sessions, g_strdup (ssid));
+                g_signal_emit (user, signals[SESSIONS_CHANGED], 0);
+        }
+}
+
+void
+_gdm_user_remove_session (GdmUser    *user,
+                          const char *ssid)
+{
+        GSList *li;
+
+        g_return_if_fail (GDM_IS_USER (user));
+        g_return_if_fail (ssid != NULL);
+
+        li = g_slist_find (user->sessions, ssid);
+        if (li != NULL) {
+                g_free (li->data);
+                user->sessions = g_slist_delete_link (user->sessions, li);
+                g_signal_emit (user, signals[SESSIONS_CHANGED], 0);
+        }
+}
+
+void
+_gdm_user_remove_session (GdmUser    *user,
+                          const char *ssid)
+{
+        return g_slist_length (user->sessions);
+}
 
 static void
 gdm_user_set_property (GObject      *object,
@@ -136,9 +173,6 @@ gdm_user_get_property (GObject    *object,
                 break;
         case PROP_SHELL:
                 g_value_set_string (value, user->shell);
-                break;
-        case PROP_IS_LOGGED_IN:
-                g_value_set_boolean (value, user->is_logged_in);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
@@ -208,6 +242,14 @@ gdm_user_class_init (GdmUserClass *class)
                               G_TYPE_FROM_CLASS (class),
                               G_SIGNAL_RUN_LAST,
                               G_STRUCT_OFFSET (GdmUserClass, icon_changed),
+                              NULL, NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE, 0);
+        signals [SESSIONS_CHANGED] =
+                g_signal_new ("sessions-changed",
+                              G_TYPE_FROM_CLASS (class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmUserClass, sessions_changed),
                               NULL, NULL,
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE, 0);

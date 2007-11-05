@@ -194,7 +194,7 @@ reload_passwd (GdmUserManager *manager)
 
         /* Make sure we keep users who are logged in no matter what. */
         for (list = old_users; list; list = list->next) {
-                if (gdm_user_is_logged_in (list->data)) {
+                if (gdm_user_get_num_sessions (list->data) > 0) {
                         g_object_freeze_notify (G_OBJECT (list->data));
                         new_users = g_slist_prepend (new_users, g_object_ref (list->data));
                 }
