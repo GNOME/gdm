@@ -1,3 +1,16 @@
+2007-11-06  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/gdm-session-worker.c:
+	(gdm_session_worker_uninitialize_pam),
+	(gdm_session_worker_authenticate_user),
+	(gdm_session_worker_authorize_user),
+	(gdm_session_worker_give_user_credentials),
+	(gdm_session_worker_open_user_session),
+	(gdm_session_worker_start_program):
+	* daemon/gdm-session-worker.h:
+	Make a bit more like a state machine.  This will make it easier to
+	separate the steps but make sure they occur in the proper order.
+
 2007-11-05  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/simple-greeter/gdm-user-chooser-widget.c: (choose_user_id),

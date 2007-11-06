@@ -52,16 +52,13 @@ typedef struct GdmSessionWorkerPrivate GdmSessionWorkerPrivate;
 
 typedef struct
 {
-        GObject parent;
-
-        /*< private > */
+        GObject                  parent;
         GdmSessionWorkerPrivate *priv;
 } GdmSessionWorker;
 
 typedef struct
 {
         GObjectClass parent_class;
-
 } GdmSessionWorkerClass;
 
 GType              gdm_session_worker_get_type                 (void);

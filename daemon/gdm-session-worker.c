@@ -66,8 +66,20 @@
 
 #define MESSAGE_REPLY_TIMEOUT (10 * 60 * 1000)
 
+enum {
+        GDM_SESSION_WORKER_STATE_NONE = 0,
+        GDM_SESSION_WORKER_STATE_INITIALIZED,
+        GDM_SESSION_WORKER_STATE_AUTHENTICATED,
+        GDM_SESSION_WORKER_STATE_AUTHORIZED,
+        GDM_SESSION_WORKER_STATE_ACCREDITED,
+        GDM_SESSION_WORKER_STATE_SESSION_OPENED,
+        GDM_SESSION_WORKER_STATE_SESSION_STARTED,
+};
+
 struct GdmSessionWorkerPrivate
 {
+        int               state;
+
         int               exit_code;
 
         pam_handle_t     *pam_handle;
@@ -80,8 +92,6 @@ struct GdmSessionWorkerPrivate
 
         GHashTable       *environment;
 
-        guint32           credentials_are_established : 1;
-        guint32           is_running : 1;
         guint32           cancelled : 1;
         guint             open_idle_id;
 
@@ -801,18 +811,18 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
         if (worker->priv->pam_handle == NULL)
                 return;
 
-        if (worker->priv->credentials_are_established) {
+        if (worker->priv->state >= GDM_SESSION_WORKER_STATE_ACCREDITED) {
                 pam_setcred (worker->priv->pam_handle, PAM_DELETE_CRED);
-                worker->priv->credentials_are_established = FALSE;
         }
 
-        if (worker->priv->is_running) {
+        if (worker->priv->state >= GDM_SESSION_WORKER_STATE_SESSION_OPENED) {
                 pam_close_session (worker->priv->pam_handle, 0);
-                worker->priv->is_running = FALSE;
         }
 
         pam_end (worker->priv->pam_handle, status);
         worker->priv->pam_handle = NULL;
+
+        worker->priv->state = GDM_SESSION_WORKER_STATE_NONE;
 }
 
 static char *
@@ -946,6 +956,8 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
                 goto out;
         }
 
+        worker->priv->state = GDM_SESSION_WORKER_STATE_AUTHENTICATED;
+
  out:
         if (error_code != PAM_SUCCESS) {
                 gdm_session_worker_uninitialize_pam (worker, error_code);
@@ -989,6 +1001,8 @@ gdm_session_worker_authorize_user (GdmSessionWorker *worker,
                              "%s", pam_strerror (worker->priv->pam_handle, error_code));
                 goto out;
         }
+
+        worker->priv->state = GDM_SESSION_WORKER_STATE_AUTHORIZED;
 
  out:
         if (error_code != PAM_SUCCESS) {
@@ -1056,10 +1070,11 @@ gdm_session_worker_give_user_credentials (GdmSessionWorker  *worker,
 
         required_aux_buffer_size = sysconf (_SC_GETPW_R_SIZE_MAX);
 
-        if (required_aux_buffer_size < 0)
+        if (required_aux_buffer_size < 0) {
                 aux_buffer_size = GDM_PASSWD_AUXILLARY_BUFFER_SIZE;
-        else
+        } else {
                 aux_buffer_size = (gsize) required_aux_buffer_size;
+        }
 
         aux_buffer = g_slice_alloc0 (aux_buffer_size);
 
@@ -1151,7 +1166,7 @@ gdm_session_worker_give_user_credentials (GdmSessionWorker  *worker,
                 goto out;
         }
 
-        worker->priv->credentials_are_established = TRUE;
+        worker->priv->state = GDM_SESSION_WORKER_STATE_ACCREDITED;
 
  out:
         if (aux_buffer != NULL) {
@@ -1342,8 +1357,9 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
         int    error_code;
         pid_t  session_pid;
 
-        g_assert (!worker->priv->is_running);
+        g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCREDITED);
         g_assert (geteuid () == 0);
+
         error_code = pam_open_session (worker->priv->pam_handle, 0);
 
         if (error_code != PAM_SUCCESS) {
@@ -1353,7 +1369,7 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
                              "%s", pam_strerror (worker->priv->pam_handle, error_code));
                 goto out;
         }
-        worker->priv->is_running = TRUE;
+        worker->priv->state = GDM_SESSION_WORKER_STATE_SESSION_OPENED;
 
         g_debug ("GdmSessionWorker: querying pam for user environment");
         gdm_session_worker_update_environment_from_pam (worker);
@@ -1415,6 +1431,8 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
 
         g_debug ("GdmSessionWorker: session opened creating reply...");
         g_assert (sizeof (GPid) <= sizeof (int));
+
+        worker->priv->state = GDM_SESSION_WORKER_STATE_SESSION_STARTED;
 
         send_session_started (worker, session_pid);
 
@@ -1506,7 +1524,7 @@ gdm_session_worker_start_program (GdmSessionWorker *worker,
         /* Did start_program get called early? if so, we will process the request
          * later, synchronously after getting credentials
          */
-        if (!worker->priv->credentials_are_established) {
+        if (worker->priv->state != GDM_SESSION_WORKER_STATE_ACCREDITED) {
                 return FALSE;
         }
 
