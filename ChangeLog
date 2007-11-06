@@ -1,5 +1,21 @@
 2007-11-06  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-session-worker.c: (send_dbus_void_method),
+	(send_authenticated), (send_session_startup_failed),
+	(send_authentication_failed), (send_authorization_failed),
+	(send_accreditation_failed), (gdm_session_worker_initialize_pam),
+	(gdm_session_worker_authenticate_user),
+	(gdm_session_worker_accredit_user),
+	(gdm_session_worker_start_user_session),
+	(gdm_session_worker_open_user_session), (do_initialize),
+	(do_authenticate), (do_authorize), (do_accredit),
+	(do_open_session), (do_start_session), (state_change_idle),
+	(queue_state_change), (on_start_program), (on_begin_verification),
+	(on_begin_verification_for_user):
+	Make worker internally use a state machine.
+
+2007-11-06  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/gdm-session-worker.c:
 	(gdm_session_worker_uninitialize_pam),
 	(gdm_session_worker_authenticate_user),

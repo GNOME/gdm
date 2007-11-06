@@ -87,13 +87,21 @@ struct GdmSessionWorkerPrivate
         GPid              child_pid;
         guint             child_watch_id;
 
+        /* from BeginAuth */
+        char             *service;
+        char             *x11_display_name;
+        char             *display_device;
+        char             *hostname;
         char             *username;
+        gboolean          password_is_required;
+
         char            **arguments;
 
         GHashTable       *environment;
 
         guint32           cancelled : 1;
-        guint             open_idle_id;
+
+        guint             state_change_idle_id;
 
         char             *server_address;
         DBusConnection   *connection;
@@ -106,8 +114,8 @@ enum {
 
 
 enum {
-        USER_VERIFIED = 0,
-        USER_VERIFICATION_ERROR,
+        USER_AUTHENTICATED = 0,
+        USER_AUTHENTICATION_ERROR,
         INFO,
         PROBLEM,
         INFO_QUERY,
@@ -122,6 +130,8 @@ enum {
 static void     gdm_session_worker_class_init   (GdmSessionWorkerClass *klass);
 static void     gdm_session_worker_init         (GdmSessionWorker      *session_worker);
 static void     gdm_session_worker_finalize     (GObject               *object);
+
+static void     queue_state_change              (GdmSessionWorker      *worker);
 
 typedef int (* GdmSessionWorkerPamNewMessagesFunc) (int,
                                                     const struct pam_message **,
@@ -410,42 +420,53 @@ send_dbus_int_method (DBusConnection *connection,
         return TRUE;
 }
 
-static void
-send_user_verified (GdmSessionWorker *worker)
+static gboolean
+send_dbus_void_method (DBusConnection *connection,
+                       const char     *method)
 {
         DBusError       error;
         DBusMessage    *message;
         DBusMessage    *reply;
 
-        g_debug ("GdmSessionWorker: Calling Verified");
+        g_debug ("GdmSessionWorker: Calling %s", method);
         message = dbus_message_new_method_call (NULL,
                                                 GDM_SESSION_DBUS_PATH,
                                                 GDM_SESSION_DBUS_INTERFACE,
-                                                "Verified");
+                                                method);
         if (message == NULL) {
                 g_warning ("Couldn't allocate the D-Bus message");
-                return;
+                return FALSE;
         }
 
         dbus_error_init (&error);
-        reply = dbus_connection_send_with_reply_and_block (worker->priv->connection,
+        reply = dbus_connection_send_with_reply_and_block (connection,
                                                            message,
                                                            -1,
                                                            &error);
         dbus_message_unref (message);
         dbus_message_unref (reply);
-        dbus_connection_flush (worker->priv->connection);
+        dbus_connection_flush (connection);
 
         if (dbus_error_is_set (&error)) {
-                g_debug ("Verified %s raised: %s\n",
+                g_debug ("%s %s raised: %s\n",
+                         method,
                          error.name,
                          error.message);
+                return FALSE;
         }
+
+        return TRUE;
 }
 
 static void
-send_startup_failed (GdmSessionWorker *worker,
-                     const char       *msg)
+send_authenticated (GdmSessionWorker *worker)
+{
+        send_dbus_void_method (worker->priv->connection, "Verified");
+}
+
+static void
+send_session_startup_failed (GdmSessionWorker *worker,
+                             const char       *msg)
 {
         send_dbus_string_method (worker->priv->connection,
                                  "StartupFailed",
@@ -479,11 +500,29 @@ send_username_changed (GdmSessionWorker *worker)
 }
 
 static void
-send_user_verification_error (GdmSessionWorker *worker,
-                              const char       *msg)
+send_authentication_failed (GdmSessionWorker *worker,
+                            const char       *msg)
 {
         send_dbus_string_method (worker->priv->connection,
-                                 "VerificationFailed",
+                                 "AuthenticationFailed",
+                                 msg);
+}
+
+static void
+send_authorization_failed (GdmSessionWorker *worker,
+                           const char       *msg)
+{
+        send_dbus_string_method (worker->priv->connection,
+                                 "AuthorizationFailed",
+                                 msg);
+}
+
+static void
+send_accreditation_failed (GdmSessionWorker *worker,
+                           const char       *msg)
+{
+        send_dbus_string_method (worker->priv->connection,
+                                 "AccreditationFailed",
                                  msg);
 }
 
@@ -877,6 +916,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                 goto out;
         }
 
+        /* set USER PROMPT */
         if (username == NULL) {
                 error_code = pam_set_item (worker->priv->pam_handle, PAM_USER_PROMPT, _("Username:"));
 
@@ -890,6 +930,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                 }
         }
 
+        /* set RHOST */
         if (hostname != NULL && hostname[0] != '\0') {
                 error_code = pam_set_item (worker->priv->pam_handle, PAM_RHOST, hostname);
 
@@ -903,9 +944,9 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                 }
         }
 
+        /* set TTY */
         pam_tty = _get_tty_for_pam (x11_display_name, display_device);
-        error_code = pam_set_item (worker->priv->pam_handle, PAM_TTY,
-                                   pam_tty);
+        error_code = pam_set_item (worker->priv->pam_handle, PAM_TTY, pam_tty);
         g_free (pam_tty);
 
         if (error_code != PAM_SUCCESS) {
@@ -916,6 +957,9 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                              pam_strerror (worker->priv->pam_handle, error_code));
                 goto out;
         }
+
+        g_debug ("GdmSessionWorker: initialized");
+        worker->priv->state = GDM_SESSION_WORKER_STATE_INITIALIZED;
 
  out:
         if (error_code != PAM_SUCCESS) {
@@ -942,8 +986,7 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
                 authentication_flags |= PAM_DISALLOW_NULL_AUTHTOK;
         }
 
-        /* blocking call, does the actual conversation
-         */
+        /* blocking call, does the actual conversation */
         error_code = pam_authenticate (worker->priv->pam_handle, authentication_flags);
 
         if (error_code != PAM_SUCCESS) {
@@ -1046,8 +1089,8 @@ gdm_session_worker_environment_variable_is_set (GdmSessionWorker *worker,
 }
 
 static gboolean
-gdm_session_worker_give_user_credentials (GdmSessionWorker  *worker,
-                                          GError           **error)
+gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
+                                  GError           **error)
 {
         int            error_code;
         struct passwd *passwd_entry;
@@ -1182,81 +1225,6 @@ gdm_session_worker_give_user_credentials (GdmSessionWorker  *worker,
         return TRUE;
 }
 
-static gboolean
-gdm_session_worker_verify_user (GdmSessionWorker  *worker,
-                                const char        *service_name,
-                                const char        *hostname,
-                                const char        *x11_display_name,
-                                const char        *display_device,
-                                const char        *username,
-                                gboolean           password_is_required,
-                                GError           **error)
-{
-        GError   *pam_error;
-        gboolean  res;
-
-        g_debug ("GdmSessionWorker: Verifying user: %s host: %s service: %s display: %s tty: %s",
-                 username != NULL ? username : "(null)",
-                 hostname != NULL ? hostname : "(null)",
-                 service_name != NULL ? service_name : "(null)",
-                 x11_display_name != NULL ? x11_display_name : "(null)",
-                 display_device != NULL ? display_device : "(null)");
-
-        pam_error = NULL;
-        res = gdm_session_worker_initialize_pam (worker,
-                                                 service_name,
-                                                 username,
-                                                 hostname,
-                                                 x11_display_name,
-                                                 display_device,
-                                                 &pam_error);
-        if (! res) {
-                g_propagate_error (error, pam_error);
-                return FALSE;
-        }
-
-        /* find out who the user is and ensure they are who they say they are
-         */
-        res = gdm_session_worker_authenticate_user (worker,
-                                                    password_is_required,
-                                                    &pam_error);
-        if (! res) {
-                g_debug ("GdmSessionWorker: Unable to verify user");
-                g_propagate_error (error, pam_error);
-                return FALSE;
-        }
-
-        /* we're authenticated.  Let's make sure we've been given
-         * a valid username for the system
-         */
-        g_debug ("GdmSessionWorker: trying to get updated username");
-        gdm_session_worker_update_username (worker);
-
-        /* make sure the user is allowed to log in to this system
-         */
-        res = gdm_session_worker_authorize_user (worker,
-                                                 password_is_required,
-                                                 &pam_error);
-        if (! res) {
-                g_propagate_error (error, pam_error);
-                return FALSE;
-        }
-
-        /* get kerberos tickets, setup group lists, etc
-         */
-        res = gdm_session_worker_give_user_credentials (worker, &pam_error);
-        if (! res) {
-                g_propagate_error (error, pam_error);
-                return FALSE;
-        }
-
-        g_debug ("GdmSessionWorker: verification process completed, creating reply...");
-
-        send_user_verified (worker);
-
-        return TRUE;
-}
-
 static void
 gdm_session_worker_update_environment_from_pam (GdmSessionWorker *worker)
 {
@@ -1351,25 +1319,11 @@ gdm_session_worker_watch_child (GdmSessionWorker *worker)
 }
 
 static gboolean
-gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
-                                      GError           **error)
+gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
+                                       GError           **error)
 {
-        int    error_code;
-        pid_t  session_pid;
-
-        g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCREDITED);
-        g_assert (geteuid () == 0);
-
-        error_code = pam_open_session (worker->priv->pam_handle, 0);
-
-        if (error_code != PAM_SUCCESS) {
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
-                             "%s", pam_strerror (worker->priv->pam_handle, error_code));
-                goto out;
-        }
-        worker->priv->state = GDM_SESSION_WORKER_STATE_SESSION_OPENED;
+        pid_t session_pid;
+        int   error_code;
 
         g_debug ("GdmSessionWorker: querying pam for user environment");
         gdm_session_worker_update_environment_from_pam (worker);
@@ -1434,8 +1388,6 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
 
         worker->priv->state = GDM_SESSION_WORKER_STATE_SESSION_STARTED;
 
-        send_session_started (worker, session_pid);
-
         gdm_session_worker_watch_child (worker);
 
  out:
@@ -1447,95 +1399,30 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
         return TRUE;
 }
 
-
-
 static gboolean
-gdm_session_worker_open (GdmSessionWorker    *worker,
-                         const char          *service_name,
-                         const char          *x11_display_name,
-                         const char          *display_device,
-                         const char          *hostname,
-                         const char          *username,
-                         GError             **error)
+gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
+                                      GError           **error)
 {
-        GError   *verification_error;
-        gboolean  res;
-        gboolean  ret;
+        int error_code;
 
-        ret = FALSE;
+        g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCREDITED);
+        g_assert (geteuid () == 0);
 
-        verification_error = NULL;
-        res = gdm_session_worker_verify_user (worker,
-                                              service_name,
-                                              hostname,
-                                              x11_display_name,
-                                              display_device,
-                                              username,
-                                              TRUE /* password is required */,
-                                              &verification_error);
-        if (! res) {
-                g_assert (verification_error != NULL);
+        error_code = pam_open_session (worker->priv->pam_handle, 0);
 
-                g_debug ("GdmSessionWorker: %s", verification_error->message);
-
-                g_propagate_error (error, verification_error);
-
+        if (error_code != PAM_SUCCESS) {
+                g_set_error (error,
+                             GDM_SESSION_WORKER_ERROR,
+                             GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
+                             "%s", pam_strerror (worker->priv->pam_handle, error_code));
                 goto out;
         }
 
-        /* Did start_program get called early? if so, process it now,
-         * otherwise we'll do it asynchronously later.
-         */
-        if ((worker->priv->arguments != NULL) &&
-            !gdm_session_worker_open_user_session (worker, &verification_error)) {
-                g_assert (verification_error != NULL);
-
-                g_debug ("GdmSessionWorker: %s", verification_error->message);
-
-                g_propagate_error (error, verification_error);
-
-                goto out;
-        }
-
-        ret = TRUE;
+        worker->priv->state = GDM_SESSION_WORKER_STATE_SESSION_OPENED;
 
  out:
-        return ret;
-}
-
-static gboolean
-gdm_session_worker_start_program (GdmSessionWorker *worker,
-                                  const char       *command)
-{
-        GError  *start_error;
-        GError  *error;
-        gboolean res;
-
-        if (worker->priv->arguments != NULL)
-                g_strfreev (worker->priv->arguments);
-
-        error = NULL;
-        if (! g_shell_parse_argv (command, NULL, &worker->priv->arguments, &error)) {
-                g_warning ("Unable to parse command: %s", error->message);
-                g_error_free (error);
-                return FALSE;
-        }
-
-        /* Did start_program get called early? if so, we will process the request
-         * later, synchronously after getting credentials
-         */
-        if (worker->priv->state != GDM_SESSION_WORKER_STATE_ACCREDITED) {
-                return FALSE;
-        }
-
-        start_error = NULL;
-        res = gdm_session_worker_open_user_session (worker, &start_error);
-        if (! res) {
-                g_assert (start_error != NULL);
-
-                g_debug ("%s", start_error->message);
-
-                send_startup_failed (worker, start_error->message);
+        if (error_code != PAM_SUCCESS) {
+                gdm_session_worker_uninitialize_pam (worker, error_code);
                 return FALSE;
         }
 
@@ -1615,6 +1502,181 @@ on_set_environment_variable (GdmSessionWorker *worker,
 }
 
 static void
+do_initialize (GdmSessionWorker *worker)
+{
+        GError  *error;
+        gboolean res;
+
+        error = NULL;
+        res = gdm_session_worker_initialize_pam (worker,
+                                                 worker->priv->service,
+                                                 worker->priv->username,
+                                                 worker->priv->hostname,
+                                                 worker->priv->x11_display_name,
+                                                 worker->priv->display_device,
+                                                 &error);
+        if (! res) {
+                send_authentication_failed (worker, error->message);
+                g_error_free (error);
+                return;
+        }
+
+        queue_state_change (worker);
+}
+
+static void
+do_authenticate (GdmSessionWorker *worker)
+{
+        GError  *error;
+        gboolean res;
+
+        /* find out who the user is and ensure they are who they say they are
+         */
+        error = NULL;
+        res = gdm_session_worker_authenticate_user (worker,
+                                                    worker->priv->password_is_required,
+                                                    &error);
+        if (! res) {
+                g_debug ("GdmSessionWorker: Unable to verify user");
+                send_authentication_failed (worker, error->message);
+                g_error_free (error);
+                return;
+        }
+
+        /* we're authenticated.  Let's make sure we've been given
+         * a valid username for the system
+         */
+        g_debug ("GdmSessionWorker: trying to get updated username");
+        gdm_session_worker_update_username (worker);
+
+        /*send_authenticated (worker);*/
+        queue_state_change (worker);
+}
+
+static void
+do_authorize (GdmSessionWorker *worker)
+{
+        GError  *error;
+        gboolean res;
+
+        /* make sure the user is allowed to log in to this system
+         */
+        error = NULL;
+        res = gdm_session_worker_authorize_user (worker,
+                                                 worker->priv->password_is_required,
+                                                 &error);
+        if (! res) {
+                send_authorization_failed (worker, error->message);
+                g_error_free (error);
+                return;
+        }
+
+        /*send_authorized (worker);*/
+        queue_state_change (worker);
+}
+
+static void
+do_accredit (GdmSessionWorker *worker)
+{
+        GError  *error;
+        gboolean res;
+
+        /* get kerberos tickets, setup group lists, etc
+         */
+        error = NULL;
+        res = gdm_session_worker_accredit_user (worker, &error);
+
+        if (! res) {
+                send_accreditation_failed (worker, error->message);
+                g_error_free (error);
+                return;
+        }
+
+        /*send_accredited (worker);*/
+        send_authenticated (worker);
+}
+
+static void
+do_open_session (GdmSessionWorker *worker)
+{
+        GError  *error;
+        gboolean res;
+
+        error = NULL;
+        res = gdm_session_worker_open_user_session (worker, &error);
+        if (! res) {
+                send_session_startup_failed (worker, error->message);
+                g_error_free (error);
+                return;
+        }
+
+        queue_state_change (worker);
+}
+
+static void
+do_start_session (GdmSessionWorker *worker)
+{
+        GError  *error;
+        gboolean res;
+
+        error = NULL;
+        res = gdm_session_worker_start_user_session (worker, &error);
+        if (! res) {
+                send_session_startup_failed (worker, error->message);
+                g_error_free (error);
+                return;
+        }
+
+        send_session_started (worker, worker->priv->child_pid);
+}
+
+static gboolean
+state_change_idle (GdmSessionWorker *worker)
+{
+        int new_state;
+
+        new_state = worker->priv->state + 1;
+        g_debug ("GdmSessionWorker: changing state to %d", new_state);
+
+        worker->priv->state_change_idle_id = 0;
+
+        switch (new_state) {
+        case GDM_SESSION_WORKER_STATE_INITIALIZED:
+                do_initialize (worker);
+                break;
+        case GDM_SESSION_WORKER_STATE_AUTHENTICATED:
+                do_authenticate (worker);
+                break;
+        case GDM_SESSION_WORKER_STATE_AUTHORIZED:
+                do_authorize (worker);
+                break;
+        case GDM_SESSION_WORKER_STATE_ACCREDITED:
+                do_accredit (worker);
+                break;
+        case GDM_SESSION_WORKER_STATE_SESSION_OPENED:
+                do_open_session (worker);
+                break;
+        case GDM_SESSION_WORKER_STATE_SESSION_STARTED:
+                do_start_session (worker);
+                break;
+        case GDM_SESSION_WORKER_STATE_NONE:
+        default:
+                g_assert_not_reached ();
+        }
+        return FALSE;
+}
+
+static void
+queue_state_change (GdmSessionWorker *worker)
+{
+        if (worker->priv->state_change_idle_id > 0) {
+                return;
+        }
+
+        worker->priv->state_change_idle_id = g_idle_add ((GSourceFunc)state_change_idle, worker);
+}
+
+static void
 on_start_program (GdmSessionWorker *worker,
                   DBusMessage      *message)
 {
@@ -1622,91 +1684,34 @@ on_start_program (GdmSessionWorker *worker,
         const char *text;
         dbus_bool_t res;
 
+        /* FIXME: return error if not in ACCREDITED state */
+
         dbus_error_init (&error);
         res = dbus_message_get_args (message,
                                      &error,
                                      DBUS_TYPE_STRING, &text,
                                      DBUS_TYPE_INVALID);
         if (res) {
+                GError *parse_error;
+
                 g_debug ("GdmSessionWorker: start program: %s", text);
 
-                gdm_session_worker_start_program (worker, text);
+                if (worker->priv->arguments != NULL) {
+                        g_strfreev (worker->priv->arguments);
+                }
+
+                parse_error = NULL;
+                if (! g_shell_parse_argv (text, NULL, &worker->priv->arguments, &parse_error)) {
+                        g_warning ("Unable to parse command: %s", parse_error->message);
+                        g_error_free (parse_error);
+                        return;
+                }
+
+                queue_state_change (worker);
         } else {
                 g_warning ("Unable to get arguments: %s", error.message);
                 dbus_error_free (&error);
         }
-}
-
-typedef struct {
-        GdmSessionWorker *worker;
-        char             *service;
-        char             *x11_display_name;
-        char             *console;
-        char             *hostname;
-        char             *username;
-} OpenData;
-
-static gboolean
-open_idle (OpenData *data)
-{
-        GError  *error;
-        gboolean res;
-
-        g_debug ("GdmSessionWorker: begin verification: %s %s", data->service, data->console);
-
-        error = NULL;
-        res = gdm_session_worker_open (data->worker,
-                                       data->service,
-                                       data->x11_display_name,
-                                       data->console,
-                                       data->hostname,
-                                       data->username,
-                                       &error);
-        if (! res) {
-                g_debug ("GdmSessionWorker: Verification failed: %s", error->message);
-                g_error_free (error);
-                send_user_verification_error (data->worker, error->message);
-        }
-
-        data->worker->priv->open_idle_id = 0;
-        return FALSE;
-}
-
-static void
-free_open_data (OpenData *data)
-{
-        g_free (data->service);
-        g_free (data->console);
-        g_free (data->hostname);
-        g_free (data->username);
-        g_free (data);
-}
-
-static void
-queue_open (GdmSessionWorker *worker,
-            const char       *service,
-            const char       *x11_display_name,
-            const char       *console,
-            const char       *hostname,
-            const char       *username)
-{
-        OpenData *data;
-
-        if (worker->priv->open_idle_id > 0) {
-                return;
-        }
-
-        data = g_new0 (OpenData, 1);
-        data->worker = worker;
-        data->service = g_strdup (service);
-        data->x11_display_name = g_strdup (x11_display_name);
-        data->console = g_strdup (console);
-        data->hostname = g_strdup (hostname);
-        data->username = g_strdup (username);
-        worker->priv->open_idle_id = g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
-                                                      (GSourceFunc)open_idle,
-                                                      data,
-                                                      (GDestroyNotify)free_open_data);
 }
 
 static void
@@ -1720,6 +1725,8 @@ on_begin_verification (GdmSessionWorker *worker,
         const char *hostname;
         dbus_bool_t res;
 
+        /* FIXME: return error if not in NONE state */
+
         dbus_error_init (&error);
         res = dbus_message_get_args (message,
                                      &error,
@@ -1729,8 +1736,14 @@ on_begin_verification (GdmSessionWorker *worker,
                                      DBUS_TYPE_STRING, &hostname,
                                      DBUS_TYPE_INVALID);
         if (res) {
-                g_debug ("GdmSessionWorker: begin verification: %s %s", service, console);
-                queue_open (worker, service, x11_display_name, console, hostname, NULL);
+                worker->priv->service = g_strdup (service);
+                worker->priv->x11_display_name = g_strdup (x11_display_name);
+                worker->priv->display_device = g_strdup (console);
+                worker->priv->hostname = g_strdup (hostname);
+                worker->priv->username = NULL;
+
+                g_debug ("GdmSessionWorker: begin authentication: %s %s", service, console);
+                queue_state_change (worker);
         } else {
                 g_warning ("Unable to get arguments: %s", error.message);
                 dbus_error_free (&error);
@@ -1749,6 +1762,8 @@ on_begin_verification_for_user (GdmSessionWorker *worker,
         const char *username;
         dbus_bool_t res;
 
+        /* FIXME: return error if not in NONE state */
+
         dbus_error_init (&error);
         res = dbus_message_get_args (message,
                                      &error,
@@ -1759,8 +1774,14 @@ on_begin_verification_for_user (GdmSessionWorker *worker,
                                      DBUS_TYPE_STRING, &username,
                                      DBUS_TYPE_INVALID);
         if (res) {
-                g_debug ("GdmSessionWorker: begin verification: %s %s", service, console);
-                queue_open (worker, service, x11_display_name, console, hostname, username);
+                worker->priv->service = g_strdup (service);
+                worker->priv->x11_display_name = g_strdup (x11_display_name);
+                worker->priv->display_device = g_strdup (console);
+                worker->priv->hostname = g_strdup (hostname);
+                worker->priv->username = g_strdup (username);
+
+                g_debug ("GdmSessionWorker: begin authentication: %s %s", service, console);
+                queue_state_change (worker);
         } else {
                 g_warning ("Unable to get arguments: %s", error.message);
                 dbus_error_free (&error);
