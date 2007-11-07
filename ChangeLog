@@ -1,3 +1,98 @@
+2007-11-07  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/gdm-factory-slave.c: (greeter_reset_timeout),
+	(queue_greeter_reset), (on_session_setup_complete),
+	(on_session_setup_failed), (on_session_reset_complete),
+	(on_session_reset_failed), (on_session_authenticated),
+	(on_session_authentication_failed), (on_session_authorized),
+	(on_session_authorization_failed), (on_session_accredited),
+	(on_session_accreditation_failed), (on_greeter_begin_verification),
+	(on_greeter_begin_verification_for_user),
+	(gdm_factory_slave_start):
+	* daemon/gdm-product-slave.c: (on_session_setup_complete),
+	(on_session_setup_failed), (on_session_reset_complete),
+	(on_session_reset_failed), (on_session_authenticated),
+	(on_session_authentication_failed), (on_session_authorized),
+	(on_session_authorization_failed), (on_session_accredited),
+	(on_session_accreditation_failed), (on_relay_setup),
+	(on_relay_setup_for_user), (on_relay_authenticate),
+	(on_relay_authorize), (on_relay_establish_credentials),
+	(on_relay_renew_credentials), (create_new_session),
+	(relay_dbus_handle_message):
+	* daemon/gdm-session-direct.c: (send_dbus_void_signal),
+	(on_authentication_failed), (on_session_start_failed),
+	(gdm_session_direct_handle_setup_complete),
+	(gdm_session_direct_handle_setup_failed),
+	(gdm_session_direct_handle_reset_complete),
+	(gdm_session_direct_handle_reset_failed),
+	(gdm_session_direct_handle_authenticated),
+	(gdm_session_direct_handle_authentication_failed),
+	(gdm_session_direct_handle_authorized),
+	(gdm_session_direct_handle_authorization_failed),
+	(gdm_session_direct_handle_accredited),
+	(gdm_session_direct_handle_accreditation_failed),
+	(gdm_session_direct_handle_start_failed), (session_worker_message),
+	(do_introspect), (gdm_session_direct_init), (worker_exited),
+	(worker_died), (gdm_session_direct_open), (send_setup),
+	(send_setup_for_user), (gdm_session_direct_setup),
+	(gdm_session_direct_setup_for_user),
+	(gdm_session_direct_authenticate), (gdm_session_direct_authorize),
+	(gdm_session_direct_accredit), (gdm_session_direct_close),
+	(gdm_session_iface_init):
+	* daemon/gdm-session-direct.h:
+	* daemon/gdm-session-private.h:
+	* daemon/gdm-session-relay.c: (send_dbus_string_signal),
+	(send_dbus_void_signal), (gdm_session_relay_setup),
+	(gdm_session_relay_setup_for_user),
+	(gdm_session_relay_authenticate), (gdm_session_relay_authorize),
+	(gdm_session_relay_accredit), (gdm_session_relay_answer_query),
+	(handle_setup_complete), (handle_setup_failed),
+	(handle_authenticated), (handle_authentication_failed),
+	(handle_authorized), (handle_authorization_failed),
+	(handle_accredited), (handle_accreditation_failed),
+	(handle_session_started), (handle_session_stopped),
+	(handle_opened), (session_handle_child_message), (do_introspect),
+	(gdm_session_iface_init):
+	* daemon/gdm-session-worker.c: (gdm_session_execute),
+	(gdm_session_worker_update_username),
+	(gdm_session_worker_initialize_pam),
+	(gdm_session_worker_accredit_user), (session_worker_child_watch),
+	(gdm_session_worker_start_user_session), (do_setup),
+	(do_authenticate), (do_authorize), (do_accredit),
+	(do_open_session), (do_start_session), (state_change_idle),
+	(on_setup), (on_setup_for_user), (on_authenticate), (on_authorize),
+	(on_establish_credentials), (on_renew_credentials),
+	(worker_dbus_handle_message):
+	* daemon/gdm-session.c: (gdm_session_setup),
+	(gdm_session_setup_for_user), (gdm_session_authenticate),
+	(gdm_session_authorize), (gdm_session_accredit),
+	(gdm_session_class_init), (_gdm_session_setup_complete),
+	(_gdm_session_setup_failed), (_gdm_session_reset_complete),
+	(_gdm_session_reset_failed), (_gdm_session_authenticated),
+	(_gdm_session_authentication_failed), (_gdm_session_authorized),
+	(_gdm_session_authorization_failed), (_gdm_session_accredited),
+	(_gdm_session_accreditation_failed),
+	(_gdm_session_session_start_failed):
+	* daemon/gdm-session.h:
+	* daemon/gdm-simple-slave.c: (greeter_reset_timeout),
+	(queue_greeter_reset), (on_session_setup_complete),
+	(on_session_setup_failed), (on_session_reset_complete),
+	(on_session_reset_failed), (on_session_authenticated),
+	(on_session_authentication_failed), (on_session_authorized),
+	(on_session_authorization_failed), (on_session_accredited),
+	(on_session_accreditation_failed), (create_new_session),
+	(on_greeter_begin_verification),
+	(on_greeter_begin_verification_for_user):
+	* daemon/test-session.c: (on_open), (on_session_setup_complete),
+	(on_session_setup_failed), (on_session_reset_complete),
+	(on_session_reset_failed), (on_session_authenticated),
+	(on_session_authentication_failed), (on_session_authorized),
+	(on_session_authorization_failed), (on_session_accredited),
+	(on_session_accreditation_failed), (on_session_started),
+	(on_session_exited), (on_session_died), (main):
+	Split up the Verification step in the GdmSession interface into
+	component parts: setup, authenticate, authorize, accredit.
+
 2007-11-06  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/gdm-session-worker.c: (send_dbus_void_method),

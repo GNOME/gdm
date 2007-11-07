@@ -378,20 +378,92 @@ gdm_product_slave_create_server (GdmProductSlave *slave)
 }
 
 static void
-on_session_user_verified (GdmSession      *session,
-                          GdmProductSlave *slave)
+on_session_setup_complete (GdmSession      *session,
+                           GdmProductSlave *slave)
 {
         send_dbus_void_method (slave->priv->session_relay_connection,
-                               "UserVerified");
+                               "SetupComplete");
 }
 
 static void
-on_session_user_verification_error (GdmSession      *session,
-                                    const char      *message,
-                                    GdmProductSlave *slave)
+on_session_setup_failed (GdmSession      *session,
+                         const char      *message,
+                         GdmProductSlave *slave)
 {
         send_dbus_string_method (slave->priv->session_relay_connection,
-                                 "UserVerificationError",
+                                 "SetupFailed",
+                                 message);
+}
+
+static void
+on_session_reset_complete (GdmSession      *session,
+                           GdmProductSlave *slave)
+{
+        send_dbus_void_method (slave->priv->session_relay_connection,
+                               "ResetComplete");
+}
+
+static void
+on_session_reset_failed (GdmSession      *session,
+                         const char      *message,
+                         GdmProductSlave *slave)
+{
+        send_dbus_string_method (slave->priv->session_relay_connection,
+                                 "ResetFailed",
+                                 message);
+}
+
+static void
+on_session_authenticated (GdmSession      *session,
+                          GdmProductSlave *slave)
+{
+        send_dbus_void_method (slave->priv->session_relay_connection,
+                               "Authenticated");
+}
+
+static void
+on_session_authentication_failed (GdmSession      *session,
+                                  const char      *message,
+                                  GdmProductSlave *slave)
+{
+        send_dbus_string_method (slave->priv->session_relay_connection,
+                                 "AuthenticationFailed",
+                                 message);
+}
+
+static void
+on_session_authorized (GdmSession      *session,
+                       GdmProductSlave *slave)
+{
+        send_dbus_void_method (slave->priv->session_relay_connection,
+                               "Authorized");
+}
+
+static void
+on_session_authorization_failed (GdmSession      *session,
+                                 const char      *message,
+                                 GdmProductSlave *slave)
+{
+        send_dbus_string_method (slave->priv->session_relay_connection,
+                                 "AuthorizationFailed",
+                                 message);
+}
+
+static void
+on_session_accredited (GdmSession      *session,
+                       GdmProductSlave *slave)
+{
+        send_dbus_void_method (slave->priv->session_relay_connection,
+                               "Accredited");
+}
+
+static void
+on_session_accreditation_failed (GdmSession      *session,
+                                 const char      *message,
+                                 GdmProductSlave *slave)
+{
+        send_dbus_string_method (slave->priv->session_relay_connection,
+                                 "AccreditationFailed",
                                  message);
 }
 
@@ -436,17 +508,17 @@ on_session_secret_info_query (GdmSession      *session,
 }
 
 static void
-on_relay_begin_verification (GdmProductSlave *slave,
-                             DBusMessage     *message)
+on_relay_setup (GdmProductSlave *slave,
+                DBusMessage     *message)
 {
-        g_debug ("GdmProductSlave: Relay BeginVerification");
+        g_debug ("GdmProductSlave: Relay Setup");
 
-        gdm_session_begin_verification (GDM_SESSION (slave->priv->session));
+        gdm_session_setup (GDM_SESSION (slave->priv->session));
 }
 
 static void
-on_relay_begin_verification_for_user (GdmProductSlave *slave,
-                                      DBusMessage     *message)
+on_relay_setup_for_user (GdmProductSlave *slave,
+                         DBusMessage     *message)
 {
         DBusError   error;
         const char *text;
@@ -458,12 +530,48 @@ on_relay_begin_verification_for_user (GdmProductSlave *slave,
                                      DBUS_TYPE_STRING, &text,
                                      DBUS_TYPE_INVALID);
         if (res) {
-                g_debug ("GdmProductSlave: Relay BeginVerificationForUser");
-                gdm_session_begin_verification_for_user (GDM_SESSION (slave->priv->session), text);
+                g_debug ("GdmProductSlave: Relay SetupForUser");
+                gdm_session_setup_for_user (GDM_SESSION (slave->priv->session), text);
         } else {
                 g_warning ("Unable to get arguments: %s", error.message);
                 dbus_error_free (&error);
         }
+}
+
+static void
+on_relay_authenticate (GdmProductSlave *slave,
+                       DBusMessage     *message)
+{
+        g_debug ("GdmProductSlave: Relay Authenticate");
+
+        gdm_session_authenticate (GDM_SESSION (slave->priv->session));
+}
+
+static void
+on_relay_authorize (GdmProductSlave *slave,
+                    DBusMessage     *message)
+{
+        g_debug ("GdmProductSlave: Relay Authorize");
+
+        gdm_session_authorize (GDM_SESSION (slave->priv->session));
+}
+
+static void
+on_relay_establish_credentials (GdmProductSlave *slave,
+                                DBusMessage     *message)
+{
+        g_debug ("GdmProductSlave: Relay Authorize");
+
+        gdm_session_accredit (GDM_SESSION (slave->priv->session), GDM_SESSION_CRED_ESTABLISH);
+}
+
+static void
+on_relay_renew_credentials (GdmProductSlave *slave,
+                            DBusMessage     *message)
+{
+        g_debug ("GdmProductSlave: Relay Authorize");
+
+        gdm_session_accredit (GDM_SESSION (slave->priv->session), GDM_SESSION_CRED_RENEW);
 }
 
 static void
@@ -584,35 +692,62 @@ create_new_session (GdmProductSlave *slave)
                           "opened",
                           G_CALLBACK (on_session_opened),
                           slave);
+        g_signal_connect (slave->priv->session,
+                          "setup-complete",
+                          G_CALLBACK (on_session_setup_complete),
+                          slave);
+        g_signal_connect (slave->priv->session,
+                          "setup-failed",
+                          G_CALLBACK (on_session_setup_failed),
+                          slave);
+        g_signal_connect (slave->priv->session,
+                          "reset-complete",
+                          G_CALLBACK (on_session_reset_complete),
+                          slave);
+        g_signal_connect (slave->priv->session,
+                          "reset-failed",
+                          G_CALLBACK (on_session_reset_failed),
+                          slave);
+        g_signal_connect (slave->priv->session,
+                          "authenticated",
+                          G_CALLBACK (on_session_authenticated),
+                          slave);
+        g_signal_connect (slave->priv->session,
+                          "authentication-failed",
+                          G_CALLBACK (on_session_authentication_failed),
+                          slave);
+        g_signal_connect (slave->priv->session,
+                          "authorized",
+                          G_CALLBACK (on_session_authorized),
+                          slave);
+        g_signal_connect (slave->priv->session,
+                          "authorization-failed",
+                          G_CALLBACK (on_session_authorization_failed),
+                          slave);
+        g_signal_connect (slave->priv->session,
+                          "accredited",
+                          G_CALLBACK (on_session_accredited),
+                          slave);
+        g_signal_connect (slave->priv->session,
+                          "accreditation-failed",
+                          G_CALLBACK (on_session_accreditation_failed),
+                          slave);
 
         g_signal_connect (slave->priv->session,
                           "info",
                           G_CALLBACK (on_session_info),
                           slave);
-
         g_signal_connect (slave->priv->session,
                           "problem",
                           G_CALLBACK (on_session_problem),
                           slave);
-
         g_signal_connect (slave->priv->session,
                           "info-query",
                           G_CALLBACK (on_session_info_query),
                           slave);
-
         g_signal_connect (slave->priv->session,
                           "secret-info-query",
                           G_CALLBACK (on_session_secret_info_query),
-                          slave);
-
-        g_signal_connect (slave->priv->session,
-                          "user-verified",
-                          G_CALLBACK (on_session_user_verified),
-                          slave);
-
-        g_signal_connect (slave->priv->session,
-                          "user-verification-error",
-                          G_CALLBACK (on_session_user_verification_error),
                           slave);
 
         g_signal_connect (slave->priv->session,
@@ -689,12 +824,18 @@ relay_dbus_handle_message (DBusConnection *connection,
         g_return_val_if_fail (connection != NULL, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
         g_return_val_if_fail (message != NULL, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
 
-        if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "BeginVerification")) {
-                on_relay_begin_verification (slave, message);
-        } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "BeginVerificationForUser")) {
-                on_relay_begin_verification_for_user (slave, message);
-        } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "BeginVerificationForUser")) {
-                on_relay_begin_verification_for_user (slave, message);
+        if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "Setup")) {
+                on_relay_setup (slave, message);
+        } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "SetupForUser")) {
+                on_relay_setup_for_user (slave, message);
+        } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "Authenticate")) {
+                on_relay_authenticate (slave, message);
+        } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "Authorize")) {
+                on_relay_authorize (slave, message);
+        } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "EstablishCredentials")) {
+                on_relay_establish_credentials (slave, message);
+        } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "RenewCredentials")) {
+                on_relay_renew_credentials (slave, message);
         } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "AnswerQuery")) {
                 on_relay_answer_query (slave, message);
         } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "SessionSelected")) {

@@ -36,15 +36,112 @@ static void
 on_open (GdmSession *session,
          const char *username)
 {
-        g_debug ("Got opened: begin auth for %s", username ? username : "(null)");
+        g_debug ("Got opened: calling setup...");
 
-        gdm_session_begin_verification (session);
+        gdm_session_setup (session);
+}
+
+static void
+on_session_setup_complete (GdmSession *session,
+                           gpointer    data)
+{
+        g_debug ("Session setup complete");
+        gdm_session_authenticate (session);
+}
+
+static void
+on_session_setup_failed (GdmSession *session,
+                         const char *message,
+                         gpointer    data)
+{
+        g_print ("Unable to initialize PAM: %s\n", message);
+
+        exit (1);
+}
+
+static void
+on_session_reset_complete (GdmSession *session,
+                           gpointer    data)
+{
+        g_debug ("Session reset complete");
+}
+
+static void
+on_session_reset_failed (GdmSession *session,
+                         const char *message,
+                         gpointer    data)
+{
+        g_print ("Unable to reset PAM: %s\n", message);
+
+        exit (1);
+}
+
+static void
+on_session_authenticated (GdmSession *session,
+                          gpointer    data)
+{
+        g_debug ("Session authenticated");
+        gdm_session_authorize (session);
+}
+
+static void
+on_session_authentication_failed (GdmSession *session,
+                                  const char *message,
+                                  gpointer    data)
+{
+        g_print ("Unable to authenticate user: %s\n", message);
+
+        exit (1);
+}
+
+static void
+on_session_authorized (GdmSession *session,
+                       gpointer    data)
+{
+        g_debug ("Session authorized");
+        gdm_session_accredit (session, GDM_SESSION_CRED_ESTABLISH);
+}
+
+static void
+on_session_authorization_failed (GdmSession *session,
+                                 const char *message,
+                                 gpointer    data)
+{
+        g_print ("Unable to authorize user: %s\n", message);
+
+        exit (1);
+}
+
+static void
+on_session_accredited (GdmSession *session,
+                       gpointer    data)
+{
+        char *username;
+
+        username = gdm_session_direct_get_username (GDM_SESSION_DIRECT (session));
+
+        g_print ("%s%ssuccessfully accredited\n",
+                 username ? username : "", username ? " " : "");
+        g_free (username);
+
+        gdm_session_start_session (session);
+
+}
+
+static void
+on_session_accreditation_failed (GdmSession *session,
+                                 const char *message,
+                                 gpointer    data)
+{
+        g_print ("Unable to accredit user: %s\n", message);
+
+        exit (1);
 }
 
 static void
 on_session_started (GdmSession *session)
 {
-        g_print ("session started");
+        g_print ("session started\n");
 }
 
 static void
@@ -59,38 +156,9 @@ static void
 on_session_died (GdmSession *session,
                  int         signal_number)
 {
-        g_print ("session died with signal %d, (%s)",
+        g_print ("session died with signal %d, (%s)\n",
                  signal_number,
                  g_strsignal (signal_number));
-        exit (1);
-}
-
-static void
-on_user_verified (GdmSession *session)
-{
-        char *username;
-
-        username = gdm_session_direct_get_username (GDM_SESSION_DIRECT (session));
-
-        g_print ("%s%ssuccessfully authenticated\n",
-                 username ? username : "", username ? " " : "");
-        g_free (username);
-
-        gdm_session_start_session (session);
-}
-
-static void
-on_user_verification_error (GdmSession *session,
-                            const char *message)
-{
-        char *username;
-
-        username = gdm_session_direct_get_username (GDM_SESSION_DIRECT (session));
-
-        g_print ("%s%scould not be successfully authenticated: %s\n",
-                 username ? username : "", username ? " " : "",
-                 message);
-        g_free (username);
         exit (1);
 }
 
@@ -191,43 +259,78 @@ main (int   argc,
 
                 gdm_session_open (GDM_SESSION (session));
 
-                g_signal_connect (session, "opened",
+                g_signal_connect (session,
+                                  "opened",
                                   G_CALLBACK (on_open),
                                   username);
+                g_signal_connect (session,
+                                  "setup-complete",
+                                  G_CALLBACK (on_session_setup_complete),
+                                  NULL);
+                g_signal_connect (session,
+                                  "setup-failed",
+                                  G_CALLBACK (on_session_setup_failed),
+                                  NULL);
+                g_signal_connect (session,
+                                  "reset-complete",
+                                  G_CALLBACK (on_session_reset_complete),
+                                  NULL);
+                g_signal_connect (session,
+                                  "reset-failed",
+                                  G_CALLBACK (on_session_reset_failed),
+                                  NULL);
+                g_signal_connect (session,
+                                  "authenticated",
+                                  G_CALLBACK (on_session_authenticated),
+                                  NULL);
+                g_signal_connect (session,
+                                  "authentication-failed",
+                                  G_CALLBACK (on_session_authentication_failed),
+                                  NULL);
+                g_signal_connect (session,
+                                  "authorized",
+                                  G_CALLBACK (on_session_authorized),
+                                  NULL);
+                g_signal_connect (session,
+                                  "authorization-failed",
+                                  G_CALLBACK (on_session_authorization_failed),
+                                  NULL);
+                g_signal_connect (session,
+                                  "accredited",
+                                  G_CALLBACK (on_session_accredited),
+                                  NULL);
+                g_signal_connect (session,
+                                  "accreditation-failed",
+                                  G_CALLBACK (on_session_accreditation_failed),
+                                  NULL);
 
-                g_signal_connect (session, "info",
+                g_signal_connect (session,
+                                  "info",
                                   G_CALLBACK (on_info),
                                   NULL);
-
-                g_signal_connect (session, "problem",
+                g_signal_connect (session,
+                                  "problem",
                                   G_CALLBACK (on_problem),
                                   NULL);
-
-                g_signal_connect (session, "info-query",
+                g_signal_connect (session,
+                                  "info-query",
                                   G_CALLBACK (on_info_query),
                                   NULL);
-
-                g_signal_connect (session, "secret-info-query",
+                g_signal_connect (session,
+                                  "secret-info-query",
                                   G_CALLBACK (on_secret_info_query),
                                   NULL);
 
-                g_signal_connect (session, "user-verified",
-                                  G_CALLBACK (on_user_verified),
-                                  NULL);
-
-                g_signal_connect (session, "user-verification-error",
-                                  G_CALLBACK (on_user_verification_error),
-                                  NULL);
-
-                g_signal_connect (session, "session-started",
+                g_signal_connect (session,
+                                  "session-started",
                                   G_CALLBACK (on_session_started),
                                   NULL);
-
-                g_signal_connect (session, "session-exited",
+                g_signal_connect (session,
+                                  "session-exited",
                                   G_CALLBACK (on_session_exited),
                                   NULL);
-
-                g_signal_connect (session, "session-died",
+                g_signal_connect (session,
+                                  "session-died",
                                   G_CALLBACK (on_session_died),
                                   NULL);
 

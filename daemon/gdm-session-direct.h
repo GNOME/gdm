@@ -32,7 +32,6 @@ G_BEGIN_DECLS
 #define GDM_IS_SESSION_DIRECT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GDM_TYPE_SESSION_DIRECT))
 #define GDM_IS_SESSION_DIRECT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GDM_TYPE_SESSION_DIRECT))
 #define GDM_SESSION_DIRECT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), GDM_TYPE_SESSION_DIRECT, GdmSessionDirectClass))
-#define GDM_SESSION_DIRECT_ERROR (gdm_session_direct_error_quark ())
 
 typedef struct _GdmSessionDirectPrivate GdmSessionDirectPrivate;
 
@@ -47,21 +46,7 @@ typedef struct
         GObjectClass parent_class;
 } GdmSessionDirectClass;
 
-typedef enum _GdmSessionDirectError {
-        GDM_SESSION_DIRECT_ERROR_GENERIC = 0,
-        GDM_SESSION_DIRECT_ERROR_WITH_SESSION_DIRECT_COMMAND,
-        GDM_SESSION_DIRECT_ERROR_FORKING,
-        GDM_SESSION_DIRECT_ERROR_COMMUNICATING,
-        GDM_SESSION_DIRECT_ERROR_WORKER_DIED,
-        GDM_SESSION_DIRECT_ERROR_AUTHENTICATING,
-        GDM_SESSION_DIRECT_ERROR_AUTHORIZING,
-        GDM_SESSION_DIRECT_ERROR_OPENING_LOG_FILE,
-        GDM_SESSION_DIRECT_ERROR_OPENING_SESSION_DIRECT,
-        GDM_SESSION_DIRECT_ERROR_GIVING_CREDENTIALS
-} GdmSessionDirectError;
-
 GType              gdm_session_direct_get_type                 (void);
-GQuark             gdm_session_direct_error_quark              (void);
 
 GdmSessionDirect * gdm_session_direct_new                      (const char *display_name,
                                                                 const char *display_hostname,

@@ -35,14 +35,25 @@ G_BEGIN_DECLS
 typedef struct _GdmSession      GdmSession; /* Dummy typedef */
 typedef struct _GdmSessionIface GdmSessionIface;
 
+enum {
+        GDM_SESSION_CRED_ESTABLISH = 0,
+        GDM_SESSION_CRED_RENEW,
+};
+
 struct _GdmSessionIface
 {
         GTypeInterface base_iface;
 
         /* Methods */
-        void (* begin_verification)          (GdmSession   *session);
-        void (* begin_verification_for_user) (GdmSession   *session,
+        void (* open)                        (GdmSession   *session);
+        void (* setup)                       (GdmSession   *session);
+        void (* setup_for_user)              (GdmSession   *session,
                                               const char   *username);
+        void (* reset)                       (GdmSession   *session);
+        void (* authenticate)                (GdmSession   *session);
+        void (* authorize)                   (GdmSession   *session);
+        void (* accredit)                    (GdmSession   *session,
+                                              int           cred_flag);
         void (* answer_query)                (GdmSession   *session,
                                               const char   *text);
         void (* select_language)             (GdmSession   *session,
@@ -51,15 +62,27 @@ struct _GdmSessionIface
                                               const char   *text);
         void (* select_user)                 (GdmSession   *session,
                                               const char   *text);
-        void (* open)                        (GdmSession   *session);
+        void (* start_session)               (GdmSession   *session);
         void (* close)                       (GdmSession   *session);
         void (* cancel)                      (GdmSession   *session);
-        void (* start_session)               (GdmSession   *session);
 
         /* Signals */
-        void (* user_verified)               (GdmSession   *session);
-        void (* user_verification_error)     (GdmSession   *session,
+        void (* setup_complete)              (GdmSession   *session);
+        void (* setup_failed)                (GdmSession   *session,
                                               const char   *message);
+        void (* reset_complete)              (GdmSession   *session);
+        void (* reset_failed)                (GdmSession   *session,
+                                              const char   *message);
+        void (* authenticated)               (GdmSession   *session);
+        void (* authentication_failed)       (GdmSession   *session,
+                                              const char   *message);
+        void (* authorized)                  (GdmSession   *session);
+        void (* authorization_failed)        (GdmSession   *session,
+                                              const char   *message);
+        void (* accredited)                  (GdmSession   *session);
+        void (* accreditation_failed)        (GdmSession   *session,
+                                              const char   *message);
+
         void (* info_query)                  (GdmSession   *session,
                                               const char   *query_text);
         void (* secret_info_query)           (GdmSession   *session,
@@ -69,7 +92,7 @@ struct _GdmSessionIface
         void (* problem)                     (GdmSession   *session,
                                               const char   *problem);
         void (* session_started)             (GdmSession   *session);
-        void (* session_startup_error)       (GdmSession   *session,
+        void (* session_start_failed)        (GdmSession   *session,
                                               const char   *message);
         void (* session_exited)              (GdmSession   *session,
                                               int           exit_code);
@@ -84,9 +107,18 @@ struct _GdmSessionIface
 
 GType    gdm_session_get_type                    (void) G_GNUC_CONST;
 
-void     gdm_session_begin_verification          (GdmSession *session);
-void     gdm_session_begin_verification_for_user (GdmSession *session,
+void     gdm_session_open                        (GdmSession *session);
+void     gdm_session_setup                       (GdmSession *session);
+void     gdm_session_setup_for_user              (GdmSession *session,
                                                   const char *username);
+void     gdm_session_reset                       (GdmSession *session);
+void     gdm_session_authenticate                (GdmSession *session);
+void     gdm_session_authorize                   (GdmSession *session);
+void     gdm_session_accredit                    (GdmSession *session,
+                                                  int         cred_flag);
+void     gdm_session_start_session               (GdmSession *session);
+void     gdm_session_close                       (GdmSession *session);
+
 void     gdm_session_answer_query                (GdmSession *session,
                                                   const char *text);
 void     gdm_session_select_session              (GdmSession *session,
@@ -95,10 +127,7 @@ void     gdm_session_select_language             (GdmSession *session,
                                                   const char *language);
 void     gdm_session_select_user                 (GdmSession *session,
                                                   const char *username);
-void     gdm_session_open                        (GdmSession *session);
-void     gdm_session_close                       (GdmSession *session);
 void     gdm_session_cancel                      (GdmSession *session);
-void     gdm_session_start_session               (GdmSession *session);
 
 G_END_DECLS
 

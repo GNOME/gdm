@@ -116,6 +116,7 @@ send_dbus_string_signal (GdmSessionRelay *session_relay,
 
         g_return_if_fail (session_relay != NULL);
 
+        g_debug ("GdmSessionRelay: sending signal %s", name);
         message = dbus_message_new_signal (GDM_SESSION_RELAY_DBUS_PATH,
                                            GDM_SESSION_RELAY_DBUS_INTERFACE,
                                            name);
@@ -138,6 +139,7 @@ send_dbus_void_signal (GdmSessionRelay *session_relay,
 
         g_return_if_fail (session_relay != NULL);
 
+        g_debug ("GdmSessionRelay: sending signal %s", name);
         message = dbus_message_new_signal (GDM_SESSION_RELAY_DBUS_PATH,
                                            GDM_SESSION_RELAY_DBUS_INTERFACE,
                                            name);
@@ -164,20 +166,50 @@ gdm_session_relay_close (GdmSession *session)
 }
 
 static void
-gdm_session_relay_begin_verification (GdmSession *session)
+gdm_session_relay_setup (GdmSession *session)
 {
         GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
-        g_debug ("GdmSessionRelay: Sending signal BeginVerification");
-        send_dbus_void_signal (impl, "BeginVerification");
+        send_dbus_void_signal (impl, "Setup");
 }
 
 static void
-gdm_session_relay_begin_verification_for_user (GdmSession *session,
-                                               const char *username)
+gdm_session_relay_setup_for_user (GdmSession *session,
+                                  const char *username)
 {
         GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
-        g_debug ("GdmSessionRelay: Sending signal BeginVerificationForUser");
-        send_dbus_string_signal (impl, "BeginVerificationForUser", username);
+        send_dbus_string_signal (impl, "SetupForUser", username);
+}
+
+static void
+gdm_session_relay_authenticate (GdmSession *session)
+{
+        GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
+        send_dbus_void_signal (impl, "Authenticate");
+}
+
+static void
+gdm_session_relay_authorize (GdmSession *session)
+{
+        GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
+        send_dbus_void_signal (impl, "Authorize");
+}
+
+static void
+gdm_session_relay_accredit (GdmSession *session,
+                            int         cred_flag)
+{
+        GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
+
+        switch (cred_flag) {
+        case GDM_SESSION_CRED_ESTABLISH:
+                send_dbus_void_signal (impl, "EstablishCredentials");
+                break;
+        case GDM_SESSION_CRED_RENEW:
+                send_dbus_void_signal (impl, "RenewCredentials");
+                break;
+        default:
+                g_assert_not_reached ();
+        }
 }
 
 static void
@@ -185,7 +217,6 @@ gdm_session_relay_answer_query (GdmSession *session,
                                 const char *text)
 {
         GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
-        g_debug ("GdmSessionRelay: Sending signal AnswerQuery");
         send_dbus_string_signal (impl, "AnswerQuery", text);
 }
 
@@ -366,7 +397,50 @@ handle_problem (GdmSessionRelay *session_relay,
 }
 
 static DBusHandlerResult
-handle_user_verified (GdmSessionRelay *session_relay,
+handle_setup_complete (GdmSessionRelay *session_relay,
+                       DBusConnection  *connection,
+                       DBusMessage     *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+
+        dbus_error_init (&error);
+
+        g_debug ("GdmSessionRelay: SetupComplete");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        _gdm_session_setup_complete (GDM_SESSION (session_relay));
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+handle_setup_failed (GdmSessionRelay *session_relay,
+                     DBusConnection  *connection,
+                     DBusMessage     *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+
+        dbus_error_init (&error);
+
+        g_debug ("GdmSessionRelay: SetupFailed");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        _gdm_session_setup_failed (GDM_SESSION (session_relay), NULL);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+
+static DBusHandlerResult
+handle_authenticated (GdmSessionRelay *session_relay,
                       DBusConnection  *connection,
                       DBusMessage     *message)
 {
@@ -375,34 +449,118 @@ handle_user_verified (GdmSessionRelay *session_relay,
 
         dbus_error_init (&error);
 
-        g_debug ("GdmSessionRelay: UserVerified");
+        g_debug ("GdmSessionRelay: Authenticated");
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_user_verified (GDM_SESSION (session_relay));
+        _gdm_session_authenticated (GDM_SESSION (session_relay));
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 static DBusHandlerResult
-handle_user_verification_error (GdmSessionRelay *session_relay,
-                                DBusConnection  *connection,
-                                DBusMessage     *message)
+handle_authentication_failed (GdmSessionRelay *session_relay,
+                              DBusConnection  *connection,
+                              DBusMessage     *message)
 {
         DBusMessage *reply;
         DBusError    error;
 
         dbus_error_init (&error);
 
-        g_debug ("GdmSessionRelay: UserVerificationError");
+        g_debug ("GdmSessionRelay: AuthenticationFailed");
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_user_verification_error (GDM_SESSION (session_relay), NULL);
+        _gdm_session_authentication_failed (GDM_SESSION (session_relay), NULL);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+handle_authorized (GdmSessionRelay *session_relay,
+                   DBusConnection  *connection,
+                   DBusMessage     *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+
+        dbus_error_init (&error);
+
+        g_debug ("GdmSessionRelay: Authorized");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        _gdm_session_authorized (GDM_SESSION (session_relay));
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+handle_authorization_failed (GdmSessionRelay *session_relay,
+                             DBusConnection  *connection,
+                             DBusMessage     *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+
+        dbus_error_init (&error);
+
+        g_debug ("GdmSessionRelay: AuthorizationFailed");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        _gdm_session_authorization_failed (GDM_SESSION (session_relay), NULL);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+handle_accredited (GdmSessionRelay *session_relay,
+                   DBusConnection  *connection,
+                   DBusMessage     *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+
+        dbus_error_init (&error);
+
+        g_debug ("GdmSessionRelay: Accredited");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        _gdm_session_accredited (GDM_SESSION (session_relay));
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+handle_accreditation_failed (GdmSessionRelay *session_relay,
+                             DBusConnection  *connection,
+                             DBusMessage     *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+
+        dbus_error_init (&error);
+
+        g_debug ("GdmSessionRelay: AccreditationFailed");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        _gdm_session_accreditation_failed (GDM_SESSION (session_relay), NULL);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -473,29 +631,6 @@ handle_opened (GdmSessionRelay *session_relay,
 }
 
 static DBusHandlerResult
-handle_reset (GdmSessionRelay *session_relay,
-              DBusConnection  *connection,
-              DBusMessage     *message)
-{
-        DBusMessage *reply;
-        DBusError    error;
-
-        dbus_error_init (&error);
-
-        g_debug ("GdmSessionRelay: Reset");
-
-        reply = dbus_message_new_method_return (message);
-        dbus_connection_send (connection, reply, NULL);
-        dbus_message_unref (reply);
-
-#if 0
-        _gdm_session_reset (GDM_SESSION (session_relay));
-#endif
-
-        return DBUS_HANDLER_RESULT_HANDLED;
-}
-
-static DBusHandlerResult
 session_handle_child_message (DBusConnection *connection,
                               DBusMessage    *message,
                               void           *user_data)
@@ -510,18 +645,28 @@ session_handle_child_message (DBusConnection *connection,
                 return handle_info (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "Problem")) {
                 return handle_problem (session_relay, connection, message);
-        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "UserVerified")) {
-                return handle_user_verified (session_relay, connection, message);
-        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "UserVerificationError")) {
-                return handle_user_verification_error (session_relay, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "SetupComplete")) {
+                return handle_setup_complete (session_relay, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "SetupFailed")) {
+                return handle_setup_failed (session_relay, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "Authenticated")) {
+                return handle_authenticated (session_relay, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "AuthenticationFailed")) {
+                return handle_authentication_failed (session_relay, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "Authorized")) {
+                return handle_authorized (session_relay, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "AuthorizationFailed")) {
+                return handle_authorization_failed (session_relay, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "Accredited")) {
+                return handle_accredited (session_relay, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "AccreditationFailed")) {
+                return handle_accreditation_failed (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "SessionStarted")) {
                 return handle_session_started (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "SessionStopped")) {
                 return handle_session_stopped (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "Opened")) {
                 return handle_opened (session_relay, connection, message);
-        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "Reset")) {
-                return handle_reset (session_relay, connection, message);
         }
 
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -550,10 +695,32 @@ do_introspect (DBusConnection *connection,
         /* interface */
         xml = g_string_append (xml,
                                "  <interface name=\"org.gnome.DisplayManager.SessionRelay\">\n"
-                               "    <method name=\"UserVerified\">\n"
+                               "    <method name=\"Opened\">\n"
                                "    </method>\n"
-                               "    <method name=\"UserVerificationError\">\n"
-                               "      <arg name=\"text\" type=\"s\"/>\n"
+                               "    <method name=\"SetupComplete\">\n"
+                               "    </method>\n"
+                               "    <method name=\"SetupFailed\">\n"
+                               "      <arg name=\"message\" direction=\"in\" type=\"s\"/>\n"
+                               "    </method>\n"
+                               "    <method name=\"ResetComplete\">\n"
+                               "    </method>\n"
+                               "    <method name=\"RestFailed\">\n"
+                               "      <arg name=\"message\" direction=\"in\" type=\"s\"/>\n"
+                               "    </method>\n"
+                               "    <method name=\"Authenticated\">\n"
+                               "    </method>\n"
+                               "    <method name=\"AuthenticationFailed\">\n"
+                               "      <arg name=\"message\" direction=\"in\" type=\"s\"/>\n"
+                               "    </method>\n"
+                               "    <method name=\"Authorized\">\n"
+                               "    </method>\n"
+                               "    <method name=\"AuthorizationFailed\">\n"
+                               "      <arg name=\"message\" direction=\"in\" type=\"s\"/>\n"
+                               "    </method>\n"
+                               "    <method name=\"Accredited\">\n"
+                               "    </method>\n"
+                               "    <method name=\"AccreditationFailed\">\n"
+                               "      <arg name=\"message\" direction=\"in\" type=\"s\"/>\n"
                                "    </method>\n"
                                "    <method name=\"InfoQuery\">\n"
                                "      <arg name=\"text\" type=\"s\"/>\n"
@@ -571,18 +738,35 @@ do_introspect (DBusConnection *connection,
                                "    </method>\n"
                                "    <method name=\"SessionStopped\">\n"
                                "    </method>\n"
-                               "    <method name=\"Opened\">\n"
-                               "    </method>\n"
-                               "    <method name=\"Reset\">\n"
-                               "    </method>\n"
+                               "    <signal name=\"Reset\">\n"
+                               "    </signal>\n"
+                               "    <signal name=\"Setup\">\n"
+                               "      <arg name=\"service_name\" type=\"s\"/>\n"
+                               "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
+                               "      <arg name=\"display_device\" type=\"s\"/>\n"
+                               "      <arg name=\"hostname\" type=\"s\"/>\n"
+                               "    </signal>\n"
+                               "    <signal name=\"SetupForUser\">\n"
+                               "      <arg name=\"service_name\" type=\"s\"/>\n"
+                               "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
+                               "      <arg name=\"display_device\" type=\"s\"/>\n"
+                               "      <arg name=\"hostname\" type=\"s\"/>\n"
+                               "      <arg name=\"username\" type=\"s\"/>\n"
+                               "    </signal>\n"
+                               "    <signal name=\"Authenticate\">\n"
+                               "    </signal>\n"
+                               "    <signal name=\"Authorize\">\n"
+                               "    </signal>\n"
+                               "    <signal name=\"EstablishCredentials\">\n"
+                               "    </signal>\n"
+                               "    <signal name=\"RenewCredentials\">\n"
+                               "    </signal>\n"
+
                                "    <signal name=\"Open\">\n"
                                "    </signal>\n"
                                "    <signal name=\"Close\">\n"
                                "    </signal>\n"
                                "    <signal name=\"StartSession\">\n"
-                               "    </signal>\n"
-                               "    <signal name=\"BeginVerification\">\n"
-                               "      <arg name=\"username\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"AnswerQuery\">\n"
                                "      <arg name=\"text\" type=\"s\"/>\n"
@@ -881,10 +1065,15 @@ gdm_session_relay_constructor (GType                  type,
 static void
 gdm_session_iface_init (GdmSessionIface *iface)
 {
-        iface->begin_verification = gdm_session_relay_begin_verification;
-        iface->begin_verification_for_user = gdm_session_relay_begin_verification_for_user;
+
         iface->open = gdm_session_relay_open;
+        iface->setup = gdm_session_relay_setup;
+        iface->setup_for_user = gdm_session_relay_setup_for_user;
+        iface->authenticate = gdm_session_relay_authenticate;
+        iface->authorize = gdm_session_relay_authorize;
+        iface->accredit = gdm_session_relay_accredit;
         iface->close = gdm_session_relay_close;
+
         iface->cancel = gdm_session_relay_cancel;
         iface->start_session = gdm_session_relay_start_session;
         iface->answer_query = gdm_session_relay_answer_query;

@@ -26,38 +26,45 @@
 
 G_BEGIN_DECLS
 
-void             _gdm_session_user_verified                (GdmSession   *session);
-
-void             _gdm_session_user_verification_error      (GdmSession   *session,
-                                                            const char   *text);
-
-void             _gdm_session_info_query                   (GdmSession   *session,
-                                                            const char   *text);
-
-void             _gdm_session_secret_info_query            (GdmSession   *session,
-                                                            const char   *text);
-
-void             _gdm_session_info                         (GdmSession   *session,
-                                                            const char   *text);
-
-void             _gdm_session_problem                      (GdmSession   *session,
-                                                            const char   *text);
-
-void             _gdm_session_session_started              (GdmSession   *session);
-
-void             _gdm_session_session_startup_error        (GdmSession   *session,
+/* state changes */
+void             _gdm_session_opened                       (GdmSession   *session);
+void             _gdm_session_setup_complete               (GdmSession   *session);
+void             _gdm_session_setup_failed                 (GdmSession   *session,
                                                             const char   *message);
-
+void             _gdm_session_reset_complete               (GdmSession   *session);
+void             _gdm_session_reset_failed                 (GdmSession   *session,
+                                                            const char   *message);
+void             _gdm_session_authenticated                (GdmSession   *session);
+void             _gdm_session_authentication_failed        (GdmSession   *session,
+                                                            const char   *text);
+void             _gdm_session_authorized                   (GdmSession   *session);
+void             _gdm_session_authorization_failed         (GdmSession   *session,
+                                                            const char   *text);
+void             _gdm_session_accredited                   (GdmSession   *session);
+void             _gdm_session_accreditation_failed         (GdmSession   *session,
+                                                            const char   *text);
+void             _gdm_session_session_started              (GdmSession   *session);
+void             _gdm_session_session_start_failed         (GdmSession   *session,
+                                                            const char   *message);
 void             _gdm_session_session_exited               (GdmSession   *session,
                                                             int           exit_code);
-
 void             _gdm_session_session_died                 (GdmSession   *session,
                                                             int           signal_number);
-
-void             _gdm_session_opened                       (GdmSession   *session);
 void             _gdm_session_closed                       (GdmSession   *session);
 
+
+/* user is selected/changed internally */
 void             _gdm_session_selected_user_changed        (GdmSession   *session,
+                                                            const char   *text);
+
+/* call and response stuff */
+void             _gdm_session_info_query                   (GdmSession   *session,
+                                                            const char   *text);
+void             _gdm_session_secret_info_query            (GdmSession   *session,
+                                                            const char   *text);
+void             _gdm_session_info                         (GdmSession   *session,
+                                                            const char   *text);
+void             _gdm_session_problem                      (GdmSession   *session,
                                                             const char   *text);
 
 G_END_DECLS

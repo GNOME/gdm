@@ -68,7 +68,7 @@
 
 enum {
         GDM_SESSION_WORKER_STATE_NONE = 0,
-        GDM_SESSION_WORKER_STATE_INITIALIZED,
+        GDM_SESSION_WORKER_STATE_SETUP_COMPLETE,
         GDM_SESSION_WORKER_STATE_AUTHENTICATED,
         GDM_SESSION_WORKER_STATE_AUTHORIZED,
         GDM_SESSION_WORKER_STATE_ACCREDITED,
@@ -87,7 +87,7 @@ struct GdmSessionWorkerPrivate
         GPid              child_pid;
         guint             child_watch_id;
 
-        /* from BeginAuth */
+        /* from Setup */
         char             *service;
         char             *x11_display_name;
         char             *display_device;
@@ -95,12 +95,11 @@ struct GdmSessionWorkerPrivate
         char             *username;
         gboolean          password_is_required;
 
+        int               cred_flags;
+
         char            **arguments;
-
         GHashTable       *environment;
-
         guint32           cancelled : 1;
-
         guint             state_change_idle_id;
 
         char             *server_address;
@@ -110,21 +109,6 @@ struct GdmSessionWorkerPrivate
 enum {
         PROP_0,
         PROP_SERVER_ADDRESS,
-};
-
-
-enum {
-        USER_AUTHENTICATED = 0,
-        USER_AUTHENTICATION_ERROR,
-        INFO,
-        PROBLEM,
-        INFO_QUERY,
-        SECRET_INFO_QUERY,
-        SESSION_STARTED,
-        SESSION_STARTUP_ERROR,
-        SESSION_EXITED,
-        SESSION_DIED,
-        LAST_SIGNAL
 };
 
 static void     gdm_session_worker_class_init   (GdmSessionWorkerClass *klass);
@@ -258,22 +242,25 @@ gdm_session_execute (const char *file,
                         path = p;
                         p = my_strchrnul (path, ':');
 
-                        if (p == path)
+                        if (p == path) {
                                 /* Two adjacent colons, or a colon at the beginning or the end
                                  * of `PATH' means to search the current directory.
                                  */
                                 startp = name + 1;
-                        else
+                        } else {
                                 startp = memcpy (name - (p - path), path, p - path);
+                        }
 
                         /* Try to execute this name.  If it works, execv will not return.  */
-                        if (envp)
+                        if (envp) {
                                 execve (startp, argv, envp);
-                        else
+                        } else {
                                 execv (startp, argv);
+                        }
 
-                        if (errno == ENOEXEC)
+                        if (errno == ENOEXEC) {
                                 script_execute (startp, argv, envp, search_path);
+                        }
 
                         switch (errno) {
                         case EACCES:
@@ -309,11 +296,12 @@ gdm_session_execute (const char *file,
                 } while (*p++ != '\0');
 
                 /* We tried every element and none of them worked.  */
-                if (got_eacces)
+                if (got_eacces) {
                         /* At least one failure was due to permissions, so report that
                          * error.
                          */
                         errno = EACCES;
+                }
 
                 g_free (freeme);
         }
@@ -458,83 +446,6 @@ send_dbus_void_method (DBusConnection *connection,
         return TRUE;
 }
 
-static void
-send_authenticated (GdmSessionWorker *worker)
-{
-        send_dbus_void_method (worker->priv->connection, "Verified");
-}
-
-static void
-send_session_startup_failed (GdmSessionWorker *worker,
-                             const char       *msg)
-{
-        send_dbus_string_method (worker->priv->connection,
-                                 "StartupFailed",
-                                 msg);
-}
-
-static void
-send_session_exited (GdmSessionWorker *worker,
-                     int               code)
-{
-        send_dbus_int_method (worker->priv->connection,
-                              "SessionExited",
-                              code);
-}
-
-static void
-send_session_died (GdmSessionWorker *worker,
-                   int               num)
-{
-        send_dbus_int_method (worker->priv->connection,
-                              "SessionDied",
-                              num);
-}
-
-static void
-send_username_changed (GdmSessionWorker *worker)
-{
-        send_dbus_string_method (worker->priv->connection,
-                                 "UsernameChanged",
-                                 worker->priv->username);
-}
-
-static void
-send_authentication_failed (GdmSessionWorker *worker,
-                            const char       *msg)
-{
-        send_dbus_string_method (worker->priv->connection,
-                                 "AuthenticationFailed",
-                                 msg);
-}
-
-static void
-send_authorization_failed (GdmSessionWorker *worker,
-                           const char       *msg)
-{
-        send_dbus_string_method (worker->priv->connection,
-                                 "AuthorizationFailed",
-                                 msg);
-}
-
-static void
-send_accreditation_failed (GdmSessionWorker *worker,
-                           const char       *msg)
-{
-        send_dbus_string_method (worker->priv->connection,
-                                 "AccreditationFailed",
-                                 msg);
-}
-
-static void
-send_session_started (GdmSessionWorker *worker,
-                      GPid              pid)
-{
-        send_dbus_int_method (worker->priv->connection,
-                              "SessionStarted",
-                              (int)pid);
-}
-
 static gboolean
 gdm_session_worker_get_username (GdmSessionWorker  *worker,
                                  char             **username)
@@ -575,7 +486,9 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
                 worker->priv->username = username;
                 username = NULL;
 
-                send_username_changed (worker);
+                send_dbus_string_method (worker->priv->connection,
+                                         "UsernameChanged",
+                                         worker->priv->username);
         }
 
  out:
@@ -959,7 +872,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
         }
 
         g_debug ("GdmSessionWorker: initialized");
-        worker->priv->state = GDM_SESSION_WORKER_STATE_INITIALIZED;
+        worker->priv->state = GDM_SESSION_WORKER_STATE_SETUP_COMPLETE;
 
  out:
         if (error_code != PAM_SUCCESS) {
@@ -1198,7 +1111,7 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
                 goto out;
         }
 
-        error_code = pam_setcred (worker->priv->pam_handle, PAM_ESTABLISH_CRED);
+        error_code = pam_setcred (worker->priv->pam_handle, worker->priv->cred_flags);
 
         if (error_code != PAM_SUCCESS) {
                 g_set_error (error,
@@ -1296,11 +1209,15 @@ session_worker_child_watch (GPid              pid,
         if (WIFEXITED (status)) {
                 int code = WEXITSTATUS (status);
 
-                send_session_exited (worker, code);
+                send_dbus_int_method (worker->priv->connection,
+                                      "SessionExited",
+                                      code);
         } else if (WIFSIGNALED (status)) {
                 int num = WTERMSIG (status);
 
-                send_session_died (worker, num);
+                send_dbus_int_method (worker->priv->connection,
+                                      "SessionDied",
+                                      num);
         }
 
         gdm_session_worker_uninitialize_pam (worker, PAM_SUCCESS);
@@ -1330,6 +1247,8 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
 
         g_debug ("GdmSessionWorker: opening user session with program '%s'",
                  worker->priv->arguments[0]);
+
+        error_code = PAM_SUCCESS;
 
         session_pid = fork ();
 
@@ -1502,7 +1421,7 @@ on_set_environment_variable (GdmSessionWorker *worker,
 }
 
 static void
-do_initialize (GdmSessionWorker *worker)
+do_setup (GdmSessionWorker *worker)
 {
         GError  *error;
         gboolean res;
@@ -1516,12 +1435,14 @@ do_initialize (GdmSessionWorker *worker)
                                                  worker->priv->display_device,
                                                  &error);
         if (! res) {
-                send_authentication_failed (worker, error->message);
+                send_dbus_string_method (worker->priv->connection,
+                                         "SetupFailed",
+                                         error->message);
                 g_error_free (error);
                 return;
         }
 
-        queue_state_change (worker);
+        send_dbus_void_method (worker->priv->connection, "SetupComplete");
 }
 
 static void
@@ -1538,7 +1459,9 @@ do_authenticate (GdmSessionWorker *worker)
                                                     &error);
         if (! res) {
                 g_debug ("GdmSessionWorker: Unable to verify user");
-                send_authentication_failed (worker, error->message);
+                send_dbus_string_method (worker->priv->connection,
+                                         "AuthenticationFailed",
+                                         error->message);
                 g_error_free (error);
                 return;
         }
@@ -1549,8 +1472,7 @@ do_authenticate (GdmSessionWorker *worker)
         g_debug ("GdmSessionWorker: trying to get updated username");
         gdm_session_worker_update_username (worker);
 
-        /*send_authenticated (worker);*/
-        queue_state_change (worker);
+        send_dbus_void_method (worker->priv->connection, "Authenticated");
 }
 
 static void
@@ -1566,13 +1488,14 @@ do_authorize (GdmSessionWorker *worker)
                                                  worker->priv->password_is_required,
                                                  &error);
         if (! res) {
-                send_authorization_failed (worker, error->message);
+                send_dbus_string_method (worker->priv->connection,
+                                         "AuthorizationFailed",
+                                         error->message);
                 g_error_free (error);
                 return;
         }
 
-        /*send_authorized (worker);*/
-        queue_state_change (worker);
+        send_dbus_void_method (worker->priv->connection, "Authorized");
 }
 
 static void
@@ -1587,13 +1510,14 @@ do_accredit (GdmSessionWorker *worker)
         res = gdm_session_worker_accredit_user (worker, &error);
 
         if (! res) {
-                send_accreditation_failed (worker, error->message);
+                send_dbus_string_method (worker->priv->connection,
+                                         "AccreditationFailed",
+                                         error->message);
                 g_error_free (error);
                 return;
         }
 
-        /*send_accredited (worker);*/
-        send_authenticated (worker);
+        send_dbus_void_method (worker->priv->connection, "Accredited");
 }
 
 static void
@@ -1605,7 +1529,9 @@ do_open_session (GdmSessionWorker *worker)
         error = NULL;
         res = gdm_session_worker_open_user_session (worker, &error);
         if (! res) {
-                send_session_startup_failed (worker, error->message);
+                send_dbus_string_method (worker->priv->connection,
+                                         "StartFailed",
+                                         error->message);
                 g_error_free (error);
                 return;
         }
@@ -1622,12 +1548,16 @@ do_start_session (GdmSessionWorker *worker)
         error = NULL;
         res = gdm_session_worker_start_user_session (worker, &error);
         if (! res) {
-                send_session_startup_failed (worker, error->message);
+                send_dbus_string_method (worker->priv->connection,
+                                         "StartFailed",
+                                         error->message);
                 g_error_free (error);
                 return;
         }
 
-        send_session_started (worker, worker->priv->child_pid);
+        send_dbus_int_method (worker->priv->connection,
+                              "SessionStarted",
+                              (int)worker->priv->child_pid);
 }
 
 static gboolean
@@ -1641,8 +1571,8 @@ state_change_idle (GdmSessionWorker *worker)
         worker->priv->state_change_idle_id = 0;
 
         switch (new_state) {
-        case GDM_SESSION_WORKER_STATE_INITIALIZED:
-                do_initialize (worker);
+        case GDM_SESSION_WORKER_STATE_SETUP_COMPLETE:
+                do_setup (worker);
                 break;
         case GDM_SESSION_WORKER_STATE_AUTHENTICATED:
                 do_authenticate (worker);
@@ -1715,8 +1645,8 @@ on_start_program (GdmSessionWorker *worker,
 }
 
 static void
-on_begin_verification (GdmSessionWorker *worker,
-                       DBusMessage      *message)
+on_setup (GdmSessionWorker *worker,
+          DBusMessage      *message)
 {
         DBusError   error;
         const char *service;
@@ -1742,7 +1672,7 @@ on_begin_verification (GdmSessionWorker *worker,
                 worker->priv->hostname = g_strdup (hostname);
                 worker->priv->username = NULL;
 
-                g_debug ("GdmSessionWorker: begin authentication: %s %s", service, console);
+                g_debug ("GdmSessionWorker: queing setup: %s %s", service, console);
                 queue_state_change (worker);
         } else {
                 g_warning ("Unable to get arguments: %s", error.message);
@@ -1751,8 +1681,8 @@ on_begin_verification (GdmSessionWorker *worker,
 }
 
 static void
-on_begin_verification_for_user (GdmSessionWorker *worker,
-                                DBusMessage      *message)
+on_setup_for_user (GdmSessionWorker *worker,
+                   DBusMessage      *message)
 {
         DBusError   error;
         const char *service;
@@ -1780,12 +1710,50 @@ on_begin_verification_for_user (GdmSessionWorker *worker,
                 worker->priv->hostname = g_strdup (hostname);
                 worker->priv->username = g_strdup (username);
 
-                g_debug ("GdmSessionWorker: begin authentication: %s %s", service, console);
+                g_debug ("GdmSessionWorker: queuing setup for user %s %s", service, console);
                 queue_state_change (worker);
         } else {
                 g_warning ("Unable to get arguments: %s", error.message);
                 dbus_error_free (&error);
         }
+}
+
+static void
+on_authenticate (GdmSessionWorker *worker,
+                 DBusMessage      *message)
+{
+        /* FIXME: return error if not in SETUP_COMPLETE state */
+        queue_state_change (worker);
+}
+
+static void
+on_authorize (GdmSessionWorker *worker,
+              DBusMessage      *message)
+{
+        /* FIXME: return error if not in AUTHENTICATED state */
+        queue_state_change (worker);
+}
+
+static void
+on_establish_credentials (GdmSessionWorker *worker,
+                          DBusMessage      *message)
+{
+        /* FIXME: return error if not in AUTHORIZED state */
+
+        worker->priv->cred_flags = PAM_ESTABLISH_CRED;
+
+        queue_state_change (worker);
+}
+
+static void
+on_renew_credentials (GdmSessionWorker *worker,
+                      DBusMessage      *message)
+{
+        /* FIXME: return error if not in AUTHORIZED state */
+
+        worker->priv->cred_flags = PAM_REINITIALIZE_CRED;
+
+        queue_state_change (worker);
 }
 
 static DBusHandlerResult
@@ -1807,14 +1775,22 @@ worker_dbus_handle_message (DBusConnection *connection,
         g_return_val_if_fail (connection != NULL, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
         g_return_val_if_fail (message != NULL, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
 
-        if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "StartProgram")) {
+        if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "Setup")) {
+                on_setup (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetupForUser")) {
+                on_setup_for_user (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "Authenticate")) {
+                on_authenticate (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "Authorize")) {
+                on_authorize (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "EstablishCredentials")) {
+                on_establish_credentials (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "RenewCredentials")) {
+                on_renew_credentials (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "StartProgram")) {
                 on_start_program (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetEnvironmentVariable")) {
                 on_set_environment_variable (worker, message);
-        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "BeginVerification")) {
-                on_begin_verification (worker, message);
-        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "BeginVerificationForUser")) {
-                on_begin_verification_for_user (worker, message);
         } else {
                 return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
         }

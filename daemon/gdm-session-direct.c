@@ -74,7 +74,7 @@ struct _GdmSessionDirectPrivate
 
         GdmSessionWorkerJob *job;
         GPid                 session_pid;
-        guint32              is_verified : 1;
+        guint32              is_authenticated : 1;
         guint32              is_running : 1;
 
         /* object lifetime scope */
@@ -105,17 +105,6 @@ G_DEFINE_TYPE_WITH_CODE (GdmSessionDirect,
                          G_TYPE_OBJECT,
                          G_IMPLEMENT_INTERFACE (GDM_TYPE_SESSION,
                                                 gdm_session_iface_init));
-
-GQuark
-gdm_session_direct_error_quark (void)
-{
-        static GQuark error_quark = 0;
-
-        if (error_quark == 0)
-                error_quark = g_quark_from_static_string ("gdm-session-direct");
-
-        return error_quark;
-}
 
 static gboolean
 send_dbus_message (DBusConnection *connection,
@@ -167,8 +156,27 @@ send_dbus_string_signal (GdmSessionDirect *session,
 }
 
 static void
-on_user_verification_error (GdmSession *session,
-                            const char *message)
+send_dbus_void_signal (GdmSessionDirect *session,
+                       const char       *name)
+{
+        DBusMessage *message;
+
+        g_return_if_fail (session != NULL);
+
+        message = dbus_message_new_signal (GDM_SESSION_DBUS_PATH,
+                                           GDM_SESSION_DBUS_INTERFACE,
+                                           name);
+
+        if (! send_dbus_message (session->priv->worker_connection, message)) {
+                g_debug ("GdmSessionDirect: Could not send %s signal", name);
+        }
+
+        dbus_message_unref (message);
+}
+
+static void
+on_authentication_failed (GdmSession *session,
+                          const char *message)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
         gdm_session_record_failed (impl->priv->session_pid,
@@ -190,8 +198,8 @@ on_session_started (GdmSession *session)
 }
 
 static void
-on_session_startup_error (GdmSession *session,
-                          const char *message)
+on_session_start_failed (GdmSession *session,
+                         const char *message)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
         gdm_session_record_login (impl->priv->session_pid,
@@ -214,29 +222,27 @@ on_session_exited (GdmSession *session,
 }
 
 static DBusHandlerResult
-gdm_session_direct_handle_verified (GdmSessionDirect *session,
-                                    DBusConnection   *connection,
-                                    DBusMessage      *message)
+gdm_session_direct_handle_setup_complete (GdmSessionDirect *session,
+                                          DBusConnection   *connection,
+                                          DBusMessage      *message)
 {
         DBusMessage *reply;
 
-        g_debug ("GdmSessionDirect: Emitting 'user-verified' signal");
+        g_debug ("GdmSessionDirect: Emitting 'setup-complete' signal");
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        session->priv->is_verified = TRUE;
-
-        _gdm_session_user_verified (GDM_SESSION (session));
+        _gdm_session_setup_complete (GDM_SESSION (session));
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 static DBusHandlerResult
-gdm_session_direct_handle_verification_failed (GdmSessionDirect *session,
-                                               DBusConnection   *connection,
-                                               DBusMessage      *message)
+gdm_session_direct_handle_setup_failed (GdmSessionDirect *session,
+                                        DBusConnection   *connection,
+                                        DBusMessage      *message)
 {
         DBusMessage *reply;
         DBusError    error;
@@ -253,9 +259,190 @@ gdm_session_direct_handle_verification_failed (GdmSessionDirect *session,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_debug ("GdmSessionDirect: Emitting 'verification-failed' signal");
+        g_debug ("GdmSessionDirect: Emitting 'setup-failed' signal");
 
-        _gdm_session_user_verification_error (GDM_SESSION (session), NULL);
+        _gdm_session_setup_failed (GDM_SESSION (session), NULL);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+
+static DBusHandlerResult
+gdm_session_direct_handle_reset_complete (GdmSessionDirect *session,
+                                          DBusConnection   *connection,
+                                          DBusMessage      *message)
+{
+        DBusMessage *reply;
+
+        g_debug ("GdmSessionDirect: Emitting 'reset-complete' signal");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        _gdm_session_reset_complete (GDM_SESSION (session));
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+gdm_session_direct_handle_reset_failed (GdmSessionDirect *session,
+                                        DBusConnection   *connection,
+                                        DBusMessage      *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+        const char  *text;
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &text,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        g_debug ("GdmSessionDirect: Emitting 'reset-failed' signal");
+
+        _gdm_session_reset_failed (GDM_SESSION (session), NULL);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+gdm_session_direct_handle_authenticated (GdmSessionDirect *session,
+                                         DBusConnection   *connection,
+                                         DBusMessage      *message)
+{
+        DBusMessage *reply;
+
+        g_debug ("GdmSessionDirect: Emitting 'authenticated' signal");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        _gdm_session_authenticated (GDM_SESSION (session));
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+gdm_session_direct_handle_authentication_failed (GdmSessionDirect *session,
+                                                 DBusConnection   *connection,
+                                                 DBusMessage      *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+        const char  *text;
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &text,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        g_debug ("GdmSessionDirect: Emitting 'authentication-failed' signal");
+
+        _gdm_session_authentication_failed (GDM_SESSION (session), NULL);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+gdm_session_direct_handle_authorized (GdmSessionDirect *session,
+                                      DBusConnection   *connection,
+                                      DBusMessage      *message)
+{
+        DBusMessage *reply;
+
+        g_debug ("GdmSessionDirect: Emitting 'authorized' signal");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        _gdm_session_authorized (GDM_SESSION (session));
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+gdm_session_direct_handle_authorization_failed (GdmSessionDirect *session,
+                                                DBusConnection   *connection,
+                                                DBusMessage      *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+        const char  *text;
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &text,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        g_debug ("GdmSessionDirect: Emitting 'authorization-failed' signal");
+
+        _gdm_session_authorization_failed (GDM_SESSION (session), NULL);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+gdm_session_direct_handle_accredited (GdmSessionDirect *session,
+                                      DBusConnection   *connection,
+                                      DBusMessage      *message)
+{
+        DBusMessage *reply;
+
+        g_debug ("GdmSessionDirect: Emitting 'accredited' signal");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        _gdm_session_accredited (GDM_SESSION (session));
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+gdm_session_direct_handle_accreditation_failed (GdmSessionDirect *session,
+                                                DBusConnection   *connection,
+                                                DBusMessage      *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+        const char  *text;
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &text,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        g_debug ("GdmSessionDirect: Emitting 'accreditation-failed' signal");
+
+        _gdm_session_accreditation_failed (GDM_SESSION (session), NULL);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -473,9 +660,9 @@ gdm_session_direct_handle_session_started (GdmSessionDirect *session,
 }
 
 static DBusHandlerResult
-gdm_session_direct_handle_startup_failed (GdmSessionDirect *session,
-                                          DBusConnection   *connection,
-                                          DBusMessage      *message)
+gdm_session_direct_handle_start_failed (GdmSessionDirect *session,
+                                        DBusConnection   *connection,
+                                        DBusMessage      *message)
 {
         DBusMessage *reply;
         DBusError    error;
@@ -492,8 +679,8 @@ gdm_session_direct_handle_startup_failed (GdmSessionDirect *session,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_debug ("GdmSessionDirect: Emitting 'session-startup-error' signal");
-        _gdm_session_session_startup_error (GDM_SESSION (session), text);
+        g_debug ("GdmSessionDirect: Emitting 'session-start-failed' signal");
+        _gdm_session_session_start_failed (GDM_SESSION (session), text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -563,13 +750,7 @@ session_worker_message (DBusConnection *connection,
 {
         GdmSessionDirect *session = GDM_SESSION_DIRECT (user_data);
 
-        if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "Verified")) {
-                return gdm_session_direct_handle_verified (session, connection, message);
-        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "VerificationFailed")) {
-                return gdm_session_direct_handle_verification_failed (session, connection, message);
-        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "UsernameChanged")) {
-                return gdm_session_direct_handle_username_changed (session, connection, message);
-        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "InfoQuery")) {
+        if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "InfoQuery")) {
                 return gdm_session_direct_handle_info_query (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SecretInfoQuery")) {
                 return gdm_session_direct_handle_secret_info_query (session, connection, message);
@@ -577,10 +758,32 @@ session_worker_message (DBusConnection *connection,
                 return gdm_session_direct_handle_info (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "Problem")) {
                 return gdm_session_direct_handle_problem (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SetupComplete")) {
+                return gdm_session_direct_handle_setup_complete (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SetupFailed")) {
+                return gdm_session_direct_handle_setup_failed (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "ResetComplete")) {
+                return gdm_session_direct_handle_reset_complete (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "ResetFailed")) {
+                return gdm_session_direct_handle_reset_failed (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "Authenticated")) {
+                return gdm_session_direct_handle_authenticated (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "AuthenticationFailed")) {
+                return gdm_session_direct_handle_authentication_failed (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "Authorized")) {
+                return gdm_session_direct_handle_authorized (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "AuthorizationFailed")) {
+                return gdm_session_direct_handle_authorization_failed (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "Accredited")) {
+                return gdm_session_direct_handle_accredited (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "AccreditationFailed")) {
+                return gdm_session_direct_handle_accreditation_failed (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "UsernameChanged")) {
+                return gdm_session_direct_handle_username_changed (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SessionStarted")) {
                 return gdm_session_direct_handle_session_started (session, connection, message);
-        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "StartupFailed")) {
-                return gdm_session_direct_handle_startup_failed (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "StartFailed")) {
+                return gdm_session_direct_handle_start_failed (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SessionExited")) {
                 return gdm_session_direct_handle_session_exited (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SessionDied")) {
@@ -613,9 +816,29 @@ do_introspect (DBusConnection *connection,
         /* interface */
         xml = g_string_append (xml,
                                "  <interface name=\"org.gnome.DisplayManager.Session\">\n"
-                               "    <method name=\"Verified\">\n"
+                               "    <method name=\"SetupComplete\">\n"
                                "    </method>\n"
-                               "    <method name=\"VerificationFailed\">\n"
+                               "    <method name=\"SetupFailed\">\n"
+                               "      <arg name=\"message\" direction=\"in\" type=\"s\"/>\n"
+                               "    </method>\n"
+                               "    <method name=\"ResetComplete\">\n"
+                               "    </method>\n"
+                               "    <method name=\"ResetFailed\">\n"
+                               "      <arg name=\"message\" direction=\"in\" type=\"s\"/>\n"
+                               "    </method>\n"
+                               "    <method name=\"Authenticated\">\n"
+                               "    </method>\n"
+                               "    <method name=\"AuthenticationFailed\">\n"
+                               "      <arg name=\"message\" direction=\"in\" type=\"s\"/>\n"
+                               "    </method>\n"
+                               "    <method name=\"Authorized\">\n"
+                               "    </method>\n"
+                               "    <method name=\"AuthorizationFailed\">\n"
+                               "      <arg name=\"message\" direction=\"in\" type=\"s\"/>\n"
+                               "    </method>\n"
+                               "    <method name=\"Accredited\">\n"
+                               "    </method>\n"
+                               "    <method name=\"AccreditationFailed\">\n"
                                "      <arg name=\"message\" direction=\"in\" type=\"s\"/>\n"
                                "    </method>\n"
                                "    <method name=\"InfoQuery\">\n"
@@ -635,7 +858,7 @@ do_introspect (DBusConnection *connection,
                                "    <method name=\"UsernameChanged\">\n"
                                "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
                                "    </method>\n"
-                               "    <method name=\"StartupFailed\">\n"
+                               "    <method name=\"StartFailed\">\n"
                                "      <arg name=\"message\" direction=\"in\" type=\"s\"/>\n"
                                "    </method>\n"
                                "    <method name=\"SessionStarted\">\n"
@@ -647,27 +870,35 @@ do_introspect (DBusConnection *connection,
                                "    <method name=\"SessionDied\">\n"
                                "      <arg name=\"signal\" direction=\"in\" type=\"i\"/>\n"
                                "    </method>\n"
-                               "    <signal name=\"BeginVerification\">\n"
+                               "    <signal name=\"Reset\">\n"
+                               "    </signal>\n"
+                               "    <signal name=\"Setup\">\n"
                                "      <arg name=\"service_name\" type=\"s\"/>\n"
                                "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
                                "      <arg name=\"display_device\" type=\"s\"/>\n"
                                "      <arg name=\"hostname\" type=\"s\"/>\n"
                                "    </signal>\n"
-                               "    <signal name=\"BeginVerificationForUser\">\n"
+                               "    <signal name=\"SetupForUser\">\n"
                                "      <arg name=\"service_name\" type=\"s\"/>\n"
                                "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
                                "      <arg name=\"display_device\" type=\"s\"/>\n"
                                "      <arg name=\"hostname\" type=\"s\"/>\n"
                                "      <arg name=\"username\" type=\"s\"/>\n"
                                "    </signal>\n"
-                               "    <signal name=\"StartProgram\">\n"
-                               "      <arg name=\"command\" type=\"s\"/>\n"
+                               "    <signal name=\"Authenticate\">\n"
+                               "    </signal>\n"
+                               "    <signal name=\"Authorize\">\n"
+                               "    </signal>\n"
+                               "    <signal name=\"EstablishCredentials\">\n"
+                               "    </signal>\n"
+                               "    <signal name=\"RenewCredentials\">\n"
                                "    </signal>\n"
                                "    <signal name=\"SetEnvironmentVariable\">\n"
                                "      <arg name=\"name\" type=\"s\"/>\n"
                                "      <arg name=\"value\" type=\"s\"/>\n"
                                "    </signal>\n"
-                               "    <signal name=\"Reset\">\n"
+                               "    <signal name=\"StartProgram\">\n"
+                               "      <arg name=\"command\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "  </interface>\n");
 
@@ -882,16 +1113,16 @@ gdm_session_direct_init (GdmSessionDirect *session)
                                                      GdmSessionDirectPrivate);
 
         g_signal_connect (session,
-                          "user-verification-error",
-                          G_CALLBACK (on_user_verification_error),
+                          "authentication-failed",
+                          G_CALLBACK (on_authentication_failed),
                           NULL);
         g_signal_connect (session,
                           "session-started",
                           G_CALLBACK (on_session_started),
                           NULL);
         g_signal_connect (session,
-                          "session-startup-error",
-                          G_CALLBACK (on_session_startup_error),
+                          "session-start-failed",
+                          G_CALLBACK (on_session_start_failed),
                           NULL);
         g_signal_connect (session,
                           "session-exited",
@@ -936,11 +1167,11 @@ worker_exited (GdmSessionWorkerJob *job,
 {
         g_debug ("GdmSessionDirect: Worker job exited: %d", code);
 
-        if (!session->priv->is_verified) {
+        if (!session->priv->is_authenticated) {
                 char *msg;
 
                 msg = g_strdup_printf (_("worker exited with status %d"), code);
-                _gdm_session_user_verification_error (GDM_SESSION (session), msg);
+                _gdm_session_authentication_failed (GDM_SESSION (session), msg);
                 g_free (msg);
         } else if (session->priv->is_running) {
                 _gdm_session_session_exited (GDM_SESSION (session), code);
@@ -954,11 +1185,11 @@ worker_died (GdmSessionWorkerJob *job,
 {
         g_debug ("GdmSessionDirect: Worker job died: %d", signum);
 
-        if (!session->priv->is_verified) {
+        if (!session->priv->is_authenticated) {
                 char *msg;
 
                 msg = g_strdup_printf (_("worker exited with status %d"), signum);
-                _gdm_session_user_verification_error (GDM_SESSION (session), msg);
+                _gdm_session_authentication_failed (GDM_SESSION (session), msg);
                 g_free (msg);
         } else if (session->priv->is_running) {
                 _gdm_session_session_died (GDM_SESSION (session), signum);
@@ -1016,13 +1247,13 @@ gdm_session_direct_open (GdmSession *session)
 
         g_return_if_fail (session != NULL);
 
-        g_debug ("GdmSessionDirect: Openning session");
+        g_debug ("GdmSessionDirect: Opening session");
 
         res = start_worker (impl);
 }
 
 static void
-send_begin_verification (GdmSessionDirect *session)
+send_setup (GdmSessionDirect *session)
 {
         DBusMessage    *message;
         DBusMessageIter iter;
@@ -1046,11 +1277,11 @@ send_begin_verification (GdmSessionDirect *session)
                 display_device = "";
         }
 
-        g_debug ("GdmSessionDirect: Beginning verification");
+        g_debug ("GdmSessionDirect: Beginning setup");
 
         message = dbus_message_new_signal (GDM_SESSION_DBUS_PATH,
                                            GDM_SESSION_DBUS_INTERFACE,
-                                           "BeginVerification");
+                                           "Setup");
 
         dbus_message_iter_init_append (message, &iter);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->service_name);
@@ -1059,14 +1290,14 @@ send_begin_verification (GdmSessionDirect *session)
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_hostname);
 
         if (! send_dbus_message (session->priv->worker_connection, message)) {
-                g_debug ("GdmSessionDirect: Could not send %s signal", "BeginVerification");
+                g_debug ("GdmSessionDirect: Could not send %s signal", "Setup");
         }
 
         dbus_message_unref (message);
 }
 
 static void
-send_begin_verification_for_user (GdmSessionDirect *session)
+send_setup_for_user (GdmSessionDirect *session)
 {
         DBusMessage    *message;
         DBusMessageIter iter;
@@ -1096,11 +1327,11 @@ send_begin_verification_for_user (GdmSessionDirect *session)
                 selected_user = "";
         }
 
-        g_debug ("GdmSessionDirect: Beginning verification for user %s", session->priv->selected_user);
+        g_debug ("GdmSessionDirect: Beginning setup for user %s", session->priv->selected_user);
 
         message = dbus_message_new_signal (GDM_SESSION_DBUS_PATH,
                                            GDM_SESSION_DBUS_INTERFACE,
-                                           "BeginVerificationForUser");
+                                           "SetupForUser");
 
         dbus_message_iter_init_append (message, &iter);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->service_name);
@@ -1110,26 +1341,26 @@ send_begin_verification_for_user (GdmSessionDirect *session)
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &selected_user);
 
         if (! send_dbus_message (session->priv->worker_connection, message)) {
-                g_debug ("GdmSessionDirect: Could not send %s signal", "BeginVerificationForUser");
+                g_debug ("GdmSessionDirect: Could not send %s signal", "SetupForUser");
         }
 
         dbus_message_unref (message);
 }
 
 static void
-gdm_session_direct_begin_verification (GdmSession *session)
+gdm_session_direct_setup (GdmSession *session)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
 
         g_return_if_fail (session != NULL);
         g_return_if_fail (dbus_connection_get_is_connected (impl->priv->worker_connection));
 
-        send_begin_verification (impl);
+        send_setup (impl);
 }
 
 static void
-gdm_session_direct_begin_verification_for_user (GdmSession  *session,
-                                                const char  *username)
+gdm_session_direct_setup_for_user (GdmSession  *session,
+                                   const char  *username)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
 
@@ -1139,7 +1370,50 @@ gdm_session_direct_begin_verification_for_user (GdmSession  *session,
 
         impl->priv->selected_user = g_strdup (username);
 
-        send_begin_verification_for_user (impl);
+        send_setup_for_user (impl);
+}
+
+static void
+gdm_session_direct_authenticate (GdmSession *session)
+{
+        GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+
+        g_return_if_fail (session != NULL);
+        g_return_if_fail (dbus_connection_get_is_connected (impl->priv->worker_connection));
+
+        send_dbus_void_signal (impl, "Authenticate");
+}
+
+static void
+gdm_session_direct_authorize (GdmSession *session)
+{
+        GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+
+        g_return_if_fail (session != NULL);
+        g_return_if_fail (dbus_connection_get_is_connected (impl->priv->worker_connection));
+
+        send_dbus_void_signal (impl, "Authorize");
+}
+
+static void
+gdm_session_direct_accredit (GdmSession *session,
+                             int         cred_flag)
+{
+        GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+
+        g_return_if_fail (session != NULL);
+        g_return_if_fail (dbus_connection_get_is_connected (impl->priv->worker_connection));
+
+        switch (cred_flag) {
+        case GDM_SESSION_CRED_ESTABLISH:
+                send_dbus_void_signal (impl, "EstablishCredentials");
+                break;
+        case GDM_SESSION_CRED_RENEW:
+                send_dbus_void_signal (impl, "RenewCredentials");
+                break;
+        default:
+                g_assert_not_reached ();
+        }
 }
 
 static void
@@ -1473,9 +1747,6 @@ gdm_session_direct_close (GdmSession *session)
                 stop_worker (impl);
         }
 
-        impl->priv->is_running = FALSE;
-        impl->priv->is_verified = FALSE;
-
         g_free (impl->priv->selected_user);
         impl->priv->selected_user = NULL;
 
@@ -1491,7 +1762,7 @@ gdm_session_direct_close (GdmSession *session)
         g_hash_table_remove_all (impl->priv->environment);
 
         impl->priv->session_pid = -1;
-        impl->priv->is_verified = FALSE;
+        impl->priv->is_authenticated = FALSE;
         impl->priv->is_running = FALSE;
 }
 
@@ -1719,10 +1990,14 @@ gdm_session_direct_finalize (GObject *object)
 static void
 gdm_session_iface_init (GdmSessionIface *iface)
 {
-        iface->begin_verification = gdm_session_direct_begin_verification;
-        iface->begin_verification_for_user = gdm_session_direct_begin_verification_for_user;
         iface->open = gdm_session_direct_open;
+        iface->setup = gdm_session_direct_setup;
+        iface->setup_for_user = gdm_session_direct_setup_for_user;
+        iface->authenticate = gdm_session_direct_authenticate;
+        iface->authorize = gdm_session_direct_authorize;
+        iface->accredit = gdm_session_direct_accredit;
         iface->close = gdm_session_direct_close;
+
         iface->cancel = gdm_session_direct_cancel;
         iface->start_session = gdm_session_direct_start_session;
         iface->answer_query = gdm_session_direct_answer_query;

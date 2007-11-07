@@ -92,6 +92,24 @@ static void     gdm_factory_slave_finalize      (GObject             *object);
 
 G_DEFINE_TYPE (GdmFactorySlave, gdm_factory_slave, GDM_TYPE_SLAVE)
 
+static gboolean
+greeter_reset_timeout (GdmFactorySlave *slave)
+{
+        gdm_greeter_server_reset (slave->priv->greeter_server);
+        slave->priv->greeter_reset_id = 0;
+        return FALSE;
+}
+
+static void
+queue_greeter_reset (GdmFactorySlave *slave)
+{
+        if (slave->priv->greeter_reset_id > 0) {
+                return;
+        }
+
+        slave->priv->greeter_reset_id = g_timeout_add_seconds (2, (GSourceFunc)greeter_reset_timeout, slave);
+}
+
 static void
 on_greeter_start (GdmGreeterSession *greeter,
                   GdmFactorySlave   *slave)
@@ -153,8 +171,79 @@ on_session_opened (GdmSession      *session,
 }
 
 static void
-on_session_user_verified (GdmSession      *session,
+on_session_setup_complete (GdmSession      *session,
+                           GdmFactorySlave *slave)
+{
+        gdm_session_authenticate (session);
+}
+
+static void
+on_session_setup_failed (GdmSession      *session,
+                         const char      *message,
+                         GdmFactorySlave *slave)
+{
+        gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to initialize login system"));
+
+        queue_greeter_reset (slave);
+}
+
+static void
+on_session_reset_complete (GdmSession      *session,
+                           GdmFactorySlave *slave)
+{
+        g_debug ("GdmFactorySlave: PAM reset");
+}
+
+static void
+on_session_reset_failed (GdmSession      *session,
+                         const char      *message,
+                         GdmFactorySlave *slave)
+{
+        g_critical ("Unable to reset PAM");
+}
+
+static void
+on_session_authenticated (GdmSession      *session,
                           GdmFactorySlave *slave)
+{
+        gdm_session_authorize (session);
+}
+
+static void
+on_session_authentication_failed (GdmSession      *session,
+                                  const char      *message,
+                                  GdmFactorySlave *slave)
+{
+        gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to authenticate user"));
+
+        queue_greeter_reset (slave);
+}
+
+static void
+on_session_authorized (GdmSession      *session,
+                       GdmFactorySlave *slave)
+{
+        int flag;
+
+        /* FIXME: check for migration? */
+        flag = GDM_SESSION_CRED_ESTABLISH;
+
+        gdm_session_accredit (session, flag);
+}
+
+static void
+on_session_authorization_failed (GdmSession      *session,
+                                 const char      *message,
+                                 GdmFactorySlave *slave)
+{
+        gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to authorize user"));
+
+        queue_greeter_reset (slave);
+}
+
+static void
+on_session_accredited (GdmSession      *session,
+                       GdmFactorySlave *slave)
 {
         g_debug ("GdmFactorySlave:  session user verified");
 
@@ -163,33 +252,15 @@ on_session_user_verified (GdmSession      *session,
         gdm_greeter_server_reset (slave->priv->greeter_server);
 }
 
-static gboolean
-greeter_reset_timeout (GdmFactorySlave *slave)
-{
-        gdm_greeter_server_reset (slave->priv->greeter_server);
-        slave->priv->greeter_reset_id = 0;
-        return FALSE;
-}
-
 static void
-queue_greeter_reset (GdmFactorySlave *slave)
-{
-        if (slave->priv->greeter_reset_id > 0) {
-                return;
-        }
-
-        slave->priv->greeter_reset_id = g_timeout_add_seconds (2, (GSourceFunc)greeter_reset_timeout, slave);
-}
-
-static void
-on_session_user_verification_error (GdmSession      *session,
-                                    const char      *message,
-                                    GdmFactorySlave *slave)
+on_session_accreditation_failed (GdmSession      *session,
+                                 const char      *message,
+                                 GdmFactorySlave *slave)
 {
         g_debug ("GdmFactorySlave: could not successfully authenticate user: %s",
                  message);
 
-        gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to authenticate user"));
+        gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to establish credentials"));
 
         queue_greeter_reset (slave);
 }
@@ -285,8 +356,7 @@ on_greeter_begin_verification (GdmGreeterServer *greeter_server,
                                GdmFactorySlave  *slave)
 {
         g_debug ("GdmFactorySlave: begin verification");
-
-        gdm_session_begin_verification (GDM_SESSION (slave->priv->session));
+        gdm_session_setup (GDM_SESSION (slave->priv->session));
 }
 
 static void
@@ -295,9 +365,8 @@ on_greeter_begin_verification_for_user (GdmGreeterServer *greeter_server,
                                         GdmFactorySlave  *slave)
 {
         g_debug ("GdmFactorySlave: begin verification for user");
-
-        gdm_session_begin_verification_for_user (GDM_SESSION (slave->priv->session),
-                                                 username);
+        gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
+                                    username);
 }
 
 static void
@@ -552,6 +621,50 @@ gdm_factory_slave_start (GdmSlave *slave)
 
         GDM_FACTORY_SLAVE (slave)->priv->session = gdm_session_relay_new ();
         g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
+                          "opened",
+                          G_CALLBACK (on_session_opened),
+                          slave);
+        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
+                          "setup-complete",
+                          G_CALLBACK (on_session_setup_complete),
+                          slave);
+        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
+                          "setup-failed",
+                          G_CALLBACK (on_session_setup_failed),
+                          slave);
+        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
+                          "reset-complete",
+                          G_CALLBACK (on_session_reset_complete),
+                          slave);
+        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
+                          "reset-failed",
+                          G_CALLBACK (on_session_reset_failed),
+                          slave);
+        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
+                          "authenticated",
+                          G_CALLBACK (on_session_authenticated),
+                          slave);
+        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
+                          "authentication-failed",
+                          G_CALLBACK (on_session_authentication_failed),
+                          slave);
+        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
+                          "authorized",
+                          G_CALLBACK (on_session_authorized),
+                          slave);
+        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
+                          "authorization-failed",
+                          G_CALLBACK (on_session_authorization_failed),
+                          slave);
+        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
+                          "accredited",
+                          G_CALLBACK (on_session_accredited),
+                          slave);
+        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
+                          "accreditation-failed",
+                          G_CALLBACK (on_session_accreditation_failed),
+                          slave);
+        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
                           "info",
                           G_CALLBACK (on_session_info),
                           slave);
@@ -566,18 +679,6 @@ gdm_factory_slave_start (GdmSlave *slave)
         g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
                           "secret-info-query",
                           G_CALLBACK (on_session_secret_info_query),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "user-verified",
-                          G_CALLBACK (on_session_user_verified),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "user-verification-error",
-                          G_CALLBACK (on_session_user_verification_error),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "opened",
-                          G_CALLBACK (on_session_opened),
                           slave);
         g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
                           "session-started",
