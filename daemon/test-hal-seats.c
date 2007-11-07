@@ -109,7 +109,7 @@ list_seats (GList *seats)
 {
         GList *l;
         for (l = seats; l != NULL; l = l->next) {
-                g_message ("Found device: %s", l->data);
+                g_message ("Found device: %s", (char *)l->data);
         }
 }
 

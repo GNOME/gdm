@@ -62,7 +62,16 @@ gdm-product-display-glue.h: gdm-product-display.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_product_display --mode=glib-server --output=gdm-product-display-glue.h $(srcdir)/gdm-product-display.xml
 
 noinst_PROGRAMS = 		\
+	test-hal-seats		\
 	test-session		\
+	$(NULL)
+
+test_hal_seats_SOURCES = 	\
+	test-hal-seats.c	\
+	$(NULL)
+
+test_hal_seats_LDADD =		\
+	$(DAEMON_LIBS)		\
 	$(NULL)
 
 test_session_SOURCES = 		\
