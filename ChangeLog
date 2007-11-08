@@ -1,3 +1,11 @@
+2007-11-07  Brian Cameron  <brian.cameron@sun.com>
+
+	* common/gdm-common.[ch], daemon/misc.c, daemon/gdm-xdmcp-manager.c:
+	  Fix to better calculate sockaddr length.  No longer set hints,
+	  since the way we were doing it was broken.  hints_ai_family is not
+	  a bitmask.  Patch by Robert Nelson <robertn@the-nelsons.org>.
+	  Fixes bug #494817.
+
 2007-10-31  Luca Ferretti  <elle.uca@libero.it>
 
 	* data/icons/README: Added, with the list of currently installed

@@ -38,6 +38,7 @@
 
 G_BEGIN_DECLS
 
+#define		gdm_sockaddr_len(sa)	(((struct sockaddr *)sa)->sa_family == AF_INET6 ? sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in))
 
 gboolean     gdm_address_equal        (struct sockaddr_storage *sa,
                                        struct sockaddr_storage *sb);

@@ -107,7 +107,7 @@ gdm_address_get_info (struct sockaddr_storage *ss,
 	host [0] = '\0';
 	serv [0] = '\0';
 	getnameinfo ((const struct sockaddr *)ss,
-		     sizeof (struct sockaddr_storage),
+		     gdm_sockaddr_len(ss),
 		     host, sizeof (host),
 		     serv, sizeof (serv),
 		     NI_NUMERICHOST | NI_NUMERICSERV);

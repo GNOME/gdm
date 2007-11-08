@@ -762,7 +762,7 @@ gdm_xdmcp_send_willing (GdmXdmcpManager         *manager,
 	XdmcpFlush (manager->priv->socket_fd,
 		    &manager->priv->buf,
 		    (XdmcpNetaddr)clnt_sa,
-		    (int)sizeof (struct sockaddr_storage));
+		    (int)gdm_sockaddr_len(clnt_sa));
 
 	g_free (status.data);
 }
@@ -805,7 +805,7 @@ gdm_xdmcp_send_unwilling (GdmXdmcpManager         *manager,
 	XdmcpFlush (manager->priv->socket_fd,
 		    &manager->priv->buf,
 		    (XdmcpNetaddr)clnt_sa,
-		    (int)sizeof (struct sockaddr_storage));
+		    (int)gdm_sockaddr_len(clnt_sa));
 
 	last_time = time (NULL);
 }
@@ -907,7 +907,7 @@ gdm_xdmcp_send_forward_query (GdmXdmcpManager         *manager,
 	XdmcpFlush (manager->priv->socket_fd,
 		    &manager->priv->buf,
 		    (XdmcpNetaddr) sa,
-		    (int)sizeof (struct sockaddr_storage));
+		    (int)gdm_sockaddr_len(clnt_sa));
 
 	g_free (port.data);
 	g_free (address.data);
@@ -1435,7 +1435,7 @@ gdm_xdmcp_really_send_managed_forward (GdmXdmcpManager         *manager,
 	XdmcpFlush (manager->priv->socket_fd,
 		    &manager->priv->buf,
 		    (XdmcpNetaddr)clnt_sa,
-		    (int)sizeof (struct sockaddr_storage));
+		    (int)gdm_sockaddr_len(clnt_sa));
 
 	g_free (address.data);
 }
@@ -1507,7 +1507,7 @@ gdm_xdmcp_send_got_managed_forward (GdmXdmcpManager         *manager,
 	XdmcpFlush (manager->priv->socket_fd,
 		    &manager->priv->buf,
 		    (XdmcpNetaddr)clnt_sa,
-		    (int)sizeof (struct sockaddr_storage));
+		    (int)gdm_sockaddr_len(clnt_sa));
 }
 
 static void
@@ -1655,7 +1655,7 @@ gdm_xdmcp_send_decline (GdmXdmcpManager         *manager,
 	XdmcpFlush (manager->priv->socket_fd,
 		    &manager->priv->buf,
 		    (XdmcpNetaddr)clnt_sa,
-		    (int)sizeof (struct sockaddr_storage));
+		    (int)gdm_sockaddr_len(clnt_sa));
 
 	/* Send MANAGED_FORWARD to indicate that the connection
 	 * reached some sort of resolution */
@@ -1805,7 +1805,7 @@ gdm_xdmcp_send_accept (GdmXdmcpManager         *manager,
 	XdmcpFlush (manager->priv->socket_fd,
 		    &manager->priv->buf,
 		    (XdmcpNetaddr)clnt_sa,
-		    (int)sizeof (struct sockaddr_storage));
+		    (int)gdm_sockaddr_len(clnt_sa));
 
 	gdm_address_get_info (clnt_sa, &host, NULL);
 	g_debug ("XDMCP: Sending ACCEPT to %s with SessionID=%ld",
@@ -2107,7 +2107,7 @@ gdm_xdmcp_send_failed (GdmXdmcpManager         *manager,
 	XdmcpFlush (manager->priv->socket_fd,
 		    &manager->priv->buf,
 		    (XdmcpNetaddr)clnt_sa,
-		    (int)sizeof (struct sockaddr_storage));
+		    (int)gdm_sockaddr_len(clnt_sa));
 }
 
 static void
@@ -2131,7 +2131,7 @@ gdm_xdmcp_send_refuse (GdmXdmcpManager         *manager,
 	XdmcpFlush (manager->priv->socket_fd,
 		    &manager->priv->buf,
 		    (XdmcpNetaddr)clnt_sa,
-		    (int)sizeof (struct sockaddr_storage));
+		    (int)gdm_sockaddr_len(clnt_sa));
 
 	/*
 	 * This was from a forwarded query quite apparently so
@@ -2384,7 +2384,7 @@ gdm_xdmcp_send_alive (GdmXdmcpManager         *manager,
 	XdmcpFlush (manager->priv->socket_fd,
 		    &manager->priv->buf,
 		    (XdmcpNetaddr)clnt_sa,
-		    (int)sizeof (struct sockaddr_storage));
+		    (int)gdm_sockaddr_len(clnt_sa));
 }
 
 static void
