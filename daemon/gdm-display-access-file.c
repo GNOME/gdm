@@ -1,4 +1,6 @@
-/* gdm-display-access-file.c - Abstraction around xauth cookies
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
+ *
+ * gdm-display-access-file.c - Abstraction around xauth cookies
  *
  * Copyright (C) 2007 Ray Strode <rstrode@redhat.com>
  *
@@ -17,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  * 02111-1307, USA.
  */
+
 #include "config.h"
-#include "gdm-display-access-file.h"
 
 #include <errno.h>
 #include <pwd.h>
@@ -32,6 +34,8 @@
 #include <glib/gi18n.h>
 
 #include <X11/Xauth.h>
+
+#include "gdm-display-access-file.h"
 
 struct _GdmDisplayAccessFilePrivate
 {
@@ -112,13 +116,17 @@ gdm_display_access_file_class_init (GdmDisplayAccessFileClass *access_file_class
         object_class->get_property = gdm_display_access_file_get_property;
         object_class->set_property = gdm_display_access_file_set_property;
 
-        param_spec = g_param_spec_string ("username", "Username",
+        param_spec = g_param_spec_string ("username",
+                                          "Username",
                                           "Owner of Xauthority file",
-                                          NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+                                          NULL,
+                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
         g_object_class_install_property (object_class, PROP_USERNAME, param_spec);
-        param_spec = g_param_spec_string ("path", "Path",
+        param_spec = g_param_spec_string ("path",
+                                          "Path",
                                           "Path to Xauthority file",
-                                          NULL, G_PARAM_READABLE);
+                                          NULL,
+                                          G_PARAM_READABLE);
         g_object_class_install_property (object_class, PROP_PATH, param_spec);
         g_type_class_add_private (access_file_class, sizeof (GdmDisplayAccessFilePrivate));
 }
@@ -175,7 +183,8 @@ gdm_display_access_file_new (const char *username)
         g_return_val_if_fail (username != NULL, NULL);
 
         access_file = g_object_new (GDM_TYPE_DISPLAY_ACCESS_FILE,
-                                    "username", username, NULL);
+                                    "username", username,
+                                    NULL);
 
         return access_file;
 }
@@ -359,11 +368,10 @@ gdm_display_access_file_add_display (GdmDisplayAccessFile  *file,
         *cookie_size = GDM_DISPLAY_ACCESS_COOKIE_SIZE;
 
         add_error = NULL;
-        display_added =
-            gdm_display_access_file_add_display_with_cookie (file, display,
-                                                             *cookie,
-                                                             *cookie_size,
-                                                             &add_error);
+        display_added = gdm_display_access_file_add_display_with_cookie (file, display,
+                                                                         *cookie,
+                                                                         *cookie_size,
+                                                                         &add_error);
         if (!display_added) {
                 g_free (*cookie);
                 *cookie = NULL;

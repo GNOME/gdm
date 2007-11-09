@@ -1,4 +1,6 @@
-/* gdm-display-access-file.h - Abstraction around xauth cookies
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
+ *
+ * gdm-display-access-file.h - Abstraction around xauth cookies
  *
  * Copyright (C) 2007 Ray Strode <rstrode@redhat.com>
  *
@@ -17,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
- * 02111-1307, USA.  
+ * 02111-1307, USA.
  */
 #ifndef __GDM_DISPLAY_ACCESS_FILE_H__
 #define __GDM_DISPLAY_ACCESS_FILE_H__
