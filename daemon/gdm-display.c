@@ -35,10 +35,9 @@
 
 #include "gdm-display.h"
 #include "gdm-display-glue.h"
+#include "gdm-display-access-file.h"
 
 #include "gdm-slave-proxy.h"
-
-#include "auth.h"
 
 static guint32 display_serial = 1;
 
@@ -56,15 +55,18 @@ struct GdmDisplayPrivate
         char            *x11_display_name;
         int              status;
         time_t           creation_time;
-        char            *x11_cookie;
-        char            *x11_authority_file;
         char            *slave_command;
+
+        char                 *x11_cookie;
+        gsize                 x11_cookie_size;
+        GdmDisplayAccessFile *access_file;
 
         gboolean         is_local;
         guint            finish_idle_id;
 
         GdmSlaveProxy   *slave_proxy;
         DBusGConnection *connection;
+        GdmDisplayAccessFile *user_access_file;
 };
 
 enum {
@@ -127,10 +129,56 @@ gdm_display_get_status (GdmDisplay *display)
         return display->priv->status;
 }
 
+static GdmDisplayAccessFile *
+_create_access_file_for_user (GdmDisplay  *display,
+                              const char  *username,
+                              GError     **error)
+{
+        GdmDisplayAccessFile *access_file;
+        GError *file_error;
+
+        access_file = gdm_display_access_file_new (username);
+
+        file_error = NULL;
+        if (!gdm_display_access_file_open (access_file, &file_error)) {
+                g_propagate_error (error, file_error);
+                return FALSE;
+        }
+
+        return access_file;
+}
+
 static gboolean
 gdm_display_real_create_authority (GdmDisplay *display)
 {
+        GdmDisplayAccessFile *access_file;
+        GError *error;
+
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (display->priv->access_file == NULL, FALSE);
+
+        error = NULL;
+        access_file = _create_access_file_for_user (display, "gdm", &error);
+
+        if (access_file == NULL) {
+            g_critical ("could not create display access file: %s", error->message);
+            g_error_free (error);
+            return FALSE;
+        }
+
+        if (!gdm_display_access_file_add_display (access_file, display,
+                                                  &display->priv->x11_cookie,
+                                                  &display->priv->x11_cookie_size,
+                                                  &error)) {
+
+                g_critical ("could not add display to access file: %s", error->message);
+                g_error_free (error);
+                gdm_display_access_file_close (access_file);
+                g_object_unref (access_file);
+                return FALSE;
+        }
+
+        display->priv->access_file = access_file;
 
         return TRUE;
 }
@@ -155,11 +203,35 @@ gdm_display_real_add_user_authorization (GdmDisplay *display,
                                          char      **filename,
                                          GError    **error)
 {
-        gboolean ret;
+        GdmDisplayAccessFile *access_file;
+        GError *access_file_error;
 
-        ret = FALSE;
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (display->priv->access_file != NULL, FALSE);
 
-        return ret;
+        access_file_error = NULL;
+        access_file = _create_access_file_for_user (display, username,
+                                                    &access_file_error);
+
+        if (access_file == NULL) {
+            g_propagate_error (error, access_file_error);
+            return FALSE;
+        }
+
+        if (!gdm_display_access_file_add_display_with_cookie (access_file,
+                                                              display, display->priv->x11_cookie,
+                                                              display->priv->x11_cookie_size,
+                                                              &access_file_error)) {
+                g_propagate_error (error, access_file_error);
+                gdm_display_access_file_close (access_file);
+                g_object_unref (access_file);
+                return FALSE;
+        }
+
+        *filename = gdm_display_access_file_get_path (access_file);
+        display->priv->user_access_file = access_file;
+
+        return TRUE;
 }
 
 gboolean
@@ -186,11 +258,9 @@ gdm_display_real_remove_user_authorization (GdmDisplay *display,
                                             const char *username,
                                             GError    **error)
 {
-        gboolean ret;
+        gdm_display_access_file_close (display->priv->user_access_file);
 
-        ret = FALSE;
-
-        return ret;
+        return TRUE;
 }
 
 gboolean
@@ -214,12 +284,18 @@ gdm_display_remove_user_authorization (GdmDisplay *display,
 gboolean
 gdm_display_get_x11_cookie (GdmDisplay *display,
                             char      **x11_cookie,
+                            gsize      *x11_cookie_size,
                             GError    **error)
 {
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
         if (x11_cookie != NULL) {
-                *x11_cookie = g_strdup (display->priv->x11_cookie);
+                *x11_cookie = g_memdup (display->priv->x11_cookie,
+                                        display->priv->x11_cookie_size);
+        }
+
+        if (x11_cookie_size != NULL) {
+                *x11_cookie_size = display->priv->x11_cookie_size;
         }
 
         return TRUE;
@@ -231,9 +307,12 @@ gdm_display_get_x11_authority_file (GdmDisplay *display,
                                     GError    **error)
 {
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+        g_return_val_if_fail (filename != NULL, FALSE);
 
-        if (filename != NULL) {
-                *filename = g_strdup (display->priv->x11_authority_file);
+        if (display->priv->access_file != NULL) {
+                *filename = gdm_display_access_file_get_path (display->priv->access_file);
+        } else {
+                *filename = NULL;
         }
 
         return TRUE;
@@ -398,6 +477,14 @@ gdm_display_real_unmanage (GdmDisplay *display)
                 display->priv->slave_proxy = NULL;
         }
 
+        gdm_display_access_file_close (display->priv->user_access_file);
+        g_object_unref (display->priv->user_access_file);
+        display->priv->user_access_file = NULL;
+
+        gdm_display_access_file_close (display->priv->access_file);
+        g_object_unref (display->priv->access_file);
+        display->priv->access_file = NULL;
+
         return TRUE;
 }
 
@@ -507,14 +594,6 @@ _gdm_display_set_x11_cookie (GdmDisplay     *display,
 }
 
 static void
-_gdm_display_set_x11_authority_file (GdmDisplay     *display,
-                                     const char     *file)
-{
-        g_free (display->priv->x11_authority_file);
-        display->priv->x11_authority_file = g_strdup (file);
-}
-
-static void
 _gdm_display_set_is_local (GdmDisplay     *display,
                            gboolean        is_local)
 {
@@ -558,9 +637,6 @@ gdm_display_set_property (GObject        *object,
         case PROP_X11_COOKIE:
                 _gdm_display_set_x11_cookie (self, g_value_get_string (value));
                 break;
-        case PROP_X11_AUTHORITY_FILE:
-                _gdm_display_set_x11_authority_file (self, g_value_get_string (value));
-                break;
         case PROP_IS_LOCAL:
                 _gdm_display_set_is_local (self, g_value_get_boolean (value));
                 break;
@@ -603,7 +679,8 @@ gdm_display_get_property (GObject        *object,
                 g_value_set_string (value, self->priv->x11_cookie);
                 break;
         case PROP_X11_AUTHORITY_FILE:
-                g_value_set_string (value, self->priv->x11_authority_file);
+                g_value_take_string (value,
+                                     gdm_display_access_file_get_path (self->priv->access_file));
                 break;
         case PROP_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->is_local);
@@ -752,7 +829,7 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               "authority file",
                                                               "authority file",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+                                                              G_PARAM_READABLE));
 
         g_object_class_install_property (object_class,
                                          PROP_IS_LOCAL,
@@ -803,8 +880,15 @@ gdm_display_finalize (GObject *object)
         g_free (display->priv->remote_hostname);
         g_free (display->priv->x11_display_name);
         g_free (display->priv->x11_cookie);
-        g_free (display->priv->x11_authority_file);
         g_free (display->priv->slave_command);
+
+        if (display->priv->access_file != NULL) {
+                g_object_unref (display->priv->access_file);
+        }
+
+        if (display->priv->user_access_file != NULL) {
+                g_object_unref (display->priv->user_access_file);
+        }
 
         G_OBJECT_CLASS (gdm_display_parent_class)->finalize (object);
 }

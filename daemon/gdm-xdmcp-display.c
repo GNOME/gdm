@@ -42,8 +42,6 @@
 #include "gdm-common.h"
 #include "gdm-address.h"
 
-#include "auth.h"
-
 #define GDM_XDMCP_DISPLAY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_XDMCP_DISPLAY, GdmXdmcpDisplayPrivate))
 
 struct GdmXdmcpDisplayPrivate
@@ -83,75 +81,9 @@ gdm_xdmcp_display_get_remote_address (GdmXdmcpDisplay *display)
 static gboolean
 gdm_xdmcp_display_create_authority (GdmDisplay *display)
 {
-        FILE    *af;
-        int      closeret;
-        gboolean ret;
-        char    *authfile;
-        int      display_num;
-        char    *x11_display;
-        GString *cookie;
-        GSList  *authlist;
-        char    *basename;
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-        ret = FALSE;
-        x11_display = NULL;
-
-        g_object_get (display,
-                      "x11-display-name", &x11_display,
-                      "x11-display-number", &display_num,
-                      NULL);
-
-        /* Create new random cookie */
-        cookie = g_string_new (NULL);
-        gdm_generate_cookie (cookie);
-
-        g_debug ("GdmXdmcpDisplay: Setting up access for %s", x11_display);
-
-        /* gdm and xserver authfile can be the same, server will run as root */
-        basename = g_strconcat (x11_display, ".Xauth", NULL);
-        authfile = g_build_filename (AUTHDIR, basename, NULL);
-        g_free (basename);
-
-        af = gdm_safe_fopen_w (authfile, 0644);
-        if (af == NULL) {
-                g_warning (_("Cannot safely open %s"), authfile);
-                g_free (authfile);
-                goto out;
-        }
-
-        g_debug ("GdmXdmcpDisplay: Adding auth entry for xdmcp display:%d cookie:%s", display_num, cookie->str);
-        authlist = NULL;
-        if (! gdm_auth_add_entry_for_display (display_num, NULL, cookie, af, &authlist)) {
-                goto out;
-        }
-
-        g_debug ("GdmXdmcpDisplay: Setting up access");
-
-        VE_IGNORE_EINTR (closeret = fclose (af));
-        if (closeret < 0) {
-                g_warning (_("Could not write new authorization entry: %s"),
-                           g_strerror (errno));
-                goto out;
-        }
-
-        g_debug ("GdmXdmcpDisplay: Set up access for %s - %d entries",
-                 x11_display,
-                 g_slist_length (authlist));
-
-        /* FIXME: save authlist */
-
-        g_object_set (display,
-                      "x11-authority-file", authfile,
-                      "x11-cookie", cookie->str,
-                      NULL);
-
-        ret = TRUE;
-
- out:
-        g_free (x11_display);
-        g_string_free (cookie, TRUE);
-
-        return ret;
+        return GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->create_authority (display);
 }
 
 static gboolean
@@ -160,26 +92,7 @@ gdm_xdmcp_display_add_user_authorization (GdmDisplay *display,
                                           char      **filename,
                                           GError    **error)
 {
-        gboolean res;
-        char    *cookie;
-        char    *hostname;
-        int      display_num;
-
-        res = gdm_display_get_x11_cookie (display, &cookie, NULL);
-        res = gdm_display_get_x11_display_number (display, &display_num, NULL);
-
-        hostname = NULL;
-        res = gdm_address_get_hostname (GDM_XDMCP_DISPLAY (display)->priv->remote_address, &hostname);
-        g_debug ("GdmXdmcpDisplay: add user auth for xdmcp display: %s host:%s", username, hostname);
-        gdm_address_debug (GDM_XDMCP_DISPLAY (display)->priv->remote_address);
-        g_free (hostname);
-
-        res = gdm_auth_user_add (display_num,
-                                 GDM_XDMCP_DISPLAY (display)->priv->remote_address,
-                                 username,
-                                 cookie,
-                                 filename);
-        return res;
+        return GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->add_user_authorization (display, username, filename, error);
 }
 
 static gboolean
@@ -187,7 +100,7 @@ gdm_xdmcp_display_remove_user_authorization (GdmDisplay *display,
                                              const char *username,
                                              GError    **error)
 {
-        return TRUE;
+        return GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->remove_user_authorization (display, username, error);
 }
 
 static gboolean
@@ -206,7 +119,6 @@ gdm_xdmcp_display_unmanage (GdmDisplay *display)
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
         GDM_DISPLAY_CLASS (gdm_xdmcp_display_parent_class)->unmanage (display);
-
         return TRUE;
 }
 

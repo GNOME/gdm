@@ -20,9 +20,11 @@
 
 #include "config.h"
 
+#include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
+#include <pwd.h>
 #include <unistd.h>
 #include <string.h>
 #include <signal.h>
@@ -34,6 +36,7 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 
+#include "gdm-common.h"
 #include "gdm-display.h"
 #include "gdm-static-display.h"
 #include "gdm-static-display-glue.h"
@@ -71,7 +74,7 @@ gdm_static_display_add_user_authorization (GdmDisplay *display,
                                            char      **filename,
                                            GError    **error)
 {
-        return TRUE;
+        return GDM_DISPLAY_CLASS (gdm_static_display_parent_class)->add_user_authorization (display, username, filename, error);
 }
 
 static gboolean
@@ -79,7 +82,7 @@ gdm_static_display_remove_user_authorization (GdmDisplay *display,
                                               const char *username,
                                               GError    **error)
 {
-        return TRUE;
+        return GDM_DISPLAY_CLASS (gdm_static_display_parent_class)->remove_user_authorization (display, username, error);
 }
 
 static gboolean

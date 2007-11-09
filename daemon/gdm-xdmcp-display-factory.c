@@ -57,8 +57,6 @@
 #include "gdm-xdmcp-display-factory.h"
 #include "gdm-display-store.h"
 
-#include "auth.h"
-
 /*
  * On Sun, we need to define allow_severity and deny_severity to link
  * against libwrap.
@@ -2043,57 +2041,29 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                                            clnt_dspnum);
 
                         if (display != NULL) {
-                                ARRAY8 authentication_name;
-                                ARRAY8 authentication_data;
-                                ARRAY8 authorization_name;
-                                ARRAY8 authorization_data;
-                                gint32 session_number;
-                                char    *x11_cookie;
-                                GString *cookie;
-                                GString *binary_cookie;
-                                GString *test_cookie;
+                                ARRAY8  authentication_name;
+                                ARRAY8  authentication_data;
+                                ARRAY8  authorization_name;
+                                ARRAY8  authorization_data;
+                                gint32  session_number;
+                                char   *cookie;
+                                gsize   cookie_size;
+                                char   *name;
 
-                                gdm_display_get_x11_cookie (display, &x11_cookie, NULL);
-                                cookie = g_string_new (x11_cookie);
-                                g_free (x11_cookie);
+                                gdm_display_get_x11_cookie (display, &cookie,
+                                                            &cookie_size, NULL);
 
-                                binary_cookie = g_string_new (NULL);
+                                gdm_display_get_x11_display_name (display, &name, NULL);
 
-                                if (! gdm_string_hex_decode (cookie,
-                                                             0,
-                                                             NULL,
-                                                             binary_cookie,
-                                                             0)) {
-                                        g_warning ("Unable to decode hex cookie");
-                                        /* FIXME: handle error */
-                                }
+                                g_debug ("GdmXdmcpDisplayFactory: Sending authorization key for display %s", name);
+                                g_free (name);
 
-                                test_cookie = g_string_new (NULL);
-                                if (! gdm_string_hex_encode (binary_cookie,
-                                                             0,
-                                                             test_cookie,
-                                                             0)) {
-                                        g_warning ("Unable to encode hex cookie");
-                                        /* FIXME: handle error */
-                                }
-
-                                /* sanity check cookie */
-                                g_debug ("GdmXdmcpDisplayFactory: Original cookie len:%d '%s'; Reencoded cookie len:%d '%s'",
-                                         (int) cookie->len,
-                                         cookie->str,
-                                         (int) test_cookie->len,
-                                         test_cookie->str);
-                                g_assert (test_cookie->len == cookie->len);
-                                g_assert (strcmp (test_cookie->str, cookie->str) == 0);
-                                g_string_free (test_cookie, TRUE);
-
-                                g_debug ("GdmXdmcpDisplayFactory: Sending authorization key for display %s", cookie->str);
-                                g_debug ("GdmXdmcpDisplayFactory: Decoded cookie len %d", (int) binary_cookie->len);
+                                g_debug ("GdmXdmcpDisplayFactory: cookie len %d", (int) cookie_size);
 
                                 session_number = gdm_xdmcp_display_get_session_number (GDM_XDMCP_DISPLAY (display));
 
                                 /* the send accept will fail if cookie is null */
-                                g_assert (binary_cookie != NULL);
+                                g_assert (cookie != NULL);
 
                                 authentication_name.data   = NULL;
                                 authentication_name.length = 0;
@@ -2103,8 +2073,8 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                 authorization_name.data     = (CARD8 *) "MIT-MAGIC-COOKIE-1";
                                 authorization_name.length   = strlen ((char *) authorization_name.data);
 
-                                authorization_data.data     = (CARD8 *) binary_cookie->str;
-                                authorization_data.length   = binary_cookie->len;
+                                authorization_data.data     = (CARD8 *) cookie;
+                                authorization_data.length   = cookie_size;
 
                                 /* the addrs are NOT copied */
                                 gdm_xdmcp_send_accept (factory,
@@ -2114,9 +2084,6 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                                        &authentication_data,
                                                        &authorization_name,
                                                        &authorization_data);
-
-                                g_string_free (binary_cookie, TRUE);
-                                g_string_free (cookie, TRUE);
                         }
                 }
         } else {

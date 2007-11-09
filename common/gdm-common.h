@@ -32,9 +32,6 @@ void           gdm_set_fatal_warnings_if_unstable (void);
 int            gdm_signal_pid            (int pid,
                                           int signal);
 
-gboolean       gdm_generate_random_bytes (GString *str,
-                                          int      n_bytes);
-
 gboolean       gdm_string_hex_encode     (const GString *source,
                                           int            start,
                                           GString       *dest,
@@ -44,7 +41,6 @@ gboolean       gdm_string_hex_decode     (const GString *source,
                                           int           *end_return,
                                           GString       *dest,
                                           int            insert_at);
-gboolean       gdm_generate_cookie       (GString *result);
 
 G_END_DECLS
 

@@ -69,7 +69,8 @@ typedef struct
 
 typedef enum
 {
-         GDM_DISPLAY_ERROR_GENERAL
+         GDM_DISPLAY_ERROR_GENERAL,
+         GDM_DISPLAY_ERROR_GETTING_USER_INFO
 } GdmDisplayError;
 
 #define GDM_DISPLAY_ERROR gdm_display_error_quark ()
@@ -107,6 +108,7 @@ gboolean            gdm_display_is_local                       (GdmDisplay *disp
 /* exported but protected */
 gboolean            gdm_display_get_x11_cookie                 (GdmDisplay *display,
                                                                 char      **x11_cookie,
+                                                                gsize      *cookie_size,
                                                                 GError    **error);
 gboolean            gdm_display_get_x11_authority_file         (GdmDisplay *display,
                                                                 char      **filename,

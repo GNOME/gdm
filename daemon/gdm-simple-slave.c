@@ -680,11 +680,13 @@ static gboolean
 gdm_simple_slave_run (GdmSimpleSlave *slave)
 {
         char    *display_name;
+        char    *auth_file;
         gboolean display_is_local;
 
         g_object_get (slave,
                       "display-is-local", &display_is_local,
                       "display-name", &display_name,
+                      "display-x11-authority-file", &auth_file,
                       NULL);
 
         /* if this is local display start a server if one doesn't
@@ -692,7 +694,7 @@ gdm_simple_slave_run (GdmSimpleSlave *slave)
         if (display_is_local) {
                 gboolean res;
 
-                slave->priv->server = gdm_server_new (display_name);
+                slave->priv->server = gdm_server_new (display_name, auth_file);
 
                 g_signal_connect (slave->priv->server,
                                   "ready",
@@ -718,6 +720,7 @@ gdm_simple_slave_run (GdmSimpleSlave *slave)
         }
 
         g_free (display_name);
+        g_free (auth_file);
 
         return TRUE;
 }

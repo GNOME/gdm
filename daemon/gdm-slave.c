@@ -75,7 +75,6 @@ struct GdmSlavePrivate
         gboolean         display_is_local;
         gboolean         display_is_parented;
         char            *display_x11_authority_file;
-        char            *display_x11_cookie;
         char            *parent_display_name;
         char            *parent_display_x11_authority_file;
 
@@ -94,8 +93,7 @@ enum {
         PROP_DISPLAY_NUMBER,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
-        PROP_DISPLAY_X11_AUTHORITY_FILE,
-        PROP_DISPLAY_X11_COOKIE,
+        PROP_DISPLAY_X11_AUTHORITY_FILE
 };
 
 enum {
@@ -354,37 +352,6 @@ gdm_slave_set_busy_cursor (GdmSlave *slave)
         }
 }
 
-static void
-set_local_auth (GdmSlave *slave)
-{
-        GString *binary_cookie;
-        GString *cookie;
-
-        g_debug ("GdmSlave: Setting authorization key for display %s", slave->priv->display_x11_cookie);
-
-        cookie = g_string_new (slave->priv->display_x11_cookie);
-        binary_cookie = g_string_new (NULL);
-        if (! gdm_string_hex_decode (cookie,
-                                     0,
-                                     NULL,
-                                     binary_cookie,
-                                     0)) {
-                g_warning ("Unable to decode hex cookie");
-                goto out;
-        }
-
-        g_debug ("GdmSlave: Decoded cookie len %d", (int) binary_cookie->len);
-
-        XSetAuthorization ("MIT-MAGIC-COOKIE-1",
-                           (int) strlen ("MIT-MAGIC-COOKIE-1"),
-                           (char *)binary_cookie->str,
-                           binary_cookie->len);
-
- out:
-        g_string_free (binary_cookie, TRUE);
-        g_string_free (cookie, TRUE);
-}
-
 gboolean
 gdm_slave_connect_to_x11_display (GdmSlave *slave)
 {
@@ -400,9 +367,7 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
         g_debug ("GdmSlave: Server is ready - opening display %s", slave->priv->display_name);
 
         g_setenv ("DISPLAY", slave->priv->display_name, TRUE);
-        g_unsetenv ("XAUTHORITY"); /* just in case it's set */
-
-        set_local_auth (slave);
+        g_setenv ("XAUTHORITY", slave->priv->display_x11_authority_file, TRUE);
 
 #if 0
         /* X error handlers to avoid the default one (i.e. exit (1)) */
@@ -574,24 +539,6 @@ gdm_slave_real_start (GdmSlave *slave)
 
         error = NULL;
         res = dbus_g_proxy_call (slave->priv->display_proxy,
-                                 "GetX11Cookie",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_STRING, &slave->priv->display_x11_cookie,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to get value: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to get value");
-                }
-
-                return FALSE;
-        }
-
-        error = NULL;
-        res = dbus_g_proxy_call (slave->priv->display_proxy,
                                  "GetX11AuthorityFile",
                                  &error,
                                  G_TYPE_INVALID,
@@ -743,14 +690,6 @@ _gdm_slave_set_display_x11_authority_file (GdmSlave   *slave,
 }
 
 static void
-_gdm_slave_set_display_x11_cookie (GdmSlave   *slave,
-                                   const char *name)
-{
-        g_free (slave->priv->display_x11_cookie);
-        slave->priv->display_x11_cookie = g_strdup (name);
-}
-
-static void
 _gdm_slave_set_display_is_local (GdmSlave   *slave,
                                  gboolean    is)
 {
@@ -782,9 +721,6 @@ gdm_slave_set_property (GObject      *object,
                 break;
         case PROP_DISPLAY_X11_AUTHORITY_FILE:
                 _gdm_slave_set_display_x11_authority_file (self, g_value_get_string (value));
-                break;
-        case PROP_DISPLAY_X11_COOKIE:
-                _gdm_slave_set_display_x11_cookie (self, g_value_get_string (value));
                 break;
         case PROP_DISPLAY_IS_LOCAL:
                 _gdm_slave_set_display_is_local (self, g_value_get_boolean (value));
@@ -820,9 +756,6 @@ gdm_slave_get_property (GObject    *object,
                 break;
         case PROP_DISPLAY_X11_AUTHORITY_FILE:
                 g_value_set_string (value, self->priv->display_x11_authority_file);
-                break;
-        case PROP_DISPLAY_X11_COOKIE:
-                g_value_set_string (value, self->priv->display_x11_cookie);
                 break;
         case PROP_DISPLAY_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->display_is_local);
@@ -933,13 +866,6 @@ gdm_slave_class_init (GdmSlaveClass *klass)
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_X11_AUTHORITY_FILE,
                                          g_param_spec_string ("display-x11-authority-file",
-                                                              "",
-                                                              "",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-        g_object_class_install_property (object_class,
-                                         PROP_DISPLAY_X11_COOKIE,
-                                         g_param_spec_string ("display-x11-cookie",
                                                               "",
                                                               "",
                                                               NULL,

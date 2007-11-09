@@ -125,8 +125,6 @@ gdm_simple_slave_SOURCES = 		\
 	gdm-slave.h			\
 	gdm-simple-slave.c		\
 	gdm-simple-slave.h		\
-	auth.c				\
-	auth.h				\
 	$(NULL)
 
 gdm_simple_slave_LDFLAGS =		\
@@ -190,8 +188,6 @@ gdm_product_slave_SOURCES = 		\
 	gdm-slave.h			\
 	gdm-product-slave.c		\
 	gdm-product-slave.h		\
-	auth.c				\
-	auth.h				\
 	$(NULL)
 
 gdm_product_slave_LDFLAGS =		\
@@ -226,6 +222,8 @@ sbin_PROGRAMS = 			\
 
 gdm_binary_SOURCES = 			\
 	main.c				\
+	gdm-display-access-file.c	\
+	gdm-display-access-file.h	\
 	gdm-display-store.c		\
 	gdm-display-store.h		\
 	gdm-display-factory.c		\
@@ -246,8 +244,6 @@ gdm_binary_SOURCES = 			\
 	gdm-manager.h			\
 	gdm-slave-proxy.c		\
 	gdm-slave-proxy.h		\
-	auth.c				\
-	auth.h				\
 	$(NULL)
 
 XDMCP_SOURCES =				\

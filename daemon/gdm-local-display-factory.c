@@ -89,6 +89,12 @@ create_display_for_device (GdmLocalDisplayFactory *factory,
                 return;
         }
 
+        if (! gdm_display_create_authority (display)) {
+                g_warning ("Unable to set up access control for display %d",
+                           0);
+                return;
+        }
+
         gdm_display_store_add (store, display);
         /* let store own the ref */
         g_object_unref (display);

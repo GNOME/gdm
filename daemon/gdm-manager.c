@@ -60,7 +60,6 @@ struct GdmManagerPrivate
 
         gboolean                xdmcp_enabled;
 
-        GString                *global_cookie;
         gboolean                wait_for_go;
         gboolean                no_console;
 
@@ -135,38 +134,6 @@ gdm_manager_get_displays (GdmManager *manager,
                                    displays);
 
         return TRUE;
-}
-
-static void
-make_global_cookie (GdmManager *manager)
-{
-        FILE  *fp;
-        char  *file;
-
-        gdm_generate_cookie (manager->priv->global_cookie);
-
-        file = g_build_filename (AUTHDIR, ".cookie", NULL);
-        VE_IGNORE_EINTR (g_unlink (file));
-
-        fp = gdm_safe_fopen_w (file, 077);
-        if G_UNLIKELY (fp == NULL) {
-                g_warning (_("Can't open %s for writing"), file);
-                g_free (file);
-                return;
-        }
-
-        VE_IGNORE_EINTR (fprintf (fp, "%s\n", manager->priv->global_cookie->str));
-
-        /* FIXME: What about out of disk space errors? */
-        errno = 0;
-        VE_IGNORE_EINTR (fclose (fp));
-        if G_UNLIKELY (errno != 0) {
-                g_warning (_("Can't write to %s: %s"),
-                           file,
-                           g_strerror (errno));
-        }
-
-        g_free (file);
 }
 
 void
@@ -420,10 +387,6 @@ gdm_manager_init (GdmManager *manager)
 
         manager->priv = GDM_MANAGER_GET_PRIVATE (manager);
 
-        manager->priv->global_cookie = g_string_new (NULL);
-
-        make_global_cookie (manager);
-
         manager->priv->display_store = gdm_display_store_new ();
 }
 
@@ -445,8 +408,6 @@ gdm_manager_finalize (GObject *object)
 
         gdm_display_store_clear (manager->priv->display_store);
         g_object_unref (manager->priv->display_store);
-
-        g_string_free (manager->priv->global_cookie, TRUE);
 
         G_OBJECT_CLASS (gdm_manager_parent_class)->finalize (object);
 }

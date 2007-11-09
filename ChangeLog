@@ -1,3 +1,49 @@
+2007-11-09  William Jon McCann  <mccann@jhu.edu>
+
+	* common/gdm-common.c: (gdm_string_hex_decode):
+	* common/gdm-common.h:
+	* daemon/Makefile.am:
+	* daemon/auth.c:
+	* daemon/auth.h:
+	* daemon/gdm-display.c: (_create_access_file_for_user),
+	(gdm_display_real_create_authority),
+	(gdm_display_real_add_user_authorization),
+	(gdm_display_real_remove_user_authorization),
+	(gdm_display_get_x11_cookie), (gdm_display_get_x11_authority_file),
+	(gdm_display_real_unmanage), (gdm_display_set_property),
+	(gdm_display_get_property), (gdm_display_class_init),
+	(gdm_display_finalize):
+	* daemon/gdm-display.h:
+	* daemon/gdm-factory-slave.c: (gdm_factory_slave_run):
+	* daemon/gdm-local-display-factory.c: (create_display_for_device):
+	* daemon/gdm-manager.c: (gdm_manager_init), (gdm_manager_finalize):
+	* daemon/gdm-product-slave.c: (gdm_product_slave_create_server):
+	* daemon/gdm-server.c: (_gdm_server_set_auth_file),
+	(gdm_server_set_property), (gdm_server_get_property),
+	(gdm_server_class_init), (gdm_server_new):
+	* daemon/gdm-server.h:
+	* daemon/gdm-simple-slave.c: (gdm_simple_slave_run):
+	* daemon/gdm-slave.c: (gdm_slave_connect_to_x11_display),
+	(gdm_slave_real_start), (gdm_slave_set_property),
+	(gdm_slave_get_property), (gdm_slave_class_init):
+	* daemon/gdm-static-display.c:
+	(gdm_static_display_add_user_authorization),
+	(gdm_static_display_remove_user_authorization):
+	* daemon/gdm-xdmcp-display-factory.c: (gdm_xdmcp_handle_request):
+	* daemon/gdm-xdmcp-display.c: (gdm_xdmcp_display_create_authority),
+	(gdm_xdmcp_display_add_user_authorization),
+	(gdm_xdmcp_display_remove_user_authorization),
+	(gdm_xdmcp_display_unmanage):
+	* daemon/gdm-display-access-file.c:
+	* daemon/gdm-display-access-file.h:
+	With this patch we now invoke the X server with the -auth argument
+	and disable machine wide access to the X server.  This patch also
+	drops the md5 hashing of random bytes to create cookies and
+	instead just creates cookies directly (like the X server would if
+	we asked the X server to generate the cookies for us).
+
+	Patch from: Ray Strode  <rstrode@redhat.com>
+
 2007-11-07  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/Makefile.am:

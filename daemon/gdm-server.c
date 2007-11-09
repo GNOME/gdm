@@ -743,6 +743,14 @@ _gdm_server_set_display_name (GdmServer  *server,
 }
 
 static void
+_gdm_server_set_auth_file (GdmServer  *server,
+                           const char *auth_file)
+{
+        g_free (server->priv->auth_file);
+        server->priv->auth_file = g_strdup (auth_file);
+}
+
+static void
 _gdm_server_set_user_name (GdmServer  *server,
                            const char *name)
 {
@@ -763,6 +771,9 @@ gdm_server_set_property (GObject      *object,
         switch (prop_id) {
         case PROP_DISPLAY_NAME:
                 _gdm_server_set_display_name (self, g_value_get_string (value));
+                break;
+        case PROP_AUTH_FILE:
+                _gdm_server_set_auth_file (self, g_value_get_string (value));
                 break;
         case PROP_USER_NAME:
                 _gdm_server_set_user_name (self, g_value_get_string (value));
@@ -790,6 +801,9 @@ gdm_server_get_property (GObject    *object,
         case PROP_DISPLAY_DEVICE:
                 g_value_take_string (value,
                                      gdm_server_get_display_device (self));
+                break;
+        case PROP_AUTH_FILE:
+                g_value_set_string (value, self->priv->auth_file);
                 break;
         case PROP_USER_NAME:
                 g_value_set_string (value, self->priv->user_name);
@@ -853,6 +867,13 @@ gdm_server_class_init (GdmServerClass *klass)
                                                               "Path to terminal display is running on",
                                                               NULL,
                                                               G_PARAM_READABLE));
+        g_object_class_install_property (object_class,
+                                         PROP_AUTH_FILE,
+                                         g_param_spec_string ("auth-file",
+                                                              "Authorization File",
+                                                              "Path to X authorization file",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
         g_object_class_install_property (object_class,
                                          PROP_USER_NAME,
@@ -897,12 +918,14 @@ gdm_server_finalize (GObject *object)
 }
 
 GdmServer *
-gdm_server_new (const char *display_name)
+gdm_server_new (const char *display_name,
+                const char *auth_file)
 {
         GObject *object;
 
         object = g_object_new (GDM_TYPE_SERVER,
                                "display-name", display_name,
+                               "auth-file", auth_file,
                                NULL);
 
         return GDM_SERVER (object);
