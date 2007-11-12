@@ -1,4 +1,3 @@
-# Slovenian translation of gdm2.
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gdm2 package.
 #
@@ -14,7 +13,7 @@ msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-10-23 05:51+0100\n"
-"PO-Revision-Date: 2007-10-29 12:16+0100\n"
+"PO-Revision-Date: 2007-11-12 15:45+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian\n"
 "MIME-Version: 1.0\n"
@@ -24,16 +23,6 @@ msgstr ""
 "X-Poedit-Country: SLOVENIA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Language: Slovenian\n"
-
-#: ../daemon/auth.c:117
-#, c-format
-msgid "%s: Could not write new authorization entry: %s"
-msgstr "%s: Ni mogoče ustvariti novega vnosa pooblastitev: %s"
-
-#: ../daemon/auth.c:120
-#, c-format
-msgid "%s: Could not write new authorization entry.  Possibly out of diskspace"
-msgstr "%s: Ni mogoče zapisati novega vnosa pooblastitve.  Mogoče je zmanjkalo prostora na disku"
 
 #: ../daemon/factory-slave-main.c:156
 #: ../daemon/product-slave-main.c:156
@@ -53,14 +42,28 @@ msgstr "ID"
 msgid "GNOME Display Manager Slave"
 msgstr "Podenota upravljalnika namizja GNOME"
 
-#: ../daemon/gdm-factory-slave.c:437
-#: ../daemon/gdm-simple-slave.c:716
+#: ../daemon/gdm-factory-slave.c:185
+#: ../daemon/gdm-simple-slave.c:169
+msgid "Unable to initialize login system"
+msgstr "Ni mogoče zagnati sistema prijave"
+
+#: ../daemon/gdm-factory-slave.c:217
+#: ../daemon/gdm-simple-slave.c:201
 msgid "Unable to authenticate user"
 msgstr "Ni mogoče pooblastiti uporabnika"
 
-#: ../daemon/gdm-factory-slave.c:765
-#: ../daemon/gdm-product-slave.c:814
-#: ../daemon/gdm-simple-slave.c:1170
+#: ../daemon/gdm-factory-slave.c:239
+#: ../daemon/gdm-simple-slave.c:223
+msgid "Unable to authorize user"
+msgstr "Ni mogoče pooblastiti uporabnika"
+
+#: ../daemon/gdm-factory-slave.c:263
+msgid "Unable to establish credentials"
+msgstr "Ni mogoče vzpostaviti pooblastila"
+
+#: ../daemon/gdm-factory-slave.c:591
+#: ../daemon/gdm-product-slave.c:361
+#: ../daemon/gdm-simple-slave.c:706
 msgid "Could not start the X server (your graphical environment) due to some internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 msgstr "Ni mogoče zagnati strežnika X (vašega grafičnega okolja) zaradi notranje napake. Obrnite se na vašega skrbnika sistema ali preverite vaš sistemski dnevnik. V vmesnem času bo ta zaslon izključen. Ponovno zaženite GDM, ko bo problem odpravljen."
 
@@ -97,16 +100,6 @@ msgstr "Ni mogoče nastaviti userid na %d"
 msgid "Couldn't set groupid to 0"
 msgstr "Ni mogoče nastaviti groupid na 0"
 
-#: ../daemon/gdm-manager.c:153
-#, c-format
-msgid "Can't open %s for writing"
-msgstr "Ni moč odpreti %s za pisanje"
-
-#: ../daemon/gdm-manager.c:164
-#, c-format
-msgid "Can't write to %s: %s"
-msgstr "Ni moč pisati v %s: %s"
-
 #: ../daemon/gdm-server.c:241
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
@@ -132,220 +125,204 @@ msgstr "%s: Napaka ob nastavljanju %s na %s"
 #: ../daemon/gdm-server.c:463
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
-msgstr "%s: Prednosti strežnika ni bilo moč nastaviti na %d: %s"
+msgstr "%s: Prednosti strežnika ni mogoče nastaviti na %d: %s"
 
 #: ../daemon/gdm-server.c:607
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Prazen ukaz strežnika za zaslon %s"
 
-#: ../daemon/gdm-session.c:1132
+#: ../daemon/gdm-session-direct.c:1173
+#: ../daemon/gdm-session-direct.c:1191
 #, c-format
 msgid "worker exited with status %d"
 msgstr "enota zaključena s stanjem  %d"
 
-#: ../daemon/gdm-session.c:1157
-#, c-format
-msgid "worker got signal '%s' and was subsequently killed"
-msgstr "enota prejela ukaz '%s' in je bila v nadaljevanju končana"
-
-#: ../daemon/gdm-session-worker.c:853
+#: ../daemon/gdm-session-worker.c:823
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "napaka zaganjanja povezave z sistemom pooblastitve - %s"
 
-#: ../daemon/gdm-session-worker.c:854
+#: ../daemon/gdm-session-worker.c:824
 msgid "general failure"
 msgstr "splošna napaka"
 
-#: ../daemon/gdm-session-worker.c:855
+#: ../daemon/gdm-session-worker.c:825
 msgid "out of memory"
 msgstr "zmanjkalo je pomnilnika"
 
-#: ../daemon/gdm-session-worker.c:856
+#: ../daemon/gdm-session-worker.c:826
 msgid "application programmer error"
 msgstr "programerska napaka programa"
 
-#: ../daemon/gdm-session-worker.c:857
+#: ../daemon/gdm-session-worker.c:827
 msgid "unscoped error"
 msgstr "nedosežena napaka"
 
-#: ../daemon/gdm-session-worker.c:863
+#: ../daemon/gdm-session-worker.c:834
 msgid "Username:"
 msgstr "Uporabniško ime:"
 
-#: ../daemon/gdm-session-worker.c:869
+#: ../daemon/gdm-session-worker.c:840
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr "napaka obvestitve sistema pooblastitve o pozivniku uporabniškega imena - %s"
 
-#: ../daemon/gdm-session-worker.c:882
+#: ../daemon/gdm-session-worker.c:854
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr "napaka obvestitve sistema pooblastitve o imenu gostitelja - %s"
 
-#: ../daemon/gdm-session-worker.c:897
+#: ../daemon/gdm-session-worker.c:869
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr "napaka obvestitve sistema pooblastitve o konzoli - %s"
 
-#: ../daemon/gdm-session-worker.c:1045
+#: ../daemon/gdm-session-worker.c:1023
 msgid "no user account available"
 msgstr "na voljo ni nobenega uporabniškega računa"
 
-#: ../daemon/gdm-session-worker.c:1093
+#: ../daemon/gdm-session-worker.c:1072
 msgid "user account not available on system"
 msgstr "uporabniški račun v sistemu ni na voljo"
 
-#: ../daemon/gdm-xdmcp-display.c:117
-#, c-format
-msgid "Cannot safely open %s"
-msgstr "Ni mogoče varno odpreti %s"
+#: ../daemon/gdm-simple-slave.c:254
+msgid "Unable establish credentials"
+msgstr "Ni mogoče vzpostaviti pooblastila"
 
-#: ../daemon/gdm-xdmcp-display.c:132
-#, c-format
-msgid "Could not write new authorization entry: %s"
-msgstr "Ni mogoče zapisati novega vnosa pooblastila: %s"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:583
+#: ../daemon/gdm-xdmcp-display-factory.c:581
 msgid "Could not create socket!"
 msgstr "Ni mogoče ustvariti vtičnice!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:849
+#: ../daemon/gdm-xdmcp-display-factory.c:847
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Zavrnjena XDMCP poizvedba iz strežnika %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1012
-#: ../daemon/gdm-xdmcp-display-factory.c:1077
+#: ../daemon/gdm-xdmcp-display-factory.c:1010
+#: ../daemon/gdm-xdmcp-display-factory.c:1075
 msgid "Could not extract authlist from packet"
 msgstr "Ni mogoče izvleči seznama pooblastitve iz paketa"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1025
-#: ../daemon/gdm-xdmcp-display-factory.c:1092
+#: ../daemon/gdm-xdmcp-display-factory.c:1023
+#: ../daemon/gdm-xdmcp-display-factory.c:1090
 msgid "Error in checksum"
 msgstr "%s: Napaka v nadzorni vsoti"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1344
+#: ../daemon/gdm-xdmcp-display-factory.c:1342
 msgid "Bad address"
 msgstr "Napačen naslov"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1425
+#: ../daemon/gdm-xdmcp-display-factory.c:1423
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: Ni mogoče prebrati naslova zaslona"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1433
+#: ../daemon/gdm-xdmcp-display-factory.c:1431
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s: Ni mogoče prebrati številke vrat zaslona"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1442
+#: ../daemon/gdm-xdmcp-display-factory.c:1440
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s: Ni mogoče izvleči seznama pooblastitev iz paketa"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1462
+#: ../daemon/gdm-xdmcp-display-factory.c:1460
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: Napaka v nadzorni vsoti"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1898
+#: ../daemon/gdm-xdmcp-display-factory.c:1896
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Dobil sem REQUEST iz prepovedanega gostitelja %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1908
-#: ../daemon/gdm-xdmcp-display-factory.c:2290
-#: ../daemon/gdm-xdmcp-display-factory.c:2547
+#: ../daemon/gdm-xdmcp-display-factory.c:1906
+#: ../daemon/gdm-xdmcp-display-factory.c:2261
+#: ../daemon/gdm-xdmcp-display-factory.c:2518
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Ni mogoče prebrati številke zaslona"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1915
+#: ../daemon/gdm-xdmcp-display-factory.c:1913
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Ni mogoče prebrati vrste povezave"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1922
+#: ../daemon/gdm-xdmcp-display-factory.c:1920
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Ni mogoče prebrati naslova odjemalca"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1930
+#: ../daemon/gdm-xdmcp-display-factory.c:1928
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Ni mogoče prebrati imen pooblastitev"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1939
+#: ../daemon/gdm-xdmcp-display-factory.c:1937
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Ni mogoče prebrati podatkov pooblastitev"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1949
+#: ../daemon/gdm-xdmcp-display-factory.c:1947
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Ni mogoče prebrati seznama pooblastitev"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1968
+#: ../daemon/gdm-xdmcp-display-factory.c:1966
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Ni mogoče prebrati ID proizvajalca"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1995
+#: ../daemon/gdm-xdmcp-display-factory.c:1993
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Neveljavna nadzorna vsota za %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2274
+#: ../daemon/gdm-xdmcp-display-factory.c:2245
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Dobil sem ukaz za upravljanje iz prepovedanega gostitelja %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2283
-#: ../daemon/gdm-xdmcp-display-factory.c:2554
+#: ../daemon/gdm-xdmcp-display-factory.c:2254
+#: ../daemon/gdm-xdmcp-display-factory.c:2525
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Ni mogoče prebrati ID seje"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2297
+#: ../daemon/gdm-xdmcp-display-factory.c:2268
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Ni mogoče prebrati razreda zaslona"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2403
-#: ../daemon/gdm-xdmcp-display-factory.c:2457
-#: ../daemon/gdm-xdmcp-display-factory.c:2463
+#: ../daemon/gdm-xdmcp-display-factory.c:2374
+#: ../daemon/gdm-xdmcp-display-factory.c:2428
+#: ../daemon/gdm-xdmcp-display-factory.c:2434
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Ni mogoče prebrati naslova"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2537
+#: ../daemon/gdm-xdmcp-display-factory.c:2508
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Dobil sem KEEPALIVE iz prepovedanega gostitelja %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2620
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
-msgid "XMCP: Could not create XDMCP buffer!"
-msgstr "XMCP: Ni mogoče ustvariti izravnalnika za XDMCP!"
+#: ../daemon/gdm-xdmcp-display-factory.c:2597
+msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
+msgstr "GdmXdmcpDisplayFactory: Ni mogoče prebrati glave XDMCP!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2626
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
-msgid "XDMCP: Could not read XDMCP header!"
-msgstr "XDMCP: Ni mogoče prebrati glave XDMCP!"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2632
+#: ../daemon/gdm-xdmcp-display-factory.c:2603
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:238
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XDMCP: Nepravilna različica XDMCP!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2638
+#: ../daemon/gdm-xdmcp-display-factory.c:2609
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:244
 msgid "XMDCP: Unable to parse address"
 msgstr "XMDCP: Ni mogoče razčleniti naslova"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3036
+#: ../daemon/gdm-xdmcp-display-factory.c:3007
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Ni mogoče dobiti imena strežnika: %s!"
@@ -399,48 +376,48 @@ msgstr "Ni mogoče najti skupine GDM '%s'. Dejanje prekinjeno!"
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Skupina GDM ne sme biti skrbniška. Dejanje prekinjeno!"
 
-#: ../daemon/main.c:526
+#: ../daemon/main.c:520
 msgid "Alternative GDM System Defaults configuration file"
 msgstr "Alternativna sistemska privzeta GDM nastavitvena datoteka"
 
-#: ../daemon/main.c:526
+#: ../daemon/main.c:520
 msgid "CONFIGFILE"
 msgstr "CONFIGFILE"
 
-#: ../daemon/main.c:528
+#: ../daemon/main.c:522
 msgid "Enable debugging code"
 msgstr "Omogoči kodo za razhroščevanje"
 
-#: ../daemon/main.c:529
+#: ../daemon/main.c:523
 msgid "Make all warnings fatal"
 msgstr "Izpiši vsa opozorila kot usodna"
 
-#: ../daemon/main.c:530
+#: ../daemon/main.c:524
 msgid "Don't become a daemon"
 msgstr "Ne postani demon"
 
-#: ../daemon/main.c:531
+#: ../daemon/main.c:525
 msgid "No console (static) servers to be run"
 msgstr "Ni (statičnih) strežnikov konzole za zagon"
 
-#: ../daemon/main.c:533
+#: ../daemon/main.c:527
 msgid "Exit after a time - for debugging"
 msgstr "Končaj po določenem času - za razhroščevanje"
 
-#: ../daemon/main.c:534
+#: ../daemon/main.c:528
 msgid "Print GDM version"
 msgstr "Izpiši različico GDM"
 
-#: ../daemon/main.c:549
+#: ../daemon/main.c:543
 msgid "GNOME Display Manager"
 msgstr "Upravljalnik zaslona GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:622
+#: ../daemon/main.c:616
 msgid "Only root wants to run GDM"
 msgstr "Samo s skrbniškimi pravicami je mogoče zagnati GDM"
 
-#: ../daemon/session-worker-main.c:131
+#: ../daemon/session-worker-main.c:134
 msgid "GNOME Display Manager Session Worker"
 msgstr "Seja upravljalnika zaslona GNOME."
 
@@ -456,6 +433,14 @@ msgstr "Upravljanje X nastavitev"
 #: ../gui/settings-daemon/plugins/xsettings/xsettings.gdm-settings-plugin.desktop.in.h:2
 msgid "X Settings"
 msgstr "_Nastavitve strežnika X"
+
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
+msgid "XMCP: Could not create XDMCP buffer!"
+msgstr "XMCP: Ni mogoče ustvariti izravnalnika za XDMCP!"
+
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
+msgid "XDMCP: Could not read XDMCP header!"
+msgstr "XDMCP: Ni mogoče prebrati glave XDMCP!"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:656
 msgid "%l:%M:%S %p"
@@ -563,11 +548,11 @@ msgstr "Predhodna seja"
 msgid "System Default"
 msgstr "Privzeto s strani sistema"
 
-#: ../gui/simple-greeter/gdm-user.c:163
+#: ../gui/simple-greeter/gdm-user.c:219
 msgid "Manager"
 msgstr "Upravljavec"
 
-#: ../gui/simple-greeter/gdm-user.c:164
+#: ../gui/simple-greeter/gdm-user.c:220
 msgid "The user manager object this user is controlled by."
 msgstr "Objekt upravitelja uporabnikov, ki nadzoruje tega uporabnika."
 
