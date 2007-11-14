@@ -64,6 +64,10 @@
 #define GDM_SESSION_ROOT_UID 0
 #endif
 
+#ifndef GDM_SESSION_LOG_FILENAME
+#define GDM_SESSION_LOG_FILENAME ".xsession-errors"
+#endif
+
 #define MESSAGE_REPLY_TIMEOUT (10 * 60 * 1000)
 
 enum {
@@ -1236,6 +1240,72 @@ gdm_session_worker_watch_child (GdmSessionWorker *worker)
 }
 
 static gboolean
+_fd_is_normal_file (int fd)
+{
+        struct stat file_info;
+
+        if (fstat (fd, &file_info) < 0) {
+                return FALSE;
+        }
+
+        return S_ISREG (file_info.st_mode);
+}
+
+static int
+_open_session_log (const char *dir)
+{
+        int   fd;
+        char *filename;
+
+        filename = g_build_filename (dir, GDM_SESSION_LOG_FILENAME, NULL);
+        fd = g_open (filename, O_RDWR | O_APPEND | O_CREAT, 0600);
+
+        if (fd < 0 || !_fd_is_normal_file (fd)) {
+                char *temp_name;
+
+                close (fd);
+
+                temp_name = g_strdup_printf ("%s.XXXXXXXX", filename);
+
+                fd = g_mkstemp (temp_name);
+
+                if (fd < 0) {
+                        g_free (temp_name);
+                        goto out;
+                }
+
+                g_warning (_("session log '%s' is not a normal file, "
+                             "logging session to '%s' instead.\n"), filename,
+                           temp_name);
+                g_free (filename);
+                filename = temp_name;
+        } else {
+                if (ftruncate (fd, 0) < 0) {
+                        close (fd);
+                        fd = -1;
+                        goto out;
+                }
+        }
+
+        if (fchmod (fd, 0600) < 0) {
+                close (fd);
+                fd = -1;
+                goto out;
+        }
+
+
+out:
+        g_free (filename);
+
+        if (fd < 0) {
+                g_warning (_("unable to log session"));
+                fd = g_open ("/dev/null", O_RDWR);
+        }
+
+        return fd;
+}
+
+static gboolean
 gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
                                        GError           **error)
 {
@@ -1264,6 +1334,7 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
         if (session_pid == 0) {
                 char **environment;
                 char  *home_dir;
+                int    fd;
 
                 if (setuid (getuid ()) < 0) {
                         g_debug ("GdmSessionWorker: could not reset uid - %s", g_strerror (errno));
@@ -1286,6 +1357,15 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
                 if ((home_dir == NULL) || g_chdir (home_dir) < 0) {
                         g_chdir ("/");
                 }
+
+                fd = open ("/dev/null", O_RDWR);
+                dup2 (fd, STDIN_FILENO);
+                close (fd);
+
+                fd = _open_session_log (home_dir);
+                dup2 (fd, STDOUT_FILENO);
+                dup2 (fd, STDERR_FILENO);
+                close (fd);
 
                 gdm_session_execute (worker->priv->arguments[0],
                                      worker->priv->arguments,
