@@ -772,26 +772,6 @@ fi
 AC_SUBST(XINERAMA_LIBS)
 CPPFLAGS="$xinerama_save_cppflags"
 
-
-dnl ---------------------------------------------------------------------------
-dnl - Check for Solaris Trusted Extensions stuff
-dnl ---------------------------------------------------------------------------
-
-case "$host" in
-*solaris*)
-        AC_CHECK_HEADERS(sys/tsol/label_macro.h,
-                AC_DEFINE(HAVE_TSOL, ,[Building with TSOL support]) found_tsol=yes,)
-        ;;
-*)
-        ;;
-esac
-
-AM_CONDITIONAL(TSOL_DEFINED, test x$found_tsol = xyes)
-if test "x$found_tsol" = "xyes" ; then
-	EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lsecdb"
-fi
-
-
 dnl ---------------------------------------------------------------------------
 dnl - Check for SELinux
 dnl ---------------------------------------------------------------------------
@@ -1365,6 +1345,5 @@ echo \
 "        Xinerama support:         ${XINERAMA_SUPPORT}
         XDMCP support:            ${XDMCP_SUPPORT}
         SELinux support:          ${with_selinux}
-        Solaris TSOL support:     ${found_tsol}
         ConsoleKit support:       ${use_console_kit}
 "
