@@ -2536,6 +2536,8 @@ gdm_login_gui_init (void)
 	    gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0);
     else if (gdm_config_get_bool (GDM_KEY_ENTRY_CIRCLES))
 	    gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0x25cf);
+    else
+	    gtk_entry_set_invisible_char (GTK_ENTRY (entry), '*');
 
     gtk_entry_set_max_length (GTK_ENTRY (entry), PW_ENTRY_SIZE);
     gtk_widget_set_size_request (entry, 250, -1);

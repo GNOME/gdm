@@ -512,7 +512,14 @@ toggle_timeout (GtkWidget *toggle)
 	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
 	gboolean    val = gdm_config_get_bool ((gchar *)key);
 
-	if (strcmp (ve_sure_string (key), GDM_KEY_GLOBAL_FACE_DIR) == 0) {
+	if (strcmp (ve_sure_string (key), GDM_KEY_ENTRY_INVISIBLE) == 0) {
+		/* This is a lil bit back to front
+		   true is false and false is true in this case */
+		if ( bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
+			gdm_setup_config_set_bool (key, !GTK_TOGGLE_BUTTON (toggle)->active);
+		}
+	}
+	else if (strcmp (ve_sure_string (key), GDM_KEY_GLOBAL_FACE_DIR) == 0) {
 		/* Once enabled write the curently selected item
 		   in the filechooser widget, otherwise disable
 		   the config entry, i.e. write an empty string */
@@ -2195,11 +2202,20 @@ setup_notify_toggle (const char *name,
 		g_signal_connect (G_OBJECT (toggle), "toggled",	
 		                  G_CALLBACK (timedlogin_allow_remote_toggled), timedlogin_allow_remote);
 	}
-	else if (strcmp ("hide_vis_feedback_passwd_checkbox", ve_sure_string (name)) == 0) {
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle), val);
+	else if (strcmp ("vis_feedback_passwd_checkbox", ve_sure_string (name)) == 0) {
+		/* This one is a lil bit back to front
+		   true is false and false is true */
+		GtkWidget *use_circles_in_passwd;
+		use_circles_in_passwd = glade_xml_get_widget (xml, "use_circles_passwd_checkbox");
+
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle), !val);
+		gtk_widget_set_sensitive (use_circles_in_passwd, !val);
 		
 		g_signal_connect (G_OBJECT (toggle), "toggled",
-		                  G_CALLBACK (toggle_toggled), toggle);		
+		                  G_CALLBACK (toggle_toggled), toggle);	
+		g_signal_connect (G_OBJECT (toggle), "toggled",
+		                  G_CALLBACK (toggle_toggled_sensitivity_positive), use_circles_in_passwd);
+		
 	}
 	else if (strcmp ("local_set_pos_checkbox", ve_sure_string (name)) == 0) {
 		
@@ -7446,7 +7462,10 @@ setup_general_tab (void)
 
 	
 	/* Setup use visual feedback in the passwotrd entry */
-	setup_notify_toggle ("hide_vis_feedback_passwd_checkbox", GDM_KEY_ENTRY_INVISIBLE);
+	setup_notify_toggle ("vis_feedback_passwd_checkbox", GDM_KEY_ENTRY_INVISIBLE);
+
+	/* Setup use circles in the password entry */
+	setup_notify_toggle ("use_circles_passwd_checkbox", GDM_KEY_ENTRY_CIRCLES);
 
 	/* Setup always login current session entry */
 	setup_notify_toggle ("a_login_curr_session_checkbutton", GDM_KEY_ALWAYS_LOGIN_CURRENT_SESSION);
