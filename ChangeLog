@@ -1,3 +1,13 @@
+2007-11-14  Brian Cameron  <brian.cameron@sun.com>
+
+	* gui/gdmlogin.c, gui/greeter/greeter_canvas_item.c,
+	  gui/gdmsetup.glade, gui/gdmsetup.c, config/gdm.conf.in,
+	  docs/C/gdm.xml:  No longer hardcode the password field to '*'.
+	  Instead use the GTK+ default character for password fields.  No
+	  longer support the UseCirclesInEntry configuration option.
+	  Addresses enhancement request #477881.  Patch by Alex "weej"
+	  Jones <alex@weej.com>.
+
 2007-11-13  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/getvt.c: If gdm_get_current_vtnum is called with a NULL

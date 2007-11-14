@@ -468,8 +468,6 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
       gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0);
     else if (gdm_config_get_bool (GDM_KEY_ENTRY_CIRCLES))
       gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0x25cf);
-    else
-	    gtk_entry_set_invisible_char (GTK_ENTRY (entry), '*');
 
     gtk_widget_modify_font (entry, item->data.text.fonts[GREETER_ITEM_STATE_NORMAL]);
 
