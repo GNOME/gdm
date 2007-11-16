@@ -899,6 +899,7 @@ gdm_address_peek_local_list (void)
 	static GList *the_list = NULL;
 	static time_t last_time = 0;
 	char hostbuf[BUFSIZ];
+	struct addrinfo hints;  
 	struct addrinfo *result;
 	struct addrinfo *res;
 
@@ -919,12 +920,28 @@ gdm_address_peek_local_list (void)
 		snprintf (hostbuf, BUFSIZ-1, "localhost");
 	}
 
-	if (getaddrinfo (hostbuf, NULL, NULL, &result) != 0) {
+	memset (&hints, 0, sizeof (hints)); 
+
+	hints.ai_family = AF_INET;
+
+#ifdef ENABLE_IPV6
+	hints.ai_family = AF_INET6;
+#endif  
+
+#ifdef ENABLE_IPV6 
+	if (getaddrinfo (hostbuf, NULL, &hints, &result) != 0) {
+		hints.ai_family = AF_INET;
+#endif
+
+	if (getaddrinfo (hostbuf, NULL, &hints, &result) != 0) {
 		gdm_debug ("%s: Could not get address from hostname!", "gdm_peek_local_address_list");
 
 		return NULL;
 	}
 
+#ifdef ENABLE_IPV6        
+	}
+#endif    
 	for (res = result; res != NULL; res = res->ai_next) {
 		struct sockaddr_storage *sa;
 
