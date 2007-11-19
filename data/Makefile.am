@@ -81,6 +81,8 @@ EXTRA_DIST =			\
 	PreSession.in 		\
 	PostSession.in 		\
 	PostLogin 		\
+	gconf.path		\
+	session-setup.entries	\
 	$(NULL)
 
 CLEANFILES = 				\
