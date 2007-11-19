@@ -1,5 +1,13 @@
 2007-11-19  Ray Strode  <rstrode@redhat.com>
 
+	Fix make distcheck
+
+	* acconfig.h: add HAVE_LOG{IN,OUT,WTMP}
+	* data/Makefile.am: uninstall pam and gconf files
+	in uninstall-hook. fix builddir != srcdir issues
+
+2007-11-19  Ray Strode  <rstrode@redhat.com>
+
 	* data/Makefile.am:
 	set up correct permissions on /var/lib/gdm
 

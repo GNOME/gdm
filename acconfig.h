@@ -50,3 +50,7 @@
 #undef X_PATH
 #undef XSESSION_SHELL
 #undef XEVIE_OPTION
+#undef HAVE_LOGIN
+#undef HAVE_LOGOUT
+#undef HAVE_LOGWTMP
+

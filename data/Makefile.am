@@ -109,7 +109,12 @@ uninstall-hook:
 	$(DESTDIR)$(initdir)/Default \
 	$(DESTDIR)$(postlogindir)/Default.sample \
 	$(DESTDIR)$(predir)/Default \
-	$(DESTDIR)$(postdir)/Default
+	$(DESTDIR)$(postdir)/Default \
+	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm \
+	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin \
+	$(DESTDIR)$(workingdir)/.gconf.path \
+	-rf \
+	$(DESTDIR)$(workingdir)/.gconf.mandatory
 
 install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.path
 	if test '!' -d $(DESTDIR)$(gdmconfdir); then \
@@ -175,10 +180,10 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 		chmod 755 $(DESTDIR)$(PAM_PREFIX)/pam.d; \
 	   fi; \
 	   if test $$system = Linux && test '!' -f $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm; then \
-		$(INSTALL_DATA) gdm $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm; \
+		$(INSTALL_DATA) $(srcdir)/gdm $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm; \
 	   fi; \
 	   if test $$system = Linux && test '!' -f $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin; then \
-		$(INSTALL_DATA) gdm-autologin $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin; \
+		$(INSTALL_DATA) $(srcdir)/gdm-autologin $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin; \
 	   fi; \
 	   if test $$system = SunOS; then \
 		echo "Please add PAM authentication for gdm and gdm-autologin in $(PAM_PREFIX)/pam.conf!"; \
@@ -191,8 +196,8 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 		chown root:gdm $(DESTDIR)$(workingdir) || : ; \
 	fi
 
-	$(INSTALL_DATA) gconf.path $(DESTDIR)$(workingdir)/.gconf.path
-	gconftool-2 --direct --config-source=xml:merged:$(DESTDIR)$(workingdir)/.gconf.mandatory --load session-setup.entries
+	$(INSTALL_DATA) $(srcdir)/gconf.path $(DESTDIR)$(workingdir)/.gconf.path
+	gconftool-2 --direct --config-source=xml:merged:$(DESTDIR)$(workingdir)/.gconf.mandatory --load $(srcdir)/session-setup.entries
 
 
 
