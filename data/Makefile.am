@@ -184,7 +184,14 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 		echo "Please add PAM authentication for gdm and gdm-autologin in $(PAM_PREFIX)/pam.conf!"; \
 	   fi; \
 	fi
-	install -m644 -D gconf.path $(DESTDIR)$(workingdir)/.gconf.path
+
+	if test '!' -d $(DESTDIR)$(workingdir); then \
+		$(mkinstalldirs) $(DESTDIR)$(workingdir); \
+		chmod 1770 $(DESTDIR)$(workingdir); \
+		chown root:gdm $(DESTDIR)$(workingdir) || : ; \
+	fi
+
+	$(INSTALL_DATA) gconf.path $(DESTDIR)$(workingdir)/.gconf.path
 	gconftool-2 --direct --config-source=xml:merged:$(DESTDIR)$(workingdir)/.gconf.mandatory --load session-setup.entries
 
 
