@@ -1,5 +1,5 @@
 
-AC_PREREQ(2.59c)
+AC_PREREQ([2.60])
 AC_INIT([gdm],
         [2.21.2],
         [http://bugzilla.gnome.org/enter_bug.cgi?product=gdm])
