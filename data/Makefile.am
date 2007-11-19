@@ -10,6 +10,7 @@ authdir = $(localstatedir)/gdm
 postdir = $(gdmconfdir)/PostSession
 predir = $(gdmconfdir)/PreSession
 postlogindir = $(gdmconfdir)/PostLogin
+workingdir = $(GDM_WORKING_DIR)
 
 Xsession: $(srcdir)/Xsession.in
 	sed	-e 's,[@]XSESSION_SHELL[@],$(XSESSION_SHELL),g' \
@@ -108,7 +109,7 @@ uninstall-hook:
 	$(DESTDIR)$(predir)/Default \
 	$(DESTDIR)$(postdir)/Default
 
-install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession
+install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.path
 	if test '!' -d $(DESTDIR)$(gdmconfdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(gdmconfdir); \
 		chmod 755 $(DESTDIR)$(gdmconfdir); \
@@ -181,4 +182,8 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession
 		echo "Please add PAM authentication for gdm and gdm-autologin in $(PAM_PREFIX)/pam.conf!"; \
 	   fi; \
 	fi
+	install -m644 -D gconf.path $(DESTDIR)$(workingdir)/.gconf.path
+	gconftool-2 --direct --config-source=xml:merged:$(DESTDIR)$(workingdir)/.gconf.mandatory --load session-setup.entries
+
+
 

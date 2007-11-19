@@ -1166,6 +1166,20 @@ AC_SUBST(GDM_PID_FILE)
 AC_DEFINE_UNQUOTED(GDM_PID_FILE, "$GDM_PID_FILE", [pid file])
 
 dnl ---------------------------------------------------------------------------
+dnl - GREETER WORKING DIRECTORY
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_WITH(working-directory,    [  --with-working-dir=<dir> working directory])
+
+if ! test -z "$with_working_directory"; then
+   GDM_WORKING_DIR=$with_working_directory
+else
+   GDM_WORKING_DIR=${localstatedir}/lib/gdm
+fi
+
+AC_SUBST(GDM_WORKING_DIR)
+
+dnl ---------------------------------------------------------------------------
 dnl - Allow configure to specify RBAC keys.
 dnl ---------------------------------------------------------------------------
 
