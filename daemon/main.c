@@ -30,8 +30,9 @@
 #include <fcntl.h>
 #include <pwd.h>
 #include <grp.h>
-#include <wait.h>
+#include <sys/wait.h>
 #include <locale.h>
+#include <signal.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>

@@ -22,6 +22,7 @@
 #ifndef _GDM_COMMON_UNKNOWN_H
 #define _GDM_COMMON_UNKNOWN_H
 
+#include <sys/stat.h>
 #include <stdio.h>
 #include <errno.h>
 #include <glib.h>

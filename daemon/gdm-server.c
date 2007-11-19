@@ -32,6 +32,7 @@
 #include <pwd.h>
 #include <grp.h>
 #include <signal.h>
+#include <sys/resource.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>

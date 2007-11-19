@@ -504,9 +504,15 @@ dnl ---------------------------------------------------------------------------
 
 AC_CHECK_HEADERS(utmp.h utmpx.h libutil.h sys/param.h)
 AC_CHECK_FUNCS([getutxent updwtmpx updwtmp])
-AC_CHECK_LIB(util, login)
-AC_CHECK_LIB(util, logout)
-AC_CHECK_LIB(util, logwtmp)
+AC_CHECK_LIB(util, login, [
+		   AC_DEFINE(HAVE_LOGIN)
+		       EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lutil" ])
+AC_CHECK_LIB(util, logout, [
+		   AC_DEFINE(HAVE_LOGOUT)
+		       EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lutil" ])
+AC_CHECK_LIB(util, logwtmp, [
+	  	   AC_DEFINE(HAVE_LOGWTMP)
+		       EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lutil" ])
 GDM_CHECK_UTMP
 
 AC_MSG_CHECKING(if utmpx structure has ut_syslen field)

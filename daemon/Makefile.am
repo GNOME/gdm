@@ -90,6 +90,7 @@ test_session_SOURCES = 		\
 
 test_session_LDADD =		\
 	$(XLIB_LIBS)		\
+	$(EXTRA_DAEMON_LIBS)	\
 	$(DAEMON_LIBS)		\
 	$(PAM_LIBS)		\
 	$(top_builddir)/common/libgdmcommon.la	\
