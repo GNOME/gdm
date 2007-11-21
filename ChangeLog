@@ -1,3 +1,10 @@
+2007-11-21  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/gdm.c, daemon/slave.c: Fix so that we allow setting of
+	  LC_CTYPE without setting LANG.  Cleanup of how we set the
+	  system locale.  Fixes bug #485852.  Patch by Sjoerd Simons
+	  <sjoerd@luon.net> and Takao Fujiwara <Takao.Fujiwara@sun.com>.
+
 2007-11-16  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/misc.c: Add back hinting, with a preference towards

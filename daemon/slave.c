@@ -5545,10 +5545,8 @@ check_for_interruption (const char *msg)
 		case GDM_INTERRUPT_SELECT_LANG:
 			if (msg + 2) {
 				const char *locale;
-				const char *gdm_system_locale;
 
 				locale = (gchar*)(msg + 3);
-				gdm_system_locale = setlocale (LC_CTYPE, NULL);
 
 				always_restart_greeter = (gboolean)(*(msg + 2));
 				ve_clearenv ();
