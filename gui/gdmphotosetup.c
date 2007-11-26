@@ -161,6 +161,7 @@ update_preview_cb (GtkFileChooser *chooser)
 		}
 	}		
 	gtk_file_chooser_set_preview_widget_active (chooser, TRUE);
+	g_free (uri);
 }
 
 static GtkWidget *

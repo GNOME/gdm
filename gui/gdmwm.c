@@ -1258,6 +1258,7 @@ gdm_wm_init (Window login_window)
 {
 	XWindowAttributes attribs = { 0, };
 	GSource *source;
+	gchar *display;
 
 	wm_login_window = login_window;
 
@@ -1265,7 +1266,9 @@ gdm_wm_init (Window login_window)
 		return;
 	}
 
-	wm_disp = XOpenDisplay (gdk_get_display ());
+	display = gdk_get_display ();
+	wm_disp = XOpenDisplay (display);
+	g_free (display);
 	if (wm_disp == NULL) {
 		/* EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEK! */
 		wm_disp = GDK_DISPLAY ();

@@ -390,6 +390,8 @@ gdm_final_cleanup (void)
 	if (pidfile != NULL) {
 		VE_IGNORE_EINTR (g_unlink (pidfile));
 	}
+
+	gdm_daemon_config_close ();
 }
 
 #ifdef __sun
@@ -626,7 +628,6 @@ static gboolean
 try_commands (const char **array)
 {
 	int      i;
-	int      status;
 	gboolean ret;
 
 	ret = FALSE;

@@ -812,6 +812,8 @@ key_file_get_value (GdmConfig            *config,
  out:
 	*valuep = value;
 
+	g_free (val);
+
 	return ret;
 }
 
@@ -1010,7 +1012,7 @@ add_keys_to_hash (GKeyFile   *key_file,
 		  GHashTable *hash)
 {
 	GError     *local_error;
-	char      **keys;
+	gchar      **keys;
 	gsize       len;
 	int         i;
 
@@ -1022,12 +1024,15 @@ add_keys_to_hash (GKeyFile   *key_file,
 				    &local_error);
 	if (local_error != NULL) {
 		g_error_free (local_error);
+		g_strfreev (keys);
 		return;
 	}
 
 	for (i = 0; i < len; i++) {
-		g_hash_table_insert (hash, keys[i], GINT_TO_POINTER (1));
+		g_hash_table_insert (hash, g_strdup (keys[i]), GINT_TO_POINTER (1));
 	}
+
+	g_strfreev (keys);
 }
 
 static void

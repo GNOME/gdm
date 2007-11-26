@@ -662,10 +662,12 @@ main (int argc, char *argv[])
 		execvp (execvec[0], execvec);
 		g_warning ("Can't exec that either, giving up");
 		/* FIXME: this should be handled in the GUI */
+		g_strfreev (execvec);
 		_exit (1);
 	} else if (xnest_pid < 0) {
 		/* eeeek */
 		g_warning ("Can't fork");
+		g_strfreev (execvec);
 		_exit (1);
 	}
 
@@ -678,6 +680,8 @@ main (int argc, char *argv[])
 
 	if (no_query)
 		whack_cookie (display);
+
+	g_strfreev (execvec);
 
 	return 0;
 }

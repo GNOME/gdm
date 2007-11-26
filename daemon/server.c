@@ -780,6 +780,8 @@ gdm_server_start (GdmDisplay *disp,
     /* fork X server process */
     gdm_server_spawn (d, vtarg);
 
+    g_free (vtarg);
+
     /* we can now use d->handled since that's set up above */
     do_server_wait (d);
 
@@ -1252,6 +1254,8 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 		gdm_error (_("%s: Could not open logfile for display %s!"),
 			   "gdm_server_spawn", d->name);
 	}
+
+	g_free (logfile);
 
 	/* The X server expects USR1/TTIN/TTOU to be SIG_IGN */
 	ign_signal.sa_handler = SIG_IGN;

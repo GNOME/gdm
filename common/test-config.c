@@ -158,7 +158,7 @@ validate_cb (GdmConfig          *config,
 static void
 load_servers_group (GdmConfig *config)
 {
-        char     **keys;
+        gchar    **keys;
         gsize      len;
         int        i;
 
@@ -203,6 +203,7 @@ load_servers_group (GdmConfig *config)
                 }
                 g_free (new_group);
         }
+	g_ptr_array_free ((GPtrArray*) keys, TRUE);
 }
 
 static void

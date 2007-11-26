@@ -1141,6 +1141,8 @@ gdm_daemon_config_load_xserver (GdmConfig  *config,
 	}
 
 	xservers = g_slist_append (xservers, svr);
+
+	g_free (group);
 }
 
 static void
@@ -1255,6 +1257,8 @@ load_xservers_group (GdmConfig *config)
                 gdm_config_value_free (value);
 		g_strfreev (value_list);
         }
+
+	g_strfreev (keys);
 }
 
 static void
@@ -1539,6 +1543,8 @@ gdm_daemon_config_load_displays (GdmConfig *config)
 
 		g_strfreev (value_list);
 	}
+
+	g_ptr_array_free ((GPtrArray*) keys, TRUE);
 }
 
 static gboolean
@@ -2230,7 +2236,8 @@ gdm_daemon_config_parse (const char *config_file,
 	}
 	custom_config_file = g_strdup (GDM_CUSTOM_CONF);
 
-	daemon_config = gdm_config_new ();
+	if (daemon_config == NULL)
+		daemon_config = gdm_config_new ();
 
 	gdm_config_set_notify_func (daemon_config, notify_cb, NULL);
 	gdm_config_set_validate_func (daemon_config, validate_cb, NULL);
@@ -2322,6 +2329,17 @@ void
 gdm_daemon_config_set_high_display_num (gint val)
 {
 	high_display_num = val;
+}
+
+/**
+ *  gdm_daemon_config_close
+ *
+ *  Cleanup
+ */
+void
+gdm_daemon_config_close (void)
+{
+	gdm_config_free (daemon_config);
 }
 
 /**

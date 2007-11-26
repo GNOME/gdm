@@ -43,6 +43,7 @@ uid_t          gdm_daemon_config_get_gdmuid           (void);
 uid_t          gdm_daemon_config_get_gdmgid           (void);
 gint           gdm_daemon_config_get_high_display_num (void);
 void           gdm_daemon_config_set_high_display_num (gint val);
+void           gdm_daemon_config_close                (void);
 
 /* deprecated */
 char *         gdm_daemon_config_get_display_custom_config_file (const char *display);

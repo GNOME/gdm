@@ -934,7 +934,7 @@ main (int argc, char *argv[])
 
 	ret = gdmcomm_call_gdm (command, auth_cookie, version, 5);
 	g_free (command);
-
+	g_free (auth_cookie);
 	g_strfreev (args_remaining);
 
 	/* At this point we are done using the socket, so close it */
@@ -950,6 +950,7 @@ main (int argc, char *argv[])
 		}
 
 		/* all fine and dandy */
+		g_free (ret);
 		return 0;
 	}
 
@@ -965,6 +966,7 @@ main (int argc, char *argv[])
 	gtk_widget_show_all (dialog);
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
+	g_free (ret);
 
 	return 1;
 }

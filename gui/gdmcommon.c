@@ -708,6 +708,7 @@ pre_atspi_launch (void){
 
 	atspi_prog_argv = NULL;
 	g_shell_parse_argv (command, NULL, &atspi_prog_argv, NULL);
+	g_free (command);
 
 	g_spawn_async (".",
 		       atspi_prog_argv,
@@ -723,7 +724,11 @@ pre_atspi_launch (void){
 	g_strfreev (atspi_prog_argv);
 
 	if (kill (pid, 0) < 0) {
-		fprintf (stderr, "at-spi-registryd not running: %s\n", error->message);
+		gchar * msg = NULL;
+		if (error && error->message)
+			msg = error->message;
+		fprintf (stderr, "at-spi-registryd not running: %s\n",
+			 msg ? msg : "");
 		return FALSE;
 	}
 

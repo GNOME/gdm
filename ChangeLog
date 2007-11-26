@@ -1,5 +1,13 @@
 2007-11-26  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/gdm.c, daemon/server.c, daemon/gdm-daemon-config.[ch],
+	  common/gdm-config.c, common/test-config.c, gui/gdmwm.c,
+	  gui/gdmphotosetup.c, gui/gdmXnestchooser.c, gui/gdmcommon.c,
+	  gui/gdmflexiserver.c: Fix leaks.  Fixes bug #499445.  Patch
+	  by Andrew Ziem <ahziem1@mailbolt.com>
+
+2007-11-26  Brian Cameron  <brian.cameron@sun.com>
+
 	* gui/gdmXnestchooser.c: Set execvec by calling make_us_an_exec_vector
 	  after setting indirect_host, since the function uses this variable.
 	  Fixes bug #499389.  Patch by Andrew Ziem <ahziem1@mailbolt.com>
