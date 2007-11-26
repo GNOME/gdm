@@ -514,25 +514,6 @@ main (int argc, char *argv[])
 	/* At this point we are done using the socket, so close it */
 	gdmcomm_comm_bulk_stop ();
 
-	/* complex and wonderous way to get the exec vector */
-	execvec = make_us_an_exec_vector (xnest);
-
-	if (execvec == NULL) {
-		GtkWidget *d;
-		d = hig_dialog_new (NULL /* parent */,
-				    GTK_DIALOG_MODAL /* flags */,
-				    GTK_MESSAGE_ERROR,
-				    GTK_BUTTONS_OK,
-				    _("Xnest doesn't exist."),
-				    _("Please ask your system "
-				      "administrator "
-				      "to install it."));
-		gtk_widget_show_all (d);
-		gtk_dialog_run (GTK_DIALOG (d));
-		gtk_widget_destroy (d);
-		return 0;
-	}
-
 	if ( ! no_query &&
 	     ! do_broadcast &&
 	     ! no_gdm_check &&
@@ -627,6 +608,26 @@ main (int argc, char *argv[])
 
 	g_snprintf (display_num, sizeof (display_num), ":%d", display);
 	g_snprintf (indirect_host, sizeof (indirect_host), "%s", host);
+
+	/* complex and wonderous way to get the exec vector */
+	execvec = make_us_an_exec_vector (xnest);
+
+	if (execvec == NULL) {
+		GtkWidget *d;
+		d = hig_dialog_new (NULL /* parent */,
+				    GTK_DIALOG_MODAL /* flags */,
+				    GTK_MESSAGE_ERROR,
+				    GTK_BUTTONS_OK,
+				    _("Xnest doesn't exist."),
+				    _("Please ask your system "
+				      "administrator "
+				      "to install it."));
+		gtk_widget_show_all (d);
+		gtk_dialog_run (GTK_DIALOG (d));
+		gtk_widget_destroy (d);
+		return 0;
+	}
+
 
 	if (no_query) {
 		whack_cookie (display);
