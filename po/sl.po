@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-10-23 05:51+0100\n"
-"PO-Revision-Date: 2007-11-12 15:45+0100\n"
+"PO-Revision-Date: 2007-11-27 15:16+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian\n"
 "MIME-Version: 1.0\n"
@@ -42,6 +42,11 @@ msgstr "ID"
 msgid "GNOME Display Manager Slave"
 msgstr "Podenota upravljalnika namizja GNOME"
 
+#: ../daemon/gdm-display-access-file.c:245
+#, c-format
+msgid "could not find user \"%s\" on system"
+msgstr "v sistemu ni mogoče najti uporabnika \"%s\""
+
 #: ../daemon/gdm-factory-slave.c:185
 #: ../daemon/gdm-simple-slave.c:169
 msgid "Unable to initialize login system"
@@ -67,67 +72,67 @@ msgstr "Ni mogoče vzpostaviti pooblastila"
 msgid "Could not start the X server (your graphical environment) due to some internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 msgstr "Ni mogoče zagnati strežnika X (vašega grafičnega okolja) zaradi notranje napake. Obrnite se na vašega skrbnika sistema ali preverite vaš sistemski dnevnik. V vmesnem času bo ta zaslon izključen. Ponovno zaženite GDM, ko bo problem odpravljen."
 
-#: ../daemon/gdm-greeter-session.c:333
+#: ../daemon/gdm-greeter-session.c:334
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Uporabnik %s ne obstaja"
 
-#: ../daemon/gdm-greeter-session.c:340
+#: ../daemon/gdm-greeter-session.c:341
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Skupina %s ne obstaja"
 
-#: ../daemon/gdm-greeter-session.c:351
-#: ../daemon/gdm-server.c:370
+#: ../daemon/gdm-greeter-session.c:352
+#: ../daemon/gdm-server.c:371
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Ni mogoče nastaviti groupid na %d"
 
-#: ../daemon/gdm-greeter-session.c:357
-#: ../daemon/gdm-server.c:376
+#: ../daemon/gdm-greeter-session.c:358
+#: ../daemon/gdm-server.c:377
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgrougs() ni uspel za %s"
 
-#: ../daemon/gdm-greeter-session.c:363
-#: ../daemon/gdm-server.c:382
+#: ../daemon/gdm-greeter-session.c:364
+#: ../daemon/gdm-server.c:383
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Ni mogoče nastaviti userid na %d"
 
-#: ../daemon/gdm-greeter-session.c:371
-#: ../daemon/gdm-server.c:390
+#: ../daemon/gdm-greeter-session.c:372
+#: ../daemon/gdm-server.c:391
 msgid "Couldn't set groupid to 0"
 msgstr "Ni mogoče nastaviti groupid na 0"
 
-#: ../daemon/gdm-server.c:241
+#: ../daemon/gdm-server.c:242
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: povezava z zaslonom '%s' ni uspela"
 
-#: ../daemon/gdm-server.c:359
+#: ../daemon/gdm-server.c:360
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Strežnik bi moral biti zagnan preko uporabnika %s, vendar ta uporabnik ne obstaja"
 
-#: ../daemon/gdm-server.c:425
+#: ../daemon/gdm-server.c:426
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: Ni mogoče odpreti dnevnika za zaslon %s!"
 
-#: ../daemon/gdm-server.c:436
-#: ../daemon/gdm-server.c:442
-#: ../daemon/gdm-server.c:448
+#: ../daemon/gdm-server.c:437
+#: ../daemon/gdm-server.c:443
+#: ../daemon/gdm-server.c:449
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Napaka ob nastavljanju %s na %s"
 
-#: ../daemon/gdm-server.c:463
+#: ../daemon/gdm-server.c:464
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Prednosti strežnika ni mogoče nastaviti na %d: %s"
 
-#: ../daemon/gdm-server.c:607
+#: ../daemon/gdm-server.c:608
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Prazen ukaz strežnika za zaslon %s"
@@ -138,53 +143,62 @@ msgstr "%s: Prazen ukaz strežnika za zaslon %s"
 msgid "worker exited with status %d"
 msgstr "enota zaključena s stanjem  %d"
 
-#: ../daemon/gdm-session-worker.c:823
+#: ../daemon/gdm-session-worker.c:827
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "napaka zaganjanja povezave z sistemom pooblastitve - %s"
 
-#: ../daemon/gdm-session-worker.c:824
+#: ../daemon/gdm-session-worker.c:828
 msgid "general failure"
 msgstr "splošna napaka"
 
-#: ../daemon/gdm-session-worker.c:825
+#: ../daemon/gdm-session-worker.c:829
 msgid "out of memory"
 msgstr "zmanjkalo je pomnilnika"
 
-#: ../daemon/gdm-session-worker.c:826
+#: ../daemon/gdm-session-worker.c:830
 msgid "application programmer error"
 msgstr "programerska napaka programa"
 
-#: ../daemon/gdm-session-worker.c:827
+#: ../daemon/gdm-session-worker.c:831
 msgid "unscoped error"
 msgstr "nedosežena napaka"
 
-#: ../daemon/gdm-session-worker.c:834
+#: ../daemon/gdm-session-worker.c:838
 msgid "Username:"
 msgstr "Uporabniško ime:"
 
-#: ../daemon/gdm-session-worker.c:840
+#: ../daemon/gdm-session-worker.c:844
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr "napaka obvestitve sistema pooblastitve o pozivniku uporabniškega imena - %s"
 
-#: ../daemon/gdm-session-worker.c:854
+#: ../daemon/gdm-session-worker.c:858
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr "napaka obvestitve sistema pooblastitve o imenu gostitelja - %s"
 
-#: ../daemon/gdm-session-worker.c:869
+#: ../daemon/gdm-session-worker.c:873
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr "napaka obvestitve sistema pooblastitve o konzoli - %s"
 
-#: ../daemon/gdm-session-worker.c:1023
+#: ../daemon/gdm-session-worker.c:1027
 msgid "no user account available"
 msgstr "na voljo ni nobenega uporabniškega računa"
 
-#: ../daemon/gdm-session-worker.c:1072
+#: ../daemon/gdm-session-worker.c:1076
 msgid "user account not available on system"
 msgstr "uporabniški račun v sistemu ni na voljo"
+
+#: ../daemon/gdm-session-worker.c:1277
+#, c-format
+msgid "session log '%s' is not a normal file, logging session to '%s' instead.\n"
+msgstr "datoteka beleženja seje '%s' ni običajna datoteka, beleženje se nadaljuje v datoteko '%s'.\n"
+
+#: ../daemon/gdm-session-worker.c:1301
+msgid "unable to log session"
+msgstr "ni mogoče beležiti seje"
 
 #: ../daemon/gdm-simple-slave.c:254
 msgid "Unable establish credentials"
@@ -313,12 +327,12 @@ msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory: Ni mogoče prebrati glave XDMCP!"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2603
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:238
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:240
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XDMCP: Nepravilna različica XDMCP!"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2609
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:244
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:246
 msgid "XMDCP: Unable to parse address"
 msgstr "XMDCP: Ni mogoče razčleniti naslova"
 
@@ -327,93 +341,93 @@ msgstr "XMDCP: Ni mogoče razčleniti naslova"
 msgid "Could not get server hostname: %s!"
 msgstr "Ni mogoče dobiti imena strežnika: %s!"
 
-#: ../daemon/main.c:229
-#: ../daemon/main.c:242
+#: ../daemon/main.c:230
+#: ../daemon/main.c:243
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace: %s"
 msgstr "Ni mogoče pisati datoteke PID %s: verjetno na disku ni prostora: %s"
 
-#: ../daemon/main.c:262
+#: ../daemon/main.c:263
 #, c-format
 msgid "Logdir %s does not exist or isn't a directory."
 msgstr "Imenik dnevnika %s ne obstaja ali pa ni imenik."
 
-#: ../daemon/main.c:275
+#: ../daemon/main.c:276
 #, c-format
 msgid "Authdir %s does not exist. Aborting."
 msgstr "Imenik authdir %s ne obstaja. Postopek je prekinjen."
 
-#: ../daemon/main.c:279
+#: ../daemon/main.c:280
 #, c-format
 msgid "Authdir %s is not a directory. Aborting."
 msgstr "Imenik authdir %s ni imenik. Dejanje prekinjeno."
 
-#: ../daemon/main.c:353
+#: ../daemon/main.c:354
 #, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
 msgstr "Lastnik imenika authdir %s ni uporabnik %d, skupine %d. Dejanje prekinjeno."
 
-#: ../daemon/main.c:360
+#: ../daemon/main.c:361
 #, c-format
 msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr "Imenik authdir %s ima napačna dovoljenja %o. Biti morajo %o. Dejanje prekinjeno."
 
-#: ../daemon/main.c:397
+#: ../daemon/main.c:398
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Ni mogoče najti uporabnika GDM '%s'. Dejanje prekinjeno!"
 
-#: ../daemon/main.c:403
+#: ../daemon/main.c:404
 msgid "The GDM user should not be root. Aborting!"
 msgstr "Uporabnik GDM ne sme biti skrbnik. Dejanje prekinjeno!"
 
-#: ../daemon/main.c:409
+#: ../daemon/main.c:410
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Ni mogoče najti skupine GDM '%s'. Dejanje prekinjeno!"
 
-#: ../daemon/main.c:415
+#: ../daemon/main.c:416
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Skupina GDM ne sme biti skrbniška. Dejanje prekinjeno!"
 
-#: ../daemon/main.c:520
+#: ../daemon/main.c:521
 msgid "Alternative GDM System Defaults configuration file"
 msgstr "Alternativna sistemska privzeta GDM nastavitvena datoteka"
 
-#: ../daemon/main.c:520
+#: ../daemon/main.c:521
 msgid "CONFIGFILE"
 msgstr "CONFIGFILE"
 
-#: ../daemon/main.c:522
+#: ../daemon/main.c:523
 msgid "Enable debugging code"
 msgstr "Omogoči kodo za razhroščevanje"
 
-#: ../daemon/main.c:523
+#: ../daemon/main.c:524
 msgid "Make all warnings fatal"
 msgstr "Izpiši vsa opozorila kot usodna"
 
-#: ../daemon/main.c:524
+#: ../daemon/main.c:525
 msgid "Don't become a daemon"
 msgstr "Ne postani demon"
 
-#: ../daemon/main.c:525
+#: ../daemon/main.c:526
 msgid "No console (static) servers to be run"
 msgstr "Ni (statičnih) strežnikov konzole za zagon"
 
-#: ../daemon/main.c:527
+#: ../daemon/main.c:528
 msgid "Exit after a time - for debugging"
 msgstr "Končaj po določenem času - za razhroščevanje"
 
-#: ../daemon/main.c:528
+#: ../daemon/main.c:529
 msgid "Print GDM version"
 msgstr "Izpiši različico GDM"
 
-#: ../daemon/main.c:543
+#: ../daemon/main.c:544
 msgid "GNOME Display Manager"
 msgstr "Upravljalnik zaslona GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:616
+#: ../daemon/main.c:617
 msgid "Only root wants to run GDM"
 msgstr "Samo s skrbniškimi pravicami je mogoče zagnati GDM"
 
@@ -421,7 +435,7 @@ msgstr "Samo s skrbniškimi pravicami je mogoče zagnati GDM"
 msgid "GNOME Display Manager Session Worker"
 msgstr "Seja upravljalnika zaslona GNOME."
 
-#: ../gui/settings-daemon/plugins/xsettings/gdm-xsettings-manager.c:558
+#: ../gui/settings-daemon/plugins/xsettings/gdm-xsettings-manager.c:560
 #, c-format
 msgid "GConf key %s set to type %s but its expected type was %s\n"
 msgstr "GConf ključ %s nastavljen na vrsto %s, pričakovana vrsta pa je %s\n"
@@ -434,11 +448,11 @@ msgstr "Upravljanje X nastavitev"
 msgid "X Settings"
 msgstr "_Nastavitve strežnika X"
 
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:228
 msgid "XMCP: Could not create XDMCP buffer!"
 msgstr "XMCP: Ni mogoče ustvariti izravnalnika za XDMCP!"
 
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:234
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Ni mogoče prebrati glave XDMCP!"
 
