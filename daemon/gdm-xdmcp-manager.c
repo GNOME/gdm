@@ -1852,7 +1852,7 @@ gdm_xdmcp_handle_request (GdmXdmcpManager         *manager,
 
 	/* Update num_sessions only if the length of the list that contain
  	 * them is smaller */ 
-	if (g_list_length (gdm_daemon_config_get_display_list()) < manager->priv->num_sessions ){
+	if (g_slist_length (gdm_daemon_config_get_display_list()) < manager->priv->num_sessions ) {
 		gdm_xdmcp_recount_sessions (manager);
 	}
 
@@ -2591,26 +2591,6 @@ gdm_xdmcp_manager_start (GdmXdmcpManager *manager,
 	return ret;
 }
 
-gboolean
-gdm_xdmcp_manager_stop (GdmXdmcpManager *manager,
-			GError         **error)
-{
-	g_return_val_if_fail (GDM_IS_XDMCP_MANAGER (manager), FALSE);
-	g_return_val_if_fail (manager->priv->socket_fd != -1, FALSE);
-
-	if (manager->priv->socket_watch_id > 0) {
-		g_source_remove (manager->priv->socket_watch_id);
-		manager->priv->socket_watch_id = 0;
-	}
-
-	if (manager->priv->socket_fd > 0) {
-		VE_IGNORE_EINTR (close (manager->priv->socket_fd));
-		manager->priv->socket_fd = -1;
-	}
-
-	return TRUE;
-}
-
 void
 gdm_xdmcp_manager_set_port (GdmXdmcpManager *manager,
 			    guint            port)
@@ -2926,6 +2906,11 @@ gdm_xdmcp_manager_finalize (GObject *object)
 
 	if (manager->priv->socket_watch_id > 0) {
 		g_source_remove (manager->priv->socket_watch_id);
+	}
+
+	if (manager->priv->socket_fd > 0) {
+		VE_IGNORE_EINTR (close (manager->priv->socket_fd));
+		manager->priv->socket_fd = -1;
 	}
 
 	g_slist_free (manager->priv->forward_queries);

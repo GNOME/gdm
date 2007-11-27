@@ -62,8 +62,6 @@ void                gdm_xdmcp_manager_set_port                (GdmXdmcpManager *
 							       guint            port);
 gboolean            gdm_xdmcp_manager_start                   (GdmXdmcpManager *manager,
 							       GError         **error);
-gboolean            gdm_xdmcp_manager_stop                    (GdmXdmcpManager *manager,
-							       GError         **error);
 
 G_END_DECLS
 
