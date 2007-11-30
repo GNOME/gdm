@@ -2528,7 +2528,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		gdm_info (_("Master suspending..."));
 
 		sysmenu = gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, d->name);
-		if (sysmenu && gdm_daemon_config_get_value_string (GDM_KEY_SUSPEND) != NULL) {
+		if (sysmenu && gdm_daemon_config_get_value_string_array (GDM_KEY_SUSPEND) != NULL) {
 			suspend_machine ();
 		}
 	} else if (strncmp (msg, GDM_SOP_CHOSEN_THEME " ",
