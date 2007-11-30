@@ -145,7 +145,7 @@ gdm_exec_fbconsole (GdmDisplay *disp)
         argv[2] = disp->name;
         argv[3] = NULL;
 
-	g_debug ("Forking fbconsole");
+	gdm_debug ("Forking fbconsole");
 
         pid = fork ();
         if (pid == 0) {
@@ -1210,7 +1210,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
     /* Fork into two processes. Parent remains the gdm process. Child
      * becomes the X server. */
 
-    g_debug ("Forking X server process");
+    gdm_debug ("Forking X server process");
 
     gdm_sigterm_block_push ();
     pid = d->servpid = fork ();

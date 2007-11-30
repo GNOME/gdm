@@ -271,7 +271,7 @@ get_path_array_from_iter (DBusMessageIter *iter,
 	return buffer;
 
 oom:
-	g_warning ("%s %d : error allocating memory\n", __FILE__, __LINE__);
+	gdm_debug ("%s %d : error allocating memory\n", __FILE__, __LINE__);
 	return NULL;
 
 }

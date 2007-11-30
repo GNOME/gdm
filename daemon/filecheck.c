@@ -26,6 +26,7 @@
 #include "gdm.h"
 #include "gdm-common.h"
 #include "gdm-daemon-config.h"
+#include "gdm-log.h"
 
 #include "filecheck.h"
 
@@ -78,7 +79,7 @@ gdm_file_check (const gchar *caller,
 
 	if (r < 0) {
 		if ( ! absentdirok)
-			g_warning ("%s: Directory %s does not exist.",
+			gdm_debug ("%s: Directory %s does not exist.",
 				   caller, dir);
 		return FALSE;
 	}
@@ -90,19 +91,19 @@ gdm_file_check (const gchar *caller,
 	   2004-06-22, Andreas Schubert, MATHEMA Software GmbH */
 
 	if G_UNLIKELY (gdm_daemon_config_get_value_bool (GDM_KEY_CHECK_DIR_OWNER) && (statbuf.st_uid != user)) {
-		g_warning ("%s: %s is not owned by uid %d.", caller, dir, user);
+		gdm_debug ("%s: %s is not owned by uid %d.", caller, dir, user);
 		return FALSE;
 	}
 
 	/* ... if group has write permission ... */
 	if G_UNLIKELY (perms < 1 && (statbuf.st_mode & S_IWGRP) == S_IWGRP) {
-		g_warning ("%s: %s is writable by group.", caller, dir);
+		gdm_debug ("%s: %s is writable by group.", caller, dir);
 		return FALSE;
 	}
 
 	/* ... and if others have write permission. */
 	if G_UNLIKELY (perms < 2 && (statbuf.st_mode & S_IWOTH) == S_IWOTH) {
-		g_warning ("%s: %s is writable by other.", caller, dir);
+		gdm_debug ("%s: %s is writable by other.", caller, dir);
 		return FALSE;
 	}
 
@@ -117,7 +118,7 @@ gdm_file_check (const gchar *caller,
 			return TRUE;
 		}
 		else {
-			g_warning ("%s: %s does not exist but must exist.", caller, fullpath);
+			gdm_debug ("%s: %s does not exist but must exist.", caller, fullpath);
 			g_free (fullpath);
 			return FALSE;
 		}
@@ -125,35 +126,35 @@ gdm_file_check (const gchar *caller,
 
 	/* Check that it is a regular file ... */
 	if G_UNLIKELY (! S_ISREG (statbuf.st_mode)) {
-		g_warning ("%s: %s is not a regular file.", caller, fullpath);
+		gdm_debug ("%s: %s is not a regular file.", caller, fullpath);
 		g_free (fullpath);
 		return FALSE;
 	}
 
 	/* ... owned by the user ... */
 	if G_UNLIKELY (statbuf.st_uid != user) {
-		g_warning ("%s: %s is not owned by uid %d.", caller, fullpath, user);
+		gdm_debug ("%s: %s is not owned by uid %d.", caller, fullpath, user);
 		g_free (fullpath);
 		return FALSE;
 	}
 
 	/* ... unwritable by group ... */
 	if G_UNLIKELY (perms < 1 && (statbuf.st_mode & S_IWGRP) == S_IWGRP) {
-		g_warning ("%s: %s is writable by group.", caller, fullpath);
+		gdm_debug ("%s: %s is writable by group.", caller, fullpath);
 		g_free (fullpath);
 		return FALSE;
 	}
 
 	/* ... unwritable by others ... */
 	if G_UNLIKELY (perms < 2 && (statbuf.st_mode & S_IWOTH) == S_IWOTH) {
-		g_warning ("%s: %s is writable by group/other.", caller, fullpath);
+		gdm_debug ("%s: %s is writable by group/other.", caller, fullpath);
 		g_free (fullpath);
 		return FALSE;
 	}
 
 	/* ... and smaller than sysadmin specified limit. */
 	if G_UNLIKELY (maxsize && statbuf.st_size > maxsize) {
-		g_warning ("%s: %s is bigger than sysadmin specified maximum file size.",
+		gdm_debug ("%s: %s is bigger than sysadmin specified maximum file size.",
 			   caller, fullpath);
 		g_free (fullpath);
 		return FALSE;
@@ -187,32 +188,32 @@ gdm_auth_file_check (const gchar *caller,
 	if (r < 0) {
 		if (absentok)
 			return TRUE;
-		g_warning ("%s: %s does not exist but must exist.", caller, authfile);
+		gdm_debug ("%s: %s does not exist but must exist.", caller, authfile);
 		return FALSE;
 	}
 
 	/* Check that it is a regular file ... */
 	if G_UNLIKELY (! S_ISREG (statbuf.st_mode)) {
-		g_warning ("%s: %s is not a regular file.", caller, authfile);
+		gdm_debug ("%s: %s is not a regular file.", caller, authfile);
 		return FALSE;
 	}
 
 	/* ... owned by the user ... */
 	if G_UNLIKELY (statbuf.st_uid != user) {
-		g_warning ("%s: %s is not owned by uid %d.", caller, authfile, user);
+		gdm_debug ("%s: %s is not owned by uid %d.", caller, authfile, user);
 		return FALSE;
 	}
 
 	/* ... has right permissions ... */
 	if G_UNLIKELY (statbuf.st_mode & 0077) {
-		g_warning ("%s: %s has wrong permissions (should be 0600)", caller, authfile);
+		gdm_debug ("%s: %s has wrong permissions (should be 0600)", caller, authfile);
 		return FALSE;
 	}
 
 	usermaxfile = gdm_daemon_config_get_value_int (GDM_KEY_USER_MAX_FILE);
 	/* ... and smaller than sysadmin specified limit. */
 	if G_UNLIKELY (usermaxfile && statbuf.st_size > usermaxfile) {
-		g_warning ("%s: %s is bigger than sysadmin specified maximum file size.",
+		gdm_debug ("%s: %s is bigger than sysadmin specified maximum file size.",
 			caller, authfile);
 		return FALSE;
 	}

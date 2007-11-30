@@ -1,5 +1,17 @@
 2007-11-30 Brian Cameron <brian.cameron@sun.com>
 
+	Thanks to George Lebl for noticing these issues.
+	* daemon/errorgui.c, daemon/gdmconsolekit.c, daemon/display.c,
+	  daemon/gdm.c, daemon/filecheck.c, daemon/verify-shadow.c,
+	  daemon/gdm-xdmcp-manager.c, daemon/verify-crypt.c, daemon/server.c,
+	  daemon/slave.c, daemon/gdm-daemon-config.c, daemon/choose.c,
+	  daemon/misc.c:  Use gdm_debug instead of g_warning and g_debug.
+	* daemon/gdm-xdmcp-manager.c: Fix bug where WILLING script was
+	  being read from the configuration file as an int rather than a
+	  string.  
+	
+2007-11-30 Brian Cameron <brian.cameron@sun.com>
+
 	* daemon/gdm.c, daemon/slave.c: Fix Suspend configuration option
 	  so it works.  Fixes bug #500362.  Patch by Philippe Troin
 	  <phil@fifi.org>.

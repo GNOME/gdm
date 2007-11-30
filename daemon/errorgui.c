@@ -310,7 +310,7 @@ gdm_errorgui_error_box_full (GdmDisplay *d,
 	GdkDisplay *gdk_display;
 	pid_t pid;
 
-	g_debug ("Forking extra process: error dialog");
+	gdm_debug ("Forking extra process: error dialog");
 
 	pid = gdm_fork_extra ();
 
@@ -534,7 +534,7 @@ gdm_errorgui_failsafe_question (GdmDisplay *d,
 	if G_UNLIKELY (pipe (p) < 0)
 		return NULL;
 
-	g_debug ("Forking extra process: failsafe question");
+	gdm_debug ("Forking extra process: failsafe question");
 
 	pid = gdm_fork_extra ();
 	if (pid == 0) {
@@ -664,7 +664,7 @@ gdm_errorgui_failsafe_yesno (GdmDisplay *d,
 	if G_UNLIKELY (pipe (p) < 0)
 		return FALSE;
 
-	g_debug ("Forking extra process: failsafe yes/no");
+	gdm_debug ("Forking extra process: failsafe yes/no");
 
 	pid = gdm_fork_extra ();
 	if (pid == 0) {
@@ -778,7 +778,7 @@ gdm_errorgui_failsafe_ask_buttons (GdmDisplay *d,
 	if G_UNLIKELY (pipe (p) < 0)
 		return -1;
 
-	g_debug ("Forking extra process: failsafe ask buttons");
+	gdm_debug ("Forking extra process: failsafe ask buttons");
 
 	pid = gdm_fork_extra ();
 	if (pid == 0) {

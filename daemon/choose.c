@@ -104,7 +104,7 @@ get_first_address_for_node (const char               *node,
 	snprintf (strport, sizeof (strport), "%u", XDM_UDP_PORT);
 
 	if ((gaierr = getaddrinfo (node, strport, &hints, &ai_list)) != 0) {
-		g_warning ("Unable get address: %s", gai_strerror (gaierr));
+		gdm_debug ("Unable get address: %s", gai_strerror (gaierr));
 		return FALSE;
 	}
 

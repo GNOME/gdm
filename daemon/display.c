@@ -357,7 +357,7 @@ gdm_display_manage (GdmDisplay *d)
 
     d->managetime = time (NULL);
 
-    g_debug ("Forking slave process");
+    gdm_debug ("Forking slave process");
 
     /* Fork slave process */
     pid = d->slavepid = fork ();

@@ -537,7 +537,7 @@ gdm_daemon_config_key_to_string_per_display (const char *keystring,
 		goto out;
 	}
 
-	g_debug ("Looking up per display value for %s", keystring);
+	gdm_debug ("Looking up per display value for %s", keystring);
 
 	res = gdm_common_config_parse_key_string (keystring,
 						  &group,
@@ -602,7 +602,7 @@ gdm_daemon_config_key_to_string (const char *file,
 						  &key,
 						  &locale,
 						  NULL);
-	g_debug ("Requesting group=%s key=%s locale=%s", group, key, locale ? locale : "(null)");
+	gdm_debug ("Requesting group=%s key=%s locale=%s", group, key, locale ? locale : "(null)");
 
 	if (! res) {
 		gdm_error ("Could not parse configuration key %s", keystring);
@@ -712,7 +712,7 @@ gdm_daemon_config_to_string (const char *keystring,
 	if (display != NULL) {
 		res = gdm_daemon_config_key_to_string_per_display (keystring, display, retval);
 		if (res) {
-			g_debug ("Using per display value for key: %s", keystring);
+			gdm_debug ("Using per display value for key: %s", keystring);
 			return TRUE;
 		}
 	}
@@ -720,7 +720,7 @@ gdm_daemon_config_to_string (const char *keystring,
 	ret = FALSE;
 	result = NULL;
 
-	g_debug ("Looking up key: %s", keystring);
+	gdm_debug ("Looking up key: %s", keystring);
 
 	group = NULL;
 	key = NULL;

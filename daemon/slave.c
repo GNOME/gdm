@@ -1707,7 +1707,7 @@ focus_first_x_window (const char *class_res_name)
 		p[1] = -1;
 	}
 
-	g_debug ("Forking process to focus first X11 window");
+	gdm_debug ("Forking process to focus first X11 window");
 
 	pid = fork ();
 	if G_UNLIKELY (pid < 0) {
@@ -1850,7 +1850,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		XSync (d->dsp, False);
 	}
 
-	g_debug ("Forking GDM configuration process");
+	gdm_debug ("Forking GDM configuration process");
 
 	gdm_sigchld_block_push ();
 	gdm_sigterm_block_push ();
@@ -2042,7 +2042,7 @@ play_login_sound (const char *sound_file)
 	gdm_sigchld_block_push ();
 	gdm_sigterm_block_push ();
 
-	g_debug ("Forking sound program: %s", soundprogram);
+	gdm_debug ("Forking sound program: %s", soundprogram);
 
 	pid = fork ();
 	if (pid == 0)
@@ -2635,7 +2635,7 @@ gdm_slave_greeter (void)
 	system ("/usr/bin/setfacl -m user:gdm:rwx,mask:rwx /dev/audio");
 	system ("/usr/bin/setfacl -m user:gdm:rwx,mask:rwx /dev/audioctl");
 #endif
-	g_debug ("Forking greeter process: %s", command);
+	gdm_debug ("Forking greeter process: %s", command);
 
 	/* Fork. Parent is gdmslave, child is greeter process. */
 	gdm_sigchld_block_push ();
@@ -3122,7 +3122,7 @@ gdm_slave_chooser (void)
 	gdm_slave_exec_script (d, gdm_daemon_config_get_value_string (GDM_KEY_DISPLAY_INIT_DIR),
 			       NULL, NULL, FALSE /* pass_stdout */);
 
-	g_debug ("Forking chooser process: %s", gdm_daemon_config_get_value_string (GDM_KEY_CHOOSER));
+	gdm_debug ("Forking chooser process: %s", gdm_daemon_config_get_value_string (GDM_KEY_CHOOSER));
 
 	/* Fork. Parent is gdmslave, child is greeter process. */
 	gdm_sigchld_block_push ();
@@ -4779,7 +4779,7 @@ gdm_slave_session_start (void)
 	ck_session_cookie = open_ck_session (pwent, d, session);
 #endif
 
-	g_debug ("Forking user session");
+	gdm_debug ("Forking user session");
 
 	/* Start user process */
 	gdm_sigchld_block_push ();
@@ -5832,7 +5832,7 @@ gdm_slave_exec_script (GdmDisplay *d,
 
 	create_temp_auth_file ();
 
-	g_debug ("Forking extra process: %s", script);
+	gdm_debug ("Forking extra process: %s", script);
 
 	extra_process = pid = gdm_fork_extra ();
 
@@ -5999,7 +5999,7 @@ gdm_slave_parse_enriched_login (GdmDisplay *d, const gchar *s)
 			gdm_error (_("%s: Failed creating pipe"),
 				   "gdm_slave_parse_enriched_login");
 		} else {
-			g_debug ("Forking extra process: %s", str->str);
+			gdm_debug ("Forking extra process: %s", str->str);
 
 			extra_process = pid = gdm_fork_extra ();
 

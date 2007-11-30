@@ -634,7 +634,7 @@ gdm_exec_wait (char * const *argv,
 	    g_access (argv[0], X_OK) != 0)
 		return -1;
 
-	g_debug ("Forking extra process: %s", argv[0]);
+	gdm_debug ("Forking extra process: %s", argv[0]);
 
 	pid = gdm_fork_extra ();
 	if (pid == 0) {

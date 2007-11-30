@@ -178,7 +178,7 @@ gdm_verify_user (GdmDisplay *d,
 
 	if (pwent == NULL) {
 		gdm_sleep_no_signal (gdm_daemon_config_get_value_int (GDM_KEY_RETRY_DELAY));
-		g_warning ("Couldn't authenticate user");
+		gdm_debug ("Couldn't authenticate user");
 
 		print_cant_auth_errbox ();
 
@@ -192,7 +192,7 @@ gdm_verify_user (GdmDisplay *d,
 	if (ppasswd == NULL || (ppasswd[0] != '\0' &&
 				strcmp (crypt (passwd, ppasswd), ppasswd) != 0)) {
 		gdm_sleep_no_signal (gdm_daemon_config_get_value_int (GDM_KEY_RETRY_DELAY));
-		g_warning ("Couldn't authenticate user");
+		gdm_debug ("Couldn't authenticate user");
 
 		print_cant_auth_errbox ();
 
@@ -206,7 +206,7 @@ gdm_verify_user (GdmDisplay *d,
 	    ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT) &&
               ! d->attached)) && pwent->pw_uid == 0) {
 
-		g_warning ("Root login disallowed on display '%s'", d->name);
+		gdm_debug ("Root login disallowed on display '%s'", d->name);
 		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
 					      _("The system administrator "
 						"is not allowed to login "
@@ -224,7 +224,7 @@ gdm_verify_user (GdmDisplay *d,
 	/* Check with the 'loginrestrictions' function
 	   if the user has been disallowed */
 	if (loginrestrictions (login, 0, NULL, &message) != 0) {
-		g_warning ("User not allowed to log in");
+		gdm_debug ("User not allowed to log in");
 		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
 					      _("\nThe system administrator "
 						"has disabled your "
@@ -248,7 +248,7 @@ gdm_verify_user (GdmDisplay *d,
 	    (strcmp (pwent->pw_shell, NOLOGIN) == 0 ||
 	     strcmp (pwent->pw_shell, "/bin/true") == 0 ||
 	     strcmp (pwent->pw_shell, "/bin/false") == 0)) {
-		g_warning ("User not allowed to log in");
+		gdm_debug ("User not allowed to log in");
 		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
 					      _("\nThe system administrator "
 						"has disabled your "
@@ -273,7 +273,7 @@ gdm_verify_user (GdmDisplay *d,
 	}
 
 	if ( ! gdm_setup_gids (login, pwent->pw_gid)) {
-		g_warning ("Cannot set user group");
+		gdm_debug ("Cannot set user group");
 		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
 					      _("\nCannot set your user group; "
 						"you will not be able to log in. "
@@ -286,7 +286,7 @@ gdm_verify_user (GdmDisplay *d,
 
 	switch (passwdexpired (login, &info_msg)) {
 	case 1 :
-		g_warning ("User password has expired");
+		gdm_debug ("User password has expired");
 		gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR,
 					_("You are required to change your password.\n"
 					  "Please choose a new one."));
@@ -359,7 +359,7 @@ gdm_verify_user (GdmDisplay *d,
 		break;
 
 	case 2 :
-		g_warning ("User password has expired");
+		gdm_debug ("User password has expired");
 		gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR,
 					_("Your password has expired.\n"
 					  "Only a system administrator can now change it"));
@@ -368,7 +368,7 @@ gdm_verify_user (GdmDisplay *d,
 		break;
 
 	case -1 :
-		g_warning ("Internal error on passwdexpired");
+		gdm_debug ("Internal error on passwdexpired");
 		gdm_errorgui_error_box (d, GTK_MESSAGE_ERROR,
 					_("An internal error occurred. You will not be able to log in.\n"
 					  "Please try again later or contact your system administrator."));
@@ -405,12 +405,12 @@ gdm_verify_setup_user (GdmDisplay *d,
 
 	pwent = getpwnam (login);
 	if (pwent == NULL) {
-		g_warning ("Cannot get passwd structure");
+		gdm_debug ("Cannot get passwd structure");
 		return FALSE;
 	}
 
 	if ( ! gdm_setup_gids (login, pwent->pw_gid)) {
-		g_warning ("Cannot set user group");
+		gdm_debug ("Cannot set user group");
 		gdm_errorgui_error_box (d,
 					GTK_MESSAGE_ERROR,
 					_("\nCannot set your user group; "

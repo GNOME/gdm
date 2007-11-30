@@ -249,7 +249,7 @@ gdm_start_first_unborn_local (int delay)
 		    d->type == TYPE_STATIC &&
 		    d->dispstat == DISPLAY_UNBORN) {
 			GdmXserver *svr;
-			g_debug ("gdm_start_first_unborn_local: "
+			gdm_debug ("gdm_start_first_unborn_local: "
 				   "Starting %s", d->name);
 
 			/* well sleep at least 'delay' seconds
@@ -296,7 +296,7 @@ gdm_final_cleanup (void)
 
 	displays = gdm_daemon_config_get_display_list ();
 
-	g_debug ("gdm_final_cleanup");
+	gdm_debug ("gdm_final_cleanup");
 
 	if (extra_process > 1) {
 		/* we sigterm extra processes, and we
@@ -600,12 +600,12 @@ try_command (const char *command)
 	gboolean res;
 	int      status;
 
-	g_debug ("Running %s", command);
+	gdm_debug ("Running %s", command);
 
 	error = NULL;
 	res = g_spawn_command_line_sync (command, NULL, NULL, &status, &error);
 	if (error != NULL) {
-		g_warning ("Command failed %s: %s", command, error->message);
+		gdm_debug ("Command failed %s: %s", command, error->message);
 		g_error_free (error);		
 	}
 	else {
@@ -694,7 +694,7 @@ halt_machine (void)
 {
 	const char **s;
 
-	g_debug (_("Master halting..."));
+	gdm_debug (_("Master halting..."));
 
 	s = gdm_daemon_config_get_value_string_array (GDM_KEY_HALT);
 
@@ -716,7 +716,7 @@ restart_machine (void)
 {
 	const char **s;
 
-	g_debug (_("Restarting computer..."));
+	gdm_debug (_("Restarting computer..."));
 
 	s = gdm_daemon_config_get_value_string_array (GDM_KEY_REBOOT);
 
@@ -759,7 +759,7 @@ custom_cmd_restart (long cmd_id)
 	char **argv;
 	const char *s;
 
-        g_debug (_("Executing custom command %ld with restart option..."), cmd_id);
+        gdm_debug (_("Executing custom command %ld with restart option..."), cmd_id);
 
 	gdm_final_cleanup ();
 	VE_IGNORE_EINTR (g_chdir ("/"));
@@ -791,7 +791,7 @@ custom_cmd_no_restart (long cmd_id)
 {
         pid_t pid;
 
-        g_debug (_("Executing custom command %ld with no restart option ..."), cmd_id);
+        gdm_debug (_("Executing custom command %ld with no restart option ..."), cmd_id);
 
         pid = fork ();
 
@@ -831,7 +831,7 @@ custom_cmd_no_restart (long cmd_id)
 		if (p_stat > 0) {
 			if G_LIKELY (WIFEXITED (exitstatus)){
 				status = WEXITSTATUS (exitstatus);
-				g_debug (_("custom_cmd: child %d returned %d"), p_stat, status);
+				gdm_debug (_("custom_cmd: child %d returned %d"), p_stat, status);
 			}
 			return;
 		}
@@ -856,7 +856,7 @@ gdm_cleanup_children (void)
 	if G_LIKELY (WIFEXITED (exitstatus)) {
 		status = WEXITSTATUS (exitstatus);
 		crashed = FALSE;
-		g_debug ("gdm_cleanup_children: child %d returned %d", pid, status);
+		gdm_debug ("gdm_cleanup_children: child %d returned %d", pid, status);
 	} else {
 		status = EXIT_SUCCESS;
 		crashed = TRUE;
@@ -864,7 +864,7 @@ gdm_cleanup_children (void)
 			if (WTERMSIG (exitstatus) == SIGTERM ||
 			    WTERMSIG (exitstatus) == SIGINT) {
 				/* we send these signals, sometimes children don't handle them */
-				g_debug ("gdm_cleanup_children: child %d died of signal %d (TERM/INT)", pid,
+				gdm_debug ("gdm_cleanup_children: child %d died of signal %d (TERM/INT)", pid,
 					   (int)WTERMSIG (exitstatus));
 			} else {
 				gdm_error ("gdm_cleanup_children: child %d crashed of signal %d", pid,
@@ -1055,7 +1055,7 @@ gdm_cleanup_children (void)
 		break;
 
 	case DISPLAY_XFAILED:       /* X sucks */
-		g_debug ("X failed!");
+		gdm_debug ("X failed!");
 		/* inform about error if needed */
 		if (d->socket_conn != NULL) {
 			GdmConnection *conn = d->socket_conn;
@@ -1080,9 +1080,9 @@ gdm_cleanup_children (void)
 				/* well sleep at least 3 seconds before starting */
 				d->sleep_before_run = 3;
 			} else if (d->x_faileds >= 3) {
-				g_debug ("gdm_child_action: dealing with X crashes");
+				gdm_debug ("gdm_child_action: dealing with X crashes");
 				if ( ! deal_with_x_crashes (d)) {
-					g_debug ("gdm_child_action: Aborting display");
+					gdm_debug ("gdm_child_action: Aborting display");
 					/* an original way to deal with these things:
 					 * "Screw you guys, I'm going home!" */
 					gdm_display_unmanage (d);
@@ -1092,7 +1092,7 @@ gdm_cleanup_children (void)
 					gdm_start_first_unborn_local (3 /* delay */);
 					break;
 				}
-				g_debug ("gdm_child_action: Trying again");
+				gdm_debug ("gdm_child_action: Trying again");
 
 				/* reset */
 				d->x_faileds = 0;
@@ -1109,7 +1109,7 @@ gdm_cleanup_children (void)
 
 	case DISPLAY_REMANAGE:	/* Remanage display */
 	default:
-		g_debug ("gdm_child_action: In remanage");
+		gdm_debug ("gdm_child_action: In remanage");
 
 		/* if we did REMANAGE, that means that we're no longer failing */
 		if (status == DISPLAY_REMANAGE) {
@@ -1266,7 +1266,7 @@ mainloop_sig_callback (int sig, gpointer data)
 	/* signals are at somewhat random times aren't they? */
 	gdm_random_tick ();
 
-	g_debug ("mainloop_sig_callback: Got signal %d", (int)sig);
+	gdm_debug ("mainloop_sig_callback: Got signal %d", (int)sig);
 	switch (sig)
 		{
 		case SIGCHLD:
@@ -1276,7 +1276,7 @@ mainloop_sig_callback (int sig, gpointer data)
 
 		case SIGINT:
 		case SIGTERM:
-			g_debug ("mainloop_sig_callback: Got TERM/INT. Going down!");
+			gdm_debug ("mainloop_sig_callback: Got TERM/INT. Going down!");
 			gdm_final_cleanup ();
 			exit (EXIT_SUCCESS);
 			break;
@@ -1757,7 +1757,7 @@ main (int argc, char *argv[])
 	gdm_signal_ignore (SIGLOST);
 #endif
 
-	g_debug ("gdm_main: Here we go...");
+	gdm_debug ("gdm_main: Here we go...");
 
 	/* Init XDMCP if applicable */
 	if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP) && ! gdm_wait_for_go) {
@@ -1778,7 +1778,7 @@ main (int argc, char *argv[])
 
 	/* Accept remote connections */
 	if (gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP) && ! gdm_wait_for_go) {
-		g_debug ("Accepting XDMCP connections...");
+		gdm_debug ("Accepting XDMCP connections...");
 		gdm_xdmcp_run ();
 	}
 
@@ -1789,7 +1789,7 @@ main (int argc, char *argv[])
 	while (1)
 		{
 			g_main_loop_run (main_loop);
-			g_debug ("main: Exited main loop");
+			gdm_debug ("main: Exited main loop");
 		}
 
 	return EXIT_SUCCESS;	/* Not reached */
@@ -1992,14 +1992,14 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			char *s = g_strndup
 				(msg, strlen (GDM_SOP_COOKIE " XXXX XX"));
 			/* cut off most of the cookie for "security" */
-			g_debug ("Handling message: '%s...'", s);
+			gdm_debug ("Handling message: '%s...'", s);
 			g_free (s);
 		} else if (strncmp (msg, GDM_SOP_SYSLOG " ",
 				    strlen (GDM_SOP_SYSLOG " ")) != 0) {
 			/* Don't print out the syslog message as it will
 			 * be printed out anyway as that's the whole point
 			 * of the message. */
-			g_debug ("Handling message: '%s'", msg);
+			gdm_debug ("Handling message: '%s'", msg);
 		}
 	}
 
@@ -2028,7 +2028,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		if (d != NULL) {
 			g_free (d->chosen_hostname);
 			d->chosen_hostname = g_strdup (p);
-			g_debug ("Got CHOSEN_LOCAL == %s", p);
+			gdm_debug ("Got CHOSEN_LOCAL == %s", p);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2046,7 +2046,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		if (d != NULL) {
 			d->servpid = pid;
-			g_debug ("Got XPID == %ld", (long)pid);
+			gdm_debug ("Got XPID == %ld", (long)pid);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2064,7 +2064,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		if (d != NULL) {
 			d->sesspid = pid;
-			g_debug ("Got SESSPID == %ld", (long)pid);
+			gdm_debug ("Got SESSPID == %ld", (long)pid);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2082,7 +2082,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		if (d != NULL) {
 			d->greetpid = pid;
-			g_debug ("Got GREETPID == %ld", (long)pid);
+			gdm_debug ("Got GREETPID == %ld", (long)pid);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2100,7 +2100,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		if (d != NULL) {
 			d->chooserpid = pid;
-			g_debug ("Got CHOOSERPID == %ld", (long)pid);
+			gdm_debug ("Got CHOOSERPID == %ld", (long)pid);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2118,7 +2118,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		if (d != NULL) {
 			d->logged_in = logged_in ? TRUE : FALSE;
-			g_debug ("Got logged in == %s",
+			gdm_debug ("Got logged in == %s",
 				   d->logged_in ? "TRUE" : "FALSE");
 
 			/* whack connections about this display if a user
@@ -2154,7 +2154,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			g_free (d->name);
 			d->name = g_strdup_printf (":%d", disp_num);
 			d->dispnum = disp_num;
-			g_debug ("Got DISP_NUM == %d", disp_num);
+			gdm_debug ("Got DISP_NUM == %d", disp_num);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2173,7 +2173,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		if (d != NULL) {
 			d->vt = vt_num;
-			g_debug ("Got VT_NUM == %d", vt_num);
+			gdm_debug ("Got VT_NUM == %d", vt_num);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2200,7 +2200,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		if (d != NULL) {
 			g_free (d->login);
 			d->login = g_strdup (p);
-			g_debug ("Got LOGIN == %s", p);
+			gdm_debug ("Got LOGIN == %s", p);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2230,7 +2230,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			GSList *displays;
 
 			displays = gdm_daemon_config_get_display_list ();
-			g_debug ("Got QUERYLOGIN %s", p);
+			gdm_debug ("Got QUERYLOGIN %s", p);
 			for (li = displays; li != NULL; li = li->next) {
 				GdmDisplay *di = li->data;
 				if (di->logged_in &&
@@ -2289,7 +2289,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		if (d == NULL)
 			return;
 
-		g_debug ("Got MIGRATE %s", p);
+		gdm_debug ("Got MIGRATE %s", p);
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *di = li->data;
 			if (di->logged_in && strcmp (di->name, p) == 0) {
@@ -2323,7 +2323,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		if (d != NULL) {
 			g_free (d->cookie);
 			d->cookie = g_strdup (p);
-			g_debug ("Got COOKIE == <secret>");
+			gdm_debug ("Got COOKIE == <secret>");
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2350,7 +2350,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		if (d != NULL) {
 			g_free (d->authfile);
 			d->authfile = g_strdup (p);
-			g_debug ("Got AUTHFILE == %s", d->authfile);
+			gdm_debug ("Got AUTHFILE == %s", d->authfile);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2387,7 +2387,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			if (conn != NULL)
 				gdm_connection_write (conn, error);
 
-			g_debug ("Got FLEXI_ERR == %d", err);
+			gdm_debug ("Got FLEXI_ERR == %d", err);
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2414,7 +2414,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 					gdm_display_unmanage (d);
 			}
 
-			g_debug ("Got FLEXI_OK");
+			gdm_debug ("Got FLEXI_OK");
 			/* send ack */
 			send_slave_ack (d, NULL);
 		}
@@ -2462,8 +2462,8 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			return;
 		p++;
 
-		/* FIXME: use g_critical or g_debug when required */
-		g_warning ("(child %ld) %s", pid, p);
+		/* FIXME: use g_critical or gdm_debug when required */
+		gdm_debug ("(child %ld) %s", pid, p);
 	} else if (strcmp (msg, GDM_SOP_START_NEXT_LOCAL) == 0) {
 		gdm_start_first_unborn_local (3 /* delay */);
 	} else if (strcmp (msg, GDM_SOP_HUP_ALL_GREETERS) == 0) {
@@ -2493,7 +2493,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		/* Init XDMCP if applicable */
 		if (old_wait && gdm_daemon_config_get_value_bool (GDM_KEY_XDMCP)) {
 			if (gdm_xdmcp_init ()) {
-				g_debug ("Accepting XDMCP connections...");
+				gdm_debug ("Accepting XDMCP connections...");
 				gdm_xdmcp_run ();
 			}
 		}
@@ -3021,7 +3021,7 @@ handle_flexi_server (GdmConnection *conn,
 	gchar *bin;
 	uid_t server_uid = 0;
 
-	g_debug ("flexi server: '%s'", server);
+	gdm_debug ("flexi server: '%s'", server);
 
 	if (gdm_wait_for_go) {
 		if (conn != NULL)
@@ -3470,7 +3470,7 @@ sup_handle_flexi_xserver (GdmConnection *conn,
 
 	has_user = strncmp (msg, GDM_SUP_FLEXI_XSERVER_USER " ", strlen (GDM_SUP_FLEXI_XSERVER_USER " ")) == 0;
 
-	g_debug ("Handling flexi request has-user:%d", has_user);
+	gdm_debug ("Handling flexi request has-user:%d", has_user);
 
 	/* Only allow locally authenticated connections */
 	if ( ! GDM_CONN_AUTHENTICATED (conn)) {
@@ -3553,7 +3553,7 @@ sup_handle_flexi_xnest (GdmConnection *conn,
 
 	has_user = strncmp (msg, GDM_SUP_FLEXI_XNEST_USER " ", strlen (GDM_SUP_FLEXI_XNEST_USER " ")) == 0;
 
-	g_debug ("Handling flexi xnest request has-user:%d", has_user);
+	gdm_debug ("Handling flexi xnest request has-user:%d", has_user);
 
 	if (has_user) {
 		rest = msg + strlen (GDM_SUP_FLEXI_XNEST_USER " ");
@@ -3575,7 +3575,7 @@ sup_handle_flexi_xnest (GdmConnection *conn,
 		 * connection */
 		g_free (xauthfile);
 		gdm_connection_close (conn);
-		g_warning ("Unable to get display name from request");
+		gdm_debug ("Unable to get display name from request");
 		return;
 	}
 
@@ -3652,8 +3652,8 @@ sup_handle_get_config (GdmConnection *conn,
 		 * value at all.
 		 */
 
-		g_debug ("Handling GET_CONFIG: %s for display %s", splitstr[0],
-			splitstr[1] ? splitstr[1] : "(null)");
+		gdm_debug ("Handling GET_CONFIG: %s for display %s", splitstr[0],
+			   splitstr[1] ? splitstr[1] : "(null)");
 
 		res = gdm_daemon_config_to_string (splitstr[0], splitstr[1], &retval);
 
@@ -4198,10 +4198,10 @@ gdm_handle_user_message (GdmConnection *conn,
 			 gpointer       data)
 {
 
-	g_debug ("Handling user message: '%s'", msg);
+	gdm_debug ("Handling user message: '%s'", msg);
 
 	if (gdm_connection_get_message_count (conn) > GDM_SUP_MAX_MESSAGES) {
-		g_debug ("Closing connection, %d messages reached", GDM_SUP_MAX_MESSAGES);
+		gdm_debug ("Closing connection, %d messages reached", GDM_SUP_MAX_MESSAGES);
 		gdm_connection_write (conn, "ERROR 200 Too many messages\n");
 		gdm_connection_close (conn);
 		return;
