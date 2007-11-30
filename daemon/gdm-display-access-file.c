@@ -36,6 +36,7 @@
 #include <X11/Xauth.h>
 
 #include "gdm-display-access-file.h"
+#include "gdm-common.h"
 
 struct _GdmDisplayAccessFilePrivate
 {
@@ -298,25 +299,6 @@ gdm_display_access_file_open (GdmDisplayAccessFile  *file,
         return TRUE;
 }
 
-static char *
-_generate_random_bytes (gsize size)
-{
-        char *bytes;
-        int i;
-
-        bytes = g_malloc (size);
-
-        for (i = 0; i < size; i++) {
-                guint8 byte;
-
-                byte = (guint8) g_random_int_range (0, G_MAXUINT8);
-
-                bytes[i] = (char) byte;
-        }
-
-        return bytes;
-}
-
 static void
 _get_auth_info_for_display (GdmDisplayAccessFile *file,
                             GdmDisplay           *display,
@@ -364,10 +346,17 @@ gdm_display_access_file_add_display (GdmDisplayAccessFile  *file,
         g_return_val_if_fail (file->priv->path != NULL, FALSE);
         g_return_val_if_fail (cookie != NULL, FALSE);
 
-        *cookie = _generate_random_bytes (GDM_DISPLAY_ACCESS_COOKIE_SIZE);
+        add_error = NULL;
+        *cookie = gdm_generate_random_bytes (GDM_DISPLAY_ACCESS_COOKIE_SIZE,
+                                             &add_error);
+
+        if (*cookie == NULL) {
+                g_propagate_error (error, add_error);
+                return FALSE;
+        }
+
         *cookie_size = GDM_DISPLAY_ACCESS_COOKIE_SIZE;
 
-        add_error = NULL;
         display_added = gdm_display_access_file_add_display_with_cookie (file, display,
                                                                          *cookie,
                                                                          *cookie_size,

@@ -272,3 +272,111 @@ gdm_string_hex_decode (const GString *source,
 
         return retval;
 }
+
+static gboolean
+_fd_is_character_device (int fd)
+{
+        struct stat file_info;
+
+        if (fstat (fd, &file_info) < 0) {
+                return FALSE;
+        }
+
+        return S_ISCHR (file_info.st_mode);
+}
+
+static gboolean
+_read_bytes (int      fd,
+             char    *bytes,
+             gsize    number_of_bytes,
+             GError **error)
+{
+        size_t bytes_left_to_read;
+        size_t total_bytes_read = 0;
+        gboolean premature_eof;
+
+        premature_eof = FALSE;
+        do {
+                size_t bytes_read = 0;
+
+                bytes_read = read (fd, ((guchar *) bytes) + total_bytes_read,
+                                   bytes_left_to_read);
+
+                if (bytes_read > 0) {
+                        total_bytes_read += bytes_read;
+                        bytes_left_to_read -= bytes_read;
+                } else if (bytes_read == 0) {
+                        premature_eof = TRUE;
+                        break;
+                } else if ((errno != EINTR)) {
+                        break;
+                }
+        } while (bytes_left_to_read > 0);
+
+        if (premature_eof) {
+                g_set_error (error,
+                             G_FILE_ERROR,
+                             g_file_error_from_errno (ENODATA),
+                             g_strerror (ENODATA));
+
+                return FALSE;
+        } else if (bytes_left_to_read > 0) {
+                g_set_error (error,
+                             G_FILE_ERROR,
+                             g_file_error_from_errno (errno),
+                             g_strerror (errno));
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
+/**
+ * Pulls a requested number of bytes from /dev/urandom
+ *
+ * @param size number of bytes to pull
+ * @param error error if read fails
+ * @returns The requested number of random bytes or #NULL if fail
+ */
+
+char *
+gdm_generate_random_bytes (gsize    size,
+                           GError **error)
+{
+        int fd;
+        char *bytes;
+        GError *read_error;
+
+        /* We don't use the g_rand_* glib apis because they don't document
+         * how much entropy they are seeded with, and it might be less
+         * than the passed in size.
+         */
+
+        fd = open ("/dev/urandom", O_RDONLY);
+
+        if (fd < 0) {
+                g_set_error (error,
+                             G_FILE_ERROR,
+                             g_file_error_from_errno (errno),
+                             "%s", g_strerror (errno));
+                return NULL;
+        }
+
+        if (!_fd_is_character_device (fd)) {
+                g_set_error (error,
+                             G_FILE_ERROR,
+                             g_file_error_from_errno (ENODEV),
+                             _("/dev/urandom is not a character device"));
+                return NULL;
+        }
+
+        bytes = g_malloc (size);
+        read_error = NULL;
+        if (!_read_bytes (fd, bytes, size, &read_error)) {
+                g_propagate_error (error, read_error);
+                g_free (bytes);
+                return NULL;
+        }
+
+        return bytes;
+}

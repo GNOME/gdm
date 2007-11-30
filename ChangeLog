@@ -1,3 +1,21 @@
+2007-11-30  Ray Strode  <rstrode@redhat.com>
+
+	Ensure second and subsequent auth cookies are
+	random.  Spotted by George Lebl.
+
+	* common/gdm-common.[ch] (gdm_generate_random_bytes):
+	open /dev/urandom and read size bytes from it.
+	(_fd_is_character_device): check if fd points to char
+        device
+	(_read_bytes): the usual loop until all bytes are read
+	helper function for read().
+
+	* daemon/gdm-display-access-file.c
+	(generate_random_bytes): remove function
+	(gdm_display_access_file_add_display):
+	use gdm_generate_random_bytes instead of 
+	_generate_random_bytes
+
 2007-11-19  Ray Strode  <rstrode@redhat.com>
 
 	Fix make distcheck

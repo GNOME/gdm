@@ -41,6 +41,8 @@ gboolean       gdm_string_hex_decode     (const GString *source,
                                           int           *end_return,
                                           GString       *dest,
                                           int            insert_at);
+char          *gdm_generate_random_bytes (gsize          size,
+                                          GError       **error);
 
 G_END_DECLS
 
