@@ -295,6 +295,7 @@ _read_bytes (int      fd,
         size_t total_bytes_read = 0;
         gboolean premature_eof;
 
+        bytes_left_to_read = number_of_bytes;
         premature_eof = FALSE;
         do {
                 size_t bytes_read = 0;
@@ -359,6 +360,7 @@ gdm_generate_random_bytes (gsize    size,
                              G_FILE_ERROR,
                              g_file_error_from_errno (errno),
                              "%s", g_strerror (errno));
+                close (fd);
                 return NULL;
         }
 
@@ -367,6 +369,7 @@ gdm_generate_random_bytes (gsize    size,
                              G_FILE_ERROR,
                              g_file_error_from_errno (ENODEV),
                              _("/dev/urandom is not a character device"));
+                close (fd);
                 return NULL;
         }
 
@@ -375,8 +378,10 @@ gdm_generate_random_bytes (gsize    size,
         if (!_read_bytes (fd, bytes, size, &read_error)) {
                 g_propagate_error (error, read_error);
                 g_free (bytes);
+                close (fd);
                 return NULL;
         }
 
+        close (fd);
         return bytes;
 }

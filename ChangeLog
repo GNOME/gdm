@@ -1,5 +1,14 @@
 2007-11-30  Ray Strode  <rstrode@redhat.com>
 
+	Fix some problems in the previous commit, spotted by
+	Mike Oliver <Mike.Oliver@sun.com>
+
+	* common/gdm-common.[ch] (gdm_generate_random_bytes):
+	don't leak fd 
+	(_read_bytes): initialize bytes_left_to_read
+
+2007-11-30  Ray Strode  <rstrode@redhat.com>
+
 	Ensure second and subsequent auth cookies are
 	random.  Spotted by George Lebl.
 
