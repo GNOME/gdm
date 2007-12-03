@@ -46,6 +46,7 @@
 
 #include "gdm-common.h"
 #include "gdm-daemon-config-keys.h"
+#include "gdm-log.h"
 
 static gchar **args_remaining;
 static pid_t xnest_pid = 0;

@@ -52,6 +52,7 @@
 #include "gdm-common.h"
 #include "gdm-socket-protocol.h"
 #include "gdm-daemon-config-keys.h"
+#include "gdm-log.h"
 
 #include "server.h"
 
@@ -877,6 +878,9 @@ gdm_load_displays (GKeyFile *cfg,
 {
 	GSList *li2;
 	int i;
+
+	if (keys == NULL)
+		return;
 
 	for (i = 0; keys[i] != NULL; i++) {
 		const gchar *key = keys[i];
