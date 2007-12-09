@@ -1,10 +1,28 @@
+2007-12-09  William Jon McCann  <mccann@jhu.edu>
+
+	* Makefile.am:
+	* common/gdm-address.c: (gdm_address_equal),
+	(gdm_address_is_loopback):
+	* common/gdm-common.c: (gdm_string_hex_encode),
+	(gdm_string_hex_decode):
+	* configure.ac:
+	* tests/Makefile.am:
+	* tests/m-common.c: (main):
+	* tests/s-common-address.c: (setup), (teardown), (START_TEST),
+	(suite_common_address):
+	* tests/s-common-address.h:
+	* tests/s-common-utils.c: (START_TEST), (suite_common_utils):
+	* tests/s-common-utils.h:
+	Add a unit testing framework.
+	Based on a patch from Andrew Ziem <ahz001@gmail.com>
+
 2007-11-30  Ray Strode  <rstrode@redhat.com>
 
 	Fix some problems in the previous commit, spotted by
 	Mike Oliver <Mike.Oliver@sun.com>
 
 	* common/gdm-common.[ch] (gdm_generate_random_bytes):
-	don't leak fd 
+	don't leak fd
 	(_read_bytes): initialize bytes_left_to_read
 
 2007-11-30  Ray Strode  <rstrode@redhat.com>

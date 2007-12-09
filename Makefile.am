@@ -7,6 +7,7 @@ SUBDIRS = 			\
 	gui 			\
 	utils 			\
 	po 			\
+	tests 			\
 	$(NULL)
 
 # add these when help gets added back

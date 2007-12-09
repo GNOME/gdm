@@ -119,6 +119,11 @@ gdm_string_hex_encode (const GString *source,
         const unsigned char *end;
         gboolean             retval;
 
+        g_return_val_if_fail (source != NULL, FALSE);
+        g_return_val_if_fail (dest != NULL, FALSE);
+        g_return_val_if_fail (source != dest, FALSE);
+        g_return_val_if_fail (start >= 0, FALSE);
+        g_return_val_if_fail (dest >= 0, FALSE);
         g_assert (start <= source->len);
 
         result = g_string_new (NULL);
@@ -165,6 +170,12 @@ gdm_string_hex_decode (const GString *source,
         const unsigned char *end;
         gboolean             retval;
         gboolean             high_bits;
+
+        g_return_val_if_fail (source != NULL, FALSE);
+        g_return_val_if_fail (dest != NULL, FALSE);
+        g_return_val_if_fail (source != dest, FALSE);
+        g_return_val_if_fail (start >= 0, FALSE);
+        g_return_val_if_fail (dest >= 0, FALSE);
 
         g_assert (start <= source->len);
 

@@ -119,6 +119,15 @@ AC_SUBST(PLUGIN_LIBTOOL_FLAGS)
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 AC_PATH_XTRA
 
+# Unit testing framework
+PKG_CHECK_MODULES(CHECK,[check >= 0.9.4],:,[
+                  ifdef([AM_PATH_CHECK],
+                        [AM_PATH_CHECK],
+                        [AC_MSG_RESULT([no, testing is disabled])])
+                  ])
+
+AM_CONDITIONAL([HAVE_CHECK],[test "x$CHECK_CFLAGS" != "x"])
+
 dnl ---------------------------------------------------------------------------
 dnl - Configuration file stuff
 dnl ---------------------------------------------------------------------------
@@ -1322,6 +1331,7 @@ data/pixmaps/32x32/Makefile
 data/pixmaps/48x48/Makefile
 common/Makefile
 po/Makefile.in
+tests/Makefile
 ])
 
 dnl ---------------------------------------------------------------------------

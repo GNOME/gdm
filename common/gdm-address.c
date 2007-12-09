@@ -166,8 +166,10 @@ gdm_address_equal (GdmAddress *a,
         guint8 fam_a;
         guint8 fam_b;
 
-        g_return_val_if_fail (a != NULL || a->ss != NULL, FALSE);
-        g_return_val_if_fail (b != NULL || b->ss != NULL, FALSE);
+        g_return_val_if_fail (a != NULL, FALSE);
+        g_return_val_if_fail (a->ss != NULL, FALSE);
+        g_return_val_if_fail (b != NULL, FALSE);
+        g_return_val_if_fail (b->ss != NULL, FALSE);
 
         fam_a = a->ss->ss_family;
         fam_b = b->ss->ss_family;
@@ -259,7 +261,8 @@ gdm_address_get_numeric_info (GdmAddress *address,
 gboolean
 gdm_address_is_loopback (GdmAddress *address)
 {
-        g_return_val_if_fail (address != NULL || address->ss != NULL, FALSE);
+        g_return_val_if_fail (address != NULL, FALSE);
+        g_return_val_if_fail (address->ss != NULL, FALSE);
 
         switch (address->ss->ss_family){
 #ifdef  AF_INET6
