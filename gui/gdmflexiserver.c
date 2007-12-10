@@ -736,7 +736,6 @@ calc_pi (void)
 	}
 }
 
-
 int
 main (int argc, char *argv[])
 {
@@ -745,18 +744,17 @@ main (int argc, char *argv[])
 	char *version;
 	char *ret;
 	const char *message;
-	gboolean    initialized;
+	GOptionContext *ctx;
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	initialized = gtk_init_with_args (&argc,
-					  &argv,
-					  "- New gdm login",
-					  options,
-					  GETTEXT_PACKAGE,
-					  NULL);
+	/* Option parsing */
+	ctx = g_option_context_new ("- New gdm login");
+	g_option_context_add_main_entries (ctx, options, _("main options"));
+	g_option_context_parse (ctx, &argc, &argv, NULL);
+	g_option_context_free (ctx);
 
 	if (monte_carlo_pi) {
 		calc_pi ();
@@ -776,11 +774,14 @@ main (int argc, char *argv[])
 			return 1;
 		}
 	} else {
-
-		if (! initialized) {
-			g_warning ("Unable to open a display");
-			exit (1);
-		}
+		/*
+		 * The --command argument does not display anything, so avoid
+		 * running gtk_init until it finishes.  Sometimes the
+		 * --command argument is used when there is no display so it
+		 * will fail and cause the program to exit, complaining about
+		 * "no display".
+		 */
+		gtk_init (&argc, &argv);
 
 		if ( ! gdmcomm_check (TRUE)) {
 			return 1;
@@ -791,6 +792,9 @@ main (int argc, char *argv[])
 	gdmcomm_comm_bulk_start ();
 
 	/* Process --command option */
+
+	g_type_init ();
+
 	if (send_command != NULL) {
 		if (authenticate)
 			auth_cookie = gdmcomm_get_auth_cookie ();

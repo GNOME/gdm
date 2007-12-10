@@ -1,5 +1,11 @@
 2007-12-10 Brian Cameron <brian.cameron@sun.com>
 
+	* gui/gdmflexiserver.c: Revert to the old logic for handling 
+	  options.  This uses g_option_context* rather than gtk_init.
+	  This fixes bug #438939.
+
+2007-12-10 Brian Cameron <brian.cameron@sun.com>
+
 	* gui/gdmlogin.c, gui/greeter/greeter.c: Now "Esc" key acts like the
 	  "Start Again" button.  Fixes enhancement request #482642.  Patch by
 	  Ray Strode <rstrode@redhat.com>.
