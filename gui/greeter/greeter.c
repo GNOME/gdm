@@ -592,10 +592,16 @@ process_operation (guchar       op_code,
 static gboolean
 key_press_event (GtkWidget *widget, GdkEventKey *key, gpointer data)
 {
-  if (DOING_GDM_DEVELOPMENT && (key->keyval == GDK_Escape))
+  if (key->keyval == GDK_Escape)
     {
-      process_operation (GDM_QUIT, NULL);
-      
+      if (DOING_GDM_DEVELOPMENT)
+        process_operation (GDM_QUIT, NULL);
+      else
+      {
+        printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CANCEL);
+        fflush (stdout);
+      }
+
       return TRUE;
     }
   
@@ -1355,11 +1361,9 @@ main (int argc, char *argv[])
   
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
-  if G_UNLIKELY (DOING_GDM_DEVELOPMENT) {
-     g_signal_connect (G_OBJECT (window), "key_press_event",
-		       G_CALLBACK (key_press_event), NULL);
-  }
-  
+  g_signal_connect (G_OBJECT (window), "key_press_event",
+                    G_CALLBACK (key_press_event), NULL);
+
   canvas = gnome_canvas_new_aa ();
   GTK_WIDGET_UNSET_FLAGS (canvas, GTK_CAN_FOCUS);
   gnome_canvas_set_scroll_region (GNOME_CANVAS (canvas),

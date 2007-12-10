@@ -2132,6 +2132,20 @@ gdm_set_welcomemsg (void)
 	g_free (greeting);
 }
 
+static gboolean
+key_press_event (GtkWidget *widget, GdkEventKey *key, gpointer data)
+{
+  if (key->keyval == GDK_Escape)
+    {
+      printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CANCEL);
+      fflush (stdout);
+
+      return TRUE;
+    }
+  
+  return FALSE;
+}
+
 static void
 gdm_login_gui_init (void)
 {
@@ -2167,6 +2181,9 @@ gdm_login_gui_init (void)
 			    (GDestroyNotify) g_object_unref);
 
     gtk_widget_set_events (login, GDK_ALL_EVENTS_MASK);
+
+    g_signal_connect (G_OBJECT (login), "key_press_event",
+                      G_CALLBACK (key_press_event), NULL);
 
     gtk_window_set_title (GTK_WINDOW (login), _("GDM Login"));
     /* connect for fingering */
