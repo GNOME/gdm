@@ -29,6 +29,15 @@
 #include "gdm-settings-manager.h"
 #include "gdm-common.h"
 
+#define DEFAULT_GCONF_PREFIX "/apps/gdm/simple-greeter/settings-plugins"
+
+static char *gconf_prefix = NULL;
+
+static GOptionEntry entries[] = {
+        {"gconf-prefix", 0, 0, G_OPTION_ARG_STRING, &gconf_prefix, "GConf prefix from which to load plugin settings", NULL},
+        {NULL}
+};
+
 int
 main (int argc, char *argv[])
 {
@@ -44,9 +53,22 @@ main (int argc, char *argv[])
 
         g_type_init ();
 
-        gtk_init (&argc, &argv);
+        error = NULL;
+        if (! gtk_init_with_args (&argc, &argv, NULL, entries, NULL, &error)) {
+                if (error != NULL) {
+                        g_warning ("%s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Unable to initialize GTK+");
+                }
+                exit (1);
+        }
 
-        manager = gdm_settings_manager_new ();
+        if (gconf_prefix == NULL) {
+                gconf_prefix = DEFAULT_GCONF_PREFIX;
+        }
+
+        manager = gdm_settings_manager_new (gconf_prefix);
 
         res = gdm_settings_manager_start (manager, &error);
         if (! res) {

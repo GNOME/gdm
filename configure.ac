@@ -101,6 +101,7 @@ AC_SUBST(SIMPLE_CHOOSER_LIBS)
 
 PKG_CHECK_MODULES(SETTINGS_DAEMON,
         gtk+-2.0 >= $GTK_REQUIRED_VERSION
+        gconf-2.0 >= $GCONF_REQUIRED_VERSION
         gmodule-2.0
 )
 AC_SUBST(SETTINGS_DAEMON_CFLAGS)
@@ -127,6 +128,10 @@ PKG_CHECK_MODULES(CHECK,[check >= 0.9.4],:,[
                   ])
 
 AM_CONDITIONAL([HAVE_CHECK],[test "x$CHECK_CFLAGS" != "x"])
+
+AC_PATH_PROG(GCONFTOOL, gconftool-2)
+
+AM_GCONF_SOURCE_2
 
 dnl ---------------------------------------------------------------------------
 dnl - Configuration file stuff

@@ -26,14 +26,12 @@
 
 typedef struct _GdmSettingsPluginInfo GdmSettingsPluginInfo;
 
-gboolean         gdm_settings_plugins_engine_init                   (void);
+gboolean         gdm_settings_plugins_engine_init                   (const char *gconf_prefix);
 void             gdm_settings_plugins_engine_shutdown               (void);
 
 void             gdm_settings_plugins_engine_garbage_collect        (void);
 
 const GList     *gdm_settings_plugins_engine_get_plugins_list       (void);
-
-void             gdm_settings_plugins_engine_activate_all           (void);
 
 gboolean         gdm_settings_plugins_engine_activate_plugin        (GdmSettingsPluginInfo *info);
 gboolean         gdm_settings_plugins_engine_deactivate_plugin      (GdmSettingsPluginInfo *info);

@@ -1,3 +1,31 @@
+2007-12-13  William Jon McCann  <mccann@jhu.edu>
+
+	* configure.ac:
+	* gui/settings-daemon/gdm-settings-manager.c:
+	(gdm_settings_manager_start), (gdm_settings_manager_stop),
+	(_set_gconf_prefix), (gdm_settings_manager_set_property),
+	(gdm_settings_manager_get_property),
+	(gdm_settings_manager_constructor), (gdm_settings_manager_dispose),
+	(gdm_settings_manager_class_init), (gdm_settings_manager_init),
+	(gdm_settings_manager_finalize), (gdm_settings_manager_new):
+	* gui/settings-daemon/gdm-settings-manager.h:
+	* gui/settings-daemon/gdm-settings-plugins-engine.c:
+	(gdm_settings_plugins_engine_plugin_active_cb),
+	(gdm_settings_plugins_engine_load_file),
+	(gdm_settings_plugins_engine_load_dir),
+	(gdm_settings_plugins_engine_init),
+	(gdm_settings_plugins_engine_shutdown), (collate_values_cb),
+	(gdm_settings_plugins_engine_get_plugins_list),
+	(gdm_settings_plugins_engine_activate_plugin),
+	(gdm_settings_plugins_engine_deactivate_plugin):
+	* gui/settings-daemon/gdm-settings-plugins-engine.h:
+	* gui/settings-daemon/main.c: (main):
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/gdm-greeter-session.c:
+	(start_settings_daemon):
+	* gui/simple-greeter/gdm-simple-greeter.schemas.in:
+	Make the settings daemon load plugins from a specified gconf prefix.
+
 2007-12-09  William Jon McCann  <mccann@jhu.edu>
 
 	* Makefile.am:

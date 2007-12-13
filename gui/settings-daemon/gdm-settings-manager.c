@@ -36,11 +36,12 @@
 
 struct GdmSettingsManagerPrivate
 {
-        gpointer dummy;
+        char *gconf_prefix;
 };
 
 enum {
         PROP_0,
+        PROP_GCONF_PREFIX,
 };
 
 static void     gdm_settings_manager_class_init  (GdmSettingsManagerClass *klass);
@@ -59,9 +60,9 @@ gdm_settings_manager_start (GdmSettingsManager *manager,
 
         g_debug ("Starting settings manager");
 
-        ret = TRUE;
-        gdm_settings_plugins_engine_activate_all ();
+        gdm_settings_plugins_engine_init (manager->priv->gconf_prefix);
 
+        ret = TRUE;
         return ret;
 }
 
@@ -69,6 +70,16 @@ void
 gdm_settings_manager_stop (GdmSettingsManager *manager)
 {
         g_debug ("Stopping settings manager");
+
+        gdm_settings_plugins_engine_shutdown ();
+}
+
+static void
+_set_gconf_prefix (GdmSettingsManager *self,
+                   const char         *prefix)
+{
+        g_free (self->priv->gconf_prefix);
+        self->priv->gconf_prefix = g_strdup (prefix);
 }
 
 static void
@@ -82,6 +93,9 @@ gdm_settings_manager_set_property (GObject        *object,
         self = GDM_SETTINGS_MANAGER (object);
 
         switch (prop_id) {
+        case PROP_GCONF_PREFIX:
+                _set_gconf_prefix (self, g_value_get_string (value));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -99,6 +113,9 @@ gdm_settings_manager_get_property (GObject        *object,
         self = GDM_SETTINGS_MANAGER (object);
 
         switch (prop_id) {
+        case PROP_GCONF_PREFIX:
+                g_value_set_string (value, self->priv->gconf_prefix);
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -110,26 +127,26 @@ gdm_settings_manager_constructor (GType                  type,
                                   guint                  n_construct_properties,
                                   GObjectConstructParam *construct_properties)
 {
-        GdmSettingsManager      *settings_manager;
+        GdmSettingsManager      *manager;
         GdmSettingsManagerClass *klass;
 
         klass = GDM_SETTINGS_MANAGER_CLASS (g_type_class_peek (GDM_TYPE_SETTINGS_MANAGER));
 
-        settings_manager = GDM_SETTINGS_MANAGER (G_OBJECT_CLASS (gdm_settings_manager_parent_class)->constructor (type,
-                                                                                                                  n_construct_properties,
-                                                                                                                  construct_properties));
+        manager = GDM_SETTINGS_MANAGER (G_OBJECT_CLASS (gdm_settings_manager_parent_class)->constructor (type,
+                                                                                                         n_construct_properties,
+                                                                                                         construct_properties));
 
-        return G_OBJECT (settings_manager);
+        return G_OBJECT (manager);
 }
 
 static void
 gdm_settings_manager_dispose (GObject *object)
 {
-        GdmSettingsManager *settings_manager;
+        GdmSettingsManager *manager;
 
-        settings_manager = GDM_SETTINGS_MANAGER (object);
+        manager = GDM_SETTINGS_MANAGER (object);
 
-        gdm_settings_plugins_engine_shutdown ();
+        gdm_settings_manager_stop (manager);
 
         G_OBJECT_CLASS (gdm_settings_manager_parent_class)->dispose (object);
 }
@@ -145,6 +162,14 @@ gdm_settings_manager_class_init (GdmSettingsManagerClass *klass)
         object_class->dispose = gdm_settings_manager_dispose;
         object_class->finalize = gdm_settings_manager_finalize;
 
+        g_object_class_install_property (object_class,
+                                         PROP_GCONF_PREFIX,
+                                         g_param_spec_string ("gconf-prefix",
+                                                              "gconf-prefix",
+                                                              "gconf-prefix",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+
         g_type_class_add_private (klass, sizeof (GdmSettingsManagerPrivate));
 }
 
@@ -153,32 +178,34 @@ gdm_settings_manager_init (GdmSettingsManager *manager)
 {
 
         manager->priv = GDM_SETTINGS_MANAGER_GET_PRIVATE (manager);
-
-        gdm_settings_plugins_engine_init ();
 }
 
 static void
 gdm_settings_manager_finalize (GObject *object)
 {
-        GdmSettingsManager *settings_manager;
+        GdmSettingsManager *manager;
 
         g_return_if_fail (object != NULL);
         g_return_if_fail (GDM_IS_SETTINGS_MANAGER (object));
 
-        settings_manager = GDM_SETTINGS_MANAGER (object);
+        manager = GDM_SETTINGS_MANAGER (object);
 
-        g_return_if_fail (settings_manager->priv != NULL);
+        g_return_if_fail (manager->priv != NULL);
+
+        g_free (manager->priv->gconf_prefix);
 
         G_OBJECT_CLASS (gdm_settings_manager_parent_class)->finalize (object);
 }
 
 GdmSettingsManager *
-gdm_settings_manager_new (void)
+gdm_settings_manager_new (const char *gconf_prefix)
 {
         if (manager_object != NULL) {
                 g_object_ref (manager_object);
         } else {
-                manager_object = g_object_new (GDM_TYPE_SETTINGS_MANAGER, NULL);
+                manager_object = g_object_new (GDM_TYPE_SETTINGS_MANAGER,
+                                               "gconf-prefix", gconf_prefix,
+                                               NULL);
                 g_object_add_weak_pointer (manager_object,
                                            (gpointer *) &manager_object);
         }

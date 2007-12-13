@@ -26,6 +26,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gmodule.h>
+#include <gconf/gconf-client.h>
 
 #include "gdm-settings-plugins-engine.h"
 #include "gdm-settings-plugin.h"
@@ -43,7 +44,7 @@ typedef enum
 
 struct _GdmSettingsPluginInfo
 {
-        char                   *file;
+        char                    *file;
 
         char                    *location;
         GdmSettingsPluginLoader  loader;
@@ -59,14 +60,17 @@ struct _GdmSettingsPluginInfo
 
         gint                     active : 1;
 
+        guint                    active_notification_id;
+
         /* A plugin is unavailable if it is not possible to activate it
            due to an error loading the plugin module (e.g. for Python plugins
            when the interpreter has not been correctly initializated) */
         gint                     available : 1;
 };
 
-static GList  *gdm_settings_plugins_list = NULL;
-static GSList *active_plugins = NULL;
+static char        *gdm_settings_gconf_prefix = NULL;
+static GHashTable  *gdm_settings_plugins = NULL;
+static GConfClient *client = NULL;
 
 static void
 gdm_settings_plugin_info_free (GdmSettingsPluginInfo *info)
@@ -95,8 +99,8 @@ static GdmSettingsPluginInfo *
 gdm_settings_plugins_engine_load (const char *file)
 {
         GdmSettingsPluginInfo *info;
-        GKeyFile *plugin_file = NULL;
-        char *str;
+        GKeyFile              *plugin_file = NULL;
+        char                  *str;
 
         g_return_val_if_fail (file != NULL, NULL);
 
@@ -199,70 +203,101 @@ error:
         return NULL;
 }
 
-static gint
-compare_plugin_info (GdmSettingsPluginInfo *info1,
-                     GdmSettingsPluginInfo *info2)
+static void
+gdm_settings_plugins_engine_plugin_active_cb (GConfClient           *client,
+                                              guint                  cnxn_id,
+                                              GConfEntry            *entry,
+                                              GdmSettingsPluginInfo *info)
 {
-        return strcmp (info1->location, info2->location);
+        if (gconf_value_get_bool (entry->value)) {
+                gdm_settings_plugins_engine_activate_plugin (info);
+        } else {
+                gdm_settings_plugins_engine_deactivate_plugin (info);
+        }
 }
 
 static void
-gdm_settings_plugins_engine_load_dir (const char *dir)
+gdm_settings_plugins_engine_load_file (const char *filename)
 {
-        GError *error = NULL;
-        GDir *d;
-        const char *dirent;
+        GdmSettingsPluginInfo *info;
+        char                  *key_name;
+        gboolean               activate;
 
-        g_debug ("DIR: %s", dir);
+        if (g_str_has_suffix (filename, PLUGIN_EXT) == FALSE) {
+                return;
+        }
 
-        d = g_dir_open (dir, 0, &error);
-        if (!d) {
+        info = gdm_settings_plugins_engine_load (filename);
+        if (info == NULL) {
+                return;
+        }
+
+        if (g_hash_table_lookup (gdm_settings_plugins, info->location)) {
+                gdm_settings_plugin_info_free (info);
+                return;
+        }
+
+        g_hash_table_insert (gdm_settings_plugins, info->location, info);
+
+        key_name = g_strdup_printf ("%s/%s", gdm_settings_gconf_prefix, info->location);
+        gconf_client_add_dir (client, key_name, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+        g_free (key_name);
+
+        key_name = g_strdup_printf ("%s/%s/active", gdm_settings_gconf_prefix, info->location);
+
+        info->active_notification_id = gconf_client_notify_add (client,
+                                                                key_name,
+                                                                (GConfClientNotifyFunc)gdm_settings_plugins_engine_plugin_active_cb,
+                                                                info,
+                                                                NULL,
+                                                                NULL);
+
+        g_debug ("Reading gconf key: %s", key_name);
+        activate = gconf_client_get_bool (client, key_name, NULL);
+        g_free (key_name);
+
+        if (activate) {
+                gboolean res;
+                res = gdm_settings_plugins_engine_activate_plugin (info);
+                if (res) {
+                        g_debug ("Plugin %s: active", info->location);
+                } else {
+                        g_debug ("Plugin %s: activation failed", info->location);
+                }
+        } else {
+                g_debug ("Plugin %s: inactive", info->location);
+        }
+}
+
+static void
+gdm_settings_plugins_engine_load_dir (const char *path)
+{
+        GError     *error;
+        GDir       *d;
+        const char *name;
+
+        g_debug ("Loading settings plugins from dir: %s", path);
+
+        error = NULL;
+        d = g_dir_open (path, 0, &error);
+        if (d == NULL) {
                 g_warning (error->message);
                 g_error_free (error);
                 return;
         }
 
-        while ((dirent = g_dir_read_name (d))) {
-                if (g_str_has_suffix (dirent, PLUGIN_EXT)) {
-                        char *plugin_file;
-                        GdmSettingsPluginInfo *info;
+        while ((name = g_dir_read_name (d))) {
+                char *filename;
 
-                        plugin_file = g_build_filename (dir, dirent, NULL);
-                        info = gdm_settings_plugins_engine_load (plugin_file);
-                        g_free (plugin_file);
-
-                        if (info == NULL)
-                                continue;
-
-                        /* If a plugin with this name has already been loaded
-                         * drop this one (user plugins override system plugins) */
-                        if (g_list_find_custom (gdm_settings_plugins_list,
-                                                info,
-                                                (GCompareFunc)compare_plugin_info) != NULL) {
-                                g_warning ("Two or more plugins named '%s'. "
-                                           "Only the first will be considered.\n",
-                                           info->location);
-
-                                gdm_settings_plugin_info_free (info);
-
-                                continue;
-                        }
-
-                        /* Actually, the plugin will be activated when reactivate_all
-                         * will be called for the first time. */
-                        if (g_slist_find_custom (active_plugins, info->location, (GCompareFunc)strcmp) != NULL) {
-                                info->active = TRUE;
-                        } else {
-                                info->active = FALSE;
-                        }
-
-                        gdm_settings_plugins_list = g_list_prepend (gdm_settings_plugins_list, info);
-
-                        g_debug ("Plugin %s loaded", info->name);
+                filename = g_build_filename (path, name, NULL);
+                if (g_file_test (filename, G_FILE_TEST_IS_DIR) != FALSE) {
+                        gdm_settings_plugins_engine_load_dir (filename);
+                } else {
+                        gdm_settings_plugins_engine_load_file (filename);
                 }
-        }
+                g_free (filename);
 
-        gdm_settings_plugins_list = g_list_reverse (gdm_settings_plugins_list);
+        }
 
         g_dir_close (d);
 }
@@ -275,14 +310,24 @@ gdm_settings_plugins_engine_load_all (void)
 }
 
 gboolean
-gdm_settings_plugins_engine_init (void)
+gdm_settings_plugins_engine_init (const char *gconf_prefix)
 {
-        g_return_val_if_fail (gdm_settings_plugins_list == NULL, FALSE);
+        g_return_val_if_fail (gdm_settings_plugins == NULL, FALSE);
+        g_return_val_if_fail (gconf_prefix != NULL, FALSE);
 
         if (!g_module_supported ()) {
                 g_warning ("gdm_settings is not able to initialize the plugins engine.");
                 return FALSE;
         }
+
+        gdm_settings_plugins = g_hash_table_new_full (g_str_hash,
+                                                      g_str_equal,
+                                                      NULL,
+                                                      (GDestroyNotify)gdm_settings_plugin_info_free);
+
+        gdm_settings_gconf_prefix = g_strdup (gconf_prefix);
+
+        client = gconf_client_get_default ();
 
         gdm_settings_plugins_engine_load_all ();
 
@@ -300,7 +345,6 @@ gdm_settings_plugins_engine_garbage_collect (void)
 void
 gdm_settings_plugins_engine_shutdown (void)
 {
-        GList *pl;
 
 #ifdef ENABLE_PYTHON
         /* Note: that this may cause finalization of objects by
@@ -311,25 +355,41 @@ gdm_settings_plugins_engine_shutdown (void)
         gdm_settings_python_shutdown ();
 #endif
 
-        for (pl = gdm_settings_plugins_list; pl; pl = pl->next) {
-                GdmSettingsPluginInfo *info = (GdmSettingsPluginInfo*)pl->data;
-
-                gdm_settings_plugin_info_free (info);
+        if (gdm_settings_plugins != NULL) {
+                g_hash_table_destroy (gdm_settings_plugins);
+                gdm_settings_plugins = NULL;
         }
 
-        g_slist_foreach (active_plugins, (GFunc)g_free, NULL);
-        g_slist_free (active_plugins);
+        if (client != NULL) {
+                g_object_unref (client);
+                client = NULL;
+        }
 
-        active_plugins = NULL;
+        g_free (gdm_settings_gconf_prefix);
+        gdm_settings_gconf_prefix = NULL;
+}
 
-        g_list_free (gdm_settings_plugins_list);
-        gdm_settings_plugins_list = NULL;
+static void
+collate_values_cb (gpointer key,
+                   gpointer value,
+                   GList  **list)
+{
+        *list = g_list_prepend (*list, value);
 }
 
 const GList *
 gdm_settings_plugins_engine_get_plugins_list (void)
 {
-        return gdm_settings_plugins_list;
+        GList *list = NULL;
+
+        if (gdm_settings_plugins == NULL) {
+                return NULL;
+        }
+
+        g_hash_table_foreach (gdm_settings_plugins, (GHFunc)collate_values_cb, &list);
+        list = g_list_reverse (list);
+
+        return list;
 }
 
 static gboolean
@@ -468,32 +528,24 @@ gdm_settings_plugins_engine_activate_plugin (GdmSettingsPluginInfo *info)
 
         g_return_val_if_fail (info != NULL, FALSE);
 
-        if (!info->available)
+        if (! info->available) {
                 return FALSE;
+        }
 
-        if (info->active)
+        if (info->active) {
                 return TRUE;
+        }
 
         if (gdm_settings_plugins_engine_activate_plugin_real (info)) {
-                GSList *list;
+                char *key_name;
 
-                /* Update plugin state */
+                key_name = g_strdup_printf ("/%s/%s/active",
+                                            gdm_settings_gconf_prefix,
+                                            info->location);
+                gconf_client_set_bool (client, key_name, TRUE, NULL);
+                g_free (key_name);
+
                 info->active = TRUE;
-
-                /* I want to be really sure :) */
-                list = active_plugins;
-                while (list != NULL) {
-                        if (strcmp (info->location, (char *)list->data) == 0) {
-                                g_warning ("Plugin '%s' is already active.", info->name);
-                                return TRUE;
-                        }
-
-                        list = g_slist_next (list);
-                }
-
-                active_plugins = g_slist_insert_sorted (active_plugins,
-                                                        g_strdup (info->location),
-                                                        (GCompareFunc)strcmp);
 
                 return TRUE;
         }
@@ -510,40 +562,24 @@ gdm_settings_plugins_engine_deactivate_plugin_real (GdmSettingsPluginInfo *info)
 gboolean
 gdm_settings_plugins_engine_deactivate_plugin (GdmSettingsPluginInfo *info)
 {
-        gboolean res;
-        GSList *list;
+        char *key_name;
 
         g_return_val_if_fail (info != NULL, FALSE);
 
-        if (!info->active || !info->available)
+        if (!info->active || !info->available) {
                 return TRUE;
+        }
 
         gdm_settings_plugins_engine_deactivate_plugin_real (info);
 
         /* Update plugin state */
         info->active = FALSE;
 
-        list = active_plugins;
-        res = (list == NULL);
-
-        while (list != NULL) {
-                if (strcmp (info->location, (char *)list->data) == 0) {
-                        g_free (list->data);
-                        active_plugins = g_slist_delete_link (active_plugins, list);
-                        list = NULL;
-                        res = TRUE;
-                } else {
-                        list = g_slist_next (list);
-                }
-        }
-
-        if (!res) {
-                g_warning ("Plugin '%s' is already deactivated.", info->name);
-                return TRUE;
-        }
-
-        if (!res)
-                g_warning ("Error saving the list of active plugins.");
+        key_name = g_strdup_printf ("/%s/%s/active",
+                                    gdm_settings_gconf_prefix,
+                                    info->location);
+        gconf_client_set_bool (client, key_name, FALSE, NULL);
+        g_free (key_name);
 
         return TRUE;
 }
@@ -562,51 +598,6 @@ gdm_settings_plugins_engine_plugin_is_available (GdmSettingsPluginInfo *info)
         g_return_val_if_fail (info != NULL, FALSE);
 
         return (info->available != FALSE);
-}
-
-static void
-reactivate_all (void)
-{
-        GList *pl;
-
-        for (pl = gdm_settings_plugins_list; pl; pl = pl->next) {
-                GdmSettingsPluginInfo *info;
-                gboolean               res;
-
-                info = (GdmSettingsPluginInfo*)pl->data;
-
-                g_debug ("Trying to activate plugin: %s", info->name);
-
-                if (! info->available) {
-                        g_debug ("Plugin is not available");
-                        continue;
-                }
-
-                if (! info->available) {
-                        g_debug ("Plugin is not active");
-                        continue;
-                }
-
-                res = TRUE;
-                if (info->plugin == NULL) {
-                        res = load_plugin_module (info);
-                }
-
-                if (!res) {
-                        g_debug ("Unable to load plugin module");
-                        continue;
-                }
-
-                gdm_settings_plugin_activate (info->plugin);
-        }
-}
-
-void
-gdm_settings_plugins_engine_activate_all (void)
-{
-        g_debug ("Activating all plugins");
-
-        reactivate_all ();
 }
 
 const char *

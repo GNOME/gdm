@@ -51,7 +51,7 @@ typedef struct
 
 GType                gdm_settings_manager_get_type            (void);
 
-GdmSettingsManager * gdm_settings_manager_new                 (void);
+GdmSettingsManager * gdm_settings_manager_new                 (const char         *gconf_prefix);
 gboolean             gdm_settings_manager_start               (GdmSettingsManager *manager,
                                                                GError            **error);
 void                 gdm_settings_manager_stop                (GdmSettingsManager *manager);

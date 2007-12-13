@@ -21,6 +21,12 @@ INCLUDES = \
 	$(SIMPLE_GREETER_CFLAGS)			\
 	$(NULL)
 
+@INTLTOOL_SCHEMAS_RULE@
+
+schemasdir   = @GCONF_SCHEMA_FILE_DIR@
+schemas_in_files = gdm-simple-greeter.schemas.in
+schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
+
 noinst_PROGRAMS = 			\
 	test-greeter-background		\
 	test-greeter-login-window	\
@@ -167,5 +173,18 @@ glade_DATA = 				\
 	$(NULL)
 
 EXTRA_DIST = 			\
+	$(schemas_in_files)	\
 	$(glade_DATA)		\
 	$(NULL)
+
+if GCONF_SCHEMAS_INSTALL
+# don't do this if we are building in eg. rpm
+install-data-local: $(schemas_DATA)
+	if test -z "$(DESTDIR)" ; then \
+		for p in $(schemas_DATA) ; do \
+			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(top_builddir)/gui/simple-greeter/$$p ; \
+		done \
+	fi
+else
+install-data-local:
+endif
