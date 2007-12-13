@@ -30,6 +30,7 @@
 #include "gdm-common.h"
 
 #define DEFAULT_GCONF_PREFIX "/apps/gdm/simple-greeter/settings-plugins"
+#define GCONF_PREFIX_ENV     "GDM_SETTINGS_DAEMON_GCONF_PREFIX"
 
 static char *gconf_prefix = NULL;
 
@@ -65,7 +66,10 @@ main (int argc, char *argv[])
         }
 
         if (gconf_prefix == NULL) {
-                gconf_prefix = DEFAULT_GCONF_PREFIX;
+                gconf_prefix = g_strdup (g_getenv (GCONF_PREFIX_ENV));
+                if (gconf_prefix == NULL) {
+                        gconf_prefix = g_strdup (DEFAULT_GCONF_PREFIX);
+                }
         }
 
         manager = gdm_settings_manager_new (gconf_prefix);
@@ -78,6 +82,8 @@ main (int argc, char *argv[])
         }
 
         gtk_main ();
+
+        g_free (gconf_prefix);
 
  out:
         if (manager != NULL) {
