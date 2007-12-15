@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.21.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-10-29 15:08+0100\n"
-"PO-Revision-Date: 2007-10-29 15:10+0100\n"
+"POT-Creation-Date: 2007-12-15 12:27+0100\n"
+"PO-Revision-Date: 2007-12-15 12:29+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -17,16 +17,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../daemon/auth.c:117
+#: ../common/gdm-common.c:382
 #, c-format
-msgid "%s: Could not write new authorization entry: %s"
-msgstr "%s: Kunne ikke skrive ny autorisasjonsoppføring: %s"
-
-#: ../daemon/auth.c:120
-#, c-format
-msgid "%s: Could not write new authorization entry.  Possibly out of diskspace"
-msgstr ""
-"%s: Kunne ikke skrive ny autorisasjonsoppføring. Muligens tom for diskplass"
+msgid "/dev/urandom is not a character device"
+msgstr "/dev/urandom er ikke en tegnenhet"
 
 #: ../daemon/factory-slave-main.c:156 ../daemon/product-slave-main.c:156
 #: ../daemon/simple-slave-main.c:156
@@ -43,400 +37,406 @@ msgstr "id"
 msgid "GNOME Display Manager Slave"
 msgstr "Slave for GNOME skjermhåndterer"
 
-#: ../daemon/gdm-factory-slave.c:437 ../daemon/gdm-simple-slave.c:716
+#: ../daemon/gdm-display-access-file.c:246
+#, c-format
+msgid "could not find user \"%s\" on system"
+msgstr "kunne ikke finne bruker «%s» på systemet"
+
+#: ../daemon/gdm-factory-slave.c:185 ../daemon/gdm-simple-slave.c:169
+msgid "Unable to initialize login system"
+msgstr "Kan ikke initiere påloggingssystemet"
+
+#: ../daemon/gdm-factory-slave.c:217 ../daemon/gdm-simple-slave.c:201
 msgid "Unable to authenticate user"
 msgstr "Kan ikke autentisere bruker"
 
-#: ../daemon/gdm-factory-slave.c:765 ../daemon/gdm-product-slave.c:814
-#: ../daemon/gdm-simple-slave.c:1170
+#: ../daemon/gdm-factory-slave.c:239 ../daemon/gdm-simple-slave.c:223
+msgid "Unable to authorize user"
+msgstr "Kan ikke autorisere bruker"
+
+#: ../daemon/gdm-factory-slave.c:263
+#, fuzzy
+msgid "Unable to establish credentials"
+msgstr "Kan ikke autentisere bruker"
+
+#: ../daemon/gdm-factory-slave.c:591 ../daemon/gdm-product-slave.c:361
+#: ../daemon/gdm-simple-slave.c:706
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
 "syslog to diagnose. In the meantime this display will be disabled.  Please "
 "restart GDM when the problem is corrected."
-msgstr "Kunne ikke starte X-tjeneren (ditt grafiske miljø) på grunn av en intern feil. Vennligst kontakt din systemadministrator eller sjekk systemloggen for å finne ut hva som er feil. I mellomtiden vil denne skjermen deaktiveres. Vennligst start GDM på nytt når problemet er rettet."
+msgstr ""
+"Kunne ikke starte X-tjeneren (ditt grafiske miljø) på grunn av en intern "
+"feil. Vennligst kontakt din systemadministrator eller sjekk systemloggen for "
+"å finne ut hva som er feil. I mellomtiden vil denne skjermen deaktiveres. "
+"Vennligst start GDM på nytt når problemet er rettet."
 
-#: ../daemon/gdm-greeter-session.c:333
+#: ../daemon/gdm-greeter-session.c:334
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Bruker %s eksisterer ikke"
 
-#: ../daemon/gdm-greeter-session.c:340
+#: ../daemon/gdm-greeter-session.c:341
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Gruppe %s eksisterer ikke"
 
-#: ../daemon/gdm-greeter-session.c:351 ../daemon/gdm-server.c:370
+#: ../daemon/gdm-greeter-session.c:352 ../daemon/gdm-server.c:371
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Kunne ikke sette gruppe-ID til %d"
 
-#: ../daemon/gdm-greeter-session.c:357 ../daemon/gdm-server.c:376
+#: ../daemon/gdm-greeter-session.c:358 ../daemon/gdm-server.c:377
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () feilet for %s"
 
-#: ../daemon/gdm-greeter-session.c:363 ../daemon/gdm-server.c:382
+#: ../daemon/gdm-greeter-session.c:364 ../daemon/gdm-server.c:383
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Kunne ikke sette bruker-id til %d"
 
-#: ../daemon/gdm-greeter-session.c:371 ../daemon/gdm-server.c:390
+#: ../daemon/gdm-greeter-session.c:372 ../daemon/gdm-server.c:391
 msgid "Couldn't set groupid to 0"
 msgstr "Kunne ikke sette gruppe-id til 0"
 
-#: ../daemon/gdm-manager.c:153
-#, c-format
-msgid "Can't open %s for writing"
-msgstr "Kunne ikke åpne %s for skriving"
-
-#: ../daemon/gdm-manager.c:164
-#, c-format
-msgid "Can't write to %s: %s"
-msgstr "Kan ikke skrive til %s: %s"
-
-#: ../daemon/gdm-server.c:241
+#: ../daemon/gdm-server.c:242
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: kunne ikke koble til opphavsskjerm «%s»"
 
-#: ../daemon/gdm-server.c:359
+#: ../daemon/gdm-server.c:360
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Tjeneren skulle startes av bruker %s, men denne brukeren eksisterer ikke"
 
-#: ../daemon/gdm-server.c:425
+#: ../daemon/gdm-server.c:426
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: Kunne ikke åpne loggfil for skjerm %s!"
 
-#: ../daemon/gdm-server.c:436 ../daemon/gdm-server.c:442
-#: ../daemon/gdm-server.c:448
+#: ../daemon/gdm-server.c:437 ../daemon/gdm-server.c:443
+#: ../daemon/gdm-server.c:449
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Feil under setting  av %s til %s"
 
-#: ../daemon/gdm-server.c:463
+#: ../daemon/gdm-server.c:464
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Prioritet for tjener kunne ikke settes til %d: %s"
 
-#: ../daemon/gdm-server.c:607
+#: ../daemon/gdm-server.c:608
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tjenerkommandoen for skjerm %s er tom"
 
-#: ../daemon/gdm-session.c:1132
+#: ../daemon/gdm-session-direct.c:1173 ../daemon/gdm-session-direct.c:1191
 #, c-format
 msgid "worker exited with status %d"
-msgstr ""
+msgstr "arbeider avsluttet med status %d"
 
-#: ../daemon/gdm-session.c:1157
-#, c-format
-msgid "worker got signal '%s' and was subsequently killed"
-msgstr ""
-
-#: ../daemon/gdm-session-worker.c:853
+#: ../daemon/gdm-session-worker.c:827
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:854
+#: ../daemon/gdm-session-worker.c:828
 msgid "general failure"
 msgstr "generell feil"
 
-#: ../daemon/gdm-session-worker.c:855
+#: ../daemon/gdm-session-worker.c:829
 msgid "out of memory"
 msgstr "ikke mer minne"
 
-#: ../daemon/gdm-session-worker.c:856
+#: ../daemon/gdm-session-worker.c:830
 msgid "application programmer error"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:857
+#: ../daemon/gdm-session-worker.c:831
 msgid "unscoped error"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:863
+#: ../daemon/gdm-session-worker.c:838
 msgid "Username:"
 msgstr "Brukernavn:"
 
-#: ../daemon/gdm-session-worker.c:869
+#: ../daemon/gdm-session-worker.c:844
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:882
+#: ../daemon/gdm-session-worker.c:858
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:897
+#: ../daemon/gdm-session-worker.c:873
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:1045
+#: ../daemon/gdm-session-worker.c:1027
 #, c-format
 msgid "no user account available"
 msgstr "ingen brukerkonto tilgjengelig"
 
-#: ../daemon/gdm-session-worker.c:1093
+#: ../daemon/gdm-session-worker.c:1076
 #, c-format
 msgid "user account not available on system"
+msgstr "brukerkonto ikke tilgjengelig på systemet"
+
+#: ../daemon/gdm-session-worker.c:1277
+#, c-format
+msgid ""
+"session log '%s' is not a normal file, logging session to '%s' instead.\n"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display.c:117
-#, c-format
-msgid "Cannot safely open %s"
-msgstr "Kan ikke åpne %s på en sikker måte"
+#: ../daemon/gdm-session-worker.c:1301
+msgid "unable to log session"
+msgstr "kan ikke logge sesjonen"
 
-#: ../daemon/gdm-xdmcp-display.c:132
-#, c-format
-msgid "Could not write new authorization entry: %s"
-msgstr "Kunne ikke skrive ny autorisasjonsoppføring: %s"
+#: ../daemon/gdm-simple-slave.c:254
+msgid "Unable establish credentials"
+msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:583
+#: ../daemon/gdm-xdmcp-display-factory.c:581
 msgid "Could not create socket!"
 msgstr "Kunne ikke lage socket!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:849
+#: ../daemon/gdm-xdmcp-display-factory.c:847
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Nektet XDMCP spørring fra vert %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1012
-#: ../daemon/gdm-xdmcp-display-factory.c:1077
+#: ../daemon/gdm-xdmcp-display-factory.c:1010
+#: ../daemon/gdm-xdmcp-display-factory.c:1075
 msgid "Could not extract authlist from packet"
 msgstr "Kunne ikke hente ut autentiseringsliste fra pakke"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1025
-#: ../daemon/gdm-xdmcp-display-factory.c:1092
+#: ../daemon/gdm-xdmcp-display-factory.c:1023
+#: ../daemon/gdm-xdmcp-display-factory.c:1090
 msgid "Error in checksum"
 msgstr "Feil i sjekksum"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1344
+#: ../daemon/gdm-xdmcp-display-factory.c:1342
 msgid "Bad address"
 msgstr "Ugyldig adresse"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1425
+#: ../daemon/gdm-xdmcp-display-factory.c:1423
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: Kunne ikke lese adresse for skjerm"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1433
+#: ../daemon/gdm-xdmcp-display-factory.c:1431
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s: Kunne ikke lese portnummer for skjerm"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1442
+#: ../daemon/gdm-xdmcp-display-factory.c:1440
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s: Kunne ikke hente ut autentiseringsliste fra pakke"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1462
+#: ../daemon/gdm-xdmcp-display-factory.c:1460
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: Feil i sjekksum"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1898
+#: ../daemon/gdm-xdmcp-display-factory.c:1896
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Mottok REQUEST fra bannlyst vert %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1908
-#: ../daemon/gdm-xdmcp-display-factory.c:2290
-#: ../daemon/gdm-xdmcp-display-factory.c:2547
+#: ../daemon/gdm-xdmcp-display-factory.c:1906
+#: ../daemon/gdm-xdmcp-display-factory.c:2261
+#: ../daemon/gdm-xdmcp-display-factory.c:2518
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Kunne ikke lese skjermnummer"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1915
+#: ../daemon/gdm-xdmcp-display-factory.c:1913
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Kunne ikke lese forbindelsestype"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1922
+#: ../daemon/gdm-xdmcp-display-factory.c:1920
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Kunne ikke lese klientens adresse"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1930
+#: ../daemon/gdm-xdmcp-display-factory.c:1928
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Kunne ikke lese autentiseringsnavn"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1939
+#: ../daemon/gdm-xdmcp-display-factory.c:1937
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Kunne ikke lese autentiseringsdata"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1949
+#: ../daemon/gdm-xdmcp-display-factory.c:1947
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Kunne ikke lese autorisasjonslisten"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1968
+#: ../daemon/gdm-xdmcp-display-factory.c:1966
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Kunne ikke lese produsent-ID"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1995
+#: ../daemon/gdm-xdmcp-display-factory.c:1993
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Feilet sjekksum fra %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2274
+#: ../daemon/gdm-xdmcp-display-factory.c:2245
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Mottok Manage fra bannlyst vert %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2283
-#: ../daemon/gdm-xdmcp-display-factory.c:2554
+#: ../daemon/gdm-xdmcp-display-factory.c:2254
+#: ../daemon/gdm-xdmcp-display-factory.c:2525
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Kunne ikke lese sesjons-ID"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2297
+#: ../daemon/gdm-xdmcp-display-factory.c:2268
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Kunne ikke lese skjermklasse"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2403
-#: ../daemon/gdm-xdmcp-display-factory.c:2457
-#: ../daemon/gdm-xdmcp-display-factory.c:2463
+#: ../daemon/gdm-xdmcp-display-factory.c:2374
+#: ../daemon/gdm-xdmcp-display-factory.c:2428
+#: ../daemon/gdm-xdmcp-display-factory.c:2434
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Kunne ikke lese adresse"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2537
+#: ../daemon/gdm-xdmcp-display-factory.c:2508
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Mottok KEEPALIVE fra bannlyst vert %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2620
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
-msgid "XMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: Kunne ikke opprette XDMCP buffer!"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2626
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
-msgid "XDMCP: Could not read XDMCP header!"
+#: ../daemon/gdm-xdmcp-display-factory.c:2597
+#, fuzzy
+msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "XDMCP: Kunne ikke lese XDMCP header!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2632
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:238
+#: ../daemon/gdm-xdmcp-display-factory.c:2603
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:240
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XDMCP: Feil XDMCP versjon!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2638
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:244
+#: ../daemon/gdm-xdmcp-display-factory.c:2609
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:246
 msgid "XMDCP: Unable to parse address"
 msgstr "XDMCP: Kan ikke lese adressen"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3036
+#: ../daemon/gdm-xdmcp-display-factory.c:3007
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Fant ikke tjenerens vertsnavn: %s!"
 
-#: ../daemon/main.c:229 ../daemon/main.c:242
+#: ../daemon/main.c:230 ../daemon/main.c:243
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace: %s"
 msgstr "Kan ikke skrive PID-fil %s: Kan være tom for diskplass: %s"
 
-#: ../daemon/main.c:262
+#: ../daemon/main.c:263
 #, c-format
 msgid "Logdir %s does not exist or isn't a directory."
 msgstr "Katalog for logger, %s, eksisterer ikke eller er ikke en katalog."
 
-#: ../daemon/main.c:275
+#: ../daemon/main.c:276
 #, c-format
 msgid "Authdir %s does not exist. Aborting."
 msgstr "Autentiseringskatalog %s eksisterer ikke. Avbryter."
 
-#: ../daemon/main.c:279
+#: ../daemon/main.c:280
 #, c-format
 msgid "Authdir %s is not a directory. Aborting."
 msgstr "Autentiseringskatalog %s er ikke en katalog. Avbryter."
 
-#: ../daemon/main.c:353
+#: ../daemon/main.c:354
 #, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
 msgstr "Autentiseringskatalog %s eies ikke av bruker %d, gruppe %d. Avbryter."
 
-#: ../daemon/main.c:360
+#: ../daemon/main.c:361
 #, c-format
 msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
 "Autentiseringskatalog %s har ikke riktige tilgangsrettigheter %o. Skal være %"
 "o. Avbryter."
 
-#: ../daemon/main.c:397
+#: ../daemon/main.c:398
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Kan ikke finne GDM-bruker «%s». Avbryter!"
 
-#: ../daemon/main.c:403
+#: ../daemon/main.c:404
 msgid "The GDM user should not be root. Aborting!"
 msgstr "Bruker for GDM bør ikke være root. Avbryter!"
 
-#: ../daemon/main.c:409
+#: ../daemon/main.c:410
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Kan ikke finne GDM-gruppe «%s». Avbryter."
 
-#: ../daemon/main.c:415
+#: ../daemon/main.c:416
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Gruppen for GDM bør ikke være root. Avbryter!"
 
-#: ../daemon/main.c:526
+#: ../daemon/main.c:521
 msgid "Alternative GDM System Defaults configuration file"
 msgstr "Alternativ GDM-konfigurasjonsfil for systemforvalg"
 
-#: ../daemon/main.c:526
+#: ../daemon/main.c:521
 msgid "CONFIGFILE"
 msgstr "KONFIGURASJONSFIL"
 
-#: ../daemon/main.c:528
+#: ../daemon/main.c:523
 msgid "Enable debugging code"
-msgstr ""
+msgstr "Aktiver feilsøkingskode"
 
-#: ../daemon/main.c:529
+#: ../daemon/main.c:524
 msgid "Make all warnings fatal"
-msgstr ""
+msgstr "Gjør alle advarsler fatale"
 
-#: ../daemon/main.c:530
+#: ../daemon/main.c:525
 msgid "Don't become a daemon"
-msgstr ""
+msgstr "Ikke kjør som en tjeneste"
 
-#: ../daemon/main.c:531
+#: ../daemon/main.c:526
 msgid "No console (static) servers to be run"
 msgstr "Ingen konsolltjenere (lokale) å kjøre"
 
-#: ../daemon/main.c:533
+#: ../daemon/main.c:528
 msgid "Exit after a time - for debugging"
-msgstr ""
+msgstr "Avslutt etter en tid - for feilsøking"
 
-#: ../daemon/main.c:534
+#: ../daemon/main.c:529
 msgid "Print GDM version"
 msgstr "Skriv ut GDM-versjon"
 
-#: ../daemon/main.c:549
+#: ../daemon/main.c:544
 msgid "GNOME Display Manager"
 msgstr "GNOME skjermhåndterer"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:622
+#: ../daemon/main.c:617
 msgid "Only root wants to run GDM"
 msgstr "Bare root ønsker å kjøre GDM"
 
-#: ../daemon/session-worker-main.c:131
+#: ../daemon/session-worker-main.c:134
 #, fuzzy
 msgid "GNOME Display Manager Session Worker"
 msgstr "GDM (GNOME Display Manager) kjører ikke."
 
-#: ../gui/settings-daemon/plugins/xsettings/gdm-xsettings-manager.c:558
+#: ../gui/settings-daemon/plugins/xsettings/gdm-xsettings-manager.c:560
 #, c-format
 msgid "GConf key %s set to type %s but its expected type was %s\n"
 msgstr ""
@@ -449,6 +449,14 @@ msgstr "Innstillinger for tjener"
 #: ../gui/settings-daemon/plugins/xsettings/xsettings.gdm-settings-plugin.desktop.in.h:2
 msgid "X Settings"
 msgstr "Innstillinger for X"
+
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:228
+msgid "XMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP: Kunne ikke opprette XDMCP buffer!"
+
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:234
+msgid "XDMCP: Could not read XDMCP header!"
+msgstr "XDMCP: Kunne ikke lese XDMCP header!"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:656
 msgid "%l:%M:%S %p"
@@ -556,11 +564,19 @@ msgstr "Forrige sesjon"
 msgid "System Default"
 msgstr "Systemforvalg"
 
-#: ../gui/simple-greeter/gdm-user.c:163
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
+msgid "Set to True to enable the xsettings settings manager plugin."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
+msgid "True if the xsettings settings manager plugin is enabled."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-user.c:219
 msgid "Manager"
 msgstr "Håndterer"
 
-#: ../gui/simple-greeter/gdm-user.c:164
+#: ../gui/simple-greeter/gdm-user.c:220
 msgid "The user manager object this user is controlled by."
 msgstr ""
 
