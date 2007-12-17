@@ -539,7 +539,7 @@ gdm_settings_plugins_engine_activate_plugin (GdmSettingsPluginInfo *info)
         if (gdm_settings_plugins_engine_activate_plugin_real (info)) {
                 char *key_name;
 
-                key_name = g_strdup_printf ("/%s/%s/active",
+                key_name = g_strdup_printf ("%s/%s/active",
                                             gdm_settings_gconf_prefix,
                                             info->location);
                 gconf_client_set_bool (client, key_name, TRUE, NULL);
@@ -575,7 +575,7 @@ gdm_settings_plugins_engine_deactivate_plugin (GdmSettingsPluginInfo *info)
         /* Update plugin state */
         info->active = FALSE;
 
-        key_name = g_strdup_printf ("/%s/%s/active",
+        key_name = g_strdup_printf ("%s/%s/active",
                                     gdm_settings_gconf_prefix,
                                     info->location);
         gconf_client_set_bool (client, key_name, FALSE, NULL);
