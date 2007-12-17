@@ -72,6 +72,8 @@ struct GdmGreeterLoginWindowPrivate
         char            *timeformat;
         guint            update_clock_id;
         gboolean         clock_show_seconds;
+
+        guint            animation_timeout_id;
 };
 
 enum {
@@ -860,12 +862,60 @@ load_theme (GdmGreeterLoginWindow *login_window)
         switch_mode (login_window, MODE_SELECTION);
 }
 
+static gboolean
+fit_window_to_children (GdmGreeterLoginWindow *window)
+{
+        int x;
+        int y;
+        int width;
+        int height;
+        int height_step;
+        int width_step;
+
+        /* FIXME: this animation logic is really dumb
+         */
+
+        if (!GTK_WIDGET_REALIZED (GTK_WIDGET (window))) {
+                return FALSE;
+        }
+
+        gdk_window_get_geometry (GTK_WIDGET (window)->window,
+                                 &x, &y, &width, &height, NULL);
+
+        if (height == GTK_WIDGET (window)->requisition.height) {
+                return FALSE;
+        }
+
+        if (width < GTK_WIDGET (window)->requisition.width) {
+                width_step = MIN (1, GTK_WIDGET (window)->requisition.width - width);
+        } else if (width > GTK_WIDGET (window)->requisition.width) {
+                width_step = -1 * MIN (1, width - GTK_WIDGET (window)->requisition.width);
+        } else {
+                width_step = 0;
+        }
+
+        if (height < GTK_WIDGET (window)->requisition.height) {
+                height_step = MIN ((int) 25, GTK_WIDGET (window)->requisition.height - height);
+        } else if (height > GTK_WIDGET (window)->requisition.height) {
+                height_step = -1 * MIN ((int) 25, height - GTK_WIDGET (window)->requisition.height);
+        } else {
+                height_step = 0;
+        }
+
+        gdk_window_resize (GTK_WIDGET (window)->window,
+                           width + width_step,
+                           height + height_step);
+
+        return TRUE;
+}
+
 static void
 gdm_greeter_login_window_size_request (GtkWidget      *widget,
                                        GtkRequisition *requisition)
 {
-        int screen_w;
-        int screen_h;
+        int            screen_w;
+        int            screen_h;
+        GtkRequisition child_requisition;
 
         if (GTK_WIDGET_CLASS (gdm_greeter_login_window_parent_class)->size_request) {
                 GTK_WIDGET_CLASS (gdm_greeter_login_window_parent_class)->size_request (widget, requisition);
@@ -874,8 +924,39 @@ gdm_greeter_login_window_size_request (GtkWidget      *widget,
         screen_w = gdk_screen_get_width (gtk_widget_get_screen (widget));
         screen_h = gdk_screen_get_height (gtk_widget_get_screen (widget));
 
-        requisition->height = screen_h * 0.5;
-        requisition->width = screen_w * 0.3;
+        gtk_widget_size_request (GTK_BIN (widget)->child, &child_requisition);
+        *requisition = child_requisition;
+
+        requisition->width += 2 * GTK_CONTAINER (widget)->border_width;
+        requisition->height += 2 * GTK_CONTAINER (widget)->border_width;
+
+        requisition->width = MIN (requisition->width, .50 * screen_w);
+        requisition->height = MIN (requisition->height, .80 * screen_h);
+}
+
+static void
+clear_animation_timeout_id (GdmGreeterLoginWindow *window)
+{
+        window->priv->animation_timeout_id = 0;
+}
+
+static void
+gdm_greeter_login_window_size_allocate (GtkWidget      *widget,
+                                        GtkAllocation  *allocation)
+{
+        GdmGreeterLoginWindow *window;
+
+        window = GDM_GREETER_LOGIN_WINDOW (widget);
+
+        if (window->priv->animation_timeout_id == 0) {
+                window->priv->animation_timeout_id =
+                    g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE, 20,
+                                        (GSourceFunc) fit_window_to_children,
+                                        widget,
+                                        (GDestroyNotify) clear_animation_timeout_id);
+        }
+
+        GTK_WIDGET_CLASS (gdm_greeter_login_window_parent_class)->size_allocate (widget, allocation);
 }
 
 static GObject *
@@ -910,6 +991,7 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
         object_class->finalize = gdm_greeter_login_window_finalize;
 
         widget_class->size_request = gdm_greeter_login_window_size_request;
+        widget_class->size_allocate = gdm_greeter_login_window_size_allocate;
 
         signals [BEGIN_VERIFICATION] =
                 g_signal_new ("begin-verification",
