@@ -22,7 +22,7 @@
 #define __GDM_SESSION_CHOOSER_WIDGET_H
 
 #include <glib-object.h>
-#include <gtk/gtkvbox.h>
+#include "gdm-chooser-widget.h"
 
 G_BEGIN_DECLS
 
@@ -37,17 +37,17 @@ typedef struct GdmSessionChooserWidgetPrivate GdmSessionChooserWidgetPrivate;
 
 typedef struct
 {
-        GtkVBox                         parent;
+        GdmChooserWidget                parent;
         GdmSessionChooserWidgetPrivate *priv;
 } GdmSessionChooserWidget;
 
 typedef struct
 {
-        GtkVBoxClass   parent_class;
-
-        /* signals */
-        void (* session_activated)        (GdmSessionChooserWidget *widget);
+        GdmChooserWidgetClass   parent_class;
 } GdmSessionChooserWidgetClass;
+
+#define GDM_SESSION_CHOOSER_SESSION_PREVIOUS "__previous-session"
+#define GDM_SESSION_CHOOSER_SESSION_DEFAULT "__default-session"
 
 GType                  gdm_session_chooser_widget_get_type                      (void);
 GtkWidget *            gdm_session_chooser_widget_new                           (void);
@@ -55,7 +55,8 @@ GtkWidget *            gdm_session_chooser_widget_new                           
 char *                 gdm_session_chooser_widget_get_current_session_name      (GdmSessionChooserWidget *widget);
 void                   gdm_session_chooser_widget_set_current_session_name      (GdmSessionChooserWidget *widget,
                                                                                  const char              *session_name);
-
+void                   gdm_session_chooser_widget_set_show_only_chosen          (GdmSessionChooserWidget *widget,
+                                                                                 gboolean                 show_only);
 G_END_DECLS
 
 #endif /* __GDM_SESSION_CHOOSER_WIDGET_H */
