@@ -22,7 +22,8 @@
 #define __GDM_USER_CHOOSER_WIDGET_H
 
 #include <glib-object.h>
-#include <gtk/gtkvbox.h>
+
+#include "gdm-chooser-widget.h"
 
 G_BEGIN_DECLS
 
@@ -37,16 +38,13 @@ typedef struct GdmUserChooserWidgetPrivate GdmUserChooserWidgetPrivate;
 
 typedef struct
 {
-        GtkVBox                      parent;
+        GdmChooserWidget            parent;
         GdmUserChooserWidgetPrivate *priv;
 } GdmUserChooserWidget;
 
 typedef struct
 {
-        GtkVBoxClass   parent_class;
-
-        /* signals */
-        void (* user_chosen)        (GdmUserChooserWidget *widget);
+        GdmChooserWidgetClass   parent_class;
 } GdmUserChooserWidgetClass;
 
 #define GDM_USER_CHOOSER_USER_OTHER "__other"
@@ -64,7 +62,6 @@ void                   gdm_user_chooser_widget_set_show_other_user        (GdmUs
                                                                            gboolean              show_other);
 void                   gdm_user_chooser_widget_set_show_guest_user        (GdmUserChooserWidget *widget,
                                                                            gboolean              show_other);
-
 G_END_DECLS
 
 #endif /* __GDM_USER_CHOOSER_WIDGET_H */

@@ -51,6 +51,8 @@ test_greeter_login_window_SOURCES = 	\
 	test-greeter-login-window.c	\
 	gdm-greeter-login-window.h	\
 	gdm-greeter-login-window.c	\
+	gdm-chooser-widget.h		\
+	gdm-chooser-widget.c		\
 	gdm-user-chooser-widget.h	\
 	gdm-user-chooser-widget.c	\
 	gdm-user-chooser-dialog.h	\
@@ -92,6 +94,8 @@ test_language_chooser_LDADD =	\
 
 test_session_chooser_SOURCES = 	\
 	test-session-chooser.c		\
+	gdm-chooser-widget.h		\
+	gdm-chooser-widget.c		\
 	gdm-session-chooser-widget.h	\
 	gdm-session-chooser-widget.c	\
 	gdm-session-chooser-dialog.h	\
@@ -104,6 +108,8 @@ test_session_chooser_LDADD =		\
 
 test_user_chooser_SOURCES = 		\
 	test-user-chooser.c		\
+	gdm-chooser-widget.h		\
+	gdm-chooser-widget.c		\
 	gdm-user-chooser-widget.h	\
 	gdm-user-chooser-widget.c	\
 	gdm-user-chooser-dialog.h	\
@@ -137,6 +143,8 @@ libexec_PROGRAMS =			\
 
 gdm_simple_greeter_SOURCES =  		\
 	greeter-main.c 			\
+	gdm-chooser-widget.h		\
+	gdm-chooser-widget.c		\
 	gdm-greeter-client.h		\
 	gdm-greeter-client.c		\
 	gdm-greeter-session.h		\
@@ -151,6 +159,8 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-greeter-panel.c		\
 	gdm-greeter-background.h	\
 	gdm-greeter-background.c	\
+	gdm-session-chooser-widget.h	\
+	gdm-session-chooser-widget.c	\
 	gdm-user-chooser-widget.h	\
 	gdm-user-chooser-widget.c	\
 	gdm-user-manager.h		\
