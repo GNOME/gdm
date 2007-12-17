@@ -1,5 +1,18 @@
 2007-12-17  William Jon McCann  <mccann@jhu.edu>
 
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/gdm-greeter-login-window.c: (switch_mode),
+	(do_cancel), (reset_dialog), (on_user_unchosen),
+	(on_session_activated), (custom_widget_constructor), (load_theme),
+	(gdm_greeter_login_window_init):
+	* gui/simple-greeter/gdm-greeter-login-window.glade:
+	This change adds the session chooser to the login window.
+	It changes the mechanism by the choosers are specified in
+	the glade file to use custom widgets.
+	Patch from: Ray Strode  <rstrode@redhat.com>
+
+2007-12-17  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/settings-daemon/gdm-settings-plugins-engine.c:
 	(gdm_settings_plugins_engine_activate_plugin),
 	(gdm_settings_plugins_engine_deactivate_plugin):

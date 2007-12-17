@@ -53,6 +53,8 @@ test_greeter_login_window_SOURCES = 	\
 	gdm-greeter-login-window.c	\
 	gdm-chooser-widget.h		\
 	gdm-chooser-widget.c		\
+	gdm-session-chooser-widget.h	\
+	gdm-session-chooser-widget.c	\
 	gdm-user-chooser-widget.h	\
 	gdm-user-chooser-widget.c	\
 	gdm-user-chooser-dialog.h	\
