@@ -154,7 +154,6 @@ gdm_user_chooser_dialog_init (GdmUserChooserDialog *dialog)
         dialog->priv = GDM_USER_CHOOSER_DIALOG_GET_PRIVATE (dialog);
 
         dialog->priv->chooser_widget = gdm_user_chooser_widget_new ();
-        gdm_user_chooser_widget_set_show_only_chosen (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), TRUE);
         gdm_user_chooser_widget_set_show_other_user (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), TRUE);
         gdm_user_chooser_widget_set_show_guest_user (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), TRUE);
         gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), dialog->priv->chooser_widget);
