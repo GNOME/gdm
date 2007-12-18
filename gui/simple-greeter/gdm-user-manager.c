@@ -159,6 +159,80 @@ on_user_icon_changed (GdmUser        *user,
         g_debug ("GdmUserManager: user icon changed");
 }
 
+static void
+add_sessions_for_user (GdmUserManager *manager,
+                       GdmUser        *user)
+{
+        DBusGConnection *connection;
+        DBusGProxy      *proxy;
+        GError          *error;
+        gboolean         res;
+        guint32          uid;
+        GPtrArray       *sessions;
+        int              i;
+
+        proxy = NULL;
+
+        error = NULL;
+        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (connection == NULL) {
+                g_warning ("Failed to connect to the D-Bus daemon: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        proxy = dbus_g_proxy_new_for_name (connection,
+                                           CK_NAME,
+                                           CK_MANAGER_PATH,
+                                           CK_MANAGER_INTERFACE);
+        if (proxy == NULL) {
+                g_warning ("Failed to connect to the ConsoleKit manager object");
+                goto out;
+        }
+
+        uid = gdm_user_get_uid (user);
+
+        g_debug ("Getting list of sessions for user %u", uid);
+
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 "GetSessionsForUnixUser",
+                                 &error,
+                                 G_TYPE_UINT, uid,
+                                 G_TYPE_INVALID,
+                                 dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH),
+                                 &sessions,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("Failed to find sessions for user: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        g_debug ("Found %d sessions for user %s", sessions->len, gdm_user_get_user_name (user));
+
+        for (i = 0; i < sessions->len; i++) {
+                char *ssid;
+
+                ssid = g_ptr_array_index (sessions, i);
+
+                g_hash_table_insert (manager->priv->sessions,
+                                     g_strdup (ssid),
+                                     g_strdup (gdm_user_get_user_name (user)));
+
+                _gdm_user_add_session (user, ssid);
+
+                g_free (ssid);
+        }
+
+        g_ptr_array_free (sessions, TRUE);
+
+ out:
+        if (proxy != NULL) {
+                g_object_unref (proxy);
+        }
+}
+
 static GdmUser *
 create_user (GdmUserManager *manager)
 {
@@ -176,18 +250,30 @@ create_user (GdmUserManager *manager)
         return user;
 }
 
+static void
+add_user (GdmUserManager *manager,
+          GdmUser        *user)
+{
+        add_sessions_for_user (manager, user);
+        g_hash_table_insert (manager->priv->users,
+                             g_strdup (gdm_user_get_user_name (user)),
+                             g_object_ref (user));
+
+        g_signal_emit (manager, signals[USER_ADDED], 0, user);
+}
+
 static GdmUser *
 add_new_user_for_pwent (GdmUserManager *manager,
                         struct passwd  *pwent)
 {
         GdmUser *user;
 
+        g_debug ("Creating new user");
+
         user = create_user (manager);
         _gdm_user_update (user, pwent);
-        g_hash_table_insert (manager->priv->users,
-                             g_strdup (pwent->pw_name),
-                             user);
-        g_signal_emit (manager, signals[USER_ADDED], 0, user);
+
+        add_user (manager, user);
 
         return user;
 }
@@ -210,7 +296,7 @@ get_current_seat_id (DBusGConnection *connection)
                                            CK_MANAGER_PATH,
                                            CK_MANAGER_INTERFACE);
         if (proxy == NULL) {
-                g_warning ("Failed to connect to the ConsoleKit session object");
+                g_warning ("Failed to connect to the ConsoleKit manager object");
                 goto out;
         }
 
@@ -574,10 +660,7 @@ reload_passwd (GdmUserManager *manager)
         /* Go through and handle added users */
         for (list = new_users; list; list = list->next) {
                 if (! g_slist_find (old_users, list->data)) {
-                        g_hash_table_insert (manager->priv->users,
-                                             g_strdup (gdm_user_get_user_name (list->data)),
-                                             g_object_ref (list->data));
-                        g_signal_emit (manager, signals[USER_ADDED], 0, list->data);
+                        add_user (manager, list->data);
                 }
         }
 

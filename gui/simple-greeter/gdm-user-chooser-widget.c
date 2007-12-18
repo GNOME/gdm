@@ -251,18 +251,27 @@ on_user_added (GdmUserManager       *manager,
 {
         GdkPixbuf    *pixbuf;
         char         *tooltip;
-
-        g_debug ("GdmUserChooserWidget: User added: %s", gdm_user_get_user_name (user));
+        gboolean      is_logged_in;
 
         pixbuf = gdm_user_render_icon (user, GTK_WIDGET (widget), ICON_SIZE);
 
         tooltip = g_strdup_printf (_("Log in as %s"),
                                    gdm_user_get_user_name (user));
 
+        is_logged_in = gdm_user_get_num_sessions (user) > 0;
+
+        g_debug ("GdmUserChooserWidget: User added name:%s logged-in:%d pixbuf:%p",
+                 gdm_user_get_user_name (user),
+                 is_logged_in,
+                 pixbuf);
+
         gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                      gdm_user_get_user_name (user),
-                                     pixbuf, gdm_user_get_real_name (user),
-                                     tooltip, FALSE, FALSE);
+                                     pixbuf,
+                                     gdm_user_get_real_name (user),
+                                     tooltip,
+                                     is_logged_in,
+                                     FALSE);
         g_free (tooltip);
 
         if (pixbuf != NULL) {
@@ -299,7 +308,8 @@ on_user_is_logged_in_changed (GdmUserManager       *manager,
         is_logged_in = gdm_user_get_num_sessions (user) > 0;
 
         gdm_chooser_widget_set_item_in_use (GDM_CHOOSER_WIDGET (widget),
-                                            user_name, is_logged_in);
+                                            user_name,
+                                            is_logged_in);
 }
 
 static void
