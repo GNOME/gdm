@@ -253,12 +253,12 @@ set_frame_text (GdmChooserWidget *widget,
                 gtk_frame_set_label_widget (GTK_FRAME (widget->priv->frame),
                                             label);
                 gtk_alignment_set_padding (GTK_ALIGNMENT (widget->priv->frame_alignment),
-                                           6, 0, 12, 0);
+                                           0, 0, 0, 0);
         }
 
         if (label != NULL && text != NULL) {
                 char *markup;
-                markup = g_strdup_printf ("<b>%s</b>", text);
+                markup = g_strdup_printf ("%s", text);
                 gtk_label_set_markup_with_mnemonic (GTK_LABEL (label), markup);
                 g_free (markup);
         }
@@ -1273,7 +1273,7 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
 
         widget->priv = GDM_CHOOSER_WIDGET_GET_PRIVATE (widget);
 
-        gtk_alignment_set_padding (GTK_ALIGNMENT (widget), 6, 0, 12, 0);
+        gtk_alignment_set_padding (GTK_ALIGNMENT (widget), 0, 0, 0, 0);
 
         add_frame (widget);
 

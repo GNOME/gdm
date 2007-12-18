@@ -223,16 +223,21 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         user_chooser = glade_xml_get_widget (login_window->priv->xml, "user-chooser");
         box = gtk_widget_get_parent (user_chooser);
         if (GTK_IS_BOX (box)) {
-            guint padding;
-            GtkPackType pack_type;
+                guint       padding;
+                GtkPackType pack_type;
 
-            gtk_box_query_child_packing (GTK_BOX (box), user_chooser,
-                                         NULL, NULL, &padding, &pack_type);
-            gtk_box_set_child_packing (GTK_BOX (box),
-                                       user_chooser,
-                                       number == MODE_SELECTION,
-                                       number == MODE_SELECTION,
-                                       padding, pack_type);
+                gtk_box_query_child_packing (GTK_BOX (box),
+                                             user_chooser,
+                                             NULL,
+                                             NULL,
+                                             &padding,
+                                             &pack_type);
+                gtk_box_set_child_packing (GTK_BOX (box),
+                                           user_chooser,
+                                           number == MODE_SELECTION,
+                                           number == MODE_SELECTION,
+                                           padding,
+                                           pack_type);
         }
 
         if (default_name != NULL) {
@@ -1108,7 +1113,7 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         gtk_window_set_skip_taskbar_hint (GTK_WINDOW (login_window), TRUE);
         gtk_window_set_skip_pager_hint (GTK_WINDOW (login_window), TRUE);
         gtk_window_stick (GTK_WINDOW (login_window));
-        gtk_container_set_border_width (GTK_CONTAINER (login_window), 20);
+        gtk_container_set_border_width (GTK_CONTAINER (login_window), 25);
 }
 
 static void
