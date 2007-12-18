@@ -351,8 +351,7 @@ start_settings_daemon (GdmGreeterSession *session)
         ret = FALSE;
 
         error = NULL;
-        /*g_spawn_command_line_async (LIBEXECDIR "/gnome-settings-daemon --gconf-prefix=/apps/gdm/simple-greeter/settings-manager-plugins", &error);*/
-        g_spawn_command_line_async (LIBEXECDIR "/gdm-settings-daemon", &error);
+        g_spawn_command_line_async (LIBEXECDIR "/gnome-settings-daemon --gconf-prefix=/apps/gdm/simple-greeter/settings-manager-plugins", &error);
         if (error != NULL) {
                 g_warning ("Error starting settings daemon: %s", error->message);
                 g_error_free (error);
