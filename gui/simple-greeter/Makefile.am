@@ -189,6 +189,14 @@ EXTRA_DIST = 			\
 	$(glade_DATA)		\
 	$(NULL)
 
+DISTCLEANFILES =                        \
+        $(schemas_DATA)                 \
+        $(NULL)
+
+MAINTAINERCLEANFILES =                  \
+        *~                              \
+        Makefile.in
+
 if GCONF_SCHEMAS_INSTALL
 # don't do this if we are building in eg. rpm
 install-data-local: $(schemas_DATA)
