@@ -188,6 +188,7 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         GtkWidget  *box;
 
         /* FIXME: do animation */
+        default_name = NULL;
 
         switch (number) {
         case MODE_SELECTION:
