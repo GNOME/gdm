@@ -141,7 +141,6 @@ find_item (GdmChooserWidget *widget,
         do {
                 char *item_id;
 
-
                 gtk_tree_model_get (model, iter,
                                     CHOOSER_ID_COLUMN, &item_id, -1);
 
@@ -1180,6 +1179,7 @@ add_separator (GdmChooserWidget *widget)
 static gboolean
 update_column_visibility (GdmChooserWidget *widget)
 {
+#if 0
         if (widget->priv->number_of_rows_with_images > 0) {
                 gtk_tree_view_column_set_visible (widget->priv->image_column,
                                                   TRUE);
@@ -1187,6 +1187,7 @@ update_column_visibility (GdmChooserWidget *widget)
                 gtk_tree_view_column_set_visible (widget->priv->image_column,
                                                   FALSE);
         }
+
         if (widget->priv->number_of_in_use_rows > 0) {
                 gtk_tree_view_column_set_visible (widget->priv->is_in_use_column,
                                                   TRUE);
@@ -1194,7 +1195,7 @@ update_column_visibility (GdmChooserWidget *widget)
                 gtk_tree_view_column_set_visible (widget->priv->is_in_use_column,
                                                   FALSE);
         }
-
+#endif
         return FALSE;
 }
 
