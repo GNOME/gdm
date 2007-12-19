@@ -84,6 +84,7 @@ struct GdmChooserWidgetPrivate
         guint                    animation_timeout_id;
 
         guint32                  should_hide_inactive_items : 1;
+        guint32                  emit_activated_after_animation : 1;
 
         GdmChooserWidgetPosition separator_position;
         GdmChooserWidgetState    state;
@@ -335,9 +336,15 @@ shrink_edge_toward_active_row (GdmChooserWidget     *widget,
 }
 
 static gboolean
-iterate_animation (GdmChooserWidget *widget)
+run_animation (GdmChooserWidget *widget,
+               int               number_of_iterations)
 {
         gboolean is_done;
+
+        /* FIXME: this function could be done a lot more efficiently
+         * If we know we need to iterate more than once before the next redraw
+         * we should be able to avoid a lot of intermediate work
+         */
 
         is_done = FALSE;
 
@@ -356,6 +363,8 @@ iterate_animation (GdmChooserWidget *widget)
                 GtkTreePath *path;
                 GtkTreeIter  iter;
                 gboolean     is_visible;
+
+                g_assert (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING);
 
                 path = gtk_tree_path_new_first ();
 
@@ -382,24 +391,70 @@ iterate_animation (GdmChooserWidget *widget)
                 gtk_tree_path_free (path);
         }
 
-        return is_done != TRUE;
+        number_of_iterations--;
+
+        if (number_of_iterations == 0) {
+                return is_done;
+        }
+
+        return run_animation (widget, number_of_iterations);
+}
+
+static gboolean
+on_animation_timeout (GdmChooserWidget *widget)
+{
+        return run_animation (widget, 1) != TRUE;
 }
 
 static void
-stop_animation (GdmChooserWidget *widget)
+on_animation_done (GdmChooserWidget *widget)
 {
         if (widget->priv->animation_timeout_id == 0) {
                 return;
         }
 
-        gtk_tree_row_reference_free (widget->priv->top_edge_row);
-        widget->priv->top_edge_row = NULL;
+        if (widget->priv->top_edge_row != NULL) {
+                gtk_tree_row_reference_free (widget->priv->top_edge_row);
+                widget->priv->top_edge_row = NULL;
+        }
 
-        gtk_tree_row_reference_free (widget->priv->bottom_edge_row);
-        widget->priv->bottom_edge_row = NULL;
+        if (widget->priv->bottom_edge_row != NULL) {
+                gtk_tree_row_reference_free (widget->priv->bottom_edge_row);
+                widget->priv->bottom_edge_row = NULL;
+        }
 
         widget->priv->animation_timeout_id = 0;
         gtk_widget_set_sensitive (GTK_WIDGET (widget), TRUE);
+
+        if (widget->priv->emit_activated_after_animation) {
+                g_signal_emit (widget, signals[ACTIVATED], 0);
+                widget->priv->emit_activated_after_animation = FALSE;
+        }
+}
+
+static int
+get_number_of_on_screen_rows (GdmChooserWidget *widget)
+{
+        GtkTreePath *start_path;
+        GtkTreePath *end_path;
+        int         *start_index;
+        int         *end_index;
+        int          number_of_rows;
+
+        if (!gtk_tree_view_get_visible_range (GTK_TREE_VIEW (widget->priv->items_view),
+                                              &start_path, &end_path)) {
+                return 0;
+        }
+
+        start_index = gtk_tree_path_get_indices (start_path);
+        end_index = gtk_tree_path_get_indices (end_path);
+
+        number_of_rows = *end_index - *start_index;
+
+        gtk_tree_path_free (start_path);
+        gtk_tree_path_free (end_path);
+
+        return number_of_rows;
 }
 
 static void
@@ -417,8 +472,12 @@ start_animation (GdmChooserWidget *widget)
        number_of_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->list_store), NULL);
 
        if (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_SHRINKING) {
+               int number_of_on_screen_rows;
+               int number_of_iterations;
+
                if (number_of_visible_rows <= 1) {
                        widget->priv->state = GDM_CHOOSER_WIDGET_STATE_SHRUNK;
+                       on_animation_done (widget);
                        return;
                }
 
@@ -434,11 +493,18 @@ start_animation (GdmChooserWidget *widget)
                gtk_tree_path_free (edge_path);
 
                g_assert (widget->priv->top_edge_row != NULL && widget->priv->bottom_edge_row != NULL);
+
+               number_of_on_screen_rows = get_number_of_on_screen_rows (widget);
+               number_of_iterations = number_of_visible_rows - number_of_on_screen_rows;
+               number_of_iterations = MAX (0, number_of_iterations);
+
+               run_animation (widget, number_of_iterations);
        }
 
        if (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING) {
                if (number_of_visible_rows >= number_of_rows) {
                        widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
+                       on_animation_done (widget);
                        return;
                }
        }
@@ -451,8 +517,8 @@ start_animation (GdmChooserWidget *widget)
        widget->priv->animation_timeout_id =
                g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE,
                                    1000 / (4 * number_of_rows),
-                                   (GSourceFunc) iterate_animation,
-                                   widget, (GDestroyNotify) stop_animation);
+                                   (GSourceFunc) on_animation_timeout,
+                                   widget, (GDestroyNotify) on_animation_done);
 }
 
 static void
@@ -534,11 +600,14 @@ activate_from_row (GdmChooserWidget    *widget,
         }
 
         widget->priv->active_row = gtk_tree_row_reference_copy (row);
-        g_signal_emit (widget, signals[ACTIVATED], 0);
 
         if (widget->priv->should_hide_inactive_items) {
+                widget->priv->emit_activated_after_animation = TRUE;
                 gdm_chooser_widget_shrink (widget);
+        } else {
+                g_signal_emit (widget, signals[ACTIVATED], 0);
         }
+
 }
 
 static void
@@ -551,11 +620,11 @@ deactivate (GdmChooserWidget *widget)
         gtk_tree_row_reference_free (widget->priv->active_row);
         widget->priv->active_row = NULL;
 
-        g_signal_emit (widget, signals[DEACTIVATED], 0, NULL, NULL);
-
         if (widget->priv->state != GDM_CHOOSER_WIDGET_STATE_GROWN) {
                 gdm_chooser_widget_grow (widget);
         }
+
+        g_signal_emit (widget, signals[DEACTIVATED], 0);
 }
 
 static void

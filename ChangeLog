@@ -1,5 +1,23 @@
 2007-12-19  Ray Strode  <rstrode@redhat.com>
 
+	Improve the chooser animation
+
+	* gui/simple-greeter/gdm-chooser-widget.c
+	(iterate_animation): Support doing an arbitrary
+	number of iterations, also rename to run_animation
+	(activate_from_row), (stop_animation): Defer "activated"
+	signal emission to here, so the toplevel won't react
+	to user selection until the animation finishes.  Rename
+	stop_animation to on_animation_done since it gets called in
+	response to the animation stopping, not to initiate stopping.
+	(start_animation): Before starting an animation (and thus
+	expanding the scrolled window to the full height of the tree
+	view), hide all rows that are currently occluded by the
+	the scrolled window.  This prevents an initial grow flicker
+	in the shrink sequence
+
+2007-12-19  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-login-window.c
 	(custom_widget_constructor), (load_theme): don't show
 	custom widgets by default
