@@ -780,10 +780,6 @@ custom_widget_constructor (GladeXML              *xml,
                widget = gdm_session_chooser_widget_new ();
         }
 
-        if (widget != NULL) {
-                gtk_widget_show (widget);
-        }
-
         return widget;
 }
 
@@ -826,6 +822,8 @@ load_theme (GdmGreeterLoginWindow *login_window)
                           "deactivated",
                           G_CALLBACK (on_user_unchosen),
                           login_window);
+
+        gtk_widget_show (login_window->priv->user_chooser);
 
         login_window->priv->session_chooser =
                 glade_xml_get_widget (login_window->priv->xml, "session-chooser");
