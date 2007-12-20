@@ -200,6 +200,47 @@ get_seat_id_for_session (DBusGConnection *connection,
         return seat_id;
 }
 
+
+static char *
+get_x11_display_for_session (DBusGConnection *connection,
+                             const char      *session_id)
+{
+        DBusGProxy      *proxy;
+        GError          *error;
+        char            *x11_display;
+        gboolean         res;
+
+        proxy = NULL;
+        x11_display = NULL;
+
+        proxy = dbus_g_proxy_new_for_name (connection,
+                                           CK_NAME,
+                                           session_id,
+                                           CK_SESSION_INTERFACE);
+        if (proxy == NULL) {
+                g_warning ("Failed to connect to the ConsoleKit seat object");
+                goto out;
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 "GetX11Display",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &x11_display,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_debug ("Failed to identify the x11 display: %s", error->message);
+                g_error_free (error);
+        }
+ out:
+        if (proxy != NULL) {
+                g_object_unref (proxy);
+        }
+
+        return x11_display;
+}
+
 static void
 add_sessions_for_user (GdmUserManager *manager,
                        GdmUser        *user)
@@ -255,24 +296,32 @@ add_sessions_for_user (GdmUserManager *manager,
         for (i = 0; i < sessions->len; i++) {
                 char *ssid;
                 char *sid;
+                char *x11_display;
 
                 ssid = g_ptr_array_index (sessions, i);
 
                 /* skip if on another seat */
-
                 sid = get_seat_id_for_session (connection, ssid);
                 if (sid == NULL
                     || manager->priv->seat_id == NULL
                     || strcmp (sid, manager->priv->seat_id) != 0) {
-                        continue;
+                        goto next;
                 }
+
+                /* skip if doesn't have an x11 display */
+                x11_display = get_x11_display_for_session (connection, ssid);
+                if (x11_display == NULL || x11_display[0] == '\0') {
+                        goto next;
+                }
+                g_free (x11_display);
 
                 g_hash_table_insert (manager->priv->sessions,
                                      g_strdup (ssid),
                                      g_strdup (gdm_user_get_user_name (user)));
 
                 _gdm_user_add_session (user, ssid);
-
+        next:
+                g_free (sid);
                 g_free (ssid);
         }
 
