@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-10-23 05:51+0100\n"
-"PO-Revision-Date: 2007-12-10 15:25+0100\n"
+"PO-Revision-Date: 2007-12-20 14:52+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian\n"
 "MIME-Version: 1.0\n"
@@ -460,11 +460,27 @@ msgstr "XMCP: Ni mogoče ustvariti izravnalnika za XDMCP!"
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Ni mogoče prebrati glave XDMCP!"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:656
+#: ../gui/simple-greeter/gdm-chooser-widget.c:979
+msgid "Inactive Text"
+msgstr "Nedejavno besedilo"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:980
+msgid "The text to use in the label if the user hasn't picked an item yet"
+msgstr "Besedilo, ki se uporablja za označevanje naslova, če uporabnik še ni določil predmeta."
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:988
+msgid "Active Text"
+msgstr "Dejavno besedilo"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:989
+msgid "The text to use in the label if the user has picked an item"
+msgstr "Besedilo, ki se uporablja za označevanje naslova, ko uporabnik določi predmet"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:706
 msgid "%l:%M:%S %p"
 msgstr "%l:%M:%S %p"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:656
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:706
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
@@ -473,7 +489,7 @@ msgstr "%l:%M %p"
 #. *              should begin with a 0 in your locale (e.g. "May
 #. *              01" instead of "May  1").
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:662
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:712
 msgid "%a %b %e"
 msgstr "%a %b %e"
 
@@ -481,7 +497,7 @@ msgstr "%a %b %e"
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:667
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:717
 #, c-format
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
@@ -535,36 +551,56 @@ msgid "Version"
 msgstr "Različica"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:13
-msgid "gtk-cancel"
-msgstr "gtk-cancel"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:14
 msgid "page 1"
 msgstr "stran 1"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:15
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:14
 msgid "page 2"
 msgstr "stran 2"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:16
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:15
 msgid "page 3"
 msgstr "stran 3"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:17
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:16
 msgid "page 4"
 msgstr "stran 4"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:18
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:17
 msgid "page 5"
 msgstr "stran 5"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:506
-msgid "Previous Session"
-msgstr "Predhodna seja"
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:380
+msgid "Default"
+msgstr "Privzeto"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:512
-msgid "System Default"
-msgstr "Privzeto s strani sistema"
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:381
+msgid "Login with the same session as last time."
+msgstr "Prijava v enako sejo kot ob zadnji prijavi."
+
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:386
+msgid "Legacy"
+msgstr "Opuščeno"
+
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:387
+msgid "Login based on preset legacy configuration"
+msgstr "Prijava v predhodno nastavljeno opuščeno sejo"
+
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:430
+msgid "_Sessions:"
+msgstr "_Seje:"
+
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:431
+msgid "_Session:"
+msgstr "_Seja:"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
+msgid "Set to True to enable the xsettings settings manager plugin."
+msgstr "Izbrana nastavitev omogoča uporabo vključka upravljalnika xsettings nastavitev."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
+msgid "True if the xsettings settings manager plugin is enabled."
+msgstr "Omogočeno, kadar je izbrana možnost upravljalnika xsettings nastavitev"
 
 #: ../gui/simple-greeter/gdm-user.c:219
 msgid "Manager"
@@ -574,27 +610,36 @@ msgstr "Upravljavec"
 msgid "The user manager object this user is controlled by."
 msgstr "Objekt upravitelja uporabnikov, ki nadzoruje tega uporabnika."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:410
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:231
 msgid "Other..."
 msgstr "Drugo ..."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:411
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:232
 msgid "Choose a different account"
 msgstr "Izbor drugega računa"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:419
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:237
 msgid "Guest"
 msgstr "Gost"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:420
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:238
 msgid "Login as a temporary guest"
 msgstr "Prijava kot začasni gost"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:506
-msgid "Short Name"
-msgstr "Kratko ime"
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:258
+#, c-format
+msgid "Log in as %s"
+msgstr "Prijavite se kot %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:678
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:323
 msgid "Currently logged in"
 msgstr "Trenutno prijavljen"
+
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:363
+msgid "_Users:"
+msgstr "_Uporabniki:"
+
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:364
+msgid "_User:"
+msgstr "_Uporabnik:"
 
