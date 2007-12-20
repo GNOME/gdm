@@ -533,8 +533,10 @@ gdm_chooser_widget_grow (GdmChooserWidget *widget)
 
         set_frame_text (widget, widget->priv->inactive_text);
 
-        widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWING;
-        start_animation (widget);
+        if (GTK_WIDGET_VISIBLE (GTK_WIDGET (widget))) {
+                widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWING;
+                start_animation (widget);
+        }
 }
 
 static void
@@ -583,8 +585,10 @@ gdm_chooser_widget_shrink (GdmChooserWidget *widget)
                                              GTK_SHADOW_ETCHED_OUT);
 
         clear_selection (widget);
-        widget->priv->state = GDM_CHOOSER_WIDGET_STATE_SHRINKING;
-        start_animation (widget);
+        if (GTK_WIDGET_VISIBLE (GTK_WIDGET (widget))) {
+                widget->priv->state = GDM_CHOOSER_WIDGET_STATE_SHRINKING;
+                start_animation (widget);
+        }
 }
 
 static void
