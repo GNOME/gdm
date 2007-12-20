@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.21.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-17 17:08+0100\n"
-"PO-Revision-Date: 2007-12-17 17:14+0100\n"
+"POT-Creation-Date: 2007-12-20 08:52+0100\n"
+"PO-Revision-Date: 2007-12-20 08:55+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -165,17 +165,21 @@ msgstr "Brukernavn:"
 #: ../daemon/gdm-session-worker.c:844
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
-msgstr "feil ved informasjon til autentiseringssystemet om foretrukket spørring etter brukernavn - %s"
+msgstr ""
+"feil ved informasjon til autentiseringssystemet om foretrukket spørring "
+"etter brukernavn - %s"
 
 #: ../daemon/gdm-session-worker.c:858
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
-msgstr "feil ved informasjon til autentiseringssystemet om brukers vertsnavn - %s"
+msgstr ""
+"feil ved informasjon til autentiseringssystemet om brukers vertsnavn - %s"
 
 #: ../daemon/gdm-session-worker.c:873
 #, c-format
 msgid "error informing authentication system of user's console - %s"
-msgstr "feil ved informasjon til autentiseringssystemet om brukers konsoll - %s"
+msgstr ""
+"feil ved informasjon til autentiseringssystemet om brukers konsoll - %s"
 
 #: ../daemon/gdm-session-worker.c:1027
 #, c-format
@@ -191,7 +195,9 @@ msgstr "brukerkonto ikke tilgjengelig på systemet"
 #, c-format
 msgid ""
 "session log '%s' is not a normal file, logging session to '%s' instead.\n"
-msgstr "Sesjonsloggen «%s» er ikke en normal fil. Logger sesjonen til «%s» i stedet.\n"
+msgstr ""
+"Sesjonsloggen «%s» er ikke en normal fil. Logger sesjonen til «%s» i "
+"stedet.\n"
 
 #: ../daemon/gdm-session-worker.c:1301
 msgid "unable to log session"
@@ -454,11 +460,27 @@ msgstr "XDMCP: Kunne ikke opprette XDMCP buffer!"
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Kunne ikke lese XDMCP header!"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:656
+#: ../gui/simple-greeter/gdm-chooser-widget.c:979
+msgid "Inactive Text"
+msgstr "Inaktiv tekst"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:980
+msgid "The text to use in the label if the user hasn't picked an item yet"
+msgstr "Tekst som skal brukes i etiketten hvis brukeren ikke har valgt en oppføring ennå"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:988
+msgid "Active Text"
+msgstr "Aktiv tekst"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:989
+msgid "The text to use in the label if the user has picked an item"
+msgstr "Tekst som skal brukes i etiketten hvis brukeren har valgt en oppføring"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:706
 msgid "%l:%M:%S %p"
 msgstr "%l:%M:%S"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:656
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:706
 msgid "%l:%M %p"
 msgstr "%l:%M"
 
@@ -467,7 +489,7 @@ msgstr "%l:%M"
 #. *              should begin with a 0 in your locale (e.g. "May
 #. *              01" instead of "May  1").
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:662
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:712
 msgid "%a %b %e"
 msgstr "%a %b %e"
 
@@ -475,7 +497,7 @@ msgstr "%a %b %e"
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:667
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:717
 #, c-format
 msgid "%1$s, %2$s"
 msgstr "%1$s: %2$s"
@@ -529,44 +551,59 @@ msgid "Version"
 msgstr "Versjon"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:13
-msgid "gtk-cancel"
-msgstr "gtk-cancel"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:14
 msgid "page 1"
 msgstr "side 1"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:15
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:14
 msgid "page 2"
 msgstr "side 2"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:16
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:15
 msgid "page 3"
 msgstr "side 3"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:17
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:16
 msgid "page 4"
 msgstr "side 4"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:18
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:17
 msgid "page 5"
 msgstr "side 5"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:506
-msgid "Previous Session"
-msgstr "Forrige sesjon"
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:380
+msgid "Default"
+msgstr "Forvalg"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:512
-msgid "System Default"
-msgstr "Systemforvalg"
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:381
+msgid "Login with the same session as last time."
+msgstr "Logg inn med samme sesjon som sist gang."
+
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:386
+msgid "Legacy"
+msgstr "Legacy"
+
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:387
+msgid "Login based on preset legacy configuration"
+msgstr "Innlogging basert på forhåndssatt tidligere konfigurasjon"
+
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:430
+msgid "_Sessions:"
+msgstr "_Sesjoner:"
+
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:431
+msgid "_Session:"
+msgstr "_Sesjon:"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
 msgid "Set to True to enable the xsettings settings manager plugin."
-msgstr "Sett til True for å aktivere tillegg for håndtering av innstillinger i xsettings."
+msgstr ""
+"Sett til True for å aktivere tillegg for håndtering av innstillinger i "
+"xsettings."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
 msgid "True if the xsettings settings manager plugin is enabled."
-msgstr "True hvis tillegg for håndtering av innstillinger i xsettings er aktivert."
+msgstr ""
+"True hvis tillegg for håndtering av innstillinger i xsettings er aktivert."
 
 #: ../gui/simple-greeter/gdm-user.c:219
 msgid "Manager"
@@ -576,26 +613,35 @@ msgstr "Håndterer"
 msgid "The user manager object this user is controlled by."
 msgstr "Brukerhåndteringsobjekt denne brukeren kontrolleres av."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:410
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:231
 msgid "Other..."
 msgstr "Annen..."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:411
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:232
 msgid "Choose a different account"
 msgstr "Velg en annen konto"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:419
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:237
 msgid "Guest"
 msgstr "Gjest"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:420
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:238
 msgid "Login as a temporary guest"
 msgstr "Logg inn som en midlertidig gjest"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:506
-msgid "Short Name"
-msgstr "Kort navn"
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:258
+#, c-format
+msgid "Log in as %s"
+msgstr "Logg inn som %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:678
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:323
 msgid "Currently logged in"
 msgstr "Allerede logget inn"
+
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:363
+msgid "_Users:"
+msgstr "Br_ukere:"
+
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:364
+msgid "_User:"
+msgstr "Br_uker:"
