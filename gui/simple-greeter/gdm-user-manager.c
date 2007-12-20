@@ -97,6 +97,7 @@ struct GdmUserManagerPrivate
         GnomeVFSMonitorHandle *passwd_monitor;
         GnomeVFSMonitorHandle *shells_monitor;
         DBusGProxy            *seat_proxy;
+        char                  *seat_id;
 
         guint                  reload_id;
         uid_t                  minimal_uid;
@@ -159,6 +160,46 @@ on_user_icon_changed (GdmUser        *user,
         g_debug ("GdmUserManager: user icon changed");
 }
 
+static char *
+get_seat_id_for_session (DBusGConnection *connection,
+                         const char      *session_id)
+{
+        DBusGProxy      *proxy;
+        GError          *error;
+        char            *seat_id;
+        gboolean         res;
+
+        proxy = NULL;
+        seat_id = NULL;
+
+        proxy = dbus_g_proxy_new_for_name (connection,
+                                           CK_NAME,
+                                           session_id,
+                                           CK_SESSION_INTERFACE);
+        if (proxy == NULL) {
+                g_warning ("Failed to connect to the ConsoleKit seat object");
+                goto out;
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 "GetSeatId",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 DBUS_TYPE_G_OBJECT_PATH, &seat_id,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("Failed to identify the current seat: %s", error->message);
+                g_error_free (error);
+        }
+ out:
+        if (proxy != NULL) {
+                g_object_unref (proxy);
+        }
+
+        return seat_id;
+}
+
 static void
 add_sessions_for_user (GdmUserManager *manager,
                        GdmUser        *user)
@@ -204,7 +245,7 @@ add_sessions_for_user (GdmUserManager *manager,
                                  &sessions,
                                  G_TYPE_INVALID);
         if (! res) {
-                g_warning ("Failed to find sessions for user: %s", error->message);
+                g_debug ("Failed to find sessions for user: %s", error->message);
                 g_error_free (error);
                 goto out;
         }
@@ -213,8 +254,18 @@ add_sessions_for_user (GdmUserManager *manager,
 
         for (i = 0; i < sessions->len; i++) {
                 char *ssid;
+                char *sid;
 
                 ssid = g_ptr_array_index (sessions, i);
+
+                /* skip if on another seat */
+
+                sid = get_seat_id_for_session (connection, ssid);
+                if (sid == NULL
+                    || manager->priv->seat_id == NULL
+                    || strcmp (sid, manager->priv->seat_id) != 0) {
+                        continue;
+                }
 
                 g_hash_table_insert (manager->priv->sessions,
                                      g_strdup (ssid),
@@ -316,26 +367,7 @@ get_current_seat_id (DBusGConnection *connection)
 
         g_object_unref (proxy);
 
-        proxy = dbus_g_proxy_new_for_name (connection,
-                                           CK_NAME,
-                                           session_id,
-                                           CK_SESSION_INTERFACE);
-        if (proxy == NULL) {
-                g_warning ("Failed to connect to the ConsoleKit seat object");
-                goto out;
-        }
-
-        error = NULL;
-        res = dbus_g_proxy_call (proxy,
-                                 "GetSeatId",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 DBUS_TYPE_G_OBJECT_PATH, &seat_id,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Failed to identify the current seat: %s", error->message);
-                g_error_free (error);
-        }
+        seat_id = get_seat_id_for_session (connection, session_id);
 
  out:
         if (proxy != NULL) {
@@ -476,7 +508,6 @@ get_seat_proxy (GdmUserManager *manager)
         DBusGConnection *connection;
         DBusGProxy      *proxy;
         GError          *error;
-        char            *seat_id;
 
         g_assert (manager->priv->seat_proxy == NULL);
 
@@ -488,19 +519,19 @@ get_seat_proxy (GdmUserManager *manager)
                 return;
         }
 
-        seat_id = get_current_seat_id (connection);
-        if (seat_id == NULL) {
+        manager->priv->seat_id = get_current_seat_id (connection);
+        if (manager->priv->seat_id == NULL) {
                 return;
         }
-        g_debug ("GdmUserManager: Found current seat: %s", seat_id);
+
+        g_debug ("GdmUserManager: Found current seat: %s", manager->priv->seat_id);
 
         error = NULL;
         proxy = dbus_g_proxy_new_for_name_owner (connection,
                                                  CK_NAME,
-                                                 seat_id,
+                                                 manager->priv->seat_id,
                                                  CK_SEAT_INTERFACE,
                                                  &error);
-        g_free (seat_id);
 
         if (proxy == NULL) {
                 g_warning ("Failed to connect to the ConsoleKit seat object: %s", error->message);
@@ -900,6 +931,8 @@ gdm_user_manager_finalize (GObject *object)
 
         gnome_vfs_monitor_cancel (manager->priv->passwd_monitor);
         g_hash_table_destroy (manager->priv->users);
+
+        g_free (manager->priv->seat_id);
 
         G_OBJECT_CLASS (gdm_user_manager_parent_class)->finalize (object);
 }
