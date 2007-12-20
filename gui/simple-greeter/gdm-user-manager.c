@@ -189,7 +189,7 @@ get_seat_id_for_session (DBusGConnection *connection,
                                  DBUS_TYPE_G_OBJECT_PATH, &seat_id,
                                  G_TYPE_INVALID);
         if (! res) {
-                g_warning ("Failed to identify the current seat: %s", error->message);
+                g_debug ("Failed to identify the current seat: %s", error->message);
                 g_error_free (error);
         }
  out:
@@ -360,7 +360,7 @@ get_current_seat_id (DBusGConnection *connection)
                                  &session_id,
                                  G_TYPE_INVALID);
         if (! res) {
-                g_warning ("Failed to identify the current session: %s", error->message);
+                g_debug ("Failed to identify the current session: %s", error->message);
                 g_error_free (error);
                 goto out;
         }
