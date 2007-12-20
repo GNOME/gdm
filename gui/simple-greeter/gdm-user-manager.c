@@ -365,8 +365,6 @@ get_current_seat_id (DBusGConnection *connection)
                 goto out;
         }
 
-        g_object_unref (proxy);
-
         seat_id = get_seat_id_for_session (connection, session_id);
 
  out:
@@ -900,7 +898,6 @@ gdm_user_manager_init (GdmUserManager *manager)
         queue_reload_passwd (manager);
 
         manager->priv->users_dirty = FALSE;
-
 }
 
 static void
