@@ -41,6 +41,7 @@ struct GdmGreeterPanelPrivate
         int                     monitor;
         GdkRectangle            geometry;
         GtkWidget              *hbox;
+        GtkWidget              *hostname_label;
 };
 
 enum {
@@ -398,9 +399,18 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
         gtk_widget_show (panel->priv->hbox);
         gtk_container_add (GTK_CONTAINER (panel), panel->priv->hbox);
 
-        label = gtk_label_new (g_get_host_name ());
+        /* Add a label so that the panel gets sized correctly */
+        label = gtk_label_new ("");
         gtk_box_pack_start (GTK_BOX (panel->priv->hbox), label, FALSE, FALSE, 6);
         gtk_widget_show (label);
+
+        /* FIXME: we should only show hostname on panel when connected
+           to a remote host */
+        if (0) {
+                panel->priv->hostname_label = gtk_label_new (g_get_host_name ());
+                gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->hostname_label, FALSE, FALSE, 6);
+                gtk_widget_show (panel->priv->hostname_label);
+        }
 
         tray = na_tray_new_for_screen (gtk_window_get_screen (GTK_WINDOW (panel)),
                                        GTK_ORIENTATION_HORIZONTAL);

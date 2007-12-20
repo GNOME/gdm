@@ -208,7 +208,6 @@ toggle_panel (GdmSessionManager *manager,
               gboolean           enabled,
               GdmGreeterSession *session)
 {
-#if 0
         if (enabled) {
                 session->priv->panel = gdm_greeter_panel_new ();
                 gtk_widget_show (session->priv->panel);
@@ -216,7 +215,6 @@ toggle_panel (GdmSessionManager *manager,
                 gtk_widget_destroy (session->priv->panel);
                 session->priv->panel = NULL;
         }
-#endif
 }
 
 static void
