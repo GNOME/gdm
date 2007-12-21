@@ -333,8 +333,8 @@ launch_metacity (GdmGreeterSession *session)
 static void
 start_window_manager (GdmGreeterSession *session)
 {
-        if (! launch_compiz (session)) {
-                launch_metacity (session);
+        if (! launch_metacity (session)) {
+                launch_compiz (session);
         }
 }
 

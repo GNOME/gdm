@@ -1,3 +1,22 @@
+2007-12-21  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/gdm-session-worker.c:
+	(gdm_session_worker_uninitialize_pam),
+	(gdm_session_worker_initialize_pam),
+	(gdm_session_worker_authenticate_user),
+	(gdm_session_worker_authorize_user),
+	(gdm_session_worker_accredit_user),
+	(gdm_session_worker_start_user_session),
+	(gdm_session_worker_open_user_session), (get_state_name),
+	(state_change_idle):
+	Add some debug output for the state changes.
+
+	* gui/simple-greeter/gdm-chooser-widget.c:
+	(update_column_visibility):
+	* gui/simple-greeter/gdm-greeter-session.c: (start_window_manager):
+	Prefer metacity over compiz.  We've had a number of compiz
+	bugs show up and confuse us.
+
 2007-12-20  Ray Strode  <halfline@gnome.org>
 
 	* gui/simple-greeter (update_column_visibility): reenable

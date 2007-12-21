@@ -1259,7 +1259,6 @@ update_column_visibility (GdmChooserWidget *widget)
                 gtk_tree_view_column_set_visible (widget->priv->image_column,
                                                   FALSE);
         }
-
         if (widget->priv->number_of_in_use_rows > 0) {
                 gtk_tree_view_column_set_visible (widget->priv->is_in_use_column,
                                                   TRUE);

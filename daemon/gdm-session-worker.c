@@ -778,6 +778,7 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
         pam_end (worker->priv->pam_handle, status);
         worker->priv->pam_handle = NULL;
 
+        g_debug ("GdmSessionWorker: state NONE");
         worker->priv->state = GDM_SESSION_WORKER_STATE_NONE;
 }
 
@@ -875,7 +876,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                 goto out;
         }
 
-        g_debug ("GdmSessionWorker: initialized");
+        g_debug ("GdmSessionWorker: state SETUP_COMPLETE");
         worker->priv->state = GDM_SESSION_WORKER_STATE_SETUP_COMPLETE;
 
  out:
@@ -916,6 +917,7 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
                 goto out;
         }
 
+        g_debug ("GdmSessionWorker: state AUTHENTICATED");
         worker->priv->state = GDM_SESSION_WORKER_STATE_AUTHENTICATED;
 
  out:
@@ -962,6 +964,7 @@ gdm_session_worker_authorize_user (GdmSessionWorker *worker,
                 goto out;
         }
 
+        g_debug ("GdmSessionWorker: state AUTHORIZED");
         worker->priv->state = GDM_SESSION_WORKER_STATE_AUTHORIZED;
 
  out:
@@ -1126,6 +1129,7 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
                 goto out;
         }
 
+        g_debug ("GdmSessionWorker: state ACCREDITED");
         worker->priv->state = GDM_SESSION_WORKER_STATE_ACCREDITED;
 
  out:
@@ -1385,6 +1389,7 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
         g_debug ("GdmSessionWorker: session opened creating reply...");
         g_assert (sizeof (GPid) <= sizeof (int));
 
+        g_debug ("GdmSessionWorker: state SESSION_STARTED");
         worker->priv->state = GDM_SESSION_WORKER_STATE_SESSION_STARTED;
 
         gdm_session_worker_watch_child (worker);
@@ -1417,6 +1422,7 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
                 goto out;
         }
 
+        g_debug ("GdmSessionWorker: state SESSION_OPENED");
         worker->priv->state = GDM_SESSION_WORKER_STATE_SESSION_OPENED;
 
  out:
@@ -1640,13 +1646,51 @@ do_start_session (GdmSessionWorker *worker)
                               (int)worker->priv->child_pid);
 }
 
+static const char *
+get_state_name (int state)
+{
+        const char *name;
+
+        name = NULL;
+
+        switch (state) {
+        case GDM_SESSION_WORKER_STATE_NONE:
+                name = "NONE";
+                break;
+        case GDM_SESSION_WORKER_STATE_SETUP_COMPLETE:
+                name = "SETUP_COMPLETE";
+                break;
+        case GDM_SESSION_WORKER_STATE_AUTHENTICATED:
+                name = "AUTHENTICATED";
+                break;
+        case GDM_SESSION_WORKER_STATE_AUTHORIZED:
+                name = "AUTHORIZED";
+                break;
+        case GDM_SESSION_WORKER_STATE_ACCREDITED:
+                name = "ACCREDITED";
+                break;
+        case GDM_SESSION_WORKER_STATE_SESSION_OPENED:
+                name = "SESSION_OPENED";
+                break;
+        case GDM_SESSION_WORKER_STATE_SESSION_STARTED:
+                name = "SESSION_STARTED";
+                break;
+        default:
+                g_assert_not_reached ();
+                break;
+        }
+
+        return name;
+}
+
 static gboolean
 state_change_idle (GdmSessionWorker *worker)
 {
         int new_state;
 
         new_state = worker->priv->state + 1;
-        g_debug ("GdmSessionWorker: changing state to %d", new_state);
+        g_debug ("GdmSessionWorker: changing state to %s",
+                 get_state_name (new_state));
 
         worker->priv->state_change_idle_id = 0;
 
