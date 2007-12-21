@@ -4267,11 +4267,11 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 
 #if defined(HAVE_UT_UT_USER)
 		gdm_debug ("utmp-wtmp: Using username %*s",
-			   sizeof (record.ut_user),
+			   (int) sizeof (record.ut_user),
 			   record.ut_user);
 #elif defined(HAVE_UT_UT_NAME)
 		gdm_debug ("utmp-wtmp: Using username %*s",
-			   sizeof (record.ut_name),
+			   (int) sizeof (record.ut_name),
 			   record.ut_name);
 #endif
 	}
@@ -4302,7 +4302,7 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 #if defined(HAVE_UT_UT_ID)
 	strncpy (record.ut_id, d->name, sizeof (record.ut_id));
 	gdm_debug ("utmp-wtmp: Using id %*s",
-	       sizeof (record.ut_id),
+	       (int) sizeof (record.ut_id),
 	       record.ut_id);
 #endif
 
@@ -4315,7 +4315,7 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 	}
 
 	gdm_debug ("utmp-wtmp: Using line %*s",
-	       sizeof (record.ut_line),
+	       (int) sizeof (record.ut_line),
 	       record.ut_line);
 
 #if defined(HAVE_UT_UT_HOST)
@@ -4333,7 +4333,7 @@ gdm_slave_write_utmp_wtmp_record (GdmDisplay *d,
 		g_free (host);
 
 		gdm_debug ("utmp-wtmp: Using hostname %*s",
-		   sizeof (record.ut_host),
+		   (int) sizeof (record.ut_host),
 		   record.ut_host);
 
 #ifdef HAVE_UT_SYSLEN

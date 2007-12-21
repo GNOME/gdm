@@ -616,7 +616,7 @@ try_command (const char *command)
 			}
 		}
 		else if (WIFSIGNALED (status)) {
-			gdm_error ("Command '%s' was killed by signal '%s'"), command, g_strsignal (WTERMSIG (status));
+			gdm_error ("Command '%s' was killed by signal '%s'", command, g_strsignal (WTERMSIG (status)));
 			res = FALSE;
 		}
 	}
