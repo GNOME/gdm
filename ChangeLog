@@ -1,3 +1,19 @@
+2007-12-21  Ray Strode  <halfline@gnome.org>
+
+	* gui/simple-greeter/gdm-chooser-widget.c:
+	(shrink_edge_toward_active_row): bail if we're already at the top
+	(run_animation): stop running if the animation finishes elsewhere
+	between iterations.
+	(set_inactive_items_visible): new function to hide or show all
+	inactive items in one go
+	(skip_animation): new function skip to the fully shrunk or fully
+	grown state without any intermediate animation
+	(gdm_chooser_widget_grow), (gdm_chooser_widget_shrink): skip
+	animation if widget is hidden
+	(gdm_chooser_widget_show), (gdm_chooser_widget_hide),
+	(gdm_chooser_widget_class_init): stop any pending animations if
+	the widget just gets shown or hidden
+
 2007-12-21  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/gdm-session-worker.c:
@@ -19,7 +35,8 @@
 
 2007-12-20  Ray Strode  <halfline@gnome.org>
 
-	* gui/simple-greeter (update_column_visibility): reenable
+	* gui/simple-greeter/gdm-chooser-widget.c:
+	(update_column_visibility): reenable
 	(gdm_chooser_widget_add_item), (gdm_chooser_widget_remove_item),
 	(gdm_chooser_widget_set_item_in_use): call
 	queue_column_visibility_update as needed so columns get shown

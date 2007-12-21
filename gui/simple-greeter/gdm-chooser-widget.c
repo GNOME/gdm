@@ -311,7 +311,10 @@ shrink_edge_toward_active_row (GdmChooserWidget     *widget,
                 if (relative_position < 0) {
                         gtk_tree_path_next (edge_path);
                 } else {
-                        gtk_tree_path_prev (edge_path);
+                        if (!gtk_tree_path_prev (edge_path)) {
+                                edge_is_hidden = TRUE;
+                                goto out;
+                        }
                 }
                 gtk_tree_row_reference_free (*edge_row);
 
@@ -329,6 +332,7 @@ shrink_edge_toward_active_row (GdmChooserWidget     *widget,
         } else {
                 edge_is_hidden = TRUE;
         }
+out:
         gtk_tree_path_free (active_path);
         gtk_tree_path_free (edge_path);
 
@@ -359,12 +363,10 @@ run_animation (GdmChooserWidget *widget,
                                 shrink_edge_toward_active_row (widget,
                                                  &widget->priv->bottom_edge_row);
                 }
-        } else {
+        } else if (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING) {
                 GtkTreePath *path;
                 GtkTreeIter  iter;
                 gboolean     is_visible;
-
-                g_assert (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING);
 
                 path = gtk_tree_path_new_first ();
 
@@ -389,15 +391,17 @@ run_animation (GdmChooserWidget *widget,
                 } while (is_visible);
 
                 gtk_tree_path_free (path);
+        } else {
+                is_done = TRUE;
         }
 
         number_of_iterations--;
 
-        if (number_of_iterations == 0) {
-                return is_done;
+        if (number_of_iterations != 0) {
+                is_done = run_animation (widget, number_of_iterations);
         }
 
-        return run_animation (widget, number_of_iterations);
+        return is_done;
 }
 
 static gboolean
@@ -522,6 +526,66 @@ start_animation (GdmChooserWidget *widget)
 }
 
 static void
+set_inactive_items_visible (GdmChooserWidget *widget,
+                            gboolean          should_show)
+{
+        GtkTreeModel *model;
+        char         *active_item_id;
+        GtkTreeIter   active_item_iter;
+        GtkTreeIter   iter;
+
+        model = GTK_TREE_MODEL (widget->priv->list_store);
+
+        if (!gtk_tree_model_get_iter_first (model, &iter)) {
+                return;
+        }
+
+        active_item_id = get_active_item_id (widget, &active_item_iter);
+
+        do {
+                gboolean is_active;
+
+                is_active = FALSE;
+                if (active_item_id != NULL) {
+                        char *id;
+
+                        gtk_tree_model_get (model, &iter,
+                                            CHOOSER_ID_COLUMN, &id, -1);
+
+                        if (strcmp (active_item_id, id) == 0) {
+                                is_active = TRUE;
+                                g_free (active_item_id);
+                                active_item_id = NULL;
+                        }
+                        g_free (id);
+                }
+
+                if (!is_active) {
+                        gtk_list_store_set (widget->priv->list_store,
+                                            &iter, CHOOSER_ITEM_IS_VISIBLE_COLUMN, should_show, -1);
+                } else {
+
+                        gtk_list_store_set (widget->priv->list_store,
+                                            &iter, CHOOSER_ITEM_IS_VISIBLE_COLUMN, TRUE, -1);
+                }
+        } while (gtk_tree_model_iter_next (model, &iter));
+
+        g_free (active_item_id);
+}
+
+static void
+skip_animation (GdmChooserWidget *widget)
+{
+        if (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_SHRINKING) {
+                set_inactive_items_visible (GDM_CHOOSER_WIDGET (widget), FALSE);
+                widget->priv->state = GDM_CHOOSER_WIDGET_STATE_SHRUNK;
+        } else if (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING) {
+                set_inactive_items_visible (GDM_CHOOSER_WIDGET (widget), TRUE);
+                widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
+        }
+}
+
+static void
 gdm_chooser_widget_grow (GdmChooserWidget *widget)
 {
         gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (widget->priv->scrolled_window),
@@ -533,9 +597,12 @@ gdm_chooser_widget_grow (GdmChooserWidget *widget)
 
         set_frame_text (widget, widget->priv->inactive_text);
 
-        if (GTK_WIDGET_VISIBLE (GTK_WIDGET (widget))) {
-                widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWING;
+        widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWING;
+
+        if (GTK_WIDGET_VISIBLE (widget)) {
                 start_animation (widget);
+        } else {
+                skip_animation (widget);
         }
 }
 
@@ -585,9 +652,13 @@ gdm_chooser_widget_shrink (GdmChooserWidget *widget)
                                              GTK_SHADOW_ETCHED_OUT);
 
         clear_selection (widget);
-        if (GTK_WIDGET_VISIBLE (GTK_WIDGET (widget))) {
-                widget->priv->state = GDM_CHOOSER_WIDGET_STATE_SHRINKING;
+
+        widget->priv->state = GDM_CHOOSER_WIDGET_STATE_SHRINKING;
+
+        if (GTK_WIDGET_VISIBLE (widget)) {
                 start_animation (widget);
+        } else {
+                skip_animation (widget);
         }
 }
 
@@ -937,6 +1008,20 @@ gdm_chooser_widget_size_allocate (GtkWidget        *widget,
 #endif
 
 static void
+gdm_chooser_widget_hide (GtkWidget *widget)
+{
+        skip_animation (GDM_CHOOSER_WIDGET (widget));
+        GTK_WIDGET_CLASS (gdm_chooser_widget_parent_class)->hide (widget);
+}
+
+static void
+gdm_chooser_widget_show (GtkWidget *widget)
+{
+        skip_animation (GDM_CHOOSER_WIDGET (widget));
+        GTK_WIDGET_CLASS (gdm_chooser_widget_parent_class)->show (widget);
+}
+
+static void
 gdm_chooser_widget_class_init (GdmChooserWidgetClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
@@ -952,6 +1037,8 @@ gdm_chooser_widget_class_init (GdmChooserWidgetClass *klass)
 #ifdef BUILD_ALLOCATION_HACK
         widget_class->size_allocate = gdm_chooser_widget_size_allocate;
 #endif
+        widget_class->hide = gdm_chooser_widget_hide;
+        widget_class->show = gdm_chooser_widget_show;
 
         signals [ACTIVATED] = g_signal_new ("activated",
                                             G_TYPE_FROM_CLASS (object_class),
