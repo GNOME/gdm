@@ -104,6 +104,7 @@ struct GdmSessionWorkerPrivate
         char            **arguments;
         GHashTable       *environment;
         guint32           cancelled : 1;
+        guint32           timed_out : 1;
         guint             state_change_idle_id;
 
         char             *server_address;
@@ -537,8 +538,10 @@ send_question_method (GdmSessionWorker *worker,
         dbus_message_unref (message);
 
         if (dbus_error_is_set (&error)) {
-                if (strcmp (error.name, GDM_SESSION_DBUS_ERROR_CANCEL) == 0) {
+                if (dbus_error_has_name (&error, GDM_SESSION_DBUS_ERROR_CANCEL)) {
                         worker->priv->cancelled = TRUE;
+                } else if (dbus_error_has_name (&error, DBUS_ERROR_NO_REPLY)) {
+                        worker->priv->timed_out = TRUE;
                 }
                 g_debug ("%s %s raised: %s\n",
                          method,
@@ -645,6 +648,7 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
         utf8_msg = convert_to_utf8 (query->msg);
 
         worker->priv->cancelled = FALSE;
+        worker->priv->timed_out = FALSE;
 
         user_answer = NULL;
         res = FALSE;
@@ -662,8 +666,13 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
                 res = gdm_session_worker_report_problem (worker, utf8_msg);
                 break;
         default:
-                g_debug ("GdmSessionWorker: unknown query of type %u\n", query->msg_style);
+                g_assert_not_reached ();
                 break;
+        }
+
+        if (worker->priv->timed_out) {
+                send_dbus_void_method (worker->priv->connection, "CancelPendingQuery");
+                worker->priv->timed_out = FALSE;
         }
 
         if (user_answer != NULL) {

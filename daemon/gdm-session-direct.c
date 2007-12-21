@@ -603,6 +603,23 @@ gdm_session_direct_handle_info (GdmSessionDirect *session,
 }
 
 static DBusHandlerResult
+gdm_session_direct_handle_cancel_pending_query (GdmSessionDirect *session,
+                                                DBusConnection   *connection,
+                                                DBusMessage      *message)
+{
+        DBusMessage *reply;
+
+        g_debug ("GdmSessionDirect: worker cancelling pending query");
+        cancel_pending_query (session);
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
 gdm_session_direct_handle_problem (GdmSessionDirect *session,
                                    DBusConnection   *connection,
                                    DBusMessage      *message)
@@ -758,6 +775,8 @@ session_worker_message (DBusConnection *connection,
                 return gdm_session_direct_handle_info (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "Problem")) {
                 return gdm_session_direct_handle_problem (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "CancelPendingQuery")) {
+                return gdm_session_direct_handle_cancel_pending_query (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SetupComplete")) {
                 return gdm_session_direct_handle_setup_complete (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SetupFailed")) {
@@ -840,6 +859,8 @@ do_introspect (DBusConnection *connection,
                                "    </method>\n"
                                "    <method name=\"AccreditationFailed\">\n"
                                "      <arg name=\"message\" direction=\"in\" type=\"s\"/>\n"
+                               "    </method>\n"
+                               "    <method name=\"CancelPendingQuery\">\n"
                                "    </method>\n"
                                "    <method name=\"InfoQuery\">\n"
                                "      <arg name=\"query\" direction=\"in\" type=\"s\"/>\n"
