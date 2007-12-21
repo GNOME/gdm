@@ -1,3 +1,11 @@
+2007-12-21  Brian Cameron  <brian.cameron@sun.com>
+
+	* configure.ac, tests/Makefile.am:  Minor change to
+	  add -lsocket and -lnsl when building the test programs
+	  on Solaris.  This is needed to link getnameinfo,
+	  getaddrinfo, freeaddrinfo, and gai_strerror which
+	  are references from libgdmcommon.
+
 2007-12-21  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/gdm-session-direct.c:
