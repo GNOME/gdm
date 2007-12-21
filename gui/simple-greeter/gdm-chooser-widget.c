@@ -1252,7 +1252,6 @@ add_separator (GdmChooserWidget *widget)
 static gboolean
 update_column_visibility (GdmChooserWidget *widget)
 {
-#if 0
         if (widget->priv->number_of_rows_with_images > 0) {
                 gtk_tree_view_column_set_visible (widget->priv->image_column,
                                                   TRUE);
@@ -1268,7 +1267,6 @@ update_column_visibility (GdmChooserWidget *widget)
                 gtk_tree_view_column_set_visible (widget->priv->is_in_use_column,
                                                   FALSE);
         }
-#endif
         return FALSE;
 }
 
@@ -1519,10 +1517,12 @@ gdm_chooser_widget_add_item (GdmChooserWidget *widget,
 
         if (in_use) {
                 widget->priv->number_of_in_use_rows++;
+                queue_column_visibility_update (widget);
         }
 
         if (image != NULL) {
                 widget->priv->number_of_rows_with_images++;
+                queue_column_visibility_update (widget);
         }
 
         is_visible = widget->priv->active_row == NULL;
@@ -1574,6 +1574,7 @@ gdm_chooser_widget_remove_item (GdmChooserWidget *widget,
 
         if (is_in_use) {
                 widget->priv->number_of_in_use_rows--;
+                queue_column_visibility_update (widget);
         }
 
         if (is_separate) {
@@ -1629,6 +1630,7 @@ gdm_chooser_widget_set_item_in_use (GdmChooserWidget *widget,
                                     gboolean          is_in_use)
 {
         GtkTreeIter   iter;
+        gboolean      was_in_use;
 
         g_return_if_fail (GDM_IS_CHOOSER_WIDGET (widget));
 
@@ -1636,8 +1638,23 @@ gdm_chooser_widget_set_item_in_use (GdmChooserWidget *widget,
                 return;
         }
 
-        gtk_list_store_set (widget->priv->list_store, &iter,
-                            CHOOSER_ITEM_IS_IN_USE_COLUMN, is_in_use, -1);
+        gtk_tree_model_get (GTK_TREE_MODEL (widget->priv->list_store), &iter,
+                            CHOOSER_ITEM_IS_IN_USE_COLUMN, &was_in_use,
+                            -1);
+
+        if (was_in_use != is_in_use) {
+
+                if (is_in_use) {
+                        widget->priv->number_of_in_use_rows++;
+                } else {
+                        widget->priv->number_of_in_use_rows--;
+                }
+                queue_column_visibility_update (widget);
+
+                gtk_list_store_set (widget->priv->list_store, &iter,
+                                    CHOOSER_ITEM_IS_IN_USE_COLUMN, is_in_use, -1);
+
+        }
 }
 
 void
