@@ -37,6 +37,7 @@
 #include <glib/gstdio.h>
 #include <glib-object.h>
 
+#include <gdk/gdkkeysyms.h>
 #include <gdk/gdkx.h>
 
 #include <gtk/gtk.h>
@@ -913,6 +914,17 @@ fit_window_to_children (GdmGreeterLoginWindow *window)
         return TRUE;
 }
 
+static gboolean
+gdm_greeter_login_window_key_press_event (GtkWidget   *widget,
+                                          GdkEventKey *event)
+{
+        if (event->keyval == GDK_Escape) {
+                reset_dialog (GDM_GREETER_LOGIN_WINDOW (widget));
+        }
+
+        return GTK_WIDGET_CLASS (gdm_greeter_login_window_parent_class)->key_press_event (widget, event);
+}
+
 static void
 gdm_greeter_login_window_size_request (GtkWidget      *widget,
                                        GtkRequisition *requisition)
@@ -994,6 +1006,7 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
         object_class->constructor = gdm_greeter_login_window_constructor;
         object_class->finalize = gdm_greeter_login_window_finalize;
 
+        widget_class->key_press_event = gdm_greeter_login_window_key_press_event;
         widget_class->size_request = gdm_greeter_login_window_size_request;
         widget_class->size_allocate = gdm_greeter_login_window_size_allocate;
 
