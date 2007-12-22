@@ -59,6 +59,15 @@ typedef enum {
         GDM_CHOOSER_WIDGET_POSITION_BOTTOM,
 } GdmChooserWidgetPosition;
 
+typedef gboolean (*GdmChooserUpdateForeachFunc)          (GdmChooserWidget *widget,
+                                                          const char       *id,
+                                                          GdkPixbuf       **image,
+                                                          char            **name,
+                                                          char            **comment,
+                                                          gboolean         *is_in_use,
+                                                          gboolean         *is_separate,
+                                                          gpointer          data);
+
 GType                  gdm_chooser_widget_get_type               (void);
 GtkWidget *            gdm_chooser_widget_new                    (const char *unactive_label,
                                                                   const char *active_label);
@@ -70,6 +79,18 @@ void                   gdm_chooser_widget_add_item               (GdmChooserWidg
                                                                   const char       *comment,
                                                                   gboolean          is_in_use,
                                                                   gboolean          keep_separate);
+
+void                   gdm_chooser_widget_update_foreach_item    (GdmChooserWidget           *widget,
+                                                                  GdmChooserUpdateForeachFunc cb,
+                                                                  gpointer                    data);
+
+void                   gdm_chooser_widget_update_item            (GdmChooserWidget *widget,
+                                                                  const char       *id,
+                                                                  GdkPixbuf        *new_image,
+                                                                  const char       *new_name,
+                                                                  const char       *new_comment,
+                                                                  gboolean          new_in_use,
+                                                                  gboolean          new_is_separate);
 
 void                   gdm_chooser_widget_remove_item            (GdmChooserWidget *widget,
                                                                   const char       *id);

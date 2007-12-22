@@ -42,18 +42,22 @@ enum {
         USER_ACCOUNT_DISABLED        = 1 << 1,
 };
 
+#define DEFAULT_USER_ICON "stock_person"
+
 #define GDM_USER_CHOOSER_WIDGET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_USER_CHOOSER_WIDGET, GdmUserChooserWidgetPrivate))
 
 #define ICON_SIZE 64
 
 struct GdmUserChooserWidgetPrivate
 {
-        GdmUserManager     *manager;
+        GdmUserManager *manager;
+        GtkIconTheme   *icon_theme;
 
-        GdkPixbuf          *logged_in_pixbuf;
+        GdkPixbuf      *logged_in_pixbuf;
+        GdkPixbuf      *stock_person_pixbuf;
 
-        guint               show_other_user : 1;
-        guint               show_guest_user : 1;
+        guint           show_other_user : 1;
+        guint           show_guest_user : 1;
 };
 
 enum {
@@ -173,6 +177,16 @@ gdm_user_chooser_widget_dispose (GObject *object)
         widget = GDM_USER_CHOOSER_WIDGET (object);
 
         G_OBJECT_CLASS (gdm_user_chooser_widget_parent_class)->dispose (object);
+
+        if (widget->priv->logged_in_pixbuf != NULL) {
+                g_object_unref (widget->priv->logged_in_pixbuf);
+                widget->priv->logged_in_pixbuf = NULL;
+        }
+
+        if (widget->priv->stock_person_pixbuf != NULL) {
+                g_object_unref (widget->priv->stock_person_pixbuf);
+                widget->priv->stock_person_pixbuf = NULL;
+        }
 }
 
 static void
@@ -189,14 +203,15 @@ gdm_user_chooser_widget_class_init (GdmUserChooserWidgetClass *klass)
 }
 
 static GdkPixbuf *
-get_pixbuf_for_user (GdmUserChooserWidget *widget,
-                     const char           *username)
+get_stock_person_pixbuf (GdmUserChooserWidget *widget)
 {
-        GtkIconTheme *theme;
-        GdkPixbuf    *pixbuf;
+        GdkPixbuf *pixbuf;
 
-        theme = gtk_icon_theme_get_default ();
-        pixbuf = gtk_icon_theme_load_icon (theme, "stock_person", ICON_SIZE, 0, NULL);
+        pixbuf = gtk_icon_theme_load_icon (widget->priv->icon_theme,
+                                           DEFAULT_USER_ICON,
+                                           ICON_SIZE,
+                                           0,
+                                           NULL);
 
         return pixbuf;
 }
@@ -204,11 +219,9 @@ get_pixbuf_for_user (GdmUserChooserWidget *widget,
 static GdkPixbuf *
 get_logged_in_pixbuf (GdmUserChooserWidget *widget)
 {
-        GtkIconTheme *theme;
-        GdkPixbuf    *pixbuf;
+        GdkPixbuf *pixbuf;
 
-        theme = gtk_icon_theme_get_default ();
-        pixbuf = gtk_icon_theme_load_icon (theme,
+        pixbuf = gtk_icon_theme_load_icon (widget->priv->icon_theme,
                                            "emblem-default",
                                            ICON_SIZE / 3,
                                            0,
@@ -217,29 +230,97 @@ get_logged_in_pixbuf (GdmUserChooserWidget *widget)
         return pixbuf;
 }
 
+typedef struct {
+        GdkPixbuf *old_icon;
+        GdkPixbuf *new_icon;
+} IconUpdateData;
+
+static gboolean
+update_icons (GdmChooserWidget *widget,
+              const char       *id,
+              GdkPixbuf       **image,
+              char            **name,
+              char            **comment,
+              gboolean         *is_in_use,
+              gboolean         *is_separate,
+              IconUpdateData   *data)
+{
+        if (data->old_icon == *image) {
+                *image = data->new_icon;
+                return TRUE;
+        }
+
+        return FALSE;
+}
+
+static void
+load_icons (GdmUserChooserWidget *widget)
+{
+        GdkPixbuf     *old_pixbuf;
+        IconUpdateData data;
+
+        if (widget->priv->logged_in_pixbuf != NULL) {
+                g_object_unref (widget->priv->logged_in_pixbuf);
+        }
+        widget->priv->logged_in_pixbuf = get_logged_in_pixbuf (widget);
+
+        old_pixbuf = widget->priv->stock_person_pixbuf;
+        widget->priv->stock_person_pixbuf = get_stock_person_pixbuf (widget);
+        /* update the icons in the model */
+        data.old_icon = old_pixbuf;
+        data.new_icon = widget->priv->stock_person_pixbuf;
+        gdm_chooser_widget_update_foreach_item (GDM_CHOOSER_WIDGET (widget),
+                                                (GdmChooserUpdateForeachFunc)update_icons,
+                                                &data);
+        if (old_pixbuf != NULL) {
+                g_object_unref (old_pixbuf);
+        }
+}
+
+static void
+on_icon_theme_changed (GtkIconTheme         *icon_theme,
+                       GdmUserChooserWidget *widget)
+{
+        g_debug ("GdmUserChooserWidget: icon theme changed");
+        load_icons (widget);
+}
+
+static void
+setup_icons (GdmUserChooserWidget *widget)
+{
+        if (gtk_widget_has_screen (GTK_WIDGET (widget))) {
+                widget->priv->icon_theme = gtk_icon_theme_get_for_screen (gtk_widget_get_screen (GTK_WIDGET (widget)));
+        } else {
+                widget->priv->icon_theme = gtk_icon_theme_get_default ();
+        }
+
+        if (widget->priv->icon_theme != NULL) {
+                g_signal_connect (widget->priv->icon_theme,
+                                  "changed",
+                                  G_CALLBACK (on_icon_theme_changed),
+                                  widget);
+        }
+
+        load_icons (widget);
+}
+
 static gboolean
 add_special_users (GdmUserChooserWidget *widget)
 {
-        GdkPixbuf  *pixbuf;
-
-        widget->priv->logged_in_pixbuf = get_logged_in_pixbuf (widget);
-
-        pixbuf = get_pixbuf_for_user (widget, NULL);
 
         gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                      GDM_USER_CHOOSER_USER_OTHER,
-                                     pixbuf, _("Other..."),
+                                     widget->priv->stock_person_pixbuf,
+                                     _("Other..."),
                                      _("Choose a different account"), FALSE,
                                      TRUE);
 
         gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                      GDM_USER_CHOOSER_USER_GUEST,
-                                     pixbuf, _("Guest"),
+                                     widget->priv->stock_person_pixbuf,
+                                     _("Guest"),
                                      _("Login as a temporary guest"), FALSE,
                                      TRUE);
-        if (pixbuf != NULL) {
-                g_object_unref (pixbuf);
-        }
 
         return FALSE;
 }
@@ -253,7 +334,10 @@ on_user_added (GdmUserManager       *manager,
         char         *tooltip;
         gboolean      is_logged_in;
 
-        pixbuf = gdm_user_render_icon (user, GTK_WIDGET (widget), ICON_SIZE);
+        pixbuf = gdm_user_render_icon (user, ICON_SIZE);
+        if (pixbuf == NULL && widget->priv->stock_person_pixbuf != NULL) {
+                pixbuf = g_object_ref (widget->priv->stock_person_pixbuf);
+        }
 
         tooltip = g_strdup_printf (_("Log in as %s"),
                                    gdm_user_get_user_name (user));
@@ -336,6 +420,7 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
                           G_CALLBACK (on_user_is_logged_in_changed),
                           widget);
 
+        setup_icons (widget);
         add_special_users (widget);
 }
 

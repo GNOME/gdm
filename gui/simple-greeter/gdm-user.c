@@ -42,7 +42,6 @@
 #define MINIMAL_UID       100
 #define RELAX_GROUP       TRUE
 #define RELAX_OTHER       TRUE
-#define DEFAULT_USER_ICON "stock_person"
 
 enum {
         PROP_0,
@@ -595,9 +594,8 @@ check_user_file (const char *filename,
 }
 
 static GdkPixbuf *
-render_icon_from_home (GdmUser     *user,
-                       GtkWidget   *widget,
-                       gint         icon_size)
+render_icon_from_home (GdmUser *user,
+                       int      icon_size)
 {
         GdkPixbuf *  retval;
         char        *path;
@@ -718,21 +716,17 @@ render_icon_from_home (GdmUser     *user,
 
 GdkPixbuf *
 gdm_user_render_icon (GdmUser   *user,
-                      GtkWidget *widget,
                       gint       icon_size)
 {
         GdkPixbuf    *pixbuf;
         char         *path;
         char         *tmp;
-        GtkIconTheme *theme;
         gboolean      res;
 
         g_return_val_if_fail (GDM_IS_USER (user), NULL);
-        g_return_val_if_fail (widget == NULL || GTK_IS_WIDGET (widget), NULL);
         g_return_val_if_fail (icon_size > 12, NULL);
 
-        pixbuf = render_icon_from_home (user, widget, icon_size);
-
+        pixbuf = render_icon_from_home (user, icon_size);
         if (pixbuf != NULL) {
                 return pixbuf;
         }
@@ -777,30 +771,6 @@ gdm_user_render_icon (GdmUser   *user,
         }
 
         g_free (path);
-        if (pixbuf != NULL) {
-                return pixbuf;
-        }
-
-        /* Nothing yet, use stock icon */
-        if (widget != NULL && gtk_widget_has_screen (widget)) {
-                theme = gtk_icon_theme_get_for_screen (gtk_widget_get_screen (widget));
-        } else {
-                theme = gtk_icon_theme_get_default ();
-        }
-
-        pixbuf = gtk_icon_theme_load_icon (theme,
-                                           DEFAULT_USER_ICON,
-                                           icon_size,
-                                           0,
-                                           NULL);
-
-        if (pixbuf == NULL) {
-                pixbuf = gtk_icon_theme_load_icon (theme,
-                                                   GTK_STOCK_MISSING_IMAGE,
-                                                   icon_size,
-                                                   0,
-                                                   NULL);
-        }
 
         return pixbuf;
 }

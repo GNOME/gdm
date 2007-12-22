@@ -157,13 +157,86 @@ find_item (GdmChooserWidget *widget,
         return found_item;
 }
 
+typedef struct {
+        GdmChooserWidget           *widget;
+        GdmChooserUpdateForeachFunc func;
+        gpointer                    user_data;
+} UpdateForeachData;
+
+static gboolean
+foreach_item (GtkTreeModel      *model,
+              GtkTreePath       *path,
+              GtkTreeIter       *iter,
+              UpdateForeachData *data)
+{
+        GdkPixbuf *image;
+        char      *name;
+        char      *comment;
+        gboolean   in_use;
+        gboolean   is_separate;
+        gboolean   res;
+        char      *id;
+
+        gtk_tree_model_get (model,
+                            iter,
+                            CHOOSER_ID_COLUMN, &id,
+                            CHOOSER_IMAGE_COLUMN, &image,
+                            CHOOSER_NAME_COLUMN, &name,
+                            CHOOSER_COMMENT_COLUMN, &comment,
+                            CHOOSER_ITEM_IS_IN_USE_COLUMN, &in_use,
+                            CHOOSER_ITEM_IS_SEPARATED_COLUMN, &is_separate,
+                            -1);
+        res = data->func (data->widget,
+                          (const char *)id,
+                          &image,
+                          &name,
+                          &comment,
+                          &in_use,
+                          &is_separate,
+                          data->user_data);
+        if (res) {
+                gtk_list_store_set (GTK_LIST_STORE (model),
+                                    iter,
+                                    CHOOSER_ID_COLUMN, id,
+                                    CHOOSER_IMAGE_COLUMN, image,
+                                    CHOOSER_NAME_COLUMN, name,
+                                    CHOOSER_COMMENT_COLUMN, comment,
+                                    CHOOSER_ITEM_IS_IN_USE_COLUMN, in_use,
+                                    CHOOSER_ITEM_IS_SEPARATED_COLUMN, is_separate,
+                                    -1);
+        }
+
+        g_free (name);
+        g_free (comment);
+        if (image != NULL) {
+                g_object_unref (image);
+        }
+
+        return FALSE;
+}
+
+void
+gdm_chooser_widget_update_foreach_item (GdmChooserWidget           *widget,
+                                        GdmChooserUpdateForeachFunc func,
+                                        gpointer                    user_data)
+{
+        UpdateForeachData fdata;
+
+        fdata.widget = widget;
+        fdata.func = func;
+        fdata.user_data = user_data;
+        gtk_tree_model_foreach (GTK_TREE_MODEL (widget->priv->list_store),
+                                (GtkTreeModelForeachFunc) foreach_item,
+                                &fdata);
+}
+
 static char *
 get_active_item_id (GdmChooserWidget *widget,
                     GtkTreeIter      *iter)
 {
-        char *item_id;
+        char         *item_id;
         GtkTreeModel *model;
-        GtkTreePath *path;
+        GtkTreePath  *path;
 
         g_return_val_if_fail (GDM_IS_CHOOSER_WIDGET (widget), NULL);
 
@@ -326,7 +399,9 @@ shrink_edge_toward_active_row (GdmChooserWidget     *widget,
                 gtk_tree_model_filter_convert_iter_to_child_iter (widget->priv->model_filter,
                                                                   &iter, &filtered_iter);
                 gtk_list_store_set (GTK_LIST_STORE (widget->priv->list_store),
-                                    &iter, CHOOSER_ITEM_IS_VISIBLE_COLUMN, FALSE, -1);
+                                    &iter,
+                                    CHOOSER_ITEM_IS_VISIBLE_COLUMN, FALSE,
+                                    -1);
 
                 edge_is_hidden = FALSE;
         } else {
@@ -385,8 +460,9 @@ run_animation (GdmChooserWidget *widget,
                                 gtk_tree_path_next (path);
                         } else {
                                 gtk_list_store_set (GTK_LIST_STORE (widget->priv->list_store),
-                                                    &iter, CHOOSER_ITEM_IS_VISIBLE_COLUMN,
-                                                    TRUE, -1);
+                                                    &iter,
+                                                    CHOOSER_ITEM_IS_VISIBLE_COLUMN, TRUE,
+                                                    -1);
                         }
                 } while (is_visible);
 
@@ -562,11 +638,14 @@ set_inactive_items_visible (GdmChooserWidget *widget,
 
                 if (!is_active) {
                         gtk_list_store_set (widget->priv->list_store,
-                                            &iter, CHOOSER_ITEM_IS_VISIBLE_COLUMN, should_show, -1);
+                                            &iter,
+                                            CHOOSER_ITEM_IS_VISIBLE_COLUMN, should_show,
+                                            -1);
                 } else {
-
                         gtk_list_store_set (widget->priv->list_store,
-                                            &iter, CHOOSER_ITEM_IS_VISIBLE_COLUMN, TRUE, -1);
+                                            &iter,
+                                            CHOOSER_ITEM_IS_VISIBLE_COLUMN, TRUE,
+                                            -1);
                 }
         } while (gtk_tree_model_iter_next (model, &iter));
 
@@ -1583,6 +1662,77 @@ gdm_chooser_widget_new (const char *inactive_text,
 }
 
 void
+gdm_chooser_widget_update_item (GdmChooserWidget *widget,
+                                const char       *id,
+                                GdkPixbuf        *new_image,
+                                const char       *new_name,
+                                const char       *new_comment,
+                                gboolean          new_in_use,
+                                gboolean          new_is_separate)
+{
+        GtkTreeModel *model;
+        GtkTreeIter   iter;
+        GdkPixbuf    *image;
+        gboolean      is_separate;
+        gboolean      in_use;
+
+        g_return_if_fail (GDM_IS_CHOOSER_WIDGET (widget));
+
+        model = GTK_TREE_MODEL (widget->priv->list_store);
+
+        if (!find_item (widget, id, &iter)) {
+                g_critical ("Tried to remove non-existing item from chooser");
+                return;
+        }
+
+        is_separate = FALSE;
+        gtk_tree_model_get (model, &iter,
+                            CHOOSER_IMAGE_COLUMN, &image,
+                            CHOOSER_ITEM_IS_IN_USE_COLUMN, &in_use,
+                            CHOOSER_ITEM_IS_SEPARATED_COLUMN, &is_separate,
+                            -1);
+
+        if (image != new_image) {
+                if (image == NULL && new_image != NULL) {
+                        widget->priv->number_of_rows_with_images++;
+                } else if (image != NULL && new_image == NULL) {
+                        widget->priv->number_of_rows_with_images--;
+                }
+        }
+        if (image != NULL) {
+                g_object_unref (image);
+        }
+
+        if (in_use != new_in_use) {
+                if (new_in_use) {
+                        widget->priv->number_of_in_use_rows++;
+                } else {
+                        widget->priv->number_of_in_use_rows--;
+                }
+                queue_column_visibility_update (widget);
+        }
+
+        if (is_separate != new_is_separate) {
+                if (new_is_separate) {
+                        widget->priv->number_of_separated_rows++;
+                        widget->priv->number_of_normal_rows--;
+                } else {
+                        widget->priv->number_of_separated_rows--;
+                        widget->priv->number_of_normal_rows++;
+                }
+        }
+
+        gtk_list_store_set (widget->priv->list_store,
+                            &iter,
+                            CHOOSER_IMAGE_COLUMN, new_image,
+                            CHOOSER_NAME_COLUMN, new_name,
+                            CHOOSER_COMMENT_COLUMN, new_comment,
+                            CHOOSER_ITEM_IS_IN_USE_COLUMN, new_in_use,
+                            CHOOSER_ITEM_IS_SEPARATED_COLUMN, new_is_separate,
+                            -1);
+}
+
+void
 gdm_chooser_widget_add_item (GdmChooserWidget *widget,
                              const char       *id,
                              GdkPixbuf        *image,
@@ -1737,8 +1887,10 @@ gdm_chooser_widget_set_item_in_use (GdmChooserWidget *widget,
                 }
                 queue_column_visibility_update (widget);
 
-                gtk_list_store_set (widget->priv->list_store, &iter,
-                                    CHOOSER_ITEM_IS_IN_USE_COLUMN, is_in_use, -1);
+                gtk_list_store_set (widget->priv->list_store,
+                                    &iter,
+                                    CHOOSER_ITEM_IS_IN_USE_COLUMN, is_in_use,
+                                    -1);
 
         }
 }

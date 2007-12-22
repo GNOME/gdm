@@ -1,5 +1,23 @@
 2007-12-21  William Jon McCann  <mccann@jhu.edu>
 
+	* gui/simple-greeter/gdm-chooser-widget.c: (foreach_item),
+	(gdm_chooser_widget_update_foreach_item),
+	(shrink_edge_toward_active_row), (run_animation),
+	(set_inactive_items_visible), (gdm_chooser_widget_update_item),
+	(gdm_chooser_widget_set_item_in_use):
+	* gui/simple-greeter/gdm-chooser-widget.h:
+	* gui/simple-greeter/gdm-user-chooser-widget.c:
+	(gdm_user_chooser_widget_dispose), (get_stock_person_pixbuf),
+	(get_logged_in_pixbuf), (update_icons), (load_icons),
+	(on_icon_theme_changed), (setup_icons), (add_special_users),
+	(on_user_added), (gdm_user_chooser_widget_init):
+	* gui/simple-greeter/gdm-user.c: (render_icon_from_home),
+	(gdm_user_render_icon):
+	* gui/simple-greeter/gdm-user.h:
+	Reload the themed icons when the icon theme changes.
+
+2007-12-21  William Jon McCann  <mccann@jhu.edu>
+
 	* configure.ac:
 	* gui/Makefile.am:
 	* gui/settings-daemon/Makefile.am:

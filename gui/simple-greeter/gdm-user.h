@@ -46,7 +46,6 @@ G_CONST_RETURN char  *gdm_user_get_shell          (GdmUser   *user);
 guint                 gdm_user_get_num_sessions   (GdmUser   *user);
 
 GdkPixbuf            *gdm_user_render_icon        (GdmUser   *user,
-                                                   GtkWidget *widget,
                                                    gint       icon_size);
 
 gint                  gdm_user_collate            (GdmUser   *user1,
