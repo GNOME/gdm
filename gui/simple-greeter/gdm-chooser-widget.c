@@ -1698,6 +1698,7 @@ gdm_chooser_widget_update_item (GdmChooserWidget *widget,
                 } else if (image != NULL && new_image == NULL) {
                         widget->priv->number_of_rows_with_images--;
                 }
+                queue_column_visibility_update (widget);
         }
         if (image != NULL) {
                 g_object_unref (image);
