@@ -32,7 +32,6 @@
 #include "gdm-greeter-session.h"
 #include "gdm-greeter-client.h"
 #include "gdm-greeter-panel.h"
-#include "gdm-greeter-background.h"
 #include "gdm-greeter-login-window.h"
 
 #include "gdm-session-manager.h"
@@ -47,7 +46,6 @@ struct GdmGreeterSessionPrivate
 
         GtkWidget             *login_window;
         GtkWidget             *panel;
-        GtkWidget             *background;
 };
 
 enum {
@@ -370,12 +368,7 @@ toggle_all_levels (GdmSessionManager *manager,
         if (enabled) {
                 start_settings_daemon (session);
                 start_window_manager (session);
-
-                session->priv->background = gdm_greeter_background_new ();
-                gtk_widget_show (session->priv->background);
         } else {
-                gtk_widget_destroy (session->priv->background);
-                session->priv->background = NULL;
         }
 }
 

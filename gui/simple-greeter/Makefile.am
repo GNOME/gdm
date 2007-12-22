@@ -28,23 +28,12 @@ schemas_in_files = gdm-simple-greeter.schemas.in
 schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
 
 noinst_PROGRAMS = 			\
-	test-greeter-background		\
 	test-greeter-login-window	\
 	test-greeter-panel		\
 	test-language-chooser		\
 	test-session-chooser		\
 	test-user-chooser		\
 	test-user-manager		\
-	$(NULL)
-
-test_greeter_background_SOURCES = 	\
-	test-greeter-background.c	\
-	gdm-greeter-background.h	\
-	gdm-greeter-background.c	\
-	$(NULL)
-
-test_greeter_background_LDADD =	\
-	$(SIMPLE_GREETER_LIBS)	\
 	$(NULL)
 
 test_greeter_login_window_SOURCES = 	\
@@ -159,8 +148,6 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-greeter-login-window.h	\
 	gdm-greeter-panel.h		\
 	gdm-greeter-panel.c		\
-	gdm-greeter-background.h	\
-	gdm-greeter-background.c	\
 	gdm-session-chooser-widget.h	\
 	gdm-session-chooser-widget.c	\
 	gdm-user-chooser-widget.h	\
