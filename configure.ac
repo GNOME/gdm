@@ -1320,9 +1320,6 @@ AC_OUTPUT([
 Makefile
 daemon/Makefile
 gui/Makefile
-gui/settings-daemon/Makefile
-gui/settings-daemon/plugins/Makefile
-gui/settings-daemon/plugins/xsettings/Makefile
 gui/simple-greeter/Makefile
 gui/simple-greeter/libnotificationarea/Makefile
 gui/simple-chooser/Makefile
