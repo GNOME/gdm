@@ -1436,7 +1436,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, char **new_login)
 					_("Authentication failed"));
 		goto setup_pamerr;
 	}
-	after_login = (const char *)p;
+	after_login = p;
 
 	if (after_login != NULL /* should never be */ &&
 	    strcmp (after_login, login) != 0) {
