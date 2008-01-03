@@ -286,7 +286,7 @@ gdm_config_value_compare (const GdmConfigValue *value_a,
 			int   res;
 
 			str_a = gdm_config_value_to_string (value_a);
-			str_b = gdm_config_value_to_string (value_a);
+			str_b = gdm_config_value_to_string (value_b);
 			res = safe_strcmp (str_a, str_b);
 			g_free (str_a);
 			g_free (str_b);
@@ -613,6 +613,71 @@ gdm_config_free (GdmConfig *config)
 	}
 
 	g_slice_free (GdmConfig, config);
+}
+
+static void
+add_server_group_once (GPtrArray *server_groups, char *group)
+{
+	int i;
+
+	for (i=0; i < server_groups->len; i++) {
+		if (strcmp (g_ptr_array_index (server_groups, i), group) == 0) {
+			g_debug ("server group %s already exists, skipping",
+				group);
+			return;
+		}
+	}
+	g_ptr_array_add (server_groups, g_strdup (group));
+}
+
+GPtrArray *
+gdm_config_get_server_groups (GdmConfig *config)
+{
+	GPtrArray       *server_groups;
+	GError          *error;
+	char           **groups;
+	gsize            len;
+	int              i;
+	
+	server_groups = g_ptr_array_new ();
+
+	if (config->mandatory_key_file != NULL) {
+		groups = g_key_file_get_groups (config->mandatory_key_file, &len);
+
+		for (i = 0; i < len; i++)
+		{
+			if (g_str_has_prefix (groups[i], "server-")) {
+				add_server_group_once (server_groups, groups[i]);
+			}
+		}
+		g_strfreev (groups);
+	}
+
+	if (config->default_key_file != NULL) {
+		groups = g_key_file_get_groups (config->default_key_file, &len);
+
+		for (i = 0; i < len; i++)
+		{
+			if (g_str_has_prefix (groups[i], "server-")) {
+				add_server_group_once (server_groups, groups[i]);
+			}
+		}
+		g_strfreev (groups);
+	}
+
+	if (config->custom_key_file != NULL) {
+		groups = g_key_file_get_groups (config->custom_key_file, &len);
+
+		for (i = 0; i < len; i++)
+		{
+			if (g_str_has_prefix (groups[i], "server-")) {
+				add_server_group_once (server_groups, groups[i]);
+			}
+		}
+		g_strfreev (groups);
+	}
+
+	return server_groups;
 }
 
 const GdmConfigEntry *

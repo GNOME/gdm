@@ -1575,7 +1575,6 @@ main (int argc, char *argv[])
 	gdm_log_init ();
 	/* Parse configuration file */
 	gdm_daemon_config_parse (config_file, no_console);
-	gdm_log_set_debug (gdm_daemon_config_get_bool_for_id (GDM_ID_DEBUG));
 
 	/* XDM compliant error message */
 	if G_UNLIKELY (getuid () != 0) {

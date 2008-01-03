@@ -1067,12 +1067,11 @@ gdm_daemon_config_get_xservers (void)
  */
 static void
 gdm_daemon_config_load_xserver (GdmConfig  *config,
-				const char *key,
+				const char *group,
 				const char *name)
 {
 	GdmXserver     *svr;
 	int             n;
-	char           *group;
 	gboolean        res;
 	GdmConfigValue *value;
 
@@ -1083,8 +1082,6 @@ gdm_daemon_config_load_xserver (GdmConfig  *config,
 
 	svr = g_new0 (GdmXserver, 1);
 	svr->id = g_strdup (name);
-
-	group = g_strdup_printf ("server-%s", name);
 
 	/* string */
 	res = gdm_config_get_value (config, group, "name", &value);
@@ -1141,8 +1138,6 @@ gdm_daemon_config_load_xserver (GdmConfig  *config,
 	}
 
 	xservers = g_slist_append (xservers, svr);
-
-	g_free (group);
 }
 
 static void
@@ -1187,78 +1182,45 @@ gdm_daemon_config_ensure_one_xserver (GdmConfig *config)
 static void
 load_xservers_group (GdmConfig *config)
 {
-	char     **keys;
-	gsize      len;
-	int        i;
+	GPtrArray  *server_groups;
+	char      **vname_array;
+	char       *xserver_value;
+	int         i, j;
 
-	keys = gdm_config_get_keys_for_group (config,
-		GDM_CONFIG_GROUP_SERVERS, &len, NULL);
+	server_groups = gdm_config_get_server_groups (config);
 
-	/* now construct entries for these groups */
-	for (i = 0; i < len; i++) {
-		GdmConfigEntry   entry;
-		GdmConfigValue  *value;
-		const char      *display_value;
-		const char      *name;
-		char           **value_list;
-		char            *new_group;
-		int              j;
-		gboolean         res;
+	for (i=0; i < server_groups->len; i++) {
+		xserver_value = g_ptr_array_index (server_groups, i);
+		gdm_debug ("Processing server group <%s>", xserver_value);
 
-	        entry.group         = GDM_CONFIG_GROUP_SERVERS;
-		entry.key           = keys[i];
-		entry.type          = GDM_CONFIG_VALUE_STRING;
-		entry.default_value = NULL;
-		entry.id            = GDM_CONFIG_INVALID_ID;
+		if (g_str_has_prefix (xserver_value, "server-")) {
+			char * xserver_group;
+			char * xserver_name;
 
-		gdm_config_add_entry (config, &entry);
-		gdm_config_process_entry (config, &entry, NULL);
-
-		res = gdm_config_get_value (config, entry.group, entry.key,
-			&value);
-		if (! res) {
-			continue;
-		}
-
-		display_value = gdm_config_value_get_string (value);
-		value_list = g_strsplit (display_value, " ", -1);
-		if (value_list == NULL || value_list[0] == '\0') {
-			gdm_config_value_free (value);
-			g_strfreev (value_list);
-			continue;
-		}
-		
-		name = value_list[0];
-
-		/* Skip servers marked as inactive */
-		if (name == NULL || name[0] == '\0' ||
-		    g_ascii_strcasecmp (name, "inactive") == 0) {
-			gdm_config_value_free (value);
-			g_strfreev (value_list);
-			continue;
-		}
-
-		new_group = g_strdup_printf ("server-%s", name);
-		for (j = 0; j < G_N_ELEMENTS (gdm_daemon_server_config_entries); j++) {
-			GdmConfigEntry *srv_entry;
-			if (gdm_daemon_server_config_entries[j].key == NULL) {
-				continue;
+			xserver_group = g_strdup (xserver_value);
+			
+			for (j = 0; j < G_N_ELEMENTS (gdm_daemon_server_config_entries); j++) {
+				GdmConfigEntry *srv_entry;
+				if (gdm_daemon_server_config_entries[j].key == NULL) {
+					continue;
+				}
+				srv_entry = gdm_config_entry_copy (&gdm_daemon_server_config_entries[j]);
+				g_free (srv_entry->group);
+				srv_entry->group = xserver_group;
+				gdm_config_process_entry (config, srv_entry, NULL);
+				gdm_config_entry_free (srv_entry);
 			}
-			srv_entry = gdm_config_entry_copy (&gdm_daemon_server_config_entries[j]);
-			g_free (srv_entry->group);
-			srv_entry->group = g_strdup (new_group);
-			gdm_config_process_entry (config, srv_entry, NULL);
-			gdm_config_entry_free (srv_entry);
-		}
-		g_free (new_group);
 
-		/* Now we can add this server */
-		gdm_daemon_config_load_xserver (config, entry.key, name);
-                gdm_config_value_free (value);
-		g_strfreev (value_list);
+			/* Strip "server-" prefix from name */
+			xserver_name = xserver_group + strlen ("server-");
+
+			/* Now we can add this server */
+			if (xserver_name != NULL)
+				gdm_daemon_config_load_xserver (config, xserver_group, xserver_name);
+		}
         }
 
-	g_strfreev (keys);
+	g_ptr_array_free (server_groups, TRUE);
 }
 
 static void
@@ -1471,16 +1433,36 @@ gdm_daemon_config_load_displays (GdmConfig *config)
 	keys = gdm_config_get_keys_for_group (config,
 		GDM_CONFIG_GROUP_SERVERS, &len, NULL);
 
-        /* now construct entries for these groups */
-        for (i = 0; i < len; i++) {
+	for (i = 0; i < len; i++) {
+		GdmConfigEntry   entry;
+		GdmConfigValue  *value;
+		const char      *display_value;
+		const char      *name;
+		char           **value_list;
+		char            *new_group;
+		int              j;
+		gboolean         res;
+
+		entry.group         = GDM_CONFIG_GROUP_SERVERS;
+		entry.key           = keys[i];
+		entry.type          = GDM_CONFIG_VALUE_STRING;
+		entry.default_value = NULL;
+		entry.id            = GDM_CONFIG_INVALID_ID;
+
+		gdm_config_add_entry (config, &entry);
+		gdm_config_process_entry (config, &entry, NULL);
+	}
+
+	/* Now construct entries for these groups */
+	for (i = 0; i < len; i++) {
+		char           **value_list;
 		GString         *command     = NULL;
-		GdmDisplay     *disp;
-		GdmConfigValue *value;
+		GdmDisplay      *disp;
+		GdmConfigValue  *value;
 		const char      *name        = NULL;
 		const char      *device_name = NULL;
-		char           **value_list;
-		int             keynum;
-		gboolean        res;
+		int              keynum;
+		gboolean         res;
 
 		name   = keys[i];
 
@@ -1490,14 +1472,19 @@ gdm_daemon_config_load_displays (GdmConfig *config)
 
 		keynum = atoi (name);
 
-                res = gdm_config_get_value (config, GDM_CONFIG_GROUP_SERVERS,
+		res = gdm_config_get_value (config, GDM_CONFIG_GROUP_SERVERS,
 			keys[i], &value);
 		if (! res) {
 			continue;
 		}
 
-                display_value = gdm_config_value_get_string (value);
-		value_list    = g_strsplit (display_value, " ", -1);
+		display_value = gdm_config_value_get_string (value);
+
+		/* Skip displays marked as inactive */
+		if (g_ascii_strcasecmp (display_value, "inactive") == 0)
+			continue;
+
+		value_list = g_strsplit (display_value, " ", -1);
 
 		if (value_list == NULL || value_list[0] == '\0') {
 			gdm_config_value_free (value);
@@ -1524,7 +1511,7 @@ gdm_daemon_config_load_displays (GdmConfig *config)
 				g_string_append (command, " ");
 			}
 			j++;
-                }
+		}
 
 		gdm_debug ("Loading display for key '%d'", keynum);
 
@@ -1786,6 +1773,20 @@ validate_xdmcp (GdmConfig          *config,
 	return TRUE;
 }
 
+/* Cause debug to affect logging as soon as the config value is read */
+static gboolean
+validate_debug (GdmConfig          *config,
+		GdmConfigSourceType source,
+		GdmConfigValue     *value)
+{
+	gboolean debugval;
+
+	debugval = gdm_config_value_get_bool (value);
+	gdm_log_set_debug (debugval);
+
+	return TRUE;
+}
+
 static gboolean
 validate_at_least_int (GdmConfig          *config,
 		       GdmConfigSourceType source,
@@ -1814,6 +1815,9 @@ validate_cb (GdmConfig          *config,
 	res = TRUE;
 
         switch (id) {
+        case GDM_ID_DEBUG:
+		res = validate_debug (config, source, value);
+		break;
         case GDM_ID_PATH:
 		res = validate_path (config, source, value);
 		break;

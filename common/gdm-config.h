@@ -126,6 +126,7 @@ char **                gdm_config_get_keys_for_group     (GdmConfig       *confi
 							  const gchar     *group_name,
 							  gsize           *length,
 							  GError         **error);
+GPtrArray *            gdm_config_get_server_groups      (GdmConfig       *config);
 
 gboolean               gdm_config_peek_value             (GdmConfig             *config,
 							  const char            *group,
