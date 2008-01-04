@@ -29,8 +29,19 @@
 #include <syslog.h>
 #include <security/pam_appl.h>
 #include <pwd.h>
+
 #ifdef __sun
 #include <fcntl.h>
+/*
+ * Solaris and other operating systems use const differently
+ * with PAM functions.  Using these defines avoids compiler
+ * warnings and needing to cast.
+ */
+#define GDM_PAM_CONV_TYPE const
+#define GDM_PAM_GET_ITEM_PTR_TYPE
+#else
+#define GDM_PAM_CONV_TYPE
+#define GDM_PAM_GET_ITEM_PTR_TYPE const
 #endif
 
 #include <glib/gi18n.h>
@@ -495,7 +506,8 @@ perhaps_translate_message (const char *msg)
  * authentication system and the actual greeter program */
 
 static int
-gdm_verify_pam_conv (int num_msg, struct pam_message **msg,
+gdm_verify_pam_conv (int num_msg,
+		     GDM_PAM_CONV_TYPE struct pam_message **msg,
 		     struct pam_response **resp,
 		     void *appdata_ptr)
 {
@@ -503,7 +515,7 @@ gdm_verify_pam_conv (int num_msg, struct pam_message **msg,
 	int i;
 	char *s = NULL;
 	struct pam_response *reply = NULL;
-	const void *p;
+	GDM_PAM_GET_ITEM_PTR_TYPE void *p;
 	const char *login;
 
 	if (pamh == NULL)
@@ -527,7 +539,7 @@ gdm_verify_pam_conv (int num_msg, struct pam_message **msg,
 	/* Here we set the login if it wasn't already set,
 	 * this is kind of anal, but this way we guarantee that
 	 * the greeter always is up to date on the login */
-	if (pam_get_item (pamh, PAM_USER, (void **)&p) == PAM_SUCCESS) {
+	if (pam_get_item (pamh, PAM_USER, &p) == PAM_SUCCESS) {
 		login = (const char *)p;
 		gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
 	}
@@ -630,7 +642,8 @@ static struct pam_conv pamc = {
 static char *extra_standalone_message = NULL;
 
 static int
-gdm_verify_standalone_pam_conv (int num_msg, struct pam_message **msg,
+gdm_verify_standalone_pam_conv (int num_msg,
+				GDM_PAM_CONV_TYPE struct pam_message **msg,
 				struct pam_response **resp,
 				void *appdata_ptr)
 {
@@ -882,9 +895,9 @@ gdm_verify_user (GdmDisplay *d,
 {
 	gint pamerr = 0;
 	struct passwd *pwent = NULL;
-	const void *p;
 	char *login, *passreq, *consoleonly;
 	char *pam_stack = NULL;
+	GDM_PAM_GET_ITEM_PTR_TYPE void *p;
 	int null_tok = 0;
 	gboolean credentials_set = FALSE;
 	gboolean error_msg_given = FALSE;
@@ -1065,7 +1078,7 @@ gdm_verify_user (GdmDisplay *d,
 	g_free (prev_user);
 	prev_user = NULL;
 
-	if ((pamerr = pam_get_item (pamh, PAM_USER, (void **)&p)) != PAM_SUCCESS) {
+	if ((pamerr = pam_get_item (pamh, PAM_USER, &p)) != PAM_SUCCESS) {
 		login = NULL;
 		/* is not really an auth problem, but it will
 		   pretty much look as such, it shouldn't really
@@ -1361,7 +1374,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, char **new_login)
 {
 	gint pamerr = 0;
 	struct passwd *pwent = NULL;
-	const void *p;
+	GDM_PAM_GET_ITEM_PTR_TYPE void *p;
 	char *passreq;
 	char *pam_stack = NULL;
 	char *pam_service_name = NULL;
@@ -1426,7 +1439,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, char **new_login)
 		goto setup_pamerr;
 	}
 
-	if ((pamerr = pam_get_item (pamh, PAM_USER, (void **)&p)) != PAM_SUCCESS) {
+	if ((pamerr = pam_get_item (pamh, PAM_USER, &p)) != PAM_SUCCESS) {
 		/* is not really an auth problem, but it will
 		   pretty much look as such, it shouldn't really
 		   happen */
