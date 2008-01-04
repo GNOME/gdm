@@ -37,11 +37,9 @@
  * with PAM functions.  Using these defines avoids compiler
  * warnings and needing to cast.
  */
-#define GDM_PAM_CONV_TYPE const
-#define GDM_PAM_GET_ITEM_PTR_TYPE
+#define GDM_PAM_QUAL
 #else
-#define GDM_PAM_CONV_TYPE
-#define GDM_PAM_GET_ITEM_PTR_TYPE const
+#define GDM_PAM_QUAL const
 #endif
 
 #include <glib/gi18n.h>
@@ -507,7 +505,7 @@ perhaps_translate_message (const char *msg)
 
 static int
 gdm_verify_pam_conv (int num_msg,
-		     GDM_PAM_CONV_TYPE struct pam_message **msg,
+		     GDM_PAM_QUAL struct pam_message **msg,
 		     struct pam_response **resp,
 		     void *appdata_ptr)
 {
@@ -515,7 +513,7 @@ gdm_verify_pam_conv (int num_msg,
 	int i;
 	char *s = NULL;
 	struct pam_response *reply = NULL;
-	GDM_PAM_GET_ITEM_PTR_TYPE void *p;
+	GDM_PAM_QUAL void *p;
 	const char *login;
 
 	if (pamh == NULL)
@@ -643,7 +641,7 @@ static char *extra_standalone_message = NULL;
 
 static int
 gdm_verify_standalone_pam_conv (int num_msg,
-				GDM_PAM_CONV_TYPE struct pam_message **msg,
+				GDM_PAM_QUAL struct pam_message **msg,
 				struct pam_response **resp,
 				void *appdata_ptr)
 {
@@ -897,7 +895,7 @@ gdm_verify_user (GdmDisplay *d,
 	struct passwd *pwent = NULL;
 	char *login, *passreq, *consoleonly;
 	char *pam_stack = NULL;
-	GDM_PAM_GET_ITEM_PTR_TYPE void *p;
+	GDM_PAM_QUAL void *p;
 	int null_tok = 0;
 	gboolean credentials_set = FALSE;
 	gboolean error_msg_given = FALSE;
@@ -1374,7 +1372,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, char **new_login)
 {
 	gint pamerr = 0;
 	struct passwd *pwent = NULL;
-	GDM_PAM_GET_ITEM_PTR_TYPE void *p;
+	GDM_PAM_QUAL void *p;
 	char *passreq;
 	char *pam_stack = NULL;
 	char *pam_service_name = NULL;
