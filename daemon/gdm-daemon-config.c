@@ -1184,21 +1184,18 @@ load_xservers_group (GdmConfig *config)
 {
 	GPtrArray  *server_groups;
 	char      **vname_array;
-	char       *xserver_value;
+	char       *xserver_group;
 	int         i, j;
 
 	server_groups = gdm_config_get_server_groups (config);
 
 	for (i=0; i < server_groups->len; i++) {
-		xserver_value = g_ptr_array_index (server_groups, i);
-		gdm_debug ("Processing server group <%s>", xserver_value);
+		xserver_group = g_ptr_array_index (server_groups, i);
+		gdm_debug ("Processing server group <%s>", xserver_group);
 
-		if (g_str_has_prefix (xserver_value, "server-")) {
-			char * xserver_group;
+		if (g_str_has_prefix (xserver_group, "server-")) {
 			char * xserver_name;
 
-			xserver_group = g_strdup (xserver_value);
-			
 			for (j = 0; j < G_N_ELEMENTS (gdm_daemon_server_config_entries); j++) {
 				GdmConfigEntry *srv_entry;
 				if (gdm_daemon_server_config_entries[j].key == NULL) {
@@ -1206,7 +1203,7 @@ load_xservers_group (GdmConfig *config)
 				}
 				srv_entry = gdm_config_entry_copy (&gdm_daemon_server_config_entries[j]);
 				g_free (srv_entry->group);
-				srv_entry->group = xserver_group;
+				srv_entry->group = g_strdup (xserver_group);
 				gdm_config_process_entry (config, srv_entry, NULL);
 				gdm_config_entry_free (srv_entry);
 			}
