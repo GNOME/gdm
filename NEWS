@@ -1,5 +1,44 @@
 Ahh news...
 
+2.20.3 Stuff:
+
+- Now "Esc" key acts like the "Start Again" button in the greeter
+  program.  (Ray Strode>
+
+- Fix regression in GDM 2.20 that caused the daemon to not read
+  any [server-foo] sections that were not referenced in the
+  [servers] section of the configuration file.  This caused
+  problems for gdmsetup when you tried to edit the Xserver
+  configuration.  (Brian Cameron)
+
+- Fix regression in GDM 2.20 that caused HaltCommand,
+  SuspendCommand, and RebootCommand to not get updated properly
+  when modified from gdmsetup.  (Brian Cameron)
+
+- Fix gdmsetup so that it doesn't use gtk_init when run with
+  the "--command" option.  This allows the gdmflexiserver --command
+  option to be run with setuid/setgid without problems.  This fixes
+  bug #438939.  (Brian Cameron)
+
+- Fix counting of open XDMCP sessions.  In some situations this
+  problem would cause GDM to think the maximum number of XDMCP
+  sessions had been started when this wasn't the case.  This fixes
+  bug #495623.  (Andrew Ziem)
+
+- Fix Suspend configuration option so it works.  (Philippe
+  Troin)
+
+- Fix so that XDMCP Willing configuration option works.  (George
+  Lebl)
+
+- Fixes to avoid compiler warnings.  (Brian Cameron, Larry
+  Doolittle, George Lebl)
+
+- Fix gdmsetup so it does not crash if it cannot read any
+  displays from the configuration file.  (Brian Cameron)
+
+- Translation updates (Se\303\241n de B\303\272rca, Jakub Friedl)
+
 2.20.2 Stuff:
 
 - Fix bugs that were causing XDMCP to not work properly.  (Robert
