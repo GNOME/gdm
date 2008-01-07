@@ -3,7 +3,7 @@ Ahh news...
 2.20.3 Stuff:
 
 - Now "Esc" key acts like the "Start Again" button in the greeter
-  program.  (Ray Strode>
+  program.  (Ray Strode)
 
 - Fix regression in GDM 2.20 that caused the daemon to not read
   any [server-foo] sections that were not referenced in the
@@ -53,7 +53,7 @@ Ahh news...
 - Fix so that GDM allows setting of LC_TYPE without setting LANG.
   (Sjoerd Simons and Takao Fujiwara)
 
-- Icon imporvements.  (Luca Ferretti)
+- Icon improvements.  (Luca Ferretti)
 
 - Fix leaks.  (Andrew Ziem)
  
@@ -203,9 +203,9 @@ Ahh news...
 2.19.5 Stuff:
 
 - Fix for CVE-2007-3381, a denial of service attack where the
-  user can crash the GDM daemon with a carefuly crafted 
+  user can crash the GDM daemon with a carefully crafted 
   GDM sockets command and cause GDM to stop managing future
-  displays.  GDM now is much better about safegarding against
+  displays.  GDM now is much better about safeguarding against
   NULL values returned from g_strsplit calls.  Credit given
   to "JLANTHEA".  (Brian Cameron)
 
@@ -579,9 +579,9 @@ New features, improvements, and bug fixes:
 2.18.4 Stuff:
 
 - Fix for CVE-2007-3381, a denial of service attack where the
-  user can crash the GDM daemon with a carefuly crafted
+  user can crash the GDM daemon with a carefully crafted
   GDM sockets command and cause GDM to stop managing future
-  displays.  GDM now is much better about safegarding against
+  displays.  GDM now is much better about safeguarding against
   NULL values returned from g_strsplit calls.  (Brian Cameron)
 
 - Remove setting hints.ai_family != AF_INET6 to fix bug #455190.
@@ -751,7 +751,7 @@ New features, improvements, and bug fixes:
 
 2.17.5 Stuff:
 
-- No longer close file descripters in forked process which
+- No longer close file descriptors in forked process which
   shows dialog boxes since this causes the dialogs to not
   display any text.  (Brian Cameron)
 
@@ -954,9 +954,9 @@ New features, improvements, and bug fixes:
 2.16.7 Stuff:
 
 - Fix for CVE-2007-3381, a denial of service attack where the
-  user can crash the GDM daemon with a carefuly crafted
+  user can crash the GDM daemon with a carefully crafted
   GDM sockets command and cause GDM to stop managing future
-  displays.  GDM now is much better about safegarding against
+  displays.  GDM now is much better about safeguarding against
   NULL values returned from g_strsplit calls.  (Brian Cameron)
 
 - Translation updates (Christophe Merlet, Amitakhya Phukan,
@@ -1239,7 +1239,7 @@ New features, improvements, and bug fixes:
   dwell gestures.  (Brian Cameron)
 
 - Now Welcome message is saved in the configuration file in 
-  UTF-8 format for better readibility.  (Frederic Peters)
+  UTF-8 format for better readability.  (Frederic Peters)
 
 - The GDM daemon once again supports the -nodaemon option.
   (Ray Strode)
@@ -1362,9 +1362,9 @@ New features, improvements, and bug fixes:
 2.14.13 stuff:
 
 - Fix for CVE-2007-3381, a denial of service attack where the
-  user can crash the GDM daemon with a carefuly crafted
+  user can crash the GDM daemon with a carefully crafted
   GDM sockets command and cause GDM to stop managing future
-  displays.  GDM now is much better about safegarding against
+  displays.  GDM now is much better about safeguarding against
   NULL values returned from g_strsplit calls.  (Brian Cameron)
 
 - Translation updates (Christophe Merlet)
@@ -1833,7 +1833,7 @@ Note: Some users have been complaining that GDM 2.13.0.4 core dumps when the
 
 - Minor cleanup of gdmsetup.  (Dennis Cranston)
 
-- Caps lock and Shut down messages changed to be more consistant between
+- Caps lock and Shut down messages changed to be more consistent between
   gdmlogin and gdmgreeter.  Error message provided when session file is 
   invalid now tells you the name of the offending file.  (Brian Cameron)
 
@@ -2039,7 +2039,7 @@ Other Changes:
   accessibility and no GNOME programs use menu tooltips, it is not recommended.
   (Brian Cameron)
 
-- Change the way the "OK" and "Cancel" buttons work so they are consistant.
+- Change the way the "OK" and "Cancel" buttons work so they are consistent.
   Now the "Cancel" button in gdmlogin is active when the Username is requested
   and just clears the field.  This makes gdmlogin work like gdmgreeter.  Now
   make the buttons insensitive when the ok/enter/tab is pressed and make them
@@ -2115,7 +2115,7 @@ Other Changes:
   slave will never exit too early.  (Jerry G. DeLapp)
 
 - The "OK" and "Cancel" buttons in gdmlogin and gdmgreeter now work
-  consistantly.  Now the gdmlogin "Cancel" button is active when the Username
+  consistently.  Now the gdmlogin "Cancel" button is active when the Username
   is requested and pressing it just clears the field, so it works like
   gdmgreeter.  Also fixed a bug in gdmgreeter where a user could corrupt
   gdmgreeter's memory by hitting cancel after authentication, which could only
@@ -3507,7 +3507,7 @@ Major changes in 2.4.4.x since 2.4.1.x:
 - If X server crashes or doesn't otherwise whack its lockfile,
   help it along, should fix #114003 and redhat #90014
 
-- No translatable message contains unneccessary markup now
+- No translatable message contains unnecessary markup now
   (fixes #101794 and #101795)
 
 - gdmsetup .desktop file is now in the SystemSetup category
@@ -4774,7 +4774,7 @@ Issues with this version:
 
 2.2.3.1 stuff:
 
-- file descriptor leaks and messups dealt with, making gdm2 work again
+- file descriptor leaks and mess-ups dealt with, making gdm2 work again
   on debian and probably others (Ryan Murray, me)
 
 - Posibility of a "soft" restart, that is scheduling a restart when all logins
