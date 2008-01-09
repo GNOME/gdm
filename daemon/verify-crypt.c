@@ -43,6 +43,7 @@
 #include "gdm-common.h"
 #include "gdm-daemon-config.h"
 #include "gdm-socket-protocol.h"
+#include "gdm-log.h"
 
 static char *selected_user = NULL;
 
