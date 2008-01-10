@@ -846,10 +846,9 @@ lookup_notify_key (GdmConfig  *config,
 	else if (is_key (keystring, GDM_KEY_TIMED_LOGIN))
 		nkey = g_strdup (GDM_NOTIFY_TIMED_LOGIN);
 	else if (strcmp (group, GDM_CONFIG_GROUP_CUSTOM_CMD) == 0 &&
-		 g_str_has_prefix (key, "CustomCommand") &&
-		 strlen (key) == 14) {
+		 g_str_has_prefix (key, "CustomCommand")) {
 		/* this should match 'CustomCommandN' */
-		nkey = g_strdup (key);
+		nkey = g_strdup (GDM_NOTIFY_CUSTOM_CMD_TEMPLATE);
 	}
 	g_free (keystring);
 
