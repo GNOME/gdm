@@ -77,6 +77,7 @@ int deny_severity = LOG_WARNING;
 #define DEFAULT_MAX_DISPLAYS          16
 #define DEFAULT_MAX_PENDING_DISPLAYS  4
 #define DEFAULT_MAX_WAIT              15
+#define DEFAULT_WILLING_SCRIPT        GDMCONFDIR "/Xwilling"
 
 #define GDM_MAX_FORWARD_QUERIES 10
 #define GDM_FORWARD_QUERY_TIMEOUT 30
@@ -193,7 +194,7 @@ enum {
 
 static void     gdm_xdmcp_display_factory_class_init    (GdmXdmcpDisplayFactoryClass *klass);
 static void     gdm_xdmcp_display_factory_init          (GdmXdmcpDisplayFactory      *manager);
-static void     gdm_xdmcp_display_factory_finalize      (GObject              *object);
+static void     gdm_xdmcp_display_factory_finalize      (GObject                     *object);
 
 static gpointer xdmcp_display_factory_object = NULL;
 
@@ -2947,7 +2948,7 @@ gdm_xdmcp_display_factory_class_init (GdmXdmcpDisplayFactoryClass *klass)
                                          g_param_spec_string ("willing-script",
                                                               "willing-script",
                                                               "willing-script",
-                                                              NULL,
+                                                              DEFAULT_WILLING_SCRIPT,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
                                          PROP_MAX_DISPLAYS_PER_HOST,
@@ -3034,6 +3035,11 @@ gdm_xdmcp_display_factory_finalize (GObject *object)
 
         if (factory->priv->socket_watch_id > 0) {
                 g_source_remove (factory->priv->socket_watch_id);
+        }
+
+        if (factory->priv->socket_fd > 0) {
+                close (factory->priv->socket_fd);
+                factory->priv->socket_fd = -1;
         }
 
         g_slist_free (factory->priv->forward_queries);

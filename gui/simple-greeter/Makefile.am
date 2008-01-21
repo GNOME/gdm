@@ -29,6 +29,7 @@ schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
 
 noinst_PROGRAMS = 			\
 	test-greeter-login-window	\
+	test-remote-login-window	\
 	test-greeter-panel		\
 	test-language-chooser		\
 	test-session-chooser		\
@@ -68,6 +69,16 @@ test_greeter_panel_SOURCES = 	\
 test_greeter_panel_LDADD =	\
 	$(GTK_LIBS)		\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
+	$(NULL)
+
+test_remote_login_window_SOURCES = 	\
+	test-remote-login-window.c	\
+	gdm-remote-login-window.h	\
+	gdm-remote-login-window.c	\
+	$(NULL)
+
+test_remote_login_window_LDADD =	\
+	$(GTK_LIBS)			\
 	$(NULL)
 
 test_language_chooser_SOURCES = 	\
@@ -146,6 +157,8 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-session-client.c		\
 	gdm-greeter-login-window.c	\
 	gdm-greeter-login-window.h	\
+	gdm-remote-login-window.c	\
+	gdm-remote-login-window.h	\
 	gdm-greeter-panel.h		\
 	gdm-greeter-panel.c		\
 	gdm-session-chooser-widget.h	\

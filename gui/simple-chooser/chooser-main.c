@@ -69,7 +69,7 @@ main (int argc, char *argv[])
                 char *hostname;
 
                 hostname = gdm_host_chooser_dialog_get_current_hostname (GDM_HOST_CHOOSER_DIALOG (chooser));
-                g_message ("Hostname: %s", hostname);
+                g_print ("hostname: %s\n", hostname);
                 g_free (hostname);
         }
 
