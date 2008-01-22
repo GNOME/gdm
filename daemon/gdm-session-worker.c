@@ -480,6 +480,10 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
         username = NULL;
         res = gdm_session_worker_get_username (worker, &username);
         if (res) {
+                g_debug ("GdmSessionWorker: old-username='%s' new-username='%s'",
+                         username != NULL ? username : "<unset>",
+                         worker->priv->username != NULL ? worker->priv->username : "<unset>");
+
                 if ((worker->priv->username == username) ||
                     ((worker->priv->username != NULL) && (username != NULL) &&
                      (strcmp (worker->priv->username, username) == 0)))

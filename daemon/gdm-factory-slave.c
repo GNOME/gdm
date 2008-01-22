@@ -270,6 +270,7 @@ on_session_session_started (GdmSession      *session,
                             GdmFactorySlave *slave)
 {
         g_debug ("GdmFactorySlave: Relay session started");
+
         gdm_greeter_server_reset (slave->priv->greeter_server);
 }
 

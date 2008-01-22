@@ -447,6 +447,18 @@ gdm_session_direct_handle_accreditation_failed (GdmSessionDirect *session,
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
+static void
+gdm_session_direct_select_user (GdmSession *session,
+                                const char *text)
+{
+        GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+
+        g_debug ("GdmSessionDirect: Setting user: '%s'", text);
+
+        g_free (impl->priv->selected_user);
+        impl->priv->selected_user = g_strdup (text);
+}
+
 static DBusHandlerResult
 gdm_session_direct_handle_username_changed (GdmSessionDirect *session,
                                             DBusConnection   *connection,
@@ -471,8 +483,7 @@ gdm_session_direct_handle_username_changed (GdmSessionDirect *session,
                  session->priv->selected_user != NULL ? session->priv->selected_user : "<unset>",
                  (strlen (text)) ? text : "<unset>");
 
-        g_free (session->priv->selected_user);
-        session->priv->selected_user = (strlen (text) > 0) ? g_strdup (text) : NULL;
+        gdm_session_direct_select_user (GDM_SESSION (session), (strlen (text) > 0) ? g_strdup (text) : NULL);
 
         _gdm_session_selected_user_changed (GDM_SESSION (session), session->priv->selected_user);
 
@@ -1389,7 +1400,7 @@ gdm_session_direct_setup_for_user (GdmSession  *session,
         g_return_if_fail (dbus_connection_get_is_connected (impl->priv->worker_connection));
         g_return_if_fail (username != NULL);
 
-        impl->priv->selected_user = g_strdup (username);
+        gdm_session_direct_select_user (session, username);
 
         send_setup_for_user (impl);
 }
@@ -1620,6 +1631,8 @@ open_ck_session (GdmSessionDirect *session)
                 display_device = "";
         }
 
+        g_assert (session->priv->selected_user != NULL);
+
         pwent = getpwnam (session->priv->selected_user);
         if (pwent == NULL) {
                 return FALSE;
@@ -1834,16 +1847,6 @@ gdm_session_direct_select_language (GdmSession *session,
 
         g_free (impl->priv->selected_language);
         impl->priv->selected_language = g_strdup (text);
-}
-
-static void
-gdm_session_direct_select_user (GdmSession *session,
-                                const char *text)
-{
-        GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
-
-        g_free (impl->priv->selected_user);
-        impl->priv->selected_user = g_strdup (text);
 }
 
 /* At some point we may want to read these right from

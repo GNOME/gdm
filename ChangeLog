@@ -1,3 +1,26 @@
+2008-01-22  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/gdm-display.c: (gdm_display_real_add_user_authorization),
+	(gdm_display_real_unmanage), (gdm_display_unmanage),
+	(gdm_display_dispose), (gdm_display_finalize):
+	* daemon/gdm-factory-slave.c: (on_session_session_started):
+	* daemon/gdm-product-display.c:
+	(gdm_product_display_add_user_authorization),
+	(gdm_product_display_remove_user_authorization):
+	* daemon/gdm-product-slave.c: (add_user_authorization),
+	(setup_session), (on_relay_establish_credentials),
+	(on_relay_renew_credentials):
+	* daemon/gdm-session-direct.c: (gdm_session_direct_select_user),
+	(gdm_session_direct_handle_username_changed),
+	(gdm_session_direct_setup_for_user), (open_ck_session):
+	* daemon/gdm-session-worker.c:
+	(gdm_session_worker_update_username):
+	* daemon/gdm-simple-slave.c: (on_session_accredited):
+	* daemon/gdm-static-factory-display.c:
+	(gdm_static_factory_display_add_user_authorization),
+	(gdm_static_factory_display_remove_user_authorization):
+	Make user auth work for factory display again.
+
 2008-01-21  William Jon McCann  <mccann@jhu.edu>
 
 	* common/gdm-address.c: (gdm_address_peek_local_list):

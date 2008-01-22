@@ -204,13 +204,16 @@ gdm_display_real_add_user_authorization (GdmDisplay *display,
                                          GError    **error)
 {
         GdmDisplayAccessFile *access_file;
-        GError *access_file_error;
+        GError               *access_file_error;
 
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
         g_return_val_if_fail (display->priv->access_file != NULL, FALSE);
 
+        g_debug ("GdmDisplay: Adding user authorization for %s", username);
+
         access_file_error = NULL;
-        access_file = _create_access_file_for_user (display, username,
+        access_file = _create_access_file_for_user (display,
+                                                    username,
                                                     &access_file_error);
 
         if (access_file == NULL) {
@@ -219,9 +222,13 @@ gdm_display_real_add_user_authorization (GdmDisplay *display,
         }
 
         if (!gdm_display_access_file_add_display_with_cookie (access_file,
-                                                              display, display->priv->x11_cookie,
+                                                              display,
+                                                              display->priv->x11_cookie,
                                                               display->priv->x11_cookie_size,
                                                               &access_file_error)) {
+                g_debug ("GdmDisplay: Unable to add user authorization for %s: %s",
+                         username,
+                         access_file_error->message);
                 g_propagate_error (error, access_file_error);
                 gdm_display_access_file_close (access_file);
                 g_object_unref (access_file);
@@ -230,6 +237,8 @@ gdm_display_real_add_user_authorization (GdmDisplay *display,
 
         *filename = gdm_display_access_file_get_path (access_file);
         display->priv->user_access_file = access_file;
+
+        g_debug ("GdmDisplay: Added user authorization for %s: %s", username, *filename);
 
         return TRUE;
 }
@@ -468,7 +477,7 @@ gdm_display_real_unmanage (GdmDisplay *display)
 
         display->priv->status = GDM_DISPLAY_UNMANAGED;
 
-        g_debug ("GdmDisplay unmanage display");
+        g_debug ("GdmDisplay: unmanage display");
 
         if (display->priv->slave_proxy != NULL) {
                 gdm_slave_proxy_stop (display->priv->slave_proxy);
@@ -499,7 +508,7 @@ gdm_display_unmanage (GdmDisplay *display)
 
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-        g_debug ("Unmanaging display");
+        g_debug ("GdmDisplay: Unmanaging display");
 
         g_object_ref (display);
         ret = GDM_DISPLAY_GET_CLASS (display)->unmanage (display);
@@ -759,7 +768,7 @@ gdm_display_dispose (GObject *object)
                 display->priv->finish_idle_id = 0;
         }
 
-        g_debug ("Disposing display");
+        g_debug ("GdmDisplay: Disposing display");
         gdm_display_unmanage (display);
 
         G_OBJECT_CLASS (gdm_display_parent_class)->dispose (object);
@@ -878,7 +887,7 @@ gdm_display_finalize (GObject *object)
 
         g_return_if_fail (display->priv != NULL);
 
-        g_debug ("Finalizing display: %s", display->priv->id);
+        g_debug ("GdmDisplay: Finalizing display: %s", display->priv->id);
         g_free (display->priv->id);
         g_free (display->priv->seat_id);
         g_free (display->priv->remote_hostname);

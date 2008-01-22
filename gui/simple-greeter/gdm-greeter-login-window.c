@@ -487,7 +487,7 @@ on_user_chosen (GdmUserChooserWidget  *user_chooser,
 
 static void
 on_user_unchosen (GdmUserChooserWidget  *user_chooser,
-                     GdmGreeterLoginWindow *login_window)
+                  GdmGreeterLoginWindow *login_window)
 {
         do_cancel (login_window);
 }

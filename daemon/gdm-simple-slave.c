@@ -237,6 +237,8 @@ on_session_accredited (GdmSession     *session,
         auth_file = NULL;
         add_user_authorization (slave, &auth_file);
 
+        g_assert (auth_file != NULL);
+
         g_object_set (session,
                       "user-x11-authority-file", auth_file,
                       NULL);

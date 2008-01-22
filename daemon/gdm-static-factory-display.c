@@ -128,7 +128,7 @@ gdm_static_factory_display_add_user_authorization (GdmDisplay *display,
                                                    char      **filename,
                                                    GError    **error)
 {
-        return FALSE;
+        return GDM_DISPLAY_CLASS (gdm_static_factory_display_parent_class)->add_user_authorization (display, username, filename, error);
 }
 
 static gboolean
@@ -136,7 +136,7 @@ gdm_static_factory_display_remove_user_authorization (GdmDisplay *display,
                                                       const char *username,
                                                       GError    **error)
 {
-        return FALSE;
+        return GDM_DISPLAY_CLASS (gdm_static_factory_display_parent_class)->remove_user_authorization (display, username, error);
 }
 
 static gboolean

@@ -266,9 +266,12 @@ add_user_authorization (GdmProductSlave *slave,
         gboolean ret;
 
         username = gdm_session_direct_get_username (slave->priv->session);
+
         ret = gdm_slave_add_user_authorization (GDM_SLAVE (slave),
                                                 username,
                                                 filename);
+        g_debug ("GdmProductSlave: Adding user authorization for %s: %s", username, *filename);
+
         g_free (username);
 
         return ret;
@@ -282,6 +285,8 @@ setup_session (GdmProductSlave *slave)
 
         auth_file = NULL;
         add_user_authorization (slave, &auth_file);
+
+        g_assert (auth_file != NULL);
 
         display_device = NULL;
         if (slave->priv->server != NULL) {
@@ -563,7 +568,7 @@ static void
 on_relay_establish_credentials (GdmProductSlave *slave,
                                 DBusMessage     *message)
 {
-        g_debug ("GdmProductSlave: Relay Authorize");
+        g_debug ("GdmProductSlave: Relay EstablishCredentials");
 
         gdm_session_accredit (GDM_SESSION (slave->priv->session), GDM_SESSION_CRED_ESTABLISH);
 }
@@ -572,7 +577,7 @@ static void
 on_relay_renew_credentials (GdmProductSlave *slave,
                             DBusMessage     *message)
 {
-        g_debug ("GdmProductSlave: Relay Authorize");
+        g_debug ("GdmProductSlave: Relay RenewCredentials");
 
         gdm_session_accredit (GDM_SESSION (slave->priv->session), GDM_SESSION_CRED_RENEW);
 }
