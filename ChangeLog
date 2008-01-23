@@ -1,3 +1,14 @@
+2008-01-23  William Jon McCann  <mccann@jhu.edu>
+
+	* configure.ac:
+	* gui/simple-greeter/gdm-greeter-login-window.c: (try_system_stop),
+	(try_system_restart), (system_restart_auth_cb),
+	(system_stop_auth_cb), (do_system_restart), (do_system_stop),
+	(restart_button_clicked), (shutdown_button_clicked), (load_theme):
+	Initial support for CK/PK system restart/stop functionality.
+	We still need to use a different action when multiple users are
+	logged in.
+
 2008-01-22  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/gdm-display.c: (gdm_display_real_add_user_authorization),

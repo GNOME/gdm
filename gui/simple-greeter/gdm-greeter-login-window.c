@@ -44,6 +44,12 @@
 
 #include <glade/glade-xml.h>
 
+#define DBUS_API_SUBJECT_TO_CHANGE
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
+
+#include <polkit-gnome/polkit-gnome.h>
+
 #include "gdm-greeter-login-window.h"
 #include "gdm-user-chooser-widget.h"
 #include "gdm-session-chooser-widget.h"
@@ -54,6 +60,15 @@
 #else
 #define PW_ENTRY_SIZE GDM_MAX_PASS
 #endif
+
+#define CK_NAME      "org.freedesktop.ConsoleKit"
+#define CK_PATH      "/org/freedesktop/ConsoleKit"
+#define CK_INTERFACE "org.freedesktop.ConsoleKit"
+
+#define CK_MANAGER_PATH      "/org/freedesktop/ConsoleKit/Manager"
+#define CK_MANAGER_INTERFACE "org.freedesktop.ConsoleKit.Manager"
+#define CK_SEAT_INTERFACE    "org.freedesktop.ConsoleKit.Seat"
+#define CK_SESSION_INTERFACE "org.freedesktop.ConsoleKit.Session"
 
 #define GLADE_XML_FILE "gdm-greeter-login-window.glade"
 
@@ -461,6 +476,232 @@ cancel_button_clicked (GtkButton             *button,
         do_cancel (login_window);
 }
 
+static gboolean
+try_system_stop (DBusGConnection *connection,
+                 GError         **error)
+{
+        DBusGProxy      *proxy;
+        gboolean         res;
+
+        g_debug ("GdmGreeterLoginWindow: trying to stop system");
+
+        proxy = dbus_g_proxy_new_for_name (connection,
+                                           CK_NAME,
+                                           CK_MANAGER_PATH,
+                                           CK_MANAGER_INTERFACE);
+        res = dbus_g_proxy_call_with_timeout (proxy,
+                                              "Stop",
+                                              INT_MAX,
+                                              error,
+                                              /* parameters: */
+                                              G_TYPE_INVALID,
+                                              /* return values: */
+                                              G_TYPE_INVALID);
+        return res;
+}
+
+static gboolean
+try_system_restart (DBusGConnection *connection,
+                    GError         **error)
+{
+        DBusGProxy      *proxy;
+        gboolean         res;
+
+        g_debug ("GdmGreeterLoginWindow: trying to restart system");
+
+        proxy = dbus_g_proxy_new_for_name (connection,
+                                           CK_NAME,
+                                           CK_MANAGER_PATH,
+                                           CK_MANAGER_INTERFACE);
+        res = dbus_g_proxy_call_with_timeout (proxy,
+                                              "Restart",
+                                              INT_MAX,
+                                              error,
+                                              /* parameters: */
+                                              G_TYPE_INVALID,
+                                              /* return values: */
+                                              G_TYPE_INVALID);
+        return res;
+}
+
+static void
+system_restart_auth_cb (PolKitAction          *action,
+                        gboolean               gained_privilege,
+                        GError                *error,
+                        GdmGreeterLoginWindow *login_window)
+{
+        GError          *local_error;
+        DBusGConnection *connection;
+        gboolean         res;
+
+        if (! gained_privilege) {
+                return;
+        }
+
+        local_error = NULL;
+        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &local_error);
+        if (connection == NULL) {
+                g_warning ("Unable to get system bus connection: %s", local_error->message);
+                g_error_free (local_error);
+                return;
+        }
+
+        res = try_system_restart (connection, &local_error);
+        if (! res) {
+                g_warning ("Unable to restart system: %s", local_error->message);
+                g_error_free (local_error);
+                return;
+        }
+}
+
+static void
+system_stop_auth_cb (PolKitAction          *action,
+                     gboolean               gained_privilege,
+                     GError                *error,
+                     GdmGreeterLoginWindow *login_window)
+{
+        GError          *local_error;
+        DBusGConnection *connection;
+        gboolean         res;
+
+        if (! gained_privilege) {
+                return;
+        }
+
+        local_error = NULL;
+        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &local_error);
+        if (connection == NULL) {
+                g_warning ("Unable to get system bus connection: %s", local_error->message);
+                g_error_free (local_error);
+                return;
+        }
+
+        res = try_system_stop (connection, &local_error);
+        if (! res) {
+                g_warning ("Unable to ssystem: %s", local_error->message);
+                g_error_free (local_error);
+                return;
+        }
+}
+
+static void
+do_system_restart (GdmGreeterLoginWindow *login_window)
+{
+        gboolean         res;
+        GError          *error;
+        DBusGConnection *connection;
+
+        error = NULL;
+        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (connection == NULL) {
+                g_warning ("Unable to get system bus connection: %s", error->message);
+                g_error_free (error);
+                return;
+        }
+
+        res = try_system_restart (connection, &error);
+        if (! res) {
+                g_debug ("GdmGreeterLoginWindow: unable to restart system: %s", error->message);
+
+                if (dbus_g_error_has_name (error, "org.freedesktop.ConsoleKit.Manager.NotPrivileged")) {
+                        PolKitAction *action;
+                        guint         xid;
+                        pid_t         pid;
+
+                        xid = 0;
+                        pid = getpid ();
+
+                        action = polkit_action_new ();
+                        /* FIXME: check num users */
+                        polkit_action_set_action_id (action, "org.freedesktop.consolekit.system.restart");
+
+                        g_error_free (error);
+                        error = NULL;
+                        res = polkit_gnome_auth_obtain (action,
+                                                        xid,
+                                                        pid,
+                                                        (PolKitGnomeAuthCB) system_restart_auth_cb,
+                                                        login_window,
+                                                        &error);
+                        polkit_action_unref (action);
+
+                        if (! res) {
+                                g_warning ("Unable to request privilege for action: %s", error->message);
+                                g_error_free (error);
+                        }
+
+                }
+        }
+
+}
+
+
+static void
+do_system_stop (GdmGreeterLoginWindow *login_window)
+{
+        gboolean         res;
+        GError          *error;
+        DBusGConnection *connection;
+
+        error = NULL;
+        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (connection == NULL) {
+                g_warning ("Unable to get system bus connection: %s", error->message);
+                g_error_free (error);
+                return;
+        }
+
+        res = try_system_stop (connection, &error);
+        if (! res) {
+                g_debug ("GdmGreeterLoginWindow: unable to restart system: %s", error->message);
+                if (dbus_g_error_has_name (error, "org.freedesktop.ConsoleKit.Manager.NotPrivileged")) {
+                        PolKitAction *action;
+                        guint         xid;
+                        pid_t         pid;
+
+                        xid = 0;
+                        pid = getpid ();
+
+                        action = polkit_action_new ();
+                        /* FIXME: check num users */
+                        polkit_action_set_action_id (action, "org.freedesktop.consolekit.system.stop");
+
+                        g_error_free (error);
+                        error = NULL;
+                        res = polkit_gnome_auth_obtain (action,
+                                                        xid,
+                                                        pid,
+                                                        (PolKitGnomeAuthCB) system_stop_auth_cb,
+                                                        login_window,
+                                                        &error);
+                        polkit_action_unref (action);
+
+                        if (! res) {
+                                g_warning ("Unable to request privilege for action: %s", error->message);
+                                g_error_free (error);
+                        }
+
+                }
+        }
+
+}
+
+static void
+restart_button_clicked (GtkButton             *button,
+                        GdmGreeterLoginWindow *login_window)
+{
+        g_debug ("GdmGreeterLoginWindow: restart button clicked");
+        do_system_restart (login_window);
+}
+
+static void
+shutdown_button_clicked (GtkButton             *button,
+                         GdmGreeterLoginWindow *login_window)
+{
+        g_debug ("GdmGreeterLoginWindow: stop button clicked");
+        do_system_stop (login_window);
+}
+
 static void
 on_user_chosen (GdmUserChooserWidget  *user_chooser,
                 GdmGreeterLoginWindow *login_window)
@@ -850,6 +1091,11 @@ load_theme (GdmGreeterLoginWindow *login_window)
 
         button = glade_xml_get_widget (login_window->priv->xml, "cancel-button");
         g_signal_connect (button, "clicked", G_CALLBACK (cancel_button_clicked), login_window);
+
+        button = glade_xml_get_widget (login_window->priv->xml, "restart-button");
+        g_signal_connect (button, "clicked", G_CALLBACK (restart_button_clicked), login_window);
+        button = glade_xml_get_widget (login_window->priv->xml, "shutdown-button");
+        g_signal_connect (button, "clicked", G_CALLBACK (shutdown_button_clicked), login_window);
 
         entry = glade_xml_get_widget (login_window->priv->xml, "auth-prompt-entry");
         /* Only change the invisible character if it '*' otherwise assume it is OK */
