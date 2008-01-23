@@ -786,7 +786,7 @@ do_system_restart (GdmGreeterLoginWindow *login_window)
 
                         action = polkit_action_new ();
                         if (get_system_num_sessions (connection) > 1) {
-                                paction = "org.freedesktop.consolekit.system.restart-multiple-users";
+                                paction = "org.freedesktop.consolekit.system.restart-multiple-sessions";
                         } else {
                                 paction = "org.freedesktop.consolekit.system.restart";
                         }
@@ -847,7 +847,7 @@ do_system_stop (GdmGreeterLoginWindow *login_window)
 
                         action = polkit_action_new ();
                         if (get_system_num_sessions (connection) > 1) {
-                                paction = "org.freedesktop.consolekit.system.stop-multiple-users";
+                                paction = "org.freedesktop.consolekit.system.stop-multiple-sessions";
                         } else {
                                 paction = "org.freedesktop.consolekit.system.stop";
                         }
