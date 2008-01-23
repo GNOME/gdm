@@ -31,6 +31,7 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <errno.h>
+#include <pwd.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -477,6 +478,165 @@ cancel_button_clicked (GtkButton             *button,
 }
 
 static gboolean
+get_int (DBusGProxy *proxy,
+         const char *method,
+         int        *val)
+{
+        GError  *error;
+        gboolean res;
+
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 method,
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_INT, val,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("%s failed: %s", method, error->message);
+                g_error_free (error);
+        }
+
+        return res;
+}
+
+static gboolean
+get_string (DBusGProxy *proxy,
+            const char *method,
+            char      **str)
+{
+        GError  *error;
+        gboolean res;
+
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 method,
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, str,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("%s failed: %s", method, error->message);
+                g_error_free (error);
+        }
+
+        return res;
+}
+
+static char *
+get_user_name (uid_t uid)
+{
+        struct passwd *pwent;
+        char          *name;
+
+        name = NULL;
+
+        pwent = getpwuid (uid);
+
+        if (pwent != NULL) {
+                name = g_strdup (pwent->pw_name);
+        }
+
+        return name;
+}
+
+static gboolean
+session_is_real_user (DBusGConnection *connection,
+                      const char      *ssid)
+{
+        DBusGProxy *proxy;
+        int         uid;
+        char       *username;
+        char       *session_type;
+        gboolean    ret;
+
+        ret = FALSE;
+        session_type = NULL;
+        username = NULL;
+
+        proxy = dbus_g_proxy_new_for_name (connection,
+                                           CK_NAME,
+                                           ssid,
+                                           CK_SESSION_INTERFACE);
+        if (proxy == NULL) {
+                return FALSE;
+        }
+
+        session_type = NULL;
+
+        get_int (proxy, "GetUnixUser", &uid);
+        get_string (proxy, "GetSessionType", &session_type);
+
+        username = get_user_name (uid);
+
+        /* filter out GDM user */
+        if (username != NULL && strcmp (username, "gdm") == 0) {
+                ret = FALSE;
+                goto out;
+        }
+
+        ret = TRUE;
+
+ out:
+        g_free (username);
+        g_free (session_type);
+        g_object_unref (proxy);
+
+        return ret;
+}
+
+static guint
+get_system_num_sessions (DBusGConnection *connection)
+{
+        DBusGProxy      *proxy;
+        gboolean         res;
+        GPtrArray       *sessions;
+        guint            num_sessions;
+        GError          *error;
+        int              i;
+
+        g_debug ("GdmGreeterLoginWindow: trying to restart system");
+
+        proxy = dbus_g_proxy_new_for_name (connection,
+                                           CK_NAME,
+                                           CK_MANAGER_PATH,
+                                           CK_MANAGER_INTERFACE);
+        error = NULL;
+        res = dbus_g_proxy_call_with_timeout (proxy,
+                                              "GetSessions",
+                                              INT_MAX,
+                                              &error,
+                                              /* parameters: */
+                                              G_TYPE_INVALID,
+                                              /* return values: */
+                                              dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH),
+                                              &sessions,
+                                              G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("Unable to query sessions: %s", error->message);
+                g_error_free (error);
+                return 0;
+        }
+
+        num_sessions = 0;
+        for (i = 0; i < sessions->len; i++) {
+                char *ssid;
+
+                ssid = g_ptr_array_index (sessions, i);
+
+                if (session_is_real_user (connection, ssid)) {
+                        num_sessions++;
+                }
+
+                g_free (ssid);
+        }
+
+        g_ptr_array_free (sessions, TRUE);
+
+        return num_sessions;
+}
+
+static gboolean
 try_system_stop (DBusGConnection *connection,
                  GError         **error)
 {
@@ -534,7 +694,12 @@ system_restart_auth_cb (PolKitAction          *action,
         DBusGConnection *connection;
         gboolean         res;
 
+        g_debug ("GdmGreeterLoginWindow: system restart auth callback gained=%s", gained_privilege ? "yes" : "no");
+
         if (! gained_privilege) {
+                if (error != NULL) {
+                        g_warning ("GdmGreeterLoginWindow: system restart error: %s", error->message);
+                }
                 return;
         }
 
@@ -564,7 +729,12 @@ system_stop_auth_cb (PolKitAction          *action,
         DBusGConnection *connection;
         gboolean         res;
 
+        g_debug ("GdmGreeterLoginWindow: system stop auth callback gained=%s", gained_privilege ? "yes" : "no");
+
         if (! gained_privilege) {
+                if (error != NULL) {
+                        g_warning ("GdmGreeterLoginWindow: system stop error: %s", error->message);
+                }
                 return;
         }
 
@@ -578,7 +748,7 @@ system_stop_auth_cb (PolKitAction          *action,
 
         res = try_system_stop (connection, &local_error);
         if (! res) {
-                g_warning ("Unable to ssystem: %s", local_error->message);
+                g_warning ("Unable to stop system: %s", local_error->message);
                 g_error_free (local_error);
                 return;
         }
@@ -601,19 +771,29 @@ do_system_restart (GdmGreeterLoginWindow *login_window)
 
         res = try_system_restart (connection, &error);
         if (! res) {
-                g_debug ("GdmGreeterLoginWindow: unable to restart system: %s", error->message);
+                g_debug ("GdmGreeterLoginWindow: unable to restart system: %s: %s",
+                         dbus_g_error_get_name (error),
+                         error->message);
 
                 if (dbus_g_error_has_name (error, "org.freedesktop.ConsoleKit.Manager.NotPrivileged")) {
                         PolKitAction *action;
                         guint         xid;
                         pid_t         pid;
+                        const char   *paction;
 
                         xid = 0;
                         pid = getpid ();
 
                         action = polkit_action_new ();
-                        /* FIXME: check num users */
-                        polkit_action_set_action_id (action, "org.freedesktop.consolekit.system.restart");
+                        if (get_system_num_sessions (connection) > 1) {
+                                paction = "org.freedesktop.consolekit.system.restart-multiple-users";
+                        } else {
+                                paction = "org.freedesktop.consolekit.system.restart";
+                        }
+                        polkit_action_set_action_id (action, paction);
+
+                        g_debug ("GdmGreeterLoginWindow: trying to obtain authorization for %s",
+                                 paction);
 
                         g_error_free (error);
                         error = NULL;
@@ -635,7 +815,6 @@ do_system_restart (GdmGreeterLoginWindow *login_window)
 
 }
 
-
 static void
 do_system_stop (GdmGreeterLoginWindow *login_window)
 {
@@ -653,18 +832,28 @@ do_system_stop (GdmGreeterLoginWindow *login_window)
 
         res = try_system_stop (connection, &error);
         if (! res) {
-                g_debug ("GdmGreeterLoginWindow: unable to restart system: %s", error->message);
+                g_debug ("GdmGreeterLoginWindow: unable to stop system: %s: %s",
+                         dbus_g_error_get_name (error),
+                         error->message);
+
                 if (dbus_g_error_has_name (error, "org.freedesktop.ConsoleKit.Manager.NotPrivileged")) {
                         PolKitAction *action;
                         guint         xid;
                         pid_t         pid;
+                        const char   *paction;
 
                         xid = 0;
                         pid = getpid ();
 
                         action = polkit_action_new ();
-                        /* FIXME: check num users */
-                        polkit_action_set_action_id (action, "org.freedesktop.consolekit.system.stop");
+                        if (get_system_num_sessions (connection) > 1) {
+                                paction = "org.freedesktop.consolekit.system.stop-multiple-users";
+                        } else {
+                                paction = "org.freedesktop.consolekit.system.stop";
+                        }
+
+                        g_debug ("GdmGreeterLoginWindow: trying to obtain authorization for %s",
+                                 paction);
 
                         g_error_free (error);
                         error = NULL;
