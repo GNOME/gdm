@@ -45,7 +45,7 @@
 
 #include "gdm-greeter-session.h"
 
-#define DBUS_LAUNCH_COMMAND "dbus-launch --exit-with-session"
+#define DBUS_LAUNCH_COMMAND BINDIR "/dbus-launch --exit-with-session"
 
 #define GDM_GREETER_SERVER_DBUS_PATH      "/org/gnome/DisplayManager/GreeterServer"
 #define GDM_GREETER_SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.GreeterServer"
@@ -239,8 +239,12 @@ get_greeter_environment (GdmGreeterSession *greeter_session)
         /* create a hash table of current environment, then update keys has necessary */
         hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
-        g_hash_table_insert (hash, g_strdup ("DBUS_SESSION_BUS_ADDRESS"), g_strdup (greeter_session->priv->dbus_bus_address));
-        g_hash_table_insert (hash, g_strdup ("GDM_GREETER_DBUS_ADDRESS"), g_strdup (greeter_session->priv->server_address));
+        if (greeter_session->priv->dbus_bus_address != NULL) {
+                g_hash_table_insert (hash, g_strdup ("DBUS_SESSION_BUS_ADDRESS"), g_strdup (greeter_session->priv->dbus_bus_address));
+        }
+        if (greeter_session->priv->server_address != NULL) {
+                g_hash_table_insert (hash, g_strdup ("GDM_GREETER_DBUS_ADDRESS"), g_strdup (greeter_session->priv->server_address));
+        }
 
         g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (greeter_session->priv->x11_authority_file));
         g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (greeter_session->priv->x11_display_name));
@@ -567,21 +571,27 @@ parse_dbus_launch_output (const char *output,
 static gboolean
 start_dbus_daemon (GdmGreeterSession *greeter_session)
 {
-        gboolean res;
-        char    *std_out;
-        char    *std_err;
-        int      exit_status;
-        GError  *error;
+        gboolean   res;
+        char      *std_out;
+        char      *std_err;
+        int        exit_status;
+        GError    *error;
+        GPtrArray *env;
+
+        env = get_greeter_environment (greeter_session);
 
         error = NULL;
         res = spawn_command_line_sync_as_user (DBUS_LAUNCH_COMMAND,
                                                greeter_session->priv->user_name,
                                                greeter_session->priv->group_name,
-                                               NULL,
+                                               (char **)env->pdata,
                                                &std_out,
                                                &std_err,
                                                &exit_status,
                                                &error);
+        g_ptr_array_foreach (env, (GFunc)g_free, NULL);
+        g_ptr_array_free (env, TRUE);
+
         if (! res) {
                 g_warning ("Unable to launch D-Bus daemon: %s", error->message);
                 g_error_free (error);

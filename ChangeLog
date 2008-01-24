@@ -1,5 +1,13 @@
 2008-01-23  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-greeter-session.c: (get_greeter_environment),
+	(start_dbus_daemon):
+	Make sure the dbus daemon for the greeter session gets the
+	correct environment.  This is particularly important when
+	doing service activation.
+
+2008-01-23  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/simple-greeter/gdm-greeter-login-window.c:
 	(do_system_restart), (do_system_stop):
 	Fix ConsoleKit action names.
