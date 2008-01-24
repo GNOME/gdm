@@ -595,8 +595,6 @@ get_system_num_sessions (DBusGConnection *connection)
         GError          *error;
         int              i;
 
-        g_debug ("GdmGreeterLoginWindow: trying to restart system");
-
         proxy = dbus_g_proxy_new_for_name (connection,
                                            CK_NAME,
                                            CK_MANAGER_PATH,
@@ -851,6 +849,7 @@ do_system_stop (GdmGreeterLoginWindow *login_window)
                         } else {
                                 paction = "org.freedesktop.consolekit.system.stop";
                         }
+                        polkit_action_set_action_id (action, paction);
 
                         g_debug ("GdmGreeterLoginWindow: trying to obtain authorization for %s",
                                  paction);
