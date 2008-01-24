@@ -3548,10 +3548,6 @@ typedef struct _ImageData {
 	gchar *key;
 } ImageData;
 
-/*
- * Do we really want to throw away the user's translations just because they
- * changed the non-translated value?
- */
 static gboolean
 greeter_entry_untranslate_timeout (GtkWidget *entry)
 {
@@ -3574,19 +3570,8 @@ greeter_entry_untranslate_timeout (GtkWidget *entry)
 		goto out;
 	}
 
-	prefix = g_strdup_printf ("%s[", config_key);
-	keys = g_key_file_get_keys (custom_cfg, config_group, NULL, NULL);
-	for (i = 0; keys[i] != NULL; i++) {
-		if (g_str_has_prefix (keys[i], prefix)) {
-			g_key_file_remove_key (custom_cfg, config_group, keys[i], NULL);
-		}
-	}
-	g_strfreev (keys);
-
 	gdm_setup_config_set_string (key, (char *)ve_sure_string (text));
 	update_greeters ();
-
-	gdm_common_config_save (custom_cfg, custom_config_file, NULL);
 
  out:
 	g_key_file_free (custom_cfg);

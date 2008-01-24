@@ -1,3 +1,11 @@
+2008-01-23 Brian Cameron <brian.cameron@sun.com>
+
+	* gui/gdmsetup.c: Fix bug that was causing the Welcome message to not
+	  get saved properly.  Fixes bug #511018.  Also removed the bad code
+	  to delete translated strings if the user changes the value.  If
+	  user wants to change the translated strings, they should do it 
+	  manually.
+
 2008-01-10 Brian Cameron <brian.cameron@sun.com>
 
 	* daemon/gdm-daemon-config.c: Fix the setting of the custom command
