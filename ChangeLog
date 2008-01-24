@@ -1,6 +1,13 @@
 2008-01-23  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/simple-greeter/gdm-greeter-login-window.c:
+	(get_action_from_error), (do_system_restart), (do_system_stop):
+	Don't try to determine PK action independently.  Parse
+	it from the error message.
+
+2008-01-23  William Jon McCann  <mccann@jhu.edu>
+
+	* gui/simple-greeter/gdm-greeter-login-window.c:
 	(get_system_num_sessions), (do_system_stop):
 	Set the action name for stop.
 
