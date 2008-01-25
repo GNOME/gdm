@@ -125,7 +125,7 @@ static gboolean
 open_greeter_session (GdmGreeterSession *greeter_session)
 {
         struct passwd *pwent;
-        const char    *session;
+        const char    *session_type;
         const char    *hostname;
         const char    *x11_display_device;
         int            res;
@@ -134,8 +134,7 @@ open_greeter_session (GdmGreeterSession *greeter_session)
 
         ret = FALSE;
 
-        /* FIXME: */
-        session = "greeter";
+        session_type = "LoginWindow";
 
         pwent = getpwnam (greeter_session->priv->user_name);
         if (pwent == NULL) {
@@ -173,6 +172,7 @@ open_greeter_session (GdmGreeterSession *greeter_session)
         res = ck_connector_open_session_with_parameters (greeter_session->priv->ckc,
                                                          &error,
                                                          "unix-user", &pwent->pw_uid,
+                                                         "session-type", &session_type,
                                                          "x11-display", &greeter_session->priv->x11_display_name,
                                                          "x11-display-device", &x11_display_device,
                                                          "remote-host-name", &hostname,
