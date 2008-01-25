@@ -37,7 +37,7 @@
 
 struct GdmDisplayStorePrivate
 {
-        GHashTable      *displays;
+        GHashTable *displays;
 };
 
 enum {
@@ -68,6 +68,7 @@ gdm_display_store_error_quark (void)
 void
 gdm_display_store_clear (GdmDisplayStore    *store)
 {
+        g_return_if_fail (store != NULL);
         g_debug ("GdmDisplayStore: Clearing display store");
         g_hash_table_remove_all (store->priv->displays);
 }
@@ -76,6 +77,8 @@ gboolean
 gdm_display_store_remove (GdmDisplayStore    *store,
                           GdmDisplay         *display)
 {
+        g_return_val_if_fail (store != NULL, FALSE);
+
         g_warning ("GdmDisplayStore: Implement me");
         return FALSE;
 }
@@ -197,14 +200,16 @@ gdm_display_store_init (GdmDisplayStore *store)
 static void
 gdm_display_store_finalize (GObject *object)
 {
-        GdmDisplayStore *display_store;
+        GdmDisplayStore *store;
 
         g_return_if_fail (object != NULL);
         g_return_if_fail (GDM_IS_DISPLAY_STORE (object));
 
-        display_store = GDM_DISPLAY_STORE (object);
+        store = GDM_DISPLAY_STORE (object);
 
-        g_return_if_fail (display_store->priv != NULL);
+        g_return_if_fail (store->priv != NULL);
+
+        g_hash_table_destroy (store->priv->displays);
 
         G_OBJECT_CLASS (gdm_display_store_parent_class)->finalize (object);
 }

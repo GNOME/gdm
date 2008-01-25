@@ -36,6 +36,8 @@ BUILT_SOURCES =					\
 	gdm-display-glue.h			\
 	gdm-xdmcp-display-glue.h		\
 	gdm-static-display-glue.h		\
+	gdm-transient-display-glue.h		\
+	gdm-local-display-factory-glue.h	\
 	gdm-static-factory-display-glue.h	\
 	gdm-product-display-glue.h		\
 	$(NULL)
@@ -56,6 +58,10 @@ gdm-xdmcp-display-glue.h: gdm-xdmcp-display.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_xdmcp_display --mode=glib-server --output=gdm-xdmcp-display-glue.h $(srcdir)/gdm-xdmcp-display.xml
 gdm-static-display-glue.h: gdm-static-display.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_static_display --mode=glib-server --output=gdm-static-display-glue.h $(srcdir)/gdm-static-display.xml
+gdm-transient-display-glue.h: gdm-transient-display.xml Makefile.am
+	dbus-binding-tool --prefix=gdm_transient_display --mode=glib-server --output=gdm-transient-display-glue.h $(srcdir)/gdm-transient-display.xml
+gdm-local-display-factory-glue.h: gdm-local-display-factory.xml Makefile.am
+	dbus-binding-tool --prefix=gdm_local_display_factory --mode=glib-server --output=gdm-local-display-factory-glue.h $(srcdir)/gdm-local-display-factory.xml
 gdm-static-factory-display-glue.h: gdm-static-factory-display.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_static_factory_display --mode=glib-server --output=gdm-static-factory-display-glue.h $(srcdir)/gdm-static-factory-display.xml
 gdm-product-display-glue.h: gdm-product-display.xml Makefile.am
@@ -237,6 +243,8 @@ gdm_binary_SOURCES = 			\
 	gdm-xdmcp-display.h		\
 	gdm-static-display.c		\
 	gdm-static-display.h		\
+	gdm-transient-display.c		\
+	gdm-transient-display.h		\
 	gdm-static-factory-display.c	\
 	gdm-static-factory-display.h	\
 	gdm-product-display.c		\
@@ -305,6 +313,8 @@ EXTRA_DIST = 				\
 	gdm-display.xml			\
 	gdm-xdmcp-display.xml		\
 	gdm-static-display.xml		\
+	gdm-transient-display.xml	\
+	gdm-local-display-factory.xml	\
 	gdm-static-factory-display.xml	\
 	gdm-product-display.xml		\
 	$(NULL)

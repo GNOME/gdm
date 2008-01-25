@@ -29,11 +29,19 @@
 
 #include "gdm-display-factory.h"
 #include "gdm-local-display-factory.h"
+#include "gdm-local-display-factory-glue.h"
+
 #include "gdm-display-store.h"
 #include "gdm-static-display.h"
+#include "gdm-transient-display.h"
 #include "gdm-static-factory-display.h"
+#include "gdm-product-display.h"
 
 #define GDM_LOCAL_DISPLAY_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_LOCAL_DISPLAY_FACTORY, GdmLocalDisplayFactoryPrivate))
+
+#define GDM_DBUS_PATH                       "/org/gnome/DisplayManager"
+#define GDM_LOCAL_DISPLAY_FACTORY_DBUS_PATH GDM_DBUS_PATH "/LocalDisplayFactory"
+#define GDM_MANAGER_DBUS_NAME               "org.gnome.DisplayManager.LocalDisplayFactory"
 
 #define HAL_DBUS_NAME                           "org.freedesktop.Hal"
 #define HAL_DBUS_MANAGER_PATH                   "/org/freedesktop/Hal/Manager"
@@ -45,6 +53,7 @@ struct GdmLocalDisplayFactoryPrivate
 {
         DBusGConnection *connection;
         DBusGProxy      *proxy;
+        GHashTable      *displays;
 };
 
 enum {
@@ -71,18 +80,210 @@ gdm_local_display_factory_error_quark (void)
 }
 
 static void
+listify_hash (gpointer    key,
+              GdmDisplay *display,
+              GList     **list)
+{
+        *list = g_list_prepend (*list, key);
+}
+
+static int
+sort_nums (gpointer a,
+           gpointer b)
+{
+        guint32 num_a;
+        guint32 num_b;
+
+        num_a = GPOINTER_TO_UINT (a);
+        num_b = GPOINTER_TO_UINT (b);
+
+        if (num_a > num_b) {
+                return 1;
+        } else if (num_a < num_b) {
+                return -1;
+        } else {
+                return 0;
+        }
+}
+
+static guint32
+take_next_display_number (GdmLocalDisplayFactory *factory)
+{
+        GList  *list;
+        GList  *l;
+        guint32 ret;
+
+        ret = 0;
+        list = NULL;
+
+        g_hash_table_foreach (factory->priv->displays, (GHFunc)listify_hash, &list);
+        if (list == NULL) {
+                goto out;
+        }
+
+        /* sort low to high */
+        list = g_list_sort (list, (GCompareFunc)sort_nums);
+
+        g_debug ("GdmLocalDisplayFactory: Found the following X displays:");
+        for (l = list; l != NULL; l = l->next) {
+                g_debug ("%u", GPOINTER_TO_UINT (l->data));
+        }
+
+        for (l = list; l != NULL; l = l->next) {
+                guint32 num;
+                num = GPOINTER_TO_UINT (l->data);
+
+                /* always fill zero */
+                if (l->prev == NULL && num != 0) {
+                        ret = 0;
+                        break;
+                }
+                /* now find the first hole */
+                if (l->next == NULL || GPOINTER_TO_UINT (l->next->data) != (num + 1)) {
+                        ret = num + 1;
+                        break;
+                }
+        }
+ out:
+
+        /* now reserve this number */
+        g_debug ("GdmLocalDisplayFactory: Reserving X display: %u", ret);
+        g_hash_table_insert (factory->priv->displays, GUINT_TO_POINTER (ret), NULL);
+
+        return ret;
+}
+
+static void
+on_display_disposed (GdmLocalDisplayFactory *factory,
+                     GdmDisplay             *display)
+{
+        /* remove the display number from accounting */
+
+}
+
+static void
+store_display (GdmLocalDisplayFactory *factory,
+               guint32                 num,
+               GdmDisplay             *display)
+{
+        GdmDisplayStore *store;
+
+        g_object_weak_ref (G_OBJECT (display), (GWeakNotify)on_display_disposed, factory);
+
+        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+        gdm_display_store_add (store, display);
+
+        /* now fill our reserved spot */
+        g_hash_table_insert (factory->priv->displays, GUINT_TO_POINTER (num), NULL);
+
+}
+
+gboolean
+gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *factory,
+                                                    char                  **id,
+                                                    GError                **error)
+{
+        gboolean         ret;
+        GdmDisplay      *display;
+        guint32          num;
+
+        g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
+
+        ret = FALSE;
+
+        num = take_next_display_number (factory);
+
+        g_debug ("GdmLocalDisplayFactory: Creating transient display %d", num);
+
+        display = gdm_transient_display_new (num);
+
+        if (! gdm_display_create_authority (display)) {
+                display = NULL;
+                goto out;
+        }
+
+        store_display (factory, num, display);
+
+        if (! gdm_display_manage (display)) {
+                display = NULL;
+                goto out;
+        }
+
+        if (! gdm_display_get_id (display, id, NULL)) {
+                display = NULL;
+                goto out;
+        }
+
+        ret = TRUE;
+ out:
+        /* ref either held by store or not at all */
+        g_object_unref (display);
+
+        return ret;
+}
+
+gboolean
+gdm_local_display_factory_create_product_display (GdmLocalDisplayFactory *factory,
+                                                  const char             *parent_display_id,
+                                                  const char             *relay_address,
+                                                  char                  **id,
+                                                  GError                **error)
+{
+        gboolean    ret;
+        GdmDisplay *display;
+        guint32     num;
+
+        g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
+
+        ret = FALSE;
+
+        g_debug ("GdmLocalDisplayFactory: Creating product display parent %s address:%s",
+                 parent_display_id, relay_address);
+
+        num = take_next_display_number (factory);
+
+        g_debug ("GdmLocalDisplayFactory: got display num %u", num);
+
+        display = gdm_product_display_new (num, relay_address);
+
+        if (! gdm_display_create_authority (display)) {
+                display = NULL;
+                goto out;
+        }
+
+        store_display (factory, num, display);
+
+        if (! gdm_display_manage (display)) {
+                display = NULL;
+                goto out;
+        }
+
+        if (! gdm_display_get_id (display, id, NULL)) {
+                display = NULL;
+                goto out;
+        }
+
+        ret = TRUE;
+ out:
+        /* ref either held by store or not at all */
+        g_object_unref (display);
+
+        return ret;
+}
+
+static void
 create_display_for_device (GdmLocalDisplayFactory *factory,
                            DBusGProxy             *device_proxy)
 {
-        GdmDisplay      *display;
-        GdmDisplayStore *store;
+        GdmDisplay *display;
+        guint32     num;
 
-        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+        num = take_next_display_number (factory);
 
 #if 0
-        display = gdm_static_factory_display_new (0, store);
+        display = gdm_static_factory_display_new (num);
 #else
-        display = gdm_static_display_new (0);
+        display = gdm_static_display_new (num);
 #endif
         if (display == NULL) {
                 g_warning ("Unable to create display: %d", 0);
@@ -95,7 +296,8 @@ create_display_for_device (GdmLocalDisplayFactory *factory,
                 return;
         }
 
-        gdm_display_store_add (store, display);
+        store_display (factory, num, display);
+
         /* let store own the ref */
         g_object_unref (display);
 
@@ -232,37 +434,29 @@ gdm_local_display_factory_get_property (GObject    *object,
         }
 }
 
-static void
-gdm_local_display_factory_class_init (GdmLocalDisplayFactoryClass *klass)
+static gboolean
+register_factory (GdmLocalDisplayFactory *factory)
 {
-        GObjectClass           *object_class = G_OBJECT_CLASS (klass);
-        GdmDisplayFactoryClass *factory_class = GDM_DISPLAY_FACTORY_CLASS (klass);
+        GError *error = NULL;
 
-        object_class->get_property = gdm_local_display_factory_get_property;
-        object_class->set_property = gdm_local_display_factory_set_property;
-        object_class->finalize = gdm_local_display_factory_finalize;
+        error = NULL;
+        factory->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (factory->priv->connection == NULL) {
+                if (error != NULL) {
+                        g_critical ("error getting system bus: %s", error->message);
+                        g_error_free (error);
+                }
+                exit (1);
+        }
 
-        factory_class->start = gdm_local_display_factory_start;
-        factory_class->stop = gdm_local_display_factory_stop;
+        dbus_g_connection_register_g_object (factory->priv->connection, GDM_LOCAL_DISPLAY_FACTORY_DBUS_PATH, G_OBJECT (factory));
 
-        g_type_class_add_private (klass, sizeof (GdmLocalDisplayFactoryPrivate));
+        return TRUE;
 }
 
 static gboolean
 connect_to_hal (GdmLocalDisplayFactory *factory)
 {
-        GError *error;
-
-        error = NULL;
-        factory->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-        if (factory->priv->connection == NULL) {
-                g_critical ("Couldn't connect to system bus: %s",
-                           error->message);
-                g_error_free (error);
-
-                return FALSE;
-        }
-
         factory->priv->proxy = dbus_g_proxy_new_for_name (factory->priv->connection,
                                                           HAL_DBUS_NAME,
                                                           HAL_DBUS_MANAGER_PATH,
@@ -283,12 +477,56 @@ disconnect_from_hal (GdmLocalDisplayFactory *factory)
         }
 }
 
+static GObject *
+gdm_local_display_factory_constructor (GType                  type,
+                                       guint                  n_construct_properties,
+                                       GObjectConstructParam *construct_properties)
+{
+        GdmLocalDisplayFactory      *factory;
+        GdmLocalDisplayFactoryClass *klass;
+        gboolean                     res;
+
+        klass = GDM_LOCAL_DISPLAY_FACTORY_CLASS (g_type_class_peek (GDM_TYPE_LOCAL_DISPLAY_FACTORY));
+
+        factory = GDM_LOCAL_DISPLAY_FACTORY (G_OBJECT_CLASS (gdm_local_display_factory_parent_class)->constructor (type,
+                                                                                                                   n_construct_properties,
+                                                                                                                   construct_properties));
+
+        res = register_factory (factory);
+        if (! res) {
+                g_warning ("Unable to register local display factory with system bus");
+        }
+
+        connect_to_hal (factory);
+
+        return G_OBJECT (factory);
+}
+
+static void
+gdm_local_display_factory_class_init (GdmLocalDisplayFactoryClass *klass)
+{
+        GObjectClass           *object_class = G_OBJECT_CLASS (klass);
+        GdmDisplayFactoryClass *factory_class = GDM_DISPLAY_FACTORY_CLASS (klass);
+
+        object_class->get_property = gdm_local_display_factory_get_property;
+        object_class->set_property = gdm_local_display_factory_set_property;
+        object_class->finalize = gdm_local_display_factory_finalize;
+        object_class->constructor = gdm_local_display_factory_constructor;
+
+        factory_class->start = gdm_local_display_factory_start;
+        factory_class->stop = gdm_local_display_factory_stop;
+
+        g_type_class_add_private (klass, sizeof (GdmLocalDisplayFactoryPrivate));
+
+        dbus_g_object_type_install_info (GDM_TYPE_LOCAL_DISPLAY_FACTORY, &dbus_glib_gdm_local_display_factory_object_info);
+}
+
 static void
 gdm_local_display_factory_init (GdmLocalDisplayFactory *factory)
 {
         factory->priv = GDM_LOCAL_DISPLAY_FACTORY_GET_PRIVATE (factory);
 
-        connect_to_hal (factory);
+        factory->priv->displays = g_hash_table_new (NULL, NULL);
 }
 
 static void
@@ -302,6 +540,8 @@ gdm_local_display_factory_finalize (GObject *object)
         factory = GDM_LOCAL_DISPLAY_FACTORY (object);
 
         g_return_if_fail (factory->priv != NULL);
+
+        g_hash_table_destroy (factory->priv->displays);
 
         disconnect_from_hal (factory);
 

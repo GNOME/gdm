@@ -52,8 +52,7 @@ typedef struct
 } GdmStaticFactoryDisplayClass;
 
 GType               gdm_static_factory_display_get_type                (void);
-GdmDisplay *        gdm_static_factory_display_new                     (int                      display_number,
-                                                                        GdmDisplayStore         *store);
+GdmDisplay *        gdm_static_factory_display_new                     (int                      display_number);
 
 gboolean            gdm_static_factory_display_create_product_display  (GdmStaticFactoryDisplay *display,
                                                                         const char              *server_address,

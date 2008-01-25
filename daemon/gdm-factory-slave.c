@@ -57,8 +57,9 @@ extern char **environ;
 
 #define GDM_FACTORY_SLAVE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_FACTORY_SLAVE, GdmFactorySlavePrivate))
 
-#define GDM_DBUS_NAME                      "org.gnome.DisplayManager"
-#define GDM_DBUS_FACTORY_DISPLAY_INTERFACE "org.gnome.DisplayManager.StaticFactoryDisplay"
+#define GDM_DBUS_NAME                            "org.gnome.DisplayManager"
+#define GDM_DBUS_LOCAL_DISPLAY_FACTORY_PATH      "/org/gnome/DisplayManager/LocalDisplayFactory"
+#define GDM_DBUS_LOCAL_DISPLAY_FACTORY_INTERFACE "org.gnome.DisplayManager.LocalDisplayFactory"
 
 #define MAX_CONNECT_ATTEMPTS 10
 
@@ -78,7 +79,7 @@ struct GdmFactorySlavePrivate
         GdmSessionRelay   *session;
         GdmGreeterServer  *greeter_server;
         GdmGreeterSession *greeter;
-        DBusGProxy        *factory_display_proxy;
+        DBusGProxy        *factory_proxy;
         DBusGConnection   *connection;
 };
 
@@ -277,7 +278,7 @@ on_session_session_started (GdmSession      *session,
 static gboolean
 create_product_display (GdmFactorySlave *slave)
 {
-        char    *display_id;
+        char    *parent_display_id;
         char    *server_address;
         char    *product_id;
         GError  *error;
@@ -288,33 +289,33 @@ create_product_display (GdmFactorySlave *slave)
 
         g_debug ("GdmFactorySlave: Create product display");
 
-        g_object_get (slave,
-                      "display-id", &display_id,
-                      NULL);
-
-        g_debug ("GdmFactorySlave: Connecting to display %s", display_id);
-        slave->priv->factory_display_proxy = dbus_g_proxy_new_for_name (slave->priv->connection,
-                                                                        GDM_DBUS_NAME,
-                                                                        display_id,
-                                                                        GDM_DBUS_FACTORY_DISPLAY_INTERFACE);
-        g_free (display_id);
-
-        if (slave->priv->factory_display_proxy == NULL) {
-                g_warning ("Failed to create display proxy %s", display_id);
+        g_debug ("GdmFactorySlave: Connecting to local display factory");
+        slave->priv->factory_proxy = dbus_g_proxy_new_for_name (slave->priv->connection,
+                                                                GDM_DBUS_NAME,
+                                                                GDM_DBUS_LOCAL_DISPLAY_FACTORY_PATH,
+                                                                GDM_DBUS_LOCAL_DISPLAY_FACTORY_INTERFACE);
+        if (slave->priv->factory_proxy == NULL) {
+                g_warning ("Failed to create local display factory proxy");
                 goto out;
         }
 
         server_address = gdm_session_relay_get_address (slave->priv->session);
 
+        g_object_get (slave,
+                      "display-id", &parent_display_id,
+                      NULL);
+
         error = NULL;
-        res = dbus_g_proxy_call (slave->priv->factory_display_proxy,
+        res = dbus_g_proxy_call (slave->priv->factory_proxy,
                                  "CreateProductDisplay",
                                  &error,
+                                 DBUS_TYPE_G_OBJECT_PATH, parent_display_id,
                                  G_TYPE_STRING, server_address,
                                  G_TYPE_INVALID,
                                  DBUS_TYPE_G_OBJECT_PATH, &product_id,
                                  G_TYPE_INVALID);
         g_free (server_address);
+        g_free (parent_display_id);
 
         if (! res) {
                 if (error != NULL) {
@@ -740,8 +741,8 @@ gdm_factory_slave_stop (GdmSlave *slave)
                 GDM_FACTORY_SLAVE (slave)->priv->server = NULL;
         }
 
-        if (GDM_FACTORY_SLAVE (slave)->priv->factory_display_proxy != NULL) {
-                g_object_unref (GDM_FACTORY_SLAVE (slave)->priv->factory_display_proxy);
+        if (GDM_FACTORY_SLAVE (slave)->priv->factory_proxy != NULL) {
+                g_object_unref (GDM_FACTORY_SLAVE (slave)->priv->factory_proxy);
         }
 
         return TRUE;

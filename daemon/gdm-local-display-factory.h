@@ -56,10 +56,20 @@ typedef enum
 
 #define GDM_LOCAL_DISPLAY_FACTORY_ERROR gdm_local_display_factory_error_quark ()
 
-GQuark                     gdm_local_display_factory_error_quark             (void);
-GType                      gdm_local_display_factory_get_type                (void);
+GQuark                     gdm_local_display_factory_error_quark              (void);
+GType                      gdm_local_display_factory_get_type                 (void);
 
-GdmLocalDisplayFactory *   gdm_local_display_factory_new                     (GdmDisplayStore        *display_store);
+GdmLocalDisplayFactory *   gdm_local_display_factory_new                      (GdmDisplayStore        *display_store);
+
+gboolean                   gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *factory,
+                                                                               char                  **id,
+                                                                               GError                **error);
+
+gboolean                   gdm_local_display_factory_create_product_display   (GdmLocalDisplayFactory *factory,
+                                                                               const char             *parent_display_id,
+                                                                               const char             *relay_address,
+                                                                               char                  **id,
+                                                                               GError                **error);
 
 G_END_DECLS
 

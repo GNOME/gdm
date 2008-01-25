@@ -1,3 +1,45 @@
+2008-01-24  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/Makefile.am:
+	* daemon/gdm-display-store.c: (gdm_display_store_clear),
+	(gdm_display_store_remove), (gdm_display_store_finalize):
+	* daemon/gdm-factory-slave.c: (create_product_display),
+	(gdm_factory_slave_stop):
+	* daemon/gdm-local-display-factory.c: (listify_hash), (sort_nums),
+	(take_next_display_number), (on_display_disposed), (store_display),
+	(gdm_local_display_factory_create_transient_display),
+	(gdm_local_display_factory_create_product_display),
+	(create_display_for_device), (register_factory), (connect_to_hal),
+	(gdm_local_display_factory_constructor),
+	(gdm_local_display_factory_class_init),
+	(gdm_local_display_factory_init),
+	(gdm_local_display_factory_finalize):
+	* daemon/gdm-local-display-factory.h:
+	* daemon/gdm-local-display-factory.xml:
+	* daemon/gdm-static-factory-display.c:
+	(gdm_static_factory_display_set_property),
+	(gdm_static_factory_display_get_property),
+	(gdm_static_factory_display_class_init),
+	(gdm_static_factory_display_new):
+	* daemon/gdm-static-factory-display.h:
+	* daemon/gdm-static-factory-display.xml:
+	* daemon/gdm-transient-display.c:
+	(gdm_transient_display_create_authority),
+	(gdm_transient_display_add_user_authorization),
+	(gdm_transient_display_remove_user_authorization),
+	(gdm_transient_display_manage), (gdm_transient_display_finish),
+	(gdm_transient_display_unmanage),
+	(gdm_transient_display_set_property),
+	(gdm_transient_display_get_property),
+	(gdm_transient_display_class_init), (gdm_transient_display_init),
+	(gdm_transient_display_finalize), (gdm_transient_display_new):
+	* daemon/gdm-transient-display.h:
+	* daemon/gdm-transient-display.xml:
+	Use the LocalDisplayFactory to assign X11 Display numbers
+	to all local displays.  Try to assign the lowest available.
+	Add a stub for a TransientDisplay that can be used to
+	do FUS logins.
+
 2008-01-23  William Jon McCann  <mccann@jhu.edu>
 
 	* gui/simple-greeter/gdm-greeter-login-window.c:
