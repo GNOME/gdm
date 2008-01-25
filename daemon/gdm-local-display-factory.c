@@ -175,7 +175,6 @@ store_display (GdmLocalDisplayFactory *factory,
 
         /* now fill our reserved spot */
         g_hash_table_insert (factory->priv->displays, GUINT_TO_POINTER (num), NULL);
-
 }
 
 /*
@@ -208,6 +207,9 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
                 display = NULL;
                 goto out;
         }
+
+        /* FIXME: don't hardcode seat1? */
+        g_object_set (display, "seat-id", "org.freedesktop.ConsoleKit.Seat1", NULL);
 
         store_display (factory, num, display);
 
@@ -258,6 +260,9 @@ gdm_local_display_factory_create_product_display (GdmLocalDisplayFactory *factor
                 goto out;
         }
 
+        /* FIXME: don't hardcode seat1? */
+        g_object_set (display, "seat-id", "org.freedesktop.ConsoleKit.Seat1", NULL);
+
         store_display (factory, num, display);
 
         if (! gdm_display_manage (display)) {
@@ -278,9 +283,8 @@ gdm_local_display_factory_create_product_display (GdmLocalDisplayFactory *factor
         return ret;
 }
 
-static void
-create_display_for_device (GdmLocalDisplayFactory *factory,
-                           DBusGProxy             *device_proxy)
+static GdmDisplay *
+create_display (GdmLocalDisplayFactory *factory)
 {
         GdmDisplay *display;
         guint32     num;
@@ -293,15 +297,19 @@ create_display_for_device (GdmLocalDisplayFactory *factory,
         display = gdm_static_display_new (num);
 #endif
         if (display == NULL) {
-                g_warning ("Unable to create display: %d", 0);
-                return;
+                g_warning ("Unable to create display: %d", num);
+                return NULL;
         }
 
         if (! gdm_display_create_authority (display)) {
                 g_warning ("Unable to set up access control for display %d",
-                           0);
-                return;
+                           num);
+                g_object_unref (display);
+                return NULL;
         }
+
+        /* FIXME: don't hardcode seat1? */
+        g_object_set (display, "seat-id", "org.freedesktop.ConsoleKit.Seat1", NULL);
 
         store_display (factory, num, display);
 
@@ -311,6 +319,16 @@ create_display_for_device (GdmLocalDisplayFactory *factory,
         if (! gdm_display_manage (display)) {
                 gdm_display_unmanage (display);
         }
+
+        return display;
+}
+
+#if 0
+static void
+create_display_for_device (GdmLocalDisplayFactory *factory,
+                           DBusGProxy             *device_proxy)
+{
+        create_display (factory);
 }
 
 static void
@@ -380,6 +398,7 @@ create_displays_for_pci_devices (GdmLocalDisplayFactory *factory)
 
         g_strfreev (devices);
 }
+#endif
 
 static gboolean
 gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
@@ -391,8 +410,12 @@ gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
 
         ret = TRUE;
 
-        /* FIXME: */
+        /* FIXME: use seat configuration */
+#if 0
         create_displays_for_pci_devices (factory);
+#else
+        create_display (factory);
+#endif
 
         return ret;
 }

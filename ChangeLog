@@ -1,5 +1,16 @@
 2008-01-25  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-local-display-factory.c: (store_display),
+	(gdm_local_display_factory_create_transient_display),
+	(gdm_local_display_factory_create_product_display),
+	(create_display), (create_display_for_device),
+	(gdm_local_display_factory_start):
+	Don't use HAL to get seats since we don't know what to do
+	with that info yet.  Hardcode starting one display for
+	Seat1 and set the seat-id for all local displays.
+
+2008-01-25  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/gdm-greeter-session.c: (open_greeter_session):
 	Set the ConsoleKit session-type to LoginWindow for the
 	greeter sessions.
