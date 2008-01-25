@@ -178,6 +178,13 @@ store_display (GdmLocalDisplayFactory *factory,
 
 }
 
+/*
+  Example:
+  dbus-send --system --dest=org.gnome.DisplayManager \
+  --type=method_call --print-reply --reply-timeout=2000 \
+  /org/gnome/DisplayManager/Manager \
+  org.gnome.DisplayManager.Manager.GetDisplays
+*/
 gboolean
 gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *factory,
                                                     char                  **id,

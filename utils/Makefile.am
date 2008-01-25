@@ -5,6 +5,8 @@ INCLUDES = \
 	-I..						\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	$(UTILS_CFLAGS)					\
+	$(GTK_CFLAGS)					\
+	$(COMMON_CFLAGS)				\
 	$(NULL)
 
 edit = sed \
@@ -20,10 +22,23 @@ gdm-restart: gdm-restart.in Makefile
 gdm-safe-restart: gdm-safe-restart.in Makefile
 	$(edit) $< >$@
 
+bin_PROGRAMS = \
+	gdmflexiserver		\
+	$(NULL)
+
 sbin_SCRIPTS = 			\
 	gdm-stop		\
 	gdm-restart		\
 	gdm-safe-restart	\
+	$(NULL)
+
+gdmflexiserver_SOURCES =	\
+	gdmflexiserver.c	\
+	$(NULL)
+
+gdmflexiserver_LDADD =		\
+	$(GTK_LIBS)		\
+	$(COMMON_LIBS)		\
 	$(NULL)
 
 EXTRA_DIST = 			\
