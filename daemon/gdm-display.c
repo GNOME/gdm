@@ -355,6 +355,20 @@ gdm_display_get_x11_display_number (GdmDisplay *display,
        return TRUE;
 }
 
+gboolean
+gdm_display_get_seat_id (GdmDisplay *display,
+                         char      **seat_id,
+                         GError    **error)
+{
+       g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+       if (seat_id != NULL) {
+               *seat_id = g_strdup (display->priv->seat_id);
+       }
+
+       return TRUE;
+}
+
 static gboolean
 finish_idle (GdmDisplay *display)
 {
@@ -800,13 +814,6 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
-                                         PROP_SEAT_ID,
-                                         g_param_spec_string ("seat-id",
-                                                              "seat id",
-                                                              "seat id",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-        g_object_class_install_property (object_class,
                                          PROP_REMOTE_HOSTNAME,
                                          g_param_spec_string ("remote-hostname",
                                                               "remote-hostname",
@@ -829,6 +836,13 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               "x11-display-name",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_SEAT_ID,
+                                         g_param_spec_string ("seat-id",
+                                                              "seat id",
+                                                              "seat id",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
                                          PROP_X11_COOKIE,
                                          g_param_spec_string ("x11-cookie",

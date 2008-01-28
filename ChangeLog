@@ -1,3 +1,27 @@
+2008-01-28  William Jon McCann  <mccann@jhu.edu>
+
+	* daemon/gdm-display.c: (gdm_display_get_seat_id),
+	(gdm_display_class_init):
+	* daemon/gdm-display.h:
+	* daemon/gdm-display.xml:
+	* daemon/gdm-local-display-factory.c:
+	(gdm_local_display_factory_create_transient_display),
+	(gdm_local_display_factory_create_product_display),
+	(create_display):
+	* daemon/gdm-simple-slave.c: (on_session_authorized),
+	(try_migrate_session), (start_session_timeout),
+	(queue_start_session), (on_session_accredited),
+	(on_session_accreditation_failed):
+	* daemon/gdm-slave.c: (gdm_slave_real_start),
+	(_get_uid_and_gid_for_user), (x11_session_is_on_seat),
+	(_get_primary_user_session_id), (activate_session_id),
+	(gdm_slave_switch_to_user_session),
+	(_gdm_slave_set_display_seat_id), (gdm_slave_set_property),
+	(gdm_slave_get_property), (gdm_slave_class_init):
+	* daemon/gdm-slave.h:
+	Initial session migration support.  We still need to
+	make the slave die after if it is a transient display.
+
 2008-01-25  William Jon McCann  <mccann@jhu.edu>
 
 	* daemon/gdm-local-display-factory.c: (store_display),

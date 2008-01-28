@@ -60,6 +60,10 @@ gboolean            gdm_slave_stop                   (GdmSlave   *slave);
 gboolean            gdm_slave_add_user_authorization (GdmSlave   *slave,
                                                       const char *username,
                                                       char      **filename);
+
+gboolean            gdm_slave_switch_to_user_session (GdmSlave   *slave,
+                                                      const char *username);
+
 gboolean            gdm_slave_connect_to_x11_display (GdmSlave   *slave);
 void                gdm_slave_set_busy_cursor        (GdmSlave   *slave);
 gboolean            gdm_slave_run_script             (GdmSlave   *slave,

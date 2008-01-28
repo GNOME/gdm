@@ -53,6 +53,15 @@
 
 #define GDM_SLAVE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SLAVE, GdmSlavePrivate))
 
+#define CK_NAME      "org.freedesktop.ConsoleKit"
+#define CK_PATH      "/org/freedesktop/ConsoleKit"
+#define CK_INTERFACE "org.freedesktop.ConsoleKit"
+
+#define CK_MANAGER_PATH      "/org/freedesktop/ConsoleKit/Manager"
+#define CK_MANAGER_INTERFACE "org.freedesktop.ConsoleKit.Manager"
+#define CK_SEAT_INTERFACE    "org.freedesktop.ConsoleKit.Seat"
+#define CK_SESSION_INTERFACE "org.freedesktop.ConsoleKit.Session"
+
 #define GDM_DBUS_NAME              "org.gnome.DisplayManager"
 #define GDM_DBUS_DISPLAY_INTERFACE "org.gnome.DisplayManager.Display"
 
@@ -74,6 +83,7 @@ struct GdmSlavePrivate
         char            *display_hostname;
         gboolean         display_is_local;
         gboolean         display_is_parented;
+        char            *display_seat_id;
         char            *display_x11_authority_file;
         char            *parent_display_name;
         char            *parent_display_x11_authority_file;
@@ -93,6 +103,7 @@ enum {
         PROP_DISPLAY_NUMBER,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
+        PROP_DISPLAY_SEAT_ID,
         PROP_DISPLAY_X11_AUTHORITY_FILE
 };
 
@@ -555,6 +566,24 @@ gdm_slave_real_start (GdmSlave *slave)
                 return FALSE;
         }
 
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->display_proxy,
+                                 "GetSeatId",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &slave->priv->display_seat_id,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get value: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get value");
+                }
+
+                return FALSE;
+        }
+
         return TRUE;
 }
 
@@ -650,6 +679,317 @@ gdm_slave_add_user_authorization (GdmSlave   *slave,
         return res;
 }
 
+static gboolean
+_get_uid_and_gid_for_user (const char *username,
+                           uid_t      *uid,
+                           gid_t      *gid)
+{
+        struct passwd *passwd_entry;
+
+        g_assert (username != NULL);
+
+        errno = 0;
+        passwd_entry = getpwnam (username);
+
+        if (passwd_entry == NULL) {
+                return FALSE;
+        }
+
+        if (uid != NULL) {
+                *uid = passwd_entry->pw_uid;
+        }
+
+        if (gid != NULL) {
+                *gid = passwd_entry->pw_gid;
+        }
+
+        return TRUE;
+}
+
+static gboolean
+x11_session_is_on_seat (GdmSlave        *slave,
+                        const char      *session_id,
+                        const char      *seat_id)
+{
+        DBusGProxy      *proxy;
+        GError          *error;
+        char            *sid;
+        gboolean         res;
+        gboolean         ret;
+        char            *x11_display_device;
+        char            *x11_display;
+
+        ret = FALSE;
+
+        if (seat_id == NULL || seat_id[0] == '\0' || session_id == NULL || session_id[0] == '\0') {
+                return FALSE;
+        }
+
+        proxy = dbus_g_proxy_new_for_name (slave->priv->connection,
+                                           CK_NAME,
+                                           session_id,
+                                           CK_SESSION_INTERFACE);
+        if (proxy == NULL) {
+                g_warning ("Failed to connect to the ConsoleKit seat object");
+                goto out;
+        }
+
+        sid = NULL;
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 "GetSeatId",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 DBUS_TYPE_G_OBJECT_PATH, &sid,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_debug ("Failed to identify the current seat: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        if (sid == NULL || sid[0] == '\0' || strcmp (sid, seat_id) != 0) {
+                g_debug ("GdmSlave: session not on current seat: %s", seat_id);
+                goto out;
+        }
+
+        x11_display = NULL;
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 "GetX11Display",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &x11_display,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_error_free (error);
+                goto out;
+        }
+
+        /* don't try to switch to our own session */
+        if (x11_display == NULL || x11_display[0] == '\0'
+            || strcmp (slave->priv->display_name, x11_display) == 0) {
+                g_free (x11_display);
+                goto out;
+        }
+        g_free (x11_display);
+
+        x11_display_device = NULL;
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 "GetX11DisplayDevice",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &x11_display_device,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_error_free (error);
+                goto out;
+        }
+
+        if (x11_display_device == NULL || x11_display_device[0] == '\0') {
+                g_free (x11_display_device);
+                goto out;
+        }
+        g_free (x11_display_device);
+
+        ret = TRUE;
+
+ out:
+        if (proxy != NULL) {
+                g_object_unref (proxy);
+        }
+
+        return ret;
+}
+
+static char *
+_get_primary_user_session_id (GdmSlave   *slave,
+                              const char *username)
+{
+        gboolean    res;
+        gboolean    ret;
+        gboolean    can_activate_sessions;
+        GError     *error;
+        DBusGProxy *manager_proxy;
+        DBusGProxy *seat_proxy;
+        GPtrArray  *sessions;
+        char       *primary_ssid;
+        int         i;
+        uid_t       uid;
+
+        if (slave->priv->display_seat_id == NULL || slave->priv->display_seat_id[0] == '\0') {
+                g_debug ("GdmSlave: display seat id is not set; can't switch sessions");
+                return FALSE;
+        }
+
+        ret = FALSE;
+        manager_proxy = NULL;
+        primary_ssid = NULL;
+        sessions = NULL;
+
+        g_debug ("GdmSlave: getting proxy for seat: %s", slave->priv->display_seat_id);
+
+        seat_proxy = dbus_g_proxy_new_for_name (slave->priv->connection,
+                                                CK_NAME,
+                                                slave->priv->display_seat_id,
+                                                CK_SEAT_INTERFACE);
+
+        g_debug ("GdmSlave: checking if seat can activate sessions");
+
+        error = NULL;
+        res = dbus_g_proxy_call (seat_proxy,
+                                 "CanActivateSessions",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_BOOLEAN, &can_activate_sessions,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("unable to determine if seat can activate sessions: %s",
+                           error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        if (! can_activate_sessions) {
+                g_debug ("GdmSlave: seat is unable to activate sessions");
+                goto out;
+        }
+
+        manager_proxy = dbus_g_proxy_new_for_name (slave->priv->connection,
+                                                   CK_NAME,
+                                                   CK_MANAGER_PATH,
+                                                   CK_MANAGER_INTERFACE);
+
+        if (! _get_uid_and_gid_for_user (username, &uid, NULL)) {
+                g_debug ("GdmSlave: unable to determine uid for user: %s", username);
+                goto out;
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (manager_proxy,
+                                 "GetSessionsForUnixUser",
+                                 &error,
+                                 G_TYPE_UINT, uid,
+                                 G_TYPE_INVALID,
+                                 dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH), &sessions,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("unable to determine sessions for user: %s",
+                           error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        for (i = 0; i < sessions->len; i++) {
+                char *ssid;
+
+                ssid = g_ptr_array_index (sessions, i);
+
+                if (! x11_session_is_on_seat (slave, ssid, slave->priv->display_seat_id)) {
+                        goto next;
+                }
+
+                /* FIXME: better way to choose? */
+                if (primary_ssid == NULL) {
+                        primary_ssid = g_strdup (ssid);
+                }
+
+        next:
+                g_free (ssid);
+        }
+        g_ptr_array_free (sessions, TRUE);
+
+ out:
+
+        if (seat_proxy != NULL) {
+                g_object_unref (seat_proxy);
+        }
+        if (manager_proxy != NULL) {
+                g_object_unref (manager_proxy);
+        }
+
+        return primary_ssid;
+}
+
+static gboolean
+activate_session_id (GdmSlave   *slave,
+                     const char *seat_id,
+                     const char *session_id)
+{
+        DBusError    local_error;
+        DBusMessage *message;
+        DBusMessage *reply;
+        gboolean     ret;
+
+        ret = FALSE;
+
+        dbus_error_init (&local_error);
+        message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
+                                                seat_id,
+                                                "org.freedesktop.ConsoleKit.Seat",
+                                                "ActivateSession");
+        if (message == NULL) {
+                goto out;
+        }
+
+        if (! dbus_message_append_args (message,
+                                        DBUS_TYPE_OBJECT_PATH, &session_id,
+                                        DBUS_TYPE_INVALID)) {
+                goto out;
+        }
+
+
+        dbus_error_init (&local_error);
+        reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (slave->priv->connection),
+                                                           message,
+                                                           -1,
+                                                           &local_error);
+        if (reply == NULL) {
+                if (dbus_error_is_set (&local_error)) {
+                        g_warning ("Unable to activate session: %s", local_error.message);
+                        dbus_error_free (&local_error);
+                        goto out;
+                }
+        }
+
+        ret = TRUE;
+ out:
+        return ret;
+}
+
+gboolean
+gdm_slave_switch_to_user_session (GdmSlave   *slave,
+                                  const char *username)
+{
+        gboolean    res;
+        gboolean    ret;
+        char       *ssid_to_activate;
+
+        ret = FALSE;
+
+        ssid_to_activate = _get_primary_user_session_id (slave, username);
+        if (ssid_to_activate == NULL) {
+                g_debug ("GdmSlave: unable to determine session to activate");
+                goto out;
+        }
+
+        g_debug ("GdmSlave: Activating session: '%s'", ssid_to_activate);
+
+        res = activate_session_id (slave, slave->priv->display_seat_id, ssid_to_activate);
+        if (! res) {
+                g_debug ("GdmSlave: unable to activate session: %s", ssid_to_activate);
+                goto out;
+        }
+
+        ret = TRUE;
+
+ out:
+        g_free (ssid_to_activate);
+
+        return ret;
+}
+
 static void
 _gdm_slave_set_display_id (GdmSlave   *slave,
                            const char *id)
@@ -690,6 +1030,14 @@ _gdm_slave_set_display_x11_authority_file (GdmSlave   *slave,
 }
 
 static void
+_gdm_slave_set_display_seat_id (GdmSlave   *slave,
+                                const char *id)
+{
+        g_free (slave->priv->display_seat_id);
+        slave->priv->display_seat_id = g_strdup (id);
+}
+
+static void
 _gdm_slave_set_display_is_local (GdmSlave   *slave,
                                  gboolean    is)
 {
@@ -718,6 +1066,9 @@ gdm_slave_set_property (GObject      *object,
                 break;
         case PROP_DISPLAY_HOSTNAME:
                 _gdm_slave_set_display_hostname (self, g_value_get_string (value));
+                break;
+        case PROP_DISPLAY_SEAT_ID:
+                _gdm_slave_set_display_seat_id (self, g_value_get_string (value));
                 break;
         case PROP_DISPLAY_X11_AUTHORITY_FILE:
                 _gdm_slave_set_display_x11_authority_file (self, g_value_get_string (value));
@@ -753,6 +1104,9 @@ gdm_slave_get_property (GObject    *object,
                 break;
         case PROP_DISPLAY_HOSTNAME:
                 g_value_set_string (value, self->priv->display_hostname);
+                break;
+        case PROP_DISPLAY_SEAT_ID:
+                g_value_set_string (value, self->priv->display_seat_id);
                 break;
         case PROP_DISPLAY_X11_AUTHORITY_FILE:
                 g_value_set_string (value, self->priv->display_x11_authority_file);
@@ -861,6 +1215,13 @@ gdm_slave_class_init (GdmSlaveClass *klass)
                                          g_param_spec_string ("display-hostname",
                                                               "display hostname",
                                                               "display hostname",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_SEAT_ID,
+                                         g_param_spec_string ("display-seat-id",
+                                                              "",
+                                                              "",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,

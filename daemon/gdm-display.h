@@ -101,6 +101,9 @@ gboolean            gdm_display_get_x11_display_number         (GdmDisplay *disp
 gboolean            gdm_display_get_x11_display_name           (GdmDisplay *display,
                                                                 char      **x11_display,
                                                                 GError    **error);
+gboolean            gdm_display_get_seat_id                    (GdmDisplay *display,
+                                                                char      **seat_id,
+                                                                GError    **error);
 gboolean            gdm_display_is_local                       (GdmDisplay *display,
                                                                 gboolean   *local,
                                                                 GError    **error);

@@ -39,6 +39,8 @@
 
 #define GDM_LOCAL_DISPLAY_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_LOCAL_DISPLAY_FACTORY, GdmLocalDisplayFactoryPrivate))
 
+#define CK_SEAT1_PATH                       "/org/freedesktop/ConsoleKit/Seat1"
+
 #define GDM_DBUS_PATH                       "/org/gnome/DisplayManager"
 #define GDM_LOCAL_DISPLAY_FACTORY_DBUS_PATH GDM_DBUS_PATH "/LocalDisplayFactory"
 #define GDM_MANAGER_DBUS_NAME               "org.gnome.DisplayManager.LocalDisplayFactory"
@@ -209,7 +211,7 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
         }
 
         /* FIXME: don't hardcode seat1? */
-        g_object_set (display, "seat-id", "org.freedesktop.ConsoleKit.Seat1", NULL);
+        g_object_set (display, "seat-id", CK_SEAT1_PATH, NULL);
 
         store_display (factory, num, display);
 
@@ -261,7 +263,7 @@ gdm_local_display_factory_create_product_display (GdmLocalDisplayFactory *factor
         }
 
         /* FIXME: don't hardcode seat1? */
-        g_object_set (display, "seat-id", "org.freedesktop.ConsoleKit.Seat1", NULL);
+        g_object_set (display, "seat-id", CK_SEAT1_PATH, NULL);
 
         store_display (factory, num, display);
 
@@ -309,7 +311,7 @@ create_display (GdmLocalDisplayFactory *factory)
         }
 
         /* FIXME: don't hardcode seat1? */
-        g_object_set (display, "seat-id", "org.freedesktop.ConsoleKit.Seat1", NULL);
+        g_object_set (display, "seat-id", CK_SEAT1_PATH, NULL);
 
         store_display (factory, num, display);
 

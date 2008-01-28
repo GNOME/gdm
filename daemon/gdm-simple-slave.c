@@ -66,6 +66,7 @@ struct GdmSimpleSlavePrivate
         guint              error_watch_id;
 
         guint              greeter_reset_id;
+        guint              start_session_id;
 
         int                ping_interval;
 
@@ -76,7 +77,6 @@ struct GdmSimpleSlavePrivate
         GdmGreeterServer  *greeter_server;
         GdmGreeterSession *greeter;
         GdmSessionDirect  *session;
-        DBusGConnection   *connection;
 };
 
 enum {
@@ -209,7 +209,6 @@ on_session_authorized (GdmSession     *session,
 {
         int flag;
 
-        /* FIXME: check for migration? */
         flag = GDM_SESSION_CRED_ESTABLISH;
 
         gdm_session_accredit (session, flag);
@@ -225,11 +224,39 @@ on_session_authorization_failed (GdmSession     *session,
         queue_greeter_reset (slave);
 }
 
-static void
-on_session_accredited (GdmSession     *session,
-                       GdmSimpleSlave *slave)
+static gboolean
+try_migrate_session (GdmSimpleSlave *slave)
 {
-        char *auth_file;
+        char    *username;
+        gboolean res;
+
+        g_debug ("GdmSimpleSlave: trying to migrate session");
+
+        username = gdm_session_direct_get_username (slave->priv->session);
+
+        /* try to switch to an existing session */
+        res = gdm_slave_switch_to_user_session (GDM_SLAVE (slave), username);
+        g_free (username);
+
+        return res;
+}
+
+
+static gboolean
+start_session_timeout (GdmSimpleSlave *slave)
+{
+
+        char    *auth_file;
+        gboolean migrated;
+
+        g_debug ("GdmSimpleSlave: accredited");
+
+        migrated = try_migrate_session (slave);
+        g_debug ("GdmSimpleSlave: migrated: %d", migrated);
+        if (migrated) {
+                queue_greeter_reset (slave);
+                goto out;
+        }
 
         gdm_greeter_session_stop (slave->priv->greeter);
         gdm_greeter_server_stop (slave->priv->greeter_server);
@@ -239,13 +266,33 @@ on_session_accredited (GdmSession     *session,
 
         g_assert (auth_file != NULL);
 
-        g_object_set (session,
+        g_object_set (slave->priv->session,
                       "user-x11-authority-file", auth_file,
                       NULL);
 
         g_free (auth_file);
 
-        gdm_session_start_session (session);
+        gdm_session_start_session (GDM_SESSION (slave->priv->session));
+ out:
+        slave->priv->start_session_id = 0;
+        return FALSE;
+}
+
+static void
+queue_start_session (GdmSimpleSlave *slave)
+{
+        if (slave->priv->start_session_id > 0) {
+                return;
+        }
+
+        slave->priv->start_session_id = g_idle_add ((GSourceFunc)start_session_timeout, slave);
+}
+
+static void
+on_session_accredited (GdmSession     *session,
+                       GdmSimpleSlave *slave)
+{
+        queue_start_session (slave);
 }
 
 static void
@@ -253,7 +300,17 @@ on_session_accreditation_failed (GdmSession     *session,
                                  const char     *message,
                                  GdmSimpleSlave *slave)
 {
-        gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable establish credentials"));
+        gboolean migrated;
+
+        g_debug ("GdmSimpleSlave: accreditation failed");
+
+        migrated = try_migrate_session (slave);
+
+        /* If we switched to another session we don't care if
+           accreditation fails */
+        if (! migrated) {
+                gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable establish credentials"));
+        }
 
         queue_greeter_reset (slave);
 }
