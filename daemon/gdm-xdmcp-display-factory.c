@@ -700,8 +700,8 @@ lookup_by_host (const char     *id,
 
 static GdmDisplay *
 gdm_xdmcp_display_lookup_by_host (GdmXdmcpDisplayFactory *factory,
-                                  GdmAddress      *address,
-                                  int              display_num)
+                                  GdmAddress             *address,
+                                  int                     display_num)
 {
         GdmDisplay      *display;
         LookupHostData  *data;
@@ -766,7 +766,7 @@ get_willing_output (GdmXdmcpDisplayFactory *factory)
 
 static void
 gdm_xdmcp_send_willing (GdmXdmcpDisplayFactory *factory,
-                        GdmAddress      *address)
+                        GdmAddress             *address)
 {
         ARRAY8        status;
         XdmcpHeader   header;
@@ -828,8 +828,8 @@ gdm_xdmcp_send_willing (GdmXdmcpDisplayFactory *factory,
 
 static void
 gdm_xdmcp_send_unwilling (GdmXdmcpDisplayFactory *factory,
-                          GdmAddress      *address,
-                          int              type)
+                          GdmAddress             *address,
+                          int                     type)
 {
         ARRAY8        status;
         XdmcpHeader   header;
@@ -987,7 +987,7 @@ gdm_xdmcp_send_forward_query (GdmXdmcpDisplayFactory  *factory,
 #endif
 
 static void
-handle_any_query (GdmXdmcpDisplayFactory         *factory,
+handle_any_query (GdmXdmcpDisplayFactory  *factory,
                   GdmAddress              *address,
                   ARRAYofARRAY8Ptr         authentication_names,
                   int                      type)
@@ -996,7 +996,7 @@ handle_any_query (GdmXdmcpDisplayFactory         *factory,
 }
 
 static void
-handle_direct_query (GdmXdmcpDisplayFactory         *factory,
+handle_direct_query (GdmXdmcpDisplayFactory  *factory,
                      GdmAddress              *address,
                      int                      len,
                      int                      type)
@@ -1029,8 +1029,8 @@ handle_direct_query (GdmXdmcpDisplayFactory         *factory,
 
 static void
 gdm_xdmcp_handle_broadcast_query (GdmXdmcpDisplayFactory *factory,
-                                  GdmAddress      *address,
-                                  int              len)
+                                  GdmAddress             *address,
+                                  int                     len)
 {
         if (gdm_xdmcp_host_allow (address)) {
                 handle_direct_query (factory, address, len, BROADCAST_QUERY);
@@ -1041,8 +1041,8 @@ gdm_xdmcp_handle_broadcast_query (GdmXdmcpDisplayFactory *factory,
 
 static void
 gdm_xdmcp_handle_query (GdmXdmcpDisplayFactory *factory,
-                        GdmAddress      *address,
-                        int              len)
+                        GdmAddress             *address,
+                        int                     len)
 {
         if (gdm_xdmcp_host_allow (address)) {
                 handle_direct_query (factory, address, len, QUERY);
@@ -1053,8 +1053,8 @@ gdm_xdmcp_handle_query (GdmXdmcpDisplayFactory *factory,
 
 static void
 gdm_xdmcp_handle_indirect_query (GdmXdmcpDisplayFactory *factory,
-                                 GdmAddress      *address,
-                                 int              len)
+                                 GdmAddress             *address,
+                                 int                     len)
 {
         ARRAYofARRAY8       clnt_authlist;
         int                 expected_len;
@@ -1150,7 +1150,7 @@ out:
 
 static void
 gdm_forward_query_dispose (GdmXdmcpDisplayFactory *factory,
-                           GdmForwardQuery *q)
+                           GdmForwardQuery        *q)
 {
         if (q == NULL) {
                 return;
@@ -1201,8 +1201,8 @@ remove_oldest_forward (GdmXdmcpDisplayFactory *factory)
 
 static GdmForwardQuery *
 gdm_forward_query_alloc (GdmXdmcpDisplayFactory *factory,
-                         GdmAddress      *mgr_address,
-                         GdmAddress      *dsp_address)
+                         GdmAddress             *mgr_address,
+                         GdmAddress             *dsp_address)
 {
         GdmForwardQuery *q;
         int              count;
@@ -1224,7 +1224,7 @@ gdm_forward_query_alloc (GdmXdmcpDisplayFactory *factory,
 
 static GdmForwardQuery *
 gdm_forward_query_lookup (GdmXdmcpDisplayFactory *factory,
-                          GdmAddress      *address)
+                          GdmAddress             *address)
 {
         GSList          *li;
         GSList          *qlist;
@@ -1370,8 +1370,8 @@ create_address_from_request (ARRAY8      *req_addr,
 
 static void
 gdm_xdmcp_whack_queued_managed_forwards (GdmXdmcpDisplayFactory *factory,
-                                         GdmAddress      *address,
-                                         GdmAddress      *origin)
+                                         GdmAddress             *address,
+                                         GdmAddress             *origin)
 {
         GSList *li;
 
@@ -1391,8 +1391,8 @@ gdm_xdmcp_whack_queued_managed_forwards (GdmXdmcpDisplayFactory *factory,
 
 static void
 gdm_xdmcp_handle_forward_query (GdmXdmcpDisplayFactory *factory,
-                                GdmAddress      *address,
-                                int              len)
+                                GdmAddress             *address,
+                                int                     len)
 {
         ARRAY8                   clnt_addr;
         ARRAY8                   clnt_port;
@@ -1562,8 +1562,8 @@ managed_forward_free (ManagedForward *mf)
 
 static void
 gdm_xdmcp_send_managed_forward (GdmXdmcpDisplayFactory *factory,
-                                GdmAddress      *address,
-                                GdmAddress      *origin)
+                                GdmAddress             *address,
+                                GdmAddress             *origin)
 {
         ManagedForward *mf;
 
@@ -1586,8 +1586,8 @@ gdm_xdmcp_send_managed_forward (GdmXdmcpDisplayFactory *factory,
 
 static void
 gdm_xdmcp_send_got_managed_forward (GdmXdmcpDisplayFactory *factory,
-                                    GdmAddress      *address,
-                                    GdmAddress      *origin)
+                                    GdmAddress             *address,
+                                    GdmAddress             *origin)
 {
         ARRAY8      addr;
         XdmcpHeader header;
@@ -1613,8 +1613,8 @@ gdm_xdmcp_send_got_managed_forward (GdmXdmcpDisplayFactory *factory,
 }
 
 static gboolean
-count_sessions (const char      *id,
-                GdmDisplay      *display,
+count_sessions (const char             *id,
+                GdmDisplay             *display,
                 GdmXdmcpDisplayFactory *factory)
 {
         if (GDM_IS_XDMCP_DISPLAY (display)) {
@@ -1647,8 +1647,8 @@ gdm_xdmcp_recount_sessions (GdmXdmcpDisplayFactory *factory)
 }
 
 static gboolean
-purge_displays (const char      *id,
-                GdmDisplay      *display,
+purge_displays (const char             *id,
+                GdmDisplay             *display,
                 GdmXdmcpDisplayFactory *factory)
 {
         if (GDM_IS_XDMCP_DISPLAY (display)) {
@@ -1717,8 +1717,8 @@ remove_host (const char     *id,
 
 static void
 display_dispose_check (GdmXdmcpDisplayFactory *factory,
-                       const char      *hostname,
-                       int              display_num)
+                       const char             *hostname,
+                       int                     display_num)
 {
         RemoveHostData  *data;
         GdmDisplayStore *store;
@@ -1744,8 +1744,8 @@ display_dispose_check (GdmXdmcpDisplayFactory *factory,
 
 static void
 gdm_xdmcp_send_decline (GdmXdmcpDisplayFactory *factory,
-                        GdmAddress      *address,
-                        const char      *reason)
+                        GdmAddress             *address,
+                        const char             *reason)
 {
         XdmcpHeader      header;
         ARRAY8           authentype;
@@ -1869,8 +1869,8 @@ gdm_xdmcp_send_accept (GdmXdmcpDisplayFactory *factory,
 
 static void
 gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
-                          GdmAddress      *address,
-                          int              len)
+                          GdmAddress             *address,
+                          int                     len)
 {
         CARD16        clnt_dspnum;
         ARRAY16       clnt_conntyp;
@@ -2143,7 +2143,7 @@ lookup_by_session_id (const char *id,
 
 static GdmDisplay *
 gdm_xdmcp_display_lookup (GdmXdmcpDisplayFactory *factory,
-                          CARD32           sessid)
+                          CARD32                  sessid)
 {
         GdmDisplay      *display;
         GdmDisplayStore *store;
@@ -2162,8 +2162,8 @@ gdm_xdmcp_display_lookup (GdmXdmcpDisplayFactory *factory,
 
 static void
 gdm_xdmcp_send_failed (GdmXdmcpDisplayFactory *factory,
-                       GdmAddress      *address,
-                       CARD32           sessid)
+                       GdmAddress             *address,
+                       CARD32                  sessid)
 {
         XdmcpHeader header;
         ARRAY8      status;
@@ -2193,8 +2193,8 @@ gdm_xdmcp_send_failed (GdmXdmcpDisplayFactory *factory,
 
 static void
 gdm_xdmcp_send_refuse (GdmXdmcpDisplayFactory *factory,
-                       GdmAddress      *address,
-                       CARD32           sessid)
+                       GdmAddress             *address,
+                       CARD32                  sessid)
 {
         XdmcpHeader      header;
         GdmForwardQuery *fq;
@@ -2227,8 +2227,8 @@ gdm_xdmcp_send_refuse (GdmXdmcpDisplayFactory *factory,
 
 static void
 gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
-                         GdmAddress      *address,
-                         int              len)
+                         GdmAddress             *address,
+                         int                     len)
 {
         CARD32              clnt_sessid;
         CARD16              clnt_dspnum;
@@ -2349,8 +2349,8 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
 
 static void
 gdm_xdmcp_handle_managed_forward (GdmXdmcpDisplayFactory *factory,
-                                  GdmAddress      *address,
-                                  int              len)
+                                  GdmAddress             *address,
+                                  int                     len)
 {
         ARRAY8              clnt_address;
         char               *host;
@@ -2363,8 +2363,8 @@ gdm_xdmcp_handle_managed_forward (GdmXdmcpDisplayFactory *factory,
 
         /* Check with tcp_wrappers if client is allowed to access */
         if (! gdm_xdmcp_host_allow (address)) {
-                g_warning ("%s: Got MANAGED_FORWARD from banned host %s",
-                           "gdm_xdmcp_handle_request", host);
+                g_warning ("GdmXdmcpDisplayFactory: Got MANAGED_FORWARD from banned host %s",
+                           host);
                 g_free (host);
                 return;
         }
@@ -2404,8 +2404,8 @@ gdm_xdmcp_handle_managed_forward (GdmXdmcpDisplayFactory *factory,
 
 static void
 gdm_xdmcp_handle_got_managed_forward (GdmXdmcpDisplayFactory *factory,
-                                      GdmAddress      *address,
-                                      int              len)
+                                      GdmAddress             *address,
+                                      int                     len)
 {
         GdmAddress *disp_address;
         ARRAY8      clnt_address;
@@ -2447,9 +2447,9 @@ gdm_xdmcp_handle_got_managed_forward (GdmXdmcpDisplayFactory *factory,
 
 static void
 gdm_xdmcp_send_alive (GdmXdmcpDisplayFactory *factory,
-                      GdmAddress      *address,
-                      CARD16           dspnum,
-                      CARD32           sessid)
+                      GdmAddress             *address,
+                      CARD16                  dspnum,
+                      CARD32                  sessid)
 {
         XdmcpHeader header;
         GdmDisplay *display;
@@ -2493,8 +2493,8 @@ gdm_xdmcp_send_alive (GdmXdmcpDisplayFactory *factory,
 
 static void
 gdm_xdmcp_handle_keepalive (GdmXdmcpDisplayFactory *factory,
-                            GdmAddress      *address,
-                            int              len)
+                            GdmAddress             *address,
+                            int                     len)
 {
         CARD16 clnt_dspnum;
         CARD32 clnt_sessid;
