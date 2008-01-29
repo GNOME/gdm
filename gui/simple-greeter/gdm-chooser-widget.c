@@ -1321,9 +1321,9 @@ name_cell_data_func (GtkTreeViewColumn  *tree_column,
         if (is_in_use) {
                 markup = g_strdup_printf ("<b>%s</b>\n"
                                           "<i><span size=\"x-small\">%s</span></i>",
-                                          name, widget->priv->in_use_message);
+                                          name ? name : "(null)", widget->priv->in_use_message);
         } else {
-                markup = g_strdup_printf ("<b>%s</b>", name);
+                markup = g_strdup_printf ("<b>%s</b>", name ? name : "(null)");
         }
         g_free (name);
 

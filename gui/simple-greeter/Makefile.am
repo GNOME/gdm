@@ -19,6 +19,7 @@ INCLUDES = \
 	-DAT_SPI_REGISTRYD_DIR="\"$(AT_SPI_REGISTRYD_DIR)\""	\
 	$(GTK_CFLAGS)					\
 	$(SIMPLE_GREETER_CFLAGS)			\
+	$(POLKIT_GNOME_CFLAGS)				\
 	$(NULL)
 
 @INTLTOOL_SCHEMAS_RULE@
@@ -58,6 +59,9 @@ test_greeter_login_window_SOURCES = 	\
 
 test_greeter_login_window_LDADD =	\
 	$(SIMPLE_GREETER_LIBS)		\
+	$(POLKIT_GNOME_LIBS)		\
+	$(RBAC_LIBS)			\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 test_greeter_panel_SOURCES = 	\
@@ -125,6 +129,7 @@ test_user_chooser_SOURCES = 		\
 
 test_user_chooser_LDADD =	\
 	$(SIMPLE_GREETER_LIBS)	\
+	$(POLKIT_GNOME_LIBS)	\
 	$(NULL)
 
 test_user_manager_SOURCES = 	\
@@ -138,6 +143,7 @@ test_user_manager_SOURCES = 	\
 
 test_user_manager_LDADD =	\
 	$(SIMPLE_GREETER_LIBS)	\
+	$(POLKIT_GNOME_LIBS)	\
 	$(NULL)
 
 libexec_PROGRAMS =			\
@@ -177,6 +183,9 @@ gdm_simple_greeter_LDADD = 		\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
 	$(SIMPLE_GREETER_LIBS)		\
+	$(POLKIT_GNOME_LIBS)		\
+	$(RBAC_LIBS)			\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 gladedir = $(pkgdatadir)

@@ -87,10 +87,19 @@ PKG_CHECK_MODULES(SIMPLE_GREETER,
         gtk+-2.0 >= $GTK_REQUIRED_VERSION
         libglade-2.0 >= $LIBGLADE_REQUIRED_VERSION
         gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED_VERSION
-        polkit-gnome >= $POLICYKIT_REQUIRED_VERSION
 )
 AC_SUBST(SIMPLE_GREETER_CFLAGS)
 AC_SUBST(SIMPLE_GREETER_LIBS)
+
+PKG_CHECK_MODULES(POLKIT_GNOME,
+  polkit >= $POLICYKIT_REQUIRED_VERSION,
+  have_polkit=yes,
+  have_polkit=no)
+if test "x$have_polkit" = "xyes" ; then
+       AC_DEFINE(HAVE_POLKIT_GNOME, [], [Define if we have polkit])
+fi
+AM_CONDITIONAL(HAVE_POLKIT_GNOME, test x$have_polkit = xyes)
+AC_SUBST(HAVE_POLKIT_GNOME)
 
 PKG_CHECK_MODULES(SIMPLE_CHOOSER,
         dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
@@ -862,6 +871,24 @@ ISO_CODES=iso-codes
 
 
 dnl ---------------------------------------------------------------------------
+dnl check for RBAC
+dnl ---------------------------------------------------------------------------
+
+msg_rbac_shutdown=no
+AC_ARG_ENABLE(rbac-shutdown,
+        [AC_HELP_STRING([--enable-rbac-shutdown=<key>],
+        [Build with RBAC support specifying shutdown/reboot RBAC authentication key])],
+        enable_rbac_shutdown=$enableval,enable_rbac_shutdown=no)
+if test "x$enable_rbac_shutdown" != "xno"; then
+        RBAC_LIBS="-lsecdb -lsocket -lnsl"
+        AC_DEFINE(ENABLE_RBAC_SHUTDOWN, [], [Set if we build with RBAC support])
+        AC_DEFINE_UNQUOTED(RBAC_SHUTDOWN_KEY, "$enable_rbac_shutdown", [Set if we build with RBAC support])
+        msg_rbac_shutdown="yes, using key $enable_rbac_shutdown"
+fi
+AC_SUBST(RBAC_LIBS)
+
+
+dnl ---------------------------------------------------------------------------
 dnl - Define some variables to represent the directories we use.
 dnl ---------------------------------------------------------------------------
 
@@ -977,15 +1004,6 @@ AC_CHECK_LIB(devinfo, di_devperm_login, [
 		     	AC_DEFINE(HAVE_LOGINDEVPERM)
 			    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -ldevinfo" ])
 
-# Check for RBAC support (chkauthattr
-#
-AC_MSG_CHECKING(for RBAC support - chkauthattr)
-AC_CHECK_LIB(secdb, chkauthattr, [
-		     	AC_DEFINE(HAVE_CHKAUTHATTR)
-			    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lsecdb"
-			    EXTRA_GREETER_LIBS="$EXTRA_GREETER_LIBS -lsecdb"])
-
-
 dnl ---------------------------------------------------------------------------
 dnl - Check for Halt, and Reboot commands
 dnl ---------------------------------------------------------------------------
@@ -995,7 +1013,6 @@ dnl ---------------------------------------------------------------------------
 # On Solaris/bin is a symlink to /usr/bin, so don't include it in
 # GDM_USER_PATH.
 GDM_USER_PATH=""
-GDM_RBAC_SYSCMD_KEYS=""
 
 case "$host" in
 *solaris*)
@@ -1006,7 +1023,6 @@ case "$host" in
         SUSPEND_COMMAND="/usr/openwin/bin/sys-suspend -n"
         XSESSION_SHELL=/bin/ksh
         SOUND_PROGRAM=/usr/bin/audioplay
-        GDM_RBAC_SYSCMD_KEYS="HALT:solaris.system.shutdown;REBOOT:solaris.system.shutdown"
         ;;
 *freebsd*)
 	GDM_USER_PATH="/bin:/usr/bin"
@@ -1201,16 +1217,6 @@ fi
 AC_SUBST(GDM_WORKING_DIR)
 
 dnl ---------------------------------------------------------------------------
-dnl - Allow configure to specify RBAC keys.
-dnl ---------------------------------------------------------------------------
-
-AC_ARG_WITH(rbac-system-command-keys,    [  --with-rbac-system-command-keys=<keys>     RBAC system command keys])
-
-if ! test -z "$with_system_command_keys"; then
-   GDM_RBAC_SYSCMD_KEYS=$with_system_command_keys
-fi
-
-dnl ---------------------------------------------------------------------------
 dnl - Finish
 dnl ---------------------------------------------------------------------------
 
@@ -1288,8 +1294,6 @@ AC_SUBST(GDM_USER_PATH)
 AC_DEFINE_UNQUOTED(GDM_USER_PATH,"$GDM_USER_PATH")
 AC_SUBST(SOUND_PROGRAM)
 AC_DEFINE_UNQUOTED(SOUND_PROGRAM,"$SOUND_PROGRAM")
-AC_SUBST(GDM_RBAC_SYSCMD_KEYS)
-AC_DEFINE_UNQUOTED(GDM_RBAC_SYSCMD_KEYS,"$GDM_RBAC_SYSCMD_KEYS")
 
 AC_SUBST(X_PATH)
 AC_SUBST(X_SERVER)
@@ -1371,6 +1375,7 @@ if test x"$LIBWRAP_PATH" = x ; then
 	echo \
 "        TCP Wrappers support:     no"
 else
+	echo \
 "        TCP Wrappers support:     yes"
 fi
 
@@ -1379,4 +1384,5 @@ echo \
         XDMCP support:            ${XDMCP_SUPPORT}
         SELinux support:          ${with_selinux}
         ConsoleKit support:       ${use_console_kit}
+        Build with RBAC:          ${msg_rbac_shutdown}
 "

@@ -33,6 +33,11 @@
 #include <errno.h>
 #include <pwd.h>
 
+#ifdef ENABLE_RBAC_SHUTDOWN
+#include <auth_attr.h>
+#include <secdb.h>
+#endif
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -49,7 +54,9 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
+#if HAVE_POLKIT_GNOME
 #include <polkit-gnome/polkit-gnome.h>
+#endif
 
 #include "gdm-greeter-login-window.h"
 #include "gdm-user-chooser-widget.h"
@@ -196,6 +203,25 @@ show_widget (GdmGreeterLoginWindow *login_window,
         }
 }
 
+#ifdef ENABLE_RBAC_SHUTDOWN
+static char *
+get_user_name (uid_t uid)
+{
+        struct passwd *pwent;
+        char          *name;
+
+        name = NULL;
+
+        pwent = getpwuid (uid);
+
+        if (pwent != NULL) {
+                name = g_strdup (pwent->pw_name);
+        }
+
+        return name;
+}
+#endif
+
 static void
 switch_mode (GdmGreeterLoginWindow *login_window,
              int                    number)
@@ -203,16 +229,35 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         const char *default_name;
         GtkWidget  *user_chooser;
         GtkWidget  *box;
+        gchar      *username;
+        gboolean    show_restart_shutdown = TRUE;
+        uid_t       uid;
 
         /* FIXME: do animation */
         default_name = NULL;
+
+#ifdef ENABLE_RBAC_SHUTDOWN
+        uid      = getuid ();
+        username = get_user_name (uid);
+
+        if (username == NULL || !chkauthattr (RBAC_SHUTDOWN_KEY, username)) {
+                show_restart_shutdown = FALSE;
+                g_debug ("Not showing stop/restart buttons for user %s due to RBAC key %s",
+                         username, RBAC_SHUTDOWN_KEY);
+        } else {
+                g_debug ("Showing stop/restart buttons for user %s due to RBAC key %s",
+                         username, RBAC_SHUTDOWN_KEY);
+        }
+#endif
 
         switch (number) {
         case MODE_SELECTION:
                 show_widget (login_window, "log-in-button", FALSE);
                 show_widget (login_window, "cancel-button", FALSE);
-                show_widget (login_window, "shutdown-button", login_window->priv->display_is_local);
-                show_widget (login_window, "restart-button", login_window->priv->display_is_local);
+                show_widget (login_window, "shutdown-button",
+                             login_window->priv->display_is_local && show_restart_shutdown);
+                show_widget (login_window, "restart-button",
+                             login_window->priv->display_is_local && show_restart_shutdown);
                 show_widget (login_window, "suspend-button", login_window->priv->display_is_local);
                 show_widget (login_window, "disconnect-button", ! login_window->priv->display_is_local);
                 show_widget (login_window, "auth-input-box", FALSE);
@@ -525,6 +570,7 @@ try_system_restart (DBusGConnection *connection,
         return res;
 }
 
+#ifdef HAVE_POLKIT_GNOME
 static void
 system_restart_auth_cb (PolKitAction          *action,
                         gboolean               gained_privilege,
@@ -613,6 +659,7 @@ get_action_from_error (GError *error)
 
         return action;
 }
+#endif
 
 static void
 do_system_restart (GdmGreeterLoginWindow *login_window)
@@ -630,6 +677,7 @@ do_system_restart (GdmGreeterLoginWindow *login_window)
         }
 
         res = try_system_restart (connection, &error);
+#ifdef HAVE_POLKIT_GNOME
         if (! res) {
                 g_debug ("GdmGreeterLoginWindow: unable to restart system: %s: %s",
                          dbus_g_error_get_name (error),
@@ -662,7 +710,7 @@ do_system_restart (GdmGreeterLoginWindow *login_window)
 
                 }
         }
-
+#endif
 }
 
 static void
@@ -681,6 +729,7 @@ do_system_stop (GdmGreeterLoginWindow *login_window)
         }
 
         res = try_system_stop (connection, &error);
+#ifdef HAVE_POLKIT_GNOME
         if (! res) {
                 g_debug ("GdmGreeterLoginWindow: unable to stop system: %s: %s",
                          dbus_g_error_get_name (error),
@@ -713,7 +762,7 @@ do_system_stop (GdmGreeterLoginWindow *login_window)
 
                 }
         }
-
+#endif
 }
 
 static void
