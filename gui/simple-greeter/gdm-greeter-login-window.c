@@ -54,7 +54,7 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
-#if HAVE_POLKIT_GNOME
+#ifdef HAVE_POLKIT_GNOME
 #include <polkit-gnome/polkit-gnome.h>
 #endif
 
@@ -203,24 +203,30 @@ show_widget (GdmGreeterLoginWindow *login_window,
         }
 }
 
-#ifdef ENABLE_RBAC_SHUTDOWN
-static char *
-get_user_name (uid_t uid)
+static gboolean
+get_show_restart_buttons (GdmGreeterLoginWindow *login_window)
 {
-        struct passwd *pwent;
-        char          *name;
+        gboolean show;
 
-        name = NULL;
+        show = TRUE;
 
-        pwent = getpwuid (uid);
+#ifdef ENABLE_RBAC_SHUTDOWN
+        {
+                char *username;
 
-        if (pwent != NULL) {
-                name = g_strdup (pwent->pw_name);
+                username = g_get_user_name ();
+                if (username == NULL || !chkauthattr (RBAC_SHUTDOWN_KEY, username)) {
+                        show = FALSE;
+                        g_debug ("Not showing stop/restart buttons for user %s due to RBAC key %s",
+                                 username, RBAC_SHUTDOWN_KEY);
+                } else {
+                        g_debug ("Showing stop/restart buttons for user %s due to RBAC key %s",
+                                 username, RBAC_SHUTDOWN_KEY);
+                }
         }
-
-        return name;
-}
 #endif
+        return show;
+}
 
 static void
 switch_mode (GdmGreeterLoginWindow *login_window,
@@ -229,26 +235,12 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         const char *default_name;
         GtkWidget  *user_chooser;
         GtkWidget  *box;
-        gchar      *username;
         gboolean    show_restart_shutdown = TRUE;
-        uid_t       uid;
 
         /* FIXME: do animation */
         default_name = NULL;
 
-#ifdef ENABLE_RBAC_SHUTDOWN
-        uid      = getuid ();
-        username = get_user_name (uid);
-
-        if (username == NULL || !chkauthattr (RBAC_SHUTDOWN_KEY, username)) {
-                show_restart_shutdown = FALSE;
-                g_debug ("Not showing stop/restart buttons for user %s due to RBAC key %s",
-                         username, RBAC_SHUTDOWN_KEY);
-        } else {
-                g_debug ("Showing stop/restart buttons for user %s due to RBAC key %s",
-                         username, RBAC_SHUTDOWN_KEY);
-        }
-#endif
+        show_restart_shutdown = get_show_restart_buttons (login_window);
 
         switch (number) {
         case MODE_SELECTION:

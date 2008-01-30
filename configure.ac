@@ -92,14 +92,16 @@ AC_SUBST(SIMPLE_GREETER_CFLAGS)
 AC_SUBST(SIMPLE_GREETER_LIBS)
 
 PKG_CHECK_MODULES(POLKIT_GNOME,
-  polkit >= $POLICYKIT_REQUIRED_VERSION,
-  have_polkit=yes,
-  have_polkit=no)
+        polkit-gnome >= $POLICYKIT_REQUIRED_VERSION,
+        have_polkit=yes,
+        have_polkit=no)
 if test "x$have_polkit" = "xyes" ; then
        AC_DEFINE(HAVE_POLKIT_GNOME, [], [Define if we have polkit])
 fi
 AM_CONDITIONAL(HAVE_POLKIT_GNOME, test x$have_polkit = xyes)
 AC_SUBST(HAVE_POLKIT_GNOME)
+AC_SUBST(POLKIT_GNOME_CFLAGS)
+AC_SUBST(POLKIT_GNOME_LIBS)
 
 PKG_CHECK_MODULES(SIMPLE_CHOOSER,
         dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
