@@ -145,23 +145,6 @@ gdm_session_chooser_widget_get_property (GObject        *object,
         }
 }
 
-static GObject *
-gdm_session_chooser_widget_constructor (GType                  type,
-                                         guint                  n_construct_properties,
-                                         GObjectConstructParam *construct_properties)
-{
-        GdmSessionChooserWidget      *session_chooser_widget;
-        GdmSessionChooserWidgetClass *klass;
-
-        klass = GDM_SESSION_CHOOSER_WIDGET_CLASS (g_type_class_peek (GDM_TYPE_SESSION_CHOOSER_WIDGET));
-
-        session_chooser_widget = GDM_SESSION_CHOOSER_WIDGET (G_OBJECT_CLASS (gdm_session_chooser_widget_parent_class)->constructor (type,
-                                                                                                                                       n_construct_properties,
-                                                                                                                                       construct_properties));
-
-        return G_OBJECT (session_chooser_widget);
-}
-
 static void
 gdm_session_chooser_widget_dispose (GObject *object)
 {
@@ -184,7 +167,6 @@ gdm_session_chooser_widget_class_init (GdmSessionChooserWidgetClass *klass)
 
         object_class->get_property = gdm_session_chooser_widget_get_property;
         object_class->set_property = gdm_session_chooser_widget_set_property;
-        object_class->constructor = gdm_session_chooser_widget_constructor;
         object_class->dispose = gdm_session_chooser_widget_dispose;
         object_class->finalize = gdm_session_chooser_widget_finalize;
 
