@@ -496,7 +496,7 @@ greeter_handle_child_message (DBusConnection *connection,
                 return handle_select_session (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "HostnameSession")) {
                 return handle_select_hostname (greeter_server, connection, message);
-        } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectSession")) {
+        } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectLanguage")) {
                 return handle_select_language (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectUser")) {
                 return handle_select_user (greeter_server, connection, message);
