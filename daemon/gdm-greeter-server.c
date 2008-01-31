@@ -56,9 +56,6 @@ struct GdmGreeterServerPrivate
         char           *group_name;
         char           *display_id;
 
-        gboolean        interrupted;
-        gboolean        always_restart_greeter;
-
         DBusServer     *server;
         char           *server_address;
         DBusConnection *greeter_connection;

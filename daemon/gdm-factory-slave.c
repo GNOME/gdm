@@ -67,8 +67,6 @@ struct GdmFactorySlavePrivate
 {
         char              *id;
         GPid               pid;
-        guint              output_watch_id;
-        guint              error_watch_id;
         guint              greeter_reset_id;
 
         GPid               server_pid;

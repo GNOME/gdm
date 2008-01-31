@@ -417,6 +417,35 @@ display_proxy_destroyed_cb (DBusGProxy *display_proxy,
 }
 
 static gboolean
+gdm_slave_set_slave_bus_name (GdmSlave *slave)
+{
+        gboolean    res;
+        GError     *error;
+        const char *name;
+
+        name = dbus_bus_get_unique_name (dbus_g_connection_get_connection (slave->priv->connection));
+
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->display_proxy,
+                                 "SetSlaveBusName",
+                                 &error,
+                                 G_TYPE_STRING, name,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_INVALID);
+
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to set slave bus name on parent: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to set slave bus name on parent");
+                }
+        }
+
+        return res;
+}
+
+static gboolean
 gdm_slave_real_start (GdmSlave *slave)
 {
         gboolean res;
@@ -474,6 +503,8 @@ gdm_slave_real_start (GdmSlave *slave)
                 g_critical ("Display ID doesn't match");
                 exit (1);
         }
+
+        gdm_slave_set_slave_bus_name (slave);
 
         /* cache some values up front */
         error = NULL;
@@ -1123,7 +1154,7 @@ gdm_slave_get_property (GObject    *object,
 static gboolean
 register_slave (GdmSlave *slave)
 {
-        GError *error = NULL;
+        GError *error;
 
         error = NULL;
         slave->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
@@ -1155,6 +1186,7 @@ gdm_slave_constructor (GType                  type,
         slave = GDM_SLAVE (G_OBJECT_CLASS (gdm_slave_parent_class)->constructor (type,
                                                                                  n_construct_properties,
                                                                                  construct_properties));
+        /* Always match the slave id with the master */
 
         id = NULL;
         if (g_str_has_prefix (slave->priv->display_id, "/org/gnome/DisplayManager/Display")) {

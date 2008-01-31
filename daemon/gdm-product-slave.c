@@ -66,8 +66,6 @@ struct GdmProductSlavePrivate
 {
         char             *id;
         GPid              pid;
-        guint             output_watch_id;
-        guint             error_watch_id;
 
         char             *relay_address;
 

@@ -30,6 +30,8 @@
 #include <sys/socket.h>
 #endif
 #include <netdb.h>
+#include <sys/ioctl.h>
+#include <net/if.h>
 
 #ifndef G_OS_WIN32
 #include <sys/socket.h>
@@ -280,25 +282,71 @@ gdm_address_is_loopback (GdmAddress *address)
         return FALSE;
 }
 
-const GList *
-gdm_address_peek_local_list (void)
+static void
+add_local_siocgifconf (GList **list)
 {
-        static GList *the_list = NULL;
-        static time_t last_time = 0;
-        char hostbuf[BUFSIZ];
-        struct addrinfo *result;
-        struct addrinfo *res;
+        struct ifconf ifc;
+        struct ifreq  ifreq;
+        struct ifreq *ifr;
+        struct ifreq *the_end;
+        int           sock;
+        char          buf[BUFSIZ];
 
-        /* Don't check more then every 5 seconds */
-        if (last_time + 5 > time (NULL)) {
-                return the_list;
+        if ((sock = socket (PF_INET, SOCK_DGRAM, 0)) < 0) {
+                perror ("socket");
+                return;
         }
 
-        g_list_foreach (the_list, (GFunc)gdm_address_free, NULL);
-        g_list_free (the_list);
-        the_list = NULL;
+        ifc.ifc_len = sizeof (buf);
+        ifc.ifc_buf = buf;
+        if (ioctl (sock, SIOCGIFCONF, (char *) &ifc) < 0) {
+                perror ("SIOCGIFCONF");
+                close (sock);
+                return;
+        }
 
-        last_time = time (NULL);
+        /* Get IP address of each active IP network interface. */
+        the_end = (struct ifreq *) (ifc.ifc_buf + ifc.ifc_len);
+
+        for (ifr = ifc.ifc_req; ifr < the_end; ifr++) {
+                if (ifr->ifr_addr.sa_family == AF_INET) {
+                        /* IP net interface */
+                        ifreq = *ifr;
+
+                        if (ioctl (sock, SIOCGIFFLAGS, (char *) &ifreq) < 0) {
+                                perror("SIOCGIFFLAGS");
+                        } else if (ifreq.ifr_flags & IFF_UP) {  /* active interface */
+                                if (ioctl (sock, SIOCGIFADDR, (char *) &ifreq) < 0) {
+                                        perror("SIOCGIFADDR");
+                                } else {
+                                        GdmAddress *address;
+                                        address = gdm_address_new_from_sockaddr ((struct sockaddr *)&ifreq.ifr_addr,
+                                                                                 sizeof (struct sockaddr));
+
+                                        gdm_address_debug (address);
+
+                                        *list = g_list_append (*list, address);
+                                }
+                        }
+                }
+
+                /* Support for variable-length addresses. */
+#ifdef HAS_SA_LEN
+                ifr = (struct ifreq *) ((caddr_t) ifr
+                                        + ifr->ifr_addr.sa_len - sizeof(struct sockaddr));
+#endif
+        }
+
+        close (sock);
+}
+
+static void
+add_local_addrinfo (GList **list)
+{
+        char             hostbuf[BUFSIZ];
+        struct addrinfo *result;
+        struct addrinfo *res;
+        struct addrinfo  hints;
 
         hostbuf[BUFSIZ-1] = '\0';
         if (gethostname (hostbuf, BUFSIZ-1) != 0) {
@@ -306,26 +354,58 @@ gdm_address_peek_local_list (void)
                 snprintf (hostbuf, BUFSIZ-1, "localhost");
         }
 
+        memset (&hints, 0, sizeof (hints));
+        hints.ai_family = AF_UNSPEC;
+        hints.ai_flags = AI_CANONNAME;
+
+        g_debug ("GdmAddress: looking up hostname: %s", hostbuf);
         result = NULL;
-        if (getaddrinfo (hostbuf, NULL, NULL, &result) != 0) {
+        if (getaddrinfo (hostbuf, NULL, &hints, &result) != 0) {
                 g_debug ("%s: Could not get address from hostname!", "gdm_peek_local_address_list");
 
-                return NULL;
+                return;
         }
 
         for (res = result; res != NULL; res = res->ai_next) {
                 GdmAddress *address;
 
+                g_debug ("family=%d sock_type=%d protocol=%d flags=0x%x canonname=%s\n",
+                         res->ai_family,
+                         res->ai_socktype,
+                         res->ai_protocol,
+                         res->ai_flags,
+                         res->ai_canonname);
                 address = gdm_address_new_from_sockaddr (res->ai_addr, res->ai_addrlen);
-                the_list = g_list_append (the_list, address);
+                *list = g_list_append (*list, address);
         }
 
         if (result != NULL) {
                 freeaddrinfo (result);
                 result = NULL;
         }
+}
 
-        return the_list;
+const GList *
+gdm_address_peek_local_list (void)
+{
+        static GList  *list = NULL;
+        static time_t  last_time = 0;
+
+        /* Don't check more then every 5 seconds */
+        if (last_time + 5 > time (NULL)) {
+                return list;
+        }
+
+        g_list_foreach (list, (GFunc)gdm_address_free, NULL);
+        g_list_free (list);
+        list = NULL;
+
+        last_time = time (NULL);
+
+        add_local_siocgifconf (&list);
+        add_local_addrinfo (&list);
+
+        return list;
 }
 
 gboolean

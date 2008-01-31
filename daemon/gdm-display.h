@@ -61,10 +61,12 @@ typedef struct
         gboolean (*remove_user_authorization) (GdmDisplay *display,
                                                const char *username,
                                                GError    **error);
+        gboolean (*set_slave_bus_name)        (GdmDisplay *display,
+                                               const char *name,
+                                               GError    **error);
         gboolean (*manage)                    (GdmDisplay *display);
         gboolean (*finish)                    (GdmDisplay *display);
         gboolean (*unmanage)                  (GdmDisplay *display);
-
 } GdmDisplayClass;
 
 typedef enum
@@ -122,6 +124,9 @@ gboolean            gdm_display_add_user_authorization         (GdmDisplay *disp
                                                                 GError    **error);
 gboolean            gdm_display_remove_user_authorization      (GdmDisplay *display,
                                                                 const char *username,
+                                                                GError    **error);
+gboolean            gdm_display_set_slave_bus_name             (GdmDisplay *display,
+                                                                const char *name,
                                                                 GError    **error);
 
 

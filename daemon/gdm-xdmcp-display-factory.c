@@ -52,7 +52,8 @@
 #include <X11/Xdmcp.h>
 
 #include "gdm-common.h"
-#include "gdm-xdmcp-display.h"
+#include "gdm-xdmcp-greeter-display.h"
+#include "gdm-xdmcp-chooser-display.h"
 #include "gdm-display-factory.h"
 #include "gdm-xdmcp-display-factory.h"
 #include "gdm-display-store.h"
@@ -136,17 +137,24 @@ static XdmAuthRec serv_authlist = {
 };
 
 /* NOTE: Timeout and max are hardcoded */
-typedef struct _GdmForwardQuery {
+typedef struct _ForwardQuery {
         time_t      acctime;
         GdmAddress *dsp_address;
         GdmAddress *from_address;
-} GdmForwardQuery;
+} ForwardQuery;
+
+typedef struct _IndirectClient {
+        int         id;
+        GdmAddress *dsp_address;
+        GdmAddress *chosen_address;
+        time_t      acctime;
+} IndirectClient;
 
 typedef struct {
-        int              times;
-        guint            handler;
-        GdmAddress      *manager;
-        GdmAddress      *origin;
+        int                     times;
+        guint                   handler;
+        GdmAddress             *manager;
+        GdmAddress             *origin;
         GdmXdmcpDisplayFactory *xdmcp_display_factory;
 } ManagedForward;
 
@@ -154,6 +162,7 @@ struct GdmXdmcpDisplayFactoryPrivate
 {
         GSList          *forward_queries;
         GSList          *managed_forwards;
+        GSList          *indirect_clients;
 
         int              socket_fd;
         gint32           session_serial;
@@ -873,8 +882,6 @@ gdm_xdmcp_send_unwilling (GdmXdmcpDisplayFactory *factory,
 #define SIN(__s)   ((struct sockaddr_in *) __s)
 #define SIN6(__s)  ((struct sockaddr_in6 *) __s)
 
-#if 0
-/* FIXME: Add chooser support */
 static void
 set_port_for_request (GdmAddress *address,
                       ARRAY8     *port)
@@ -898,7 +905,6 @@ set_port_for_request (GdmAddress *address,
                 break;
         }
 }
-#endif
 
 static void
 set_address_for_request (GdmAddress *address,
@@ -925,11 +931,9 @@ set_address_for_request (GdmAddress *address,
 
 }
 
-#if 0
-/* FIXME: Add chooser support */
 static void
 gdm_xdmcp_send_forward_query (GdmXdmcpDisplayFactory  *factory,
-                              GdmIndirectDisplay      *id,
+                              IndirectClient          *ic,
                               GdmAddress              *address,
                               GdmAddress              *display_address,
                               ARRAYofARRAY8Ptr         authlist)
@@ -941,11 +945,11 @@ gdm_xdmcp_send_forward_query (GdmXdmcpDisplayFactory  *factory,
         char                    *host;
         char                    *serv;
 
-        g_assert (id != NULL);
-        g_assert (id->chosen_host != NULL);
+        g_assert (ic != NULL);
+        g_assert (ic->chosen_address != NULL);
 
         host = NULL;
-        gdm_address_get_numeric_info (id->chosen_host, &host, NULL);
+        gdm_address_get_numeric_info (ic->chosen_address, &host, NULL);
         g_debug ("GdmXdmcpDisplayFactory: Sending forward query to %s",
                    host);
         g_free (host);
@@ -978,13 +982,12 @@ gdm_xdmcp_send_forward_query (GdmXdmcpDisplayFactory  *factory,
 
         XdmcpFlush (factory->priv->socket_fd,
                     &factory->priv->buf,
-                    (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (id->chosen_host),
+                    (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (ic->chosen_address),
                     (int)sizeof (struct sockaddr_storage));
 
         g_free (port.data);
         g_free (addr.data);
 }
-#endif
 
 static void
 handle_any_query (GdmXdmcpDisplayFactory  *factory,
@@ -1051,15 +1054,167 @@ gdm_xdmcp_handle_query (GdmXdmcpDisplayFactory *factory,
         }
 }
 
+static IndirectClient *
+indirect_client_create (GdmXdmcpDisplayFactory *factory,
+                        GdmAddress             *dsp_address)
+{
+        IndirectClient *ic;
+        int             count;
+
+        count = g_slist_length (factory->priv->indirect_clients);
+
+        ic = g_new0 (IndirectClient, 1);
+        ic->dsp_address = gdm_address_copy (dsp_address);
+
+        factory->priv->indirect_clients = g_slist_prepend (factory->priv->indirect_clients, ic);
+
+        return ic;
+}
+
+static void
+indirect_client_destroy (GdmXdmcpDisplayFactory *factory,
+                         IndirectClient         *ic)
+{
+        if (ic == NULL) {
+                return;
+        }
+
+        factory->priv->indirect_clients = g_slist_remove (factory->priv->indirect_clients, ic);
+
+        ic->acctime = 0;
+
+        {
+                char *host;
+
+                host = NULL;
+                gdm_address_get_numeric_info (ic->dsp_address, &host, NULL);
+                g_debug ("GdmXdmcpDisplayFactory: Disposing IndirectClient for %s", host);
+                g_free (host);
+        }
+
+        g_free (ic->dsp_address);
+        ic->dsp_address = NULL;
+        g_free (ic->chosen_address);
+        ic->chosen_address = NULL;
+
+        g_free (ic);
+}
+
+static IndirectClient *
+indirect_client_lookup_by_chosen (GdmXdmcpDisplayFactory *factory,
+                                  GdmAddress             *chosen_address,
+                                  GdmAddress             *origin_address)
+{
+        GSList         *li;
+        char           *host;
+        IndirectClient *ret;
+
+        g_assert (chosen_address != NULL);
+        g_assert (origin_address != NULL);
+
+        ret = NULL;
+
+        for (li = factory->priv->indirect_clients; li != NULL; li = li->next) {
+                IndirectClient *ic = li->data;
+
+                if (ic != NULL
+                    && ic->chosen_address != NULL
+                    && gdm_address_equal (ic->chosen_address, chosen_address)) {
+                        if (gdm_address_equal (ic->dsp_address, origin_address)) {
+                                ret = ic;
+                                goto out;
+                        } else if (gdm_address_is_loopback (ic->dsp_address)
+                                   && gdm_address_is_local (origin_address)) {
+                                ret = ic;
+                                goto out;
+                        }
+                }
+        }
+
+        gdm_address_get_numeric_info (chosen_address, &host, NULL);
+
+        g_debug ("GdmXdmcpDisplayFactory: Chosen %s host not found", host);
+        g_free (host);
+ out:
+        return ret;
+}
+
+/* lookup by origin */
+static IndirectClient *
+indirect_client_lookup (GdmXdmcpDisplayFactory *factory,
+                        GdmAddress             *address)
+{
+        GSList         *li;
+        GSList         *qlist;
+        IndirectClient *ret;
+        time_t          curtime;
+
+        g_assert (address != NULL);
+
+        curtime = time (NULL);
+        ret = NULL;
+
+        qlist = g_slist_copy (factory->priv->indirect_clients);
+
+        for (li = qlist; li != NULL; li = li->next) {
+                IndirectClient *ic;
+                char           *host;
+                char           *serv;
+
+                ic = (IndirectClient *) li->data;
+
+                if (ic == NULL) {
+                        continue;
+                }
+
+                host = NULL;
+                serv = NULL;
+                gdm_address_get_numeric_info (ic->dsp_address, &host, &serv);
+
+                g_debug ("GdmXdmcpDisplayFactory: comparing %s:%s", host, serv);
+                if (gdm_address_equal (ic->dsp_address, address)) {
+                        ret = ic;
+                        g_free (host);
+                        g_free (serv);
+                        break;
+                }
+
+                if (ic->acctime > 0 && curtime > ic->acctime + factory->priv->max_wait) {
+                        g_debug ("GdmXdmcpDisplayFactory: Disposing stale forward query from %s:%s",
+                                 host, serv);
+
+                        indirect_client_destroy (factory, ic);
+                }
+
+                g_free (host);
+                g_free (serv);
+        }
+
+        g_slist_free (qlist);
+
+        if (ret == NULL) {
+                char *host;
+
+                host = NULL;
+                gdm_address_get_numeric_info (address, &host, NULL);
+                g_debug ("GdmXdmcpDisplayFactory: Host %s not found",
+                         host);
+                g_free (host);
+        }
+
+        return ret;
+}
+
 static void
 gdm_xdmcp_handle_indirect_query (GdmXdmcpDisplayFactory *factory,
                                  GdmAddress             *address,
                                  int                     len)
 {
-        ARRAYofARRAY8       clnt_authlist;
-        int                 expected_len;
-        int                 i;
-        int                 res;
+        ARRAYofARRAY8    clnt_authlist;
+        int              expected_len;
+        int              i;
+        int              res;
+        IndirectClient  *ic;
 
         if (! gdm_xdmcp_host_allow (address)) {
                 /* ignore the request */
@@ -1068,6 +1223,13 @@ gdm_xdmcp_handle_indirect_query (GdmXdmcpDisplayFactory *factory,
 
         if (! factory->priv->honor_indirect) {
                 /* ignore it */
+                return;
+        }
+
+        if (factory->priv->num_sessions > factory->priv->max_displays ||
+            (!gdm_address_is_local (address) &&
+             gdm_xdmcp_num_displays_from_host (factory, address) > factory->priv->max_displays_per_host)) {
+                g_debug ("GdmXdmcpDisplayFactory: reached maximum number of clients - ignoring indirect query");
                 return;
         }
 
@@ -1085,7 +1247,7 @@ gdm_xdmcp_handle_indirect_query (GdmXdmcpDisplayFactory *factory,
 
         /* Try to look up the display in
          * the pending list. If found send a FORWARD_QUERY to the
-         * chosen factory. Otherwise alloc a new indirect display. */
+         * chosen manager. Otherwise alloc a new indirect display. */
 
         if (len != expected_len) {
                 g_warning (_("Error in checksum"));
@@ -1093,18 +1255,16 @@ gdm_xdmcp_handle_indirect_query (GdmXdmcpDisplayFactory *factory,
         }
 
 
-#if 0
-        GdmIndirectDisplay *id;
-        /* FIXME: Add chooser support */
+        ic = indirect_client_lookup (factory, address);
 
-        id = gdm_choose_indirect_lookup (address);
-
-        if (id != NULL && id->chosen_host != NULL) {
+        if (ic != NULL && ic->chosen_address != NULL) {
                 /* if user chose us, then just send willing */
-                if (gdm_address_is_local (id->chosen_host)) {
+                if (gdm_address_is_local (ic->chosen_address)) {
+                        g_debug ("GdmXdmcpDisplayFactory: the chosen address is local - dropping indirect");
+
                         /* get rid of indirect, so that we don't get
                          * the chooser */
-                        gdm_choose_indirect_dispose (id);
+                        indirect_client_destroy (factory, ic);
                         gdm_xdmcp_send_willing (factory, address);
                 } else if (gdm_address_is_loopback (address)) {
                         /* woohoo! fun, I have no clue how to get
@@ -1112,13 +1272,15 @@ gdm_xdmcp_handle_indirect_query (GdmXdmcpDisplayFactory *factory,
                          * queries with all the different IPs */
                         const GList *list = gdm_address_peek_local_list ();
 
+                        g_debug ("GdmXdmcpDisplayFactory: the chosen address is a loopback");
+
                         while (list != NULL) {
                                 GdmAddress *saddr = list->data;
 
                                 if (! gdm_address_is_loopback (saddr)) {
                                         /* forward query to * chosen host */
                                         gdm_xdmcp_send_forward_query (factory,
-                                                                      id,
+                                                                      ic,
                                                                       address,
                                                                       saddr,
                                                                       &clnt_authlist);
@@ -1129,28 +1291,27 @@ gdm_xdmcp_handle_indirect_query (GdmXdmcpDisplayFactory *factory,
                 } else {
                         /* or send forward query to chosen host */
                         gdm_xdmcp_send_forward_query (factory,
-                                                      id,
+                                                      ic,
                                                       address,
                                                       address,
                                                       &clnt_authlist);
                 }
-        } else if (id == NULL) {
-                id = gdm_choose_indirect_alloc (address);
-                if (id != NULL) {
+        } else if (ic == NULL) {
+                ic = indirect_client_create (factory, address);
+                if (ic != NULL) {
                         gdm_xdmcp_send_willing (factory, address);
                 }
         } else  {
                 gdm_xdmcp_send_willing (factory, address);
         }
-#endif
 
 out:
         XdmcpDisposeARRAYofARRAY8 (&clnt_authlist);
 }
 
 static void
-gdm_forward_query_dispose (GdmXdmcpDisplayFactory *factory,
-                           GdmForwardQuery        *q)
+forward_query_destroy (GdmXdmcpDisplayFactory *factory,
+                       ForwardQuery           *q)
 {
         if (q == NULL) {
                 return;
@@ -1180,11 +1341,11 @@ gdm_forward_query_dispose (GdmXdmcpDisplayFactory *factory,
 static gboolean
 remove_oldest_forward (GdmXdmcpDisplayFactory *factory)
 {
-        GSList          *li;
-        GdmForwardQuery *oldest = NULL;
+        GSList       *li;
+        ForwardQuery *oldest = NULL;
 
         for (li = factory->priv->forward_queries; li != NULL; li = li->next) {
-                GdmForwardQuery *query = li->data;
+                ForwardQuery *query = li->data;
 
                 if (oldest == NULL || query->acctime < oldest->acctime) {
                         oldest = query;
@@ -1192,20 +1353,20 @@ remove_oldest_forward (GdmXdmcpDisplayFactory *factory)
         }
 
         if (oldest != NULL) {
-                gdm_forward_query_dispose (factory, oldest);
+                forward_query_destroy (factory, oldest);
                 return TRUE;
         } else {
                 return FALSE;
         }
 }
 
-static GdmForwardQuery *
-gdm_forward_query_alloc (GdmXdmcpDisplayFactory *factory,
+static ForwardQuery *
+forward_query_create (GdmXdmcpDisplayFactory *factory,
                          GdmAddress             *mgr_address,
                          GdmAddress             *dsp_address)
 {
-        GdmForwardQuery *q;
-        int              count;
+        ForwardQuery *q;
+        int           count;
 
         count = g_slist_length (factory->priv->forward_queries);
 
@@ -1213,7 +1374,7 @@ gdm_forward_query_alloc (GdmXdmcpDisplayFactory *factory,
                 count--;
         }
 
-        q = g_new0 (GdmForwardQuery, 1);
+        q = g_new0 (ForwardQuery, 1);
         q->dsp_address = gdm_address_copy (dsp_address);
         q->from_address = gdm_address_copy (mgr_address);
 
@@ -1222,14 +1383,14 @@ gdm_forward_query_alloc (GdmXdmcpDisplayFactory *factory,
         return q;
 }
 
-static GdmForwardQuery *
-gdm_forward_query_lookup (GdmXdmcpDisplayFactory *factory,
+static ForwardQuery *
+forward_query_lookup (GdmXdmcpDisplayFactory *factory,
                           GdmAddress             *address)
 {
-        GSList          *li;
-        GSList          *qlist;
-        GdmForwardQuery *ret;
-        time_t           curtime;
+        GSList       *li;
+        GSList       *qlist;
+        ForwardQuery *ret;
+        time_t        curtime;
 
         curtime = time (NULL);
         ret = NULL;
@@ -1237,11 +1398,11 @@ gdm_forward_query_lookup (GdmXdmcpDisplayFactory *factory,
         qlist = g_slist_copy (factory->priv->forward_queries);
 
         for (li = qlist; li != NULL; li = li->next) {
-                GdmForwardQuery *q;
-                char            *host;
-                char            *serv;
+                ForwardQuery *q;
+                char         *host;
+                char         *serv;
 
-                q = (GdmForwardQuery *) li->data;
+                q = (ForwardQuery *) li->data;
 
                 if (q == NULL) {
                         continue;
@@ -1263,7 +1424,7 @@ gdm_forward_query_lookup (GdmXdmcpDisplayFactory *factory,
                         g_debug ("GdmXdmcpDisplayFactory: Disposing stale forward query from %s:%s",
                                  host, serv);
 
-                        gdm_forward_query_dispose (factory, q);
+                        forward_query_destroy (factory, q);
                 }
 
                 g_free (host);
@@ -1482,14 +1643,14 @@ gdm_xdmcp_handle_forward_query (GdmXdmcpDisplayFactory *factory,
 
         /* Check with tcp_wrappers if display is allowed to access */
         if (gdm_xdmcp_host_allow (disp_address)) {
-                GdmForwardQuery *q;
+                ForwardQuery *q;
 
-                q = gdm_forward_query_lookup (factory, disp_address);
+                q = forward_query_lookup (factory, disp_address);
                 if (q != NULL) {
-                        gdm_forward_query_dispose (factory, q);
+                        forward_query_destroy (factory, q);
                 }
 
-                gdm_forward_query_alloc (factory, address, disp_address);
+                forward_query_create (factory, address, disp_address);
 
                 gdm_xdmcp_send_willing (factory, disp_address);
         }
@@ -1751,7 +1912,7 @@ gdm_xdmcp_send_decline (GdmXdmcpDisplayFactory *factory,
         ARRAY8           authentype;
         ARRAY8           authendata;
         ARRAY8           status;
-        GdmForwardQuery *fq;
+        ForwardQuery    *fq;
         char            *host;
 
         host = NULL;
@@ -1786,28 +1947,100 @@ gdm_xdmcp_send_decline (GdmXdmcpDisplayFactory *factory,
 
         /* Send MANAGED_FORWARD to indicate that the connection
          * reached some sort of resolution */
-        fq = gdm_forward_query_lookup (factory, address);
+        fq = forward_query_lookup (factory, address);
         if (fq != NULL) {
                 gdm_xdmcp_send_managed_forward (factory, fq->from_address, address);
-                gdm_forward_query_dispose (factory, fq);
+                forward_query_destroy (factory, fq);
         }
 }
 
+static void
+on_hostname_selected (GdmXdmcpChooserDisplay *display,
+                      const char             *hostname,
+                      GdmXdmcpDisplayFactory *factory)
+{
+        struct addrinfo  hints;
+        struct addrinfo *ai_list;
+        struct addrinfo *ai;
+        int              gaierr;
+        GdmAddress      *address;
+        IndirectClient  *ic;
+
+        g_debug ("GdmXdmcpDisplayFactory: hostname selected: %s", hostname);
+
+        address = gdm_xdmcp_display_get_remote_address (GDM_XDMCP_DISPLAY (display));
+
+        g_assert (address != NULL);
+
+        ic = indirect_client_lookup (factory, address);
+
+        if (ic->chosen_address != NULL) {
+                gdm_address_free (ic->chosen_address);
+                ic->chosen_address = NULL;
+        }
+
+        memset (&hints, 0, sizeof (hints));
+        hints.ai_family = gdm_address_get_family_type (address);
+        hints.ai_flags = AI_V4MAPPED; /* this should convert IPv4 address to IPv6 if needed */
+        if ((gaierr = getaddrinfo (hostname, NULL, &hints, &ai_list)) != 0) {
+                g_warning ("Unable get address: %s", gai_strerror (gaierr));
+                return;
+        }
+
+        /* just take the first one */
+        ai = ai_list;
+
+        if (ai != NULL) {
+                char *ip;
+                ic->chosen_address = gdm_address_new_from_sockaddr (ai->ai_addr, ai->ai_addrlen);
+
+                ip = NULL;
+                gdm_address_get_numeric_info (ic->chosen_address, &ip, NULL);
+                g_debug ("GdmXdmcpDisplayFactory: hostname resolves to %s", ip);
+                g_free (ip);
+        }
+
+        freeaddrinfo (ai_list);
+}
+
 static GdmDisplay *
-gdm_xdmcp_display_alloc (GdmXdmcpDisplayFactory *factory,
-                         const char             *hostname,
-                         GdmAddress             *address,
-                         int                     displaynum)
+gdm_xdmcp_display_create (GdmXdmcpDisplayFactory *factory,
+                          const char             *hostname,
+                          GdmAddress             *address,
+                          int                     displaynum)
 {
         GdmDisplay      *display;
         GdmDisplayStore *store;
+        gboolean         use_chooser;
 
         g_debug ("GdmXdmcpDisplayFactory: Creating xdmcp display for %s:%d", hostname, displaynum);
 
-        display = gdm_xdmcp_display_new (hostname,
-                                         displaynum,
-                                         address,
-                                         get_next_session_serial (factory));
+        use_chooser = FALSE;
+        if (factory->priv->honor_indirect) {
+                IndirectClient *ic;
+
+                ic = indirect_client_lookup (factory, address);
+
+                /* This was an indirect thingie and nothing was yet chosen,
+                 * use a chooser */
+                if (ic != NULL && ic->chosen_address == NULL) {
+                        use_chooser = TRUE;
+                }
+        }
+
+        if (use_chooser) {
+                display = gdm_xdmcp_chooser_display_new (hostname,
+                                                         displaynum,
+                                                         address,
+                                                         get_next_session_serial (factory));
+                g_signal_connect (display, "hostname-selected", G_CALLBACK (on_hostname_selected), factory);
+        } else {
+                display = gdm_xdmcp_greeter_display_new (hostname,
+                                                         displaynum,
+                                                         address,
+                                                         get_next_session_serial (factory));
+        }
+
         if (display == NULL) {
                 goto out;
         }
@@ -2036,10 +2269,10 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                 } else {
                         GdmDisplay *display;
 
-                        display = gdm_xdmcp_display_alloc (factory,
-                                                           hostname,
-                                                           address,
-                                                           clnt_dspnum);
+                        display = gdm_xdmcp_display_create (factory,
+                                                            hostname,
+                                                            address,
+                                                            clnt_dspnum);
 
                         if (display != NULL) {
                                 ARRAY8  authentication_name;
@@ -2196,8 +2429,8 @@ gdm_xdmcp_send_refuse (GdmXdmcpDisplayFactory *factory,
                        GdmAddress             *address,
                        CARD32                  sessid)
 {
-        XdmcpHeader      header;
-        GdmForwardQuery *fq;
+        XdmcpHeader   header;
+        ForwardQuery *fq;
 
         g_debug ("GdmXdmcpDisplayFactory: Sending REFUSE to %ld",
                  (long)sessid);
@@ -2218,10 +2451,10 @@ gdm_xdmcp_send_refuse (GdmXdmcpDisplayFactory *factory,
          * This was from a forwarded query quite apparently so
          * send MANAGED_FORWARD
          */
-        fq = gdm_forward_query_lookup (factory, address);
+        fq = forward_query_lookup (factory, address);
         if (fq != NULL) {
                 gdm_xdmcp_send_managed_forward (factory, fq->from_address, address);
-                gdm_forward_query_dispose (factory, fq);
+                forward_query_destroy (factory, fq);
         }
 }
 
@@ -2234,7 +2467,7 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
         CARD16              clnt_dspnum;
         ARRAY8              clnt_dspclass;
         GdmDisplay         *display;
-        GdmForwardQuery    *fq;
+        ForwardQuery       *fq;
         char               *host;
 
         host = NULL;
@@ -2292,36 +2525,34 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
                 g_debug ("GdmXdmcpDisplayFactory: Looked up %s", name);
                 g_free (name);
 
-#if 0
-                /* FIXME: Add chooser support */
                 if (factory->priv->honor_indirect) {
-                        GdmIndirectDisplay *id;
+                        IndirectClient *ic;
 
-                        id = gdm_choose_indirect_lookup (address);
+                        ic = indirect_client_lookup (factory, address);
 
                         /* This was an indirect thingie and nothing was yet chosen,
                          * use a chooser */
-                        if (id != NULL &&
-                            id->chosen_host == NULL) {
-                                d->use_chooser = TRUE;
-                                d->indirect_id = id->id;
+                        if (ic != NULL && ic->chosen_address == NULL) {
+                                g_debug ("GdmXdmcpDisplayFactory: use chooser");
+                                /*d->use_chooser = TRUE;
+                                  d->indirect_id = ic->id;*/
                         } else {
-                                d->indirect_id = 0;
-                                d->use_chooser = FALSE;
-                                if (id != NULL) {
-                                        gdm_choose_indirect_dispose (id);
+                                /*d->indirect_id = 0;
+                                  d->use_chooser = FALSE;*/
+                                if (ic != NULL) {
+                                        indirect_client_destroy (factory, ic);
                                 }
                         }
                 } else {
 
                 }
-#endif
+
                 /* this was from a forwarded query quite apparently so
                  * send MANAGED_FORWARD */
-                fq = gdm_forward_query_lookup (factory, address);
+                fq = forward_query_lookup (factory, address);
                 if (fq != NULL) {
                         gdm_xdmcp_send_managed_forward (factory, fq->from_address, address);
-                        gdm_forward_query_dispose (factory, fq);
+                        forward_query_destroy (factory, fq);
                 }
 
                 factory->priv->num_sessions++;
@@ -2355,6 +2586,7 @@ gdm_xdmcp_handle_managed_forward (GdmXdmcpDisplayFactory *factory,
         ARRAY8              clnt_address;
         char               *host;
         GdmAddress         *disp_address;
+        IndirectClient     *ic;
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
@@ -2384,14 +2616,10 @@ gdm_xdmcp_handle_managed_forward (GdmXdmcpDisplayFactory *factory,
                 return;
         }
 
-#if 0
-        GdmIndirectDisplay *id;
-        /* FIXME: Add chooser support */
-        id = gdm_choose_indirect_lookup_by_chosen (address, disp_address);
-        if (id != NULL) {
-                gdm_choose_indirect_dispose (id);
+        ic = indirect_client_lookup_by_chosen (factory, address, disp_address);
+        if (ic != NULL) {
+                indirect_client_destroy (factory, ic);
         }
-#endif
 
         /* Note: we send GOT even on not found, just in case our previous
          * didn't get through and this was a second managed forward */

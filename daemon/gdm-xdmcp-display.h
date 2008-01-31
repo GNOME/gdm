@@ -55,12 +55,6 @@ typedef struct
 
 GType                     gdm_xdmcp_display_get_type                 (void);
 
-
-GdmDisplay *              gdm_xdmcp_display_new                      (const char              *hostname,
-                                                                      int                      number,
-                                                                      GdmAddress              *addr,
-                                                                      gint32                   serial_number);
-
 gint32                    gdm_xdmcp_display_get_session_number       (GdmXdmcpDisplay         *display);
 GdmAddress              * gdm_xdmcp_display_get_remote_address       (GdmXdmcpDisplay         *display);
 

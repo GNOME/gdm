@@ -1,3 +1,135 @@
+2008-01-30  William Jon McCann  <mccann@jhu.edu>
+
+	* common/gdm-address.c: (add_local_siocgifconf),
+	(add_local_addrinfo), (gdm_address_peek_local_list):
+	* daemon/Makefile.am:
+	* daemon/gdm-chooser-server.c: (generate_address),
+	(handle_select_hostname), (handle_disconnect),
+	(chooser_handle_child_message), (do_introspect),
+	(chooser_server_message_handler),
+	(chooser_server_unregister_handler), (connection_filter_function),
+	(allow_user_function), (handle_connection),
+	(gdm_chooser_server_start), (gdm_chooser_server_stop),
+	(gdm_chooser_server_get_address),
+	(_gdm_chooser_server_set_display_id),
+	(_gdm_chooser_server_set_user_name),
+	(_gdm_chooser_server_set_group_name),
+	(gdm_chooser_server_set_property),
+	(gdm_chooser_server_get_property),
+	(gdm_chooser_server_constructor), (gdm_chooser_server_class_init),
+	(gdm_chooser_server_init), (gdm_chooser_server_finalize),
+	(gdm_chooser_server_new):
+	* daemon/gdm-chooser-server.h:
+	* daemon/gdm-chooser-session.c: (listify_hash),
+	(get_chooser_environment), (chooser_session_child_watch),
+	(spawn_child_setup), (spawn_command_line_sync_as_user),
+	(spawn_command_line_async_as_user), (parse_value_as_integer),
+	(parse_dbus_launch_output), (start_dbus_daemon),
+	(stop_dbus_daemon), (gdm_chooser_session_spawn),
+	(gdm_chooser_session_start), (wait_on_child),
+	(chooser_session_died), (gdm_chooser_session_stop),
+	(gdm_chooser_session_set_server_address),
+	(_gdm_chooser_session_set_x11_display_name),
+	(_gdm_chooser_session_set_x11_display_hostname),
+	(_gdm_chooser_session_set_x11_display_device),
+	(_gdm_chooser_session_set_x11_authority_file),
+	(_gdm_chooser_session_set_user_name),
+	(_gdm_chooser_session_set_group_name),
+	(gdm_chooser_session_set_property),
+	(gdm_chooser_session_get_property),
+	(gdm_chooser_session_constructor),
+	(gdm_chooser_session_class_init), (gdm_chooser_session_init),
+	(gdm_chooser_session_finalize), (gdm_chooser_session_new):
+	* daemon/gdm-chooser-session.h:
+	* daemon/gdm-display.c: (gdm_display_real_set_slave_bus_name),
+	(gdm_display_set_slave_bus_name), (gdm_display_class_init):
+	* daemon/gdm-display.h:
+	* daemon/gdm-display.xml:
+	* daemon/gdm-factory-slave.c:
+	* daemon/gdm-greeter-server.c:
+	* daemon/gdm-greeter-session.c: (gdm_greeter_session_init):
+	* daemon/gdm-product-slave.c:
+	* daemon/gdm-simple-slave.c:
+	* daemon/gdm-slave.c: (gdm_slave_set_slave_bus_name),
+	(gdm_slave_real_start), (register_slave), (gdm_slave_constructor):
+	* daemon/gdm-xdmcp-chooser-display.c: (on_hostname_selected),
+	(gdm_xdmcp_chooser_display_set_slave_bus_name),
+	(gdm_xdmcp_chooser_display_manage),
+	(gdm_xdmcp_chooser_display_class_init),
+	(gdm_xdmcp_chooser_display_init),
+	(gdm_xdmcp_chooser_display_finalize),
+	(gdm_xdmcp_chooser_display_new):
+	* daemon/gdm-xdmcp-chooser-display.h:
+	* daemon/gdm-xdmcp-chooser-display.xml:
+	* daemon/gdm-xdmcp-chooser-slave.c: (on_chooser_session_start),
+	(on_chooser_session_stop), (on_chooser_session_exited),
+	(on_chooser_session_died), (on_chooser_hostname_selected),
+	(on_chooser_disconnected), (on_chooser_connected), (setup_server),
+	(run_chooser), (idle_connect_to_display),
+	(gdm_xdmcp_chooser_slave_run), (gdm_xdmcp_chooser_slave_start),
+	(gdm_xdmcp_chooser_slave_stop),
+	(gdm_xdmcp_chooser_slave_set_property),
+	(gdm_xdmcp_chooser_slave_get_property),
+	(gdm_xdmcp_chooser_slave_constructor),
+	(gdm_xdmcp_chooser_slave_class_init),
+	(gdm_xdmcp_chooser_slave_init), (gdm_xdmcp_chooser_slave_finalize),
+	(gdm_xdmcp_chooser_slave_new):
+	* daemon/gdm-xdmcp-chooser-slave.h:
+	* daemon/gdm-xdmcp-display-factory.c: (set_port_for_request),
+	(gdm_xdmcp_send_forward_query), (indirect_client_create),
+	(indirect_client_destroy), (indirect_client_lookup_by_chosen),
+	(indirect_client_lookup), (gdm_xdmcp_handle_indirect_query),
+	(forward_query_destroy), (remove_oldest_forward),
+	(forward_query_create), (forward_query_lookup),
+	(gdm_xdmcp_handle_forward_query), (gdm_xdmcp_send_decline),
+	(on_hostname_selected), (gdm_xdmcp_display_create),
+	(gdm_xdmcp_handle_request), (gdm_xdmcp_send_refuse),
+	(gdm_xdmcp_handle_manage), (gdm_xdmcp_handle_managed_forward):
+	* daemon/gdm-xdmcp-display.c: (gdm_xdmcp_display_class_init),
+	(gdm_xdmcp_display_finalize):
+	* daemon/gdm-xdmcp-display.h:
+	* daemon/gdm-xdmcp-display.xml:
+	* daemon/gdm-xdmcp-greeter-display.c:
+	(gdm_xdmcp_greeter_display_class_init),
+	(gdm_xdmcp_greeter_display_init),
+	(gdm_xdmcp_greeter_display_finalize),
+	(gdm_xdmcp_greeter_display_new):
+	* daemon/gdm-xdmcp-greeter-display.h:
+	* daemon/xdmcp-chooser-slave-main.c: (get_system_bus), (signal_cb),
+	(on_slave_stopped), (main):
+	* data/gdm.conf:
+	* gui/simple-chooser/Makefile.am:
+	* gui/simple-chooser/chooser-main.c: (assistive_registry_launch),
+	(filter_watch), (filter_timeout), (assistive_registry_start),
+	(at_set_gtk_modules), (load_a11y), (main):
+	* gui/simple-chooser/gdm-chooser-client.c:
+	(gdm_chooser_client_error_quark), (send_dbus_string_method),
+	(send_dbus_void_method), (gdm_chooser_client_call_select_hostname),
+	(gdm_chooser_client_call_disconnect), (client_dbus_handle_message),
+	(client_dbus_filter_function), (gdm_chooser_client_start),
+	(gdm_chooser_client_stop), (gdm_chooser_client_set_property),
+	(gdm_chooser_client_get_property),
+	(gdm_chooser_client_constructor), (gdm_chooser_client_dispose),
+	(gdm_chooser_client_class_init), (gdm_chooser_client_init),
+	(gdm_chooser_client_finalize), (gdm_chooser_client_new):
+	* gui/simple-chooser/gdm-chooser-client.h:
+	* gui/simple-chooser/gdm-chooser-session.c: (launch_compiz),
+	(launch_metacity), (start_window_manager), (start_settings_daemon),
+	(on_dialog_response), (gdm_chooser_session_start),
+	(gdm_chooser_session_stop), (gdm_chooser_session_set_property),
+	(gdm_chooser_session_get_property),
+	(gdm_chooser_session_constructor), (gdm_chooser_session_dispose),
+	(gdm_chooser_session_class_init), (gdm_chooser_session_init),
+	(gdm_chooser_session_finalize), (gdm_chooser_session_new):
+	* gui/simple-chooser/gdm-chooser-session.h:
+	* gui/simple-chooser/test-host-chooser.c:
+	(assistive_registry_launch), (filter_watch), (filter_timeout),
+	(assistive_registry_start), (at_set_gtk_modules), (load_a11y),
+	(main):
+	* gui/simple-greeter/greeter-main.c: (load_a11y), (main):
+	Initial support for XDMCP IndirectQuery choosers.
+	Also fix broken gdm_address_is_local.
+
 2008-01-29  William Jon McCann  <mccann@jhu.edu>
 
 	* configure.ac:

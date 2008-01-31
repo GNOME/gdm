@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
+ * Copyright (C) 2008 William Jon McCann <jmccann@redhat.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,21 +41,19 @@
 #include <dbus/dbus-glib-lowlevel.h>
 
 #include "gdm-common.h"
-#include "ck-connector.h"
 
-#include "gdm-greeter-session.h"
+#include "gdm-chooser-session.h"
 
 #define DBUS_LAUNCH_COMMAND BINDIR "/dbus-launch --exit-with-session"
 
-#define GDM_GREETER_SERVER_DBUS_PATH      "/org/gnome/DisplayManager/GreeterServer"
-#define GDM_GREETER_SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.GreeterServer"
-
+#define GDM_CHOOSER_SERVER_DBUS_PATH      "/org/gnome/DisplayManager/ChooserServer"
+#define GDM_CHOOSER_SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.ChooserServer"
 
 extern char **environ;
 
-#define GDM_GREETER_SESSION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_SESSION, GdmGreeterSessionPrivate))
+#define GDM_CHOOSER_SESSION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_CHOOSER_SESSION, GdmChooserSessionPrivate))
 
-struct GdmGreeterSessionPrivate
+struct GdmChooserSessionPrivate
 {
         char           *command;
         GPid            pid;
@@ -67,9 +65,6 @@ struct GdmGreeterSessionPrivate
         char           *x11_display_device;
         char           *x11_display_hostname;
         char           *x11_authority_file;
-        gboolean        x11_display_is_local;
-
-        CkConnector    *ckc;
 
         guint           child_watch_id;
 
@@ -84,7 +79,6 @@ enum {
         PROP_X11_DISPLAY_NAME,
         PROP_X11_DISPLAY_DEVICE,
         PROP_X11_DISPLAY_HOSTNAME,
-        PROP_X11_DISPLAY_IS_LOCAL,
         PROP_X11_AUTHORITY_FILE,
         PROP_USER_NAME,
         PROP_GROUP_NAME,
@@ -94,16 +88,18 @@ enum {
 enum {
         STARTED,
         STOPPED,
+        EXITED,
+        DIED,
         LAST_SIGNAL
 };
 
 static guint signals [LAST_SIGNAL] = { 0, };
 
-static void     gdm_greeter_session_class_init    (GdmGreeterSessionClass *klass);
-static void     gdm_greeter_session_init  (GdmGreeterSession      *greeter_session);
-static void     gdm_greeter_session_finalize      (GObject         *object);
+static void     gdm_chooser_session_class_init    (GdmChooserSessionClass *klass);
+static void     gdm_chooser_session_init          (GdmChooserSession      *chooser_session);
+static void     gdm_chooser_session_finalize      (GObject                *object);
 
-G_DEFINE_TYPE (GdmGreeterSession, gdm_greeter_session, G_TYPE_OBJECT)
+G_DEFINE_TYPE (GdmChooserSession, gdm_chooser_session, G_TYPE_OBJECT)
 
 static void
 listify_hash (const char *key,
@@ -112,118 +108,12 @@ listify_hash (const char *key,
 {
         char *str;
         str = g_strdup_printf ("%s=%s", key, value);
-        g_debug ("GdmGreeterSession: greeter environment: %s", str);
+        g_debug ("GdmChooserSession: chooser environment: %s", str);
         g_ptr_array_add (env, str);
 }
 
-static gboolean
-open_greeter_session (GdmGreeterSession *greeter_session)
-{
-        struct passwd *pwent;
-        const char    *session_type;
-        const char    *hostname;
-        const char    *x11_display_device;
-        int            res;
-        gboolean       ret;
-        DBusError      error;
-
-        ret = FALSE;
-
-        session_type = "LoginWindow";
-
-        pwent = getpwnam (greeter_session->priv->user_name);
-        if (pwent == NULL) {
-                /* FIXME: */
-                g_warning ("Couldn't look up uid");
-                goto out;
-        }
-
-        greeter_session->priv->ckc = ck_connector_new ();
-        if (greeter_session->priv->ckc == NULL) {
-                g_warning ("Couldn't create new ConsoleKit connector");
-                goto out;
-        }
-
-        if (greeter_session->priv->x11_display_hostname != NULL) {
-                hostname = greeter_session->priv->x11_display_hostname;
-        } else {
-                hostname = "";
-        }
-
-        if (greeter_session->priv->x11_display_device != NULL) {
-                x11_display_device = greeter_session->priv->x11_display_device;
-        } else {
-                x11_display_device = "";
-        }
-
-        g_debug ("GdmGreeterSession: Opening ConsoleKit session for user:%d x11-display:'%s' x11-display-device:'%s' remote-host-name:'%s' is-local:%d",
-                 pwent->pw_uid,
-                 greeter_session->priv->x11_display_name,
-                 x11_display_device,
-                 hostname,
-                 greeter_session->priv->x11_display_is_local);
-
-        dbus_error_init (&error);
-        res = ck_connector_open_session_with_parameters (greeter_session->priv->ckc,
-                                                         &error,
-                                                         "unix-user", &pwent->pw_uid,
-                                                         "session-type", &session_type,
-                                                         "x11-display", &greeter_session->priv->x11_display_name,
-                                                         "x11-display-device", &x11_display_device,
-                                                         "remote-host-name", &hostname,
-                                                         "is-local", &greeter_session->priv->x11_display_is_local,
-                                                         NULL);
-        if (! res) {
-                if (dbus_error_is_set (&error)) {
-                        g_warning ("%s\n", error.message);
-                        dbus_error_free (&error);
-                } else {
-                        g_warning ("cannot open CK session: OOM, D-Bus system bus not available,\n"
-                                   "ConsoleKit not available or insufficient privileges.\n");
-                }
-                goto out;
-        }
-
-        ret = TRUE;
-
- out:
-        return ret;
-}
-
-static gboolean
-close_greeter_session (GdmGreeterSession *greeter_session)
-{
-        int       res;
-        gboolean  ret;
-        DBusError error;
-
-        ret = FALSE;
-
-        if (greeter_session->priv->ckc == NULL) {
-                return FALSE;
-        }
-
-        dbus_error_init (&error);
-        res = ck_connector_close_session (greeter_session->priv->ckc, &error);
-        if (! res) {
-                if (dbus_error_is_set (&error)) {
-                        g_warning ("%s\n", error.message);
-                        dbus_error_free (&error);
-                } else {
-                        g_warning ("cannot open CK session: OOM, D-Bus system bus not available,\n"
-                                   "ConsoleKit not available or insufficient privileges.\n");
-                }
-                goto out;
-        }
-
-        ret = TRUE;
- out:
-
-        return ret;
-}
-
 static GPtrArray *
-get_greeter_environment (GdmGreeterSession *greeter_session)
+get_chooser_environment (GdmChooserSession *chooser_session)
 {
         GPtrArray     *env;
         GHashTable    *hash;
@@ -234,32 +124,24 @@ get_greeter_environment (GdmGreeterSession *greeter_session)
         /* create a hash table of current environment, then update keys has necessary */
         hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
-        if (greeter_session->priv->dbus_bus_address != NULL) {
-                g_hash_table_insert (hash, g_strdup ("DBUS_SESSION_BUS_ADDRESS"), g_strdup (greeter_session->priv->dbus_bus_address));
+        if (chooser_session->priv->dbus_bus_address != NULL) {
+                g_hash_table_insert (hash, g_strdup ("DBUS_SESSION_BUS_ADDRESS"), g_strdup (chooser_session->priv->dbus_bus_address));
         }
-        if (greeter_session->priv->server_address != NULL) {
-                g_hash_table_insert (hash, g_strdup ("GDM_GREETER_DBUS_ADDRESS"), g_strdup (greeter_session->priv->server_address));
+        if (chooser_session->priv->server_address != NULL) {
+                g_hash_table_insert (hash, g_strdup ("GDM_CHOOSER_DBUS_ADDRESS"), g_strdup (chooser_session->priv->server_address));
         }
 
-        g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (greeter_session->priv->x11_authority_file));
-        g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (greeter_session->priv->x11_display_name));
+        g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (chooser_session->priv->x11_authority_file));
+        g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (chooser_session->priv->x11_display_name));
 
 #if 0
         /* hackish ain't it */
         set_xnest_parent_stuff ();
 #endif
 
-        if (greeter_session->priv->ckc != NULL) {
-                const char *cookie;
-                cookie = ck_connector_get_cookie (greeter_session->priv->ckc);
-                if (cookie != NULL) {
-                        g_hash_table_insert (hash, g_strdup ("XDG_SESSION_COOKIE"), g_strdup (cookie));
-                }
-        }
-
-        g_hash_table_insert (hash, g_strdup ("LOGNAME"), g_strdup (greeter_session->priv->user_name));
-        g_hash_table_insert (hash, g_strdup ("USER"), g_strdup (greeter_session->priv->user_name));
-        g_hash_table_insert (hash, g_strdup ("USERNAME"), g_strdup (greeter_session->priv->user_name));
+        g_hash_table_insert (hash, g_strdup ("LOGNAME"), g_strdup (chooser_session->priv->user_name));
+        g_hash_table_insert (hash, g_strdup ("USER"), g_strdup (chooser_session->priv->user_name));
+        g_hash_table_insert (hash, g_strdup ("USERNAME"), g_strdup (chooser_session->priv->user_name));
 
         g_hash_table_insert (hash, g_strdup ("GDM_VERSION"), g_strdup (VERSION));
         g_hash_table_remove (hash, "MAIL");
@@ -268,7 +150,7 @@ get_greeter_environment (GdmGreeterSession *greeter_session)
         g_hash_table_insert (hash, g_strdup ("PWD"), g_strdup ("/"));
         g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup ("/bin/sh"));
 
-        pwent = getpwnam (greeter_session->priv->user_name);
+        pwent = getpwnam (chooser_session->priv->user_name);
         if (pwent != NULL) {
                 if (pwent->pw_dir != NULL && pwent->pw_dir[0] != '\0') {
                         g_hash_table_insert (hash, g_strdup ("HOME"), g_strdup (pwent->pw_dir));
@@ -292,11 +174,11 @@ get_greeter_environment (GdmGreeterSession *greeter_session)
 }
 
 static void
-greeter_session_child_watch (GPid               pid,
+chooser_session_child_watch (GPid               pid,
                              int                status,
-                             GdmGreeterSession *greeter_session)
+                             GdmChooserSession *session)
 {
-        g_debug ("GdmGreeterSession: child (pid:%d) done (%s:%d)",
+        g_debug ("GdmChooserSession: child (pid:%d) done (%s:%d)",
                  (int) pid,
                  WIFEXITED (status) ? "status"
                  : WIFSIGNALED (status) ? "signal"
@@ -305,12 +187,16 @@ greeter_session_child_watch (GPid               pid,
                  : WIFSIGNALED (status) ? WTERMSIG (status)
                  : -1);
 
-        g_spawn_close_pid (greeter_session->priv->pid);
-        greeter_session->priv->pid = -1;
-
-        if (greeter_session->priv->ckc != NULL) {
-                close_greeter_session (greeter_session);
+        if (WIFEXITED (status)) {
+                int code = WEXITSTATUS (status);
+                g_signal_emit (session, signals [EXITED], 0, code);
+        } else if (WIFSIGNALED (status)) {
+                int num = WTERMSIG (status);
+                g_signal_emit (session, signals [DIED], 0, num);
         }
+
+        g_spawn_close_pid (session->priv->pid);
+        session->priv->pid = -1;
 }
 
 typedef struct {
@@ -342,7 +228,7 @@ spawn_child_setup (SpawnChildData *data)
                 _exit (1);
         }
 
-        g_debug ("GdmGreeterSession: Changing (uid:gid) for child process to (%d:%d)",
+        g_debug ("GdmChooserSession: Changing (uid:gid) for child process to (%d:%d)",
                  pwent->pw_uid,
                  grent->gr_gid);
 
@@ -378,7 +264,7 @@ spawn_child_setup (SpawnChildData *data)
         }
 
         if (setsid () < 0) {
-                g_debug ("GdmGreeterSession: could not set pid '%u' as leader of new session and process group - %s",
+                g_debug ("GdmChooserSession: could not set pid '%u' as leader of new session and process group - %s",
                          (guint) getpid (), g_strerror (errno));
                 _exit (2);
         }
@@ -442,9 +328,9 @@ static gboolean
 spawn_command_line_async_as_user (const char *command_line,
                                   const char *user_name,
                                   const char *group_name,
-                                  char       **env,
-                                  GPid        *child_pid,
-                                  GError     **error)
+                                  char      **env,
+                                  GPid       *child_pid,
+                                  GError    **error)
 {
         char           **argv;
         GError          *local_error;
@@ -564,7 +450,7 @@ parse_dbus_launch_output (const char *output,
 }
 
 static gboolean
-start_dbus_daemon (GdmGreeterSession *greeter_session)
+start_dbus_daemon (GdmChooserSession *chooser_session)
 {
         gboolean   res;
         char      *std_out;
@@ -573,12 +459,12 @@ start_dbus_daemon (GdmGreeterSession *greeter_session)
         GError    *error;
         GPtrArray *env;
 
-        env = get_greeter_environment (greeter_session);
+        env = get_chooser_environment (chooser_session);
 
         error = NULL;
         res = spawn_command_line_sync_as_user (DBUS_LAUNCH_COMMAND,
-                                               greeter_session->priv->user_name,
-                                               greeter_session->priv->group_name,
+                                               chooser_session->priv->user_name,
+                                               chooser_session->priv->group_name,
                                                (char **)env->pdata,
                                                &std_out,
                                                &std_err,
@@ -595,29 +481,29 @@ start_dbus_daemon (GdmGreeterSession *greeter_session)
 
         /* pull the address and pid from the output */
         res = parse_dbus_launch_output (std_out,
-                                        &greeter_session->priv->dbus_bus_address,
-                                        &greeter_session->priv->dbus_pid);
+                                        &chooser_session->priv->dbus_bus_address,
+                                        &chooser_session->priv->dbus_pid);
         if (! res) {
                 g_warning ("Unable to parse D-Bus launch output");
         } else {
-                g_debug ("GdmGreeterSession: Started D-Bus daemon on pid %d", greeter_session->priv->dbus_pid);
+                g_debug ("GdmChooserSession: Started D-Bus daemon on pid %d", chooser_session->priv->dbus_pid);
         }
  out:
         return res;
 }
 
 static gboolean
-stop_dbus_daemon (GdmGreeterSession *greeter_session)
+stop_dbus_daemon (GdmChooserSession *chooser_session)
 {
-        if (greeter_session->priv->dbus_pid > 0) {
-                gdm_signal_pid (-1 * greeter_session->priv->dbus_pid, SIGTERM);
-                greeter_session->priv->dbus_pid = 0;
+        if (chooser_session->priv->dbus_pid > 0) {
+                gdm_signal_pid (-1 * chooser_session->priv->dbus_pid, SIGTERM);
+                chooser_session->priv->dbus_pid = 0;
         }
         return TRUE;
 }
 
 static gboolean
-gdm_greeter_session_spawn (GdmGreeterSession *greeter_session)
+gdm_chooser_session_spawn (GdmChooserSession *chooser_session)
 {
         GError          *error;
         GPtrArray       *env;
@@ -626,28 +512,22 @@ gdm_greeter_session_spawn (GdmGreeterSession *greeter_session)
 
         ret = FALSE;
 
-        res = start_dbus_daemon (greeter_session);
+        g_debug ("GdmChooserSession: Running chooser_session process: %s", chooser_session->priv->command);
+
+        res = start_dbus_daemon (chooser_session);
         if (! res) {
                 /* FIXME: */
         }
 
-#if 0
-        create_temp_auth_file (greeter_session);
-#endif
-
-        g_debug ("GdmGreeterSession: Running greeter_session process: %s", greeter_session->priv->command);
-
-        open_greeter_session (greeter_session);
-
-        env = get_greeter_environment (greeter_session);
+        env = get_chooser_environment (chooser_session);
 
         error = NULL;
 
-        ret = spawn_command_line_async_as_user (greeter_session->priv->command,
-                                                greeter_session->priv->user_name,
-                                                greeter_session->priv->group_name,
+        ret = spawn_command_line_async_as_user (chooser_session->priv->command,
+                                                chooser_session->priv->user_name,
+                                                chooser_session->priv->group_name,
                                                 (char **)env->pdata,
-                                                &greeter_session->priv->pid,
+                                                &chooser_session->priv->pid,
                                                 &error);
 
         g_ptr_array_foreach (env, (GFunc)g_free, NULL);
@@ -655,17 +535,17 @@ gdm_greeter_session_spawn (GdmGreeterSession *greeter_session)
 
         if (! ret) {
                 g_warning ("Could not start command '%s': %s",
-                           greeter_session->priv->command,
+                           chooser_session->priv->command,
                            error->message);
                 g_error_free (error);
                 goto out;
         } else {
-                g_debug ("GdmGreeterSession: GreeterSession on pid %d", (int)greeter_session->priv->pid);
+                g_debug ("GdmChooserSession: ChooserSession on pid %d", (int)chooser_session->priv->pid);
         }
 
-        greeter_session->priv->child_watch_id = g_child_watch_add (greeter_session->priv->pid,
-                                                                   (GChildWatchFunc)greeter_session_child_watch,
-                                                                   greeter_session);
+        chooser_session->priv->child_watch_id = g_child_watch_add (chooser_session->priv->pid,
+                                                                   (GChildWatchFunc)chooser_session_child_watch,
+                                                                   chooser_session);
 
  out:
 
@@ -673,19 +553,19 @@ gdm_greeter_session_spawn (GdmGreeterSession *greeter_session)
 }
 
 /**
- * gdm_greeter_session_start:
+ * gdm_chooser_session_start:
  * @disp: Pointer to a GdmDisplay structure
  *
- * Starts a local X greeter_session. Handles retries and fatal errors properly.
+ * Starts a local X chooser_session. Handles retries and fatal errors properly.
  */
 gboolean
-gdm_greeter_session_start (GdmGreeterSession *greeter_session)
+gdm_chooser_session_start (GdmChooserSession *chooser_session)
 {
         gboolean    res;
 
-        g_debug ("GdmGreeterSession: Starting greeter...");
+        g_debug ("GdmChooserSession: Starting chooser...");
 
-        res = gdm_greeter_session_spawn (greeter_session);
+        res = gdm_chooser_session_spawn (chooser_session);
 
         if (res) {
 
@@ -707,7 +587,7 @@ wait_on_child (int pid)
                 } else if (errno == ECHILD) {
                         ; /* do nothing, child already reaped */
                 } else {
-                        g_debug ("GdmGreeterSession: waitpid () should not fail");
+                        g_debug ("GdmChooserSession: waitpid () should not fail");
                 }
         }
 
@@ -715,152 +595,138 @@ wait_on_child (int pid)
 }
 
 static void
-greeter_session_died (GdmGreeterSession *greeter_session)
+chooser_session_died (GdmChooserSession *chooser_session)
 {
         int exit_status;
 
-        g_debug ("GdmGreeterSession: Waiting on process %d", greeter_session->priv->pid);
-        exit_status = wait_on_child (greeter_session->priv->pid);
+        g_debug ("GdmChooserSession: Waiting on process %d", chooser_session->priv->pid);
+        exit_status = wait_on_child (chooser_session->priv->pid);
 
         if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
-                g_debug ("GdmGreeterSession: Wait on child process failed");
+                g_debug ("GdmChooserSession: Wait on child process failed");
         } else {
                 /* exited normally */
         }
 
-        g_spawn_close_pid (greeter_session->priv->pid);
-        greeter_session->priv->pid = -1;
+        g_spawn_close_pid (chooser_session->priv->pid);
+        chooser_session->priv->pid = -1;
 
-        g_debug ("GdmGreeterSession: GreeterSession died");
+        g_debug ("GdmChooserSession: ChooserSession died");
 }
 
 gboolean
-gdm_greeter_session_stop (GdmGreeterSession *greeter_session)
+gdm_chooser_session_stop (GdmChooserSession *chooser_session)
 {
 
-        if (greeter_session->priv->pid <= 1) {
+        if (chooser_session->priv->pid <= 1) {
                 return TRUE;
         }
 
         /* remove watch source before we can wait on child */
-        if (greeter_session->priv->child_watch_id > 0) {
-                g_source_remove (greeter_session->priv->child_watch_id);
-                greeter_session->priv->child_watch_id = 0;
+        if (chooser_session->priv->child_watch_id > 0) {
+                g_source_remove (chooser_session->priv->child_watch_id);
+                chooser_session->priv->child_watch_id = 0;
         }
 
-        g_debug ("GdmGreeterSession: Stopping greeter_session");
+        g_debug ("GdmChooserSession: Stopping chooser_session");
 
-        gdm_signal_pid (-1 * greeter_session->priv->pid, SIGTERM);
-        greeter_session_died (greeter_session);
+        gdm_signal_pid (-1 * chooser_session->priv->pid, SIGTERM);
+        chooser_session_died (chooser_session);
 
-        if (greeter_session->priv->ckc != NULL) {
-                close_greeter_session (greeter_session);
-        }
-
-        stop_dbus_daemon (greeter_session);
+        stop_dbus_daemon (chooser_session);
 
         return TRUE;
 }
 
 void
-gdm_greeter_session_set_server_address (GdmGreeterSession *greeter_session,
+gdm_chooser_session_set_server_address (GdmChooserSession *chooser_session,
                                         const char        *address)
 {
-        g_return_if_fail (GDM_IS_GREETER_SESSION (greeter_session));
+        g_return_if_fail (GDM_IS_CHOOSER_SESSION (chooser_session));
 
-        g_free (greeter_session->priv->server_address);
-        greeter_session->priv->server_address = g_strdup (address);
+        g_free (chooser_session->priv->server_address);
+        chooser_session->priv->server_address = g_strdup (address);
 }
 
 static void
-_gdm_greeter_session_set_x11_display_name (GdmGreeterSession *greeter_session,
+_gdm_chooser_session_set_x11_display_name (GdmChooserSession *chooser_session,
                                            const char        *name)
 {
-        g_free (greeter_session->priv->x11_display_name);
-        greeter_session->priv->x11_display_name = g_strdup (name);
+        g_free (chooser_session->priv->x11_display_name);
+        chooser_session->priv->x11_display_name = g_strdup (name);
 }
 
 static void
-_gdm_greeter_session_set_x11_display_hostname (GdmGreeterSession *greeter_session,
+_gdm_chooser_session_set_x11_display_hostname (GdmChooserSession *chooser_session,
                                                const char        *name)
 {
-        g_free (greeter_session->priv->x11_display_hostname);
-        greeter_session->priv->x11_display_hostname = g_strdup (name);
+        g_free (chooser_session->priv->x11_display_hostname);
+        chooser_session->priv->x11_display_hostname = g_strdup (name);
 }
 
 static void
-_gdm_greeter_session_set_x11_display_device (GdmGreeterSession *greeter_session,
+_gdm_chooser_session_set_x11_display_device (GdmChooserSession *chooser_session,
                                              const char        *name)
 {
-        g_free (greeter_session->priv->x11_display_device);
-        greeter_session->priv->x11_display_device = g_strdup (name);
+        g_free (chooser_session->priv->x11_display_device);
+        chooser_session->priv->x11_display_device = g_strdup (name);
 }
 
 static void
-_gdm_greeter_session_set_x11_display_is_local (GdmGreeterSession *greeter_session,
-                                               gboolean           is_local)
-{
-        greeter_session->priv->x11_display_is_local = is_local;
-}
-
-static void
-_gdm_greeter_session_set_x11_authority_file (GdmGreeterSession *greeter_session,
+_gdm_chooser_session_set_x11_authority_file (GdmChooserSession *chooser_session,
                                              const char        *file)
 {
-        g_free (greeter_session->priv->x11_authority_file);
-        greeter_session->priv->x11_authority_file = g_strdup (file);
+        g_free (chooser_session->priv->x11_authority_file);
+        chooser_session->priv->x11_authority_file = g_strdup (file);
 }
 
 static void
-_gdm_greeter_session_set_user_name (GdmGreeterSession *greeter_session,
+_gdm_chooser_session_set_user_name (GdmChooserSession *chooser_session,
                                     const char        *name)
 {
-        g_free (greeter_session->priv->user_name);
-        greeter_session->priv->user_name = g_strdup (name);
+        g_free (chooser_session->priv->user_name);
+        chooser_session->priv->user_name = g_strdup (name);
 }
 
 static void
-_gdm_greeter_session_set_group_name (GdmGreeterSession *greeter_session,
+_gdm_chooser_session_set_group_name (GdmChooserSession *chooser_session,
                                      const char        *name)
 {
-        g_free (greeter_session->priv->group_name);
-        greeter_session->priv->group_name = g_strdup (name);
+        g_free (chooser_session->priv->group_name);
+        chooser_session->priv->group_name = g_strdup (name);
 }
 
 static void
-gdm_greeter_session_set_property (GObject      *object,
+gdm_chooser_session_set_property (GObject      *object,
                                   guint         prop_id,
                                   const GValue *value,
                                   GParamSpec   *pspec)
 {
-        GdmGreeterSession *self;
+        GdmChooserSession *self;
 
-        self = GDM_GREETER_SESSION (object);
+        self = GDM_CHOOSER_SESSION (object);
 
         switch (prop_id) {
         case PROP_X11_DISPLAY_NAME:
-                _gdm_greeter_session_set_x11_display_name (self, g_value_get_string (value));
+                _gdm_chooser_session_set_x11_display_name (self, g_value_get_string (value));
                 break;
         case PROP_X11_DISPLAY_HOSTNAME:
-                _gdm_greeter_session_set_x11_display_hostname (self, g_value_get_string (value));
+                _gdm_chooser_session_set_x11_display_hostname (self, g_value_get_string (value));
                 break;
         case PROP_X11_DISPLAY_DEVICE:
-                _gdm_greeter_session_set_x11_display_device (self, g_value_get_string (value));
-                break;
-        case PROP_X11_DISPLAY_IS_LOCAL:
-                _gdm_greeter_session_set_x11_display_is_local (self, g_value_get_boolean (value));
+                _gdm_chooser_session_set_x11_display_device (self, g_value_get_string (value));
                 break;
         case PROP_X11_AUTHORITY_FILE:
-                _gdm_greeter_session_set_x11_authority_file (self, g_value_get_string (value));
+                _gdm_chooser_session_set_x11_authority_file (self, g_value_get_string (value));
                 break;
         case PROP_USER_NAME:
-                _gdm_greeter_session_set_user_name (self, g_value_get_string (value));
+                _gdm_chooser_session_set_user_name (self, g_value_get_string (value));
                 break;
         case PROP_GROUP_NAME:
-                _gdm_greeter_session_set_group_name (self, g_value_get_string (value));
+                _gdm_chooser_session_set_group_name (self, g_value_get_string (value));
                 break;
         case PROP_SERVER_ADDRESS:
-                gdm_greeter_session_set_server_address (self, g_value_get_string (value));
+                gdm_chooser_session_set_server_address (self, g_value_get_string (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -869,14 +735,14 @@ gdm_greeter_session_set_property (GObject      *object,
 }
 
 static void
-gdm_greeter_session_get_property (GObject    *object,
+gdm_chooser_session_get_property (GObject    *object,
                                   guint       prop_id,
                                   GValue     *value,
                                   GParamSpec *pspec)
 {
-        GdmGreeterSession *self;
+        GdmChooserSession *self;
 
-        self = GDM_GREETER_SESSION (object);
+        self = GDM_CHOOSER_SESSION (object);
 
         switch (prop_id) {
         case PROP_X11_DISPLAY_NAME:
@@ -887,9 +753,6 @@ gdm_greeter_session_get_property (GObject    *object,
                 break;
         case PROP_X11_DISPLAY_DEVICE:
                 g_value_set_string (value, self->priv->x11_display_device);
-                break;
-        case PROP_X11_DISPLAY_IS_LOCAL:
-                g_value_set_boolean (value, self->priv->x11_display_is_local);
                 break;
         case PROP_X11_AUTHORITY_FILE:
                 g_value_set_string (value, self->priv->x11_authority_file);
@@ -910,33 +773,33 @@ gdm_greeter_session_get_property (GObject    *object,
 }
 
 static GObject *
-gdm_greeter_session_constructor (GType                  type,
+gdm_chooser_session_constructor (GType                  type,
                                  guint                  n_construct_properties,
                                  GObjectConstructParam *construct_properties)
 {
-        GdmGreeterSession      *greeter_session;
-        GdmGreeterSessionClass *klass;
+        GdmChooserSession      *chooser_session;
+        GdmChooserSessionClass *klass;
 
-        klass = GDM_GREETER_SESSION_CLASS (g_type_class_peek (GDM_TYPE_GREETER_SESSION));
+        klass = GDM_CHOOSER_SESSION_CLASS (g_type_class_peek (GDM_TYPE_CHOOSER_SESSION));
 
-        greeter_session = GDM_GREETER_SESSION (G_OBJECT_CLASS (gdm_greeter_session_parent_class)->constructor (type,
-                                                                                                         n_construct_properties,
-                                                                                                         construct_properties));
+        chooser_session = GDM_CHOOSER_SESSION (G_OBJECT_CLASS (gdm_chooser_session_parent_class)->constructor (type,
+                                                                                                               n_construct_properties,
+                                                                                                               construct_properties));
 
-        return G_OBJECT (greeter_session);
+        return G_OBJECT (chooser_session);
 }
 
 static void
-gdm_greeter_session_class_init (GdmGreeterSessionClass *klass)
+gdm_chooser_session_class_init (GdmChooserSessionClass *klass)
 {
         GObjectClass    *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->get_property = gdm_greeter_session_get_property;
-        object_class->set_property = gdm_greeter_session_set_property;
-        object_class->constructor = gdm_greeter_session_constructor;
-        object_class->finalize = gdm_greeter_session_finalize;
+        object_class->get_property = gdm_chooser_session_get_property;
+        object_class->set_property = gdm_chooser_session_set_property;
+        object_class->constructor = gdm_chooser_session_constructor;
+        object_class->finalize = gdm_chooser_session_finalize;
 
-        g_type_class_add_private (klass, sizeof (GdmGreeterSessionPrivate));
+        g_type_class_add_private (klass, sizeof (GdmChooserSessionPrivate));
 
         g_object_class_install_property (object_class,
                                          PROP_X11_DISPLAY_NAME,
@@ -959,13 +822,6 @@ gdm_greeter_session_class_init (GdmGreeterSessionClass *klass)
                                                               "device",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-        g_object_class_install_property (object_class,
-                                         PROP_X11_DISPLAY_IS_LOCAL,
-                                         g_param_spec_boolean ("x11-display-is-local",
-                                                               "is local",
-                                                               "is local",
-                                                               FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
                                          PROP_X11_AUTHORITY_FILE,
                                          g_param_spec_string ("x11-authority-file",
@@ -998,7 +854,7 @@ gdm_greeter_session_class_init (GdmGreeterSessionClass *klass)
                 g_signal_new ("started",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterSessionClass, started),
+                              G_STRUCT_OFFSET (GdmChooserSessionClass, started),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,
@@ -1008,70 +864,85 @@ gdm_greeter_session_class_init (GdmGreeterSessionClass *klass)
                 g_signal_new ("stopped",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterSessionClass, stopped),
+                              G_STRUCT_OFFSET (GdmChooserSessionClass, stopped),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
+        signals [EXITED] =
+                g_signal_new ("exited",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmChooserSessionClass, exited),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__INT,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_INT);
+        signals [DIED] =
+                g_signal_new ("died",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmChooserSessionClass, died),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__INT,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_INT);
 }
 
 static void
-gdm_greeter_session_init (GdmGreeterSession *greeter_session)
+gdm_chooser_session_init (GdmChooserSession *chooser_session)
 {
 
-        greeter_session->priv = GDM_GREETER_SESSION_GET_PRIVATE (greeter_session);
+        chooser_session->priv = GDM_CHOOSER_SESSION_GET_PRIVATE (chooser_session);
 
-        greeter_session->priv->pid = -1;
+        chooser_session->priv->pid = -1;
 
-        greeter_session->priv->command = g_strdup (LIBEXECDIR "/gdm-simple-greeter");
+        chooser_session->priv->command = g_strdup (LIBEXECDIR "/gdm-simple-chooser");
 }
 
 static void
-gdm_greeter_session_finalize (GObject *object)
+gdm_chooser_session_finalize (GObject *object)
 {
-        GdmGreeterSession *greeter_session;
+        GdmChooserSession *chooser_session;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (GDM_IS_GREETER_SESSION (object));
+        g_return_if_fail (GDM_IS_CHOOSER_SESSION (object));
 
-        greeter_session = GDM_GREETER_SESSION (object);
+        chooser_session = GDM_CHOOSER_SESSION (object);
 
-        g_return_if_fail (greeter_session->priv != NULL);
+        g_return_if_fail (chooser_session->priv != NULL);
 
-        gdm_greeter_session_stop (greeter_session);
+        gdm_chooser_session_stop (chooser_session);
 
-        g_free (greeter_session->priv->command);
-        g_free (greeter_session->priv->user_name);
-        g_free (greeter_session->priv->group_name);
-        g_free (greeter_session->priv->x11_display_name);
-        g_free (greeter_session->priv->x11_display_device);
-        g_free (greeter_session->priv->x11_display_hostname);
-        g_free (greeter_session->priv->x11_authority_file);
-        g_free (greeter_session->priv->dbus_bus_address);
-        g_free (greeter_session->priv->server_address);
+        g_free (chooser_session->priv->command);
+        g_free (chooser_session->priv->user_name);
+        g_free (chooser_session->priv->group_name);
+        g_free (chooser_session->priv->x11_display_name);
+        g_free (chooser_session->priv->x11_display_device);
+        g_free (chooser_session->priv->x11_display_hostname);
+        g_free (chooser_session->priv->x11_authority_file);
+        g_free (chooser_session->priv->server_address);
 
-        if (greeter_session->priv->ckc != NULL) {
-                ck_connector_unref (greeter_session->priv->ckc);
-        }
-
-        G_OBJECT_CLASS (gdm_greeter_session_parent_class)->finalize (object);
+        G_OBJECT_CLASS (gdm_chooser_session_parent_class)->finalize (object);
 }
 
-GdmGreeterSession *
-gdm_greeter_session_new (const char *display_name,
+GdmChooserSession *
+gdm_chooser_session_new (const char *display_name,
                          const char *display_device,
-                         const char *display_hostname,
-                         gboolean    display_is_local)
+                         const char *display_hostname)
 {
         GObject *object;
 
-        object = g_object_new (GDM_TYPE_GREETER_SESSION,
+        object = g_object_new (GDM_TYPE_CHOOSER_SESSION,
                                "x11-display-name", display_name,
                                "x11-display-device", display_device,
                                "x11-display-hostname", display_hostname,
-                               "x11-display-is-local", display_is_local,
                                NULL);
 
-        return GDM_GREETER_SESSION (object);
+        return GDM_CHOOSER_SESSION (object);
 }

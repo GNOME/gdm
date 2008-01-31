@@ -47,25 +47,25 @@ static guint32 display_serial = 1;
 
 struct GdmDisplayPrivate
 {
-        char            *id;
-        char            *seat_id;
+        char                 *id;
+        char                 *seat_id;
 
-        char            *remote_hostname;
-        int              x11_display_number;
-        char            *x11_display_name;
-        int              status;
-        time_t           creation_time;
-        char            *slave_command;
+        char                 *remote_hostname;
+        int                   x11_display_number;
+        char                 *x11_display_name;
+        int                   status;
+        time_t                creation_time;
+        char                 *slave_command;
 
         char                 *x11_cookie;
         gsize                 x11_cookie_size;
         GdmDisplayAccessFile *access_file;
 
-        gboolean         is_local;
-        guint            finish_idle_id;
+        gboolean              is_local;
+        guint                 finish_idle_id;
 
-        GdmSlaveProxy   *slave_proxy;
-        DBusGConnection *connection;
+        GdmSlaveProxy        *slave_proxy;
+        DBusGConnection      *connection;
         GdmDisplayAccessFile *user_access_file;
 };
 
@@ -257,6 +257,33 @@ gdm_display_add_user_authorization (GdmDisplay *display,
 
         g_object_ref (display);
         ret = GDM_DISPLAY_GET_CLASS (display)->add_user_authorization (display, username, filename, error);
+        g_object_unref (display);
+
+        return ret;
+}
+
+static gboolean
+gdm_display_real_set_slave_bus_name (GdmDisplay *display,
+                                     const char *name,
+                                     GError    **error)
+{
+
+        return TRUE;
+}
+
+gboolean
+gdm_display_set_slave_bus_name (GdmDisplay *display,
+                                const char *name,
+                                GError    **error)
+{
+        gboolean ret;
+
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        g_debug ("Setting slave bus name:%s on display %s", name, display->priv->x11_display_name);
+
+        g_object_ref (display);
+        ret = GDM_DISPLAY_GET_CLASS (display)->set_slave_bus_name (display, name, error);
         g_object_unref (display);
 
         return ret;
@@ -802,6 +829,7 @@ gdm_display_class_init (GdmDisplayClass *klass)
         klass->create_authority = gdm_display_real_create_authority;
         klass->add_user_authorization = gdm_display_real_add_user_authorization;
         klass->remove_user_authorization = gdm_display_real_remove_user_authorization;
+        klass->set_slave_bus_name = gdm_display_real_set_slave_bus_name;
         klass->manage = gdm_display_real_manage;
         klass->finish = gdm_display_real_finish;
         klass->unmanage = gdm_display_real_unmanage;

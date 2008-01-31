@@ -37,7 +37,7 @@
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 
-#include "gdm-chooser-session.h"
+#include "gdm-host-chooser-dialog.h"
 
 #define ACCESSIBILITY_KEY         "/desktop/gnome/interface/accessibility"
 
@@ -223,9 +223,7 @@ load_a11y (void)
 int
 main (int argc, char *argv[])
 {
-        GdmChooserSession *session;
-        gboolean           res;
-        GError            *error;
+        GtkWidget        *chooser;
 
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -250,25 +248,16 @@ main (int argc, char *argv[])
 
         gtk_init (&argc, &argv);
 
-        session = gdm_chooser_session_new ();
-        if (session == NULL) {
-                g_critical ("Unable to create chooser session");
-                exit (1);
+        chooser = gdm_host_chooser_dialog_new ();
+        if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_OK) {
+                char *hostname;
+
+                hostname = gdm_host_chooser_dialog_get_current_hostname (GDM_HOST_CHOOSER_DIALOG (chooser));
+                g_print ("hostname: %s\n", hostname);
+                g_free (hostname);
         }
 
-        error = NULL;
-        res = gdm_chooser_session_start (session, &error);
-        if (! res) {
-                g_warning ("Unable to start chooser session: %s", error->message);
-                g_error_free (error);
-                exit (1);
-        }
-
-        gtk_main ();
-
-        if (session != NULL) {
-                g_object_unref (session);
-        }
+        gtk_widget_destroy (chooser);
 
         return 0;
 }

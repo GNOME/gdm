@@ -62,8 +62,6 @@ struct GdmSimpleSlavePrivate
 {
         char              *id;
         GPid               pid;
-        guint              output_watch_id;
-        guint              error_watch_id;
 
         guint              greeter_reset_id;
         guint              start_session_id;

@@ -194,15 +194,36 @@ at_set_gtk_modules (void)
         g_slist_free (modules_list);
 }
 
+static void
+load_a11y (void)
+{
+        const char        *env_a_t_support;
+        gboolean           a_t_support;
+        GConfClient       *gconf_client;
+
+        gconf_client = gconf_client_get_default ();
+
+        env_a_t_support = g_getenv ("GNOME_ACCESSIBILITY");
+        if (env_a_t_support) {
+                a_t_support = atoi (env_a_t_support);
+        } else {
+                a_t_support = gconf_client_get_bool (gconf_client, ACCESSIBILITY_KEY, NULL);
+        }
+
+        if (a_t_support) {
+                assistive_registry_start ();
+                at_set_gtk_modules ();
+        }
+
+        g_object_unref (gconf_client);
+}
+
 int
 main (int argc, char *argv[])
 {
         GError            *error;
         GdmGreeterSession *session;
         gboolean           res;
-        const char        *env_a_t_support;
-        gboolean           a_t_support;
-        GConfClient       *gconf_client;
 
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -231,19 +252,7 @@ main (int argc, char *argv[])
 
         gdk_init (&argc, &argv);
 
-        gconf_client = gconf_client_get_default ();
-
-        env_a_t_support = g_getenv ("GNOME_ACCESSIBILITY");
-        if (env_a_t_support) {
-                a_t_support = atoi (env_a_t_support);
-        } else {
-                a_t_support = gconf_client_get_bool (gconf_client, ACCESSIBILITY_KEY, NULL);
-        }
-
-        if (a_t_support) {
-                assistive_registry_start ();
-                at_set_gtk_modules ();
-        }
+        load_a11y ();
 
         gtk_init (&argc, &argv);
 
@@ -253,6 +262,7 @@ main (int argc, char *argv[])
                 exit (1);
         }
 
+        error = NULL;
         res = gdm_greeter_session_start (session, &error);
         if (! res) {
                 g_warning ("Unable to start greeter session: %s", error->message);

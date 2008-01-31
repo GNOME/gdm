@@ -37,7 +37,6 @@
 
 #include "gdm-display.h"
 #include "gdm-xdmcp-display.h"
-#include "gdm-xdmcp-display-glue.h"
 
 #include "gdm-common.h"
 #include "gdm-address.h"
@@ -60,7 +59,7 @@ static void     gdm_xdmcp_display_class_init    (GdmXdmcpDisplayClass *klass);
 static void     gdm_xdmcp_display_init          (GdmXdmcpDisplay      *xdmcp_display);
 static void     gdm_xdmcp_display_finalize      (GObject              *object);
 
-G_DEFINE_TYPE (GdmXdmcpDisplay, gdm_xdmcp_display, GDM_TYPE_DISPLAY)
+G_DEFINE_ABSTRACT_TYPE (GdmXdmcpDisplay, gdm_xdmcp_display, GDM_TYPE_DISPLAY)
 
 gint32
 gdm_xdmcp_display_get_session_number (GdmXdmcpDisplay *display)
@@ -218,7 +217,6 @@ gdm_xdmcp_display_class_init (GdmXdmcpDisplayClass *klass)
                                                            0,
                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
-        dbus_g_object_type_install_info (GDM_TYPE_XDMCP_DISPLAY, &dbus_glib_gdm_xdmcp_display_object_info);
 }
 
 static void
@@ -241,27 +239,4 @@ gdm_xdmcp_display_finalize (GObject *object)
         g_return_if_fail (xdmcp_display->priv != NULL);
 
         G_OBJECT_CLASS (gdm_xdmcp_display_parent_class)->finalize (object);
-}
-
-GdmDisplay *
-gdm_xdmcp_display_new (const char              *hostname,
-                       int                      number,
-                       GdmAddress              *address,
-                       gint32                   session_number)
-{
-        GObject *object;
-        char    *x11_display;
-
-        x11_display = g_strdup_printf ("%s:%d", hostname, number);
-        object = g_object_new (GDM_TYPE_XDMCP_DISPLAY,
-                               "remote-hostname", hostname,
-                               "x11-display-number", number,
-                               "x11-display-name", x11_display,
-                               "is-local", FALSE,
-                               "remote-address", address,
-                               "session-number", session_number,
-                               NULL);
-        g_free (x11_display);
-
-        return GDM_DISPLAY (object);
 }
