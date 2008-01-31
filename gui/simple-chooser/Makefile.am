@@ -39,11 +39,11 @@ gdm_simple_chooser_SOURCES =  		\
 	$(NULL)
 
 gdm_simple_chooser_LDADD = 		\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(GTK_LIBS)			\
 	$(EXTRA_CHOOSER_LIBS)   	\
 	$(SIMPLE_CHOOSER_LIBS)		\
 	$(XDMCP_LIBS)			\
-	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 test_host_chooser_SOURCES = 		\
@@ -55,11 +55,11 @@ test_host_chooser_SOURCES = 		\
 	$(NULL)
 
 test_host_chooser_LDADD =		\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(GTK_LIBS)			\
 	$(EXTRA_CHOOSER_LIBS)   	\
 	$(SIMPLE_CHOOSER_LIBS)		\
 	$(XDMCP_LIBS)			\
-	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 EXTRA_DIST = 			\

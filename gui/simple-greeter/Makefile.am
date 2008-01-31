@@ -71,8 +71,8 @@ test_greeter_panel_SOURCES = 	\
 	$(NULL)
 
 test_greeter_panel_LDADD =	\
-	$(GTK_LIBS)		\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
+	$(GTK_LIBS)		\
 	$(NULL)
 
 test_remote_login_window_SOURCES = 	\
@@ -179,9 +179,9 @@ gdm_simple_greeter_SOURCES =  		\
 	$(NULL)
 
 gdm_simple_greeter_LDADD = 		\
-	$(EXTRA_GREETER_LIBS)   	\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
+	$(EXTRA_GREETER_LIBS)   	\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(POLKIT_GNOME_LIBS)		\
 	$(RBAC_LIBS)			\

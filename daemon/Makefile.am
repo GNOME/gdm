@@ -101,11 +101,11 @@ test_session_SOURCES = 		\
 	$(NULL)
 
 test_session_LDADD =		\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(XLIB_LIBS)		\
 	$(EXTRA_DAEMON_LIBS)	\
 	$(DAEMON_LIBS)		\
 	$(PAM_LIBS)		\
-	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 libexec_PROGRAMS = 			\
@@ -146,10 +146,10 @@ gdm_simple_slave_LDFLAGS =		\
 	$(NULL)
 
 gdm_simple_slave_LDADD = 			\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(XLIB_LIBS)				\
 	$(DAEMON_LIBS)				\
 	$(EXTRA_DAEMON_LIBS)                    \
-	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 gdm_factory_slave_SOURCES = 		\
@@ -178,9 +178,9 @@ gdm_factory_slave_LDFLAGS =		\
 	$(NULL)
 
 gdm_factory_slave_LDADD = 			\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(XLIB_LIBS)				\
 	$(DAEMON_LIBS)				\
-	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 gdm_product_slave_SOURCES = 		\
@@ -209,10 +209,10 @@ gdm_product_slave_LDFLAGS =		\
 	$(NULL)
 
 gdm_product_slave_LDADD = 			\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(XLIB_LIBS)				\
 	$(DAEMON_LIBS)				\
 	$(EXTRA_DAEMON_LIBS)                    \
-	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 gdm_xdmcp_chooser_slave_SOURCES = 		\
@@ -245,8 +245,8 @@ gdm_session_worker_LDFLAGS =			\
 	$(NULL)
 
 gdm_session_worker_LDADD = 			\
-	$(DAEMON_LIBS)				\
 	$(top_builddir)/common/libgdmcommon.la	\
+	$(DAEMON_LIBS)				\
 	$(NULL)
 
 sbin_PROGRAMS = 			\
@@ -310,11 +310,11 @@ gdm_binary_LDFLAGS =				\
 	$(NULL)
 
 gdm_binary_LDADD = \
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(XLIB_LIBS)				\
 	$(DAEMON_LIBS)				\
 	$(XDMCP_LIBS)                           \
 	$(LIBWRAP_LIBS)                         \
-	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 if WITH_CONSOLE_KIT
