@@ -228,11 +228,28 @@ get_greeter_environment (GdmGreeterSession *greeter_session)
         GPtrArray     *env;
         GHashTable    *hash;
         struct passwd *pwent;
+        static const char * const optional_environment[] = {
+            "LANG", "LANGUAGE", "LC_CTYPE", "LC_NUMERIC", "LC_TIME",
+            "LC_COLLATE", "LC_MONETARY", "LC_MESSAGES", "LC_PAPER",
+            "LC_NAME", "LC_ADDRESS", "LC_TELEPHONE", "LC_MEASUREMENT",
+            "LC_IDENTIFICATION", "LC_ALL",
+            NULL
+        };
+        int i;
 
         env = g_ptr_array_new ();
 
         /* create a hash table of current environment, then update keys has necessary */
         hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+
+        for (i = 0; optional_environment[i] != NULL; i++) {
+                if (g_getenv (optional_environment[i]) == NULL) {
+                        continue;
+                }
+
+                g_hash_table_insert (hash, g_strdup (optional_environment[i]),
+                                     g_strdup (g_getenv (optional_environment[i])));
+        }
 
         if (greeter_session->priv->dbus_bus_address != NULL) {
                 g_hash_table_insert (hash, g_strdup ("DBUS_SESSION_BUS_ADDRESS"), g_strdup (greeter_session->priv->dbus_bus_address));
