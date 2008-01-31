@@ -22,7 +22,7 @@
 #define __GDM_LANGUAGE_CHOOSER_WIDGET_H
 
 #include <glib-object.h>
-#include <gtk/gtkvbox.h>
+#include "gdm-chooser-widget.h"
 
 G_BEGIN_DECLS
 
@@ -37,16 +37,13 @@ typedef struct GdmLanguageChooserWidgetPrivate GdmLanguageChooserWidgetPrivate;
 
 typedef struct
 {
-        GtkVBox                          parent;
+        GdmChooserWidget                 parent;
         GdmLanguageChooserWidgetPrivate *priv;
 } GdmLanguageChooserWidget;
 
 typedef struct
 {
-        GtkVBoxClass   parent_class;
-
-        /* signals */
-        void (* language_activated)        (GdmLanguageChooserWidget *widget);
+        GdmChooserWidgetClass   parent_class;
 } GdmLanguageChooserWidgetClass;
 
 GType                  gdm_language_chooser_widget_get_type                       (void);

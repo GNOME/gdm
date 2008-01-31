@@ -87,6 +87,10 @@ test_remote_login_window_LDADD =	\
 
 test_language_chooser_SOURCES = 	\
 	test-language-chooser.c		\
+	gdm-chooser-widget.h		\
+	gdm-chooser-widget.c		\
+	gdm-languages.h			\
+	gdm-languages.c			\
 	gdm-language-chooser-widget.h	\
 	gdm-language-chooser-widget.c	\
 	locarchive.h			\

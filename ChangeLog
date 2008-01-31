@@ -1,5 +1,13 @@
 2008-01-31  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-language-chooser-widget.[ch]:
+	make gdm-language-chooser-widget subclass 
+	gdm-chooser-widget for consistency.  
+	Drop all the code that's been moved to gdm-languages.c
+	and just call into it there.
+
+2008-01-31  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-languages.[ch]:
 	New files that copy and paste the non-widget
 	specific locale handling code from
