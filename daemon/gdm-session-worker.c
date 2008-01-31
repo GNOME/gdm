@@ -831,7 +831,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                                 &worker->priv->pam_handle);
 
         if (error_code != PAM_SUCCESS) {
-                g_debug ("GdmSessionWorker: could not initialize pam");
+                g_debug ("GdmSessionWorker: could not initialize PAM");
                 /* we don't use pam_strerror here because it requires a valid
                  * pam handle, and if pam_start fails pam_handle is undefined
                  */
@@ -842,7 +842,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                              error_code == PAM_ABORT? _("general failure") :
                              error_code == PAM_BUF_ERR? _("out of memory") :
                              error_code == PAM_SYSTEM_ERR? _("application programmer error") :
-                             _("unscoped error"));
+                             _("unknown error"));
 
                 goto out;
         }
@@ -1291,8 +1291,7 @@ _open_session_log (const char *dir)
                         goto out;
                 }
 
-                g_warning (_("session log '%s' is not a normal file, "
-                             "logging session to '%s' instead.\n"), filename,
+                g_warning ("session log '%s' is not a normal file, logging session to '%s' instead.\n", filename,
                            temp_name);
                 g_free (filename);
                 filename = temp_name;
@@ -1315,7 +1314,7 @@ out:
         g_free (filename);
 
         if (fd < 0) {
-                g_warning (_("unable to log session"));
+                g_warning ("unable to log session");
                 fd = g_open ("/dev/null", O_RDWR);
         }
 
