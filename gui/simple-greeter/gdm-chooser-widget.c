@@ -1323,7 +1323,7 @@ name_cell_data_func (GtkTreeViewColumn  *tree_column,
                                           "<i><span size=\"x-small\">%s</span></i>",
                                           name ? name : "(null)", widget->priv->in_use_message);
         } else {
-                markup = g_strdup_printf ("<b>%s</b>", name ? name : "(null)");
+                markup = g_strdup_printf ("%s", name ? name : "(null)");
         }
         g_free (name);
 
