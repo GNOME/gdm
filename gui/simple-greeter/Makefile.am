@@ -68,11 +68,27 @@ test_greeter_panel_SOURCES = 	\
 	test-greeter-panel.c	\
 	gdm-greeter-panel.h	\
 	gdm-greeter-panel.c	\
+	gdm-option-widget.h     \
+	gdm-option-widget.c     \
+	gdm-recent-option-widget.h	\
+	gdm-recent-option-widget.c	\
+	gdm-languages.h			\
+	gdm-languages.c			\
+	gdm-chooser-widget.h		\
+	gdm-chooser-widget.c		\
+	gdm-language-chooser-widget.h	\
+	gdm-language-chooser-widget.c	\
+	locarchive.h			\
+	gdm-language-chooser-dialog.h	\
+	gdm-language-chooser-dialog.c	\
+	gdm-language-option-widget.h	\
+	gdm-language-option-widget.c	\
 	$(NULL)
 
 test_greeter_panel_LDADD =	\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
 	$(GTK_LIBS)		\
+	$(GCONF_LIBS)		\
 	$(NULL)
 
 test_remote_login_window_SOURCES = 	\
@@ -171,6 +187,19 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-remote-login-window.h	\
 	gdm-greeter-panel.h		\
 	gdm-greeter-panel.c		\
+	gdm-option-widget.h		\
+	gdm-option-widget.c		\
+	gdm-recent-option-widget.h	\
+	gdm-recent-option-widget.c	\
+	gdm-languages.h			\
+	gdm-languages.c			\
+	gdm-language-chooser-widget.h	\
+	gdm-language-chooser-widget.c	\
+	locarchive.h			\
+	gdm-language-chooser-dialog.h	\
+	gdm-language-chooser-dialog.c	\
+	gdm-language-option-widget.h	\
+	gdm-language-option-widget.c	\
 	gdm-session-chooser-widget.h	\
 	gdm-session-chooser-widget.c	\
 	gdm-user-chooser-widget.h	\

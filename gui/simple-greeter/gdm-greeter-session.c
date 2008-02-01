@@ -161,9 +161,8 @@ on_select_session (GdmGreeterLoginWindow *login_window,
 }
 
 static void
-on_select_language (GdmGreeterLoginWindow *login_window,
-                    const char            *text,
-                    GdmGreeterSession     *session)
+on_select_language (GdmGreeterSession     *session,
+                    const char            *text)
 {
         gdm_greeter_client_call_select_language (session->priv->client,
                                                  text);
@@ -208,6 +207,12 @@ toggle_panel (GdmSessionManager *manager,
 {
         if (enabled) {
                 session->priv->panel = gdm_greeter_panel_new ();
+
+                g_signal_connect_swapped (session->priv->panel,
+                                          "language-selected",
+                                          G_CALLBACK (on_select_language),
+                                          session);
+
                 gtk_widget_show (session->priv->panel);
         } else {
                 gtk_widget_destroy (session->priv->panel);
@@ -243,10 +248,10 @@ toggle_login_window (GdmSessionManager *manager,
                                   "session-selected",
                                   G_CALLBACK (on_select_session),
                                   session);
-                g_signal_connect (session->priv->login_window,
-                                  "language-selected",
-                                  G_CALLBACK (on_select_language),
-                                  session);
+                g_signal_connect_swapped (session->priv->login_window,
+                                          "language-selected",
+                                          G_CALLBACK (on_select_language),
+                                          session);
                 g_signal_connect (session->priv->login_window,
                                   "user-selected",
                                   G_CALLBACK (on_select_user),

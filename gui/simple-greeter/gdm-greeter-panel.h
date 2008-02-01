@@ -44,6 +44,9 @@ typedef struct
 typedef struct
 {
         GtkWindowClass   parent_class;
+
+        void (* language_selected)           (GdmGreeterPanel *panel,
+                                              const char      *text);
 } GdmGreeterPanelClass;
 
 GType                  gdm_greeter_panel_get_type                       (void);

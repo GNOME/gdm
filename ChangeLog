@@ -1,5 +1,25 @@
 2008-02-01  Ray Strode  <rstrode@redhat.com>
 
+	Put language selector in panel
+
+	* configure.ac: put gconf libs in $GCONF_LIBS
+	* gui/simple-greeter/Makefile.am: add widget to makefile
+	New subclass of gdm-recent-option-widget that shows
+	recently used languages.
+	* gui/simple-greeter/gdm-greeter-panel.c
+	(gdm_greeter_panel_class_init): create new 'language-selected' signal
+	(on_language_activated): new function to emit language-selected when
+	language option widget is changed
+	(gdm_greeter_panel_init): drop dummy label, add option-widget to panel
+	* gui/simple-greeter/gdm-greeter-session.c (on_select_language):
+	move user data to first argument and drop GdmGreeterLoginWindow arg
+	(toggle_panel): call on_select_language when language-selected is
+	emitted from panel
+	(toggle_login_window): s/connect/connect_swapped/ to deal with
+	on_select_language signature change
+
+2008-02-01  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-language-option-widget.[ch]:
 	New subclass of gdm-recent-option-widget that shows
 	recently used languages.

@@ -31,6 +31,7 @@
 #include <gtk/gtk.h>
 
 #include "gdm-greeter-panel.h"
+#include "gdm-language-option-widget.h"
 
 #include "na-tray.h"
 
@@ -42,11 +43,19 @@ struct GdmGreeterPanelPrivate
         GdkRectangle            geometry;
         GtkWidget              *hbox;
         GtkWidget              *hostname_label;
+        GtkWidget              *language_option_widget;
 };
 
 enum {
         PROP_0,
 };
+
+enum {
+        LANGUAGE_SELECTED,
+        NUMBER_OF_SIGNALS
+};
+
+static guint signals [NUMBER_OF_SIGNALS] = { 0, };
 
 static void     gdm_greeter_panel_class_init  (GdmGreeterPanelClass *klass);
 static void     gdm_greeter_panel_init        (GdmGreeterPanel      *greeter_panel);
@@ -367,14 +376,41 @@ gdm_greeter_panel_class_init (GdmGreeterPanelClass *klass)
         widget_class->realize = gdm_greeter_panel_real_realize;
         widget_class->unrealize = gdm_greeter_panel_real_unrealize;
         widget_class->size_request = gdm_greeter_panel_real_size_request;
+        signals[LANGUAGE_SELECTED] =
+                g_signal_new ("language-selected",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmGreeterPanelClass, language_selected),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1, G_TYPE_STRING);
 
         g_type_class_add_private (klass, sizeof (GdmGreeterPanelPrivate));
 }
 
 static void
+on_language_activated (GdmLanguageOptionWidget *widget,
+                       GdmGreeterPanel         *panel)
+{
+
+        char *language;
+
+        language = gdm_language_option_widget_get_current_language_name (GDM_LANGUAGE_OPTION_WIDGET (panel->priv->language_option_widget));
+
+        if (language == NULL) {
+                return;
+        }
+
+        g_signal_emit (panel, signals[LANGUAGE_SELECTED], 0, language);
+
+        g_free (language);
+}
+
+static void
 gdm_greeter_panel_init (GdmGreeterPanel *panel)
 {
-        GtkWidget *label;
         NaTray    *tray;
 
         panel->priv = GDM_GREETER_PANEL_GET_PRIVATE (panel);
@@ -394,13 +430,16 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
         gtk_window_set_opacity (GTK_WINDOW (panel), 0.75);
 
         panel->priv->hbox = gtk_hbox_new (FALSE, 12);
+        gtk_container_set_border_width (GTK_CONTAINER (panel->priv->hbox), 2);
         gtk_widget_show (panel->priv->hbox);
         gtk_container_add (GTK_CONTAINER (panel), panel->priv->hbox);
 
-        /* Add a label so that the panel gets sized correctly */
-        label = gtk_label_new ("");
-        gtk_box_pack_start (GTK_BOX (panel->priv->hbox), label, FALSE, FALSE, 6);
-        gtk_widget_show (label);
+        panel->priv->language_option_widget = gdm_language_option_widget_new ();
+        g_signal_connect (G_OBJECT (panel->priv->language_option_widget),
+                          "language-activated",
+                          G_CALLBACK (on_language_activated), panel);
+        gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->language_option_widget, FALSE, FALSE, 6);
+        gtk_widget_show (panel->priv->language_option_widget);
 
         /* FIXME: we should only show hostname on panel when connected
            to a remote host */
