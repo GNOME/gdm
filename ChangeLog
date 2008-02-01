@@ -1,5 +1,11 @@
 2008-02-01  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/Makefile.am: change
+	LIBLOCALEDIR to $(prefix)/lib/locale instead
+	of $(libdir)/locale to fix multilib
+
+2008-02-01  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-language-chooser-dialog.c
 	(gdm_language_chooser_dialog_size_request),
 	(gdm_language_chooser_dialog_class_init): size dialog better
