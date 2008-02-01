@@ -1,4 +1,4 @@
-# Swedish messages for gdm2.
+# Swedish messages for gdm.
 # Copyright (C) 1999-2008 Free Software Foundation, Inc.
 # Daniel Nylander <po@danielnylander.se>, 2006, 2007, 2008.
 # Anders Carlsson <anders.carlsson@tordata.se>, 1999.
@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-28 09:12+0100\n"
-"PO-Revision-Date: 2008-01-28 09:15+0100\n"
+"POT-Creation-Date: 2008-02-01 01:23+0100\n"
+"PO-Revision-Date: 2008-02-01 01:23+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -26,83 +26,92 @@ msgstr "/dev/urandom är inte en teckenenhet"
 #: ../daemon/factory-slave-main.c:156
 #: ../daemon/product-slave-main.c:156
 #: ../daemon/simple-slave-main.c:156
+#: ../daemon/xdmcp-chooser-slave-main.c:156
 msgid "Display ID"
 msgstr "Display-id"
 
 #: ../daemon/factory-slave-main.c:156
 #: ../daemon/product-slave-main.c:156
 #: ../daemon/simple-slave-main.c:156
+#: ../daemon/xdmcp-chooser-slave-main.c:156
 msgid "id"
 msgstr "id"
 
 #: ../daemon/factory-slave-main.c:168
 #: ../daemon/product-slave-main.c:168
 #: ../daemon/simple-slave-main.c:168
+#: ../daemon/xdmcp-chooser-slave-main.c:168
 msgid "GNOME Display Manager Slave"
 msgstr "Slav för GNOME:s displayhanterare"
+
+#: ../daemon/gdm-chooser-session.c:219
+#: ../daemon/gdm-greeter-session.c:350
+#, c-format
+msgid "User %s doesn't exist"
+msgstr "Användaren %s finns inte"
+
+#: ../daemon/gdm-chooser-session.c:226
+#: ../daemon/gdm-greeter-session.c:357
+#, c-format
+msgid "Group %s doesn't exist"
+msgstr "Gruppen %s finns inte"
+
+#: ../daemon/gdm-chooser-session.c:237
+#: ../daemon/gdm-greeter-session.c:368
+#: ../daemon/gdm-server.c:371
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "Kunde inte ställa in grupp-id till %d"
+
+#: ../daemon/gdm-chooser-session.c:243
+#: ../daemon/gdm-greeter-session.c:374
+#: ../daemon/gdm-server.c:377
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "initgroups () misslyckades för %s"
+
+#: ../daemon/gdm-chooser-session.c:249
+#: ../daemon/gdm-greeter-session.c:380
+#: ../daemon/gdm-server.c:383
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "Kunde inte ställa in användar-id till %d"
+
+#: ../daemon/gdm-chooser-session.c:257
+#: ../daemon/gdm-greeter-session.c:388
+#: ../daemon/gdm-server.c:391
+msgid "Couldn't set groupid to 0"
+msgstr "Kunde inte ställa in grupp-id till 0"
 
 #: ../daemon/gdm-display-access-file.c:246
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "kunde inte hitta användaren \"%s\" i systemet"
 
-#: ../daemon/gdm-factory-slave.c:186
-#: ../daemon/gdm-simple-slave.c:169
+#: ../daemon/gdm-factory-slave.c:184
+#: ../daemon/gdm-simple-slave.c:167
 msgid "Unable to initialize login system"
 msgstr "Kunde inte initiera inloggningssystemet"
 
-#: ../daemon/gdm-factory-slave.c:218
-#: ../daemon/gdm-simple-slave.c:201
+#: ../daemon/gdm-factory-slave.c:216
+#: ../daemon/gdm-simple-slave.c:199
 msgid "Unable to authenticate user"
 msgstr "Kunde inte autentisera användaren"
 
-#: ../daemon/gdm-factory-slave.c:240
-#: ../daemon/gdm-simple-slave.c:223
+#: ../daemon/gdm-factory-slave.c:238
+#: ../daemon/gdm-simple-slave.c:220
 msgid "Unable to authorize user"
 msgstr "Kunde inte auktorisera användare"
 
-#: ../daemon/gdm-factory-slave.c:264
+#: ../daemon/gdm-factory-slave.c:262
 msgid "Unable to establish credentials"
 msgstr "Kan inte etablera behörighet"
 
-#: ../daemon/gdm-factory-slave.c:593
-#: ../daemon/gdm-product-slave.c:366
-#: ../daemon/gdm-simple-slave.c:708
+#: ../daemon/gdm-factory-slave.c:591
+#: ../daemon/gdm-product-slave.c:364
+#: ../daemon/gdm-simple-slave.c:763
 msgid "Could not start the X server (your graphical environment) due to some internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 msgstr "Kunde inte starta X-servern (din grafiska miljö) på grund av ett internt fel. Kontakta din systemadministratör eller kontrollera din systemlogg för att analysera felet. Under tiden kommer denna display att vara inaktiverad. Starta om GDM när problemet är åtgärdat."
-
-#: ../daemon/gdm-greeter-session.c:338
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "Användaren %s finns inte"
-
-#: ../daemon/gdm-greeter-session.c:345
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "Gruppen %s finns inte"
-
-#: ../daemon/gdm-greeter-session.c:356
-#: ../daemon/gdm-server.c:371
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "Kunde inte ställa in grupp-id till %d"
-
-#: ../daemon/gdm-greeter-session.c:362
-#: ../daemon/gdm-server.c:377
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "initgroups () misslyckades för %s"
-
-#: ../daemon/gdm-greeter-session.c:368
-#: ../daemon/gdm-server.c:383
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "Kunde inte ställa in användar-id till %d"
-
-#: ../daemon/gdm-greeter-session.c:376
-#: ../daemon/gdm-server.c:391
-msgid "Couldn't set groupid to 0"
-msgstr "Kunde inte ställa in grupp-id till 0"
 
 #: ../daemon/gdm-server.c:242
 #, c-format
@@ -160,7 +169,7 @@ msgid "application programmer error"
 msgstr "programmeringsfel i programmet"
 
 #: ../daemon/gdm-session-worker.c:845
-msgid "unscoped error"
+msgid "unknown error"
 msgstr "okänt fel"
 
 #: ../daemon/gdm-session-worker.c:852
@@ -192,152 +201,143 @@ msgstr "inget användarkonto tillgängligt"
 msgid "user account not available on system"
 msgstr "användarkonto inte tillgängligt på systemet"
 
-#: ../daemon/gdm-session-worker.c:1294
-#, c-format
-msgid "session log '%s' is not a normal file, logging session to '%s' instead.\n"
-msgstr "sessionsloggen \"%s\" är inte en vanlig fil, loggar sessionen till \"%s\" istället.\n"
-
-#: ../daemon/gdm-session-worker.c:1318
-msgid "unable to log session"
-msgstr "kunde inte logga session"
-
-#: ../daemon/gdm-simple-slave.c:256
+#: ../daemon/gdm-simple-slave.c:310
 msgid "Unable establish credentials"
 msgstr "Kan inte etablera behörighet"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:582
+#: ../daemon/gdm-xdmcp-display-factory.c:591
 msgid "Could not create socket!"
 msgstr "Kunde inte skapa uttag!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:848
+#: ../daemon/gdm-xdmcp-display-factory.c:857
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Nekade XDMCP-förfrågan från värden %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1011
-#: ../daemon/gdm-xdmcp-display-factory.c:1076
+#: ../daemon/gdm-xdmcp-display-factory.c:1014
+#: ../daemon/gdm-xdmcp-display-factory.c:1238
 msgid "Could not extract authlist from packet"
 msgstr "Kunde inte extrahera autentiseringslista från paket"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1024
-#: ../daemon/gdm-xdmcp-display-factory.c:1091
+#: ../daemon/gdm-xdmcp-display-factory.c:1027
+#: ../daemon/gdm-xdmcp-display-factory.c:1253
 msgid "Error in checksum"
 msgstr "Fel i kontrollsumman"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1343
+#: ../daemon/gdm-xdmcp-display-factory.c:1504
 msgid "Bad address"
 msgstr "Felaktig adress"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1424
+#: ../daemon/gdm-xdmcp-display-factory.c:1585
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: Kunde inte läsa displayadress"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1432
+#: ../daemon/gdm-xdmcp-display-factory.c:1593
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s: Kunde inte läsa displayportnummer"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1441
+#: ../daemon/gdm-xdmcp-display-factory.c:1602
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s: Kunde inte läsa autentiseringslista från paket"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1461
+#: ../daemon/gdm-xdmcp-display-factory.c:1622
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: Fel i kontrollsumman"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1897
+#: ../daemon/gdm-xdmcp-display-factory.c:2130
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Fick REQUEST från utestängda värden %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1907
-#: ../daemon/gdm-xdmcp-display-factory.c:2262
-#: ../daemon/gdm-xdmcp-display-factory.c:2519
+#: ../daemon/gdm-xdmcp-display-factory.c:2140
+#: ../daemon/gdm-xdmcp-display-factory.c:2495
+#: ../daemon/gdm-xdmcp-display-factory.c:2747
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Kunde inte läsa displaynumret"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1914
+#: ../daemon/gdm-xdmcp-display-factory.c:2147
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Kunde inte läsa anslutningstypen"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1921
+#: ../daemon/gdm-xdmcp-display-factory.c:2154
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Kunde inte läsa klientadress"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1929
+#: ../daemon/gdm-xdmcp-display-factory.c:2162
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Kunde inte läsa autentiseringsnamn"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1938
+#: ../daemon/gdm-xdmcp-display-factory.c:2171
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Kunde inte läsa autentiseringsdata"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1948
+#: ../daemon/gdm-xdmcp-display-factory.c:2181
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Kunde inte läsa autentiseringslista"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1967
+#: ../daemon/gdm-xdmcp-display-factory.c:2200
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Kunde inte läsa tillverkar-ID"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1994
+#: ../daemon/gdm-xdmcp-display-factory.c:2227
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Ogiltig kontrollsumma från %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2246
+#: ../daemon/gdm-xdmcp-display-factory.c:2479
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Fick Manage från utestängda värden %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2255
-#: ../daemon/gdm-xdmcp-display-factory.c:2526
+#: ../daemon/gdm-xdmcp-display-factory.c:2488
+#: ../daemon/gdm-xdmcp-display-factory.c:2754
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Kunde inte läsa sessions-ID"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2269
+#: ../daemon/gdm-xdmcp-display-factory.c:2502
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Kunde inte läsa displayklass"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2375
-#: ../daemon/gdm-xdmcp-display-factory.c:2429
-#: ../daemon/gdm-xdmcp-display-factory.c:2435
+#: ../daemon/gdm-xdmcp-display-factory.c:2607
+#: ../daemon/gdm-xdmcp-display-factory.c:2657
+#: ../daemon/gdm-xdmcp-display-factory.c:2663
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Kunde inte läsa adress"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2509
+#: ../daemon/gdm-xdmcp-display-factory.c:2737
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Fick KEEPALIVE från utestängda värden %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2598
+#: ../daemon/gdm-xdmcp-display-factory.c:2826
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory: Kunde inte läsa XDMCP-huvud!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2604
+#: ../daemon/gdm-xdmcp-display-factory.c:2832
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:240
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XDMCP: Felaktig XDMCP-version!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2610
+#: ../daemon/gdm-xdmcp-display-factory.c:2838
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:246
 msgid "XMDCP: Unable to parse address"
 msgstr "XMDCP: Kunde inte tolka adress"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3008
+#: ../daemon/gdm-xdmcp-display-factory.c:3236
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Kunde inte hitta serverns värdnamn: %s!"
@@ -460,11 +460,11 @@ msgstr "Aktiv text"
 msgid "The text to use in the label if the user has picked an item"
 msgstr "Texten att använda i etiketten om användaren har valt ett objekt"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:978
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1019
 msgid "%l:%M:%S %p"
 msgstr "%H.%M.%S"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:978
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1019
 msgid "%l:%M %p"
 msgstr "%H.%M"
 
@@ -473,7 +473,7 @@ msgstr "%H.%M"
 #. *              should begin with a 0 in your locale (e.g. "May
 #. *              01" instead of "May  1").
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:984
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1025
 msgid "%a %b %e"
 msgstr "%a %d %b"
 
@@ -481,7 +481,7 @@ msgstr "%a %d %b"
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:989
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1030
 #, c-format
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
@@ -519,10 +519,6 @@ msgid "Suspend"
 msgstr "Viloläge"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:9
-msgid "Tue Oct 23 21:16:50 EDT 2007"
-msgstr "Tis okt 23 21:16:50 CET 2007"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:10
 msgid "Version"
 msgstr "Version"
 
@@ -540,27 +536,27 @@ msgstr "Fjärrinloggning (Ansluten till %s)"
 msgid "Remote Login"
 msgstr "Fjärrinloggning"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:380
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:362
 msgid "Default"
 msgstr "Standard"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:381
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:363
 msgid "Login with the same session as last time."
 msgstr "Inloggning med samma session som förra gången."
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:386
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:368
 msgid "Legacy"
 msgstr "Standard"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:387
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:369
 msgid "Login based on preset legacy configuration"
 msgstr "Inloggning baserat på förvald standardkonfiguration"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:430
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:412
 msgid "_Sessions:"
 msgstr "_Sessioner:"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:431
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:413
 msgid "_Session:"
 msgstr "_Session:"
 
@@ -657,6 +653,15 @@ msgstr "Huvudalternativ"
 msgid "Unable to start new display"
 msgstr "Kunde inte starta ny display"
 
+#~ msgid ""
+#~ "session log '%s' is not a normal file, logging session to '%s' instead.\n"
+#~ msgstr ""
+#~ "sessionsloggen \"%s\" är inte en vanlig fil, loggar sessionen till \"%s\" "
+#~ "istället.\n"
+#~ msgid "unable to log session"
+#~ msgstr "kunde inte logga session"
+#~ msgid "Tue Oct 23 21:16:50 EDT 2007"
+#~ msgstr "Tis okt 23 21:16:50 CET 2007"
 #~ msgid "IP Address"
 #~ msgstr "IP-adress"
 #~ msgid "Network status"
