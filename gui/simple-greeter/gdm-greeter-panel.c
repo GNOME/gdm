@@ -293,13 +293,11 @@ update_geometry (GdmGreeterPanel *panel,
                  GtkRequisition  *requisition)
 {
         GdkRectangle geometry;
-        int          height;
 
         get_monitor_geometry (panel, &geometry);
 
-        height = requisition->height;
         panel->priv->geometry.width = geometry.width;
-        panel->priv->geometry.height = height * 2;
+        panel->priv->geometry.height = requisition->height + 2 * GTK_CONTAINER (panel)->border_width;
 
         panel->priv->geometry.x = geometry.x;
         panel->priv->geometry.y = geometry.y + geometry.height - panel->priv->geometry.height;
