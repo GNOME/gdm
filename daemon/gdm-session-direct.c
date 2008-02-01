@@ -82,6 +82,7 @@ struct _GdmSessionDirectPrivate
         char                *display_name;
         char                *display_hostname;
         char                *display_device;
+        char                *display_x11_authority_file;
         gboolean             display_is_local;
 
         DBusServer          *server;
@@ -95,6 +96,7 @@ enum {
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
         PROP_DISPLAY_DEVICE,
+        PROP_DISPLAY_X11_AUTHORITY_FILE,
         PROP_USER_X11_AUTHORITY_FILE,
 };
 
@@ -909,12 +911,14 @@ do_introspect (DBusConnection *connection,
                                "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
                                "      <arg name=\"display_device\" type=\"s\"/>\n"
                                "      <arg name=\"hostname\" type=\"s\"/>\n"
+                               "      <arg name=\"x11_authority_file\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"SetupForUser\">\n"
                                "      <arg name=\"service_name\" type=\"s\"/>\n"
                                "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
                                "      <arg name=\"display_device\" type=\"s\"/>\n"
                                "      <arg name=\"hostname\" type=\"s\"/>\n"
+                               "      <arg name=\"x11_authority_file\" type=\"s\"/>\n"
                                "      <arg name=\"username\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"Authenticate\">\n"
@@ -1292,6 +1296,7 @@ send_setup (GdmSessionDirect *session)
         const char     *display_name;
         const char     *display_device;
         const char     *display_hostname;
+        const char     *display_x11_authority_file;
 
         if (session->priv->display_name != NULL) {
                 display_name = session->priv->display_name;
@@ -1308,6 +1313,11 @@ send_setup (GdmSessionDirect *session)
         } else {
                 display_device = "";
         }
+        if (session->priv->display_x11_authority_file != NULL) {
+                display_x11_authority_file = session->priv->display_x11_authority_file;
+        } else {
+                display_x11_authority_file = "";
+        }
 
         g_debug ("GdmSessionDirect: Beginning setup");
 
@@ -1320,6 +1330,7 @@ send_setup (GdmSessionDirect *session)
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_name);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_device);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_hostname);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_x11_authority_file);
 
         if (! send_dbus_message (session->priv->worker_connection, message)) {
                 g_debug ("GdmSessionDirect: Could not send %s signal", "Setup");
@@ -1336,6 +1347,7 @@ send_setup_for_user (GdmSessionDirect *session)
         const char     *display_name;
         const char     *display_device;
         const char     *display_hostname;
+        const char     *display_x11_authority_file;
         const char     *selected_user;
 
         if (session->priv->display_name != NULL) {
@@ -1352,6 +1364,11 @@ send_setup_for_user (GdmSessionDirect *session)
                 display_device = session->priv->display_device;
         } else {
                 display_device = "";
+        }
+        if (session->priv->display_x11_authority_file != NULL) {
+                display_x11_authority_file = session->priv->display_x11_authority_file;
+        } else {
+                display_x11_authority_file = "";
         }
         if (session->priv->selected_user != NULL) {
                 selected_user = session->priv->selected_user;
@@ -1370,6 +1387,7 @@ send_setup_for_user (GdmSessionDirect *session)
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_name);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_device);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_hostname);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_x11_authority_file);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &selected_user);
 
         if (! send_dbus_message (session->priv->worker_connection, message)) {
@@ -1885,6 +1903,14 @@ _gdm_session_direct_set_user_x11_authority_file (GdmSessionDirect *session,
 }
 
 static void
+_gdm_session_direct_set_display_x11_authority_file (GdmSessionDirect *session,
+                                                    const char       *name)
+{
+        g_free (session->priv->display_x11_authority_file);
+        session->priv->display_x11_authority_file = g_strdup (name);
+}
+
+static void
 _gdm_session_direct_set_display_is_local (GdmSessionDirect *session,
                                           gboolean          is)
 {
@@ -1913,6 +1939,9 @@ gdm_session_direct_set_property (GObject      *object,
                 break;
         case PROP_USER_X11_AUTHORITY_FILE:
                 _gdm_session_direct_set_user_x11_authority_file (self, g_value_get_string (value));
+                break;
+        case PROP_DISPLAY_X11_AUTHORITY_FILE:
+                _gdm_session_direct_set_display_x11_authority_file (self, g_value_get_string (value));
                 break;
         case PROP_DISPLAY_IS_LOCAL:
                 _gdm_session_direct_set_display_is_local (self, g_value_get_boolean (value));
@@ -1946,6 +1975,9 @@ gdm_session_direct_get_property (GObject    *object,
         case PROP_USER_X11_AUTHORITY_FILE:
                 g_value_set_string (value, self->priv->user_x11_authority_file);
                 break;
+        case PROP_DISPLAY_X11_AUTHORITY_FILE:
+                g_value_set_string (value, self->priv->display_x11_authority_file);
+                break;
         case PROP_DISPLAY_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->display_is_local);
                 break;
@@ -1977,6 +2009,9 @@ gdm_session_direct_dispose (GObject *object)
 
         g_free (session->priv->display_device);
         session->priv->display_device = NULL;
+
+        g_free (session->priv->display_x11_authority_file);
+        session->priv->display_x11_authority_file = NULL;
 
         g_free (session->priv->server_address);
         session->priv->server_address = NULL;
@@ -2065,6 +2100,13 @@ gdm_session_direct_class_init (GdmSessionDirectClass *session_class)
                                                                "display is local",
                                                                TRUE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_X11_AUTHORITY_FILE,
+                                         g_param_spec_string ("display-x11-authority-file",
+                                                              "display x11 authority file",
+                                                              "display x11 authority file",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         /* not construct only */
         g_object_class_install_property (object_class,
                                          PROP_USER_X11_AUTHORITY_FILE,
@@ -2088,6 +2130,7 @@ GdmSessionDirect *
 gdm_session_direct_new (const char *display_name,
                         const char *display_hostname,
                         const char *display_device,
+                        const char *display_x11_authority_file,
                         gboolean    display_is_local)
 {
         GdmSessionDirect *session;
@@ -2096,6 +2139,7 @@ gdm_session_direct_new (const char *display_name,
                                 "display-name", display_name,
                                 "display-hostname", display_hostname,
                                 "display-device", display_device,
+                                "display-x11-authority-file", display_x11_authority_file,
                                 "display-is-local", display_is_local,
                                 NULL);
 

@@ -1,5 +1,26 @@
 2008-02-01  Ray Strode  <rstrode@redhat.com>
 
+	Patch from Eamon Walsh <ewalsh@tycho.nsa.gov> to
+	pass path of authority file to pam code so that it
+	can be given to PAM at a later time.
+
+	* daemon/test-session.c (main):
+	* daemon/gdm-product-slave.c (create_new_session):
+	* daemon/gdm-simple-slave.c (create_new_session):
+	grab authority file and pass to session direct
+	object
+	* daemon/gdm-session-worker.c (do_setup),
+	(on_setup_for_user):,
+	stash away location for authority file
+	* daemon/gdm-session-direct.c (do_introspect),
+	(send_setup), (send_setup_for_user):
+	add authority file to dbus interface
+	(_gdm_session_direct_set_display_x11_authority_file):
+	(gdm_session_direct_new):
+	stash away location for authority file
+
+2008-02-01  Ray Strode  <rstrode@redhat.com>
+
 	* configure.ac: add patch from Cosimo Cecchi to
 	fix build
 

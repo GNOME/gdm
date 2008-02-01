@@ -248,6 +248,7 @@ main (int   argc,
                 session = gdm_session_direct_new (":0",
                                                   g_get_host_name (),
                                                   ttyname (STDIN_FILENO),
+                                                  getenv("XAUTHORITY"),
                                                   TRUE);
                 g_debug ("GdmSessionDirect object created successfully");
 

@@ -94,6 +94,7 @@ struct GdmSessionWorkerPrivate
         /* from Setup */
         char             *service;
         char             *x11_display_name;
+        char             *x11_authority_file;
         char             *display_device;
         char             *hostname;
         char             *username;
@@ -811,6 +812,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                                    const char       *username,
                                    const char       *hostname,
                                    const char       *x11_display_name,
+                                   const char       *x11_authority_file,
                                    const char       *display_device,
                                    GError          **error)
 {
@@ -1530,6 +1532,7 @@ do_setup (GdmSessionWorker *worker)
                                                  worker->priv->username,
                                                  worker->priv->hostname,
                                                  worker->priv->x11_display_name,
+                                                 worker->priv->x11_authority_file,
                                                  worker->priv->display_device,
                                                  &error);
         if (! res) {
@@ -1787,6 +1790,7 @@ on_setup (GdmSessionWorker *worker,
         DBusError   error;
         const char *service;
         const char *x11_display_name;
+        const char *x11_authority_file;
         const char *console;
         const char *hostname;
         dbus_bool_t res;
@@ -1800,10 +1804,12 @@ on_setup (GdmSessionWorker *worker,
                                      DBUS_TYPE_STRING, &x11_display_name,
                                      DBUS_TYPE_STRING, &console,
                                      DBUS_TYPE_STRING, &hostname,
+                                     DBUS_TYPE_STRING, &x11_authority_file,
                                      DBUS_TYPE_INVALID);
         if (res) {
                 worker->priv->service = g_strdup (service);
                 worker->priv->x11_display_name = g_strdup (x11_display_name);
+                worker->priv->x11_authority_file = g_strdup (x11_authority_file);
                 worker->priv->display_device = g_strdup (console);
                 worker->priv->hostname = g_strdup (hostname);
                 worker->priv->username = NULL;
@@ -1823,6 +1829,7 @@ on_setup_for_user (GdmSessionWorker *worker,
         DBusError   error;
         const char *service;
         const char *x11_display_name;
+        const char *x11_authority_file;
         const char *console;
         const char *hostname;
         const char *username;
@@ -1837,11 +1844,13 @@ on_setup_for_user (GdmSessionWorker *worker,
                                      DBUS_TYPE_STRING, &x11_display_name,
                                      DBUS_TYPE_STRING, &console,
                                      DBUS_TYPE_STRING, &hostname,
+                                     DBUS_TYPE_STRING, &x11_authority_file,
                                      DBUS_TYPE_STRING, &username,
                                      DBUS_TYPE_INVALID);
         if (res) {
                 worker->priv->service = g_strdup (service);
                 worker->priv->x11_display_name = g_strdup (x11_display_name);
+                worker->priv->x11_authority_file = g_strdup (x11_authority_file);
                 worker->priv->display_device = g_strdup (console);
                 worker->priv->hostname = g_strdup (hostname);
                 worker->priv->username = g_strdup (username);
