@@ -96,6 +96,7 @@ struct GdmUserManagerPrivate
         GHashTable            *exclusions;
         GnomeVFSMonitorHandle *passwd_monitor;
         GnomeVFSMonitorHandle *shells_monitor;
+        DBusGConnection       *connection;
         DBusGProxy            *seat_proxy;
         char                  *seat_id;
 
@@ -241,11 +242,55 @@ get_x11_display_for_session (DBusGConnection *connection,
         return x11_display;
 }
 
+static gboolean
+maybe_add_session_for_user (GdmUserManager *manager,
+                            GdmUser        *user,
+                            const char     *ssid)
+{
+        char    *sid;
+        char    *x11_display;
+        gboolean ret;
+
+        ret = FALSE;
+        sid = NULL;
+        x11_display = NULL;
+
+        /* skip if on another seat */
+        sid = get_seat_id_for_session (manager->priv->connection, ssid);
+        if (sid == NULL
+            || manager->priv->seat_id == NULL
+            || strcmp (sid, manager->priv->seat_id) != 0) {
+                g_debug ("GdmUserManager: not adding session on other seat: %s", ssid);
+                goto out;
+        }
+
+        /* skip if doesn't have an x11 display */
+        x11_display = get_x11_display_for_session (manager->priv->connection, ssid);
+        if (x11_display == NULL || x11_display[0] == '\0') {
+                g_debug ("GdmUserManager: not adding session without a x11 display: %s", ssid);
+                goto out;
+        }
+
+        g_hash_table_insert (manager->priv->sessions,
+                             g_strdup (ssid),
+                             g_strdup (gdm_user_get_user_name (user)));
+
+        _gdm_user_add_session (user, ssid);
+        g_debug ("GdmUserManager: added session for user: %s", gdm_user_get_user_name (user));
+
+        ret = TRUE;
+
+ out:
+        g_free (sid);
+        g_free (x11_display);
+
+        return ret;
+}
+
 static void
 add_sessions_for_user (GdmUserManager *manager,
                        GdmUser        *user)
 {
-        DBusGConnection *connection;
         DBusGProxy      *proxy;
         GError          *error;
         gboolean         res;
@@ -253,17 +298,7 @@ add_sessions_for_user (GdmUserManager *manager,
         GPtrArray       *sessions;
         int              i;
 
-        proxy = NULL;
-
-        error = NULL;
-        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-        if (connection == NULL) {
-                g_warning ("Failed to connect to the D-Bus daemon: %s", error->message);
-                g_error_free (error);
-                goto out;
-        }
-
-        proxy = dbus_g_proxy_new_for_name (connection,
+        proxy = dbus_g_proxy_new_for_name (manager->priv->connection,
                                            CK_NAME,
                                            CK_MANAGER_PATH,
                                            CK_MANAGER_INTERFACE);
@@ -295,34 +330,9 @@ add_sessions_for_user (GdmUserManager *manager,
 
         for (i = 0; i < sessions->len; i++) {
                 char *ssid;
-                char *sid;
-                char *x11_display;
 
                 ssid = g_ptr_array_index (sessions, i);
-
-                /* skip if on another seat */
-                sid = get_seat_id_for_session (connection, ssid);
-                if (sid == NULL
-                    || manager->priv->seat_id == NULL
-                    || strcmp (sid, manager->priv->seat_id) != 0) {
-                        goto next;
-                }
-
-                /* skip if doesn't have an x11 display */
-                x11_display = get_x11_display_for_session (connection, ssid);
-                if (x11_display == NULL || x11_display[0] == '\0') {
-                        goto next;
-                }
-                g_free (x11_display);
-
-                g_hash_table_insert (manager->priv->sessions,
-                                     g_strdup (ssid),
-                                     g_strdup (gdm_user_get_user_name (user)));
-
-                _gdm_user_add_session (user, ssid);
-        next:
-                g_free (sid);
-                g_free (ssid);
+                maybe_add_session_for_user (manager, user, ssid);
         }
 
         g_ptr_array_free (sessions, TRUE);
@@ -426,24 +436,16 @@ get_current_seat_id (DBusGConnection *connection)
 }
 
 static gboolean
-get_uid_from_session_id (const char *session_id,
-                         uid_t      *uidp)
+get_uid_from_session_id (GdmUserManager *manager,
+                         const char     *session_id,
+                         uid_t          *uidp)
 {
-        DBusGConnection *connection;
         DBusGProxy      *proxy;
         GError          *error;
         int              uid;
         gboolean         res;
 
-        error = NULL;
-        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-        if (connection == NULL) {
-                g_warning ("Failed to connect to the D-Bus daemon: %s", error->message);
-                g_error_free (error);
-                return FALSE;
-        }
-
-        proxy = dbus_g_proxy_new_for_name (connection,
+        proxy = dbus_g_proxy_new_for_name (manager->priv->connection,
                                            CK_NAME,
                                            session_id,
                                            CK_SESSION_INTERFACE);
@@ -486,7 +488,7 @@ seat_session_added (DBusGProxy     *seat_proxy,
 
         g_debug ("Session added: %s", session_id);
 
-        res = get_uid_from_session_id (session_id, &uid);
+        res = get_uid_from_session_id (manager, session_id, &uid);
         if (! res) {
                 g_warning ("Unable to lookup user for session");
                 return;
@@ -505,11 +507,7 @@ seat_session_added (DBusGProxy     *seat_proxy,
                 user = add_new_user_for_pwent (manager, pwent);
         }
 
-        g_debug ("GdmUserManager: Session added for %d", (int)uid);
-        g_hash_table_insert (manager->priv->sessions,
-                             g_strdup (session_id),
-                             g_strdup (gdm_user_get_user_name (user)));
-        _gdm_user_add_session (user, session_id);
+        maybe_add_session_for_user (manager, user, session_id);
 }
 
 static void
@@ -552,21 +550,20 @@ on_proxy_destroy (DBusGProxy     *proxy,
 static void
 get_seat_proxy (GdmUserManager *manager)
 {
-        DBusGConnection *connection;
         DBusGProxy      *proxy;
         GError          *error;
 
         g_assert (manager->priv->seat_proxy == NULL);
 
         error = NULL;
-        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-        if (connection == NULL) {
+        manager->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (manager->priv->connection == NULL) {
                 g_warning ("Failed to connect to the D-Bus daemon: %s", error->message);
                 g_error_free (error);
                 return;
         }
 
-        manager->priv->seat_id = get_current_seat_id (connection);
+        manager->priv->seat_id = get_current_seat_id (manager->priv->connection);
         if (manager->priv->seat_id == NULL) {
                 return;
         }
@@ -574,7 +571,7 @@ get_seat_proxy (GdmUserManager *manager)
         g_debug ("GdmUserManager: Found current seat: %s", manager->priv->seat_id);
 
         error = NULL;
-        proxy = dbus_g_proxy_new_for_name_owner (connection,
+        proxy = dbus_g_proxy_new_for_name_owner (manager->priv->connection,
                                                  CK_NAME,
                                                  manager->priv->seat_id,
                                                  CK_SEAT_INTERFACE,
