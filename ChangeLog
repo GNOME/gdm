@@ -1,5 +1,14 @@
 2008-02-01  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-language-chooser-dialog.c
+	(gdm_language_chooser_dialog_size_request),
+	(gdm_language_chooser_dialog_class_init): size dialog better
+	(gdm_language_chooser_dialog_init): set initial language to
+	the highest priority language returned from g_get_language_names ()
+	(gdm_language_chooser_dialog_new): set a title and add some padding
+
+2008-02-01  Ray Strode  <rstrode@redhat.com>
+
 	Put language selector in panel
 
 	* configure.ac: put gconf libs in $GCONF_LIBS

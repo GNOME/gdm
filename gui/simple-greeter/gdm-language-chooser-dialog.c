@@ -40,9 +40,6 @@ struct GdmLanguageChooserDialogPrivate
         GtkWidget *chooser_widget;
 };
 
-enum {
-        PROP_0,
-};
 
 static void     gdm_language_chooser_dialog_class_init  (GdmLanguageChooserDialogClass *klass);
 static void     gdm_language_chooser_dialog_init        (GdmLanguageChooserDialog      *language_chooser_dialog);
@@ -63,88 +60,40 @@ gdm_language_chooser_dialog_get_current_language_name (GdmLanguageChooserDialog 
 }
 
 static void
-gdm_language_chooser_dialog_set_property (GObject        *object,
-                                      guint           prop_id,
-                                      const GValue   *value,
-                                      GParamSpec     *pspec)
+gdm_language_chooser_dialog_size_request (GtkWidget      *widget,
+                                       GtkRequisition *requisition)
 {
-        GdmLanguageChooserDialog *self;
+        int            screen_w;
+        int            screen_h;
+        GtkRequisition child_requisition;
 
-        self = GDM_LANGUAGE_CHOOSER_DIALOG (object);
-
-        switch (prop_id) {
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
+        if (GTK_WIDGET_CLASS (gdm_language_chooser_dialog_parent_class)->size_request) {
+                GTK_WIDGET_CLASS (gdm_language_chooser_dialog_parent_class)->size_request (widget, requisition);
         }
-}
 
-static void
-gdm_language_chooser_dialog_get_property (GObject        *object,
-                                      guint           prop_id,
-                                      GValue         *value,
-                                      GParamSpec     *pspec)
-{
-        GdmLanguageChooserDialog *self;
+        screen_w = gdk_screen_get_width (gtk_widget_get_screen (widget));
+        screen_h = gdk_screen_get_height (gtk_widget_get_screen (widget));
 
-        self = GDM_LANGUAGE_CHOOSER_DIALOG (object);
+        gtk_widget_size_request (GTK_BIN (widget)->child, &child_requisition);
+        *requisition = child_requisition;
 
-        switch (prop_id) {
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
-        }
-}
+        requisition->width += 2 * GTK_CONTAINER (widget)->border_width;
+        requisition->height += 2 * GTK_CONTAINER (widget)->border_width;
 
-static GObject *
-gdm_language_chooser_dialog_constructor (GType                  type,
-                                     guint                  n_construct_properties,
-                                     GObjectConstructParam *construct_properties)
-{
-        GdmLanguageChooserDialog      *language_chooser_dialog;
-        GdmLanguageChooserDialogClass *klass;
-
-        klass = GDM_LANGUAGE_CHOOSER_DIALOG_CLASS (g_type_class_peek (GDM_TYPE_LANGUAGE_CHOOSER_DIALOG));
-
-        language_chooser_dialog = GDM_LANGUAGE_CHOOSER_DIALOG (G_OBJECT_CLASS (gdm_language_chooser_dialog_parent_class)->constructor (type,
-                                                                                                                           n_construct_properties,
-                                                                                                                           construct_properties));
-
-        return G_OBJECT (language_chooser_dialog);
-}
-
-static void
-gdm_language_chooser_dialog_dispose (GObject *object)
-{
-        GdmLanguageChooserDialog *language_chooser_dialog;
-
-        language_chooser_dialog = GDM_LANGUAGE_CHOOSER_DIALOG (object);
-
-        G_OBJECT_CLASS (gdm_language_chooser_dialog_parent_class)->dispose (object);
+        requisition->width = MIN (requisition->width, .50 * screen_w);
+        requisition->height = MIN (requisition->height, .80 * screen_h);
 }
 
 static void
 gdm_language_chooser_dialog_class_init (GdmLanguageChooserDialogClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+        GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-        object_class->get_property = gdm_language_chooser_dialog_get_property;
-        object_class->set_property = gdm_language_chooser_dialog_set_property;
-        object_class->constructor = gdm_language_chooser_dialog_constructor;
-        object_class->dispose = gdm_language_chooser_dialog_dispose;
         object_class->finalize = gdm_language_chooser_dialog_finalize;
+        widget_class->size_request = gdm_language_chooser_dialog_size_request;
 
         g_type_class_add_private (klass, sizeof (GdmLanguageChooserDialogPrivate));
-}
-
-static void
-on_response (GdmLanguageChooserDialog *dialog,
-             gint                      response_id)
-{
-        switch (response_id) {
-        default:
-                break;
-        }
 }
 
 static void
@@ -154,7 +103,9 @@ gdm_language_chooser_dialog_init (GdmLanguageChooserDialog *dialog)
         dialog->priv = GDM_LANGUAGE_CHOOSER_DIALOG_GET_PRIVATE (dialog);
 
         dialog->priv->chooser_widget = gdm_language_chooser_widget_new ();
-        gdm_language_chooser_widget_set_current_language_name (GDM_LANGUAGE_CHOOSER_WIDGET (dialog->priv->chooser_widget), g_getenv ("LANG"));
+        gtk_widget_show (dialog->priv->chooser_widget);
+        gdm_language_chooser_widget_set_current_language_name (GDM_LANGUAGE_CHOOSER_WIDGET (dialog->priv->chooser_widget),
+                                                               g_get_language_names ()[0]);
 
         gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), dialog->priv->chooser_widget);
 
@@ -162,12 +113,6 @@ gdm_language_chooser_dialog_init (GdmLanguageChooserDialog *dialog)
                                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                 GTK_STOCK_OK, GTK_RESPONSE_OK,
                                 NULL);
-        g_signal_connect (dialog,
-                          "response",
-                          G_CALLBACK (on_response),
-                          dialog);
-
-        gtk_widget_show_all (GTK_WIDGET (dialog));
 }
 
 static void
@@ -191,6 +136,8 @@ gdm_language_chooser_dialog_new (void)
         GObject *object;
 
         object = g_object_new (GDM_TYPE_LANGUAGE_CHOOSER_DIALOG,
+                               "title", _("Languages"),
+                               "border-width", 8,
                                NULL);
 
         return GTK_WIDGET (object);
