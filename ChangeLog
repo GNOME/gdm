@@ -1,5 +1,12 @@
 2008-02-01  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-language-chooser-widget.c
+	(gdm_language_chooser_widget_get_current_language_name):
+	if the language list couldn't be loaded (for whatever reason),
+	return current locale instead of null
+
+2008-02-01  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/Makefile.am: change
 	LIBLOCALEDIR to $(prefix)/lib/locale instead
 	of $(libdir)/locale to fix multilib

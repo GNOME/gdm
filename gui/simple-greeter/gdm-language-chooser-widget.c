@@ -65,6 +65,10 @@ gdm_language_chooser_widget_get_current_language_name (GdmLanguageChooserWidget 
         g_return_val_if_fail (GDM_IS_LANGUAGE_CHOOSER_WIDGET (widget), NULL);
 
         language_name = gdm_chooser_widget_get_active_item (GDM_CHOOSER_WIDGET (widget));
+
+        if (language_name == NULL) {
+                language_name = g_strdup (g_get_language_names ()[0]);
+        }
         return language_name;
 }
 
