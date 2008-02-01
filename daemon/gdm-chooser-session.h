@@ -24,6 +24,8 @@
 
 #include <glib-object.h>
 
+#include "gdm-welcome-session.h"
+
 G_BEGIN_DECLS
 
 #define GDM_TYPE_CHOOSER_SESSION         (gdm_chooser_session_get_type ())
@@ -37,30 +39,19 @@ typedef struct GdmChooserSessionPrivate GdmChooserSessionPrivate;
 
 typedef struct
 {
-        GObject                   parent;
+        GdmWelcomeSession         parent;
         GdmChooserSessionPrivate *priv;
 } GdmChooserSession;
 
 typedef struct
 {
-        GObjectClass   parent_class;
-
-        void (* started)           (GdmChooserSession  *chooser_session);
-        void (* stopped)           (GdmChooserSession  *chooser_session);
-        void (* exited)            (GdmChooserSession  *chooser_session,
-                                    int                 exit_code);
-        void (* died)              (GdmChooserSession  *chooser_session,
-                                    int                 signal_number);
+        GdmWelcomeSessionClass    parent_class;
 } GdmChooserSessionClass;
 
 GType                 gdm_chooser_session_get_type           (void);
 GdmChooserSession *   gdm_chooser_session_new                (const char        *display_name,
                                                               const char        *display_device,
                                                               const char        *display_hostname);
-void                  gdm_chooser_session_set_server_address (GdmChooserSession *chooser_session,
-                                                              const char        *server_address);
-gboolean              gdm_chooser_session_start              (GdmChooserSession *chooser_session);
-gboolean              gdm_chooser_session_stop               (GdmChooserSession *chooser_session);
 
 G_END_DECLS
 

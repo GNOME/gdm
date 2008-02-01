@@ -24,6 +24,8 @@
 
 #include <glib-object.h>
 
+#include "gdm-welcome-session.h"
+
 G_BEGIN_DECLS
 
 #define GDM_TYPE_GREETER_SESSION         (gdm_greeter_session_get_type ())
@@ -37,16 +39,13 @@ typedef struct GdmGreeterSessionPrivate GdmGreeterSessionPrivate;
 
 typedef struct
 {
-        GObject                   parent;
+        GdmWelcomeSession         parent;
         GdmGreeterSessionPrivate *priv;
 } GdmGreeterSession;
 
 typedef struct
 {
-        GObjectClass   parent_class;
-
-        void (* started)           (GdmGreeterSession  *greeter_session);
-        void (* stopped)           (GdmGreeterSession  *greeter_session);
+        GdmWelcomeSessionClass    parent_class;
 } GdmGreeterSessionClass;
 
 GType                 gdm_greeter_session_get_type           (void);
@@ -54,10 +53,6 @@ GdmGreeterSession *   gdm_greeter_session_new                (const char        
                                                               const char        *display_device,
                                                               const char        *display_hostname,
                                                               gboolean           display_is_local);
-void                  gdm_greeter_session_set_server_address (GdmGreeterSession *greeter_session,
-                                                              const char        *server_address);
-gboolean              gdm_greeter_session_start              (GdmGreeterSession *greeter_session);
-gboolean              gdm_greeter_session_stop               (GdmGreeterSession *greeter_session);
 
 G_END_DECLS
 

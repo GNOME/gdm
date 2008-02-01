@@ -120,6 +120,8 @@ gdm_simple_slave_SOURCES = 		\
 	simple-slave-main.c 		\
 	gdm-greeter-server.c		\
 	gdm-greeter-server.h		\
+	gdm-welcome-session.c		\
+	gdm-welcome-session.h		\
 	gdm-greeter-session.c		\
 	gdm-greeter-session.h		\
 	ck-connector.h			\
@@ -156,6 +158,8 @@ gdm_factory_slave_SOURCES = 		\
 	factory-slave-main.c 		\
 	gdm-greeter-server.c		\
 	gdm-greeter-server.h		\
+	gdm-welcome-session.c		\
+	gdm-welcome-session.h		\
 	gdm-greeter-session.c		\
 	gdm-greeter-session.h		\
 	ck-connector.h			\
@@ -217,8 +221,12 @@ gdm_product_slave_LDADD = 			\
 
 gdm_xdmcp_chooser_slave_SOURCES = 		\
 	xdmcp-chooser-slave-main.c 		\
+	ck-connector.h				\
+	ck-connector.c				\
 	gdm-chooser-server.c			\
 	gdm-chooser-server.h			\
+	gdm-welcome-session.c			\
+	gdm-welcome-session.h			\
 	gdm-chooser-session.c			\
 	gdm-chooser-session.h			\
 	gdm-slave.c				\

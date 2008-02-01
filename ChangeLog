@@ -1,5 +1,54 @@
 2008-02-01  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/Makefile.am:
+	* daemon/gdm-chooser-session.c: (gdm_chooser_session_set_property),
+	(gdm_chooser_session_get_property),
+	(gdm_chooser_session_class_init), (gdm_chooser_session_init),
+	(gdm_chooser_session_finalize), (gdm_chooser_session_new):
+	* daemon/gdm-chooser-session.h:
+	* daemon/gdm-factory-slave.c: (run_greeter),
+	(gdm_factory_slave_stop):
+	* daemon/gdm-greeter-session.c: (gdm_greeter_session_set_property),
+	(gdm_greeter_session_get_property),
+	(gdm_greeter_session_class_init), (gdm_greeter_session_init),
+	(gdm_greeter_session_finalize), (gdm_greeter_session_new):
+	* daemon/gdm-greeter-session.h:
+	* daemon/gdm-simple-slave.c: (start_session_timeout),
+	(run_greeter), (gdm_simple_slave_stop):
+	* daemon/gdm-welcome-session.c: (listify_hash),
+	(open_welcome_session), (close_welcome_session),
+	(get_welcome_environment), (welcome_session_child_watch),
+	(spawn_child_setup), (spawn_command_line_sync_as_user),
+	(spawn_command_line_async_as_user), (parse_value_as_integer),
+	(parse_dbus_launch_output), (start_dbus_daemon),
+	(stop_dbus_daemon), (gdm_welcome_session_spawn),
+	(gdm_welcome_session_start), (wait_on_child),
+	(welcome_session_died), (gdm_welcome_session_stop),
+	(gdm_welcome_session_set_server_address),
+	(_gdm_welcome_session_set_x11_display_name),
+	(_gdm_welcome_session_set_x11_display_hostname),
+	(_gdm_welcome_session_set_x11_display_device),
+	(_gdm_welcome_session_set_x11_display_is_local),
+	(_gdm_welcome_session_set_x11_authority_file),
+	(_gdm_welcome_session_set_user_name),
+	(_gdm_welcome_session_set_group_name),
+	(_gdm_welcome_session_set_server_dbus_path),
+	(_gdm_welcome_session_set_server_dbus_interface),
+	(_gdm_welcome_session_set_command),
+	(_gdm_welcome_session_set_server_env_var_name),
+	(_gdm_welcome_session_set_register_ck_session),
+	(gdm_welcome_session_set_property),
+	(gdm_welcome_session_get_property),
+	(gdm_welcome_session_constructor),
+	(gdm_welcome_session_class_init), (gdm_welcome_session_init),
+	(gdm_welcome_session_finalize):
+	* daemon/gdm-welcome-session.h:
+	* daemon/gdm-xdmcp-chooser-slave.c: (run_chooser),
+	(gdm_xdmcp_chooser_slave_stop):
+	Add a base class to share code between chooser and greeter sessions.
+
+2008-02-01  William Jon McCann  <mccann@jhu.edu>
+
 	* gui/simple-greeter/gdm-user-manager.c:
 	(maybe_add_session_for_user), (add_sessions_for_user),
 	(get_uid_from_session_id), (seat_session_added), (get_seat_proxy):

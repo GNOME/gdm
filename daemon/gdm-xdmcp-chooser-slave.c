@@ -232,8 +232,8 @@ run_chooser (GdmXdmcpChooserSlave *slave)
         g_object_set (slave->priv->chooser,
                       "x11-authority-file", auth_file,
                       NULL);
-        gdm_chooser_session_set_server_address (slave->priv->chooser, address);
-        gdm_chooser_session_start (slave->priv->chooser);
+        gdm_welcome_session_set_server_address (GDM_WELCOME_SESSION (slave->priv->chooser), address);
+        gdm_welcome_session_start (GDM_WELCOME_SESSION (slave->priv->chooser));
 
         g_free (display_id);
         g_free (display_name);
@@ -306,7 +306,7 @@ gdm_xdmcp_chooser_slave_stop (GdmSlave *slave)
         res = GDM_SLAVE_CLASS (gdm_xdmcp_chooser_slave_parent_class)->stop (slave);
 
         if (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser != NULL) {
-                gdm_chooser_session_stop (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser);
+                gdm_welcome_session_stop (GDM_WELCOME_SESSION (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser));
                 g_object_unref (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser);
                 GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser = NULL;
         }

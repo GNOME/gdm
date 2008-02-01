@@ -515,8 +515,8 @@ run_greeter (GdmFactorySlave *slave)
         g_object_set (slave->priv->greeter,
                       "x11-authority-file", auth_file,
                       NULL);
-        gdm_greeter_session_set_server_address (slave->priv->greeter, address);
-        gdm_greeter_session_start (slave->priv->greeter);
+        gdm_welcome_session_set_server_address (GDM_WELCOME_SESSION (slave->priv->greeter), address);
+        gdm_welcome_session_start (GDM_WELCOME_SESSION (slave->priv->greeter));
 
         g_free (address);
 
@@ -728,7 +728,7 @@ gdm_factory_slave_stop (GdmSlave *slave)
         }
 
         if (GDM_FACTORY_SLAVE (slave)->priv->greeter != NULL) {
-                gdm_greeter_session_stop (GDM_FACTORY_SLAVE (slave)->priv->greeter);
+                gdm_welcome_session_stop (GDM_WELCOME_SESSION (GDM_FACTORY_SLAVE (slave)->priv->greeter));
                 g_object_unref (GDM_FACTORY_SLAVE (slave)->priv->greeter);
                 GDM_FACTORY_SLAVE (slave)->priv->greeter = NULL;
         }
