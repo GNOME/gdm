@@ -491,17 +491,36 @@ create_new_session (GdmSimpleSlave *slave)
 }
 
 static void
-on_greeter_start (GdmGreeterSession *greeter,
-                  GdmSimpleSlave    *slave)
+on_greeter_session_start (GdmGreeterSession *greeter,
+                          GdmSimpleSlave    *slave)
 {
         g_debug ("GdmSimpleSlave: Greeter started");
 }
 
 static void
-on_greeter_stop (GdmGreeterSession *greeter,
-                 GdmSimpleSlave    *slave)
+on_greeter_session_stop (GdmGreeterSession *greeter,
+                         GdmSimpleSlave    *slave)
 {
         g_debug ("GdmSimpleSlave: Greeter stopped");
+        gdm_slave_stopped (GDM_SLAVE (slave));
+}
+
+static void
+on_greeter_session_exited (GdmGreeterSession    *greeter,
+                           int                   code,
+                           GdmSimpleSlave       *slave)
+{
+        g_debug ("GdmSimpleSlave: Greeter exited: %d", code);
+        gdm_slave_stopped (GDM_SLAVE (slave));
+}
+
+static void
+on_greeter_session_died (GdmGreeterSession    *greeter,
+                         int                   signal,
+                         GdmSimpleSlave       *slave)
+{
+        g_debug ("GdmSimpleSlave: Greeter died: %d", signal);
+        gdm_slave_stopped (GDM_SLAVE (slave));
 }
 
 static void
@@ -687,11 +706,19 @@ run_greeter (GdmSimpleSlave *slave)
                                                         display_is_local);
         g_signal_connect (slave->priv->greeter,
                           "started",
-                          G_CALLBACK (on_greeter_start),
+                          G_CALLBACK (on_greeter_session_start),
                           slave);
         g_signal_connect (slave->priv->greeter,
                           "stopped",
-                          G_CALLBACK (on_greeter_stop),
+                          G_CALLBACK (on_greeter_session_stop),
+                          slave);
+        g_signal_connect (slave->priv->greeter,
+                          "exited",
+                          G_CALLBACK (on_greeter_session_exited),
+                          slave);
+        g_signal_connect (slave->priv->greeter,
+                          "died",
+                          G_CALLBACK (on_greeter_session_died),
                           slave);
         g_object_set (slave->priv->greeter,
                       "x11-authority-file", auth_file,

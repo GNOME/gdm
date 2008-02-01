@@ -1,5 +1,17 @@
 2008-02-01  William Jon McCann  <mccann@jhu.edu>
 
+	* daemon/gdm-factory-slave.c: (on_greeter_session_start),
+	(on_greeter_session_stop), (on_greeter_session_exited),
+	(on_greeter_session_died), (run_greeter):
+	* daemon/gdm-simple-slave.c: (on_greeter_session_start),
+	(on_greeter_session_stop), (on_greeter_session_exited),
+	(on_greeter_session_died), (run_greeter):
+	* daemon/gdm-welcome-session.c: (stop_dbus_daemon),
+	(welcome_session_child_watch), (start_dbus_daemon):
+	Make sure slaves respond to exit of welcome session.
+
+2008-02-01  William Jon McCann  <mccann@jhu.edu>
+
 	* daemon/Makefile.am:
 	* daemon/gdm-chooser-session.c: (gdm_chooser_session_set_property),
 	(gdm_chooser_session_get_property),

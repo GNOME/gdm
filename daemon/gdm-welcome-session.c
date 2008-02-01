@@ -325,6 +325,18 @@ get_welcome_environment (GdmWelcomeSession *welcome_session)
         return env;
 }
 
+
+static gboolean
+stop_dbus_daemon (GdmWelcomeSession *welcome_session)
+{
+        if (welcome_session->priv->dbus_pid > 0) {
+                g_debug ("GdmWelcomeSession: Stopping D-Bus daemon");
+                gdm_signal_pid (-1 * welcome_session->priv->dbus_pid, SIGTERM);
+                welcome_session->priv->dbus_pid = 0;
+        }
+        return TRUE;
+}
+
 static void
 welcome_session_child_watch (GPid               pid,
                              int                status,
@@ -353,6 +365,7 @@ welcome_session_child_watch (GPid               pid,
         if (session->priv->ckc != NULL) {
                 close_welcome_session (session);
         }
+        stop_dbus_daemon (session);
 }
 
 typedef struct {
@@ -615,8 +628,6 @@ start_dbus_daemon (GdmWelcomeSession *welcome_session)
         GError    *error;
         GPtrArray *env;
 
-
-        sleep(10);
         g_debug ("GdmWelcomeSession: Starting D-Bus daemon");
 
         env = get_welcome_environment (welcome_session);
@@ -650,17 +661,6 @@ start_dbus_daemon (GdmWelcomeSession *welcome_session)
         }
  out:
         return res;
-}
-
-static gboolean
-stop_dbus_daemon (GdmWelcomeSession *welcome_session)
-{
-        if (welcome_session->priv->dbus_pid > 0) {
-                g_debug ("GdmWelcomeSession: Stopping D-Bus daemon");
-                gdm_signal_pid (-1 * welcome_session->priv->dbus_pid, SIGTERM);
-                welcome_session->priv->dbus_pid = 0;
-        }
-        return TRUE;
 }
 
 static gboolean
