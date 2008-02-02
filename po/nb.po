@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.21.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-27 14:54+0100\n"
-"PO-Revision-Date: 2008-01-27 14:57+0100\n"
+"POT-Creation-Date: 2008-02-02 21:22+0100\n"
+"PO-Revision-Date: 2008-02-02 21:23+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -23,17 +23,17 @@ msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom er ikke en tegnenhet"
 
 #: ../daemon/factory-slave-main.c:156 ../daemon/product-slave-main.c:156
-#: ../daemon/simple-slave-main.c:156
+#: ../daemon/simple-slave-main.c:156 ../daemon/xdmcp-chooser-slave-main.c:156
 msgid "Display ID"
 msgstr "Skjerm-ID"
 
 #: ../daemon/factory-slave-main.c:156 ../daemon/product-slave-main.c:156
-#: ../daemon/simple-slave-main.c:156
+#: ../daemon/simple-slave-main.c:156 ../daemon/xdmcp-chooser-slave-main.c:156
 msgid "id"
 msgstr "id"
 
 #: ../daemon/factory-slave-main.c:168 ../daemon/product-slave-main.c:168
-#: ../daemon/simple-slave-main.c:168
+#: ../daemon/simple-slave-main.c:168 ../daemon/xdmcp-chooser-slave-main.c:168
 msgid "GNOME Display Manager Slave"
 msgstr "Slave for GNOME skjermhåndterer"
 
@@ -42,24 +42,24 @@ msgstr "Slave for GNOME skjermhåndterer"
 msgid "could not find user \"%s\" on system"
 msgstr "kunne ikke finne bruker «%s» på systemet"
 
-#: ../daemon/gdm-factory-slave.c:186 ../daemon/gdm-simple-slave.c:169
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:167
 msgid "Unable to initialize login system"
 msgstr "Kan ikke initiere påloggingssystemet"
 
-#: ../daemon/gdm-factory-slave.c:218 ../daemon/gdm-simple-slave.c:201
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:199
 msgid "Unable to authenticate user"
 msgstr "Kan ikke autentisere bruker"
 
-#: ../daemon/gdm-factory-slave.c:240 ../daemon/gdm-simple-slave.c:223
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:220
 msgid "Unable to authorize user"
 msgstr "Kan ikke autorisere bruker"
 
-#: ../daemon/gdm-factory-slave.c:264
+#: ../daemon/gdm-factory-slave.c:281
 msgid "Unable to establish credentials"
 msgstr "Kan ikke bruke autentiseringsinformasjonen"
 
-#: ../daemon/gdm-factory-slave.c:593 ../daemon/gdm-product-slave.c:366
-#: ../daemon/gdm-simple-slave.c:708
+#: ../daemon/gdm-factory-slave.c:618 ../daemon/gdm-product-slave.c:364
+#: ../daemon/gdm-simple-slave.c:793
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -71,35 +71,6 @@ msgstr ""
 "å finne ut hva som er feil. I mellomtiden vil denne skjermen deaktiveres. "
 "Vennligst start GDM på nytt når problemet er rettet."
 
-#: ../daemon/gdm-greeter-session.c:338
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "Bruker %s eksisterer ikke"
-
-#: ../daemon/gdm-greeter-session.c:345
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "Gruppe %s eksisterer ikke"
-
-#: ../daemon/gdm-greeter-session.c:356 ../daemon/gdm-server.c:371
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "Kunne ikke sette gruppe-ID til %d"
-
-#: ../daemon/gdm-greeter-session.c:362 ../daemon/gdm-server.c:377
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "initgroups () feilet for %s"
-
-#: ../daemon/gdm-greeter-session.c:368 ../daemon/gdm-server.c:383
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "Kunne ikke sette bruker-id til %d"
-
-#: ../daemon/gdm-greeter-session.c:376 ../daemon/gdm-server.c:391
-msgid "Couldn't set groupid to 0"
-msgstr "Kunne ikke sette gruppe-id til 0"
-
 #: ../daemon/gdm-server.c:242
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
@@ -110,6 +81,25 @@ msgstr "%s: kunne ikke koble til opphavsskjerm «%s»"
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Tjeneren skulle startes av bruker %s, men denne brukeren eksisterer ikke"
+
+#: ../daemon/gdm-server.c:371 ../daemon/gdm-welcome-session.c:406
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "Kunne ikke sette gruppe-ID til %d"
+
+#: ../daemon/gdm-server.c:377 ../daemon/gdm-welcome-session.c:412
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "initgroups () feilet for %s"
+
+#: ../daemon/gdm-server.c:383 ../daemon/gdm-welcome-session.c:418
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "Kunne ikke sette bruker-id til %d"
+
+#: ../daemon/gdm-server.c:391 ../daemon/gdm-welcome-session.c:426
+msgid "Couldn't set groupid to 0"
+msgstr "Kunne ikke sette gruppe-id til 0"
 
 #: ../daemon/gdm-server.c:426
 #, c-format
@@ -132,213 +122,212 @@ msgstr "%s: Prioritet for tjener kunne ikke settes til %d: %s"
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tjenerkommandoen for skjerm %s er tom"
 
-#: ../daemon/gdm-session-direct.c:1205 ../daemon/gdm-session-direct.c:1223
+#: ../daemon/gdm-session-direct.c:1209 ../daemon/gdm-session-direct.c:1227
 #, c-format
 msgid "worker exited with status %d"
 msgstr "arbeider avsluttet med status %d"
 
-#: ../daemon/gdm-session-worker.c:841
+#: ../daemon/gdm-session-worker.c:843
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "feil i initiering av kommunikasjon med autentiseringssystemet - %s"
 
-#: ../daemon/gdm-session-worker.c:842
+#: ../daemon/gdm-session-worker.c:844
 msgid "general failure"
 msgstr "generell feil"
 
-#: ../daemon/gdm-session-worker.c:843
+#: ../daemon/gdm-session-worker.c:845
 msgid "out of memory"
 msgstr "ikke mer minne"
 
-#: ../daemon/gdm-session-worker.c:844
+#: ../daemon/gdm-session-worker.c:846
 msgid "application programmer error"
 msgstr "feil i programkoden"
 
-#: ../daemon/gdm-session-worker.c:845
-msgid "unscoped error"
-msgstr "feilen som ikke kan plasseres"
+#: ../daemon/gdm-session-worker.c:847
+msgid "unknown error"
+msgstr "ukjent feil"
 
-#: ../daemon/gdm-session-worker.c:852
+#: ../daemon/gdm-session-worker.c:854
 msgid "Username:"
 msgstr "Brukernavn:"
 
-#: ../daemon/gdm-session-worker.c:858
+#: ../daemon/gdm-session-worker.c:860
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om foretrukket spørring "
 "etter brukernavn - %s"
 
-#: ../daemon/gdm-session-worker.c:872
+#: ../daemon/gdm-session-worker.c:874
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om brukers vertsnavn - %s"
 
-#: ../daemon/gdm-session-worker.c:887
+#: ../daemon/gdm-session-worker.c:889
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om brukers konsoll - %s"
 
-#: ../daemon/gdm-session-worker.c:1043
+#: ../daemon/gdm-session-worker.c:1045
 #, c-format
 msgid "no user account available"
 msgstr "ingen brukerkonto tilgjengelig"
 
-#: ../daemon/gdm-session-worker.c:1092
+#: ../daemon/gdm-session-worker.c:1094
 #, c-format
 msgid "user account not available on system"
 msgstr "brukerkonto ikke tilgjengelig på systemet"
 
-#: ../daemon/gdm-session-worker.c:1294
-#, c-format
-msgid ""
-"session log '%s' is not a normal file, logging session to '%s' instead.\n"
-msgstr ""
-"Sesjonsloggen «%s» er ikke en normal fil. Logger sesjonen til «%s» i stedet.\n"
-
-#: ../daemon/gdm-session-worker.c:1318
-msgid "unable to log session"
-msgstr "kan ikke logge sesjonen"
-
-#: ../daemon/gdm-simple-slave.c:256
+#: ../daemon/gdm-simple-slave.c:310
 msgid "Unable establish credentials"
 msgstr "Kan ikke bruke autentiseringsinformasjonen"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:582
+#: ../daemon/gdm-welcome-session.c:388
+#, c-format
+msgid "User %s doesn't exist"
+msgstr "Bruker %s eksisterer ikke"
+
+#: ../daemon/gdm-welcome-session.c:395
+#, c-format
+msgid "Group %s doesn't exist"
+msgstr "Gruppe %s eksisterer ikke"
+
+#: ../daemon/gdm-xdmcp-display-factory.c:591
 msgid "Could not create socket!"
 msgstr "Kunne ikke lage socket!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:848
+#: ../daemon/gdm-xdmcp-display-factory.c:857
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Nektet XDMCP spørring fra vert %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1011
-#: ../daemon/gdm-xdmcp-display-factory.c:1076
+#: ../daemon/gdm-xdmcp-display-factory.c:1014
+#: ../daemon/gdm-xdmcp-display-factory.c:1238
 msgid "Could not extract authlist from packet"
 msgstr "Kunne ikke hente ut autentiseringsliste fra pakke"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1024
-#: ../daemon/gdm-xdmcp-display-factory.c:1091
+#: ../daemon/gdm-xdmcp-display-factory.c:1027
+#: ../daemon/gdm-xdmcp-display-factory.c:1253
 msgid "Error in checksum"
 msgstr "Feil i sjekksum"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1343
+#: ../daemon/gdm-xdmcp-display-factory.c:1504
 msgid "Bad address"
 msgstr "Ugyldig adresse"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1424
+#: ../daemon/gdm-xdmcp-display-factory.c:1585
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: Kunne ikke lese adresse for skjerm"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1432
+#: ../daemon/gdm-xdmcp-display-factory.c:1593
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s: Kunne ikke lese portnummer for skjerm"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1441
+#: ../daemon/gdm-xdmcp-display-factory.c:1602
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s: Kunne ikke hente ut autentiseringsliste fra pakke"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1461
+#: ../daemon/gdm-xdmcp-display-factory.c:1622
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: Feil i sjekksum"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1897
+#: ../daemon/gdm-xdmcp-display-factory.c:2130
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Mottok REQUEST fra bannlyst vert %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1907
-#: ../daemon/gdm-xdmcp-display-factory.c:2262
-#: ../daemon/gdm-xdmcp-display-factory.c:2519
+#: ../daemon/gdm-xdmcp-display-factory.c:2140
+#: ../daemon/gdm-xdmcp-display-factory.c:2495
+#: ../daemon/gdm-xdmcp-display-factory.c:2747
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Kunne ikke lese skjermnummer"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1914
+#: ../daemon/gdm-xdmcp-display-factory.c:2147
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Kunne ikke lese forbindelsestype"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1921
+#: ../daemon/gdm-xdmcp-display-factory.c:2154
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Kunne ikke lese klientens adresse"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1929
+#: ../daemon/gdm-xdmcp-display-factory.c:2162
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Kunne ikke lese autentiseringsnavn"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1938
+#: ../daemon/gdm-xdmcp-display-factory.c:2171
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Kunne ikke lese autentiseringsdata"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1948
+#: ../daemon/gdm-xdmcp-display-factory.c:2181
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Kunne ikke lese autorisasjonslisten"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1967
+#: ../daemon/gdm-xdmcp-display-factory.c:2200
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Kunne ikke lese produsent-ID"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1994
+#: ../daemon/gdm-xdmcp-display-factory.c:2227
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Feilet sjekksum fra %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2246
+#: ../daemon/gdm-xdmcp-display-factory.c:2479
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Mottok Manage fra bannlyst vert %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2255
-#: ../daemon/gdm-xdmcp-display-factory.c:2526
+#: ../daemon/gdm-xdmcp-display-factory.c:2488
+#: ../daemon/gdm-xdmcp-display-factory.c:2754
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Kunne ikke lese sesjons-ID"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2269
+#: ../daemon/gdm-xdmcp-display-factory.c:2502
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Kunne ikke lese skjermklasse"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2375
-#: ../daemon/gdm-xdmcp-display-factory.c:2429
-#: ../daemon/gdm-xdmcp-display-factory.c:2435
+#: ../daemon/gdm-xdmcp-display-factory.c:2607
+#: ../daemon/gdm-xdmcp-display-factory.c:2657
+#: ../daemon/gdm-xdmcp-display-factory.c:2663
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Kunne ikke lese adresse"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2509
+#: ../daemon/gdm-xdmcp-display-factory.c:2737
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Mottok KEEPALIVE fra bannlyst vert %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2598
+#: ../daemon/gdm-xdmcp-display-factory.c:2826
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory: Kunne ikke lese XDMCP header!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2604
+#: ../daemon/gdm-xdmcp-display-factory.c:2832
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:240
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XDMCP: Feil XDMCP versjon!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2610
+#: ../daemon/gdm-xdmcp-display-factory.c:2838
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:246
 msgid "XMDCP: Unable to parse address"
 msgstr "XDMCP: Kan ikke lese adressen"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3008
+#: ../daemon/gdm-xdmcp-display-factory.c:3236
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Fant ikke tjenerens vertsnavn: %s!"
@@ -464,11 +453,11 @@ msgstr "Aktiv tekst"
 msgid "The text to use in the label if the user has picked an item"
 msgstr "Tekst som skal brukes i etiketten hvis brukeren har valgt en oppføring"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:978
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1019
 msgid "%l:%M:%S %p"
 msgstr "%l:%M:%S"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:978
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1019
 msgid "%l:%M %p"
 msgstr "%l:%M"
 
@@ -477,7 +466,7 @@ msgstr "%l:%M"
 #. *              should begin with a 0 in your locale (e.g. "May
 #. *              01" instead of "May  1").
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:984
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1025
 msgid "%a %b %e"
 msgstr "%a %b %e"
 
@@ -485,7 +474,7 @@ msgstr "%a %b %e"
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:989
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1030
 #, c-format
 msgid "%1$s, %2$s"
 msgstr "%1$s: %2$s"
@@ -523,12 +512,46 @@ msgid "Suspend"
 msgstr "Hvilemodus"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:9
-msgid "Tue Oct 23 21:16:50 EDT 2007"
-msgstr "Tir. 23 okt 21.16.50 CET 2007"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:10
 msgid "Version"
 msgstr "Versjon"
+
+#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:139
+msgid "Languages"
+msgstr "Språk"
+
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:186
+msgid "_Languages:"
+msgstr "_Språk:"
+
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:187
+#: ../gui/simple-greeter/gdm-language-option-widget.c:211
+msgid "_Language:"
+msgstr "_Språk:"
+
+#: ../gui/simple-greeter/gdm-language-option-widget.c:177
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:314
+msgid "Other..."
+msgstr "Annen..."
+
+#: ../gui/simple-greeter/gdm-language-option-widget.c:178
+msgid "Choose a language from the full list of available languages."
+msgstr "Velg et språk fra listen med tilgjengelige språk."
+
+#: ../gui/simple-greeter/gdm-option-widget.c:384
+msgid "Label Text"
+msgstr "Tekst for etikett"
+
+#: ../gui/simple-greeter/gdm-option-widget.c:385
+msgid "The text to use as a label"
+msgstr "Teksten som skal brukes som etikett"
+
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:301
+msgid "Max Item Count"
+msgstr "Maksimalt antall oppføringer"
+
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:302
+msgid "The maximum number of items to keep around in the list"
+msgstr "Maksimalt antall oppføringer som skal beholdes i listen"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:97
 #, c-format
@@ -544,27 +567,27 @@ msgstr "Ekstern pålogging (Koblet til %s)"
 msgid "Remote Login"
 msgstr "Ekstern pålogging"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:380
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:362
 msgid "Default"
 msgstr "Forvalg"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:381
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:363
 msgid "Login with the same session as last time."
 msgstr "Logg inn med samme sesjon som sist gang."
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:386
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:368
 msgid "Legacy"
 msgstr "Legacy"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:387
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:369
 msgid "Login based on preset legacy configuration"
 msgstr "Innlogging basert på forhåndssatt tidligere konfigurasjon"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:430
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:412
 msgid "_Sessions:"
 msgstr "_Sesjoner:"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:431
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:413
 msgid "_Session:"
 msgstr "_Sesjon:"
 
@@ -597,10 +620,6 @@ msgstr "Håndterer"
 #: ../gui/simple-greeter/gdm-user.c:219
 msgid "The user manager object this user is controlled by."
 msgstr "Brukerhåndteringsobjekt denne brukeren kontrolleres av."
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:314
-msgid "Other..."
-msgstr "Annen..."
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:315
 msgid "Choose a different account"
