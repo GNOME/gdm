@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-27 13:20+0100\n"
-"PO-Revision-Date: 2007-12-27 01:04+0100\n"
+"POT-Creation-Date: 2008-02-02 21:52+0100\n"
+"PO-Revision-Date: 2008-02-02 22:14+0100\n"
 "Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);"
 
 #: ../common/gdm-common.c:382
 #, c-format
@@ -24,17 +24,17 @@ msgid "/dev/urandom is not a character device"
 msgstr ""
 
 #: ../daemon/factory-slave-main.c:156 ../daemon/product-slave-main.c:156
-#: ../daemon/simple-slave-main.c:156
+#: ../daemon/simple-slave-main.c:156 ../daemon/xdmcp-chooser-slave-main.c:156
 msgid "Display ID"
 msgstr ""
 
 #: ../daemon/factory-slave-main.c:156 ../daemon/product-slave-main.c:156
-#: ../daemon/simple-slave-main.c:156
+#: ../daemon/simple-slave-main.c:156 ../daemon/xdmcp-chooser-slave-main.c:156
 msgid "id"
 msgstr ""
 
 #: ../daemon/factory-slave-main.c:168 ../daemon/product-slave-main.c:168
-#: ../daemon/simple-slave-main.c:168
+#: ../daemon/simple-slave-main.c:168 ../daemon/xdmcp-chooser-slave-main.c:168
 msgid "GNOME Display Manager Slave"
 msgstr ""
 
@@ -43,58 +43,29 @@ msgstr ""
 msgid "could not find user \"%s\" on system"
 msgstr ""
 
-#: ../daemon/gdm-factory-slave.c:185 ../daemon/gdm-simple-slave.c:169
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:167
 msgid "Unable to initialize login system"
 msgstr ""
 
-#: ../daemon/gdm-factory-slave.c:217 ../daemon/gdm-simple-slave.c:201
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:199
 msgid "Unable to authenticate user"
 msgstr ""
 
-#: ../daemon/gdm-factory-slave.c:239 ../daemon/gdm-simple-slave.c:223
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:220
 msgid "Unable to authorize user"
 msgstr ""
 
-#: ../daemon/gdm-factory-slave.c:263
+#: ../daemon/gdm-factory-slave.c:281
 msgid "Unable to establish credentials"
 msgstr ""
 
-#: ../daemon/gdm-factory-slave.c:591 ../daemon/gdm-product-slave.c:361
-#: ../daemon/gdm-simple-slave.c:706
+#: ../daemon/gdm-factory-slave.c:618 ../daemon/gdm-product-slave.c:364
+#: ../daemon/gdm-simple-slave.c:793
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
 "syslog to diagnose. In the meantime this display will be disabled.  Please "
 "restart GDM when the problem is corrected."
-msgstr ""
-
-#: ../daemon/gdm-greeter-session.c:334
-#, c-format
-msgid "User %s doesn't exist"
-msgstr ""
-
-#: ../daemon/gdm-greeter-session.c:341
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr ""
-
-#: ../daemon/gdm-greeter-session.c:352 ../daemon/gdm-server.c:371
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr ""
-
-#: ../daemon/gdm-greeter-session.c:358 ../daemon/gdm-server.c:377
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr ""
-
-#: ../daemon/gdm-greeter-session.c:364 ../daemon/gdm-server.c:383
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr ""
-
-#: ../daemon/gdm-greeter-session.c:372 ../daemon/gdm-server.c:391
-msgid "Couldn't set groupid to 0"
 msgstr ""
 
 #: ../daemon/gdm-server.c:242
@@ -105,6 +76,25 @@ msgstr ""
 #: ../daemon/gdm-server.c:360
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
+msgstr ""
+
+#: ../daemon/gdm-server.c:371 ../daemon/gdm-welcome-session.c:406
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr ""
+
+#: ../daemon/gdm-server.c:377 ../daemon/gdm-welcome-session.c:412
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr ""
+
+#: ../daemon/gdm-server.c:383 ../daemon/gdm-welcome-session.c:418
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr ""
+
+#: ../daemon/gdm-server.c:391 ../daemon/gdm-welcome-session.c:426
+msgid "Couldn't set groupid to 0"
 msgstr ""
 
 #: ../daemon/gdm-server.c:426
@@ -128,208 +118,208 @@ msgstr ""
 msgid "%s: Empty server command for display %s"
 msgstr ""
 
-#: ../daemon/gdm-session-direct.c:1194 ../daemon/gdm-session-direct.c:1212
+#: ../daemon/gdm-session-direct.c:1209 ../daemon/gdm-session-direct.c:1227
 #, c-format
 msgid "worker exited with status %d"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:837
+#: ../daemon/gdm-session-worker.c:843
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:838
+#: ../daemon/gdm-session-worker.c:844
 msgid "general failure"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:839
+#: ../daemon/gdm-session-worker.c:845
 msgid "out of memory"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:840
+#: ../daemon/gdm-session-worker.c:846
 msgid "application programmer error"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:841
-msgid "unscoped error"
+#: ../daemon/gdm-session-worker.c:847
+msgid "unknown error"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:848
+#: ../daemon/gdm-session-worker.c:854
 msgid "Username:"
 msgstr "Nom d'utilizaire :"
 
-#: ../daemon/gdm-session-worker.c:854
+#: ../daemon/gdm-session-worker.c:860
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:868
+#: ../daemon/gdm-session-worker.c:874
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:883
+#: ../daemon/gdm-session-worker.c:889
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:1039
+#: ../daemon/gdm-session-worker.c:1045
 #, c-format
 msgid "no user account available"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:1088
+#: ../daemon/gdm-session-worker.c:1094
 #, c-format
 msgid "user account not available on system"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:1290
-#, c-format
-msgid ""
-"session log '%s' is not a normal file, logging session to '%s' instead.\n"
-msgstr ""
-
-#: ../daemon/gdm-session-worker.c:1314
-msgid "unable to log session"
-msgstr ""
-
-#: ../daemon/gdm-simple-slave.c:254
+#: ../daemon/gdm-simple-slave.c:310
 msgid "Unable establish credentials"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:581
+#: ../daemon/gdm-welcome-session.c:388
+#, c-format
+msgid "User %s doesn't exist"
+msgstr ""
+
+#: ../daemon/gdm-welcome-session.c:395
+#, c-format
+msgid "Group %s doesn't exist"
+msgstr ""
+
+#: ../daemon/gdm-xdmcp-display-factory.c:591
 msgid "Could not create socket!"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:847
+#: ../daemon/gdm-xdmcp-display-factory.c:857
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1010
-#: ../daemon/gdm-xdmcp-display-factory.c:1075
+#: ../daemon/gdm-xdmcp-display-factory.c:1014
+#: ../daemon/gdm-xdmcp-display-factory.c:1238
 msgid "Could not extract authlist from packet"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1023
-#: ../daemon/gdm-xdmcp-display-factory.c:1090
+#: ../daemon/gdm-xdmcp-display-factory.c:1027
+#: ../daemon/gdm-xdmcp-display-factory.c:1253
 msgid "Error in checksum"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1342
+#: ../daemon/gdm-xdmcp-display-factory.c:1504
 msgid "Bad address"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1423
+#: ../daemon/gdm-xdmcp-display-factory.c:1585
 #, c-format
 msgid "%s: Could not read display address"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1431
+#: ../daemon/gdm-xdmcp-display-factory.c:1593
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1440
+#: ../daemon/gdm-xdmcp-display-factory.c:1602
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1460
+#: ../daemon/gdm-xdmcp-display-factory.c:1622
 #, c-format
 msgid "%s: Error in checksum"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1896
+#: ../daemon/gdm-xdmcp-display-factory.c:2130
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1906
-#: ../daemon/gdm-xdmcp-display-factory.c:2261
-#: ../daemon/gdm-xdmcp-display-factory.c:2518
+#: ../daemon/gdm-xdmcp-display-factory.c:2140
+#: ../daemon/gdm-xdmcp-display-factory.c:2495
+#: ../daemon/gdm-xdmcp-display-factory.c:2747
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1913
+#: ../daemon/gdm-xdmcp-display-factory.c:2147
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1920
+#: ../daemon/gdm-xdmcp-display-factory.c:2154
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s : impossible de legir l'adreça del client"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1928
+#: ../daemon/gdm-xdmcp-display-factory.c:2162
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1937
+#: ../daemon/gdm-xdmcp-display-factory.c:2171
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1947
+#: ../daemon/gdm-xdmcp-display-factory.c:2181
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1966
+#: ../daemon/gdm-xdmcp-display-factory.c:2200
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1993
+#: ../daemon/gdm-xdmcp-display-factory.c:2227
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2245
+#: ../daemon/gdm-xdmcp-display-factory.c:2479
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2254
-#: ../daemon/gdm-xdmcp-display-factory.c:2525
+#: ../daemon/gdm-xdmcp-display-factory.c:2488
+#: ../daemon/gdm-xdmcp-display-factory.c:2754
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2268
+#: ../daemon/gdm-xdmcp-display-factory.c:2502
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2374
-#: ../daemon/gdm-xdmcp-display-factory.c:2428
-#: ../daemon/gdm-xdmcp-display-factory.c:2434
+#: ../daemon/gdm-xdmcp-display-factory.c:2607
+#: ../daemon/gdm-xdmcp-display-factory.c:2657
+#: ../daemon/gdm-xdmcp-display-factory.c:2663
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s : impossible de legir l'adreça"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2508
+#: ../daemon/gdm-xdmcp-display-factory.c:2737
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2597
+#: ../daemon/gdm-xdmcp-display-factory.c:2826
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2603
+#: ../daemon/gdm-xdmcp-display-factory.c:2832
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:240
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2609
+#: ../daemon/gdm-xdmcp-display-factory.c:2838
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:246
 msgid "XMDCP: Unable to parse address"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3007
+#: ../daemon/gdm-xdmcp-display-factory.c:3236
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr ""
@@ -451,11 +441,11 @@ msgstr ""
 msgid "The text to use in the label if the user has picked an item"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:707
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1019
 msgid "%l:%M:%S %p"
 msgstr "%l:%M:%S %p"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:707
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1019
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
@@ -464,7 +454,7 @@ msgstr "%l:%M %p"
 #. *              should begin with a 0 in your locale (e.g. "May
 #. *              01" instead of "May  1").
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:713
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1025
 msgid "%a %b %e"
 msgstr "%a %e de %b"
 
@@ -472,7 +462,7 @@ msgstr "%a %e de %b"
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:718
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1030
 #, c-format
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
@@ -490,82 +480,102 @@ msgid "Disconnect"
 msgstr "Desconnectar"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:4
-msgid "IP Address"
-msgstr "Adreça IP"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
 msgid "Log In"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
-msgid "Network status"
-msgstr ""
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
 msgid "Prompt:"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
 msgid "Restart"
 msgstr "Tornar lançar"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:9
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
 msgid "Shut Down"
 msgstr "Atudar l'ordenador"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:10
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
 msgid "Suspend"
 msgstr "Suspendre"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:11
-msgid "Tue Oct 23 21:16:50 EDT 2007"
-msgstr ""
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:12
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:9
 msgid "Version"
 msgstr "Version"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:13
-msgid "page 1"
-msgstr "pagina 1"
+#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:139
+msgid "Languages"
+msgstr "Lengas"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:14
-msgid "page 2"
-msgstr "pagina 2"
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:186
+msgid "_Languages:"
+msgstr "_Lengas :"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:15
-msgid "page 3"
-msgstr "pagina 3"
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:187
+#: ../gui/simple-greeter/gdm-language-option-widget.c:211
+msgid "_Language:"
+msgstr "_Lenga :"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:16
-msgid "page 4"
-msgstr "pagina 4"
+#: ../gui/simple-greeter/gdm-language-option-widget.c:177
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:314
+msgid "Other..."
+msgstr "Autre..."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:17
-msgid "page 5"
-msgstr "pagina 5"
+#: ../gui/simple-greeter/gdm-language-option-widget.c:178
+msgid "Choose a language from the full list of available languages."
+msgstr ""
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:380
+#: ../gui/simple-greeter/gdm-option-widget.c:384
+msgid "Label Text"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-option-widget.c:385
+msgid "The text to use as a label"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:301
+msgid "Max Item Count"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:302
+msgid "The maximum number of items to keep around in the list"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-remote-login-window.c:97
+#, c-format
+msgid "Remote Login (Connecting to %s...)"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-remote-login-window.c:106
+#, c-format
+msgid "Remote Login (Connected to %s)"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-remote-login-window.c:196
+msgid "Remote Login"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:362
 msgid "Default"
 msgstr "Defaut"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:381
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:363
 msgid "Login with the same session as last time."
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:386
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:368
 msgid "Legacy"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:387
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:369
 msgid "Login based on preset legacy configuration"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:430
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:412
 msgid "_Sessions:"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:431
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:413
 msgid "_Session:"
 msgstr ""
 
@@ -592,10 +602,6 @@ msgstr ""
 #: ../gui/simple-greeter/gdm-user.c:219
 msgid "The user manager object this user is controlled by."
 msgstr ""
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:314
-msgid "Other..."
-msgstr "Autre..."
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:315
 msgid "Choose a different account"
@@ -626,635 +632,39 @@ msgstr "_Utilizaires :"
 msgid "_User:"
 msgstr "_Utilizaire :"
 
-#~ msgid "This session logs you into CDE"
-#~ msgstr "Aquesta session vos connectarà dins CDE"
+#: ../utils/gdmflexiserver.c:49
+msgid "Send the specified protocol command to GDM"
+msgstr ""
 
-#~ msgid "Please type in the root (privileged user) password."
-#~ msgstr "Picatz lo mot de pas del adminstrator (root)."
+#: ../utils/gdmflexiserver.c:49
+msgid "COMMAND"
+msgstr "COMANDA"
 
-#~ msgid "GNOME"
-#~ msgstr "GNOME"
+#: ../utils/gdmflexiserver.c:50
+msgid "Xnest mode"
+msgstr "Mòde Xnest"
 
-#~ msgid "This session logs you into GNOME"
-#~ msgstr "La session vos connectarà dins GNOME"
+#: ../utils/gdmflexiserver.c:51
+msgid "Do not lock current screen"
+msgstr "Varrolhar pas l'ecran actiu"
 
-#~ msgid "Secure Remote connection"
-#~ msgstr "Connexion distanta segura"
+#: ../utils/gdmflexiserver.c:52
+msgid "Debugging output"
+msgstr ""
 
-#~ msgid "This session logs you into a remote host using ssh"
-#~ msgstr "Aquesta session vos connectarà a un òste per ssh"
+#: ../utils/gdmflexiserver.c:53
+msgid "Authenticate before running --command"
+msgstr ""
 
-#~ msgid "Can't write to %s: %s"
-#~ msgstr "Impossible d'escriure dins %s : %s"
+#: ../utils/gdmflexiserver.c:54
+msgid "Start new flexible session; do not show popup"
+msgstr ""
 
-#~ msgid "%s not a regular file!\n"
-#~ msgstr "%s es pas un fichièr regulièr !\n"
+#: ../utils/gdmflexiserver.c:201
+msgid "Main Options"
+msgstr ""
 
-#~ msgid "%s could not be opened"
-#~ msgstr "Impossible de dobrir %s"
+#: ../utils/gdmflexiserver.c:244
+msgid "Unable to start new display"
+msgstr ""
 
-#~ msgid "%s: Directory %s does not exist."
-#~ msgstr "%s : lo repertòri %s existís pas."
-
-#~ msgid "%s: %s is not a regular file."
-#~ msgstr "%s : %s es pas un fichièr regulièr."
-
-#~ msgid "- The GNOME login manager"
-#~ msgstr "- Lo gestionari de connexions de GNOME"
-
-#~ msgid "main options"
-#~ msgstr "opcions principalas"
-
-#~ msgid "y = Yes or n = No? >"
-#~ msgstr "y = òc / n = non ?>"
-
-#~ msgid ""
-#~ "Last login:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Darrièra connexion :\n"
-#~ "%s"
-
-#~ msgid "Abort login"
-#~ msgstr "Anullar la connexion"
-
-#~ msgid "%s: Could not open ~/.xsession-errors"
-#~ msgstr "%s : impossible de dobrir ~/.xsession-errors"
-
-#~ msgid "System default"
-#~ msgstr "Valor per defaut del sistèma"
-
-#~ msgid "The system administrator has disabled your account."
-#~ msgstr "L'administrator sistèma a desactivat vòstre compte."
-
-#~ msgid "%s: Could not exec %s %s %s %s %s %s"
-#~ msgstr "%s : impossible d'executar %s %s %s %s %s %s"
-
-#~ msgid "%s: Could not exec %s %s %s"
-#~ msgstr "%s : impossible d'executar %s %s %s"
-
-#~ msgid "%s: Home directory for %s: '%s' does not exist!"
-#~ msgstr "%s: repertòri personal per %s: '%s' existís pas !"
-
-#~ msgid "View details (~/.xsession-errors file)"
-#~ msgstr "Mostrar los detalhs (fichièr ~/.xsession-errors)"
-
-#~ msgid "Please enter your username"
-#~ msgstr "Picatz vòstre nom d'utilizaire"
-
-#~ msgid "Password:"
-#~ msgstr "Mot de pas :"
-
-#~ msgid "Can not get username"
-#~ msgstr "Impossible d'obténer un nom d'utilizaire"
-
-#~ msgid "Xnest command line"
-#~ msgstr "Linha de comanda de Xnest"
-
-#~ msgid "Extra options for Xnest"
-#~ msgstr "Opcions suplementàrias per Xnest"
-
-#~ msgid "OPTIONS"
-#~ msgstr "OPCIONS"
-
-#~ msgid "XDMCP is not enabled"
-#~ msgstr "XDMCP es pas activat"
-
-#~ msgid "Cannot find host"
-#~ msgstr "Impossible de trobar l'òste"
-
-#~ msgid "ADDRESS"
-#~ msgstr "ADREÇA"
-
-#~ msgid "TYPE"
-#~ msgstr "TIPE"
-
-#~ msgid "A_dd host: "
-#~ msgstr "Apon_dre un òste : "
-
-#~ msgid "C_onnect"
-#~ msgstr "Se _connectar"
-
-#~ msgid "Exit the application"
-#~ msgstr "Sortir del programa"
-
-#~ msgid "Status"
-#~ msgstr "Estatut"
-
-#~ msgid "_Add"
-#~ msgstr "_Apondre"
-
-#~ msgid "Unknown error occurred."
-#~ msgstr "I a aguda una error desconeguda."
-
-#~ msgid "%d second"
-#~ msgid_plural "%d seconds"
-#~ msgstr[0] "%d segonda"
-#~ msgstr[1] "%d segondas"
-
-#~ msgid "\t-l [server_name]\n"
-#~ msgstr "\t-l [nom del servidor]\n"
-
-#~ msgid "COMMAND"
-#~ msgstr "COMANDA"
-
-#~ msgid "Xnest mode"
-#~ msgstr "Mòde Xnest"
-
-#~ msgid "Do not lock current screen"
-#~ msgstr "Varrolhar pas l'ecran actiu"
-
-#~ msgid "Nobody"
-#~ msgstr "Degun"
-
-#~ msgid "Username"
-#~ msgstr "Nom d'utilizaire"
-
-#~ msgid "Choose server"
-#~ msgstr "Causissètz un servidor"
-
-#~ msgid "New Login"
-#~ msgstr "Connexion novèla"
-
-#~ msgid "A-M|Albanian"
-#~ msgstr "A-M|Albanés"
-
-#~ msgid "A-M|Arabic (Egypt)"
-#~ msgstr "A-M|Arab (Egipte)"
-
-#~ msgid "A-M|Arabic (Lebanon)"
-#~ msgstr "A-M|Arab (Liban)"
-
-#~ msgid "A-M|Armenian"
-#~ msgstr "A-M|Armenian"
-
-#~ msgid "A-M|Basque"
-#~ msgstr "A-M|Basc"
-
-#~ msgid "A-M|Belarusian"
-#~ msgstr "A-M|Bielorus"
-
-#~ msgid "A-M|Bengali"
-#~ msgstr "A-M|Bengali"
-
-#~ msgid "A-M|Bengali (India)"
-#~ msgstr "A-M|Bengali (Índia)"
-
-#~ msgid "A-M|Bulgarian"
-#~ msgstr "A-M|Bulgar"
-
-#~ msgid "A-M|Bosnian"
-#~ msgstr "A-M|Bosniac"
-
-#~ msgid "A-M|Catalan"
-#~ msgstr "A-M|Catalan"
-
-#~ msgid "A-M|Croatian"
-#~ msgstr "A-M|Croat"
-
-#~ msgid "A-M|Czech"
-#~ msgstr "A-M|Chèc"
-
-#~ msgid "A-M|Danish"
-#~ msgstr "A-M|Danés"
-
-#~ msgid "A-M|Dutch"
-#~ msgstr "N-Z|Néerlandés"
-
-#~ msgid "A-M|English (USA)"
-#~ msgstr "A-M|Anglés (USA)"
-
-#~ msgid "A-M|English (Australia)"
-#~ msgstr "A-M|Anglais (Australia)"
-
-#~ msgid "A-M|English (UK)"
-#~ msgstr "A-M|Anglés (Reialme-Unit)"
-
-#~ msgid "A-M|English (Canada)"
-#~ msgstr "A-M|Anglés (Canadà)"
-
-#~ msgid "A-M|English (Ireland)"
-#~ msgstr "A-M|Anglés (Irlanda)"
-
-#~ msgid "A-M|English (Denmark)"
-#~ msgstr "A-M|Anglés (Danemarc)"
-
-#~ msgid "A-M|Estonian"
-#~ msgstr "A-M|Estonian"
-
-#~ msgid "A-M|Finnish"
-#~ msgstr "A-M|Finés"
-
-#~ msgid "A-M|French"
-#~ msgstr "A-M|Francés"
-
-#~ msgid "A-M|French (Belgium)"
-#~ msgstr "A-M|Francés (Belgica)"
-
-#~ msgid "A-M|French (Switzerland)"
-#~ msgstr "A-M|Francés (Soïssa)"
-
-#~ msgid "A-M|Galician"
-#~ msgstr "A-M|Galician"
-
-#~ msgid "A-M|German"
-#~ msgstr "A-M|Aleman"
-
-#~ msgid "A-M|German (Switzerland)"
-#~ msgstr "A-M|Aleman (Soïssa)"
-
-#~ msgid "A-M|Greek"
-#~ msgstr "A-M|Grèc"
-
-#~ msgid "A-M|Gujarati"
-#~ msgstr "A-M|Gujarati"
-
-#~ msgid "A-M|Hebrew"
-#~ msgstr "A-M|Ebrèu"
-
-#~ msgid "A-M|Hindi"
-#~ msgstr "A-M|Indi"
-
-#~ msgid "A-M|Hungarian"
-#~ msgstr "N-Z|Ongrés"
-
-#~ msgid "A-M|Icelandic"
-#~ msgstr "A-M|Islandés"
-
-#~ msgid "A-M|Indonesian"
-#~ msgstr "A-M|Indonesian"
-
-#~ msgid "A-M|Interlingua"
-#~ msgstr "A-M|Interlingüà"
-
-#~ msgid "A-M|Irish"
-#~ msgstr "A-M|Irlandés"
-
-#~ msgid "A-M|Italian"
-#~ msgstr "A-M|Italian"
-
-#~ msgid "A-M|Japanese"
-#~ msgstr "A-M|Japonés"
-
-#~ msgid "A-M|Korean"
-#~ msgstr "A-M|Corean"
-
-#~ msgid "A-M|Macedonian"
-#~ msgstr "A-M|Macedonian"
-
-#~ msgid "A-M|Malay"
-#~ msgstr "A-M|Malés"
-
-#~ msgid "A-M|Mongolian"
-#~ msgstr "A-M|Mongolian"
-
-#~ msgid "N-Z|Polish"
-#~ msgstr "N-Z|Polonés"
-
-#~ msgid "N-Z|Portuguese"
-#~ msgstr "N-Z|Portugués"
-
-#~ msgid "N-Z|Portuguese (Brazilian)"
-#~ msgstr "N-Z|Portugués (brasilian)"
-
-#~ msgid "N-Z|Russian"
-#~ msgstr "N-Z|Rus"
-
-#~ msgid "N-Z|Slovak"
-#~ msgstr "A-M|Eslovac"
-
-#~ msgid "N-Z|Slovenian"
-#~ msgstr "A-M|Eslovèn"
-
-#~ msgid "N-Z|Spanish"
-#~ msgstr "A-M|Espanhol"
-
-#~ msgid "N-Z|Tamil"
-#~ msgstr "N-Z|Tamil"
-
-#~ msgid "N-Z|Turkish"
-#~ msgstr "N-Z|Turc"
-
-#~ msgid "N-Z|Ukrainian"
-#~ msgstr "N-Z|Ucraïnian"
-
-#~ msgid "A-M"
-#~ msgstr "A-M"
-
-#~ msgid "N-Z"
-#~ msgstr "N-Z"
-
-#~ msgid "Just For _This Session"
-#~ msgstr "Sonque per _la session"
-
-#~ msgid "Select a Language"
-#~ msgstr "Seleccionatz una lenga"
-
-#~ msgid "Change _Language"
-#~ msgstr "Modificatz la _lenga"
-
-#~ msgid "_Select the language for your session to use:"
-#~ msgstr "_Seleccionatz una lenga per vòstra session :"
-
-#~ msgid "Cannot run command '%s': %s."
-#~ msgstr "Impossible d'aviar la comanda '%s': %s."
-
-#~ msgid "User %u will login in %t"
-#~ msgstr "L'utilizaire %u se connectarà dins %t"
-
-#~ msgid "Are you sure you want to restart the computer?"
-#~ msgstr "Sètz segur que volètz tornar aviar l'ordenador ?"
-
-#~ msgid "_Restart"
-#~ msgstr "To_rnar lançar"
-
-#~ msgid "_Username:"
-#~ msgstr "_Nom d'utilizaire :"
-
-#~ msgid "%s session selected"
-#~ msgstr "Session %s seleccionada"
-
-#~ msgid "_Last"
-#~ msgstr "_Darrièra"
-
-#~ msgid "Select _Language..."
-#~ msgstr "Seleccionatz una _lenga..."
-
-#~ msgid "_Password:"
-#~ msgstr "Mot de _pas :"
-
-#~ msgid "GDM Login"
-#~ msgstr "Connexion GDM"
-
-#~ msgid "_Configure Login Manager..."
-#~ msgstr "_Configurar lo gestionari de connexions..."
-
-#~ msgid "_Actions"
-#~ msgstr "_Accions"
-
-#~ msgid "_Theme"
-#~ msgstr "_Tèma"
-
-#~ msgid "_Quit"
-#~ msgstr "_Sortir"
-
-#~ msgid "Icon"
-#~ msgstr "Icòna"
-
-#~ msgid "Welcome"
-#~ msgstr "Planvengut"
-
-#~ msgid "Restart GDM"
-#~ msgstr "Tornar aviar GDM"
-
-#~ msgid "Restart computer"
-#~ msgstr "Tornar lançar l'ordenador"
-
-#~ msgid "Cannot open file"
-#~ msgstr "Impossible de dobrir lo fichièr"
-
-#~ msgid "Select User Image"
-#~ msgstr "Seleccionatz un imatge personalisat"
-
-#~ msgid "Images"
-#~ msgstr "Imatges"
-
-#~ msgid "All Files"
-#~ msgstr "Totes los fichièrs"
-
-#~ msgid "Plain"
-#~ msgstr "Simpla"
-
-#~ msgid "Cannot add user"
-#~ msgstr "Impossible d'apondre l'utilizaire"
-
-#~ msgid "The \"%s\" user does not exist."
-#~ msgstr "L'utilizaire \"%s\" existís pas."
-
-#~ msgid "No file selected"
-#~ msgstr "Pas de fichièr seleccionat"
-
-#~ msgid "Close _without Applying"
-#~ msgstr "Tampar _sens aplicar"
-
-#~ msgid "Sounds"
-#~ msgstr "Sons"
-
-#~ msgid "None"
-#~ msgstr "Pas cap"
-
-#~ msgid "File does not exist"
-#~ msgstr "Lo fichièr existís pas"
-
-#~ msgid "%s"
-#~ msgstr "%s"
-
-#~ msgid "_Install"
-#~ msgstr "_Installar"
-
-#~ msgid "Remove the \"%s\" theme?"
-#~ msgstr "Volètz suprimir lo tèma \"%s\" ?"
-
-#~ msgid "_Remove Theme"
-#~ msgstr "_Suprimir lo tèma"
-
-#~ msgid "auto"
-#~ msgstr "auto"
-
-#~ msgid "yes"
-#~ msgstr "òc"
-
-#~ msgid "no"
-#~ msgstr "non"
-
-#~ msgid "Login Window"
-#~ msgstr "Fenèstra de connexion"
-
-#~ msgid " "
-#~ msgstr " "
-
-#~ msgid "  "
-#~ msgstr "  "
-
-#~ msgid "    "
-#~ msgstr "    "
-
-#~ msgid "     "
-#~ msgstr "     "
-
-#~ msgid "         "
-#~ msgstr "         "
-
-#~ msgid "A_dd..."
-#~ msgstr "Apon_dre..."
-
-#~ msgid "Accessibility"
-#~ msgstr "Accessibilitat"
-
-#~ msgid "Add S_erver..."
-#~ msgstr "Apondre un s_ervidor..."
-
-#~ msgid "Add User"
-#~ msgstr "Apondre un servidor"
-
-#~ msgid "Author:"
-#~ msgstr "Autor :"
-
-#~ msgid "Background"
-#~ msgstr "Fons"
-
-#~ msgid "C_ommand:"
-#~ msgstr "C_omanda :"
-
-#~ msgid "C_ustom:"
-#~ msgstr "_Personalisat :"
-
-#~ msgid "Co_lor:"
-#~ msgstr "Co_lor :"
-
-#~ msgid "Configure _X Server..."
-#~ msgstr "Configurar lo servidor _X..."
-
-#~ msgid "Copyright:"
-#~ msgstr "Copyright :"
-
-#~ msgid "General"
-#~ msgstr "General"
-
-#~ msgid "I_mage:"
-#~ msgstr "I_matge :"
-
-#~ msgid "Local"
-#~ msgstr "Local"
-
-#~ msgid "Login Window Preferences"
-#~ msgstr "Preferéncias de la fenèstra de connexion"
-
-#~ msgid "Menu Bar"
-#~ msgstr "Barra de menuts"
-
-#~ msgid "Op_tions:\t"
-#~ msgstr "Op_cions :\t"
-
-#~ msgid "R_emove"
-#~ msgstr "_Suprimir"
-
-#~ msgid "Re_move Server"
-#~ msgstr "_Suprimir lo servidor"
-
-#~ msgid "Remote"
-#~ msgstr "Distant"
-
-#~ msgid "Resolution:"
-#~ msgstr "Resolucion :"
-
-#~ msgid "Security"
-#~ msgstr "Seguritat"
-
-#~ msgid "Select Background Image"
-#~ msgstr "Seleccionar un imatge de fons"
-
-#~ msgid "Select Sound File"
-#~ msgstr "Seleccionar un fichièr son"
-
-#~ msgid "Server Settings"
-#~ msgstr "Paramètres del servidor"
-
-#~ msgid "Server _name:"
-#~ msgstr "_Nom del servidor :"
-
-#~ msgid "Sho_w Actions menu"
-#~ msgstr "Mostrar lo _menut Accions"
-
-#~ msgid "Themes"
-#~ msgstr "Tèmas"
-
-#~ msgid "U_ser:"
-#~ msgstr "U_tilizaire :"
-
-#~ msgid "Users"
-#~ msgstr "Utilizaires"
-
-#~ msgid "_Add..."
-#~ msgstr "_Apondre..."
-
-#~ msgid "_Add/Modify..."
-#~ msgstr "_Apondre/Modificar..."
-
-#~ msgid "_Background color:"
-#~ msgstr "Color de _fons :"
-
-#~ msgid "_Image:"
-#~ msgstr "_Imatge :"
-
-#~ msgid "_Priority:"
-#~ msgstr "_Prioritat :"
-
-#~ msgid "_Remove"
-#~ msgstr "_Suprimir"
-
-#~ msgid "_Remove..."
-#~ msgstr "_Suprimir..."
-
-#~ msgid "_Server:"
-#~ msgstr "_Servidor :"
-
-#~ msgid "_Servers:"
-#~ msgstr "_Servidors :"
-
-#~ msgid "_Style:"
-#~ msgstr "_Estil :"
-
-#~ msgid "_Theme:"
-#~ msgstr "_Tèma :"
-
-#~ msgid "dummy"
-#~ msgstr "manequin"
-
-#~ msgid "seconds"
-#~ msgstr "segondas"
-
-#~ msgid "Restart Machine"
-#~ msgstr "Tornar aviar l'ordenador"
-
-#~ msgid "Select _Session..."
-#~ msgstr "Seleccionatz una _session..."
-
-#~ msgid "Sus_pend"
-#~ msgstr "_Interrompre"
-
-#~ msgid "Confi_gure"
-#~ msgstr "Confi_gurar"
-
-#~ msgid "Op_tions"
-#~ msgstr "Op_cions"
-
-#~ msgid "_OK"
-#~ msgstr "_Validar"
-
-#~ msgid "_Cancel"
-#~ msgstr "_Anullar"
-
-#~ msgid "Sessions"
-#~ msgstr "Sessions"
-
-#~ msgid "_Last session"
-#~ msgstr "_Darrièra session"
-
-#~ msgid "Confi_gure Login Manager..."
-#~ msgstr "Confi_gurar lo gestionari de connexions..."
-
-#~ msgid "_Restart the computer"
-#~ msgstr "_Tornar aviar l'ordenador"
-
-#~ msgid "Confi_gure the login manager"
-#~ msgstr "Confi_gurar lo gestionari de connexions"
-
-#~ msgid "(c) 2002 Bond, James Bond"
-#~ msgstr "(c) 2002 Bond, James Bond"
-
-#~ msgid "Bond, James Bond"
-#~ msgstr "Bond, James Bond"
-
-#~ msgid "(c) 2002 GNOME"
-#~ msgstr "(c) 2002 GNOME"
