@@ -27,10 +27,12 @@
 #include <unistd.h>
 #include <stropts.h>
 #include <string.h>
-#ifdef HAS_SYS_SOCKET
+#ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
 #endif
+#ifdef HAVE_SYS_SOCKIO_H
 #include <sys/sockio.h>
+#endif
 #include <netdb.h>
 #include <sys/ioctl.h>
 #include <net/if.h>
