@@ -25,10 +25,12 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stropts.h>
 #include <string.h>
 #ifdef HAS_SYS_SOCKET
 #include <sys/socket.h>
 #endif
+#include <sys/sockio.h>
 #include <netdb.h>
 #include <sys/ioctl.h>
 #include <net/if.h>

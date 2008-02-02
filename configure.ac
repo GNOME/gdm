@@ -142,7 +142,10 @@ AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 AC_PATH_XTRA
 
 # Unit testing framework
-PKG_CHECK_MODULES(CHECK,[check >= 0.9.4])
+PKG_CHECK_MODULES(CHECK,
+                  [check >= 0.9.4],
+                  have_check=yes,
+                  have_check=no)
 AM_CONDITIONAL([HAVE_CHECK],[test "x$CHECK_CFLAGS" != "x"])
 
 AC_PATH_PROG(GCONFTOOL, gconftool-2)
