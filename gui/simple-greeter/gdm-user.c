@@ -26,8 +26,8 @@
 #include <unistd.h>
 
 #include <glib/gi18n.h>
+#include <gio/gio.h>
 #include <gtk/gtk.h>
-#include <libgnomevfs/gnome-vfs.h>
 
 #include "gdm-user-manager.h"
 #include "gdm-user-private.h"
@@ -307,10 +307,6 @@ gdm_user_init (GdmUser *user)
         user->user_name = NULL;
         user->real_name = NULL;
         user->sessions = NULL;
-
-        if (! gnome_vfs_initialized ()) {
-                gnome_vfs_init ();
-        }
 }
 
 static void
@@ -633,30 +629,59 @@ static GdkPixbuf *
 render_icon_from_home (GdmUser *user,
                        int      icon_size)
 {
-        GdkPixbuf *  retval;
-        char        *path;
-        GnomeVFSURI *uri;
-        gboolean     is_local;
-        gboolean     res;
+        GdkPixbuf  *retval;
+        char       *path;
+        GFile      *file;
+        GFileInfo  *file_info;
+        gboolean    is_local, is_autofs;
+        gboolean    res;
+        const char *filesystem_type;
 
         /* special case: look at parent of home to detect autofs
            this is so we don't try to trigger an automount */
         path = g_path_get_dirname (user->home_dir);
-        uri = gnome_vfs_uri_new (path);
-        is_local = gnome_vfs_uri_is_local (uri);
-        gnome_vfs_uri_unref (uri);
+        file = g_file_new_for_path (path);
+        file_info = g_file_query_filesystem_info (file,
+                                                  G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
+                                                  NULL,
+                                                  NULL);
+        if (file_info == NULL) {
+                g_free (path);
+                g_object_unref (file);
+                return NULL;
+        }
+        filesystem_type = g_file_info_get_attribute_string (file_info,
+                                                            G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+        is_autofs = (filesystem_type != NULL && strcmp (filesystem_type, "autofs") == 0);
+        g_object_unref (file);
+        g_object_unref (file_info);
         g_free (path);
 
         /* now check that home dir itself is local */
-        if (is_local) {
-                uri = gnome_vfs_uri_new (user->home_dir);
-                is_local = gnome_vfs_uri_is_local (uri);
-                gnome_vfs_uri_unref (uri);
+        if (! is_autofs) {
+                file = g_file_new_for_path (user->home_dir);
+                file_info = g_file_query_filesystem_info (file,
+                                                          G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
+                                                          NULL,
+                                                          NULL);
+                if (file_info == NULL) {
+                        g_object_unref (file);
+                        return NULL;
+                }
+                filesystem_type = g_file_info_get_attribute_string (file_info,
+                                                                    G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+                is_local = ((strcmp (filesystem_type, "nfs") != 0) &&
+                            (strcmp (filesystem_type, "afs") != 0) &&
+                            (strcmp (filesystem_type, "autofs") != 0) &&
+                            (strcmp (filesystem_type, "unknown") != 0) &&
+                            (strcmp (filesystem_type, "ncpfs") != 0));
+                g_object_unref (file_info);
+                g_object_unref (file);
         }
 
         /* only look at local home directories so we don't try to
            read from remote (e.g. NFS) volumes */
-        if (!is_local) {
+        if (! is_local) {
                 return NULL;
         }
 

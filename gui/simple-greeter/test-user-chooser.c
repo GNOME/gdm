@@ -29,7 +29,6 @@
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <libgnomevfs/gnome-vfs-init.h>
 
 #include "gdm-user-chooser-dialog.h"
 
@@ -45,7 +44,6 @@ main (int argc, char *argv[])
         setlocale (LC_ALL, "");
 
         gtk_init (&argc, &argv);
-        gnome_vfs_init ();
 
         dialog = gdm_user_chooser_dialog_new ();
         /*gtk_widget_set_size_request (dialog, 480, 128);*/

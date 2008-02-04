@@ -30,8 +30,6 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include <libgnomevfs/gnome-vfs-init.h>
-
 #include "gdm-user-manager.h"
 
 static GdmUserManager *manager = NULL;
@@ -63,7 +61,6 @@ main (int argc, char *argv[])
         setlocale (LC_ALL, "");
 
         gtk_init (&argc, &argv);
-        gnome_vfs_init ();
 
         manager = gdm_user_manager_ref_default ();
         g_signal_connect (manager,
