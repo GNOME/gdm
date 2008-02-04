@@ -241,6 +241,7 @@ update_icons (GdmChooserWidget *widget,
               GdkPixbuf       **image,
               char            **name,
               char            **comment,
+              gulong           *priority,
               gboolean         *is_in_use,
               gboolean         *is_separate,
               IconUpdateData   *data)
