@@ -114,6 +114,7 @@ enum {
         CHOOSER_IMAGE_COLUMN = 0,
         CHOOSER_NAME_COLUMN,
         CHOOSER_COMMENT_COLUMN,
+        CHOOSER_PRIORITY_COLUMN,
         CHOOSER_ITEM_IS_IN_USE_COLUMN,
         CHOOSER_ITEM_IS_SEPARATED_COLUMN,
         CHOOSER_ITEM_IS_VISIBLE_COLUMN,
@@ -176,6 +177,7 @@ foreach_item (GtkTreeModel      *model,
         gboolean   is_separate;
         gboolean   res;
         char      *id;
+        gulong     priority;
 
         gtk_tree_model_get (model,
                             iter,
@@ -183,6 +185,7 @@ foreach_item (GtkTreeModel      *model,
                             CHOOSER_IMAGE_COLUMN, &image,
                             CHOOSER_NAME_COLUMN, &name,
                             CHOOSER_COMMENT_COLUMN, &comment,
+                            CHOOSER_PRIORITY_COLUMN, &priority,
                             CHOOSER_ITEM_IS_IN_USE_COLUMN, &in_use,
                             CHOOSER_ITEM_IS_SEPARATED_COLUMN, &is_separate,
                             -1);
@@ -191,6 +194,7 @@ foreach_item (GtkTreeModel      *model,
                           &image,
                           &name,
                           &comment,
+                          &priority,
                           &in_use,
                           &is_separate,
                           data->user_data);
@@ -201,6 +205,7 @@ foreach_item (GtkTreeModel      *model,
                                     CHOOSER_IMAGE_COLUMN, image,
                                     CHOOSER_NAME_COLUMN, name,
                                     CHOOSER_COMMENT_COLUMN, comment,
+                                    CHOOSER_PRIORITY_COLUMN, priority,
                                     CHOOSER_ITEM_IS_IN_USE_COLUMN, in_use,
                                     CHOOSER_ITEM_IS_SEPARATED_COLUMN, is_separate,
                                     -1);
@@ -1226,11 +1231,14 @@ compare_item  (GtkTreeModel *model,
         GdmChooserWidget *widget;
         char             *name_a;
         char             *name_b;
+        gulong            prio_a;
+        gulong            prio_b;
         gboolean          is_separate_a;
         gboolean          is_separate_b;
         int               result;
         int               direction;
         GtkTreeIter      *separator_iter;
+        char             *id;
 
         g_assert (GDM_IS_CHOOSER_WIDGET (data));
 
@@ -1260,17 +1268,18 @@ compare_item  (GtkTreeModel *model,
         if (separator_iter != a) {
                 gtk_tree_model_get (model, a,
                                     CHOOSER_NAME_COLUMN, &name_a,
+                                    CHOOSER_PRIORITY_COLUMN, &prio_a,
                                     CHOOSER_ITEM_IS_SEPARATED_COLUMN, &is_separate_a,
                                     -1);
         }
 
-        char *id;
         name_b = NULL;
         is_separate_b = FALSE;
         if (separator_iter != b) {
                 gtk_tree_model_get (model, b,
                                     CHOOSER_NAME_COLUMN, &name_b,
                                     CHOOSER_ID_COLUMN, &id,
+                                    CHOOSER_PRIORITY_COLUMN, &prio_b,
                                     CHOOSER_ITEM_IS_SEPARATED_COLUMN, &is_separate_b,
                                     -1);
         }
@@ -1288,7 +1297,13 @@ compare_item  (GtkTreeModel *model,
                 result = is_separate_b? -1 : 1;
                 result *= direction;
         } else if (is_separate_b == is_separate_a) {
-                result = g_utf8_collate (name_a, name_b);
+                if (prio_a == prio_b) {
+                        result = g_utf8_collate (name_a, name_b);
+                } else if (prio_a > prio_b) {
+                        result = -1;
+                } else {
+                        result = 1;
+                }
         } else {
                 result = is_separate_a - is_separate_b;
                 result *= direction;
@@ -1545,11 +1560,12 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
         selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget->priv->items_view));
         gtk_tree_selection_set_mode (selection, GTK_SELECTION_BROWSE);
 
-        g_assert (NUMBER_OF_CHOOSER_COLUMNS == 7);
+        g_assert (NUMBER_OF_CHOOSER_COLUMNS == 8);
         widget->priv->list_store = gtk_list_store_new (NUMBER_OF_CHOOSER_COLUMNS,
                                                        GDK_TYPE_PIXBUF,
                                                        G_TYPE_STRING,
                                                        G_TYPE_STRING,
+                                                       G_TYPE_ULONG,
                                                        G_TYPE_BOOLEAN,
                                                        G_TYPE_BOOLEAN,
                                                        G_TYPE_BOOLEAN,
@@ -1667,6 +1683,7 @@ gdm_chooser_widget_update_item (GdmChooserWidget *widget,
                                 GdkPixbuf        *new_image,
                                 const char       *new_name,
                                 const char       *new_comment,
+                                gulong            new_priority,
                                 gboolean          new_in_use,
                                 gboolean          new_is_separate)
 {
@@ -1728,6 +1745,7 @@ gdm_chooser_widget_update_item (GdmChooserWidget *widget,
                             CHOOSER_IMAGE_COLUMN, new_image,
                             CHOOSER_NAME_COLUMN, new_name,
                             CHOOSER_COMMENT_COLUMN, new_comment,
+                            CHOOSER_PRIORITY_COLUMN, new_priority,
                             CHOOSER_ITEM_IS_IN_USE_COLUMN, new_in_use,
                             CHOOSER_ITEM_IS_SEPARATED_COLUMN, new_is_separate,
                             -1);
@@ -1739,6 +1757,7 @@ gdm_chooser_widget_add_item (GdmChooserWidget *widget,
                              GdkPixbuf        *image,
                              const char       *name,
                              const char       *comment,
+                             gulong            priority,
                              gboolean          in_use,
                              gboolean          keep_separate)
 {
@@ -1769,6 +1788,7 @@ gdm_chooser_widget_add_item (GdmChooserWidget *widget,
                                            CHOOSER_IMAGE_COLUMN, image,
                                            CHOOSER_NAME_COLUMN, name,
                                            CHOOSER_COMMENT_COLUMN, comment,
+                                           CHOOSER_PRIORITY_COLUMN, priority,
                                            CHOOSER_ITEM_IS_IN_USE_COLUMN, in_use,
                                            CHOOSER_ITEM_IS_SEPARATED_COLUMN, keep_separate,
                                            CHOOSER_ITEM_IS_VISIBLE_COLUMN, is_visible,
@@ -1831,6 +1851,7 @@ gdm_chooser_widget_lookup_item (GdmChooserWidget *widget,
                                 GdkPixbuf       **image,
                                 char            **name,
                                 char            **comment,
+                                gulong           *priority,
                                 gboolean         *is_in_use,
                                 gboolean         *is_separate)
 {
@@ -1854,6 +1875,7 @@ gdm_chooser_widget_lookup_item (GdmChooserWidget *widget,
         gtk_tree_model_get (GTK_TREE_MODEL (widget->priv->list_store), &iter,
                             CHOOSER_IMAGE_COLUMN, image,
                             CHOOSER_NAME_COLUMN, name,
+                            CHOOSER_PRIORITY_COLUMN, priority,
                             CHOOSER_ITEM_IS_IN_USE_COLUMN, is_in_use,
                             CHOOSER_ITEM_IS_SEPARATED_COLUMN, is_separate,
                             -1);
@@ -1893,6 +1915,34 @@ gdm_chooser_widget_set_item_in_use (GdmChooserWidget *widget,
                                     CHOOSER_ITEM_IS_IN_USE_COLUMN, is_in_use,
                                     -1);
 
+        }
+}
+
+void
+gdm_chooser_widget_set_item_priority (GdmChooserWidget *widget,
+                                      const char       *id,
+                                      gulong            priority)
+{
+        GtkTreeIter   iter;
+        gulong        was_priority;
+
+        g_return_if_fail (GDM_IS_CHOOSER_WIDGET (widget));
+
+        if (!find_item (widget, id, &iter)) {
+                return;
+        }
+
+        gtk_tree_model_get (GTK_TREE_MODEL (widget->priv->list_store), &iter,
+                            CHOOSER_PRIORITY_COLUMN, &was_priority,
+                            -1);
+
+        if (was_priority != priority) {
+
+                gtk_list_store_set (widget->priv->list_store,
+                                    &iter,
+                                    CHOOSER_PRIORITY_COLUMN, priority,
+                                    -1);
+                gtk_tree_model_filter_refilter (widget->priv->model_filter);
         }
 }
 

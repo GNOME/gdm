@@ -312,14 +312,18 @@ add_special_users (GdmUserChooserWidget *widget)
                                      GDM_USER_CHOOSER_USER_OTHER,
                                      widget->priv->stock_person_pixbuf,
                                      _("Other..."),
-                                     _("Choose a different account"), FALSE,
+                                     _("Choose a different account"),
+                                     0,
+                                     FALSE,
                                      TRUE);
 
         gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                      GDM_USER_CHOOSER_USER_GUEST,
                                      widget->priv->stock_person_pixbuf,
                                      _("Guest"),
-                                     _("Login as a temporary guest"), FALSE,
+                                     _("Login as a temporary guest"),
+                                     0,
+                                     FALSE,
                                      TRUE);
 
         return FALSE;
@@ -354,6 +358,7 @@ on_user_added (GdmUserManager       *manager,
                                      pixbuf,
                                      gdm_user_get_real_name (user),
                                      tooltip,
+                                     gdm_user_get_login_frequency (user),
                                      is_logged_in,
                                      FALSE);
         g_free (tooltip);
@@ -397,6 +402,24 @@ on_user_is_logged_in_changed (GdmUserManager       *manager,
 }
 
 static void
+on_user_login_frequency_changed (GdmUserManager       *manager,
+                                 GdmUser              *user,
+                                 GdmUserChooserWidget *widget)
+{
+        const char *user_name;
+        gulong      freq;
+
+        g_debug ("GdmUserChooserWidget: User login frequency changed: %s", gdm_user_get_user_name (user));
+
+        user_name = gdm_user_get_user_name (user);
+        freq = gdm_user_get_login_frequency (user);
+
+        gdm_chooser_widget_set_item_priority (GDM_CHOOSER_WIDGET (widget),
+                                              user_name,
+                                              freq);
+}
+
+static void
 gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
 {
         widget->priv = GDM_USER_CHOOSER_WIDGET_GET_PRIVATE (widget);
@@ -418,6 +441,10 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
         g_signal_connect (widget->priv->manager,
                           "user-is-logged-in-changed",
                           G_CALLBACK (on_user_is_logged_in_changed),
+                          widget);
+        g_signal_connect (widget->priv->manager,
+                          "user-login-frequency-changed",
+                          G_CALLBACK (on_user_login_frequency_changed),
                           widget);
 
         setup_icons (widget);

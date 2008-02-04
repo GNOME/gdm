@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
+ * Copyright (C) 2007-2008 William Jon McCann <mccann@jhu.edu>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,12 +34,10 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <glib-object.h>
-#define DBUS_API_SUBJECT_TO_CHANGE
+
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
-
-#include <libgnomevfs/gnome-vfs.h>
 
 #include "gdm-user-manager.h"
 #include "gdm-user-private.h"
@@ -60,15 +58,10 @@
 #define DEFAULT_MAX_ICON_SIZE   128
 #define DEFAULT_USER_MAX_FILE   65536
 
-#ifdef __sun
-#define DEFAULT_MINIMAL_UID     100
-#else
-#define DEFAULT_MINIMAL_UID     500
-#endif
-
 #define DEFAULT_GLOBAL_FACE_DIR DATADIR "/faces"
 #define DEFAULT_USER_ICON       "stock_person"
 #define DEFAULT_EXCLUDE         { "bin",        \
+                                  "root",       \
                                   "daemon",     \
                                   "adm",        \
                                   "lp",         \
@@ -92,16 +85,13 @@ struct GdmUserManagerPrivate
 {
         GHashTable            *users;
         GHashTable            *sessions;
-        GHashTable            *shells;
         GHashTable            *exclusions;
-        GnomeVFSMonitorHandle *passwd_monitor;
-        GnomeVFSMonitorHandle *shells_monitor;
         DBusGConnection       *connection;
         DBusGProxy            *seat_proxy;
         char                  *seat_id;
 
         guint                  reload_id;
-        uid_t                  minimal_uid;
+        guint                  ck_history_id;
 
         guint8                 users_dirty : 1;
 };
@@ -110,6 +100,7 @@ enum {
         USER_ADDED,
         USER_REMOVED,
         USER_IS_LOGGED_IN_CHANGED,
+        USER_LOGIN_FREQUENCY_CHANGED,
         LAST_SIGNAL
 };
 
@@ -664,143 +655,236 @@ gdm_user_manager_list_users (GdmUserManager *manager)
         return g_slist_sort (retval, (GCompareFunc) gdm_user_collate);
 }
 
-static void
-reload_passwd (GdmUserManager *manager)
+static gboolean
+parse_value_as_ulong (const char *value,
+                      gulong     *ulongval)
 {
-        struct passwd *pwent;
-        GSList        *old_users;
-        GSList        *new_users;
-        GSList        *list;
+        char  *end_of_valid_long;
+        glong  long_value;
+        gulong ulong_value;
 
-        old_users = NULL;
-        new_users = NULL;
+        errno = 0;
+        long_value = strtol (value, &end_of_valid_long, 10);
 
-        g_hash_table_foreach (manager->priv->users, listify_hash_values_hfunc, &old_users);
-        g_slist_foreach (old_users, (GFunc) g_object_ref, NULL);
+        if (*value == '\0' || *end_of_valid_long != '\0') {
+                return FALSE;
+        }
 
-        /* Make sure we keep users who are logged in no matter what. */
-        for (list = old_users; list; list = list->next) {
-                if (gdm_user_get_num_sessions (list->data) > 0) {
-                        g_object_freeze_notify (G_OBJECT (list->data));
-                        new_users = g_slist_prepend (new_users, g_object_ref (list->data));
+        ulong_value = long_value;
+        if (ulong_value != long_value || errno == ERANGE) {
+                return FALSE;
+        }
+
+        *ulongval = ulong_value;
+
+        return TRUE;
+}
+
+static gboolean
+parse_ck_history_line (const char *line,
+                       char      **user_namep,
+                       gulong     *frequencyp)
+{
+        GRegex     *re;
+        GMatchInfo *match_info;
+        gboolean    res;
+        gboolean    ret;
+        GError     *error;
+
+        ret = FALSE;
+        re = NULL;
+        match_info = NULL;
+
+        error = NULL;
+        re = g_regex_new ("(?P<username>[0-9a-zA-Z]+)[ ]+(?P<frequency>[0-9]+)", 0, 0, &error);
+        if (re == NULL) {
+                g_critical (error->message);
+                goto out;
+        }
+
+        g_regex_match (re, line, 0, &match_info);
+
+        res = g_match_info_matches (match_info);
+        if (! res) {
+                g_warning ("Unable to parse history: %s", line);
+                goto out;
+        }
+
+        if (user_namep != NULL) {
+                *user_namep = g_match_info_fetch_named (match_info, "username");
+        }
+
+        if (frequencyp != NULL) {
+                char *freq;
+                freq = g_match_info_fetch_named (match_info, "frequency");
+                res = parse_value_as_ulong (freq, frequencyp);
+                g_free (freq);
+                if (! res) {
+                        goto out;
                 }
         }
 
-        setpwent ();
+        ret = TRUE;
 
-        for (pwent = getpwent (); pwent; pwent = getpwent ()) {
-                GdmUser *user;
-
-                user = NULL;
-
-                /* Skip users below MinimalUID... */
-                if (pwent->pw_uid < manager->priv->minimal_uid) {
-                        continue;
-                }
-
-                /* ...And users w/ invalid shells... */
-                if (!pwent->pw_shell ||
-                    !g_hash_table_lookup (manager->priv->shells, pwent->pw_shell)) {
-                        continue;
-                }
-
-                /* ...And explicitly excluded users */
-                if (g_hash_table_lookup (manager->priv->exclusions, pwent->pw_name)) {
-                        continue;
-                }
-
-                user = g_hash_table_lookup (manager->priv->users, pwent->pw_name);
-
-                /* Update users already in the *new* list */
-                if (g_slist_find (new_users, user)) {
-                        _gdm_user_update (user, pwent);
-                        continue;
-                }
-
-                if (user == NULL) {
-                        user = create_user (manager);
-                } else {
-                        g_object_ref (user);
-                }
-
-                /* Freeze & update users not already in the new list */
-                g_object_freeze_notify (G_OBJECT (user));
-                _gdm_user_update (user, pwent);
-
-                new_users = g_slist_prepend (new_users, user);
+ out:
+        if (match_info != NULL) {
+                g_match_info_free (match_info);
         }
-
-        endpwent ();
-
-        /* Go through and handle added users */
-        for (list = new_users; list; list = list->next) {
-                if (! g_slist_find (old_users, list->data)) {
-                        add_user (manager, list->data);
-                }
+        if (re != NULL) {
+                g_regex_unref (re);
         }
-
-        /* Go through and handle removed users */
-        for (list = old_users; list; list = list->next) {
-                if (! g_slist_find (new_users, list->data)) {
-                        g_signal_emit (manager, signals[USER_REMOVED], 0, list->data);
-                        g_hash_table_remove (manager->priv->users,
-                                             gdm_user_get_user_name (list->data));
-                }
-        }
-
-        /* Cleanup */
-        g_slist_foreach (new_users, (GFunc) g_object_thaw_notify, NULL);
-        g_slist_foreach (new_users, (GFunc) g_object_unref, NULL);
-        g_slist_free (new_users);
-
-        g_slist_foreach (old_users, (GFunc) g_object_unref, NULL);
-        g_slist_free (old_users);
+        return ret;
 }
 
 static void
-reload_shells (GdmUserManager *manager)
+process_ck_history_line (GdmUserManager *manager,
+                         const char     *line)
 {
-        char *shell;
+        gboolean res;
+        char    *username;
+        gulong   frequency;
+        GdmUser *user;
 
-        setusershell ();
-
-        g_hash_table_remove_all (manager->priv->shells);
-        for (shell = getusershell (); shell; shell = getusershell ()) {
-                g_hash_table_insert (manager->priv->shells,
-                                     g_strdup (shell),
-                                     GUINT_TO_POINTER (TRUE));
-        }
-
-        endusershell ();
-}
-
-static void
-shells_monitor_cb (GnomeVFSMonitorHandle    *handle,
-                   const gchar              *text_uri,
-                   const gchar              *info_uri,
-                   GnomeVFSMonitorEventType  event_type,
-                   GdmUserManager           *manager)
-{
-        if (event_type != GNOME_VFS_MONITOR_EVENT_CHANGED &&
-            event_type != GNOME_VFS_MONITOR_EVENT_CREATED)
+        frequency = 0;
+        username = NULL;
+        res = parse_ck_history_line (line, &username, &frequency);
+        if (! res) {
                 return;
+        }
 
-        reload_shells (manager);
-        reload_passwd (manager);
+        if (g_hash_table_lookup (manager->priv->exclusions, username)) {
+                g_debug ("GdmUserManager: excluding user '%s'", username);
+                g_free (username);
+                return;
+        }
+
+        user = gdm_user_manager_get_user (manager, username);
+        g_object_set (user, "login-frequency", frequency, NULL);
+        g_signal_emit (manager, signals [USER_LOGIN_FREQUENCY_CHANGED], 0, user);
+}
+
+static gboolean
+ck_history_watch (GIOChannel     *source,
+                  GIOCondition    condition,
+                  GdmUserManager *manager)
+{
+        GIOStatus status;
+        gboolean  done  = FALSE;
+
+        g_return_val_if_fail (manager != NULL, FALSE);
+
+        if (condition & G_IO_IN) {
+                char   *str;
+                GError *error;
+
+                error = NULL;
+                status = g_io_channel_read_line (source, &str, NULL, NULL, &error);
+                if (error != NULL) {
+                        g_warning ("GdmUserManager: unable to read line: %s", error->message);
+                        g_error_free (error);
+                }
+
+                if (status == G_IO_STATUS_NORMAL) {
+                        g_debug ("GdmUserManager: history output: %s", str);
+                        process_ck_history_line (manager, str);
+                } else if (status == G_IO_STATUS_EOF) {
+                        done = TRUE;
+                }
+
+                g_free (str);
+        } else if (condition & G_IO_HUP) {
+                done = TRUE;
+        }
+
+        if (done) {
+                manager->priv->ck_history_id = 0;
+                return FALSE;
+        }
+
+        return TRUE;
 }
 
 static void
-passwd_monitor_cb (GnomeVFSMonitorHandle    *handle,
-                   const gchar              *text_uri,
-                   const gchar              *info_uri,
-                   GnomeVFSMonitorEventType  event_type,
-                   GdmUserManager           *manager)
+reload_users (GdmUserManager *manager)
 {
-        if (event_type != GNOME_VFS_MONITOR_EVENT_CHANGED &&
-            event_type != GNOME_VFS_MONITOR_EVENT_CREATED)
-                return;
+        char       *command;
+        const char *seat_id;
+        GError     *error;
+        gboolean    res;
+        char      **argv;
+        int         standard_out;
+        GIOChannel *channel;
 
-        reload_passwd (manager);
+        seat_id = NULL;
+        if (manager->priv->seat_id != NULL
+            && g_str_has_prefix (manager->priv->seat_id, "/org/freedesktop/ConsoleKit/")) {
+
+                seat_id = manager->priv->seat_id + strlen ("/org/freedesktop/ConsoleKit/");
+        }
+
+        if (seat_id == NULL) {
+                g_warning ("Unable to find users: no seat-id found");
+        }
+
+        command = g_strdup_printf ("ck-history --frequent --seat='%s' --session-type=''",
+                                   seat_id);
+        g_debug ("GdmUserManager: running '%s'", command);
+        error = NULL;
+        if (! g_shell_parse_argv (command, NULL, &argv, &error)) {
+                g_warning ("Could not parse command: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        error = NULL;
+        res = g_spawn_async_with_pipes (NULL,
+                                        argv,
+                                        NULL,
+                                        G_SPAWN_SEARCH_PATH,
+                                        NULL,
+                                        NULL,
+                                        NULL, /* pid */
+                                        NULL,
+                                        &standard_out,
+                                        NULL,
+                                        &error);
+        if (! res) {
+                g_warning ("Unable to run ck-history: %s", error->message);
+                g_error_free (error);
+        }
+        g_strfreev (argv);
+
+        channel = g_io_channel_unix_new (standard_out);
+        g_io_channel_set_close_on_unref (channel, TRUE);
+        g_io_channel_set_flags (channel,
+                                g_io_channel_get_flags (channel) | G_IO_FLAG_NONBLOCK,
+                                NULL);
+        manager->priv->ck_history_id = g_io_add_watch (channel,
+                                                       G_IO_IN | G_IO_HUP | G_IO_ERR | G_IO_NVAL,
+                                                       (GIOFunc)ck_history_watch,
+                                                       manager);
+        g_io_channel_unref (channel);
+
+ out:
+        g_free (command);
+}
+
+static gboolean
+reload_users_timeout (GdmUserManager *manager)
+{
+        reload_users (manager);
+        manager->priv->reload_id = 0;
+        return FALSE;
+}
+
+static void
+queue_reload_users (GdmUserManager *manager)
+{
+        if (manager->priv->reload_id > 0) {
+                return;
+        }
+
+        manager->priv->reload_id = g_idle_add ((GSourceFunc)reload_users_timeout, manager);
 }
 
 static void
@@ -834,44 +918,25 @@ gdm_user_manager_class_init (GdmUserManagerClass *klass)
                               NULL, NULL,
                               g_cclosure_marshal_VOID__OBJECT,
                               G_TYPE_NONE, 1, GDM_TYPE_USER);
+        signals [USER_LOGIN_FREQUENCY_CHANGED] =
+                g_signal_new ("user-login-frequency-changed",
+                              G_TYPE_FROM_CLASS (klass),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmUserManagerClass, user_login_frequency_changed),
+                              NULL, NULL,
+                              g_cclosure_marshal_VOID__OBJECT,
+                              G_TYPE_NONE, 1, GDM_TYPE_USER);
 
         g_type_class_add_private (klass, sizeof (GdmUserManagerPrivate));
-}
-
-static gboolean
-reload_passwd_timeout (GdmUserManager *manager)
-{
-        reload_passwd (manager);
-        manager->priv->reload_id = 0;
-        return FALSE;
-}
-
-static void
-queue_reload_passwd (GdmUserManager *manager)
-{
-        if (manager->priv->reload_id > 0) {
-                return;
-        }
-
-        manager->priv->reload_id = g_idle_add ((GSourceFunc)reload_passwd_timeout, manager);
 }
 
 static void
 gdm_user_manager_init (GdmUserManager *manager)
 {
-        GError        *error;
-        char          *uri;
-        GnomeVFSResult result;
         int            i;
         const char    *exclude_default[] = DEFAULT_EXCLUDE;
 
-        if (! gnome_vfs_initialized ()) {
-                gnome_vfs_init ();
-        }
-
         manager->priv = GDM_USER_MANAGER_GET_PRIVATE (manager);
-
-        manager->priv->minimal_uid = DEFAULT_MINIMAL_UID;
 
         /* sessions */
         manager->priv->sessions = g_hash_table_new_full (g_str_hash,
@@ -890,58 +955,14 @@ gdm_user_manager_init (GdmUserManager *manager)
                                      GUINT_TO_POINTER (TRUE));
         }
 
-        /* /etc/shells */
-        manager->priv->shells = g_hash_table_new_full (g_str_hash,
-                                                       g_str_equal,
-                                                       g_free,
-                                                       NULL);
-        reload_shells (manager);
-        error = NULL;
-        uri = g_filename_to_uri ("/etc/shells", NULL, &error);
-        if (uri == NULL) {
-                g_warning ("Could not create URI for shells file `/etc/shells': %s",
-                            error->message);
-                g_error_free (error);
-        } else {
-                result = gnome_vfs_monitor_add (&(manager->priv->shells_monitor),
-                                                uri,
-                                                GNOME_VFS_MONITOR_FILE,
-                                                (GnomeVFSMonitorCallback)shells_monitor_cb,
-                                                manager);
-                g_free (uri);
-
-                if (result != GNOME_VFS_OK)
-                        g_warning ("Could not install monitor for shells file `/etc/shells': %s",
-                                    gnome_vfs_result_to_string (result));
-        }
-
-        /* /etc/passwd */
         manager->priv->users = g_hash_table_new_full (g_str_hash,
                                                       g_str_equal,
                                                       g_free,
                                                       (GDestroyNotify) g_object_run_dispose);
-        error = NULL;
-        uri = g_filename_to_uri ("/etc/passwd", NULL, &error);
-        if (uri == NULL) {
-                g_warning ("Could not create URI for password file `/etc/passwd': %s",
-                            error->message);
-                g_error_free (error);
-        } else {
-                result = gnome_vfs_monitor_add (&(manager->priv->passwd_monitor),
-                                                uri,
-                                                GNOME_VFS_MONITOR_FILE,
-                                                (GnomeVFSMonitorCallback)passwd_monitor_cb,
-                                                manager);
-                g_free (uri);
-
-                if (result != GNOME_VFS_OK)
-                        g_warning ("Could not install monitor for password file `/etc/passwd: %s",
-                                   gnome_vfs_result_to_string (result));
-        }
 
         get_seat_proxy (manager);
 
-        queue_reload_passwd (manager);
+        queue_reload_users (manager);
 
         manager->priv->users_dirty = FALSE;
 }
@@ -962,6 +983,11 @@ gdm_user_manager_finalize (GObject *object)
                 g_object_unref (manager->priv->seat_proxy);
         }
 
+        if (manager->priv->ck_history_id != 0) {
+                g_source_remove (manager->priv->ck_history_id);
+                manager->priv->ck_history_id = 0;
+        }
+
         if (manager->priv->reload_id > 0) {
                 g_source_remove (manager->priv->reload_id);
                 manager->priv->reload_id = 0;
@@ -969,10 +995,6 @@ gdm_user_manager_finalize (GObject *object)
 
         g_hash_table_destroy (manager->priv->sessions);
 
-        gnome_vfs_monitor_cancel (manager->priv->shells_monitor);
-        g_hash_table_destroy (manager->priv->shells);
-
-        gnome_vfs_monitor_cancel (manager->priv->passwd_monitor);
         g_hash_table_destroy (manager->priv->users);
 
         g_free (manager->priv->seat_id);

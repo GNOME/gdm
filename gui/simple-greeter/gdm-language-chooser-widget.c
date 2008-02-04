@@ -127,7 +127,11 @@ gdm_language_chooser_widget_add_language (GdmLanguageChooserWidget *widget,
         if (language != NULL) {
                 gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                              normalized_name,
-                                             NULL, language, "", FALSE,
+                                             NULL,
+                                             language,
+                                             "",
+                                             0,
+                                             FALSE,
                                              FALSE);
                 g_free (language);
         }

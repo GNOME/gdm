@@ -1,3 +1,31 @@
+2008-02-04  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/simple-greeter/gdm-chooser-widget.c: (foreach_item),
+	(compare_item), (gdm_chooser_widget_init),
+	(gdm_chooser_widget_update_item), (gdm_chooser_widget_add_item),
+	(gdm_chooser_widget_lookup_item),
+	(gdm_chooser_widget_set_item_priority):
+	* gui/simple-greeter/gdm-chooser-widget.h:
+	* gui/simple-greeter/gdm-language-chooser-widget.c:
+	(gdm_language_chooser_widget_add_language):
+	* gui/simple-greeter/gdm-session-chooser-widget.c: (add_session),
+	(add_available_sessions):
+	* gui/simple-greeter/gdm-user-chooser-widget.c:
+	(add_special_users), (on_user_added),
+	(on_user_login_frequency_changed), (gdm_user_chooser_widget_init):
+	* gui/simple-greeter/gdm-user-manager.c: (parse_value_as_ulong),
+	(parse_ck_history_line), (process_ck_history_line),
+	(ck_history_watch), (reload_users), (reload_users_timeout),
+	(queue_reload_users), (gdm_user_manager_class_init),
+	(gdm_user_manager_init), (gdm_user_manager_finalize):
+	* gui/simple-greeter/gdm-user-manager.h:
+	* gui/simple-greeter/gdm-user.c: (_gdm_user_set_login_frequency),
+	(gdm_user_set_property), (gdm_user_get_property),
+	(gdm_user_class_init), (gdm_user_init),
+	(gdm_user_get_login_frequency):
+	* gui/simple-greeter/gdm-user.h:
+	Only show users that have frequently logged in.
+
 2008-02-01  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.ac, common/gdm-address.c use HAVE_SYS_SOCKIO_H

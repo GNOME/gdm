@@ -1,6 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2004-2005 James M. Cape <jcape@ignore-your.tv>.
+ * Copyright (C) 2007-2008 William Jon McCann <mccann@jhu.edu>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +45,7 @@ G_CONST_RETURN char  *gdm_user_get_real_name      (GdmUser   *user);
 G_CONST_RETURN char  *gdm_user_get_home_directory (GdmUser   *user);
 G_CONST_RETURN char  *gdm_user_get_shell          (GdmUser   *user);
 guint                 gdm_user_get_num_sessions   (GdmUser   *user);
+gulong                gdm_user_get_login_frequency (GdmUser   *user);
 
 GdkPixbuf            *gdm_user_render_icon        (GdmUser   *user,
                                                    gint       icon_size);

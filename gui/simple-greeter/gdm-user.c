@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2004-2005 James M. Cape <jcape@ignore-your.tv>.
- * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
+ * Copyright (C) 2007-2008 William Jon McCann <mccann@jhu.edu>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,6 +51,7 @@ enum {
         PROP_UID,
         PROP_HOME_DIR,
         PROP_SHELL,
+        PROP_LOGIN_FREQUENCY,
 };
 
 enum {
@@ -70,6 +71,7 @@ struct _GdmUser {
         char           *home_dir;
         char           *shell;
         GSList         *sessions;
+        gulong          login_frequency;
 };
 
 typedef struct _GdmUserClass
@@ -145,6 +147,14 @@ gdm_user_get_num_sessions (GdmUser    *user)
 }
 
 static void
+_gdm_user_set_login_frequency (GdmUser *user,
+                               gulong   login_frequency)
+{
+        user->login_frequency = login_frequency;
+        g_object_notify (G_OBJECT (user), "login-frequency");
+}
+
+static void
 gdm_user_set_property (GObject      *object,
                        guint         param_id,
                        const GValue *value,
@@ -159,7 +169,9 @@ gdm_user_set_property (GObject      *object,
                 user->manager = g_value_get_object (value);
                 g_assert (user->manager);
                 break;
-
+        case PROP_LOGIN_FREQUENCY:
+                _gdm_user_set_login_frequency (user, g_value_get_ulong (value));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
                 break;
@@ -194,6 +206,9 @@ gdm_user_get_property (GObject    *object,
                 break;
         case PROP_SHELL:
                 g_value_set_string (value, user->shell);
+                break;
+        case PROP_LOGIN_FREQUENCY:
+                g_value_set_ulong (value, user->login_frequency);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
@@ -257,6 +272,15 @@ gdm_user_class_init (GdmUserClass *class)
                                                               "The shell for this user.",
                                                               NULL,
                                                               G_PARAM_READABLE));
+        g_object_class_install_property (gobject_class,
+                                         PROP_LOGIN_FREQUENCY,
+                                         g_param_spec_ulong ("login-frequency",
+                                                             "login frequency",
+                                                             "login frequency",
+                                                             0,
+                                                             G_MAXULONG,
+                                                             0,
+                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
         signals [ICON_CHANGED] =
                 g_signal_new ("icon-changed",
@@ -283,6 +307,10 @@ gdm_user_init (GdmUser *user)
         user->user_name = NULL;
         user->real_name = NULL;
         user->sessions = NULL;
+
+        if (! gnome_vfs_initialized ()) {
+                gnome_vfs_init ();
+        }
 }
 
 static void
@@ -505,6 +533,14 @@ gdm_user_get_shell (GdmUser *user)
         g_return_val_if_fail (GDM_IS_USER (user), NULL);
 
         return user->shell;
+}
+
+gulong
+gdm_user_get_login_frequency (GdmUser *user)
+{
+        g_return_val_if_fail (GDM_IS_USER (user), 0);
+
+        return user->login_frequency;
 }
 
 gint

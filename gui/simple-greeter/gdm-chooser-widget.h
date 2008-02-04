@@ -64,6 +64,7 @@ typedef gboolean (*GdmChooserUpdateForeachFunc)          (GdmChooserWidget *widg
                                                           GdkPixbuf       **image,
                                                           char            **name,
                                                           char            **comment,
+                                                          gulong           *priority,
                                                           gboolean         *is_in_use,
                                                           gboolean         *is_separate,
                                                           gpointer          data);
@@ -77,6 +78,7 @@ void                   gdm_chooser_widget_add_item               (GdmChooserWidg
                                                                   GdkPixbuf        *image,
                                                                   const char       *name,
                                                                   const char       *comment,
+                                                                  gulong            priority,
                                                                   gboolean          is_in_use,
                                                                   gboolean          keep_separate);
 
@@ -89,6 +91,7 @@ void                   gdm_chooser_widget_update_item            (GdmChooserWidg
                                                                   GdkPixbuf        *new_image,
                                                                   const char       *new_name,
                                                                   const char       *new_comment,
+                                                                  gulong            priority,
                                                                   gboolean          new_in_use,
                                                                   gboolean          new_is_separate);
 
@@ -100,6 +103,7 @@ gboolean               gdm_chooser_widget_lookup_item            (GdmChooserWidg
                                                                   GdkPixbuf       **image,
                                                                   char            **name,
                                                                   char            **comment,
+                                                                  gulong           *priority,
                                                                   gboolean         *is_in_use,
                                                                   gboolean         *is_separate);
 
@@ -110,6 +114,9 @@ void                   gdm_chooser_widget_set_active_item        (GdmChooserWidg
 void                   gdm_chooser_widget_set_item_in_use        (GdmChooserWidget *widget,
                                                                   const char       *id,
                                                                   gboolean          is_in_use);
+void                   gdm_chooser_widget_set_item_priority      (GdmChooserWidget *widget,
+                                                                  const char       *id,
+                                                                  gulong            priority);
 
 void                   gdm_chooser_widget_set_in_use_message     (GdmChooserWidget *widget,
                                                                   const char       *message);

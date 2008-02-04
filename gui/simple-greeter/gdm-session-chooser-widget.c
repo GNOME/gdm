@@ -349,9 +349,14 @@ add_session (const char              *name,
                 g_debug ("Not adding session to list: %s", session->filename);
         }
 
-        gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget), name,
-                                     NULL, session->translated_name,
-                                     session->translated_comment, FALSE, FALSE);
+        gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
+                                     name,
+                                     NULL,
+                                     session->translated_name,
+                                     session->translated_comment,
+                                     0,
+                                     FALSE,
+                                     FALSE);
 }
 
 static void
@@ -359,15 +364,21 @@ add_available_sessions (GdmSessionChooserWidget *widget)
 {
         gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                      GDM_SESSION_CHOOSER_SESSION_PREVIOUS,
-                                     NULL, _("Default"),
+                                     NULL,
+                                     _("Default"),
                                      _("Login with the same session as "
                                        "last time."),
-                                     FALSE, TRUE);
+                                     0,
+                                     FALSE,
+                                     TRUE);
         gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                      GDM_SESSION_CHOOSER_SESSION_DEFAULT,
-                                     NULL, _("Legacy"),
+                                     NULL,
+                                     _("Legacy"),
                                      _("Login based on preset legacy configuration"),
-                                     FALSE, TRUE);
+                                     0,
+                                     FALSE,
+                                     TRUE);
 
         g_hash_table_foreach (widget->priv->available_sessions,
                               (GHFunc) add_session,
