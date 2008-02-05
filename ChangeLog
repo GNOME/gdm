@@ -1,5 +1,65 @@
 2008-02-04  William Jon McCann  <jmccann@redhat.com>
 
+	* configure.ac:
+	* daemon/gdm-slave.c: (_get_primary_user_session_id):
+	* gui/Makefile.am:
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/gdm-user-manager.c: (start_new_login_session),
+	(_get_primary_user_session_id), (activate_session_id),
+	(session_is_login_window), (_get_login_window_session_id),
+	(gdm_user_manager_goto_login_session),
+	(gdm_user_manager_activate_user_session),
+	(maybe_add_session_for_user), (seat_session_added),
+	(gdm_user_manager_get_user_by_uid):
+	* gui/simple-greeter/gdm-user-manager.h:
+	* gui/simple-greeter/gdm-user.c: (_gdm_user_add_session),
+	(_gdm_user_remove_session), (gdm_user_get_num_sessions),
+	(gdm_user_get_sessions):
+	* gui/simple-greeter/gdm-user.h:
+	* gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in:
+	* gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml:
+	* gui/user-switch-applet/Makefile.am:
+	* gui/user-switch-applet/Makefile.in:
+	* gui/user-switch-applet/applet.c: (about_me_cb), (get_glade_xml),
+	(make_label_bold), (make_label_small_italic),
+	(prefs_radio_toggled_cb), (prefs_xnest_check_toggled_cb),
+	(prefs_lock_check_toggled_cb), (reset_login_screen_item),
+	(system_can_do_xnest), (reset_login_window_item),
+	(menubar_button_press_event_cb), (prefs_cb), (help_cb), (about_cb),
+	(admin_cb), (setup_cb), (set_menuitem_icon), (applet_style_set_cb),
+	(applet_change_background_cb), (applet_key_press_event_cb),
+	(applet_size_allocate_cb), (gdm_applet_data_free),
+	(menubar_expose_event_cb), (sort_menu_comparedatafunc),
+	(sort_menu), (menu_style_set_cb), (menuitem_destroy_cb),
+	(menuitem_style_set_cb), (user_notify_display_name_cb),
+	(menu_expose_cb), (switch_to_user_session), (maybe_lock_screen),
+	(do_switch), (user_item_activate_cb), (user_sessions_changed_cb),
+	(manager_user_added_cb), (login_screen_activate_cb),
+	(login_window_activate_cb), (display_key_changed),
+	(xnest_key_changed), (client_notify_applet_func),
+	(client_notify_global_func), (client_notify_lockdown_func),
+	(applet_fill_cb):
+	* gui/user-switch-applet/gdm-user-menu-item.c: (user_weak_notify),
+	(reset_label), (reset_icon), (user_notify_cb),
+	(user_icon_changed_cb), (user_sessions_changed_cb),
+	(_gdm_user_menu_item_set_user), (gdm_user_menu_item_set_property),
+	(gdm_user_menu_item_get_property), (gdm_user_menu_item_finalize),
+	(gdm_user_menu_item_expose_event),
+	(gdm_user_menu_item_size_request), (gdm_user_menu_item_class_init),
+	(image_style_set_cb), (label_style_set_cb),
+	(gdm_user_menu_item_init), (gdm_user_menu_item_new),
+	(gdm_user_menu_item_get_user), (gdm_user_menu_item_get_icon_size),
+	(gdm_user_menu_item_set_icon_size):
+	* gui/user-switch-applet/gdm-user-menu-item.h:
+	* gui/user-switch-applet/gdm-user-switch-applet.glade:
+	* gui/user-switch-applet/gdm-user-switch-applet.schemas.in:
+	Add a user switcher applet.  This is here at the moment instead
+	of in fusa so that we can share code and stay in sync.  This
+	is important since it is very likely we'll need to change interfaces
+	slightly.
+
+2008-02-04  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/simple-greeter/gdm-user-chooser-widget.c: (update_icons):
 	Forgot to add a priority argument to the load_icons foreach func.
 

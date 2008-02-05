@@ -28,6 +28,33 @@ schemasdir   = @GCONF_SCHEMA_FILE_DIR@
 schemas_in_files = gdm-simple-greeter.schemas.in
 schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
 
+noinst_LTLIBRARIES = 			\
+	libgdmuser.la			\
+	$(null)
+
+libgdmuser_la_SOURCES =			\
+	gdm-user.c			\
+	gdm-user.h			\
+	gdm-user-private.h		\
+	gdm-user-manager.c		\
+	gdm-user-manager.h		\
+	$(NULL)
+
+libgdmuser_la_CPPFLAGS = 		\
+	$(DISABLE_DEPRECATED_CFLAGS)	\
+	$(NULL)
+
+libgdmuser_la_CFLAGS =			\
+	$(SIMPLE_GREETER_CFLAGS)	\
+	$(NULL)
+
+libgdmuser_la_LIBADD =			\
+	$(NULL)
+
+libgdmuser_la_LDFLAGS = 	\
+	-export-dynamic 	\
+	$(NULL)
+
 noinst_PROGRAMS = 			\
 	test-greeter-login-window	\
 	test-remote-login-window	\
@@ -50,18 +77,14 @@ test_greeter_login_window_SOURCES = 	\
 	gdm-user-chooser-widget.c	\
 	gdm-user-chooser-dialog.h	\
 	gdm-user-chooser-dialog.c	\
-	gdm-user-manager.h		\
-	gdm-user-manager.c		\
-	gdm-user-private.h		\
-	gdm-user.h			\
-	gdm-user.c			\
 	$(NULL)
 
 test_greeter_login_window_LDADD =	\
+	$(top_builddir)/common/libgdmcommon.la	\
+	libgdmuser.la			\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(POLKIT_GNOME_LIBS)		\
 	$(RBAC_LIBS)			\
-	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 test_greeter_panel_SOURCES = 	\
@@ -140,28 +163,20 @@ test_user_chooser_SOURCES = 		\
 	gdm-user-chooser-widget.c	\
 	gdm-user-chooser-dialog.h	\
 	gdm-user-chooser-dialog.c	\
-	gdm-user-manager.h		\
-	gdm-user-manager.c		\
-	gdm-user-private.h		\
-	gdm-user.h			\
-	gdm-user.c			\
 	$(NULL)
 
 test_user_chooser_LDADD =	\
+	libgdmuser.la		\
 	$(SIMPLE_GREETER_LIBS)	\
 	$(POLKIT_GNOME_LIBS)	\
 	$(NULL)
 
 test_user_manager_SOURCES = 	\
 	test-user-manager.c	\
-	gdm-user-manager.h	\
-	gdm-user-manager.c	\
-	gdm-user-private.h	\
-	gdm-user.h		\
-	gdm-user.c		\
 	$(NULL)
 
 test_user_manager_LDADD =	\
+	libgdmuser.la		\
 	$(SIMPLE_GREETER_LIBS)	\
 	$(POLKIT_GNOME_LIBS)	\
 	$(NULL)
@@ -204,21 +219,16 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-session-chooser-widget.c	\
 	gdm-user-chooser-widget.h	\
 	gdm-user-chooser-widget.c	\
-	gdm-user-manager.h		\
-	gdm-user-manager.c		\
-	gdm-user-private.h		\
-	gdm-user.h			\
-	gdm-user.c			\
 	$(NULL)
 
 gdm_simple_greeter_LDADD = 		\
 	$(top_builddir)/common/libgdmcommon.la	\
+	libgdmuser.la			\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
 	$(EXTRA_GREETER_LIBS)   	\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(POLKIT_GNOME_LIBS)		\
 	$(RBAC_LIBS)			\
-	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 gladedir = $(pkgdatadir)

@@ -851,7 +851,7 @@ _get_primary_user_session_id (GdmSlave   *slave,
 
         if (slave->priv->display_seat_id == NULL || slave->priv->display_seat_id[0] == '\0') {
                 g_debug ("GdmSlave: display seat id is not set; can't switch sessions");
-                return FALSE;
+                return NULL;
         }
 
         ret = FALSE;
@@ -917,18 +917,13 @@ _get_primary_user_session_id (GdmSlave   *slave,
 
                 ssid = g_ptr_array_index (sessions, i);
 
-                if (! x11_session_is_on_seat (slave, ssid, slave->priv->display_seat_id)) {
-                        goto next;
-                }
-
-                /* FIXME: better way to choose? */
-                if (primary_ssid == NULL) {
+                if (x11_session_is_on_seat (slave, ssid, slave->priv->display_seat_id)) {
                         primary_ssid = g_strdup (ssid);
+                        break;
                 }
-
-        next:
-                g_free (ssid);
         }
+
+        g_ptr_array_foreach (sessions, (GFunc)g_free, NULL);
         g_ptr_array_free (sessions, TRUE);
 
  out:

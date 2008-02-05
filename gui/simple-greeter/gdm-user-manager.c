@@ -125,6 +125,317 @@ gdm_user_manager_error_quark (void)
         return ret;
 }
 
+static gboolean
+start_new_login_session (GdmUserManager *manager)
+{
+        GError  *error;
+        gboolean res;
+
+        res = g_spawn_command_line_async ("gdmflexiserver -s", &error);
+        if (! res) {
+                g_warning ("Unable to start new login: %s", error->message);
+                g_error_free (error);
+        }
+
+        return res;
+}
+
+/* needs to stay in sync with gdm-slave */
+static char *
+_get_primary_user_session_id (GdmUserManager *manager,
+                              GdmUser        *user)
+{
+        gboolean    res;
+        gboolean    ret;
+        gboolean    can_activate_sessions;
+        GError     *error;
+        GList      *sessions;
+        GList      *l;
+        char       *primary_ssid;
+
+        if (manager->priv->seat_id == NULL || manager->priv->seat_id[0] == '\0') {
+                g_debug ("GdmUserManager: display seat id is not set; can't switch sessions");
+                return NULL;
+        }
+
+        ret = FALSE;
+        primary_ssid = NULL;
+        sessions = NULL;
+
+        g_debug ("GdmUserManager: checking if seat can activate sessions");
+
+        error = NULL;
+        res = dbus_g_proxy_call (manager->priv->seat_proxy,
+                                 "CanActivateSessions",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_BOOLEAN, &can_activate_sessions,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("unable to determine if seat can activate sessions: %s",
+                           error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        if (! can_activate_sessions) {
+                g_debug ("GdmUserManager: seat is unable to activate sessions");
+                goto out;
+        }
+
+        sessions = gdm_user_get_sessions (user);
+        if (sessions == NULL) {
+                g_warning ("unable to determine sessions for user: %s",
+                           gdm_user_get_user_name (user));
+                goto out;
+        }
+
+        for (l = sessions; l != NULL; l = l->next) {
+                const char *ssid;
+
+                ssid = l->data;
+
+                /* FIXME: better way to choose? */
+                if (ssid != NULL) {
+                        primary_ssid = g_strdup (ssid);
+                        break;
+                }
+        }
+
+ out:
+
+        return primary_ssid;
+}
+
+static gboolean
+activate_session_id (GdmUserManager *manager,
+                     const char     *seat_id,
+                     const char     *session_id)
+{
+        DBusError    local_error;
+        DBusMessage *message;
+        DBusMessage *reply;
+        gboolean     ret;
+
+        ret = FALSE;
+
+        dbus_error_init (&local_error);
+        message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
+                                                seat_id,
+                                                "org.freedesktop.ConsoleKit.Seat",
+                                                "ActivateSession");
+        if (message == NULL) {
+                goto out;
+        }
+
+        if (! dbus_message_append_args (message,
+                                        DBUS_TYPE_OBJECT_PATH, &session_id,
+                                        DBUS_TYPE_INVALID)) {
+                goto out;
+        }
+
+
+        dbus_error_init (&local_error);
+        reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (manager->priv->connection),
+                                                           message,
+                                                           -1,
+                                                           &local_error);
+        if (reply == NULL) {
+                if (dbus_error_is_set (&local_error)) {
+                        g_warning ("Unable to activate session: %s", local_error.message);
+                        dbus_error_free (&local_error);
+                        goto out;
+                }
+        }
+
+        ret = TRUE;
+ out:
+        return ret;
+}
+
+static gboolean
+session_is_login_window (GdmUserManager *manager,
+                         const char     *session_id)
+{
+        DBusGProxy      *proxy;
+        GError          *error;
+        gboolean         res;
+        gboolean         ret;
+        char            *session_type;
+
+        ret = FALSE;
+
+        proxy = dbus_g_proxy_new_for_name (manager->priv->connection,
+                                           CK_NAME,
+                                           session_id,
+                                           CK_SESSION_INTERFACE);
+        if (proxy == NULL) {
+                g_warning ("Failed to connect to the ConsoleKit seat object");
+                goto out;
+        }
+
+        session_type = NULL;
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 "GetSessionType",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &session_type,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_debug ("Failed to identify the session type: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        if (session_type == NULL || session_type[0] == '\0' || strcmp (session_type, "LoginWindow") != 0) {
+                goto out;
+        }
+
+        ret = TRUE;
+
+ out:
+        if (proxy != NULL) {
+                g_object_unref (proxy);
+        }
+
+        return ret;
+}
+
+static char *
+_get_login_window_session_id (GdmUserManager *manager)
+{
+        gboolean    res;
+        gboolean    ret;
+        gboolean    can_activate_sessions;
+        GError     *error;
+        GPtrArray  *sessions;
+        char       *primary_ssid;
+        int         i;
+
+        if (manager->priv->seat_id == NULL || manager->priv->seat_id[0] == '\0') {
+                g_debug ("GdmUserManager: display seat id is not set; can't switch sessions");
+                return NULL;
+        }
+
+        ret = FALSE;
+        primary_ssid = NULL;
+        sessions = NULL;
+
+        g_debug ("GdmSlave: checking if seat can activate sessions");
+
+        error = NULL;
+        res = dbus_g_proxy_call (manager->priv->seat_proxy,
+                                 "CanActivateSessions",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_BOOLEAN, &can_activate_sessions,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("unable to determine if seat can activate sessions: %s",
+                           error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        if (! can_activate_sessions) {
+                g_debug ("GdmSlave: seat is unable to activate sessions");
+                goto out;
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (manager->priv->seat_proxy,
+                                 "GetSessions",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH), &sessions,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("unable to determine sessions for user: %s",
+                           error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        for (i = 0; i < sessions->len; i++) {
+                char *ssid;
+
+                ssid = g_ptr_array_index (sessions, i);
+
+                if (session_is_login_window (manager, ssid)) {
+                        primary_ssid = g_strdup (ssid);
+                        break;
+                }
+        }
+        g_ptr_array_foreach (sessions, (GFunc)g_free, NULL);
+        g_ptr_array_free (sessions, TRUE);
+
+ out:
+
+        return primary_ssid;
+}
+
+gboolean
+gdm_user_manager_goto_login_session (GdmUserManager *manager)
+{
+        gboolean ret;
+        gboolean res;
+        char    *ssid;
+
+        g_return_val_if_fail (GDM_IS_USER_MANAGER (manager), FALSE);
+
+        ret = FALSE;
+
+        /* First look for any existing LoginWindow sessions on the seat.
+           If none are found, create a new one. */
+
+        ssid = _get_login_window_session_id (manager);
+        if (ssid != NULL) {
+                res = activate_session_id (manager, manager->priv->seat_id, ssid);
+                if (res) {
+                        ret = TRUE;
+                }
+        }
+
+        if (! ret) {
+                res = start_new_login_session (manager);
+                if (res) {
+                        ret = TRUE;
+                }
+        }
+
+        return ret;
+}
+
+gboolean
+gdm_user_manager_activate_user_session (GdmUserManager *manager,
+                                        GdmUser        *user)
+{
+        gboolean ret;
+        char    *ssid;
+        gboolean res;
+
+        g_return_val_if_fail (GDM_IS_USER_MANAGER (manager), FALSE);
+        g_return_val_if_fail (GDM_IS_USER (user), FALSE);
+
+        ret = FALSE;
+
+        ssid = _get_primary_user_session_id (manager, user);
+        if (ssid == NULL) {
+                goto out;
+        }
+
+        res = activate_session_id (manager, manager->priv->seat_id, ssid);
+        if (! res) {
+                g_debug ("GdmUserManager: unable to activate session: %s", ssid);
+                goto out;
+        }
+
+        ret = TRUE;
+ out:
+        return ret;
+}
+
 static void
 on_user_sessions_changed (GdmUser        *user,
                           GdmUserManager *manager)
@@ -192,7 +503,6 @@ get_seat_id_for_session (DBusGConnection *connection,
         return seat_id;
 }
 
-
 static char *
 get_x11_display_for_session (DBusGConnection *connection,
                              const char      *session_id)
@@ -259,6 +569,11 @@ maybe_add_session_for_user (GdmUserManager *manager,
         x11_display = get_x11_display_for_session (manager->priv->connection, ssid);
         if (x11_display == NULL || x11_display[0] == '\0') {
                 g_debug ("GdmUserManager: not adding session without a x11 display: %s", ssid);
+                goto out;
+        }
+
+        if (g_hash_table_lookup (manager->priv->exclusions, gdm_user_get_user_name (user))) {
+                g_debug ("GdmUserManager: excluding user '%s'", gdm_user_get_user_name (user));
                 goto out;
         }
 
@@ -476,6 +791,7 @@ seat_session_added (DBusGProxy     *seat_proxy,
         gboolean       res;
         struct passwd *pwent;
         GdmUser       *user;
+        gboolean       is_new;
 
         g_debug ("Session added: %s", session_id);
 
@@ -494,11 +810,27 @@ seat_session_added (DBusGProxy     *seat_proxy,
 
         user = g_hash_table_lookup (manager->priv->users, pwent->pw_name);
         if (user == NULL) {
+                g_debug ("Creating new user");
+
+                user = create_user (manager);
+                _gdm_user_update (user, pwent);
+                is_new = TRUE;
                 /* add the user */
                 user = add_new_user_for_pwent (manager, pwent);
+        } else {
+                is_new = FALSE;
         }
 
-        maybe_add_session_for_user (manager, user, session_id);
+        res = maybe_add_session_for_user (manager, user, session_id);
+
+        /* only add the user if we added a session */
+        if (is_new) {
+                if (res) {
+                        add_user (manager, user);
+                } else {
+                        g_object_unref (user);
+                }
+        }
 }
 
 static void
@@ -627,6 +959,30 @@ gdm_user_manager_get_user (GdmUserManager *manager,
                 if (pwent != NULL) {
                         user = add_new_user_for_pwent (manager, pwent);
                 }
+        }
+
+        return user;
+}
+
+GdmUser *
+gdm_user_manager_get_user_by_uid (GdmUserManager *manager,
+                                  uid_t           uid)
+{
+        GdmUser       *user;
+        struct passwd *pwent;
+
+        g_return_val_if_fail (GDM_IS_USER_MANAGER (manager), NULL);
+
+        pwent = getpwuid (uid);
+        if (pwent == NULL) {
+                g_warning ("GdmUserManager: unable to lookup uid %d", (int)uid);
+                return NULL;
+        }
+
+        user = g_hash_table_lookup (manager->priv->users, pwent->pw_name);
+
+        if (user == NULL) {
+                user = add_new_user_for_pwent (manager, pwent);
         }
 
         return user;

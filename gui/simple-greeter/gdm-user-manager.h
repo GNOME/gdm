@@ -72,6 +72,14 @@ GdmUserManager *    gdm_user_manager_ref_default           (void);
 GSList *            gdm_user_manager_list_users            (GdmUserManager *manager);
 GdmUser *           gdm_user_manager_get_user              (GdmUserManager *manager,
                                                             const char     *user_name);
+GdmUser *           gdm_user_manager_get_user_by_uid       (GdmUserManager *manager,
+                                                            uid_t           uid);
+
+gboolean            gdm_user_manager_activate_user_session (GdmUserManager *manager,
+                                                            GdmUser        *user);
+
+gboolean            gdm_user_manager_goto_login_session    (GdmUserManager *manager);
+
 G_END_DECLS
 
 #endif /* __GDM_USER_MANAGER_H */

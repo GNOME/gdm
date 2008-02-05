@@ -70,7 +70,7 @@ struct _GdmUser {
         char           *real_name;
         char           *home_dir;
         char           *shell;
-        GSList         *sessions;
+        GList          *sessions;
         gulong          login_frequency;
 };
 
@@ -105,15 +105,15 @@ void
 _gdm_user_add_session (GdmUser    *user,
                        const char *ssid)
 {
-        GSList *li;
+        GList *li;
 
         g_return_if_fail (GDM_IS_USER (user));
         g_return_if_fail (ssid != NULL);
 
-        li = g_slist_find_custom (user->sessions, ssid, (GCompareFunc)session_compare);
+        li = g_list_find_custom (user->sessions, ssid, (GCompareFunc)session_compare);
         if (li == NULL) {
                 g_debug ("GdmUser: adding session %s", ssid);
-                user->sessions = g_slist_prepend (user->sessions, g_strdup (ssid));
+                user->sessions = g_list_prepend (user->sessions, g_strdup (ssid));
                 g_signal_emit (user, signals[SESSIONS_CHANGED], 0);
         } else {
                 g_debug ("GdmUser: session already present: %s", ssid);
@@ -124,16 +124,16 @@ void
 _gdm_user_remove_session (GdmUser    *user,
                           const char *ssid)
 {
-        GSList *li;
+        GList *li;
 
         g_return_if_fail (GDM_IS_USER (user));
         g_return_if_fail (ssid != NULL);
 
-        li = g_slist_find_custom (user->sessions, ssid, (GCompareFunc)session_compare);
+        li = g_list_find_custom (user->sessions, ssid, (GCompareFunc)session_compare);
         if (li != NULL) {
                 g_debug ("GdmUser: removing session %s", ssid);
                 g_free (li->data);
-                user->sessions = g_slist_delete_link (user->sessions, li);
+                user->sessions = g_list_delete_link (user->sessions, li);
                 g_signal_emit (user, signals[SESSIONS_CHANGED], 0);
         } else {
                 g_debug ("GdmUser: session not found: %s", ssid);
@@ -143,7 +143,13 @@ _gdm_user_remove_session (GdmUser    *user,
 guint
 gdm_user_get_num_sessions (GdmUser    *user)
 {
-        return g_slist_length (user->sessions);
+        return g_list_length (user->sessions);
+}
+
+GList *
+gdm_user_get_sessions (GdmUser *user)
+{
+        return user->sessions;
 }
 
 static void
