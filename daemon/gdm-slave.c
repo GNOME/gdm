@@ -984,6 +984,40 @@ activate_session_id (GdmSlave   *slave,
         return ret;
 }
 
+static gboolean
+session_unlock (GdmSlave   *slave,
+                const char *ssid)
+{
+        DBusError       error;
+        DBusMessage    *message;
+        DBusMessage    *reply;
+
+        g_debug ("ConsoleKit: Unlocking session %s", ssid);
+        message = dbus_message_new_method_call (CK_NAME,
+                                                ssid,
+                                                CK_SESSION_INTERFACE,
+                                                "Unlock");
+        if (message == NULL) {
+                g_debug ("GdmSlave: ConsoleKit couldn't allocate the D-Bus message");
+                return FALSE;
+        }
+
+        dbus_error_init (&error);
+        reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (slave->priv->connection),
+                                                           message,
+                                                           -1, &error);
+        dbus_message_unref (message);
+        dbus_message_unref (reply);
+        dbus_connection_flush (dbus_g_connection_get_connection (slave->priv->connection));
+
+        if (dbus_error_is_set (&error)) {
+                g_debug ("GdmSlave: ConsoleKit %s raised:\n %s\n\n", error.name, error.message);
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
 gboolean
 gdm_slave_switch_to_user_session (GdmSlave   *slave,
                                   const char *username)
@@ -1006,6 +1040,12 @@ gdm_slave_switch_to_user_session (GdmSlave   *slave,
         if (! res) {
                 g_debug ("GdmSlave: unable to activate session: %s", ssid_to_activate);
                 goto out;
+        }
+
+        res = session_unlock (slave, ssid_to_activate);
+        if (!res) {
+                /* this isn't fatal */
+                g_debug ("GdmSlave: unable to unlock session: %s", ssid_to_activate);
         }
 
         ret = TRUE;
