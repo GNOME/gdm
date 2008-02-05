@@ -808,6 +808,12 @@ seat_session_added (DBusGProxy     *seat_proxy,
                 return;
         }
 
+        /* check exclusions up front */
+        if (g_hash_table_lookup (manager->priv->exclusions, pwent->pw_name)) {
+                g_debug ("GdmUserManager: excluding user '%s'", pwent->pw_name);
+                return;
+        }
+
         user = g_hash_table_lookup (manager->priv->users, pwent->pw_name);
         if (user == NULL) {
                 g_debug ("Creating new user");
@@ -815,8 +821,6 @@ seat_session_added (DBusGProxy     *seat_proxy,
                 user = create_user (manager);
                 _gdm_user_update (user, pwent);
                 is_new = TRUE;
-                /* add the user */
-                user = add_new_user_for_pwent (manager, pwent);
         } else {
                 is_new = FALSE;
         }
