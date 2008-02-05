@@ -1,5 +1,15 @@
 2008-02-05  William Jon McCann  <jmccann@redhat.com>
 
+	* utils/gdmflexiserver.c: (create_transient_display),
+	(get_current_session_id), (get_seat_id_for_session),
+	(get_current_seat_id), (activate_session_id),
+	(session_is_login_window), (seat_can_activate_sessions),
+	(get_path_array_from_iter), (seat_get_sessions),
+	(get_login_window_session_id), (goto_login_session), (main):
+	Add support for finding and switching to existing greeters.
+
+2008-02-05  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/user-switch-applet/gdm-user-switch-applet.schemas.in:
 	Display name by default in user switcher.
 
@@ -7,7 +17,7 @@
 
 	* configure.ac:  Add gio to COMMON_LIBS, needed to link on
 	  Solaris.
-	* gui/simple-greeter/Makefile.am, 
+	* gui/simple-greeter/Makefile.am,
 	  gui/user-switch-applet/Makefile.am:  Reference COMMON_LIBS
 	  so programs link.
 
