@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-27 13:58+0000\n"
-"PO-Revision-Date: 2008-01-27 17:40+0200\n"
+"POT-Creation-Date: 2008-02-05 03:48+0000\n"
+"PO-Revision-Date: 2008-02-05 17:58+0200\n"
 "Last-Translator: Mark Krapivner <mark125@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,17 +22,17 @@ msgid "/dev/urandom is not a character device"
 msgstr ""
 
 #: ../daemon/factory-slave-main.c:156 ../daemon/product-slave-main.c:156
-#: ../daemon/simple-slave-main.c:156
+#: ../daemon/simple-slave-main.c:156 ../daemon/xdmcp-chooser-slave-main.c:156
 msgid "Display ID"
 msgstr "Display ID"
 
 #: ../daemon/factory-slave-main.c:156 ../daemon/product-slave-main.c:156
-#: ../daemon/simple-slave-main.c:156
+#: ../daemon/simple-slave-main.c:156 ../daemon/xdmcp-chooser-slave-main.c:156
 msgid "id"
 msgstr "id"
 
 #: ../daemon/factory-slave-main.c:168 ../daemon/product-slave-main.c:168
-#: ../daemon/simple-slave-main.c:168
+#: ../daemon/simple-slave-main.c:168 ../daemon/xdmcp-chooser-slave-main.c:168
 msgid "GNOME Display Manager Slave"
 msgstr "GNOME Display Manager Slave"
 
@@ -41,25 +41,25 @@ msgstr "GNOME Display Manager Slave"
 msgid "could not find user \"%s\" on system"
 msgstr ""
 
-#: ../daemon/gdm-factory-slave.c:186 ../daemon/gdm-simple-slave.c:169
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:167
 msgid "Unable to initialize login system"
 msgstr ""
 
-#: ../daemon/gdm-factory-slave.c:218 ../daemon/gdm-simple-slave.c:201
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:199
 #, fuzzy
 msgid "Unable to authenticate user"
 msgstr "לא ניתן לאמת משתמש"
 
-#: ../daemon/gdm-factory-slave.c:240 ../daemon/gdm-simple-slave.c:223
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:220
 msgid "Unable to authorize user"
 msgstr ""
 
-#: ../daemon/gdm-factory-slave.c:264
+#: ../daemon/gdm-factory-slave.c:281
 msgid "Unable to establish credentials"
 msgstr ""
 
-#: ../daemon/gdm-factory-slave.c:593 ../daemon/gdm-product-slave.c:366
-#: ../daemon/gdm-simple-slave.c:708
+#: ../daemon/gdm-factory-slave.c:618 ../daemon/gdm-product-slave.c:364
+#: ../daemon/gdm-simple-slave.c:793
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -71,35 +71,6 @@ msgstr ""
 "syslog to diagnose. In the meantime this display will be disabled.  Please "
 "restart GDM when the problem is corrected."
 
-#: ../daemon/gdm-greeter-session.c:338
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "User %s doesn't exist"
-
-#: ../daemon/gdm-greeter-session.c:345
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "Group %s doesn't exist"
-
-#: ../daemon/gdm-greeter-session.c:356 ../daemon/gdm-server.c:371
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "Couldn't set groupid to %d"
-
-#: ../daemon/gdm-greeter-session.c:362 ../daemon/gdm-server.c:377
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "initgroups () failed for %s"
-
-#: ../daemon/gdm-greeter-session.c:368 ../daemon/gdm-server.c:383
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "Couldn't set userid to %d"
-
-#: ../daemon/gdm-greeter-session.c:376 ../daemon/gdm-server.c:391
-msgid "Couldn't set groupid to 0"
-msgstr "Couldn't set groupid to 0"
-
 #: ../daemon/gdm-server.c:242
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
@@ -109,6 +80,25 @@ msgstr "%s: failed to connect to parent display '%s'"
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Server was to be spawned by user %s but that user doesn't exist"
+
+#: ../daemon/gdm-server.c:371 ../daemon/gdm-welcome-session.c:406
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "Couldn't set groupid to %d"
+
+#: ../daemon/gdm-server.c:377 ../daemon/gdm-welcome-session.c:412
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "initgroups () failed for %s"
+
+#: ../daemon/gdm-server.c:383 ../daemon/gdm-welcome-session.c:418
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "Couldn't set userid to %d"
+
+#: ../daemon/gdm-server.c:391 ../daemon/gdm-welcome-session.c:426
+msgid "Couldn't set groupid to 0"
+msgstr "Couldn't set groupid to 0"
 
 #: ../daemon/gdm-server.c:426
 #, c-format
@@ -131,208 +121,207 @@ msgstr "%s: Server priority couldn't be set to %d: %s"
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Empty server command for display %s"
 
-#: ../daemon/gdm-session-direct.c:1205 ../daemon/gdm-session-direct.c:1223
+#: ../daemon/gdm-session-direct.c:1209 ../daemon/gdm-session-direct.c:1227
 #, c-format
 msgid "worker exited with status %d"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:841
+#: ../daemon/gdm-session-worker.c:843
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:842
+#: ../daemon/gdm-session-worker.c:844
 msgid "general failure"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:843
+#: ../daemon/gdm-session-worker.c:845
 msgid "out of memory"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:844
+#: ../daemon/gdm-session-worker.c:846
 msgid "application programmer error"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:845
-msgid "unscoped error"
-msgstr ""
+#: ../daemon/gdm-session-worker.c:847
+msgid "unknown error"
+msgstr "שגיאה לא ידועה"
 
-#: ../daemon/gdm-session-worker.c:852
+#: ../daemon/gdm-session-worker.c:854
 msgid "Username:"
 msgstr "שם משתמש:"
 
-#: ../daemon/gdm-session-worker.c:858
+#: ../daemon/gdm-session-worker.c:860
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:872
+#: ../daemon/gdm-session-worker.c:874
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:887
+#: ../daemon/gdm-session-worker.c:889
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:1043
+#: ../daemon/gdm-session-worker.c:1045
 #, fuzzy
 msgid "no user account available"
 msgstr "תמונת מסך אינה זמינה"
 
-#: ../daemon/gdm-session-worker.c:1092
+#: ../daemon/gdm-session-worker.c:1094
 msgid "user account not available on system"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:1294
-#, c-format
-msgid ""
-"session log '%s' is not a normal file, logging session to '%s' instead.\n"
-msgstr ""
-
-#: ../daemon/gdm-session-worker.c:1318
-#, fuzzy
-msgid "unable to log session"
-msgstr "_תצורת הפעלה אחרונה"
-
-#: ../daemon/gdm-simple-slave.c:256
+#: ../daemon/gdm-simple-slave.c:310
 msgid "Unable establish credentials"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:582
+#: ../daemon/gdm-welcome-session.c:388
+#, c-format
+msgid "User %s doesn't exist"
+msgstr "User %s doesn't exist"
+
+#: ../daemon/gdm-welcome-session.c:395
+#, c-format
+msgid "Group %s doesn't exist"
+msgstr "Group %s doesn't exist"
+
+#: ../daemon/gdm-xdmcp-display-factory.c:591
 msgid "Could not create socket!"
 msgstr "Could not create socket!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:848
+#: ../daemon/gdm-xdmcp-display-factory.c:857
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Denied XDMCP query from host %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1011
-#: ../daemon/gdm-xdmcp-display-factory.c:1076
+#: ../daemon/gdm-xdmcp-display-factory.c:1014
+#: ../daemon/gdm-xdmcp-display-factory.c:1238
 msgid "Could not extract authlist from packet"
-msgstr"Could not extract authlist from packet"
+msgstr "Could not extract authlist from packet"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1024
-#: ../daemon/gdm-xdmcp-display-factory.c:1091
+#: ../daemon/gdm-xdmcp-display-factory.c:1027
+#: ../daemon/gdm-xdmcp-display-factory.c:1253
 msgid "Error in checksum"
 msgstr "Error in checksum"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1343
+#: ../daemon/gdm-xdmcp-display-factory.c:1504
 msgid "Bad address"
 msgstr "Bad address"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1424
+#: ../daemon/gdm-xdmcp-display-factory.c:1585
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: Could not read display address"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1432
+#: ../daemon/gdm-xdmcp-display-factory.c:1593
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s: Could not read display port number"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1441
+#: ../daemon/gdm-xdmcp-display-factory.c:1602
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s: Could not extract authlist from packet"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1461
+#: ../daemon/gdm-xdmcp-display-factory.c:1622
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: Error in checksum"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1897
+#: ../daemon/gdm-xdmcp-display-factory.c:2130
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Got REQUEST from banned host %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1907
-#: ../daemon/gdm-xdmcp-display-factory.c:2262
-#: ../daemon/gdm-xdmcp-display-factory.c:2519
+#: ../daemon/gdm-xdmcp-display-factory.c:2140
+#: ../daemon/gdm-xdmcp-display-factory.c:2495
+#: ../daemon/gdm-xdmcp-display-factory.c:2747
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Could not read Display Number"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1914
+#: ../daemon/gdm-xdmcp-display-factory.c:2147
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Could not read Connection Type"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1921
+#: ../daemon/gdm-xdmcp-display-factory.c:2154
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Could not read Client Address"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1929
+#: ../daemon/gdm-xdmcp-display-factory.c:2162
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Could not read Authentication Names"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1938
+#: ../daemon/gdm-xdmcp-display-factory.c:2171
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Could not read Authentication Data"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1948
+#: ../daemon/gdm-xdmcp-display-factory.c:2181
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Could not read Authorization List"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1967
+#: ../daemon/gdm-xdmcp-display-factory.c:2200
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Could not read Manufacturer ID"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1994
-#,, c-format
+#: ../daemon/gdm-xdmcp-display-factory.c:2227
+#, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Failed checksum from %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2246
+#: ../daemon/gdm-xdmcp-display-factory.c:2479
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Got Manage from banned host %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2255
-#: ../daemon/gdm-xdmcp-display-factory.c:2526
+#: ../daemon/gdm-xdmcp-display-factory.c:2488
+#: ../daemon/gdm-xdmcp-display-factory.c:2754
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Could not read Session ID"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2269
+#: ../daemon/gdm-xdmcp-display-factory.c:2502
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Could not read Display Class"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2375
-#: ../daemon/gdm-xdmcp-display-factory.c:2429
-#: ../daemon/gdm-xdmcp-display-factory.c:2435
+#: ../daemon/gdm-xdmcp-display-factory.c:2607
+#: ../daemon/gdm-xdmcp-display-factory.c:2657
+#: ../daemon/gdm-xdmcp-display-factory.c:2663
 #, c-format
 msgid "%s: Could not read address"
-msgstr"%s: Could not read address"
+msgstr "%s: Could not read address"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2509
+#: ../daemon/gdm-xdmcp-display-factory.c:2737
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Got KEEPALIVE from banned host %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2598
+#: ../daemon/gdm-xdmcp-display-factory.c:2826
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2604
+#: ../daemon/gdm-xdmcp-display-factory.c:2832
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:240
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XMDCP: Incorrect XDMCP version!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2610
+#: ../daemon/gdm-xdmcp-display-factory.c:2838
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:246
 msgid "XMDCP: Unable to parse address"
 msgstr "XMDCP: Unable to parse address"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3008
+#: ../daemon/gdm-xdmcp-display-factory.c:3236
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Could not get server hostname: %s!"
@@ -438,27 +427,27 @@ msgstr "XMCP: Could not create XDMCP buffer!"
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Could not read XDMCP header!"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1145
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1150
 msgid "Inactive Text"
 msgstr "Inactive Text"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1146
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1151
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr "The text to use in the label if the user hasn't picked an item yet"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1154
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1159
 msgid "Active Text"
 msgstr "Active Text"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1155
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1160
 msgid "The text to use in the label if the user has picked an item"
 msgstr "The text to use in the label if the user has picked an item"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:978
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1019
 msgid "%l:%M:%S %p"
 msgstr "%l:%M:%S %p"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:978
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1019
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
@@ -467,7 +456,7 @@ msgstr "%l:%M %p"
 #. *              should begin with a 0 in your locale (e.g. "May
 #. *              01" instead of "May  1").
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:984
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1025
 msgid "%a %b %e"
 msgstr "%a %b %e"
 
@@ -475,7 +464,7 @@ msgstr "%a %b %e"
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:989
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1030
 #, c-format
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
@@ -494,9 +483,8 @@ msgid "Disconnect"
 msgstr "התנתקות"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:4
-#, fuzzy
 msgid "Log In"
-msgstr "סמל"
+msgstr "התחברות"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
 msgid "Prompt:"
@@ -515,12 +503,47 @@ msgid "Suspend"
 msgstr "השהה"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:9
-msgid "Tue Oct 23 21:16:50 EDT 2007"
-msgstr "Tue Oct 23 21:16:50 EDT 2007"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:10
 msgid "Version"
 msgstr "גירסה"
+
+#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:139
+msgid "Languages"
+msgstr "שפות"
+
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:190
+msgid "_Languages:"
+msgstr "_שפות:"
+
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:191
+#: ../gui/simple-greeter/gdm-language-option-widget.c:211
+msgid "_Language:"
+msgstr "_שפה:"
+
+#: ../gui/simple-greeter/gdm-language-option-widget.c:177
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:315
+msgid "Other..."
+msgstr "אחר..."
+
+#: ../gui/simple-greeter/gdm-language-option-widget.c:178
+msgid "Choose a language from the full list of available languages."
+msgstr "בחר שפה מתוך רשימת השפות הזמינות המלאה."
+
+#: ../gui/simple-greeter/gdm-option-widget.c:384
+#, fuzzy
+msgid "Label Text"
+msgstr "Inactive Text"
+
+#: ../gui/simple-greeter/gdm-option-widget.c:385
+msgid "The text to use as a label"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:301
+msgid "Max Item Count"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:302
+msgid "The maximum number of items to keep around in the list"
+msgstr ""
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:97
 #, c-format
@@ -536,27 +559,27 @@ msgstr "התחברות מרוחקת (מחובר אל %s...)"
 msgid "Remote Login"
 msgstr "התחברות מרוחקת"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:380
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:368
 msgid "Default"
 msgstr "ברירת מחדל"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:381
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:369
 msgid "Login with the same session as last time."
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:386
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:377
 msgid "Legacy"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:387
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:378
 msgid "Login based on preset legacy configuration"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:430
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:423
 msgid "_Sessions:"
 msgstr "_תצורות הפעלה:"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:431
+#: ../gui/simple-greeter/gdm-session-chooser-widget.c:424
 msgid "_Session:"
 msgstr "_תצורת הפעלה:"
 
@@ -576,46 +599,347 @@ msgstr "True if the background settings manager plugin is enabled."
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "True if the xsettings settings manager plugin is enabled."
 
-#: ../gui/simple-greeter/gdm-user.c:218
+#: ../gui/simple-greeter/gdm-user.c:239
 msgid "Manager"
 msgstr "_שפה"
 
-#: ../gui/simple-greeter/gdm-user.c:219
+#: ../gui/simple-greeter/gdm-user.c:240
 msgid "The user manager object this user is controlled by."
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:314
-msgid "Other..."
-msgstr "אחר..."
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:315
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:316
 msgid "Choose a different account"
 msgstr "בחר חשבון אחר"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:321
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:324
 msgid "Guest"
 msgstr "אורח"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:322
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:325
 msgid "Login as a temporary guest"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:342
-#, fuzzy, c-format
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:347
+#, c-format
 msgid "Log in as %s"
-msgstr "התחבר בכל מקרה"
+msgstr "התחבר כ-%s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:407
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:431
 msgid "Currently logged in"
 msgstr "כבר מחובר"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:448
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:476
 msgid "_Users:"
 msgstr "_משתמשים:"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:449
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:477
 msgid "_User:"
 msgstr "_משתמש:"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:1
+msgid "A menu to quickly switch between users"
+msgstr ""
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:2
+msgid "User Switcher 2"
+msgstr ""
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:3
+msgid "User Switcher Applet Factory"
+msgstr ""
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:1
+msgid "Edit Personal _Information"
+msgstr ""
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:2
+msgid "_About"
+msgstr "_אודות"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:3
+msgid "_Edit Users and Groups"
+msgstr "_ערוך משתמשים וקבוצות"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:4
+msgid "_Help"
+msgstr "_עזרה"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:5
+msgid "_Preferences"
+msgstr "_העדפות"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:6
+#, fuzzy
+msgid "_Setup Login Screen"
+msgstr "לא ניתן לנעול צג"
+
+#: ../gui/user-switch-applet/applet.c:135
+msgid "Missing Required File"
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:137
+#, c-format
+msgid ""
+"The User Selector's interfaces file, `%s', could not be opened. It is likely "
+"that this application was not properly installed or configured."
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:514
+msgid ""
+"The User Switch Applet is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 2 of the License, or (at your "
+"option) any later version."
+msgstr ""
+"The User Switch Applet is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 2 of the License, or (at your "
+"option) any later version."
+
+#: ../gui/user-switch-applet/applet.c:518
+msgid ""
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details."
+msgstr ""
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details."
+
+#: ../gui/user-switch-applet/applet.c:522
+msgid ""
+"You should have received a copy of the GNU General Public License along with "
+"this program; if not, write to the Free Software Foundation, Inc., 51 "
+"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
+msgstr ""
+"You should have received a copy of the GNU General Public License along with "
+"this program; if not, write to the Free Software Foundation, Inc., 51 "
+"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
+
+#: ../gui/user-switch-applet/applet.c:536
+msgid "A menu to quickly switch between users."
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:540
+msgid "translator-credits"
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:1112
+#, fuzzy, c-format
+msgid "Can't lock screen: %s"
+msgstr "Can't write to %s: %s"
+
+#: ../gui/user-switch-applet/applet.c:1126
+#, c-format
+msgid "Can't temporarily set screensaver to blank screen: %s"
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:1282
+#: ../gui/user-switch-applet/applet.c:1285
+#: ../gui/user-switch-applet/applet.c:1340
+#: ../gui/user-switch-applet/applet.c:1343
+#: ../gui/user-switch-applet/applet.c:1677
+#: ../gui/user-switch-applet/applet.c:1682
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:15
+msgid "Users"
+msgstr "משתמשים"
+
+#: ../gui/user-switch-applet/applet.c:1542
+msgid "User Switch Applet"
+msgstr "יישומון החלפת משתמשים"
+
+#: ../gui/user-switch-applet/applet.c:1563
+msgid "User Switcher"
+msgstr "מחליף משתמשים"
+
+#: ../gui/user-switch-applet/applet.c:1741
+msgid "Other"
+msgstr "אחר"
+
+#: ../gui/user-switch-applet/applet.c:1754
+msgid "Login Window"
+msgstr "חלון התחברות"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:312
+msgid "User"
+msgstr "משתמש"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:313
+msgid "The user this menu item represents."
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:320
+#, fuzzy
+msgid "Icon Size"
+msgstr "סמל"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:321
+msgid "The size of the icon to use."
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:327
+msgid "Indicator Size"
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:328
+msgid "Size of check indicator"
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:333
+msgid "Indicator Spacing"
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:334
+msgid "Space between the username and the indicator"
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:1
+msgid "<span weight=\"bold\" size=\"larger\">Multiple Logins Found</span>"
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:2
+msgid "Appearance"
+msgstr "מראה"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:3
+msgid "Continue"
+msgstr "המשך"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:4
+msgid "Create new logins in _nested windows"
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:5
+msgid "Details"
+msgstr "פרטים"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:6
+msgid "Multiple Logins Found - User Switcher"
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:7
+msgid "Options"
+msgstr "אפשרויות"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:8
+msgid "Some preferences have been locked by the system adminstrator."
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:9
+msgid ""
+"The user you want to switch to is logged in multiple times on this computer. "
+"Which login do you want to switch to?"
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:10
+msgid "Use the `people' icon for the menu title"
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:11
+msgid "Use the current user's name for the menu title"
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:12
+msgid "Use the word `Users' as the menu title"
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:13
+msgid "User Switcher Error"
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:14
+msgid "User Switcher Preferences"
+msgstr "העדפות מחליף משתמשים"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:16
+msgid ""
+"When a new login must be created to switch users, create it in a window "
+"instead of on a new screen"
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:17
+msgid ""
+"When changing to a different display, activate the screensaver for this "
+"display."
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:18
+msgid "_Lock the screen after switching users"
+msgstr ""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:1
+msgid "Display Style"
+msgstr "Display Style"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:2
+msgid "Lock Screen After Switch"
+msgstr "Lock Screen After Switch"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:3
+msgid "Show \"Login Window\" Menuitem"
+msgstr "Show \"Login Window\" Menuitem"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:4
+msgid "Show \"Other\" Menuitem"
+msgstr "Show \"Other\" Menuitem"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:5
+msgid "Show Active Users Only"
+msgstr "Show Active Users Only"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:6
+msgid ""
+"Specifies how to display the applet in the panel. Use \"username\" to "
+"display the current user's name, \"icon\" to show the people icon, or \"text"
+"\" to use the word `Users.'"
+msgstr ""
+"Specifies how to display the applet in the panel. Use \"username\" to "
+"display the current user's name, \"icon\" to show the people icon, or \"text"
+"\" to use the word `Users.'"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:7
+msgid "Use Xnest"
+msgstr "Use Xnest"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:8
+msgid ""
+"When to show the \"Login Window\" item. Possible values include: \"always\" "
+"to always show the item, \"never\" to never show the item, and \"auto\" (the "
+"default) to show the item when the applet is in Xnest mode."
+msgstr ""
+"When to show the \"Login Window\" item. Possible values include: \"always\" "
+"to always show the item, \"never\" to never show the item, and \"auto\" (the "
+"default) to show the item when the applet is in Xnest mode."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:9
+msgid ""
+"When to show the \"Other\" item. Possible values include: \"always\" to "
+"always show the item, \"never\" to never show the item, and \"auto\" (the "
+"default) to show the item when the applet is in console (not Xnest) mode."
+msgstr ""
+"When to show the \"Other\" item. Possible values include: \"always\" to "
+"always show the item, \"never\" to never show the item, and \"auto\" (the "
+"default) to show the item when the applet is in console (not Xnest) mode."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:10
+msgid ""
+"Whether or not to create new Xnest windows instead of spawning new consoles "
+"when switching users."
+msgstr ""
+"Whether or not to create new Xnest windows instead of spawning new consoles "
+"when switching users."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:11
+msgid ""
+"Whether or not to lock the screen after switching to a different console."
+msgstr ""
+"Whether or not to lock the screen after switching to a different console."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:12
+msgid "Whether to show only users who are currently logged in, or all users."
+msgstr "Whether to show only users who are currently logged in, or all users."
 
 #: ../utils/gdmflexiserver.c:49
 msgid "Send the specified protocol command to GDM"
@@ -653,2701 +977,3 @@ msgstr "Main Options"
 msgid "Unable to start new display"
 msgstr "Unable to start new display"
 
-#~ msgid "Didn't understand `%s' (expected integer)"
-#~ msgstr "Didn't understand `%s' (expected integer)"
-
-#~ msgid "Integer `%s' is too large or small"
-#~ msgstr "Integer `%s' is too large or small"
-
-#~ msgid "Didn't understand `%s' (expected true or false)"
-#~ msgstr "Didn't understand `%s' (expected true or false)"
-
-#~ msgid "Text contains invalid UTF-8"
-#~ msgstr "Text contains invalid UTF-8"
-
-#~ msgid "This session logs you into CDE"
-#~ msgstr "תצורת הפעלה זו מחברת אותך ל CDE"
-
-#, fuzzy
-#~ msgid ""
-#~ "Failed to start the X server (your graphical interface).  It is likely "
-#~ "that it is not set up correctly.  You will need to log in on a console "
-#~ "and reconfigure the X server.  Then restart GDM."
-#~ msgstr ""
-#~ "Failed to start the X server (your graphical interface).  It is likely "
-#~ "that it is not set up correctly.  You will need to log in on a console "
-#~ "and reconfigure the X server.  Then restart GDM."
-
-#~ msgid ""
-#~ "Would you like to try to configure the X server?  Note that you will need "
-#~ "the root password for this."
-#~ msgstr ""
-#~ "Would you like to try to configure the X server?  Note that you will need "
-#~ "the root password for this.root בשביל זה."
-
-#~ msgid "Please type in the root (privileged user) password."
-#~ msgstr "Please type in the root (privileged user) password."
-
-#~ msgid "Trying to restart the X server."
-#~ msgstr "Trying to restart the X server."
-
-#~ msgid ""
-#~ "The X server is now disabled.  Restart GDM when it is configured "
-#~ "correctly."
-#~ msgstr ""
-#~ "The X server is now disabled.  Restart GDM when it is configured "
-#~ "correctly."
-
-#~ msgid ""
-#~ "Failed to start the X server (your graphical interface).  It is likely "
-#~ "that it is not set up correctly.  Would you like to view the X server "
-#~ "output to diagnose the problem?"
-#~ msgstr ""
-#~ "Failed to start the X server (your graphical interface).  It is likely "
-#~ "that it is not set up correctly.  Would you like to view the X server "
-#~ "output to diagnose the problem?"
-
-#~ msgid "Would you like to view the detailed X server output as well?"
-#~ msgstr "Would you like to view the detailed X server output as well?"
-
-#~ msgid ""
-#~ "Failed to start the X server (your graphical interface).  It seems that "
-#~ "the pointer device (your mouse) is not set up correctly.  Would you like "
-#~ "to view the X server output to diagnose the problem?"
-#~ msgstr ""
-#~ "Failed to start the X server (your graphical interface).  It seems that "
-#~ "the pointer device (your mouse) is not set up correctly.  Would you like "
-#~ "to view the X server output to diagnose the problem?"
-
-#~ msgid ""
-#~ "Would you like to try to configure the mouse?  Note that you will need "
-#~ "the root password for this."
-#~ msgstr ""
-#~ "Would you like to try to configure the mouse?  Note that you will need "
-#~ "the root password for this."
-
-#~ msgid ""
-#~ "System has no Xclients file, so starting a failsafe xterm session.  "
-#~ "Windows will have focus only if the mouse pointer is above them.  To get "
-#~ "out of this mode type 'exit' in the window."
-#~ msgstr ""
-#~ "System has no Xclients file, so starting a failsafe xterm session.  "
-#~ "Windows will have focus only if the mouse pointer is above them.  To get "
-#~ "out of this mode type 'exit' in the window."
-
-#~ msgid ""
-#~ "Failed to start the session, so starting a failsafe xterm session.  "
-#~ "Windows will have focus only if the mouse pointer is above them.  To get "
-#~ "out of this mode type 'exit' in the window."
-#~ msgstr ""
-#~ "Failed to start the session, so starting a failsafe xterm session.  "
-#~ "Windows will have focus only if the mouse pointer is above them.  To get "
-#~ "out of this mode type 'exit' in the window."
-
-#~ msgid "GNOME"
-#~ msgstr "GNOME"
-
-#~ msgid "This session logs you into GNOME"
-#~ msgstr "תצורת הפעלה זו מחברת אותך ל GNOME"
-
-#~ msgid "Secure Remote connection"
-#~ msgstr "חיבור מרוחק מאובטח"
-
-#, fuzzy
-#~ msgid "This session logs you into a remote host using ssh"
-#~ msgstr "תצורת הפעלה זו מחברת אותך ל CDE"
-
-#~ msgid "%s: Could not write new authorization entry: %s"
-#~ msgstr "%s: Could not write new authorization entry: %s"
-
-#~ msgid ""
-#~ "%s: Could not write new authorization entry.  Possibly out of diskspace"
-#~ msgstr ""
-#~ "%s: Could not write new authorization entry.  Possibly out of diskspace"
-
-#~ msgid ""
-#~ "GDM could not write a new authorization entry to disk.  Possibly out of "
-#~ "diskspace.%s%s"
-#~ msgstr ""
-#~ "GDM לא יכול לכתוב ערך אישור חדש:  כנראה אין מספיק מקום על הדיסק.%s%s"
-
-#~ msgid "%s: Could not make new cookie file in %s"
-#~ msgstr "%s: Could not make new cookie file in %s"
-
-#~ msgid "%s: Cannot safely open %s"
-#~ msgstr "%s: Cannot safely open %s"
-
-#~ msgid "%s: Could not open cookie file %s"
-#~ msgstr "%s: Could not open cookie file %s"
-
-#~ msgid "%s: Could not lock cookie file %s"
-#~ msgstr "%s: Could not lock cookie file %s"
-
-#~ msgid "%s: Could not write cookie"
-#~ msgstr "%s: Could not write cookie"
-
-#~ msgid "%s: Ignoring suspiciously looking cookie file %s"
-#~ msgstr "%s: Ignoring suspiciously looking cookie file %s"
-
-#~ msgid "Can't write to %s: %s"
-#~ msgstr "Can't write to %s: %s"
-
-#~ msgid ""
-#~ "The display server has been shut down about 6 times in the last 90 "
-#~ "seconds. It is likely that something bad is going on.  Waiting for 2 "
-#~ "minutes before trying again on display %s."
-#~ msgstr ""
-#~ "שרת התצוגה נכבה בערך 6 פעמים ב־90 השניות האחרונות. סביר להניח שמשהו רע "
-#~ "מתרחש. מחכה 2 דקות לפני שמנסה שוב על תצוגה %s."
-
-#~ msgid "%s: Cannot create pipe"
-#~ msgstr "%s: Cannot create pipe"
-
-#~ msgid "%s: Failed forking GDM slave process for %s"
-#~ msgstr "%s: Failed forking GDM slave process for %s"
-
-#~ msgid "%s not a regular file!\n"
-#~ msgstr "%s איננו קובץ רגיל!\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "... File too long to display ...\n"
-#~ msgstr ""
-#~ "\n"
-#~ "... הקובץ ארוך מידי לתצוגה ...\n"
-
-#~ msgid "%s could not be opened"
-#~ msgstr "%s לא הצליח להיפתח"
-
-#~ msgid "%s: Cannot fork to display error/info box"
-#~ msgstr "%s: Cannot fork to display error/info box"
-
-#~ msgid "%s: Priority out of bounds; changed to %d"
-#~ msgstr "%s: Priority out of bounds; changed to %d"
-
-#~ msgid "%s: Empty server command; using standard command."
-#~ msgstr "%s: Empty server command; using standard command."
-
-#, fuzzy
-#~ msgid ""
-#~ "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
-#~ "does not exist. Please correct GDM configuration and restart GDM."
-#~ msgstr "המשתמש gdm איננו קיים. אנא תקן את הגדרות gdm %s והפעל מחדש את gdm."
-
-#~ msgid "%s: BaseXsession empty; using %s"
-#~ msgstr "%s: BaseXsession empty; using %s"
-
-#~ msgid "%s: Standard X server not found; trying alternatives"
-#~ msgstr "%s: Standard X server not found; trying alternatives"
-
-#~ msgid "%s: No greeter specified."
-#~ msgstr "%s: No greeter specified."
-
-#~ msgid "%s: No remote greeter specified."
-#~ msgstr "%s: No remote greeter specified."
-
-#~ msgid "%s: No sessions directory specified."
-#~ msgstr "%s: No sessions directory specified."
-
-#~ msgid ""
-#~ "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
-#~ msgstr ""
-#~ "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
-
-#~ msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
-#~ msgstr "%s: XDMCP disabled and no static servers defined. Aborting!"
-
-#~ msgid ""
-#~ "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to "
-#~ "allow configuration!"
-#~ msgstr ""
-#~ "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to "
-#~ "allow configuration!"
-
-#, fuzzy
-#~ msgid ""
-#~ "The GDM user '%s' does not exist. Please correct GDM configuration and "
-#~ "restart GDM."
-#~ msgstr "המשתמש gdm איננו קיים. אנא תקן את הגדרות gdm %s והפעל מחדש את gdm."
-
-#, fuzzy
-#~ msgid ""
-#~ "The GDM user is set to be root, but this is not allowed since it can pose "
-#~ "a security risk.  Please correct GDM configuration and restart GDM."
-#~ msgstr "המשתמש gdm איננו קיים. אנא תקן את הגדרות gdm %s והפעל מחדש את gdm."
-
-#, fuzzy
-#~ msgid ""
-#~ "The GDM group '%s' does not exist. Please correct GDM configuration and "
-#~ "restart GDM."
-#~ msgstr "המשתמש gdm איננו קיים. אנא תקן את הגדרות gdm %s והפעל מחדש את gdm."
-
-#, fuzzy
-#~ msgid ""
-#~ "Server Authorization directory (daemon/ServAuthDir) is set to %s but is "
-#~ "not owned by user %d and group %d. Please correct the ownership or GDM "
-#~ "configuration and restart GDM."
-#~ msgstr "המשתמש gdm איננו קיים. אנא תקן את הגדרות gdm %s והפעל מחדש את gdm."
-
-#~ msgid "%s: Could not bind socket"
-#~ msgstr "%s: Could not bind socket"
-
-#~ msgid "%s: Could not make FIFO"
-#~ msgstr "%s: Could not make FIFO"
-
-#~ msgid "%s: Could not open FIFO"
-#~ msgstr "%s: Could not open FIFO"
-
-#~ msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
-#~ msgstr "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
-
-#~ msgid "%s: fork () failed!"
-#~ msgstr "%s: fork () failed!"
-
-#~ msgid "%s: setsid () failed: %s!"
-#~ msgstr "%s: setsid () failed: %s!"
-
-#~ msgid "%s: Trying failsafe X server %s"
-#~ msgstr "%s: Trying failsafe X server %s"
-
-#~ msgid "%s: Running the XKeepsCrashing script"
-#~ msgstr "%s: Running the XKeepsCrashing script"
-
-#~ msgid ""
-#~ "The X server (your graphical interface) cannot be started.  It is likely "
-#~ "that it is not set up correctly.  You will need to log in on a console "
-#~ "and rerun the X configuration application, then restart GDM."
-#~ msgstr ""
-#~ "The X server (your graphical interface) cannot be started.  It is likely "
-#~ "that it is not set up correctly.  You will need to log in on a console "
-#~ "and rerun the X configuration application, then restart GDM."
-
-#~ msgid ""
-#~ "Failed to start X server several times in a short time period; disabling "
-#~ "display %s"
-#~ msgstr ""
-#~ "Failed to start X server several times in a short time period; disabling "
-#~ "display %s"
-
-#~ msgid "Master suspending..."
-#~ msgstr "Master suspending..."
-
-#~ msgid "System is restarting, please wait ..."
-#~ msgstr "System is restarting, please wait ..."
-
-#~ msgid "System is shutting down, please wait ..."
-#~ msgstr "System is shutting down, please wait ..."
-
-#~ msgid "Master halting..."
-#~ msgstr "Master halting..."
-
-#~ msgid "Restarting computer..."
-#~ msgstr "Restarting computer..."
-
-#~ msgid "custom_cmd: Custom command index %ld outside permitted range [0,%d)"
-#~ msgstr "custom_cmd: Custom command index %ld outside permitted range [0,%d)"
-
-#~ msgid "Executing custom command %ld with restart option..."
-#~ msgstr "Executing custom command %ld with restart option..."
-
-#~ msgid "%s: Execution of custom command failed: %s"
-#~ msgstr "%s: Execution of custom command failed: %s"
-
-#~ msgid "Executing custom command %ld with no restart option ..."
-#~ msgstr "Executing custom command %ld with no restart option ..."
-
-#~ msgid "custom_cmd: forking process for custom command %ld failed"
-#~ msgstr "custom_cmd: forking process for custom command %ld failed"
-
-#~ msgid "custom_cmd: child %d returned %d"
-#~ msgstr "custom_cmd: child %d returned %d"
-
-#~ msgid ""
-#~ "Restart GDM, Restart machine, Suspend, or Halt request when there is no "
-#~ "system menu from display %s"
-#~ msgstr ""
-#~ "Restart GDM, Restart machine, Suspend, or Halt request when there is no "
-#~ "system menu from display %s"
-
-#~ msgid ""
-#~ "Restart GDM, Restart machine, Suspend or Halt request from a non-static "
-#~ "display %s"
-#~ msgstr ""
-#~ "Restart GDM, Restart machine, Suspend or Halt request from a non-static "
-#~ "display %s"
-
-#~ msgid "%s: Aborting display %s"
-#~ msgstr "%s: Aborting display %s"
-
-#~ msgid "GDM restarting ..."
-#~ msgstr "GDM restarting ..."
-
-#~ msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
-#~ msgstr "main daemon: Got SIGABRT. Something went very wrong. Going down!"
-
-#~ msgid "Do not fork into the background"
-#~ msgstr "Do not fork into the background"
-
-#~ msgid "Preserve LD_* variables"
-#~ msgstr "Preserve LD_* variables"
-
-#~ msgid "Start the first X server but then halt until we get a GO in the fifo"
-#~ msgstr ""
-#~ "Start the first X server but then halt until we get a GO in the fifo"
-
-#~ msgid "Can't open %s for writing"
-#~ msgstr "Can't open %s for writing"
-
-#~ msgid "- The GNOME login manager"
-#~ msgstr "- The GNOME login manager"
-
-#~ msgid "%s: Error setting up %s signal handler: %s"
-#~ msgstr "%s: Error setting up %s signal handler: %s"
-
-#~ msgid "GDM already running. Aborting!"
-#~ msgstr "GDM already running. Aborting!"
-
-#~ msgid "%s: Error setting up CHLD signal handler"
-#~ msgstr "%s: Error setting up CHLD signal handler"
-
-#~ msgid "DYNAMIC request denied: Not authenticated"
-#~ msgstr "DYNAMIC request denied: Not authenticated"
-
-#~ msgid "%s request denied: Not authenticated"
-#~ msgstr "%s request denied: Not authenticated"
-
-#~ msgid "Unknown server type requested; using standard server."
-#~ msgstr "Unknown server type requested; using standard server."
-
-#~ msgid ""
-#~ "Requested server %s not allowed to be used for flexible servers; using "
-#~ "standard server."
-#~ msgstr ""
-#~ "Requested server %s not allowed to be used for flexible servers; using "
-#~ "standard server."
-
-#~ msgid "y = Yes or n = No? >"
-#~ msgstr "y = Yes or n = No? >"
-
-#~ msgid "Could not setgid %d. Aborting."
-#~ msgstr "Could not setgid %d. Aborting."
-
-#~ msgid "initgroups () failed for %s. Aborting."
-#~ msgstr "initgroups () failed for %s. Aborting."
-
-#~ msgid "%s: Error setting signal %d to %s"
-#~ msgstr "%s: Error setting signal %d to %s"
-
-#~ msgid ""
-#~ "Last login:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "התחברות אחרונה:\n"
-#~ "%s"
-
-#~ msgid "Can not start fallback console"
-#~ msgstr "Can not start fallback console"
-
-#~ msgid ""
-#~ "There already appears to be an X server running on display %s.  Should "
-#~ "another display number by tried?  Answering no will cause GDM to attempt "
-#~ "starting the server on %s again.%s"
-#~ msgstr ""
-#~ "There already appears to be an X server running on display %s.  Should "
-#~ "another display number by tried?  Answering no will cause GDM to attempt "
-#~ "starting the server on %s again.%s"
-
-#~ msgid ""
-#~ "  (You can change consoles by pressing Ctrl-Alt plus a function key, such "
-#~ "as Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 "
-#~ "and higher.)"
-#~ msgstr ""
-#~ "  (You can change consoles by pressing Ctrl-Alt plus a function key, such "
-#~ "as Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 "
-#~ "and higher.)"
-
-# y, c-format
-#~ msgid "Display '%s' cannot be opened by nested display"
-#~ msgstr "Display '%s' cannot be opened by nested display"
-
-#~ msgid "Display %s is busy. There is another X server running already."
-#~ msgstr "Display %s is busy. There is another X server running already."
-
-#~ msgid "%s: Cannot find a free display number"
-#~ msgstr "%s: Cannot find a free display number"
-
-#~ msgid "%s: Display %s busy.  Trying another display number."
-#~ msgstr "%s: Display %s busy.  Trying another display number."
-
-#~ msgid "Invalid server command '%s'"
-#~ msgstr "Invalid server command '%s'"
-
-#~ msgid "Server name '%s' not found; using standard server"
-#~ msgstr "Server name '%s' not found; using standard server"
-
-#~ msgid "%s: Xserver not found: %s"
-#~ msgstr "%s: Xserver not found: %s"
-
-#~ msgid "%s: Can't fork Xserver process!"
-#~ msgstr "%s: Can't fork Xserver process!"
-
-#~ msgid "Can't set EGID to user GID"
-#~ msgstr "Can't set EGID to user GID"
-
-#~ msgid "Can't set EUID to user UID"
-#~ msgstr "Can't set EUID to user UID"
-
-#~ msgid ""
-#~ "You are already logged in.  You can log in anyway, return to your "
-#~ "previous login session, or abort this login"
-#~ msgstr ""
-#~ "אתה כבר מחובר.  אתה יכול להתחבר בכל מקרה, לחזור לתצורת ההפעלה הקודמת שלך, "
-#~ "או לבטל התחברות זו"
-
-#~ msgid "Return to previous login"
-#~ msgstr "חזור לחיבור קודם"
-
-#~ msgid "Abort login"
-#~ msgstr "בטל חיבור"
-
-#~ msgid ""
-#~ "You are already logged in.  You can log in anyway or abort this login"
-#~ msgstr "אתה כבר מחובר.  אתה יכול להתחבר בכל מקרה או לבטל התחברות זו"
-
-#~ msgid "%s: cannot fork"
-#~ msgstr "%s: cannot fork"
-
-#~ msgid "%s: cannot open display %s"
-#~ msgstr "%s: cannot open display %s"
-
-#, fuzzy
-#~ msgid ""
-#~ "Could not access configuration file (custom.conf). Make sure that the "
-#~ "file exists before launching  login manager config utility."
-#~ msgstr ""
-#~ "לא מצליח להריץ את ישום ההגדרות. יש לוודא שהנתיב שלו מוגדר נכון בקובץ "
-#~ "ההגדרות."
-
-#~ msgid ""
-#~ "Could not execute the configuration application.  Make sure its path is "
-#~ "set correctly in the configuration file.  Attempting to start it from the "
-#~ "default location."
-#~ msgstr ""
-#~ "לא יכול להריץ את יישום ההגדרות. יש לוודא שהנתיב שלו מוגדר כראוי בקובץ "
-#~ "ההגדרות. מנסה להפעיל אותו ממקום ברירת המחדל."
-
-#~ msgid ""
-#~ "Could not execute the configuration application.  Make sure its path is "
-#~ "set correctly in the configuration file."
-#~ msgstr ""
-#~ "לא מצליח להריץ את ישום ההגדרות. יש לוודא שהנתיב שלו מוגדר נכון בקובץ "
-#~ "ההגדרות."
-
-#, fuzzy
-#~ msgid "You must authenticate as root to run configuration."
-#~ msgstr ""
-#~ "הזן את סיסמת root\n"
-#~ "כדי להפעיל את תוכנת ההתקנה."
-
-#~ msgid ""
-#~ "Login sound requested on non-local display or the play software cannot be "
-#~ "run or the sound does not exist."
-#~ msgstr ""
-#~ "Login sound requested on non-local display or the play software cannot be "
-#~ "run or the sound does not exist."
-
-#~ msgid "%s: Can't init pipe to gdmgreeter"
-#~ msgstr "%s: Can't init pipe to gdmgreeter"
-
-#, fuzzy
-#~ msgid ""
-#~ "Could not start the regular X server (your graphical environment) and so "
-#~ "this is a failsafe X server.  You should log in and properly configure "
-#~ "the X server."
-#~ msgstr ""
-#~ "אני לא יכול לפתוח את שרת ה X הרגיל (הסביבה הגרפית שלך) ולכן זהו שרת X "
-#~ "בתצורה בטוחה.  אתה צריך להתחבר ולהגדיר נכון את שרת ה X."
-
-#~ msgid ""
-#~ "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
-#~ msgstr ""
-#~ "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
-
-#~ msgid "%s: Cannot start greeter trying default: %s"
-#~ msgstr "%s: Cannot start greeter trying default: %s"
-
-#~ msgid "%s: Error starting greeter on display %s"
-#~ msgstr "%s: Error starting greeter on display %s"
-
-#~ msgid "%s: Can't fork gdmgreeter process"
-#~ msgstr "%s: Can't fork gdmgreeter process"
-
-#~ msgid "%s: Can't open fifo!"
-#~ msgstr "%s: Can't open fifo!"
-
-#~ msgid "%s: Can't init pipe to gdmchooser"
-#~ msgstr "%s: Can't init pipe to gdmchooser"
-
-#~ msgid "%s: Error starting chooser on display %s"
-#~ msgstr "%s: Error starting chooser on display %s"
-
-#~ msgid "%s: Can't fork gdmchooser process"
-#~ msgstr "%s: Can't fork gdmchooser process"
-
-#~ msgid "%s: Could not open ~/.xsession-errors"
-#~ msgstr "%s: Could not open ~/.xsession-errors"
-
-#~ msgid "%s: Execution of PreSession script returned > 0. Aborting."
-#~ msgstr "%s: Execution of PreSession script returned > 0. Aborting."
-
-#, fuzzy
-#~ msgid "Language %s does not exist; using %s"
-#~ msgstr "השפה %s אינה קיימת, משתמש ב-%s"
-
-#~ msgid "System default"
-#~ msgstr "ברירת המחדל של המערכת"
-
-#~ msgid "%s: Could not setup environment for %s. Aborting."
-#~ msgstr "%s: Could not setup environment for %s. Aborting."
-
-#~ msgid "%s: setusercontext () failed for %s. Aborting."
-#~ msgstr "%s: setusercontext () failed for %s. Aborting."
-
-#~ msgid "%s: Could not become %s. Aborting."
-#~ msgstr "%s: Could not become %s. Aborting."
-
-#, fuzzy
-#~ msgid ""
-#~ "No Exec line in the session file: %s.  Running the GNOME failsafe session "
-#~ "instead"
-#~ msgstr "%s: אין שורת Exec בקובץ התצורה: %s, מתחיל את GNOME בתצורה הבטוחה"
-
-#~ msgid ""
-#~ "%s: Cannot find or run the base Xsession script.  Running the GNOME "
-#~ "failsafe session instead."
-#~ msgstr ""
-#~ "%s: Cannot find or run the base Xsession script.  Running the GNOME "
-#~ "failsafe session instead."
-
-#~ msgid ""
-#~ "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
-#~ msgstr ""
-#~ "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
-
-#~ msgid ""
-#~ "Could not find the GNOME installation, will try running the \"Failsafe "
-#~ "xterm\" session."
-#~ msgstr ""
-#~ "לא ניתן למצוא את התקנת GNOME, אנסה להפעיל את תצורת \"מסוף X לתצורה בטוחה"
-#~ "\"."
-
-#, fuzzy
-#~ msgid ""
-#~ "This is the Failsafe GNOME session.  You will be logged into the "
-#~ "'Default' session of GNOME without the startup scripts being run.  This "
-#~ "should be used to fix problems in your installation."
-#~ msgstr ""
-#~ "זוהי תצורת ההפעלה הבטוחה של Gnome.  אתה תתחבר לתצורת 'ברירת המחדל' של "
-#~ "Gnome ללא הפעלת תסריטי הפעלה.  זה נועד רק כדי לתקן תקלות בהתקנה שלך."
-
-#~ msgid "Cannot find \"xterm\" to start a failsafe session."
-#~ msgstr "לא ניתן למצוא את \"xterm\" כדי להפעיל תצורת הפעלה בטוחה."
-
-#~ msgid "%s: User not allowed to log in"
-#~ msgstr "%s: User not allowed to log in"
-
-#~ msgid "The system administrator has disabled your account."
-#~ msgstr "מנהל המערכת כיבה את חשבונך."
-
-#~ msgid "%s: Could not exec %s"
-#~ msgstr "%s: Could not exec %s"
-
-#~ msgid "Cannot start the session due to some internal error."
-#~ msgstr "לא ניתן להתחיל את תצורת ההפעלה עקב שגיאה פנימית."
-
-#~ msgid "%s: User passed auth but getpwnam (%s) failed!"
-#~ msgstr "%s: User passed auth but getpwnam (%s) failed!"
-
-#~ msgid "%s: Execution of PostLogin script returned > 0. Aborting."
-#~ msgstr "%s: Execution of PostLogin script returned > 0. Aborting."
-
-#, fuzzy
-#~ msgid ""
-#~ "Your home directory is listed as: '%s' but it does not appear to exist.  "
-#~ "Do you want to log in with the / (root) directory as your home directory? "
-#~ "It is unlikely anything will work unless you use a failsafe session."
-#~ msgstr ""
-#~ "ספריית הבית שלך רשומה כ:\n"
-#~ "'%s'\n"
-#~ "אך לא נראה שהיא קיימת.  האם ברצונך להתחבר עם ספריית / (שורש) כספריית הבית "
-#~ "שלך?\n"
-#~ "\n"
-#~ "סביר להניח ששום דבר לא יעבוד אלא אם תשתמש בתצורת הפעלה בטוחה."
-
-#~ msgid "%s: Home directory for %s: '%s' does not exist!"
-#~ msgstr "%s: Home directory for %s: '%s' does not exist!"
-
-#~ msgid "%s: Error forking user session"
-#~ msgstr "%s: Error forking user session"
-
-#~ msgid ""
-#~ "Your session only lasted less than 10 seconds.  If you have not logged "
-#~ "out yourself, this could mean that there is some installation problem or "
-#~ "that you may be out of diskspace.  Try logging in with one of the "
-#~ "failsafe sessions to see if you can fix this problem."
-#~ msgstr ""
-#~ "תצורת ההפעלה שלך נמשכה פחות מ-10 שניות.  אם לא התחברת בעצמך, יכול להיות "
-#~ "שישנה בעיה בהתקנה או שייתכן ואין לך מספיק מקום פנוי על הדיסק.  נסה להתחבר "
-#~ "לאחת מתצורות ההפעלה הבטוחות כדי לראות אם אתה יכול לתקן בעיה זו."
-
-#~ msgid "View details (~/.xsession-errors file)"
-#~ msgstr "הצג פרטים (הקובץ ~/.xsession-errors)"
-
-#~ msgid "GDM detected a halt or restart in progress."
-#~ msgstr "GDM detected a halt or restart in progress."
-
-#~ msgid "%s: Fatal X error - Restarting %s"
-#~ msgstr "%s: Fatal X error - Restarting %s"
-
-#~ msgid ""
-#~ "Login sound requested on non-local display or the play software cannot be "
-#~ "run or the sound does not exist"
-#~ msgstr ""
-#~ "Login sound requested on non-local display or the play software cannot be "
-#~ "run or the sound does not exist"
-
-#~ msgid "%s: Failed starting: %s"
-#~ msgstr "%s: Failed starting: %s"
-
-#~ msgid "%s: Can't fork script process!"
-#~ msgstr "%s: Can't fork script process!"
-
-#~ msgid "%s: Failed creating pipe"
-#~ msgstr "%s: Failed creating pipe"
-
-#~ msgid ""
-#~ "\n"
-#~ "Incorrect username or password.  Letters must be typed in the correct "
-#~ "case."
-#~ msgstr ""
-#~ "\n"
-#~ "שם משתמש או סיסמה שגויים.  האותיות חייבות להיות כתובות ברשיות הנכונות."
-
-#~ msgid "Please enter your username"
-#~ msgstr "אנא הזן את שם המשתמש שלך"
-
-#~ msgid "Password:"
-#~ msgstr "סיסמה:"
-
-#~ msgid "The system administrator is not allowed to login from this screen"
-#~ msgstr "מנהל המערכת לא איפשר חיבור ממסך זה"
-
-#~ msgid ""
-#~ "\n"
-#~ "The system administrator has disabled your account."
-#~ msgstr ""
-#~ "\n"
-#~ "מנהל המערכת כיבה את חשבונך."
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "Cannot set your user group; you will not be able to log in. Please "
-#~ "contact your system administrator."
-#~ msgstr "פג תוקפו של חשבונך; אנא צור קשר עם מנהל המערכת"
-
-#, fuzzy
-#~ msgid ""
-#~ "You are required to change your password.\n"
-#~ "Please choose a new one."
-#~ msgstr "אתה נדרש לשנות את סיסמתך מיידית (הכרח של root)"
-
-#, fuzzy
-#~ msgid ""
-#~ "Your password has expired.\n"
-#~ "Only a system administrator can now change it"
-#~ msgstr "פג תוקפו של חשבונך; אנא צור קשר עם מנהל המערכת"
-
-#~ msgid "You are required to change your password immediately (password aged)"
-#~ msgstr "אתה נדרש לשנות את סיסמתך מיידית (תקפות הסיסמה)"
-
-#~ msgid "You are required to change your password immediately (root enforced)"
-#~ msgstr "אתה נדרש לשנות את סיסמתך מיידית (הכרח של root)"
-
-#~ msgid "Your account has expired; please contact your system administrator"
-#~ msgstr "פג תוקפו של חשבונך; אנא צור קשר עם מנהל המערכת"
-
-#~ msgid "No password supplied"
-#~ msgstr "לא סופקה סיסמה"
-
-#~ msgid "Password unchanged"
-#~ msgstr "סיסמה לא שונתה"
-
-#~ msgid "Retype new UNIX password:"
-#~ msgstr "הקלד שוב סיסמת UNIX חדשה:"
-
-#~ msgid "Enter new UNIX password:"
-#~ msgstr "הקלד סיסמת UNIX חדשה:"
-
-#~ msgid "(current) UNIX password:"
-#~ msgstr "סיסמת UNIX (נוכחית):"
-
-#~ msgid "Error while changing NIS password."
-#~ msgstr "שגיאה בזמן שינוי סיסמת NIS."
-
-#~ msgid "You must choose a longer password"
-#~ msgstr "אתה חייב לבחור סיסמה ארוכה יותר"
-
-#~ msgid "Password has been already used. Choose another."
-#~ msgstr "הסיסמה כבר הייתה בשימוש. בחר אחרת."
-
-#~ msgid "You must wait longer to change your password"
-#~ msgstr "אתה חייב לחכות יותר זמן כדי לשנות את סיסמתך"
-
-#~ msgid "Sorry, passwords do not match"
-#~ msgstr "מצטער, הסיסמאות אינן תואמות"
-
-#~ msgid "Can't set PAM_TTY=%s"
-#~ msgstr "Can't set PAM_TTY=%s"
-
-#~ msgid "Can't set PAM_RHOST=%s"
-#~ msgstr "Can't set PAM_RHOST=%s"
-
-#~ msgid "Root login disallowed on display '%s'"
-#~ msgstr "Root login disallowed on display '%s'"
-
-#~ msgid "Authentication token change failed for user %s"
-#~ msgstr "Authentication token change failed for user %s"
-
-#~ msgid "User %s no longer permitted to access the system"
-#~ msgstr "User %s no longer permitted to access the system"
-
-#~ msgid "User %s not permitted to gain access at this time"
-#~ msgstr "User %s not permitted to gain access at this time"
-
-#~ msgid ""
-#~ "\n"
-#~ "The system administrator has disabled access to the system temporarily."
-#~ msgstr ""
-#~ "\n"
-#~ "זמנית מנהל המערכת מונע גישה למערכת."
-
-#~ msgid "Couldn't set acct. mgmt for %s"
-#~ msgstr "Couldn't set acct. mgmt for %s"
-
-#~ msgid "Cannot set user group for %s"
-#~ msgstr "Cannot set user group for %s"
-
-#~ msgid "Couldn't set credentials for %s"
-#~ msgstr "Couldn't set credentials for %s"
-
-#~ msgid "Couldn't open session for %s"
-#~ msgstr "Couldn't open session for %s"
-
-#~ msgid ""
-#~ "\n"
-#~ "Authentication failed.  Letters must be typed in the correct case."
-#~ msgstr ""
-#~ "\n"
-#~ "האימות נכשל.  האותיות חייבות להיות כתובות ברשיות הנכונות."
-
-#~ msgid "Automatic login"
-#~ msgstr "חיבור אוטומטי"
-
-#, fuzzy
-#~ msgid ""
-#~ "The system administrator has disabled your access to the system "
-#~ "temporarily."
-#~ msgstr ""
-#~ "\n"
-#~ "זמנית מנהל המערכת מונע גישה למערכת."
-
-#, fuzzy
-#~ msgid ""
-#~ "Cannot set your user group; you will not be able to log in. Please "
-#~ "contact your system administrator."
-#~ msgstr "פג תוקפו של חשבונך; אנא צור קשר עם מנהל המערכת"
-
-#~ msgid ""
-#~ "%s: Failed to run '%s --display %s --display-authfile %s --to %s --to-"
-#~ "authfile %s': %s"
-#~ msgstr ""
-#~ "%s: Failed to run '%s --display %s --display-authfile %s --to %s --to-"
-#~ "authfile %s': %s"
-
-#~ msgid "%s: No XDMCP support"
-#~ msgstr "%s: No XDMCP support"
-
-#~ msgid "Xnest command line"
-#~ msgstr "Xnest command line"
-
-#~ msgid "STRING"
-#~ msgstr "STRING"
-
-#~ msgid "Extra options for Xnest"
-#~ msgstr "Extra options for Xnest"
-
-#~ msgid "OPTIONS"
-#~ msgstr "OPTIONS"
-
-#~ msgid "Run in background"
-#~ msgstr "Run in background"
-
-#~ msgid "Just run Xnest, no query (no chooser)"
-#~ msgstr "Just run Xnest, no query (no chooser)"
-
-#~ msgid "Do direct query instead of indirect (chooser)"
-#~ msgstr "Do direct query instead of indirect (chooser)"
-
-#~ msgid "Run broadcast instead of indirect (chooser)"
-#~ msgstr "Run broadcast instead of indirect (chooser)"
-
-#~ msgid "Don't check for running GDM"
-#~ msgstr "Don't check for running GDM"
-
-#~ msgid "- Nested gdm login chooser"
-#~ msgstr "- Nested gdm login chooser"
-
-#~ msgid "- Nested gdm login"
-#~ msgstr "- Nested gdm login"
-
-#~ msgid "Please ask your system administrator to install it."
-#~ msgstr "אנא בקש ממנהל המערכת להתקין אותו."
-
-#, fuzzy
-#~ msgid "Please ask your system administrator to enable this feature."
-#~ msgstr "אנא בקש ממנהל המערכת להתקין אותו."
-
-#~ msgid "Please ask your system administrator to start it."
-#~ msgstr "אנא בקש ממנהל המערכת להפעיל אותו."
-
-#~ msgid "Socket for xdm communication"
-#~ msgstr "Socket for xdm communication"
-
-#~ msgid "SOCKET"
-#~ msgstr "SOCKET"
-
-#~ msgid "Client address to return in response to xdm"
-#~ msgstr "Client address to return in response to xdm"
-
-#~ msgid "ADDRESS"
-#~ msgstr "ADDRESS"
-
-#~ msgid "Connection type to return in response to xdm"
-#~ msgstr "Connection type to return in response to xdm"
-
-#~ msgid "TYPE"
-#~ msgstr "TYPE"
-
-#~ msgid "- gdm login chooser"
-#~ msgstr "- gdm login chooser"
-
-#~ msgid "C_onnect"
-#~ msgstr "ה_תחבר"
-
-#~ msgid "Exit the application"
-#~ msgstr "צא מהיישום"
-
-#~ msgid "How to use this application"
-#~ msgstr "כיצד להשתמש ביישום זה"
-
-#, fuzzy
-#~ msgid "Login Host Chooser"
-#~ msgstr "בוחר מארח GDM"
-
-#~ msgid "Status"
-#~ msgstr "מצב"
-
-#~ msgid "_Add"
-#~ msgstr "_הוסף"
-
-#, fuzzy
-#~ msgid ""
-#~ "You might be using a different display manager, such as KDM (KDE Display "
-#~ "Manager), CDE login (dtlogin), or xdm. If you wish to use this feature, "
-#~ "then your system will need to be configured to use GDM instead."
-#~ msgstr ""
-#~ "<b>GDM (The GNOME Display Manager) אינו מופעל.</b>\n"
-#~ "\n"
-#~ "יכול להיות כי אתה משתמש במנהל תצוגה אחר, כגון KDM (מנהל התצוגה של KDE או "
-#~ "xdm).\n"
-#~ "אם בכל זאת אתה רוצה להשתמש באפשרות הזו, או שתפעיל את GDM בעצמך או שתבקש "
-#~ "ממנהל המערכת שלך להפעיל את GDM."
-
-#~ msgid "Unknown error occurred."
-#~ msgstr "ארעה שגיאה לא ידועה."
-
-#~ msgid "%d second"
-#~ msgid_plural "%d seconds"
-#~ msgstr[0] "שניה אחת"
-#~ msgstr[1] "%d שניות"
-
-#~ msgid "Usage: %s [-b][-v] and one of the following:\n"
-#~ msgstr "Usage: %s [-b][-v] and one of the following:\n"
-
-#~ msgid "\t-a display\n"
-#~ msgstr "\t-a display\n"
-
-#~ msgid "\t-r display\n"
-#~ msgstr "\t-r display\n"
-
-#~ msgid "\t-d display\n"
-#~ msgstr "\t-d display\n"
-
-#~ msgid "\t-l [server_name]\n"
-#~ msgstr "\t-l [server_name]\n"
-
-#~ msgid "\t-t maximum tries to connect (default 15)\n"
-#~ msgstr "\t-t maximum tries to connect (default 15)\n"
-
-#~ msgid "\t-s sleep value (default 8)\n"
-#~ msgstr "\t-s sleep value (default 8)\n"
-
-#~ msgid "Server busy, will sleep.\n"
-#~ msgstr "Server busy, will sleep.\n"
-
-#~ msgid ""
-#~ "Connection to daemon failed, sleeping for %d seconds.  Retry %d of %d\n"
-#~ msgstr ""
-#~ "Connection to daemon failed, sleeping for %d seconds.  Retry %d of %d\n"
-
-#~ msgid "Failed to connect to server after %d retries\n"
-#~ msgstr "Failed to connect to server after %d retries\n"
-
-#, fuzzy
-#~ msgid "Login as another user in a window"
-#~ msgstr "התחבר כמשתמש אחר מתוך חלון מקונן"
-
-#, fuzzy
-#~ msgid "New Login in a Window"
-#~ msgstr "חיבור חדש בחלון מקונן"
-
-#~ msgid "Cannot change display"
-#~ msgstr "%s: לא יכול לפתוח תצוגה %s"
-
-#~ msgid "Username"
-#~ msgstr "שם משתמש"
-
-#~ msgid "Choose server"
-#~ msgstr "בחר שרת"
-
-#~ msgid "Choose the X server to start"
-#~ msgstr "בחר את שרת ה X להפעלה"
-
-#~ msgid "Standard server"
-#~ msgstr "שרת רגיל"
-
-#~ msgid "Log in as another user without logging out"
-#~ msgstr "התחבר עם שם משתמש אחר מבלי להתנתק"
-
-#~ msgid "New Login"
-#~ msgstr "חיבור חדש"
-
-#~ msgid "A-M|Afrikaans"
-#~ msgstr "א-כ|אפריקנס"
-
-#~ msgid "A-M|Albanian"
-#~ msgstr "א-כ|אלבנית"
-
-#~ msgid "A-M|Amharic"
-#~ msgstr "א-כ|אמהרית"
-
-#~ msgid "A-M|Arabic (Egypt)"
-#~ msgstr "ל-ת|ערבית (מצרים)"
-
-#~ msgid "A-M|Arabic (Lebanon)"
-#~ msgstr "ל-ת|ערבית (לבנון)"
-
-#, fuzzy
-#~ msgid "A-M|Arabic (Saudi Arabia)"
-#~ msgstr "ל-ת|ערבית (לבנון)"
-
-#~ msgid "A-M|Armenian"
-#~ msgstr "א-כ|ארמנית"
-
-#~ msgid "A-M|Azerbaijani"
-#~ msgstr "א-כ|אזרביינית"
-
-#~ msgid "A-M|Basque"
-#~ msgstr "א-כ|בסקית"
-
-#~ msgid "A-M|Belarusian"
-#~ msgstr "א-כ|בלרוסית"
-
-#~ msgid "A-M|Bengali"
-#~ msgstr "א-כ|בנגלית"
-
-#~ msgid "A-M|Bengali (India)"
-#~ msgstr "א-כ|בנגלית (הודו)"
-
-#~ msgid "A-M|Bulgarian"
-#~ msgstr "א-כ|בולגרית"
-
-#~ msgid "A-M|Bosnian"
-#~ msgstr "א-כ|בוסנית"
-
-#~ msgid "A-M|Catalan"
-#~ msgstr "ל-ת|קטלונית"
-
-#~ msgid "A-M|Chinese (China Mainland)"
-#~ msgstr "ל-ת|סינית (סין)"
-
-#~ msgid "A-M|Chinese (Hong Kong)"
-#~ msgstr "ל-ת|סינית (הונג קונג)"
-
-#~ msgid "A-M|Chinese (Singapore)"
-#~ msgstr "ל-ת|סינית (סינגפור)"
-
-#~ msgid "A-M|Chinese (Taiwan)"
-#~ msgstr "ל-ת|סינית (טיוואן)"
-
-#~ msgid "A-M|Croatian"
-#~ msgstr "ל-ת|קרואטית"
-
-#~ msgid "A-M|Czech"
-#~ msgstr "ל-ת|צ'כית"
-
-#~ msgid "A-M|Danish"
-#~ msgstr "א-כ|דנית"
-
-#~ msgid "A-M|Dutch"
-#~ msgstr "א-כ|הולנדית"
-
-#, fuzzy
-#~ msgid "A-M|Dutch (Belgium)"
-#~ msgstr "ל-ת|צרפתית (בלגיה)"
-
-#~ msgid "A-M|English (USA)"
-#~ msgstr "א-כ|אנגלית (ארה\"ב)"
-
-#~ msgid "A-M|English (Australia)"
-#~ msgstr "א-כ|אנגלית (אוסטרליה)"
-
-#~ msgid "A-M|English (UK)"
-#~ msgstr "א-כ|אנגלית (בריטניה)"
-
-#~ msgid "A-M|English (Canada)"
-#~ msgstr "א-כ|אנגלית (קנדה)"
-
-#~ msgid "A-M|English (Ireland)"
-#~ msgstr "א-כ|אנגלית (אירלנד)"
-
-#~ msgid "A-M|English (Denmark)"
-#~ msgstr "א-כ|אנגלית (דנמרק)"
-
-#~ msgid "A-M|English (South Africa)"
-#~ msgstr "א-כ|אנגלית (דרום אפריקה)"
-
-#, fuzzy
-#~ msgid "A-M|English (Malta)"
-#~ msgstr "א-כ|אנגלית (קנדה)"
-
-#, fuzzy
-#~ msgid "A-M|English (New Zealand)"
-#~ msgstr "א-כ|אנגלית (אירלנד)"
-
-#~ msgid "A-M|Estonian"
-#~ msgstr "א-כ|אסטונית"
-
-#~ msgid "A-M|Finnish"
-#~ msgstr "ל-ת|פינית"
-
-#~ msgid "A-M|French"
-#~ msgstr "ל-ת|צרפתית"
-
-#~ msgid "A-M|French (Belgium)"
-#~ msgstr "ל-ת|צרפתית (בלגיה)"
-
-#, fuzzy
-#~ msgid "A-M|French (Canada)"
-#~ msgstr "א-כ|אנגלית (קנדה)"
-
-#, fuzzy
-#~ msgid "A-M|French (Luxembourg)"
-#~ msgstr "ל-ת|צרפתית (בלגיה)"
-
-#~ msgid "A-M|French (Switzerland)"
-#~ msgstr "ל-ת|צרפתית (שוויץ)"
-
-#~ msgid "A-M|Galician"
-#~ msgstr "א-כ|גליצית"
-
-#~ msgid "A-M|German"
-#~ msgstr "א-כ|גרמנית"
-
-#~ msgid "A-M|German (Austria)"
-#~ msgstr "א-כ|גרמנית (אוסטריה)"
-
-#, fuzzy
-#~ msgid "A-M|German (Luxembourg)"
-#~ msgstr "א-כ|גרמנית (אוסטריה)"
-
-#~ msgid "A-M|German (Switzerland)"
-#~ msgstr "א-כ|גרמנית (שוויץ)"
-
-#~ msgid "A-M|Greek"
-#~ msgstr "א-כ|יוונית"
-
-#, fuzzy
-#~ msgid "A-M|Greek (Cyprus)"
-#~ msgstr "א-כ|יוונית"
-
-#~ msgid "A-M|Gujarati"
-#~ msgstr "א-כ|גוז'ארטית"
-
-#~ msgid "A-M|Hebrew"
-#~ msgstr "ל-ת|עברית"
-
-#~ msgid "A-M|Hindi"
-#~ msgstr "א-כ|הינדית"
-
-#~ msgid "A-M|Hungarian"
-#~ msgstr "א-כ|הונגרית"
-
-#~ msgid "A-M|Icelandic"
-#~ msgstr "א-כ|איסלנדית"
-
-#~ msgid "A-M|Indonesian"
-#~ msgstr "א-כ|אינדונזית"
-
-#~ msgid "A-M|Interlingua"
-#~ msgstr "א-כ|אינטרליגוה"
-
-#~ msgid "A-M|Irish"
-#~ msgstr "א-כ|אירית"
-
-#~ msgid "A-M|Italian"
-#~ msgstr "א-כ|איטלקית"
-
-#~ msgid "A-M|Japanese"
-#~ msgstr "א-כ|יפנית"
-
-#~ msgid "A-M|Kannada"
-#~ msgstr "ל-ת|קנאדה"
-
-#~ msgid "A-M|Kinyarwanda"
-#~ msgstr "ל-ת|קיניהרואנדה"
-
-#~ msgid "A-M|Korean"
-#~ msgstr "ל-ת|קוריאנית"
-
-#~ msgid "A-M|Latvian"
-#~ msgstr "ל-ת|לטווית"
-
-#~ msgid "A-M|Lithuanian"
-#~ msgstr "ל-ת|ליטאית"
-
-#~ msgid "A-M|Macedonian"
-#~ msgstr "ל-ת|מקדונית"
-
-#~ msgid "A-M|Malay"
-#~ msgstr "ל-ת|מלאית"
-
-#~ msgid "A-M|Malayalam"
-#~ msgstr "ל-ת|מליאלאם"
-
-#, fuzzy
-#~ msgid "A-M|Maltese"
-#~ msgstr "ל-ת|מלאית"
-
-#~ msgid "A-M|Marathi"
-#~ msgstr "ל-ת|מאראת'י"
-
-#~ msgid "A-M|Mongolian"
-#~ msgstr "ל-ת|מונגולית"
-
-#~ msgid "N-Z|Northern Sotho"
-#~ msgstr "ל-ת|סותו צפונית"
-
-#~ msgid "N-Z|Norwegian (bokmal)"
-#~ msgstr "ל-ת|נורבגית (bokmal)"
-
-#~ msgid "N-Z|Norwegian (nynorsk)"
-#~ msgstr "ל-ת|נורבגית (nynorsk)"
-
-#~ msgid "N-Z|Oriya"
-#~ msgstr "א-כ|אוריה"
-
-#, fuzzy
-#~ msgid "N-Z|Punjabi"
-#~ msgstr "ל-ת|פאנג'בית"
-
-#~ msgid "N-Z|Persian"
-#~ msgstr "ל-ת|פרסית"
-
-#~ msgid "N-Z|Polish"
-#~ msgstr "ל-ת|פולנית"
-
-#~ msgid "N-Z|Portuguese"
-#~ msgstr "ל-ת|פורטוגזית"
-
-#~ msgid "N-Z|Portuguese (Brazilian)"
-#~ msgstr "ל-ת|פורטוגזית (ברזילאית)"
-
-#~ msgid "N-Z|Romanian"
-#~ msgstr "ל-ת|רומנית"
-
-#~ msgid "N-Z|Russian"
-#~ msgstr "ל-ת|רוסית"
-
-#~ msgid "N-Z|Serbian"
-#~ msgstr "ל-ת|סרבית"
-
-#, fuzzy
-#~ msgid "N-Z|Serbian (Serbia & Montenegro)"
-#~ msgstr "ל-ת|סרבית (קירילית)"
-
-#, fuzzy
-#~ msgid "N-Z|Serbian (Montenegro)"
-#~ msgstr "ל-ת|סרבית (לטינית)"
-
-#, fuzzy
-#~ msgid "N-Z|Serbian (Serbia)"
-#~ msgstr "ל-ת|סרבית (קירילית)"
-
-#~ msgid "N-Z|Serbian (Latin)"
-#~ msgstr "ל-ת|סרבית (לטינית)"
-
-#~ msgid "N-Z|Serbian (Jekavian)"
-#~ msgstr "ל-ת|סרבית (קירילית)"
-
-#, fuzzy
-#~ msgid "N-Z|Serbian (Bosnia)"
-#~ msgstr "ל-ת|סרבית (לטינית)"
-
-#~ msgid "N-Z|Slovak"
-#~ msgstr "ל-ת|סלובקית"
-
-#~ msgid "N-Z|Slovenian"
-#~ msgstr "ל-ת|סלובנית"
-
-#~ msgid "N-Z|Spanish"
-#~ msgstr "ל-ת|ספרדית"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Argentina)"
-#~ msgstr "ל-ת|ספרדית (מקסיקו)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Bolivia)"
-#~ msgstr "ל-ת|ספרדית (מקסיקו)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Chile)"
-#~ msgstr "ל-ת|ספרדית (מקסיקו)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Colombia)"
-#~ msgstr "ל-ת|ספרדית (מקסיקו)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Costa Rica)"
-#~ msgstr "ל-ת|ספרדית (מקסיקו)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Ecuador)"
-#~ msgstr "ל-ת|ספרדית (מקסיקו)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Guatemala)"
-#~ msgstr "ל-ת|ספרדית (מקסיקו)"
-
-#~ msgid "N-Z|Spanish (Mexico)"
-#~ msgstr "ל-ת|ספרדית (מקסיקו)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Nicaragua)"
-#~ msgstr "ל-ת|ספרדית (מקסיקו)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Panama)"
-#~ msgstr "ל-ת|ספרדית"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Peru)"
-#~ msgstr "ל-ת|ספרדית (מקסיקו)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Paraguay)"
-#~ msgstr "ל-ת|ספרדית"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (El Salvador)"
-#~ msgstr "ל-ת|ספרדית (מקסיקו)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Uruguay)"
-#~ msgstr "ל-ת|ספרדית"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Venezuela)"
-#~ msgstr "ל-ת|ספרדית (מקסיקו)"
-
-#~ msgid "N-Z|Swedish"
-#~ msgstr "ל-ת|שוודית"
-
-#~ msgid "N-Z|Swedish (Finland)"
-#~ msgstr "ל-ת|שוודית (פינלנד)"
-
-#~ msgid "N-Z|Tamil"
-#~ msgstr "א-כ|טמילית"
-
-#~ msgid "N-Z|Telugu"
-#~ msgstr "א-כ|טלגוית"
-
-#~ msgid "N-Z|Thai"
-#~ msgstr "ל-ת|תאי"
-
-#~ msgid "N-Z|Turkish"
-#~ msgstr "א-כ|טורקית"
-
-#~ msgid "N-Z|Ukrainian"
-#~ msgstr "א-כ|אוקראינית"
-
-#~ msgid "N-Z|Vietnamese"
-#~ msgstr "א-כ|ויאטנאמית"
-
-#~ msgid "N-Z|Walloon"
-#~ msgstr "א-כ|ולונית"
-
-#~ msgid "N-Z|Welsh"
-#~ msgstr "א-כ|וולשית"
-
-#, fuzzy
-#~ msgid "N-Z|Xhosa"
-#~ msgstr "ל-ת|תאי"
-
-#~ msgid "N-Z|Yiddish"
-#~ msgstr "א-כ|יידיש"
-
-#~ msgid "N-Z|Zulu"
-#~ msgstr "א-כ|זולו"
-
-#~ msgid "Other|POSIX/C English"
-#~ msgstr "אחר|POSIX/C אנגלית"
-
-#~ msgid "A-M"
-#~ msgstr "א-כ"
-
-#~ msgid "N-Z"
-#~ msgstr "ל-ת"
-
-#~ msgid "Last language"
-#~ msgstr "שפה אחרונה"
-
-#~ msgid "System Default"
-#~ msgstr "ברירת המחדל של המערכת"
-
-#, fuzzy
-#~ msgid "Do you wish to make %s the default for future sessions?"
-#~ msgstr ""
-#~ "סוג תצורת ההפעלה המועדפת שלך %s איננה מותקנת על המכונה הזו.\n"
-#~ "האם ברצונך לעשות את %s ברירת המחדל להפעלות העתידיות?"
-
-#, fuzzy
-#~ msgid "You have chosen %s for this session, but your default setting is %s."
-#~ msgstr ""
-#~ "בחרת את %s להפעלה הזו, אך ההגדרה ברירת המחדל שלך היא %s.\n"
-#~ "האם ברצונך להפוך את %s לברירת המחדל בהפעלות העתידיות?"
-
-#~ msgid "Select a Language"
-#~ msgstr "בחר שפv"
-
-#~ msgid "Change _Language"
-#~ msgstr "שינוי _שפה"
-
-#~ msgid "_Select the language for your session to use:"
-#~ msgstr "_בחר שפה לשימוש בתצורת ההפעלה שלך:"
-
-#, fuzzy
-#~ msgid "the login screen"
-#~ msgstr "לא ניתן לנעול צג"
-
-#, fuzzy
-#~ msgid "User %u will login in %t"
-#~ msgstr "המשתמש %s יתחבר בעוד %d שניות"
-
-#, fuzzy
-#~ msgid "Are you sure you want to restart the computer?"
-#~ msgstr "האם אתה בטוח שברצונך להפעיל מחדש את המחשב?"
-
-#~ msgid "_Restart"
-#~ msgstr "_הפעל מחדש"
-
-#~ msgid "Are you sure you want to Shut Down the computer?"
-#~ msgstr "האם אתה בטוח שברצונך לכבות את המחשב?"
-
-#~ msgid "Are you sure you want to suspend the computer?"
-#~ msgstr "האם אתה בטוח שברצונך להכניס את המחשב למצב המתנה?"
-
-#~ msgid "_Username:"
-#~ msgstr "_שם משתמש:"
-
-#~ msgid "%s session selected"
-#~ msgstr "תצורת ההפעלה %s נבחרה"
-
-#~ msgid "_Last"
-#~ msgstr "_אחרון"
-
-#~ msgid "Select _Language..."
-#~ msgstr "בחר _שפה..."
-
-#~ msgid "_Password:"
-#~ msgstr "_סיסמה:"
-
-#, fuzzy
-#~ msgid "Your preferred session type %s is not installed on this computer."
-#~ msgstr ""
-#~ "סוג תצורת ההפעלה המועדפת שלך %s איננה מותקנת על המכונה הזו.\n"
-#~ "האם ברצונך לעשות את %s ברירת המחדל להפעלות העתידיות?"
-
-#~ msgid "You have chosen %s for this session"
-#~ msgstr "בחרת %s עבור תצורת הפעלה זו"
-
-#, fuzzy
-#~ msgid ""
-#~ "If you wish to make %s the default for future sessions, run the "
-#~ "'switchdesk' utility (System->Desktop Switching Tool from the panel menu)."
-#~ msgstr ""
-#~ "בחרת את %s להפעלה הזו.\n"
-#~ "אם ברצונך להפוך את %s לברירת מחדל להפעלות העתידיות,\n"
-#~ "הפעל את העזר 'switchdesk'\n"
-#~ "(מערכת->כלי החלפת שולחן עבודה מתפריט הלוח)."
-
-#~ msgid "Please insert 25 cents to log in."
-#~ msgstr "אנא הכנס שקל כדי להתחבר."
-
-#~ msgid "Finger"
-#~ msgstr "אצבע"
-
-#~ msgid "GDM Login"
-#~ msgstr "התחברות GDM"
-
-#~ msgid "_Configure Login Manager..."
-#~ msgstr "_הגדר את מנהל ההתחברות..."
-
-#~ msgid "_Actions"
-#~ msgstr "_פעולות"
-
-#~ msgid "_Quit"
-#~ msgstr "_יציאה"
-
-#~ msgid "Icon"
-#~ msgstr "סמל"
-
-#~ msgid "Welcome"
-#~ msgstr "ברוכים הבאים"
-
-#~ msgid "Cannot start the greeter"
-#~ msgstr "לא ניתן להפעיל את המברך"
-
-#~ msgid "Restart GDM"
-#~ msgstr "הפעל מחדש את GDM"
-
-#~ msgid "Restart computer"
-#~ msgstr "הפעל את המחשב שלך מחדש"
-
-#~ msgid ""
-#~ "Your session directory is missing or empty!  There are two available "
-#~ "sessions you can use, but you should log in and correct the GDM "
-#~ "configuration."
-#~ msgstr ""
-#~ "תיקית תצורת ההפעלה שלך חסרה או ריקה! ישנן שתי תצורות הפעלה שניתן להשתמש "
-#~ "בהם, אבל עליך להתחבר ולתקן את הגדרות GDM."
-
-#~ msgid "Configuration is not correct"
-#~ msgstr "ההגדרה איננה נכונה"
-
-#, fuzzy
-#~ msgid "File %s cannot be opened for writing."
-#~ msgstr ""
-#~ "הקובץ %s לא יכול להיפתח לכתיבה\n"
-#~ "שגיאה: %s"
-
-#~ msgid "Cannot open file"
-#~ msgstr "לא ניתן לפתוח קובץ"
-
-#~ msgid "Select User Image"
-#~ msgstr "בחר תמונת משתמש"
-
-#~ msgid "Images"
-#~ msgstr "תמונות"
-
-#~ msgid "All Files"
-#~ msgstr "כל הקבצים"
-
-#~ msgid ""
-#~ "Change the picture that will show in the GDM (login manager) face browser"
-#~ msgstr "שנה את התמונה שתופיע בדפדפן הפנים של GDM (מנהל ההתחברות)"
-
-#~ msgid "Login Photo"
-#~ msgstr "תמונת התחברות"
-
-#~ msgid "<b>User Image</b>"
-#~ msgstr "<b>תמונת משתמש</b>"
-
-#~ msgid "Login Photo Preferences"
-#~ msgstr "הגדרות תמונת התחברות"
-
-#, fuzzy
-#~ msgid "Failsafe _GNOME"
-#~ msgstr "תצורה _בטוחה של Gnome"
-
-#, fuzzy
-#~ msgid "Failsafe GNOME"
-#~ msgstr "תצורה _בטוחה של Gnome"
-
-#, fuzzy
-#~ msgid ""
-#~ "This is a failsafe session that will log you into GNOME. No startup "
-#~ "scripts will be read and it is only to be used when you can't log in "
-#~ "otherwise.  GNOME will use the 'Default' session."
-#~ msgstr ""
-#~ "זוהי תצורה בטוחה שתחבר אותך לתוך GNOME.  אף תסריטי הפעלה לא יקראו וזה "
-#~ "לשימוש רק אם אין לך דרך אחרת להתחבר.  GNOME ישתמש בתצורת ההפעלה ברירת "
-#~ "המחדל."
-
-#~ msgid "Failsafe _Terminal"
-#~ msgstr "_מסוף X לתצורה בטוחה"
-
-#, fuzzy
-#~ msgid "Failsafe Terminal"
-#~ msgstr "_מסוף X לתצורה בטוחה"
-
-#~ msgid ""
-#~ "An error occurred while trying to contact the login screens.  Not all "
-#~ "updates may have taken effect."
-#~ msgstr ""
-#~ "חלה שגיאה בניסיון יצירת הקשר עם מסכי ההתחברות. לא כל העדכונים בהכרח חלו."
-
-#~ msgid "Themed"
-#~ msgstr "בעל ערכת נושא"
-
-#, fuzzy
-#~ msgid "Themed with face browser"
-#~ msgstr "פשוט עם דפדפן פנים"
-
-#~ msgid "Plain"
-#~ msgstr "פשוט"
-
-#~ msgid "Plain with face browser"
-#~ msgstr "פשוט עם דפדפן פנים"
-
-#, fuzzy
-#~ msgid "Autologin or timed login to the root account is forbidden."
-#~ msgstr "התחברות אוטומטית או התחברות לאחר זמן אל חשבון root אסורה."
-
-#, fuzzy
-#~ msgid "User not allowed"
-#~ msgstr "המשתמש %s לא מורשה להתחבר"
-
-#, fuzzy
-#~ msgid "No themes selected!"
-#~ msgstr "לא נבחר קובץ"
-
-#, fuzzy
-#~ msgid "Apply changes to the modified command?"
-#~ msgstr "להחיל את השינויים עבור המשתמשים לפני היציאה?"
-
-#, fuzzy
-#~ msgid "If you don't apply, the changes will be discarded."
-#~ msgstr "אם לא תחיל, השינויים שבוצעו בלשונית המשתמשים יעלמו."
-
-#~ msgid "Autologin or timed login to the root account is not allowed."
-#~ msgstr "התחברות אוטומטית או התחברות לאחר זמן אל חשבון root אסורה."
-
-#~ msgid "The \"%s\" user already exists in the include list."
-#~ msgstr "המשתמש \"%s\" כבר קיים ברשימת ההכללה."
-
-#, fuzzy
-#~ msgid "Cannot add user"
-#~ msgstr "לא ניתן לקבל שם משתמש"
-
-#, fuzzy
-#~ msgid "The \"%s\" user does not exist."
-#~ msgstr "%s: הספריה %s איננה קיימת."
-
-#, fuzzy
-#~ msgid "Invalid command path"
-#~ msgstr "פקודת שרת לא תקנית '%s'"
-
-#, fuzzy
-#~ msgid "Select Command"
-#~ msgstr "בחר _שפה..."
-
-#~ msgid "No file selected"
-#~ msgstr "לא נבחר קובץ"
-
-#, fuzzy
-#~ msgid "Apply the changes to commands before closing?"
-#~ msgstr "להחיל את השינויים עבור המשתמשים לפני היציאה?"
-
-#, fuzzy
-#~ msgid "If you don't apply, the changes made will be disregarded."
-#~ msgstr "אם לא תחיל, השינויים שבוצעו בלשונית המשתמשים יעלמו."
-
-#~ msgid "Close _without Applying"
-#~ msgstr "סגור ללא להחל."
-
-#, fuzzy
-#~ msgid "Reboot command"
-#~ msgstr "שורת הפקודה של Xnest"
-
-#, fuzzy
-#~ msgid "Suspend command"
-#~ msgstr "_השהה את המחשב"
-
-#~ msgid "Sounds"
-#~ msgstr "צלילים"
-
-#~ msgid "Archive is not of a subdirectory"
-#~ msgstr "הארכיון איננו תת-ספרייה"
-
-#~ msgid "Archive is not of a single subdirectory"
-#~ msgstr "הארכיון איננו תת-ספרייה יחידה"
-
-#~ msgid "File not a tar.gz or tar archive"
-#~ msgstr "הקובץ איננו ארכיון tar.gz או tar"
-
-#~ msgid "Archive does not include a GdmGreeterTheme.info file"
-#~ msgstr "הארכיון איננו כולל את הקובץ GdmGreeterTheme.info"
-
-#~ msgid "File does not exist"
-#~ msgstr "הקובץ אינו קיים"
-
-#~ msgid "Not a theme archive"
-#~ msgstr "לא ארכיון ערכת נושא"
-
-#, fuzzy
-#~ msgid ""
-#~ "Theme directory '%s' seems to be already installed. Install again anyway?"
-#~ msgstr "נראה שערכת הנושא '%s' כבר מותקנת, האם להתקין שוב בכל מקרה?"
-
-#, fuzzy
-#~ msgid "Some error occurred when installing the theme"
-#~ msgstr "אירעו שגיאות בהתקנת ערכת הנושא"
-
-#, fuzzy
-#~ msgid "Select Theme Archive"
-#~ msgstr "לא ארכיון ערכת נושא"
-
-#~ msgid "_Install"
-#~ msgstr "_התקן"
-
-#, fuzzy
-#~ msgid "Theme archives"
-#~ msgstr "לא ארכיון ערכת נושא"
-
-#~ msgid "Remove the \"%s\" theme?"
-#~ msgstr "להסיר את ערכת הנושא \"%s\"?"
-
-#~ msgid "If you choose to remove the theme, it will be permanently lost."
-#~ msgstr "אם הבחירה תהיה להסיר את ערכת הנושא, היא תאבד לנצח."
-
-#~ msgid "Select install to add the theme from the file '%s'."
-#~ msgstr "בחר \"התקן\" בכדי להוסיף את ערכת הנושא מהקובץ '%s'."
-
-#~ msgid ""
-#~ "This configuration window changes settings for the GDM daemon, which is "
-#~ "the graphical login screen for GNOME.  Changes that you make will take "
-#~ "effect immediately.\n"
-#~ "\n"
-#~ "Note that not all configuration options are listed here.  You may want to "
-#~ "edit %s if you cannot find what you are looking for.\n"
-#~ "\n"
-#~ "For complete documentation see the GNOME help browser under the \"Desktop"
-#~ "\" category."
-#~ msgstr ""
-#~ "חלון ההגדרות זה משנה את ההגדרות עבור השירות GDM, שהו מסך התחברות גראפי "
-#~ "עבור GNOME. שינויים יחולו באופן מיידי.\n"
-#~ "\n"
-#~ "יש לשים לב שלא כל ההגדרות קיימות כאן. יכול להיות שתרצה לערוך את %s אם מה "
-#~ "שאתה מחפש לא נמצא כאן.\n"
-#~ "\n"
-#~ "עבור מידע מלא ראה את דפדפן העזרה של GNOME תחת הקטגוריה \"שולחן עבודה\"."
-
-#, fuzzy
-#~ msgid "auto"
-#~ msgstr "מחבר"
-
-#~ msgid "Apply the changes to users before closing?"
-#~ msgstr "להחיל את השינויים עבור המשתמשים לפני היציאה?"
-
-#~ msgid ""
-#~ "If you don't apply, the changes made on the Users tab will be disregarded."
-#~ msgstr "אם לא תחיל, השינויים שבוצעו בלשונית המשתמשים יעלמו."
-
-#, fuzzy
-#~ msgid "Could not access configuration file (defaults.conf)"
-#~ msgstr "לא מצליח לקבל גישה לקובץ ההגדרות של GDM.\n"
-
-#, fuzzy
-#~ msgid "Could not access configuration file (custom.conf)"
-#~ msgstr "לא מצליח לקבל גישה לקובץ ההגדרות של GDM.\n"
-
-#, fuzzy
-#~ msgid "You must be the root user to configure GDM."
-#~ msgstr "אתה חייב להיות משתמש על (root) כדי להגדיר את GDM."
-
-#, fuzzy
-#~ msgid "Configure GDM login window appearance and behavior"
-#~ msgstr "_הגדר את מנהל ההתחברות"
-
-#~ msgid "Login Window"
-#~ msgstr "חלון התחברות"
-
-#~ msgid "%n will be replaced by hostname"
-#~ msgstr "%n יוחלף ב-hostname"
-
-#~ msgid ""
-#~ "<b>Warning:</b>  Incorrect settings could prevent the X server from "
-#~ "restarting.  Changes to these settings will not take effect until GDM is "
-#~ "restarted."
-#~ msgstr ""
-#~ "<b>אזהרה:</b>הגדרות לא נכונות עלולות למנוע משרת ה־X מלהפעיל את עצמו מחדש. "
-#~ "שינויים של הגדרות אלו לא יחולו עד ש־GDM יופעל מחדש."
-
-#~ msgid "A_dd..."
-#~ msgstr "הו_סף..."
-
-#, fuzzy
-#~ msgid "A_llow remote system administrator login"
-#~ msgstr "אפשר חיבורים מ_תוזמנים מרוחקים"
-
-#~ msgid "A_pply User Changes"
-#~ msgstr "ה_חל שינויי משתמש"
-
-#~ msgid "Accessibility"
-#~ msgstr "נגישות"
-
-#~ msgid "Add / Modify Servers To Start"
-#~ msgstr "הוסף/שנה שרתים להפעלה"
-
-#~ msgid "Add S_erver..."
-#~ msgstr "הוסף _שרת..."
-
-#~ msgid "Add User"
-#~ msgstr "הוסף משתמש"
-
-#~ msgid "Allo_w remote timed logins"
-#~ msgstr "אפשר חיבורים מ_תוזמנים מרוחקים"
-
-#, fuzzy
-#~ msgid "Apply Co_mmand Changes"
-#~ msgstr "ה_חל שינויי משתמש"
-
-#~ msgid "Author:"
-#~ msgstr "מחבר:"
-
-#~ msgid "Background"
-#~ msgstr "רקע"
-
-#, fuzzy
-#~ msgid "Background color of the greeter."
-#~ msgstr "צבע _רקע: "
-
-#~ msgid "C_ommand:"
-#~ msgstr "_פקודה:"
-
-#~ msgid "C_ustom:"
-#~ msgstr "מו_תאם אישית:"
-
-#~ msgid "Co_lor:"
-#~ msgstr "צ_בע:"
-
-#~ msgid "Color depth:"
-#~ msgstr "עומק צבע:"
-
-#, fuzzy
-#~ msgid "Comma_nd type:"
-#~ msgstr "_פקודה:"
-
-#, fuzzy
-#~ msgid "Configure XDMC_P..."
-#~ msgstr "_הגדר"
-
-#, fuzzy
-#~ msgid "Configure _X Server..."
-#~ msgstr "_הגדר את מנהל ההתחברות..."
-
-#~ msgid "Copyright:"
-#~ msgstr "זכויות יוצרים:"
-
-#, fuzzy
-#~ msgid "De_fault face:"
-#~ msgstr "_ברירת מחדל: \"ברוך הבא\""
-
-#, fuzzy
-#~ msgid "De_fault session:"
-#~ msgstr "תצורת ההפעלה ברירת המחדל של המערכת"
-
-#~ msgid "Displays per _host:"
-#~ msgstr "תצוגות למ_ארח:"
-
-#~ msgid "Do not show image for _remote logins"
-#~ msgstr "אל תראה תמונה עבור התחברות מרוחקת."
-
-#, fuzzy
-#~ msgid "Enable _Timed Login"
-#~ msgstr "התחברות מתוזמנת"
-
-#~ msgid "General"
-#~ msgstr "כללי"
-
-#, fuzzy
-#~ msgid ""
-#~ "Greeter\n"
-#~ "Chooser"
-#~ msgstr "בוחר Gnome"
-
-#, fuzzy
-#~ msgid "Honor _indirect requests"
-#~ msgstr "מקסימום בקשות לא ישירות ממ_תינות:"
-
-#, fuzzy
-#~ msgid "I_mage:"
-#~ msgstr "_תמונה"
-
-#~ msgid "I_nclude:"
-#~ msgstr "ה_כללה:"
-
-#~ msgid "Includ_e Hostname Chooser (XDMCP) menu item"
-#~ msgstr "כלול פריט של בוחר שם מארח (XDMPC)"
-
-#~ msgid "La_unch:"
-#~ msgstr "ה_פעל:"
-
-#~ msgid "Listen on _UDP port: "
-#~ msgstr "האזן ליציאת _UDP: "
-
-#~ msgid "Local"
-#~ msgstr "מקומי"
-
-#~ msgid "Login Window Preferences"
-#~ msgstr "אפשרויות חלון ההתחברות"
-
-#~ msgid "Login _failed:"
-#~ msgstr "התחברות _נכשלה:"
-
-#, fuzzy
-#~ msgid "Login _retry delay:"
-#~ msgstr "ה_שהייה בין ניסיון התחברות נוסף:"
-
-#~ msgid "Login _successful:"
-#~ msgstr "התחברות בוצעה _בהצלחה:"
-
-#~ msgid "Maximum _remote sessions:"
-#~ msgstr "מקסימום הפעלות מ_רוחקות:"
-
-#~ msgid "Maximum _wait time:"
-#~ msgstr "מקסימום _זמן המתנה:"
-
-#~ msgid "Maximum indirect w_ait time:"
-#~ msgstr "מקסימום זמן המ_תנה לא ישיר:"
-
-#, fuzzy
-#~ msgid "Maximum p_ending indirect requests:"
-#~ msgstr "מקסימום בקשות לא ישירות ממ_תינות:"
-
-#~ msgid "Menu Bar"
-#~ msgstr "תפריט"
-
-#~ msgid "Op_tions:\t"
-#~ msgstr "אפ_שרויות:\t"
-
-#, fuzzy
-#~ msgid "Permissions"
-#~ msgstr "תצורות הפעלה"
-
-#, fuzzy
-#~ msgid "Pick Background Color"
-#~ msgstr "צבע _רקע: "
-
-#, fuzzy
-#~ msgid ""
-#~ "Plain\n"
-#~ "Plain with face browser\n"
-#~ "Themed\n"
-#~ "Themed with face browser"
-#~ msgstr ""
-#~ "פשוט\n"
-#~ "פשוט עם דפדפן פנים\n"
-#~ "עם ערכת נושא."
-
-#~ msgid "R_emove"
-#~ msgstr "הס_ר"
-
-#~ msgid "Re_move Server"
-#~ msgstr "הסר _שרת"
-
-#~ msgid "Refresh rate:"
-#~ msgstr "תדר רענון:"
-
-#~ msgid "Remote"
-#~ msgstr "מרוחק"
-
-#~ msgid ""
-#~ "Remote login disabled\n"
-#~ "Same as Local"
-#~ msgstr ""
-#~ "התחברות מרוחקת לא מאופשרת\n"
-#~ "זהה להתחברות מקומית"
-
-#~ msgid "Resolution:"
-#~ msgstr "הפרדה:"
-
-#~ msgid "Sc_ale to fit screen"
-#~ msgstr "שנה _גודל בכדי להתאים למסך"
-
-#, fuzzy
-#~ msgid "Scale background image to fit the screen."
-#~ msgstr "שנה _גודל בכדי להתאים למסך"
-
-#~ msgid "Security"
-#~ msgstr "אבטחה"
-
-#~ msgid "Select Background Image"
-#~ msgstr "בחר תמונת רקע"
-
-#, fuzzy
-#~ msgid "Select Logo Image"
-#~ msgstr "בחר _שפה..."
-
-#~ msgid "Select Sound File"
-#~ msgstr "בחר קובץ קול"
-
-#~ msgid ""
-#~ "Selected only\n"
-#~ "Random from selected\n"
-#~ msgstr ""
-#~ "רק מה שנבחר\n"
-#~ "אקראי ממה שנבחר\n"
-
-#~ msgid "Server Settings"
-#~ msgstr "הגדרות שרת"
-
-#~ msgid "Server _name:"
-#~ msgstr "שם _שרת:"
-
-#~ msgid "Servers To Start"
-#~ msgstr "שרתים להפעלה"
-
-#, fuzzy
-#~ msgid "Shake the display when an incorrect username/password is entered."
-#~ msgstr "ערכת הנושא לא מכילה הגדרה אודות השדה שם משתמש/ססמה."
-
-#, fuzzy
-#~ msgid "Sho_w Actions menu"
-#~ msgstr "הצג תפריט _פעולות"
-
-#, fuzzy
-#~ msgid "The horizontal position of the login window."
-#~ msgstr "מזער את חלון ההתחברות"
-
-#, fuzzy
-#~ msgid "The vertical position of the login window."
-#~ msgstr "מזער את חלון ההתחברות"
-
-#~ msgid "Themes"
-#~ msgstr "ערכות נושא"
-
-#, fuzzy
-#~ msgid ""
-#~ "Turns the Actions menu (which used to be called System menu) on or off.  "
-#~ "If this is off then one of the actions will be available anywhere.  These "
-#~ "actions include Shutdown, Restart, Custom, Configure, XDMCP chooser and "
-#~ "such."
-#~ msgstr ""
-#~ "הצג את תפריט \"פעולות\" (לשעבר תפריט \"מערכת\").  אם לא נקבע, אף אחת "
-#~ "מפקודות המערכת לא תהינה זמינות (זה כולל הפעלה מחדש, כיבוי, הגדרות ובוחר)"
-
-#~ msgid "U_ser:"
-#~ msgstr "מ_שתמש:"
-
-#~ msgid "Users"
-#~ msgstr "משתמשים"
-
-#, fuzzy
-#~ msgid "Welcome Message"
-#~ msgstr "מחרוזת ברוכים הבאים: "
-
-#~ msgid "X Server Login Window Preferences"
-#~ msgstr "העדפות חלון ההגדרות של שרת X"
-
-#~ msgid "XDMCP Login Window Preferences"
-#~ msgstr "העדפות חלון ההתחברות של XDMCP"
-
-#~ msgid "_Add..."
-#~ msgstr "_הוסף..."
-
-#~ msgid "_Add/Modify..."
-#~ msgstr "הוסף/_שנה..."
-
-#, fuzzy
-#~ msgid "_Allow local system administrator login"
-#~ msgstr "אנא בקש ממנהל המערכת להתקין אותו."
-
-#~ msgid "_Allow users to change fonts and colors of plain greeter"
-#~ msgstr "אפשר למשתמשים לשנות את הגופנים ואת הצבעים של המברך הפשוט."
-
-#, fuzzy
-#~ msgid "_Background color:"
-#~ msgstr "צבע _רקע: "
-
-#, fuzzy
-#~ msgid "_Default: \"Welcome to %n\""
-#~ msgstr "ברוך הבא ל - %n"
-
-#~ msgid "_Default: \"Welcome\""
-#~ msgstr "_ברירת מחדל: \"ברוך הבא\""
-
-#~ msgid "_Deny TCP connections to Xserver"
-#~ msgstr "אל _תאפשר חיבורי TCP אל שרת ה־X."
-
-#~ msgid "_Enable Automatic Login"
-#~ msgstr "אפשר ה_תחברות אוטומטי"
-
-#~ msgid "_Enable accessible login"
-#~ msgstr "א_פשר התחברות נגישה"
-
-#~ msgid "_Flexible (on demand)"
-#~ msgstr "גמיש (עפ\"י דרישה)"
-
-#~ msgid "_Image:"
-#~ msgstr "_תמונה:"
-
-#~ msgid "_Include all users from /etc/passwd (not for NIS)"
-#~ msgstr "כ_לול את כל המשתמשים מ־‎/etc/passwd (לא עבור NIS)"
-
-#, fuzzy
-#~ msgid "_Login screen ready:"
-#~ msgstr "הגדרת מסך התחברות"
-
-#~ msgid "_Logins are handled by this computer"
-#~ msgstr "התחברויות _מנוהלות ע\"י מחשב זה"
-
-#, fuzzy
-#~ msgid "_Maximum pending requests:"
-#~ msgstr "מקסימום בקשות _ממתינות:"
-
-#, fuzzy
-#~ msgid "_Pause before login:"
-#~ msgstr "_שניות לפני ההתחברות:"
-
-#, fuzzy
-#~ msgid "_Ping interval:"
-#~ msgstr "מרווח _Ping (שניות):"
-
-#~ msgid "_Remove"
-#~ msgstr "_הסרה"
-
-#~ msgid "_Remove..."
-#~ msgstr "_הסרה..."
-
-#~ msgid "_Server:"
-#~ msgstr "_שרת:"
-
-#~ msgid "_Servers:"
-#~ msgstr "ש_רתים:"
-
-#~ msgid "_Style:"
-#~ msgstr "_סגנון:"
-
-#, fuzzy
-#~ msgid "_Theme:"
-#~ msgstr "_מרוחק: "
-
-#~ msgid "seconds"
-#~ msgstr "שניות"
-
-#~ msgid "Too many users to list here..."
-#~ msgstr "יותר מידי משתמשים כדי לרשום כאן..."
-
-#~ msgid "Restart Machine"
-#~ msgstr "הפעל מחדש"
-
-#~ msgid "There was an error loading the theme %s"
-#~ msgstr "ארעה שגיאה בטעינת ערכת הנושא %s"
-
-#, fuzzy
-#~ msgid "The greeter theme is corrupt"
-#~ msgstr "ערכת הנושא למברך הגרפי פגומה"
-
-#~ msgid ""
-#~ "The theme does not contain definition for the username/password entry "
-#~ "element."
-#~ msgstr "ערכת הנושא לא מכילה הגדרה אודות השדה שם משתמש/ססמה."
-
-#~ msgid ""
-#~ "There was an error loading the theme, and the default theme could not be "
-#~ "loaded. Attempting to start the standard greeter"
-#~ msgstr ""
-#~ "חלה שגיאה בהעלאת ערכת הנושא, וערכת הנושא של ברירת המחדל לא יכולה לעלות. "
-#~ "מנסה להפעיל במברך סטנדרטי"
-
-#~ msgid ""
-#~ "The GTK+ greeter could not be started.  This display will abort and you "
-#~ "may have to login another way and fix the installation of GDM"
-#~ msgstr ""
-#~ "מברך ה־GTK+‎ לא הצליח לעלות. תצוגה זו תסגר ויהיה עליך להתחבר בדרך אחרת "
-#~ "ולתקן את התקנת GDM"
-
-#~ msgid ""
-#~ "Your session directory is missing or empty!  There are two available "
-#~ "sessions you can use, but you should log in and correct the gdm "
-#~ "configuration."
-#~ msgstr ""
-#~ "תיקית תצורת ההפעלה שלך חסרה או ריקה! ישנן שתי תצורות הפעלה שניתן להשתמש "
-#~ "בהם, אבל עליך להתחבר ולתקן את הגדרות GDM."
-
-#~ msgid "Select _Session..."
-#~ msgstr "בחר _תצורת הפעלה..."
-
-#~ msgid ""
-#~ "Answer questions here and press Enter when done.  For a menu press F10."
-#~ msgstr "יש לענות על השאלות כאן וללחוץ Enter בסיום. עבור תפריט יש ללחוץ F10."
-
-#~ msgid "Sus_pend"
-#~ msgstr "_השהה"
-
-#~ msgid "Confi_gure"
-#~ msgstr "_הגדר"
-
-#~ msgid "Op_tions"
-#~ msgstr "אפ_שרויות"
-
-#~ msgid "_OK"
-#~ msgstr "_אישור"
-
-#~ msgid "_Cancel"
-#~ msgstr "_ביטול"
-
-#~ msgid "Change _Session"
-#~ msgstr "שנה _תצורת הפעלה"
-
-#~ msgid "Sessions"
-#~ msgstr "תצורות הפעלה"
-
-#~ msgid "_Last session"
-#~ msgstr "_תצורת הפעלה אחרונה"
-
-#~ msgid "Log in using the session that you have used last time you logged in"
-#~ msgstr "התחבר בעזרת תצורת ההפעלה שהשתמשת בה בפעם הקודמת שהתחברת"
-
-#~ msgid "Confi_gure Login Manager..."
-#~ msgstr "הג_דר את מנהל ההתחברות..."
-
-#~ msgid "Shut _down the computer"
-#~ msgstr "_כבה את המחשב"
-
-#, fuzzy
-#~ msgid "Shut Down your computer so that you may turn it off."
-#~ msgstr "מכבה את המחשב."
-
-#~ msgid "_Restart the computer"
-#~ msgstr "_הפעל מחדש את המחשב"
-
-#~ msgid "Restart your computer"
-#~ msgstr "הפעל מחדש את המחשב שלך"
-
-#~ msgid "Sus_pend the computer"
-#~ msgstr "_השהה את המחשב"
-
-#~ msgid "Suspend your computer"
-#~ msgstr "משהה את המחשב שלך"
-
-#~ msgid "Run _XDMCP chooser"
-#~ msgstr "הפעל את בוחר _XDMCP"
-
-#~ msgid ""
-#~ "Run an XDMCP chooser which will allow you to log into available remote "
-#~ "computers, if there are any."
-#~ msgstr "הרץ בוחר XDMCP שיאפשר לך להתחבר אל מחשבים מרוחקים, אם יש כאלו."
-
-#~ msgid "Confi_gure the login manager"
-#~ msgstr "_הגדר את מנהל ההתחברות"
-
-#~ msgid ""
-#~ "Configure GDM (this login manager). This will require the root password."
-#~ msgstr "הגדר את GDM (מנהל ההתחברות הזה). זה דורש את סיסמת root."
-
-#~ msgid "(c) 2002 Bond, James Bond"
-#~ msgstr "(c) 2002 בונד, ג'יימס בונד"
-
-#~ msgid "Bond, James Bond"
-#~ msgstr "בונד, ג'יימס בונד"
-
-#~ msgid "Circles"
-#~ msgstr "מעגלים"
-
-#~ msgid "Theme with blue circles"
-#~ msgstr "ערכת נושא עם מעגלים כחולים"
-
-#~ msgid "(c) 2002 GNOME"
-#~ msgstr "(c) 2002 GNOME"
-
-#~ msgid "GNOME Art variation of Circles with a Face Browser"
-#~ msgstr "הגירסה של GNOME Art למעגלים עם דפדפן פנים"
-
-#~ msgid "GNOME Artists"
-#~ msgstr "אומני GNOME"
-
-#~ msgid "Happy GNOME with Browser"
-#~ msgstr "GNOME שמח עם דפדפן"
-
-#~ msgid "GNOME Art variation of Circles"
-#~ msgstr "הגירסה של GNOME למעגלים"
-
-#~ msgid "Happy GNOME"
-#~ msgstr "GNOME שמח"
-
-#~ msgid ""
-#~ "Error while trying to run (%s)\n"
-#~ "which is linked to (%s)"
-#~ msgstr ""
-#~ "שגיאה בזמן ניסיון הפעלה (%s)\n"
-#~ "שהוא מקושר ל (%s)"
-
-#, fuzzy
-#~ msgid "Cannot open gestures file: %s"
-#~ msgstr "לא ניתן לפתוח קובץ"
-
-#~ msgid "DMX display to migrate to"
-#~ msgstr "DMX display to migrate to"
-
-#~ msgid "DISPLAY"
-#~ msgstr "DISPLAY"
-
-#~ msgid "Backend display name"
-#~ msgstr "Backend display name"
-
-#~ msgid "Xauthority file for destination display"
-#~ msgstr "Xauthority file for destination display"
-
-#~ msgid "AUTHFILE"
-#~ msgstr "AUTHFILE"
-
-#~ msgid "Xauthority file for backend display"
-#~ msgstr "Xauthority file for backend display"
-
-#~ msgid "Failed to open display \"%s\"\n"
-#~ msgstr "Failed to open display \"%s\"\n"
-
-#~ msgid "DMX extension not present on \"%s\"\n"
-#~ msgstr "DMX extension not present on \"%s\"\n"
-
-#~ msgid "- migrate a backend display from one DMX display to another"
-#~ msgstr "- migrate a backend display from one DMX display to another"
-
-#~ msgid "You must specify a destination DMX display using %s\n"
-#~ msgstr "You must specify a destination DMX display using %s\n"
-
-#~ msgid "You must specify a backend display by using %s\n"
-#~ msgstr "You must specify a backend display by using %s\n"
-
-#~ msgid "DMXAddScreen \"%s\" failed on \"%s\"\n"
-#~ msgstr "DMXAddScreen \"%s\" failed on \"%s\"\n"
-
-#~ msgid "gdmaskpass only runs as root\n"
-#~ msgstr "gdmaskpass only runs as root\n"
-
-#~ msgid "Authentication failure!\n"
-#~ msgstr "Authentication failure!\n"
-
-#~ msgid "CDE"
-#~ msgstr "CDE"
-
-#~ msgid "This is the default system session"
-#~ msgstr "זוהי תצורת ההפעלה ברירת המחדל של המערכת"
-
-#~ msgid ""
-#~ "This is the failsafe xterm session.  Windows now have focus only if you "
-#~ "have your cursor above them.  To get out of this mode type 'exit' in the "
-#~ "window in the upper left corner"
-#~ msgstr ""
-#~ "זוהי תצורת הפעלה בטוחה למסוף X.  חלונות כעת ממוקדים רק אם סמן העכבר שלך "
-#~ "יהיה מעליהם.  כדי לצאת מהמצב הזה הקלד 'exit' בחלון בפינה השמאלית העליונה"
-
-#~ msgid "%s: Directory %s does not exist."
-#~ msgstr "%s: הספריה %s איננה קיימת."
-
-#~ msgid "%s: %s does not exist but must exist."
-#~ msgstr "%s: %s לא קיים אך חייב להיות קיים."
-
-#~ msgid "%s: %s is not a regular file."
-#~ msgstr "%s: %s איננו קובץ רגיל."
-
-#~ msgid "%s: Halt failed: %s"
-#~ msgstr "%s: כיבוי נכשל: %s"
-
-#~ msgid "%s: Restart failed: %s"
-#~ msgstr "ו%s: הפעלה מחדש נכשלה: %s"
-
-#, fuzzy
-#~ msgid "%s: No GDM configuration file: %s. Using defaults."
-#~ msgstr "%s: אין קובץ הגדרות: %s. משתמש בברירת המחדל."
-
-#~ msgid ""
-#~ "Could not find the GNOME installation.  Running the \"Failsafe xterm\" "
-#~ "session instead."
-#~ msgstr ""
-#~ "לא ניתן למצוא את התקנת GNOME, אנסה להפעיל את תצורת \"מסוף X לתצורה בטוחה"
-#~ "\"."
-
-#~ msgid "Couldn't authenticate user \"%s\""
-#~ msgstr "לא ניתן לאמת את המשתמש \"%s\""
-
-#~ msgid "%s language selected"
-#~ msgstr "השפה %s נבחרה"
-
-#~ msgid "_System Default"
-#~ msgstr "ברירת המחדל של המ_ערכת"
-
-#~ msgid "    "
-#~ msgstr "    "
-
-#~ msgid "Disables X forwarding, but does not affect XDMCP."
-#~ msgstr "מבטל העברת X, אבל לא משפיע על XDMCP."
-
-#~ msgid "Example: /usr/X11R6/bin/X"
-#~ msgstr "דוגמה: ‎/usr/X11R6/bin/X"
-
-#~ msgid "(memory buffer)"
-#~ msgstr "(חוצץ זיכרון)"
-
-#~ msgid "Cannot load user interface"
-#~ msgstr "לא ניתן לטעון ממשק משתמש"
-
-#~ msgid ""
-#~ "Glade file is on crack! Make sure the correct file is installed!\n"
-#~ "file: %s widget: %s"
-#~ msgstr ""
-#~ "קובץ ה־glade על סמים! יש לוודא שהקובץ הנכון מותקן!\n"
-#~ "קובץ: %s פקד: %s"
-
-#~ msgid ""
-#~ "An error occurred while loading the user interface element %s%s from file "
-#~ "%s. CList type widget should have %d column. Possibly the glade interface "
-#~ "description was corrupted. %s cannot continue and will exit now. You "
-#~ "should check your installation of %s or reinstall %s."
-#~ msgid_plural ""
-#~ "An error occurred while loading the user interface element %s%s from file "
-#~ "%s. CList type widget should have %d columns. Possibly the glade "
-#~ "interface description was corrupted. %s cannot continue and will exit "
-#~ "now. You should check your installation of %s or reinstall %s."
-#~ msgstr[0] ""
-#~ "שגיאה התרחשה בעת הפעלת אלמנט ממשק המשתמש %s%s מהקובץ %s. סוג פקד CLIST "
-#~ "אמור להיות בעל עמודה %d. כנראה שהסבר קובץ ממשק ה־glade הושחת. %s לא יכול "
-#~ "להמשיך ויצא עכשיו. עליך לבדוק את ההתקנה של %s או להתקין מחדש את %s."
-#~ msgstr[1] ""
-#~ "שגיאה התרחשה בעת הפעלת אלמנט ממשק המשתמש %s%s מהקובץ %s. סוג פקד CLIST "
-#~ "אמור להיות בעל %d עמודות. כנראה שהסבר קובץ ממשק ה־glade הושחת. %s לא יכול "
-#~ "להמשיך ויצא עכשיו. עליך לבדוק את ההתקנה של %s או להתקין מחדש את %s."
-
-#~ msgid ""
-#~ "Glade file is on crack! Make sure the correct file is installed!\n"
-#~ "file: %s widget: %s expected clist columns: %d"
-#~ msgstr ""
-#~ "קובץ ה־glade על סמים! יש לוודא שהקובץ הנכון מותקן!\n"
-#~ "קובץ: %s פקד %s עמודות clist צפויות: %d"
-
-#, fuzzy
-#~ msgid "No interface could be loaded. This is BAD! (file: %s)"
-#~ msgstr "אין ממשק שניתן לטעינה, רע! (קובץ: %s)"
-
-#, fuzzy
-#~ msgid ""
-#~ "If you wish to make %s the default for future sessions, run the "
-#~ "'switchdesk' utility (System Tools->Desktop Switching Tool from the main "
-#~ "menu)."
-#~ msgstr ""
-#~ "בחרת את %s להפעלה הזו.\n"
-#~ "אם ברצונך להפוך את %s לברירת מחדל להפעלות העתידיות,\n"
-#~ "הפעל את העזר 'switchdesk'\n"
-#~ "(מערכת->כלי החלפת שולחן עבודה מתפריט הלוח)."
-
-#~ msgid ""
-#~ "Would you like me to try to run the mouse configuration program?  Note "
-#~ "that you will need the root password for this."
-#~ msgstr ""
-#~ "האם ברצונך לתת לי לנסות להריץ את תוכנת הגדרות העכבר?  שים לב שתצטרך את "
-#~ "סיסמת root בשביל זה."
-
-#~ msgid "%s: Root cannot be autologged in, turing off automatic login"
-#~ msgstr "%s: Root לא יכול להתחבר אוטומטית, מכבה התחברות אוטומטית"
-
-#~ msgid "%s: Display number %d in use!  I will use %d"
-#~ msgstr "%s: תצוגה מספר %d בשימוש!  אני אשתמש ב %d"
-
-#~ msgid ""
-#~ "I cannot start the X server (your graphical interface).  It is likely "
-#~ "that it is not set up correctly. You will need to log in on a console and "
-#~ "rerun the X configuration program.  Then restart GDM."
-#~ msgstr ""
-#~ "אני לא יכול להפעיל את שרת X (הממשק הגרפי שלך). כנראה שהוא לא מוגדר כראוי. "
-#~ "אתה תצטרך להתחבר דרך מסוף ולהפעיל מחדש את תוכנית ההגדרות של X. לאחר-מכן "
-#~ "הפעל מחדש את GDM."
-
-#~ msgid "Master rebooting..."
-#~ msgstr "מבצע הפעלה מחדש..."
-
-#~ msgid "Please make sure the Caps Lock key is not enabled."
-#~ msgstr "אנא ודא כי המקש Caps Lock איננו מאופשר."
-
-#~ msgid ""
-#~ "Please ask your system administrator to enable it in the GDM configurator "
-#~ "program."
-#~ msgstr "אנא בקש ממנהל המערכת לאפשרו בתוכנית הגדרת GDM."
-
-#~ msgid "*"
-#~ msgstr "*"
-
-#~ msgid ""
-#~ "If you still wish to use this feature, either start GDM yourself or ask "
-#~ "your system administrator to start GDM."
-#~ msgstr ""
-#~ "אם עדיין ברצונך להשתמש בתכונה זו, או שתפעיל מחדש את GDM בעצמך או שתבקש "
-#~ "ממנהל המערכת להפעיל את GDM."
-
-#~ msgid "A-M|English (British)"
-#~ msgstr "א-כ|אנגלית (בריטית)"
-
-#~ msgid "%s: String too long!"
-#~ msgstr "%s: המחרוזת ארוכה מידי!"
-
-#~ msgid "%sWelcome to %s%s"
-#~ msgstr "%sברוך הבא ל - %s%s"
-
-#~ msgid "You likely won't be able to log in either."
-#~ msgstr "כנראה שגם לא תוכל להתחבר."
-
-#~ msgid "_Reboot"
-#~ msgstr "הפעל _מחדש"
-
-#~ msgid "Failsafe Gnome"
-#~ msgstr "תצורה בטוחה של Gnome"
-
-#~ msgid "Failsafe xterm"
-#~ msgstr "מסוף X לתצורה בטוחה"
-
-#~ msgid "Yaikes, nothing found in the session directory."
-#~ msgstr "יאייק, שום דבר לא נמצא בסיפרית תצורות ההפעלה."
-
-#~ msgid "No default session link found. Using Failsafe GNOME.\n"
-#~ msgstr ""
-#~ "לא נמצא קישור לתצורת הפעלה ברירת מחדל. משתמש בתצורה הבטוחה של GNOME.\n"
-
-#~ msgid "Log in using the language that you have used last time you logged in"
-#~ msgstr "התחבר באמצעות השפה שבחרת בפעם האחרונה שהתחברת"
-
-#~ msgid "Log in using the default system language"
-#~ msgstr "התחבר האמצעות שפת המערכת ברירת המחדל"
-
-#~ msgid "Doubleclick on the user to log in"
-#~ msgstr "לחיצה כפולה על משתמש כדי להתחבר"
-
-#~ msgid "_XDMCP Chooser..."
-#~ msgstr "בוחר _XDMCP..."
-
-#~ msgid "Shut_down"
-#~ msgstr "_כיבוי"
-
-#~ msgid "Shut down the system so that you may safely turn off the computer."
-#~ msgstr "מכבה את המערכת כך שתוכל בבטחה לסגור את המחשב."
-
-#~ msgid "Reboot"
-#~ msgstr "הפעל מחדש"
-
-#~ msgid "No configuration was found"
-#~ msgstr "לא נמצאו הגדרות"
-
-#~ msgid "Select a photograph to show in the facebrowser:"
-#~ msgstr "בחר תמונה להצגה בדפדפן הפנים:"
-
-#~ msgid "Browse"
-#~ msgstr "עיין"
-
-#~ msgid "No picture selected."
-#~ msgstr "לא נבחרה תמונה."
-
-#~ msgid "Picture is too large"
-#~ msgstr "התמונה גדולה מידי"
-
-#~ msgid ""
-#~ "The system administrator disallowed pictures larger than %d bytes to show "
-#~ "in the face browser"
-#~ msgstr ""
-#~ "מנהל המערכת לא מרשה שהתמונות יהיו גדולות מ %d בתים להצגה בדפדפן הפנים"
-
-#~ msgid ""
-#~ "File %s cannot be open for reading\n"
-#~ "Error: %s"
-#~ msgstr ""
-#~ "הקובץ %s לא יכול להיפתח לקריאה\n"
-#~ "שגיאה: %s"
-
-#~ msgid "Greeter"
-#~ msgstr "מברך"
-
-#~ msgid "_Welcome string: "
-#~ msgstr "מחרוזת _ברוכים הבאים: "
-
-#~ msgid "Re_mote welcome string: "
-#~ msgstr "מחרוזת ברוכים הבאים מ_רוחקת: "
-
-#~ msgid "Standard greeter"
-#~ msgstr "מברך רגיל"
-
-#~ msgid "Graphical greeter"
-#~ msgstr "מברך גרפי"
-
-#~ msgid "Always use 24 hour cloc_k format"
-#~ msgstr "תמיד השתמש בסידור ש_עון של 24 שעות"
-
-#~ msgid "_Automatic login username:"
-#~ msgstr "שם משתמש לחיבור _אוטומטי:"
-
-#~ msgid "_Login a user automatically on first bootup"
-#~ msgstr "_חבר משתמש באופן אוטומטי בהפעלה הראשונה"
-
-#~ msgid "Timed login us_ername:"
-#~ msgstr "_שם המשתמש להתחברות מתוזמנת:"
-
-#~ msgid "Login a user automa_tically after a specified number of seconds"
-#~ msgstr "חבר משתמש באופן או_טומטי לאחר מספר מסוים של שניות"
-
-#~ msgid "Miscellaneous"
-#~ msgstr "שונות"
-
-#~ msgid "Show choosable user images (_face browser)"
-#~ msgstr "הצג תמונות משתמשים הניתנות לבחירה (דפדפן _פנים)"
-
-#~ msgid "_No background"
-#~ msgstr "_ללא רקע"
-
-#~ msgid "_Only color on remote displays"
-#~ msgstr "צבע _רק בצגים מרוחקים"
-
-#~ msgid "Pick a color"
-#~ msgstr "בחר צבע"
-
-#~ msgid "Preview:"
-#~ msgstr "תצוגה מקדימה:"
-
-#~ msgid ""
-#~ "description\n"
-#~ "widget"
-#~ msgstr ""
-#~ "תיאור\n"
-#~ "פריט"
-
-#~ msgid "copyright"
-#~ msgstr "זכויות יוצרים"
-
-#~ msgid "_Delete theme"
-#~ msgstr "_מחק ערכת נושא"
-
-#~ msgid "Allow _root to login with GDM"
-#~ msgstr "אפשר חיבור _root באמצעות GDM"
-
-#~ msgid "Allow root to login r_emotely with GDM"
-#~ msgstr "אפשר ל root להתחבר מ_רחוק באמצעות GDM"
-
-#~ msgid "Allow c_onfiguration from the login screen"
-#~ msgstr "אפשר שינוי ה_גדרות ממסך ההתחברות"
-
-#~ msgid "Allo_w running XDMCP chooser from the login screen"
-#~ msgstr "אפ_שר הפעלת בוחר XDMCP ממסך ההתחברות"
-
-#~ msgid "Retry _delay (seconds) :"
-#~ msgstr "_השהיית ניסיון חדש (שניות) :"
-
-#~ msgid "Enable _XDMCP"
-#~ msgstr "אפשר _XDMCP"
-
-#~ msgid "Ping interval (seconds):"
-#~ msgstr "מרווח Ping (שניות):"
-
-#~ msgid "XDMCP"
-#~ msgstr "XDMCP"
-
-#~ msgid "Details: %s"
-#~ msgstr "פרטים: %s"
-
-#~ msgid "Select new theme archive to install"
-#~ msgstr "בחר ארכיון ערכת נושא חדש להתקנה"
-
-#~ msgid "Do you really wish to remove theme '%s' from the system?"
-#~ msgstr "האם ברצונך באמת להסיר את ערכת הנושא '%s' מהמערכת?"
-
-#~ msgid ""
-#~ "A graphical application for configuring the GNOME Display Manager (GDM)"
-#~ msgstr "יישום גרפי להגדרות מנהל התצוגה של GNOME (GDM)"
-
-#~ msgid "Last"
-#~ msgstr "אחרון"
-
-#~ msgid ""
-#~ "Doubleclick on the user\n"
-#~ "to log in"
-#~ msgstr ""
-#~ "לחיצה כפולה על משתמש\n"
-#~ "כדי להתחבר"
-
-#~ msgid "_XDMCP Chooser"
-#~ msgstr "בוחר _XDMCP"
-
-#~ msgid "You've got capslock on!"
-#~ msgstr "ה Caps Lock שלך דולק!"
-
-#~ msgid "(memory buffer"
-#~ msgstr "(חוצץ זיכרון"
-
-#~ msgid "focus_first_x_window: cannot fork"
-#~ msgstr "focus_first_x_window: לא ניתן לשכפל"
-
-#~ msgid "Running %s for %s on %s"
-#~ msgstr "מריץ %s עבור %s על %s"
-
-#~ msgid "Information"
-#~ msgstr "מידע"
-
-#~ msgid "AnotherLevel"
-#~ msgstr "רמה אחרת"
-
-#~ msgid "Failsafe"
-#~ msgstr "תצורה בטוחה"
-
-#~ msgid "Gnome"
-#~ msgstr "Gnome"
-
-#~ msgid "XSession"
-#~ msgstr "XSession"
-
-#~ msgid ""
-#~ "Doubleclick here to un-iconify the login window, so that you may log in."
-#~ msgstr "חיצה כפולה כאן כדי להחזיר את חלון התתחברות, כדי שתוכל להתחבר."
-
-#~ msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
-#~ msgstr "gdm_login_parse_config: אין קובץ הגדרות: %s. משתמש בברירת המחדל."
-
-#~ msgid "Name: "
-#~ msgstr "שם: "
-
-#~ msgid "Remember this setting"
-#~ msgstr "זכור את ההגדרות האלו"
-
-#~ msgid "S_ystem"
-#~ msgstr "_מערכת"
-
-#~ msgid "Select a photo"
-#~ msgstr "בחר תמונה"
-
-#~ msgid "GDM Setup"
-#~ msgstr "הגדרות GDM"
-
-#~ msgid "<b>Author:</b>"
-#~ msgstr "<b>מחבר:</b>"
-
-#~ msgid "GDM Configurator"
-#~ msgstr "הגדרות GDM"
