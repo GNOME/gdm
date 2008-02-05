@@ -27,6 +27,7 @@ gdm_user_switch_applet_SOURCES =  	\
 
 gdm_user_switch_applet_LDADD = 		\
 	$(top_builddir)/gui/simple-greeter/libgdmuser.la	\
+	$(COMMON_LIBS)					\
 	$(APPLET_LIBS)					\
 	$(NULL)
 

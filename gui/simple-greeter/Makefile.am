@@ -82,6 +82,7 @@ test_greeter_login_window_SOURCES = 	\
 test_greeter_login_window_LDADD =	\
 	$(top_builddir)/common/libgdmcommon.la	\
 	libgdmuser.la			\
+	$(COMMON_LIBS)			\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(POLKIT_GNOME_LIBS)		\
 	$(RBAC_LIBS)			\
@@ -167,6 +168,7 @@ test_user_chooser_SOURCES = 		\
 
 test_user_chooser_LDADD =	\
 	libgdmuser.la		\
+	$(COMMON_LIBS)		\
 	$(SIMPLE_GREETER_LIBS)	\
 	$(POLKIT_GNOME_LIBS)	\
 	$(NULL)
@@ -177,6 +179,7 @@ test_user_manager_SOURCES = 	\
 
 test_user_manager_LDADD =	\
 	libgdmuser.la		\
+	$(COMMON_LIBS)		\
 	$(SIMPLE_GREETER_LIBS)	\
 	$(POLKIT_GNOME_LIBS)	\
 	$(NULL)
@@ -225,6 +228,7 @@ gdm_simple_greeter_LDADD = 		\
 	$(top_builddir)/common/libgdmcommon.la	\
 	libgdmuser.la			\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
+	$(COMMON_LIBS)			\
 	$(EXTRA_GREETER_LIBS)   	\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(POLKIT_GNOME_LIBS)		\
