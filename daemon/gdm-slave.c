@@ -263,6 +263,7 @@ gdm_slave_run_script (GdmSlave   *slave,
 
         script = g_build_filename (dir, slave->priv->display_name, NULL);
         if (g_access (script, R_OK | X_OK) != 0) {
+                g_debug ("GdmSlave: script %s not found; skipping", script);
                 g_free (script);
                 script = NULL;
         }
@@ -271,6 +272,7 @@ gdm_slave_run_script (GdmSlave   *slave,
             slave->priv->display_hostname != NULL) {
                 script = g_build_filename (dir, slave->priv->display_hostname, NULL);
                 if (g_access (script, R_OK | X_OK) != 0) {
+                        g_debug ("GdmSlave: script %s not found; skipping", script);
                         g_free (script);
                         script = NULL;
                 }
@@ -298,12 +300,14 @@ gdm_slave_run_script (GdmSlave   *slave,
         if (script == NULL) {
                 script = g_build_filename (dir, "Default", NULL);
                 if (g_access (script, R_OK | X_OK) != 0) {
+                        g_debug ("GdmSlave: script %s not found; skipping", script);
                         g_free (script);
                         script = NULL;
                 }
         }
 
         if (script == NULL) {
+                g_debug ("GdmSlave: no script found");
                 return TRUE;
         }
 

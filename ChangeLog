@@ -1,3 +1,14 @@
+2008-02-06  William Jon McCann  <jmccann@redhat.com>
+
+	* daemon/gdm-factory-slave.c: (idle_connect_to_display):
+	* daemon/gdm-product-slave.c: (idle_connect_to_display):
+	* daemon/gdm-simple-slave.c: (idle_connect_to_display):
+	* daemon/gdm-slave.c: (gdm_slave_run_script):
+	* daemon/gdm-xdmcp-chooser-slave.c: (idle_connect_to_display):
+	* daemon/simple-slave-main.c: (main):
+	Make sure we retry connecting to the xserver.  This also ensures
+	that we reach the exit if we fail the max number of times.
+
 2008-02-05  Ray Strode  <rstrode@redhat.com>
 
 	Add PAM auditing logic.  Based on patch and feedback from

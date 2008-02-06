@@ -171,6 +171,9 @@ main (int    argc,
         g_option_context_parse (context, &argc, &argv, NULL);
         g_option_context_free (context);
 
+        /* For debugging */
+        /*sleep (10);*/
+
         connection = get_system_bus ();
         if (connection == NULL) {
                 goto out;

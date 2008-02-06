@@ -322,6 +322,7 @@ idle_connect_to_display (GdmProductSlave *slave)
                         g_warning ("Unable to connect to display after %d tries - bailing out", slave->priv->connection_attempts);
                         exit (1);
                 }
+                return TRUE;
         }
 
         return FALSE;
