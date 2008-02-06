@@ -1,3 +1,34 @@
+2008-02-05  Ray Strode  <rstrode@redhat.com>
+
+	Add PAM auditing logic.  Based on patch and feedback from
+	Brian Cameron and earlier code from Gary Winiger and
+	Steve Grubb.
+
+	* configure.ac: set HAVE_ADT and HAVE_LIBAUDIT as appropriate
+	for solaris and linux audit support, respectively.
+	* daemon/Makefile.am: add new auditing code to Makefile.
+	* daemon/gdm-session-auditor.[ch]: generic base class for doing
+	auditing.
+	* daemon/gdm-session-linux-auditor.[ch]: linux auditor subclass
+	* daemon/gdm-session-solaris-auditor.[ch]: solaris auditor 
+	subclass
+	* daemon/gdm-session-worker.c (GdmSessionWorkerPrivate): track
+	auditor
+	(gdm_session_worker_update_username): inform audit code about
+	username changes
+	(gdm_session_worker_start_auditor): instantiate the auditor
+	(gdm_session_worker_stop_auditor): free the auditor
+	(gdm_session_worker_uninitialize_pam): inform audit code about
+	logout/login failure and then free the auditor
+	(_get_tty_for_pam): fix calling return more than once on solaris
+	(gdm_session_worker_initialize_pam): instantiate the auditor.
+	(gdm_session_worker_authorize_user): inform audit code about
+	password changes
+	(gdm_session_worker_accredit_user): inform audit code about
+	user getting credentials
+	(gdm_session_worker_open_user_session): inform audit code about
+	successful login
+
 2008-02-05  William Jon McCann  <jmccann@redhat.com>
 
 	* data/session-setup.entries:

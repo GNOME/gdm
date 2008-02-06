@@ -995,10 +995,33 @@ adt_user_context = ADT_USER;
 if test ${check_sun_audit} = yes
 then
    AC_DEFINE(HAVE_ADT)
-   EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lbsm"
+   PAM_LIBS="$PAM_LIBS -lbsm"
    AC_MSG_RESULT(yes)
 else
    AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(HAVE_ADT, test x$check_sun_audit = xyes)
+
+# Check for Linux auditing API
+#
+AC_ARG_WITH(libaudit,
+  [  --with-libaudit=[auto/yes/no]  Add Linux audit support [default=auto]],,
+  with_libaudit=auto)
+
+# libaudit detection
+if test x$with_libaudit = xno ; then
+    have_libaudit=no;
+else
+    # See if we have audit daemon library
+    AC_CHECK_LIB(audit, audit_log_user_message,
+                 have_libaudit=yes, have_libaudit=no)
+fi
+
+AM_CONDITIONAL(HAVE_LIBAUDIT, test x$have_libaudit = xyes)
+
+if test x$have_libaudit = xyes ; then
+    PAM_LIBS="$PAM_LIBS -laudit"
+    AC_DEFINE(HAVE_LIBAUDIT,1,[linux audit support])
 fi
 
 # Check for Solaris logindevperm support

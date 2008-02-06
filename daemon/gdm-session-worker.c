@@ -46,6 +46,14 @@
 #include "gdm-session-worker.h"
 #include "gdm-marshal.h"
 
+#if defined (HAVE_ADT)
+#include "gdm-session-solaris-auditor.h"
+#elif defined (HAVE_LIBAUDIT)
+#include "gdm-session-linux-auditor.h"
+#else
+#include "gdm-session-auditor.h"
+#endif
+
 #define GDM_SESSION_WORKER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SESSION_WORKER, GdmSessionWorkerPrivate))
 
 #define GDM_SESSION_DBUS_PATH         "/org/gnome/DisplayManager/Session"
@@ -110,6 +118,8 @@ struct GdmSessionWorkerPrivate
 
         char             *server_address;
         DBusConnection   *connection;
+
+        GdmSessionAuditor *auditor;
 };
 
 enum {
@@ -496,6 +506,8 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
                 worker->priv->username = username;
                 username = NULL;
 
+                gdm_session_auditor_set_username (worker->priv->auditor, worker->priv->username);
+
                 send_dbus_string_method (worker->priv->connection,
                                          "UsernameChanged",
                                          worker->priv->username);
@@ -773,6 +785,32 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
 }
 
 static void
+gdm_session_worker_start_auditor (GdmSessionWorker *worker)
+{
+
+/* FIXME: it may make sense at some point to keep a list of
+ * auditors, instead of assuming they are mutually exclusive
+ */
+#if defined (HAVE_ADT)
+        worker->priv->auditor = gdm_session_solaris_auditor_new (worker->priv->hostname,
+                                                                 worker->priv->display_device);
+#elif defined (HAVE_LIBAUDIT)
+        worker->priv->auditor = gdm_session_linux_auditor_new (worker->priv->hostname,
+                                                               worker->priv->display_device);
+#else
+        worker->priv->auditor = gdm_session_auditor_new (worker->priv->hostname,
+                                                         worker->priv->display_device);
+#endif
+}
+
+static void
+gdm_session_worker_stop_auditor (GdmSessionWorker *worker)
+{
+        g_object_unref (worker->priv->auditor);
+        worker->priv->auditor = NULL;
+}
+
+static void
 gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
                                      int               status)
 {
@@ -787,10 +825,17 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
 
         if (worker->priv->state >= GDM_SESSION_WORKER_STATE_SESSION_OPENED) {
                 pam_close_session (worker->priv->pam_handle, 0);
+                gdm_session_auditor_report_logout (worker->priv->auditor);
+        } else {
+                gdm_session_auditor_report_login_failure (worker->priv->auditor,
+                                                          status,
+                                                          pam_strerror (worker->priv->pam_handle, status));
         }
 
         pam_end (worker->priv->pam_handle, status);
         worker->priv->pam_handle = NULL;
+
+        gdm_session_worker_stop_auditor (worker);
 
         g_debug ("GdmSessionWorker: state NONE");
         worker->priv->state = GDM_SESSION_WORKER_STATE_NONE;
@@ -802,8 +847,9 @@ _get_tty_for_pam (const char *x11_display_name,
 {
 #ifdef __sun
         return g_strdup (display_device);
-#endif
+#else
         return g_strdup (x11_display_name);
+#endif
 }
 
 static gboolean
@@ -827,6 +873,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
         pam_conversation.conv = (GdmSessionWorkerPamNewMessagesFunc) gdm_session_worker_pam_new_messages_handler;
         pam_conversation.appdata_ptr = worker;
 
+        gdm_session_worker_start_auditor (worker);
         error_code = pam_start (service,
                                 username,
                                 &pam_conversation,
@@ -966,8 +1013,15 @@ gdm_session_worker_authorize_user (GdmSessionWorker *worker,
 
         /* it's possible that the user needs to change their password or pin code
          */
-        if (error_code == PAM_NEW_AUTHTOK_REQD)
+        if (error_code == PAM_NEW_AUTHTOK_REQD) {
                 error_code = pam_chauthtok (worker->priv->pam_handle, PAM_CHANGE_EXPIRED_AUTHTOK);
+
+                if (error_code != PAM_SUCCESS) {
+                        gdm_session_auditor_report_password_change_failure (worker->priv->auditor);
+                } else {
+                        gdm_session_auditor_report_password_changed (worker->priv->auditor);
+                }
+        }
 
         if (error_code != PAM_SUCCESS) {
                 g_debug ("GdmSessionWorker: user is not authorized to log in: %s",
@@ -1143,6 +1197,8 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
                              pam_strerror (worker->priv->pam_handle, error_code));
                 goto out;
         }
+
+        gdm_session_auditor_report_user_accredited (worker->priv->auditor);
 
         g_debug ("GdmSessionWorker: state ACCREDITED");
         worker->priv->state = GDM_SESSION_WORKER_STATE_ACCREDITED;
@@ -1444,6 +1500,8 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
                 gdm_session_worker_uninitialize_pam (worker, error_code);
                 return FALSE;
         }
+
+        gdm_session_auditor_report_login (worker->priv->auditor);
 
         return TRUE;
 }
