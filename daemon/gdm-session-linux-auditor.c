@@ -61,15 +61,14 @@ gdm_session_linux_auditor_report_login_attempt (GdmSessionAuditor *auditor,
         g_object_get (G_OBJECT (auditor), "hostname", &hostname, NULL);
         g_object_get (G_OBJECT (auditor), "display-device", &display_device, NULL);
 
-        pw  = getpwnam (username);
-        if (username) {
+        if (username != NULL) {
                 pw = getpwnam (username);
         } else {
                 username = "unknown";
                 pw = NULL;
         }
 
-        if (pw) {
+        if (pw != NULL) {
                 g_snprintf (buf, sizeof (buf), "uid=%d", pw->pw_uid);
                 audit_log_user_message (linux_auditor->priv->audit_fd, AUDIT_USER_LOGIN,
                                         buf, hostname, NULL, display_device,
