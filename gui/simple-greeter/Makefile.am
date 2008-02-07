@@ -71,6 +71,8 @@ test_greeter_login_window_SOURCES = 	\
 	gdm-greeter-login-window.c	\
 	gdm-chooser-widget.h		\
 	gdm-chooser-widget.c		\
+	gdm-sessions.h			\
+	gdm-sessions.c			\
 	gdm-session-chooser-widget.h	\
 	gdm-session-chooser-widget.c	\
 	gdm-user-chooser-widget.h	\
@@ -107,6 +109,10 @@ test_greeter_panel_SOURCES = 	\
 	gdm-language-chooser-dialog.c	\
 	gdm-language-option-widget.h	\
 	gdm-language-option-widget.c	\
+	gdm-sessions.h			\
+	gdm-sessions.c			\
+	gdm-session-option-widget.h	\
+	gdm-session-option-widget.c	\
 	$(NULL)
 
 test_greeter_panel_LDADD =	\
@@ -146,6 +152,8 @@ test_session_chooser_SOURCES = 	\
 	test-session-chooser.c		\
 	gdm-chooser-widget.h		\
 	gdm-chooser-widget.c		\
+	gdm-sessions.h			\
+	gdm-sessions.c			\
 	gdm-session-chooser-widget.h	\
 	gdm-session-chooser-widget.c	\
 	gdm-session-chooser-dialog.h	\
@@ -218,6 +226,10 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-language-chooser-dialog.c	\
 	gdm-language-option-widget.h	\
 	gdm-language-option-widget.c	\
+	gdm-sessions.h			\
+	gdm-sessions.c			\
+	gdm-session-option-widget.h	\
+	gdm-session-option-widget.c	\
 	gdm-session-chooser-widget.h	\
 	gdm-session-chooser-widget.c	\
 	gdm-user-chooser-widget.h	\

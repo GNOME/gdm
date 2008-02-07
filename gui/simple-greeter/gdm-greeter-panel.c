@@ -32,6 +32,7 @@
 
 #include "gdm-greeter-panel.h"
 #include "gdm-language-option-widget.h"
+#include "gdm-session-option-widget.h"
 
 #include "na-tray.h"
 
@@ -44,6 +45,7 @@ struct GdmGreeterPanelPrivate
         GtkWidget              *hbox;
         GtkWidget              *hostname_label;
         GtkWidget              *language_option_widget;
+        GtkWidget              *session_option_widget;
 };
 
 enum {
@@ -52,6 +54,7 @@ enum {
 
 enum {
         LANGUAGE_SELECTED,
+        SESSION_SELECTED,
         NUMBER_OF_SIGNALS
 };
 
@@ -387,6 +390,17 @@ gdm_greeter_panel_class_init (GdmGreeterPanelClass *klass)
                               G_TYPE_NONE,
                               1, G_TYPE_STRING);
 
+        signals[SESSION_SELECTED] =
+                g_signal_new ("session-selected",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmGreeterPanelClass, session_selected),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1, G_TYPE_STRING);
+
         g_type_class_add_private (klass, sizeof (GdmGreeterPanelPrivate));
 }
 
@@ -406,6 +420,24 @@ on_language_activated (GdmLanguageOptionWidget *widget,
         g_signal_emit (panel, signals[LANGUAGE_SELECTED], 0, language);
 
         g_free (language);
+}
+
+static void
+on_session_activated (GdmSessionOptionWidget *widget,
+                      GdmGreeterPanel        *panel)
+{
+
+        char *session;
+
+        session = gdm_session_option_widget_get_current_session (GDM_SESSION_OPTION_WIDGET (panel->priv->session_option_widget));
+
+        if (session == NULL) {
+                return;
+        }
+
+        g_signal_emit (panel, signals[SESSION_SELECTED], 0, session);
+
+        g_free (session);
 }
 
 static void
@@ -440,6 +472,13 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
                           G_CALLBACK (on_language_activated), panel);
         gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->language_option_widget, FALSE, FALSE, 6);
         gtk_widget_show (panel->priv->language_option_widget);
+
+        panel->priv->session_option_widget = gdm_session_option_widget_new ();
+        g_signal_connect (G_OBJECT (panel->priv->session_option_widget),
+                          "session-activated",
+                          G_CALLBACK (on_session_activated), panel);
+        gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->session_option_widget, FALSE, FALSE, 6);
+        gtk_widget_show (panel->priv->session_option_widget);
 
         /* FIXME: we should only show hostname on panel when connected
            to a remote host */

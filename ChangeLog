@@ -1,5 +1,24 @@
 2008-02-06  Ray Strode  <rstrode@redhat.com>
 
+	Add the session option widget to the panel
+
+	* gui/simple-greeter/gdm-greeter-panel.c (GdmGreeterPanelPrivate):
+	Add session_option_widget to struct.
+	(gdm_greeter_panel_class_init): add session-selected signal
+	(on_session_activated): new function to handle session-activated
+	signal from the option widget.  It emits session-selected on the
+	panel.
+	(gdm_greeter_panel_init): create the option widget and connect
+	session-activated to on_session_activated
+
+	* gui/simple-greeter/gdm-greeter-panel.h: add session_selected
+	member to class struct
+
+	* gui/simple-greeter/Makefile.am: add session option widget to
+	makefile
+
+2008-02-06  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-session-option-widget.[ch]:
 	Add the start of a session option widget for the panel
 

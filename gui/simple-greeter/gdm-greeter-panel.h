@@ -47,6 +47,9 @@ typedef struct
 
         void (* language_selected)           (GdmGreeterPanel *panel,
                                               const char      *text);
+
+        void (* session_selected)            (GdmGreeterPanel *panel,
+                                              const char      *text);
 } GdmGreeterPanelClass;
 
 GType                  gdm_greeter_panel_get_type                       (void);
