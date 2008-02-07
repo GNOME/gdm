@@ -317,7 +317,7 @@ add_special_users (GdmUserChooserWidget *widget)
                                      0,
                                      FALSE,
                                      TRUE);
-
+#if 0
         gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                      GDM_USER_CHOOSER_USER_GUEST,
                                      widget->priv->stock_person_pixbuf,
@@ -326,7 +326,7 @@ add_special_users (GdmUserChooserWidget *widget)
                                      0,
                                      FALSE,
                                      TRUE);
-
+#endif
         return FALSE;
 }
 
