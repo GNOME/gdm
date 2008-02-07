@@ -60,7 +60,6 @@ noinst_PROGRAMS = 			\
 	test-remote-login-window	\
 	test-greeter-panel		\
 	test-language-chooser		\
-	test-session-chooser		\
 	test-user-chooser		\
 	test-user-manager		\
 	$(NULL)
@@ -73,8 +72,6 @@ test_greeter_login_window_SOURCES = 	\
 	gdm-chooser-widget.c		\
 	gdm-sessions.h			\
 	gdm-sessions.c			\
-	gdm-session-chooser-widget.h	\
-	gdm-session-chooser-widget.c	\
 	gdm-user-chooser-widget.h	\
 	gdm-user-chooser-widget.c	\
 	gdm-user-chooser-dialog.h	\
@@ -150,22 +147,6 @@ test_language_chooser_LDADD =	\
 	$(GTK_LIBS)		\
 	$(NULL)
 
-test_session_chooser_SOURCES = 	\
-	test-session-chooser.c		\
-	gdm-chooser-widget.h		\
-	gdm-chooser-widget.c		\
-	gdm-sessions.h			\
-	gdm-sessions.c			\
-	gdm-session-chooser-widget.h	\
-	gdm-session-chooser-widget.c	\
-	gdm-session-chooser-dialog.h	\
-	gdm-session-chooser-dialog.c	\
-	$(NULL)
-
-test_session_chooser_LDADD =		\
-	$(GTK_LIBS)			\
-	$(NULL)
-
 test_user_chooser_SOURCES = 		\
 	test-user-chooser.c		\
 	gdm-chooser-widget.h		\
@@ -234,8 +215,6 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-sessions.c			\
 	gdm-session-option-widget.h	\
 	gdm-session-option-widget.c	\
-	gdm-session-chooser-widget.h	\
-	gdm-session-chooser-widget.c	\
 	gdm-user-chooser-widget.h	\
 	gdm-user-chooser-widget.c	\
 	$(NULL)
