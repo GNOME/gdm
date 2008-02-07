@@ -1,5 +1,16 @@
 2008-02-07  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-greeter-panel.[ch]
+	(gdm_greeter_panel_show_user_options),
+	(gdm_greeter_panel_hide_user_options):
+	new apis to show and hide language and
+	session selection depending on if a user
+	is currently active
+	(gdm_greeter_panel_init): don't show language
+	and session selection by default
+
+2008-02-07  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-login-window.c
 	(on_user_chosen): emit "user-selected" signal
 	when a user is selected

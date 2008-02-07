@@ -56,6 +56,9 @@ GType                  gdm_greeter_panel_get_type                       (void);
 
 GtkWidget            * gdm_greeter_panel_new                            (void);
 
+void                   gdm_greeter_panel_show_user_options              (GdmGreeterPanel *panel);
+void                   gdm_greeter_panel_hide_user_options              (GdmGreeterPanel *panel);
+
 G_END_DECLS
 
 #endif /* __GDM_GREETER_PANEL_H */

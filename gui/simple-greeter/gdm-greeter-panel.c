@@ -474,14 +474,12 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
                           "language-activated",
                           G_CALLBACK (on_language_activated), panel);
         gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->language_option_widget, FALSE, FALSE, 6);
-        gtk_widget_show (panel->priv->language_option_widget);
 
         panel->priv->session_option_widget = gdm_session_option_widget_new ();
         g_signal_connect (G_OBJECT (panel->priv->session_option_widget),
                           "session-activated",
                           G_CALLBACK (on_session_activated), panel);
         gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->session_option_widget, FALSE, FALSE, 6);
-        gtk_widget_show (panel->priv->session_option_widget);
 
         /* FIXME: we should only show hostname on panel when connected
            to a remote host */
@@ -500,6 +498,8 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
                                        GTK_ORIENTATION_HORIZONTAL);
         gtk_box_pack_end (GTK_BOX (panel->priv->hbox), GTK_WIDGET (tray), FALSE, FALSE, 6);
         gtk_widget_show (GTK_WIDGET (tray));
+
+        gdm_greeter_panel_hide_user_options (panel);
 }
 
 static void
@@ -526,4 +526,18 @@ gdm_greeter_panel_new (void)
                                NULL);
 
         return GTK_WIDGET (object);
+}
+
+void
+gdm_greeter_panel_show_user_options (GdmGreeterPanel *panel)
+{
+        gtk_widget_show (panel->priv->session_option_widget);
+        gtk_widget_show (panel->priv->language_option_widget);
+}
+
+void
+gdm_greeter_panel_hide_user_options (GdmGreeterPanel *panel)
+{
+        gtk_widget_hide (panel->priv->session_option_widget);
+        gtk_widget_hide (panel->priv->language_option_widget);
 }
