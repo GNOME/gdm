@@ -213,6 +213,11 @@ toggle_panel (GdmSessionManager *manager,
                                           G_CALLBACK (on_select_language),
                                           session);
 
+                g_signal_connect_swapped (session->priv->panel,
+                                          "session-selected",
+                                          G_CALLBACK (on_select_session),
+                                          session);
+
                 gtk_widget_show (session->priv->panel);
         } else {
                 gtk_widget_destroy (session->priv->panel);
