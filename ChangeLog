@@ -1,5 +1,22 @@
 2008-02-06  Ray Strode  <rstrode@redhat.com>
 
+	Drop session chooser from login window, since its on the panel
+	now.
+
+	* gui/simple-greeter/gdm-greeter-login-window.c
+	(struct GdmGreeterLoginWindowPrivate): get rid of session_chooser
+	field.
+	(switch_mode): don't show/hide session-chooser widget anymore
+	(do_cancel): don't call set_current_session_name anymore
+	(on_session_activated): kill
+	(custom_widget_constructor): drop special casing session-chooser
+	in glade file.
+	(load_theme): don't try to load session-chooser from glade file
+	* gui/simple-greeter/gdm-greeter-login-window.glade: drop
+	session-chooser from glade file
+
+2008-02-06  Ray Strode  <rstrode@redhat.com>
+
 	Sessions api added 4 commits back dealed in terms of filenames,
 	while the daemon works in terms of desktop ids.  Change everything
 	to be in terms of desktop ids

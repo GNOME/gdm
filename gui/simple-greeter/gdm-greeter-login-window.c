@@ -60,7 +60,6 @@
 
 #include "gdm-greeter-login-window.h"
 #include "gdm-user-chooser-widget.h"
-#include "gdm-session-chooser-widget.h"
 
 #if HAVE_PAM
 #include <security/pam_appl.h>
@@ -90,7 +89,6 @@ enum {
 struct GdmGreeterLoginWindowPrivate
 {
         GladeXML        *xml;
-        GtkWidget       *session_chooser;
         GtkWidget       *user_chooser;
         gboolean         display_is_local;
         char            *timeformat;
@@ -253,7 +251,6 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 show_widget (login_window, "suspend-button", login_window->priv->display_is_local);
                 show_widget (login_window, "disconnect-button", ! login_window->priv->display_is_local);
                 show_widget (login_window, "auth-input-box", FALSE);
-                show_widget (login_window, "session-chooser", FALSE);
                 default_name = NULL;
                 break;
         case MODE_AUTHENTICATION:
@@ -264,7 +261,6 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 show_widget (login_window, "suspend-button", FALSE);
                 show_widget (login_window, "disconnect-button", FALSE);
                 show_widget (login_window, "auth-input-box", TRUE);
-                show_widget (login_window, "session-chooser", TRUE);
                 default_name = "log-in-button";
                 break;
         default:
@@ -308,8 +304,6 @@ do_cancel (GdmGreeterLoginWindow *login_window)
 {
 
         gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), NULL);
-        gdm_session_chooser_widget_set_current_session_name (GDM_SESSION_CHOOSER_WIDGET (login_window->priv->session_chooser),
-                                                             GDM_SESSION_CHOOSER_SESSION_PREVIOUS);
 
         switch_mode (login_window, MODE_SELECTION);
         set_busy (login_window);
@@ -338,8 +332,6 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         set_message (login_window, "");
 
         gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), NULL);
-        gdm_session_chooser_widget_set_current_session_name (GDM_SESSION_CHOOSER_WIDGET (login_window->priv->session_chooser),
-                                                             GDM_SESSION_CHOOSER_SESSION_PREVIOUS);
 
         switch_mode (login_window, MODE_SELECTION);
 
@@ -805,22 +797,6 @@ on_user_unchosen (GdmUserChooserWidget  *user_chooser,
 }
 
 static void
-on_session_activated (GdmSessionChooserWidget *session_chooser,
-                      GdmGreeterLoginWindow   *login_window)
-{
-        char *session;
-
-        session = gdm_session_chooser_widget_get_current_session_name (GDM_SESSION_CHOOSER_WIDGET (login_window->priv->session_chooser));
-        if (session == NULL) {
-                return;
-        }
-
-        g_signal_emit (login_window, signals[SESSION_SELECTED], 0, session);
-
-        g_free (session);
-}
-
-static void
 update_clock (GtkLabel   *label,
               const char *format)
 {
@@ -1089,8 +1065,6 @@ custom_widget_constructor (GladeXML              *xml,
 
         if (strcmp (name, "user-chooser") == 0) {
                widget = gdm_user_chooser_widget_new ();
-        } else if (strcmp (name, "session-chooser") == 0) {
-               widget = gdm_session_chooser_widget_new ();
         }
 
         return widget;
@@ -1137,24 +1111,6 @@ load_theme (GdmGreeterLoginWindow *login_window)
                           login_window);
 
         gtk_widget_show (login_window->priv->user_chooser);
-
-        login_window->priv->session_chooser =
-                glade_xml_get_widget (login_window->priv->xml, "session-chooser");
-
-        if (login_window->priv->session_chooser == NULL) {
-                g_critical ("Session chooser not found in greeter theme");
-        }
-
-        gdm_session_chooser_widget_set_show_only_chosen (GDM_SESSION_CHOOSER_WIDGET (login_window->priv->session_chooser), TRUE);
-
-        g_signal_connect (login_window->priv->session_chooser,
-                          "activated",
-                          G_CALLBACK (on_session_activated),
-                          login_window);
-
-        gdm_session_chooser_widget_set_current_session_name (GDM_SESSION_CHOOSER_WIDGET (login_window->priv->session_chooser),
-                                                             GDM_SESSION_CHOOSER_SESSION_PREVIOUS);
-
 
         button = glade_xml_get_widget (login_window->priv->xml, "log-in-button");
         gtk_widget_grab_default (button);
