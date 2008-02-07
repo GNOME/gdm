@@ -152,9 +152,8 @@ on_query_answer (GdmGreeterLoginWindow *login_window,
 }
 
 static void
-on_select_session (GdmGreeterLoginWindow *login_window,
-                   const char            *text,
-                   GdmGreeterSession     *session)
+on_select_session (GdmGreeterSession     *session,
+                   const char            *text)
 {
         gdm_greeter_client_call_select_session (session->priv->client,
                                                 text);
