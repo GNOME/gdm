@@ -28,6 +28,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
+#include <gconf/gconf-client.h>
 
 #include "gdm-greeter-session.h"
 #include "gdm-greeter-client.h"
@@ -39,10 +40,19 @@
 
 #define GDM_GREETER_SESSION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_SESSION, GdmGreeterSessionPrivate))
 
+#define KEY_GDM_A11Y_DIR            "/apps/gdm/simple-greeter/accessibility"
+#define KEY_SCREEN_KEYBOARD_ENABLED  KEY_GDM_A11Y_DIR "/screen_keyboard_enabled"
+#define KEY_SCREEN_MAGNIFIER_ENABLED KEY_GDM_A11Y_DIR "/screen_magnifier_enabled"
+#define KEY_SCREEN_READER_ENABLED    KEY_GDM_A11Y_DIR "/screen_reader_enabled"
+
 struct GdmGreeterSessionPrivate
 {
         GdmGreeterClient      *client;
         GdmSessionManager     *manager;
+
+        GdmSessionClient      *screen_reader_client;
+        GdmSessionClient      *screen_keyboard_client;
+        GdmSessionClient      *screen_magnifier_client;
 
         GtkWidget             *login_window;
         GtkWidget             *panel;
@@ -327,6 +337,148 @@ start_window_manager (GdmGreeterSession *session)
         }
 }
 
+static void
+toggle_screen_reader (GdmGreeterSession *session,
+                      gboolean           enabled)
+{
+        g_debug ("GdmGreeterSession: screen reader toggled: %d", enabled);
+        gdm_session_client_set_enabled (session->priv->screen_reader_client, enabled);
+}
+
+static void
+toggle_screen_magnifier (GdmGreeterSession *session,
+                         gboolean           enabled)
+{
+        g_debug ("GdmGreeterSession: screen magnifier toggled: %d", enabled);
+        gdm_session_client_set_enabled (session->priv->screen_magnifier_client, enabled);
+}
+
+static void
+toggle_screen_keyboard (GdmGreeterSession *session,
+                        gboolean           enabled)
+{
+        g_debug ("GdmGreeterSession: screen keyboard toggled: %d", enabled);
+        gdm_session_client_set_enabled (session->priv->screen_keyboard_client, enabled);
+}
+
+static void
+on_a11y_key_changed (GConfClient       *client,
+                     guint              cnxn_id,
+                     GConfEntry        *entry,
+                     GdmGreeterSession *session)
+{
+        const char *key;
+        GConfValue *value;
+
+        key = gconf_entry_get_key (entry);
+        value = gconf_entry_get_value (entry);
+
+        if (strcmp (key, KEY_SCREEN_READER_ENABLED) == 0) {
+                if (value->type == GCONF_VALUE_BOOL) {
+                        gboolean enabled;
+
+                        enabled = gconf_value_get_bool (value);
+                        g_debug ("setting key %s = %d", key, enabled);
+                        toggle_screen_reader (session, enabled);
+                } else {
+                        g_warning ("Error retrieving configuration key '%s': Invalid type",
+                                   key);
+                }
+
+        } else if (strcmp (key, KEY_SCREEN_MAGNIFIER_ENABLED) == 0) {
+                if (value->type == GCONF_VALUE_BOOL) {
+                        gboolean enabled;
+
+                        enabled = gconf_value_get_bool (value);
+                        g_debug ("setting key %s = %d", key, enabled);
+                        toggle_screen_magnifier (session, enabled);
+                } else {
+                        g_warning ("Error retrieving configuration key '%s': Invalid type",
+                                   key);
+                }
+
+        } else if (strcmp (key, KEY_SCREEN_KEYBOARD_ENABLED) == 0) {
+                if (value->type == GCONF_VALUE_BOOL) {
+                        gboolean enabled;
+
+                        enabled = gconf_value_get_bool (value);
+                        g_debug ("setting key %s = %d", key, enabled);
+                        toggle_screen_keyboard (session, enabled);
+                } else {
+                        g_warning ("Error retrieving configuration key '%s': Invalid type",
+                                   key);
+                }
+
+        } else {
+        }
+}
+
+static void
+setup_at_tools (GdmGreeterSession *session)
+{
+        GConfClient *client;
+        gboolean     enabled;
+
+        client = gconf_client_get_default ();
+        gconf_client_add_dir (client,
+                              KEY_GDM_A11Y_DIR,
+                              GCONF_CLIENT_PRELOAD_ONELEVEL,
+                              NULL);
+        gconf_client_notify_add (client,
+                                 KEY_GDM_A11Y_DIR,
+                                 (GConfClientNotifyFunc)on_a11y_key_changed,
+                                 session,
+                                 NULL,
+                                 NULL);
+
+        session->priv->screen_keyboard_client = gdm_session_client_new ();
+        gdm_session_client_set_name (session->priv->screen_keyboard_client,
+                                     "On-screen Keyboard");
+        gdm_session_client_set_try_exec (session->priv->screen_keyboard_client,
+                                         "gok");
+        gdm_session_client_set_command (session->priv->screen_keyboard_client,
+                                        "gok");
+        enabled = gconf_client_get_bool (client, KEY_SCREEN_KEYBOARD_ENABLED, NULL);
+        gdm_session_client_set_enabled (session->priv->screen_keyboard_client,
+                                        enabled);
+
+
+        session->priv->screen_reader_client = gdm_session_client_new ();
+        gdm_session_client_set_name (session->priv->screen_reader_client,
+                                     "Screen Reader");
+        gdm_session_client_set_try_exec (session->priv->screen_reader_client,
+                                         "orca");
+        gdm_session_client_set_command (session->priv->screen_reader_client,
+                                        "orca -n");
+        enabled = gconf_client_get_bool (client, KEY_SCREEN_READER_ENABLED, NULL);
+        gdm_session_client_set_enabled (session->priv->screen_reader_client,
+                                        enabled);
+
+
+        session->priv->screen_magnifier_client = gdm_session_client_new ();
+        gdm_session_client_set_name (session->priv->screen_magnifier_client,
+                                     "Screen Magnifier");
+        gdm_session_client_set_try_exec (session->priv->screen_magnifier_client,
+                                         "magnifier");
+        gdm_session_client_set_command (session->priv->screen_magnifier_client,
+                                        "magnifier -v -m");
+        enabled = gconf_client_get_bool (client, KEY_SCREEN_MAGNIFIER_ENABLED, NULL);
+        gdm_session_client_set_enabled (session->priv->screen_magnifier_client,
+                                        enabled);
+
+        gdm_session_manager_add_client (session->priv->manager,
+                                        session->priv->screen_reader_client,
+                                        GDM_SESSION_LEVEL_LOGIN_WINDOW);
+        gdm_session_manager_add_client (session->priv->manager,
+                                        session->priv->screen_keyboard_client,
+                                        GDM_SESSION_LEVEL_LOGIN_WINDOW);
+        gdm_session_manager_add_client (session->priv->manager,
+                                        session->priv->screen_magnifier_client,
+                                        GDM_SESSION_LEVEL_LOGIN_WINDOW);
+
+        g_object_unref (client);
+}
+
 static gboolean
 start_settings_daemon (GdmGreeterSession *session)
 {
@@ -514,6 +666,8 @@ gdm_greeter_session_init (GdmGreeterSession *session)
                           G_CALLBACK (on_selected_user_changed),
                           session);
 
+        /* FIXME: we should really do this in settings daemon */
+        setup_at_tools (session);
 }
 
 static void

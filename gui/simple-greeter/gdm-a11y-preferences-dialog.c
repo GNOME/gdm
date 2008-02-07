@@ -46,9 +46,9 @@
 #define KEY_MOUSE_KEYS_ENABLED    KEY_A11Y_DIR "/keyboard/mousekeys_enable"
 
 #define KEY_GDM_A11Y_DIR            "/apps/gdm/simple-greeter/accessibility"
-#define KEY_SCREEN_KEYBOARD_ENABLED  KEY_GDM_A11Y_DIR "screen_keyboard_enabled"
-#define KEY_SCREEN_MAGNIFIER_ENABLED KEY_GDM_A11Y_DIR "screen_magnifier_enabled"
-#define KEY_SCREEN_READER_ENABLED    KEY_GDM_A11Y_DIR "screen_reader_enabled"
+#define KEY_SCREEN_KEYBOARD_ENABLED  KEY_GDM_A11Y_DIR "/screen_keyboard_enabled"
+#define KEY_SCREEN_MAGNIFIER_ENABLED KEY_GDM_A11Y_DIR "/screen_magnifier_enabled"
+#define KEY_SCREEN_READER_ENABLED    KEY_GDM_A11Y_DIR "/screen_reader_enabled"
 
 #define KEY_GTK_THEME "/desktop/gnome/interface/gtk_theme"
 #define KEY_COLOR_SCHEME "/desktop/gnome/interface/gtk_color_scheme"
@@ -491,11 +491,6 @@ key_changed_cb (GConfClient *client,
         GConfValue *value;
 
         key = gconf_entry_get_key (entry);
-
-        if (! g_str_has_prefix (key, KEY_A11Y_DIR)) {
-                return;
-        }
-
         value = gconf_entry_get_value (entry);
 
         if (strcmp (key, KEY_STICKY_KEYS_ENABLED) == 0) {

@@ -50,16 +50,22 @@ GType                  gdm_session_client_get_type              (void);
 GdmSessionClient     * gdm_session_client_new                   (void);
 GdmSessionClient     * gdm_session_client_new_from_desktop_file (const char       *filename);
 
+void                   gdm_session_client_set_name              (GdmSessionClient *client,
+                                                                 const char       *name);
 void                   gdm_session_client_set_priority          (GdmSessionClient *client,
                                                                  guint             priority);
 void                   gdm_session_client_set_command           (GdmSessionClient *client,
                                                                  const char       *command);
 void                   gdm_session_client_set_try_exec          (GdmSessionClient *client,
                                                                  const char       *try_exec);
+void                   gdm_session_client_set_enabled           (GdmSessionClient *client,
+                                                                 gboolean          enabled);
 
+const char           * gdm_session_client_get_name              (GdmSessionClient *client);
 guint                  gdm_session_client_get_priority          (GdmSessionClient *client);
 const char           * gdm_session_client_get_command           (GdmSessionClient *client);
 const char           * gdm_session_client_get_try_exec          (GdmSessionClient *client);
+gboolean               gdm_session_client_get_enabled           (GdmSessionClient *client);
 
 gboolean               gdm_session_client_start                 (GdmSessionClient *client,
                                                                  GError          **error);

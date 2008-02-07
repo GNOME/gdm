@@ -49,6 +49,7 @@ struct GdmSessionClientPrivate
 enum {
         PROP_0,
         PROP_DESKTOP_FILE,
+        PROP_ENABLED,
 };
 
 static void     gdm_session_client_class_init  (GdmSessionClientClass *klass);
@@ -128,6 +129,97 @@ _gdm_session_client_set_desktop_file (GdmSessionClient *client,
         client->priv->desktop_filename = g_strdup (file);
 }
 
+gboolean
+gdm_session_client_get_enabled (GdmSessionClient *client)
+{
+        g_return_val_if_fail (GDM_IS_SESSION_CLIENT (client), FALSE);
+
+        return client->priv->enabled;
+}
+
+void
+gdm_session_client_set_enabled (GdmSessionClient *client,
+                                gboolean          enabled)
+{
+        g_return_if_fail (GDM_IS_SESSION_CLIENT (client));
+
+        if (enabled != client->priv->enabled) {
+                client->priv->enabled = enabled;
+                g_object_notify (G_OBJECT (client), "enabled");
+        }
+}
+
+const char *
+gdm_session_client_get_name (GdmSessionClient *client)
+{
+        g_return_val_if_fail (GDM_IS_SESSION_CLIENT (client), NULL);
+
+        return client->priv->name;
+}
+
+void
+gdm_session_client_set_name (GdmSessionClient *client,
+                             const char       *name)
+{
+        g_return_if_fail (GDM_IS_SESSION_CLIENT (client));
+
+        g_free (client->priv->name);
+        client->priv->name = g_strdup (name);
+}
+
+const char *
+gdm_session_client_get_command (GdmSessionClient *client)
+{
+        g_return_val_if_fail (GDM_IS_SESSION_CLIENT (client), NULL);
+
+        return client->priv->command;
+}
+
+void
+gdm_session_client_set_command (GdmSessionClient *client,
+                                const char       *name)
+{
+        g_return_if_fail (GDM_IS_SESSION_CLIENT (client));
+
+        g_free (client->priv->command);
+        client->priv->command = g_strdup (name);
+}
+
+const char *
+gdm_session_client_get_try_exec (GdmSessionClient *client)
+{
+        g_return_val_if_fail (GDM_IS_SESSION_CLIENT (client), NULL);
+
+        return client->priv->try_exec;
+}
+
+void
+gdm_session_client_set_try_exec (GdmSessionClient *client,
+                                 const char       *name)
+{
+        g_return_if_fail (GDM_IS_SESSION_CLIENT (client));
+
+        g_free (client->priv->try_exec);
+        client->priv->try_exec = g_strdup (name);
+}
+
+guint
+gdm_session_client_get_priority (GdmSessionClient *client)
+{
+        g_return_val_if_fail (GDM_IS_SESSION_CLIENT (client), 0);
+
+        return client->priv->priority;
+}
+
+void
+gdm_session_client_set_priority (GdmSessionClient *client,
+                                 guint             priority)
+{
+        g_return_if_fail (GDM_IS_SESSION_CLIENT (client));
+
+        client->priv->priority = priority;
+}
+
 static void
 gdm_session_client_set_property (GObject        *object,
                                  guint           prop_id,
@@ -141,6 +233,9 @@ gdm_session_client_set_property (GObject        *object,
         switch (prop_id) {
         case PROP_DESKTOP_FILE:
                 _gdm_session_client_set_desktop_file (self, g_value_get_string (value));
+                break;
+        case PROP_ENABLED:
+                gdm_session_client_set_enabled (self, g_value_get_boolean (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -161,6 +256,9 @@ gdm_session_client_get_property (GObject        *object,
         switch (prop_id) {
         case PROP_DESKTOP_FILE:
                 g_value_set_string (value, self->priv->desktop_filename);
+                break;
+        case PROP_ENABLED:
+                g_value_set_boolean (value, self->priv->enabled);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -242,6 +340,13 @@ gdm_session_client_class_init (GdmSessionClientClass *klass)
         object_class->dispose = gdm_session_client_dispose;
         object_class->finalize = gdm_session_client_finalize;
 
+        g_object_class_install_property (object_class,
+                                         PROP_ENABLED,
+                                         g_param_spec_boolean ("enabled",
+                                                               "enabled",
+                                                               "enabled",
+                                                               FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
                                          PROP_DESKTOP_FILE,
                                          g_param_spec_string ("desktop-file",

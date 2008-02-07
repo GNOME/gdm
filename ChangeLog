@@ -1,3 +1,30 @@
+2008-02-07  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/simple-greeter/gdm-a11y-preferences-dialog.c:
+	(key_changed_cb):
+	* gui/simple-greeter/gdm-greeter-panel.c:
+	(on_a11y_dialog_response):
+	* gui/simple-greeter/gdm-greeter-session.c: (toggle_screen_reader),
+	(toggle_screen_magnifier), (toggle_screen_keyboard),
+	(on_a11y_key_changed), (setup_at_tools),
+	(gdm_greeter_session_init):
+	* gui/simple-greeter/gdm-session-client.c:
+	(gdm_session_client_get_enabled), (gdm_session_client_set_enabled),
+	(gdm_session_client_get_name), (gdm_session_client_set_name),
+	(gdm_session_client_get_command), (gdm_session_client_set_command),
+	(gdm_session_client_get_try_exec),
+	(gdm_session_client_set_try_exec),
+	(gdm_session_client_get_priority),
+	(gdm_session_client_set_priority),
+	(gdm_session_client_set_property),
+	(gdm_session_client_get_property), (gdm_session_client_class_init):
+	* gui/simple-greeter/gdm-session-client.h:
+	* gui/simple-greeter/gdm-session-manager.c:
+	(is_client_in_current_level), (on_client_enable_notify),
+	(gdm_session_manager_add_client), (_change_level):
+	* gui/simple-greeter/gdm-simple-greeter.schemas.in:
+	Start/stop orca etc in the greeter session.
+
 2008-02-07  Ray Strode  <rstrode@redhat.com>
 
 	Make sure the user never sees the string "Prompt: "

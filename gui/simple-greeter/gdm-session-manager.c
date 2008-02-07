@@ -146,6 +146,54 @@ add_client_to_level (GdmSessionManager *manager,
         g_hash_table_insert (manager->priv->levels, GUINT_TO_POINTER (level), list);
 }
 
+static gboolean
+is_client_in_current_level (GdmSessionManager *manager,
+                            GdmSessionClient  *client)
+{
+        GList   *list;
+        GList   *l;
+        gboolean ret;
+
+        ret = FALSE;
+
+        list = g_hash_table_lookup (manager->priv->levels, GUINT_TO_POINTER (manager->priv->level));
+        for (l = list; l != NULL; l = l->next) {
+                if (client == l->data) {
+                        ret = TRUE;
+                        break;
+                }
+        }
+
+        return ret;
+}
+
+static void
+on_client_enable_notify (GdmSessionClient  *client,
+                         GParamSpec        *spec,
+                         GdmSessionManager *manager)
+{
+        g_debug ("GdmSessionManager: Client %s enabled changed: %d",
+                 gdm_session_client_get_name (client),
+                 gdm_session_client_get_enabled (client));
+        if (! is_client_in_current_level (manager, client)) {
+                return;
+        }
+
+        if (gdm_session_client_get_enabled (client)) {
+                GError  *error;
+                gboolean res;
+
+                error = NULL;
+                res = gdm_session_client_start (client, &error);
+                if (! res) {
+                        g_warning ("Unable to start client: %s", error->message);
+                        g_error_free (error);
+                }
+        } else {
+                gdm_session_client_stop (client);
+        }
+}
+
 void
 gdm_session_manager_add_client (GdmSessionManager *manager,
                                 GdmSessionClient  *client,
@@ -154,6 +202,11 @@ gdm_session_manager_add_client (GdmSessionManager *manager,
         int i;
 
         g_return_if_fail (GDM_IS_SESSION_MANAGER (manager));
+
+        g_signal_connect (client,
+                          "notify::enabled",
+                          G_CALLBACK (on_client_enable_notify),
+                          manager);
 
         for (i = GDM_SESSION_LEVEL_NONE; i <= GDM_SESSION_LEVEL_SHUTDOWN; i = i << 1) {
                 if (levels & i) {
@@ -292,6 +345,12 @@ _change_level (GdmSessionManager *manager,
                         GError           *error;
 
                         client = list->data;
+
+                        if (! gdm_session_client_get_enabled (client)) {
+                                g_debug ("Skipping disabled client");
+                                continue;
+                        }
+
                         error = NULL;
                         res = gdm_session_client_start (client, &error);
                         if (! res) {
