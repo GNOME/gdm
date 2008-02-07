@@ -1,5 +1,14 @@
 2008-02-07  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-greeter-login-window.c
+	(struct GdmGreeterLoginWindowPrivate), (update_clock),
+	(set_clock_timeout), (update_clock_timeout_cb),
+	(remove_clock_timeout), (get_time_format):
+	* gui/simple-greeter/gdm-greeter-login-window.glade:
+	Remove clock from login dialog since its on panel now
+
+2008-02-07  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-session.c
 	(on_reset), (on_select_user), (on_cancelled):
 	show language and session selection when a
