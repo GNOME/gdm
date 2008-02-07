@@ -1,3 +1,10 @@
+2008-02-07  Ray Strode  <rstrode@redhat.com>
+
+	* daemon/gdm-session-linux-auditor.c
+	(gdm_session_linux_auditor_report_login_attempt):
+	strdup "uknown" string so a literal doesn't get
+	freed later
+
 2008-02-07  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/Makefile.am:
