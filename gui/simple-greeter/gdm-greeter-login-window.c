@@ -776,6 +776,9 @@ on_user_chosen (GdmUserChooserWidget  *user_chooser,
                 return;
         }
 
+        g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
+                       0, user_name);
+
         if (strcmp (user_name, GDM_USER_CHOOSER_USER_OTHER) == 0) {
                 g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
         } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_GUEST) == 0) {
