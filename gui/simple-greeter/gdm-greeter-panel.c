@@ -22,6 +22,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/time.h>
 #include <unistd.h>
 #include <string.h>
 
@@ -31,6 +32,7 @@
 #include <gtk/gtk.h>
 
 #include "gdm-greeter-panel.h"
+#include "gdm-clock-widget.h"
 #include "gdm-language-option-widget.h"
 #include "gdm-session-option-widget.h"
 
@@ -44,6 +46,7 @@ struct GdmGreeterPanelPrivate
         GdkRectangle            geometry;
         GtkWidget              *hbox;
         GtkWidget              *hostname_label;
+        GtkWidget              *clock;
         GtkWidget              *language_option_widget;
         GtkWidget              *session_option_widget;
 };
@@ -488,11 +491,15 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
                 gtk_widget_show (panel->priv->hostname_label);
         }
 
+        panel->priv->clock = gdm_clock_widget_new ();
+        gtk_box_pack_end (GTK_BOX (panel->priv->hbox),
+                          GTK_WIDGET (panel->priv->clock), FALSE, FALSE, 6);
+        gtk_widget_show (panel->priv->clock);
+
         tray = na_tray_new_for_screen (gtk_window_get_screen (GTK_WINDOW (panel)),
                                        GTK_ORIENTATION_HORIZONTAL);
         gtk_box_pack_end (GTK_BOX (panel->priv->hbox), GTK_WIDGET (tray), FALSE, FALSE, 6);
         gtk_widget_show (GTK_WIDGET (tray));
-
 }
 
 static void

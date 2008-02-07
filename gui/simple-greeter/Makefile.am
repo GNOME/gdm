@@ -94,6 +94,8 @@ test_greeter_panel_SOURCES = 	\
 	test-greeter-panel.c	\
 	gdm-greeter-panel.h	\
 	gdm-greeter-panel.c	\
+	gdm-clock-widget.h      \
+	gdm-clock-widget.c      \
 	gdm-option-widget.h     \
 	gdm-option-widget.c     \
 	gdm-recent-option-widget.h	\
@@ -213,6 +215,8 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-remote-login-window.h	\
 	gdm-greeter-panel.h		\
 	gdm-greeter-panel.c		\
+	gdm-clock-widget.h		\
+	gdm-clock-widget.c		\
 	gdm-option-widget.h		\
 	gdm-option-widget.c		\
 	gdm-recent-option-widget.h	\
