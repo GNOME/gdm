@@ -50,13 +50,7 @@ typedef struct
                                               const char            *username);
         void (* query_answer)                (GdmGreeterLoginWindow *login_window,
                                               const char            *text);
-        void (* session_selected)            (GdmGreeterLoginWindow *login_window,
-                                              const char            *text);
-        void (* language_selected)           (GdmGreeterLoginWindow *login_window,
-                                              const char            *text);
         void (* user_selected)               (GdmGreeterLoginWindow *login_window,
-                                              const char            *text);
-        void (* hostname_selected)           (GdmGreeterLoginWindow *login_window,
                                               const char            *text);
         void (* cancelled)                   (GdmGreeterLoginWindow *login_window);
         void (* disconnected)                (GdmGreeterLoginWindow *login_window);

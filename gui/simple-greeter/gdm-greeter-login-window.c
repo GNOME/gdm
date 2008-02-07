@@ -105,10 +105,7 @@ enum {
         BEGIN_VERIFICATION,
         BEGIN_VERIFICATION_FOR_USER,
         QUERY_ANSWER,
-        SESSION_SELECTED,
-        LANGUAGE_SELECTED,
         USER_SELECTED,
-        HOSTNAME_SELECTED,
         DISCONNECTED,
         CANCELLED,
         LAST_SIGNAL
@@ -1188,41 +1185,11 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                               g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
                               1, G_TYPE_STRING);
-        signals [LANGUAGE_SELECTED] =
-                g_signal_new ("language-selected",
-                              G_TYPE_FROM_CLASS (object_class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, language_selected),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__STRING,
-                              G_TYPE_NONE,
-                              1, G_TYPE_STRING);
         signals [USER_SELECTED] =
                 g_signal_new ("user-selected",
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
                               G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, user_selected),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__STRING,
-                              G_TYPE_NONE,
-                              1, G_TYPE_STRING);
-        signals [SESSION_SELECTED] =
-                g_signal_new ("session-selected",
-                              G_TYPE_FROM_CLASS (object_class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, session_selected),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__STRING,
-                              G_TYPE_NONE,
-                              1, G_TYPE_STRING);
-        signals [HOSTNAME_SELECTED] =
-                g_signal_new ("hostname-selected",
-                              G_TYPE_FROM_CLASS (object_class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, hostname_selected),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,

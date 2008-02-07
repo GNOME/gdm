@@ -179,15 +179,6 @@ on_select_user (GdmGreeterLoginWindow *login_window,
 }
 
 static void
-on_select_hostname (GdmGreeterLoginWindow *login_window,
-                    const char            *text,
-                    GdmGreeterSession     *session)
-{
-        gdm_greeter_client_call_select_hostname (session->priv->client,
-                                                 text);
-}
-
-static void
 on_cancelled (GdmGreeterLoginWindow *login_window,
               GdmGreeterSession     *session)
 {
@@ -252,20 +243,8 @@ toggle_login_window (GdmSessionManager *manager,
                                   G_CALLBACK (on_query_answer),
                                   session);
                 g_signal_connect (session->priv->login_window,
-                                  "session-selected",
-                                  G_CALLBACK (on_select_session),
-                                  session);
-                g_signal_connect_swapped (session->priv->login_window,
-                                          "language-selected",
-                                          G_CALLBACK (on_select_language),
-                                          session);
-                g_signal_connect (session->priv->login_window,
                                   "user-selected",
                                   G_CALLBACK (on_select_user),
-                                  session);
-                g_signal_connect (session->priv->login_window,
-                                  "hostname-selected",
-                                  G_CALLBACK (on_select_hostname),
                                   session);
                 g_signal_connect (session->priv->login_window,
                                   "cancelled",
