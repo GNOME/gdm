@@ -95,6 +95,7 @@ on_reset (GdmGreeterClient  *client,
 {
         g_debug ("GdmGreeterSession: Reset");
 
+        gdm_greeter_panel_hide_user_options (GDM_GREETER_PANEL (session->priv->panel));
         gdm_greeter_login_window_reset (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
 }
 
@@ -172,6 +173,7 @@ on_select_user (GdmGreeterLoginWindow *login_window,
                 const char            *text,
                 GdmGreeterSession     *session)
 {
+        gdm_greeter_panel_show_user_options (GDM_GREETER_PANEL (session->priv->panel));
         gdm_greeter_client_call_select_user (session->priv->client,
                                              text);
 }
@@ -189,6 +191,7 @@ static void
 on_cancelled (GdmGreeterLoginWindow *login_window,
               GdmGreeterSession     *session)
 {
+        gdm_greeter_panel_hide_user_options (GDM_GREETER_PANEL (session->priv->panel));
         gdm_greeter_client_call_cancel (session->priv->client);
 }
 
