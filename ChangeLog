@@ -1,8 +1,22 @@
 2008-02-07  Ray Strode  <rstrode@redhat.com>
 
+	Make sure the user never sees the string "Prompt: "
+
+	* gui/simple-greeter/gdm-greeter-login-window.c
+	(switch_mode):
+	(gdm_greeter_login_window_{secret,}info_query):
+	Don't show auth input hbox as soon as going into
+	authentication mode
+	explicitly show the auth input hbox when pam
+	asks for input.
+	* gui/simple-greeter/gdm-greeter-login-window.glade:
+	drop the string "Prompt:" entirely
+
+2008-02-07  Ray Strode  <rstrode@redhat.com>
+
 	* daemon/gdm-session-linux-auditor.c
 	(gdm_session_linux_auditor_report_login_attempt):
-	strdup "uknown" string so a literal doesn't get
+	strdup "unknown" string so a literal doesn't get
 	freed later
 
 2008-02-07  William Jon McCann  <jmccann@redhat.com>

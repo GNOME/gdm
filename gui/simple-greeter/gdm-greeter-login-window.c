@@ -253,7 +253,6 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 show_widget (login_window, "restart-button", FALSE);
                 show_widget (login_window, "suspend-button", FALSE);
                 show_widget (login_window, "disconnect-button", FALSE);
-                show_widget (login_window, "auth-input-box", TRUE);
                 default_name = "log-in-button";
                 break;
         default:
@@ -399,6 +398,7 @@ gdm_greeter_login_window_info_query (GdmGreeterLoginWindow *login_window,
         label = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-label");
         gtk_label_set_text (GTK_LABEL (label), text);
 
+        show_widget (login_window, "auth-input-box", TRUE);
         set_sensitive (GDM_GREETER_LOGIN_WINDOW (login_window), TRUE);
         set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
@@ -422,6 +422,7 @@ gdm_greeter_login_window_secret_info_query (GdmGreeterLoginWindow *login_window,
         label = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-label");
         gtk_label_set_text (GTK_LABEL (label), text);
 
+        show_widget (login_window, "auth-input-box", TRUE);
         set_sensitive (GDM_GREETER_LOGIN_WINDOW (login_window), TRUE);
         set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
