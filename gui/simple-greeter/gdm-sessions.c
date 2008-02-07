@@ -35,7 +35,7 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 
-#include "gdm-languages.h"
+#include "gdm-sessions.h"
 
 typedef struct _GdmSessionFile {
         char    *id;
