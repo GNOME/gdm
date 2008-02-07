@@ -38,7 +38,7 @@
 #include "gdm-languages.h"
 
 typedef struct _GdmSessionFile {
-        char    *filename;
+        char    *id;
         char    *path;
         char    *translated_name;
         char    *translated_comment;
@@ -138,14 +138,14 @@ load_session_file (const char              *name,
 
         session = g_new0 (GdmSessionFile, 1);
 
-        session->filename = g_strdup (name);
+        session->id = g_strdup (name);
         session->path = g_strdup (path);
 
         session->translated_name = g_key_file_get_locale_string (key_file, G_KEY_FILE_DESKTOP_GROUP, "Name", NULL, NULL);
         session->translated_comment = g_key_file_get_locale_string (key_file, G_KEY_FILE_DESKTOP_GROUP, "Comment", NULL, NULL);
 
         g_hash_table_insert (gdm_available_sessions_map,
-                             g_strdup (session->path),
+                             g_strdup (name),
                              session);
  out:
         g_key_file_free (key_file);
@@ -223,7 +223,7 @@ gdm_get_all_sessions (void)
 
                 session = (GdmSessionFile *) value;
 
-                g_ptr_array_add (array, g_strdup (session->path));
+                g_ptr_array_add (array, g_strdup (session->id));
         }
         g_ptr_array_add (array, NULL);
 
@@ -231,7 +231,7 @@ gdm_get_all_sessions (void)
 }
 
 gboolean
-gdm_get_details_for_session (const char  *filename,
+gdm_get_details_for_session (const char  *id,
                              char       **name,
                              char       **comment)
 {
@@ -244,7 +244,7 @@ gdm_get_details_for_session (const char  *filename,
         }
 
         session = (GdmSessionFile *) g_hash_table_lookup (gdm_available_sessions_map,
-                                                          filename);
+                                                          id);
 
         if (session == NULL) {
                 return FALSE;

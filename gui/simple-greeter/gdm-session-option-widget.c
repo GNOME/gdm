@@ -104,30 +104,30 @@ gdm_session_option_widget_class_init (GdmSessionOptionWidgetClass *klass)
 static void
 add_available_sessions (GdmSessionOptionWidget *widget)
 {
-        char     **session_files;
+        char     **session_ids;
         int        i;
         gboolean   default_is_set;
 
-        session_files = gdm_get_all_sessions ();
+        session_ids = gdm_get_all_sessions ();
 
         default_is_set = FALSE;
 
-        for (i = 0; session_files[i] != NULL; i++) {
+        for (i = 0; session_ids[i] != NULL; i++) {
                 char *name;
                 char *comment;
 
-                if (!gdm_get_details_for_session (session_files[i],
+                if (!gdm_get_details_for_session (session_ids[i],
                                                   &name, &comment)) {
                         continue;
                 }
 
                 gdm_option_widget_add_item (GDM_OPTION_WIDGET (widget),
-                                            session_files[i], name, comment,
+                                            session_ids[i], name, comment,
                                             FALSE);
 
                 if (!default_is_set) {
                         gdm_option_widget_set_active_item (GDM_OPTION_WIDGET (widget),
-                                                           session_files[i]);
+                                                           session_ids[i]);
                         default_is_set = TRUE;
                 }
 
@@ -135,7 +135,7 @@ add_available_sessions (GdmSessionOptionWidget *widget)
                 g_free (comment);
         }
 
-        g_strfreev (session_files);
+        g_strfreev (session_ids);
 }
 
 static void

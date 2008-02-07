@@ -1,5 +1,24 @@
 2008-02-06  Ray Strode  <rstrode@redhat.com>
 
+	Sessions api added 4 commits back dealed in terms of filenames,
+	while the daemon works in terms of desktop ids.  Change everything
+	to be in terms of desktop ids
+
+	* gui/simple-greeter/gdm-sessions.c (struct _GdmSessionFile):
+	rename filename to id.
+	(load_session_file): set ->id to desktop id.  store id in
+	hash table.
+	(gdm_get_all_sessions): add ids insteads of filenames to
+	returned list of sessions
+	(gdm_get_details_for_session): change argument name from
+	filename to id.
+	* gui/simple-greeter/gdm-sessions.h: change argument name
+	from filename to id.
+	* gui/simple-greeter/gdm-session-option-widget.c
+	(add_available_sessions): s/files/ids/
+
+2008-02-06  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-session.c (toggle_panel):
 	connect to 'session-selected' signal of panel and inform
 	daemon about new session selection when it gets made

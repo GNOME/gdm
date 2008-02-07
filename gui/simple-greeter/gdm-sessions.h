@@ -29,7 +29,7 @@
 G_BEGIN_DECLS
 
 char **                gdm_get_all_sessions (void);
-gboolean               gdm_get_details_for_session (const char  *filename,
+gboolean               gdm_get_details_for_session (const char  *id,
                                                     char       **name,
                                                     char       **comment);
 
