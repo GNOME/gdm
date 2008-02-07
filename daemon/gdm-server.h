@@ -45,7 +45,11 @@ typedef struct
 {
         GObjectClass   parent_class;
 
-        void          (* ready)    (GdmServer *server);
+        void (* ready)             (GdmServer *server);
+        void (* exited)            (GdmServer *server,
+                                    int        exit_code);
+        void (* died)              (GdmServer *server,
+                                    int        signal_number);
 } GdmServerClass;
 
 GType               gdm_server_get_type  (void);

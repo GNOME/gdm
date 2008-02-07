@@ -1,3 +1,18 @@
+2008-02-06  William Jon McCann  <jmccann@redhat.com>
+
+	* daemon/gdm-factory-slave.c: (on_server_ready),
+	(on_server_exited), (on_server_died), (gdm_factory_slave_run):
+	* daemon/gdm-product-slave.c: (on_server_ready),
+	(on_server_exited), (on_server_died),
+	(gdm_product_slave_create_server):
+	* daemon/gdm-server.c: (server_child_watch),
+	(gdm_server_class_init):
+	* daemon/gdm-server.h:
+	* daemon/gdm-simple-slave.c: (on_server_ready), (on_server_exited),
+	(on_server_died), (gdm_simple_slave_run):
+	* daemon/gdm-slave.c: (gdm_slave_connect_to_x11_display):
+	Make sure we catch the xserver exiting.
+
 2008-02-06  Ray Strode  <rstrode@redhat.com>
 
 	Drop session chooser from login window, since its on the panel

@@ -758,10 +758,32 @@ idle_connect_to_display (GdmSimpleSlave *slave)
 }
 
 static void
-server_ready_cb (GdmServer      *server,
+on_server_ready (GdmServer      *server,
                  GdmSimpleSlave *slave)
 {
         g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
+}
+
+static void
+on_server_exited (GdmServer      *server,
+                  int             exit_code,
+                  GdmSimpleSlave *slave)
+{
+        g_debug ("GdmSimpleSlave: server exited with code %d\n", exit_code);
+
+        gdm_slave_stopped (GDM_SLAVE (slave));
+}
+
+static void
+on_server_died (GdmServer      *server,
+                int             signal_number,
+                GdmSimpleSlave *slave)
+{
+        g_debug ("GdmSimpleSlave: server died with signal %d, (%s)",
+                 signal_number,
+                 g_strsignal (signal_number));
+
+        gdm_slave_stopped (GDM_SLAVE (slave));
 }
 
 static gboolean
@@ -783,10 +805,17 @@ gdm_simple_slave_run (GdmSimpleSlave *slave)
                 gboolean res;
 
                 slave->priv->server = gdm_server_new (display_name, auth_file);
-
+                g_signal_connect (slave->priv->server,
+                                  "exited",
+                                  G_CALLBACK (on_server_exited),
+                                  slave);
+                g_signal_connect (slave->priv->server,
+                                  "died",
+                                  G_CALLBACK (on_server_died),
+                                  slave);
                 g_signal_connect (slave->priv->server,
                                   "ready",
-                                  G_CALLBACK (server_ready_cb),
+                                  G_CALLBACK (on_server_ready),
                                   slave);
 
                 res = gdm_server_start (slave->priv->server);

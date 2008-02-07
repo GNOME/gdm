@@ -384,13 +384,6 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
         g_setenv ("DISPLAY", slave->priv->display_name, TRUE);
         g_setenv ("XAUTHORITY", slave->priv->display_x11_authority_file, TRUE);
 
-#if 0
-        /* X error handlers to avoid the default one (i.e. exit (1)) */
-        do_xfailed_on_xio_error = TRUE;
-        XSetErrorHandler (gdm_slave_xerror_handler);
-        XSetIOErrorHandler (gdm_slave_xioerror_handler);
-#endif
-
         sigemptyset (&mask);
         sigaddset (&mask, SIGCHLD);
         sigprocmask (SIG_BLOCK, &mask, &omask);

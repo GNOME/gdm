@@ -100,6 +100,8 @@ enum {
 
 enum {
         READY,
+        EXITED,
+        DIED,
         LAST_SIGNAL
 };
 
@@ -575,6 +577,14 @@ server_child_watch (GPid       pid,
                  : WIFSIGNALED (status) ? WTERMSIG (status)
                  : -1);
 
+        if (WIFEXITED (status)) {
+                int code = WEXITSTATUS (status);
+                g_signal_emit (server, signals [EXITED], 0, code);
+        } else if (WIFSIGNALED (status)) {
+                int num = WTERMSIG (status);
+                g_signal_emit (server, signals [DIED], 0, num);
+        }
+
         g_spawn_close_pid (server->priv->pid);
         server->priv->pid = -1;
 }
@@ -853,6 +863,28 @@ gdm_server_class_init (GdmServerClass *klass)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
+        signals [EXITED] =
+                g_signal_new ("exited",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmServerClass, exited),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__INT,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_INT);
+        signals [DIED] =
+                g_signal_new ("died",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmServerClass, died),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__INT,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_INT);
 
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_NAME,
