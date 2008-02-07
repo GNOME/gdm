@@ -1,3 +1,41 @@
+2008-02-07  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/gdm-a11y-preferences-dialog.c:
+	(gdm_a11y_preferences_dialog_set_property),
+	(gdm_a11y_preferences_dialog_get_property),
+	(gdm_a11y_preferences_dialog_constructor),
+	(gdm_a11y_preferences_dialog_dispose),
+	(gdm_a11y_preferences_dialog_class_init), (on_response),
+	(config_get_string), (config_get_bool), (config_get_high_contrast),
+	(config_set_high_contrast), (config_get_sticky_keys),
+	(config_set_sticky_keys), (config_get_bounce_keys),
+	(config_set_bounce_keys), (config_get_slow_keys),
+	(config_set_slow_keys), (config_get_screen_keyboard),
+	(config_set_screen_keyboard), (config_get_screen_reader),
+	(config_set_screen_reader), (config_get_screen_magnifier),
+	(config_set_screen_magnifier),
+	(on_sticky_keys_checkbutton_toggled),
+	(on_bounce_keys_checkbutton_toggled),
+	(on_slow_keys_checkbutton_toggled),
+	(on_high_contrast_checkbutton_toggled),
+	(on_screen_keyboard_checkbutton_toggled),
+	(on_screen_reader_checkbutton_toggled),
+	(on_screen_magnifier_checkbutton_toggled), (ui_set_sticky_keys),
+	(ui_set_bounce_keys), (ui_set_slow_keys), (ui_set_high_contrast),
+	(ui_set_screen_keyboard), (ui_set_screen_reader),
+	(ui_set_screen_magnifier), (key_changed_cb), (setup_dialog),
+	(gdm_a11y_preferences_dialog_init),
+	(gdm_a11y_preferences_dialog_finalize),
+	(gdm_a11y_preferences_dialog_new):
+	* gui/simple-greeter/gdm-a11y-preferences-dialog.glade:
+	* gui/simple-greeter/gdm-a11y-preferences-dialog.h:
+	* gui/simple-greeter/gdm-greeter-panel.c:
+	(on_a11y_dialog_response), (on_a11y_button_clicked),
+	(gdm_greeter_panel_init):
+	* gui/simple-greeter/test-a11y-preferences.c: (main):
+	Add initial cut at a11y dialog.  Orca etc don't start yet.
+
 2008-02-07  Ray Strode  <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-greeter-login-window.[ch]:
