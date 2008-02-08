@@ -1,3 +1,11 @@
+2008-02-08  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/simple-greeter/gdm-greeter-panel.c:
+	(on_a11y_dialog_response):
+	Destroy and disconnect signals instead of hiding.
+	Makes it handle font resizing better and not crash when
+	we forgot to handle delete event etc.
+
 2008-02-08  Ray Strode  <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-greeter-session.c

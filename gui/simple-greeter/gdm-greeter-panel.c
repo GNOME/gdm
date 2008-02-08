@@ -451,7 +451,12 @@ on_a11y_dialog_response (GtkDialog       *dialog,
                          int              response,
                          GdmGreeterPanel *panel)
 {
-        gtk_widget_hide (GTK_WIDGET (dialog));
+        g_signal_handlers_disconnect_by_func (dialog,
+                                              on_a11y_dialog_response,
+                                              panel);
+
+        gtk_widget_destroy (GTK_WIDGET (dialog));
+        panel->priv->a11y_dialog = NULL;
 }
 
 static void
