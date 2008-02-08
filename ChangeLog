@@ -1,5 +1,15 @@
 2008-02-08  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-greeter-session.c
+	(gdm_greeter_session_init), (gdm_greeter_session_event_handler):
+	Listen for key presses and try to apply them as mnemonics on
+	all toplevels, not just the focused toplevel (so for instance,
+	pressing Alt-L should focus the language option widget in the
+	panel when the user is doing the pam conversation in the login
+	window)
+
+2008-02-08  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-login-window.c
 	(gdm_greeter_login_window_init): set title to
 	"Login Window"

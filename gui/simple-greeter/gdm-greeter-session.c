@@ -615,6 +615,28 @@ gdm_greeter_session_class_init (GdmGreeterSessionClass *klass)
 }
 
 static void
+gdm_greeter_session_event_handler(GdkEvent          *event,
+                                  GdmGreeterSession *session)
+{
+        if (event->type == GDK_KEY_PRESS) {
+                if (session->priv->panel != NULL &&
+                    gtk_window_activate_key (GTK_WINDOW (session->priv->panel),
+                                             ((GdkEventKey *) event))) {
+
+                        return;
+                }
+
+                if (session->priv->login_window != NULL &&
+                    gtk_window_activate_key (GTK_WINDOW (session->priv->login_window),
+                                             ((GdkEventKey *) event))) {
+                        return;
+                }
+        }
+
+        gtk_main_do_event (event);
+}
+
+static void
 gdm_greeter_session_init (GdmGreeterSession *session)
 {
 
@@ -665,6 +687,12 @@ gdm_greeter_session_init (GdmGreeterSession *session)
                           "selected-user-changed",
                           G_CALLBACK (on_selected_user_changed),
                           session);
+
+        /* We want to listen for panel mnemonics even if the
+         * login window is focused, so we intercept them here.
+         */
+        gdk_event_handler_set ((GdkEventFunc) gdm_greeter_session_event_handler,
+                               session, NULL);
 
         /* FIXME: we should really do this in settings daemon */
         setup_at_tools (session);
