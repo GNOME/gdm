@@ -63,6 +63,8 @@
 struct GdmA11yPreferencesDialogPrivate
 {
         GladeXML *xml;
+        guint     a11y_dir_cnxn;
+        guint     gdm_a11y_dir_cnxn;
 };
 
 enum {
@@ -721,23 +723,23 @@ setup_dialog (GdmA11yPreferencesDialog *dialog)
                               KEY_A11Y_DIR,
                               GCONF_CLIENT_PRELOAD_ONELEVEL,
                               NULL);
-        gconf_client_notify_add (client,
-                                 KEY_A11Y_DIR,
-                                 (GConfClientNotifyFunc)key_changed_cb,
-                                 dialog,
-                                 NULL,
-                                 NULL);
+        dialog->priv->a11y_dir_cnxn = gconf_client_notify_add (client,
+                                                               KEY_A11Y_DIR,
+                                                               (GConfClientNotifyFunc)key_changed_cb,
+                                                               dialog,
+                                                               NULL,
+                                                               NULL);
 
         gconf_client_add_dir (client,
                               KEY_GDM_A11Y_DIR,
                               GCONF_CLIENT_PRELOAD_ONELEVEL,
                               NULL);
-        gconf_client_notify_add (client,
-                                 KEY_GDM_A11Y_DIR,
-                                 (GConfClientNotifyFunc)key_changed_cb,
-                                 dialog,
-                                 NULL,
-                                 NULL);
+        dialog->priv->gdm_a11y_dir_cnxn = gconf_client_notify_add (client,
+                                                                   KEY_GDM_A11Y_DIR,
+                                                                   (GConfClientNotifyFunc)key_changed_cb,
+                                                                   dialog,
+                                                                   NULL,
+                                                                   NULL);
         g_object_unref (client);
 }
 
@@ -778,14 +780,26 @@ gdm_a11y_preferences_dialog_init (GdmA11yPreferencesDialog *dialog)
 static void
 gdm_a11y_preferences_dialog_finalize (GObject *object)
 {
-        GdmA11yPreferencesDialog *a11y_preferences_dialog;
+        GdmA11yPreferencesDialog *dialog;
+        GConfClient *client;
 
         g_return_if_fail (object != NULL);
         g_return_if_fail (GDM_IS_A11Y_PREFERENCES_DIALOG (object));
 
-        a11y_preferences_dialog = GDM_A11Y_PREFERENCES_DIALOG (object);
+        dialog = GDM_A11Y_PREFERENCES_DIALOG (object);
 
-        g_return_if_fail (a11y_preferences_dialog->priv != NULL);
+        g_return_if_fail (dialog->priv != NULL);
+
+        client = gconf_client_get_default ();
+
+        if (dialog->priv->a11y_dir_cnxn > 0) {
+                gconf_client_notify_remove (client, dialog->priv->a11y_dir_cnxn);
+        }
+        if (dialog->priv->gdm_a11y_dir_cnxn > 0) {
+                gconf_client_notify_remove (client, dialog->priv->gdm_a11y_dir_cnxn);
+        }
+
+        g_object_unref (client);
 
         G_OBJECT_CLASS (gdm_a11y_preferences_dialog_parent_class)->finalize (object);
 }
