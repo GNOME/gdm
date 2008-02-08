@@ -618,18 +618,28 @@ static void
 gdm_greeter_session_event_handler(GdkEvent          *event,
                                   GdmGreeterSession *session)
 {
-        if (event->type == GDK_KEY_PRESS) {
-                if (session->priv->panel != NULL &&
-                    gtk_window_activate_key (GTK_WINDOW (session->priv->panel),
-                                             ((GdkEventKey *) event))) {
+        g_assert (GDM_IS_GREETER_SESSION (session));
 
-                        return;
+        if (event->type == GDK_KEY_PRESS) {
+                GdkEventKey *key_event;
+
+                key_event = (GdkEventKey *) event;
+                if (session->priv->panel != NULL) {
+                        if (gtk_window_activate_key (GTK_WINDOW (session->priv->panel),
+                                                     key_event)) {
+                                gtk_window_present_with_time (GTK_WINDOW (session->priv->panel),
+                                                              key_event->time);
+                                return;
+                        }
                 }
 
-                if (session->priv->login_window != NULL &&
-                    gtk_window_activate_key (GTK_WINDOW (session->priv->login_window),
-                                             ((GdkEventKey *) event))) {
-                        return;
+                if (session->priv->login_window != NULL) {
+                        if (gtk_window_activate_key (GTK_WINDOW (session->priv->login_window),
+                                                     ((GdkEventKey *) event))) {
+                                gtk_window_present_with_time (GTK_WINDOW (session->priv->login_window),
+                                                              key_event->time);
+                                return;
+                        }
                 }
         }
 

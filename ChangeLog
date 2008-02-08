@@ -1,3 +1,12 @@
+2008-02-08  Ray Strode  <rstrode@redhat.com>
+
+	* gui/simple-greeter/gdm-greeter-session.c
+	(gdm_greeter_session_event_handler):
+	If a mnemonic is successfully applied to a window
+	then focus that window (since often activating
+	a mnemonic implies setting the focus widget for
+	the window to the activated widget)
+
 2008-02-08  William Jon McCann  <jmccann@redhat.com>
 
 	* configure.ac:
