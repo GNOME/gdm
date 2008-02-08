@@ -476,6 +476,8 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
 
         panel->priv = GDM_GREETER_PANEL_GET_PRIVATE (panel);
 
+        GTK_WIDGET_SET_FLAGS (GTK_WIDGET (panel), GTK_CAN_FOCUS);
+
         panel->priv->geometry.x      = -1;
         panel->priv->geometry.y      = -1;
         panel->priv->geometry.width  = -1;
