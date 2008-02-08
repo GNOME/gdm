@@ -410,6 +410,8 @@ AC_CHECK_LIB(pam, pam_start, have_pam=yes)
 
 if test "x$have_pam" = "xyes"; then
         PAM_LIBS="${PAM_LIBS} -lpam"
+else
+	AC_MSG_ERROR("PAM libraries not found")
 fi
 AC_SUBST(HAVE_PAM)
 AC_SUBST(PAM_LIBS)
