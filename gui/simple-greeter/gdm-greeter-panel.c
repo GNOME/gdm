@@ -483,6 +483,7 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
         panel->priv->geometry.width  = -1;
         panel->priv->geometry.height = -1;
 
+        gtk_window_set_title (GTK_WINDOW (panel), _("Panel"));
         gtk_window_set_decorated (GTK_WINDOW (panel), FALSE);
 
         gtk_window_set_keep_above (GTK_WINDOW (panel), TRUE);

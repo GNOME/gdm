@@ -1232,6 +1232,7 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
 {
         login_window->priv = GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE (login_window);
 
+        gtk_window_set_title (GTK_WINDOW (login_window), _("Login Window"));
         gtk_window_set_opacity (GTK_WINDOW (login_window), 0.85);
         gtk_window_set_position (GTK_WINDOW (login_window), GTK_WIN_POS_CENTER_ALWAYS);
         gtk_window_set_deletable (GTK_WINDOW (login_window), FALSE);
