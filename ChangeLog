@@ -1,5 +1,13 @@
 2008-02-08  William Jon McCann  <jmccann@redhat.com>
 
+	* gui/simple-greeter/gdm-a11y-preferences-dialog.c:
+	(get_large_font), (config_get_large_print),
+	(config_set_large_print):
+	Use pango to parse fonts.  Increase font size by
+	PANGO_SCALE_XX_LARGE instead of using a fixed size.
+
+2008-02-08  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/simple-greeter/gdm-a11y-preferences-dialog.c: (setup_dialog),
 	(gdm_a11y_preferences_dialog_finalize):
 	Disconnect gconf notify callbacks.

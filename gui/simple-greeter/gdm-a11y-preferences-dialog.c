@@ -58,7 +58,7 @@
 #define KEY_GTK_FONT           "/desktop/gnome/interface/font_name"
 
 #define HIGH_CONTRAST_THEME    "HighContrast"
-#define LARGE_FONT             "Sans 24"
+#define DEFAULT_LARGE_FONT             "Sans 18"
 
 struct GdmA11yPreferencesDialogPrivate
 {
@@ -206,16 +206,71 @@ config_get_bool (const char *key,
         return enabled;
 }
 
+static char *
+get_large_font (GConfClient *client)
+{
+        char                 *default_font;
+        double                new_size;
+        char                 *new_font;
+        PangoFontDescription *pfd;
+        GConfValue           *value;
+        new_font = NULL;
+
+        default_font = NULL;
+        value = gconf_client_get_default_from_schema (client,
+                                                      KEY_GTK_FONT,
+                                                      NULL);
+        if (value != NULL) {
+                default_font = g_strdup (gconf_value_get_string (value));
+                gconf_value_free (value);
+        }
+        if (default_font == NULL) {
+                default_font = g_strdup (DEFAULT_LARGE_FONT);
+        }
+
+        pfd = pango_font_description_from_string (default_font);
+        if (pfd == NULL) {
+                goto out;
+        }
+
+        if ((pango_font_description_get_set_fields (pfd) & PANGO_FONT_MASK_SIZE)) {
+                new_size = pango_font_description_get_size (pfd) / (double)PANGO_SCALE;
+                new_size *= PANGO_SCALE_XX_LARGE;
+        } else {
+                new_size = 18.0;
+        }
+
+        pango_font_description_set_size (pfd, new_size * PANGO_SCALE);
+        new_font = pango_font_description_to_string (pfd);
+        pango_font_description_free (pfd);
+
+ out:
+        g_free (default_font);
+
+        return new_font;
+}
+
 static gboolean
 config_get_large_print (gboolean *is_writable)
 {
-        gboolean ret;
-        char    *font;
+        gboolean     ret;
+        char        *font;
+        char        *large_font;
+        GConfClient *client;
 
         ret = FALSE;
 
         font = config_get_string (KEY_GTK_FONT, is_writable);
 
+        client = gconf_client_get_default ();
+        large_font = get_large_font (client);
+        g_object_unref (client);
+
+        if (large_font != NULL && font != NULL && strcmp (large_font, font) == 0) {
+                ret = TRUE;
+        }
+
+        g_free (large_font);
         g_free (font);
 
         return ret;
@@ -229,7 +284,11 @@ config_set_large_print (gboolean enabled)
         client = gconf_client_get_default ();
 
         if (enabled) {
-                gconf_client_set_string (client, KEY_GTK_FONT, LARGE_FONT, NULL);
+                char *large_font;
+                large_font = get_large_font (client);
+                g_debug ("GdmA11yPreferencesDialog: Setting font to '%s'", large_font);
+                gconf_client_set_string (client, KEY_GTK_FONT, large_font, NULL);
+                g_free (large_font);
         } else {
                 gconf_client_unset (client, KEY_GTK_FONT, NULL);
         }
