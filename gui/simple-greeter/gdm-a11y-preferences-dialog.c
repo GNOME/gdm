@@ -50,12 +50,15 @@
 #define KEY_SCREEN_MAGNIFIER_ENABLED KEY_GDM_A11Y_DIR "/screen_magnifier_enabled"
 #define KEY_SCREEN_READER_ENABLED    KEY_GDM_A11Y_DIR "/screen_reader_enabled"
 
-#define KEY_GTK_THEME "/desktop/gnome/interface/gtk_theme"
-#define KEY_COLOR_SCHEME "/desktop/gnome/interface/gtk_color_scheme"
-#define KEY_METACITY_THEME "/apps/metacity/general/theme"
-#define KEY_ICON_THEME "/desktop/gnome/interface/icon_theme"
+#define KEY_GTK_THEME          "/desktop/gnome/interface/gtk_theme"
+#define KEY_COLOR_SCHEME       "/desktop/gnome/interface/gtk_color_scheme"
+#define KEY_METACITY_THEME     "/apps/metacity/general/theme"
+#define KEY_ICON_THEME         "/desktop/gnome/interface/icon_theme"
 
-#define HIGH_CONTRAST_THEME "HighContrast"
+#define KEY_GTK_FONT           "/desktop/gnome/interface/font_name"
+
+#define HIGH_CONTRAST_THEME    "HighContrast"
+#define LARGE_FONT             "Sans 24"
 
 struct GdmA11yPreferencesDialogPrivate
 {
@@ -199,6 +202,37 @@ config_get_bool (const char *key,
         g_object_unref (client);
 
         return enabled;
+}
+
+static gboolean
+config_get_large_print (gboolean *is_writable)
+{
+        gboolean ret;
+        char    *font;
+
+        ret = FALSE;
+
+        font = config_get_string (KEY_GTK_FONT, is_writable);
+
+        g_free (font);
+
+        return ret;
+}
+
+static void
+config_set_large_print (gboolean enabled)
+{
+        GConfClient *client;
+
+        client = gconf_client_get_default ();
+
+        if (enabled) {
+                gconf_client_set_string (client, KEY_GTK_FONT, LARGE_FONT, NULL);
+        } else {
+                gconf_client_unset (client, KEY_GTK_FONT, NULL);
+        }
+
+        g_object_unref (client);
 }
 
 static gboolean
@@ -384,6 +418,13 @@ on_screen_magnifier_checkbutton_toggled (GtkToggleButton          *button,
 }
 
 static void
+on_large_print_checkbutton_toggled (GtkToggleButton          *button,
+                                    GdmA11yPreferencesDialog *dialog)
+{
+        config_set_large_print (gtk_toggle_button_get_active (button));
+}
+
+static void
 ui_set_sticky_keys (GdmA11yPreferencesDialog *dialog,
                     gboolean                  enabled)
 {
@@ -475,6 +516,20 @@ ui_set_screen_magnifier (GdmA11yPreferencesDialog *dialog,
         gboolean   active;
 
         widget = glade_xml_get_widget (dialog->priv->xml, "screen_magnifier_checkbutton");
+        active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+        if (active != enabled) {
+                gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), enabled);
+        }
+}
+
+static void
+ui_set_large_print (GdmA11yPreferencesDialog *dialog,
+                    gboolean                  enabled)
+{
+        GtkWidget *widget;
+        gboolean   active;
+
+        widget = glade_xml_get_widget (dialog->priv->xml, "large_print_checkbutton");
         active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
         if (active != enabled) {
                 gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), enabled);
@@ -648,6 +703,18 @@ setup_dialog (GdmA11yPreferencesDialog *dialog)
         if (! is_writable) {
                 gtk_widget_set_sensitive (widget, FALSE);
         }
+
+        widget = glade_xml_get_widget (dialog->priv->xml, "large_print_checkbutton");
+        g_signal_connect (widget,
+                          "toggled",
+                          G_CALLBACK (on_large_print_checkbutton_toggled),
+                          NULL);
+        enabled = config_get_large_print (&is_writable);
+        ui_set_large_print (dialog, enabled);
+        if (! is_writable) {
+                gtk_widget_set_sensitive (widget, FALSE);
+        }
+
 
         client = gconf_client_get_default ();
         gconf_client_add_dir (client,
