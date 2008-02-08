@@ -2,4 +2,7 @@
 xml:readonly:/etc/gconf/gconf.xml.system
 
 # override some settings
+# we treat settings in this location as
+# owned by GDM.  Sysadmins should create
+# another source if they wish to override them.
 xml:readonly:$(HOME)/.gconf.mandatory
