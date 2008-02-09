@@ -145,6 +145,7 @@ gdm_session_auditor_set_username (GdmSessionAuditor *auditor,
 
         if ((username == NULL || auditor->priv->username == NULL) ||
             strcmp (username, auditor->priv->username) != 0) {
+                g_debug ("reporting to auditor username has been set to '%s'\n", username);
                 auditor->priv->username = g_strdup (username);
                 g_object_notify (G_OBJECT (auditor), "username");
         }
@@ -257,6 +258,7 @@ gdm_session_auditor_new (const char *hostname,
 void
 gdm_session_auditor_report_password_changed (GdmSessionAuditor *auditor)
 {
+        g_debug ("report password changed %s\n", auditor->priv->username);
         if (GDM_SESSION_AUDITOR_GET_CLASS (auditor)->report_password_changed != NULL) {
                 GDM_SESSION_AUDITOR_GET_CLASS (auditor)->report_password_changed (auditor);
         }
@@ -265,6 +267,7 @@ gdm_session_auditor_report_password_changed (GdmSessionAuditor *auditor)
 void
 gdm_session_auditor_report_password_change_failure (GdmSessionAuditor *auditor)
 {
+        g_debug ("report password change failure %s\n", auditor->priv->username);
         if (GDM_SESSION_AUDITOR_GET_CLASS (auditor)->report_password_change_failure != NULL) {
                 GDM_SESSION_AUDITOR_GET_CLASS (auditor)->report_password_change_failure (auditor);
         }
@@ -273,6 +276,7 @@ gdm_session_auditor_report_password_change_failure (GdmSessionAuditor *auditor)
 void
 gdm_session_auditor_report_user_accredited (GdmSessionAuditor *auditor)
 {
+        g_debug ("report user accredited %s\n", auditor->priv->username);
         if (GDM_SESSION_AUDITOR_GET_CLASS (auditor)->report_user_accredited != NULL) {
                 GDM_SESSION_AUDITOR_GET_CLASS (auditor)->report_user_accredited (auditor);
         }
@@ -281,6 +285,8 @@ gdm_session_auditor_report_user_accredited (GdmSessionAuditor *auditor)
 void
 gdm_session_auditor_report_login (GdmSessionAuditor *auditor)
 {
+
+        g_debug ("report login %s\n", auditor->priv->username);
         if (GDM_SESSION_AUDITOR_GET_CLASS (auditor)->report_login != NULL) {
                 GDM_SESSION_AUDITOR_GET_CLASS (auditor)->report_login (auditor);
         }
@@ -291,6 +297,7 @@ gdm_session_auditor_report_login_failure (GdmSessionAuditor *auditor,
                                           int                error_code,
                                           const char        *error_message)
 {
+        g_debug ("report login failure %s\n", auditor->priv->username);
         if (GDM_SESSION_AUDITOR_GET_CLASS (auditor)->report_login_failure != NULL) {
                 GDM_SESSION_AUDITOR_GET_CLASS (auditor)->report_login_failure (auditor, error_code, error_message);
         }
@@ -299,6 +306,7 @@ gdm_session_auditor_report_login_failure (GdmSessionAuditor *auditor,
 void
 gdm_session_auditor_report_logout (GdmSessionAuditor *auditor)
 {
+        g_debug ("report logout %s\n", auditor->priv->username);
         if (GDM_SESSION_AUDITOR_GET_CLASS (auditor)->report_logout != NULL) {
                 GDM_SESSION_AUDITOR_GET_CLASS (auditor)->report_logout (auditor);
         }

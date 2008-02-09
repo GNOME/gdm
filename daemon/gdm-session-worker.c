@@ -495,6 +495,8 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
                          username != NULL ? username : "<unset>",
                          worker->priv->username != NULL ? worker->priv->username : "<unset>");
 
+                gdm_session_auditor_set_username (worker->priv->auditor, worker->priv->username);
+
                 if ((worker->priv->username == username) ||
                     ((worker->priv->username != NULL) && (username != NULL) &&
                      (strcmp (worker->priv->username, username) == 0)))
@@ -505,8 +507,6 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
                 g_free (worker->priv->username);
                 worker->priv->username = username;
                 username = NULL;
-
-                gdm_session_auditor_set_username (worker->priv->auditor, worker->priv->username);
 
                 send_dbus_string_method (worker->priv->connection,
                                          "UsernameChanged",
