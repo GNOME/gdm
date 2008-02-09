@@ -538,7 +538,8 @@ name_cell_data_func (GtkTreeViewColumn  *tree_column,
                             OPTION_NAME_COLUMN, &name,
                             -1);
 
-        markup = g_strdup_printf ("<span size='small'>%s</span>", name);
+        markup = g_strdup_printf ("<span size='small'>%s</span>",
+                name ? name : "(null)");
         g_free (name);
 
         g_object_set (cell, "markup", markup, NULL);
