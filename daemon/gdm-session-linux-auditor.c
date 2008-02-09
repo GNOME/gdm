@@ -64,7 +64,6 @@ gdm_session_linux_auditor_report_login_attempt (GdmSessionAuditor *auditor,
         if (username != NULL) {
                 pw = getpwnam (username);
         } else {
-                G_BREAKPOINT ();
                 username = g_strdup ("unknown");
                 pw = NULL;
         }
