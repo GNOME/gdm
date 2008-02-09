@@ -809,7 +809,9 @@ gdm_get_language_from_name (const char *name)
         }
 
         if (territory != NULL) {
-                full_language  = g_strdup_printf ("%s (%s)", language, territory);
+                full_language  = g_strdup_printf ("%s (%s)",
+                        language ? language : "",
+                        territory ? territory : "");
         } else {
                 full_language  = g_strdup (language);
         }
