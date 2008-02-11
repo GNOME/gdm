@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-03 10:51+0700\n"
-"PO-Revision-Date: 2008-02-04 15:02+0700\n"
+"POT-Creation-Date: 2008-02-11 14:31+0700\n"
+"PO-Revision-Date: 2008-02-11 15:38+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -61,8 +61,8 @@ msgstr "ไม่สามารถอนุญาตสิทธิ์ผู้
 msgid "Unable to establish credentials"
 msgstr "ไม่สามารถจัดตั้งรหัสลับได้"
 
-#: ../daemon/gdm-factory-slave.c:618 ../daemon/gdm-product-slave.c:364
-#: ../daemon/gdm-simple-slave.c:793
+#: ../daemon/gdm-factory-slave.c:648 ../daemon/gdm-product-slave.c:394
+#: ../daemon/gdm-simple-slave.c:823
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -71,110 +71,134 @@ msgid ""
 msgstr ""
 "ไม่สามารถเริ่มการทำงาน X server (สภาพแวดล้อมแบบกราฟิกของคุณ) "
 "เนื่องจากข้อผิดพลาดภายในบางประการ กรุณาติดต่อผู้ดูแลระบบของคุณ "
-"หรือตรวจสอบบันทึกปฏิบัติการของระบบเพื่อหาสาเหตุ ในระหว่างนี้ หน้าจอนี้จะถูกปิดใช้งาน "
-"กรุณาตั้งต้น GDM ใหม่เมื่อเมื่อได้แก้ปัญหาแล้ว"
+"หรือตรวจสอบบันทึกปฏิบัติการของระบบเพื่อหาสาเหตุ ในระหว่างนี้ หน้าจอนี้จะถูกปิดใช้งาน กรุณาตั้งต้น "
+"GDM ใหม่เมื่อเมื่อได้แก้ปัญหาแล้ว"
 
-#: ../daemon/gdm-server.c:242
+#: ../daemon/gdm-server.c:244
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: ไม่สามารถเชื่อมต่อไปยังดิสเพลย์แม่ '%s'"
 
-#: ../daemon/gdm-server.c:360
+#: ../daemon/gdm-server.c:362
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "จะสร้างโพรเซสเซิร์ฟเวอร์ในนามผู้ใช้ %s แต่ผู้ใช้นั้นไม่มีอยู่จริง"
 
-#: ../daemon/gdm-server.c:371 ../daemon/gdm-welcome-session.c:406
+#: ../daemon/gdm-server.c:373 ../daemon/gdm-welcome-session.c:406
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "ไม่สามารถกำหนด groupid เป็น %d"
 
-#: ../daemon/gdm-server.c:377 ../daemon/gdm-welcome-session.c:412
+#: ../daemon/gdm-server.c:379 ../daemon/gdm-welcome-session.c:412
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () ล้มเหลวสำหรับ %s"
 
-#: ../daemon/gdm-server.c:383 ../daemon/gdm-welcome-session.c:418
+#: ../daemon/gdm-server.c:385 ../daemon/gdm-welcome-session.c:418
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "ไม่สามารถกำหนด ID ของผู้ใช้เป็น %d"
 
-#: ../daemon/gdm-server.c:391 ../daemon/gdm-welcome-session.c:426
+#: ../daemon/gdm-server.c:393 ../daemon/gdm-welcome-session.c:426
 msgid "Couldn't set groupid to 0"
 msgstr "ไม่สามารถกำหนด ID ของกลุ่มเป็น 0"
 
-#: ../daemon/gdm-server.c:426
+#: ../daemon/gdm-server.c:428
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: ไม่สามารถเปิดแฟ้มบันทึกปฏิบัติการสำหรับดิสเพลย์ %s!"
 
-#: ../daemon/gdm-server.c:437 ../daemon/gdm-server.c:443
-#: ../daemon/gdm-server.c:449
+#: ../daemon/gdm-server.c:439 ../daemon/gdm-server.c:445
+#: ../daemon/gdm-server.c:451
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: เกิดความผิดพลาดขณะตั้งค่า %s เป็น %s"
 
-#: ../daemon/gdm-server.c:464
+#: ../daemon/gdm-server.c:466
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: ไม่สามารถกำหนดลำดับความสำคัญของเซิร์ฟเวอร์เป็น %d ได้: %s"
 
-#: ../daemon/gdm-server.c:608
+#: ../daemon/gdm-server.c:618
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: คำสั่งเซิร์ฟเวอร์ว่างเปล่าสำหรับดิสเพลย์ %s"
+
+#: ../daemon/gdm-session-auditor.c:90
+msgid "Username"
+msgstr "ชื่อผู้ใช้"
+
+#: ../daemon/gdm-session-auditor.c:91
+msgid "The username"
+msgstr "ชื่อของผู้ใช้"
+
+#: ../daemon/gdm-session-auditor.c:95
+msgid "Hostname"
+msgstr "ชื่อโฮสต์"
+
+#: ../daemon/gdm-session-auditor.c:96
+msgid "The hostname"
+msgstr "ชื่อของโฮสต์"
+
+#: ../daemon/gdm-session-auditor.c:101
+msgid "Display Device"
+msgstr "อุปกรณ์ดิสเพลย์"
+
+#: ../daemon/gdm-session-auditor.c:102
+msgid "The display device"
+msgstr "อุปกรณ์ดิสเพลย์"
 
 #: ../daemon/gdm-session-direct.c:1209 ../daemon/gdm-session-direct.c:1227
 #, c-format
 msgid "worker exited with status %d"
 msgstr "worker จบการทำงานด้วยสถานะ %d"
 
-#: ../daemon/gdm-session-worker.c:843
+#: ../daemon/gdm-session-worker.c:890
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "เกิดข้อผิดพลาดขณะเตรียมการโต้ตอบกับระบบยืนยันตัวบุคคล - %s"
 
-#: ../daemon/gdm-session-worker.c:844
+#: ../daemon/gdm-session-worker.c:891
 msgid "general failure"
 msgstr "ข้อผิดพลาดทั่วไป"
 
-#: ../daemon/gdm-session-worker.c:845
+#: ../daemon/gdm-session-worker.c:892
 msgid "out of memory"
 msgstr "หน่วยความจำหมด"
 
-#: ../daemon/gdm-session-worker.c:846
+#: ../daemon/gdm-session-worker.c:893
 msgid "application programmer error"
 msgstr "ข้อผิดพลาดของผู้เขียนโปรแกรม"
 
-#: ../daemon/gdm-session-worker.c:847
+#: ../daemon/gdm-session-worker.c:894
 msgid "unknown error"
 msgstr "ข้อผิดพลาดไม่ทราบสาเหตุ"
 
-#: ../daemon/gdm-session-worker.c:854
+#: ../daemon/gdm-session-worker.c:901
 msgid "Username:"
 msgstr "ชื่อผู้ใช้:"
 
-#: ../daemon/gdm-session-worker.c:860
+#: ../daemon/gdm-session-worker.c:907
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr "เกิดข้อผิดพลาดขณะแจ้งพร็อมต์ที่จะใช้ต่อระบบยืนยันตัวบุคคล - %s"
 
-#: ../daemon/gdm-session-worker.c:874
+#: ../daemon/gdm-session-worker.c:921
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr "เกิดข้อผิดพลาดขณะแจ้งชื่อโฮสต์ของผู้ใช้ต่อระบบยืนยันตัวบุคคล - %s"
 
-#: ../daemon/gdm-session-worker.c:889
+#: ../daemon/gdm-session-worker.c:936
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr "เกิดข้อผิดพลาดขณะแจ้งชื่อคอนโซลของผู้ใช้ต่อระบบยืนยันตัวบุคคล - %s"
 
-#: ../daemon/gdm-session-worker.c:1045
+#: ../daemon/gdm-session-worker.c:1099
 #, c-format
 msgid "no user account available"
 msgstr "ไม่มีบัญชีผู้ใช้"
 
-#: ../daemon/gdm-session-worker.c:1094
+#: ../daemon/gdm-session-worker.c:1148
 #, c-format
 msgid "user account not available on system"
 msgstr "ไม่มีบัญชีผู้ใช้ในระบบ"
@@ -431,27 +455,75 @@ msgstr "XDMCP: ไม่สามารถสร้างบัฟเฟอร�
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: ไม่สามารถอ่านข้อมูลส่วนหัวของ XDMCP ได้"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1145
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.c:823
+msgid "Accessibility Preferences"
+msgstr "ปรับแต่งสิ่งอำนวยความสะดวก"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:1
+msgid "<b>Enable features that make your computer easier to use:</b>"
+msgstr "<b>เปิดใช้ความสามารถที่ทำให้คอมพิวเตอร์ของคุณใช้ง่ายยิ่งขึ้น:</b>"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:2
+msgid "Assistive Technology Preferences"
+msgstr "ปรับแต่งเทคโนโลยีสิ่งอำนวยความสะดวก"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:3
+msgid "_Hear text onscreen read aloud (Reader)"
+msgstr "_ฟังเสียงอ่านข้อความบนหน้าจอ (ด้วยโปรแกรมอ่านหน้าจอ)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:4
+msgid "_Ignore duplicate keypresses (Bounce Keys)"
+msgstr "ละเลยแป้นที่_กดซ้ำ (ด้วยตัวเลือกป้องกันการกดแป้นรัว)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:5
+msgid "_Make items on screen larger (Magnifier)"
+msgstr "_ขยายส่วนต่างๆ บนหน้าจอให้ใหญ่ขึ้น (ด้วยโปรแกรมแว่นขยาย)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:6
+msgid "_Only accept long held keypresses (Slow Keys)"
+msgstr "รับการกดปุ่มที่แ_ช่ไว้เท่านั้น (ด้วยตัวเลือกพิมพ์แบบช้า)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:7
+msgid "_Press keyboard shortcuts on key at a time (Sticky Keys)"
+msgstr "_กดปุ่มลัดทีละปุ่ม (ด้วยตัวเลือกค้างปุ่มกด)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:8
+msgid "_See more contrast in colors (High Contrast)"
+msgstr "ใช้_สีที่ตัดกันมากขึ้น (ด้วยชุดตกแต่งสีตัดกัน)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:9
+msgid "_Type without the keyboard (On-screen Keyboard)"
+msgstr "_พิมพ์ข้อความโดยไม่มีแป้นพิมพ์ (ด้วยโปรแกรมแป้นพิมพ์บนจอ)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:10
+msgid "_Use a larger font size (Large Print)"
+msgstr "ใช้แบบ_อักษรขนาดใหญ่ขึ้น (ด้วยชุดตกแต่งอักษรใหญ่)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:11
+msgid "gtk-close"
+msgstr "gtk-close"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1150
 msgid "Inactive Text"
 msgstr "ข้อความส่วนปิดใช้งาน"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1146
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1151
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr "ข้อความที่จะใช้เป็นป้ายชื่อถ้าผู้ใช้ยังไม่เลือกรายการใด"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1154
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1159
 msgid "Active Text"
 msgstr "ข้อความส่วนใช้งาน"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1155
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1160
 msgid "The text to use in the label if the user has picked an item"
 msgstr "ข้อความที่จะใช้เป็นป้ายชื่อถ้าผู้ใช้เลือกรายการ"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1019
+#: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M:%S %p"
 msgstr "%H:%M:%S"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1019
+#: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M %p"
 msgstr "%H:%M"
 
@@ -460,7 +532,7 @@ msgstr "%H:%M"
 #. *              should begin with a 0 in your locale (e.g. "May
 #. *              01" instead of "May  1").
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1025
+#: ../gui/simple-greeter/gdm-clock-widget.c:72
 msgid "%a %b %e"
 msgstr "%a %e %b"
 
@@ -468,10 +540,15 @@ msgstr "%a %e %b"
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1030
+#: ../gui/simple-greeter/gdm-clock-widget.c:77
 #, c-format
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1235
+#: ../gui/user-switch-applet/applet.c:1754
+msgid "Login Window"
+msgstr "หน้าจอเข้าระบบ"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:1
 msgid "Authentication Dialog"
@@ -490,40 +567,40 @@ msgid "Log In"
 msgstr "เข้าระบบ"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
-msgid "Prompt:"
-msgstr "คำถาม:"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
 msgid "Restart"
 msgstr "เริ่มเปิดเครื่องใหม่"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
 msgid "Shut Down"
 msgstr "ปิดเครื่อง"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
 msgid "Suspend"
 msgstr "พักเครื่อง"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:9
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
 msgid "Version"
 msgstr "รุ่น"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:491
+msgid "Panel"
+msgstr "พาเนล"
 
 #: ../gui/simple-greeter/gdm-language-chooser-dialog.c:139
 msgid "Languages"
 msgstr "ภาษา"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:186
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:190
 msgid "_Languages:"
 msgstr "_ภาษา:"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:187
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:191
 #: ../gui/simple-greeter/gdm-language-option-widget.c:211
 msgid "_Language:"
 msgstr "_ภาษา:"
 
 #: ../gui/simple-greeter/gdm-language-option-widget.c:177
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:314
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:315
 msgid "Other..."
 msgstr "อื่นๆ..."
 
@@ -561,118 +638,446 @@ msgstr "เข้าระบบผ่านเครื่อข่าย (เ�
 msgid "Remote Login"
 msgstr "เข้าระบบผ่านเครื่อข่าย"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:362
-msgid "Default"
-msgstr "ค่าปริยาย"
-
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:363
-msgid "Login with the same session as last time."
-msgstr "เข้าระบบด้วยวาระแบบเดียวกับครั้งก่อน"
-
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:368
-msgid "Legacy"
-msgstr "ค่าตั้งแบบเก่า"
-
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:369
-msgid "Login based on preset legacy configuration"
-msgstr "เข้าระบบโดยใช้ค่าตั้งแบบเก่าที่ตั้งไว้"
-
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:412
+#: ../gui/simple-greeter/gdm-session-option-widget.c:170
 msgid "_Sessions:"
 msgstr "_วาระ:"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:413
-msgid "_Session:"
-msgstr "_วาระ:"
-
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
+msgid "Enable accessibility keyboard plugin"
+msgstr "เปิดใช้ปลั๊กอินสิ่งอำนวยความสะดวกสำหรับแป้นพิมพ์"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
+msgid "Enable on-screen keyboard"
+msgstr "เปิดใช้แป้นพิมพ์บนจอ"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
+msgid "Enable screen magnifier"
+msgstr "เปิดใช้แว่นขยาย"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
+msgid "Enable screen reader"
+msgstr "เปิดใช้โปรแกรมอ่านหน้าจอ"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
 msgid "Set to True to enable the background settings manager plugin."
 msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้งพื้นหลัง"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
+msgid "Set to True to enable the on-screen keyboard."
+msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินแป้นพิมพ์บนจอ"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
+msgid ""
+"Set to True to enable the plugin to manage the accessibility keyboard "
+"settings."
+msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้งสิ่งอำนวยความสะดวกสำหรับแป้นพิมพ์"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
+msgid "Set to True to enable the screen magnifier."
+msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้แว่นขยาย"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+msgid "Set to True to enable the screen reader."
+msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้โปรแกรมอ่านหน้าจอ"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
 msgid "Set to True to enable the xsettings settings manager plugin."
 msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้ง xsettings"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "True if the background settings manager plugin is enabled."
 msgstr "เปิดใช้ปลั๊กอินจัดการค่าตั้งพื้นหลัง"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "เปิดใช้ปลั๊กอินจัดการค่าตั้ง xsettings"
 
-#: ../gui/simple-greeter/gdm-user.c:218
+#: ../gui/simple-greeter/gdm-user.c:239
 msgid "Manager"
 msgstr "ตัวจัดการ"
 
-#: ../gui/simple-greeter/gdm-user.c:219
+#: ../gui/simple-greeter/gdm-user.c:240
 msgid "The user manager object this user is controlled by."
 msgstr "ออบเจกต์ตัวจัดการผู้ใช้ที่ควบคุมผู้ใช้นี้"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:315
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:316
 msgid "Choose a different account"
 msgstr "เลือกบัญชีผู้ใช้อื่น "
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:321
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:324
 msgid "Guest"
 msgstr "ผู้มาเยือน"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:322
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:325
 msgid "Login as a temporary guest"
 msgstr "เข้าระบบด้วยบัญชีชั่วคราวสำหรับผู้มาเยือน"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:342
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:347
 #, c-format
 msgid "Log in as %s"
 msgstr "เข้าระบบในนาม %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:407
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:431
 msgid "Currently logged in"
 msgstr "เข้าระบบอยู่"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:448
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:476
 msgid "_Users:"
 msgstr "_ผู้ใช้:"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:449
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:477
 msgid "_User:"
 msgstr "_ผู้ใช้:"
 
-#: ../utils/gdmflexiserver.c:49
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:1
+msgid "A menu to quickly switch between users"
+msgstr "เมนูสำหรับสลับผู้ใช้เครื่องอย่างเร็ว"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:2
+msgid "User Switcher 2"
+msgstr "สลับผู้ใช้ 2"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:3
+msgid "User Switcher Applet Factory"
+msgstr "โรงงานแอพเพล็ตสลับผู้ใช้"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:1
+msgid "Edit Personal _Information"
+msgstr "แก้ไข_ข้อมูลส่วนตัว"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:2
+msgid "_About"
+msgstr "เ_กี่ยวกับ"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:3
+msgid "_Edit Users and Groups"
+msgstr "แ_ก้ไขข้อมูลผู้ใช้และกลุ่มผู้ใช้"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:4
+msgid "_Help"
+msgstr "_วิธีใช้"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:5
+msgid "_Preferences"
+msgstr "_ปรับแต่ง"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:6
+msgid "_Setup Login Screen"
+msgstr "_ตั้งค่าหน้าจอเข้าระบบ"
+
+#: ../gui/user-switch-applet/applet.c:135
+msgid "Missing Required File"
+msgstr "ไม่พบแฟ้มที่ต้องการ"
+
+#: ../gui/user-switch-applet/applet.c:137
+#, c-format
+msgid ""
+"The User Selector's interfaces file, `%s', could not be opened. It is likely "
+"that this application was not properly installed or configured."
+msgstr ""
+"ไม่สามารถเปิดแฟ้มส่วนติดต่อผู้ใช้ `%s' ของแอพเพล็ตสลับผู้ใช้ได้ "
+"เป็นไปได้ว่าโปรแกรมติดตั้งหรือตั้งค่าไม่สมบูรณ์"
+
+#: ../gui/user-switch-applet/applet.c:514
+msgid ""
+"The User Switch Applet is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 2 of the License, or (at your "
+"option) any later version."
+msgstr ""
+"แอพเพล็ตสลับผู้ใช้ เป็นซอฟต์แวร์เสรี คุณสามารถแจกจ่ายต่อ และ/หรือ แก้ไขโปรแกรมได้ "
+"ภายใต้เงื่อนไขของ GNU General Public License ที่เผยแพร่โดยมูลนิธิซอฟต์แวร์เสรี "
+"ไม่ว่าจะเป็นสัญญาอนุญาตรุ่นที่ 2 หรือรุ่นถัดมา (ตามแต่คุณจะเลือก)"
+
+#: ../gui/user-switch-applet/applet.c:518
+msgid ""
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details."
+msgstr ""
+"โปรแกรมนี้ เผยแพร่ด้วยความหวังว่าโปรแกรมจะมีประโยชน์ แต่ *ไม่มีการรับประกันใดๆ* "
+"ไม่มีแม้การรับประกัน *อรรถประโยชน์เชิงพาณิชย์* หรือ "
+"*ความเหมาะสมสำหรับวัตถุประสงค์เฉพาะกิจใดๆ* กรุณาอ่าน GNU General Public License "
+"เพื่อดูรายละเอียดเพิ่มเติม"
+
+#: ../gui/user-switch-applet/applet.c:522
+msgid ""
+"You should have received a copy of the GNU General Public License along with "
+"this program; if not, write to the Free Software Foundation, Inc., 51 "
+"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
+msgstr ""
+"คุณควรจะได้รับสำเนาของ GNU General Public License มาพร้อมกับโปรแกรมนี้ ถ้าคุณไม่ได้รับ "
+"กรุณาติดต่อไปที่ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, "
+"Boston, MA 02110-1301, USA"
+
+#: ../gui/user-switch-applet/applet.c:536
+msgid "A menu to quickly switch between users."
+msgstr "เมนูสำหรับสลับผู้ใช้อย่างเร็ว"
+
+#: ../gui/user-switch-applet/applet.c:540
+msgid "translator-credits"
+msgstr "เทพพิทักษ์ การุญบุญญานันท์ <thep@linux.thai.net>"
+
+#: ../gui/user-switch-applet/applet.c:1112
+#, c-format
+msgid "Can't lock screen: %s"
+msgstr "ไม่สามารถล็อคหน้าจอได้: %s"
+
+#: ../gui/user-switch-applet/applet.c:1126
+#, c-format
+msgid "Can't temporarily set screensaver to blank screen: %s"
+msgstr "ไม่สามารถสั่งให้โปรแกรมรักษาหน้าจอล้างหน้าจอได้: %s"
+
+#: ../gui/user-switch-applet/applet.c:1282
+#: ../gui/user-switch-applet/applet.c:1285
+#: ../gui/user-switch-applet/applet.c:1340
+#: ../gui/user-switch-applet/applet.c:1343
+#: ../gui/user-switch-applet/applet.c:1677
+#: ../gui/user-switch-applet/applet.c:1682
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:15
+msgid "Users"
+msgstr "ผู้ใช้"
+
+#: ../gui/user-switch-applet/applet.c:1542
+msgid "User Switch Applet"
+msgstr "แอพเพล็ตสลับผู้ใช้"
+
+#: ../gui/user-switch-applet/applet.c:1563
+msgid "User Switcher"
+msgstr "แอพเพล็ตสลับผู้ใช้"
+
+#: ../gui/user-switch-applet/applet.c:1741
+msgid "Other"
+msgstr "อื่นๆ"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:312
+msgid "User"
+msgstr "ผู้ใช้"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:313
+msgid "The user this menu item represents."
+msgstr "ผู้ใช้ที่แทนโดยรายการเมนูนี้"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:320
+msgid "Icon Size"
+msgstr "ขนาดไอคอน"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:321
+msgid "The size of the icon to use."
+msgstr "ขนาดของไอคอนที่จะใช้"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:327
+msgid "Indicator Size"
+msgstr "ขนาดเครื่องหมายบ่งชี้"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:328
+msgid "Size of check indicator"
+msgstr "ขนาดของเครื่องหมายบ่งชี้"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:333
+msgid "Indicator Spacing"
+msgstr "ช่องไฟระหว่างเครื่องหมายบ่งชี้"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:334
+msgid "Space between the username and the indicator"
+msgstr "ช่องไฟระหว่างชื่อผู้ใช้กับเครื่องหมายบ่งชี้"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:1
+msgid "<span weight=\"bold\" size=\"larger\">Multiple Logins Found</span>"
+msgstr "<span weight=\"bold\" size=\"larger\">พบการเข้าระบบหลายวาระ</span>"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:2
+msgid "Appearance"
+msgstr "การแสดงผล"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:3
+msgid "Continue"
+msgstr "ดำเนินการต่อ"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:4
+msgid "Create new logins in _nested windows"
+msgstr "เปิดหน้าจอเข้าระบบในหน้าต่าง_ซ้อน"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:5
+msgid "Details"
+msgstr "รายละเอียด"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:6
+msgid "Multiple Logins Found - User Switcher"
+msgstr "พบการเข้าระบบหลายวาระ - แอพเพล็ตสลับผู้ใช้"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:7
+msgid "Options"
+msgstr "ตัวเลือก"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:8
+msgid "Some preferences have been locked by the system adminstrator."
+msgstr "การปรับแต่งบางอย่างถูกผู้ดูแลระบบล็อคไว้"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:9
+msgid ""
+"The user you want to switch to is logged in multiple times on this computer. "
+"Which login do you want to switch to?"
+msgstr "ผู้ใช้ที่คุณจะสลับไปได้เข้าระบบไว้หลายวาระในเครื่องนี้ คุณต้องการสลับไปที่วาระไหน?"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:10
+msgid "Use the `people' icon for the menu title"
+msgstr "ใช้ไอคอน `กลุ่มคน' เป็นป้ายเมนู"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:11
+msgid "Use the current user's name for the menu title"
+msgstr "ใช้ชื่อผู้ใช้ปัจจุบันเป็นป้ายเมนู"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:12
+msgid "Use the word `Users' as the menu title"
+msgstr "ใช้คำว่า `ผู้ใช้' เป็นป้ายเมนู"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:13
+msgid "User Switcher Error"
+msgstr "ข้อผิดพลาดในแอพเพล็ตสลับผู้ใช้"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:14
+msgid "User Switcher Preferences"
+msgstr "ปรับแต่งแอพเพล็ตสลับผู้ใช้"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:16
+msgid ""
+"When a new login must be created to switch users, create it in a window "
+"instead of on a new screen"
+msgstr "เมื่อต้องเปิดหน้าจอเข้าระบบ ให้เปิดในหน้าต่างแทนที่จะเปิดในหน้าจอใหม่"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:17
+msgid ""
+"When changing to a different display, activate the screensaver for this "
+"display."
+msgstr "เมื่อย้ายไปยังดิสเพลย์อื่น ให้เรียกโปรแกรมรักษาหน้าจอที่ดิสเพลย์นี้ด้วย"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:18
+msgid "_Lock the screen after switching users"
+msgstr "_ล็อคหน้าจอเมื่อสลับผู้ใช้"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:1
+msgid "Display Style"
+msgstr "รูปลักษณ์การแสดงผล"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:2
+msgid "Lock Screen After Switch"
+msgstr "ล็อคหน้าจอหลังการสลับ"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:3
+msgid "Show \"Login Window\" Menuitem"
+msgstr "แสดงรายการเมนู \"หน้าต่างเข้าระบบ\""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:4
+msgid "Show \"Other\" Menuitem"
+msgstr "แสดงรายการเมนู \"อื่นๆ\""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:5
+msgid "Show Active Users Only"
+msgstr "แสดงเฉพาะผู้ใช้ที่เข้าระบบอยู่เท่านั้น"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:6
+msgid ""
+"Specifies how to display the applet in the panel. Use \"username\" to "
+"display the current user's name, \"icon\" to show the people icon, or \"text"
+"\" to use the word `Users.'"
+msgstr ""
+"กำหนดวิธีการแสดงแอพเพล็ตบนพาเนล ใช้ \"username\" เพื่อแสดงชื่อผู้ใช้ปัจจุบัน ใช้ \"icon\" "
+"เพื่อแสดงไอคอนรูปกลุ่มคน หรือ \"text\" เพื่อแสดงคำว่า `ผู้ใช้'"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:7
+msgid "Use Xnest"
+msgstr "ใช้ Xnest"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:8
+msgid ""
+"When to show the \"Login Window\" item. Possible values include: \"always\" "
+"to always show the item, \"never\" to never show the item, and \"auto\" (the "
+"default) to show the item when the applet is in Xnest mode."
+msgstr ""
+"เมื่อไรจะแสดงรายการ \"หน้าต่างเข้าระบบ\" ค่าที่เป็นไปได้คือ: \"always\" เพื่อจะแสดงเสมอ, "
+"\"never\" เพื่อไม่แสดงรายการเลย, และ \"auto\" (ค่าปริยาย) "
+"เพื่อแสดงรายการเมื่อแอพเพล็ตอยู่ในโหมด Xnest"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:9
+msgid ""
+"When to show the \"Other\" item. Possible values include: \"always\" to "
+"always show the item, \"never\" to never show the item, and \"auto\" (the "
+"default) to show the item when the applet is in console (not Xnest) mode."
+msgstr ""
+"เมื่อไรจะแสดงรายการ \"อื่นๆ\" ค่าที่เป็นไปได้คือ: \"always\" เพื่อจะแสดงเสมอ, \"never\" "
+"เพื่อไม่แสดงรายการเลย, และ \"auto\" (ค่าปริยาย) "
+"เพื่อแสดงรายการเมื่อแอพเพล็ตอยู่ในโหมดคอนโซล (ไม่ใช่ Xnest)"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:10
+msgid ""
+"Whether or not to create new Xnest windows instead of spawning new consoles "
+"when switching users."
+msgstr "กำหนดว่าจะเปิดหน้าต่าง Xnest ใหม่ แทนการเปิดคอนโซลใหม่เพื่อสลับผู้ใช้หรือไม่"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:11
+msgid ""
+"Whether or not to lock the screen after switching to a different console."
+msgstr "กำหนดว่าจะล็อคหน้าจอเมื่อสลับไปยังคอนโซลอื่นหรือไม่"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:12
+msgid "Whether to show only users who are currently logged in, or all users."
+msgstr "กำหนดว่าจะแสดงเฉพาะผู้ใช้ที่กำลังเข้าระบบอยู่ หรือจะแสดงผู้ใช้ทั้งหมด"
+
+#: ../utils/gdmflexiserver.c:59
 msgid "Send the specified protocol command to GDM"
 msgstr "ส่งคำสั่งโพรโทคอลที่ระบุไปยัง GDM"
 
-#: ../utils/gdmflexiserver.c:49
+#: ../utils/gdmflexiserver.c:59
 msgid "COMMAND"
 msgstr "คำสั่ง"
 
-#: ../utils/gdmflexiserver.c:50
+#: ../utils/gdmflexiserver.c:60
 msgid "Xnest mode"
 msgstr "โหมด Xnest"
 
-#: ../utils/gdmflexiserver.c:51
+#: ../utils/gdmflexiserver.c:61
 msgid "Do not lock current screen"
 msgstr "ไม่ล็อคหน้าจอปัจจุบัน"
 
-#: ../utils/gdmflexiserver.c:52
+#: ../utils/gdmflexiserver.c:62
 msgid "Debugging output"
 msgstr "การแสดงข้อความดีบั๊ก"
 
-#: ../utils/gdmflexiserver.c:53
+#: ../utils/gdmflexiserver.c:63
 msgid "Authenticate before running --command"
 msgstr "ยืนยันตัวบุคคลก่อนเรียกทำงาน --command"
 
-#: ../utils/gdmflexiserver.c:54
+#: ../utils/gdmflexiserver.c:64
 msgid "Start new flexible session; do not show popup"
 msgstr "เริ่มวาระยืดหยุ่นวาระใหม่; ไม่ต้องผุดเมนู"
 
-#: ../utils/gdmflexiserver.c:201
+#: ../utils/gdmflexiserver.c:650
 msgid "Main Options"
 msgstr "ตัวเลือกหลักๆ"
 
-#: ../utils/gdmflexiserver.c:244
+#: ../utils/gdmflexiserver.c:693
 msgid "Unable to start new display"
 msgstr "ไม่สามารถเริ่มการทำงานดิสเพลย์ชุดใหม่"
+
+#~ msgid "Prompt:"
+#~ msgstr "คำถาม:"
+
+#~ msgid "Default"
+#~ msgstr "ค่าปริยาย"
+
+#~ msgid "Login with the same session as last time."
+#~ msgstr "เข้าระบบด้วยวาระแบบเดียวกับครั้งก่อน"
+
+#~ msgid "Legacy"
+#~ msgstr "ค่าตั้งแบบเก่า"
+
+#~ msgid "Login based on preset legacy configuration"
+#~ msgstr "เข้าระบบโดยใช้ค่าตั้งแบบเก่าที่ตั้งไว้"
+
+#~ msgid "_Session:"
+#~ msgstr "_วาระ:"
 
 #~ msgid "CDE"
 #~ msgstr "CDE"
@@ -2056,9 +2461,6 @@ msgstr "ไม่สามารถเริ่มการทำงานดิ
 #~ msgid "Log in as another user inside a nested window"
 #~ msgstr "เข้าระบบในนามผู้ใช้อื่นในหน้าต่างซ้อน"
 
-#~ msgid "New Login in a Nested Window"
-#~ msgstr "การเข้าระบบใหม่ใน Nested Window"
-
 #~ msgid "Cannot change display"
 #~ msgstr "ไม่สามารถเปลี่ยนหน้าจอแสดงผล"
 
@@ -2070,9 +2472,6 @@ msgstr "ไม่สามารถเริ่มการทำงานดิ
 
 #~ msgid "Nested display %s on virtual terminal %d"
 #~ msgstr "ดิสเพลย์ซ้อน %s บนเทอร์มินัลเสมือน %d"
-
-#~ msgid "Username"
-#~ msgstr "ชื่อผู้ใช้"
 
 #~ msgid "Open Displays"
 #~ msgstr "เ_ปิดหน้าจอแสดงผล"
@@ -2560,9 +2959,6 @@ msgstr "ไม่สามารถเริ่มการทำงานดิ
 #~ msgid "_Quit"
 #~ msgstr "_ออกจากระบบ"
 
-#~ msgid "Icon"
-#~ msgstr "ไ_อคอน"
-
 #~ msgid "Welcome"
 #~ msgstr "ยินดีต้อนรับ"
 
@@ -2641,9 +3037,6 @@ msgstr "ไม่สามารถเริ่มการทำงานดิ
 
 #~ msgid "<b>User Image</b>"
 #~ msgstr "<b>รูปผู้ใช้</b>"
-
-#~ msgid "Login Photo Preferences"
-#~ msgstr "ปรับแต่งรูปภาพเข้าระบบ"
 
 #~ msgid "Failsafe _GNOME"
 #~ msgstr "_GNOME แบบ Failsafe"
@@ -2912,9 +3305,6 @@ msgstr "ไม่สามารถเริ่มการทำงานดิ
 #~ msgid "Configure GDM login window appearance and behavior"
 #~ msgstr "ปรับแต่งรูปโฉมและพฤติกรรมของหน้าจอเข้าระบบ GDM"
 
-#~ msgid "Login Window"
-#~ msgstr "หน้าจอเข้าระบบ"
-
 #~ msgid " "
 #~ msgstr " "
 
@@ -2988,9 +3378,6 @@ msgstr "ไม่สามารถเริ่มการทำงานดิ
 
 #~ msgid "A_pply User Changes"
 #~ msgstr "เ_ริ่มใช้ค่าที่แก้"
-
-#~ msgid "Accessibility"
-#~ msgstr "สิ่งอำนวยความสะดวก"
 
 #~ msgid "Accessible from the outside of the login manager"
 #~ msgstr "เข้าถึงได้จากภายนอกโปรแกรมจัดการการเข้าระบบ"
@@ -3318,9 +3705,6 @@ msgstr "ไม่สามารถเริ่มการทำงานดิ
 #~ msgid "Local"
 #~ msgstr "จากเครื่องนี้"
 
-#~ msgid "Login Window Preferences"
-#~ msgstr "ปรับแต่งหน้าจอเข้าระบบ"
-
 #~ msgid "Login _failed:"
 #~ msgstr "เข้าระบบไ_ม่สำเร็จ:"
 
@@ -3475,9 +3859,6 @@ msgstr "ไม่สามารถเริ่มการทำงานดิ
 
 #~ msgid "Shake the display when an incorrect username/password is entered."
 #~ msgstr "สั่นหน้าจอเมื่อป้อนชื่อผู้ใช้หรือรหัสผ่านผิด"
-
-#~ msgid "Sho_w Actions menu"
-#~ msgstr "แสดงเมนู_ปฏิบัติการ"
 
 #~ msgid ""
 #~ "Show visual feedback is the password entry. Turning this option on can be "
@@ -3641,9 +4022,6 @@ msgstr "ไม่สามารถเริ่มการทำงานดิ
 #~ "with all fonts however."
 #~ msgstr "ใช้จุดกลมแทนดอกจันในช่องรหัสผ่าน อย่างไรก็ดี อาจใช้ไม่ได้กับแบบอักษรทุกแบบ"
 
-#~ msgid "Users"
-#~ msgstr "ผู้ใช้"
-
 #~ msgid "Welcome Message"
 #~ msgstr "ข้อความต้อนรับ"
 
@@ -3705,9 +4083,6 @@ msgstr "ไม่สามารถเริ่มการทำงานดิ
 #~ msgid "_Enable Automatic Login"
 #~ msgstr "เ_ปิดใช้การเข้าระบบอัตโนมัติ"
 
-#~ msgid "_Enable accessible login"
-#~ msgstr "เปิดใ_ช้งานสิ่งอำนวยความสะดวก"
-
 #~ msgid "_Flexible (on demand)"
 #~ msgstr "_ยืดหยุ่น (ตามสั่ง)"
 
@@ -3722,9 +4097,6 @@ msgstr "ไม่สามารถเริ่มการทำงานดิ
 
 #~ msgid "_Include all users from /etc/passwd (not for NIS)"
 #~ msgstr "แ_สดงผู้ใช้ทุกคนใน /etc/passwd (ไม่รวม NIS)"
-
-#~ msgid "_Login screen ready:"
-#~ msgstr "หน้า_จอเข้าระบบพร้อมใช้งาน:"
 
 #~ msgid "_Logins are handled by this computer"
 #~ msgstr "จัดการการเ_ข้าระบบโดยเครื่องนี้"
@@ -3868,17 +4240,8 @@ msgstr "ไม่สามารถเริ่มการทำงานดิ
 #~ msgid "Sus_pend"
 #~ msgstr "ห_ยุดทำงานชั่วคราว"
 
-#~ msgid "Confi_gure"
-#~ msgstr "กำหนด_ค่า"
-
-#~ msgid "Op_tions"
-#~ msgstr "ตัวเ_ลือก"
-
 #~ msgid "_OK"
 #~ msgstr "_ตกลง"
-
-#~ msgid "_Cancel"
-#~ msgstr "_ยกเลิก"
 
 #~ msgid "Change _Session"
 #~ msgstr "เปลี่ยน_วาระ"
@@ -4167,9 +4530,6 @@ msgstr "ไม่สามารถเริ่มการทำงานดิ
 #~ msgid "_XDMCP Chooser"
 #~ msgstr "หน้าต่างเลือก _XDMCP"
 
-#~ msgid "_Reboot"
-#~ msgstr "เริ่ม_ระบบใหม่"
-
 #~ msgid "Reboot your computer"
 #~ msgstr "เริ่มระบบคอมพิวเตอร์ของคุณใหม่"
 
@@ -4261,9 +4621,6 @@ msgstr "ไม่สามารถเริ่มการทำงานดิ
 #~ msgstr ""
 #~ "คุณอาจกำลังใช้โปรแกรมจัดการดิสเพลย์อื่นอยู่ เช่น KDM (KDE Display Manager) หรือ xdm"
 
-#~ msgid "Can't lock screen"
-#~ msgstr "ไม่สามารถล็อคหน้าจอได้"
-
 #~ msgid "Can't disable xscreensaver display hacks"
 #~ msgstr "ไม่สามารถปิดโปรแกรมรักษาหน้าจอชั่วคราวได้"
 
@@ -4272,9 +4629,6 @@ msgstr "ไม่สามารถเริ่มการทำงานดิ
 
 #~ msgid "PNG and JPEG"
 #~ msgstr "PNG และ JPEG"
-
-#~ msgid "Details: %s"
-#~ msgstr "รายละเอียด: %s"
 
 #~ msgid "Select new theme archive to install"
 #~ msgstr "เลือกแฟ้มจัดเก็บข้อมูลชุดตกแต่งใหม่เพื่อติดตั้ง"
