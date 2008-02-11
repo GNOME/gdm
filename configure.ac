@@ -1269,7 +1269,7 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
         -Wall \
         -Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes \
         -Wnested-externs -Wpointer-arith \
-        -Wcast-align -Wsign-compare -Werror \
+        -Wcast-align -Wsign-compare \
         $CFLAGS"
 
         for option in -Wno-strict-aliasing -Wno-sign-compare; do
