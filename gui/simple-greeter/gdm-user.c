@@ -639,7 +639,8 @@ render_icon_from_home (GdmUser *user,
         char       *path;
         GFile      *file;
         GFileInfo  *file_info;
-        gboolean    is_local, is_autofs;
+        gboolean    is_local;
+        gboolean    is_autofs;
         gboolean    res;
         const char *filesystem_type;
 
@@ -664,6 +665,7 @@ render_icon_from_home (GdmUser *user,
         g_free (path);
 
         /* now check that home dir itself is local */
+        is_local = TRUE;
         if (! is_autofs) {
                 file = g_file_new_for_path (user->home_dir);
                 file_info = g_file_query_filesystem_info (file,
