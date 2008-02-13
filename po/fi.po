@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-02 22:30+0200\n"
+"POT-Creation-Date: 2008-02-13 09:06+0300\n"
 "PO-Revision-Date: 2008-02-02 22:30+0200\n"
 "Last-Translator: Tommi Vainikainen <Tommi.Vainikainen@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
@@ -61,8 +61,8 @@ msgstr "Käyttäjän valtuutus epäonnistui"
 msgid "Unable to establish credentials"
 msgstr "Valtuuksien käyttöönotto epäonnistui"
 
-#: ../daemon/gdm-factory-slave.c:618 ../daemon/gdm-product-slave.c:364
-#: ../daemon/gdm-simple-slave.c:793
+#: ../daemon/gdm-factory-slave.c:648 ../daemon/gdm-product-slave.c:394
+#: ../daemon/gdm-simple-slave.c:823
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -74,109 +74,133 @@ msgstr ""
 "järjestelmälokia. Tämä näyttö poistetaan toistaiseksi käytöstä. Käynnistä "
 "GDM uudelleen, kun ongelma on korjattu."
 
-#: ../daemon/gdm-server.c:242
+#: ../daemon/gdm-server.c:244
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: yhteydenotto isänäyttöön \"%s\" ei onnistunut"
 
-#: ../daemon/gdm-server.c:360
+#: ../daemon/gdm-server.c:362
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Palvelin käynnistettiin käyttäjänä %s, mutta käyttäjää ei ole olemassa"
 
-#: ../daemon/gdm-server.c:371 ../daemon/gdm-welcome-session.c:406
+#: ../daemon/gdm-server.c:373 ../daemon/gdm-welcome-session.c:406
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Ryhmätunnusta ei voitu asettaa arvoon %d"
 
-#: ../daemon/gdm-server.c:377 ../daemon/gdm-welcome-session.c:412
+#: ../daemon/gdm-server.c:379 ../daemon/gdm-welcome-session.c:412
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups() epäonnistui %s:lle"
 
-#: ../daemon/gdm-server.c:383 ../daemon/gdm-welcome-session.c:418
+#: ../daemon/gdm-server.c:385 ../daemon/gdm-welcome-session.c:418
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "userid:tä ei voitu asettaa arvoon %d"
 
-#: ../daemon/gdm-server.c:391 ../daemon/gdm-welcome-session.c:426
+#: ../daemon/gdm-server.c:393 ../daemon/gdm-welcome-session.c:426
 msgid "Couldn't set groupid to 0"
 msgstr "groupid:tä ei voitu asettaa arvoon 0"
 
-#: ../daemon/gdm-server.c:426
+#: ../daemon/gdm-server.c:428
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: Näytön %s lokitiedostoa ei voitu avata!"
 
-#: ../daemon/gdm-server.c:437 ../daemon/gdm-server.c:443
-#: ../daemon/gdm-server.c:449
+#: ../daemon/gdm-server.c:439 ../daemon/gdm-server.c:445
+#: ../daemon/gdm-server.c:451
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Virhe asetettaessa %s arvoksi %s"
 
-#: ../daemon/gdm-server.c:464
+#: ../daemon/gdm-server.c:466
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Palvelimen prioriteettia ei voitu asettaa arvoon %d: %s"
 
-#: ../daemon/gdm-server.c:608
+#: ../daemon/gdm-server.c:618
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tyhjä palvelinkomento näytölle %s"
 
-#: ../daemon/gdm-session-direct.c:1209 ../daemon/gdm-session-direct.c:1227
+#: ../daemon/gdm-session-auditor.c:90
+msgid "Username"
+msgstr "Käyttäjätunnus"
+
+#: ../daemon/gdm-session-auditor.c:91
+msgid "The username"
+msgstr "Käyttäjätunnus"
+
+#: ../daemon/gdm-session-auditor.c:95
+msgid "Hostname"
+msgstr "Verkkonimi"
+
+#: ../daemon/gdm-session-auditor.c:96
+msgid "The hostname"
+msgstr "Verkkonimi"
+
+#: ../daemon/gdm-session-auditor.c:101
+msgid "Display Device"
+msgstr "Näyttölaite"
+
+#: ../daemon/gdm-session-auditor.c:102
+msgid "The display device"
+msgstr "Näyttölaite"
+
+#: ../daemon/gdm-session-direct.c:1210 ../daemon/gdm-session-direct.c:1228
 #, c-format
 msgid "worker exited with status %d"
 msgstr "hallintaohjelma sulkeutui tilaan %d"
 
-#: ../daemon/gdm-session-worker.c:843
+#: ../daemon/gdm-session-worker.c:890
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "virhe alustettaessa keskustelua todennusjärjestelmän kanssa - %s"
 
-#: ../daemon/gdm-session-worker.c:844
+#: ../daemon/gdm-session-worker.c:891
 msgid "general failure"
 msgstr "yleinen virhe"
 
-#: ../daemon/gdm-session-worker.c:845
+#: ../daemon/gdm-session-worker.c:892
 msgid "out of memory"
 msgstr "muisti loppui"
 
-#: ../daemon/gdm-session-worker.c:846
+#: ../daemon/gdm-session-worker.c:893
 msgid "application programmer error"
 msgstr "sovelluksen ohjelmointivirhe"
 
-#: ../daemon/gdm-session-worker.c:847
+#: ../daemon/gdm-session-worker.c:894
 msgid "unknown error"
 msgstr "tuntematon virhe"
 
-#: ../daemon/gdm-session-worker.c:854
+#: ../daemon/gdm-session-worker.c:901
 msgid "Username:"
 msgstr "Käyttäjätunnus:"
 
-#: ../daemon/gdm-session-worker.c:860
+#: ../daemon/gdm-session-worker.c:907
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "virhe kerrottaessa todennusjärjestelmälle haluttua käyttäjätunnuskehotetta - "
 "%s"
 
-#: ../daemon/gdm-session-worker.c:874
+#: ../daemon/gdm-session-worker.c:921
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr "virhe kerrottaessa todennusjärjestelmälle käyttäjän verkkonimeä - %s"
 
-#: ../daemon/gdm-session-worker.c:889
+#: ../daemon/gdm-session-worker.c:936
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr "virhe kerrottaessa todennusjärjestelmälle käyttäjän konsolista - %s"
 
-#: ../daemon/gdm-session-worker.c:1045
+#: ../daemon/gdm-session-worker.c:1099
 #, c-format
 msgid "no user account available"
 msgstr "käyttäjätiliä ei ole saatavilla"
 
-#: ../daemon/gdm-session-worker.c:1094
+#: ../daemon/gdm-session-worker.c:1148
 #, c-format
 msgid "user account not available on system"
 msgstr "käyttäjätili ei ole käytettävissä järjestelmässä"
@@ -435,28 +459,76 @@ msgstr "XDMCP-puskurin luonti epäonnistui!"
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP-otsakkeen luku epäonnistui!"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1145
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.c:823
+msgid "Accessibility Preferences"
+msgstr "Esteettömyysasetukset"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:1
+msgid "<b>Enable features that make your computer easier to use:</b>"
+msgstr "<b>Ota käyttöön ominaisuuksia, jotka helpottavat tietokoneen käyttöä:</b>"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:2
+msgid "Assistive Technology Preferences"
+msgstr "Esteettömyystuen asetukset"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:3
+msgid "_Hear text onscreen read aloud (Reader)"
+msgstr "_Kuule näytöllä oleva teksti luettuna (lukija)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:4
+msgid "_Ignore duplicate keypresses (Bounce Keys)"
+msgstr "_Jätä kahdentuneet näppäilyt huomioimatta (ponnahdusnäppäimet)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:5
+msgid "_Make items on screen larger (Magnifier)"
+msgstr "_Suurenna näytöllä olevia kohtia (suurennuslasi)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:6
+msgid "_Only accept long held keypresses (Slow Keys)"
+msgstr "_Hyväksy vain pitkään painetut näppäilyt (hitaat näppäimet)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:7
+msgid "_Press keyboard shortcuts on key at a time (Sticky Keys)"
+msgstr "_Kirjoita näppäinoikotiet näppäin kerrallaan (tahmeat näppäimet)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:8
+msgid "_See more contrast in colors (High Contrast)"
+msgstr "_Käytä suurempaa kontrastia väreissä"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:9
+msgid "_Type without the keyboard (On-screen Keyboard)"
+msgstr "_Kirjoita ilman näppäimistöä (näppäimistö näytöllä)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:10
+msgid "_Use a larger font size (Large Print)"
+msgstr "_Käytä suurempaa kirjasinkokoa"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:11
+msgid "gtk-close"
+msgstr "gtk-close"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1150
 msgid "Inactive Text"
 msgstr "Epäaktiivinen teksti"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1146
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1151
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr ""
 "Nimiössä käytettävä teksti kun käyttäjä ei vielä ole valinnut mitään kohdetta"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1154
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1159
 msgid "Active Text"
 msgstr "Aktiivinen teksti"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1155
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1160
 msgid "The text to use in the label if the user has picked an item"
 msgstr "Nimiössä käytettävä teksti kun käyttäjä on valinnut kohteen"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1019
+#: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M:%S %p"
 msgstr "%l:%M:%S %p"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1019
+#: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
@@ -465,7 +537,7 @@ msgstr "%l:%M %p"
 #. *              should begin with a 0 in your locale (e.g. "May
 #. *              01" instead of "May  1").
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1025
+#: ../gui/simple-greeter/gdm-clock-widget.c:72
 msgid "%a %b %e"
 msgstr "+%a %e. %Bta"
 
@@ -473,10 +545,15 @@ msgstr "+%a %e. %Bta"
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1030
+#: ../gui/simple-greeter/gdm-clock-widget.c:77
 #, c-format
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1235
+#: ../gui/user-switch-applet/applet.c:1754
+msgid "Login Window"
+msgstr "Kirjautumisikkuna"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:1
 msgid "Authentication Dialog"
@@ -495,40 +572,40 @@ msgid "Log In"
 msgstr "Kirjaudu sisään"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
-msgid "Prompt:"
-msgstr "Kehoite:"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
 msgid "Restart"
 msgstr "Käynnistä GDM uudelleen"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
 msgid "Shut Down"
 msgstr "Sammuta"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
 msgid "Suspend"
 msgstr "Keskeytystila"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:9
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
 msgid "Version"
 msgstr "Versio"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:491
+msgid "Panel"
+msgstr "Paneeli"
 
 #: ../gui/simple-greeter/gdm-language-chooser-dialog.c:139
 msgid "Languages"
 msgstr "Kielet"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:186
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:190
 msgid "_Languages:"
 msgstr "_Kielet:"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:187
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:191
 #: ../gui/simple-greeter/gdm-language-option-widget.c:211
 msgid "_Language:"
 msgstr "_Kieli:"
 
 #: ../gui/simple-greeter/gdm-language-option-widget.c:177
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:314
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:315
 msgid "Other..."
 msgstr "Muu..."
 
@@ -566,179 +643,448 @@ msgstr "Etäkirjautuminen (Yhdistetty koneeseen %s)"
 msgid "Remote Login"
 msgstr "Etäkirjautuminen"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:362
-msgid "Default"
-msgstr "Oletus"
-
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:363
-msgid "Login with the same session as last time."
-msgstr "Kirjaudu sisään samalla istunnolla kuin edellisellä kerralla."
-
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:368
-msgid "Legacy"
-msgstr "Vanha"
-
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:369
-msgid "Login based on preset legacy configuration"
-msgstr "Kirjaudu sisään esiasetetuin vanhoin asetuksin."
-
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:412
+#: ../gui/simple-greeter/gdm-session-option-widget.c:170
 msgid "_Sessions:"
 msgstr "_Istunnot:"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:413
-msgid "_Session:"
-msgstr "_Istunto:"
-
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
+msgid "Enable accessibility keyboard plugin"
+msgstr "Ota esteettömyysnäppäimistön liitännäinen käyttöön"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
+msgid "Enable on-screen keyboard"
+msgstr "Ota näppäimistö näytöllä käyttöön"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
+msgid "Enable screen magnifier"
+msgstr "Ota suurennuslasi käyttöön"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
+msgid "Enable screen reader"
+msgstr "Ota näytönlukija käyttöön"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
 msgid "Set to True to enable the background settings manager plugin."
 msgstr ""
 "Aseta todeksi ottaaksesi käyttöön tausta-asetuksien hallintaliitännäisen."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
+msgid "Set to True to enable the on-screen keyboard."
+msgstr "Aseta todeksi ottaaksesi käyttöön näppäimistö näytöllä."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
+msgid ""
+"Set to True to enable the plugin to manage the accessibility keyboard "
+"settings."
+msgstr ""
+"Aseta todeksi ottaaksesi käyttöön esteettömyysnäppäimistön liitännisen."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
+msgid "Set to True to enable the screen magnifier."
+msgstr ""
+"Aseta todeksi ottaaksesi käyttöön näytön suurennuslasin."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+msgid "Set to True to enable the screen reader."
+msgstr ""
+"Aseta todeksi ottaaksesi käyttöön näytönlukijan."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
 msgid "Set to True to enable the xsettings settings manager plugin."
 msgstr ""
 "Aseta todeksi ottaaksesi käyttöön xsettings-asetuksien hallintaliitännäisen."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "True if the background settings manager plugin is enabled."
 msgstr "Tosi mikäli tausta-asetuksien hallintaliitännäinen on käytössä."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "Tosi mikäli xsettings-asetuksien hallintaliitännäinen on käytössä."
 
-#: ../gui/simple-greeter/gdm-user.c:218
+#: ../gui/simple-greeter/gdm-user.c:239
 msgid "Manager"
 msgstr "Hallinta"
 
-#: ../gui/simple-greeter/gdm-user.c:219
+#: ../gui/simple-greeter/gdm-user.c:240
 msgid "The user manager object this user is controlled by."
 msgstr "Käyttäjänhallintaolio, joka ohjaa tätä käyttäjää."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:315
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:316
 msgid "Choose a different account"
 msgstr "Valitse toinen tunnus"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:321
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:324
 msgid "Guest"
 msgstr "Vieras"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:322
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:325
 msgid "Login as a temporary guest"
 msgstr "Kirjaudu sisään väliaikaisena vieraskäyttäjänä"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:342
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:347
 #, c-format
 msgid "Log in as %s"
 msgstr "Kirjaudu käyttäjänä %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:407
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:431
 msgid "Currently logged in"
 msgstr "Kirjautunut jo sisään"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:448
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:476
 msgid "_Users:"
 msgstr "_Käyttäjät:"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:449
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:477
 msgid "_User:"
 msgstr "_Käyttäjä:"
 
-#: ../utils/gdmflexiserver.c:49
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:1
+msgid "A menu to quickly switch between users"
+msgstr "Valikko, josta voit vaihtaa käyttäjää nopeasti"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:2
+#: ../gui/user-switch-applet/applet.c:1563
+msgid "User Switcher"
+msgstr "Käyttäjän vaihdin"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:3
+msgid "User Switcher Applet Factory"
+msgstr "Käyttäjän vaihdin-sovelman tehdas"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:1
+msgid "Edit Personal _Information"
+msgstr "Muokkaa henkilökohtaisia t_ietoja"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:2
+msgid "_About"
+msgstr "_Tietoja"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:3
+msgid "_Edit Users and Groups"
+msgstr "_Muokkaa käyttäjiä ja ryhmiä"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:4
+msgid "_Help"
+msgstr "O_hje"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:5
+msgid "_Preferences"
+msgstr "_Asetukset"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:6
+msgid "_Setup Login Screen"
+msgstr "_Määrittele kirjautumisikkuna"
+
+#: ../gui/user-switch-applet/applet.c:135
+msgid "Missing Required File"
+msgstr "Vaadittu tiedosto puuttuu"
+
+#: ../gui/user-switch-applet/applet.c:137
+#, c-format
+msgid ""
+"The User Selector's interfaces file, `%s', could not be opened. It is likely "
+"that this application was not properly installed or configured."
+msgstr ""
+"Käyttäjävalitsimen käyttöliittymätiedostoa \"%s\" ei voitu avata. On "
+"luultavaa, että tätä ohjelmaa ei ole asennettu tai määritelty oikein."
+
+#: ../gui/user-switch-applet/applet.c:514
+msgid ""
+"The User Switch Applet is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 2 of the License, or (at your "
+"option) any later version."
+msgstr ""
+"Käyttäjän vaihdinsovelma on vapaa ohjelma; sitä on sallittu levittää "
+"edelleen ja muuttaa GNU yleisen lisenssin (GPL lisenssin) ehtojen mukaan "
+" sellaisina kuin Free Software Foundation on ne julkaissut; joko "
+"lisenssin version 2, tai (valinnan mukaan) minkä tahansa myöhemmän "
+"version mukaisesti. "
+
+#: ../gui/user-switch-applet/applet.c:518
+msgid ""
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details."
+msgstr ""
+"Tätä ohjelmaa levitetään siinä toivossa, että se olisi hyödyllinen, "
+"mutta ilman mitään takuuta; ilman edes hiljaista takuuta kaupallisesti "
+"hyväksyttävästä laadusta tai soveltuvuudesta tiettyyn tarkoitukseen. "
+"Katso GPL lisenssistä lisää yksityiskohtia."
+
+
+#: ../gui/user-switch-applet/applet.c:522
+msgid ""
+"You should have received a copy of the GNU General Public License along with "
+"this program; if not, write to the Free Software Foundation, Inc., 51 "
+"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
+msgstr ""
+"Tämän ohjelman mukana pitäisi tulla kopio GPL-lisenssistä; jos näin "
+"ei ole, kirjoita osoitteeseen Free Software Foundation Inc., 51 Franklin "
+"St, Fifth Floor, Boston, MA 02110-1301, USA."
+
+#: ../gui/user-switch-applet/applet.c:536
+msgid "A menu to quickly switch between users."
+msgstr "Valikko, josta voit vaihtaa käyttäjää nopeasti."
+
+#: ../gui/user-switch-applet/applet.c:540
+msgid "translator-credits"
+msgstr ""
+"Ilkka Tuohela, 2005-2008.\n"
+"Tommi Vainikainen 2003-2005, 2008.\n"
+"Lauri Nurmi, 2003.\n"
+"Jarkko Ranta, 2000-2002.\n"
+"Mikko Rauhala, 1999\n"
+"\n"
+"http://www.gnome.fi/"
+
+#: ../gui/user-switch-applet/applet.c:1112
+#, c-format
+msgid "Can't lock screen: %s"
+msgstr "Näyttöä ei voi lukita: %s"
+
+#: ../gui/user-switch-applet/applet.c:1126
+#, c-format
+msgid "Can't temporarily set screensaver to blank screen: %s"
+msgstr "Näytönsäästäjää ei voida väliaikaisesti asettaa pimentämään näyttöä: %s"
+
+#: ../gui/user-switch-applet/applet.c:1282
+#: ../gui/user-switch-applet/applet.c:1285
+#: ../gui/user-switch-applet/applet.c:1340
+#: ../gui/user-switch-applet/applet.c:1343
+#: ../gui/user-switch-applet/applet.c:1677
+#: ../gui/user-switch-applet/applet.c:1682
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:15
+msgid "Users"
+msgstr "Käyttäjät"
+
+#: ../gui/user-switch-applet/applet.c:1542
+msgid "User Switch Applet"
+msgstr "Käyttäjän vaihdinsovelma"
+
+#: ../gui/user-switch-applet/applet.c:1741
+msgid "Other"
+msgstr "Muu"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:312
+msgid "User"
+msgstr "Käyttäjä"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:313
+msgid "The user this menu item represents."
+msgstr "Käyttäjä, jota tämä valikon kohta edustaa."
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:320
+msgid "Icon Size"
+msgstr "Kuvakkeen koko"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:321
+msgid "The size of the icon to use."
+msgstr "Käytettävän kuvakkeen koko."
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:327
+msgid "Indicator Size"
+msgstr "Ilmaisimen koko"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:328
+msgid "Size of check indicator"
+msgstr "Ilmaisimen koko"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:333
+msgid "Indicator Spacing"
+msgstr "Ilmaisimen etäisyys"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:334
+msgid "Space between the username and the indicator"
+msgstr "Tila käyttäjätunnuksen ja ilmaisimen välissä"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:1
+msgid "<span weight=\"bold\" size=\"larger\">Multiple Logins Found</span>"
+msgstr ""
+"<span weight=\"bold\" size=\"larger\">Löytyi useita kirjautumisia</spam>"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:2
+msgid "Appearance"
+msgstr "Ulkoasu"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:3
+msgid "Continue"
+msgstr "Jatka"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:4
+msgid "Create new logins in _nested windows"
+msgstr "Luo uudet kirjautumiset _sisäkkäisissä ikkunoissa"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:5
+msgid "Details"
+msgstr "Yksityiskohdat"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:6
+msgid "Multiple Logins Found - User Switcher"
+msgstr "Löytyi useita kirjautumisia - käyttäjän vaihdin"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:7
+msgid "Options"
+msgstr "Valinnat"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:8
+msgid "Some preferences have been locked by the system adminstrator."
+msgstr "Jotkut asetukset on lukittu ylläpidon toimesta."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:9
+msgid ""
+"The user you want to switch to is logged in multiple times on this computer. "
+"Which login do you want to switch to?"
+msgstr ""
+"Käyttäjä, joksi haluat vaihtaa, on kirjautunut tietokoneelle moneen kertaan. "
+"Mihin istuntoon haluat siirtyä?"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:10
+msgid "Use the `people' icon for the menu title"
+msgstr "Käytä \"ihmiset\"-kuvaketta valikon otsikkona"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:11
+msgid "Use the current user's name for the menu title"
+msgstr "käytä nykyisen käyttäjän nimeä valikon otsikkona"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:12
+msgid "Use the word `Users' as the menu title"
+msgstr "Käytä sanaa \"Käyttäjät\" valikon otsikkona"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:13
+msgid "User Switcher Error"
+msgstr "Käyttäjävaihtimen virhe"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:14
+msgid "User Switcher Preferences"
+msgstr "Käyttäjävaihtimen asetukset"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:16
+msgid ""
+"When a new login must be created to switch users, create it in a window "
+"instead of on a new screen"
+msgstr ""
+"Avaa uusi istunto ikkunassa uuden näytön sijasta kirjauduttaessa uutena "
+"käyttäjänä sisään käyttäjää vaihdettaessa."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:17
+msgid ""
+"When changing to a different display, activate the screensaver for this "
+"display."
+msgstr ""
+"Käynnistä näytönsäästäjä tässä istunnossa siirryttäessä uuteen näyttöön "
+"käyttäjää vaihdettaessa."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:18
+msgid "_Lock the screen after switching users"
+msgstr "_Lukitse näyttö käyttäjiä vaihdettaessa"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:1
+msgid "Display Style"
+msgstr "Näytön tyyli"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:2
+msgid "Lock Screen After Switch"
+msgstr "Lukitse näyttö vaihdon jälkeen"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:3
+msgid "Show \"Login Window\" Menuitem"
+msgstr "Näytä valikon kohta \"Kirjautumisikkuna\""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:4
+msgid "Show \"Other\" Menuitem"
+msgstr "Näytä valikon kohta \"Muut\""
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:5
+msgid "Show Active Users Only"
+msgstr "Näytä vain aktiiviset käyttäjät"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:6
+msgid ""
+"Specifies how to display the applet in the panel. Use \"username\" to "
+"display the current user's name, \"icon\" to show the people icon, or \"text"
+"\" to use the word `Users.'"
+msgstr ""
+"Määrittää, kuinka sovelma näytetään paneelissa. Käytä arvoa \"username\" "
+"näyttääksesi nykyisen käyttäjän nimi, \"icon\" näyttäksesi kuvakkeen tai "
+"\"text\" käyttääksesi sanaa \"Käyttäjät\"."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:7
+msgid "Use Xnest"
+msgstr "Käytä Xnest:iä"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:8
+msgid ""
+"When to show the \"Login Window\" item. Possible values include: \"always\" "
+"to always show the item, \"never\" to never show the item, and \"auto\" (the "
+"default) to show the item when the applet is in Xnest mode."
+msgstr ""
+"Määrittää milloin kohta \"Kirjautumisikkuna\" näytetään. Mahdolliset arvot "
+"ovat \"always\" (näytä aina), \"never\" (ei koskaan) tai \"auto\" (oletus, "
+"näyttää kohdan kun sovelma on Xnest-tilassa)."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:9
+msgid ""
+"When to show the \"Other\" item. Possible values include: \"always\" to "
+"always show the item, \"never\" to never show the item, and \"auto\" (the "
+"default) to show the item when the applet is in console (not Xnest) mode."
+msgstr ""
+"Määrittää milloin kohta \"Muut\" näytetään. Mahdolliset arvot ovat "
+"\"always (näytä aina), \"never\" (ei koskaan) ja \"auto\" (oletus, "
+"näyttää kohdan kun sovelma on Xnest-tilassa)."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:10
+msgid ""
+"Whether or not to create new Xnest windows instead of spawning new consoles "
+"when switching users."
+msgstr ""
+"Luodaanko Xnest-ikkunoita käyttäjää vaihdettaessa uuden näytön avaamisen "
+"sijasta."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:11
+msgid ""
+"Whether or not to lock the screen after switching to a different console."
+msgstr ""
+"Lukitaanko näyttö, kun siirrytään toiselle konsolille."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:12
+msgid "Whether to show only users who are currently logged in, or all users."
+msgstr "Näytetäänkö vain sisäänkirjautuneet käyttäjät vai kaikki käyttäjät."
+
+#: ../utils/gdmflexiserver.c:59
 msgid "Send the specified protocol command to GDM"
 msgstr "Lähetä määritetty protokollakomento GDM:lle"
 
-#: ../utils/gdmflexiserver.c:49
+#: ../utils/gdmflexiserver.c:59
 msgid "COMMAND"
 msgstr "KOMENTO"
 
-#: ../utils/gdmflexiserver.c:50
+#: ../utils/gdmflexiserver.c:60
 msgid "Xnest mode"
 msgstr "Xnest-tila"
 
-#: ../utils/gdmflexiserver.c:51
+#: ../utils/gdmflexiserver.c:61
 msgid "Do not lock current screen"
 msgstr "Älä lukitse nykyistä ruutua"
 
-#: ../utils/gdmflexiserver.c:52
+#: ../utils/gdmflexiserver.c:62
 msgid "Debugging output"
 msgstr "Vianetsintätuloste"
 
-#: ../utils/gdmflexiserver.c:53
+#: ../utils/gdmflexiserver.c:63
 msgid "Authenticate before running --command"
 msgstr "Todenna ennen --command-komennon suoritusta"
 
-#: ../utils/gdmflexiserver.c:54
+#: ../utils/gdmflexiserver.c:64
 msgid "Start new flexible session; do not show popup"
 msgstr "Käynnistä uusi joustava istunto; älä näytä valintaikkunoita"
 
-#: ../utils/gdmflexiserver.c:201
+#: ../utils/gdmflexiserver.c:650
 msgid "Main Options"
 msgstr "Päävalitsimet"
 
-#: ../utils/gdmflexiserver.c:244
+#: ../utils/gdmflexiserver.c:693
 msgid "Unable to start new display"
 msgstr "Uuden näytön käynnistys epäonnistui"
-
-#~ msgid "%s: Could not write new authorization entry: %s"
-#~ msgstr "%s: Ei voitu luoda uutta todennusta kohteessa %s"
-
-#~ msgid ""
-#~ "%s: Could not write new authorization entry.  Possibly out of diskspace"
-#~ msgstr "%s: Ei voitu kirjoittaa uutta todennusta. Levytila voi olla lopussa"
-
-#~ msgid "Can't open %s for writing"
-#~ msgstr "Tiedostoa %s ei voi avata kirjoittamiseen"
-
-#~ msgid "Can't write to %s: %s"
-#~ msgstr "Ei voi kirjoittaa %s: %s"
-
-#~ msgid "Cannot safely open %s"
-#~ msgstr "%s ei voi avata turvallisesti"
-
-#~ msgid "Could not write new authorization entry: %s"
-#~ msgstr "Ei voitu luoda uutta todennusmerkintää: %s"
-
-#~ msgid "GConf key %s set to type %s but its expected type was %s\n"
-#~ msgstr ""
-#~ "GConf-avain %s asetettu %s-tyyppiseksi, mutta tyypin pitäisi olla %s\n"
-
-#~ msgid "Manager X Settings"
-#~ msgstr "Palvelimen X-asetukset"
-
-#~ msgid "X Settings"
-#~ msgstr "X-asetukset"
-
-#~ msgid "IP Address"
-#~ msgstr "IP-osoite"
-
-#~ msgid "Network status"
-#~ msgstr "Verkon tila"
-
-#~ msgid "Tue Oct 23 21:16:50 EDT 2007"
-#~ msgstr "Ti 23. lokakuuta 21:16:50 EET 2007"
-
-#~ msgid "gtk-cancel"
-#~ msgstr "gtk-cancel"
-
-#~ msgid "page 1"
-#~ msgstr "sivu 1"
-
-#~ msgid "page 2"
-#~ msgstr "sivu 2"
-
-#~ msgid "page 3"
-#~ msgstr "sivu 3"
-
-#~ msgid "page 4"
-#~ msgstr "sivu 4"
-
-#~ msgid "page 5"
-#~ msgstr "sivu 5"
-
-#~ msgid "Previous Session"
-#~ msgstr "Edellinen istunto"
-
-#~ msgid "Short Name"
-#~ msgstr "Lyhyt nimi"
