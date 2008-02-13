@@ -43,7 +43,7 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <glib-object.h>
-#define DBUS_API_SUBJECT_TO_CHANGE
+
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
@@ -92,6 +92,7 @@ struct _GdmSessionDirectPrivate
 
 enum {
         PROP_0,
+        PROP_SERVICE_NAME,
         PROP_DISPLAY_NAME,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
@@ -1867,6 +1868,14 @@ gdm_session_direct_select_language (GdmSession *session,
         impl->priv->selected_language = g_strdup (text);
 }
 
+static void
+_gdm_session_direct_set_service_name (GdmSessionDirect *session,
+                                      const char       *name)
+{
+        g_free (session->priv->service_name);
+        session->priv->service_name = g_strdup (name);
+}
+
 /* At some point we may want to read these right from
  * the slave but for now I don't want the dependency */
 static void
@@ -1928,6 +1937,9 @@ gdm_session_direct_set_property (GObject      *object,
         self = GDM_SESSION_DIRECT (object);
 
         switch (prop_id) {
+        case PROP_SERVICE_NAME:
+                _gdm_session_direct_set_service_name (self, g_value_get_string (value));
+                break;
         case PROP_DISPLAY_NAME:
                 _gdm_session_direct_set_display_name (self, g_value_get_string (value));
                 break;
@@ -1963,6 +1975,9 @@ gdm_session_direct_get_property (GObject    *object,
         self = GDM_SESSION_DIRECT (object);
 
         switch (prop_id) {
+        case PROP_SERVICE_NAME:
+                g_value_set_string (value, self->priv->service_name);
+                break;
         case PROP_DISPLAY_NAME:
                 g_value_set_string (value, self->priv->display_name);
                 break;
@@ -2079,6 +2094,13 @@ gdm_session_direct_class_init (GdmSessionDirectClass *session_class)
 
         g_type_class_add_private (session_class, sizeof (GdmSessionDirectPrivate));
 
+        g_object_class_install_property (object_class,
+                                         PROP_SERVICE_NAME,
+                                         g_param_spec_string ("service-name",
+                                                              "service name",
+                                                              "service name",
+                                                              "gdm",
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_NAME,
                                          g_param_spec_string ("display-name",
