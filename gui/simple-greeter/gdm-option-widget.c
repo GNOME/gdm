@@ -55,15 +55,16 @@ struct GdmOptionWidgetPrivate
         GtkWidget                *items_combo_box;
         GtkListStore             *list_store;
 
+        GtkTreeModelFilter       *model_filter;
         GtkTreeModelSort         *model_sorter;
 
         GtkTreeRowReference      *active_row;
-        GtkTreeRowReference      *separator_row;
+        GtkTreeRowReference      *top_separator_row;
+        GtkTreeRowReference      *bottom_separator_row;
 
-        gint                     number_of_normal_rows;
-        gint                     number_of_separated_rows;
-
-        GdmOptionWidgetPosition  separator_position;
+        gint                     number_of_top_rows;
+        gint                     number_of_middle_rows;
+        gint                     number_of_bottom_rows;
 };
 
 enum {
@@ -86,7 +87,7 @@ G_DEFINE_TYPE (GdmOptionWidget, gdm_option_widget, GTK_TYPE_ALIGNMENT)
 enum {
         OPTION_NAME_COLUMN = 0,
         OPTION_COMMENT_COLUMN,
-        OPTION_ITEM_IS_SEPARATED_COLUMN,
+        OPTION_POSITION_COLUMN,
         OPTION_ID_COLUMN,
         NUMBER_OF_OPTION_COLUMNS
 };
@@ -342,9 +343,14 @@ gdm_option_widget_dispose (GObject *object)
 
         widget = GDM_OPTION_WIDGET (object);
 
-        if (widget->priv->separator_row != NULL) {
-                gtk_tree_row_reference_free (widget->priv->separator_row);
-                widget->priv->separator_row = NULL;
+        if (widget->priv->top_separator_row != NULL) {
+                gtk_tree_row_reference_free (widget->priv->top_separator_row);
+                widget->priv->top_separator_row = NULL;
+        }
+
+        if (widget->priv->bottom_separator_row != NULL) {
+                gtk_tree_row_reference_free (widget->priv->bottom_separator_row);
+                widget->priv->bottom_separator_row = NULL;
         }
 
         if (widget->priv->active_row != NULL) {
@@ -399,123 +405,188 @@ on_changed (GtkComboBox     *combo_box,
 }
 
 static gboolean
-path_is_separator (GdmOptionWidget *widget,
-                   GtkTreeModel     *model,
-                   GtkTreePath      *path)
+path_is_row (GdmOptionWidget     *widget,
+             GtkTreeModel        *model,
+             GtkTreePath         *path,
+             GtkTreeRowReference *row)
 {
-        GtkTreePath      *base_path;
-        GtkTreePath      *sorted_path;
-        GtkTreePath      *separator_path;
-        gboolean          is_separator;
+        GtkTreePath      *row_path;
+        GtkTreePath      *translated_path;
+        gboolean          is_row;
 
-        if (widget->priv->separator_row == NULL) {
+        row_path = gtk_tree_row_reference_get_path (row);
+
+        if (row_path == NULL) {
                 return FALSE;
         }
 
-        base_path = gtk_tree_row_reference_get_path (widget->priv->separator_row);
-        separator_path = base_path;
-        sorted_path = NULL;
+        if (model == GTK_TREE_MODEL (widget->priv->model_sorter)) {
+                GtkTreePath *filtered_path;
 
-        if (base_path == NULL) {
-                return FALSE;
-        }
+                filtered_path = gtk_tree_model_sort_convert_path_to_child_path (widget->priv->model_sorter, path);
 
-        if (model != GTK_TREE_MODEL (widget->priv->list_store)) {
-                sorted_path = gtk_tree_model_sort_convert_child_path_to_path (widget->priv->model_sorter, base_path);
-                separator_path = sorted_path;
-
-                gtk_tree_path_free (base_path);
-                base_path = NULL;
-        }
-
-        if ((separator_path != NULL) &&
-            gtk_tree_path_compare (path, separator_path) == 0) {
-                is_separator = TRUE;
+                translated_path = gtk_tree_model_filter_convert_path_to_child_path (widget->priv->model_filter, filtered_path);
+                gtk_tree_path_free (filtered_path);
+        } else if (model == GTK_TREE_MODEL (widget->priv->model_filter)) {
+                translated_path = gtk_tree_model_filter_convert_path_to_child_path (widget->priv->model_filter, path);
         } else {
-                is_separator = FALSE;
+                g_assert (model == GTK_TREE_MODEL (widget->priv->list_store));
+                translated_path = gtk_tree_path_copy (path);
         }
-        gtk_tree_path_free (separator_path);
 
-        return is_separator;
+        if (gtk_tree_path_compare (row_path, translated_path) == 0) {
+                is_row = TRUE;
+        } else {
+                is_row = FALSE;
+        }
+        gtk_tree_path_free (translated_path);
+
+        return is_row;
 }
 
-static int
-compare_item  (GtkTreeModel *model,
-               GtkTreeIter  *a,
-               GtkTreeIter  *b,
-               gpointer      data)
+static gboolean
+path_is_top_separator (GdmOptionWidget *widget,
+                       GtkTreeModel    *model,
+                       GtkTreePath     *path)
+{
+        if (widget->priv->top_separator_row != NULL) {
+                if (path_is_row (widget, model, path,
+                                 widget->priv->top_separator_row)) {
+                    return TRUE;
+                }
+        }
+
+        return FALSE;
+}
+
+static gboolean
+path_is_bottom_separator (GdmOptionWidget *widget,
+                          GtkTreeModel    *model,
+                          GtkTreePath     *path)
+{
+        if (widget->priv->bottom_separator_row != NULL) {
+
+                if (path_is_row (widget, model, path,
+                                 widget->priv->bottom_separator_row)) {
+                    return TRUE;
+                }
+        }
+
+        return FALSE;
+}
+
+static gboolean
+path_is_separator (GdmOptionWidget *widget,
+                   GtkTreeModel    *model,
+                   GtkTreePath     *path)
+{
+        return path_is_top_separator (widget, model, path) ||
+               path_is_bottom_separator (widget, model, path);
+}
+
+static gboolean
+check_item_visibilty (GtkTreeModel *model,
+                      GtkTreeIter  *iter,
+                      gpointer      data)
 {
         GdmOptionWidget *widget;
-        char             *name_a;
-        char             *name_b;
-        gboolean          is_separate_a;
-        gboolean          is_separate_b;
-        int               result;
-        int               direction;
-        GtkTreeIter      *separator_iter;
+        GtkTreePath     *path;
+        gboolean         is_top_separator;
+        gboolean         is_bottom_separator;
+        gboolean         is_visible;
 
         g_assert (GDM_IS_OPTION_WIDGET (data));
 
         widget = GDM_OPTION_WIDGET (data);
 
-        separator_iter = NULL;
-        if (widget->priv->separator_row != NULL) {
+        path = gtk_tree_model_get_path (model, iter);
+        is_top_separator = path_is_top_separator (widget, model, path);
+        is_bottom_separator = path_is_bottom_separator (widget, model, path);
+        gtk_tree_path_free (path);
 
-                GtkTreePath      *path_a;
-                GtkTreePath      *path_b;
-
-                path_a = gtk_tree_model_get_path (model, a);
-                path_b = gtk_tree_model_get_path (model, b);
-
-                if (path_is_separator (widget, model, path_a)) {
-                        separator_iter = a;
-                } else if (path_is_separator (widget, model, path_b)) {
-                        separator_iter = b;
-                }
-
-                gtk_tree_path_free (path_a);
-                gtk_tree_path_free (path_b);
-        }
-
-        name_a = NULL;
-        is_separate_a = FALSE;
-        if (separator_iter != a) {
-                gtk_tree_model_get (model, a,
-                                    OPTION_NAME_COLUMN, &name_a,
-                                    OPTION_ITEM_IS_SEPARATED_COLUMN, &is_separate_a,
-                                    -1);
-        }
-
-        char *id;
-        name_b = NULL;
-        is_separate_b = FALSE;
-        if (separator_iter != b) {
-                gtk_tree_model_get (model, b,
-                                    OPTION_NAME_COLUMN, &name_b,
-                                    OPTION_ID_COLUMN, &id,
-                                    OPTION_ITEM_IS_SEPARATED_COLUMN, &is_separate_b,
-                                    -1);
-        }
-
-        if (widget->priv->separator_position == GDM_OPTION_WIDGET_POSITION_TOP) {
-                direction = -1;
+        if (is_top_separator) {
+                is_visible = widget->priv->number_of_top_rows > 0 &&
+                             widget->priv->number_of_middle_rows > 0;
+        } else if (is_bottom_separator) {
+                is_visible = widget->priv->number_of_bottom_rows > 0 &&
+                             widget->priv->number_of_middle_rows > 0;
         } else {
-                direction = 1;
+                is_visible = TRUE;
         }
 
-        if (separator_iter == b) {
-                result = is_separate_a? 1 : -1;
-                result *= direction;
-        } else if (separator_iter == a) {
-                result = is_separate_b? -1 : 1;
-                result *= direction;
-        } else if (is_separate_b == is_separate_a) {
-                result = g_utf8_collate (name_a, name_b);
+        return is_visible;
+}
+
+static int
+compare_item (GtkTreeModel *model,
+              GtkTreeIter  *a,
+              GtkTreeIter  *b,
+              gpointer      data)
+{
+        GdmOptionWidget *widget;
+        GtkTreePath     *path;
+        gboolean         a_is_separator;
+        gboolean         b_is_separator;
+        char            *name_a;
+        char            *name_b;
+        int              position_a;
+        int              position_b;
+        int              result;
+
+        g_assert (GDM_IS_OPTION_WIDGET (data));
+
+        widget = GDM_OPTION_WIDGET (data);
+
+        gtk_tree_model_get (model, a,
+                            OPTION_NAME_COLUMN, &name_a,
+                            OPTION_POSITION_COLUMN, &position_a,
+                            -1);
+
+        gtk_tree_model_get (model, b,
+                            OPTION_NAME_COLUMN, &name_b,
+                            OPTION_POSITION_COLUMN, &position_b,
+                            -1);
+
+        if (position_a != position_b) {
+                result = position_a - position_b;
+                goto out;
+        }
+
+        if (position_a == GDM_OPTION_WIDGET_POSITION_MIDDLE) {
+                a_is_separator = FALSE;
         } else {
-                result = is_separate_a - is_separate_b;
-                result *= direction;
+                path = gtk_tree_model_get_path (model, a);
+                a_is_separator = path_is_separator (widget, model, path);
+                gtk_tree_path_free (path);
         }
 
+        if (position_b == GDM_OPTION_WIDGET_POSITION_MIDDLE) {
+                b_is_separator = FALSE;
+        } else {
+                path = gtk_tree_model_get_path (model, b);
+                b_is_separator = path_is_separator (widget, model, path);
+                gtk_tree_path_free (path);
+        }
+
+        if (a_is_separator && b_is_separator) {
+                result = 0;
+                goto out;
+        }
+
+        if (!a_is_separator && !b_is_separator) {
+            result = g_utf8_collate (name_a, name_b);
+            goto out;
+        }
+
+        g_assert (position_a == position_b);
+        g_assert (position_a != GDM_OPTION_WIDGET_POSITION_MIDDLE);
+
+        result = a_is_separator - b_is_separator;
+
+        if (position_a == GDM_OPTION_WIDGET_POSITION_BOTTOM) {
+                result *= -1;
+        }
+out:
         g_free (name_a);
         g_free (name_b);
 
@@ -552,16 +623,12 @@ separator_func (GtkTreeModel *model,
                 gpointer      data)
 {
         GdmOptionWidget *widget;
-        GtkTreePath      *path;
-        gboolean          is_separator;
+        GtkTreePath     *path;
+        gboolean         is_separator;
 
         g_assert (GDM_IS_OPTION_WIDGET (data));
 
         widget = GDM_OPTION_WIDGET (data);
-
-        if (widget->priv->separator_row == NULL) {
-                return FALSE;
-        }
 
         path = gtk_tree_model_get_path (model, iter);
 
@@ -573,23 +640,34 @@ separator_func (GtkTreeModel *model,
 }
 
 static void
-add_separator (GdmOptionWidget *widget)
+add_separators (GdmOptionWidget *widget)
 {
         GtkTreeIter   iter;
         GtkTreeModel *model;
         GtkTreePath  *path;
 
-        g_assert (widget->priv->separator_row == NULL);
+        g_assert (widget->priv->top_separator_row == NULL);
+        g_assert (widget->priv->bottom_separator_row == NULL);
 
         model = GTK_TREE_MODEL (widget->priv->list_store);
 
         gtk_list_store_insert_with_values (widget->priv->list_store,
                                            &iter, 0,
-                                           OPTION_ID_COLUMN, "-",
-                                           OPTION_ITEM_IS_SEPARATED_COLUMN, TRUE,
+                                           OPTION_ID_COLUMN, "--",
+                                           OPTION_POSITION_COLUMN, GDM_OPTION_WIDGET_POSITION_BOTTOM,
                                            -1);
         path = gtk_tree_model_get_path (model, &iter);
-        widget->priv->separator_row =
+        widget->priv->bottom_separator_row =
+            gtk_tree_row_reference_new (model, path);
+        gtk_tree_path_free (path);
+
+        gtk_list_store_insert_with_values (widget->priv->list_store,
+                                           &iter, 0,
+                                           OPTION_ID_COLUMN, "-",
+                                           OPTION_POSITION_COLUMN, GDM_OPTION_WIDGET_POSITION_TOP,
+                                           -1);
+        path = gtk_tree_model_get_path (model, &iter);
+        widget->priv->top_separator_row =
             gtk_tree_row_reference_new (model, path);
         gtk_tree_path_free (path);
 }
@@ -632,10 +710,18 @@ gdm_option_widget_init (GdmOptionWidget *widget)
         widget->priv->list_store = gtk_list_store_new (NUMBER_OF_OPTION_COLUMNS,
                                                        G_TYPE_STRING,
                                                        G_TYPE_STRING,
-                                                       G_TYPE_BOOLEAN,
-                                                       G_TYPE_STRING);
+                                                       G_TYPE_INT,
+                                                       G_TYPE_STRING,
+                                                       G_TYPE_BOOLEAN);
 
-        widget->priv->model_sorter = GTK_TREE_MODEL_SORT (gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (widget->priv->list_store)));
+
+        widget->priv->model_filter = GTK_TREE_MODEL_FILTER (gtk_tree_model_filter_new (GTK_TREE_MODEL (widget->priv->list_store), NULL));
+
+        gtk_tree_model_filter_set_visible_func (widget->priv->model_filter,
+                                                check_item_visibilty,
+                                                widget, NULL);
+
+        widget->priv->model_sorter = GTK_TREE_MODEL_SORT (gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (widget->priv->model_filter)));
 
         gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (widget->priv->model_sorter),
                                          OPTION_ID_COLUMN,
@@ -648,7 +734,7 @@ gdm_option_widget_init (GdmOptionWidget *widget)
         gtk_combo_box_set_model (GTK_COMBO_BOX (widget->priv->items_combo_box),
                                  GTK_TREE_MODEL (widget->priv->model_sorter));
 
-        add_separator (widget);
+        add_separators (widget);
         gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (widget->priv->items_combo_box),
                                               separator_func, widget, NULL);
 
@@ -689,29 +775,38 @@ gdm_option_widget_new (const char *label_text)
 }
 
 void
-gdm_option_widget_add_item (GdmOptionWidget *widget,
-                             const char     *id,
-                             const char     *name,
-                             const char     *comment,
-                             gboolean        keep_separate)
+gdm_option_widget_add_item (GdmOptionWidget         *widget,
+                            const char              *id,
+                            const char              *name,
+                            const char              *comment,
+                            GdmOptionWidgetPosition  position)
 {
         GtkTreeIter iter;
 
         g_return_if_fail (GDM_IS_OPTION_WIDGET (widget));
 
-        if (keep_separate) {
-                widget->priv->number_of_separated_rows++;
-        } else {
-                widget->priv->number_of_normal_rows++;
+        switch (position) {
+            case GDM_OPTION_WIDGET_POSITION_BOTTOM:
+                widget->priv->number_of_bottom_rows++;
+                break;
+
+            case GDM_OPTION_WIDGET_POSITION_MIDDLE:
+                widget->priv->number_of_middle_rows++;
+                break;
+
+            case GDM_OPTION_WIDGET_POSITION_TOP:
+                widget->priv->number_of_top_rows++;
+                break;
         }
 
         gtk_list_store_insert_with_values (widget->priv->list_store,
                                            &iter, 0,
                                            OPTION_NAME_COLUMN, name,
                                            OPTION_COMMENT_COLUMN, comment,
-                                           OPTION_ITEM_IS_SEPARATED_COLUMN, keep_separate,
+                                           OPTION_POSITION_COLUMN, (int) position,
                                            OPTION_ID_COLUMN, id,
                                            -1);
+        gtk_tree_model_filter_refilter (widget->priv->model_filter);
 }
 
 void
@@ -720,7 +815,7 @@ gdm_option_widget_remove_item (GdmOptionWidget *widget,
 {
         GtkTreeModel *model;
         GtkTreeIter   iter;
-        gboolean      is_separate;
+        int           position;
 
         g_return_if_fail (GDM_IS_OPTION_WIDGET (widget));
 
@@ -731,27 +826,34 @@ gdm_option_widget_remove_item (GdmOptionWidget *widget,
                 return;
         }
 
-        is_separate = FALSE;
         gtk_tree_model_get (model, &iter,
-                            OPTION_ITEM_IS_SEPARATED_COLUMN, &is_separate,
+                            OPTION_POSITION_COLUMN, &position,
                             -1);
 
-        if (is_separate) {
-                widget->priv->number_of_separated_rows--;
-        } else {
-                widget->priv->number_of_normal_rows--;
+        switch ((GdmOptionWidgetPosition) position) {
+            case GDM_OPTION_WIDGET_POSITION_BOTTOM:
+                widget->priv->number_of_bottom_rows--;
+                break;
+
+            case GDM_OPTION_WIDGET_POSITION_MIDDLE:
+                widget->priv->number_of_middle_rows--;
+                break;
+
+            case GDM_OPTION_WIDGET_POSITION_TOP:
+                widget->priv->number_of_top_rows--;
+                break;
         }
 
         gtk_list_store_remove (widget->priv->list_store, &iter);
+        gtk_tree_model_filter_refilter (widget->priv->model_filter);
 }
-
 
 void
 gdm_option_widget_remove_all_items (GdmOptionWidget *widget)
 {
         GtkTreeIter   iter;
         GtkTreeModel *model;
-        gboolean      is_separated;
+        int           position;
         gboolean      is_valid;
 
         g_assert (GDM_IS_OPTION_WIDGET (widget));
@@ -764,10 +866,10 @@ gdm_option_widget_remove_all_items (GdmOptionWidget *widget)
 
         do {
                 gtk_tree_model_get (model, &iter,
-                                    OPTION_ITEM_IS_SEPARATED_COLUMN, &is_separated,
+                                    OPTION_POSITION_COLUMN, &position,
                                     -1);
 
-                if (!is_separated) {
+                if ((GdmOptionWidgetPosition) position == GDM_OPTION_WIDGET_POSITION_MIDDLE) {
                         is_valid = gtk_list_store_remove (widget->priv->list_store,
                                                           &iter);
                 } else {
@@ -779,11 +881,11 @@ gdm_option_widget_remove_all_items (GdmOptionWidget *widget)
 }
 
 gboolean
-gdm_option_widget_lookup_item (GdmOptionWidget *widget,
-                                const char       *id,
-                                char            **name,
-                                char            **comment,
-                                gboolean         *is_separate)
+gdm_option_widget_lookup_item (GdmOptionWidget          *widget,
+                               const char               *id,
+                               char                    **name,
+                               char                    **comment,
+                               GdmOptionWidgetPosition  *position)
 {
         GtkTreeIter   iter;
         char         *active_item_id;
@@ -817,21 +919,14 @@ gdm_option_widget_lookup_item (GdmOptionWidget *widget,
                                     OPTION_COMMENT_COLUMN, comment, -1);
         }
 
-        if (is_separate != NULL) {
+        if (position != NULL) {
+                int position_as_int;
+
                 gtk_tree_model_get (GTK_TREE_MODEL (widget->priv->list_store), &iter,
-                                    OPTION_ITEM_IS_SEPARATED_COLUMN, is_separate, -1);
+                                    OPTION_POSITION_COLUMN, &position_as_int, -1);
+
+                *position = (GdmOptionWidgetPosition) position_as_int;
         }
 
         return TRUE;
-}
-
-void
-gdm_option_widget_set_separator_position (GdmOptionWidget         *widget,
-                                          GdmOptionWidgetPosition  position)
-{
-        g_return_if_fail (GDM_IS_OPTION_WIDGET (widget));
-
-        if (widget->priv->separator_position != position) {
-                widget->priv->separator_position = position;
-        }
 }

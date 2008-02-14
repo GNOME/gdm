@@ -167,7 +167,8 @@ gdm_recent_option_widget_sync_items_from_gconf (GdmRecentOptionWidget *widget)
 
                 if (widget->priv->lookup_item_func (widget, id, &name, &comment)) {
                         gdm_option_widget_add_item (GDM_OPTION_WIDGET (widget),
-                                                    id, name, comment, FALSE);
+                                                    id, name, comment,
+                                                    GDM_OPTION_WIDGET_POSITION_MIDDLE);
                         if (!default_is_set) {
                                 gdm_option_widget_set_active_item (GDM_OPTION_WIDGET (widget),
                                         id);

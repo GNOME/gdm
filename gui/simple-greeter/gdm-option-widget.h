@@ -52,8 +52,9 @@ typedef struct
 } GdmOptionWidgetClass;
 
 typedef enum {
-        GDM_OPTION_WIDGET_POSITION_BOTTOM = 0,
-        GDM_OPTION_WIDGET_POSITION_TOP
+        GDM_OPTION_WIDGET_POSITION_TOP = 0,
+        GDM_OPTION_WIDGET_POSITION_MIDDLE,
+        GDM_OPTION_WIDGET_POSITION_BOTTOM,
 } GdmOptionWidgetPosition;
 
 GType                  gdm_option_widget_get_type               (void);
@@ -63,7 +64,7 @@ void                   gdm_option_widget_add_item               (GdmOptionWidget
                                                                  const char       *id,
                                                                  const char       *name,
                                                                  const char       *comment,
-                                                                 gboolean          keep_separate);
+                                                                 GdmOptionWidgetPosition position);
 
 void                   gdm_option_widget_remove_item            (GdmOptionWidget *widget,
                                                                  const char       *id);
@@ -73,13 +74,11 @@ gboolean               gdm_option_widget_lookup_item            (GdmOptionWidget
                                                                  const char       *id,
                                                                  char            **name,
                                                                  char            **comment,
-                                                                 gboolean         *is_separate);
+                                                                 GdmOptionWidgetPosition *position);
 
 char *                 gdm_option_widget_get_active_item        (GdmOptionWidget *widget);
 void                   gdm_option_widget_set_active_item        (GdmOptionWidget *widget,
                                                                  const char       *item);
-void                   gdm_option_widget_set_separator_position  (GdmOptionWidget         *widget,
-                                                                  GdmOptionWidgetPosition  position);
 G_END_DECLS
 
 #endif /* __GDM_OPTION_WIDGET_H */

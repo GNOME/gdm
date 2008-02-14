@@ -123,7 +123,7 @@ add_available_sessions (GdmSessionOptionWidget *widget)
 
                 gdm_option_widget_add_item (GDM_OPTION_WIDGET (widget),
                                             session_ids[i], name, comment,
-                                            FALSE);
+                                            GDM_OPTION_WIDGET_POSITION_MIDDLE);
 
                 if (!default_is_set) {
                         gdm_option_widget_set_active_item (GDM_OPTION_WIDGET (widget),

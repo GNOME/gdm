@@ -176,7 +176,8 @@ gdm_language_option_widget_init (GdmLanguageOptionWidget *widget)
         gdm_option_widget_add_item (GDM_OPTION_WIDGET (widget),
                                     "__other", _("Other..."),
                                     _("Choose a language from the "
-                                      "full list of available languages."), TRUE);
+                                      "full list of available languages."),
+                                    GDM_OPTION_WIDGET_POSITION_BOTTOM);
 
         widget->priv->dialog = gdm_language_chooser_dialog_new ();
 
