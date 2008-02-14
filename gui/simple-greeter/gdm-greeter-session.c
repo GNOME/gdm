@@ -437,7 +437,7 @@ setup_at_tools (GdmGreeterSession *session)
         gdm_session_client_set_try_exec (session->priv->screen_keyboard_client,
                                          "gok");
         gdm_session_client_set_command (session->priv->screen_keyboard_client,
-                                        "gok");
+                                        "gok --login");
         enabled = gconf_client_get_bool (client, KEY_SCREEN_KEYBOARD_ENABLED, NULL);
         gdm_session_client_set_enabled (session->priv->screen_keyboard_client,
                                         enabled);
