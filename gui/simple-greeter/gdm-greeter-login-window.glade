@@ -82,12 +82,6 @@
                     <property name="type">tab</property>
                   </packing>
                 </child>
-                <child>
-                  <placeholder/>
-                  <packing>
-                    <property name="type">tab</property>
-                  </packing>
-                </child>
               </widget>
             </child>
           </widget>
@@ -116,7 +110,6 @@
                     <child>
                       <widget class="GtkLabel" id="auth-prompt-label">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes"></property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -176,30 +169,11 @@
               <widget class="GtkButton" id="disconnect-button">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="can_default">True</property>
-                <property name="has_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                <property name="label" translatable="yes">gtk-disconnect</property>
+                <property name="use_stock">True</property>
                 <property name="response_id">0</property>
-                <child>
-                  <widget class="GtkHBox" id="hbox2">
-                    <property name="visible">True</property>
-                    <child>
-                      <widget class="GtkImage" id="image10">
-                        <property name="visible">True</property>
-                        <property name="pixel_size">16</property>
-                        <property name="icon_name">window-close</property>
-                      </widget>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label3">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Disconnect</property>
-                      </widget>
-                      <packing>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </widget>
-                </child>
               </widget>
             </child>
             <child>

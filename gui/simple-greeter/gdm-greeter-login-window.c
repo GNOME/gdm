@@ -292,6 +292,12 @@ switch_mode (GdmGreeterLoginWindow *login_window,
 }
 
 static void
+do_disconnect (GdmGreeterLoginWindow *login_window)
+{
+        gtk_main_quit ();
+}
+
+static void
 do_cancel (GdmGreeterLoginWindow *login_window)
 {
 
@@ -498,6 +504,13 @@ cancel_button_clicked (GtkButton             *button,
                        GdmGreeterLoginWindow *login_window)
 {
         do_cancel (login_window);
+}
+
+static void
+disconnect_button_clicked (GtkButton             *button,
+                           GdmGreeterLoginWindow *login_window)
+{
+        do_disconnect (login_window);
 }
 
 static gboolean
@@ -991,6 +1004,9 @@ load_theme (GdmGreeterLoginWindow *login_window)
 
         button = glade_xml_get_widget (login_window->priv->xml, "cancel-button");
         g_signal_connect (button, "clicked", G_CALLBACK (cancel_button_clicked), login_window);
+
+        button = glade_xml_get_widget (login_window->priv->xml, "disconnect-button");
+        g_signal_connect (button, "clicked", G_CALLBACK (disconnect_button_clicked), login_window);
 
         button = glade_xml_get_widget (login_window->priv->xml, "restart-button");
         g_signal_connect (button, "clicked", G_CALLBACK (restart_button_clicked), login_window);
