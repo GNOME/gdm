@@ -224,15 +224,15 @@ gdm_session_auditor_get_property (GObject    *object,
 
         switch (prop_id) {
                 case PROP_USERNAME:
-                        g_value_set_string (value, gdm_session_auditor_get_username (auditor));
+                        g_value_take_string (value, gdm_session_auditor_get_username (auditor));
                 break;
 
                 case PROP_HOSTNAME:
-                        g_value_set_string (value, gdm_session_auditor_get_hostname (auditor));
+                        g_value_take_string (value, gdm_session_auditor_get_hostname (auditor));
                 break;
 
                 case PROP_DISPLAY_DEVICE:
-                        g_value_set_string (value, gdm_session_auditor_get_display_device (auditor));
+                        g_value_take_string (value, gdm_session_auditor_get_display_device (auditor));
                 break;
 
                 default:
