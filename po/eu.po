@@ -1,14 +1,14 @@
-# translation of gdm.HEAD.po to Basque
+# translation of eu.po to Basque
 # Copyright (C) 2001, 2004, 2006, 2008 Free Software Foundation, Inc.
 #
 # Hizkuntza Politikarako Sailburuordetza <hizpol@ej-gv.es>, 2004, 2005.
 # Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>, 2006,2007,2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm.HEAD\n"
+"Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-05 18:43+0100\n"
-"PO-Revision-Date: 2008-01-05 18:40+0100\n"
+"POT-Creation-Date: 2008-02-16 17:44+0100\n"
+"PO-Revision-Date: 2008-02-16 18:40+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,18 +22,17 @@ msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom ez da karaktere motako gailua"
 
 #: ../daemon/factory-slave-main.c:156 ../daemon/product-slave-main.c:156
-#: ../daemon/simple-slave-main.c:156
-#, fuzzy
+#: ../daemon/simple-slave-main.c:156 ../daemon/xdmcp-chooser-slave-main.c:156
 msgid "Display ID"
 msgstr "Pantailaren IDa"
 
 #: ../daemon/factory-slave-main.c:156 ../daemon/product-slave-main.c:156
-#: ../daemon/simple-slave-main.c:156
+#: ../daemon/simple-slave-main.c:156 ../daemon/xdmcp-chooser-slave-main.c:156
 msgid "id"
 msgstr "IDa"
 
 #: ../daemon/factory-slave-main.c:168 ../daemon/product-slave-main.c:168
-#: ../daemon/simple-slave-main.c:168
+#: ../daemon/simple-slave-main.c:168 ../daemon/xdmcp-chooser-slave-main.c:168
 msgid "GNOME Display Manager Slave"
 msgstr "GNOMEren mahaigain-kudeatzailearen morroia"
 
@@ -42,24 +41,24 @@ msgstr "GNOMEren mahaigain-kudeatzailearen morroia"
 msgid "could not find user \"%s\" on system"
 msgstr "ezin izan da \"%s\" erabiltzailea aurkitu sisteman"
 
-#: ../daemon/gdm-factory-slave.c:185 ../daemon/gdm-simple-slave.c:169
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:167
 msgid "Unable to initialize login system"
 msgstr "Ezin da sistemako saio-hasiera hasieratu"
 
-#: ../daemon/gdm-factory-slave.c:217 ../daemon/gdm-simple-slave.c:201
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:199
 msgid "Unable to authenticate user"
 msgstr "Ezin da erabiltzailea autentifikatu"
 
-#: ../daemon/gdm-factory-slave.c:239 ../daemon/gdm-simple-slave.c:223
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:220
 msgid "Unable to authorize user"
 msgstr "Ezin da erabiltzailea baimendu"
 
-#: ../daemon/gdm-factory-slave.c:263
+#: ../daemon/gdm-factory-slave.c:281
 msgid "Unable to establish credentials"
 msgstr "Ezin dira kredentzialak ezarri"
 
-#: ../daemon/gdm-factory-slave.c:591 ../daemon/gdm-product-slave.c:361
-#: ../daemon/gdm-simple-slave.c:706
+#: ../daemon/gdm-factory-slave.c:648 ../daemon/gdm-product-slave.c:394
+#: ../daemon/gdm-simple-slave.c:823
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -71,277 +70,288 @@ msgstr ""
 "egiaztatu syslog arazteko.Bitartean pantaila hau desgaitu egingo da. GDM "
 "berrabiarazi arazoa zuzendutakoan."
 
-#
-#: ../daemon/gdm-greeter-session.c:334
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "%s erabiltzailea ez da existitzen"
-
-#
-#: ../daemon/gdm-greeter-session.c:341
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "%s taldea ez da existitzen"
-
-#: ../daemon/gdm-greeter-session.c:352 ../daemon/gdm-server.c:371
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "Ezin izan da groupid ezarri %d(e)n"
-
-#: ../daemon/gdm-greeter-session.c:358 ../daemon/gdm-server.c:377
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "%s(r)en initgroups()-ek huts egin du."
-
-#: ../daemon/gdm-greeter-session.c:364 ../daemon/gdm-server.c:383
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "Ezin izan da userid ezarri %d(e)n"
-
-#: ../daemon/gdm-greeter-session.c:372 ../daemon/gdm-server.c:391
-msgid "Couldn't set groupid to 0"
-msgstr "Ezin izan da groupid ezarri 0-n"
-
-#: ../daemon/gdm-server.c:242
+#: ../daemon/gdm-server.c:244
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: huts egin du '%s' pantaila gurasoarekin konektatzean"
 
-#: ../daemon/gdm-server.c:360
+#: ../daemon/gdm-server.c:362
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Zerbitzaria %s erabiltzaileak abiarazi behar zuen, baina erabiltzaile hori "
 "ez da existitzen"
 
-#: ../daemon/gdm-server.c:426
+#: ../daemon/gdm-server.c:373 ../daemon/gdm-welcome-session.c:406
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "Ezin izan da groupid ezarri %d(e)n"
+
+#: ../daemon/gdm-server.c:379 ../daemon/gdm-welcome-session.c:412
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "%s(r)en initgroups()-ek huts egin du."
+
+#: ../daemon/gdm-server.c:385 ../daemon/gdm-welcome-session.c:418
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "Ezin izan da userid ezarri %d(e)n"
+
+#: ../daemon/gdm-server.c:393 ../daemon/gdm-welcome-session.c:426
+msgid "Couldn't set groupid to 0"
+msgstr "Ezin izan da groupid ezarri 0-n"
+
+#: ../daemon/gdm-server.c:428
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: Ezin izan da egunkari-fitxategia ireki %s pantailarentzat!"
 
-#: ../daemon/gdm-server.c:437 ../daemon/gdm-server.c:443
-#: ../daemon/gdm-server.c:449
+#: ../daemon/gdm-server.c:439 ../daemon/gdm-server.c:445
+#: ../daemon/gdm-server.c:451
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Errorea %s %s(e)n ezartzean"
 
-#: ../daemon/gdm-server.c:464
+#: ../daemon/gdm-server.c:466
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: zerbitzariaren lehentasuna ezin da %d balioarekin ezarri: %s"
 
-#: ../daemon/gdm-server.c:608
+#: ../daemon/gdm-server.c:618
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: %s pantailaren zerbitzari-komando hutsa"
 
-#: ../daemon/gdm-session-direct.c:1194 ../daemon/gdm-session-direct.c:1212
+#: ../daemon/gdm-session-auditor.c:90
+msgid "Username"
+msgstr "Erabiltzaile-izena"
+
+#: ../daemon/gdm-session-auditor.c:91
+msgid "The username"
+msgstr "Erabiltzaile-izena"
+
+#: ../daemon/gdm-session-auditor.c:95
+msgid "Hostname"
+msgstr "Ostalari-izena"
+
+#: ../daemon/gdm-session-auditor.c:96
+msgid "The hostname"
+msgstr "Ostalari-izena"
+
+#: ../daemon/gdm-session-auditor.c:101
+msgid "Display Device"
+msgstr "Pantailaren gailua"
+
+#: ../daemon/gdm-session-auditor.c:102
+msgid "The display device"
+msgstr "Pantailaren gailua"
+
+#: ../daemon/gdm-session-direct.c:1210 ../daemon/gdm-session-direct.c:1228
 #, c-format
 msgid "worker exited with status %d"
 msgstr "langilea %d egoerarekin irten da"
 
-#: ../daemon/gdm-session-worker.c:837
+#: ../daemon/gdm-session-worker.c:890
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "errorea autentifikazio-sistemarekin harremanetan jartzean - %s"
 
-#: ../daemon/gdm-session-worker.c:838
+#: ../daemon/gdm-session-worker.c:891
 msgid "general failure"
 msgstr "Hutsegite orokorra"
 
-#: ../daemon/gdm-session-worker.c:839
+#: ../daemon/gdm-session-worker.c:892
 msgid "out of memory"
 msgstr "Memoriarik ez"
 
-#: ../daemon/gdm-session-worker.c:840
+#: ../daemon/gdm-session-worker.c:893
 msgid "application programmer error"
 msgstr "aplikazioaren programazioko errorea"
 
-#: ../daemon/gdm-session-worker.c:841
-#, fuzzy
-msgid "unscoped error"
-msgstr "zehaztu gabeko errorea"
+#: ../daemon/gdm-session-worker.c:894
+msgid "unknown error"
+msgstr "errore ezezaguna"
 
-#: ../daemon/gdm-session-worker.c:848
+#: ../daemon/gdm-session-worker.c:901
 msgid "Username:"
 msgstr "Erabiltzaile-izena:"
 
-#: ../daemon/gdm-session-worker.c:854
+#: ../daemon/gdm-session-worker.c:907
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "errorea erabiltzaile-izenaren galdera hobetsiaren autentifikazio-sistema "
 "informatzean - %s"
 
-#: ../daemon/gdm-session-worker.c:868
+#: ../daemon/gdm-session-worker.c:921
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 "errorea erabiltzailearen ostalari-izenaren autentifikazio-sistema "
 "informatzean - %s"
 
-#: ../daemon/gdm-session-worker.c:883
+#: ../daemon/gdm-session-worker.c:936
 #, c-format
 msgid "error informing authentication system of user's console - %s"
-msgstr ""
-"errorea erabiltzailearen kontsolaren autentifikazio-sistema informatzean - %s"
+msgstr "errorea erabiltzailearen kontsolaren autentifikazio-sistema informatzean - %s"
 
-#: ../daemon/gdm-session-worker.c:1039
+#: ../daemon/gdm-session-worker.c:1099
 msgid "no user account available"
 msgstr "ez dago erabiltzailearen konturik erabilgarri"
 
-#: ../daemon/gdm-session-worker.c:1088
+#: ../daemon/gdm-session-worker.c:1148
 msgid "user account not available on system"
 msgstr "erabiltzailearen konturik ez dago sisteman"
 
-#: ../daemon/gdm-session-worker.c:1290
-#, fuzzy, c-format
-msgid ""
-"session log '%s' is not a normal file, logging session to '%s' instead.\n"
-msgstr ""
-"'%s' saio-hasiera ez da fitxategi normala, saioa '%s' gisa hasiko da.\n"
-
-#: ../daemon/gdm-session-worker.c:1314
-msgid "unable to log session"
-msgstr ""
-
-#: ../daemon/gdm-simple-slave.c:254
+#: ../daemon/gdm-simple-slave.c:310
 msgid "Unable establish credentials"
 msgstr "Ezin da kredentzialik ezarri"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:581
+#
+#: ../daemon/gdm-welcome-session.c:388
+#, c-format
+msgid "User %s doesn't exist"
+msgstr "%s erabiltzailea ez da existitzen"
+
+#
+#: ../daemon/gdm-welcome-session.c:395
+#, c-format
+msgid "Group %s doesn't exist"
+msgstr "%s taldea ez da existitzen"
+
+#: ../daemon/gdm-xdmcp-display-factory.c:591
 msgid "Could not create socket!"
 msgstr "Ezin izan da socket-a sortu!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:847
+#: ../daemon/gdm-xdmcp-display-factory.c:857
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "%s ostalariak XDMCPren kontsulta ukatu du"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1010
-#: ../daemon/gdm-xdmcp-display-factory.c:1075
+#: ../daemon/gdm-xdmcp-display-factory.c:1014
+#: ../daemon/gdm-xdmcp-display-factory.c:1238
 msgid "Could not extract authlist from packet"
 msgstr "Ezin izan da paketeko authlist atera"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1023
-#: ../daemon/gdm-xdmcp-display-factory.c:1090
+#: ../daemon/gdm-xdmcp-display-factory.c:1027
+#: ../daemon/gdm-xdmcp-display-factory.c:1253
 msgid "Error in checksum"
 msgstr "Errorea kontrol-baturan"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1342
+#: ../daemon/gdm-xdmcp-display-factory.c:1504
 msgid "Bad address"
 msgstr "Helbide okerra"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1423
+#: ../daemon/gdm-xdmcp-display-factory.c:1585
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: Ezin izan da pantailako helbidea irakurri"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1431
+#: ../daemon/gdm-xdmcp-display-factory.c:1593
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s: Ezin izan da pantailako ataka-zenbakia irakurri"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1440
+#: ../daemon/gdm-xdmcp-display-factory.c:1602
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s: Ezin izan da paketeko authlist atera"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1460
+#: ../daemon/gdm-xdmcp-display-factory.c:1622
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: Errorea kontrol-baturan"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1896
+#: ../daemon/gdm-xdmcp-display-factory.c:2130
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Baimenik ez duen %s ostalariaren REQUEST jaso da"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1906
-#: ../daemon/gdm-xdmcp-display-factory.c:2261
-#: ../daemon/gdm-xdmcp-display-factory.c:2518
+#: ../daemon/gdm-xdmcp-display-factory.c:2140
+#: ../daemon/gdm-xdmcp-display-factory.c:2495
+#: ../daemon/gdm-xdmcp-display-factory.c:2747
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Ezin izan da pantailako zenbakia irakurri"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1913
+#: ../daemon/gdm-xdmcp-display-factory.c:2147
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Ezin izan da konexio-mota irakurri"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1920
+#: ../daemon/gdm-xdmcp-display-factory.c:2154
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Ezin izan da bezeroaren helbidea irakurri"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1928
+#: ../daemon/gdm-xdmcp-display-factory.c:2162
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Ezin izan dira autentifikazio-izenak irakurri"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1937
+#: ../daemon/gdm-xdmcp-display-factory.c:2171
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Ezin izan da autentifikazio-informazioa irakurri"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1947
+#: ../daemon/gdm-xdmcp-display-factory.c:2181
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Ezin izan da autentifikazio-zerrenda irakurri"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1966
+#: ../daemon/gdm-xdmcp-display-factory.c:2200
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Ezin izan da fabrikatzailearen IDa irakurri"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1993
+#: ../daemon/gdm-xdmcp-display-factory.c:2227
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: %s(r)en kontrol-baturak huts egin du"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2245
+#: ../daemon/gdm-xdmcp-display-factory.c:2479
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Baimenik ez duen %s ostalariaren MANAGE mezua jaso da"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2254
-#: ../daemon/gdm-xdmcp-display-factory.c:2525
+#: ../daemon/gdm-xdmcp-display-factory.c:2488
+#: ../daemon/gdm-xdmcp-display-factory.c:2754
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Ezin izan da saioaren IDa irakurri"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2268
+#: ../daemon/gdm-xdmcp-display-factory.c:2502
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Ezin izan da pantailaren klasea irakurri"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2374
-#: ../daemon/gdm-xdmcp-display-factory.c:2428
-#: ../daemon/gdm-xdmcp-display-factory.c:2434
+#: ../daemon/gdm-xdmcp-display-factory.c:2607
+#: ../daemon/gdm-xdmcp-display-factory.c:2657
+#: ../daemon/gdm-xdmcp-display-factory.c:2663
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Ezin izan da helbidea irakurri"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2508
+#: ../daemon/gdm-xdmcp-display-factory.c:2737
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Baimenik ez duen %s ostalariaren KEEPALIVE mezua jaso da"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2597
+#: ../daemon/gdm-xdmcp-display-factory.c:2826
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory: ezin izan da XDMCPren goiburua irakurri!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2603
+#: ../daemon/gdm-xdmcp-display-factory.c:2832
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:240
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XMDCP: XDMCPren bertsio okerra!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2609
+#: ../daemon/gdm-xdmcp-display-factory.c:2838
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:246
 msgid "XMDCP: Unable to parse address"
 msgstr "XMDCP: ezin da helbidea analizatu"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3007
+#: ../daemon/gdm-xdmcp-display-factory.c:3236
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Ezin izan da zerbitzariaren ostalari-izenik lortu: %s!"
@@ -349,8 +359,7 @@ msgstr "Ezin izan da zerbitzariaren ostalari-izenik lortu: %s!"
 #: ../daemon/main.c:230 ../daemon/main.c:243
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace: %s"
-msgstr ""
-"Ezin da %s PID fitxategia idatzi, agian ez da lekurik egongo diskoan: %s"
+msgstr "Ezin da %s PID fitxategia idatzi, agian ez da lekurik egongo diskoan: %s"
 
 #: ../daemon/main.c:263
 #, c-format
@@ -370,8 +379,7 @@ msgstr "Authdir %s ez da direktorioa. Abortatu egingo da."
 #: ../daemon/main.c:354
 #, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-msgstr ""
-"Authdir %s ez da %d erabiltzailearena, ez %d taldearena. Abortatu egingo da."
+msgstr "Authdir %s ez da %d erabiltzailearena, ez %d taldearena. Abortatu egingo da."
 
 #: ../daemon/main.c:361
 #, c-format
@@ -452,30 +460,77 @@ msgstr "XMCP: ezin izan da XDMCP bufferra sortu!"
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XMCP: ezin izan da XDMCPren goiburua irakurri!"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1145
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.c:823
+msgid "Accessibility Preferences"
+msgstr "Erabilerraztasunaren hobespenak"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:1
+msgid "<b>Enable features that make your computer easier to use:</b>"
+msgstr "<b>Gaitu eginbideak ordenagailua erabiltzeko errazagoa izateko:</b>"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:2
+msgid "Assistive Technology Preferences"
+msgstr "Laguntza-teknologiaren hobespenak"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:3
+msgid "_Hear text onscreen read aloud (Reader)"
+msgstr "_Entzun pantailako testuaren irakurketa ozen (irakurlea)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:4
+msgid "_Ignore duplicate keypresses (Bounce Keys)"
+msgstr "_Ez ikusi egin bikoiztutako teklak sakatzean (Errebote-teklak)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:5
+msgid "_Make items on screen larger (Magnifier)"
+msgstr "_Egin pantailako elementuak handiagoak (Lupa)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:6
+msgid "_Only accept long held keypresses (Slow Keys)"
+msgstr "_Onartu teklak denbora luzean sakatzean soilik (Tekla motelak)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:7
+msgid "_Press keyboard shortcuts on key at a time (Sticky Keys)"
+msgstr "_Sakatu laster-tekla bat aldiko (Tekla itsaskorrak)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:8
+msgid "_See more contrast in colors (High Contrast)"
+msgstr "_Ikusi koloreen kontraste gehiago (Kontraste altua)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:9
+msgid "_Type without the keyboard (On-screen Keyboard)"
+msgstr "_Idatzi teklaturik gabe (Pantailako teklatua)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:10
+msgid "_Use a larger font size (Large Print)"
+msgstr "_Erabili letra-tipo handiagoak (Tipografia handia)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:11
+msgid "gtk-close"
+msgstr "gtk-close"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1150
 msgid "Inactive Text"
 msgstr "Testu inaktiboa"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1146
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1151
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr ""
 "Etiketan erabiliko den testua, erabiltzaileak ez badu elementu bat hautatu "
 "oraindik"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1154
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1159
 msgid "Active Text"
 msgstr "Testu aktiboa"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1155
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1160
 msgid "The text to use in the label if the user has picked an item"
-msgstr ""
-"Etiketan erabiliko den testua, erabiltzaileak elementu bat hautatu duenean"
+msgstr "Etiketan erabiliko den testua, erabiltzaileak elementu bat hautatu duenean"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:707
+#: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M:%S %p"
 msgstr "%l:%M:%S %p"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:707
+#: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
@@ -484,7 +539,7 @@ msgstr "%l:%M %p"
 #. *              should begin with a 0 in your locale (e.g. "May
 #. *              01" instead of "May  1").
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:713
+#: ../gui/simple-greeter/gdm-clock-widget.c:72
 msgid "%a %b %e"
 msgstr "%a %b %d"
 
@@ -492,10 +547,15 @@ msgstr "%a %b %d"
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:718
+#: ../gui/simple-greeter/gdm-clock-widget.c:77
 #, c-format
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1251
+#: ../gui/user-switch-applet/applet.c:1754
+msgid "Login Window"
+msgstr "Saio-hasieraren leihoa"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:1
 msgid "Authentication Dialog"
@@ -505,158 +565,529 @@ msgstr "Autentifikazioaren elkarrizketa-koadroa"
 msgid "Computer Name"
 msgstr "Ordenagailuaren izena"
 
-#
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:3
-msgid "Disconnect"
-msgstr "Deskonektatu"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:4
-msgid "IP Address"
-msgstr "IP helbidea"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
 msgid "Log In"
 msgstr "Sartu saioan"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
-msgid "Network status"
-msgstr "Sarearen egoera"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
-msgid "Prompt:"
-msgstr "Galdera:"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:4
 msgid "Restart"
 msgstr "Berrabiarazi"
 
 #
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:9
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
 msgid "Shut Down"
 msgstr "Itzali"
 
 #
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:10
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
 msgid "Suspend"
 msgstr "Eseki"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:11
-msgid "Tue Oct 23 21:16:50 EDT 2007"
-msgstr "Tue Oct 23 21:16:50 EDT 2007"
-
 #
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:12
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
 msgid "Version"
 msgstr "Bertsioa"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:13
-msgid "page 1"
-msgstr "1. orrialdea"
+#
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
+msgid "gtk-disconnect"
+msgstr "gtk-disconnect"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:14
-msgid "page 2"
-msgstr "2. orrialdea"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:15
-msgid "page 3"
-msgstr "3. orrialdea"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:16
-msgid "page 4"
-msgstr "4. orrialdea"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:17
-msgid "page 5"
-msgstr "5. orrialdea"
+#: ../gui/simple-greeter/gdm-greeter-panel.c:491
+msgid "Panel"
+msgstr "Panela"
 
 #
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:380
-msgid "Default"
-msgstr "Lehenetsia"
+#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:139
+msgid "Languages"
+msgstr "Hizkuntzak"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:381
-msgid "Login with the same session as last time."
-msgstr "Hasi saioa azken saioaren antzera."
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:190
+msgid "_Languages:"
+msgstr "_Hizkuntzak:"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:386
-msgid "Legacy"
-msgstr "Aurrekoa"
-
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:387
-msgid "Login based on preset legacy configuration"
-msgstr "Hasi saioa aurrezarpeneko konfigurazioarekin"
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:191
+#: ../gui/simple-greeter/gdm-language-option-widget.c:212
+msgid "_Language:"
+msgstr "_Hizkuntza:"
 
 #
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:430
+#: ../gui/simple-greeter/gdm-language-option-widget.c:177
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:315
+msgid "Other..."
+msgstr "Bestelakoa..."
+
+#: ../gui/simple-greeter/gdm-language-option-widget.c:178
+msgid "Choose a language from the full list of available languages."
+msgstr "Hizkuntza erabilgarrien zerrenda osotik aukeratu hizkuntza."
+
+#: ../gui/simple-greeter/gdm-option-widget.c:390
+msgid "Label Text"
+msgstr "Etiketaren testua"
+
+#: ../gui/simple-greeter/gdm-option-widget.c:391
+msgid "The text to use as a label"
+msgstr "Testua etiketa gisa erabiltzeko"
+
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:302
+msgid "Max Item Count"
+msgstr "Gehien. elementu-kopurua"
+
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:303
+msgid "The maximum number of items to keep around in the list"
+msgstr "Elementuen gehienezko kopurua zerrendaren inguruan mantentzeko"
+
+#: ../gui/simple-greeter/gdm-remote-login-window.c:97
+#, c-format
+msgid "Remote Login (Connecting to %s...)"
+msgstr "Urruneko saioa (%s-(r)a konektatzen...)"
+
+#: ../gui/simple-greeter/gdm-remote-login-window.c:106
+#, c-format
+msgid "Remote Login (Connected to %s)"
+msgstr "Urruneko saioa (%s-(r)a konektatuta)"
+
+#: ../gui/simple-greeter/gdm-remote-login-window.c:196
+msgid "Remote Login"
+msgstr "Urruneko saioa"
+
+#
+#: ../gui/simple-greeter/gdm-session-option-widget.c:170
 msgid "_Sessions:"
 msgstr "_Saioak:"
 
-#
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:431
-msgid "_Session:"
-msgstr "_Saioa:"
-
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
-msgid "Set to True to enable the background settings manager plugin."
-msgstr ""
-"Ezarri EGIA gisa atzeko planoaren ezarpenen kudeatzailearen plugina gaitzeko."
+msgid "Enable accessibility keyboard plugin"
+msgstr "Gaitu erabilerraztasuneko teklatuaren plugin-a"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
-msgid "Set to True to enable the xsettings settings manager plugin."
-msgstr ""
-"Ezarri EGIA gisa xsettings-en ezarpenen kudeatzailearen plugina gaitzeko."
+msgid "Enable on-screen keyboard"
+msgstr "Gaitu pantailako teklatua"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
-msgid "True if the background settings manager plugin is enabled."
-msgstr ""
-"EGIA atzeko planoaren ezarpenen kudeatzailearen plugina gaituta badago."
+msgid "Enable screen magnifier"
+msgstr "Gaitu pantailaren lupa"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
+msgid "Enable screen reader"
+msgstr "Gaitu pantailaren irakurlea"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
+msgid "Set to True to enable the background settings manager plugin."
+msgstr "Ezarri EGIA gisa atzeko planoaren ezarpenen kudeatzailearen plugina gaitzeko."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
+msgid "Set to True to enable the on-screen keyboard."
+msgstr "Ezarri 'TRUE' (EGIA) gisa pantailako teklatua gaitzeko."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
+msgid ""
+"Set to True to enable the plugin to manage the accessibility keyboard "
+"settings."
+msgstr "Ezarri 'TRUE' (EGIA) gisa erabilerraztasuneko teklatuaren ezarpenak kudeatzeko plugin-a gaitzeko."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
+msgid "Set to True to enable the screen magnifier."
+msgstr "Ezarri 'TRUE' (EGIA) gisa pantailako lupa gaitzeko."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+msgid "Set to True to enable the screen reader."
+msgstr "Ezarri 'TRUE' (EGIA) gisa pantailaren irakurlea gaitzeko."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
+msgid "Set to True to enable the xsettings settings manager plugin."
+msgstr "Ezarri EGIA gisa xsettings-en ezarpenen kudeatzailearen plugina gaitzeko."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
+msgid "True if the background settings manager plugin is enabled."
+msgstr "EGIA atzeko planoaren ezarpenen kudeatzailearen plugina gaituta badago."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "EGIA xsettings-en ezarpenen kudeatzailearen plugina gaituta badago."
 
 #
-#: ../gui/simple-greeter/gdm-user.c:218
+#: ../gui/simple-greeter/gdm-user.c:239
 msgid "Manager"
 msgstr "Kudeatzailea"
 
-#: ../gui/simple-greeter/gdm-user.c:219
+#: ../gui/simple-greeter/gdm-user.c:240
 msgid "The user manager object this user is controlled by."
 msgstr "Erabiltzaile hau kontrolatzen duen erabiltzaile-kudeatzailea."
 
 #
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:314
-msgid "Other..."
-msgstr "Bestelakoa..."
-
-#
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:315
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:316
 msgid "Choose a different account"
 msgstr "Aukeratu beste kontu bat"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:321
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:324
 msgid "Guest"
 msgstr "Gonbidatua"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:322
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:325
 msgid "Login as a temporary guest"
 msgstr "Hasi saioa gonbidatu gisa"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:342
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:347
 #, c-format
 msgid "Log in as %s"
 msgstr "Hasi saioa %s gisa"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:407
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:431
 msgid "Currently logged in"
 msgstr "Jadanik saio hasita"
 
 #
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:448
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:476
 msgid "_Users:"
 msgstr "_Erabiltzaileak:"
 
 #
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:449
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:477
 msgid "_User:"
 msgstr "_Erabiltzailea:"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:1
+msgid "A menu to quickly switch between users"
+msgstr "Erabiltzaileen artean bizkor aldatzeko menua"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:2
+#: ../gui/user-switch-applet/applet.c:1563
+msgid "User Switcher"
+msgstr "Erabiltzaile-aldatzailea"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:3
+msgid "User Switcher Applet Factory"
+msgstr "Erabiltzaile-aldatzaile appletaren fabrika"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:1
+msgid "Edit Personal _Information"
+msgstr "Editatu _informazio pertsonala"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:2
+msgid "_About"
+msgstr "Honi _buruz"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:3
+msgid "_Edit Users and Groups"
+msgstr "_Editatu erabiltzaileak eta taldeak"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:4
+msgid "_Help"
+msgstr "_Laguntza"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:5
+msgid "_Preferences"
+msgstr "_Hobespenak"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:6
+msgid "_Setup Login Screen"
+msgstr "_Konfiguratu saio-hasierako pantaila"
+
+#: ../gui/user-switch-applet/applet.c:135
+msgid "Missing Required File"
+msgstr "Beharrezko fitxategia falta da"
+
+#: ../gui/user-switch-applet/applet.c:137
+#, c-format
+msgid ""
+"The User Selector's interfaces file, `%s', could not be opened. It is likely "
+"that this application was not properly installed or configured."
+msgstr ""
+"Erabiltzaile-hautatzailearen interfazeko fitxategia, '%s', ezin da ireki. "
+"Baliteke aplikazio hau ongi instalatu gabe edo konfiguratu gabe "
+"egotea."
+
+#: ../gui/user-switch-applet/applet.c:514
+msgid ""
+"The User Switch Applet is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 2 of the License, or (at your "
+"option) any later version."
+msgstr ""
+"'User Switch Applet' software librea da; birbana eta/edo alda "
+"dezakezu Software Foundation-ek argitaratutako GNU Lizentzia "
+"Publiko Orokorraren 2. bertsioan, edo (nahiago baduzu) beste "
+"berriago batean, jasotako baldintzak betez gero."
+
+#: ../gui/user-switch-applet/applet.c:518
+msgid ""
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details."
+msgstr ""
+"Programa hau erabilgarria izango delakoan banatzen da, baina, INOLAKO "
+"BERMERIK GABE; era berean, ez da bermatzen beraren EGOKITASUNA "
+"MERKATURATZEKO edo HELBURU PARTIKULARRETARAKO ERABILTZEKO. "
+"Argibide gehiago nahi izanez gero, ikus GNU Lizentzia Publiko Orokorra."
+
+#: ../gui/user-switch-applet/applet.c:522
+msgid ""
+"You should have received a copy of the GNU General Public License along with "
+"this program; if not, write to the Free Software Foundation, Inc., 51 "
+"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
+msgstr ""
+"Programa honekin batera GNU Lizentzia Publiko Orokorraren kopia "
+"bat jasoko zenuen; hala ez bada, idatzi hona: Free SoftwareFoundation, Inc., "
+"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
+
+#: ../gui/user-switch-applet/applet.c:536
+msgid "A menu to quickly switch between users."
+msgstr "Erabiltzaileen artean bizkor aldatzeko menua."
+
+#: ../gui/user-switch-applet/applet.c:540
+msgid "translator-credits"
+msgstr ""
+"Hizkuntza Politikarako Sailburuordetza <hizpol@ej-gv.es>\n"
+"Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>"
+
+#: ../gui/user-switch-applet/applet.c:1112
+#, c-format
+msgid "Can't lock screen: %s"
+msgstr "Ezin da pantaila blokeatu: %s"
+
+#: ../gui/user-switch-applet/applet.c:1126
+#, c-format
+msgid "Can't temporarily set screensaver to blank screen: %s"
+msgstr "Ezin da pantaila-babeslea aldi baterako ezarri pantaila belzteko: %s"
+
+#
+#: ../gui/user-switch-applet/applet.c:1282
+#: ../gui/user-switch-applet/applet.c:1285
+#: ../gui/user-switch-applet/applet.c:1340
+#: ../gui/user-switch-applet/applet.c:1343
+#: ../gui/user-switch-applet/applet.c:1677
+#: ../gui/user-switch-applet/applet.c:1682
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:15
+msgid "Users"
+msgstr "Erabiltzaileak"
+
+#: ../gui/user-switch-applet/applet.c:1542
+msgid "User Switch Applet"
+msgstr "Erabiltzailez aldatzeko appleta"
+
+#
+#: ../gui/user-switch-applet/applet.c:1741
+msgid "Other"
+msgstr "Bestelakoa"
+
+#
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:312
+msgid "User"
+msgstr "Erabiltzailea"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:313
+msgid "The user this menu item represents."
+msgstr "Menu honek adierazten duen erabiltzailea."
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:320
+msgid "Icon Size"
+msgstr "Ikono-tamaina"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:321
+msgid "The size of the icon to use."
+msgstr "Ikonoaren tamaina erabiltzeko."
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:327
+msgid "Indicator Size"
+msgstr "Adierazlearen tamaina"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:328
+msgid "Size of check indicator"
+msgstr "Kontrol-koadroko adierazlearen tamaina"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:333
+msgid "Indicator Spacing"
+msgstr "Adierazlearen tartea"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:334
+msgid "Space between the username and the indicator"
+msgstr "Erabiltzaile-izena eta adierazlearen arteko tartea"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:1
+msgid "<span weight=\"bold\" size=\"larger\">Multiple Logins Found</span>"
+msgstr "<span weight=\"bold\" size=\"larger\">Hainbat saio aurkitu dira</span>"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:2
+msgid "Appearance"
+msgstr "Itxura"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:3
+msgid "Continue"
+msgstr "Jarraitu"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:4
+msgid "Create new logins in _nested windows"
+msgstr "Sortu saio berriak _habiaratutako leihoetan"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:5
+msgid "Details"
+msgstr "Xehetasunak"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:6
+msgid "Multiple Logins Found - User Switcher"
+msgstr "Hainbat saio aurkitu dira - Erabiltzaile aldatzailea"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:7
+msgid "Options"
+msgstr "Aukerak"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:8
+msgid "Some preferences have been locked by the system adminstrator."
+msgstr "Sistemako administratzaileak hobespen batzuk blokeatu ditu."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:9
+msgid ""
+"The user you want to switch to is logged in multiple times on this computer. "
+"Which login do you want to switch to?"
+msgstr ""
+"Aldatzea nahi duzun erabiltzaileak hainbat saio hasita ditu ordenagailuan.\n"
+"Zein saiora aldatzea nahi duzu?"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:10
+msgid "Use the `people' icon for the menu title"
+msgstr "Erabili 'pertsonak' ikonoa menuaren tituluan"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:11
+msgid "Use the current user's name for the menu title"
+msgstr "Erabili uneko erabiltzaile-izena menuaren tituluan"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:12
+msgid "Use the word `Users' as the menu title"
+msgstr "Erabili 'Erabiltzaileak' hitza menuaren titulu gisa"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:13
+msgid "User Switcher Error"
+msgstr "Erabiltzaile aldatzailearen errorea"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:14
+msgid "User Switcher Preferences"
+msgstr "Erabiltzaile aldatzailearen hobespenak"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:16
+msgid ""
+"When a new login must be created to switch users, create it in a window "
+"instead of on a new screen"
+msgstr ""
+"Saio berri bat noiz sortu behar den erabiltzailez aldatzeko, "
+"sortu leiho batean (pantaila berri baten ordez)"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:17
+msgid ""
+"When changing to a different display, activate the screensaver for this "
+"display."
+msgstr ""
+"Noiz aldatu beste pantaila batera, aktibatu pantaila-babeslea pantaila "
+"honetan."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:18
+msgid "_Lock the screen after switching users"
+msgstr "_Blokeatu pantaila erabiltzailez aldatu ondoren"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:1
+msgid "Display Style"
+msgstr "Pantailaren estiloa"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:2
+msgid "Lock Screen After Switch"
+msgstr "Blokeatu pantaila aldatu ondoren"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:3
+msgid "Show \"Login Window\" Menuitem"
+msgstr "Erakutsi \"Saio-hasieraren leihoa\" menu-elementua"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:4
+msgid "Show \"Other\" Menuitem"
+msgstr "Erakutsi \"Bestelakoa\" menu-elementua"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:5
+msgid "Show Active Users Only"
+msgstr "Erakutsi erabiltzaile aktiboak soilik"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:6
+msgid ""
+"Specifies how to display the applet in the panel. Use \"username\" to "
+"display the current user's name, \"icon\" to show the people icon, or \"text"
+"\" to use the word `Users.'"
+msgstr ""
+"Applet-a panelean nola bistaratuko den zehazten du. Erabili \"erabiltzaile-izena\" "
+"uneko erabiltzailearen izena bistaratzeko, \"ikonoa\" pertsonaren ikonoa "
+"erakusteko, edo \"testua\" 'Erabiltzaileak' hitza erabiltzeko."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:7
+msgid "Use Xnest"
+msgstr "Erabili Xnest"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:8
+msgid ""
+"When to show the \"Login Window\" item. Possible values include: \"always\" "
+"to always show the item, \"never\" to never show the item, and \"auto\" (the "
+"default) to show the item when the applet is in Xnest mode."
+msgstr ""
+"\"Saio-hasieraren leihoa\" elementua noiz erakutsi. Balio erabilgarriak: "
+"\"always\" beti erakutsi elementua, \"never\" inoiz ez erakutsi elementua, "
+"eta \"auto\" (lehenetsia) elementua erakusteko applet-a Xnest moduan "
+"dagoenean."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:9
+msgid ""
+"When to show the \"Other\" item. Possible values include: \"always\" to "
+"always show the item, \"never\" to never show the item, and \"auto\" (the "
+"default) to show the item when the applet is in console (not Xnest) mode."
+msgstr ""
+"\"Bestelakoa\" elementua noiz erakutsi. Balio erabilgarriak: "
+"\"always\" beti erakutsi elementua, \"never\" inoiz ez erakutsi elementua, "
+"eta \"auto\" (lehenetsia) elementua erakusteko applet-a kontsola (ez Xnest) "
+"moduan dagoenean."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:10
+msgid ""
+"Whether or not to create new Xnest windows instead of spawning new consoles "
+"when switching users."
+msgstr "Erabiltzailez aldatzean Xnest leiho berriak sortu behar diren (kontsola berriak abiarazi ordez) ala ez adierazten du"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:11
+msgid "Whether or not to lock the screen after switching to a different console."
+msgstr "Beste kontsola batera aldatu ondoren pantaila blokeatu egin behar den ala ez adierazten du."
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:12
+msgid "Whether to show only users who are currently logged in, or all users."
+msgstr "Unean saioa hasita duten erabiltzaileak bakarrik erakutsi behar diren, edo erabiltzaile guztiak erakutsi adierazten du."
+
+#: ../utils/gdmflexiserver.c:59
+msgid "Send the specified protocol command to GDM"
+msgstr "Bidali zehaztutako protokoloaren komandoa GDMra"
+
+#: ../utils/gdmflexiserver.c:59
+msgid "COMMAND"
+msgstr "KOMANDOA"
+
+#: ../utils/gdmflexiserver.c:60
+msgid "Xnest mode"
+msgstr "Xnest modua"
+
+#: ../utils/gdmflexiserver.c:61
+msgid "Do not lock current screen"
+msgstr "Ez blokeatu uneko pantaila"
+
+#: ../utils/gdmflexiserver.c:62
+msgid "Debugging output"
+msgstr "Irteeraren arazketa lantzen"
+
+#: ../utils/gdmflexiserver.c:63
+msgid "Authenticate before running --command"
+msgstr "Autentifikatu --command exekutatu aurretik"
+
+#: ../utils/gdmflexiserver.c:64
+msgid "Start new flexible session; do not show popup"
+msgstr "Hasi saio malgu berria, ez erakutsi laster-leihoa"
+
+#: ../utils/gdmflexiserver.c:650
+msgid "Main Options"
+msgstr "Aukera nagusiak"
+
+#: ../utils/gdmflexiserver.c:693
+msgid "Unable to start new display"
+msgstr "Ezin da pantaila berria hasi"
+
