@@ -1,6 +1,14 @@
 2008-02-15  Ray Strode  <rstrode@redhat.com>
 
-	* daemon/gdm-session-auditor.c (gdm_session_auditor_set_property):
+	* daemon/gdm/simple-greeter/gdm-sessions.c
+	(collect_sessions_from_directory),
+	(load_session_file): strip .desktop extension
+	from desktop ids (to match what's in ~/.dmrc).
+
+2008-02-15  Ray Strode  <rstrode@redhat.com>
+
+	* daemon/gdm-session-auditor.c
+	(gdm_session_auditor_set_property):
 	Don't leak property values
 
 2008-02-14  William Jon McCann  <jmccann@redhat.com>

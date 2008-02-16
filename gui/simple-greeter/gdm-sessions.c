@@ -102,7 +102,7 @@ key_file_is_relevant (GKeyFile     *key_file)
 }
 
 static void
-load_session_file (const char              *name,
+load_session_file (const char              *id,
                    const char              *path)
 {
         GKeyFile          *key_file;
@@ -138,14 +138,14 @@ load_session_file (const char              *name,
 
         session = g_new0 (GdmSessionFile, 1);
 
-        session->id = g_strdup (name);
+        session->id = g_strdup (id);
         session->path = g_strdup (path);
 
         session->translated_name = g_key_file_get_locale_string (key_file, G_KEY_FILE_DESKTOP_GROUP, "Name", NULL, NULL);
         session->translated_comment = g_key_file_get_locale_string (key_file, G_KEY_FILE_DESKTOP_GROUP, "Comment", NULL, NULL);
 
         g_hash_table_insert (gdm_available_sessions_map,
-                             g_strdup (name),
+                             g_strdup (id),
                              session);
  out:
         g_key_file_free (key_file);
@@ -165,15 +165,17 @@ collect_sessions_from_directory (const char *dirname)
         }
 
         while ((filename = g_dir_read_name (dir))) {
+                char *id;
                 char *full_path;
 
                 if (! g_str_has_suffix (filename, ".desktop")) {
                         continue;
                 }
+                id = g_strndup (filename, strlen (filename) - strlen (".desktop"));
 
                 full_path = g_build_filename (dirname, filename, NULL);
 
-                load_session_file (filename, full_path);
+                load_session_file (id, full_path);
 
                 g_free (full_path);
         }
