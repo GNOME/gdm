@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-14 02:13+0000\n"
-"PO-Revision-Date: 2008-02-17 16:07+0100\n"
+"POT-Creation-Date: 2008-02-17 15:08+0000\n"
+"PO-Revision-Date: 2008-02-17 18:45+0100\n"
 "Last-Translator: Arangel Angov <ufo@linux.net.mk>\n"
 "Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
 "MIME-Version: 1.0\n"
@@ -158,6 +158,22 @@ msgstr "Уредот за приказ"
 #, c-format
 msgid "worker exited with status %d"
 msgstr "работникот се исклучи со статус %d"
+
+#: ../daemon/gdm-session-settings.c:88
+msgid "Session Name"
+msgstr "Име на сесија"
+
+#: ../daemon/gdm-session-settings.c:89
+msgid "The name of the session"
+msgstr "Името на сесијата"
+
+#: ../daemon/gdm-session-settings.c:93
+msgid "Language Name"
+msgstr "Име на јазик"
+
+#: ../daemon/gdm-session-settings.c:94
+msgid "The name of the language"
+msgstr "Името на јазикот"
 
 #: ../daemon/gdm-session-worker.c:890
 #, c-format
@@ -609,7 +625,7 @@ msgid "_Languages:"
 msgstr "_Јазици:"
 
 #: ../gui/simple-greeter/gdm-language-chooser-widget.c:191
-#: ../gui/simple-greeter/gdm-language-option-widget.c:211
+#: ../gui/simple-greeter/gdm-language-option-widget.c:212
 msgid "_Language:"
 msgstr "_Јазик:"
 
@@ -622,19 +638,19 @@ msgstr "Друго..."
 msgid "Choose a language from the full list of available languages."
 msgstr "Изберете јазик од листата на достапни јазици."
 
-#: ../gui/simple-greeter/gdm-option-widget.c:384
+#: ../gui/simple-greeter/gdm-option-widget.c:390
 msgid "Label Text"
 msgstr "Текст со ознака"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:385
+#: ../gui/simple-greeter/gdm-option-widget.c:391
 msgid "The text to use as a label"
 msgstr "Текстот што треба да се користи за ознака"
 
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:301
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:302
 msgid "Max Item Count"
 msgstr "Макс. број на предмети"
 
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:302
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:303
 msgid "The maximum number of items to keep around in the list"
 msgstr "Максималниот број на предмети кои ќе бидат зачувани во листата"
 
@@ -687,8 +703,8 @@ msgid ""
 "Set to True to enable the plugin to manage the accessibility keyboard "
 "settings."
 msgstr ""
-"Штиклирано за вклучување на додатокот за менаџирање на поставувањата "
-"за тастатурата за пристапност."
+"Штиклирано за вклучување на додатокот за менаџирање на поставувањата за "
+"тастатурата за пристапност."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Set to True to enable the screen magnifier."
@@ -749,43 +765,6 @@ msgstr "_Корисници:"
 msgid "_User:"
 msgstr "_Корисник:"
 
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:1
-msgid "A menu to quickly switch between users"
-msgstr "Мени за брзо менување на корисници"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:2
-#: ../gui/user-switch-applet/applet.c:1563
-msgid "User Switcher"
-msgstr "Менувач на корисници"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:3
-msgid "User Switcher Applet Factory"
-msgstr "Аплет за фабрика за менувачот на корисници"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:1
-msgid "Edit Personal _Information"
-msgstr "Уреди лични _информации"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:2
-msgid "_About"
-msgstr "_За"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:3
-msgid "_Edit Users and Groups"
-msgstr "_Уреди корисници и групи"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:4
-msgid "_Help"
-msgstr "_Помош"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:5
-msgid "_Preferences"
-msgstr "_Преференци"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:6
-msgid "_Setup Login Screen"
-msgstr "_Поставувања за екранот за најава"
-
 #: ../gui/user-switch-applet/applet.c:135
 msgid "Missing Required File"
 msgstr "Недостасува потребната датотека"
@@ -797,8 +776,8 @@ msgid ""
 "that this application was not properly installed or configured."
 msgstr ""
 "Датотеката за интерфејсот на избирачот за корисници, %s не може да се "
-"отвори. Најверојатно апликацијата не била инсталирана или конфигурирана "
-"како што треба."
+"отвори. Најверојатно апликацијата не била инсталирана или конфигурирана како "
+"што треба."
 
 #: ../gui/user-switch-applet/applet.c:514
 msgid ""
@@ -807,8 +786,10 @@ msgid ""
 "the Free Software Foundation; either version 2 of the License, or (at your "
 "option) any later version."
 msgstr ""
-"Аплетот за менување на корисници е слободен софтвер; можете да го редистрибуирате/менувате под ""условите објаснети во  GNU General Public License објавена од страна на Free "
-"Software Foundation; или верзија 2 или секоја понова верзија на лиценцата."
+"Аплетот за менување на корисници е слободен софтвер; можете да го "
+"редистрибуирате/менувате под условите објаснети во  GNU General Public "
+"License објавена од страна на Free Software Foundation; или верзија 2 или "
+"секоја понова верзија на лиценцата."
 
 #: ../gui/user-switch-applet/applet.c:518
 msgid ""
@@ -817,9 +798,8 @@ msgid ""
 "FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
 "more details."
 msgstr ""
-"Оваа програма се дистрибуира со надеж дека ќе биде корисна,"
-"но без БИЛО КАКВИ ГАРАНЦИИ.  За повеќе погледнете ја"
-"општата јавна ГНУ лиценца."
+"Оваа програма се дистрибуира со надеж дека ќе биде корисна,но без БИЛО КАКВИ "
+"ГАРАНЦИИ.  За повеќе погледнете јаопштата јавна ГНУ лиценца."
 
 #: ../gui/user-switch-applet/applet.c:522
 msgid ""
@@ -837,9 +817,7 @@ msgstr "Мени за брзо менување на корисници."
 
 #: ../gui/user-switch-applet/applet.c:540
 msgid "translator-credits"
-msgstr ""
-"Arangel Angov <arangel@linux.net.mk> "
-"Слободен софтвер Македонија"
+msgstr "Arangel Angov <arangel@linux.net.mk> Слободен софтвер Македонија"
 
 #: ../gui/user-switch-applet/applet.c:1112
 #, c-format
@@ -864,6 +842,11 @@ msgstr "Корисници"
 #: ../gui/user-switch-applet/applet.c:1542
 msgid "User Switch Applet"
 msgstr "Аплет за менување на корисници"
+
+#: ../gui/user-switch-applet/applet.c:1563
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:2
+msgid "User Switcher"
+msgstr "Менувач на корисници"
 
 #: ../gui/user-switch-applet/applet.c:1741
 msgid "Other"
@@ -974,8 +957,8 @@ msgid ""
 "When changing to a different display, activate the screensaver for this "
 "display."
 msgstr ""
-"Кога менуваш на различен приказ, активирај го чуварот на екранот "
-"за овој приказ."
+"Кога менуваш на различен приказ, активирај го чуварот на екранот за овој "
+"приказ."
 
 #: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:18
 msgid "_Lock the screen after switching users"
@@ -1021,9 +1004,10 @@ msgid ""
 "to always show the item, \"never\" to never show the item, and \"auto\" (the "
 "default) to show the item when the applet is in Xnest mode."
 msgstr ""
-"Кога да се покажува предметот „Прозорец за најава“. Можни вредности се „секогаш“ "
-"за покажување на предметот секогаш, „никогаш“ за никогаш да не се покажува предметот "
-"никогаш и „автоматски“ (стандардното) за да се покажува предметот кога аплетот е во Xnest режим."
+"Кога да се покажува предметот „Прозорец за најава“. Можни вредности се "
+"„секогаш“ за покажување на предметот секогаш, „никогаш“ за никогаш да не се "
+"покажува предметот никогаш и „автоматски“ (стандардното) за да се покажува "
+"предметот кога аплетот е во Xnest режим."
 
 #: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:9
 msgid ""
@@ -1051,6 +1035,38 @@ msgstr "Дали да го заклучам екранот по менување
 #: ../gui/user-switch-applet/gdm-user-switch-applet.schemas.in.h:12
 msgid "Whether to show only users who are currently logged in, or all users."
 msgstr "Дали да ги покажувам само корисниците кои што се најавени или сите корисници."
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:1
+msgid "A menu to quickly switch between users"
+msgstr "Мени за брзо менување на корисници"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:3
+msgid "User Switcher Applet Factory"
+msgstr "Аплет за фабрика за менувачот на корисници"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:1
+msgid "Edit Personal _Information"
+msgstr "Уреди лични _информации"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:2
+msgid "_About"
+msgstr "_За"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:3
+msgid "_Edit Users and Groups"
+msgstr "_Уреди корисници и групи"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:4
+msgid "_Help"
+msgstr "_Помош"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:5
+msgid "_Preferences"
+msgstr "_Преференци"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:6
+msgid "_Setup Login Screen"
+msgstr "_Поставувања за екранот за најава"
 
 #: ../utils/gdmflexiserver.c:59
 msgid "Send the specified protocol command to GDM"
