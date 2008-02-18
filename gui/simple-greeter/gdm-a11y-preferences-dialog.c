@@ -822,9 +822,10 @@ gdm_a11y_preferences_dialog_init (GdmA11yPreferencesDialog *dialog)
         gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
         gtk_window_set_title (GTK_WINDOW (dialog), _("Accessibility Preferences"));
         gtk_window_set_icon_name (GTK_WINDOW (dialog), "preferences-desktop-accessibility");
-        g_object_set (dialog, "allow-shrink", TRUE, NULL);
-        g_object_set (dialog, "allow-grow", TRUE, NULL);
-        gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+        g_object_set (dialog,
+                      "allow-shrink", FALSE,
+                      "allow-grow", FALSE,
+                      NULL);
 
         gtk_dialog_add_buttons (GTK_DIALOG (dialog),
                                 GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
