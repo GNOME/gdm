@@ -782,7 +782,6 @@ gdm_session_direct_handle_saved_language_name_read (GdmSessionDirect *session,
         DBusMessage *reply;
         DBusError    error;
         const char  *language_name;
-        int          code;
 
         dbus_error_init (&error);
         if (! dbus_message_get_args (message, &error,
@@ -808,7 +807,6 @@ gdm_session_direct_handle_saved_session_name_read (GdmSessionDirect *session,
         DBusMessage *reply;
         DBusError    error;
         const char  *session_name;
-        int          code;
 
         dbus_error_init (&error);
         if (! dbus_message_get_args (message, &error,
