@@ -1,3 +1,32 @@
+2008-02-18  Ray Strode  <rstrode@redhat.com>
+
+	Read ~/.dmrc when available, and bubble the
+	results up to the greeter
+
+	* daemon/Makefile.am: add gdm-session-settings.[ch] to 
+	worker sources
+	* daemon/gdm-session-private.h:
+	* daemon/gdm-session.[ch]:
+	(_gdm_session_saved_language_name_read),
+	(_gdm_session_saved_session_name_read),
+	(gdm_session_class_init):
+	Add two new signals: "saved-language-name-read"
+	and "saved-session-name-read"
+	* daemon/gdm-session-worker.c (GdmSessionWorkerPrivate):
+	session settings object to hold ~/.dmrc info.
+	(attempt_to_load_user_settings_as_root): new function
+	to switch from root to user, load settings, and switch
+	back
+	(do_setup), (gdm_session_worker_update_username):
+	Create session settings object, and try to load ~/.dmrc
+	in to object at various points in the pam conversation.
+	(on_saved_language_name_read), (on_saved_session_name_read):
+	report session settings changes from worker to slave
+	* daemon/gdm-greeter-server.[ch]:
+	(gdm_greeter_server_saved_language_name_read),
+	(gdm_greeter_server_saved_session_name_read),
+	(do_introspect): send language and session name to greeter
+
 2008-02-18  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/gdm-language-option-widget.c:

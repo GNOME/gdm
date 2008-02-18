@@ -49,6 +49,8 @@ enum {
         SESSION_EXITED,
         SESSION_DIED,
         SELECTED_USER_CHANGED,
+        SAVED_LANGUAGE_NAME_READ,
+        SAVED_SESSION_NAME_READ,
         LAST_SIGNAL
 };
 
@@ -413,7 +415,28 @@ gdm_session_class_init (gpointer g_iface)
                               G_TYPE_NONE,
                               1,
                               G_TYPE_STRING);
-
+        signals [SAVED_LANGUAGE_NAME_READ] =
+                g_signal_new ("saved-language-name-read",
+                              iface_type,
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmSessionIface, saved_language_name_read),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_STRING);
+        signals [SAVED_SESSION_NAME_READ] =
+                g_signal_new ("saved-session-name-read",
+                              iface_type,
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmSessionIface, saved_session_name_read),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_STRING);
 }
 
 void
@@ -571,6 +594,24 @@ _gdm_session_closed (GdmSession   *session)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
         g_signal_emit (session, signals [CLOSED], 0);
+}
+
+void
+_gdm_session_saved_language_name_read (GdmSession   *session,
+                                       const char   *language_name)
+{
+        g_return_if_fail (GDM_IS_SESSION (session));
+
+        g_signal_emit (session, signals [SAVED_LANGUAGE_NAME_READ], 0, language_name);
+}
+
+void
+_gdm_session_saved_session_name_read (GdmSession   *session,
+                                      const char   *session_name)
+{
+        g_return_if_fail (GDM_IS_SESSION (session));
+
+        g_signal_emit (session, signals [SAVED_SESSION_NAME_READ], 0, session_name);
 }
 
 void

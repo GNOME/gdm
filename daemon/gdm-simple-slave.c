@@ -373,6 +373,25 @@ on_session_selected_user_changed (GdmSession     *session,
         gdm_greeter_server_selected_user_changed (slave->priv->greeter_server, text);
 }
 
+static void
+on_saved_language_name_read (GdmSession     *session,
+                             const char     *text,
+                             GdmSimpleSlave *slave)
+{
+        g_debug ("GdmSimpleSlave: Saved language name read: %s", text);
+
+        gdm_greeter_server_saved_language_name_read (slave->priv->greeter_server, text);
+}
+
+static void
+on_saved_session_name_read (GdmSession     *session,
+                            const char     *text,
+                            GdmSimpleSlave *slave)
+{
+        g_debug ("GdmSimpleSlave: Saved session name read: %s", text);
+
+        gdm_greeter_server_saved_session_name_read (slave->priv->greeter_server, text);
+}
 
 static void
 create_new_session (GdmSimpleSlave *slave)
@@ -487,6 +506,16 @@ create_new_session (GdmSimpleSlave *slave)
         g_signal_connect (slave->priv->session,
                           "selected-user-changed",
                           G_CALLBACK (on_session_selected_user_changed),
+                          slave);
+
+        g_signal_connect (slave->priv->session,
+                          "saved-language-name-read",
+                          G_CALLBACK (on_saved_language_name_read),
+                          slave);
+
+        g_signal_connect (slave->priv->session,
+                          "saved-session-name-read",
+                          G_CALLBACK (on_saved_session_name_read),
                           slave);
 }
 

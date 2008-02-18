@@ -244,6 +244,8 @@ gdm_xdmcp_chooser_slave_LDADD = 		\
 
 gdm_session_worker_SOURCES = 			\
 	session-worker-main.c 			\
+	gdm-session-settings.h			\
+	gdm-session-settings.c			\
 	gdm-session-auditor.h			\
 	gdm-session-auditor.c			\
 	gdm-session-worker.h			\

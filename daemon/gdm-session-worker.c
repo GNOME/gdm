@@ -54,6 +54,8 @@
 #include "gdm-session-auditor.h"
 #endif
 
+#include "gdm-session-settings.h"
+
 #define GDM_SESSION_WORKER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SESSION_WORKER, GdmSessionWorkerPrivate))
 
 #define GDM_SESSION_DBUS_PATH         "/org/gnome/DisplayManager/Session"
@@ -119,7 +121,8 @@ struct GdmSessionWorkerPrivate
         char             *server_address;
         DBusConnection   *connection;
 
-        GdmSessionAuditor *auditor;
+        GdmSessionAuditor  *auditor;
+        GdmSessionSettings *user_settings;
 };
 
 enum {
@@ -483,6 +486,39 @@ gdm_session_worker_get_username (GdmSessionWorker  *worker,
 }
 
 static void
+attempt_to_load_user_settings_as_root (GdmSessionWorker *worker,
+                                       const char       *username)
+{
+        struct passwd *passwd_entry;
+        uid_t          old_uid;
+        gid_t          old_gid;
+
+        old_uid = geteuid ();
+        old_gid = getegid ();
+
+        g_assert (old_uid == 0);
+        g_assert (old_gid == 0);
+
+        passwd_entry = getpwnam (username);
+
+        /* User input isn't a valid username
+         */
+        if (passwd_entry == NULL) {
+                return;
+        }
+
+        setegid (passwd_entry->pw_gid);
+        seteuid (passwd_entry->pw_uid);
+
+        gdm_session_settings_load (worker->priv->user_settings,
+                                   passwd_entry->pw_dir,
+                                   NULL);
+
+        seteuid (old_uid);
+        setegid (old_gid);
+}
+
+static void
 gdm_session_worker_update_username (GdmSessionWorker *worker)
 {
         char    *username;
@@ -496,6 +532,16 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
                          worker->priv->username != NULL ? worker->priv->username : "<unset>");
 
                 gdm_session_auditor_set_username (worker->priv->auditor, worker->priv->username);
+
+                /* We have a new username to try. If we haven't been able to
+                 * read user settings up until now, then give it a go now
+                 * (see the comment in do_setup for rationale on why it's useful
+                 * to keep trying to read settings)
+                 */
+                if (username != NULL &&
+                    !gdm_session_settings_is_loaded (worker->priv->user_settings)) {
+                        attempt_to_load_user_settings_as_root (worker, username);
+                }
 
                 if ((worker->priv->username == username) ||
                     ((worker->priv->username != NULL) && (username != NULL) &&
@@ -1579,10 +1625,61 @@ on_set_environment_variable (GdmSessionWorker *worker,
 }
 
 static void
+on_saved_language_name_read (GdmSessionWorker *worker)
+{
+        char *language_name;
+
+        language_name = gdm_session_settings_get_language_name (worker->priv->user_settings);
+        send_dbus_string_method (worker->priv->connection,
+                                 "SavedLanguageNameRead",
+                                 language_name);
+        g_free (language_name);
+}
+
+static void
+on_saved_session_name_read (GdmSessionWorker *worker)
+{
+        char *session_name;
+
+        session_name = gdm_session_settings_get_session_name (worker->priv->user_settings);
+        send_dbus_string_method (worker->priv->connection,
+                                 "SavedSessionNameRead",
+                                 session_name);
+        g_free (session_name);
+}
+
+static void
 do_setup (GdmSessionWorker *worker)
 {
         GError  *error;
         gboolean res;
+
+        worker->priv->user_settings = gdm_session_settings_new ();
+
+        g_signal_connect_swapped (worker->priv->user_settings,
+                                  "notify::language-name",
+                                  G_CALLBACK (on_saved_language_name_read),
+                                  worker);
+
+        g_signal_connect_swapped (worker->priv->user_settings,
+                                  "notify::session-name",
+                                  G_CALLBACK (on_saved_session_name_read),
+                                  worker);
+
+        /* In some setups the user can read ~/.dmrc at this point.
+         * In some other setups the user can only read ~/.dmrc after completing
+         * the pam conversation.
+         *
+         * The user experience is better if we can read .dmrc now since we can
+         * prefill in the language and session combo boxes in the greeter with
+         * the right values.
+         *
+         * We'll try now, and if it doesn't work out, try later.
+         */
+        if (worker->priv->username != NULL) {
+                attempt_to_load_user_settings_as_root (worker,
+                                                       worker->priv->username);
+        }
 
         error = NULL;
         res = gdm_session_worker_initialize_pam (worker,

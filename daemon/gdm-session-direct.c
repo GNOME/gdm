@@ -775,6 +775,58 @@ gdm_session_direct_handle_session_died (GdmSessionDirect *session,
 }
 
 static DBusHandlerResult
+gdm_session_direct_handle_saved_language_name_read (GdmSessionDirect *session,
+                                                    DBusConnection   *connection,
+                                                    DBusMessage      *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+        const char  *language_name;
+        int          code;
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &language_name,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        _gdm_session_saved_language_name_read (GDM_SESSION (session), language_name);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+gdm_session_direct_handle_saved_session_name_read (GdmSessionDirect *session,
+                                                   DBusConnection   *connection,
+                                                   DBusMessage      *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+        const char  *session_name;
+        int          code;
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &session_name,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        _gdm_session_saved_session_name_read (GDM_SESSION (session), session_name);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
 session_worker_message (DBusConnection *connection,
                         DBusMessage    *message,
                         void           *user_data)
@@ -821,6 +873,10 @@ session_worker_message (DBusConnection *connection,
                 return gdm_session_direct_handle_session_exited (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SessionDied")) {
                 return gdm_session_direct_handle_session_died (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SavedLanguageNameRead")) {
+                return gdm_session_direct_handle_saved_language_name_read (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SavedSessionNameRead")) {
+                return gdm_session_direct_handle_saved_session_name_read (session, connection, message);
         }
 
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;

@@ -221,6 +221,20 @@ gdm_greeter_server_selected_user_changed (GdmGreeterServer *greeter_server,
         send_dbus_string_signal (greeter_server, "SelectedUserChanged", username);
 }
 
+void
+gdm_greeter_server_saved_language_name_read (GdmGreeterServer *greeter_server,
+                                             const char       *language_name)
+{
+        send_dbus_string_signal (greeter_server, "SavedLanguageNameRead", language_name);
+}
+
+void
+gdm_greeter_server_saved_session_name_read (GdmGreeterServer *greeter_server,
+                                            const char       *session_name)
+{
+        send_dbus_string_signal (greeter_server, "SavedSessionNameRead", session_name);
+}
+
 /* Note: Use abstract sockets like dbus does by default on Linux. Abstract
  * sockets are only available on Linux.
  */
@@ -575,6 +589,12 @@ do_introspect (DBusConnection *connection,
                                "    </signal>\n"
                                "    <signal name=\"SelectedUserChanged\">\n"
                                "      <arg name=\"username\" type=\"s\"/>\n"
+                               "    </signal>\n"
+                               "    <signal name=\"SavedLanguageNameRead\">\n"
+                               "      <arg name=\"language_name\" type=\"s\"/>\n"
+                               "    </signal>\n"
+                               "    <signal name=\"SavedSessionNameRead\">\n"
+                               "      <arg name=\"session_name\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"Ready\">\n"
                                "    </signal>\n"

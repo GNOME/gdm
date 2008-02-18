@@ -102,7 +102,10 @@ struct _GdmSessionIface
         void (* closed)                      (GdmSession   *session);
         void (* selected_user_changed)       (GdmSession   *session,
                                               const char   *text);
-
+        void (* saved_language_name_read)    (GdmSession   *session,
+                                              const char   *text);
+        void (* saved_session_name_read)     (GdmSession   *session,
+                                              const char   *text);
 };
 
 GType    gdm_session_get_type                    (void) G_GNUC_CONST;
