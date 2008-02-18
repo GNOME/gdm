@@ -43,6 +43,11 @@ typedef struct
 typedef struct
 {
         GObjectClass   parent_class;
+
+        void (* exited)            (GdmSessionClient  *client,
+                                    int                exit_code);
+        void (* died)              (GdmSessionClient  *client,
+                                    int                signal_number);
 } GdmSessionClientClass;
 
 GType                  gdm_session_client_get_type              (void);

@@ -44,6 +44,7 @@ struct GdmSessionClientPrivate
         char    *try_exec;
         gboolean enabled;
         GPid     pid;
+        guint    child_watch_id;
 };
 
 enum {
@@ -52,11 +53,48 @@ enum {
         PROP_ENABLED,
 };
 
+enum {
+        EXITED,
+        DIED,
+        LAST_SIGNAL
+};
+
+static guint signals [LAST_SIGNAL] = { 0, };
+
 static void     gdm_session_client_class_init  (GdmSessionClientClass *klass);
 static void     gdm_session_client_init        (GdmSessionClient      *session_client);
 static void     gdm_session_client_finalize    (GObject               *object);
 
 G_DEFINE_TYPE (GdmSessionClient, gdm_session_client, G_TYPE_OBJECT)
+
+static void
+client_child_watch (GPid              pid,
+                    int               status,
+                    GdmSessionClient *client)
+{
+        g_debug ("GdmSessionClient: **** child '%s' (pid:%d) done (%s:%d)",
+                 client->priv->name,
+                 (int) pid,
+                 WIFEXITED (status) ? "status"
+                 : WIFSIGNALED (status) ? "signal"
+                 : "unknown",
+                 WIFEXITED (status) ? WEXITSTATUS (status)
+                 : WIFSIGNALED (status) ? WTERMSIG (status)
+                 : -1);
+
+        if (WIFEXITED (status)) {
+                int code = WEXITSTATUS (status);
+                g_signal_emit (client, signals [EXITED], 0, code);
+        } else if (WIFSIGNALED (status)) {
+                int num = WTERMSIG (status);
+                g_signal_emit (client, signals [DIED], 0, num);
+        }
+
+        g_spawn_close_pid (client->priv->pid);
+
+        client->priv->pid = -1;
+        client->priv->child_watch_id = 0;
+}
 
 gboolean
 gdm_session_client_start (GdmSessionClient *client,
@@ -77,7 +115,7 @@ gdm_session_client_start (GdmSessionClient *client,
         local_error = NULL;
         res = g_shell_parse_argv (client->priv->command, NULL, &argv, &local_error);
         if (! res) {
-                g_warning ("Unable to parse command: %s", local_error->message);
+                g_warning ("GdmSessionClient: Unable to parse command: %s", local_error->message);
                 g_propagate_error (error, local_error);
                 goto out;
         }
@@ -87,6 +125,7 @@ gdm_session_client_start (GdmSessionClient *client,
                              argv,
                              NULL,
                              G_SPAWN_SEARCH_PATH
+                             | G_SPAWN_DO_NOT_REAP_CHILD
                              | G_SPAWN_STDOUT_TO_DEV_NULL
                              | G_SPAWN_STDERR_TO_DEV_NULL,
                              NULL,
@@ -96,12 +135,18 @@ gdm_session_client_start (GdmSessionClient *client,
         g_strfreev (argv);
 
         if (! res) {
-                g_warning ("Unable to run command %s: %s",
+                g_warning ("GdmSessionClient: Unable to run command %s: %s",
                            client->priv->command,
                            local_error->message);
                 g_propagate_error (error, local_error);
                 goto out;
         }
+
+        g_debug ("GdmSessionClient: Started: pid=%d command='%s'", client->priv->pid, client->priv->command);
+
+        client->priv->child_watch_id = g_child_watch_add (client->priv->pid,
+                                                          (GChildWatchFunc)client_child_watch,
+                                                          client);
 
         ret = TRUE;
 
@@ -109,15 +154,60 @@ gdm_session_client_start (GdmSessionClient *client,
         return ret;
 }
 
+static int
+wait_on_child (int pid)
+{
+        int status;
+
+ wait_again:
+        if (waitpid (pid, &status, 0) < 0) {
+                if (errno == EINTR) {
+                        goto wait_again;
+                } else if (errno == ECHILD) {
+                        ; /* do nothing, child already reaped */
+                } else {
+                        g_debug ("GdmWelcomeSession: waitpid () should not fail");
+                }
+        }
+
+        return status;
+}
+
+static void
+client_died (GdmSessionClient *client)
+{
+        int exit_status;
+
+        g_debug ("GdmSessionClient: Waiting on process %d", client->priv->pid);
+        exit_status = wait_on_child (client->priv->pid);
+
+        if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
+                g_debug ("GdmSessionClient: Wait on child process failed");
+        } else {
+                /* exited normally */
+        }
+
+        g_spawn_close_pid (client->priv->pid);
+        client->priv->pid = -1;
+
+        g_debug ("GdmSessionClient: SessionClient died");
+}
+
 void
 gdm_session_client_stop (GdmSessionClient *client)
 {
         g_return_if_fail (GDM_IS_SESSION_CLIENT (client));
 
+        /* remove watch before killing so we don't restart */
+        if (client->priv->child_watch_id > 0) {
+                g_source_remove (client->priv->child_watch_id);
+                client->priv->child_watch_id = 0;
+        }
+
         g_debug ("GdmSessionClient: Stopping client: %s", client->priv->name);
         if (client->priv->pid > 0) {
                 gdm_signal_pid (client->priv->pid, SIGTERM);
-                client->priv->pid = 0;
+                client_died (client);
         }
 }
 
@@ -355,6 +445,29 @@ gdm_session_client_class_init (GdmSessionClientClass *klass)
                                                               "desktop file",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+        signals [EXITED] =
+                g_signal_new ("exited",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmSessionClientClass, exited),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__INT,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_INT);
+        signals [DIED] =
+                g_signal_new ("died",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmSessionClientClass, died),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__INT,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_INT);
 
         g_type_class_add_private (klass, sizeof (GdmSessionClientPrivate));
 }
