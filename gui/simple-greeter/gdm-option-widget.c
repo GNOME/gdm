@@ -767,8 +767,7 @@ gdm_option_widget_init (GdmOptionWidget *widget)
                                                        G_TYPE_STRING,
                                                        G_TYPE_STRING,
                                                        G_TYPE_INT,
-                                                       G_TYPE_STRING,
-                                                       G_TYPE_BOOLEAN);
+                                                       G_TYPE_STRING);
 
 
         widget->priv->model_filter = GTK_TREE_MODEL_FILTER (gtk_tree_model_filter_new (GTK_TREE_MODEL (widget->priv->list_store), NULL));
