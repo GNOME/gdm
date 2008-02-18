@@ -210,6 +210,7 @@ gdm_language_option_widget_new (void)
 
         object = g_object_new (GDM_TYPE_LANGUAGE_OPTION_WIDGET,
                                "label-text", _("_Language:"),
+                               "icon-name", "config-language",
                                "max-item-count", 8,
                                NULL);
 

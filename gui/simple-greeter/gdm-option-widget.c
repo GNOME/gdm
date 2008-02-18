@@ -50,7 +50,9 @@
 struct GdmOptionWidgetPrivate
 {
         GtkWidget                *label;
+        GtkWidget                *image;
         char                     *label_text;
+        char                     *icon_name;
 
         GtkWidget                *items_combo_box;
         GtkListStore             *list_store;
@@ -69,7 +71,8 @@ struct GdmOptionWidgetPrivate
 
 enum {
         PROP_0,
-        PROP_LABEL_TEXT
+        PROP_LABEL_TEXT,
+        PROP_ICON_NAME
 };
 
 enum {
@@ -277,11 +280,45 @@ gdm_option_widget_set_label_text (GdmOptionWidget *widget,
         }
 }
 
+static const char *
+gdm_option_widget_get_icon_name (GdmOptionWidget *widget)
+{
+        return widget->priv->icon_name;
+}
+
+static void
+gdm_option_widget_set_icon_name (GdmOptionWidget *widget,
+                                 const char      *name)
+{
+        if (name == NULL && widget->priv->icon_name != NULL) {
+                /* remove icon */
+                g_free (widget->priv->icon_name);
+                widget->priv->icon_name = NULL;
+                gtk_widget_hide (widget->priv->image);
+                gtk_image_clear (GTK_IMAGE (widget->priv->image));
+                g_object_notify (G_OBJECT (widget), "icon-name");
+        } else if (name != NULL && widget->priv->icon_name == NULL) {
+                /* add icon */
+                widget->priv->icon_name = g_strdup (name);
+                gtk_widget_show (widget->priv->image);
+                gtk_image_set_from_icon_name (GTK_IMAGE (widget->priv->image), name, GTK_ICON_SIZE_BUTTON);
+                g_object_notify (G_OBJECT (widget), "icon-name");
+        } else if (name != NULL
+                   && widget->priv->icon_name != NULL
+                   && strcmp (widget->priv->icon_name, name) != 0) {
+                /* changed icon */
+                g_free (widget->priv->icon_name);
+                widget->priv->icon_name = g_strdup (name);
+                gtk_image_set_from_icon_name (GTK_IMAGE (widget->priv->image), name, GTK_ICON_SIZE_BUTTON);
+                g_object_notify (G_OBJECT (widget), "icon-name");
+        }
+}
+
 static void
 gdm_option_widget_set_property (GObject        *object,
-                                 guint           prop_id,
-                                 const GValue   *value,
-                                 GParamSpec     *pspec)
+                                guint           prop_id,
+                                const GValue   *value,
+                                GParamSpec     *pspec)
 {
         GdmOptionWidget *self;
 
@@ -291,7 +328,9 @@ gdm_option_widget_set_property (GObject        *object,
         case PROP_LABEL_TEXT:
                 gdm_option_widget_set_label_text (self, g_value_get_string (value));
                 break;
-
+        case PROP_ICON_NAME:
+                gdm_option_widget_set_icon_name (self, g_value_get_string (value));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -313,6 +352,10 @@ gdm_option_widget_get_property (GObject        *object,
                 g_value_set_string (value,
                                     gdm_option_widget_get_label_text (self));
                 break;
+        case PROP_ICON_NAME:
+                g_value_set_string (value,
+                                    gdm_option_widget_get_icon_name (self));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -321,8 +364,8 @@ gdm_option_widget_get_property (GObject        *object,
 
 static GObject *
 gdm_option_widget_constructor (GType                  type,
-                                guint                  n_construct_properties,
-                                GObjectConstructParam *construct_properties)
+                               guint                  n_construct_properties,
+                               GObjectConstructParam *construct_properties)
 {
         GdmOptionWidget      *option_widget;
         GdmOptionWidgetClass *klass;
@@ -389,6 +432,14 @@ gdm_option_widget_class_init (GdmOptionWidgetClass *klass)
                                          g_param_spec_string ("label-text",
                                                               _("Label Text"),
                                                               _("The text to use as a label"),
+                                                              NULL,
+                                                              (G_PARAM_READWRITE |
+                                                               G_PARAM_CONSTRUCT)));
+        g_object_class_install_property (object_class,
+                                         PROP_ICON_NAME,
+                                         g_param_spec_string ("icon-name",
+                                                              _("Icon name"),
+                                                              _("The icon to use with the label"),
                                                               NULL,
                                                               (G_PARAM_READWRITE |
                                                                G_PARAM_CONSTRUCT)));
@@ -688,11 +739,16 @@ gdm_option_widget_init (GdmOptionWidget *widget)
         gtk_container_add (GTK_CONTAINER (widget),
                            box);
 
+
+        widget->priv->image = gtk_image_new ();
+        gtk_widget_set_no_show_all (widget->priv->image, TRUE);
+        gtk_box_pack_start (GTK_BOX (box), widget->priv->image, FALSE, FALSE, 0);
+
         widget->priv->label = gtk_label_new ("");
         gtk_label_set_use_underline (GTK_LABEL (widget->priv->label), TRUE);
         gtk_label_set_use_markup (GTK_LABEL (widget->priv->label), TRUE);
         gtk_widget_show (widget->priv->label);
-        gtk_container_add (GTK_CONTAINER (box), widget->priv->label);
+        gtk_box_pack_start (GTK_BOX (box), widget->priv->label, FALSE, FALSE, 0);
 
         widget->priv->items_combo_box = gtk_combo_box_new ();
         g_signal_connect (widget->priv->items_combo_box,
@@ -759,6 +815,9 @@ gdm_option_widget_finalize (GObject *object)
         widget = GDM_OPTION_WIDGET (object);
 
         g_return_if_fail (widget->priv != NULL);
+
+        g_free (widget->priv->icon_name);
+        g_free (widget->priv->label_text);
 
         G_OBJECT_CLASS (gdm_option_widget_parent_class)->finalize (object);
 }
