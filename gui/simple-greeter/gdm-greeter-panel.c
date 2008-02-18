@@ -583,3 +583,20 @@ gdm_greeter_panel_hide_user_options (GdmGreeterPanel *panel)
         gtk_widget_hide (panel->priv->session_option_widget);
         gtk_widget_hide (panel->priv->language_option_widget);
 }
+
+void
+gdm_greeter_panel_set_language_name_hint (GdmGreeterPanel *panel,
+                                          const char      *language_name)
+{
+        gdm_language_option_widget_set_current_language_name (GDM_LANGUAGE_OPTION_WIDGET (panel->priv->language_option_widget),
+                                                              language_name);
+}
+
+void
+gdm_greeter_panel_set_session_name_hint (GdmGreeterPanel *panel,
+                                         const char      *session_name)
+{
+
+        gdm_session_option_widget_set_current_session (GDM_SESSION_OPTION_WIDGET (panel->priv->session_option_widget),
+                                                       session_name);
+}

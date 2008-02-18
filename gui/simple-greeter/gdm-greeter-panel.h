@@ -59,6 +59,10 @@ GtkWidget            * gdm_greeter_panel_new                            (void);
 void                   gdm_greeter_panel_show_user_options              (GdmGreeterPanel *panel);
 void                   gdm_greeter_panel_hide_user_options              (GdmGreeterPanel *panel);
 
+void                   gdm_greeter_panel_set_language_name_hint         (GdmGreeterPanel *panel,
+                                                                         const char      *language_name);
+void                   gdm_greeter_panel_set_session_name_hint          (GdmGreeterPanel *panel,
+                                                                         const char      *session_name);
 G_END_DECLS
 
 #endif /* __GDM_GREETER_PANEL_H */

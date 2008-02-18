@@ -1,3 +1,24 @@
+2008-02-18  Ray Strode  <rstrode@redhat.com>
+
+	* gui/simple-greeter/gdm-greeter-client.[ch]:
+	(on_saved_language_name_read),
+	(on_saved_session_name_read),
+	(client_dbus_handle_message):
+	(gdm_greeter_client_class_init):
+	inform greeter session about language and
+	session name changes in slave
+	* gui/simple-greeter/gdm-greeter-panel.[ch]:
+	(gdm_greeter_panel_set_language_name_hint),
+	(gdm_greeter_panel_set_session_name_hint):
+	* gui/simple-greeter/gdm-greeter-session.c:
+	(on_saved_language_name_read),
+	(on_saved_session_name_read):
+	(gdm_greeter_session_init):
+	Set greeter language and session based on ~/.dmrc.
+	We'll probably need some policy here so we don't
+	override the user's explicit choice in the event
+	~/.dmrc doesn't get read right away.
+
 2008-02-18  William Jon McCann  <jmccann@redhat.com>
 
 	* common/gdm-common.c: (gdm_is_version_unstable),

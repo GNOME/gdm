@@ -118,6 +118,26 @@ on_selected_user_changed (GdmGreeterClient  *client,
 }
 
 static void
+on_saved_language_name_read (GdmGreeterClient  *client,
+                             const char        *text,
+                             GdmGreeterSession *session)
+{
+        g_debug ("GdmGreeterSession: saved language name read: %s", text);
+        gdm_greeter_panel_set_language_name_hint (GDM_GREETER_PANEL (session->priv->panel),
+                                                  text);
+}
+
+static void
+on_saved_session_name_read (GdmGreeterClient  *client,
+                            const char        *text,
+                            GdmGreeterSession *session)
+{
+        g_debug ("GdmGreeterSession: saved session name read: %s", text);
+        gdm_greeter_panel_set_session_name_hint (GDM_GREETER_PANEL (session->priv->panel),
+                                                 text);
+}
+
+static void
 on_info_query (GdmGreeterClient  *client,
                const char        *text,
                GdmGreeterSession *session)
@@ -696,6 +716,14 @@ gdm_greeter_session_init (GdmGreeterSession *session)
         g_signal_connect (session->priv->client,
                           "selected-user-changed",
                           G_CALLBACK (on_selected_user_changed),
+                          session);
+        g_signal_connect (session->priv->client,
+                          "saved-language-name-read",
+                          G_CALLBACK (on_saved_language_name_read),
+                          session);
+        g_signal_connect (session->priv->client,
+                          "saved-session-name-read",
+                          G_CALLBACK (on_saved_session_name_read),
                           session);
 
         /* We want to listen for panel mnemonics even if the

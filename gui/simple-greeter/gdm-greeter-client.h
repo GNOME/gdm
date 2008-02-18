@@ -60,6 +60,11 @@ typedef struct
         void (* selected_user_changed)   (GdmGreeterClient  *client,
                                           const char        *username);
 
+        void (* saved_session_name_read)  (GdmGreeterClient  *client,
+                                           const char        *session_name);
+        void (* saved_language_name_read) (GdmGreeterClient  *client,
+                                           const char        *language_name);
+
 } GdmGreeterClientClass;
 
 #define GDM_GREETER_CLIENT_ERROR (gdm_greeter_client_error_quark ())
