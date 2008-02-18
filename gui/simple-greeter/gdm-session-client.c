@@ -104,6 +104,7 @@ gdm_session_client_start (GdmSessionClient *client,
         char      **argv;
         gboolean    res;
         gboolean    ret;
+        int         flags;
 
         g_return_val_if_fail (GDM_IS_SESSION_CLIENT (client), FALSE);
 
@@ -120,14 +121,19 @@ gdm_session_client_start (GdmSessionClient *client,
                 goto out;
         }
 
+        flags = G_SPAWN_SEARCH_PATH
+                | G_SPAWN_DO_NOT_REAP_CHILD;
+
+        if (! gdm_is_version_unstable ()) {
+                flags |= G_SPAWN_STDOUT_TO_DEV_NULL
+                        | G_SPAWN_STDERR_TO_DEV_NULL;
+        }
+
         local_error = NULL;
         res = g_spawn_async (NULL,
                              argv,
                              NULL,
-                             G_SPAWN_SEARCH_PATH
-                             | G_SPAWN_DO_NOT_REAP_CHILD
-                             | G_SPAWN_STDOUT_TO_DEV_NULL
-                             | G_SPAWN_STDERR_TO_DEV_NULL,
+                             flags,
                              NULL,
                              NULL,
                              &client->priv->pid,

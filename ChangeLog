@@ -1,3 +1,14 @@
+2008-02-18  William Jon McCann  <jmccann@redhat.com>
+
+	* common/gdm-common.c: (gdm_is_version_unstable),
+	(gdm_set_fatal_warnings_if_unstable):
+	* common/gdm-common.h:
+	Add a function to see if release is unstable.
+	* gui/simple-greeter/gdm-session-client.c:
+	(gdm_session_client_start):
+	Don't redirect client output to /dev/null in unstable
+	releases.
+
 2008-02-18  Ray Strode  <rstrode@redhat.com>
 
 	* daemon/gdm-session-direct.c

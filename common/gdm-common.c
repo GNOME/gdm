@@ -33,21 +33,34 @@
 
 #include "gdm-common.h"
 
-void
-gdm_set_fatal_warnings_if_unstable (void)
+gboolean
+gdm_is_version_unstable (void)
 {
-        char **versions;
+        char   **versions;
+        gboolean unstable;
+
+        unstable = FALSE;
 
         versions = g_strsplit (VERSION, ".", 3);
         if (versions && versions [0] && versions [1]) {
                 int major;
                 major = atoi (versions [1]);
                 if ((major % 2) != 0) {
-                        g_setenv ("G_DEBUG", "fatal_criticals", FALSE);
-                        g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL);
+                        unstable = TRUE;
                 }
         }
         g_strfreev (versions);
+
+        return unstable;
+}
+
+void
+gdm_set_fatal_warnings_if_unstable (void)
+{
+        if (gdm_is_version_unstable ()) {
+                g_setenv ("G_DEBUG", "fatal_criticals", FALSE);
+                g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL);
+        }
 }
 
 int
