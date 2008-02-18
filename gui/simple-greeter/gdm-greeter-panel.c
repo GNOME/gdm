@@ -496,7 +496,7 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
         gtk_window_set_opacity (GTK_WINDOW (panel), 0.75);
 
         panel->priv->hbox = gtk_hbox_new (FALSE, 12);
-        gtk_container_set_border_width (GTK_CONTAINER (panel->priv->hbox), 2);
+        gtk_container_set_border_width (GTK_CONTAINER (panel->priv->hbox), 0);
         gtk_widget_show (panel->priv->hbox);
         gtk_container_add (GTK_CONTAINER (panel), panel->priv->hbox);
 
@@ -509,7 +509,7 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
                           "clicked",
                           G_CALLBACK (on_a11y_button_clicked), panel);
 
-        gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->a11y_button, FALSE, FALSE, 6);
+        gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->a11y_button, FALSE, FALSE, 0);
 
         panel->priv->language_option_widget = gdm_language_option_widget_new ();
         g_signal_connect (G_OBJECT (panel->priv->language_option_widget),
