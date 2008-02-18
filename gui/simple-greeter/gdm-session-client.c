@@ -271,7 +271,7 @@ load_from_desktop_file (GdmSessionClient *client)
 {
         GKeyFile *keyfile;
         GError   *error;
-        gboolean res;
+        gboolean  res;
 
         keyfile = g_key_file_new ();
 
@@ -293,6 +293,7 @@ load_from_desktop_file (GdmSessionClient *client)
                 goto out;
         }
 
+        client->priv->enabled = TRUE;
 
  out:
         g_key_file_free (keyfile);

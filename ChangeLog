@@ -1,5 +1,13 @@
 2008-02-18  William Jon McCann  <jmccann@redhat.com>
 
+	* gui/simple-greeter/gdm-session-client.c:
+	(load_from_desktop_file):
+	* gui/simple-greeter/gdm-session-manager.c: (_change_level):
+	Now that we honor the enabled property make sure that
+	we set it correctly for clients loaded from .desktop files.
+
+2008-02-18  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-panel.c: (gdm_greeter_panel_init):
 	Make the a11y button sit in the corner of the screen to
 	make it easier to find and click.

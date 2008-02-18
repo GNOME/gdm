@@ -347,14 +347,17 @@ _change_level (GdmSessionManager *manager,
                         client = list->data;
 
                         if (! gdm_session_client_get_enabled (client)) {
-                                g_debug ("Skipping disabled client");
+                                g_debug ("Skipping disabled client: %s",
+                                         gdm_session_client_get_name (client));
                                 continue;
                         }
 
                         error = NULL;
                         res = gdm_session_client_start (client, &error);
                         if (! res) {
-                                g_warning ("Unable to start client: %s", error->message);
+                                g_warning ("Unable to start client: %s: %s",
+                                           gdm_session_client_get_name (client),
+                                           error->message);
                                 g_error_free (error);
                         }
                 }
