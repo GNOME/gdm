@@ -113,6 +113,10 @@ gdm_language_chooser_dialog_init (GdmLanguageChooserDialog *dialog)
                                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                 GTK_STOCK_OK, GTK_RESPONSE_OK,
                                 NULL);
+        gtk_window_set_icon_name (GTK_WINDOW (dialog), "config-language");
+        gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+        gtk_container_set_border_width (GTK_CONTAINER (dialog), 12);
+        gtk_container_set_border_width (GTK_CONTAINER (dialog->priv->chooser_widget), 5);
 }
 
 static void
