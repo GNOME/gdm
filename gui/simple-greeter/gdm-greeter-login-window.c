@@ -49,6 +49,7 @@
 #include <gtk/gtk.h>
 
 #include <glade/glade-xml.h>
+#include <gconf/gconf-client.h>
 
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus-glib.h>
@@ -77,7 +78,9 @@
 #define CK_SEAT_INTERFACE    "org.freedesktop.ConsoleKit.Seat"
 #define CK_SESSION_INTERFACE "org.freedesktop.ConsoleKit.Session"
 
-#define GLADE_XML_FILE "gdm-greeter-login-window.glade"
+#define GLADE_XML_FILE       "gdm-greeter-login-window.glade"
+
+#define LOGO_KEY             "/apps/gdm/simple-greeter/logo-icon-name"
 
 #define GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_LOGIN_WINDOW, GdmGreeterLoginWindowPrivate))
 
@@ -962,6 +965,7 @@ load_theme (GdmGreeterLoginWindow *login_window)
         GtkWidget *entry;
         GtkWidget *button;
         GtkWidget *box;
+        GtkWidget *image;
 
         glade_set_custom_handler ((GladeXMLCustomWidgetHandler) custom_widget_constructor,
                                   login_window);
@@ -970,6 +974,29 @@ load_theme (GdmGreeterLoginWindow *login_window)
                                                  PACKAGE);
 
         g_assert (login_window->priv->xml != NULL);
+
+        image = glade_xml_get_widget (login_window->priv->xml, "logo-image");
+        if (image != NULL) {
+                GConfClient *client;
+                char        *icon_name;
+                GError      *error;
+
+                client = gconf_client_get_default ();
+                error = NULL;
+                icon_name = gconf_client_get_string (client, LOGO_KEY, &error);
+                if (error != NULL) {
+                        g_debug ("GdmGreeterLoginWindow: unable to get logo icon name: %s", error->message);
+                        g_error_free (error);
+                }
+                g_object_unref (client);
+                g_debug ("GdmGreeterLoginWindow: Got greeter logo '%s'", icon_name);
+                if (icon_name != NULL) {
+                        gtk_image_set_from_icon_name (GTK_IMAGE (image),
+                                                      icon_name,
+                                                      GTK_ICON_SIZE_DIALOG);
+                        g_free (icon_name);
+                }
+        }
 
         box = glade_xml_get_widget (login_window->priv->xml, "window-box");
         gtk_container_add (GTK_CONTAINER (login_window), box);
