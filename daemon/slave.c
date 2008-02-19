@@ -3563,6 +3563,7 @@ session_child_run (struct passwd *pwent,
 		   gboolean savesess,
 		   gboolean savelang)
 {
+	const char *old_system_data_dirs;
 	char *sessionexec = NULL;
 	GString *fullexec = NULL;
 	const char *shell = NULL;
@@ -3633,6 +3634,10 @@ session_child_run (struct passwd *pwent,
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("%s: Execution of PreSession script returned > 0. Aborting."), "session_child_run");
 
+	old_system_data_dirs = g_getenv ("XDG_DATA_DIRS") ?
+			       g_getenv ("XDG_DATA_DIRS") :
+			       "/usr/local/share/:/usr/share/";
+
 	ve_clearenv ();
 
 	/* Prepare user session */
@@ -3686,12 +3691,7 @@ session_child_run (struct passwd *pwent,
 	 * using a different display manager.
 	 */
 	{
-		const char *old_system_data_dirs;
 		char *new_system_data_dirs;
-
-		old_system_data_dirs = g_getenv ("XDG_DATA_DIRS") ?
-				       g_getenv ("XDG_DATA_DIRS") :
-				       "/usr/local/share/:/usr/share/";
 
 		new_system_data_dirs = g_build_path (":",
 			 old_system_data_dirs, DATADIR "/gdm/", NULL);

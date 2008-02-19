@@ -1,3 +1,9 @@
+2008-02-18 Brian Cameron <brian.cameron@sun.com>
+
+	* daemon/slave.c: Get the environment value for XDG_DATA_DIRS
+	  before calling ve_clearenv.  This issue was noticed while
+	  discussing bug #510358.
+
 2008-01-23 Brian Cameron <brian.cameron@sun.com>
 
 	* gui/gdmsetup.c: Fix bug that was causing the Welcome message to not
