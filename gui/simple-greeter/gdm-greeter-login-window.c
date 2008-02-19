@@ -1,6 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
+ * Copyright (C) 2008 Red Hat, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,6 +78,10 @@
 #define CK_MANAGER_INTERFACE "org.freedesktop.ConsoleKit.Manager"
 #define CK_SEAT_INTERFACE    "org.freedesktop.ConsoleKit.Seat"
 #define CK_SESSION_INTERFACE "org.freedesktop.ConsoleKit.Session"
+
+#define GPM_DBUS_NAME      "org.freedesktop.PowerManagement"
+#define GPM_DBUS_PATH      "/org/freedesktop/PowerManagement"
+#define GPM_DBUS_INTERFACE "org.freedesktop.PowerManagement"
 
 #define GLADE_XML_FILE       "gdm-greeter-login-window.glade"
 
@@ -211,10 +216,10 @@ get_show_restart_buttons (GdmGreeterLoginWindow *login_window)
                 username = g_get_user_name ();
                 if (username == NULL || !chkauthattr (RBAC_SHUTDOWN_KEY, username)) {
                         show = FALSE;
-                        g_debug ("Not showing stop/restart buttons for user %s due to RBAC key %s",
+                        g_debug ("GdmGreeterLoginWindow: Not showing stop/restart buttons for user %s due to RBAC key %s",
                                  username, RBAC_SHUTDOWN_KEY);
                 } else {
-                        g_debug ("Showing stop/restart buttons for user %s due to RBAC key %s",
+                        g_debug ("GdmGreeterLoginWindow: Showing stop/restart buttons for user %s due to RBAC key %s",
                                  username, RBAC_SHUTDOWN_KEY);
                 }
         }
@@ -298,6 +303,41 @@ static void
 do_disconnect (GdmGreeterLoginWindow *login_window)
 {
         gtk_main_quit ();
+}
+
+static void
+do_suspend (GdmGreeterLoginWindow *login_window)
+{
+        GError          *error;
+        DBusGConnection *connection;
+        DBusGProxy      *proxy;
+
+        g_debug ("GdmGreeterLoginWindow: Suspend button clicked");
+
+        error = NULL;
+        connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+        if (error != NULL) {
+                g_warning ("Couldn't suspend: %s", error->message);
+                g_error_free (error);
+                return;
+        }
+        proxy = dbus_g_proxy_new_for_name (connection,
+                                           GPM_DBUS_NAME,
+                                           GPM_DBUS_PATH,
+                                           GPM_DBUS_INTERFACE);
+        error = NULL;
+        dbus_g_proxy_call (proxy,
+                           "Suspend",
+                           &error,
+                           G_TYPE_INVALID,
+                           G_TYPE_INVALID);
+        if (error != NULL) {
+                g_warning ("Couldn't suspend: %s", error->message);
+                g_error_free (error);
+                return;
+        }
+
+        g_object_unref (proxy);
 }
 
 static void
@@ -503,6 +543,14 @@ log_in_button_clicked (GtkButton             *button,
 }
 
 static void
+suspend_button_clicked (GtkButton             *button,
+                        GdmGreeterLoginWindow *login_window)
+{
+        do_suspend (login_window);
+}
+
+
+static void
 cancel_button_clicked (GtkButton             *button,
                        GdmGreeterLoginWindow *login_window)
 {
@@ -647,7 +695,7 @@ get_action_from_error (GError *error)
         if (g_str_has_prefix (error->message, "Not privileged for action: ")) {
                 paction = error->message + strlen ("Not privileged for action: ");
         }
-        g_debug ("Requesting priv for '%s'", paction);
+        g_debug ("GdmGreeterLoginWindow: Requesting priv for '%s'", paction);
 
         polkit_action_set_action_id (action, paction);
 
@@ -1024,6 +1072,9 @@ load_theme (GdmGreeterLoginWindow *login_window)
                           login_window);
 
         gtk_widget_show (login_window->priv->user_chooser);
+
+        button = glade_xml_get_widget (login_window->priv->xml, "suspend-button");
+        g_signal_connect (button, "clicked", G_CALLBACK (suspend_button_clicked), login_window);
 
         button = glade_xml_get_widget (login_window->priv->xml, "log-in-button");
         gtk_widget_grab_default (button);
