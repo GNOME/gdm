@@ -20,10 +20,7 @@ INCLUDES = \
 
 libexec_PROGRAMS =			\
 	gdm-simple-chooser		\
-	$(NULL)
-
-noinst_PROGRAMS = 			\
-	test-host-chooser		\
+	gdm-host-chooser		\
 	$(NULL)
 
 gdm_simple_chooser_SOURCES =  		\
@@ -46,15 +43,15 @@ gdm_simple_chooser_LDADD = 		\
 	$(XDMCP_LIBS)			\
 	$(NULL)
 
-test_host_chooser_SOURCES = 		\
-	test-host-chooser.c 		\
+gdm_host_chooser_SOURCES = 		\
+	gdm-host-chooser.c 		\
 	gdm-host-chooser-widget.c	\
 	gdm-host-chooser-widget.h	\
 	gdm-host-chooser-dialog.c	\
 	gdm-host-chooser-dialog.h	\
 	$(NULL)
 
-test_host_chooser_LDADD =		\
+gdm_host_chooser_LDADD =		\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(GTK_LIBS)			\
 	$(EXTRA_CHOOSER_LIBS)   	\

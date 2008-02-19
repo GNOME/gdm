@@ -67,7 +67,7 @@ start_xephyr (GdmRemoteLoginWindow *login_window)
         gboolean res;
         GError  *error;
 
-        cmd = g_strdup_printf ("Xephyr -query %s -parent 0x%x %s",
+        cmd = g_strdup_printf ("Xephyr -query %s -parent 0x%x -br -once %s",
                                login_window->priv->hostname,
                                (unsigned int)GDK_WINDOW_XID (GTK_WIDGET (login_window)->window),
                                login_window->priv->display);
@@ -80,6 +80,32 @@ start_xephyr (GdmRemoteLoginWindow *login_window)
 
         if (! res) {
                 g_warning ("Could not start nested X server: %s", error->message);
+                g_error_free (error);
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
+static gboolean
+start_xdmx (GdmRemoteLoginWindow *login_window)
+{
+        char    *cmd;
+        gboolean res;
+        GError  *error;
+
+        cmd = g_strdup_printf ("Xdmx -query %s -br -once %s",
+                               login_window->priv->hostname,
+                               login_window->priv->display);
+        g_debug ("Running: %s", cmd);
+
+        error = NULL;
+        res = g_spawn_command_line_async (cmd, &error);
+
+        g_free (cmd);
+
+        if (! res) {
+                g_warning ("Could not start Xdmx X server: %s", error->message);
                 g_error_free (error);
                 return FALSE;
         }
@@ -101,7 +127,12 @@ gdm_remote_login_window_connect (GdmRemoteLoginWindow *login_window,
         login_window->priv->hostname = g_strdup (hostname);
         login_window->priv->display = g_strdup (":300");
 
-        res = start_xephyr (login_window);
+        if (0) {
+                res = start_xdmx (login_window);
+        } else {
+                res = start_xephyr (login_window);
+        }
+
         if (res) {
                 title = g_strdup_printf (_("Remote Login (Connected to %s)"), hostname);
                 gtk_window_set_title (GTK_WINDOW (login_window), title);
@@ -188,6 +219,7 @@ gdm_remote_login_window_init (GdmRemoteLoginWindow *login_window)
         gtk_window_set_skip_pager_hint (GTK_WINDOW (login_window), TRUE);
         gtk_window_stick (GTK_WINDOW (login_window));
         gtk_window_maximize (GTK_WINDOW (login_window));
+        gtk_window_set_icon_name (GTK_WINDOW (login_window), "computer");
 }
 
 static void

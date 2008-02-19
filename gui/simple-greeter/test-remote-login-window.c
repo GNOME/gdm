@@ -48,7 +48,7 @@ main (int argc, char *argv[])
         textdomain (GETTEXT_PACKAGE);
 
         std_out = NULL;
-        g_spawn_command_line_sync (LIBEXECDIR "/gdm-simple-chooser",
+        g_spawn_command_line_sync (LIBEXECDIR "/gdm-host-chooser",
                                    &std_out,
                                    NULL, NULL, NULL);
         if (std_out == NULL) {
