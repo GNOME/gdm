@@ -125,10 +125,6 @@ gdm_static_display_set_property (GObject      *object,
                                  const GValue *value,
                                  GParamSpec   *pspec)
 {
-        GdmStaticDisplay *self;
-
-        self = GDM_STATIC_DISPLAY (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -142,10 +138,6 @@ gdm_static_display_get_property (GObject    *object,
                                  GValue     *value,
                                  GParamSpec *pspec)
 {
-        GdmStaticDisplay *self;
-
-        self = GDM_STATIC_DISPLAY (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

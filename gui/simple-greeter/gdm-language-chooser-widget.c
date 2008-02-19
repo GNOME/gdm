@@ -96,10 +96,6 @@ gdm_language_chooser_widget_set_current_language_name (GdmLanguageChooserWidget 
 static void
 gdm_language_chooser_widget_dispose (GObject *object)
 {
-        GdmLanguageChooserWidget *widget;
-
-        widget = GDM_LANGUAGE_CHOOSER_WIDGET (object);
-
         G_OBJECT_CLASS (gdm_language_chooser_widget_parent_class)->dispose (object);
 }
 

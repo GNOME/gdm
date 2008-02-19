@@ -68,10 +68,6 @@ gdm_user_chooser_dialog_set_property (GObject        *object,
                                       const GValue   *value,
                                       GParamSpec     *pspec)
 {
-        GdmUserChooserDialog *self;
-
-        self = GDM_USER_CHOOSER_DIALOG (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -85,10 +81,6 @@ gdm_user_chooser_dialog_get_property (GObject        *object,
                                       GValue         *value,
                                       GParamSpec     *pspec)
 {
-        GdmUserChooserDialog *self;
-
-        self = GDM_USER_CHOOSER_DIALOG (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -102,9 +94,6 @@ gdm_user_chooser_dialog_constructor (GType                  type,
                                      GObjectConstructParam *construct_properties)
 {
         GdmUserChooserDialog      *user_chooser_dialog;
-        GdmUserChooserDialogClass *klass;
-
-        klass = GDM_USER_CHOOSER_DIALOG_CLASS (g_type_class_peek (GDM_TYPE_USER_CHOOSER_DIALOG));
 
         user_chooser_dialog = GDM_USER_CHOOSER_DIALOG (G_OBJECT_CLASS (gdm_user_chooser_dialog_parent_class)->constructor (type,
                                                                                                                            n_construct_properties,
@@ -116,10 +105,6 @@ gdm_user_chooser_dialog_constructor (GType                  type,
 static void
 gdm_user_chooser_dialog_dispose (GObject *object)
 {
-        GdmUserChooserDialog *user_chooser_dialog;
-
-        user_chooser_dialog = GDM_USER_CHOOSER_DIALOG (object);
-
         G_OBJECT_CLASS (gdm_user_chooser_dialog_parent_class)->dispose (object);
 }
 

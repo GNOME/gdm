@@ -68,10 +68,6 @@ gdm_chooser_session_set_property (GObject      *object,
                                   const GValue *value,
                                   GParamSpec   *pspec)
 {
-        GdmChooserSession *self;
-
-        self = GDM_CHOOSER_SESSION (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -85,10 +81,6 @@ gdm_chooser_session_get_property (GObject    *object,
                                   GValue     *value,
                                   GParamSpec *pspec)
 {
-        GdmChooserSession *self;
-
-        self = GDM_CHOOSER_SESSION (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -102,9 +94,6 @@ gdm_chooser_session_constructor (GType                  type,
                                  GObjectConstructParam *construct_properties)
 {
         GdmChooserSession      *chooser_session;
-        GdmChooserSessionClass *klass;
-
-        klass = GDM_CHOOSER_SESSION_CLASS (g_type_class_peek (GDM_TYPE_CHOOSER_SESSION));
 
         chooser_session = GDM_CHOOSER_SESSION (G_OBJECT_CLASS (gdm_chooser_session_parent_class)->constructor (type,
                                                                                                                n_construct_properties,

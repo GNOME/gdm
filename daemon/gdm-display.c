@@ -142,7 +142,7 @@ _create_access_file_for_user (GdmDisplay  *display,
         file_error = NULL;
         if (!gdm_display_access_file_open (access_file, &file_error)) {
                 g_propagate_error (error, file_error);
-                return FALSE;
+                return NULL;
         }
 
         return access_file;
@@ -778,10 +778,7 @@ gdm_display_constructor (GType                  type,
                          GObjectConstructParam *construct_properties)
 {
         GdmDisplay      *display;
-        GdmDisplayClass *klass;
         gboolean         res;
-
-        klass = GDM_DISPLAY_CLASS (g_type_class_peek (GDM_TYPE_DISPLAY));
 
         display = GDM_DISPLAY (G_OBJECT_CLASS (gdm_display_parent_class)->constructor (type,
                                                                                        n_construct_properties,

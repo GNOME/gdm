@@ -392,10 +392,6 @@ gdm_session_manager_set_property (GObject        *object,
                                   const GValue   *value,
                                   GParamSpec     *pspec)
 {
-        GdmSessionManager *self;
-
-        self = GDM_SESSION_MANAGER (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -409,10 +405,6 @@ gdm_session_manager_get_property (GObject        *object,
                                   GValue         *value,
                                   GParamSpec     *pspec)
 {
-        GdmSessionManager *self;
-
-        self = GDM_SESSION_MANAGER (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -426,9 +418,6 @@ gdm_session_manager_constructor (GType                  type,
                                  GObjectConstructParam *construct_properties)
 {
         GdmSessionManager      *session_manager;
-        GdmSessionManagerClass *klass;
-
-        klass = GDM_SESSION_MANAGER_CLASS (g_type_class_peek (GDM_TYPE_SESSION_MANAGER));
 
         session_manager = GDM_SESSION_MANAGER (G_OBJECT_CLASS (gdm_session_manager_parent_class)->constructor (type,
                                                                                                                      n_construct_properties,
@@ -440,10 +429,6 @@ gdm_session_manager_constructor (GType                  type,
 static void
 gdm_session_manager_dispose (GObject *object)
 {
-        GdmSessionManager *session_manager;
-
-        session_manager = GDM_SESSION_MANAGER (object);
-
         G_OBJECT_CLASS (gdm_session_manager_parent_class)->dispose (object);
 }
 

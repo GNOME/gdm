@@ -631,10 +631,6 @@ gdm_host_chooser_widget_set_property (GObject        *object,
                                       const GValue   *value,
                                       GParamSpec     *pspec)
 {
-        GdmHostChooserWidget *self;
-
-        self = GDM_HOST_CHOOSER_WIDGET (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -648,10 +644,6 @@ gdm_host_chooser_widget_get_property (GObject        *object,
                                       GValue         *value,
                                       GParamSpec     *pspec)
 {
-        GdmHostChooserWidget *self;
-
-        self = GDM_HOST_CHOOSER_WIDGET (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -665,9 +657,6 @@ gdm_host_chooser_widget_constructor (GType                  type,
                                      GObjectConstructParam *construct_properties)
 {
         GdmHostChooserWidget      *host_chooser_widget;
-        GdmHostChooserWidgetClass *klass;
-
-        klass = GDM_HOST_CHOOSER_WIDGET_CLASS (g_type_class_peek (GDM_TYPE_HOST_CHOOSER_WIDGET));
 
         host_chooser_widget = GDM_HOST_CHOOSER_WIDGET (G_OBJECT_CLASS (gdm_host_chooser_widget_parent_class)->constructor (type,
                                                                                                                            n_construct_properties,

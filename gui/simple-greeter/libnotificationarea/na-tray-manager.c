@@ -447,13 +447,13 @@ na_tray_manager_handle_begin_message (NaTrayManager       *manager,
   /* Check if the same message is already in the queue and remove it if so */
   for (p = manager->messages; p; p = p->next)
     {
-      PendingMessage *msg = p->data;
+      PendingMessage *message = p->data;
 
-      if (xevent->window == msg->window &&
-	  xevent->data.l[4] == msg->id)
+      if (xevent->window == message->window &&
+	  xevent->data.l[4] == message->id)
 	{
 	  /* Hmm, we found it, now remove it */
-	  pending_message_free (msg);
+	  pending_message_free (message);
 	  manager->messages = g_list_remove_link (manager->messages, p);
           g_list_free_1 (p);
 	  break;

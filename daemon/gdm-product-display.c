@@ -187,9 +187,6 @@ gdm_product_display_constructor (GType                  type,
                                  GObjectConstructParam *construct_properties)
 {
         GdmProductDisplay      *display;
-        GdmProductDisplayClass *klass;
-
-        klass = GDM_PRODUCT_DISPLAY_CLASS (g_type_class_peek (GDM_TYPE_PRODUCT_DISPLAY));
 
         display = GDM_PRODUCT_DISPLAY (G_OBJECT_CLASS (gdm_product_display_parent_class)->constructor (type,
                                                                                                        n_construct_properties,

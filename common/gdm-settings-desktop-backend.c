@@ -173,7 +173,6 @@ static void
 save_settings (GdmSettingsDesktopBackend *backend)
 {
         GError   *local_error;
-        gboolean  res;
         char     *contents;
         gsize     length;
 
@@ -192,10 +191,10 @@ save_settings (GdmSettingsDesktopBackend *backend)
         }
 
         local_error = NULL;
-        res = g_file_set_contents (backend->priv->filename,
-                                   contents,
-                                   length,
-                                   &local_error);
+        g_file_set_contents (backend->priv->filename,
+                             contents,
+                             length,
+                             &local_error);
         if (local_error != NULL) {
                 g_warning ("Unable to save settings: %s", local_error->message);
                 g_error_free (local_error);

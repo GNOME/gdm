@@ -235,9 +235,6 @@ main (int   argc,
 {
         GdmSessionDirect *session;
         char             *username;
-        int               exit_code;
-
-        exit_code = 0;
 
         g_log_set_always_fatal (G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING);
 
@@ -345,6 +342,4 @@ main (int   argc,
                 g_object_unref (session);
                 g_message ("GdmSessionDirect object destroyed successfully");
         } while (1);
-
-        return exit_code;
 }

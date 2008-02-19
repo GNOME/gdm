@@ -514,9 +514,6 @@ gdm_chooser_server_constructor (GType                  type,
                                GObjectConstructParam *construct_properties)
 {
         GdmChooserServer      *chooser_server;
-        GdmChooserServerClass *klass;
-
-        klass = GDM_CHOOSER_SERVER_CLASS (g_type_class_peek (GDM_TYPE_CHOOSER_SERVER));
 
         chooser_server = GDM_CHOOSER_SERVER (G_OBJECT_CLASS (gdm_chooser_server_parent_class)->constructor (type,
                                                                                        n_construct_properties,

@@ -1,6 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2004-2005 James M. Cape <jcape@ignore-your.tv>.
+ * Copyright (C) 2008      Red Hat Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,7 +98,7 @@ PANEL_APPLET_BONOBO_FACTORY ("OAFIID:GNOME_GdmUserSwitchApplet_Factory",
                              PANEL_TYPE_APPLET,
                              "gdm-user-switch-applet", "0",
                              (PanelAppletFactoryCallback)applet_fill_cb,
-                             NULL);
+                             NULL)
 
 static void
 about_me_cb (BonoboUIComponent *ui_container,
@@ -409,14 +410,14 @@ prefs_cb (BonoboUIComponent *ui_container,
         label_setup_done = FALSE;
         key = panel_applet_gconf_get_full_key (adata->applet, DISPLAY_KEY);
         if (has_lockdown || !gconf_client_key_is_writable (adata->client, key, NULL)) {
-                GtkWidget *label;
+                GtkWidget *warning_label;
 
                 gtk_widget_set_sensitive (username_radio, FALSE);
                 gtk_widget_set_sensitive (text_radio, FALSE);
                 gtk_widget_set_sensitive (icon_radio, FALSE);
 
-                label = glade_xml_get_widget (xml, "warning_label");
-                make_label_small_italic (GTK_LABEL (label));
+                warning_label = glade_xml_get_widget (xml, "warning_label");
+                make_label_small_italic (GTK_LABEL (warning_label));
                 label_setup_done = TRUE;
 
                 gtk_widget_show (warning_box);
@@ -438,10 +439,10 @@ prefs_cb (BonoboUIComponent *ui_container,
                 gtk_widget_set_sensitive (check, FALSE);
 
                 if (!label_setup_done) {
-                        GtkWidget *label;
+                        GtkWidget *warning_label;
 
-                        label = glade_xml_get_widget (xml, "warning_label");
-                        make_label_small_italic (GTK_LABEL (label));
+                        warning_label = glade_xml_get_widget (xml, "warning_label");
+                        make_label_small_italic (GTK_LABEL (warning_label));
                         label_setup_done = TRUE;
 
                         gtk_widget_show (warning_box);
@@ -466,10 +467,10 @@ prefs_cb (BonoboUIComponent *ui_container,
                 gtk_widget_set_sensitive (check, FALSE);
 
                 if (!label_setup_done) {
-                        GtkWidget *label;
+                        GtkWidget *warning_label;
 
-                        label = glade_xml_get_widget (xml, "warning_label");
-                        make_label_small_italic (GTK_LABEL (label));
+                        warning_label = glade_xml_get_widget (xml, "warning_label");
+                        make_label_small_italic (GTK_LABEL (warning_label));
                         label_setup_done = TRUE;
 
                         gtk_widget_show (warning_box);
@@ -1068,9 +1069,7 @@ static void
 switch_to_user_session (GdmAppletData *adata,
                         GdmUser       *user)
 {
-        gboolean res;
-
-        res = gdm_user_manager_activate_user_session (adata->manager, user);
+        gdm_user_manager_activate_user_session (adata->manager, user);
 }
 
 static void
@@ -1330,7 +1329,7 @@ display_key_changed (GdmAppletData *adata,
                                 gtk_image_new_from_icon_name ("stock_people",
                                                               GTK_ICON_SIZE_MENU);
                         gtk_box_pack_start (GTK_BOX (parent), adata->imglabel,
-                                            TRUE, TRUE, 0);
+                                            TRUE, TRUE, item_border);
                         gtk_widget_show (adata->imglabel);
                 }
         } else {
@@ -1511,36 +1510,35 @@ applet_fill_cb (PanelApplet   *applet,
                 return FALSE;
 
         /* Global GdmManager */
-        if (!first_time)
-                {
-                        gint argc = 1;
-                        char *argv[2] = { "gdm-user-switch-applet", NULL};
+        if (!first_time) {
+                int   argc = 1;
+                char *argv[2] = { "gdm-user-switch-applet", NULL};
 
-                        first_time = TRUE;
+                first_time = TRUE;
 
-                        program = gnome_program_init ("gdm-user-switch-applet",
-                                                      VERSION,
-                                                      LIBGNOME_MODULE,
-                                                      argc, argv,
-                                                      GNOME_PROGRAM_STANDARD_PROPERTIES,
-                                                      NULL);
+                program = gnome_program_init ("gdm-user-switch-applet",
+                                              VERSION,
+                                              LIBGNOME_MODULE,
+                                              argc, argv,
+                                              GNOME_PROGRAM_STANDARD_PROPERTIES,
+                                              NULL);
 
-                        /* Do this here so it's only done once. */
-                        gtk_rc_parse_string ("style \"gdm-user-switch-menubar-style\"\n"
-                                             "{\n"
-                                             "GtkMenuBar::shadow-type = none\n"
-                                             "GtkMenuBar::internal-padding = 0\n"
-                                             "}\n"
-                                             "style \"gdm-user-switch-applet-style\"\n"
-                                             "{\n"
-                                             "GtkWidget::focus-line-width = 0\n"
-                                             "GtkWidget::focus-padding = 0\n"
-                                             "}\n"
-                                             "widget \"*.gdm-user-switch-menubar\" style \"gdm-user-switch-menubar-style\"\n"
-                                             "widget \"*.gdm-user-switch-applet\" style \"gdm-user-switch-applet-style\"\n");
-                        gtk_window_set_default_icon_name ("stock_people");
-                        g_set_application_name (_("User Switch Applet"));
-                }
+                /* Do this here so it's only done once. */
+                gtk_rc_parse_string ("style \"gdm-user-switch-menubar-style\"\n"
+                                     "{\n"
+                                     "GtkMenuBar::shadow-type = none\n"
+                                     "GtkMenuBar::internal-padding = 0\n"
+                                     "}\n"
+                                     "style \"gdm-user-switch-applet-style\"\n"
+                                     "{\n"
+                                     "GtkWidget::focus-line-width = 0\n"
+                                     "GtkWidget::focus-padding = 0\n"
+                                     "}\n"
+                                     "widget \"*.gdm-user-switch-menubar\" style \"gdm-user-switch-menubar-style\"\n"
+                                     "widget \"*.gdm-user-switch-applet\" style \"gdm-user-switch-applet-style\"\n");
+                gtk_window_set_default_icon_name ("stock_people");
+                g_set_application_name (_("User Switch Applet"));
+        }
 
         adata = g_new0 (GdmAppletData, 1);
         adata->applet = applet;
@@ -1821,6 +1819,8 @@ applet_fill_cb (PanelApplet   *applet,
         } else {
                 gtk_widget_show (GTK_WIDGET (applet));
         }
+
+        g_object_unref (program);
 
         return TRUE;
 }

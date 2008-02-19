@@ -438,10 +438,6 @@ gdm_local_display_factory_set_property (GObject       *object,
                                         const GValue  *value,
                                         GParamSpec    *pspec)
 {
-        GdmLocalDisplayFactory *self;
-
-        self = GDM_LOCAL_DISPLAY_FACTORY (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -455,10 +451,6 @@ gdm_local_display_factory_get_property (GObject    *object,
                                         GValue     *value,
                                         GParamSpec *pspec)
 {
-        GdmLocalDisplayFactory *self;
-
-        self = GDM_LOCAL_DISPLAY_FACTORY (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -515,10 +507,7 @@ gdm_local_display_factory_constructor (GType                  type,
                                        GObjectConstructParam *construct_properties)
 {
         GdmLocalDisplayFactory      *factory;
-        GdmLocalDisplayFactoryClass *klass;
         gboolean                     res;
-
-        klass = GDM_LOCAL_DISPLAY_FACTORY_CLASS (g_type_class_peek (GDM_TYPE_LOCAL_DISPLAY_FACTORY));
 
         factory = GDM_LOCAL_DISPLAY_FACTORY (G_OBJECT_CLASS (gdm_local_display_factory_parent_class)->constructor (type,
                                                                                                                    n_construct_properties,

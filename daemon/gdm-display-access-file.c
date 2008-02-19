@@ -58,7 +58,7 @@ enum
         PROP_PATH
 };
 
-G_DEFINE_TYPE (GdmDisplayAccessFile, gdm_display_access_file, G_TYPE_OBJECT);
+G_DEFINE_TYPE (GdmDisplayAccessFile, gdm_display_access_file, G_TYPE_OBJECT)
 
 static void
 gdm_display_access_file_get_property (GObject    *object,

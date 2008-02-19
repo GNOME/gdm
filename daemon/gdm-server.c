@@ -831,9 +831,6 @@ gdm_server_constructor (GType                  type,
                         GObjectConstructParam *construct_properties)
 {
         GdmServer      *server;
-        GdmServerClass *klass;
-
-        klass = GDM_SERVER_CLASS (g_type_class_peek (GDM_TYPE_SERVER));
 
         server = GDM_SERVER (G_OBJECT_CLASS (gdm_server_parent_class)->constructor (type,
                                                                                     n_construct_properties,

@@ -874,9 +874,7 @@ gdm_simple_slave_run (GdmSimpleSlave *slave)
 static gboolean
 gdm_simple_slave_start (GdmSlave *slave)
 {
-        gboolean res;
-
-        res = GDM_SLAVE_CLASS (gdm_simple_slave_parent_class)->start (slave);
+        GDM_SLAVE_CLASS (gdm_simple_slave_parent_class)->start (slave);
 
         gdm_simple_slave_run (GDM_SIMPLE_SLAVE (slave));
 
@@ -886,11 +884,9 @@ gdm_simple_slave_start (GdmSlave *slave)
 static gboolean
 gdm_simple_slave_stop (GdmSlave *slave)
 {
-        gboolean res;
-
         g_debug ("GdmSimpleSlave: Stopping simple_slave");
 
-        res = GDM_SLAVE_CLASS (gdm_simple_slave_parent_class)->stop (slave);
+        GDM_SLAVE_CLASS (gdm_simple_slave_parent_class)->stop (slave);
 
         if (GDM_SIMPLE_SLAVE (slave)->priv->greeter != NULL) {
                 gdm_welcome_session_stop (GDM_WELCOME_SESSION (GDM_SIMPLE_SLAVE (slave)->priv->greeter));
@@ -919,10 +915,6 @@ gdm_simple_slave_set_property (GObject      *object,
                                const GValue *value,
                                GParamSpec   *pspec)
 {
-        GdmSimpleSlave *self;
-
-        self = GDM_SIMPLE_SLAVE (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -936,10 +928,6 @@ gdm_simple_slave_get_property (GObject    *object,
                                GValue      *value,
                                GParamSpec *pspec)
 {
-        GdmSimpleSlave *self;
-
-        self = GDM_SIMPLE_SLAVE (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -953,9 +941,6 @@ gdm_simple_slave_constructor (GType                  type,
                               GObjectConstructParam *construct_properties)
 {
         GdmSimpleSlave      *simple_slave;
-        GdmSimpleSlaveClass *klass;
-
-        klass = GDM_SIMPLE_SLAVE_CLASS (g_type_class_peek (GDM_TYPE_SIMPLE_SLAVE));
 
         simple_slave = GDM_SIMPLE_SLAVE (G_OBJECT_CLASS (gdm_simple_slave_parent_class)->constructor (type,
                                                                                  n_construct_properties,

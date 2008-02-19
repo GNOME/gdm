@@ -146,7 +146,6 @@ _get_primary_user_session_id (GdmUserManager *manager,
                               GdmUser        *user)
 {
         gboolean    res;
-        gboolean    ret;
         gboolean    can_activate_sessions;
         GError     *error;
         GList      *sessions;
@@ -158,7 +157,6 @@ _get_primary_user_session_id (GdmUserManager *manager,
                 return NULL;
         }
 
-        ret = FALSE;
         primary_ssid = NULL;
         sessions = NULL;
 
@@ -306,7 +304,6 @@ static char *
 _get_login_window_session_id (GdmUserManager *manager)
 {
         gboolean    res;
-        gboolean    ret;
         gboolean    can_activate_sessions;
         GError     *error;
         GPtrArray  *sessions;
@@ -318,7 +315,6 @@ _get_login_window_session_id (GdmUserManager *manager)
                 return NULL;
         }
 
-        ret = FALSE;
         primary_ssid = NULL;
         sessions = NULL;
 

@@ -83,10 +83,6 @@ gdm_a11y_preferences_dialog_set_property (GObject        *object,
                                           const GValue   *value,
                                           GParamSpec     *pspec)
 {
-        GdmA11yPreferencesDialog *self;
-
-        self = GDM_A11Y_PREFERENCES_DIALOG (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -100,10 +96,6 @@ gdm_a11y_preferences_dialog_get_property (GObject        *object,
                                           GValue         *value,
                                           GParamSpec     *pspec)
 {
-        GdmA11yPreferencesDialog *self;
-
-        self = GDM_A11Y_PREFERENCES_DIALOG (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -117,9 +109,6 @@ gdm_a11y_preferences_dialog_constructor (GType                  type,
                                          GObjectConstructParam *construct_properties)
 {
         GdmA11yPreferencesDialog      *a11y_preferences_dialog;
-        GdmA11yPreferencesDialogClass *klass;
-
-        klass = GDM_A11Y_PREFERENCES_DIALOG_CLASS (g_type_class_peek (GDM_TYPE_A11Y_PREFERENCES_DIALOG));
 
         a11y_preferences_dialog = GDM_A11Y_PREFERENCES_DIALOG (G_OBJECT_CLASS (gdm_a11y_preferences_dialog_parent_class)->constructor (type,
                                                                                                                            n_construct_properties,
@@ -131,10 +120,6 @@ gdm_a11y_preferences_dialog_constructor (GType                  type,
 static void
 gdm_a11y_preferences_dialog_dispose (GObject *object)
 {
-        GdmA11yPreferencesDialog *a11y_preferences_dialog;
-
-        a11y_preferences_dialog = GDM_A11Y_PREFERENCES_DIALOG (object);
-
         G_OBJECT_CLASS (gdm_a11y_preferences_dialog_parent_class)->dispose (object);
 }
 

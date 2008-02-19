@@ -38,8 +38,6 @@
 #include "gdm-settings-utils.h"
 #include "gdm-settings-direct.h"
 
-static char            *schemas_file;
-static char            *schemas_root;
 static GHashTable      *schemas;
 static GdmSettings     *settings_object;
 
@@ -225,9 +223,6 @@ gdm_settings_direct_init (GdmSettings *settings,
 
         schemas = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify)gdm_settings_entry_free);
         g_slist_foreach (list, (GFunc)hashify_list, NULL);
-
-        schemas_file = g_strdup (file);
-        schemas_root = g_strdup (root);
 
         settings_object = settings;
 

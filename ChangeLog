@@ -1,3 +1,144 @@
+2008-02-19  William Jon McCann  <jmccann@redhat.com>
+
+	* common/gdm-settings-client.c:
+	(gdm_settings_client_get_locale_string),
+	(gdm_settings_client_init):
+	* common/gdm-settings-desktop-backend.c: (save_settings):
+	* common/gdm-settings-direct.c: (gdm_settings_direct_init):
+	* common/test-log.c: (test_log):
+	* common/test-settings-client.c: (test_settings_client):
+	* daemon/gdm-chooser-server.c: (gdm_chooser_server_constructor):
+	* daemon/gdm-chooser-session.c: (gdm_chooser_session_set_property),
+	(gdm_chooser_session_get_property),
+	(gdm_chooser_session_constructor):
+	* daemon/gdm-display-access-file.c:
+	* daemon/gdm-display.c: (_create_access_file_for_user),
+	(gdm_display_constructor):
+	* daemon/gdm-factory-slave.c: (gdm_factory_slave_start),
+	(gdm_factory_slave_stop), (gdm_factory_slave_set_property),
+	(gdm_factory_slave_get_property), (gdm_factory_slave_constructor):
+	* daemon/gdm-greeter-server.c: (gdm_greeter_server_constructor):
+	* daemon/gdm-greeter-session.c: (gdm_greeter_session_set_property),
+	(gdm_greeter_session_get_property):
+	* daemon/gdm-local-display-factory.c:
+	(gdm_local_display_factory_set_property),
+	(gdm_local_display_factory_get_property),
+	(gdm_local_display_factory_constructor):
+	* daemon/gdm-manager.c: (gdm_manager_constructor):
+	* daemon/gdm-product-display.c: (gdm_product_display_constructor):
+	* daemon/gdm-product-slave.c: (gdm_product_slave_start),
+	(gdm_product_slave_stop), (gdm_product_slave_set_property),
+	(gdm_product_slave_get_property), (gdm_product_slave_constructor):
+	* daemon/gdm-server.c: (gdm_server_constructor):
+	* daemon/gdm-session-auditor.c:
+	* daemon/gdm-session-direct.c: (gdm_session_direct_open):
+	* daemon/gdm-session-linux-auditor.c:
+	* daemon/gdm-session-relay.c: (gdm_session_relay_set_property),
+	(gdm_session_relay_get_property), (gdm_session_relay_constructor):
+	* daemon/gdm-session-settings.c:
+	* daemon/gdm-session-worker-job.c:
+	(gdm_session_worker_job_constructor):
+	* daemon/gdm-session-worker.c: (gdm_session_worker_constructor):
+	* daemon/gdm-simple-slave.c: (gdm_simple_slave_start),
+	(gdm_simple_slave_stop), (gdm_simple_slave_set_property),
+	(gdm_simple_slave_get_property), (gdm_simple_slave_constructor):
+	* daemon/gdm-slave.c: (gdm_slave_run_script),
+	(_get_primary_user_session_id), (gdm_slave_constructor):
+	* daemon/gdm-static-display.c: (gdm_static_display_set_property),
+	(gdm_static_display_get_property):
+	* daemon/gdm-static-factory-display.c:
+	(gdm_static_factory_display_set_property),
+	(gdm_static_factory_display_get_property),
+	(gdm_static_factory_display_constructor):
+	* daemon/gdm-transient-display.c:
+	(gdm_transient_display_set_property),
+	(gdm_transient_display_get_property):
+	* daemon/gdm-welcome-session.c: (parse_dbus_launch_output),
+	(gdm_welcome_session_constructor):
+	* daemon/gdm-xdmcp-chooser-slave.c:
+	(gdm_xdmcp_chooser_slave_start), (gdm_xdmcp_chooser_slave_stop),
+	(gdm_xdmcp_chooser_slave_set_property),
+	(gdm_xdmcp_chooser_slave_get_property),
+	(gdm_xdmcp_chooser_slave_constructor):
+	* daemon/gdm-xdmcp-display-factory.c: (do_bind),
+	(indirect_client_create), (gdm_xdmcp_handle_forward_query):
+	* daemon/test-session.c: (main):
+	* gui/simple-chooser/gdm-chooser-client.c:
+	(gdm_chooser_client_set_property),
+	(gdm_chooser_client_get_property),
+	(gdm_chooser_client_constructor), (gdm_chooser_client_dispose):
+	* gui/simple-chooser/gdm-chooser-session.c:
+	(gdm_chooser_session_set_property),
+	(gdm_chooser_session_get_property),
+	(gdm_chooser_session_constructor), (gdm_chooser_session_dispose):
+	* gui/simple-chooser/gdm-host-chooser-dialog.c:
+	(gdm_host_chooser_dialog_set_property),
+	(gdm_host_chooser_dialog_get_property),
+	(gdm_host_chooser_dialog_constructor),
+	(gdm_host_chooser_dialog_dispose):
+	* gui/simple-chooser/gdm-host-chooser-widget.c:
+	(gdm_host_chooser_widget_set_property),
+	(gdm_host_chooser_widget_get_property),
+	(gdm_host_chooser_widget_constructor):
+	* gui/simple-greeter/gdm-a11y-preferences-dialog.c:
+	(gdm_a11y_preferences_dialog_set_property),
+	(gdm_a11y_preferences_dialog_get_property),
+	(gdm_a11y_preferences_dialog_constructor),
+	(gdm_a11y_preferences_dialog_dispose):
+	* gui/simple-greeter/gdm-chooser-widget.c:
+	(shrink_edge_toward_active_row), (gdm_chooser_widget_constructor):
+	* gui/simple-greeter/gdm-greeter-client.c:
+	(gdm_greeter_client_set_property),
+	(gdm_greeter_client_get_property),
+	(gdm_greeter_client_constructor), (gdm_greeter_client_dispose):
+	* gui/simple-greeter/gdm-greeter-login-window.c:
+	(gdm_greeter_login_window_constructor):
+	* gui/simple-greeter/gdm-greeter-panel.c:
+	(gdm_greeter_panel_set_property), (gdm_greeter_panel_get_property),
+	(gdm_greeter_panel_constructor), (gdm_greeter_panel_dispose):
+	* gui/simple-greeter/gdm-greeter-session.c:
+	(gdm_greeter_session_set_property),
+	(gdm_greeter_session_get_property),
+	(gdm_greeter_session_constructor), (gdm_greeter_session_dispose):
+	* gui/simple-greeter/gdm-language-chooser-widget.c:
+	(gdm_language_chooser_widget_dispose):
+	* gui/simple-greeter/gdm-option-widget.c: (activate_from_item_id),
+	(gdm_option_widget_constructor):
+	* gui/simple-greeter/gdm-recent-option-widget.c:
+	(gdm_recent_option_widget_dispose):
+	* gui/simple-greeter/gdm-remote-login-window.c:
+	(gdm_remote_login_window_set_property),
+	(gdm_remote_login_window_get_property),
+	(gdm_remote_login_window_constructor):
+	* gui/simple-greeter/gdm-session-client.c:
+	(gdm_session_client_constructor), (gdm_session_client_dispose):
+	* gui/simple-greeter/gdm-session-manager.c:
+	(gdm_session_manager_set_property),
+	(gdm_session_manager_get_property),
+	(gdm_session_manager_constructor), (gdm_session_manager_dispose):
+	* gui/simple-greeter/gdm-user-chooser-dialog.c:
+	(gdm_user_chooser_dialog_set_property),
+	(gdm_user_chooser_dialog_get_property),
+	(gdm_user_chooser_dialog_constructor),
+	(gdm_user_chooser_dialog_dispose):
+	* gui/simple-greeter/gdm-user-chooser-widget.c:
+	(gdm_user_chooser_widget_set_property),
+	(gdm_user_chooser_widget_get_property),
+	(gdm_user_chooser_widget_constructor):
+	* gui/simple-greeter/gdm-user-manager.c:
+	(_get_primary_user_session_id), (_get_login_window_session_id):
+	* gui/simple-greeter/gdm-user.c:
+	* gui/simple-greeter/libnotificationarea/na-tray-manager.c:
+	(na_tray_manager_handle_begin_message):
+	* gui/simple-greeter/libnotificationarea/na-tray.c:
+	* gui/user-switch-applet/applet.c: (prefs_cb),
+	(switch_to_user_session), (display_key_changed), (applet_fill_cb):
+	* gui/user-switch-applet/gdm-user-menu-item.c:
+	* tests/s-common-address.c: (START_TEST):
+	* utils/gdmflexiserver.c: (get_login_window_session_id):
+	Fix a bunch of compiler warnings and remove unused code.
+	Patch from: Kjartan Maraas <kmaraas@broadpark.no>
+
 2008-02-18  William Jon McCann  <jmccann@redhat.com>
 
 	* common/gdm-address.c:

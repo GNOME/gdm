@@ -339,9 +339,6 @@ gdm_session_worker_job_constructor (GType                  type,
                                     GObjectConstructParam *construct_properties)
 {
         GdmSessionWorkerJob      *session_worker_job;
-        GdmSessionWorkerJobClass *klass;
-
-        klass = GDM_SESSION_WORKER_JOB_CLASS (g_type_class_peek (GDM_TYPE_SESSION_WORKER_JOB));
 
         session_worker_job = GDM_SESSION_WORKER_JOB (G_OBJECT_CLASS (gdm_session_worker_job_parent_class)->constructor (type,
                                                                                        n_construct_properties,

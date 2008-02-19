@@ -117,10 +117,6 @@ gdm_remote_login_window_set_property (GObject      *object,
                                       const GValue *value,
                                       GParamSpec   *pspec)
 {
-        GdmRemoteLoginWindow *self;
-
-        self = GDM_REMOTE_LOGIN_WINDOW (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -134,10 +130,6 @@ gdm_remote_login_window_get_property (GObject    *object,
                                       GValue     *value,
                                       GParamSpec *pspec)
 {
-        GdmRemoteLoginWindow *self;
-
-        self = GDM_REMOTE_LOGIN_WINDOW (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -151,9 +143,6 @@ gdm_remote_login_window_constructor (GType                  type,
                                      GObjectConstructParam *construct_properties)
 {
         GdmRemoteLoginWindow      *login_window;
-        GdmRemoteLoginWindowClass *klass;
-
-        klass = GDM_REMOTE_LOGIN_WINDOW_CLASS (g_type_class_peek (GDM_TYPE_REMOTE_LOGIN_WINDOW));
 
         login_window = GDM_REMOTE_LOGIN_WINDOW (G_OBJECT_CLASS (gdm_remote_login_window_parent_class)->constructor (type,
                                                                                                                       n_construct_properties,

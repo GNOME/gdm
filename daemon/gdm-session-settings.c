@@ -59,7 +59,7 @@ enum {
         PROP_LANGUAGE_NAME,
 };
 
-G_DEFINE_TYPE (GdmSessionSettings, gdm_session_settings, G_TYPE_OBJECT);
+G_DEFINE_TYPE (GdmSessionSettings, gdm_session_settings, G_TYPE_OBJECT)
 
 static void
 gdm_session_settings_class_init (GdmSessionSettingsClass *settings_class)

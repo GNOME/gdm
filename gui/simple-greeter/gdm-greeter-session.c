@@ -563,10 +563,6 @@ gdm_greeter_session_set_property (GObject        *object,
                                   const GValue   *value,
                                   GParamSpec     *pspec)
 {
-        GdmGreeterSession *self;
-
-        self = GDM_GREETER_SESSION (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -580,10 +576,6 @@ gdm_greeter_session_get_property (GObject        *object,
                                   GValue         *value,
                                   GParamSpec     *pspec)
 {
-        GdmGreeterSession *self;
-
-        self = GDM_GREETER_SESSION (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -597,9 +589,6 @@ gdm_greeter_session_constructor (GType                  type,
                                  GObjectConstructParam *construct_properties)
 {
         GdmGreeterSession      *greeter_session;
-        GdmGreeterSessionClass *klass;
-
-        klass = GDM_GREETER_SESSION_CLASS (g_type_class_peek (GDM_TYPE_GREETER_SESSION));
 
         greeter_session = GDM_GREETER_SESSION (G_OBJECT_CLASS (gdm_greeter_session_parent_class)->constructor (type,
                                                                                                                n_construct_properties,
@@ -611,10 +600,6 @@ gdm_greeter_session_constructor (GType                  type,
 static void
 gdm_greeter_session_dispose (GObject *object)
 {
-        GdmGreeterSession *greeter_session;
-
-        greeter_session = GDM_GREETER_SESSION (object);
-
         g_debug ("GdmGreeterSession: Disposing greeter_session");
 
         G_OBJECT_CLASS (gdm_greeter_session_parent_class)->dispose (object);

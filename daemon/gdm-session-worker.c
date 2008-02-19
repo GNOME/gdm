@@ -2138,10 +2138,7 @@ gdm_session_worker_constructor (GType                  type,
                                 GObjectConstructParam *construct_properties)
 {
         GdmSessionWorker      *worker;
-        GdmSessionWorkerClass *klass;
         DBusError              error;
-
-        klass = GDM_SESSION_WORKER_CLASS (g_type_class_peek (GDM_TYPE_SESSION_WORKER));
 
         worker = GDM_SESSION_WORKER (G_OBJECT_CLASS (gdm_session_worker_parent_class)->constructor (type,
                                                                                                     n_construct_properties,

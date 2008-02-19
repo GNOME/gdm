@@ -670,14 +670,13 @@ gdm_factory_slave_run (GdmFactorySlave *slave)
 static gboolean
 gdm_factory_slave_start (GdmSlave *slave)
 {
-        gboolean res;
         gboolean ret;
 
         ret = FALSE;
 
         g_debug ("GdmFactorySlave: Starting factory slave");
 
-        res = GDM_SLAVE_CLASS (gdm_factory_slave_parent_class)->start (slave);
+        GDM_SLAVE_CLASS (gdm_factory_slave_parent_class)->start (slave);
 
         GDM_FACTORY_SLAVE (slave)->priv->session = gdm_session_relay_new ();
         g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
@@ -766,11 +765,9 @@ gdm_factory_slave_start (GdmSlave *slave)
 static gboolean
 gdm_factory_slave_stop (GdmSlave *slave)
 {
-        gboolean res;
-
         g_debug ("GdmFactorySlave: Stopping factory_slave");
 
-        res = GDM_SLAVE_CLASS (gdm_factory_slave_parent_class)->stop (slave);
+        GDM_SLAVE_CLASS (gdm_factory_slave_parent_class)->stop (slave);
 
         if (GDM_FACTORY_SLAVE (slave)->priv->session != NULL) {
                 gdm_session_relay_stop (GDM_FACTORY_SLAVE (slave)->priv->session);
@@ -809,10 +806,6 @@ gdm_factory_slave_set_property (GObject      *object,
                                const GValue *value,
                                GParamSpec   *pspec)
 {
-        GdmFactorySlave *self;
-
-        self = GDM_FACTORY_SLAVE (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -826,10 +819,6 @@ gdm_factory_slave_get_property (GObject    *object,
                                 GValue     *value,
                                 GParamSpec *pspec)
 {
-        GdmFactorySlave *self;
-
-        self = GDM_FACTORY_SLAVE (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -843,9 +832,6 @@ gdm_factory_slave_constructor (GType                  type,
                                GObjectConstructParam *construct_properties)
 {
         GdmFactorySlave      *factory_slave;
-        GdmFactorySlaveClass *klass;
-
-        klass = GDM_FACTORY_SLAVE_CLASS (g_type_class_peek (GDM_TYPE_FACTORY_SLAVE));
 
         factory_slave = GDM_FACTORY_SLAVE (G_OBJECT_CLASS (gdm_factory_slave_parent_class)->constructor (type,
                                                                                                          n_construct_properties,

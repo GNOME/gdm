@@ -170,12 +170,7 @@ static void
 activate_from_item_id (GdmOptionWidget *widget,
                        const char      *item_id)
 {
-        GtkTreeModel *model;
-        GtkTreePath  *path;
         GtkTreeIter   iter;
-
-        model = GTK_TREE_MODEL (widget->priv->list_store);
-        path = NULL;
 
         if (!find_item (widget, item_id, &iter)) {
                 g_critical ("Tried to activate non-existing item from option widget");
@@ -368,9 +363,6 @@ gdm_option_widget_constructor (GType                  type,
                                GObjectConstructParam *construct_properties)
 {
         GdmOptionWidget      *option_widget;
-        GdmOptionWidgetClass *klass;
-
-        klass = GDM_OPTION_WIDGET_CLASS (g_type_class_peek (GDM_TYPE_OPTION_WIDGET));
 
         option_widget = GDM_OPTION_WIDGET (G_OBJECT_CLASS (gdm_option_widget_parent_class)->constructor (type,
                                                                                                          n_construct_properties,

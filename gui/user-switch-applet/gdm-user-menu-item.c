@@ -59,7 +59,7 @@ struct _GdmUserMenuItemClass
         GtkImageMenuItemClass parent_class;
 };
 
-G_DEFINE_TYPE (GdmUserMenuItem, gdm_user_menu_item, GTK_TYPE_IMAGE_MENU_ITEM);
+G_DEFINE_TYPE (GdmUserMenuItem, gdm_user_menu_item, GTK_TYPE_IMAGE_MENU_ITEM)
 
 
 static void

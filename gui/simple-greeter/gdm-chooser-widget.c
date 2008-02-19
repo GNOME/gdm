@@ -364,14 +364,11 @@ static gboolean
 shrink_edge_toward_active_row (GdmChooserWidget     *widget,
                                GtkTreeRowReference **edge_row)
 {
-        GtkTreeModel *model;
         GtkTreePath  *active_path;
         GtkTreePath  *edge_path;
         GtkTreeIter   edge_iter;
         gboolean      edge_is_hidden;
         int           relative_position;
-
-        model = GTK_TREE_MODEL (widget->priv->list_store);
 
         active_path = gtk_tree_row_reference_get_path (widget->priv->active_row);
         translate_base_path_to_sorted_path (widget, &active_path);
@@ -919,9 +916,6 @@ gdm_chooser_widget_constructor (GType                  type,
                                 GObjectConstructParam *construct_properties)
 {
         GdmChooserWidget      *chooser_widget;
-        GdmChooserWidgetClass *klass;
-
-        klass = GDM_CHOOSER_WIDGET_CLASS (g_type_class_peek (GDM_TYPE_CHOOSER_WIDGET));
 
         chooser_widget = GDM_CHOOSER_WIDGET (G_OBJECT_CLASS (gdm_chooser_widget_parent_class)->constructor (type,
                                                                                                             n_construct_properties,

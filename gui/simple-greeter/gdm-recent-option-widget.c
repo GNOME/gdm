@@ -237,10 +237,6 @@ gdm_recent_option_widget_set_gconf_key (GdmRecentOptionWidget          *widget,
 static void
 gdm_recent_option_widget_dispose (GObject *object)
 {
-        GdmRecentOptionWidget *widget;
-
-        widget = GDM_RECENT_OPTION_WIDGET (object);
-
         G_OBJECT_CLASS (gdm_recent_option_widget_parent_class)->dispose (object);
 }
 

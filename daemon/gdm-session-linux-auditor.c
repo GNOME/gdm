@@ -42,7 +42,7 @@ struct _GdmSessionLinuxAuditorPrivate
 
 static void gdm_session_linux_auditor_finalize (GObject *object);
 
-G_DEFINE_TYPE (GdmSessionLinuxAuditor, gdm_session_linux_auditor, GDM_TYPE_SESSION_AUDITOR);
+G_DEFINE_TYPE (GdmSessionLinuxAuditor, gdm_session_linux_auditor, GDM_TYPE_SESSION_AUDITOR)
 
 static void
 gdm_session_linux_auditor_report_login_attempt (GdmSessionAuditor *auditor,

@@ -62,7 +62,7 @@
 #include "gdm-greeter-login-window.h"
 #include "gdm-user-chooser-widget.h"
 
-#if HAVE_PAM
+#ifdef HAVE_PAM
 #include <security/pam_appl.h>
 #define PW_ENTRY_SIZE PAM_MAX_RESP_SIZE
 #else
@@ -1170,9 +1170,6 @@ gdm_greeter_login_window_constructor (GType                  type,
                                       GObjectConstructParam *construct_properties)
 {
         GdmGreeterLoginWindow      *login_window;
-        GdmGreeterLoginWindowClass *klass;
-
-        klass = GDM_GREETER_LOGIN_WINDOW_CLASS (g_type_class_peek (GDM_TYPE_GREETER_LOGIN_WINDOW));
 
         login_window = GDM_GREETER_LOGIN_WINDOW (G_OBJECT_CLASS (gdm_greeter_login_window_parent_class)->constructor (type,
                                                                                                                       n_construct_properties,

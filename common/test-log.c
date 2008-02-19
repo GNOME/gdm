@@ -46,8 +46,8 @@ test_log (void)
 
         g_message ("Test message");
         g_warning ("Test warning");
-        g_error ("Test error");
         g_critical ("Test critical");
+        g_error ("Test error");
 }
 
 int

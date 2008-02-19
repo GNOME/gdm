@@ -966,13 +966,12 @@ static gboolean
 gdm_product_slave_start (GdmSlave *slave)
 {
         gboolean ret;
-        gboolean res;
         GError  *error;
         char    *display_id;
 
         ret = FALSE;
 
-        res = GDM_SLAVE_CLASS (gdm_product_slave_parent_class)->start (slave);
+        GDM_SLAVE_CLASS (gdm_product_slave_parent_class)->start (slave);
 
         g_object_get (slave,
                       "display-id", &display_id,
@@ -1019,11 +1018,9 @@ gdm_product_slave_start (GdmSlave *slave)
 static gboolean
 gdm_product_slave_stop (GdmSlave *slave)
 {
-        gboolean res;
-
         g_debug ("GdmProductSlave: Stopping product_slave");
 
-        res = GDM_SLAVE_CLASS (gdm_product_slave_parent_class)->stop (slave);
+        GDM_SLAVE_CLASS (gdm_product_slave_parent_class)->stop (slave);
 
         if (GDM_PRODUCT_SLAVE (slave)->priv->session != NULL) {
                 gdm_session_close (GDM_SESSION (GDM_PRODUCT_SLAVE (slave)->priv->session));
@@ -1050,10 +1047,6 @@ gdm_product_slave_set_property (GObject      *object,
                                 const GValue *value,
                                 GParamSpec   *pspec)
 {
-        GdmProductSlave *self;
-
-        self = GDM_PRODUCT_SLAVE (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1067,10 +1060,6 @@ gdm_product_slave_get_property (GObject    *object,
                                 GValue     *value,
                                 GParamSpec *pspec)
 {
-        GdmProductSlave *self;
-
-        self = GDM_PRODUCT_SLAVE (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1084,9 +1073,6 @@ gdm_product_slave_constructor (GType                  type,
                                GObjectConstructParam *construct_properties)
 {
         GdmProductSlave      *product_slave;
-        GdmProductSlaveClass *klass;
-
-        klass = GDM_PRODUCT_SLAVE_CLASS (g_type_class_peek (GDM_TYPE_PRODUCT_SLAVE));
 
         product_slave = GDM_PRODUCT_SLAVE (G_OBJECT_CLASS (gdm_product_slave_parent_class)->constructor (type,
                                                                                                          n_construct_properties,

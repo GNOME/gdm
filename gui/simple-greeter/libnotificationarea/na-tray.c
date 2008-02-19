@@ -83,7 +83,7 @@ static TraysScreen *trays_screens = NULL;
 
 static void icon_tip_show_next (IconTip *icontip);
 
-G_DEFINE_TYPE (NaTray, na_tray, GTK_TYPE_BIN);
+G_DEFINE_TYPE (NaTray, na_tray, GTK_TYPE_BIN)
 
 static NaTray *
 get_tray (TraysScreen *trays_screen)

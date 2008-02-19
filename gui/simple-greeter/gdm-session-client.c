@@ -25,6 +25,8 @@
 #include <unistd.h>
 #include <string.h>
 #include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -401,9 +403,6 @@ gdm_session_client_constructor (GType                  type,
                                 GObjectConstructParam *construct_properties)
 {
         GdmSessionClient      *client;
-        GdmSessionClientClass *klass;
-
-        klass = GDM_SESSION_CLIENT_CLASS (g_type_class_peek (GDM_TYPE_SESSION_CLIENT));
 
         client = GDM_SESSION_CLIENT (G_OBJECT_CLASS (gdm_session_client_parent_class)->constructor (type,
                                                                                                     n_construct_properties,
@@ -419,10 +418,6 @@ gdm_session_client_constructor (GType                  type,
 static void
 gdm_session_client_dispose (GObject *object)
 {
-        GdmSessionClient *session_client;
-
-        session_client = GDM_SESSION_CLIENT (object);
-
         G_OBJECT_CLASS (gdm_session_client_parent_class)->dispose (object);
 }
 

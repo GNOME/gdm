@@ -916,9 +916,6 @@ gdm_greeter_server_constructor (GType                  type,
                                GObjectConstructParam *construct_properties)
 {
         GdmGreeterServer      *greeter_server;
-        GdmGreeterServerClass *klass;
-
-        klass = GDM_GREETER_SERVER_CLASS (g_type_class_peek (GDM_TYPE_GREETER_SERVER));
 
         greeter_server = GDM_GREETER_SERVER (G_OBJECT_CLASS (gdm_greeter_server_parent_class)->constructor (type,
                                                                                        n_construct_properties,

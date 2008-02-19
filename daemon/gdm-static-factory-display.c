@@ -124,10 +124,6 @@ gdm_static_factory_display_set_property (GObject      *object,
                                          const GValue *value,
                                          GParamSpec   *pspec)
 {
-        GdmStaticFactoryDisplay *self;
-
-        self = GDM_STATIC_FACTORY_DISPLAY (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -141,10 +137,6 @@ gdm_static_factory_display_get_property (GObject    *object,
                                          GValue     *value,
                                          GParamSpec *pspec)
 {
-        GdmStaticFactoryDisplay *self;
-
-        self = GDM_STATIC_FACTORY_DISPLAY (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -158,9 +150,6 @@ gdm_static_factory_display_constructor (GType                  type,
                                         GObjectConstructParam *construct_properties)
 {
         GdmStaticFactoryDisplay      *display;
-        GdmStaticFactoryDisplayClass *klass;
-
-        klass = GDM_STATIC_FACTORY_DISPLAY_CLASS (g_type_class_peek (GDM_TYPE_STATIC_FACTORY_DISPLAY));
 
         display = GDM_STATIC_FACTORY_DISPLAY (G_OBJECT_CLASS (gdm_static_factory_display_parent_class)->constructor (type,
                                                                                                                      n_construct_properties,

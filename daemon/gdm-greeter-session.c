@@ -66,10 +66,6 @@ gdm_greeter_session_set_property (GObject      *object,
                                   const GValue *value,
                                   GParamSpec   *pspec)
 {
-        GdmGreeterSession *self;
-
-        self = GDM_GREETER_SESSION (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -83,10 +79,6 @@ gdm_greeter_session_get_property (GObject    *object,
                                   GValue     *value,
                                   GParamSpec *pspec)
 {
-        GdmGreeterSession *self;
-
-        self = GDM_GREETER_SESSION (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

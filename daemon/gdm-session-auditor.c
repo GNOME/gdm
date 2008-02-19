@@ -61,7 +61,7 @@ enum {
         PROP_DISPLAY_DEVICE
 };
 
-G_DEFINE_TYPE (GdmSessionAuditor, gdm_session_auditor, G_TYPE_OBJECT);
+G_DEFINE_TYPE (GdmSessionAuditor, gdm_session_auditor, G_TYPE_OBJECT)
 
 static void
 gdm_session_auditor_class_init (GdmSessionAuditorClass *auditor_class)

@@ -67,10 +67,6 @@ gdm_host_chooser_dialog_set_property (GObject        *object,
                                       const GValue   *value,
                                       GParamSpec     *pspec)
 {
-        GdmHostChooserDialog *self;
-
-        self = GDM_HOST_CHOOSER_DIALOG (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -84,10 +80,6 @@ gdm_host_chooser_dialog_get_property (GObject        *object,
                                       GValue         *value,
                                       GParamSpec     *pspec)
 {
-        GdmHostChooserDialog *self;
-
-        self = GDM_HOST_CHOOSER_DIALOG (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -101,9 +93,6 @@ gdm_host_chooser_dialog_constructor (GType                  type,
                                      GObjectConstructParam *construct_properties)
 {
         GdmHostChooserDialog      *host_chooser_dialog;
-        GdmHostChooserDialogClass *klass;
-
-        klass = GDM_HOST_CHOOSER_DIALOG_CLASS (g_type_class_peek (GDM_TYPE_HOST_CHOOSER_DIALOG));
 
         host_chooser_dialog = GDM_HOST_CHOOSER_DIALOG (G_OBJECT_CLASS (gdm_host_chooser_dialog_parent_class)->constructor (type,
                                                                                                                            n_construct_properties,
@@ -115,10 +104,6 @@ gdm_host_chooser_dialog_constructor (GType                  type,
 static void
 gdm_host_chooser_dialog_dispose (GObject *object)
 {
-        GdmHostChooserDialog *host_chooser_dialog;
-
-        host_chooser_dialog = GDM_HOST_CHOOSER_DIALOG (object);
-
         g_debug ("Disposing host_chooser_dialog");
 
         G_OBJECT_CLASS (gdm_host_chooser_dialog_parent_class)->dispose (object);

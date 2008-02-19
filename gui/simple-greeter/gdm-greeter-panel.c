@@ -78,10 +78,6 @@ gdm_greeter_panel_set_property (GObject        *object,
                                 const GValue   *value,
                                 GParamSpec     *pspec)
 {
-        GdmGreeterPanel *self;
-
-        self = GDM_GREETER_PANEL (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -95,10 +91,6 @@ gdm_greeter_panel_get_property (GObject        *object,
                                 GValue         *value,
                                 GParamSpec     *pspec)
 {
-        GdmGreeterPanel *self;
-
-        self = GDM_GREETER_PANEL (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -112,9 +104,6 @@ gdm_greeter_panel_constructor (GType                  type,
                                GObjectConstructParam *construct_properties)
 {
         GdmGreeterPanel      *greeter_panel;
-        GdmGreeterPanelClass *klass;
-
-        klass = GDM_GREETER_PANEL_CLASS (g_type_class_peek (GDM_TYPE_GREETER_PANEL));
 
         greeter_panel = GDM_GREETER_PANEL (G_OBJECT_CLASS (gdm_greeter_panel_parent_class)->constructor (type,
                                                                                                          n_construct_properties,
@@ -126,10 +115,6 @@ gdm_greeter_panel_constructor (GType                  type,
 static void
 gdm_greeter_panel_dispose (GObject *object)
 {
-        GdmGreeterPanel *greeter_panel;
-
-        greeter_panel = GDM_GREETER_PANEL (object);
-
         g_debug ("Disposing greeter_panel");
 
         G_OBJECT_CLASS (gdm_greeter_panel_parent_class)->dispose (object);

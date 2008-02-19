@@ -86,7 +86,7 @@ static void gdm_user_finalize     (GObject      *object);
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (GdmUser, gdm_user, G_TYPE_OBJECT);
+G_DEFINE_TYPE (GdmUser, gdm_user, G_TYPE_OBJECT)
 
 static int
 session_compare (const char *a,

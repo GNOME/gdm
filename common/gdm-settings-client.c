@@ -45,8 +45,6 @@
 #define SETTINGS_DBUS_PATH      "/org/gnome/DisplayManager/Settings"
 #define SETTINGS_DBUS_INTERFACE "org.gnome.DisplayManager.Settings"
 
-static char            *schemas_file   = NULL;
-static char            *schemas_root   = NULL;
 static GHashTable      *notifiers      = NULL;
 static GHashTable      *schemas        = NULL;
 static DBusGProxy      *settings_proxy = NULL;
@@ -250,7 +248,6 @@ gdm_settings_client_get_locale_string (const char  *key,
 {
         char    *candidate_key;
         char    *translated_value;
-        GError  *error;
         char   **languages;
         gboolean free_languages = FALSE;
         int      i;
@@ -260,7 +257,6 @@ gdm_settings_client_get_locale_string (const char  *key,
 
         candidate_key = NULL;
         translated_value = NULL;
-        error = NULL;
 
         if (locale != NULL) {
                 languages = g_new (char *, 2);
@@ -528,9 +524,6 @@ gdm_settings_client_init (const char *file,
 
         schemas = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify)gdm_settings_entry_free);
         g_slist_foreach (list, (GFunc)hashify_list, NULL);
-
-        schemas_file = g_strdup (file);
-        schemas_root = g_strdup (root);
 
         dbus_g_proxy_add_signal (settings_proxy, "ValueChanged", G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
         dbus_g_proxy_connect_signal (settings_proxy,

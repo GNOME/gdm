@@ -124,10 +124,6 @@ gdm_user_chooser_widget_set_property (GObject        *object,
                                       const GValue   *value,
                                       GParamSpec     *pspec)
 {
-        GdmUserChooserWidget *self;
-
-        self = GDM_USER_CHOOSER_WIDGET (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -141,10 +137,6 @@ gdm_user_chooser_widget_get_property (GObject        *object,
                                       GValue         *value,
                                       GParamSpec     *pspec)
 {
-        GdmUserChooserWidget *self;
-
-        self = GDM_USER_CHOOSER_WIDGET (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -158,9 +150,6 @@ gdm_user_chooser_widget_constructor (GType                  type,
                                      GObjectConstructParam *construct_properties)
 {
         GdmUserChooserWidget      *user_chooser_widget;
-        GdmUserChooserWidgetClass *klass;
-
-        klass = GDM_USER_CHOOSER_WIDGET_CLASS (g_type_class_peek (GDM_TYPE_USER_CHOOSER_WIDGET));
 
         user_chooser_widget = GDM_USER_CHOOSER_WIDGET (G_OBJECT_CLASS (gdm_user_chooser_widget_parent_class)->constructor (type,
                                                                                                                            n_construct_properties,

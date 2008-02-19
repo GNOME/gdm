@@ -552,13 +552,11 @@ static char *
 get_login_window_session_id (DBusConnection *connection,
                              const char     *seat_id)
 {
-        gboolean    ret;
         gboolean    can_activate_sessions;
         char      **sessions;
         char       *session_id;
         int         i;
 
-        ret = FALSE;
         session_id = NULL;
         sessions = NULL;
 

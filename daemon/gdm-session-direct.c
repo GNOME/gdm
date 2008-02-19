@@ -107,7 +107,7 @@ G_DEFINE_TYPE_WITH_CODE (GdmSessionDirect,
                          gdm_session_direct,
                          G_TYPE_OBJECT,
                          G_IMPLEMENT_INTERFACE (GDM_TYPE_SESSION,
-                                                gdm_session_iface_init));
+                                                gdm_session_iface_init))
 
 static gboolean
 send_dbus_message (DBusConnection *connection,
@@ -1334,13 +1334,12 @@ static void
 gdm_session_direct_open (GdmSession *session)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
-        gboolean          res;
 
         g_return_if_fail (session != NULL);
 
         g_debug ("GdmSessionDirect: Opening session");
 
-        res = start_worker (impl);
+        start_worker (impl);
 }
 
 static void

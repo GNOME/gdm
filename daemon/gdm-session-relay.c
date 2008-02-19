@@ -1017,10 +1017,6 @@ gdm_session_relay_set_property (GObject      *object,
                                 const GValue *value,
                                 GParamSpec   *pspec)
 {
-        GdmSessionRelay *self;
-
-        self = GDM_SESSION_RELAY (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1034,10 +1030,6 @@ gdm_session_relay_get_property (GObject    *object,
                                 GValue     *value,
                                 GParamSpec *pspec)
 {
-        GdmSessionRelay *self;
-
-        self = GDM_SESSION_RELAY (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1051,9 +1043,6 @@ gdm_session_relay_constructor (GType                  type,
                                GObjectConstructParam *construct_properties)
 {
         GdmSessionRelay      *session_relay;
-        GdmSessionRelayClass *klass;
-
-        klass = GDM_SESSION_RELAY_CLASS (g_type_class_peek (GDM_TYPE_SESSION_RELAY));
 
         session_relay = GDM_SESSION_RELAY (G_OBJECT_CLASS (gdm_session_relay_parent_class)->constructor (type,
                                                                                                             n_construct_properties,

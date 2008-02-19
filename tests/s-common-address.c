@@ -81,8 +81,7 @@ teardown (void)
  */
 START_TEST (test_gdm_address_get_type)
 {
-        GType g;
-        g = gdm_address_get_type ();
+        gdm_address_get_type ();
         /* it did not crash! :) */
 
 }

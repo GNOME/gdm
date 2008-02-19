@@ -439,7 +439,6 @@ do_bind (guint                     port,
         ai_list = NULL;
         if ((gaierr = getaddrinfo (NULL, strport, &hints, &ai_list)) != 0) {
                 g_error ("Unable to connect to socket: %s", gai_strerror (gaierr));
-                return -1;
         }
 
         /* should only be one but.. */
@@ -1059,9 +1058,6 @@ indirect_client_create (GdmXdmcpDisplayFactory *factory,
                         GdmAddress             *dsp_address)
 {
         IndirectClient *ic;
-        int             count;
-
-        count = g_slist_length (factory->priv->indirect_clients);
 
         ic = g_new0 (IndirectClient, 1);
         ic->dsp_address = gdm_address_copy (dsp_address);
@@ -1568,15 +1564,15 @@ gdm_xdmcp_handle_forward_query (GdmXdmcpDisplayFactory *factory,
 
         /* Check with tcp_wrappers if client is allowed to access */
         if (! gdm_xdmcp_host_allow (address)) {
-                char *host;
+                char *host2;
 
-                host = NULL;
-                gdm_address_get_numeric_info (address, &host, NULL);
+                host2 = NULL;
+                gdm_address_get_numeric_info (address, &host2, NULL);
 
                 g_warning ("%s: Got FORWARD_QUERY from banned host %s",
                            "gdm_xdmcp_handle_forward query",
-                           host);
-                g_free (host);
+                           host2);
+                g_free (host2);
                 return;
         }
 

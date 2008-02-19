@@ -320,9 +320,6 @@ gdm_manager_constructor (GType                  type,
                          GObjectConstructParam *construct_properties)
 {
         GdmManager      *manager;
-        GdmManagerClass *klass;
-
-        klass = GDM_MANAGER_CLASS (g_type_class_peek (GDM_TYPE_MANAGER));
 
         manager = GDM_MANAGER (G_OBJECT_CLASS (gdm_manager_parent_class)->constructor (type,
                                                                                        n_construct_properties,

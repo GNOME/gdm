@@ -625,10 +625,6 @@ gdm_greeter_client_set_property (GObject        *object,
                                  const GValue   *value,
                                  GParamSpec     *pspec)
 {
-        GdmGreeterClient *self;
-
-        self = GDM_GREETER_CLIENT (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -642,10 +638,6 @@ gdm_greeter_client_get_property (GObject        *object,
                                  GValue         *value,
                                  GParamSpec     *pspec)
 {
-        GdmGreeterClient *self;
-
-        self = GDM_GREETER_CLIENT (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -659,9 +651,6 @@ gdm_greeter_client_constructor (GType                  type,
                                  GObjectConstructParam *construct_properties)
 {
         GdmGreeterClient      *greeter_client;
-        GdmGreeterClientClass *klass;
-
-        klass = GDM_GREETER_CLIENT_CLASS (g_type_class_peek (GDM_TYPE_GREETER_CLIENT));
 
         greeter_client = GDM_GREETER_CLIENT (G_OBJECT_CLASS (gdm_greeter_client_parent_class)->constructor (type,
                                                                                                             n_construct_properties,
@@ -673,10 +662,6 @@ gdm_greeter_client_constructor (GType                  type,
 static void
 gdm_greeter_client_dispose (GObject *object)
 {
-        GdmGreeterClient *greeter_client;
-
-        greeter_client = GDM_GREETER_CLIENT (object);
-
         g_debug ("GdmGreeterClient: Disposing greeter_client");
 
         G_OBJECT_CLASS (gdm_greeter_client_parent_class)->dispose (object);

@@ -337,6 +337,11 @@ gdm_slave_run_script (GdmSlave   *slave,
         g_ptr_array_foreach (env, (GFunc)g_free, NULL);
         g_ptr_array_free (env, TRUE);
 
+        if (! res) {
+                g_warning ("GdmSlave: Unable to run script: %s", error->message);
+                g_error_free (error);
+        }
+
         gdm_slave_whack_temp_auth_file (slave);
 
         if (WIFEXITED (status)) {
@@ -836,7 +841,6 @@ _get_primary_user_session_id (GdmSlave   *slave,
                               const char *username)
 {
         gboolean    res;
-        gboolean    ret;
         gboolean    can_activate_sessions;
         GError     *error;
         DBusGProxy *manager_proxy;
@@ -851,7 +855,6 @@ _get_primary_user_session_id (GdmSlave   *slave,
                 return NULL;
         }
 
-        ret = FALSE;
         manager_proxy = NULL;
         primary_ssid = NULL;
         sessions = NULL;
@@ -1209,11 +1212,8 @@ gdm_slave_constructor (GType                  type,
                        GObjectConstructParam *construct_properties)
 {
         GdmSlave      *slave;
-        GdmSlaveClass *klass;
         gboolean       res;
         const char    *id;
-
-        klass = GDM_SLAVE_CLASS (g_type_class_peek (GDM_TYPE_SLAVE));
 
         slave = GDM_SLAVE (G_OBJECT_CLASS (gdm_slave_parent_class)->constructor (type,
                                                                                  n_construct_properties,

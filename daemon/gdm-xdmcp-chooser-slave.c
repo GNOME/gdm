@@ -288,9 +288,7 @@ gdm_xdmcp_chooser_slave_run (GdmXdmcpChooserSlave *slave)
 static gboolean
 gdm_xdmcp_chooser_slave_start (GdmSlave *slave)
 {
-        gboolean res;
-
-        res = GDM_SLAVE_CLASS (gdm_xdmcp_chooser_slave_parent_class)->start (slave);
+        GDM_SLAVE_CLASS (gdm_xdmcp_chooser_slave_parent_class)->start (slave);
 
         gdm_xdmcp_chooser_slave_run (GDM_XDMCP_CHOOSER_SLAVE (slave));
 
@@ -300,11 +298,9 @@ gdm_xdmcp_chooser_slave_start (GdmSlave *slave)
 static gboolean
 gdm_xdmcp_chooser_slave_stop (GdmSlave *slave)
 {
-        gboolean res;
-
         g_debug ("GdmXdmcpChooserSlave: Stopping xdmcp_chooser_slave");
 
-        res = GDM_SLAVE_CLASS (gdm_xdmcp_chooser_slave_parent_class)->stop (slave);
+        GDM_SLAVE_CLASS (gdm_xdmcp_chooser_slave_parent_class)->stop (slave);
 
         if (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser != NULL) {
                 gdm_welcome_session_stop (GDM_WELCOME_SESSION (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser));
@@ -321,10 +317,6 @@ gdm_xdmcp_chooser_slave_set_property (GObject      *object,
                                       const GValue *value,
                                       GParamSpec   *pspec)
 {
-        GdmXdmcpChooserSlave *self;
-
-        self = GDM_XDMCP_CHOOSER_SLAVE (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -338,10 +330,6 @@ gdm_xdmcp_chooser_slave_get_property (GObject    *object,
                                       GValue     *value,
                                       GParamSpec *pspec)
 {
-        GdmXdmcpChooserSlave *self;
-
-        self = GDM_XDMCP_CHOOSER_SLAVE (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -355,9 +343,6 @@ gdm_xdmcp_chooser_slave_constructor (GType                  type,
                                      GObjectConstructParam *construct_properties)
 {
         GdmXdmcpChooserSlave      *xdmcp_chooser_slave;
-        GdmXdmcpChooserSlaveClass *klass;
-
-        klass = GDM_XDMCP_CHOOSER_SLAVE_CLASS (g_type_class_peek (GDM_TYPE_XDMCP_CHOOSER_SLAVE));
 
         xdmcp_chooser_slave = GDM_XDMCP_CHOOSER_SLAVE (G_OBJECT_CLASS (gdm_xdmcp_chooser_slave_parent_class)->constructor (type,
                                                                                                                            n_construct_properties,

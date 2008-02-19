@@ -600,9 +600,9 @@ parse_dbus_launch_output (const char *output,
 
         if (pidp != NULL) {
                 int      pid;
-                gboolean res;
-                res = parse_value_as_integer (g_match_info_fetch (match_info, 2), &pid);
-                if (res) {
+                gboolean result;
+                result = parse_value_as_integer (g_match_info_fetch (match_info, 2), &pid);
+                if (result) {
                         *pidp = pid;
                 } else {
                         *pidp = 0;
@@ -1030,9 +1030,6 @@ gdm_welcome_session_constructor (GType                  type,
                                  GObjectConstructParam *construct_properties)
 {
         GdmWelcomeSession      *welcome_session;
-        GdmWelcomeSessionClass *klass;
-
-        klass = GDM_WELCOME_SESSION_CLASS (g_type_class_peek (GDM_TYPE_WELCOME_SESSION));
 
         welcome_session = GDM_WELCOME_SESSION (G_OBJECT_CLASS (gdm_welcome_session_parent_class)->constructor (type,
                                                                                                                n_construct_properties,

@@ -302,10 +302,6 @@ gdm_chooser_client_set_property (GObject        *object,
                                  const GValue   *value,
                                  GParamSpec     *pspec)
 {
-        GdmChooserClient *self;
-
-        self = GDM_CHOOSER_CLIENT (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -319,10 +315,6 @@ gdm_chooser_client_get_property (GObject        *object,
                                  GValue         *value,
                                  GParamSpec     *pspec)
 {
-        GdmChooserClient *self;
-
-        self = GDM_CHOOSER_CLIENT (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -336,9 +328,6 @@ gdm_chooser_client_constructor (GType                  type,
                                  GObjectConstructParam *construct_properties)
 {
         GdmChooserClient      *chooser_client;
-        GdmChooserClientClass *klass;
-
-        klass = GDM_CHOOSER_CLIENT_CLASS (g_type_class_peek (GDM_TYPE_CHOOSER_CLIENT));
 
         chooser_client = GDM_CHOOSER_CLIENT (G_OBJECT_CLASS (gdm_chooser_client_parent_class)->constructor (type,
                                                                                                             n_construct_properties,
@@ -350,10 +339,6 @@ gdm_chooser_client_constructor (GType                  type,
 static void
 gdm_chooser_client_dispose (GObject *object)
 {
-        GdmChooserClient *chooser_client;
-
-        chooser_client = GDM_CHOOSER_CLIENT (object);
-
         g_debug ("GdmChooserClient: Disposing chooser_client");
 
         G_OBJECT_CLASS (gdm_chooser_client_parent_class)->dispose (object);
