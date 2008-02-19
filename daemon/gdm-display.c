@@ -533,7 +533,7 @@ gdm_display_real_unmanage (GdmDisplay *display)
                 display->priv->user_access_file = NULL;
         }
 
-        if (display->priv->user_access_file != NULL) {
+        if (display->priv->access_file != NULL) {
                 gdm_display_access_file_close (display->priv->access_file);
                 g_object_unref (display->priv->access_file);
                 display->priv->access_file = NULL;
