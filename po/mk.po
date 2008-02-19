@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-17 15:08+0000\n"
-"PO-Revision-Date: 2008-02-17 18:45+0100\n"
+"POT-Creation-Date: 2008-02-19 00:43+0000\n"
+"PO-Revision-Date: 2008-02-19 21:45+0100\n"
 "Last-Translator: Arangel Angov <ufo@linux.net.mk>\n"
 "Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural= n==1 || n%10==1 ? 0 : 1\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../common/gdm-common.c:382
+#: ../common/gdm-common.c:395
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom не е  character уред"
 
@@ -68,7 +68,7 @@ msgid "Unable to establish credentials"
 msgstr "Не можам да ги проверам информациите"
 
 #: ../daemon/gdm-factory-slave.c:648 ../daemon/gdm-product-slave.c:394
-#: ../daemon/gdm-simple-slave.c:823
+#: ../daemon/gdm-simple-slave.c:852
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -154,76 +154,60 @@ msgstr "Прикажи уред"
 msgid "The display device"
 msgstr "Уредот за приказ"
 
-#: ../daemon/gdm-session-direct.c:1210 ../daemon/gdm-session-direct.c:1228
+#: ../daemon/gdm-session-direct.c:1264 ../daemon/gdm-session-direct.c:1282
 #, c-format
 msgid "worker exited with status %d"
 msgstr "работникот се исклучи со статус %d"
 
-#: ../daemon/gdm-session-settings.c:88
-msgid "Session Name"
-msgstr "Име на сесија"
-
-#: ../daemon/gdm-session-settings.c:89
-msgid "The name of the session"
-msgstr "Името на сесијата"
-
-#: ../daemon/gdm-session-settings.c:93
-msgid "Language Name"
-msgstr "Име на јазик"
-
-#: ../daemon/gdm-session-settings.c:94
-msgid "The name of the language"
-msgstr "Името на јазикот"
-
-#: ../daemon/gdm-session-worker.c:890
+#: ../daemon/gdm-session-worker.c:936
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "грешка при иницирање на разговорот со системот за автентикација - %s"
 
-#: ../daemon/gdm-session-worker.c:891
+#: ../daemon/gdm-session-worker.c:937
 msgid "general failure"
 msgstr "општ пад"
 
-#: ../daemon/gdm-session-worker.c:892
+#: ../daemon/gdm-session-worker.c:938
 msgid "out of memory"
 msgstr "нема повеќе меморија"
 
-#: ../daemon/gdm-session-worker.c:893
+#: ../daemon/gdm-session-worker.c:939
 msgid "application programmer error"
 msgstr "грешка со апликацијата"
 
-#: ../daemon/gdm-session-worker.c:894
+#: ../daemon/gdm-session-worker.c:940
 msgid "unknown error"
 msgstr "непозната грешка"
 
-#: ../daemon/gdm-session-worker.c:901
+#: ../daemon/gdm-session-worker.c:947
 msgid "Username:"
 msgstr "Корисничко име:"
 
-#: ../daemon/gdm-session-worker.c:907
+#: ../daemon/gdm-session-worker.c:953
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "грешка при информирање на системот за автентикација за барање на "
 "корисничкото име - %s"
 
-#: ../daemon/gdm-session-worker.c:921
+#: ../daemon/gdm-session-worker.c:967
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr "грешка при информирање на системот за автентикација за името на хостот - %s"
 
-#: ../daemon/gdm-session-worker.c:936
+#: ../daemon/gdm-session-worker.c:982
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
 "грешка при информирање на системот за автентикација за корисничката конзола "
 "- %s"
 
-#: ../daemon/gdm-session-worker.c:1099
+#: ../daemon/gdm-session-worker.c:1145
 msgid "no user account available"
 msgstr "не е достапна корисничка сметка"
 
-#: ../daemon/gdm-session-worker.c:1148
+#: ../daemon/gdm-session-worker.c:1194
 msgid "user account not available on system"
 msgstr "корисничката сметка не е достапна на системот"
 
@@ -575,7 +559,7 @@ msgstr "%a %b %e"
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1251
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1278
 #: ../gui/user-switch-applet/applet.c:1754
 msgid "Login Window"
 msgstr "Прозорец за најава"
@@ -616,7 +600,7 @@ msgstr "gtk-disconnect"
 msgid "Panel"
 msgstr "Панел"
 
-#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:139
+#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:143
 msgid "Languages"
 msgstr "Јазици"
 
@@ -638,13 +622,21 @@ msgstr "Друго..."
 msgid "Choose a language from the full list of available languages."
 msgstr "Изберете јазик од листата на достапни јазици."
 
-#: ../gui/simple-greeter/gdm-option-widget.c:390
+#: ../gui/simple-greeter/gdm-option-widget.c:433
 msgid "Label Text"
 msgstr "Текст со ознака"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:391
+#: ../gui/simple-greeter/gdm-option-widget.c:434
 msgid "The text to use as a label"
 msgstr "Текстот што треба да се користи за ознака"
+
+#: ../gui/simple-greeter/gdm-option-widget.c:441
+msgid "Icon name"
+msgstr "Име на иконата"
+
+#: ../gui/simple-greeter/gdm-option-widget.c:442
+msgid "The icon to use with the label"
+msgstr "Иконата што треба да се користи со ознаката"
 
 #: ../gui/simple-greeter/gdm-recent-option-widget.c:302
 msgid "Max Item Count"
@@ -689,16 +681,20 @@ msgid "Enable screen reader"
 msgstr "Вклучи читач од екранот"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
+msgid "Icon name to use for greeter logo"
+msgstr "Име на иконата за логото за поздравување"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
 msgid "Set to True to enable the background settings manager plugin."
 msgstr ""
 "Штиклирано за вклучување на додатокот за менаџерот за поставувањата за "
 "позадината."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
 msgid "Set to True to enable the on-screen keyboard."
 msgstr "Штиклирано за вклучување на тастатурата на екранот."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid ""
 "Set to True to enable the plugin to manage the accessibility keyboard "
 "settings."
@@ -706,25 +702,29 @@ msgstr ""
 "Штиклирано за вклучување на додатокот за менаџирање на поставувањата за "
 "тастатурата за пристапност."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
 msgid "Set to True to enable the screen magnifier."
 msgstr "Штиклирано за вклучување на лупата."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
 msgid "Set to True to enable the screen reader."
 msgstr "Штиклирано за вклучување на читачот на екранот."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "Set to True to enable the xsettings settings manager plugin."
 msgstr ""
 "Штиклирано за вклучување на додатонкот за менаџер на поставувањата за "
 "xsettings."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+msgid "Set to the themed icon name to use for the greeter logo."
+msgstr "Поставено на името на иконата од темата за користење со логото за поздравување."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid "True if the background settings manager plugin is enabled."
 msgstr "Вклучено ако е вклучен додатокот за менаџерот за поставувања на позадината."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "Вклучено ако е вклучен додатокот за менаџерот за поставувања за xsettings."
 
