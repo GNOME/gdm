@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.22\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-14 07:42+0000\n"
-"PO-Revision-Date: 2008-02-14 07:45+0000\n"
+"POT-Creation-Date: 2008-02-19 07:55+0000\n"
+"PO-Revision-Date: 2008-02-19 08:00+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../common/gdm-common.c:382
+#: ../common/gdm-common.c:395
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom não é um dispositivo de caracteres"
 
@@ -56,7 +56,7 @@ msgid "Unable to establish credentials"
 msgstr "Incapaz de estabelecer as credenciais"
 
 #: ../daemon/gdm-factory-slave.c:648 ../daemon/gdm-product-slave.c:394
-#: ../daemon/gdm-simple-slave.c:823
+#: ../daemon/gdm-simple-slave.c:852
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -143,62 +143,62 @@ msgstr "Dispositivo de Ecrã"
 msgid "The display device"
 msgstr "O dispositivo de ecrã"
 
-#: ../daemon/gdm-session-direct.c:1210 ../daemon/gdm-session-direct.c:1228
+#: ../daemon/gdm-session-direct.c:1264 ../daemon/gdm-session-direct.c:1282
 #, c-format
 msgid "worker exited with status %d"
 msgstr "processo subordinado terminou com o estado %d"
 
-#: ../daemon/gdm-session-worker.c:890
+#: ../daemon/gdm-session-worker.c:936
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "erro ao iniciar conversação com o sistema de autenticação - %s"
 
-#: ../daemon/gdm-session-worker.c:891
+#: ../daemon/gdm-session-worker.c:937
 msgid "general failure"
 msgstr "falha geral"
 
-#: ../daemon/gdm-session-worker.c:892
+#: ../daemon/gdm-session-worker.c:938
 msgid "out of memory"
 msgstr "sem memória livre"
 
-#: ../daemon/gdm-session-worker.c:893
+#: ../daemon/gdm-session-worker.c:939
 msgid "application programmer error"
 msgstr "erro do programador da aplicação"
 
-#: ../daemon/gdm-session-worker.c:894
+#: ../daemon/gdm-session-worker.c:940
 msgid "unknown error"
 msgstr "erro desconhecido"
 
-#: ../daemon/gdm-session-worker.c:901
+#: ../daemon/gdm-session-worker.c:947
 msgid "Username:"
 msgstr "Utilizador:"
 
-#: ../daemon/gdm-session-worker.c:907
+#: ../daemon/gdm-session-worker.c:953
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "erro ao informar o sistema de autenticação de qual a forma preferida de "
 "pedir o utilizador - %s"
 
-#: ../daemon/gdm-session-worker.c:921
+#: ../daemon/gdm-session-worker.c:967
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 "erro ao informar o sistema de autenticação de qual a máquina do utilizador - "
 "%s"
 
-#: ../daemon/gdm-session-worker.c:936
+#: ../daemon/gdm-session-worker.c:982
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
 "erro ao informar o sistema de autenticação de qual a consola do utilizador - "
 "%s"
 
-#: ../daemon/gdm-session-worker.c:1099
+#: ../daemon/gdm-session-worker.c:1145
 msgid "no user account available"
 msgstr "nenhuma conta de utilizador disponível"
 
-#: ../daemon/gdm-session-worker.c:1148
+#: ../daemon/gdm-session-worker.c:1194
 msgid "user account not available on system"
 msgstr "conta de utilizador indisponível neste sistema"
 
@@ -550,7 +550,7 @@ msgstr "%a %b %e"
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1251
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1278
 #: ../gui/user-switch-applet/applet.c:1754
 msgid "Login Window"
 msgstr "Janela de Início de Sessão"
@@ -591,7 +591,7 @@ msgstr "gtk-disconnect"
 msgid "Panel"
 msgstr "Painel"
 
-#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:139
+#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:143
 msgid "Languages"
 msgstr "Idiomas"
 
@@ -600,7 +600,7 @@ msgid "_Languages:"
 msgstr "_Idiomas:"
 
 #: ../gui/simple-greeter/gdm-language-chooser-widget.c:191
-#: ../gui/simple-greeter/gdm-language-option-widget.c:211
+#: ../gui/simple-greeter/gdm-language-option-widget.c:212
 msgid "_Language:"
 msgstr "I_dioma:"
 
@@ -613,19 +613,27 @@ msgstr "Outro..."
 msgid "Choose a language from the full list of available languages."
 msgstr "Seleccione um idioma na lista completa de idiomas disponíveis."
 
-#: ../gui/simple-greeter/gdm-option-widget.c:384
+#: ../gui/simple-greeter/gdm-option-widget.c:433
 msgid "Label Text"
 msgstr "Texto da Etiqueta"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:385
+#: ../gui/simple-greeter/gdm-option-widget.c:434
 msgid "The text to use as a label"
 msgstr "O texto a utilizar como uma etiqueta"
 
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:301
+#: ../gui/simple-greeter/gdm-option-widget.c:441
+msgid "Icon name"
+msgstr "Nome do ícone"
+
+#: ../gui/simple-greeter/gdm-option-widget.c:442
+msgid "The icon to use with the label"
+msgstr "O ícone a utilizar com a etiqueta"
+
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:302
 msgid "Max Item Count"
 msgstr "Número Máximo de Itens"
 
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:302
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:303
 msgid "The maximum number of items to keep around in the list"
 msgstr "O número máximo de itens a manter na lista"
 
@@ -664,16 +672,20 @@ msgid "Enable screen reader"
 msgstr "Activar a locução de ecrã"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
+msgid "Icon name to use for greeter logo"
+msgstr "O nome do ícone a utilizar para o logo das boas vindas"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
 msgid "Set to True to enable the background settings manager plugin."
 msgstr ""
 "Definir como Verdadeiro para activar o plugin de gestão de definições de "
 "fundo."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
 msgid "Set to True to enable the on-screen keyboard."
 msgstr "Definir como Verdadeiro para activar o teclado no ecrã."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid ""
 "Set to True to enable the plugin to manage the accessibility keyboard "
 "settings."
@@ -681,26 +693,30 @@ msgstr ""
 "Definir como Verdadeiro para activar o plugin de gestão de definições de "
 "acessibilidade de teclado."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
 msgid "Set to True to enable the screen magnifier."
 msgstr "Definir como Verdadeiro para activar o ampliador de ecrã."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
 msgid "Set to True to enable the screen reader."
 msgstr "Definir como Verdadeiro para activar o a locução de ecrã."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "Set to True to enable the xsettings settings manager plugin."
 msgstr ""
 "Definir como Verdadeiro para activar o plugin de gestão de definições "
 "xsettings."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+msgid "Set to the themed icon name to use for the greeter logo."
+msgstr "Definir o nome do ícone de tema a utilizar para o logo das boas vindas."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid "True if the background settings manager plugin is enabled."
 msgstr ""
 "Verdadeiro se o plugin de gestão de definições de fundo estiver activo."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr ""
 "Verdadeiro se o plugin de gestão de definições xsettings estiver activo."
@@ -741,43 +757,6 @@ msgstr "_Utilizadores:"
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:477
 msgid "_User:"
 msgstr "_Utilizador:"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:1
-msgid "A menu to quickly switch between users"
-msgstr "Um menu para alternar rapidamente entre utilizadores"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:2
-#: ../gui/user-switch-applet/applet.c:1563
-msgid "User Switcher"
-msgstr "Alternador de Utilizadores"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:3
-msgid "User Switcher Applet Factory"
-msgstr "Fábrica da Applet de Alternador de Utilizadores"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:1
-msgid "Edit Personal _Information"
-msgstr "Editar _Informação Pessoal"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:2
-msgid "_About"
-msgstr "_Sobre"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:3
-msgid "_Edit Users and Groups"
-msgstr "_Editar Utilizadores e Grupos"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:4
-msgid "_Help"
-msgstr "_Ajuda"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:5
-msgid "_Preferences"
-msgstr "_Preferências"
-
-#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:6
-msgid "_Setup Login Screen"
-msgstr "_Configurar o Ecrã de Início de Sessão"
 
 #: ../gui/user-switch-applet/applet.c:135
 msgid "Missing Required File"
@@ -859,6 +838,11 @@ msgstr "Utilizadores"
 #: ../gui/user-switch-applet/applet.c:1542
 msgid "User Switch Applet"
 msgstr "Applet de Alternador de Utilizadores"
+
+#: ../gui/user-switch-applet/applet.c:1563
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:2
+msgid "User Switcher"
+msgstr "Alternador de Utilizadores"
 
 #: ../gui/user-switch-applet/applet.c:1741
 msgid "Other"
@@ -1051,6 +1035,38 @@ msgid "Whether to show only users who are currently logged in, or all users."
 msgstr ""
 "Se apresentar apenas utilizadores com sessão iniciada ou todos os "
 "utilizadores."
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:1
+msgid "A menu to quickly switch between users"
+msgstr "Um menu para alternar rapidamente entre utilizadores"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in.h:3
+msgid "User Switcher Applet Factory"
+msgstr "Fábrica da Applet de Alternador de Utilizadores"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:1
+msgid "Edit Personal _Information"
+msgstr "Editar _Informação Pessoal"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:2
+msgid "_About"
+msgstr "_Sobre"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:3
+msgid "_Edit Users and Groups"
+msgstr "_Editar Utilizadores e Grupos"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:4
+msgid "_Help"
+msgstr "_Ajuda"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:5
+msgid "_Preferences"
+msgstr "_Preferências"
+
+#: ../gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml.h:6
+msgid "_Setup Login Screen"
+msgstr "_Configurar o Ecrã de Início de Sessão"
 
 #: ../utils/gdmflexiserver.c:59
 msgid "Send the specified protocol command to GDM"
