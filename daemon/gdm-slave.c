@@ -687,6 +687,8 @@ gdm_slave_add_user_authorization (GdmSlave   *slave,
                 *filenamep = NULL;
         }
 
+        g_debug ("GdmSlave: Requesting user authorization");
+
         error = NULL;
         res = dbus_g_proxy_call (slave->priv->display_proxy,
                                  "AddUserAuthorization",
@@ -695,10 +697,6 @@ gdm_slave_add_user_authorization (GdmSlave   *slave,
                                  G_TYPE_INVALID,
                                  G_TYPE_STRING, &filename,
                                  G_TYPE_INVALID);
-        if (filenamep != NULL) {
-                *filenamep = g_strdup (filename);
-        }
-        g_free (filename);
 
         if (! res) {
                 if (error != NULL) {
@@ -707,7 +705,14 @@ gdm_slave_add_user_authorization (GdmSlave   *slave,
                 } else {
                         g_warning ("Failed to add user authorization");
                 }
+        } else {
+                g_debug ("GdmSlave: Got user authorization: %s", filename);
         }
+
+        if (filenamep != NULL) {
+                *filenamep = g_strdup (filename);
+        }
+        g_free (filename);
 
         return res;
 }
