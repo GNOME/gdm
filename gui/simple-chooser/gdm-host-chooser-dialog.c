@@ -151,6 +151,13 @@ gdm_host_chooser_dialog_init (GdmHostChooserDialog *dialog)
                                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                 GTK_STOCK_OK, GTK_RESPONSE_OK,
                                 NULL);
+
+        gtk_container_set_border_width (GTK_CONTAINER (dialog), 12);
+        gtk_container_set_border_width (GTK_CONTAINER (dialog->priv->chooser_widget), 5);
+        gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+        gtk_window_set_title (GTK_WINDOW (dialog), _("Select System"));
+        gtk_window_set_icon_name (GTK_WINDOW (dialog), "computer");
+
         g_signal_connect (dialog,
                           "response",
                           G_CALLBACK (on_response),
