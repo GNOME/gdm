@@ -78,6 +78,10 @@ get_entry_for_key (const char *key)
 
         entry = g_hash_table_lookup (schemas, key);
 
+        if (entry == NULL) {
+                g_warning ("GdmSettingsClient: unable to find schema for key: %s", key);
+        }
+
         return entry;
 }
 
