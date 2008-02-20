@@ -1,16 +1,16 @@
-# translation of help.gnome-2-18.es.po to Español
+# translation of gdm.help.gnome-2-18.po to Español
 # Francisco Javier F. Serrador <serrador@openshine.com>, 2003, 2007.
 # Lucas Vieites <lucas@asixinformatica.com>, 2007.
-# Jorge González <jorgegonz@svn.gnome.org>, 2007.
+# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008.
 # translation of es.po to
 msgid ""
 msgstr ""
-"Project-Id-Version: help.gnome-2-18.es\n"
+"Project-Id-Version: gdm.help.gnome-2-18\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-22 03:51+0000\n"
-"PO-Revision-Date: 2007-04-21 16:41+0200\n"
+"POT-Creation-Date: 2007-10-17 03:33+0100\n"
+"PO-Revision-Date: 2008-02-20 16:09+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
-"Language-Team: Spanish <traductores@es.gnome.org>\n"
+"Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -571,14 +571,24 @@ msgid ""
 "different service name. For example, if \"foo\" is specified, then GDM will "
 "use the \"foo\" service name for normal login and \"foo-autologin\" for "
 "automatic login."
-msgstr "Tenga en cuenta que, de modo predeterminado, GDM utiliza «gdm» como nombre de servicio para un inicio de sesión normal y el nombre «gdm-autologin» para el inicio de sesión automático. Puede utilizar la opción de configuración <filename>PamStack</filename> para indicar un nombre distinto. Por ejemplo, si indica «foo», GDM utilizará el nombre «foo» para el servicio de inicio de sesión normal y «foo-autologin» para el inicio de sesión automático."
+msgstr ""
+"Tenga en cuenta que, de modo predeterminado, GDM utiliza «gdm» como nombre "
+"de servicio para un inicio de sesión normal y el nombre «gdm-autologin» para "
+"el inicio de sesión automático. Puede utilizar la opción de configuración "
+"<filename>PamStack</filename> para indicar un nombre distinto. Por ejemplo, "
+"si indica «foo», GDM utilizará el nombre «foo» para el servicio de inicio de "
+"sesión normal y «foo-autologin» para el inicio de sesión automático."
 
 #: C/gdm.xml:300(para)
 msgid ""
 "For those looking at the code, the gdm_verify_user function in "
 "<filename>daemon/verify-pam.c</filename> is used for normal login and the "
 "gdm_verify_setup_user function is used for automatic login."
-msgstr "Para aquellos que estén viendo el código, la función gdm_verify_user en <filename>daemon/verify-pam.c</filename> se utiliza para el inicio de sesión normal y la función gdm_verify_setup_user para el inicio de sesión automático."
+msgstr ""
+"Para aquellos que estén viendo el código, la función gdm_verify_user en "
+"<filename>daemon/verify-pam.c</filename> se utiliza para el inicio de sesión "
+"normal y la función gdm_verify_setup_user para el inicio de sesión "
+"automático."
 
 #: C/gdm.xml:308(title)
 msgid "Different Display Types"
@@ -6051,7 +6061,14 @@ msgid ""
 "LC_MESSAGES or LC_ALL in the GDM's runtime environment. Priorities between "
 "the mentioned environment variables can be found from your system's C "
 "library manual."
-msgstr "Los valores aceptados son: «auto» (predeterminado), «true» y «false». Si se ajusta a «auto» o se deja vacío, el formato de la hora se tomará de los ajuste de locale. Los ajustes de locale están basados en el idioma en uso, por lo tanto se cambia mediante las variables LANGUAGE (extensión GNU), LANG, LC_MESSAGES o LC_ALL en el entorno de ejecución de GDM. Podrá encontrar información acerda de las prioridades entre las variables de entorno indicadas en el manual de las bibliotecas de C de su sistema."
+msgstr ""
+"Los valores aceptados son: «auto» (predeterminado), «true» y «false». Si se "
+"ajusta a «auto» o se deja vacío, el formato de la hora se tomará de los "
+"ajuste de locale. Los ajustes de locale están basados en el idioma en uso, "
+"por lo tanto se cambia mediante las variables LANGUAGE (extensión GNU), "
+"LANG, LC_MESSAGES o LC_ALL en el entorno de ejecución de GDM. Podrá "
+"encontrar información acerda de las prioridades entre las variables de "
+"entorno indicadas en el manual de las bibliotecas de C de su sistema."
 
 #: C/gdm.xml:3776(term)
 msgid "UseCirclesInEntry"
@@ -6229,7 +6246,12 @@ msgid ""
 "the network. If you need to add some hosts not local to this network, or if "
 "you don't want to use a broadcast, you can list them explicitly in the "
 "<filename>Hosts</filename> key."
-msgstr "Si es «true», el selector emitirá una petición a la red local y recogerá las respuestas. De este modo el selector siempre mostrará todos los gestores disponibles en la red. Si necesita añadir algún servidor que no sea local a esta red, o si no desea utilizar «broadcast», puede añadirlo explícitamente en la clave <filename>Hosts</filename>."
+msgstr ""
+"Si es «true», el selector emitirá una petición a la red local y recogerá las "
+"respuestas. De este modo el selector siempre mostrará todos los gestores "
+"disponibles en la red. Si necesita añadir algún servidor que no sea local a "
+"esta red, o si no desea utilizar «broadcast», puede añadirlo explícitamente "
+"en la clave <filename>Hosts</filename>."
 
 #: C/gdm.xml:3911(term)
 msgid "Multicast"
@@ -6247,7 +6269,13 @@ msgid ""
 "group. If you don't want to send a multicast, you can specify IPv6 address "
 "in the <filename>Hosts </filename> key. The host will respond if it is "
 "listening to XDMCP requests and IPv6 is enabled there."
-msgstr "Si es «true» y está activado IPv6, el selector emitirá una petición multicast a la red local y recogerá las respuestas de los servidores que se hayan unido al grupo multicast. Si no desea emitir un multicast puede indicar una dirección IPv6 en la clave <filename>Hosts</filename>. El servidor responderá si está escuchando a las peticiones XDMCP y tiene activado IPv6."
+msgstr ""
+"Si es «true» y está activado IPv6, el selector emitirá una petición "
+"multicast a la red local y recogerá las respuestas de los servidores que se "
+"hayan unido al grupo multicast. Si no desea emitir un multicast puede "
+"indicar una dirección IPv6 en la clave <filename>Hosts</filename>. El "
+"servidor responderá si está escuchando a las peticiones XDMCP y tiene "
+"activado IPv6."
 
 #: C/gdm.xml:3926(term)
 msgid "MulticastAddr"
@@ -8198,7 +8226,7 @@ msgstr ""
 
 #: C/gdm.xml:5514(term)
 msgid "-l [pattern]"
-msgstr ""
+msgstr "-l [patrón]"
 
 #: C/gdm.xml:5516(para)
 msgid ""
@@ -8571,6 +8599,8 @@ msgid ""
 "daemon when starting a secure remote connection through ssh. It does not "
 "take any options."
 msgstr ""
+"Normalmente el demonio de GDM ejecuta <command>gdm-ssh-session</command> al "
+"iniciar una conexión remota segura a través de SSH. No toma ninguna opción."
 
 #: C/gdm.xml:5859(title)
 msgid "Themed Greeter"
@@ -9084,7 +9114,7 @@ msgstr "Ejecuta la aplicación de configuración de GDM."
 
 #: C/gdm.xml:6319(term)
 msgid "custom_cmd_button[0-9]"
-msgstr ""
+msgstr "custom_cmd_button[0-9]"
 
 #: C/gdm.xml:6321(para)
 msgid "Runs the <filename>n-th</filename> custom command."
@@ -9367,7 +9397,7 @@ msgstr ""
 
 #: C/gdm.xml:6555(title)
 msgid "Normal/Active/Prelight Nodes"
-msgstr ""
+msgstr "Nodos normal/activo/prelight"
 
 #: C/gdm.xml:6557(para)
 msgid ""
@@ -9393,6 +9423,10 @@ msgid ""
 "&lt;normal color=\"#ffffff\" alpha=\"0.0\"&gt;\n"
 "</screen>"
 msgstr ""
+"Cuando un elemento es \"rect\" (se puede omitir alpha y se toma 0.0): "
+"<screen>\n"
+"&lt;normal color=\"#ffffff\" alpha=\"0.0\"&gt;\n"
+"</screen>"
 
 #: C/gdm.xml:6582(para)
 msgid ""
@@ -9440,6 +9474,9 @@ msgid ""
 "If the item type is of userlist, then the background color for the icon and "
 "label can be set separately via the the following tag:"
 msgstr ""
+"Si el tipo de elemento es «userlist», entonces el color de fondo para el "
+"icono y la etiqueta se pueden establecer separadamente a través de la "
+"siguiente etiqueta:"
 
 #: C/gdm.xml:6627(screen)
 #, no-wrap
@@ -9477,6 +9514,8 @@ msgid ""
 "Text nodes can contain the following special character sequences which will "
 "be translated as follows:"
 msgstr ""
+"Los nodos de texto pueden contener las siguientes secuencias de caracteres "
+"especiales que se traducirán como sigue:"
 
 #: C/gdm.xml:6659(para)
 msgid "%% - A literal % character"
@@ -10072,6 +10111,11 @@ msgid ""
 "provide the full path in /etc/pam.conf) and ensure it is owned by uid 0 and "
 "not group or world writable."
 msgstr ""
+"Si está usando Solaris 10 o inferior, entonces necesita compilar el código "
+"pam_allow.c proporcionado con la distribución de GDM e instalarlo en /usr/"
+"lib/security (o proporcionar la ruta completa en /etc/pam.conf) y asegurarse "
+"de que el propietario tiene un uid 0 y sin grupo o que sea editable por todo "
+"usuario."
 
 #: C/gdm.xml:7093(para)
 msgid ""
@@ -10426,12 +10470,23 @@ msgid ""
 "debug information and do not sent the entire file. If you do not see any GDM "
 "syslog output, you may need to configure syslog (see syslog.3c man page)."
 msgstr ""
+"Si GDM comienza a no funcionar correctamente, siempre es buena idea incluir la "
+"información de depuración. Use el comando <command>gdmsetup</command> para activar la "
+"depuración (la casilla «Activar envío de mensajes de depuración al registro del sistema» en la solapa "
+"«Seguridad»), después use GDM hasta el punto donde falla, e incluya la salida de GDM "
+"que se envió a su registro del sistema (<filename>&lt;var&gt;/log/messages</filename> o "
+"<filename>&lt;var&gt;/adm/messages</filename> dependiendo de su sistema operativo). "
+"Ya que el registro del sistema puede ser muy grande, incluya sólo la información de depuración "
+"de GDM y no envíe el archivo entero. Si no ve ninguna salida de depuración de GDM, "
+"quizá necesite configurar el registro del sistema (consulte la página syslog.3c)."
 
 #: C/gdm.xml:7402(para)
 msgid ""
 "You should not leave debug on after collecting data. It will clutter your "
 "syslog and slow system performance."
 msgstr ""
+"No debería dejar la depuración activada después de obtener los datos. "
+"desordenará su archivo syslog y ralentizará el rendimiento del sistema."
 
 #: C/gdm.xml:7408(title)
 msgid "GDM Will Not Start"
@@ -10445,6 +10500,11 @@ msgid ""
 "error message or dialog when it tries to start, but it can be difficult to "
 "track down problems when GDM fails silently."
 msgstr ""
+"Puede haber muchos problemas que causen un fallo de GDM al inicio, pero esta "
+"sección discutirá algunos problemas comunes y cómo solucionar un problema de "
+"inicio de GDM. Algunos problemas provocarán que GDM responda con un mensaje "
+"de error o un diálogo cuando intenta iniciarse, pero puede ser difícil "
+"seguir un problema cuando GDM falla de forma silenciosa."
 
 #: C/gdm.xml:7419(para)
 msgid ""
@@ -10522,8 +10582,11 @@ msgid ""
 "the Free Software Foundation; either version 2 of the License, or (at your "
 "option) any later version."
 msgstr ""
-"Este programa es software libre; puede redistribuirlo y/o modificarlo bajo los términos de la <ulink type=\"help\" url=\"gnome-help:gpl"
-"\"><citetitle>Licencia Pública General GNU</citetitle></ulink> tal como se publica por la Free Software Foundation; ya sea la versión 2 de la Licencia, o (a su elección) cualquier versión posterior."
+"Este programa es software libre; puede redistribuirlo y/o modificarlo bajo "
+"los términos de la <ulink type=\"help\" url=\"gnome-help:gpl"
+"\"><citetitle>Licencia Pública General GNU</citetitle></ulink> tal como se "
+"publica por la Free Software Foundation; ya sea la versión 2 de la Licencia, "
+"o (a su elección) cualquier versión posterior."
 
 #: C/gdm.xml:7483(para)
 msgid ""
@@ -10531,7 +10594,11 @@ msgid ""
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
 "FITNESS FOR A PARTICULAR PURPOSE. See the <citetitle>GNU General Public "
 "License</citetitle> for more details."
-msgstr "Este programa se distribuye con la esperanza de que le sea útil, pero SIN NINGUNA GARANTÍA; sin incluso la garantía implícita de MERCANTILIDAD o IDONEIDAD PARA UN PROPÓSITO PARTICULAR. Vea la <citetitle>Licencia Pública General GNU</citetitle> para más detalles."
+msgstr ""
+"Este programa se distribuye con la esperanza de que le sea útil, pero SIN "
+"NINGUNA GARANTÍA; sin incluso la garantía implícita de MERCANTILIDAD o "
+"IDONEIDAD PARA UN PROPÓSITO PARTICULAR. Vea la <citetitle>Licencia Pública "
+"General GNU</citetitle> para más detalles."
 
 #: C/gdm.xml:7489(para)
 msgid ""
@@ -10557,7 +10624,7 @@ msgstr ""
 #: C/gdm.xml:0(None)
 msgid "translator-credits"
 msgstr ""
-"Jorge González <jorgegonz@svn.gnome.org>, 2007\n"
-"Lucas Vieites <lucas@asixinformatica.com>, 2007\n"
-"Francisco Javier F. Serrador <serrador@openshine.com>, 2003, 2006"
+"Jorge González <jorgegonz@svn.gnome.org>, 2007-2008.\n"
+"Lucas Vieites <lucas@asixinformatica.com>, 2007.\n"
+"Francisco Javier F. Serrador <serrador@openshine.com>, 2003, 2006."
 
