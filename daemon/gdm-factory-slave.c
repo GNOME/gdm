@@ -481,7 +481,7 @@ run_greeter (GdmFactorySlave *slave)
         /* FIXME: send a signal back to the master */
 
         /* Run the init script. gdmslave suspends until script has terminated */
-        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", "gdm");
+        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init/Default", "gdm");
 
         slave->priv->greeter_server = gdm_greeter_server_new (display_id);
         g_signal_connect (slave->priv->greeter_server,

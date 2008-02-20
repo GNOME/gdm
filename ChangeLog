@@ -1,3 +1,15 @@
+2008-02-20  Ray Strode  <rstrode@redhat.com>
+
+	* daemon/gdm-factory-slave.c
+	(run_greeter):
+	* daemon/gdm-simple-slave.c
+	(run_greeter):
+	* daemon/gdm-xdmcp-chooser-slave.c:
+	(run_chooser):
+	Run /etc/gdm/Init/Default, not /etc/gdm/Init.
+	We should probably run the per-display scripts,
+	too.
+
 2008-02-20  William Jon McCann  <jmccann@redhat.com>
 
 	* common/gdm-settings-keys.h:
