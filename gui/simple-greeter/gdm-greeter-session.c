@@ -747,18 +747,9 @@ gdm_greeter_session_finalize (GObject *object)
         G_OBJECT_CLASS (gdm_greeter_session_parent_class)->finalize (object);
 }
 
-#include <signal.h>
-static void
-on_segfault(int no)
-{
-        sleep (10);
-}
-
 GdmGreeterSession *
 gdm_greeter_session_new (void)
 {
-        signal (SIGSEGV, on_segfault);
-
         if (session_object != NULL) {
                 g_object_ref (session_object);
         } else {
