@@ -1,3 +1,11 @@
+2008-02-20  Ray Strode  <rstrode@redhat.com>
+
+	* daemon/gdm-local-display-factory.c (create_display)
+	* daemon/gdm-display.c (gdm_display_real_manage):
+	create authority file in gdm_display_manage instead of
+	create_display so that it gets recreated when the display
+	gets finished (and remanaged, not destroyed)
+
 2008-02-20  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/gdm-user-manager.c (reload_users):

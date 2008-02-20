@@ -303,13 +303,6 @@ create_display (GdmLocalDisplayFactory *factory)
                 return NULL;
         }
 
-        if (! gdm_display_create_authority (display)) {
-                g_warning ("Unable to set up access control for display %d",
-                           num);
-                g_object_unref (display);
-                return NULL;
-        }
-
         /* FIXME: don't hardcode seat1? */
         g_object_set (display, "seat-id", CK_SEAT1_PATH, NULL);
 

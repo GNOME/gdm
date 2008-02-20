@@ -441,9 +441,15 @@ gdm_display_real_manage (GdmDisplay *display)
 
         g_debug ("GdmDisplay manage display");
 
-        display->priv->status = GDM_DISPLAY_MANAGED;
-
         g_assert (display->priv->slave_proxy == NULL);
+
+        if (!gdm_display_create_authority (display)) {
+                g_warning ("Unable to set up access control for display %d",
+                           display->priv->x11_display_number);
+                return FALSE;
+        }
+
+        display->priv->status = GDM_DISPLAY_MANAGED;
 
         display->priv->slave_proxy = gdm_slave_proxy_new ();
         g_signal_connect (display->priv->slave_proxy,
