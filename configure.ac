@@ -1026,13 +1026,6 @@ if test x$have_libaudit = xyes ; then
     AC_DEFINE(HAVE_LIBAUDIT,1,[linux audit support])
 fi
 
-# Check for Solaris logindevperm support
-#
-AC_MSG_CHECKING(for Solaris di_devperm_login)
-AC_CHECK_LIB(devinfo, di_devperm_login, [
-		     	AC_DEFINE(HAVE_LOGINDEVPERM)
-			    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -ldevinfo" ])
-
 dnl ---------------------------------------------------------------------------
 dnl - Check for Halt, and Reboot commands
 dnl ---------------------------------------------------------------------------
