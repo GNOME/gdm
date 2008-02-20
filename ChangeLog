@@ -1,5 +1,12 @@
 2008-02-20  Ray Strode  <rstrode@redhat.com>
 
+	* daemon/gdm-local-display-factory.c:
+	(gdm_local_display_factory_create_product_display):
+	don't call create_authority here anymore either,
+	since it's handled by gdm_display_manage now.
+
+2008-02-20  Ray Strode  <rstrode@redhat.com>
+
 	* daemon/gdm-local-display-factory.c
 	(gdm_local_display_factory_create_transient_display):
 	* daemon/gdm-xdmcp-display-factory.c:

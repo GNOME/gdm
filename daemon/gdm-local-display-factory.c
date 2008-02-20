@@ -252,11 +252,6 @@ gdm_local_display_factory_create_product_display (GdmLocalDisplayFactory *factor
 
         display = gdm_product_display_new (num, relay_address);
 
-        if (! gdm_display_create_authority (display)) {
-                display = NULL;
-                goto out;
-        }
-
         /* FIXME: don't hardcode seat1? */
         g_object_set (display, "seat-id", CK_SEAT1_PATH, NULL);
 
