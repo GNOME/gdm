@@ -1204,11 +1204,12 @@ reload_users (GdmUserManager *manager)
                                         &standard_out,
                                         NULL,
                                         &error);
+        g_strfreev (argv);
         if (! res) {
                 g_warning ("Unable to run ck-history: %s", error->message);
                 g_error_free (error);
+                goto out;
         }
-        g_strfreev (argv);
 
         channel = g_io_channel_unix_new (standard_out);
         g_io_channel_set_close_on_unref (channel, TRUE);
