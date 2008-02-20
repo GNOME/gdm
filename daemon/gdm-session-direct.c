@@ -78,7 +78,6 @@ struct _GdmSessionDirectPrivate
         guint32              is_running : 1;
 
         /* object lifetime scope */
-        char                *service_name;
         char                *display_name;
         char                *display_hostname;
         char                *display_device;
@@ -92,7 +91,6 @@ struct _GdmSessionDirectPrivate
 
 enum {
         PROP_0,
-        PROP_SERVICE_NAME,
         PROP_DISPLAY_NAME,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
@@ -1227,7 +1225,6 @@ gdm_session_direct_init (GdmSessionDirect *session)
 
         session->priv->session_pid = -1;
         session->priv->selected_session = g_strdup ("gnome.desktop");
-        session->priv->service_name = g_strdup ("gdm");
 
         session->priv->environment = g_hash_table_new_full (g_str_hash,
                                                             g_str_equal,
@@ -1343,7 +1340,8 @@ gdm_session_direct_open (GdmSession *session)
 }
 
 static void
-send_setup (GdmSessionDirect *session)
+send_setup (GdmSessionDirect *session,
+            const char       *service_name)
 {
         DBusMessage    *message;
         DBusMessageIter iter;
@@ -1351,6 +1349,8 @@ send_setup (GdmSessionDirect *session)
         const char     *display_device;
         const char     *display_hostname;
         const char     *display_x11_authority_file;
+
+        g_assert (service_name != NULL);
 
         if (session->priv->display_name != NULL) {
                 display_name = session->priv->display_name;
@@ -1380,7 +1380,7 @@ send_setup (GdmSessionDirect *session)
                                            "Setup");
 
         dbus_message_iter_init_append (message, &iter);
-        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->service_name);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &service_name);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_name);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_device);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_hostname);
@@ -1394,7 +1394,8 @@ send_setup (GdmSessionDirect *session)
 }
 
 static void
-send_setup_for_user (GdmSessionDirect *session)
+send_setup_for_user (GdmSessionDirect *session,
+                     const char       *service_name)
 {
         DBusMessage    *message;
         DBusMessageIter iter;
@@ -1403,6 +1404,8 @@ send_setup_for_user (GdmSessionDirect *session)
         const char     *display_hostname;
         const char     *display_x11_authority_file;
         const char     *selected_user;
+
+        g_assert (service_name != NULL);
 
         if (session->priv->display_name != NULL) {
                 display_name = session->priv->display_name;
@@ -1437,7 +1440,7 @@ send_setup_for_user (GdmSessionDirect *session)
                                            "SetupForUser");
 
         dbus_message_iter_init_append (message, &iter);
-        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &session->priv->service_name);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &service_name);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_name);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_device);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_hostname);
@@ -1452,19 +1455,21 @@ send_setup_for_user (GdmSessionDirect *session)
 }
 
 static void
-gdm_session_direct_setup (GdmSession *session)
+gdm_session_direct_setup (GdmSession *session,
+                          const char *service_name)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
 
         g_return_if_fail (session != NULL);
         g_return_if_fail (dbus_connection_get_is_connected (impl->priv->worker_connection));
 
-        send_setup (impl);
+        send_setup (impl, service_name);
 }
 
 static void
-gdm_session_direct_setup_for_user (GdmSession  *session,
-                                   const char  *username)
+gdm_session_direct_setup_for_user (GdmSession *session,
+                                   const char *service_name,
+                                   const char *username)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
 
@@ -1474,7 +1479,7 @@ gdm_session_direct_setup_for_user (GdmSession  *session,
 
         gdm_session_direct_select_user (session, username);
 
-        send_setup_for_user (impl);
+        send_setup_for_user (impl, service_name);
 }
 
 static void
@@ -1921,14 +1926,6 @@ gdm_session_direct_select_language (GdmSession *session,
         impl->priv->selected_language = g_strdup (text);
 }
 
-static void
-_gdm_session_direct_set_service_name (GdmSessionDirect *session,
-                                      const char       *name)
-{
-        g_free (session->priv->service_name);
-        session->priv->service_name = g_strdup (name);
-}
-
 /* At some point we may want to read these right from
  * the slave but for now I don't want the dependency */
 static void
@@ -1990,9 +1987,6 @@ gdm_session_direct_set_property (GObject      *object,
         self = GDM_SESSION_DIRECT (object);
 
         switch (prop_id) {
-        case PROP_SERVICE_NAME:
-                _gdm_session_direct_set_service_name (self, g_value_get_string (value));
-                break;
         case PROP_DISPLAY_NAME:
                 _gdm_session_direct_set_display_name (self, g_value_get_string (value));
                 break;
@@ -2028,9 +2022,6 @@ gdm_session_direct_get_property (GObject    *object,
         self = GDM_SESSION_DIRECT (object);
 
         switch (prop_id) {
-        case PROP_SERVICE_NAME:
-                g_value_set_string (value, self->priv->service_name);
-                break;
         case PROP_DISPLAY_NAME:
                 g_value_set_string (value, self->priv->display_name);
                 break;
@@ -2065,9 +2056,6 @@ gdm_session_direct_dispose (GObject *object)
         g_debug ("GdmSessionDirect: Disposing session");
 
         gdm_session_direct_close (GDM_SESSION (session));
-
-        g_free (session->priv->service_name);
-        session->priv->service_name = NULL;
 
         g_free (session->priv->display_name);
         session->priv->display_name = NULL;
@@ -2147,13 +2135,6 @@ gdm_session_direct_class_init (GdmSessionDirectClass *session_class)
 
         g_type_class_add_private (session_class, sizeof (GdmSessionDirectPrivate));
 
-        g_object_class_install_property (object_class,
-                                         PROP_SERVICE_NAME,
-                                         g_param_spec_string ("service-name",
-                                                              "service name",
-                                                              "service name",
-                                                              "gdm",
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_NAME,
                                          g_param_spec_string ("display-name",

@@ -60,6 +60,9 @@
 #include <polkit-gnome/polkit-gnome.h>
 #endif
 
+#include "gdm-settings-client.h"
+#include "gdm-settings-keys.h"
+
 #include "gdm-greeter-login-window.h"
 #include "gdm-user-chooser-widget.h"
 
@@ -86,12 +89,19 @@
 #define GLADE_XML_FILE       "gdm-greeter-login-window.glade"
 
 #define LOGO_KEY             "/apps/gdm/simple-greeter/logo-icon-name"
+#define TIMED_LOGIN_TIMEOUT_SEC  60
 
 #define GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_LOGIN_WINDOW, GdmGreeterLoginWindowPrivate))
 
 enum {
         MODE_SELECTION = 0,
         MODE_AUTHENTICATION
+};
+
+enum {
+        LOGIN_BUTTON_HIDDEN = 0,
+        LOGIN_BUTTON_ANSWER_QUERY,
+        LOGIN_BUTTON_TIMED_LOGIN
 };
 
 struct GdmGreeterLoginWindowPrivate
@@ -101,7 +111,13 @@ struct GdmGreeterLoginWindowPrivate
         gboolean         display_is_local;
         char            *timeformat;
 
+        gboolean         timed_login_enabled;
+        guint            timed_login_delay;
+        guint            timed_login_timeout_id;
+
         guint            animation_timeout_id;
+
+        guint            login_button_handler_id;
 };
 
 enum {
@@ -110,6 +126,7 @@ enum {
 };
 
 enum {
+        BEGIN_TIMED_LOGIN,
         BEGIN_VERIFICATION,
         BEGIN_VERIFICATION_FOR_USER,
         QUERY_ANSWER,
@@ -174,7 +191,6 @@ set_focus (GdmGreeterLoginWindow *login_window)
         }
 }
 
-
 static void
 set_message (GdmGreeterLoginWindow *login_window,
              const char            *text)
@@ -183,6 +199,40 @@ set_message (GdmGreeterLoginWindow *login_window,
 
         label = glade_xml_get_widget (login_window->priv->xml, "auth-message-label");
         gtk_label_set_text (GTK_LABEL (label), text);
+}
+
+static void
+remove_timed_login_timeout (GdmGreeterLoginWindow *login_window)
+{
+        if (login_window->priv->timed_login_timeout_id > 0) {
+                g_source_remove (login_window->priv->timed_login_timeout_id);
+                login_window->priv->timed_login_timeout_id = 0;
+        }
+}
+
+static gboolean
+timed_login_timer (GdmGreeterLoginWindow *login_window)
+{
+        set_sensitive (login_window, FALSE);
+        set_message (login_window, _("Automatically logging in..."));
+
+        g_debug ("GdmGreeterLoginWindow: emitting begin-timed_login");
+        g_signal_emit (login_window, signals[BEGIN_TIMED_LOGIN], 0);
+        login_window->priv->timed_login_timeout_id = 0;
+
+        return FALSE;
+}
+
+static void
+restart_timed_login_timeout (GdmGreeterLoginWindow *login_window)
+{
+        remove_timed_login_timeout (login_window);
+
+        if (login_window->priv->timed_login_enabled) {
+                login_window->priv->timed_login_timeout_id = g_timeout_add_seconds (login_window->priv->timed_login_delay,
+                                                                                    (GSourceFunc)timed_login_timer,
+                                                                                    login_window);
+        }
 }
 
 static void
@@ -228,6 +278,65 @@ get_show_restart_buttons (GdmGreeterLoginWindow *login_window)
 }
 
 static void
+on_login_button_clicked_answer_query (GtkButton             *button,
+                                      GdmGreeterLoginWindow *login_window)
+{
+        GtkWidget  *entry;
+        const char *text;
+
+        set_busy (login_window);
+        set_sensitive (login_window, FALSE);
+
+        entry = glade_xml_get_widget (login_window->priv->xml, "auth-prompt-entry");
+        text = gtk_entry_get_text (GTK_ENTRY (entry));
+
+        g_signal_emit (login_window, signals[QUERY_ANSWER], 0, text);
+}
+
+static void
+on_login_button_clicked_timed_login (GtkButton             *button,
+                                   GdmGreeterLoginWindow *login_window)
+{
+        set_busy (login_window);
+        set_sensitive (login_window, FALSE);
+
+        g_signal_emit (login_window, signals[BEGIN_TIMED_LOGIN], 0);
+}
+
+static void
+set_log_in_button_mode (GdmGreeterLoginWindow *login_window,
+                        int                    mode)
+{
+        GtkWidget *button;
+
+        button = glade_xml_get_widget (login_window->priv->xml, "log-in-button");
+        gtk_widget_grab_default (button);
+
+        /* disconnect any signals */
+        if (login_window->priv->login_button_handler_id > 0) {
+                g_signal_handler_disconnect (button, login_window->priv->login_button_handler_id);
+                login_window->priv->login_button_handler_id = 0;
+       }
+
+        switch (mode) {
+        case LOGIN_BUTTON_HIDDEN:
+                gtk_widget_hide (button);
+                break;
+        case LOGIN_BUTTON_ANSWER_QUERY:
+                login_window->priv->login_button_handler_id = g_signal_connect (button, "clicked", G_CALLBACK (on_login_button_clicked_answer_query), login_window);
+                gtk_widget_show (button);
+                break;
+        case LOGIN_BUTTON_TIMED_LOGIN:
+                login_window->priv->login_button_handler_id = g_signal_connect (button, "clicked", G_CALLBACK (on_login_button_clicked_timed_login), login_window);
+                gtk_widget_show (button);
+                break;
+        default:
+                g_assert_not_reached ();
+                break;
+        }
+}
+
+static void
 switch_mode (GdmGreeterLoginWindow *login_window,
              int                    number)
 {
@@ -239,11 +348,14 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         /* FIXME: do animation */
         default_name = NULL;
 
+        restart_timed_login_timeout (login_window);
+
         show_restart_shutdown = get_show_restart_buttons (login_window);
 
         switch (number) {
         case MODE_SELECTION:
-                show_widget (login_window, "log-in-button", FALSE);
+                set_log_in_button_mode (login_window, LOGIN_BUTTON_HIDDEN);
+
                 show_widget (login_window, "cancel-button", FALSE);
                 show_widget (login_window, "shutdown-button",
                              login_window->priv->display_is_local && show_restart_shutdown);
@@ -255,7 +367,6 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 default_name = NULL;
                 break;
         case MODE_AUTHENTICATION:
-                show_widget (login_window, "log-in-button", TRUE);
                 show_widget (login_window, "cancel-button", TRUE);
                 show_widget (login_window, "shutdown-button", FALSE);
                 show_widget (login_window, "restart-button", FALSE);
@@ -349,6 +460,7 @@ do_cancel (GdmGreeterLoginWindow *login_window)
         switch_mode (login_window, MODE_SELECTION);
         set_busy (login_window);
         set_sensitive (login_window, FALSE);
+        set_message (login_window, "");
 
         g_signal_emit (login_window, signals[CANCELLED], 0);
 
@@ -366,6 +478,7 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         entry = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-entry");
         gtk_entry_set_text (GTK_ENTRY (entry), "");
         gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
+        set_message (login_window, "");
 
         label = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-label");
         gtk_label_set_text (GTK_LABEL (label), "");
@@ -379,6 +492,8 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         set_sensitive (login_window, TRUE);
         set_ready (login_window);
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
+
+        restart_timed_login_timeout (login_window);
 }
 
 gboolean
@@ -443,6 +558,7 @@ gdm_greeter_login_window_info_query (GdmGreeterLoginWindow *login_window,
         entry = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-entry");
         gtk_entry_set_text (GTK_ENTRY (entry), "");
         gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
+        set_log_in_button_mode (login_window, LOGIN_BUTTON_ANSWER_QUERY);
 
         label = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-label");
         gtk_label_set_text (GTK_LABEL (label), text);
@@ -467,6 +583,7 @@ gdm_greeter_login_window_secret_info_query (GdmGreeterLoginWindow *login_window,
         entry = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-entry");
         gtk_entry_set_text (GTK_ENTRY (entry), "");
         gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
+        set_log_in_button_mode (login_window, LOGIN_BUTTON_ANSWER_QUERY);
 
         label = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-label");
         gtk_label_set_text (GTK_LABEL (label), text);
@@ -524,22 +641,6 @@ gdm_greeter_login_window_get_property (GObject    *object,
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
         }
-}
-
-static void
-log_in_button_clicked (GtkButton             *button,
-                       GdmGreeterLoginWindow *login_window)
-{
-        GtkWidget  *entry;
-        const char *text;
-
-        set_busy (login_window);
-        set_sensitive (login_window, FALSE);
-
-        entry = glade_xml_get_widget (login_window->priv->xml, "auth-prompt-entry");
-        text = gtk_entry_get_text (GTK_ENTRY (entry));
-
-        g_signal_emit (login_window, signals[QUERY_ANSWER], 0, text);
 }
 
 static void
@@ -841,6 +942,10 @@ on_user_chosen (GdmUserChooserWidget  *user_chooser,
                 g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
         } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_GUEST) == 0) {
                 /* FIXME: handle guest account stuff */
+        } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_AUTO) == 0) {
+                /* just wait for the user to select language and stuff */
+                set_log_in_button_mode (login_window, LOGIN_BUTTON_TIMED_LOGIN);
+                set_message (login_window, _("Select language and click Log In"));
         } else {
                 g_signal_emit (login_window, signals[BEGIN_VERIFICATION_FOR_USER], 0, user_name);
         }
@@ -1058,9 +1163,9 @@ load_theme (GdmGreeterLoginWindow *login_window)
 
         gdm_user_chooser_widget_set_show_only_chosen (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
 
-        /* FIXME: set from gconf */
-        gdm_user_chooser_widget_set_show_other_user (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
-        gdm_user_chooser_widget_set_show_guest_user (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
+        if (login_window->priv->timed_login_enabled) {
+                gdm_user_chooser_widget_set_show_auto_user (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
+        }
 
         g_signal_connect (login_window->priv->user_chooser,
                           "activated",
@@ -1075,10 +1180,6 @@ load_theme (GdmGreeterLoginWindow *login_window)
 
         button = glade_xml_get_widget (login_window->priv->xml, "suspend-button");
         g_signal_connect (button, "clicked", G_CALLBACK (suspend_button_clicked), login_window);
-
-        button = glade_xml_get_widget (login_window->priv->xml, "log-in-button");
-        gtk_widget_grab_default (button);
-        g_signal_connect (button, "clicked", G_CALLBACK (log_in_button_clicked), login_window);
 
         button = glade_xml_get_widget (login_window->priv->xml, "cancel-button");
         g_signal_connect (button, "clicked", G_CALLBACK (cancel_button_clicked), login_window);
@@ -1215,6 +1316,49 @@ gdm_greeter_login_window_size_allocate (GtkWidget      *widget,
         GTK_WIDGET_CLASS (gdm_greeter_login_window_parent_class)->size_allocate (widget, allocation);
 }
 
+static void
+read_configuration (GdmGreeterLoginWindow *login_window)
+{
+        gboolean res;
+        int      delay;
+        char    *username;
+
+        g_debug ("GdmGreeterLoginWindow: reading system configuration");
+
+        res = gdm_settings_client_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE,
+                                               &login_window->priv->timed_login_enabled);
+        if (! res) {
+                g_warning ("Unable to read configuration for %s", GDM_KEY_TIMED_LOGIN_ENABLE);
+        }
+        g_debug ("GdmGreeterLoginWindow: TimedLoginEnable=%s",
+                 login_window->priv->timed_login_enabled ? "true" : "false");
+
+        /* treat failures here as disabling */
+        username = NULL;
+        res = gdm_settings_client_get_string (GDM_KEY_TIMED_LOGIN_USER, &username);
+        if (! res) {
+                g_warning ("Unable to read configuration for %s", GDM_KEY_TIMED_LOGIN_USER);
+                login_window->priv->timed_login_enabled = FALSE;
+        } else {
+                if (username == NULL) {
+                        login_window->priv->timed_login_enabled = FALSE;
+                }
+        }
+        g_debug ("GdmGreeterLoginWindow: TimedLogin=%s", username);
+        g_free (username);
+
+        delay = -1;
+        res = gdm_settings_client_get_int (GDM_KEY_TIMED_LOGIN_DELAY, &delay);
+        if (! res) {
+                g_warning ("Unable to read configuration for %s", GDM_KEY_TIMED_LOGIN_DELAY);
+        } else {
+                if (delay >= 0) {
+                        login_window->priv->timed_login_delay = delay;
+                }
+        }
+        g_debug ("GdmGreeterLoginWindow: TimedLoginDelay=%d", delay);
+}
+
 static GObject *
 gdm_greeter_login_window_constructor (GType                  type,
                                       guint                  n_construct_properties,
@@ -1227,6 +1371,7 @@ gdm_greeter_login_window_constructor (GType                  type,
                                                                                                                       construct_properties));
 
 
+        read_configuration (login_window);
         load_theme (login_window);
 
         return G_OBJECT (login_window);
@@ -1247,6 +1392,16 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
         widget_class->size_request = gdm_greeter_login_window_size_request;
         widget_class->size_allocate = gdm_greeter_login_window_size_allocate;
 
+        signals [BEGIN_TIMED_LOGIN] =
+                g_signal_new ("begin-timed_login",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, begin_timed_login),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE,
+                              0);
         signals [BEGIN_VERIFICATION] =
                 g_signal_new ("begin-verification",
                               G_TYPE_FROM_CLASS (object_class),
@@ -1322,6 +1477,9 @@ static void
 gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
 {
         login_window->priv = GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE (login_window);
+
+        login_window->priv->timed_login_enabled = FALSE;
+        login_window->priv->timed_login_delay = TIMED_LOGIN_TIMEOUT_SEC;
 
         gtk_window_set_title (GTK_WINDOW (login_window), _("Login Window"));
         gtk_window_set_opacity (GTK_WINDOW (login_window), 0.85);

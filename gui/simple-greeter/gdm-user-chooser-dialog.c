@@ -62,6 +62,33 @@ gdm_user_chooser_dialog_get_chosen_user_name (GdmUserChooserDialog *dialog)
         return user_name;
 }
 
+void
+gdm_user_chooser_dialog_set_show_other_user (GdmUserChooserDialog *dialog,
+                                             gboolean              show_user)
+{
+        g_return_if_fail (GDM_IS_USER_CHOOSER_DIALOG (dialog));
+
+        gdm_user_chooser_widget_set_show_other_user (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), show_user);
+}
+
+void
+gdm_user_chooser_dialog_set_show_guest_user (GdmUserChooserDialog *dialog,
+                                             gboolean              show_user)
+{
+        g_return_if_fail (GDM_IS_USER_CHOOSER_DIALOG (dialog));
+
+        gdm_user_chooser_widget_set_show_guest_user (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), show_user);
+}
+
+void
+gdm_user_chooser_dialog_set_show_auto_user (GdmUserChooserDialog *dialog,
+                                            gboolean              show_user)
+{
+        g_return_if_fail (GDM_IS_USER_CHOOSER_DIALOG (dialog));
+
+        gdm_user_chooser_widget_set_show_auto_user (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), show_user);
+}
+
 static void
 gdm_user_chooser_dialog_set_property (GObject        *object,
                                       guint           prop_id,
@@ -139,8 +166,7 @@ gdm_user_chooser_dialog_init (GdmUserChooserDialog *dialog)
         dialog->priv = GDM_USER_CHOOSER_DIALOG_GET_PRIVATE (dialog);
 
         dialog->priv->chooser_widget = gdm_user_chooser_widget_new ();
-        gdm_user_chooser_widget_set_show_other_user (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), TRUE);
-        gdm_user_chooser_widget_set_show_guest_user (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), TRUE);
+
         gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), dialog->priv->chooser_widget);
 
         gtk_dialog_add_buttons (GTK_DIALOG (dialog),

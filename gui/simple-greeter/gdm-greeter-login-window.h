@@ -1,6 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
+ * Copyright (C) 2008 Red Hat, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +46,7 @@ typedef struct
         GtkWindowClass   parent_class;
 
         /* signals */
+        void (* begin_timed_login)           (GdmGreeterLoginWindow *login_window);
         void (* begin_verification)          (GdmGreeterLoginWindow *login_window);
         void (* begin_verification_for_user) (GdmGreeterLoginWindow *login_window,
                                               const char            *username);

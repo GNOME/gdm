@@ -86,6 +86,7 @@ gboolean           gdm_greeter_client_get_display_is_local           (GdmGreeter
 
 char *             gdm_greeter_client_call_get_display_id            (GdmGreeterClient *client);
 
+void               gdm_greeter_client_call_begin_timed_login         (GdmGreeterClient *client);
 void               gdm_greeter_client_call_begin_verification        (GdmGreeterClient *client);
 void               gdm_greeter_client_call_begin_verification_for_user (GdmGreeterClient *client,
                                                                         const char       *username);

@@ -58,6 +58,7 @@ struct GdmUserChooserWidgetPrivate
 
         guint           show_other_user : 1;
         guint           show_guest_user : 1;
+        guint           show_auto_user : 1;
 };
 
 enum {
@@ -70,6 +71,66 @@ static void     gdm_user_chooser_widget_finalize    (GObject                   *
 
 G_DEFINE_TYPE (GdmUserChooserWidget, gdm_user_chooser_widget, GDM_TYPE_CHOOSER_WIDGET)
 
+static void
+add_user_other (GdmUserChooserWidget *widget)
+{
+        gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
+                                     GDM_USER_CHOOSER_USER_OTHER,
+                                     widget->priv->stock_person_pixbuf,
+                                     _("Other..."),
+                                     _("Choose a different account"),
+                                     0,
+                                     FALSE,
+                                     TRUE);
+}
+
+static void
+add_user_guest (GdmUserChooserWidget *widget)
+{
+        gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
+                                     GDM_USER_CHOOSER_USER_GUEST,
+                                     widget->priv->stock_person_pixbuf,
+                                     _("Guest"),
+                                     _("Login as a temporary guest"),
+                                     0,
+                                     FALSE,
+                                     TRUE);
+}
+
+static void
+add_user_auto (GdmUserChooserWidget *widget)
+{
+        gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
+                                     GDM_USER_CHOOSER_USER_AUTO,
+                                     widget->priv->stock_person_pixbuf,
+                                     _("Automatic Login"),
+                                     _("Automatically login to the system after selecting options"),
+                                     0,
+                                     FALSE,
+                                     TRUE);
+}
+
+static void
+remove_user_other (GdmUserChooserWidget *widget)
+{
+        gdm_chooser_widget_remove_item (GDM_CHOOSER_WIDGET (widget),
+                                        GDM_USER_CHOOSER_USER_OTHER);
+}
+
+static void
+remove_user_guest (GdmUserChooserWidget *widget)
+{
+        gdm_chooser_widget_remove_item (GDM_CHOOSER_WIDGET (widget),
+                                        GDM_USER_CHOOSER_USER_GUEST);
+}
+
+static void
+remove_user_auto (GdmUserChooserWidget *widget)
+{
+        gdm_chooser_widget_remove_item (GDM_CHOOSER_WIDGET (widget),
+                                        GDM_USER_CHOOSER_USER_AUTO);
+}
+
 void
 gdm_user_chooser_widget_set_show_other_user (GdmUserChooserWidget *widget,
                                              gboolean              show_user)
@@ -78,6 +139,11 @@ gdm_user_chooser_widget_set_show_other_user (GdmUserChooserWidget *widget,
 
         if (widget->priv->show_other_user != show_user) {
                 widget->priv->show_other_user = show_user;
+                if (show_user) {
+                        add_user_other (widget);
+                } else {
+                        remove_user_other (widget);
+                }
         }
 }
 
@@ -89,6 +155,27 @@ gdm_user_chooser_widget_set_show_guest_user (GdmUserChooserWidget *widget,
 
         if (widget->priv->show_guest_user != show_user) {
                 widget->priv->show_guest_user = show_user;
+                if (show_user) {
+                        add_user_guest (widget);
+                } else {
+                        remove_user_guest (widget);
+                }
+        }
+}
+
+void
+gdm_user_chooser_widget_set_show_auto_user (GdmUserChooserWidget *widget,
+                                            gboolean              show_user)
+{
+        g_return_if_fail (GDM_IS_USER_CHOOSER_WIDGET (widget));
+
+        if (widget->priv->show_auto_user != show_user) {
+                widget->priv->show_auto_user = show_user;
+                if (show_user) {
+                        add_user_auto (widget);
+                } else {
+                        remove_user_auto (widget);
+                }
         }
 }
 
@@ -154,6 +241,11 @@ gdm_user_chooser_widget_constructor (GType                  type,
         user_chooser_widget = GDM_USER_CHOOSER_WIDGET (G_OBJECT_CLASS (gdm_user_chooser_widget_parent_class)->constructor (type,
                                                                                                                            n_construct_properties,
                                                                                                                            construct_properties));
+
+        /* FIXME: make these construct properties */
+        gdm_user_chooser_widget_set_show_guest_user (user_chooser_widget, FALSE);
+        gdm_user_chooser_widget_set_show_auto_user (user_chooser_widget, FALSE);
+        gdm_user_chooser_widget_set_show_other_user (user_chooser_widget, TRUE);
 
         return G_OBJECT (user_chooser_widget);
 }
@@ -294,31 +386,6 @@ setup_icons (GdmUserChooserWidget *widget)
         load_icons (widget);
 }
 
-static gboolean
-add_special_users (GdmUserChooserWidget *widget)
-{
-
-        gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
-                                     GDM_USER_CHOOSER_USER_OTHER,
-                                     widget->priv->stock_person_pixbuf,
-                                     _("Other..."),
-                                     _("Choose a different account"),
-                                     0,
-                                     FALSE,
-                                     TRUE);
-#if 0
-        gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
-                                     GDM_USER_CHOOSER_USER_GUEST,
-                                     widget->priv->stock_person_pixbuf,
-                                     _("Guest"),
-                                     _("Login as a temporary guest"),
-                                     0,
-                                     FALSE,
-                                     TRUE);
-#endif
-        return FALSE;
-}
-
 static void
 on_user_added (GdmUserManager       *manager,
                GdmUser              *user,
@@ -438,7 +505,6 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
                           widget);
 
         setup_icons (widget);
-        add_special_users (widget);
 }
 
 static void

@@ -69,6 +69,7 @@ enum {
 };
 
 enum {
+        BEGIN_TIMED_LOGIN,
         BEGIN_VERIFICATION,
         BEGIN_VERIFICATION_FOR_USER,
         QUERY_ANSWER,
@@ -281,6 +282,23 @@ handle_begin_verification (GdmGreeterServer *greeter_server,
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
+static DBusHandlerResult
+handle_begin_timed_login (GdmGreeterServer *greeter_server,
+                        DBusConnection   *connection,
+                        DBusMessage      *message)
+{
+        DBusMessage *reply;
+
+        g_debug ("GreeterServer: BeginTimedLogin");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        g_signal_emit (greeter_server, signals [BEGIN_TIMED_LOGIN], 0);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
 
 static DBusHandlerResult
 handle_begin_verification_for_user (GdmGreeterServer *greeter_server,
@@ -504,6 +522,8 @@ greeter_handle_child_message (DBusConnection *connection,
                 return handle_begin_verification (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "BeginVerificationForUser")) {
                 return handle_begin_verification_for_user (greeter_server, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "BeginTimedLogin")) {
+                return handle_begin_timed_login (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "AnswerQuery")) {
                 return handle_answer_query (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectSession")) {
@@ -549,6 +569,7 @@ do_introspect (DBusConnection *connection,
         xml = g_string_append (xml,
                                "  <interface name=\"org.gnome.DisplayManager.GreeterServer\">\n"
                                "    <method name=\"BeginVerification\">\n"
+                               "    <method name=\"BeginTimedLogin\">\n"
                                "    </method>\n"
                                "    <method name=\"BeginVerificationForUser\">\n"
                                "      <arg name=\"username\" direction=\"in\" type=\"s\"/>\n"
@@ -962,6 +983,16 @@ gdm_greeter_server_class_init (GdmGreeterServerClass *klass)
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
                               G_STRUCT_OFFSET (GdmGreeterServerClass, begin_verification),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE,
+                              0);
+        signals [BEGIN_TIMED_LOGIN] =
+                g_signal_new ("begin-timed-login",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmGreeterServerClass, begin_timed_login),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,

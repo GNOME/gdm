@@ -132,8 +132,36 @@ send_dbus_string_signal (GdmSessionRelay *session_relay,
 }
 
 static void
+send_dbus_string_string_signal (GdmSessionRelay *session_relay,
+                                const char      *name,
+                                const char      *text1,
+                                const char      *text2)
+{
+        DBusMessage    *message;
+        DBusMessageIter iter;
+
+        g_return_if_fail (session_relay != NULL);
+
+        g_debug ("GdmSessionRelay: sending signal %s", name);
+        message = dbus_message_new_signal (GDM_SESSION_RELAY_DBUS_PATH,
+                                           GDM_SESSION_RELAY_DBUS_INTERFACE,
+                                           name);
+
+        dbus_message_iter_init_append (message, &iter);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &text1);
+        dbus_message_iter_init_append (message, &iter);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &text2);
+
+        if (! send_dbus_message (session_relay->priv->session_connection, message)) {
+                g_debug ("GdmSessionRelay: Could not send %s signal", name);
+        }
+
+        dbus_message_unref (message);
+}
+
+static void
 send_dbus_void_signal (GdmSessionRelay *session_relay,
-                       const char        *name)
+                       const char      *name)
 {
         DBusMessage    *message;
 
@@ -166,18 +194,20 @@ gdm_session_relay_close (GdmSession *session)
 }
 
 static void
-gdm_session_relay_setup (GdmSession *session)
+gdm_session_relay_setup (GdmSession *session,
+                         const char *service_name)
 {
         GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
-        send_dbus_void_signal (impl, "Setup");
+        send_dbus_string_signal (impl, "Setup", service_name);
 }
 
 static void
 gdm_session_relay_setup_for_user (GdmSession *session,
+                                  const char *service_name,
                                   const char *username)
 {
         GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
-        send_dbus_string_signal (impl, "SetupForUser", username);
+        send_dbus_string_string_signal (impl, "SetupForUser", service_name, username);
 }
 
 static void
@@ -742,15 +772,9 @@ do_introspect (DBusConnection *connection,
                                "    </signal>\n"
                                "    <signal name=\"Setup\">\n"
                                "      <arg name=\"service_name\" type=\"s\"/>\n"
-                               "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
-                               "      <arg name=\"display_device\" type=\"s\"/>\n"
-                               "      <arg name=\"hostname\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"SetupForUser\">\n"
                                "      <arg name=\"service_name\" type=\"s\"/>\n"
-                               "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
-                               "      <arg name=\"display_device\" type=\"s\"/>\n"
-                               "      <arg name=\"hostname\" type=\"s\"/>\n"
                                "      <arg name=\"username\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"Authenticate\">\n"

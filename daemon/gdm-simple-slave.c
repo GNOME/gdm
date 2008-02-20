@@ -42,6 +42,9 @@
 
 #include "gdm-common.h"
 
+#include "gdm-settings-client.h"
+#include "gdm-settings-keys.h"
+
 #include "gdm-simple-slave.h"
 #include "gdm-simple-slave-glue.h"
 
@@ -557,7 +560,37 @@ on_greeter_begin_verification (GdmGreeterServer *greeter_server,
                                GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: begin verification");
-        gdm_session_setup (GDM_SESSION (slave->priv->session));
+        gdm_session_setup (GDM_SESSION (slave->priv->session),
+                           "gdm");
+}
+
+static void
+on_greeter_begin_timed_login (GdmGreeterServer *greeter_server,
+                              GdmSimpleSlave   *slave)
+{
+        char    *username;
+        gboolean enabled;
+        gboolean res;
+
+        g_debug ("GdmSimpleSlave: begin timed login");
+
+        enabled = FALSE;
+        res = gdm_settings_client_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE, &enabled);
+        if (! enabled) {
+                g_warning ("GdmSimpleSlave: timed login requested but disabled in configuration");
+                return;
+        }
+
+        username = NULL;
+        res = gdm_settings_client_get_string (GDM_KEY_TIMED_LOGIN_USER, &username);
+        if (username == NULL) {
+                g_warning ("GdmSimpleSlave: timed login requested but username not specified in configuration");
+                return;
+        }
+
+        gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
+                                    "gdm-autologin",
+                                    username);
 }
 
 static void
@@ -567,6 +600,7 @@ on_greeter_begin_verification_for_user (GdmGreeterServer *greeter_server,
 {
         g_debug ("GdmSimpleSlave: begin verification");
         gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
+                                    "gdm",
                                     username);
 }
 
@@ -692,6 +726,10 @@ run_greeter (GdmSimpleSlave *slave)
         create_new_session (slave);
 
         slave->priv->greeter_server = gdm_greeter_server_new (display_id);
+        g_signal_connect (slave->priv->greeter_server,
+                          "begin-timed-login",
+                          G_CALLBACK (on_greeter_begin_timed_login),
+                          slave);
         g_signal_connect (slave->priv->greeter_server,
                           "begin-verification",
                           G_CALLBACK (on_greeter_begin_verification),

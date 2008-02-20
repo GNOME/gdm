@@ -49,6 +49,7 @@ typedef struct
 
 #define GDM_USER_CHOOSER_USER_OTHER "__other"
 #define GDM_USER_CHOOSER_USER_GUEST "__guest"
+#define GDM_USER_CHOOSER_USER_AUTO  "__auto"
 
 GType                  gdm_user_chooser_widget_get_type                   (void);
 GtkWidget *            gdm_user_chooser_widget_new                        (void);
@@ -59,9 +60,11 @@ void                   gdm_user_chooser_widget_set_chosen_user_name       (GdmUs
 void                   gdm_user_chooser_widget_set_show_only_chosen       (GdmUserChooserWidget *widget,
                                                                            gboolean              show_only);
 void                   gdm_user_chooser_widget_set_show_other_user        (GdmUserChooserWidget *widget,
-                                                                           gboolean              show_other);
+                                                                           gboolean              show);
 void                   gdm_user_chooser_widget_set_show_guest_user        (GdmUserChooserWidget *widget,
-                                                                           gboolean              show_other);
+                                                                           gboolean              show);
+void                   gdm_user_chooser_widget_set_show_auto_user         (GdmUserChooserWidget *widget,
+                                                                           gboolean              show);
 G_END_DECLS
 
 #endif /* __GDM_USER_CHOOSER_WIDGET_H */

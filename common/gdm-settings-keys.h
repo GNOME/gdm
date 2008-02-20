@@ -27,6 +27,9 @@ G_BEGIN_DECLS
 
 #define GDM_KEY_USER "daemon/User"
 #define GDM_KEY_GROUP "daemon/Group"
+#define GDM_KEY_TIMED_LOGIN_ENABLE "daemon/TimedLoginEnable"
+#define GDM_KEY_TIMED_LOGIN_USER "daemon/TimedLogin"
+#define GDM_KEY_TIMED_LOGIN_DELAY "daemon/TimedLoginDelay"
 
 #define GDM_KEY_XDMCP "xdmcp/Enable"
 #define GDM_KEY_MAX_PENDING "xdmcp/MaxPending"

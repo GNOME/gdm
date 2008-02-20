@@ -375,7 +375,8 @@ on_greeter_begin_verification (GdmGreeterServer *greeter_server,
                                GdmFactorySlave  *slave)
 {
         g_debug ("GdmFactorySlave: begin verification");
-        gdm_session_setup (GDM_SESSION (slave->priv->session));
+        gdm_session_setup (GDM_SESSION (slave->priv->session),
+                           "gdm");
 }
 
 static void
@@ -385,6 +386,7 @@ on_greeter_begin_verification_for_user (GdmGreeterServer *greeter_server,
 {
         g_debug ("GdmFactorySlave: begin verification for user");
         gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
+                                    "gdm",
                                     username);
 }
 

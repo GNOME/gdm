@@ -38,7 +38,7 @@ on_open (GdmSession *session,
 {
         g_debug ("Got opened: calling setup...");
 
-        gdm_session_setup (session);
+        gdm_session_setup (session, "gdm");
 }
 
 static void

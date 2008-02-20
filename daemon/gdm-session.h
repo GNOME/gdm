@@ -46,8 +46,10 @@ struct _GdmSessionIface
 
         /* Methods */
         void (* open)                        (GdmSession   *session);
-        void (* setup)                       (GdmSession   *session);
+        void (* setup)                       (GdmSession   *session,
+                                              const char   *service_name);
         void (* setup_for_user)              (GdmSession   *session,
+                                              const char   *service_name,
                                               const char   *username);
         void (* reset)                       (GdmSession   *session);
         void (* authenticate)                (GdmSession   *session);
@@ -111,8 +113,10 @@ struct _GdmSessionIface
 GType    gdm_session_get_type                    (void) G_GNUC_CONST;
 
 void     gdm_session_open                        (GdmSession *session);
-void     gdm_session_setup                       (GdmSession *session);
+void     gdm_session_setup                       (GdmSession *session,
+                                                  const char *service_name);
 void     gdm_session_setup_for_user              (GdmSession *session,
+                                                  const char *service_name,
                                                   const char *username);
 void     gdm_session_reset                       (GdmSession *session);
 void     gdm_session_authenticate                (GdmSession *session);

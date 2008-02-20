@@ -236,6 +236,8 @@ gdm_settings_client_get_string (const char  *key,
                 *value = g_strdup (str);
         }
 
+        ret = TRUE;
+
         g_free (str);
 
         return ret;

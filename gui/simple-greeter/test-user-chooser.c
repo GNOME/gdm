@@ -47,6 +47,8 @@ main (int argc, char *argv[])
 
         dialog = gdm_user_chooser_dialog_new ();
         /*gtk_widget_set_size_request (dialog, 480, 128);*/
+        gdm_user_chooser_dialog_set_show_guest_user (GDM_USER_CHOOSER_DIALOG (dialog), TRUE);
+        gdm_user_chooser_dialog_set_show_auto_user (GDM_USER_CHOOSER_DIALOG (dialog), TRUE);
 
         if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
                 char *name;

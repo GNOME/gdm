@@ -1,3 +1,71 @@
+2008-02-20  William Jon McCann  <jmccann@redhat.com>
+
+	* common/gdm-settings-client.c: (gdm_settings_client_get_string):
+	* common/gdm-settings-keys.h:
+	* daemon/gdm-factory-slave.c: (on_greeter_begin_verification),
+	(on_greeter_begin_verification_for_user):
+	* daemon/gdm-greeter-server.c: (handle_begin_timed_login),
+	(greeter_handle_child_message), (do_introspect),
+	(gdm_greeter_server_class_init):
+	* daemon/gdm-greeter-server.h:
+	* daemon/gdm-product-slave.c: (on_relay_setup),
+	(on_relay_setup_for_user):
+	* daemon/gdm-session-direct.c: (gdm_session_direct_init),
+	(send_setup), (send_setup_for_user), (gdm_session_direct_setup),
+	(gdm_session_direct_setup_for_user),
+	(gdm_session_direct_set_property),
+	(gdm_session_direct_get_property), (gdm_session_direct_dispose),
+	(gdm_session_direct_class_init):
+	* daemon/gdm-session-relay.c: (send_dbus_string_string_signal),
+	(gdm_session_relay_setup), (gdm_session_relay_setup_for_user),
+	(do_introspect):
+	* daemon/gdm-session.c: (gdm_session_setup),
+	(gdm_session_setup_for_user):
+	* daemon/gdm-session.h:
+	* daemon/gdm-simple-slave.c: (on_greeter_begin_verification),
+	(on_greeter_begin_timed_login),
+	(on_greeter_begin_verification_for_user), (run_greeter):
+	* daemon/simple-slave-main.c: (main):
+	* daemon/test-session.c: (on_open):
+	* gui/simple-greeter/gdm-greeter-client.c:
+	(emit_string_signal_for_message),
+	(gdm_greeter_client_call_begin_timed_login):
+	* gui/simple-greeter/gdm-greeter-client.h:
+	* gui/simple-greeter/gdm-greeter-login-window.c:
+	(remove_timed_login_timeout), (timed_login_timer),
+	(restart_timed_login_timeout),
+	(on_login_button_clicked_answer_query),
+	(on_login_button_clicked_timed_login), (set_log_in_button_mode),
+	(switch_mode), (do_cancel), (reset_dialog),
+	(gdm_greeter_login_window_info_query),
+	(gdm_greeter_login_window_secret_info_query), (on_user_chosen),
+	(load_theme), (read_configuration),
+	(gdm_greeter_login_window_constructor),
+	(gdm_greeter_login_window_class_init),
+	(gdm_greeter_login_window_init):
+	* gui/simple-greeter/gdm-greeter-login-window.h:
+	* gui/simple-greeter/gdm-greeter-session.c: (on_begin_timed_login),
+	(toggle_login_window):
+	* gui/simple-greeter/gdm-user-chooser-dialog.c:
+	(gdm_user_chooser_dialog_set_show_other_user),
+	(gdm_user_chooser_dialog_set_show_guest_user),
+	(gdm_user_chooser_dialog_set_show_auto_user),
+	(gdm_user_chooser_dialog_init):
+	* gui/simple-greeter/gdm-user-chooser-dialog.h:
+	* gui/simple-greeter/gdm-user-chooser-widget.c: (add_user_other),
+	(add_user_guest), (add_user_auto), (remove_user_other),
+	(remove_user_guest), (remove_user_auto),
+	(gdm_user_chooser_widget_set_show_other_user),
+	(gdm_user_chooser_widget_set_show_guest_user),
+	(gdm_user_chooser_widget_set_show_auto_user),
+	(gdm_user_chooser_widget_constructor),
+	(gdm_user_chooser_widget_init):
+	* gui/simple-greeter/gdm-user-chooser-widget.h:
+	* gui/simple-greeter/greeter-main.c: (main):
+	* gui/simple-greeter/test-greeter-login-window.c: (main):
+	* gui/simple-greeter/test-user-chooser.c: (main):
+	Add initial support for timed login.
+
 2008-02-20  Ray Strode  <rstrode@redhat.com>
 
 	* daemon/gdm-local-display-factory.c (create_display)

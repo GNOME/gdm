@@ -93,20 +93,22 @@ gdm_session_close (GdmSession *session)
 }
 
 void
-gdm_session_setup (GdmSession *session)
+gdm_session_setup (GdmSession *session,
+                   const char *service_name)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
 
-        GDM_SESSION_GET_IFACE (session)->setup (session);
+        GDM_SESSION_GET_IFACE (session)->setup (session, service_name);
 }
 
 void
 gdm_session_setup_for_user (GdmSession *session,
+                            const char *service_name,
                             const char *username)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
 
-        GDM_SESSION_GET_IFACE (session)->setup_for_user (session, username);
+        GDM_SESSION_GET_IFACE (session)->setup_for_user (session, service_name, username);
 }
 
 void

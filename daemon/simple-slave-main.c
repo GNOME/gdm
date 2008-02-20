@@ -44,6 +44,8 @@
 #include "gdm-common.h"
 #include "gdm-simple-slave.h"
 
+#include "gdm-settings-client.h"
+
 static int gdm_return_code = 0;
 
 static DBusGConnection *
@@ -185,6 +187,11 @@ main (int    argc,
 
         if (display_id == NULL) {
                 g_critical ("No display ID set");
+                exit (1);
+        }
+
+        if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
+                g_critical ("Unable to initialize settings client");
                 exit (1);
         }
 

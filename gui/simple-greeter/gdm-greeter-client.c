@@ -115,7 +115,7 @@ emit_string_signal_for_message (GdmGreeterClient *client,
                                      DBUS_TYPE_INVALID);
         if (res) {
 
-                g_debug ("GdmGreeterClient: Recieved %s (%s)", name, text);
+                g_debug ("GdmGreeterClient: Received %s (%s)", name, text);
 
                 g_signal_emit (client,
                                gdm_greeter_client_signals[signal],
@@ -288,6 +288,13 @@ send_dbus_void_method (DBusConnection *connection,
         dbus_connection_flush (connection);
 
         return TRUE;
+}
+
+void
+gdm_greeter_client_call_begin_timed_login (GdmGreeterClient *client)
+{
+        send_dbus_void_method (client->priv->connection,
+                               "BeginTimedLogin");
 }
 
 void

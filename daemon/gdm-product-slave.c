@@ -547,9 +547,25 @@ static void
 on_relay_setup (GdmProductSlave *slave,
                 DBusMessage     *message)
 {
-        g_debug ("GdmProductSlave: Relay Setup");
+        DBusError   error;
+        const char *service_name;
+        dbus_bool_t res;
 
-        gdm_session_setup (GDM_SESSION (slave->priv->session));
+        service_name = NULL;
+
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("GdmProductSlave: Relay Setup");
+                gdm_session_setup (GDM_SESSION (slave->priv->session),
+                                   service_name);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
 }
 
 static void
@@ -557,17 +573,24 @@ on_relay_setup_for_user (GdmProductSlave *slave,
                          DBusMessage     *message)
 {
         DBusError   error;
-        const char *text;
+        const char *service_name;
+        const char *username;
         dbus_bool_t res;
+
+        username = NULL;
+        service_name = NULL;
 
         dbus_error_init (&error);
         res = dbus_message_get_args (message,
                                      &error,
-                                     DBUS_TYPE_STRING, &text,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_STRING, &username,
                                      DBUS_TYPE_INVALID);
         if (res) {
                 g_debug ("GdmProductSlave: Relay SetupForUser");
-                gdm_session_setup_for_user (GDM_SESSION (slave->priv->session), text);
+                gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
+                                            service_name,
+                                            username);
         } else {
                 g_warning ("Unable to get arguments: %s", error.message);
                 dbus_error_free (&error);
