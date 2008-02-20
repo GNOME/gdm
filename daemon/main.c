@@ -509,6 +509,7 @@ main (int    argc,
         int                 ret;
         int                 i;
         gboolean            res;
+        gboolean            xdmcp_enabled;
         GdmSignalHandler   *signal_handler;
         static char        *config_file      = NULL;
         static gboolean     debug            = FALSE;
@@ -630,8 +631,9 @@ main (int    argc,
                 goto out;
         }
 
-        /* FIXME: pull from settings */
-        gdm_manager_set_xdmcp_enabled (manager, TRUE);
+        xdmcp_enabled = FALSE;
+        gdm_settings_direct_get_boolean (GDM_KEY_XDMCP_ENABLE, &xdmcp_enabled);
+        gdm_manager_set_xdmcp_enabled (manager, xdmcp_enabled);
 
         g_signal_connect (bus_proxy,
                           "destroy",

@@ -370,7 +370,7 @@ gdm_manager_class_init (GdmManagerClass *klass)
                                          g_param_spec_boolean ("xdmcp-enabled",
                                                                NULL,
                                                                NULL,
-                                                               TRUE,
+                                                               FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
         g_type_class_add_private (klass, sizeof (GdmManagerPrivate));

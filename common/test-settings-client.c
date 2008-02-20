@@ -57,16 +57,16 @@ test_settings_client (gpointer data)
         g_debug ("Got res=%d %s=%s", res, GDM_KEY_WILLING, strval);
         g_free (strval);
 
-        res = gdm_settings_client_get_boolean (GDM_KEY_XDMCP, &boolval);
-        g_debug ("Got res=%d %s=%s", res, GDM_KEY_XDMCP, boolval ? "true" : "false");
+        res = gdm_settings_client_get_boolean (GDM_KEY_XDMCP_ENABLE, &boolval);
+        g_debug ("Got res=%d %s=%s", res, GDM_KEY_XDMCP_ENABLE, boolval ? "true" : "false");
 
         g_debug ("Adding notify for all keys");
         gdm_settings_client_notify_add ("/", notify_cb, NULL, NULL);
 
-        g_debug ("Setting boolean key %s to %s", GDM_KEY_XDMCP, !boolval ? "true" : "false");
-        gdm_settings_client_set_boolean (GDM_KEY_XDMCP, !boolval);
-        g_debug ("Setting boolean key %s to %s", GDM_KEY_XDMCP, boolval ? "true" : "false");
-        gdm_settings_client_set_boolean (GDM_KEY_XDMCP, boolval);
+        g_debug ("Setting boolean key %s to %s", GDM_KEY_XDMCP_ENABLE, !boolval ? "true" : "false");
+        gdm_settings_client_set_boolean (GDM_KEY_XDMCP_ENABLE, !boolval);
+        g_debug ("Setting boolean key %s to %s", GDM_KEY_XDMCP_ENABLE, boolval ? "true" : "false");
+        gdm_settings_client_set_boolean (GDM_KEY_XDMCP_ENABLE, boolval);
 
         return FALSE;
 }
