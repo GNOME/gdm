@@ -1,16 +1,16 @@
-# translation of help.gnome-2-18.es.po to Español
+# translation of gdm.help.gnome-2-20.po to Español
 # Francisco Javier F. Serrador <serrador@openshine.com>, 2003, 2007.
 # Lucas Vieites <lucas@asixinformatica.com>, 2007.
-# Jorge González <jorgegonz@svn.gnome.org>, 2007.
+# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008.
 # translation of es.po to
 msgid ""
 msgstr ""
-"Project-Id-Version: help.gnome-2-20.es\n"
+"Project-Id-Version: gdm.help.gnome-2-20\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-09-18 00:27+0100\n"
-"PO-Revision-Date: 2007-09-18 16:44+0200\n"
+"POT-Creation-Date: 2007-11-14 22:43+0000\n"
+"PO-Revision-Date: 2008-02-20 12:54+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
-"Language-Team: Spanish <traductores@es.gnome.org>\n"
+"Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2859,7 +2859,7 @@ msgstr ""
 msgid ""
 "The Configuration Files - GDM System Defaults Configuration File and GDM "
 "Custom Configuraiton File"
-msgstr ""
+msgstr "Loas archivos de configuración; el archivo de configuración predeterminada del sistema de GDM y el archivo de configuración personalizada de GDM"
 
 #: C/gdm.xml:1745(para)
 msgid ""
@@ -2947,6 +2947,10 @@ msgid ""
 "run as root, so users who feel it is insecure to run GUI programs as root "
 "should edit the configuration files by hand."
 msgstr ""
+"El comando <command>gdmsetup</command> se puede usar para modificar el archivo de configuración "
+"personalizada de GDM. Note que <command>gdmsetup</command> está pensado para ejecutarse "
+"como «root», de tal forma que los usuarios que se sientan inseguros ejecutando programas con IGU como "
+"«root» deberían editar los archivos de configuración a mano."
 
 #: C/gdm.xml:1801(para)
 msgid ""
@@ -3608,7 +3612,7 @@ msgstr "GtkModulesList"
 #: C/gdm.xml:2245(synopsis)
 #, no-wrap
 msgid "GtkModulesList=module-1:module-2:..."
-msgstr "GtkModulesList=module-1:module-2:..."
+msgstr "GtkModulesList=module-1:module-2:…"
 
 #: C/gdm.xml:2246(para)
 msgid ""
@@ -4485,7 +4489,7 @@ msgid ""
 "by using encryption). In this case set this to 'false'. Note that this "
 "option appeared in version 2.4.4.4 and is ignored in previous versions."
 msgstr ""
-"Normalmente si esto es <literal>true</literal (lo cual es por omisión), GDM "
+"Normalmente si esto es <literal>true</literal> (lo cual es por omisión), GDM "
 "no colocará cookies en los directorios personales de los usuarios si estos "
 "directorios se encuentran en un volumen remoto NFS. Bien, GDM considerará "
 "cualquier sistema con root-squashing un sistema NFS. Algunas veces sin "
@@ -5512,7 +5516,7 @@ msgstr "Exclude"
 #: C/gdm.xml:3519(synopsis)
 #, no-wrap
 msgid "Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,..."
-msgstr "Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,..."
+msgstr "Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,…"
 
 #: C/gdm.xml:3520(para)
 msgid ""
@@ -5967,7 +5971,7 @@ msgid ""
 "by <filename>PositionX</filename> / <filename>PositionY</filename>."
 msgstr ""
 "Si es true la posición de la ventana de entrada del interfaz GTK+ se "
-"determina por PositionX</filename> / <filename>PositionY</filename>."
+"determina por <filename>PositionX</filename> / <filename>PositionY</filename>."
 
 #: C/gdm.xml:3831(term)
 msgid "ShowGnomeFailsafeSession"
@@ -6367,7 +6371,7 @@ msgid ""
 msgstr ""
 "Si está activa la extensión Xinerama la ventana de inicio de sesión se "
 "centrará en esta pantalla física (use 0 para la primera pantalla, 1 para la "
-"segunda...)."
+"segunda…)."
 
 #: C/gdm.xml:4113(title)
 msgid "XDCMP Chooser Options"
@@ -8945,7 +8949,7 @@ msgstr ""
 "&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;\n"
 "&lt;!DOCTYPE greeter SYSTEM \"greeter.dtd\"&gt;\n"
 "&lt;greeter gtk-theme=\"Crux\"&gt;\n"
-"[...]\n"
+"[…]\n"
 "&lt;/greeter&gt;\n"
 
 #: C/gdm.xml:6194(para)
@@ -9090,7 +9094,7 @@ msgid ""
 "etc...)"
 msgstr ""
 "Una imagen pixmap en un formato que gdk-pixbuf soporte como PNG, JPEG, Tiff, "
-"etc...)"
+"etc…)"
 
 #: C/gdm.xml:6317(term)
 msgid "rect"
@@ -10341,6 +10345,15 @@ msgid ""
 "to run the following command to see if CDE login is running as an SMF "
 "service."
 msgstr ""
+"GDM aún no es el programa de inicio de sesión predeterminado en Solaris. Si desea cambiar "
+"y usar GDM, entonces necesita desactivar el inicio de sesión con CDE e iniciar el servicio GDM. "
+"Note que desactivar el inicio de sesión con CDE causará que cualquier sesión que se esté ejecutando "
+"se cierre inmediatamente y cualquier dato no guardado se perderá. Ejecute estos "
+"comandos sólo si está seguro de que no hay datos sin guardar en sus sesiones en "
+"ejecución. Lo mejor sería ejecutar estos comandos desde una consola o un terminal "
+"a prueba de fallos en lugar de hacerlo desde una sesión IGU en ejecución. El primer paso "
+"es ejecutar el siguiente comando para ver si el inicio de sesión con CDE se está ejecutando como "
+"un servicio SMF."
 
 #: C/gdm.xml:7410(screen)
 #, no-wrap
@@ -10394,6 +10407,9 @@ msgid ""
 "run the following command. If on Solaris 10 the servicename is \"gdm2-login"
 "\", if on Solaris Nevada the servicename is \"gdm\"."
 msgstr ""
+"En este punto se le presentará una consola de nuevo. Inicie sesión como «root » y "
+"ejecute el siguiente comando. Si está en Solaris 10 el nombre del servicio es "
+"\"gdm2-login\", si está en Solaris Nevada el nombre del servicio es \"gdm\"."
 
 #: C/gdm.xml:7441(screen)
 #, no-wrap
@@ -10499,6 +10515,12 @@ msgid ""
 "computer to login to a specified username on startup without asking for "
 "username and password. This is an insecure way to set up your computer."
 msgstr ""
+"El inicio de sesión automático no funciona en Solaris 10 y anteriores porque PAM no "
+"está configurado para soportar esta característica de forma predeterminada. El inicio de sesión automático "
+"es una característica de GDM que no está activada de forma predeterminada, de tal forma que sólo notará este "
+"problema si intenta usarla. Activar esta característica hará que se inicie sesión con un usuario "
+"especificado en su equipo, sin preguntar por el usuario y la contraseña. Esta es una forma insegura de configurar "
+"su equipo."
 
 #: C/gdm.xml:7512(para)
 msgid ""
@@ -10602,6 +10624,12 @@ msgid ""
 "<filename>User</filename> configuration option, \"gdm\" by default) has such "
 "RBAC permissions."
 msgstr ""
+"Esto hará que las características APAGAR y REINICIAR sólo estén activadas para usuarios "
+"con autoridad RBAC. En otras palabras, aquellos usuarios que tienen la "
+"autorización \"solaris.system.shutdown\" específica. La interfaz de entrada de GDM "
+"sólo mostrará esas opciones si el usuario de GDM (especificado en la "
+"opción de configuración <filename>Usuario</filename>, \"gdm\" de forma predeterminada) tiene "
+"esos permisos RBAC."
 
 #: C/gdm.xml:7577(para)
 msgid ""
@@ -10615,6 +10643,15 @@ msgid ""
 "<filename>user_attr</filename> man page for more information about setting "
 "RBAC privileges."
 msgstr ""
+"Por ello, añada la autorización \"solaris.system.shutdown\" al archivo "
+"<filename>/etc/user_attr</filename> para todos los usuarios que deben tener "
+"autoridad para apagar y reiniciar el sistema. Si quiere que estas opciones aparezcan en el programa "
+"de interfaz de entrada de GDM, añada también esta autorización al usuario \"gdm\". Si "
+"no quiere usar RBAC, entonces debe deshabilitar la clave de configuración de GDM "
+"<filename>RBACSystemCommandKeys</filename> y esto hará "
+"que los comandos del sistema estén disponibles para todos los usuarios. Consulte la página "
+"man de <filename>user_attr</filename> para obtener más información acerca de los privilegios "
+"RBAC."
 
 #: C/gdm.xml:7591(para)
 msgid ""
@@ -10707,7 +10744,7 @@ msgstr "Configuraciones de ejemplo"
 
 #: C/gdm.xml:7665(title)
 msgid "Defining Custom Commands"
-msgstr "Definir comando personalizados"
+msgstr "Definir comandos personalizados"
 
 #: C/gdm.xml:7667(para)
 msgid ""
@@ -10833,6 +10870,15 @@ msgid ""
 "debug information and do not sent the entire file. If you do not see any GDM "
 "syslog output, you may need to configure syslog (see syslog.3c man page)."
 msgstr ""
+"Si GDM comienza a no funcionar correctamente, siempre es buena idea incluir la "
+"información de depuración. Use el comando <command>gdmsetup</command> para activar la "
+"depuración (la casilla «Activar envío de mensajes de depuración al registro del sistema» en la solapa "
+"«Seguridad»), después use GDM hasta el punto donde falla, e incluya la salida de GDM "
+"que se envió a su registro del sistema (<filename>&lt;var&gt;/log/messages</filename> o "
+"<filename>&lt;var&gt;/adm/messages</filename> dependiendo de su sistema operativo). "
+"Ya que el registro del sistema puede ser muy grande, incluya sólo la información de depuración "
+"de GDM y no envíe el archivo entero. Si no ve ninguna salida de depuración de GDM, "
+"quizá necesite configurar el registro del sistema (consulte la página syslog.3c)."
 
 #: C/gdm.xml:7791(para)
 msgid ""
@@ -10872,6 +10918,15 @@ msgid ""
 "options. If so, then modify the X server command in the GDM configuration "
 "file so that it is correct for your system."
 msgstr ""
+"Primero asegúrese de que el servidor X está configurado apropiadamente. El archivo de "
+"configuración de GDM contiene un comando en la sección [server-Standard] que "
+"se usa para iniciar el servidor X. Compruebe que este comando funciona en su "
+"sistema. Al ejecutar este comando se debería iniciar el servidor X desde la consola. Si "
+"falla, entonces el problema probablemente sea de la configuración de su servidor X. Consulte "
+"el registro de error de su servidor X para obtener una idea de cuál puede ser el problema. El "
+"problema también puede ser que su servidor X requiere diferentes opciones en la línea "
+"de comandos. Si es así, modifique el comando del servidor X en el archivo de configuración "
+"de GDM para que sea correcto en su sistema."
 
 #: C/gdm.xml:7821(para)
 msgid ""
@@ -10884,6 +10939,14 @@ msgid ""
 "Also, turning on debug and checking the output sent to the system log will "
 "often highlight the problem."
 msgstr ""
+"Otro problema común es que la interfaz de entrada de GDM tenga problemas para "
+"iniciarse. Esto puede pasar, por ejemplo, si GDM no puede encontrar una biblioteca u "
+"otro recurso. Pruebe a iniciar el servidor X y una terminal de programa, establezca la "
+"variable de entorno DOING_GDM_DEVELOPMENT=1 y ejecute <command>&lt;"
+"lib&gt;/gdmlogin</command> o <command>&lt;lib&gt;/gdmgreeter</command>. Cualquier "
+"mensaje de error mostrado en la terminal probablemente resaltará el problema. "
+"También puede ayudar a encontrar el problema activar la depuración y comprobar "
+"la salida enviada al registro del sistema."
 
 #: C/gdm.xml:7834(para)
 msgid ""
@@ -10978,7 +11041,7 @@ msgstr ""
 #: C/gdm.xml:0(None)
 msgid "translator-credits"
 msgstr ""
-"Jorge González <jorgegonz@svn.gnome.org>, 2007\n"
-"Lucas Vieites <lucas@asixinformatica.com>, 2007\n"
-"Francisco Javier F. Serrador <serrador@openshine.com>, 2003, 2006"
+"Jorge González <jorgegonz@svn.gnome.org>, 2007-2008.\n"
+"Lucas Vieites <lucas@asixinformatica.com>, 2007.\n"
+"Francisco Javier F. Serrador <serrador@openshine.com>, 2003, 2006."
 
