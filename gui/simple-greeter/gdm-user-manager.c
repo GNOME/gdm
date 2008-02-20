@@ -1180,6 +1180,7 @@ reload_users (GdmUserManager *manager)
 
         if (seat_id == NULL) {
                 g_warning ("Unable to find users: no seat-id found");
+                return;
         }
 
         command = g_strdup_printf ("ck-history --frequent --seat='%s' --session-type=''",
