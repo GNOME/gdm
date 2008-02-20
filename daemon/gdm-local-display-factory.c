@@ -205,11 +205,6 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
 
         display = gdm_transient_display_new (num);
 
-        if (! gdm_display_create_authority (display)) {
-                display = NULL;
-                goto out;
-        }
-
         /* FIXME: don't hardcode seat1? */
         g_object_set (display, "seat-id", CK_SEAT1_PATH, NULL);
 

@@ -2041,12 +2041,6 @@ gdm_xdmcp_display_create (GdmXdmcpDisplayFactory *factory,
                 goto out;
         }
 
-        if (! gdm_display_create_authority (display)) {
-                g_object_unref (display);
-                display = NULL;
-                goto out;
-        }
-
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
         gdm_display_store_add (store, display);
 
