@@ -41,6 +41,8 @@
 
 #define GDM_SESSION_OPTION_WIDGET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SESSION_OPTION_WIDGET, GdmSessionOptionWidgetPrivate))
 
+#define GDM_SESSION_OPTION_WIDGET_LAST_SESSION "__previous"
+
 struct GdmSessionOptionWidgetPrivate
 {
         gpointer dummy;
@@ -106,11 +108,16 @@ add_available_sessions (GdmSessionOptionWidget *widget)
 {
         char     **session_ids;
         int        i;
-        gboolean   default_is_set;
 
         session_ids = gdm_get_all_sessions ();
 
-        default_is_set = FALSE;
+        gdm_option_widget_add_item (GDM_OPTION_WIDGET (widget),
+                                    GDM_SESSION_OPTION_WIDGET_LAST_SESSION,
+                                    _("Last session"),
+                                    _("Login with the same session as last time."),
+                                    GDM_OPTION_WIDGET_POSITION_TOP);
+        gdm_option_widget_set_active_item (GDM_OPTION_WIDGET (widget),
+                                           GDM_SESSION_OPTION_WIDGET_LAST_SESSION);
 
         for (i = 0; session_ids[i] != NULL; i++) {
                 char *name;
@@ -124,13 +131,6 @@ add_available_sessions (GdmSessionOptionWidget *widget)
                 gdm_option_widget_add_item (GDM_OPTION_WIDGET (widget),
                                             session_ids[i], name, comment,
                                             GDM_OPTION_WIDGET_POSITION_MIDDLE);
-
-                if (!default_is_set) {
-                        gdm_option_widget_set_active_item (GDM_OPTION_WIDGET (widget),
-                                                           session_ids[i]);
-                        default_is_set = TRUE;
-                }
-
                 g_free (name);
                 g_free (comment);
         }
@@ -191,7 +191,10 @@ void
 gdm_session_option_widget_set_current_session (GdmSessionOptionWidget *widget,
                                                const char             *session)
 {
-        if (gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (widget), session,
+        if (session == NULL) {
+                gdm_option_widget_set_active_item (GDM_OPTION_WIDGET (widget),
+                                                   GDM_SESSION_OPTION_WIDGET_LAST_SESSION);
+        } else if (gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (widget), session,
                                             NULL, NULL, NULL)) {
                 gdm_option_widget_set_active_item (GDM_OPTION_WIDGET (widget), session);
         }

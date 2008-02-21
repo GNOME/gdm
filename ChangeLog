@@ -1,5 +1,22 @@
 2008-02-20  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-greeter-panel.c
+	(gdm_greeter_panel_reset):
+	Set language and session to defaults when
+	reseting the user
+	* gui/simple-greeter/gdm-language-option-widget.c
+	(gdm_language_option_widget_init):
+	(gdm_language_option_widget_set_current_language_name):
+	* gui/simple-greeter/gdm-session-option-widget.c
+	(gdm_session_option_widget_init):
+	(gdm_session_option_widget_set_current_session_name):
+	Create "Last Language" and "Last Session" items
+	to go to when we don't know more specific values
+	for language and session.  Make set_current_*_name (..., NULL)
+	revert to these values.
+
+2008-02-20  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-panel.[ch]:
 	(gdm_greeter_panel_reset):
 	new function that is an analog of

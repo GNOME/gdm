@@ -42,6 +42,8 @@
 
 #define GDM_LANGUAGE_OPTION_WIDGET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_LANGUAGE_OPTION_WIDGET, GdmLanguageOptionWidgetPrivate))
 
+#define GDM_LANGUAGE_OPTION_WIDGET_LAST_LANGUAGE "__previous"
+
 struct GdmLanguageOptionWidgetPrivate
 {
         GtkWidget *dialog;
@@ -174,6 +176,14 @@ gdm_language_option_widget_init (GdmLanguageOptionWidget *widget)
         }
 
         gdm_option_widget_add_item (GDM_OPTION_WIDGET (widget),
+                                    GDM_LANGUAGE_OPTION_WIDGET_LAST_LANGUAGE, _("Last language"),
+                                    _("Log in using the language that you "
+                                      "have used last time you logged in"),
+                                    GDM_OPTION_WIDGET_POSITION_TOP);
+        gdm_option_widget_set_active_item (GDM_OPTION_WIDGET (widget),
+                                           GDM_LANGUAGE_OPTION_WIDGET_LAST_LANGUAGE);
+
+        gdm_option_widget_add_item (GDM_OPTION_WIDGET (widget),
                                     "__other", _("Other..."),
                                     _("Choose a language from the "
                                       "full list of available languages."),
@@ -247,8 +257,12 @@ void
 gdm_language_option_widget_set_current_language_name (GdmLanguageOptionWidget *widget,
                                                       const char              *lang_name)
 {
-        if (!gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (widget), lang_name,
-                                            NULL, NULL, NULL)) {
+        g_return_if_fail (GDM_IS_LANGUAGE_OPTION_WIDGET (widget));
+
+        if (lang_name == NULL) {
+                gdm_option_widget_set_active_item (GDM_OPTION_WIDGET (widget), GDM_LANGUAGE_OPTION_WIDGET_LAST_LANGUAGE);
+        } else if (!gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (widget), lang_name,
+                                                   NULL, NULL, NULL)) {
                 gdm_recent_option_widget_add_item (GDM_RECENT_OPTION_WIDGET (widget),
                                                    lang_name);
         } else {
