@@ -244,7 +244,6 @@ gdm_session_settings_load (GdmSessionSettings  *settings,
         g_return_val_if_fail (settings != NULL, FALSE);
         g_return_val_if_fail (home_directory != NULL, FALSE);
         g_return_val_if_fail (!gdm_session_settings_is_loaded (settings), FALSE);
-
         filename = g_build_filename (home_directory, ".dmrc", NULL);
 
         is_loaded = FALSE;
@@ -260,7 +259,13 @@ gdm_session_settings_load (GdmSessionSettings  *settings,
         session_name = g_key_file_get_string (key_file, "Desktop", "Session",
                                               &load_error);
 
-        if (session_name == NULL) {
+        if (session_name != NULL) {
+                gdm_session_settings_set_session_name (settings, session_name);
+                g_free (session_name);
+        } else if (g_error_matches (load_error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
+                g_error_free (load_error);
+                load_error = NULL;
+        } else {
                 g_propagate_error (error, load_error);
                 goto out;
         }
@@ -268,13 +273,16 @@ gdm_session_settings_load (GdmSessionSettings  *settings,
         language_name = g_key_file_get_string (key_file, "Desktop", "Language",
                                                &load_error);
 
-        if (language_name == NULL) {
+        if (language_name != NULL) {
+                gdm_session_settings_set_language_name (settings, language_name);
+                g_free (language_name);
+        } else if (g_error_matches (load_error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
+                g_error_free (load_error);
+                load_error = NULL;
+        } else {
                 g_propagate_error (error, load_error);
                 goto out;
         }
-
-        gdm_session_settings_set_language_name (settings, language_name);
-        gdm_session_settings_set_session_name (settings, session_name);
 
         is_loaded = TRUE;
 out:
