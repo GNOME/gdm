@@ -180,7 +180,8 @@ typedef struct {
 } RemoveDisplayData;
 
 static gboolean
-remove_display_for_connection (GdmDisplay        *display,
+remove_display_for_connection (char              *id,
+                               GdmDisplay        *display,
                                RemoveDisplayData *data)
 {
         g_assert (display != NULL);

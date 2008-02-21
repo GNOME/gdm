@@ -37,14 +37,15 @@ G_BEGIN_DECLS
 typedef struct GdmDisplayPrivate GdmDisplayPrivate;
 
 typedef enum {
-        GDM_DISPLAY_UNMANAGED,
+        GDM_DISPLAY_UNMANAGED = 0,
         GDM_DISPLAY_MANAGED,
-        GDM_DISPLAY_FINISHED
+        GDM_DISPLAY_FINISHED,
+        GDM_DISPLAY_FAILED,
 } GdmDisplayStatus;
 
 typedef struct
 {
-        GObject           parent;
+        GObject            parent;
         GdmDisplayPrivate *priv;
 } GdmDisplay;
 

@@ -73,13 +73,26 @@ gdm_display_store_clear (GdmDisplayStore    *store)
         g_hash_table_remove_all (store->priv->displays);
 }
 
+static gboolean
+remove_display (char              *id,
+                GdmDisplay        *display,
+                GdmDisplay        *display_to_remove)
+{
+        if (display == display_to_remove) {
+                return TRUE;
+        }
+        return FALSE;
+}
+
 gboolean
 gdm_display_store_remove (GdmDisplayStore    *store,
                           GdmDisplay         *display)
 {
         g_return_val_if_fail (store != NULL, FALSE);
 
-        g_warning ("GdmDisplayStore: Implement me");
+        gdm_display_store_foreach_remove (store,
+                                          (GdmDisplayStoreFunc)remove_display,
+                                          display);
         return FALSE;
 }
 

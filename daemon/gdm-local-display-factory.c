@@ -51,11 +51,16 @@
 #define HAL_DBUS_DEVICE_INTERFACE               "org.freedesktop.Hal.Device"
 #define SEAT_PCI_DEVICE_CLASS                   3
 
+#define MAX_DISPLAY_FAILURES 5
+
 struct GdmLocalDisplayFactoryPrivate
 {
         DBusGConnection *connection;
         DBusGProxy      *proxy;
         GHashTable      *displays;
+
+        /* FIXME: this needs to be per seat? */
+        guint            num_failures;
 };
 
 enum {
@@ -65,6 +70,8 @@ enum {
 static void     gdm_local_display_factory_class_init    (GdmLocalDisplayFactoryClass *klass);
 static void     gdm_local_display_factory_init          (GdmLocalDisplayFactory      *factory);
 static void     gdm_local_display_factory_finalize      (GObject                     *object);
+
+static GdmDisplay *create_display                       (GdmLocalDisplayFactory      *factory);
 
 static gpointer local_display_factory_object = NULL;
 
@@ -128,7 +135,7 @@ take_next_display_number (GdmLocalDisplayFactory *factory)
 
         g_debug ("GdmLocalDisplayFactory: Found the following X displays:");
         for (l = list; l != NULL; l = l->next) {
-                g_debug ("%u", GPOINTER_TO_UINT (l->data));
+                g_debug ("GdmLocalDisplayFactory: %u", GPOINTER_TO_UINT (l->data));
         }
 
         for (l = list; l != NULL; l = l->next) {
@@ -159,8 +166,7 @@ static void
 on_display_disposed (GdmLocalDisplayFactory *factory,
                      GdmDisplay             *display)
 {
-        /* remove the display number from accounting */
-
+        g_debug ("GdmLocalDisplayFactory: Display %p disposed", display);
 }
 
 static void
@@ -275,6 +281,57 @@ gdm_local_display_factory_create_product_display (GdmLocalDisplayFactory *factor
         return ret;
 }
 
+static void
+on_static_display_status_changed (GdmDisplay             *display,
+                                  GParamSpec             *arg1,
+                                  GdmLocalDisplayFactory *factory)
+{
+        int              status;
+        GdmDisplayStore *store;
+        int              num;
+
+        num = -1;
+        gdm_display_get_x11_display_number (display, &num, NULL);
+        g_assert (num != -1);
+
+        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+
+        status = gdm_display_get_status (display);
+
+        g_debug ("GdmLocalDisplayFactory: static display status changed: %d", status);
+        switch (status) {
+        case GDM_DISPLAY_FINISHED:
+                /* remove the display number from factory->priv->displays
+                   so that it may be reused */
+                g_hash_table_remove (factory->priv->displays, GUINT_TO_POINTER (num));
+                gdm_display_store_remove (store, display);
+                /* reset num failures */
+                factory->priv->num_failures = 0;
+                create_display (factory);
+                break;
+        case GDM_DISPLAY_FAILED:
+                /* leave the display number in factory->priv->displays
+                   so that it doesn't get reused */
+                gdm_display_store_remove (store, display);
+                factory->priv->num_failures++;
+                if (factory->priv->num_failures > MAX_DISPLAY_FAILURES) {
+                        /* oh shit */
+                        g_critical ("GdmLocalDisplayFactory: maximum number of displays failures reached: check Xorg.log for errors");
+                        exit (1);
+                }
+
+                create_display (factory);
+                break;
+        case GDM_DISPLAY_UNMANAGED:
+                break;
+        case GDM_DISPLAY_MANAGED:
+                break;
+        default:
+                g_assert_not_reached ();
+                break;
+        }
+}
+
 static GdmDisplay *
 create_display (GdmLocalDisplayFactory *factory)
 {
@@ -295,6 +352,11 @@ create_display (GdmLocalDisplayFactory *factory)
 
         /* FIXME: don't hardcode seat1? */
         g_object_set (display, "seat-id", CK_SEAT1_PATH, NULL);
+
+        g_signal_connect (display,
+                          "notify::status",
+                          G_CALLBACK (on_static_display_status_changed),
+                          factory);
 
         store_display (factory, num, display);
 

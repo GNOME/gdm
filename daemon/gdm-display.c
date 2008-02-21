@@ -43,7 +43,7 @@ static guint32 display_serial = 1;
 
 #define GDM_DISPLAY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_DISPLAY, GdmDisplayPrivate))
 
-#define DEFAULT_SLAVE_COMMAND LIBEXECDIR"/gdm-simple-slave"
+#define DEFAULT_SLAVE_COMMAND LIBEXECDIR "/gdm-simple-slave"
 
 struct GdmDisplayPrivate
 {
@@ -55,6 +55,7 @@ struct GdmDisplayPrivate
         char                 *x11_display_name;
         int                   status;
         time_t                creation_time;
+        GTimer               *slave_timer;
         char                 *slave_command;
 
         char                 *x11_cookie;
@@ -72,6 +73,7 @@ struct GdmDisplayPrivate
 enum {
         PROP_0,
         PROP_ID,
+        PROP_STATUS,
         PROP_SEAT_ID,
         PROP_REMOTE_HOSTNAME,
         PROP_X11_DISPLAY_NUMBER,
@@ -253,7 +255,7 @@ gdm_display_add_user_authorization (GdmDisplay *display,
 
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-        g_debug ("Adding authorization for user:%s on display %s", username, display->priv->x11_display_name);
+        g_debug ("GdmDisplay: Adding authorization for user:%s on display %s", username, display->priv->x11_display_name);
 
         g_object_ref (display);
         ret = GDM_DISPLAY_GET_CLASS (display)->add_user_authorization (display, username, filename, error);
@@ -280,7 +282,7 @@ gdm_display_set_slave_bus_name (GdmDisplay *display,
 
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-        g_debug ("Setting slave bus name:%s on display %s", name, display->priv->x11_display_name);
+        g_debug ("GdmDisplay: Setting slave bus name:%s on display %s", name, display->priv->x11_display_name);
 
         g_object_ref (display);
         ret = GDM_DISPLAY_GET_CLASS (display)->set_slave_bus_name (display, name, error);
@@ -308,7 +310,7 @@ gdm_display_remove_user_authorization (GdmDisplay *display,
 
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-        g_debug ("Removing authorization for user:%s on display %s", username, display->priv->x11_display_name);
+        g_debug ("GdmDisplay: Removing authorization for user:%s on display %s", username, display->priv->x11_display_name);
 
         g_object_ref (display);
         ret = GDM_DISPLAY_GET_CLASS (display)->remove_user_authorization (display, username, error);
@@ -399,8 +401,9 @@ gdm_display_get_seat_id (GdmDisplay *display,
 static gboolean
 finish_idle (GdmDisplay *display)
 {
-        gdm_display_finish (display);
         display->priv->finish_idle_id = 0;
+        /* finish may end up finalizing object */
+        gdm_display_finish (display);
         return FALSE;
 }
 
@@ -417,7 +420,7 @@ slave_exited (GdmSlaveProxy       *proxy,
               int                  code,
               GdmDisplay          *display)
 {
-        g_debug ("Slave exited: %d", code);
+        g_debug ("GdmDisplay: Slave exited: %d", code);
 
         queue_finish (display);
 }
@@ -427,9 +430,20 @@ slave_died (GdmSlaveProxy       *proxy,
             int                  signum,
             GdmDisplay          *display)
 {
-        g_debug ("Slave died: %d", signum);
+        g_debug ("GdmDisplay: Slave died: %d", signum);
 
         queue_finish (display);
+}
+
+
+static void
+_gdm_display_set_status (GdmDisplay *display,
+                         int         status)
+{
+        if (status != display->priv->status) {
+                display->priv->status = status;
+                g_object_notify (G_OBJECT (display), "status");
+        }
 }
 
 static gboolean
@@ -439,7 +453,7 @@ gdm_display_real_manage (GdmDisplay *display)
 
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-        g_debug ("GdmDisplay manage display");
+        g_debug ("GdmDisplay: manage display");
 
         g_assert (display->priv->slave_proxy == NULL);
 
@@ -449,7 +463,7 @@ gdm_display_real_manage (GdmDisplay *display)
                 return FALSE;
         }
 
-        display->priv->status = GDM_DISPLAY_MANAGED;
+        _gdm_display_set_status (display, GDM_DISPLAY_MANAGED);
 
         display->priv->slave_proxy = gdm_slave_proxy_new ();
         g_signal_connect (display->priv->slave_proxy,
@@ -468,6 +482,8 @@ gdm_display_real_manage (GdmDisplay *display)
         gdm_slave_proxy_set_command (display->priv->slave_proxy, command);
         g_free (command);
 
+        g_timer_start (display->priv->slave_timer);
+
         gdm_slave_proxy_start (display->priv->slave_proxy);
 
         return TRUE;
@@ -480,7 +496,7 @@ gdm_display_manage (GdmDisplay *display)
 
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-        g_debug ("Managing display: %s", display->priv->id);
+        g_debug ("GdmDisplay: Managing display: %s", display->priv->id);
 
         g_object_ref (display);
         ret = GDM_DISPLAY_GET_CLASS (display)->manage (display);
@@ -494,9 +510,9 @@ gdm_display_real_finish (GdmDisplay *display)
 {
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-        display->priv->status = GDM_DISPLAY_FINISHED;
+        _gdm_display_set_status (display, GDM_DISPLAY_FINISHED);
 
-        g_debug ("GdmDisplay finish display");
+        g_debug ("GdmDisplay: finish display");
 
         return TRUE;
 }
@@ -508,7 +524,7 @@ gdm_display_finish (GdmDisplay *display)
 
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-        g_debug ("Finishing display: %s", display->priv->id);
+        g_debug ("GdmDisplay: Finishing display: %s", display->priv->id);
 
         g_object_ref (display);
         ret = GDM_DISPLAY_GET_CLASS (display)->finish (display);
@@ -520,11 +536,13 @@ gdm_display_finish (GdmDisplay *display)
 static gboolean
 gdm_display_real_unmanage (GdmDisplay *display)
 {
+        gdouble elapsed;
+
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-        display->priv->status = GDM_DISPLAY_UNMANAGED;
-
         g_debug ("GdmDisplay: unmanage display");
+
+        g_timer_stop (display->priv->slave_timer);
 
         if (display->priv->slave_proxy != NULL) {
                 gdm_slave_proxy_stop (display->priv->slave_proxy);
@@ -543,6 +561,14 @@ gdm_display_real_unmanage (GdmDisplay *display)
                 gdm_display_access_file_close (display->priv->access_file);
                 g_object_unref (display->priv->access_file);
                 display->priv->access_file = NULL;
+        }
+
+        elapsed = g_timer_elapsed (display->priv->slave_timer, NULL);
+        if (elapsed < 10) {
+                g_warning ("GdmDisplay: display lasted %lf seconds", elapsed);
+                _gdm_display_set_status (display, GDM_DISPLAY_FAILED);
+        } else {
+                _gdm_display_set_status (display, GDM_DISPLAY_UNMANAGED);
         }
 
         return TRUE;
@@ -682,6 +708,9 @@ gdm_display_set_property (GObject        *object,
         case PROP_ID:
                 _gdm_display_set_id (self, g_value_get_string (value));
                 break;
+        case PROP_STATUS:
+                _gdm_display_set_status (self, g_value_get_int (value));
+                break;
         case PROP_SEAT_ID:
                 _gdm_display_set_seat_id (self, g_value_get_string (value));
                 break;
@@ -722,6 +751,9 @@ gdm_display_get_property (GObject        *object,
         switch (prop_id) {
         case PROP_ID:
                 g_value_set_string (value, self->priv->id);
+                break;
+        case PROP_STATUS:
+                g_value_set_int (value, self->priv->status);
                 break;
         case PROP_SEAT_ID:
                 g_value_set_string (value, self->priv->seat_id);
@@ -807,13 +839,29 @@ gdm_display_dispose (GObject *object)
 
         display = GDM_DISPLAY (object);
 
+        g_debug ("GdmDisplay: Disposing display");
+
         if (display->priv->finish_idle_id > 0) {
                 g_source_remove (display->priv->finish_idle_id);
                 display->priv->finish_idle_id = 0;
         }
 
-        g_debug ("GdmDisplay: Disposing display");
-        gdm_display_unmanage (display);
+        if (display->priv->slave_proxy != NULL) {
+                g_object_unref (display->priv->slave_proxy);
+                display->priv->slave_proxy = NULL;
+        }
+
+        if (display->priv->user_access_file != NULL) {
+                gdm_display_access_file_close (display->priv->user_access_file);
+                g_object_unref (display->priv->user_access_file);
+                display->priv->user_access_file = NULL;
+        }
+
+        if (display->priv->access_file != NULL) {
+                gdm_display_access_file_close (display->priv->access_file);
+                g_object_unref (display->priv->access_file);
+                display->priv->access_file = NULL;
+        }
 
         G_OBJECT_CLASS (gdm_display_parent_class)->dispose (object);
 }
@@ -904,6 +952,15 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               "slave command",
                                                               DEFAULT_SLAVE_COMMAND,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_STATUS,
+                                         g_param_spec_int ("status",
+                                                           "status",
+                                                           "status",
+                                                           -1,
+                                                           G_MAXINT,
+                                                           GDM_DISPLAY_UNMANAGED,
+                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
         g_type_class_add_private (klass, sizeof (GdmDisplayPrivate));
 
@@ -916,8 +973,8 @@ gdm_display_init (GdmDisplay *display)
 
         display->priv = GDM_DISPLAY_GET_PRIVATE (display);
 
-        display->priv->status = GDM_DISPLAY_UNMANAGED;
         display->priv->creation_time = time (NULL);
+        display->priv->slave_timer = g_timer_new ();
 }
 
 static void
@@ -946,6 +1003,10 @@ gdm_display_finalize (GObject *object)
 
         if (display->priv->user_access_file != NULL) {
                 g_object_unref (display->priv->user_access_file);
+        }
+
+        if (display->priv->slave_timer != NULL) {
+                g_timer_destroy (display->priv->slave_timer);
         }
 
         G_OBJECT_CLASS (gdm_display_parent_class)->finalize (object);

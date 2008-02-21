@@ -1,3 +1,25 @@
+2008-02-21  William Jon McCann  <jmccann@redhat.com>
+
+	* daemon/gdm-display-store.c: (remove_display),
+	(gdm_display_store_remove):
+	* daemon/gdm-display.c: (gdm_display_add_user_authorization),
+	(gdm_display_set_slave_bus_name),
+	(gdm_display_remove_user_authorization), (finish_idle),
+	(slave_exited), (slave_died), (_gdm_display_set_status),
+	(gdm_display_real_manage), (gdm_display_manage),
+	(gdm_display_real_finish), (gdm_display_finish),
+	(gdm_display_real_unmanage), (gdm_display_set_property),
+	(gdm_display_get_property), (gdm_display_dispose),
+	(gdm_display_class_init), (gdm_display_init),
+	(gdm_display_finalize):
+	* daemon/gdm-display.h:
+	* daemon/gdm-local-display-factory.c: (take_next_display_number),
+	(on_display_disposed), (on_static_display_status_changed),
+	(create_display):
+	* daemon/gdm-manager.c: (remove_display_for_connection):
+	* daemon/gdm-static-display.c: (gdm_static_display_finish):
+	Add quick death and looping detection for displays.
+
 2008-02-21  Ray Strode  <rstrode@redhat.com>
 
 	* daemon/gdm-session-worker.c:

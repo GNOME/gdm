@@ -98,13 +98,20 @@ gdm_static_display_manage (GdmDisplay *display)
 static gboolean
 gdm_static_display_finish (GdmDisplay *display)
 {
+        int status;
+
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-        GDM_DISPLAY_CLASS (gdm_static_display_parent_class)->finish (display);
+        /* Don't call parent's finish since we don't ever
+           want to be put in the FINISHED state */
 
         /* restart static displays */
         gdm_display_unmanage (display);
-        gdm_display_manage (display);
+
+        status = gdm_display_get_status (display);
+        if (status != GDM_DISPLAY_FAILED) {
+                gdm_display_manage (display);
+        }
 
         return TRUE;
 }
