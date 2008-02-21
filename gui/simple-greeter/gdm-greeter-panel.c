@@ -570,6 +570,12 @@ gdm_greeter_panel_hide_user_options (GdmGreeterPanel *panel)
 }
 
 void
+gdm_greeter_panel_reset (GdmGreeterPanel *panel)
+{
+        gdm_greeter_panel_hide_user_options (panel);
+}
+
+void
 gdm_greeter_panel_set_language_name_hint (GdmGreeterPanel *panel,
                                           const char      *language_name)
 {

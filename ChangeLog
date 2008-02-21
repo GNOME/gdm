@@ -1,5 +1,17 @@
 2008-02-20  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-greeter-panel.[ch]:
+	(gdm_greeter_panel_reset):
+	new function that is an analog of
+	gdm_greeter_login_window_reset.  Right now
+	it just hides user options.
+
+	* gui/simple-greeter/gdm-greeter-session.c:
+	(on_reset): call gdm_greeter_panel_reset instead
+	of gdm_greeter_paneL_hide_user_options
+
+2008-02-20  Ray Strode  <rstrode@redhat.com>
+
 	* daemon/gdm-session-settings.c
 	(gdm_session_settings_load):
 	Don't fail if optional fields are missing in ~/.dmrc
