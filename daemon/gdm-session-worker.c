@@ -510,6 +510,16 @@ attempt_to_load_user_settings_as_root (GdmSessionWorker *worker,
         setegid (passwd_entry->pw_gid);
         seteuid (passwd_entry->pw_uid);
 
+        /* FIXME: if this call fails, we should probably do some
+         * heuristics to try to figure out if .dmrc doesn't
+         * exist at all or just isn't readable yet.  If it doesn't
+         * exist at all (and won't exist by the end of the pam
+         * conversation) then we should send some sort of
+         * "NoSavedSettings" message to the slave so that it can
+         * tell the greeter to use specific default settings
+         * instead of the place holder "Last Session" "Last
+         * Language" items in the combo boxes in the panel
+         */
         gdm_session_settings_load (worker->priv->user_settings,
                                    passwd_entry->pw_dir,
                                    NULL);
