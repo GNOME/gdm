@@ -1224,7 +1224,7 @@ gdm_session_direct_init (GdmSessionDirect *session)
         }
 
         session->priv->session_pid = -1;
-        session->priv->selected_session = g_strdup ("gnome.desktop");
+        session->priv->selected_session = g_strdup ("gnome");
 
         session->priv->environment = g_hash_table_new_full (g_str_hash,
                                                             g_str_equal,
@@ -1595,6 +1595,8 @@ get_session_command_for_file (const char *file,
 
         key_file = g_key_file_new ();
 
+        g_debug ("GdmSessionDirect: looking for session file '%s'", file);
+
         error = NULL;
         full_path = NULL;
         res = g_key_file_load_from_dirs (key_file,
@@ -1669,14 +1671,18 @@ get_session_command (GdmSessionDirect *session)
 {
         gboolean res;
         char    *command;
+        char    *filename;
+
+        filename = g_strdup_printf ("%s.desktop", session->priv->selected_session);
 
         command = NULL;
-        res = get_session_command_for_file (session->priv->selected_session,
-                                            &command);
+        res = get_session_command_for_file (filename, &command);
         if (! res) {
-                g_critical ("Cannot read specified session file: %s", session->priv->selected_session);
+                g_critical ("Cannot read specified session file: %s", filename);
+                g_free (filename);
                 exit (1);
         }
+        g_free (filename);
 
         return command;
 }
