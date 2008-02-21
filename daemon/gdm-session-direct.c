@@ -39,6 +39,8 @@
 #include <pwd.h>
 #include <grp.h>
 
+#include <locale.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -64,7 +66,9 @@ struct _GdmSessionDirectPrivate
 {
         /* per open scope */
         char                *selected_session;
+        char                *saved_session;
         char                *selected_language;
+        char                *saved_language;
         char                *selected_user;
         char                *user_x11_authority_file;
 
@@ -793,6 +797,7 @@ gdm_session_direct_handle_saved_language_name_read (GdmSessionDirect *session,
         dbus_message_unref (reply);
 
         _gdm_session_saved_language_name_read (GDM_SESSION (session), language_name);
+        session->priv->saved_language = g_strdup (language_name);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -818,6 +823,8 @@ gdm_session_direct_handle_saved_session_name_read (GdmSessionDirect *session,
         dbus_message_unref (reply);
 
         _gdm_session_saved_session_name_read (GDM_SESSION (session), session_name);
+
+        session->priv->saved_session = g_strdup (session_name);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -1195,8 +1202,6 @@ setup_server (GdmSessionDirect *session)
 static void
 gdm_session_direct_init (GdmSessionDirect *session)
 {
-        const char * const *languages;
-
         session->priv = G_TYPE_INSTANCE_GET_PRIVATE (session,
                                                      GDM_TYPE_SESSION_DIRECT,
                                                      GdmSessionDirectPrivate);
@@ -1218,13 +1223,7 @@ gdm_session_direct_init (GdmSessionDirect *session)
                           G_CALLBACK (on_session_exited),
                           NULL);
 
-        languages = g_get_language_names ();
-        if (languages != NULL) {
-                session->priv->selected_language = g_strdup (languages[0]);
-        }
-
         session->priv->session_pid = -1;
-        session->priv->selected_session = g_strdup ("gnome");
 
         session->priv->environment = g_hash_table_new_full (g_str_hash,
                                                             g_str_equal,
@@ -1666,6 +1665,30 @@ out:
         return ret;
 }
 
+static const char *
+get_language_name (GdmSessionDirect *session)
+{
+        if (session->priv->selected_language != NULL) {
+                return session->priv->selected_language;
+        } else if (session->priv->saved_language != NULL) {
+                return session->priv->saved_language;
+        } else {
+                return setlocale (LC_MESSAGES, NULL);
+        }
+}
+
+static const char *
+get_session_name (GdmSessionDirect *session)
+{
+        if (session->priv->selected_session != NULL) {
+                return session->priv->selected_session;
+        } else if (session->priv->saved_session != NULL) {
+                return session->priv->saved_session;
+        } else {
+                return "gnome";
+        }
+}
+
 static char *
 get_session_command (GdmSessionDirect *session)
 {
@@ -1673,7 +1696,7 @@ get_session_command (GdmSessionDirect *session)
         char    *command;
         char    *filename;
 
-        filename = g_strdup_printf ("%s.desktop", session->priv->selected_session);
+        filename = g_strdup_printf ("%s.desktop", get_session_name (session));
 
         command = NULL;
         res = get_session_command_for_file (filename, &command);
@@ -1783,17 +1806,17 @@ setup_session_environment (GdmSessionDirect *session)
 
         gdm_session_direct_set_environment_variable (session,
                                                      "GDMSESSION",
-                                                     session->priv->selected_session);
+                                                     get_session_name (session));
         gdm_session_direct_set_environment_variable (session,
                                                      "DESKTOP_SESSION",
-                                                     session->priv->selected_session);
+                                                     get_session_name (session));
 
         gdm_session_direct_set_environment_variable (session,
                                                      "LANG",
-                                                     session->priv->selected_language);
+                                                     get_language_name (session));
         gdm_session_direct_set_environment_variable (session,
                                                      "GDM_LANG",
-                                                     session->priv->selected_language);
+                                                     get_language_name (session));
 
         gdm_session_direct_set_environment_variable (session,
                                                      "DISPLAY",
@@ -1870,8 +1893,14 @@ gdm_session_direct_close (GdmSession *session)
         g_free (impl->priv->selected_session);
         impl->priv->selected_session = NULL;
 
+        g_free (impl->priv->saved_session);
+        impl->priv->saved_session = NULL;
+
         g_free (impl->priv->selected_language);
         impl->priv->selected_language = NULL;
+
+        g_free (impl->priv->saved_language);
+        impl->priv->saved_language = NULL;
 
         g_free (impl->priv->user_x11_authority_file);
         impl->priv->user_x11_authority_file = NULL;
@@ -1919,7 +1948,12 @@ gdm_session_direct_select_session (GdmSession *session,
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
 
         g_free (impl->priv->selected_session);
-        impl->priv->selected_session = g_strdup (text);
+
+        if (strcmp (text, "__previous") == 0) {
+                impl->priv->selected_session = NULL;
+        } else {
+                impl->priv->selected_session = g_strdup (text);
+        }
 }
 
 static void
@@ -1929,7 +1963,12 @@ gdm_session_direct_select_language (GdmSession *session,
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
 
         g_free (impl->priv->selected_language);
-        impl->priv->selected_language = g_strdup (text);
+
+        if (strcmp (text, "__previous") == 0) {
+                impl->priv->selected_language = NULL;
+        } else {
+                impl->priv->selected_language = g_strdup (text);
+        }
 }
 
 /* At some point we may want to read these right from
@@ -2101,6 +2140,10 @@ gdm_session_direct_finalize (GObject *object)
         session = GDM_SESSION_DIRECT (object);
 
         g_free (session->priv->selected_user);
+        g_free (session->priv->selected_session);
+        g_free (session->priv->saved_session);
+        g_free (session->priv->selected_language);
+        g_free (session->priv->saved_language);
 
         parent_class = G_OBJECT_CLASS (gdm_session_direct_parent_class);
 
