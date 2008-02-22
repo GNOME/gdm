@@ -231,7 +231,6 @@ char *
 gdm_language_option_widget_get_current_language_name (GdmLanguageOptionWidget *widget)
 {
         char *active_item_id;
-        char *language_name;
 
         active_item_id = gdm_option_widget_get_active_item (GDM_OPTION_WIDGET (widget));
         if (active_item_id == NULL) {
@@ -243,14 +242,7 @@ gdm_language_option_widget_get_current_language_name (GdmLanguageOptionWidget *w
                 return NULL;
         }
 
-        /* FIXME: this clearly isn't thought through.  hard coding .utf8
-         * probably doesn't make sense.  we should figure out a way
-         * to propagate the right encoding
-         */
-        language_name = g_strdup_printf ("%s.utf8", active_item_id);
-        g_free (active_item_id);
-
-        return language_name;
+        return active_item_id;
 }
 
 void
