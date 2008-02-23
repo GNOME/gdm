@@ -88,7 +88,8 @@
 
 #define GLADE_XML_FILE       "gdm-greeter-login-window.glade"
 
-#define LOGO_KEY             "/apps/gdm/simple-greeter/logo-icon-name"
+#define KEY_LOGO                    "/apps/gdm/simple-greeter/logo-icon-name"
+#define KEY_DISABLE_RESTART_BUTTONS "/apps/gdm/simple-greeter/disable-restart-buttons"
 #define TIMED_LOGIN_TIMEOUT_SEC  60
 
 #define GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_LOGIN_WINDOW, GdmGreeterLoginWindowPrivate))
@@ -258,9 +259,18 @@ show_widget (GdmGreeterLoginWindow *login_window,
 static gboolean
 get_show_restart_buttons (GdmGreeterLoginWindow *login_window)
 {
-        gboolean show;
+        gboolean     show;
+        GConfClient *client;
+        GError      *error;
 
-        show = TRUE;
+        client = gconf_client_get_default ();
+        error = NULL;
+        show = ! gconf_client_get_bool (client, KEY_DISABLE_RESTART_BUTTONS, &error);
+        if (error != NULL) {
+                g_debug ("GdmGreeterLoginWindow: unable to get disable-restart-buttons configuration: %s", error->message);
+                g_error_free (error);
+        }
+        g_object_unref (client);
 
 #ifdef ENABLE_RBAC_SHUTDOWN
         {
@@ -346,12 +356,12 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         const char *default_name;
         GtkWidget  *user_chooser;
         GtkWidget  *box;
-        gboolean    show_restart_shutdown = TRUE;
+        gboolean    show_restart_buttons;
 
         /* FIXME: do animation */
         default_name = NULL;
 
-        show_restart_shutdown = get_show_restart_buttons (login_window);
+        show_restart_buttons = get_show_restart_buttons (login_window);
 
         switch (number) {
         case MODE_SELECTION:
@@ -361,11 +371,13 @@ switch_mode (GdmGreeterLoginWindow *login_window,
 
                 show_widget (login_window, "cancel-button", FALSE);
                 show_widget (login_window, "shutdown-button",
-                             login_window->priv->display_is_local && show_restart_shutdown);
+                             login_window->priv->display_is_local && show_restart_buttons);
                 show_widget (login_window, "restart-button",
-                             login_window->priv->display_is_local && show_restart_shutdown);
-                show_widget (login_window, "suspend-button", login_window->priv->display_is_local);
-                show_widget (login_window, "disconnect-button", ! login_window->priv->display_is_local);
+                             login_window->priv->display_is_local && show_restart_buttons);
+                show_widget (login_window, "suspend-button",
+                             login_window->priv->display_is_local && show_restart_buttons);
+                show_widget (login_window, "disconnect-button",
+                             ! login_window->priv->display_is_local);
                 show_widget (login_window, "auth-input-box", FALSE);
                 default_name = NULL;
                 break;
@@ -1145,7 +1157,7 @@ load_theme (GdmGreeterLoginWindow *login_window)
 
                 client = gconf_client_get_default ();
                 error = NULL;
-                icon_name = gconf_client_get_string (client, LOGO_KEY, &error);
+                icon_name = gconf_client_get_string (client, KEY_LOGO, &error);
                 if (error != NULL) {
                         g_debug ("GdmGreeterLoginWindow: unable to get logo icon name: %s", error->message);
                         g_error_free (error);
