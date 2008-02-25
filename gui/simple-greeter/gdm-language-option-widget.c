@@ -237,17 +237,25 @@ gdm_language_option_widget_get_current_language_name (GdmLanguageOptionWidget *w
 
 void
 gdm_language_option_widget_set_current_language_name (GdmLanguageOptionWidget *widget,
-                                                      const char              *lang_name)
+                                                      const char              *language_name)
 {
+        char *normalized_language_name;
+
         g_return_if_fail (GDM_IS_LANGUAGE_OPTION_WIDGET (widget));
 
-        if (lang_name == NULL) {
-                gdm_option_widget_set_active_item (GDM_OPTION_WIDGET (widget), GDM_LANGUAGE_OPTION_WIDGET_LAST_LANGUAGE);
-        } else if (!gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (widget), lang_name,
-                                                   NULL, NULL, NULL)) {
-                gdm_recent_option_widget_add_item (GDM_RECENT_OPTION_WIDGET (widget),
-                                                   lang_name);
+        if (language_name != NULL) {
+                normalized_language_name = gdm_normalize_language_name (language_name);
         } else {
-                gdm_option_widget_set_active_item (GDM_OPTION_WIDGET (widget), lang_name);
+                normalized_language_name = NULL;
         }
+
+        if (normalized_language_name != NULL &&
+            !gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (widget),
+                                            normalized_language_name, NULL, NULL, NULL)) {
+                gdm_recent_option_widget_add_item (GDM_RECENT_OPTION_WIDGET (widget),
+                                                   normalized_language_name);
+        }
+
+        gdm_option_widget_set_active_item (GDM_OPTION_WIDGET (widget), normalized_language_name);
+        g_free (normalized_language_name);
 }

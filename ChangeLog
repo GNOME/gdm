@@ -1,5 +1,13 @@
 2008-02-25  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-language-option-widget.c
+	(gdm_language_option_widget_set_current_language_name):
+	Normalize language name before adding to the list, so
+	we don't end up with duplicate entries for the same
+	locale
+
+2008-02-25  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-language-chooser-widget.c
 	(gdm_language_chooser_widget_get_current_language_name):
 	fallback to setlocale (LC_MESSAGES, NULL) instead of
