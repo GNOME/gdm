@@ -205,17 +205,19 @@ construct_language_name (const char *language,
 {
         char *name;
 
-        /* Ignore codeset and modifier for this */
-        /* FIXME: that can't be right. It's going to break
-         * serbian among other things.
-         */
-        if (territory == NULL) {
-                name = g_strdup (language);
-        } else {
-                name = g_strdup_printf ("%s_%s",
-                                        language,
-                                        territory);
-        }
+        g_assert (language[0] != 0);
+        g_assert (territory == NULL || territory[0] != 0);
+        g_assert (codeset == NULL || codeset[0] != 0);
+        g_assert (modifier == NULL || modifier[0] != 0);
+
+        name = g_strdup_printf ("%s%s%s%s%s%s%s",
+                                language,
+                                territory != NULL? "_" : "",
+                                territory != NULL? territory : "",
+                                codeset != NULL? "." : "",
+                                codeset != NULL? codeset : "",
+                                modifier != NULL? "@" : "",
+                                modifier != NULL? modifier : "");
 
         return name;
 }
