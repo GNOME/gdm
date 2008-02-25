@@ -1,5 +1,12 @@
 2008-02-25  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-language-chooser-widget.c
+	(gdm_language_chooser_widget_get_current_language_name):
+	fallback to setlocale (LC_MESSAGES, NULL) instead of
+	g_get_language_names()[0]
+
+2008-02-25  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-language-option-widget.c
 	(gdm_language_option_widget_activated):
 	Set language dialog language to whatever gets put
