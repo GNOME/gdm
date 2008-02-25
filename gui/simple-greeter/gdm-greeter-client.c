@@ -64,8 +64,8 @@ enum {
         READY,
         RESET,
         SELECTED_USER_CHANGED,
-        SAVED_LANGUAGE_NAME_READ,
-        SAVED_SESSION_NAME_READ,
+        DEFAULT_LANGUAGE_NAME_CHANGED,
+        DEFAULT_SESSION_NAME_CHANGED,
         LAST_SIGNAL
 };
 
@@ -134,17 +134,17 @@ on_selected_user_changed (GdmGreeterClient *client,
 }
 
 static void
-on_saved_language_name_read (GdmGreeterClient *client,
-                             DBusMessage      *message)
+on_default_language_name_changed (GdmGreeterClient *client,
+                                  DBusMessage      *message)
 {
-        emit_string_signal_for_message (client, "SavedLanguageNameRead", message, SAVED_LANGUAGE_NAME_READ);
+        emit_string_signal_for_message (client, "DefaultLanguageNameChanged", message, DEFAULT_LANGUAGE_NAME_CHANGED);
 }
 
 static void
-on_saved_session_name_read (GdmGreeterClient *client,
-                            DBusMessage      *message)
+on_default_session_name_changed (GdmGreeterClient *client,
+                                 DBusMessage      *message)
 {
-        emit_string_signal_for_message (client, "SavedSessionNameRead", message, SAVED_SESSION_NAME_READ);
+        emit_string_signal_for_message (client, "DefaultSessionNameChanged", message, DEFAULT_SESSION_NAME_CHANGED);
 }
 
 static void
@@ -520,10 +520,10 @@ client_dbus_handle_message (DBusConnection *connection,
                 on_reset (client, message);
         } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "SelectedUserChanged")) {
                 on_selected_user_changed (client, message);
-        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "SavedLanguageNameRead")) {
-                on_saved_language_name_read (client, message);
-        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "SavedSessionNameRead")) {
-                on_saved_session_name_read (client, message);
+        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "DefaultLanguageNameChanged")) {
+                on_default_language_name_changed (client, message);
+        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "DefaultSessionNameChanged")) {
+                on_default_session_name_changed (client, message);
         } else {
                 return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
         }
@@ -766,21 +766,21 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
                               1, G_TYPE_STRING);
-        gdm_greeter_client_signals[SAVED_LANGUAGE_NAME_READ] =
-                g_signal_new ("saved-language-name-read",
+        gdm_greeter_client_signals[DEFAULT_LANGUAGE_NAME_CHANGED] =
+                g_signal_new ("default-language-name-changed",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterClientClass, saved_language_name_read),
+                              G_STRUCT_OFFSET (GdmGreeterClientClass, default_language_name_changed),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
                               1, G_TYPE_STRING);
-        gdm_greeter_client_signals[SAVED_SESSION_NAME_READ] =
-                g_signal_new ("saved-session-name-read",
+        gdm_greeter_client_signals[DEFAULT_SESSION_NAME_CHANGED] =
+                g_signal_new ("default-session-name-changed",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterClientClass, saved_session_name_read),
+                              G_STRUCT_OFFSET (GdmGreeterClientClass, default_session_name_changed),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,

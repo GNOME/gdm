@@ -60,9 +60,9 @@ void                   gdm_greeter_panel_show_user_options              (GdmGree
 void                   gdm_greeter_panel_hide_user_options              (GdmGreeterPanel *panel);
 void                   gdm_greeter_panel_reset                          (GdmGreeterPanel *panel);
 
-void                   gdm_greeter_panel_set_language_name_hint         (GdmGreeterPanel *panel,
+void                   gdm_greeter_panel_set_default_language_name      (GdmGreeterPanel *panel,
                                                                          const char      *language_name);
-void                   gdm_greeter_panel_set_session_name_hint          (GdmGreeterPanel *panel,
+void                   gdm_greeter_panel_set_default_session_name       (GdmGreeterPanel *panel,
                                                                          const char      *session_name);
 G_END_DECLS
 

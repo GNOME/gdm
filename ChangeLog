@@ -1,5 +1,22 @@
 2008-02-25  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-greeter-client.[ch]:
+	(on_default_language_name_changed),
+	(on_default_session_name_changed),
+	(client_dbus_handle_message),
+	(gdm_greeter_client_class_init):
+	* gui/simple-greeter/gdm-greeter-panel.[ch]:
+	(gdm_greeter_panel_reset):
+	(gdm_greeter_panel_set_default_language_name):
+	(gdm_greeter_panel_set_default_session_name):
+	* gui/simple-greeter/gdm-greeter-session.c
+	(on_default_language_name_changed):
+	(on_default_session_name_changed):
+	Change greeter to use the new slave interface setup in
+	the last commit
+
+2008-02-25  Ray Strode  <rstrode@redhat.com>
+
 	* daemon/gdm-session-private.h:
 	* daemon/gdm-session.h:
 	* daemon/gdm-session.c:

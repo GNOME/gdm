@@ -52,6 +52,9 @@ struct GdmGreeterPanelPrivate
         GtkWidget              *clock;
         GtkWidget              *language_option_widget;
         GtkWidget              *session_option_widget;
+
+        char                   *default_session_name;
+        char                   *default_language_name;
 };
 
 enum {
@@ -572,22 +575,22 @@ gdm_greeter_panel_hide_user_options (GdmGreeterPanel *panel)
 void
 gdm_greeter_panel_reset (GdmGreeterPanel *panel)
 {
-        gdm_greeter_panel_set_language_name_hint (panel, NULL);
-        gdm_greeter_panel_set_session_name_hint (panel, NULL);
+        gdm_greeter_panel_set_default_language_name (panel, NULL);
+        gdm_greeter_panel_set_default_session_name (panel, NULL);
         gdm_greeter_panel_hide_user_options (panel);
 }
 
 void
-gdm_greeter_panel_set_language_name_hint (GdmGreeterPanel *panel,
-                                          const char      *language_name)
+gdm_greeter_panel_set_default_language_name (GdmGreeterPanel *panel,
+                                             const char      *language_name)
 {
         gdm_language_option_widget_set_current_language_name (GDM_LANGUAGE_OPTION_WIDGET (panel->priv->language_option_widget),
                                                               language_name);
 }
 
 void
-gdm_greeter_panel_set_session_name_hint (GdmGreeterPanel *panel,
-                                         const char      *session_name)
+gdm_greeter_panel_set_default_session_name (GdmGreeterPanel *panel,
+                                            const char      *session_name)
 {
 
         gdm_session_option_widget_set_current_session (GDM_SESSION_OPTION_WIDGET (panel->priv->session_option_widget),
