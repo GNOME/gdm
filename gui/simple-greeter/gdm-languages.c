@@ -154,14 +154,32 @@ gdm_parse_language_name (const char *name,
 
         if (territory_codep != NULL) {
                 *territory_codep = g_match_info_fetch_named (match_info, "territory");
+
+                if (*territory_codep != NULL &&
+                    *territory_codep[0] == '\0') {
+                        g_free (*territory_codep);
+                        *territory_codep = NULL;
+                }
         }
 
         if (codesetp != NULL) {
                 *codesetp = g_match_info_fetch_named (match_info, "codeset");
+
+                if (*codesetp != NULL &&
+                    *codesetp[0] == '\0') {
+                        g_free (*codesetp);
+                        *codesetp = NULL;
+                }
         }
 
         if (modifierp != NULL) {
                 *modifierp = g_match_info_fetch_named (match_info, "modifier");
+
+                if (*modifierp != NULL &&
+                    *modifierp[0] == '\0') {
+                        g_free (*modifierp);
+                        *modifierp = NULL;
+                }
         }
 
         g_match_info_free (match_info);

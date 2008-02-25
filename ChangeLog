@@ -1,6 +1,14 @@
 2008-02-25  Ray Strode  <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-languages.c:
+	(gdm_parse_language_name):
+	If regex match returns empty string for one
+	of the components of a locale, just free it
+	and return NULL
+
+2008-02-25  Ray Strode  <rstrode@redhat.com>
+
+	* gui/simple-greeter/gdm-languages.c:
 	(normalize_codeset): new function to
 	fold the various legal forms for codeset
 	into one consistent format
