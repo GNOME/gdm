@@ -80,6 +80,32 @@ chooser_locale_free (GdmLocale *locale)
         g_free (locale);
 }
 
+static char *
+normalize_codeset (const char *codeset)
+{
+        char *normalized_codeset;
+        const char *p;
+        char *q;
+
+        normalized_codeset = g_strdup (codeset);
+
+        if (codeset != NULL) {
+                for (p = codeset, q = normalized_codeset;
+                     *p != '\0'; p++) {
+
+                        if (*p == '-' || *p == '_') {
+                                continue;
+                        }
+
+                        *q = g_ascii_tolower (*p);
+                        q++;
+                }
+                *q = '\0';
+        }
+
+        return normalized_codeset;
+}
+
 /*
  * According to http://en.wikipedia.org/wiki/Locale
  * locale names are of the form:
