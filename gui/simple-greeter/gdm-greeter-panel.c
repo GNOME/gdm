@@ -119,8 +119,6 @@ gdm_greeter_panel_constructor (GType                  type,
 static void
 gdm_greeter_panel_dispose (GObject *object)
 {
-        g_debug ("Disposing greeter_panel");
-
         G_OBJECT_CLASS (gdm_greeter_panel_parent_class)->dispose (object);
 }
 
@@ -257,7 +255,9 @@ set_struts (GdmGreeterPanel *panel,
         /* bottom_end_x */
         data[11] = x + width;
 
+#if 0
         g_debug ("Setting strut: bottom=%lu bottom_start_x=%lu bottom_end_x=%lu", data[3], data[10], data[11]);
+#endif
 
         gdk_error_trap_push ();
 
@@ -309,11 +309,13 @@ update_geometry (GdmGreeterPanel *panel,
         panel->priv->geometry.x = geometry.x;
         panel->priv->geometry.y = geometry.y + geometry.height - panel->priv->geometry.height;
 
+#if 0
         g_debug ("Setting geometry x:%d y:%d w:%d h:%d",
                  panel->priv->geometry.x,
                  panel->priv->geometry.y,
                  panel->priv->geometry.width,
                  panel->priv->geometry.height);
+#endif
 
         update_struts (panel);
 }
