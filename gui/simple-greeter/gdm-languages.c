@@ -170,6 +170,14 @@ gdm_parse_language_name (const char *name,
                         g_free (*codesetp);
                         *codesetp = NULL;
                 }
+
+                if (*codesetp != NULL) {
+                        char *codeset;
+
+                        codeset = normalize_codeset (*codesetp);
+                        g_free (*codesetp);
+                        *codesetp = codeset;
+                }
         }
 
         if (modifierp != NULL) {
