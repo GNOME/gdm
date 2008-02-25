@@ -455,6 +455,24 @@ get_language (const char *code)
 }
 
 static char *
+get_first_item_in_semicolon_list (const char *list)
+{
+    char **items;
+    char  *item;
+
+    /* Some entries in iso codes have multiple values, separated
+     * by semicolons.  Not really sure which one to pick, so
+     * we just arbitrarily pick the first one.
+     */
+    items = g_strsplit (list, "; ", 2);
+
+    item = g_strdup (items[0]);
+    g_strfreev (items);
+
+    return item;
+}
+
+static char *
 get_translated_language (const char *code,
                          const char *locale)
 {
@@ -472,14 +490,13 @@ get_translated_language (const char *code,
                 old_locale = g_strdup (setlocale (LC_MESSAGES, NULL));
                 setlocale (LC_MESSAGES, locale);
                 translated_name = dgettext ("iso_639", language);
+
+                name = get_first_item_in_semicolon_list (translated_name);
+
                 setlocale (LC_MESSAGES, old_locale);
                 g_free (old_locale);
 
-                names = g_strsplit (translated_name, "; ", 2);
-
-                name = g_strdup (names[0]);
-                g_strfreev (names);
-        }
+            }
 
         return name;
 }
@@ -523,10 +540,7 @@ get_translated_territory (const char *code,
                 setlocale (LC_MESSAGES, old_locale);
                 g_free (old_locale);
 
-                territories = g_strsplit (translated_territory, "; ", 2);
-
-                name = g_strdup (territories[0]);
-                g_strfreev (territories);
+                name = get_first_item_in_semicolon_list (translated_territory);
         }
 
         return name;
