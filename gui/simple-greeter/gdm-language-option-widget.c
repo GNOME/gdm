@@ -108,6 +108,9 @@ gdm_language_option_widget_activated (GdmOptionWidget *widget)
                 return;
         }
 
+        gdm_language_chooser_dialog_set_current_language_name (GDM_LANGUAGE_CHOOSER_DIALOG (GDM_LANGUAGE_OPTION_WIDGET (widget)->priv->dialog),
+                                                               active_item_id);
+
         g_signal_emit (G_OBJECT (widget), signals[LANGUAGE_ACTIVATED], 0);
 }
 
@@ -183,9 +186,6 @@ gdm_language_option_widget_init (GdmLanguageOptionWidget *widget)
 
         g_signal_connect (GTK_DIALOG (widget->priv->dialog), "response",
                 G_CALLBACK (on_dialog_response), widget);
-
-
-        gdm_language_option_widget_set_language_from_dialog (widget);
 }
 
 static void
