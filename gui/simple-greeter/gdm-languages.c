@@ -412,7 +412,12 @@ collect_locales_from_archive (void)
 
         for (cnt = 0; cnt < used; ++cnt) {
                 struct locrecent *locrec;
-                GdmLocale *locale;
+                GdmLocale        *locale;
+
+                if (!language_name_is_valid (names[cnt].name) ||
+                    !language_name_is_utf8 (names[cnt].name)) {
+                        continue;
+                }
 
                 locale = g_new0 (GdmLocale, 1);
 
@@ -486,9 +491,14 @@ collect_locales_from_directory (void)
         ndirents = scandir (LIBLOCALEDIR, &dirents, select_dirs, alphasort);
 
         for (cnt = 0; cnt < ndirents; ++cnt) {
-                char             *path;
+                char      *path;
                 GdmLocale *locale;
-                gboolean          res;
+                gboolean   res;
+
+                if (!language_name_is_valid (dirents[cnt]->d_name) ||
+                    !language_name_is_utf8 (dirents[cnt]->d_name)) {
+                        continue;
+                }
 
                 locale = g_new0 (GdmLocale, 1);
                 gdm_parse_language_name (dirents[cnt]->d_name,
