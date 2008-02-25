@@ -448,6 +448,35 @@ gdm_session_direct_handle_accreditation_failed (GdmSessionDirect *session,
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
+static const char *
+get_default_language_name (GdmSessionDirect *session)
+{
+    if (session->priv->saved_language != NULL) {
+                return session->priv->saved_language;
+    }
+
+    return setlocale (LC_MESSAGES, NULL);
+}
+
+static const char *
+get_default_session_name (GdmSessionDirect *session)
+{
+        if (session->priv->saved_session != NULL) {
+                return session->priv->saved_session;
+        }
+
+        return "gnome";
+}
+
+static void
+gdm_session_direct_defaults_changed (GdmSessionDirect *session)
+{
+        _gdm_session_default_language_name_changed (GDM_SESSION (session),
+                                                    get_default_language_name (session));
+        _gdm_session_default_session_name_changed (GDM_SESSION (session),
+                                                   get_default_session_name (session));
+}
+
 static void
 gdm_session_direct_select_user (GdmSession *session,
                                 const char *text)
@@ -458,6 +487,12 @@ gdm_session_direct_select_user (GdmSession *session,
 
         g_free (impl->priv->selected_user);
         impl->priv->selected_user = g_strdup (text);
+
+        g_free (impl->priv->saved_session);
+        impl->priv->saved_session = NULL;
+
+        g_free (impl->priv->saved_language);
+        impl->priv->saved_language = NULL;
 }
 
 static DBusHandlerResult
@@ -487,6 +522,8 @@ gdm_session_direct_handle_username_changed (GdmSessionDirect *session,
         gdm_session_direct_select_user (GDM_SESSION (session), (strlen (text) > 0) ? g_strdup (text) : NULL);
 
         _gdm_session_selected_user_changed (GDM_SESSION (session), session->priv->selected_user);
+
+        gdm_session_direct_defaults_changed (session);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -792,8 +829,15 @@ gdm_session_direct_handle_saved_language_name_read (GdmSessionDirect *session,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_saved_language_name_read (GDM_SESSION (session), language_name);
-        session->priv->saved_language = g_strdup (language_name);
+        if (strcmp (language_name,
+                    get_default_language_name (session)) != 0) {
+                g_free (session->priv->saved_language);
+                session->priv->saved_language = g_strdup (language_name);
+
+                _gdm_session_default_language_name_changed (GDM_SESSION (session),
+                                                            language_name);
+        }
+
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -818,9 +862,14 @@ gdm_session_direct_handle_saved_session_name_read (GdmSessionDirect *session,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_saved_session_name_read (GDM_SESSION (session), session_name);
+        if (strcmp (session_name,
+                    get_default_session_name (session)) != 0) {
+                g_free (session->priv->saved_session);
+                session->priv->saved_session = g_strdup (session_name);
 
-        session->priv->saved_session = g_strdup (session_name);
+                _gdm_session_default_session_name_changed (GDM_SESSION (session),
+                                                           session_name);
+        }
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -1459,6 +1508,7 @@ gdm_session_direct_setup (GdmSession *session,
         g_return_if_fail (dbus_connection_get_is_connected (impl->priv->worker_connection));
 
         send_setup (impl, service_name);
+        gdm_session_direct_defaults_changed (impl);
 }
 
 static void
@@ -1475,6 +1525,7 @@ gdm_session_direct_setup_for_user (GdmSession *session,
         gdm_session_direct_select_user (session, username);
 
         send_setup_for_user (impl, service_name);
+        gdm_session_direct_defaults_changed (impl);
 }
 
 static void
@@ -1666,11 +1717,9 @@ get_language_name (GdmSessionDirect *session)
 {
         if (session->priv->selected_language != NULL) {
                 return session->priv->selected_language;
-        } else if (session->priv->saved_language != NULL) {
-                return session->priv->saved_language;
-        } else {
-                return setlocale (LC_MESSAGES, NULL);
         }
+
+        return get_default_language_name (session);
 }
 
 static const char *
@@ -1678,11 +1727,9 @@ get_session_name (GdmSessionDirect *session)
 {
         if (session->priv->selected_session != NULL) {
                 return session->priv->selected_session;
-        } else if (session->priv->saved_session != NULL) {
-                return session->priv->saved_session;
-        } else {
-                return "gnome";
         }
+
+        return get_default_session_name (session);
 }
 
 static char *

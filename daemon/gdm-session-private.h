@@ -52,11 +52,11 @@ void             _gdm_session_session_died                 (GdmSession   *sessio
                                                             int           signal_number);
 void             _gdm_session_closed                       (GdmSession   *session);
 
-/* user settings read from ~/.dmrc */
-void             _gdm_session_saved_language_name_read     (GdmSession   *session,
-                                                            const char   *language_name);
-void             _gdm_session_saved_session_name_read      (GdmSession   *session,
-                                                            const char   *session_name);
+/* user settings read from ~/.dmrc / system defaults */
+void             _gdm_session_default_language_name_changed     (GdmSession   *session,
+                                                                 const char   *language_name);
+void             _gdm_session_default_session_name_changed      (GdmSession   *session,
+                                                                 const char   *session_name);
 /* user is selected/changed internally */
 void             _gdm_session_selected_user_changed        (GdmSession   *session,
                                                             const char   *text);

@@ -223,17 +223,17 @@ gdm_greeter_server_selected_user_changed (GdmGreeterServer *greeter_server,
 }
 
 void
-gdm_greeter_server_saved_language_name_read (GdmGreeterServer *greeter_server,
-                                             const char       *language_name)
+gdm_greeter_server_default_language_name_changed (GdmGreeterServer *greeter_server,
+                                                  const char       *language_name)
 {
-        send_dbus_string_signal (greeter_server, "SavedLanguageNameRead", language_name);
+        send_dbus_string_signal (greeter_server, "DefaultLanguageNameChanged", language_name);
 }
 
 void
-gdm_greeter_server_saved_session_name_read (GdmGreeterServer *greeter_server,
-                                            const char       *session_name)
+gdm_greeter_server_default_session_name_changed (GdmGreeterServer *greeter_server,
+                                                 const char       *session_name)
 {
-        send_dbus_string_signal (greeter_server, "SavedSessionNameRead", session_name);
+        send_dbus_string_signal (greeter_server, "DefaultSessionNameChanged", session_name);
 }
 
 /* Note: Use abstract sockets like dbus does by default on Linux. Abstract
@@ -611,10 +611,10 @@ do_introspect (DBusConnection *connection,
                                "    <signal name=\"SelectedUserChanged\">\n"
                                "      <arg name=\"username\" type=\"s\"/>\n"
                                "    </signal>\n"
-                               "    <signal name=\"SavedLanguageNameRead\">\n"
+                               "    <signal name=\"DefaultLanguageNameChanged\">\n"
                                "      <arg name=\"language_name\" type=\"s\"/>\n"
                                "    </signal>\n"
-                               "    <signal name=\"SavedSessionNameRead\">\n"
+                               "    <signal name=\"DefaultSessionNameChanged\">\n"
                                "      <arg name=\"session_name\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"Ready\">\n"

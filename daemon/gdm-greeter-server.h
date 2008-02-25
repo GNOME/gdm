@@ -84,10 +84,10 @@ gboolean            gdm_greeter_server_reset                 (GdmGreeterServer *
 gboolean            gdm_greeter_server_ready                 (GdmGreeterServer *greeter_server);
 void                gdm_greeter_server_selected_user_changed (GdmGreeterServer *greeter_server,
                                                               const char       *text);
-void                gdm_greeter_server_saved_language_name_read (GdmGreeterServer *greeter_server,
-                                                                 const char       *text);
-void                gdm_greeter_server_saved_session_name_read (GdmGreeterServer *greeter_server,
-                                                                const char       *text);
+void                gdm_greeter_server_default_language_name_changed (GdmGreeterServer *greeter_server,
+                                                                      const char       *text);
+void                gdm_greeter_server_default_session_name_changed (GdmGreeterServer *greeter_server,
+                                                                     const char       *text);
 
 G_END_DECLS
 

@@ -377,23 +377,23 @@ on_session_selected_user_changed (GdmSession     *session,
 }
 
 static void
-on_saved_language_name_read (GdmSession     *session,
-                             const char     *text,
-                             GdmSimpleSlave *slave)
+on_default_language_name_changed (GdmSession     *session,
+                                  const char     *text,
+                                  GdmSimpleSlave *slave)
 {
-        g_debug ("GdmSimpleSlave: Saved language name read: %s", text);
+        g_debug ("GdmSimpleSlave: Default language name changed: %s", text);
 
-        gdm_greeter_server_saved_language_name_read (slave->priv->greeter_server, text);
+        gdm_greeter_server_default_language_name_changed (slave->priv->greeter_server, text);
 }
 
 static void
-on_saved_session_name_read (GdmSession     *session,
-                            const char     *text,
-                            GdmSimpleSlave *slave)
+on_default_session_name_changed (GdmSession     *session,
+                                 const char     *text,
+                                 GdmSimpleSlave *slave)
 {
-        g_debug ("GdmSimpleSlave: Saved session name read: %s", text);
+        g_debug ("GdmSimpleSlave: Default session name changed: %s", text);
 
-        gdm_greeter_server_saved_session_name_read (slave->priv->greeter_server, text);
+        gdm_greeter_server_default_session_name_changed (slave->priv->greeter_server, text);
 }
 
 static void
@@ -512,13 +512,13 @@ create_new_session (GdmSimpleSlave *slave)
                           slave);
 
         g_signal_connect (slave->priv->session,
-                          "saved-language-name-read",
-                          G_CALLBACK (on_saved_language_name_read),
+                          "default-language-name-changed",
+                          G_CALLBACK (on_default_language_name_changed),
                           slave);
 
         g_signal_connect (slave->priv->session,
-                          "saved-session-name-read",
-                          G_CALLBACK (on_saved_session_name_read),
+                          "default-session-name-changed",
+                          G_CALLBACK (on_default_session_name_changed),
                           slave);
 }
 

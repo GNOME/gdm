@@ -1,3 +1,36 @@
+2008-02-25  Ray Strode  <rstrode@redhat.com>
+
+	* daemon/gdm-session-private.h:
+	* daemon/gdm-session.h:
+	* daemon/gdm-session.c:
+	(gdm_session_class_init),
+	(_gdm_session_default_language_name_changed),
+	(_gdm_session_default_session_name_changed),
+	(_gdm_session_default_session_name_changed),
+	* daemon/gdm-session-direct.c:
+	(get_default_language_name),
+	(get_default_session_name),
+	(gdm_session_direct_defaults_changed),
+	(gdm_session_direct_select_user),
+	(gdm_session_direct_handle_username_changed),
+	(gdm_session_direct_handle_saved_language),
+	(gdm_session_direct_setup),
+	(gdm_session_direct_setup_for_user),
+	(get_language_name),
+	(get_session_name):
+	* daemon/gdm-simple-slave:
+	(on_default_language_name_changed):
+	(on_default_session_name_changed):
+	(create_new_session):
+	* daemon/gdm-greeter-server.[ch]:
+	(gdm_greeter_server_default_language_name_changed),
+	(gdm_greeter_server_default_session_name_changed),
+	(do_introspect):
+	Change "SavedLanguageNameRead"/"SavedSessionNameRead"
+	to "DefaultLanguageNameChanged"/"DefaultSessionNameChanged"
+	and call it with system fallbacks whenever a new user is
+	authenticating before ~/.dmrc is read.
+
 2008-02-23  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/gdm-greeter-login-window.c:
