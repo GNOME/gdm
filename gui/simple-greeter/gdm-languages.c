@@ -77,6 +77,8 @@ chooser_locale_free (GdmLocale *locale)
         g_free (locale->title);
         g_free (locale->language);
         g_free (locale->territory);
+        g_free (locale->codeset);
+        g_free (locale->modifier);
         g_free (locale);
 }
 
