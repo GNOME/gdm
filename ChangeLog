@@ -1,5 +1,15 @@
 2008-02-25  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-greeter-panel.c:
+	(gdm_greeter_panel_set_default_language_name):
+	Call new gdm_option_widget_set_default_item instead of
+	gdm_language_option_widget_set_current_language_name.
+	Add language to list if it isn't there already.
+	(gdm_greeter_panel_set_default_session_name):
+	Use gdm_option_widget_set_default_item here too.
+
+2008-02-25  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-option-widget.[ch]:
 	(activate_from_item_id): allow NULL input
 	to deselect combo box

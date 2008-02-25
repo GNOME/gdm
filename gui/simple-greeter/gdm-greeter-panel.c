@@ -31,6 +31,7 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
+#include "gdm-languages.h"
 #include "gdm-greeter-panel.h"
 #include "gdm-clock-widget.h"
 #include "gdm-language-option-widget.h"
@@ -584,15 +585,42 @@ void
 gdm_greeter_panel_set_default_language_name (GdmGreeterPanel *panel,
                                              const char      *language_name)
 {
-        gdm_language_option_widget_set_current_language_name (GDM_LANGUAGE_OPTION_WIDGET (panel->priv->language_option_widget),
-                                                              language_name);
+        char *normalized_language_name;
+
+        g_return_if_fail (GDM_IS_GREETER_PANEL (panel));
+
+        if (language_name != NULL) {
+                normalized_language_name = gdm_normalize_language_name (language_name);
+        } else {
+                normalized_language_name = NULL;
+        }
+
+        if (normalized_language_name != NULL &&
+            !gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (panel->priv->language_option_widget),
+                                            normalized_language_name, NULL, NULL, NULL)) {
+                gdm_recent_option_widget_add_item (GDM_RECENT_OPTION_WIDGET (panel->priv->language_option_widget),
+                                                   normalized_language_name);
+        }
+
+        gdm_option_widget_set_default_item (GDM_OPTION_WIDGET (panel->priv->language_option_widget),
+                                            normalized_language_name);
+
+        g_free (normalized_language_name);
 }
 
 void
 gdm_greeter_panel_set_default_session_name (GdmGreeterPanel *panel,
                                             const char      *session_name)
 {
+        g_return_if_fail (GDM_IS_GREETER_PANEL (panel));
 
-        gdm_session_option_widget_set_current_session (GDM_SESSION_OPTION_WIDGET (panel->priv->session_option_widget),
-                                                       session_name);
+        if (session_name != NULL &&
+            !gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (panel->priv->session_option_widget),
+                                            session_name, NULL, NULL, NULL)) {
+                g_warning ("Default session is not available");
+                return;
+        }
+
+        gdm_option_widget_set_default_item (GDM_OPTION_WIDGET (panel->priv->session_option_widget),
+                                            session_name);
 }
