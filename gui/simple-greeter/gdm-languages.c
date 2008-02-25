@@ -30,6 +30,7 @@
 #include <errno.h>
 #include <dirent.h>
 #include <locale.h>
+#include <langinfo.h>
 #include <sys/stat.h>
 
 #include <glib.h>
@@ -312,6 +313,45 @@ nameentcmp (const void *a, const void *b)
 {
         return strcoll (((const struct nameent *) a)->name,
                         ((const struct nameent *) b)->name);
+}
+
+static gboolean
+language_name_is_valid (const char *language_name)
+{
+        char     *old_locale;
+        gboolean  is_valid;
+
+        old_locale = g_strdup (setlocale (LC_MESSAGES, NULL));
+        is_valid = setlocale (LC_MESSAGES, language_name) != NULL;
+        setlocale (LC_MESSAGES, old_locale);
+        g_free (old_locale);
+
+        return is_valid;
+}
+
+static gboolean
+language_name_is_utf8 (const char *language_name)
+{
+        char     *old_locale;
+        char     *codeset;
+        gboolean  is_utf8;
+
+        old_locale = g_strdup (setlocale (LC_CTYPE, NULL));
+
+        if (setlocale (LC_CTYPE, language_name) == NULL) {
+                g_free (old_locale);
+                return FALSE;
+        }
+
+        codeset = normalize_codeset (nl_langinfo (CODESET));
+
+        is_utf8 = strcmp (codeset, "utf8") == 0;
+        g_free (codeset);
+
+        setlocale (LC_CTYPE, old_locale);
+        g_free (old_locale);
+
+        return is_utf8;
 }
 
 static void
