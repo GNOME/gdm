@@ -1,5 +1,15 @@
 2008-02-25  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-language-option-widget.c:
+	(gdm_language_option_widget_init)
+	* gui/simple-greeter/gdm-session-option-widget.c:
+	(add_available_sessions):
+	Get rid of the "Last Language" and "Last Session" options.
+	We'll just fallback to the slave specified default items
+	now.
+
+2008-02-25  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-panel.c:
 	(gdm_greeter_panel_set_default_language_name):
 	Call new gdm_option_widget_set_default_item instead of

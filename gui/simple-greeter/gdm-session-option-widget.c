@@ -111,14 +111,6 @@ add_available_sessions (GdmSessionOptionWidget *widget)
 
         session_ids = gdm_get_all_sessions ();
 
-        gdm_option_widget_add_item (GDM_OPTION_WIDGET (widget),
-                                    GDM_SESSION_OPTION_WIDGET_LAST_SESSION,
-                                    _("Last session"),
-                                    _("Login with the same session as last time."),
-                                    GDM_OPTION_WIDGET_POSITION_TOP);
-        gdm_option_widget_set_active_item (GDM_OPTION_WIDGET (widget),
-                                           GDM_SESSION_OPTION_WIDGET_LAST_SESSION);
-
         for (i = 0; session_ids[i] != NULL; i++) {
                 char *name;
                 char *comment;
