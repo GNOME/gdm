@@ -612,9 +612,8 @@ get_translated_language (const char *code,
 
         name = NULL;
         if (language != NULL) {
-                const char *translated_name;
-                char *old_locale;
-                char **names;
+                const char  *translated_name;
+                char        *old_locale;
 
                 old_locale = g_strdup (setlocale (LC_MESSAGES, NULL));
                 setlocale (LC_MESSAGES, locale);
@@ -660,8 +659,7 @@ get_translated_territory (const char *code,
         name = NULL;
         if (territory != NULL) {
                 const char *translated_territory;
-                char *old_locale;
-                char **territories;
+                char       *old_locale;
 
                 old_locale = g_strdup (setlocale (LC_MESSAGES, NULL));
                 setlocale (LC_MESSAGES, locale);
