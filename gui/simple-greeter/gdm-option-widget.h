@@ -79,6 +79,9 @@ gboolean               gdm_option_widget_lookup_item            (GdmOptionWidget
 char *                 gdm_option_widget_get_active_item        (GdmOptionWidget *widget);
 void                   gdm_option_widget_set_active_item        (GdmOptionWidget *widget,
                                                                  const char       *item);
+char *                 gdm_option_widget_get_default_item       (GdmOptionWidget *widget);
+void                   gdm_option_widget_set_default_item       (GdmOptionWidget *widget,
+                                                                 const char       *item);
 G_END_DECLS
 
 #endif /* __GDM_OPTION_WIDGET_H */

@@ -53,6 +53,7 @@ struct GdmOptionWidgetPrivate
         GtkWidget                *image;
         char                     *label_text;
         char                     *icon_name;
+        char                     *default_item_id;
 
         GtkWidget                *items_combo_box;
         GtkListStore             *list_store;
@@ -72,7 +73,8 @@ struct GdmOptionWidgetPrivate
 enum {
         PROP_0,
         PROP_LABEL_TEXT,
-        PROP_ICON_NAME
+        PROP_ICON_NAME,
+        PROP_DEFAULT_ITEM
 };
 
 enum {
@@ -172,6 +174,16 @@ activate_from_item_id (GdmOptionWidget *widget,
 {
         GtkTreeIter   iter;
 
+        if (item_id == NULL) {
+                if (widget->priv->active_row != NULL) {
+                    gtk_tree_row_reference_free (widget->priv->active_row);
+                    widget->priv->active_row = NULL;
+                }
+
+                gtk_combo_box_set_active (GTK_COMBO_BOX (widget->priv->items_combo_box), -1);
+                return;
+        }
+
         if (!find_item (widget, item_id, &iter)) {
                 g_critical ("Tried to activate non-existing item from option widget");
                 return;
@@ -250,9 +262,40 @@ gdm_option_widget_set_active_item (GdmOptionWidget *widget,
                                    const char      *id)
 {
         g_return_if_fail (GDM_IS_OPTION_WIDGET (widget));
-        g_return_if_fail (id != NULL);
 
         activate_from_item_id (widget, id);
+}
+
+char *
+gdm_option_widget_get_default_item (GdmOptionWidget *widget)
+{
+        g_return_val_if_fail (GDM_IS_OPTION_WIDGET (widget), NULL);
+
+        return g_strdup (widget->priv->default_item_id);
+}
+
+void
+gdm_option_widget_set_default_item (GdmOptionWidget *widget,
+                                    const char      *item)
+{
+        g_return_if_fail (GDM_IS_OPTION_WIDGET (widget));
+        g_return_if_fail (item == NULL ||
+                          gdm_option_widget_lookup_item (widget, item,
+                                                         NULL, NULL, NULL));
+
+        if (widget->priv->default_item_id == NULL ||
+            strcmp (widget->priv->default_item_id, item) != 0) {
+                g_free (widget->priv->default_item_id);
+                widget->priv->default_item_id = NULL;
+
+                if (widget->priv->active_row == NULL) {
+                    activate_from_item_id (widget, item);
+                }
+
+                widget->priv->default_item_id = g_strdup (item);
+
+                g_object_notify (G_OBJECT (widget), "default-item");
+        }
 }
 
 static const char *
@@ -326,6 +369,9 @@ gdm_option_widget_set_property (GObject        *object,
         case PROP_ICON_NAME:
                 gdm_option_widget_set_icon_name (self, g_value_get_string (value));
                 break;
+        case PROP_DEFAULT_ITEM:
+                gdm_option_widget_set_default_item (self, g_value_get_string (value));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -350,6 +396,10 @@ gdm_option_widget_get_property (GObject        *object,
         case PROP_ICON_NAME:
                 g_value_set_string (value,
                                     gdm_option_widget_get_icon_name (self));
+                break;
+        case PROP_DEFAULT_ITEM:
+                g_value_take_string (value,
+                                    gdm_option_widget_get_default_item (self));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -436,6 +486,13 @@ gdm_option_widget_class_init (GdmOptionWidgetClass *klass)
                                                               (G_PARAM_READWRITE |
                                                                G_PARAM_CONSTRUCT)));
 
+        g_object_class_install_property (object_class,
+                                         PROP_DEFAULT_ITEM,
+                                         g_param_spec_string ("default-item",
+                                                              _("Default Item"),
+                                                              _("The id of the default item"),
+                                                              NULL,
+                                                              G_PARAM_READWRITE));
 
         g_type_class_add_private (klass, sizeof (GdmOptionWidgetPrivate));
 }
@@ -444,7 +501,19 @@ static void
 on_changed (GtkComboBox     *combo_box,
             GdmOptionWidget *widget)
 {
+        if (widget->priv->default_item_id == NULL) {
+                return;
+        }
+
         activate_selected_item (widget);
+}
+
+static void
+on_default_item_changed (GdmOptionWidget *widget)
+{
+        gtk_widget_set_sensitive (widget->priv->items_combo_box,
+                                  widget->priv->default_item_id != NULL);
+        gtk_tree_model_filter_refilter (widget->priv->model_filter);
 }
 
 static gboolean
@@ -644,16 +713,31 @@ name_cell_data_func (GtkTreeViewColumn  *tree_column,
                      GdmOptionWidget   *widget)
 {
         char    *name;
+        char    *id;
         char    *markup;
+        gboolean is_default;
 
         name = NULL;
         gtk_tree_model_get (model,
                             iter,
+                            OPTION_ID_COLUMN, &id,
                             OPTION_NAME_COLUMN, &name,
                             -1);
 
-        markup = g_strdup_printf ("<span size='small'>%s</span>",
-                name ? name : "(null)");
+        if (widget->priv->default_item_id != NULL &&
+            id != NULL &&
+            strcmp (widget->priv->default_item_id, id) == 0) {
+                is_default = TRUE;
+        } else {
+                is_default = FALSE;
+        }
+        g_free (id);
+        id = NULL;
+
+        markup = g_strdup_printf ("<span size='small'>%s%s%s</span>",
+                                  is_default? "<i>" : "",
+                                  name ? name : "",
+                                  is_default? "</i>" : "");
         g_free (name);
 
         g_object_set (cell, "markup", markup, NULL);
@@ -743,10 +827,19 @@ gdm_option_widget_init (GdmOptionWidget *widget)
         gtk_box_pack_start (GTK_BOX (box), widget->priv->label, FALSE, FALSE, 0);
 
         widget->priv->items_combo_box = gtk_combo_box_new ();
+
         g_signal_connect (widget->priv->items_combo_box,
                           "changed",
                           G_CALLBACK (on_changed),
                           widget);
+
+        /* We disable the combo box until it has a default
+         */
+        gtk_widget_set_sensitive (widget->priv->items_combo_box, FALSE);
+        g_signal_connect (widget,
+                          "notify::default-item",
+                          G_CALLBACK (on_default_item_changed),
+                          NULL);
 
         gtk_widget_show (widget->priv->items_combo_box);
         gtk_container_add (GTK_CONTAINER (box),
@@ -873,6 +966,12 @@ gdm_option_widget_remove_item (GdmOptionWidget *widget,
 
         if (!find_item (widget, id, &iter)) {
                 g_critical ("Tried to remove non-existing item from option widget");
+                return;
+        }
+
+        if (widget->priv->default_item_id != NULL &&
+            strcmp (widget->priv->default_item_id, id) == 0) {
+                g_critical ("Tried to remove default item from option widget");
                 return;
         }
 

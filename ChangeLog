@@ -1,5 +1,27 @@
 2008-02-25  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-option-widget.[ch]:
+	(activate_from_item_id): allow NULL input
+	to deselect combo box
+	(gdm_option_widget_get_default_item):
+	(gdm_option_widget_set_default_item):
+	(gdm_option_widget_set_property):
+	(gdm_option_widget_get_property):
+	Add new concept of a default item, to fall
+	back to if the user hasn't picked on yet
+	(on_changed): If no default item is set
+	don't activate whatever invalid item is
+	selected
+	(gdm_option_widget_init):
+	(on_default_item_changed): set combo box
+	to insensitive if there is no default item
+	(name_cell_data_func): show the default item
+	in italics
+	(gdm_option_widget_remove_item): don't let the
+	default item get removed
+
+2008-02-25  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-client.[ch]:
 	(on_default_language_name_changed),
 	(on_default_session_name_changed),
