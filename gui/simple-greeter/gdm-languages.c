@@ -98,12 +98,23 @@ gdm_parse_language_name (const char *name,
         GError     *error;
 
         error = NULL;
-        re = g_regex_new ("(?P<language>[a-zA-Z]+)(_(?P<territory>[a-zA-Z]+))?(.(?P<codeset>[0-9a-zA-Z]+))?(@(?P<modifier>[0-9a-zA-Z]+))?", 0, 0, &error);
+        re = g_regex_new ("^(?P<language>[^_.@[:space:]]+)"
+                          "(_(?P<territory>[[:upper:]]+))?"
+                          "(.(?P<codeset>[-_0-9a-zA-Z]+))?"
+                          "(@(?P<modifier>[[:ascii:]]+))?$",
+                          0, 0, &error);
         if (re == NULL) {
                 g_critical (error->message);
+                return;
         }
 
-        g_regex_match (re, name, 0, &match_info);
+        if (!g_regex_match (re, name, 0, &match_info) ||
+            g_match_info_is_partial_match (match_info)) {
+                g_match_info_free (match_info);
+                g_regex_unref (re);
+                g_warning ("locale %s isn't valid\n", name);
+                return;
+        }
 
         res = g_match_info_matches (match_info);
         if (! res) {
