@@ -1,6 +1,20 @@
 2008-02-25  Ray Strode  <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-languages.c:
+	(GdmLocale),
+	(chooser_locale_free),
+	(collect_locales_from_{directory,archive}):
+	store a separate "id" in the locale structure
+	that is less specific than the name, so that
+	e.g., en_US and en_US.utf8 are keyed the same
+	in the lookup map.  When figuring out which
+	locale to choose, pick the one with the longest
+	name. Thinking about it more, it might be better
+	to pick the one with the most components
+
+2008-02-25  Ray Strode  <rstrode@redhat.com>
+
+	* gui/simple-greeter/gdm-languages.c:
 	(get_translated_language), (get_translated_territory):
 	fix up spacing
 

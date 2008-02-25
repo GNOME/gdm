@@ -51,6 +51,7 @@
 #define ISO_CODES_LOCALESDIR ISO_CODES_PREFIX "/share/locale"
 
 typedef struct _GdmLocale {
+        char *id;
         char *name;
         char *language_code;
         char *territory_code;
@@ -74,6 +75,7 @@ chooser_locale_free (GdmLocale *locale)
                 return;
         }
 
+        g_free (locale->id);
         g_free (locale->name);
         g_free (locale->title);
         g_free (locale->language);
@@ -413,6 +415,7 @@ collect_locales_from_archive (void)
         for (cnt = 0; cnt < used; ++cnt) {
                 struct locrecent *locrec;
                 GdmLocale        *locale;
+                GdmLocale        *old_locale;
 
                 if (!language_name_is_valid (names[cnt].name) ||
                     !language_name_is_utf8 (names[cnt].name)) {
@@ -427,13 +430,19 @@ collect_locales_from_archive (void)
                                          &locale->codeset,
                                          &locale->modifier);
 
+                locale->id = construct_language_name (locale->language_code, locale->territory_code,
+                                                      NULL, locale->modifier);
                 locale->name = construct_language_name (locale->language_code, locale->territory_code,
                                                         locale->codeset, locale->modifier);
 
-                if (g_hash_table_lookup (gdm_available_locales_map, locale->name) != NULL) {
-                        chooser_locale_free (locale);
-                        continue;
+                old_locale = g_hash_table_lookup (gdm_available_locales_map, locale->id);
+                if (old_locale != NULL) {
+                        if (strlen (old_locale->name) > strlen (locale->name)) {
+                                    chooser_locale_free (locale);
+                                    continue;
+                        }
                 }
+
 
                 locrec = (struct locrecent *) (addr + names[cnt].locrec_offset);
 
@@ -443,7 +452,7 @@ collect_locales_from_archive (void)
                                        locrec->record[LC_IDENTIFICATION].len);
 #endif
 
-                g_hash_table_insert (gdm_available_locales_map, g_strdup (locale->name), locale);
+                g_hash_table_insert (gdm_available_locales_map, g_strdup (locale->id), locale);
         }
 
         g_free (names);
@@ -495,6 +504,7 @@ collect_locales_from_directory (void)
         for (cnt = 0; cnt < ndirents; ++cnt) {
                 char      *path;
                 GdmLocale *locale;
+                GdmLocale *old_locale;
                 gboolean   res;
 
                 if (!language_name_is_valid (dirents[cnt]->d_name) ||
@@ -509,12 +519,17 @@ collect_locales_from_directory (void)
                                          &locale->codeset,
                                          &locale->modifier);
 
+                locale->id = construct_language_name (locale->language_code, locale->territory_code,
+                                                      NULL, locale->modifier);
                 locale->name = construct_language_name (locale->language_code, locale->territory_code,
                                                         locale->codeset, locale->modifier);
 
-                if (g_hash_table_lookup (gdm_available_locales_map, locale->name) != NULL) {
-                        chooser_locale_free (locale);
-                        continue;
+                old_locale = g_hash_table_lookup (gdm_available_locales_map, locale->id);
+                if (old_locale != NULL) {
+                        if (strlen (old_locale->name) > strlen (locale->name)) {
+                                chooser_locale_free (locale);
+                                continue;
+                        }
                 }
 
                 /* try to get additional information from LC_IDENTIFICATION */
@@ -538,7 +553,7 @@ collect_locales_from_directory (void)
                 }
                 g_free (path);
 
-                g_hash_table_insert (gdm_available_locales_map, g_strdup (locale->name), locale);
+                g_hash_table_insert (gdm_available_locales_map, g_strdup (locale->id), locale);
         }
 
         if (ndirents > 0) {
