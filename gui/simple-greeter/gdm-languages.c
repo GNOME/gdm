@@ -424,9 +424,11 @@ collect_locales_from_archive (void)
                 gdm_parse_language_name (names[cnt].name,
                                          &locale->language_code,
                                          &locale->territory_code,
-                                         NULL, NULL);
+                                         &locale->codeset,
+                                         &locale->modifier);
 
-                locale->name = construct_language_name (locale->language_code, locale->territory_code, NULL, NULL);
+                locale->name = construct_language_name (locale->language_code, locale->territory_code,
+                                                        locale->codeset, locale->modifier);
 
                 if (g_hash_table_lookup (gdm_available_locales_map, locale->name) != NULL) {
                         chooser_locale_free (locale);
@@ -504,10 +506,11 @@ collect_locales_from_directory (void)
                 gdm_parse_language_name (dirents[cnt]->d_name,
                                          &locale->language_code,
                                          &locale->territory_code,
-                                         NULL, NULL);
+                                         &locale->codeset,
+                                         &locale->modifier);
 
-                /* Ignore codeset and modifier for this */
-                locale->name = construct_language_name (locale->language_code, locale->territory_code, NULL, NULL);
+                locale->name = construct_language_name (locale->language_code, locale->territory_code,
+                                                        locale->codeset, locale->modifier);
 
                 if (g_hash_table_lookup (gdm_available_locales_map, locale->name) != NULL) {
                         chooser_locale_free (locale);

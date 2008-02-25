@@ -1,6 +1,12 @@
 2008-02-25  Ray Strode  <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-languages.c:
+	(collect_locales_from_{archives,directory}):
+	don't discard modifier and codeset
+
+2008-02-25  Ray Strode  <rstrode@redhat.com>
+
+	* gui/simple-greeter/gdm-languages.c:
 	(collect_locales_from_directory),
 	(collect_locales_from_archives):
 	filter out invalid and non-utf8 locales
