@@ -59,6 +59,16 @@ gdm_language_chooser_dialog_get_current_language_name (GdmLanguageChooserDialog 
         return language_name;
 }
 
+void
+gdm_language_chooser_dialog_set_current_language_name (GdmLanguageChooserDialog *dialog,
+                                                       const char               *language_name)
+{
+
+        g_return_if_fail (GDM_IS_LANGUAGE_CHOOSER_DIALOG (dialog));
+
+        gdm_language_chooser_widget_set_current_language_name (GDM_LANGUAGE_CHOOSER_WIDGET (dialog->priv->chooser_widget), language_name);
+}
+
 static void
 gdm_language_chooser_dialog_size_request (GtkWidget      *widget,
                                        GtkRequisition *requisition)
