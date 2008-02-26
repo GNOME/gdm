@@ -122,7 +122,7 @@ gdm_session_settings_finalize (GObject *object)
         }
 }
 
-static void
+void
 gdm_session_settings_set_language_name (GdmSessionSettings *settings,
                                         const char         *language_name)
 {
@@ -135,7 +135,7 @@ gdm_session_settings_set_language_name (GdmSessionSettings *settings,
         }
 }
 
-static void
+void
 gdm_session_settings_set_session_name (GdmSessionSettings *settings,
                                        const char         *session_name)
 {
