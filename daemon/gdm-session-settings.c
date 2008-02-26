@@ -36,8 +36,6 @@ struct _GdmSessionSettingsPrivate
 {
         char *session_name;
         char *language_name;
-
-        guint is_loaded : 1;
 };
 
 static void gdm_session_settings_finalize (GObject *object);
@@ -226,7 +224,8 @@ gdm_session_settings_new (void)
 gboolean
 gdm_session_settings_is_loaded (GdmSessionSettings  *settings)
 {
-        return settings->priv->is_loaded;
+        return settings->priv->session_name != NULL ||
+               settings->priv->language_name != NULL;
 }
 
 gboolean

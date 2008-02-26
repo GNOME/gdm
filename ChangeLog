@@ -1,3 +1,11 @@
+2008-02-26  Ray Strode  <rstrode@redhat.com>
+
+	* daemon/gdm-session-settings.c
+	(gdm_session_settings_is_loaded):
+	Track is_loaded status by whether either session or
+	language are explicitly set instead of relying on a
+	boolean that wasn't being kept in sync.
+
 2008-02-26  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/gdm-greeter-panel.c:
