@@ -842,6 +842,130 @@ gdm_session_direct_handle_saved_language_name_read (GdmSessionDirect *session,
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
+static gboolean
+is_prog_in_path (const char *prog)
+{
+        char    *f;
+        gboolean ret;
+
+        f = g_find_program_in_path (prog);
+        ret = (f != NULL);
+        g_free (f);
+        return ret;
+}
+
+static gboolean
+get_session_command_for_file (const char *file,
+                              char      **command)
+{
+        GKeyFile   *key_file;
+        GError     *error;
+        char       *full_path;
+        char       *exec;
+        gboolean    ret;
+        gboolean    res;
+        const char *search_dirs[] = {
+                "/etc/X11/sessions/",
+                DMCONFDIR "/Sessions/",
+                DATADIR "/gdm/BuiltInSessions/",
+                DATADIR "/xsessions/",
+                NULL
+        };
+
+        exec = NULL;
+        ret = FALSE;
+        if (command != NULL) {
+                *command = NULL;
+        }
+
+        key_file = g_key_file_new ();
+
+        g_debug ("GdmSessionDirect: looking for session file '%s'", file);
+
+        error = NULL;
+        full_path = NULL;
+        res = g_key_file_load_from_dirs (key_file,
+                                         file,
+                                         search_dirs,
+                                         &full_path,
+                                         G_KEY_FILE_NONE,
+                                         &error);
+        if (! res) {
+                g_debug ("GdmSessionDirect: File '%s' not found: %s", file, error->message);
+                g_error_free (error);
+                if (command != NULL) {
+                        *command = NULL;
+                }
+                goto out;
+        }
+
+        error = NULL;
+        res = g_key_file_get_boolean (key_file,
+                                      G_KEY_FILE_DESKTOP_GROUP,
+                                      G_KEY_FILE_DESKTOP_KEY_HIDDEN,
+                                      &error);
+        if (error == NULL && res) {
+                g_debug ("GdmSessionDirect: Session %s is marked as hidden", file);
+                goto out;
+        }
+
+        error = NULL;
+        exec = g_key_file_get_string (key_file,
+                                      G_KEY_FILE_DESKTOP_GROUP,
+                                      G_KEY_FILE_DESKTOP_KEY_TRY_EXEC,
+                                      &error);
+        if (exec == NULL) {
+                g_debug ("GdmSessionDirect: %s key not found", G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
+                goto out;
+        }
+
+        res = is_prog_in_path (exec);
+        g_free (exec);
+
+        if (! res) {
+                g_debug ("GdmSessionDirect: Command not found: %s", G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
+                goto out;
+        }
+
+        error = NULL;
+        exec = g_key_file_get_string (key_file,
+                                      G_KEY_FILE_DESKTOP_GROUP,
+                                      G_KEY_FILE_DESKTOP_KEY_EXEC,
+                                      &error);
+        if (error != NULL) {
+                g_debug ("GdmSessionDirect: %s key not found: %s",
+                         G_KEY_FILE_DESKTOP_KEY_EXEC,
+                         error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        if (command != NULL) {
+                *command = g_strdup (exec);
+        }
+        ret = TRUE;
+
+out:
+        g_free (exec);
+
+        return ret;
+}
+
+static gboolean
+get_session_command_for_name (const char *name,
+                              char      **command)
+{
+        gboolean res;
+        char    *filename;
+
+        filename = g_strdup_printf ("%s.desktop", name);
+
+        command = NULL;
+        res = get_session_command_for_file (filename, command);
+
+        return res;
+}
+
 static DBusHandlerResult
 gdm_session_direct_handle_saved_session_name_read (GdmSessionDirect *session,
                                                    DBusConnection   *connection,
@@ -862,6 +986,14 @@ gdm_session_direct_handle_saved_session_name_read (GdmSessionDirect *session,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
+        if (! get_session_command_for_name (session_name, NULL)) {
+                /* ignore sessions that don't exist */
+                g_debug ("GdmSessionDirect: not using invalid .dmrc session: %s", session_name);
+                g_free (session->priv->saved_session);
+                session->priv->saved_session = NULL;
+                goto out;
+        }
+
         if (strcmp (session_name,
                     get_default_session_name (session)) != 0) {
                 g_free (session->priv->saved_session);
@@ -870,7 +1002,7 @@ gdm_session_direct_handle_saved_session_name_read (GdmSessionDirect *session,
                 _gdm_session_default_session_name_changed (GDM_SESSION (session),
                                                            session_name);
         }
-
+ out:
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
@@ -1603,115 +1735,6 @@ send_environment (GdmSessionDirect *session)
                               session);
 }
 
-static gboolean
-is_prog_in_path (const char *prog)
-{
-        char    *f;
-        gboolean ret;
-
-        f = g_find_program_in_path (prog);
-        ret = (f != NULL);
-        g_free (f);
-        return ret;
-}
-
-static gboolean
-get_session_command_for_file (const char *file,
-                              char      **command)
-{
-        GKeyFile   *key_file;
-        GError     *error;
-        char       *full_path;
-        char       *exec;
-        gboolean    ret;
-        gboolean    res;
-        const char *search_dirs[] = {
-                "/etc/X11/sessions/",
-                DMCONFDIR "/Sessions/",
-                DATADIR "/gdm/BuiltInSessions/",
-                DATADIR "/xsessions/",
-                NULL
-        };
-
-        exec = NULL;
-        ret = FALSE;
-        if (command != NULL) {
-                *command = NULL;
-        }
-
-        key_file = g_key_file_new ();
-
-        g_debug ("GdmSessionDirect: looking for session file '%s'", file);
-
-        error = NULL;
-        full_path = NULL;
-        res = g_key_file_load_from_dirs (key_file,
-                                         file,
-                                         search_dirs,
-                                         &full_path,
-                                         G_KEY_FILE_NONE,
-                                         &error);
-        if (! res) {
-                g_debug ("GdmSessionDirect: File '%s' not found: %s", file, error->message);
-                g_error_free (error);
-                if (command != NULL) {
-                        *command = NULL;
-                }
-                goto out;
-        }
-
-        error = NULL;
-        res = g_key_file_get_boolean (key_file,
-                                      G_KEY_FILE_DESKTOP_GROUP,
-                                      G_KEY_FILE_DESKTOP_KEY_HIDDEN,
-                                      &error);
-        if (error == NULL && res) {
-                g_debug ("GdmSessionDirect: Session %s is marked as hidden", file);
-                goto out;
-        }
-
-        error = NULL;
-        exec = g_key_file_get_string (key_file,
-                                      G_KEY_FILE_DESKTOP_GROUP,
-                                      G_KEY_FILE_DESKTOP_KEY_TRY_EXEC,
-                                      &error);
-        if (exec == NULL) {
-                g_debug ("GdmSessionDirect: %s key not found", G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
-                goto out;
-        }
-
-        res = is_prog_in_path (exec);
-        g_free (exec);
-
-        if (! res) {
-                g_debug ("GdmSessionDirect: Command not found: %s", G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
-                goto out;
-        }
-
-        error = NULL;
-        exec = g_key_file_get_string (key_file,
-                                      G_KEY_FILE_DESKTOP_GROUP,
-                                      G_KEY_FILE_DESKTOP_KEY_EXEC,
-                                      &error);
-        if (error != NULL) {
-                g_debug ("GdmSessionDirect: %s key not found: %s",
-                         G_KEY_FILE_DESKTOP_KEY_EXEC,
-                         error->message);
-                g_error_free (error);
-                goto out;
-        }
-
-        if (command != NULL) {
-                *command = g_strdup (exec);
-        }
-        ret = TRUE;
-
-out:
-        g_free (exec);
-
-        return ret;
-}
-
 static const char *
 get_language_name (GdmSessionDirect *session)
 {
@@ -1725,6 +1748,8 @@ get_language_name (GdmSessionDirect *session)
 static const char *
 get_session_name (GdmSessionDirect *session)
 {
+        /* FIXME: test the session names before we use them? */
+
         if (session->priv->selected_session != NULL) {
                 return session->priv->selected_session;
         }

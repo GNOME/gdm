@@ -1,5 +1,13 @@
 2008-02-25  William Jon McCann  <jmccann@redhat.com>
 
+	* daemon/gdm-session-direct.c: (is_prog_in_path),
+	(get_session_command_for_file), (get_session_command_for_name),
+	(gdm_session_direct_handle_saved_session_name_read),
+	(get_session_name):
+	Verify that the dmrc session is available before using it.
+
+2008-02-25  William Jon McCann  <jmccann@redhat.com>
+
 	* configure.ac: Post release bump
 
 ==== 2.21.8 ====
