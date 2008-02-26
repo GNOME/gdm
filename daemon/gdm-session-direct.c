@@ -1170,6 +1170,12 @@ do_introspect (DBusConnection *connection,
                                "      <arg name=\"name\" type=\"s\"/>\n"
                                "      <arg name=\"value\" type=\"s\"/>\n"
                                "    </signal>\n"
+                               "    <signal name=\"SetLanguageName\">\n"
+                               "      <arg name=\"language_name\" type=\"s\"/>\n"
+                               "    </signal>\n"
+                               "    <signal name=\"SetSessionName\">\n"
+                               "      <arg name=\"session_name\" type=\"s\"/>\n"
+                               "    </signal>\n"
                                "    <signal name=\"StartProgram\">\n"
                                "      <arg name=\"command\" type=\"s\"/>\n"
                                "    </signal>\n"
@@ -2022,6 +2028,9 @@ gdm_session_direct_select_session (GdmSession *session,
         } else {
                 impl->priv->selected_session = g_strdup (text);
         }
+
+        send_dbus_string_signal (impl, "SetSessionName",
+                                 get_session_name (impl));
 }
 
 static void
@@ -2037,6 +2046,9 @@ gdm_session_direct_select_language (GdmSession *session,
         } else {
                 impl->priv->selected_language = g_strdup (text);
         }
+
+        send_dbus_string_signal (impl, "SetLanguageName",
+                                 get_language_name (impl));
 }
 
 /* At some point we may want to read these right from

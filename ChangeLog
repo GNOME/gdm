@@ -1,5 +1,13 @@
 2008-02-26  Ray Strode  <rstrode@redhat.com>
 
+	* daemon/gdm-session-direct.c
+	(do_introspect), (gdm_session_direct_select_session),
+	(gdm_session_direct_select_language):
+	Tell worker about language/session changes the user
+	makes from the greeter
+
+2008-02-26  Ray Strode  <rstrode@redhat.com>
+
 	* daemon/gdm-session-worker.c: (_save_user_settings),
 	(gdm_session_worker_start_user_session):
 	Save out user settings to ~/.dmrc before starting the
