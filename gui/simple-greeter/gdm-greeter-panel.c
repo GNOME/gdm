@@ -31,6 +31,8 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
+#include <gconf/gconf-client.h>
+
 #include "gdm-languages.h"
 #include "gdm-greeter-panel.h"
 #include "gdm-clock-widget.h"
@@ -39,6 +41,8 @@
 #include "gdm-a11y-preferences-dialog.h"
 
 #include "na-tray.h"
+
+#define KEY_DISABLE_A11Y_BUTTON "/apps/gdm/simple-greeter/disable-accessibility-button"
 
 #define GDM_GREETER_PANEL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_PANEL, GdmGreeterPanelPrivate))
 
@@ -464,6 +468,23 @@ on_a11y_button_clicked (GtkButton       *button,
         gtk_window_present (GTK_WINDOW (panel->priv->a11y_dialog));
 }
 
+static gboolean
+is_a11y_button_disabled (GdmGreeterPanel *panel)
+{
+        GConfClient *client;
+        GError      *error;
+        gboolean     disabled;
+
+        client = gconf_client_get_default ();
+        error = NULL;
+        disabled = gconf_client_get_bool (client, KEY_DISABLE_A11Y_BUTTON, &error);
+        if (error != NULL) {
+                g_debug ("GdmGreeterPanel: unable to get disable-accessibility-button configuration: %s", error->message);
+                g_error_free (error);
+        }
+        g_object_unref (client);
+}
+
 static void
 gdm_greeter_panel_init (GdmGreeterPanel *panel)
 {
@@ -491,16 +512,18 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
         gtk_widget_show (panel->priv->hbox);
         gtk_container_add (GTK_CONTAINER (panel), panel->priv->hbox);
 
-        panel->priv->a11y_button = gtk_button_new ();
-        image = gtk_image_new_from_icon_name ("preferences-desktop-accessibility", GTK_ICON_SIZE_BUTTON);
-        gtk_container_add (GTK_CONTAINER (panel->priv->a11y_button), image);
-        gtk_widget_show (image);
-        gtk_widget_show (panel->priv->a11y_button);
-        g_signal_connect (G_OBJECT (panel->priv->a11y_button),
-                          "clicked",
-                          G_CALLBACK (on_a11y_button_clicked), panel);
+        if (! is_a11y_button_disabled (panel)) {
+                panel->priv->a11y_button = gtk_button_new ();
+                image = gtk_image_new_from_icon_name ("preferences-desktop-accessibility", GTK_ICON_SIZE_BUTTON);
+                gtk_container_add (GTK_CONTAINER (panel->priv->a11y_button), image);
+                gtk_widget_show (image);
+                gtk_widget_show (panel->priv->a11y_button);
+                g_signal_connect (G_OBJECT (panel->priv->a11y_button),
+                                  "clicked",
+                                  G_CALLBACK (on_a11y_button_clicked), panel);
 
-        gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->a11y_button, FALSE, FALSE, 0);
+                gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->a11y_button, FALSE, FALSE, 0);
+        }
 
         panel->priv->language_option_widget = gdm_language_option_widget_new ();
         g_signal_connect (G_OBJECT (panel->priv->language_option_widget),
