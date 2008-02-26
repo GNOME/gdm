@@ -511,21 +511,13 @@ main (int    argc,
         gboolean            res;
         gboolean            xdmcp_enabled;
         GdmSignalHandler   *signal_handler;
-        static char        *config_file      = NULL;
         static gboolean     debug            = FALSE;
-        static gboolean     no_daemon        = FALSE;
-        static gboolean     no_console       = FALSE;
         static gboolean     do_timed_exit    = FALSE;
         static gboolean     print_version    = FALSE;
         static gboolean     fatal_warnings   = FALSE;
         static GOptionEntry entries []   = {
-                { "config", 0, 0, G_OPTION_ARG_STRING, &config_file, N_("Alternative GDM System Defaults configuration file"), N_("CONFIGFILE") },
-
                 { "debug", 0, 0, G_OPTION_ARG_NONE, &debug, N_("Enable debugging code"), NULL },
                 { "fatal-warnings", 0, 0, G_OPTION_ARG_NONE, &fatal_warnings, N_("Make all warnings fatal"), NULL },
-                { "no-daemon", 0, 0, G_OPTION_ARG_NONE, &no_daemon, N_("Don't become a daemon"), NULL },
-                { "no-console", 0, 0, G_OPTION_ARG_NONE, &no_console, N_("No console (static) servers to be run"), NULL },
-
                 { "timed-exit", 0, 0, G_OPTION_ARG_NONE, &do_timed_exit, N_("Exit after a time - for debugging"), NULL },
                 { "version", 0, 0, G_OPTION_ARG_NONE, &print_version, N_("Print GDM version"), NULL },
 
@@ -545,15 +537,6 @@ main (int    argc,
         context = g_option_context_new (_("GNOME Display Manager"));
         g_option_context_add_main_entries (context, entries, NULL);
 
-        /* preprocess the arguments to support the xdm style -nodaemon
-         * option
-         */
-        for (i = 0; i < argc; i++) {
-                if (strcmp (argv[i], "-nodaemon") == 0) {
-                        argv[i] = (char *) "--no-daemon";
-                }
-        }
-
         error = NULL;
         res = g_option_context_parse (context, &argc, &argv, &error);
         g_option_context_free (context);
@@ -569,10 +552,6 @@ main (int    argc,
                 fatal_mask = g_log_set_always_fatal (G_LOG_FATAL_MASK);
                 fatal_mask |= G_LOG_LEVEL_WARNING | G_LOG_LEVEL_CRITICAL;
                 g_log_set_always_fatal (fatal_mask);
-        }
-
-        if (! no_daemon && daemon (0, 0)) {
-                g_error ("Could not daemonize: %s", g_strerror (errno));
         }
 
         connection = get_system_bus ();
