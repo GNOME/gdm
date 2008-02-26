@@ -1,5 +1,17 @@
 2008-02-26  Ray Strode  <rstrode@redhat.com>
 
+	* daemon/gdm-session-worker.c:
+	(gdm_session_worker_set_session_name),
+	(on_set_session_name),
+	(gdm_session_worker_set_language_name),
+	(on_set_language_name),
+	(worker_dbus_handle_message):
+	Update session and language state in the worker, when
+	the slave informs it about language/session changes the
+	user makes from the greeter
+
+2008-02-26  Ray Strode  <rstrode@redhat.com>
+
 	* daemon/gdm-session-direct.c
 	(do_introspect), (gdm_session_direct_select_session),
 	(gdm_session_direct_select_language):

@@ -1656,6 +1656,66 @@ on_set_environment_variable (GdmSessionWorker *worker,
 }
 
 static void
+gdm_session_worker_set_session_name (GdmSessionWorker *worker,
+                                     const char       *session_name)
+{
+        gdm_session_settings_set_session_name (worker->priv->user_settings,
+                                               session_name);
+}
+
+static void
+on_set_session_name (GdmSessionWorker *worker,
+                     DBusMessage      *message)
+{
+        DBusError   error;
+        const char *session_name;
+        dbus_bool_t res;
+
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &session_name,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("GdmSessionWorker: session name set to %s", session_name);
+                gdm_session_worker_set_session_name (worker, session_name);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
+}
+
+static void
+gdm_session_worker_set_language_name (GdmSessionWorker *worker,
+                                      const char       *language_name)
+{
+        gdm_session_settings_set_language_name (worker->priv->user_settings,
+                                                language_name);
+}
+
+static void
+on_set_language_name (GdmSessionWorker *worker,
+                      DBusMessage      *message)
+{
+        DBusError   error;
+        const char *language_name;
+        dbus_bool_t res;
+
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &language_name,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("GdmSessionWorker: language name set to %s", language_name);
+                gdm_session_worker_set_language_name (worker, language_name);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
+}
+
+static void
 on_saved_language_name_read (GdmSessionWorker *worker)
 {
         char *language_name;
@@ -2122,6 +2182,10 @@ worker_dbus_handle_message (DBusConnection *connection,
                 on_start_program (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetEnvironmentVariable")) {
                 on_set_environment_variable (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetLanguageName")) {
+                on_set_language_name (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetSessionName")) {
+                on_set_session_name (worker, message);
         } else {
                 return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
         }
