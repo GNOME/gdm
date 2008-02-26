@@ -1435,6 +1435,25 @@ out:
         return fd;
 }
 
+static void
+_save_user_settings (GdmSessionWorker *worker,
+                     const char       *home_dir)
+{
+        GError *error;
+
+        if (!gdm_session_settings_is_loaded (worker->priv->user_settings)) {
+                return;
+        }
+
+        error = NULL;
+        if (!gdm_session_settings_save (worker->priv->user_settings,
+                                        home_dir, &error)) {
+                g_warning ("could not save session and language settings: %s",
+                           error->message);
+                g_error_free (error);
+        }
+}
+
 static gboolean
 gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
                                        GError           **error)
@@ -1496,6 +1515,8 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
                 dup2 (fd, STDOUT_FILENO);
                 dup2 (fd, STDERR_FILENO);
                 close (fd);
+
+                _save_user_settings (worker, home_dir);
 
                 gdm_session_execute (worker->priv->arguments[0],
                                      worker->priv->arguments,
