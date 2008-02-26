@@ -288,7 +288,63 @@ out:
         g_key_file_free (key_file);
         g_free (filename);
 
-        settings->priv->is_loaded = is_loaded;
-
         return is_loaded;
+}
+
+gboolean
+gdm_session_settings_save (GdmSessionSettings  *settings,
+                           const char          *home_directory,
+                           GError             **error)
+{
+        GKeyFile *key_file;
+        GError   *file_error;
+        gboolean  is_saved;
+        char     *filename;
+        gsize     length;
+        gchar    *contents;
+
+        g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), FALSE);
+        g_return_val_if_fail (home_directory != NULL, FALSE);
+        g_return_val_if_fail (gdm_session_settings_is_loaded (settings), FALSE);
+        filename = g_build_filename (home_directory, ".dmrc", NULL);
+
+        is_saved = FALSE;
+        key_file = g_key_file_new ();
+
+        file_error = NULL;
+        g_key_file_load_from_file (key_file, filename,
+                                   G_KEY_FILE_KEEP_COMMENTS |
+                                   G_KEY_FILE_KEEP_TRANSLATIONS,
+                                   NULL);
+
+        if (settings->priv->session_name != NULL) {
+                g_key_file_set_string (key_file, "Desktop", "Session",
+                                       settings->priv->session_name);
+        }
+
+        if (settings->priv->language_name != NULL) {
+                g_key_file_set_string (key_file, "Desktop", "Language",
+                                       settings->priv->language_name);
+        }
+
+        contents = g_key_file_to_data (key_file, &length, &file_error);
+
+        if (contents == NULL) {
+                g_propagate_error (error, file_error);
+                goto out;
+        }
+
+        if (!g_file_set_contents (filename, contents, length, &file_error)) {
+                g_free (contents);
+                g_propagate_error (error, file_error);
+                goto out;
+        }
+        g_free (contents);
+
+        is_saved = TRUE;
+out:
+        g_key_file_free (key_file);
+        g_free (filename);
+
+        return is_saved;
 }
