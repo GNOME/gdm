@@ -284,11 +284,12 @@ gdm_option_widget_set_default_item (GdmOptionWidget *widget,
                                                          NULL, NULL, NULL));
 
         if (widget->priv->default_item_id == NULL ||
+            item == NULL ||
             strcmp (widget->priv->default_item_id, item) != 0) {
                 g_free (widget->priv->default_item_id);
                 widget->priv->default_item_id = NULL;
 
-                if (widget->priv->active_row == NULL) {
+                if (widget->priv->active_row == NULL || item != NULL) {
                     activate_from_item_id (widget, item);
                 }
 
