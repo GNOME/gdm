@@ -46,6 +46,7 @@
 
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkx.h>
+#include <X11/XKBlib.h>
 
 #include <gtk/gtk.h>
 
@@ -109,8 +110,11 @@ struct GdmGreeterLoginWindowPrivate
 {
         GladeXML        *xml;
         GtkWidget       *user_chooser;
+        GtkWidget       *auth_capslock_label;
         gboolean         display_is_local;
         char            *timeformat;
+
+        gboolean         caps_lock_on;
 
         gboolean         timed_login_enabled;
         guint            timed_login_delay;
@@ -144,6 +148,41 @@ static void     gdm_greeter_login_window_init         (GdmGreeterLoginWindow    
 static void     gdm_greeter_login_window_finalize     (GObject                    *object);
 
 G_DEFINE_TYPE (GdmGreeterLoginWindow, gdm_greeter_login_window, GTK_TYPE_WINDOW)
+
+static void
+capslock_update (GdmGreeterLoginWindow *login_window,
+                 gboolean               is_on)
+{
+
+        login_window->priv->caps_lock_on = is_on;
+
+        if (login_window->priv->auth_capslock_label == NULL) {
+                return;
+        }
+
+        if (is_on) {
+                gtk_label_set_text (GTK_LABEL (login_window->priv->auth_capslock_label),
+                                    _("You have the Caps Lock key on."));
+        } else {
+                gtk_label_set_text (GTK_LABEL (login_window->priv->auth_capslock_label),
+                                    "");
+        }
+}
+
+static gboolean
+is_capslock_on (void)
+{
+        unsigned int states;
+        Display     *dsp;
+
+        dsp = GDK_DISPLAY ();
+
+        if (XkbGetIndicatorState (dsp, XkbUseCoreKbd, &states) != Success) {
+                return FALSE;
+        }
+
+        return (states & ShiftMask) != 0;
+}
 
 static void
 set_busy (GdmGreeterLoginWindow *login_window)
@@ -1199,6 +1238,8 @@ load_theme (GdmGreeterLoginWindow *login_window)
 
         gtk_widget_show (login_window->priv->user_chooser);
 
+        login_window->priv->auth_capslock_label = glade_xml_get_widget (login_window->priv->xml, "auth-capslock-label");
+
         button = glade_xml_get_widget (login_window->priv->xml, "suspend-button");
         g_signal_connect (button, "clicked", G_CALLBACK (suspend_button_clicked), login_window);
 
@@ -1494,6 +1535,22 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
         g_type_class_add_private (klass, sizeof (GdmGreeterLoginWindowPrivate));
 }
 
+static gint
+window_key_press (GtkWidget             *widget,
+                  GdkEventKey           *event,
+                  GdmGreeterLoginWindow *login_window)
+{
+        gboolean capslock_on;
+
+        capslock_on = is_capslock_on ();
+
+        if (capslock_on != login_window->priv->caps_lock_on) {
+                capslock_update (login_window, capslock_on);
+        }
+
+        return TRUE;
+}
+
 static void
 gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
 {
@@ -1511,6 +1568,11 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         gtk_window_set_skip_pager_hint (GTK_WINDOW (login_window), TRUE);
         gtk_window_stick (GTK_WINDOW (login_window));
         gtk_container_set_border_width (GTK_CONTAINER (login_window), 25);
+
+        g_signal_connect (login_window, "key_press_event",
+                          G_CALLBACK (window_key_press),
+                          login_window);
+
 }
 
 static void
