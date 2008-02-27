@@ -31,12 +31,6 @@ gdm_user_switch_applet_LDADD = 		\
 	$(APPLET_LIBS)					\
 	$(NULL)
 
-schemasdir   = @GCONF_SCHEMA_FILE_DIR@
-schemas_in_files = gdm-user-switch-applet.schemas.in
-schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
-
-@INTLTOOL_SCHEMAS_RULE@
-
 gladedir = $(pkgdatadir)
 glade_DATA = 				\
 	gdm-user-switch-applet.glade	\
@@ -61,7 +55,6 @@ $(server_in_files): $(server_in_files:.server.in=.server.in.in)
 @INTLTOOL_SERVER_RULE@
 
 EXTRA_DIST = 			\
-	$(schemas_in_files)	\
 	$(glade_DATA)		\
 	$(ui_DATA)		\
 	GNOME_FastUserSwitchApplet.server.in.in	\
@@ -69,22 +62,9 @@ EXTRA_DIST = 			\
 
 DISTCLEANFILES =                        \
 	$(server_in_files)		\
-        $(schemas_DATA)                 \
 	$(server_DATA)			\
         $(NULL)
 
 MAINTAINERCLEANFILES =                  \
         *~                              \
         Makefile.in
-
-if GCONF_SCHEMAS_INSTALL
-# don't do this if we are building in eg. rpm
-install-data-local: $(schemas_DATA)
-	if test -z "$(DESTDIR)" ; then \
-		for p in $(schemas_DATA) ; do \
-			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(top_builddir)/gui/user-switch-applet/$$p ; \
-		done \
-	fi
-else
-install-data-local:
-endif

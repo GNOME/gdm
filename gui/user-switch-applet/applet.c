@@ -43,15 +43,6 @@
 #include "gdm-user-manager.h"
 #include "gdm-user-menu-item.h"
 
-#define DISPLAY_KEY     "display_style"
-#define USE_XNEST_KEY   "use_xnest"
-#define LOCK_KEY        "lock_screen_after_switch"
-
-#define GLOBAL_DIR      "/apps/gdm-user-switch-applet"
-#define SHOW_WINDOW_KEY "/apps/gdm-user-switch-applet/show_window_item"
-#define SHOW_SCREEN_KEY "/apps/gdm-user-switch-applet/show_screen_item"
-#define ACTIVE_ONLY_KEY "/apps/gdm-user-switch-applet/show_active_users_only"
-
 #define LOCKDOWN_DIR    "/desktop/gnome/lockdown"
 #define LOCKDOWN_KEY    LOCKDOWN_DIR "/disable_user_switching"
 
@@ -62,18 +53,13 @@ typedef struct _GdmAppletData
         GConfClient    *client;
         GdmUserManager *manager;
 
-        GtkWidget      *prefs;
-
         GtkWidget      *menubar;
         GtkWidget      *imglabel;
         GtkWidget      *menu;
         GtkWidget      *separator_item;
         GtkWidget      *login_screen_item;
-        GtkWidget      *login_window_item;
         GSList         *items;
 
-        guint           client_notify_applet_id;
-        guint           client_notify_global_id;
         guint           client_notify_lockdown_id;
         guint           user_notify_id;
         GQuark          user_menu_item_quark;
@@ -88,16 +74,15 @@ typedef struct _SelectorResponseData
 } SelectorResponseData;
 
 static GtkTooltips *tooltips = NULL;
-static GnomeProgram *program = NULL;
 
-static gboolean applet_fill_cb (PanelApplet   *applet,
+static gboolean applet_factory (PanelApplet   *applet,
                                 const char    *iid,
-                                GdmAppletData *adata);
+                                gpointer       data);
 
 PANEL_APPLET_BONOBO_FACTORY ("OAFIID:GNOME_FastUserSwitchApplet_Factory",
                              PANEL_TYPE_APPLET,
                              "gdm-user-switch-applet", "0",
-                             (PanelAppletFactoryCallback)applet_fill_cb,
+                             (PanelAppletFactoryCallback)applet_factory,
                              NULL)
 
 static void
@@ -126,7 +111,7 @@ get_glade_xml (const char *root)
 
         xml = glade_xml_new (GLADEDIR "/gdm-user-switch-applet.glade", root, NULL);
 
-        if (!xml) {
+        if (xml == NULL) {
                 GtkWidget *dialog;
 
                 dialog = gtk_message_dialog_new (NULL,
@@ -199,80 +184,6 @@ make_label_small_italic (GtkLabel *label)
         pango_attr_list_unref (list);
 }
 
-static void
-prefs_radio_toggled_cb (GtkToggleButton *button,
-                        GdmAppletData   *adata)
-{
-        if (gtk_toggle_button_get_active (button)) {
-                gpointer value;
-
-                value = g_object_get_data (G_OBJECT (button),
-                                           "prefs-radio-display-style");
-                panel_applet_gconf_set_string (adata->applet, DISPLAY_KEY, value, NULL);
-        }
-}
-
-static void
-prefs_xnest_check_toggled_cb (GtkToggleButton *button,
-                              GdmAppletData   *adata)
-{
-        panel_applet_gconf_set_bool (adata->applet, USE_XNEST_KEY,
-                                     gtk_toggle_button_get_active (button), NULL);
-}
-
-static void
-prefs_lock_check_toggled_cb (GtkToggleButton *button,
-                             GdmAppletData   *adata)
-{
-        panel_applet_gconf_set_bool (adata->applet, LOCK_KEY,
-                                     gtk_toggle_button_get_active (button), NULL);
-}
-
-static void
-reset_login_screen_item (GtkWidget   *widget,
-                         gboolean     use_xnest_value,
-                         const char *pref_value)
-{
-        if (!pref_value || strcmp (pref_value, "always") == 0)
-                gtk_widget_show (widget);
-        else if (pref_value && strcmp (pref_value, "never") == 0)
-                gtk_widget_hide (widget);
-        else if (use_xnest_value)
-                gtk_widget_hide (widget);
-        else
-                gtk_widget_show (widget);
-}
-
-static gboolean
-system_can_do_xnest (void)
-{
-        char *tmp;
-        gboolean retval;
-
-        tmp = g_find_program_in_path ("Xnest");
-        retval = (tmp != NULL ? TRUE : FALSE);
-        g_free (tmp);
-
-        return retval;
-}
-
-static void
-reset_login_window_item (GtkWidget   *widget,
-                         gboolean     use_xnest_value,
-                         const char *pref_value)
-{
-        if (!system_can_do_xnest ())
-                gtk_widget_hide (widget);
-        else if (pref_value && strcmp (pref_value, "always") == 0)
-                gtk_widget_show (widget);
-        else if (pref_value && strcmp (pref_value, "never") == 0)
-                gtk_widget_hide (widget);
-        else if (use_xnest_value)
-                gtk_widget_show (widget);
-        else
-                gtk_widget_hide (widget);
-}
-
 /*
  * gnome-panel/applets/wncklet/window-menu.c:window_filter_button_press()
  *
@@ -289,198 +200,9 @@ menubar_button_press_event_cb (GtkWidget      *menubar,
         if (event->button != 1) {
                 g_signal_stop_emission_by_name (menubar, "button-press-event");
                 /* Reset the login window item */
-        } else {
-                gboolean use_xnest;
-                char    *value;
-
-                use_xnest = panel_applet_gconf_get_bool (adata->applet,
-                                                         USE_XNEST_KEY,
-                                                         NULL);
-                value = gconf_client_get_string (adata->client, SHOW_WINDOW_KEY, NULL);
-                reset_login_window_item (GTK_WIDGET (adata->login_window_item), use_xnest,
-                                         value);
-                g_free (value);
         }
 
         return FALSE;
-}
-
-static void
-prefs_cb (BonoboUIComponent *ui_container,
-          GdmAppletData     *adata,
-          const char        *cname)
-{
-        GladeXML      *xml;
-        GtkWidget     *warning_box;
-        GtkWidget     *label;
-        GtkWidget     *username_radio;
-        GtkWidget     *text_radio;
-        GtkWidget     *icon_radio;
-        GtkWidget     *check;
-        char          *key;
-        char          *value;
-        gboolean       has_lockdown;
-        gboolean       xnest_available;
-        gboolean       label_setup_done;
-        GdmUser       *user;
-
-        if (adata->prefs) {
-                gtk_window_set_screen (GTK_WINDOW (adata->prefs),
-                                       gtk_widget_get_screen (GTK_WIDGET (adata->applet)));
-                gtk_window_present (GTK_WINDOW (adata->prefs));
-                return;
-        }
-
-        xml = get_glade_xml ("prefs_dialog");
-
-        if (!xml)
-                return;
-
-        adata->prefs = glade_xml_get_widget (xml, "prefs_dialog");
-        gtk_dialog_set_default_response (GTK_DIALOG (adata->prefs),
-                                         GTK_RESPONSE_CLOSE);
-        gtk_window_set_transient_for (GTK_WINDOW (adata->prefs),
-                                      GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (adata->applet))));
-        gtk_window_set_screen (GTK_WINDOW (adata->prefs),
-                               gtk_widget_get_screen (GTK_WIDGET (adata->applet)));
-        g_signal_connect (adata->prefs,
-                          "response",
-                          G_CALLBACK (gtk_widget_destroy),
-                          NULL);
-        g_signal_connect (adata->prefs,
-                          "delete-event",
-                          G_CALLBACK (gtk_true),
-                          NULL);
-        g_object_add_weak_pointer (G_OBJECT (adata->prefs),
-                                   (gpointer *) &adata->prefs);
-
-        warning_box = glade_xml_get_widget (xml, "warning_box");
-
-        label = glade_xml_get_widget (xml, "appearance_label");
-        make_label_bold (GTK_LABEL (label));
-
-        label = glade_xml_get_widget (xml, "options_label");
-        make_label_bold (GTK_LABEL (label));
-
-        username_radio = glade_xml_get_widget (xml, "username_radio");
-        text_radio = glade_xml_get_widget (xml, "text_radio");
-        icon_radio = glade_xml_get_widget (xml, "icon_radio");
-
-        has_lockdown = panel_applet_get_locked_down (adata->applet);
-
-        value = panel_applet_gconf_get_string (adata->applet, DISPLAY_KEY, NULL);
-        if (!value || strcmp (value, "text") == 0) {
-                gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (text_radio), TRUE);
-        } else if (strcmp (value, "icon") == 0) {
-                gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (icon_radio), TRUE);
-        } else if (strcmp (value, "username") == 0) {
-                gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (username_radio), TRUE);
-        }
-        g_free (value);
-
-        g_object_set_data (G_OBJECT (username_radio),
-                           "prefs-radio-display-style",
-                           "username");
-        g_signal_connect (username_radio,
-                          "toggled",
-                          G_CALLBACK (prefs_radio_toggled_cb),
-                          adata);
-
-        user = gdm_user_manager_get_user_by_uid (adata->manager, getuid ());
-        if (user != NULL) {
-                gtk_label_set_text (GTK_LABEL (GTK_BIN (username_radio)->child),
-                                    gdm_user_get_real_name (user));
-        }
-
-        g_object_set_data (G_OBJECT (text_radio),
-                           "prefs-radio-display-style",
-                           "text");
-        g_signal_connect (text_radio,
-                          "toggled",
-                          G_CALLBACK (prefs_radio_toggled_cb),
-                          adata);
-
-        g_object_set_data (G_OBJECT (icon_radio),
-                           "prefs-radio-display-style", "icon");
-        g_signal_connect (icon_radio,
-                          "toggled",
-                          G_CALLBACK (prefs_radio_toggled_cb),
-                          adata);
-
-        label_setup_done = FALSE;
-        key = panel_applet_gconf_get_full_key (adata->applet, DISPLAY_KEY);
-        if (has_lockdown || !gconf_client_key_is_writable (adata->client, key, NULL)) {
-                GtkWidget *warning_label;
-
-                gtk_widget_set_sensitive (username_radio, FALSE);
-                gtk_widget_set_sensitive (text_radio, FALSE);
-                gtk_widget_set_sensitive (icon_radio, FALSE);
-
-                warning_label = glade_xml_get_widget (xml, "warning_label");
-                make_label_small_italic (GTK_LABEL (warning_label));
-                label_setup_done = TRUE;
-
-                gtk_widget_show (warning_box);
-        }
-        g_free (key);
-
-        /* [_] Lock the screen after switching */
-        check = glade_xml_get_widget (xml, "lock_check");
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check),
-                                      panel_applet_gconf_get_bool (adata->applet,
-                                                                   LOCK_KEY,
-                                                                   NULL));
-        g_signal_connect (check,
-                          "toggled",
-                          G_CALLBACK (prefs_lock_check_toggled_cb),
-                          adata);
-        key = panel_applet_gconf_get_full_key (adata->applet, LOCK_KEY);
-        if (has_lockdown || !gconf_client_key_is_writable (adata->client, key, NULL)) {
-                gtk_widget_set_sensitive (check, FALSE);
-
-                if (!label_setup_done) {
-                        GtkWidget *warning_label;
-
-                        warning_label = glade_xml_get_widget (xml, "warning_label");
-                        make_label_small_italic (GTK_LABEL (warning_label));
-                        label_setup_done = TRUE;
-
-                        gtk_widget_show (warning_box);
-                }
-        }
-        g_free (key);
-
-        /* [_] Create new logins in nested windows */
-        check = glade_xml_get_widget (xml, "xnest_check");
-        xnest_available = system_can_do_xnest ();
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check),
-                                      (panel_applet_gconf_get_bool (adata->applet,
-                                                                    USE_XNEST_KEY,
-                                                                    NULL) &&
-                                       xnest_available));
-        g_signal_connect (check,
-                          "toggled",
-                          G_CALLBACK (prefs_xnest_check_toggled_cb),
-                          adata);
-        key = panel_applet_gconf_get_full_key (adata->applet, USE_XNEST_KEY);
-        if (has_lockdown || !gconf_client_key_is_writable (adata->client, key, NULL)) {
-                gtk_widget_set_sensitive (check, FALSE);
-
-                if (!label_setup_done) {
-                        GtkWidget *warning_label;
-
-                        warning_label = glade_xml_get_widget (xml, "warning_label");
-                        make_label_small_italic (GTK_LABEL (warning_label));
-                        label_setup_done = TRUE;
-
-                        gtk_widget_show (warning_box);
-                }
-        } else if (!xnest_available) {
-                gtk_widget_set_sensitive (check, FALSE);
-        }
-        g_free (key);
-
-        gtk_window_present (GTK_WINDOW (adata->prefs));
 }
 
 static void
@@ -494,7 +216,7 @@ help_cb (BonoboUIComponent *ui_container,
         gnome_help_display_on_screen ("gdm-user-switch-applet", NULL,
                                       gtk_widget_get_screen (GTK_WIDGET (adata->applet)),
                                       &err);
-        if (err) {
+        if (err != NULL) {
                 g_warning ("Could not open help document: %s", err->message);
                 g_error_free (err);
         }
@@ -583,47 +305,20 @@ admin_cb (BonoboUIComponent *ui_container,
 }
 
 static void
-setup_cb (BonoboUIComponent *ui_container,
-          gpointer           data,
-          const char       *cname)
-{
-#ifdef GDM_SETUP
-        char **args;
-        GError *err;
-
-        err = NULL;
-        if (!g_shell_parse_argv (GDM_SETUP, NULL, &args, &err)) {
-                g_critical ("Could not parse GDM configuration command line `%s': %s",
-                            GDM_SETUP, err->message);
-                return;
-        }
-
-        if (!g_spawn_async (g_get_home_dir (), args, NULL,
-                            (G_SPAWN_STDOUT_TO_DEV_NULL |
-                             G_SPAWN_STDERR_TO_DEV_NULL |
-                             G_SPAWN_SEARCH_PATH),
-                            NULL, NULL, NULL, &err)) {
-                g_critical ("Could not run `%s' to configure GDM: %s",
-                            GDM_SETUP, err->message);
-                g_error_free (err);
-        }
-        g_strfreev (args);
-#endif /* GDM_SETUP */
-}
-
-static void
 set_menuitem_icon (BonoboUIComponent *component,
-                   const char       *item_path,
+                   const char        *item_path,
                    GtkIconTheme      *theme,
-                   const char       *icon_name,
+                   const char        *icon_name,
                    gint               icon_size)
 {
         GdkPixbuf *pixbuf;
-        gint width, height;
+        int        width;
+        int        height;
 
         pixbuf = gtk_icon_theme_load_icon (theme, icon_name, icon_size, 0, NULL);
-        if (!pixbuf)
+        if (pixbuf == NULL) {
                 return;
+        }
 
         width = gdk_pixbuf_get_width (pixbuf);
         height = gdk_pixbuf_get_height (pixbuf);
@@ -655,26 +350,32 @@ applet_style_set_cb (GtkWidget *widget,
         GtkIconTheme *theme;
         gint width, height, icon_size;
 
-        if (gtk_widget_has_screen (widget))
+        if (gtk_widget_has_screen (widget)) {
                 screen = gtk_widget_get_screen (widget);
-        else
+        } else {
                 screen = gdk_screen_get_default ();
+        }
 
         if (gtk_icon_size_lookup_for_settings (gtk_settings_get_for_screen (screen),
-                                               GTK_ICON_SIZE_MENU, &width, &height))
+                                               GTK_ICON_SIZE_MENU, &width, &height)) {
                 icon_size = MAX (width, height);
-        else
+        } else {
                 icon_size = 16;
+        }
 
         theme = gtk_icon_theme_get_for_screen (screen);
         component = panel_applet_get_popup_component (PANEL_APPLET (widget));
 
-        set_menuitem_icon (component, "/commands/GdmAboutMe",
-                           theme, "user-info", icon_size);
-        set_menuitem_icon (component, "/commands/GdmUsersGroupsAdmin",
-                           theme, "stock_people", icon_size);
-        set_menuitem_icon (component, "/commands/GdmGdmSetup",
-                           theme, "gdm-setup", icon_size);
+        set_menuitem_icon (component,
+                           "/commands/GdmAboutMe",
+                           theme,
+                           "user-info",
+                           icon_size);
+        set_menuitem_icon (component,
+                           "/commands/GdmUsersGroupsAdmin",
+                           theme,
+                           "stock_people",
+                           icon_size);
 }
 
 static void
@@ -685,8 +386,8 @@ applet_change_background_cb (PanelApplet               *applet,
                              gpointer                   data)
 {
         GdmAppletData *adata;
-        GtkRcStyle *rc_style;
-        GtkStyle   *style;
+        GtkRcStyle    *rc_style;
+        GtkStyle      *style;
 
         adata = data;
 
@@ -830,12 +531,8 @@ applet_size_allocate_cb (GtkWidget     *widget,
 static void
 gdm_applet_data_free (GdmAppletData *adata)
 {
-        if (adata->prefs)
-                gtk_widget_destroy (adata->prefs);
+        gconf_client_notify_remove (adata->client, adata->client_notify_lockdown_id);
 
-        gconf_client_notify_remove (adata->client, adata->client_notify_applet_id);
-        gconf_client_notify_remove (adata->client, adata->client_notify_global_id);
-        gconf_client_remove_dir (adata->client, GLOBAL_DIR, NULL);
         g_object_unref (adata->client);
         g_object_unref (adata->manager);
         g_object_unref (tooltips);
@@ -911,8 +608,9 @@ sort_menu (GdmAppletData *adata)
         guint n_items, n_rows, n_cols, row, column, count;
         gint screen_height;
 
-        if (!gtk_widget_has_screen (adata->menu))
+        if (!gtk_widget_has_screen (adata->menu)) {
                 return;
+        }
 
         adata->items = g_slist_sort_with_data (adata->items,
                                                sort_menu_comparedatafunc, adata);
@@ -971,13 +669,15 @@ menu_style_set_cb (GtkWidget *menu,
         adata = data;
         adata->icon_size = gtk_icon_size_from_name ("panel-menu");
 
-        if (adata->icon_size == GTK_ICON_SIZE_INVALID)
+        if (adata->icon_size == GTK_ICON_SIZE_INVALID) {
                 adata->icon_size = gtk_icon_size_register ("panel-menu", 24, 24);
+        }
 
-        if (gtk_widget_has_screen (menu))
+        if (gtk_widget_has_screen (menu)) {
                 settings = gtk_settings_get_for_screen (gtk_widget_get_screen (menu));
-        else
+        } else {
                 settings = gtk_settings_get_default ();
+        }
 
         if (!gtk_icon_size_lookup_for_settings (settings, adata->icon_size,
                                                 &width, &height))
@@ -1001,9 +701,10 @@ menuitem_destroy_cb (GtkWidget *menuitem,
                 GdmUser *user;
 
                 user = gdm_user_menu_item_get_user (GDM_USER_MENU_ITEM (menuitem));
-                if (user)
+                if (user != NULL) {
                         g_object_set_qdata (G_OBJECT (user),
                                             adata->user_menu_item_quark, NULL);
+                }
         }
 
         li = g_slist_find (adata->items, menuitem);
@@ -1020,26 +721,24 @@ menuitem_style_set_cb (GtkWidget *menuitem,
 
         adata = data;
 
-        if (GDM_IS_USER_MENU_ITEM (menuitem))
+        if (GDM_IS_USER_MENU_ITEM (menuitem)) {
                 gdm_user_menu_item_set_icon_size (GDM_USER_MENU_ITEM (menuitem),
                                                    adata->pixel_size);
-        else
-                {
-                        GtkWidget *image;
-                        const char *icon_name;
+        } else {
+                GtkWidget *image;
+                const char *icon_name;
 
-                        if (menuitem == adata->login_screen_item)
-                                icon_name = "gdm";
-                        else if (menuitem == adata->login_window_item)
-                                icon_name = "gdm-xnest";
-                        else
-                                icon_name = GTK_STOCK_MISSING_IMAGE;
-
-                        image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (menuitem));
-                        gtk_image_set_pixel_size (GTK_IMAGE (image), adata->pixel_size);
-                        gtk_image_set_from_icon_name (GTK_IMAGE (image), icon_name,
-                                                      adata->icon_size);
+                if (menuitem == adata->login_screen_item) {
+                        icon_name = "gdm";
+                } else {
+                        icon_name = GTK_STOCK_MISSING_IMAGE;
                 }
+
+                image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (menuitem));
+                gtk_image_set_pixel_size (GTK_IMAGE (image), adata->pixel_size);
+                gtk_image_set_from_icon_name (GTK_IMAGE (image), icon_name,
+                                              adata->icon_size);
+        }
 }
 
 
@@ -1075,73 +774,70 @@ switch_to_user_session (GdmAppletData *adata,
 static void
 maybe_lock_screen (GdmAppletData *adata)
 {
-        if (panel_applet_gconf_get_bool (adata->applet, LOCK_KEY, NULL)) {
-                char      *args[3];
-                GError    *err;
-                GdkScreen *screen;
-                gboolean   use_gscreensaver = TRUE;
+        char      *args[3];
+        GError    *err;
+        GdkScreen *screen;
+        gboolean   use_gscreensaver = TRUE;
 
-                args[0] = g_find_program_in_path ("gnome-screensaver-command");
-                if (!args[0]) {
-                        args[0] = g_find_program_in_path ("xscreensaver-command");
-                        use_gscreensaver = FALSE;
-                }
-                if (!args[0]) {
-                        return;
-                }
-
-                if (use_gscreensaver) {
-                        args[1] = "--lock";
-                } else {
-                        args[1] = "-lock";
-                }
-                args[2] = NULL;
-
-                if (gtk_widget_has_screen (GTK_WIDGET (adata->applet))) {
-                        screen = gtk_widget_get_screen (GTK_WIDGET (adata->applet));
-                } else {
-                        screen = gdk_screen_get_default ();
-                }
-
-                err = NULL;
-                if (!gdk_spawn_on_screen (screen, g_get_home_dir (), args, NULL,
-                                          (G_SPAWN_STDERR_TO_DEV_NULL |
-                                           G_SPAWN_STDOUT_TO_DEV_NULL),
-                                          NULL, NULL, NULL, &err)) {
-                        g_warning (_("Can't lock screen: %s"), err->message);
-                        g_error_free (err);
-                }
-
-                if (use_gscreensaver) {
-                        args[1] = "--throttle";
-                } else {
-                        args[1] = "-throttle";
-                }
-
-                if (!gdk_spawn_on_screen (screen, g_get_home_dir (), args, NULL,
-                                          (G_SPAWN_STDERR_TO_DEV_NULL |
-                                           G_SPAWN_STDOUT_TO_DEV_NULL),
-                                          NULL, NULL, NULL, &err)) {
-                        g_warning (_("Can't temporarily set screensaver to blank screen: %s"),
-                                   err->message);
-                        g_error_free (err);
-                }
-
-                g_free (args[0]);
+        args[0] = g_find_program_in_path ("gnome-screensaver-command");
+        if (args[0] == NULL) {
+                args[0] = g_find_program_in_path ("xscreensaver-command");
+                use_gscreensaver = FALSE;
         }
+
+        if (args[0] == NULL) {
+                return;
+        }
+
+        if (use_gscreensaver) {
+                args[1] = "--lock";
+        } else {
+                args[1] = "-lock";
+        }
+        args[2] = NULL;
+
+        if (gtk_widget_has_screen (GTK_WIDGET (adata->applet))) {
+                screen = gtk_widget_get_screen (GTK_WIDGET (adata->applet));
+        } else {
+                screen = gdk_screen_get_default ();
+        }
+
+        err = NULL;
+        if (!gdk_spawn_on_screen (screen, g_get_home_dir (), args, NULL,
+                                  (G_SPAWN_STDERR_TO_DEV_NULL |
+                                   G_SPAWN_STDOUT_TO_DEV_NULL),
+                                  NULL, NULL, NULL, &err)) {
+                g_warning (_("Can't lock screen: %s"), err->message);
+                g_error_free (err);
+        }
+
+        if (use_gscreensaver) {
+                args[1] = "--throttle";
+        } else {
+                args[1] = "-throttle";
+        }
+
+        if (!gdk_spawn_on_screen (screen, g_get_home_dir (), args, NULL,
+                                  (G_SPAWN_STDERR_TO_DEV_NULL |
+                                   G_SPAWN_STDOUT_TO_DEV_NULL),
+                                  NULL, NULL, NULL, &err)) {
+                g_warning (_("Can't temporarily set screensaver to blank screen: %s"),
+                           err->message);
+                g_error_free (err);
+        }
+
+        g_free (args[0]);
 }
 
 static void
 do_switch (GdmAppletData *adata,
-           GdmUser       *user,
-           gboolean       use_xnest)
+           GdmUser       *user)
 {
         guint num_sessions;
 
         g_debug ("Do user switch");
 
         if (user == NULL) {
-                /* FIXME: xnest?? */
                 gdm_user_manager_goto_login_session (adata->manager);
                 return;
         }
@@ -1166,7 +862,7 @@ user_item_activate_cb (GtkWidget     *menuitem,
         item = GDM_USER_MENU_ITEM (menuitem);
         user = gdm_user_menu_item_get_user (item);
 
-        do_switch (adata, user, FALSE);
+        do_switch (adata, user);
 }
 
 static void
@@ -1174,26 +870,46 @@ user_sessions_changed_cb (GdmUser       *user,
                           GdmAppletData *adata)
 {
         GtkWidget *menuitem;
-        gboolean active_only;
 
         menuitem = g_object_get_qdata (G_OBJECT (user), adata->user_menu_item_quark);
-        if (!menuitem)
+        if (menuitem == NULL) {
                 return;
-
-        active_only = gconf_client_get_bool (adata->client, ACTIVE_ONLY_KEY, NULL);
-        if (active_only) {
-                guint num;
-                num = gdm_user_get_num_sessions (user);
-                if (num > 0) {
-                        gtk_widget_show (menuitem);
-                } else {
-                        gtk_widget_hide (menuitem);
-                }
-        } else {
-                gtk_widget_show (menuitem);
         }
 
+        gtk_widget_show (menuitem);
+
         sort_menu (adata);
+}
+
+static void
+add_user (GdmAppletData  *adata,
+          GdmUser        *user)
+{
+        GtkWidget *menuitem;
+
+        menuitem = gdm_user_menu_item_new (user);
+        g_object_set_qdata (G_OBJECT (user), adata->user_menu_item_quark, menuitem);
+        g_signal_connect (menuitem,
+                          "style-set",
+                          G_CALLBACK (menuitem_style_set_cb),
+                          adata);
+        g_signal_connect (menuitem,
+                          "destroy",
+                          G_CALLBACK (menuitem_destroy_cb),
+                          adata);
+        g_signal_connect (menuitem,
+                          "activate",
+                          G_CALLBACK (user_item_activate_cb),
+                          adata);
+        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), menuitem);
+        adata->items = g_slist_prepend (adata->items, menuitem);
+
+        gtk_widget_show (menuitem);
+
+        g_signal_connect (user,
+                          "sessions-changed",
+                          G_CALLBACK (user_sessions_changed_cb),
+                          adata);
 }
 
 static void
@@ -1201,32 +917,7 @@ manager_user_added_cb (GdmUserManager *manager,
                        GdmUser        *user,
                        GdmAppletData  *adata)
 {
-        GtkWidget *menuitem;
-        gboolean active_only;
-
-        menuitem = gdm_user_menu_item_new (user);
-        g_object_set_qdata (G_OBJECT (user), adata->user_menu_item_quark, menuitem);
-        g_signal_connect (menuitem, "style-set",
-                          G_CALLBACK (menuitem_style_set_cb), adata);
-        g_signal_connect (menuitem, "destroy",
-                          G_CALLBACK (menuitem_destroy_cb), adata);
-        g_signal_connect (menuitem, "activate",
-                          G_CALLBACK (user_item_activate_cb), adata);
-        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), menuitem);
-        adata->items = g_slist_prepend (adata->items, menuitem);
-
-        active_only = gconf_client_get_bool (adata->client, ACTIVE_ONLY_KEY, NULL);
-        if (active_only) {
-                guint num;
-                num = gdm_user_get_num_sessions (user);
-                if (num > 0) {
-                        gtk_widget_show (menuitem);
-                }
-        } else {
-                gtk_widget_show (menuitem);
-        }
-        g_signal_connect (user, "sessions-changed",
-                          G_CALLBACK (user_sessions_changed_cb), adata);
+        add_user (adata, user);
         sort_menu (adata);
 }
 
@@ -1240,136 +931,7 @@ login_screen_activate_cb (GtkMenuItem *item,
         adata = data;
         user = NULL;
 
-        do_switch (adata, user, FALSE);
-}
-
-static void
-login_window_activate_cb (GtkMenuItem *item,
-                          gpointer     data)
-{
-        GdmAppletData *adata;
-        GdmUser       *user;
-
-        adata = data;
-        user = NULL;
-
-        if (!system_can_do_xnest ()) {
-                g_critical ("%s: (%s): FIXME: show an error dialog when Xnest is missing.",
-                            G_STRLOC, G_STRFUNC);
-                gtk_widget_hide (GTK_WIDGET (item));
-        } else {
-                do_switch (adata, user, TRUE);
-        }
-}
-
-static void
-display_key_changed (GdmAppletData *adata,
-                     GConfClient   *client,
-                     GConfValue    *value)
-{
-        const char *str;
-        GtkWidget  *parent;
-        GdmUser    *user;
-
-        str = gconf_value_get_string (value);
-        parent = adata->imglabel->parent;
-        user = gdm_user_manager_get_user_by_uid (adata->manager, getuid ());
-        if (str == NULL) {
-                if (adata->user_notify_id) {
-                        g_signal_handler_disconnect (user, adata->user_notify_id);
-                        adata->user_notify_id = 0;
-                        gtk_label_set_text (GTK_LABEL (adata->imglabel), _("Users"));
-                } else {
-                        gtk_widget_destroy (adata->imglabel);
-                        adata->imglabel = gtk_label_new (_("Users"));
-                        gtk_box_pack_start (GTK_BOX (parent), adata->imglabel,
-                                            TRUE, TRUE, 0);
-                        gtk_widget_show (adata->imglabel);
-                }
-                return;
-        }
-
-        if (strcmp (str, "username") == 0) {
-                if (GTK_IS_IMAGE (adata->imglabel)) {
-                        gtk_widget_destroy (adata->imglabel);
-
-                        adata->imglabel = gtk_label_new (gdm_user_get_real_name (user));
-                        adata->user_notify_id =
-                                g_signal_connect (user, "notify::display-name",
-                                                  G_CALLBACK (user_notify_display_name_cb),
-                                                  adata->imglabel);
-                        gtk_box_pack_start (GTK_BOX (parent), adata->imglabel,
-                                            TRUE, TRUE, 0);
-                        gtk_widget_show (adata->imglabel);
-                } else if (!adata->user_notify_id) {
-                        gtk_label_set_text (GTK_LABEL (adata->imglabel),
-                                            gdm_user_get_real_name (user));
-                        adata->user_notify_id =
-                                g_signal_connect (user, "notify::display-name",
-                                                  G_CALLBACK (user_notify_display_name_cb),
-                                                  adata->imglabel);
-                }
-        } else if (strcmp (str, "icon") == 0) {
-                if (!GTK_IS_IMAGE (adata->imglabel)) {
-                        guint item_border;
-
-                        if (adata->user_notify_id) {
-                                g_signal_handler_disconnect (user, adata->user_notify_id);
-                                adata->user_notify_id = 0;
-                        }
-                        if (adata->imglabel->parent->style)
-                                item_border = (MAX (adata->imglabel->parent->style->xthickness,
-                                                    adata->imglabel->parent->style->ythickness) * 2);
-                        else
-                                item_border = 0;
-
-                        gtk_widget_destroy (adata->imglabel);
-
-                        adata->imglabel =
-                                gtk_image_new_from_icon_name ("stock_people",
-                                                              GTK_ICON_SIZE_MENU);
-                        gtk_box_pack_start (GTK_BOX (parent), adata->imglabel,
-                                            TRUE, TRUE, item_border);
-                        gtk_widget_show (adata->imglabel);
-                }
-        } else {
-                if (adata->user_notify_id) {
-                        g_signal_handler_disconnect (user, adata->user_notify_id);
-                        adata->user_notify_id = 0;
-                        gtk_label_set_text (GTK_LABEL (adata->imglabel), _("Users"));
-                } else {
-                        gtk_widget_destroy (adata->imglabel);
-                        adata->imglabel = gtk_label_new (_("Users"));
-                        gtk_box_pack_start (GTK_BOX (parent), adata->imglabel,
-                                            TRUE, TRUE, 0);
-                        gtk_widget_show (adata->imglabel);
-                }
-        }
-}
-
-static void
-xnest_key_changed (GdmAppletData *adata,
-                   GConfClient   *client,
-                   GConfValue    *value)
-{
-        char *str;
-
-        str = gconf_client_get_string (client, SHOW_SCREEN_KEY, NULL);
-        reset_login_screen_item (adata->login_screen_item,
-                                 gconf_value_get_bool (value), str);
-        g_free (str);
-
-        str = gconf_client_get_string (client, SHOW_WINDOW_KEY, NULL);
-        reset_login_window_item (adata->login_window_item,
-                                 gconf_value_get_bool (value), str);
-        g_free (str);
-
-        if (GTK_WIDGET_VISIBLE (adata->login_screen_item) ||
-            GTK_WIDGET_VISIBLE (adata->login_window_item)) {
-                gtk_widget_show (adata->separator_item);
-        } else {
-                gtk_widget_hide (adata->separator_item);
-        }
+        do_switch (adata, user);
 }
 
 static void
@@ -1383,19 +945,13 @@ client_notify_applet_func (GConfClient   *client,
 
         value = gconf_entry_get_value (entry);
 
-        if (!value)
+        if (value == NULL)
                 return;
 
         key = g_path_get_basename (gconf_entry_get_key (entry));
 
-        if (!key)
+        if (key == NULL)
                 return;
-
-        if (strcmp (key, DISPLAY_KEY) == 0) {
-                display_key_changed (adata, client, value);
-        } else if (strcmp (key, USE_XNEST_KEY) == 0) {
-                xnest_key_changed (adata, client, value);
-        }
 
         g_free (key);
 }
@@ -1407,55 +963,7 @@ client_notify_global_func (GConfClient   *client,
                            GConfEntry    *entry,
                            GdmAppletData *adata)
 {
-        GConfValue *value;
-        const char *key;
-
-        value = gconf_entry_get_value (entry);
-        key = gconf_entry_get_key (entry);
-
-        if (!value || !key)
-                return;
-
-        if (strcmp (key, SHOW_SCREEN_KEY) == 0)
-                reset_login_screen_item (adata->login_screen_item,
-                                         panel_applet_gconf_get_bool (adata->applet,
-                                                                      USE_XNEST_KEY, NULL),
-                                         gconf_value_get_string (value));
-        else if (strcmp (key, SHOW_WINDOW_KEY) == 0)
-                reset_login_window_item (adata->login_window_item,
-                                         panel_applet_gconf_get_bool (adata->applet,
-                                                                      USE_XNEST_KEY, NULL),
-                                         gconf_value_get_string (value));
-        else if (strcmp (key, ACTIVE_ONLY_KEY) == 0) {
-                GSList *items;
-
-                items = adata->items;
-                while (items) {
-                        if (GDM_IS_USER_MENU_ITEM (items->data)) {
-                                if (gconf_value_get_bool (value)) {
-                                        guint num;
-                                        num = gdm_user_get_num_sessions (gdm_user_menu_item_get_user (items->data));
-                                        if (num > 0) {
-                                                gtk_widget_show (items->data);
-                                        } else
-                                                gtk_widget_hide (items->data);
-                                } else
-                                        gtk_widget_show (items->data);
-                        }
-
-                        items = items->next;
-                }
-        }
-
-        if (GTK_WIDGET_VISIBLE (adata->login_screen_item) ||
-            GTK_WIDGET_VISIBLE (adata->login_window_item))
-                gtk_widget_show (adata->separator_item);
-        else
-                gtk_widget_hide (adata->separator_item);
-
-        sort_menu (adata);
 }
-
 
 static void
 client_notify_lockdown_func (GConfClient   *client,
@@ -1482,15 +990,11 @@ client_notify_lockdown_func (GConfClient   *client,
 }
 
 static gboolean
-applet_fill_cb (PanelApplet   *applet,
-                const char    *iid,
-                GdmAppletData *adata)
+fill_applet (PanelApplet *applet)
 {
         static const BonoboUIVerb menu_verbs[] = {
                 BONOBO_UI_VERB ("GdmAboutMe", about_me_cb),
                 BONOBO_UI_VERB ("GdmUsersGroupsAdmin", admin_cb),
-                BONOBO_UI_VERB ("GdmGdmSetup", setup_cb),
-                BONOBO_UI_VERB ("GdmPreferences", (BonoboUIVerbFn)prefs_cb),
                 BONOBO_UI_VERB ("GdmHelp", (BonoboUIVerbFn)help_cb),
                 BONOBO_UI_VERB ("GdmAbout", about_cb),
                 BONOBO_UI_VERB_END
@@ -1500,29 +1004,11 @@ applet_fill_cb (PanelApplet   *applet,
         GtkWidget         *hbox;
         GSList            *users;
         char              *tmp;
-        char              *key;
-        char              *value;
-        gboolean           use_xnest;
-        gboolean           active_only;
         BonoboUIComponent *popup_component;
+        GdmAppletData     *adata;
 
-        if (strcmp (iid, "OAFIID:GNOME_FastUserSwitchApplet") != 0) {
-                return FALSE;
-        }
-
-        /* Global GdmManager */
         if (!first_time) {
-                int   argc = 1;
-                char *argv[2] = { "gdm-user-switch-applet", NULL};
-
                 first_time = TRUE;
-
-                program = gnome_program_init ("gdm-user-switch-applet",
-                                              VERSION,
-                                              LIBGNOME_MODULE,
-                                              argc, argv,
-                                              GNOME_PROGRAM_STANDARD_PROPERTIES,
-                                              NULL);
 
                 /* Do this here so it's only done once. */
                 gtk_rc_parse_string ("style \"gdm-user-switch-menubar-style\"\n"
@@ -1551,7 +1037,7 @@ applet_fill_cb (PanelApplet   *applet,
         adata->user_menu_item_quark = g_quark_from_string (tmp);
         g_free (tmp);
 
-        if (!tooltips) {
+        if (tooltips == NULL) {
                 tooltips = gtk_tooltips_new ();
                 g_object_ref (tooltips);
                 gtk_object_sink (GTK_OBJECT (tooltips));
@@ -1568,9 +1054,6 @@ applet_fill_cb (PanelApplet   *applet,
                                            NULL, menu_verbs, adata);
 
         popup_component = panel_applet_get_popup_component (applet);
-        if (panel_applet_get_locked_down (applet))
-                bonobo_ui_component_set_prop (popup_component, "/commands/GdmPreferences",
-                                              "hidden", "0", NULL);
 
         /* Hide the admin context menu items if locked down or no cmd-line */
         if (gconf_client_get_bool (adata->client,
@@ -1582,8 +1065,6 @@ applet_fill_cb (PanelApplet   *applet,
                                               "hidden", "1", NULL);
                 bonobo_ui_component_set_prop (popup_component,
                                               "/commands/GdmUsersGroupsAdmin",
-                                              "hidden", "1", NULL);
-                bonobo_ui_component_set_prop (popup_component, "/commands/GdmGdmSetup",
                                               "hidden", "1", NULL);
         } else {
 #ifndef USERS_ADMIN
@@ -1598,12 +1079,6 @@ applet_fill_cb (PanelApplet   *applet,
                                               "hidden", "1",
                                               NULL);
 #endif /* !USERS_ADMIN */
-
-#ifndef GDM_SETUP
-                bonobo_ui_component_set_prop (popup_component, "/commands/GdmGdmSetup",
-                                              "hidden", "1",
-                                              NULL);
-#endif /* !GDM_SETUP */
         }
 
         /* Hide the gdmphotosetup item if it can't be found in the path. */
@@ -1617,22 +1092,27 @@ applet_fill_cb (PanelApplet   *applet,
                 g_free (tmp);
         }
 
-        panel_applet_add_preferences (applet,
-                                      "/schemas/apps/gdm-user-switch-applet/per-applet",
-                                      NULL);
-        g_signal_connect (adata->applet, "style-set",
+        g_signal_connect (adata->applet,
+                          "style-set",
                           G_CALLBACK (applet_style_set_cb), adata);
-        g_signal_connect (applet, "change-background",
+        g_signal_connect (applet,
+                          "change-background",
                           G_CALLBACK (applet_change_background_cb), adata);
-        g_signal_connect (applet, "size-allocate",
+        g_signal_connect (applet,
+                          "size-allocate",
                           G_CALLBACK (applet_size_allocate_cb), adata);
-        g_signal_connect (applet, "key-press-event",
+        g_signal_connect (applet,
+                          "key-press-event",
                           G_CALLBACK (applet_key_press_event_cb), adata);
-        g_signal_connect_after (applet, "focus-in-event",
+        g_signal_connect_after (applet,
+                                "focus-in-event",
                                 G_CALLBACK (gtk_widget_queue_draw), NULL);
-        g_signal_connect_after (applet, "focus-out-event",
+        g_signal_connect_after (applet,
+                                "focus-out-event",
                                 G_CALLBACK (gtk_widget_queue_draw), NULL);
-        g_object_set_data_full (G_OBJECT (applet), "gdm-applet-data", adata,
+        g_object_set_data_full (G_OBJECT (applet),
+                                "gdm-applet-data",
+                                adata,
                                 (GDestroyNotify) gdm_applet_data_free);
 
         adata->menubar = gtk_menu_bar_new ();
@@ -1654,35 +1134,18 @@ applet_fill_cb (PanelApplet   *applet,
         gtk_container_add (GTK_CONTAINER (menuitem), hbox);
         gtk_widget_show (hbox);
 
-        value = panel_applet_gconf_get_string (applet, DISPLAY_KEY, NULL);
-        if (value) {
-                if (strcmp (value, "username") == 0) {
-                        GdmUser *user;
+        {
+                GdmUser *user;
 
-                        user = gdm_user_manager_get_user_by_uid (adata->manager, getuid ());
-                        adata->imglabel = gtk_label_new (gdm_user_get_real_name (user));
-                        adata->user_notify_id =
-                                g_signal_connect (user, "notify::display-name",
-                                                  G_CALLBACK (user_notify_display_name_cb),
-                                                  adata->imglabel);
-                        gtk_box_pack_start (GTK_BOX (hbox), adata->imglabel, TRUE, TRUE, 0);
-                        gtk_widget_show (adata->imglabel);
-                } else if (strcmp (value, "icon") == 0) {
-                        adata->imglabel = gtk_image_new_from_icon_name ("stock_people",
-                                                                                        GTK_ICON_SIZE_MENU);
-                        gtk_container_add (GTK_CONTAINER (hbox), adata->imglabel);
-                        gtk_widget_show (adata->imglabel);
-                } else {
-                        adata->imglabel = gtk_label_new (_("Users"));
-                        gtk_box_pack_start (GTK_BOX (hbox), adata->imglabel, TRUE, TRUE, 0);
-                        gtk_widget_show (adata->imglabel);
-                }
-        } else {
-                adata->imglabel = gtk_label_new (_("Users"));
+                user = gdm_user_manager_get_user_by_uid (adata->manager, getuid ());
+                adata->imglabel = gtk_label_new (gdm_user_get_real_name (user));
+                adata->user_notify_id = g_signal_connect (user,
+                                                          "notify::display-name",
+                                                          G_CALLBACK (user_notify_display_name_cb),
+                                                          adata->imglabel);
                 gtk_box_pack_start (GTK_BOX (hbox), adata->imglabel, TRUE, TRUE, 0);
                 gtk_widget_show (adata->imglabel);
         }
-        g_free (value);
 
         adata->menu = gtk_menu_new ();
         gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem), adata->menu);
@@ -1691,8 +1154,6 @@ applet_fill_cb (PanelApplet   *applet,
         g_signal_connect (adata->menu, "show",
                           G_CALLBACK (menu_expose_cb), adata);
         gtk_widget_show (adata->menu);
-
-        active_only = gconf_client_get_bool (adata->client, ACTIVE_ONLY_KEY, NULL);
 
         /* This next part populates the list with all the users we currently know
          * about. For almost all cases, this is the empty list, because we're
@@ -1703,41 +1164,23 @@ applet_fill_cb (PanelApplet   *applet,
          * depending on getting data from the callback like the first one.
          */
         users = gdm_user_manager_list_users (adata->manager);
-        while (users) {
-                menuitem = gdm_user_menu_item_new (users->data);
-                g_object_set_qdata (users->data, adata->user_menu_item_quark, menuitem);
-                g_signal_connect (menuitem, "style-set",
-                                  G_CALLBACK (menuitem_style_set_cb), adata);
-                g_signal_connect (menuitem, "destroy",
-                                  G_CALLBACK (menuitem_destroy_cb), adata);
-                g_signal_connect (menuitem, "activate",
-                                  G_CALLBACK (user_item_activate_cb), adata);
-                gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), menuitem);
-                adata->items = g_slist_prepend (adata->items, menuitem);
-
-                if (active_only) {
-                        guint num;
-                        num = gdm_user_get_num_sessions (users->data);
-                        if (num > 0) {
-                                gtk_widget_show (menuitem);
-                        }
-                } else {
-                        gtk_widget_show (menuitem);
-                }
-                g_signal_connect (users->data, "sessions-changed",
-                                  G_CALLBACK (user_sessions_changed_cb), adata);
+        while (users != NULL) {
+                add_user (adata, users->data);
 
                 users = g_slist_delete_link (users, users);
         }
 
-        g_signal_connect (adata->manager, "user-added",
-                          G_CALLBACK (manager_user_added_cb), adata);
+        g_signal_connect (adata->manager,
+                          "user-added",
+                          G_CALLBACK (manager_user_added_cb),
+                          adata);
 
         adata->separator_item = gtk_separator_menu_item_new ();
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), adata->separator_item);
         adata->items = g_slist_prepend (adata->items, adata->separator_item);
+        gtk_widget_show (adata->separator_item);
 
-        adata->login_screen_item = gtk_image_menu_item_new_with_label (_("Other"));
+        adata->login_screen_item = gtk_image_menu_item_new_with_label (_("Other..."));
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->login_screen_item),
                                        gtk_image_new ());
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
@@ -1749,68 +1192,14 @@ applet_fill_cb (PanelApplet   *applet,
         g_signal_connect (adata->login_screen_item, "activate",
                           G_CALLBACK (login_screen_activate_cb), adata);
         adata->items = g_slist_prepend (adata->items, adata->login_screen_item);
+        gtk_widget_show (adata->login_screen_item);
 
-        adata->login_window_item = gtk_image_menu_item_new_with_label (_("Login Window"));
-        gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->login_window_item),
-                                       gtk_image_new ());
-        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
-                               adata->login_window_item);
-        g_signal_connect (adata->login_window_item, "style-set",
-                          G_CALLBACK (menuitem_style_set_cb), adata);
-        g_signal_connect (adata->login_window_item, "destroy",
-                          G_CALLBACK (menuitem_destroy_cb), adata);
-        g_signal_connect (adata->login_window_item, "activate",
-                          G_CALLBACK (login_window_activate_cb), adata);
-        adata->items = g_slist_prepend (adata->items, adata->login_window_item);
-
-        use_xnest = panel_applet_gconf_get_bool (applet, USE_XNEST_KEY, NULL);
-        value = gconf_client_get_string (adata->client, SHOW_SCREEN_KEY, NULL);
-        reset_login_screen_item (adata->login_screen_item, use_xnest, value);
-        g_free (value);
-
-        value = gconf_client_get_string (adata->client, SHOW_WINDOW_KEY, NULL);
-        reset_login_window_item (adata->login_window_item, use_xnest, value);
-        g_free (value);
-
-        if (GTK_WIDGET_VISIBLE (adata->login_screen_item) ||
-            GTK_WIDGET_VISIBLE (adata->login_window_item))
-                gtk_widget_show (adata->separator_item);
-        else
-                gtk_widget_hide (adata->separator_item);
-
-        key = panel_applet_gconf_get_full_key (applet, DISPLAY_KEY);
-        if (key) {
-                char *path;
-
-                path = g_path_get_dirname (key);
-                g_free (key);
-                adata->client_notify_applet_id =
-                        gconf_client_notify_add (adata->client,
-                                                 path,
-                                                 (GConfClientNotifyFunc)client_notify_applet_func,
-                                                 adata,
-                                                 NULL,
-                                                 NULL);
-                g_free (path);
-        }
-
-        gconf_client_add_dir (adata->client, GLOBAL_DIR,
-                              GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-        adata->client_notify_global_id =
-                gconf_client_notify_add (adata->client,
-                                         GLOBAL_DIR,
-                                         (GConfClientNotifyFunc)client_notify_global_func,
-                                         adata,
-                                         NULL,
-                                         NULL);
-
-        adata->client_notify_lockdown_id =
-                gconf_client_notify_add (adata->client,
-                                         LOCKDOWN_KEY,
-                                         (GConfClientNotifyFunc)client_notify_lockdown_func,
-                                         adata,
-                                         NULL,
-                                         NULL);
+        adata->client_notify_lockdown_id = gconf_client_notify_add (adata->client,
+                                                                    LOCKDOWN_KEY,
+                                                                    (GConfClientNotifyFunc)client_notify_lockdown_func,
+                                                                    adata,
+                                                                    NULL,
+                                                                    NULL);
 
         adata->items = g_slist_sort_with_data (adata->items,
                                                sort_menu_comparedatafunc, adata);
@@ -1821,8 +1210,18 @@ applet_fill_cb (PanelApplet   *applet,
                 gtk_widget_show (GTK_WIDGET (applet));
         }
 
-        g_object_unref (program);
-
         return TRUE;
 }
 
+static gboolean
+applet_factory (PanelApplet   *applet,
+                const char    *iid,
+                gpointer       data)
+{
+        gboolean ret;
+        ret = FALSE;
+        if (strcmp (iid, "OAFIID:GNOME_FastUserSwitchApplet") == 0) {
+                ret = fill_applet (applet);
+        }
+        return ret;
+}

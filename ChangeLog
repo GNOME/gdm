@@ -1,3 +1,21 @@
+2008-02-27  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml:
+	* gui/user-switch-applet/Makefile.am:
+	* gui/user-switch-applet/applet.c: (get_glade_xml),
+	(menubar_button_press_event_cb), (help_cb), (set_menuitem_icon),
+	(applet_style_set_cb), (gdm_applet_data_free), (sort_menu),
+	(menu_style_set_cb), (menuitem_destroy_cb),
+	(menuitem_style_set_cb), (maybe_lock_screen), (do_switch),
+	(user_item_activate_cb), (user_sessions_changed_cb), (add_user),
+	(manager_user_added_cb), (login_screen_activate_cb),
+	(client_notify_applet_func), (client_notify_global_func),
+	(fill_applet), (applet_factory):
+	* gui/user-switch-applet/gdm-user-switch-applet.schemas.in:
+	Remove gconf settings from user switch applet - simplifies
+	code dramatically.  Fix crash when adding multiple applets
+	to panel.
+
 2008-02-27  Ray Strode  <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-option-widget.c:
