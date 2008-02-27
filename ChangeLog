@@ -1,3 +1,14 @@
+2008-02-27  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in:
+	* gui/user-switch-applet/GNOME_GdmUserSwitchApplet.server.in.in:
+	* gui/user-switch-applet/GNOME_GdmUserSwitchApplet.xml:
+	* gui/user-switch-applet/Makefile.am:
+	* gui/user-switch-applet/applet.c: (about_me_cb), (about_cb),
+	(applet_fill_cb):
+	Use the same oafiid as FUSA so we can be a drop in replacement.
+	Note that we now conflict with FUSA.
+
 2008-02-26  William Jon McCann  <jmccann@redhat.com>
 
 	* daemon/main.c: (main):

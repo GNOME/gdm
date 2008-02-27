@@ -45,13 +45,13 @@ glade_DATA = 				\
 # Bonobo UI
 uidir =	$(datadir)/gnome-2.0/ui
 ui_DATA =					\
-	GNOME_GdmUserSwitchApplet.xml		\
+	GNOME_FastUserSwitchApplet.xml		\
 	$(NULL)
 
 # Bonobo .server
 serverdir = $(libdir)/bonobo/servers
 server_in_files =				\
-	GNOME_GdmUserSwitchApplet.server.in	\
+	GNOME_FastUserSwitchApplet.server.in	\
 	$(NULL)
 server_DATA = $(server_in_files:.server.in=.server)
 
@@ -64,7 +64,7 @@ EXTRA_DIST = 			\
 	$(schemas_in_files)	\
 	$(glade_DATA)		\
 	$(ui_DATA)		\
-	GNOME_GdmUserSwitchApplet.server.in.in	\
+	GNOME_FastUserSwitchApplet.server.in.in	\
 	$(NULL)
 
 DISTCLEANFILES =                        \

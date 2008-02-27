@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2004-2005 James M. Cape <jcape@ignore-your.tv>.
- * Copyright (C) 2008      Red Hat Inc.
+ * Copyright (C) 2008      Red Hat, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,7 +94,7 @@ static gboolean applet_fill_cb (PanelApplet   *applet,
                                 const char    *iid,
                                 GdmAppletData *adata);
 
-PANEL_APPLET_BONOBO_FACTORY ("OAFIID:GNOME_GdmUserSwitchApplet_Factory",
+PANEL_APPLET_BONOBO_FACTORY ("OAFIID:GNOME_FastUserSwitchApplet_Factory",
                              PANEL_TYPE_APPLET,
                              "gdm-user-switch-applet", "0",
                              (PanelAppletFactoryCallback)applet_fill_cb,
@@ -109,7 +109,7 @@ about_me_cb (BonoboUIComponent *ui_container,
 
         err = NULL;
         if (! g_spawn_command_line_async ("gnome-about-me", &err)) {
-                g_critical ("Could not run `gnome-about-me' to change photo: %s",
+                g_critical ("Could not run `gnome-about-me': %s",
                             err->message);
                 g_error_free (err);
                 bonobo_ui_component_set_prop (ui_container,
@@ -533,7 +533,7 @@ about_cb (BonoboUIComponent *ui_container,
                                "version", VERSION,
                                "copyright", "Copyright \xc2\xa9 2004-2005 James M. Cape.\n"
                                "Copyright \xc2\xa9 2006 Thomas Thurman.\n"
-                               "Copyright \xc2\xa9 2008 Red Hat Inc.",
+                               "Copyright \xc2\xa9 2008 Red Hat, Inc.",
                                "comments", _("A menu to quickly switch between users."),
                                "authors", authors,
                                "license", license_i18n,
@@ -1506,8 +1506,9 @@ applet_fill_cb (PanelApplet   *applet,
         gboolean           active_only;
         BonoboUIComponent *popup_component;
 
-        if (strcmp (iid, "OAFIID:GNOME_GdmUserSwitchApplet") != 0)
+        if (strcmp (iid, "OAFIID:GNOME_FastUserSwitchApplet") != 0) {
                 return FALSE;
+        }
 
         /* Global GdmManager */
         if (!first_time) {
@@ -1563,7 +1564,7 @@ applet_fill_cb (PanelApplet   *applet,
         gtk_widget_set_name (GTK_WIDGET (applet), "gdm-user-switch-applet");
         panel_applet_set_flags (applet, PANEL_APPLET_EXPAND_MINOR);
         panel_applet_setup_menu_from_file (applet, NULL,
-                                           DATADIR "/gnome-2.0/ui/GNOME_GdmUserSwitchApplet.xml",
+                                           DATADIR "/gnome-2.0/ui/GNOME_FastUserSwitchApplet.xml",
                                            NULL, menu_verbs, adata);
 
         popup_component = panel_applet_get_popup_component (applet);
