@@ -909,22 +909,19 @@ get_session_command_for_file (const char *file,
                 goto out;
         }
 
-        error = NULL;
         exec = g_key_file_get_string (key_file,
                                       G_KEY_FILE_DESKTOP_GROUP,
                                       G_KEY_FILE_DESKTOP_KEY_TRY_EXEC,
-                                      &error);
-        if (exec == NULL) {
-                g_debug ("GdmSessionDirect: %s key not found", G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
-                goto out;
-        }
+                                      NULL);
+        if (exec != NULL) {
+                res = is_prog_in_path (exec);
+                g_free (exec);
 
-        res = is_prog_in_path (exec);
-        g_free (exec);
-
-        if (! res) {
-                g_debug ("GdmSessionDirect: Command not found: %s", G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
-                goto out;
+                if (! res) {
+                        g_debug ("GdmSessionDirect: Command not found: %s",
+                                 G_KEY_FILE_DESKTOP_KEY_TRY_EXEC);
+                        goto out;
+                }
         }
 
         error = NULL;
