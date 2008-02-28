@@ -2,8 +2,30 @@
   <schemalist>
 
     <schema>
-      <key>/schemas/apps/gdm/simple-greeter/logo-icon-name</key>
-      <applyto>/apps/gdm/simple-greeter/logo-icon-name</applyto>
+      <key>/schemas/apps/gdm/simple-greeter/banner_message_enable</key>
+      <applyto>/apps/gdm/simple-greeter/banner_message_enable</applyto>
+      <owner>gdm-simple-greeter</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Enable showing the banner message</short>
+        <long>Set to true to show the banner message text.</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/gdm/simple-greeter/banner_message_text</key>
+      <applyto>/apps/gdm/simple-greeter/banner_message_text</applyto>
+      <owner>gdm-simple-greeter</owner>
+      <type>string</type>
+      <default></default>
+      <locale name="C">
+        <short>Banner message text</short>
+        <long>Text banner message to show on the login window.</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/gdm/simple-greeter/logo_icon_name</key>
+      <applyto>/apps/gdm/simple-greeter/logo_icon_name</applyto>
       <owner>gdm-simple-greeter</owner>
       <type>string</type>
       <default>computer</default>
@@ -13,8 +35,8 @@
       </locale>
     </schema>
     <schema>
-      <key>/schemas/apps/gdm/simple-greeter/disable-restart-buttons</key>
-      <applyto>/apps/gdm/simple-greeter/disable-restart-buttons</applyto>
+      <key>/schemas/apps/gdm/simple-greeter/disable_restart_buttons</key>
+      <applyto>/apps/gdm/simple-greeter/disable_restart_buttons</applyto>
       <owner>gdm-simple-greeter</owner>
       <type>bool</type>
       <default>FALSE</default>
@@ -24,8 +46,8 @@
       </locale>
     </schema>
     <schema>
-      <key>/schemas/apps/gdm/simple-greeter/disable-accessibility-button</key>
-      <applyto>/apps/gdm/simple-greeter/disable-accessibility-button</applyto>
+      <key>/schemas/apps/gdm/simple-greeter/disable_accessibility_button</key>
+      <applyto>/apps/gdm/simple-greeter/disable_accessibility_button</applyto>
       <owner>gdm-simple-greeter</owner>
       <type>bool</type>
       <default>FALSE</default>
