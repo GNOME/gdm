@@ -178,16 +178,16 @@ capslock_update (GdmGreeterLoginWindow *login_window,
 static gboolean
 is_capslock_on (void)
 {
-        unsigned int states;
+        XkbStateRec states;
         Display     *dsp;
 
         dsp = GDK_DISPLAY ();
 
-        if (XkbGetIndicatorState (dsp, XkbUseCoreKbd, &states) != Success) {
-                return FALSE;
+        if (XkbGetState (dsp, XkbUseCoreKbd, &states) != Success) {
+              return FALSE;
         }
 
-        return (states & ShiftMask) != 0;
+        return (states.locked_mods & LockMask) != 0;
 }
 
 static void
