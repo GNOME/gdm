@@ -23,6 +23,8 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include <gtk/gtk.h>
 
 #include "config.h"
@@ -33,6 +35,7 @@
 #include "gdmconfig.h"
 
 #include "gdm-common.h"
+#include "gdm-log.h"
 
 #include "server.h"
 
@@ -385,7 +388,7 @@ _gdm_config_get_string (const gchar *key,
 			else
 				*changed = FALSE;
 		}
-		g_hash_table_replace (string_hash, key, temp);
+		g_hash_table_replace (string_hash, (void *)key, temp);
 	}
 	return temp;
 }
@@ -674,10 +677,28 @@ gdm_save_customlist_data (const gchar *file,
 {
 	GKeyFile *cfg;
 
+	gdm_debug ("Saving custom configuration data to file=%s, key=%s",
+		file, key);
 	cfg = gdm_common_config_load (file, NULL);
-	gdm_common_config_set_string (cfg, key, ve_sure_string (id));
-	gdm_common_config_save (cfg, file, NULL);
+	if (cfg == NULL) {
+		gint fd = -1;
+                gdm_debug ("creating file: %s", file);
+		VE_IGNORE_EINTR (fd = g_open (file,
+			O_CREAT | O_TRUNC | O_RDWR, 0644));
 
+		if (fd < 0)
+			return;
+
+		write (fd, "\n", 2);
+		close (fd);
+		cfg = gdm_common_config_load (file, NULL);
+		if (cfg == NULL) {
+			return;
+		}
+	}
+
+	g_key_file_set_string (cfg, "GreeterInfo", key, ve_sure_string (id));
+	gdm_common_config_save (cfg, file, NULL);
 	g_key_file_free (cfg);
 }
 
