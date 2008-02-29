@@ -1325,8 +1325,19 @@ static gboolean
 gdm_greeter_login_window_key_press_event (GtkWidget   *widget,
                                           GdkEventKey *event)
 {
+        GdmGreeterLoginWindow *login_window;
+        gboolean               capslock_on;
+
+        login_window = GDM_GREETER_LOGIN_WINDOW (widget);
+
         if (event->keyval == GDK_Escape) {
                 reset_dialog (GDM_GREETER_LOGIN_WINDOW (widget));
+        }
+
+        capslock_on = is_capslock_on ();
+
+        if (capslock_on != login_window->priv->caps_lock_on) {
+                capslock_update (login_window, capslock_on);
         }
 
         return GTK_WIDGET_CLASS (gdm_greeter_login_window_parent_class)->key_press_event (widget, event);
@@ -1581,22 +1592,6 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
         g_type_class_add_private (klass, sizeof (GdmGreeterLoginWindowPrivate));
 }
 
-static gint
-window_key_press (GtkWidget             *widget,
-                  GdkEventKey           *event,
-                  GdmGreeterLoginWindow *login_window)
-{
-        gboolean capslock_on;
-
-        capslock_on = is_capslock_on ();
-
-        if (capslock_on != login_window->priv->caps_lock_on) {
-                capslock_update (login_window, capslock_on);
-        }
-
-        return TRUE;
-}
-
 static void
 on_gconf_key_changed (GConfClient           *client,
                       guint                  cnxn_id,
@@ -1659,11 +1654,6 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
                                                                   login_window,
                                                                   NULL,
                                                                   NULL);
-
-        g_signal_connect (login_window, "key_press_event",
-                          G_CALLBACK (window_key_press),
-                          login_window);
-
 }
 
 static void

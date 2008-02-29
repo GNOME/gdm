@@ -1,3 +1,13 @@
+2008-02-29  Ray Strode  <rstrode@redhat.com>
+
+	Don't eat all key presses in caps lock handler
+
+	* gui/simple-greeter/gdm-greeter-login-window.c
+	(gdm_greeter_login_window_key_press_event):
+	check caps lock here
+	(window_key_press), (gdm_greeter_login_window_init):
+	drop separate function that checks caps lock.
+
 2008-02-28  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/gdm-greeter-login-window.c:
