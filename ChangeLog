@@ -1,6 +1,16 @@
 2008-02-28  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/gdm-greeter-login-window.c:
+	* gui/simple-greeter/gdm-greeter-session.c:
+	(send_dbus_string_method), (activate_settings_daemon),
+	(toggle_all_levels):
+	Use the new g-s-d method to dbus activate the service.
+	Block while the plugins load so we don't cause problems
+	and ugliness when widgets start to draw.
+
+2008-02-28  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/simple-greeter/gdm-greeter-login-window.c:
 	(get_show_restart_buttons), (load_theme), (update_banner_message),
 	(gdm_greeter_login_window_constructor), (on_gconf_key_changed),
 	(gdm_greeter_login_window_init),

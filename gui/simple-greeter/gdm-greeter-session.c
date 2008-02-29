@@ -25,6 +25,9 @@
 #include <unistd.h>
 #include <string.h>
 
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
@@ -39,6 +42,10 @@
 #include "gdm-session-client.h"
 
 #define GDM_GREETER_SESSION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_SESSION, GdmGreeterSessionPrivate))
+
+#define GSD_DBUS_NAME      "org.gnome.SettingsDaemon"
+#define GSD_DBUS_PATH      "/org/gnome/SettingsDaemon"
+#define GSD_DBUS_INTERFACE "org.gnome.SettingsDaemon"
 
 #define KEY_GDM_A11Y_DIR            "/apps/gdm/simple-greeter/accessibility"
 #define KEY_SCREEN_KEYBOARD_ENABLED  KEY_GDM_A11Y_DIR "/screen_keyboard_enabled"
@@ -511,6 +518,90 @@ setup_at_tools (GdmGreeterSession *session)
 }
 
 static gboolean
+send_dbus_string_method (DBusConnection *connection,
+                         const char     *method,
+                         const char     *payload)
+{
+        DBusError       error;
+        DBusMessage    *message;
+        DBusMessage    *reply;
+        DBusMessageIter iter;
+        const char     *str;
+
+        if (payload != NULL) {
+                str = payload;
+        } else {
+                str = "";
+        }
+
+        g_debug ("GdmGreeterSession: Calling %s", method);
+        message = dbus_message_new_method_call (GSD_DBUS_NAME,
+                                                GSD_DBUS_PATH,
+                                                GSD_DBUS_INTERFACE,
+                                                method);
+        if (message == NULL) {
+                g_warning ("Couldn't allocate the D-Bus message");
+                return FALSE;
+        }
+
+        dbus_message_iter_init_append (message, &iter);
+        dbus_message_iter_append_basic (&iter,
+                                        DBUS_TYPE_STRING,
+                                        &str);
+
+        dbus_error_init (&error);
+        reply = dbus_connection_send_with_reply_and_block (connection,
+                                                           message,
+                                                           -1,
+                                                           &error);
+
+        dbus_message_unref (message);
+
+        if (dbus_error_is_set (&error)) {
+                g_warning ("%s %s raised: %s\n",
+                           method,
+                           error.name,
+                           error.message);
+                return FALSE;
+        }
+        dbus_message_unref (reply);
+        dbus_connection_flush (connection);
+
+        return TRUE;
+}
+
+static gboolean
+activate_settings_daemon (GdmGreeterSession *session)
+{
+        gboolean         ret;
+        gboolean         res;
+        DBusError        local_error;
+        DBusConnection  *connection;
+
+        g_debug ("GdmGreeterLoginWindow: activating settings daemon");
+
+        dbus_error_init (&local_error);
+        connection = dbus_bus_get (DBUS_BUS_SESSION, &local_error);
+        if (connection == NULL) {
+                g_debug ("Failed to connect to the D-Bus daemon: %s", local_error.message);
+                dbus_error_free (&local_error);
+                return FALSE;
+        }
+
+        res = send_dbus_string_method (connection,
+                                       "StartWithSettingsPrefix",
+                                       "/apps/gdm/simple-greeter/settings-manager-plugins");
+        if (! res) {
+                g_warning ("Couldn't start settings daemon");
+                goto out;
+        }
+        ret = TRUE;
+        g_debug ("GdmGreeterLoginWindow: settings daemon started");
+ out:
+        return ret;
+}
+
+static gboolean
 start_settings_daemon (GdmGreeterSession *session)
 {
         GError  *error;
@@ -540,7 +631,7 @@ toggle_all_levels (GdmSessionManager *manager,
                    GdmGreeterSession *session)
 {
         if (enabled) {
-                start_settings_daemon (session);
+                activate_settings_daemon (session);
                 start_window_manager (session);
         } else {
         }
