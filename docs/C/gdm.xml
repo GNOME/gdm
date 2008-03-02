@@ -4008,17 +4008,6 @@ gdm:.my.domain
           </varlistentry>
 
           <varlistentry>
-            <term>UseCirclesInEntry</term>
-            <listitem>
-              <synopsis>UseCirclesInEntry=false</synopsis>
-              <para>
-                Use circles instead of asterisks in the password entry.
-                This may not work with all fonts however.
-              </para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
             <term>UseInvisibleInEntry</term>
             <listitem>
               <synopsis>UseInvisibleInEntry=false</synopsis>
@@ -7108,13 +7097,13 @@ homogeneous=&quot;bool&quot;&gt;
         <para>
           For example suppose we are on display :0,
           <filename>ServAuthDir</filename> is
-          <filename>&lt;var&gt;/lib/gdm</filename> and we have the following in the
-          theme:
+          <filename>&lt;var&gt;/lib/gdm</filename> and we have the following in
+          the theme:
         </para>
 
 <screen>
 &lt;item type=&quot;list&quot; id=&quot;custom-config&quot;&gt;
-&lt;pos anchor=&quot;nw&quot; x=&quot;1&quot; y=&quot;1&quot; height=&quot;200&quot; width=&quot;100&quot;&gt;
+&lt;pos anchor=&quot;nw&quot; x=&quot;1&quot; y=&quot;1&quot; height=&quot;200&quot; width=&quot;100&quot;/&gt;
 &lt;listitem id=&quot;foo&quot;&gt;
 &lt;text&gt;Foo&lt;/text&gt;
 &lt;/listitem&gt;
@@ -7125,8 +7114,21 @@ homogeneous=&quot;bool&quot;&gt;
 </screen>
 
         <para>
-          Then if the user chooses 'Foo' then 
-          <filename>&lt;var&gt;/lib/gdm/:0.GreeterInfo</filename> will contain:
+          Using GDM 2.20, the file is created in INI format.  The group value
+          is &quot;GreeterInfo&quot;, and the &quot;custom-config&quot; key
+          will specify the id of the chosen listitem.  For example, if the user
+          chooses &quot;Foo&quot; (which has an id value of &quot;foo&quot;,
+          then <filename>&lt;var&gt;/lib/gdm/:0.GreeterInfo</filename> will
+          contain:
+<screen>
+[GreeterInfo]
+custom-config=foo
+</screen>
+        </para>
+        <para>
+          Using GDM 2.18 and earlier, the file is not saved in INI format, so
+          the &quot;GreeterInfo&quot; group will not be in the file.  In other
+          words, the file will contain only the following:
 <screen>
 custom-config=foo
 </screen>
