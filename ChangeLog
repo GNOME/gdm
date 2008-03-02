@@ -1,13 +1,22 @@
 2008-03-01 Brian Cameron <brian.cameron@sun.com>
 
+	I got approval from the GNOME release team for these 3 changes.
+
 	* gui/gdmlogin.c, gui/gdmsetup.glade,
 	  gui/greeter/greeter_canvas_item.c, gui/gdmsetup.c,
-	  config/gdm.conf.in: Honor default password character rather
-	  than hardcoding to '*'.
+	  config/gdm.conf.in: Honor default password character rather than
+	  hardcoding to '*'.  Fixes bug #477881.  Note this same fix was
+	  committed and reverted on 2007-11-14 because I did not obtain string
+	  freeze breakage approval at that time.
 	* docs/C/gdm.xml: Modify docs relating to above change, and 
 	  modify the Custom Widgetry section to explain the recent fixes
 	  (in last commit).
-
+	* gui/greeter/greeter_canvas_item.c:  Note the change on 2007-11-14
+	  also fixed bug #389734.  I intended to back this change out, but I
+	  obviously forgot to revert it with the other changes.  At any rate
+	  there is now approval to break string freeze for this string, so
+	  leaving this fix in.
+ 
 2008-02-28 Brian Cameron <brian.cameron@sun.com>
 
 	* gui/gdmcommon.c:  Fix code so that saving custom widgetry values
