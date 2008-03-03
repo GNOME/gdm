@@ -545,42 +545,53 @@ gdm_user_get_login_frequency (GdmUser *user)
         return user->login_frequency;
 }
 
-gint
+int
 gdm_user_collate (GdmUser *user1,
                   GdmUser *user2)
 {
-        const gchar *str1, *str2;
+        const char *str1;
+        const char *str2;
+        gulong      num1;
+        gulong      num2;
 
         g_return_val_if_fail (user1 == NULL || GDM_IS_USER (user1), 0);
         g_return_val_if_fail (user2 == NULL || GDM_IS_USER (user2), 0);
 
-        if (!user1 && user2)
-                return -1;
-
-        if (user1 && !user2)
-                return 1;
-
-        if (!user1 && !user2)
-                return 0;
-
-        if (user1->real_name)
+        if (user1->real_name != NULL) {
                 str1 = user1->real_name;
-        else
+        } else {
                 str1 = user1->user_name;
+        }
 
-        if (user2->real_name)
+        if (user2->real_name != NULL) {
                 str2 = user2->real_name;
-        else
+        } else {
                 str2 = user2->user_name;
+        }
 
-        if (!str1 && str2)
+        num1 = user1->login_frequency;
+        num2 = user2->login_frequency;
+        g_debug ("Login freq 1=%u 2=%u", (guint)num1, (guint)num2);
+        if (num1 > num2) {
                 return -1;
+        }
 
-        if (str1 && !str2)
+        if (num1 < num2) {
                 return 1;
+        }
 
-        if (!str1 && !str2)
+        /* if login frequency is equal try names */
+        if (str1 == NULL && str2 != NULL) {
+                return -1;
+        }
+
+        if (str1 != NULL && str2 == NULL) {
+                return 1;
+        }
+
+        if (str1 == NULL && str2 == NULL) {
                 return 0;
+        }
 
         return g_utf8_collate (str1, str2);
 }

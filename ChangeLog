@@ -1,5 +1,13 @@
 2008-03-03  William Jon McCann  <jmccann@redhat.com>
 
+	* gui/simple-greeter/gdm-user.c: (gdm_user_collate):
+	* gui/user-switch-applet/applet.c: (sort_menu_comparedatafunc),
+	(sort_menu), (menu_style_set_cb), (fill_applet):
+	Order the users in the applet the same way we do for the greeter:
+	in order of login frequency.
+
+2008-03-03  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/user-switch-applet/gdm-user-menu-item.c: (reset_icon),
 	(reset_sensitivity), (on_user_notify), (on_user_icon_changed),
 	(on_user_sessions_changed), (_gdm_user_menu_item_set_user):

@@ -575,28 +575,35 @@ sort_menu_comparedatafunc (gconstpointer a,
         a_is_user = GDM_IS_USER_MENU_ITEM (a);
         b_is_user = GDM_IS_USER_MENU_ITEM (b);
 
-        if (a_is_user && !b_is_user)
+        if (a_is_user && !b_is_user) {
                 return -1;
+        }
 
-        if (b_is_user && !a_is_user)
+        if (b_is_user && !a_is_user) {
                 return 1;
+        }
 
-        if (a_is_user && b_is_user)
+        if (a_is_user && b_is_user) {
                 return gdm_user_collate (gdm_user_menu_item_get_user ((GdmUserMenuItem *) a),
                                          gdm_user_menu_item_get_user ((GdmUserMenuItem *) b));
+        }
 
         adata = data;
-        if (a == adata->separator_item)
+        if (a == adata->separator_item) {
                 return -1;
+        }
 
-        if (b == adata->separator_item)
+        if (b == adata->separator_item) {
                 return 1;
+        }
 
-        if (a == adata->login_screen_item)
+        if (a == adata->login_screen_item) {
                 return -1;
+        }
 
-        if (b == adata->login_screen_item)
+        if (b == adata->login_screen_item) {
                 return 1;
+        }
 
         return 0;
 }
@@ -605,15 +612,21 @@ static void
 sort_menu (GdmAppletData *adata)
 {
         GSList *items;
-        guint n_items, n_rows, n_cols, row, column, count;
-        gint screen_height;
+        guint   n_items;
+        guint   n_rows;
+        guint   n_cols;
+        guint   row;
+        guint   column;
+        guint   count;
+        int     screen_height;
 
         if (!gtk_widget_has_screen (adata->menu)) {
                 return;
         }
 
         adata->items = g_slist_sort_with_data (adata->items,
-                                               sort_menu_comparedatafunc, adata);
+                                               sort_menu_comparedatafunc,
+                                               adata);
 
         screen_height = gdk_screen_get_height (gtk_widget_get_screen (adata->menu));
 
@@ -680,10 +693,11 @@ menu_style_set_cb (GtkWidget *menu,
         }
 
         if (!gtk_icon_size_lookup_for_settings (settings, adata->icon_size,
-                                                &width, &height))
+                                                &width, &height)) {
                 adata->pixel_size = -1;
-        else
+        } else {
                 adata->pixel_size = MAX (width, height);
+        }
 
         sort_menu (adata);
 }
@@ -1202,7 +1216,8 @@ fill_applet (PanelApplet *applet)
                                                                     NULL);
 
         adata->items = g_slist_sort_with_data (adata->items,
-                                               sort_menu_comparedatafunc, adata);
+                                               sort_menu_comparedatafunc,
+                                               adata);
 
         if (gconf_client_get_bool (adata->client, LOCKDOWN_KEY, NULL)) {
                 gtk_widget_hide (GTK_WIDGET (applet));
