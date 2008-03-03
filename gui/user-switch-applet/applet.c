@@ -131,59 +131,6 @@ get_glade_xml (const char *root)
         return xml;
 }
 
-static void
-make_label_bold (GtkLabel *label)
-{
-        PangoAttrList  *list;
-        PangoAttribute *attr;
-        gboolean        existing_list;
-
-        list = gtk_label_get_attributes (label);
-        existing_list = (list != NULL);
-        if (!existing_list) {
-                list = pango_attr_list_new ();
-        } else {
-                pango_attr_list_ref (list);
-        }
-
-        attr = pango_attr_weight_new (PANGO_WEIGHT_BOLD);
-        attr->start_index = 0;
-        attr->end_index = (guint) -1;
-        pango_attr_list_insert (list, attr);
-
-        gtk_label_set_attributes (label, list);
-        pango_attr_list_unref (list);
-}
-
-static void
-make_label_small_italic (GtkLabel *label)
-{
-        PangoAttrList  *list;
-        PangoAttribute *attr;
-        gboolean        existing_list;
-
-        list = gtk_label_get_attributes (label);
-        existing_list = (list != NULL);
-        if (!existing_list) {
-                list = pango_attr_list_new ();
-        } else {
-                pango_attr_list_ref (list);
-        }
-
-        attr = pango_attr_style_new (PANGO_STYLE_ITALIC);
-        attr->start_index = 0;
-        attr->end_index = (guint) -1;
-        pango_attr_list_insert (list, attr);
-
-        attr = pango_attr_scale_new (PANGO_SCALE_SMALL);
-        attr->start_index = 0;
-        attr->end_index = (guint) -1;
-        pango_attr_list_insert (list, attr);
-
-        gtk_label_set_attributes (label, list);
-        pango_attr_list_unref (list);
-}
-
 /*
  * gnome-panel/applets/wncklet/window-menu.c:window_filter_button_press()
  *
@@ -792,6 +739,9 @@ maybe_lock_screen (GdmAppletData *adata)
         GError    *err;
         GdkScreen *screen;
         gboolean   use_gscreensaver = TRUE;
+        gboolean   res;
+
+        g_debug ("Attempting to lock screen");
 
         args[0] = g_find_program_in_path ("gnome-screensaver-command");
         if (args[0] == NULL) {
@@ -817,10 +767,16 @@ maybe_lock_screen (GdmAppletData *adata)
         }
 
         err = NULL;
-        if (!gdk_spawn_on_screen (screen, g_get_home_dir (), args, NULL,
-                                  (G_SPAWN_STDERR_TO_DEV_NULL |
-                                   G_SPAWN_STDOUT_TO_DEV_NULL),
-                                  NULL, NULL, NULL, &err)) {
+        res = gdk_spawn_on_screen (screen,
+                                   g_get_home_dir (),
+                                   args,
+                                   NULL,
+                                   0,
+                                   NULL,
+                                   NULL,
+                                   NULL,
+                                   &err);
+        if (! res) {
                 g_warning (_("Can't lock screen: %s"), err->message);
                 g_error_free (err);
         }
@@ -831,10 +787,18 @@ maybe_lock_screen (GdmAppletData *adata)
                 args[1] = "-throttle";
         }
 
-        if (!gdk_spawn_on_screen (screen, g_get_home_dir (), args, NULL,
-                                  (G_SPAWN_STDERR_TO_DEV_NULL |
-                                   G_SPAWN_STDOUT_TO_DEV_NULL),
-                                  NULL, NULL, NULL, &err)) {
+        err = NULL;
+        res = gdk_spawn_on_screen (screen,
+                                   g_get_home_dir (),
+                                   args,
+                                   NULL,
+                                   (G_SPAWN_STDERR_TO_DEV_NULL
+                                   | G_SPAWN_STDOUT_TO_DEV_NULL),
+                                   NULL,
+                                   NULL,
+                                   NULL,
+                                   &err);
+        if (! res) {
                 g_warning (_("Can't temporarily set screensaver to blank screen: %s"),
                            err->message);
                 g_error_free (err);
@@ -853,7 +817,7 @@ do_switch (GdmAppletData *adata,
 
         if (user == NULL) {
                 gdm_user_manager_goto_login_session (adata->manager);
-                return;
+                goto out;
         }
 
         num_sessions = gdm_user_get_num_sessions (user);
@@ -862,7 +826,7 @@ do_switch (GdmAppletData *adata,
         } else {
                 gdm_user_manager_goto_login_session (adata->manager);
         }
-
+ out:
         maybe_lock_screen (adata);
 }
 
@@ -946,37 +910,6 @@ login_screen_activate_cb (GtkMenuItem *item,
         user = NULL;
 
         do_switch (adata, user);
-}
-
-static void
-client_notify_applet_func (GConfClient   *client,
-                           guint          cnxn_id,
-                           GConfEntry    *entry,
-                           GdmAppletData *adata)
-{
-        GConfValue *value;
-        char       *key;
-
-        value = gconf_entry_get_value (entry);
-
-        if (value == NULL)
-                return;
-
-        key = g_path_get_basename (gconf_entry_get_key (entry));
-
-        if (key == NULL)
-                return;
-
-        g_free (key);
-}
-
-
-static void
-client_notify_global_func (GConfClient   *client,
-                           guint          cnxn_id,
-                           GConfEntry    *entry,
-                           GdmAppletData *adata)
-{
 }
 
 static void
