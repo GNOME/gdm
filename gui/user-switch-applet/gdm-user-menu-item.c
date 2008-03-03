@@ -84,8 +84,9 @@ reset_icon (GdmUserMenuItem *item)
 {
         GdkPixbuf *pixbuf;
 
-        if (!item->user || !gtk_widget_has_screen (GTK_WIDGET (item)))
+        if (item->user == NULL || !gtk_widget_has_screen (GTK_WIDGET (item))) {
                 return;
+        }
 
         g_assert (item->icon_size != 0);
 
@@ -97,33 +98,49 @@ reset_icon (GdmUserMenuItem *item)
 }
 
 static void
-user_notify_cb (GObject    *object,
-                GParamSpec *pspec,
-                gpointer    data)
+reset_sensitivity (GdmUserMenuItem *item)
 {
-        if (!pspec || !pspec->name)
+        if (item->user == NULL) {
                 return;
+        }
 
-        if (strcmp (pspec->name, "user-name") == 0 ||
-            strcmp (pspec->name, "display-name") == 0)
-                reset_label (data);
+        if (gdm_user_get_uid (item->user) == getuid ()) {
+                gtk_widget_set_sensitive (item, (gdm_user_get_num_sessions (item->user) > 1));
+        } else {
+                gtk_widget_set_sensitive (item, TRUE);
+        }
+}
+
+static void
+on_user_notify (GObject         *object,
+                GParamSpec      *pspec,
+                GdmUserMenuItem *item)
+{
+        if (!pspec || !pspec->name) {
+                return;
+        }
+
+        if (strcmp (pspec->name, "user-name") == 0
+            || strcmp (pspec->name, "display-name") == 0) {
+                reset_label (item);
+        }
 }
 
 
 static void
-user_icon_changed_cb (GdmUser *user,
-                      gpointer  data)
+on_user_icon_changed (GdmUser         *user,
+                      GdmUserMenuItem *item)
 {
-        if (gtk_widget_has_screen (data))
-                reset_icon (data);
+        if (gtk_widget_has_screen (item)) {
+                reset_icon (item);
+        }
 }
 
 static void
-user_sessions_changed_cb (GdmUser *user,
-                          gpointer  data)
+on_user_sessions_changed (GdmUser         *user,
+                          GdmUserMenuItem *item)
 {
-        if (gdm_user_get_uid (user) == getuid ())
-                gtk_widget_set_sensitive (data, (gdm_user_get_num_sessions (user) > 1));
+        reset_sensitivity (item);
 }
 
 static void
@@ -132,17 +149,24 @@ _gdm_user_menu_item_set_user (GdmUserMenuItem *item,
 {
         item->user = user;
         g_object_weak_ref (G_OBJECT (item->user), user_weak_notify, item);
-        item->user_notify_id = g_signal_connect (item->user, "notify",
-                                                 G_CALLBACK (user_notify_cb), item);
-        item->user_icon_changed_id = g_signal_connect (item->user, "icon-changed",
-                                                       G_CALLBACK (user_icon_changed_cb), item);
-        item->user_sessions_changed_id = g_signal_connect (item->user, "sessions-changed",
-                                                           G_CALLBACK (user_sessions_changed_cb), item);
+        item->user_notify_id = g_signal_connect (item->user,
+                                                 "notify",
+                                                 G_CALLBACK (on_user_notify),
+                                                 item);
+        item->user_icon_changed_id = g_signal_connect (item->user,
+                                                       "icon-changed",
+                                                       G_CALLBACK (on_user_icon_changed),
+                                                       item);
+        item->user_sessions_changed_id = g_signal_connect (item->user,
+                                                           "sessions-changed",
+                                                           G_CALLBACK (on_user_sessions_changed),
+                                                           item);
 
         if (gtk_widget_get_style (GTK_WIDGET (item))) {
                 reset_icon (item);
                 reset_label (item);
         }
+        reset_sensitivity (item);
 }
 
 static void
