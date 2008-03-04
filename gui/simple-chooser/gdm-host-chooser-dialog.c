@@ -139,9 +139,10 @@ gdm_host_chooser_dialog_constructor (GType                  type,
         gtk_dialog_add_buttons (GTK_DIALOG (dialog),
                                 GTK_STOCK_REFRESH, GTK_RESPONSE_APPLY,
                                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                GTK_STOCK_OK, GTK_RESPONSE_OK,
+                                GTK_STOCK_CONNECT, GTK_RESPONSE_OK,
                                 NULL);
 
+        gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
         gtk_container_set_border_width (GTK_CONTAINER (dialog), 12);
         gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
         gtk_window_set_title (GTK_WINDOW (dialog), _("Select System"));

@@ -334,7 +334,7 @@ gdm_remote_login_window_init (GdmRemoteLoginWindow *login_window)
 
         gtk_window_set_position (GTK_WINDOW (login_window), GTK_WIN_POS_CENTER_ALWAYS);
         gtk_window_set_title (GTK_WINDOW (login_window), _("Remote Login"));
-        /*gtk_window_set_decorated (GTK_WINDOW (login_window), FALSE);*/
+        gtk_window_set_decorated (GTK_WINDOW (login_window), FALSE);
         gtk_window_set_skip_taskbar_hint (GTK_WINDOW (login_window), TRUE);
         gtk_window_set_skip_pager_hint (GTK_WINDOW (login_window), TRUE);
         gtk_window_stick (GTK_WINDOW (login_window));
