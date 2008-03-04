@@ -44,19 +44,16 @@
 #include <gtk/gtk.h>
 
 #include "gdm-address.h"
+#include "gdm-chooser-host.h"
 #include "gdm-host-chooser-widget.h"
 
 #define GDM_HOST_CHOOSER_WIDGET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_HOST_CHOOSER_WIDGET, GdmHostChooserWidgetPrivate))
 
-typedef struct _GdmChooserHost {
-        GdmAddress *address;
-        char       *description;
-        gboolean    willing;
-} GdmChooserHost;
-
 struct GdmHostChooserWidgetPrivate
 {
         GtkWidget      *treeview;
+
+        int             kind_mask;
 
         char          **hosts;
 
@@ -79,6 +76,7 @@ struct GdmHostChooserWidgetPrivate
 
 enum {
         PROP_0,
+        PROP_KIND_MASK,
 };
 
 enum {
@@ -121,18 +119,6 @@ chooser_host_remove (GdmHostChooserWidget *widget,
 }
 #endif
 
-static void
-chooser_host_free (GdmChooserHost *host)
-{
-        if (host == NULL) {
-                return;
-        }
-
-        g_free (host->description);
-        gdm_address_free (host->address);
-        g_free (host);
-}
-
 static GdmChooserHost *
 find_known_host (GdmHostChooserWidget *widget,
                  GdmAddress           *address)
@@ -142,7 +128,7 @@ find_known_host (GdmHostChooserWidget *widget,
 
         for (li = widget->priv->chooser_hosts; li != NULL; li = li->next) {
                 host = li->data;
-                if (gdm_address_equal (host->address, address)) {
+                if (gdm_address_equal (gdm_chooser_host_get_address (host), address)) {
                         goto out;
                 }
         }
@@ -167,18 +153,18 @@ browser_add_host (GdmHostChooserWidget *widget,
 
         g_assert (host != NULL);
 
-        if (! host->willing) {
+        if (! gdm_chooser_host_get_willing (host)) {
                 gtk_widget_set_sensitive (GTK_WIDGET (widget), TRUE);
                 return;
         }
 
-        res = gdm_address_get_hostname (host->address, &hostname);
+        res = gdm_address_get_hostname (gdm_chooser_host_get_address (host), &hostname);
         if (! res) {
-                gdm_address_get_numeric_info (host->address, &hostname, NULL);
+                gdm_address_get_numeric_info (gdm_chooser_host_get_address (host), &hostname, NULL);
         }
 
         name = g_markup_escape_text (hostname, -1);
-        desc = g_markup_escape_text (host->description, -1);
+        desc = g_markup_escape_text (gdm_chooser_host_get_description (host), -1);
         label = g_strdup_printf ("<b>%s</b>\n%s", name, desc);
         g_free (name);
         g_free (desc);
@@ -274,19 +260,22 @@ decode_packet (GIOChannel           *source,
 
         chooser_host = find_known_host (widget, address);
         if (chooser_host == NULL) {
-
-                chooser_host = g_new0 (GdmChooserHost, 1);
-                chooser_host->address = gdm_address_copy (address);
-                chooser_host->description = g_strdup (status);
-                chooser_host->willing = (header.opcode == WILLING);
+                chooser_host = g_object_new (GDM_TYPE_CHOOSER_HOST,
+                                             "address", address,
+                                             "description", status,
+                                             "willing", (header.opcode == WILLING),
+                                             "kind", GDM_CHOOSER_HOST_KIND_XDMCP,
+                                             NULL);
                 chooser_host_add (widget, chooser_host);
                 browser_add_host (widget, chooser_host);
         } else {
                 /* server changed it's mind */
-                if (header.opcode == WILLING && ! chooser_host->willing) {
-                        chooser_host->willing = TRUE;
+                if (header.opcode == WILLING
+                    && ! gdm_chooser_host_get_willing (chooser_host)) {
+                        g_object_set (chooser_host, "willing", TRUE, NULL);
                         browser_add_host (widget, chooser_host);
                 }
+                /* FIXME: handle unwilling? */
         }
 
  done:
@@ -600,29 +589,38 @@ xdmcp_init (GdmHostChooserWidget *widget)
                                                     (GIOFunc)decode_packet,
                                                     widget);
         g_io_channel_unref (ioc);
-
-        xdmcp_discover (widget);
 }
 
 void
 gdm_host_chooser_widget_refresh (GdmHostChooserWidget *widget)
 {
         g_return_if_fail (GDM_IS_HOST_CHOOSER_WIDGET (widget));
+
+        xdmcp_discover (widget);
 }
 
-char *
-gdm_host_chooser_widget_get_current_hostname (GdmHostChooserWidget *widget)
+GdmChooserHost *
+gdm_host_chooser_widget_get_host (GdmHostChooserWidget *widget)
 {
-        char *hostname;
+        GdmChooserHost *host;
 
         g_return_val_if_fail (GDM_IS_HOST_CHOOSER_WIDGET (widget), NULL);
 
-        hostname = NULL;
+        host = NULL;
         if (widget->priv->current_host != NULL) {
-                gdm_address_get_hostname (widget->priv->current_host->address, &hostname);
+                host = g_object_ref (widget->priv->current_host);
         }
 
-        return hostname;
+        return host;
+}
+
+static void
+_gdm_host_chooser_widget_set_kind_mask (GdmHostChooserWidget *widget,
+                                        int                   kind_mask)
+{
+        if (widget->priv->kind_mask != kind_mask) {
+                widget->priv->kind_mask = kind_mask;
+        }
 }
 
 static void
@@ -631,7 +629,14 @@ gdm_host_chooser_widget_set_property (GObject        *object,
                                       const GValue   *value,
                                       GParamSpec     *pspec)
 {
+        GdmHostChooserWidget *self;
+
+        self = GDM_HOST_CHOOSER_WIDGET (object);
+
         switch (prop_id) {
+        case PROP_KIND_MASK:
+                _gdm_host_chooser_widget_set_kind_mask (self, g_value_get_int (value));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -656,13 +661,16 @@ gdm_host_chooser_widget_constructor (GType                  type,
                                      guint                  n_construct_properties,
                                      GObjectConstructParam *construct_properties)
 {
-        GdmHostChooserWidget      *host_chooser_widget;
+        GdmHostChooserWidget      *widget;
 
-        host_chooser_widget = GDM_HOST_CHOOSER_WIDGET (G_OBJECT_CLASS (gdm_host_chooser_widget_parent_class)->constructor (type,
+        widget = GDM_HOST_CHOOSER_WIDGET (G_OBJECT_CLASS (gdm_host_chooser_widget_parent_class)->constructor (type,
                                                                                                                            n_construct_properties,
                                                                                                                            construct_properties));
 
-        return G_OBJECT (host_chooser_widget);
+        xdmcp_init (widget);
+        xdmcp_discover (widget);
+
+        return G_OBJECT (widget);
 }
 
 static void
@@ -690,7 +698,7 @@ gdm_host_chooser_widget_dispose (GObject *object)
         }
         if (widget->priv->chooser_hosts != NULL) {
                 g_slist_foreach (widget->priv->chooser_hosts,
-                                 (GFunc)chooser_host_free,
+                                 (GFunc)g_object_unref,
                                  NULL);
                 g_slist_free (widget->priv->chooser_hosts);
                 widget->priv->chooser_hosts = NULL;
@@ -711,6 +719,16 @@ gdm_host_chooser_widget_class_init (GdmHostChooserWidgetClass *klass)
         object_class->constructor = gdm_host_chooser_widget_constructor;
         object_class->dispose = gdm_host_chooser_widget_dispose;
         object_class->finalize = gdm_host_chooser_widget_finalize;
+
+        g_object_class_install_property (object_class,
+                                         PROP_KIND_MASK,
+                                         g_param_spec_int ("kind-mask",
+                                                           "kind mask",
+                                                           "kind mask",
+                                                           0,
+                                                           G_MAXINT,
+                                                           0,
+                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
         signals [HOST_ACTIVATED] = g_signal_new ("host-activated",
                                                  G_TYPE_FROM_CLASS (object_class),
@@ -803,8 +821,6 @@ gdm_host_chooser_widget_init (GdmHostChooserWidget *widget)
         gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (model),
                                               CHOOSER_LIST_LABEL_COLUMN,
                                               GTK_SORT_ASCENDING);
-
-        xdmcp_init (widget);
 }
 
 static void
@@ -823,11 +839,12 @@ gdm_host_chooser_widget_finalize (GObject *object)
 }
 
 GtkWidget *
-gdm_host_chooser_widget_new (void)
+gdm_host_chooser_widget_new (int kind_mask)
 {
         GObject *object;
 
         object = g_object_new (GDM_TYPE_HOST_CHOOSER_WIDGET,
+                               "kind-mask", kind_mask,
                                NULL);
 
         return GTK_WIDGET (object);

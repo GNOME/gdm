@@ -23,6 +23,7 @@
 
 #include <glib-object.h>
 #include <gtk/gtkvbox.h>
+#include "gdm-chooser-host.h"
 
 G_BEGIN_DECLS
 
@@ -49,12 +50,15 @@ typedef struct
         void (* host_activated)        (GdmHostChooserWidget *widget);
 } GdmHostChooserWidgetClass;
 
-GType                  gdm_host_chooser_widget_get_type                       (void);
-GtkWidget *            gdm_host_chooser_widget_new                            (void);
+GType                  gdm_host_chooser_widget_get_type           (void);
+GtkWidget *            gdm_host_chooser_widget_new                (int                   kind_mask);
 
-void                   gdm_host_chooser_widget_refresh                        (GdmHostChooserWidget *widget);
+void                   gdm_host_chooser_widget_set_kind_mask      (GdmHostChooserWidget *widget,
+                                                                   int                   kind_mask);
 
-char *                 gdm_host_chooser_widget_get_current_hostname           (GdmHostChooserWidget *widget);
+void                   gdm_host_chooser_widget_refresh            (GdmHostChooserWidget *widget);
+
+GdmChooserHost *       gdm_host_chooser_widget_get_host           (GdmHostChooserWidget *widget);
 
 G_END_DECLS
 

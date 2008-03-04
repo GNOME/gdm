@@ -38,10 +38,12 @@
 struct GdmHostChooserDialogPrivate
 {
         GtkWidget *chooser_widget;
+        int        kind_mask;
 };
 
 enum {
         PROP_0,
+        PROP_KIND_MASK,
 };
 
 static void     gdm_host_chooser_dialog_class_init  (GdmHostChooserDialogClass *klass);
@@ -50,24 +52,41 @@ static void     gdm_host_chooser_dialog_finalize    (GObject                   *
 
 G_DEFINE_TYPE (GdmHostChooserDialog, gdm_host_chooser_dialog, GTK_TYPE_DIALOG)
 
-char *
-gdm_host_chooser_dialog_get_current_hostname (GdmHostChooserDialog *dialog)
+GdmChooserHost *
+gdm_host_chooser_dialog_get_host (GdmHostChooserDialog *dialog)
 {
-        char *hostname;
+        GdmChooserHost *host;
 
         g_return_val_if_fail (GDM_IS_HOST_CHOOSER_DIALOG (dialog), NULL);
 
-        hostname = gdm_host_chooser_widget_get_current_hostname (GDM_HOST_CHOOSER_WIDGET (dialog->priv->chooser_widget));
+        host = gdm_host_chooser_widget_get_host (GDM_HOST_CHOOSER_WIDGET (dialog->priv->chooser_widget));
 
-        return hostname;
+        return host;
 }
+
+static void
+_gdm_host_chooser_dialog_set_kind_mask (GdmHostChooserDialog *dialog,
+                                        int                   kind_mask)
+{
+        if (dialog->priv->kind_mask != kind_mask) {
+                dialog->priv->kind_mask = kind_mask;
+        }
+}
+
 static void
 gdm_host_chooser_dialog_set_property (GObject        *object,
                                       guint           prop_id,
                                       const GValue   *value,
                                       GParamSpec     *pspec)
 {
+        GdmHostChooserDialog *self;
+
+        self = GDM_HOST_CHOOSER_DIALOG (object);
+
         switch (prop_id) {
+        case PROP_KIND_MASK:
+                _gdm_host_chooser_dialog_set_kind_mask (self, g_value_get_int (value));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -87,18 +106,55 @@ gdm_host_chooser_dialog_get_property (GObject        *object,
         }
 }
 
+static void
+on_response (GdmHostChooserDialog *dialog,
+             gint                  response_id)
+{
+        switch (response_id) {
+        case GTK_RESPONSE_APPLY:
+                gdm_host_chooser_widget_refresh (GDM_HOST_CHOOSER_WIDGET (dialog->priv->chooser_widget));
+                g_signal_stop_emission_by_name (dialog, "response");
+                break;
+        default:
+                break;
+        }
+}
+
 static GObject *
 gdm_host_chooser_dialog_constructor (GType                  type,
                                      guint                  n_construct_properties,
                                      GObjectConstructParam *construct_properties)
 {
-        GdmHostChooserDialog      *host_chooser_dialog;
+        GdmHostChooserDialog      *dialog;
 
-        host_chooser_dialog = GDM_HOST_CHOOSER_DIALOG (G_OBJECT_CLASS (gdm_host_chooser_dialog_parent_class)->constructor (type,
+        dialog = GDM_HOST_CHOOSER_DIALOG (G_OBJECT_CLASS (gdm_host_chooser_dialog_parent_class)->constructor (type,
                                                                                                                            n_construct_properties,
                                                                                                                            construct_properties));
 
-        return G_OBJECT (host_chooser_dialog);
+
+        dialog->priv->chooser_widget = gdm_host_chooser_widget_new (dialog->priv->kind_mask);
+        gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), dialog->priv->chooser_widget);
+        gtk_container_set_border_width (GTK_CONTAINER (dialog->priv->chooser_widget), 5);
+
+        gtk_dialog_add_buttons (GTK_DIALOG (dialog),
+                                GTK_STOCK_REFRESH, GTK_RESPONSE_APPLY,
+                                GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                GTK_STOCK_OK, GTK_RESPONSE_OK,
+                                NULL);
+
+        gtk_container_set_border_width (GTK_CONTAINER (dialog), 12);
+        gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+        gtk_window_set_title (GTK_WINDOW (dialog), _("Select System"));
+        gtk_window_set_icon_name (GTK_WINDOW (dialog), "computer");
+
+        g_signal_connect (dialog,
+                          "response",
+                          G_CALLBACK (on_response),
+                          dialog);
+
+        gtk_widget_show_all (GTK_WIDGET (dialog));
+
+        return G_OBJECT (dialog);
 }
 
 static void
@@ -120,50 +176,23 @@ gdm_host_chooser_dialog_class_init (GdmHostChooserDialogClass *klass)
         object_class->dispose = gdm_host_chooser_dialog_dispose;
         object_class->finalize = gdm_host_chooser_dialog_finalize;
 
-        g_type_class_add_private (klass, sizeof (GdmHostChooserDialogPrivate));
-}
+        g_object_class_install_property (object_class,
+                                         PROP_KIND_MASK,
+                                         g_param_spec_int ("kind-mask",
+                                                           "kind mask",
+                                                           "kind mask",
+                                                           0,
+                                                           G_MAXINT,
+                                                           0,
+                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
-static void
-on_response (GdmHostChooserDialog *dialog,
-             gint                  response_id)
-{
-        switch (response_id) {
-        case GTK_RESPONSE_APPLY:
-                gdm_host_chooser_widget_refresh (GDM_HOST_CHOOSER_WIDGET (dialog->priv->chooser_widget));
-                g_signal_stop_emission_by_name (dialog, "response");
-                break;
-        default:
-                break;
-        }
+        g_type_class_add_private (klass, sizeof (GdmHostChooserDialogPrivate));
 }
 
 static void
 gdm_host_chooser_dialog_init (GdmHostChooserDialog *dialog)
 {
-
         dialog->priv = GDM_HOST_CHOOSER_DIALOG_GET_PRIVATE (dialog);
-
-        dialog->priv->chooser_widget = gdm_host_chooser_widget_new ();
-        gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), dialog->priv->chooser_widget);
-
-        gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-                                GTK_STOCK_REFRESH, GTK_RESPONSE_APPLY,
-                                GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                GTK_STOCK_OK, GTK_RESPONSE_OK,
-                                NULL);
-
-        gtk_container_set_border_width (GTK_CONTAINER (dialog), 12);
-        gtk_container_set_border_width (GTK_CONTAINER (dialog->priv->chooser_widget), 5);
-        gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
-        gtk_window_set_title (GTK_WINDOW (dialog), _("Select System"));
-        gtk_window_set_icon_name (GTK_WINDOW (dialog), "computer");
-
-        g_signal_connect (dialog,
-                          "response",
-                          G_CALLBACK (on_response),
-                          dialog);
-
-        gtk_widget_show_all (GTK_WIDGET (dialog));
 }
 
 static void
@@ -182,11 +211,12 @@ gdm_host_chooser_dialog_finalize (GObject *object)
 }
 
 GtkWidget *
-gdm_host_chooser_dialog_new (void)
+gdm_host_chooser_dialog_new (int kind_mask)
 {
         GObject *object;
 
         object = g_object_new (GDM_TYPE_HOST_CHOOSER_DIALOG,
+                               "kind-mask", kind_mask,
                                NULL);
 
         return GTK_WIDGET (object);

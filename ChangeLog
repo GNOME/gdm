@@ -1,3 +1,40 @@
+2008-03-04  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/simple-chooser/Makefile.am:
+	* gui/simple-chooser/gdm-chooser-host.c:
+	(gdm_chooser_host_get_address), (gdm_chooser_host_get_description),
+	(gdm_chooser_host_get_kind), (gdm_chooser_host_get_willing),
+	(_gdm_chooser_host_set_address),
+	(_gdm_chooser_host_set_description), (_gdm_chooser_host_set_kind),
+	(_gdm_chooser_host_set_willing), (gdm_chooser_host_set_property),
+	(gdm_chooser_host_get_property), (gdm_chooser_host_class_init),
+	(gdm_chooser_host_init), (gdm_chooser_host_finalize):
+	* gui/simple-chooser/gdm-chooser-host.h:
+	* gui/simple-chooser/gdm-chooser-session.c: (on_dialog_response),
+	(gdm_chooser_session_start):
+	* gui/simple-chooser/gdm-host-chooser-dialog.c:
+	(gdm_host_chooser_dialog_get_host),
+	(_gdm_host_chooser_dialog_set_kind_mask),
+	(gdm_host_chooser_dialog_set_property), (on_response),
+	(gdm_host_chooser_dialog_constructor),
+	(gdm_host_chooser_dialog_class_init),
+	(gdm_host_chooser_dialog_init), (gdm_host_chooser_dialog_new):
+	* gui/simple-chooser/gdm-host-chooser-dialog.h:
+	* gui/simple-chooser/gdm-host-chooser-widget.c: (find_known_host),
+	(browser_add_host), (decode_packet), (xdmcp_init),
+	(gdm_host_chooser_widget_refresh),
+	(gdm_host_chooser_widget_get_host),
+	(_gdm_host_chooser_widget_set_kind_mask),
+	(gdm_host_chooser_widget_set_property),
+	(gdm_host_chooser_widget_constructor),
+	(gdm_host_chooser_widget_dispose),
+	(gdm_host_chooser_widget_class_init),
+	(gdm_host_chooser_widget_init), (gdm_host_chooser_widget_new):
+	* gui/simple-chooser/gdm-host-chooser-widget.h:
+	* gui/simple-chooser/gdm-host-chooser.c: (main):
+	Abstract the host selection to be able to support
+	other kinds in addition to XDMCP.
+
 2008-03-03  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/user-switch-applet/applet.c: (maybe_lock_screen),

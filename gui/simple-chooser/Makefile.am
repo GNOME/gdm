@@ -25,6 +25,8 @@ libexec_PROGRAMS =			\
 
 gdm_simple_chooser_SOURCES =  		\
 	chooser-main.c 			\
+	gdm-chooser-host.c		\
+	gdm-chooser-host.h		\
 	gdm-host-chooser-widget.c	\
 	gdm-host-chooser-widget.h	\
 	gdm-host-chooser-dialog.c	\
@@ -45,6 +47,8 @@ gdm_simple_chooser_LDADD = 		\
 
 gdm_host_chooser_SOURCES = 		\
 	gdm-host-chooser.c 		\
+	gdm-chooser-host.c		\
+	gdm-chooser-host.h		\
 	gdm-host-chooser-widget.c	\
 	gdm-host-chooser-widget.h	\
 	gdm-host-chooser-dialog.c	\

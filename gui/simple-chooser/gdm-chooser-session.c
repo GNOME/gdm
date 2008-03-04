@@ -149,22 +149,32 @@ on_dialog_response (GtkDialog         *dialog,
                     int                response_id,
                     GdmChooserSession *session)
 {
-        char *hostname;
+        GdmChooserHost *host;
 
-        hostname = NULL;
+        host = NULL;
         switch (response_id) {
         case GTK_RESPONSE_OK:
-                hostname = gdm_host_chooser_dialog_get_current_hostname (GDM_HOST_CHOOSER_DIALOG (dialog));
+                host = gdm_host_chooser_dialog_get_host (GDM_HOST_CHOOSER_DIALOG (dialog));
         case GTK_RESPONSE_NONE:
                 /* delete event */
         default:
                 break;
         }
 
-        if (hostname != NULL) {
-                g_debug ("GdmChooserSession: Selected hostname '%s'", hostname);
-                gdm_chooser_client_call_select_hostname (session->priv->client, hostname);
-                g_free (hostname);
+        if (host != NULL) {
+                char *hostname;
+
+                /* only support XDMCP hosts in remote chooser */
+                g_assert (gdm_chooser_host_get_kind (host) == GDM_CHOOSER_HOST_KIND_XDMCP);
+
+                hostname = NULL;
+                gdm_address_get_hostname (gdm_chooser_host_get_address (host), &hostname);
+                /* FIXME: fall back to numerical address? */
+                if (hostname != NULL) {
+                        g_debug ("GdmChooserSession: Selected hostname '%s'", hostname);
+                        gdm_chooser_client_call_select_hostname (session->priv->client, hostname);
+                        g_free (hostname);
+                }
         }
 
         gdm_chooser_client_call_disconnect (session->priv->client);
@@ -184,7 +194,8 @@ gdm_chooser_session_start (GdmChooserSession *session,
                 start_settings_daemon (session);
                 start_window_manager (session);
 
-                session->priv->chooser_dialog = gdm_host_chooser_dialog_new ();
+                /* Only support XDMCP on remote choosers */
+                session->priv->chooser_dialog = gdm_host_chooser_dialog_new (GDM_CHOOSER_HOST_KIND_XDMCP);
                 g_signal_connect (session->priv->chooser_dialog,
                                   "response",
                                   G_CALLBACK (on_dialog_response),

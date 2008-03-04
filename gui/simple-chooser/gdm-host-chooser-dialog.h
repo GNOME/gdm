@@ -23,6 +23,7 @@
 
 #include <glib-object.h>
 #include <gtk/gtkdialog.h>
+#include "gdm-chooser-host.h"
 
 G_BEGIN_DECLS
 
@@ -46,11 +47,13 @@ typedef struct
         GtkDialogClass   parent_class;
 } GdmHostChooserDialogClass;
 
-GType                  gdm_host_chooser_dialog_get_type                       (void);
+GType                  gdm_host_chooser_dialog_get_type           (void);
 
-GtkWidget            * gdm_host_chooser_dialog_new                            (void);
+GtkWidget            * gdm_host_chooser_dialog_new                (int                   kind_mask);
+void                   gdm_host_chooser_dialog_set_kind_mask      (GdmHostChooserDialog *dialog,
+                                                                   int                   kind_mask);
 
-char *                 gdm_host_chooser_dialog_get_current_hostname           (GdmHostChooserDialog *dialog);
+GdmChooserHost *       gdm_host_chooser_dialog_get_host           (GdmHostChooserDialog *dialog);
 
 G_END_DECLS
 

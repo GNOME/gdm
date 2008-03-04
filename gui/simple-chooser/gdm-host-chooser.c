@@ -37,6 +37,7 @@
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 
+#include "gdm-chooser-host.h"
 #include "gdm-host-chooser-dialog.h"
 
 #define ACCESSIBILITY_KEY         "/desktop/gnome/interface/accessibility"
@@ -248,13 +249,23 @@ main (int argc, char *argv[])
 
         gtk_init (&argc, &argv);
 
-        chooser = gdm_host_chooser_dialog_new ();
+        chooser = gdm_host_chooser_dialog_new (GDM_CHOOSER_HOST_KIND_MASK_ALL);
         if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_OK) {
-                char *hostname;
+                GdmChooserHost *host;
 
-                hostname = gdm_host_chooser_dialog_get_current_hostname (GDM_HOST_CHOOSER_DIALOG (chooser));
-                g_print ("hostname: %s\n", hostname);
-                g_free (hostname);
+                host = gdm_host_chooser_dialog_get_host (GDM_HOST_CHOOSER_DIALOG (chooser));
+                if (host != NULL) {
+                        char *hostname;
+                        /* FIXME: handle different host types here? */
+
+                        hostname = NULL;
+                        gdm_address_get_hostname (gdm_chooser_host_get_address (host), &hostname);
+                        /* FIXME: fall back to numerical address? */
+                        if (hostname != NULL) {
+                                g_print ("hostname: %s\n", hostname);
+                                g_free (hostname);
+                        }
+                }
         }
 
         gtk_widget_destroy (chooser);
