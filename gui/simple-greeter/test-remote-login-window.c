@@ -79,6 +79,7 @@ main (int argc, char *argv[])
         gtk_init (&argc, &argv);
 
         login_window = gdm_remote_login_window_new (TRUE);
+        g_signal_connect (login_window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
         gtk_widget_show (login_window);
 
         gdm_remote_login_window_connect (GDM_REMOTE_LOGIN_WINDOW (login_window), hostname);

@@ -23,6 +23,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <errno.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -33,6 +36,7 @@
 #include <gtk/gtk.h>
 
 #include "gdm-remote-login-window.h"
+#include "gdm-common.h"
 
 #define GDM_REMOTE_LOGIN_WINDOW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_REMOTE_LOGIN_WINDOW, GdmRemoteLoginWindowPrivate))
 
@@ -41,6 +45,8 @@ struct GdmRemoteLoginWindowPrivate
         gboolean connected;
         char    *hostname;
         char    *display;
+        GPid     xserver_pid;
+        guint    xserver_watch_id;
 };
 
 enum {
@@ -60,31 +66,145 @@ static void     gdm_remote_login_window_finalize     (GObject                   
 
 G_DEFINE_TYPE (GdmRemoteLoginWindow, gdm_remote_login_window, GTK_TYPE_WINDOW)
 
+static int
+wait_on_child (int pid)
+{
+        int status;
+
+ wait_again:
+        if (waitpid (pid, &status, 0) < 0) {
+                if (errno == EINTR) {
+                        goto wait_again;
+                } else if (errno == ECHILD) {
+                        ; /* do nothing, child already reaped */
+                } else {
+                        g_debug ("GdmRemoteLoginWindow: waitpid () should not fail");
+                }
+        }
+
+        return status;
+}
+
+static void
+xserver_died (GdmRemoteLoginWindow *login_window)
+{
+        int exit_status;
+
+        g_debug ("GdmRemoteLoginWindow: Waiting on process %d", login_window->priv->xserver_pid);
+        exit_status = wait_on_child (login_window->priv->xserver_pid);
+
+        if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
+                g_debug ("GdmRemoteLoginWindow: Wait on child process failed");
+        } else {
+                /* exited normally */
+        }
+
+        g_spawn_close_pid (login_window->priv->xserver_pid);
+        login_window->priv->xserver_pid = -1;
+
+        g_debug ("GdmRemoteLoginWindow: xserver died");
+}
+
+static void
+stop_xserver (GdmRemoteLoginWindow *login_window)
+{
+        /* remove watch before killing so we don't restart */
+        if (login_window->priv->xserver_watch_id > 0) {
+                g_source_remove (login_window->priv->xserver_watch_id);
+                login_window->priv->xserver_watch_id = 0;
+        }
+
+        g_debug ("GdmRemoteLoginWindow: Stopping xserver");
+        if (login_window->priv->xserver_pid > 0) {
+                gdm_signal_pid (login_window->priv->xserver_pid, SIGTERM);
+                xserver_died (login_window);
+        }
+}
+
+static void
+xserver_child_watch (GPid                  pid,
+                     int                   status,
+                     GdmRemoteLoginWindow *login_window)
+{
+        g_debug ("GdmRemoteLoginWindow: **** xserver (pid:%d) done (%s:%d)",
+                 (int) pid,
+                 WIFEXITED (status) ? "status"
+                 : WIFSIGNALED (status) ? "signal"
+                 : "unknown",
+                 WIFEXITED (status) ? WEXITSTATUS (status)
+                 : WIFSIGNALED (status) ? WTERMSIG (status)
+                 : -1);
+
+        g_spawn_close_pid (login_window->priv->xserver_pid);
+
+        login_window->priv->xserver_pid = -1;
+        login_window->priv->xserver_watch_id = 0;
+
+        gtk_widget_destroy (GTK_WIDGET (login_window));
+}
+
 static gboolean
 start_xephyr (GdmRemoteLoginWindow *login_window)
 {
-        char    *cmd;
-        gboolean res;
-        GError  *error;
+        GError     *local_error;
+        char      **argv;
+        gboolean    res;
+        gboolean    ret;
+        int         flags;
+        char       *command;
 
-        cmd = g_strdup_printf ("Xephyr -query %s -parent 0x%x -br -once %s",
-                               login_window->priv->hostname,
-                               (unsigned int)GDK_WINDOW_XID (GTK_WIDGET (login_window)->window),
-                               login_window->priv->display);
-        g_debug ("Running: %s", cmd);
+        command = g_strdup_printf ("Xephyr -query %s -parent 0x%x -br -once %s",
+                                   login_window->priv->hostname,
+                                   (unsigned int)GDK_WINDOW_XID (GTK_WIDGET (login_window)->window),
+                                   login_window->priv->display);
+        g_debug ("GdmRemoteLoginWindow: Running: %s", command);
 
-        error = NULL;
-        res = g_spawn_command_line_async (cmd, &error);
+        ret = FALSE;
 
-        g_free (cmd);
-
+        argv = NULL;
+        local_error = NULL;
+        res = g_shell_parse_argv (command, NULL, &argv, &local_error);
         if (! res) {
-                g_warning ("Could not start nested X server: %s", error->message);
-                g_error_free (error);
-                return FALSE;
+                g_warning ("GdmRemoteLoginWindow: Unable to parse command: %s", local_error->message);
+                g_error_free (local_error);
+                goto out;
         }
 
-        return TRUE;
+        flags = G_SPAWN_SEARCH_PATH
+                | G_SPAWN_DO_NOT_REAP_CHILD;
+
+        local_error = NULL;
+        res = g_spawn_async (NULL,
+                             argv,
+                             NULL,
+                             flags,
+                             NULL,
+                             NULL,
+                             &login_window->priv->xserver_pid,
+                             &local_error);
+        g_strfreev (argv);
+
+        if (! res) {
+                g_warning ("GdmRemoteLoginWindow: Unable to run command %s: %s",
+                           command,
+                           local_error->message);
+                g_error_free (local_error);
+                goto out;
+        }
+
+        g_debug ("GdmRemoteLoginWindow: Started: pid=%d command='%s'",
+                 login_window->priv->xserver_pid,
+                 command);
+
+        login_window->priv->xserver_watch_id = g_child_watch_add (login_window->priv->xserver_pid,
+                                                                  (GChildWatchFunc)xserver_child_watch,
+                                                                  login_window);
+        ret = TRUE;
+
+ out:
+        g_free (command);
+
+        return ret;
 }
 
 static gboolean

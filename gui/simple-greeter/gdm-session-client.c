@@ -174,7 +174,7 @@ wait_on_child (int pid)
                 } else if (errno == ECHILD) {
                         ; /* do nothing, child already reaped */
                 } else {
-                        g_debug ("GdmWelcomeSession: waitpid () should not fail");
+                        g_debug ("GdmSessionClient: waitpid () should not fail");
                 }
         }
 
@@ -418,6 +418,8 @@ gdm_session_client_constructor (GType                  type,
 static void
 gdm_session_client_dispose (GObject *object)
 {
+        gdm_session_client_stop (GDM_SESSION_CLIENT (object));
+
         G_OBJECT_CLASS (gdm_session_client_parent_class)->dispose (object);
 }
 

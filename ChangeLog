@@ -1,5 +1,15 @@
 2008-03-04  William Jon McCann  <jmccann@redhat.com>
 
+	* gui/simple-greeter/gdm-remote-login-window.c: (wait_on_child),
+	(xserver_died), (stop_xserver), (xserver_child_watch),
+	(start_xephyr):
+	* gui/simple-greeter/gdm-session-client.c: (wait_on_child),
+	(gdm_session_client_dispose):
+	* gui/simple-greeter/test-remote-login-window.c: (main):
+	Destroy the remote login window when the xserver quits.
+
+2008-03-04  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/simple-chooser/Makefile.am:
 	* gui/simple-chooser/gdm-chooser-host.c:
 	(gdm_chooser_host_get_address), (gdm_chooser_host_get_description),
