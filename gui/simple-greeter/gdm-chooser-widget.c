@@ -35,6 +35,7 @@
 #include <gtk/gtk.h>
 
 #include "gdm-chooser-widget.h"
+#include "gdm-cell-renderer-timer.h"
 
 #define GDM_CHOOSER_WIDGET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_CHOOSER_WIDGET, GdmChooserWidgetPrivate))
 
@@ -68,6 +69,8 @@ struct GdmChooserWidgetPrivate
         GtkTreeRowReference      *top_edge_row;    /* Only around for shrink */
         GtkTreeRowReference      *bottom_edge_row; /* animations */
 
+        GHashTable               *rows_with_timers;
+
         GtkTreeViewColumn        *status_column;
         GtkTreeViewColumn        *image_column;
 
@@ -82,6 +85,7 @@ struct GdmChooserWidgetPrivate
 
         guint                    update_idle_id;
         guint                    animation_timeout_id;
+        guint                    timer_animation_timeout_id;
 
         guint32                  should_hide_inactive_items : 1;
         guint32                  emit_activated_after_animation : 1;
@@ -107,7 +111,11 @@ static guint    signals[NUMBER_OF_SIGNALS];
 
 static void     gdm_chooser_widget_class_init  (GdmChooserWidgetClass *klass);
 static void     gdm_chooser_widget_init        (GdmChooserWidget      *chooser_widget);
-static void     gdm_chooser_widget_finalize    (GObject                   *object);
+static void     gdm_chooser_widget_finalize    (GObject               *object);
+
+static void     update_timer_from_time         (GdmChooserWidget    *widget,
+                                                GtkTreeRowReference *row,
+                                                double               now);
 
 G_DEFINE_TYPE (GdmChooserWidget, gdm_chooser_widget, GTK_TYPE_ALIGNMENT)
 enum {
@@ -118,6 +126,9 @@ enum {
         CHOOSER_ITEM_IS_IN_USE_COLUMN,
         CHOOSER_ITEM_IS_SEPARATED_COLUMN,
         CHOOSER_ITEM_IS_VISIBLE_COLUMN,
+        CHOOSER_TIMER_START_TIME_COLUMN,
+        CHOOSER_TIMER_DURATION_COLUMN,
+        CHOOSER_TIMER_VALUE_COLUMN,
         CHOOSER_ID_COLUMN,
         NUMBER_OF_CHOOSER_COLUMNS
 };
@@ -1555,7 +1566,7 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
         selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget->priv->items_view));
         gtk_tree_selection_set_mode (selection, GTK_SELECTION_BROWSE);
 
-        g_assert (NUMBER_OF_CHOOSER_COLUMNS == 8);
+        g_assert (NUMBER_OF_CHOOSER_COLUMNS == 11);
         widget->priv->list_store = gtk_list_store_new (NUMBER_OF_CHOOSER_COLUMNS,
                                                        GDK_TYPE_PIXBUF,
                                                        G_TYPE_STRING,
@@ -1564,6 +1575,9 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
                                                        G_TYPE_BOOLEAN,
                                                        G_TYPE_BOOLEAN,
                                                        G_TYPE_BOOLEAN,
+                                                       G_TYPE_DOUBLE,
+                                                       G_TYPE_DOUBLE,
+                                                       G_TYPE_DOUBLE,
                                                        G_TYPE_STRING);
 
         widget->priv->model_filter = GTK_TREE_MODEL_FILTER (gtk_tree_model_filter_new (GTK_TREE_MODEL (widget->priv->list_store), NULL));
@@ -1634,9 +1648,17 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
                                                  NULL);
         widget->priv->is_in_use_pixbuf = get_is_in_use_pixbuf (widget);
 
-        g_object_set (renderer,
-                      "width", GDM_CHOOSER_WIDGET_DEFAULT_ICON_SIZE,
-                      NULL);
+        renderer = gdm_cell_renderer_timer_new ();
+        gtk_tree_view_column_pack_start (column, renderer, FALSE);
+        gtk_tree_view_column_add_attribute (column, renderer, "value",
+                                            CHOOSER_TIMER_VALUE_COLUMN);
+
+        widget->priv->rows_with_timers =
+            g_hash_table_new_full (g_str_hash,
+                                   g_str_equal,
+                                  (GDestroyNotify) g_free,
+                                  (GDestroyNotify)
+                                  gtk_tree_row_reference_free);
 
         add_separator (widget);
 
@@ -1655,6 +1677,9 @@ gdm_chooser_widget_finalize (GObject *object)
         widget = GDM_CHOOSER_WIDGET (object);
 
         g_return_if_fail (widget->priv != NULL);
+
+        g_hash_table_destroy (widget->priv->rows_with_timers);
+        widget->priv->rows_with_timers = NULL;
 
         G_OBJECT_CLASS (gdm_chooser_widget_parent_class)->finalize (object);
 }
@@ -1939,6 +1964,214 @@ gdm_chooser_widget_set_item_priority (GdmChooserWidget *widget,
                                     -1);
                 gtk_tree_model_filter_refilter (widget->priv->model_filter);
         }
+}
+
+static double
+get_current_time (void)
+{
+  const double microseconds_per_second = 1000000.0;
+  double       timestamp;
+  GTimeVal     now;
+
+  g_get_current_time (&now);
+
+  timestamp = ((microseconds_per_second * now.tv_sec) + now.tv_usec) /
+               microseconds_per_second;
+
+  return timestamp;
+}
+
+static gboolean
+on_timer_timeout (GdmChooserWidget *widget)
+{
+        GHashTableIter  iter;
+        GSList         *list;
+        GSList         *tmp;
+        gpointer        key;
+        gpointer        value;
+        double          now;
+
+        list = NULL;
+        g_hash_table_iter_init (&iter, widget->priv->rows_with_timers);
+        while (g_hash_table_iter_next (&iter, &key, &value)) {
+                list = g_slist_prepend (list, value);
+        }
+
+        now = get_current_time ();
+        for (tmp = list; tmp != NULL; tmp = tmp->next) {
+                GtkTreeRowReference *row;
+
+                row = (GtkTreeRowReference *) tmp->data;
+
+                update_timer_from_time (widget, row, now);
+        }
+        g_slist_free (list);
+
+        return TRUE;
+}
+
+static void
+start_timer (GdmChooserWidget    *widget,
+             GtkTreeRowReference *row,
+             double               duration)
+{
+        GtkTreeModel *model;
+        GtkTreePath  *path;
+        GtkTreeIter   iter;
+
+        model = GTK_TREE_MODEL (widget->priv->list_store);
+
+        path = gtk_tree_row_reference_get_path (row);
+        gtk_tree_model_get_iter (model, &iter, path);
+        gtk_tree_path_free (path);
+
+        gtk_list_store_set (widget->priv->list_store, &iter,
+                            CHOOSER_TIMER_START_TIME_COLUMN,
+                            get_current_time (), -1);
+        gtk_list_store_set (widget->priv->list_store, &iter,
+                            CHOOSER_TIMER_DURATION_COLUMN,
+                            duration, -1);
+        gtk_list_store_set (widget->priv->list_store, &iter,
+                            CHOOSER_TIMER_VALUE_COLUMN, 0.0, -1);
+
+        if (widget->priv->timer_animation_timeout_id == 0) {
+                g_assert (g_hash_table_size (widget->priv->rows_with_timers) == 1);
+
+                widget->priv->timer_animation_timeout_id =
+                    g_timeout_add (1000 / 20,
+                                   (GSourceFunc) on_timer_timeout,
+                                   widget);
+
+        }
+}
+
+static void
+stop_timer (GdmChooserWidget    *widget,
+            GtkTreeRowReference *row)
+{
+        GtkTreeModel *model;
+        GtkTreePath  *path;
+        GtkTreeIter   iter;
+
+        model = GTK_TREE_MODEL (widget->priv->list_store);
+
+        path = gtk_tree_row_reference_get_path (row);
+        gtk_tree_model_get_iter (model, &iter, path);
+        gtk_tree_path_free (path);
+
+        gtk_list_store_set (widget->priv->list_store, &iter,
+                            CHOOSER_TIMER_START_TIME_COLUMN,
+                            0.0, -1);
+        gtk_list_store_set (widget->priv->list_store, &iter,
+                            CHOOSER_TIMER_DURATION_COLUMN,
+                            0.0, -1);
+        gtk_list_store_set (widget->priv->list_store, &iter,
+                            CHOOSER_TIMER_VALUE_COLUMN, 0.0, -1);
+}
+
+static void
+update_timer_from_time (GdmChooserWidget    *widget,
+                        GtkTreeRowReference *row,
+                        double               now)
+{
+        GtkTreeModel *model;
+        GtkTreePath  *path;
+        GtkTreeIter   iter;
+        double        start_time;
+        double        duration;
+        double        elapsed_ratio;
+
+        model = GTK_TREE_MODEL (widget->priv->list_store);
+
+        path = gtk_tree_row_reference_get_path (row);
+        gtk_tree_model_get_iter (model, &iter, path);
+        gtk_tree_path_free (path);
+
+        gtk_tree_model_get (model, &iter,
+                            CHOOSER_TIMER_START_TIME_COLUMN, &start_time,
+                            CHOOSER_TIMER_DURATION_COLUMN, &duration, -1);
+
+        if (duration > G_MINDOUBLE) {
+                elapsed_ratio = (now - start_time) / duration;
+        } else {
+                elapsed_ratio = 0.0;
+        }
+
+        gtk_list_store_set (widget->priv->list_store, &iter,
+                            CHOOSER_TIMER_VALUE_COLUMN,
+                            elapsed_ratio, -1);
+
+        if (elapsed_ratio > .999) {
+                char *id;
+
+                stop_timer (widget, row);
+
+                gtk_tree_model_get (model, &iter,
+                                    CHOOSER_ID_COLUMN, &id, -1);
+                g_hash_table_remove (widget->priv->rows_with_timers,
+                                     id);
+                g_free (id);
+
+                widget->priv->number_of_rows_with_status--;
+                queue_column_visibility_update (widget);
+        }
+}
+
+void
+gdm_chooser_widget_set_item_timer (GdmChooserWidget *widget,
+                                   const char       *id,
+                                   gulong            timeout)
+{
+        GtkTreeModel        *model;
+        GtkTreeRowReference *row;
+
+        g_return_if_fail (GDM_IS_CHOOSER_WIDGET (widget));
+
+        model = GTK_TREE_MODEL (widget->priv->list_store);
+
+        row = g_hash_table_lookup (widget->priv->rows_with_timers,
+                                   id);
+
+        g_assert (row == NULL || gtk_tree_row_reference_valid (row));
+
+        if (row != NULL) {
+                stop_timer (widget, row);
+        }
+
+        if (timeout == 0) {
+                if (row == NULL) {
+                        g_warning ("could not find item with id '%s' to "
+                                   "remove timer", id);
+                        return;
+                }
+
+                g_hash_table_remove (widget->priv->rows_with_timers,
+                                     id);
+                gtk_tree_model_filter_refilter (widget->priv->model_filter);
+                return;
+        }
+
+        if (row == NULL) {
+                GtkTreeIter  iter;
+                GtkTreePath *path;
+
+                if (!find_item (widget, id, &iter)) {
+                        g_warning ("could not find item with id '%s' to "
+                                   "add timer", id);
+                        return;
+                }
+
+                path = gtk_tree_model_get_path (model, &iter);
+                row = gtk_tree_row_reference_new (model, path);
+
+                g_hash_table_insert (widget->priv->rows_with_timers,
+                                     g_strdup (id), row);
+
+                widget->priv->number_of_rows_with_status++;
+                queue_column_visibility_update (widget);
+        }
+
+        start_timer (widget, row, timeout / 1000.0);
 }
 
 void

@@ -117,7 +117,9 @@ void                   gdm_chooser_widget_set_item_in_use        (GdmChooserWidg
 void                   gdm_chooser_widget_set_item_priority      (GdmChooserWidget *widget,
                                                                   const char       *id,
                                                                   gulong            priority);
-
+void                   gdm_chooser_widget_set_item_timer         (GdmChooserWidget *widget,
+                                                                  const char       *id,
+                                                                  gulong            timeout);
 void                   gdm_chooser_widget_set_in_use_message     (GdmChooserWidget *widget,
                                                                   const char       *message);
 

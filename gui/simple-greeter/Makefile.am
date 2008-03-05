@@ -73,6 +73,8 @@ test_greeter_login_window_SOURCES = 	\
 	gdm-chooser-widget.c		\
 	gdm-sessions.h			\
 	gdm-sessions.c			\
+	gdm-cell-renderer-timer.h	\
+	gdm-cell-renderer-timer.c	\
 	gdm-user-chooser-widget.h	\
 	gdm-user-chooser-widget.c	\
 	gdm-user-chooser-dialog.h	\
@@ -100,6 +102,8 @@ test_greeter_panel_SOURCES = 	\
 	gdm-recent-option-widget.c	\
 	gdm-languages.h			\
 	gdm-languages.c			\
+	gdm-cell-renderer-timer.h	\
+	gdm-cell-renderer-timer.c	\
 	gdm-chooser-widget.h		\
 	gdm-chooser-widget.c		\
 	gdm-language-chooser-widget.h	\
@@ -136,6 +140,8 @@ test_remote_login_window_LDADD =	\
 
 test_language_chooser_SOURCES = 	\
 	test-language-chooser.c		\
+	gdm-cell-renderer-timer.h	\
+	gdm-cell-renderer-timer.c	\
 	gdm-chooser-widget.h		\
 	gdm-chooser-widget.c		\
 	gdm-languages.h			\
@@ -153,6 +159,8 @@ test_language_chooser_LDADD =	\
 
 test_user_chooser_SOURCES = 		\
 	test-user-chooser.c		\
+	gdm-cell-renderer-timer.h	\
+	gdm-cell-renderer-timer.c	\
 	gdm-chooser-widget.h		\
 	gdm-chooser-widget.c		\
 	gdm-user-chooser-widget.h	\
@@ -195,6 +203,8 @@ libexec_PROGRAMS =			\
 
 gdm_simple_greeter_SOURCES =  		\
 	greeter-main.c 			\
+	gdm-cell-renderer-timer.h	\
+	gdm-cell-renderer-timer.c	\
 	gdm-chooser-widget.h		\
 	gdm-chooser-widget.c		\
 	gdm-greeter-client.h		\

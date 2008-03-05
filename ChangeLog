@@ -1,5 +1,17 @@
 2008-03-04  Ray Strode <rstrode@redhat.com>
 
+	* gui/simple-greeter/Makefile.am:
+	add timer cell renderer to build
+	* gui/simple-greeter/gdm-chooser-widget.[ch]:
+	(GdmChooserWidgetPrivate), (gdm_chooser_widget_init),
+	(gdm_chooser_widget_finalize), (get_current_time),
+	(on_timer_timeout), (start_timer), (stop_timer),
+	(update_timer_from_time), (gdm_chooser_widget_set_item_timer):
+	Add new timer api to chooser widget that shows a timer
+	in the status column
+
+2008-03-04  Ray Strode <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-chooser-widget.c:
 	(GdmChooserWidgetPrivate), (update_column_visibility),
 	(gdm_chooser_widget_init), (gdm_chooser_widget_update_item),
