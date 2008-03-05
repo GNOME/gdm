@@ -1,3 +1,14 @@
+2008-03-05  William Jon McCann  <jmccann@redhat.com>
+
+	* daemon/gdm-session-worker.c: (script_execute), (my_strchrnul),
+	(gdm_session_execute), (gdm_session_worker_process_pam_message),
+	(gdm_session_worker_pam_new_messages_handler):
+	* gui/simple-greeter/gdm-greeter-login-window.c:
+	(delete_entry_text), (reset_dialog),
+	(gdm_greeter_login_window_info_query),
+	(gdm_greeter_login_window_secret_info_query):
+	Try a little harder to not keep sensitive data in memory.
+
 2008-03-05  Ray Strode <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-cell-renderer-timer.c

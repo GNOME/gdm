@@ -529,6 +529,19 @@ do_cancel (GdmGreeterLoginWindow *login_window)
 }
 
 static void
+delete_entry_text (GtkWidget *entry)
+{
+        const char *typed_text;
+        char       *null_text;
+
+        /* try to scrub out any secret info */
+        typed_text = gtk_entry_get_text (GTK_ENTRY (entry));
+        null_text = g_strnfill (strlen (typed_text) + 1, '\b');
+        gtk_entry_set_text (GTK_ENTRY (entry), null_text);
+        gtk_entry_set_text (GTK_ENTRY (entry), "");
+}
+
+static void
 reset_dialog (GdmGreeterLoginWindow *login_window)
 {
         GtkWidget  *entry;
@@ -537,7 +550,9 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         g_debug ("GdmGreeterLoginWindow: Resetting dialog");
 
         entry = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-entry");
-        gtk_entry_set_text (GTK_ENTRY (entry), "");
+
+        delete_entry_text (entry);
+
         gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
         set_message (login_window, "");
 
@@ -617,7 +632,7 @@ gdm_greeter_login_window_info_query (GdmGreeterLoginWindow *login_window,
         g_debug ("GdmGreeterLoginWindow: info query: %s", text);
 
         entry = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-entry");
-        gtk_entry_set_text (GTK_ENTRY (entry), "");
+        delete_entry_text (entry);
         gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
         set_log_in_button_mode (login_window, LOGIN_BUTTON_ANSWER_QUERY);
 
@@ -642,7 +657,7 @@ gdm_greeter_login_window_secret_info_query (GdmGreeterLoginWindow *login_window,
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
         entry = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-entry");
-        gtk_entry_set_text (GTK_ENTRY (entry), "");
+        delete_entry_text (entry);
         gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
         set_log_in_button_mode (login_window, LOGIN_BUTTON_ANSWER_QUERY);
 

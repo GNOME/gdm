@@ -164,8 +164,9 @@ script_execute (const gchar *file,
         /* Count the arguments.  */
         int argc = 0;
 
-        while (argv[argc])
+        while (argv[argc]) {
                 ++argc;
+        }
 
         /* Construct an argument list for the shell.  */
         {
@@ -181,10 +182,11 @@ script_execute (const gchar *file,
                 }
 
                 /* Execute the shell. */
-                if (envp)
+                if (envp) {
                         execve (new_argv[0], new_argv, envp);
-                else
+                } else {
                         execv (new_argv[0], new_argv);
+                }
 
                 g_free (new_argv);
         }
@@ -194,8 +196,9 @@ static char *
 my_strchrnul (const char *str, char c)
 {
         char *p = (char*) str;
-        while (*p && (*p != c))
+        while (*p && (*p != c)) {
                 ++p;
+        }
 
         return p;
 }
@@ -215,13 +218,15 @@ gdm_session_execute (const char *file,
 
         if (!search_path || strchr (file, '/') != NULL) {
                 /* Don't search when it contains a slash. */
-                if (envp)
+                if (envp) {
                         execve (file, argv, envp);
-                else
+                } else {
                         execv (file, argv);
+                }
 
-                if (errno == ENOEXEC)
+                if (errno == ENOEXEC) {
                         script_execute (file, argv, envp, FALSE);
+                }
         } else {
                 gboolean got_eacces = 0;
                 const char *path, *p;
@@ -756,6 +761,7 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
                         *response_text = strdup (user_answer);
                 }
 
+                memset (user_answer, '\0', strlen (user_answer));
                 g_free (user_answer);
 
                 g_debug ("GdmSessionWorker: trying to get updated username");
@@ -807,6 +813,8 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
                                                                        messages[i],
                                                                        &response_text);
                 if (!got_response) {
+                        memset (response_text, '\0', strlen (response_text));
+                        g_free (response_text);
                         goto out;
                 }
 
