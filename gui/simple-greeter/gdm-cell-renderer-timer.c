@@ -181,10 +181,17 @@ gdm_cell_renderer_timer_render (GtkCellRenderer      *cell,
                          cell_area->x + cell->xpad,
                          cell_area->y + cell->ypad);
 
+        widget_state = GTK_STATE_NORMAL;
         if (renderer_state & GTK_CELL_RENDERER_SELECTED) {
-                widget_state = GTK_STATE_SELECTED;
-        } else {
-                widget_state = GTK_STATE_NORMAL;
+                if (GTK_WIDGET_HAS_FOCUS (widget)) {
+                        widget_state = GTK_STATE_SELECTED;
+                } else {
+                        widget_state = GTK_STATE_ACTIVE;
+                }
+        }
+
+        if (renderer_state & GTK_CELL_RENDERER_INSENSITIVE) {
+                widget_state = GTK_STATE_INSENSITIVE;
         }
 
         draw_timer (renderer, context,
