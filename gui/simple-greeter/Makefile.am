@@ -136,6 +136,7 @@ test_remote_login_window_SOURCES = 	\
 
 test_remote_login_window_LDADD =	\
 	$(GTK_LIBS)			\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 test_language_chooser_SOURCES = 	\
