@@ -68,7 +68,7 @@ struct GdmChooserWidgetPrivate
         GtkTreeRowReference      *top_edge_row;    /* Only around for shrink */
         GtkTreeRowReference      *bottom_edge_row; /* animations */
 
-        GtkTreeViewColumn        *is_in_use_column;
+        GtkTreeViewColumn        *status_column;
         GtkTreeViewColumn        *image_column;
 
         char                     *inactive_text;
@@ -77,7 +77,7 @@ struct GdmChooserWidgetPrivate
 
         gint                     number_of_normal_rows;
         gint                     number_of_separated_rows;
-        gint                     number_of_in_use_rows;
+        gint                     number_of_rows_with_status;
         gint                     number_of_rows_with_images;
 
         guint                    update_idle_id;
@@ -1434,13 +1434,14 @@ update_column_visibility (GdmChooserWidget *widget)
                 gtk_tree_view_column_set_visible (widget->priv->image_column,
                                                   FALSE);
         }
-        if (widget->priv->number_of_in_use_rows > 0) {
-                gtk_tree_view_column_set_visible (widget->priv->is_in_use_column,
+        if (widget->priv->number_of_rows_with_status > 0) {
+                gtk_tree_view_column_set_visible (widget->priv->status_column,
                                                   TRUE);
         } else {
-                gtk_tree_view_column_set_visible (widget->priv->is_in_use_column,
+                gtk_tree_view_column_set_visible (widget->priv->status_column,
                                                   FALSE);
         }
+
         return FALSE;
 }
 
@@ -1619,12 +1620,12 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
         gtk_tree_view_set_tooltip_column (GTK_TREE_VIEW (widget->priv->items_view),
                                           CHOOSER_COMMENT_COLUMN);
 
-        /* IN USE COLUMN */
+        /* STATUS COLUMN */
         renderer = gtk_cell_renderer_pixbuf_new ();
         column = gtk_tree_view_column_new ();
         gtk_tree_view_column_pack_start (column, renderer, FALSE);
         gtk_tree_view_append_column (GTK_TREE_VIEW (widget->priv->items_view), column);
-        widget->priv->is_in_use_column = column;
+        widget->priv->status_column = column;
 
         gtk_tree_view_column_set_cell_data_func (column,
                                                  renderer,
@@ -1717,9 +1718,9 @@ gdm_chooser_widget_update_item (GdmChooserWidget *widget,
 
         if (in_use != new_in_use) {
                 if (new_in_use) {
-                        widget->priv->number_of_in_use_rows++;
+                        widget->priv->number_of_rows_with_status++;
                 } else {
-                        widget->priv->number_of_in_use_rows--;
+                        widget->priv->number_of_rows_with_status--;
                 }
                 queue_column_visibility_update (widget);
         }
@@ -1766,7 +1767,7 @@ gdm_chooser_widget_add_item (GdmChooserWidget *widget,
         }
 
         if (in_use) {
-                widget->priv->number_of_in_use_rows++;
+                widget->priv->number_of_rows_with_status++;
                 queue_column_visibility_update (widget);
         }
 
@@ -1824,7 +1825,7 @@ gdm_chooser_widget_remove_item (GdmChooserWidget *widget,
         }
 
         if (is_in_use) {
-                widget->priv->number_of_in_use_rows--;
+                widget->priv->number_of_rows_with_status--;
                 queue_column_visibility_update (widget);
         }
 
@@ -1898,9 +1899,9 @@ gdm_chooser_widget_set_item_in_use (GdmChooserWidget *widget,
         if (was_in_use != is_in_use) {
 
                 if (is_in_use) {
-                        widget->priv->number_of_in_use_rows++;
+                        widget->priv->number_of_rows_with_status++;
                 } else {
-                        widget->priv->number_of_in_use_rows--;
+                        widget->priv->number_of_rows_with_status--;
                 }
                 queue_column_visibility_update (widget);
 

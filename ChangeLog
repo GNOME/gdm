@@ -1,5 +1,16 @@
 2008-03-04  Ray Strode <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-chooser-widget.c:
+	(GdmChooserWidgetPrivate), (update_column_visibility),
+	(gdm_chooser_widget_init), (gdm_chooser_widget_update_item),
+	(gdm_chooser_widget_add_item), (gdm_chooser_widget_remove_item),
+	(gdm_chooser_widget_set_item_in_use):
+	rename in_use_column and number_of_in_use_rows to status_column
+	and number_of_rows_with_status respectively, in preparation for
+	packing the animated timer into the same status column
+
+2008-03-04  Ray Strode <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-cell-renderer-timer.[ch]:
 	New cell renderer that does clock count-down animation
 	(will be improved to be themable later)
