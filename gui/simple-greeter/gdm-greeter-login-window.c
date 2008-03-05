@@ -281,6 +281,10 @@ restart_timed_login_timeout (GdmGreeterLoginWindow *login_window)
                 login_window->priv->timed_login_timeout_id = g_timeout_add_seconds (login_window->priv->timed_login_delay,
                                                                                     (GSourceFunc)timed_login_timer,
                                                                                     login_window);
+
+                gdm_chooser_widget_set_item_timer (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser),
+                                                   GDM_USER_CHOOSER_USER_AUTO,
+                                                   login_window->priv->timed_login_delay * 1000);
         }
 }
 
