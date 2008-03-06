@@ -63,7 +63,6 @@
 
 struct GdmSimpleSlavePrivate
 {
-        char              *id;
         GPid               pid;
 
         guint              greeter_reset_id;
@@ -400,6 +399,7 @@ static void
 create_new_session (GdmSimpleSlave *slave)
 {
         gboolean       display_is_local;
+        char          *display_id;
         char          *display_name;
         char          *display_hostname;
         char          *display_device;
@@ -408,6 +408,7 @@ create_new_session (GdmSimpleSlave *slave)
         g_debug ("GdmSimpleSlave: Creating new session");
 
         g_object_get (slave,
+                      "display-id", &display_id,
                       "display-name", &display_name,
                       "display-hostname", &display_hostname,
                       "display-is-local", &display_is_local,
@@ -419,11 +420,13 @@ create_new_session (GdmSimpleSlave *slave)
                 display_device = gdm_server_get_display_device (slave->priv->server);
         }
 
-        slave->priv->session = gdm_session_direct_new (display_name,
+        slave->priv->session = gdm_session_direct_new (display_id,
+                                                       display_name,
                                                        display_hostname,
                                                        display_device,
                                                        display_x11_authority_file,
                                                        display_is_local);
+        g_free (display_id);
         g_free (display_name);
         g_free (display_device);
         g_free (display_hostname);

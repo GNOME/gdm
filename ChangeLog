@@ -1,5 +1,25 @@
 2008-03-05  William Jon McCann  <jmccann@redhat.com>
 
+	* daemon/Makefile.am:
+	* daemon/gdm-product-slave.c: (create_new_session):
+	* daemon/gdm-session-direct.c: (gdm_session_direct_init),
+	(_gdm_session_direct_set_display_id),
+	(gdm_session_direct_set_property),
+	(gdm_session_direct_get_property), (gdm_session_direct_dispose),
+	(gdm_session_direct_finalize), (register_session),
+	(gdm_session_direct_constructor), (gdm_session_direct_class_init),
+	(gdm_session_direct_new), (gdm_session_direct_restart),
+	(gdm_session_direct_stop), (gdm_session_direct_detach):
+	* daemon/gdm-session-direct.h:
+	* daemon/gdm-session-direct.xml:
+	* daemon/gdm-simple-slave.c: (create_new_session):
+	* daemon/gdm-slave.c: (gdm_slave_constructor):
+	* daemon/test-session.c: (main):
+	* data/gdm.conf:
+	Put the SessionDirect on the bus.  Doesn't do anything yet.
+
+2008-03-05  William Jon McCann  <jmccann@redhat.com>
+
 	* data/gdm.conf:
 	Invert the sense of the policy.  Deny first.
 

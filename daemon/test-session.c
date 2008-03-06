@@ -242,7 +242,8 @@ main (int   argc,
 
         do {
                 g_debug ("creating instance of GdmSessionDirect object...");
-                session = gdm_session_direct_new (":0",
+                session = gdm_session_direct_new ("/org/gnome/DisplayManager/Display1",
+                                                  ":0",
                                                   g_get_host_name (),
                                                   ttyname (STDIN_FILENO),
                                                   getenv("XAUTHORITY"),

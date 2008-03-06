@@ -1230,6 +1230,8 @@ gdm_slave_constructor (GType                  type,
                 id = slave->priv->display_id + strlen ("/org/gnome/DisplayManager/Display");
         }
 
+        g_assert (id != NULL);
+
         slave->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Slave%s", id);
         g_debug ("GdmSlave: Registering %s", slave->priv->id);
 

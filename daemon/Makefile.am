@@ -33,6 +33,7 @@ BUILT_SOURCES =					\
 	gdm-factory-slave-glue.h		\
 	gdm-product-slave-glue.h		\
 	gdm-xdmcp-chooser-slave-glue.h		\
+	gdm-session-direct-glue.h		\
 	gdm-manager-glue.h			\
 	gdm-display-glue.h			\
 	gdm-xdmcp-greeter-display-glue.h	\
@@ -56,6 +57,8 @@ gdm-product-slave-glue.h: gdm-product-slave.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_product_slave --mode=glib-server --output=gdm-product-slave-glue.h $(srcdir)/gdm-product-slave.xml
 gdm-xdmcp-chooser-slave-glue.h: gdm-xdmcp-chooser-slave.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_xdmcp_chooser_slave --mode=glib-server --output=gdm-xdmcp-chooser-slave-glue.h $(srcdir)/gdm-xdmcp-chooser-slave.xml
+gdm-session-direct-glue.h: gdm-session-direct.xml Makefile.am
+	dbus-binding-tool --prefix=gdm_session_direct --mode=glib-server --output=gdm-session-direct-glue.h $(srcdir)/gdm-session-direct.xml
 gdm-display-glue.h: gdm-display.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_display --mode=glib-server --output=gdm-display-glue.h $(srcdir)/gdm-display.xml
 gdm-xdmcp-greeter-display-glue.h: gdm-xdmcp-greeter-display.xml Makefile.am

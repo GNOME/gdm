@@ -48,6 +48,7 @@
 #include "gdm-session-direct.h"
 #include "gdm-session.h"
 #include "gdm-session-private.h"
+#include "gdm-session-direct-glue.h"
 
 #include "gdm-session-record.h"
 #include "gdm-session-worker-job.h"
@@ -78,6 +79,8 @@ struct _GdmSessionDirectPrivate
         guint32              is_running : 1;
 
         /* object lifetime scope */
+        char                *id;
+        char                *display_id;
         char                *display_name;
         char                *display_hostname;
         char                *display_device;
@@ -87,10 +90,12 @@ struct _GdmSessionDirectPrivate
         DBusServer          *server;
         char                *server_address;
         GHashTable          *environment;
+        DBusGConnection     *connection;
 };
 
 enum {
         PROP_0,
+        PROP_DISPLAY_ID,
         PROP_DISPLAY_NAME,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
@@ -1411,6 +1416,7 @@ gdm_session_direct_init (GdmSessionDirect *session)
                                                             (GDestroyNotify) g_free);
 
         setup_server (session);
+
 }
 
 static void
@@ -2048,6 +2054,14 @@ gdm_session_direct_select_language (GdmSession *session,
                                  get_language_name (impl));
 }
 
+static void
+_gdm_session_direct_set_display_id (GdmSessionDirect *session,
+                                    const char       *id)
+{
+        g_free (session->priv->display_id);
+        session->priv->display_id = g_strdup (id);
+}
+
 /* At some point we may want to read these right from
  * the slave but for now I don't want the dependency */
 static void
@@ -2109,6 +2123,9 @@ gdm_session_direct_set_property (GObject      *object,
         self = GDM_SESSION_DIRECT (object);
 
         switch (prop_id) {
+        case PROP_DISPLAY_ID:
+                _gdm_session_direct_set_display_id (self, g_value_get_string (value));
+                break;
         case PROP_DISPLAY_NAME:
                 _gdm_session_direct_set_display_name (self, g_value_get_string (value));
                 break;
@@ -2144,6 +2161,9 @@ gdm_session_direct_get_property (GObject    *object,
         self = GDM_SESSION_DIRECT (object);
 
         switch (prop_id) {
+        case PROP_DISPLAY_ID:
+                g_value_set_string (value, self->priv->display_id);
+                break;
         case PROP_DISPLAY_NAME:
                 g_value_set_string (value, self->priv->display_name);
                 break;
@@ -2178,6 +2198,9 @@ gdm_session_direct_dispose (GObject *object)
         g_debug ("GdmSessionDirect: Disposing session");
 
         gdm_session_direct_close (GDM_SESSION (session));
+
+        g_free (session->priv->display_id);
+        session->priv->display_id = NULL;
 
         g_free (session->priv->display_name);
         session->priv->display_name = NULL;
@@ -2216,6 +2239,8 @@ gdm_session_direct_finalize (GObject *object)
 
         session = GDM_SESSION_DIRECT (object);
 
+        g_free (session->priv->id);
+
         g_free (session->priv->selected_user);
         g_free (session->priv->selected_session);
         g_free (session->priv->saved_session);
@@ -2226,6 +2251,58 @@ gdm_session_direct_finalize (GObject *object)
 
         if (parent_class->finalize != NULL)
                 parent_class->finalize (object);
+}
+
+static gboolean
+register_session (GdmSessionDirect *session)
+{
+        GError *error;
+
+        error = NULL;
+        session->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (session->priv->connection == NULL) {
+                if (error != NULL) {
+                        g_critical ("error getting system bus: %s", error->message);
+                        g_error_free (error);
+                }
+                exit (1);
+        }
+
+        dbus_g_connection_register_g_object (session->priv->connection, session->priv->id, G_OBJECT (session));
+
+        return TRUE;
+}
+
+static GObject *
+gdm_session_direct_constructor (GType                  type,
+                                guint                  n_construct_properties,
+                                GObjectConstructParam *construct_properties)
+{
+        GdmSessionDirect *session;
+        gboolean          res;
+        const char       *id;
+
+        session = GDM_SESSION_DIRECT (G_OBJECT_CLASS (gdm_session_direct_parent_class)->constructor (type,
+                                                                                          n_construct_properties,
+                                                                                          construct_properties));
+
+        /* Always match the session id with the master */
+        id = NULL;
+        if (g_str_has_prefix (session->priv->display_id, "/org/gnome/DisplayManager/Display")) {
+                id = session->priv->display_id + strlen ("/org/gnome/DisplayManager/Display");
+        }
+
+        g_assert (id != NULL);
+
+        session->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Session%s", id);
+        g_debug ("GdmSessionDirect: Registering %s", session->priv->id);
+
+        res = register_session (session);
+        if (! res) {
+                g_warning ("Unable to register session with system bus");
+        }
+
+        return G_OBJECT (session);
 }
 
 static void
@@ -2256,11 +2333,19 @@ gdm_session_direct_class_init (GdmSessionDirectClass *session_class)
 
         object_class->get_property = gdm_session_direct_get_property;
         object_class->set_property = gdm_session_direct_set_property;
+        object_class->constructor = gdm_session_direct_constructor;
         object_class->dispose = gdm_session_direct_dispose;
         object_class->finalize = gdm_session_direct_finalize;
 
         g_type_class_add_private (session_class, sizeof (GdmSessionDirectPrivate));
 
+        g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_ID,
+                                         g_param_spec_string ("display-id",
+                                                              "display id",
+                                                              "display id",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_NAME,
                                          g_param_spec_string ("display-name",
@@ -2306,10 +2391,12 @@ gdm_session_direct_class_init (GdmSessionDirectClass *session_class)
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
 
+        dbus_g_object_type_install_info (GDM_TYPE_SESSION_DIRECT, &dbus_glib_gdm_session_direct_object_info);
 }
 
 GdmSessionDirect *
-gdm_session_direct_new (const char *display_name,
+gdm_session_direct_new (const char *display_id,
+                        const char *display_name,
                         const char *display_hostname,
                         const char *display_device,
                         const char *display_x11_authority_file,
@@ -2318,6 +2405,7 @@ gdm_session_direct_new (const char *display_name,
         GdmSessionDirect *session;
 
         session = g_object_new (GDM_TYPE_SESSION_DIRECT,
+                                "display-id", display_id,
                                 "display-name", display_name,
                                 "display-hostname", display_hostname,
                                 "display-device", display_device,
@@ -2326,4 +2414,42 @@ gdm_session_direct_new (const char *display_name,
                                 NULL);
 
         return session;
+}
+
+gboolean
+gdm_session_direct_restart (GdmSessionDirect *session,
+                            GError          **error)
+{
+        gboolean ret;
+
+        ret = TRUE;
+        g_debug ("GdmSessionDirect: Request to restart session");
+
+        return ret;
+}
+
+gboolean
+gdm_session_direct_stop (GdmSessionDirect *session,
+                         GError          **error)
+{
+        gboolean ret;
+
+        ret = TRUE;
+
+        g_debug ("GdmSessionDirect: Request to stop session");
+
+        return ret;
+}
+
+gboolean
+gdm_session_direct_detach (GdmSessionDirect *session,
+                           GError          **error)
+{
+        gboolean ret;
+
+        ret = TRUE;
+
+        g_debug ("GdmSessionDirect: Request to detach session");
+
+        return ret;
 }
