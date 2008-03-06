@@ -796,6 +796,9 @@ main (int argc, char *argv[])
 	g_type_init ();
 
 	if (send_command != NULL) {
+
+		/* gdk_init is needed for cookie code to get display */
+		gdk_init (&argc, &argv);
 		if (authenticate)
 			auth_cookie = gdmcomm_get_auth_cookie ();
 

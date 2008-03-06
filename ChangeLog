@@ -1,3 +1,11 @@
+2008-03-05 Brian Cameron <brian.cameron@sun.com>
+
+	* gui/gdmcommon.c: If the user uses the default remote welcome string
+	  for local displays or vice-versa, then translate the string.
+	* gui/gdmflexiserver.c:  Need to call gdk_init when running in
+	  --command mode or the -a option fails when trying to call the
+	  gdk function to get the display.
+
 2008-03-01 Brian Cameron <brian.cameron@sun.com>
 
 	I got approval from the GNOME release team for these 3 changes.

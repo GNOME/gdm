@@ -618,8 +618,10 @@ gdm_common_get_welcomemsg (void)
 	gchar *tempstr;
 
 	/*
-	 * Translate the welcome msg in the client program since it is running as the
-	 * user and therefore has the appropriate language environment set.
+	 * Translate the welcome msg in the client program since it is running
+	 * as the user and therefore has the appropriate language environment
+	 * set.  If the user wants to use the default remote welcome msg as the
+         * local welcome msg (or vice versa), then also translate.
 	 */
         if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
                 if (gdm_config_get_bool (GDM_KEY_DEFAULT_REMOTE_WELCOME))
@@ -630,6 +632,8 @@ gdm_common_get_welcomemsg (void)
 			if (tempstr == NULL ||
 			    strcmp (ve_sure_string (tempstr), GDM_DEFAULT_REMOTE_WELCOME_MSG) == 0)
 				welcomemsg = g_strdup (_(GDM_DEFAULT_REMOTE_WELCOME_MSG));
+			else if (strcmp (ve_sure_string (tempstr), GDM_DEFAULT_WELCOME_MSG) == 0)
+		        	welcomemsg = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
 			else
 				welcomemsg = g_strdup (tempstr);
 		}
@@ -642,8 +646,10 @@ gdm_common_get_welcomemsg (void)
 			if (tempstr == NULL ||
 			    strcmp (ve_sure_string (tempstr), GDM_DEFAULT_WELCOME_MSG) == 0)
 				welcomemsg = g_strdup (_(GDM_DEFAULT_WELCOME_MSG));
+			else if (strcmp (ve_sure_string (tempstr), GDM_DEFAULT_REMOTE_WELCOME_MSG) == 0)
+	        		welcomemsg = g_strdup (_(GDM_DEFAULT_REMOTE_WELCOME_MSG));
 			else
-				welcomemsg = g_strdup (tempstr);
+       				welcomemsg = g_strdup (tempstr);
 		}
         }
 
