@@ -1222,7 +1222,8 @@ load_theme (GdmGreeterLoginWindow *login_window)
                         g_error_free (error);
                 }
 
-                g_debug ("GdmGreeterLoginWindow: Got greeter logo '%s'", icon_name);
+                g_debug ("GdmGreeterLoginWindow: Got greeter logo '%s'",
+                          icon_name ? icon_name : "(null)");
                 if (icon_name != NULL) {
                         gtk_image_set_from_icon_name (GTK_IMAGE (image),
                                                       icon_name,
