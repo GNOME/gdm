@@ -80,7 +80,12 @@ parse_key_string (const char *keystring,
         /*g_debug ("Attempting to parse key string: %s", keystring);*/
 
         split1 = g_strsplit (keystring, "/", 2);
-        if (split1 == NULL || split1 [0] == NULL || split1 [1] == NULL) {
+        if (split1 == NULL
+            || split1 [0] == NULL
+            || split1 [1] == NULL
+            || split1 [0][0] == '\0'
+            || split1 [1][0] == '\0') {
+                g_warning ("GdmSettingsDesktopBackend: invalid key: %s", keystring);
                 goto out;
         }
 
