@@ -220,6 +220,7 @@ signal_handler (int signo)
 {
         static int in_fatal = 0;
         int        ignore;
+        guchar     signo_byte = signo;
 
         /* avoid loops */
         if (in_fatal > 0) {
@@ -244,12 +245,11 @@ signal_handler (int signo)
 
                 g_warning ("Caught signal %d, shutting down abnormally.  Generating backtrace...", signo);
                 gdm_signal_handler_backtrace ();
-                ignore = write (signal_pipes [1], (guchar *)&signo, 1);
+                ignore = write (signal_pipes [1], &signo_byte, 1);
                 break;
         default:
                 --in_fatal;
-                /* FIXME: should probably use int32 here */
-                ignore = write (signal_pipes [1], (guchar *)&signo, 1);
+                ignore = write (signal_pipes [1], &signo_byte, 1);
                 break;
         }
 }
