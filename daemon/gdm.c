@@ -1585,7 +1585,7 @@ main (int argc, char *argv[])
 
 	main_loop = g_main_loop_new (NULL, FALSE);
 
-	gdm_system_locale = g_strdup (g_get_language_names()[0]);
+	gdm_system_locale = g_strdup (setlocale (LC_MESSAGES, NULL));
 	/* initial TERM/INT handler */
 	sig.sa_handler = initial_term_int;
 	sig.sa_flags = SA_RESTART;
