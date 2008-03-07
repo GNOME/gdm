@@ -1,7 +1,8 @@
 2008-03-07 Brian Cameron <brian.cameron@sun.com>
 
 	* daemon/gdm.c:  Get default locale from LC_MESSAGES rather than
-	  from g_get_language_names.  Fixes bug #517670.
+	  from g_get_language_names.  Fixes bug #517670.  Patch by Ray
+	  Strode <rstrode@redhat.com>.
 
 2008-03-05 Brian Cameron <brian.cameron@sun.com>
 
@@ -9,7 +10,8 @@
 	  for local displays or vice-versa, then translate the string.
 	* gui/gdmflexiserver.c:  Need to call gdk_init when running in
 	  --command mode or the -a option fails when trying to call the
-	  gdk function to get the display.
+	  gdk function to get the display.  Patch by Frederic Crozat 
+          <fcrozat@mandriva.com> and myself.
 
 2008-03-01 Brian Cameron <brian.cameron@sun.com>
 
@@ -20,7 +22,8 @@
 	  config/gdm.conf.in: Honor default password character rather than
 	  hardcoding to '*'.  Fixes bug #477881.  Note this same fix was
 	  committed and reverted on 2007-11-14 because I did not obtain string
-	  freeze breakage approval at that time.
+	  freeze breakage approval at that time.  Patch by Alexander "weej"
+	  Jones <alex@weej.com>.
 	* docs/C/gdm.xml: Modify docs relating to above change, and 
 	  modify the Custom Widgetry section to explain the recent fixes
 	  (in last commit).
