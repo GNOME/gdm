@@ -34,6 +34,22 @@ BUILT_SOURCES =			\
 	gdm-marshal.h		\
 	$(NULL)
 
+gdmdir = $(datadir)/gdm
+gdm_DATA = gdb-cmd
+
+libexec_PROGRAMS = gdm-crash-logger
+gdm_crash_logger_SOURCES = gdm-crash-logger.c
+gdm_crash_logger_CPPFLAGS = \
+	$(GTHREAD_CFLAGS)			\
+	-DG_DISABLE_DEPRECATED			\
+	-DBINDIR=\"$(bindir)\"			\
+	-DSBINDIR=\"$(sbindir)\"		\
+	-DDATADIR=\"$(datadir)\"		\
+	-DSYSCONFDIR=\"$(sysconfdir)\"		\
+	-DLOCALSTATEDIR=\"$(localstatedir)\"	\
+	$(NULL)
+gdm_crash_logger_LDADD = $(GTHREAD_LIBS)
+
 gdm-settings-glue.h: gdm-settings.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_settings --mode=glib-server --output=gdm-settings-glue.h $(srcdir)/gdm-settings.xml
 
@@ -129,4 +145,5 @@ CLEANFILES =			\
 EXTRA_DIST = 			\
 	gdm-settings.xml	\
 	gdm-marshal.list	\
+	$(gdm_DATA)		\
 	$(NULL)
