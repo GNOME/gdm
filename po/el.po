@@ -28,8 +28,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-21 18:25+0200\n"
-"PO-Revision-Date: 2008-01-21 18:25+0200\n"
+"POT-Creation-Date: 2008-03-08 18:31+0200\n"
+"PO-Revision-Date: 2008-03-08 18:31+0200\n"
 "Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
 "Language-Team: Greek <team@gnome.gr>\n"
 "MIME-Version: 1.0\n"
@@ -37,23 +37,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);X-Generator: KBabel 1.11.2X-\n"
 
-#: ../common/gdm-common.c:382
+#: ../common/gdm-common.c:395
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom δεν είναι μια character device"
 
 #: ../daemon/factory-slave-main.c:156 ../daemon/product-slave-main.c:156
-#: ../daemon/simple-slave-main.c:156
+#: ../daemon/simple-slave-main.c:158 ../daemon/xdmcp-chooser-slave-main.c:156
 msgid "Display ID"
 msgstr "Οθόνη"
 
 #: ../daemon/factory-slave-main.c:156 ../daemon/product-slave-main.c:156
-#: ../daemon/simple-slave-main.c:156
+#: ../daemon/simple-slave-main.c:158 ../daemon/xdmcp-chooser-slave-main.c:156
 msgid "id"
 msgstr "id"
 
 #: ../daemon/factory-slave-main.c:168 ../daemon/product-slave-main.c:168
-#: ../daemon/simple-slave-main.c:168
+#: ../daemon/simple-slave-main.c:170 ../daemon/xdmcp-chooser-slave-main.c:168
 msgid "GNOME Display Manager Slave"
 msgstr "Slave Διαχειριστής Επιφάνειας Εργασίας GNOME"
 
@@ -62,25 +62,25 @@ msgstr "Slave Διαχειριστής Επιφάνειας Εργασίας GNO
 msgid "could not find user \"%s\" on system"
 msgstr "αδυναμία εύρεσης του χρήστη \"%s\" στο σύστημα"
 
-#: ../daemon/gdm-factory-slave.c:185 ../daemon/gdm-simple-slave.c:169
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:169
 msgid "Unable to initialize login system"
 msgstr "Αδυναμία αρχικοποίησης του συστήματος εισόδου"
 
 #
-#: ../daemon/gdm-factory-slave.c:217 ../daemon/gdm-simple-slave.c:201
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:201
 msgid "Unable to authenticate user"
 msgstr "Αποτυχία πιστοποίησης χρήστη"
 
-#: ../daemon/gdm-factory-slave.c:239 ../daemon/gdm-simple-slave.c:223
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:222
 msgid "Unable to authorize user"
 msgstr "Αδυναμία έγκρισης χρήστη"
 
-#: ../daemon/gdm-factory-slave.c:263
+#: ../daemon/gdm-factory-slave.c:281
 msgid "Unable to establish credentials"
 msgstr "Αδυναμία παρουσίασης διαπιστευτηρίων"
 
-#: ../daemon/gdm-factory-slave.c:591 ../daemon/gdm-product-slave.c:361
-#: ../daemon/gdm-simple-slave.c:706
+#: ../daemon/gdm-factory-slave.c:650 ../daemon/gdm-product-slave.c:394
+#: ../daemon/gdm-simple-slave.c:893
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -92,303 +92,314 @@ msgstr ""
 "ή ελέγξτε το syslog για διάγνωση.Στο μεταξύ αυτή η οθόνη θα απενεργοποιηθεί. "
 "Επανεκκινήστε το GDM όταν διορθωθεί το πρόβλημα."
 
-#
-#: ../daemon/gdm-greeter-session.c:334
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "Ο χρήστης %s δεν υπάρχει."
-
-#
-#: ../daemon/gdm-greeter-session.c:341
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "Η ομάδα %s δεν υπάρχει"
-
-#
-#: ../daemon/gdm-greeter-session.c:352 ../daemon/gdm-server.c:371
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "Αποτυχία ρύθμισης της ταυτότητας ομάδας σε %d"
-
-#
-#: ../daemon/gdm-greeter-session.c:358 ../daemon/gdm-server.c:377
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "Το initgroups() απέτυχε για το %s"
-
-#
-#: ../daemon/gdm-greeter-session.c:364 ../daemon/gdm-server.c:383
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "Αποτυχία ρύθμισης της ταυτότητας χρήστη σε %d"
-
-#
-#: ../daemon/gdm-greeter-session.c:372 ../daemon/gdm-server.c:391
-msgid "Couldn't set groupid to 0"
-msgstr "Αποτυχία ρύθμισης της ταυτότητας ομάδας σε 0"
-
-#: ../daemon/gdm-server.c:242
+#: ../daemon/gdm-server.c:244
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: αδυναμία σύνδεσης στη μητρική οθόνη '%s'"
 
-#: ../daemon/gdm-server.c:360
+#: ../daemon/gdm-server.c:362
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Ο εξυπηρετητής Χ spawned από το χρήστη %s  αλλά αυτός ο χρήστης δεν υπάρχει."
 
 #
-#: ../daemon/gdm-server.c:426
+#: ../daemon/gdm-server.c:373 ../daemon/gdm-welcome-session.c:406
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "Αποτυχία ρύθμισης της ταυτότητας ομάδας σε %d"
+
+#
+#: ../daemon/gdm-server.c:379 ../daemon/gdm-welcome-session.c:412
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "Το initgroups() απέτυχε για το %s"
+
+#
+#: ../daemon/gdm-server.c:385 ../daemon/gdm-welcome-session.c:418
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "Αποτυχία ρύθμισης της ταυτότητας χρήστη σε %d"
+
+#
+#: ../daemon/gdm-server.c:393 ../daemon/gdm-welcome-session.c:426
+msgid "Couldn't set groupid to 0"
+msgstr "Αποτυχία ρύθμισης της ταυτότητας ομάδας σε 0"
+
+#
+#: ../daemon/gdm-server.c:428
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s:Αποτυχία ανοίγματος αρχείου καταγραφών για εμφάνιση %s!"
 
-#: ../daemon/gdm-server.c:437 ../daemon/gdm-server.c:443
-#: ../daemon/gdm-server.c:449
+#: ../daemon/gdm-server.c:439 ../daemon/gdm-server.c:445
+#: ../daemon/gdm-server.c:451
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Σφάλμα ρύθμισης %s σε %s"
 
 #
-#: ../daemon/gdm-server.c:464
+#: ../daemon/gdm-server.c:466
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s:Η προτεραιότητα του εξυπηρετητής δεν μπορεί να ορισθεί σε %d: %s"
 
-#: ../daemon/gdm-server.c:608
+#: ../daemon/gdm-server.c:618
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Κενή εντολή εξυπηρετητή για οθόνη %s"
 
-#: ../daemon/gdm-session-direct.c:1194 ../daemon/gdm-session-direct.c:1212
+#: ../daemon/gdm-session-auditor.c:90
+msgid "Username"
+msgstr "Όνομα Χρήστη"
+
+#: ../daemon/gdm-session-auditor.c:91
+msgid "The username"
+msgstr "Το όνομα Χρήστη"
+
+#: ../daemon/gdm-session-auditor.c:95
+msgid "Hostname"
+msgstr "Όνομα συστήματος"
+
+#: ../daemon/gdm-session-auditor.c:96
+msgid "The hostname"
+msgstr "Το όνομα συστήματος"
+
+#: ../daemon/gdm-session-auditor.c:101
+msgid "Display Device"
+msgstr "Συσκευή απεικόνισης"
+
+#: ../daemon/gdm-session-auditor.c:102
+msgid "The display device"
+msgstr "Η συσκευή απεικόνισης"
+
+#: ../daemon/gdm-session-direct.c:1446 ../daemon/gdm-session-direct.c:1464
 #, c-format
 msgid "worker exited with status %d"
 msgstr "η επεξεργασία έκλεισε με κατάσταση %d"
 
-#: ../daemon/gdm-session-worker.c:837
+#: ../daemon/gdm-session-worker.c:954
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "σφάλμα έναρξης συνομιλίας με το σύστημα πιστοποίησης - %s"
 
-#: ../daemon/gdm-session-worker.c:838
+#: ../daemon/gdm-session-worker.c:955
 msgid "general failure"
 msgstr "γενική αποτυχία"
 
-#: ../daemon/gdm-session-worker.c:839
+#: ../daemon/gdm-session-worker.c:956
 msgid "out of memory"
 msgstr "ανεπάρκεια μνήμης"
 
-#: ../daemon/gdm-session-worker.c:840
+#: ../daemon/gdm-session-worker.c:957
 msgid "application programmer error"
 msgstr "σφάλμα προγραμματιστή εφαρμογής"
 
-#: ../daemon/gdm-session-worker.c:841
-msgid "unscoped error"
-msgstr "άσκοπο σφάλμα"
+#: ../daemon/gdm-session-worker.c:958
+msgid "unknown error"
+msgstr "άγνωστο σφάλμα"
 
-#: ../daemon/gdm-session-worker.c:848
+#: ../daemon/gdm-session-worker.c:965
 msgid "Username:"
 msgstr "Όνομα Χρήστη:"
 
-#: ../daemon/gdm-session-worker.c:854
+#: ../daemon/gdm-session-worker.c:971
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "σφάλμα πληροφόρησης του συστήματος πιστοποίησης για την ειδοποίηση "
 "προτιμώμενου ονόματος χρήστη - %s"
 
-#: ../daemon/gdm-session-worker.c:868
+#: ../daemon/gdm-session-worker.c:985
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 "σφάλμα πληροφόρησης του συστήματος πιστοποίησης για το hostname χρήστη - %s"
 
-#: ../daemon/gdm-session-worker.c:883
+#: ../daemon/gdm-session-worker.c:1000
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
 "σφάλμα πληροφόρησης του συστήματος πιστοποίησης για την κονσόλα χρήστη - %s"
 
-#: ../daemon/gdm-session-worker.c:1039
+#: ../daemon/gdm-session-worker.c:1163
 #, c-format
 msgid "no user account available"
 msgstr "δεν υπάρχει διαθέσιμος λογαριασμός χρήστη"
 
-#: ../daemon/gdm-session-worker.c:1088
+#: ../daemon/gdm-session-worker.c:1212
 #, c-format
 msgid "user account not available on system"
 msgstr "δεν υπάρχει διαθέσιμος λογαριασμός χρήστη στο σύστημα"
 
-#: ../daemon/gdm-session-worker.c:1290
-#, c-format
-msgid ""
-"session log '%s' is not a normal file, logging session to '%s' instead.\n"
-msgstr ""
-"το αρχείο καταγραφής συνεδρίας '%s' δεν είναι ένα κανονικό αρχείο. Να γίνει "
-"καταγραφή συνεδρίας στο '%s'.\n"
-
-#
-#: ../daemon/gdm-session-worker.c:1314
-msgid "unable to log session"
-msgstr "αδυναμία καταγραφής συνεδρία"
-
-#: ../daemon/gdm-simple-slave.c:254
+#: ../daemon/gdm-simple-slave.c:312
 msgid "Unable establish credentials"
 msgstr "Αδυναμία παρουσίασης διαπιστευτηρίων"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:581
+#: ../daemon/gdm-welcome-session.c:388
+#, c-format
+msgid "User %s doesn't exist"
+msgstr "Ο χρήστης %s δεν υπάρχει."
+
+#
+#: ../daemon/gdm-welcome-session.c:395
+#, c-format
+msgid "Group %s doesn't exist"
+msgstr "Η ομάδα %s δεν υπάρχει"
+
+#
+#: ../daemon/gdm-xdmcp-display-factory.c:590
 msgid "Could not create socket!"
 msgstr "Αποτυχία δημιουργίας υποδοχής!"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:847
+#: ../daemon/gdm-xdmcp-display-factory.c:856
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Άρνηση ερωτήματος XDMCP από το σύστημα %s"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:1010
-#: ../daemon/gdm-xdmcp-display-factory.c:1075
+#: ../daemon/gdm-xdmcp-display-factory.c:1013
+#: ../daemon/gdm-xdmcp-display-factory.c:1234
 msgid "Could not extract authlist from packet"
 msgstr "Αποτυχία εξαγωγής λίστας ελέγχου αυθεντικότητας από το πακέτο"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:1023
-#: ../daemon/gdm-xdmcp-display-factory.c:1090
+#: ../daemon/gdm-xdmcp-display-factory.c:1026
+#: ../daemon/gdm-xdmcp-display-factory.c:1249
 msgid "Error in checksum"
 msgstr "Σφάλμα στο άθροισμα ελέγχου"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1342
+#: ../daemon/gdm-xdmcp-display-factory.c:1500
 msgid "Bad address"
 msgstr "Εσφαλμένη διεύθυνση"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1423
+#: ../daemon/gdm-xdmcp-display-factory.c:1581
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: Αδυναμία ανάγνωσης διεύθυνσης οθόνης"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1431
+#: ../daemon/gdm-xdmcp-display-factory.c:1589
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s:Αδυναμία εύρεσης ελεύθερου αριθμού οθόνης"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:1440
+#: ../daemon/gdm-xdmcp-display-factory.c:1598
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s:Αποτυχία εξαγωγής λίστας ελέγχου αυθεντικότητας από το πακέτο"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:1460
+#: ../daemon/gdm-xdmcp-display-factory.c:1618
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: Σφάλμα στο άθροισμα ελέγχου"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:1896
+#: ../daemon/gdm-xdmcp-display-factory.c:2120
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Λήψη REQUEST από απαγορευμένο σύστημα %s"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:1906
-#: ../daemon/gdm-xdmcp-display-factory.c:2261
-#: ../daemon/gdm-xdmcp-display-factory.c:2518
+#: ../daemon/gdm-xdmcp-display-factory.c:2130
+#: ../daemon/gdm-xdmcp-display-factory.c:2485
+#: ../daemon/gdm-xdmcp-display-factory.c:2737
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s:Αποτυχία ανάγνωσης Αριθμού Απεικόνισης"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:1913
+#: ../daemon/gdm-xdmcp-display-factory.c:2137
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Αποτυχία ανάγνωσης Είδους Σύνδεσης"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1920
+#: ../daemon/gdm-xdmcp-display-factory.c:2144
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Αδυναμία ανάγνωσης διεύθυνσης πελάτη"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:1928
+#: ../daemon/gdm-xdmcp-display-factory.c:2152
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Αποτυχία ανάγνωσης Ονομάτων Εξουσιοδότησης"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:1937
+#: ../daemon/gdm-xdmcp-display-factory.c:2161
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s:Αποτυχία ανάγνωσης Δεδομένων Εξουσιοδότησης"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:1947
+#: ../daemon/gdm-xdmcp-display-factory.c:2171
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Αποτυχία ανάγνωσης Λίστας Εξουσιοδότησης"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:1966
+#: ../daemon/gdm-xdmcp-display-factory.c:2190
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Αποτυχία ανάγνωσης Ταυτότητας Κατασκευαστή"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:1993
+#: ../daemon/gdm-xdmcp-display-factory.c:2217
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Εσφαλμένο άθροισμα ελέγχου από %s"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:2245
+#: ../daemon/gdm-xdmcp-display-factory.c:2469
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s:Λήψη μηνύματος Manage από απαγορευμένο σύστημα %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2254
-#: ../daemon/gdm-xdmcp-display-factory.c:2525
+#: ../daemon/gdm-xdmcp-display-factory.c:2478
+#: ../daemon/gdm-xdmcp-display-factory.c:2744
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Αδυναμία ανάγνωσης ταυτότητας διεύθυνσης"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2268
+#: ../daemon/gdm-xdmcp-display-factory.c:2492
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Αδυναμία ανάγνωσης τάξης οθόνης"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2374
-#: ../daemon/gdm-xdmcp-display-factory.c:2428
-#: ../daemon/gdm-xdmcp-display-factory.c:2434
+#: ../daemon/gdm-xdmcp-display-factory.c:2597
+#: ../daemon/gdm-xdmcp-display-factory.c:2647
+#: ../daemon/gdm-xdmcp-display-factory.c:2653
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Αδυναμία ανάγνωσης διεύθυνσης"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:2508
+#: ../daemon/gdm-xdmcp-display-factory.c:2727
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Λήψη KEEPALIVE από απαγορευμένο σύστημα %s"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:2597
+#: ../daemon/gdm-xdmcp-display-factory.c:2816
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory: Αποτυχία ανάγνωσης κεφαλίδας XDMCP!"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:2603
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:240
+#: ../daemon/gdm-xdmcp-display-factory.c:2822
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XMDCP: Εσφαλμένη έκδοση XDMCP!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2609
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:246
+#: ../daemon/gdm-xdmcp-display-factory.c:2828
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
 msgid "XMDCP: Unable to parse address"
 msgstr "XMDCP: Αδυναμία ανάλυσης διεύθυνσης"
 
 #
-#: ../daemon/gdm-xdmcp-display-factory.c:3007
+#: ../daemon/gdm-xdmcp-display-factory.c:3226
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Αποτυχία λήψης του ονόματος συστήματος του εξυπηρετητή: %s!"
@@ -449,45 +460,29 @@ msgstr "Δε βρέθηκε η ομάδα gdm '%s'. Διακοπή!"
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Η ομάδα gdm δε πρέπει να είναι διαχειριστής. Διακοπή!"
 
-#: ../daemon/main.c:521
-msgid "Alternative GDM System Defaults configuration file"
-msgstr "Εναλλακτικό αρχείο προεπιλεγμένων ρυθμίσεων GDM"
-
-#: ../daemon/main.c:521
-msgid "CONFIGFILE"
-msgstr "CONFIGFILE"
-
-#: ../daemon/main.c:523
+#: ../daemon/main.c:519
 msgid "Enable debugging code"
 msgstr "Ενεργοποίηση κώδικα debugging "
 
-#: ../daemon/main.c:524
+#: ../daemon/main.c:520
 msgid "Make all warnings fatal"
 msgstr "Να γίνουν όλες οι προειδοποιήσεις μοιραίες"
 
-#: ../daemon/main.c:525
-msgid "Don't become a daemon"
-msgstr "Να μην γίνει daemon"
-
-#: ../daemon/main.c:526
-msgid "No console (static) servers to be run"
-msgstr "Δεν υπάρχουν εξυπηρετητές κονσόλας (στατικοί) για εκτέλεση"
-
-#: ../daemon/main.c:528
+#: ../daemon/main.c:521
 msgid "Exit after a time - for debugging"
 msgstr "Έξοδος μετά από ένα χρονικό διάστημα - για debugging "
 
-#: ../daemon/main.c:529
+#: ../daemon/main.c:522
 msgid "Print GDM version"
 msgstr "Εκτύπωση έκδοσης GDM"
 
-#: ../daemon/main.c:544
+#: ../daemon/main.c:537
 msgid "GNOME Display Manager"
 msgstr "Διαχειριστής Επιφάνειας Εργασίας GNOME"
 
 #
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:617
+#: ../daemon/main.c:598
 msgid "Only root wants to run GDM"
 msgstr "Μόνο ο διαχειριστής θέλει να τρέξει το GDM"
 
@@ -495,41 +490,105 @@ msgstr "Μόνο ο διαχειριστής θέλει να τρέξει το G
 msgid "GNOME Display Manager Session Worker"
 msgstr "Επεξεργασία συνεδρίας GDM"
 
+#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:148
+msgid "Select System"
+msgstr "Επιλογή συστήματος"
+
 #
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:228
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:214
 msgid "XMCP: Could not create XDMCP buffer!"
 msgstr "XMCP: Αποτυχία δημιουργίας ενταμιευτή XDMCP!"
 
 #
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:234
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:220
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XMCP: Αποτυχία ανάγνωσης κεφαλίδας XDMCP!"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1145
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.c:808
+msgid "Accessibility Preferences"
+msgstr "Προτιμήσεις προσιτότητας"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:1
+msgid "<b>Enable features that make your computer easier to use:</b>"
+msgstr ""
+"<b>Ενεργοποιεί λειτουργίες που κάνουν τον υπολογιστή σας πιο ευκολόχρηστο:</"
+"b>"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:2
+msgid "Assistive Technology Preferences"
+msgstr "Προτιμήσεις Βοηθητικής τεχνολογίας"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:3
+msgid "_Hear text read aloud (Reader)"
+msgstr "Α_κούσρε το κείμενο δυνατά (Αναγνώστης)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:4
+msgid "_Ignore duplicate keypresses (Bounce Keys)"
+msgstr "Α_γνόηση διπλών πατημάτων πλήκτρων (Πλήκτρα αναπήδησης)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:5
+msgid "_Make items larger (Magnifier)"
+msgstr "_Μεγέθυνση των αντικειμένων (Μεγεθυντής)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:6
+msgid "_Only accept long held keypresses (Slow Keys)"
+msgstr ""
+"Να _γίνονται αποδεκτά μόνο τα πατήματα πλήκτρων με διάρκεια (Αργά πλήκτρα)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:7
+msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
+msgstr ""
+"_Πάτημα συντομεύσεων πληκτρολογίου με ένα πλήκτρο την φορά (Sticky Keys)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:8
+msgid "_See more contrast in colors (High Contrast)"
+msgstr "_Δείτε με περισσότερα αντίθεση τα χρώματα (Υψηλή αντίθεση)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:9
+msgid "_Type without the keyboard (On-screen Keyboard)"
+msgstr "_Πληκτρολόγηση χωρίς πληκτρολόγιο (Πληκτρολόγιο οθόνης)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:10
+msgid "_Use a larger font size (Large Print)"
+msgstr "_Χρήση μια μεγαλύτερης γραμματοσειράς (Large Print)"
+
+#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:11
+msgid "gtk-close"
+msgstr "gtk-close"
+
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:220
+msgid "Value"
+msgstr "Τιμή"
+
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:221
+msgid "percentage of time complete"
+msgstr "ποσοστό χρόνου που πέρασε"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1155
 msgid "Inactive Text"
 msgstr "Ανενεργό κείμενο"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1146
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1156
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr ""
 "Το κείμενο που θα χρησιμοποιείται στην ταμπέλα αν ο χρήστης δεν έχει "
 "επιλέξει ακόμα ένα αντικείμενο"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1154
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1164
 msgid "Active Text"
 msgstr "Ενεργό κείμενο"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1155
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1165
 msgid "The text to use in the label if the user has picked an item"
 msgstr ""
 "Το κείμενο που θα χρησιμοποιείται στην ταμπέλα αν ο χρήστης έχει επιλέξει "
 "ένα αντικείμενο"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:707
+#: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M:%S %p"
 msgstr "%l:%M:%S %p"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:707
+#: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
@@ -538,7 +597,7 @@ msgstr "%l:%M %p"
 #. *              should begin with a 0 in your locale (e.g. "May
 #. *              01" instead of "May  1").
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:713
+#: ../gui/simple-greeter/gdm-clock-widget.c:72
 msgid "%a %b %e"
 msgstr "%a %b %e"
 
@@ -546,10 +605,26 @@ msgstr "%a %b %e"
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:718
+#: ../gui/simple-greeter/gdm-clock-widget.c:77
 #, c-format
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:171
+msgid "You have the Caps Lock key on."
+msgstr "Τα κεφαλαία είναι ενεργοποιημένα."
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:264
+msgid "Automatically logging in..."
+msgstr "Αυτόματη είσοδος σε..."
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1027
+msgid "Select language and click Log In"
+msgstr "Επιλέξτε γλώσσα και πατήστε Είσοδος"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1656
+msgid "Login Window"
+msgstr "Παράθυρο εισόδου"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:1
 msgid "Authentication Dialog"
@@ -559,159 +634,578 @@ msgstr "Διάλογος πιστοποίησης"
 msgid "Computer Name"
 msgstr "Όνομα υπολογιστή"
 
-#
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:3
-msgid "Disconnect"
-msgstr "Αποσύνδεση"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:4
-msgid "IP Address"
-msgstr "Διεύθυνση IP "
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
 msgid "Log In"
 msgstr "Είσοδος"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
-msgid "Network status"
-msgstr "Κατάσταση δικτύου"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
-msgid "Prompt:"
-msgstr "Prompt:"
-
 #
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:4
 msgid "Restart"
 msgstr "Επανεκκίνηση"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:9
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
 msgid "Shut Down"
 msgstr "Κλείσιμο "
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:10
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
 msgid "Suspend"
 msgstr "Αναστολή"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:11
-msgid "Tue Oct 23 21:16:50 EDT 2007"
-msgstr "Τρί 23 Οκτ 21:16:50 EDT 2007"
-
 #
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:12
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
 msgid "Version"
 msgstr "Έκδοση"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:13
-msgid "page 1"
-msgstr "σελίδα 1"
+#
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
+msgid "gtk-disconnect"
+msgstr "gtk-disconnect"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:14
-msgid "page 2"
-msgstr "σελίδα 2"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:15
-msgid "page 3"
-msgstr "σελίδα 3"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:16
-msgid "page 4"
-msgstr "σελίδα 4"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:17
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:9
 msgid "page 5"
 msgstr "σελίδα 5"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:380
-msgid "Default"
-msgstr "Προεπιλογή"
-
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:381
-msgid "Login with the same session as last time."
-msgstr "Είσοδος με την ίδια συνεδρία"
-
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:386
-msgid "Legacy"
-msgstr "Legacy"
-
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:387
-msgid "Login based on preset legacy configuration"
-msgstr "Η είσοδος βασίζεται σε μια γενική ρύθμιση legacy "
+#: ../gui/simple-greeter/gdm-greeter-panel.c:503
+msgid "Panel"
+msgstr "Πίνακας εφαρμογών"
 
 #
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:430
+#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:153
+msgid "Languages"
+msgstr "Γλώσσες"
+
+#
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:187
+msgid "_Languages:"
+msgstr "_Γλώσσες:"
+
+#
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:188
+#: ../gui/simple-greeter/gdm-language-option-widget.c:212
+msgid "_Language:"
+msgstr "_Γλώσσα:"
+
+#
+#: ../gui/simple-greeter/gdm-language-option-widget.c:180
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:80
+#: ../gui/user-switch-applet/applet.c:1130
+msgid "Other..."
+msgstr "Άλλο..."
+
+#: ../gui/simple-greeter/gdm-language-option-widget.c:181
+msgid "Choose a language from the full list of available languages."
+msgstr "Επιλέξτε μια γλώσσα από την πλήρη λίστα των διαθέσιμων γλωσσών"
+
+#: ../gui/simple-greeter/gdm-option-widget.c:476
+msgid "Label Text"
+msgstr "Κείμενο ετικέτας"
+
+#: ../gui/simple-greeter/gdm-option-widget.c:477
+msgid "The text to use as a label"
+msgstr "Το κείμενο που θα χρησιμοποιηθεί ως ετικέτα"
+
+#: ../gui/simple-greeter/gdm-option-widget.c:484
+msgid "Icon name"
+msgstr "Όνομα εικονιδίου"
+
+#: ../gui/simple-greeter/gdm-option-widget.c:485
+msgid "The icon to use with the label"
+msgstr "Το εικονίδιο που θα χρησιμοποιηθεί με την ετικέτα"
+
+#: ../gui/simple-greeter/gdm-option-widget.c:493
+msgid "Default Item"
+msgstr "Προεπιλεγμένο αντικείμενο"
+
+#: ../gui/simple-greeter/gdm-option-widget.c:494
+msgid "The id of the default item"
+msgstr "Το id του προεπιλεγμένου αντικειμένου"
+
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:298
+msgid "Max Item Count"
+msgstr "Μέγιστη μέτρηση αντικειμένου"
+
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:299
+msgid "The maximum number of items to keep around in the list"
+msgstr "Ο μέγιστος αριθμός αντικειμένων που θα διατηρούνται στη λίστα"
+
+#: ../gui/simple-greeter/gdm-remote-login-window.c:243
+#, c-format
+msgid "Remote Login (Connecting to %s...)"
+msgstr "Απομακρυσμένη σύνδεση (Σύνδεση σε %s...)"
+
+#: ../gui/simple-greeter/gdm-remote-login-window.c:257
+#, c-format
+msgid "Remote Login (Connected to %s)"
+msgstr "Απομακρυσμένη σύνεση (Σύνδεση σε %s)"
+
+#: ../gui/simple-greeter/gdm-remote-login-window.c:336
+msgid "Remote Login"
+msgstr "Απομακρυσμένη είσοδος"
+
+#
+#: ../gui/simple-greeter/gdm-session-option-widget.c:162
 msgid "_Sessions:"
 msgstr "Συνε_δρίες:"
 
-#
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:431
-msgid "_Session:"
-msgstr "Συνε_δρία:"
-
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
+msgid "Banner message text"
+msgstr "Μήνυμα κειμένου Banner"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
+msgid "Disable showing the accessibility button"
+msgstr "Απενεργοποίηση προβολής του κουμπιού προσιτότητας"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
+msgid "Disable showing the restart buttons"
+msgstr "Απενεργοποίηση προβολής των κουμπιών επανεκκίνησης"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
+msgid "Enable accessibility keyboard plugin"
+msgstr "Ε_νεργοποίηση πρόσθετης λειτουργίας προσιτότητας πληκτρολογίου"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
+msgid "Enable on-screen keyboard"
+msgstr "Ενεργοποίηση πληκτρολογίου οθόνης"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
+msgid "Enable screen magnifier"
+msgstr "Ενεργοποίηση μεγεθυντή οθόνης"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
+msgid "Enable screen reader"
+msgstr "Ενεργοποίηση εφαρμογής ανάγνωσης οθόνης"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
+msgid "Enable showing the banner message"
+msgstr "Ενεργοποίηση προβολής του κειμένου του banner"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+msgid "Icon name to use for greeter logo"
+msgstr "Όνομα εικονιδίου για χρήση στο λογότυπο χαιρετιστή"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
+msgid ""
+"Set to TRUE to disable showing the accessibility button in the login window."
+msgstr ""
+"Ορισμός σε TRUE  για απενεργοποίηση της προβολής του κουμπιού προσιτότητας "
+"στο παράθυρο εισόδου."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
+msgid "Set to TRUE to disable showing the restart buttons in the login window."
+msgstr ""
+"Ορισμός σε TRUE  για απενεργοποίηση της προβολής των κουμπιών επανεκκίνησης "
+"στο παράθυρο εισόδου."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Set to True to enable the background settings manager plugin."
 msgstr ""
 "Ορισμός σε true για να ενεργοποιηθεί η πρόσθετη λειτουργία διαχείρισης "
 "ρυθμίσεων παρασκηνίου"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+msgid "Set to True to enable the on-screen keyboard."
+msgstr "Ορισμός σε true για να ενεργοποιηθεί το πληκτρολόγιο οθόνης"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
+msgid ""
+"Set to True to enable the plugin to manage the accessibility keyboard "
+"settings."
+msgstr ""
+"Ορισμός σε True για να ενεργοποιηθούν οι ρυθμίσεις προσιτότητας πληκτρολογίου"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
+msgid "Set to True to enable the screen magnifier."
+msgstr "Ορισμός σε True για να ενεργοποιηθεί η μεγέθυνση οθόνης"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
+msgid "Set to True to enable the screen reader."
+msgstr "Ορισμός σε True για να ενεργοποιηθεί ο αναγνώστης οθόνης."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to True to enable the xsettings settings manager plugin."
 msgstr ""
 "Ορισμός σε True για να ενεργοποιηθεί  η πρόσθετη λειτουργία διαχείρισης "
 "ρυθμίσεων xsettings"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+msgid "Set to the themed icon name to use for the greeter logo."
+msgstr "Set to the themed icon name to use for the greeter logo."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+msgid "Set to true to show the banner message text."
+msgstr "Set to true to show the banner message text."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+msgid "Text banner message to show on the login window."
+msgstr "Κείμενο μηνύματος bannner που θα προβάλλεται στο παράθυρο εισόδου"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid "True if the background settings manager plugin is enabled."
 msgstr ""
 "True αν είναι ενεργή η πρόσθετη λειτουργία διαχείρισης ρυθμίσεων παρασκηνίου"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr ""
 "True αν είναι ενεργή η πρόσθετη λειτουργία διαχείρισης ρυθμίσεων xsettings"
 
 #
-#: ../gui/simple-greeter/gdm-user.c:218
+#: ../gui/simple-greeter/gdm-user.c:239
 msgid "Manager"
 msgstr "Διαχειριστής"
 
-#: ../gui/simple-greeter/gdm-user.c:219
+#: ../gui/simple-greeter/gdm-user.c:240
 msgid "The user manager object this user is controlled by."
 msgstr "The user manager object this user is controlled by."
 
-#
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:314
-msgid "Other..."
-msgstr "Άλλο..."
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:315
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:81
 msgid "Choose a different account"
 msgstr "Επιλέξτε ένα διαφορετικό λογαριασμό"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:321
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:93
 msgid "Guest"
 msgstr "Guest"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:322
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:94
 msgid "Login as a temporary guest"
 msgstr "Είσοδος ως προσωρινός χρήστης"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:342
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:106
+msgid "Automatic Login"
+msgstr "Αυτόματη είσοδος"
+
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:107
+msgid "Automatically login to the system after selecting options"
+msgstr "Αυτόματη είσοδος στο σύστημα μετά από την ρύθμιση των επιλογών"
+
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:403
 #, c-format
 msgid "Log in as %s"
 msgstr "Είσοδος ως %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:407
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:487
 msgid "Currently logged in"
 msgstr "Ήδη συνδεδεμένος σε"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:448
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:531
 msgid "_Users:"
 msgstr "_Χρήστες:"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:449
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:532
 msgid "_User:"
 msgstr "_Χρήστης:"
+
+#: ../gui/user-switch-applet/applet.c:121
+msgid "Missing Required File"
+msgstr "Λείπει ένα απαιτούμενο αρχείο"
+
+#: ../gui/user-switch-applet/applet.c:123
+#, c-format
+msgid ""
+"The User Selector's interfaces file, `%s', could not be opened. It is likely "
+"that this application was not properly installed or configured."
+msgstr ""
+"The User Selector's interfaces file, `%s', could not be opened. It is likely "
+"that this application was not properly installed or configured."
+
+#: ../gui/user-switch-applet/applet.c:184
+msgid ""
+"The User Switch Applet is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 2 of the License, or (at your "
+"option) any later version."
+msgstr ""
+"Η εφαρμογή εναλλαγής χρηστών είναι ελεύθερο λογισμικό. Μπορείτε να το "
+"αναδιανέμετε ή/και να το τροποποιείτε μέσω των όρων της GNU General Public "
+"License όπως αυτή δημοσιεύτηκε από το Free Software Foundation, έκδοση 2 , ή "
+"(προαιρετικά) οποιαδήποτε νεότερη έκδοση."
+
+#: ../gui/user-switch-applet/applet.c:188
+msgid ""
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details."
+msgstr ""
+"Αυτό το πρόγραμμα διανέμεται με την ελπίδα οτι θα είναι χρήσιμος, αλλά ΧΩΡΙΣ "
+"ΚΑΜΜΙΑ ΑΠΟΛΥΤΩΣ ΕΓΓΥΗΣΗ για συγκεκριμένο σκοπό. Δείτε για περισσότερες "
+"λεπτομέρειες την GNU General Public License ."
+
+#: ../gui/user-switch-applet/applet.c:192
+msgid ""
+"You should have received a copy of the GNU General Public License along with "
+"this program; if not, write to the Free Software Foundation, Inc., 51 "
+"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
+msgstr ""
+"Θα πρέπει να έχετε λάβει ένα αντίγραφο της GNU General Public License μαζί "
+"με το αυτό το πρόγραμμα. Αν όχι γράψτε στο Free Software Foundation, Inc., "
+"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
+
+#: ../gui/user-switch-applet/applet.c:206
+msgid "A menu to quickly switch between users."
+msgstr "Ένα μενού για την γρήγορη εναλλαγή χρηστών."
+
+#: ../gui/user-switch-applet/applet.c:210
+msgid "translator-credits"
+msgstr "Κώστας Παπαδήμας <pkst@gnome.org>"
+
+#: ../gui/user-switch-applet/applet.c:780
+#, c-format
+msgid "Can't lock screen: %s"
+msgstr "Αδυναμία κλειδώματος οθόνης: %s"
+
+#: ../gui/user-switch-applet/applet.c:802
+#, c-format
+msgid "Can't temporarily set screensaver to blank screen: %s"
+msgstr "Αδυναμία προσωρινού ορισμού του screensaver σε κενή οθόνη: %s"
+
+#: ../gui/user-switch-applet/applet.c:974
+msgid "User Switch Applet"
+msgstr "Εφαρμογίδιο εναλλαγής χρηστών"
+
+#: ../gui/user-switch-applet/applet.c:995
+#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:2
+msgid "User Switcher"
+msgstr "Εφαρμογή εναλλαγής χρηστών"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:336
+msgid "User"
+msgstr "Χρήστης"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:337
+msgid "The user this menu item represents."
+msgstr "Ο χρήστης τον οποίο αντιπροσωπεύει το μενού"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:344
+msgid "Icon Size"
+msgstr "Μέγεθος εικονιδίου"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:345
+msgid "The size of the icon to use."
+msgstr "Το μέγεθος του εικονιδίου που θα χρησιμοποιηθεί"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:351
+msgid "Indicator Size"
+msgstr "Μέγεθος ένδειξης"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:352
+msgid "Size of check indicator"
+msgstr "Μέγεθος της ένδειξης ελέγχου"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:357
+msgid "Indicator Spacing"
+msgstr "Διάστημα ένδειξης"
+
+#: ../gui/user-switch-applet/gdm-user-menu-item.c:358
+msgid "Space between the username and the indicator"
+msgstr "Διάστημα ανάμεσα στο όνομα χρήστη και την ένδειξη"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:1
+msgid "<span weight=\"bold\" size=\"larger\">Multiple Logins Found</span>"
+msgstr ""
+"<span weight=\"bold\" size=\"larger\">Βρέθηκαν πολλαπλές είσοδοι</span>"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:2
+msgid "Appearance"
+msgstr "Εμφάνιση"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:3
+msgid "Continue"
+msgstr "Συνέχεια"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:4
+msgid "Create new logins in _nested windows"
+msgstr "Δημιουργία νέας εισόδου σε ε_νσωματωμένα παράθυρα"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:5
+msgid "Details"
+msgstr "Λεπτομέρειες"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:6
+msgid "Multiple Logins Found - User Switcher"
+msgstr "Βρέθηκαν πολλαπλές είσοδοι - Εφαρμογή εναλλαγής χρηστών"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:7
+msgid "Options"
+msgstr "Επιλογές"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:8
+msgid "Some preferences have been locked by the system adminstrator."
+msgstr ""
+"Μερικές από τις προτιμήσεις έχουν κλειδωθεί από τον διαχειριστή του "
+"συστήματος σας"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:9
+msgid ""
+"The user you want to switch to is logged in multiple times on this computer. "
+"Which login do you want to switch to?"
+msgstr ""
+"Ο χρήστης στον οποίο προσπαθείτε να αλλάξετε έχει ήδη συνδεθεί πολλαπλές "
+"φορές σε αυτό τον υπολογιστή. Σε ποια είσοδο συνεδρίας του θα θέλατε να "
+"αλλάξετε; "
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:10
+msgid "Use the `people' icon for the menu title"
+msgstr "Χρήση του εικονιδίου Άνθρωποι' ως τίτλο μενού"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:11
+msgid "Use the current user's name for the menu title"
+msgstr "Χρήση του ονόματος του τρέχοντα χρήστη ως τίτλο μενού"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:12
+msgid "Use the word `Users' as the menu title"
+msgstr "Χρήση της λέξης 'Χρήστες' ως τίτλο μενού"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:13
+msgid "User Switcher Error"
+msgstr "Σφάλμα εφαρμογής εναλλαγής χρηστών"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:14
+msgid "User Switcher Preferences"
+msgstr "Προτιμήσεις εφαρμογής εναλλαγής χρηστών"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:15
+msgid "Users"
+msgstr "Χρήστες"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:16
+msgid ""
+"When a new login must be created to switch users, create it in a window "
+"instead of on a new screen"
+msgstr ""
+"Όταν πρέπει να δημιουργηθεί μια νέα είσοδος για να γίνει αλλαγή χρήστη, να "
+"δημιουργηθεί σε ένα παράθυρο και όχι σε μια νέα οθόνη"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:17
+msgid ""
+"When changing to a different display, activate the screensaver for this "
+"display."
+msgstr ""
+"Όταν γίνεται αλλαγή σε διαφορετική οθόνη. ενεργοποίηση του screensaver για "
+"αυτή την οθόνη"
+
+#: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:18
+msgid "_Lock the screen after switching users"
+msgstr "_Κλείδωμα της οθόνης μετά την εναλλαγή χρηστών"
+
+#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:1
+msgid "A menu to quickly switch between users"
+msgstr "Ένα μενού για την γρήγορη εναλλαγή χρηστών"
+
+#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:3
+msgid "User Switcher Applet Factory"
+msgstr "Εργοστάσιο εφαρμογιδίου αλλαγής χρήστη"
+
+#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:1
+msgid "Edit Personal _Information"
+msgstr "Επεξεργασία προσ_ωπικών πληροφοριών"
+
+#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:2
+msgid "_About"
+msgstr "_Περί"
+
+#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:3
+msgid "_Edit Users and Groups"
+msgstr "Επε_ξεργασία χρηστών και ομάδων"
+
+#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:4
+msgid "_Help"
+msgstr "_Βοήθεια"
+
+#: ../utils/gdmflexiserver.c:59
+msgid "Send the specified protocol command to GDM"
+msgstr "Αποστολή της καθορισμένης εντολής πρωτοκόλλου στο GDM"
+
+#: ../utils/gdmflexiserver.c:59
+msgid "COMMAND"
+msgstr "COMMAND"
+
+#: ../utils/gdmflexiserver.c:60
+msgid "Xnest mode"
+msgstr "Λειτουργία Xnest "
+
+#: ../utils/gdmflexiserver.c:61
+msgid "Do not lock current screen"
+msgstr "Να μην κλειδωθεί η τρέχουσα οθόνη"
+
+#: ../utils/gdmflexiserver.c:62
+msgid "Debugging output"
+msgstr "Έξοδος εκσφαλμάτωσης"
+
+#: ../utils/gdmflexiserver.c:63
+msgid "Authenticate before running --command"
+msgstr "Πιστοποίηση πριν από την εκτέλεση --command"
+
+#: ../utils/gdmflexiserver.c:64
+msgid "Start new flexible session; do not show popup"
+msgstr "Έναρξη νέας ελαστικής συνεδρίας, να μην εμφανίζεται αναδυόμενο"
+
+#: ../utils/gdmflexiserver.c:648
+msgid "Main Options"
+msgstr "Κύριες επιλογές"
+
+#: ../utils/gdmflexiserver.c:691
+msgid "Unable to start new display"
+msgstr "Αδυναμία εκκίνησης νέας οθόνης"
+
+#~ msgid ""
+#~ "session log '%s' is not a normal file, logging session to '%s' instead.\n"
+#~ msgstr ""
+#~ "το αρχείο καταγραφής συνεδρίας '%s' δεν είναι ένα κανονικό αρχείο. Να "
+#~ "γίνει καταγραφή συνεδρίας στο '%s'.\n"
+
+#
+#~ msgid "unable to log session"
+#~ msgstr "αδυναμία καταγραφής συνεδρία"
+
+#~ msgid "Alternative GDM System Defaults configuration file"
+#~ msgstr "Εναλλακτικό αρχείο προεπιλεγμένων ρυθμίσεων GDM"
+
+#~ msgid "CONFIGFILE"
+#~ msgstr "CONFIGFILE"
+
+#~ msgid "Don't become a daemon"
+#~ msgstr "Να μην γίνει daemon"
+
+#~ msgid "No console (static) servers to be run"
+#~ msgstr "Δεν υπάρχουν εξυπηρετητές κονσόλας (στατικοί) για εκτέλεση"
+
+#~ msgid "IP Address"
+#~ msgstr "Διεύθυνση IP "
+
+#~ msgid "Network status"
+#~ msgstr "Κατάσταση δικτύου"
+
+#~ msgid "Prompt:"
+#~ msgstr "Prompt:"
+
+#~ msgid "Tue Oct 23 21:16:50 EDT 2007"
+#~ msgstr "Τρί 23 Οκτ 21:16:50 EDT 2007"
+
+#~ msgid "page 1"
+#~ msgstr "σελίδα 1"
+
+#~ msgid "page 2"
+#~ msgstr "σελίδα 2"
+
+#~ msgid "page 3"
+#~ msgstr "σελίδα 3"
+
+#~ msgid "page 4"
+#~ msgstr "σελίδα 4"
+
+#~ msgid "Login with the same session as last time."
+#~ msgstr "Είσοδος με την ίδια συνεδρία"
+
+#~ msgid "Legacy"
+#~ msgstr "Legacy"
+
+#~ msgid "Login based on preset legacy configuration"
+#~ msgstr "Η είσοδος βασίζεται σε μια γενική ρύθμιση legacy "
+
+#
+#~ msgid "_Session:"
+#~ msgstr "Συνε_δρία:"
 
 #~ msgid "CDE"
 #~ msgstr "CDE"
@@ -855,9 +1349,6 @@ msgstr "_Χρήστης:"
 #
 #~ msgid "%s: Ignoring suspiciously looking cookie file %s"
 #~ msgstr "%s: Αγνόηση ύποπτου αρχείου cookie %s"
-
-#~ msgid "Can't write to %s: %s"
-#~ msgstr "Αδυναμία εγγραφής σε %s: %s"
 
 #~ msgid ""
 #~ "The display server has been shut down about 6 times in the last 90 "
@@ -1071,9 +1562,6 @@ msgstr "_Χρήστης:"
 
 #~ msgid "- The GNOME login manager"
 #~ msgstr "- Ο διαχειριστής εισόδου του GNOME"
-
-#~ msgid "main options"
-#~ msgstr "κύριες επιλογές"
 
 #
 #~ msgid "%s: Error setting up %s signal handler: %s"
@@ -1753,9 +2241,6 @@ msgstr "_Χρήστης:"
 #~ "Εσφαλμένο όνομα χρήστη ή κωδικός. Οι χαρακτήρες πρέπει να πληκτρολογηθούν "
 #~ "με τη σωστή σειρά."
 
-#~ msgid "Caps Lock is on."
-#~ msgstr "Τα κεφαλαία είναι ενεργοποιημένα."
-
 #
 #~ msgid "Please enter your username"
 #~ msgstr "Παρακαλώ εισάγετε το όνομα χρήστη"
@@ -1956,9 +2441,6 @@ msgstr "_Χρήστης:"
 #~ "\n"
 #~ "Αποτυχία πιστοποίησης. Οι χαρακτήρες θα πρέπει να πληκτρολογηθούν με την "
 #~ "σωστή σειρά."
-
-#~ msgid "Automatic login"
-#~ msgstr "Αυτόματη είσοδος"
 
 #~ msgid ""
 #~ "The system administrator has disabled your access to the system "
@@ -2304,30 +2786,6 @@ msgstr "_Χρήστης:"
 #~ msgid "Log in as another user inside a nested window"
 #~ msgstr "Είσοδος ως διαφορετικός χρήστης μέσα σε ενσωματωμένο παράθυρο"
 
-#~ msgid "New Login in a Nested Window"
-#~ msgstr "Νέα είσοδος σε ενσωματωμένο παράθυρο"
-
-#~ msgid "Send the specified protocol command to GDM"
-#~ msgstr "Αποστολή της καθορισμένης εντολής πρωτοκόλλου στο GDM"
-
-#~ msgid "COMMAND"
-#~ msgstr "COMMAND"
-
-#~ msgid "Xnest mode"
-#~ msgstr "Λειτουργία Xnest "
-
-#~ msgid "Do not lock current screen"
-#~ msgstr "Να μην κλειδωθεί η τρέχουσα οθόνη"
-
-#~ msgid "Debugging output"
-#~ msgstr "Έξοδος εκσφαλμάτωσης"
-
-#~ msgid "Authenticate before running --command"
-#~ msgstr "Πιστοποίηση πριν από την εκτέλεση --command"
-
-#~ msgid "Start new flexible session; do not show popup"
-#~ msgstr "Έναρξη νέας ελαστικής συνεδρίας, να μην εμφανίζεται αναδυόμενο"
-
 #~ msgid "Cannot change display"
 #~ msgstr "Αδυναμία αλλαγής οθόνης"
 
@@ -2339,9 +2797,6 @@ msgstr "_Χρήστης:"
 
 #~ msgid "Nested display %s on virtual terminal %d"
 #~ msgstr "Ενσωματωμένη οθόνη %s στο εικονικό τερματικό %d"
-
-#~ msgid "Username"
-#~ msgstr "Όνομα Χρήστη"
 
 #~ msgid "Open Displays"
 #~ msgstr "Άνοιγμα οθονών"
@@ -2380,9 +2835,6 @@ msgstr "_Χρήστης:"
 
 #~ msgid "Starting a new login only works correctly on the console."
 #~ msgstr "Η έναρξη μιας νέας εισόδου δουλεύει σωστά μόνο στην κονσόλα."
-
-#~ msgid "Cannot start new display"
-#~ msgstr "Αδυναμία εκκίνησης νέας οθόνης"
 
 #~ msgid "Log in as another user without logging out"
 #~ msgstr "Είσοδος ως άλλος χρήστης χωρίς να αποσυνδεθείτε"
@@ -2843,9 +3295,6 @@ msgstr "_Χρήστης:"
 #~ msgid "GDM Login"
 #~ msgstr "Σύνδεση μέσω GDM"
 
-#~ msgid "Remote Login via _XDMCP..."
-#~ msgstr "Απομακρυσμένη σύνδεση μέσω _XDMCP..."
-
 #~ msgid "_Configure Login Manager..."
 #~ msgstr "Ρύ_θμιση της διαχείρισης εισόδου..."
 
@@ -2857,9 +3306,6 @@ msgstr "_Χρήστης:"
 
 #~ msgid "_Quit"
 #~ msgstr "Έ_ξοδος"
-
-#~ msgid "Icon"
-#~ msgstr "Εικονίδιο"
 
 #
 #~ msgid "Welcome"
@@ -2929,9 +3375,6 @@ msgstr "_Χρήστης:"
 #~ msgid "Cannot open file"
 #~ msgstr "Αδυναμία ανοίγματος αρχείου"
 
-#~ msgid "Select User Image"
-#~ msgstr "Επιλογή εικόνας χρήστη"
-
 #~ msgid "Images"
 #~ msgstr "Εικόνες"
 
@@ -2947,9 +3390,6 @@ msgstr "_Χρήστης:"
 
 #~ msgid "<b>User Image</b>"
 #~ msgstr "<b>Εικόνα χρήστη</b>"
-
-#~ msgid "Login Photo Preferences"
-#~ msgstr "Προτιμήσεις φωτογραφίας εισόδου"
 
 #~ msgid "Failsafe _GNOME"
 #~ msgstr "Failsafe _GNOME"
@@ -3246,9 +3686,6 @@ msgstr "_Χρήστης:"
 #~ "Ρύθμιση εμφάνισης και συμπεριφοράς του παραθύρου εισόδου (Gnome Display "
 #~ "Manager)"
 
-#~ msgid "Login Window"
-#~ msgstr "Παράθυρο εισόδου"
-
 #~ msgid " "
 #~ msgstr " "
 
@@ -3324,9 +3761,6 @@ msgstr "_Χρήστης:"
 
 #~ msgid "A_pply User Changes"
 #~ msgstr "Ε_φαρμογή αλλαγώ χρήστη"
-
-#~ msgid "Accessibility"
-#~ msgstr "Προσιτότητα"
 
 #~ msgid "Accessible from the outside of the login manager"
 #~ msgstr "Προσβάσιμο εκτός της διαχείρισης εισόδου,"
@@ -3700,9 +4134,6 @@ msgstr "_Χρήστης:"
 #~ "Χρήση κύκλων αντί για αστερίσκων στο πεδίο καταχώρισης κωδικού. Αυτό "
 #~ "μπορεί να μην λειτουργήσει με όλες τις γραμματοσειρές."
 
-#~ msgid "Users"
-#~ msgstr "Χρήστες"
-
 #
 #~ msgid "Welcome Message"
 #~ msgstr "Μήνυμα υποδοχής"
@@ -3744,9 +4175,6 @@ msgstr "_Χρήστης:"
 #~ msgid "_Enable Automatic Login"
 #~ msgstr "Ε_νεργοποίηση αυτόματης εισόδου"
 
-#~ msgid "_Enable accessible login"
-#~ msgstr "Ε_νεργοποίηση εισόδου προσιτότητας"
-
 #~ msgid "_Flexible (on demand)"
 #~ msgstr "Ε_λαστική (με αίτηση)"
 
@@ -3763,9 +4191,6 @@ msgstr "_Χρήστης:"
 #~ msgstr ""
 #~ "_Να συμπεριλαμβάνονται όλοι οι χρήστες από /etc/passwd. (Ακατάλληλο για "
 #~ "χρήση με NIS)"
-
-#~ msgid "_Login screen ready:"
-#~ msgstr "Η οθόνη εισόδου είναι έτοιμη:"
 
 #~ msgid "_Logins are handled by this computer"
 #~ msgstr "Ο υπολογιστής χειρίζεται τις προσπά_θειες εισόδου"
@@ -3886,10 +4311,6 @@ msgstr "_Χρήστης:"
 #~ "διαθέσιμες συνεδρίες που μπορείτε να χρησιμοποιήσετε, αλλά θα πρέπει να "
 #~ "μπείτε και να διορθώσετε τη ρύθμιση του gdm."
 
-#
-#~ msgid "Last language"
-#~ msgstr "Τελευταία γλώσσα"
-
 #~ msgid "Select a Language"
 #~ msgstr "Επιλογή γλώσσας"
 
@@ -3918,20 +4339,8 @@ msgstr "_Χρήστης:"
 #~ msgid "Sus_pend"
 #~ msgstr "Αναστο_λή"
 
-#~ msgid "Remote Login via _XDMCP"
-#~ msgstr "Απομακρυσμένη σύνδεση μέσω  _XDMCP"
-
-#~ msgid "Confi_gure"
-#~ msgstr "_Ρύθμιση"
-
-#~ msgid "Op_tions"
-#~ msgstr "Επι_λογές"
-
 #~ msgid "_OK"
 #~ msgstr "_ΟΚ"
-
-#~ msgid "_Cancel"
-#~ msgstr "Άκυ_ρο"
 
 #~ msgid "Change _Session"
 #~ msgstr "Αλλαγή σ_υνεδρίας"
