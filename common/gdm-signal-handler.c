@@ -139,7 +139,12 @@ signal_io_watch (GIOChannel       *ioc,
 
         if (is_fatal) {
                 g_debug ("GdmSignalHandler: Caught termination signal - exiting main loop");
-                g_main_loop_quit (handler->priv->main_loop);
+                if (handler->priv->main_loop != NULL) {
+                        g_main_loop_quit (handler->priv->main_loop);
+                } else {
+                        exit (1);
+                }
+
                 return FALSE;
         }
 

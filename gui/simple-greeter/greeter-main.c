@@ -33,6 +33,7 @@
 
 #include "gdm-log.h"
 #include "gdm-common.h"
+#include "gdm-signal-handler.h"
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 
@@ -218,12 +219,80 @@ load_a11y (void)
         g_object_unref (gconf_client);
 }
 
+
+static gboolean
+signal_cb (int      signo,
+           gpointer data)
+{
+        int ret;
+
+        g_debug ("Got callback for signal %d", signo);
+
+        ret = TRUE;
+
+        switch (signo) {
+        case SIGSEGV:
+        case SIGBUS:
+        case SIGILL:
+        case SIGABRT:
+                g_debug ("Caught signal %d.", signo);
+
+                ret = FALSE;
+                break;
+
+        case SIGFPE:
+        case SIGPIPE:
+                /* let the fatal signals interrupt us */
+                g_debug ("Caught signal %d, shutting down abnormally.", signo);
+                ret = FALSE;
+
+                break;
+
+        case SIGINT:
+        case SIGTERM:
+                /* let the fatal signals interrupt us */
+                g_debug ("Caught signal %d, shutting down normally.", signo);
+                ret = FALSE;
+
+                break;
+
+        case SIGHUP:
+                g_debug ("Got HUP signal");
+                /* FIXME:
+                 * Reread config stuff like system config files, VPN service files, etc
+                 */
+                ret = TRUE;
+
+                break;
+
+        case SIGUSR1:
+                g_debug ("Got USR1 signal");
+                /* FIXME:
+                 * Play with log levels or something
+                 */
+                ret = TRUE;
+
+                gdm_log_toggle_debug ();
+
+                break;
+
+        default:
+                g_debug ("Caught unhandled signal %d", signo);
+                ret = TRUE;
+
+                break;
+        }
+
+        return ret;
+}
+
 int
 main (int argc, char *argv[])
 {
         GError            *error;
         GdmGreeterSession *session;
         gboolean           res;
+        GdmSignalHandler  *signal_handler;
 
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -256,6 +325,17 @@ main (int argc, char *argv[])
         load_a11y ();
 
         gtk_init (&argc, &argv);
+
+        signal_handler = gdm_signal_handler_new ();
+        gdm_signal_handler_add (signal_handler, SIGTERM, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGINT, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGILL, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGBUS, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGFPE, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGHUP, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGSEGV, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGABRT, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGUSR1, signal_cb, NULL);
 
         session = gdm_greeter_session_new ();
         if (session == NULL) {
