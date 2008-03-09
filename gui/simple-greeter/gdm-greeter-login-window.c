@@ -129,6 +129,7 @@ struct GdmGreeterLoginWindowPrivate
         guint            animation_timeout_id;
 
         guint            login_button_handler_id;
+        guint            start_session_handler_id;
 };
 
 enum {
@@ -142,6 +143,7 @@ enum {
         BEGIN_VERIFICATION,
         BEGIN_VERIFICATION_FOR_USER,
         QUERY_ANSWER,
+        START_SESSION,
         USER_SELECTED,
         DISCONNECTED,
         CANCELLED,
@@ -531,6 +533,11 @@ do_cancel (GdmGreeterLoginWindow *login_window)
         login_window->priv->timed_login_enabled = FALSE;
         gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), NULL);
 
+        if (login_window->priv->start_session_handler_id > 0) {
+                g_signal_handler_disconnect (login_window, login_window->priv->start_session_handler_id);
+                login_window->priv->start_session_handler_id = 0;
+        }
+
         switch_mode (login_window, MODE_SELECTION);
         set_busy (login_window);
         set_sensitive (login_window, FALSE);
@@ -648,6 +655,43 @@ gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_windo
         reset_dialog (login_window);
         gdm_user_chooser_widget_set_show_auto_user (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
         gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), GDM_USER_CHOOSER_USER_AUTO);
+}
+
+static void
+gdm_greeter_login_window_start_session_when_ready (GdmGreeterLoginWindow *login_window)
+{
+        if (login_window->priv->is_interactive) {
+                g_debug ("GdmGreeterLoginWindow: starting session");
+                g_signal_emit (login_window, signals[START_SESSION], 0);
+        } else {
+                g_debug ("GdmGreeterLoginWindow: not starting session since "
+                         "user hasn't had an opportunity to pick language "
+                         "and session yet.");
+
+                /* Call back when we're ready to go
+                 */
+                login_window->priv->start_session_handler_id =
+                    g_signal_connect (login_window, "notify::is-interactive",
+                                      G_CALLBACK (gdm_greeter_login_window_start_session_when_ready),
+                                      NULL);
+
+                /* FIXME: If the user wasn't asked any questions by pam but
+                 * pam still authorized them (passwd -d, or the questions got
+                 * asked on an external device) then we need to let them log in.
+                 * Right now we just log them in right away, but we really should
+                 * set a timer up like timed login (but shorter, say ~5 seconds),
+                 * so they can pick language/session.  Will need to refactor things
+                 * a bit so we can share code with timed login.
+                 */
+                if (!login_window->priv->timed_login_enabled) {
+
+                        g_debug ("GdmGreeterLoginWindow: Okay, we'll start the session anyway,"
+                                 "because the user isn't ever going to get an opportunity to"
+                                 "interact with session");
+                        _gdm_greeter_login_window_set_interactive (login_window, TRUE);
+                }
+
+        }
 }
 
 gboolean
@@ -1599,15 +1643,16 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
-        signals [INTERACTIVE] =
-                g_signal_new ("interactive",
+        signals [START_SESSION] =
+                g_signal_new ("start-session",
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, interactive),
+                              G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, start_session),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,
-                              G_TYPE_NONE, 0);
+                              G_TYPE_NONE,
+                              0);
 
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_IS_LOCAL,

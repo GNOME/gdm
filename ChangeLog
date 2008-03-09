@@ -1,5 +1,16 @@
 2008-03-09  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-greeter-login-window.[ch]:
+	(do_cancel), (gdm_greeter_login_window_start_when_ready),
+	(gdm_greeter_login_window_class_init):
+	add new "start-session" to replace "interactive" from before
+	* gui/simple-greeter/gdm-greeter-session.c:
+	(on_start_session), (toggle_login_window):
+	Tell slave to start session when login window is ready for
+	the session to be started.
+
+2008-03-09  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-login-window.c:
 	(GdmGreeterLoginWindowPrivate),
 	(_gdm_greeter_login_window_set_interactive),
