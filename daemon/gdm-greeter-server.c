@@ -118,6 +118,40 @@ send_dbus_message (DBusConnection *connection,
 }
 
 static void
+send_dbus_string_and_int_signal (GdmGreeterServer *greeter_server,
+                                 const char       *name,
+                                 const char       *text,
+                                 int               number)
+{
+        DBusMessage    *message;
+        DBusMessageIter iter;
+        const char     *str;
+
+        if (text != NULL) {
+                str = text;
+        } else {
+                str = "";
+        }
+
+        g_return_if_fail (greeter_server != NULL);
+
+        message = dbus_message_new_signal (GDM_GREETER_SERVER_DBUS_PATH,
+                                           GDM_GREETER_SERVER_DBUS_INTERFACE,
+                                           name);
+
+        dbus_message_iter_init_append (message, &iter);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &str);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_INT32, &number);
+
+        g_debug ("GreeterServer: Sending %s (%s %d)", name, str, number);
+        if (! send_dbus_message (greeter_server->priv->greeter_connection, message)) {
+                g_debug ("GreeterServer: Could not send %s signal", name);
+        }
+
+        dbus_message_unref (message);
+}
+
+static void
 send_dbus_string_signal (GdmGreeterServer *greeter_server,
                          const char       *name,
                          const char       *text)

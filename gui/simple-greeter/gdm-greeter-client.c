@@ -99,6 +99,36 @@ gdm_greeter_client_get_display_is_local (GdmGreeterClient *client)
 }
 
 static void
+emit_string_and_int_signal_for_message (GdmGreeterClient *client,
+                                        const char       *name,
+                                        DBusMessage      *message,
+                                        int               signal)
+{
+        DBusError   error;
+        const char *text;
+        int         number;
+        dbus_bool_t res;
+
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &text,
+                                     DBUS_TYPE_INT32, &number,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+
+                g_debug ("GdmGreeterClient: Received %s (%s %d)", name, text, number);
+
+                g_signal_emit (client,
+                               gdm_greeter_client_signals[signal],
+                               0, text, number);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
+}
+
+static void
 emit_string_signal_for_message (GdmGreeterClient *client,
                                 const char       *name,
                                 DBusMessage      *message,
@@ -250,6 +280,51 @@ send_dbus_string_method (DBusConnection *connection,
         return TRUE;
 }
 
+static gboolean
+send_dbus_bool_method (DBusConnection *connection,
+                       const char     *method,
+                       gboolean        payload)
+{
+        DBusError       error;
+        DBusMessage    *message;
+        DBusMessage    *reply;
+        DBusMessageIter iter;
+
+        g_debug ("GdmGreeterClient: Calling %s", method);
+        message = dbus_message_new_method_call (NULL,
+                                                GREETER_SERVER_DBUS_PATH,
+                                                GREETER_SERVER_DBUS_INTERFACE,
+                                                method);
+        if (message == NULL) {
+                g_warning ("Couldn't allocate the D-Bus message");
+                return FALSE;
+        }
+
+        dbus_message_iter_init_append (message, &iter);
+        dbus_message_iter_append_basic (&iter,
+                                        DBUS_TYPE_BOOLEAN,
+                                        &payload);
+
+        dbus_error_init (&error);
+        reply = dbus_connection_send_with_reply_and_block (connection,
+                                                           message,
+                                                           -1,
+                                                           &error);
+
+        dbus_message_unref (message);
+
+        if (dbus_error_is_set (&error)) {
+                g_warning ("%s %s raised: %s\n",
+                           method,
+                           error.name,
+                           error.message);
+                return FALSE;
+        }
+        dbus_message_unref (reply);
+        dbus_connection_flush (connection);
+
+        return TRUE;
+}
 
 static gboolean
 send_dbus_void_method (DBusConnection *connection,
