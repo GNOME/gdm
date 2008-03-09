@@ -272,6 +272,14 @@ gdm_greeter_server_default_session_name_changed (GdmGreeterServer *greeter_serve
         send_dbus_string_signal (greeter_server, "DefaultSessionNameChanged", session_name);
 }
 
+void
+gdm_greeter_server_request_timed_login (GdmGreeterServer *greeter_server,
+                                        const char       *username,
+                                        int               delay)
+{
+        send_dbus_string_and_int_signal (greeter_server, "TimedLoginRequested", username, delay);
+}
+
 /* Note: Use abstract sockets like dbus does by default on Linux. Abstract
  * sockets are only available on Linux.
  */
@@ -689,6 +697,10 @@ do_introspect (DBusConnection *connection,
                                "    </signal>\n"
                                "    <signal name=\"DefaultSessionNameChanged\">\n"
                                "      <arg name=\"session_name\" type=\"s\"/>\n"
+                               "    </signal>\n"
+                               "    <signal name=\"TimedLoginRequested\">\n"
+                               "      <arg name=\"username\" type=\"s\"/>\n"
+                               "      <arg name=\"delay\" type=\"i\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"Ready\">\n"
                                "    </signal>\n"

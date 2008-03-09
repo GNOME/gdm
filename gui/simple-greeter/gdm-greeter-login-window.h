@@ -75,6 +75,10 @@ gboolean            gdm_greeter_login_window_info               (GdmGreeterLogin
 gboolean            gdm_greeter_login_window_problem            (GdmGreeterLoginWindow *login_window,
                                                                  const char *text);
 
+void               gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_window,
+                                                                 const char            *username,
+                                                                 int                    delay);
+
 G_END_DECLS
 
 #endif /* __GDM_GREETER_LOGIN_WINDOW_H */

@@ -149,6 +149,16 @@ on_default_session_name_changed (GdmGreeterClient  *client,
 }
 
 static void
+on_timed_login_requested (GdmGreeterClient  *client,
+                          const char        *text,
+                          int                delay,
+                          GdmGreeterSession *session)
+{
+        g_debug ("GdmGreeterSession: timed login requested for user %s (in %d seconds)", text, delay);
+        gdm_greeter_login_window_request_timed_login (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text, delay);
+}
+
+static void
 on_info_query (GdmGreeterClient  *client,
                const char        *text,
                GdmGreeterSession *session)
@@ -838,6 +848,11 @@ gdm_greeter_session_init (GdmGreeterSession *session)
                           "default-session-name-changed",
                           G_CALLBACK (on_default_session_name_changed),
                           session);
+        g_signal_connect (session->priv->client,
+                          "timed-login-requested",
+                          G_CALLBACK (on_timed_login_requested),
+                          session);
+
 
         /* We want to listen for panel mnemonics even if the
          * login window is focused, so we intercept them here.

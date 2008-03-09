@@ -34,6 +34,7 @@
 #include <dbus/dbus-glib-lowlevel.h>
 
 #include "gdm-greeter-client.h"
+#include "gdm-marshal.h"
 
 #define GDM_GREETER_CLIENT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_CLIENT, GdmGreeterClientPrivate))
 
@@ -66,6 +67,7 @@ enum {
         SELECTED_USER_CHANGED,
         DEFAULT_LANGUAGE_NAME_CHANGED,
         DEFAULT_SESSION_NAME_CHANGED,
+        TIMED_LOGIN_REQUESTED,
         LAST_SIGNAL
 };
 
@@ -175,6 +177,13 @@ on_default_session_name_changed (GdmGreeterClient *client,
                                  DBusMessage      *message)
 {
         emit_string_signal_for_message (client, "DefaultSessionNameChanged", message, DEFAULT_SESSION_NAME_CHANGED);
+}
+
+static void
+on_timed_login_requested (GdmGreeterClient *client,
+                          DBusMessage      *message)
+{
+        emit_string_and_int_signal_for_message (client, "TimedLoginRequested", message, TIMED_LOGIN_REQUESTED);
 }
 
 static void
@@ -608,6 +617,8 @@ client_dbus_handle_message (DBusConnection *connection,
                 on_default_language_name_changed (client, message);
         } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "DefaultSessionNameChanged")) {
                 on_default_session_name_changed (client, message);
+        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "TimedLoginRequested")) {
+                on_timed_login_requested (client, message);
         } else {
                 return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
         }
@@ -870,6 +881,18 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
                               1, G_TYPE_STRING);
+
+        gdm_greeter_client_signals[TIMED_LOGIN_REQUESTED] =
+                g_signal_new ("timed-login-requested",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmGreeterClientClass, default_session_name_changed),
+                              NULL,
+                              NULL,
+                              gdm_marshal_VOID__STRING_INT,
+                              G_TYPE_NONE,
+                              2, G_TYPE_STRING, G_TYPE_INT);
+
 }
 
 static void

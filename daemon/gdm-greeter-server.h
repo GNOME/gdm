@@ -91,6 +91,10 @@ void                gdm_greeter_server_default_language_name_changed (GdmGreeter
 void                gdm_greeter_server_default_session_name_changed (GdmGreeterServer *greeter_server,
                                                                      const char       *text);
 
+void                gdm_greeter_server_request_timed_login   (GdmGreeterServer *greeter_server,
+                                                              const char       *username,
+                                                              int               delay);
+
 G_END_DECLS
 
 #endif /* __GDM_GREETER_SERVER_H */

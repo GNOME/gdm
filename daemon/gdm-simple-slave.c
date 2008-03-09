@@ -362,16 +362,49 @@ on_session_secret_info_query (GdmSession     *session,
         gdm_greeter_server_secret_info_query (slave->priv->greeter_server, text);
 }
 
+static gboolean
+get_timed_login_details (GdmSimpleSlave  *slave,
+                         char           **username,
+                         int             *delay)
+{
+        gboolean enabled;
+        gboolean res;
+
+        enabled = FALSE;
+        res = gdm_settings_client_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE, &enabled);
+        if (! enabled) {
+                return FALSE;
+        }
+
+        *username = NULL;
+        res = gdm_settings_client_get_string (GDM_KEY_TIMED_LOGIN_USER, username);
+
+        if (username == NULL) {
+                return FALSE;
+        }
+
+        res = gdm_settings_client_get_int (GDM_KEY_TIMED_LOGIN_DELAY, delay);
+
+        return TRUE;
+}
+
 static void
 on_session_opened (GdmSession     *session,
                    GdmSimpleSlave *slave)
 {
         gboolean res;
+        char    *username;
+        int      delay;
 
         g_debug ("GdmSimpleSlave: session opened");
         res = gdm_greeter_server_ready (slave->priv->greeter_server);
         if (! res) {
                 g_warning ("Unable to send ready");
+        }
+
+        if (get_timed_login_details (slave, &username, &delay)) {
+                gdm_greeter_server_request_timed_login (slave->priv->greeter_server, username, delay);
+                g_free (username);
         }
 }
 

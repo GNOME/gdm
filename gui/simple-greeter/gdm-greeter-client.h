@@ -64,6 +64,9 @@ typedef struct
                                                 const char        *session_name);
         void (* default_language_name_changed) (GdmGreeterClient  *client,
                                                 const char        *language_name);
+        void (* timed_login_requested)   (GdmGreeterClient  *client,
+                                          const char        *username,
+                                          int                delay);
 } GdmGreeterClientClass;
 
 #define GDM_GREETER_CLIENT_ERROR (gdm_greeter_client_error_quark ())

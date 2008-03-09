@@ -1,5 +1,36 @@
 2008-03-09  Ray Strode  <rstrode@redhat.com>
 
+	Read timed login configuration from the daemon,
+	and pass along rather than reading it from the daemon
+	and greeter.
+
+	* daemon/gdm-simple-slave.c:
+	(get_timed_login_details):
+	(on_session_opened):
+	* daemon/gdm-greeter-server.[ch]:
+	(gdm_server_request_timed_login):
+	Read timed login configuration and forward to greeter
+	* gui/simple-greeter/gdm-greeter-client.[ch]:
+	(on_timed_login_requested), (client_dbus_handle_message),
+	(gdm_greeter_client_class_init):
+	* gui/simple-greeter/gdm-greeter-session.[ch]:
+	(on_timed_login_requested), (gdm_greeter_session_init):
+	Forward timed login requests from slave to login window
+	* gui/simple-greeter/gdm-greeter-login-window.[ch]:
+	(load_theme): don't show "automatic login" entry here
+	anymore
+	(gdm_greeter_login_window_request_timed_login):
+	show "automatic login" entry in face browser, start
+	timer
+	(read_configuration): drop function
+	(gdm_greeter_login_window_constructor): don't call
+	read_configuration anymore
+	(gdm_greeter_login_window_init): don't initialized
+	timed_login_delay here anymore since it's sent up from
+	slave now
+
+2008-03-09  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-login-window.[ch]:
 	(on_login_button_clicked_answer_query):
 	(gdm_greeter_login_window_class_init):

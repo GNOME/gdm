@@ -93,8 +93,6 @@
 #define KEY_BANNER_MESSAGE_TEXT     KEY_GREETER_DIR "/banner_message_text"
 #define KEY_LOGO                    KEY_GREETER_DIR "/logo_icon_name"
 #define KEY_DISABLE_RESTART_BUTTONS KEY_GREETER_DIR "/disable_restart_buttons"
-#define TIMED_LOGIN_TIMEOUT_SEC  60
-
 #define GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_LOGIN_WINDOW, GdmGreeterLoginWindowPrivate))
 
 enum {
@@ -124,6 +122,7 @@ struct GdmGreeterLoginWindowPrivate
 
         gboolean         timed_login_enabled;
         guint            timed_login_delay;
+        char            *timed_login_username;
         guint            timed_login_timeout_id;
 
         guint            animation_timeout_id;
@@ -620,6 +619,25 @@ gdm_greeter_login_window_problem (GdmGreeterLoginWindow *login_window,
         set_message (GDM_GREETER_LOGIN_WINDOW (login_window), text);
 
         return TRUE;
+}
+
+void
+gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_window,
+                                              const char            *username,
+                                              int                    delay)
+{
+        g_return_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window));
+
+        g_debug ("GdmGreeterLoginWindow: requested automatic login for user '%s' in %d seconds", username, delay);
+
+        login_window->priv->timed_login_enabled = TRUE;
+        login_window->priv->timed_login_username = g_strdup (username);
+        login_window->priv->timed_login_delay = delay;
+
+        reset_dialog (login_window);
+        gdm_user_chooser_widget_set_show_auto_user (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
+        gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), GDM_USER_CHOOSER_USER_AUTO);
+        restart_timed_login_timeout (login_window);
 }
 
 gboolean
@@ -1246,10 +1264,6 @@ load_theme (GdmGreeterLoginWindow *login_window)
 
         gdm_user_chooser_widget_set_show_only_chosen (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
 
-        if (login_window->priv->timed_login_enabled) {
-                gdm_user_chooser_widget_set_show_auto_user (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
-        }
-
         g_signal_connect (login_window->priv->user_chooser,
                           "activated",
                           G_CALLBACK (on_user_chosen),
@@ -1416,49 +1430,6 @@ gdm_greeter_login_window_size_allocate (GtkWidget      *widget,
 }
 
 static void
-read_configuration (GdmGreeterLoginWindow *login_window)
-{
-        gboolean res;
-        int      delay;
-        char    *username;
-
-        g_debug ("GdmGreeterLoginWindow: reading system configuration");
-
-        res = gdm_settings_client_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE,
-                                               &login_window->priv->timed_login_enabled);
-        if (! res) {
-                g_warning ("Unable to read configuration for %s", GDM_KEY_TIMED_LOGIN_ENABLE);
-        }
-        g_debug ("GdmGreeterLoginWindow: TimedLoginEnable=%s",
-                 login_window->priv->timed_login_enabled ? "true" : "false");
-
-        /* treat failures here as disabling */
-        username = NULL;
-        res = gdm_settings_client_get_string (GDM_KEY_TIMED_LOGIN_USER, &username);
-        if (! res) {
-                g_warning ("Unable to read configuration for %s", GDM_KEY_TIMED_LOGIN_USER);
-                login_window->priv->timed_login_enabled = FALSE;
-        } else {
-                if (username == NULL) {
-                        login_window->priv->timed_login_enabled = FALSE;
-                }
-        }
-        g_debug ("GdmGreeterLoginWindow: TimedLogin=%s", username);
-        g_free (username);
-
-        delay = -1;
-        res = gdm_settings_client_get_int (GDM_KEY_TIMED_LOGIN_DELAY, &delay);
-        if (! res) {
-                g_warning ("Unable to read configuration for %s", GDM_KEY_TIMED_LOGIN_DELAY);
-        } else {
-                if (delay >= 0) {
-                        login_window->priv->timed_login_delay = delay;
-                }
-        }
-        g_debug ("GdmGreeterLoginWindow: TimedLoginDelay=%d", delay);
-}
-
-static void
 update_banner_message (GdmGreeterLoginWindow *login_window)
 {
         GError      *error;
@@ -1511,7 +1482,6 @@ gdm_greeter_login_window_constructor (GType                  type,
                                                                                                                       construct_properties));
 
 
-        read_configuration (login_window);
         load_theme (login_window);
         update_banner_message (login_window);
 
@@ -1663,7 +1633,6 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         login_window->priv = GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE (login_window);
 
         login_window->priv->timed_login_enabled = FALSE;
-        login_window->priv->timed_login_delay = TIMED_LOGIN_TIMEOUT_SEC;
 
         gtk_window_set_title (GTK_WINDOW (login_window), _("Login Window"));
         gtk_window_set_opacity (GTK_WINDOW (login_window), 0.85);
