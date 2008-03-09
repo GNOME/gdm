@@ -412,8 +412,6 @@ switch_mode (GdmGreeterLoginWindow *login_window,
 
         switch (number) {
         case MODE_SELECTION:
-                restart_timed_login_timeout (login_window);
-
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_HIDDEN);
 
                 show_widget (login_window, "cancel-button", FALSE);
@@ -516,13 +514,15 @@ do_suspend (GdmGreeterLoginWindow *login_window)
 static void
 do_cancel (GdmGreeterLoginWindow *login_window)
 {
-
+        gdm_chooser_widget_set_item_timer (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser),
+                                           GDM_USER_CHOOSER_USER_AUTO, 0);
         gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), NULL);
 
         switch_mode (login_window, MODE_SELECTION);
         set_busy (login_window);
         set_sensitive (login_window, FALSE);
         set_message (login_window, "");
+        remove_timed_login_timeout (login_window);
 
         g_signal_emit (login_window, signals[CANCELLED], 0);
 
@@ -569,8 +569,6 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         set_sensitive (login_window, TRUE);
         set_ready (login_window);
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
-
-        restart_timed_login_timeout (login_window);
 }
 
 gboolean
@@ -637,7 +635,6 @@ gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_windo
         reset_dialog (login_window);
         gdm_user_chooser_widget_set_show_auto_user (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
         gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), GDM_USER_CHOOSER_USER_AUTO);
-        restart_timed_login_timeout (login_window);
 }
 
 gboolean
@@ -1035,22 +1032,18 @@ on_user_chosen (GdmUserChooserWidget  *user_chooser,
                        0, user_name);
 
         if (strcmp (user_name, GDM_USER_CHOOSER_USER_OTHER) == 0) {
-                /* stop the timed login until the verification times
-                   out or is cancelled */
-                remove_timed_login_timeout (login_window);
                 g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
         } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_GUEST) == 0) {
                 /* FIXME: handle guest account stuff */
         } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_AUTO) == 0) {
                 g_signal_emit (login_window, signals[BEGIN_AUTO_LOGIN], 0,
                                login_window->priv->timed_login_username);
+                restart_timed_login_timeout (login_window);
+
                 /* just wait for the user to select language and stuff */
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_TIMED_LOGIN);
                 set_message (login_window, _("Select language and click Log In"));
         } else {
-                /* stop the timed login until the verification times
-                   out or is cancelled */
-                remove_timed_login_timeout (login_window);
                 g_signal_emit (login_window, signals[BEGIN_VERIFICATION_FOR_USER], 0, user_name);
         }
 
