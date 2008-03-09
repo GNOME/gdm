@@ -45,7 +45,7 @@ typedef struct
 {
         GObjectClass   parent_class;
 
-        void (* begin_timed_login)          (GdmGreeterServer  *greeter_server);
+        void (* begin_auto_login)           (GdmGreeterServer  *greeter_server);
         void (* begin_verification)         (GdmGreeterServer  *greeter_server);
         void (* begin_verification_for_user)(GdmGreeterServer  *greeter_server,
                                              const char        *username);

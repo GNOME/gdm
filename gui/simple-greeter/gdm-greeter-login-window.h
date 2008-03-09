@@ -46,7 +46,8 @@ typedef struct
         GtkWindowClass   parent_class;
 
         /* signals */
-        void (* begin_timed_login)           (GdmGreeterLoginWindow *login_window);
+        void (* begin_auto_login)            (GdmGreeterLoginWindow *login_window,
+                                              const char            *username);
         void (* begin_verification)          (GdmGreeterLoginWindow *login_window);
         void (* begin_verification_for_user) (GdmGreeterLoginWindow *login_window,
                                               const char            *username);

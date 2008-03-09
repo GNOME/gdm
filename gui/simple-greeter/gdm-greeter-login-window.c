@@ -136,7 +136,7 @@ enum {
 };
 
 enum {
-        BEGIN_TIMED_LOGIN,
+        BEGIN_AUTO_LOGIN,
         BEGIN_VERIFICATION,
         BEGIN_VERIFICATION_FOR_USER,
         QUERY_ANSWER,
@@ -263,8 +263,8 @@ timed_login_timer (GdmGreeterLoginWindow *login_window)
         set_sensitive (login_window, FALSE);
         set_message (login_window, _("Automatically logging in..."));
 
-        g_debug ("GdmGreeterLoginWindow: emitting begin-timed_login");
-        g_signal_emit (login_window, signals[BEGIN_TIMED_LOGIN], 0);
+        g_debug ("GdmGreeterLoginWindow: emitting interactive");
+        g_signal_emit (login_window, signals[INTERACTIVE], 0);
         login_window->priv->timed_login_timeout_id = 0;
 
         return FALSE;
@@ -355,12 +355,12 @@ on_login_button_clicked_answer_query (GtkButton             *button,
 
 static void
 on_login_button_clicked_timed_login (GtkButton             *button,
-                                   GdmGreeterLoginWindow *login_window)
+                                     GdmGreeterLoginWindow *login_window)
 {
         set_busy (login_window);
         set_sensitive (login_window, FALSE);
 
-        g_signal_emit (login_window, signals[BEGIN_TIMED_LOGIN], 0);
+        g_signal_emit (login_window, signals[INTERACTIVE], 0);
 }
 
 static void
@@ -1042,6 +1042,8 @@ on_user_chosen (GdmUserChooserWidget  *user_chooser,
         } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_GUEST) == 0) {
                 /* FIXME: handle guest account stuff */
         } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_AUTO) == 0) {
+                g_signal_emit (login_window, signals[BEGIN_AUTO_LOGIN], 0,
+                               login_window->priv->timed_login_username);
                 /* just wait for the user to select language and stuff */
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_TIMED_LOGIN);
                 set_message (login_window, _("Select language and click Log In"));
@@ -1503,11 +1505,20 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
         widget_class->size_request = gdm_greeter_login_window_size_request;
         widget_class->size_allocate = gdm_greeter_login_window_size_allocate;
 
-        signals [BEGIN_TIMED_LOGIN] =
-                g_signal_new ("begin-timed_login",
+        signals [BEGIN_AUTO_LOGIN] =
+                g_signal_new ("begin-auto-login",
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, begin_timed_login),
+                              G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, begin_auto_login),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE, 1, G_TYPE_STRING);
+        signals [BEGIN_VERIFICATION] =
+                g_signal_new ("begin-verification",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, begin_verification),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,

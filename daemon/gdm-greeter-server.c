@@ -69,7 +69,7 @@ enum {
 };
 
 enum {
-        BEGIN_TIMED_LOGIN,
+        BEGIN_AUTO_LOGIN,
         BEGIN_VERIFICATION,
         BEGIN_VERIFICATION_FOR_USER,
         QUERY_ANSWER,
@@ -327,19 +327,29 @@ handle_begin_verification (GdmGreeterServer *greeter_server,
 }
 
 static DBusHandlerResult
-handle_begin_timed_login (GdmGreeterServer *greeter_server,
-                        DBusConnection   *connection,
-                        DBusMessage      *message)
+handle_begin_auto_login (GdmGreeterServer *greeter_server,
+                         DBusConnection   *connection,
+                         DBusMessage      *message)
 {
         DBusMessage *reply;
+        DBusError    error;
+        const char  *text;
 
-        g_debug ("GreeterServer: BeginTimedLogin");
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &text,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+
+        g_debug ("GreeterServer: BeginAutoLogin for '%s'", text);
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_signal_emit (greeter_server, signals [BEGIN_TIMED_LOGIN], 0);
+        g_signal_emit (greeter_server, signals [BEGIN_AUTO_LOGIN], 0, text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -598,8 +608,8 @@ greeter_handle_child_message (DBusConnection *connection,
                 return handle_begin_verification (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "BeginVerificationForUser")) {
                 return handle_begin_verification_for_user (greeter_server, connection, message);
-        } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "BeginTimedLogin")) {
-                return handle_begin_timed_login (greeter_server, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "BeginAutoLogin")) {
+                return handle_begin_auto_login (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "AnswerQuery")) {
                 return handle_answer_query (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectSession")) {
@@ -1073,16 +1083,17 @@ gdm_greeter_server_class_init (GdmGreeterServerClass *klass)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
-        signals [BEGIN_TIMED_LOGIN] =
-                g_signal_new ("begin-timed-login",
+        signals [BEGIN_AUTO_LOGIN] =
+                g_signal_new ("begin-auto-login",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterServerClass, begin_timed_login),
+                              G_STRUCT_OFFSET (GdmGreeterServerClass, begin_auto_login),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__VOID,
+                              g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
-                              0);
+                              1,
+                              G_TYPE_STRING);
         signals [BEGIN_VERIFICATION_FOR_USER] =
                 g_signal_new ("begin-verification-for-user",
                               G_OBJECT_CLASS_TYPE (object_class),

@@ -611,29 +611,11 @@ on_greeter_begin_verification (GdmGreeterServer *greeter_server,
 }
 
 static void
-on_greeter_begin_timed_login (GdmGreeterServer *greeter_server,
-                              GdmSimpleSlave   *slave)
+on_greeter_begin_auto_login (GdmGreeterServer *greeter_server,
+                             const char       *username,
+                             GdmSimpleSlave   *slave)
 {
-        char    *username;
-        gboolean enabled;
-        gboolean res;
-
-        g_debug ("GdmSimpleSlave: begin timed login");
-
-        enabled = FALSE;
-        res = gdm_settings_client_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE, &enabled);
-        if (! enabled) {
-                g_warning ("GdmSimpleSlave: timed login requested but disabled in configuration");
-                return;
-        }
-
-        username = NULL;
-        res = gdm_settings_client_get_string (GDM_KEY_TIMED_LOGIN_USER, &username);
-        if (username == NULL) {
-                g_warning ("GdmSimpleSlave: timed login requested but username not specified in configuration");
-                return;
-        }
-
+        g_debug ("GdmSimpleSlave: begin auto login for user '%s'", username);
         gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
                                     "gdm-autologin",
                                     username);
@@ -795,8 +777,8 @@ run_greeter (GdmSimpleSlave *slave)
 
         slave->priv->greeter_server = gdm_greeter_server_new (display_id);
         g_signal_connect (slave->priv->greeter_server,
-                          "begin-timed-login",
-                          G_CALLBACK (on_greeter_begin_timed_login),
+                          "begin-auto-login",
+                          G_CALLBACK (on_greeter_begin_auto_login),
                           slave);
         g_signal_connect (slave->priv->greeter_server,
                           "begin-verification",

@@ -179,10 +179,12 @@ on_secret_info_query (GdmGreeterClient  *client,
 }
 
 static void
-on_begin_timed_login (GdmGreeterLoginWindow *login_window,
-                    GdmGreeterSession     *session)
+on_begin_auto_login (GdmGreeterLoginWindow *login_window,
+                     const char            *username,
+                     GdmGreeterSession     *session)
 {
-        gdm_greeter_client_call_begin_timed_login (session->priv->client);
+        gdm_greeter_client_call_begin_auto_login (session->priv->client,
+                                                  username);
 }
 
 static void
@@ -307,8 +309,8 @@ toggle_login_window (GdmSessionManager *manager,
                 session->priv->login_window = gdm_greeter_login_window_new (is_local);
 
                 g_signal_connect (session->priv->login_window,
-                                  "begin-timed-login",
-                                  G_CALLBACK (on_begin_timed_login),
+                                  "begin-auto-login",
+                                  G_CALLBACK (on_begin_auto_login),
                                   session);
                 g_signal_connect (session->priv->login_window,
                                   "begin-verification",

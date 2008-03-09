@@ -375,10 +375,11 @@ send_dbus_void_method (DBusConnection *connection,
 }
 
 void
-gdm_greeter_client_call_begin_timed_login (GdmGreeterClient *client)
+gdm_greeter_client_call_begin_auto_login (GdmGreeterClient *client,
+                                          const char       *username)
 {
-        send_dbus_void_method (client->priv->connection,
-                               "BeginTimedLogin");
+        send_dbus_string_method (client->priv->connection,
+                                 "BeginAutoLogin", username);
 }
 
 void
