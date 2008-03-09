@@ -280,6 +280,12 @@ gdm_greeter_server_request_timed_login (GdmGreeterServer *greeter_server,
         send_dbus_string_and_int_signal (greeter_server, "TimedLoginRequested", username, delay);
 }
 
+void
+gdm_greeter_server_user_authorized (GdmGreeterServer *greeter_server)
+{
+        send_dbus_void_signal (greeter_server, "UserAuthorized");
+}
+
 /* Note: Use abstract sockets like dbus does by default on Linux. Abstract
  * sockets are only available on Linux.
  */
@@ -715,6 +721,8 @@ do_introspect (DBusConnection *connection,
                                "    <signal name=\"Ready\">\n"
                                "    </signal>\n"
                                "    <signal name=\"Reset\">\n"
+                               "    </signal>\n"
+                               "    <signal name=\"UserAuthorized\">\n"
                                "    </signal>\n"
                                "  </interface>\n");
 

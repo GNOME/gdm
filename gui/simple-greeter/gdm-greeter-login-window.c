@@ -746,6 +746,16 @@ gdm_greeter_login_window_secret_info_query (GdmGreeterLoginWindow *login_window,
         return TRUE;
 }
 
+void
+gdm_greeter_login_window_user_authorized (GdmGreeterLoginWindow *login_window)
+{
+        g_return_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window));
+
+        g_debug ("GdmGreeterLoginWindow: user now authorized");
+
+        gdm_greeter_login_window_start_session_when_ready (login_window);
+}
+
 static void
 _gdm_greeter_login_window_set_display_is_local (GdmGreeterLoginWindow *login_window,
                                                 gboolean               is)

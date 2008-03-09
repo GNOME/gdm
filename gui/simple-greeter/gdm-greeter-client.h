@@ -67,6 +67,7 @@ typedef struct
         void (* timed_login_requested)   (GdmGreeterClient  *client,
                                           const char        *username,
                                           int                delay);
+        void (* user_authorized)         (GdmGreeterClient  *client);
 } GdmGreeterClientClass;
 
 #define GDM_GREETER_CLIENT_ERROR (gdm_greeter_client_error_quark ())

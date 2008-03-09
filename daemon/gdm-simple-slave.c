@@ -221,6 +221,7 @@ static void
 on_session_authorized (GdmSession     *session,
                        GdmSimpleSlave *slave)
 {
+        gdm_greeter_server_user_authorized (slave->priv->greeter_server);
         gdm_simple_slave_accredit_when_ready (slave);
 }
 

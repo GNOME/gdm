@@ -1,5 +1,28 @@
 2008-03-09  Ray Strode  <rstrode@redhat.com>
 
+	* daemon/gdm-simple-slave.c:
+	(on_session_authorized),
+	* daemon/gdm-greeter-server.[ch]:
+	(gdm_greeter_server_user_authorized),
+	(do_introspect):
+	When the user has successfully been verified,
+	inform the greeter, so that it can make a judgement
+	about whether the user's session should be opened.
+	* gui/simple-greeter/gdm-greeter-client.c:
+	(on_user_authorized), (client_dbus_handle_message),
+	(gdm_greeter_client_class_init):
+	* gui/simple-greeter/gdm-greeter-session.c
+	(on_user_authorized), (gdm_greeter_session_init):
+	forward "user-authorized" signal from slave to
+	login window
+	* gui/simple-greeter/gdm-greeter-login-window.c:
+	(gdm_greeter_login_window_user_authorized):
+	When the user is verified start the session as soon
+	as the user has had an opporunity to interact with
+	language and session choosers
+
+2008-03-09  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-login-window.[ch]:
 	(do_cancel), (gdm_greeter_login_window_start_when_ready),
 	(gdm_greeter_login_window_class_init):

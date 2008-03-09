@@ -79,6 +79,7 @@ gboolean            gdm_greeter_login_window_problem            (GdmGreeterLogin
 void               gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_window,
                                                                  const char            *username,
                                                                  int                    delay);
+void               gdm_greeter_login_window_user_authorized     (GdmGreeterLoginWindow *login_window);
 
 G_END_DECLS
 

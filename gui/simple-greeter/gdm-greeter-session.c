@@ -155,6 +155,14 @@ on_timed_login_requested (GdmGreeterClient  *client,
 }
 
 static void
+on_user_authorized (GdmGreeterClient  *client,
+                    GdmGreeterSession *session)
+{
+        g_debug ("GdmGreeterSession: user authorized");
+        gdm_greeter_login_window_user_authorized (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
+}
+
+static void
 on_info_query (GdmGreeterClient  *client,
                const char        *text,
                GdmGreeterSession *session)
@@ -839,7 +847,10 @@ gdm_greeter_session_init (GdmGreeterSession *session)
                           "timed-login-requested",
                           G_CALLBACK (on_timed_login_requested),
                           session);
-
+        g_signal_connect (session->priv->client,
+                          "user-authorized",
+                          G_CALLBACK (on_user_authorized),
+                          session);
 
         /* We want to listen for panel mnemonics even if the
          * login window is focused, so we intercept them here.

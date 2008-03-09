@@ -94,6 +94,8 @@ void                gdm_greeter_server_default_session_name_changed (GdmGreeterS
 void                gdm_greeter_server_request_timed_login   (GdmGreeterServer *greeter_server,
                                                               const char       *username,
                                                               int               delay);
+void                gdm_greeter_server_user_authorized       (GdmGreeterServer *greeter_server);
+
 
 G_END_DECLS
 

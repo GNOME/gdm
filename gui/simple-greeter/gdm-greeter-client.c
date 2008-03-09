@@ -68,6 +68,7 @@ enum {
         DEFAULT_LANGUAGE_NAME_CHANGED,
         DEFAULT_SESSION_NAME_CHANGED,
         TIMED_LOGIN_REQUESTED,
+        USER_AUTHORIZED,
         LAST_SIGNAL
 };
 
@@ -184,6 +185,15 @@ on_timed_login_requested (GdmGreeterClient *client,
                           DBusMessage      *message)
 {
         emit_string_and_int_signal_for_message (client, "TimedLoginRequested", message, TIMED_LOGIN_REQUESTED);
+}
+
+static void
+on_user_authorized (GdmGreeterClient *client,
+                    DBusMessage      *message)
+{
+        g_signal_emit (client,
+                       gdm_greeter_client_signals[USER_AUTHORIZED],
+                       0);
 }
 
 static void
@@ -620,6 +630,8 @@ client_dbus_handle_message (DBusConnection *connection,
                 on_default_session_name_changed (client, message);
         } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "TimedLoginRequested")) {
                 on_timed_login_requested (client, message);
+        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "UserAuthorized")) {
+                on_user_authorized (client, message);
         } else {
                 return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
         }
@@ -894,6 +906,15 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               G_TYPE_NONE,
                               2, G_TYPE_STRING, G_TYPE_INT);
 
+        gdm_greeter_client_signals[USER_AUTHORIZED] =
+                g_signal_new ("user-authorized",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmGreeterClientClass, user_authorized),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE, 0);
 }
 
 static void
