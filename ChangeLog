@@ -1,5 +1,25 @@
 2008-03-09  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-greeter-login-window.c:
+	(GdmGreeterLoginWindowPrivate),
+	(_gdm_greeter_login_window_set_interactive),
+	(timed_login_timer), (on_button_clicked_answer_query),
+	(on_login_button_clicked_timed_login), (do_cancel),
+	(gdm_greeter_login_window_set_property),
+	(gdm_greeter_login_window_get_property),
+	(gdm_greeter_login_window_class_init)):
+	Make "is-interactive" property to replace "interactive"
+	signal, since we're going to need to track it's state
+	from within the login window.
+	* gui/simple-greeter/gdm-greeter-session.c:
+	(GdmGreeterSessionPrivate), (on_reset):
+	Don't track interactive state here anymore, we'll
+	rely on the login window to tell us when to start
+	the session instead of trying to figure it out
+	ourselves
+
+2008-03-09  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-login-window.c
 	(gdm_greeter_login_window_request_timed_login),
 	(do_cancel), (on_user_chosen):

@@ -112,7 +112,8 @@ struct GdmGreeterLoginWindowPrivate
         GtkWidget       *user_chooser;
         GtkWidget       *auth_capslock_label;
         GtkWidget       *auth_banner_label;
-        gboolean         display_is_local;
+        guint            display_is_local : 1;
+        guint            is_interactive : 1;
         GConfClient     *client;
 
         gboolean         caps_lock_on;
@@ -133,6 +134,7 @@ struct GdmGreeterLoginWindowPrivate
 enum {
         PROP_0,
         PROP_DISPLAY_IS_LOCAL,
+        PROP_IS_INTERACTIVE,
 };
 
 enum {
@@ -143,7 +145,6 @@ enum {
         USER_SELECTED,
         DISCONNECTED,
         CANCELLED,
-        INTERACTIVE,
         LAST_SIGNAL
 };
 
@@ -257,14 +258,25 @@ remove_timed_login_timeout (GdmGreeterLoginWindow *login_window)
         }
 }
 
+static void
+_gdm_greeter_login_window_set_interactive (GdmGreeterLoginWindow *login_window,
+                                           gboolean               is_interactive)
+{
+
+        if (login_window->priv->is_interactive != is_interactive) {
+                login_window->priv->is_interactive = is_interactive;
+                g_object_notify (G_OBJECT (login_window), "is-interactive");
+        }
+}
+
 static gboolean
 timed_login_timer (GdmGreeterLoginWindow *login_window)
 {
         set_sensitive (login_window, FALSE);
         set_message (login_window, _("Automatically logging in..."));
 
-        g_debug ("GdmGreeterLoginWindow: emitting interactive");
-        g_signal_emit (login_window, signals[INTERACTIVE], 0);
+        g_debug ("GdmGreeterLoginWindow: timer expired");
+        _gdm_greeter_login_window_set_interactive (login_window, TRUE);
         login_window->priv->timed_login_timeout_id = 0;
 
         return FALSE;
@@ -349,7 +361,7 @@ on_login_button_clicked_answer_query (GtkButton             *button,
         entry = glade_xml_get_widget (login_window->priv->xml, "auth-prompt-entry");
         text = gtk_entry_get_text (GTK_ENTRY (entry));
 
-        g_signal_emit (login_window, signals[INTERACTIVE], 0);
+        _gdm_greeter_login_window_set_interactive (login_window, TRUE);
         g_signal_emit (login_window, signals[QUERY_ANSWER], 0, text);
 }
 
@@ -360,7 +372,7 @@ on_login_button_clicked_timed_login (GtkButton             *button,
         set_busy (login_window);
         set_sensitive (login_window, FALSE);
 
-        g_signal_emit (login_window, signals[INTERACTIVE], 0);
+        _gdm_greeter_login_window_set_interactive (login_window, TRUE);
 }
 
 static void
@@ -524,6 +536,7 @@ do_cancel (GdmGreeterLoginWindow *login_window)
         set_sensitive (login_window, FALSE);
         set_message (login_window, "");
         remove_timed_login_timeout (login_window);
+        _gdm_greeter_login_window_set_interactive (login_window, FALSE);
 
         g_signal_emit (login_window, signals[CANCELLED], 0);
 
@@ -710,6 +723,9 @@ gdm_greeter_login_window_set_property (GObject      *object,
         case PROP_DISPLAY_IS_LOCAL:
                 _gdm_greeter_login_window_set_display_is_local (self, g_value_get_boolean (value));
                 break;
+        case PROP_IS_INTERACTIVE:
+                _gdm_greeter_login_window_set_interactive (self, g_value_get_boolean (value));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -730,6 +746,10 @@ gdm_greeter_login_window_get_property (GObject    *object,
         case PROP_DISPLAY_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->display_is_local);
                 break;
+        case PROP_IS_INTERACTIVE:
+                g_value_set_boolean (value, self->priv->is_interactive);
+                break;
+
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -1596,6 +1616,13 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                                                                "display is local",
                                                                FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_IS_INTERACTIVE,
+                                         g_param_spec_boolean ("is-interactive",
+                                                               "Is Interactive",
+                                                               "Use has had an oppurtunity to interact with window",
+                                                               FALSE,
+                                                               G_PARAM_READABLE));
 
         g_type_class_add_private (klass, sizeof (GdmGreeterLoginWindowPrivate));
 }

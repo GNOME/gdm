@@ -63,8 +63,6 @@ struct GdmGreeterSessionPrivate
 
         GtkWidget             *login_window;
         GtkWidget             *panel;
-
-        guint                  was_interactive : 1;
 };
 
 enum {
@@ -116,8 +114,6 @@ on_reset (GdmGreeterClient  *client,
 
         gdm_greeter_panel_reset (GDM_GREETER_PANEL (session->priv->panel));
         gdm_greeter_login_window_reset (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
-
-        session->priv->was_interactive = FALSE;
 }
 
 static void
