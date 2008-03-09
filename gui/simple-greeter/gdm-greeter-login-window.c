@@ -516,6 +516,7 @@ do_cancel (GdmGreeterLoginWindow *login_window)
 {
         gdm_chooser_widget_set_item_timer (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser),
                                            GDM_USER_CHOOSER_USER_AUTO, 0);
+        login_window->priv->timed_login_enabled = FALSE;
         gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), NULL);
 
         switch_mode (login_window, MODE_SELECTION);
@@ -628,7 +629,6 @@ gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_windo
 
         g_debug ("GdmGreeterLoginWindow: requested automatic login for user '%s' in %d seconds", username, delay);
 
-        login_window->priv->timed_login_enabled = TRUE;
         login_window->priv->timed_login_username = g_strdup (username);
         login_window->priv->timed_login_delay = delay;
 
@@ -1038,6 +1038,8 @@ on_user_chosen (GdmUserChooserWidget  *user_chooser,
         } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_AUTO) == 0) {
                 g_signal_emit (login_window, signals[BEGIN_AUTO_LOGIN], 0,
                                login_window->priv->timed_login_username);
+
+                login_window->priv->timed_login_enabled = TRUE;
                 restart_timed_login_timeout (login_window);
 
                 /* just wait for the user to select language and stuff */
