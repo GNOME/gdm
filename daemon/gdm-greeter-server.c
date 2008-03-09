@@ -80,6 +80,8 @@ enum {
         CANCELLED,
         CONNECTED,
         DISCONNECTED,
+        START_SESSION_WHEN_READY,
+        START_SESSION_LATER,
         LAST_SIGNAL
 };
 
@@ -546,6 +548,38 @@ handle_get_display_id (GdmGreeterServer *greeter_server,
 }
 
 static DBusHandlerResult
+handle_start_session_when_ready (GdmGreeterServer *greeter_server,
+                                 DBusConnection   *connection,
+                                 DBusMessage      *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+        gboolean     should_start_session;
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_BOOLEAN, &should_start_session,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+
+        g_debug ("GreeterServer: %sStartSessionWhenReady",
+                 should_start_session? "" : "Don't ");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        if (should_start_session) {
+                g_signal_emit (greeter_server, signals [START_SESSION_WHEN_READY], 0);
+        } else {
+                g_signal_emit (greeter_server, signals [START_SESSION_LATER] ,0);
+        }
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
 greeter_handle_child_message (DBusConnection *connection,
                               DBusMessage    *message,
                               void           *user_data)
@@ -574,6 +608,8 @@ greeter_handle_child_message (DBusConnection *connection,
                 return handle_disconnect (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "GetDisplayId")) {
                 return handle_get_display_id (greeter_server, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "StartSessionWhenReady")) {
+                return handle_start_session_when_ready (greeter_server, connection, message);
         }
 
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -629,6 +665,9 @@ do_introspect (DBusConnection *connection,
                                "    </method>\n"
                                "    <method name=\"GetDisplayId\">\n"
                                "      <arg name=\"id\" direction=\"out\" type=\"o\"/>\n"
+                               "    </method>\n"
+                               "    <method name=\"StartSessionWhenReady\">\n"
+                               "      <arg name=\"should_start_session\" type=\"b\"/>\n"
                                "    </method>\n"
                                "    <signal name=\"Info\">\n"
                                "      <arg name=\"text\" type=\"s\"/>\n"
@@ -1123,6 +1162,28 @@ gdm_greeter_server_class_init (GdmGreeterServerClass *klass)
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
                               G_STRUCT_OFFSET (GdmGreeterServerClass, disconnected),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE,
+                              0);
+
+        signals [START_SESSION_WHEN_READY] =
+                g_signal_new ("start-session-when-ready",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmGreeterServerClass, start_session_when_ready),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE,
+                              0);
+
+        signals [START_SESSION_LATER] =
+                g_signal_new ("start-session-later",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmGreeterServerClass, start_session_later),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,

@@ -102,6 +102,9 @@ void               gdm_greeter_client_call_select_session            (GdmGreeter
 void               gdm_greeter_client_call_answer_query              (GdmGreeterClient *client,
                                                                       const char       *text);
 
+void               gdm_greeter_client_call_start_session_when_ready  (GdmGreeterClient *client,
+                                                                      gboolean          should_start_session);
+
 
 G_END_DECLS
 

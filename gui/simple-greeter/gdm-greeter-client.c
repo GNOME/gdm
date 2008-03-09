@@ -398,6 +398,15 @@ gdm_greeter_client_call_answer_query (GdmGreeterClient *client,
 }
 
 void
+gdm_greeter_client_call_start_session_when_ready  (GdmGreeterClient *client,
+                                                   gboolean          should_start_session)
+{
+        send_dbus_bool_method (client->priv->connection,
+                               "StartSessionWhenReady",
+                               should_start_session);
+}
+
+void
 gdm_greeter_client_call_select_session (GdmGreeterClient *client,
                                         const char       *text)
 {

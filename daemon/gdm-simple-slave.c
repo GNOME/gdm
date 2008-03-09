@@ -77,6 +77,9 @@ struct GdmSimpleSlavePrivate
         GdmGreeterServer  *greeter_server;
         GdmGreeterSession *greeter;
         GdmSessionDirect  *session;
+
+        guint              start_session_when_ready : 1;
+        guint              waiting_to_start_session : 1;
 };
 
 enum {
@@ -204,14 +207,21 @@ on_session_authentication_failed (GdmSession     *session,
 }
 
 static void
+gdm_simple_slave_accredit_when_ready (GdmSimpleSlave *slave)
+{
+        if (slave->priv->start_session_when_ready) {
+                gdm_session_accredit (GDM_SESSION (slave->priv->session),
+                                      GDM_SESSION_CRED_ESTABLISH);
+        } else {
+                slave->priv->waiting_to_start_session = TRUE;
+        }
+}
+
+static void
 on_session_authorized (GdmSession     *session,
                        GdmSimpleSlave *slave)
 {
-        int flag;
-
-        flag = GDM_SESSION_CRED_ESTABLISH;
-
-        gdm_session_accredit (session, flag);
+        gdm_simple_slave_accredit_when_ready (slave);
 }
 
 static void
@@ -676,6 +686,28 @@ on_greeter_connected (GdmGreeterServer *greeter_server,
 }
 
 static void
+on_start_session_when_ready (GdmGreeterServer *session,
+                             GdmSimpleSlave   *slave)
+{
+        g_debug ("GdmSimpleSlave: Will start session when ready");
+        slave->priv->start_session_when_ready = TRUE;
+
+        if (slave->priv->waiting_to_start_session) {
+                gdm_simple_slave_accredit_when_ready (slave);
+        }
+}
+
+static void
+on_start_session_later (GdmGreeterServer *session,
+                        GdmSimpleSlave   *slave)
+{
+        g_debug ("GdmSimpleSlave: Will start session when ready and told");
+        slave->priv->start_session_when_ready = FALSE;
+}
+
+
+
+static void
 setup_server (GdmSimpleSlave *slave)
 {
         /* Set the busy cursor */
@@ -765,6 +797,16 @@ run_greeter (GdmSimpleSlave *slave)
                           "cancelled",
                           G_CALLBACK (on_greeter_cancel),
                           slave);
+        g_signal_connect (slave->priv->greeter_server,
+                          "start-session-when-ready",
+                          G_CALLBACK (on_start_session_when_ready),
+                          slave);
+
+        g_signal_connect (slave->priv->greeter_server,
+                          "start-session-later",
+                          G_CALLBACK (on_start_session_later),
+                          slave);
+
         gdm_greeter_server_start (slave->priv->greeter_server);
 
         address = gdm_greeter_server_get_address (slave->priv->greeter_server);

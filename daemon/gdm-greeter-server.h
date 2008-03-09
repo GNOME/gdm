@@ -62,6 +62,8 @@ typedef struct
         void (* cancelled)                  (GdmGreeterServer  *greeter_server);
         void (* connected)                  (GdmGreeterServer  *greeter_server);
         void (* disconnected)               (GdmGreeterServer  *greeter_server);
+        void (* start_session_when_ready)   (GdmGreeterServer  *greeter_server);
+        void (* start_session_later)        (GdmGreeterServer  *greeter_server);
 } GdmGreeterServerClass;
 
 GType               gdm_greeter_server_get_type              (void);

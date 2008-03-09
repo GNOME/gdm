@@ -1,5 +1,24 @@
 2008-03-09  Ray Strode  <rstrode@redhat.com>
 
+	* daemon/gdm-simple-slave.c:
+	(GdmSimpleSlavePrivate),
+	(gdm_simple_slave_accredit_when_ready),
+	(on_start_session_when_ready),
+	(on_start_session_later),
+	(setup_server):
+	* daemon/gdm-greeter-server.[ch]:
+	(handle_start_session_when_ready):
+	(greeter_handle_child_message):
+	(do_introspect):
+	(gdm_greeter_server_class_init):
+	* gui/simple-greeter/gdm-greeter-client.[ch]:
+	(gdm_greeter_client_call_start_session_when_ready):
+	After successfully verifying the user, wait until
+	the greeter gives the go ahead before starting the
+	user's session
+
+2008-03-09  Ray Strode  <rstrode@redhat.com>
+
 	* common/gdm-marshal.list (VOID:STRING,INT):
 	* daemon/gdm-greeter-server.c:
 	(send_dbus_string_and_int_signal):
