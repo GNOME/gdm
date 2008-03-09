@@ -144,6 +144,7 @@ enum {
         USER_SELECTED,
         DISCONNECTED,
         CANCELLED,
+        INTERACTIVE,
         LAST_SIGNAL
 };
 
@@ -349,6 +350,7 @@ on_login_button_clicked_answer_query (GtkButton             *button,
         entry = glade_xml_get_widget (login_window->priv->xml, "auth-prompt-entry");
         text = gtk_entry_get_text (GTK_ENTRY (entry));
 
+        g_signal_emit (login_window, signals[INTERACTIVE], 0);
         g_signal_emit (login_window, signals[QUERY_ANSWER], 0, text);
 }
 
@@ -1601,6 +1603,16 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
+        signals [INTERACTIVE] =
+                g_signal_new ("interactive",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, interactive),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE, 0);
+
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_IS_LOCAL,
                                          g_param_spec_boolean ("display-is-local",

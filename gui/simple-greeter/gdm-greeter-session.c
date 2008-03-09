@@ -63,6 +63,8 @@ struct GdmGreeterSessionPrivate
 
         GtkWidget             *login_window;
         GtkWidget             *panel;
+
+        guint                  was_interactive : 1;
 };
 
 enum {
@@ -114,6 +116,8 @@ on_reset (GdmGreeterClient  *client,
 
         gdm_greeter_panel_reset (GDM_GREETER_PANEL (session->priv->panel));
         gdm_greeter_login_window_reset (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
+
+        session->priv->was_interactive = FALSE;
 }
 
 static void
@@ -238,6 +242,24 @@ on_disconnected (GdmGreeterLoginWindow *login_window,
 }
 
 static void
+on_interactive (GdmGreeterLoginWindow *login_window,
+                  GdmGreeterSession     *session)
+{
+        if (!session->priv->was_interactive) {
+                g_debug ("GdmGreeterSession: session was interactive\n");
+
+                /* We've blocked the UI already for the user to answer a question,
+                 * so we know they've had an opportunity to interact with
+                 * language chooser session selector, etc, and we can start the
+                 * session right away.
+                 */
+                gdm_greeter_client_call_start_session_when_ready (session->priv->client,
+                                                                  TRUE);
+                session->priv->was_interactive = TRUE;
+        }
+}
+
+static void
 toggle_panel (GdmSessionManager *manager,
               gboolean           enabled,
               GdmGreeterSession *session)
@@ -301,6 +323,10 @@ toggle_login_window (GdmSessionManager *manager,
                 g_signal_connect (session->priv->login_window,
                                   "disconnected",
                                   G_CALLBACK (on_disconnected),
+                                  session);
+                g_signal_connect (session->priv->login_window,
+                                  "interactive",
+                                  G_CALLBACK (on_interactive),
                                   session);
                 gtk_widget_show (session->priv->login_window);
         } else {

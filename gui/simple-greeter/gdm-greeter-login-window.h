@@ -56,6 +56,7 @@ typedef struct
                                               const char            *text);
         void (* cancelled)                   (GdmGreeterLoginWindow *login_window);
         void (* disconnected)                (GdmGreeterLoginWindow *login_window);
+        void (* interactive)                 (GdmGreeterLoginWindow *login_window);
 
 } GdmGreeterLoginWindowClass;
 
