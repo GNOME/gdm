@@ -365,6 +365,7 @@ EXTRA_DIST = 				\
 	gdm-factory-slave.xml		\
 	gdm-product-slave.xml		\
 	gdm-xdmcp-chooser-slave.xml	\
+	gdm-session-direct.xml		\
 	gdm-manager.xml			\
 	gdm-display.xml			\
 	gdm-xdmcp-greeter-display.xml	\
