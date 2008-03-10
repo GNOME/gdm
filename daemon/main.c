@@ -442,15 +442,6 @@ signal_cb (int      signo,
         ret = TRUE;
 
         switch (signo) {
-        case SIGSEGV:
-        case SIGBUS:
-        case SIGILL:
-        case SIGABRT:
-                g_debug ("Caught signal %d.", signo);
-
-                ret = FALSE;
-                break;
-
         case SIGFPE:
         case SIGPIPE:
                 /* let the fatal signals interrupt us */
@@ -624,14 +615,11 @@ main (int    argc,
 
         signal_handler = gdm_signal_handler_new ();
         gdm_signal_handler_set_main_loop (signal_handler, main_loop);
+        gdm_signal_handler_add_fatal (signal_handler);
         gdm_signal_handler_add (signal_handler, SIGTERM, signal_cb, NULL);
         gdm_signal_handler_add (signal_handler, SIGINT, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGILL, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGBUS, signal_cb, NULL);
         gdm_signal_handler_add (signal_handler, SIGFPE, signal_cb, NULL);
         gdm_signal_handler_add (signal_handler, SIGHUP, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGSEGV, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGABRT, signal_cb, NULL);
         gdm_signal_handler_add (signal_handler, SIGUSR1, signal_cb, NULL);
 
         if (do_timed_exit) {

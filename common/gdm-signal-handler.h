@@ -56,6 +56,7 @@ GdmSignalHandler *  gdm_signal_handler_new                     (void);
 void                gdm_signal_handler_set_main_loop           (GdmSignalHandler    *handler,
                                                                 GMainLoop           *main_loop);
 
+void                gdm_signal_handler_add_fatal               (GdmSignalHandler    *handler);
 guint               gdm_signal_handler_add                     (GdmSignalHandler    *handler,
                                                                 int                  signal_number,
                                                                 GdmSignalHandlerFunc callback,

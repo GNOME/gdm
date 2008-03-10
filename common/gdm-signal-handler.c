@@ -126,10 +126,12 @@ signal_io_watch (GIOChannel       *ioc,
 
                         data = g_hash_table_lookup (handler->priv->id_lookup, l->data);
                         if (data != NULL) {
-                                g_debug ("GdmSignalHandler: running %d handler: %p", signum, data->func);
-                                res = data->func (signum, data->data);
-                                if (! res) {
-                                        is_fatal = TRUE;
+                                if (data->func != NULL) {
+                                        g_debug ("GdmSignalHandler: running %d handler: %p", signum, data->func);
+                                        res = data->func (signum, data->data);
+                                        if (! res) {
+                                                is_fatal = TRUE;
+                                        }
                                 }
                         }
                 }
@@ -181,7 +183,7 @@ crashlogger_get_backtrace (void)
         gboolean success = FALSE;
         int      pid;
 
-        pid = fork();
+        pid = fork ();
         if (pid > 0) {
                 /* Wait for the child to finish */
                 int estatus;
@@ -193,8 +195,8 @@ crashlogger_get_backtrace (void)
                 }
         } else if (pid == 0) {
                 /* Child process */
-                execl (LIBEXECDIR"/gdm-crash-logger",
-                       LIBEXECDIR"/gdm-crash-logger", NULL);
+                execl (LIBEXECDIR "/gdm-crash-logger",
+                       LIBEXECDIR "/gdm-crash-logger", NULL);
         }
 
         return success;
@@ -211,7 +213,7 @@ gdm_signal_handler_backtrace (void)
          * we get much better information out of it.  Otherwise
          * fall back to execinfo.
          */
-        if (g_stat (LIBEXECDIR"/gdm-crash-logger", &s) == 0) {
+        if (g_stat (LIBEXECDIR "/gdm-crash-logger", &s) == 0) {
                 fallback = crashlogger_get_backtrace () ? FALSE : TRUE;
         }
 
@@ -239,7 +241,7 @@ signal_handler (int signo)
         case SIGBUS:
         case SIGILL:
         case SIGABRT:
-                g_warning ("Caught signal %d.  Generating backtrace...", signo);
+        case SIGTRAP:
                 gdm_signal_handler_backtrace ();
                 exit (1);
                 break;
@@ -247,8 +249,6 @@ signal_handler (int signo)
         case SIGPIPE:
                 /* let the fatal signals interrupt us */
                 --in_fatal;
-
-                g_warning ("Caught signal %d, shutting down abnormally.  Generating backtrace...", signo);
                 gdm_signal_handler_backtrace ();
                 ignore = write (signal_pipes [1], &signo_byte, 1);
                 break;
@@ -331,6 +331,18 @@ gdm_signal_handler_add (GdmSignalHandler    *handler,
         g_hash_table_insert (handler->priv->lookup, GINT_TO_POINTER (signal_number), list);
 
         return cdata->id;
+}
+
+void
+gdm_signal_handler_add_fatal (GdmSignalHandler *handler)
+{
+        g_return_if_fail (GDM_IS_SIGNAL_HANDLER (handler));
+
+        gdm_signal_handler_add (handler, SIGILL, NULL, NULL);
+        gdm_signal_handler_add (handler, SIGBUS, NULL, NULL);
+        gdm_signal_handler_add (handler, SIGSEGV, NULL, NULL);
+        gdm_signal_handler_add (handler, SIGABRT, NULL, NULL);
+        gdm_signal_handler_add (handler, SIGTRAP, NULL, NULL);
 }
 
 static void
