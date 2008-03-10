@@ -40,6 +40,7 @@ int main (int argc, char ** argv)
         gboolean        res;
         gboolean        done;
         GError         *error;
+        int             options;
         char *  args[] = { "gdb",
                            "--batch",
                            "--quiet",
@@ -67,7 +68,12 @@ int main (int argc, char ** argv)
                 exit (1);
         }
 
-        openlog ("gdm", LOG_CONS | LOG_PERROR, LOG_DAEMON);
+        options = LOG_PID | LOG_CONS;
+#ifdef LOG_PERROR
+        options |= LOG_PERROR;
+#endif
+
+        openlog ("gdm", options, LOG_DAEMON);
         syslog (LOG_CRIT, "******************* START **********************************");
         done = FALSE;
         while (!done) {
