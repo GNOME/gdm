@@ -82,6 +82,7 @@ struct GdmChooserWidgetPrivate
         gint                     number_of_separated_rows;
         gint                     number_of_rows_with_status;
         gint                     number_of_rows_with_images;
+        gint                     number_of_active_timers;
 
         guint                    update_idle_id;
         guint                    animation_timeout_id;
@@ -2034,6 +2035,7 @@ start_timer (GdmChooserWidget    *widget,
         gtk_list_store_set (widget->priv->list_store, &iter,
                             CHOOSER_TIMER_VALUE_COLUMN, 0.0, -1);
 
+        widget->priv->number_of_active_timers++;
         if (widget->priv->timer_animation_timeout_id == 0) {
                 g_assert (g_hash_table_size (widget->priv->rows_with_timers) == 1);
 
@@ -2067,6 +2069,12 @@ stop_timer (GdmChooserWidget    *widget,
                             0.0, -1);
         gtk_list_store_set (widget->priv->list_store, &iter,
                             CHOOSER_TIMER_VALUE_COLUMN, 0.0, -1);
+
+        widget->priv->number_of_active_timers--;
+        if (widget->priv->number_of_active_timers == 0) {
+                g_source_remove (widget->priv->timer_animation_timeout_id);
+                widget->priv->timer_animation_timeout_id = 0;
+        }
 }
 
 static void
