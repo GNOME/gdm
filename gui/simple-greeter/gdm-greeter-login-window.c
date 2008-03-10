@@ -1593,16 +1593,6 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
-        signals [BEGIN_VERIFICATION] =
-                g_signal_new ("begin-verification",
-                              G_TYPE_FROM_CLASS (object_class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, begin_verification),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__VOID,
-                              G_TYPE_NONE,
-                              0);
         signals [BEGIN_VERIFICATION_FOR_USER] =
                 g_signal_new ("begin-verification-for-user",
                               G_TYPE_FROM_CLASS (object_class),
