@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-02 10:12+0100\n"
-"PO-Revision-Date: 2008-03-02 10:13+0100\n"
+"POT-Creation-Date: 2008-03-10 20:01+0100\n"
+"PO-Revision-Date: 2008-03-10 20:02+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -651,6 +651,16 @@ msgstr "Okänd servertyp begärd; använder standardserver."
 #, c-format
 msgid "Requested server %s not allowed to be used for flexible servers; using standard server."
 msgstr "Begärda servern %s är inte tillåten för användning med flexibla servrar; använder standardserver."
+
+#: ../daemon/gdm.h:70
+#: ../gui/gdmlogin.c:2501
+msgid "Welcome"
+msgstr "Välkommen"
+
+#: ../daemon/gdm.h:71
+#, c-format
+msgid "Welcome to %n"
+msgstr "Välkommen till %n"
 
 #. Translators, don't translate the 'y' and 'n'
 #: ../daemon/misc.c:592
@@ -1678,12 +1688,12 @@ msgid "You might be using a different display manager, such as KDM (KDE Display 
 msgstr "Du kanske i själva verket använder en annan displayhanterare som till exempel KDM (KDE:s displayhanterare), CDE login (dtlogin) eller xdm. Om du fortfarande vill använda denna funktion måste ditt system konfigureras till att använda GDM istället."
 
 #: ../gui/gdmcomm.c:653
-#: ../gui/gdmflexiserver.c:843
+#: ../gui/gdmflexiserver.c:846
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "Kan inte kommunicera med GDM (GNOME:s displayhanterare)"
 
 #: ../gui/gdmcomm.c:655
-#: ../gui/gdmflexiserver.c:845
+#: ../gui/gdmflexiserver.c:848
 msgid "Perhaps you have an old version of GDM running."
 msgstr "Du kanske har en gammal version körandes."
 
@@ -1752,15 +1762,15 @@ msgstr "För många meddelanden skickades till GDM och det hängde oss."
 msgid "Unknown error occurred."
 msgstr "Okänt fel inträffade."
 
-#: ../gui/gdmcommon.c:756
+#: ../gui/gdmcommon.c:762
 msgid "The accessibility registry was not found."
 msgstr "Tillgänglighetsregistret hittades inte."
 
-#: ../gui/gdmcommon.c:779
+#: ../gui/gdmcommon.c:785
 msgid "The accessibility registry could not be started."
 msgstr "Tillgänglighetsregistret kunde inte startas."
 
-#: ../gui/gdmcommon.c:841
+#: ../gui/gdmcommon.c:847
 msgid "%a %b %d, %H:%M"
 msgstr "%a %d %b, %H.%M"
 
@@ -1768,11 +1778,11 @@ msgstr "%a %d %b, %H.%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:847
+#: ../gui/gdmcommon.c:853
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a %d %b, %H.%M"
 
-#: ../gui/gdmcommon.c:947
+#: ../gui/gdmcommon.c:953
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -1932,23 +1942,23 @@ msgstr "Fel: GDM (GNOME:s displayhanterare) är inte igång."
 msgid "You might be using a different display manager."
 msgstr "Du kanske använder en annan displayhanterare."
 
-#: ../gui/gdmflexiserver.c:885
+#: ../gui/gdmflexiserver.c:888
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "Du verkar inte ha den autentisering som behövs för denna åtgärd"
 
-#: ../gui/gdmflexiserver.c:888
+#: ../gui/gdmflexiserver.c:891
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "Din .Xauthority-fil är kanske inte korrekt konfigurerad."
 
-#: ../gui/gdmflexiserver.c:917
+#: ../gui/gdmflexiserver.c:920
 msgid "You do not seem to be logged in on the console"
 msgstr "Du verkar inte vara inloggad på konsollen"
 
-#: ../gui/gdmflexiserver.c:919
+#: ../gui/gdmflexiserver.c:922
 msgid "Starting a new login only works correctly on the console."
 msgstr "Att starta en ny inloggning fungerar endast korrekt på konsollen."
 
-#: ../gui/gdmflexiserver.c:967
+#: ../gui/gdmflexiserver.c:970
 msgid "Cannot start new display"
 msgstr "Kan inte starta ny display"
 
@@ -2810,10 +2820,6 @@ msgstr "_Koppla från"
 #: ../gui/greeter/greeter_item_ulist.c:305
 msgid "Icon"
 msgstr "Ikon"
-
-#: ../gui/gdmlogin.c:2501
-msgid "Welcome"
-msgstr "Välkommen"
 
 #: ../gui/gdmlogin.c:2620
 #: ../gui/greeter/greeter_parser.c:418
