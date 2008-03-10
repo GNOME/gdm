@@ -1,5 +1,56 @@
 Ahh news...
 
+2.20.4 Stuff:
+
+- The Custom Widgetry code in gdmgreeter was broken, and would not create
+  the /var/lib/$DISPLAY.GreeterInfo file properly.  Due to the move away
+  from vicious-extensions and towards GKeyFile, the format of this file
+  changed slightly to INI format with the [GreeterInfo] group.  The docs
+  were modified to explain this change.
+
+- Now the default local and remote welcome strings ("Welcome" and
+  "Welcome to %n") are translated.  (Wouter Bolsterlee, Brian Cameron,
+  Frederic Crozat)
+
+- If the user picks the default local welcome string to be used as the
+  remote welcome string, or vice versa, then the strings will be
+  translated also.  (Brian Cameron, Frederic Crozat)
+
+- Get default locale from LC_MESSAGES rather than from g_get_language_names.
+  Fixes bug #517670.  (Ray Strode)
+
+- Honor GTK+ default password character rather than hardcoding to '*'.  The
+  docs were modified to explain this change.  Fixes bug #477881.
+  (Alexander "weej" Jones)
+
+- Provide better tooltip for entry field in gdmgreeter.  (Roberto
+  Sarrionandia)
+
+- Get the environment variable XDG_DATA_DIRS before clearing the 
+  environment variables.  This way if the user sets XDG_DATA_DIRS before
+  running GDM, this should now be honored.  (Brian Cameron)
+
+- Fix gdmsetup bug that was causing the Welcome (local and remote)
+  message to not be saved properly when changed.  (Brian Cameron)
+
+- Fix the setting of the custom command NOTIFY key to avoid crashing when
+  changing the label values of a custom command in gdmsetup.  (Brian
+  Cameron)
+
+- Add include of "gdm-log.h" to daemon/verify-crypt.c and
+  daemon/verify-shadow.c to fix compile issue on some platforms.  (Simon
+  Munton)
+
+- Translation updates (Djihed Afifi, Takeshi AIHANA, Arangel Angov, Wouter
+  Bolsterlee, Baris Cicek, Pawan Chitrakar, Wadim Dziedzic, Maxim
+  Dziumanenko, Luca Ferretti, Leonardo Ferreira Fontenelle, Gil Forcada,
+  Jorge Gonzalez, Theppitak Karoonboonyanan, Gabor Kelemen, Peter Kovar,
+  Duarte Loreto, Kjartan Maraas, Gintautas Miliauskas, Inaki Larranaga
+  Murgoitio, Kenneth Nielsen, Daniel Nylander, Kostas Papadimas, Ankit
+  Patel, Ignacio Casal Quinteiro, St\303\251phane Raimbault, Hendrik
+  Richter, Changwoo Ryu, \303\205smund Skj\303\246veland, Marcel Telka,
+  Mugurel Tudor, Ilkka Tuohela, Philip Withnall)
+
 2.20.3 Stuff:
 
 - Now "Esc" key acts like the "Start Again" button in the greeter
