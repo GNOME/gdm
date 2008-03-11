@@ -156,6 +156,7 @@ static void     gdm_greeter_login_window_class_init   (GdmGreeterLoginWindowClas
 static void     gdm_greeter_login_window_init         (GdmGreeterLoginWindow      *greeter_login_window);
 static void     gdm_greeter_login_window_finalize     (GObject                    *object);
 
+static void restart_timed_login_timeout (GdmGreeterLoginWindow *login_window);
 G_DEFINE_TYPE (GdmGreeterLoginWindow, gdm_greeter_login_window, GTK_TYPE_WINDOW)
 
 static void
@@ -251,6 +252,46 @@ set_message (GdmGreeterLoginWindow *login_window,
 }
 
 static void
+on_user_interaction (GdmGreeterLoginWindow *login_window)
+{
+        g_debug ("GdmGreeterLoginWindow: user is interacting with session!\n");
+        restart_timed_login_timeout (login_window);
+}
+
+static GdkFilterReturn
+on_xevent (XEvent                *xevent,
+           GdkEvent              *event,
+           GdmGreeterLoginWindow *login_window)
+{
+        switch (xevent->xany.type) {
+                case KeyPress:
+                case KeyRelease:
+                case ButtonPress:
+                case ButtonRelease:
+                        on_user_interaction (login_window);
+                        break;
+                case  PropertyNotify:
+                        if (xevent->xproperty.atom == gdk_x11_get_xatom_by_name ("_NET_WM_USER_TIME")) {
+                                on_user_interaction (login_window);
+                        }
+                        break;
+
+                default:
+                        break;
+        }
+
+        return GDK_FILTER_CONTINUE;
+}
+
+static void
+stop_watching_for_user_interaction (GdmGreeterLoginWindow *login_window)
+{
+        gdk_window_remove_filter (NULL,
+                                  (GdkFilterFunc) on_xevent,
+                                  login_window);
+}
+
+static void
 remove_timed_login_timeout (GdmGreeterLoginWindow *login_window)
 {
         if (login_window->priv->timed_login_timeout_id > 0) {
@@ -258,13 +299,14 @@ remove_timed_login_timeout (GdmGreeterLoginWindow *login_window)
                 g_source_remove (login_window->priv->timed_login_timeout_id);
                 login_window->priv->timed_login_timeout_id = 0;
         }
+
+        stop_watching_for_user_interaction (login_window);
 }
 
 static void
 _gdm_greeter_login_window_set_interactive (GdmGreeterLoginWindow *login_window,
                                            gboolean               is_interactive)
 {
-
         if (login_window->priv->is_interactive != is_interactive) {
                 login_window->priv->is_interactive = is_interactive;
                 g_object_notify (G_OBJECT (login_window), "is-interactive");
@@ -285,13 +327,21 @@ timed_login_timer (GdmGreeterLoginWindow *login_window)
 }
 
 static void
+watch_for_user_interaction (GdmGreeterLoginWindow *login_window)
+{
+        gdk_window_add_filter (NULL,
+                               (GdkFilterFunc) on_xevent,
+                               login_window);
+}
+
+static void
 restart_timed_login_timeout (GdmGreeterLoginWindow *login_window)
 {
         remove_timed_login_timeout (login_window);
 
         if (login_window->priv->timed_login_enabled) {
                 g_debug ("GdmGreeterLoginWindow: adding timed login timer");
-
+                watch_for_user_interaction (login_window);
                 login_window->priv->timed_login_timeout_id = g_timeout_add_seconds (login_window->priv->timed_login_delay,
                                                                                     (GSourceFunc)timed_login_timer,
                                                                                     login_window);
