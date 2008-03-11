@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-03 17:21+0200\n"
-"PO-Revision-Date: 2008-03-03 17:28+0200\n"
+"POT-Creation-Date: 2008-03-11 12:54+0200\n"
+"PO-Revision-Date: 2008-03-11 12:54+0200\n"
 "Last-Translator: Timo Jyrinki <timo.jyrinki@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -741,6 +741,14 @@ msgid ""
 msgstr ""
 "Pyydettyä palvelinta %s ei ole lupa käyttää joustaville palvelimille. "
 "Käytetään vakiopalvelinta."
+
+#: ../daemon/gdm.h:70 ../gui/gdmlogin.c:2501
+msgid "Welcome"
+msgstr "Tervetuloa"
+
+#: ../daemon/gdm.h:71
+msgid "Welcome to %n"
+msgstr "Tervetuloa, tämä on %n"
 
 #. Translators, don't translate the 'y' and 'n'
 #: ../daemon/misc.c:592
@@ -1905,11 +1913,11 @@ msgstr ""
 "käyttää tätä ominaisuutta, täytyy järjestelmäsi määrittää käyttämään GDM:ää "
 "toisen ohjelman sijasta."
 
-#: ../gui/gdmcomm.c:653 ../gui/gdmflexiserver.c:843
+#: ../gui/gdmcomm.c:653 ../gui/gdmflexiserver.c:846
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "Kommunikointi GDM:n (Gnomen kirjautumisohjelman) kanssa ei onnistu"
 
-#: ../gui/gdmcomm.c:655 ../gui/gdmflexiserver.c:845
+#: ../gui/gdmcomm.c:655 ../gui/gdmflexiserver.c:848
 msgid "Perhaps you have an old version of GDM running."
 msgstr "Käynnissä saattaa olla GDM:n vanha versio."
 
@@ -1991,15 +1999,15 @@ msgstr "GDM:lle lähetettiin liian monta viestiä, ja se katkaisi yhteyden."
 msgid "Unknown error occurred."
 msgstr "Tuntematon virhe."
 
-#: ../gui/gdmcommon.c:756
+#: ../gui/gdmcommon.c:762
 msgid "The accessibility registry was not found."
 msgstr "Esteettömyysrekisteriä ei löydy."
 
-#: ../gui/gdmcommon.c:779
+#: ../gui/gdmcommon.c:785
 msgid "The accessibility registry could not be started."
 msgstr "Esteettömyysrekisteriä ei voitu käynnistää."
 
-#: ../gui/gdmcommon.c:841
+#: ../gui/gdmcommon.c:847
 msgid "%a %b %d, %H:%M"
 msgstr "%a %-d. %Bta, %H:%M"
 
@@ -2007,11 +2015,11 @@ msgstr "%a %-d. %Bta, %H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:847
+#: ../gui/gdmcommon.c:853
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a %-d. %Bta, %H:%M"
 
-#: ../gui/gdmcommon.c:947
+#: ../gui/gdmcommon.c:953
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -2176,23 +2184,23 @@ msgstr "Virhe: GDM (Gnomen kirjautumisohjelma) ei ole käynnissä."
 msgid "You might be using a different display manager."
 msgstr "Voi olla että käytät jotain toista kirjautumisohjelmaa."
 
-#: ../gui/gdmflexiserver.c:885
+#: ../gui/gdmflexiserver.c:888
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "Toimintoon tarvittavaa todennusta ei näy olevan"
 
-#: ../gui/gdmflexiserver.c:888
+#: ../gui/gdmflexiserver.c:891
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "Tiedosto .Xauthority voi olla väärin asetettu."
 
-#: ../gui/gdmflexiserver.c:917
+#: ../gui/gdmflexiserver.c:920
 msgid "You do not seem to be logged in on the console"
 msgstr "Et näytä kirjautuneen sisään konsolissa"
 
-#: ../gui/gdmflexiserver.c:919
+#: ../gui/gdmflexiserver.c:922
 msgid "Starting a new login only works correctly on the console."
 msgstr "Uuden kirjautumisen aloitus toimii oikein vain konsolista."
 
-#: ../gui/gdmflexiserver.c:967
+#: ../gui/gdmflexiserver.c:970
 msgid "Cannot start new display"
 msgstr "Uutta näyttöä ei voi käynnistää"
 
@@ -3019,10 +3027,6 @@ msgstr "_Katkaise yhteys"
 #: ../gui/gdmlogin.c:2420 ../gui/greeter/greeter_item_ulist.c:305
 msgid "Icon"
 msgstr "Kuvake"
-
-#: ../gui/gdmlogin.c:2501
-msgid "Welcome"
-msgstr "Tervetuloa"
 
 #: ../gui/gdmlogin.c:2620 ../gui/greeter/greeter_parser.c:418
 msgid "_Start Again"
@@ -3897,8 +3901,7 @@ msgid ""
 "people looking at your screen."
 msgstr ""
 "Piilota näkyvä palaute salasanaa syötettäessä. Tämän ominaisuuden käyttö "
-"lisää turvallisuutta, sillä sen avulla salasanasi pituutta ei voida "
-"arvata."
+"lisää turvallisuutta, sillä sen avulla salasanasi pituutta ei voida arvata."
 
 #: ../gui/gdmsetup.glade.h:68
 msgid "Honor _indirect requests"
