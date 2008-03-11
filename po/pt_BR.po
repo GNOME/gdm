@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-02 22:05-0300\n"
+"POT-Creation-Date: 2008-03-11 20:56-0300\n"
 "PO-Revision-Date: 2008-03-02 22:04-0300\n"
 "Last-Translator: Luiz Armesto <luiz.armesto@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
@@ -284,6 +284,15 @@ msgstr "Não foi possível abrir %s"
 msgid "%s: Cannot fork to display error/info box"
 msgstr ""
 "%s: Não foi possível bifurcar o processo para mostrar a caixa de erro/info"
+
+#: ../daemon/gdm-daemon-config-keys.h:44 ../gui/gdmlogin.c:2501
+msgid "Welcome"
+msgstr "Bem-vindo"
+
+#: ../daemon/gdm-daemon-config-keys.h:45
+#, c-format
+msgid "Welcome to %n"
+msgstr "Bem-vindo a %n"
 
 #: ../daemon/gdm-daemon-config.c:1127
 #, c-format
@@ -1931,12 +1940,12 @@ msgstr ""
 "quer usar este serviço, o seu sistema precisará ser configurado para usar o "
 "GDM."
 
-#: ../gui/gdmcomm.c:653 ../gui/gdmflexiserver.c:843
+#: ../gui/gdmcomm.c:653 ../gui/gdmflexiserver.c:846
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr ""
 "Não foi possível comunicar-se com o GDM (O Gerenciador de Sessões do GNOME)"
 
-#: ../gui/gdmcomm.c:655 ../gui/gdmflexiserver.c:845
+#: ../gui/gdmcomm.c:655 ../gui/gdmflexiserver.c:848
 msgid "Perhaps you have an old version of GDM running."
 msgstr "Talvez você tenha uma versão antiga do GDM executando."
 
@@ -2018,15 +2027,15 @@ msgstr "Muitas mensagens estão sendo enviadas para o GDM e ele travou."
 msgid "Unknown error occurred."
 msgstr "Ocorreu um erro desconhecido."
 
-#: ../gui/gdmcommon.c:756
+#: ../gui/gdmcommon.c:762
 msgid "The accessibility registry was not found."
 msgstr "Registro de acessibilidade não encontrado."
 
-#: ../gui/gdmcommon.c:779
+#: ../gui/gdmcommon.c:785
 msgid "The accessibility registry could not be started."
 msgstr "Não foi possível iniciar o registro de acessibilidade."
 
-#: ../gui/gdmcommon.c:841
+#: ../gui/gdmcommon.c:847
 msgid "%a %b %d, %H:%M"
 msgstr "%a %d de %b, %H:%M"
 
@@ -2034,11 +2043,11 @@ msgstr "%a %d de %b, %H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:847
+#: ../gui/gdmcommon.c:853
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a %d de %b, %H:%M"
 
-#: ../gui/gdmcommon.c:947
+#: ../gui/gdmcommon.c:953
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -2202,23 +2211,23 @@ msgstr "Erro: GDM (Gerenciador de Sessões do GNOME) não está executando."
 msgid "You might be using a different display manager."
 msgstr "Você pode estar usando um gerenciador de sessões diferente."
 
-#: ../gui/gdmflexiserver.c:885
+#: ../gui/gdmflexiserver.c:888
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "Você parece não ter a autorização necessária para esta operação"
 
-#: ../gui/gdmflexiserver.c:888
+#: ../gui/gdmflexiserver.c:891
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "Talvez o seu arquivo .Xauthority não esteja definido corretamente."
 
-#: ../gui/gdmflexiserver.c:917
+#: ../gui/gdmflexiserver.c:920
 msgid "You do not seem to be logged in on the console"
 msgstr "Parece que você não iniciou a sessão no console"
 
-#: ../gui/gdmflexiserver.c:919
+#: ../gui/gdmflexiserver.c:922
 msgid "Starting a new login only works correctly on the console."
 msgstr "Iniciar uma nova sessão só funciona corretamente no console."
 
-#: ../gui/gdmflexiserver.c:967
+#: ../gui/gdmflexiserver.c:970
 msgid "Cannot start new display"
 msgstr "Não foi possível iniciar uma nova tela"
 
@@ -3044,10 +3053,6 @@ msgstr "D_esconectar"
 #: ../gui/gdmlogin.c:2420 ../gui/greeter/greeter_item_ulist.c:305
 msgid "Icon"
 msgstr "Ícone"
-
-#: ../gui/gdmlogin.c:2501
-msgid "Welcome"
-msgstr "Bem-vindo"
 
 #: ../gui/gdmlogin.c:2620 ../gui/greeter/greeter_parser.c:418
 msgid "_Start Again"
