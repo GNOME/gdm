@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.20\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-03 00:58+0000\n"
-"PO-Revision-Date: 2008-03-03 01:00+0000\n"
+"POT-Creation-Date: 2008-03-11 08:28+0000\n"
+"PO-Revision-Date: 2008-03-11 08:30+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -735,6 +735,15 @@ msgid ""
 msgstr ""
 "Servidor pedido %s cuja utilização não é permitida por servidores flexíveis; "
 "a utilizar o servidor standard."
+
+#: ../daemon/gdm.h:70 ../gui/gdmlogin.c:2501
+msgid "Welcome"
+msgstr "Bem Vindo"
+
+#: ../daemon/gdm.h:71
+#, c-format
+msgid "Welcome to %n"
+msgstr "Bem Vindo a %n"
 
 #. Translators, don't translate the 'y' and 'n'
 #: ../daemon/misc.c:592
@@ -1905,11 +1914,11 @@ msgstr ""
 "utilizar esta funcionalidade, o seu sistema terá de ser configurado para "
 "utilizar o GDM."
 
-#: ../gui/gdmcomm.c:653 ../gui/gdmflexiserver.c:843
+#: ../gui/gdmcomm.c:653 ../gui/gdmflexiserver.c:846
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "Incapaz de comunicar com o GDM (O Gestor de Sessões do GNOME)"
 
-#: ../gui/gdmcomm.c:655 ../gui/gdmflexiserver.c:845
+#: ../gui/gdmcomm.c:655 ../gui/gdmflexiserver.c:848
 msgid "Perhaps you have an old version of GDM running."
 msgstr "Talvez tenha em execução uma versão antiga do GDM."
 
@@ -1991,15 +2000,15 @@ msgstr "Foram enviadas demasiadas mensagens para o GDM e este parou."
 msgid "Unknown error occurred."
 msgstr "Ocorreu um erro desconhecido."
 
-#: ../gui/gdmcommon.c:756
+#: ../gui/gdmcommon.c:762
 msgid "The accessibility registry was not found."
 msgstr "O registo de acessibilidade não foi encontrado."
 
-#: ../gui/gdmcommon.c:779
+#: ../gui/gdmcommon.c:785
 msgid "The accessibility registry could not be started."
 msgstr "Incapaz de iniciar o registo de acessibilidade."
 
-#: ../gui/gdmcommon.c:841
+#: ../gui/gdmcommon.c:847
 msgid "%a %b %d, %H:%M"
 msgstr "%a %b %d, %H:%M"
 
@@ -2007,11 +2016,11 @@ msgstr "%a %b %d, %H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:847
+#: ../gui/gdmcommon.c:853
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a %b %d, %l:%M %p"
 
-#: ../gui/gdmcommon.c:947
+#: ../gui/gdmcommon.c:953
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -2175,24 +2184,24 @@ msgstr "Erro: GDM (O Gestor de Ecrãs GNOME) não está em execução."
 msgid "You might be using a different display manager."
 msgstr "Poderá estar a utilizar um gestor de ecrãs diferente."
 
-#: ../gui/gdmflexiserver.c:885
+#: ../gui/gdmflexiserver.c:888
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "Não parece possuir a autenticação necessária para esta operação"
 
-#: ../gui/gdmflexiserver.c:888
+#: ../gui/gdmflexiserver.c:891
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr ""
 "Talvez o seu ficheiro .Xauthority não esteja correctamente configurado."
 
-#: ../gui/gdmflexiserver.c:917
+#: ../gui/gdmflexiserver.c:920
 msgid "You do not seem to be logged in on the console"
 msgstr "Não parece ter iniciado sessão na consola"
 
-#: ../gui/gdmflexiserver.c:919
+#: ../gui/gdmflexiserver.c:922
 msgid "Starting a new login only works correctly on the console."
 msgstr "Iniciar uma nova sessão apenas funciona correctamente na consola."
 
-#: ../gui/gdmflexiserver.c:967
+#: ../gui/gdmflexiserver.c:970
 msgid "Cannot start new display"
 msgstr "Incapaz de iniciar novo ecrã"
 
@@ -3021,10 +3030,6 @@ msgstr "Desl_igar"
 #: ../gui/gdmlogin.c:2420 ../gui/greeter/greeter_item_ulist.c:305
 msgid "Icon"
 msgstr "Ícone"
-
-#: ../gui/gdmlogin.c:2501
-msgid "Welcome"
-msgstr "Bem Vindo"
 
 #: ../gui/gdmlogin.c:2620 ../gui/greeter/greeter_parser.c:418
 msgid "_Start Again"
@@ -4538,8 +4543,7 @@ msgstr "Ficheiro _GtkRC:"
 
 #: ../gui/gdmsetup.glade.h:187
 msgid "_Hide visual feedback in the password entry"
-msgstr ""
-"_Esconder reacção visual no campo de introdução de senha"
+msgstr "_Esconder reacção visual no campo de introdução de senha"
 
 #: ../gui/gdmsetup.glade.h:188
 msgid "_Image:"
@@ -5297,7 +5301,9 @@ msgstr "Falha na autenticação!\n"
 #~ msgstr "Nenhum interface pode ser lido. Isto é muito MAU! (ficheiro: %s)"
 
 #~ msgid "Too many alias levels for a locale; may indicate a loop"
-#~ msgstr "Demasiados níveis de alias para uma configuração regional; poderá indicar um cíclo"
+#~ msgstr ""
+#~ "Demasiados níveis de alias para uma configuração regional; poderá indicar "
+#~ "um cíclo"
 
 #~ msgid "This is the default system session"
 #~ msgstr "Esta é a sessão de sistema por omissão"
@@ -5402,9 +5408,6 @@ msgstr "Falha na autenticação!\n"
 
 #~ msgid "%s: String too long!"
 #~ msgstr "%s: Expressão demasiado extensa!"
-
-#~ msgid "%sWelcome to %s%s"
-#~ msgstr "%sBem Vindo a %s%s"
 
 #~ msgid "%s: No configuration file: %s. Using defaults."
 #~ msgstr "%s: Nenhum ficheiro de configuração: %s. A utilizar omissões."
