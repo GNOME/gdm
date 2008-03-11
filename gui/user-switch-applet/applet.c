@@ -1082,14 +1082,23 @@ fill_applet (PanelApplet *applet)
         gtk_widget_show (hbox);
 
         {
-                GdmUser *user;
+                GdmUser    *user;
+                const char *name;
 
                 user = gdm_user_manager_get_user_by_uid (adata->manager, getuid ());
-                adata->imglabel = gtk_label_new (gdm_user_get_real_name (user));
-                adata->user_notify_id = g_signal_connect (user,
-                                                          "notify::display-name",
-                                                          G_CALLBACK (user_notify_display_name_cb),
-                                                          adata->imglabel);
+                if (user != NULL) {
+                        name = gdm_user_get_real_name (user);
+                } else {
+                        name = _("Unknown");
+                }
+
+                adata->imglabel = gtk_label_new (name);
+                if (user != NULL) {
+                        adata->user_notify_id = g_signal_connect (user,
+                                                                  "notify::display-name",
+                                                                  G_CALLBACK (user_notify_display_name_cb),
+                                                                  adata->imglabel);
+                }
                 gtk_box_pack_start (GTK_BOX (hbox), adata->imglabel, TRUE, TRUE, 0);
                 gtk_widget_show (adata->imglabel);
         }

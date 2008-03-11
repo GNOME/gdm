@@ -1115,6 +1115,11 @@ process_ck_history_line (GdmUserManager *manager,
         }
 
         user = gdm_user_manager_get_user (manager, username);
+        if (user == NULL) {
+                g_debug ("GdmUserManager: unable to lookup user '%s'", username);
+                return;
+        }
+
         g_object_set (user, "login-frequency", frequency, NULL);
         g_signal_emit (manager, signals [USER_LOGIN_FREQUENCY_CHANGED], 0, user);
 }
