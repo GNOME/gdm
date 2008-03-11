@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm.gnome-2-20\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-02 05:37+0000\n"
-"PO-Revision-Date: 2008-03-02 13:29+0100\n"
+"POT-Creation-Date: 2008-03-11 03:20+0000\n"
+"PO-Revision-Date: 2008-03-11 07:40+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -755,10 +755,19 @@ msgstr ""
 "Al servidor solicitado %s no se le permite usarse para servidores flexibles; "
 "se usará el servidor habitual."
 
+#: ../daemon/gdm.h:70 ../gui/gdmlogin.c:2501
+msgid "Welcome"
+msgstr "Bienvenido"
+
+#: ../daemon/gdm.h:71
+#, c-format
+msgid "Welcome to %n"
+msgstr "Bienvenido a %n"
+
 #. Translators, don't translate the 'y' and 'n'
 #: ../daemon/misc.c:592
 msgid "y = Yes or n = No? >"
-msgstr "¿y = Sí ó n = No? >"
+msgstr "¿y = Sí o n = No? >"
 
 #: ../daemon/misc.c:993
 #, c-format
@@ -1923,11 +1932,11 @@ msgstr ""
 "CDE login (dtlogin) o xdm. Si todavía desea utilizar esta característica, "
 "deberá configurar su sistema para que use GDM."
 
-#: ../gui/gdmcomm.c:653 ../gui/gdmflexiserver.c:843
+#: ../gui/gdmcomm.c:653 ../gui/gdmflexiserver.c:846
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "No se puede comunicar con GDM (GNOME Display Manager)"
 
-#: ../gui/gdmcomm.c:655 ../gui/gdmflexiserver.c:845
+#: ../gui/gdmcomm.c:655 ../gui/gdmflexiserver.c:848
 msgid "Perhaps you have an old version of GDM running."
 msgstr "Quizás esté ejecutando una versión antigua de GDM."
 
@@ -2007,16 +2016,16 @@ msgstr "Se han enviado demasiados mensajes a GDM y se ha colgado."
 msgid "Unknown error occurred."
 msgstr "Ha ocurrido un error desconocido."
 
-#: ../gui/gdmcommon.c:756
+#: ../gui/gdmcommon.c:762
 msgid "The accessibility registry was not found."
 msgstr "No se encontró el registro de accesibilidad."
 
-#: ../gui/gdmcommon.c:779
+#: ../gui/gdmcommon.c:785
 msgid "The accessibility registry could not be started."
 msgstr "No se pudo iniciar el registro de accesibilidad."
 
 # El formato de la fecha, día y 24-horas Dom 12 de jun, 14:00)
-#: ../gui/gdmcommon.c:841
+#: ../gui/gdmcommon.c:847
 msgid "%a %b %d, %H:%M"
 msgstr "%a %d de %b, %H:%M"
 
@@ -2025,11 +2034,11 @@ msgstr "%a %d de %b, %H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:847
+#: ../gui/gdmcommon.c:853
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a %d de %b, %l:%M %p"
 
-#: ../gui/gdmcommon.c:947
+#: ../gui/gdmcommon.c:953
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -2194,23 +2203,23 @@ msgstr "Error: GDM (GNOME Display Manager) no está en ejecución."
 msgid "You might be using a different display manager."
 msgstr "Podría estar utilizando un gestor de pantallas distinto."
 
-#: ../gui/gdmflexiserver.c:885
+#: ../gui/gdmflexiserver.c:888
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "Al parecer no posee la autenticación necesaria para esta operación"
 
-#: ../gui/gdmflexiserver.c:888
+#: ../gui/gdmflexiserver.c:891
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "Quizás su archivo .Xauthority no está configurado correctamente."
 
-#: ../gui/gdmflexiserver.c:917
+#: ../gui/gdmflexiserver.c:920
 msgid "You do not seem to be logged in on the console"
 msgstr "Al parecer no ha accedido a la consola"
 
-#: ../gui/gdmflexiserver.c:919
+#: ../gui/gdmflexiserver.c:922
 msgid "Starting a new login only works correctly on the console."
 msgstr "Iniciar una entrada nueva sólo funciona correctamente en la consola."
 
-#: ../gui/gdmflexiserver.c:967
+#: ../gui/gdmflexiserver.c:970
 msgid "Cannot start new display"
 msgstr "No se puede iniciar una pantalla nueva"
 
@@ -3036,10 +3045,6 @@ msgstr "D_esconectar"
 #: ../gui/gdmlogin.c:2420 ../gui/greeter/greeter_item_ulist.c:305
 msgid "Icon"
 msgstr "Icono"
-
-#: ../gui/gdmlogin.c:2501
-msgid "Welcome"
-msgstr "Bienvenida"
 
 #: ../gui/gdmlogin.c:2620 ../gui/greeter/greeter_parser.c:418
 msgid "_Start Again"
