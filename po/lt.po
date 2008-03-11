@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-02 14:04+0200\n"
-"PO-Revision-Date: 2008-03-02 14:04+0200\n"
+"POT-Creation-Date: 2008-03-11 12:50+0200\n"
+"PO-Revision-Date: 2008-03-11 12:50+0200\n"
 "Last-Translator: Žygimantas Beručka <zygis@gnome.org>\n"
 "Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
 "MIME-Version: 1.0\n"
@@ -741,6 +741,15 @@ msgid ""
 msgstr ""
 "Užklaustas serveris %s yra neleidžiamas naudoti lankstiems serveriams, "
 "naudojamas standartinis serveris."
+
+#: ../daemon/gdm.h:70 ../gui/gdmlogin.c:2501
+msgid "Welcome"
+msgstr "Pasveikinimas"
+
+#: ../daemon/gdm.h:71
+#, c-format
+msgid "Welcome to %n"
+msgstr "Sveiki prisijungę prie %n"
 
 #. Translators, don't translate the 'y' and 'n'
 #: ../daemon/misc.c:592
@@ -1898,11 +1907,11 @@ msgstr ""
 "valdyklę), CDR prisijungimą (dtlogin) arba xdm. Jeigu norite naudoti šią "
 "funkciją, jūsų sistema turi būti sukonfigūruota naudoti GDM."
 
-#: ../gui/gdmcomm.c:653 ../gui/gdmflexiserver.c:843
+#: ../gui/gdmcomm.c:653 ../gui/gdmflexiserver.c:846
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "Nepavyko susisiekti su GDM (GNOME ekrano valdykle)"
 
-#: ../gui/gdmcomm.c:655 ../gui/gdmflexiserver.c:845
+#: ../gui/gdmcomm.c:655 ../gui/gdmflexiserver.c:848
 msgid "Perhaps you have an old version of GDM running."
 msgstr "Galbūt šiuo metu paleista senesnė GDM versija."
 
@@ -1982,15 +1991,15 @@ msgstr "GDM buvo nusiųsta per daug pranešimų ir jis pakibo."
 msgid "Unknown error occurred."
 msgstr "Įškilo nežinoma klaida."
 
-#: ../gui/gdmcommon.c:756
+#: ../gui/gdmcommon.c:762
 msgid "The accessibility registry was not found."
 msgstr "Pritaikymo neįgaliesiems registras nerastas."
 
-#: ../gui/gdmcommon.c:779
+#: ../gui/gdmcommon.c:785
 msgid "The accessibility registry could not be started."
 msgstr "Nepavyko paleisti pritaikymo neįgaliesiems registro."
 
-#: ../gui/gdmcommon.c:841
+#: ../gui/gdmcommon.c:847
 msgid "%a %b %d, %H:%M"
 msgstr "%a %b %d, %H:%M"
 
@@ -1998,11 +2007,11 @@ msgstr "%a %b %d, %H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:847
+#: ../gui/gdmcommon.c:853
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a %b %d, %H:%M"
 
-#: ../gui/gdmcommon.c:947
+#: ../gui/gdmcommon.c:953
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -2167,23 +2176,23 @@ msgstr "Klaida: Šiuo metu GDM (GNOME ekrano valdyklė) neveikia."
 msgid "You might be using a different display manager."
 msgstr "Gali būti, kad naudojate kitą ekrano valdyklę."
 
-#: ../gui/gdmflexiserver.c:885
+#: ../gui/gdmflexiserver.c:888
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "Neturite tapatybės patvirtinimo, reikiamo šiai operacijai vykdyti"
 
-#: ../gui/gdmflexiserver.c:888
+#: ../gui/gdmflexiserver.c:891
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "Galbūt .Xauthority failas nėra tinkamai sutvarkytas."
 
-#: ../gui/gdmflexiserver.c:917
+#: ../gui/gdmflexiserver.c:920
 msgid "You do not seem to be logged in on the console"
 msgstr "Nepanašu, kad esate prisijungę konsolėje"
 
-#: ../gui/gdmflexiserver.c:919
+#: ../gui/gdmflexiserver.c:922
 msgid "Starting a new login only works correctly on the console."
 msgstr "Naujas prisijungimas korektiškai veikia tik konsolėje."
 
-#: ../gui/gdmflexiserver.c:967
+#: ../gui/gdmflexiserver.c:970
 msgid "Cannot start new display"
 msgstr "Nepavyko paleisti naujo ekrano"
 
@@ -3010,10 +3019,6 @@ msgstr "A_tsijungti"
 #: ../gui/gdmlogin.c:2420 ../gui/greeter/greeter_item_ulist.c:305
 msgid "Icon"
 msgstr "Piktograma"
-
-#: ../gui/gdmlogin.c:2501
-msgid "Welcome"
-msgstr "Pasveikinimas"
 
 #: ../gui/gdmlogin.c:2620 ../gui/greeter/greeter_parser.c:418
 msgid "_Start Again"
