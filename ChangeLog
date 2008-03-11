@@ -1,3 +1,10 @@
+2008-03-11 Brian Cameron <brian.cameron@sun.com>
+
+	* daemon/gdm.h, daemon/gdm-daemon-config-keys.h, po/POTFILES.in:
+	  Move the default Welcome/RemoteWelcome strings from gdm.h to
+	  gdm-daemon-config-keys.h.  I noticed that we were defining the
+	  #defines in two places.  So now we just define them once.
+
 2008-03-10 Brian Cameron <brian.cameron@sun.com>
 
 	* Release 2.20.4:
@@ -6,7 +13,7 @@
 
 2008-03-10 Brian Cameron <brian.cameron@sun.com>
 
-	* daemon/gdm.h, po/POTFILES:  Mark the default local and remote
+	* daemon/gdm.h, po/POTFILES.in:  Mark the default local and remote
 	  welcome message for translation more clearly.  Fixes bug
 	  #519528.  Thanks to Wouter Bolsterlee <uws+gnome@xs4all.nl>
 	  and Frederic Crozat <fcrozat@mandriva.com> for help with 
@@ -24,7 +31,7 @@
 	  for local displays or vice-versa, then translate the string.
 	* gui/gdmflexiserver.c:  Need to call gdk_init when running in
 	  --command mode or the -a option fails when trying to call the
-	  gdk function to get the display.  Patch by Frederic Crozat 
+	  gdk function to get the display value.  Patch by Frederic Crozat 
           <fcrozat@mandriva.com> and myself.
 
 2008-03-01 Brian Cameron <brian.cameron@sun.com>

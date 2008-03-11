@@ -27,6 +27,23 @@
 
 G_BEGIN_DECLS
 
+/*
+ * For backwards compatibility, do not set values for DEFAULT_WELCOME or
+ * DEFAULT_REMOTEWELCOME.  This will cause these values to always be
+ * read from the config file, and will cause them to return FALSE if
+ * no value is set in the config file.  We want the value "FALSE" if
+ * the values don't exist in the config file.  The daemon will compare
+ * the Welcome/RemoveWelcome value with the default string and
+ * automatically translate the text if the string is the same as the
+ * default string.  We set the default values of GDM_KEY_WELCOME and
+ * GDM_KEY_REMOTEWELCOME so that the default value is returned when
+ * you run GET_CONFIG on these keys.
+ */
+#define GDM_DEFAULT_WELCOME_MSG "Welcome"
+#define GDM_DEFAULT_REMOTE_WELCOME_MSG "Welcome to %n"
+#define GDM_DEFAULT_WELCOME_TRANSLATED_MSG N_("Welcome")
+#define GDM_DEFAULT_REMOTE_WELCOME_TRANSLATED_MSG N_("Welcome to %n")
+
 /* BEGIN LEGACY KEYS */
 #define GDM_KEY_CHOOSER "daemon/Chooser=" LIBEXECDIR "/gdmchooser"
 #define GDM_KEY_AUTOMATIC_LOGIN_ENABLE "daemon/AutomaticLoginEnable=false"
@@ -146,8 +163,6 @@ G_BEGIN_DECLS
 #define GDM_KEY_CONFIG_AVAILABLE "greeter/ConfigAvailable=true"
 #define GDM_KEY_CHOOSER_BUTTON "greeter/ChooserButton=true"
 #define GDM_KEY_TITLE_BAR "greeter/TitleBar=true"
-#define GDM_DEFAULT_WELCOME_MSG "Welcome"
-#define GDM_DEFAULT_REMOTE_WELCOME_MSG "Welcome to %n"
 #define GDM_KEY_DEFAULT_WELCOME "greeter/DefaultWelcome="
 #define GDM_KEY_DEFAULT_REMOTE_WELCOME "greeter/DefaultRemoteWelcome="
 #define GDM_KEY_WELCOME "greeter/Welcome=" GDM_DEFAULT_WELCOME_MSG
