@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-05 08:22+0100\n"
-"PO-Revision-Date: 2008-03-03 09:42+0100\n"
+"POT-Creation-Date: 2008-03-12 21:24+0100\n"
+"PO-Revision-Date: 2008-03-12 17:14+0100\n"
 "Last-Translator: Pavol Šimo <palo.simo@gmail.com>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
@@ -42,17 +42,17 @@ msgstr "Klient Správcu prihlásenia GNOME"
 #: ../daemon/gdm-display-access-file.c:246
 #, c-format
 msgid "could not find user \"%s\" on system"
-msgstr "užívateľ \"%s\" sa v systéme nenašiel"
+msgstr "používateľ \"%s\" sa v systéme nenašiel"
 
-#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:170
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:172
 msgid "Unable to initialize login system"
 msgstr "Nepodarilo sa inicializovať systém prihlásenia"
 
-#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:202
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:204
 msgid "Unable to authenticate user"
 msgstr "Nepodarilo sa overiť používateľa"
 
-#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:223
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:233
 msgid "Unable to authorize user"
 msgstr "Nepodarilo sa autorizovať používateľa"
 
@@ -60,8 +60,8 @@ msgstr "Nepodarilo sa autorizovať používateľa"
 msgid "Unable to establish credentials"
 msgstr "Nepodarilo sa vytvoriť poverenia"
 
-#: ../daemon/gdm-factory-slave.c:650 ../daemon/gdm-product-slave.c:394
-#: ../daemon/gdm-simple-slave.c:890
+#: ../daemon/gdm-factory-slave.c:650 ../daemon/gdm-product-slave.c:398
+#: ../daemon/gdm-simple-slave.c:951
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -69,7 +69,7 @@ msgid ""
 "restart GDM when the problem is corrected."
 msgstr ""
 "Nepodarilo sa spustiť X server (vaše grafické prostredie), kvôli nejakej "
-"internej chybe. Prosím, kontaktujte vášho systémového správcu alebo "
+"internej chybe. Prosím, kontaktujte vášho systémového správcu, alebo "
 "skontrolujte súbor so systémovým záznamom. Zatiaľ bude tento displej "
 "vypnutý. Prosím, po oprave problému reštartujte GDM."
 
@@ -81,7 +81,7 @@ msgstr "%s: zlyhalo pripojenie na rodičovský displej '%s'"
 #: ../daemon/gdm-server.c:362
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
-msgstr "Server mal byť spustený užívateľom %s, ale taký užívateľ neexistuje"
+msgstr "Server mal byť spustený používateľom %s, taký ale neexistuje"
 
 #: ../daemon/gdm-server.c:373 ../daemon/gdm-welcome-session.c:406
 #, c-format
@@ -137,7 +137,7 @@ msgstr "Názov hostiteľa"
 
 #: ../daemon/gdm-session-auditor.c:96
 msgid "The hostname"
-msgstr "Názov systému"
+msgstr "Názov systému hostiteľa"
 
 #: ../daemon/gdm-session-auditor.c:101
 msgid "Display Device"
@@ -147,66 +147,66 @@ msgstr "Zariadenie displeja"
 msgid "The display device"
 msgstr "Zobrazovacie zariadenie"
 
-#: ../daemon/gdm-session-direct.c:1440 ../daemon/gdm-session-direct.c:1458
+#: ../daemon/gdm-session-direct.c:1446 ../daemon/gdm-session-direct.c:1464
 #, c-format
 msgid "worker exited with status %d"
 msgstr "spracovávač skončil so stavom %d"
 
-#: ../daemon/gdm-session-worker.c:946
+#: ../daemon/gdm-session-worker.c:960
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "chyba pri započatí konverzácie s overovacím systémom - %s"
 
-#: ../daemon/gdm-session-worker.c:947
+#: ../daemon/gdm-session-worker.c:961
 msgid "general failure"
 msgstr "všeobecné zlyhanie"
 
-#: ../daemon/gdm-session-worker.c:948
+#: ../daemon/gdm-session-worker.c:962
 msgid "out of memory"
 msgstr "nedostatok pamäte"
 
-#: ../daemon/gdm-session-worker.c:949
+#: ../daemon/gdm-session-worker.c:963
 msgid "application programmer error"
 msgstr "chyba programátora aplikácie"
 
-#: ../daemon/gdm-session-worker.c:950
+#: ../daemon/gdm-session-worker.c:964
 msgid "unknown error"
 msgstr "neznáma chyba"
 
-#: ../daemon/gdm-session-worker.c:957
+#: ../daemon/gdm-session-worker.c:971
 msgid "Username:"
 msgstr "Používateľské meno:"
 
-#: ../daemon/gdm-session-worker.c:963
+#: ../daemon/gdm-session-worker.c:977
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "chyba pri informovaní overovacieho systému o preferovanej výzve na meno "
 "používateľa - %s"
 
-#: ../daemon/gdm-session-worker.c:977
+#: ../daemon/gdm-session-worker.c:991
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 "chyba pri informovaní overovacieho systému o názve hostiteľa používateľa - %s"
 
-#: ../daemon/gdm-session-worker.c:992
+#: ../daemon/gdm-session-worker.c:1006
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
 "chyba pri informovaní overovacieho systému o používateľovej konzoli - %s"
 
-#: ../daemon/gdm-session-worker.c:1155
+#: ../daemon/gdm-session-worker.c:1169
 #, c-format
 msgid "no user account available"
 msgstr "žiadne používateľské konto k dispozícií"
 
-#: ../daemon/gdm-session-worker.c:1204
+#: ../daemon/gdm-session-worker.c:1218
 #, c-format
 msgid "user account not available on system"
 msgstr "používateľské konto nie je v systéme k dispozícií"
 
-#: ../daemon/gdm-simple-slave.c:313
+#: ../daemon/gdm-simple-slave.c:323
 msgid "Unable establish credentials"
 msgstr "Nepodarilo sa vytvoriť poverenia"
 
@@ -319,7 +319,7 @@ msgstr "%s: Prijaté Manage zo zakázaného hostiteľa %s"
 #: ../daemon/gdm-xdmcp-display-factory.c:2744
 #, c-format
 msgid "%s: Could not read Session ID"
-msgstr "%s: Nemôžem prečítať ID sedenia"
+msgstr "%s: Nemôžem prečítať ID relácie"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2492
 #, c-format
@@ -350,7 +350,7 @@ msgstr "XDMCP: Nesprávna verzia XDMCP!"
 #: ../daemon/gdm-xdmcp-display-factory.c:2828
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
 msgid "XMDCP: Unable to parse address"
-msgstr "XMDCP: Nepodarilo sa zistiť adresu"
+msgstr "XMDCP: Analýza adresy zlyhala"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:3226
 #, c-format
@@ -372,65 +372,66 @@ msgstr ""
 #: ../daemon/main.c:276
 #, c-format
 msgid "Authdir %s does not exist. Aborting."
-msgstr "Priečinok pre overovanie %s neexistuje. Končím."
+msgstr "Priečinok pre overovanie %s neexistuje. Koniec."
 
 #: ../daemon/main.c:280
 #, c-format
 msgid "Authdir %s is not a directory. Aborting."
-msgstr "Priečinok pre overovanie %s nie je priečinkom. Končím."
+msgstr "Priečinok pre overovanie %s nie je priečinkom. Koniec."
 
 #: ../daemon/main.c:354
 #, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
 msgstr ""
-"Priečinok pre overovanie %s nie je vlastnený užívateľom %d, skupinou %d. "
-"Končím."
+"Priečinok pre overovanie %s nie je vlastnený používateľom %d, skupinou %d. "
+"Koniec."
 
 #: ../daemon/main.c:361
 #, c-format
 msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-msgstr "Overovací priečinok %s má nesprávne práva %o. Majú byť %o. Končím."
+msgstr ""
+"Overovací priečinok %s má nesprávne prístupové práva %o. Majú byť %o. Koniec."
 
 #: ../daemon/main.c:398
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
-msgstr "Nemôžem nájsť GDM užívateľa '%s'. Končím!"
+msgstr "Nemôžem nájsť GDM používateľa '%s'. Koniec!"
 
 #: ../daemon/main.c:404
 msgid "The GDM user should not be root. Aborting!"
-msgstr "Užívateľ GDM by nemal byť správca. Končím!"
+msgstr "Používateľ GDM by nemal byť správca. Koniec!"
 
 #: ../daemon/main.c:410
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "Nemôžem nájsť GDM skupinu '%s'. Končím!"
+msgstr "Nemôžem nájsť GDM skupinu '%s'. Koniec!"
 
 #: ../daemon/main.c:416
 msgid "The GDM group should not be root. Aborting!"
-msgstr "Skupina GDM by nemala byť správca. Končím!"
+msgstr "Skupina GDM by nemala byť správca. Koniec!"
 
-#: ../daemon/main.c:519
+#: ../daemon/main.c:510
 msgid "Enable debugging code"
 msgstr "Povoliť ladiaci kód"
 
-#: ../daemon/main.c:520
+#: ../daemon/main.c:511
 msgid "Make all warnings fatal"
 msgstr "Považovať všetky varovania za kritické"
 
-#: ../daemon/main.c:521
+#: ../daemon/main.c:512
 msgid "Exit after a time - for debugging"
 msgstr "Skončiť po istom čase - pre ladenie"
 
-#: ../daemon/main.c:522
+#: ../daemon/main.c:513
 msgid "Print GDM version"
 msgstr "Zobraziť verziu GDM"
 
-#: ../daemon/main.c:537
+#: ../daemon/main.c:528
 msgid "GNOME Display Manager"
 msgstr "Správca prihlásenia"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:598
+#: ../daemon/main.c:589
 msgid "Only root wants to run GDM"
 msgstr "Len správca môže spúšťať GDM"
 
@@ -448,7 +449,7 @@ msgstr "Nemôžem vytvoriť medzipamäť XDMCP!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:220
 msgid "XDMCP: Could not read XDMCP header!"
-msgstr "Nemôžem prečítať XDMCP hlavičku!"
+msgstr "Nemôžem prečítať hlavičku XDMCP!"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.c:808
 msgid "Accessibility Preferences"
@@ -498,29 +499,29 @@ msgstr "Po_užiť väčšiu veľkosť písma (Veľké písmo)"
 msgid "gtk-close"
 msgstr "gtk-close"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:213
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:220
 msgid "Value"
-msgstr ""
+msgstr "Hodnota"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:214
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:221
 msgid "percentage of time complete"
-msgstr ""
+msgstr "počet percent času hotovo"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1155
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1156
 msgid "Inactive Text"
 msgstr "Neaktívny text"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1156
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1157
 msgid "The text to use in the label if the user hasn't picked an item yet"
-msgstr "Text použitý na popise, ak si používateľ ešte nič nezvolil"
+msgstr "Text použitý v popise, ak si používateľ ešte nič nezvolil"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1164
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1165
 msgid "Active Text"
 msgstr "Aktívny text"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1165
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1166
 msgid "The text to use in the label if the user has picked an item"
-msgstr "Text použitý na popise, ak si už používateľ zvolil nejakú položku"
+msgstr "Text použitý v popise, ak si už používateľ zvolil nejakú položku"
 
 #: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M:%S %p"
@@ -548,19 +549,19 @@ msgstr "%a %e. %b"
 msgid "%1$s, %2$s"
 msgstr "%2$s, %1$s"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:171
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:175
 msgid "You have the Caps Lock key on."
-msgstr ""
+msgstr "Máte zapnuté písanie veľkých písmen (Caps Lock)."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:264
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:320
 msgid "Automatically logging in..."
 msgstr "Automatické prihlásenie..."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1012
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1171
 msgid "Select language and click Log In"
 msgstr "Zvoľte jazyk a kliknite na Prihlásiť"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1640
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1765
 msgid "Login Window"
 msgstr "Prihlasovacie okno"
 
@@ -598,7 +599,7 @@ msgstr "gtk-disconnect"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:9
 msgid "page 5"
-msgstr ""
+msgstr "page 5"
 
 #: ../gui/simple-greeter/gdm-greeter-panel.c:503
 msgid "Panel"
@@ -619,13 +620,13 @@ msgstr "_Jazyk:"
 
 #: ../gui/simple-greeter/gdm-language-option-widget.c:180
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:80
-#: ../gui/user-switch-applet/applet.c:1130
+#: ../gui/user-switch-applet/applet.c:1139
 msgid "Other..."
 msgstr "Ďalšie..."
 
 #: ../gui/simple-greeter/gdm-language-option-widget.c:181
 msgid "Choose a language from the full list of available languages."
-msgstr "Zvoľte si jazyk z plného zoznamu dostupných jazykov."
+msgstr "Zvoľte si jazyk z úplného zoznamu dostupných jazykov."
 
 #: ../gui/simple-greeter/gdm-option-widget.c:476
 msgid "Label Text"
@@ -649,7 +650,7 @@ msgstr "Predvolená položka"
 
 #: ../gui/simple-greeter/gdm-option-widget.c:494
 msgid "The id of the default item"
-msgstr "Identifikator predvolenej polozky"
+msgstr "Identifikátor predvolenej položky"
 
 #: ../gui/simple-greeter/gdm-recent-option-widget.c:298
 msgid "Max Item Count"
@@ -675,11 +676,11 @@ msgstr "Vzdialené prihlásenie"
 
 #: ../gui/simple-greeter/gdm-session-option-widget.c:162
 msgid "_Sessions:"
-msgstr "_Sedenia:"
+msgstr "_Relácie:"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
 msgid "Banner message text"
-msgstr ""
+msgstr "Text uvítacej správy"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
 msgid "Disable showing the accessibility button"
@@ -706,9 +707,8 @@ msgid "Enable screen reader"
 msgstr "Povoliť čítanie obrazovky"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
-#, fuzzy
 msgid "Enable showing the banner message"
-msgstr "Zakázať zobrazenie tlačidiel reštartu"
+msgstr "Povoliť zobrazenie uvítacej správy"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
 msgid "Icon name to use for greeter logo"
@@ -754,23 +754,23 @@ msgstr "Ak je True, modul správy nastavení xsettings je povolený"
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr ""
-"Nastavte na nazov temovatelnej ikony, ktora sa ma pouzit ako logo privitania."
+"Nastavte na názov témovateľnej ikony, ktorá sa má použiť ako logo uvítania."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid "Set to true to show the banner message text."
-msgstr ""
+msgstr "Nastavte na true, ak sa má zobraziť text uvítacej správy."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid "Text banner message to show on the login window."
-msgstr ""
+msgstr "Textová uvítacia správa zobrazená v prihlasovacom okne."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid "True if the background settings manager plugin is enabled."
-msgstr "Ak je True, modul správy nastavenia pozadia je povolený"
+msgstr "Ak je True, modul správy nastavenia pozadia je povolený."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "True if the xsettings settings manager plugin is enabled."
-msgstr "Ak je True, modul správy nastavení xsettings je povolený"
+msgstr "Ak je True, modul správy nastavení xsettings je povolený."
 
 #: ../gui/simple-greeter/gdm-user.c:239
 msgid "Manager"
@@ -778,7 +778,7 @@ msgstr "Správca"
 
 #: ../gui/simple-greeter/gdm-user.c:240
 msgid "The user manager object this user is controlled by."
-msgstr "Objekt správcu používateľov, ktorým je tento používateľ riadený"
+msgstr "Objekt správcu používateľov, ktorým je tento používateľ riadený."
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:81
 msgid "Choose a different account"
@@ -849,10 +849,10 @@ msgid ""
 "FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
 "more details."
 msgstr ""
-"Tento program je distribuovaný v nádeji, že bude užitočný, ale BEZ "
-"AKEJKOĽVEK ZÁRUKY; a to ani bez predpokladanej záruky PREDAJNOSTI, alebo "
-"VHODNOSTI PRE KONKRÉTNY ÚČEL. Ďalšie podrobnosti sú uvedené v GNU Všeobecnej "
-"verejnej licencii."
+"Tento program je šírený v nádeji, že bude užitočný, ale BEZ AKEJKOĽVEK "
+"ZÁRUKY; dokonca bez akejkoľvek OBCHODNEJ ZÁRUKY, alebo VHODNOSTI PRE "
+"KONKRÉTNY ÚČEL. Ďalšie podrobnosti sú uvedené v GNU Všeobecnej verejnej "
+"licencii."
 
 #: ../gui/user-switch-applet/applet.c:192
 msgid ""
@@ -882,7 +882,8 @@ msgstr "Nie je možné uzamknúť obrazovku: %s"
 #: ../gui/user-switch-applet/applet.c:802
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
-msgstr "Nedá sa nastaviť šetrič obrazovky do režimu dočasnej aktivácie: %s"
+msgstr ""
+"Nie je možné nastaviť šetrič obrazovky do režimu dočasnej aktivácie: %s"
 
 #: ../gui/user-switch-applet/applet.c:974
 msgid "User Switch Applet"
@@ -892,6 +893,10 @@ msgstr "Aplet Prepínač používateľov"
 #: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:2
 msgid "User Switcher"
 msgstr "Prepínač používateľov"
+
+#: ../gui/user-switch-applet/applet.c:1092
+msgid "Unknown"
+msgstr "Neznámy"
 
 #: ../gui/user-switch-applet/gdm-user-menu-item.c:336
 msgid "User"
@@ -996,7 +1001,7 @@ msgid ""
 "instead of on a new screen"
 msgstr ""
 "Ak má byť na prepnutie používateľov vytvorené nové prihlásenie, vytvorí sa v "
-"novom okne namiesto na novej ploche"
+"novom okne namiesto na novej obrazovke"
 
 #: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:17
 msgid ""
@@ -1006,7 +1011,7 @@ msgstr "Po zmene obrazovky, aktivovať na tejto šetrič obrazovky."
 
 #: ../gui/user-switch-applet/gdm-user-switch-applet.glade.h:18
 msgid "_Lock the screen after switching users"
-msgstr "_Uzamknúť plochu po prepnutí používateľov"
+msgstr "_Uzamknúť obrazovku po prepnutí používateľov"
 
 #: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:1
 msgid "A menu to quickly switch between users"
@@ -1054,17 +1059,17 @@ msgstr "Ladiaci výstup"
 
 #: ../utils/gdmflexiserver.c:63
 msgid "Authenticate before running --command"
-msgstr "Overiť pred spustením --command"
+msgstr "Overiť sa pred spustením --command"
 
 #: ../utils/gdmflexiserver.c:64
 msgid "Start new flexible session; do not show popup"
 msgstr "Spustiť nové flexibilné sedenie; nezobraziť vyskakovacie okno"
 
-#: ../utils/gdmflexiserver.c:648
+#: ../utils/gdmflexiserver.c:689
 msgid "Main Options"
 msgstr "Hlavné voľby"
 
-#: ../utils/gdmflexiserver.c:691
+#: ../utils/gdmflexiserver.c:732
 msgid "Unable to start new display"
 msgstr "Nie je možné spustiť nový displej"
 
