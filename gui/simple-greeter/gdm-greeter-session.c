@@ -351,7 +351,7 @@ launch_compiz (GdmGreeterSession *session)
         ret = FALSE;
 
         error = NULL;
-        g_spawn_command_line_async ("gtk-window-decorator --replace", &error);
+        g_spawn_command_line_async ("gtk-window-decorator", &error);
         if (error != NULL) {
                 g_warning ("Error starting WM: %s", error->message);
                 g_error_free (error);
@@ -359,7 +359,7 @@ launch_compiz (GdmGreeterSession *session)
         }
 
         error = NULL;
-        g_spawn_command_line_async ("compiz --replace", &error);
+        g_spawn_command_line_async ("compiz glib gconf", &error);
         if (error != NULL) {
                 g_warning ("Error starting WM: %s", error->message);
                 g_error_free (error);
