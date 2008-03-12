@@ -954,6 +954,7 @@ activate_session_id (GdmSlave   *slave,
         gboolean     ret;
 
         ret = FALSE;
+        reply = NULL;
 
         dbus_error_init (&local_error);
         message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
@@ -986,6 +987,13 @@ activate_session_id (GdmSlave   *slave,
 
         ret = TRUE;
  out:
+        if (message != NULL) {
+                dbus_message_unref (message);
+        }
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
+
         return ret;
 }
 
@@ -1012,7 +1020,9 @@ session_unlock (GdmSlave   *slave,
                                                            message,
                                                            -1, &error);
         dbus_message_unref (message);
-        dbus_message_unref (reply);
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
         dbus_connection_flush (dbus_g_connection_get_connection (slave->priv->connection));
 
         if (dbus_error_is_set (&error)) {

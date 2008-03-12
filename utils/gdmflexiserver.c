@@ -147,6 +147,7 @@ create_transient_display (DBusConnection *connection)
         const char     *value;
 
         ret = FALSE;
+        reply = NULL;
 
         dbus_error_init (&local_error);
         message = dbus_message_new_method_call (GDM_DBUS_NAME,
@@ -174,10 +175,15 @@ create_transient_display (DBusConnection *connection)
         dbus_message_iter_get_basic (&iter, &value);
         g_debug ("Started %s", value);
 
-        dbus_message_unref (reply);
-
         ret = TRUE;
  out:
+        if (message != NULL) {
+                dbus_message_unref (message);
+        }
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
+
         return ret;
 }
 
@@ -193,6 +199,7 @@ get_current_session_id (DBusConnection *connection,
         const char     *value;
 
         ret = FALSE;
+        reply = NULL;
 
         dbus_error_init (&local_error);
         message = dbus_message_new_method_call (CK_NAME,
@@ -221,10 +228,16 @@ get_current_session_id (DBusConnection *connection,
         if (session_id != NULL) {
                 *session_id = g_strdup (value);
         }
-        dbus_message_unref (reply);
 
         ret = TRUE;
  out:
+        if (message != NULL) {
+                dbus_message_unref (message);
+        }
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
+
         return ret;
 }
 
@@ -241,6 +254,7 @@ get_seat_id_for_session (DBusConnection *connection,
         const char     *value;
 
         ret = FALSE;
+        reply = NULL;
 
         dbus_error_init (&local_error);
         message = dbus_message_new_method_call (CK_NAME,
@@ -269,10 +283,16 @@ get_seat_id_for_session (DBusConnection *connection,
         if (seat_id != NULL) {
                 *seat_id = g_strdup (value);
         }
-        dbus_message_unref (reply);
 
         ret = TRUE;
  out:
+        if (message != NULL) {
+                dbus_message_unref (message);
+        }
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
+
         return ret;
 }
 
@@ -306,6 +326,7 @@ activate_session_id (DBusConnection *connection,
         gboolean     ret;
 
         ret = FALSE;
+        reply = NULL;
 
         g_debug ("Switching to session %s", session_id);
 
@@ -340,6 +361,13 @@ activate_session_id (DBusConnection *connection,
 
         ret = TRUE;
  out:
+        if (message != NULL) {
+                dbus_message_unref (message);
+        }
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
+
         return ret;
 }
 
@@ -355,6 +383,7 @@ session_is_login_window (DBusConnection *connection,
         const char     *value;
 
         ret = FALSE;
+        reply = NULL;
 
         dbus_error_init (&local_error);
         message = dbus_message_new_method_call (CK_NAME,
@@ -385,10 +414,15 @@ session_is_login_window (DBusConnection *connection,
                 goto out;
         }
 
-        dbus_message_unref (reply);
-
         ret = TRUE;
  out:
+        if (message != NULL) {
+                dbus_message_unref (message);
+        }
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
+
         return ret;
 }
 
@@ -403,6 +437,7 @@ seat_can_activate_sessions (DBusConnection *connection,
         gboolean        can_activate;
 
         can_activate = FALSE;
+        reply = NULL;
 
         dbus_error_init (&local_error);
         message = dbus_message_new_method_call (CK_NAME,
@@ -428,9 +463,15 @@ seat_can_activate_sessions (DBusConnection *connection,
 
         dbus_message_iter_init (reply, &iter);
         dbus_message_iter_get_basic (&iter, &can_activate);
-        dbus_message_unref (reply);
 
  out:
+        if (message != NULL) {
+                dbus_message_unref (message);
+        }
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
+
         return can_activate;
 }
 

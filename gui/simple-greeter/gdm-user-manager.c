@@ -216,6 +216,7 @@ activate_session_id (GdmUserManager *manager,
         gboolean     ret;
 
         ret = FALSE;
+        reply = NULL;
 
         dbus_error_init (&local_error);
         message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
@@ -248,6 +249,13 @@ activate_session_id (GdmUserManager *manager,
 
         ret = TRUE;
  out:
+        if (message != NULL) {
+                dbus_message_unref (message);
+        }
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
+
         return ret;
 }
 

@@ -1,3 +1,26 @@
+2008-03-12  William Jon McCann  <jmccann@redhat.com>
+
+	* daemon/gdm-chooser-server.c: (handle_select_hostname),
+	(handle_disconnect), (do_introspect):
+	* daemon/gdm-product-slave.c: (send_dbus_string_method),
+	(send_dbus_void_method):
+	* daemon/gdm-session-worker.c: (send_dbus_string_method),
+	(send_dbus_int_method), (send_dbus_void_method):
+	* daemon/gdm-slave.c: (activate_session_id), (session_unlock):
+	* gui/simple-chooser/gdm-chooser-client.c:
+	(send_dbus_string_method), (send_dbus_void_method):
+	* gui/simple-greeter/gdm-greeter-client.c:
+	(send_dbus_string_method), (send_dbus_bool_method),
+	(send_dbus_void_method):
+	* gui/simple-greeter/gdm-greeter-session.c:
+	(send_dbus_string_method):
+	* gui/simple-greeter/gdm-user-manager.c: (activate_session_id):
+	* utils/gdmflexiserver.c: (create_transient_display),
+	(get_current_session_id), (get_seat_id_for_session),
+	(activate_session_id), (session_is_login_window),
+	(seat_can_activate_sessions):
+	Fix a few leaks and make sure we don't unref null replies.
+
 2008-03-11  Ray Strode <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-greeter-login-window.c:

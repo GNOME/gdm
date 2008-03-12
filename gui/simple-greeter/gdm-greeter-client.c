@@ -293,7 +293,9 @@ send_dbus_string_method (DBusConnection *connection,
                            error.message);
                 return FALSE;
         }
-        dbus_message_unref (reply);
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
         dbus_connection_flush (connection);
 
         return TRUE;
@@ -339,7 +341,9 @@ send_dbus_bool_method (DBusConnection *connection,
                            error.message);
                 return FALSE;
         }
-        dbus_message_unref (reply);
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
         dbus_connection_flush (connection);
 
         return TRUE;
@@ -378,7 +382,9 @@ send_dbus_void_method (DBusConnection *connection,
                            error.message);
                 return FALSE;
         }
-        dbus_message_unref (reply);
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
         dbus_connection_flush (connection);
 
         return TRUE;

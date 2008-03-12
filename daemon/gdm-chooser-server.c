@@ -131,7 +131,9 @@ handle_select_hostname (GdmChooserServer *chooser_server,
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
-        dbus_message_unref (reply);
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
 
         g_signal_emit (chooser_server, signals [HOSTNAME_SELECTED], 0, text);
 
@@ -147,7 +149,9 @@ handle_disconnect (GdmChooserServer *chooser_server,
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
-        dbus_message_unref (reply);
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
 
         g_signal_emit (chooser_server, signals [DISCONNECTED], 0);
 
@@ -219,7 +223,9 @@ do_introspect (DBusConnection *connection,
                 g_error ("No memory");
         }
 
-        dbus_message_unref (reply);
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
