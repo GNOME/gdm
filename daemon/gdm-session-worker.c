@@ -819,8 +819,10 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
                                                                        messages[i],
                                                                        &response_text);
                 if (!got_response) {
-                        memset (response_text, '\0', strlen (response_text));
-                        g_free (response_text);
+                        if (response_text != NULL) {
+                                memset (response_text, '\0', strlen (response_text));
+                                g_free (response_text);
+                        }
                         goto out;
                 }
 
