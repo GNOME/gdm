@@ -554,6 +554,10 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
                           G_CALLBACK (on_session_activated), panel);
         gtk_box_pack_start (GTK_BOX (panel->priv->option_hbox), panel->priv->session_option_widget, FALSE, FALSE, 6);
 
+        spacer = gtk_label_new ("");
+        gtk_box_pack_start (GTK_BOX (panel->priv->option_hbox), spacer, TRUE, TRUE, 6);
+        gtk_widget_show (spacer);
+
         /* FIXME: we should only show hostname on panel when connected
            to a remote host */
         if (0) {
