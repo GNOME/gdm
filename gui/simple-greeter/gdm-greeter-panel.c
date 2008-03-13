@@ -53,6 +53,8 @@ struct GdmGreeterPanelPrivate
         GtkWidget              *a11y_button;
         GtkWidget              *a11y_dialog;
         GtkWidget              *hbox;
+        GtkWidget              *alignment;
+        GtkWidget              *option_hbox;
         GtkWidget              *hostname_label;
         GtkWidget              *clock;
         GtkWidget              *language_option_widget;
@@ -483,6 +485,8 @@ is_a11y_button_disabled (GdmGreeterPanel *panel)
                 g_error_free (error);
         }
         g_object_unref (client);
+
+        return disabled;
 }
 
 static void
@@ -490,6 +494,7 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
 {
         NaTray    *tray;
         GtkWidget *image;
+        GtkWidget *spacer;
 
         panel->priv = GDM_GREETER_PANEL_GET_PRIVATE (panel);
 
@@ -525,17 +530,29 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
                 gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->a11y_button, FALSE, FALSE, 0);
         }
 
+        panel->priv->alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
+        gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->alignment, TRUE, TRUE, 0);
+        gtk_widget_show (panel->priv->alignment);
+
+        panel->priv->option_hbox = gtk_hbox_new (FALSE, 12);
+        gtk_widget_show (panel->priv->option_hbox);
+        gtk_container_add (GTK_CONTAINER (panel->priv->alignment), panel->priv->option_hbox);
+
+        spacer = gtk_label_new ("");
+        gtk_box_pack_start (GTK_BOX (panel->priv->option_hbox), spacer, TRUE, TRUE, 6);
+        gtk_widget_show (spacer);
+
         panel->priv->language_option_widget = gdm_language_option_widget_new ();
         g_signal_connect (G_OBJECT (panel->priv->language_option_widget),
                           "language-activated",
                           G_CALLBACK (on_language_activated), panel);
-        gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->language_option_widget, FALSE, FALSE, 6);
+        gtk_box_pack_start (GTK_BOX (panel->priv->option_hbox), panel->priv->language_option_widget, FALSE, FALSE, 6);
 
         panel->priv->session_option_widget = gdm_session_option_widget_new ();
         g_signal_connect (G_OBJECT (panel->priv->session_option_widget),
                           "session-activated",
                           G_CALLBACK (on_session_activated), panel);
-        gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->session_option_widget, FALSE, FALSE, 6);
+        gtk_box_pack_start (GTK_BOX (panel->priv->option_hbox), panel->priv->session_option_widget, FALSE, FALSE, 6);
 
         /* FIXME: we should only show hostname on panel when connected
            to a remote host */
@@ -547,7 +564,7 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
 
         panel->priv->clock = gdm_clock_widget_new ();
         gtk_box_pack_end (GTK_BOX (panel->priv->hbox),
-                          GTK_WIDGET (panel->priv->clock), FALSE, FALSE, 6);
+                            GTK_WIDGET (panel->priv->clock), FALSE, FALSE, 6);
         gtk_widget_show (panel->priv->clock);
 
         tray = na_tray_new_for_screen (gtk_window_get_screen (GTK_WINDOW (panel)),

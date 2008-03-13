@@ -46,6 +46,8 @@ main (int argc, char *argv[])
         gtk_init (&argc, &argv);
 
         panel = gdm_greeter_panel_new ();
+        gdm_greeter_panel_show_user_options (GDM_GREETER_PANEL (panel));
+
         gtk_widget_show (panel);
 
         gtk_main ();
