@@ -234,8 +234,8 @@ gdm_session_relay_accredit (GdmSession *session,
         case GDM_SESSION_CRED_ESTABLISH:
                 send_dbus_void_signal (impl, "EstablishCredentials");
                 break;
-        case GDM_SESSION_CRED_RENEW:
-                send_dbus_void_signal (impl, "RenewCredentials");
+        case GDM_SESSION_CRED_REFRESH:
+                send_dbus_void_signal (impl, "RefreshCredentials");
                 break;
         default:
                 g_assert_not_reached ();
@@ -354,6 +354,8 @@ handle_secret_info_query (GdmSessionRelay *session_relay,
         DBusError    error;
         const char  *text;
 
+        text = NULL;
+
         dbus_error_init (&error);
         if (! dbus_message_get_args (message, &error,
                                      DBUS_TYPE_STRING, &text,
@@ -381,6 +383,8 @@ handle_info (GdmSessionRelay *session_relay,
         DBusError    error;
         const char  *text;
 
+        text = NULL;
+
         dbus_error_init (&error);
         if (! dbus_message_get_args (message, &error,
                                      DBUS_TYPE_STRING, &text,
@@ -407,6 +411,8 @@ handle_problem (GdmSessionRelay *session_relay,
         DBusMessage *reply;
         DBusError    error;
         const char  *text;
+
+        text = NULL;
 
         dbus_error_init (&error);
         if (! dbus_message_get_args (message, &error,
@@ -602,8 +608,17 @@ handle_session_started (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
+        int          pid;
 
         dbus_error_init (&error);
+
+        pid = 0;
+        if (! dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_INT32, &pid,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
 
         g_debug ("GdmSessionRelay: SessionStarted");
 
@@ -611,7 +626,8 @@ handle_session_started (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_session_started (GDM_SESSION (session_relay));
+        _gdm_session_session_started (GDM_SESSION (session_relay),
+                                      pid);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -783,7 +799,7 @@ do_introspect (DBusConnection *connection,
                                "    </signal>\n"
                                "    <signal name=\"EstablishCredentials\">\n"
                                "    </signal>\n"
-                               "    <signal name=\"RenewCredentials\">\n"
+                               "    <signal name=\"RefreshCredentials\">\n"
                                "    </signal>\n"
 
                                "    <signal name=\"Open\">\n"
@@ -1093,7 +1109,6 @@ gdm_session_iface_init (GdmSessionIface *iface)
         iface->select_session = gdm_session_relay_select_session;
         iface->select_language = gdm_session_relay_select_language;
         iface->select_user = gdm_session_relay_select_user;
-
 }
 
 static void

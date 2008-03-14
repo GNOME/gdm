@@ -225,9 +225,6 @@ bus_name_owner_changed (DBusGProxy  *bus_proxy,
         if (strlen (new_service_name) == 0) {
                 remove_displays_for_connection (manager, old_service_name);
         }
-
-        g_debug ("GdmManager: NameOwnerChanged: service_name='%s', old_service_name='%s' new_service_name='%s'",
-                   service_name, old_service_name, new_service_name);
 }
 
 static gboolean

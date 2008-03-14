@@ -37,7 +37,7 @@ typedef struct _GdmSessionIface GdmSessionIface;
 
 enum {
         GDM_SESSION_CRED_ESTABLISH = 0,
-        GDM_SESSION_CRED_RENEW,
+        GDM_SESSION_CRED_REFRESH,
 };
 
 struct _GdmSessionIface
@@ -93,7 +93,8 @@ struct _GdmSessionIface
                                               const char   *info);
         void (* problem)                     (GdmSession   *session,
                                               const char   *problem);
-        void (* session_started)             (GdmSession   *session);
+        void (* session_started)             (GdmSession   *session,
+                                              int           pid);
         void (* session_start_failed)        (GdmSession   *session,
                                               const char   *message);
         void (* session_exited)              (GdmSession   *session,

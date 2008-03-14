@@ -1132,14 +1132,17 @@ gdm_session_worker_set_environment_variable (GdmSessionWorker *worker,
 }
 
 static void
-gdm_session_worker_update_environment_from_passwd_entry (GdmSessionWorker *worker,
-                                                         struct passwd    *passwd_entry)
+gdm_session_worker_update_environment_from_passwd_info (GdmSessionWorker *worker,
+                                                        uid_t             uid,
+                                                        gid_t             gid,
+                                                        const char       *home,
+                                                        const char       *shell)
 {
         gdm_session_worker_set_environment_variable (worker, "LOGNAME", worker->priv->username);
         gdm_session_worker_set_environment_variable (worker, "USER", worker->priv->username);
         gdm_session_worker_set_environment_variable (worker, "USERNAME", worker->priv->username);
-        gdm_session_worker_set_environment_variable (worker, "HOME", passwd_entry->pw_dir);
-        gdm_session_worker_set_environment_variable (worker, "SHELL", passwd_entry->pw_shell);
+        gdm_session_worker_set_environment_variable (worker, "HOME", home);
+        gdm_session_worker_set_environment_variable (worker, "SHELL", shell);
 }
 
 static gboolean
@@ -1150,27 +1153,52 @@ gdm_session_worker_environment_variable_is_set (GdmSessionWorker *worker,
 }
 
 static gboolean
-gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
-                                  GError           **error)
+_change_user (GdmSessionWorker  *worker,
+              uid_t              uid,
+              gid_t              gid)
 {
-        int            error_code;
+        gboolean ret;
+
+        ret = FALSE;
+
+        /* pam_setcred wants to be called as the authenticated user
+         * but pam_open_session needs to be called as super-user.
+         *
+         * Set the real uid and gid to the user and give the user a
+         * temporary super-user effective id.
+         */
+        if (setreuid (uid, GDM_SESSION_ROOT_UID) < 0) {
+                return FALSE;
+        }
+
+        if (setgid (gid) < 0) {
+                return FALSE;
+        }
+
+        if (initgroups (worker->priv->username, gid) < 0) {
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
+static gboolean
+_lookup_passwd_info (const char *username,
+                     uid_t      *uidp,
+                     gid_t      *gidp,
+                     char      **homep,
+                     char      **shellp)
+{
+        gboolean       ret;
         struct passwd *passwd_entry;
         struct passwd  passwd_buffer;
         char          *aux_buffer;
         long           required_aux_buffer_size;
         gsize          aux_buffer_size;
 
+        ret = FALSE;
         aux_buffer = NULL;
         aux_buffer_size = 0;
-
-        if (worker->priv->username == NULL) {
-                error_code = PAM_USER_UNKNOWN;
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_GIVING_CREDENTIALS,
-                             _("no user account available"));
-                goto out;
-        }
 
         required_aux_buffer_size = sysconf (_SC_GETPW_R_SIZE_MAX);
 
@@ -1189,13 +1217,13 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
          */
         passwd_entry = NULL;
 #ifdef HAVE_POSIX_GETPWNAM_R
-        errno = getpwnam_r (worker->priv->username,
+        errno = getpwnam_r (username,
                             &passwd_buffer,
                             aux_buffer,
                             (size_t) aux_buffer_size,
                             &passwd_entry);
 #else
-        passwd_entry = getpwnam_r (worker->priv->username,
+        passwd_entry = getpwnam_r (username,
                                    &passwd_buffer,
                                    aux_buffer,
                                    (size_t) aux_buffer_size);
@@ -1203,25 +1231,83 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
 #endif /* !HAVE_POSIX_GETPWNAM_R */
 
         if (errno != 0) {
-                error_code = PAM_SYSTEM_ERR;
-                g_set_error (error,
-                             GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_GIVING_CREDENTIALS,
-                             "%s",
-                             g_strerror (errno));
+                g_warning ("%s", g_strerror (errno));
                 goto out;
         }
 
         if (passwd_entry == NULL) {
+                goto out;
+        }
+
+        if (uidp != NULL) {
+                *uidp = passwd_entry->pw_uid;
+        }
+        if (gidp != NULL) {
+                *gidp = passwd_entry->pw_gid;
+        }
+        if (homep != NULL) {
+                *homep = g_strdup (passwd_entry->pw_dir);
+        }
+        if (shellp != NULL) {
+                *shellp = g_strdup (passwd_entry->pw_shell);
+        }
+        ret = TRUE;
+ out:
+        if (aux_buffer != NULL) {
+                g_assert (aux_buffer_size > 0);
+                g_slice_free1 (aux_buffer_size, aux_buffer);
+        }
+
+        return ret;
+}
+
+static gboolean
+gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
+                                  GError           **error)
+{
+        gboolean ret;
+        gboolean res;
+        uid_t    uid;
+        gid_t    gid;
+        char    *shell;
+        char    *home;
+        int      error_code;
+
+        ret = FALSE;
+
+        if (worker->priv->username == NULL) {
+                g_debug ("GdmSessionWorker: Username not set");
                 error_code = PAM_USER_UNKNOWN;
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_GIVING_CREDENTIALS,
-                             _("user account not available on system"));
+                             _("no user account available"));
                 goto out;
         }
 
-        gdm_session_worker_update_environment_from_passwd_entry (worker, passwd_entry);
+        home = NULL;
+        shell = NULL;
+        uid = 0;
+        gid = 0;
+        res = _lookup_passwd_info (worker->priv->username,
+                                   &uid,
+                                   &gid,
+                                   &home,
+                                   &shell);
+        if (! res) {
+                g_debug ("GdmSessionWorker: Unable to lookup account info");
+                g_set_error (error,
+                             GDM_SESSION_WORKER_ERROR,
+                             GDM_SESSION_WORKER_ERROR_GIVING_CREDENTIALS,
+                             _("no user account available"));
+                goto out;
+        }
+
+        gdm_session_worker_update_environment_from_passwd_info (worker,
+                                                                uid,
+                                                                gid,
+                                                                home,
+                                                                shell);
 
         /* Let's give the user a default PATH if he doesn't already have one
          */
@@ -1229,33 +1315,12 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
                 gdm_session_worker_set_environment_variable (worker, "PATH", GDM_SESSION_DEFAULT_PATH);
         }
 
-        /* pam_setcred wants to be called as the authenticated user
-         * but pam_open_session needs to be called as super-user.
-         *
-         * Set the real uid and gid to the user and give the user a
-         * temporary super-user effective id.
-         */
-        if (setreuid (passwd_entry->pw_uid, GDM_SESSION_ROOT_UID) < 0) {
+        if (! _change_user (worker, uid, gid)) {
+                g_debug ("GdmSessionWorker: Unable to change to user");
                 error_code = PAM_SYSTEM_ERR;
                 g_set_error (error, GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_GIVING_CREDENTIALS,
-                             "%s", g_strerror (errno));
-                goto out;
-        }
-
-        if (setgid (passwd_entry->pw_gid) < 0) {
-                error_code = PAM_SYSTEM_ERR;
-                g_set_error (error, GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_GIVING_CREDENTIALS,
-                             "%s", g_strerror (errno));
-                goto out;
-        }
-
-        if (initgroups (passwd_entry->pw_name, passwd_entry->pw_gid) < 0) {
-                error_code = PAM_SYSTEM_ERR;
-                g_set_error (error, GDM_SESSION_WORKER_ERROR,
-                             GDM_SESSION_WORKER_ERROR_GIVING_CREDENTIALS,
-                             "%s", g_strerror (errno));
+                             "%s", _("Unable to change to user"));
                 goto out;
         }
 
@@ -1270,23 +1335,19 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
                 goto out;
         }
 
-        gdm_session_auditor_report_user_accredited (worker->priv->auditor);
-
-        g_debug ("GdmSessionWorker: state ACCREDITED");
-        worker->priv->state = GDM_SESSION_WORKER_STATE_ACCREDITED;
+        ret = TRUE;
 
  out:
-        if (aux_buffer != NULL) {
-                g_assert (aux_buffer_size > 0);
-                g_slice_free1 (aux_buffer_size, aux_buffer);
-        }
-
-        if (error_code != PAM_SUCCESS) {
+        if (ret) {
+                g_debug ("GdmSessionWorker: state ACCREDITED");
+                ret = TRUE;
+                gdm_session_auditor_report_user_accredited (worker->priv->auditor);
+                worker->priv->state = GDM_SESSION_WORKER_STATE_ACCREDITED;
+        } else {
                 gdm_session_worker_uninitialize_pam (worker, error_code);
-                return FALSE;
         }
 
-        return TRUE;
+        return ret;
 }
 
 static void
@@ -2153,14 +2214,18 @@ on_establish_credentials (GdmSessionWorker *worker,
 }
 
 static void
-on_renew_credentials (GdmSessionWorker *worker,
-                      DBusMessage      *message)
+on_refresh_credentials (GdmSessionWorker *worker,
+                        DBusMessage      *message)
 {
-        /* FIXME: return error if not in AUTHORIZED state */
+        int error_code;
 
-        worker->priv->cred_flags = PAM_REINITIALIZE_CRED;
+        /* FIXME: return error if not in SESSION STARTED state */
+        g_debug ("GdmSessionWorker: refreshing credentials");
 
-        queue_state_change (worker);
+        error_code = pam_setcred (worker->priv->pam_handle, PAM_REFRESH_CRED);
+        if (error_code != PAM_SUCCESS) {
+                g_debug ("GdmSessionWorker: %s", pam_strerror (worker->priv->pam_handle, error_code));
+        }
 }
 
 static DBusHandlerResult
@@ -2192,8 +2257,8 @@ worker_dbus_handle_message (DBusConnection *connection,
                 on_authorize (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "EstablishCredentials")) {
                 on_establish_credentials (worker, message);
-        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "RenewCredentials")) {
-                on_renew_credentials (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "RefreshCredentials")) {
+                on_refresh_credentials (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "StartProgram")) {
                 on_start_program (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetEnvironmentVariable")) {

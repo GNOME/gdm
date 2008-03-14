@@ -109,7 +109,7 @@ send_dbus_string_method (DBusConnection *connection,
                 str = "";
         }
 
-        g_debug ("GdmGreeterClient: Calling %s", method);
+        g_debug ("GdmProductSlave: Calling %s", method);
         message = dbus_message_new_method_call (NULL,
                                                 RELAY_SERVER_DBUS_PATH,
                                                 RELAY_SERVER_DBUS_INTERFACE,
@@ -155,7 +155,7 @@ send_dbus_void_method (DBusConnection *connection,
         DBusMessage    *message;
         DBusMessage    *reply;
 
-        g_debug ("GdmGreeterClient: Calling %s", method);
+        g_debug ("GdmProductSlave: Calling %s", method);
         message = dbus_message_new_method_call (NULL,
                                                 RELAY_SERVER_DBUS_PATH,
                                                 RELAY_SERVER_DBUS_INTERFACE,
@@ -188,11 +188,61 @@ send_dbus_void_method (DBusConnection *connection,
         return TRUE;
 }
 
-static void
-relay_session_started (GdmProductSlave *slave)
+
+static gboolean
+send_dbus_int_method (DBusConnection *connection,
+                      const char     *method,
+                      int             payload)
 {
-        send_dbus_void_method (slave->priv->session_relay_connection,
-                               "SessionStarted");
+        DBusError       error;
+        DBusMessage    *message;
+        DBusMessage    *reply;
+        DBusMessageIter iter;
+
+        g_debug ("GdmSessionWorker: Calling %s", method);
+        message = dbus_message_new_method_call (NULL,
+                                                RELAY_SERVER_DBUS_PATH,
+                                                RELAY_SERVER_DBUS_INTERFACE,
+                                                method);
+        if (message == NULL) {
+                g_warning ("Couldn't allocate the D-Bus message");
+                return FALSE;
+        }
+
+        dbus_message_iter_init_append (message, &iter);
+        dbus_message_iter_append_basic (&iter,
+                                        DBUS_TYPE_INT32,
+                                        &payload);
+
+        dbus_error_init (&error);
+        reply = dbus_connection_send_with_reply_and_block (connection,
+                                                           message,
+                                                           -1,
+                                                           &error);
+        dbus_message_unref (message);
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
+        dbus_connection_flush (connection);
+
+        if (dbus_error_is_set (&error)) {
+                g_debug ("%s %s raised: %s\n",
+                         method,
+                         error.name,
+                         error.message);
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
+static void
+relay_session_started (GdmProductSlave *slave,
+                       int              pid)
+{
+        send_dbus_int_method (slave->priv->session_relay_connection,
+                              "SessionStarted",
+                              pid);
 }
 
 static void
@@ -222,11 +272,12 @@ disconnect_relay (GdmProductSlave *slave)
 
 static void
 on_session_started (GdmSession      *session,
+                    int              pid,
                     GdmProductSlave *slave)
 {
         g_debug ("GdmProductSlave: session started");
 
-        relay_session_started (slave);
+        relay_session_started (slave, pid);
 
         disconnect_relay (slave);
 }
@@ -629,12 +680,12 @@ on_relay_establish_credentials (GdmProductSlave *slave,
 }
 
 static void
-on_relay_renew_credentials (GdmProductSlave *slave,
-                            DBusMessage     *message)
+on_relay_refresh_credentials (GdmProductSlave *slave,
+                              DBusMessage     *message)
 {
-        g_debug ("GdmProductSlave: Relay RenewCredentials");
+        g_debug ("GdmProductSlave: Relay RefreshCredentials");
 
-        gdm_session_accredit (GDM_SESSION (slave->priv->session), GDM_SESSION_CRED_RENEW);
+        gdm_session_accredit (GDM_SESSION (slave->priv->session), GDM_SESSION_CRED_REFRESH);
 }
 
 static void
@@ -904,8 +955,8 @@ relay_dbus_handle_message (DBusConnection *connection,
                 on_relay_authorize (slave, message);
         } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "EstablishCredentials")) {
                 on_relay_establish_credentials (slave, message);
-        } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "RenewCredentials")) {
-                on_relay_renew_credentials (slave, message);
+        } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "RefreshCredentials")) {
+                on_relay_refresh_credentials (slave, message);
         } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "AnswerQuery")) {
                 on_relay_answer_query (slave, message);
         } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "SessionSelected")) {

@@ -57,6 +57,9 @@ GType               gdm_slave_get_type               (void);
 gboolean            gdm_slave_start                  (GdmSlave   *slave);
 gboolean            gdm_slave_stop                   (GdmSlave   *slave);
 
+char *              gdm_slave_get_primary_session_id_for_user (GdmSlave   *slave,
+                                                               const char *username);
+
 gboolean            gdm_slave_add_user_authorization (GdmSlave   *slave,
                                                       const char *username,
                                                       char      **filename);

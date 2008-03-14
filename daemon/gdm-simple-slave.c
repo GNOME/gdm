@@ -94,9 +94,12 @@ G_DEFINE_TYPE (GdmSimpleSlave, gdm_simple_slave, GDM_TYPE_SLAVE)
 
 static void
 on_session_started (GdmSession       *session,
+                    int               pid,
                     GdmSimpleSlave   *slave)
 {
-        g_debug ("GdmSimpleSlave: session started");
+        int i;
+
+        g_debug ("GdmSimpleSlave: session started %d", pid);
 
         /* FIXME: should we do something here? */
 }
@@ -210,8 +213,22 @@ static void
 gdm_simple_slave_accredit_when_ready (GdmSimpleSlave *slave)
 {
         if (slave->priv->start_session_when_ready) {
-                gdm_session_accredit (GDM_SESSION (slave->priv->session),
-                                      GDM_SESSION_CRED_ESTABLISH);
+                char *ssid;
+                char *username;
+                int   cred_flag;
+
+                username = gdm_session_direct_get_username (slave->priv->session);
+
+                ssid = gdm_slave_get_primary_session_id_for_user (slave, username);
+                if (ssid != NULL && ssid [0] != '\0') {
+                        cred_flag = GDM_SESSION_CRED_REFRESH;
+                } else {
+                        cred_flag = GDM_SESSION_CRED_ESTABLISH;
+                }
+                g_free (ssid);
+                g_free (username);
+
+                gdm_session_accredit (GDM_SESSION (slave->priv->session), cred_flag);
         } else {
                 slave->priv->waiting_to_start_session = TRUE;
         }
@@ -687,7 +704,7 @@ on_greeter_connected (GdmGreeterServer *greeter_server,
 {
         gboolean display_is_local;
 
-        g_debug ("GdmSimpleSlave: Greeter started");
+        g_debug ("GdmSimpleSlave: Greeter connected");
 
         gdm_session_open (GDM_SESSION (slave->priv->session));
 
@@ -720,8 +737,6 @@ on_start_session_later (GdmGreeterServer *session,
         g_debug ("GdmSimpleSlave: Will start session when ready and told");
         slave->priv->start_session_when_ready = FALSE;
 }
-
-
 
 static void
 setup_server (GdmSimpleSlave *slave)

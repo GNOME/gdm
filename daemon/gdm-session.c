@@ -360,9 +360,10 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, session_started),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__VOID,
+                              g_cclosure_marshal_VOID__INT,
                               G_TYPE_NONE,
-                              0);
+                              1,
+                              G_TYPE_INT);
         signals [SESSION_START_FAILED] =
                 g_signal_new ("session-start-failed",
                               iface_type,
@@ -554,10 +555,11 @@ _gdm_session_problem (GdmSession   *session,
 }
 
 void
-_gdm_session_session_started (GdmSession   *session)
+_gdm_session_session_started (GdmSession   *session,
+                              int           pid)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
-        g_signal_emit (session, signals [SESSION_STARTED], 0);
+        g_signal_emit (session, signals [SESSION_STARTED], 0, pid);
 }
 
 void

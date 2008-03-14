@@ -708,6 +708,10 @@ gdm_session_direct_handle_session_started (GdmSessionDirect *session,
         DBusError    error;
         int          pid;
 
+        pid = 0;
+
+        g_debug ("GdmSessionDirect: Handling SessionStarted");
+
         dbus_error_init (&error);
         if (! dbus_message_get_args (message, &error,
                                      DBUS_TYPE_INT32, &pid,
@@ -725,7 +729,7 @@ gdm_session_direct_handle_session_started (GdmSessionDirect *session,
         session->priv->session_pid = pid;
         session->priv->is_running = TRUE;
 
-        _gdm_session_session_started (GDM_SESSION (session));
+        _gdm_session_session_started (GDM_SESSION (session), pid);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -1136,6 +1140,7 @@ do_introspect (DBusConnection *connection,
                                "    </method>\n"
                                "    <method name=\"SessionStarted\">\n"
                                "      <arg name=\"pid\" direction=\"in\" type=\"i\"/>\n"
+                               "      <arg name=\"environment\" direction=\"in\" type=\"as\"/>\n"
                                "    </method>\n"
                                "    <method name=\"SessionExited\">\n"
                                "      <arg name=\"code\" direction=\"in\" type=\"i\"/>\n"
@@ -1166,7 +1171,7 @@ do_introspect (DBusConnection *connection,
                                "    </signal>\n"
                                "    <signal name=\"EstablishCredentials\">\n"
                                "    </signal>\n"
-                               "    <signal name=\"RenewCredentials\">\n"
+                               "    <signal name=\"RefreshCredentials\">\n"
                                "    </signal>\n"
                                "    <signal name=\"SetEnvironmentVariable\">\n"
                                "      <arg name=\"name\" type=\"s\"/>\n"
@@ -1704,8 +1709,8 @@ gdm_session_direct_accredit (GdmSession *session,
         case GDM_SESSION_CRED_ESTABLISH:
                 send_dbus_void_signal (impl, "EstablishCredentials");
                 break;
-        case GDM_SESSION_CRED_RENEW:
-                send_dbus_void_signal (impl, "RenewCredentials");
+        case GDM_SESSION_CRED_REFRESH:
+                send_dbus_void_signal (impl, "RefreshCredentials");
                 break;
         default:
                 g_assert_not_reached ();

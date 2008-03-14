@@ -1,3 +1,34 @@
+2008-03-14  William Jon McCann  <jmccann@redhat.com>
+
+	* daemon/gdm-manager.c: (bus_name_owner_changed):
+	* daemon/gdm-product-slave.c: (send_dbus_string_method),
+	(send_dbus_void_method), (send_dbus_int_method),
+	(relay_session_started), (on_session_started),
+	(on_relay_refresh_credentials), (relay_dbus_handle_message):
+	* daemon/gdm-session-direct.c:
+	(gdm_session_direct_handle_session_started), (do_introspect),
+	(gdm_session_direct_accredit):
+	* daemon/gdm-session-private.h:
+	* daemon/gdm-session-relay.c: (gdm_session_relay_accredit),
+	(handle_secret_info_query), (handle_info), (handle_problem),
+	(handle_session_started), (do_introspect),
+	(gdm_session_iface_init):
+	* daemon/gdm-session-worker.c:
+	(gdm_session_worker_update_environment_from_passwd_info),
+	(_change_user), (_lookup_passwd_info),
+	(gdm_session_worker_accredit_user), (on_refresh_credentials),
+	(worker_dbus_handle_message):
+	* daemon/gdm-session.c: (gdm_session_class_init),
+	(_gdm_session_session_started):
+	* daemon/gdm-session.h:
+	* daemon/gdm-simple-slave.c: (on_session_started),
+	(gdm_simple_slave_accredit_when_ready), (on_greeter_connected):
+	* daemon/gdm-slave.c: (gdm_slave_get_primary_session_id_for_user),
+	(gdm_slave_switch_to_user_session):
+	* daemon/gdm-slave.h:
+	Refactor things a little.  Rename renew to refresh.  Add a pid to the
+	session started signal.
+
 2008-03-13  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/gdm-greeter-panel.c: (gdm_greeter_panel_init):
