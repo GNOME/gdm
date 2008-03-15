@@ -88,6 +88,9 @@ enum {
         GDM_SESSION_WORKER_STATE_ACCREDITED,
         GDM_SESSION_WORKER_STATE_SESSION_OPENED,
         GDM_SESSION_WORKER_STATE_SESSION_STARTED,
+        GDM_SESSION_WORKER_STATE_REAUTHENTICATED,
+        GDM_SESSION_WORKER_STATE_REAUTHORIZED,
+        GDM_SESSION_WORKER_STATE_REACCREDITED,
 };
 
 struct GdmSessionWorkerPrivate
@@ -2214,12 +2217,28 @@ on_establish_credentials (GdmSessionWorker *worker,
 }
 
 static void
+on_reauthenticate (GdmSessionWorker *worker,
+                   DBusMessage      *message)
+{
+        /* FIXME: return error if not in SESSION_STARTED state */
+        queue_state_change (worker);
+}
+
+static void
+on_reauthorize (GdmSessionWorker *worker,
+                DBusMessage      *message)
+{
+        /* FIXME: return error if not in REAUTHENTICATED state */
+        queue_state_change (worker);
+}
+
+static void
 on_refresh_credentials (GdmSessionWorker *worker,
                         DBusMessage      *message)
 {
         int error_code;
 
-        /* FIXME: return error if not in SESSION STARTED state */
+        /* FIXME: return error if not in REAUTHORIZED state */
         g_debug ("GdmSessionWorker: refreshing credentials");
 
         error_code = pam_setcred (worker->priv->pam_handle, PAM_REFRESH_CRED);
@@ -2257,10 +2276,14 @@ worker_dbus_handle_message (DBusConnection *connection,
                 on_authorize (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "EstablishCredentials")) {
                 on_establish_credentials (worker, message);
-        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "RefreshCredentials")) {
-                on_refresh_credentials (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "StartProgram")) {
                 on_start_program (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "Reauthenticate")) {
+                on_reauthenticate (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "Reauthorize")) {
+                on_reauthorize (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "RefreshCredentials")) {
+                on_refresh_credentials (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetEnvironmentVariable")) {
                 on_set_environment_variable (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetLanguageName")) {

@@ -1049,6 +1049,18 @@ session_worker_message (DBusConnection *connection,
                 return gdm_session_direct_handle_accredited (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "AccreditationFailed")) {
                 return gdm_session_direct_handle_accreditation_failed (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "Authenticated")) {
+                return gdm_session_direct_handle_authenticated (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "AuthenticationFailed")) {
+                return gdm_session_direct_handle_authentication_failed (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "Authorized")) {
+                return gdm_session_direct_handle_authorized (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "AuthorizationFailed")) {
+                return gdm_session_direct_handle_authorization_failed (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "Accredited")) {
+                return gdm_session_direct_handle_accredited (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "AccreditationFailed")) {
+                return gdm_session_direct_handle_accreditation_failed (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "UsernameChanged")) {
                 return gdm_session_direct_handle_username_changed (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SessionStarted")) {
