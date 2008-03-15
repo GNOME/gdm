@@ -1755,6 +1755,19 @@ on_gconf_key_changed (GConfClient           *client,
         }
 }
 
+static gboolean
+on_window_state_event (GtkWidget           *widget,
+                       GdkEventWindowState *event,
+                       gpointer             data)
+{
+        if (event->changed_mask & GDK_WINDOW_STATE_ICONIFIED) {
+                g_debug ("GdmGreeterLoginWindow: window iconified");
+                gtk_window_deiconify (GTK_WINDOW (widget));
+        }
+
+        return FALSE;
+}
+
 static void
 gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
 {
@@ -1771,6 +1784,12 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         gtk_window_set_skip_pager_hint (GTK_WINDOW (login_window), TRUE);
         gtk_window_stick (GTK_WINDOW (login_window));
         gtk_container_set_border_width (GTK_CONTAINER (login_window), 25);
+
+
+        g_signal_connect (login_window,
+                          "window-state-event",
+                          G_CALLBACK (on_window_state_event),
+                          NULL);
 
         login_window->priv->client = gconf_client_get_default ();
         gconf_client_add_dir (login_window->priv->client,
