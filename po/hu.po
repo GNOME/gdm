@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.gnome-2-10.hu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-02 05:37+0000\n"
-"PO-Revision-Date: 2008-03-04 10:15+0100\n"
+"POT-Creation-Date: 2008-03-11 03:20+0000\n"
+"PO-Revision-Date: 2008-03-16 15:28+0100\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@fsf.hu>\n"
 "MIME-Version: 1.0\n"
@@ -140,8 +140,8 @@ msgid ""
 msgstr ""
 "A környezet elindítása sikertelen, mivel nem található Xclients fájl, így "
 "egy tartalék xterm környezet kerül elindításra. Az ablakok csak akkor kapnak "
-"fókuszt, ha az egér föléjük ér. A kilépéshez ebből a módból írja be az „exit"
-"” parancsot az ablakba."
+"fókuszt, ha az egér föléjük ér. A kilépéshez ebből a módból írja be az "
+"„exit” parancsot az ablakba."
 
 #: ../config/gettextfoo.h:16
 msgid ""
@@ -748,6 +748,15 @@ msgstr ""
 "A kért %s kiszolgáló nem használható flexibilis kiszolgálóként, a szabványos "
 "kiszolgáló lesz használva."
 
+#: ../daemon/gdm.h:70 ../gui/gdmlogin.c:2501
+msgid "Welcome"
+msgstr "Üdvözlet"
+
+#: ../daemon/gdm.h:71
+#, c-format
+msgid "Welcome to %n"
+msgstr "Üdvözlet a következőn: %n"
+
 #. Translators, don't translate the 'y' and 'n'
 #: ../daemon/misc.c:592
 msgid "y = Yes or n = No? >"
@@ -840,9 +849,7 @@ msgstr "Érvénytelen kiszolgálóparancs „%s”"
 #: ../daemon/server.c:1044
 #, c-format
 msgid "Server name '%s' not found; using standard server"
-msgstr ""
-"A(z) „%s” kiszolgálónév nem található, a szabványos kiszolgáló lesz "
-"használva"
+msgstr "A(z) „%s” kiszolgálónév nem található, a szabványos kiszolgáló lesz használva"
 
 #: ../daemon/server.c:1254
 #, c-format
@@ -1225,7 +1232,8 @@ msgid ""
 msgstr ""
 "Ez a csökkentett módú xterm környezet. Egy terminálra lesz bejelentkeztetve, "
 "amely bekéri a rendszergazda jelszót, így megjavítható a rendszer, amelybe "
-"másként nem tud bejelentkezni. Ebből a módból az ablakban kiadott „exit” paranccsal léphet ki."
+"másként nem tud bejelentkezni. Ebből a módból az ablakban kiadott „exit” "
+"paranccsal léphet ki."
 
 #: ../daemon/slave.c:3972
 msgid ""
@@ -1280,8 +1288,8 @@ msgid ""
 "you want to log in with the / (root) directory as your home directory? It is "
 "unlikely anything will work unless you use a failsafe session."
 msgstr ""
-"A saját könyvtára „%s” néven van felsorolva, de úgy tűnik, ez a könyvtár "
-"nem létezik. Be akar lépni úgy, hogy a gyökérkönyvtár (/) legyen a saját "
+"A saját könyvtára „%s” néven van felsorolva, de úgy tűnik, ez a könyvtár nem "
+"létezik. Be akar lépni úgy, hogy a gyökérkönyvtár (/) legyen a saját "
 "könyvtára? Valószínűleg semmi sem fog működni, hacsak nem a csökkentett módú "
 "környezetet választja."
 
@@ -1783,9 +1791,9 @@ msgid ""
 "host is not turned on, or is not willing to support a login session right "
 "now.  Please try again later."
 msgstr ""
-"Nem jött válasz a(z) „%s” géptől %d másodperc alatt. Lehet, hogy a gép "
-"nincs bekapcsolva, vagy most nem kívánja a bejelentkezését fogadni. Próbálja "
-"meg később."
+"Nem jött válasz a(z) „%s” géptől %d másodperc alatt. Lehet, hogy a gép nincs "
+"bekapcsolva, vagy most nem kívánja a bejelentkezését fogadni. Próbálja meg "
+"később."
 
 #: ../gui/gdmchooser.c:1318
 msgid "Did not receive response from server"
@@ -1916,11 +1924,11 @@ msgstr ""
 "mégis szeretné használni ezt a szolgáltatást, akkor indítsa el a GDM-et vagy "
 "kérje meg erre a rendszergazdát."
 
-#: ../gui/gdmcomm.c:653 ../gui/gdmflexiserver.c:843
+#: ../gui/gdmcomm.c:653 ../gui/gdmflexiserver.c:846
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "Nem lehet kommunikálni a GDM-mel (a GNOME bejelentkezéskezelőjével)"
 
-#: ../gui/gdmcomm.c:655 ../gui/gdmflexiserver.c:845
+#: ../gui/gdmcomm.c:655 ../gui/gdmflexiserver.c:848
 msgid "Perhaps you have an old version of GDM running."
 msgstr "Valószínűleg egy régebbi GDM verzió fut."
 
@@ -2000,15 +2008,15 @@ msgstr "Túl sok üzenet lett elküldve a GDM-nek és az ettől lefagyott."
 msgid "Unknown error occurred."
 msgstr "Ismeretlen hiba történt."
 
-#: ../gui/gdmcommon.c:756
+#: ../gui/gdmcommon.c:762
 msgid "The accessibility registry was not found."
 msgstr "Nem található az akadálymentesítési nyilvántartás."
 
-#: ../gui/gdmcommon.c:779
+#: ../gui/gdmcommon.c:785
 msgid "The accessibility registry could not be started."
 msgstr "Az akadálymentesítési nyilvántartás nem indítható el."
 
-#: ../gui/gdmcommon.c:841
+#: ../gui/gdmcommon.c:847
 msgid "%a %b %d, %H:%M"
 msgstr "%Y. %B %-d., %A, %k.%M"
 
@@ -2016,11 +2024,11 @@ msgstr "%Y. %B %-d., %A, %k.%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:847
+#: ../gui/gdmcommon.c:853
 msgid "%a %b %d, %l:%M %p"
 msgstr "%Y. %B %-d., %A, %l.%M %p"
 
-#: ../gui/gdmcommon.c:947
+#: ../gui/gdmcommon.c:953
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -2185,23 +2193,23 @@ msgstr "Hiba: A GDM (a GNOME bejelentkezéskezelője) nem fut."
 msgid "You might be using a different display manager."
 msgstr "Lehetséges, hogy másik bejelentkezéskezelőt használ."
 
-#: ../gui/gdmflexiserver.c:885
+#: ../gui/gdmflexiserver.c:888
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "Úgy tűnik, hogy Ön nem rendelkezik a művelethez szükséges engedéllyel"
 
-#: ../gui/gdmflexiserver.c:888
+#: ../gui/gdmflexiserver.c:891
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "Talán a „.Xauthority” fájlja nincs megfelelően beállítva."
 
-#: ../gui/gdmflexiserver.c:917
+#: ../gui/gdmflexiserver.c:920
 msgid "You do not seem to be logged in on the console"
 msgstr "Úgy tűnik, hogy Ön konzolon nincs bejelentkezve"
 
-#: ../gui/gdmflexiserver.c:919
+#: ../gui/gdmflexiserver.c:922
 msgid "Starting a new login only works correctly on the console."
 msgstr "Új bejelentkezés indítása csak a konzolon működik megfelelően."
 
-#: ../gui/gdmflexiserver.c:967
+#: ../gui/gdmflexiserver.c:970
 msgid "Cannot start new display"
 msgstr "Nem indítható új képernyő"
 
@@ -3032,10 +3040,6 @@ msgstr "_Bontás"
 msgid "Icon"
 msgstr "Ikon"
 
-#: ../gui/gdmlogin.c:2501
-msgid "Welcome"
-msgstr "Üdvözlet"
-
 #: ../gui/gdmlogin.c:2620 ../gui/greeter/greeter_parser.c:418
 msgid "_Start Again"
 msgstr "Újrain_dítás"
@@ -3258,8 +3262,8 @@ msgid ""
 "You need one or more themes selected for the \"Random from selected\" option "
 "to be valid. Failure to do so will force \"Selected only\" mode."
 msgstr ""
-"Legalább egy témát ki kell választania „A kijelöltek közül véletlenszerűen” lehetőség működéséhez. Ennek hiányában a „Csak a kijelölt” mód lép "
-"életbe."
+"Legalább egy témát ki kell választania „A kijelöltek közül véletlenszerűen” "
+"lehetőség működéséhez. Ennek hiányában a „Csak a kijelölt” mód lép életbe."
 
 #: ../gui/gdmsetup.c:2005
 msgid "Apply changes to the modified command?"
@@ -3418,7 +3422,10 @@ msgid ""
 "This theme cannot be deleted at this point. If you wish to delete this theme "
 "switch to \"Selected only\" mode, and deselect it by choosing a different "
 "theme."
-msgstr "Ez a téma jelenleg nem törölhető. Ha törölni kívánja a témát, akkor váltson „Csak a kijelölt” módba, majd másik téma kiválasztásával szüntesse meg a téma kijelölését."
+msgstr ""
+"Ez a téma jelenleg nem törölhető. Ha törölni kívánja a témát, akkor váltson "
+"„Csak a kijelölt” módba, majd másik téma kiválasztásával szüntesse meg a "
+"téma kijelölését."
 
 #: ../gui/gdmsetup.c:5693
 #, c-format
@@ -3847,8 +3854,8 @@ msgid ""
 msgstr ""
 "Engedélyezi az üdvözlő kiegészítő GTK+ modulokkal történő indítását. Ez "
 "akkor hasznos, ha kiegészítő szolgáltatásokra van szükség, mint például az "
-"akadálymentes bejelentkezés. Ne feledje, hogy csak a „megbízható” "
-"modulokat használja a biztonsági kockázatok csökkentése érdekében."
+"akadálymentes bejelentkezés. Ne feledje, hogy csak a „megbízható” modulokat "
+"használja a biztonsági kockázatok csökkentése érdekében."
 
 #: ../gui/gdmsetup.glade.h:59
 msgid ""
@@ -3910,7 +3917,10 @@ msgid ""
 "Hide visual feedback in the password entry. Turning this option on can "
 "increase security, as the length of your password cannot be guessed by "
 "people looking at your screen."
-msgstr "Vizuális visszajelzés elrejtése a jelszóbeviteli mezőben. A beállítás bekapcsolása növelheti a biztonságot, mivel a jelszó hossza nem található ki a képernyő figyelésével."
+msgstr ""
+"Vizuális visszajelzés elrejtése a jelszóbeviteli mezőben. A beállítás "
+"bekapcsolása növelheti a biztonságot, mivel a jelszó hossza nem található ki "
+"a képernyő figyelésével."
 
 #: ../gui/gdmsetup.glade.h:68
 msgid "Honor _indirect requests"
@@ -4351,8 +4361,8 @@ msgid ""
 "preference and has picked 'Last' from the list of sessions."
 msgstr ""
 "Az alapértelmezett környezet, ha a felhasználó nem mentette el a saját "
-"beállítását és a környezetek listájából a „Legutóbbi környezet” "
-"lehetőséget választotta."
+"beállítását és a környezetek listájából a „Legutóbbi környezet” lehetőséget "
+"választotta."
 
 #: ../gui/gdmsetup.glade.h:159
 msgid "The vertical position of the login window."
