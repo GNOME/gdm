@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-02 05:37+0000\n"
-"PO-Revision-Date: 2008-03-03 19:52+0800\n"
+"POT-Creation-Date: 2008-03-11 03:20+0000\n"
+"PO-Revision-Date: 2008-03-17 12:28+0800\n"
 "Last-Translator: Yang Zhang <zyangmath@gmail.com>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -692,6 +692,15 @@ msgid ""
 "Requested server %s not allowed to be used for flexible servers; using "
 "standard server."
 msgstr "请求的服务器 %s 不能被用于便捷服务器；使用标准服务器。"
+
+#: ../daemon/gdm.h:70 ../gui/gdmlogin.c:2501
+msgid "Welcome"
+msgstr "欢迎"
+
+#: ../daemon/gdm.h:71
+#, c-format
+msgid "Welcome to %n"
+msgstr "欢迎来到 %n"
 
 #. Translators, don't translate the 'y' and 'n'
 #: ../daemon/misc.c:592
@@ -1793,11 +1802,11 @@ msgstr ""
 "您可能在使用不同的显示管理器，比如 KDM(KDE 显示管理器)、CDE 登录 (dtlogin) "
 "或 XDM。如果您仍然想要使用此特您的系统需要被配置为使用 GDM。"
 
-#: ../gui/gdmcomm.c:653 ../gui/gdmflexiserver.c:843
+#: ../gui/gdmcomm.c:653 ../gui/gdmflexiserver.c:846
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "无法与 GDM(GNOME 显示器管理器)通讯"
 
-#: ../gui/gdmcomm.c:655 ../gui/gdmflexiserver.c:845
+#: ../gui/gdmcomm.c:655 ../gui/gdmflexiserver.c:848
 msgid "Perhaps you have an old version of GDM running."
 msgstr "可能您正在运行老版本的 gdm。"
 
@@ -1872,15 +1881,15 @@ msgstr "发送给 GDM 的消息太多，系统挂起。"
 msgid "Unknown error occurred."
 msgstr "发生未知错误。"
 
-#: ../gui/gdmcommon.c:756
+#: ../gui/gdmcommon.c:762
 msgid "The accessibility registry was not found."
 msgstr "未找到辅助选项注册项。"
 
-#: ../gui/gdmcommon.c:779
+#: ../gui/gdmcommon.c:785
 msgid "The accessibility registry could not be started."
 msgstr "未能启动辅助选项注册项。"
 
-#: ../gui/gdmcommon.c:841
+#: ../gui/gdmcommon.c:847
 msgid "%a %b %d, %H:%M"
 msgstr "%-m月%-d日%A，%H:%M"
 
@@ -1888,11 +1897,11 @@ msgstr "%-m月%-d日%A，%H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:847
+#: ../gui/gdmcommon.c:853
 msgid "%a %b %d, %l:%M %p"
 msgstr "%-m月%-d日%A，%H:%M"
 
-#: ../gui/gdmcommon.c:947
+#: ../gui/gdmcommon.c:953
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -2052,23 +2061,23 @@ msgstr "错误：GDM(GNOME 显示管理器)未运行。"
 msgid "You might be using a different display manager."
 msgstr "您可能在使用其它的显示管理器。"
 
-#: ../gui/gdmflexiserver.c:885
+#: ../gui/gdmflexiserver.c:888
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "您似乎不具有该操作所必须的认证权限。"
 
-#: ../gui/gdmflexiserver.c:888
+#: ../gui/gdmflexiserver.c:891
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "可能您的 .Xauthority 文件的设置不正确。"
 
-#: ../gui/gdmflexiserver.c:917
+#: ../gui/gdmflexiserver.c:920
 msgid "You do not seem to be logged in on the console"
 msgstr "您似乎不能从控制台登录。"
 
-#: ../gui/gdmflexiserver.c:919
+#: ../gui/gdmflexiserver.c:922
 msgid "Starting a new login only works correctly on the console."
 msgstr "启动一个新的登录只能在控制台上正常工作。"
 
-#: ../gui/gdmflexiserver.c:967
+#: ../gui/gdmflexiserver.c:970
 msgid "Cannot start new display"
 msgstr "无法启动新显示"
 
@@ -2894,10 +2903,6 @@ msgstr "断开连接(_I)"
 msgid "Icon"
 msgstr "图标"
 
-#: ../gui/gdmlogin.c:2501
-msgid "Welcome"
-msgstr "欢迎"
-
 #: ../gui/gdmlogin.c:2620 ../gui/greeter/greeter_parser.c:418
 msgid "_Start Again"
 msgstr "再次启动(_S)"
@@ -3713,8 +3718,8 @@ msgid ""
 "increase security, as the length of your password cannot be guessed by "
 "people looking at your screen."
 msgstr ""
-"在密码输入框中隐藏视觉反馈。打开此选项可增加安全性，因为您的密码的长度"
-"不会被看到您的屏幕的人猜测到。"
+"在密码输入框中隐藏视觉反馈。打开此选项可增加安全性，因为您的密码的长度不会被"
+"看到您的屏幕的人猜测到。"
 
 #: ../gui/gdmsetup.glade.h:68
 msgid "Honor _indirect requests"
