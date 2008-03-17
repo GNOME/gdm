@@ -510,7 +510,7 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
 
         gtk_window_set_keep_above (GTK_WINDOW (panel), TRUE);
         gtk_window_set_type_hint (GTK_WINDOW (panel), GDK_WINDOW_TYPE_HINT_DOCK);
-        gtk_window_set_opacity (GTK_WINDOW (panel), 0.75);
+        gtk_window_set_opacity (GTK_WINDOW (panel), 0.85);
 
         panel->priv->hbox = gtk_hbox_new (FALSE, 12);
         gtk_container_set_border_width (GTK_CONTAINER (panel->priv->hbox), 0);
