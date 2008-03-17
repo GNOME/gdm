@@ -353,6 +353,8 @@ launch_compiz (GdmGreeterSession *session)
 
         ret = FALSE;
 
+        g_setenv ("LIBGL_ALWAYS_INDIRECT", "1", TRUE);
+
         error = NULL;
         g_spawn_command_line_async ("gtk-window-decorator", &error);
         if (error != NULL) {
@@ -362,7 +364,7 @@ launch_compiz (GdmGreeterSession *session)
         }
 
         error = NULL;
-        g_spawn_command_line_async ("compiz glib gconf", &error);
+        g_spawn_command_line_async ("compiz --replace glib gconf", &error);
         if (error != NULL) {
                 g_warning ("Error starting WM: %s", error->message);
                 g_error_free (error);
@@ -406,6 +408,8 @@ start_window_manager (GdmGreeterSession *session)
 {
         gboolean     use_compiz;
         GConfClient *client;
+
+        /* FIXME: check for COMPOSITE */
 
         client = gconf_client_get_default ();
         use_compiz = gconf_client_get_bool (client, KEY_WM_USE_COMPIZ, NULL);
