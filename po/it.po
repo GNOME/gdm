@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-10 20:51+0100\n"
-"PO-Revision-Date: 2008-03-10 20:51+0100\n"
+"POT-Creation-Date: 2008-03-17 21:57+0100\n"
+"PO-Revision-Date: 2008-03-14 21:09+0100\n"
 "Last-Translator: Milo Casagrande <milo_casagrande@yahoo.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -279,6 +279,15 @@ msgstr "%s non può essere aperto"
 msgid "%s: Cannot fork to display error/info box"
 msgstr ""
 "%s: fork non possibile per visualizzare la finestra di errore/informazione"
+
+#: ../daemon/gdm-daemon-config-keys.h:44 ../gui/gdmlogin.c:2501
+msgid "Welcome"
+msgstr "Benvenuti"
+
+#: ../daemon/gdm-daemon-config-keys.h:45
+#, c-format
+msgid "Welcome to %n"
+msgstr "Benvenuti su %n"
 
 #: ../daemon/gdm-daemon-config.c:1127
 #, c-format
@@ -753,15 +762,6 @@ msgid ""
 msgstr ""
 "Il server %s richiesto non è abilitato per l'uso con i flexible server, sarà "
 "utilizzato quello standard."
-
-#: ../daemon/gdm.h:70 ../gui/gdmlogin.c:2501
-msgid "Welcome"
-msgstr "Benvenuti"
-
-#: ../daemon/gdm.h:71
-#, c-format
-msgid "Welcome to %n"
-msgstr "Benvenuti su %n"
 
 #. Translators, don't translate the 'y' and 'n'
 #: ../daemon/misc.c:592
@@ -1843,8 +1843,8 @@ msgstr ""
 "console.\n"
 "\n"
 "È possibile eseguire una ricerca per nuovi host facendo clic su «Aggiorna». "
-"Dopo aver selezionato un host fare clic su «Connetti» per aprire una "
-"sessione su quel computer."
+"Dopo aver selezionato un host fare clic su «Connetti» per aprire una sessione "
+"su quel computer."
 
 #: ../gui/gdmchooser.c:1905
 msgid "Socket for xdm communication"
@@ -2360,12 +2360,12 @@ msgstr "A-M|Danese"
 #. Note translate the A-M to the A-M you used in the group label
 #: ../gui/gdmlanguages.c:125
 msgid "A-M|Dutch"
-msgstr "A-M|Olandese"
+msgstr "N-Z|Olandese"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: ../gui/gdmlanguages.c:127
 msgid "A-M|Dutch (Belgium)"
-msgstr "A-M|Olandese (Belgio)"
+msgstr "N-Z|Olandese (Belgio)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: ../gui/gdmlanguages.c:129
@@ -2500,7 +2500,7 @@ msgstr "A-M|Hindi"
 #. Note translate the A-M to the A-M you used in the group label
 #: ../gui/gdmlanguages.c:183
 msgid "A-M|Hungarian"
-msgstr "A-M|Ungherese"
+msgstr "N-Z|Ungherese"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: ../gui/gdmlanguages.c:185
@@ -2873,8 +2873,7 @@ msgstr "Rendere «%s» la scelta predefinita per le sessioni future?"
 #, c-format
 msgid "You have chosen %s for this session, but your default setting is %s."
 msgstr ""
-"È stato scelto «%s» per questa sessione, ma l'impostazione predefinita è «%"
-"s»."
+"È stato scelto «%s» per questa sessione, ma l'impostazione predefinita è «%s»."
 
 #: ../gui/gdmlanguages.c:784 ../gui/gdmlogin.c:1508 ../gui/gdmlogin.c:1524
 #: ../gui/greeter/greeter.c:340 ../gui/greeter/greeter.c:357
@@ -3234,8 +3233,8 @@ msgid ""
 "Some of the users in the Include list (Users tab) now have uid lower than "
 "MinimalUID and will be removed."
 msgstr ""
-"Alcuni utenti nell'elenco «Includere» (scheda «Utenti») hanno un UID "
-"inferiore al valore minimo e saranno rimossi."
+"Alcuni utenti nell'elenco «Includere» (scheda «Utenti») hanno un UID inferiore "
+"al valore minimo e saranno rimossi."
 
 #: ../gui/gdmsetup.c:1203 ../gui/gdmsetup.c:1229 ../gui/gdmsetup.c:1388
 #: ../gui/gdmsetup.c:1792
@@ -3338,8 +3337,8 @@ msgid ""
 "Some of the users had uid lower than MinimalUID (Security tab) and could not "
 "be added."
 msgstr ""
-"Alcuni utenti hanno un «uid» minore di «UID minimo» (scheda «Sicurezza») e "
-"non possono essere aggiunti."
+"Alcuni utenti hanno un «uid» minore di «UID minimo» (scheda «Sicurezza») e non "
+"possono essere aggiunti."
 
 #. first get the file
 #: ../gui/gdmsetup.c:3591
@@ -3979,9 +3978,9 @@ msgid ""
 msgstr ""
 "Se un utente non ha un'immagine per il volto, GDM utilizza l'icona "
 "«stock_person» definita per il tema GTK+. Se questa immagine non è definita, "
-"verrà usata quella indicata in «Volto predefinito». L'immagine deve essere "
-"in un formato gdk-pixbuf supportato e il file deve essere leggibile "
-"dall'utente GDM."
+"verrà usata quella indicata in «Volto predefinito». L'immagine deve essere in "
+"un formato gdk-pixbuf supportato e il file deve essere leggibile dall'utente "
+"GDM."
 
 #: ../gui/gdmsetup.glade.h:72
 msgid ""
@@ -4453,10 +4452,10 @@ msgid ""
 "this is off then one of the actions will be available anywhere.  These "
 "actions include Shutdown, Restart, Custom, Configure, XDMCP chooser and such."
 msgstr ""
-"Abilita o disabilita il menù «Azioni» (in precedenza chiamato menù "
-"«Sistema»). Se è disattivato sarà comunque disponibile una delle azioni. "
-"Queste azioni includono Spegnimento, Riavvio, Personalizzata, Configura, "
-"Selettore XDMMCP e così via."
+"Abilita o disabilita il menù «Azioni» (in precedenza chiamato menù «Sistema»). "
+"Se è disattivato sarà comunque disponibile una delle azioni. Queste azioni "
+"includono Spegnimento, Riavvio, Personalizzata, Configura, Selettore XDMMCP "
+"e così via."
 
 #: ../gui/gdmsetup.glade.h:165
 msgid "U_ser:"
