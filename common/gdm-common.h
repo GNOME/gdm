@@ -30,6 +30,7 @@ G_BEGIN_DECLS
 gboolean       gdm_is_version_unstable            (void);
 void           gdm_set_fatal_warnings_if_unstable (void);
 
+int            gdm_wait_on_pid           (int pid);
 int            gdm_signal_pid            (int pid,
                                           int signal);
 

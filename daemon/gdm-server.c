@@ -678,32 +678,13 @@ gdm_server_start (GdmServer *server)
         return res;
 }
 
-static int
-wait_on_child (int pid)
-{
-        int status;
-
- wait_again:
-        if (waitpid (pid, &status, 0) < 0) {
-                if (errno == EINTR) {
-                        goto wait_again;
-                } else if (errno == ECHILD) {
-                        ; /* do nothing, child already reaped */
-                } else {
-                        g_debug ("GdmServer: waitpid () should not fail");
-                }
-        }
-
-        return status;
-}
-
 static void
 server_died (GdmServer *server)
 {
         int exit_status;
 
         g_debug ("GdmServer: Waiting on process %d", server->priv->pid);
-        exit_status = wait_on_child (server->priv->pid);
+        exit_status = gdm_wait_on_pid (server->priv->pid);
 
         if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
                 g_debug ("GdmServer: Wait on child process failed");
@@ -726,6 +707,8 @@ server_died (GdmServer *server)
 gboolean
 gdm_server_stop (GdmServer *server)
 {
+        int res;
+
         if (server->priv->pid <= 1) {
                 return TRUE;
         }
@@ -738,8 +721,11 @@ gdm_server_stop (GdmServer *server)
 
         g_debug ("GdmServer: Stopping server");
 
-        gdm_signal_pid (server->priv->pid, SIGTERM);
-        server_died (server);
+        res = gdm_signal_pid (server->priv->pid, SIGTERM);
+        if (res < 0) {
+        } else {
+                server_died (server);
+        }
 
         return TRUE;
 }

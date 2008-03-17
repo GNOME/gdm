@@ -66,32 +66,13 @@ static void     gdm_remote_login_window_finalize     (GObject                   
 
 G_DEFINE_TYPE (GdmRemoteLoginWindow, gdm_remote_login_window, GTK_TYPE_WINDOW)
 
-static int
-wait_on_child (int pid)
-{
-        int status;
-
- wait_again:
-        if (waitpid (pid, &status, 0) < 0) {
-                if (errno == EINTR) {
-                        goto wait_again;
-                } else if (errno == ECHILD) {
-                        ; /* do nothing, child already reaped */
-                } else {
-                        g_debug ("GdmRemoteLoginWindow: waitpid () should not fail");
-                }
-        }
-
-        return status;
-}
-
 static void
 xserver_died (GdmRemoteLoginWindow *login_window)
 {
         int exit_status;
 
         g_debug ("GdmRemoteLoginWindow: Waiting on process %d", login_window->priv->xserver_pid);
-        exit_status = wait_on_child (login_window->priv->xserver_pid);
+        exit_status = gdm_wait_on_pid (login_window->priv->xserver_pid);
 
         if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
                 g_debug ("GdmRemoteLoginWindow: Wait on child process failed");

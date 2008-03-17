@@ -630,6 +630,8 @@ main (int    argc,
 
         g_main_loop_run (main_loop);
 
+        g_debug ("GDM finished, cleaning up...");
+
         if (manager != NULL) {
                 g_object_unref (manager);
         }
@@ -641,6 +643,8 @@ main (int    argc,
         if (signal_handler != NULL) {
                 g_object_unref (signal_handler);
         }
+
+        gdm_settings_direct_shutdown ();
 
         g_main_loop_unref (main_loop);
 

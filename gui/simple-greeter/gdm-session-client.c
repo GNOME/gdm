@@ -162,32 +162,13 @@ gdm_session_client_start (GdmSessionClient *client,
         return ret;
 }
 
-static int
-wait_on_child (int pid)
-{
-        int status;
-
- wait_again:
-        if (waitpid (pid, &status, 0) < 0) {
-                if (errno == EINTR) {
-                        goto wait_again;
-                } else if (errno == ECHILD) {
-                        ; /* do nothing, child already reaped */
-                } else {
-                        g_debug ("GdmSessionClient: waitpid () should not fail");
-                }
-        }
-
-        return status;
-}
-
 static void
 client_died (GdmSessionClient *client)
 {
         int exit_status;
 
         g_debug ("GdmSessionClient: Waiting on process %d", client->priv->pid);
-        exit_status = wait_on_child (client->priv->pid);
+        exit_status = gdm_wait_on_pid (client->priv->pid);
 
         if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
                 g_debug ("GdmSessionClient: Wait on child process failed");
@@ -214,8 +195,14 @@ gdm_session_client_stop (GdmSessionClient *client)
 
         g_debug ("GdmSessionClient: Stopping client: %s", client->priv->name);
         if (client->priv->pid > 0) {
-                gdm_signal_pid (client->priv->pid, SIGTERM);
-                client_died (client);
+                int res;
+
+                res = gdm_signal_pid (client->priv->pid, SIGTERM);
+                if (res < 0) {
+                        g_warning ("Unable to kill session client process %d", client->priv->pid);
+                } else {
+                        client_died (client);
+                }
         }
 }
 

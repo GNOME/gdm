@@ -1,5 +1,30 @@
 2008-03-17  William Jon McCann  <jmccann@redhat.com>
 
+	* common/gdm-common.c: (gdm_wait_on_pid), (gdm_signal_pid),
+	(_read_bytes), (gdm_generate_random_bytes):
+	* common/gdm-common.h:
+	* common/gdm-settings-desktop-backend.c: (parse_key_string),
+	(gdm_settings_desktop_backend_get_value),
+	(gdm_settings_desktop_backend_finalize):
+	* common/gdm-settings-utils.c: (gdm_settings_parse_schemas):
+	* daemon/gdm-server.c: (server_died), (gdm_server_stop):
+	* daemon/gdm-session-worker-job.c: (session_worker_job_died),
+	(gdm_session_worker_job_stop):
+	* daemon/gdm-slave-proxy.c: (child_watch), (kill_slave),
+	(gdm_slave_proxy_stop), (gdm_slave_proxy_dispose),
+	(gdm_slave_proxy_finalize):
+	* daemon/gdm-welcome-session.c: (stop_dbus_daemon),
+	(welcome_session_died), (gdm_welcome_session_stop):
+	* daemon/main.c: (main):
+	* gui/simple-greeter/gdm-remote-login-window.c: (xserver_died):
+	* gui/simple-greeter/gdm-session-client.c: (client_died),
+	(gdm_session_client_stop):
+	Move wait_on_child to common.  Always check return value of
+	gdm_signal_pid.  Fix a number of small leaks.  Make sure
+	to signal the slaves when exiting.
+
+2008-03-17  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-login-window.c:
 	(gdm_greeter_login_window_init):
 	* gui/simple-greeter/gdm-greeter-panel.c: (gdm_greeter_panel_init):

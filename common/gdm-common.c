@@ -64,13 +64,43 @@ gdm_set_fatal_warnings_if_unstable (void)
 }
 
 int
+gdm_wait_on_pid (int pid)
+{
+        int status;
+
+ wait_again:
+        errno = 0;
+        if (waitpid (pid, &status, 0) < 0) {
+                if (errno == EINTR) {
+                        goto wait_again;
+                } else if (errno == ECHILD) {
+                        ; /* do nothing, child already reaped */
+                } else {
+                        g_debug ("GdmCommon: waitpid () should not fail");
+                }
+        }
+
+        g_debug ("GdmCommon: process (pid:%d) done (%s:%d)",
+                 (int) pid,
+                 WIFEXITED (status) ? "status"
+                 : WIFSIGNALED (status) ? "signal"
+                 : "unknown",
+                 WIFEXITED (status) ? WEXITSTATUS (status)
+                 : WIFSIGNALED (status) ? WTERMSIG (status)
+                 : -1);
+
+        return status;
+}
+
+int
 gdm_signal_pid (int pid,
                 int signal)
 {
         int status = -1;
 
         /* perhaps block sigchld */
-        g_debug ("sending signal %d to process %d", signal, pid);
+        g_debug ("GdmCommon: sending signal %d to process %d", signal, pid);
+        errno = 0;
         status = kill (pid, signal);
 
         if (status < 0) {
@@ -324,6 +354,7 @@ _read_bytes (int      fd,
         do {
                 size_t bytes_read = 0;
 
+                errno = 0;
                 bytes_read = read (fd, ((guchar *) bytes) + total_bytes_read,
                                    bytes_left_to_read);
 
@@ -377,6 +408,7 @@ gdm_generate_random_bytes (gsize    size,
          * than the passed in size.
          */
 
+        errno = 0;
         fd = open ("/dev/urandom", O_RDONLY);
 
         if (fd < 0) {

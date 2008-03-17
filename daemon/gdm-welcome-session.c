@@ -330,10 +330,16 @@ get_welcome_environment (GdmWelcomeSession *welcome_session)
 static gboolean
 stop_dbus_daemon (GdmWelcomeSession *welcome_session)
 {
+        int res;
+
         if (welcome_session->priv->dbus_pid > 0) {
                 g_debug ("GdmWelcomeSession: Stopping D-Bus daemon");
-                gdm_signal_pid (-1 * welcome_session->priv->dbus_pid, SIGTERM);
-                welcome_session->priv->dbus_pid = 0;
+                res = gdm_signal_pid (-1 * welcome_session->priv->dbus_pid, SIGTERM);
+                if (res < 0) {
+                        g_warning ("Unable to kill D-Bus daemon");
+                } else {
+                        welcome_session->priv->dbus_pid = 0;
+                }
         }
         return TRUE;
 }
@@ -741,32 +747,13 @@ gdm_welcome_session_start (GdmWelcomeSession *welcome_session)
         return res;
 }
 
-static int
-wait_on_child (int pid)
-{
-        int status;
-
- wait_again:
-        if (waitpid (pid, &status, 0) < 0) {
-                if (errno == EINTR) {
-                        goto wait_again;
-                } else if (errno == ECHILD) {
-                        ; /* do nothing, child already reaped */
-                } else {
-                        g_debug ("GdmWelcomeSession: waitpid () should not fail");
-                }
-        }
-
-        return status;
-}
-
 static void
 welcome_session_died (GdmWelcomeSession *welcome_session)
 {
         int exit_status;
 
         g_debug ("GdmWelcomeSession: Waiting on process %d", welcome_session->priv->pid);
-        exit_status = wait_on_child (welcome_session->priv->pid);
+        exit_status = gdm_wait_on_pid (welcome_session->priv->pid);
 
         if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
                 g_debug ("GdmWelcomeSession: Wait on child process failed");
@@ -783,6 +770,7 @@ welcome_session_died (GdmWelcomeSession *welcome_session)
 gboolean
 gdm_welcome_session_stop (GdmWelcomeSession *welcome_session)
 {
+        int res;
 
         if (welcome_session->priv->pid <= 1) {
                 return TRUE;
@@ -796,8 +784,12 @@ gdm_welcome_session_stop (GdmWelcomeSession *welcome_session)
 
         g_debug ("GdmWelcomeSession: Stopping welcome_session");
 
-        gdm_signal_pid (-1 * welcome_session->priv->pid, SIGTERM);
-        welcome_session_died (welcome_session);
+        res = gdm_signal_pid (-1 * welcome_session->priv->pid, SIGTERM);
+        if (res < 0) {
+                g_warning ("Unable to kill welcome session process");
+        } else {
+                welcome_session_died (welcome_session);
+        }
 
         if (welcome_session->priv->ckc != NULL) {
                 close_welcome_session (welcome_session);

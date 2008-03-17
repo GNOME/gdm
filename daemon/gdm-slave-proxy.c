@@ -82,6 +82,7 @@ child_watch (GPid           pid,
 
         g_spawn_close_pid (slave->priv->pid);
         slave->priv->pid = -1;
+        slave->priv->child_watch_id = 0;
 
         if (WIFEXITED (status)) {
                 int code = WEXITSTATUS (status);
@@ -147,11 +148,21 @@ spawn_slave (GdmSlaveProxy *slave)
 static void
 kill_slave (GdmSlaveProxy *slave)
 {
+        int exit_status;
+        int res;
+
         if (slave->priv->pid <= 1) {
                 return;
         }
 
-        gdm_signal_pid (slave->priv->pid, SIGTERM);
+        res = gdm_signal_pid (slave->priv->pid, SIGTERM);
+        if (res < 0) {
+                g_warning ("Unable to kill slave process");
+        } else {
+                exit_status = gdm_wait_on_pid (slave->priv->pid);
+                g_spawn_close_pid (slave->priv->pid);
+                slave->priv->pid = 0;
+        }
 }
 
 gboolean
@@ -167,11 +178,12 @@ gdm_slave_proxy_stop (GdmSlaveProxy *slave)
 {
         g_debug ("GdmSlaveProxy: Killing slave");
 
-        kill_slave (slave);
-
         if (slave->priv->child_watch_id > 0) {
                 g_source_remove (slave->priv->child_watch_id);
+                slave->priv->child_watch_id = 0;
         }
+
+        kill_slave (slave);
 
         return TRUE;
 }
@@ -232,10 +244,7 @@ gdm_slave_proxy_dispose (GObject *object)
         slave = GDM_SLAVE_PROXY (object);
 
         g_debug ("GdmSlaveProxy: Disposing slave proxy");
-        if (slave->priv->child_watch_id > 0) {
-                g_source_remove (slave->priv->child_watch_id);
-                slave->priv->child_watch_id = 0;
-        }
+        gdm_slave_proxy_stop (slave);
 
         G_OBJECT_CLASS (gdm_slave_proxy_parent_class)->dispose (object);
 }
@@ -304,6 +313,8 @@ gdm_slave_proxy_finalize (GObject *object)
         slave = GDM_SLAVE_PROXY (object);
 
         g_return_if_fail (slave->priv != NULL);
+
+        g_free (slave->priv->command);
 
         G_OBJECT_CLASS (gdm_slave_proxy_parent_class)->finalize (object);
 }

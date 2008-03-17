@@ -77,6 +77,19 @@ parse_key_string (const char *keystring,
         g = k = v = l = NULL;
         split1 = split2 = NULL;
 
+        if (group != NULL) {
+                *group = g;
+        }
+        if (key != NULL) {
+                *key = k;
+        }
+        if (locale != NULL) {
+                *locale = l;
+        }
+        if (value != NULL) {
+                *value = v;
+        }
+
         /*g_debug ("Attempting to parse key string: %s", keystring);*/
 
         split1 = g_strsplit (keystring, "/", 2);
@@ -108,7 +121,7 @@ parse_key_string (const char *keystring,
         }
 
         ret = TRUE;
- out:
+
         if (group != NULL) {
                 *group = g_strdup (g);
         }
@@ -121,6 +134,7 @@ parse_key_string (const char *keystring,
         if (value != NULL) {
                 *value = g_strdup (v);
         }
+ out:
 
         g_strfreev (split1);
         g_strfreev (split2);
@@ -134,23 +148,27 @@ gdm_settings_desktop_backend_get_value (GdmSettingsBackend *backend,
                                         char              **value,
                                         GError            **error)
 {
-        GError *local_error;
-        char   *val;
-        char   *g;
-        char   *k;
-        char   *l;
+        GError  *local_error;
+        char    *val;
+        char    *g;
+        char    *k;
+        char    *l;
+        gboolean ret;
 
         g_return_val_if_fail (GDM_IS_SETTINGS_BACKEND (backend), FALSE);
         g_return_val_if_fail (key != NULL, FALSE);
+
+        ret = FALSE;
 
         if (value != NULL) {
                 *value = NULL;
         }
 
+        val = g = k = l = NULL;
         /*GDM_SETTINGS_BACKEND_CLASS (gdm_settings_desktop_backend_parent_class)->get_value (display);*/
         if (! parse_key_string (key, &g, &k, &l, NULL)) {
                 g_set_error (error, GDM_SETTINGS_BACKEND_ERROR, GDM_SETTINGS_BACKEND_ERROR_KEY_NOT_FOUND, "Key not found");
-                return FALSE;
+                goto out;
         }
 
         /*g_debug ("Getting key: %s %s %s", g, k, l);*/
@@ -162,16 +180,20 @@ gdm_settings_desktop_backend_get_value (GdmSettingsBackend *backend,
         if (local_error != NULL) {
                 g_error_free (local_error);
                 g_set_error (error, GDM_SETTINGS_BACKEND_ERROR, GDM_SETTINGS_BACKEND_ERROR_KEY_NOT_FOUND, "Key not found");
-                return FALSE;
+                goto out;
         }
 
         if (value != NULL) {
                 *value = g_strdup (val);
         }
-
+        ret = TRUE;
+ out:
         g_free (val);
+        g_free (g);
+        g_free (k);
+        g_free (l);
 
-        return TRUE;
+        return ret;
 }
 
 static void
@@ -331,6 +353,7 @@ gdm_settings_desktop_backend_finalize (GObject *object)
 
         save_settings (backend);
         g_key_file_free (backend->priv->key_file);
+        g_free (backend->priv->filename);
 
         G_OBJECT_CLASS (gdm_settings_desktop_backend_parent_class)->finalize (object);
 }
