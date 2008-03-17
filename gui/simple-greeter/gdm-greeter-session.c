@@ -47,10 +47,13 @@
 #define GSD_DBUS_PATH      "/org/gnome/SettingsDaemon"
 #define GSD_DBUS_INTERFACE "org.gnome.SettingsDaemon"
 
-#define KEY_GDM_A11Y_DIR            "/apps/gdm/simple-greeter/accessibility"
+#define KEY_GDM_DIR                 "/apps/gdm/simple-greeter"
+#define KEY_GDM_A11Y_DIR             KEY_GDM_DIR "/accessibility"
 #define KEY_SCREEN_KEYBOARD_ENABLED  KEY_GDM_A11Y_DIR "/screen_keyboard_enabled"
 #define KEY_SCREEN_MAGNIFIER_ENABLED KEY_GDM_A11Y_DIR "/screen_magnifier_enabled"
 #define KEY_SCREEN_READER_ENABLED    KEY_GDM_A11Y_DIR "/screen_reader_enabled"
+
+#define KEY_WM_USE_COMPIZ            KEY_GDM_DIR "/wm_use_compiz"
 
 struct GdmGreeterSessionPrivate
 {
@@ -401,9 +404,19 @@ launch_metacity (GdmGreeterSession *session)
 static void
 start_window_manager (GdmGreeterSession *session)
 {
-        if (! launch_metacity (session)) {
-                launch_compiz (session);
+        gboolean     use_compiz;
+        GConfClient *client;
+
+        client = gconf_client_get_default ();
+        use_compiz = gconf_client_get_bool (client, KEY_WM_USE_COMPIZ, NULL);
+        g_object_unref (client);
+        if (use_compiz) {
+                if (launch_compiz (session)) {
+                        return;
+                }
         }
+
+        launch_metacity (session);
 }
 
 static void
