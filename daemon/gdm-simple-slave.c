@@ -97,8 +97,6 @@ on_session_started (GdmSession       *session,
                     int               pid,
                     GdmSimpleSlave   *slave)
 {
-        int i;
-
         g_debug ("GdmSimpleSlave: session started %d", pid);
 
         /* FIXME: should we do something here? */
@@ -221,7 +219,8 @@ gdm_simple_slave_accredit_when_ready (GdmSimpleSlave *slave)
 
                 ssid = gdm_slave_get_primary_session_id_for_user (slave, username);
                 if (ssid != NULL && ssid [0] != '\0') {
-                        cred_flag = GDM_SESSION_CRED_REFRESH;
+                        /* FIXME: we don't yet support refresh */
+                        cred_flag = GDM_SESSION_CRED_ESTABLISH;
                 } else {
                         cred_flag = GDM_SESSION_CRED_ESTABLISH;
                 }
