@@ -1522,6 +1522,65 @@ on_button_release (GtkTreeView      *items_view,
         return FALSE;
 }
 
+static gboolean
+search_equal_func (GtkTreeModel     *model,
+                   int               column,
+                   const char       *key,
+                   GtkTreeIter      *iter,
+                   GdmChooserWidget *widget)
+{
+        char       *id;
+        char       *name;
+        char       *key_folded;
+        gboolean    ret;
+
+        if (key == NULL) {
+                return FALSE;
+        }
+
+        ret = TRUE;
+        id = NULL;
+        name = NULL;
+
+        key_folded = g_utf8_casefold (key, -1);
+
+        gtk_tree_model_get (model,
+                            iter,
+                            CHOOSER_ID_COLUMN, &id,
+                            CHOOSER_NAME_COLUMN, &name,
+                            -1);
+        if (name != NULL) {
+                char *name_folded;
+
+                name_folded = g_utf8_casefold (name, -1);
+                ret = !g_str_has_prefix (name_folded, key_folded);
+                g_free (name_folded);
+
+                if (!ret) {
+                        goto out;
+                }
+        }
+
+        if (id != NULL) {
+                char *id_folded;
+
+
+                id_folded = g_utf8_casefold (id, -1);
+                ret = !g_str_has_prefix (id_folded, key_folded);
+                g_free (id_folded);
+
+                if (!ret) {
+                        goto out;
+                }
+        }
+ out:
+        g_free (id);
+        g_free (name);
+        g_free (key_folded);
+
+        return ret;
+}
+
 static void
 gdm_chooser_widget_init (GdmChooserWidget *widget)
 {
@@ -1552,6 +1611,11 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
                           "row-activated",
                           G_CALLBACK (on_row_activated),
                           widget);
+
+        gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (widget->priv->items_view),
+                                             (GtkTreeViewSearchEqualFunc)search_equal_func,
+                                             widget,
+                                             NULL);
 
         /* hack to make single-click activate work
          */
