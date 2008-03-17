@@ -686,6 +686,7 @@ gdm_greeter_login_window_problem (GdmGreeterLoginWindow *login_window,
         g_debug ("GdmGreeterLoginWindow: problem: %s", text);
 
         set_message (GDM_GREETER_LOGIN_WINDOW (login_window), text);
+        gdk_window_beep (GTK_WIDGET (login_window)->window);
 
         return TRUE;
 }
