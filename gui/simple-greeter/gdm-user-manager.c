@@ -30,6 +30,10 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#ifdef HAVE_PATHS_H
+#include <paths.h>
+#endif /* HAVE_PATHS_H */
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -57,6 +61,17 @@
 #define DEFAULT_ALLOW_ROOT      TRUE
 #define DEFAULT_MAX_ICON_SIZE   128
 #define DEFAULT_USER_MAX_FILE   65536
+
+#ifdef __sun
+#define DEFAULT_MINIMAL_UID     100
+#else
+#define DEFAULT_MINIMAL_UID     500
+#endif
+
+#ifndef _PATH_SHELLS
+#define _PATH_SHELLS    "/etc/shells"
+#endif
+#define PATH_PASSWD     "/etc/passwd"
 
 #define DEFAULT_GLOBAL_FACE_DIR DATADIR "/faces"
 #define DEFAULT_USER_ICON       "stock_person"
@@ -86,9 +101,13 @@ struct GdmUserManagerPrivate
         GHashTable            *users;
         GHashTable            *sessions;
         GHashTable            *exclusions;
+        GHashTable            *shells;
         DBusGConnection       *connection;
         DBusGProxy            *seat_proxy;
         char                  *seat_id;
+
+        GFileMonitor          *passwd_monitor;
+        GFileMonitor          *shells_monitor;
 
         guint                  reload_id;
         guint                  ck_history_id;
@@ -484,7 +503,7 @@ get_seat_id_for_session (DBusGConnection *connection,
                                            session_id,
                                            CK_SESSION_INTERFACE);
         if (proxy == NULL) {
-                g_warning ("Failed to connect to the ConsoleKit seat object");
+                g_warning ("Failed to connect to the ConsoleKit session object");
                 goto out;
         }
 
@@ -524,7 +543,7 @@ get_x11_display_for_session (DBusGConnection *connection,
                                            session_id,
                                            CK_SESSION_INTERFACE);
         if (proxy == NULL) {
-                g_warning ("Failed to connect to the ConsoleKit seat object");
+                g_warning ("Failed to connect to the ConsoleKit session object");
                 goto out;
         }
 
@@ -1174,7 +1193,7 @@ ck_history_watch (GIOChannel     *source,
 }
 
 static void
-reload_users (GdmUserManager *manager)
+reload_ck_history (GdmUserManager *manager)
 {
         char       *command;
         const char *seat_id;
@@ -1240,6 +1259,114 @@ reload_users (GdmUserManager *manager)
         g_free (command);
 }
 
+static void
+reload_passwd (GdmUserManager *manager)
+{
+        struct passwd *pwent;
+        GSList        *old_users;
+        GSList        *new_users;
+        GSList        *list;
+        FILE          *fp;
+
+        old_users = NULL;
+        new_users = NULL;
+
+        errno = 0;
+        fp = fopen (PATH_PASSWD, "r");
+        if (fp == NULL) {
+                g_warning ("Unable to open %s: %s", PATH_PASSWD, g_strerror (errno));
+                goto out;
+        }
+
+        g_hash_table_foreach (manager->priv->users, listify_hash_values_hfunc, &old_users);
+        g_slist_foreach (old_users, (GFunc) g_object_ref, NULL);
+
+        /* Make sure we keep users who are logged in no matter what. */
+        for (list = old_users; list; list = list->next) {
+                if (gdm_user_get_num_sessions (list->data) > 0) {
+                        g_object_freeze_notify (G_OBJECT (list->data));
+                        new_users = g_slist_prepend (new_users, g_object_ref (list->data));
+                }
+        }
+
+        for (pwent = fgetpwent (fp); pwent != NULL; pwent = fgetpwent (fp)) {
+                GdmUser *user;
+
+                user = NULL;
+
+                /* Skip users below MinimalUID... */
+                if (pwent->pw_uid < DEFAULT_MINIMAL_UID) {
+                        continue;
+                }
+
+                /* ...And users w/ invalid shells... */
+                if (!pwent->pw_shell ||
+                    !g_hash_table_lookup (manager->priv->shells, pwent->pw_shell)) {
+                        continue;
+                }
+
+                /* ...And explicitly excluded users */
+                if (g_hash_table_lookup (manager->priv->exclusions, pwent->pw_name)) {
+                        continue;
+                }
+
+                user = g_hash_table_lookup (manager->priv->users, pwent->pw_name);
+
+                /* Update users already in the *new* list */
+                if (g_slist_find (new_users, user)) {
+                        _gdm_user_update (user, pwent);
+                        continue;
+                }
+
+                if (user == NULL) {
+                        user = create_user (manager);
+                } else {
+                        g_object_ref (user);
+                }
+
+                /* Freeze & update users not already in the new list */
+                g_object_freeze_notify (G_OBJECT (user));
+                _gdm_user_update (user, pwent);
+
+                new_users = g_slist_prepend (new_users, user);
+        }
+
+        /* Go through and handle added users */
+        for (list = new_users; list; list = list->next) {
+                if (! g_slist_find (old_users, list->data)) {
+                        add_user (manager, list->data);
+                }
+        }
+
+        /* Go through and handle removed users */
+        for (list = old_users; list; list = list->next) {
+                if (! g_slist_find (new_users, list->data)) {
+                        g_signal_emit (manager, signals[USER_REMOVED], 0, list->data);
+                        g_hash_table_remove (manager->priv->users,
+                                             gdm_user_get_user_name (list->data));
+                }
+        }
+
+ out:
+        /* Cleanup */
+
+        fclose (fp);
+
+        g_slist_foreach (new_users, (GFunc) g_object_thaw_notify, NULL);
+        g_slist_foreach (new_users, (GFunc) g_object_unref, NULL);
+        g_slist_free (new_users);
+
+        g_slist_foreach (old_users, (GFunc) g_object_unref, NULL);
+        g_slist_free (old_users);
+}
+
+static void
+reload_users (GdmUserManager *manager)
+{
+        reload_ck_history (manager);
+        reload_passwd (manager);
+}
+
 static gboolean
 reload_users_timeout (GdmUserManager *manager)
 {
@@ -1256,6 +1383,54 @@ queue_reload_users (GdmUserManager *manager)
         }
 
         manager->priv->reload_id = g_idle_add ((GSourceFunc)reload_users_timeout, manager);
+}
+
+static void
+reload_shells (GdmUserManager *manager)
+{
+        char *shell;
+
+        setusershell ();
+
+        g_hash_table_remove_all (manager->priv->shells);
+        for (shell = getusershell (); shell; shell = getusershell ()) {
+                g_hash_table_insert (manager->priv->shells,
+                                     g_strdup (shell),
+                                     GUINT_TO_POINTER (TRUE));
+        }
+
+        endusershell ();
+}
+
+static void
+on_shells_monitor_changed (GFileMonitor     *monitor,
+                           GFile            *file,
+                           GFile            *other_file,
+                           GFileMonitorEvent event_type,
+                           GdmUserManager   *manager)
+{
+        if (event_type != G_FILE_MONITOR_EVENT_CHANGED &&
+            event_type != G_FILE_MONITOR_EVENT_CREATED) {
+                return;
+        }
+
+        reload_shells (manager);
+        reload_passwd (manager);
+}
+
+static void
+on_passwd_monitor_changed (GFileMonitor     *monitor,
+                           GFile            *file,
+                           GFile            *other_file,
+                           GFileMonitorEvent event_type,
+                           GdmUserManager   *manager)
+{
+        if (event_type != G_FILE_MONITOR_EVENT_CHANGED &&
+            event_type != G_FILE_MONITOR_EVENT_CREATED) {
+                return;
+        }
+
+        reload_passwd (manager);
 }
 
 static void
@@ -1305,6 +1480,8 @@ static void
 gdm_user_manager_init (GdmUserManager *manager)
 {
         int            i;
+        GFile         *file;
+        GError        *error;
         const char    *exclude_default[] = DEFAULT_EXCLUDE;
 
         manager->priv = GDM_USER_MANAGER_GET_PRIVATE (manager);
@@ -1326,10 +1503,50 @@ gdm_user_manager_init (GdmUserManager *manager)
                                      GUINT_TO_POINTER (TRUE));
         }
 
+        /* /etc/shells */
+        manager->priv->shells = g_hash_table_new_full (g_str_hash,
+                                                       g_str_equal,
+                                                       g_free,
+                                                       NULL);
+        reload_shells (manager);
+        file = g_file_new_for_path (_PATH_SHELLS);
+        error = NULL;
+        manager->priv->shells_monitor = g_file_monitor_file (file,
+                                                             G_FILE_MONITOR_NONE,
+                                                             NULL,
+                                                             &error);
+        if (manager->priv->shells_monitor != NULL) {
+                g_signal_connect (manager->priv->shells_monitor,
+                                  "changed",
+                                  G_CALLBACK (on_shells_monitor_changed),
+                                  manager);
+        } else {
+                g_warning ("Unable to monitor %s: %s", _PATH_SHELLS, error->message);
+                g_error_free (error);
+        }
+        g_object_unref (file);
+
+        /* /etc/passwd */
         manager->priv->users = g_hash_table_new_full (g_str_hash,
                                                       g_str_equal,
                                                       g_free,
                                                       (GDestroyNotify) g_object_run_dispose);
+        file = g_file_new_for_path (PATH_PASSWD);
+        manager->priv->passwd_monitor = g_file_monitor_file (file,
+                                                             G_FILE_MONITOR_NONE,
+                                                             NULL,
+                                                             &error);
+        if (manager->priv->shells_monitor != NULL) {
+                g_signal_connect (manager->priv->passwd_monitor,
+                                  "changed",
+                                  G_CALLBACK (on_passwd_monitor_changed),
+                                  manager);
+        } else {
+                g_warning ("Unable to monitor %s: %s", PATH_PASSWD, error->message);
+                g_error_free (error);
+        }
+        g_object_unref (file);
+
 
         get_seat_proxy (manager);
 
@@ -1366,7 +1583,11 @@ gdm_user_manager_finalize (GObject *object)
 
         g_hash_table_destroy (manager->priv->sessions);
 
+        g_file_monitor_cancel (manager->priv->passwd_monitor);
         g_hash_table_destroy (manager->priv->users);
+
+        g_file_monitor_cancel (manager->priv->shells_monitor);
+        g_hash_table_destroy (manager->priv->shells);
 
         g_free (manager->priv->seat_id);
 
