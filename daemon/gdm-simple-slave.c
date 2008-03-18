@@ -217,7 +217,7 @@ gdm_simple_slave_accredit_when_ready (GdmSimpleSlave *slave)
 
                 username = gdm_session_direct_get_username (slave->priv->session);
 
-                ssid = gdm_slave_get_primary_session_id_for_user (slave, username);
+                ssid = gdm_slave_get_primary_session_id_for_user (GDM_SLAVE (slave), username);
                 if (ssid != NULL && ssid [0] != '\0') {
                         /* FIXME: we don't yet support refresh */
                         cred_flag = GDM_SESSION_CRED_ESTABLISH;
@@ -287,7 +287,8 @@ start_session_timeout (GdmSimpleSlave *slave)
                         slave->priv->session = NULL;
                 }
 
-                queue_greeter_reset (slave);
+                gdm_slave_stopped (GDM_SLAVE (slave));
+
                 goto out;
         }
 
@@ -343,12 +344,15 @@ on_session_accreditation_failed (GdmSession     *session,
            accreditation fails */
         if (! migrated) {
                 gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable establish credentials"));
-        }
+        } else {
 
-        if (slave->priv->session != NULL) {
-                gdm_session_close (GDM_SESSION (slave->priv->session));
-                g_object_unref (slave->priv->session);
-                slave->priv->session = NULL;
+                if (slave->priv->session != NULL) {
+                        gdm_session_close (GDM_SESSION (slave->priv->session));
+                        g_object_unref (slave->priv->session);
+                        slave->priv->session = NULL;
+                }
+
+                gdm_slave_stopped (GDM_SLAVE (slave));
         }
 
         queue_greeter_reset (slave);

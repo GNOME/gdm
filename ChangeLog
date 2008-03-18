@@ -1,5 +1,13 @@
 2008-03-18  William Jon McCann  <jmccann@redhat.com>
 
+	* daemon/gdm-simple-slave.c:
+	(gdm_simple_slave_accredit_when_ready), (start_session_timeout),
+	(on_session_accreditation_failed):
+	Make sure to kill the simple slave after switching to an
+	existing session.
+
+2008-03-18  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/simple-greeter/gdm-user-manager.c: (get_seat_id_for_session),
 	(get_x11_display_for_session), (reload_ck_history),
 	(reload_passwd), (reload_users), (reload_shells),
