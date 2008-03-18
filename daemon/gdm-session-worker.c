@@ -2093,6 +2093,7 @@ on_start_program (GdmSessionWorker *worker,
 
                 if (worker->priv->arguments != NULL) {
                         g_strfreev (worker->priv->arguments);
+                        worker->priv->arguments = NULL;
                 }
 
                 parse_error = NULL;

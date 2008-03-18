@@ -1,5 +1,13 @@
 2008-03-17  William Jon McCann  <jmccann@redhat.com>
 
+	* daemon/gdm-session-worker.c: (on_start_program):
+	* daemon/gdm-simple-slave.c: (start_session_timeout),
+	(on_session_accreditation_failed), (on_greeter_cancel):
+	Close the session immediately after migration so there
+	are no races.
+
+2008-03-17  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/simple-greeter/gdm-language-chooser-widget.c:
 	(gdm_language_chooser_widget_add_language):
 	* gui/simple-greeter/gdm-language-option-widget.c:

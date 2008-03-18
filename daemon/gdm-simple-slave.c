@@ -281,6 +281,12 @@ start_session_timeout (GdmSimpleSlave *slave)
         migrated = try_migrate_session (slave);
         g_debug ("GdmSimpleSlave: migrated: %d", migrated);
         if (migrated) {
+                if (slave->priv->session != NULL) {
+                        gdm_session_close (GDM_SESSION (slave->priv->session));
+                        g_object_unref (slave->priv->session);
+                        slave->priv->session = NULL;
+                }
+
                 queue_greeter_reset (slave);
                 goto out;
         }
@@ -337,6 +343,12 @@ on_session_accreditation_failed (GdmSession     *session,
            accreditation fails */
         if (! migrated) {
                 gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable establish credentials"));
+        }
+
+        if (slave->priv->session != NULL) {
+                gdm_session_close (GDM_SESSION (slave->priv->session));
+                g_object_unref (slave->priv->session);
+                slave->priv->session = NULL;
         }
 
         queue_greeter_reset (slave);
@@ -690,6 +702,7 @@ on_greeter_cancel (GdmGreeterServer *greeter_server,
         if (slave->priv->session != NULL) {
                 gdm_session_close (GDM_SESSION (slave->priv->session));
                 g_object_unref (slave->priv->session);
+                slave->priv->session = NULL;
         }
 
         create_new_session (slave);
