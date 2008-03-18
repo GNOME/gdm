@@ -630,16 +630,19 @@ get_translated_language (const char *code,
                 const char  *translated_name;
                 char        *old_locale;
 
-                old_locale = g_strdup (setlocale (LC_MESSAGES, NULL));
-                setlocale (LC_MESSAGES, locale);
-                translated_name = dgettext ("iso_639", language);
+                if (locale != NULL) {
+                        old_locale = g_strdup (setlocale (LC_MESSAGES, NULL));
+                        setlocale (LC_MESSAGES, locale);
+                }
 
+                translated_name = dgettext ("iso_639", language);
                 name = get_first_item_in_semicolon_list (translated_name);
 
-                setlocale (LC_MESSAGES, old_locale);
-                g_free (old_locale);
-
-            }
+                if (locale != NULL) {
+                        setlocale (LC_MESSAGES, old_locale);
+                        g_free (old_locale);
+                }
+        }
 
         return name;
 }
@@ -676,13 +679,18 @@ get_translated_territory (const char *code,
                 const char *translated_territory;
                 char       *old_locale;
 
-                old_locale = g_strdup (setlocale (LC_MESSAGES, NULL));
-                setlocale (LC_MESSAGES, locale);
-                translated_territory = dgettext ("iso_3166", territory);
-                setlocale (LC_MESSAGES, old_locale);
-                g_free (old_locale);
+                if (locale != NULL) {
+                        old_locale = g_strdup (setlocale (LC_MESSAGES, NULL));
+                        setlocale (LC_MESSAGES, locale);
+                }
 
+                translated_territory = dgettext ("iso_3166", territory);
                 name = get_first_item_in_semicolon_list (translated_territory);
+
+                if (locale != NULL) {
+                        setlocale (LC_MESSAGES, old_locale);
+                        g_free (old_locale);
+                }
         }
 
         return name;
@@ -929,7 +937,8 @@ territories_init (void)
 }
 
 char *
-gdm_get_language_from_name (const char *name)
+gdm_get_language_from_name (const char *name,
+                            const char *locale)
 {
         char *full_language;
         char *language_code;
@@ -956,10 +965,10 @@ gdm_get_language_from_name (const char *name)
                 goto out;
         }
 
-        language = get_translated_language (language_code, name);
+        language = get_translated_language (language_code, locale);
 
         if (territory_code != NULL) {
-                territory = get_translated_territory (territory_code, name);
+                territory = get_translated_territory (territory_code, locale);
         } else {
                 territory = NULL;
         }

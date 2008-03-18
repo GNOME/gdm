@@ -144,15 +144,18 @@ gdm_language_option_widget_lookup_item (GdmRecentOptionWidget *widget,
                                         char                 **comment)
 {
         char *language;
+        char *readable_language;
 
-        language = gdm_get_language_from_name (locale);
+        language = gdm_get_language_from_name (locale, locale);
 
         if (language == NULL) {
                 return FALSE;
         }
 
+        readable_language = gdm_get_language_from_name (locale, NULL);
+
         *name = language;
-        *comment = g_strdup ("");
+        *comment = readable_language;
 
         return TRUE;
 }

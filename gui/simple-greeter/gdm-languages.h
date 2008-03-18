@@ -26,14 +26,15 @@
 
 G_BEGIN_DECLS
 
-char *                 gdm_get_language_from_name (const char *name);
-char **                gdm_get_all_language_names (void);
-void                   gdm_parse_language_name (const char *name,
-                                                char      **language_codep,
-                                                char      **territory_codep,
-                                                char      **codesetp,
-                                                char      **modifierp);
-char *                 gdm_normalize_language_name (const char *name);
+char *        gdm_get_language_from_name  (const char *name,
+                                           const char *locale);
+char **       gdm_get_all_language_names  (void);
+void          gdm_parse_language_name     (const char *name,
+                                           char      **language_codep,
+                                           char      **territory_codep,
+                                           char      **codesetp,
+                                           char      **modifierp);
+char *        gdm_normalize_language_name (const char *name);
 
 G_END_DECLS
 

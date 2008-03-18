@@ -117,21 +117,24 @@ gdm_language_chooser_widget_add_language (GdmLanguageChooserWidget *widget,
 {
         char *language;
         char *normalized_name;
+        char *readable_language;
 
         normalized_name = gdm_normalize_language_name (name);
-        language = gdm_get_language_from_name (normalized_name);
+        language = gdm_get_language_from_name (normalized_name, normalized_name);
+        readable_language = gdm_get_language_from_name (normalized_name, NULL);
 
         if (language != NULL) {
                 gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                              normalized_name,
                                              NULL,
                                              language,
-                                             "",
+                                             readable_language,
                                              0,
                                              FALSE,
                                              FALSE);
                 g_free (language);
         }
+        g_free (readable_language);
 
         g_free (normalized_name);
 }
