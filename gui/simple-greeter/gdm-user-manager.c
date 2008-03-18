@@ -38,6 +38,7 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <glib-object.h>
+#include <gio/gio.h>
 
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
