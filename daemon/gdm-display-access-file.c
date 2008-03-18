@@ -339,7 +339,7 @@ gdm_display_access_file_add_display (GdmDisplayAccessFile  *file,
                                      gsize                 *cookie_size,
                                      GError               **error)
 {
-        GError *add_error;
+        GError  *add_error;
         gboolean display_added;
 
         g_return_val_if_fail (file != NULL, FALSE);

@@ -154,7 +154,8 @@ static gboolean
 gdm_display_real_create_authority (GdmDisplay *display)
 {
         GdmDisplayAccessFile *access_file;
-        GError *error;
+        GError               *error;
+        gboolean              res;
 
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
         g_return_val_if_fail (display->priv->access_file == NULL, FALSE);
@@ -163,15 +164,20 @@ gdm_display_real_create_authority (GdmDisplay *display)
         access_file = _create_access_file_for_user (display, "gdm", &error);
 
         if (access_file == NULL) {
-            g_critical ("could not create display access file: %s", error->message);
-            g_error_free (error);
-            return FALSE;
+                g_critical ("could not create display access file: %s", error->message);
+                g_error_free (error);
+                return FALSE;
         }
 
-        if (!gdm_display_access_file_add_display (access_file, display,
-                                                  &display->priv->x11_cookie,
-                                                  &display->priv->x11_cookie_size,
-                                                  &error)) {
+        g_free (display->priv->x11_cookie);
+        display->priv->x11_cookie = NULL;
+        res = gdm_display_access_file_add_display (access_file,
+                                                   display,
+                                                   &display->priv->x11_cookie,
+                                                   &display->priv->x11_cookie_size,
+                                                   &error);
+
+        if (! res) {
 
                 g_critical ("could not add display to access file: %s", error->message);
                 g_error_free (error);
@@ -207,6 +213,7 @@ gdm_display_real_add_user_authorization (GdmDisplay *display,
 {
         GdmDisplayAccessFile *access_file;
         GError               *access_file_error;
+        gboolean              res;
 
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
         g_return_val_if_fail (display->priv->access_file != NULL, FALSE);
@@ -219,15 +226,16 @@ gdm_display_real_add_user_authorization (GdmDisplay *display,
                                                     &access_file_error);
 
         if (access_file == NULL) {
-            g_propagate_error (error, access_file_error);
-            return FALSE;
+                g_propagate_error (error, access_file_error);
+                return FALSE;
         }
 
-        if (!gdm_display_access_file_add_display_with_cookie (access_file,
-                                                              display,
-                                                              display->priv->x11_cookie,
-                                                              display->priv->x11_cookie_size,
-                                                              &access_file_error)) {
+        res = gdm_display_access_file_add_display_with_cookie (access_file,
+                                                               display,
+                                                               display->priv->x11_cookie,
+                                                               display->priv->x11_cookie_size,
+                                                               &access_file_error);
+        if (! res) {
                 g_debug ("GdmDisplay: Unable to add user authorization for %s: %s",
                          username,
                          access_file_error->message);
@@ -822,6 +830,7 @@ gdm_display_constructor (GType                  type,
                                                                                        n_construct_properties,
                                                                                        construct_properties));
 
+        g_free (display->priv->id);
         display->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Display%u", get_next_display_serial ());
 
         res = register_display (display);

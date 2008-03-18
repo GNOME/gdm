@@ -519,6 +519,9 @@ gdm_signal_handler_finalize (GObject *object)
         }
         g_hash_table_destroy (handler->priv->action_lookup);
 
+        close (signal_pipes [0]);
+        close (signal_pipes [1]);
+
         G_OBJECT_CLASS (gdm_signal_handler_parent_class)->finalize (object);
 }
 

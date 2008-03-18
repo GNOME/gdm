@@ -645,6 +645,7 @@ main (int    argc,
         }
 
         gdm_settings_direct_shutdown ();
+        gdm_log_shutdown ();
 
         g_main_loop_unref (main_loop);
 

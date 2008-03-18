@@ -1,5 +1,15 @@
 2008-03-17  William Jon McCann  <jmccann@redhat.com>
 
+	* common/gdm-signal-handler.c: (gdm_signal_handler_finalize):
+	* daemon/gdm-display.c: (gdm_display_real_create_authority),
+	(gdm_display_real_add_user_authorization),
+	(gdm_display_constructor):
+	* daemon/gdm-slave.c: (gdm_slave_finalize):
+	* daemon/main.c: (main):
+	Fix a few more mem and fd leaks.
+
+2008-03-17  William Jon McCann  <jmccann@redhat.com>
+
 	* common/gdm-common.c: (gdm_wait_on_pid), (gdm_signal_pid),
 	(_read_bytes), (gdm_generate_random_bytes):
 	* common/gdm-common.h:
