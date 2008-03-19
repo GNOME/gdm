@@ -24,6 +24,7 @@ gdm-safe-restart: gdm-safe-restart.in Makefile
 
 bin_PROGRAMS = \
 	gdmflexiserver		\
+	gdm-screenshot		\
 	$(NULL)
 
 sbin_SCRIPTS = 			\
@@ -37,6 +38,15 @@ gdmflexiserver_SOURCES =	\
 	$(NULL)
 
 gdmflexiserver_LDADD =		\
+	$(GTK_LIBS)		\
+	$(COMMON_LIBS)		\
+	$(NULL)
+
+gdm_screenshot_SOURCES =	\
+	gdm-screenshot.c	\
+	$(NULL)
+
+gdm_screenshot_LDADD =		\
 	$(GTK_LIBS)		\
 	$(COMMON_LIBS)		\
 	$(NULL)

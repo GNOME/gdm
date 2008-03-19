@@ -580,8 +580,9 @@ sort_menu (GdmAppletData *adata)
         n_items = 0;
         items = adata->items;
         while (items) {
-                if (GTK_WIDGET_VISIBLE (items->data))
+                if (GTK_WIDGET_VISIBLE (items->data)) {
                         n_items++;
+                }
 
                 items = items->next;
         }
@@ -595,10 +596,14 @@ sort_menu (GdmAppletData *adata)
         column = 0;
         count = 0;
         items = adata->items;
-        while (items) {
+        while (items != NULL) {
                 if (GTK_WIDGET_VISIBLE (items->data)) {
-                        gtk_menu_attach (GTK_MENU (adata->menu), items->data,
-                                         column, column + 1, row, row + 1);
+                        gtk_menu_attach (GTK_MENU (adata->menu),
+                                         items->data,
+                                         column,
+                                         column + 1,
+                                         row,
+                                         row + 1);
                         row++;
                         if (row > n_rows) {
                                 row = 0;
@@ -610,7 +615,8 @@ sort_menu (GdmAppletData *adata)
                          * have to set that explicitly.
                          */
                         gtk_menu_reorder_child (GTK_MENU (adata->menu),
-                                                items->data, count++);
+                                                items->data,
+                                                count++);
                 }
 
                 items = items->next;
