@@ -576,31 +576,6 @@ do_suspend (GdmGreeterLoginWindow *login_window)
 }
 
 static void
-do_cancel (GdmGreeterLoginWindow *login_window)
-{
-        gdm_chooser_widget_set_item_timer (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser),
-                                           GDM_USER_CHOOSER_USER_AUTO, 0);
-        login_window->priv->timed_login_enabled = FALSE;
-        gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), NULL);
-
-        if (login_window->priv->start_session_handler_id > 0) {
-                g_signal_handler_disconnect (login_window, login_window->priv->start_session_handler_id);
-                login_window->priv->start_session_handler_id = 0;
-        }
-
-        switch_mode (login_window, MODE_SELECTION);
-        set_busy (login_window);
-        set_sensitive (login_window, FALSE);
-        set_message (login_window, "");
-        remove_timed_login_timeout (login_window);
-        _gdm_greeter_login_window_set_interactive (login_window, FALSE);
-
-        g_signal_emit (login_window, signals[CANCELLED], 0);
-
-        set_ready (login_window);
-}
-
-static void
 delete_entry_text (GtkWidget *entry)
 {
         const char *typed_text;
@@ -620,6 +595,23 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         GtkWidget  *label;
 
         g_debug ("GdmGreeterLoginWindow: Resetting dialog");
+        set_busy (login_window);
+        set_sensitive (login_window, FALSE);
+
+        if (login_window->priv->timed_login_enabled) {
+                gdm_chooser_widget_set_item_timer (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser),
+                                                   GDM_USER_CHOOSER_USER_AUTO, 0);
+                remove_timed_login_timeout (login_window);
+                login_window->priv->timed_login_enabled = FALSE;
+        }
+        _gdm_greeter_login_window_set_interactive (login_window, FALSE);
+
+        gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), NULL);
+
+        if (login_window->priv->start_session_handler_id > 0) {
+                g_signal_handler_disconnect (login_window, login_window->priv->start_session_handler_id);
+                login_window->priv->start_session_handler_id = 0;
+        }
 
         entry = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-entry");
 
@@ -640,6 +632,13 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         set_sensitive (login_window, TRUE);
         set_ready (login_window);
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
+}
+
+static void
+do_cancel (GdmGreeterLoginWindow *login_window)
+{
+        reset_dialog (login_window);
+        g_signal_emit (login_window, signals[CANCELLED], 0);
 }
 
 gboolean
@@ -1489,7 +1488,7 @@ gdm_greeter_login_window_key_press_event (GtkWidget   *widget,
         login_window = GDM_GREETER_LOGIN_WINDOW (widget);
 
         if (event->keyval == GDK_Escape) {
-                reset_dialog (GDM_GREETER_LOGIN_WINDOW (widget));
+                do_cancel (GDM_GREETER_LOGIN_WINDOW (widget));
         }
 
         capslock_on = is_capslock_on ();
