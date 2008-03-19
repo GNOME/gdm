@@ -84,6 +84,9 @@ static guint save_struts[4] = {0, 0, 0, 0};
 void 
 gdm_wm_screen_init (int cur_screen_num)
 {
+	GdkScreen *screen;
+	int i;
+
 	if (g_getenv ("FAKE_XINERAMA_GDM") != NULL) {
 	/* for testing Xinerama support on non-xinerama setups */
 		gdm_wm_screen.x = 100;
@@ -101,129 +104,18 @@ gdm_wm_screen_init (int cur_screen_num)
 		return;
 	}
 
-	{
-#ifdef HAVE_XFREE_XINERAMA
-	gboolean have_xinerama = FALSE;
+	screen = gdk_screen_get_default ();
 
-	gdk_flush ();
-	gdk_error_trap_push ();
-	have_xinerama = XineramaIsActive (GDK_DISPLAY ());
-	gdk_flush ();
-	if (gdk_error_trap_pop () != 0)
-		have_xinerama = FALSE;
+	gdm_wm_screens = gdk_screen_get_n_monitors (screen);
 
-	if (have_xinerama) {
-		int screen_num, i;
-		XineramaScreenInfo *xscreens =
-			XineramaQueryScreens (GDK_DISPLAY (),
-					      &screen_num);
+	gdm_wm_allscreens = g_new (GdkRectangle, gdm_wm_screens);
+	for (i = 0; i < gdm_wm_screens; i++)
+		gdk_screen_get_monitor_geometry (screen, i, gdm_wm_allscreens + i);
 
+	if (gdm_wm_screens < cur_screen_num)
+		cur_screen_num = 0;
 
-		if (screen_num <= 0) {
-			/* should NEVER EVER happen */
-			gdm_common_error ("Xinerama active, but <= 0 screens?");
-			gdm_wm_screen.x = 0;
-			gdm_wm_screen.y = 0;
-			gdm_wm_screen.width = gdk_screen_width ();
-			gdm_wm_screen.height = gdk_screen_height ();
-
-			gdm_wm_allscreens = g_new0 (GdkRectangle, 1);
-			gdm_wm_allscreens[0] = gdm_wm_screen;
-			gdm_wm_screens = 1;
-			return;
-		}
-
-		if (screen_num <= cur_screen_num)
-			cur_screen_num = 0;
-
-		gdm_wm_allscreens = g_new0 (GdkRectangle, screen_num);
-		gdm_wm_screens = screen_num;
-
-		for (i = 0; i < screen_num; i++) {
-			gdm_wm_allscreens[i].x = xscreens[i].x_org;
-			gdm_wm_allscreens[i].y = xscreens[i].y_org;
-			gdm_wm_allscreens[i].width = xscreens[i].width;
-			gdm_wm_allscreens[i].height = xscreens[i].height;
-
-			if (cur_screen_num == i)
-				gdm_wm_screen = gdm_wm_allscreens[i];
-		}
-
-		XFree (xscreens);
-	} else
-#elif HAVE_SOLARIS_XINERAMA
-	gboolean have_xinerama = FALSE;
- 	/* This code from GDK, Copyright (C) 2002 Sun Microsystems */
- 	int opcode;
-	int firstevent;
-	int firsterror;
-	int n_monitors = 0;
-	
-	gdk_flush ();
-	gdk_error_trap_push ();
-	have_xinerama = XQueryExtension (GDK_DISPLAY (),
-			"XINERAMA",
-			&opcode,
-			&firstevent,
-			&firsterror);
-	gdk_flush ();
-	if (gdk_error_trap_pop () != 0)
-		have_xinerama = FALSE;
-
-	if (have_xinerama) {
-		int i;
-		int result;
-		XRectangle monitors[MAXFRAMEBUFFERS];
-		unsigned char  hints[16];
-		
-		result = XineramaGetInfo (GDK_DISPLAY (), 0, monitors, hints, &n_monitors);
-		/* Yes I know it should be Success but the current implementation 
-		 * returns the num of monitor
-		 */
-
-		if (result <= 0) {
-			/* should NEVER EVER happen */
-			gdm_common_error ("Xinerama active, but <= 0 screens?");
-			gdm_wm_screen.x = 0;
-			gdm_wm_screen.y = 0;
-			gdm_wm_screen.width = gdk_screen_width ();
-			gdm_wm_screen.height = gdk_screen_height ();
-
-			gdm_wm_allscreens = g_new0 (GdkRectangle, 1);
-			gdm_wm_allscreens[0] = gdm_wm_screen;
-			gdm_wm_screens = 1;
-			return;
-		}
-
-		if (n_monitors <= cur_screen_num)
-			cur_screen_num = 0;
-
-		gdm_wm_allscreens = g_new0 (GdkRectangle, n_monitors);
-		gdm_wm_screens = n_monitors;
-
-		for (i = 0; i < n_monitors; i++) {
-			gdm_wm_allscreens[i].x = monitors[i].x;
-			gdm_wm_allscreens[i].y = monitors[i].y;
-			gdm_wm_allscreens[i].width = monitors[i].width;
-			gdm_wm_allscreens[i].height = monitors[i].height;
-
-			if (cur_screen_num == i)
-				gdm_wm_screen = gdm_wm_allscreens[i];
-		}
-
-	} else
-#endif
-	{
-		gdm_wm_screen.x = 0;
-		gdm_wm_screen.y = 0;
-		gdm_wm_screen.width = gdk_screen_width ();
-		gdm_wm_screen.height = gdk_screen_height ();
-
-		gdm_wm_allscreens = g_new0 (GdkRectangle, 1);
-		gdm_wm_allscreens[0] = gdm_wm_screen;
-		gdm_wm_screens = 1;
-	}
-	}
+	gdm_wm_screen = gdm_wm_allscreens[cur_screen_num];
 }
 
 void 
