@@ -1,5 +1,12 @@
 2008-03-19  Ray Strode <rstrode@redhat.com>
 
+	* daemon/gdm-simple-slave.c
+	(gdm_simple_slave_accredit_when_ready):
+	reset "waiting_to_start_session" state variable to FALSE
+	once we've initiated a session start operation
+
+2008-03-19  Ray Strode <rstrode@redhat.com>
+
 	* daemon/gdm-session-worker.c
 	(gdm_session_worker_accredit_user):
 	* daemon/gdm-session-direct.c

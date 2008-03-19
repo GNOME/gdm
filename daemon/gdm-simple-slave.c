@@ -215,6 +215,8 @@ gdm_simple_slave_accredit_when_ready (GdmSimpleSlave *slave)
                 char *username;
                 int   cred_flag;
 
+                slave->priv->waiting_to_start_session = FALSE;
+
                 username = gdm_session_direct_get_username (slave->priv->session);
 
                 ssid = gdm_slave_get_primary_session_id_for_user (GDM_SLAVE (slave), username);
