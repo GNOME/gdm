@@ -59,6 +59,10 @@
 #define GDM_SESSION_DBUS_INTERFACE    "org.gnome.DisplayManager.Session"
 #define GDM_SESSION_DBUS_ERROR_CANCEL "org.gnome.DisplayManager.Session.Error.Cancel"
 
+#ifndef GDM_SESSION_DEFAULT_PATH
+#define GDM_SESSION_DEFAULT_PATH "/usr/local/bin:/usr/bin:/bin"
+#endif
+
 struct _GdmSessionDirectPrivate
 {
         /* per open scope */
@@ -1927,9 +1931,14 @@ setup_session_environment (GdmSessionDirect *session)
                                                              session->priv->user_x11_authority_file);
         }
 
+        /* FIXME: We do this here and in the session worker.  We should consolidate
+         * somehow.
+         */
         gdm_session_direct_set_environment_variable (session,
                                                      "PATH",
-                                                     "/bin:/usr/bin:" BINDIR);
+                                                     strcmp (BINDIR, "/usr/bin") == 0?
+                                                     GDM_SESSION_DEFAULT_PATH :
+                                                     BINDIR ":" GDM_SESSION_DEFAULT_PATH);
 
 }
 
