@@ -52,6 +52,11 @@ assistive_registry_launch (void)
         const char *command;
         char      **argv;
         gboolean    res;
+        gboolean    ret;
+
+        ret = FALSE;
+
+        gdm_profile_start (NULL);
 
         command = AT_SPI_REGISTRYD_DIR "/at-spi-registryd";
 
@@ -60,7 +65,7 @@ assistive_registry_launch (void)
         res = g_shell_parse_argv (command, NULL, &argv, &error);
         if (! res) {
                 g_warning ("Unable to parse command: %s", error->message);
-                return FALSE;
+                goto out;
         }
 
         error = NULL;
@@ -78,15 +83,19 @@ assistive_registry_launch (void)
 
         if (! res) {
                 g_warning ("Unable to run command %s: %s", command, error->message);
-                return FALSE;
+                goto out;
         }
 
         if (kill (pid, 0) < 0) {
                 g_warning ("at-spi-registryd not running");
-                return FALSE;
+                goto out;
         }
 
-        return TRUE;
+        ret = TRUE;
+ out:
+        gdm_profile_end (NULL);
+
+        return ret;
 }
 
 static GdkFilterReturn
@@ -122,6 +131,8 @@ assistive_registry_start (void)
         GdkWindow *root;
         guint      tid;
 
+        gdm_profile_start (NULL);
+
         root = gdk_get_default_root_window ();
 
         if ( ! AT_SPI_IOR) {
@@ -142,6 +153,8 @@ assistive_registry_start (void)
 
         gdk_window_remove_filter (root, filter_watch, NULL);
         g_source_remove (tid);
+
+        gdm_profile_end (NULL);
 }
 
 static void
@@ -154,6 +167,8 @@ at_set_gtk_modules (void)
         gboolean    found_gail;
         gboolean    found_atk_bridge;
         int         n;
+
+        gdm_profile_start (NULL);
 
         n = 0;
         modules_list = NULL;
@@ -194,6 +209,8 @@ at_set_gtk_modules (void)
         g_setenv ("GTK_MODULES", g_strjoinv (":", modules), TRUE);
         g_strfreev (modules);
         g_slist_free (modules_list);
+
+        gdm_profile_end (NULL);
 }
 
 static void

@@ -801,6 +801,7 @@ gdm_greeter_session_event_handler(GdkEvent          *event,
 static void
 gdm_greeter_session_init (GdmGreeterSession *session)
 {
+        gdm_profile_start (NULL);
 
         session->priv = GDM_GREETER_SESSION_GET_PRIVATE (session);
 
@@ -874,6 +875,8 @@ gdm_greeter_session_init (GdmGreeterSession *session)
 
         /* FIXME: we should really do this in settings daemon */
         setup_at_tools (session);
+
+        gdm_profile_end (NULL);
 }
 
 static void

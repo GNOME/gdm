@@ -1291,6 +1291,8 @@ create_computer_info (GdmGreeterLoginWindow *login_window)
 {
         GtkWidget *label;
 
+        gdm_profile_start (NULL);
+
         label = glade_xml_get_widget (login_window->priv->xml, "computer-info-name-label");
         if (label != NULL) {
                 gtk_label_set_text (GTK_LABEL (label), g_get_host_name ());
@@ -1303,6 +1305,8 @@ create_computer_info (GdmGreeterLoginWindow *login_window)
                 gtk_label_set_text (GTK_LABEL (label), version);
                 g_free (version);
         }
+
+        gdm_profile_end (NULL);
 }
 
 #define INVISIBLE_CHAR_DEFAULT       '*'
@@ -1327,11 +1331,15 @@ custom_widget_constructor (GladeXML              *xml,
         g_assert (name != NULL);
         g_assert (GDM_IS_GREETER_LOGIN_WINDOW (login_window));
 
+        gdm_profile_start (NULL);
+
         widget = NULL;
 
         if (strcmp (name, "user-chooser") == 0) {
                widget = gdm_user_chooser_widget_new ();
         }
+
+        gdm_profile_end (NULL);
 
         return widget;
 }
@@ -1343,6 +1351,8 @@ load_theme (GdmGreeterLoginWindow *login_window)
         GtkWidget *button;
         GtkWidget *box;
         GtkWidget *image;
+
+        gdm_profile_start (NULL);
 
         glade_set_custom_handler ((GladeXMLCustomWidgetHandler) custom_widget_constructor,
                                   login_window);
@@ -1430,6 +1440,8 @@ load_theme (GdmGreeterLoginWindow *login_window)
         g_signal_connect (box, "button-press-event", G_CALLBACK (on_computer_info_label_button_press), login_window);
 
         switch_mode (login_window, MODE_SELECTION);
+
+        gdm_profile_end (NULL);
 }
 
 static gboolean
