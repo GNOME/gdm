@@ -56,13 +56,14 @@ libgdmuser_la_LDFLAGS = 	\
 	$(NULL)
 
 noinst_PROGRAMS = 			\
+	test-a11y-preferences		\
 	test-greeter-login-window	\
-	test-remote-login-window	\
 	test-greeter-panel		\
 	test-language-chooser		\
+	test-languages			\
+	test-remote-login-window	\
 	test-user-chooser		\
 	test-user-manager		\
-	test-a11y-preferences		\
 	$(NULL)
 
 test_greeter_login_window_SOURCES = 	\
@@ -156,6 +157,17 @@ test_language_chooser_SOURCES = 	\
 	$(NULL)
 
 test_language_chooser_LDADD =	\
+	$(GTK_LIBS)		\
+	$(NULL)
+
+test_languages_SOURCES = 		\
+	test-languages.c		\
+	gdm-languages.h			\
+	gdm-languages.c			\
+	locarchive.h			\
+	$(NULL)
+
+test_languages_LDADD =		\
 	$(GTK_LIBS)		\
 	$(NULL)
 

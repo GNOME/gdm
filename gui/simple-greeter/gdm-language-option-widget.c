@@ -35,6 +35,7 @@
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
 
+#include "gdm-profile.h"
 #include "gdm-languages.h"
 #include "gdm-language-option-widget.h"
 #include "gdm-recent-option-widget.h"
@@ -161,6 +162,23 @@ gdm_language_option_widget_lookup_item (GdmRecentOptionWidget *widget,
 }
 
 static void
+create_dialog (GdmLanguageOptionWidget *widget)
+{
+        gdm_profile_start (NULL);
+
+        g_assert (widget->priv->dialog == NULL);
+
+        widget->priv->dialog = gdm_language_chooser_dialog_new ();
+
+        g_signal_connect (GTK_DIALOG (widget->priv->dialog),
+                          "response",
+                          G_CALLBACK (on_dialog_response),
+                          widget);
+
+        gdm_profile_end (NULL);
+}
+
+static void
 gdm_language_option_widget_init (GdmLanguageOptionWidget *widget)
 {
         GError *error;
@@ -180,15 +198,13 @@ gdm_language_option_widget_init (GdmLanguageOptionWidget *widget)
         }
 
         gdm_option_widget_add_item (GDM_OPTION_WIDGET (widget),
-                                    "__other", _("Other..."),
+                                    "__other",
+                                    _("Other..."),
                                     _("Choose a language from the "
                                       "full list of available languages."),
                                     GDM_OPTION_WIDGET_POSITION_BOTTOM);
 
-        widget->priv->dialog = gdm_language_chooser_dialog_new ();
-
-        g_signal_connect (GTK_DIALOG (widget->priv->dialog), "response",
-                G_CALLBACK (on_dialog_response), widget);
+        create_dialog (widget);
 }
 
 static void
