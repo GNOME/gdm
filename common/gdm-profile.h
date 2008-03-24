@@ -29,9 +29,9 @@ G_BEGIN_DECLS
 
 #ifdef ENABLE_PROFILING
 #ifdef G_HAVE_ISO_VARARGS
-#define gdm_profile_start(...) _gdm_profile_log (G_STRFUNC, "start", __VA_ARGDM__)
-#define gdm_profile_end(...)   _gdm_profile_log (G_STRFUNC, "end", __VA_ARGDM__)
-#define gdm_profile_msg(...)   _gdm_profile_log (NULL, NULL, __VA_ARGDM__)
+#define gdm_profile_start(...) _gdm_profile_log (G_STRFUNC, "start", __VA_ARGS__)
+#define gdm_profile_end(...)   _gdm_profile_log (G_STRFUNC, "end", __VA_ARGS__)
+#define gdm_profile_msg(...)   _gdm_profile_log (NULL, NULL, __VA_ARGS__)
 #elif defined(G_HAVE_GNUC_VARARGS)
 #define gdm_profile_start(format...) _gdm_profile_log (G_STRFUNC, "start", format)
 #define gdm_profile_end(format...)   _gdm_profile_log (G_STRFUNC, "end", format)

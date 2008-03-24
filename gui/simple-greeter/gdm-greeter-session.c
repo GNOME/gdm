@@ -40,6 +40,7 @@
 
 #include "gdm-session-manager.h"
 #include "gdm-session-client.h"
+#include "gdm-profile.h"
 
 #define GDM_GREETER_SESSION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_SESSION, GdmGreeterSessionPrivate))
 
@@ -272,6 +273,8 @@ toggle_panel (GdmSessionManager *manager,
               gboolean           enabled,
               GdmGreeterSession *session)
 {
+        gdm_profile_start (NULL);
+
         if (enabled) {
                 session->priv->panel = gdm_greeter_panel_new ();
 
@@ -290,6 +293,8 @@ toggle_panel (GdmSessionManager *manager,
                 gtk_widget_destroy (session->priv->panel);
                 session->priv->panel = NULL;
         }
+
+        gdm_profile_end (NULL);
 }
 
 static void
@@ -297,6 +302,8 @@ toggle_login_window (GdmSessionManager *manager,
                      gboolean           enabled,
                      GdmGreeterSession *session)
 {
+        gdm_profile_start (NULL);
+
         if (enabled) {
                 gboolean is_local;
 
@@ -341,6 +348,7 @@ toggle_login_window (GdmSessionManager *manager,
                 gtk_widget_destroy (session->priv->login_window);
                 session->priv->login_window = NULL;
         }
+        gdm_profile_end (NULL);
 }
 
 static gboolean
@@ -349,6 +357,7 @@ launch_compiz (GdmGreeterSession *session)
         GError  *error;
         gboolean ret;
 
+        gdm_profile_start (NULL);
         g_debug ("GdmGreeterSession: Launching compiz");
 
         ret = FALSE;
@@ -376,6 +385,7 @@ launch_compiz (GdmGreeterSession *session)
         /* FIXME: should try to detect if it actually works */
 
  out:
+        gdm_profile_end (NULL);
         return ret;
 }
 
@@ -384,6 +394,8 @@ launch_metacity (GdmGreeterSession *session)
 {
         GError  *error;
         gboolean ret;
+
+        gdm_profile_start (NULL);
 
         g_debug ("GdmGreeterSession: Launching metacity");
 
@@ -400,6 +412,7 @@ launch_metacity (GdmGreeterSession *session)
         ret = TRUE;
 
  out:
+        gdm_profile_end (NULL);
         return ret;
 }
 
@@ -408,8 +421,6 @@ start_window_manager (GdmGreeterSession *session)
 {
         gboolean     use_compiz;
         GConfClient *client;
-
-        /* FIXME: check for COMPOSITE */
 
         client = gconf_client_get_default ();
         use_compiz = gconf_client_get_bool (client, KEY_WM_USE_COMPIZ, NULL);
@@ -628,6 +639,8 @@ activate_settings_daemon (GdmGreeterSession *session)
         DBusError        local_error;
         DBusConnection  *connection;
 
+        gdm_profile_start (NULL);
+
         g_debug ("GdmGreeterLoginWindow: activating settings daemon");
 
         dbus_error_init (&local_error);
@@ -635,7 +648,7 @@ activate_settings_daemon (GdmGreeterSession *session)
         if (connection == NULL) {
                 g_debug ("Failed to connect to the D-Bus daemon: %s", local_error.message);
                 dbus_error_free (&local_error);
-                return FALSE;
+                goto out;
         }
 
         res = send_dbus_string_method (connection,
@@ -648,30 +661,8 @@ activate_settings_daemon (GdmGreeterSession *session)
         ret = TRUE;
         g_debug ("GdmGreeterLoginWindow: settings daemon started");
  out:
-        return ret;
-}
+        gdm_profile_end (NULL);
 
-static gboolean
-start_settings_daemon (GdmGreeterSession *session)
-{
-        GError  *error;
-        gboolean ret;
-
-        g_debug ("GdmGreeterSession: Launching settings daemon");
-
-        ret = FALSE;
-
-        error = NULL;
-        g_spawn_command_line_async (LIBEXECDIR "/gnome-settings-daemon --gconf-prefix=/apps/gdm/simple-greeter/settings-manager-plugins", &error);
-        if (error != NULL) {
-                g_warning ("Error starting settings daemon: %s", error->message);
-                g_error_free (error);
-                goto out;
-        }
-
-        ret = TRUE;
-
- out:
         return ret;
 }
 
@@ -695,9 +686,13 @@ gdm_greeter_session_start (GdmGreeterSession *session,
 
         g_return_val_if_fail (GDM_IS_GREETER_SESSION (session), FALSE);
 
+        gdm_profile_start (NULL);
+
         res = gdm_greeter_client_start (session->priv->client, error);
 
         gdm_session_manager_set_level (session->priv->manager, GDM_SESSION_LEVEL_LOGIN_WINDOW);
+
+        gdm_profile_end (NULL);
 
         return res;
 }

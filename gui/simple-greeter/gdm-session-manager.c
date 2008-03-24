@@ -31,6 +31,7 @@
 
 #include "gdm-session-manager.h"
 #include "gdm-marshal.h"
+#include "gdm-profile.h"
 
 #define GDM_SESSION_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SESSION_MANAGER, GdmSessionManagerPrivate))
 
@@ -294,6 +295,8 @@ _change_level (GdmSessionManager *manager,
         GList *list;
         guint  old_level;
 
+        gdm_profile_start (NULL);
+
         g_debug ("GdmSessionManager: Changing level to %u", (guint)new_level);
 
         /* unlike some other run level systems
@@ -371,6 +374,8 @@ _change_level (GdmSessionManager *manager,
                         ndata->func (manager, TRUE, ndata->data);
                 }
         }
+
+        gdm_profile_end (NULL);
 }
 
 void
@@ -383,7 +388,9 @@ gdm_session_manager_set_level (GdmSessionManager *manager,
                 return;
         }
 
+        gdm_profile_start (NULL);
         _change_level (manager, level);
+        gdm_profile_end (NULL);
 }
 
 static void

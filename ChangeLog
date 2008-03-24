@@ -1,5 +1,26 @@
 2008-03-23  William Jon McCann  <jmccann@redhat.com>
 
+	* common/gdm-profile.h:
+	* configure.ac:
+	* gui/simple-greeter/gdm-greeter-client.c:
+	(gdm_greeter_client_start):
+	* gui/simple-greeter/gdm-greeter-session.c: (toggle_panel),
+	(toggle_login_window), (launch_compiz), (launch_metacity),
+	(start_window_manager), (activate_settings_daemon),
+	(gdm_greeter_session_start):
+	* gui/simple-greeter/gdm-session-manager.c: (_change_level),
+	(gdm_session_manager_set_level):
+	* gui/simple-greeter/greeter-main.c: (load_a11y), (main):
+	Add some more profiling stuff.
+
+	The greeter can now be profiled like so:
+	strace -ttt -f -o /tmp/logfile.strace -p `/sbin/pidof gdm-binary`
+	python plot-timeline.py -o prettygraph.png /tmp/logfile.strace
+
+	See: http://www.gnome.org/~federico/news-2006-03.html#09
+
+2008-03-23  William Jon McCann  <jmccann@redhat.com>
+
 	* common/Makefile.am:
 	* common/gdm-profile.c: (_gdm_profile_log):
 	* common/gdm-profile.h:

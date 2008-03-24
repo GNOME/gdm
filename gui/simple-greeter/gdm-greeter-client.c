@@ -35,6 +35,7 @@
 
 #include "gdm-greeter-client.h"
 #include "gdm-marshal.h"
+#include "gdm-profile.h"
 
 #define GDM_GREETER_CLIENT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_CLIENT, GdmGreeterClientPrivate))
 
@@ -688,6 +689,8 @@ gdm_greeter_client_start (GdmGreeterClient *client,
 
         g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
 
+        gdm_profile_start (NULL);
+
         ret = FALSE;
 
         if (client->priv->address == NULL) {
@@ -730,6 +733,8 @@ gdm_greeter_client_start (GdmGreeterClient *client,
         ret = TRUE;
 
  out:
+        gdm_profile_end (NULL);
+
         return ret;
 }
 

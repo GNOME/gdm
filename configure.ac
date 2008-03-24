@@ -1306,6 +1306,17 @@ else
 fi
 AC_SUBST(DEBUG_CFLAGS)
 
+#
+# Enable Profiling
+#
+AC_ARG_ENABLE(profiling,
+	[AC_HELP_STRING([--enable-profiling],
+	[turn on profiling])],
+	, enable_profiling=yes)
+if test "$enable_profiling" = "yes"; then
+    AC_DEFINE(ENABLE_PROFILING,1,[enable profiling])
+fi
+
 # Set configuration choices.
 #
 AC_SUBST(HALT_COMMAND)

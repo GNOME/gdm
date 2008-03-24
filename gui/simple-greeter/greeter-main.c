@@ -36,6 +36,7 @@
 #include "gdm-signal-handler.h"
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
+#include "gdm-profile.h"
 
 #include "gdm-greeter-session.h"
 
@@ -202,6 +203,8 @@ load_a11y (void)
         gboolean           a_t_support;
         GConfClient       *gconf_client;
 
+        gdm_profile_start (NULL);
+
         gconf_client = gconf_client_get_default ();
 
         env_a_t_support = g_getenv ("GNOME_ACCESSIBILITY");
@@ -217,6 +220,8 @@ load_a11y (void)
         }
 
         g_object_unref (gconf_client);
+
+        gdm_profile_end (NULL);
 }
 
 
@@ -295,10 +300,12 @@ main (int argc, char *argv[])
 
         g_type_init ();
 
+        gdm_profile_start ("Initializing settings client");
         if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
                 g_critical ("Unable to initialize settings client");
                 exit (1);
         }
+        gdm_profile_end ("Initializing settings client");
 
         g_debug ("Greeter session pid=%d display=%s xauthority=%s",
                  (int)getpid (),
@@ -325,11 +332,13 @@ main (int argc, char *argv[])
         gdm_signal_handler_add (signal_handler, SIGHUP, signal_cb, NULL);
         gdm_signal_handler_add (signal_handler, SIGUSR1, signal_cb, NULL);
 
+        gdm_profile_start ("Creating new greeter session");
         session = gdm_greeter_session_new ();
         if (session == NULL) {
                 g_critical ("Unable to create greeter session");
                 exit (1);
         }
+        gdm_profile_end ("Creating new greeter session");
 
         error = NULL;
         res = gdm_greeter_session_start (session, &error);
