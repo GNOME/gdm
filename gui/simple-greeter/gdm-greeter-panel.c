@@ -39,6 +39,7 @@
 #include "gdm-language-option-widget.h"
 #include "gdm-session-option-widget.h"
 #include "gdm-a11y-preferences-dialog.h"
+#include "gdm-profile.h"
 
 #include "na-tray.h"
 
@@ -115,9 +116,13 @@ gdm_greeter_panel_constructor (GType                  type,
 {
         GdmGreeterPanel      *greeter_panel;
 
+        gdm_profile_start (NULL);
+
         greeter_panel = GDM_GREETER_PANEL (G_OBJECT_CLASS (gdm_greeter_panel_parent_class)->constructor (type,
                                                                                                          n_construct_properties,
                                                                                                          construct_properties));
+
+        gdm_profile_end (NULL);
 
         return G_OBJECT (greeter_panel);
 }
@@ -496,6 +501,8 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
         GtkWidget *image;
         GtkWidget *spacer;
 
+        gdm_profile_start (NULL);
+
         panel->priv = GDM_GREETER_PANEL_GET_PRIVATE (panel);
 
         GTK_WIDGET_SET_FLAGS (GTK_WIDGET (panel), GTK_CAN_FOCUS);
@@ -542,11 +549,13 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
         gtk_box_pack_start (GTK_BOX (panel->priv->option_hbox), spacer, TRUE, TRUE, 6);
         gtk_widget_show (spacer);
 
+        gdm_profile_start ("creating option widget");
         panel->priv->language_option_widget = gdm_language_option_widget_new ();
         g_signal_connect (G_OBJECT (panel->priv->language_option_widget),
                           "language-activated",
                           G_CALLBACK (on_language_activated), panel);
         gtk_box_pack_start (GTK_BOX (panel->priv->option_hbox), panel->priv->language_option_widget, FALSE, FALSE, 6);
+        gdm_profile_end ("creating option widget");
 
         panel->priv->session_option_widget = gdm_session_option_widget_new ();
         g_signal_connect (G_OBJECT (panel->priv->session_option_widget),
@@ -577,6 +586,8 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
         gtk_widget_show (GTK_WIDGET (tray));
 
         gdm_greeter_panel_hide_user_options (panel);
+
+        gdm_profile_end (NULL);
 }
 
 static void

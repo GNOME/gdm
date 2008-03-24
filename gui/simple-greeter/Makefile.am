@@ -122,6 +122,7 @@ test_greeter_panel_SOURCES = 	\
 	$(NULL)
 
 test_greeter_panel_LDADD =	\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(GTK_LIBS)		\

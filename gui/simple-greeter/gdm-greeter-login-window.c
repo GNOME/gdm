@@ -62,6 +62,7 @@
 
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
+#include "gdm-profile.h"
 
 #include "gdm-greeter-login-window.h"
 #include "gdm-user-chooser-widget.h"
@@ -1598,6 +1599,8 @@ gdm_greeter_login_window_constructor (GType                  type,
 {
         GdmGreeterLoginWindow      *login_window;
 
+        gdm_profile_start (NULL);
+
         login_window = GDM_GREETER_LOGIN_WINDOW (G_OBJECT_CLASS (gdm_greeter_login_window_parent_class)->constructor (type,
                                                                                                                       n_construct_properties,
                                                                                                                       construct_properties));
@@ -1605,6 +1608,8 @@ gdm_greeter_login_window_constructor (GType                  type,
 
         load_theme (login_window);
         update_banner_message (login_window);
+
+        gdm_profile_end (NULL);
 
         return G_OBJECT (login_window);
 }
@@ -1771,6 +1776,8 @@ on_window_state_event (GtkWidget           *widget,
 static void
 gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
 {
+        gdm_profile_start (NULL);
+
         login_window->priv = GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE (login_window);
 
         login_window->priv->timed_login_enabled = FALSE;
@@ -1802,6 +1809,7 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
                                                                   login_window,
                                                                   NULL,
                                                                   NULL);
+        gdm_profile_end (NULL);
 }
 
 static void
