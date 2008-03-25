@@ -321,13 +321,6 @@ struct nameent
         uint32_t locrec_offset;
 };
 
-static int
-nameentcmp (const void *a, const void *b)
-{
-        return strcoll (((const struct nameent *) a)->name,
-                        ((const struct nameent *) b)->name);
-}
-
 static gboolean
 language_name_is_valid (const char *language_name)
 {
@@ -411,9 +404,6 @@ collect_locales_from_archive (void)
                         names[used++].locrec_offset = namehashtab[cnt].locrec_offset;
                 }
         }
-
-        /* Sort the names.  */
-        qsort (names, used, sizeof (struct nameent), nameentcmp);
 
         for (cnt = 0; cnt < used; ++cnt) {
                 struct locrecent *locrec;
