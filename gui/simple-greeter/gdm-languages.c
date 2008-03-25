@@ -474,7 +474,7 @@ select_dirs (const struct dirent *dirent)
                                 struct stat st;
                                 char       *path;
 
-                                path = g_build_filename (LIBLOCALEDIR, dirent->d_name, NULL);
+                                path = g_build_filename (GNOMELOCALEDIR, dirent->d_name, NULL);
                                 if (g_stat (path, &st) == 0) {
                                         mode = st.st_mode;
                                 }
@@ -494,7 +494,7 @@ collect_locales_from_directory (void)
         int             ndirents;
         int             cnt;
 
-        ndirents = scandir (LIBLOCALEDIR, &dirents, select_dirs, alphasort);
+        ndirents = scandir (GNOMELOCALEDIR, &dirents, select_dirs, alphasort);
 
         for (cnt = 0; cnt < ndirents; ++cnt) {
                 char      *path;
@@ -528,7 +528,7 @@ collect_locales_from_directory (void)
                 }
 
                 /* try to get additional information from LC_IDENTIFICATION */
-                path = g_build_filename (LIBLOCALEDIR, dirents[cnt]->d_name, "LC_IDENTIFICATION", NULL);
+                path = g_build_filename (GNOMELOCALEDIR, dirents[cnt]->d_name, "LC_IDENTIFICATION", NULL);
                 res = g_file_test (path, G_FILE_TEST_IS_REGULAR);
                 if (res) {
                         GMappedFile      *mapped;
