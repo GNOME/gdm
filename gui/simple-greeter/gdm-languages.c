@@ -570,12 +570,6 @@ collect_locales_from_directory (void)
 }
 
 static void
-collect_locales_from_aliases (void)
-{
-        /* FIXME: */
-}
-
-static void
 collect_locales (void)
 {
 
@@ -588,7 +582,6 @@ collect_locales (void)
         }
 
         collect_locales_from_directory ();
-        collect_locales_from_aliases ();
 }
 
 static const char *
