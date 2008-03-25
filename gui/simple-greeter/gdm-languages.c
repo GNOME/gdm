@@ -500,19 +500,32 @@ collect_locales_from_directory (void)
                 char      *path;
                 GdmLocale *locale;
                 GdmLocale *old_locale;
+                char      *name;
                 gboolean   res;
 
-                if (!language_name_is_valid (dirents[cnt]->d_name) ||
-                    !language_name_is_utf8 (dirents[cnt]->d_name)) {
+                if (language_name_is_utf8 (dirents[cnt]->d_name)) {
+                        name = g_strdup (dirents[cnt]->d_name);
+                } else {
+                        name = g_strdup_printf ("%s.utf8", dirents[cnt]->d_name);
+
+                        if (!language_name_is_utf8 (name)) {
+                                g_free (name);
+                                continue;
+                        }
+                }
+
+                if (!language_name_is_valid (name)) {
                         continue;
                 }
 
                 locale = g_new0 (GdmLocale, 1);
-                gdm_parse_language_name (dirents[cnt]->d_name,
+                gdm_parse_language_name (name,
                                          &locale->language_code,
                                          &locale->territory_code,
                                          &locale->codeset,
                                          &locale->modifier);
+                g_free (name);
+                name = NULL;
 
                 locale->id = construct_language_name (locale->language_code, locale->territory_code,
                                                       NULL, locale->modifier);

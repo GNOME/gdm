@@ -1,5 +1,13 @@
 2008-03-25  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-languages.c:
+	(collect_locales_from_directory):
+	if a directory name in /usr/share/locale isn't a
+	valid utf-8 locale, then try appending .utf8 to
+	the name to find the utf8 locale.
+
+2008-03-25  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-languages:
 	(select_dirs), (collect_locales_from_directory):
 	When looking for locales, look in /usr/share/locale
