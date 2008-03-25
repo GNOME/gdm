@@ -367,7 +367,7 @@ language_name_is_utf8 (const char *language_name)
         return is_utf8;
 }
 
-static void
+static gboolean
 collect_locales_from_archive (void)
 {
         GMappedFile        *mapped;
@@ -379,14 +379,17 @@ collect_locales_from_archive (void)
         uint32_t            used;
         uint32_t            cnt;
         gsize               len;
+        gboolean            locales_collected;
 
         error = NULL;
         mapped = g_mapped_file_new (ARCHIVE_FILE, FALSE, &error);
         if (mapped == NULL) {
                 g_warning ("Mapping failed for %s: %s", ARCHIVE_FILE, error->message);
                 g_error_free (error);
-                return;
+                return FALSE;
         }
+
+        locales_collected = FALSE;
 
         addr = g_mapped_file_get_contents (mapped);
         len = g_mapped_file_get_length (mapped);
@@ -457,9 +460,11 @@ collect_locales_from_archive (void)
 
         g_free (names);
 
+        locales_collected = TRUE;
  out:
 
         g_mapped_file_free (mapped);
+        return locales_collected;
 }
 
 static int
@@ -575,7 +580,10 @@ collect_locales (void)
                 gdm_available_locales_map = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) chooser_locale_free);
         }
 
-        collect_locales_from_archive ();
+        if (collect_locales_from_archive ()) {
+                return;
+        }
+
         collect_locales_from_directory ();
         collect_locales_from_aliases ();
 }
