@@ -43,6 +43,7 @@ _gdm_profile_log (const char *func,
         va_list args;
         char   *str;
         char   *formatted;
+        char   *prgname;
 
         if (format == NULL) {
                 formatted = g_strdup ("");
@@ -52,10 +53,19 @@ _gdm_profile_log (const char *func,
                 va_end (args);
         }
 
+        prgname = g_get_prgname();
+
         if (func != NULL) {
-                str = g_strdup_printf ("MARK: %s %s: %s %s", g_get_prgname(), func, note ? note : "", formatted);
+                str = g_strdup_printf ("MARK: %s %s: %s %s",
+                                       prgname ? prgname : "(null)",
+                                       func,
+                                       note ? note : "",
+                                       formatted);
         } else {
-                str = g_strdup_printf ("MARK: %s: %s %s", g_get_prgname(), note ? note : "", formatted);
+                str = g_strdup_printf ("MARK: %s: %s %s",
+                                       prgname ? prgname : "(null)",
+                                       note ? note : "",
+                                       formatted);
         }
 
         g_free (formatted);
