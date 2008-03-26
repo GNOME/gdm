@@ -122,6 +122,8 @@ struct GdmGreeterLoginWindowPrivate
         gboolean         banner_message_enabled;
         guint            gconf_cnxn;
 
+        guint            dialog_mode;
+
         gboolean         timed_login_enabled;
         guint            timed_login_delay;
         char            *timed_login_username;
@@ -469,6 +471,11 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         GtkWidget  *user_chooser;
         GtkWidget  *box;
         gboolean    show_restart_buttons;
+
+        /* we want to run this even if we're supposed to
+           be in the mode already so that we reset everything
+           to a known state */
+        login_window->priv->dialog_mode = number;
 
         /* FIXME: do animation */
         default_name = NULL;
@@ -1501,7 +1508,9 @@ gdm_greeter_login_window_key_press_event (GtkWidget   *widget,
         login_window = GDM_GREETER_LOGIN_WINDOW (widget);
 
         if (event->keyval == GDK_Escape) {
-                do_cancel (GDM_GREETER_LOGIN_WINDOW (widget));
+                if (login_window->priv->dialog_mode == MODE_AUTHENTICATION) {
+                        do_cancel (GDM_GREETER_LOGIN_WINDOW (widget));
+                }
         }
 
         capslock_on = is_capslock_on ();
@@ -1793,6 +1802,8 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         login_window->priv = GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE (login_window);
 
         login_window->priv->timed_login_enabled = FALSE;
+
+        login_window->priv->dialog_mode = MODE_SELECTION;
 
         gtk_window_set_title (GTK_WINDOW (login_window), _("Login Window"));
         /*gtk_window_set_opacity (GTK_WINDOW (login_window), 0.85);*/
