@@ -641,6 +641,8 @@ activate_settings_daemon (GdmGreeterSession *session)
 
         gdm_profile_start (NULL);
 
+        ret = FALSE;
+
         g_debug ("GdmGreeterLoginWindow: activating settings daemon");
 
         dbus_error_init (&local_error);
@@ -666,13 +668,39 @@ activate_settings_daemon (GdmGreeterSession *session)
         return ret;
 }
 
+static gboolean
+start_settings_daemon (GdmGreeterSession *session)
+{
+        GError  *error;
+        gboolean ret;
+
+        g_debug ("GdmGreeterSession: Launching settings daemon");
+
+        ret = FALSE;
+
+        error = NULL;
+        g_spawn_command_line_async (LIBEXECDIR "/gnome-settings-daemon --gconf-prefix=/apps/gdm/simple-greeter/settings-manager-plugins", &error);
+        if (error != NULL) {
+                g_warning ("Error starting settings daemon: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        ret = TRUE;
+
+ out:
+        return ret;
+}
+
 static void
 toggle_all_levels (GdmSessionManager *manager,
                    gboolean           enabled,
                    GdmGreeterSession *session)
 {
         if (enabled) {
-                activate_settings_daemon (session);
+                if (!activate_settings_daemon (session)) {
+                        start_settings_daemon (session);
+                }
                 start_window_manager (session);
         } else {
         }
