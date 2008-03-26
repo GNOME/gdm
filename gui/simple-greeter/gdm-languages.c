@@ -247,12 +247,6 @@ gdm_normalize_language_name (const char *name)
         return normalized_name;
 }
 
-struct nameent
-{
-        char    *name;
-        uint32_t locrec_offset;
-};
-
 static gboolean
 language_name_is_valid (const char *language_name)
 {
@@ -291,6 +285,13 @@ language_name_is_utf8 (const char *language_name)
 
         return is_utf8;
 }
+
+#ifdef GDM_GET_LOCALES_FROM_LIBC
+struct nameent
+{
+        char    *name;
+        uint32_t locrec_offset;
+};
 
 static gboolean
 collect_locales_from_archive (void)
@@ -382,6 +383,7 @@ collect_locales_from_archive (void)
         g_mapped_file_free (mapped);
         return locales_collected;
 }
+#endif
 
 static int
 select_dirs (const struct dirent *dirent)
@@ -480,9 +482,11 @@ collect_locales (void)
                 gdm_available_locales_map = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) chooser_locale_free);
         }
 
+#ifdef GDM_GET_LOCALES_FROM_LIBC
         if (collect_locales_from_archive ()) {
                 return;
         }
+#endif
 
         collect_locales_from_directory ();
 }

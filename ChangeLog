@@ -1,6 +1,15 @@
 2008-03-25  Ray Strode  <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-languages.c
+	(collect_locales_from_archive), (collect_locales):
+	Don't read from archive by default for now. We're
+	really interested in which locales the user has
+	translations for, not all the locales glibc knows
+	about.
+
+2008-03-25  Ray Strode  <rstrode@redhat.com>
+
+	* gui/simple-greeter/gdm-languages.c
 	(GdmLocale), (chooser_locale_free),
 	(utf8_convert), (get_lc_identification),
 	(collect_locales_from_archive),
