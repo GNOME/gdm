@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-11 17:31+0000\n"
+"POT-Creation-Date: 2008-03-26 15:22+0000\n"
 "PO-Revision-Date: 2007-05-15 22:28-0000\n"
 "Last-Translator: David Lodge <dave@cirt.net>\n"
 "Language-Team: en_GB <en@li.org>\n"
@@ -161,13 +161,13 @@ msgstr "This session logs you into a remote host using ssh"
 #: ../daemon/auth.c:64
 #, c-format
 msgid "%s: Could not write new authorization entry: %s"
-msgstr "%s: Could not write new authorization entry: %s"
+msgstr "%s: Could not write new authorisation entry: %s"
 
 #: ../daemon/auth.c:67
 #, c-format
 msgid "%s: Could not write new authorization entry.  Possibly out of diskspace"
 msgstr ""
-"%s: Could not write new authorization entry.  Possibly out of diskspace"
+"%s: Could not write new authorisation entry.  Possibly out of diskspace"
 
 #: ../daemon/auth.c:72
 #, c-format
@@ -175,7 +175,7 @@ msgid ""
 "GDM could not write a new authorization entry to disk.  Possibly out of "
 "diskspace.%s%s"
 msgstr ""
-"GDM could not write a new authorization entry to disk.  Possibly out of "
+"GDM could not write a new authorisation entry to disk.  Possibly out of "
 "diskspace.%s%s"
 
 #: ../daemon/auth.c:205
@@ -231,7 +231,7 @@ msgid ""
 "It is likely that something bad is going on.  Waiting for 2 minutes before "
 "trying again on display %s."
 msgstr ""
-"The display server has been shut down about 6 times in the last 90 seconds, "
+"The display server has been shut down about 6 times in the last 90 seconds: "
 "it is likely that something bad is going on.  Waiting for 2 minutes before "
 "trying again on display %s."
 
@@ -269,6 +269,15 @@ msgstr "%s could not be opened"
 msgid "%s: Cannot fork to display error/info box"
 msgstr "%s: Cannot fork to display error/info box"
 
+#: ../daemon/gdm-daemon-config-keys.h:44 ../gui/gdmlogin.c:2501
+msgid "Welcome"
+msgstr "Welcome"
+
+#: ../daemon/gdm-daemon-config-keys.h:45
+#, c-format
+msgid "Welcome to %n"
+msgstr "Welcome to %n"
+
 #: ../daemon/gdm-daemon-config.c:1127
 #, c-format
 msgid "%s: Priority out of bounds; changed to %d"
@@ -292,7 +301,7 @@ msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
 "does not exist. Please correct GDM configuration and restart GDM."
 msgstr ""
-"Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
+"Server Authorisation directory (daemon/ServAuthDir) is set to %s but this "
 "does not exist. Please correct GDM configuration and restart GDM."
 
 #: ../daemon/gdm-daemon-config.c:1386
@@ -306,7 +315,7 @@ msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
 "not a directory. Please correct GDM configuration and restart GDM."
 msgstr ""
-"Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
+"Server Authorisation directory (daemon/ServAuthDir) is set to %s but this is "
 "not a directory. Please correct GDM configuration and restart GDM."
 
 #: ../daemon/gdm-daemon-config.c:1402
@@ -445,7 +454,7 @@ msgid ""
 "wrong permissions: it should have permissions of %o. Please correct the "
 "permissions or the GDM configuration and restart GDM."
 msgstr ""
-"Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
+"Server Authorisation directory (daemon/ServAuthDir) is set to %s but has the "
 "wrong permissions: it should have permissions of %o. Please correct the "
 "permissions or the GDM configuration and restart GDM."
 
@@ -722,15 +731,6 @@ msgid ""
 msgstr ""
 "Requested server %s not allowed to be used for flexible servers; using "
 "standard server."
-
-#: ../daemon/gdm.h:70 ../gui/gdmlogin.c:2501
-msgid "Welcome"
-msgstr "Welcome"
-
-#: ../daemon/gdm.h:71
-#, c-format
-msgid "Welcome to %n"
-msgstr "Welcome to %n"
 
 #. Translators, don't translate the 'y' and 'n'
 #: ../daemon/misc.c:592
@@ -1140,8 +1140,8 @@ msgid ""
 "%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe "
 "session instead."
 msgstr ""
-"%s: Cannot find or run the base session script.  Running the GNOME failsafe "
-"session insteae."
+"%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe "
+"session instead."
 
 #: ../daemon/slave.c:3866
 msgid ""
@@ -1280,7 +1280,7 @@ msgid ""
 "writing.  In any case, it is not possible to log in.  Please contact your "
 "system administrator"
 msgstr ""
-"GDM could not write to your authorization file.  This could mean that you "
+"GDM could not write to your authorisation file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
 "writing.  In any case, it is not possible to log in.  Please contact your "
 "system administrator"
@@ -1444,7 +1444,7 @@ msgid ""
 "An internal error occurred. You will not be able to log in.\n"
 "Please try again later or contact your system administrator."
 msgstr ""
-"An internal error occured. You will not be able to log in.\n"
+"An internal error occurred. You will not be able to log in.\n"
 "Please try again later or contact your system administrator."
 
 #: ../daemon/verify-pam.c:478
@@ -3491,7 +3491,7 @@ msgstr "You must be the root user to configure GDM."
 #. EOF
 #: ../gui/gdmsetup.desktop.in.in.h:1
 msgid "Configure GDM login window appearance and behavior"
-msgstr "Configure GDM login window appearance and behavior"
+msgstr "Configure GDM login window appearance and behaviour"
 
 #: ../gui/gdmsetup.desktop.in.in.h:2
 msgid "Login Window"
@@ -3558,7 +3558,7 @@ msgstr "Accessible from the outside of the login manager"
 
 #: ../gui/gdmsetup.glade.h:12
 msgid "Add / Modify Servers To Start"
-msgstr "Add/Modify Servers To Start"
+msgstr "Add / Modify Servers To Start"
 
 #: ../gui/gdmsetup.glade.h:13
 msgid "Add S_erver..."
@@ -4220,8 +4220,8 @@ msgid ""
 "Specifies the message that will be displayed on the warning dialog box when "
 "one of the Custom Command widgets is activated."
 msgstr ""
-"Specifies the message that will be displayed on the warning dialog box when "
-"one of the Custom Command widgets is activated."
+"Specifies the message that will be displayed on the warning dialogue box "
+"when one of the Custom Command widgets is activated."
 
 #: ../gui/gdmsetup.glade.h:142
 msgid ""
@@ -4433,7 +4433,7 @@ msgstr "_Allow local system administrator login"
 
 #: ../gui/gdmsetup.glade.h:176
 msgid "_Allow users to change fonts and colors of plain greeter"
-msgstr "_Allow users to change fonts and colors of plain greeter"
+msgstr "_Allow users to change fonts and colours of the plain greeter"
 
 #: ../gui/gdmsetup.glade.h:177
 msgid "_Background color:"
