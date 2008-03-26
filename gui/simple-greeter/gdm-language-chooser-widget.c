@@ -95,23 +95,6 @@ gdm_language_chooser_widget_set_current_language_name (GdmLanguageChooserWidget 
 }
 
 static void
-gdm_language_chooser_widget_dispose (GObject *object)
-{
-        G_OBJECT_CLASS (gdm_language_chooser_widget_parent_class)->dispose (object);
-}
-
-static void
-gdm_language_chooser_widget_class_init (GdmLanguageChooserWidgetClass *klass)
-{
-        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
-
-        object_class->dispose = gdm_language_chooser_widget_dispose;
-        object_class->finalize = gdm_language_chooser_widget_finalize;
-
-        g_type_class_add_private (klass, sizeof (GdmLanguageChooserWidgetPrivate));
-}
-
-static void
 gdm_language_chooser_widget_add_language (GdmLanguageChooserWidget *widget,
                                           const char               *name)
 {
@@ -153,6 +136,24 @@ add_available_languages (GdmLanguageChooserWidget *widget)
         }
 
         g_strfreev (language_names);
+}
+
+static void
+gdm_language_chooser_widget_dispose (GObject *object)
+{
+        G_OBJECT_CLASS (gdm_language_chooser_widget_parent_class)->dispose (object);
+}
+
+static void
+gdm_language_chooser_widget_class_init (GdmLanguageChooserWidgetClass *klass)
+{
+        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+        GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+
+        object_class->dispose = gdm_language_chooser_widget_dispose;
+        object_class->finalize = gdm_language_chooser_widget_finalize;
+
+        g_type_class_add_private (klass, sizeof (GdmLanguageChooserWidgetPrivate));
 }
 
 static void
