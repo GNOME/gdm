@@ -57,9 +57,6 @@ typedef struct _GdmLocale {
         char *territory_code;
         char *codeset;
         char *modifier;
-        char *title;
-        char *language;
-        char *territory;
 } GdmLocale;
 
 static GHashTable *gdm_languages_map;
@@ -77,9 +74,6 @@ chooser_locale_free (GdmLocale *locale)
 
         g_free (locale->id);
         g_free (locale->name);
-        g_free (locale->title);
-        g_free (locale->language);
-        g_free (locale->territory);
         g_free (locale->codeset);
         g_free (locale->modifier);
         g_free (locale);
@@ -253,68 +247,6 @@ gdm_normalize_language_name (const char *name)
         return normalized_name;
 }
 
-static char *
-utf8_convert (const char *str,
-              int         len)
-{
-        char *utf8;
-
-        utf8 = g_locale_to_utf8 (str, len, NULL, NULL, NULL);
-
-        /* if we couldn't convert text from locale then
-         * assume utf-8 and hope for the best */
-        if (utf8 == NULL) {
-                char *p;
-                char *q;
-
-                if (len < 0) {
-                        utf8 = g_strdup (str);
-                } else {
-                        utf8 = g_strndup (str, len);
-                }
-
-                p = utf8;
-                while (*p != '\0' && !g_utf8_validate ((const char *)p, -1, (const char **)&q)) {
-                        *q = '?';
-                        p = q + 1;
-                }
-        }
-
-        return utf8;
-}
-
-/* Magic number at the beginning of a locale data file for CATEGORY.  */
-#define LIMAGIC(category) \
-  (category == LC_COLLATE                                               \
-   ? ((unsigned int) (0x20051014 ^ (category)))                         \
-   : ((unsigned int) (0x20031115 ^ (category))))
-
-
-/* This seems to be specified by ISO/IEC 14652 */
-static void
-get_lc_identification (GdmLocale *locale,
-                       void             *data,
-                       gsize             size)
-{
-        struct {
-                unsigned int magic;
-                unsigned int nstrings;
-                unsigned int strindex[];
-        } *filedata = data;
-
-#ifdef LC_IDENTIFICATION
-        if (filedata->magic == LIMAGIC (LC_IDENTIFICATION)
-            && (sizeof *filedata + (filedata->nstrings * sizeof (unsigned int)) <= size)) {
-
-#define GET_HANDLE(idx) ((char *) data + filedata->strindex[_NL_ITEM_INDEX (_NL_IDENTIFICATION_##idx)])
-
-                locale->title = utf8_convert (GET_HANDLE (TITLE), -1);
-                locale->language = utf8_convert (GET_HANDLE (LANGUAGE), -1);
-                locale->territory = utf8_convert (GET_HANDLE (TERRITORY), -1);
-        }
-#endif
-}
-
 struct nameent
 {
         char    *name;
@@ -439,12 +371,6 @@ collect_locales_from_archive (void)
 
                 locrec = (struct locrecent *) (addr + names[cnt].locrec_offset);
 
-#ifdef LC_IDENTIFICATION
-                get_lc_identification (locale,
-                                       addr + locrec->record[LC_IDENTIFICATION].offset,
-                                       locrec->record[LC_IDENTIFICATION].len);
-#endif
-
                 g_hash_table_insert (gdm_available_locales_map, g_strdup (locale->id), locale);
         }
 
@@ -497,11 +423,9 @@ collect_locales_from_directory (void)
         ndirents = scandir (GNOMELOCALEDIR, &dirents, select_dirs, alphasort);
 
         for (cnt = 0; cnt < ndirents; ++cnt) {
-                char      *path;
                 GdmLocale *locale;
                 GdmLocale *old_locale;
                 char      *name;
-                gboolean   res;
 
                 if (language_name_is_utf8 (dirents[cnt]->d_name)) {
                         name = g_strdup (dirents[cnt]->d_name);
@@ -539,27 +463,6 @@ collect_locales_from_directory (void)
                                 continue;
                         }
                 }
-
-                /* try to get additional information from LC_IDENTIFICATION */
-                path = g_build_filename (GNOMELOCALEDIR, dirents[cnt]->d_name, "LC_IDENTIFICATION", NULL);
-                res = g_file_test (path, G_FILE_TEST_IS_REGULAR);
-                if (res) {
-                        GMappedFile      *mapped;
-                        GError           *error;
-
-                        error = NULL;
-                        mapped = g_mapped_file_new (path, FALSE, &error);
-                        if (mapped == NULL) {
-                                g_warning ("Mapping failed for %s: %s", path, error->message);
-                                g_error_free (error);
-                        } else {
-                                get_lc_identification (locale,
-                                                       g_mapped_file_get_contents (mapped),
-                                                       g_mapped_file_get_length (mapped));
-                                g_mapped_file_free (mapped);
-                        }
-                }
-                g_free (path);
 
                 g_hash_table_insert (gdm_available_locales_map, g_strdup (locale->id), locale);
         }

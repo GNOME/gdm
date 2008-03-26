@@ -1,5 +1,16 @@
 2008-03-25  Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-languages.c
+	(GdmLocale), (chooser_locale_free),
+	(utf8_convert), (get_lc_identification),
+	(collect_locales_from_archive),
+	(collect_locales_from_directory):
+	Don't get the LC_IDENTIFICATION information about
+	locales, since we don't need it and it's just
+	extra work
+
+2008-03-25  Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-language-chooser-dialog.c
 	(gdm_language_chooser_dialog_init):
 	Replace erroneous use of g_get_language_names with
