@@ -66,7 +66,7 @@ static GHashTable *gdm_available_locales_map;
 static gboolean gdm_languages_is_initialized = FALSE;
 
 static void
-chooser_locale_free (GdmLocale *locale)
+gdm_locale_free (GdmLocale *locale)
 {
         if (locale == NULL) {
                 return;
@@ -326,7 +326,7 @@ add_locale (const char *language_name)
         old_locale = g_hash_table_lookup (gdm_available_locales_map, locale->id);
         if (old_locale != NULL) {
                 if (strlen (old_locale->name) > strlen (locale->name)) {
-                        chooser_locale_free (locale);
+                        gdm_locale_free (locale);
                         return FALSE;
                 }
         }
@@ -455,7 +455,7 @@ collect_locales (void)
 {
 
         if (gdm_available_locales_map == NULL) {
-                gdm_available_locales_map = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) chooser_locale_free);
+                gdm_available_locales_map = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) gdm_locale_free);
         }
 
 #ifdef GDM_GET_LOCALES_FROM_LIBC
