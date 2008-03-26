@@ -286,6 +286,56 @@ language_name_is_utf8 (const char *language_name)
         return is_utf8;
 }
 
+static gboolean
+add_locale (const char *language_name)
+{
+        GdmLocale *locale;
+        GdmLocale *old_locale;
+        char      *name;
+
+        if (language_name_is_utf8 (language_name)) {
+                name = g_strdup (language_name);
+        } else {
+                name = g_strdup_printf ("%s.utf8", language_name);
+
+                if (!language_name_is_utf8 (name)) {
+                        g_free (name);
+                        return FALSE;
+                }
+        }
+
+        if (!language_name_is_valid (name)) {
+                g_free (name);
+                return FALSE;
+        }
+
+        locale = g_new0 (GdmLocale, 1);
+        gdm_parse_language_name (name,
+                                 &locale->language_code,
+                                 &locale->territory_code,
+                                 &locale->codeset,
+                                 &locale->modifier);
+        g_free (name);
+        name = NULL;
+
+        locale->id = construct_language_name (locale->language_code, locale->territory_code,
+                                              NULL, locale->modifier);
+        locale->name = construct_language_name (locale->language_code, locale->territory_code,
+                                                locale->codeset, locale->modifier);
+
+        old_locale = g_hash_table_lookup (gdm_available_locales_map, locale->id);
+        if (old_locale != NULL) {
+                if (strlen (old_locale->name) > strlen (locale->name)) {
+                        chooser_locale_free (locale);
+                        return FALSE;
+                }
+        }
+
+        g_hash_table_insert (gdm_available_locales_map, g_strdup (locale->id), locale);
+
+        return TRUE;
+}
+
 #ifdef GDM_GET_LOCALES_FROM_LIBC
 struct nameent
 {
@@ -339,40 +389,7 @@ collect_locales_from_archive (void)
         }
 
         for (cnt = 0; cnt < used; ++cnt) {
-                struct locrecent *locrec;
-                GdmLocale        *locale;
-                GdmLocale        *old_locale;
-
-                if (!language_name_is_valid (names[cnt].name) ||
-                    !language_name_is_utf8 (names[cnt].name)) {
-                        continue;
-                }
-
-                locale = g_new0 (GdmLocale, 1);
-
-                gdm_parse_language_name (names[cnt].name,
-                                         &locale->language_code,
-                                         &locale->territory_code,
-                                         &locale->codeset,
-                                         &locale->modifier);
-
-                locale->id = construct_language_name (locale->language_code, locale->territory_code,
-                                                      NULL, locale->modifier);
-                locale->name = construct_language_name (locale->language_code, locale->territory_code,
-                                                        locale->codeset, locale->modifier);
-
-                old_locale = g_hash_table_lookup (gdm_available_locales_map, locale->id);
-                if (old_locale != NULL) {
-                        if (strlen (old_locale->name) > strlen (locale->name)) {
-                                    chooser_locale_free (locale);
-                                    continue;
-                        }
-                }
-
-
-                locrec = (struct locrecent *) (addr + names[cnt].locrec_offset);
-
-                g_hash_table_insert (gdm_available_locales_map, g_strdup (locale->id), locale);
+                add_locale (names[cnt].name);
         }
 
         g_free (names);
@@ -425,48 +442,7 @@ collect_locales_from_directory (void)
         ndirents = scandir (GNOMELOCALEDIR, &dirents, select_dirs, alphasort);
 
         for (cnt = 0; cnt < ndirents; ++cnt) {
-                GdmLocale *locale;
-                GdmLocale *old_locale;
-                char      *name;
-
-                if (language_name_is_utf8 (dirents[cnt]->d_name)) {
-                        name = g_strdup (dirents[cnt]->d_name);
-                } else {
-                        name = g_strdup_printf ("%s.utf8", dirents[cnt]->d_name);
-
-                        if (!language_name_is_utf8 (name)) {
-                                g_free (name);
-                                continue;
-                        }
-                }
-
-                if (!language_name_is_valid (name)) {
-                        continue;
-                }
-
-                locale = g_new0 (GdmLocale, 1);
-                gdm_parse_language_name (name,
-                                         &locale->language_code,
-                                         &locale->territory_code,
-                                         &locale->codeset,
-                                         &locale->modifier);
-                g_free (name);
-                name = NULL;
-
-                locale->id = construct_language_name (locale->language_code, locale->territory_code,
-                                                      NULL, locale->modifier);
-                locale->name = construct_language_name (locale->language_code, locale->territory_code,
-                                                        locale->codeset, locale->modifier);
-
-                old_locale = g_hash_table_lookup (gdm_available_locales_map, locale->id);
-                if (old_locale != NULL) {
-                        if (strlen (old_locale->name) > strlen (locale->name)) {
-                                chooser_locale_free (locale);
-                                continue;
-                        }
-                }
-
-                g_hash_table_insert (gdm_available_locales_map, g_strdup (locale->id), locale);
+                add_locale (dirents[cnt]->d_name);
         }
 
         if (ndirents > 0) {

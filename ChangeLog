@@ -1,6 +1,14 @@
 2008-03-25  Ray Strode  <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-languages.c
+	(add_locale), (collect_locales_from_archive),
+	(collect_locales_from_directory):
+	refactor common inner loop code between
+	collect_locales_from_* to new add_locale function
+
+2008-03-25  Ray Strode  <rstrode@redhat.com>
+
+	* gui/simple-greeter/gdm-languages.c
 	(collect_locales_from_archive), (collect_locales):
 	Don't read from archive by default for now. We're
 	really interested in which locales the user has
