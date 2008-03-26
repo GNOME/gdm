@@ -25,6 +25,8 @@
 #include <unistd.h>
 #include <string.h>
 
+#include <locale.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
@@ -115,7 +117,7 @@ gdm_language_chooser_dialog_init (GdmLanguageChooserDialog *dialog)
         dialog->priv->chooser_widget = gdm_language_chooser_widget_new ();
         gtk_widget_show (dialog->priv->chooser_widget);
         gdm_language_chooser_widget_set_current_language_name (GDM_LANGUAGE_CHOOSER_WIDGET (dialog->priv->chooser_widget),
-                                                               g_get_language_names ()[0]);
+                                                               setlocale (LC_MESSAGES, NULL));
 
         gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), dialog->priv->chooser_widget);
 
