@@ -25,7 +25,9 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#ifdef HAVE_STROPTS_H
 #include <stropts.h>
+#endif
 #include <string.h>
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>

@@ -247,6 +247,10 @@ else
 fi
 AC_SUBST(LANG_CONFIG_FILE)
 
+# stropts has been removed from glibc
+# https://bugzilla.redhat.com/show_bug.cgi?id=436349
+AC_CHECK_HEADERS(stropts.h)
+
 dnl socklen_t may be declared, but not in a "standard" C header location
 AC_CHECK_HEADERS(sys/socket.h)
 AC_CHECK_TYPE(socklen_t,,
