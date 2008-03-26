@@ -1,6 +1,15 @@
 2008-03-25  Ray Strode  <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-language-chooser-widget.c
+	(GdmLanguageChooserWidgetPrivate),
+	(gdm_language_chooser_widget_realize),
+	(gdm_language_chooser_class_init):
+	populate the language list when the widget is realized
+	instead of when it is first created
+
+2008-03-25  Ray Strode  <rstrode@redhat.com>
+
+	* gui/simple-greeter/gdm-language-chooser-widget.c
 	(gdm_language_chooser_widget_dispose),
 	(gdm_langauge_chooser_widget_class_init):
 	move some blocks of code around in the file to

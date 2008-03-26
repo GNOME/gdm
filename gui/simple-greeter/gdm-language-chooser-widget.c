@@ -42,7 +42,7 @@
 
 struct GdmLanguageChooserWidgetPrivate
 {
-        gpointer            dummy;
+        guint               languages_added : 1;
 };
 
 static void     gdm_language_chooser_widget_class_init  (GdmLanguageChooserWidgetClass *klass);
@@ -145,6 +145,21 @@ gdm_language_chooser_widget_dispose (GObject *object)
 }
 
 static void
+gdm_language_chooser_widget_realize (GtkWidget *widget)
+{
+        GdmLanguageChooserWidget *chooser;
+
+        chooser = GDM_LANGUAGE_CHOOSER_WIDGET (widget);
+
+        GTK_WIDGET_CLASS (gdm_language_chooser_widget_parent_class)->realize (widget);
+
+        if (!chooser->priv->languages_added) {
+                add_available_languages (chooser);
+                chooser->priv->languages_added = TRUE;
+        }
+}
+
+static void
 gdm_language_chooser_widget_class_init (GdmLanguageChooserWidgetClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
@@ -152,6 +167,7 @@ gdm_language_chooser_widget_class_init (GdmLanguageChooserWidgetClass *klass)
 
         object_class->dispose = gdm_language_chooser_widget_dispose;
         object_class->finalize = gdm_language_chooser_widget_finalize;
+        widget_class->realize = gdm_language_chooser_widget_realize;
 
         g_type_class_add_private (klass, sizeof (GdmLanguageChooserWidgetPrivate));
 }
@@ -163,8 +179,6 @@ gdm_language_chooser_widget_init (GdmLanguageChooserWidget *widget)
 
         gdm_chooser_widget_set_separator_position (GDM_CHOOSER_WIDGET (widget),
                                                    GDM_CHOOSER_WIDGET_POSITION_TOP);
-
-        add_available_languages (widget);
 }
 
 static void
