@@ -1,6 +1,15 @@
 2008-03-25  Ray Strode  <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-languages.c
+	(gdm_get_language_from_name),
+	(gdm_get_all_language_names):
+	only create/populate the hash tables that are needed
+	from either function instead of all hash tables from
+	both functions
+
+2008-03-25  Ray Strode  <rstrode@redhat.com>
+
+	* gui/simple-greeter/gdm-languages.c
 	(gdm_locale_free), (collect_locales):
 	rename chooser_locale_free to gdm_locale_free
 

@@ -63,8 +63,6 @@ static GHashTable *gdm_languages_map;
 static GHashTable *gdm_territories_map;
 static GHashTable *gdm_available_locales_map;
 
-static gboolean gdm_languages_is_initialized = FALSE;
-
 static void
 gdm_locale_free (GdmLocale *locale)
 {
@@ -833,12 +831,12 @@ gdm_get_language_from_name (const char *name,
         const char *language;
         const char *territory;
 
-        if (!gdm_languages_is_initialized) {
-                collect_locales ();
+        if (gdm_languages_map == NULL) {
                 languages_init ();
-                territories_init ();
+        }
 
-                gdm_languages_is_initialized = TRUE;
+        if (gdm_territories_map == NULL) {
+                territories_init ();
         }
 
         language_code = NULL;
@@ -882,12 +880,8 @@ gdm_get_all_language_names (void)
         gpointer key, value;
         GPtrArray *array;
 
-        if (!gdm_languages_is_initialized) {
+        if (gdm_available_locales_map == NULL) {
                 collect_locales ();
-                languages_init ();
-                territories_init ();
-
-                gdm_languages_is_initialized = TRUE;
         }
 
         array = g_ptr_array_new ();
