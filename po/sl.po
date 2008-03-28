@@ -1,18 +1,17 @@
-# Slovenian translation of gdm2.
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gdm2 package.
 #
 # Urban Borstnik <urban@cmm.ki.si>, 2000, 2001.
 # Andraž Tori <andraz.tori1@guest.arnes.si>, 2001, 2002.
 # Matjaž Horvat <m@owca.info>, 2006.
-# Matej Urbančič <mateju@svn.gnome.org>, 2007 - 2008."
+# Matej Urbančič <mateju@svn.gnome.org>, 2007 - 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-11-14 22:38+0000\n"
-"PO-Revision-Date: 2008-02-27 17:41+0100\n"
+"POT-Creation-Date: 2008-03-11 03:20+0000\n"
+"PO-Revision-Date: 2008-03-28 19:01+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian\n"
 "MIME-Version: 1.0\n"
@@ -105,11 +104,11 @@ msgid "Would you like to try to configure the mouse?  Note that you will need th
 msgstr "Ali želite poskusiti nastaviti miško? Za nastavljanje strežnika X morate imeti skrbniško dovoljenje."
 
 #: ../config/gettextfoo.h:15
-msgid "System has no Xclients file, so starting a failsafe xterm session. Windows will have focus only if the mouse pointer is above them. To get out of this mode type 'exit' in the window."
+msgid "System has no Xclients file, so starting a failsafe xterm session.  Windows will have focus only if the mouse pointer is above them.  To get out of this mode type 'exit' in the window."
 msgstr "Sistem nima Xclients datoteke, zato bo zagnana varna seja xterm. Okna bodo dejavna le, če bo nad njimi kazalec miške. Za izhod iz varnega načina vtipkajte 'exit' v oknu."
 
 #: ../config/gettextfoo.h:16
-msgid "Failed to start the session, so starting a failsafe xterm session.  Windows will have focus only if the mouse pointer is above them. To get out of this mode type 'exit' in the window."
+msgid "Failed to start the session, so starting a failsafe xterm session.  Windows will have focus only if the mouse pointer is above them.  To get out of this mode type 'exit' in the window."
 msgstr "Ni mogoče zagnati seje, zato bo zagnana varna seja xterm. Okna bodo dejavna le, če bo nad njimi kazalec miške. Za izhod iz varnega načina vtipkajte 'exit' v oknu."
 
 #: ../config/gnome.desktop.in.in.h:1
@@ -611,9 +610,9 @@ msgstr "Samo skrbnik sme zagnati GDM\n"
 #: ../daemon/slave.c:897
 #: ../daemon/slave.c:907
 #: ../daemon/slave.c:919
-#: ../gui/gdmlogin.c:3401
-#: ../gui/gdmlogin.c:3412
-#: ../gui/gdmlogin.c:3418
+#: ../gui/gdmlogin.c:3399
+#: ../gui/gdmlogin.c:3410
+#: ../gui/gdmlogin.c:3416
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: Napaka ob vzpostavljanju obravnalnika za signal %s: %s"
@@ -654,6 +653,16 @@ msgstr "Zahtevana neznana vrsta strežnika; uporaba običajnega strežnika."
 #, c-format
 msgid "Requested server %s not allowed to be used for flexible servers; using standard server."
 msgstr "Zahtevanemu strežniku %s ni dovoljeno uporabiti ga kot raztegljiv strežnik; uporaba običajnega strežnika."
+
+#: ../daemon/gdm.h:70
+#: ../gui/gdmlogin.c:2501
+msgid "Welcome"
+msgstr "Dobrodošli"
+
+#: ../daemon/gdm.h:71
+#, c-format
+msgid "Welcome to %n"
+msgstr "Dobrodošli v %n"
 
 #. Translators, don't translate the 'y' and 'n'
 #: ../daemon/misc.c:592
@@ -1677,12 +1686,12 @@ msgid "You might be using a different display manager, such as KDM (KDE Display 
 msgstr "Morda uporabljate drugega upravitelja zaslona, kot npr. KDM (Upravljalnik zaslona KDE), CDE prijavo ali xdm. V primeru, da še vedno želite uporabiti to možnost, mora biti sistem nastavljen za uporabo GDM."
 
 #: ../gui/gdmcomm.c:653
-#: ../gui/gdmflexiserver.c:843
+#: ../gui/gdmflexiserver.c:846
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "Ni mogoče komunicirati z GDM (Upravljalnikom zaslona GNOME)"
 
 #: ../gui/gdmcomm.c:655
-#: ../gui/gdmflexiserver.c:845
+#: ../gui/gdmflexiserver.c:848
 msgid "Perhaps you have an old version of GDM running."
 msgstr "Morda že teče starejša različica GDMja."
 
@@ -1751,15 +1760,15 @@ msgstr "Preveč sporočil je bilo poslanih na GDM, zato je postal prezaseden."
 msgid "Unknown error occurred."
 msgstr "Prišlo je do neznane napake."
 
-#: ../gui/gdmcommon.c:756
+#: ../gui/gdmcommon.c:762
 msgid "The accessibility registry was not found."
 msgstr "Prijave dostopnosti ni mogoče najti."
 
-#: ../gui/gdmcommon.c:779
+#: ../gui/gdmcommon.c:785
 msgid "The accessibility registry could not be started."
 msgstr "Prijave dostopnosti ni mogoče zagnati."
 
-#: ../gui/gdmcommon.c:841
+#: ../gui/gdmcommon.c:847
 msgid "%a %b %d, %H:%M"
 msgstr "%a %d %b, %H:%M"
 
@@ -1767,11 +1776,11 @@ msgstr "%a %d %b, %H:%M"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:847
+#: ../gui/gdmcommon.c:853
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a %d %b, %H:%M"
 
-#: ../gui/gdmcommon.c:947
+#: ../gui/gdmcommon.c:953
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -1933,23 +1942,23 @@ msgstr "Napaka: GDM (Upravljalnika zaslona GNOME) ne teče."
 msgid "You might be using a different display manager."
 msgstr "Najverjetneje uporabljate drug upravljalnik zaslona."
 
-#: ../gui/gdmflexiserver.c:885
+#: ../gui/gdmflexiserver.c:888
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "Videti je, da za to dejanje nimate zahtevane overitve."
 
-#: ../gui/gdmflexiserver.c:888
+#: ../gui/gdmflexiserver.c:891
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "Morda vaša datoteka .Xauthority ni pravilno nastavljena."
 
-#: ../gui/gdmflexiserver.c:917
+#: ../gui/gdmflexiserver.c:920
 msgid "You do not seem to be logged in on the console"
 msgstr "Videti je, da niste prijavljeni v konzolo"
 
-#: ../gui/gdmflexiserver.c:919
+#: ../gui/gdmflexiserver.c:922
 msgid "Starting a new login only works correctly on the console."
 msgstr "Začetek nove prijave deluje pravilno le iz konzole."
 
-#: ../gui/gdmflexiserver.c:967
+#: ../gui/gdmflexiserver.c:970
 msgid "Cannot start new display"
 msgstr "Ni mogoče pognati novega zaslona"
 
@@ -2805,70 +2814,66 @@ msgstr "O_dklopi se"
 msgid "Icon"
 msgstr "Ikona"
 
-#: ../gui/gdmlogin.c:2501
-msgid "Welcome"
-msgstr "Dobrodošli"
-
-#: ../gui/gdmlogin.c:2622
+#: ../gui/gdmlogin.c:2620
 #: ../gui/greeter/greeter_parser.c:418
 msgid "_Start Again"
 msgstr "_Začni znova"
 
-#: ../gui/gdmlogin.c:3240
-#: ../gui/gdmlogin.c:3274
+#: ../gui/gdmlogin.c:3238
+#: ../gui/gdmlogin.c:3272
 #: ../gui/greeter/greeter.c:714
 #: ../gui/greeter/greeter.c:749
 #, c-format
 msgid "The greeter version (%s) does not match the daemon version. You have probably just upgraded GDM. Please restart the GDM daemon or the computer."
 msgstr "Različica pozdravnega programa (%s) ne ustreza različici demona. Verjetno ste pravkar nadgradili GDM. Ponovno zaženite demon GDM ali računalnik."
 
-#: ../gui/gdmlogin.c:3250
-#: ../gui/gdmlogin.c:3284
-#: ../gui/gdmlogin.c:3332
+#: ../gui/gdmlogin.c:3248
+#: ../gui/gdmlogin.c:3282
+#: ../gui/gdmlogin.c:3330
 #: ../gui/greeter/greeter.c:724
 #: ../gui/greeter/greeter.c:759
 #: ../gui/greeter/greeter.c:808
 msgid "Cannot start the greeter"
 msgstr "Ni mogoče pognati pozdravnega programa"
 
-#: ../gui/gdmlogin.c:3289
+#: ../gui/gdmlogin.c:3287
 msgid "Restart"
 msgstr "Ponoven zagon"
 
-#: ../gui/gdmlogin.c:3322
+#: ../gui/gdmlogin.c:3320
 #: ../gui/greeter/greeter.c:798
 #, c-format
 msgid "The greeter version (%s) does not match the daemon version (%s).  You have probably just upgraded GDM.  Please restart the GDM daemon or the computer."
 msgstr "Različica pozdravnega programa (%s) ne ustreza različici demona (%s). Verjetno ste pravkar nadgradili GDM. Ponovno zaženite demon GDM ali računalnik."
 
-#: ../gui/gdmlogin.c:3337
+#: ../gui/gdmlogin.c:3335
 #: ../gui/greeter/greeter.c:813
 msgid "Restart GDM"
 msgstr "Ponovno zaženi GDM"
 
-#: ../gui/gdmlogin.c:3339
+#: ../gui/gdmlogin.c:3337
 msgid "Restart computer"
 msgstr "Ponovno računalnik"
 
-#: ../gui/gdmlogin.c:3429
+#: ../gui/gdmlogin.c:3427
 msgid "Could not set signal mask!"
 msgstr "Ni mogoče nastaviti maske za signale!"
 
-#: ../gui/gdmlogin.c:3547
+#: ../gui/gdmlogin.c:3545
 #: ../gui/greeter/greeter.c:1603
 msgid "Session directory is missing"
 msgstr "Imenik seje ne obstaja"
 
-#: ../gui/gdmlogin.c:3548
+#: ../gui/gdmlogin.c:3546
 msgid "Your session directory is missing or empty!  There are two available sessions you can use, but you should log in and correct the GDM configuration."
 msgstr "Vaša mapa seje manjka ali pa je prazna! Na voljo sta dve seji, ki ju lahko uporabite, vendar bi se morali prijaviti in popraviti nastavitve programa GDM."
 
-#: ../gui/gdmlogin.c:3571
+#: ../gui/gdmlogin.c:3569
 #: ../gui/greeter/greeter.c:1628
 msgid "Configuration is not correct"
 msgstr "Nastavitve niso pravilne"
 
-#: ../gui/gdmlogin.c:3572
+#: ../gui/gdmlogin.c:3570
 #: ../gui/greeter/greeter.c:1629
 msgid "The configuration file contains an invalid command line for the login dialog, so running the default command.  Please fix your configuration."
 msgstr "Nastavitvena datoteka vsebuje neveljavno vrstico z ukazom za prijavno okno, zato zaganjam privzet ukaz. Popravite vaše nastavitve."
@@ -2887,20 +2892,20 @@ msgid "Select User Image"
 msgstr "Izberite sliko uporabnika"
 
 #: ../gui/gdmphotosetup.c:300
-#: ../gui/gdmsetup.c:4315
-#: ../gui/gdmsetup.c:7118
-#: ../gui/gdmsetup.c:7258
-#: ../gui/gdmsetup.c:7571
-#: ../gui/gdmsetup.c:7710
+#: ../gui/gdmsetup.c:4299
+#: ../gui/gdmsetup.c:7102
+#: ../gui/gdmsetup.c:7242
+#: ../gui/gdmsetup.c:7552
+#: ../gui/gdmsetup.c:7691
 msgid "Images"
 msgstr "Slike"
 
 #: ../gui/gdmphotosetup.c:305
-#: ../gui/gdmsetup.c:4453
-#: ../gui/gdmsetup.c:7123
-#: ../gui/gdmsetup.c:7263
-#: ../gui/gdmsetup.c:7576
-#: ../gui/gdmsetup.c:7715
+#: ../gui/gdmsetup.c:4437
+#: ../gui/gdmsetup.c:7107
+#: ../gui/gdmsetup.c:7247
+#: ../gui/gdmsetup.c:7557
+#: ../gui/gdmsetup.c:7696
 msgid "All Files"
 msgstr "Vse datoteke"
 
@@ -2947,261 +2952,261 @@ msgstr "Varni zagon _terminala"
 
 #: ../gui/gdmsession.c:157
 #: ../gui/gdmsession.c:347
-msgid "This is a failsafe session that will log you into a terminal.  No startup scripts will be read and it is only to be used when you can't log in otherwise. To exit the terminal, type 'exit'."
-msgstr "Seja za varno prijavo v terminal. Uporablja se le, ko se ne morete prijaviti drugače, saj se v tem načinu ne zaženejo začetni programi. GNOME bo uporabil privzeto sejo. Za izhod iz terminala vpišite 'exit'."
+msgid "This is a failsafe session that will log you into a terminal.  No startup scripts will be read and it is only to be used when you can't log in otherwise.  To exit the terminal, type 'exit'."
+msgstr "To je seja varna pred sesutjem, ki vas bo prijavila terminal. Uporablja se jo le kadar se ne morete prijaviti drugače, saj začetne skripte ne bodo naložene. Za izhod iz terminala vpišite 'exit'."
 
 #: ../gui/gdmsetup.c:321
 msgid "An error occurred while trying to contact the login screens.  Not all updates may have taken effect."
 msgstr "Prišlo je do napake pri poskusu povezave s prijavnimi zasloni. Vse posodobitve morda niso uveljavljene."
 
-#: ../gui/gdmsetup.c:793
-#: ../gui/gdmsetup.c:2992
+#: ../gui/gdmsetup.c:786
+#: ../gui/gdmsetup.c:2976
 msgid "Users include list modification"
 msgstr "Uporabniki vključeni v spremembe seznama"
 
-#: ../gui/gdmsetup.c:794
+#: ../gui/gdmsetup.c:787
 msgid "Some of the users in the Include list (Users tab) now have uid lower than MinimalUID and will be removed."
 msgstr "Nekateri uporabniki na seznamu vključenih uporabnikov imajo UID nižji kot je določen MinimalUID in bodo izbrisani."
 
-#: ../gui/gdmsetup.c:1210
-#: ../gui/gdmsetup.c:1236
-#: ../gui/gdmsetup.c:1395
-#: ../gui/gdmsetup.c:1799
+#: ../gui/gdmsetup.c:1203
+#: ../gui/gdmsetup.c:1229
+#: ../gui/gdmsetup.c:1388
+#: ../gui/gdmsetup.c:1792
 msgid "Themed"
 msgstr "Predočenje teme"
 
-#: ../gui/gdmsetup.c:1213
-#: ../gui/gdmsetup.c:1239
+#: ../gui/gdmsetup.c:1206
+#: ../gui/gdmsetup.c:1232
 msgid "Themed with face browser"
 msgstr "Tema predočena z brskalnikom obrazov"
 
-#: ../gui/gdmsetup.c:1216
-#: ../gui/gdmsetup.c:1257
+#: ../gui/gdmsetup.c:1209
+#: ../gui/gdmsetup.c:1250
 msgid "Plain"
 msgstr "Običajno"
 
 #. Themed with face browser
-#: ../gui/gdmsetup.c:1219
-#: ../gui/gdmsetup.c:1260
+#: ../gui/gdmsetup.c:1212
+#: ../gui/gdmsetup.c:1253
 msgid "Plain with face browser"
 msgstr "Običajno z brskalnikom obrazov"
 
-#: ../gui/gdmsetup.c:1447
+#: ../gui/gdmsetup.c:1440
 msgid "Autologin or timed login to the root account is forbidden."
 msgstr "Samodejna in časovna prijava za skrbniški račun nista dovoljeni."
 
-#: ../gui/gdmsetup.c:1449
-#: ../gui/gdmsetup.c:2729
-#: ../gui/gdmsetup.c:2833
+#: ../gui/gdmsetup.c:1442
+#: ../gui/gdmsetup.c:2713
+#: ../gui/gdmsetup.c:2817
 #, c-format
 msgid "The \"%s\" user UID is lower than allowed MinimalUID."
 msgstr "Uporabniški UID \"%s\" je manjši kot dovoljena vrednost MinimalUID."
 
-#: ../gui/gdmsetup.c:1456
+#: ../gui/gdmsetup.c:1449
 msgid "User not allowed"
 msgstr "Uporabnik ni dovoljen"
 
-#: ../gui/gdmsetup.c:1633
+#: ../gui/gdmsetup.c:1626
 #: ../gui/gdmsetup.glade.h:3
 msgid "(Enabled)"
 msgstr "(Omogočeno)"
 
-#: ../gui/gdmsetup.c:1635
+#: ../gui/gdmsetup.c:1628
 msgid "(Disabled)"
 msgstr "(Onemogočeno)"
 
-#: ../gui/gdmsetup.c:1853
-#: ../gui/gdmsetup.c:1885
-#: ../gui/gdmsetup.c:5022
+#: ../gui/gdmsetup.c:1846
+#: ../gui/gdmsetup.c:1878
+#: ../gui/gdmsetup.c:5006
 msgid "No themes selected!"
 msgstr "Izbrane teme!"
 
-#: ../gui/gdmsetup.c:1854
-#: ../gui/gdmsetup.c:1886
-#: ../gui/gdmsetup.c:5023
+#: ../gui/gdmsetup.c:1847
+#: ../gui/gdmsetup.c:1879
+#: ../gui/gdmsetup.c:5007
 msgid "You need one or more themes selected for the \"Random from selected\" option to be valid. Failure to do so will force \"Selected only\" mode."
 msgstr "Izbranih mora biti več tem za možnost \"Naključno med izbranimi\". V nasprotnem primeru bo uveljavljen način \"Le izbrane\"."
 
-#: ../gui/gdmsetup.c:2012
+#: ../gui/gdmsetup.c:2005
 msgid "Apply changes to the modified command?"
 msgstr "Ali naj se uveljavijo spremembe ukaza?"
 
-#: ../gui/gdmsetup.c:2013
+#: ../gui/gdmsetup.c:2006
 msgid "If you don't apply, the changes will be discarded."
 msgstr "V primeru, da sprememb ne uveljavite, bodo te prezrte."
 
-#: ../gui/gdmsetup.c:2455
+#: ../gui/gdmsetup.c:2439
 msgid "Autologin or timed login to the root account is not allowed."
 msgstr "Samodejna in časovna prijava skrbniškega računa ni dovoljena."
 
-#: ../gui/gdmsetup.c:2674
+#: ../gui/gdmsetup.c:2658
 #, c-format
 msgid "The \"%s\" user already exists in the include list."
 msgstr "Uporabnik \"%s\" že obstaja na seznamu vključenih."
 
-#: ../gui/gdmsetup.c:2682
-#: ../gui/gdmsetup.c:2710
-#: ../gui/gdmsetup.c:2737
-#: ../gui/gdmsetup.c:2767
-#: ../gui/gdmsetup.c:2841
+#: ../gui/gdmsetup.c:2666
+#: ../gui/gdmsetup.c:2694
+#: ../gui/gdmsetup.c:2721
+#: ../gui/gdmsetup.c:2751
+#: ../gui/gdmsetup.c:2825
 msgid "Cannot add user"
 msgstr "Ni mogoče dodati uporabnika"
 
-#: ../gui/gdmsetup.c:2702
+#: ../gui/gdmsetup.c:2686
 #, c-format
 msgid "The \"%s\" user already exists in the exclude list."
 msgstr "Uporabnik \"%s\" že obstaja na seznamu izključenih."
 
-#: ../gui/gdmsetup.c:2759
+#: ../gui/gdmsetup.c:2743
 #, c-format
 msgid "The \"%s\" user does not exist."
 msgstr "Uporabnik \"%s\" ne obstaja."
 
-#: ../gui/gdmsetup.c:2923
+#: ../gui/gdmsetup.c:2907
 msgid "Invalid command path"
 msgstr "Neveljavna pot ukaza"
 
-#: ../gui/gdmsetup.c:2924
+#: ../gui/gdmsetup.c:2908
 msgid "The path you provided for this command is not valid. The changes will not be saved."
 msgstr "Navedena pot v ukazu ni veljavna. Spremembe ne bodo shranjene."
 
-#: ../gui/gdmsetup.c:2993
+#: ../gui/gdmsetup.c:2977
 msgid "Some of the users had uid lower than MinimalUID (Security tab) and could not be added."
 msgstr "Nekateri uporabniki imajo UID nižji kot je določen MinimalUID in jih ni mogoče dodati."
 
 #. first get the file
-#: ../gui/gdmsetup.c:3607
+#: ../gui/gdmsetup.c:3591
 msgid "Select Command"
 msgstr "Izbor ukaza"
 
-#: ../gui/gdmsetup.c:3633
-#: ../gui/gdmsetup.c:5548
+#: ../gui/gdmsetup.c:3617
+#: ../gui/gdmsetup.c:5532
 msgid "No file selected"
 msgstr "Ni izbrane datoteke"
 
-#: ../gui/gdmsetup.c:3798
+#: ../gui/gdmsetup.c:3782
 msgid "Apply the changes to commands before closing?"
 msgstr "Ali naj se uveljavijo spremembe ukazov pred zapiranjem?"
 
-#: ../gui/gdmsetup.c:3799
+#: ../gui/gdmsetup.c:3783
 msgid "If you don't apply, the changes made will be disregarded."
 msgstr "V primeru, da sprememb ne uveljavite, bodo te prezrte."
 
-#: ../gui/gdmsetup.c:3802
-#: ../gui/gdmsetup.c:8147
+#: ../gui/gdmsetup.c:3786
+#: ../gui/gdmsetup.c:8128
 msgid "Close _without Applying"
 msgstr "Zapri _brez uveljavljanja"
 
 #. Add halt, reboot and suspend commands
-#: ../gui/gdmsetup.c:3893
+#: ../gui/gdmsetup.c:3877
 msgid "Halt command"
 msgstr "Ukaz za ustavitev"
 
-#: ../gui/gdmsetup.c:3894
+#: ../gui/gdmsetup.c:3878
 msgid "Reboot command"
 msgstr "Ukaz za ponovni zagon"
 
-#: ../gui/gdmsetup.c:3895
+#: ../gui/gdmsetup.c:3879
 msgid "Suspend command"
 msgstr "Ukaz za zaustavitev"
 
-#: ../gui/gdmsetup.c:4448
+#: ../gui/gdmsetup.c:4432
 #: ../gui/gdmsetup.glade.h:135
 msgid "Sounds"
 msgstr "Zvoki"
 
-#: ../gui/gdmsetup.c:4667
-#: ../gui/gdmsetup.c:4721
+#: ../gui/gdmsetup.c:4651
+#: ../gui/gdmsetup.c:4705
 msgid "None"
 msgstr "Brez"
 
-#: ../gui/gdmsetup.c:5196
+#: ../gui/gdmsetup.c:5180
 msgid "Archive is not of a subdirectory"
 msgstr "Arhiv ni podimenik"
 
-#: ../gui/gdmsetup.c:5204
+#: ../gui/gdmsetup.c:5188
 msgid "Archive is not of a single subdirectory"
 msgstr "Arhiv ni enojni podimenik"
 
-#: ../gui/gdmsetup.c:5228
-#: ../gui/gdmsetup.c:5305
+#: ../gui/gdmsetup.c:5212
+#: ../gui/gdmsetup.c:5289
 msgid "File not a tar.gz or tar archive"
 msgstr "Datotaka ni arhiv tar.gz ali tar"
 
-#: ../gui/gdmsetup.c:5230
+#: ../gui/gdmsetup.c:5214
 msgid "Archive does not include a GdmGreeterTheme.info file"
 msgstr "Arhiv ne vsebuje datoteke GdmGreeterTheme.info"
 
-#: ../gui/gdmsetup.c:5252
+#: ../gui/gdmsetup.c:5236
 msgid "File does not exist"
 msgstr "Datoteka ne obstaja"
 
-#: ../gui/gdmsetup.c:5371
+#: ../gui/gdmsetup.c:5355
 #, c-format
 msgid "%s"
 msgstr "%s"
 
-#: ../gui/gdmsetup.c:5378
+#: ../gui/gdmsetup.c:5362
 msgid "Not a theme archive"
 msgstr "Ni arhiv teme"
 
 #. FIXME: if exists already perhaps we could also have an
 #. * option to change the dir name
-#: ../gui/gdmsetup.c:5400
+#: ../gui/gdmsetup.c:5384
 #, c-format
 msgid "Theme directory '%s' seems to be already installed. Install again anyway?"
 msgstr "Mapa teme '%s' je že nameščena. Ali jo želite ponovno namestiti?"
 
-#: ../gui/gdmsetup.c:5492
+#: ../gui/gdmsetup.c:5476
 msgid "Some error occurred when installing the theme"
 msgstr "Prišlo je do napake med nameščanjem teme"
 
-#: ../gui/gdmsetup.c:5570
+#: ../gui/gdmsetup.c:5554
 msgid "Select Theme Archive"
 msgstr "Izberi arhiv tem"
 
-#: ../gui/gdmsetup.c:5574
-#: ../gui/gdmsetup.c:6667
+#: ../gui/gdmsetup.c:5558
+#: ../gui/gdmsetup.c:6651
 msgid "_Install"
 msgstr "_Namesti"
 
-#: ../gui/gdmsetup.c:5578
+#: ../gui/gdmsetup.c:5562
 msgid "Theme archives"
 msgstr "Arhivi tem"
 
-#: ../gui/gdmsetup.c:5679
+#: ../gui/gdmsetup.c:5663
 msgid "Theme active in \"Selected only\" mode"
 msgstr "Tema dejavna v načinu \"Le izbrane\""
 
-#: ../gui/gdmsetup.c:5680
+#: ../gui/gdmsetup.c:5664
 msgid "This theme cannot be deleted at this point. If you wish to delete this theme switch to \"Selected only\" mode, and deselect it by choosing a different theme."
 msgstr "Teme v tem trenutku ni mogoče izbrisati. V primeru, da želite izbrisati temo, preklopite na način \"Le izbrane\" in jo odstranite z izbiro druge teme."
 
-#: ../gui/gdmsetup.c:5709
+#: ../gui/gdmsetup.c:5693
 #, c-format
 msgid "Remove the \"%s\" theme?"
 msgstr "Ali želite odstraniti temo \"%s\"?"
 
-#: ../gui/gdmsetup.c:5717
+#: ../gui/gdmsetup.c:5701
 msgid "If you choose to remove the theme, it will be permanently lost."
 msgstr "V primeru, da zbrišete temo, bo za vedno izgubljena."
 
-#: ../gui/gdmsetup.c:5725
+#: ../gui/gdmsetup.c:5709
 msgid "_Remove Theme"
 msgstr "Odst_rani temo"
 
-#: ../gui/gdmsetup.c:6656
+#: ../gui/gdmsetup.c:6640
 #, c-format
 msgid "Install the theme from '%s'?"
 msgstr "Želite namestiti temo iz '%s'?"
 
-#: ../gui/gdmsetup.c:6657
+#: ../gui/gdmsetup.c:6641
 #, c-format
 msgid "Select install to add the theme from the file '%s'."
 msgstr "Izberite namesti, če želite dodati temo iz datoteke '%s'."
 
 #. This is the temporary help dialog
-#: ../gui/gdmsetup.c:6912
+#: ../gui/gdmsetup.c:6896
 #, c-format
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the graphical login screen for GNOME.  Changes that you make will take effect immediately.\n"
@@ -3216,48 +3221,48 @@ msgstr ""
 "\n"
 "Za popolno dokumentacijo si poglejte brskalnik pomoči GNOME v razdelu \"Namizje\"."
 
-#: ../gui/gdmsetup.c:7510
+#: ../gui/gdmsetup.c:7491
 msgid "auto"
 msgstr "samodejno"
 
-#: ../gui/gdmsetup.c:7513
+#: ../gui/gdmsetup.c:7494
 msgid "yes"
 msgstr "da"
 
-#: ../gui/gdmsetup.c:7516
+#: ../gui/gdmsetup.c:7497
 msgid "no"
 msgstr "ne"
 
-#: ../gui/gdmsetup.c:8125
+#: ../gui/gdmsetup.c:8106
 msgid "Random theme mode change"
 msgstr "Naključna sprememba načina teme"
 
-#: ../gui/gdmsetup.c:8126
+#: ../gui/gdmsetup.c:8107
 msgid "Since no themes were selected in random theme mode switching back to single theme mode."
 msgstr "Ker ni izbrane teme v naključnem načinu prikaza tem bo preklopljeno na enojni način."
 
-#: ../gui/gdmsetup.c:8143
+#: ../gui/gdmsetup.c:8124
 msgid "Apply the changes to users before closing?"
 msgstr "Uveljavim spremembe uporabnika pred zapiranjem?"
 
-#: ../gui/gdmsetup.c:8144
+#: ../gui/gdmsetup.c:8125
 msgid "If you don't apply, the changes made on the Users tab will be disregarded."
 msgstr "Če sprememb v zavihku Uporabniki ne uveljavite, bodo prezrte."
 
-#: ../gui/gdmsetup.c:8216
+#: ../gui/gdmsetup.c:8197
 msgid "Could not access configuration file (defaults.conf)"
 msgstr "Ni mogoč dostop do nastavitvene datoteke (defaults.conf)."
 
-#: ../gui/gdmsetup.c:8217
-#: ../gui/gdmsetup.c:8234
+#: ../gui/gdmsetup.c:8198
+#: ../gui/gdmsetup.c:8215
 msgid "Make sure that the file exists before launching login manager config utility."
 msgstr "Prepričajte se, da datoteka bostaja preden zaženete orodje nastavitev upravitelja prijave."
 
-#: ../gui/gdmsetup.c:8233
+#: ../gui/gdmsetup.c:8214
 msgid "Could not access configuration file (custom.conf)"
 msgstr "Ni mogoč dostop do nastavitvene datoteke (custom.conf)."
 
-#: ../gui/gdmsetup.c:8281
+#: ../gui/gdmsetup.c:8262
 msgid "You must be the root user to configure GDM."
 msgstr "Za nastavljanje GDM morate biti prijavljeni kot skrbnik."
 
@@ -3528,147 +3533,151 @@ msgstr ""
 "Izbirnik"
 
 #: ../gui/gdmsetup.glade.h:67
+msgid "Hide visual feedback in the password entry. Turning this option on can increase security, as the length of your password cannot be guessed by people looking at your screen."
+msgstr ""
+
+#: ../gui/gdmsetup.glade.h:68
 msgid "Honor _indirect requests"
 msgstr "Upoštevaj _posredne zahtevke"
 
-#: ../gui/gdmsetup.glade.h:68
+#: ../gui/gdmsetup.glade.h:69
 msgid "I_mage:"
 msgstr "_Slika:"
 
-#: ../gui/gdmsetup.glade.h:69
+#: ../gui/gdmsetup.glade.h:70
 msgid "I_nclude:"
 msgstr "_Vključi:"
 
-#: ../gui/gdmsetup.glade.h:70
+#: ../gui/gdmsetup.glade.h:71
 msgid "If a user has no defined face image, GDM will use the \"stock_person\" icon defined in the current GTK+ theme.  If no such image is defined, the image specified by DefaultFace will be used.  The image must be in an gdk-pixbuf supported format and the file must be readable to the GDM user."
 msgstr ""
 
-#: ../gui/gdmsetup.glade.h:71
+#: ../gui/gdmsetup.glade.h:72
 msgid "Image file to display in the logo box. The file must be in an gdk-pixbuf supported format and it must be readable by the GDM user. If no file is specified the logo feature is disabled."
 msgstr ""
 
-#: ../gui/gdmsetup.glade.h:72
+#: ../gui/gdmsetup.glade.h:73
 msgid "Includ_e Hostname Chooser (XDMCP) menu item"
 msgstr "Vključi menijski vnos Izbirnik imena gostitelja (XDMCP)"
 
-#: ../gui/gdmsetup.glade.h:73
+#: ../gui/gdmsetup.glade.h:74
 msgid "Include Con_figure menu item"
 msgstr "Vključi menijski vnos _Nastavitve"
 
-#: ../gui/gdmsetup.glade.h:74
+#: ../gui/gdmsetup.glade.h:75
 msgid "Indicates that the X server should be started at a different process priority."
 msgstr ""
 
-#: ../gui/gdmsetup.glade.h:75
+#: ../gui/gdmsetup.glade.h:76
 msgid "Interval in which to ping the X server in seconds.  If the X server doesn't return before the next time we ping it, the connection is stopped and the session ended."
 msgstr "Zamik v sekundah, ko naj sistem pošlje ping X strežniku. V primeru, da se strežnik ne odzove v tem času, se povezava prekine in seja konča."
 
 #. This defines the label that will appear on the list/radiobutton items and stands for L(ist)R(adiobutton)label
-#: ../gui/gdmsetup.glade.h:77
+#: ../gui/gdmsetup.glade.h:78
 msgid "LRla_bel:"
 msgstr "Oznaka gumba:"
 
-#: ../gui/gdmsetup.glade.h:78
+#: ../gui/gdmsetup.glade.h:79
 msgid "La_unch:"
 msgstr "Z_aženi:"
 
-#: ../gui/gdmsetup.glade.h:79
+#: ../gui/gdmsetup.glade.h:80
 msgid "Listen on _UDP port: "
 msgstr "Poslušaj na vratih _UDP: "
 
-#: ../gui/gdmsetup.glade.h:80
+#: ../gui/gdmsetup.glade.h:81
 msgid "Loc_k position of the window"
 msgstr "Zakleni položaj okna"
 
-#: ../gui/gdmsetup.glade.h:81
+#: ../gui/gdmsetup.glade.h:82
 msgid "Local"
 msgstr "Krajevno"
 
-#: ../gui/gdmsetup.glade.h:82
+#: ../gui/gdmsetup.glade.h:83
 msgid "Login Window Preferences"
 msgstr "Nastavitve prijavnega okna"
 
-#: ../gui/gdmsetup.glade.h:83
+#: ../gui/gdmsetup.glade.h:84
 msgid "Login _failed:"
 msgstr "Prijava _ni uspela:"
 
-#: ../gui/gdmsetup.glade.h:84
+#: ../gui/gdmsetup.glade.h:85
 msgid "Login _retry delay:"
 msgstr "Premor med p_oskusi prijave: "
 
-#: ../gui/gdmsetup.glade.h:85
+#: ../gui/gdmsetup.glade.h:86
 msgid "Login _successful:"
 msgstr "U_spela prijava:"
 
-#: ../gui/gdmsetup.glade.h:86
+#: ../gui/gdmsetup.glade.h:87
 msgid "Logo"
 msgstr "Logotip"
 
-#: ../gui/gdmsetup.glade.h:87
+#: ../gui/gdmsetup.glade.h:88
 msgid "Maximum _remote sessions:"
 msgstr "Največje število o_ddaljenih sej:"
 
-#: ../gui/gdmsetup.glade.h:88
+#: ../gui/gdmsetup.glade.h:89
 msgid "Maximum _wait time:"
 msgstr "Največji ča_kalni čas:"
 
-#: ../gui/gdmsetup.glade.h:89
+#: ../gui/gdmsetup.glade.h:90
 msgid "Maximum indirect w_ait time:"
 msgstr "Največji po_sredni čakalni čas:"
 
-#: ../gui/gdmsetup.glade.h:90
+#: ../gui/gdmsetup.glade.h:91
 msgid "Maximum p_ending indirect requests:"
 msgstr "Najv_ečje število čakajočih posrednih zahtevkov:"
 
-#: ../gui/gdmsetup.glade.h:91
+#: ../gui/gdmsetup.glade.h:92
 msgid "Menu Bar"
 msgstr "Menijska vrstica"
 
-#: ../gui/gdmsetup.glade.h:92
+#: ../gui/gdmsetup.glade.h:93
 msgid "Messa_ge:"
 msgstr "_Sporočilo:"
 
-#: ../gui/gdmsetup.glade.h:93
+#: ../gui/gdmsetup.glade.h:94
 msgid "Ne_ver place cookies on NFS"
 msgstr "Nikoli ne zapiši piškotkov na NFS sistem."
 
-#: ../gui/gdmsetup.glade.h:94
+#: ../gui/gdmsetup.glade.h:95
 msgid "No _restart required"
 msgstr "Ponovni zagon ni zahtevan"
 
-#: ../gui/gdmsetup.glade.h:95
+#: ../gui/gdmsetup.glade.h:96
 msgid "Number of simultaneously provided displays with host choosers.  If more queries from different hosts come in, the oldest ones will be forgotten."
 msgstr ""
 
-#: ../gui/gdmsetup.glade.h:96
+#: ../gui/gdmsetup.glade.h:97
 msgid "Only allow login i_f user owns their home directory"
 msgstr "Dovoli prijavo le, če je uporabnik _lastnik domače mape"
 
-#: ../gui/gdmsetup.glade.h:97
+#: ../gui/gdmsetup.glade.h:98
 msgid "Op_tions:\t"
 msgstr "Možnos_ti:\t"
 
-#: ../gui/gdmsetup.glade.h:98
+#: ../gui/gdmsetup.glade.h:99
 msgid "Pa_th:"
 msgstr "Po_t:"
 
-#: ../gui/gdmsetup.glade.h:99
+#: ../gui/gdmsetup.glade.h:100
 msgid "Paranoia option. Only accepts user owned files and directories."
 msgstr "Sprejmi le lastnikove datoteke in imenike."
 
-#: ../gui/gdmsetup.glade.h:100
+#: ../gui/gdmsetup.glade.h:101
 msgid "Per_sistent"
 msgstr "V_ztrajno"
 
-#: ../gui/gdmsetup.glade.h:101
+#: ../gui/gdmsetup.glade.h:102
 msgid "Permissions"
 msgstr "Dovoljenja"
 
-#: ../gui/gdmsetup.glade.h:102
+#: ../gui/gdmsetup.glade.h:103
 msgid "Pick Background Color"
 msgstr "Izberi barvo ozadja"
 
-#: ../gui/gdmsetup.glade.h:103
+#: ../gui/gdmsetup.glade.h:104
 msgid ""
 "Plain\n"
 "Plain with face browser\n"
@@ -3680,35 +3689,35 @@ msgstr ""
 "Tema\n"
 "Tema z brskalnikom obrazov"
 
-#: ../gui/gdmsetup.glade.h:107
+#: ../gui/gdmsetup.glade.h:108
 msgid "Qui_ver when incorrect username/password entered"
 msgstr "Zatresi kadar je vneseno napačno uporabniško ime ali geslo."
 
-#: ../gui/gdmsetup.glade.h:108
+#: ../gui/gdmsetup.glade.h:109
 msgid "R_emove"
 msgstr "_Odstrani"
 
-#: ../gui/gdmsetup.glade.h:109
+#: ../gui/gdmsetup.glade.h:110
 msgid "Re_move Server"
 msgstr "O_dstrani strežnik"
 
-#: ../gui/gdmsetup.glade.h:110
+#: ../gui/gdmsetup.glade.h:111
 msgid "Reboot, Halt, Suspend and Custom Command Preferences"
 msgstr "Nastavitve ponovnega zagona, zaustavitve, ustavitve in ukazov po meri"
 
-#: ../gui/gdmsetup.glade.h:111
+#: ../gui/gdmsetup.glade.h:112
 msgid "Refresh rate:"
 msgstr "Pogostost osveževanja"
 
-#: ../gui/gdmsetup.glade.h:112
+#: ../gui/gdmsetup.glade.h:113
 msgid "Remote"
 msgstr "Oddaljeno"
 
-#: ../gui/gdmsetup.glade.h:113
+#: ../gui/gdmsetup.glade.h:114
 msgid "Remote connections through XDMCP will be allowed to log into the \"TimedLogin\" user by letting the login window time out, just like the local user on the first console."
 msgstr ""
 
-#: ../gui/gdmsetup.glade.h:114
+#: ../gui/gdmsetup.glade.h:115
 msgid ""
 "Remote login disabled\n"
 "Same as Local"
@@ -3716,35 +3725,35 @@ msgstr ""
 "Oddaljena prijava onemogočena\n"
 "Enako kot krajevno"
 
-#: ../gui/gdmsetup.glade.h:116
+#: ../gui/gdmsetup.glade.h:117
 msgid "Resolution:"
 msgstr "Ločljivost:"
 
-#: ../gui/gdmsetup.glade.h:117
+#: ../gui/gdmsetup.glade.h:118
 msgid "Sc_ale to fit screen"
 msgstr "Prilagodi velikost z_aslonu"
 
-#: ../gui/gdmsetup.glade.h:118
+#: ../gui/gdmsetup.glade.h:119
 msgid "Scale background image to fit the screen."
 msgstr "_Prilagodi velikost slike zaslonu"
 
-#: ../gui/gdmsetup.glade.h:119
+#: ../gui/gdmsetup.glade.h:120
 msgid "Security"
 msgstr "Varnost"
 
-#: ../gui/gdmsetup.glade.h:120
+#: ../gui/gdmsetup.glade.h:121
 msgid "Select Background Image"
 msgstr "Izberi sliko ozadja"
 
-#: ../gui/gdmsetup.glade.h:121
+#: ../gui/gdmsetup.glade.h:122
 msgid "Select Logo Image"
 msgstr "Izberi logotip"
 
-#: ../gui/gdmsetup.glade.h:122
+#: ../gui/gdmsetup.glade.h:123
 msgid "Select Sound File"
 msgstr "Izberi zvočno datoteko"
 
-#: ../gui/gdmsetup.glade.h:123
+#: ../gui/gdmsetup.glade.h:124
 msgid ""
 "Selected only\n"
 "Random from selected\n"
@@ -3752,41 +3761,37 @@ msgstr ""
 "Le izbrane\n"
 "Naključno med izbranimi\n"
 
-#: ../gui/gdmsetup.glade.h:126
+#: ../gui/gdmsetup.glade.h:127
 msgid "Sends debug output to the syslog.  This can be useful for tracking down problems with GDM.  This output tends to be verbose so should not be turned on for general use."
 msgstr "Pošlje izpis razhroščevanja v syslog. Možnost je uporabna za sledenje težav z GDM. Izpis je zelo podroben zato ni primeren za splošno uporabo."
 
-#: ../gui/gdmsetup.glade.h:127
+#: ../gui/gdmsetup.glade.h:128
 msgid "Server Settings"
 msgstr "Nastavitve strežnika"
 
-#: ../gui/gdmsetup.glade.h:128
+#: ../gui/gdmsetup.glade.h:129
 msgid "Server _name:"
 msgstr "Ime strež_nika:"
 
-#: ../gui/gdmsetup.glade.h:129
+#: ../gui/gdmsetup.glade.h:130
 msgid "Servers To Start"
 msgstr "Strežniki za zagon"
 
-#: ../gui/gdmsetup.glade.h:130
+#: ../gui/gdmsetup.glade.h:131
 msgid "Set positio_n of the window:"
 msgstr "Določilo mesta _novega okna:"
 
-#: ../gui/gdmsetup.glade.h:131
+#: ../gui/gdmsetup.glade.h:132
 msgid "Sh_ow title bar"
 msgstr "Prikaži nazivno vrstico"
 
-#: ../gui/gdmsetup.glade.h:132
+#: ../gui/gdmsetup.glade.h:133
 msgid "Shake the display when an incorrect username/password is entered."
 msgstr "Zatresi zaslon kadar so vneseni napačni podatki uporabniškega imena in gesla."
 
-#: ../gui/gdmsetup.glade.h:133
+#: ../gui/gdmsetup.glade.h:134
 msgid "Sho_w Actions menu"
 msgstr "Prikaži meni _dejanj"
-
-#: ../gui/gdmsetup.glade.h:134
-msgid "Show visual feedback in the password entry. Turning this option on can be a security hazard as the length of your password can be guessed."
-msgstr ""
 
 #: ../gui/gdmsetup.glade.h:136
 msgid "Specifies if Custom Command will appear outside the login manager, for example on the desktop through the Log Out/Shut Down widgets."
@@ -3913,85 +3918,85 @@ msgid "Us_e 24 Hour Clock:"
 msgstr "Uporabi 24 _urni prikaz ure:"
 
 #: ../gui/gdmsetup.glade.h:167
-msgid "Use circles instead of asterisks in the password entry. This may not work with all fonts however."
-msgstr "Uporabi krožce namesto zvezdic pri vnosu gesla. Možnost ne deluje z vsemi pisavami."
-
-#: ../gui/gdmsetup.glade.h:168
 msgid "Users"
 msgstr "Uporabniki"
 
-#: ../gui/gdmsetup.glade.h:169
+#: ../gui/gdmsetup.glade.h:168
 msgid "Welcome Message"
 msgstr "Pozdravno sporočilo"
 
-#: ../gui/gdmsetup.glade.h:170
+#: ../gui/gdmsetup.glade.h:169
 msgid "When GDM is ready to manage a remote display, an ACCEPT packet is sent to it containing a unique session id which will be used in future XDMCP conversations. GDM will then place the session id in the pending queue waiting for the display to respond with a MANAGE request. If no response is received within maximum wait time, GDM will declare the display dead and erase it from the pending queue freeing up the slot for other displays."
 msgstr ""
 
-#: ../gui/gdmsetup.glade.h:171
+#: ../gui/gdmsetup.glade.h:170
 msgid "When the user logs in and already has an existing session, they are connected to that session rather than starting a new session.  This only works for sessions running on Virtual Terminals started with gdmflexiserver, and not with XDMCP."
 msgstr ""
 
-#: ../gui/gdmsetup.glade.h:172
+#: ../gui/gdmsetup.glade.h:171
 msgid "X Server Login Window Preferences"
 msgstr "Nastavitve prijavnega okna strežnika X"
 
-#: ../gui/gdmsetup.glade.h:173
+#: ../gui/gdmsetup.glade.h:172
 msgid "XDMCP Login Window Preferences"
 msgstr "Nastavitve prijavnega okna XDMCP"
 
-#: ../gui/gdmsetup.glade.h:174
+#: ../gui/gdmsetup.glade.h:173
 msgid "_Add..."
 msgstr "Dod_aj ..."
 
-#: ../gui/gdmsetup.glade.h:175
+#: ../gui/gdmsetup.glade.h:174
 msgid "_Add/Modify..."
 msgstr "Dod_aj/Spremeni ..."
 
-#: ../gui/gdmsetup.glade.h:176
+#: ../gui/gdmsetup.glade.h:175
 msgid "_Allow local system administrator login"
 msgstr "Dovoli prij_avo krajevnega skrbnika sistema"
 
-#: ../gui/gdmsetup.glade.h:177
+#: ../gui/gdmsetup.glade.h:176
 msgid "_Allow users to change fonts and colors of plain greeter"
 msgstr "Upor_abnikom dovoli spreminjanje pisav in barv običajnega pozdravnega programa"
 
-#: ../gui/gdmsetup.glade.h:178
+#: ../gui/gdmsetup.glade.h:177
 msgid "_Background color:"
 msgstr "_Barva ozadja:"
 
-#: ../gui/gdmsetup.glade.h:180
+#: ../gui/gdmsetup.glade.h:179
 #, no-c-format
 msgid "_Default: \"Welcome to %n\""
 msgstr "_Privzeto: \"Pozdravljeni v %n\""
 
-#: ../gui/gdmsetup.glade.h:181
+#: ../gui/gdmsetup.glade.h:180
 msgid "_Default: \"Welcome\""
 msgstr "_Privzeto: \"Pozdravljeni\""
 
-#: ../gui/gdmsetup.glade.h:182
+#: ../gui/gdmsetup.glade.h:181
 msgid "_Deny TCP connections to Xserver"
 msgstr "_Zavrni povezave TCP na Xserver"
 
-#: ../gui/gdmsetup.glade.h:183
+#: ../gui/gdmsetup.glade.h:182
 msgid "_Enable Automatic Login"
 msgstr "Omogoči samod_ejno prijavo"
 
-#: ../gui/gdmsetup.glade.h:184
+#: ../gui/gdmsetup.glade.h:183
 msgid "_Enable accessible login"
 msgstr "_Omogoči dostopno prijavo"
 
-#: ../gui/gdmsetup.glade.h:185
+#: ../gui/gdmsetup.glade.h:184
 msgid "_Flexible (on demand)"
 msgstr "_Upogljivo (na zahtevo)"
 
-#: ../gui/gdmsetup.glade.h:186
+#: ../gui/gdmsetup.glade.h:185
 msgid "_Global face dir:"
 msgstr "_Splošni imenik obrazov: "
 
-#: ../gui/gdmsetup.glade.h:187
+#: ../gui/gdmsetup.glade.h:186
 msgid "_GtkRC file:"
 msgstr "_GtkRC datoteka:"
+
+#: ../gui/gdmsetup.glade.h:187
+msgid "_Hide visual feedback in the password entry"
+msgstr "_Skrij navidezni odziv pri vnosu gesla"
 
 #: ../gui/gdmsetup.glade.h:188
 msgid "_Image:"
@@ -4058,38 +4063,30 @@ msgid "_Servers:"
 msgstr "_Strežniki:"
 
 #: ../gui/gdmsetup.glade.h:204
-msgid "_Show visual feedback (asterisks) in the password entry"
-msgstr "_Prikaži navidezni odziv (zvezdice) pri vnosu gesla"
-
-#: ../gui/gdmsetup.glade.h:205
 msgid "_Style:"
 msgstr "_Slog:"
 
-#: ../gui/gdmsetup.glade.h:206
+#: ../gui/gdmsetup.glade.h:205
 msgid "_Theme:"
 msgstr "_Tema:"
 
-#: ../gui/gdmsetup.glade.h:207
-msgid "_Use circles instead of asterisks in the password entry"
-msgstr "_Uporabi krožce namesto zvezdic pri vnosu gesla."
-
-#: ../gui/gdmsetup.glade.h:208
+#: ../gui/gdmsetup.glade.h:206
 msgid "_User:"
 msgstr "_Uporabnik:"
 
-#: ../gui/gdmsetup.glade.h:209
+#: ../gui/gdmsetup.glade.h:207
 msgid "_VT:"
 msgstr "_VT:"
 
-#: ../gui/gdmsetup.glade.h:210
+#: ../gui/gdmsetup.glade.h:208
 msgid "_X coordinate"
 msgstr "_X koordinata"
 
-#: ../gui/gdmsetup.glade.h:211
+#: ../gui/gdmsetup.glade.h:209
 msgid "_Y coordinate"
 msgstr "_Y koordinata"
 
-#: ../gui/gdmsetup.glade.h:212
+#: ../gui/gdmsetup.glade.h:210
 msgid ""
 "auto\n"
 "yes\n"
@@ -4099,11 +4096,11 @@ msgstr ""
 "da\n"
 "ne"
 
-#: ../gui/gdmsetup.glade.h:215
+#: ../gui/gdmsetup.glade.h:213
 msgid "dummy"
 msgstr "poskusno"
 
-#: ../gui/gdmsetup.glade.h:216
+#: ../gui/gdmsetup.glade.h:214
 msgid "seconds"
 msgstr "sekunde"
 
@@ -4146,7 +4143,7 @@ msgstr "Vaš imenik seje manjka ali je prazen! Obstajata dve možni seji, ki ju 
 msgid "Select _Session..."
 msgstr "Izberi _sejo ..."
 
-#: ../gui/greeter/greeter_canvas_item.c:502
+#: ../gui/greeter/greeter_canvas_item.c:500
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr "Odgovorite na vprašanja tu in, ko ste končali, pritisnite Enter.  Za meni pritisnite F10."
 
@@ -4376,4 +4373,13 @@ msgstr "gdmaskpass teče le kot koren\n"
 #, c-format
 msgid "Authentication failure!\n"
 msgstr "Overitev ni uspela!\n"
+
+#~ msgid ""
+#~ "Use circles instead of asterisks in the password entry. This may not work "
+#~ "with all fonts however."
+#~ msgstr ""
+#~ "Uporabi krožce namesto zvezdic pri vnosu gesla. Možnost ne deluje z vsemi "
+#~ "pisavami."
+#~ msgid "_Use circles instead of asterisks in the password entry"
+#~ msgstr "_Uporabi krožce namesto zvezdic pri vnosu gesla."
 
