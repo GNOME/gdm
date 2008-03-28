@@ -1,6 +1,6 @@
 /* gdm-solaris-session-auditor.h - Object for solaris auditing of session login/logout
  *
- * Copyright (C) 2004, 2008 Sun Microsystems
+ * Copyright (C) 2004, 2008 Sun Microsystems, Inc.
  * Copyright (C) 2005, 2008 Red Hat, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
