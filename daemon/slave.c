@@ -1062,7 +1062,7 @@ gdm_screen_init (GdmDisplay *display)
 		XFree (xscreens);
 	} else
 #elif HAVE_SOLARIS_XINERAMA
-		/* This code from GDK, Copyright (C) 2002 Sun Microsystems */
+		/* This code from GDK, Copyright (C) 2002 Sun Microsystems, Inc. */
 		int opcode;
 	int firstevent;
 	int firsterror;

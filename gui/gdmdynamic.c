@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- *    GDMcommunication routines
- *    (c)2001 Queen of England, (c)2002,2003 George Lebl
+ *    gdmdynamic
+ *    (C) 2005-2007 Sun Microsystems, Inc.
  *    
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by

@@ -1,7 +1,7 @@
 /* GDM - The Gnome Display Manager
  * Copyright (C) 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
- * This file Copyright (c) 2003 Sun Microsystems Inc.
+ * This file Copyright (c) 2003-2007 Sun Microsystems, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
