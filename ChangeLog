@@ -1,3 +1,16 @@
+2008-03-31  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/user-switch-applet/Makefile.am:
+	* gui/user-switch-applet/gdm-user-switch-applet.glade:
+	Remove some unused glade stuff.
+	* gui/user-switch-applet/gdm-user-menu-item.c: (reset_sensitivity),
+	(on_user_icon_changed):
+	Fix some warnings.
+	* gui/user-switch-applet/applet.c: (user_sessions_changed_cb),
+	(maybe_add_user), (manager_user_added_cb), (fill_applet):
+	Until we add support to GDM for preselecting the user during
+	FUS we should only display the currently logged in users in the applet.
+
 2008-03-27  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm-session-linux-auditor.[ch],

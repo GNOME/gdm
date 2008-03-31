@@ -105,9 +105,10 @@ reset_sensitivity (GdmUserMenuItem *item)
         }
 
         if (gdm_user_get_uid (item->user) == getuid ()) {
-                gtk_widget_set_sensitive (item, (gdm_user_get_num_sessions (item->user) > 1));
+                gtk_widget_set_sensitive (GTK_WIDGET (item),
+                                          (gdm_user_get_num_sessions (item->user) > 1));
         } else {
-                gtk_widget_set_sensitive (item, TRUE);
+                gtk_widget_set_sensitive (GTK_WIDGET(item), TRUE);
         }
 }
 
@@ -131,7 +132,7 @@ static void
 on_user_icon_changed (GdmUser         *user,
                       GdmUserMenuItem *item)
 {
-        if (gtk_widget_has_screen (item)) {
+        if (gtk_widget_has_screen (GTK_WIDGET (item))) {
                 reset_icon (item);
         }
 }

@@ -60,6 +60,8 @@ typedef struct _GdmAppletData
         GtkWidget      *login_screen_item;
         GSList         *items;
 
+        gboolean        active_only;
+
         guint           client_notify_lockdown_id;
         guint           user_notify_id;
         GQuark          user_menu_item_quark;
@@ -102,33 +104,6 @@ about_me_cb (BonoboUIComponent *ui_container,
                                               "hidden", "1",
                                               NULL);
         }
-}
-
-static GladeXML *
-get_glade_xml (const char *root)
-{
-        GladeXML *xml;
-
-        xml = glade_xml_new (GLADEDIR "/gdm-user-switch-applet.glade", root, NULL);
-
-        if (xml == NULL) {
-                GtkWidget *dialog;
-
-                dialog = gtk_message_dialog_new (NULL,
-                                                 0,
-                                                 GTK_MESSAGE_ERROR,
-                                                 GTK_BUTTONS_CLOSE,
-                                                 _("Missing Required File"));
-                gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-                                                          _("The User Selector's interfaces file, `%s', could not be opened. It is likely that this application was not properly installed or configured."),
-                                                          GLADEDIR "/gdm-user-switch-applet.glade");
-                gtk_dialog_run (GTK_DIALOG (dialog));
-                gtk_widget_destroy (dialog);
-                bonobo_main_quit ();
-                return NULL;
-        }
-
-        return xml;
 }
 
 /*
@@ -855,12 +830,27 @@ user_sessions_changed_cb (GdmUser       *user,
 {
         GtkWidget *menuitem;
 
+        g_debug ("Sessions changed for %s", gdm_user_get_user_name (user));
+
         menuitem = g_object_get_qdata (G_OBJECT (user), adata->user_menu_item_quark);
         if (menuitem == NULL) {
                 return;
         }
 
-        gtk_widget_show (menuitem);
+        if (adata->active_only) {
+                guint num_sessions;
+
+                num_sessions = gdm_user_get_num_sessions (user);
+                g_debug ("Sessions changed for %s num=%u", gdm_user_get_user_name (user), num_sessions);
+
+                if (num_sessions > 0) {
+                        gtk_widget_show (menuitem);
+                } else {
+                        gtk_widget_hide (menuitem);
+                }
+        } else {
+                gtk_widget_show (menuitem);
+        }
 
         sort_menu (adata);
 }
@@ -896,13 +886,32 @@ add_user (GdmAppletData  *adata,
                           adata);
 }
 
+static gboolean
+maybe_add_user (GdmAppletData  *adata,
+                GdmUser        *user)
+{
+        if (adata->active_only) {
+                guint num_sessions;
+
+                num_sessions = gdm_user_get_num_sessions (user);
+                if (num_sessions < 1) {
+                        return FALSE;
+                }
+        }
+
+        add_user (adata, user);
+
+        return TRUE;
+}
+
 static void
 manager_user_added_cb (GdmUserManager *manager,
                        GdmUser        *user,
                        GdmAppletData  *adata)
 {
-        add_user (adata, user);
-        sort_menu (adata);
+        if (maybe_add_user (adata, user)) {
+                sort_menu (adata);
+        }
 }
 
 static void
@@ -982,6 +991,9 @@ fill_applet (PanelApplet *applet)
 
         adata = g_new0 (GdmAppletData, 1);
         adata->applet = applet;
+
+        /* Until we add user selecting to GDM */
+        adata->active_only = TRUE;
 
         adata->client = gconf_client_get_default ();
         adata->manager = gdm_user_manager_ref_default ();
@@ -1127,7 +1139,7 @@ fill_applet (PanelApplet *applet)
          */
         users = gdm_user_manager_list_users (adata->manager);
         while (users != NULL) {
-                add_user (adata, users->data);
+                maybe_add_user (adata, users->data);
 
                 users = g_slist_delete_link (users, users);
         }

@@ -8,7 +8,7 @@ INCLUDES = \
 	-DSYSCONFDIR=\""$(sysconfdir)"\"		\
 	-DLIBLOCALEDIR=\""$(prefix)/lib/locale"\"	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
-	-DGLADEDIR=\""$(pkgdatadir)"\" 	\
+	-DGLADEDIR=\""$(pkgdatadir)"\" 			\
 	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
 	-DSBINDIR=\""$(sbindir)"\"		 	\
 	$(GTK_CFLAGS)					\
@@ -31,11 +31,6 @@ gdm_user_switch_applet_LDADD = 		\
 	$(APPLET_LIBS)					\
 	$(NULL)
 
-gladedir = $(pkgdatadir)
-glade_DATA = 				\
-	gdm-user-switch-applet.glade	\
-	$(NULL)
-
 # Bonobo UI
 uidir =	$(datadir)/gnome-2.0/ui
 ui_DATA =					\
@@ -55,7 +50,6 @@ $(server_in_files): $(server_in_files:.server.in=.server.in.in)
 @INTLTOOL_SERVER_RULE@
 
 EXTRA_DIST = 			\
-	$(glade_DATA)		\
 	$(ui_DATA)		\
 	GNOME_FastUserSwitchApplet.server.in.in	\
 	$(NULL)
