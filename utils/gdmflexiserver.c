@@ -69,6 +69,18 @@ GOptionEntry options [] = {
         { NULL }
 };
 
+#define GDM_FLEXISERVER_ERROR gdm_flexiserver_error_quark ()
+static GQuark
+gdm_flexiserver_error_quark (void)
+{
+        static GQuark ret = 0;
+        if (ret == 0) {
+                ret = g_quark_from_static_string ("gdm_flexiserver_error");
+        }
+
+        return ret;
+}
+
 static gboolean
 is_program_in_path (const char *program)
 {
@@ -89,10 +101,11 @@ maybe_lock_screen (void)
         char      *command;
         GdkScreen *screen;
 
-        if (is_program_in_path ("gnome-screensaver-command"))
+        if (is_program_in_path ("gnome-screensaver-command")) {
                 use_gscreensaver = TRUE;
-        else if (! is_program_in_path ("xscreensaver-command"))
+        } else if (! is_program_in_path ("xscreensaver-command")) {
                 return;
+        }
 
         if (use_gscreensaver) {
                 command = g_strdup ("gnome-screensaver-command --lock");
@@ -139,7 +152,8 @@ calc_pi (void)
 }
 
 static gboolean
-create_transient_display (DBusConnection *connection)
+create_transient_display (DBusConnection *connection,
+                          GError        **error)
 {
         DBusError       local_error;
         DBusMessage    *message;
@@ -157,6 +171,7 @@ create_transient_display (DBusConnection *connection)
                                                 GDM_DBUS_LOCAL_DISPLAY_FACTORY_INTERFACE,
                                                 "CreateTransientDisplay");
         if (message == NULL) {
+                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, "Out of memory.");
                 goto out;
         }
 
@@ -168,6 +183,7 @@ create_transient_display (DBusConnection *connection)
         if (reply == NULL) {
                 if (dbus_error_is_set (&local_error)) {
                         g_warning ("Unable to create transient display: %s", local_error.message);
+                        g_set_error (error, GDM_FLEXISERVER_ERROR, 0, "%s", local_error.message);
                         dbus_error_free (&local_error);
                         goto out;
                 }
@@ -644,6 +660,7 @@ goto_login_session (GError **error)
         connection = dbus_bus_get (DBUS_BUS_SYSTEM, &local_error);
         if (connection == NULL) {
                 g_debug ("Failed to connect to the D-Bus daemon: %s", local_error.message);
+                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, "%s", local_error.message);
                 dbus_error_free (&local_error);
                 return FALSE;
         }
@@ -654,6 +671,8 @@ goto_login_session (GError **error)
         seat_id = get_current_seat_id (connection);
         if (seat_id == NULL || seat_id[0] == '\0') {
                 g_debug ("seat id is not set; can't switch sessions");
+                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, _("Could not identify the current session."));
+
                 return FALSE;
         }
 
@@ -666,7 +685,7 @@ goto_login_session (GError **error)
         }
 
         if (! ret) {
-                res = create_transient_display (connection);
+                res = create_transient_display (connection, error);
                 if (res) {
                         ret = TRUE;
                 }
@@ -736,7 +755,7 @@ main (int argc, char *argv[])
                 dialog = gtk_message_dialog_new (NULL,
                                                  GTK_DIALOG_DESTROY_WITH_PARENT,
                                                  GTK_MESSAGE_ERROR,
-                                                 GTK_BUTTONS_OK,
+                                                 GTK_BUTTONS_CLOSE,
                                                  "%s", _("Unable to start new display"));
 
                 gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
@@ -744,6 +763,7 @@ main (int argc, char *argv[])
                 g_free (message);
 
                 gtk_window_set_title (GTK_WINDOW (dialog), "");
+                gtk_window_set_icon_name (GTK_WINDOW (dialog), "session-properties");
                 gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
                 gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
 
