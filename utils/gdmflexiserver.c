@@ -52,6 +52,7 @@ static gboolean    debug_in         = FALSE;
 static gboolean    authenticate     = FALSE;
 static gboolean    startnew         = FALSE;
 static gboolean    monte_carlo_pi   = FALSE;
+static gboolean    show_version     = FALSE;
 static char      **args_remaining   = NULL;
 
 /* Keep all config options for compatibility even if they are noops */
@@ -63,6 +64,7 @@ GOptionEntry options [] = {
         { "authenticate", 'a', 0, G_OPTION_ARG_NONE, &authenticate, N_("Authenticate before running --command"), NULL },
         { "startnew", 's', 0, G_OPTION_ARG_NONE, &startnew, N_("Start new flexible session; do not show popup"), NULL },
         { "monte-carlo-pi", 0, 0, G_OPTION_ARG_NONE, &monte_carlo_pi, NULL, NULL },
+        { "version", 0, 0, G_OPTION_ARG_NONE, &show_version, N_("Version of this application"), NULL },
         { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args_remaining, NULL, NULL },
         { NULL }
 };
@@ -689,6 +691,12 @@ main (int argc, char *argv[])
         g_option_context_add_main_entries (ctx, options, _("Main Options"));
         g_option_context_parse (ctx, &argc, &argv, NULL);
         g_option_context_free (ctx);
+
+
+        if (show_version) {
+                g_print ("%s %s\n", argv [0], VERSION);
+                exit (1);
+        }
 
         /* don't support commands */
         if (send_command != NULL) {
