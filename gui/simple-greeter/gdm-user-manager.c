@@ -1301,13 +1301,15 @@ reload_passwd (GdmUserManager *manager)
                 }
 
                 /* ...And users w/ invalid shells... */
-                if (!pwent->pw_shell ||
+                if (pwent->pw_shell == NULL ||
                     !g_hash_table_lookup (manager->priv->shells, pwent->pw_shell)) {
+                        g_debug ("GdmUserManager: skipping user with bad shell: %s", pwent->pw_name);
                         continue;
                 }
 
                 /* ...And explicitly excluded users */
                 if (g_hash_table_lookup (manager->priv->exclusions, pwent->pw_name)) {
+                        g_debug ("GdmUserManager: explicitly skipping user: %s", pwent->pw_name);
                         continue;
                 }
 
@@ -1394,7 +1396,14 @@ reload_shells (GdmUserManager *manager)
         setusershell ();
 
         g_hash_table_remove_all (manager->priv->shells);
-        for (shell = getusershell (); shell; shell = getusershell ()) {
+        for (shell = getusershell (); shell != NULL; shell = getusershell ()) {
+                /* skip well known not-real shells */
+                if (shell == NULL
+                    || strcmp (shell, "/sbin/nologin") == 0
+                    || strcmp (shell, "/bin/false") == 0) {
+                        g_debug ("GdmUserManager: skipping shell %s", shell);
+                        continue;
+                }
                 g_hash_table_insert (manager->priv->shells,
                                      g_strdup (shell),
                                      GUINT_TO_POINTER (TRUE));
@@ -1537,7 +1546,7 @@ gdm_user_manager_init (GdmUserManager *manager)
                                                              G_FILE_MONITOR_NONE,
                                                              NULL,
                                                              &error);
-        if (manager->priv->shells_monitor != NULL) {
+        if (manager->priv->passwd_monitor != NULL) {
                 g_signal_connect (manager->priv->passwd_monitor,
                                   "changed",
                                   G_CALLBACK (on_passwd_monitor_changed),

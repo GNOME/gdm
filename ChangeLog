@@ -1,5 +1,12 @@
 2008-03-31  William Jon McCann  <jmccann@redhat.com>
 
+	* gui/simple-greeter/gdm-user-manager.c: (reload_passwd),
+	(reload_shells), (gdm_user_manager_init):
+	Explicitly exclude users with shells that are well
+	known as invalid shells: /sbin/nologin, /bin/false.
+
+2008-03-31  William Jon McCann  <jmccann@redhat.com>
+
 	* utils/gdmflexiserver.c: (gdm_flexiserver_error_quark),
 	(maybe_lock_screen), (create_transient_display),
 	(goto_login_session), (main):
