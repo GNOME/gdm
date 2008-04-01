@@ -208,8 +208,6 @@ remove_displays_for_connection (GdmManager *manager,
         data.service_name = service_name;
         data.manager = manager;
 
-        g_debug ("GdmManager: Removing display for service name: %s", service_name);
-
         gdm_display_store_foreach_remove (manager->priv->display_store,
                                           (GdmDisplayStoreFunc)remove_display_for_connection,
                                           &data);
