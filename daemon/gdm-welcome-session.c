@@ -35,6 +35,7 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <glib/gstdio.h>
 #include <glib-object.h>
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus-glib.h>
@@ -378,6 +379,7 @@ welcome_session_child_watch (GPid               pid,
 typedef struct {
         const char *user_name;
         const char *group_name;
+        const char *log_file;
 } SpawnChildData;
 
 static void
@@ -444,12 +446,26 @@ spawn_child_setup (SpawnChildData *data)
                          (guint) getpid (), g_strerror (errno));
                 _exit (2);
         }
+
+        if (data->log_file != NULL) {
+                int logfd;
+
+                VE_IGNORE_EINTR (g_unlink (data->log_file));
+                VE_IGNORE_EINTR (logfd = open (data->log_file, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644));
+
+                if (logfd != -1) {
+                        VE_IGNORE_EINTR (dup2 (logfd, 1));
+                        VE_IGNORE_EINTR (dup2 (logfd, 2));
+                        close (logfd);
+                }
+        }
 }
 
 static gboolean
 spawn_command_line_sync_as_user (const char *command_line,
                                  const char *user_name,
                                  const char *group_name,
+                                 const char *log_file,
                                  char       **env,
                                  char       **std_output,
                                  char       **std_error,
@@ -474,6 +490,7 @@ spawn_command_line_sync_as_user (const char *command_line,
 
         data.user_name = user_name;
         data.group_name = group_name;
+        data.log_file = log_file;
 
         local_error = NULL;
         res = g_spawn_sync (NULL,
@@ -504,6 +521,7 @@ static gboolean
 spawn_command_line_async_as_user (const char *command_line,
                                   const char *user_name,
                                   const char *group_name,
+                                  const char *log_file,
                                   char      **env,
                                   GPid       *child_pid,
                                   GError    **error)
@@ -526,6 +544,7 @@ spawn_command_line_async_as_user (const char *command_line,
 
         data.user_name = user_name;
         data.group_name = group_name;
+        data.log_file = log_file;
 
         local_error = NULL;
         res = g_spawn_async (NULL,
@@ -536,6 +555,7 @@ spawn_command_line_async_as_user (const char *command_line,
                              &data,
                              child_pid,
                              &local_error);
+
         if (! res) {
                 g_warning ("Could not spawn command: %s", local_error->message);
                 g_propagate_error (error, local_error);
@@ -643,6 +663,7 @@ start_dbus_daemon (GdmWelcomeSession *welcome_session)
         res = spawn_command_line_sync_as_user (DBUS_LAUNCH_COMMAND,
                                                welcome_session->priv->user_name,
                                                welcome_session->priv->group_name,
+                                               NULL, /* log file */
                                                (char **)env->pdata,
                                                &std_out,
                                                &std_err,
@@ -677,6 +698,8 @@ gdm_welcome_session_spawn (GdmWelcomeSession *welcome_session)
         GPtrArray       *env;
         gboolean         ret;
         gboolean         res;
+        char            *log_path;
+        char            *log_file;
 
         ret = FALSE;
 
@@ -695,15 +718,22 @@ gdm_welcome_session_spawn (GdmWelcomeSession *welcome_session)
 
         error = NULL;
 
+        log_file = g_strdup_printf ("%s-greeter.log", welcome_session->priv->x11_display_name);
+        log_path = g_build_filename (LOGDIR, log_file, NULL);
+        g_free (log_file);
+
         ret = spawn_command_line_async_as_user (welcome_session->priv->command,
                                                 welcome_session->priv->user_name,
                                                 welcome_session->priv->group_name,
+                                                log_path,
                                                 (char **)env->pdata,
                                                 &welcome_session->priv->pid,
                                                 &error);
 
         g_ptr_array_foreach (env, (GFunc)g_free, NULL);
         g_ptr_array_free (env, TRUE);
+
+        g_free (log_path);
 
         if (! ret) {
                 g_warning ("Could not start command '%s': %s",
