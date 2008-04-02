@@ -1,3 +1,10 @@
+2008-04-02  William Jon McCann  <jmccann@redhat.com>
+
+	* daemon/gdm-local-display-factory.c:
+	(on_static_display_status_changed):
+	Don't g_critical when bailing out after max num of
+	xserver failures since that triggers a backtrace.
+
 2008-03-31  William Jon McCann  <jmccann@redhat.com>
 
 	* daemon/gdm-manager.c: (remove_displays_for_connection):
