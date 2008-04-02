@@ -552,8 +552,9 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
         res = gdm_session_worker_get_username (worker, &username);
         if (res) {
                 g_debug ("GdmSessionWorker: old-username='%s' new-username='%s'",
-                         username != NULL ? username : "<unset>",
-                         worker->priv->username != NULL ? worker->priv->username : "<unset>");
+                         worker->priv->username != NULL ? worker->priv->username : "<unset>",
+                         username != NULL ? username : "<unset>");
+
 
                 gdm_session_auditor_set_username (worker->priv->auditor, worker->priv->username);
 
@@ -2036,7 +2037,7 @@ state_change_idle (GdmSessionWorker *worker)
         int new_state;
 
         new_state = worker->priv->state + 1;
-        g_debug ("GdmSessionWorker: changing state to %s",
+        g_debug ("GdmSessionWorker: attempting to change state to %s",
                  get_state_name (new_state));
 
         worker->priv->state_change_idle_id = 0;

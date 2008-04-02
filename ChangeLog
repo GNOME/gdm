@@ -2,6 +2,14 @@
 
 	* daemon/gdm-local-display-factory.c:
 	(on_static_display_status_changed):
+	* daemon/gdm-session-worker.c:
+	(gdm_session_worker_update_username), (state_change_idle):
+	Fix text in some debug statements and warnings.
+
+2008-04-02  William Jon McCann  <jmccann@redhat.com>
+
+	* daemon/gdm-local-display-factory.c:
+	(on_static_display_status_changed):
 	Don't g_critical when bailing out after max num of
 	xserver failures since that triggers a backtrace.
 

@@ -316,7 +316,7 @@ on_static_display_status_changed (GdmDisplay             *display,
                 factory->priv->num_failures++;
                 if (factory->priv->num_failures > MAX_DISPLAY_FAILURES) {
                         /* oh shit */
-                        g_warning ("GdmLocalDisplayFactory: maximum number of displays failures reached: check X server log for errors");
+                        g_warning ("GdmLocalDisplayFactory: maximum number of X display failures reached: check X server log for errors");
                         exit (1);
                 }
 
