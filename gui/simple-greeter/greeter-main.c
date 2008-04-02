@@ -178,9 +178,9 @@ at_set_gtk_modules (void)
         if ((old = g_getenv ("GTK_MODULES")) != NULL) {
                 modules = g_strsplit (old, ":", -1);
                 for (n = 0; modules[n]; n++) {
-                        if (!strcmp (modules[n], "gail")) {
+                        if (strcmp (modules[n], "gail") == 0) {
                                 found_gail = TRUE;
-                        } else if (!strcmp (modules[n], "atk-bridge")) {
+                        } else if (strcmp (modules[n], "atk-bridge") == 0) {
                                 found_atk_bridge = TRUE;
                         }
 
@@ -228,7 +228,15 @@ load_a11y (void)
         if (env_a_t_support) {
                 a_t_support = atoi (env_a_t_support);
         } else {
-                a_t_support = gconf_client_get_bool (gconf_client, ACCESSIBILITY_KEY, NULL);
+                GConfValue *val;
+
+                a_t_support = TRUE;
+
+                val = gconf_client_get_without_default (gconf_client, ACCESSIBILITY_KEY, NULL);
+                if (val != NULL) {
+                        a_t_support = gconf_value_get_bool (val);
+                        gconf_value_free (val);
+                }
         }
 
         if (a_t_support) {
