@@ -35,6 +35,7 @@
 #include <gtk/gtk.h>
 
 #include "gdm-chooser-widget.h"
+#include "gdm-scrollable-widget.h"
 #include "gdm-cell-renderer-timer.h"
 #include "gdm-timer.h"
 
@@ -55,7 +56,7 @@ struct GdmChooserWidgetPrivate
 {
         GtkWidget                *frame;
         GtkWidget                *frame_alignment;
-        GtkWidget                *scrolled_window;
+        GtkWidget                *scrollable_widget;
 
         GtkWidget                *items_view;
         GtkListStore             *list_store;
@@ -67,8 +68,6 @@ struct GdmChooserWidgetPrivate
 
         GtkTreeRowReference      *active_row;
         GtkTreeRowReference      *separator_row;
-        GtkTreeRowReference      *top_edge_row;    /* Only around for shrink */
-        GtkTreeRowReference      *bottom_edge_row; /* animations */
 
         GHashTable               *rows_with_timers;
 
@@ -85,9 +84,6 @@ struct GdmChooserWidgetPrivate
         gint                     number_of_rows_with_images;
         gint                     number_of_active_timers;
 
-        GdmTimer                *grow_animation_timer;
-        GdmTimer                *shrink_animation_timer;
-
         guint                    update_idle_id;
         guint                    timer_animation_timeout_id;
 
@@ -97,6 +93,7 @@ struct GdmChooserWidgetPrivate
         GdmChooserWidgetPosition separator_position;
         GdmChooserWidgetState    state;
 
+        double                   active_row_normalized_position;
 };
 
 enum {
@@ -375,358 +372,41 @@ translate_base_path_to_sorted_path (GdmChooserWidget  *widget,
         *path = sorted_path;
 }
 
-static gboolean
-shrink_edge_toward_active_row (GdmChooserWidget     *widget,
-                               GtkTreeRowReference **edge_row)
+static GtkTreePath *
+get_path_to_active_row (GdmChooserWidget *widget)
 {
-        GtkTreePath  *active_path;
-        GtkTreePath  *edge_path;
-        GtkTreeIter   edge_iter;
-        gboolean      edge_is_hidden;
-        int           relative_position;
-
-        active_path = gtk_tree_row_reference_get_path (widget->priv->active_row);
-        translate_base_path_to_sorted_path (widget, &active_path);
-
-        g_assert (*edge_row != NULL);
-        edge_path = gtk_tree_row_reference_get_path (*edge_row);
-        g_assert (edge_path != NULL);
-        relative_position = gtk_tree_path_compare (edge_path, active_path);
-        if (relative_position != 0 &&
-            gtk_tree_model_get_iter (GTK_TREE_MODEL (widget->priv->model_sorter),
-                                     &edge_iter, edge_path)) {
-                GtkTreeIter filtered_iter;
-                GtkTreeIter iter;
-
-                if (relative_position < 0) {
-                        gtk_tree_path_next (edge_path);
-                } else {
-                        if (!gtk_tree_path_prev (edge_path)) {
-                                edge_is_hidden = TRUE;
-                                goto out;
-                        }
-                }
-                gtk_tree_row_reference_free (*edge_row);
-
-                *edge_row = gtk_tree_row_reference_new (GTK_TREE_MODEL (widget->priv->model_sorter),
-                                                        edge_path);
-
-                gtk_tree_model_sort_convert_iter_to_child_iter (widget->priv->model_sorter,
-                                                                &filtered_iter, &edge_iter);
-                gtk_tree_model_filter_convert_iter_to_child_iter (widget->priv->model_filter,
-                                                                  &iter, &filtered_iter);
-                gtk_list_store_set (GTK_LIST_STORE (widget->priv->list_store),
-                                    &iter,
-                                    CHOOSER_ITEM_IS_VISIBLE_COLUMN, FALSE,
-                                    -1);
-
-                edge_is_hidden = FALSE;
-        } else {
-                edge_is_hidden = TRUE;
-        }
-out:
-        gtk_tree_path_free (active_path);
-        gtk_tree_path_free (edge_path);
-
-        return edge_is_hidden;
-}
-
-static gboolean
-run_shrink_animation (GdmChooserWidget *widget,
-                      int               number_of_iterations)
-{
-        gboolean is_done;
-
-        is_done = FALSE;
-
-        if (widget->priv->top_edge_row != NULL) {
-                is_done = shrink_edge_toward_active_row (widget,
-                                                         &widget->priv->top_edge_row);
-        }
-
-        if (widget->priv->bottom_edge_row != NULL) {
-                is_done = is_done &&
-                        shrink_edge_toward_active_row (widget,
-                                                       &widget->priv->bottom_edge_row);
-        }
-
-        number_of_iterations--;
-
-        if (number_of_iterations != 0) {
-                is_done = run_shrink_animation (widget, number_of_iterations);
-        }
-
-        return is_done;
-}
-
-static int
-get_number_of_on_screen_rows (GdmChooserWidget *widget)
-{
-        GtkTreePath *start_path;
-        GtkTreePath *end_path;
-        int         *start_index;
-        int         *end_index;
-        int          number_of_rows;
-
-        if (!gtk_tree_view_get_visible_range (GTK_TREE_VIEW (widget->priv->items_view),
-                                              &start_path, &end_path)) {
-                return 0;
-        }
-
-        start_index = gtk_tree_path_get_indices (start_path);
-        end_index = gtk_tree_path_get_indices (end_path);
-
-        number_of_rows = *end_index - *start_index;
-
-        gtk_tree_path_free (start_path);
-        gtk_tree_path_free (end_path);
-
-        return number_of_rows;
-}
-
-static gboolean
-run_grow_animation (GdmChooserWidget *widget,
-                    int               number_of_iterations)
-{
-        gboolean     is_done;
         GtkTreePath *path;
-        GtkTreeIter  iter;
-        gboolean     is_visible;
 
-        is_done = FALSE;
-
-        path = gtk_tree_path_new_first ();
-
-        do {
-                if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (widget->priv->list_store),
-                                              &iter, path)) {
-                        is_done = TRUE;
-                        break;
-                }
-
-                gtk_tree_model_get (GTK_TREE_MODEL (widget->priv->list_store),
-                                    &iter, CHOOSER_ITEM_IS_VISIBLE_COLUMN,
-                                    &is_visible, -1);
-
-                if (is_visible) {
-                        gtk_tree_path_next (path);
-                } else {
-                        gtk_list_store_set (GTK_LIST_STORE (widget->priv->list_store),
-                                            &iter,
-                                            CHOOSER_ITEM_IS_VISIBLE_COLUMN, TRUE,
-                                            -1);
-                }
-        } while (is_visible);
-
-        gtk_tree_path_free (path);
-
-        number_of_iterations--;
-
-        if (number_of_iterations != 0) {
-                is_done = run_grow_animation (widget, number_of_iterations);
+        if (widget->priv->active_row == NULL) {
+                return NULL;
         }
 
-        return is_done;
+        path= gtk_tree_row_reference_get_path (widget->priv->active_row);
+
+        if (path == NULL) {
+                return NULL;
+        }
+
+        translate_base_path_to_sorted_path (widget, &path);
+
+        return path;
 }
 
 static void
-on_shrink_animation_tick (GdmChooserWidget *widget,
-                          double            progress)
+on_shrink_animation_step (GdmScrollableWidget *scrollable_widget,
+                          double               progress,
+                          GdmChooserWidget    *widget)
 {
-        int number_of_iterations;
-        int number_of_visible_rows;
-        int number_of_rows;
-        int number_of_rows_to_be_gone;
-        int number_of_rows_gone;
+        GtkTreePath   *active_row_path;
+        const double   final_alignment = 0.5;
+        double         row_alignment;
 
-        if (widget->priv->state != GDM_CHOOSER_WIDGET_STATE_SHRINKING) {
-                return;
-        }
+        active_row_path = get_path_to_active_row (widget);
+        row_alignment = widget->priv->active_row_normalized_position + progress * (final_alignment - widget->priv->active_row_normalized_position);
 
-        number_of_visible_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->model_sorter), NULL);
-
-        if (number_of_visible_rows <= 1) {
-                gdm_timer_stop (widget->priv->shrink_animation_timer);
-                return;
-        }
-
-        number_of_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->list_store), NULL);
-
-        number_of_rows_to_be_gone = progress * number_of_rows;
-        number_of_rows_gone = number_of_rows - number_of_visible_rows;
-
-        number_of_iterations = number_of_rows_to_be_gone - number_of_rows_gone;
-
-        if (number_of_iterations <= 0) {
-                return;
-        }
-
-        if (run_shrink_animation (widget, number_of_iterations)) {
-                gdm_timer_stop (widget->priv->shrink_animation_timer);
-        }
-}
-
-static void
-on_grow_animation_tick (GdmChooserWidget *widget,
-                        double            progress)
-{
-        int number_of_iterations;
-        int number_of_visible_rows;
-        int number_of_rows;
-        int number_of_rows_wanted;
-
-        if (widget->priv->state != GDM_CHOOSER_WIDGET_STATE_GROWING) {
-                return;
-        }
-
-        number_of_visible_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->model_sorter), NULL);
-        number_of_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->list_store), NULL);
-
-        if (number_of_visible_rows == number_of_rows) {
-                gdm_timer_stop (widget->priv->shrink_animation_timer);
-                return;
-        }
-
-        number_of_rows_wanted = progress * number_of_rows;
-
-        number_of_iterations = number_of_rows_wanted - number_of_visible_rows;
-
-        if (number_of_iterations <= 0) {
-                return;
-        }
-
-        if (run_grow_animation (widget, number_of_iterations)) {
-                gdm_timer_stop (widget->priv->shrink_animation_timer);
-        }
-}
-
-static void
-on_shrink_animation_stop (GdmChooserWidget *widget)
-{
-
-        g_assert (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_SHRINKING);
-        widget->priv->state = GDM_CHOOSER_WIDGET_STATE_SHRUNK;
-
-        if (widget->priv->top_edge_row != NULL) {
-                gtk_tree_row_reference_free (widget->priv->top_edge_row);
-                widget->priv->top_edge_row = NULL;
-        }
-
-        if (widget->priv->bottom_edge_row != NULL) {
-                gtk_tree_row_reference_free (widget->priv->bottom_edge_row);
-                widget->priv->bottom_edge_row = NULL;
-        }
-
-        if (widget->priv->emit_activated_after_resize_animation) {
-                g_signal_emit (widget, signals[ACTIVATED], 0);
-                widget->priv->emit_activated_after_resize_animation = FALSE;
-        }
-
-        gtk_widget_set_sensitive (GTK_WIDGET (widget), TRUE);
-}
-
-static void
-on_grow_animation_stop (GdmChooserWidget *widget)
-{
-        g_assert (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING);
-        widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
-
-        if (widget->priv->emit_activated_after_resize_animation) {
-                g_signal_emit (widget, signals[ACTIVATED], 0);
-                widget->priv->emit_activated_after_resize_animation = FALSE;
-        }
-
-        gtk_widget_set_sensitive (GTK_WIDGET (widget), TRUE);
-}
-
-static void
-start_shrink_animation (GdmChooserWidget *widget)
-{
-       GtkTreePath *edge_path;
-       int          number_of_visible_rows;
-       int          number_of_rows;
-       int          number_of_on_screen_rows;
-       int          number_of_iterations;
-
-       if (widget->priv->shrink_animation_timer != NULL &&
-               gdm_timer_is_started (widget->priv->shrink_animation_timer)) {
-                gdm_timer_stop (widget->priv->shrink_animation_timer);
-       }
-
-       number_of_visible_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->model_sorter), NULL);
-       number_of_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->list_store), NULL);
-
-       if (number_of_visible_rows <= 1) {
-               on_shrink_animation_stop (widget);
-               return;
-       }
-
-       edge_path = gtk_tree_path_new_first ();
-       widget->priv->top_edge_row = gtk_tree_row_reference_new (GTK_TREE_MODEL (widget->priv->model_sorter),
-                                                                edge_path);
-       gtk_tree_path_free (edge_path);
-
-       edge_path = gtk_tree_path_new_from_indices (number_of_visible_rows - 1, -1);
-
-       widget->priv->bottom_edge_row = gtk_tree_row_reference_new (GTK_TREE_MODEL (widget->priv->model_sorter),
-                                                                   edge_path);
-       gtk_tree_path_free (edge_path);
-       g_assert (widget->priv->top_edge_row != NULL && widget->priv->bottom_edge_row != NULL);
-
-       gtk_widget_set_sensitive (GTK_WIDGET (widget), FALSE);
-
-       number_of_on_screen_rows = get_number_of_on_screen_rows (widget);
-       number_of_iterations = number_of_visible_rows - number_of_on_screen_rows;
-       number_of_iterations = MAX (0, number_of_iterations);
-
-       run_shrink_animation (widget, number_of_iterations);
-
-       if (widget->priv->shrink_animation_timer == NULL) {
-               widget->priv->shrink_animation_timer = gdm_timer_new ();
-
-               g_signal_connect_swapped (G_OBJECT (widget->priv->shrink_animation_timer),
-                                         "tick", G_CALLBACK (on_shrink_animation_tick),
-                                         widget);
-               g_signal_connect_swapped (G_OBJECT (widget->priv->shrink_animation_timer),
-                                         "stop", G_CALLBACK (on_shrink_animation_stop),
-                                         widget);
-       }
-
-       gdm_timer_start (widget->priv->shrink_animation_timer, 1.0);
-}
-
-static void
-start_grow_animation (GdmChooserWidget *widget)
-{
-       int          number_of_visible_rows;
-       int          number_of_rows;
-
-       if (widget->priv->grow_animation_timer != NULL &&
-               gdm_timer_is_started (widget->priv->grow_animation_timer)) {
-                gdm_timer_stop (widget->priv->grow_animation_timer);
-       }
-
-       number_of_visible_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->model_sorter), NULL);
-       number_of_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->list_store), NULL);
-
-       if (number_of_visible_rows >= number_of_rows) {
-               on_grow_animation_stop (widget);
-               return;
-       }
-
-       gtk_widget_set_sensitive (GTK_WIDGET (widget), FALSE);
-
-       if (widget->priv->grow_animation_timer == NULL) {
-               widget->priv->grow_animation_timer = gdm_timer_new ();
-
-               g_signal_connect_swapped (G_OBJECT (widget->priv->grow_animation_timer),
-                                         "tick", G_CALLBACK (on_grow_animation_tick),
-                                         widget);
-               g_signal_connect_swapped (G_OBJECT (widget->priv->grow_animation_timer),
-                                         "stop", G_CALLBACK (on_grow_animation_stop),
-                                         widget);
-       }
-       gdm_timer_start (widget->priv->grow_animation_timer, 1.0);
+        gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (widget->priv->items_view),
+                                     active_row_path, NULL, TRUE, row_alignment, 0.0);
+        gtk_tree_path_free (active_row_path);
 }
 
 static void
@@ -781,6 +461,133 @@ set_inactive_items_visible (GdmChooserWidget *widget,
 }
 
 static void
+on_shrink_animation_complete (GdmScrollableWidget *scrollable_widget,
+                              GdmChooserWidget    *widget)
+{
+        g_assert (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_SHRINKING);
+
+        widget->priv->active_row_normalized_position = 0.5;
+        set_inactive_items_visible (GDM_CHOOSER_WIDGET (widget), FALSE);
+        widget->priv->state = GDM_CHOOSER_WIDGET_STATE_SHRUNK;
+
+        if (widget->priv->emit_activated_after_resize_animation) {
+                g_signal_emit (widget, signals[ACTIVATED], 0);
+                widget->priv->emit_activated_after_resize_animation = FALSE;
+        }
+}
+
+static int
+get_height_of_row_at_path (GdmChooserWidget *widget,
+                           GtkTreePath      *path)
+{
+        GdkRectangle area;
+
+        gtk_tree_view_get_background_area (GTK_TREE_VIEW (widget->priv->items_view),
+                                           path, NULL, &area);
+
+        return area.height;
+}
+
+static double
+get_normalized_position_of_row_at_path (GdmChooserWidget *widget,
+                                        GtkTreePath      *path)
+{
+        GdkRectangle area_of_row_at_path;
+        GdkRectangle area_of_visible_rows;
+
+        gtk_tree_view_get_background_area (GTK_TREE_VIEW (widget->priv->items_view),
+                                           path, NULL, &area_of_row_at_path);
+
+        gtk_tree_view_convert_tree_to_widget_coords (GTK_TREE_VIEW (widget->priv->items_view),
+                                                     area_of_visible_rows.x,
+                                                     area_of_visible_rows.y,
+                                                     &area_of_visible_rows.x,
+                                                     &area_of_visible_rows.y);
+        return ((double) area_of_row_at_path.y) / widget->priv->items_view->allocation.height;
+}
+
+static void
+start_shrink_animation (GdmChooserWidget *widget)
+{
+       GtkTreePath *active_row_path;
+       int          active_row_height;
+       int          number_of_visible_rows;
+
+       g_assert (widget->priv->active_row != NULL);
+
+       number_of_visible_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->model_sorter), NULL);
+
+       if (number_of_visible_rows <= 1) {
+               on_shrink_animation_complete (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget),
+                                             widget);
+               return;
+       }
+
+       active_row_path = get_path_to_active_row (widget);
+       active_row_height = get_height_of_row_at_path (widget, active_row_path);
+       widget->priv->active_row_normalized_position = get_normalized_position_of_row_at_path (widget, active_row_path);
+       gtk_tree_path_free (active_row_path);
+
+       gdm_scrollable_widget_slide_to_height (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget),
+                                              active_row_height,
+                                              (GdmScrollableWidgetSlideStepFunc)
+                                              on_shrink_animation_step, widget,
+                                              (GdmScrollableWidgetSlideDoneFunc)
+                                              on_shrink_animation_complete, widget);
+}
+
+static void
+on_grow_animation_complete (GdmScrollableWidget *scrollable_widget,
+                            GdmChooserWidget *widget)
+{
+        g_assert (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING);
+        widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
+
+        if (widget->priv->emit_activated_after_resize_animation) {
+                g_signal_emit (widget, signals[ACTIVATED], 0);
+                widget->priv->emit_activated_after_resize_animation = FALSE;
+        }
+}
+
+static int
+get_height_of_screen (GdmChooserWidget *widget)
+{
+        GdkScreen    *screen;
+        GdkRectangle  area;
+        int           monitor;
+
+        screen = gtk_widget_get_screen (GTK_WIDGET (widget));
+
+        monitor = gdk_screen_get_monitor_at_window (screen,
+                                                    GTK_WIDGET (widget)->window);
+        gdk_screen_get_monitor_geometry (screen, monitor, &area);
+
+        return area.height;
+}
+
+static void
+start_grow_animation (GdmChooserWidget *widget)
+{
+        int number_of_visible_rows;
+        int number_of_rows;
+
+        number_of_visible_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->model_sorter), NULL);
+        number_of_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->list_store), NULL);
+
+        if (number_of_visible_rows >= number_of_rows) {
+               on_grow_animation_complete (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget), widget);
+               return;
+        }
+
+        set_inactive_items_visible (widget, TRUE);
+        gdm_scrollable_widget_slide_to_height (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget),
+                                               get_height_of_screen (widget),
+                                               NULL, NULL,
+                                               (GdmScrollableWidgetSlideDoneFunc)
+                                               on_grow_animation_complete, widget);
+}
+
+static void
 skip_resize_animation (GdmChooserWidget *widget)
 {
         if (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_SHRINKING) {
@@ -795,10 +602,6 @@ skip_resize_animation (GdmChooserWidget *widget)
 static void
 gdm_chooser_widget_grow (GdmChooserWidget *widget)
 {
-        gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (widget->priv->scrolled_window),
-                                             GTK_SHADOW_ETCHED_IN);
-        gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (widget->priv->scrolled_window),
-                                        GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
         gtk_alignment_set (GTK_ALIGNMENT (widget->priv->frame_alignment),
                            0.0, 0.0, 1.0, 1.0);
 
@@ -851,12 +654,6 @@ gdm_chooser_widget_shrink (GdmChooserWidget *widget)
 
         gtk_alignment_set (GTK_ALIGNMENT (widget->priv->frame_alignment),
                            0.0, 0.0, 1.0, 0.0);
-
-        gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (widget->priv->scrolled_window),
-                                        GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-
-        gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (widget->priv->scrolled_window),
-                                             GTK_SHADOW_ETCHED_OUT);
 
         clear_selection (widget);
 
@@ -1097,120 +894,6 @@ gdm_chooser_widget_focus_in (GtkWidget     *widget,
 }
 
 static void
-gdm_chooser_widget_size_request (GtkWidget      *widget,
-                                 GtkRequisition *requisition)
-{
-        GdmChooserWidget *chooser;
-
-        chooser = GDM_CHOOSER_WIDGET (widget);
-
-        GTK_WIDGET_CLASS (gdm_chooser_widget_parent_class)->size_request (widget, requisition);
-
-        /* XXX: this hack makes the scrolled window behave the way we want in
-         * the login window.  The login window is special because it always
-         * tries to hug the widgets as tightly as possible.  Normally, this
-         * "tight hug" makes the scrolled_window get squeezed into nothing (if
-         * POLICY_AUTOMATIC) If we use POLICY_NEVER then the scrolled window
-         * gets the right size but can't have a scrollbar (which sort of
-         * defeats the point I guess)
-         */
-        requisition->height -= chooser->priv->scrolled_window->requisition.height;
-        chooser->priv->scrolled_window->requisition.height = chooser->priv->items_view->requisition.height;
-        chooser->priv->scrolled_window->requisition.height += chooser->priv->scrolled_window->style->ythickness * 2;
-        chooser->priv->scrolled_window->requisition.height += GTK_CONTAINER (chooser->priv->scrolled_window)->border_width * 2;
-        requisition->height += chooser->priv->scrolled_window->requisition.height;
-}
-
-#ifdef BUILD_ALLOCATION_HACK
-static gint
-compare_allocation_height (GdmChooserWidget *widget_a,
-                           GdmChooserWidget *widget_b)
-{
-        return GTK_WIDGET (widget_a)->allocation.height - GTK_WIDGET (widget_b)->allocation.height;
-}
-
-static void
-renegotiate_allocation (GtkContainer          *container,
-                        GdmChooserWidgetClass *klass)
-{
-        GList *children;
-        GList *choosers;
-        GList *tmp;
-        int    total_allocation;
-        int    number_of_choosers;
-
-        if (klass->size_negotiation_handler == 0) {
-                return;
-        }
-        klass->size_negotiation_handler = 0;
-        g_signal_handlers_disconnect_by_func (container, renegotiate_allocation, klass);
-
-        children = gtk_container_get_children (container);
-
-        total_allocation = 0;
-        number_of_choosers = 0;
-        choosers = NULL;
-        for (tmp = children; tmp != NULL; tmp = tmp->next) {
-                GdmChooserWidget *widget;
-
-                if (!GDM_IS_CHOOSER_WIDGET (tmp->data)) {
-                        continue;
-                }
-
-                widget = GDM_CHOOSER_WIDGET (tmp->data);
-
-                total_allocation += GTK_WIDGET (widget)->allocation.height;
-                choosers = g_list_insert_sorted (choosers, widget, (GCompareFunc) compare_allocation_height);
-                number_of_choosers++;
-        }
-        total_allocation = MIN (total_allocation, GTK_WIDGET (container)->allocation.height);
-
-        for (tmp = choosers; tmp != NULL; tmp = tmp->next) {
-                GdmChooserWidget *widget;
-                GtkAllocation  allocation;
-
-                g_assert (GDM_IS_CHOOSER_WIDGET (tmp->data));
-
-                widget = GDM_CHOOSER_WIDGET (tmp->data);
-
-                allocation = GTK_WIDGET (widget)->allocation;
-
-                GTK_WIDGET (widget)->allocation.height = MIN (GTK_WIDGET (widget)->requisition.height,
-                                                              total_allocation / number_of_choosers);
-
-                total_allocation -= allocation.height;
-
-                number_of_choosers--;
-        }
-        g_list_free (children);
-}
-
-static void
-gdm_chooser_widget_size_allocate (GtkWidget        *widget,
-                                  GtkAllocation    *allocation)
-{
-        GdmChooserWidgetClass *klass;
-
-        klass = GDM_CHOOSER_WIDGET_GET_CLASS (widget);
-
-        GTK_WIDGET_CLASS (gdm_chooser_widget_parent_class)->size_allocate (widget, allocation);
-
-        /* XXX: Vbox isn't too smart about divving up allocations when there isn't enough room to go around.
-         * Since we may have more than one chooser widget in a vbox, we redistribute space between the choosers
-         * (if one chooser gets lots of space and another gets no space, give some up)
-         */
-        if (allocation->height == 1 && klass->size_negotiation_handler == 0) {
-                GtkWidget *parent;
-
-                parent = gtk_widget_get_parent (widget);
-                klass->size_negotiation_handler = g_signal_connect (parent, "size-allocate",
-                                                                    G_CALLBACK (renegotiate_allocation),
-                                                                    klass);
-        }
-}
-#endif
-
-static void
 gdm_chooser_widget_hide (GtkWidget *widget)
 {
         skip_resize_animation (GDM_CHOOSER_WIDGET (widget));
@@ -1236,10 +919,6 @@ gdm_chooser_widget_class_init (GdmChooserWidgetClass *klass)
         object_class->dispose = gdm_chooser_widget_dispose;
         object_class->finalize = gdm_chooser_widget_finalize;
         widget_class->focus_in_event = gdm_chooser_widget_focus_in;
-        widget_class->size_request = gdm_chooser_widget_size_request;
-#ifdef BUILD_ALLOCATION_HACK
-        widget_class->size_allocate = gdm_chooser_widget_size_allocate;
-#endif
         widget_class->hide = gdm_chooser_widget_hide;
         widget_class->show = gdm_chooser_widget_show;
 
@@ -1707,15 +1386,10 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
 
         add_frame (widget);
 
-        widget->priv->scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-
-        gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (widget->priv->scrolled_window),
-                                             NULL);
-        gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (widget->priv->scrolled_window),
-                                             NULL);
-        gtk_widget_show (widget->priv->scrolled_window);
+        widget->priv->scrollable_widget = gdm_scrollable_widget_new ();
+        gtk_widget_show (widget->priv->scrollable_widget);
         gtk_container_add (GTK_CONTAINER (widget->priv->frame_alignment),
-                           widget->priv->scrolled_window);
+                           widget->priv->scrollable_widget);
 
         widget->priv->items_view = gtk_tree_view_new ();
         gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (widget->priv->items_view),
@@ -1738,7 +1412,7 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
                                widget);
 
         gtk_widget_show (widget->priv->items_view);
-        gtk_container_add (GTK_CONTAINER (widget->priv->scrolled_window),
+        gtk_container_add (GTK_CONTAINER (widget->priv->scrollable_widget),
                            widget->priv->items_view);
 
         selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget->priv->items_view));
@@ -1858,16 +1532,6 @@ gdm_chooser_widget_finalize (GObject *object)
 
         g_hash_table_destroy (widget->priv->rows_with_timers);
         widget->priv->rows_with_timers = NULL;
-
-        if (widget->priv->shrink_animation_timer != NULL) {
-                g_object_unref (widget->priv->shrink_animation_timer);
-                widget->priv->shrink_animation_timer = NULL;
-        }
-
-        if (widget->priv->grow_animation_timer != NULL) {
-                g_object_unref (widget->priv->grow_animation_timer);
-                widget->priv->grow_animation_timer = NULL;
-        }
 
         G_OBJECT_CLASS (gdm_chooser_widget_parent_class)->finalize (object);
 }

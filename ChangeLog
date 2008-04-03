@@ -1,5 +1,27 @@
 2008-04-03 Ray Strode <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-scrollable-widget.[ch]:
+	* gui/simple-greeter/Makefile.am:
+	* gui/simple-greeter/gdm-chooser-widget.c:
+	(struct GdmChooserWidgetPrivate),
+	(get_path_to_active_row), (on_shrink_animation_step),
+	(on_shrink_animation_complete),
+	(get_height_of_row_at_path),
+	(get_normalized_position_of_row_at_path),
+	(start_shrink_animation),
+	(on_grow_animation_complete),
+	(get_height_of_screen), (start_grow_animation),
+	(start_grow_animation), (gdm_chooser_widget_grow),
+	(gdm_chooser_widget_shrink),
+	(gdm_chooser_widget_class_init), (gdm_chooser_widget_init),
+	(gdm_chooser_widget_finalize):
+	Do chooser widget animation in a different, smoother way
+	using a special widget that's like GtkScrolledWindow, but
+	can animation instead of removing items from the list one
+	by one
+
+2008-04-03 Ray Strode <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-login-window.c
 	(gdm_greeter_login_window_size_request):
 	Don't call gdm_widget_size_request where

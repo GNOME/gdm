@@ -72,6 +72,8 @@ test_greeter_login_window_SOURCES = 	\
 	gdm-timer.c			\
 	gdm-greeter-login-window.h	\
 	gdm-greeter-login-window.c	\
+	gdm-scrollable-widget.h		\
+	gdm-scrollable-widget.c		\
 	gdm-chooser-widget.h		\
 	gdm-chooser-widget.c		\
 	gdm-sessions.h			\
@@ -109,6 +111,8 @@ test_greeter_panel_SOURCES = 	\
 	gdm-cell-renderer-timer.c	\
 	gdm-timer.h			\
 	gdm-timer.c			\
+	gdm-scrollable-widget.h		\
+	gdm-scrollable-widget.c		\
 	gdm-chooser-widget.h		\
 	gdm-chooser-widget.c		\
 	gdm-language-chooser-widget.h	\
@@ -151,6 +155,8 @@ test_language_chooser_SOURCES = 	\
 	gdm-cell-renderer-timer.c	\
 	gdm-timer.h			\
 	gdm-timer.c			\
+	gdm-scrollable-widget.h		\
+	gdm-scrollable-widget.c		\
 	gdm-chooser-widget.h		\
 	gdm-chooser-widget.c		\
 	gdm-languages.h			\
@@ -183,6 +189,8 @@ test_user_chooser_SOURCES = 		\
 	gdm-timer.c			\
 	gdm-cell-renderer-timer.h	\
 	gdm-cell-renderer-timer.c	\
+	gdm-scrollable-widget.h		\
+	gdm-scrollable-widget.c		\
 	gdm-chooser-widget.h		\
 	gdm-chooser-widget.c		\
 	gdm-user-chooser-widget.h	\
@@ -229,6 +237,8 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-timer.c			\
 	gdm-cell-renderer-timer.h	\
 	gdm-cell-renderer-timer.c	\
+	gdm-scrollable-widget.h		\
+	gdm-scrollable-widget.c		\
 	gdm-chooser-widget.h		\
 	gdm-chooser-widget.c		\
 	gdm-greeter-client.h		\
