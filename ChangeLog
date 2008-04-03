@@ -1,5 +1,16 @@
 2008-04-03 Ray Strode <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-greeter-login-window.c
+	(gdm_greeter_login_window_class_init),
+	(gdm_greeter_login_window_new),
+	(fit_window_to_children):
+	(gdm_greeter_login_window_size_allocate):
+	Make window non-user resizable drop code
+	to make window hug children (happens automatically
+	this way)
+
+2008-04-03 Ray Strode <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-timer.c:
 	(do_tick): make sure the timer always ticks
 	at 0.0 initially
