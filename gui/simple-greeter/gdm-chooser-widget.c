@@ -85,7 +85,7 @@ struct GdmChooserWidgetPrivate
         gint                     number_of_active_timers;
 
         guint                    update_idle_id;
-        guint                    animation_timeout_id;
+        guint                    resize_animation_timeout_id;
         guint                    timer_animation_timeout_id;
 
         guint32                  should_hide_inactive_items : 1;
@@ -503,7 +503,7 @@ on_animation_timeout (GdmChooserWidget *widget)
 static void
 on_animation_done (GdmChooserWidget *widget)
 {
-        if (widget->priv->animation_timeout_id == 0) {
+        if (widget->priv->resize_animation_timeout_id == 0) {
                 return;
         }
 
@@ -517,7 +517,7 @@ on_animation_done (GdmChooserWidget *widget)
                 widget->priv->bottom_edge_row = NULL;
         }
 
-        widget->priv->animation_timeout_id = 0;
+        widget->priv->resize_animation_timeout_id = 0;
         gtk_widget_set_sensitive (GTK_WIDGET (widget), TRUE);
 
         if (widget->priv->emit_activated_after_animation) {
@@ -558,8 +558,8 @@ start_animation (GdmChooserWidget *widget)
        int          number_of_visible_rows;
        int          number_of_rows;
 
-       if (widget->priv->animation_timeout_id != 0) {
-                g_source_remove (widget->priv->animation_timeout_id);
+       if (widget->priv->resize_animation_timeout_id != 0) {
+                g_source_remove (widget->priv->resize_animation_timeout_id);
        }
 
        number_of_visible_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->model_sorter), NULL);
@@ -608,7 +608,7 @@ start_animation (GdmChooserWidget *widget)
        /* FIXME: The 4 here is abitrary.  We should really keep track of the time we start and
         * hide enough rows to catch up to where we should be each time through
         */
-       widget->priv->animation_timeout_id =
+       widget->priv->resize_animation_timeout_id =
                g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE,
                                    1000 / (4 * number_of_rows),
                                    (GSourceFunc) on_animation_timeout,
