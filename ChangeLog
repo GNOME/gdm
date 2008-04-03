@@ -1,6 +1,13 @@
 2008-04-03 Ray Strode <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-greeter-login-window.c
+	(gdm_greeter_login_window_size_request):
+	Don't call gdm_widget_size_request where
+	gtk_widget_get_child_requisition will do
+
+2008-04-03 Ray Strode <rstrode@redhat.com>
+
+	* gui/simple-greeter/gdm-greeter-login-window.c
 	(switch_mode):
 	Don't let window shrink width when switching
 	modes

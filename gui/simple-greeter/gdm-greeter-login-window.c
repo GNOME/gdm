@@ -1494,7 +1494,7 @@ gdm_greeter_login_window_size_request (GtkWidget      *widget,
         screen_w = gdk_screen_get_width (gtk_widget_get_screen (widget));
         screen_h = gdk_screen_get_height (gtk_widget_get_screen (widget));
 
-        gtk_widget_size_request (GTK_BIN (widget)->child, &child_requisition);
+        gtk_widget_get_child_requisition (GTK_BIN (widget)->child, &child_requisition);
         *requisition = child_requisition;
 
         requisition->width += 2 * GTK_CONTAINER (widget)->border_width;
