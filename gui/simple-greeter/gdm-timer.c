@@ -202,33 +202,42 @@ get_current_time (void)
   return timestamp;
 }
 
+static void
+do_tick (GdmTimer *timer,
+         double    progress,
+         double    current_time)
+{
+        static const double frequency = 1.0 / GDM_TIMER_TICKS_PER_SECOND;
+        double next_tick;
+        double time_before_tick;
+        double tick_duration;
+
+        time_before_tick = current_time;
+        g_signal_emit (G_OBJECT (timer), signals[TICK], 0, progress);
+
+        current_time = get_current_time ();
+        tick_duration = current_time - time_before_tick;
+
+        next_tick = MAX (frequency - tick_duration, 0.0);
+        timer->priv->tick_timeout_id = 0;
+        gdm_timer_queue_next_tick (timer, next_tick);
+}
+
 static gboolean
 on_tick_timeout (GdmTimer *timer)
 {
         double progress;
-        double time_before_tick;
+        double current_time;
         double elapsed_time;
 
-        time_before_tick = get_current_time ();
-        elapsed_time = time_before_tick - timer->priv->start_time;
+        current_time = get_current_time ();
+        elapsed_time = current_time - timer->priv->start_time;
         progress = elapsed_time / timer->priv->duration;
 
         if (progress > 0.999) {
                 gdm_timer_stop (timer);
         } else {
-                static const double frequency = 1.0 / GDM_TIMER_TICKS_PER_SECOND;
-                double next_tick;
-                double time_after_tick;
-                double tick_duration;
-
-                g_signal_emit (G_OBJECT (timer), signals[TICK], 0, progress);
-
-                time_after_tick = get_current_time ();
-                tick_duration = time_after_tick - time_before_tick;
-
-                next_tick = MAX (frequency - tick_duration, 0.0);
-                timer->priv->tick_timeout_id = 0;
-                gdm_timer_queue_next_tick (timer, next_tick);
+                do_tick (timer, progress, current_time);
         }
 
         return FALSE;
@@ -282,7 +291,8 @@ gdm_timer_start (GdmTimer *timer,
 
         g_assert (timer->priv->tick_timeout_id == 0);
         gdm_timer_set_is_started (timer, TRUE);
-        gdm_timer_queue_next_tick (timer, 1.0 / GDM_TIMER_TICKS_PER_SECOND);
+
+        do_tick (timer, 0.0, timer->priv->start_time);
 }
 
 void
