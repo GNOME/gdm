@@ -1,4 +1,15 @@
 2008-04-03 Ray Strode <rstrode@redhat.com>
+	* gui/simple-greeter/gdm-timer.[ch]:
+	new files to make animations easier
+	* gui/simple-greeter/gdm-chooser-widget.c
+	(struct GdmChooserWidgetPrivate),
+	(on_shrink_animation_tick), (on_grow_animation_tick),
+	(on_shrink_animation_stop), (on_grow_animation_stop),
+	(start_shrink_animation), (gdm_chooser_widget_finalize):
+	* common/gdm-marshal.list:
+	Switch chooser over to use timer
+
+2008-04-03 Ray Strode <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-chooser-widget.c
 	(struct GdmChooserWidgetPrivate),
