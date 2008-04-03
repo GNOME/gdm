@@ -1,6 +1,17 @@
 2008-04-03 Ray Strode <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-chooser-widget.c
+	(struct GdmChooserWidgetPrivate),
+	(run_animation), (run_shrink_animation), (run_grow_animation),
+	(on_shrink_animation_done), (on_animation_done),
+	(on_grow_animation_done), (start_shrink_animation),
+	(start_grow_animation), (skip_animation), (skip_resize_animation),
+	(gdm_chooser_widget_hide), (gdm_chooser_widget_show):
+	Split grow and shrink animation into independent code paths
+
+2008-04-03 Ray Strode <rstrode@redhat.com>
+
+	* gui/simple-greeter/gdm-chooser-widget.c
 	(struct GdmChooserWidgetPrivate), (on_animation_timeout),
 	(on_animation_done), (start_animation):
 	s/animation_timeout_id/resize_animation_timeout_id/
