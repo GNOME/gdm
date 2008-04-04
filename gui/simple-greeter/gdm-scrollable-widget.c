@@ -109,7 +109,7 @@ gdm_scrollable_widget_animation_free (GdmScrollableWidgetAnimation *animation)
         g_slice_free (GdmScrollableWidgetAnimation, animation);
 }
 
-void
+static void
 on_animation_tick (GdmScrollableWidgetAnimation *animation,
                    double                        progress)
 {
@@ -159,7 +159,7 @@ gdm_scrollable_unredirect_input (GdmScrollableWidget *scrollable_widget)
         gdk_pointer_ungrab (GDK_CURRENT_TIME);
 }
 
-void
+static void
 on_animation_stop (GdmScrollableWidgetAnimation *animation)
 {
         GdmScrollableWidget *widget;
@@ -229,6 +229,7 @@ gdm_scrollable_widget_size_request (GtkWidget      *widget,
         if (GTK_BIN (widget)->child && GTK_WIDGET_VISIBLE (GTK_BIN (widget)->child)) {
                 gtk_widget_size_request (GTK_BIN (widget)->child,
                                          &child_requisition);
+                requisition->width += child_requisition.width;
                 requisition->height += child_requisition.height;
         }
 

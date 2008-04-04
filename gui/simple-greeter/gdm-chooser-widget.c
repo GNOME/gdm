@@ -94,6 +94,7 @@ struct GdmChooserWidgetPrivate
         GdmChooserWidgetState    state;
 
         double                   active_row_normalized_position;
+        int                      height_when_grown;
 };
 
 enum {
@@ -559,7 +560,7 @@ get_height_of_screen (GdmChooserWidget *widget)
         screen = gtk_widget_get_screen (GTK_WIDGET (widget));
 
         monitor = gdk_screen_get_monitor_at_window (screen,
-                                                    GTK_WIDGET (widget)->window);
+                                                    gdk_screen_get_root_window (screen));
         gdk_screen_get_monitor_geometry (screen, monitor, &area);
 
         return area.height;
@@ -581,7 +582,7 @@ start_grow_animation (GdmChooserWidget *widget)
 
         set_inactive_items_visible (widget, TRUE);
         gdm_scrollable_widget_slide_to_height (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget),
-                                               get_height_of_screen (widget),
+                                               widget->priv->height_when_grown,
                                                NULL, NULL,
                                                (GdmScrollableWidgetSlideDoneFunc)
                                                on_grow_animation_complete, widget);
@@ -908,6 +909,21 @@ gdm_chooser_widget_show (GtkWidget *widget)
 }
 
 static void
+gdm_chooser_widget_size_allocate (GtkWidget     *widget,
+                                  GtkAllocation *allocation)
+{
+        GdmChooserWidget *chooser_widget;
+
+        GTK_WIDGET_CLASS (gdm_chooser_widget_parent_class)->size_allocate (widget, allocation);
+
+        chooser_widget = GDM_CHOOSER_WIDGET (widget);
+
+        if (chooser_widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWN) {
+                chooser_widget->priv->height_when_grown = allocation->height;
+        }
+}
+
+static void
 gdm_chooser_widget_class_init (GdmChooserWidgetClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
@@ -919,6 +935,7 @@ gdm_chooser_widget_class_init (GdmChooserWidgetClass *klass)
         object_class->dispose = gdm_chooser_widget_dispose;
         object_class->finalize = gdm_chooser_widget_finalize;
         widget_class->focus_in_event = gdm_chooser_widget_focus_in;
+        widget_class->size_allocate = gdm_chooser_widget_size_allocate;
         widget_class->hide = gdm_chooser_widget_hide;
         widget_class->show = gdm_chooser_widget_show;
 
@@ -1381,6 +1398,8 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
         GtkCellRenderer   *renderer;
 
         widget->priv = GDM_CHOOSER_WIDGET_GET_PRIVATE (widget);
+
+        widget->priv->height_when_grown = get_height_of_screen (widget);
 
         gtk_alignment_set_padding (GTK_ALIGNMENT (widget), 0, 0, 0, 0);
 
