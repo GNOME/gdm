@@ -159,7 +159,10 @@ static void     gdm_greeter_login_window_class_init   (GdmGreeterLoginWindowClas
 static void     gdm_greeter_login_window_init         (GdmGreeterLoginWindow      *greeter_login_window);
 static void     gdm_greeter_login_window_finalize     (GObject                    *object);
 
-static void restart_timed_login_timeout (GdmGreeterLoginWindow *login_window);
+static void     restart_timed_login_timeout (GdmGreeterLoginWindow *login_window);
+static void     on_user_unchosen            (GdmUserChooserWidget *user_chooser,
+                                             GdmGreeterLoginWindow *login_window);
+
 G_DEFINE_TYPE (GdmGreeterLoginWindow, gdm_greeter_login_window, GTK_TYPE_WINDOW)
 
 static void
@@ -618,7 +621,11 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         }
         _gdm_greeter_login_window_set_interactive (login_window, FALSE);
 
+        g_signal_handlers_block_by_func (G_OBJECT (login_window->priv->user_chooser),
+                                         G_CALLBACK (on_user_unchosen), login_window);
         gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), NULL);
+        g_signal_handlers_unblock_by_func (G_OBJECT (login_window->priv->user_chooser),
+                                           G_CALLBACK (on_user_unchosen), login_window);
 
         if (login_window->priv->start_session_handler_id > 0) {
                 g_signal_handler_disconnect (login_window, login_window->priv->start_session_handler_id);
@@ -707,16 +714,30 @@ gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_windo
                                               const char            *username,
                                               int                    delay)
 {
+        static gboolean timed_login_already_enabled;
+
         g_return_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window));
 
         g_debug ("GdmGreeterLoginWindow: requested automatic login for user '%s' in %d seconds", username, delay);
 
+        if (login_window->priv->timed_login_username != NULL) {
+                timed_login_already_enabled = TRUE;
+                g_free (login_window->priv->timed_login_username);
+        } else {
+                timed_login_already_enabled = FALSE;
+        }
         login_window->priv->timed_login_username = g_strdup (username);
         login_window->priv->timed_login_delay = delay;
 
-        reset_dialog (login_window);
+        if (login_window->priv->dialog_mode != MODE_SELECTION) {
+                reset_dialog (login_window);
+        }
         gdm_user_chooser_widget_set_show_auto_user (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
-        gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), GDM_USER_CHOOSER_USER_AUTO);
+
+        if (!timed_login_already_enabled) {
+                gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser),
+                                                              GDM_USER_CHOOSER_USER_AUTO);
+        }
 }
 
 static void
