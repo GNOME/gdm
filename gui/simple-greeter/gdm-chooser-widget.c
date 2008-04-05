@@ -504,7 +504,7 @@ get_normalized_position_of_row_at_path (GdmChooserWidget *widget,
                                                      area_of_visible_rows.y,
                                                      &area_of_visible_rows.x,
                                                      &area_of_visible_rows.y);
-        return ((double) area_of_row_at_path.y) / widget->priv->items_view->allocation.height;
+        return CLAMP (((double) area_of_row_at_path.y) / widget->priv->items_view->allocation.height, 0.0, 1.0);
 }
 
 static void
