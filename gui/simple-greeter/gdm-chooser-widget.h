@@ -48,10 +48,6 @@ typedef struct
 
         void (* activated)      (GdmChooserWidget *widget);
         void (* deactivated)    (GdmChooserWidget *widget);
-
-#ifdef BUILD_ALLOCATION_HACK
-        gulong size_negotiation_handler;
-#endif
 } GdmChooserWidgetClass;
 
 typedef enum {

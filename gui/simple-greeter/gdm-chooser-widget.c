@@ -89,6 +89,7 @@ struct GdmChooserWidgetPrivate
 
         guint32                  should_hide_inactive_items : 1;
         guint32                  emit_activated_after_resize_animation : 1;
+        guint32                  was_fully_grown : 1;
 
         GdmChooserWidgetPosition separator_position;
         GdmChooserWidgetState    state;
@@ -543,6 +544,7 @@ on_grow_animation_complete (GdmScrollableWidget *scrollable_widget,
 {
         g_assert (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING);
         widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
+        widget->priv->was_fully_grown = TRUE;
 
         if (widget->priv->emit_activated_after_resize_animation) {
                 g_signal_emit (widget, signals[ACTIVATED], 0);
@@ -566,11 +568,54 @@ get_height_of_screen (GdmChooserWidget *widget)
         return area.height;
 }
 
+static int
+get_number_of_on_screen_rows (GdmChooserWidget *widget)
+{
+        GtkTreePath *start_path;
+        GtkTreePath *end_path;
+        int         *start_index;
+        int         *end_index;
+        int          number_of_rows;
+
+        if (!gtk_tree_view_get_visible_range (GTK_TREE_VIEW (widget->priv->items_view),
+                                              &start_path, &end_path)) {
+                return 0;
+        }
+
+        start_index = gtk_tree_path_get_indices (start_path);
+        end_index = gtk_tree_path_get_indices (end_path);
+
+        number_of_rows = *end_index - *start_index;
+
+        gtk_tree_path_free (start_path);
+        gtk_tree_path_free (end_path);
+
+        return number_of_rows;
+}
+
+static void
+on_grow_animation_step (GdmScrollableWidget *scrollable_widget,
+                        double               progress,
+                        GdmChooserWidget    *widget)
+{
+        int number_of_visible_rows;
+        int number_of_on_screen_rows;
+
+        number_of_visible_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->model_sorter), NULL);
+        number_of_on_screen_rows = get_number_of_on_screen_rows (widget);
+
+        if (number_of_on_screen_rows >= number_of_visible_rows) {
+                gdm_scrollable_widget_stop_sliding (scrollable_widget);
+                return;
+        }
+}
+
 static void
 start_grow_animation (GdmChooserWidget *widget)
 {
         int number_of_visible_rows;
         int number_of_rows;
+        int height;
 
         number_of_visible_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->model_sorter), NULL);
         number_of_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->list_store), NULL);
@@ -581,9 +626,16 @@ start_grow_animation (GdmChooserWidget *widget)
         }
 
         set_inactive_items_visible (widget, TRUE);
+
+        if (widget->priv->was_fully_grown) {
+                height = widget->priv->height_when_grown;
+        } else {
+                height = get_height_of_screen (widget);
+        }
         gdm_scrollable_widget_slide_to_height (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget),
                                                widget->priv->height_when_grown,
-                                               NULL, NULL,
+                                               (GdmScrollableWidgetSlideStepFunc)
+                                               on_grow_animation_step, widget,
                                                (GdmScrollableWidgetSlideDoneFunc)
                                                on_grow_animation_complete, widget);
 }
@@ -597,6 +649,7 @@ skip_resize_animation (GdmChooserWidget *widget)
         } else if (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING) {
                 set_inactive_items_visible (GDM_CHOOSER_WIDGET (widget), TRUE);
                 widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
+                widget->priv->was_fully_grown = FALSE;
         }
 }
 
@@ -605,6 +658,7 @@ gdm_chooser_widget_grow (GdmChooserWidget *widget)
 {
         if (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_SHRINKING) {
                 gdm_scrollable_widget_stop_sliding (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget));
+                widget->priv->was_fully_grown = FALSE;
         }
 
         gtk_alignment_set (GTK_ALIGNMENT (widget->priv->frame_alignment),
@@ -656,12 +710,6 @@ gdm_chooser_widget_shrink (GdmChooserWidget *widget)
         g_assert (widget->priv->should_hide_inactive_items == TRUE);
 
         if (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING) {
-
-                /* FIXME: since we don't distinguish between a canceled
-                 * animation and a finished one, the next line is going
-                 * to mean at the next size-allocate signal,
-                 * height_when_grown is going to get set to the wrong value
-                 */
                 gdm_scrollable_widget_stop_sliding (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget));
         }
 
@@ -933,7 +981,9 @@ gdm_chooser_widget_size_allocate (GtkWidget     *widget,
         chooser_widget = GDM_CHOOSER_WIDGET (widget);
 
         if (chooser_widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWN) {
-                chooser_widget->priv->height_when_grown = allocation->height;
+                if (chooser_widget->priv->was_fully_grown) {
+                        chooser_widget->priv->height_when_grown = allocation->height;
+                }
         }
 }
 

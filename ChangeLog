@@ -1,3 +1,22 @@
+2008-04-05 Ray Strode <rstrode@redhat.com>
+
+	* gui/simple-greeter/gdm-chooser-widget.c
+	(get_number_of_on_screen_rows),
+	(on_grow_animation_complete),
+	(on_grow_animation_step), (start_grow_animation),
+	(skip_resize_animation), (gdm_chooser_widget_grow),
+	(gdm_chooser_widget_shrink),
+	(gdm_chooser_widget_size_allocate):
+	In some situations we don't start the login window
+	fully grown, so we don't know how far to grow back
+	to after shrinking.  Try to identify when those cases
+	happen and instead initiate a slide to the height of
+	the screen. To mitigate the obviousness of over guessing
+	how far to grow. Detect when we've grown enough, and stop
+	the animation early.
+	* gui/simple-greeter/gdm-chooser-widget.h:
+	Remove unused field from structure
+
 2008-04-05  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/gdm-timer.c: (gdm_timer_class_init),
