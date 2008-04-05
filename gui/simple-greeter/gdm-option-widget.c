@@ -1041,10 +1041,6 @@ gdm_option_widget_lookup_item (GdmOptionWidget          *widget,
         char         *active_item_id;
 
         g_return_val_if_fail (GDM_IS_OPTION_WIDGET (widget), FALSE);
-
-        if (id == NULL) {
-                sleep (30);
-        }
         g_return_val_if_fail (id != NULL, FALSE);
 
         active_item_id = get_active_item_id (widget, &iter);
