@@ -644,10 +644,6 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         label = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-label");
         gtk_label_set_text (GTK_LABEL (label), "");
 
-        set_message (login_window, "");
-
-        gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), NULL);
-
         switch_mode (login_window, MODE_SELECTION);
 
         set_sensitive (login_window, TRUE);
