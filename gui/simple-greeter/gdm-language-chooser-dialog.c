@@ -154,6 +154,7 @@ gdm_language_chooser_dialog_new (void)
         object = g_object_new (GDM_TYPE_LANGUAGE_CHOOSER_DIALOG,
                                "title", _("Languages"),
                                "border-width", 8,
+                               "modal", TRUE,
                                NULL);
 
         return GTK_WIDGET (object);
