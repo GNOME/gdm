@@ -1,5 +1,15 @@
 2008-04-05 Ray Strode <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-scrollable-widget.[ch]:
+	(gdm_scrollable_widget_animation_stop),
+	(gdm_scrollable_widget_stop_sliding):
+	* gui/simple-greeter/gdm-chooser-widget.c:
+	(gdm_chooser_widget_grow),
+	(gdm_chooser_widget_shrink):
+	Cancel pending animations before starting new ones
+
+2008-04-05 Ray Strode <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-chooser-widget.c
 	(get_normalized_position_of_row_at_path):
 	ensure return value is between 0.0 and 1.0

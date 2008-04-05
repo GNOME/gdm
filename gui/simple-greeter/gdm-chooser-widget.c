@@ -603,6 +603,10 @@ skip_resize_animation (GdmChooserWidget *widget)
 static void
 gdm_chooser_widget_grow (GdmChooserWidget *widget)
 {
+        if (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_SHRINKING) {
+                gdm_scrollable_widget_stop_sliding (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget));
+        }
+
         gtk_alignment_set (GTK_ALIGNMENT (widget->priv->frame_alignment),
                            0.0, 0.0, 1.0, 1.0);
 
@@ -650,6 +654,16 @@ static void
 gdm_chooser_widget_shrink (GdmChooserWidget *widget)
 {
         g_assert (widget->priv->should_hide_inactive_items == TRUE);
+
+        if (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING) {
+
+                /* FIXME: since we don't distinguish between a canceled
+                 * animation and a finished one, the next line is going
+                 * to mean at the next size-allocate signal,
+                 * height_when_grown is going to get set to the wrong value
+                 */
+                gdm_scrollable_widget_stop_sliding (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget));
+        }
 
         set_frame_text (widget, widget->priv->active_text);
 

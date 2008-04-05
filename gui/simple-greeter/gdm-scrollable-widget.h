@@ -61,6 +61,7 @@ struct GdmScrollableWidgetClass
 
 GType                  gdm_scrollable_widget_get_type               (void);
 GtkWidget *            gdm_scrollable_widget_new                    (void);
+void                   gdm_scrollable_widget_stop_sliding           (GdmScrollableWidget *widget);
 void                   gdm_scrollable_widget_slide_to_height        (GdmScrollableWidget *widget,
                                                                      int                  height,
                                                                      GdmScrollableWidgetSlideStepFunc step_func,

@@ -106,6 +106,7 @@ static void
 gdm_scrollable_widget_animation_free (GdmScrollableWidgetAnimation *animation)
 {
         g_object_unref (animation->timer);
+        animation->timer = NULL;
         g_slice_free (GdmScrollableWidgetAnimation, animation);
 }
 
@@ -191,6 +192,12 @@ gdm_scrollable_widget_animation_start (GdmScrollableWidgetAnimation *animation)
                                   G_CALLBACK (on_animation_stop),
                                   animation);
         gdm_timer_start (animation->timer, .50);
+}
+
+static void
+gdm_scrollable_widget_animation_stop (GdmScrollableWidgetAnimation *animation)
+{
+        gdm_timer_stop (animation->timer);
 }
 
 static gboolean
@@ -621,6 +628,18 @@ gdm_scrollable_widget_animations_are_disabled (GdmScrollableWidget *scrollable_w
 }
 
 void
+gdm_scrollable_widget_stop_sliding (GdmScrollableWidget *scrollable_widget)
+{
+        g_return_if_fail (GDM_IS_SCROLLABLE_WIDGET (scrollable_widget));
+
+        if (scrollable_widget->priv->animation != NULL) {
+                gdm_scrollable_widget_animation_stop (scrollable_widget->priv->animation);
+        }
+
+        g_assert (scrollable_widget->priv->animation == NULL);
+}
+
+void
 gdm_scrollable_widget_slide_to_height (GdmScrollableWidget *scrollable_widget,
                                        int                  height,
                                        GdmScrollableWidgetSlideStepFunc step_func,
@@ -634,7 +653,7 @@ gdm_scrollable_widget_slide_to_height (GdmScrollableWidget *scrollable_widget,
         g_return_if_fail (GDM_IS_SCROLLABLE_WIDGET (scrollable_widget));
         widget = GTK_WIDGET (scrollable_widget);
 
-        g_return_if_fail (scrollable_widget->priv->animation == NULL);
+        gdm_scrollable_widget_stop_sliding (scrollable_widget);
 
         input_redirected = gdm_scrollable_redirect_input_to_event_sink (scrollable_widget);
 
