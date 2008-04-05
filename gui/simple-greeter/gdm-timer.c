@@ -122,6 +122,7 @@ gdm_timer_class_init (GdmTimerClass *klass)
         object_class = G_OBJECT_CLASS (klass);
 
         object_class->finalize = gdm_timer_finalize;
+
         object_class->get_property = gdm_timer_get_property;
 
         signals[TICK] = g_signal_new ("tick",
@@ -219,7 +220,7 @@ do_tick (GdmTimer *timer,
         tick_duration = current_time - time_before_tick;
 
         next_tick = MAX (frequency - tick_duration, 0.0);
-        timer->priv->tick_timeout_id = 0;
+
         gdm_timer_queue_next_tick (timer, next_tick);
 }
 
@@ -234,6 +235,8 @@ on_tick_timeout (GdmTimer *timer)
         elapsed_time = current_time - timer->priv->start_time;
         progress = elapsed_time / timer->priv->duration;
 
+        timer->priv->tick_timeout_id = 0;
+
         if (progress > 0.999) {
                 gdm_timer_stop (timer);
         } else {
@@ -241,12 +244,6 @@ on_tick_timeout (GdmTimer *timer)
         }
 
         return FALSE;
-}
-
-static void
-gdm_timer_clear_timeout (GdmTimer *timer)
-{
-        timer->priv->tick_timeout_id = 0;
 }
 
 static void
@@ -261,13 +258,9 @@ gdm_timer_queue_next_tick (GdmTimer *timer,
                 return;
         }
 
-        timer->priv->tick_timeout_id = g_timeout_add_full (G_PRIORITY_DEFAULT,
-                                                           (guint) (when * 1000),
-                                                           (GSourceFunc)
-                                                           on_tick_timeout,
-                                                           timer,
-                                                           (GDestroyNotify)
-                                                           gdm_timer_clear_timeout);
+        timer->priv->tick_timeout_id = g_timeout_add ((guint) (when * 1000),
+                                                      (GSourceFunc) on_tick_timeout,
+                                                      timer);
 }
 
 static void
