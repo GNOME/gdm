@@ -231,6 +231,8 @@ set_sensitive (GdmGreeterLoginWindow *login_window,
 
         box = glade_xml_get_widget (login_window->priv->xml, "buttonbox");
         gtk_widget_set_sensitive (box, sensitive);
+
+        gtk_widget_set_sensitive (login_window->priv->user_chooser, sensitive);
 }
 
 static void
