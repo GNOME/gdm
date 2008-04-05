@@ -1760,11 +1760,11 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         gtk_window_set_position (GTK_WINDOW (login_window), GTK_WIN_POS_CENTER_ALWAYS);
         gtk_window_set_deletable (GTK_WINDOW (login_window), FALSE);
         gtk_window_set_decorated (GTK_WINDOW (login_window), FALSE);
+        gtk_window_set_keep_below (GTK_WINDOW (login_window), TRUE);
         gtk_window_set_skip_taskbar_hint (GTK_WINDOW (login_window), TRUE);
         gtk_window_set_skip_pager_hint (GTK_WINDOW (login_window), TRUE);
         gtk_window_stick (GTK_WINDOW (login_window));
         gtk_container_set_border_width (GTK_CONTAINER (login_window), 25);
-
 
         g_signal_connect (login_window,
                           "window-state-event",
