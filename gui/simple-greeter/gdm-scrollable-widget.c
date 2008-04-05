@@ -666,6 +666,10 @@ gdm_scrollable_widget_slide_to_height (GdmScrollableWidget *scrollable_widget,
                         done_func (scrollable_widget, done_user_data);
                 }
 
+                if (input_redirected) {
+                        gdm_scrollable_unredirect_input (scrollable_widget);
+                }
+
                 return;
         }
 
