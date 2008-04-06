@@ -545,11 +545,6 @@ on_grow_animation_complete (GdmScrollableWidget *scrollable_widget,
         g_assert (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING);
         widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
         widget->priv->was_fully_grown = TRUE;
-
-        if (widget->priv->emit_activated_after_resize_animation) {
-                g_signal_emit (widget, signals[ACTIVATED], 0);
-                widget->priv->emit_activated_after_resize_animation = FALSE;
-        }
 }
 
 static int
