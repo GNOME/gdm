@@ -749,12 +749,20 @@ activate_from_row (GdmChooserWidget    *widget,
 static void
 deactivate (GdmChooserWidget *widget)
 {
+        GtkTreePath *path;
+
         if (widget->priv->active_row == NULL) {
                 return;
         }
 
+        path = get_path_to_active_row (widget);
+
         gtk_tree_row_reference_free (widget->priv->active_row);
         widget->priv->active_row = NULL;
+
+        gtk_tree_view_set_cursor (GTK_TREE_VIEW (widget->priv->items_view),
+                                  path, NULL, FALSE);
+        gtk_tree_path_free (path);
 
         if (widget->priv->state != GDM_CHOOSER_WIDGET_STATE_GROWN) {
                 gdm_chooser_widget_grow (widget);
