@@ -465,6 +465,21 @@ collect_locales (void)
         collect_locales_from_directory ();
 }
 
+static gboolean
+is_fallback_language (const char *code)
+{
+        const char *fallback_language_names[] = { "C", "POSIX", NULL };
+        int i;
+
+        for (i = 0; fallback_language_names[i] != NULL; i++) {
+                if (strcmp (code, fallback_language_names[i]) == 0) {
+                        return TRUE;
+                }
+        }
+
+        return FALSE;
+}
+
 static const char *
 get_language (const char *code)
 {
@@ -472,6 +487,10 @@ get_language (const char *code)
         int         len;
 
         g_assert (code != NULL);
+
+        if (is_fallback_language (code)) {
+                return "Unspecified";
+        }
 
         len = strlen (code);
         if (len != 2 && len != 3) {
@@ -520,8 +539,12 @@ get_translated_language (const char *code,
                         setlocale (LC_MESSAGES, locale);
                 }
 
-                translated_name = dgettext ("iso_639", language);
-                name = get_first_item_in_semicolon_list (translated_name);
+                if (is_fallback_language (code)) {
+                        name = _("Unspecified");
+                } else {
+                        translated_name = dgettext ("iso_639", language);
+                        name = get_first_item_in_semicolon_list (translated_name);
+                }
 
                 if (locale != NULL) {
                         setlocale (LC_MESSAGES, old_locale);
