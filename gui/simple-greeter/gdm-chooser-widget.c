@@ -582,7 +582,7 @@ get_number_of_on_screen_rows (GdmChooserWidget *widget)
         start_index = gtk_tree_path_get_indices (start_path);
         end_index = gtk_tree_path_get_indices (end_path);
 
-        number_of_rows = *end_index - *start_index;
+        number_of_rows = *end_index - *start_index + 1;
 
         gtk_tree_path_free (start_path);
         gtk_tree_path_free (end_path);

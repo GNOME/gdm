@@ -1,5 +1,16 @@
 2008-04-07 Ray Strode <rstrode@redhat.com>
 
+	Properly cancel grow animation when its reached its end early.
+
+	* gui/simple-greeter/gdm-chooser-widget.c
+	(get_number_of_on_screen_rows): Fix off by one.
+	* gui/simple-greeter/gdm-timer.c (do_tick),
+	(on_tick_timeout), (gdm_timer_start): ref timer around
+	animation tick in case timer gets stopped during tick.
+	Don't queue another tick if timer is stopped
+
+2008-04-07 Ray Strode <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-language-chooser-dialog.c
 	(respond), (queue_response), (gdm_language_chooser_dialog_init):
 	Add hack to make double-click work.  chooser widget really needs

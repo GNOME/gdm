@@ -203,7 +203,7 @@ get_current_time (void)
   return timestamp;
 }
 
-static void
+static double
 do_tick (GdmTimer *timer,
          double    progress,
          double    current_time)
@@ -221,7 +221,7 @@ do_tick (GdmTimer *timer,
 
         next_tick = MAX (frequency - tick_duration, 0.0);
 
-        gdm_timer_queue_next_tick (timer, next_tick);
+        return next_tick;
 }
 
 static gboolean
@@ -230,6 +230,7 @@ on_tick_timeout (GdmTimer *timer)
         double progress;
         double current_time;
         double elapsed_time;
+        double next_tick;
 
         current_time = get_current_time ();
         elapsed_time = current_time - timer->priv->start_time;
@@ -237,11 +238,19 @@ on_tick_timeout (GdmTimer *timer)
 
         timer->priv->tick_timeout_id = 0;
 
+        g_object_ref (timer);
         if (progress > 0.999) {
-                gdm_timer_stop (timer);
+                do_tick (timer, 1.0, current_time);
+                if (timer->priv->is_started) {
+                        gdm_timer_stop (timer);
+                }
         } else {
-                do_tick (timer, progress, current_time);
+                next_tick = do_tick (timer, progress, current_time);
+                if (timer->priv->is_started) {
+                        gdm_timer_queue_next_tick (timer, next_tick);
+                }
         }
+        g_object_unref (timer);
 
         return FALSE;
 }
@@ -275,6 +284,8 @@ void
 gdm_timer_start (GdmTimer *timer,
                  double    number_of_seconds)
 {
+        double next_tick;
+
         g_return_if_fail (GDM_IS_TIMER (timer));
         g_return_if_fail (number_of_seconds > G_MINDOUBLE);
         g_return_if_fail (!timer->priv->is_started);
@@ -286,6 +297,7 @@ gdm_timer_start (GdmTimer *timer,
         gdm_timer_set_is_started (timer, TRUE);
 
         do_tick (timer, 0.0, timer->priv->start_time);
+        gdm_timer_queue_next_tick (timer, next_tick);
 }
 
 void
