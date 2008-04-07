@@ -546,7 +546,7 @@ on_grow_animation_complete (GdmScrollableWidget *scrollable_widget,
         widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
         widget->priv->was_fully_grown = TRUE;
 
-        gtk_widget_grab_focus (widget);
+        gtk_widget_grab_focus (GTK_WIDGET (widget));
 }
 
 static int
@@ -647,7 +647,7 @@ skip_resize_animation (GdmChooserWidget *widget)
                 set_inactive_items_visible (GDM_CHOOSER_WIDGET (widget), TRUE);
                 widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
                 widget->priv->was_fully_grown = FALSE;
-                gtk_widget_grab_focus (widget);
+                gtk_widget_grab_focus (GTK_WIDGET (widget));
         }
 }
 
@@ -774,8 +774,8 @@ deactivate (GdmChooserWidget *widget)
         g_signal_emit (widget, signals[DEACTIVATED], 0);
 }
 
-static void
-activate_selected_item (GdmChooserWidget *widget)
+void
+gdm_chooser_widget_activate_selected_item (GdmChooserWidget *widget)
 {
         GtkTreeRowReference *row;
         GtkTreeSelection    *selection;
@@ -982,9 +982,9 @@ gdm_chooser_widget_size_allocate (GtkWidget     *widget,
 }
 
 static void
-gdm_chooser_widget_grab_focus (GdmChooserWidget *widget)
+gdm_chooser_widget_grab_focus (GtkWidget *widget)
 {
-        gtk_widget_grab_focus (widget->priv->items_view);
+        gtk_widget_grab_focus (GDM_CHOOSER_WIDGET (widget)->priv->items_view);
 }
 
 static void
@@ -1051,7 +1051,7 @@ on_row_activated (GtkTreeView          *tree_view,
                   GtkTreeViewColumn    *tree_column,
                   GdmChooserWidget     *widget)
 {
-        activate_selected_item (widget);
+        gdm_chooser_widget_activate_selected_item (widget);
 }
 
 static gboolean
@@ -1381,6 +1381,10 @@ on_button_release (GtkTreeView      *items_view,
         GtkTreeModel     *model;
         GtkTreeIter       iter;
         GtkTreeSelection *selection;
+
+        if (!widget->priv->should_hide_inactive_items) {
+                return FALSE;
+        }
 
         selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget->priv->items_view));
         if (gtk_tree_selection_get_selected (selection, &model, &iter)) {

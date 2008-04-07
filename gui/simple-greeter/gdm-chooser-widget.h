@@ -123,6 +123,9 @@ void                   gdm_chooser_widget_set_separator_position  (GdmChooserWid
                                                                    GdmChooserWidgetPosition  position);
 void                   gdm_chooser_widget_set_hide_inactive_items (GdmChooserWidget         *widget,
                                                                    gboolean                  should_hide);
+
+void                   gdm_chooser_widget_activate_selected_item (GdmChooserWidget *widget);
+
 G_END_DECLS
 
 #endif /* __GDM_CHOOSER_WIDGET_H */

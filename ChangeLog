@@ -1,5 +1,23 @@
 2008-04-07 Ray Strode <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-chooser-widget.[ch]:
+	(on_grow_animation_complete),
+	(gdm_chooser_widget_grab_focus),
+	(skip_resize_animation): fix warnings
+	(on_row_activated):
+	(gdm_chooser_widget_activate_selected_item):
+	make activate_select_item external so language dialog can
+	call it
+	(on_button_release): don't activate on single-click if
+	we aren't in resize-on-click mode
+	* gui/simple-greeter/gdm-language-chooser-dialog.c:
+	(gdm_language_chooser_dialog_response),
+	(gdm_language_chooser_dialog_class_init),
+	(gdm_language_chooser_dialog_init):
+	activate the selected item when the user presses OK.
+
+2008-04-07 Ray Strode <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-cell-renderer-timer.c
 	(get_opacity_for_value), (draw_timer):
 	Fade the timer renderer in at 5% so it isn't always

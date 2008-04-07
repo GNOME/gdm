@@ -97,13 +97,30 @@ gdm_language_chooser_dialog_size_request (GtkWidget      *widget,
 }
 
 static void
+gdm_language_chooser_dialog_response (GtkDialog *dialog,
+                                      int        response_id)
+{
+        GdmLanguageChooserDialog *chooser_dialog;
+
+        chooser_dialog = GDM_LANGUAGE_CHOOSER_DIALOG (dialog);
+
+        if (response_id == GTK_RESPONSE_OK) {
+                gdm_chooser_widget_activate_selected_item (GDM_CHOOSER_WIDGET (chooser_dialog->priv->chooser_widget));
+        }
+}
+
+static void
 gdm_language_chooser_dialog_class_init (GdmLanguageChooserDialogClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
         GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+        GtkDialogClass *dialog_class = GTK_DIALOG_CLASS (klass);
 
         object_class->finalize = gdm_language_chooser_dialog_finalize;
         widget_class->size_request = gdm_language_chooser_dialog_size_request;
+#ifdef I_COULD_GO_BACK_IN_TIME_AND_MAKE_RESPONSE_RUN_FIRST
+        dialog_class->response = gdm_language_chooser_dialog_response;
+#endif
 
         g_type_class_add_private (klass, sizeof (GdmLanguageChooserDialogPrivate));
 }
@@ -115,10 +132,16 @@ gdm_language_chooser_dialog_init (GdmLanguageChooserDialog *dialog)
         dialog->priv = GDM_LANGUAGE_CHOOSER_DIALOG_GET_PRIVATE (dialog);
 
         dialog->priv->chooser_widget = gdm_language_chooser_widget_new ();
+        gdm_chooser_widget_set_hide_inactive_items (GDM_CHOOSER_WIDGET (dialog->priv->chooser_widget),
+                                                    FALSE);
         gtk_widget_show (dialog->priv->chooser_widget);
+
+#ifndef I_COULD_GO_BACK_IN_TIME_AND_MAKE_RESPONSE_RUN_FIRST
+        g_signal_connect (G_OBJECT (dialog), "response", G_CALLBACK (gdm_language_chooser_dialog_response), NULL);
+#endif
+
         gdm_language_chooser_widget_set_current_language_name (GDM_LANGUAGE_CHOOSER_WIDGET (dialog->priv->chooser_widget),
                                                                setlocale (LC_MESSAGES, NULL));
-
         gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), dialog->priv->chooser_widget);
 
         gtk_dialog_add_buttons (GTK_DIALOG (dialog),
