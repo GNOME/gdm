@@ -287,10 +287,11 @@ gdm_user_menu_item_expose_event (GtkWidget      *widget,
         } else {
                 shadow_type = GTK_SHADOW_OUT; /* they haave no displays, so no check */
         }
-
+#if 0
         gtk_paint_check (widget->style, widget->window, GTK_WIDGET_STATE (widget),
                          shadow_type, &(event->area), widget, "check",
                          x, y, indicator_size, indicator_size);
+#endif
 
         return TRUE;
 }
