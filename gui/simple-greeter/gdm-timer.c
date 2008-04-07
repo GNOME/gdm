@@ -296,8 +296,10 @@ gdm_timer_start (GdmTimer *timer,
         g_assert (timer->priv->tick_timeout_id == 0);
         gdm_timer_set_is_started (timer, TRUE);
 
-        do_tick (timer, 0.0, timer->priv->start_time);
+        g_object_ref (timer);
+        next_tick = do_tick (timer, 0.0, timer->priv->start_time);
         gdm_timer_queue_next_tick (timer, next_tick);
+        g_object_unref (timer);
 }
 
 void

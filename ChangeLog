@@ -1,5 +1,12 @@
 2008-04-07 Ray Strode <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-timer.c:
+	(gdm_timer_start): Initialize next_tick.
+	Harden against timer getting stopped during
+	first tick
+
+2008-04-07 Ray Strode <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-scrollable-widget.c
 	(struct GdmScrollableWidgetPrivate),
 	(gdm_scrollable_widget_needs_scrollbar),
