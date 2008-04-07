@@ -1,6 +1,21 @@
 2008-04-06 Ray Strode <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-chooser-widget.c
+	(on_grow_animation_complete), (skip_resize_animation):
+	Take focus when we finish growing. At some point we
+	may want to emit a signal when our animations complete
+	and have the caller explicitly take focus (seems a little
+	more kosher).
+	(gdm_chooser_widget_focus_in): drop function
+	(gdm_chooser_widget_grab_focus),
+	(gdm_chooser_widget_class_init): redirect grab_focus
+	calls to our tree view.
+	(gdm_chooser_widget_init): set CAN_FOCUS so
+	gtk_widget_grab_focus works.
+
+2008-04-06 Ray Strode <rstrode@redhat.com>
+
+	* gui/simple-greeter/gdm-chooser-widget.c
 	(deactivate): select previously activated
 	row when deactivating, so the user gets
 	put back in the grown list where they started

@@ -540,11 +540,13 @@ start_shrink_animation (GdmChooserWidget *widget)
 
 static void
 on_grow_animation_complete (GdmScrollableWidget *scrollable_widget,
-                            GdmChooserWidget *widget)
+                            GdmChooserWidget    *widget)
 {
         g_assert (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING);
         widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
         widget->priv->was_fully_grown = TRUE;
+
+        gtk_widget_grab_focus (widget);
 }
 
 static int
@@ -645,6 +647,7 @@ skip_resize_animation (GdmChooserWidget *widget)
                 set_inactive_items_visible (GDM_CHOOSER_WIDGET (widget), TRUE);
                 widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
                 widget->priv->was_fully_grown = FALSE;
+                gtk_widget_grab_focus (widget);
         }
 }
 
@@ -947,18 +950,6 @@ gdm_chooser_widget_dispose (GObject *object)
         G_OBJECT_CLASS (gdm_chooser_widget_parent_class)->dispose (object);
 }
 
-static gboolean
-gdm_chooser_widget_focus_in (GtkWidget     *widget,
-                             GdkEventFocus *event)
-{
-        GdmChooserWidget *chooser;
-        chooser = GDM_CHOOSER_WIDGET (widget);
-
-        gtk_widget_grab_focus (chooser->priv->items_view);
-
-        return FALSE;
-}
-
 static void
 gdm_chooser_widget_hide (GtkWidget *widget)
 {
@@ -991,6 +982,12 @@ gdm_chooser_widget_size_allocate (GtkWidget     *widget,
 }
 
 static void
+gdm_chooser_widget_grab_focus (GdmChooserWidget *widget)
+{
+        gtk_widget_grab_focus (widget->priv->items_view);
+}
+
+static void
 gdm_chooser_widget_class_init (GdmChooserWidgetClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
@@ -1001,10 +998,10 @@ gdm_chooser_widget_class_init (GdmChooserWidgetClass *klass)
         object_class->constructor = gdm_chooser_widget_constructor;
         object_class->dispose = gdm_chooser_widget_dispose;
         object_class->finalize = gdm_chooser_widget_finalize;
-        widget_class->focus_in_event = gdm_chooser_widget_focus_in;
         widget_class->size_allocate = gdm_chooser_widget_size_allocate;
         widget_class->hide = gdm_chooser_widget_hide;
         widget_class->show = gdm_chooser_widget_show;
+        widget_class->grab_focus = gdm_chooser_widget_grab_focus;
 
         signals [ACTIVATED] = g_signal_new ("activated",
                                             G_TYPE_FROM_CLASS (object_class),
@@ -1465,6 +1462,13 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
         GtkCellRenderer   *renderer;
 
         widget->priv = GDM_CHOOSER_WIDGET_GET_PRIVATE (widget);
+
+        /* Even though, we're a container and also don't ever take
+         * focus for ourselve, we set CAN_FOCUS so that gtk_widget_grab_focus
+         * works on us.  We then override grab_focus requests to
+         * be redirected our internal tree view
+         */
+        GTK_WIDGET_SET_FLAGS (widget, GTK_CAN_FOCUS);
 
         widget->priv->height_when_grown = get_height_of_screen (widget);
 
