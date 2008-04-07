@@ -688,6 +688,9 @@ gdm_scrollable_widget_slide_to_height (GdmScrollableWidget *scrollable_widget,
                 return;
         }
 
+        height += widget->style->ythickness * 2;
+        height += GTK_CONTAINER (widget)->border_width * 2;
+
         scrollable_widget->priv->animation =
             gdm_scrollable_widget_animation_new (widget,
                                                  widget->allocation.height,
