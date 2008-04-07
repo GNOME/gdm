@@ -29,6 +29,8 @@
 #include <locale.h>
 #include <sys/stat.h>
 
+#include <fontconfig/fontconfig.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -122,6 +124,54 @@ gdm_language_chooser_widget_add_language (GdmLanguageChooserWidget *widget,
         g_free (normalized_name);
 }
 
+static gboolean
+language_has_font (const char *locale)
+{
+  FcPattern   *pattern;
+  FcObjectSet *object_set;
+  FcFontSet   *font_set;
+  char        *language_code;
+  gboolean     is_displayable;
+
+  is_displayable = FALSE;
+  pattern = NULL;
+  object_set = NULL;
+  font_set = NULL;
+
+  gdm_parse_language_name (locale, &language_code, NULL, NULL, NULL);
+
+  pattern = FcPatternBuild (NULL, FC_LANG, FcTypeString, language_code, NULL);
+
+  if (pattern == NULL)
+    goto done;
+
+  object_set = FcObjectSetBuild (NULL, NULL);
+
+  if (object_set == NULL)
+    goto done;
+
+  font_set = FcFontList (NULL, pattern, object_set);
+
+  if (font_set == NULL)
+    goto done;
+
+  is_displayable = (font_set->nfont > 0);
+
+done:
+
+  if (font_set != NULL)
+    FcFontSetDestroy (font_set);
+
+  if (object_set != NULL)
+    FcObjectSetDestroy (object_set);
+
+  if (pattern != NULL)
+    FcPatternDestroy (pattern);
+
+  g_free (language_code);
+  return is_displayable;
+}
+
 static void
 add_available_languages (GdmLanguageChooserWidget *widget)
 {
@@ -131,6 +181,9 @@ add_available_languages (GdmLanguageChooserWidget *widget)
         language_names = gdm_get_all_language_names ();
 
         for (i = 0; language_names[i] != NULL; i++) {
+                if (!language_has_font (language_names[i])) {
+                        continue;
+                }
                 gdm_language_chooser_widget_add_language (widget,
                                                           language_names[i]);
         }
