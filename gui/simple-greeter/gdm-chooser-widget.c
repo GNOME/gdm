@@ -822,8 +822,6 @@ gdm_chooser_widget_activate_selected_item (GdmChooserWidget *widget)
 
         if (!is_already_active) {
                 activate_from_row (widget, row);
-        } else {
-                deactivate (widget);
         }
         gtk_tree_row_reference_free (row);
 }

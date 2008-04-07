@@ -1,5 +1,16 @@
 2008-04-07 Ray Strode <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-language-chooser-dialog.c
+	(respond), (queue_response), (gdm_language_chooser_dialog_init):
+	Add hack to make double-click work.  chooser widget really needs
+	to be split into two widgets to fix this right.
+	* gui/simple-greeter/gdm-chooser-widget.c
+	(gdm_chooser_widget_activate_selected_item):
+	Don't deactivate widget if already active. It was confusing for
+	the user chooser and busts the double-click hack mentioned above.
+
+2008-04-07 Ray Strode <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-chooser-widget.[ch]:
 	(on_grow_animation_complete),
 	(gdm_chooser_widget_grab_focus),

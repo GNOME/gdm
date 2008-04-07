@@ -114,7 +114,9 @@ gdm_language_chooser_dialog_class_init (GdmLanguageChooserDialogClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
         GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+#ifdef I_COULD_GO_BACK_IN_TIME_AND_MAKE_RESPONSE_RUN_FIRST
         GtkDialogClass *dialog_class = GTK_DIALOG_CLASS (klass);
+#endif
 
         object_class->finalize = gdm_language_chooser_dialog_finalize;
         widget_class->size_request = gdm_language_chooser_dialog_size_request;
@@ -123,6 +125,19 @@ gdm_language_chooser_dialog_class_init (GdmLanguageChooserDialogClass *klass)
 #endif
 
         g_type_class_add_private (klass, sizeof (GdmLanguageChooserDialogPrivate));
+}
+
+static gboolean
+respond (GdmLanguageChooserDialog *dialog)
+{
+        gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+        return FALSE;
+}
+
+static void
+queue_response (GdmLanguageChooserDialog *dialog)
+{
+        g_idle_add ((GSourceFunc) respond, dialog);
 }
 
 static void
@@ -144,6 +159,9 @@ gdm_language_chooser_dialog_init (GdmLanguageChooserDialog *dialog)
                                                                setlocale (LC_MESSAGES, NULL));
         gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), dialog->priv->chooser_widget);
 
+        g_signal_connect_swapped (G_OBJECT (dialog->priv->chooser_widget),
+                                  "activated", G_CALLBACK (queue_response),
+                                  dialog);
         gtk_dialog_add_buttons (GTK_DIALOG (dialog),
                                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                 GTK_STOCK_OK, GTK_RESPONSE_OK,
