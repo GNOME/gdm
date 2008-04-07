@@ -1,5 +1,16 @@
 2008-04-07 Ray Strode <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-scrollable-widget.c
+	(struct GdmScrollableWidgetPrivate),
+	(gdm_scrollable_widget_needs_scrollbar),
+	(gdm_scrollable_widget_size_request),
+	(gdm_scrollable_widget_size_allocate):
+	Track whether or not child allocations are out
+	of date when determining whether to show scrollbar.
+	If they're stale we presume a scrollbar isn't needed.
+
+2008-04-07 Ray Strode <rstrode@redhat.com>
+
 	Properly cancel grow animation when its reached its end early.
 
 	* gui/simple-greeter/gdm-chooser-widget.c

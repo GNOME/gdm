@@ -54,7 +54,9 @@ struct GdmScrollableWidgetPrivate
         GtkWidget *scrollbar;
 
         GdmScrollableWidgetAnimation *animation;
-        GtkWidget                    *invisible_event_sink;
+        GtkWidget *invisible_event_sink;
+
+        guint      child_adjustments_stale : 1;
 };
 
 struct GdmScrollableWidgetAnimation
@@ -213,6 +215,10 @@ gdm_scrollable_widget_needs_scrollbar (GdmScrollableWidget *widget)
                 return FALSE;
         }
 
+        if (widget->priv->child_adjustments_stale) {
+                return FALSE;
+        }
+
         adjustment = gtk_range_get_adjustment (GTK_RANGE (widget->priv->scrollbar));
 
         return adjustment->upper - adjustment->lower > adjustment->page_size;
@@ -224,6 +230,7 @@ gdm_scrollable_widget_size_request (GtkWidget      *widget,
 {
         GdmScrollableWidget *scrollable_widget;
         GtkRequisition       child_requisition;
+        gboolean             child_adjustments_stale;
 
         scrollable_widget = GDM_SCROLLABLE_WIDGET (widget);
 
@@ -233,11 +240,21 @@ gdm_scrollable_widget_size_request (GtkWidget      *widget,
         requisition->width += 2 * widget->style->xthickness;
         requisition->height += 2 * widget->style->ythickness;
 
+        child_adjustments_stale = FALSE;
         if (GTK_BIN (widget)->child && GTK_WIDGET_VISIBLE (GTK_BIN (widget)->child)) {
+
+                int old_child_height;
+                gtk_widget_get_child_requisition (GTK_BIN (widget)->child,
+                                                  &child_requisition);
+                old_child_height = child_requisition.height;
+
                 gtk_widget_size_request (GTK_BIN (widget)->child,
                                          &child_requisition);
+
                 requisition->width += child_requisition.width;
                 requisition->height += child_requisition.height;
+
+                child_adjustments_stale = old_child_height != child_requisition.height;
         }
 
         if (gdm_scrollable_widget_needs_scrollbar (scrollable_widget)) {
@@ -254,6 +271,8 @@ gdm_scrollable_widget_size_request (GtkWidget      *widget,
         } else {
                 gtk_widget_hide (scrollable_widget->priv->scrollbar);
         }
+
+        scrollable_widget->priv->child_adjustments_stale = child_adjustments_stale;
 }
 
 static void
@@ -303,11 +322,6 @@ gdm_scrollable_widget_size_allocate (GtkWidget     *widget,
         }
 
         if (has_child) {
-                GtkRequisition child_requisition;
-
-                gtk_widget_get_child_requisition (GTK_BIN (widget)->child,
-                                                  &child_requisition);
-
                 child_allocation.width = allocation->width;
                 child_allocation.width -= 2 * GTK_CONTAINER (widget)->border_width;
                 child_allocation.width -= 2 * widget->style->xthickness;
@@ -337,6 +351,7 @@ gdm_scrollable_widget_size_allocate (GtkWidget     *widget,
 
                 gtk_widget_size_allocate (GTK_BIN (widget)->child,
                                           &child_allocation);
+                scrollable_widget->priv->child_adjustments_stale = FALSE;
         }
 }
 
