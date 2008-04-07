@@ -124,6 +124,23 @@ gdm_cell_renderer_timer_get_size (GtkCellRenderer *cell,
         }
 }
 
+static double
+get_opacity_for_value (double value)
+{
+        const double start_value = 0.05;
+        const double end_value = 0.33;
+
+        if (value < start_value) {
+                return 0.0;
+        }
+
+        if (value >= end_value) {
+                return 1.0;
+        }
+
+        return ((value - start_value) / (end_value - start_value));
+}
+
 static void
 draw_timer (GdmCellRendererTimer *renderer,
             cairo_t              *context,
@@ -133,22 +150,38 @@ draw_timer (GdmCellRendererTimer *renderer,
             int                   height)
 {
         double radius;
+        double opacity;
+
+        opacity = get_opacity_for_value (renderer->priv->value);
+
+        if (opacity <= G_MINDOUBLE) {
+                return;
+        }
 
         radius = .5 * (MIN (width, height) / 2.0);
 
         cairo_translate (context, width / 2., height / 2.);
 
-        gdk_cairo_set_source_color (context, bg);
-        cairo_move_to (context, 0, 0);
-        cairo_arc (context, 0, 0, radius, 0, 2 * G_PI);
-        cairo_fill_preserve (context);
-        cairo_stroke (context);
+        cairo_set_source_rgba (context,
+                               fg->red / 65535.0,
+                               fg->green / 65535.0,
+                               fg->blue / 65535.0,
+                               opacity);
 
-        gdk_cairo_set_source_color (context, fg);
+        cairo_move_to (context, 0, 0);
+        cairo_arc (context, 0, 0, radius + 1, 0, 2 * G_PI);
+        cairo_fill (context);
+
+        cairo_set_operator (context, CAIRO_OPERATOR_SOURCE);
+        cairo_set_source_rgb (context,
+                              bg->red / 65535.0,
+                              bg->green / 65535.0,
+                              bg->blue / 65535.0);
         cairo_move_to (context, 0, 0);
         cairo_arc (context, 0, 0, radius, - G_PI / 2,
                    renderer->priv->value * 2 * G_PI - G_PI / 2);
-        cairo_fill (context);
+        cairo_clip (context);
+        cairo_paint_with_alpha (context, opacity);
 }
 
 static void
@@ -195,8 +228,8 @@ gdm_cell_renderer_timer_render (GtkCellRenderer      *cell,
         }
 
         draw_timer (renderer, context,
-                    &widget->style->base[widget_state],
                     &widget->style->text_aa[widget_state],
+                    &widget->style->base[widget_state],
                     cell_area->width, cell_area->height);
 
         cairo_destroy (context);
