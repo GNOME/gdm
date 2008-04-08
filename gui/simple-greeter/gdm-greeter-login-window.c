@@ -482,7 +482,6 @@ switch_mode (GdmGreeterLoginWindow *login_window,
            to a known state */
         login_window->priv->dialog_mode = number;
 
-        /* FIXME: do animation */
         default_name = NULL;
 
         show_restart_buttons = get_show_restart_buttons (login_window);
