@@ -972,6 +972,7 @@ get_session_command_for_name (const char *name,
 
         command = NULL;
         res = get_session_command_for_file (filename, command);
+        g_free (filename);
 
         return res;
 }
