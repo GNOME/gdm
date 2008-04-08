@@ -899,20 +899,6 @@ gdm_chooser_widget_get_property (GObject        *object,
         }
 }
 
-static GObject *
-gdm_chooser_widget_constructor (GType                  type,
-                                guint                  n_construct_properties,
-                                GObjectConstructParam *construct_properties)
-{
-        GdmChooserWidget      *chooser_widget;
-
-        chooser_widget = GDM_CHOOSER_WIDGET (G_OBJECT_CLASS (gdm_chooser_widget_parent_class)->constructor (type,
-                                                                                                            n_construct_properties,
-                                                                                                            construct_properties));
-
-        return G_OBJECT (chooser_widget);
-}
-
 static void
 gdm_chooser_widget_dispose (GObject *object)
 {
@@ -993,7 +979,6 @@ gdm_chooser_widget_class_init (GdmChooserWidgetClass *klass)
 
         object_class->get_property = gdm_chooser_widget_get_property;
         object_class->set_property = gdm_chooser_widget_set_property;
-        object_class->constructor = gdm_chooser_widget_constructor;
         object_class->dispose = gdm_chooser_widget_dispose;
         object_class->finalize = gdm_chooser_widget_finalize;
         widget_class->size_allocate = gdm_chooser_widget_size_allocate;
