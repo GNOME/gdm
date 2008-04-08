@@ -1042,44 +1042,36 @@ path_is_separator (GdmChooserWidget *widget,
                    GtkTreeModel     *model,
                    GtkTreePath      *path)
 {
-        GtkTreePath      *base_path;
-        GtkTreePath      *filtered_path;
-        GtkTreePath      *sorted_path;
         GtkTreePath      *separator_path;
+        GtkTreePath      *translated_path;
         gboolean          is_separator;
 
-        if (widget->priv->separator_row == NULL) {
+        separator_path = gtk_tree_row_reference_get_path (widget->priv->separator_row);
+
+        if (separator_path == NULL) {
                 return FALSE;
         }
 
-        base_path = gtk_tree_row_reference_get_path (widget->priv->separator_row);
-        separator_path = base_path;
-        filtered_path = NULL;
-        sorted_path = NULL;
+        if (model == GTK_TREE_MODEL (widget->priv->model_sorter)) {
+                GtkTreePath *filtered_path;
 
-        if (model != GTK_TREE_MODEL (widget->priv->list_store)) {
-                filtered_path = gtk_tree_model_filter_convert_child_path_to_path (widget->priv->model_filter, base_path);
-                separator_path = filtered_path;
+                filtered_path = gtk_tree_model_sort_convert_path_to_child_path (widget->priv->model_sorter, path);
 
-                gtk_tree_path_free (base_path);
-                base_path = NULL;
-        }
-
-        if (filtered_path != NULL && model != GTK_TREE_MODEL (widget->priv->model_filter)) {
-                sorted_path = gtk_tree_model_sort_convert_child_path_to_path (widget->priv->model_sorter, filtered_path);
-                separator_path = sorted_path;
-
+                translated_path = gtk_tree_model_filter_convert_path_to_child_path (widget->priv->model_filter, filtered_path);
                 gtk_tree_path_free (filtered_path);
-                filtered_path = NULL;
+        } else if (model == GTK_TREE_MODEL (widget->priv->model_filter)) {
+                translated_path = gtk_tree_model_filter_convert_path_to_child_path (widget->priv->model_filter, path);
+        } else {
+                g_assert (model == GTK_TREE_MODEL (widget->priv->list_store));
+                translated_path = gtk_tree_path_copy (path);
         }
 
-        if ((separator_path != NULL) &&
-            gtk_tree_path_compare (path, separator_path) == 0) {
+        if (gtk_tree_path_compare (separator_path, translated_path) == 0) {
                 is_separator = TRUE;
         } else {
                 is_separator = FALSE;
         }
-        gtk_tree_path_free (separator_path);
+        gtk_tree_path_free (translated_path);
 
         return is_separator;
 }
@@ -1311,6 +1303,35 @@ update_column_visibility (GdmChooserWidget *widget)
         }
 
         return FALSE;
+}
+
+static void
+update_separator_visibility (GdmChooserWidget *widget)
+{
+        GtkTreePath *separator_path;
+        GtkTreeIter  iter;
+        gboolean     is_visible;
+
+        separator_path = gtk_tree_row_reference_get_path (widget->priv->separator_row);
+
+        if (separator_path == NULL) {
+                return;
+        }
+
+        gtk_tree_model_get_iter (GTK_TREE_MODEL (widget->priv->list_store),
+                                 &iter, separator_path);
+
+        if (widget->priv->number_of_normal_rows > 0 &&
+            widget->priv->number_of_separated_rows > 0) {
+                is_visible = TRUE;
+        } else {
+                is_visible = FALSE;
+        }
+
+        gtk_list_store_set (widget->priv->list_store,
+                            &iter,
+                            CHOOSER_ITEM_IS_VISIBLE_COLUMN, is_visible,
+                            -1);
 }
 
 static void
@@ -1687,6 +1708,7 @@ gdm_chooser_widget_update_item (GdmChooserWidget *widget,
                         widget->priv->number_of_separated_rows--;
                         widget->priv->number_of_normal_rows++;
                 }
+                update_separator_visibility (widget);
         }
 
         gtk_list_store_set (widget->priv->list_store,
@@ -1719,6 +1741,7 @@ gdm_chooser_widget_add_item (GdmChooserWidget *widget,
         } else {
                 widget->priv->number_of_normal_rows++;
         }
+        update_separator_visibility (widget);
 
         if (in_use) {
                 widget->priv->number_of_rows_with_status++;
@@ -1788,6 +1811,7 @@ gdm_chooser_widget_remove_item (GdmChooserWidget *widget,
         } else {
                 widget->priv->number_of_normal_rows--;
         }
+        update_separator_visibility (widget);
 
         gtk_list_store_remove (widget->priv->list_store, &iter);
 
