@@ -61,6 +61,7 @@ noinst_PROGRAMS = 			\
 	test-greeter-panel		\
 	test-language-chooser		\
 	test-languages			\
+	test-sessions			\
 	test-remote-login-window	\
 	test-user-chooser		\
 	test-user-manager		\
@@ -180,6 +181,16 @@ test_languages_SOURCES = 		\
 	$(NULL)
 
 test_languages_LDADD =		\
+	$(GTK_LIBS)		\
+	$(NULL)
+
+test_sessions_SOURCES = 		\
+	test-sessions.c		\
+	gdm-sessions.h			\
+	gdm-sessions.c			\
+	$(NULL)
+
+test_sessions_LDADD =		\
 	$(GTK_LIBS)		\
 	$(NULL)
 
