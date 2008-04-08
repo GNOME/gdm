@@ -55,7 +55,6 @@ struct GdmUserChooserWidgetPrivate
 
         GdkPixbuf      *logged_in_pixbuf;
         GdkPixbuf      *stock_person_pixbuf;
-        GdkPixbuf      *empty_pixbuf;
 
         guint           show_other_user : 1;
         guint           show_guest_user : 1;
@@ -77,7 +76,7 @@ add_user_other (GdmUserChooserWidget *widget)
 {
         gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                      GDM_USER_CHOOSER_USER_OTHER,
-                                     widget->priv->empty_pixbuf,
+                                     NULL,
                                      _("Other..."),
                                      _("Choose a different account"),
                                      0,
@@ -103,7 +102,7 @@ add_user_auto (GdmUserChooserWidget *widget)
 {
         gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                      GDM_USER_CHOOSER_USER_AUTO,
-                                     widget->priv->empty_pixbuf,
+                                     NULL,
                                      _("Automatic Login"),
                                      _("Automatically login to the system after selecting options"),
                                      0,
@@ -269,11 +268,6 @@ gdm_user_chooser_widget_dispose (GObject *object)
                 g_object_unref (widget->priv->stock_person_pixbuf);
                 widget->priv->stock_person_pixbuf = NULL;
         }
-
-        if (widget->priv->empty_pixbuf != NULL) {
-                g_object_unref (widget->priv->empty_pixbuf);
-                widget->priv->empty_pixbuf = NULL;
-        }
 }
 
 static void
@@ -287,24 +281,6 @@ gdm_user_chooser_widget_class_init (GdmUserChooserWidgetClass *klass)
         object_class->finalize = gdm_user_chooser_widget_finalize;
 
         g_type_class_add_private (klass, sizeof (GdmUserChooserWidgetPrivate));
-}
-
-static GdkPixbuf *
-get_empty_pixbuf (GdmUserChooserWidget *widget)
-{
-        GdkPixbuf *pixbuf;
-        guchar    *pixels;
-        int        row;
-        int        rowstride;
-
-        pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, ICON_SIZE, ICON_SIZE);
-        pixels = gdk_pixbuf_get_pixels (pixbuf);
-        rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-        for (row = 0; row < ICON_SIZE; row++) {
-                memset (pixels + row * rowstride, 0, ICON_SIZE * 4);
-        }
-
-        return pixbuf;
 }
 
 static GdkPixbuf *
@@ -369,7 +345,6 @@ load_icons (GdmUserChooserWidget *widget)
                 g_object_unref (widget->priv->logged_in_pixbuf);
         }
         widget->priv->logged_in_pixbuf = get_logged_in_pixbuf (widget);
-        widget->priv->empty_pixbuf = get_empty_pixbuf (widget);
 
         old_pixbuf = widget->priv->stock_person_pixbuf;
         widget->priv->stock_person_pixbuf = get_stock_person_pixbuf (widget);

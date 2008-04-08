@@ -1,5 +1,16 @@
 2008-04-07 Ray Strode <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-user-chooser-widget.c
+	(add_user_other), (add_user_auto),
+	(gdm_user_chooser_widget_dispose),
+	(get_empty_pixbuf):
+	* gui/simple-greeter/gdm-chooser-widget.c
+	(gdm_chooser_widget_init):
+	drop the empty pixbuf and force a fixed
+	width and height on the cell renderer instead
+
+2008-04-07 Ray Strode <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-login-window.c
 	(switch_mode): remove stale FIXME
 
