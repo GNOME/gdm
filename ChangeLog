@@ -1,5 +1,19 @@
 2008-04-07 Ray Strode <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-language-chooser-dialog.c
+	(gdm_language_chooser_dialog_size_request),
+	(gdm_language_chooser_dialog_realize),
+	(gdm_language_chooser_dialog_class_init),
+	(gdm_language_chooser_dialog_init):
+	Make the language dialog look a little nicer initially.
+	We won't be able to do better until we fix the scrollable
+	widget to report it's minimum height in size_request
+	unless a property is set to report it's maximum height
+	(or until we make the language-chooser not depend on
+	 the scrollable widget)
+
+2008-04-07 Ray Strode <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-user-chooser-widget.c
 	(add_user_other), (add_user_auto),
 	(gdm_user_chooser_widget_dispose),

@@ -86,7 +86,7 @@ gdm_language_chooser_dialog_size_request (GtkWidget      *widget,
         screen_w = gdk_screen_get_width (gtk_widget_get_screen (widget));
         screen_h = gdk_screen_get_height (gtk_widget_get_screen (widget));
 
-        gtk_widget_size_request (GTK_BIN (widget)->child, &child_requisition);
+        gtk_widget_get_child_requisition (GTK_BIN (widget)->child, &child_requisition);
         *requisition = child_requisition;
 
         requisition->width += 2 * GTK_CONTAINER (widget)->border_width;
@@ -110,6 +110,18 @@ gdm_language_chooser_dialog_response (GtkDialog *dialog,
 }
 
 static void
+gdm_language_chooser_dialog_realize (GtkWidget *widget)
+{
+        GdmLanguageChooserDialog *chooser_dialog;
+
+        chooser_dialog = GDM_LANGUAGE_CHOOSER_DIALOG (widget);
+
+        gtk_widget_show (chooser_dialog->priv->chooser_widget);
+
+        GTK_WIDGET_CLASS (gdm_language_chooser_dialog_parent_class)->realize (widget);
+}
+
+static void
 gdm_language_chooser_dialog_class_init (GdmLanguageChooserDialogClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
@@ -120,6 +132,7 @@ gdm_language_chooser_dialog_class_init (GdmLanguageChooserDialogClass *klass)
 
         object_class->finalize = gdm_language_chooser_dialog_finalize;
         widget_class->size_request = gdm_language_chooser_dialog_size_request;
+        widget_class->realize = gdm_language_chooser_dialog_realize;
 #ifdef I_COULD_GO_BACK_IN_TIME_AND_MAKE_RESPONSE_RUN_FIRST
         dialog_class->response = gdm_language_chooser_dialog_response;
 #endif
@@ -149,7 +162,6 @@ gdm_language_chooser_dialog_init (GdmLanguageChooserDialog *dialog)
         dialog->priv->chooser_widget = gdm_language_chooser_widget_new ();
         gdm_chooser_widget_set_hide_inactive_items (GDM_CHOOSER_WIDGET (dialog->priv->chooser_widget),
                                                     FALSE);
-        gtk_widget_show (dialog->priv->chooser_widget);
 
 #ifndef I_COULD_GO_BACK_IN_TIME_AND_MAKE_RESPONSE_RUN_FIRST
         g_signal_connect (G_OBJECT (dialog), "response", G_CALLBACK (gdm_language_chooser_dialog_response), NULL);
@@ -170,6 +182,8 @@ gdm_language_chooser_dialog_init (GdmLanguageChooserDialog *dialog)
         gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
         gtk_container_set_border_width (GTK_CONTAINER (dialog), 12);
         gtk_container_set_border_width (GTK_CONTAINER (dialog->priv->chooser_widget), 5);
+        gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
+        gtk_window_set_default_size (GTK_WINDOW (dialog), 512, 440);
 }
 
 static void
