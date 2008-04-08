@@ -11,6 +11,7 @@ postdir = $(gdmconfdir)/PostSession
 predir = $(gdmconfdir)/PreSession
 postlogindir = $(gdmconfdir)/PostLogin
 workingdir = $(GDM_WORKING_DIR)
+xauthdir = $(GDM_XAUTH_DIR)
 
 Xsession: $(srcdir)/Xsession.in
 	sed	-e 's,[@]XSESSION_SHELL[@],$(XSESSION_SHELL),g' \
@@ -114,7 +115,8 @@ uninstall-hook:
 	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin \
 	$(DESTDIR)$(workingdir)/.gconf.path \
 	-rf \
-	$(DESTDIR)$(workingdir)/.gconf.mandatory
+	$(DESTDIR)$(workingdir)/.gconf.mandatory \
+	$(DESTDIR)$(xauthdir)
 
 install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.path
 	if test '!' -d $(DESTDIR)$(gdmconfdir); then \
@@ -188,6 +190,12 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 	   if test $$system = SunOS; then \
 		echo "Please add PAM authentication for gdm and gdm-autologin in $(PAM_PREFIX)/pam.conf!"; \
 	   fi; \
+	fi
+
+	if test '!' -d $(DESTDIR)$(xauthdir); then \
+		$(mkinstalldirs) $(DESTDIR)$(xauthdir); \
+		chmod 1770 $(DESTDIR)$(xauthdir); \
+		chown root:gdm $(DESTDIR)$(xauthdir) || : ; \
 	fi
 
 	if test '!' -d $(DESTDIR)$(workingdir); then \

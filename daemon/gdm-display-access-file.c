@@ -220,7 +220,6 @@ _create_xauth_file_for_user (const char  *username,
                              GError     **error)
 {
         char   *template;
-        GError *open_error;
         int     fd;
         FILE   *fp;
         uid_t   uid;
@@ -228,14 +227,19 @@ _create_xauth_file_for_user (const char  *username,
 
         fp = NULL;
 
-        template = g_strdup_printf (".gdm-xauth-%s.XXXXXX", username);
+        template = g_strdup_printf (GDM_XAUTH_DIR
+                                    "/auth-cookie-XXXXXXXX-for-%s",
+                                    username);
 
-        open_error = NULL;
-        fd = g_file_open_tmp (template, filename, &open_error);
-        g_free (template);
+        fd = g_mkstemp (template);
+        *filename = template;
+        template = NULL;
 
         if (fd < 0) {
-                g_propagate_error (error, open_error);
+                g_set_error (error,
+                             G_FILE_ERROR,
+                             g_file_error_from_errno (errno),
+                             "%s", g_strerror (errno));
                 goto out;
         }
 

@@ -1247,6 +1247,20 @@ fi
 AC_SUBST(GDM_WORKING_DIR)
 
 dnl ---------------------------------------------------------------------------
+dnl - Directory for X auth cookies
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_WITH(xauth-dir,    [  --with-xauth-dir=<dir> xauth cookie directory])
+
+if ! test -z "$with_xauth_dir"; then
+   GDM_XAUTH_DIR=$with_xauth_dir
+else
+   GDM_XAUTH_DIR=${localstatedir}/run/gdm
+fi
+
+AC_SUBST(GDM_XAUTH_DIR)
+
+dnl ---------------------------------------------------------------------------
 dnl - Finish
 dnl ---------------------------------------------------------------------------
 
