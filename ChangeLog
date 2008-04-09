@@ -1,5 +1,14 @@
 2008-04-09  William Jon McCann  <jmccann@redhat.com>
 
+	* gui/simple-greeter/gdm-user.c: (on_icon_monitor_changed),
+	(update_icon_monitor), (gdm_user_finalize), (_gdm_user_update):
+	* gui/user-switch-applet/applet.c: (gdm_applet_data_free),
+	(reset_icon), (on_user_icon_changed), (setup_current_user),
+	(fill_applet):
+	Monitor ~/.face for changes.
+
+2008-04-09  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/user-switch-applet/applet.c:
 	(set_item_text_angle_and_alignment), (applet_size_allocate_cb),
 	(user_notify_display_name_cb), (reset_icon), (fill_applet):

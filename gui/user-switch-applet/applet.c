@@ -52,6 +52,7 @@ typedef struct _GdmAppletData
 
         GConfClient    *client;
         GdmUserManager *manager;
+        GdmUser        *user;
 
         GtkWidget      *menubar;
         GtkWidget      *menuitem;
@@ -63,6 +64,8 @@ typedef struct _GdmAppletData
         gboolean        active_only;
 
         guint           client_notify_lockdown_id;
+
+        guint           user_icon_changed_id;
         guint           user_notify_id;
         GQuark          user_menu_item_quark;
         gint8           pixel_size;
@@ -477,6 +480,12 @@ gdm_applet_data_free (GdmAppletData *adata)
 {
         gconf_client_notify_remove (adata->client, adata->client_notify_lockdown_id);
 
+        g_signal_handler_disconnect (adata->user, adata->user_notify_id);
+        g_signal_handler_disconnect (adata->user, adata->user_icon_changed_id);
+
+        if (adata->user != NULL) {
+                g_object_unref (adata->user);
+        }
         g_object_unref (adata->client);
         g_object_unref (adata->manager);
         g_object_unref (tooltips);
@@ -977,21 +986,63 @@ client_notify_lockdown_func (GConfClient   *client,
 }
 
 static void
-reset_icon (GdmAppletData *adata,
-            GdmUser       *user)
+reset_icon (GdmAppletData *adata)
 {
         GdkPixbuf *pixbuf;
         GtkWidget *image;
 
-        if (user == NULL || !gtk_widget_has_screen (GTK_WIDGET (adata->menuitem))) {
+        if (adata->user == NULL || !gtk_widget_has_screen (GTK_WIDGET (adata->menuitem))) {
                 return;
         }
 
-        pixbuf = gdm_user_render_icon (user, 24);
+        pixbuf = gdm_user_render_icon (adata->user, 24);
         if (pixbuf != NULL) {
                 image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (adata->menuitem));
                 gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
                 g_object_unref (pixbuf);
+        }
+}
+
+static void
+on_user_icon_changed (GdmUser         *user,
+                      GdmAppletData   *adata)
+{
+        g_debug ("User icon changed");
+        reset_icon (adata);
+}
+
+static void
+setup_current_user (GdmAppletData *adata)
+{
+        const char *name;
+
+        adata->user = gdm_user_manager_get_user_by_uid (adata->manager, getuid ());
+        if (adata->user != NULL) {
+                g_object_ref (adata->user);
+                name = gdm_user_get_real_name (adata->user);
+        } else {
+                name = _("Unknown");
+        }
+
+        adata->menuitem = gtk_image_menu_item_new_with_label (name);
+        gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->menuitem),
+                                       gtk_image_new ());
+        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menubar), adata->menuitem);
+        gtk_widget_show (adata->menuitem);
+
+        if (adata->user != NULL) {
+                reset_icon (adata);
+
+                adata->user_icon_changed_id =
+                        g_signal_connect (adata->user,
+                                          "icon-changed",
+                                          G_CALLBACK (on_user_icon_changed),
+                                          adata);
+                adata->user_notify_id =
+                        g_signal_connect (adata->user,
+                                         "notify::display-name",
+                                         G_CALLBACK (user_notify_display_name_cb),
+                                         adata);
         }
 }
 
@@ -1133,32 +1184,9 @@ fill_applet (PanelApplet *applet)
         gtk_container_add (GTK_CONTAINER (applet), adata->menubar);
         gtk_widget_show (adata->menubar);
 
-        {
-                GdmUser    *user;
-                const char *name;
+        setup_current_user (adata);
 
-                user = gdm_user_manager_get_user_by_uid (adata->manager, getuid ());
-                if (user != NULL) {
-                        name = gdm_user_get_real_name (user);
-                } else {
-                        name = _("Unknown");
-                }
 
-                adata->menuitem = gtk_image_menu_item_new_with_label (name);
-                gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->menuitem),
-                                               gtk_image_new ());
-                gtk_menu_shell_append (GTK_MENU_SHELL (adata->menubar), adata->menuitem);
-                gtk_widget_show (adata->menuitem);
-
-                if (user != NULL) {
-                        reset_icon (adata, user);
-
-                        adata->user_notify_id = g_signal_connect (user,
-                                                                  "notify::display-name",
-                                                                  G_CALLBACK (user_notify_display_name_cb),
-                                                                  adata);
-                }
-        }
 
         adata->menu = gtk_menu_new ();
         gtk_menu_item_set_submenu (GTK_MENU_ITEM (adata->menuitem), adata->menu);

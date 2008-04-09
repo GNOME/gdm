@@ -72,6 +72,8 @@ struct _GdmUser {
         char           *shell;
         GList          *sessions;
         gulong          login_frequency;
+
+        GFileMonitor   *icon_monitor;
 };
 
 typedef struct _GdmUserClass
@@ -306,6 +308,61 @@ gdm_user_class_init (GdmUserClass *class)
                               G_TYPE_NONE, 0);
 }
 
+
+static void
+on_icon_monitor_changed (GFileMonitor     *monitor,
+                         GFile            *file,
+                         GFile            *other_file,
+                         GFileMonitorEvent event_type,
+                         GdmUser          *user)
+{
+        g_debug ("Icon changed: %d", event_type);
+
+        if (event_type != G_FILE_MONITOR_EVENT_CHANGED &&
+            event_type != G_FILE_MONITOR_EVENT_CREATED) {
+                return;
+        }
+
+        _gdm_user_icon_changed (user);
+}
+
+static void
+update_icon_monitor (GdmUser *user)
+{
+        GFile  *file;
+        GError *error;
+        char   *path;
+
+        if (user->home_dir == NULL) {
+                return;
+        }
+
+        if (user->icon_monitor != NULL) {
+                g_file_monitor_cancel (user->icon_monitor);
+                user->icon_monitor = NULL;
+        }
+
+        path = g_build_filename (user->home_dir, ".face", NULL);
+        g_debug ("adding monitor for '%s'", path);
+        file = g_file_new_for_path (path);
+        error = NULL;
+        user->icon_monitor = g_file_monitor_file (file,
+                                                  G_FILE_MONITOR_NONE,
+                                                  NULL,
+                                                  &error);
+        if (user->icon_monitor != NULL) {
+                g_signal_connect (user->icon_monitor,
+                                  "changed",
+                                  G_CALLBACK (on_icon_monitor_changed),
+                                  user);
+        } else {
+                g_warning ("Unable to monitor %s: %s", path, error->message);
+                g_error_free (error);
+        }
+        g_object_unref (file);
+        g_free (path);
+}
+
 static void
 gdm_user_init (GdmUser *user)
 {
@@ -321,6 +378,8 @@ gdm_user_finalize (GObject *object)
         GdmUser *user;
 
         user = GDM_USER (object);
+
+        g_file_monitor_cancel (user->icon_monitor);
 
         g_free (user->user_name);
         g_free (user->real_name);
@@ -418,6 +477,8 @@ _gdm_user_update (GdmUser             *user,
                 user->shell = g_strdup (pwent->pw_shell);
                 g_object_notify (G_OBJECT (user), "shell");
         }
+
+        update_icon_monitor (user);
 
         g_object_thaw_notify (G_OBJECT (user));
 }
