@@ -54,7 +54,7 @@ typedef struct _GdmAppletData
         GdmUserManager *manager;
 
         GtkWidget      *menubar;
-        GtkWidget      *imglabel;
+        GtkWidget      *menuitem;
         GtkWidget      *menu;
         GtkWidget      *separator_item;
         GtkWidget      *login_screen_item;
@@ -382,6 +382,21 @@ applet_key_press_event_cb (GtkWidget   *widget,
         return FALSE;
 }
 
+static void
+set_item_text_angle_and_alignment (GtkWidget *item,
+                                   double     text_angle,
+                                   float      xalign,
+                                   float      yalign)
+{
+        GtkWidget *label;
+
+        label = GTK_BIN (item)->child;
+
+        gtk_label_set_angle (GTK_LABEL (label), text_angle);
+
+        gtk_misc_set_alignment (GTK_MISC (label), xalign, yalign);
+}
+
 /*
  * gnome-panel/applets/wncklet/window-menu.c:window_menu_size_allocate()
  *
@@ -392,18 +407,23 @@ applet_key_press_event_cb (GtkWidget   *widget,
 static void
 applet_size_allocate_cb (GtkWidget     *widget,
                          GtkAllocation *allocation,
-                         gpointer       data)
+                         GdmAppletData *adata)
 {
-        GdmAppletData *adata;
-        GList *children;
-        GtkWidget *top_item;
+        GList            *children;
+        GtkWidget        *top_item;
         PanelAppletOrient orient;
-        gint item_border;
-        gint pixel_size;
-        gdouble text_angle = 0.0;
-        GtkPackDirection pack_direction = GTK_PACK_DIRECTION_LTR;
+        gint              item_border;
+        gint              pixel_size;
+        gdouble           text_angle;
+        GtkPackDirection  pack_direction;
+        float             text_xalign;
+        float             text_yalign;
 
-        adata = data;
+        pack_direction = GTK_PACK_DIRECTION_LTR;
+        text_angle = 0.0;
+        text_xalign = 0.0;
+        text_yalign = 0.5;
+
         children = gtk_container_get_children (GTK_CONTAINER (adata->menubar));
         top_item = GTK_WIDGET (children->data);
         g_list_free (children);
@@ -418,20 +438,22 @@ applet_size_allocate_cb (GtkWidget     *widget,
         case PANEL_APPLET_ORIENT_DOWN:
                 gtk_widget_set_size_request (top_item, -1, allocation->height);
                 pixel_size = allocation->height - item_border;
-                pack_direction = GTK_PACK_DIRECTION_RTL;
-                text_angle = 0.0;
                 break;
         case PANEL_APPLET_ORIENT_LEFT:
                 gtk_widget_set_size_request (top_item, allocation->width, -1);
                 pixel_size = allocation->width - item_border;
                 pack_direction = GTK_PACK_DIRECTION_TTB;
                 text_angle = 270.0;
+                text_xalign = 0.5;
+                text_yalign = 0.0;
                 break;
         case PANEL_APPLET_ORIENT_RIGHT:
                 gtk_widget_set_size_request (top_item, allocation->width, -1);
                 pixel_size = allocation->width - item_border;
-                pack_direction = GTK_PACK_DIRECTION_TTB;
+                pack_direction = GTK_PACK_DIRECTION_BTT;
                 text_angle = 90.0;
+                text_xalign = 0.5;
+                text_yalign = 0.0;
                 break;
         default:
                 g_assert_not_reached ();
@@ -440,13 +462,13 @@ applet_size_allocate_cb (GtkWidget     *widget,
 
         gtk_menu_bar_set_pack_direction (GTK_MENU_BAR (adata->menubar),
                                          pack_direction);
+        gtk_menu_bar_set_child_pack_direction (GTK_MENU_BAR (adata->menubar),
+                                               pack_direction);
 
-        if (GTK_IS_IMAGE (adata->imglabel)) {
-                gtk_image_set_pixel_size (GTK_IMAGE (adata->imglabel),
-                                          pixel_size - 4);
-        } else {
-                gtk_label_set_angle (GTK_LABEL (adata->imglabel), text_angle);
-        }
+        set_item_text_angle_and_alignment (adata->menuitem,
+                                           text_angle,
+                                           text_xalign,
+                                           text_yalign);
 }
 
 
@@ -685,11 +707,14 @@ menuitem_style_set_cb (GtkWidget *menuitem,
 
 
 static void
-user_notify_display_name_cb (GObject    *object,
-                             GParamSpec *pspec,
-                             gpointer    data)
+user_notify_display_name_cb (GObject       *object,
+                             GParamSpec    *pspec,
+                             GdmAppletData *adata)
 {
-        gtk_label_set_text (data, gdm_user_get_real_name (GDM_USER (object)));
+        GtkWidget *label;
+
+        label = gtk_bin_get_child (GTK_BIN (adata->menuitem));
+        gtk_label_set_text (GTK_LABEL (label), gdm_user_get_real_name (GDM_USER (object)));
 }
 
 
@@ -951,6 +976,25 @@ client_notify_lockdown_func (GConfClient   *client,
         }
 }
 
+static void
+reset_icon (GdmAppletData *adata,
+            GdmUser       *user)
+{
+        GdkPixbuf *pixbuf;
+        GtkWidget *image;
+
+        if (user == NULL || !gtk_widget_has_screen (GTK_WIDGET (adata->menuitem))) {
+                return;
+        }
+
+        pixbuf = gdm_user_render_icon (user, 24);
+        if (pixbuf != NULL) {
+                image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (adata->menuitem));
+                gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
+                g_object_unref (pixbuf);
+        }
+}
+
 static gboolean
 fill_applet (PanelApplet *applet)
 {
@@ -962,8 +1006,6 @@ fill_applet (PanelApplet *applet)
                 BONOBO_UI_VERB_END
         };
         static gboolean    first_time = FALSE;
-        GtkWidget         *menuitem;
-        GtkWidget         *hbox;
         GSList            *users;
         char              *tmp;
         BonoboUIComponent *popup_component;
@@ -1091,14 +1133,6 @@ fill_applet (PanelApplet *applet)
         gtk_container_add (GTK_CONTAINER (applet), adata->menubar);
         gtk_widget_show (adata->menubar);
 
-        menuitem = gtk_menu_item_new ();
-        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menubar), menuitem);
-        gtk_widget_show (menuitem);
-
-        hbox = gtk_hbox_new (FALSE, 0);
-        gtk_container_add (GTK_CONTAINER (menuitem), hbox);
-        gtk_widget_show (hbox);
-
         {
                 GdmUser    *user;
                 const char *name;
@@ -1110,19 +1144,24 @@ fill_applet (PanelApplet *applet)
                         name = _("Unknown");
                 }
 
-                adata->imglabel = gtk_label_new (name);
+                adata->menuitem = gtk_image_menu_item_new_with_label (name);
+                gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->menuitem),
+                                               gtk_image_new ());
+                gtk_menu_shell_append (GTK_MENU_SHELL (adata->menubar), adata->menuitem);
+                gtk_widget_show (adata->menuitem);
+
                 if (user != NULL) {
+                        reset_icon (adata, user);
+
                         adata->user_notify_id = g_signal_connect (user,
                                                                   "notify::display-name",
                                                                   G_CALLBACK (user_notify_display_name_cb),
-                                                                  adata->imglabel);
+                                                                  adata);
                 }
-                gtk_box_pack_start (GTK_BOX (hbox), adata->imglabel, TRUE, TRUE, 0);
-                gtk_widget_show (adata->imglabel);
         }
 
         adata->menu = gtk_menu_new ();
-        gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem), adata->menu);
+        gtk_menu_item_set_submenu (GTK_MENU_ITEM (adata->menuitem), adata->menu);
         g_signal_connect (adata->menu, "style-set",
                           G_CALLBACK (menu_style_set_cb), adata);
         g_signal_connect (adata->menu, "show",
