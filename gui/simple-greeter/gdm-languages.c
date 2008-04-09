@@ -285,6 +285,42 @@ language_name_is_utf8 (const char *language_name)
 }
 
 static gboolean
+language_name_has_translations (const char *language_name)
+{
+        GDir        *dir;
+        char        *path;
+        const char  *name;
+        gboolean     has_translations;
+
+        path = g_build_filename (GNOMELOCALEDIR, language_name, "LC_MESSAGES", NULL);
+
+        has_translations = FALSE;
+        dir = g_dir_open (path, 0, NULL);
+        g_free (path);
+
+        if (dir == NULL) {
+                goto out;
+        }
+
+        do {
+                name = g_dir_read_name (dir);
+
+                if (name == NULL) {
+                        break;
+                }
+
+                if (g_str_has_suffix (name, ".mo")) {
+                        has_translations = TRUE;
+                        break;
+                }
+        } while (name != NULL);
+        g_dir_close (dir);
+
+out:
+        return has_translations;
+}
+
+static gboolean
 add_locale (const char *language_name)
 {
         GdmLocale *locale;
@@ -307,6 +343,7 @@ add_locale (const char *language_name)
                 return FALSE;
         }
 
+
         locale = g_new0 (GdmLocale, 1);
         gdm_parse_language_name (name,
                                  &locale->language_code,
@@ -321,6 +358,12 @@ add_locale (const char *language_name)
         locale->name = construct_language_name (locale->language_code, locale->territory_code,
                                                 locale->codeset, locale->modifier);
 
+        if (!language_name_has_translations (locale->name) &&
+            !language_name_has_translations (locale->language_code)) {
+                gdm_locale_free (locale);
+                return FALSE;
+        }
+
         old_locale = g_hash_table_lookup (gdm_available_locales_map, locale->id);
         if (old_locale != NULL) {
                 if (strlen (old_locale->name) > strlen (locale->name)) {
@@ -334,7 +377,6 @@ add_locale (const char *language_name)
         return TRUE;
 }
 
-#ifdef GDM_GET_LOCALES_FROM_LIBC
 struct nameent
 {
         char    *name;
@@ -398,7 +440,6 @@ collect_locales_from_archive (void)
         g_mapped_file_free (mapped);
         return locales_collected;
 }
-#endif
 
 static int
 select_dirs (const struct dirent *dirent)
@@ -456,13 +497,15 @@ collect_locales (void)
                 gdm_available_locales_map = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) gdm_locale_free);
         }
 
-#ifdef GDM_GET_LOCALES_FROM_LIBC
         if (collect_locales_from_archive ()) {
                 return;
-        }
-#endif
+        } else {
+                g_warning ("Could not read list of available locales from libc, "
+                           "guessing possible locales from available translations, "
+                           "but list may be incomplete!");
 
-        collect_locales_from_directory ();
+                collect_locales_from_directory ();
+        }
 }
 
 static gboolean

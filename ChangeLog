@@ -1,5 +1,17 @@
 2008-04-08 Ray Strode <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-languages.c:
+	(language_name_has_translations),
+	(add_locale), (collect_locales):
+	When generating language list, use the list from libc
+	as definitive, but prune from that list languages that
+	lack translations in /usr/share/locale.  Previously
+	we were trying to figure out the list of available languages
+	from the names in /usr/share/locale, but those names aren't
+	specific enough to get a name from.
+
+2008-04-08 Ray Strode <rstrode@redhat.com>
+
 	* configure.ac
 	* data/Makefile.am:
 	* daemon/Makefile.am:
