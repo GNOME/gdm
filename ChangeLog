@@ -1,5 +1,12 @@
 2008-04-11  Ray Strode <rstrode@redhat.com>
 
+	* daemon/gdm-session-worker.c
+	(_change_user): Don't setreuid to user before setcred since
+	even though it's documented that you should, modules break if
+	you do
+
+2008-04-11  Ray Strode <rstrode@redhat.com>
+
 	* data/Makefile.am:
 	Make /var/run/gdm 1777 so libXau locking works
 
