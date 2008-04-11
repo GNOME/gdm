@@ -1576,7 +1576,7 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
                 char  *home_dir;
                 int    fd;
 
-                if (setuid (worker->uid) < 0) {
+                if (setuid (worker->priv->uid) < 0) {
                         g_debug ("GdmSessionWorker: could not reset uid - %s", g_strerror (errno));
                         _exit (1);
                 }
