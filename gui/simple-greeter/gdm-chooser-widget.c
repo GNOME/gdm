@@ -965,10 +965,36 @@ gdm_chooser_widget_size_allocate (GtkWidget     *widget,
         }
 }
 
-static void
-gdm_chooser_widget_grab_focus (GtkWidget *widget)
+static gboolean
+gdm_chooser_widget_focus (GtkWidget        *widget,
+                          GtkDirectionType  direction)
 {
+        /* Since we only have one focusable child (the tree view),
+         * no matter which direction we're going the rules are the
+         * same:
+         *
+         *    1) if it's aready got focus, return FALSE to surrender
+         *    that focus.
+         *    2) if it doesn't already have focus, then grab it
+         */
+        if (GTK_CONTAINER (widget)->focus_child != NULL) {
+                return FALSE;
+        }
+
         gtk_widget_grab_focus (GDM_CHOOSER_WIDGET (widget)->priv->items_view);
+        return TRUE;
+}
+
+static gboolean
+gdm_chooser_widget_focus_in_event (GtkWidget     *widget,
+                                   GdkEventFocus *focus_event)
+{
+        /* We don't ever want the chooser widget itself to have focus.
+         * Focus should always go to the tree view.
+         */
+        gtk_widget_grab_focus (GDM_CHOOSER_WIDGET (widget)->priv->items_view);
+
+        return FALSE;
 }
 
 static void
@@ -984,7 +1010,8 @@ gdm_chooser_widget_class_init (GdmChooserWidgetClass *klass)
         widget_class->size_allocate = gdm_chooser_widget_size_allocate;
         widget_class->hide = gdm_chooser_widget_hide;
         widget_class->show = gdm_chooser_widget_show;
-        widget_class->grab_focus = gdm_chooser_widget_grab_focus;
+        widget_class->focus = gdm_chooser_widget_focus;
+        widget_class->focus_in_event = gdm_chooser_widget_focus_in_event;
 
         signals [ACTIVATED] = g_signal_new ("activated",
                                             G_TYPE_FROM_CLASS (object_class),

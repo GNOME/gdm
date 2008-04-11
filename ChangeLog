@@ -1,3 +1,11 @@
+2008-04-11  Ray Strode <rstrode@redhat.com>
+
+	* gui/simple-greeter/gdm-chooser-widget.c
+	(gdm_chooser_widget_grab_focus), (gdm_chooser_widget_focus),
+	(gdm_chooser_widget_focus_in_event),
+	(gdm_chooser_widget_class_init):
+	Redo focus handling so that tabing out of the list works
+
 2008-04-09  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/gdm-user.c: (on_icon_monitor_changed),
@@ -32,7 +40,7 @@
 	* data/Makefile.am:
 	* daemon/Makefile.am:
 	* daemon/gdm-display-access-file.c
-	(_create_xauth_file_for_user)
+	(_create_xauth_file_for_user):
 	Store X auth password in /var/run/gdm instead of /tmp
 
 2008-04-07 Ray Strode <rstrode@redhat.com>
