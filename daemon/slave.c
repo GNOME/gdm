@@ -4895,6 +4895,10 @@ gdm_slave_session_start (void)
 	gdm_debug ("Session: start_time: %ld end_time: %ld",
 		   (long)session_start_time, (long)end_time);
 
+	/* Sync to get notified in the case the X server died
+	 */
+	XSync (d->dsp, False);
+
 	/* 66 is a very magical number signifying failure in GDM */
 	if G_UNLIKELY ((d->last_sess_status != 66) &&
 		       (/* sanity */ end_time >= session_start_time) &&
