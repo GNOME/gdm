@@ -111,6 +111,7 @@ struct GdmSessionWorkerPrivate
         char             *display_device;
         char             *hostname;
         char             *username;
+        uid_t             uid;
         gboolean          password_is_required;
 
         int               cred_flags;
@@ -1176,6 +1177,7 @@ _change_user (GdmSessionWorker  *worker,
                 return FALSE;
         }
 #endif
+        worker->priv->uid = uid;
 
         if (setgid (gid) < 0) {
                 return FALSE;
@@ -1574,7 +1576,7 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
                 char  *home_dir;
                 int    fd;
 
-                if (setuid (getuid ()) < 0) {
+                if (setuid (worker->uid) < 0) {
                         g_debug ("GdmSessionWorker: could not reset uid - %s", g_strerror (errno));
                         _exit (1);
                 }

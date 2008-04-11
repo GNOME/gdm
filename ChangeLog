@@ -1,6 +1,12 @@
 2008-04-11  Ray Strode <rstrode@redhat.com>
 
 	* daemon/gdm-session-worker.c
+	(_change_user), (gdm_session_worker_start_user_session):
+	Plug gaping security hole made in last commit
+
+2008-04-11  Ray Strode <rstrode@redhat.com>
+
+	* daemon/gdm-session-worker.c
 	(_change_user): Don't setreuid to user before setcred since
 	even though it's documented that you should, modules break if
 	you do
