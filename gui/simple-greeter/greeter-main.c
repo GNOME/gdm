@@ -101,13 +101,14 @@ assistive_registry_launch (void)
 static GdkFilterReturn
 filter_watch (GdkXEvent *xevent,
               GdkEvent  *event,
-              gpointer   data)
+              GMainLoop *loop)
 {
         XEvent *xev = (XEvent *)xevent;
 
         if (xev->xany.type == PropertyNotify
             && xev->xproperty.atom == AT_SPI_IOR) {
-                gtk_main_quit ();
+                g_debug ("a11y registry started");
+                g_main_loop_quit (loop);
 
                 return GDK_FILTER_REMOVE;
         }
@@ -116,11 +117,11 @@ filter_watch (GdkXEvent *xevent,
 }
 
 static gboolean
-filter_timeout (gpointer data)
+filter_timeout (GMainLoop *loop)
 {
         g_warning ("The accessibility registry was not found.");
 
-        gtk_main_quit ();
+        g_main_loop_quit (loop);
 
         return FALSE;
 }
@@ -130,8 +131,11 @@ assistive_registry_start (void)
 {
         GdkWindow *root;
         guint      tid;
+        GMainLoop *loop;
 
         gdm_profile_start (NULL);
+
+        g_debug ("Starting a11y registry");
 
         root = gdk_get_default_root_window ();
 
@@ -139,20 +143,23 @@ assistive_registry_start (void)
                 AT_SPI_IOR = XInternAtom (GDK_DISPLAY (), "AT_SPI_IOR", False);
         }
 
-        gdk_window_set_events (root,  GDK_PROPERTY_CHANGE_MASK);
+        gdk_window_set_events (root, GDK_PROPERTY_CHANGE_MASK);
 
         if ( ! assistive_registry_launch ()) {
                 g_warning ("The accessibility registry could not be started.");
                 return;
         }
 
-        gdk_window_add_filter (root, filter_watch, NULL);
-        tid = g_timeout_add_seconds (5, filter_timeout, NULL);
+        loop = g_main_loop_new (NULL, FALSE);
+        gdk_window_add_filter (root, (GdkFilterFunc)filter_watch, loop);
+        tid = g_timeout_add_seconds (5, (GSourceFunc)filter_timeout, loop);
 
-        gtk_main ();
+        g_main_loop_run (loop);
 
-        gdk_window_remove_filter (root, filter_watch, NULL);
+        gdk_window_remove_filter (root, (GdkFilterFunc)filter_watch, loop);
         g_source_remove (tid);
+
+        g_main_loop_unref (loop);
 
         gdm_profile_end (NULL);
 }
