@@ -470,6 +470,7 @@ on_shrink_animation_complete (GdmScrollableWidget *scrollable_widget,
 
         widget->priv->active_row_normalized_position = 0.5;
         set_inactive_items_visible (GDM_CHOOSER_WIDGET (widget), FALSE);
+        gtk_tree_view_set_enable_search (GTK_TREE_VIEW (widget->priv->items_view), FALSE);
         widget->priv->state = GDM_CHOOSER_WIDGET_STATE_SHRUNK;
 
         if (widget->priv->emit_activated_after_resize_animation) {
@@ -545,6 +546,7 @@ on_grow_animation_complete (GdmScrollableWidget *scrollable_widget,
         g_assert (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING);
         widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
         widget->priv->was_fully_grown = TRUE;
+        gtk_tree_view_set_enable_search (GTK_TREE_VIEW (widget->priv->items_view), TRUE);
 
         gtk_widget_grab_focus (GTK_WIDGET (widget));
 }
@@ -642,9 +644,11 @@ skip_resize_animation (GdmChooserWidget *widget)
 {
         if (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_SHRINKING) {
                 set_inactive_items_visible (GDM_CHOOSER_WIDGET (widget), FALSE);
+                gtk_tree_view_set_enable_search (GTK_TREE_VIEW (widget->priv->items_view), FALSE);
                 widget->priv->state = GDM_CHOOSER_WIDGET_STATE_SHRUNK;
         } else if (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING) {
                 set_inactive_items_visible (GDM_CHOOSER_WIDGET (widget), TRUE);
+                gtk_tree_view_set_enable_search (GTK_TREE_VIEW (widget->priv->items_view), TRUE);
                 widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
                 widget->priv->was_fully_grown = FALSE;
                 gtk_widget_grab_focus (GTK_WIDGET (widget));
@@ -695,9 +699,16 @@ static gboolean
 clear_selection (GdmChooserWidget *widget)
 {
         GtkTreeSelection *selection;
+        GtkWidget        *window;
 
         selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget->priv->items_view));
         gtk_tree_selection_unselect_all (selection);
+
+        window = gtk_widget_get_ancestor (widget, GTK_TYPE_WINDOW);
+
+        if (window != NULL) {
+                gtk_window_set_focus (GTK_WINDOW (window), NULL);
+        }
 
         return FALSE;
 }
