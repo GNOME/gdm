@@ -496,6 +496,7 @@ AC_CACHE_CHECK([for posix getpwnam_r],
 		ac_cv_func_posix_getpwnam_r,
 		[AC_RUN_IFELSE([AC_LANG_PROGRAM(
 [[
+#define _POSIX_PTHREAD_SEMANTICS
 #include <errno.h>
 #include <pwd.h>
 ]],

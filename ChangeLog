@@ -1,3 +1,11 @@
+2008-04-15  Brian Cameron  <brian.cameron@sun.com>
+
+	* configure.ac: Add "#define _POSIX_PTHREAD_SEMANTICS" to
+	  test for POSIX getpwnam_r.  This is needed to be able
+	  to identify that Solaris does have the POSIX version of
+	  this function.  Otherwise the build fails when building
+	  gdm-session-worker.c, which uses this function.
+
 2008-04-15  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/greeter-main.c: (filter_watch),
