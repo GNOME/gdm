@@ -546,7 +546,7 @@ setup_at_tools (GdmGreeterSession *session)
         gdm_session_client_set_try_exec (session->priv->screen_reader_client,
                                          "orca");
         gdm_session_client_set_command (session->priv->screen_reader_client,
-                                        "orca -n");
+                                        "orca -n -d main-window -d magnifier");
         enabled = gconf_client_get_bool (client, KEY_SCREEN_READER_ENABLED, NULL);
         gdm_session_client_set_enabled (session->priv->screen_reader_client,
                                         enabled);
