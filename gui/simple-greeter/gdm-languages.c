@@ -359,6 +359,7 @@ add_locale (const char *language_name)
                                                 locale->codeset, locale->modifier);
 
         if (!language_name_has_translations (locale->name) &&
+            !language_name_has_translations (locale->id) &&
             !language_name_has_translations (locale->language_code)) {
                 gdm_locale_free (locale);
                 return FALSE;
