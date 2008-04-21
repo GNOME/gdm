@@ -415,6 +415,35 @@ on_shrink_animation_step (GdmScrollableWidget *scrollable_widget,
 }
 
 static void
+update_separator_visibility (GdmChooserWidget *widget)
+{
+        GtkTreePath *separator_path;
+        GtkTreeIter  iter;
+        gboolean     is_visible;
+
+        separator_path = gtk_tree_row_reference_get_path (widget->priv->separator_row);
+
+        if (separator_path == NULL) {
+                return;
+        }
+
+        gtk_tree_model_get_iter (GTK_TREE_MODEL (widget->priv->list_store),
+                                 &iter, separator_path);
+
+        if (widget->priv->number_of_normal_rows > 0 &&
+            widget->priv->number_of_separated_rows > 0) {
+                is_visible = TRUE;
+        } else {
+                is_visible = FALSE;
+        }
+
+        gtk_list_store_set (widget->priv->list_store,
+                            &iter,
+                            CHOOSER_ITEM_IS_VISIBLE_COLUMN, is_visible,
+                            -1);
+}
+
+static void
 set_inactive_items_visible (GdmChooserWidget *widget,
                             gboolean          should_show)
 {
@@ -463,6 +492,8 @@ set_inactive_items_visible (GdmChooserWidget *widget,
         } while (gtk_tree_model_iter_next (model, &iter));
 
         g_free (active_item_id);
+
+        update_separator_visibility (widget);
 }
 
 static void
@@ -1380,35 +1411,6 @@ update_column_visibility (GdmChooserWidget *widget)
         }
 
         return FALSE;
-}
-
-static void
-update_separator_visibility (GdmChooserWidget *widget)
-{
-        GtkTreePath *separator_path;
-        GtkTreeIter  iter;
-        gboolean     is_visible;
-
-        separator_path = gtk_tree_row_reference_get_path (widget->priv->separator_row);
-
-        if (separator_path == NULL) {
-                return;
-        }
-
-        gtk_tree_model_get_iter (GTK_TREE_MODEL (widget->priv->list_store),
-                                 &iter, separator_path);
-
-        if (widget->priv->number_of_normal_rows > 0 &&
-            widget->priv->number_of_separated_rows > 0) {
-                is_visible = TRUE;
-        } else {
-                is_visible = FALSE;
-        }
-
-        gtk_list_store_set (widget->priv->list_store,
-                            &iter,
-                            CHOOSER_ITEM_IS_VISIBLE_COLUMN, is_visible,
-                            -1);
 }
 
 static void
