@@ -1,4 +1,22 @@
-2008-04-18  Ray Strode <rstrode@@redhat.com>
+2008-04-21  Ray Strode  <rstrode@redhat.com>
+
+	* gui/simple-greeter/gdm-user-manager.[hc]:
+	(reload_users_timeout), (queue_reload_users),
+	(gdm_user_manager_class_init): Add two new signals
+	"users-loaded" and "loading-users" to signify when
+	the user manager is doing its initial run through
+	of available users
+	* gui/simple-greeter/gdm-user-chooser-widget.c:
+	(on_users_loaded), (gdm_user_chooser_widget_init)
+	* gui/simple-greeter/gdm-chooser-widget.c:
+	(get_first_item), (activate_if_one_item),
+	(gdm_chooser_widget_add_item), (gdm_chooser_widget_remove_item),
+	(gdm_chooser_widget_get_number_of_items),
+	(gdm_chooser_widget_activate_on_one_item):
+	Activate the "Other..." user automatically if it's the only
+	available user
+
+2008-04-18  Ray Strode  <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-languages.c:
 	(add_locale):

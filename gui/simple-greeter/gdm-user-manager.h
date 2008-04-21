@@ -46,6 +46,8 @@ typedef struct
 {
         GObjectClass   parent_class;
 
+        void          (* loading_users)             (GdmUserManager *user_manager);
+        void          (* users_loaded)              (GdmUserManager *user_manager);
         void          (* user_added)                (GdmUserManager *user_manager,
                                                      GdmUser        *user);
         void          (* user_removed)              (GdmUserManager *user_manager,

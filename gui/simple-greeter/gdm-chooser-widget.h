@@ -126,6 +126,10 @@ void                   gdm_chooser_widget_set_hide_inactive_items (GdmChooserWid
 
 void                   gdm_chooser_widget_activate_selected_item (GdmChooserWidget *widget);
 
+int                    gdm_chooser_widget_get_number_of_items    (GdmChooserWidget *widget);
+void                   gdm_chooser_widget_activate_on_one_item   (GdmChooserWidget *widget,
+                                                                  gboolean          should_activate);
+
 G_END_DECLS
 
 #endif /* __GDM_CHOOSER_WIDGET_H */

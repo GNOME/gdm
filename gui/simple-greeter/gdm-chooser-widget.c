@@ -28,6 +28,7 @@
 #include <errno.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <syslog.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -86,10 +87,12 @@ struct GdmChooserWidgetPrivate
 
         guint                    update_idle_id;
         guint                    timer_animation_timeout_id;
+        guint                    activate_idle_id;
 
         guint32                  should_hide_inactive_items : 1;
         guint32                  emit_activated_after_resize_animation : 1;
         guint32                  was_fully_grown : 1;
+        guint32                  activate_on_one_item : 1;
 
         GdmChooserWidgetPosition separator_position;
         GdmChooserWidgetState    state;
@@ -537,6 +540,42 @@ start_shrink_animation (GdmChooserWidget *widget)
                                               on_shrink_animation_step, widget,
                                               (GdmScrollableWidgetSlideDoneFunc)
                                               on_shrink_animation_complete, widget);
+}
+
+static char *
+get_first_item (GdmChooserWidget *widget)
+{
+        GtkTreeModel *model;
+        GtkTreeIter   iter;
+        char         *id;
+
+        model = GTK_TREE_MODEL (widget->priv->list_store);
+
+        if (!gtk_tree_model_get_iter_first (model, &iter)) {
+                g_assert_not_reached ();
+        }
+
+        gtk_tree_model_get (model, &iter,
+                            CHOOSER_ID_COLUMN, &id, -1);
+        return id;
+}
+
+static gboolean
+activate_if_one_item (GdmChooserWidget *widget)
+{
+        char *id;
+
+        widget->priv->activate_idle_id = 0;
+
+        if (gdm_chooser_widget_get_number_of_items (widget) != 1) {
+                return FALSE;
+        }
+
+        id = get_first_item (widget);
+        gdm_chooser_widget_set_active_item (widget, id);
+        g_free (id);
+
+        return FALSE;
 }
 
 static void
@@ -1808,6 +1847,10 @@ gdm_chooser_widget_add_item (GdmChooserWidget *widget,
                                            -1);
 
         move_cursor_to_top (widget);
+
+        if (widget->priv->activate_on_one_item) {
+                activate_if_one_item (widget);
+        }
 }
 
 void
@@ -1856,6 +1899,10 @@ gdm_chooser_widget_remove_item (GdmChooserWidget *widget,
         gtk_list_store_remove (widget->priv->list_store, &iter);
 
         move_cursor_to_top (widget);
+
+        if (widget->priv->activate_on_one_item) {
+                activate_if_one_item (widget);
+        }
 }
 
 gboolean
@@ -2212,5 +2259,23 @@ gdm_chooser_widget_set_hide_inactive_items (GdmChooserWidget  *widget,
               (widget->priv->state != GDM_CHOOSER_WIDGET_STATE_GROWN
                || widget->priv->state != GDM_CHOOSER_WIDGET_STATE_GROWING)) {
                 gdm_chooser_widget_grow (widget);
+        }
+}
+
+int
+gdm_chooser_widget_get_number_of_items (GdmChooserWidget *widget)
+{
+        return widget->priv->number_of_normal_rows +
+               widget->priv->number_of_separated_rows;
+}
+
+void
+gdm_chooser_widget_activate_on_one_item (GdmChooserWidget *widget,
+                                         gboolean          should_activate)
+{
+        widget->priv->activate_on_one_item = should_activate;
+
+        if (widget->priv->activate_on_one_item) {
+                activate_if_one_item (widget);
         }
 }

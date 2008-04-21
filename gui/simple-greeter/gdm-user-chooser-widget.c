@@ -387,6 +387,14 @@ setup_icons (GdmUserChooserWidget *widget)
 }
 
 static void
+on_users_loaded (GdmUserManager       *manager,
+                 GdmUserChooserWidget *widget)
+{
+        gdm_chooser_widget_activate_on_one_item (GDM_CHOOSER_WIDGET (widget),
+                                                 TRUE);
+}
+
+static void
 on_user_added (GdmUserManager       *manager,
                GdmUser              *user,
                GdmUserChooserWidget *widget)
@@ -487,6 +495,10 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
                                                _("Currently logged in"));
 
         widget->priv->manager = gdm_user_manager_ref_default ();
+        g_signal_connect (widget->priv->manager,
+                          "users-loaded",
+                          G_CALLBACK (on_users_loaded),
+                          widget);
         g_signal_connect (widget->priv->manager,
                           "user-added",
                           G_CALLBACK (on_user_added),
