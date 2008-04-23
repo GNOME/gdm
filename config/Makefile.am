@@ -24,6 +24,8 @@ EXTRA_DIST = \
 	CDE.desktop.in \
 	ssh.desktop.in.in \
 	Xsession.in \
+	Xsession.common \
+	Xsession.solaris \
 	gdm \
 	gdm-autologin \
 	locale.alias \
@@ -38,9 +40,17 @@ EXTRA_DIST = \
 
 CLEANFILES = Xsession gdm.conf gdm.conf-custom default.desktop gnome.desktop CDE.desktop ssh.desktop Init PreSession PostSession gdmprefetchlist
 
+if OS_SOLARIS
+   DISTRO_XSESSION=$(srcdir)/Xsession.solaris
+else
+   DISTRO_XSESSION=$(srcdir)/Xsession.common
+endif
+
 Xsession: $(srcdir)/Xsession.in
 	sed	-e 's,[@]XSESSION_SHELL[@],$(XSESSION_SHELL),g' \
 		-e 's,[@]libexecdir[@],$(libexecdir),g' \
+		-e '/^# @DISTRO_XSESSION@/r $(DISTRO_XSESSION)' \
+		-e 's,[@]DISTRO_XSESSION[@],Distro configuration section,g' \
 		<$(srcdir)/Xsession.in >Xsession
 
 gdm.conf: $(srcdir)/gdm.conf.in

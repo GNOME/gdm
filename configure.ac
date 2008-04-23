@@ -1079,6 +1079,7 @@ case "$host" in
 	HOST_UTMP_LINE_ATTACHED="/dev/dtlocal"
 	HOST_UTMP_LINE_REMOTE="/dev/dtremote"
 	HOST_UTMP_PSEUDO_DEVICE="true"
+	os_solaris=yes
 	;;
 *freebsd*)
 	HOST_GDM_USER_PATH="/bin:/usr/bin"
@@ -1319,6 +1320,8 @@ fi
 
 # Set configuration choices.
 #
+AM_CONDITIONAL(OS_SOLARIS, test x$os_solaris = xyes)
+
 AC_SUBST(HALT_COMMAND)
 AC_DEFINE_UNQUOTED(HALT_COMMAND,"$HALT_COMMAND")
 AC_SUBST(REBOOT_COMMAND)

@@ -1,3 +1,13 @@
+2008-04-22 Brian Cameron <brian.cameron@sun.com>
+
+	* configure.ac, config/Xsession.in, config/Xsession.solaris,
+	  config/Xsession.common, config/Makefile.am:  Fix the way 
+	  Xsession is built so that distros can more easily add their
+	  own logic to the Xsession script.  Move Solaris specific 
+	  Xsession logic to the Xsession.solaris file.  Get rid of
+	  logic to normalize LC_ variables since this was causing
+	  problems for some users, fixes bug #509141.  
+
 2008-04-11 Ray Strode <rstrode@redhat.com>
 
 	* gui/slave.c:
