@@ -1203,13 +1203,6 @@ else
    X_CONFIG_OPTIONS="-audit 0"
 fi
 
-# Don't add bindir to GDM_USER_PATH if it is already in the PATH.
-# If it is /bin or /usr/bin, for example.
-if test "x$real_gdm_prefix" != "x/" -a "x$real_gdm_prefix" != "x/usr"; then
-    GDM_USER_PATH="$GDM_USER_PATH:${bindir}"
-fi
-
-
 # Use Xephyr if it is available.  It works better than Xnest since Xephyr
 # supports the Xserver extensions, even if on a remote machine.
 #
