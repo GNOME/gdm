@@ -432,7 +432,7 @@ update_separator_visibility (GdmChooserWidget *widget)
 
         if (widget->priv->number_of_normal_rows > 0 &&
             widget->priv->number_of_separated_rows > 0 &&
-            state != GDM_CHOOSER_WIDGET_STATE_SHRUNK) {
+            widget->priv->state != GDM_CHOOSER_WIDGET_STATE_SHRUNK) {
                 is_visible = TRUE;
         } else {
                 is_visible = FALSE;
