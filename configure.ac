@@ -1093,6 +1093,18 @@ case "$host" in
 	HOST_UTMP_LINE_REMOTE=""
 	HOST_UTMP_PSEUDO_DEVICE="false"
 	;;
+*openbsd*)
+	HOST_GDM_USER_PATH="/bin:/usr/bin"
+	HOST_HALT_COMMAND="/sbin/halt -p;/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now"
+	HOST_REBOOT_COMMAND="/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
+	HOST_SUSPEND_COMMAND="/usr/bin/zzz"
+	HOST_XSESSION_SHELL=/bin/sh
+	HOST_SOUND_PROGRAM=$(prefix)/bin/play
+	HOST_GDMGNOMESESSIONCMD=gnome-session
+	HOST_UTMP_LINE_ATTACHED="/dev/console"
+	HOST_UTMP_LINE_REMOTE=""
+	HOST_UTMP_PSEUDO_DEVICE="false"
+	;;
 *)
 	HOST_GDM_USER_PATH="/bin:/usr/bin"
 	HOST_HALT_COMMAND="/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now"
