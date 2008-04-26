@@ -500,6 +500,7 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
         NaTray    *tray;
         GtkWidget *image;
         GtkWidget *spacer;
+	AtkObject *atk_obj;
 
         gdm_profile_start (NULL);
 
@@ -528,6 +529,10 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
                 panel->priv->a11y_button = gtk_button_new ();
                 image = gtk_image_new_from_icon_name ("preferences-desktop-accessibility", GTK_ICON_SIZE_BUTTON);
                 gtk_container_add (GTK_CONTAINER (panel->priv->a11y_button), image);
+		atk_obj = gtk_widget_get_accessible (panel->priv->a11y_button);
+		if (GTK_IS_ACCESSIBLE (atk_obj))
+			atk_object_set_name (atk_obj, _("Accessibility Preferences"));
+
                 gtk_widget_show (image);
                 gtk_widget_show (panel->priv->a11y_button);
                 g_signal_connect (G_OBJECT (panel->priv->a11y_button),
