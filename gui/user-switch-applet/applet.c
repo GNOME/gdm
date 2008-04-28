@@ -859,12 +859,12 @@ user_item_activate_cb (GtkWidget     *menuitem,
 }
 
 static void
-user_sessions_changed_cb (GdmUser       *user,
-                          GdmAppletData *adata)
+update_user_item_visibility (GdmAppletData  *adata,
+                             GdmUser        *user)
 {
         GtkWidget *menuitem;
 
-        g_debug ("Sessions changed for %s", gdm_user_get_user_name (user));
+        g_debug ("Updating menu item visibility for %s", gdm_user_get_user_name (user));
 
         menuitem = g_object_get_qdata (G_OBJECT (user), adata->user_menu_item_quark);
         if (menuitem == NULL) {
@@ -887,6 +887,14 @@ user_sessions_changed_cb (GdmUser       *user,
         }
 
         sort_menu (adata);
+}
+
+static void
+on_user_sessions_changed (GdmUser       *user,
+                          GdmAppletData *adata)
+{
+        g_debug ("Sessions changed for %s", gdm_user_get_user_name (user));
+        update_user_item_visibility (adata, user);
 }
 
 static void
@@ -916,36 +924,27 @@ add_user (GdmAppletData  *adata,
 
         g_signal_connect (user,
                           "sessions-changed",
-                          G_CALLBACK (user_sessions_changed_cb),
+                          G_CALLBACK (on_user_sessions_changed),
                           adata);
 }
 
-static gboolean
-maybe_add_user (GdmAppletData  *adata,
-                GdmUser        *user)
-{
-        if (adata->active_only) {
-                guint num_sessions;
-
-                num_sessions = gdm_user_get_num_sessions (user);
-                if (num_sessions < 1) {
-                        return FALSE;
-                }
-        }
-
-        add_user (adata, user);
-
-        return TRUE;
-}
-
 static void
-manager_user_added_cb (GdmUserManager *manager,
+on_manager_user_added (GdmUserManager *manager,
                        GdmUser        *user,
                        GdmAppletData  *adata)
 {
-        if (maybe_add_user (adata, user)) {
-                sort_menu (adata);
-        }
+        add_user (adata, user);
+        update_user_item_visibility (adata, user);
+        sort_menu (adata);
+}
+
+static void
+on_manager_user_is_logged_in_changed (GdmUserManager *manager,
+                                      GdmUser        *user,
+                                      GdmAppletData  *adata)
+{
+        update_user_item_visibility (adata, user);
+        sort_menu (adata);
 }
 
 static void
@@ -1206,14 +1205,19 @@ fill_applet (PanelApplet *applet)
          */
         users = gdm_user_manager_list_users (adata->manager);
         while (users != NULL) {
-                maybe_add_user (adata, users->data);
+                add_user (adata, users->data);
+                update_user_item_visibility (adata, users->data);
 
                 users = g_slist_delete_link (users, users);
         }
 
         g_signal_connect (adata->manager,
                           "user-added",
-                          G_CALLBACK (manager_user_added_cb),
+                          G_CALLBACK (on_manager_user_added),
+                          adata);
+        g_signal_connect (adata->manager,
+                          "user-is-logged-in-changed",
+                          G_CALLBACK (on_manager_user_is_logged_in_changed),
                           adata);
 
         adata->separator_item = gtk_separator_menu_item_new ();
