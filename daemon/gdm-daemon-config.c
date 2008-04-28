@@ -2867,7 +2867,7 @@ gdm_daemon_config_set_user_session_lang (gboolean savesess,
 	dmrc = gdm_common_config_load (cfgstr, NULL);
 	if (dmrc == NULL) {
 		gint fd = -1;
-		gdm_debug ("file: %s does not exist - creating it", cfgstr);
+		gdm_debug ("The user dmrc file %s does not exist - creating it", cfgstr);
 		VE_IGNORE_EINTR (fd = g_open (cfgstr,
 			O_CREAT | O_TRUNC | O_RDWR, 0644));
 
@@ -2879,7 +2879,7 @@ gdm_daemon_config_set_user_session_lang (gboolean savesess,
 		dmrc = gdm_common_config_load (cfgstr, NULL);
 
 		if (dmrc == NULL) {
-			gdm_debug ("failed to open %s after creating it", cfgstr);
+			gdm_debug ("Failed to open dmrc file %s after trying to create it", cfgstr);
 			return;
 		}
 	}
@@ -2890,8 +2890,10 @@ gdm_daemon_config_set_user_session_lang (gboolean savesess,
 
 	if (savelang) {
 		if (ve_string_empty (save_language)) {
-			/* we chose the system default language so wipe the
-			 * lang key */
+			/*
+			 * We chose the system default language so wipe the
+			 * lang key
+			 */
 			g_key_file_remove_key (dmrc, "Desktop", "Language", NULL);
 		} else {
 			g_key_file_set_string (dmrc, "Desktop", "Language", save_language);
@@ -2926,41 +2928,49 @@ gdm_daemon_config_get_user_session_lang (char      **usrsess,
 	cfg = gdm_common_config_load (cfgfile, NULL);
 	g_free (cfgfile);
 
-	save = FALSE;
+	save    = FALSE;
 	session = NULL;
-	lang = NULL;
+	lang    = NULL;
 
-	gdm_common_config_get_string (cfg, "Desktop/Session", &session, NULL);
-	if (session == NULL) {
+	if (cfg == NULL) {
 		session = g_strdup ("");
-	}
+		lang    = g_strdup ("");
+	} else {
+		gdm_common_config_get_string (cfg, "Desktop/Session", &session, NULL);
+		if (session == NULL) {
+			session = g_strdup ("");
+		}
 
-	/* this is just being truly anal about what users give us, and in case
-	 * it looks like they may have included a path whack it. */
-	p = strrchr (session, '/');
-	if (p != NULL) {
-		char *tmp = g_strdup (p + 1);
-		g_free (session);
-		session = tmp;
-	}
+		/*
+		 * This is just being truly anal about what users give us, and in case
+		 * it looks like they may have included a path whack it.
+		 */
+		p = strrchr (session, '/');
+		if (p != NULL) {
+			char *tmp = g_strdup (p + 1);
+			g_free (session);
+			session = tmp;
+		}
 
-	/* ugly workaround for migration */
-	if (strcmp (session, "Default") == 0 ||
-	    strcmp (session, "Default.desktop") == 0) {
-		g_free (session);
-		session = g_strdup ("default");
-		save = TRUE;
-	}
+		/* Ugly workaround for migration */
+		if (strcmp (session, "Default") == 0 ||
+		    strcmp (session, "Default.desktop") == 0) {
+			g_free (session);
+			session = g_strdup ("default");
+			save    = TRUE;
+		}
 
-	gdm_common_config_get_string (cfg, "Desktop/Language", &lang, NULL);
-	if (lang == NULL) {
-		lang = g_strdup ("");
+		gdm_common_config_get_string (cfg, "Desktop/Language", &lang, NULL);
+		if (lang == NULL) {
+			lang = g_strdup ("");
+		}
+
+		g_key_file_free (cfg);
 	}
 
 	if (usrsess != NULL) {
 		*usrsess = g_strdup (session);
 	}
-	g_free (session);
 
 	if (savesess != NULL) {
 		*savesess = save;
@@ -2969,7 +2979,7 @@ gdm_daemon_config_get_user_session_lang (char      **usrsess,
 	if (usrlang != NULL) {
 		*usrlang = g_strdup (lang);
 	}
-	g_free (lang);
 
-	g_key_file_free (cfg);
+	g_free (session);
+	g_free (lang);
 }

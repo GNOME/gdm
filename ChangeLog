@@ -1,5 +1,16 @@
 2008-04-24 Brian Cameron <brian.cameron@sun.com>
 
+	* daemon/gdm-daemon-config.c:  Fix reading of user's .dmrc
+	  file so that if it does not exist, we avoid calling 
+	  gkeyfile functions.  This avoids useless gkeyfile warning
+	  messages about the file being NULL.  The fix on 2007-09-20
+	  mostly fixed this issue by making sure the file is
+	  created before trying to read it.  However, in some cases,
+	  such as when the user's $HOME directory is not writable,
+	  the read can happen when the file does not exist.
+
+2008-04-24 Brian Cameron <brian.cameron@sun.com>
+
 	* configure.ac:  Add openbsd section to configure file.
 	  to specify default halt, reboot, suspend commands.
 
