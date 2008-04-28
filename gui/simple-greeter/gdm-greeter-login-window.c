@@ -468,6 +468,41 @@ set_log_in_button_mode (GdmGreeterLoginWindow *login_window,
         }
 }
 
+static gboolean
+can_suspend (GdmGreeterLoginWindow *login_window)
+{
+        DBusGConnection *connection;
+        DBusGProxy      *proxy;
+        GError *error;
+        gboolean result;
+
+        error = NULL;
+        connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+        if (error != NULL) {
+                g_warning ("Couldn't connect to power manager: %s", error->message);
+                g_error_free (error);
+                return FALSE;
+        }
+        proxy = dbus_g_proxy_new_for_name (connection,
+                                           GPM_DBUS_NAME,
+                                           GPM_DBUS_PATH,
+                                           GPM_DBUS_INTERFACE);
+        result = FALSE;
+        if (!dbus_g_proxy_call (proxy, "CanSuspend",
+                                &error,
+                                G_TYPE_INVALID,
+                                G_TYPE_BOOLEAN, &result, G_TYPE_INVALID)) {
+                if (error != NULL) {
+                        g_warning ("Could not ask power manager if user can suspend: %s",
+                                   error->message);
+                        g_error_free (error);
+                }
+                result = FALSE;
+        }
+
+        return result;
+}
+
 static void
 switch_mode (GdmGreeterLoginWindow *login_window,
              int                    number)
@@ -476,6 +511,7 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         GtkWidget  *user_chooser;
         GtkWidget  *box;
         gboolean    show_restart_buttons;
+        gboolean    show_suspend_button;
 
         /* we want to run this even if we're supposed to
            be in the mode already so that we reset everything
@@ -485,6 +521,7 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         default_name = NULL;
 
         show_restart_buttons = get_show_restart_buttons (login_window);
+        show_suspend_button = can_suspend (login_window);
 
         switch (number) {
         case MODE_SELECTION:
@@ -497,7 +534,7 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 show_widget (login_window, "restart-button",
                              login_window->priv->display_is_local && show_restart_buttons);
                 show_widget (login_window, "suspend-button",
-                             login_window->priv->display_is_local && show_restart_buttons);
+                             login_window->priv->display_is_local && show_restart_buttons && show_suspend_button);
                 show_widget (login_window, "disconnect-button",
                              ! login_window->priv->display_is_local);
                 show_widget (login_window, "auth-input-box", FALSE);
