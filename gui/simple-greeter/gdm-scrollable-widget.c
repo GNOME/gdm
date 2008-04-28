@@ -193,7 +193,7 @@ gdm_scrollable_widget_animation_start (GdmScrollableWidgetAnimation *animation)
         g_signal_connect_swapped (G_OBJECT (animation->timer), "stop",
                                   G_CALLBACK (on_animation_stop),
                                   animation);
-        gdm_timer_start (animation->timer, .50);
+        gdm_timer_start (animation->timer, .10);
 }
 
 static void
