@@ -469,8 +469,9 @@ can_suspend (GdmGreeterLoginWindow *login_window)
 {
         DBusGConnection *connection;
         DBusGProxy      *proxy;
-        GError *error;
-        gboolean result;
+        GError          *error;
+        gboolean         ret;
+        gboolean         res;
 
         error = NULL;
         connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
@@ -483,20 +484,24 @@ can_suspend (GdmGreeterLoginWindow *login_window)
                                            GPM_DBUS_NAME,
                                            GPM_DBUS_PATH,
                                            GPM_DBUS_INTERFACE);
-        result = FALSE;
-        if (!dbus_g_proxy_call (proxy, "CanSuspend",
-                                &error,
-                                G_TYPE_INVALID,
-                                G_TYPE_BOOLEAN, &result, G_TYPE_INVALID)) {
+        ret = FALSE;
+
+        res = dbus_g_proxy_call (proxy, "CanSuspend",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_BOOLEAN,
+                                 &ret,
+                                 G_TYPE_INVALID);
+        if (! res) {
                 if (error != NULL) {
                         g_warning ("Could not ask power manager if user can suspend: %s",
                                    error->message);
                         g_error_free (error);
                 }
-                result = FALSE;
+                ret = FALSE;
         }
 
-        return result;
+        return ret;
 }
 
 static void
