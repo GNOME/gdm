@@ -1525,10 +1525,23 @@ combobox_timeout (GtkWidget *combo_box)
 		gchar *new_val;
 		
 		new_val = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combo_box));
-		val = gdm_config_get_string ((gchar *)key);
-		if (new_val &&
-		    strcmp (ve_sure_string (val), ve_sure_string (new_val)) != 0) {			
-			gdm_setup_config_set_string (key, new_val);
+		val     = gdm_config_get_string ((gchar *)key);
+
+		if (new_val) {
+                    if (strcmp (_(new_val), _("auto"))) {
+                       if (strcasecmp (ve_sure_string (val), "auto") != 0)
+                          gdm_setup_config_set_string (key, "auto");
+                    }
+                    else if (strcmp (_(new_val), _("yes"))) {
+                       if (strcasecmp (ve_sure_string (val), "true") != 0 &&
+                           strcasecmp (ve_sure_string (val), "yes") != 0)
+                          gdm_setup_config_set_string (key, "true");
+                    }
+                    else {
+                       if (strcasecmp (ve_sure_string (val), "false") != 0 &&
+                           strcasecmp (ve_sure_string (val), "no") != 0) 
+                           gdm_setup_config_set_string (key, "false");
+		    }
 		}
 		g_free (new_val);
 		g_free (val);
@@ -7488,13 +7501,15 @@ setup_general_tab (void)
 
 	user_24hr_clock = gdm_config_get_string (GDM_KEY_USE_24_CLOCK);
 	if (!ve_string_empty (user_24hr_clock)) {
-		if (strcasecmp (ve_sure_string (user_24hr_clock), _("auto")) == 0) {
+		if (strcasecmp (ve_sure_string (user_24hr_clock), "auto") == 0) {
 			gtk_combo_box_set_active (GTK_COMBO_BOX (clock_type_chooser), CLOCK_AUTO);
 		}
-		else if (strcasecmp (ve_sure_string (user_24hr_clock), _("yes")) == 0) {
+		else if (strcasecmp (ve_sure_string (user_24hr_clock), "yes") == 0 ||
+		         strcasecmp (ve_sure_string (user_24hr_clock), "true") == 0) {
 			gtk_combo_box_set_active (GTK_COMBO_BOX (clock_type_chooser), CLOCK_YES);
 		}
-		else if (strcasecmp (ve_sure_string (user_24hr_clock), _("no")) == 0) {	
+		else if (strcasecmp (ve_sure_string (user_24hr_clock), "no") == 0 ||
+		         strcasecmp (ve_sure_string (user_24hr_clock), "true") == 0) {
 			gtk_combo_box_set_active (GTK_COMBO_BOX (clock_type_chooser), CLOCK_NO);
 		}
 	}

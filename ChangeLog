@@ -1,5 +1,11 @@
 2008-04-24 Brian Cameron <brian.cameron@sun.com>
 
+	* gui/gdmsetup.c:  Fix the 24HourClock setting so that
+	  we do not save translated strings as the configuration
+	  option.  
+
+2008-04-24 Brian Cameron <brian.cameron@sun.com>
+
 	* daemon/gdm-daemon-config.c:  Fix reading of user's .dmrc
 	  file so that if it does not exist, we avoid calling 
 	  gkeyfile functions.  This avoids useless gkeyfile warning
