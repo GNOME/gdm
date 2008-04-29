@@ -213,11 +213,7 @@ set_busy (GdmGreeterLoginWindow *login_window)
 static void
 set_ready (GdmGreeterLoginWindow *login_window)
 {
-        GdkCursor *cursor;
-
-        cursor = gdk_cursor_new (GDK_LEFT_PTR);
-        gdk_window_set_cursor (GTK_WIDGET (login_window)->window, cursor);
-        gdk_cursor_unref (cursor);
+        gdk_window_set_cursor (GTK_WIDGET (login_window)->window, NULL);
 }
 
 static void
