@@ -289,7 +289,11 @@ start_session_timeout (GdmSimpleSlave *slave)
                         slave->priv->session = NULL;
                 }
 
-                gdm_slave_stopped (GDM_SLAVE (slave));
+                /* We don't stop the slave here because
+                   when Xorg exits it switches to the VT it was
+                   started from.  That interferes with fast
+                   user switching. */
+                queue_greeter_reset (slave);
 
                 goto out;
         }
@@ -346,15 +350,17 @@ on_session_accreditation_failed (GdmSession     *session,
            accreditation fails */
         if (! migrated) {
                 gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable establish credentials"));
-        } else {
+        }
 
-                if (slave->priv->session != NULL) {
-                        gdm_session_close (GDM_SESSION (slave->priv->session));
-                        g_object_unref (slave->priv->session);
-                        slave->priv->session = NULL;
-                }
+        /* We don't stop the slave here after migrating because
+           when Xorg exits it switches to the VT it was
+           started from.  That interferes with fast
+           user switching. */
 
-                gdm_slave_stopped (GDM_SLAVE (slave));
+        if (slave->priv->session != NULL) {
+                gdm_session_close (GDM_SESSION (slave->priv->session));
+                g_object_unref (slave->priv->session);
+                slave->priv->session = NULL;
         }
 
         queue_greeter_reset (slave);
