@@ -113,12 +113,23 @@ static void
 gdm_language_chooser_dialog_realize (GtkWidget *widget)
 {
         GdmLanguageChooserDialog *chooser_dialog;
+        GdkWindow *root_window;
+        GdkCursor *cursor;
+
+        root_window = gdk_screen_get_root_window (gdk_screen_get_default ());
+        cursor = gdk_cursor_new (GDK_WATCH);
+        gdk_window_set_cursor (root_window, cursor);
+        gdk_cursor_unref (cursor);
 
         chooser_dialog = GDM_LANGUAGE_CHOOSER_DIALOG (widget);
 
         gtk_widget_show (chooser_dialog->priv->chooser_widget);
 
         GTK_WIDGET_CLASS (gdm_language_chooser_dialog_parent_class)->realize (widget);
+
+        cursor = gdk_cursor_new (GDK_LEFT_PTR);
+        gdk_window_set_cursor (root_window, cursor);
+        gdk_cursor_unref (cursor);
 }
 
 static void
