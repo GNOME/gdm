@@ -1,5 +1,13 @@
 2008-04-29  William Jon McCann  <jmccann@redhat.com>
 
+	* gui/simple-greeter/gdm-simple-greeter.schemas.in:
+	* gui/simple-greeter/greeter-main.c: (is_debug_set), (main):
+	Don't unconditionally set debugging in the greeter.  Now
+	we'll enable it if a gconf key is set or we are using
+	an unstable build.
+
+2008-04-29  William Jon McCann  <jmccann@redhat.com>
+
 	* daemon/gdm-simple-slave.c (start_session_timeout),
 	(on_session_accreditation_failed):
 	Revert svn change 6041 from 2008-03-18.

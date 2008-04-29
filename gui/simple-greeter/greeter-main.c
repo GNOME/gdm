@@ -41,6 +41,7 @@
 #include "gdm-greeter-session.h"
 
 #define ACCESSIBILITY_KEY         "/desktop/gnome/interface/accessibility"
+#define DEBUG_KEY                 "/apps/gdm/simple-greeter/debug"
 
 static Atom AT_SPI_IOR;
 
@@ -256,6 +257,24 @@ load_a11y (void)
         gdm_profile_end (NULL);
 }
 
+static gboolean
+is_debug_set (void)
+{
+        GConfClient *client;
+        gboolean     is;
+
+        /* enable debugging for unstable builds */
+        if (gdm_is_version_unstable ()) {
+                return TRUE;
+        }
+
+        client = gconf_client_get_default ();
+        is = gconf_client_get_bool (client, DEBUG_KEY, NULL);
+        g_object_unref (client);
+
+        return is;
+}
+
 
 static gboolean
 signal_cb (int      signo,
@@ -348,7 +367,7 @@ main (int argc, char *argv[])
         /*sleep (15);*/
 
         gdm_log_init ();
-        gdm_log_set_debug (TRUE);
+        gdm_log_set_debug (is_debug_set ());
 
         gdk_init (&argc, &argv);
 
