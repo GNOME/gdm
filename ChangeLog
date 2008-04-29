@@ -1,5 +1,16 @@
 2008-04-29  William Jon McCann  <jmccann@redhat.com>
 
+	* daemon/gdm-simple-slave.c: (destroy_session), (reset_session),
+	(greeter_reset_timeout), (on_session_setup_failed),
+	(on_session_authentication_failed),
+	(on_session_authorization_failed), (start_session_timeout),
+	(on_session_accreditation_failed), (on_greeter_cancel):
+	Close out sessions after each failure to ensure no
+	information leakage.  Make sure to close/reopen sessions
+	upon reset.
+
+2008-04-29  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/simple-greeter/gdm-simple-greeter.schemas.in:
 	* gui/simple-greeter/greeter-main.c: (is_debug_set), (main):
 	Don't unconditionally set debugging in the greeter.  Now

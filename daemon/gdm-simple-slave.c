@@ -92,6 +92,8 @@ static void     gdm_simple_slave_finalize       (GObject             *object);
 
 G_DEFINE_TYPE (GdmSimpleSlave, gdm_simple_slave, GDM_TYPE_SLAVE)
 
+static void create_new_session (GdmSimpleSlave *slave);
+
 static void
 on_session_started (GdmSession       *session,
                     int               pid,
@@ -140,10 +142,30 @@ add_user_authorization (GdmSimpleSlave *slave,
         return ret;
 }
 
+static void
+destroy_session (GdmSimpleSlave *slave)
+{
+        if (slave->priv->session != NULL) {
+                gdm_session_close (GDM_SESSION (slave->priv->session));
+                g_object_unref (slave->priv->session);
+                slave->priv->session = NULL;
+        }
+}
+
+static void
+reset_session (GdmSimpleSlave *slave)
+{
+        destroy_session (slave);
+        create_new_session (slave);
+        gdm_session_open (GDM_SESSION (slave->priv->session));
+}
+
 static gboolean
 greeter_reset_timeout (GdmSimpleSlave *slave)
 {
+        g_debug ("GdmSimpleSlave: resetting greeter");
         gdm_greeter_server_reset (slave->priv->greeter_server);
+        reset_session (slave);
         slave->priv->greeter_reset_id = 0;
         return FALSE;
 }
@@ -172,6 +194,7 @@ on_session_setup_failed (GdmSession     *session,
 {
         gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to initialize login system"));
 
+        destroy_session (slave);
         queue_greeter_reset (slave);
 }
 
@@ -203,7 +226,7 @@ on_session_authentication_failed (GdmSession     *session,
                                   GdmSimpleSlave *slave)
 {
         gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to authenticate user"));
-
+        destroy_session (slave);
         queue_greeter_reset (slave);
 }
 
@@ -250,6 +273,7 @@ on_session_authorization_failed (GdmSession     *session,
 {
         gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to authorize user"));
 
+        destroy_session (slave);
         queue_greeter_reset (slave);
 }
 
@@ -283,11 +307,7 @@ start_session_timeout (GdmSimpleSlave *slave)
         migrated = try_migrate_session (slave);
         g_debug ("GdmSimpleSlave: migrated: %d", migrated);
         if (migrated) {
-                if (slave->priv->session != NULL) {
-                        gdm_session_close (GDM_SESSION (slave->priv->session));
-                        g_object_unref (slave->priv->session);
-                        slave->priv->session = NULL;
-                }
+                destroy_session (slave);
 
                 /* We don't stop the slave here because
                    when Xorg exits it switches to the VT it was
@@ -356,12 +376,7 @@ on_session_accreditation_failed (GdmSession     *session,
            when Xorg exits it switches to the VT it was
            started from.  That interferes with fast
            user switching. */
-
-        if (slave->priv->session != NULL) {
-                gdm_session_close (GDM_SESSION (slave->priv->session));
-                g_object_unref (slave->priv->session);
-                slave->priv->session = NULL;
-        }
+        destroy_session (slave);
 
         queue_greeter_reset (slave);
 }
@@ -710,16 +725,7 @@ on_greeter_cancel (GdmGreeterServer *greeter_server,
                    GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: Greeter cancelled");
-
-        if (slave->priv->session != NULL) {
-                gdm_session_close (GDM_SESSION (slave->priv->session));
-                g_object_unref (slave->priv->session);
-                slave->priv->session = NULL;
-        }
-
-        create_new_session (slave);
-
-        gdm_session_open (GDM_SESSION (slave->priv->session));
+        reset_session (slave);
 }
 
 static void
