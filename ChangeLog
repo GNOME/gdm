@@ -1,5 +1,15 @@
 2008-04-29  William Jon McCann  <jmccann@redhat.com>
 
+	* gui/simple-greeter/gdm-greeter-login-window.c:
+	(sensitize_widget), (remove_sensitize_power_buttons_timeout),
+	(sensitize_power_buttons_timeout),
+	(add_sensitize_power_buttons_timeout), (switch_mode),
+	(gdm_greeter_login_window_finalize):
+	Desensitize the power buttons for one second after switching
+	tabs to help prevent accidently clicking them.
+
+2008-04-29  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-login-window.c: (can_suspend):
 	Fix style a bit.
 

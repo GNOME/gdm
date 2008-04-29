@@ -130,6 +130,7 @@ struct GdmGreeterLoginWindowPrivate
         guint            timed_login_timeout_id;
 
         guint            animation_timeout_id;
+        guint            sensitize_power_buttons_timeout_id;
 
         guint            login_button_handler_id;
         guint            start_session_handler_id;
@@ -373,6 +374,19 @@ show_widget (GdmGreeterLoginWindow *login_window,
         }
 }
 
+static void
+sensitize_widget (GdmGreeterLoginWindow *login_window,
+                  const char            *name,
+                  gboolean               sense)
+{
+        GtkWidget *widget;
+
+        widget = glade_xml_get_widget (login_window->priv->xml, name);
+        if (widget != NULL) {
+                gtk_widget_set_sensitive (widget, sense);
+        }
+}
+
 static gboolean
 get_show_restart_buttons (GdmGreeterLoginWindow *login_window)
 {
@@ -505,6 +519,44 @@ can_suspend (GdmGreeterLoginWindow *login_window)
 }
 
 static void
+remove_sensitize_power_buttons_timeout (GdmGreeterLoginWindow *login_window)
+{
+        if (login_window->priv->sensitize_power_buttons_timeout_id > 0) {
+                g_source_remove (login_window->priv->sensitize_power_buttons_timeout_id);
+                login_window->priv->sensitize_power_buttons_timeout_id = 0;
+        }
+}
+
+static gboolean
+sensitize_power_buttons_timeout (GdmGreeterLoginWindow *login_window)
+{
+        switch (login_window->priv->dialog_mode) {
+        case MODE_SELECTION:
+                sensitize_widget (login_window, "shutdown-button", TRUE);
+                sensitize_widget (login_window, "restart-button", TRUE);
+                sensitize_widget (login_window, "suspend-button", TRUE);
+                sensitize_widget (login_window, "disconnect-button", TRUE);
+                break;
+        case MODE_AUTHENTICATION:
+                break;
+        default:
+                g_assert_not_reached ();
+        }
+
+        login_window->priv->sensitize_power_buttons_timeout_id = 0;
+        return FALSE;
+}
+
+static void
+add_sensitize_power_buttons_timeout (GdmGreeterLoginWindow *login_window)
+{
+        remove_sensitize_power_buttons_timeout (login_window);
+        login_window->priv->sensitize_power_buttons_timeout_id = g_timeout_add_seconds (1,
+                                                                                   (GSourceFunc)sensitize_power_buttons_timeout,
+                                                                                   login_window);
+}
+
+static void
 switch_mode (GdmGreeterLoginWindow *login_window,
              int                    number)
 {
@@ -514,6 +566,9 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         gboolean    show_restart_buttons;
         gboolean    show_suspend_button;
 
+        show_restart_buttons = get_show_restart_buttons (login_window);
+        show_suspend_button = can_suspend (login_window);
+
         /* we want to run this even if we're supposed to
            be in the mode already so that we reset everything
            to a known state */
@@ -521,8 +576,7 @@ switch_mode (GdmGreeterLoginWindow *login_window,
 
         default_name = NULL;
 
-        show_restart_buttons = get_show_restart_buttons (login_window);
-        show_suspend_button = can_suspend (login_window);
+        remove_sensitize_power_buttons_timeout (login_window);
 
         switch (number) {
         case MODE_SELECTION:
@@ -530,6 +584,7 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_HIDDEN);
 
                 show_widget (login_window, "cancel-button", FALSE);
+
                 show_widget (login_window, "shutdown-button",
                              login_window->priv->display_is_local && show_restart_buttons);
                 show_widget (login_window, "restart-button",
@@ -538,7 +593,15 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                              login_window->priv->display_is_local && show_restart_buttons && show_suspend_button);
                 show_widget (login_window, "disconnect-button",
                              ! login_window->priv->display_is_local);
+
                 show_widget (login_window, "auth-input-box", FALSE);
+
+                add_sensitize_power_buttons_timeout (login_window);
+                sensitize_widget (login_window, "shutdown-button", FALSE);
+                sensitize_widget (login_window, "restart-button", FALSE);
+                sensitize_widget (login_window, "suspend-button", FALSE);
+                sensitize_widget (login_window, "disconnect-button", FALSE);
+
                 default_name = NULL;
                 break;
         case MODE_AUTHENTICATION:
@@ -1842,6 +1905,8 @@ gdm_greeter_login_window_finalize (GObject *object)
         if (login_window->priv->client != NULL) {
                 g_object_unref (login_window->priv->client);
         }
+
+        remove_sensitize_power_buttons_timeout (login_window);
 
         G_OBJECT_CLASS (gdm_greeter_login_window_parent_class)->finalize (object);
 }
