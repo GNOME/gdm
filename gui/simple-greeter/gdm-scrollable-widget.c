@@ -55,6 +55,10 @@ struct GdmScrollableWidgetPrivate
 
         GdmScrollableWidgetAnimation *animation;
         GtkWidget *invisible_event_sink;
+        guint      key_press_signal_id;
+        guint      key_release_signal_id;
+
+        GQueue    *key_event_queue;
 
         guint      child_adjustments_stale : 1;
 };
@@ -135,6 +139,15 @@ on_animation_tick (GdmScrollableWidgetAnimation *animation,
 }
 
 static gboolean
+on_key_event (GdmScrollableWidget *scrollable_widget,
+              GdkEventKey         *key_event)
+{
+        g_queue_push_tail (scrollable_widget->priv->key_event_queue,
+                           gdk_event_copy ((GdkEvent *)key_event));
+        return FALSE;
+}
+
+static gboolean
 gdm_scrollable_redirect_input_to_event_sink (GdmScrollableWidget *scrollable_widget)
 {
         GdkGrabStatus status;
@@ -152,12 +165,29 @@ gdm_scrollable_redirect_input_to_event_sink (GdmScrollableWidget *scrollable_wid
                 return FALSE;
         }
 
+        scrollable_widget->priv->key_press_signal_id =
+            g_signal_connect_swapped (scrollable_widget->priv->invisible_event_sink,
+                                      "key-press-event", G_CALLBACK (on_key_event),
+                                      scrollable_widget);
+
+        scrollable_widget->priv->key_release_signal_id =
+            g_signal_connect_swapped (scrollable_widget->priv->invisible_event_sink,
+                                      "key-release-event", G_CALLBACK (on_key_event),
+                                      scrollable_widget);
+
         return TRUE;
 }
 
 static void
 gdm_scrollable_unredirect_input (GdmScrollableWidget *scrollable_widget)
 {
+        g_signal_handler_disconnect (scrollable_widget->priv->invisible_event_sink,
+                                     scrollable_widget->priv->key_press_signal_id);
+        scrollable_widget->priv->key_press_signal_id = 0;
+
+        g_signal_handler_disconnect (scrollable_widget->priv->invisible_event_sink,
+                                     scrollable_widget->priv->key_release_signal_id);
+        scrollable_widget->priv->key_release_signal_id = 0;
         gdk_keyboard_ungrab (GDK_CURRENT_TIME);
         gdk_pointer_ungrab (GDK_CURRENT_TIME);
 }
@@ -426,6 +456,8 @@ gdm_scrollable_widget_finalize (GObject *object)
 
         scrollable_widget = GDM_SCROLLABLE_WIDGET (object);
 
+        g_queue_free (scrollable_widget->priv->key_event_queue);
+
         G_OBJECT_CLASS (gdm_scrollable_widget_parent_class)->finalize (object);
 }
 
@@ -609,6 +641,8 @@ gdm_scrollable_widget_add_invisible_event_sink (GdmScrollableWidget *widget)
         widget->priv->invisible_event_sink =
             gtk_invisible_new_for_screen (gtk_widget_get_screen (GTK_WIDGET (widget)));
         gtk_widget_show (widget->priv->invisible_event_sink);
+
+        widget->priv->key_event_queue = g_queue_new ();
 }
 
 static void
@@ -698,4 +732,25 @@ gdm_scrollable_widget_slide_to_height (GdmScrollableWidget *scrollable_widget,
                                                  done_func, done_user_data);
 
         gdm_scrollable_widget_animation_start (scrollable_widget->priv->animation);
+}
+
+gboolean
+gdm_scrollable_widget_has_queued_key_events (GdmScrollableWidget *widget)
+{
+        g_return_val_if_fail (GDM_IS_SCROLLABLE_WIDGET (widget), FALSE);
+
+        return !g_queue_is_empty (widget->priv->key_event_queue);
+}
+
+void
+gdm_scrollable_widget_replay_queued_key_events (GdmScrollableWidget *widget)
+{
+        GtkWidget *toplevel;
+        GdkEvent  *event;
+
+        toplevel = gtk_widget_get_toplevel (GTK_WIDGET (widget));
+
+        while ((event = g_queue_pop_head (widget->priv->key_event_queue)) != NULL) {
+                gtk_propagate_event (toplevel, event);
+        }
 }

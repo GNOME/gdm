@@ -68,4 +68,6 @@ void                   gdm_scrollable_widget_slide_to_height        (GdmScrollab
                                                                      gpointer             step_user_data,
                                                                      GdmScrollableWidgetSlideDoneFunc done_func,
                                                                      gpointer             data);
+gboolean               gdm_scrollable_widget_has_queued_key_events (GdmScrollableWidget *widget);
+void                   gdm_scrollable_widget_replay_queued_key_events (GdmScrollableWidget *widget);
 #endif /* __GDM_SCROLLABLE_WIDGET_H */

@@ -685,6 +685,7 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         set_sensitive (login_window, TRUE);
         set_ready (login_window);
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
+        gdm_chooser_widget_propagate_pending_key_events (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser));
 }
 
 static void
@@ -835,6 +836,8 @@ gdm_greeter_login_window_info_query (GdmGreeterLoginWindow *login_window,
         set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
 
+        gdm_chooser_widget_propagate_pending_key_events (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser));
+
         return TRUE;
 }
 
@@ -859,6 +862,8 @@ gdm_greeter_login_window_secret_info_query (GdmGreeterLoginWindow *login_window,
         set_sensitive (GDM_GREETER_LOGIN_WINDOW (login_window), TRUE);
         set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
+
+        gdm_chooser_widget_propagate_pending_key_events (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser));
 
         return TRUE;
 }

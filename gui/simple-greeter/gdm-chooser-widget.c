@@ -775,7 +775,7 @@ clear_selection (GdmChooserWidget *widget)
         selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget->priv->items_view));
         gtk_tree_selection_unselect_all (selection);
 
-        window = gtk_widget_get_ancestor (widget, GTK_TYPE_WINDOW);
+        window = gtk_widget_get_ancestor (GTK_WIDGET (widget), GTK_TYPE_WINDOW);
 
         if (window != NULL) {
                 gtk_window_set_focus (GTK_WINDOW (window), NULL);
@@ -2281,4 +2281,14 @@ gdm_chooser_widget_activate_on_one_item (GdmChooserWidget *widget,
         if (widget->priv->activate_on_one_item) {
                 activate_if_one_item (widget);
         }
+}
+
+void
+gdm_chooser_widget_propagate_pending_key_events (GdmChooserWidget *widget)
+{
+        if (!gdm_scrollable_widget_has_queued_key_events (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget))) {
+                return;
+        }
+
+        gdm_scrollable_widget_replay_queued_key_events (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget));
 }

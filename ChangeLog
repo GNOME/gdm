@@ -1,3 +1,19 @@
+2008-04-28  Ray Strode <rstrode@redhat.com>
+
+	* gui/simple-greeter/gdm-scrollable-widget.[ch]:
+	(on_key_event), (gdm_scrollable_redirect_input_to_event_sink),
+	(gdm_scrollable_unredirect_input), (gdm_scrollable_widget_finalize),
+	(gdm_scrollable_widget_add_invisible_event_sink),
+	(gdm_scrollable_widget_has_queued_key_events),
+	(gdm_scrollable_widget_replay_queued_key_events):
+	* gui/simple-greeter/gdm-greeter-login-window.c:
+	(reset_dialog), (gdm_greeter_login_window_info_query),
+	(gdm_greeter_login_window_secret_info_query),
+	* gui/simple-greeter/gdm-chooser-widget.[ch]:
+	(gdm_chooser_widget_propagate_pending_key_events):
+	If the user types while an animation is going on, keep track of
+	what they are typing and replay it at the end of the animation.
+
 2008-04-28  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/user-switch-applet/applet.c: (update_user_item_visibility),
