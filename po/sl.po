@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-10-23 05:51+0100\n"
-"PO-Revision-Date: 2008-04-13 09:45+0100\n"
+"PO-Revision-Date: 2008-04-30 20:30+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian\n"
 "MIME-Version: 1.0\n"
@@ -56,17 +56,17 @@ msgid "could not find user \"%s\" on system"
 msgstr "v sistemu ni mogoče najti uporabnika \"%s\""
 
 #: ../daemon/gdm-factory-slave.c:203
-#: ../daemon/gdm-simple-slave.c:173
+#: ../daemon/gdm-simple-slave.c:195
 msgid "Unable to initialize login system"
 msgstr "Ni mogoče zagnati sistema prijave"
 
 #: ../daemon/gdm-factory-slave.c:235
-#: ../daemon/gdm-simple-slave.c:205
+#: ../daemon/gdm-simple-slave.c:228
 msgid "Unable to authenticate user"
 msgstr "Ni mogoče pooblastiti uporabnika"
 
 #: ../daemon/gdm-factory-slave.c:257
-#: ../daemon/gdm-simple-slave.c:251
+#: ../daemon/gdm-simple-slave.c:274
 msgid "Unable to authorize user"
 msgstr "Ni mogoče pooblastiti uporabnika"
 
@@ -76,7 +76,7 @@ msgstr "Ni mogoče vzpostaviti pooblastila"
 
 #: ../daemon/gdm-factory-slave.c:650
 #: ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:984
+#: ../daemon/gdm-simple-slave.c:996
 msgid "Could not start the X server (your graphical environment) due to some internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 msgstr "Ni mogoče zagnati strežnika X (vašega grafičnega okolja) zaradi notranje napake. Obrnite se na vašega skrbnika sistema ali preverite vaš sistemski dnevnik. V vmesnem času bo ta zaslon izključen. Ponovno zaženite GDM, ko bo problem odpravljen."
 
@@ -215,7 +215,7 @@ msgstr "na voljo ni nobenega uporabniškega računa"
 msgid "Unable to change to user"
 msgstr "Ni mogoče zamenjati uporabnika"
 
-#: ../daemon/gdm-simple-slave.c:348
+#: ../daemon/gdm-simple-slave.c:372
 msgid "Unable establish credentials"
 msgstr "Ni mogoče vzpostaviti pooblastila"
 
@@ -457,6 +457,7 @@ msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Ni mogoče prebrati glave XDMCP!"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.c:808
+#: ../gui/simple-greeter/gdm-greeter-panel.c:534
 msgid "Accessibility Preferences"
 msgstr "Lastnosti dostopnosti"
 
@@ -486,19 +487,19 @@ msgstr "_Sprejmi le dolgo pritisnjene tipke (Počasne tipke)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:7
 msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
-msgstr ""
+msgstr "_Upoštevanje pritiska le ene tipke sočasno (lepljive tipke)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:8
 msgid "_See more contrast in colors (High Contrast)"
-msgstr ""
+msgstr "_Okrepitev kontrasta barv (Visoko kontrastno)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:9
 msgid "_Type without the keyboard (On-screen Keyboard)"
-msgstr ""
+msgstr "_Tipkanje brez tipkovnice (zaslonska tipkovnica)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:10
 msgid "_Use a larger font size (Large Print)"
-msgstr ""
+msgstr "_Uporabi večjo velikost pisave (velik izpis)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:11
 msgid "gtk-close"
@@ -510,21 +511,21 @@ msgstr "Vrednost"
 
 #: ../gui/simple-greeter/gdm-cell-renderer-timer.c:254
 msgid "percentage of time complete"
-msgstr ""
+msgstr "odstotek časa zaključka"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1039
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1123
 msgid "Inactive Text"
 msgstr "Nedejavno besedilo"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1040
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1124
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr "Besedilo, ki se uporablja za označevanje naslova, če uporabnik še ni določil predmeta."
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1048
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1132
 msgid "Active Text"
 msgstr "Dejavno besedilo"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1049
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1133
 msgid "The text to use in the label if the user has picked an item"
 msgstr "Besedilo, ki se uporablja za označevanje naslova, ko uporabnik določi predmet"
 
@@ -554,19 +555,19 @@ msgstr "%a %b %e"
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:181
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:182
 msgid "You have the Caps Lock key on."
-msgstr "Vključeno imate tipko Caps Lock."
+msgstr "Vključena je tipka za pisanje velikih črk."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:328
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:325
 msgid "Automatically logging in..."
 msgstr "Samodejna prijava ..."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1201
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1307
 msgid "Select language and click Log In"
-msgstr ""
+msgstr "Izberite jezik in kliknite na prijavo"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1757
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1863
 msgid "Login Window"
 msgstr "Prijavno okno"
 
@@ -606,11 +607,11 @@ msgstr "gtk-disconnect"
 msgid "page 5"
 msgstr "stran 5"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:515
+#: ../gui/simple-greeter/gdm-greeter-panel.c:516
 msgid "Panel"
 msgstr "Pult"
 
-#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:210
+#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:221
 msgid "Languages"
 msgstr "Jeziki"
 
@@ -625,15 +626,15 @@ msgstr "_Jezik:"
 
 #: ../gui/simple-greeter/gdm-language-option-widget.c:202
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:80
-#: ../gui/user-switch-applet/applet.c:1224
+#: ../gui/user-switch-applet/applet.c:1228
 msgid "Other..."
 msgstr "Drugo ..."
 
 #: ../gui/simple-greeter/gdm-language-option-widget.c:203
 msgid "Choose a language from the full list of available languages."
-msgstr ""
+msgstr "Izberite jezik iz seznama jezikov, ki so na voljo."
 
-#: ../gui/simple-greeter/gdm-languages.c:586
+#: ../gui/simple-greeter/gdm-languages.c:587
 msgid "Unspecified"
 msgstr "Nedoločeno"
 
@@ -704,90 +705,106 @@ msgid "Enable accessibility keyboard plugin"
 msgstr "Omogoči vstavek dostopnosti tipkovnice"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
+msgid "Enable debugging"
+msgstr "Omogoči razhroščevanje"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
+msgid "Enable debugging mode for the greeter."
+msgstr "Omogoči razhroščevalni način za pozdravni prijavni zaslon"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
 msgid "Enable on-screen keyboard"
 msgstr "Omogoči namizno tipkovnico"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Enable screen magnifier"
 msgstr "Omogoči zaslonsko povečalo"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
 msgid "Enable screen reader"
 msgstr "Omogoči zaslonski bralnik"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
 msgid "Enable showing the banner message"
-msgstr "Omogoči prikaz pasičnih sporočil"
+msgstr "Omogoči prikaz besedilnih sporočil v pasicah"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "Icon name to use for greeter logo"
 msgstr "Ime ikone za pozdravni logo"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Set to TRUE to disable showing the accessibility button in the login window."
 msgstr "Izbrana nastavitev onemogoči prikaz gumba dostopnosti na prijavnem oknu."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
-msgid "Set to TRUE to disable showing the restart buttons in the login window."
-msgstr ""
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
-msgid "Set to True to enable the background settings manager plugin."
-msgstr "Izbrana nastavitev omogoča uporabo vključka upravljalnika nastavitev."
-
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+msgid "Set to TRUE to disable showing the restart buttons in the login window."
+msgstr "Izbrana možnost onemogoči prikaz gumba za ponovni zagon v prijavnem oknu."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
+msgid "Set to True to enable the background settings manager plugin."
+msgstr "Izbrana nastavitev omogoča uporabo vstavka upravljalnika nastavitev."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
+msgid "Set to True to enable the media-keys settings manager plugin."
+msgstr "Izbrana nastavitev omogoča uporabo vstavka upravljalnika media-keys nastavitev."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to True to enable the on-screen keyboard."
 msgstr "Izbrana nastavitev omogoča uporabo namizne tipkovnice."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to True to enable the plugin to manage the accessibility keyboard settings."
-msgstr "Izbrana nastavitev omogoča uporabo vključka upravljalnika nastavitev dostopnosti tipkovnice."
+msgstr "Izbrana nastavitev omogoča uporabo vstavka upravljalnika nastavitev dostopnosti tipkovnice."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
 msgid "Set to True to enable the screen magnifier."
 msgstr "Izbrana nastavitev omogoča uporabo povečevala."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid "Set to True to enable the screen reader."
 msgstr "Izbrana nastavitev omogoča uporabo bralnika."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid "Set to True to enable the sound settings manager plugin."
 msgstr "Izbrana možnost omogoča zagon vstavka nastavitev zvoka."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
-msgid "Set to True to enable the xsettings settings manager plugin."
-msgstr "Izbrana nastavitev omogoča uporabo vključka upravljalnika xsettings nastavitev."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
-msgid "Set to the themed icon name to use for the greeter logo."
-msgstr ""
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
-msgid "Set to true to show the banner message text."
-msgstr ""
-
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
-msgid "Set to true to use compiz as the window manager."
-msgstr "Izbrana nastavitev omogoča uporabo compiz enote kot upravlalnika oken."
+msgid "Set to True to enable the xsettings settings manager plugin."
+msgstr "Izbrana nastavitev omogoča uporabo vstavka upravljalnika xsettings nastavitev."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
-msgid "Text banner message to show on the login window."
-msgstr ""
+msgid "Set to the themed icon name to use for the greeter logo."
+msgstr "Izbrana možnost določi uporabo imena tematske ikone v logotipu pozdravnega okna prijave."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
-msgid "True if the background settings manager plugin is enabled."
-msgstr ""
+msgid "Set to true to show the banner message text."
+msgstr "Izbrana možnost omogoča prikaz pasice sporočilnega besedila."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
-msgid "True if the sound settings manager plugin is enabled."
-msgstr ""
+msgid "Set to true to use compiz as the window manager."
+msgstr "Izbrana nastavitev omogoča uporabo compiz enote kot upravljalnika oken."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+msgid "Text banner message to show on the login window."
+msgstr "Prikaz besedila sporočila na prijavnem oknu."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+msgid "True if the background settings manager plugin is enabled."
+msgstr "Možnost je omogočena, če je zagnan vstavek upravljalnika nastavitev ozadja. "
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+msgid "True if the media-keys settings manager plugin is enabled."
+msgstr "Omogočeno, kadar je izbrana možnost upravljalnika media-keys nastavitev"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+msgid "True if the sound settings manager plugin is enabled."
+msgstr "Možnost je omogočena, če je zagnan vstavek upravljalnika nastavitev zvoka."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "Omogočeno, kadar je izbrana možnost upravljalnika xsettings nastavitev"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "Use compiz as the window manager"
 msgstr "Uporabi compiz kot upravljalnik oken"
 
@@ -813,7 +830,7 @@ msgstr "Ali teče?"
 
 #: ../gui/simple-greeter/gdm-timer.c:166
 msgid "Whether or not the timer is currently ticking"
-msgstr ""
+msgstr "Ali naj časomer tiktaka"
 
 #: ../gui/simple-greeter/gdm-user.c:241
 msgid "Manager"
@@ -843,26 +860,18 @@ msgstr "Samodejna prijava"
 msgid "Automatically login to the system after selecting options"
 msgstr "Samodejna prijava v sistem po izbiri možnosti"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:403
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:411
 #, c-format
 msgid "Log in as %s"
 msgstr "Prijavite se kot %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:487
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:495
 msgid "Currently logged in"
 msgstr "Trenutno prijavljen"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:531
-msgid "_Users:"
-msgstr "_Uporabniki:"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:532
-msgid "_User:"
-msgstr "_Uporabnik:"
-
 #: ../gui/user-switch-applet/applet.c:162
 msgid "The User Switch Applet is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-msgstr ""
+msgstr "Aplet preklopa uporabnikov je prosta programska oprema; lahko jo širite in spreminjate pod pogoji splošne javne licence, kot je objavljena pri Free Software Foundation; različica licence 2 ali novejša."
 
 #: ../gui/user-switch-applet/applet.c:166
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
@@ -890,22 +899,22 @@ msgstr "Ni mogoče zakleniti zaslona: %s"
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "Ni mogoče začasno nastaviti črnega zaslona kot ohranjevalnika zaslona: %s"
 
-#: ../gui/user-switch-applet/applet.c:1024
+#: ../gui/user-switch-applet/applet.c:1023
 msgid "Unknown"
 msgstr "Neznano"
 
-#: ../gui/user-switch-applet/applet.c:1082
+#: ../gui/user-switch-applet/applet.c:1081
 msgid "User Switch Applet"
 msgstr "Aplet preklopa uporabnikov"
 
-#: ../gui/user-switch-applet/applet.c:1106
+#: ../gui/user-switch-applet/applet.c:1105
 #: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:2
 msgid "User Switcher"
 msgstr "Preklopi med uporabniki"
 
 #: ../gui/user-switch-applet/gdm-user-menu-item.c:338
 msgid "User"
-msgstr "Uporabik"
+msgstr "Uporabnik"
 
 #: ../gui/user-switch-applet/gdm-user-menu-item.c:339
 msgid "The user this menu item represents."
