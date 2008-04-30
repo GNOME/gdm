@@ -587,32 +587,60 @@ gdm_config_new (void)
 	return config;
 }
 
+/*
+ * Note that this function can be called a second time while 
+ * GDM is in the middle of processing this function.  This is
+ * because some GDM signal handlers (such as main_daemon_abrt)
+ * call gdm_final_cleanup, which ends up calling this function.
+ * To fix the sort of crashing problem reported in bugzilla bug
+ * #517526.  This function could probably be made more thread
+ * safe.
+ */
 void
 gdm_config_free (GdmConfig *config)
 {
+	GdmConfigEntry *e;
+	GKeyFile       *mkf, *dkf, *ckf;
+	GHashTable     *hash;
+
 	g_return_if_fail (config != NULL);
 
-	g_ptr_array_foreach (config->entries, (GFunc)gdm_config_entry_free, NULL);
-	g_ptr_array_free (config->entries, TRUE);
+	/*
+	 * Set local variables equal to the memory that we
+         * intend to free, and set the structure variables
+         * to NULL, so if this function is called again, we
+         * do not try to free the same data structures again.
+	 */
+	e    = config->entries;
+	mkf  = config->mandatory_key_file;
+	dkf  = config->default_key_file;
+	ckf  = config->custom_key_file;
+	hash = config->value_hash;
+
+	config->entries            = NULL;
+	config->mandatory_key_file = NULL;
+	config->default_key_file   = NULL;
+	config->custom_key_file    = NULL;
+	config->value_hash         = NULL;
 
 	g_free (config->mandatory_filename);
 	g_free (config->default_filename);
 	g_free (config->custom_filename);
 
-	if (config->mandatory_key_file != NULL) {
-		g_key_file_free (config->mandatory_key_file);
-	}
-	if (config->default_key_file != NULL) {
-		g_key_file_free (config->default_key_file);
-	}
-	if (config->custom_key_file != NULL) {
-		g_key_file_free (config->custom_key_file);
-	}
-	if (config->value_hash != NULL) {
-		g_hash_table_destroy (config->value_hash);
-	}
-
 	g_slice_free (GdmConfig, config);
+
+	if (e != NULL) {
+		g_ptr_array_foreach (e, (GFunc)gdm_config_entry_free, NULL);
+		g_ptr_array_free (e, TRUE);
+	}
+	if (mkf != NULL)
+		g_key_file_free (mkf);
+	if (dkf != NULL)
+		g_key_file_free (dkf);
+	if (ckf != NULL) 
+		g_key_file_free (ckf);
+	if (hash != NULL)
+		g_hash_table_destroy (hash);
 }
 
 static void
