@@ -593,7 +593,7 @@ gdm_config_free (GdmConfig *config)
 	g_return_if_fail (config != NULL);
 
 	g_ptr_array_foreach (config->entries, (GFunc)gdm_config_entry_free, NULL);
-	g_ptr_array_free (config->entries, TRUE);
+	g_ptr_array_free (config->entries, FALSE);
 
 	g_free (config->mandatory_filename);
 	g_free (config->default_filename);
