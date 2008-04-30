@@ -540,8 +540,6 @@ gdm_user_chooser_widget_new (void)
         GObject *object;
 
         object = g_object_new (GDM_TYPE_USER_CHOOSER_WIDGET,
-                               "inactive-text", _("_Users:"),
-                               "active-text", _("_User:"),
                                NULL);
 
         return GTK_WIDGET (object);
