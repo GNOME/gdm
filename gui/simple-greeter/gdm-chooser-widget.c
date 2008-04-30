@@ -508,6 +508,8 @@ on_shrink_animation_complete (GdmScrollableWidget *scrollable_widget,
         gtk_tree_view_set_enable_search (GTK_TREE_VIEW (widget->priv->items_view), FALSE);
         widget->priv->state = GDM_CHOOSER_WIDGET_STATE_SHRUNK;
 
+        update_separator_visibility (widget);
+
         if (widget->priv->emit_activated_after_resize_animation) {
                 g_signal_emit (widget, signals[ACTIVATED], 0);
                 widget->priv->emit_activated_after_resize_animation = FALSE;
