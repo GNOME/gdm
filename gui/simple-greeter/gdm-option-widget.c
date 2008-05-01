@@ -447,16 +447,31 @@ gdm_option_widget_dispose (GObject *object)
         G_OBJECT_CLASS (gdm_option_widget_parent_class)->dispose (object);
 }
 
+static gboolean
+gdm_option_widget_mnemonic_activate (GtkWidget *widget,
+                                     gboolean   group_cycling)
+{
+        GdmOptionWidget *option_widget;
+
+        option_widget = GDM_OPTION_WIDGET (widget);
+        gtk_widget_grab_focus (option_widget->priv->items_combo_box);
+        gtk_combo_box_popup (GTK_COMBO_BOX (option_widget->priv->items_combo_box));
+
+        return TRUE;
+}
+
 static void
 gdm_option_widget_class_init (GdmOptionWidgetClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+        GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
         object_class->get_property = gdm_option_widget_get_property;
         object_class->set_property = gdm_option_widget_set_property;
         object_class->constructor = gdm_option_widget_constructor;
         object_class->dispose = gdm_option_widget_dispose;
         object_class->finalize = gdm_option_widget_finalize;
+        widget_class->mnemonic_activate = gdm_option_widget_mnemonic_activate;
 
         gtk_rc_parse_string (GDM_OPTION_WIDGET_RC_STRING);
 
@@ -816,7 +831,6 @@ gdm_option_widget_init (GdmOptionWidget *widget)
         gtk_container_add (GTK_CONTAINER (widget),
                            box);
 
-
         widget->priv->image = gtk_image_new ();
         gtk_widget_set_no_show_all (widget->priv->image, TRUE);
         gtk_box_pack_start (GTK_BOX (box), widget->priv->image, FALSE, FALSE, 0);
@@ -846,7 +860,7 @@ gdm_option_widget_init (GdmOptionWidget *widget)
         gtk_container_add (GTK_CONTAINER (box),
                            widget->priv->items_combo_box);
         gtk_label_set_mnemonic_widget (GTK_LABEL (widget->priv->label),
-                                       widget->priv->items_combo_box);
+                                       GTK_WIDGET (widget));
 
         g_assert (NUMBER_OF_OPTION_COLUMNS == 4);
         widget->priv->list_store = gtk_list_store_new (NUMBER_OF_OPTION_COLUMNS,
