@@ -30,6 +30,8 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
+#include "gdm-settings-client.h"
+
 #include "gdm-greeter-login-window.h"
 
 int

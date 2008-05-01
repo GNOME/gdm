@@ -54,8 +54,8 @@
 
 #define GDM_DBUS_NAME "org.gnome.DisplayManager"
 
-static void bus_proxy_destroyed_cb (DBusGProxy *bus_proxy,
-                                    GdmManager *manager);
+static void bus_proxy_destroyed_cb (DBusGProxy  *bus_proxy,
+                                    GdmManager **managerp);
 
 extern char **environ;
 
@@ -189,7 +189,7 @@ bus_reconnect (GdmManager *manager)
         g_signal_connect (bus_proxy,
                           "destroy",
                           G_CALLBACK (bus_proxy_destroyed_cb),
-                          manager);
+                          &manager);
 
         g_debug ("Successfully reconnected to D-Bus");
 
@@ -200,15 +200,20 @@ bus_reconnect (GdmManager *manager)
 }
 
 static void
-bus_proxy_destroyed_cb (DBusGProxy *bus_proxy,
-                        GdmManager  *manager)
+bus_proxy_destroyed_cb (DBusGProxy  *bus_proxy,
+                        GdmManager **managerp)
 {
         g_debug ("Disconnected from D-Bus");
 
-        g_object_unref (manager);
-        manager = NULL;
+        if (managerp == NULL || *managerp == NULL) {
+                /* probably shutting down or something */
+                return;
+        }
 
-        g_timeout_add (3000, (GSourceFunc)bus_reconnect, manager);
+        g_object_unref (*managerp);
+        *managerp = NULL;
+
+        g_timeout_add (3000, (GSourceFunc)bus_reconnect, managerp);
 }
 
 static void
@@ -498,7 +503,6 @@ main (int    argc,
         DBusGConnection    *connection;
         GError             *error;
         int                 ret;
-        int                 i;
         gboolean            res;
         gboolean            xdmcp_enabled;
         GdmSignalHandler   *signal_handler;
@@ -609,7 +613,7 @@ main (int    argc,
         g_signal_connect (bus_proxy,
                           "destroy",
                           G_CALLBACK (bus_proxy_destroyed_cb),
-                          manager);
+                          &manager);
 
         main_loop = g_main_loop_new (NULL, FALSE);
 

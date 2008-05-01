@@ -1222,7 +1222,7 @@ do_system_restart (GdmGreeterLoginWindow *login_window)
                                                                  GTK_BUTTONS_OK,
                                                                  _("Failed to restart computer"));
                                 if (polkit_action_equal (action, action2)) {
-                                        gtk_message_dialog_format_secondary_text (dialog,
+                                        gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
                                                                                   _("You are not allowed to restart the computer "
                                                                                     "because multiple users are logged in"));
                                 }
@@ -1306,7 +1306,7 @@ do_system_stop (GdmGreeterLoginWindow *login_window)
                                                                  GTK_BUTTONS_OK,
                                                                  _("Failed to stop computer"));
                                 if (polkit_action_equal (action, action2)) {
-                                        gtk_message_dialog_format_secondary_text (dialog,
+                                        gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
                                                                                   _("You are not allowed to stop the computer "
                                                                                     "because multiple users are logged in"));
                                 }
