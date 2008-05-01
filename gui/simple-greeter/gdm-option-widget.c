@@ -68,6 +68,8 @@ struct GdmOptionWidgetPrivate
         gint                     number_of_top_rows;
         gint                     number_of_middle_rows;
         gint                     number_of_bottom_rows;
+
+        guint                    check_idle_id;
 };
 
 enum {
@@ -613,6 +615,39 @@ path_is_separator (GdmOptionWidget *widget,
 }
 
 static gboolean
+gdm_option_widget_check_visibility (GdmOptionWidget *widget)
+{
+        int number_of_rows;
+
+        number_of_rows = widget->priv->number_of_top_rows +
+                         widget->priv->number_of_middle_rows +
+                         widget->priv->number_of_bottom_rows;
+
+        if (number_of_rows > 1) {
+                gtk_widget_show (widget->priv->items_combo_box);
+                gtk_widget_show (widget->priv->label);
+
+                if (widget->priv->icon_name != NULL) {
+                        gtk_widget_show (widget->priv->image);
+                }
+        } else {
+                gtk_widget_hide (widget->priv->items_combo_box);
+                gtk_widget_hide (widget->priv->label);
+                gtk_widget_hide (widget->priv->image);
+        }
+
+        return FALSE;
+}
+
+static void
+gdm_option_widget_queue_visibility_check (GdmOptionWidget *widget)
+{
+        if (widget->priv->check_idle_id == 0) {
+                widget->priv->check_idle_id = g_idle_add ((GSourceFunc) gdm_option_widget_check_visibility, widget);
+        }
+}
+
+static gboolean
 check_item_visibilty (GtkTreeModel *model,
                       GtkTreeIter  *iter,
                       gpointer      data)
@@ -641,6 +676,8 @@ check_item_visibilty (GtkTreeModel *model,
         } else {
                 is_visible = TRUE;
         }
+
+        gdm_option_widget_queue_visibility_check (widget);
 
         return is_visible;
 }
@@ -838,7 +875,7 @@ gdm_option_widget_init (GdmOptionWidget *widget)
         widget->priv->label = gtk_label_new ("");
         gtk_label_set_use_underline (GTK_LABEL (widget->priv->label), TRUE);
         gtk_label_set_use_markup (GTK_LABEL (widget->priv->label), TRUE);
-        gtk_widget_show (widget->priv->label);
+        gtk_widget_set_no_show_all (widget->priv->label, TRUE);
         gtk_box_pack_start (GTK_BOX (box), widget->priv->label, FALSE, FALSE, 0);
 
         widget->priv->items_combo_box = gtk_combo_box_new ();
@@ -856,7 +893,7 @@ gdm_option_widget_init (GdmOptionWidget *widget)
                           G_CALLBACK (on_default_item_changed),
                           NULL);
 
-        gtk_widget_show (widget->priv->items_combo_box);
+        gtk_widget_set_no_show_all (widget->priv->items_combo_box, TRUE);
         gtk_container_add (GTK_CONTAINER (box),
                            widget->priv->items_combo_box);
         gtk_label_set_mnemonic_widget (GTK_LABEL (widget->priv->label),
