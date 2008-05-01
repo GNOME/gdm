@@ -1141,19 +1141,41 @@ static PolKitAction *
 get_action_from_error (GError *error)
 {
         PolKitAction *action;
-        const char   *paction;
+        char         *paction;
+        char         *p;
 
         action = polkit_action_new ();
 
         paction = NULL;
         if (g_str_has_prefix (error->message, "Not privileged for action: ")) {
-                paction = error->message + strlen ("Not privileged for action: ");
+                paction = g_strdup (error->message + strlen ("Not privileged for action: "));
+                p = strchr (paction, ' ');
+                if (p != NULL) {
+                        *p = '\0';
+                }
         }
         g_debug ("GdmGreeterLoginWindow: Requesting priv for '%s'", paction);
 
         polkit_action_set_action_id (action, paction);
 
+        g_free (paction);
+
         return action;
+}
+
+static PolKitResult
+get_result_from_error (GError *error)
+{
+        PolKitResult result = POLKIT_RESULT_UNKNOWN;
+        const char  *p;
+
+        p = strrchr (error->message, ' ');
+        if (p != NULL) {
+                p++;
+                polkit_result_from_string_representation (p, &result);
+        }
+
+        return result;
 }
 #endif
 
@@ -1181,10 +1203,39 @@ do_system_restart (GdmGreeterLoginWindow *login_window)
 
                 if (dbus_g_error_has_name (error, "org.freedesktop.ConsoleKit.Manager.NotPrivileged")) {
                         PolKitAction *action;
+                        PolKitAction *action2;
+                        PolKitResult  result;
+                        GtkWidget    *dialog;
                         guint         xid;
                         pid_t         pid;
 
+                        result = get_result_from_error (error);
                         action = get_action_from_error (error);
+
+                        if (result == POLKIT_RESULT_NO) {
+                                action2 = polkit_action_new ();
+                                polkit_action_set_action_id (action2,
+                                                             "org.freedesktop.consolekit.system.restart-multiple-users");
+                                dialog = gtk_message_dialog_new (GTK_WINDOW (login_window),
+                                                                 GTK_DIALOG_MODAL,
+                                                                 GTK_MESSAGE_ERROR,
+                                                                 GTK_BUTTONS_OK,
+                                                                 _("Failed to restart computer"));
+                                if (polkit_action_equal (action, action2)) {
+                                        gtk_message_dialog_format_secondary_text (dialog,
+                                                                                  _("You are not allowed to restart the computer "
+                                                                                    "because multiple users are logged in"));
+                                }
+                                gtk_dialog_run (GTK_DIALOG (dialog));
+                                gtk_widget_destroy (dialog);
+
+                                polkit_action_unref (action);
+                                polkit_action_unref (action2);
+
+                                g_error_free (error);
+
+                                return;
+                        }
 
                         xid = 0;
                         pid = getpid ();
@@ -1233,13 +1284,40 @@ do_system_stop (GdmGreeterLoginWindow *login_window)
 
                 if (dbus_g_error_has_name (error, "org.freedesktop.ConsoleKit.Manager.NotPrivileged")) {
                         PolKitAction *action;
+                        PolKitAction *action2;
+                        PolKitResult  result;
+                        GtkWidget    *dialog;
                         guint         xid;
                         pid_t         pid;
 
                         xid = 0;
                         pid = getpid ();
 
+                        result = get_result_from_error (error);
                         action = get_action_from_error (error);
+
+                        if (result == POLKIT_RESULT_NO) {
+                                action2 = polkit_action_new ();
+                                polkit_action_set_action_id (action2,
+                                                             "org.freedesktop.consolekit.system.stop-multiple-users");
+                                dialog = gtk_message_dialog_new (GTK_WINDOW (login_window),
+                                                                 GTK_DIALOG_MODAL,
+                                                                 GTK_MESSAGE_ERROR,
+                                                                 GTK_BUTTONS_OK,
+                                                                 _("Failed to stop computer"));
+                                if (polkit_action_equal (action, action2)) {
+                                        gtk_message_dialog_format_secondary_text (dialog,
+                                                                                  _("You are not allowed to stop the computer "
+                                                                                    "because multiple users are logged in"));
+                                }
+                                gtk_dialog_run (GTK_DIALOG (dialog));
+                                gtk_widget_destroy (dialog);
+
+                                polkit_action_unref (action);
+                                polkit_action_unref (action2);
+
+                                return;
+                        }
 
                         g_error_free (error);
                         error = NULL;
