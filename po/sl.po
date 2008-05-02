@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-10-23 05:51+0100\n"
-"PO-Revision-Date: 2008-04-30 20:30+0100\n"
+"PO-Revision-Date: 2008-05-02 11:31+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian\n"
 "MIME-Version: 1.0\n"
@@ -366,77 +366,77 @@ msgstr "XMDCP: Ni mogoče razčleniti naslova"
 msgid "Could not get server hostname: %s!"
 msgstr "Ni mogoče dobiti imena strežnika: %s!"
 
-#: ../daemon/main.c:230
-#: ../daemon/main.c:243
+#: ../daemon/main.c:237
+#: ../daemon/main.c:250
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace: %s"
 msgstr "Ni mogoče pisati datoteke PID %s: verjetno na disku ni prostora: %s"
 
-#: ../daemon/main.c:263
+#: ../daemon/main.c:270
 #, c-format
 msgid "Logdir %s does not exist or isn't a directory."
 msgstr "Imenik dnevnika %s ne obstaja ali pa ni imenik."
 
-#: ../daemon/main.c:276
+#: ../daemon/main.c:283
 #, c-format
 msgid "Authdir %s does not exist. Aborting."
 msgstr "Imenik authdir %s ne obstaja. Postopek je prekinjen."
 
-#: ../daemon/main.c:280
+#: ../daemon/main.c:287
 #, c-format
 msgid "Authdir %s is not a directory. Aborting."
 msgstr "Imenik authdir %s ni imenik. Dejanje prekinjeno."
 
-#: ../daemon/main.c:354
+#: ../daemon/main.c:361
 #, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
 msgstr "Lastnik imenika authdir %s ni uporabnik %d, skupine %d. Dejanje prekinjeno."
 
-#: ../daemon/main.c:361
+#: ../daemon/main.c:368
 #, c-format
 msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr "Imenik authdir %s ima napačna dovoljenja %o. Biti morajo %o. Dejanje prekinjeno."
 
-#: ../daemon/main.c:398
+#: ../daemon/main.c:405
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Ni mogoče najti uporabnika GDM '%s'. Dejanje prekinjeno!"
 
-#: ../daemon/main.c:404
+#: ../daemon/main.c:411
 msgid "The GDM user should not be root. Aborting!"
 msgstr "Uporabnik GDM ne sme biti skrbnik. Dejanje prekinjeno!"
 
-#: ../daemon/main.c:410
+#: ../daemon/main.c:417
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Ni mogoče najti skupine GDM '%s'. Dejanje prekinjeno!"
 
-#: ../daemon/main.c:416
+#: ../daemon/main.c:423
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Skupina GDM ne sme biti skrbniška. Dejanje prekinjeno!"
 
-#: ../daemon/main.c:510
+#: ../daemon/main.c:516
 msgid "Enable debugging code"
 msgstr "Omogoči kodo za razhroščevanje"
 
-#: ../daemon/main.c:511
+#: ../daemon/main.c:517
 msgid "Make all warnings fatal"
 msgstr "Izpiši vsa opozorila kot usodna"
 
-#: ../daemon/main.c:512
+#: ../daemon/main.c:518
 msgid "Exit after a time - for debugging"
 msgstr "Končaj po določenem času - za razhroščevanje"
 
-#: ../daemon/main.c:513
+#: ../daemon/main.c:519
 msgid "Print GDM version"
 msgstr "Izpiši različico GDM"
 
-#: ../daemon/main.c:528
+#: ../daemon/main.c:534
 msgid "GNOME Display Manager"
 msgstr "Upravljalnik zaslona GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:589
+#: ../daemon/main.c:595
 msgid "Only root wants to run GDM"
 msgstr "Samo s skrbniškimi pravicami je mogoče zagnati GDM"
 
@@ -563,11 +563,27 @@ msgstr "Vključena je tipka za pisanje velikih črk."
 msgid "Automatically logging in..."
 msgstr "Samodejna prijava ..."
 
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1223
+msgid "Failed to restart computer"
+msgstr "Neuspešen ponoven zagon računalnika"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1226
+msgid "You are not allowed to restart the computer because multiple users are logged in"
+msgstr "Nimate dovoljenja ponovno zagnati računalnika, ker je v sistem prijavljenih več uporabnikov."
+
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1307
+msgid "Failed to stop computer"
+msgstr "Neuspešen izklop računalnika"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1310
+msgid "You are not allowed to stop the computer because multiple users are logged in"
+msgstr "Nimate dovoljenja izklopiti računalnika, ker je v sistem prijavljenih več uporabnikov."
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1385
 msgid "Select language and click Log In"
 msgstr "Izberite jezik in kliknite na prijavo"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1863
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1941
 msgid "Login Window"
 msgstr "Prijavno okno"
 
@@ -638,27 +654,27 @@ msgstr "Izberite jezik iz seznama jezikov, ki so na voljo."
 msgid "Unspecified"
 msgstr "Nedoločeno"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:476
+#: ../gui/simple-greeter/gdm-option-widget.c:493
 msgid "Label Text"
 msgstr "Besedilo oznake"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:477
+#: ../gui/simple-greeter/gdm-option-widget.c:494
 msgid "The text to use as a label"
 msgstr "Besedilo uporabljeno kot naslov"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:484
+#: ../gui/simple-greeter/gdm-option-widget.c:501
 msgid "Icon name"
 msgstr "Ime ikone"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:485
+#: ../gui/simple-greeter/gdm-option-widget.c:502
 msgid "The icon to use with the label"
 msgstr "Ikona uporabljena z oznako"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:493
+#: ../gui/simple-greeter/gdm-option-widget.c:510
 msgid "Default Item"
 msgstr "Privzeti predmet"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:494
+#: ../gui/simple-greeter/gdm-option-widget.c:511
 msgid "The id of the default item"
 msgstr "ID privzetega predmeta"
 
