@@ -71,6 +71,7 @@ static GSList *displays = NULL;
 static GSList *xservers = NULL;
 
 static gint high_display_num = 0;
+static const char *default_config_file = NULL;
 static char *custom_config_file = NULL;
 
 static uid_t GdmUserId;   /* Userid  under which gdm should run */
@@ -1228,101 +1229,6 @@ gdm_daemon_config_load_xservers (GdmConfig *config)
 }
 
 /**
- * gdm_daemon_config_update_key
- *
- * Will cause a the GDM daemon to re-read the key from the configuration
- * file and cause notify signal to be sent to the slaves for the
- * specified key, if appropriate.
- * Obviously notification is not needed for configuration options only
- * used by the daemon.  This function is called when the UPDDATE_CONFIG
- * sockets command is called.
- *
- * To add a new notification, a GDM_NOTIFY_* argument will need to be
- * defined in gdm-daemon-config-keys.h, supporting logic placed in the
- * notify_cb function and in the gdm_slave_handle_notify function
- * in slave.c.
- */
-gboolean
-gdm_daemon_config_update_key (const char *keystring)
-{
-	gboolean              rc;
-	gboolean              res;
-	char                 *group;
-	char                 *key;
-	char                 *locale;
-	const GdmConfigEntry *entry;
-
-	rc = FALSE;
-	group = key = locale = NULL;
-
-	/*
-	 * Do not allow these keys to be updated, since GDM would need
-	 * additional work, or at least heavy testing, to make these keys
-	 * flexible enough to be changed at runtime.
-	 */
-	if (is_key (keystring, GDM_KEY_PID_FILE) ||
-	    is_key (keystring, GDM_KEY_CONSOLE_NOTIFY) ||
-	    is_key (keystring, GDM_KEY_USER) ||
-	    is_key (keystring, GDM_KEY_GROUP) ||
-	    is_key (keystring, GDM_KEY_LOG_DIR) ||
-	    is_key (keystring, GDM_KEY_SERV_AUTHDIR) ||
-	    is_key (keystring, GDM_KEY_USER_AUTHDIR) ||
-	    is_key (keystring, GDM_KEY_USER_AUTHFILE) ||
-	    is_key (keystring, GDM_KEY_USER_AUTHDIR_FALLBACK)) {
-		return FALSE;
-	}
-
-	/* reload backend files if necessary */
-	gdm_config_load (daemon_config, NULL);
-
-	/* Shortcut for updating all XDMCP parameters */
-	if (is_key (keystring, "xdmcp/PARAMETERS")) {
-		rc = gdm_daemon_config_update_key (GDM_KEY_DISPLAYS_PER_HOST);
-                if (rc == TRUE)
-			rc = gdm_daemon_config_update_key (GDM_KEY_MAX_PENDING);
-                if (rc == TRUE)
-			rc = gdm_daemon_config_update_key (GDM_KEY_MAX_WAIT);
-                if (rc == TRUE)
-			rc = gdm_daemon_config_update_key (GDM_KEY_MAX_SESSIONS);
-                if (rc == TRUE)
-			rc = gdm_daemon_config_update_key (GDM_KEY_INDIRECT);
-                if (rc == TRUE)
-			rc = gdm_daemon_config_update_key (GDM_KEY_MAX_INDIRECT);
-                if (rc == TRUE)
-			rc = gdm_daemon_config_update_key (GDM_KEY_MAX_WAIT_INDIRECT);
-                if (rc == TRUE)
-			rc = gdm_daemon_config_update_key (GDM_KEY_PING_INTERVAL);
-		goto out;
-	}
-
-	/* find the entry for the key */
-	res = gdm_common_config_parse_key_string (keystring,
-						  &group,
-						  &key,
-						  &locale,
-						  NULL);
-	if (! res) {
-		gdm_error ("Could not parse configuration key %s", keystring);
-		goto out;
-	}
-
-	entry = gdm_config_lookup_entry (daemon_config, group, key);
-	if (entry == NULL) {
-		gdm_error ("Request for invalid configuration key %s", keystring);
-		goto out;
-	}
-
-	rc = gdm_config_process_entry (daemon_config, entry, NULL);
-
- out:
-	g_free (group);
-	g_free (key);
-	g_free (locale);
-
-	return rc;
-}
-
-/**
  * check_logdir
  * check_servauthdir
  *
@@ -2212,6 +2118,139 @@ gdm_daemon_check_permissions (GdmConfig *config,
 	g_free (auth_path);
 }
 
+void
+gdm_daemon_load_config_file (GdmConfig **load_config)
+{
+	GError       *error;
+
+	if (*load_config == NULL)
+		*load_config = gdm_config_new ();
+
+	gdm_config_set_validate_func (*load_config, validate_cb, NULL);
+	gdm_config_add_static_entries (*load_config, gdm_daemon_config_entries);
+	gdm_config_set_default_file (*load_config, default_config_file);
+	gdm_config_set_custom_file (*load_config, custom_config_file);
+
+	/* load the data files */
+	error = NULL;
+	gdm_config_load (*load_config, &error);
+	if (error != NULL) {
+		gdm_error ("Unable to load configuration: %s", error->message);
+		g_error_free (error);
+	}
+
+	/* populate the database with all specified entries */
+	gdm_config_process_all (*load_config, &error);
+}
+
+/**
+ * gdm_daemon_config_update_key
+ *
+ * Will cause a the GDM daemon to re-read the key from the configuration
+ * file and cause notify signal to be sent to the slaves for the
+ * specified key, if appropriate.
+ * Obviously notification is not needed for configuration options only
+ * used by the daemon.  This function is called when the UPDDATE_CONFIG
+ * sockets command is called.
+ *
+ * To add a new notification, a GDM_NOTIFY_* argument will need to be
+ * defined in gdm-daemon-config-keys.h, supporting logic placed in the
+ * notify_cb function and in the gdm_slave_handle_notify function
+ * in slave.c.
+ */
+gboolean
+gdm_daemon_config_update_key (const char *keystring)
+{
+	const GdmConfigEntry *entry;
+	GdmConfigValue       *value;
+        GdmConfig            *temp_config;
+	gboolean              rc;
+	gboolean              res;
+	char                 *group;
+	char                 *key;
+	char                 *locale;
+
+	rc = FALSE;
+	group = key = locale = NULL;
+	temp_config = NULL;
+
+	/*
+	 * Do not allow these keys to be updated, since GDM would need
+	 * additional work, or at least heavy testing, to make these keys
+	 * flexible enough to be changed at runtime.
+	 */
+	if (is_key (keystring, GDM_KEY_PID_FILE) ||
+	    is_key (keystring, GDM_KEY_CONSOLE_NOTIFY) ||
+	    is_key (keystring, GDM_KEY_USER) ||
+	    is_key (keystring, GDM_KEY_GROUP) ||
+	    is_key (keystring, GDM_KEY_LOG_DIR) ||
+	    is_key (keystring, GDM_KEY_SERV_AUTHDIR) ||
+	    is_key (keystring, GDM_KEY_USER_AUTHDIR) ||
+	    is_key (keystring, GDM_KEY_USER_AUTHFILE) ||
+	    is_key (keystring, GDM_KEY_USER_AUTHDIR_FALLBACK)) {
+		return FALSE;
+	}
+
+	/* Load configuration file */
+	gdm_daemon_load_config_file (&temp_config);
+
+	if (is_key (keystring, "xservers/PARAMETERS")) {
+		gdm_daemon_config_load_xservers (temp_config);
+		goto out;
+	}
+
+	/* Shortcut for updating all XDMCP parameters */
+	if (is_key (keystring, "xdmcp/PARAMETERS")) {
+		rc = gdm_daemon_config_update_key (GDM_KEY_DISPLAYS_PER_HOST);
+                if (rc == TRUE)
+			rc = gdm_daemon_config_update_key (GDM_KEY_MAX_PENDING);
+                if (rc == TRUE)
+			rc = gdm_daemon_config_update_key (GDM_KEY_MAX_WAIT);
+                if (rc == TRUE)
+			rc = gdm_daemon_config_update_key (GDM_KEY_MAX_SESSIONS);
+                if (rc == TRUE)
+			rc = gdm_daemon_config_update_key (GDM_KEY_INDIRECT);
+                if (rc == TRUE)
+			rc = gdm_daemon_config_update_key (GDM_KEY_MAX_INDIRECT);
+                if (rc == TRUE)
+			rc = gdm_daemon_config_update_key (GDM_KEY_MAX_WAIT_INDIRECT);
+                if (rc == TRUE)
+			rc = gdm_daemon_config_update_key (GDM_KEY_PING_INTERVAL);
+		goto out;
+	}
+
+	/* find the entry for the key */
+	res = gdm_common_config_parse_key_string (keystring,
+						  &group,
+						  &key,
+						  &locale,
+						  NULL);
+	if (! res) {
+		gdm_error ("Could not parse configuration key %s", keystring);
+		goto out;
+	}
+
+	entry = gdm_config_lookup_entry (temp_config, group, key);
+	if (entry == NULL) {
+		gdm_error ("Request for invalid configuration key %s", keystring);
+		goto out;
+	}
+
+	rc = gdm_config_process_entry (temp_config, entry, NULL);
+
+	gdm_config_get_value_for_id (temp_config, entry->id, &value);
+	gdm_config_set_value_for_id (daemon_config, entry->id, value);
+
+ out:
+	if (temp_config != NULL)
+		gdm_config_free (temp_config);
+	g_free (group);
+	g_free (key);
+	g_free (locale);
+
+	return rc;
+}
+
 /**
  * gdm_daemon_config_parse
  *
@@ -2223,41 +2262,22 @@ gdm_daemon_config_parse (const char *config_file,
 {
 	uid_t         uid;
 	gid_t         gid;
-	GError       *error;
 	gboolean      xdmcp_enabled;
 	gboolean      dynamic_enabled;
 
-	displays          = NULL;
-	high_display_num  = 0;
+	displays            = NULL;
+	high_display_num    = 0;
 
 	/* Not NULL if config_file was set by command-line option. */
 	if (config_file == NULL) {
 		config_file = GDM_DEFAULTS_CONF;
 	}
-	custom_config_file = g_strdup (GDM_CUSTOM_CONF);
 
-	if (daemon_config == NULL)
-		daemon_config = gdm_config_new ();
+	default_config_file = config_file;
+	custom_config_file  = g_strdup (GDM_CUSTOM_CONF);
 
+	gdm_daemon_load_config_file (&daemon_config);
 	gdm_config_set_notify_func (daemon_config, notify_cb, NULL);
-	gdm_config_set_validate_func (daemon_config, validate_cb, NULL);
-
-	gdm_config_add_static_entries (daemon_config, gdm_daemon_config_entries);
-
-	gdm_config_set_default_file (daemon_config, config_file);
-	gdm_config_set_custom_file (daemon_config, custom_config_file);
-
-	/* load the data files */
-	error = NULL;
-	gdm_config_load (daemon_config, &error);
-	if (error != NULL) {
-		gdm_error ("Unable to load configuration: %s", error->message);
-		g_error_free (error);
-	}
-
-	/* populate the database with all specified entries */
-	gdm_config_process_all (daemon_config, &error);
-
 	gdm_daemon_config_load_xservers (daemon_config);
 
 	/* Only read the list if no_console is FALSE at this stage */

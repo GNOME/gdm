@@ -1,5 +1,32 @@
 2008-05-02  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/gdm-daemon-config.c: A better fix for the problem.
+	  While investigating the crashing problem on exit, I noticed
+	  that gdm_daemon_config_update_key was similarly crashing
+	  when calling gdm_config_load and freeing the daemon_config
+          global.  This crash would only happen occasionally, but I
+	  was able to recreate it a few times.  This indicates that
+	  this function needs to be thread-safe, since if the deamon
+	  recieves multiple UPDATE_KEY requests quickly, two requests
+	  could be processed at the same time.  This change fixes the
+	  code so it doesn't reload the configuration, but instead
+	  loads it into a temporary variable, and then updates just
+	  the key requested.  Thus avoiding the freeing of the global
+	  and this should fix the crashing.  This is more sensible
+	  anyway, because some places in the code resets configuration
+	  values to different values (e.g. resetting CONSOLE_NOTIFY to
+	  false in gdm_config_parse if no displays were defined in the
+	  configuration), so we lose such values if we reload the
+	  entire configuration file.  It's better to just reload the
+	  specified key.
+	* daemon/gdm-daemon-config.c: I noticed that the key
+	  "xservers/PARAMETERS" was not being processed in the
+	  gdm_daemon_config_update_key, so that if you change Xserver
+	  variables in gdmsetup, they weren't getting recognized by
+	  the daemon.  I fixed this, and thus fixed bug #450357.
+
+2008-05-02  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/gdm-daemon-config.c: Reverse last change.  It seemed to
 	  work when I first tested it, but I must have tested it wrong.
 	  
