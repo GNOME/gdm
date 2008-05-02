@@ -212,10 +212,6 @@ _gdm_session_list_init (GHashTable **sessnames, GList **sessions,
 		    hidden = FALSE;
 		    gdm_common_config_get_boolean (cfg, "Desktop Entry/Hidden=false", &hidden, NULL);
 		    if (hidden) {
-			    session = g_new0 (GdmSession, 1);
-			    session->name      = g_strdup (dent->d_name);
-			    session->clearname = NULL;
-			    g_hash_table_insert (*sessnames, g_strdup (dent->d_name), session);
 			    g_key_file_free (cfg);
 			    dent = readdir (sessdir);
 			    continue;
