@@ -193,6 +193,8 @@ bus_reconnect (GdmManager *manager)
 
         g_debug ("Successfully reconnected to D-Bus");
 
+        gdm_manager_start (manager);
+
         ret = FALSE;
 
  out:
