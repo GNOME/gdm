@@ -607,9 +607,9 @@ gdm_config_free (GdmConfig *config)
 
 	/*
 	 * Set local variables equal to the memory that we
-         * intend to free, and set the structure variables
-         * to NULL, so if this function is called again, we
-         * do not try to free the same data structures again.
+	 * intend to free, and set the structure variables
+	 * to NULL, so if this function is called again, we
+	 * do not try to free the same data structures again.
 	 */
 	e    = config->entries;
 	mkf  = config->mandatory_key_file;
@@ -637,7 +637,7 @@ gdm_config_free (GdmConfig *config)
 		g_key_file_free (mkf);
 	if (dkf != NULL)
 		g_key_file_free (dkf);
-	if (ckf != NULL) 
+	if (ckf != NULL)
 		g_key_file_free (ckf);
 	if (hash != NULL)
 		g_hash_table_destroy (hash);
