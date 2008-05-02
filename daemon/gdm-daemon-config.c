@@ -1272,9 +1272,6 @@ gdm_daemon_config_update_key (const char *keystring)
 		return FALSE;
 	}
 
-	/* reload backend files if necessary */
-	gdm_config_load (daemon_config, NULL);
-
 	/* Shortcut for updating all XDMCP parameters */
 	if (is_key (keystring, "xdmcp/PARAMETERS")) {
 		rc = gdm_daemon_config_update_key (GDM_KEY_DISPLAYS_PER_HOST);

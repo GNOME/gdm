@@ -1,3 +1,16 @@
+2008-05-02  Brian Cameron  <brian.cameron@sun.com>
+
+        * daemon/gdm-daemon-config.c: Remove call to gdm_config_load from
+          gdm_daemon_config_update_key.  This function is only called when
+          the UPDATE_KEY message is passed to the daemon, which is typically
+          sent from gdmsetup when a specific configuration value has changed.
+          Calling gdm_config_load before processing the key will cause the
+          entire configuration to get reloaded since the datestamp on the
+          file will, of course, be newer than the last read.  It is more
+          efficient to simply re-process the single key value requested via
+          the UPDATE_KEY command.  This makes GDM behave more like it did
+          in GDM 2.18 and earlier.
+
 2008-05-01 Brian Cameron <brian.cameron@sun.com>
 
 	* gui/gdmsession.c: If a GDM session desktop file is marked as
