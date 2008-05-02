@@ -1201,8 +1201,22 @@ load_backend (GdmConfig  *config,
 	/* if already loaded check whether reload is necessary */
 	if (*key_file != NULL) {
 		if (lmtime > *mtime) {
+
 			/* needs an update */
-			g_key_file_free (*key_file);
+
+                        /*
+                         * As in gdm-config-free, set a local
+                         * variable equal to the memory to 
+                         * free, and set the structure to 
+                         * NULL, so if this function is 
+                         * called again, we do not free the
+                         * same data stucture again.  Similar
+                         * to bug #517526.  Again, this could
+                         * probably be made more thread safe.
+                         */
+			kf = *key_file;
+			*key_file = NULL;
+			g_key_file_free (kf);
 		} else {
 			/* no reload necessary so we're done */
 			return TRUE;
