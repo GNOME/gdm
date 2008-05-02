@@ -1,5 +1,10 @@
 2008-05-02  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/gdm-daemon-config.c: Reverse last change.  It seemed to
+	  work when I first tested it, but I must have tested it wrong.
+	  
+2008-05-02  Brian Cameron  <brian.cameron@sun.com>
+
         * daemon/gdm-daemon-config.c: Remove call to gdm_config_load from
           gdm_daemon_config_update_key.  This function is only called when
           the UPDATE_KEY message is passed to the daemon, which is typically
