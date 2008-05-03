@@ -2568,6 +2568,22 @@ gdm_xdmcp_manager_start (GdmXdmcpManager *manager,
 	g_return_val_if_fail (GDM_IS_XDMCP_MANAGER (manager), FALSE);
 	g_return_val_if_fail (manager->priv->socket_fd == -1, FALSE);
 
+        if (manager->priv->multicast_address)
+		g_free (manager->priv->multicast_address);
+        if (manager->priv->willing_script)
+		g_free (manager->priv->willing_script);
+
+	/* read configuration */
+	manager->priv->port = gdm_daemon_config_get_value_int (GDM_KEY_UDP_PORT);
+	manager->priv->use_multicast = gdm_daemon_config_get_value_bool (GDM_KEY_MULTICAST);
+	manager->priv->multicast_address = g_strdup(gdm_daemon_config_get_value_string (GDM_KEY_MULTICAST_ADDR));
+	manager->priv->honor_indirect = gdm_daemon_config_get_value_bool (GDM_KEY_INDIRECT);
+	manager->priv->max_displays_per_host = gdm_daemon_config_get_value_int (GDM_KEY_DISPLAYS_PER_HOST);
+	manager->priv->max_displays = gdm_daemon_config_get_value_int (GDM_KEY_MAX_SESSIONS);
+	manager->priv->max_pending_displays = gdm_daemon_config_get_value_int (GDM_KEY_MAX_PENDING);
+	manager->priv->max_wait = gdm_daemon_config_get_value_int (GDM_KEY_MAX_WAIT);
+	manager->priv->willing_script = g_strdup (gdm_daemon_config_get_value_string (GDM_KEY_WILLING));
+
 	ret = open_port (manager);
 	if (! ret) {
 		return ret;
@@ -2877,18 +2893,6 @@ gdm_xdmcp_manager_init (GdmXdmcpManager *manager)
 
 	manager->priv->servhost.data   = (CARD8 *) g_strdup (hostbuf);
 	manager->priv->servhost.length = strlen ((char *) manager->priv->servhost.data);
-
-
-	/* read configuration */
-	manager->priv->port = gdm_daemon_config_get_value_int (GDM_KEY_UDP_PORT);
-	manager->priv->use_multicast = gdm_daemon_config_get_value_bool (GDM_KEY_MULTICAST);
-	manager->priv->multicast_address = g_strdup(gdm_daemon_config_get_value_string (GDM_KEY_MULTICAST_ADDR));
-	manager->priv->honor_indirect = gdm_daemon_config_get_value_bool (GDM_KEY_INDIRECT);
-	manager->priv->max_displays_per_host = gdm_daemon_config_get_value_int (GDM_KEY_DISPLAYS_PER_HOST);
-	manager->priv->max_displays = gdm_daemon_config_get_value_int (GDM_KEY_MAX_SESSIONS);
-	manager->priv->max_pending_displays = gdm_daemon_config_get_value_int (GDM_KEY_MAX_PENDING);
-	manager->priv->max_wait = gdm_daemon_config_get_value_int (GDM_KEY_MAX_WAIT);
-	manager->priv->willing_script = g_strdup (gdm_daemon_config_get_value_string (GDM_KEY_WILLING));
 }
 
 static void
