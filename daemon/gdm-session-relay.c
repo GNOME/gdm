@@ -267,6 +267,14 @@ gdm_session_relay_select_language (GdmSession *session,
 }
 
 static void
+gdm_session_relay_select_layout (GdmSession *session,
+                                 const char *text)
+{
+        GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
+        send_dbus_string_signal (impl, "LayoutSelected", text);
+}
+
+static void
 gdm_session_relay_select_user (GdmSession *session,
                                const char *text)
 {
@@ -814,6 +822,9 @@ do_introspect (DBusConnection *connection,
                                "    <signal name=\"LanguageSelected\">\n"
                                "      <arg name=\"language\" type=\"s\"/>\n"
                                "    </signal>\n"
+                               "    <signal name=\"LayoutSelected\">\n"
+                               "      <arg name=\"layout\" type=\"s\"/>\n"
+                               "    </signal>\n"
                                "    <signal name=\"SessionSelected\">\n"
                                "      <arg name=\"session\" type=\"s\"/>\n"
                                "    </signal>\n"
@@ -1108,6 +1119,7 @@ gdm_session_iface_init (GdmSessionIface *iface)
         iface->answer_query = gdm_session_relay_answer_query;
         iface->select_session = gdm_session_relay_select_session;
         iface->select_language = gdm_session_relay_select_language;
+        iface->select_layout = gdm_session_relay_select_layout;
         iface->select_user = gdm_session_relay_select_user;
 }
 

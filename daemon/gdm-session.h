@@ -60,6 +60,8 @@ struct _GdmSessionIface
                                               const char   *text);
         void (* select_language)             (GdmSession   *session,
                                               const char   *text);
+        void (* select_layout)               (GdmSession   *session,
+                                              const char   *text);
         void (* select_session)              (GdmSession   *session,
                                               const char   *text);
         void (* select_user)                 (GdmSession   *session,
@@ -108,6 +110,8 @@ struct _GdmSessionIface
 
         void (* default_language_name_changed)    (GdmSession   *session,
                                                    const char   *text);
+        void (* default_layout_name_changed)      (GdmSession   *session,
+                                                   const char   *text);
         void (* default_session_name_changed)     (GdmSession   *session,
                                                    const char   *text);
 };
@@ -133,6 +137,8 @@ void     gdm_session_answer_query                (GdmSession *session,
 void     gdm_session_select_session              (GdmSession *session,
                                                   const char *session_name);
 void     gdm_session_select_language             (GdmSession *session,
+                                                  const char *language);
+void     gdm_session_select_layout               (GdmSession *session,
                                                   const char *language);
 void     gdm_session_select_user                 (GdmSession *session,
                                                   const char *username);

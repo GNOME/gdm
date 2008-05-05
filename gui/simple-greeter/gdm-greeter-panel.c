@@ -34,9 +34,11 @@
 #include <gconf/gconf-client.h>
 
 #include "gdm-languages.h"
+#include "gdm-layouts.h"
 #include "gdm-greeter-panel.h"
 #include "gdm-clock-widget.h"
 #include "gdm-language-option-widget.h"
+#include "gdm-layout-option-widget.h"
 #include "gdm-session-option-widget.h"
 #include "gdm-a11y-preferences-dialog.h"
 #include "gdm-profile.h"
@@ -59,6 +61,7 @@ struct GdmGreeterPanelPrivate
         GtkWidget              *hostname_label;
         GtkWidget              *clock;
         GtkWidget              *language_option_widget;
+        GtkWidget              *layout_option_widget;
         GtkWidget              *session_option_widget;
 
         char                   *default_session_name;
@@ -71,6 +74,7 @@ enum {
 
 enum {
         LANGUAGE_SELECTED,
+        LAYOUT_SELECTED,
         SESSION_SELECTED,
         NUMBER_OF_SIGNALS
 };
@@ -398,6 +402,17 @@ gdm_greeter_panel_class_init (GdmGreeterPanelClass *klass)
                               G_TYPE_NONE,
                               1, G_TYPE_STRING);
 
+        signals[LAYOUT_SELECTED] =
+                g_signal_new ("layout-selected",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmGreeterPanelClass, layout_selected),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1, G_TYPE_STRING);
+
         signals[SESSION_SELECTED] =
                 g_signal_new ("session-selected",
                               G_TYPE_FROM_CLASS (object_class),
@@ -430,6 +445,26 @@ on_language_activated (GdmLanguageOptionWidget *widget,
         g_free (language);
 }
 
+static void
+on_layout_activated (GdmLayoutOptionWidget *widget,
+                     GdmGreeterPanel       *panel)
+{
+
+        char *layout;
+
+        layout = gdm_layout_option_widget_get_current_layout_name (GDM_LAYOUT_OPTION_WIDGET (panel->priv->layout_option_widget));
+
+        if (layout == NULL) {
+                return;
+        }
+
+	g_debug ("GdmGreeterPanel: activating selected layout %s", layout);
+	gdm_layout_activate (layout);
+
+        g_signal_emit (panel, signals[LAYOUT_SELECTED], 0, layout);
+
+        g_free (layout);
+}
 static void
 on_session_activated (GdmSessionOptionWidget *widget,
                       GdmGreeterPanel        *panel)
@@ -562,6 +597,12 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
         gtk_box_pack_start (GTK_BOX (panel->priv->option_hbox), panel->priv->language_option_widget, FALSE, FALSE, 6);
         gdm_profile_end ("creating option widget");
 
+        panel->priv->layout_option_widget = gdm_layout_option_widget_new ();
+        g_signal_connect (G_OBJECT (panel->priv->layout_option_widget),
+                          "layout-activated",
+                          G_CALLBACK (on_layout_activated), panel);
+        gtk_box_pack_start (GTK_BOX (panel->priv->option_hbox), panel->priv->layout_option_widget, FALSE, FALSE, 6);
+
         panel->priv->session_option_widget = gdm_session_option_widget_new ();
         g_signal_connect (G_OBJECT (panel->priv->session_option_widget),
                           "session-activated",
@@ -626,6 +667,7 @@ gdm_greeter_panel_show_user_options (GdmGreeterPanel *panel)
 {
         gtk_widget_show (panel->priv->session_option_widget);
         gtk_widget_show (panel->priv->language_option_widget);
+        gtk_widget_show (panel->priv->layout_option_widget);
 }
 
 void
@@ -633,12 +675,17 @@ gdm_greeter_panel_hide_user_options (GdmGreeterPanel *panel)
 {
         gtk_widget_hide (panel->priv->session_option_widget);
         gtk_widget_hide (panel->priv->language_option_widget);
+        gtk_widget_hide (panel->priv->layout_option_widget);
+
+	g_debug ("GdmGreeterPanel: activating default layout");
+	gdm_layout_activate (NULL); 
 }
 
 void
 gdm_greeter_panel_reset (GdmGreeterPanel *panel)
 {
         gdm_greeter_panel_set_default_language_name (panel, NULL);
+        gdm_greeter_panel_set_default_layout_name (panel, NULL);
         gdm_greeter_panel_set_default_session_name (panel, NULL);
         gdm_greeter_panel_hide_user_options (panel);
 }
@@ -668,6 +715,26 @@ gdm_greeter_panel_set_default_language_name (GdmGreeterPanel *panel,
                                             normalized_language_name);
 
         g_free (normalized_language_name);
+}
+
+void
+gdm_greeter_panel_set_default_layout_name (GdmGreeterPanel *panel,
+                                           const char      *layout_name)
+{
+        g_return_if_fail (GDM_IS_GREETER_PANEL (panel));
+
+        if (layout_name != NULL &&
+            !gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (panel->priv->layout_option_widget),
+                                            layout_name, NULL, NULL, NULL)) {
+                gdm_recent_option_widget_add_item (GDM_RECENT_OPTION_WIDGET (panel->priv->layout_option_widget),
+                                                   layout_name);
+        }
+
+        gdm_option_widget_set_default_item (GDM_OPTION_WIDGET (panel->priv->layout_option_widget),
+                                            layout_name);
+
+	g_debug ("GdmGreeterPanel: activating layout: %s", layout_name);
+	gdm_layout_activate (layout_name);
 }
 
 void

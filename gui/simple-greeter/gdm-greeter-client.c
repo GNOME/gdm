@@ -67,6 +67,7 @@ enum {
         RESET,
         SELECTED_USER_CHANGED,
         DEFAULT_LANGUAGE_NAME_CHANGED,
+        DEFAULT_LAYOUT_NAME_CHANGED,
         DEFAULT_SESSION_NAME_CHANGED,
         TIMED_LOGIN_REQUESTED,
         USER_AUTHORIZED,
@@ -172,6 +173,13 @@ on_default_language_name_changed (GdmGreeterClient *client,
                                   DBusMessage      *message)
 {
         emit_string_signal_for_message (client, "DefaultLanguageNameChanged", message, DEFAULT_LANGUAGE_NAME_CHANGED);
+}
+
+static void
+on_default_layout_name_changed (GdmGreeterClient *client,
+                                DBusMessage      *message)
+{
+        emit_string_signal_for_message (client, "DefaultLayoutNameChanged", message, DEFAULT_LAYOUT_NAME_CHANGED);
 }
 
 static void
@@ -452,6 +460,14 @@ gdm_greeter_client_call_select_language (GdmGreeterClient *client,
 }
 
 void
+gdm_greeter_client_call_select_layout (GdmGreeterClient *client,
+                                       const char       *text)
+{
+        send_dbus_string_method (client->priv->connection,
+                                 "SelectLayout",
+                                 text);
+}
+void
 gdm_greeter_client_call_select_user (GdmGreeterClient *client,
                                      const char       *text)
 {
@@ -633,6 +649,8 @@ client_dbus_handle_message (DBusConnection *connection,
                 on_selected_user_changed (client, message);
         } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "DefaultLanguageNameChanged")) {
                 on_default_language_name_changed (client, message);
+        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "DefaultLayoutNameChanged")) {
+                on_default_layout_name_changed (client, message);
         } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "DefaultSessionNameChanged")) {
                 on_default_session_name_changed (client, message);
         } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "TimedLoginRequested")) {
@@ -890,6 +908,16 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
                               G_STRUCT_OFFSET (GdmGreeterClientClass, default_language_name_changed),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1, G_TYPE_STRING);
+        gdm_greeter_client_signals[DEFAULT_LAYOUT_NAME_CHANGED] =
+                g_signal_new ("default-layout-name-changed",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmGreeterClientClass, default_layout_name_changed),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,

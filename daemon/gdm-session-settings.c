@@ -36,6 +36,7 @@ struct _GdmSessionSettingsPrivate
 {
         char *session_name;
         char *language_name;
+        char *layout_name;
 };
 
 static void gdm_session_settings_finalize (GObject *object);
@@ -55,6 +56,7 @@ enum {
         PROP_0 = 0,
         PROP_SESSION_NAME,
         PROP_LANGUAGE_NAME,
+        PROP_LAYOUT_NAME,
 };
 
 G_DEFINE_TYPE (GdmSessionSettings, gdm_session_settings, G_TYPE_OBJECT)
@@ -93,6 +95,11 @@ gdm_session_settings_class_install_properties (GdmSessionSettingsClass *settings
                                         NULL,
                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
         g_object_class_install_property (object_class, PROP_LANGUAGE_NAME, param_spec);
+        param_spec = g_param_spec_string ("layout-name", "Keyboard Layout Name",
+                                        "The name of the keyboard layout",
+                                        NULL,
+                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY);
+        g_object_class_install_property (object_class, PROP_LAYOUT_NAME, param_spec);
 }
 
 static void
@@ -114,6 +121,7 @@ gdm_session_settings_finalize (GObject *object)
 
         g_free (settings->priv->session_name);
         g_free (settings->priv->language_name);
+        g_free (settings->priv->layout_name);
 
         parent_class = G_OBJECT_CLASS (gdm_session_settings_parent_class);
 
@@ -132,6 +140,19 @@ gdm_session_settings_set_language_name (GdmSessionSettings *settings,
             strcmp (settings->priv->language_name, language_name) != 0) {
                 settings->priv->language_name = g_strdup (language_name);
                 g_object_notify (G_OBJECT (settings), "language-name");
+        }
+}
+
+void
+gdm_session_settings_set_layout_name (GdmSessionSettings *settings,
+                                      const char         *layout_name)
+{
+        g_return_if_fail (GDM_IS_SESSION_SETTINGS (settings));
+
+        if (settings->priv->layout_name == NULL ||
+            strcmp (settings->priv->layout_name, layout_name) != 0) {
+                settings->priv->layout_name = g_strdup (layout_name);
+                g_object_notify (G_OBJECT (settings), "layout-name");
         }
 }
 
@@ -156,6 +177,13 @@ gdm_session_settings_get_language_name (GdmSessionSettings *settings)
 }
 
 char *
+gdm_session_settings_get_layout_name (GdmSessionSettings *settings)
+{
+        g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), NULL);
+        return g_strdup (settings->priv->layout_name);
+}
+
+char *
 gdm_session_settings_get_session_name (GdmSessionSettings *settings)
 {
         g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), NULL);
@@ -175,6 +203,10 @@ gdm_session_settings_set_property (GObject      *object,
         switch (prop_id) {
                 case PROP_LANGUAGE_NAME:
                         gdm_session_settings_set_language_name (settings, g_value_get_string (value));
+                break;
+
+                case PROP_LAYOUT_NAME:
+                        gdm_session_settings_set_layout_name (settings, g_value_get_string (value));
                 break;
 
                 case PROP_SESSION_NAME:
@@ -205,6 +237,10 @@ gdm_session_settings_get_property (GObject    *object,
                         g_value_set_string (value, settings->priv->language_name);
                 break;
 
+                case PROP_LAYOUT_NAME:
+                        g_value_set_string (value, settings->priv->layout_name);
+                break;
+
                 default:
                         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -225,7 +261,8 @@ gboolean
 gdm_session_settings_is_loaded (GdmSessionSettings  *settings)
 {
         return settings->priv->session_name != NULL ||
-               settings->priv->language_name != NULL;
+               settings->priv->language_name != NULL ||
+               settings->priv->layout_name != NULL;
 }
 
 gboolean
@@ -238,6 +275,7 @@ gdm_session_settings_load (GdmSessionSettings  *settings,
         gboolean  is_loaded;
         char     *session_name;
         char     *language_name;
+        char     *layout_name;
         char     *filename;
 
         g_return_val_if_fail (settings != NULL, FALSE);
@@ -275,6 +313,20 @@ gdm_session_settings_load (GdmSessionSettings  *settings,
         if (language_name != NULL) {
                 gdm_session_settings_set_language_name (settings, language_name);
                 g_free (language_name);
+        } else if (g_error_matches (load_error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
+                g_error_free (load_error);
+                load_error = NULL;
+        } else {
+                g_propagate_error (error, load_error);
+                goto out;
+        }
+
+        layout_name = g_key_file_get_string (key_file, "Desktop", "Layout",
+                                             &load_error);
+
+        if (layout_name != NULL) {
+                gdm_session_settings_set_layout_name (settings, layout_name);
+                g_free (layout_name);
         } else if (g_error_matches (load_error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
                 g_error_free (load_error);
                 load_error = NULL;
@@ -325,6 +377,11 @@ gdm_session_settings_save (GdmSessionSettings  *settings,
         if (settings->priv->language_name != NULL) {
                 g_key_file_set_string (key_file, "Desktop", "Language",
                                        settings->priv->language_name);
+        }
+
+        if (settings->priv->layout_name != NULL) {
+                g_key_file_set_string (key_file, "Desktop", "Layout",
+                                       settings->priv->layout_name);
         }
 
         contents = g_key_file_to_data (key_file, &length, &file_error);

@@ -50,6 +50,7 @@ enum {
         SESSION_DIED,
         SELECTED_USER_CHANGED,
         DEFAULT_LANGUAGE_NAME_CHANGED,
+        DEFAULT_LAYOUT_NAME_CHANGED,
         DEFAULT_SESSION_NAME_CHANGED,
         LAST_SIGNAL
 };
@@ -161,6 +162,15 @@ gdm_session_select_language (GdmSession *session,
         g_return_if_fail (GDM_IS_SESSION (session));
 
         GDM_SESSION_GET_IFACE (session)->select_language (session, text);
+}
+
+void
+gdm_session_select_layout (GdmSession *session,
+                           const char *text)
+{
+        g_return_if_fail (GDM_IS_SESSION (session));
+
+        GDM_SESSION_GET_IFACE (session)->select_layout (session, text);
 }
 
 void
@@ -429,6 +439,17 @@ gdm_session_class_init (gpointer g_iface)
                               G_TYPE_NONE,
                               1,
                               G_TYPE_STRING);
+        signals [DEFAULT_LAYOUT_NAME_CHANGED] =
+                g_signal_new ("default-layout-name-changed",
+                              iface_type,
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmSessionIface, default_layout_name_changed),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_STRING);
         signals [DEFAULT_SESSION_NAME_CHANGED] =
                 g_signal_new ("default-session-name-changed",
                               iface_type,
@@ -607,6 +628,15 @@ _gdm_session_default_language_name_changed (GdmSession   *session,
         g_return_if_fail (GDM_IS_SESSION (session));
 
         g_signal_emit (session, signals [DEFAULT_LANGUAGE_NAME_CHANGED], 0, language_name);
+}
+
+void
+_gdm_session_default_layout_name_changed (GdmSession   *session,
+                                          const char   *layout_name)
+{
+        g_return_if_fail (GDM_IS_SESSION (session));
+
+        g_signal_emit (session, signals [DEFAULT_LAYOUT_NAME_CHANGED], 0, layout_name);
 }
 
 void

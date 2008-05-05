@@ -1,3 +1,27 @@
+2008-05-05  Matthias Clasen  <mclasen@redhat.com>
+
+	* gui/simple-greeter/gdm-layout*: Add keyboard layout chooser
+	widgetry, similar to what we have for sessions and languages.
+
+	* configure.in: 
+	* gui/simple-greeter/Makefile.am: Build integration.
+
+	* gui/simple-greeter/gdm-greeter-panel.[hc]: Show a layout chooser.
+
+	* daemon/gdm-factory-slave.c:
+	* daemon/gdm-greeter-server.[ch]:
+	* daemon/gdm-product-slave.c:
+	* daemon/gdm-session-direct.c:
+	* daemon/gdm-session-private.h:
+	* daemon/gdm-session-relay.c:
+	* daemon/gdm-session-settings.[hc]:
+	* daemon/gdm-session-worker.c:
+	* daemon/gdm-session.[hc]:
+	* daemon/gdm-simple-slave.c: 
+	* gui/simple-greeter/gdm-greeter-client.[hc]: 
+	* gui/simple-greeter/gdm-greeter-session.c: Necessary plumbing
+	to get a layout setting all the way to and from .dmrc.
+
 2008-05-02  William Jon McCann  <jmccann@redhat.com>
 
 	* configure.ac: Post branch version bump

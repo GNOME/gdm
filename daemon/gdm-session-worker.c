@@ -1785,6 +1785,14 @@ gdm_session_worker_set_language_name (GdmSessionWorker *worker,
 }
 
 static void
+gdm_session_worker_set_layout_name (GdmSessionWorker *worker,
+                                    const char       *layout_name)
+{
+        gdm_session_settings_set_layout_name (worker->priv->user_settings,
+                                              layout_name);
+}
+
+static void
 on_set_language_name (GdmSessionWorker *worker,
                       DBusMessage      *message)
 {
@@ -1807,6 +1815,28 @@ on_set_language_name (GdmSessionWorker *worker,
 }
 
 static void
+on_set_layout_name (GdmSessionWorker *worker,
+                    DBusMessage      *message)
+{
+        DBusError   error;
+        const char *layout_name;
+        dbus_bool_t res;
+
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &layout_name,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("GdmSessionWorker: layout name set to %s", layout_name);
+                gdm_session_worker_set_layout_name (worker, layout_name);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
+}
+
+static void
 on_saved_language_name_read (GdmSessionWorker *worker)
 {
         char *language_name;
@@ -1816,6 +1846,18 @@ on_saved_language_name_read (GdmSessionWorker *worker)
                                  "SavedLanguageNameRead",
                                  language_name);
         g_free (language_name);
+}
+
+static void
+on_saved_layout_name_read (GdmSessionWorker *worker)
+{
+        char *layout_name;
+
+        layout_name = gdm_session_settings_get_layout_name (worker->priv->user_settings);
+        send_dbus_string_method (worker->priv->connection,
+                                 "SavedLayoutNameRead",
+                                 layout_name);
+        g_free (layout_name);
 }
 
 static void
@@ -1841,6 +1883,11 @@ do_setup (GdmSessionWorker *worker)
         g_signal_connect_swapped (worker->priv->user_settings,
                                   "notify::language-name",
                                   G_CALLBACK (on_saved_language_name_read),
+                                  worker);
+
+        g_signal_connect_swapped (worker->priv->user_settings,
+                                  "notify::layout-name",
+                                  G_CALLBACK (on_saved_layout_name_read),
                                   worker);
 
         g_signal_connect_swapped (worker->priv->user_settings,
@@ -2300,6 +2347,8 @@ worker_dbus_handle_message (DBusConnection *connection,
                 on_set_environment_variable (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetLanguageName")) {
                 on_set_language_name (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetLayoutName")) {
+                on_set_layout_name (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetSessionName")) {
                 on_set_session_name (worker, message);
         } else {

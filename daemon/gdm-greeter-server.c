@@ -76,6 +76,7 @@ enum {
         SESSION_SELECTED,
         HOSTNAME_SELECTED,
         LANGUAGE_SELECTED,
+        LAYOUT_SELECTED,
         USER_SELECTED,
         CANCELLED,
         CONNECTED,
@@ -263,6 +264,13 @@ gdm_greeter_server_default_language_name_changed (GdmGreeterServer *greeter_serv
                                                   const char       *language_name)
 {
         send_dbus_string_signal (greeter_server, "DefaultLanguageNameChanged", language_name);
+}
+
+void
+gdm_greeter_server_default_layout_name_changed (GdmGreeterServer *greeter_server,
+                                                const char       *layout_name)
+{
+        send_dbus_string_signal (greeter_server, "DefaultLayoutNameChanged", layout_name);
 }
 
 void
@@ -496,6 +504,33 @@ handle_select_language (GdmGreeterServer *greeter_server,
 }
 
 static DBusHandlerResult
+handle_select_layout (GdmGreeterServer *greeter_server,
+                      DBusConnection  *connection,
+                      DBusMessage     *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+        const char  *text;
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &text,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+
+        g_debug ("GreeterServer: SelectLayout: %s", text);
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        g_signal_emit (greeter_server, signals [LAYOUT_SELECTED], 0, text);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
 handle_select_user (GdmGreeterServer *greeter_server,
                     DBusConnection   *connection,
                     DBusMessage      *message)
@@ -624,6 +659,8 @@ greeter_handle_child_message (DBusConnection *connection,
                 return handle_select_hostname (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectLanguage")) {
                 return handle_select_language (greeter_server, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectLayout")) {
+                return handle_select_layout (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "SelectUser")) {
                 return handle_select_user (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "Cancel")) {
@@ -711,6 +748,10 @@ do_introspect (DBusConnection *connection,
                                "    <signal name=\"DefaultLanguageNameChanged\">\n"
                                "      <arg name=\"language_name\" type=\"s\"/>\n"
                                "    </signal>\n"
+                               "    <signal name=\"DefaultLayoutNameChanged\">\n"
+                               "      <arg name=\"layout_name\" type=\"s\"/>\n"
+                               "    </signal>\n"
+                               "    <signal name=\"DefaultSessionNameChanged\">\n"
                                "    <signal name=\"DefaultSessionNameChanged\">\n"
                                "      <arg name=\"session_name\" type=\"s\"/>\n"
                                "    </signal>\n"
@@ -1151,6 +1192,17 @@ gdm_greeter_server_class_init (GdmGreeterServerClass *klass)
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
                               G_STRUCT_OFFSET (GdmGreeterServerClass, language_selected),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_STRING);
+        signals [LAYOUT_SELECTED] =
+                g_signal_new ("layout-selected",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmGreeterServerClass, layout_selected),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,

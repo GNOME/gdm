@@ -139,6 +139,16 @@ on_default_language_name_changed (GdmGreeterClient  *client,
 }
 
 static void
+on_default_layout_name_changed (GdmGreeterClient  *client,
+                                const char        *text,
+                                GdmGreeterSession *session)
+{
+        g_debug ("GdmGreeterSession: default layout name changed: %s", text);
+        gdm_greeter_panel_set_default_layout_name (GDM_GREETER_PANEL (session->priv->panel),
+                                                     text);
+}
+
+static void
 on_default_session_name_changed (GdmGreeterClient  *client,
                                  const char        *text,
                                  GdmGreeterSession *session)
@@ -237,6 +247,14 @@ on_select_language (GdmGreeterSession     *session,
 }
 
 static void
+on_select_layout (GdmGreeterSession      *session,
+                  const char             *text)
+{
+        gdm_greeter_client_call_select_layout (session->priv->client,
+                                               text);
+}
+
+static void
 on_select_user (GdmGreeterLoginWindow *login_window,
                 const char            *text,
                 GdmGreeterSession     *session)
@@ -281,6 +299,11 @@ toggle_panel (GdmSessionManager *manager,
                 g_signal_connect_swapped (session->priv->panel,
                                           "language-selected",
                                           G_CALLBACK (on_select_language),
+                                          session);
+
+                g_signal_connect_swapped (session->priv->panel,
+                                          "layout-selected",
+                                          G_CALLBACK (on_select_layout),
                                           session);
 
                 g_signal_connect_swapped (session->priv->panel,
@@ -881,6 +904,10 @@ gdm_greeter_session_init (GdmGreeterSession *session)
         g_signal_connect (session->priv->client,
                           "default-language-name-changed",
                           G_CALLBACK (on_default_language_name_changed),
+                          session);
+        g_signal_connect (session->priv->client,
+                          "default-layout-name-changed",
+                          G_CALLBACK (on_default_layout_name_changed),
                           session);
         g_signal_connect (session->priv->client,
                           "default-session-name-changed",

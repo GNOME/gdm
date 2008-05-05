@@ -48,6 +48,9 @@ typedef struct
         void (* language_selected)           (GdmGreeterPanel *panel,
                                               const char      *text);
 
+        void (* layout_selected)             (GdmGreeterPanel *panel,
+                                              const char      *text);
+
         void (* session_selected)            (GdmGreeterPanel *panel,
                                               const char      *text);
 } GdmGreeterPanelClass;
@@ -62,6 +65,8 @@ void                   gdm_greeter_panel_reset                          (GdmGree
 
 void                   gdm_greeter_panel_set_default_language_name      (GdmGreeterPanel *panel,
                                                                          const char      *language_name);
+void                   gdm_greeter_panel_set_default_layout_name        (GdmGreeterPanel *panel,
+                                                                         const char      *layout_name);
 void                   gdm_greeter_panel_set_default_session_name       (GdmGreeterPanel *panel,
                                                                          const char      *session_name);
 G_END_DECLS

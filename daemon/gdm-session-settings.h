@@ -61,9 +61,12 @@ gboolean            gdm_session_settings_save               (GdmSessionSettings 
                                                              GError             **error);
 gboolean            gdm_session_settings_is_loaded          (GdmSessionSettings  *settings);
 char               *gdm_session_settings_get_language_name  (GdmSessionSettings *settings);
+char               *gdm_session_settings_get_layout_name    (GdmSessionSettings *settings);
 char               *gdm_session_settings_get_session_name   (GdmSessionSettings *settings);
 void                gdm_session_settings_set_language_name  (GdmSessionSettings *settings,
                                                              const char         *language_name);
+void                gdm_session_settings_set_layout_name    (GdmSessionSettings *settings,
+                                                             const char         *layout_name);
 void                gdm_session_settings_set_session_name   (GdmSessionSettings *settings,
                                                              const char         *session_name);
 
