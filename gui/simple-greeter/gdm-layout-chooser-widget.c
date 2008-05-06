@@ -95,21 +95,21 @@ gdm_layout_chooser_widget_add_layout (GdmLayoutChooserWidget *widget,
                                           const char         *name)
 {
         char *layout;
-	char *escaped;
+        char *escaped;
 
         layout = gdm_get_layout_from_name (name);
 
         if (layout != NULL) {
-		escaped = g_markup_escape_text (layout, -1);
+                escaped = g_markup_escape_text (layout, -1);
                 gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
-                                             name, 
+                                             name,
                                              NULL,
-                                             escaped, 
+                                             escaped,
                                              NULL,
                                              0,
                                              FALSE,
                                              FALSE);
-		g_free (escaped);
+                g_free (escaped);
                 g_free (layout);
         }
 }
@@ -124,7 +124,7 @@ add_available_layouts (GdmLayoutChooserWidget *widget)
 
         for (i = 0; layout_names[i] != NULL; i++) {
                 gdm_layout_chooser_widget_add_layout (widget,
-                                                          layout_names[i]);
+                                                      layout_names[i]);
         }
 
         g_strfreev (layout_names);

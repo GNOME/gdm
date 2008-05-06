@@ -144,7 +144,7 @@ gdm_layout_option_widget_lookup_item (GdmRecentOptionWidget *widget,
                                       char                 **name,
                                       char                 **comment)
 {
-	char *layout;
+        char *layout;
 
         layout = gdm_get_layout_from_name (id);
 
@@ -182,7 +182,7 @@ gdm_layout_option_widget_init (GdmLayoutOptionWidget *widget)
 
         widget->priv = GDM_LAYOUT_OPTION_WIDGET_GET_PRIVATE (widget);
 
-	error = NULL; 
+        error = NULL;
         gdm_recent_option_widget_set_gconf_key (GDM_RECENT_OPTION_WIDGET (widget),
                                                 "/apps/gdm/simple-greeter/recent-layouts",
                                                 gdm_layout_option_widget_lookup_item,
