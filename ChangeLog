@@ -1,5 +1,17 @@
 2008-05-06  William Jon McCann  <jmccann@redhat.com>
 
+	* common/gdm-log.c (log_level_to_priority_and_prefix),
+	(gdm_log_set_debug):
+	* daemon/factory-slave-main.c (signal_cb), (is_debug_set), (main):
+	* daemon/product-slave-main.c (signal_cb), (is_debug_set), (main):
+	* daemon/session-worker-main.c (signal_cb), (is_debug_set), (main):
+	* daemon/simple-slave-main.c (signal_cb), (is_debug_set), (main):
+	* daemon/xdmcp-chooser-slave-main.c (signal_cb), (is_debug_set),
+	(main):
+	Don't unconditionally enable debugging.
+
+2008-05-06  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/simple-greeter/gdm-layouts.c (gdm_get_layout_from_name),
 	(gdm_get_all_layout_names), (gdm_layout_activate):
 	* gui/simple-greeter/gdm-layouts.h:

@@ -118,10 +118,16 @@ signal_cb (int      signo,
 
         case SIGUSR1:
                 g_debug ("Got USR1 signal");
-                /* FIXME:
-                 * Play with log levels or something
-                 */
+                /* we get this from xorg - can't use for anything else */
                 ret = TRUE;
+
+                break;
+
+        case SIGUSR2:
+                g_debug ("Got USR2 signal");
+                ret = TRUE;
+
+                gdm_log_toggle_debug ();
 
                 break;
 
@@ -144,6 +150,17 @@ on_slave_stopped (GdmSlave   *slave,
         g_main_loop_quit (main_loop);
 }
 
+static gboolean
+is_debug_set (gboolean arg)
+{
+        /* enable debugging for unstable builds */
+        if (gdm_is_version_unstable ()) {
+                return TRUE;
+        }
+
+        return arg;
+}
+
 int
 main (int    argc,
       char **argv)
@@ -153,8 +170,10 @@ main (int    argc,
         DBusGConnection  *connection;
         GdmSlave         *slave;
         static char      *display_id = NULL;
+        static gboolean   debug      = FALSE;
         GdmSignalHandler *signal_handler;
         static GOptionEntry entries []   = {
+                { "debug", 0, 0, G_OPTION_ARG_NONE, &debug, N_("Enable debugging code"), NULL },
                 { "display-id", 0, 0, G_OPTION_ARG_STRING, &display_id, N_("Display ID"), N_("id") },
                 { NULL }
         };
@@ -183,7 +202,7 @@ main (int    argc,
 
         gdm_log_init ();
 
-        gdm_log_set_debug (TRUE);
+        gdm_log_set_debug (is_debug_set (debug));
 
         if (display_id == NULL) {
                 g_critical ("No display ID set");
@@ -208,6 +227,7 @@ main (int    argc,
         gdm_signal_handler_add (signal_handler, SIGSEGV, signal_cb, NULL);
         gdm_signal_handler_add (signal_handler, SIGABRT, signal_cb, NULL);
         gdm_signal_handler_add (signal_handler, SIGUSR1, signal_cb, NULL);
+        gdm_signal_handler_add (signal_handler, SIGUSR2, signal_cb, NULL);
 
         slave = gdm_simple_slave_new (display_id);
         if (slave == NULL) {

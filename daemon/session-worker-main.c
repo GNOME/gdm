@@ -98,6 +98,8 @@ signal_cb (int      signo,
                  */
                 ret = TRUE;
 
+                gdm_log_toggle_debug ();
+
                 break;
 
         default:
@@ -110,6 +112,17 @@ signal_cb (int      signo,
         return ret;
 }
 
+static gboolean
+is_debug_set (gboolean arg)
+{
+        /* enable debugging for unstable builds */
+        if (gdm_is_version_unstable ()) {
+                return TRUE;
+        }
+
+        return arg;
+}
+
 int
 main (int    argc,
       char **argv)
@@ -119,7 +132,9 @@ main (int    argc,
         GdmSessionWorker *worker;
         GdmSignalHandler *signal_handler;
         const char       *address;
+        static gboolean   debug      = FALSE;
         static GOptionEntry entries []   = {
+                { "debug", 0, 0, G_OPTION_ARG_NONE, &debug, N_("Enable debugging code"), NULL },
                 { NULL }
         };
 
@@ -138,7 +153,7 @@ main (int    argc,
         g_option_context_free (context);
 
         gdm_log_init ();
-        gdm_log_set_debug (TRUE);
+        gdm_log_set_debug (is_debug_set (debug));
 
         address = g_getenv ("GDM_SESSION_DBUS_ADDRESS");
         if (address == NULL) {
