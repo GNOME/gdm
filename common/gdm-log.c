@@ -78,10 +78,11 @@ log_level_to_priority_and_prefix (GLogLevelFlags log_level,
                  * to ensure it is seen in a log */
                 if (syslog_levels & G_LOG_LEVEL_DEBUG) {
                         priority = LOG_WARNING;
+                        prefix = "DEBUG(+)";
                 } else {
                         priority = LOG_DEBUG;
+                        prefix = "DEBUG";
                 }
-                prefix = "DEBUG";
                 break;
         default:
                 priority = LOG_DEBUG;
@@ -169,7 +170,9 @@ gdm_log_set_debug (gboolean debug)
 {
         if (debug) {
                 syslog_levels |= G_LOG_LEVEL_DEBUG;
+                g_debug ("Enabling debugging");
         } else {
+                g_debug ("Disabling debugging");
                 syslog_levels &= ~G_LOG_LEVEL_DEBUG;
         }
 }
