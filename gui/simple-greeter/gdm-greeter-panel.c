@@ -45,7 +45,7 @@
 
 #include "na-tray.h"
 
-#define KEY_DISABLE_A11Y_BUTTON "/apps/gdm/simple-greeter/disable-accessibility-button"
+#define KEY_DISABLE_A11Y_BUTTON "/apps/gdm/simple-greeter/disable_accessibility_button"
 
 #define GDM_GREETER_PANEL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_PANEL, GdmGreeterPanelPrivate))
 
