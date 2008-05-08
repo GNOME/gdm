@@ -1480,6 +1480,15 @@ _open_session_log (const char *dir)
         char *filename;
 
         filename = g_build_filename (dir, GDM_SESSION_LOG_FILENAME, NULL);
+
+        if (g_access (dir, R_OK | W_OK | X_OK) == 0 && g_access (filename, R_OK | W_OK) == 0) {
+                char *filename_old;
+
+                filename_old = g_strdup_printf ("%s.old", filename);
+                g_rename (filename, filename_old);
+                g_free (filename_old);
+        }
+
         fd = g_open (filename, O_RDWR | O_APPEND | O_CREAT, 0600);
 
         if (fd < 0 || !_fd_is_normal_file (fd)) {
@@ -2515,3 +2524,4 @@ gdm_session_worker_new (const char *address)
 
         return GDM_SESSION_WORKER (object);
 }
+
