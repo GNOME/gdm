@@ -34,8 +34,13 @@
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
 
+#include <gconf/gconf-client.h>
+
 #include "gdm-user-manager.h"
 #include "gdm-user-chooser-widget.h"
+
+
+#define KEY_DISABLE_USER_LIST "/apps/gdm/simple-greeter/disable_user_list"
 
 enum {
         USER_NO_DISPLAY              = 1 << 0,
@@ -59,6 +64,7 @@ struct GdmUserChooserWidgetPrivate
         guint           show_other_user : 1;
         guint           show_guest_user : 1;
         guint           show_auto_user : 1;
+	guint		show_normal_users : 1;
 };
 
 enum {
@@ -231,6 +237,25 @@ gdm_user_chooser_widget_get_property (GObject        *object,
         }
 }
 
+static gboolean 
+is_user_list_disabled (GdmUserChooserWidget *widget)
+{
+        GConfClient *client;
+        GError      *error;
+        gboolean     result;
+
+        client = gconf_client_get_default ();
+        error = NULL;
+        result = gconf_client_get_bool (client, KEY_DISABLE_USER_LIST, &error);
+        if (error != NULL) {
+                g_debug ("GdmUserChooserWidget: unable to get disable-user-list configuration: %s", error->message);
+                g_error_free (error);
+        }
+        g_object_unref (client);
+
+        return result;
+}
+
 static GObject *
 gdm_user_chooser_widget_constructor (GType                  type,
                                      guint                  n_construct_properties,
@@ -246,6 +271,8 @@ gdm_user_chooser_widget_constructor (GType                  type,
         gdm_user_chooser_widget_set_show_guest_user (user_chooser_widget, FALSE);
         gdm_user_chooser_widget_set_show_auto_user (user_chooser_widget, FALSE);
         gdm_user_chooser_widget_set_show_other_user (user_chooser_widget, TRUE);
+
+	user_chooser_widget->priv->show_normal_users = !is_user_list_disabled (user_chooser_widget);
 
         return G_OBJECT (user_chooser_widget);
 }
@@ -402,6 +429,9 @@ on_user_added (GdmUserManager       *manager,
         GdkPixbuf    *pixbuf;
         char         *tooltip;
         gboolean      is_logged_in;
+
+	if (!widget->priv->show_normal_users)
+		return;
 
         pixbuf = gdm_user_render_icon (user, ICON_SIZE);
         if (pixbuf == NULL && widget->priv->stock_person_pixbuf != NULL) {
