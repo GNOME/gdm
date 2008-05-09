@@ -841,11 +841,11 @@ custom_cmd_no_restart (long cmd_id)
 static gboolean
 gdm_cleanup_children (void)
 {
-	pid_t pid;
 	gint exitstatus = 0, status;
 	GdmDisplay *d = NULL;
 	gboolean crashed;
 	gboolean sysmenu;
+	pid_t pid;
 
 	/* Pid and exit status of slave that died */
 	pid = waitpid (-1, &exitstatus, WNOHANG);
@@ -863,7 +863,10 @@ gdm_cleanup_children (void)
 		if (WIFSIGNALED (exitstatus)) {
 			if (WTERMSIG (exitstatus) == SIGTERM ||
 			    WTERMSIG (exitstatus) == SIGINT) {
-				/* we send these signals, sometimes children don't handle them */
+				/*
+				 * We send these signals, sometimes children
+				 * do not handle them
+				 */
 				gdm_debug ("gdm_cleanup_children: child %d died of signal %d (TERM/INT)", pid,
 					   (int)WTERMSIG (exitstatus));
 			} else {
@@ -876,9 +879,9 @@ gdm_cleanup_children (void)
 	}
 
 	if (pid == extra_process) {
-		/* an extra process died, yay! */
+		/* An extra process died, yay! */
 		extra_process = 0;
-		extra_status = exitstatus;
+		extra_status  = exitstatus;
 		return TRUE;
 	}
 
@@ -888,7 +891,7 @@ gdm_cleanup_children (void)
 	if (d == NULL)
 		return TRUE;
 
-	/* whack connections about this display */
+	/* Whack connections about this display */
 	if (unixconn != NULL)
 		gdm_kill_subconnections_with_display (unixconn, d);
 
@@ -914,14 +917,14 @@ gdm_cleanup_children (void)
 			gdm_server_whack_lockfile (d);
 		}
 
-		/* race avoider */
+		/* Race avoider */
 		gdm_sleep_no_signal (1);
 	}
 
 	/* null all these, they are not valid most definately */
-	d->servpid = 0;
-	d->sesspid = 0;
-	d->greetpid = 0;
+	d->servpid    = 0;
+	d->sesspid    = 0;
+	d->greetpid   = 0;
 	d->chooserpid = 0;
 
 	/* definately not logged in now */
@@ -933,42 +936,73 @@ gdm_cleanup_children (void)
 	d->slavepid = 0;
 	d->dispstat = DISPLAY_DEAD;
 
-	sysmenu = gdm_daemon_config_get_value_bool_per_display (GDM_KEY_SYSTEM_MENU, d->name);
+	if (status == DISPLAY_RESTARTGDM ||
+	    status == DISPLAY_REBOOT     ||
+	    status == DISPLAY_SUSPEND    ||
+	    status == DISPLAY_HALT) {
+		/*
+		 * Reset status to DISPLAY_REMANAGE if it is not valid to
+		 * perform the operation
+		 */
+		sysmenu = gdm_daemon_config_get_value_bool_per_display (
+			GDM_KEY_SYSTEM_MENU, d->name);
 
-	if ( ! sysmenu &&
-	     (status == DISPLAY_RESTARTGDM ||
-	      status == DISPLAY_REBOOT ||
-	      status == DISPLAY_SUSPEND ||
-	      status == DISPLAY_HALT)) {
-		gdm_info (_("Restart GDM, Restart machine, Suspend, or Halt request when there is no system menu from display %s"), d->name);
-		status = DISPLAY_REMANAGE;
-	}
+		if (!sysmenu) {
+			gdm_info (_("Restart GDM, Restart machine, Suspend, or Halt request when there is no system menu from display %s"), d->name);
+			status = DISPLAY_REMANAGE;
+		}
 
-	if ( ! d->attached &&
-	     (status == DISPLAY_RESTARTGDM ||
-	      status == DISPLAY_REBOOT ||
-	      status == DISPLAY_SUSPEND ||
-	      status == DISPLAY_HALT)) {
-		gdm_info (_("Restart GDM, Restart machine, Suspend or Halt request from a non-static display %s"), d->name);
-		status = DISPLAY_REMANAGE;
+
+		if ( ! d->attached) {
+			gdm_info (_("Restart GDM, Restart machine, Suspend or Halt request from a non-static display %s"), d->name);
+			status = DISPLAY_REMANAGE;
+		}
+
+		/* checkout if we can actually do stuff */
+		switch (status) {
+		case DISPLAY_REBOOT:
+			if (gdm_daemon_config_get_value_string_array (GDM_KEY_REBOOT) == NULL)
+				status = DISPLAY_REMANAGE;
+			break;
+		case DISPLAY_HALT:
+			if (gdm_daemon_config_get_value_string_array (GDM_KEY_HALT) == NULL)
+				status = DISPLAY_REMANAGE;
+			break;
+		case DISPLAY_SUSPEND:
+			if (gdm_daemon_config_get_value_string_array (GDM_KEY_SUSPEND) == NULL)
+				status = DISPLAY_REMANAGE;
+			break;
+		default:
+			break;
+		}
 	}
 
 	if (status == DISPLAY_RUN_CHOOSER) {
-		/* use the chooser on the next run (but only if allowed) */
+		sysmenu = gdm_daemon_config_get_value_bool_per_display (
+			GDM_KEY_SYSTEM_MENU, d->name);
+
+		/* Use the chooser on the next run (but only if allowed) */
 		if (sysmenu &&
-		    gdm_daemon_config_get_value_bool_per_display (GDM_KEY_CHOOSER_BUTTON, d->name))
+		    gdm_daemon_config_get_value_bool_per_display (
+			GDM_KEY_CHOOSER_BUTTON, d->name)) {
 			d->use_chooser = TRUE;
+		}
+
 		status = DISPLAY_REMANAGE;
-		/* go around the display loop detection, these are short
+		/*
+		 * Go around the display loop detection, these are short
 		 * sessions, so this decreases the chances of the loop
-		 * detection being hit */
+		 * detection being hit
+		 */
 		d->last_loop_start_time = 0;
 	}
 
 	if (status == DISPLAY_CHOSEN) {
-		/* forget about this indirect id, since this
+		/*
+		 * Forget about this indirect id, since this
 		 * display will be dead very soon, and we don't want it
-		 * to take the indirect display with it */
+		 * to take the indirect display with it
+		 */
 		d->indirect_id = 0;
 		status = DISPLAY_REMANAGE;
 	}
@@ -979,28 +1013,10 @@ gdm_cleanup_children (void)
 		} else {
 			d->try_different_greeter = FALSE;
 		}
-		/* now just remanage */
+		/* Now just remanage */
 		status = DISPLAY_REMANAGE;
 	} else {
 		d->try_different_greeter = FALSE;
-	}
-
-	/* checkout if we can actually do stuff */
-	switch (status) {
-	case DISPLAY_REBOOT:
-		if (gdm_daemon_config_get_value_string_array (GDM_KEY_REBOOT) == NULL)
-			status = DISPLAY_REMANAGE;
-		break;
-	case DISPLAY_HALT:
-		if (gdm_daemon_config_get_value_string_array (GDM_KEY_HALT) == NULL)
-			status = DISPLAY_REMANAGE;
-		break;
-	case DISPLAY_SUSPEND:
-		if (gdm_daemon_config_get_value_string_array (GDM_KEY_SUSPEND) == NULL)
-			status = DISPLAY_REMANAGE;
-		break;
-	default:
-		break;
 	}
 
 	/* if we crashed clear the theme */
@@ -1034,7 +1050,7 @@ gdm_cleanup_children (void)
 		goto start_autopsy;
 		break;
 
-	case DISPLAY_HALT:		/* Halt machine */
+	case DISPLAY_HALT:	/* Halt machine */
 		halt_machine ();
 
 		status = DISPLAY_REMANAGE;
@@ -1077,14 +1093,17 @@ gdm_cleanup_children (void)
 				/* reset */
 				d->x_faileds = 1;
 				d->last_x_failed = now;
-				/* well sleep at least 3 seconds before starting */
+				/* Sleep at least 3 seconds before starting */
 				d->sleep_before_run = 3;
 			} else if (d->x_faileds >= 3) {
 				gdm_debug ("gdm_child_action: dealing with X crashes");
 				if ( ! deal_with_x_crashes (d)) {
 					gdm_debug ("gdm_child_action: Aborting display");
-					/* an original way to deal with these things:
-					 * "Screw you guys, I'm going home!" */
+					/*
+					 * An original way to deal with these
+					 * things:
+					 * "Screw you guys, I'm going home!"
+					 */
 					gdm_display_unmanage (d);
 
 					/* If there are some pending statics,
@@ -1095,14 +1114,16 @@ gdm_cleanup_children (void)
 				gdm_debug ("gdm_child_action: Trying again");
 
 				/* reset */
-				d->x_faileds = 0;
+				d->x_faileds     = 0;
 				d->last_x_failed = 0;
 			} else {
-				/* well sleep at least 3 seconds before starting */
+				/* Sleep at least 3 seconds before starting */
 				d->sleep_before_run = 3;
 			}
-			/* go around the display loop detection, we're doing
-			 * our own here */
+			/*
+			 * Go around the display loop detection, we are doing
+			 * our own here
+			 */
 			d->last_loop_start_time = 0;
 		}
 		/* fall through */
@@ -1111,7 +1132,10 @@ gdm_cleanup_children (void)
 	default:
 		gdm_debug ("gdm_child_action: In remanage");
 
-		/* if we did REMANAGE, that means that we're no longer failing */
+		/*
+		 * If we did REMANAGE, that means that we are no longer
+		 * failing.
+		 */
 		if (status == DISPLAY_REMANAGE) {
 			/* reset */
 			d->x_faileds = 0;
@@ -1138,9 +1162,11 @@ gdm_cleanup_children (void)
 				gdm_start_first_unborn_local (3 /* delay */);
 			}
 		} else if (d->type == TYPE_FLEXI || d->type == TYPE_FLEXI_XNEST) {
-			/* if this was a chooser session and we have chosen a host,
-			   then we don't want to unmanage, we want to manage and
-			   choose that host */
+			/*
+			 * If this was a chooser session and we have chosen a
+			 * host, then we don't want to unmanage, we want to
+			 * manage and choose that host
+			 */
 			if (d->chosen_hostname != NULL || d->use_chooser) {
 				if ( ! gdm_display_manage (d)) {
 					gdm_display_unmanage (d);

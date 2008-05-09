@@ -1,3 +1,11 @@
+2008-05-09  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/gdm.c:  Fix crash on logout caused by trying to read
+	  configuration values in the mainloop_sig_callback function.
+	  Redesigned so we only read configuration values when it is
+	  appropriate (when dealing with SHUTDOWN, REBOOT, etc.).
+	  Fixes another issue raised in bug #517526.
+
 2008-05-03  Brian Cameron  <brian.cameron@sun.com>
 	
 	* daemon/gdm-xdmcp-manager.c:  Move reading of configuration
@@ -57,7 +65,7 @@
 
 2008-05-01 Brian Cameron <brian.cameron@sun.com>
 
-	* common/gdm-config.c: Similar fix to ensure that we don't free
+	* common/gdm-config.c: Similar fix to ensure that we do not free
 	  the data structure twice when reloading.  Similar issues as 
 	  with bug #517526.
 
