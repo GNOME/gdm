@@ -632,6 +632,7 @@ gdm_option_widget_check_visibility (GdmOptionWidget *widget)
                 gtk_widget_hide (widget->priv->image);
         }
 
+        widget->priv->check_idle_id = 0;
         return FALSE;
 }
 

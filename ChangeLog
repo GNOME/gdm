@@ -1,5 +1,14 @@
 2008-05-12 Ray Strode  <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-option-widget.c:
+	(gdm_option_widget_check_visibility):
+	reset check_idle_id tag to 0 after idle completes,
+	which is the other half of the "Don't erroneously
+	hide language option widget on new installs" fix
+	from two commits ago
+
+2008-05-12 Ray Strode  <rstrode@redhat.com>
+
 	* daemon/gdm-session-worker.c:
 	(attempt_to_load_user_settings):
 	(attempt_to_load_user_settings_as_root):
