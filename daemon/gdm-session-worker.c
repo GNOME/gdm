@@ -501,8 +501,8 @@ gdm_session_worker_get_username (GdmSessionWorker  *worker,
 }
 
 static void
-attempt_to_load_user_settings_as_root (GdmSessionWorker *worker,
-                                       const char       *username)
+attempt_to_load_user_settings (GdmSessionWorker *worker,
+                               const char       *username)
 {
         struct passwd *passwd_entry;
         uid_t          old_uid;
@@ -510,9 +510,6 @@ attempt_to_load_user_settings_as_root (GdmSessionWorker *worker,
 
         old_uid = geteuid ();
         old_gid = getegid ();
-
-        g_assert (old_uid == 0);
-        g_assert (old_gid == 0);
 
         passwd_entry = getpwnam (username);
 
@@ -522,19 +519,18 @@ attempt_to_load_user_settings_as_root (GdmSessionWorker *worker,
                 return;
         }
 
+        /* We may get called late in the pam conversation after
+         * the user has already been authenticated.  This could
+         * happen if for instance, the user's home directory isn't
+         * available until late in the pam conversation so user
+         * settings couldn't get loaded until late in the conversation.
+         * If we get called late the seteuid/setgid calls here will fail,
+         * but that's okay, because we'll already be the uid/gid we want
+         * to be.
+         */
         setegid (passwd_entry->pw_gid);
         seteuid (passwd_entry->pw_uid);
 
-        /* FIXME: if this call fails, we should probably do some
-         * heuristics to try to figure out if .dmrc doesn't
-         * exist at all or just isn't readable yet.  If it doesn't
-         * exist at all (and won't exist by the end of the pam
-         * conversation) then we should send some sort of
-         * "NoSavedSettings" message to the slave so that it can
-         * tell the greeter to use specific default settings
-         * instead of the place holder "Last Session" "Last
-         * Language" items in the combo boxes in the panel
-         */
         gdm_session_settings_load (worker->priv->user_settings,
                                    passwd_entry->pw_dir,
                                    NULL);
@@ -566,7 +562,7 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
                  */
                 if (username != NULL &&
                     !gdm_session_settings_is_loaded (worker->priv->user_settings)) {
-                        attempt_to_load_user_settings_as_root (worker, username);
+                        attempt_to_load_user_settings (worker, username);
                 }
 
                 if ((worker->priv->username == username) ||
@@ -1915,8 +1911,8 @@ do_setup (GdmSessionWorker *worker)
          * We'll try now, and if it doesn't work out, try later.
          */
         if (worker->priv->username != NULL) {
-                attempt_to_load_user_settings_as_root (worker,
-                                                       worker->priv->username);
+                attempt_to_load_user_settings (worker,
+                                               worker->priv->username);
         }
 
         error = NULL;

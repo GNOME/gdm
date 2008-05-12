@@ -1,3 +1,13 @@
+2008-05-12 Ray Strode  <rstrode@redhat.com>
+
+	* daemon/gdm-session-worker.c:
+	(attempt_to_load_user_settings):
+	(attempt_to_load_user_settings_as_root):
+	rename function and allow it to be run as non-root
+	also, to work in situations where ~/.dmrc isn't
+	available until after the user's uid/gid have
+	been changed.
+
 2008-05-10 Ray Strode  <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-option-widget.c
