@@ -1,5 +1,56 @@
 Ahh news...
 
+2.20.6 Stuff:
+
+- Fix two related bugs that were causing GDM to crash regularly on exit.
+  Refer to bug #517526.  (Brian Cameron)
+
+- Fix a third bug that was causing the GDM daemon to crash occasionally when
+  using gdmsetup.  This fix changes GDM so that when it receives an
+  UPDATE_CONFIG command, it only updates the key specified rather than
+  re-reading the entire configuration file.  Fixes bug #517526.  (Brian
+  Cameron)
+
+- Sync to avoid any XIO errors after session exits.  (Ray Strode)
+
+- Fix so that the XDMCP configuration values are read from the configuration
+  file when the XDMCP manager is started rather than initialized.  It seems
+  the related fixes implemented in 2.20.2 did not fully resolve this issue.
+  (Brian Cameron)
+
+- Fix bug that was causing GDM session desktop file marked as "Hidden=true"
+  to show up in the Session dialog.  (Brian Cameron)
+
+- Fix gdmsetup bug that caused users to need to restart GDM in order for
+  it to notice changes made in the "Server settings" dialog.  (Brian
+  Cameron)
+
+- Fix gdmsetup so it does not save 24HourClock setting as a translated 
+  string, which was causing the configuration to get confused.  (Brian
+  Cameron)
+
+- If the user's $HOME/.dmrc file does not exist, avoid calling gkeyfile 
+  functions.  This avoids useless gkeyfile warning messages about the file
+  being NULL.  A previous fix in 2.20.1 minimized this problem by creating
+  the file if it did not exist.  However, that does not always work if the
+  user's $HOME directory is not writable (e.g. LiveCD).  So this fix avoids
+  the warnings.  (Brian Cameron)
+
+- Add default OpenBSD Halt, Reboot and Suspend commands to the configure
+  script.
+
+- Remove broken logic in the configure script that was trying to append
+  ${prefix}/bin to the DefaultPath and RootPath.  Please use the 
+  --with-post-path configure option if you want to add custom directories
+  to the end of DefaultPath and RootPath.  (Brian Cameron)
+
+- Fix the way the Xsession script is built so that distros can more easily
+  add their own custom logic to the Xsession script.  Some Solaris specific
+  code was moved to the Xsession.solaris file so that other distros do not
+  get affected by this code.  Remove logic to normalize LC_ variables since
+  this was causing problems for some users.  Refer to bug #509141  (Takao
+  Fujiwara)
+  
 2.20.5 Stuff:
 
 - Use GDK functions to get proper screen resolution. (Vincent Untz)
