@@ -6,7 +6,7 @@ AC_INIT([gdm],
 
 AC_CONFIG_SRCDIR([daemon/gdm-manager.c])
 
-AM_INIT_AUTOMAKE([1.9])
+AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-bzip2])
 
 AM_MAINTAINER_MODE
 
