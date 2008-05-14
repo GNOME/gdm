@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.21.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-06 18:59+0200\n"
-"PO-Revision-Date: 2008-05-06 18:33+0200\n"
+"POT-Creation-Date: 2008-05-14 14:04+0200\n"
+"PO-Revision-Date: 2008-05-14 14:05+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -22,18 +22,24 @@ msgstr ""
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom er ikke en tegnenhet"
 
-#: ../daemon/factory-slave-main.c:156 ../daemon/product-slave-main.c:156
-#: ../daemon/simple-slave-main.c:158 ../daemon/xdmcp-chooser-slave-main.c:156
+#: ../daemon/factory-slave-main.c:170 ../daemon/main.c:516
+#: ../daemon/product-slave-main.c:174 ../daemon/session-worker-main.c:137
+#: ../daemon/simple-slave-main.c:176 ../daemon/xdmcp-chooser-slave-main.c:176
+msgid "Enable debugging code"
+msgstr "Aktiver feilsøkingskode"
+
+#: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
+#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:177
 msgid "Display ID"
 msgstr "Skjerm-ID"
 
-#: ../daemon/factory-slave-main.c:156 ../daemon/product-slave-main.c:156
-#: ../daemon/simple-slave-main.c:158 ../daemon/xdmcp-chooser-slave-main.c:156
+#: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
+#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:177
 msgid "id"
 msgstr "id"
 
-#: ../daemon/factory-slave-main.c:168 ../daemon/product-slave-main.c:168
-#: ../daemon/simple-slave-main.c:170 ../daemon/xdmcp-chooser-slave-main.c:168
+#: ../daemon/factory-slave-main.c:183 ../daemon/product-slave-main.c:187
+#: ../daemon/simple-slave-main.c:189 ../daemon/xdmcp-chooser-slave-main.c:189
 msgid "GNOME Display Manager Slave"
 msgstr "Slave for GNOME skjermhåndterer"
 
@@ -151,56 +157,56 @@ msgstr "Skjermenheten"
 msgid "worker exited with status %d"
 msgstr "arbeider avsluttet med status %d"
 
-#: ../daemon/gdm-session-worker.c:967
+#: ../daemon/gdm-session-worker.c:963
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "feil i initiering av kommunikasjon med autentiseringssystemet - %s"
 
-#: ../daemon/gdm-session-worker.c:968
+#: ../daemon/gdm-session-worker.c:964
 msgid "general failure"
 msgstr "generell feil"
 
-#: ../daemon/gdm-session-worker.c:969
+#: ../daemon/gdm-session-worker.c:965
 msgid "out of memory"
 msgstr "ikke mer minne"
 
-#: ../daemon/gdm-session-worker.c:970
+#: ../daemon/gdm-session-worker.c:966
 msgid "application programmer error"
 msgstr "feil i programkoden"
 
-#: ../daemon/gdm-session-worker.c:971
+#: ../daemon/gdm-session-worker.c:967
 msgid "unknown error"
 msgstr "ukjent feil"
 
-#: ../daemon/gdm-session-worker.c:978
+#: ../daemon/gdm-session-worker.c:974
 msgid "Username:"
 msgstr "Brukernavn:"
 
-#: ../daemon/gdm-session-worker.c:984
+#: ../daemon/gdm-session-worker.c:980
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om foretrukket spørring "
 "etter brukernavn - %s"
 
-#: ../daemon/gdm-session-worker.c:998
+#: ../daemon/gdm-session-worker.c:994
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om brukers vertsnavn - %s"
 
-#: ../daemon/gdm-session-worker.c:1013
+#: ../daemon/gdm-session-worker.c:1009
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om brukers konsoll - %s"
 
-#: ../daemon/gdm-session-worker.c:1292 ../daemon/gdm-session-worker.c:1310
+#: ../daemon/gdm-session-worker.c:1288 ../daemon/gdm-session-worker.c:1306
 #, c-format
 msgid "no user account available"
 msgstr "ingen brukerkonto tilgjengelig"
 
-#: ../daemon/gdm-session-worker.c:1337
+#: ../daemon/gdm-session-worker.c:1333
 msgid "Unable to change to user"
 msgstr "Kan ikke bytte til denne brukeren"
 
@@ -405,10 +411,6 @@ msgstr "Kan ikke finne GDM-gruppe «%s». Avbryter."
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Gruppen for GDM bør ikke være root. Avbryter!"
 
-#: ../daemon/main.c:516
-msgid "Enable debugging code"
-msgstr "Aktiver feilsøkingskode"
-
 #: ../daemon/main.c:517
 msgid "Make all warnings fatal"
 msgstr "Gjør alle advarsler fatale"
@@ -430,7 +432,7 @@ msgstr "GNOME skjermhåndterer"
 msgid "Only root wants to run GDM"
 msgstr "Bare root ønsker å kjøre GDM"
 
-#: ../daemon/session-worker-main.c:134
+#: ../daemon/session-worker-main.c:149
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME skjermhåndterer sesjonsarbeider"
 
@@ -630,7 +632,7 @@ msgstr "_Språk:"
 
 #: ../gui/simple-greeter/gdm-language-option-widget.c:202
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:199
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:80
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:86
 #: ../gui/user-switch-applet/applet.c:1228
 msgid "Other..."
 msgstr "Annen..."
@@ -720,67 +722,75 @@ msgid "Disable showing the restart buttons"
 msgstr "Deaktiver visning av knapp for omstart"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
+msgid "Do not show known users in the login window"
+msgstr "Ikke vis kjente brukere i påloggingsvinduet"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
 msgid "Enable accessibility keyboard plugin"
 msgstr "Aktiver tillegg for tilgjengelighet for tastaturet"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
 msgid "Enable debugging"
 msgstr "Aktiver feilsøking"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
 msgid "Enable debugging mode for the greeter."
 msgstr "Aktiver feilsøking for velkomst."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Enable on-screen keyboard"
 msgstr "Aktiver tastatur på skjermen"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
 msgid "Enable screen magnifier"
 msgstr "Aktiver forstørrelsesglass"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
 msgid "Enable screen reader"
 msgstr "Aktiver skjermleser"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "Enable showing the banner message"
 msgstr "Aktiver visning av bannermelding"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Icon name to use for greeter logo"
 msgstr "Ikonnavn som skal brukes for velkomstlogo"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+msgid "Set to TRUE to disable showing known users in the login window."
+msgstr "Sett til TRUE for å deaktivere visning av kjente brukere i påloggingsvinduet."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid ""
 "Set to TRUE to disable showing the accessibility button in the login window."
 msgstr ""
 "Sett til TRUE for å deaktivere visning av knapp for tilgjengelighet i "
 "påloggingsvinduet."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
 msgid "Set to TRUE to disable showing the restart buttons in the login window."
 msgstr ""
 "Sett til TRUE for å deaktivere visning av knapper for omstart i "
 "påloggingsvinduet."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to True to enable the background settings manager plugin."
 msgstr ""
 "Sett til True for å aktivere tillegg for håndtering av innstillinger for "
 "bakgrunn."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to True to enable the media-keys settings manager plugin."
 msgstr ""
 "Sett til True for å aktivere tillegg for håndtering av innstillinger for "
 "medietaster."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
 msgid "Set to True to enable the on-screen keyboard."
 msgstr "Sett til True for å aktivere tastatur på skjermen."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid ""
 "Set to True to enable the plugin to manage the accessibility keyboard "
 "settings."
@@ -788,62 +798,62 @@ msgstr ""
 "Sett til True for å aktivere tillegg for håndtering av innstillinger for "
 "tilgjengelighet for tastatur."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid "Set to True to enable the screen magnifier."
 msgstr "Sett til True for å aktivere forstørrelsesglass på skjermen."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid "Set to True to enable the screen reader."
 msgstr "Sett til True for å aktivere skjermleser."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "Set to True to enable the sound settings manager plugin."
 msgstr ""
 "Sett til True for å aktivere tillegg for håndtering av innstillinger for lyd."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
 msgid "Set to True to enable the xsettings settings manager plugin."
 msgstr ""
 "Sett til True for å aktivere tillegg for håndtering av innstillinger i "
 "xsettings."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "Sett til temabasert ikonnavn som skal brukes for velkomstlogoen."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid "Set to true to show the banner message text."
 msgstr "Sett til true for å vise tekst i bannermelding."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
 msgid "Set to true to use compiz as the window manager."
 msgstr "Sett til true for å bruke compiz som vindushåndterer."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
 msgid "Text banner message to show on the login window."
 msgstr "Melding som skal vises i tekstbanner i påloggingsvinduet."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
 msgid "True if the background settings manager plugin is enabled."
 msgstr ""
 "True hvis tillegg for håndtering av innstillinger for bakgrunn er aktivert."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr ""
 "True hvis tillegg for håndtering av innstillinger for medietaster er "
 "aktivert."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "True hvis tillegg for håndtering av innstillinger for lyd er aktivert."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr ""
 "True hvis tillegg for håndtering av innstillinger i xsettings er aktivert."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "Use compiz as the window manager"
 msgstr "Bruk compiz som vindushåndterer"
 
@@ -879,32 +889,32 @@ msgstr "Håndterer"
 msgid "The user manager object this user is controlled by."
 msgstr "Brukerhåndteringsobjekt denne brukeren kontrolleres av."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:81
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:87
 msgid "Choose a different account"
 msgstr "Velg en annen konto"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:93
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:99
 msgid "Guest"
 msgstr "Gjest"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:94
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:100
 msgid "Login as a temporary guest"
 msgstr "Logg inn som en midlertidig gjest"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:106
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:112
 msgid "Automatic Login"
 msgstr "Automatisk pålogging"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:107
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:113
 msgid "Automatically login to the system after selecting options"
 msgstr "Logg inn automatisk etter å ha valgt alternativer"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:411
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:441
 #, c-format
 msgid "Log in as %s"
 msgstr "Logg inn som %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:495
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:525
 msgid "Currently logged in"
 msgstr "Allerede logget inn"
 
@@ -1072,9 +1082,3 @@ msgstr "Hovedalternativer"
 #: ../utils/gdmflexiserver.c:759
 msgid "Unable to start new display"
 msgstr "Kan ikke starte ny skjerm"
-
-#~ msgid "gtk-close"
-#~ msgstr "gtk-close"
-
-#~ msgid "gtk-disconnect"
-#~ msgstr "gtk-disconnect"
