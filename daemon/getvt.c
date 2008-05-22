@@ -59,7 +59,7 @@ gdm_get_current_vtnum (Display *display)
 	if (display == NULL)
 		return -1;
 
-	prop = XInternAtom (display, "XFree86_VT", False);
+	prop = XInternAtom (display, "XFree86_VT", True);
 	if (prop == None) {
 	        gdm_debug ("no XFree86_VT atom\n");
 	        return -1;
