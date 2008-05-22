@@ -1,6 +1,6 @@
-# translation of gdm2.HEAD.ar.po to Arabic
+# translation of gdm.HEAD.po to Arabic
 # translation of gdm2.HEAD.ar.po to
-# Copyright (C) 2002,2003, 2004, 2006, 2007 Free Software Foundation, Inc.
+# Copyright (C) 2002,2003, 2004, 2006, 2007, 2008 Free Software Foundation, Inc.
 #
 #
 # Arafat Medini <lumina@silverpen.de>, 2002,2004.
@@ -9,21 +9,20 @@
 #  <lumina@silverpen.de>, 2004.
 # Abdulaziz Al-Arfaj <alarfaj0@yahoo.com>, 2004.
 # Djihed Afifi <djihed@gmail.com>, 2006, 2007.
-# Khaled Hosny <khaledhosny@eglug.org>, 2006, 2007.
+# Khaled Hosny <khaledhosny@eglug.org>, 2006, 2007, 2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm2.HEAD.ar\n"
+"Project-Id-Version: gdm.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-05-19 01:52+0100\n"
-"PO-Revision-Date: 2008-02-13 20:50+0100\n"
-"Last-Translator: Djihed Afifi <djihed@gmail.com>\n"
+"PO-Revision-Date: 2008-05-22 20:00+0300\n"
+"Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=4; plural=n==1 ? 0 : n==2 ? 1 : n>=3 && n<=10 ? 2 : "
-"3\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 #: ../common/gdm-common.c:427
 #, c-format
@@ -34,17 +33,17 @@ msgstr "/dev/urandom ليس جهازا مِحرفيا"
 #: ../daemon/product-slave-main.c:174 ../daemon/session-worker-main.c:137
 #: ../daemon/simple-slave-main.c:176 ../daemon/xdmcp-chooser-slave-main.c:176
 msgid "Enable debugging code"
-msgstr "مكّن التنقيح"
+msgstr "فعّل التنقيح"
 
 #: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
 #: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:177
 msgid "Display ID"
-msgstr "رقم هوية العرض"
+msgstr "رقم معرّف العرض"
 
 #: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
 #: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:177
 msgid "id"
-msgstr "الهوية"
+msgstr "المعرّف"
 
 #: ../daemon/factory-slave-main.c:183 ../daemon/product-slave-main.c:187
 #: ../daemon/simple-slave-main.c:189 ../daemon/xdmcp-chooser-slave-main.c:189
@@ -58,19 +57,19 @@ msgstr "تعذّر إيجاد المستخدم \"%s\" على هذا النّظا
 
 #: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:195
 msgid "Unable to initialize login system"
-msgstr "لا يمكن بدأ نظام الولوج"
+msgstr "تعذّر بدأ نظام الولوج"
 
 #: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:228
 msgid "Unable to authenticate user"
-msgstr "لم يمكن التحقق من المستخدم"
+msgstr "تعذّر التحقق من المستخدم"
 
 #: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:274
 msgid "Unable to authorize user"
-msgstr "لم يتمكن من الترخيص للمستخدم"
+msgstr "تعذّر الترخيص للمستخدم"
 
 #: ../daemon/gdm-factory-slave.c:281
 msgid "Unable to establish credentials"
-msgstr "لا يمكن تنصيب الاعتمادات"
+msgstr "تعذّر تنصيب الاعتمادات"
 
 #: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
 #: ../daemon/gdm-simple-slave.c:1023
@@ -80,24 +79,24 @@ msgid ""
 "syslog to diagnose. In the meantime this display will be disabled.  Please "
 "restart GDM when the problem is corrected."
 msgstr ""
-"لا  يمكنني تشغيل خادم X (بيئتك الرسومية) بسبب بعض الأخطاء الداخلية. الرجاء "
-"الإتصال بمدير النظام أو مراجعة سجل النظام للتشخيص. سيغلق العرض في هذه "
+"تعذّر تشغيل الخادوم س (بيئتك الرسومية) بسبب بعض الأخطاء الداخلية. الرجاء "
+"الاتصال بمدير النظام أو مراجعة سجل النظام للتشخيص. سيغلق العرض في هذه "
 "الأثناء. الرجاء إعادة تشغيل م‌ع‌ج عند تصحيح الخطأ."
 
 #: ../daemon/gdm-server.c:244
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: فشل الإتصال بالعرض الأب '%s'"
+msgstr "%s: فشل الاتصال بالعرض الأب '%s'"
 
 #: ../daemon/gdm-server.c:362
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
-msgstr "كان الخادم سيُوّلد من قبل المستخدم %s لكن ذلك المستخدم غير موجود"
+msgstr "كان الخادوم سيُوّلد من قبل المستخدم %s لكن ذلك المستخدم غير موجود"
 
 #: ../daemon/gdm-server.c:373 ../daemon/gdm-welcome-session.c:415
 #, c-format
 msgid "Couldn't set groupid to %d"
-msgstr "لم يمكن ضبط هوية المجموعة لـ %d"
+msgstr "تعذّر ضبط معرّف المجموعة لـ %d"
 
 #: ../daemon/gdm-server.c:379 ../daemon/gdm-welcome-session.c:421
 #, c-format
@@ -107,16 +106,16 @@ msgstr "فشل  initgroups () لِـ %s"
 #: ../daemon/gdm-server.c:385 ../daemon/gdm-welcome-session.c:427
 #, c-format
 msgid "Couldn't set userid to %d"
-msgstr " لم يمكن ضبط هوية المستخدم لِـ %d"
+msgstr "تعذّر ضبط معرّف المستخدم لِـ %d"
 
 #: ../daemon/gdm-server.c:393 ../daemon/gdm-welcome-session.c:435
 msgid "Couldn't set groupid to 0"
-msgstr " لم يمكن ضبط هوية المجموعة لِـ0 "
+msgstr "تعذّر ضبط معرّف المجموعة لِـ0 "
 
 #: ../daemon/gdm-server.c:428
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
-msgstr "%s: لم أستطع فتح ملف السجل للعرض %s!"
+msgstr "%s: تعذّر فتح ملف السجل للعرض %s!"
 
 #: ../daemon/gdm-server.c:439 ../daemon/gdm-server.c:445
 #: ../daemon/gdm-server.c:451
@@ -127,12 +126,12 @@ msgstr "%s: خطأ ضبط %s كـ %s"
 #: ../daemon/gdm-server.c:466
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
-msgstr "%s:لا يمكن ضبط أولوية الخادم لتكون %Id: %s"
+msgstr "%s:تعذّر ضبط أولوية الخادوم لتكون %Id: %s"
 
 #: ../daemon/gdm-server.c:618
 #, c-format
 msgid "%s: Empty server command for display %s"
-msgstr "%s: أمر خادم فارغ للعرض %s"
+msgstr "%s: أمر خادوم فارغ للعرض %s"
 
 #: ../daemon/gdm-session-auditor.c:90
 msgid "Username"
@@ -144,11 +143,11 @@ msgstr "اسم المستخدم"
 
 #: ../daemon/gdm-session-auditor.c:95
 msgid "Hostname"
-msgstr "اسم المضيف"
+msgstr "اسم المستضيف"
 
 #: ../daemon/gdm-session-auditor.c:96
 msgid "The hostname"
-msgstr "اسم المضيف"
+msgstr "اسم المستضيف"
 
 #: ../daemon/gdm-session-auditor.c:101
 msgid "Display Device"
@@ -196,31 +195,30 @@ msgstr "خطأ في إخبار نظام التوثيق عن مُحِث اسم ا
 #: ../daemon/gdm-session-worker.c:994
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
-msgstr "خطأ في إخبار نظام التوثيق عن اسم مضيف المستخدم - %s"
+msgstr "خطأ في إخبار نظام التوثيق عن اسم مستضيف المستخدم - %s"
 
 #: ../daemon/gdm-session-worker.c:1009
 #, c-format
 msgid "error informing authentication system of user's console - %s"
-msgstr "خطأ في إخبار نظام التوثيق عن كونسول المستخدم  - %s"
+msgstr "خطأ في إخبار نظام التوثيق عن معراض المستخدم - %s"
 
 #: ../daemon/gdm-session-worker.c:1288 ../daemon/gdm-session-worker.c:1306
 #, c-format
 msgid "no user account available"
-msgstr "لا يُوجد حساب مستخدم "
+msgstr "لا يُوجد حساب مستخدِم "
 
 #: ../daemon/gdm-session-worker.c:1333
-#, fuzzy
 msgid "Unable to change to user"
-msgstr "لم يتمكن من الترخيص للمستخدم"
+msgstr "تعذّر الانتقال للمستخدم"
 
 #: ../daemon/gdm-simple-slave.c:372
 msgid "Unable establish credentials"
-msgstr "لا يمكن تنصيب الاعتمادات "
+msgstr "تعذّر تنصيب الاعتمادات "
 
 #: ../daemon/gdm-welcome-session.c:397
 #, c-format
 msgid "User %s doesn't exist"
-msgstr " المستخدم %s غير موجود"
+msgstr "المستخدم %s غير موجود"
 
 #: ../daemon/gdm-welcome-session.c:404
 #, c-format
@@ -229,7 +227,7 @@ msgstr "المجموعة %s غير موجودة"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:590
 msgid "Could not create socket!"
-msgstr "لم يمكن انشاء مقبس !"
+msgstr "تعذّر انشاء مقبس !"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:856
 #, c-format
@@ -239,7 +237,7 @@ msgstr "مُنِع طلب XDMCP من المستضيف %s"
 #: ../daemon/gdm-xdmcp-display-factory.c:1013
 #: ../daemon/gdm-xdmcp-display-factory.c:1234
 msgid "Could not extract authlist from packet"
-msgstr "لم يمكن إستخراج قائمة التوثّق من الرزمة"
+msgstr "تعذّر إستخراج قائمة التوثّق من الرزمة"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:1026
 #: ../daemon/gdm-xdmcp-display-factory.c:1249
@@ -253,17 +251,17 @@ msgstr "عنوان سيّء"
 #: ../daemon/gdm-xdmcp-display-factory.c:1581
 #, c-format
 msgid "%s: Could not read display address"
-msgstr "%s: لم يمكن قراءة عنوان العرض"
+msgstr "%s: تعذّر قراءة عنوان العرض"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:1589
 #, c-format
 msgid "%s: Could not read display port number"
-msgstr "%s: لم يمكن قراءة رقم منفذ العرض"
+msgstr "%s: تعذّر قراءة رقم منفذ العرض"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:1598
 #, c-format
 msgid "%s: Could not extract authlist from packet"
-msgstr "%s: لم يمكن إستخراج قائمة التوثّق من الرزمة"
+msgstr "%s: تعذّر إستخراج قائمة التوثّق من الرزمة"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:1618
 #, c-format
@@ -280,37 +278,37 @@ msgstr "%s: تلقيّ REQUEST من مستضيف محظور %s"
 #: ../daemon/gdm-xdmcp-display-factory.c:2737
 #, c-format
 msgid "%s: Could not read Display Number"
-msgstr "%s: لم يمكن قراءة رقم العرض"
+msgstr "%s: تعذّر قراءة رقم العرض"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2137
 #, c-format
 msgid "%s: Could not read Connection Type"
-msgstr "%s: لم يمكن قراءة نوع الإتصال"
+msgstr "%s: تعذّر قراءة نوع الاتصال"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2144
 #, c-format
 msgid "%s: Could not read Client Address"
-msgstr "%s: لا يمكن قراءة عنوان العميل"
+msgstr "%s: تعذّر قراءة عنوان العميل"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2152
 #, c-format
 msgid "%s: Could not read Authentication Names"
-msgstr "%s: لم يمكن قراءة اسماء التوثّق"
+msgstr "%s: تعذّر قراءة اسماء التوثّق"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2161
 #, c-format
 msgid "%s: Could not read Authentication Data"
-msgstr "%s: لم يمكن قراءة بيانات التوثّق"
+msgstr "%s: تعذّر قراءة بيانات التوثّق"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2171
 #, c-format
 msgid "%s: Could not read Authorization List"
-msgstr "%s: لم يمكن قراءة قائمة التراخيص"
+msgstr "%s: تعذّر قراءة قائمة التراخيص"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2190
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
-msgstr "%s: لم يمكن قراءة هوية المصنّع"
+msgstr "%s: تعذّر قراءة معرّف المصنّع"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2217
 #, c-format
@@ -326,19 +324,19 @@ msgstr "%s: Got Manage من المستضيف المحظور %s"
 #: ../daemon/gdm-xdmcp-display-factory.c:2744
 #, c-format
 msgid "%s: Could not read Session ID"
-msgstr "%s: لم يمكن قراءة هوية الجلسة"
+msgstr "%s: تعذّر قراءة معرّف الجلسة"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2492
 #, c-format
 msgid "%s: Could not read Display Class"
-msgstr "%s: لا يمكن قراءة صنف العرض"
+msgstr "%s: تعذّر قراءة صنف العرض"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2597
 #: ../daemon/gdm-xdmcp-display-factory.c:2647
 #: ../daemon/gdm-xdmcp-display-factory.c:2653
 #, c-format
 msgid "%s: Could not read address"
-msgstr "%s: لا يمكن قراءة العنوان"
+msgstr "%s: تعذّر قراءة العنوان"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2727
 #, c-format
@@ -347,7 +345,7 @@ msgstr "%s: Got  KEEPALIVE من مستضيف محظور %s"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2816
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
-msgstr "GdmXdmcpDisplayFactory: لم يمكن قراءة ترويسة XDMCP!"
+msgstr "GdmXdmcpDisplayFactory: تعذّر قراءة ترويسة XDMCP!"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2822
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
@@ -357,22 +355,22 @@ msgstr "XMDCP: إصدارة XDMCP خاطئة!"
 #: ../daemon/gdm-xdmcp-display-factory.c:2828
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
 msgid "XMDCP: Unable to parse address"
-msgstr "XMDCP: لا يمكن تحليل العنوان "
+msgstr "XMDCP: تعذّر تحليل العنوان "
 
 #: ../daemon/gdm-xdmcp-display-factory.c:3226
 #, c-format
 msgid "Could not get server hostname: %s!"
-msgstr "لم يمكن تلقي اسم مستضيف الخادم: %s!"
+msgstr "تعذّر تلقي اسم مستضيف الخادوم: %s!"
 
 #: ../daemon/main.c:237 ../daemon/main.c:250
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace: %s"
-msgstr "لا يمكن كتابة ملف الـ PID %s: ربما لعدم وجود حيزعلى القرص: %s"
+msgstr "تعذّر كتابة ملف الـ PID %s: ربما لعدم وجود حيزعلى القرص: %s"
 
 #: ../daemon/main.c:270
 #, c-format
 msgid "Logdir %s does not exist or isn't a directory."
-msgstr " دليل السجل  %s غير موجود أو ليس دليلا. "
+msgstr " دليل السجل %s غير موجود أو ليس دليلا. "
 
 #: ../daemon/main.c:283
 #, c-format
@@ -406,7 +404,7 @@ msgstr "يجب أن لا يكون مستخدم GDM جذرا. إجهاض! "
 #: ../daemon/main.c:417
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "لم أجد ايجاد مجموعة GDM '%s'. إجهاض!"
+msgstr "لم أجد مجموعة GDM '%s'. إجهاض!"
 
 #: ../daemon/main.c:423
 msgid "The GDM group should not be root. Aborting!"
@@ -431,29 +429,28 @@ msgstr "مدير عرض جنوم."
 #. make sure the pid file doesn't get wiped
 #: ../daemon/main.c:595
 msgid "Only root wants to run GDM"
-msgstr "فقط الجذر يريد تشغيل GDM"
+msgstr "الجذر فقط يريد تشغيل GDM"
 
 #: ../daemon/session-worker-main.c:149
 msgid "GNOME Display Manager Session Worker"
 msgstr "عامل جلسة مدير العرض جنوم"
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:148
-#, fuzzy
 msgid "Select System"
-msgstr "اختر صورة المستخدم."
+msgstr "اختر نظاما"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:214
 msgid "XMCP: Could not create XDMCP buffer!"
-msgstr "XMCP: لا يمكن إنشاء صِِوان XDMCP !"
+msgstr "XMCP: تعذّر إنشاء صِِوان XDMCP !"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:220
 msgid "XDMCP: Could not read XDMCP header!"
-msgstr "لم يمكن قراءة ترويسة XDMCP!"
+msgstr "تعذّر قراءة ترويسة XDMCP!"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.c:808
 #: ../gui/simple-greeter/gdm-greeter-panel.c:569
 msgid "Accessibility Preferences"
-msgstr " تفضيلات الإتاحة"
+msgstr "تفضيلات الإعانة"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:1
 msgid "<b>Enable features that make your computer easier to use:</b>"
@@ -464,27 +461,24 @@ msgid "Assistive Technology Preferences"
 msgstr "تفضيلات التقنية المُعينة"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:3
-#, fuzzy
 msgid "_Hear text read aloud (Reader)"
-msgstr "_استمع للنص الظاهر على الشاشة يُقرأ بصوت مرتفع (القارئ)"
+msgstr "_استمع للنص يُقرأ بصوت مرتفع (القارئ)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:4
 msgid "_Ignore duplicate keypresses (Bounce Keys)"
 msgstr "_تجاهل الضغط المتكرر على المفاتيح (المفاتيح المرتدة)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:5
-#, fuzzy
 msgid "_Make items larger (Magnifier)"
-msgstr "ا_جعل العناصر على الشاشة تبدو أكبر (المكبر)"
+msgstr "ا_جعل العناصر أكبر (المكبر)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:6
 msgid "_Only accept long held keypresses (Slow Keys)"
 msgstr "اقبل _فقط المفاتيح المضغوطة لمدة طويلة (المفاتيح البطيئة)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:7
-#, fuzzy
 msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
-msgstr "ا_ضغط اختصارات لوحة المفاتيح على مفتاح مرة واحدة (المفاتيح الاصقة)"
+msgstr "ا_ضغط اختصارات لوحة المفاتيح مفتاحا في كل مرة (المفاتيح اللاصقة)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:8
 msgid "_See more contrast in colors (High Contrast)"
@@ -492,7 +486,7 @@ msgstr "_شاهد تباين أكثر في الألوان (تباين شديد)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:9
 msgid "_Type without the keyboard (On-screen Keyboard)"
-msgstr "ا_كتب بلا لوحة المفاتيح (لوحة المفاتيح الموجودة على الشاشة)"
+msgstr "ا_كتب بلا لوحة المفاتيح (لوحة مفاتيح على الشاشة)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:10
 msgid "_Use a larger font size (Large Print)"
@@ -500,15 +494,15 @@ msgstr "ا_ستعمل حجم خط أكبر (طباعة كبيرة)"
 
 #: ../gui/simple-greeter/gdm-cell-renderer-timer.c:253
 msgid "Value"
-msgstr ""
+msgstr "القيمة"
 
 #: ../gui/simple-greeter/gdm-cell-renderer-timer.c:254
 msgid "percentage of time complete"
-msgstr ""
+msgstr "نسبة اكتمال الوقت"
 
 #: ../gui/simple-greeter/gdm-chooser-widget.c:1123
 msgid "Inactive Text"
-msgstr "نص خامل"
+msgstr "النص الخامل"
 
 #: ../gui/simple-greeter/gdm-chooser-widget.c:1124
 msgid "The text to use in the label if the user hasn't picked an item yet"
@@ -524,11 +518,11 @@ msgstr "النص الذي سيستخدم في اللصيقة إذا ما اخت�
 
 #: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M:%S %p"
-msgstr "%l:%M:%S %p"
+msgstr "%Ol:%OM:%OS %p"
 
 #: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M %p"
-msgstr "%l:%M %p"
+msgstr "%Ol:%OM %p"
 
 #. translators: replace %e with %d if, when the day of the
 #. *              month as a decimal number is a single digit, it
@@ -537,7 +531,7 @@ msgstr "%l:%M %p"
 #.
 #: ../gui/simple-greeter/gdm-clock-widget.c:72
 msgid "%a %b %e"
-msgstr "%a %b %e"
+msgstr "%a %b %Oe"
 
 #. translators: reverse the order of these arguments
 #. *              if the time should come before the
@@ -546,42 +540,37 @@ msgstr "%a %b %e"
 #: ../gui/simple-greeter/gdm-clock-widget.c:77
 #, c-format
 msgid "%1$s, %2$s"
-msgstr "%1$s, %2$s"
+msgstr "%1$s، %2$s"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:182
-#, fuzzy
 msgid "You have the Caps Lock key on."
-msgstr "مفتاح Caps Lock مفعل"
+msgstr "مفتاح الحروف الكبيرة مفعل."
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:325
-#, fuzzy
 msgid "Automatically logging in..."
-msgstr "ولوج تلقائي"
+msgstr "لُج تلقائيا..."
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1223
-#, fuzzy
 msgid "Failed to restart computer"
-msgstr "فشل في إعادة تشغيل نفسه"
+msgstr "فشل إعادة تشغيل الحاسوب"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1226
 msgid ""
 "You are not allowed to restart the computer because multiple users are "
 "logged in"
-msgstr ""
+msgstr "ليس مسموحا لك بإعادة تشغيل الحاسوب لولوج عدد من المستخدمين"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1307
-#, fuzzy
 msgid "Failed to stop computer"
-msgstr "فشل في إعادة تشغيل نفسه"
+msgstr "فشل إيقاف الحاسوب"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1310
-msgid ""
-"You are not allowed to stop the computer because multiple users are logged in"
-msgstr ""
+msgid "You are not allowed to stop the computer because multiple users are logged in"
+msgstr "ليس مسموحا لك بإيقاف الحاسوب لولوج عدد من المستخدمين"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1385
 msgid "Select language and click Log In"
-msgstr ""
+msgstr "اختر لغة ثم انقر \"لُج\""
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1941
 msgid "Login Window"
@@ -597,27 +586,27 @@ msgstr "اسم الحاسوب"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:3
 msgid "Log In"
-msgstr "تسجيل الدخول"
+msgstr "لُج"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:4
 msgid "Restart"
-msgstr "إعادة تشغيل"
+msgstr "أعِد التشغيل"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
 msgid "Shut Down"
-msgstr "إطفاء"
+msgstr "أطفئ"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
 msgid "Suspend"
-msgstr "تعليق"
+msgstr "علّق"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
 msgid "Version"
-msgstr "إصدار"
+msgstr "الإصدار"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
 msgid "page 5"
-msgstr "الصّفحة 5"
+msgstr "صفحة 5"
 
 #: ../gui/simple-greeter/gdm-greeter-panel.c:551
 msgid "Panel"
@@ -645,26 +634,25 @@ msgstr "أخرى..."
 
 #: ../gui/simple-greeter/gdm-language-option-widget.c:203
 msgid "Choose a language from the full list of available languages."
-msgstr "اختر لغة من الائحة الكاملة للغات المتوفرة."
+msgstr "اختر لغة من قائمة اللغات المتوفرة."
 
 #: ../gui/simple-greeter/gdm-languages.c:587
 msgid "Unspecified"
-msgstr ""
+msgstr "غير محدد"
 
 #: ../gui/simple-greeter/gdm-layout-chooser-dialog.c:210
 msgid "Keyboard layouts"
-msgstr ""
+msgstr "تخطيط لوحة المفاتيح"
 
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:197
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:198
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:228
 msgid "_Keyboard:"
-msgstr ""
+msgstr "لو_حة المفاتيح:"
 
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:200
-#, fuzzy
 msgid "Choose a keyboard layout from the full list of available layouts."
-msgstr "اختر لغة من الائحة الكاملة للغات المتوفرة."
+msgstr "اختر تخطيط لوحة مفاتيح من قائمة التخطيطات المتوفرة."
 
 #: ../gui/simple-greeter/gdm-option-widget.c:493
 msgid "Label Text"
@@ -675,23 +663,20 @@ msgid "The text to use as a label"
 msgstr "النص الذي سيُستخدم كلصيقة"
 
 #: ../gui/simple-greeter/gdm-option-widget.c:501
-#, fuzzy
 msgid "Icon name"
-msgstr "حجم الأيقونة"
+msgstr "اسم الأيقونة"
 
 #: ../gui/simple-greeter/gdm-option-widget.c:502
-#, fuzzy
 msgid "The icon to use with the label"
-msgstr "النص الذي سيُستخدم كلصيقة"
+msgstr "الأيقونة التي ستستخدم مع اللصيقة"
 
 #: ../gui/simple-greeter/gdm-option-widget.c:510
-#, fuzzy
 msgid "Default Item"
-msgstr "الافتراضي"
+msgstr "العنصر المبدئي"
 
 #: ../gui/simple-greeter/gdm-option-widget.c:511
 msgid "The id of the default item"
-msgstr ""
+msgstr "معرّف العنصر المبدئي"
 
 #: ../gui/simple-greeter/gdm-recent-option-widget.c:298
 msgid "Max Item Count"
@@ -699,17 +684,17 @@ msgstr "أقصى عَدٍّ للعناصر"
 
 #: ../gui/simple-greeter/gdm-recent-option-widget.c:299
 msgid "The maximum number of items to keep around in the list"
-msgstr "أقصى عدد من العناصر التي سيُحتفظ بها في الائحة"
+msgstr "أقصى عدد من العناصر التي سيُحتفظ بها في القائمة"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:224
 #, c-format
 msgid "Remote Login (Connecting to %s...)"
-msgstr "ولوج عن بعد (الاتصال بِ %s...)"
+msgstr "ولوج عن بعد (يجري الاتصال بِ %s...)"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:238
 #, c-format
 msgid "Remote Login (Connected to %s)"
-msgstr "الولوج البعيد (مُتَّصل ب %s)"
+msgstr "ولوج عن بعد (مُتَّصل ب %s)"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:317
 msgid "Remote Login"
@@ -721,34 +706,31 @@ msgstr "ال_جلسات:"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
 msgid "Banner message text"
-msgstr ""
+msgstr "نص رسالة الملصق"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
 msgid "Disable showing the accessibility button"
-msgstr ""
+msgstr "عطّل عرض زر الإعانة"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
 msgid "Disable showing the restart buttons"
-msgstr ""
+msgstr "عطّل عرض أزرار إعادة التشغيل"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
-#, fuzzy
 msgid "Do not show known users in the login window"
-msgstr "لُجْ كمستخدم آخر في نافذة"
+msgstr "لا تعرض المستخدمين في نافذة الولوج"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
 msgid "Enable accessibility keyboard plugin"
 msgstr "فعّل ملحق لوحة مفاتيح الاتاحة"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
-#, fuzzy
 msgid "Enable debugging"
-msgstr "مكّن التنقيح"
+msgstr "فعّل التنقيح"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
-#, fuzzy
 msgid "Enable debugging mode for the greeter."
-msgstr "مكّن التنقيح"
+msgstr "فعّل طور التنقيح للمُرحّب"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Enable on-screen keyboard"
@@ -764,34 +746,31 @@ msgstr "فعّل قارئ الشاشة"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "Enable showing the banner message"
-msgstr ""
+msgstr "فعّل عرض رسالة الملصق"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Icon name to use for greeter logo"
-msgstr ""
+msgstr "اسم الأيقونة التي ستستخدم لشعار المُرحّب"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid "Set to TRUE to disable showing known users in the login window."
-msgstr ""
+msgstr "اجعله صحيح لتعطيل عرض المستخدمين المعروفين في نافذة الولوج."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-#, fuzzy
-msgid ""
-"Set to TRUE to disable showing the accessibility button in the login window."
-msgstr "معيَّن إلى صحيح حتى يُفَعل الملحق إدارة تهيئة لوحة مفاتيح الاتاحة."
+msgid "Set to TRUE to disable showing the accessibility button in the login window."
+msgstr "اجعله صحيح لتعطيل عرض زر الإعانة في نافذة الولوج."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
 msgid "Set to TRUE to disable showing the restart buttons in the login window."
-msgstr ""
+msgstr "اجعله صحيح لتعطيل عرض أزرار إعادة التشغيل في نافذة الولوج"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to True to enable the background settings manager plugin."
 msgstr "مُعيَّن إلى صحيح حتى يُمَكِّن ملحق مدير تهييئات الخلفية."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
-#, fuzzy
 msgid "Set to True to enable the media-keys settings manager plugin."
-msgstr "مُعين إلى صحيح حتى يُفَعل ملحق مدير تهيئة xsettings."
+msgstr "اجعله صحيح لتفعيل ملحق مدير إعداد مفاتيح الوسائط"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
 msgid "Set to True to enable the on-screen keyboard."
@@ -812,9 +791,8 @@ msgid "Set to True to enable the screen reader."
 msgstr "مُعين إلى صحيح حتى يُفَعل قارئ الشاشة."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
-#, fuzzy
 msgid "Set to True to enable the sound settings manager plugin."
-msgstr "مُعيَّن إلى صحيح حتى يُمَكِّن ملحق مدير تهييئات الخلفية."
+msgstr "اجعله صحيح لتفعيل ملحق مدير إعداد الأصوات."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
 msgid "Set to True to enable the xsettings settings manager plugin."
@@ -822,35 +800,31 @@ msgstr "مُعين إلى صحيح حتى يُفَعل ملحق مدير تهي�
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to the themed icon name to use for the greeter logo."
-msgstr ""
+msgstr "اضبطه إلى اسم أيقونة السمة التي ستستخدم لشعار المُرحّب."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid "Set to true to show the banner message text."
-msgstr ""
+msgstr "اجعله صحيح ليعرض نص رسالة الملصق."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
-#, fuzzy
 msgid "Set to true to use compiz as the window manager."
-msgstr "مُعين إلى صحيح حتى يُفَعل مكبر الشاشة."
+msgstr "اجعله صحيح ليستخدم كومبيز كمدير نوافذ"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
-#, fuzzy
 msgid "Text banner message to show on the login window."
-msgstr "الموضع الرأسي لنافذة الولوج."
+msgstr "ملصق الرسائل النصي المعروض في نافذة الولوج."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
 msgid "True if the background settings manager plugin is enabled."
 msgstr "صحيح إذا كان ملحق مدير التهيئة في الخلفية مُفَعلا."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
-#, fuzzy
 msgid "True if the media-keys settings manager plugin is enabled."
-msgstr "صحيح إذا كان ملحق مدير تهيئة xsettings مُفَعلا."
+msgstr "صحيح إذا كان ملحق مدير إعدادات مفاتيح الوسائط مفعل."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
-#, fuzzy
 msgid "True if the sound settings manager plugin is enabled."
-msgstr "صحيح إذا كان ملحق مدير التهيئة في الخلفية مُفَعلا."
+msgstr "صحيح إذا كان ملحق مدير إعدادات الصوت مفعل."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
 msgid "True if the xsettings settings manager plugin is enabled."
@@ -858,45 +832,43 @@ msgstr "صحيح إذا كان ملحق مدير تهيئة xsettings مُفَع
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "Use compiz as the window manager"
-msgstr ""
+msgstr "استخدم كُمْبِز كمدير نوافذ"
 
 #: ../gui/simple-greeter/gdm-timer.c:149
 msgid "Duration"
-msgstr ""
+msgstr "المدّة"
 
 #: ../gui/simple-greeter/gdm-timer.c:150
 msgid "Number of seconds until timer stops"
-msgstr ""
+msgstr "عدد الثواني قبل أن يتوقف المُؤقِّت"
 
 #: ../gui/simple-greeter/gdm-timer.c:157
-#, fuzzy
 msgid "Start time"
-msgstr "ا_بدأ مرة أخرى"
+msgstr "وقت البدء"
 
 #: ../gui/simple-greeter/gdm-timer.c:158
 msgid "Time the timer was started"
-msgstr ""
+msgstr "وقت بدء المُؤقِّت"
 
 #: ../gui/simple-greeter/gdm-timer.c:165
-#, fuzzy
 msgid "Is it Running?"
-msgstr "م‌ع‌ج لا يعمل"
+msgstr "هل يغمل؟"
 
 #: ../gui/simple-greeter/gdm-timer.c:166
 msgid "Whether or not the timer is currently ticking"
-msgstr ""
+msgstr "ما إذا كان المُؤقِّت يعمل أم لا"
 
 #: ../gui/simple-greeter/gdm-user.c:241
 msgid "Manager"
-msgstr "مدير"
+msgstr "المدير"
 
 #: ../gui/simple-greeter/gdm-user.c:242
 msgid "The user manager object this user is controlled by."
-msgstr "مدير المستخدم يشير إلى أن هذا المستخدم مُتحكم به من طرف."
+msgstr "مدير المستخدم يشير إلى أن هذا المستخدم مُتحكم به."
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:87
 msgid "Choose a different account"
-msgstr "اختر حسابا معايرا"
+msgstr "اختر حسابا مختلفا"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:99
 msgid "Guest"
@@ -904,25 +876,24 @@ msgstr "ضيف"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:100
 msgid "Login as a temporary guest"
-msgstr "الولوج كضيف مؤقت"
+msgstr "لُج كضيف مؤقت"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:112
-#, fuzzy
 msgid "Automatic Login"
 msgstr "ولوج تلقائي"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:113
 msgid "Automatically login to the system after selecting options"
-msgstr ""
+msgstr "لُج تلقائيا إلى النظام بعد اختيار الخيارات"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:441
 #, c-format
 msgid "Log in as %s"
-msgstr "الولوج بصفة %s"
+msgstr "لُج باسم %s"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:525
 msgid "Currently logged in"
-msgstr "المُسجَل حاليا "
+msgstr "الوالِج حاليا "
 
 #: ../gui/user-switch-applet/applet.c:162
 msgid ""
@@ -931,7 +902,7 @@ msgid ""
 "the Free Software Foundation; either version 2 of the License, or (at your "
 "option) any later version."
 msgstr ""
-"بريمج مبدّل المستخدم السريع برنامج حر؛ بامكانك إعادة توزيعه و/أو تعديله تحت "
+"بريمج مبدّل المستخدم السريع برمجية حرة؛ بامكانك إعادة توزيعه و/أو تعديله تحت "
 "شروط الرخصة العمومية العامة لجنو والتي نشرتها منظمة البرمجيات الحرة؛ سواء "
 "الإصدارة 2 من الرخصة أو أي إصدارة بعدها (حسب رغبتك)."
 
@@ -953,7 +924,8 @@ msgid ""
 "Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
 msgstr ""
 "من المفترض أن تكون قد استلمت نسخة من رخصة جنو العامة مع هذا البرنامج؛ في حال "
-"عدم استلامك لذلك، يمكنك مكاتبة: Free Software Foundation, Inc., 59 Temple "
+"عدم استلامك لذلك، يمكنك مكاتبة:\n"
+"Free Software Foundation, Inc., 59 Temple "
 "Place, Suite 330, Boston, MA  02111-1307  USA"
 
 #: ../gui/user-switch-applet/applet.c:184
@@ -965,6 +937,7 @@ msgid "translator-credits"
 msgstr ""
 "فريق عربآيز للترجمة http://www.arabeyes.org :\n"
 "جهاد عفيفي\t<djihed@gmail.com>"
+"خالد حسني\t<khaledhosny@eglug.org>"
 
 #: ../gui/user-switch-applet/applet.c:795
 #, c-format
@@ -977,9 +950,8 @@ msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "تعذّر الضبط المؤقت لحافظة الشاشة إلى فراغ: %s"
 
 #: ../gui/user-switch-applet/applet.c:1023
-#, fuzzy
 msgid "Unknown"
-msgstr "خطأ مجهول"
+msgstr "مجهول"
 
 #: ../gui/user-switch-applet/applet.c:1081
 msgid "User Switch Applet"
@@ -992,7 +964,7 @@ msgstr "مبدّل المستخدم"
 
 #: ../gui/user-switch-applet/gdm-user-menu-item.c:338
 msgid "User"
-msgstr "مستخدم"
+msgstr "المستخدم"
 
 #: ../gui/user-switch-applet/gdm-user-menu-item.c:339
 msgid "The user this menu item represents."
@@ -1036,7 +1008,7 @@ msgstr "حرِّر ال_معلومات الشخصية"
 
 #: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:2
 msgid "_About"
-msgstr "_حول"
+msgstr "_عنْ"
 
 #: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:3
 msgid "_Edit Users and Groups"
@@ -1044,11 +1016,11 @@ msgstr "_حرِّر المستخدمين والمجموعات"
 
 #: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:4
 msgid "_Help"
-msgstr "ساعدْ"
+msgstr "_مساعدة"
 
 #: ../utils/gdmflexiserver.c:60
 msgid "Send the specified protocol command to GDM"
-msgstr "أرسل أمر البروتوكول المحدد لـ م‌ع‌ج"
+msgstr "أرسل أمر البروتوكول المحدد لم‌ع‌ج"
 
 #: ../utils/gdmflexiserver.c:60
 msgid "COMMAND"
@@ -1056,7 +1028,7 @@ msgstr "أمر"
 
 #: ../utils/gdmflexiserver.c:61
 msgid "Xnest mode"
-msgstr "نمط Xnest"
+msgstr "نمط س معشش"
 
 #: ../utils/gdmflexiserver.c:62
 msgid "Do not lock current screen"
@@ -1064,25 +1036,24 @@ msgstr "لا تقفل الشاشة الحالية"
 
 #: ../utils/gdmflexiserver.c:63 ../utils/gdm-screenshot.c:41
 msgid "Debugging output"
-msgstr "مخرج التنقيح"
+msgstr "خرْج التنقيح"
 
 #: ../utils/gdmflexiserver.c:64
 msgid "Authenticate before running --command"
-msgstr "تحقيق الهوية قبل تشغيل --الأمر"
+msgstr "استوثق قبل تشغيل --command"
 
 #: ../utils/gdmflexiserver.c:65
 msgid "Start new flexible session; do not show popup"
 msgstr "ابدأ جلسة مرنة جديدة، لا تعرض نافذة منبثقة."
 
 #: ../utils/gdmflexiserver.c:67
-#, fuzzy
 msgid "Version of this application"
-msgstr "كيف تستعمل هذا التطبيق"
+msgstr "إصدارة هذا التطبيق"
 
 #: ../utils/gdmflexiserver.c:674
 #, c-format
 msgid "Could not identify the current session."
-msgstr ""
+msgstr "تعذّر التعرف على الجلسة الحالية"
 
 #: ../utils/gdmflexiserver.c:710 ../utils/gdm-screenshot.c:226
 msgid "Main Options"
@@ -1090,3474 +1061,5 @@ msgstr "الخيارات الرئيسية"
 
 #: ../utils/gdmflexiserver.c:759
 msgid "Unable to start new display"
-msgstr "لا يمكن بدأ تشغيل الشاشة الجديدة"
+msgstr "تعذّر بدأ تشغيل العرض الجديد"
 
-#~ msgid "user account not available on system"
-#~ msgstr "حساب المستخدم غير موجود على النظام"
-
-#~ msgid "Alternative GDM System Defaults configuration file"
-#~ msgstr "ملف م‌ع‌ج لإعدادات النظام الإفتراضية البديل"
-
-#~ msgid "CONFIGFILE"
-#~ msgstr "CONFIGFILE"
-
-#~ msgid "Don't become a daemon"
-#~ msgstr "لا تصبح خادم"
-
-#~ msgid "No console (static) servers to be run"
-#~ msgstr "لا خوادم كونسول (محليّة) لتشغيلها"
-
-#~ msgid "gtk-close"
-#~ msgstr "اغلق"
-
-#~ msgid "Disconnect"
-#~ msgstr "قطع الاتصال"
-
-#~ msgid "_Users:"
-#~ msgstr "ال_مستخدمون:"
-
-#~ msgid "_User:"
-#~ msgstr "_مستخدم:"
-
-#~ msgid "_Preferences"
-#~ msgstr "_تفضيلات"
-
-#~ msgid "_Setup Login Screen"
-#~ msgstr "شاشة _تثبيت الولوج."
-
-#~ msgid "Missing Required File"
-#~ msgstr "الملف المطلوب مفقود"
-
-#~ msgid ""
-#~ "The User Selector's interfaces file, `%s', could not be opened. It is "
-#~ "likely that this application was not properly installed or configured."
-#~ msgstr ""
-#~ "لا يمكن فتح ملف واجهات منتقي المستخدم، `%s'. يبدو أنه لم يتم تثبيت أو "
-#~ "إعداد هذا البرنامج بصورة صحيحة."
-
-#~ msgid "Users"
-#~ msgstr "مستخدمون"
-
-#~ msgid "Other"
-#~ msgstr "آخر"
-
-#~ msgid "<span weight=\"bold\" size=\"larger\">Multiple Logins Found</span>"
-#~ msgstr "<span weight=\"bold\" size=\"larger\">ولوجات متعددة موجودة</span>"
-
-#~ msgid "Appearance"
-#~ msgstr "المظهر"
-
-#~ msgid "Continue"
-#~ msgstr "تابع"
-
-#~ msgid "Create new logins in _nested windows"
-#~ msgstr "انشئ ولوجات جديدة في نوافذ _معششة"
-
-#~ msgid "Details"
-#~ msgstr "التّفاصيل"
-
-#~ msgid "Multiple Logins Found - User Switcher"
-#~ msgstr "وُجِدَت ولوجات متعددة - مبدّل المستخدم"
-
-#~ msgid "Options"
-#~ msgstr "خيارات"
-
-#~ msgid "Some preferences have been locked by the system adminstrator."
-#~ msgstr "أقفل مدير النظام بعض التفضيلات."
-
-#~ msgid ""
-#~ "The user you want to switch to is logged in multiple times on this "
-#~ "computer. Which login do you want to switch to?"
-#~ msgstr ""
-#~ "المستخدم الذي تريد التبديل إليه ولج عدة مرات في هذا الحاسوب. أي ولوج تريد "
-#~ "التبديل إليه؟"
-
-#~ msgid "Use the `people' icon for the menu title"
-#~ msgstr "استعمل أيقونة `أشخاص' لعنوان القائمة"
-
-#~ msgid "Use the current user's name for the menu title"
-#~ msgstr "استعمل اسم المستخدم الحالي لعنوان القائمة"
-
-#~ msgid "Use the word `Users' as the menu title"
-#~ msgstr "استعمل الكلمة `مستخدمون' كعنوان للقائمة"
-
-#~ msgid "User Switcher Error"
-#~ msgstr "خطأ في مبدّل المستخدم"
-
-#~ msgid "User Switcher Preferences"
-#~ msgstr "تفضيلات مبدّل المستخدم"
-
-#~ msgid ""
-#~ "When a new login must be created to switch users, create it in a window "
-#~ "instead of on a new screen"
-#~ msgstr ""
-#~ "عندما يجب إنشاء ولوج جديد لتبديل المستخدمين، قُم بإنشائه في نافذة عوض شاشة "
-#~ "جديدة."
-
-#~ msgid ""
-#~ "When changing to a different display, activate the screensaver for this "
-#~ "display."
-#~ msgstr "عند التغيير إلى معراض آخر، قم بتفعيل حافظة الشاشة لهذا المعراض."
-
-#~ msgid "_Lock the screen after switching users"
-#~ msgstr "_اقفل الشاشة بعد تبديل المستخدمين"
-
-#~ msgid "Display Style"
-#~ msgstr "أسلوب العرض"
-
-#~ msgid "Lock Screen After Switch"
-#~ msgstr "اقفل الشاشة بعد التبديل "
-
-#~ msgid "Show \"Login Window\" Menuitem"
-#~ msgstr "اظهر عنصر القائمة \"نافذة الولوج\" "
-
-#~ msgid "Show \"Other\" Menuitem"
-#~ msgstr "اظهر عنصر القائمة \"آخر\" "
-
-#~ msgid "Show Active Users Only"
-#~ msgstr "اظهر المستخدمين النشطين فقط"
-
-#~ msgid ""
-#~ "Specifies how to display the applet in the panel. Use \"username\" to "
-#~ "display the current user's name, \"icon\" to show the people icon, or "
-#~ "\"text\" to use the word `Users.'"
-#~ msgstr ""
-#~ "يحدد كيفية عرض البريمج في اللوحة. استعمل \"username\" لإظهار اسم المستخدم "
-#~ "الحالي،  \"icon\" لإظهار أيقونة الأشخاص، أو \"text\" لاستعمال الكلمة "
-#~ "`مستخدمين.'"
-
-#~ msgid "Use Xnest"
-#~ msgstr "استعمل Xnest"
-
-#~ msgid ""
-#~ "When to show the \"Login Window\" item. Possible values include: \"always"
-#~ "\" to always show the item, \"never\" to never show the item, and \"auto"
-#~ "\" (the default) to show the item when the applet is in Xnest mode."
-#~ msgstr ""
-#~ "متى يتم إظهار العنصر  \"نافذة الولوج\". القيم الممكنة: \"always\" لإظهاره "
-#~ "دوما، \"never\" لعدم إظهاره أبدا، و \"auto\" (الخيار الافتراضيي) لإظهاره "
-#~ "عندما يكون البريمج في وضع Xnest."
-
-#~ msgid ""
-#~ "When to show the \"Other\" item. Possible values include: \"always\" to "
-#~ "always show the item, \"never\" to never show the item, and \"auto\" (the "
-#~ "default) to show the item when the applet is in console (not Xnest) mode."
-#~ msgstr ""
-#~ "متى يتم إظهار العنصر  \"آخر\". من القيم الممكنة: \"always\" لإظهاره دوما، "
-#~ "\"never\" لعدم إظهاره أبدا، و \"auto\" (الخيار الافتراضيي) لإظهاره عندما "
-#~ "يكون البريمج في وضع الكونسول (ليس Xnest)."
-
-#~ msgid ""
-#~ "Whether or not to create new Xnest windows instead of spawning new "
-#~ "consoles when switching users."
-#~ msgstr ""
-#~ "ما إذا كان يفترض إنشاء نوافذ Xnest جديدة عوضا عن توليد كونسولات جديدة عند "
-#~ "تبديل المستخدمين."
-
-#~ msgid ""
-#~ "Whether or not to lock the screen after switching to a different console."
-#~ msgstr "ما إذا كان يفترض إقفال الشاشة بعد التبديل لكونسول آخر."
-
-#~ msgid ""
-#~ "Whether to show only users who are currently logged in, or all users."
-#~ msgstr ""
-#~ "ما إذا كان يفترض إظهار المستخدمين الوالجين الحاليين فقط، أو كل المستخدمين."
-
-#~ msgid "User Switcher 2"
-#~ msgstr "مبدّل المستخدم 2"
-
-#, fuzzy
-#~ msgid ""
-#~ "session log '%s' is not a normal file, logging session to '%s' instead.\n"
-#~ msgstr ""
-#~ "session log '%s' is not a normal file, logging session to '%s' instead.\n"
-
-#~ msgid "unable to log session"
-#~ msgstr "لا يمكن تسجيل الجلسة"
-
-#~ msgid "Prompt:"
-#~ msgstr "المُحِث:"
-
-#, fuzzy
-#~ msgid "Tue Oct 23 21:16:50 EDT 2007"
-#~ msgstr "Tue Oct 23 21:16:50 EDT 2007"
-
-#~ msgid "Login with the same session as last time."
-#~ msgstr "الولوج بنفس جلسة آخر مرة."
-
-#~ msgid "Legacy"
-#~ msgstr "الموروث"
-
-#~ msgid "Login based on preset legacy configuration"
-#~ msgstr "الولوج اعتمادا على تهيئة مُعينة مسبقا موروثة "
-
-#~ msgid "_Session:"
-#~ msgstr "الجل_سة:"
-
-#~ msgid "IP Address"
-#~ msgstr "عنوان الشبكة"
-
-#~ msgid "Network status"
-#~ msgstr "حالة الشبكة"
-
-#~ msgid "page 1"
-#~ msgstr "الصّفحة 1"
-
-#~ msgid "page 2"
-#~ msgstr "الصّفحة 2"
-
-#~ msgid "page 3"
-#~ msgstr "الصّفحة 3"
-
-#~ msgid "page 4"
-#~ msgstr "الصّفحة 4"
-
-#, fuzzy
-#~ msgid "Manager X Settings"
-#~ msgstr "إعدادات الخادم"
-
-#, fuzzy
-#~ msgid "X Settings"
-#~ msgstr "إعدادات الخادم"
-
-#~ msgid "System Default"
-#~ msgstr "إفتراضي النظام"
-
-#~ msgid "%s: Could not write new authorization entry: %s"
-#~ msgstr "%s:لم أتمكن من كتابة مُدْخَل تخويل جديد: %s"
-
-#~ msgid ""
-#~ "%s: Could not write new authorization entry.  Possibly out of diskspace"
-#~ msgstr ""
-#~ "%s: لم أتمكن من كتابة مُدْخَل تخويل جديد, من المحتمل بسبب نفاذ مساحة القرص"
-
-#~ msgid "Can't open %s for writing"
-#~ msgstr "لا يمكن فتح %s للكتابة"
-
-#, fuzzy
-#~ msgid "Cannot safely open %s"
-#~ msgstr "%s: لا يمكن فتح %s بأمان"
-
-#, fuzzy
-#~ msgid "Could not write new authorization entry: %s"
-#~ msgstr "%s:لم أتمكن من كتابة مُدْخَل تخويل جديد: %s"
-
-#~ msgid "Didn't understand `%s' (expected integer)"
-#~ msgstr "لم أفهم `%s' (توقعت عدد صحيح)"
-
-#~ msgid "Integer `%s' is too large or small"
-#~ msgstr "العدد الصحيح `%s' كبير أو صغير جدا"
-
-#~ msgid "Didn't understand `%s' (expected true or false)"
-#~ msgstr "لم أفهم `%s' (توقعت صحيح أو خطأ)"
-
-#~ msgid "Text contains invalid UTF-8"
-#~ msgstr "يحتوي النص على  UTF-8 غير سليم"
-
-#~ msgid "Common Desktop Environment (CDE)"
-#~ msgstr "بيئة المكتب العامة  ب‌م‌ع (CDE)"
-
-#~ msgid "This session logs you into CDE"
-#~ msgstr "تسجلك هذه الجلسة في ب‌م‌ع"
-
-#~ msgid "Run Xclient script"
-#~ msgstr "شغّل مخطوط Xclient"
-
-#~ msgid "This session runs the Xclients script"
-#~ msgstr "تشغّل هذه الجلسة مخطوط Xclient"
-
-#~ msgid ""
-#~ "Failed to start the X server (your graphical interface).  It is likely "
-#~ "that it is not set up correctly.  You will need to log in on a console "
-#~ "and reconfigure the X server.  Then restart GDM."
-#~ msgstr ""
-#~ "لا يمكنني تشغيل خادم X (واجهتك الرسومية). يبدو أنه لم يتم تثبيته بشكل "
-#~ "صحيح. ستحتاج للولوج في شاشة طرفية (console) و إعادة تشغيل برنامج إعداد X. "
-#~ "ثم اعد تشغيل م‌ع‌ج."
-
-#~ msgid ""
-#~ "Would you like to try to configure the X server?  Note that you will need "
-#~ "the root password for this."
-#~ msgstr ""
-#~ "هل تريد مني محاولة إعداد خادم X؟ لاحظ أنك ستحتاج إلى كلمة سر الجذر لهذه "
-#~ "العملية."
-
-#~ msgid "Please type in the root (privileged user) password."
-#~ msgstr "رجاء أدخل كلمة سر الجذر (المستخدم ذي الإمتيازات)."
-
-#~ msgid "Trying to restart the X server."
-#~ msgstr "يجري محاولة إعادة تشغيل خادم X."
-
-#~ msgid ""
-#~ "The X server is now disabled.  Restart GDM when it is configured "
-#~ "correctly."
-#~ msgstr "خادم X معطل من الآن. أعد تشغيل م‌ع‌ج بعد إعداده بطريقة صحيحة."
-
-#~ msgid ""
-#~ "Failed to start the X server (your graphical interface).  It is likely "
-#~ "that it is not set up correctly.  Would you like to view the X server "
-#~ "output to diagnose the problem?"
-#~ msgstr ""
-#~ "لا يمكنني تشغيل خادم X (واجهتك الرسومية). يبدو أنه لم يُعَدّ بشكل سليم. هل "
-#~ "تريد عرض خَرْج خادم X لتشخيص المشكلة؟"
-
-#~ msgid "Would you like to view the detailed X server output as well?"
-#~ msgstr "هل تريد·كذلك عرض الخَرْج المفصل لخادم X؟"
-
-#~ msgid ""
-#~ "Failed to start the X server (your graphical interface).  It seems that "
-#~ "the pointer device (your mouse) is not set up correctly.  Would you like "
-#~ "to view the X server output to diagnose the problem?"
-#~ msgstr ""
-#~ "لا يمكنني تشغيل خادم X (واجهتك الرسومية). يبدو أن جهاز المؤشر (الفأرة) لم "
-#~ "يعد بشكل صحيح. هل ترغب في عرض خَرْج خادم X لتشخيص المشكلة؟"
-
-#~ msgid ""
-#~ "Would you like to try to configure the mouse?  Note that you will need "
-#~ "the root password for this."
-#~ msgstr ""
-#~ "هل ترغب محاولة إعداد الفأرة؟ لاحظ أنك ستحتاج إلى كلمة سر الجذر لهذه "
-#~ "العملية."
-
-#~ msgid ""
-#~ "System has no Xclients file, so starting a failsafe xterm session.  "
-#~ "Windows will have focus only if the mouse pointer is above them.  To get "
-#~ "out of this mode type 'exit' in the window."
-#~ msgstr ""
-#~ "ليس للنظام ملف Xclients و لذلك شغلت جلسة xterm الآمنة من الفشل. لن تركز "
-#~ "النوافذ إلا عندما يكون المؤشر فوقها. للخروج من هذا النمط اكتب 'exit' في "
-#~ "النافذة."
-
-#~ msgid ""
-#~ "Failed to start the session, so starting a failsafe xterm session.  "
-#~ "Windows will have focus only if the mouse pointer is above them.  To get "
-#~ "out of this mode type 'exit' in the window."
-#~ msgstr ""
-#~ "لم يمكنني تشغيل الجلسة و لذلك شغلت جلسة xterm الآمنة من الفشل. لن تركز "
-#~ "النوافذ إلا عندما يكون المؤشر فوقها. للخروج من هذا النمط اكتب 'exit' في "
-#~ "النافذة."
-
-#~ msgid "GNOME"
-#~ msgstr "جنوم"
-
-#~ msgid "This session logs you into GNOME"
-#~ msgstr "تسجلك هذه الجلسة في جنوم"
-
-#~ msgid "Secure Remote connection"
-#~ msgstr "اتصال بعيد مؤمن"
-
-#~ msgid "This session logs you into a remote host using ssh"
-#~ msgstr "تسجلك هذه الجلسة في مستضيف بعيد باستخدام ssh"
-
-#~ msgid ""
-#~ "GDM could not write a new authorization entry to disk.  Possibly out of "
-#~ "diskspace.%s%s"
-#~ msgstr ""
-#~ "لم يتمكن م‌ع‌ج من كتابة مُدْخَل تخويل جديد على قرصك. من المحتمل بسبب نفاذ "
-#~ "مساحة القرص.%s%s"
-
-#~ msgid "%s: Could not make new cookie file in %s"
-#~ msgstr "%s: لم يمكن إنشاء ملف كوكي جديد في %s"
-
-#~ msgid "%s: Could not open cookie file %s"
-#~ msgstr "%s: لم يمكن فتح ملف الكوكي %s"
-
-#~ msgid "%s: Could not lock cookie file %s"
-#~ msgstr "%s:لم يمكن قفل ملف الكوكي %s"
-
-#~ msgid "%s: Could not write cookie"
-#~ msgstr "%s: لم يمكن كتابة الكوكي"
-
-#~ msgid "%s: Ignoring suspiciously looking cookie file %s"
-#~ msgstr "%s: تجاهل ملف كوكي مريب %s"
-
-#~ msgid ""
-#~ "The display server has been shut down about 6 times in the last 90 "
-#~ "seconds. It is likely that something bad is going on.  Waiting for 2 "
-#~ "minutes before trying again on display %s."
-#~ msgstr ""
-#~ "أُطفِأ خادم العرض ستة مرّات في التسعين دقيقة الآخيرة، يبدو أن شيئا سيئاً "
-#~ "يحدث. سأنتظر دقيقتان قبل المحوالة مرة أخرى على العرض %s."
-
-#~ msgid "%s: Cannot create pipe"
-#~ msgstr "%s: لا يمكن إنشاء أنبوب"
-
-#~ msgid "%s: Failed forking GDM slave process for %s"
-#~ msgstr "%s:·فشل تشعيب عملية عبد لم‌ع‌ج من أجل %s"
-
-#~ msgid "%s not a regular file!\n"
-#~ msgstr "%s ليس ملفا اعتياديا!\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "... File too long to display ...\n"
-#~ msgstr ""
-#~ "\n"
-#~ "...·الملف طويل جدا لدرجة لا تسمح بعرضه ...\n"
-
-#~ msgid "%s could not be opened"
-#~ msgstr "%s لم يمكن فتحه"
-
-#~ msgid "%s: Cannot fork to display error/info box"
-#~ msgstr "%s: لا يمكن التشعيب لعرض صندوق المعلومات/الأخطاء"
-
-#~ msgid "%s: Priority out of bounds; changed to %d"
-#~ msgstr "%s: أولوية زائدة عن الحد، تم تغييرها إلى %Id"
-
-#~ msgid "%s: Empty server command; using standard command."
-#~ msgstr "%s: أمر خادم فارغ، يجري استخدام الأمر القياسي"
-
-#~ msgid ""
-#~ "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
-#~ "does not exist. Please correct GDM configuration and restart GDM."
-#~ msgstr ""
-#~ "دليل تصاريح الخادم (daemon/ServAuthDir) ضبط لـ %s لكنه غير موجود. رجاء "
-#~ "صحح إعداد م‌ع‌ج ثم أعد تشغيل م‌ع‌ج."
-
-#~ msgid ""
-#~ "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
-#~ "is not a directory. Please correct GDM configuration and restart GDM."
-#~ msgstr ""
-#~ "دليل تراخيص الخادم (daemon/ServAuthDir) مضبوط لـ %s لكن هذا ليس بدليل. "
-#~ "رجاء اصلح إعداد م‌ع‌ج ثم أعد تشغيل م‌ع‌ج."
-
-#~ msgid "%s: BaseXsession empty; using %s"
-#~ msgstr "%s:·BaseXsession فارغة، سيستخدم %s"
-
-#~ msgid "%s: Standard X server not found; trying alternatives"
-#~ msgstr "%s: تعذر ايجاد خادم X القياسي، يجري تجربة البدائل"
-
-#~ msgid "%s: No greeter specified."
-#~ msgstr "%s: لم يحدد مُرِحّب."
-
-#~ msgid "%s: No remote greeter specified."
-#~ msgstr "%s: لم يحدد مُرَحِّب بعيد."
-
-#~ msgid "%s: No sessions directory specified."
-#~ msgstr "%s:لم يحدد دليل جلسات."
-
-#~ msgid ""
-#~ "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
-#~ msgstr "%s: مُكِّن XDMCP برغم انعدام دعمه، يجري تعطيله"
-
-#~ msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
-#~ msgstr "%s: عُطِّل XDMCP ولا يوجد خادم محلي معرف.إلغاء! "
-
-#~ msgid ""
-#~ "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to "
-#~ "allow configuration!"
-#~ msgstr ""
-#~ "%s:  عُطِّل XDMCP ولم تحدد أي خوادم محلية يجري إضافة %s على :%Id لتمكين "
-#~ "الإعداد!"
-
-#~ msgid ""
-#~ "XDMCP is disabled and GDM cannot find any static server to start.  "
-#~ "Aborting!  Please correct the configuration and restart GDM."
-#~ msgstr ""
-#~ "عُطِّل XDMCP ولم يعثر م‌ع‌ج على أي خادم محلي للبدء.  إلغاء!  الرجاء تصحيح "
-#~ "الإعدادات %s وإعادة تشغيل م‌ع‌ج."
-
-#~ msgid ""
-#~ "The GDM user '%s' does not exist. Please correct GDM configuration and "
-#~ "restart GDM."
-#~ msgstr "مستخدم م‌ع‌ج '%s' غير موجود. رجاء صحح إعدادات م‌ع‌ج ثم أعد تشغيل م‌ع‌ج."
-
-#~ msgid ""
-#~ "The GDM user is set to be root, but this is not allowed since it can pose "
-#~ "a security risk.  Please correct GDM configuration and restart GDM."
-#~ msgstr ""
-#~ "مستخدم م‌ع‌ج ضبط كجذر، لكن ذلك ممنوع لكونه قد يشكل خطرا أمنيا.رجاء صحح "
-#~ "إعداد م‌ع‌ج ثم أعدة تشغيل م‌ع‌ج."
-
-#~ msgid ""
-#~ "The GDM group '%s' does not exist. Please correct GDM configuration and "
-#~ "restart GDM."
-#~ msgstr "مجموعة  م‌ع‌ج '%s' غير موجودة. رجاء صحح إعداد م‌ع‌ج ثم أعد تشغيل م‌ع‌ج."
-
-#~ msgid ""
-#~ "The GDM group is set to be root, but this is not allowed since it can "
-#~ "pose a security risk. Please correct GDM configuration and restart GDM."
-#~ msgstr ""
-#~ "مجموعة م‌ع‌ج ضبطت لتكون جذر، لكن ذلك ممنوع لكونه قد يشكل خطرا أمنيا. رجاء "
-#~ "تصحيح إعداد م‌ع‌ج ثم أعد تشغيل م‌ع‌ج."
-
-#~ msgid ""
-#~ "Server Authorization directory (daemon/ServAuthDir) is set to %s but is "
-#~ "not owned by user %d and group %d. Please correct the ownership or GDM "
-#~ "configuration and restart GDM."
-#~ msgstr ""
-#~ "دليل توثيق الخادم (daemon/ServAuthDir) مضبوط لـ %s لكن ليس ملكا للمستخدم %"
-#~ "Id و المجموعة %Id. رجاءا صحح الملكية أو إعدادات م‌ع‌ج ثم أعِد تشغيل م‌ع‌ج."
-
-#~ msgid ""
-#~ "Server Authorization directory (daemon/ServAuthDir) is set to %s but has "
-#~ "the wrong permissions: it should have permissions of %o. Please correct "
-#~ "the permissions or the GDM configuration and restart GDM."
-#~ msgstr ""
-#~ "دليل تصاريح الخادم (daemon/ServAuthDir) مضبوط لـ %s لكن التصاريح خاطئة، "
-#~ "يجب أن يملك التصاريح %o. رجاء صحح التصاريح أو إعدادات م‌ع‌ج ثم إعادة تشغيل "
-#~ "م‌ع‌ج."
-
-#~ msgid "%s: Could not make socket"
-#~ msgstr "%s:لا يمكن انشاء مقبس "
-
-#~ msgid "%s: Could not bind socket"
-#~ msgstr "%s: لا يمكن ربط المقبس"
-
-#~ msgid "%s: Could not make FIFO"
-#~ msgstr "%s: لا يمكن انشاء FIFO"
-
-#~ msgid "%s: Could not open FIFO"
-#~ msgstr "%s:لم استطع فتح FIFO"
-
-#~ msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
-#~ msgstr ""
-#~ "لا يمكن كتابة ملف الـ PID %s، ربما لعدم وجود فضاء على القرص. خطأ: %s\n"
-
-#~ msgid "%s: fork () failed!"
-#~ msgstr "%s: فشل fork () !"
-
-#~ msgid "%s: setsid () failed: %s!"
-#~ msgstr "%s: فشل setsid() : %s!"
-
-#~ msgid "%s: Trying failsafe X server %s"
-#~ msgstr "%s: يجري محاولة  تشغيل خادم X الآمن من الفشل %s"
-
-#~ msgid "%s: Running the XKeepsCrashing script"
-#~ msgstr "%s: يجري تشغيل XKeepsCrashing script"
-
-#~ msgid ""
-#~ "The X server (your graphical interface) cannot be started.  It is likely "
-#~ "that it is not set up correctly.  You will need to log in on a console "
-#~ "and rerun the X configuration application, then restart GDM."
-#~ msgstr ""
-#~ "لا يمكنني تشغيل خادم X (واجهتك الرسومية). يبدو أنه لم يتم ضبطه بشكل صحيح. "
-#~ "ستحتاج للولوج في شاشة طرفية (console) و إعادة تشغيل برنامج إعداد X. ثم "
-#~ "اعد تشغيل م‌ع‌ج."
-
-#~ msgid ""
-#~ "Failed to start X server several times in a short time period; disabling "
-#~ "display %s"
-#~ msgstr "فشل تشغيل خادم X للعديد من المرات في وقت قصير، سيُعَطّل العرض %s"
-
-#~ msgid "Master suspending..."
-#~ msgstr "يجري تعليق السيد..."
-
-#~ msgid "System is restarting, please wait ..."
-#~ msgstr "النظام بصدد إعادة التشغيل، رجاء الانتظار ..."
-
-#~ msgid "System is shutting down, please wait ..."
-#~ msgstr "النظام بصدد الإطفاء، رجاء الانتظار ..."
-
-#~ msgid "Master halting..."
-#~ msgstr "يجري ايقاف السيد..."
-
-#~ msgid "Restarting computer..."
-#~ msgstr "يجري إعادة تشغيل الحاسوب..."
-
-#~ msgid "custom_cmd: Custom command index %ld outside permitted range [0,%d)"
-#~ msgstr "custom_cmd: فهرس الأمر المخصّص %ld خارج المدى المسموح [0,%Id)"
-
-#~ msgid "Executing custom command %ld with restart option..."
-#~ msgstr "يجري تنفيذ الأمر المخصّص %ld مع خيار إعادة التشغيل..."
-
-#~ msgid "%s: Execution of custom command failed: %s"
-#~ msgstr "%s: فشل تنفيذ الأمر المخصّص: %s"
-
-#~ msgid "Executing custom command %ld with no restart option ..."
-#~ msgstr "يجري تنفيذ الأمر المخصّص %ld بدون خيار إعادة التشغيل..."
-
-#~ msgid "custom_cmd: forking process for custom command %ld failed"
-#~ msgstr "custom_cmd: فشل تشعيب عمليّة الأمر المخصّص %ld "
-
-#~ msgid "custom_cmd: child %d returned %d"
-#~ msgstr "custom_cmd: أرجع %Id الإبن %Id"
-
-#~ msgid ""
-#~ "Restart GDM, Restart machine, Suspend, or Halt request when there is no "
-#~ "system menu from display %s"
-#~ msgstr ""
-#~ "طلب اعادة تشغيل م‌ع‌ج، أو إعادة تشغيل الجهاز، أو الإطفاء عند عدم وجود قائمة "
-#~ "نظام من قِبَل العرض %s"
-
-#~ msgid ""
-#~ "Restart GDM, Restart machine, Suspend or Halt request from a non-static "
-#~ "display %s"
-#~ msgstr ""
-#~ "طلب إعادة تشغيل م‌ع‌ج، أو إعادة تشغيل الجهاز، أو الإطفاء من عرض غير محلي %s"
-
-#~ msgid "%s: Aborting display %s"
-#~ msgstr "%s: إجهاض العرض %s"
-
-#~ msgid "GDM restarting ..."
-#~ msgstr "يجري إعادة تشغيل م‌ع‌ج..."
-
-#~ msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
-#~ msgstr "المراقب الرئيسي: تلقي SIGABRT، حدث شيئا خاطئ جدا. سيوقف الحاسوب!"
-
-#~ msgid "Do not fork into the background"
-#~ msgstr "لا تشعب إلى الخلفية"
-
-#~ msgid "Preserve LD_* variables"
-#~ msgstr "حافظ على متغيرات LD_* "
-
-#~ msgid "Start the first X server but then halt until we get a GO in the fifo"
-#~ msgstr "ابدأ خادم X الأول ثم الإيقاف حتى نتلقّى GO في الـ fifo"
-
-#~ msgid "- The GNOME login manager"
-#~ msgstr "- مدير ولوج جنوم"
-
-#~ msgid "%s: Error setting up %s signal handler: %s"
-#~ msgstr "%s: خطأ ضبط معالج الإشارات %s: %s"
-
-#~ msgid "GDM already running. Aborting!"
-#~ msgstr "م‌ع‌ج يعمل بالفعل. إلغاء!"
-
-#~ msgid "%s: Error setting up CHLD signal handler"
-#~ msgstr "%s:·خطأ·ضبط·معالج·إشارات CHLD"
-
-#~ msgid "DYNAMIC request denied: Not authenticated"
-#~ msgstr "رفض طلب DYNAMIC: غير موثّق"
-
-#~ msgid "%s request denied: Not authenticated"
-#~ msgstr "%s رُفِض الطلب: غير موثّقن"
-
-#~ msgid "Unknown server type requested; using standard server."
-#~ msgstr "طُلِب نوع خادم مجهول، سيستخدم الخادم القياسي."
-
-#~ msgid ""
-#~ "Requested server %s not allowed to be used for flexible servers; using "
-#~ "standard server."
-#~ msgstr "ممنوع استخدام الخادم المطلوب %s كخادم مرن، سيستخدم الخادم القياسي."
-
-#~ msgid "y = Yes or n = No? >"
-#~ msgstr "ن = نعم أو ل = لا؟ >"
-
-#~ msgid "Could not setgid %d. Aborting."
-#~ msgstr "لم يمكن ضبط gid %Id. إلغاء."
-
-#~ msgid "initgroups () failed for %s. Aborting."
-#~ msgstr "فشل initgroups () ل %s. إلغاء."
-
-#~ msgid "%s: Error setting signal %d to %s"
-#~ msgstr "%s: خطأ في ضبط الإشارة %Id لـ %s"
-
-#~ msgid ""
-#~ "Last login:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "الولوج الأخير:\n"
-#~ "%s"
-
-#~ msgid "Can not start fallback console"
-#~ msgstr "لا يمكن تشغيل الكونسول الإحتياطي"
-
-#~ msgid ""
-#~ "There already appears to be an X server running on display %s.  Should "
-#~ "another display number by tried?  Answering no will cause GDM to attempt "
-#~ "starting the server on %s again.%s"
-#~ msgstr ""
-#~ "يبدو أن هناك خادم X يعمل بالفعل على العرض %s.  هل ترغب مني محاولة رقم عرض "
-#~ "آخر؟ إذا كانت إجابتك لا، فسأحاول تشغيل الخادم على %s مرة أخرى.%s"
-
-#~ msgid ""
-#~ "  (You can change consoles by pressing Ctrl-Alt plus a function key, such "
-#~ "as Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 "
-#~ "and higher.)"
-#~ msgstr ""
-#~ "  (يمكنك تغيير الكونسول بنقر Ctrl-Alt مع مفتاح و ظيفة، مثل Ctrl-Alt-F7 "
-#~ "للذهاب للكونسول 7. خوادم X تعمل عادة على كونسول 7 فما فوق.)"
-
-#~ msgid "Display '%s' cannot be opened by nested display"
-#~ msgstr "لا يمكن فتح العرض '%s' من قبل العرض المعشّش"
-
-#~ msgid "Display %s is busy. There is another X server running already."
-#~ msgstr "العرض %s مشغول. هناك خادم X آخر يعمل بالفعل."
-
-#~ msgid "%s: Error opening a pipe: %s"
-#~ msgstr "%s: خطأ فتح أنبوب: %s"
-
-#~ msgid "%s: Cannot find a free display number"
-#~ msgstr "%s: لا يمكن ايجاد رقم عرض شاغر"
-
-#~ msgid "%s: Display %s busy.  Trying another display number."
-#~ msgstr "%s: العرض %s مشغول.  يجري محاولة رقم عرض آخر."
-
-#~ msgid "Invalid server command '%s'"
-#~ msgstr "أمر خادم غير سليم '%s'"
-
-#~ msgid "Server name '%s' not found; using standard server"
-#~ msgstr "اسم الخادم '%s' غير موجود، سيستعمل الخادم القياسي"
-
-#~ msgid "%s: Xserver not found: %s"
-#~ msgstr "%s: لم يوجد خادم X: %s"
-
-#~ msgid "%s: Can't fork Xserver process!"
-#~ msgstr "%s: X!لا يمكن تشعيب عملية خادم"
-
-#~ msgid "Can't set EGID to user GID"
-#~ msgstr "لا يمكن ضبط EGID لهوية مجموعة المستخدم"
-
-#~ msgid "Can't set EUID to user UID"
-#~ msgstr "لا يمكن ضبط EUID لهوية المستخدم"
-
-#~ msgid ""
-#~ "You are already logged in.  You can log in anyway, return to your "
-#~ "previous login session, or abort this login"
-#~ msgstr ""
-#~ "لقد ولجت بالفعل.  يمكنك الولوج على أي حال أو العودة إلى جلستك المسجّل "
-#~ "عليها سابقا أو إلغاء هذا الولوج"
-
-#~ msgid "Return to previous login"
-#~ msgstr "ارجع للولوج السابق"
-
-#~ msgid "Abort login"
-#~ msgstr "إلغاء الولوج"
-
-#~ msgid ""
-#~ "You are already logged in.  You can log in anyway or abort this login"
-#~ msgstr "لقد ولجْت بالفعل.  يمكنك إعادة الولوج أو إلغاء هذا الولوج"
-
-#~ msgid "%s: cannot fork"
-#~ msgstr "%s: لا يمكن التشعيب"
-
-#~ msgid "%s: cannot open display %s"
-#~ msgstr "%s: لا يمكن فتح العرض%s"
-
-#~ msgid ""
-#~ "Could not access configuration file (custom.conf). Make sure that the "
-#~ "file exists before launching  login manager config utility."
-#~ msgstr ""
-#~ "لا يمكن الوصول لملف الإعدادات (custom.conf). تأكد من أن النلف موجود قبل "
-#~ "تشغيل أداة إعداد مدير الولوج."
-
-#~ msgid ""
-#~ "Could not execute the configuration application.  Make sure its path is "
-#~ "set correctly in the configuration file.  Attempting to start it from the "
-#~ "default location."
-#~ msgstr ""
-#~ "لا يمكن تنفيذ برنامج الإعداد. تأكد من المسار مضبوط بدقة في ملف الإعدادات. "
-#~ "سأحاول تشغيله من الموقع الإفتراضي."
-
-#~ msgid ""
-#~ "Could not execute the configuration application.  Make sure its path is "
-#~ "set correctly in the configuration file."
-#~ msgstr ""
-#~ "لا يمكن تشغيل برنامج الإعداد. تأكد من أن المسار مضبوط بدقة في ملف "
-#~ "الإعدادات."
-
-#~ msgid "You must authenticate as root to run configuration."
-#~ msgstr "يجب توثيقك كجذرلتشغيل الإعداد."
-
-#~ msgid ""
-#~ "Login sound requested on non-local display or the play software cannot be "
-#~ "run or the sound does not exist."
-#~ msgstr ""
-#~ "لم يمكن تشغيل صوت الولوج المطلوب على عرض غير محلية أ لا يمكن تشغيل  "
-#~ "البرنامج اذضي يعزفه او أن الصوت غير موجو.د"
-
-#~ msgid "%s: Can't init pipe to gdmgreeter"
-#~ msgstr "%s: لا مكن بدء انبوب لمرحب م‌ع‌ج"
-
-#~ msgid ""
-#~ "No servers were defined in the configuration file and XDMCP was "
-#~ "disabled.  This can only be a configuration error.  GDM has started a "
-#~ "single server for you.  You should log in and fix the configuration.  "
-#~ "Note that automatic and timed logins are disabled now."
-#~ msgstr ""
-#~ "لم يعرَّف أي خادم في ملف الإعدادات كماعُطِّل  XDMCP. لا يمكن أن يكون ذلك إلا "
-#~ "خطأ إعداد .لقد شغّل لك م‌ع‌ج  خادما واحدا يجدر بك أن.تلِج وتصحح الإعداد. لاحظ "
-#~ "أن الولوج التلقائي و المؤقت بوقت معطلان الآن."
-
-#~ msgid ""
-#~ "Could not start the regular X server (your graphical environment) and so "
-#~ "this is a failsafe X server.  You should log in and properly configure "
-#~ "the X server."
-#~ msgstr ""
-#~ "لا يمكن تشغيل خادم X الإعتيادي (بيئتك الرسومية) و بالتالي فهذا خادم X آمن "
-#~ "من الفشل.يجب عليك الولوج و إعداد خادم X بشكل صحيح."
-
-#~ msgid ""
-#~ "The specified display number was busy, so this server was started on "
-#~ "display %s."
-#~ msgstr "رقم العرض المذكور مشغول،لذلك بُدِأل الخادم على اعرضة %s."
-
-#~ msgid ""
-#~ "The greeter application appears to be crashing. Attempting to use a "
-#~ "different one."
-#~ msgstr "يبدو أن تطبيق المُرحِّب ينهار. سأحاول إستخدام برنامج آخر."
-
-#~ msgid ""
-#~ "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
-#~ msgstr "%s: ·لا يكن بدأ تشغيل المرحّب بوحدات gtk:  %s. سأحاول دون وحدات"
-
-#~ msgid "%s: Cannot start greeter trying default: %s"
-#~ msgstr "%s: لا يمكن تشغيل المرحب سأحاول الإفتراضي: %s"
-
-#~ msgid ""
-#~ "Cannot start the greeter application; you will not be able to log in.  "
-#~ "This display will be disabled.  Try logging in by other means and editing "
-#~ "the configuration file"
-#~ msgstr ""
-#~ "لا يمكن تشغيل برنامج الترحيب،لن يمكنك الولوج. سيُعَطل هذا العرض. حاول "
-#~ "الولوج بطرق أخرى و تحرير ملف الإعدادات"
-
-#~ msgid "%s: Error starting greeter on display %s"
-#~ msgstr "%s: خطأ أثناء تشغيل المرحب على العرض %s"
-
-#~ msgid "%s: Can't fork gdmgreeter process"
-#~ msgstr "%s: لا يمكن تشعيب عملية مرحب م‌ع‌ج"
-
-#~ msgid "%s: Can't open fifo!"
-#~ msgstr "%s: لا يمكن فتح fifo!"
-
-#~ msgid "%s: Can't init pipe to gdmchooser"
-#~ msgstr "%s: لا يمكن بدء أنبوب لمرحب م‌ع‌ج"
-
-#~ msgid ""
-#~ "Cannot start the chooser application. You will probably not be able to "
-#~ "log in.  Please contact the system administrator."
-#~ msgstr ""
-#~ "لا يمكن تشغيل برنامج المخيّر. قد لا يمكنك الولوج. رجاء إتصّل بمدير نظامك."
-
-#~ msgid "%s: Error starting chooser on display %s"
-#~ msgstr "%s: خطأ أثناء تشغيل المخيِّر على العرض %s"
-
-#~ msgid "%s: Can't fork gdmchooser process"
-#~ msgstr "%s: لا يمكن تشعيب عملية مخَيِّر م‌ع‌ج"
-
-#~ msgid "%s: Could not open ~/.xsession-errors"
-#~ msgstr "%s: لا يمكن فتح ~/.xsession-errors"
-
-#~ msgid "%s: Execution of PreSession script returned > 0. Aborting."
-#~ msgstr "%s:·تنفيذ النص الشفري PreSession أرجع >·0.·إلغاء."
-
-#~ msgid "Language %s does not exist; using %s"
-#~ msgstr "الللغة %s غير موجودة، سأستخدم %s"
-
-#~ msgid "System default"
-#~ msgstr "إفتراضي النظام"
-
-#~ msgid "%s: Could not setup environment for %s. Aborting."
-#~ msgstr "%s: لم يمكن ضبط البيئة لـ %s. إلغاء"
-
-#~ msgid "%s: setusercontext () failed for %s. Aborting."
-#~ msgstr "%s: فشل setusercontext () لـ %s. إلغاء."
-
-#~ msgid "%s: Could not become %s. Aborting."
-#~ msgstr "%s: لم يمكن أن يصبح %s. إلغاء."
-
-#~ msgid ""
-#~ "No Exec line in the session file: %s.  Running the GNOME failsafe session "
-#~ "instead"
-#~ msgstr ""
-#~ "لا يوجد سطر Exec  في ملف الجلسة: %s. سيبدأ تنفيذ جنوم الآمن من الفشل عوضا "
-#~ "عنه"
-
-#~ msgid ""
-#~ "%s: Cannot find or run the base Xsession script.  Running the GNOME "
-#~ "failsafe session instead."
-#~ msgstr ""
-#~ "%s: لا يمكن ايجاد أو تشغيل النص الشفري لـ Xsession الأساسي. سأحاول جلسة "
-#~ "جنوم الآمنة من الفشل عوضا."
-
-#~ msgid ""
-#~ "Cannot find or run the base session script.  Running the GNOME failsafe "
-#~ "session instead."
-#~ msgstr ""
-#~ "لا يمكن ايجاد أو تشغيل النص الشفري الأساسي للجلسات. سأحاول جلسة جنوم "
-#~ "الآمنة من الفشل عوضا."
-
-#~ msgid ""
-#~ "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
-#~ msgstr "%s:  لم يوجد gnome-session لجلسة جنوم آمنة من الفشل، سأحاول xterm"
-
-#~ msgid ""
-#~ "Could not find the GNOME installation, will try running the \"Failsafe "
-#~ "xterm\" session."
-#~ msgstr "لم أجد جنوم مثبت، سأحاول تشغيل جلسة \"xterm الآمنة من الفشل\"."
-
-#~ msgid ""
-#~ "This is the Failsafe GNOME session.  You will be logged into the "
-#~ "'Default' session of GNOME without the startup scripts being run.  This "
-#~ "should be used to fix problems in your installation."
-#~ msgstr ""
-#~ "هذه جلسة جنوم الآمنة من الفشل.ستسجل دخول في جلسة جنوم الإفتراضية بدون "
-#~ "تشغيل نصوص بدأ التسغيل الشفرية. هذا فقط لإصلاح المشاكل في تثبيتك."
-
-#~ msgid "Cannot find \"xterm\" to start a failsafe session."
-#~ msgstr "لا يمكن ايجاد \"xterm\" لتشغيل جلسة آمنة من الفشل."
-
-#~ msgid ""
-#~ "This is the Failsafe xterm session.  You will be logged into a terminal "
-#~ "console so that you may fix your system if you cannot log in any other "
-#~ "way.  To exit the terminal emulator, type 'exit' and an enter into the "
-#~ "window."
-#~ msgstr ""
-#~ "هذه جلسة xterm الآمنة من الفشل .ستلِج في شاشة طرفية حتى تصلح نظامك إذا لم "
-#~ "يمكنك الولوج بأي طريقة أخرى.  للخروج من محاكي الطرفية، اكتب 'exit' في "
-#~ "النافذة ثم زر الإدخال."
-
-#~ msgid ""
-#~ "This is the Failsafe xterm session.  You will be logged into a terminal "
-#~ "console and be prompted to enter the password for root so that you may "
-#~ "fix your system if you cannot log in any other way. To exit the terminal "
-#~ "emulator, type 'exit' and an enter into the window."
-#~ msgstr ""
-#~ "هذه جلسة xterm الآمنة من الفشل .ستسجل في شاشة طرفية وستسأل إدخال كلمة سر "
-#~ "الجذر حتى تصلح نظامك إذا لم يمكنك التسجيل بأي طريقة أخرى.  للخروج من "
-#~ "محاكي الشاشة الطرفية، اكتب 'exit' في النافذة ثم زر الإدخال."
-
-#~ msgid ""
-#~ "The failsafe session is restricted to users who have been assigned the "
-#~ "root role. If you cannot log in any other way please contact your system "
-#~ "administrator"
-#~ msgstr ""
-#~ "تم حصر الجلسة الآمنة من الفشل للمستخدمين المعطي لهم دور الجذر. إذالم "
-#~ "يمكنك الولوج بطريق آخر فاتصل بمدير نظامك"
-
-#~ msgid "%s: User not allowed to log in"
-#~ msgstr "%s: مستخدم غير مسموح له بالولوج"
-
-#~ msgid "The system administrator has disabled your account."
-#~ msgstr "لقد عطّل مدير النظام حسابك."
-
-#~ msgid "Error! Unable to set executable context."
-#~ msgstr "خطأ! لا يمكن ضبط سياق التنفيذ."
-
-#~ msgid "%s: Could not exec %s"
-#~ msgstr "%s: لم يمكن تشغيل %s"
-
-#~ msgid "Cannot start the session due to some internal error."
-#~ msgstr "لا يمكن بدأ الجلسة بسبب أخطاء داخلية."
-
-#~ msgid "%s: User passed auth but getpwnam (%s) failed!"
-#~ msgstr "%s:  نجح التحقق من هوية المستعمل لكن getpwnam(%s) فشل!"
-
-#~ msgid "%s: Execution of PostLogin script returned > 0. Aborting."
-#~ msgstr "%s:  تشغيل النص الشفري ل  PostLogin ارجع > 0. إلغاء."
-
-#~ msgid ""
-#~ "Your home directory is listed as: '%s' but it does not appear to exist.  "
-#~ "Do you want to log in with the / (root) directory as your home directory? "
-#~ "It is unlikely anything will work unless you use a failsafe session."
-#~ msgstr ""
-#~ "دليلك المنزلي مسرود كـ:'%s' لكن يبدو انه غير موجود. هل تريد الولوج "
-#~ "بالدليل الجذري (/) كدليلك المنزلي؟من المحتمل أن لا يعمل أي شيء ما لم "
-#~ "تستعمل جلسة آمنة من الفشل."
-
-#~ msgid "%s: Home directory for %s: '%s' does not exist!"
-#~ msgstr "%s:  الدليل المنزلي لـ %s: '%s' غير موجود!"
-
-#~ msgid ""
-#~ "User's $HOME/.dmrc file is being ignored.  This prevents the default "
-#~ "session and language from being saved.  File should be owned by user and "
-#~ "have 644 permissions.  User's $HOME directory must be owned by user and "
-#~ "not writable by other users."
-#~ msgstr ""
-#~ "تم تجاهل ملف $HOME/.dmrc الخاص بالمستخدم. سيمنع هذا حفظ الجلسة واللغة "
-#~ "الإفتراضية. يجدر أن يكون هذا الملف ملكا للمستخدم وله الصلاحيات 644. دليل "
-#~ "$HOME الخاص بالمستخدم يجب أن يكون مملوكا لنفس المستخدم وليس مسموحا "
-#~ "للكتابة فيه لأي مستخدم آخر."
-
-#~ msgid ""
-#~ "GDM could not write to your authorization file.  This could mean that you "
-#~ "are out of disk space or that your home directory could not be opened for "
-#~ "writing.  In any case, it is not possible to log in.  Please contact your "
-#~ "system administrator"
-#~ msgstr ""
-#~ "لا يستطيع م‌ع‌ج كتابة ملف تصريحك. هذا يعني أن فضاء القرص لم يعد كافيا أو أن "
-#~ "دليلك المنزلي لم يمكن فتحه للكتابة. على أي حال، لا يمكن الولوج. رجاء اتصل "
-#~ "بمدير نظامك"
-
-#~ msgid "%s: Error forking user session"
-#~ msgstr "%s: خطأ تشعيب جلسة المستخدم"
-
-#~ msgid ""
-#~ "Your session only lasted less than 10 seconds.  If you have not logged "
-#~ "out yourself, this could mean that there is some installation problem or "
-#~ "that you may be out of diskspace.  Try logging in with one of the "
-#~ "failsafe sessions to see if you can fix this problem."
-#~ msgstr ""
-#~ "دامت جلستك أقل من 10 ثوان اذا لم تخرج بنفسك، ربما يعني هذا وجود مشاكل "
-#~ "تثبيت أو انه لم يعد لديك فضاء كاف على القرص.حاول التسجيل بجلسة من الجلسات "
-#~ "الآمنة من الفشل للنظر في إمكانية اصلاح الخطأ."
-
-#~ msgid "View details (~/.xsession-errors file)"
-#~ msgstr "عرض التفاصيل (ملف ~/.xsession-errors)"
-
-#~ msgid "GDM detected a halt or restart in progress."
-#~ msgstr "إكتشف م‌ع‌ج إطفاء أو إعادة تشغيل في تقدّم."
-
-#~ msgid "%s: Fatal X error - Restarting %s"
-#~ msgstr "%s: خطأ X فادح - يجري إعادة التشغيل %s"
-
-#~ msgid ""
-#~ "Login sound requested on non-local display or the play software cannot be "
-#~ "run or the sound does not exist"
-#~ msgstr ""
-#~ "لم يمكن تشغيل صوت الولوج المطلوب على عرض غير محليّ أو البرنامج الذي يعزفه "
-#~ "او أن الصوت غير موجود"
-
-#~ msgid "%s: Failed starting: %s"
-#~ msgstr "%s: فشل بدأ: %s"
-
-#~ msgid "%s: Can't fork script process!"
-#~ msgstr "%s: لا يمكن تشعيب العملية!"
-
-#~ msgid "%s: Failed creating pipe"
-#~ msgstr "%s: فشل إنشاء الانبوب"
-
-#~ msgid "%s: Failed executing: %s"
-#~ msgstr "%s: فشل تنفيذ %s"
-
-#~ msgid ""
-#~ "\n"
-#~ "Incorrect username or password.  Letters must be typed in the correct "
-#~ "case."
-#~ msgstr ""
-#~ "\n"
-#~ "اسم مستخدم أو كلمة سر خاطئة.  يجب أن تكتب الحروف الصحيحة."
-
-#~ msgid "Please enter your username"
-#~ msgstr "رجاء ادخل اسم المستخدم"
-
-#~ msgid "Password:"
-#~ msgstr "كلمة السر:"
-
-#~ msgid "The system administrator is not allowed to login from this screen"
-#~ msgstr "غير مسموح لمدير النظام أن يلِج من هذه الشاشة "
-
-#~ msgid ""
-#~ "\n"
-#~ "The system administrator has disabled your account."
-#~ msgstr ""
-#~ "\n"
-#~ "عطل مدير النظام حسابك."
-
-#~ msgid ""
-#~ "\n"
-#~ "Cannot set your user group; you will not be able to log in. Please "
-#~ "contact your system administrator."
-#~ msgstr ""
-#~ "\n"
-#~ "لا يمكن ضبط مجموعة مستخدمك، لن تتمكن من الولوج، رجاء إتصل بمدير نظامك."
-
-#~ msgid ""
-#~ "You are required to change your password.\n"
-#~ "Please choose a new one."
-#~ msgstr ""
-#~ "مطلوب منك تغيير كلمة السر.\n"
-#~ "رجاء ختر كلمة سر جديدة."
-
-#~ msgid ""
-#~ "\n"
-#~ "Cannot change your password; you will not be able to log in. Please try "
-#~ "again later or contact your system administrator."
-#~ msgstr ""
-#~ "\n"
-#~ "لا يمكن تغيير كلمة سرك، لن تتمكن من الولوج، رجاء اتصل بمدير نظامك."
-
-#~ msgid ""
-#~ "Your password has been changed but you may have to change it again. "
-#~ "Please try again later or contact your system administrator."
-#~ msgstr ""
-#~ "غُيِّرت كلمة سرك لكن ربما يتوجب عليك تغييرها مرة أخرى، رجاء حاول مرة أخرى "
-#~ "فيما بعد أو اتصل بمدير نظامك."
-
-#~ msgid ""
-#~ "Your password has expired.\n"
-#~ "Only a system administrator can now change it"
-#~ msgstr ""
-#~ "إنقضت كلمة السر.\n"
-#~ "لن يتمكّن من تغييرها إلا مدير النظام"
-
-#~ msgid ""
-#~ "An internal error occurred. You will not be able to log in.\n"
-#~ "Please try again later or contact your system administrator."
-#~ msgstr ""
-#~ "حدث خطأ داخلي. لن يمكنك الولوج.\n"
-#~ "رجاء حاول مرة أخرى فيمابعد أو اتصل بمدير النظام."
-
-#~ msgid "You are required to change your password immediately (password aged)"
-#~ msgstr "يجب أن تغير كلمة سرك حالا (كلمة السر قديمة)"
-
-#~ msgid "You are required to change your password immediately (root enforced)"
-#~ msgstr "يجب·أن·تغير·كلمة·سرك·حالا·(فرض الجذر ذلك)"
-
-#~ msgid "Your account has expired; please contact your system administrator"
-#~ msgstr "انقضى حسابك، الرجاء الإتصال بمدير النظام"
-
-#~ msgid "No password supplied"
-#~ msgstr "لم تعطيّ كلمة سر جديدة"
-
-#~ msgid "Password unchanged"
-#~ msgstr "لم تتغير كلمة السر"
-
-#~ msgid "Can not get username"
-#~ msgstr "لا يمكن تلقي اسم المستخدم"
-
-#~ msgid "Retype new UNIX password:"
-#~ msgstr "أعد كتابة كلمة سر يونكس جديدة:"
-
-#~ msgid "Enter new UNIX password:"
-#~ msgstr "ادخل كلمة سر يونكس جديدة:"
-
-#~ msgid "(current) UNIX password:"
-#~ msgstr "كلمة سر يونكس (الحالية):"
-
-#~ msgid "Error while changing NIS password."
-#~ msgstr "خطأ أثناء تغيير كلمة سر NIS."
-
-#~ msgid "You must choose a longer password"
-#~ msgstr "يجب أن تختار كلمة سر أطول"
-
-#~ msgid "Password has been already used. Choose another."
-#~ msgstr "كلمة السر مستخدمة. الرجاء اختيار كلمة مغايرة."
-
-#~ msgid "You must wait longer to change your password"
-#~ msgstr "يجب أن تنتظر مدة أطول لتتمكن من تغيير كلمة سرك"
-
-#~ msgid "Sorry, passwords do not match"
-#~ msgstr "عفوا، كلمتا السر لا تتطابقان"
-
-#~ msgid "Cannot setup pam handle with null display"
-#~ msgstr "لا يمكن إعداد متعامل pam بدون عرض."
-
-#~ msgid "Can't set PAM_TTY=%s"
-#~ msgstr "لا يمكن ضبط PAM_TTY=%s"
-
-#~ msgid "Can't set PAM_RHOST=%s"
-#~ msgstr "لا يمكن ضبط PAM_RHOST=%s"
-
-#~ msgid "Root login disallowed on display '%s'"
-#~ msgstr "ولوج الجذر ممنوع على العرض '%s'"
-
-#~ msgid ""
-#~ "\n"
-#~ "The system administrator is not allowed to login from this screen"
-#~ msgstr ""
-#~ "\n"
-#~ "غير مسموح لمدير النظام أن يلِج من هذه الشاشة "
-
-#~ msgid "Authentication token change failed for user %s"
-#~ msgstr "فشل تغيير رمز التوثق للمستخدم %s"
-
-#~ msgid ""
-#~ "\n"
-#~ "The change of the authentication token failed. Please try again later or "
-#~ "contact the system administrator."
-#~ msgstr ""
-#~ "\n"
-#~ "فشل تغيير علامة التوثق. رجاء حاول مرة أخرى فيما بعد أو اتصل بمدير النظام."
-
-#~ msgid "User %s no longer permitted to access the system"
-#~ msgstr "لم يعد يسمح للمستخدم %s بالنفاذ إلى النظام"
-
-#~ msgid "User %s not permitted to gain access at this time"
-#~ msgstr "منع المستخدم %s من النفاذ الآن"
-
-#~ msgid ""
-#~ "\n"
-#~ "The system administrator has disabled access to the system temporarily."
-#~ msgstr ""
-#~ "\n"
-#~ "عطل مدير النظام النفاذ إلى النظام مؤقتًا."
-
-#~ msgid "Couldn't set acct. mgmt for %s"
-#~ msgstr "لا يمكن ضبط acct. mgmt لـ %s"
-
-#~ msgid "Cannot set user group for %s"
-#~ msgstr "لا يمكن ضبط مجموعة المستخدم لـ %s"
-
-#~ msgid "Couldn't set credentials for %s"
-#~ msgstr "لم يمكن ضبط المؤهلات لـ %s"
-
-#~ msgid "Couldn't open session for %s"
-#~ msgstr "لا يمكن فتح جلسة لـ%s"
-
-#~ msgid ""
-#~ "\n"
-#~ "Authentication failed.  Letters must be typed in the correct case."
-#~ msgstr ""
-#~ "\n"
-#~ "فشل التحقق.  يجب أن تكتب الحروف بالحالة الصحيحة."
-
-#~ msgid ""
-#~ "The system administrator has disabled your access to the system "
-#~ "temporarily."
-#~ msgstr "عطل مدير النظام النفاذ إلى النظام مؤقتًا."
-
-#~ msgid ""
-#~ "Cannot set your user group; you will not be able to log in. Please "
-#~ "contact your system administrator."
-#~ msgstr ""
-#~ "لا يمكن ضبط مجموعة مستخدمك، لن تتمكن من الولوج، رجاء اتصل بمدير نظامك."
-
-#~ msgid ""
-#~ "%s: Failed to run '%s --display %s --display-authfile %s --to %s --to-"
-#~ "authfile %s': %s"
-#~ msgstr ""
-#~ "%s: فشل تشغيل '%s --display %s --display-authfile %s --to %s --to-"
-#~ "authfile %s': %s"
-
-#~ msgid "%s: No XDMCP support"
-#~ msgstr "%s: لا دعم لـ XDMCP"
-
-#~ msgid "Xnest command line"
-#~ msgstr "سطر أوامر Xnest"
-
-#~ msgid "STRING"
-#~ msgstr "سلسلة"
-
-#~ msgid "Extra options for Xnest"
-#~ msgstr "خيارات اضافية لـ Xnest"
-
-#~ msgid "OPTIONS"
-#~ msgstr "خيارات"
-
-#~ msgid "Run in background"
-#~ msgstr "تشغيل في الخلفية"
-
-#~ msgid "Just run Xnest, no query (no chooser)"
-#~ msgstr "فقط شغل Xnest، لا طلبات (لا مخيّر)"
-
-#~ msgid "Do direct query instead of indirect (chooser)"
-#~ msgstr "قم ببحث مباشر عوض البحث الغير مباشر (مُخَيِّر)"
-
-#~ msgid "Run broadcast instead of indirect (chooser)"
-#~ msgstr "تشغيل المبرمج عوض الغير مباشر (مُخَيِّر)"
-
-#~ msgid "Don't check for running GDM"
-#~ msgstr "لا تتفحص عن م‌ع‌ج يعمل"
-
-#~ msgid "- Nested gdm login chooser"
-#~ msgstr "- مُخَيِّر ولوج gdm معشش"
-
-#~ msgid "- Nested gdm login"
-#~ msgstr "- ولوج gdm معشش"
-
-#~ msgid "Please ask your system administrator to install it."
-#~ msgstr "رجاء اسأل مدير نظامك لتثبيته."
-
-#~ msgid "Indirect XDMCP is not enabled"
-#~ msgstr "XDMCP غير المباشر ليس مفعّلا"
-
-#~ msgid "Please ask your system administrator to enable this feature."
-#~ msgstr "الرجاء اسأل مدير نظامك ليفعل هذه الميزة."
-
-#~ msgid "XDMCP is not enabled"
-#~ msgstr "XDMCP غير مفعّل"
-
-#~ msgid "Please ask your system administrator to start it."
-#~ msgstr "الرجاء اسأل مدير نظامك لتشغيله."
-
-#~ msgid "Could not find a free display number"
-#~ msgstr "لم يوجد رقم عرض شاغر"
-
-#~ msgid "Please wait: scanning local network..."
-#~ msgstr "الرجاء الإنتظار: يجري فحص الشبكة المحلية..."
-
-#~ msgid "No serving hosts were found."
-#~ msgstr "لا يوجد مستضيفين خادمين."
-
-#~ msgid "Choose a ho_st to connect to:"
-#~ msgstr "أختر مستضيفا للإت_صال به:"
-
-#~ msgid ""
-#~ "The host \"%s\" is not willing to support a login session right now.  "
-#~ "Please try again later."
-#~ msgstr ""
-#~ "لا يريد المستضيف \"%s\" دعم جلسة ولوج الآن. رجاء حاول مرّةً أخرى فيما بعد."
-
-#~ msgid "Cannot connect to remote server"
-#~ msgstr "لا يمكن الإتصال بالخادم عن بعد"
-
-#~ msgid ""
-#~ "Did not receive any response from host \"%s\" in %d seconds.  Perhaps the "
-#~ "host is not turned on, or is not willing to support a login session right "
-#~ "now.  Please try again later."
-#~ msgstr ""
-#~ "لم أتلقى أي إجابة من المستضيف \"%s\"·لمدة %Id·ثانية.  ربما كان المستضيف "
-#~ "لا يعمل أو أنه لا يريد دعم جلسة ولوج الآن. الرجاء المحاولة فيما بعد."
-
-#~ msgid "Did not receive response from server"
-#~ msgstr "لم أتلقي إستجابة من الخادم"
-
-#~ msgid "Cannot find the host \"%s\". Perhaps you have mistyped it."
-#~ msgstr "لا يمكنني ايجاد الخادم \"%s\"، ربما اخطأت في كتابته."
-
-#~ msgid "Cannot find host"
-#~ msgstr "لا يمكنني ايجاد المستضيف"
-
-#~ msgid ""
-#~ "The main area of this application shows the hosts on the local network "
-#~ "that have \"XDMCP\" enabled. This allows users to login remotely to other "
-#~ "computers as if they were logged on using the console.\n"
-#~ "\n"
-#~ "You can rescan the network for new hosts by clicking \"Refresh\".  When "
-#~ "you have selected a host click \"Connect\" to open a session to that "
-#~ "computer."
-#~ msgstr ""
-#~ "المنطقة الرئيسية من هذا البرنامج تظهر المستضيفين على الشبكة المحلية "
-#~ "المفعل عندهم \"XDMCP\". يمكن هذا المستخدمين من الولوج عن بعد لحواسيب أخرى "
-#~ "و كأنهم قد سجلوا دخول باستعمال الكونسول.\n"
-#~ "\n"
-#~ "يمكنك إعادة مسح الشبكة بحثا عن مستضيفين جدد بنقر \"انعاش\". عند اختيارك "
-#~ "لمستضيف، انقر \"اتصال\"، لفتح جلسة في هذا الحاسوب."
-
-#~ msgid "Socket for xdm communication"
-#~ msgstr "مقبس لاتصالات xdm"
-
-#~ msgid "SOCKET"
-#~ msgstr "مقبس"
-
-#~ msgid "Client address to return in response to xdm"
-#~ msgstr "عنوان العميل ليتم ارجاعه استجابة لـ xdm"
-
-#~ msgid "ADDRESS"
-#~ msgstr "عنوان"
-
-#~ msgid "Connection type to return in response to xdm"
-#~ msgstr "نوع الاتصال ليتم إرجاع استجابة لـ xdm"
-
-#~ msgid "TYPE"
-#~ msgstr "نوع"
-
-#~ msgid "- gdm login chooser"
-#~ msgstr "- مُخَيِّر الولوج gdm"
-
-#~ msgid ""
-#~ "The chooser version (%s) does not match the daemon version (%s).  You "
-#~ "have probably just upgraded GDM.  Please restart the GDM daemon or the "
-#~ "computer."
-#~ msgstr ""
-#~ "إصدارة المُخَيِّر (%s) لا توافق إصدارة المراقب (%s).ربما حدّثت م‌ع‌ج لِتَوّك. "
-#~ "الرجاء إعادة تشغيل مراقب م‌ع‌ج أو الحاسوب."
-
-#~ msgid "Cannot run chooser"
-#~ msgstr "لا يمكن تشغيل المُخَيِّر"
-
-#~ msgid "A_dd host: "
-#~ msgstr "أضِ_ف مستضيف: "
-
-#~ msgid "C_onnect"
-#~ msgstr "إِ_تّصل"
-
-#~ msgid "Exit the application"
-#~ msgstr "إخرج من التطبيق"
-
-#~ msgid "Login Host Chooser"
-#~ msgstr "مُخَيّر مستضيف الولوج"
-
-#~ msgid "Open a session to the selected host"
-#~ msgstr "فتح جلسة للمستضيف المُنتَقَى"
-
-#~ msgid "Probe the network"
-#~ msgstr "إِسْبُْر الشبكة"
-
-#~ msgid "Query and add this host to the above list"
-#~ msgstr "استعلم و أضف هذا المستضيف للقائمة الموجودة أعلاه"
-
-#~ msgid "Status"
-#~ msgstr "الحالة"
-
-#~ msgid "_Add"
-#~ msgstr "أ_ضِف"
-
-#~ msgid ""
-#~ "You might be using a different display manager, such as KDM (KDE Display "
-#~ "Manager), CDE login (dtlogin), or xdm. If you wish to use this feature, "
-#~ "then your system will need to be configured to use GDM instead."
-#~ msgstr ""
-#~ "أنت ربما تستخدم مدير عرض آخر، مثل م‌ع‌ك (مدير عرض كيدي) أو xdm أو ولوج ب‌م‌ع "
-#~ "(dtlogin). إذا كنت ما تزال تريد هذه الميزة فستحتاج إعداد نظامك ليستخدم  "
-#~ "م‌ع‌ج بدلا منها."
-
-#~ msgid "Cannot communicate with GDM (The GNOME Display Manager)"
-#~ msgstr "لا أستطيع الإتصال بم‌ع‌ج (مدير عرض جنوم)"
-
-#~ msgid "Perhaps you have an old version of GDM running."
-#~ msgstr "ربما تعمل لديك إصدارة قديمة لم‌ع‌ج."
-
-#~ msgid ""
-#~ "Cannot communicate with GDM. Perhaps you have an old version running."
-#~ msgstr "لا أستطيع الإتصال بـ م‌ع‌ج، ربما تشغل اصدارة قديمة."
-
-#~ msgid "The allowed limit of flexible X servers reached."
-#~ msgstr "وُصِلَ للحد المسموح به من خوادم X المرنة."
-
-#~ msgid "There were errors trying to start the X server."
-#~ msgstr "كانت هناك أخطاء عند محاولة تشغيل خادم X."
-
-#~ msgid "The X server failed.  Perhaps it is not configured well."
-#~ msgstr "فشل خادم X. ربما لم يُعَدّ جيدا."
-
-#~ msgid "Too many X sessions running."
-#~ msgstr "هناك الكثير من جلسات X تعمل."
-
-#~ msgid ""
-#~ "The nested X server cannot connect to your current X server.  You may be "
-#~ "missing an X authorization file."
-#~ msgstr ""
-#~ "لا يمكن لخادم X المعشش الاتصال بخادمك X الحالي. ربما تفتقد بعض ملفات تحقق "
-#~ "X."
-
-#~ msgid ""
-#~ "The nested X server is not available, or GDM is badly configured.\n"
-#~ "Please install the Xnest package in order to use the nested login."
-#~ msgstr ""
-#~ "خادم X المعشش  غير موجود، أو م‌ع‌ج مُعَدُّ سيئا.\n"
-#~ "رجاء ثَبّت حزمة Xnest لتستعمل الولوج المعشش."
-
-#~ msgid "The X server is not available. GDM may be misconfigured."
-#~ msgstr "خادم X غير متاح، ربما تم إعداد م‌ع‌ج خطأ."
-
-#~ msgid ""
-#~ "Trying to set an unknown logout action, or trying to set a logout action "
-#~ "which is not available."
-#~ msgstr ""
-#~ "محاولة لضبط حدث \"تسجيل خروج\" مجهول، أو محاولة لضبط حدث \"تسجيل خروج\" "
-#~ "غير متوفّر."
-
-#~ msgid "Virtual terminals not supported."
-#~ msgstr "الطرفيات الوهمية غير مدعومة."
-
-#~ msgid "Trying to change to an invalid virtual terminal number."
-#~ msgstr "محاولة للتحول إلى رقم طرفيّة وهمية غير سليم."
-
-#~ msgid "Trying to update an unsupported configuration key."
-#~ msgstr "محاولة لتحديث مفتاح إعداد غير مدعوم."
-
-#~ msgid ""
-#~ "You do not seem to have the authentication needed for this operation.  "
-#~ "Perhaps your .Xauthority file is not set up correctly."
-#~ msgstr ""
-#~ "يبدوا أنك لا تملك التحقق اللازم لهذه العملية. ربما لم يضبط ملف ."
-#~ "Xauthority بسلامة."
-
-#~ msgid "Too many messages were sent to GDM and it hung up on us."
-#~ msgstr "أرسلت رسائل عديدة جدا لم‌ع‌ج و بقيت عالقة بنا."
-
-#~ msgid "Unknown error occurred."
-#~ msgstr "حدث خطأ مجهول."
-
-#~ msgid "The accessibility registry was not found."
-#~ msgstr "سجل الإتاحة غير موجود."
-
-#~ msgid "The accessibility registry could not be started."
-#~ msgstr "تعذّر بدأ سجلّ الإتاحة."
-
-#~ msgid "%d second"
-#~ msgid_plural "%d seconds"
-#~ msgstr[0] "ثانية واحدة"
-#~ msgstr[1] "ثانيتان"
-#~ msgstr[2] "%Id ثوان"
-#~ msgstr[3] "%d ثانية"
-
-#~ msgid "Usage: %s [-b][-v] and one of the following:\n"
-#~ msgstr "الإستعمال: %s [-b][-v] وواحد من التالي:\n"
-
-#~ msgid "\t-a display\n"
-#~ msgstr "\t-a عرض\n"
-
-#~ msgid "\t-r display\n"
-#~ msgstr "\t-r عرض\n"
-
-#~ msgid "\t-d display\n"
-#~ msgstr "\t-d عرض\n"
-
-#~ msgid "\t-l [server_name]\n"
-#~ msgstr "\t-l [اسم_الخادم]\n"
-
-#~ msgid "\t-t maximum tries to connect (default 15)\n"
-#~ msgstr "\t-t  أقصي عدد محاولات للإتصال (إفتراضيا 15)\n"
-
-#~ msgid "\t-s sleep value (default 8)\n"
-#~ msgstr "\t-s قيمة السبات (الإفتراضي 8)\n"
-
-#~ msgid "Server busy, will sleep.\n"
-#~ msgstr "الخادم مشغول، سأدخل في سبات.\n"
-
-#~ msgid ""
-#~ "Connection to daemon failed, sleeping for %d seconds.  Retry %d of %d\n"
-#~ msgstr ""
-#~ "فشل الإتصل بالمراقب، سأدخل في سبات لمدة %Id ثواني. محاولة %Id من %Id\n"
-
-#~ msgid "Failed to connect to server after %d retries\n"
-#~ msgstr "فشل الإتصل بالخادم بعد %Id محاولات\n"
-
-#~ msgid "New Login in a Window"
-#~ msgstr "ولوج جديد في نافذة"
-
-#~ msgid "Cannot change display"
-#~ msgstr "لا يمكن تغيير العرض"
-
-#~ msgid "Nobody"
-#~ msgstr "لا أحد"
-
-#~ msgid "Display %s on virtual terminal %d"
-#~ msgstr "العرض %s على الطرفية الوهميّة %Id"
-
-#~ msgid "Nested display %s on virtual terminal %d"
-#~ msgstr "العرض %s المعشّش على الطرفية الوهميّة %Id"
-
-#~ msgid "Open Displays"
-#~ msgstr "فتح الشاشات"
-
-#~ msgid "_Open New Display"
-#~ msgstr "_فتح شاشة جديدة"
-
-#~ msgid "Change to _Existing Display"
-#~ msgstr "تحوّل إلى شاشة _موجودة"
-
-#~ msgid ""
-#~ "There are some displays already open.  You can select one from the list "
-#~ "below or open a new one."
-#~ msgstr ""
-#~ "بعض الشاشات مفتوحة مسبقا.  يمكنك انتقاء واحدة من القائمة الموجودة أسفلا "
-#~ "أو فتح شاشة جديدة."
-
-#~ msgid "Choose server"
-#~ msgstr "اختر خادما"
-
-#~ msgid "Choose the X server to start"
-#~ msgstr "اختر خادم X للتشغيل"
-
-#~ msgid "Standard server"
-#~ msgstr "الخادم القياسي"
-
-#~ msgid "Error: GDM (GNOME Display Manager) is not running."
-#~ msgstr "خطأ: م‌ع‌ج (مدير عرض جنوم) لا يعمل."
-
-#~ msgid "You might be using a different display manager."
-#~ msgstr "ربما تستخدم مدير عرض آخر."
-
-#~ msgid "You do not seem to have the authentication needed for this operation"
-#~ msgstr "يبدو أنك لا تملك التصريح المطلوب لهذه العمليّة"
-
-#~ msgid "Perhaps your .Xauthority file is not set up correctly."
-#~ msgstr "ربما لم يضبط ملف .Xauthority لديك بسلامة."
-
-#~ msgid "You do not seem to be logged in on the console"
-#~ msgstr "يبدو أنك لست مسجلا في الهيكل."
-
-#~ msgid "Starting a new login only works correctly on the console."
-#~ msgstr "بدء ولوج جديد يعمل بسلامة فقط في الكونسول."
-
-#~ msgid "Log in as another user without logging out"
-#~ msgstr "لُجْ كمستخدم آخر دون الخروج"
-
-#~ msgid "New Login"
-#~ msgstr "ولوج جديد"
-
-#~ msgid "A-M|Afrikaans"
-#~ msgstr "ا-ص|أفريكان"
-
-#~ msgid "A-M|Albanian"
-#~ msgstr "ا-ص|ألباني"
-
-#~ msgid "A-M|Amharic"
-#~ msgstr "ا-ص|أمهري"
-
-#~ msgid "A-M|Arabic (Egypt)"
-#~ msgstr "ا-ص|عربي (مصر)"
-
-#~ msgid "A-M|Arabic (Lebanon)"
-#~ msgstr "ا-ص|عربي (لبنان)"
-
-#~ msgid "A-M|Arabic (Saudi Arabia)"
-#~ msgstr "ض-ي|عربي (العربية السعودية)"
-
-#~ msgid "A-M|Armenian"
-#~ msgstr "ا-ص|أرمني"
-
-#~ msgid "A-M|Azerbaijani"
-#~ msgstr "ا-ص|آذربيجاني"
-
-#~ msgid "A-M|Basque"
-#~ msgstr "ا-ص|باسكي"
-
-#~ msgid "A-M|Belarusian"
-#~ msgstr "ا-ص|بلاروسي"
-
-#~ msgid "A-M|Bengali"
-#~ msgstr "ا-ص|بنغالي"
-
-#~ msgid "A-M|Bengali (India)"
-#~ msgstr "ا-ص|بنغالي (الهند)"
-
-#~ msgid "A-M|Bulgarian"
-#~ msgstr "ا-ص|بلغاري"
-
-#~ msgid "A-M|Bosnian"
-#~ msgstr "ا-ص|بوسني"
-
-#~ msgid "A-M|Catalan"
-#~ msgstr "ض-ي|كتلان"
-
-#~ msgid "A-M|Chinese (China Mainland)"
-#~ msgstr "ا-ص|الصين (الأراضي الرئيسية)"
-
-#~ msgid "A-M|Chinese (Hong Kong)"
-#~ msgstr "ا-ص|الصين (هونغ كونغ)"
-
-#~ msgid "A-M|Chinese (Singapore)"
-#~ msgstr "ا-ص|الصين (سنغافورة)"
-
-#~ msgid "A-M|Chinese (Taiwan)"
-#~ msgstr "ا-ص|الصين (تايوان)"
-
-#~ msgid "A-M|Croatian"
-#~ msgstr "ض-ي|كرواتي"
-
-#~ msgid "A-M|Czech"
-#~ msgstr "ا-ص|تشيكي"
-
-#~ msgid "A-M|Danish"
-#~ msgstr "ا-ص|دانماركي"
-
-#~ msgid "A-M|Dutch"
-#~ msgstr "ض-ي|هولندي"
-
-#~ msgid "A-M|Dutch (Belgium)"
-#~ msgstr "ض-ي|هولندي (بلجيكا)"
-
-#~ msgid "A-M|English (USA)"
-#~ msgstr "ا-ص|إنجليزي (الولايات المتّحدة)"
-
-#~ msgid "A-M|English (Australia)"
-#~ msgstr "ا-ص|إنجليزي (أستراليا)"
-
-#~ msgid "A-M|English (UK)"
-#~ msgstr "ا-ص|إنجليزي (المملكة المتّحدة)"
-
-#~ msgid "A-M|English (Canada)"
-#~ msgstr "ا-ص|إنجليزي (كندا)"
-
-#~ msgid "A-M|English (Ireland)"
-#~ msgstr "ا-ص|إنجليزي (آيرلندا)"
-
-#~ msgid "A-M|English (Denmark)"
-#~ msgstr "ا-ص|إنجليزي (الدّنمارك)"
-
-#~ msgid "A-M|English (South Africa)"
-#~ msgstr "ا-ص|إنجليزي (جنوب أفريقيا)"
-
-#~ msgid "A-M|English (Malta)"
-#~ msgstr "ا-ص|انجليزي (مالطة)"
-
-#~ msgid "A-M|English (New Zealand)"
-#~ msgstr "ا-ص|انجليزي (نيوزيلاندا)"
-
-#~ msgid "A-M|Estonian"
-#~ msgstr "ا-ص|أستوني"
-
-#~ msgid "A-M|Finnish"
-#~ msgstr "ض-ي|فنلندي"
-
-#~ msgid "A-M|French"
-#~ msgstr "ض-ي|فرنسي"
-
-#~ msgid "A-M|French (Belgium)"
-#~ msgstr "ض-ي|فرنسي (بلجيكا)"
-
-#~ msgid "A-M|French (Canada)"
-#~ msgstr "ض-ي|فرنسي (كندا)"
-
-#~ msgid "A-M|French (Luxembourg)"
-#~ msgstr "ض-ي|فرنسي (لوكسمبورج)"
-
-#~ msgid "A-M|French (Switzerland)"
-#~ msgstr "ض-ي|فرنسي (سويسرا)"
-
-#~ msgid "A-M|Galician"
-#~ msgstr "ض-ي|كاليسي"
-
-#~ msgid "A-M|German"
-#~ msgstr "ا-ص|ألماني"
-
-#~ msgid "A-M|German (Austria)"
-#~ msgstr "ا-ص|ألماني (النّمسا)"
-
-#~ msgid "A-M|German (Luxembourg)"
-#~ msgstr "ا-ص|ألماني (لوكسمبورج)"
-
-#~ msgid "A-M|German (Switzerland)"
-#~ msgstr "ا-ص|ألماني (سويسرا)"
-
-#~ msgid "A-M|Greek"
-#~ msgstr "ض-ي|يوناني"
-
-#~ msgid "A-M|Greek (Cyprus)"
-#~ msgstr "ض-ي|يوناني (Cyprus)"
-
-#~ msgid "A-M|Gujarati"
-#~ msgstr "ض-ي|قوجراتي"
-
-#~ msgid "A-M|Hebrew"
-#~ msgstr "ض-ي|عبري"
-
-#~ msgid "A-M|Hindi"
-#~ msgstr "ض-ي|هندي"
-
-#~ msgid "A-M|Hungarian"
-#~ msgstr "ض-ي|مجري"
-
-#~ msgid "A-M|Icelandic"
-#~ msgstr "ا-ص|آيسلندي"
-
-#~ msgid "A-M|Indonesian"
-#~ msgstr "ا-ص|إندونيسي"
-
-#~ msgid "A-M|Interlingua"
-#~ msgstr "ا-ص|إنترلنغوا"
-
-#~ msgid "A-M|Irish"
-#~ msgstr "ا-ص|آيرلندي"
-
-#~ msgid "A-M|Italian"
-#~ msgstr "ا-ص|إيطالي"
-
-#~ msgid "A-M|Japanese"
-#~ msgstr "ض-ي|ياباني"
-
-#~ msgid "A-M|Kannada"
-#~ msgstr "ض-ي|كندي"
-
-#~ msgid "A-M|Kinyarwanda"
-#~ msgstr "ض-ي|الكينيارواندية"
-
-#~ msgid "A-M|Korean"
-#~ msgstr "ض-ي|كوري"
-
-#~ msgid "A-M|Latvian"
-#~ msgstr "ض-ي|لتوي"
-
-#~ msgid "A-M|Lithuanian"
-#~ msgstr "ض-ي|لتواني"
-
-#~ msgid "A-M|Macedonian"
-#~ msgstr "ض-ي|مقدوني"
-
-#~ msgid "A-M|Malay"
-#~ msgstr "ض-ي|مالاي"
-
-#~ msgid "A-M|Malayalam"
-#~ msgstr "ض-ي|مليلام"
-
-#~ msgid "A-M|Maltese"
-#~ msgstr "ض-ي|مالطيّ"
-
-#~ msgid "A-M|Marathi"
-#~ msgstr "ض-ي|ماراتي"
-
-#~ msgid "A-M|Mongolian"
-#~ msgstr "ض-ي|ماغولي"
-
-#~ msgid "N-Z|Northern Sotho"
-#~ msgstr "ا-ص|أيرلندا الشّماليّة"
-
-#~ msgid "N-Z|Norwegian (bokmal)"
-#~ msgstr "ض-ي|نرويجي (بكمال)"
-
-#~ msgid "N-Z|Norwegian (nynorsk)"
-#~ msgstr "ض-ي|نرويجي (نينرسك)"
-
-#~ msgid "N-Z|Oriya"
-#~ msgstr "ا-ص|أوريا"
-
-#~ msgid "N-Z|Punjabi"
-#~ msgstr "ا-ص|بنجابي"
-
-#~ msgid "N-Z|Persian"
-#~ msgstr "ض-ي|فارسي"
-
-#~ msgid "N-Z|Polish"
-#~ msgstr "ا-ص|بولوني"
-
-#~ msgid "N-Z|Portuguese"
-#~ msgstr "ا-ص|برتغالي"
-
-#~ msgid "N-Z|Portuguese (Brazilian)"
-#~ msgstr "ا-ص|برتغالي (برازيلي)"
-
-#~ msgid "N-Z|Romanian"
-#~ msgstr "ا-ص|روميني"
-
-#~ msgid "N-Z|Russian"
-#~ msgstr "ا-ص|روسي"
-
-#~ msgid "N-Z|Serbian"
-#~ msgstr "ا-ص|صربي"
-
-#~ msgid "N-Z|Serbian (Serbia & Montenegro)"
-#~ msgstr "ا-ص|صربي (صربيا و مونتنجرو)"
-
-#~ msgid "N-Z|Serbian (Montenegro)"
-#~ msgstr "ا-ص|صربي (منتنغرو)"
-
-#~ msgid "N-Z|Serbian (Serbia)"
-#~ msgstr "ا-ص|صربي (صربيا)"
-
-#~ msgid "N-Z|Serbian (Latin)"
-#~ msgstr "ا-ص|صربي (لاتيني)"
-
-#~ msgid "N-Z|Serbian (Jekavian)"
-#~ msgstr "ا-ص|صربي (جيكافيان)"
-
-#~ msgid "N-Z|Serbian (Bosnia)"
-#~ msgstr "ا-ص|صربي (البوسنة)"
-
-#~ msgid "N-Z|Slovak"
-#~ msgstr "ا-ص|سلوفاكي"
-
-#~ msgid "N-Z|Slovenian"
-#~ msgstr "ا-ص|سلوفيني"
-
-#~ msgid "N-Z|Spanish"
-#~ msgstr "ا-ص|إسباني"
-
-#~ msgid "N-Z|Spanish (Argentina)"
-#~ msgstr "ا-ص|إسباني (الأرجنتين)"
-
-#~ msgid "N-Z|Spanish (Bolivia)"
-#~ msgstr "ا-ص|إسباني (بوليفيا)"
-
-#~ msgid "N-Z|Spanish (Chile)"
-#~ msgstr "ا-ص|إسباني (شيلي)"
-
-#~ msgid "N-Z|Spanish (Colombia)"
-#~ msgstr "ا-ص|إسباني (كولومبيا)"
-
-#~ msgid "N-Z|Spanish (Costa Rica)"
-#~ msgstr "ا-ص|إسباني (كوستا ريكا)"
-
-#~ msgid "N-Z|Spanish (Ecuador)"
-#~ msgstr "ا-ص|إسباني (الإكوادور)"
-
-#~ msgid "N-Z|Spanish (Guatemala)"
-#~ msgstr "ا-ص|إسباني (جواتيمالا)"
-
-#~ msgid "N-Z|Spanish (Mexico)"
-#~ msgstr "ا-ص|إسباني (المكسيك)"
-
-#~ msgid "N-Z|Spanish (Nicaragua)"
-#~ msgstr "ا-ص|إسباني (نيكاراجوا)"
-
-#~ msgid "N-Z|Spanish (Panama)"
-#~ msgstr "ا-ص|إسباني (بنما)"
-
-#~ msgid "N-Z|Spanish (Peru)"
-#~ msgstr "ا-ص|إسباني (بيرو)"
-
-#~ msgid "N-Z|Spanish (Paraguay)"
-#~ msgstr "ا-ص|إسباني (بارجواي)"
-
-#~ msgid "N-Z|Spanish (El Salvador)"
-#~ msgstr "ا-ص|إسباني (السّلفادور)"
-
-#~ msgid "N-Z|Spanish (Uruguay)"
-#~ msgstr "ا-ص|إسباني (أوروجواي)"
-
-#~ msgid "N-Z|Spanish (Venezuela)"
-#~ msgstr "ا-ص|إسباني (فنزويلا)"
-
-#~ msgid "N-Z|Swedish"
-#~ msgstr "ا-ص|سويدي"
-
-#~ msgid "N-Z|Swedish (Finland)"
-#~ msgstr "ا-ص|سويدي (فنلندا)"
-
-#~ msgid "N-Z|Tamil"
-#~ msgstr "ا-ص|تاميلي"
-
-#~ msgid "N-Z|Telugu"
-#~ msgstr "ا-ص|تلوجو"
-
-#~ msgid "N-Z|Thai"
-#~ msgstr "ا-ص|تايلندي"
-
-#~ msgid "N-Z|Turkish"
-#~ msgstr "ا-ص|تركي"
-
-#~ msgid "N-Z|Ukrainian"
-#~ msgstr "ا-ص|اكراني"
-
-#~ msgid "N-Z|Vietnamese"
-#~ msgstr "ض-ي|فيتنامي"
-
-#~ msgid "N-Z|Walloon"
-#~ msgstr "ض-ي|والوني"
-
-#~ msgid "N-Z|Welsh"
-#~ msgstr "ض-ي|والش"
-
-#~ msgid "N-Z|Xhosa"
-#~ msgstr "ض-ي|زوشا"
-
-#~ msgid "N-Z|Yiddish"
-#~ msgstr "ض-ي|يدي"
-
-#~ msgid "N-Z|Zulu"
-#~ msgstr "ا-ص|الزولو"
-
-#~ msgid "Other|POSIX/C English"
-#~ msgstr "أخرى|POSIX/C إنجليزي"
-
-#~ msgid "A-M"
-#~ msgstr "ا-ص"
-
-#~ msgid "N-Z"
-#~ msgstr "ض-ي"
-
-#~ msgid "Do you wish to make %s the default for future sessions?"
-#~ msgstr "أترغب في جعل %s جلستك الإفتراضية مستقبلا؟"
-
-#~ msgid "You have chosen %s for this session, but your default setting is %s."
-#~ msgstr "اخترت %s لهذه الجلسة، لكن تعيينك الإفتراضي %s."
-
-#~ msgid "Just For _This Session"
-#~ msgstr "فقط ل_هذه الجلسة"
-
-#~ msgid "Select a Language"
-#~ msgstr "إختر لغة"
-
-#~ msgid "Change _Language"
-#~ msgstr "غيّر ال_لغة "
-
-#~ msgid "_Select the language for your session to use:"
-#~ msgstr "إ_ختر لغةً لتستعملها لجلستك:"
-
-#~ msgid "Do you wish to restart %s with the chosen language?"
-#~ msgstr "أترغب بإعادة تشغيل %s مستخدما اللغة المختارة؟"
-
-#~ msgid "You will restart %s with the %s locale."
-#~ msgstr "ستعيد تشغيل %s بالمحلِّية %s."
-
-#~ msgid "_Yes"
-#~ msgstr "_نعم"
-
-#~ msgid "_No"
-#~ msgstr "_لا"
-
-#~ msgid "Cannot run command '%s': %s."
-#~ msgstr "لا يمكن تشغيل الأمر  '%s': %s."
-
-#~ msgid "Cannot start background application"
-#~ msgstr "لا يمكن بدأ تطبيق الخلفية"
-
-#~ msgid "User %u will login in %t"
-#~ msgstr "المستخدم %u سيلِج في %t"
-
-#~ msgid "Are you sure you want to restart the computer?"
-#~ msgstr "أحقاً  تريد إعادة تشغيل الحاسوب؟"
-
-#~ msgid "_Restart"
-#~ msgstr "إ_عادة تشغيل"
-
-#~ msgid "Are you sure you want to Shut Down the computer?"
-#~ msgstr "أحقا تريد إيقاف الحاسوب؟"
-
-#~ msgid "Are you sure you want to suspend the computer?"
-#~ msgstr "أحقا تريد تعلق الحاسوب؟%s؟"
-
-#~ msgid "_Username:"
-#~ msgstr "إ_سم المستخدم:"
-
-#~ msgid "%s session selected"
-#~ msgstr "اختيرت جلسة %s"
-
-#~ msgid "_Last"
-#~ msgstr "الأ_خيرة"
-
-#~ msgid "Select _Language..."
-#~ msgstr "إختر _لغة..."
-
-#~ msgid "_Password:"
-#~ msgstr "كلمة ال_سرّ:"
-
-#~ msgid "Your preferred session type %s is not installed on this computer."
-#~ msgstr "نوع الجلسة %s المحبذ لديك غير مثبت على هذا الحاسوب."
-
-#~ msgid "You have chosen %s for this session"
-#~ msgstr "لقد اخترت %s لهذه الجلسة"
-
-#~ msgid ""
-#~ "If you wish to make %s the default for future sessions, run the "
-#~ "'switchdesk' utility (System->Desktop Switching Tool from the panel menu)."
-#~ msgstr ""
-#~ "إذا كنت تريد جعل %s إفتراضي لجلساتك القادمة، شغل أداة "
-#~ "'switchdesk' (النظام -> أداة تحويل سطح المكتب من قائمة الشريط)."
-
-#~ msgid "Please insert 25 cents to log in."
-#~ msgstr "رجاء ادفع 25 فلسا لِتلِج"
-
-#~ msgid "Finger"
-#~ msgstr "اصبع"
-
-#~ msgid "GDM Login"
-#~ msgstr "ولوج م‌ع‌ج"
-
-#~ msgid "_Configure Login Manager..."
-#~ msgstr "إع_داد مدير الولوج..."
-
-#~ msgid "_Actions"
-#~ msgstr "أ_حداث"
-
-#~ msgid "_Theme"
-#~ msgstr "_سِمة"
-
-#~ msgid "_Quit"
-#~ msgstr "_خروج"
-
-#~ msgid "Welcome"
-#~ msgstr "أهلا بك"
-
-#~ msgid ""
-#~ "The greeter version (%s) does not match the daemon version. You have "
-#~ "probably just upgraded GDM. Please restart the GDM daemon or the computer."
-#~ msgstr ""
-#~ "إصدارة المرحب (%s) لا تعادل اصدارة المراقب، ربما حدثت م‌ع‌ج. الرجاء إعداد "
-#~ "تشغيل مراقب مراقب م‌ع‌ج أو إعادة تشغيل الحاسوب."
-
-#~ msgid "Cannot start the greeter"
-#~ msgstr "لا يمكن بدأ المرحّب"
-
-#~ msgid ""
-#~ "The greeter version (%s) does not match the daemon version (%s).  You "
-#~ "have probably just upgraded GDM.  Please restart the GDM daemon or the "
-#~ "computer."
-#~ msgstr ""
-#~ "إصدارة المرحب (%s) لا تطابق إصدارة المراقب (%s). ريما حدثت م‌ع‌ج لتوك. "
-#~ "الرجاء إعادة تشغيل مراقب م‌ع‌ج أو إعادة تشغيل الحاسوب."
-
-#~ msgid "Restart GDM"
-#~ msgstr "أعد تشغيل م‌ع‌ج..."
-
-#~ msgid "Restart computer"
-#~ msgstr "أعد تشغيل الحاسوب"
-
-#~ msgid "Could not set signal mask!"
-#~ msgstr "لا يمكن ضبط قناع الإشارة!"
-
-#~ msgid "Session directory is missing"
-#~ msgstr "دليل الجلسة مفقود"
-
-#~ msgid ""
-#~ "Your session directory is missing or empty!  There are two available "
-#~ "sessions you can use, but you should log in and correct the GDM "
-#~ "configuration."
-#~ msgstr ""
-#~ "دليل جلستك مفقود أو فارغ!  هناك جلستان يمكنك إستعمالهما، لكن يجدر بك "
-#~ "الولوج و تصحيح إعدادات م‌ع‌ج."
-
-#~ msgid "Configuration is not correct"
-#~ msgstr "الإعدادات غير سليمة"
-
-#~ msgid ""
-#~ "The configuration file contains an invalid command line for the login "
-#~ "dialog, so running the default command.  Please fix your configuration."
-#~ msgstr ""
-#~ "يحتوي ملف الإعداد سطر أمر غير صحيح لحوار الولوج، لذا شغّلتُِ الأمر "
-#~ "الإفتراضي. رجاء صحّح إعداداتك."
-
-#~ msgid "File %s cannot be opened for writing."
-#~ msgstr "لا يمكن فتح ملف %s للكتابة."
-
-#~ msgid "Cannot open file"
-#~ msgstr "لا يمكن فتح الملف"
-
-#~ msgid "Images"
-#~ msgstr "صور"
-
-#~ msgid "All Files"
-#~ msgstr "كل الملفّات"
-
-#~ msgid ""
-#~ "Change the picture that will show in the GDM (login manager) face browser"
-#~ msgstr "غيّر الصورة التي ستظهر في متصفح الوجوه لـ م‌ع‌ج (مدير الولوج)"
-
-#~ msgid "Login Photo"
-#~ msgstr "صورة الولوج"
-
-#~ msgid "<b>User Image</b>"
-#~ msgstr "<b>صورة المستخدم</b>"
-
-#~ msgid "Failsafe _GNOME"
-#~ msgstr "_جنوم آمن من الفشل"
-
-#~ msgid "Failsafe GNOME"
-#~ msgstr "جنوم آمن من الفشل"
-
-#~ msgid ""
-#~ "This is a failsafe session that will log you into GNOME. No startup "
-#~ "scripts will be read and it is only to be used when you can't log in "
-#~ "otherwise.  GNOME will use the 'Default' session."
-#~ msgstr ""
-#~ "هذه جلسة آمنة من الفشل ستولِجك في جنوم. لن تُقرأ نصوص بدأ التشغيل الشفرية  "
-#~ "و لا تستعمل الجلسة إلا اذا لم تتمكن من الولوج بطريقة أخرى.  سيستعمل جنوم "
-#~ "الجلسة 'الافتراضية'."
-
-#~ msgid "Failsafe _Terminal"
-#~ msgstr "_طرفية آمنة من الفشل"
-
-#~ msgid "Failsafe Terminal"
-#~ msgstr "طرفية آمنة من الفشل"
-
-#~ msgid ""
-#~ "This is a failsafe session that will log you into a terminal.  No startup "
-#~ "scripts will be read and it is only to be used when you can't log in "
-#~ "otherwise.  To exit the terminal, type 'exit'."
-#~ msgstr ""
-#~ "هذه جلسة آمنة من الفشل ستولِجِك في طرفية.  لن تًقرء نصوص بدأ التشغيل "
-#~ "الشفرية  و لا تستعمل الجلسة إلا اذا لم تتمكن من التسجيل بطريقة أخرى. "
-#~ "للخروج من الطرفية، اكتب 'exit'."
-
-#~ msgid ""
-#~ "An error occurred while trying to contact the login screens.  Not all "
-#~ "updates may have taken effect."
-#~ msgstr ""
-#~ "حصل خطأ عند محاولة الاتصال بشاشات الولوج. من المحتمل عدم نجاح كل "
-#~ "التحديثات."
-
-#~ msgid "Users include list modification"
-#~ msgstr "تعديلات قائمة المدرجين"
-
-#~ msgid ""
-#~ "Some of the users in the Include list (Users tab) now have uid lower than "
-#~ "MinimalUID and will be removed."
-#~ msgstr ""
-#~ "الآن لدي بعض المستخدمين في قائمة المدرجين (لسان المستخدمين) uid أقل من "
-#~ "MinumalUID وسيُحذفوا."
-
-#~ msgid "Themed"
-#~ msgstr "ذو سمة"
-
-#~ msgid "Themed with face browser"
-#~ msgstr "ذات سِمة مع متصفّح وجوه"
-
-#~ msgid "Plain"
-#~ msgstr "صِرْف"
-
-#~ msgid "Plain with face browser"
-#~ msgstr "صِرْف مع متصفّح وجوه"
-
-#~ msgid "Autologin or timed login to the root account is forbidden."
-#~ msgstr "لا يسمح بالولوج التلقائي أو المؤقت بوقت لحساب المستخدم الجذر."
-
-#~ msgid "The \"%s\" user UID is lower than allowed MinimalUID."
-#~ msgstr "UID المستخدم \"%s\" أقل من MinimalUID المسموح به."
-
-#~ msgid "User not allowed"
-#~ msgstr "المستخدم غير مسموح له"
-
-#~ msgid "(Enabled)"
-#~ msgstr "(مفعّل)"
-
-#~ msgid "(Disabled)"
-#~ msgstr "(مُعطّل)"
-
-#~ msgid "No themes selected!"
-#~ msgstr "لم تُنتقى أيّة سِمات!"
-
-#~ msgid ""
-#~ "You need one or more themes selected for the \"Random from selected\" "
-#~ "option to be valid. Failure to do so will force \"Selected only\" mode."
-#~ msgstr ""
-#~ "تحتاج لانتقاء سِمة أو أكثر ليعمل خيار \"عشوائي من المُنتقى\". الفشل في هذا "
-#~ "سيُجبِر على وضع \"المُنتقى فقط\"."
-
-#~ msgid "Apply changes to the modified command?"
-#~ msgstr "تطبيق التغييرات على الأمر المعدّل؟"
-
-#~ msgid "If you don't apply, the changes will be discarded."
-#~ msgstr "لم لم تطبّق، ستضيع تغيراتك."
-
-#~ msgid "Autologin or timed login to the root account is not allowed."
-#~ msgstr "لا يسمح بالولوج التلقائي أو الوقتي لحساب المستخدم الجذر."
-
-#~ msgid "The \"%s\" user already exists in the include list."
-#~ msgstr "المستخدم \"%s\" موجود بالفعل على قائمة المدرجين."
-
-#~ msgid "Cannot add user"
-#~ msgstr "لا يمكن إضافة المستخدمم"
-
-#~ msgid "The \"%s\" user already exists in the exclude list."
-#~ msgstr "المستخدم \"%s\" مدرج على لائحة المستبعدين بالفعل."
-
-#~ msgid "The \"%s\" user does not exist."
-#~ msgstr "المستخدم \"%s\"' غير موجود."
-
-#~ msgid "Invalid command path"
-#~ msgstr "مسار أمر غير سليم."
-
-#~ msgid ""
-#~ "The path you provided for this command is not valid. The changes will not "
-#~ "be saved."
-#~ msgstr "مسار الأمر الذي قدّمته غير سليم. لن تُحفظ التغييرات."
-
-#~ msgid ""
-#~ "Some of the users had uid lower than MinimalUID (Security tab) and could "
-#~ "not be added."
-#~ msgstr ""
-#~ "لدى بعض المستخدمين uid أقل من MinumalUID (لسان الأمن) ولا يمكن إضافتهم."
-
-#~ msgid "Select Command"
-#~ msgstr "انتقي أمر"
-
-#~ msgid "No file selected"
-#~ msgstr "لا ملف مختار"
-
-#~ msgid "Apply the changes to commands before closing?"
-#~ msgstr "أترغب بتطبيق تّغييرات الأوامر قبل الغلق؟"
-
-#~ msgid "If you don't apply, the changes made will be disregarded."
-#~ msgstr "لو لم توافق، ستهمل كل التغييرات التي حدثت في."
-
-#~ msgid "Close _without Applying"
-#~ msgstr "اغلق _دون تطبيق"
-
-#~ msgid "Halt command"
-#~ msgstr "أمر الإطفاء"
-
-#~ msgid "Reboot command"
-#~ msgstr "أمر إعادة التشغيل"
-
-#~ msgid "Suspend command"
-#~ msgstr "أمر التعليق"
-
-#~ msgid "Sounds"
-#~ msgstr "الأصوات"
-
-#~ msgid "None"
-#~ msgstr "لا شيء"
-
-#~ msgid "Archive is not of a subdirectory"
-#~ msgstr "الأرشيف ليس ذو دليل ثانوي"
-
-#~ msgid "Archive is not of a single subdirectory"
-#~ msgstr "الأرشيف ليست ذو دليل ثانوي واحد"
-
-#~ msgid "File not a tar.gz or tar archive"
-#~ msgstr "الملف ليس أرشيف tar.gz أو tar"
-
-#~ msgid "Archive does not include a GdmGreeterTheme.info file"
-#~ msgstr "لا يحتوي الأرشيف على ملف GdmGreeterTheme.info"
-
-#~ msgid "File does not exist"
-#~ msgstr "الملف غير موجود"
-
-#~ msgid "%s"
-#~ msgstr "%s"
-
-#~ msgid "Not a theme archive"
-#~ msgstr "ليس أرشيف سِمة"
-
-#~ msgid ""
-#~ "Theme directory '%s' seems to be already installed. Install again anyway?"
-#~ msgstr ""
-#~ "دليل السِمة '%s' يبدو أنه مثبت بالفعل، هل ترغب في تثيبتها مجددًا على أي حال؟"
-
-#~ msgid "Some error occurred when installing the theme"
-#~ msgstr "حدث خطأ ما أثناء تثبيت السمة"
-
-#~ msgid "Select Theme Archive"
-#~ msgstr "اختر أرشيف سِمة"
-
-#~ msgid "_Install"
-#~ msgstr "_ثَبِّت"
-
-#~ msgid "Theme archives"
-#~ msgstr "أرشيفات السِمات"
-
-#~ msgid "Theme active in \"Selected only\" mode"
-#~ msgstr "السِمة النشِطة في وضع \"المنتقى فقط\""
-
-#~ msgid ""
-#~ "This theme cannot be deleted at this point. If you wish to delete this "
-#~ "theme switch to \"Selected only\" mode, and deselect it by choosing a "
-#~ "different theme."
-#~ msgstr ""
-#~ "لا يمكن حذف هذه السِمة في هذه اللحظة. إذا كنت ترغب في حذفها تحوّل إلى وضع "
-#~ "\"المنتقى فقط\" والغِ انتقاء هذه السِمة باختيار واحدة غيرها."
-
-#~ msgid "Remove the \"%s\" theme?"
-#~ msgstr "هل أحذف السمة \"%s\" ؟"
-
-#~ msgid "If you choose to remove the theme, it will be permanently lost."
-#~ msgstr "لو اخترت حذف السمة ستفقد إلي غير رجعة."
-
-#~ msgid "_Remove Theme"
-#~ msgstr "ا_حذف السمة"
-
-#~ msgid "Install the theme from '%s'?"
-#~ msgstr "أتريد تثبيت ِِمة من '%s'؟ت س"
-
-#~ msgid "Select install to add the theme from the file '%s'."
-#~ msgstr "اختر تثبيت لتضيف السمة من الملف '%s'."
-
-#~ msgid ""
-#~ "This configuration window changes settings for the GDM daemon, which is "
-#~ "the graphical login screen for GNOME.  Changes that you make will take "
-#~ "effect immediately.\n"
-#~ "\n"
-#~ "Note that not all configuration options are listed here.  You may want to "
-#~ "edit %s if you cannot find what you are looking for.\n"
-#~ "\n"
-#~ "For complete documentation see the GNOME help browser under the \"Desktop"
-#~ "\" category."
-#~ msgstr ""
-#~ "نافذة الإعدادات تغير التعيينات لمراقب م‌ع‌ج، الذي هو شاشة الولوج الرسومية "
-#~ "لجنوم. التغييرات التي ستقوم بها ستفعّل آنيا.\n"
-#~ "\n"
-#~ "لاحظ عدم ذكر جميع خيارات الإعداد هنا. ربما تريد تحرير %s إذ لم تجد ما "
-#~ "تبحث عنه.\n"
-#~ " لتوثيق كامل راجع متصفح مساعدة جنوم تحت الفئة \"سطح المكتب\"."
-
-#~ msgid "auto"
-#~ msgstr "آلي"
-
-#~ msgid "yes"
-#~ msgstr "نعم"
-
-#~ msgid "no"
-#~ msgstr "لا"
-
-#~ msgid "Random theme mode change"
-#~ msgstr "تغيير وضع سِمة عشوائية"
-
-#~ msgid ""
-#~ "Since no themes were selected in random theme mode switching back to "
-#~ "single theme mode."
-#~ msgstr ""
-#~ "بما أنه لم تُنتقى أية سِمات فيسعود نمط السِّمة العشوائية إلى نمط السِّمة "
-#~ "الواحدة."
-
-#~ msgid "Apply the changes to users before closing?"
-#~ msgstr "هل تريد تطبيق تّغييرات المستخدمين قبل الغلق؟"
-
-#~ msgid ""
-#~ "If you don't apply, the changes made on the Users tab will be disregarded."
-#~ msgstr "لو لم توافق، ستهمل كل التغييرات التي حدثت في لسان المستخدمين."
-
-#~ msgid "Could not access configuration file (defaults.conf)"
-#~ msgstr "لا أستطيع الوصول لملف الإعدادات (defaults.conf)"
-
-#~ msgid ""
-#~ "Make sure that the file exists before launching login manager config "
-#~ "utility."
-#~ msgstr "تأكد من وجود الملف قبل تشغيل أداة إعداد مدير الولوج."
-
-#~ msgid "Could not access configuration file (custom.conf)"
-#~ msgstr "لا أستطيع الوصول لملف الإعدادت (defaults.conf)"
-
-#~ msgid "You must be the root user to configure GDM."
-#~ msgstr "يجب أن تكون جذرا لإعداد م‌ع‌ج."
-
-#~ msgid "Configure GDM login window appearance and behavior"
-#~ msgstr "إعداد مظهر وسلوك نافذة ولوج م‌ع‌ج "
-
-#~ msgid "%n will be replaced by hostname"
-#~ msgstr "%n ستستبدل باسم المستضيف"
-
-#~ msgid ""
-#~ "<b>Note:</b>  Users in the Include list will appear in the face browser "
-#~ "if enabled and will appear in the user drop-down lists for automatic and "
-#~ "timed logins on the Security tab. Users in the Exclude list will not "
-#~ "appear. MinimalUID setting in the Security tab will affect which users "
-#~ "will be allowed to join Include list."
-#~ msgstr ""
-#~ "<b>ملاحظة:</b> المستخدمين في قائمة المدرجين سيظهرون في متصفح الوجوه لو تم "
-#~ "تفعيله و سيظهرون في لائحات الولوج التلقائي والمؤقت بوقت في لسان الأمن. لن "
-#~ "يظهر المستخدمين المدرجين في لائحة المستبعدين."
-
-#~ msgid ""
-#~ "<b>Note:</b> You can select different commands from the drop-down list, "
-#~ "and modify them through relevant fields located below. To save changes "
-#~ "press Apply Command Changes button."
-#~ msgstr ""
-#~ "<b>ملاحطة:</b> يمكنك انتقاء أوامر مختلفة من القائمة المنسدلة، وتعديلهم "
-#~ "عبر الحقول المتعلّقة بأسفل. لتحفظ التغييرات انقر زر طبّق تغييرات الأوامر."
-
-#~ msgid ""
-#~ "<b>Warning:</b>  Incorrect settings could prevent the X server from "
-#~ "restarting.  Changes to these settings will not take effect until GDM is "
-#~ "restarted."
-#~ msgstr ""
-#~ "<b>تحذير:</b>  قد تمنع الإعدادات غير الصحيحة X من إعادة التشغيلظ.  لن "
-#~ "ستصبح هذه التغييرات نافذة بعد إعادة تشغبل X."
-
-#~ msgid "A_dd..."
-#~ msgstr "أ_ضف..."
-
-#~ msgid "A_llow remote system administrator login"
-#~ msgstr "ا_سمح لمدير النظام بالولوج عن بعد"
-
-#~ msgid "A_pply User Changes"
-#~ msgstr "_طبّق تعديلات المستخدمين"
-
-#~ msgid "Accessible from the outside of the login manager"
-#~ msgstr "متاح من خارج مدير الولوج"
-
-#~ msgid "Add / Modify Servers To Start"
-#~ msgstr "أضف / عدل الخادمات الواجب بدأها"
-
-#~ msgid "Add S_erver..."
-#~ msgstr "أضف _خادم..."
-
-#~ msgid "Add User"
-#~ msgstr "أضف مستخدم"
-
-#~ msgid ""
-#~ "Adds a chooser button to the Actions menu that will restart the current X "
-#~ "server with a chooser.  XDMCP does not need to be enabled on the local "
-#~ "computer for this to work."
-#~ msgstr ""
-#~ "تضيف لقائمة الإجراءات زر مخيّر يقوم بإعادة تشغيل خادم X مع مخيِّر. لا يحتاج "
-#~ "لتفعيل XDMCP على الحاسوب المحلي كي يعمل هذا."
-
-#~ msgid ""
-#~ "All users with a lower UID will be excluded from the face browser, "
-#~ "automatic and timed login."
-#~ msgstr ""
-#~ "كل المستخدمين ذوي UID أقل سيستبعدوا من متصفّح الوجوه، الولوج الآلي والمؤقّت "
-#~ "بوقت."
-
-#~ msgid "Allo_w remote timed logins"
-#~ msgstr "اس_مح بولوج عن بعد مؤقت بوقت"
-
-#~ msgid ""
-#~ "Allow changing the GTK+ (widget) theme from the greeter. Currently this "
-#~ "only affects the standard greeter. The theme will stay in effect on this "
-#~ "display until changed and will affect all the other windows that are put "
-#~ "up by GDM."
-#~ msgstr ""
-#~ "يسمح بتغيير سمة GTK+ في المرحِّب. يؤثّر هذا حاليا على المرحّب القياسي فقط. "
-#~ "ستظل السِّمة مؤثِّرة على هذا العرض حتى تُغيّر وستُؤثّر على أي نوافذ يبدأها م‌ع‌ج."
-
-#~ msgid "Allow group writable files and directories."
-#~ msgstr "اسمح بملفات وأدلّة قابلة للكتابة من المجموعة."
-
-#~ msgid "Allow logi_n if group write permissions on user's home directory"
-#~ msgstr ""
-#~ "اسمح با_لولوج إذا كان مسموحا للمجموعة بالكتابة في دليل منزل المستخدم."
-
-#~ msgid "Allow login _if all write permissions on user's home directory"
-#~ msgstr "اسمح بال_ولوج إذا كان مسموحا للجميع بالكتابة في دليل منزل المستخدم."
-
-#~ msgid "Allow world writable files and directories."
-#~ msgstr "اسمح مبلفات وأدلة قابلة للكتابة من الجميع."
-
-#~ msgid ""
-#~ "Allows the configurator to be run from the greeter. Note that the user "
-#~ "will need to type in the root password before the configurator will be "
-#~ "started."
-#~ msgstr ""
-#~ "تسمح بتشغيل الإعداد من المرحّب. لا حظ أن المستخدم سيحتاج لكتابة كلمة سر "
-#~ "الجذر قبل بدأ الإعداد."
-
-#~ msgid ""
-#~ "Always append -nolisten tcp to the command line of local X servers, thus "
-#~ "disallowing TCP connection.  This is useful if you do not care for "
-#~ "allowing remote connections, since the X protocol could really be "
-#~ "potentially a security hazard to leave open, even though no known "
-#~ "security problems exist. Also disables X forwarding, but does not affect "
-#~ "XDMCP."
-#~ msgstr ""
-#~ "ألحق دائم -nolisten tcp إلى سطر الأمر لخادمات X المحلّية، وبذا لا تسمح "
-#~ "باتصالات TCP. يفيد هذا إذا كنت لا تهتم بالسماح بالإتصالات عن بعد، حيث أن "
-#~ "برتوكول X قد يشكّل مخاطرة أمنيّة محتملة ليترك مفتوحا، بالرغم من عدم وجود "
-#~ "مشاكل أمنيّة معروفة. يبطل هذا أيضا  توجيه X، لكن لا يؤثّر على XDMCP."
-
-#~ msgid "Apply Co_mmand Changes"
-#~ msgstr "طبّق تغييرات الأ_مر"
-
-#~ msgid "Author:"
-#~ msgstr "المؤلف:"
-
-#~ msgid "Background"
-#~ msgstr "الخلفية"
-
-#~ msgid "Background color of the greeter."
-#~ msgstr "لون خلفية المرحِّب."
-
-#~ msgid "Behaviour"
-#~ msgstr "السّلوك"
-
-#~ msgid "C_ommand:"
-#~ msgstr "ال_أمر:"
-
-#~ msgid "C_ustom:"
-#~ msgstr "م_خصص:"
-
-#~ msgid ""
-#~ "Checks the ownership of the home directories before writing to them. This "
-#~ "prevents security issues in case of bad setup."
-#~ msgstr ""
-#~ "يتحقق من ملكية المجلّدات المنزليّة قبل الكتابة بها. يمنع هذه المشاكل "
-#~ "الأمنية في حال الإعداد السيء."
-
-#~ msgid "Co_lor:"
-#~ msgstr "الل_ون:"
-
-#~ msgid "Color depth:"
-#~ msgstr "عمق اللون:"
-
-#~ msgid "Comma_nd type:"
-#~ msgstr "نوع الأم_ر:"
-
-#~ msgid "Configure XDMC_P..."
-#~ msgstr "إعداد XDMC_P..."
-
-#~ msgid "Configure _X Server..."
-#~ msgstr "إعداد خادم _X..."
-
-#~ msgid ""
-#~ "Controls which text to display next to the logo image in the greeter for "
-#~ "remote XDMCP sessions."
-#~ msgstr ""
-#~ "تتحكّم في النص الذي يظهر بجوار صورة الشعار في المرحّب لجلسات XDMCP عن بعد."
-
-#~ msgid ""
-#~ "Controls which text to display next to the logo image in the standard "
-#~ "greeter. This string is only used for local logins."
-#~ msgstr ""
-#~ "تتحكّم في النص الذي يظهر بجوار صورة الشعار في المرحّب القياسي. سيتخدم هذا "
-#~ "النص في الولوج المحلّي فقط."
-
-#~ msgid "Copyright:"
-#~ msgstr "حقوق النسخ:"
-
-#~ msgid "De_fault face:"
-#~ msgstr "الوجه الإ_فتراضي:"
-
-#~ msgid "De_fault session:"
-#~ msgstr "الجلسة الإ_فتراضية:"
-
-#~ msgid "Delay in seconds before the Timed login user will be logged in."
-#~ msgstr "الفترة -بالثواني- التي سيتنتظر قبل أن يلِج الولوج المؤقّت بوقت."
-
-#~ msgid ""
-#~ "Determines the maximum number of remote display connections which will be "
-#~ "managed simultaneously. I.e. the total number of remote displays that can "
-#~ "use your host."
-#~ msgstr ""
-#~ "يحدد العدد الأقصى من اتصالات العرض البعيدة التي ستدار آنيّا. بعبارة أخرى؛ "
-#~ "العدد الأقصى من أجهزة العرض البعيدة التي تستطيع استخدام مُضيفك."
-
-#~ msgid ""
-#~ "Determines the maximum number of seconds between the time where a user "
-#~ "chooses a host and the subsequent indirect query where the user is "
-#~ "connected to the host.  When the timeout is exceeded, the information "
-#~ "about the chosen host is forgotten and the indirect slot freed up for "
-#~ "other displays."
-#~ msgstr ""
-#~ "يحدد العدد الأقصى من الثواني بين وقت اختيار مستخدم لمضيف والإستعلام غير "
-#~ "المباشر التالي حيث يتّصل المستخدم بالمضيف. عند انتهاء المهلة، ستُنسى "
-#~ "معلومات المضيف المنتقى وسيُفرغ الشق غير المباشر من أجل أجهزة العرض الأخرى."
-
-#~ msgid "Disa_ble multiple logins for a single user"
-#~ msgstr "_عطّل الولوج المتعدّد من مستخدم واحد"
-
-#~ msgid "Display the title bar in the greeter."
-#~ msgstr "اعرض شريط التسمية في المرحِّب."
-
-#~ msgid "Displays per _host:"
-#~ msgstr "العرض لكل _مستضيف:"
-
-#~ msgid "Displays this image as the background in the greeter."
-#~ msgstr "اعرض هذه الصورة كخلفيّة في المُرحِّب."
-
-#~ msgid "Do not show image for _remote logins"
-#~ msgstr "لا تعرض الصورة للولوجات عن _بعد"
-
-#~ msgid ""
-#~ "Does not place cookies into the users home directory if this directory is "
-#~ "on NFS."
-#~ msgstr "لا يضع السكاكر في دليل المستخدم المنزل إذا كان هذا الديل على NFS."
-
-#~ msgid "Don't restart the login manager after the execution"
-#~ msgstr "لا تعِد تشغيل مدير الولوج بعد التنفيذ"
-
-#~ msgid "E_dit Commands..."
-#~ msgstr "_حرّر الأوامر..."
-
-#~ msgid "E_xclude:"
-#~ msgstr "مس_تبعد:"
-
-#~ msgid "Ena_ble debug messages to system log"
-#~ msgstr "_فعِّل رسائل التنقيح في سجل النظام"
-
-#~ msgid "Enable _Timed Login"
-#~ msgstr "فعِّل الولوج المؤقت ب_وقت"
-
-#~ msgid ""
-#~ "Enables XDMCP INDIRECT choosing (i.e. remote execution of gdmchooser) for "
-#~ "X-terminals which don't supply their own display browser."
-#~ msgstr ""
-#~ "يفعّل اختيار XDMCP INDIRECT (بعبارة أخرى؛ تشغيل gdmchooser عن بعد) لطرفيات-"
-#~ "X التي لا توفّر متصفّع العرض الخاص بها."
-
-#~ msgid ""
-#~ "Enables greeter to be launched with additional Gtk+ modules. This is "
-#~ "useful when extra features are required such as accessible login. Note "
-#~ "that only \"trusted\" modules should be used to minimize security issues."
-#~ msgstr ""
-#~ "يَسْمح بتشغيل المُرحِّب مع وحدات Gtk+ إضافيّة. يفيد هذا عند الحاجة لمميزات "
-#~ "إضافيّة مثل الولوج المُعان. لاحظ وجوب استخدام  وحدات \"موثوقة\" فقط لتقليل "
-#~ "المشاكل الأمنيّة."
-
-#~ msgid ""
-#~ "Full path and arguments for the command to be executed. If the value is "
-#~ "missing, the command will not be available."
-#~ msgstr ""
-#~ "المسار الكامل ومعاملات الأمر الذي سينفّذ. إذا كانت القيمة مفقودة فلن يتوفّر "
-#~ "الأمر."
-
-#~ msgid "Full path and arguments to the command to be executed"
-#~ msgstr "المسار الكامل ومعاملات الأمر الذي سينفّذ"
-
-#~ msgid ""
-#~ "GDM should run the login window on this server and allow a user to log "
-#~ "in.  If not selected, then GDM will just run this server and wait for it "
-#~ "to terminate."
-#~ msgstr ""
-#~ "على م‌ع‌ج أن يشغّل نافذة الولوج على هذا الخادم ليسمح للمستخدمين بالولوج. إذا "
-#~ "لم ينتقى، سيشغل م‌ع‌ج هذا الخادم فقط وينتظر حتى ينتهي."
-
-#~ msgid "General"
-#~ msgstr "عامّ"
-
-#~ msgid ""
-#~ "Given user should be logged in after a number of seconds (set with Pause "
-#~ "before login) of inactivity on the login screen.  This is useful for "
-#~ "public access terminals or perhaps even home use."
-#~ msgstr ""
-#~ "سيولج المُستخدم المُعطى بعد عدد من الثواني (ضبط بواسطة المهلة قبل الولوج) "
-#~ "بون نشاط في شاشة الولوج. يفيد هذا في الطرفيات المتوفّرة للعموم أو حتى "
-#~ "الإستخدام المنزلي."
-
-#~ msgid ""
-#~ "Given user should be logged in upon first bootup.  No password will be "
-#~ "asked.  This is useful for single user workstations where local console "
-#~ "security is not an issue."
-#~ msgstr ""
-#~ "سيولج المستخدم المعطى عند أول إقلاع. لن يُسأل عن كلمة السر. يفيد هذا في "
-#~ "منصّات العمل وحيدة المستخدم حيث لا يُأْبه لأمان الكونسول المحلّي."
-
-#~ msgid ""
-#~ "Greeter\n"
-#~ "Chooser"
-#~ msgstr ""
-#~ "المرحِّب\n"
-#~ "المُخَيِّر"
-
-#~ msgid "Honor _indirect requests"
-#~ msgstr "احترم الطلبات غير ال_مباشرةى:"
-
-#~ msgid "I_mage:"
-#~ msgstr "_صورة:"
-
-#~ msgid "I_nclude:"
-#~ msgstr "م_درَج: "
-
-#~ msgid ""
-#~ "If a user has no defined face image, GDM will use the \"stock_person\" "
-#~ "icon defined in the current GTK+ theme.  If no such image is defined, the "
-#~ "image specified by DefaultFace will be used.  The image must be in an gdk-"
-#~ "pixbuf supported format and the file must be readable to the GDM user."
-#~ msgstr ""
-#~ "إذا لم يُكن لمستخدم صورة وجه معرّفة، فسيتخدم م‌ع‌ج أيقونة \"stock_perso\" "
-#~ "المعرّفة في سِمة GTK+ الحالية. إذا لم يكن هناك صورة كهذه، فستُستخد الصورة "
-#~ "المحدّدة بواسطة DefaultFace. يجب أن تكون الصورة بصيغة gdk-pixbuf مدعومة "
-#~ "ويجب أن يكون الملف مقروءا لمستخدم م‌ع‌ج."
-
-#~ msgid ""
-#~ "Image file to display in the logo box. The file must be in an gdk-pixbuf "
-#~ "supported format and it must be readable by the GDM user. If no file is "
-#~ "specified the logo feature is disabled."
-#~ msgstr ""
-#~ "مف الصورة التي ستعرض في صندوق الشعار. يجب أن يكون الملف بصيغة gdk-pixbuf "
-#~ "مدعومة ويجب أن يكون الملف مقروءا لمستخدم م‌ع‌ج. إذا لم يُحدّد أي ملف فستُعطّل "
-#~ "ميزة الشعار."
-
-#~ msgid "Includ_e Hostname Chooser (XDMCP) menu item"
-#~ msgstr "_تضمّن عنصر القائمة \"مُخيِّر اسم المستضيف (XDMCP)\""
-
-#~ msgid "Include Con_figure menu item"
-#~ msgstr "ادرج عنصر القائمة \"إع_داد\""
-
-#~ msgid ""
-#~ "Indicates that the X server should be started at a different process "
-#~ "priority."
-#~ msgstr "توضّح أن خادم X يجب أن يبدأ بأولويّة عمليّة مختلفة."
-
-#~ msgid ""
-#~ "Interval in which to ping the X server in seconds.  If the X server "
-#~ "doesn't return before the next time we ping it, the connection is stopped "
-#~ "and the session ended."
-#~ msgstr ""
-#~ "الفترات (بالثواني) التي سيُطرق بينها خادم X. إذا لم يُجِب الخادم قبل المرّة "
-#~ "التالية من الطّرق فسيُوقف الإتصال وتنهى الجلسة."
-
-#~ msgid "LRla_bel:"
-#~ msgstr "LRla_bel:"
-
-#~ msgid "La_unch:"
-#~ msgstr "ا_بدأ:"
-
-#~ msgid "Listen on _UDP port: "
-#~ msgstr "استمع عند ال_منفذ UDP:"
-
-#~ msgid "Loc_k position of the window"
-#~ msgstr "ا_قفل موقع النافذة"
-
-#~ msgid "Local"
-#~ msgstr "محلًي"
-
-#~ msgid "Login _failed:"
-#~ msgstr "_فشل الولوج:"
-
-#~ msgid "Login _retry delay:"
-#~ msgstr "تأ_خير إعادة محاولة الولوج"
-
-#~ msgid "Login _successful:"
-#~ msgstr "_نجح الولوج:"
-
-#~ msgid "Logo"
-#~ msgstr "الشعار"
-
-#~ msgid "Maximum _remote sessions:"
-#~ msgstr "العدد الأقصى للجلسات عن _بعد:"
-
-#~ msgid "Maximum _wait time:"
-#~ msgstr "وقت الإن_تظار الأقصى:"
-
-#~ msgid "Maximum indirect w_ait time:"
-#~ msgstr "وقت الإ_نتظار الغير مباشر الأقصي:"
-
-#~ msgid "Maximum p_ending indirect requests:"
-#~ msgstr "عدد الطلبات غير المباشرةالمع_لَّقة الأقصى:"
-
-#~ msgid "Menu Bar"
-#~ msgstr "شريط القائمة"
-
-#~ msgid "Messa_ge:"
-#~ msgstr "رسا_لة:"
-
-#~ msgid "Ne_ver place cookies on NFS"
-#~ msgstr "لا تضع أ_بدا السكاكر على NFS"
-
-#~ msgid "No _restart required"
-#~ msgstr "ليس بحاجة لإعادة ال_تشغيل"
-
-#~ msgid ""
-#~ "Number of simultaneously provided displays with host choosers.  If more "
-#~ "queries from different hosts come in, the oldest ones will be forgotten."
-#~ msgstr ""
-#~ "عدد أجهزة العرض ذات مخيِّر مستضيف المُعطاة في آن واحِد. إذا أتت استعلامات "
-#~ "أكثر من مستضيفين مختلفين، سيُنسى الأقدم منهم."
-
-#~ msgid "Only allow login i_f user owns their home directory"
-#~ msgstr "اسمح بالولوج فقط إ_ذا كان المستخدم يمتلك مجلّده المنزلي"
-
-#~ msgid "Op_tions:\t"
-#~ msgstr "ال_خيارت:\t"
-
-#~ msgid "Pa_th:"
-#~ msgstr "م_سار:"
-
-#~ msgid "Paranoia option. Only accepts user owned files and directories."
-#~ msgstr "خيار بارانويا. اسمح فقط بالمستخدم المالك للملفات والأدلّة."
-
-#~ msgid "Per_sistent"
-#~ msgstr "دائ_م:"
-
-#~ msgid "Permissions"
-#~ msgstr "التصاريح"
-
-#~ msgid "Pick Background Color"
-#~ msgstr "اختر لون الخلفية"
-
-#~ msgid ""
-#~ "Plain\n"
-#~ "Plain with face browser\n"
-#~ "Themed\n"
-#~ "Themed with face browser"
-#~ msgstr ""
-#~ "صِرْف\n"
-#~ "صِرْف مع متصفح وجوه\n"
-#~ "ذو سِمة\n"
-#~ "ذو سِمة مع متصفح وجوه"
-
-#~ msgid "Qui_ver when incorrect username/password entered"
-#~ msgstr "ا_رتعش عند إدخال اسم مستخدم/كلمة سر خطأ"
-
-#~ msgid "R_emove"
-#~ msgstr "اح_ذف"
-
-#~ msgid "Re_move Server"
-#~ msgstr "احذ_ف الخادم"
-
-#~ msgid "Reboot, Halt, Suspend and Custom Command Preferences"
-#~ msgstr "تفضيلات إعادة التشغيل، الغلق، التعليق والأمر المخصّص"
-
-#~ msgid "Refresh rate:"
-#~ msgstr "معدل التحديث:"
-
-#~ msgid "Remote"
-#~ msgstr "عن بعد"
-
-#~ msgid ""
-#~ "Remote connections through XDMCP will be allowed to log into the "
-#~ "\"TimedLogin\" user by letting the login window time out, just like the "
-#~ "local user on the first console."
-#~ msgstr ""
-#~ "سيُسمح للجلسات عن بعد عبر XDMCP بالولوج إلى مستخدم \"TimedLogin\" عن طريق "
-#~ "تفعيل مهلة نافذة الولوج، مثل المستخدم المحلّي على الكونسول الأوّل."
-
-#~ msgid ""
-#~ "Remote login disabled\n"
-#~ "Same as Local"
-#~ msgstr ""
-#~ "الولوج عن بعد معطل\n"
-#~ "مثله مثل المحلي"
-
-#~ msgid "Resolution:"
-#~ msgstr "الإ_ستبانة:"
-
-#~ msgid "Sc_ale to fit screen"
-#~ msgstr "_حَجّم لتناسب الشاشة"
-
-#~ msgid "Scale background image to fit the screen."
-#~ msgstr "حجِّم صورة الخلفية لتناسب النافذة."
-
-#~ msgid "Security"
-#~ msgstr "أمن"
-
-#~ msgid "Select Background Image"
-#~ msgstr "اختر صورة الخلفية"
-
-#~ msgid "Select Logo Image"
-#~ msgstr "اختر صورة الشعار"
-
-#~ msgid "Select Sound File"
-#~ msgstr "انتقي ملف صوت"
-
-#~ msgid ""
-#~ "Selected only\n"
-#~ "Random from selected\n"
-#~ msgstr ""
-#~ "المختارة فقط\n"
-#~ "عشوائية من المختارة\n"
-
-#~ msgid ""
-#~ "Sends debug output to the syslog.  This can be useful for tracking down "
-#~ "problems with GDM.  This output tends to be verbose so should not be "
-#~ "turned on for general use."
-#~ msgstr ""
-#~ "يُرسل خرْج التنقيح لسجل النظام (syslog) يفيد هذا في تتبع مشاكل م‌ع‌ج. الخرْج "
-#~ "مُطنِب عادة، لذا يفضّل ألا يفعّل في الإستخدام العام."
-
-#~ msgid "Server _name:"
-#~ msgstr "إ_سم الخادم:"
-
-#~ msgid "Servers To Start"
-#~ msgstr "الخوادم الواجب تشغيلها"
-
-#~ msgid "Set positio_n of the window:"
-#~ msgstr "اضبط موق_ع النافذة:"
-
-#~ msgid "Sh_ow title bar"
-#~ msgstr "اعرض شريط التسمية"
-
-#~ msgid "Shake the display when an incorrect username/password is entered."
-#~ msgstr "رجّ العرض عند إدخال اسم مستخدم/كلمة سر خطأ."
-
-#~ msgid ""
-#~ "Show visual feedback in the password entry. Turning this option on can be "
-#~ "a security hazard as the length of your password can be guessed."
-#~ msgstr ""
-#~ "اظهر رجْعا بصريّا في خانة كلمة السرّ. قد يشكّل تفعيل هذا الخيار مخاطرة أمنية، "
-#~ "حيث سيمكن تخمين طول كلمة سرّك."
-
-#~ msgid ""
-#~ "Specifies if Custom Command will appear outside the login manager, for "
-#~ "example on the desktop through the Log Out/Shut Down widgets."
-#~ msgstr ""
-#~ "يحدد ما إذا كان الأمر المخصص سيظهر خارج مدير الولوج، مثلا على سطح المكتب "
-#~ "من خلال أداة اخرج/اطفيء."
-
-#~ msgid ""
-#~ "Specifies if gdm will be stopped/restarted once Custom Command has been "
-#~ "executed."
-#~ msgstr "يحدد ما إذا كان gdm سيوقف/يعاد تشغيله عندما ينفّذ الأمر المخصص."
-
-#~ msgid ""
-#~ "Specifies the label that will be displayed on the Custom Command buttons "
-#~ "and menu items."
-#~ msgstr "يحدد العنوان الذي سيظهر على زر الأمر المخصص وفي مُدخل القائمة."
-
-#~ msgid ""
-#~ "Specifies the label that will be displayed on the Custom Command list "
-#~ "items and radio buttons."
-#~ msgstr ""
-#~ "يحدد العنوان الذي سيظهر على زر راديو الأمر المخصص وفي عناصر اللائحة."
-
-#~ msgid ""
-#~ "Specifies the message that will be displayed on Custom Command tooltip "
-#~ "entries."
-#~ msgstr "يحدد الرسالة التي ستظهر فى مُدخلات تلميحة الأمر المخصص."
-
-#~ msgid ""
-#~ "Specifies the message that will be displayed on the warning dialog box "
-#~ "when one of the Custom Command widgets is activated."
-#~ msgstr ""
-#~ "يحدد الرسالة التي ستظهر في صندوق حوار التحذير عند تنشيط أي من قطع الأمر "
-#~ "الخصص."
-
-#~ msgid ""
-#~ "Systemwide directory for face files. The sysadmin can place icons for "
-#~ "users here without touching their homedirs. Faces are named after their "
-#~ "users' logins. The face images must be stored in gdk-pixbuf supported "
-#~ "formats and they must be readable for the GDM user."
-#~ msgstr ""
-#~ "دليل النظام العام لملفات الوجوه. يستطيع مدير النظام وضع أيقونات "
-#~ "المستخدمين هنا بدون لمس أدلتهم المنزليّة. تسمى الوجوه تبعا لاسم ولوج "
-#~ "مستخدميها. يجب أن تخزن ملفات الوجوه بصيغة gdk-pixbuf مدعومة ويجب أن تطون "
-#~ "مقروءة لمستخدم م‌ع‌ج."
-
-#~ msgid "T_ooltip:"
-#~ msgstr "_تلميحة:"
-
-#~ msgid "Text to appear in the warning pop-up dialogs"
-#~ msgstr "النص الذي سيظهر في حوارات التحذير المنبثقة"
-
-#~ msgid "Text to appear on the buttons and menu items"
-#~ msgstr "النص الذي سيظهر على الأزرار وعناصر القائمة"
-
-#~ msgid "Text to appear on the radio buttons and list items"
-#~ msgstr "النص الذي سيظهﻻ على أزرار الراديو وعناصر اللائحة"
-
-#~ msgid "Text to appear on the tooltips"
-#~ msgstr "النص الذي سيظهر على تلميحات الأدوات"
-
-#~ msgid ""
-#~ "The UDP port number gdm should listen to for XDMCP requests. Don't change "
-#~ "this unless you know what you are doing."
-#~ msgstr ""
-#~ "رقم منفذ UDP الذي سيستمع gdm لطلبات XDMCP فيه. لا تغيّر هذا إلا إذا كنت "
-#~ "تعرف ماالذي تفعله."
-
-#~ msgid ""
-#~ "The command to execute, with full path to the binary of the X server, and "
-#~ "any extra arguments needed. Example: /usr/X11R6/bin/X"
-#~ msgstr ""
-#~ "الأمر الذي سينفّذ، مع المسار الكامل للملف الثنائي لخادم X، وأي معطيات أخرى "
-#~ "مطلوبة. مثال:  /usr/X11R6/bin/X"
-
-#~ msgid "The greeter will play a sound after a failed login attempt."
-#~ msgstr "سيعزف المرحّب صوتا بعد محاولة الولوج الفاشلة."
-
-#~ msgid "The greeter will play a sound after a successful login attempt."
-#~ msgstr "سيعزف المرحّب صوتا بعد محاولة الولوج الناجحة."
-
-#~ msgid "The greeter will play a sound or beep when it is ready for a login."
-#~ msgstr "سيعزف المرحّب صوتا أو يصفّر عندما يكون مستعدّا للولوج."
-
-#~ msgid "The horizontal position of the login window."
-#~ msgstr "الموضع الأفقي لنافذة الولوج."
-
-#~ msgid "The name that will be displayed to the user."
-#~ msgstr "الاسم الذي سيظهر للمستخدم."
-
-#~ msgid ""
-#~ "The number of seconds that should pass before reactivating the entry "
-#~ "field after a failed login."
-#~ msgstr "عدد الثواني التي يجب أن تمر قبل تفعيل خانة الإدخال بعد ولوج فاشل."
-
-#~ msgid "The position of the login window cannot be changed."
-#~ msgstr "لا يمكن تغيير موضع نافذة الولوج."
-
-#~ msgid ""
-#~ "The position of the login window is determined by Position X / Position Y."
-#~ msgstr "يحدد موضع نافذة الولوج بالموضع س / الموضع ص"
-
-#~ msgid ""
-#~ "The session that is used by default if the user does not have a saved "
-#~ "preference and has picked 'Last' from the list of sessions."
-#~ msgstr ""
-#~ "الجلسة التي ستستخدم إفتراضيا إذا لم يكن للمستخدم تفضيل محفوظ واختار "
-#~ "'الأخيرة' من قائمة الجلسات."
-
-#~ msgid "Themes"
-#~ msgstr "السِمات"
-
-#~ msgid ""
-#~ "This server is available as a choice when a user wishes to run a "
-#~ "flexible, on demand server."
-#~ msgstr ""
-#~ "يتوفّر هذا الخادم كاختيار عندما يرغب المستخدم في تشغيل خادم مرن، عند الطلب."
-
-#~ msgid ""
-#~ "To avoid denial of service attacks, GDM has fixed size queue of pending "
-#~ "connections. Please note that this parameter does *not* limit the number "
-#~ "of remote displays which can be managed. It only limits the number of "
-#~ "displays initiating a connection simultaneously."
-#~ msgstr ""
-#~ "لتجنّب هجوم حجب الخدمة، لدى م‌ع‌ج عدد ثابت من طابور الإتصالات المنتظرة. لاحظ "
-#~ "أن هذا المعامل *لا* يحدّ عدد أجهزة العرض البعيدة المُدارة بل االعدد الذي "
-#~ "يبدأ الإتصال في وقت واحِد."
-
-#~ msgid ""
-#~ "To prevent attackers from filling up the pending queue, GDM will only "
-#~ "allow one connection for each remote computer.  If you want to provide "
-#~ "display services to computers with more than one screen, you should "
-#~ "increase the this value accordingly."
-#~ msgstr ""
-#~ "لمنع المهاجمين من ملأ طابور الإنتظار، لن يسمج م‌ع‌ج بأكثر من اتصال لكل "
-#~ "حاسوب بعيد. إذا أردت تقديم خدمات عرض لحواسيب بأكثر من شاشة، يتعيّن عليك "
-#~ "زيادة هذه القيمة تبعا لذلك."
-
-#~ msgid ""
-#~ "Turns the Actions menu (which used to be called System menu) on or off.  "
-#~ "If this is off then one of the actions will be available anywhere.  These "
-#~ "actions include Shutdown, Restart, Custom, Configure, XDMCP chooser and "
-#~ "such."
-#~ msgstr ""
-#~ "يشغّل أو يغلق قائمة الإجراءات (اعتيد على تسميتها قائمة النظام). إذا أغلقت "
-#~ "هذه، فسيظهر أحد الإجراءات في مكان ما. تشمل هذا الإجراءات الإطفاء، إعادة "
-#~ "التشغيل، مخصّص، إعداد، مخيّر chooser وما شابه."
-
-#~ msgid "U_ser:"
-#~ msgstr "مستخدم: "
-
-#~ msgid "Us_e 24 Hour Clock:"
-#~ msgstr "ا_ستعمل نسق 24 ساعة:"
-
-#~ msgid ""
-#~ "Use circles instead of asterisks in the password entry. This may not work "
-#~ "with all fonts however."
-#~ msgstr ""
-#~ "استخدم دوائر بدلا من النجوم في خانة كلمة السر. قد لا يعمل هذا جيّدا مع كل "
-#~ "الخطوط."
-
-#~ msgid "Welcome Message"
-#~ msgstr "رسالة الترحيب"
-
-#~ msgid ""
-#~ "When GDM is ready to manage a remote display, an ACCEPT packet is sent to "
-#~ "it containing a unique session id which will be used in future XDMCP "
-#~ "conversations. GDM will then place the session id in the pending queue "
-#~ "waiting for the display to respond with a MANAGE request. If no response "
-#~ "is received within maximum wait time, GDM will declare the display dead "
-#~ "and erase it from the pending queue freeing up the slot for other "
-#~ "displays."
-#~ msgstr ""
-#~ "عندما يكون م‌ع‌ج مستعدا لإدارة جهاز عرض، ستُرسل له رزمة ACCEPT تحتوى على "
-#~ "معرِّف جلسة فريد سيُستخدم في مُحادثات XDMCP المستقبليّة. سيُضع م‌ع‌ج معرِّف الجلسة "
-#~ "بعد ذلك في طابور الإنتظار منتظرا استجابة جهاز العرض بطلب MANAGE. إذا لم "
-#~ "يتلقى أي استجابة خلال فترة الإنتظار القصوى، سيعتبر م‌ع‌ج جهاز العرض ميِّت "
-#~ "ويمسحه من طابور الإنتظار مُفرغا الشِّق لأجهزة العرض الأخرى."
-
-#~ msgid ""
-#~ "When the user logs in and already has an existing session, they are "
-#~ "connected to that session rather than starting a new session.  This only "
-#~ "works for sessions running on Virtual Terminals started with "
-#~ "gdmflexiserver, and not with XDMCP."
-#~ msgstr ""
-#~ "يعندما يلج مستخدم له جلسة موجودة بالفعل، فسيُوصّل بتلك الجلسة بدلا من بدأ "
-#~ "جلسة جديدة. يعمل هذا فقط مع الجلسات التي تعمل على على الطرفيات الوهميّة "
-#~ "التي بدأت بـ gdmflexiserver وليس XDMCP."
-
-#~ msgid "X Server Login Window Preferences"
-#~ msgstr "تفضيلات نافذة خادم X للولوج"
-
-#~ msgid "XDMCP Login Window Preferences"
-#~ msgstr "تفضيلات نافذة XDMCP للولوج"
-
-#~ msgid "_Add..."
-#~ msgstr "أ_ضِف..."
-
-#~ msgid "_Add/Modify..."
-#~ msgstr "أ_ضِف/عدّل..."
-
-#~ msgid "_Allow local system administrator login"
-#~ msgstr "ا_سمح بولوج مدير النظام محليا"
-
-#~ msgid "_Allow users to change fonts and colors of plain greeter"
-#~ msgstr "ا_سمح للمستخدمين بتغيير ألوان وخط المرحّب الصِرْف"
-
-#~ msgid "_Background color:"
-#~ msgstr "_لون الخلفية:"
-
-#~ msgid "_Default: \"Welcome to %n\""
-#~ msgstr "الإ_فتراضي: \"أهلا بك في %n\""
-
-#~ msgid "_Default: \"Welcome\""
-#~ msgstr "الإ_فتراضي: \"أهلا\""
-
-#~ msgid "_Deny TCP connections to Xserver"
-#~ msgstr "ا_رفض اتصالات TCP لخادم X"
-
-#~ msgid "_Enable Automatic Login"
-#~ msgstr "_فعّل الولوج التلقائي"
-
-#~ msgid "_Flexible (on demand)"
-#~ msgstr "_مرن (عند الطلب)"
-
-#~ msgid "_Global face dir:"
-#~ msgstr "دليل الوجوه ال_عام:"
-
-#~ msgid "_GtkRC file:"
-#~ msgstr "ملف _GtkRC:"
-
-#~ msgid "_Image:"
-#~ msgstr "_صورة:"
-
-#~ msgid "_Include all users from /etc/passwd (not for NIS)"
-#~ msgstr "ا_درج كل المستخدمين من /etc/passwd (ليس بالنسبة لـ NIS)"
-
-#~ msgid "_Label:"
-#~ msgstr "_تسمية:"
-
-#~ msgid "_Logins are handled by this computer"
-#~ msgstr "يتم التعامل مع ال_ولوجات بواسطة هذا الحاسوب"
-
-#~ msgid "_Maximum pending requests:"
-#~ msgstr "عدد الطلبات المعلَّقة الأ_قصى:"
-
-#~ msgid "_Minimal UID:"
-#~ msgstr "أد_نى UID:"
-
-#~ msgid "_Only allow login if user's home directory permissions are secure"
-#~ msgstr "اسمح بالولوج _فقط عندما تكون صلاحيات دليل منزل المستخدم آمنة"
-
-#~ msgid "_Path:        "
-#~ msgstr "_مسار:     "
-
-#~ msgid "_Pause before login:"
-#~ msgstr "ال_مهلة قبل الولوج:"
-
-#~ msgid "_Ping interval:"
-#~ msgstr "فترة ال_طرْق:"
-
-#~ msgid "_Priority:"
-#~ msgstr "الأ_ولويّة:"
-
-#~ msgid "_Remove"
-#~ msgstr "أ_زل"
-
-#~ msgid "_Remove..."
-#~ msgstr "أ_زل..."
-
-#~ msgid "_Server:"
-#~ msgstr "ال_خادم:"
-
-#~ msgid "_Servers:"
-#~ msgstr "ال_خوادم:"
-
-#~ msgid "_Show visual feedback (asterisks) in the password entry"
-#~ msgstr "ا_ظهر رجْعا مرئيا (نجوم) في خانة كلمة السرّ"
-
-#~ msgid "_Style:"
-#~ msgstr "الأ_سلوب:"
-
-#~ msgid "_Theme:"
-#~ msgstr "_سِمة:"
-
-#~ msgid "_Use circles instead of asterisks in the password entry"
-#~ msgstr "ا_ستعمل دوائر بدلا من النجوم في خانة كلمة السرّ"
-
-#~ msgid "_VT:"
-#~ msgstr "_VT:"
-
-#~ msgid "_X coordinate"
-#~ msgstr "الإحداثي _س"
-
-#~ msgid "_Y coordinate"
-#~ msgstr "الإحداثي _ص"
-
-#~ msgid ""
-#~ "auto\n"
-#~ "yes\n"
-#~ "no"
-#~ msgstr ""
-#~ "آلي\n"
-#~ "نعم\n"
-#~ "لا"
-
-#~ msgid "dummy"
-#~ msgstr "زائف"
-
-#~ msgid "seconds"
-#~ msgstr "ثوان"
-
-#~ msgid "Too many users to list here..."
-#~ msgstr "عدد المستخدمين كبير جدا لعرضه هنا..."
-
-#~ msgid "Restart Machine"
-#~ msgstr "أعد تشغيل الجهاز"
-
-#~ msgid "There was an error loading the theme %s"
-#~ msgstr "حدث خطأ عند تحميل السِمة %s"
-
-#~ msgid "The greeter theme is corrupt"
-#~ msgstr "سِمة المُرَحّب تالفة"
-
-#~ msgid ""
-#~ "The theme does not contain definition for the username/password entry "
-#~ "element."
-#~ msgstr "السِّمة لا تحتوي تعريفا لعنصر إدخال اسم المستخدم/كلمة السر."
-
-#~ msgid ""
-#~ "There was an error loading the theme, and the default theme could not be "
-#~ "loaded. Attempting to start the standard greeter"
-#~ msgstr ""
-#~ "حصل خطأ عند تحميل السِّمة،كما لم يمكن تحميل السِّمة الإفتراضية، سأحاول تشغيل "
-#~ "المُرحّب القياسي"
-
-#~ msgid ""
-#~ "The GTK+ greeter could not be started.  This display will abort and you "
-#~ "may have to login another way and fix the installation of GDM"
-#~ msgstr ""
-#~ "لا يمكنن تشغيل مرحب GTK+. سيجهض هذه العرض كما سيتحتم عليك الولوج بطريقة "
-#~ "أخرى و تصحيح تثبيت م‌ع‌ج"
-
-#~ msgid ""
-#~ "Your session directory is missing or empty!  There are two available "
-#~ "sessions you can use, but you should log in and correct the gdm "
-#~ "configuration."
-#~ msgstr ""
-#~ "دليل جلستك مفقود أو فارغ!  هناك جلستان يمكنك إستعمالهما، لكن يجدر بك "
-#~ "الولوج و تصحيح إعدادات م‌ع‌ج."
-
-#~ msgid "Select _Session..."
-#~ msgstr "إختر _جلسة..."
-
-#~ msgid ""
-#~ "Answer questions here and press Enter when done.  For a menu press F10."
-#~ msgstr ""
-#~ "أجب على الأسئلة ثم اضغط زر الإدخال عند الإنتهاء. للحصول على قائمة اضغط "
-#~ "F10."
-
-#~ msgid "Sus_pend"
-#~ msgstr "ع_لِّق"
-
-#~ msgid "_OK"
-#~ msgstr "_موافق"
-
-#~ msgid "Change _Session"
-#~ msgstr "غيِّر ال_جلسة"
-
-#~ msgid "Sessions"
-#~ msgstr "الجلسات"
-
-#~ msgid "_Last session"
-#~ msgstr "الجلسة ال_سابقة"
-
-#~ msgid "Log in using the session that you have used last time you logged in"
-#~ msgstr "سجِّل دخول بالجلسة التي استخمتها آخر مرة قمت فيها بالولوج"
-
-#~ msgid "Confi_gure Login Manager..."
-#~ msgstr "إ_عداد مدير الولوج..."
-
-#~ msgid "Shut _down the computer"
-#~ msgstr "أط_فيء الحاسوب"
-
-#~ msgid "Shut Down your computer so that you may turn it off."
-#~ msgstr "اطفئ حاسوبك ليمكنك غلقه."
-
-#~ msgid "_Restart the computer"
-#~ msgstr "أ_عِد تشغيل الحاسوب"
-
-#~ msgid "Restart your computer"
-#~ msgstr "أعد تشغيل حاسوبك"
-
-#~ msgid "Sus_pend the computer"
-#~ msgstr "_علِّق الحاسوب"
-
-#~ msgid "Suspend your computer"
-#~ msgstr "علِّق حاسوبك"
-
-#~ msgid "Run _XDMCP chooser"
-#~ msgstr "شغّل مَخَيِّر _XDMCP"
-
-#~ msgid ""
-#~ "Run an XDMCP chooser which will allow you to log into available remote "
-#~ "computers, if there are any."
-#~ msgstr ""
-#~ "شغّل مَخَيِّر _XDMCP الذي سيسمح لك بتسجيل دخولك في الحواسيب المتوفرة عن بعد "
-#~ "إذا وجد أيا منها."
-
-#~ msgid "Confi_gure the login manager"
-#~ msgstr "إ_عداد مدير الولوج"
-
-#~ msgid ""
-#~ "Configure GDM (this login manager). This will require the root password."
-#~ msgstr "إعداد م‌ع‌ج (مدير الولوج هذا). سيتطلب ذلك كلمة سر الجذر."
-
-#~ msgid "(c) 2002 Bond, James Bond"
-#~ msgstr "(c) 2002 بوند، جايمس بوند"
-
-#~ msgid "Bond, James Bond"
-#~ msgstr "بوند, جايمس بوند"
-
-#~ msgid "Circles"
-#~ msgstr "دوائر"
-
-#~ msgid "Theme with blue circles"
-#~ msgstr "سِّمة بدوائر زرقاء"
-
-#~ msgid "(c) 2002 GNOME"
-#~ msgstr "(c) 2002 جنوم"
-
-#~ msgid "GNOME Art variation of Circles with a Face Browser"
-#~ msgstr "تعديل جنوم أرت على \"دوائر\" مع متصفّح وجوه"
-
-#~ msgid "GNOME Artists"
-#~ msgstr "فناني جنوم"
-
-#~ msgid "Happy GNOME with Browser"
-#~ msgstr "جنوم سعيد مع متصفّح"
-
-#~ msgid "GNOME Art variation of Circles"
-#~ msgstr "تعديل جنوم أرت على \"دوائر\""
-
-#~ msgid "Happy GNOME"
-#~ msgstr "جنوم سعيد"
-
-#~ msgid ""
-#~ "Error while trying to run (%s)\n"
-#~ "which is linked to (%s)"
-#~ msgstr ""
-#~ "خطأ عند محاولة تشغيل (%s)\n"
-#~ "المربوط بـ (%s)"
-
-#~ msgid "Cannot open gestures file: %s"
-#~ msgstr "تعذر فتح ملف البادرات (gestures): %s"
-
-#~ msgid "DMX display to migrate to"
-#~ msgstr "عرض DMX المطلوب الإنتقال إليه"
-
-#~ msgid "DISPLAY"
-#~ msgstr "عرض"
-
-#~ msgid "Backend display name"
-#~ msgstr "اسم عرض النهاية الخلفية"
-
-#~ msgid "Xauthority file for destination display"
-#~ msgstr "ملف Xauthority للعرض الوِجْهة"
-
-#~ msgid "AUTHFILE"
-#~ msgstr "AUTHFILE"
-
-#~ msgid "Xauthority file for backend display"
-#~ msgstr "ملف Xauthority لعرض النهاية الخلفية"
-
-#~ msgid "Failed to open display \"%s\"\n"
-#~ msgstr "فشل فتح العرض \"%s\"\n"
-
-#~ msgid "DMX extension not present on \"%s\"\n"
-#~ msgstr "امتداد DMX غير موجود على \"%s\"\n"
-
-#~ msgid "- migrate a backend display from one DMX display to another"
-#~ msgstr "- انقل عرض نهاية خلفية من عرض DMX إلى آخر"
-
-#~ msgid "You must specify a destination DMX display using %s\n"
-#~ msgstr "يجب عليك تحديد عرض DMX الوِجْهة باستخدام %s\n"
-
-#~ msgid "You must specify a backend display by using %s\n"
-#~ msgstr "يجب عليك تحديد عرض النهاية الخلفية باستخدام %s\n"
-
-#~ msgid "DMXAddScreen \"%s\" failed on \"%s\"\n"
-#~ msgstr "فشل DMXAddScreen \"%s\" على \"%s\"\n"
-
-#~ msgid "gdmaskpass only runs as root\n"
-#~ msgstr "م‌ع‌جaskpass يعمل فقط كجذر\n"
-
-#~ msgid "Authentication failure!\n"
-#~ msgstr "فشل التحقق!\n"
-
-#~ msgid "%s: Directory %s does not exist."
-#~ msgstr "%s: الدليل %s غير موجود."
-
-#~ msgid "%s: %s is not owned by uid %d."
-#~ msgstr "%s: %s غير مملوك من قبل هوية المستخدم %Id."
-
-#~ msgid "%s: %s is writable by group."
-#~ msgstr "%s: %s قابل للكتابة من طرف المجموعة."
-
-#~ msgid "%s: %s is writable by other."
-#~ msgstr "%s: %s قابل للكتابة من الآخرين."
-
-#~ msgid "%s: %s does not exist but must exist."
-#~ msgstr "%s: %s غير موجود لكن يجب أن يكون موجودًا."
-
-#~ msgid "%s: %s is not a regular file."
-#~ msgstr "%s: %s ليس ملفّا اعتياديّا."
-
-#~ msgid "%s: %s is writable by group/other."
-#~ msgstr "%s: %s قابل للكتابة من طرف المجموعة/الآخرين."
-
-#~ msgid "%s: %s is bigger than sysadmin specified maximum file size."
-#~ msgstr "%s: %s أكبر من حجم الملف الاقصى الذي حدده مدير النظام. "
-
-#~ msgid "Couldn't authenticate user \"%s\""
-#~ msgstr "لم يمكن التوثق من المستخدم \"%s\""
-
-#~ msgid "User %s not allowed to log in"
-#~ msgstr "المستخدم %s غير مسموح له بالولوج"
-
-#~ msgid "Password of %s has expired"
-#~ msgstr "إنقضت كلمة سر %s"
-
-#~ msgid "Internal error on passwdexpired"
-#~ msgstr "خطأ داخلي عند passwdexpired"
-
-#~ msgid "Cannot get passwd structure for %s"
-#~ msgstr "لا يمكن تلقي تركيب كلمة السر لـ %s"
-
-#~ msgid ""
-#~ "This is the failsafe xterm session.  Windows now have focus only if you "
-#~ "have your cursor above them.  To get out of this mode type 'exit' in the "
-#~ "window in the upper left corner"
-#~ msgstr ""
-#~ "هذه جلسة xterm الآمنة من الفشل. للنوافذ الآن تركيز فقط عندما يكون المؤشر "
-#~ "فوقها.  للخروج من هذا النمط اكتب 'exit'·في النافذة في الزاوية اليسرى "
-#~ "العليا"
-
-#~ msgid "command failed %s: %d"
-#~ msgstr "فشل الأمر %s: %Id"
-
-#~ msgid ""
-#~ "%s: gnome-session not found for a failsafe GNOME session; trying xterm"
-#~ msgstr "%s:  لم يوجد gnome-session لجلسة جنوم آمنة من الفشل، سأحاول xterm"
-
-#~ msgid ""
-#~ "Could not find the GNOME installation.  Running the \"Failsafe xterm\" "
-#~ "session instead."
-#~ msgstr ""
-#~ "لا يوجد جنوم مثبت، محاولة تشغيل جلسة \"xterm الآمنة من الفشل\" عوضا."
-
-#~ msgid "%s: Could not exec %s %s %s %s %s %s"
-#~ msgstr "%s: لم يمكن تشغيل %s %s %s %s %s %s"
-
-#~ msgid "Can't find PAM configuration for GDM."
-#~ msgstr "لا يمكن العثور على إعدادات PAM لـ م‌ع‌ج."
-
-#~ msgid " "
-#~ msgstr " "
-
-#~ msgid "  "
-#~ msgstr "  "
-
-#~ msgid "    "
-#~ msgstr "    "
-
-#~ msgid "     "
-#~ msgstr "     "
-
-#~ msgid "         "
-#~ msgstr "         "
