@@ -227,6 +227,23 @@ _create_xauth_file_for_user (const char  *username,
 
         fp = NULL;
 
+        /* Create directory on startup if not exist */ 
+        if (g_file_test (GDM_XAUTH_DIR, G_FILE_TEST_IS_DIR) == FALSE) {
+                g_unlink (GDM_XAUTH_DIR);
+                if (g_mkdir (GDM_XAUTH_DIR, S_ISVTX|S_IRWXU|S_IRWXG) != 0) {
+                        g_set_error (error,
+                                     G_FILE_ERROR,
+                                     g_file_error_from_errno (errno),
+                                     "%s", g_strerror (errno));
+                        fp = -1;
+                        goto out;
+                }
+
+                g_chmod (GDM_XAUTH_DIR, S_ISVTX|S_IRWXU|S_IRWXG|S_IRWXO);
+                _get_uid_and_gid_for_user ("gdm", &uid, &gid);
+                chown (GDM_XAUTH_DIR, 0, gid);
+        }
+ 
         template = g_strdup_printf (GDM_XAUTH_DIR
                                     "/auth-cookie-XXXXXXXX-for-%s",
                                     username);
