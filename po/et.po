@@ -12,10 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: GDM2 2.20\n"
+"Project-Id-Version: GDM2 HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-05-08 18:54+0000\n"
-"PO-Revision-Date: 2008-05-24 13:07+0300\n"
+"PO-Revision-Date: 2008-05-25 12:09+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -46,9 +46,8 @@ msgstr ""
 
 #: ../daemon/factory-slave-main.c:183 ../daemon/product-slave-main.c:187
 #: ../daemon/simple-slave-main.c:189 ../daemon/xdmcp-chooser-slave-main.c:189
-#, fuzzy
 msgid "GNOME Display Manager Slave"
-msgstr "GNOME töölauahaldur"
+msgstr ""
 
 #: ../daemon/gdm-display-access-file.c:250
 #, c-format
@@ -57,7 +56,7 @@ msgstr ""
 
 #: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:195
 msgid "Unable to initialize login system"
-msgstr ""
+msgstr "Sisselogimissüsteemi pole võimalik lähtestada"
 
 #: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:228
 msgid "Unable to authenticate user"
@@ -73,21 +72,16 @@ msgstr ""
 
 #: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
 #: ../daemon/gdm-simple-slave.c:1023
-#, fuzzy
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
 "syslog to diagnose. In the meantime this display will be disabled.  Please "
 "restart GDM when the problem is corrected."
 msgstr ""
-"X serverit (graafilist kasutajakeskkonda)\n"
-"pole võimalik mingi sisemise vea tõttu\n"
-"käivitada. Palun võta ühendust oma\n"
-"süsteemihalduriga või uuri veale\n"
-"jälilejõudmiseks süsteemi logisid.\n"
-"Vahepeal on see kuva blokitud.\n"
-"Kui probleemid on kõrvaldatud,\n"
-"siis palun taaskäivita GDM."
+"X-serverit (graafilist kasutajakeskkonda) pole võimalik mingi sisemise vea "
+"tõttu käivitada. Palun võta ühendust oma süsteemihalduriga või uuri veale "
+"jälilejõudmiseks süsteemi logisid.  Vahepeal on see kuva blokitud.  "
+"Probleemide kõrvaldamise järel taaskäivita palun GDM."
 
 #: ../daemon/gdm-server.c:244
 #, c-format
@@ -98,26 +92,27 @@ msgstr "%s: tõrge ühendumisel vanemkuvaga '%s'"
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
+"Server proovis luua uut protsessi kasutaja %s õigustes, kuid sellist "
+"kasutajat pole olemas"
 
 #: ../daemon/gdm-server.c:373 ../daemon/gdm-welcome-session.c:415
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't set groupid to %d"
-msgstr "%s: Grupi ID'd (groupid) pole võimalik %d-ks seada"
+msgstr "Grupi ID'd (groupid) pole võimalik %d-ks seada"
 
 #: ../daemon/gdm-server.c:379 ../daemon/gdm-welcome-session.c:421
-#, fuzzy, c-format
+#, c-format
 msgid "initgroups () failed for %s"
-msgstr "%s: tõrge initgroups() täitmisel %s jaoks"
+msgstr "tõrge initgroups() täitmisel %s jaoks"
 
 #: ../daemon/gdm-server.c:385 ../daemon/gdm-welcome-session.c:427
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't set userid to %d"
-msgstr "%s: Kasutaja ID'd (userid) pole võimalik %d-ks seada"
+msgstr "Kasutaja ID'd (userid) pole võimalik %d-ks seada"
 
 #: ../daemon/gdm-server.c:393 ../daemon/gdm-welcome-session.c:435
-#, fuzzy
 msgid "Couldn't set groupid to 0"
-msgstr "%s: Grupi ID'd (groupid) pole võimalik 0-ks seada"
+msgstr "Grupi ID'd (groupid) pole võimalik 0-ks seada"
 
 #: ../daemon/gdm-server.c:428
 #, c-format
@@ -212,16 +207,15 @@ msgstr ""
 #: ../daemon/gdm-session-worker.c:1292 ../daemon/gdm-session-worker.c:1310
 #, c-format
 msgid "no user account available"
-msgstr ""
+msgstr "kasutajakonto pole saadaval"
 
 #: ../daemon/gdm-session-worker.c:1337
 msgid "Unable to change to user"
 msgstr ""
 
 #: ../daemon/gdm-simple-slave.c:372
-#, fuzzy
 msgid "Unable establish credentials"
-msgstr "Teenust %s pole võimalik luua: %s\n"
+msgstr ""
 
 #: ../daemon/gdm-welcome-session.c:397
 #, c-format
@@ -352,9 +346,8 @@ msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Keelatud host %s saatis KEEPALIVE"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2816
-#, fuzzy
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
-msgstr "XDMCP: XDMCP päise lugemine pole võimalik!"
+msgstr "GdmXdmcpDisplayFactory: XDMCP päist pole võimalik lugeda!"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:2822
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
@@ -372,59 +365,57 @@ msgid "Could not get server hostname: %s!"
 msgstr "Serveri hostinime hankimine pole võimalik: %s!"
 
 #: ../daemon/main.c:237 ../daemon/main.c:250
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace: %s"
 msgstr ""
-"PID faili %s pole võimalik kirjutada kirjutada, arvatavasti on kettaruum "
-"otsas.  Viga: %s"
+"PID-faili %s pole võimalik kirjutada kirjutada: arvatavasti on kettaruum "
+"otsas: %s"
 
 #: ../daemon/main.c:270
-#, fuzzy, c-format
+#, c-format
 msgid "Logdir %s does not exist or isn't a directory."
-msgstr ""
-"%s: Logikataloogi %s pole olemas või pole see kataloog.  Kasutatakse "
-"ServAuthDir'i %s."
+msgstr "Logikataloogi %s pole olemas või pole see kataloog."
 
 #: ../daemon/main.c:283
-#, fuzzy, c-format
+#, c-format
 msgid "Authdir %s does not exist. Aborting."
-msgstr "%s: 'Authdir' %s pole olemas. Katkestan."
+msgstr "Autentimiskataloogi %s pole olemas. Katkestatakse."
 
 #: ../daemon/main.c:287
-#, fuzzy, c-format
+#, c-format
 msgid "Authdir %s is not a directory. Aborting."
-msgstr "%s: 'Authdir' %s ei ole kataloog. Katkestan."
+msgstr "Autentimiskataloog %s ei ole kataloog. Katkestatakse."
 
 #: ../daemon/main.c:361
-#, fuzzy, c-format
+#, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
 msgstr ""
-"%s: Autentimiskataloog %s ei kuulu kasutajale %d, grupile %d. Katkestan."
+"Autentimiskataloog %s ei kuulu kasutajale %d ja grupile %d. Katkestatakse."
 
 #: ../daemon/main.c:368
-#, fuzzy, c-format
+#, c-format
 msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-msgstr "%s: Authdir %s loabitid (%o) on valed. Peaks olema %o. Katkestan."
+msgstr ""
+"Autentimiskataloogi %s pääsuõigused (%o) on valed. Peaks olema %o. "
+"Katkestatakse."
 
 #: ../daemon/main.c:405
-#, fuzzy, c-format
+#, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
-msgstr "%s: Ei leia GDM-i kasutajat '%s'. Katkestan!"
+msgstr "GDM-i kasutajat '%s' pole võimalik leida. Katkestatakse!"
 
 #: ../daemon/main.c:411
-#, fuzzy
 msgid "The GDM user should not be root. Aborting!"
-msgstr "%s: GDM kasutaja ei tohi olla root. Katkestan!"
+msgstr "GDM-i kasutaja ei tohi olla juurkasutaja. Katkestatakse!"
 
 #: ../daemon/main.c:417
-#, fuzzy, c-format
+#, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "%s: Ei leia GDM gruppi '%s'. Katkestan!"
+msgstr "GDM-i gruppi '%s' pole võimalik leida. Katkestatakse!"
 
 #: ../daemon/main.c:423
-#, fuzzy
 msgid "The GDM group should not be root. Aborting!"
-msgstr "%s: GDM grupp ei tohi olla root. Katkestan!"
+msgstr "GDM-i grupp ei tohi olla juurkasutaja grupp. Katkestatakse!"
 
 #: ../daemon/main.c:517
 msgid "Make all warnings fatal"
@@ -473,9 +464,8 @@ msgid "<b>Enable features that make your computer easier to use:</b>"
 msgstr ""
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:2
-#, fuzzy
 msgid "Assistive Technology Preferences"
-msgstr "Sisselogimisfoto eelistused"
+msgstr "Abistava tehnika eelistused"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:3
 msgid "_Hear text read aloud (Reader)"
@@ -603,18 +593,16 @@ msgid "Computer Name"
 msgstr "Arvuti nimi"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:3
-#, fuzzy
 msgid "Log In"
-msgstr "_Lihtsalt logi sisse"
+msgstr "Logi sisse"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:4
 msgid "Restart"
 msgstr "Taaskäivitamine"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
-#, fuzzy
 msgid "Shut Down"
-msgstr "_Seiska"
+msgstr "Seiska"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
 #, fuzzy
@@ -727,7 +715,7 @@ msgstr "_Seansid:"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
 msgid "Banner message text"
-msgstr ""
+msgstr "Bännersõnumi tekst"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
 msgid "Disable showing the accessibility button"
@@ -738,9 +726,8 @@ msgid "Disable showing the restart buttons"
 msgstr ""
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
-#, fuzzy
 msgid "Do not show known users in the login window"
-msgstr "Teise kasutaja alt aknas sisselogimine"
+msgstr ""
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
 #, fuzzy
@@ -771,7 +758,7 @@ msgstr "Sisse_logimisekraan on valmis:"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "Enable showing the banner message"
-msgstr ""
+msgstr "Bännerisõnumi näitamise lubamine"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Icon name to use for greeter logo"
@@ -830,16 +817,15 @@ msgstr ""
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid "Set to true to show the banner message text."
-msgstr ""
+msgstr "Kui märgitud, siis kuvatakse bännerisõnumit."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
 msgid "Set to true to use compiz as the window manager."
 msgstr ""
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
-#, fuzzy
 msgid "Text banner message to show on the login window."
-msgstr "Sisselogimisakna vertikaalne asukoht."
+msgstr "Sisselogimisakna bänneris kuvatav tekst."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
 msgid "True if the background settings manager plugin is enabled."
@@ -904,10 +890,9 @@ msgstr "Külaline"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:100
 msgid "Login as a temporary guest"
-msgstr ""
+msgstr "Sisselogimine külalisena"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:112
-#, fuzzy
 msgid "Automatic Login"
 msgstr "Automaatne sisselogimine"
 
@@ -916,14 +901,13 @@ msgid "Automatically login to the system after selecting options"
 msgstr ""
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:441
-#, fuzzy, c-format
+#, c-format
 msgid "Log in as %s"
-msgstr "Logi sisse sellegipoolest"
+msgstr ""
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:525
-#, fuzzy
 msgid "Currently logged in"
-msgstr "Juba sisselogitud"
+msgstr "Hetkel sisselogitud"
 
 #: ../gui/user-switch-applet/applet.c:162
 msgid ""
@@ -1068,9 +1052,8 @@ msgid "Start new flexible session; do not show popup"
 msgstr "Uue paindliku seansi käivitamune, hüpikakent ei näidata"
 
 #: ../utils/gdmflexiserver.c:67
-#, fuzzy
 msgid "Version of this application"
-msgstr "Rakenduse kasutamise kohta teabe kuvamine"
+msgstr "Selle rakenduse versioon"
 
 #: ../utils/gdmflexiserver.c:674
 #, c-format
@@ -1297,11 +1280,6 @@ msgstr "Uut kuva pole võimalik käivitada"
 #~ "%s: XDMCP on vaatamata XDMCP toe puudumisele aktiveeritud. Säte "
 #~ "lülitatakse välja"
 
-#~ msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
-#~ msgstr ""
-#~ "%s: XDMCP on välja lülitatud ja lokaalseid servereid pole määratud. "
-#~ "Katkestan!"
-
 #~ msgid ""
 #~ "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to "
 #~ "allow configuration!"
@@ -1364,11 +1342,6 @@ msgstr "Uut kuva pole võimalik käivitada"
 
 #~ msgid "%s: Could not open FIFO"
 #~ msgstr "%s: Ei saa järjekorda (FIFO) avada"
-
-#~ msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
-#~ msgstr ""
-#~ "PID faili %s pole võimalik kirjutada kirjutada, arvatavasti on kettaruum "
-#~ "otsas.  Viga: %s\n"
 
 #~ msgid "%s: fork () failed!"
 #~ msgstr "%s: tõrge fork() täitmisel!"
@@ -1505,12 +1478,6 @@ msgstr "Uut kuva pole võimalik käivitada"
 
 #~ msgid "y = Yes or n = No? >"
 #~ msgstr "y = Jah või n = Ei? >"
-
-#~ msgid "Could not setgid %d. Aborting."
-#~ msgstr "Setgid %d pole võimalik teha. Katkestan."
-
-#~ msgid "initgroups () failed for %s. Aborting."
-#~ msgstr "Tõrge %s jaoks initgroups() tegemisel. Katkestan."
 
 #~ msgid "%s: Error setting signal %d to %s"
 #~ msgstr "%s: Viga signaali %d sättimisel signaaliks %s"
@@ -1667,23 +1634,14 @@ msgstr "Uut kuva pole võimalik käivitada"
 #~ msgid "%s: Could not open ~/.xsession-errors"
 #~ msgstr "%s: Faili ~/.xsession-errors pole võimalik avada"
 
-#~ msgid "%s: Execution of PreSession script returned > 0. Aborting."
-#~ msgstr "%s: PreSession skripti kävitamise tulemus > 0. Katkestan."
-
 #~ msgid "Language %s does not exist; using %s"
 #~ msgstr "Keelt %s ei ole olemas; kasutame %s keelt"
 
 #~ msgid "System default"
 #~ msgstr "Süsteemi vaikeväärtus"
 
-#~ msgid "%s: Could not setup environment for %s. Aborting."
-#~ msgstr "%s: %s jaoks pole võimalik keskkonda seadistada. Katkestan."
-
 #~ msgid "%s: setusercontext () failed for %s. Aborting."
 #~ msgstr "%s: tõrge setusercontext() täitmisel %s jaoks. Katkestamine."
-
-#~ msgid "%s: Could not become %s. Aborting."
-#~ msgstr "%s: Ei saa hakata kasutajaks %s. Katkestan."
 
 #~ msgid ""
 #~ "No Exec line in the session file: %s.  Running the GNOME failsafe session "
@@ -1735,9 +1693,6 @@ msgstr "Uut kuva pole võimalik käivitada"
 #~ msgstr ""
 #~ "%s: Kasutaja läbis autentimise, kuid funktsioonis getpwnam (%s) tekkis "
 #~ "tõrge!"
-
-#~ msgid "%s: Execution of PostLogin script returned > 0. Aborting."
-#~ msgstr "%s: PreSession skripti kävitamise tulemus > 0. Katkestan."
 
 #~ msgid "%s: Home directory for %s: '%s' does not exist!"
 #~ msgstr "%s: Kasutaja %s kodukataloogi '%s' pole olemas!"
