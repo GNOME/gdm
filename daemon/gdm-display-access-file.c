@@ -227,10 +227,10 @@ _create_xauth_file_for_user (const char  *username,
 
         fp = NULL;
 
-        /* Create directory on startup if not exist */ 
+        /* Create directory if not exist, then set permission 01775 and ownership root:gdm */ 
         if (g_file_test (GDM_XAUTH_DIR, G_FILE_TEST_IS_DIR) == FALSE) {
                 g_unlink (GDM_XAUTH_DIR);
-                if (g_mkdir (GDM_XAUTH_DIR, S_ISVTX|S_IRWXU|S_IRWXG) != 0) {
+                if (g_mkdir (GDM_XAUTH_DIR, S_ISVTX|S_IRWXU|S_IRWXG|S_IROTH|S_IXOTH) != 0) {
                         g_set_error (error,
                                      G_FILE_ERROR,
                                      g_file_error_from_errno (errno),
@@ -239,7 +239,7 @@ _create_xauth_file_for_user (const char  *username,
                         goto out;
                 }
 
-                g_chmod (GDM_XAUTH_DIR, S_ISVTX|S_IRWXU|S_IRWXG|S_IRWXO);
+                g_chmod (GDM_XAUTH_DIR, S_ISVTX|S_IRWXU|S_IRWXG|S_IROTH|S_IXOTH);
                 _get_uid_and_gid_for_user ("gdm", &uid, &gid);
                 chown (GDM_XAUTH_DIR, 0, gid);
         }
