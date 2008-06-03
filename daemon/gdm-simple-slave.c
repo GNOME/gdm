@@ -99,7 +99,13 @@ on_session_started (GdmSession       *session,
                     int               pid,
                     GdmSimpleSlave   *slave)
 {
+        char *username;
+
         g_debug ("GdmSimpleSlave: session started %d", pid);
+
+        /* Run the PreSession script. gdmslave suspends until script has terminated */
+        username = gdm_session_direct_get_username (slave->priv->session);
+        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PreSession", username);
 
         /* FIXME: should we do something here? */
 }
@@ -109,7 +115,13 @@ on_session_exited (GdmSession     *session,
                    int             exit_code,
                    GdmSimpleSlave *slave)
 {
+        char *username;
+
         g_debug ("GdmSimpleSlave: session exited with code %d\n", exit_code);
+
+        /* Run the PostSession script. gdmslave suspends until script has terminated */
+        username = gdm_session_direct_get_username (slave->priv->session);
+        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostSession", username);
 
         gdm_slave_stopped (GDM_SLAVE (slave));
 }
@@ -353,6 +365,9 @@ on_session_accredited (GdmSession     *session,
                        GdmSimpleSlave *slave)
 {
         queue_start_session (slave);
+
+        /* Run the PostLogin script. gdmslave suspends until script has terminated */
+        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostLogin", "gdm");
 }
 
 static void
@@ -840,7 +855,7 @@ run_greeter (GdmSimpleSlave *slave)
         }
 
         /* Run the init script. gdmslave suspends until script has terminated */
-        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init/Default", "gdm");
+        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", "gdm");
 
         create_new_session (slave);
 
