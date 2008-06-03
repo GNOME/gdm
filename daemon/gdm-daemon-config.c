@@ -1433,7 +1433,7 @@ gdm_daemon_config_load_displays (GdmConfig *config)
 		g_strfreev (value_list);
 	}
 
-	g_ptr_array_free ((GPtrArray*) keys, TRUE);
+	g_free (keys);
 }
 
 static gboolean

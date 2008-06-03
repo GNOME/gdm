@@ -1,3 +1,11 @@
+2008-06-03 Brian Cameron <brian.cameron@sun.com>
+
+	* daemon/gdm-daemon-config.c:  Free the pointer array via 
+	  g_free instead of g_ptr_array_free.  Fixes an error where
+	  an assertion was being triggered when GDM is exiting.
+	  Further fix for bug #517526.  Patch by Frederic Crozat
+	  <fcrozat@mandriva.com>.
+
 2008-05-22 Brian Cameron <brian.cameron@sun.com>
 
 	* daemon/getvt.c:  Change 3rd argument of XInternAtom to True,
