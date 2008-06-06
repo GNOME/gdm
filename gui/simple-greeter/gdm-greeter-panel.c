@@ -721,6 +721,7 @@ void
 gdm_greeter_panel_set_default_layout_name (GdmGreeterPanel *panel,
                                            const char      *layout_name)
 {
+#ifdef HAVE_LIBXKLAVIER
         g_return_if_fail (GDM_IS_GREETER_PANEL (panel));
 
         if (layout_name != NULL &&
@@ -735,6 +736,7 @@ gdm_greeter_panel_set_default_layout_name (GdmGreeterPanel *panel,
 
 	g_debug ("GdmGreeterPanel: activating layout: %s", layout_name);
 	gdm_layout_activate (layout_name);
+#endif
 }
 
 void

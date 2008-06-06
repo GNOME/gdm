@@ -122,6 +122,9 @@ add_available_layouts (GdmLayoutChooserWidget *widget)
 
         layout_names = gdm_get_all_layout_names ();
 
+        if (layout_names == NULL)
+           return;
+
         for (i = 0; layout_names[i] != NULL; i++) {
                 gdm_layout_chooser_widget_add_layout (widget,
                                                       layout_names[i]);

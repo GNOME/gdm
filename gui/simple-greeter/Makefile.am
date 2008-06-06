@@ -145,7 +145,7 @@ test_greeter_panel_LDADD =	\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(GTK_LIBS)		\
 	$(GCONF_LIBS)		\
-	-lxklavier			\
+	$(LIBXKLAVIER_LIBS)		\
 	$(NULL)
 
 test_remote_login_window_SOURCES = 	\

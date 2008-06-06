@@ -26,11 +26,21 @@
 #include <glib.h>
 
 #include <gdk/gdkx.h>
+
+#ifdef HAVE_LIBXKLAVIER
 #include <libxklavier/xklavier.h>
+#endif
+
 #include <gconf/gconf-client.h>
 
 #include "gdm-layouts.h"
 
+typedef struct {
+        GSList *list;
+        char *layout;
+} LayoutData;
+
+#ifdef HAVE_LIBXKLAVIER
 static XklEngine         *engine = NULL;
 static XklConfigRegistry *config_registry = NULL;
 static XklConfigRec      *initial_config = NULL;
@@ -60,9 +70,34 @@ xci_desc_to_utf8 (XklConfigItem * ci)
                 g_locale_to_utf8 (sd, -1, NULL, NULL, NULL);
 }
 
+static void
+add_variant (XklConfigRegistry   *config,
+             const XklConfigItem *item,
+             gpointer             data)
+{
+        LayoutData *ldata = data;
+
+        ldata->list = g_slist_prepend (ldata->list, g_strdup_printf  ("%s\t%s", ldata->layout, item->name));
+}
+
+static void
+add_layout (XklConfigRegistry   *config,
+            const XklConfigItem *item,
+            gpointer             data)
+{
+        LayoutData *ldata = data;
+
+        ldata->layout = item->name;
+        ldata->list = g_slist_prepend (ldata->list, g_strdup (item->name));
+        xkl_config_registry_foreach_layout_variant (config, item->name, add_variant, data);
+        ldata->layout = NULL;
+}
+#endif
+
 gchar *
 gdm_get_layout_from_name (const char *name)
 {
+#ifdef HAVE_LIBXKLAVIER
         XklConfigItem *item;
         char          *layout;
         char          *variant;
@@ -115,49 +150,25 @@ gdm_get_layout_from_name (const char *name)
         }
 
         return result;
-}
-
-typedef struct {
-        GSList *list;
-        char *layout;
-} LayoutData;
-
-static void
-add_variant (XklConfigRegistry   *config,
-             const XklConfigItem *item,
-             gpointer             data)
-{
-        LayoutData *ldata = data;
-
-        ldata->list = g_slist_prepend (ldata->list, g_strdup_printf  ("%s\t%s", ldata->layout, item->name));
-}
-
-static void
-add_layout (XklConfigRegistry   *config,
-            const XklConfigItem *item,
-            gpointer             data)
-{
-        LayoutData *ldata = data;
-
-        ldata->layout = item->name;
-        ldata->list = g_slist_prepend (ldata->list, g_strdup (item->name));
-        xkl_config_registry_foreach_layout_variant (config, item->name, add_variant, data);
-        ldata->layout = NULL;
+#else
+        return NULL;
+#endif
 }
 
 char **
 gdm_get_all_layout_names (void)
 {
+#ifdef HAVE_LIBXKLAVIER
         GSList    *l;
         int        len;
         int        i;
         char     **layouts;
         LayoutData data;
 
-        init_xkl ();
-
         data.list = NULL;
         data.layout = NULL;
+
+        init_xkl ();
 
         xkl_config_registry_foreach_layout (config_registry, add_layout, &data);
 
@@ -173,11 +184,15 @@ gdm_get_all_layout_names (void)
         g_slist_free (data.list);
 
         return layouts;
+#else
+        return NULL;
+#endif
 }
 
 void
 gdm_layout_activate (const char *layout)
 {
+#ifdef HAVE_LIBXKLAVIER
         XklConfigRec *config;
         char         *p;
 
@@ -205,5 +220,6 @@ gdm_layout_activate (const char *layout)
         xkl_config_rec_activate (config, engine);
 
         g_object_unref (config);
+#endif
 }
 
