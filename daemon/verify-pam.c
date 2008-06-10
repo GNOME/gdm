@@ -992,8 +992,6 @@ gdm_verify_user (GdmDisplay *d,
 	/* Start authentication session */
 	did_we_ask_for_password = FALSE;
 	if ((pamerr = pam_authenticate (pamh, null_tok)) != PAM_SUCCESS) {
-		/* Log the failed login attempt */
-		log_to_audit_system(login, d->hostname, d->name, AU_FAILED);
 		if ( ! ve_string_empty (selected_user)) {
 			pam_handle_t *tmp_pamh;
 
@@ -1113,9 +1111,6 @@ gdm_verify_user (GdmDisplay *d,
 	if (( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_ROOT) ||
 	    ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT) &&
 	      ! d->attached)) && pwent != NULL && pwent->pw_uid == 0) {
-
-		/* Log the failed login attempt */
-		log_to_audit_system(login, d->hostname, d->name, AU_FAILED);
 		gdm_error (_("Root login disallowed on display '%s'"),
 			   d->name);
 		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
@@ -1149,8 +1144,6 @@ gdm_verify_user (GdmDisplay *d,
 		break;
 	case PAM_NEW_AUTHTOK_REQD :
 		if ((pamerr = pam_chauthtok (pamh, PAM_CHANGE_EXPIRED_AUTHTOK)) != PAM_SUCCESS) {
-			/* Log the failed login attempt */
-			log_to_audit_system(login, d->hostname, d->name, AU_FAILED);
 			gdm_error (_("Authentication token change failed for user %s"), login);
 			gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
 						      _("\nThe change of the authentication token failed. "
@@ -1168,24 +1161,18 @@ gdm_verify_user (GdmDisplay *d,
 #endif	/* HAVE_ADT */
 		break;
 	case PAM_ACCT_EXPIRED :
-		/* Log the failed login attempt */
-		log_to_audit_system(login, d->hostname, d->name, AU_FAILED);
 		gdm_error (_("User %s no longer permitted to access the system"), login);
 		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
 					      _("\nThe system administrator has disabled your account."));
 		error_msg_given = TRUE;
 		goto pamerr;
 	case PAM_PERM_DENIED :
-		/* Log the failed login attempt */
-		log_to_audit_system(login, d->hostname, d->name, AU_FAILED);
 		gdm_error (_("User %s not permitted to gain access at this time"), login);
 		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
 					      _("\nThe system administrator has disabled access to the system temporarily."));
 		error_msg_given = TRUE;
 		goto pamerr;
 	default :
-		/* Log the failed login attempt */
-		log_to_audit_system(login, d->hostname, d->name, AU_FAILED);
 		if (gdm_slave_action_pending ())
 			gdm_error (_("Couldn't set acct. mgmt for %s"), login);
 		goto pamerr;
@@ -1237,8 +1224,6 @@ gdm_verify_user (GdmDisplay *d,
 			gdm_error (_("Couldn't open session for %s"), login);
 		goto pamerr;
 	}
-	/* Login succeeded */
-	log_to_audit_system(login, d->hostname, d->name, AU_SUCCESS);
 
 	/* Workaround to avoid gdm messages being logged as PAM_pwdb */
 	gdm_log_shutdown ();
@@ -1269,12 +1254,24 @@ gdm_verify_user (GdmDisplay *d,
 	audit_success_login (pw_change, pwent);
 #endif  /* HAVE_ADT */
 
+	/*
+	 * Login succeeded.
+	 * This function is a no-op if libaudit is not present.
+	 */
+	log_to_audit_system(login, d->hostname, d->name, AU_SUCCESS);
+
 	return login;
 
  pamerr:
 #ifdef  HAVE_ADT
 	audit_fail_login (d, pw_change, pwent, pamerr);
 #endif	/* HAVE_ADT */
+
+	/*
+	 * Log the failed login attempt.
+	 * This function is a no-op if libaudit is not present.
+	 */
+	log_to_audit_system(login, d->hostname, d->name, AU_FAILED);
 
 	/* The verbose authentication is turned on, output the error
 	 * message from the PAM subsystem */
@@ -1585,13 +1582,24 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, char **new_login)
 	audit_success_login (pw_change, pwent);
 #endif	/* HAVE_ADT */
 
+	/*
+	 * Login succeeded.
+	 * This function is a no-op if libaudit is not present
+	 */
+	log_to_audit_system(login, d->hostname, d->name, AU_SUCCESS);
+
 	return TRUE;
 
  setup_pamerr:
-
 #ifdef  HAVE_ADT
 	audit_fail_login (d, pw_change, pwent, pamerr);
 #endif	/* HAVE_ADT */
+
+	/*
+	 * Log the failed login attempt.
+	 * This function is a no-op if libaudit is not present
+	 */
+	log_to_audit_system(login, d->hostname, d->name, AU_FAILED);
 
 	did_setcred = FALSE;
 	opened_session = FALSE;

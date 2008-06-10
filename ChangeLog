@@ -1,3 +1,10 @@
+2008-06-10 Brian Cameron <brian.cameron@sun.com>
+
+	* daemon/verify-pam.c: Clean up the libaudit calls so
+	  that we just log the failed login attempt once in
+	  the pamerr block rather than at each failure point.
+	  Add libaudit logging when autologin is being used.
+
 2008-06-03 Brian Cameron <brian.cameron@sun.com>
 
 	* daemon/gdm-daemon-config.c:  Free the pointer array via 
