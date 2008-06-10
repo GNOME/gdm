@@ -28,7 +28,6 @@ gchar *gdm_verify_user			 (GdmDisplay *d,
 					  const char *username,
 					  gboolean allow_retry);
 void   gdm_verify_cleanup		 (GdmDisplay *d);
-void   gdm_verify_check			 (void);
 void   gdm_verify_select_user		 (const char *user);
 
 /* used in pam */
