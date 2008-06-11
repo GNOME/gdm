@@ -940,11 +940,11 @@ get_seat_proxy (GdmUserManager *manager)
 
         dbus_g_proxy_add_signal (proxy,
                                  "SessionAdded",
-                                 G_TYPE_STRING,
+                                 DBUS_TYPE_G_OBJECT_PATH,
                                  G_TYPE_INVALID);
         dbus_g_proxy_add_signal (proxy,
                                  "SessionRemoved",
-                                 G_TYPE_STRING,
+                                 DBUS_TYPE_G_OBJECT_PATH,
                                  G_TYPE_INVALID);
         dbus_g_proxy_connect_signal (proxy,
                                      "SessionAdded",
