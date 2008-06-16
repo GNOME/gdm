@@ -1,3 +1,11 @@
+2008-06-16 Brian Cameron <brian.cameron@sun.com>
+
+	* daemon/slave.c: When processing BaseXsession, only accept the
+	  first word.  Since the slave calls g_access with this value,
+	  it will fail if there is more than one word or even trailing
+	  space in this configuration value.  Makes the code a bit more
+	  robust.
+	  
 2008-06-10 Brian Cameron <brian.cameron@sun.com>
 
 	* daemon/verify.h: Remove gdm_verify_check prototype since

@@ -3854,9 +3854,10 @@ session_child_run (struct passwd *pwent,
 
 	if (sessionexec != NULL) {
 		const char *basexsession = gdm_daemon_config_get_value_string (GDM_KEY_BASE_XSESSION);
+		char **bxvec = g_strsplit (basexsession, " ", -1);
 
 		/* cannot be possibly failsafe */
-		if G_UNLIKELY (g_access (basexsession, X_OK) != 0) {
+		if G_UNLIKELY (bxvec == NULL || g_access (bxvec[0], X_OK) != 0) {
 			gdm_error (_("%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe session instead."),
 				   "session_child_run");
 			session = GDM_SESSION_FAILSAFE_GNOME;
@@ -3870,7 +3871,7 @@ session_child_run (struct passwd *pwent,
 			 * we really DON'T care about leaks, we are going to
 			 * exec in just a bit
 			 */
-			g_string_append (fullexec, basexsession);
+			g_string_append (fullexec, bxvec[0]);
 			g_string_append (fullexec, " ");
 
 #ifdef HAVE_TSOL
@@ -3879,6 +3880,7 @@ session_child_run (struct passwd *pwent,
 #endif
 			g_string_append (fullexec, sessionexec);
 		}
+		g_strfreev (bxvec);
 	}
 
 	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0) {
