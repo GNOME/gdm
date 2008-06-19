@@ -1075,7 +1075,7 @@ case "$host" in
 	HOST_XSESSION_SHELL=/bin/ksh
 	HOST_SOUND_PROGRAM=/usr/bin/audioplay
 	HOST_GDMGNOMESESSIONCMD=/usr/dt/config/Xsession.jds
-	HOST_GDM_RBAC_SYSCMD_KEYS="HALT:solaris.system.shutdown;REBOOT:solaris.system.shutdown"
+	HOST_GDM_RBAC_SYSCMD_KEYS="HALT:solaris.system.shutdown;REBOOT:solaris.system.shutdown;SUSPEND:solaris.system.power.suspend.ram"
 	HOST_UTMP_LINE_ATTACHED="/dev/dtlocal"
 	HOST_UTMP_LINE_REMOTE="/dev/dtremote"
 	HOST_UTMP_PSEUDO_DEVICE="true"
