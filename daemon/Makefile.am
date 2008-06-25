@@ -267,6 +267,7 @@ gdm_session_worker_SOURCES += gdm-session-solaris-auditor.h     \
 endif
 
 gdm_session_worker_LDFLAGS =			\
+	$(XLIB_LIBS)				\
 	$(PAM_LIBS)				\
 	$(NULL)
 

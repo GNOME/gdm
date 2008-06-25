@@ -43,6 +43,8 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
+#include <X11/Xauth.h>
+
 #include "gdm-session-worker.h"
 #include "gdm-marshal.h"
 
@@ -925,6 +927,35 @@ _get_tty_for_pam (const char *x11_display_name,
 #endif
 }
 
+static struct pam_xauth_data *
+_get_xauth_for_pam (const char *x11_authority_file)
+{
+        FILE                  *fh;
+        Xauth                 *auth = NULL;
+        struct pam_xauth_data *retval = NULL;
+        gsize                  len = sizeof (*retval) + 1;
+
+        fh = fopen (x11_authority_file, "r");
+        if (fh) {
+                auth = XauReadAuth (fh);
+                fclose (fh);
+        }
+        if (auth) {
+                len += auth->name_length + auth->data_length;
+                retval = g_malloc0 (len);
+        }
+        if (retval) {
+                retval->namelen = auth->name_length;
+                retval->name = (char *) (retval + 1);
+                memcpy (retval->name, auth->name, auth->name_length);
+                retval->datalen = auth->data_length;
+                retval->data = retval->name + auth->name_length + 1;
+                memcpy (retval->data, auth->data, auth->data_length);
+        }
+        XauDisposeAuth (auth);
+        return retval;
+}
+
 static gboolean
 gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                                    const char       *service,
@@ -935,9 +966,10 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                                    const char       *display_device,
                                    GError          **error)
 {
-        struct pam_conv  pam_conversation;
-        int              error_code;
-        char            *pam_tty;
+        struct pam_conv        pam_conversation;
+        struct pam_xauth_data *pam_xauth;
+        int                    error_code;
+        char                  *pam_tty;
 
         g_assert (worker->priv->pam_handle == NULL);
 
@@ -1010,6 +1042,35 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                              pam_strerror (worker->priv->pam_handle, error_code));
                 goto out;
         }
+
+#ifdef PAM_XDISPLAY
+        /* set XDISPLAY */
+        error_code = pam_set_item (worker->priv->pam_handle, PAM_XDISPLAY, x11_display_name);
+
+        if (error_code != PAM_SUCCESS) {
+                g_set_error (error,
+                             GDM_SESSION_WORKER_ERROR,
+                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
+                             _("error informing authentication system of display string - %s"),
+                             pam_strerror (worker->priv->pam_handle, error_code));
+                goto out;
+        }
+#endif
+#ifdef PAM_XAUTHDATA
+        /* set XAUTHDATA */
+        pam_xauth = _get_xauth_for_pam (x11_authority_file);
+        error_code = pam_set_item (worker->priv->pam_handle, PAM_XAUTHDATA, pam_xauth);
+        g_free (pam_xauth);
+
+        if (error_code != PAM_SUCCESS) {
+                g_set_error (error,
+                             GDM_SESSION_WORKER_ERROR,
+                             GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
+                             _("error informing authentication system of display xauth credentials - %s"),
+                             pam_strerror (worker->priv->pam_handle, error_code));
+                goto out;
+        }
+#endif
 
         g_debug ("GdmSessionWorker: state SETUP_COMPLETE");
         worker->priv->state = GDM_SESSION_WORKER_STATE_SETUP_COMPLETE;

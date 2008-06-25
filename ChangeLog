@@ -1,5 +1,16 @@
 2008-06-25  Ray Strode  <rstrode@redhat.com>
 
+	Add patch from Eamon Walsh to support PAM_XDISPLAY
+	and PAM_XAUTHDATA
+
+	* daemon/gdm-session-worker.c
+	(_get_xauth_for_pam), (gdm_session_worker_initialize_pam):
+	set the two above pam attributes if pam supports it.
+
+	* daemon/Makefile.am: link session worker against libXau
+
+2008-06-25  Ray Strode  <rstrode@redhat.com>
+
 	By popular demand, add DisallowTCP back.
 
 	* common/gdm-settings-keys.h:
