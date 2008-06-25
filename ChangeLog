@@ -1,3 +1,14 @@
+2008-06-25  Ray Strode  <rstrode@redhat.com>
+
+	By popular demand, add DisallowTCP back.
+
+	* common/gdm-settings-keys.h:
+	* data/gdm.schemas.in.in:
+	* data/gdm.conf-custom.in
+	Add new setting security/DisallowTCP
+	* daemon/gdm-simple-slave.c (gdm_simple_slave_run):
+	If DisallowTCP is false, then don't pass -nolisten tcp to X
+
 2008-06-11  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/gdm-user-manager.c (get_seat_proxy):
