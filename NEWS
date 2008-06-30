@@ -1,5 +1,24 @@
 Ahh news...
 
+2.20.7 Stuff:
+
+- When GDM checks the XFree86_VT atom, it does not set it if it
+  does not already exist.  (Brian Cameron, Simon Zheng)
+
+- Free a pointer array via g_free instead of g_ptr_array_free, avoiding
+  an assert on shutdown.  (Frederic Crozat)
+
+- When reading in the BaseXsession configuration value, it now only
+  accepts the first word as the script name and ignores the rest.
+  Previously if you had any trailing spaces or other arguments, it
+  would cause GDM to fail to read any value for the script.  (Brian
+  Cameron)
+
+- Translation updates (Theppitak Karoonboonyanan, Priit Laes, Nickolay
+  V. Shmyrev, Clytie Siddall)
+
+- Use RBAC for Suspend when on Solaris.  (Simon Zheng)
+
 2.20.6 Stuff:
 
 - Fix two related bugs that were causing GDM to crash regularly on exit.
