@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.21.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-14 14:04+0200\n"
-"PO-Revision-Date: 2008-05-14 14:05+0200\n"
+"POT-Creation-Date: 2008-07-01 09:38+0200\n"
+"PO-Revision-Date: 2008-07-01 09:39+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -43,20 +43,20 @@ msgstr "id"
 msgid "GNOME Display Manager Slave"
 msgstr "Slave for GNOME skjermhåndterer"
 
-#: ../daemon/gdm-display-access-file.c:250
+#: ../daemon/gdm-display-access-file.c:267
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "kunne ikke finne bruker «%s» på systemet"
 
-#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:195
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:207
 msgid "Unable to initialize login system"
 msgstr "Kan ikke initiere påloggingssystemet"
 
-#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:228
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:240
 msgid "Unable to authenticate user"
 msgstr "Kan ikke autentisere bruker"
 
-#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:274
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:286
 msgid "Unable to authorize user"
 msgstr "Kan ikke autorisere bruker"
 
@@ -65,7 +65,7 @@ msgid "Unable to establish credentials"
 msgstr "Kan ikke bruke autentiseringsinformasjonen"
 
 #: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1023
+#: ../daemon/gdm-simple-slave.c:1048
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -157,60 +157,70 @@ msgstr "Skjermenheten"
 msgid "worker exited with status %d"
 msgstr "arbeider avsluttet med status %d"
 
-#: ../daemon/gdm-session-worker.c:963
+#: ../daemon/gdm-session-worker.c:995
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "feil i initiering av kommunikasjon med autentiseringssystemet - %s"
 
-#: ../daemon/gdm-session-worker.c:964
+#: ../daemon/gdm-session-worker.c:996
 msgid "general failure"
 msgstr "generell feil"
 
-#: ../daemon/gdm-session-worker.c:965
+#: ../daemon/gdm-session-worker.c:997
 msgid "out of memory"
 msgstr "ikke mer minne"
 
-#: ../daemon/gdm-session-worker.c:966
+#: ../daemon/gdm-session-worker.c:998
 msgid "application programmer error"
 msgstr "feil i programkoden"
 
-#: ../daemon/gdm-session-worker.c:967
+#: ../daemon/gdm-session-worker.c:999
 msgid "unknown error"
 msgstr "ukjent feil"
 
-#: ../daemon/gdm-session-worker.c:974
+#: ../daemon/gdm-session-worker.c:1006
 msgid "Username:"
 msgstr "Brukernavn:"
 
-#: ../daemon/gdm-session-worker.c:980
+#: ../daemon/gdm-session-worker.c:1012
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om foretrukket spørring "
 "etter brukernavn - %s"
 
-#: ../daemon/gdm-session-worker.c:994
+#: ../daemon/gdm-session-worker.c:1026
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om brukers vertsnavn - %s"
 
-#: ../daemon/gdm-session-worker.c:1009
+#: ../daemon/gdm-session-worker.c:1041
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om brukers konsoll - %s"
 
-#: ../daemon/gdm-session-worker.c:1288 ../daemon/gdm-session-worker.c:1306
+#: ../daemon/gdm-session-worker.c:1054
+#, c-format
+msgid "error informing authentication system of display string - %s"
+msgstr "feil ved informasjon til autentiseringssystemet om skjermstrengen - %s"
+
+#: ../daemon/gdm-session-worker.c:1069
+#, c-format
+msgid "error informing authentication system of display xauth credentials - %s"
+msgstr "feil ved informasjon til autentiseringssystemet om xauth-påloggingsinformasjon for skjermen - %s"
+
+#: ../daemon/gdm-session-worker.c:1349 ../daemon/gdm-session-worker.c:1367
 #, c-format
 msgid "no user account available"
 msgstr "ingen brukerkonto tilgjengelig"
 
-#: ../daemon/gdm-session-worker.c:1333
+#: ../daemon/gdm-session-worker.c:1394
 msgid "Unable to change to user"
 msgstr "Kan ikke bytte til denne brukeren"
 
-#: ../daemon/gdm-simple-slave.c:372
+#: ../daemon/gdm-simple-slave.c:387
 msgid "Unable establish credentials"
 msgstr "Kan ikke bruke autentiseringsinformasjonen"
 
@@ -649,8 +659,8 @@ msgstr "Uspesifisert"
 msgid "Keyboard layouts"
 msgstr "Tastaturutforminger"
 
-#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:197
-#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:198
+#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:200
+#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:201
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:228
 msgid "_Keyboard:"
 msgstr "_Tastatur:"
@@ -759,7 +769,8 @@ msgstr "Ikonnavn som skal brukes for velkomstlogo"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid "Set to TRUE to disable showing known users in the login window."
-msgstr "Sett til TRUE for å deaktivere visning av kjente brukere i påloggingsvinduet."
+msgstr ""
+"Sett til TRUE for å deaktivere visning av kjente brukere i påloggingsvinduet."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid ""
