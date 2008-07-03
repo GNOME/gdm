@@ -750,11 +750,13 @@ render_icon_from_home (GdmUser *user,
                 }
                 filesystem_type = g_file_info_get_attribute_string (file_info,
                                                                     G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
-                is_local = ((strcmp (filesystem_type, "nfs") != 0) &&
-                            (strcmp (filesystem_type, "afs") != 0) &&
-                            (strcmp (filesystem_type, "autofs") != 0) &&
-                            (strcmp (filesystem_type, "unknown") != 0) &&
-                            (strcmp (filesystem_type, "ncpfs") != 0));
+                if (filesystem_type != NULL) {
+                        is_local = ((strcmp (filesystem_type, "nfs") != 0) &&
+                                    (strcmp (filesystem_type, "afs") != 0) &&
+                                    (strcmp (filesystem_type, "autofs") != 0) &&
+                                    (strcmp (filesystem_type, "unknown") != 0) &&
+                                    (strcmp (filesystem_type, "ncpfs") != 0));
+                }
                 g_object_unref (file_info);
                 g_object_unref (file);
         }
