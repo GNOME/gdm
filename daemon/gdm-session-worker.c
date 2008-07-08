@@ -927,6 +927,7 @@ _get_tty_for_pam (const char *x11_display_name,
 #endif
 }
 
+#ifdef PAM_XAUTHDATA
 static struct pam_xauth_data *
 _get_xauth_for_pam (const char *x11_authority_file)
 {
@@ -955,6 +956,7 @@ _get_xauth_for_pam (const char *x11_authority_file)
         XauDisposeAuth (auth);
         return retval;
 }
+#endif
 
 static gboolean
 gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
@@ -967,7 +969,9 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                                    GError          **error)
 {
         struct pam_conv        pam_conversation;
+#ifdef PAM_XAUTHDATA
         struct pam_xauth_data *pam_xauth;
+#endif
         int                    error_code;
         char                  *pam_tty;
 
