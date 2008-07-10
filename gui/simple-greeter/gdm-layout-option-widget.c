@@ -226,7 +226,7 @@ gdm_layout_option_widget_new (void)
 
         object = g_object_new (GDM_TYPE_LAYOUT_OPTION_WIDGET,
                                "label-text", _("_Keyboard:"),
-                               "icon-name", "keyboard",
+                               "icon-name", "preferences-desktop-keyboard",
                                "max-item-count", 8,
                                NULL);
 
