@@ -103,24 +103,30 @@ gdm_language_chooser_widget_add_language (GdmLanguageChooserWidget *widget,
         char *language;
         char *normalized_name;
         char *readable_language;
+        char *lang_tag;
+	char *tagged;
 
         normalized_name = gdm_normalize_language_name (name);
+	gdm_parse_language_name (name, &lang_tag, NULL, NULL, NULL);
         language = gdm_get_language_from_name (normalized_name, normalized_name);
         readable_language = gdm_get_language_from_name (normalized_name, NULL);
 
+ 	tagged = g_strdup_printf ("<span lang=\"%s\">%s</span>", lang_tag, language);
+	
         if (language != NULL) {
                 gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                              normalized_name,
                                              NULL,
-                                             language,
-                                             readable_language,
+                                             tagged,
+					     readable_language,
                                              0,
                                              FALSE,
                                              FALSE);
                 g_free (language);
         }
         g_free (readable_language);
-
+	g_free (tagged);
+	g_free (lang_tag);
         g_free (normalized_name);
 }
 
