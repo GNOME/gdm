@@ -146,6 +146,7 @@ gdm_language_option_widget_lookup_item (GdmRecentOptionWidget *widget,
 {
         char *language;
         char *readable_language;
+	char *lang_tag;
 
         language = gdm_get_language_from_name (locale, locale);
 
@@ -154,9 +155,12 @@ gdm_language_option_widget_lookup_item (GdmRecentOptionWidget *widget,
         }
 
         readable_language = gdm_get_language_from_name (locale, NULL);
-
-        *name = language;
+	gdm_parse_language_name (locale, &lang_tag, NULL, NULL, NULL);
+        *name = g_strdup_printf ("<span lang=\"%s\">%s</span>", lang_tag, language);
         *comment = readable_language;
+
+	g_free (language);
+	g_free (lang_tag);
 
         return TRUE;
 }
