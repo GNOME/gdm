@@ -373,14 +373,14 @@ _read_bytes (int      fd,
                 g_set_error (error,
                              G_FILE_ERROR,
                              g_file_error_from_errno (ENODATA),
-                             g_strerror (ENODATA));
+                             "%s", g_strerror (ENODATA));
 
                 return FALSE;
         } else if (bytes_left_to_read > 0) {
                 g_set_error (error,
                              G_FILE_ERROR,
                              g_file_error_from_errno (errno),
-                             g_strerror (errno));
+                             "%s", g_strerror (errno));
                 return FALSE;
         }
 

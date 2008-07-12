@@ -235,7 +235,7 @@ _create_xauth_file_for_user (const char  *username,
                                      G_FILE_ERROR,
                                      g_file_error_from_errno (errno),
                                      "%s", g_strerror (errno));
-                        fp = -1;
+                        fd = -1;
                         goto out;
                 }
 

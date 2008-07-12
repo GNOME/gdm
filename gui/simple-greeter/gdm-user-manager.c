@@ -1084,7 +1084,7 @@ parse_ck_history_line (const char *line,
         error = NULL;
         re = g_regex_new ("(?P<username>[0-9a-zA-Z]+)[ ]+(?P<frequency>[0-9]+)", 0, 0, &error);
         if (re == NULL) {
-                g_critical (error->message);
+                g_critical ("%s", error->message);
                 goto out;
         }
 

@@ -610,7 +610,7 @@ parse_dbus_launch_output (const char *output,
         error = NULL;
         re = g_regex_new ("DBUS_SESSION_BUS_ADDRESS=(.+)\nDBUS_SESSION_BUS_PID=([0-9]+)", 0, 0, &error);
         if (re == NULL) {
-                g_critical (error->message);
+                g_critical ("%s", error->message);
         }
 
         g_regex_match (re, output, 0, &match_info);

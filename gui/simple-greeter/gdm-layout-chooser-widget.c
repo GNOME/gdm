@@ -114,7 +114,7 @@ gdm_layout_chooser_widget_add_layout (GdmLayoutChooserWidget *widget,
         }
 }
 
-void
+static void
 add_available_layouts (GdmLayoutChooserWidget *widget)
 {
         char **layout_names;

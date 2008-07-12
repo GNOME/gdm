@@ -271,7 +271,7 @@ gdm_chooser_client_start (GdmChooserClient *client,
                         g_set_error (error,
                                      GDM_CHOOSER_CLIENT_ERROR,
                                      GDM_CHOOSER_CLIENT_ERROR_GENERIC,
-                                     local_error.message);
+                                     "%s", local_error.message);
                         dbus_error_free (&local_error);
                 } else {
                         g_warning ("Unable to open connection");

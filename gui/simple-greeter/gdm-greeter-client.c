@@ -730,7 +730,7 @@ gdm_greeter_client_start (GdmGreeterClient *client,
                         g_set_error (error,
                                      GDM_GREETER_CLIENT_ERROR,
                                      GDM_GREETER_CLIENT_ERROR_GENERIC,
-                                     local_error.message);
+                                     "%s", local_error.message);
                         dbus_error_free (&local_error);
                 } else {
                         g_warning ("Unable to open connection");

@@ -127,7 +127,7 @@ gdm_parse_language_name (const char *name,
                           "(@(?P<modifier>[[:ascii:]]+))?$",
                           0, 0, &error);
         if (re == NULL) {
-                g_critical (error->message);
+                g_critical ("%s", error->message);
                 return;
         }
 
