@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-08 18:54+0000\n"
+"POT-Creation-Date: 2008-06-25 20:42+0000\n"
 "PO-Revision-Date: 2008-02-05 17:58+0200\n"
 "Last-Translator: Mark Krapivner <mark125@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -43,20 +43,20 @@ msgstr "id"
 msgid "GNOME Display Manager Slave"
 msgstr "GNOME Display Manager Slave"
 
-#: ../daemon/gdm-display-access-file.c:250
+#: ../daemon/gdm-display-access-file.c:267
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "המשתמש \"%s\" לא נימצא במערכת"
 
-#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:195
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:207
 msgid "Unable to initialize login system"
 msgstr "לא ניתן לאתחל את מערכת הכניסה"
 
-#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:228
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:240
 msgid "Unable to authenticate user"
 msgstr "לא ניתן לאמת משתמש"
 
-#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:274
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:286
 msgid "Unable to authorize user"
 msgstr "לא ניתן לאמת את המשתמש"
 
@@ -65,7 +65,7 @@ msgid "Unable to establish credentials"
 msgstr ""
 
 #: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1023
+#: ../daemon/gdm-simple-slave.c:1048
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -156,57 +156,67 @@ msgstr "התקן התצוגה"
 msgid "worker exited with status %d"
 msgstr "worker exited with status %d"
 
-#: ../daemon/gdm-session-worker.c:967
+#: ../daemon/gdm-session-worker.c:995
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "error initiating conversation with authentication system - %s"
 
-#: ../daemon/gdm-session-worker.c:968
+#: ../daemon/gdm-session-worker.c:996
 msgid "general failure"
 msgstr "general failure"
 
-#: ../daemon/gdm-session-worker.c:969
+#: ../daemon/gdm-session-worker.c:997
 msgid "out of memory"
 msgstr "out of memory"
 
-#: ../daemon/gdm-session-worker.c:970
+#: ../daemon/gdm-session-worker.c:998
 msgid "application programmer error"
 msgstr "application programmer error"
 
-#: ../daemon/gdm-session-worker.c:971
+#: ../daemon/gdm-session-worker.c:999
 msgid "unknown error"
 msgstr "שגיאה לא ידועה"
 
-#: ../daemon/gdm-session-worker.c:978
+#: ../daemon/gdm-session-worker.c:1006
 msgid "Username:"
 msgstr "שם משתמש:"
 
-#: ../daemon/gdm-session-worker.c:984
+#: ../daemon/gdm-session-worker.c:1012
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "error informing authentication system of preferred username prompt - %s"
 
-#: ../daemon/gdm-session-worker.c:998
+#: ../daemon/gdm-session-worker.c:1026
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr "error informing authentication system of user's hostname - %s"
 
-#: ../daemon/gdm-session-worker.c:1013
+#: ../daemon/gdm-session-worker.c:1041
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr "error informing authentication system of user's console - %s"
 
-#: ../daemon/gdm-session-worker.c:1292 ../daemon/gdm-session-worker.c:1310
+#: ../daemon/gdm-session-worker.c:1054
+#, c-format
+msgid "error informing authentication system of display string - %s"
+msgstr "error informing authentication system of display string - %s"
+
+#: ../daemon/gdm-session-worker.c:1069
+#, c-format
+msgid "error informing authentication system of display xauth credentials - %s"
+msgstr "error informing authentication system of display xauth credentials - %s"
+
+#: ../daemon/gdm-session-worker.c:1349 ../daemon/gdm-session-worker.c:1367
 #, c-format
 msgid "no user account available"
 msgstr "אין חשבון משתמש זמין"
 
-#: ../daemon/gdm-session-worker.c:1337
+#: ../daemon/gdm-session-worker.c:1394
 msgid "Unable to change to user"
 msgstr "לא ניתן להחליף משתמש"
 
-#: ../daemon/gdm-simple-slave.c:372
+#: ../daemon/gdm-simple-slave.c:387
 msgid "Unable establish credentials"
 msgstr ""
 
@@ -465,8 +475,7 @@ msgstr ""
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:5
 msgid "_Make items larger (Magnifier)"
-msgstr ""
-"_הגדל את הפריטים (זכוכית מגדלת)"
+msgstr "_הגדל את הפריטים (זכוכית מגדלת)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:6
 msgid "_Only accept long held keypresses (Slow Keys)"
@@ -482,13 +491,11 @@ msgstr ""
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:9
 msgid "_Type without the keyboard (On-screen Keyboard)"
-msgstr ""
-"ה_קש ללא מקלדת (מקלדת על המסך)"
+msgstr "ה_קש ללא מקלדת (מקלדת על המסך)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:10
 msgid "_Use a larger font size (Large Print)"
-msgstr ""
-"ה_שתמש בגופן גדול יותר (הדפסה גדולה)"
+msgstr "ה_שתמש בגופן גדול יותר (הדפסה גדולה)"
 
 #: ../gui/simple-greeter/gdm-cell-renderer-timer.c:253
 msgid "Value"
@@ -556,8 +563,7 @@ msgstr "נכשל בשתחול המחשב"
 msgid ""
 "You are not allowed to restart the computer because multiple users are "
 "logged in"
-msgstr ""
-"אינך רשאי לשתחל את המחשב מכיוון שמחוברים אליו משתשים נוספים"
+msgstr "אינך רשאי לשתחל את המחשב מכיוון שמחוברים אליו משתשים נוספים"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1307
 msgid "Failed to stop computer"
@@ -566,8 +572,7 @@ msgstr "נכשל בעצירת המחשב"
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1310
 msgid ""
 "You are not allowed to stop the computer because multiple users are logged in"
-msgstr ""
-"אינך רשאי לעצור את המחשב מכיוון שמחוברים אליו משתשים נוספים"
+msgstr "אינך רשאי לעצור את המחשב מכיוון שמחוברים אליו משתשים נוספים"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1385
 msgid "Select language and click Log In"
@@ -645,8 +650,8 @@ msgstr "לא מצויין"
 msgid "Keyboard layouts"
 msgstr "פריסות מקלדת"
 
-#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:197
-#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:198
+#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:200
+#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:201
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:228
 msgid "_Keyboard:"
 msgstr "_מקלדת:"
@@ -656,9 +661,8 @@ msgid "Choose a keyboard layout from the full list of available layouts."
 msgstr "בחר פריסת מקלדת מתוך רשימת הפריסות הזמינות המלאה."
 
 #: ../gui/simple-greeter/gdm-option-widget.c:493
-#, fuzzy
 msgid "Label Text"
-msgstr "Inactive Text"
+msgstr "טקסט התווית"
 
 #: ../gui/simple-greeter/gdm-option-widget.c:494
 msgid "The text to use as a label"
