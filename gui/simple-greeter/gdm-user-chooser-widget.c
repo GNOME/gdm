@@ -51,7 +51,7 @@ enum {
 
 #define GDM_USER_CHOOSER_WIDGET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_USER_CHOOSER_WIDGET, GdmUserChooserWidgetPrivate))
 
-#define ICON_SIZE 64
+#define ICON_SIZE 96
 
 struct GdmUserChooserWidgetPrivate
 {
