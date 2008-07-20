@@ -17,18 +17,14 @@ EXTRA_DIST = \
 	MAINTAINERS		\
 	ChangeLog		\
 	README			\
-	intltool-extract.in	\
-	intltool-merge.in	\
-	intltool-update.in	\
 	gnome-doc-utils.make	\
 	xmldocs.make		\
-	omf.make
+	omf.make		\
+	$(NULL)
 
 DISTCLEANFILES = \
 	gnome-doc-utils.make	\
-	intltool-extract	\
-	intltool-merge		\
-	intltool-update
+	$(NULL)
 
 DISTCHECK_CONFIGURE_FLAGS = --disable-scrollkeeper
 
