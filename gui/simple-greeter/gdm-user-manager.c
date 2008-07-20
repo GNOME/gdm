@@ -1188,6 +1188,8 @@ ck_history_watch (GIOChannel     *source,
         }
 
         if (done) {
+                g_signal_emit (G_OBJECT (manager), signals[USERS_LOADED], 0);
+
                 manager->priv->ck_history_id = 0;
                 return FALSE;
         }
@@ -1378,7 +1380,6 @@ reload_users_timeout (GdmUserManager *manager)
         reload_users (manager);
         manager->priv->reload_id = 0;
 
-        g_signal_emit (G_OBJECT (manager), signals[USERS_LOADED], 0);
         return FALSE;
 }
 

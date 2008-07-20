@@ -61,10 +61,11 @@ struct GdmUserChooserWidgetPrivate
         GdkPixbuf      *logged_in_pixbuf;
         GdkPixbuf      *stock_person_pixbuf;
 
+        guint           loaded : 1;
         guint           show_other_user : 1;
         guint           show_guest_user : 1;
         guint           show_auto_user : 1;
-	guint		show_normal_users : 1;
+        guint           show_normal_users : 1;
 };
 
 enum {
@@ -237,7 +238,7 @@ gdm_user_chooser_widget_get_property (GObject        *object,
         }
 }
 
-static gboolean 
+static gboolean
 is_user_list_disabled (GdmUserChooserWidget *widget)
 {
         GConfClient *client;
@@ -272,7 +273,7 @@ gdm_user_chooser_widget_constructor (GType                  type,
         gdm_user_chooser_widget_set_show_auto_user (user_chooser_widget, FALSE);
         gdm_user_chooser_widget_set_show_other_user (user_chooser_widget, TRUE);
 
-	user_chooser_widget->priv->show_normal_users = !is_user_list_disabled (user_chooser_widget);
+        user_chooser_widget->priv->show_normal_users = !is_user_list_disabled (user_chooser_widget);
 
         return G_OBJECT (user_chooser_widget);
 }
@@ -414,24 +415,16 @@ setup_icons (GdmUserChooserWidget *widget)
 }
 
 static void
-on_users_loaded (GdmUserManager       *manager,
-                 GdmUserChooserWidget *widget)
-{
-        gdm_chooser_widget_activate_on_one_item (GDM_CHOOSER_WIDGET (widget),
-                                                 TRUE);
-}
-
-static void
-on_user_added (GdmUserManager       *manager,
-               GdmUser              *user,
-               GdmUserChooserWidget *widget)
+add_user (GdmUserChooserWidget *widget,
+          GdmUser              *user)
 {
         GdkPixbuf    *pixbuf;
         char         *tooltip;
         gboolean      is_logged_in;
 
-	if (!widget->priv->show_normal_users)
-		return;
+        if (!widget->priv->show_normal_users) {
+                return;
+        }
 
         pixbuf = gdm_user_render_icon (user, ICON_SIZE);
         if (pixbuf == NULL && widget->priv->stock_person_pixbuf != NULL) {
@@ -464,6 +457,38 @@ on_user_added (GdmUserManager       *manager,
 }
 
 static void
+on_users_loaded (GdmUserManager       *manager,
+                 GdmUserChooserWidget *widget)
+{
+        GSList *users;
+
+        widget->priv->loaded = TRUE;
+
+        g_debug ("GdmUserChooserWidget: Users loaded");
+
+        users = gdm_user_manager_list_users (manager);
+        while (users != NULL) {
+                add_user (widget, users->data);
+                users = g_slist_delete_link (users, users);
+        }
+
+        gdm_chooser_widget_activate_on_one_item (GDM_CHOOSER_WIDGET (widget),
+                                                 TRUE);
+}
+
+static void
+on_user_added (GdmUserManager       *manager,
+               GdmUser              *user,
+               GdmUserChooserWidget *widget)
+{
+        /* wait for all users to be loaded */
+        if (! widget->priv->loaded) {
+                return;
+        }
+        add_user (widget, user);
+}
+
+static void
 on_user_removed (GdmUserManager       *manager,
                  GdmUser              *user,
                  GdmUserChooserWidget *widget)
@@ -471,6 +496,10 @@ on_user_removed (GdmUserManager       *manager,
         const char *user_name;
 
         g_debug ("GdmUserChooserWidget: User removed: %s", gdm_user_get_user_name (user));
+        /* wait for all users to be loaded */
+        if (! widget->priv->loaded) {
+                return;
+        }
 
         user_name = gdm_user_get_user_name (user);
 
@@ -526,16 +555,16 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
 
         widget->priv->manager = gdm_user_manager_ref_default ();
         g_signal_connect (widget->priv->manager,
-                          "users-loaded",
-                          G_CALLBACK (on_users_loaded),
-                          widget);
-        g_signal_connect (widget->priv->manager,
                           "user-added",
                           G_CALLBACK (on_user_added),
                           widget);
         g_signal_connect (widget->priv->manager,
                           "user-removed",
                           G_CALLBACK (on_user_removed),
+                          widget);
+        g_signal_connect (widget->priv->manager,
+                          "users-loaded",
+                          G_CALLBACK (on_users_loaded),
                           widget);
         g_signal_connect (widget->priv->manager,
                           "user-is-logged-in-changed",

@@ -1,3 +1,14 @@
+2008-07-20  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/simple-greeter/gdm-user-chooser-widget.c (add_user),
+	(on_users_loaded), (on_user_added), (on_user_removed),
+	(gdm_user_chooser_widget_init):
+	* gui/simple-greeter/gdm-user-manager.c (ck_history_watch),
+	(reload_users_timeout):
+	* gui/simple-greeter/test-user-manager.c (on_users_loaded), (main):
+	Set the initial user selection correctly.  Also avoid
+	some flicker while reordering.
+
 2008-07-12  William Jon McCann  <jmccann@redhat.com>
 
 	* common/gdm-common.c (_read_bytes):

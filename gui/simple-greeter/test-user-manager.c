@@ -35,6 +35,22 @@
 static GdmUserManager *manager = NULL;
 
 static void
+on_users_loaded (GdmUserManager *manager,
+                 gpointer        data)
+{
+        GSList *users;
+
+        g_debug ("Users loaded");
+
+        users = gdm_user_manager_list_users (manager);
+        while (users != NULL) {
+                g_print ("User: %s\n", gdm_user_get_user_name (users->data));
+                users = g_slist_delete_link (users, users);
+        }
+
+}
+
+static void
 on_user_added (GdmUserManager *manager,
                GdmUser        *user,
                gpointer        data)
@@ -63,6 +79,10 @@ main (int argc, char *argv[])
         gtk_init (&argc, &argv);
 
         manager = gdm_user_manager_ref_default ();
+        g_signal_connect (manager,
+                          "users-loaded",
+                          G_CALLBACK (on_users_loaded),
+                          NULL);
         g_signal_connect (manager,
                           "user-added",
                           G_CALLBACK (on_user_added),
