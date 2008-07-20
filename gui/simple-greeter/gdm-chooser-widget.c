@@ -1637,9 +1637,11 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
 
         /* IMAGE COLUMN */
         renderer = gtk_cell_renderer_pixbuf_new ();
+#if 0
         gtk_cell_renderer_set_fixed_size (renderer,
                                           GDM_CHOOSER_WIDGET_DEFAULT_ICON_SIZE,
                                           GDM_CHOOSER_WIDGET_DEFAULT_ICON_SIZE);
+#endif
         column = gtk_tree_view_column_new ();
         gtk_tree_view_column_pack_start (column, renderer, FALSE);
         gtk_tree_view_append_column (GTK_TREE_VIEW (widget->priv->items_view), column);
