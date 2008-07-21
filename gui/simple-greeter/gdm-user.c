@@ -718,7 +718,7 @@ get_filesystem_type (const char *path)
                                                   NULL,
                                                   &error);
         if (file_info == NULL) {
-                g_warning ("Unable to query filesystem type: %s", error->message);
+                g_warning ("Unable to query filesystem type for %s: %s", path, error->message);
                 g_error_free (error);
                 g_object_unref (file);
                 return NULL;
@@ -726,6 +726,9 @@ get_filesystem_type (const char *path)
 
         filesystem_type = g_strdup (g_file_info_get_attribute_string (file_info,
                                                                       G_FILE_ATTRIBUTE_FILESYSTEM_TYPE));
+        if (filesystem_type == NULL) {
+                g_warning ("GIO returned NULL filesystem type for %s", path);
+        }
 
         g_object_unref (file);
         g_object_unref (file_info);
