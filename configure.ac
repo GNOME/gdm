@@ -1045,44 +1045,6 @@ if test x$have_libaudit = xyes ; then
     AC_DEFINE(HAVE_LIBAUDIT,1,[linux audit support])
 fi
 
-dnl ---------------------------------------------------------------------------
-dnl - Check for Halt, and Reboot commands
-dnl ---------------------------------------------------------------------------
-
-# Define different Halt, and Reboot commands differently for Solaris.
-#
-# On Solaris/bin is a symlink to /usr/bin, so don't include it in
-# GDM_USER_PATH.
-GDM_USER_PATH=""
-
-case "$host" in
-*solaris*)
-        AC_CHECK_LIB(resolv, daemon, [EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lresolv"])
-        GDM_USER_PATH="/usr/bin"
-        HALT_COMMAND="/sbin/init 5"
-        REBOOT_COMMAND="/sbin/init 6"
-        SUSPEND_COMMAND="/usr/openwin/bin/sys-suspend -n"
-        XSESSION_SHELL=/bin/ksh
-        SOUND_PROGRAM=/usr/bin/audioplay
-        ;;
-*freebsd*)
-	GDM_USER_PATH="/bin:/usr/bin"
-	HALT_COMMAND="/sbin/shutdown -p now;/usr/sbin/shutdown -p now"
-	REBOOT_COMMAND="/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
-	SUSPEND_COMMAND="/usr/sbin/zzz"
-	XSESSION_SHELL=/bin/sh
-	SOUND_PROGRAM=
-	;;
-*)
-        GDM_USER_PATH="/bin:/usr/bin"
-        HALT_COMMAND="/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now"
-        REBOOT_COMMAND="/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
-        SUSPEND_COMMAND=""
-        XSESSION_SHELL=/bin/sh
-        SOUND_PROGRAM=/usr/bin/play
-        ;;
-esac
-
 #
 # Subst the extra libs
 #
@@ -1348,12 +1310,6 @@ fi
 
 # Set configuration choices.
 #
-AC_SUBST(HALT_COMMAND)
-AC_DEFINE_UNQUOTED(HALT_COMMAND,"$HALT_COMMAND")
-AC_SUBST(REBOOT_COMMAND)
-AC_DEFINE_UNQUOTED(REBOOT_COMMAND,"$REBOOT_COMMAND")
-AC_SUBST(SUSPEND_COMMAND)
-AC_DEFINE_UNQUOTED(SUSPEND_COMMAND,"$SUSPEND_COMMAND")
 AC_SUBST(XSESSION_SHELL)
 AC_DEFINE_UNQUOTED(XSESSION_SHELL,"$XSESSION_SHELL")
 AC_SUBST(GDM_USER_PATH)
