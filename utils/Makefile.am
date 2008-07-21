@@ -3,6 +3,7 @@ NULL =
 INCLUDES = \
 	-I.						\
 	-I..						\
+	-DLOCALSTATEDIR=\""$(localstatedir)"\" 		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	$(UTILS_CFLAGS)					\
 	$(GTK_CFLAGS)					\

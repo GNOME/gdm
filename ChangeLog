@@ -1,5 +1,14 @@
 2008-07-21  William Jon McCann  <jmccann@redhat.com>
 
+	* daemon/gdm-display-access-file.c (_create_xauth_file_for_user):
+	Fix xauth dir permissions if it exists.
+
+	* utils/Makefile.am:
+	* utils/gdm-screenshot.c (screenshot_save), (prepare_screenshot):
+	Write gdm screenshot output to /var/run/gdm instead of /tmp.
+
+2008-07-21  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/simple-greeter/Makefile.am:
 	* gui/simple-greeter/gdm-user.c (get_filesystem_type),
 	(render_icon_from_home):

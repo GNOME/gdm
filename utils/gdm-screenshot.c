@@ -158,11 +158,14 @@ screenshot_get_pixbuf (Window w)
 static char *
 screenshot_save (GdkPixbuf *pixbuf)
 {
-        char    *filename;
-        gboolean res;
-        GError  *error;
+        char       *filename;
+        gboolean    res;
+        GError     *error;
+        const char *save_dir;
 
-        filename = g_build_filename (g_get_tmp_dir (),
+        save_dir = LOCALSTATEDIR "/run/gdm";
+
+        filename = g_build_filename (save_dir,
                                      "GDM-Screenshot.png",
                                      NULL);
 
@@ -206,10 +209,11 @@ prepare_screenshot (void)
         }
 
         filename = screenshot_save (screenshot);
-        g_print ("Wrote %s\n", filename);
-        /* FIXME: show a dialog or something */
-
-        g_free (filename);
+        if (filename != NULL) {
+                g_print ("Wrote %s\n", filename);
+                /* FIXME: show a dialog or something */
+                g_free (filename);
+        }
 }
 
 int

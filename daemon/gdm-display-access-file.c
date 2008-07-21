@@ -227,7 +227,7 @@ _create_xauth_file_for_user (const char  *username,
 
         fp = NULL;
 
-        /* Create directory if not exist, then set permission 01775 and ownership root:gdm */ 
+        /* Create directory if not exist, then set permission 01775 and ownership root:gdm */
         if (g_file_test (GDM_XAUTH_DIR, G_FILE_TEST_IS_DIR) == FALSE) {
                 g_unlink (GDM_XAUTH_DIR);
                 if (g_mkdir (GDM_XAUTH_DIR, S_ISVTX|S_IRWXU|S_IRWXG|S_IROTH|S_IXOTH) != 0) {
@@ -242,8 +242,11 @@ _create_xauth_file_for_user (const char  *username,
                 g_chmod (GDM_XAUTH_DIR, S_ISVTX|S_IRWXU|S_IRWXG|S_IROTH|S_IXOTH);
                 _get_uid_and_gid_for_user ("gdm", &uid, &gid);
                 chown (GDM_XAUTH_DIR, 0, gid);
+        } else {
+                /* if it does exist make sure it has correct mode */
+                g_chmod (GDM_XAUTH_DIR, S_ISVTX|S_IRWXU|S_IRWXG|S_IROTH|S_IXOTH);
         }
- 
+
         template = g_strdup_printf (GDM_XAUTH_DIR
                                     "/auth-cookie-XXXXXXXX-for-%s",
                                     username);
