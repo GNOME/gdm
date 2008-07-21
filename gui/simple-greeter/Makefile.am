@@ -59,6 +59,7 @@ noinst_PROGRAMS = 			\
 	test-a11y-preferences		\
 	test-greeter-login-window	\
 	test-greeter-panel		\
+	test-filesystem-type		\
 	test-language-chooser		\
 	test-languages			\
 	test-sessions			\
@@ -157,6 +158,14 @@ test_remote_login_window_SOURCES = 	\
 test_remote_login_window_LDADD =	\
 	$(GTK_LIBS)			\
 	$(top_builddir)/common/libgdmcommon.la	\
+	$(NULL)
+
+test_filesystem_type_SOURCES = 	\
+	test-filesystem-type.c	\
+	$(NULL)
+
+test_filesystem_type_LDADD =	\
+	$(COMMON_LIBS)			\
 	$(NULL)
 
 test_language_chooser_SOURCES = 	\

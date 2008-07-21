@@ -703,63 +703,70 @@ check_user_file (const char *filename,
         return TRUE;
 }
 
+static char *
+get_filesystem_type (const char *path)
+{
+        GFile      *file;
+        GFileInfo  *file_info;
+        GError     *error;
+        char       *filesystem_type;
+
+        file = g_file_new_for_path (path);
+        error = NULL;
+        file_info = g_file_query_filesystem_info (file,
+                                                  G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
+                                                  NULL,
+                                                  &error);
+        if (file_info == NULL) {
+                g_warning ("Unable to query filesystem type: %s", error->message);
+                g_error_free (error);
+                g_object_unref (file);
+                return NULL;
+        }
+
+        filesystem_type = g_strdup (g_file_info_get_attribute_string (file_info,
+                                                                      G_FILE_ATTRIBUTE_FILESYSTEM_TYPE));
+
+        g_object_unref (file);
+        g_object_unref (file_info);
+
+        return filesystem_type;
+}
+
 static GdkPixbuf *
 render_icon_from_home (GdmUser *user,
                        int      icon_size)
 {
         GdkPixbuf  *retval;
         char       *path;
-        GFile      *file;
-        GFileInfo  *file_info;
         gboolean    is_local;
         gboolean    is_autofs;
         gboolean    res;
-        const char *filesystem_type;
+        char       *filesystem_type;
+
+        is_local = FALSE;
 
         /* special case: look at parent of home to detect autofs
            this is so we don't try to trigger an automount */
         path = g_path_get_dirname (user->home_dir);
-        file = g_file_new_for_path (path);
-        file_info = g_file_query_filesystem_info (file,
-                                                  G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
-                                                  NULL,
-                                                  NULL);
-        if (file_info == NULL) {
-                g_free (path);
-                g_object_unref (file);
-                return NULL;
-        }
-        filesystem_type = g_file_info_get_attribute_string (file_info,
-                                                            G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+        filesystem_type = get_filesystem_type (path);
         is_autofs = (filesystem_type != NULL && strcmp (filesystem_type, "autofs") == 0);
-        g_object_unref (file);
-        g_object_unref (file_info);
+        g_free (filesystem_type);
         g_free (path);
 
-        /* now check that home dir itself is local */
-        is_local = TRUE;
-        if (! is_autofs) {
-                file = g_file_new_for_path (user->home_dir);
-                file_info = g_file_query_filesystem_info (file,
-                                                          G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
-                                                          NULL,
-                                                          NULL);
-                if (file_info == NULL) {
-                        g_object_unref (file);
-                        return NULL;
-                }
-                filesystem_type = g_file_info_get_attribute_string (file_info,
-                                                                    G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
-                if (filesystem_type != NULL) {
-                        is_local = ((strcmp (filesystem_type, "nfs") != 0) &&
-                                    (strcmp (filesystem_type, "afs") != 0) &&
-                                    (strcmp (filesystem_type, "autofs") != 0) &&
-                                    (strcmp (filesystem_type, "unknown") != 0) &&
-                                    (strcmp (filesystem_type, "ncpfs") != 0));
-                }
-                g_object_unref (file_info);
-                g_object_unref (file);
+        if (is_autofs) {
+                return NULL;
         }
+
+        /* now check that home dir itself is local */
+        filesystem_type = get_filesystem_type (user->home_dir);
+        is_local = ((filesystem_type != NULL) &&
+                    (strcmp (filesystem_type, "nfs") != 0) &&
+                    (strcmp (filesystem_type, "afs") != 0) &&
+                    (strcmp (filesystem_type, "autofs") != 0) &&
+                    (strcmp (filesystem_type, "unknown") != 0) &&
+                    (strcmp (filesystem_type, "ncpfs") != 0));
+        g_free (filesystem_type);
 
         /* only look at local home directories so we don't try to
            read from remote (e.g. NFS) volumes */
