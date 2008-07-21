@@ -59,7 +59,6 @@ noinst_PROGRAMS = 			\
 	test-a11y-preferences		\
 	test-greeter-login-window	\
 	test-greeter-panel		\
-	test-filesystem-type		\
 	test-language-chooser		\
 	test-languages			\
 	test-sessions			\
