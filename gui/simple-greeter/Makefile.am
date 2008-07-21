@@ -57,6 +57,7 @@ libgdmuser_la_LDFLAGS = 	\
 
 noinst_PROGRAMS = 			\
 	test-a11y-preferences		\
+	test-filesystem-type		\
 	test-greeter-login-window	\
 	test-greeter-panel		\
 	test-language-chooser		\
