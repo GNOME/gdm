@@ -56,8 +56,9 @@ struct GdmManagerPrivate
 {
         GdmDisplayStore        *display_store;
         GdmLocalDisplayFactory *local_factory;
+#ifdef HAVE_LIBXDMCP
         GdmXdmcpDisplayFactory *xdmcp_factory;
-
+#endif
         gboolean                xdmcp_enabled;
 
         gboolean                wait_for_go;
@@ -145,6 +146,7 @@ gdm_manager_start (GdmManager *manager)
                 gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
         }
 
+#ifdef HAVE_LIBXDMCP
         /* Accept remote connections */
         if (manager->priv->xdmcp_enabled && ! manager->priv->wait_for_go) {
                 if (manager->priv->xdmcp_factory != NULL) {
@@ -152,7 +154,7 @@ gdm_manager_start (GdmManager *manager)
                         gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
                 }
         }
-
+#endif
 }
 
 void
@@ -166,10 +168,12 @@ gdm_manager_set_wait_for_go (GdmManager *manager,
                         /* we got a go */
                         gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
 
+#ifdef HAVE_LIBXDMCP
                         if (manager->priv->xdmcp_enabled && manager->priv->xdmcp_factory != NULL) {
                                 g_debug ("GdmManager: Accepting XDMCP connections...");
                                 gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
                         }
+#endif
                 }
         }
 }
@@ -323,9 +327,11 @@ gdm_manager_constructor (GType                  type,
 
         manager->priv->local_factory = gdm_local_display_factory_new (manager->priv->display_store);
 
+#ifdef HAVE_LIBXDMCP
         if (manager->priv->xdmcp_enabled) {
                 manager->priv->xdmcp_factory = gdm_xdmcp_display_factory_new (manager->priv->display_store);
         }
+#endif
 
         return G_OBJECT (manager);
 }
@@ -395,9 +401,11 @@ gdm_manager_finalize (GObject *object)
 
         g_return_if_fail (manager->priv != NULL);
 
+#ifdef HAVE_LIBXDMCP
         if (manager->priv->xdmcp_factory != NULL) {
                 g_object_unref (manager->priv->xdmcp_factory);
         }
+#endif
 
         gdm_display_store_clear (manager->priv->display_store);
         g_object_unref (manager->priv->display_store);

@@ -1,3 +1,11 @@
+2008-07-21  William Jon McCann  <jmccann@redhat.com>
+
+	* daemon/gdm-manager.c (gdm_manager_start),
+	(gdm_manager_set_wait_for_go), (gdm_manager_constructor),
+	(gdm_manager_finalize):
+	Don't use xdmcp factory if libxdmcp not available.
+	Fixes #531467
+
 2008-07-20  William Jon McCann  <jmccann@redhat.com>
 
 	* Makefile.am:
