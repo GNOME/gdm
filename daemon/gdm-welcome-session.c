@@ -450,6 +450,15 @@ spawn_child_setup (SpawnChildData *data)
         if (data->log_file != NULL) {
                 int logfd;
 
+                if (g_access (data->log_file, R_OK | W_OK) == 0) {
+                        char *filename_old;
+
+                        filename_old = g_strdup_printf ("%s.old", data->log_file);
+                        VE_IGNORE_EINTR (g_unlink (filename_old));
+                        VE_IGNORE_EINTR (g_rename (data->log_file, filename_old));
+                        g_free (filename_old);
+                }
+
                 VE_IGNORE_EINTR (g_unlink (data->log_file));
                 VE_IGNORE_EINTR (logfd = open (data->log_file, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644));
 

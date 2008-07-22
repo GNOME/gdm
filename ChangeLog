@@ -1,5 +1,11 @@
 2008-07-21  William Jon McCann  <jmccann@redhat.com>
 
+	* daemon/gdm-welcome-session.c (spawn_child_setup):
+	Save one old copy of greeter log file.  Helps
+	to keep messages from before a restart.
+
+2008-07-21  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-login-window.c
 	(gdm_greeter_login_window_size_request):
 	Set a minimum width for the login window.
