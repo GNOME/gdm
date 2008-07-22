@@ -1,5 +1,12 @@
 2008-07-21  William Jon McCann  <jmccann@redhat.com>
 
+	* utils/gdm-restart.in:
+	* utils/gdm-safe-restart.in:
+	Don't signal the gdm process with HUP and USR1 since
+	they don't work.
+
+2008-07-21  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-login-window.c (do_cancel),
 	(gdm_greeter_login_window_ready):
 	Wait for ready from backend when cancelling
