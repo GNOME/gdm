@@ -258,44 +258,32 @@ gdm_slave_run_script (GdmSlave   *slave,
         g_assert (login != NULL);
 
         script = g_build_filename (dir, slave->priv->display_name, NULL);
-        if (g_access (script, R_OK | X_OK) != 0) {
+        g_debug ("GdmSlave: Trying script %s", script);
+        if (g_file_test (script, G_FILE_TEST_IS_REGULAR)
+            && g_file_test (script, G_FILE_TEST_IS_EXECUTABLE)) {
                 g_debug ("GdmSlave: script %s not found; skipping", script);
                 g_free (script);
                 script = NULL;
         }
 
-        if (script == NULL &&
-            slave->priv->display_hostname != NULL) {
+        if (script == NULL
+            && slave->priv->display_hostname != NULL
+            && slave->priv->display_hostname[0] != '\0') {
                 script = g_build_filename (dir, slave->priv->display_hostname, NULL);
-                if (g_access (script, R_OK | X_OK) != 0) {
+                g_debug ("GdmSlave: Trying script %s", script);
+                if (g_file_test (script, G_FILE_TEST_IS_REGULAR)
+                    && g_file_test (script, G_FILE_TEST_IS_EXECUTABLE)) {
                         g_debug ("GdmSlave: script %s not found; skipping", script);
                         g_free (script);
                         script = NULL;
                 }
         }
 
-#if 0
-        if (script == NULL &&
-            SERVER_IS_XDMCP (d)) {
-                script = g_build_filename (dir, "XDMCP", NULL);
-                if (g_access (script, R_OK | X_OK) != 0) {
-                        g_free (script);
-                        script = NULL;
-                }
-        }
-        if (script == NULL &&
-            SERVER_IS_FLEXI (d)) {
-                script = g_build_filename (dir, "Flexi", NULL);
-                if (g_access (script, R_OK | X_OK) != 0) {
-                        g_free (script);
-                        script = NULL;
-                }
-        }
-#endif
-
         if (script == NULL) {
                 script = g_build_filename (dir, "Default", NULL);
-                if (g_access (script, R_OK | X_OK) != 0) {
+                g_debug ("GdmSlave: Trying script %s", script);
+                if (g_file_test (script, G_FILE_TEST_IS_REGULAR)
+                    && g_file_test (script, G_FILE_TEST_IS_EXECUTABLE)) {
                         g_debug ("GdmSlave: script %s not found; skipping", script);
                         g_free (script);
                         script = NULL;
