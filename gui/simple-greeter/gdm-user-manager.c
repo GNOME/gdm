@@ -774,7 +774,7 @@ get_uid_from_session_id (GdmUserManager *manager,
 {
         DBusGProxy      *proxy;
         GError          *error;
-        int              uid;
+        guint            uid;
         gboolean         res;
 
         proxy = dbus_g_proxy_new_for_name (manager->priv->connection,
@@ -791,7 +791,7 @@ get_uid_from_session_id (GdmUserManager *manager,
                                  "GetUnixUser",
                                  &error,
                                  G_TYPE_INVALID,
-                                 G_TYPE_INT, &uid,
+                                 G_TYPE_UINT, &uid,
                                  G_TYPE_INVALID);
         g_object_unref (proxy);
 
