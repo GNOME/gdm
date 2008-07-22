@@ -755,7 +755,10 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
 static void
 do_cancel (GdmGreeterLoginWindow *login_window)
 {
-        reset_dialog (login_window);
+        /* need to wait for response from backend */
+        set_message (login_window, _("Cancelling..."));
+        set_busy (login_window);
+        set_sensitive (login_window, FALSE);
         g_signal_emit (login_window, signals[CANCELLED], 0);
 }
 
@@ -763,6 +766,8 @@ gboolean
 gdm_greeter_login_window_ready (GdmGreeterLoginWindow *login_window)
 {
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
+
+        reset_dialog (login_window);
 
         set_sensitive (GDM_GREETER_LOGIN_WINDOW (login_window), TRUE);
         set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
