@@ -259,8 +259,8 @@ gdm_slave_run_script (GdmSlave   *slave,
 
         script = g_build_filename (dir, slave->priv->display_name, NULL);
         g_debug ("GdmSlave: Trying script %s", script);
-        if (g_file_test (script, G_FILE_TEST_IS_REGULAR)
-            && g_file_test (script, G_FILE_TEST_IS_EXECUTABLE)) {
+        if (! (g_file_test (script, G_FILE_TEST_IS_REGULAR)
+               && g_file_test (script, G_FILE_TEST_IS_EXECUTABLE))) {
                 g_debug ("GdmSlave: script %s not found; skipping", script);
                 g_free (script);
                 script = NULL;
@@ -271,8 +271,8 @@ gdm_slave_run_script (GdmSlave   *slave,
             && slave->priv->display_hostname[0] != '\0') {
                 script = g_build_filename (dir, slave->priv->display_hostname, NULL);
                 g_debug ("GdmSlave: Trying script %s", script);
-                if (g_file_test (script, G_FILE_TEST_IS_REGULAR)
-                    && g_file_test (script, G_FILE_TEST_IS_EXECUTABLE)) {
+                if (! (g_file_test (script, G_FILE_TEST_IS_REGULAR)
+                       && g_file_test (script, G_FILE_TEST_IS_EXECUTABLE))) {
                         g_debug ("GdmSlave: script %s not found; skipping", script);
                         g_free (script);
                         script = NULL;
@@ -282,8 +282,8 @@ gdm_slave_run_script (GdmSlave   *slave,
         if (script == NULL) {
                 script = g_build_filename (dir, "Default", NULL);
                 g_debug ("GdmSlave: Trying script %s", script);
-                if (g_file_test (script, G_FILE_TEST_IS_REGULAR)
-                    && g_file_test (script, G_FILE_TEST_IS_EXECUTABLE)) {
+                if (! (g_file_test (script, G_FILE_TEST_IS_REGULAR)
+                       && g_file_test (script, G_FILE_TEST_IS_EXECUTABLE))) {
                         g_debug ("GdmSlave: script %s not found; skipping", script);
                         g_free (script);
                         script = NULL;
