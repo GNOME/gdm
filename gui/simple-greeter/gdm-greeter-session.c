@@ -721,9 +721,7 @@ toggle_all_levels (GdmSessionManager *manager,
                    GdmGreeterSession *session)
 {
         if (enabled) {
-                if (!activate_settings_daemon (session)) {
-                        start_settings_daemon (session);
-                }
+                start_settings_daemon (session);
                 start_window_manager (session);
         } else {
         }
