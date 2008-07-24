@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-05 11:23+0000\n"
-"PO-Revision-Date: 2008-07-20 15:02+0200\n"
+"POT-Creation-Date: 2008-07-22 03:14+0000\n"
+"PO-Revision-Date: 2008-07-24 22:47+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -52,7 +52,7 @@ msgstr "id"
 msgid "GNOME Display Manager Slave"
 msgstr "Esclavo del gestor de pantallas de GNOME"
 
-#: ../daemon/gdm-display-access-file.c:267
+#: ../daemon/gdm-display-access-file.c:270
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "no se pudo encontrar el usuario «%s» en el sistema"
@@ -165,70 +165,70 @@ msgstr "La pantalla"
 msgid "worker exited with status %d"
 msgstr "worker se detuvo con estado %d"
 
-#: ../daemon/gdm-session-worker.c:995
+#: ../daemon/gdm-session-worker.c:999
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "error al iniciar la conversación con el sistema de autenticación - %s"
 
-#: ../daemon/gdm-session-worker.c:996
+#: ../daemon/gdm-session-worker.c:1000
 msgid "general failure"
 msgstr "fallo general"
 
-#: ../daemon/gdm-session-worker.c:997
+#: ../daemon/gdm-session-worker.c:1001
 msgid "out of memory"
 msgstr "sin memoria"
 
-#: ../daemon/gdm-session-worker.c:998
+#: ../daemon/gdm-session-worker.c:1002
 msgid "application programmer error"
 msgstr "error del programador de la aplicación"
 
-#: ../daemon/gdm-session-worker.c:999
+#: ../daemon/gdm-session-worker.c:1003
 msgid "unknown error"
 msgstr "error desconocido"
 
-#: ../daemon/gdm-session-worker.c:1006
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "Usuario:"
 
-#: ../daemon/gdm-session-worker.c:1012
+#: ../daemon/gdm-session-worker.c:1016
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "error al informar al sistema de autenticación del diálogo del nombre de "
 "usuario preferido - %s"
 
-#: ../daemon/gdm-session-worker.c:1026
+#: ../daemon/gdm-session-worker.c:1030
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 "error al informar al sistema de autenticación del nombre del equipo del "
 "usuario - %s"
 
-#: ../daemon/gdm-session-worker.c:1041
+#: ../daemon/gdm-session-worker.c:1045
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
 "error al informar al sistema de autenticación acerca de la consola del "
 "usuario - %s"
 
-#: ../daemon/gdm-session-worker.c:1054
+#: ../daemon/gdm-session-worker.c:1058
 #, c-format
 msgid "error informing authentication system of display string - %s"
 msgstr "error al informar al sistema de autenticación de la cadena de pantalla - %s"
 
-#: ../daemon/gdm-session-worker.c:1069
+#: ../daemon/gdm-session-worker.c:1073
 #, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
 msgstr ""
 "error al informar al sistema de autenticación de las credenciales xauth de "
 "la pantalla - %s"
 
-#: ../daemon/gdm-session-worker.c:1349 ../daemon/gdm-session-worker.c:1367
+#: ../daemon/gdm-session-worker.c:1353 ../daemon/gdm-session-worker.c:1371
 #, c-format
 msgid "no user account available"
 msgstr "no hay cuentas de usuario disponibles"
 
-#: ../daemon/gdm-session-worker.c:1394
+#: ../daemon/gdm-session-worker.c:1398
 msgid "Unable to change to user"
 msgstr "No se pudo cambiar el usuario"
 
@@ -503,23 +503,23 @@ msgstr "_Hacer los elementos más grandes (magnificador)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:6
 msgid "_Only accept long held keypresses (Slow Keys)"
-msgstr ""
+msgstr "Aceptar _sólo pulsaciones de teclas largas (teclas lentas)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:7
 msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
-msgstr ""
+msgstr "_Pulsar los atajos de teclado uno cada vez (teclas persistentes)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:8
 msgid "_See more contrast in colors (High Contrast)"
-msgstr ""
+msgstr "_Ver más contraste en los colores (alto contraste)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:9
 msgid "_Type without the keyboard (On-screen Keyboard)"
-msgstr ""
+msgstr "_Escribir sin el teclado (teclado en pantalla)"
 
 #: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:10
 msgid "_Use a larger font size (Large Print)"
-msgstr ""
+msgstr "_Usar una tipografía grande (tipografía grande)"
 
 #: ../gui/simple-greeter/gdm-cell-renderer-timer.c:253
 msgid "Value"
@@ -583,11 +583,16 @@ msgstr "Tiene pulsada la tecla Bloq Mayús"
 msgid "Automatically logging in..."
 msgstr "Iniciar sesión automáticamente…"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1223
+#. need to wait for response from backend
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:759
+msgid "Cancelling..."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1228
 msgid "Failed to restart computer"
 msgstr "Falló al reiniciar el equipo"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1226
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1231
 msgid ""
 "You are not allowed to restart the computer because multiple users are "
 "logged in"
@@ -595,21 +600,21 @@ msgstr ""
 "No se le permite reiniciar el equipo porque hay múltiples usuarios que han "
 "iniciado sesión"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1307
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1312
 msgid "Failed to stop computer"
 msgstr "Falló al parar el equipo"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1310
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1315
 msgid "You are not allowed to stop the computer because multiple users are logged in"
 msgstr ""
 "No se le permite parar el equipo porque hay múltiples usuarios que han "
 "iniciado sesión"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1385
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1390
 msgid "Select language and click Log In"
 msgstr "Seleccione un idioma y pulse Iniciar sesión"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1941
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1949
 msgid "Login Window"
 msgstr "Ventana de inicio de sesión"
 
@@ -653,23 +658,23 @@ msgstr "Panel"
 msgid "Languages"
 msgstr "Idiomas"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:258
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:264
 msgid "_Languages:"
 msgstr "_Idiomas:"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:259
-#: ../gui/simple-greeter/gdm-language-option-widget.c:231
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:265
+#: ../gui/simple-greeter/gdm-language-option-widget.c:235
 msgid "_Language:"
 msgstr "_Idioma:"
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:202
+#: ../gui/simple-greeter/gdm-language-option-widget.c:206
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:199
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:86
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:87
 #: ../gui/user-switch-applet/applet.c:1228
 msgid "Other..."
 msgstr "Otro…"
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:203
+#: ../gui/simple-greeter/gdm-language-option-widget.c:207
 msgid "Choose a language from the full list of available languages."
 msgstr "Elija un idioma de la lista de idiomas disponibles."
 
@@ -790,34 +795,42 @@ msgid "Icon name to use for greeter logo"
 msgstr ""
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
-msgid "Set to TRUE to disable showing known users in the login window."
-msgstr ""
+msgid "Recently selected keyboard layouts"
+msgstr "Distribuciones de teclado seleccionadas recientemente"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-msgid "Set to TRUE to disable showing the accessibility button in the login window."
+msgid "Recently selected languages"
 msgstr ""
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
-msgid "Set to TRUE to disable showing the restart buttons in the login window."
+msgid "Set to TRUE to disable showing known users in the login window."
 msgstr ""
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
+msgid "Set to TRUE to disable showing the accessibility button in the login window."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
+msgid "Set to TRUE to disable showing the restart buttons in the login window."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
 msgid "Set to True to enable the background settings manager plugin."
 msgstr ""
 "Actívelo para activar el complemento del gestor de ajustes del fondo de "
 "pantalla."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid "Set to True to enable the media-keys settings manager plugin."
 msgstr ""
 "Actívelo para activar los ajustes del complemento del gestor de teclas "
 "multimedia."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid "Set to True to enable the on-screen keyboard."
 msgstr "Actívelo para activar el teclado en pantalla."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid ""
 "Set to True to enable the plugin to manage the accessibility keyboard "
 "settings."
@@ -825,61 +838,69 @@ msgstr ""
 "Actívelo para activar el complemento del gestor de ajustes de accesibilidad "
 "del teclado."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "Set to True to enable the screen magnifier."
 msgstr "Actívelo para activar el magnificador de pantalla."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
 msgid "Set to True to enable the screen reader."
 msgstr "Actívelo para activar el lector de pantalla."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to True to enable the sound settings manager plugin."
 msgstr "Actívelo para activar el complemento del gestor de ajustes de sonido."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid "Set to True to enable the xsettings settings manager plugin."
 msgstr "Actívelo para activar el complemento del gestor de ajustes xsettings."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
-msgid "Set to the themed icon name to use for the greeter logo."
-msgstr ""
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
-msgid "Set to true to show the banner message text."
-msgstr ""
-
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
-msgid "Set to true to use compiz as the window manager."
+msgid "Set to a list of keyboard layouts to be shown by default at the login window."
 msgstr ""
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
-msgid "Text banner message to show on the login window."
+msgid "Set to a list of languages to be shown by default at the login window."
 msgstr ""
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+msgid "Set to the themed icon name to use for the greeter logo."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+msgid "Set to true to show the banner message text."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+msgid "Set to true to use compiz as the window manager."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+msgid "Text banner message to show on the login window."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "True if the background settings manager plugin is enabled."
 msgstr ""
 "Verdadero si el complemento del gestor de ajustes del fondo de pantalla está "
 "activado."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr ""
 "Verdadero si el complemento del gestor de ajustes de teclas multimedia está "
 "activado."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "Verdadero si el complemento del gestor de ajustes de sonido está activado."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "Verdadero si el complemento del gestor de ajustes xsettings está activado."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
 msgid "Use compiz as the window manager"
-msgstr ""
+msgstr "Usar compiz como gestor de ventanas"
 
 #: ../gui/simple-greeter/gdm-timer.c:149
 msgid "Duration"
@@ -899,7 +920,7 @@ msgstr ""
 
 #: ../gui/simple-greeter/gdm-timer.c:165
 msgid "Is it Running?"
-msgstr ""
+msgstr "¿Se está ejecutando?"
 
 #: ../gui/simple-greeter/gdm-timer.c:166
 msgid "Whether or not the timer is currently ticking"
@@ -913,32 +934,32 @@ msgstr "Gestor"
 msgid "The user manager object this user is controlled by."
 msgstr "El objeto de gestión de usuarios que controla a este usuario."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:87
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:88
 msgid "Choose a different account"
 msgstr "Elija una cuenta distinta"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:99
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:100
 msgid "Guest"
 msgstr "Invitado"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:100
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:101
 msgid "Login as a temporary guest"
 msgstr "Iniciar sesión como invitado temporal"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:112
-msgid "Automatic Login"
-msgstr ""
-
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:113
-msgid "Automatically login to the system after selecting options"
-msgstr ""
+msgid "Automatic Login"
+msgstr "Inicio de sesión automático"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:441
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:114
+msgid "Automatically login to the system after selecting options"
+msgstr "Iniciar sesión en el sistema después de seleccionar las opciones"
+
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:434
 #, c-format
 msgid "Log in as %s"
 msgstr "Iniciar sesión como %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:525
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:554
 msgid "Currently logged in"
 msgstr "Sesión iniciada"
 
@@ -967,21 +988,25 @@ msgstr ""
 
 #: ../gui/user-switch-applet/applet.c:184
 msgid "A menu to quickly switch between users."
-msgstr ""
+msgstr "Un menú para cambiar rápidamente entre usuarios."
 
 #: ../gui/user-switch-applet/applet.c:188
 msgid "translator-credits"
 msgstr ""
+"Lucas Vieites <lucas@codexion.com>, 2008\n"
+"Jorge González <jorgegonz@svn.gnome.org>, 2008"
 
 #: ../gui/user-switch-applet/applet.c:795
 #, c-format
 msgid "Can't lock screen: %s"
-msgstr ""
+msgstr "No se puede bloquear la pantalla: %s"
 
 #: ../gui/user-switch-applet/applet.c:817
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
-msgstr "No se puede establecer temporalmente el salvapantallas a oscurecer pantalla: %s"
+msgstr ""
+"No se puede establecer temporalmente el salvapantallas a oscurecer pantalla: "
+"%s"
 
 #: ../gui/user-switch-applet/applet.c:1023
 msgid "Unknown"
@@ -989,12 +1014,12 @@ msgstr "Desconocido"
 
 #: ../gui/user-switch-applet/applet.c:1081
 msgid "User Switch Applet"
-msgstr ""
+msgstr "Miniaplicación del selector de usuarios"
 
 #: ../gui/user-switch-applet/applet.c:1105
 #: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:2
 msgid "User Switcher"
-msgstr ""
+msgstr "Selector de usuarios"
 
 #: ../gui/user-switch-applet/gdm-user-menu-item.c:338
 msgid "User"
@@ -1034,7 +1059,7 @@ msgstr "Un menú para cambiar rápidamente entre usuarios"
 
 #: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:3
 msgid "User Switcher Applet Factory"
-msgstr ""
+msgstr "Fábrica de la miniaplicación del selector de usuarios"
 
 #: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:1
 msgid "Edit Personal _Information"
@@ -1052,33 +1077,19 @@ msgstr "_Editar usuarios y grupos"
 msgid "_Help"
 msgstr "Ay_uda"
 
-#: ../utils/gdmflexiserver.c:60
-msgid "Send the specified protocol command to GDM"
-msgstr "Enviar el comando de protocolo especificado a GDM"
+#: ../utils/gdmflexiserver.c:60 ../utils/gdmflexiserver.c:61
+#: ../utils/gdmflexiserver.c:62 ../utils/gdmflexiserver.c:64
+#: ../utils/gdmflexiserver.c:65
+msgid "Ignored - retained for compatibility"
+msgstr ""
 
 #: ../utils/gdmflexiserver.c:60
 msgid "COMMAND"
 msgstr "COMANDO"
 
-#: ../utils/gdmflexiserver.c:61
-msgid "Xnest mode"
-msgstr "Modo Xnest"
-
-#: ../utils/gdmflexiserver.c:62
-msgid "Do not lock current screen"
-msgstr "No bloquear la pantalla actual"
-
 #: ../utils/gdmflexiserver.c:63 ../utils/gdm-screenshot.c:41
 msgid "Debugging output"
 msgstr "Opción de depuración"
-
-#: ../utils/gdmflexiserver.c:64
-msgid "Authenticate before running --command"
-msgstr "Autenticarse antes de ejecutar --comando"
-
-#: ../utils/gdmflexiserver.c:65
-msgid "Start new flexible session; do not show popup"
-msgstr "Iniciar una sesión flexible nueva; no mostrar el mensaje emergente"
 
 #: ../utils/gdmflexiserver.c:67
 msgid "Version of this application"
@@ -1089,7 +1100,7 @@ msgstr "Versión de esta aplicación"
 msgid "Could not identify the current session."
 msgstr "No se pudo identificar la sesión actual."
 
-#: ../utils/gdmflexiserver.c:710 ../utils/gdm-screenshot.c:226
+#: ../utils/gdmflexiserver.c:710 ../utils/gdm-screenshot.c:230
 msgid "Main Options"
 msgstr "Opciones principales"
 
