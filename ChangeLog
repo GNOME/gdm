@@ -1,3 +1,10 @@
+2008-07-28 Brian Cameron <brian.cameron@sun.com>
+
+	* gui/gdmchooser.c:  Ignore ENXIO when processing ioctl since
+	  some distros (FreeBSD) yields ENXIO for non-IP/non-configured
+	  interfaces.  Fixes bug #544790.  Patch by Volker Stolz
+	  (vs+gnome@FreeBSD.org).
+
 2008-06-30 Brian Cameron <brian.cameron@sun.com>
 
 	* Release 2.20.7:

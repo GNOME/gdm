@@ -727,7 +727,12 @@ gdm_chooser_find_bcaddr (void)
 			/* paranoia */
 			ifreq.ifr_name[sizeof (ifreq.ifr_name) - 1] = '\0';
 
-			if (ioctl (sock, SIOCGIFFLAGS, &ifreq) < 0) 
+			/*
+			 * Ignore ENXIO silently, since some distros (FreeBSD)
+			 * yields ENXIO for non-IP/non-configured interfaces.
+			 *  Fixes bug #544790.
+			 */
+			if ((ioctl (sock, SIOCGIFFLAGS, &ifreq) < 0) && (errno != ENXIO))
 				gdm_common_error ("Could not get SIOCGIFFLAGS for %s", ifr[i].ifr_name);
 
 			if ((ifreq.ifr_flags & IFF_UP) == 0 ||
