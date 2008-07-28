@@ -27,6 +27,8 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include <glib.h>
 #include <glib-object.h>
@@ -47,6 +49,10 @@ struct _GdmDisplayAccessFilePrivate
 
 #ifndef GDM_DISPLAY_ACCESS_COOKIE_SIZE
 #define GDM_DISPLAY_ACCESS_COOKIE_SIZE 16
+#endif
+
+#ifndef O_BINARY
+#define O_BINARY 0
 #endif
 
 static void gdm_display_access_file_finalize (GObject * object);
@@ -214,53 +220,108 @@ _get_uid_and_gid_for_user (const char *username,
         return TRUE;
 }
 
+/*
+ * create_temp_dir based on the mkstemp implementation from the GNU C library.
+ * Copyright (C) 1991,92,93,94,95,96,97,98,99 Free Software Foundation, Inc.
+ */
+static int
+create_temp_dir (char *tmpl,
+                 int    permissions)
+{
+        char             *XXXXXX;
+        int               count;
+        int               fd;
+        static const char letters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        static const int  NLETTERS = sizeof (letters) - 1;
+        glong             value;
+        GTimeVal          tv;
+        static int        counter = 0;
+
+        /* find the last occurrence of "XXXXXX" */
+        XXXXXX = g_strrstr (tmpl, "XXXXXX");
+
+        if (!XXXXXX || strncmp (XXXXXX, "XXXXXX", 6)) {
+                errno = EINVAL;
+                return -1;
+        }
+
+        /* Get some more or less random data.  */
+        g_get_current_time (&tv);
+        value = (tv.tv_usec ^ tv.tv_sec) + counter++;
+
+        for (count = 0; count < 100; value += 7777, ++count) {
+                glong v = value;
+
+                /* Fill in the random bits.  */
+                XXXXXX[0] = letters[v % NLETTERS];
+                v /= NLETTERS;
+                XXXXXX[1] = letters[v % NLETTERS];
+                v /= NLETTERS;
+                XXXXXX[2] = letters[v % NLETTERS];
+                v /= NLETTERS;
+                XXXXXX[3] = letters[v % NLETTERS];
+                v /= NLETTERS;
+                XXXXXX[4] = letters[v % NLETTERS];
+                v /= NLETTERS;
+                XXXXXX[5] = letters[v % NLETTERS];
+
+                /* tmpl is in UTF-8 on Windows, thus use g_mkdir() */
+                fd = g_mkdir (tmpl, permissions);
+                if (fd >= 0) {
+                        return fd;
+                } else if (errno != EEXIST) {
+                        /* Any other error will apply also to other names we might
+                         *  try, and there are 2^32 or so of them, so give up now.
+                         */
+                        return -1;
+                }
+        }
+
+        /* We got out of the loop because we ran out of combinations to try.  */
+        errno = EEXIST;
+        return -1;
+}
+
 static FILE *
 _create_xauth_file_for_user (const char  *username,
                              char       **filename,
                              GError     **error)
 {
         char   *template;
-        int     fd;
+        char   *auth_filename;
+        int     dir_fd;
+        int     file_fd;
         FILE   *fp;
         uid_t   uid;
         gid_t   gid;
 
+        g_assert (filename != NULL);
+
+        *filename = NULL;
+
+        template = NULL;
+        auth_filename = NULL;
         fp = NULL;
+        dir_fd = -1;
+        file_fd = -1;
 
         /* Create directory if not exist, then set permission 01775 and ownership root:gdm */
         if (g_file_test (GDM_XAUTH_DIR, G_FILE_TEST_IS_DIR) == FALSE) {
                 g_unlink (GDM_XAUTH_DIR);
-                if (g_mkdir (GDM_XAUTH_DIR, S_ISVTX|S_IRWXU|S_IRWXG|S_IROTH|S_IXOTH) != 0) {
+                if (g_mkdir (GDM_XAUTH_DIR, S_ISVTX | S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != 0) {
                         g_set_error (error,
                                      G_FILE_ERROR,
                                      g_file_error_from_errno (errno),
                                      "%s", g_strerror (errno));
-                        fd = -1;
                         goto out;
                 }
 
-                g_chmod (GDM_XAUTH_DIR, S_ISVTX|S_IRWXU|S_IRWXG|S_IROTH|S_IXOTH);
+                g_chmod (GDM_XAUTH_DIR, S_ISVTX | S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
                 _get_uid_and_gid_for_user ("gdm", &uid, &gid);
                 chown (GDM_XAUTH_DIR, 0, gid);
         } else {
-                /* if it does exist make sure it has correct mode */
-                g_chmod (GDM_XAUTH_DIR, S_ISVTX|S_IRWXU|S_IRWXG|S_IROTH|S_IXOTH);
-        }
-
-        template = g_strdup_printf (GDM_XAUTH_DIR
-                                    "/auth-cookie-XXXXXXXX-for-%s",
-                                    username);
-
-        fd = g_mkstemp (template);
-        *filename = template;
-        template = NULL;
-
-        if (fd < 0) {
-                g_set_error (error,
-                             G_FILE_ERROR,
-                             g_file_error_from_errno (errno),
-                             "%s", g_strerror (errno));
-                goto out;
+                /* if it does exist make sure it has correct mode 01775 */
+                g_chmod (GDM_XAUTH_DIR, S_ISVTX | S_IRWXU |S_IRWXG | S_IROTH | S_IXOTH);
         }
 
         if (!_get_uid_and_gid_for_user (username, &uid, &gid)) {
@@ -269,34 +330,94 @@ _create_xauth_file_for_user (const char  *username,
                              GDM_DISPLAY_ERROR_GETTING_USER_INFO,
                              _("could not find user \"%s\" on system"),
                              username);
-                close (fd);
-                fd = -1;
                 goto out;
 
         }
 
-        if (fchown (fd, uid, gid) < 0) {
+        template = g_strdup_printf (GDM_XAUTH_DIR
+                                    "/auth-for-%s-XXXXXX",
+                                    username);
+
+        /* Initially create with mode 01700 then later chmod after we create database */
+        dir_fd = create_temp_dir (template, S_ISVTX | S_IRWXU);
+        if (dir_fd < 0) {
                 g_set_error (error,
                              G_FILE_ERROR,
                              g_file_error_from_errno (errno),
                              "%s", g_strerror (errno));
-                close (fd);
-                fd = -1;
                 goto out;
         }
 
-        fp = fdopen (fd, "w");
+        g_debug ("GdmDisplayAccessFile: chowning %s to %u:%u", template, (guint)uid, (guint)gid);
+        if (fchown (dir_fd, uid, gid) < 0) {
+                g_set_error (error,
+                             G_FILE_ERROR,
+                             g_file_error_from_errno (errno),
+                             "%s", g_strerror (errno));
+                close (dir_fd);
+                dir_fd = -1;
+                goto out;
+        }
+        close (dir_fd);
+        dir_fd = -1;
 
+        auth_filename = g_build_filename (template, "database", NULL);
+
+        g_debug ("GdmDisplayAccessFile: creating %s", auth_filename);
+        /* mode 00600 */
+        file_fd = g_open (auth_filename,
+                          O_RDWR | O_CREAT | O_EXCL | O_BINARY,
+                          S_IRUSR | S_IWUSR);
+
+        if (file_fd < 0) {
+                g_set_error (error,
+                             G_FILE_ERROR,
+                             g_file_error_from_errno (errno),
+                             "%s", g_strerror (errno));
+                goto out;
+        }
+
+        g_debug ("GdmDisplayAccessFile: chowning %s to %u:%u", auth_filename, (guint)uid, (guint)gid);
+        if (fchown (file_fd, uid, gid) < 0) {
+                g_set_error (error,
+                             G_FILE_ERROR,
+                             g_file_error_from_errno (errno),
+                             "%s", g_strerror (errno));
+                close (file_fd);
+                file_fd = -1;
+                goto out;
+        }
+
+        /* now open up permissions on per-session directory */
+        g_debug ("GdmDisplayAccessFile: chmoding %s to 1777", template);
+        g_chmod (template, S_ISVTX | S_IRWXU | S_IRWXG | S_IRWXO);
+
+        fp = fdopen (file_fd, "w");
         if (fp == NULL) {
                 g_set_error (error,
                              G_FILE_ERROR,
                              g_file_error_from_errno (errno),
                              "%s", g_strerror (errno));
-                close (fd);
-                fd = -1;
+                close (file_fd);
+                file_fd = -1;
                 goto out;
         }
+
+        *filename = auth_filename;
+        auth_filename = NULL;
+
+        /* don't close it */
+        file_fd = -1;
 out:
+        g_free (template);
+        g_free (auth_filename);
+        if (dir_fd != -1) {
+                close (dir_fd);
+        }
+        if (file_fd != -1) {
+                close (file_fd);
+        }
+
         return fp;
 }
 

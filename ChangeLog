@@ -1,3 +1,19 @@
+2008-07-28  William Jon McCann  <jmccann@redhat.com>
+
+	* daemon/gdm-display-access-file.c (create_temp_dir),
+	(_create_xauth_file_for_user):
+	Use per session directories in /var/run/gdm to
+	hold user's X11 authorizations database.  This
+	allows us to avoid having a writable /var/run/gdm and
+	still allows libXau locking to work.
+
+2008-07-28  William Jon McCann  <jmccann@redhat.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* daemon/gdm-display-access-file.c (create_temp_dir),
+	(_create_xauth_file_for_user):
+
 2008-07-22  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/gdm-user-manager.c (get_uid_from_session_id):
