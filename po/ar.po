@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-19 01:52+0100\n"
+"POT-Creation-Date: 2008-07-29 02:12+0100\n"
 "PO-Revision-Date: 2008-05-22 20:00+0300\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
@@ -22,7 +22,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 #: ../common/gdm-common.c:427
 #, c-format
@@ -50,20 +51,20 @@ msgstr "المعرّف"
 msgid "GNOME Display Manager Slave"
 msgstr "مدير عرض جنوم التابع"
 
-#: ../daemon/gdm-display-access-file.c:250
+#: ../daemon/gdm-display-access-file.c:331
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "تعذّر إيجاد المستخدم \"%s\" على هذا النّظام"
 
-#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:195
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:207
 msgid "Unable to initialize login system"
 msgstr "تعذّر بدأ نظام الولوج"
 
-#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:228
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:240
 msgid "Unable to authenticate user"
 msgstr "تعذّر التحقق من المستخدم"
 
-#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:274
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:286
 msgid "Unable to authorize user"
 msgstr "تعذّر الترخيص للمستخدم"
 
@@ -72,7 +73,7 @@ msgid "Unable to establish credentials"
 msgstr "تعذّر تنصيب الاعتمادات"
 
 #: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1023
+#: ../daemon/gdm-simple-slave.c:1048
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -162,56 +163,66 @@ msgstr "جهاز العرض"
 msgid "worker exited with status %d"
 msgstr "غادر العامل بالحالة %d"
 
-#: ../daemon/gdm-session-worker.c:963
+#: ../daemon/gdm-session-worker.c:999
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "خطأ أثناء بدء الحوار مع نظام التوثيق - %s"
 
-#: ../daemon/gdm-session-worker.c:964
+#: ../daemon/gdm-session-worker.c:1000
 msgid "general failure"
 msgstr "فشل عام"
 
-#: ../daemon/gdm-session-worker.c:965
+#: ../daemon/gdm-session-worker.c:1001
 msgid "out of memory"
 msgstr "نفذت الذّاكرة"
 
-#: ../daemon/gdm-session-worker.c:966
+#: ../daemon/gdm-session-worker.c:1002
 msgid "application programmer error"
 msgstr "خطأ مُبرمج التّطبيق"
 
-#: ../daemon/gdm-session-worker.c:967
+#: ../daemon/gdm-session-worker.c:1003
 msgid "unknown error"
 msgstr "خطأ مجهول"
 
-#: ../daemon/gdm-session-worker.c:974
+#: ../daemon/gdm-session-worker.c:1010
 msgid "Username:"
 msgstr "اسم المستخدم: "
 
-#: ../daemon/gdm-session-worker.c:980
+#: ../daemon/gdm-session-worker.c:1016
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr "خطأ في إخبار نظام التوثيق عن مُحِث اسم المستخدم المفضل - %s"
 
-#: ../daemon/gdm-session-worker.c:994
+#: ../daemon/gdm-session-worker.c:1030
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr "خطأ في إخبار نظام التوثيق عن اسم مستضيف المستخدم - %s"
 
-#: ../daemon/gdm-session-worker.c:1009
+#: ../daemon/gdm-session-worker.c:1045
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr "خطأ في إخبار نظام التوثيق عن معراض المستخدم - %s"
 
-#: ../daemon/gdm-session-worker.c:1288 ../daemon/gdm-session-worker.c:1306
+#: ../daemon/gdm-session-worker.c:1058
+#, fuzzy, c-format
+msgid "error informing authentication system of display string - %s"
+msgstr "خطأ في إخبار نظام التوثيق عن اسم مستضيف المستخدم - %s"
+
+#: ../daemon/gdm-session-worker.c:1073
+#, fuzzy, c-format
+msgid "error informing authentication system of display xauth credentials - %s"
+msgstr "خطأ في إخبار نظام التوثيق عن معراض المستخدم - %s"
+
+#: ../daemon/gdm-session-worker.c:1353 ../daemon/gdm-session-worker.c:1371
 #, c-format
 msgid "no user account available"
 msgstr "لا يُوجد حساب مستخدِم "
 
-#: ../daemon/gdm-session-worker.c:1333
+#: ../daemon/gdm-session-worker.c:1398
 msgid "Unable to change to user"
 msgstr "تعذّر الانتقال للمستخدم"
 
-#: ../daemon/gdm-simple-slave.c:372
+#: ../daemon/gdm-simple-slave.c:387
 msgid "Unable establish credentials"
 msgstr "تعذّر تنصيب الاعتمادات "
 
@@ -550,29 +561,35 @@ msgstr "مفتاح الحروف الكبيرة مفعل."
 msgid "Automatically logging in..."
 msgstr "لُج تلقائيا..."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1223
+#. need to wait for response from backend
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:759
+msgid "Cancelling..."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1228
 msgid "Failed to restart computer"
 msgstr "فشل إعادة تشغيل الحاسوب"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1226
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1231
 msgid ""
 "You are not allowed to restart the computer because multiple users are "
 "logged in"
 msgstr "ليس مسموحا لك بإعادة تشغيل الحاسوب لولوج عدد من المستخدمين"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1307
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1312
 msgid "Failed to stop computer"
 msgstr "فشل إيقاف الحاسوب"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1310
-msgid "You are not allowed to stop the computer because multiple users are logged in"
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1315
+msgid ""
+"You are not allowed to stop the computer because multiple users are logged in"
 msgstr "ليس مسموحا لك بإيقاف الحاسوب لولوج عدد من المستخدمين"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1385
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1390
 msgid "Select language and click Log In"
 msgstr "اختر لغة ثم انقر \"لُج\""
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1941
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1949
 msgid "Login Window"
 msgstr "نافذة الولوج"
 
@@ -616,23 +633,23 @@ msgstr "اللوحة"
 msgid "Languages"
 msgstr "اللغات"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:258
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:264
 msgid "_Languages:"
 msgstr "الل_غات:"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:259
-#: ../gui/simple-greeter/gdm-language-option-widget.c:231
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:265
+#: ../gui/simple-greeter/gdm-language-option-widget.c:235
 msgid "_Language:"
 msgstr "ال_لغة:"
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:202
+#: ../gui/simple-greeter/gdm-language-option-widget.c:206
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:199
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:86
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:87
 #: ../gui/user-switch-applet/applet.c:1228
 msgid "Other..."
 msgstr "أخرى..."
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:203
+#: ../gui/simple-greeter/gdm-language-option-widget.c:207
 msgid "Choose a language from the full list of available languages."
 msgstr "اختر لغة من قائمة اللغات المتوفرة."
 
@@ -644,8 +661,8 @@ msgstr "غير محدد"
 msgid "Keyboard layouts"
 msgstr "تخطيط لوحة المفاتيح"
 
-#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:197
-#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:198
+#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:200
+#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:201
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:228
 msgid "_Keyboard:"
 msgstr "لو_حة المفاتيح:"
@@ -753,84 +770,105 @@ msgid "Icon name to use for greeter logo"
 msgstr "اسم الأيقونة التي ستستخدم لشعار المُرحّب"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+#, fuzzy
+msgid "Recently selected keyboard layouts"
+msgstr "تخطيط لوحة المفاتيح"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
+msgid "Recently selected languages"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
 msgid "Set to TRUE to disable showing known users in the login window."
 msgstr "اجعله صحيح لتعطيل عرض المستخدمين المعروفين في نافذة الولوج."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-msgid "Set to TRUE to disable showing the accessibility button in the login window."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
+msgid ""
+"Set to TRUE to disable showing the accessibility button in the login window."
 msgstr "اجعله صحيح لتعطيل عرض زر الإعانة في نافذة الولوج."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to TRUE to disable showing the restart buttons in the login window."
 msgstr "اجعله صحيح لتعطيل عرض أزرار إعادة التشغيل في نافذة الولوج"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
 msgid "Set to True to enable the background settings manager plugin."
 msgstr "مُعيَّن إلى صحيح حتى يُمَكِّن ملحق مدير تهييئات الخلفية."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid "Set to True to enable the media-keys settings manager plugin."
 msgstr "اجعله صحيح لتفعيل ملحق مدير إعداد مفاتيح الوسائط"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid "Set to True to enable the on-screen keyboard."
 msgstr "مُعيَّن إلى صحيح حتى يُمَكِّن لوحة المفاتيح الموجودة على الشاشة."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid ""
 "Set to True to enable the plugin to manage the accessibility keyboard "
 "settings."
 msgstr "معيَّن إلى صحيح حتى يُفَعل الملحق إدارة تهيئة لوحة مفاتيح الاتاحة."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "Set to True to enable the screen magnifier."
 msgstr "مُعين إلى صحيح حتى يُفَعل مكبر الشاشة."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
 msgid "Set to True to enable the screen reader."
 msgstr "مُعين إلى صحيح حتى يُفَعل قارئ الشاشة."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to True to enable the sound settings manager plugin."
 msgstr "اجعله صحيح لتفعيل ملحق مدير إعداد الأصوات."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid "Set to True to enable the xsettings settings manager plugin."
 msgstr "مُعين إلى صحيح حتى يُفَعل ملحق مدير تهيئة xsettings."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#, fuzzy
+msgid ""
+"Set to a list of keyboard layouts to be shown by default at the login window."
+msgstr "اجعله صحيح لتعطيل عرض أزرار إعادة التشغيل في نافذة الولوج"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#, fuzzy
+msgid "Set to a list of languages to be shown by default at the login window."
+msgstr "اجعله صحيح لتعطيل عرض أزرار إعادة التشغيل في نافذة الولوج"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "اضبطه إلى اسم أيقونة السمة التي ستستخدم لشعار المُرحّب."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "Set to true to show the banner message text."
 msgstr "اجعله صحيح ليعرض نص رسالة الملصق."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "Set to true to use compiz as the window manager."
 msgstr "اجعله صحيح ليستخدم كومبيز كمدير نوافذ"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
 msgid "Text banner message to show on the login window."
 msgstr "ملصق الرسائل النصي المعروض في نافذة الولوج."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "True if the background settings manager plugin is enabled."
 msgstr "صحيح إذا كان ملحق مدير التهيئة في الخلفية مُفَعلا."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr "صحيح إذا كان ملحق مدير إعدادات مفاتيح الوسائط مفعل."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "صحيح إذا كان ملحق مدير إعدادات الصوت مفعل."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "صحيح إذا كان ملحق مدير تهيئة xsettings مُفَعلا."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
 msgid "Use compiz as the window manager"
 msgstr "استخدم كُمْبِز كمدير نوافذ"
 
@@ -866,32 +904,32 @@ msgstr "المدير"
 msgid "The user manager object this user is controlled by."
 msgstr "مدير المستخدم يشير إلى أن هذا المستخدم مُتحكم به."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:87
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:88
 msgid "Choose a different account"
 msgstr "اختر حسابا مختلفا"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:99
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:100
 msgid "Guest"
 msgstr "ضيف"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:100
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:101
 msgid "Login as a temporary guest"
 msgstr "لُج كضيف مؤقت"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:112
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:113
 msgid "Automatic Login"
 msgstr "ولوج تلقائي"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:113
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:114
 msgid "Automatically login to the system after selecting options"
 msgstr "لُج تلقائيا إلى النظام بعد اختيار الخيارات"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:441
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:434
 #, c-format
 msgid "Log in as %s"
 msgstr "لُج باسم %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:525
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:554
 msgid "Currently logged in"
 msgstr "الوالِج حاليا "
 
@@ -925,8 +963,8 @@ msgid ""
 msgstr ""
 "من المفترض أن تكون قد استلمت نسخة من رخصة جنو العامة مع هذا البرنامج؛ في حال "
 "عدم استلامك لذلك، يمكنك مكاتبة:\n"
-"Free Software Foundation, Inc., 59 Temple "
-"Place, Suite 330, Boston, MA  02111-1307  USA"
+"Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  "
+"02111-1307  USA"
 
 #: ../gui/user-switch-applet/applet.c:184
 msgid "A menu to quickly switch between users."
@@ -936,8 +974,7 @@ msgstr "قائمة للتبديل السريع بين المستخدين"
 msgid "translator-credits"
 msgstr ""
 "فريق عربآيز للترجمة http://www.arabeyes.org :\n"
-"جهاد عفيفي\t<djihed@gmail.com>"
-"خالد حسني\t<khaledhosny@eglug.org>"
+"جهاد عفيفي\t<djihed@gmail.com>خالد حسني\t<khaledhosny@eglug.org>"
 
 #: ../gui/user-switch-applet/applet.c:795
 #, c-format
@@ -1018,33 +1055,19 @@ msgstr "_حرِّر المستخدمين والمجموعات"
 msgid "_Help"
 msgstr "_مساعدة"
 
-#: ../utils/gdmflexiserver.c:60
-msgid "Send the specified protocol command to GDM"
-msgstr "أرسل أمر البروتوكول المحدد لم‌ع‌ج"
+#: ../utils/gdmflexiserver.c:60 ../utils/gdmflexiserver.c:61
+#: ../utils/gdmflexiserver.c:62 ../utils/gdmflexiserver.c:64
+#: ../utils/gdmflexiserver.c:65
+msgid "Ignored - retained for compatibility"
+msgstr ""
 
 #: ../utils/gdmflexiserver.c:60
 msgid "COMMAND"
 msgstr "أمر"
 
-#: ../utils/gdmflexiserver.c:61
-msgid "Xnest mode"
-msgstr "نمط س معشش"
-
-#: ../utils/gdmflexiserver.c:62
-msgid "Do not lock current screen"
-msgstr "لا تقفل الشاشة الحالية"
-
 #: ../utils/gdmflexiserver.c:63 ../utils/gdm-screenshot.c:41
 msgid "Debugging output"
 msgstr "خرْج التنقيح"
-
-#: ../utils/gdmflexiserver.c:64
-msgid "Authenticate before running --command"
-msgstr "استوثق قبل تشغيل --command"
-
-#: ../utils/gdmflexiserver.c:65
-msgid "Start new flexible session; do not show popup"
-msgstr "ابدأ جلسة مرنة جديدة، لا تعرض نافذة منبثقة."
 
 #: ../utils/gdmflexiserver.c:67
 msgid "Version of this application"
@@ -1055,7 +1078,7 @@ msgstr "إصدارة هذا التطبيق"
 msgid "Could not identify the current session."
 msgstr "تعذّر التعرف على الجلسة الحالية"
 
-#: ../utils/gdmflexiserver.c:710 ../utils/gdm-screenshot.c:226
+#: ../utils/gdmflexiserver.c:710 ../utils/gdm-screenshot.c:230
 msgid "Main Options"
 msgstr "الخيارات الرئيسية"
 
@@ -1063,3 +1086,17 @@ msgstr "الخيارات الرئيسية"
 msgid "Unable to start new display"
 msgstr "تعذّر بدأ تشغيل العرض الجديد"
 
+#~ msgid "Send the specified protocol command to GDM"
+#~ msgstr "أرسل أمر البروتوكول المحدد لم‌ع‌ج"
+
+#~ msgid "Xnest mode"
+#~ msgstr "نمط س معشش"
+
+#~ msgid "Do not lock current screen"
+#~ msgstr "لا تقفل الشاشة الحالية"
+
+#~ msgid "Authenticate before running --command"
+#~ msgstr "استوثق قبل تشغيل --command"
+
+#~ msgid "Start new flexible session; do not show popup"
+#~ msgstr "ابدأ جلسة مرنة جديدة، لا تعرض نافذة منبثقة."
