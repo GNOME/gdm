@@ -626,16 +626,36 @@ gdm_display_access_file_remove_display (GdmDisplayAccessFile  *file,
 void
 gdm_display_access_file_close (GdmDisplayAccessFile  *file)
 {
+        char *auth_dir;
+
         g_return_if_fail (file != NULL);
         g_return_if_fail (file->priv->fp != NULL);
         g_return_if_fail (file->priv->path != NULL);
 
-        g_unlink (file->priv->path);
-        if (file->priv->path != NULL) {
-                g_free (file->priv->path);
-                file->priv->path = NULL;
-                g_object_notify (G_OBJECT (file), "path");
+        errno = 0;
+        if (g_unlink (file->priv->path) != 0) {
+                g_warning ("GdmDisplayAccessFile: Unable to remove X11 authority database '%s': %s",
+                           file->priv->path,
+                           g_file_error_from_errno (errno));
         }
+
+        /* still try to remove dir even if file remove failed,
+           may have already been removed by someone else */
+        /* we own the parent directory too */
+        auth_dir = g_path_get_dirname (file->priv->path);
+        if (auth_dir != NULL) {
+                errno = 0;
+                if (g_rmdir (auth_dir) != 0) {
+                        g_warning ("GdmDisplayAccessFile: Unable to remove X11 authority directory '%s': %s",
+                                   auth_dir,
+                                   g_file_error_from_errno (errno));
+                }
+                g_free (auth_dir);
+        }
+
+        g_free (file->priv->path);
+        file->priv->path = NULL;
+        g_object_notify (G_OBJECT (file), "path");
 
         fclose (file->priv->fp);
         file->priv->fp = NULL;
