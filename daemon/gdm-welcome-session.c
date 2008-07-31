@@ -705,13 +705,13 @@ gdm_welcome_session_spawn (GdmWelcomeSession *welcome_session)
 
         g_debug ("GdmWelcomeSession: Running welcome_session process: %s", welcome_session->priv->command);
 
+        if (welcome_session->priv->register_ck_session) {
+                open_welcome_session (welcome_session);
+        }
+
         res = start_dbus_daemon (welcome_session);
         if (! res) {
                 /* FIXME: */
-        }
-
-        if (welcome_session->priv->register_ck_session) {
-                open_welcome_session (welcome_session);
         }
 
         env = get_welcome_environment (welcome_session);
