@@ -313,6 +313,15 @@ AC_CHECK_FUNC(inet_aton,,[
 	      AC_CHECK_LIB(resolv,inet_aton, [
 			   EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lresolv"])])
 
+dnl ---------------------------------------------------------------------------
+dnl - Check for mkdtemp
+dnl ---------------------------------------------------------------------------
+
+mkdtemp_missing=false
+AC_CHECK_FUNC(mkdtemp,
+    [AC_DEFINE([HAVE_MKDTEMP], 1, [Have GlibC function to make temp dirs])],
+    mkdtemp_missing=true)
+AM_CONDITIONAL(MKDTEMP_MISSING, test x$mkdtemp_missing = xtrue)
 
 dnl ---------------------------------------------------------------------------
 dnl - Check for IPv6

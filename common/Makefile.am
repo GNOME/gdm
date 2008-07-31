@@ -60,6 +60,12 @@ gdm-marshal.c: gdm-marshal.list
 gdm-marshal.h: gdm-marshal.list
 	@GLIB_GENMARSHAL@ $< --prefix=gdm_marshal --header > $@
 
+if MKDTEMP_MISSING
+MKDTEMP_FILES = mkdtemp.c mkdtemp.h
+else
+MKDTEMP_FILES =
+endif
+
 libgdmcommon_la_SOURCES =	\
 	gdm-address.h		\
 	gdm-address.c		\
@@ -90,6 +96,7 @@ libgdmcommon_la_SOURCES =	\
 	gdm-md5.c		\
 	gdm-signal-handler.h	\
 	gdm-signal-handler.c	\
+	$(MKDTEMP_FILES) 	\
 	$(NULL)
 
 libgdmcommon_la_CPPFLAGS = 		\
@@ -147,5 +154,7 @@ CLEANFILES =			\
 EXTRA_DIST = 			\
 	gdm-settings.xml	\
 	gdm-marshal.list	\
+	mkdtemp.c 		\
+	mkdtemp.h		\
 	$(gdm_DATA)		\
 	$(NULL)

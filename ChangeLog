@@ -1,5 +1,18 @@
 2008-07-30  William Jon McCann  <jmccann@redhat.com>
 
+	* common/Makefile.am:
+	* common/gdm-common.c (gdm_make_temp_dir):
+	* common/gdm-common.h:
+	* common/mkdtemp.c:
+	* common/mkdtemp.h:
+	* configure.ac:
+	* daemon/gdm-display-access-file.c (_create_xauth_file_for_user),
+	(gdm_display_access_file_close):
+	Wow, that was really broken.  Use mkdtemp when available
+	to create a temporary directory.
+
+2008-07-30  William Jon McCann  <jmccann@redhat.com>
+
 	* daemon/gdm-display-access-file.c (gdm_display_access_file_close):
 	Remove the X authorizations directory when we're done
 	with it.

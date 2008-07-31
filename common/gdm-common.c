@@ -33,6 +33,16 @@
 
 #include "gdm-common.h"
 
+#ifndef HAVE_MKDTEMP
+#include "mkdtemp.h"
+#endif
+
+char *
+gdm_make_temp_dir (const char *template)
+{
+        return mkdtemp (template);
+}
+
 gboolean
 gdm_is_version_unstable (void)
 {

@@ -34,6 +34,8 @@ int            gdm_wait_on_pid           (int pid);
 int            gdm_signal_pid            (int pid,
                                           int signal);
 
+char *         gdm_make_temp_dir         (const char    *template);
+
 gboolean       gdm_string_hex_encode     (const GString *source,
                                           int            start,
                                           GString       *dest,
