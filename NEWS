@@ -1,4 +1,27 @@
 ===============
+Version 2.23.2
+===============
+
+ * Requires ConsoleKit 0.3.0
+
+ * Keyboard layout selection from greeter (Matthias Clasen)
+ * Save backup of ~/.xsession-errors (Tom London)
+ * Add a GConf key for not showing the user list (Matthias Clasen)
+ * Now support PostLogin, PreSession, and PostSession hooks (Brian Cameron)
+ * Add DisallowTCP back (Ray Strode)
+ * Support PAM_XDISPLAY and PAM_XAUTHDATA (Eamon Walsh)
+ * Add lang tags, to help Pango pick the right font (Matthias Clasen)
+ * Set the initial user selection correctly
+ * Add frame around user icons and make them larger
+ * Write gdm screenshot output to /var/run/gdm instead of /tmp
+ * Save one old copy of greeter log file
+ * Set a minimum width for the login window
+ * Fix check for /etc/gdm/Init/Default so it will actually be executed
+ * Wait for ready from backend when cancelling from greeter
+ * Use per session directories in /var/run/gdm for xauth databases
+ * Move ConsoleKit registration into the worker
+
+===============
 Version 2.22.0
 ===============
 
