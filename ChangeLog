@@ -1,3 +1,9 @@
+2008-07-31 Brian Cameron <brian.cameron@sun.com>
+
+	* gui/gdmchooser.c:  use g_strdup when copying strings to avoid
+	  a crash.  Reported by Matthias Drochner <M.Drochner@fz-juelich.de>
+	  in bug #544730 with a proposed patch, which I modified slightly.
+
 2008-07-28 Brian Cameron <brian.cameron@sun.com>
 
 	* gui/gdmchooser.c:  Ignore ENXIO when processing ioctl since

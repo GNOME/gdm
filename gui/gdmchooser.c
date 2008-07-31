@@ -1998,7 +1998,7 @@ main (int argc, char *argv[])
 	if (gdm_config_get_bool (GDM_KEY_BROADCAST)) {
 		gchar *tmp;
 		if (ve_string_empty (GdmHosts)) {
-			tmp = "BROADCAST";
+			tmp = g_strdup ("BROADCAST");
 		} else {
 			tmp = g_strconcat (GdmHosts, ",BROADCAST", NULL);
 		}
@@ -2010,7 +2010,7 @@ main (int argc, char *argv[])
 	if (gdm_config_get_bool (GDM_KEY_MULTICAST)) {
 		gchar *tmp;
 		if (ve_string_empty (GdmHosts)) {
-			tmp = "MULTICAST";
+			tmp = g_strdup ("MULTICAST");
 		} else {
 			tmp = g_strconcat (GdmHosts, ",MULTICAST", NULL);
 		}
