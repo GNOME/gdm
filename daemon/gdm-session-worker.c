@@ -45,6 +45,8 @@
 
 #include <X11/Xauth.h>
 
+#include "ck-connector.h"
+
 #include "gdm-session-worker.h"
 #include "gdm-marshal.h"
 
@@ -101,6 +103,7 @@ struct GdmSessionWorkerPrivate
 
         int               exit_code;
 
+        CkConnector      *ckc;
         pam_handle_t     *pam_handle;
 
         GPid              child_pid;
@@ -158,6 +161,83 @@ gdm_session_worker_error_quark (void)
                 error_quark = g_quark_from_static_string ("gdm-session-worker");
 
         return error_quark;
+}
+
+static gboolean
+open_ck_session (GdmSessionWorker  *worker)
+{
+        struct passwd *pwent;
+        gboolean       ret;
+        int            res;
+        DBusError      error;
+        const char     *display_name;
+        const char     *display_device;
+        const char     *display_hostname;
+        gboolean        is_local;
+
+        if (worker->priv->x11_display_name != NULL) {
+                display_name = worker->priv->x11_display_name;
+        } else {
+                display_name = "";
+        }
+        if (worker->priv->hostname != NULL) {
+                display_hostname = worker->priv->hostname;
+        } else {
+                display_hostname = "";
+        }
+        if (worker->priv->display_device != NULL) {
+                display_device = worker->priv->display_device;
+        } else {
+                display_device = "";
+        }
+
+        g_assert (worker->priv->username != NULL);
+
+        /* FIXME: this isn't very good */
+        if (display_hostname == NULL
+            || display_hostname[0] == '\0'
+            || strcmp (display_hostname, "localhost") == 0) {
+                is_local = TRUE;
+        } else {
+                is_local = FALSE;
+        }
+
+        pwent = getpwnam (worker->priv->username);
+        if (pwent == NULL) {
+                return FALSE;
+        }
+
+        worker->priv->ckc = ck_connector_new ();
+        if (worker->priv->ckc == NULL) {
+                g_warning ("Couldn't create new ConsoleKit connector");
+                goto out;
+        }
+
+        dbus_error_init (&error);
+        res = ck_connector_open_session_with_parameters (worker->priv->ckc,
+                                                         &error,
+                                                         "unix-user", &pwent->pw_uid,
+                                                         "x11-display", &display_name,
+                                                         "x11-display-device", &display_device,
+                                                         "remote-host-name", &display_hostname,
+                                                         "is-local", &is_local,
+                                                         NULL);
+
+        if (! res) {
+                if (dbus_error_is_set (&error)) {
+                        g_warning ("%s\n", error.message);
+                        dbus_error_free (&error);
+                } else {
+                        g_warning ("cannot open CK session: OOM, D-Bus system bus not available,\n"
+                                   "ConsoleKit not available or insufficient privileges.\n");
+                }
+                goto out;
+        }
+
+        ret = TRUE;
+
+ out:
+        return ret;
 }
 
 /* adapted from glib script_execute */
@@ -1480,6 +1560,24 @@ gdm_session_worker_get_environment (GdmSessionWorker *worker)
 }
 
 static void
+register_ck_session (GdmSessionWorker *worker)
+{
+        const char *session_cookie;
+        gboolean    res;
+
+        session_cookie = NULL;
+        res = open_ck_session (worker);
+        if (res) {
+                session_cookie = ck_connector_get_cookie (worker->priv->ckc);
+        }
+        if (session_cookie != NULL) {
+                gdm_session_worker_set_environment_variable (worker,
+                                                             "XDG_SESSION_COOKIE",
+                                                             session_cookie);
+        }
+}
+
+static void
 session_worker_child_watch (GPid              pid,
                             int               status,
                             GdmSessionWorker *worker)
@@ -1505,6 +1603,12 @@ session_worker_child_watch (GPid              pid,
                 send_dbus_int_method (worker->priv->connection,
                                       "SessionDied",
                                       num);
+        }
+
+        if (worker->priv->ckc != NULL) {
+                ck_connector_close_session (worker->priv->ckc, NULL);
+                ck_connector_unref (worker->priv->ckc);
+                worker->priv->ckc = NULL;
         }
 
         gdm_session_worker_uninitialize_pam (worker, PAM_SUCCESS);
@@ -1624,6 +1728,8 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
 
         g_debug ("GdmSessionWorker: querying pam for user environment");
         gdm_session_worker_update_environment_from_pam (worker);
+
+        register_ck_session (worker);
 
         g_debug ("GdmSessionWorker: opening user session with program '%s'",
                  worker->priv->arguments[0]);

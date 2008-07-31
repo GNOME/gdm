@@ -1,5 +1,16 @@
 2008-07-30  William Jon McCann  <jmccann@redhat.com>
 
+	* daemon/Makefile.am:
+	* daemon/gdm-session-direct.c (setup_session_environment),
+	(gdm_session_direct_close):
+	* daemon/gdm-session-worker.c (open_ck_session),
+	(register_ck_session), (session_worker_child_watch),
+	(gdm_session_worker_start_user_session):
+	Move ConsoleKit registration into the worker so that
+	ConsoleKit can probe the caller (ie. session leader) correctly.
+
+2008-07-30  William Jon McCann  <jmccann@redhat.com>
+
 	* common/Makefile.am:
 	* common/gdm-common.c (gdm_make_temp_dir):
 	* common/gdm-common.h:

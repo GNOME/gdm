@@ -53,8 +53,6 @@
 #include "gdm-session-record.h"
 #include "gdm-session-worker-job.h"
 
-#include "ck-connector.h"
-
 #define GDM_SESSION_DBUS_PATH         "/org/gnome/DisplayManager/Session"
 #define GDM_SESSION_DBUS_INTERFACE    "org.gnome.DisplayManager.Session"
 #define GDM_SESSION_DBUS_ERROR_CANCEL "org.gnome.DisplayManager.Session.Error.Cancel"
@@ -77,7 +75,6 @@ struct _GdmSessionDirectPrivate
 
         DBusMessage         *message_pending_reply;
         DBusConnection      *worker_connection;
-        CkConnector         *ckc;
 
         GdmSessionWorkerJob *job;
         GPid                 session_pid;
@@ -1928,73 +1925,6 @@ get_session_command (GdmSessionDirect *session)
         return command;
 }
 
-static gboolean
-open_ck_session (GdmSessionDirect *session)
-{
-        struct passwd *pwent;
-        gboolean       ret;
-        int            res;
-        DBusError      error;
-        const char     *display_name;
-        const char     *display_device;
-        const char     *display_hostname;
-
-        if (session->priv->display_name != NULL) {
-                display_name = session->priv->display_name;
-        } else {
-                display_name = "";
-        }
-        if (session->priv->display_hostname != NULL) {
-                display_hostname = session->priv->display_hostname;
-        } else {
-                display_hostname = "";
-        }
-        if (session->priv->display_device != NULL) {
-                display_device = session->priv->display_device;
-        } else {
-                display_device = "";
-        }
-
-        g_assert (session->priv->selected_user != NULL);
-
-        pwent = getpwnam (session->priv->selected_user);
-        if (pwent == NULL) {
-                return FALSE;
-        }
-
-        session->priv->ckc = ck_connector_new ();
-        if (session->priv->ckc == NULL) {
-                g_warning ("Couldn't create new ConsoleKit connector");
-                goto out;
-        }
-
-        dbus_error_init (&error);
-        res = ck_connector_open_session_with_parameters (session->priv->ckc,
-                                                         &error,
-                                                         "unix-user", &pwent->pw_uid,
-                                                         "x11-display", &display_name,
-                                                         "x11-display-device", &display_device,
-                                                         "remote-host-name", &display_hostname,
-                                                         "is-local", &session->priv->display_is_local,
-                                                         NULL);
-
-        if (! res) {
-                if (dbus_error_is_set (&error)) {
-                        g_warning ("%s\n", error.message);
-                        dbus_error_free (&error);
-                } else {
-                        g_warning ("cannot open CK session: OOM, D-Bus system bus not available,\n"
-                                   "ConsoleKit not available or insufficient privileges.\n");
-                }
-                goto out;
-        }
-
-        ret = TRUE;
-
- out:
-        return ret;
-}
-
 static void
 gdm_session_direct_set_environment_variable (GdmSessionDirect *session,
                                              const char       *key,
@@ -2013,15 +1943,6 @@ gdm_session_direct_set_environment_variable (GdmSessionDirect *session,
 static void
 setup_session_environment (GdmSessionDirect *session)
 {
-        const char *session_cookie;
-        gboolean    res;
-
-        session_cookie = NULL;
-        res = open_ck_session (session);
-        if (res) {
-                session_cookie = ck_connector_get_cookie (session->priv->ckc);
-        }
-
         gdm_session_direct_set_environment_variable (session,
                                                      "GDMSESSION",
                                                      get_session_name (session));
@@ -2043,11 +1964,6 @@ setup_session_environment (GdmSessionDirect *session)
         gdm_session_direct_set_environment_variable (session,
                                                      "DISPLAY",
                                                      session->priv->display_name);
-        if (session_cookie != NULL) {
-                gdm_session_direct_set_environment_variable (session,
-                                                             "XDG_SESSION_COOKIE",
-                                                             session_cookie);
-        }
 
         if (session->priv->user_x11_authority_file != NULL) {
                 gdm_session_direct_set_environment_variable (session,
@@ -2095,12 +2011,6 @@ gdm_session_direct_close (GdmSession *session)
         g_return_if_fail (session != NULL);
 
         g_debug ("GdmSessionDirect: Closing session");
-
-        if (impl->priv->ckc != NULL) {
-                ck_connector_close_session (impl->priv->ckc, NULL);
-                ck_connector_unref (impl->priv->ckc);
-                impl->priv->ckc = NULL;
-        }
 
         if (impl->priv->job != NULL) {
                 if (impl->priv->is_running) {
