@@ -735,6 +735,7 @@ territories_parse_start_tag (GMarkupParseContext      *ctx,
         const char *acode_2;
         const char *acode_3;
         const char *ncode;
+        const char *territory_common_name;
         const char *territory_name;
 
         if (! g_str_equal (element_name, "iso_3166_entry") || attr_names == NULL || attr_values == NULL) {
@@ -744,6 +745,7 @@ territories_parse_start_tag (GMarkupParseContext      *ctx,
         acode_2 = NULL;
         acode_3 = NULL;
         ncode = NULL;
+        territory_common_name = NULL;
         territory_name = NULL;
 
         while (*attr_names && *attr_values) {
@@ -771,12 +773,21 @@ territories_parse_start_tag (GMarkupParseContext      *ctx,
                                 }
                                 ncode = *attr_values;
                         }
+                } else if (g_str_equal (*attr_names, "common_name")) {
+                        /* skip if empty */
+                        if (**attr_values) {
+                                territory_common_name = *attr_values;
+                        }
                 } else if (g_str_equal (*attr_names, "name")) {
                         territory_name = *attr_values;
                 }
 
                 ++attr_names;
                 ++attr_values;
+        }
+
+        if (territory_common_name != NULL) {
+                territory_name = territory_common_name;
         }
 
         if (territory_name == NULL) {
