@@ -346,7 +346,10 @@ greeter_size_allocate_box (GreeterItemInfo *box,
 	  if (child->item_type != GREETER_ITEM_TYPE_LABEL)
 	    fixup_from_anchor (&child_allocation, child->anchor);
 	  
-	  if (child_allocation.x + child_allocation.width > allocation->x + allocation->width)
+	  if ((child->item_type != GREETER_ITEM_TYPE_SVG ||
+	    child_allocation.width > (child_allocation.x + child_allocation.width
+					 - allocation->x - allocation->width)) &&
+	    (child_allocation.x + child_allocation.width > allocation->x + allocation->width))
 	      child_allocation.width -= (child_allocation.x + child_allocation.width
 					 - allocation->x - allocation->width);
 
