@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-29 02:12+0100\n"
-"PO-Revision-Date: 2008-05-22 20:00+0300\n"
+"POT-Creation-Date: 2008-08-06 09:17+0100\n"
+"PO-Revision-Date: 2008-07-28 19:34+0300\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-#: ../common/gdm-common.c:427
+#: ../common/gdm-common.c:437
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom ليس جهازا مِحرفيا"
@@ -51,7 +51,7 @@ msgstr "المعرّف"
 msgid "GNOME Display Manager Slave"
 msgstr "مدير عرض جنوم التابع"
 
-#: ../daemon/gdm-display-access-file.c:331
+#: ../daemon/gdm-display-access-file.c:271
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "تعذّر إيجاد المستخدم \"%s\" على هذا النّظام"
@@ -97,7 +97,7 @@ msgstr "كان الخادوم سيُوّلد من قبل المستخدم %s ل�
 #: ../daemon/gdm-server.c:373 ../daemon/gdm-welcome-session.c:415
 #, c-format
 msgid "Couldn't set groupid to %d"
-msgstr "تعذّر ضبط معرّف المجموعة لـ %d"
+msgstr "تعذّر ضبط معرّف المجموعة لـ %Id"
 
 #: ../daemon/gdm-server.c:379 ../daemon/gdm-welcome-session.c:421
 #, c-format
@@ -107,7 +107,7 @@ msgstr "فشل  initgroups () لِـ %s"
 #: ../daemon/gdm-server.c:385 ../daemon/gdm-welcome-session.c:427
 #, c-format
 msgid "Couldn't set userid to %d"
-msgstr "تعذّر ضبط معرّف المستخدم لِـ %d"
+msgstr "تعذّر ضبط معرّف المستخدم لِـ %Id"
 
 #: ../daemon/gdm-server.c:393 ../daemon/gdm-welcome-session.c:435
 msgid "Couldn't set groupid to 0"
@@ -158,67 +158,67 @@ msgstr "جهاز العرض"
 msgid "The display device"
 msgstr "جهاز العرض"
 
-#: ../daemon/gdm-session-direct.c:1577 ../daemon/gdm-session-direct.c:1595
+#: ../daemon/gdm-session-direct.c:1574 ../daemon/gdm-session-direct.c:1592
 #, c-format
 msgid "worker exited with status %d"
-msgstr "غادر العامل بالحالة %d"
+msgstr "غادر العامل بالحالة %Id"
 
-#: ../daemon/gdm-session-worker.c:999
+#: ../daemon/gdm-session-worker.c:1079
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "خطأ أثناء بدء الحوار مع نظام التوثيق - %s"
 
-#: ../daemon/gdm-session-worker.c:1000
+#: ../daemon/gdm-session-worker.c:1080
 msgid "general failure"
 msgstr "فشل عام"
 
-#: ../daemon/gdm-session-worker.c:1001
+#: ../daemon/gdm-session-worker.c:1081
 msgid "out of memory"
 msgstr "نفذت الذّاكرة"
 
-#: ../daemon/gdm-session-worker.c:1002
+#: ../daemon/gdm-session-worker.c:1082
 msgid "application programmer error"
 msgstr "خطأ مُبرمج التّطبيق"
 
-#: ../daemon/gdm-session-worker.c:1003
+#: ../daemon/gdm-session-worker.c:1083
 msgid "unknown error"
 msgstr "خطأ مجهول"
 
-#: ../daemon/gdm-session-worker.c:1010
+#: ../daemon/gdm-session-worker.c:1090
 msgid "Username:"
 msgstr "اسم المستخدم: "
 
-#: ../daemon/gdm-session-worker.c:1016
+#: ../daemon/gdm-session-worker.c:1096
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr "خطأ في إخبار نظام التوثيق عن مُحِث اسم المستخدم المفضل - %s"
 
-#: ../daemon/gdm-session-worker.c:1030
+#: ../daemon/gdm-session-worker.c:1110
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr "خطأ في إخبار نظام التوثيق عن اسم مستضيف المستخدم - %s"
 
-#: ../daemon/gdm-session-worker.c:1045
+#: ../daemon/gdm-session-worker.c:1125
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr "خطأ في إخبار نظام التوثيق عن معراض المستخدم - %s"
 
-#: ../daemon/gdm-session-worker.c:1058
+#: ../daemon/gdm-session-worker.c:1138
 #, fuzzy, c-format
 msgid "error informing authentication system of display string - %s"
 msgstr "خطأ في إخبار نظام التوثيق عن اسم مستضيف المستخدم - %s"
 
-#: ../daemon/gdm-session-worker.c:1073
+#: ../daemon/gdm-session-worker.c:1153
 #, fuzzy, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
 msgstr "خطأ في إخبار نظام التوثيق عن معراض المستخدم - %s"
 
-#: ../daemon/gdm-session-worker.c:1353 ../daemon/gdm-session-worker.c:1371
+#: ../daemon/gdm-session-worker.c:1433 ../daemon/gdm-session-worker.c:1451
 #, c-format
 msgid "no user account available"
 msgstr "لا يُوجد حساب مستخدِم "
 
-#: ../daemon/gdm-session-worker.c:1398
+#: ../daemon/gdm-session-worker.c:1478
 msgid "Unable to change to user"
 msgstr "تعذّر الانتقال للمستخدم"
 
@@ -396,7 +396,7 @@ msgstr "Authdir %s ليس بالدليل. إجهاض."
 #: ../daemon/main.c:361
 #, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-msgstr "Authdir·%s ليس ملكا للمستخدم %d، المجموعة %d. إجهاض."
+msgstr "Authdir·%s ليس ملكا للمستخدم %Id، المجموعة %Id. إجهاض."
 
 #: ../daemon/main.c:368
 #, c-format
