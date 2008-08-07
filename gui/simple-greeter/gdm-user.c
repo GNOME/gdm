@@ -1082,7 +1082,7 @@ frame_pixbuf (GdkPixbuf *source)
         curved_rectangle (cr, frame_width, frame_width,
                           w - frame_width * 2, h - frame_width * 2,
                           radius);
-        cairo_set_source_rgb (cr, 0.3, 0.3, 0.3);
+        cairo_set_source_rgba (cr, 0.5, 0.5, 0.5, 0.3);
         cairo_fill_preserve (cr);
 
         surface = surface_from_pixbuf (source);
