@@ -35,7 +35,6 @@
 #include <bonobo/bonobo-ui-util.h>
 
 #include <libgnome/gnome-init.h>
-#include <libgnomeui/gnome-help.h>
 
 #include <panel-applet.h>
 #include <panel-applet-gconf.h>
@@ -128,23 +127,6 @@ menubar_button_press_event_cb (GtkWidget      *menubar,
         }
 
         return FALSE;
-}
-
-static void
-help_cb (BonoboUIComponent *ui_container,
-         GdmAppletData     *adata,
-         const char        *cname)
-{
-        GError *err;
-
-        err = NULL;
-        gnome_help_display_on_screen ("gdm-user-switch-applet", NULL,
-                                      gtk_widget_get_screen (GTK_WIDGET (adata->applet)),
-                                      &err);
-        if (err != NULL) {
-                g_warning ("Could not open help document: %s", err->message);
-                g_error_free (err);
-        }
 }
 
 static void
@@ -1051,7 +1033,6 @@ fill_applet (PanelApplet *applet)
         static const BonoboUIVerb menu_verbs[] = {
                 BONOBO_UI_VERB ("GdmAboutMe", about_me_cb),
                 BONOBO_UI_VERB ("GdmUsersGroupsAdmin", admin_cb),
-                BONOBO_UI_VERB ("GdmHelp", (BonoboUIVerbFn)help_cb),
                 BONOBO_UI_VERB ("GdmAbout", about_cb),
                 BONOBO_UI_VERB_END
         };
