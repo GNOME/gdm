@@ -40,12 +40,9 @@
 #include "gdm-language-option-widget.h"
 #include "gdm-layout-option-widget.h"
 #include "gdm-session-option-widget.h"
-#include "gdm-a11y-preferences-dialog.h"
 #include "gdm-profile.h"
 
 #include "na-tray.h"
-
-#define KEY_DISABLE_A11Y_BUTTON "/apps/gdm/simple-greeter/disable_accessibility_button"
 
 #define GDM_GREETER_PANEL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_PANEL, GdmGreeterPanelPrivate))
 
@@ -53,8 +50,6 @@ struct GdmGreeterPanelPrivate
 {
         int                     monitor;
         GdkRectangle            geometry;
-        GtkWidget              *a11y_button;
-        GtkWidget              *a11y_dialog;
         GtkWidget              *hbox;
         GtkWidget              *alignment;
         GtkWidget              *option_hbox;
@@ -484,58 +479,10 @@ on_session_activated (GdmSessionOptionWidget *widget,
 }
 
 static void
-on_a11y_dialog_response (GtkDialog       *dialog,
-                         int              response,
-                         GdmGreeterPanel *panel)
-{
-        g_signal_handlers_disconnect_by_func (dialog,
-                                              on_a11y_dialog_response,
-                                              panel);
-
-        gtk_widget_destroy (GTK_WIDGET (dialog));
-        panel->priv->a11y_dialog = NULL;
-}
-
-static void
-on_a11y_button_clicked (GtkButton       *button,
-                        GdmGreeterPanel *panel)
-{
-        if (panel->priv->a11y_dialog == NULL) {
-                panel->priv->a11y_dialog = gdm_a11y_preferences_dialog_new ();
-                g_signal_connect (panel->priv->a11y_dialog,
-                                  "response",
-                                  G_CALLBACK (on_a11y_dialog_response),
-                                  panel);
-        }
-        gtk_window_present (GTK_WINDOW (panel->priv->a11y_dialog));
-}
-
-static gboolean
-is_a11y_button_disabled (GdmGreeterPanel *panel)
-{
-        GConfClient *client;
-        GError      *error;
-        gboolean     disabled;
-
-        client = gconf_client_get_default ();
-        error = NULL;
-        disabled = gconf_client_get_bool (client, KEY_DISABLE_A11Y_BUTTON, &error);
-        if (error != NULL) {
-                g_debug ("GdmGreeterPanel: unable to get disable-accessibility-button configuration: %s", error->message);
-                g_error_free (error);
-        }
-        g_object_unref (client);
-
-        return disabled;
-}
-
-static void
 gdm_greeter_panel_init (GdmGreeterPanel *panel)
 {
         NaTray    *tray;
-        GtkWidget *image;
         GtkWidget *spacer;
-	AtkObject *atk_obj;
 
         gdm_profile_start (NULL);
 
@@ -559,23 +506,6 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
         gtk_container_set_border_width (GTK_CONTAINER (panel->priv->hbox), 0);
         gtk_widget_show (panel->priv->hbox);
         gtk_container_add (GTK_CONTAINER (panel), panel->priv->hbox);
-
-        if (! is_a11y_button_disabled (panel)) {
-                panel->priv->a11y_button = gtk_button_new ();
-                image = gtk_image_new_from_icon_name ("preferences-desktop-accessibility", GTK_ICON_SIZE_BUTTON);
-                gtk_container_add (GTK_CONTAINER (panel->priv->a11y_button), image);
-		atk_obj = gtk_widget_get_accessible (panel->priv->a11y_button);
-		if (GTK_IS_ACCESSIBLE (atk_obj))
-			atk_object_set_name (atk_obj, _("Accessibility Preferences"));
-
-                gtk_widget_show (image);
-                gtk_widget_show (panel->priv->a11y_button);
-                g_signal_connect (G_OBJECT (panel->priv->a11y_button),
-                                  "clicked",
-                                  G_CALLBACK (on_a11y_button_clicked), panel);
-
-                gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->a11y_button, FALSE, FALSE, 0);
-        }
 
         panel->priv->alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
         gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->alignment, TRUE, TRUE, 0);

@@ -56,7 +56,6 @@ libgdmuser_la_LDFLAGS = 	\
 	$(NULL)
 
 noinst_PROGRAMS = 			\
-	test-a11y-preferences		\
 	test-filesystem-type		\
 	test-greeter-login-window	\
 	test-greeter-panel		\
@@ -136,8 +135,6 @@ test_greeter_panel_SOURCES = 	\
 	gdm-sessions.c			\
 	gdm-session-option-widget.h	\
 	gdm-session-option-widget.c	\
-	gdm-a11y-preferences-dialog.h	\
-	gdm-a11y-preferences-dialog.c	\
 	$(NULL)
 
 test_greeter_panel_LDADD =	\
@@ -246,17 +243,6 @@ test_user_manager_LDADD =	\
 	$(POLKIT_GNOME_LIBS)	\
 	$(NULL)
 
-test_a11y_preferences_SOURCES = 	\
-	gdm-a11y-preferences-dialog.h	\
-	gdm-a11y-preferences-dialog.c	\
-	test-a11y-preferences.c		\
-	$(NULL)
-
-test_a11y_preferences_LDADD =	\
-	$(COMMON_LIBS)		\
-	$(SIMPLE_GREETER_LIBS)	\
-	$(NULL)
-
 libexec_PROGRAMS =			\
 	gdm-simple-greeter
 
@@ -313,8 +299,6 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-session-option-widget.c	\
 	gdm-user-chooser-widget.h	\
 	gdm-user-chooser-widget.c	\
-	gdm-a11y-preferences-dialog.h	\
-	gdm-a11y-preferences-dialog.c	\
 	$(NULL)
 
 gdm_simple_greeter_LDADD = 		\
@@ -331,7 +315,6 @@ gdm_simple_greeter_LDADD = 		\
 gladedir = $(pkgdatadir)
 glade_DATA = 					\
 	gdm-greeter-login-window.glade		\
-	gdm-a11y-preferences-dialog.glade	\
 	$(NULL)
 
 EXTRA_DIST = 			\
