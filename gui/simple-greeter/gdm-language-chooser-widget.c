@@ -133,6 +133,7 @@ gdm_language_chooser_widget_add_language (GdmLanguageChooserWidget *widget,
 static gboolean
 language_has_font (const char *locale)
 {
+  const FcCharSet *charset;
   FcPattern   *pattern;
   FcObjectSet *object_set;
   FcFontSet   *font_set;
@@ -146,22 +147,30 @@ language_has_font (const char *locale)
 
   gdm_parse_language_name (locale, &language_code, NULL, NULL, NULL);
 
-  pattern = FcPatternBuild (NULL, FC_LANG, FcTypeString, language_code, NULL);
+  charset = FcLangGetCharSet ((FcChar8 *) language_code);
+  if (!charset)
+    /* fontconfig does not know about this language */
+    is_displayable = TRUE;
+  else
+    {
+      /* see if any fonts support rendering it */
+      pattern = FcPatternBuild (NULL, FC_LANG, FcTypeString, language_code, NULL);
 
-  if (pattern == NULL)
-    goto done;
+      if (pattern == NULL)
+	goto done;
 
-  object_set = FcObjectSetBuild (NULL, NULL);
+      object_set = FcObjectSetCreate ();
 
-  if (object_set == NULL)
-    goto done;
+      if (object_set == NULL)
+	goto done;
 
-  font_set = FcFontList (NULL, pattern, object_set);
+      font_set = FcFontList (NULL, pattern, object_set);
 
-  if (font_set == NULL)
-    goto done;
+      if (font_set == NULL)
+	goto done;
 
-  is_displayable = (font_set->nfont > 0);
+      is_displayable = (font_set->nfont > 0);
+    }
 
 done:
 

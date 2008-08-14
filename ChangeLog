@@ -1,3 +1,13 @@
+2008-08-14  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 547826 – Whitelist languages not known by fontconfig
+
+	* configure.ac: Require fontconfig >= 2.6.0
+
+	* gui/simple-greeter/gdm-language-chooser-widget.c
+	(language_has_font): Accept language if FcLangGetCharSet()
+	returns NULL on it.
+
 2008-08-14  William Jon McCann  <jmccann@redhat.com>
 
 	* data/session-setup.entries:
