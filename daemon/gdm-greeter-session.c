@@ -147,7 +147,7 @@ gdm_greeter_session_new (const char *display_name,
         GObject *object;
 
         object = g_object_new (GDM_TYPE_GREETER_SESSION,
-                               "command", LIBEXECDIR "/gdm-simple-greeter",
+                               "command", BINDIR "/gnome-session --autostart="DATADIR"/gdm/autostart/LoginWindow/",
                                "server-dbus-path", GDM_GREETER_SERVER_DBUS_PATH,
                                "server-dbus-interface", GDM_GREETER_SERVER_DBUS_INTERFACE,
                                "server-env-var-name", "GDM_GREETER_DBUS_ADDRESS",

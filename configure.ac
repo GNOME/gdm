@@ -1359,6 +1359,8 @@ AC_OUTPUT([
 Makefile
 daemon/Makefile
 gui/Makefile
+gui/simple-greeter/gdm-simple-greeter.desktop.in
+gui/simple-greeter/at-spi-registryd-wrapper.desktop.in
 gui/simple-greeter/Makefile
 gui/simple-greeter/libnotificationarea/Makefile
 gui/simple-chooser/Makefile

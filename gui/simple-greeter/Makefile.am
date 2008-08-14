@@ -22,6 +22,14 @@ INCLUDES = \
 	$(POLKIT_GNOME_CFLAGS)				\
 	$(NULL)
 
+@INTLTOOL_DESKTOP_RULE@
+desktopdir = $(pkgdatadir)/autostart/LoginWindow
+desktop_in_files = 	\
+	at-spi-registryd-wrapper.desktop.in	\
+	gdm-simple-greeter.desktop.in		\
+	$(NULL)
+desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+
 @INTLTOOL_SCHEMAS_RULE@
 
 schemasdir   = @GCONF_SCHEMA_FILE_DIR@
@@ -260,10 +268,6 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-greeter-client.c		\
 	gdm-greeter-session.h		\
 	gdm-greeter-session.c		\
-	gdm-session-manager.h		\
-	gdm-session-manager.c		\
-	gdm-session-client.h		\
-	gdm-session-client.c		\
 	gdm-greeter-login-window.c	\
 	gdm-greeter-login-window.h	\
 	gdm-remote-login-window.c	\
@@ -318,6 +322,7 @@ glade_DATA = 					\
 	$(NULL)
 
 EXTRA_DIST = 			\
+	$(desktop_in_files)	\
 	$(schemas_in_files)	\
 	$(glade_DATA)		\
 	$(NULL)

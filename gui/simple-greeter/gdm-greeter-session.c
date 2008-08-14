@@ -38,32 +38,13 @@
 #include "gdm-greeter-panel.h"
 #include "gdm-greeter-login-window.h"
 
-#include "gdm-session-manager.h"
-#include "gdm-session-client.h"
 #include "gdm-profile.h"
 
 #define GDM_GREETER_SESSION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_SESSION, GdmGreeterSessionPrivate))
 
-#define GSD_DBUS_NAME      "org.gnome.SettingsDaemon"
-#define GSD_DBUS_PATH      "/org/gnome/SettingsDaemon"
-#define GSD_DBUS_INTERFACE "org.gnome.SettingsDaemon"
-
-#define KEY_GDM_DIR                 "/apps/gdm/simple-greeter"
-#define KEY_GDM_A11Y_DIR             KEY_GDM_DIR "/accessibility"
-#define KEY_SCREEN_KEYBOARD_ENABLED  KEY_GDM_A11Y_DIR "/screen_keyboard_enabled"
-#define KEY_SCREEN_MAGNIFIER_ENABLED KEY_GDM_A11Y_DIR "/screen_magnifier_enabled"
-#define KEY_SCREEN_READER_ENABLED    KEY_GDM_A11Y_DIR "/screen_reader_enabled"
-
-#define KEY_WM_USE_COMPIZ            KEY_GDM_DIR "/wm_use_compiz"
-
 struct GdmGreeterSessionPrivate
 {
         GdmGreeterClient      *client;
-        GdmSessionManager     *manager;
-
-        GdmSessionClient      *screen_reader_client;
-        GdmSessionClient      *screen_keyboard_client;
-        GdmSessionClient      *screen_magnifier_client;
 
         GtkWidget             *login_window;
         GtkWidget             *panel;
@@ -287,9 +268,8 @@ on_start_session (GdmGreeterLoginWindow *login_window,
 }
 
 static void
-toggle_panel (GdmSessionManager *manager,
-              gboolean           enabled,
-              GdmGreeterSession *session)
+toggle_panel (GdmGreeterSession *session,
+              gboolean           enabled)
 {
         gdm_profile_start (NULL);
 
@@ -321,9 +301,8 @@ toggle_panel (GdmSessionManager *manager,
 }
 
 static void
-toggle_login_window (GdmSessionManager *manager,
-                     gboolean           enabled,
-                     GdmGreeterSession *session)
+toggle_login_window (GdmGreeterSession *session,
+                     gboolean           enabled)
 {
         gdm_profile_start (NULL);
 
@@ -374,359 +353,6 @@ toggle_login_window (GdmSessionManager *manager,
         gdm_profile_end (NULL);
 }
 
-static gboolean
-launch_compiz (GdmGreeterSession *session)
-{
-        GError  *error;
-        gboolean ret;
-
-        gdm_profile_start (NULL);
-        g_debug ("GdmGreeterSession: Launching compiz");
-
-        ret = FALSE;
-
-        g_setenv ("LIBGL_ALWAYS_INDIRECT", "1", TRUE);
-
-        error = NULL;
-        g_spawn_command_line_async ("gtk-window-decorator", &error);
-        if (error != NULL) {
-                g_warning ("Error starting WM: %s", error->message);
-                g_error_free (error);
-                goto out;
-        }
-
-        error = NULL;
-        g_spawn_command_line_async ("compiz --replace glib gconf", &error);
-        if (error != NULL) {
-                g_warning ("Error starting WM: %s", error->message);
-                g_error_free (error);
-                goto out;
-        }
-
-        ret = TRUE;
-
-        /* FIXME: should try to detect if it actually works */
-
- out:
-        gdm_profile_end (NULL);
-        return ret;
-}
-
-static gboolean
-launch_metacity (GdmGreeterSession *session)
-{
-        GError  *error;
-        gboolean ret;
-
-        gdm_profile_start (NULL);
-
-        g_debug ("GdmGreeterSession: Launching metacity");
-
-        ret = FALSE;
-
-        error = NULL;
-        g_spawn_command_line_async ("metacity --replace", &error);
-        if (error != NULL) {
-                g_warning ("Error starting WM: %s", error->message);
-                g_error_free (error);
-                goto out;
-        }
-
-        ret = TRUE;
-
- out:
-        gdm_profile_end (NULL);
-        return ret;
-}
-
-static void
-start_window_manager (GdmGreeterSession *session)
-{
-        gboolean     use_compiz;
-        GConfClient *client;
-
-        client = gconf_client_get_default ();
-        use_compiz = gconf_client_get_bool (client, KEY_WM_USE_COMPIZ, NULL);
-        g_object_unref (client);
-        if (use_compiz) {
-                if (launch_compiz (session)) {
-                        return;
-                }
-        }
-
-        launch_metacity (session);
-}
-
-static void
-toggle_screen_reader (GdmGreeterSession *session,
-                      gboolean           enabled)
-{
-        g_debug ("GdmGreeterSession: screen reader toggled: %d", enabled);
-        gdm_session_client_set_enabled (session->priv->screen_reader_client, enabled);
-}
-
-static void
-toggle_screen_magnifier (GdmGreeterSession *session,
-                         gboolean           enabled)
-{
-        g_debug ("GdmGreeterSession: screen magnifier toggled: %d", enabled);
-        gdm_session_client_set_enabled (session->priv->screen_magnifier_client, enabled);
-}
-
-static void
-toggle_screen_keyboard (GdmGreeterSession *session,
-                        gboolean           enabled)
-{
-        g_debug ("GdmGreeterSession: screen keyboard toggled: %d", enabled);
-        gdm_session_client_set_enabled (session->priv->screen_keyboard_client, enabled);
-}
-
-static void
-on_a11y_key_changed (GConfClient       *client,
-                     guint              cnxn_id,
-                     GConfEntry        *entry,
-                     GdmGreeterSession *session)
-{
-        const char *key;
-        GConfValue *value;
-
-        key = gconf_entry_get_key (entry);
-        value = gconf_entry_get_value (entry);
-
-        if (strcmp (key, KEY_SCREEN_READER_ENABLED) == 0) {
-                if (value->type == GCONF_VALUE_BOOL) {
-                        gboolean enabled;
-
-                        enabled = gconf_value_get_bool (value);
-                        g_debug ("setting key %s = %d", key, enabled);
-                        toggle_screen_reader (session, enabled);
-                } else {
-                        g_warning ("Error retrieving configuration key '%s': Invalid type",
-                                   key);
-                }
-
-        } else if (strcmp (key, KEY_SCREEN_MAGNIFIER_ENABLED) == 0) {
-                if (value->type == GCONF_VALUE_BOOL) {
-                        gboolean enabled;
-
-                        enabled = gconf_value_get_bool (value);
-                        g_debug ("setting key %s = %d", key, enabled);
-                        toggle_screen_magnifier (session, enabled);
-                } else {
-                        g_warning ("Error retrieving configuration key '%s': Invalid type",
-                                   key);
-                }
-
-        } else if (strcmp (key, KEY_SCREEN_KEYBOARD_ENABLED) == 0) {
-                if (value->type == GCONF_VALUE_BOOL) {
-                        gboolean enabled;
-
-                        enabled = gconf_value_get_bool (value);
-                        g_debug ("setting key %s = %d", key, enabled);
-                        toggle_screen_keyboard (session, enabled);
-                } else {
-                        g_warning ("Error retrieving configuration key '%s': Invalid type",
-                                   key);
-                }
-
-        } else {
-        }
-}
-
-static void
-setup_at_tools (GdmGreeterSession *session)
-{
-        GConfClient *client;
-        gboolean     enabled;
-
-        client = gconf_client_get_default ();
-        gconf_client_add_dir (client,
-                              KEY_GDM_A11Y_DIR,
-                              GCONF_CLIENT_PRELOAD_ONELEVEL,
-                              NULL);
-        gconf_client_notify_add (client,
-                                 KEY_GDM_A11Y_DIR,
-                                 (GConfClientNotifyFunc)on_a11y_key_changed,
-                                 session,
-                                 NULL,
-                                 NULL);
-
-        session->priv->screen_keyboard_client = gdm_session_client_new ();
-        gdm_session_client_set_name (session->priv->screen_keyboard_client,
-                                     "On-screen Keyboard");
-        gdm_session_client_set_try_exec (session->priv->screen_keyboard_client,
-                                         "gok");
-        gdm_session_client_set_command (session->priv->screen_keyboard_client,
-                                        "gok --login");
-        enabled = gconf_client_get_bool (client, KEY_SCREEN_KEYBOARD_ENABLED, NULL);
-        gdm_session_client_set_enabled (session->priv->screen_keyboard_client,
-                                        enabled);
-
-
-        session->priv->screen_reader_client = gdm_session_client_new ();
-        gdm_session_client_set_name (session->priv->screen_reader_client,
-                                     "Screen Reader");
-        gdm_session_client_set_try_exec (session->priv->screen_reader_client,
-                                         "orca");
-        gdm_session_client_set_command (session->priv->screen_reader_client,
-                                        "orca -n -d main-window -d magnifier");
-        enabled = gconf_client_get_bool (client, KEY_SCREEN_READER_ENABLED, NULL);
-        gdm_session_client_set_enabled (session->priv->screen_reader_client,
-                                        enabled);
-
-
-        session->priv->screen_magnifier_client = gdm_session_client_new ();
-        gdm_session_client_set_name (session->priv->screen_magnifier_client,
-                                     "Screen Magnifier");
-        gdm_session_client_set_try_exec (session->priv->screen_magnifier_client,
-                                         "magnifier");
-        gdm_session_client_set_command (session->priv->screen_magnifier_client,
-                                        "magnifier -v -m");
-        enabled = gconf_client_get_bool (client, KEY_SCREEN_MAGNIFIER_ENABLED, NULL);
-        gdm_session_client_set_enabled (session->priv->screen_magnifier_client,
-                                        enabled);
-
-        gdm_session_manager_add_client (session->priv->manager,
-                                        session->priv->screen_reader_client,
-                                        GDM_SESSION_LEVEL_LOGIN_WINDOW);
-        gdm_session_manager_add_client (session->priv->manager,
-                                        session->priv->screen_keyboard_client,
-                                        GDM_SESSION_LEVEL_LOGIN_WINDOW);
-        gdm_session_manager_add_client (session->priv->manager,
-                                        session->priv->screen_magnifier_client,
-                                        GDM_SESSION_LEVEL_LOGIN_WINDOW);
-
-        g_object_unref (client);
-}
-
-static gboolean
-send_dbus_string_method (DBusConnection *connection,
-                         const char     *method,
-                         const char     *payload)
-{
-        DBusError       error;
-        DBusMessage    *message;
-        DBusMessage    *reply;
-        DBusMessageIter iter;
-        const char     *str;
-
-        if (payload != NULL) {
-                str = payload;
-        } else {
-                str = "";
-        }
-
-        g_debug ("GdmGreeterSession: Calling %s", method);
-        message = dbus_message_new_method_call (GSD_DBUS_NAME,
-                                                GSD_DBUS_PATH,
-                                                GSD_DBUS_INTERFACE,
-                                                method);
-        if (message == NULL) {
-                g_warning ("Couldn't allocate the D-Bus message");
-                return FALSE;
-        }
-
-        dbus_message_iter_init_append (message, &iter);
-        dbus_message_iter_append_basic (&iter,
-                                        DBUS_TYPE_STRING,
-                                        &str);
-
-        dbus_error_init (&error);
-        reply = dbus_connection_send_with_reply_and_block (connection,
-                                                           message,
-                                                           -1,
-                                                           &error);
-
-        dbus_message_unref (message);
-
-        if (dbus_error_is_set (&error)) {
-                g_warning ("%s %s raised: %s\n",
-                           method,
-                           error.name,
-                           error.message);
-                return FALSE;
-        }
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-        dbus_connection_flush (connection);
-
-        return TRUE;
-}
-
-static gboolean
-activate_settings_daemon (GdmGreeterSession *session)
-{
-        gboolean         ret;
-        gboolean         res;
-        DBusError        local_error;
-        DBusConnection  *connection;
-
-        gdm_profile_start (NULL);
-
-        ret = FALSE;
-
-        g_debug ("GdmGreeterLoginWindow: activating settings daemon");
-
-        dbus_error_init (&local_error);
-        connection = dbus_bus_get (DBUS_BUS_SESSION, &local_error);
-        if (connection == NULL) {
-                g_debug ("Failed to connect to the D-Bus daemon: %s", local_error.message);
-                dbus_error_free (&local_error);
-                goto out;
-        }
-
-        res = send_dbus_string_method (connection,
-                                       "StartWithSettingsPrefix",
-                                       "/apps/gdm/simple-greeter/settings-manager-plugins");
-        if (! res) {
-                g_warning ("Couldn't start settings daemon");
-                goto out;
-        }
-        ret = TRUE;
-        g_debug ("GdmGreeterLoginWindow: settings daemon started");
- out:
-        gdm_profile_end (NULL);
-
-        return ret;
-}
-
-static gboolean
-start_settings_daemon (GdmGreeterSession *session)
-{
-        GError  *error;
-        gboolean ret;
-
-        g_debug ("GdmGreeterSession: Launching settings daemon");
-
-        ret = FALSE;
-
-        error = NULL;
-        g_spawn_command_line_async (LIBEXECDIR "/gnome-settings-daemon --gconf-prefix=/apps/gdm/simple-greeter/settings-manager-plugins", &error);
-        if (error != NULL) {
-                g_warning ("Error starting settings daemon: %s", error->message);
-                g_error_free (error);
-                goto out;
-        }
-
-        ret = TRUE;
-
- out:
-        return ret;
-}
-
-static void
-toggle_all_levels (GdmSessionManager *manager,
-                   gboolean           enabled,
-                   GdmGreeterSession *session)
-{
-        if (enabled) {
-                start_settings_daemon (session);
-                start_window_manager (session);
-        } else {
-        }
-}
-
 gboolean
 gdm_greeter_session_start (GdmGreeterSession *session,
                            GError           **error)
@@ -739,7 +365,8 @@ gdm_greeter_session_start (GdmGreeterSession *session,
 
         res = gdm_greeter_client_start (session->priv->client, error);
 
-        gdm_session_manager_set_level (session->priv->manager, GDM_SESSION_LEVEL_LOGIN_WINDOW);
+        toggle_panel (session, TRUE);
+        toggle_login_window (session, TRUE);
 
         gdm_profile_end (NULL);
 
@@ -751,6 +378,8 @@ gdm_greeter_session_stop (GdmGreeterSession *session)
 {
         g_return_if_fail (GDM_IS_GREETER_SESSION (session));
 
+        toggle_panel (session, FALSE);
+        toggle_login_window (session, FALSE);
 }
 
 static void
@@ -816,8 +445,8 @@ gdm_greeter_session_class_init (GdmGreeterSessionClass *klass)
 }
 
 static void
-gdm_greeter_session_event_handler(GdkEvent          *event,
-                                  GdmGreeterSession *session)
+gdm_greeter_session_event_handler (GdkEvent          *event,
+                                   GdmGreeterSession *session)
 {
         g_assert (GDM_IS_GREETER_SESSION (session));
 
@@ -853,22 +482,6 @@ gdm_greeter_session_init (GdmGreeterSession *session)
         gdm_profile_start (NULL);
 
         session->priv = GDM_GREETER_SESSION_GET_PRIVATE (session);
-
-        session->priv->manager = gdm_session_manager_new ();
-        gdm_session_manager_load_system_dirs (session->priv->manager);
-
-        gdm_session_manager_add_notify (session->priv->manager,
-                                        GDM_SESSION_LEVEL_LOGIN_WINDOW,
-                                        (GdmSessionLevelNotifyFunc)toggle_login_window,
-                                        session);
-        gdm_session_manager_add_notify (session->priv->manager,
-                                        GDM_SESSION_LEVEL_LOGIN_WINDOW,
-                                        (GdmSessionLevelNotifyFunc)toggle_panel,
-                                        session);
-        gdm_session_manager_add_notify (session->priv->manager,
-                                        GDM_SESSION_ALL_LEVELS,
-                                        (GdmSessionLevelNotifyFunc)toggle_all_levels,
-                                        session);
 
         session->priv->client = gdm_greeter_client_new ();
         g_signal_connect (session->priv->client,
@@ -925,9 +538,6 @@ gdm_greeter_session_init (GdmGreeterSession *session)
          */
         gdk_event_handler_set ((GdkEventFunc) gdm_greeter_session_event_handler,
                                session, NULL);
-
-        /* FIXME: we should really do this in settings daemon */
-        setup_at_tools (session);
 
         gdm_profile_end (NULL);
 }

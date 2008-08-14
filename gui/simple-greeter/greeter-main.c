@@ -31,6 +31,8 @@
 #include <gtk/gtk.h>
 #include <gconf/gconf-client.h>
 
+#include <dbus/dbus-glib.h>
+
 #include "gdm-log.h"
 #include "gdm-common.h"
 #include "gdm-signal-handler.h"
@@ -40,222 +42,18 @@
 
 #include "gdm-greeter-session.h"
 
-#define ACCESSIBILITY_KEY         "/desktop/gnome/interface/accessibility"
 #define DEBUG_KEY                 "/apps/gdm/simple-greeter/debug"
 
-static Atom AT_SPI_IOR;
+#define SM_DBUS_NAME      "org.gnome.SessionManager"
+#define SM_DBUS_PATH      "/org/gnome/SessionManager"
+#define SM_DBUS_INTERFACE "org.gnome.SessionManager"
 
-static gboolean
-assistive_registry_launch (void)
-{
-        GPid        pid;
-        GError     *error;
-        const char *command;
-        char      **argv;
-        gboolean    res;
-        gboolean    ret;
+#define SM_CLIENT_DBUS_INTERFACE "org.gnome.SessionManager.ClientPrivate"
 
-        ret = FALSE;
-
-        gdm_profile_start (NULL);
-
-        command = AT_SPI_REGISTRYD_DIR "/at-spi-registryd";
-
-        argv = NULL;
-        error = NULL;
-        res = g_shell_parse_argv (command, NULL, &argv, &error);
-        if (! res) {
-                g_warning ("Unable to parse command: %s", error->message);
-                goto out;
-        }
-
-        error = NULL;
-        res = g_spawn_async (NULL,
-                             argv,
-                             NULL,
-                             G_SPAWN_SEARCH_PATH
-                             | G_SPAWN_STDOUT_TO_DEV_NULL
-                             | G_SPAWN_STDERR_TO_DEV_NULL,
-                             NULL,
-                             NULL,
-                             &pid,
-                             &error);
-        g_strfreev (argv);
-
-        if (! res) {
-                g_warning ("Unable to run command %s: %s", command, error->message);
-                goto out;
-        }
-
-        if (kill (pid, 0) < 0) {
-                g_warning ("at-spi-registryd not running");
-                goto out;
-        }
-
-        ret = TRUE;
- out:
-        gdm_profile_end (NULL);
-
-        return ret;
-}
-
-static GdkFilterReturn
-filter_watch (GdkXEvent *xevent,
-              GdkEvent  *event,
-              GMainLoop *loop)
-{
-        XEvent *xev = (XEvent *)xevent;
-
-        if (xev->xany.type == PropertyNotify
-            && xev->xproperty.atom == AT_SPI_IOR) {
-                g_debug ("a11y registry started");
-                g_main_loop_quit (loop);
-
-                return GDK_FILTER_REMOVE;
-        }
-
-        return GDK_FILTER_CONTINUE;
-}
-
-static gboolean
-filter_timeout (GMainLoop *loop)
-{
-        g_warning ("The accessibility registry was not found.");
-
-        g_main_loop_quit (loop);
-
-        return FALSE;
-}
-
-static void
-assistive_registry_start (void)
-{
-        GdkWindow *root;
-        guint      tid;
-        GMainLoop *loop;
-
-        gdm_profile_start (NULL);
-
-        g_debug ("Starting a11y registry");
-
-        root = gdk_get_default_root_window ();
-
-        if ( ! AT_SPI_IOR) {
-                AT_SPI_IOR = XInternAtom (GDK_DISPLAY (), "AT_SPI_IOR", False);
-        }
-
-        gdk_window_set_events (root, GDK_PROPERTY_CHANGE_MASK);
-
-        if ( ! assistive_registry_launch ()) {
-                g_warning ("The accessibility registry could not be started.");
-                return;
-        }
-
-        loop = g_main_loop_new (NULL, FALSE);
-        gdk_window_add_filter (root, (GdkFilterFunc)filter_watch, loop);
-        tid = g_timeout_add_seconds (5, (GSourceFunc)filter_timeout, loop);
-
-        g_main_loop_run (loop);
-
-        gdk_window_remove_filter (root, (GdkFilterFunc)filter_watch, loop);
-        g_source_remove (tid);
-
-        g_main_loop_unref (loop);
-
-        gdm_profile_end (NULL);
-}
-
-static void
-at_set_gtk_modules (void)
-{
-        GSList     *modules_list;
-        GSList     *l;
-        const char *old;
-        char      **modules;
-        gboolean    found_gail;
-        gboolean    found_atk_bridge;
-        int         n;
-
-        gdm_profile_start (NULL);
-
-        n = 0;
-        modules_list = NULL;
-        found_gail = FALSE;
-        found_atk_bridge = FALSE;
-
-        if ((old = g_getenv ("GTK_MODULES")) != NULL) {
-                modules = g_strsplit (old, ":", -1);
-                for (n = 0; modules[n]; n++) {
-                        if (strcmp (modules[n], "gail") == 0) {
-                                found_gail = TRUE;
-                        } else if (strcmp (modules[n], "atk-bridge") == 0) {
-                                found_atk_bridge = TRUE;
-                        }
-
-                        modules_list = g_slist_prepend (modules_list, modules[n]);
-                        modules[n] = NULL;
-                }
-                g_free (modules);
-        }
-
-        if (!found_gail) {
-                modules_list = g_slist_prepend (modules_list, "gail");
-                ++n;
-        }
-
-        if (!found_atk_bridge) {
-                modules_list = g_slist_prepend (modules_list, "atk-bridge");
-                ++n;
-        }
-
-        modules = g_new (char *, n + 1);
-        modules[n--] = NULL;
-        for (l = modules_list; l; l = l->next) {
-                modules[n--] = g_strdup (l->data);
-        }
-
-        g_setenv ("GTK_MODULES", g_strjoinv (":", modules), TRUE);
-        g_strfreev (modules);
-        g_slist_free (modules_list);
-
-        gdm_profile_end (NULL);
-}
-
-static void
-load_a11y (void)
-{
-        const char        *env_a_t_support;
-        gboolean           a_t_support;
-        GConfClient       *gconf_client;
-
-        gdm_profile_start (NULL);
-
-        gconf_client = gconf_client_get_default ();
-
-        env_a_t_support = g_getenv ("GNOME_ACCESSIBILITY");
-        if (env_a_t_support) {
-                a_t_support = atoi (env_a_t_support);
-        } else {
-                GConfValue *val;
-
-                a_t_support = TRUE;
-
-                val = gconf_client_get_without_default (gconf_client, ACCESSIBILITY_KEY, NULL);
-                if (val != NULL) {
-                        a_t_support = gconf_value_get_bool (val);
-                        gconf_value_free (val);
-                }
-        }
-
-        if (a_t_support) {
-                assistive_registry_start ();
-                at_set_gtk_modules ();
-        }
-
-        g_object_unref (gconf_client);
-
-        gdm_profile_end (NULL);
-}
+static DBusGConnection *bus_connection = NULL;
+static DBusGProxy      *sm_proxy = NULL;
+static char            *client_id = NULL;
+static DBusGProxy      *client_proxy = NULL;
 
 static gboolean
 is_debug_set (void)
@@ -333,6 +131,66 @@ signal_cb (int      signo,
         return ret;
 }
 
+static gboolean
+session_manager_connect (void)
+{
+
+        if (bus_connection == NULL) {
+                GError *error;
+
+                error = NULL;
+                bus_connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+                if (bus_connection == NULL) {
+                        g_message ("Failed to connect to the session bus: %s",
+                                   error->message);
+                        g_error_free (error);
+                        exit (1);
+                }
+        }
+
+        sm_proxy = dbus_g_proxy_new_for_name (bus_connection,
+                                              SM_DBUS_NAME,
+                                              SM_DBUS_PATH,
+                                              SM_DBUS_INTERFACE);
+        return (sm_proxy != NULL);
+}
+
+static gboolean
+register_client (void)
+{
+        GError     *error;
+        gboolean    res;
+        const char *startup_id;
+        const char *app_id;
+
+        startup_id = g_getenv ("DESKTOP_AUTOSTART_ID");
+        app_id = "gdm-simple-greeter.desktop";
+
+        error = NULL;
+        res = dbus_g_proxy_call (sm_proxy,
+                                 "RegisterClient",
+                                 &error,
+                                 G_TYPE_STRING, app_id,
+                                 G_TYPE_STRING, startup_id,
+                                 G_TYPE_INVALID,
+                                 DBUS_TYPE_G_OBJECT_PATH, &client_id,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                g_warning ("Failed to register client: %s", error->message);
+                g_error_free (error);
+                return FALSE;
+        }
+
+        g_debug ("Client registered with session manager: %s", client_id);
+        client_proxy = dbus_g_proxy_new_for_name (bus_connection,
+                                                  SM_DBUS_NAME,
+                                                  client_id,
+                                                  SM_CLIENT_DBUS_INTERFACE);
+        g_unsetenv ("DESKTOP_AUTOSTART_ID");
+
+        return TRUE;
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -369,10 +227,6 @@ main (int argc, char *argv[])
         gdm_log_init ();
         gdm_log_set_debug (is_debug_set ());
 
-        gdk_init (&argc, &argv);
-
-        load_a11y ();
-
         gtk_init (&argc, &argv);
 
         signal_handler = gdm_signal_handler_new ();
@@ -397,6 +251,17 @@ main (int argc, char *argv[])
                 g_warning ("Unable to start greeter session: %s", error->message);
                 g_error_free (error);
                 exit (1);
+        }
+
+        res = session_manager_connect ();
+        if (! res) {
+                g_warning ("Unable to connect to session manager");
+                exit (1);
+        }
+
+        res = register_client ();
+        if (! res) {
+                g_warning ("Unable to register client with session manager");
         }
 
         gtk_main ();
