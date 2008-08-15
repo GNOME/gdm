@@ -472,6 +472,7 @@ on_users_loaded (GdmUserManager       *manager,
                 users = g_slist_delete_link (users, users);
         }
 
+        gtk_widget_grab_focus (widget);
         gdm_chooser_widget_activate_on_one_item (GDM_CHOOSER_WIDGET (widget),
                                                  TRUE);
 }
