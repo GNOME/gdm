@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.23.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-09 10:53+0200\n"
-"PO-Revision-Date: 2008-08-09 10:55+0200\n"
+"POT-Creation-Date: 2008-08-15 14:59+0200\n"
+"PO-Revision-Date: 2008-08-15 15:00+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -448,6 +448,10 @@ msgstr "Bare root ønsker å kjøre GDM"
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME skjermhåndterer sesjonsarbeider"
 
+#: ../gui/simple-greeter/at-spi-registryd-wrapper.desktop.in.in.h:1
+msgid "AT SPI Registry Wrapper"
+msgstr "AT SPI register wrapper"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:148
 msgid "Select System"
 msgstr "Velg system"
@@ -459,51 +463,6 @@ msgstr "XDMCP: Kunne ikke opprette XDMCP buffer!"
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:220
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Kunne ikke lese XDMCP header!"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.c:808
-#: ../gui/simple-greeter/gdm-greeter-panel.c:569
-msgid "Accessibility Preferences"
-msgstr "Brukervalg for tilgjengelighet"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:1
-msgid "<b>Enable features that make your computer easier to use:</b>"
-msgstr "<b>Aktiver funksjoner for å forenkle bruk av datamaskinen:</b>"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:2
-msgid "Assistive Technology Preferences"
-msgstr "Brukervalg for hjelpeteknologi"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:3
-msgid "_Hear text read aloud (Reader)"
-msgstr "_Hør teksten lest høyt (Leser)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:4
-msgid "_Ignore duplicate keypresses (Bounce Keys)"
-msgstr "_Ignorer dupliserte tastetrykk (Bounce Keys)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:5
-msgid "_Make items larger (Magnifier)"
-msgstr "_Gjør oppføringer større (Forstørrelsesglass)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:6
-msgid "_Only accept long held keypresses (Slow Keys)"
-msgstr "_Bare godta tastetrykk som holdes nede (Trege taster)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:7
-msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
-msgstr "_Trykk ned tastatursnarveier en om gangen (Klebrige taster)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:8
-msgid "_See more contrast in colors (High Contrast)"
-msgstr "_Se mer kontrast i farger (Høy kontrast)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:9
-msgid "_Type without the keyboard (On-screen Keyboard)"
-msgstr "_Skriv uten tastaturet (Tastatur på skjermen)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:10
-msgid "_Use a larger font size (Large Print)"
-msgstr "Br_uk større skriftstørrelse (Stor skrift)"
 
 #: ../gui/simple-greeter/gdm-cell-renderer-timer.c:253
 msgid "Value"
@@ -595,6 +554,7 @@ msgid "Select language and click Log In"
 msgstr "Velg språk og klikk på Logg inn"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1949
+#: ../gui/simple-greeter/gdm-simple-greeter.desktop.in.in.h:1
 msgid "Login Window"
 msgstr "Påloggingsvindu"
 
@@ -630,7 +590,7 @@ msgstr "Versjon"
 msgid "page 5"
 msgstr "side 5"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:551
+#: ../gui/simple-greeter/gdm-greeter-panel.c:498
 msgid "Panel"
 msgstr "Panel"
 
@@ -638,11 +598,11 @@ msgstr "Panel"
 msgid "Languages"
 msgstr "Språk"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:264
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
 msgid "_Languages:"
 msgstr "_Språk:"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:265
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:274
 #: ../gui/simple-greeter/gdm-language-option-widget.c:235
 msgid "_Language:"
 msgstr "_Språk:"
@@ -838,60 +798,68 @@ msgstr ""
 "Sett til True for å aktivere tillegg for håndtering av innstillinger for lyd."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+msgid "Set to True to enable the xrandr settings manager plugin."
+msgstr "Sett til True for å aktivere tillegg for håndtering av innstillinger for xrandr."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
 msgid "Set to True to enable the xsettings settings manager plugin."
 msgstr ""
 "Sett til True for å aktivere tillegg for håndtering av innstillinger i "
 "xsettings."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
 msgid ""
 "Set to a list of keyboard layouts to be shown by default at the login window."
 msgstr ""
 "Sett til en liste med tastaturutforminger som skal vises som forvalg i "
 "påloggingsvinduet."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
 msgid "Set to a list of languages to be shown by default at the login window."
 msgstr ""
 "Sett til en liste med språk som skal vises som forvalg i påloggingsvinduet."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "Sett til temabasert ikonnavn som skal brukes for velkomstlogoen."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "Set to true to show the banner message text."
 msgstr "Sett til true for å vise tekst i bannermelding."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
 msgid "Set to true to use compiz as the window manager."
 msgstr "Sett til true for å bruke compiz som vindushåndterer."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "Text banner message to show on the login window."
 msgstr "Melding som skal vises i tekstbanner i påloggingsvinduet."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the background settings manager plugin is enabled."
 msgstr ""
 "True hvis tillegg for håndtering av innstillinger for bakgrunn er aktivert."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr ""
 "True hvis tillegg for håndtering av innstillinger for medietaster er "
 "aktivert."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "True hvis tillegg for håndtering av innstillinger for lyd er aktivert."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
+msgid "True if the xrandr settings manager plugin is enabled."
+msgstr "True hvis tillegg for håndtering av innstillinger for xrandr er aktivert."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:37
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr ""
 "True hvis tillegg for håndtering av innstillinger i xsettings er aktivert."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:38
 msgid "Use compiz as the window manager"
 msgstr "Bruk compiz som vindushåndterer"
 
