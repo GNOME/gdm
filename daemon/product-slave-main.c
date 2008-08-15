@@ -207,7 +207,9 @@ main (int    argc,
         main_loop = g_main_loop_new (NULL, FALSE);
 
         signal_handler = gdm_signal_handler_new ();
-        gdm_signal_handler_set_main_loop (signal_handler, main_loop);
+        gdm_signal_handler_set_fatal_func (signal_handler,
+                                           (GDestroyNotify)g_main_loop_quit,
+                                           main_loop);
         gdm_signal_handler_add (signal_handler, SIGTERM, signal_cb, NULL);
         gdm_signal_handler_add (signal_handler, SIGINT, signal_cb, NULL);
         gdm_signal_handler_add (signal_handler, SIGILL, signal_cb, NULL);

@@ -100,6 +100,10 @@ session_worker_job_child_watch (GPid                 pid,
                  WIFEXITED (status) ? WEXITSTATUS (status)
                  : WIFSIGNALED (status) ? WTERMSIG (status)
                  : -1);
+
+        g_spawn_close_pid (job->priv->pid);
+        job->priv->pid = -1;
+
         if (WIFEXITED (status)) {
                 int code = WEXITSTATUS (status);
                 g_signal_emit (job, signals [EXITED], 0, code);
@@ -107,9 +111,6 @@ session_worker_job_child_watch (GPid                 pid,
                 int num = WTERMSIG (status);
                 g_signal_emit (job, signals [DIED], 0, num);
         }
-
-        g_spawn_close_pid (job->priv->pid);
-        job->priv->pid = -1;
 }
 
 static void

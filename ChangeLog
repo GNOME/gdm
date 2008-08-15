@@ -1,3 +1,19 @@
+2008-08-15  William Jon McCann  <jmccann@redhat.com>
+
+	* common/gdm-signal-handler.c (signal_io_watch),
+	(gdm_signal_handler_set_fatal_func):
+	* common/gdm-signal-handler.h:
+	* daemon/factory-slave-main.c (main):
+	* daemon/gdm-session-direct.c (stop_worker):
+	* daemon/gdm-session-worker-job.c (session_worker_job_child_watch):
+	* daemon/main.c (main):
+	* daemon/product-slave-main.c (main):
+	* daemon/session-worker-main.c (main):
+	* daemon/simple-slave-main.c (main):
+	* daemon/xdmcp-chooser-slave-main.c (main):
+	Use a callback for the fatal handler instead of supplying
+	the main_loop.
+
 2008-08-14  William Jon McCann  <jmccann@redhat.com>
 
 	* configure.ac:

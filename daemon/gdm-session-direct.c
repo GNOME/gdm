@@ -1629,6 +1629,19 @@ start_worker (GdmSessionDirect *session)
 static void
 stop_worker (GdmSessionDirect *session)
 {
+        g_signal_handlers_disconnect_by_func (session->priv->job,
+                                              G_CALLBACK (worker_stopped),
+                                              session);
+        g_signal_handlers_disconnect_by_func (session->priv->job,
+                                              G_CALLBACK (worker_started),
+                                              session);
+        g_signal_handlers_disconnect_by_func (session->priv->job,
+                                              G_CALLBACK (worker_exited),
+                                              session);
+        g_signal_handlers_disconnect_by_func (session->priv->job,
+                                              G_CALLBACK (worker_died),
+                                              session);
+
         cancel_pending_query (session);
 
         if (session->priv->worker_connection != NULL) {
@@ -1637,6 +1650,7 @@ stop_worker (GdmSessionDirect *session)
         }
 
         gdm_session_worker_job_stop (session->priv->job);
+        g_object_unref (session->priv->job);
         session->priv->job = NULL;
 }
 

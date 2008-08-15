@@ -50,11 +50,12 @@ typedef struct {
 
 struct GdmSignalHandlerPrivate
 {
-        GMainLoop  *main_loop;
-        GHashTable *lookup;
-        GHashTable *id_lookup;
-        GHashTable *action_lookup;
-        guint       next_id;
+        GHashTable    *lookup;
+        GHashTable    *id_lookup;
+        GHashTable    *action_lookup;
+        guint          next_id;
+        GDestroyNotify fatal_func;
+        gpointer       fatal_data;
 };
 
 static void     gdm_signal_handler_class_init   (GdmSignalHandlerClass *klass);
@@ -140,10 +141,11 @@ signal_io_watch (GIOChannel       *ioc,
         block_signals_pop ();
 
         if (is_fatal) {
-                g_debug ("GdmSignalHandler: Caught termination signal - exiting main loop");
-                if (handler->priv->main_loop != NULL) {
-                        g_main_loop_quit (handler->priv->main_loop);
+                if (handler->priv->fatal_func != NULL) {
+                        g_debug ("GdmSignalHandler: Caught termination signal - calling fatal func");
+                        handler->priv->fatal_func (handler->priv->fatal_data);
                 } else {
+                        g_debug ("GdmSignalHandler: Caught termination signal - exiting");
                         exit (1);
                 }
 
@@ -456,13 +458,14 @@ signal_list_free (GSList *list)
 }
 
 void
-gdm_signal_handler_set_main_loop (GdmSignalHandler *handler,
-                                  GMainLoop        *main_loop)
+gdm_signal_handler_set_fatal_func (GdmSignalHandler *handler,
+                                   GDestroyNotify    func,
+                                   gpointer          user_data)
 {
         g_return_if_fail (GDM_IS_SIGNAL_HANDLER (handler));
 
-        /* FIXME: take a ref */
-        handler->priv->main_loop = main_loop;
+        handler->priv->fatal_func = func;
+        handler->priv->fatal_data = user_data;
 }
 
 static void

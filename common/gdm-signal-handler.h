@@ -53,8 +53,9 @@ typedef struct
 GType               gdm_signal_handler_get_type                (void);
 
 GdmSignalHandler *  gdm_signal_handler_new                     (void);
-void                gdm_signal_handler_set_main_loop           (GdmSignalHandler    *handler,
-                                                                GMainLoop           *main_loop);
+void                gdm_signal_handler_set_fatal_func          (GdmSignalHandler    *handler,
+                                                                GDestroyNotify       func,
+                                                                gpointer             user_data);
 
 void                gdm_signal_handler_add_fatal               (GdmSignalHandler    *handler);
 guint               gdm_signal_handler_add                     (GdmSignalHandler    *handler,
