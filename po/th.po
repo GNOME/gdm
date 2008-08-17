@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-13 19:18+0700\n"
-"PO-Revision-Date: 2008-08-13 19:23+0700\n"
+"POT-Creation-Date: 2008-08-17 14:06+0700\n"
+"PO-Revision-Date: 2008-08-17 14:09+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -442,6 +442,10 @@ msgstr "root เท่านั้นที่ต้องการเรีย�
 msgid "GNOME Display Manager Session Worker"
 msgstr "ตัวดำเนินงานวาระของโปรแกรมจัดการการเข้าระบบของ GNOME"
 
+#: ../gui/simple-greeter/at-spi-registryd-wrapper.desktop.in.in.h:1
+msgid "AT SPI Registry Wrapper"
+msgstr "โปรแกรมครอบเรจิสตรี AT SPI"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:148
 msgid "Select System"
 msgstr "เลือกระบบ"
@@ -453,51 +457,6 @@ msgstr "XDMCP: ไม่สามารถสร้างบัฟเฟอร�
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:220
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: ไม่สามารถอ่านข้อมูลส่วนหัวของ XDMCP ได้"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.c:808
-#: ../gui/simple-greeter/gdm-greeter-panel.c:569
-msgid "Accessibility Preferences"
-msgstr "ปรับแต่งสิ่งอำนวยความสะดวก"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:1
-msgid "<b>Enable features that make your computer easier to use:</b>"
-msgstr "<b>เปิดใช้ความสามารถที่ทำให้คอมพิวเตอร์ของคุณใช้ง่ายยิ่งขึ้น:</b>"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:2
-msgid "Assistive Technology Preferences"
-msgstr "ปรับแต่งเทคโนโลยีสิ่งอำนวยความสะดวก"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:3
-msgid "_Hear text read aloud (Reader)"
-msgstr "_ฟังเสียงอ่านข้อความ (ด้วยโปรแกรมอ่านหน้าจอ)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:4
-msgid "_Ignore duplicate keypresses (Bounce Keys)"
-msgstr "ละเลยแป้นที่_กดซ้ำ (ด้วยตัวเลือกป้องกันการกดแป้นรัว)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:5
-msgid "_Make items larger (Magnifier)"
-msgstr "_ขยายส่วนต่างๆ ให้ใหญ่ขึ้น (ด้วยโปรแกรมแว่นขยาย)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:6
-msgid "_Only accept long held keypresses (Slow Keys)"
-msgstr "รับการกดปุ่มที่แ_ช่ไว้เท่านั้น (ด้วยตัวเลือกพิมพ์แบบช้า)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:7
-msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
-msgstr "_กดปุ่มลัดทีละปุ่ม (ด้วยตัวเลือกค้างปุ่มกด)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:8
-msgid "_See more contrast in colors (High Contrast)"
-msgstr "ใช้_สีที่ตัดกันมากขึ้น (ด้วยชุดตกแต่งสีตัดกัน)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:9
-msgid "_Type without the keyboard (On-screen Keyboard)"
-msgstr "_พิมพ์ข้อความโดยไม่มีแป้นพิมพ์ (ด้วยโปรแกรมแป้นพิมพ์บนจอ)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:10
-msgid "_Use a larger font size (Large Print)"
-msgstr "ใช้แบบ_อักษรขนาดใหญ่ขึ้น (ด้วยชุดตกแต่งอักษรใหญ่)"
 
 #: ../gui/simple-greeter/gdm-cell-renderer-timer.c:253
 msgid "Value"
@@ -586,6 +545,7 @@ msgid "Select language and click Log In"
 msgstr "เลือกภาษาแล้วคลิกที่ปุ่มเข้าระบบ"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1949
+#: ../gui/simple-greeter/gdm-simple-greeter.desktop.in.in.h:1
 msgid "Login Window"
 msgstr "หน้าจอเข้าระบบ"
 
@@ -621,7 +581,7 @@ msgstr "รุ่น"
 msgid "page 5"
 msgstr "หน้า 5"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:551
+#: ../gui/simple-greeter/gdm-greeter-panel.c:498
 msgid "Panel"
 msgstr "พาเนล"
 
@@ -629,11 +589,11 @@ msgstr "พาเนล"
 msgid "Languages"
 msgstr "ภาษา"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:264
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
 msgid "_Languages:"
 msgstr "_ภาษา:"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:265
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:274
 #: ../gui/simple-greeter/gdm-language-option-widget.c:235
 msgid "_Language:"
 msgstr "_ภาษา:"
@@ -817,51 +777,59 @@ msgid "Set to True to enable the sound settings manager plugin."
 msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้งเสียง"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+msgid "Set to True to enable the xrandr settings manager plugin."
+msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้ง xrandr"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
 msgid "Set to True to enable the xsettings settings manager plugin."
 msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้ง xsettings"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
 msgid ""
 "Set to a list of keyboard layouts to be shown by default at the login window."
 msgstr "ตั้งเป็นรายชื่อผังแป้นพิมพ์ที่จะแสดงโดยปริยายในหน้าต่างเข้าระบบ"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
 msgid "Set to a list of languages to be shown by default at the login window."
 msgstr "ตั้งเป็นรายชื่อภาษาที่จะแสดงโดยปริยายในหน้าต่างเข้าระบบ"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "ตั้งเป็นชื่อของไอคอนที่จะใช้เป็นโลโก้ของหน้าต่างต้อนรับ โดยใช้ชื่อที่อ้างในชุดตกแต่ง"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "Set to true to show the banner message text."
 msgstr "ตั้งเป็นค่าจริงถ้าต้องการแสดงข้อความพาดหัว"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
 msgid "Set to true to use compiz as the window manager."
 msgstr "ตั้งเป็นค่าจริงถ้าต้องการใช้ compiz เป็นโปรแกรมจัดการหน้าต่าง"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "Text banner message to show on the login window."
 msgstr "ข้อความพาดหัวที่จะแสดงในหน้าต่างเข้าระบบ"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the background settings manager plugin is enabled."
 msgstr "เปิดใช้ปลั๊กอินจัดการค่าตั้งพื้นหลัง"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr "เปิดใช้ปลั๊กอินจัดการค่าตั้งปุ่มสื่อผสม"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "เปิดใช้ปลั๊กอินจัดการค่าตั้งเสียง"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
+msgid "True if the xrandr settings manager plugin is enabled."
+msgstr "เปิดใช้ปลั๊กอินจัดการค่าตั้ง xrandr"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:37
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "เปิดใช้ปลั๊กอินจัดการค่าตั้ง xsettings"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:38
 msgid "Use compiz as the window manager"
 msgstr "ใช้ compiz เป็นโปรแกรมจัดการหน้าต่าง"
 
@@ -922,7 +890,7 @@ msgstr "เข้าระบบโดบอัตโนมัติหลัง
 msgid "Log in as %s"
 msgstr "เข้าระบบในนาม %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:554
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:555
 msgid "Currently logged in"
 msgstr "เข้าระบบอยู่"
 
@@ -1076,6 +1044,39 @@ msgstr "ตัวเลือกหลักๆ"
 #: ../utils/gdmflexiserver.c:759
 msgid "Unable to start new display"
 msgstr "ไม่สามารถเริ่มการทำงานดิสเพลย์ชุดใหม่"
+
+#~ msgid "Accessibility Preferences"
+#~ msgstr "ปรับแต่งสิ่งอำนวยความสะดวก"
+
+#~ msgid "<b>Enable features that make your computer easier to use:</b>"
+#~ msgstr "<b>เปิดใช้ความสามารถที่ทำให้คอมพิวเตอร์ของคุณใช้ง่ายยิ่งขึ้น:</b>"
+
+#~ msgid "Assistive Technology Preferences"
+#~ msgstr "ปรับแต่งเทคโนโลยีสิ่งอำนวยความสะดวก"
+
+#~ msgid "_Hear text read aloud (Reader)"
+#~ msgstr "_ฟังเสียงอ่านข้อความ (ด้วยโปรแกรมอ่านหน้าจอ)"
+
+#~ msgid "_Ignore duplicate keypresses (Bounce Keys)"
+#~ msgstr "ละเลยแป้นที่_กดซ้ำ (ด้วยตัวเลือกป้องกันการกดแป้นรัว)"
+
+#~ msgid "_Make items larger (Magnifier)"
+#~ msgstr "_ขยายส่วนต่างๆ ให้ใหญ่ขึ้น (ด้วยโปรแกรมแว่นขยาย)"
+
+#~ msgid "_Only accept long held keypresses (Slow Keys)"
+#~ msgstr "รับการกดปุ่มที่แ_ช่ไว้เท่านั้น (ด้วยตัวเลือกพิมพ์แบบช้า)"
+
+#~ msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
+#~ msgstr "_กดปุ่มลัดทีละปุ่ม (ด้วยตัวเลือกค้างปุ่มกด)"
+
+#~ msgid "_See more contrast in colors (High Contrast)"
+#~ msgstr "ใช้_สีที่ตัดกันมากขึ้น (ด้วยชุดตกแต่งสีตัดกัน)"
+
+#~ msgid "_Type without the keyboard (On-screen Keyboard)"
+#~ msgstr "_พิมพ์ข้อความโดยไม่มีแป้นพิมพ์ (ด้วยโปรแกรมแป้นพิมพ์บนจอ)"
+
+#~ msgid "_Use a larger font size (Large Print)"
+#~ msgstr "ใช้แบบ_อักษรขนาดใหญ่ขึ้น (ด้วยชุดตกแต่งอักษรใหญ่)"
 
 #~ msgid "Send the specified protocol command to GDM"
 #~ msgstr "ส่งคำสั่งโพรโทคอลที่ระบุไปยัง GDM"
