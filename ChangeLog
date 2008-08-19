@@ -1,5 +1,26 @@
 2008-08-19  William Jon McCann  <jmccann@redhat.com>
 
+	* gui/simple-greeter/gdm-chooser-widget.c
+	(translate_view_path_to_list_path),
+	(translate_list_path_to_view_path), (activate_from_item_id),
+	(get_path_to_active_row), (on_shrink_animation_complete),
+	(clear_selection), (activate_from_row), (get_selected_path),
+	(gdm_chooser_widget_activate_selected_item),
+	(gdm_chooser_widget_class_init), (on_row_activated),
+	(on_selection_changed), (gdm_chooser_widget_init),
+	(gdm_chooser_widget_add_item), (gdm_chooser_widget_remove_item),
+	(gdm_chooser_widget_activate_if_one_item),
+	(gdm_chooser_widget_loaded):
+	* gui/simple-greeter/gdm-chooser-widget.h:
+	* gui/simple-greeter/gdm-greeter-login-window.c (on_users_loaded),
+	(on_user_chosen), (load_theme):
+	* gui/simple-greeter/gdm-user-chooser-widget.c (on_users_loaded),
+	(load_users), (gdm_user_chooser_widget_constructor),
+	(gdm_user_chooser_widget_dispose):
+	Make activation of single item work a bit more reliably.
+
+2008-08-19  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/simple-greeter/gdm-chooser-widget.c (activate_if_one_item),
 	(gdm_chooser_widget_set_active_item),
 	(gdm_chooser_widget_set_activate_on_one_item):

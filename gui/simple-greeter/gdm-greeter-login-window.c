@@ -1362,12 +1362,21 @@ shutdown_button_clicked (GtkButton             *button,
 }
 
 static void
+on_users_loaded (GdmUserChooserWidget  *user_chooser,
+                 GdmGreeterLoginWindow *login_window)
+{
+        gdm_chooser_widget_activate_if_one_item (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser));
+}
+
+static void
 on_user_chosen (GdmUserChooserWidget  *user_chooser,
                 GdmGreeterLoginWindow *login_window)
 {
         char *user_name;
 
         user_name = gdm_user_chooser_widget_get_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser));
+        g_debug ("GdmGreeterLoginWindow: user chosen '%s'", user_name);
+
         if (user_name == NULL) {
                 return;
         }
@@ -1606,15 +1615,18 @@ load_theme (GdmGreeterLoginWindow *login_window)
         box = glade_xml_get_widget (login_window->priv->xml, "window-box");
         gtk_container_add (GTK_CONTAINER (login_window), box);
 
-        login_window->priv->user_chooser =
-                glade_xml_get_widget (login_window->priv->xml, "user-chooser");
-
+        login_window->priv->user_chooser = glade_xml_get_widget (login_window->priv->xml,
+                                                                 "user-chooser");
         if (login_window->priv->user_chooser == NULL) {
                 g_critical ("Userlist box not found");
         }
 
         gdm_user_chooser_widget_set_show_only_chosen (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
 
+        g_signal_connect (login_window->priv->user_chooser,
+                          "loaded",
+                          G_CALLBACK (on_users_loaded),
+                          login_window);
         g_signal_connect (login_window->priv->user_chooser,
                           "activated",
                           G_CALLBACK (on_user_chosen),

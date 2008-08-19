@@ -46,6 +46,8 @@ typedef struct
 {
         GtkAlignmentClass       parent_class;
 
+        void (* loaded)         (GdmChooserWidget *widget);
+
         void (* activated)      (GdmChooserWidget *widget);
         void (* deactivated)    (GdmChooserWidget *widget);
 } GdmChooserWidgetClass;
@@ -127,9 +129,10 @@ void           gdm_chooser_widget_set_hide_inactive_items       (GdmChooserWidge
 void           gdm_chooser_widget_activate_selected_item       (GdmChooserWidget          *widget);
 
 int            gdm_chooser_widget_get_number_of_items          (GdmChooserWidget          *widget);
-void           gdm_chooser_widget_set_activate_on_one_item     (GdmChooserWidget          *widget,
-                                                                gboolean                   should_activate);
+void           gdm_chooser_widget_activate_if_one_item         (GdmChooserWidget          *widget);
 void           gdm_chooser_widget_propagate_pending_key_events (GdmChooserWidget          *widget);
+
+void           gdm_chooser_widget_loaded                       (GdmChooserWidget          *widget);
 
 G_END_DECLS
 

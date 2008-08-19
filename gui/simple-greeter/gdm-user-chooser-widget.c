@@ -66,6 +66,8 @@ struct GdmUserChooserWidgetPrivate
         guint           show_guest_user : 1;
         guint           show_auto_user : 1;
         guint           show_normal_users : 1;
+
+        guint           load_idle_id;
 };
 
 enum {
@@ -383,22 +385,18 @@ on_users_loaded (GdmUserManager       *manager,
         }
 
         gtk_widget_grab_focus (GTK_WIDGET (widget));
-        gdm_chooser_widget_set_activate_on_one_item (GDM_CHOOSER_WIDGET (widget),
-                                                     TRUE);
+
+        gdm_chooser_widget_loaded (GDM_CHOOSER_WIDGET (widget));
 }
 
-static GObject *
-gdm_user_chooser_widget_constructor (GType                  type,
-                                     guint                  n_construct_properties,
-                                     GObjectConstructParam *construct_properties)
+static gboolean
+load_users (GdmUserChooserWidget *widget)
 {
-        GdmUserChooserWidget      *widget;
 
-        widget = GDM_USER_CHOOSER_WIDGET (G_OBJECT_CLASS (gdm_user_chooser_widget_parent_class)->constructor (type,
-                                                                                                                           n_construct_properties,
-                                                                                                                           construct_properties));
-
-        widget->priv->show_normal_users = !is_user_list_disabled (widget);
+        /* FIXME: make these construct properties */
+        gdm_user_chooser_widget_set_show_guest_user (widget, FALSE);
+        gdm_user_chooser_widget_set_show_auto_user (widget, FALSE);
+        gdm_user_chooser_widget_set_show_other_user (widget, TRUE);
 
         if (widget->priv->show_normal_users) {
                 widget->priv->manager = gdm_user_manager_ref_default ();
@@ -423,14 +421,28 @@ gdm_user_chooser_widget_constructor (GType                  type,
                                   G_CALLBACK (on_user_login_frequency_changed),
                                   widget);
         } else {
-                gdm_chooser_widget_set_activate_on_one_item (GDM_CHOOSER_WIDGET (widget),
-                                                             TRUE);
+                gdm_chooser_widget_loaded (GDM_CHOOSER_WIDGET (widget));
         }
 
-        /* FIXME: make these construct properties */
-        gdm_user_chooser_widget_set_show_guest_user (widget, FALSE);
-        gdm_user_chooser_widget_set_show_auto_user (widget, FALSE);
-        gdm_user_chooser_widget_set_show_other_user (widget, TRUE);
+        widget->priv->load_idle_id = 0;
+
+        return FALSE;
+}
+
+static GObject *
+gdm_user_chooser_widget_constructor (GType                  type,
+                                     guint                  n_construct_properties,
+                                     GObjectConstructParam *construct_properties)
+{
+        GdmUserChooserWidget      *widget;
+
+        widget = GDM_USER_CHOOSER_WIDGET (G_OBJECT_CLASS (gdm_user_chooser_widget_parent_class)->constructor (type,
+                                                                                                              n_construct_properties,
+                                                                                                              construct_properties));
+
+        widget->priv->show_normal_users = !is_user_list_disabled (widget);
+
+        widget->priv->load_idle_id = g_idle_add ((GSourceFunc)load_users, widget);
 
         return G_OBJECT (widget);
 }
@@ -443,6 +455,11 @@ gdm_user_chooser_widget_dispose (GObject *object)
         widget = GDM_USER_CHOOSER_WIDGET (object);
 
         G_OBJECT_CLASS (gdm_user_chooser_widget_parent_class)->dispose (object);
+
+        if (widget->priv->load_idle_id > 0) {
+                g_source_remove (widget->priv->load_idle_id);
+                widget->priv->load_idle_id = 0;
+        }
 
         if (widget->priv->logged_in_pixbuf != NULL) {
                 g_object_unref (widget->priv->logged_in_pixbuf);
