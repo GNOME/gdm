@@ -68,6 +68,7 @@ typedef struct _GdmAppletData
         guint           user_notify_id;
         GQuark          user_menu_item_quark;
         gint8           pixel_size;
+        gint            panel_size;
         GtkIconSize     icon_size;
 } GdmAppletData;
 
@@ -78,6 +79,8 @@ typedef struct _SelectorResponseData
 } SelectorResponseData;
 
 static GtkTooltips *tooltips = NULL;
+
+static void reset_icon (GdmAppletData *adata);
 
 static gboolean applet_factory (PanelApplet   *applet,
                                 const char    *iid,
@@ -397,7 +400,6 @@ applet_size_allocate_cb (GtkWidget     *widget,
         GList            *children;
         GtkWidget        *top_item;
         PanelAppletOrient orient;
-        gint              item_border;
         gint              pixel_size;
         gdouble           text_angle;
         GtkPackDirection  pack_direction;
@@ -415,18 +417,15 @@ applet_size_allocate_cb (GtkWidget     *widget,
 
         orient = panel_applet_get_orient (PANEL_APPLET (widget));
 
-        item_border = (MAX (top_item->style->xthickness,
-                            top_item->style->ythickness) * 2);
-
         switch (orient) {
         case PANEL_APPLET_ORIENT_UP:
         case PANEL_APPLET_ORIENT_DOWN:
                 gtk_widget_set_size_request (top_item, -1, allocation->height);
-                pixel_size = allocation->height - item_border;
+                pixel_size = allocation->height - top_item->style->ythickness * 2;
                 break;
         case PANEL_APPLET_ORIENT_LEFT:
                 gtk_widget_set_size_request (top_item, allocation->width, -1);
-                pixel_size = allocation->width - item_border;
+                pixel_size = allocation->width - top_item->style->xthickness * 2;
                 pack_direction = GTK_PACK_DIRECTION_TTB;
                 text_angle = 270.0;
                 text_xalign = 0.5;
@@ -434,7 +433,7 @@ applet_size_allocate_cb (GtkWidget     *widget,
                 break;
         case PANEL_APPLET_ORIENT_RIGHT:
                 gtk_widget_set_size_request (top_item, allocation->width, -1);
-                pixel_size = allocation->width - item_border;
+                pixel_size = allocation->width - top_item->style->xthickness * 2;
                 pack_direction = GTK_PACK_DIRECTION_BTT;
                 text_angle = 90.0;
                 text_xalign = 0.5;
@@ -454,6 +453,11 @@ applet_size_allocate_cb (GtkWidget     *widget,
                                            text_angle,
                                            text_xalign,
                                            text_yalign);
+
+        if (adata->panel_size != pixel_size) {
+                adata->panel_size = pixel_size;
+                reset_icon (adata);
+        }
 }
 
 
@@ -976,7 +980,7 @@ reset_icon (GdmAppletData *adata)
                 return;
         }
 
-        pixbuf = gdm_user_render_icon (adata->user, 24);
+        pixbuf = gdm_user_render_icon (adata->user, adata->panel_size);
         if (pixbuf != NULL) {
                 image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (adata->menuitem));
                 gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
@@ -1064,6 +1068,7 @@ fill_applet (PanelApplet *applet)
 
         adata = g_new0 (GdmAppletData, 1);
         adata->applet = applet;
+        adata->panel_size = 24;
 
         /* Until we add user selecting to GDM */
         adata->active_only = TRUE;
