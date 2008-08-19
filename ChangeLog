@@ -1,6 +1,18 @@
 2008-08-19  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/gdm-chooser-widget.c (activate_if_one_item),
+	(gdm_chooser_widget_set_active_item),
+	(gdm_chooser_widget_set_activate_on_one_item):
+	* gui/simple-greeter/gdm-chooser-widget.h:
+	* gui/simple-greeter/gdm-user-chooser-widget.c (on_users_loaded),
+	(gdm_user_chooser_widget_constructor):
+	Rename to gdm_chooser_widget_set_activate_on_one_item to make it
+	clear that it is basically a property.  Set the property before
+	adding items.
+
+2008-08-19  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/simple-greeter/gdm-chooser-widget.c (activate_if_one_item),
 	(_grab_focus), (on_grow_animation_complete),
 	(skip_resize_animation), (gdm_chooser_widget_show),
 	(gdm_chooser_widget_focus), (gdm_chooser_widget_focus_in_event):

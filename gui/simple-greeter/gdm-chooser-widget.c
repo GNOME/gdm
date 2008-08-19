@@ -598,14 +598,18 @@ activate_if_one_item (GdmChooserWidget *widget)
 {
         char *id;
 
+        g_debug ("GdmChooserWidget: attempting to activate single item");
+
         if (gdm_chooser_widget_get_number_of_items (widget) != 1) {
+                g_debug ("GdmChooserWidget: unable to activate single item - has %d items", gdm_chooser_widget_get_number_of_items (widget));
                 return FALSE;
         }
 
-        g_debug ("GdmChooserWidget: activating single item");
         id = get_first_item (widget);
-        gdm_chooser_widget_set_active_item (widget, id);
-        g_free (id);
+        if (id != NULL) {
+                gdm_chooser_widget_set_active_item (widget, id);
+                g_free (id);
+        }
 
         return FALSE;
 }
@@ -933,6 +937,8 @@ gdm_chooser_widget_set_active_item (GdmChooserWidget *widget,
                                     const char       *id)
 {
         g_return_if_fail (GDM_IS_CHOOSER_WIDGET (widget));
+
+        g_debug ("GdmChooserWidget: setting active item '%s'", id);
 
         if (id != NULL) {
                 activate_from_item_id (widget, id);
@@ -2298,8 +2304,8 @@ gdm_chooser_widget_get_number_of_items (GdmChooserWidget *widget)
 }
 
 void
-gdm_chooser_widget_activate_on_one_item (GdmChooserWidget *widget,
-                                         gboolean          should_activate)
+gdm_chooser_widget_set_activate_on_one_item (GdmChooserWidget *widget,
+                                             gboolean          should_activate)
 {
         widget->priv->activate_on_one_item = should_activate;
 

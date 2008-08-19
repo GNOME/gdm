@@ -65,71 +65,71 @@ typedef gboolean (*GdmChooserUpdateForeachFunc)          (GdmChooserWidget *widg
                                                           gboolean         *is_separate,
                                                           gpointer          data);
 
-GType                  gdm_chooser_widget_get_type               (void);
-GtkWidget *            gdm_chooser_widget_new                    (const char *unactive_label,
-                                                                  const char *active_label);
+GType        gdm_chooser_widget_get_type                     (void);
+GtkWidget *  gdm_chooser_widget_new                          (const char       *unactive_label,
+                                                              const char       *active_label);
 
-void                   gdm_chooser_widget_add_item               (GdmChooserWidget *widget,
-                                                                  const char       *id,
-                                                                  GdkPixbuf        *image,
-                                                                  const char       *name,
-                                                                  const char       *comment,
-                                                                  gulong            priority,
-                                                                  gboolean          is_in_use,
-                                                                  gboolean          keep_separate);
+void         gdm_chooser_widget_add_item                     (GdmChooserWidget *widget,
+                                                              const char       *id,
+                                                              GdkPixbuf        *image,
+                                                              const char       *name,
+                                                              const char       *comment,
+                                                              gulong            priority,
+                                                              gboolean          is_in_use,
+                                                              gboolean          keep_separate);
 
-void                   gdm_chooser_widget_update_foreach_item    (GdmChooserWidget           *widget,
-                                                                  GdmChooserUpdateForeachFunc cb,
-                                                                  gpointer                    data);
+void         gdm_chooser_widget_update_foreach_item          (GdmChooserWidget           *widget,
+                                                              GdmChooserUpdateForeachFunc cb,
+                                                              gpointer                    data);
 
-void                   gdm_chooser_widget_update_item            (GdmChooserWidget *widget,
-                                                                  const char       *id,
-                                                                  GdkPixbuf        *new_image,
-                                                                  const char       *new_name,
-                                                                  const char       *new_comment,
-                                                                  gulong            priority,
-                                                                  gboolean          new_in_use,
-                                                                  gboolean          new_is_separate);
+void         gdm_chooser_widget_update_item                  (GdmChooserWidget *widget,
+                                                              const char       *id,
+                                                              GdkPixbuf        *new_image,
+                                                              const char       *new_name,
+                                                              const char       *new_comment,
+                                                              gulong            priority,
+                                                              gboolean          new_in_use,
+                                                              gboolean          new_is_separate);
 
-void                   gdm_chooser_widget_remove_item            (GdmChooserWidget *widget,
-                                                                  const char       *id);
+void          gdm_chooser_widget_remove_item                  (GdmChooserWidget *widget,
+                                                               const char       *id);
 
-gboolean               gdm_chooser_widget_lookup_item            (GdmChooserWidget *widget,
-                                                                  const char       *id,
-                                                                  GdkPixbuf       **image,
-                                                                  char            **name,
-                                                                  char            **comment,
-                                                                  gulong           *priority,
-                                                                  gboolean         *is_in_use,
-                                                                  gboolean         *is_separate);
+gboolean      gdm_chooser_widget_lookup_item                  (GdmChooserWidget           *widget,
+                                                               const char                 *id,
+                                                               GdkPixbuf                 **image,
+                                                               char                      **name,
+                                                               char                      **comment,
+                                                               gulong                     *priority,
+                                                               gboolean                   *is_in_use,
+                                                               gboolean                   *is_separate);
 
-char *                 gdm_chooser_widget_get_active_item        (GdmChooserWidget *widget);
-void                   gdm_chooser_widget_set_active_item        (GdmChooserWidget *widget,
-                                                                  const char       *item);
+char *         gdm_chooser_widget_get_active_item              (GdmChooserWidget          *widget);
+void           gdm_chooser_widget_set_active_item              (GdmChooserWidget          *widget,
+                                                                const char                *item);
 
-void                   gdm_chooser_widget_set_item_in_use        (GdmChooserWidget *widget,
-                                                                  const char       *id,
-                                                                  gboolean          is_in_use);
-void                   gdm_chooser_widget_set_item_priority      (GdmChooserWidget *widget,
-                                                                  const char       *id,
-                                                                  gulong            priority);
-void                   gdm_chooser_widget_set_item_timer         (GdmChooserWidget *widget,
-                                                                  const char       *id,
-                                                                  gulong            timeout);
-void                   gdm_chooser_widget_set_in_use_message     (GdmChooserWidget *widget,
-                                                                  const char       *message);
+void           gdm_chooser_widget_set_item_in_use              (GdmChooserWidget          *widget,
+                                                                const char                *id,
+                                                                gboolean                   is_in_use);
+void           gdm_chooser_widget_set_item_priority            (GdmChooserWidget          *widget,
+                                                                const char                *id,
+                                                                gulong                     priority);
+void           gdm_chooser_widget_set_item_timer               (GdmChooserWidget          *widget,
+                                                                const char                *id,
+                                                                gulong                     timeout);
+void           gdm_chooser_widget_set_in_use_message           (GdmChooserWidget          *widget,
+                                                                const char                *message);
 
-void                   gdm_chooser_widget_set_separator_position  (GdmChooserWidget         *widget,
-                                                                   GdmChooserWidgetPosition  position);
-void                   gdm_chooser_widget_set_hide_inactive_items (GdmChooserWidget         *widget,
-                                                                   gboolean                  should_hide);
+void           gdm_chooser_widget_set_separator_position        (GdmChooserWidget         *widget,
+                                                                 GdmChooserWidgetPosition  position);
+void           gdm_chooser_widget_set_hide_inactive_items       (GdmChooserWidget         *widget,
+                                                                 gboolean                  should_hide);
 
-void                   gdm_chooser_widget_activate_selected_item (GdmChooserWidget *widget);
+void           gdm_chooser_widget_activate_selected_item       (GdmChooserWidget          *widget);
 
-int                    gdm_chooser_widget_get_number_of_items    (GdmChooserWidget *widget);
-void                   gdm_chooser_widget_activate_on_one_item   (GdmChooserWidget *widget,
-                                                                  gboolean          should_activate);
-void                   gdm_chooser_widget_propagate_pending_key_events (GdmChooserWidget *widget);
+int            gdm_chooser_widget_get_number_of_items          (GdmChooserWidget          *widget);
+void           gdm_chooser_widget_set_activate_on_one_item     (GdmChooserWidget          *widget,
+                                                                gboolean                   should_activate);
+void           gdm_chooser_widget_propagate_pending_key_events (GdmChooserWidget          *widget);
 
 G_END_DECLS
 

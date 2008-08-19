@@ -383,8 +383,8 @@ on_users_loaded (GdmUserManager       *manager,
         }
 
         gtk_widget_grab_focus (GTK_WIDGET (widget));
-        gdm_chooser_widget_activate_on_one_item (GDM_CHOOSER_WIDGET (widget),
-                                                 TRUE);
+        gdm_chooser_widget_set_activate_on_one_item (GDM_CHOOSER_WIDGET (widget),
+                                                     TRUE);
 }
 
 static GObject *
@@ -397,11 +397,6 @@ gdm_user_chooser_widget_constructor (GType                  type,
         widget = GDM_USER_CHOOSER_WIDGET (G_OBJECT_CLASS (gdm_user_chooser_widget_parent_class)->constructor (type,
                                                                                                                            n_construct_properties,
                                                                                                                            construct_properties));
-
-        /* FIXME: make these construct properties */
-        gdm_user_chooser_widget_set_show_guest_user (widget, FALSE);
-        gdm_user_chooser_widget_set_show_auto_user (widget, FALSE);
-        gdm_user_chooser_widget_set_show_other_user (widget, TRUE);
 
         widget->priv->show_normal_users = !is_user_list_disabled (widget);
 
@@ -428,9 +423,14 @@ gdm_user_chooser_widget_constructor (GType                  type,
                                   G_CALLBACK (on_user_login_frequency_changed),
                                   widget);
         } else {
-                gdm_chooser_widget_activate_on_one_item (GDM_CHOOSER_WIDGET (widget),
-                                                         TRUE);
+                gdm_chooser_widget_set_activate_on_one_item (GDM_CHOOSER_WIDGET (widget),
+                                                             TRUE);
         }
+
+        /* FIXME: make these construct properties */
+        gdm_user_chooser_widget_set_show_guest_user (widget, FALSE);
+        gdm_user_chooser_widget_set_show_auto_user (widget, FALSE);
+        gdm_user_chooser_widget_set_show_other_user (widget, TRUE);
 
         return G_OBJECT (widget);
 }
