@@ -118,8 +118,20 @@ PKG_CHECK_MODULES(POLKIT_GNOME,
         polkit-gnome >= $POLICYKIT_REQUIRED_VERSION,
         have_polkit=yes,
         have_polkit=no)
-if test "x$have_polkit" = "xyes" ; then
-       AC_DEFINE(HAVE_POLKIT_GNOME, [], [Define if we have polkit])
+
+AC_ARG_ENABLE([polkit],
+              AS_HELP_STRING([--enable-polkit],
+                             [Enable PolicyKit support @<:@default=auto@:>@]),
+              enable_polkit=$enableval, enable_polkit=auto)
+
+if test "x$enable_polkit" != "xno"; then
+  if test "x$enable_polkit" = "xyes" -a "x$have_polkit" = "xno"; then
+    AC_MSG_ERROR([PolicyKit support explicitly requested but dependencies not found])
+  fi
+
+  if test "x$have_polkit" = "xyes" ; then
+    AC_DEFINE(HAVE_POLKIT_GNOME, [], [Define if we have polkit])
+  fi
 fi
 AM_CONDITIONAL(HAVE_POLKIT_GNOME, test x$have_polkit = xyes)
 AC_SUBST(HAVE_POLKIT_GNOME)
