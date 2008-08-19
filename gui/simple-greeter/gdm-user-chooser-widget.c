@@ -257,25 +257,182 @@ is_user_list_disabled (GdmUserChooserWidget *widget)
         return result;
 }
 
+static void
+add_user (GdmUserChooserWidget *widget,
+          GdmUser              *user)
+{
+        GdkPixbuf    *pixbuf;
+        char         *tooltip;
+        gboolean      is_logged_in;
+
+        if (!widget->priv->show_normal_users) {
+                return;
+        }
+
+        pixbuf = gdm_user_render_icon (user, ICON_SIZE);
+        if (pixbuf == NULL && widget->priv->stock_person_pixbuf != NULL) {
+                pixbuf = g_object_ref (widget->priv->stock_person_pixbuf);
+        }
+
+        tooltip = g_strdup_printf (_("Log in as %s"),
+                                   gdm_user_get_user_name (user));
+
+        is_logged_in = gdm_user_get_num_sessions (user) > 0;
+
+        g_debug ("GdmUserChooserWidget: User added name:%s logged-in:%d pixbuf:%p",
+                 gdm_user_get_user_name (user),
+                 is_logged_in,
+                 pixbuf);
+
+        gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
+                                     gdm_user_get_user_name (user),
+                                     pixbuf,
+                                     gdm_user_get_real_name (user),
+                                     tooltip,
+                                     gdm_user_get_login_frequency (user),
+                                     is_logged_in,
+                                     FALSE);
+        g_free (tooltip);
+
+        if (pixbuf != NULL) {
+                g_object_unref (pixbuf);
+        }
+}
+
+static void
+on_user_added (GdmUserManager       *manager,
+               GdmUser              *user,
+               GdmUserChooserWidget *widget)
+{
+        /* wait for all users to be loaded */
+        if (! widget->priv->loaded) {
+                return;
+        }
+        add_user (widget, user);
+}
+
+static void
+on_user_removed (GdmUserManager       *manager,
+                 GdmUser              *user,
+                 GdmUserChooserWidget *widget)
+{
+        const char *user_name;
+
+        g_debug ("GdmUserChooserWidget: User removed: %s", gdm_user_get_user_name (user));
+        /* wait for all users to be loaded */
+        if (! widget->priv->loaded) {
+                return;
+        }
+
+        user_name = gdm_user_get_user_name (user);
+
+        gdm_chooser_widget_remove_item (GDM_CHOOSER_WIDGET (widget),
+                                        user_name);
+}
+
+static void
+on_user_is_logged_in_changed (GdmUserManager       *manager,
+                              GdmUser              *user,
+                              GdmUserChooserWidget *widget)
+{
+        const char *user_name;
+        gboolean    is_logged_in;
+
+        g_debug ("GdmUserChooserWidget: User logged in changed: %s", gdm_user_get_user_name (user));
+
+        user_name = gdm_user_get_user_name (user);
+        is_logged_in = gdm_user_get_num_sessions (user) > 0;
+
+        gdm_chooser_widget_set_item_in_use (GDM_CHOOSER_WIDGET (widget),
+                                            user_name,
+                                            is_logged_in);
+}
+
+static void
+on_user_login_frequency_changed (GdmUserManager       *manager,
+                                 GdmUser              *user,
+                                 GdmUserChooserWidget *widget)
+{
+        const char *user_name;
+        gulong      freq;
+
+        g_debug ("GdmUserChooserWidget: User login frequency changed: %s", gdm_user_get_user_name (user));
+
+        user_name = gdm_user_get_user_name (user);
+        freq = gdm_user_get_login_frequency (user);
+
+        gdm_chooser_widget_set_item_priority (GDM_CHOOSER_WIDGET (widget),
+                                              user_name,
+                                              freq);
+}
+
+static void
+on_users_loaded (GdmUserManager       *manager,
+                 GdmUserChooserWidget *widget)
+{
+        GSList *users;
+
+        widget->priv->loaded = TRUE;
+
+        g_debug ("GdmUserChooserWidget: Users loaded");
+
+        users = gdm_user_manager_list_users (manager);
+        while (users != NULL) {
+                add_user (widget, users->data);
+                users = g_slist_delete_link (users, users);
+        }
+
+        gtk_widget_grab_focus (GTK_WIDGET (widget));
+        gdm_chooser_widget_activate_on_one_item (GDM_CHOOSER_WIDGET (widget),
+                                                 TRUE);
+}
+
 static GObject *
 gdm_user_chooser_widget_constructor (GType                  type,
                                      guint                  n_construct_properties,
                                      GObjectConstructParam *construct_properties)
 {
-        GdmUserChooserWidget      *user_chooser_widget;
+        GdmUserChooserWidget      *widget;
 
-        user_chooser_widget = GDM_USER_CHOOSER_WIDGET (G_OBJECT_CLASS (gdm_user_chooser_widget_parent_class)->constructor (type,
+        widget = GDM_USER_CHOOSER_WIDGET (G_OBJECT_CLASS (gdm_user_chooser_widget_parent_class)->constructor (type,
                                                                                                                            n_construct_properties,
                                                                                                                            construct_properties));
 
         /* FIXME: make these construct properties */
-        gdm_user_chooser_widget_set_show_guest_user (user_chooser_widget, FALSE);
-        gdm_user_chooser_widget_set_show_auto_user (user_chooser_widget, FALSE);
-        gdm_user_chooser_widget_set_show_other_user (user_chooser_widget, TRUE);
+        gdm_user_chooser_widget_set_show_guest_user (widget, FALSE);
+        gdm_user_chooser_widget_set_show_auto_user (widget, FALSE);
+        gdm_user_chooser_widget_set_show_other_user (widget, TRUE);
 
-        user_chooser_widget->priv->show_normal_users = !is_user_list_disabled (user_chooser_widget);
+        widget->priv->show_normal_users = !is_user_list_disabled (widget);
 
-        return G_OBJECT (user_chooser_widget);
+        if (widget->priv->show_normal_users) {
+                widget->priv->manager = gdm_user_manager_ref_default ();
+                g_signal_connect (widget->priv->manager,
+                                  "user-added",
+                                  G_CALLBACK (on_user_added),
+                                  widget);
+                g_signal_connect (widget->priv->manager,
+                                  "user-removed",
+                                  G_CALLBACK (on_user_removed),
+                                  widget);
+                g_signal_connect (widget->priv->manager,
+                                  "users-loaded",
+                                  G_CALLBACK (on_users_loaded),
+                                  widget);
+                g_signal_connect (widget->priv->manager,
+                                  "user-is-logged-in-changed",
+                                  G_CALLBACK (on_user_is_logged_in_changed),
+                                  widget);
+                g_signal_connect (widget->priv->manager,
+                                  "user-login-frequency-changed",
+                                  G_CALLBACK (on_user_login_frequency_changed),
+                                  widget);
+        } else {
+                gdm_chooser_widget_activate_on_one_item (GDM_CHOOSER_WIDGET (widget),
+                                                         TRUE);
+        }
+
+        return G_OBJECT (widget);
 }
 
 static void
@@ -301,7 +458,8 @@ gdm_user_chooser_widget_dispose (GObject *object)
 static void
 gdm_user_chooser_widget_class_init (GdmUserChooserWidgetClass *klass)
 {
-        GObjectClass          *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+
         object_class->get_property = gdm_user_chooser_widget_get_property;
         object_class->set_property = gdm_user_chooser_widget_set_property;
         object_class->constructor = gdm_user_chooser_widget_constructor;
@@ -415,136 +573,6 @@ setup_icons (GdmUserChooserWidget *widget)
 }
 
 static void
-add_user (GdmUserChooserWidget *widget,
-          GdmUser              *user)
-{
-        GdkPixbuf    *pixbuf;
-        char         *tooltip;
-        gboolean      is_logged_in;
-
-        if (!widget->priv->show_normal_users) {
-                return;
-        }
-
-        pixbuf = gdm_user_render_icon (user, ICON_SIZE);
-        if (pixbuf == NULL && widget->priv->stock_person_pixbuf != NULL) {
-                pixbuf = g_object_ref (widget->priv->stock_person_pixbuf);
-        }
-
-        tooltip = g_strdup_printf (_("Log in as %s"),
-                                   gdm_user_get_user_name (user));
-
-        is_logged_in = gdm_user_get_num_sessions (user) > 0;
-
-        g_debug ("GdmUserChooserWidget: User added name:%s logged-in:%d pixbuf:%p",
-                 gdm_user_get_user_name (user),
-                 is_logged_in,
-                 pixbuf);
-
-        gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
-                                     gdm_user_get_user_name (user),
-                                     pixbuf,
-                                     gdm_user_get_real_name (user),
-                                     tooltip,
-                                     gdm_user_get_login_frequency (user),
-                                     is_logged_in,
-                                     FALSE);
-        g_free (tooltip);
-
-        if (pixbuf != NULL) {
-                g_object_unref (pixbuf);
-        }
-}
-
-static void
-on_users_loaded (GdmUserManager       *manager,
-                 GdmUserChooserWidget *widget)
-{
-        GSList *users;
-
-        widget->priv->loaded = TRUE;
-
-        g_debug ("GdmUserChooserWidget: Users loaded");
-
-        users = gdm_user_manager_list_users (manager);
-        while (users != NULL) {
-                add_user (widget, users->data);
-                users = g_slist_delete_link (users, users);
-        }
-
-        gtk_widget_grab_focus (widget);
-        gdm_chooser_widget_activate_on_one_item (GDM_CHOOSER_WIDGET (widget),
-                                                 TRUE);
-}
-
-static void
-on_user_added (GdmUserManager       *manager,
-               GdmUser              *user,
-               GdmUserChooserWidget *widget)
-{
-        /* wait for all users to be loaded */
-        if (! widget->priv->loaded) {
-                return;
-        }
-        add_user (widget, user);
-}
-
-static void
-on_user_removed (GdmUserManager       *manager,
-                 GdmUser              *user,
-                 GdmUserChooserWidget *widget)
-{
-        const char *user_name;
-
-        g_debug ("GdmUserChooserWidget: User removed: %s", gdm_user_get_user_name (user));
-        /* wait for all users to be loaded */
-        if (! widget->priv->loaded) {
-                return;
-        }
-
-        user_name = gdm_user_get_user_name (user);
-
-        gdm_chooser_widget_remove_item (GDM_CHOOSER_WIDGET (widget),
-                                        user_name);
-}
-
-static void
-on_user_is_logged_in_changed (GdmUserManager       *manager,
-                              GdmUser              *user,
-                              GdmUserChooserWidget *widget)
-{
-        const char *user_name;
-        gboolean    is_logged_in;
-
-        g_debug ("GdmUserChooserWidget: User logged in changed: %s", gdm_user_get_user_name (user));
-
-        user_name = gdm_user_get_user_name (user);
-        is_logged_in = gdm_user_get_num_sessions (user) > 0;
-
-        gdm_chooser_widget_set_item_in_use (GDM_CHOOSER_WIDGET (widget),
-                                            user_name,
-                                            is_logged_in);
-}
-
-static void
-on_user_login_frequency_changed (GdmUserManager       *manager,
-                                 GdmUser              *user,
-                                 GdmUserChooserWidget *widget)
-{
-        const char *user_name;
-        gulong      freq;
-
-        g_debug ("GdmUserChooserWidget: User login frequency changed: %s", gdm_user_get_user_name (user));
-
-        user_name = gdm_user_get_user_name (user);
-        freq = gdm_user_get_login_frequency (user);
-
-        gdm_chooser_widget_set_item_priority (GDM_CHOOSER_WIDGET (widget),
-                                              user_name,
-                                              freq);
-}
-
-static void
 gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
 {
         widget->priv = GDM_USER_CHOOSER_WIDGET_GET_PRIVATE (widget);
@@ -553,28 +581,6 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
                                                    GDM_CHOOSER_WIDGET_POSITION_BOTTOM);
         gdm_chooser_widget_set_in_use_message (GDM_CHOOSER_WIDGET (widget),
                                                _("Currently logged in"));
-
-        widget->priv->manager = gdm_user_manager_ref_default ();
-        g_signal_connect (widget->priv->manager,
-                          "user-added",
-                          G_CALLBACK (on_user_added),
-                          widget);
-        g_signal_connect (widget->priv->manager,
-                          "user-removed",
-                          G_CALLBACK (on_user_removed),
-                          widget);
-        g_signal_connect (widget->priv->manager,
-                          "users-loaded",
-                          G_CALLBACK (on_users_loaded),
-                          widget);
-        g_signal_connect (widget->priv->manager,
-                          "user-is-logged-in-changed",
-                          G_CALLBACK (on_user_is_logged_in_changed),
-                          widget);
-        g_signal_connect (widget->priv->manager,
-                          "user-login-frequency-changed",
-                          G_CALLBACK (on_user_login_frequency_changed),
-                          widget);
 
         setup_icons (widget);
 }

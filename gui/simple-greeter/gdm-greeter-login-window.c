@@ -129,7 +129,6 @@ struct GdmGreeterLoginWindowPrivate
         char            *timed_login_username;
         guint            timed_login_timeout_id;
 
-        guint            animation_timeout_id;
         guint            sensitize_power_buttons_timeout_id;
 
         guint            login_button_handler_id;
@@ -243,6 +242,8 @@ set_focus (GdmGreeterLoginWindow *login_window)
 
         if (GTK_WIDGET_REALIZED (entry) && ! GTK_WIDGET_HAS_FOCUS (entry)) {
                 gtk_widget_grab_focus (entry);
+        } else if (GTK_WIDGET_REALIZED (login_window->priv->user_chooser) && ! GTK_WIDGET_HAS_FOCUS (login_window->priv->user_chooser)) {
+                gtk_widget_grab_focus (login_window->priv->user_chooser);
         }
 }
 

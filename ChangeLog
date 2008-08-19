@@ -1,3 +1,19 @@
+2008-08-19  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/simple-greeter/gdm-chooser-widget.c (activate_if_one_item),
+	(_grab_focus), (on_grow_animation_complete),
+	(skip_resize_animation), (gdm_chooser_widget_show),
+	(gdm_chooser_widget_focus), (gdm_chooser_widget_focus_in_event):
+	* gui/simple-greeter/gdm-greeter-login-window.c (set_focus):
+	* gui/simple-greeter/gdm-user-chooser-widget.c (add_user),
+	(on_user_added), (on_user_removed), (on_user_is_logged_in_changed),
+	(on_user_login_frequency_changed), (on_users_loaded),
+	(gdm_user_chooser_widget_constructor),
+	(gdm_user_chooser_widget_class_init),
+	(gdm_user_chooser_widget_init):
+	Don't load the user manager if local users are disabled.
+	Fix focus handling.
+
 2008-08-18  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/gdm-simple-greeter.schemas.in:

@@ -87,7 +87,6 @@ struct GdmChooserWidgetPrivate
 
         guint                    update_idle_id;
         guint                    timer_animation_timeout_id;
-        guint                    activate_idle_id;
 
         guint32                  should_hide_inactive_items : 1;
         guint32                  emit_activated_after_resize_animation : 1;
@@ -599,17 +598,36 @@ activate_if_one_item (GdmChooserWidget *widget)
 {
         char *id;
 
-        widget->priv->activate_idle_id = 0;
-
         if (gdm_chooser_widget_get_number_of_items (widget) != 1) {
                 return FALSE;
         }
 
+        g_debug ("GdmChooserWidget: activating single item");
         id = get_first_item (widget);
         gdm_chooser_widget_set_active_item (widget, id);
         g_free (id);
 
         return FALSE;
+}
+
+static void
+_grab_focus (GtkWidget *widget)
+{
+        GtkWidget *foc_widget;
+
+        foc_widget = GDM_CHOOSER_WIDGET (widget)->priv->items_view;
+        g_debug ("GdmChooserWidget: grabbing focus");
+        if (! GTK_WIDGET_REALIZED (foc_widget)) {
+                g_debug ("GdmChooserWidget: not grabbing focus - not realized");
+                return;
+        }
+
+        if (GTK_WIDGET_HAS_FOCUS (foc_widget)) {
+                g_debug ("GdmChooserWidget: not grabbing focus - already has it");
+                return;
+        }
+
+        gtk_widget_grab_focus (foc_widget);
 }
 
 static void
@@ -621,7 +639,7 @@ on_grow_animation_complete (GdmScrollableWidget *scrollable_widget,
         widget->priv->was_fully_grown = TRUE;
         gtk_tree_view_set_enable_search (GTK_TREE_VIEW (widget->priv->items_view), TRUE);
 
-        gtk_widget_grab_focus (GTK_WIDGET (widget));
+        _grab_focus (GTK_WIDGET (widget));
 }
 
 static int
@@ -724,7 +742,7 @@ skip_resize_animation (GdmChooserWidget *widget)
                 gtk_tree_view_set_enable_search (GTK_TREE_VIEW (widget->priv->items_view), TRUE);
                 widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
                 widget->priv->was_fully_grown = FALSE;
-                gtk_widget_grab_focus (GTK_WIDGET (widget));
+                _grab_focus (GTK_WIDGET (widget));
         }
 }
 
@@ -1029,6 +1047,7 @@ static void
 gdm_chooser_widget_show (GtkWidget *widget)
 {
         skip_resize_animation (GDM_CHOOSER_WIDGET (widget));
+
         GTK_WIDGET_CLASS (gdm_chooser_widget_parent_class)->show (widget);
 }
 
@@ -1062,10 +1081,12 @@ gdm_chooser_widget_focus (GtkWidget        *widget,
          *    2) if it doesn't already have focus, then grab it
          */
         if (GTK_CONTAINER (widget)->focus_child != NULL) {
+                g_debug ("GdmChooserWidget: not focusing - focus child not null");
                 return FALSE;
         }
 
-        gtk_widget_grab_focus (GDM_CHOOSER_WIDGET (widget)->priv->items_view);
+        _grab_focus (widget);
+
         return TRUE;
 }
 
@@ -1076,7 +1097,7 @@ gdm_chooser_widget_focus_in_event (GtkWidget     *widget,
         /* We don't ever want the chooser widget itself to have focus.
          * Focus should always go to the tree view.
          */
-        gtk_widget_grab_focus (GDM_CHOOSER_WIDGET (widget)->priv->items_view);
+        _grab_focus (widget);
 
         return FALSE;
 }
