@@ -6,7 +6,7 @@ AC_INIT([gdm],
 
 AC_CONFIG_SRCDIR([daemon/gdm-manager.c])
 
-AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-bzip2])
+AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-bzip2 -Wall])
 
 AM_MAINTAINER_MODE
 
@@ -163,8 +163,9 @@ dnl ---------------------------------------------------------------------------
 dnl - Configuration file stuff
 dnl ---------------------------------------------------------------------------
 
-AC_ARG_WITH(sysconfsubdir, AC_HELP_STRING([--with-sysconfsubdir],
-            [directory name used under sysconfdir, default=gdm]),
+AC_ARG_WITH(sysconfsubdir,
+            AS_HELP_STRING([--with-sysconfsubdir],
+                           [directory name used under sysconfdir, default=gdm]),
             sysconfsubdir=${withval}, sysconfsubdir=gdm)
 AC_SUBST(sysconfsubdir)
 
@@ -175,8 +176,9 @@ else
 fi
 AC_SUBST(gdmconfdir)
 
-AC_ARG_WITH(dmconfdir, AC_HELP_STRING([--with-dmconfdir],
-            [directory where Sessions are stored, default=SYSCONFDIR/dm]),
+AC_ARG_WITH(dmconfdir,
+            AS_HELP_STRING([--with-dmconfdir],
+                           [directory where Sessions are stored, default=SYSCONFDIR/dm]),
             dmconfdir=${withval}, dmconfdir=${sysconfdir}/dm)
 AC_SUBST(dmconfdir)
 
@@ -185,36 +187,43 @@ dnl - Configure arguments
 dnl ---------------------------------------------------------------------------
 
 AC_ARG_ENABLE(console-helper,
-  [  --enable-console-helper=[auto/no/yes]  Enable PAM console helper [default=auto]],,
-  enable_console_helper=auto)
+	      AS_HELP_STRING([--enable-console-helper],
+                             [Enable PAM console helper @<:@default=auto@:>@]),,
+              enable_console_helper=auto)
 
 AC_ARG_ENABLE(authentication-scheme,
-  [  --enable-authentication-scheme=[auto/pam/crypt/shadow]  Choose a specific
-                          authentication scheme [default=auto]],,
-  enable_authentication_scheme=auto)
+              AS_HELP_STRING([--enable-authentication-scheme=@<:@pam/crypt/shadow@:>@],
+	                     [Choose a specific authentication scheme @<:@default=auto@:>@]),,
+              enable_authentication_scheme=auto)
 
 AC_ARG_WITH(xinerama,
-  [  --with-xinerama=[auto/yes/no]  Add Xinerama support [default=auto]],,
-  with_xinerama=auto)
+            AS_HELP_STRING([--with-xinerama],
+                           [Add Xinerama support @<:@default=auto@:>@]),,
+            with_xinerama=auto)
 
 AC_ARG_WITH(xdmcp,
-  [  --with-xdmcp=[auto/yes/no]  Add XDMCP (remote login) support [default=auto]],,
-  with_xdmcp=auto)
+            AS_HELP_STRING([--with-xdmcp],
+	                   [Add XDMCP (remote login) support @<:@default=auto@:>@]),,
+            with_xdmcp=auto)
 
 AC_ARG_WITH(tcp-wrappers,
-  [  --with-tcp-wrappers=[auto/yes/no]  Use TCP Wrappers [default=auto]],,
-  with_tcp_wrappers=auto)
+            AS_HELP_STRING([--with-tcp-wrappers],
+                           [Use TCP Wrappers @<:@default=auto@:>@]),,
+            with_tcp_wrappers=auto)
 
-AC_ARG_WITH(selinux, [  --with-selinux  Add SELinux support])
+AC_ARG_WITH(selinux,
+	    AS_HELP_STRING([--with-selinux],
+	                   [Add SELinux support]))
 
 AC_ARG_WITH(console-kit,
-  [  --with-console-kit=[auto/yes/no]  Add ConsoleKit support [default=auto]],,
-  with_console_kit=auto)
+            AS_HELP_STRING([--with-console-kit],
+                           [Add ConsoleKit support @<:@default=auto@:>@]),,
+            with_console_kit=auto)
 
 AC_ARG_WITH(at-spi-registryd-directory,
-              [AC_HELP_STRING([--with-at-spi-registryd-directory],
-                              [Specify the directory of at-spi-registryd @<:@default=libexecdir@:>@])],,
-                              [with_at_spi_registryd_directory="\${libexecdir}"])
+            AS_HELP_STRING([--with-at-spi-registryd-directory],
+	                   [Specify the directory of at-spi-registryd @<:@default=libexecdir@:>@])],,
+            [with_at_spi_registryd_directory="\${libexecdir}"])
 
 AT_SPI_REGISTRYD_DIR=$with_at_spi_registryd_directory
 AC_SUBST(AT_SPI_REGISTRYD_DIR)
@@ -235,10 +244,12 @@ AC_SUBST(AT_SPI_REGISTRYD_DIR)
 #
 withval=""
 AC_ARG_WITH(post-path,
-[  --with-post-path=<PATH>   add PATH to end of user's PATH when logging in],[
-if test x$withval != x; then
-   AC_MSG_RESULT("PATH ${withval} with be added to end of user's PATH when logging in.")
-fi])
+            AS_HELP_STRING([--with-post-path=<PATH>],
+	                   [add PATH to end of user's PATH when logging in]),
+            [if test x$withval != x; then
+               AC_MSG_RESULT("PATH ${withval} will be added to end of user's PATH when logging in.")
+             fi])
+
 if test x$withval != x; then
 	USER_POST_PATH="$withval"
 fi
@@ -248,10 +259,12 @@ dnl file that sets LANG
 dnl
 withval=""
 AC_ARG_WITH(lang-file,
-    [  --with-lang-file=<filename>   file containing default language setting],[
-if test x$withval != x; then
-AC_MSG_RESULT("System locale will be looked for in file ${withval}.")
-fi])
+            AS_HELP_STRING([--with-lang-file=<filename>],
+	                   [file containing default language setting]),
+            [if test x$withval != x; then
+               AC_MSG_RESULT("System locale will be looked for in file ${withval}.")
+             fi])
+
 if test x$withval != x; then
 	LANG_CONFIG_FILE="$withval"
 else
@@ -330,7 +343,11 @@ dnl - Check for IPv6
 dnl ---------------------------------------------------------------------------
 
 AC_MSG_CHECKING([whether to enable IPv6])
-AC_ARG_ENABLE(ipv6, [  --enable-ipv6=[yes/no] Enables compilation of IPv6 code default=[no]],, enable_ipv6=no)
+AC_ARG_ENABLE(ipv6,
+              AS_HELP_STRING([--enable-ipv6],
+                             [Enables compilation of IPv6 code @<:@default=no@:>@]),,
+              enable_ipv6=no)
+
 if test x$enable_ipv6 = xyes; then
   AC_TRY_COMPILE([
     #include <sys/types.h>
@@ -374,10 +391,11 @@ else
 fi
 
 AC_ARG_WITH(afs,
-[  --with-afs              support -fstype afs],
-[  AC_DEFINE(AFS, [], [Define if you have the Andrew File System])
-  CPPFLAGS="$CPPFLAGS -I/usr/afsws/include"
-  LIBS="$LIBS -L/usr/afsws/lib -L/usr/afsws/lib/afs -lsys -lrx -llwp"])
+            AS_HELP_STRING([--with-afs],
+	                   [support -fstype afs]),
+            [AC_DEFINE(AFS, [], [Define if you have the Andrew File System])
+	     CPPFLAGS="$CPPFLAGS -I/usr/afsws/include"
+	     LIBS="$LIBS -L/usr/afsws/lib -L/usr/afsws/lib/afs -lsys -lrx -llwp"])
 
 
 dnl ---------------------------------------------------------------------------
@@ -423,10 +441,12 @@ dnl ---------------------------------------------------------------------------
 dnl PAM prefix
 withval=""
 AC_ARG_WITH(pam-prefix,
-[  --with-pam-prefix=<prefix>   specify where pam files go],[
-if test x$withval != x; then
-   AC_MSG_RESULT("PAM files will be installed in prefix ${withval}.")
-fi])
+            AS_HELP_STRING([--with-pam-prefix=<prefix>],
+                           [specify where pam files go]),
+            [if test x$withval != x; then
+               AC_MSG_RESULT("PAM files will be installed in prefix ${withval}.")
+             fi])
+
 if test x$withval != x; then
 	PAM_PREFIX="$withval"
 else
@@ -880,11 +900,12 @@ dnl ---------------------------------------------------------------------------
 
 dnl - Are we specifying a different dbus root ?
 AC_ARG_WITH(dbus-sys,
-        [AC_HELP_STRING([--with-dbus-sys=<dir>],
-        [where D-BUS system.d directory is])])
+            AS_HELP_STRING([--with-dbus-sys=<dir>],
+	                   [where D-BUS system.d directory is]))
 AC_ARG_WITH(dbus-services,
-        [AC_HELP_STRING([--with-dbus-services=<dir>],
-        [where D-BUS services directory is])])
+            AS_HELP_STRING([--with-dbus-services=<dir>],
+	                   [where D-BUS services directory is]))
+
 if ! test -z "$with_dbus_sys" ; then
         DBUS_SYS_DIR="$with_dbus_sys"
 else
@@ -912,9 +933,10 @@ dnl ---------------------------------------------------------------------------
 
 msg_rbac_shutdown=no
 AC_ARG_ENABLE(rbac-shutdown,
-        [AC_HELP_STRING([--enable-rbac-shutdown=<key>],
-        [Build with RBAC support specifying shutdown/reboot RBAC authentication key])],
-        enable_rbac_shutdown=$enableval,enable_rbac_shutdown=no)
+              AC_HELP_STRING([--enable-rbac-shutdown=<key>],
+	                     [Build with RBAC support specifying shutdown/reboot RBAC authentication key]),
+              enable_rbac_shutdown=$enableval,enable_rbac_shutdown=no)
+
 if test "x$enable_rbac_shutdown" != "xno"; then
         RBAC_LIBS="-lsecdb -lsocket -lnsl"
         AC_DEFINE(ENABLE_RBAC_SHUTDOWN, [], [Set if we build with RBAC support])
@@ -932,7 +954,9 @@ AC_SUBST(authdir, ${localstatedir}/gdm)
 AC_SUBST(gdmlocaledir, ${gdmconfdir})
 AC_SUBST(pixmapdir, ${datadir}/pixmaps)
 
-AC_ARG_WITH(log-dir,    [  --with-log-dir=<file>     log dir])
+AC_ARG_WITH(log-dir,
+            AS_HELP_STRING([--with-log-dir=<file>],
+                           [log dir]))
 
 if ! test -z "$with_log_dir"; then
    GDM_LOG_DIR=$with_log_dir
@@ -943,7 +967,8 @@ AC_SUBST(logdir, $GDM_LOG_DIR)
 
 withval=""
 AC_ARG_WITH(at-bindir,
-[  --with-at-bindir=<PATH>   PATH to Accessible Technology programs [default=BINDIR]],)
+            AS_HELP_STRING([--with-at-bindir=<PATH>]
+                           [PATH to Accessible Technology programs @<:@default=BINDIR@:>@]))
 
 if test x$withval != x; then
 	AT_BINDIR="$withval"
@@ -955,7 +980,8 @@ AC_SUBST(AT_BINDIR)
 
 withval=""
 AC_ARG_WITH(defaults_conf,
-[  --with-defaults-conf=<FILENAME>   FILENAME to give to defaults file [default=DATADIR/gdm/defaults.conf]],)
+            AS_HELP_STRING([--with-defaults-conf=<FILENAME>],
+                           [FILENAME to give to defaults file @<:@default=DATADIR/gdm/defaults.conf@:>@]))
 
 if test x$withval != x; then
 	GDM_DEFAULTS_CONF="$withval"
@@ -967,7 +993,8 @@ AC_SUBST(GDM_DEFAULTS_CONF)
 
 withval=""
 AC_ARG_WITH(custom_conf,
-[  --with-custom-conf=<FILENAME>   FILENAME to give to custom configuration file [default=GDMCONFDIR/custom.conf]],)
+            AS_HELP_STRING([--with-custom-conf=<FILENAME>],
+                           [FILENAME to give to custom configuration file @<:@default=GDMCONFDIR/custom.conf@:>@]))
 
 if test x$withval != x; then
 	GDM_CUSTOM_CONF="$withval"
@@ -983,8 +1010,9 @@ dnl - Check for XEvIE extension support
 dnl ---------------------------------------------------------------------------
 
 AC_ARG_WITH(xevie,
-  [  --with-xevie=[yes/no]  Add XEvIE Xserver extension support [default=no]],,
-  with_xevie=no)
+            AS_HELP_STRING([--with-xevie],
+                           [Add XEvIE Xserver extension support @<:@default=no@:>@]),,
+            with_xevie=no)
 
 if test x$with_xevie != xno ; then
 	XEVIE_OPTION="+extension XEVIE"
@@ -1037,8 +1065,9 @@ AM_CONDITIONAL(HAVE_ADT, test x$check_sun_audit = xyes)
 # Check for Linux auditing API
 #
 AC_ARG_WITH(libaudit,
-  [  --with-libaudit=[auto/yes/no]  Add Linux audit support [default=auto]],,
-  with_libaudit=auto)
+            AS_HELP_STRING([--with-libaudit],
+                           [Add Linux audit support @<:@default=auto@:>@]),,
+            with_libaudit=auto)
 
 # libaudit detection
 if test x$with_libaudit = xno ; then
@@ -1205,7 +1234,9 @@ dnl ---------------------------------------------------------------------------
 dnl - PID file
 dnl ---------------------------------------------------------------------------
 
-AC_ARG_WITH(pid-file,    [  --with-pid-file=<file>     pid file])
+AC_ARG_WITH(pid-file,
+            AS_HELP_STRING([--with-pid-file=<file>],
+                           [pid file]))
 
 if ! test -z "$with_pid_file"; then
    GDM_PID_FILE=$with_pid_file
@@ -1220,7 +1251,9 @@ dnl ---------------------------------------------------------------------------
 dnl - GREETER WORKING DIRECTORY
 dnl ---------------------------------------------------------------------------
 
-AC_ARG_WITH(working-directory,    [  --with-working-dir=<dir> working directory])
+AC_ARG_WITH(working-directory,
+            AS_HELP_STRING([--with-working-dir=<dir>],
+                           [working directory]))
 
 if ! test -z "$with_working_directory"; then
    GDM_WORKING_DIR=$with_working_directory
@@ -1234,7 +1267,9 @@ dnl ---------------------------------------------------------------------------
 dnl - Directory for X auth cookies
 dnl ---------------------------------------------------------------------------
 
-AC_ARG_WITH(xauth-dir,    [  --with-xauth-dir=<dir> xauth cookie directory])
+AC_ARG_WITH(xauth-dir,
+            AS_HELP_STRING([--with-xauth-dir=<dir>],
+                           [xauth cookie directory]))
 
 if ! test -z "$with_xauth_dir"; then
    GDM_XAUTH_DIR=$with_xauth_dir
@@ -1252,15 +1287,15 @@ dnl ---------------------------------------------------------------------------
 # Turn on the additional warnings last, so -Werror doesn't affect other tests.
 
 AC_ARG_ENABLE(more-warnings,
-	[AC_HELP_STRING([--enable-more-warnings],
-	[Maximum compiler warnings])],
-	set_more_warnings="$enableval",[
-        	if test -d $srcdir/.svn; then
-        		set_more_warnings=yes
-              	else
-                  	set_more_warnings=no
-              	fi
-        ])
+              AS_HELP_STRING([--enable-more-warnings],
+                             [Maximum compiler warnings]),
+              set_more_warnings="$enableval",[
+	      if test -d $srcdir/.svn; then
+	        set_more_warnings=yes
+	      else
+	        set_more_warnings=no
+              fi])
+
 AC_MSG_CHECKING(for more warnings)
 if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
         AC_MSG_RESULT(yes)
@@ -1294,9 +1329,10 @@ fi
 # Enable Debug
 #
 AC_ARG_ENABLE(debug,
-	[AC_HELP_STRING([--enable-debug],
-	[turn on debugging])],
-	, enable_debug=yes)
+              AS_HELP_STRING([--enable-debug],
+                             [turn on debugging]),,
+              enable_debug=yes)
+
 if test "$enable_debug" = "yes"; then
 	DEBUG_CFLAGS="-DG_ENABLE_DEBUG"
 else
@@ -1312,9 +1348,10 @@ AC_SUBST(DEBUG_CFLAGS)
 # Enable Profiling
 #
 AC_ARG_ENABLE(profiling,
-	[AC_HELP_STRING([--enable-profiling],
-	[turn on profiling])],
-	, enable_profiling=yes)
+              AS_HELP_STRING([--enable-profiling],
+                             [turn on profiling]),,
+              enable_profiling=yes)
+
 if test "$enable_profiling" = "yes"; then
     AC_DEFINE(ENABLE_PROFILING,1,[enable profiling])
 fi
@@ -1355,7 +1392,7 @@ AC_DEFINE_UNQUOTED(X_XNEST_UNSCALED_FONTPATH,"$X_XNEST_UNSCALED_FONTPATH")
 #AC_SUBST(DEBIAN_DATESTAMP)
 #AC_SUBST(DEBIAN_DATE)
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 daemon/Makefile
 gui/Makefile
@@ -1376,6 +1413,8 @@ common/Makefile
 po/Makefile.in
 tests/Makefile
 ])
+
+AC_OUTPUT
 
 dnl ---------------------------------------------------------------------------
 dnl - Show summary
