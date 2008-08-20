@@ -445,6 +445,34 @@ AC_TRY_CPP([#include <sys/mount.h>
 fi
 AC_MSG_RESULT($fstype)
 
+dnl GDM user
+withval=""
+AC_ARG_WITH(user,
+            AS_HELP_STRING([--with-user=<username>],
+                           [specify gdm's user name]))
+
+if test x$withval != x; then
+	GDM_USERNAME="$withval"
+else
+	GDM_USERNAME=gdm
+fi
+AC_SUBST(GDM_USERNAME)
+AC_DEFINE_UNQUOTED([GDM_USERNAME], "$GDM_USERNAME", [User to use])
+
+dnl GDM group
+withval=""
+AC_ARG_WITH(group,
+            AS_HELP_STRING([--with-group=<username>],
+                           [specify gdm's user name]))
+
+if test x$withval != x; then
+	GDM_GROUPNAME="$withval"
+else
+	GDM_GROUPNAME=gdm
+fi
+AC_SUBST(GDM_GROUPNAME)
+AC_DEFINE_UNQUOTED([GDM_GROUPNAME], "$GDM_GROUPNAME", [Group to use])
+
 
 dnl ---------------------------------------------------------------------------
 dnl - Check for PAM stuff
@@ -1415,6 +1443,7 @@ gui/simple-greeter/libnotificationarea/Makefile
 gui/simple-chooser/Makefile
 gui/user-switch-applet/Makefile
 utils/Makefile
+data/gdm.conf
 data/Makefile
 data/faces/Makefile
 data/pixmaps/Makefile
@@ -1451,6 +1480,9 @@ echo "
 	compiler:		  ${CC}
 	cflags:		          ${CFLAGS}
         Maintainer mode:          ${USE_MAINTAINER_MODE}
+
+        user:                     ${GDM_USERNAME}
+        group:                    ${GDM_GROUPNAME}
 
         dbus-1 system.d dir:      ${DBUS_SYS_DIR}
         PAM prefix:               ${PAM_PREFIX}

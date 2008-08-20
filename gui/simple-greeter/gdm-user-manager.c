@@ -89,7 +89,7 @@
                                   "uucp",       \
                                   "operator",   \
                                   "nobody",     \
-                                  "gdm",        \
+                                  GDM_USERNAME, \
                                   "postgres",   \
                                   "pvm",        \
                                   "rpm",        \

@@ -161,7 +161,7 @@ gdm_display_real_create_authority (GdmDisplay *display)
         g_return_val_if_fail (display->priv->access_file == NULL, FALSE);
 
         error = NULL;
-        access_file = _create_access_file_for_user (display, "gdm", &error);
+        access_file = _create_access_file_for_user (display, GDM_USERNAME, &error);
 
         if (access_file == NULL) {
                 g_critical ("could not create display access file: %s", error->message);

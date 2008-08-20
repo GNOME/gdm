@@ -1122,14 +1122,14 @@ gdm_welcome_session_class_init (GdmWelcomeSessionClass *klass)
                                          g_param_spec_string ("user-name",
                                                               "user name",
                                                               "user name",
-                                                              "gdm",
+                                                              GDM_USERNAME,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
                                          PROP_GROUP_NAME,
                                          g_param_spec_string ("group-name",
                                                               "group name",
                                                               "group name",
-                                                              "gdm",
+                                                              GDM_GROUPNAME,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
                                          PROP_SERVER_ADDRESS,

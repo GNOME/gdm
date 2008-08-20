@@ -190,7 +190,7 @@ run_chooser (GdmXdmcpChooserSlave *slave)
         }
 
         /* Run the init script. gdmslave suspends until script has terminated */
-        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", "gdm");
+        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
 
         slave->priv->chooser_server = gdm_chooser_server_new (display_id);
         g_signal_connect (slave->priv->chooser_server,

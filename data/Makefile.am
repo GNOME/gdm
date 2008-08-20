@@ -34,7 +34,8 @@ gdm.conf-custom: $(srcdir)/gdm.conf-custom.in
 		<$(srcdir)/gdm.conf-custom.in >gdm.conf-custom
 
 dbusconfdir = $(DBUS_SYS_DIR)
-dbusconf_DATA = gdm.conf
+dbusconf_in_files = gdm.conf.in
+dbusconf_DATA = $(dbusconf_in_files:.conf.in=.conf)
 
 @INTLTOOL_SCHEMAS_RULE@
 
@@ -72,7 +73,7 @@ gdm.schemas.in: $(srcdir)/gdm.schemas.in.in
 EXTRA_DIST =			\
 	$(schemas_in_files)	\
 	$(schemas_DATA)		\
-	$(dbusconf_DATA)	\
+	$(dbusconf_in_files)	\
 	gdm.schemas.in.in	\
 	gdm.conf-custom.in 	\
 	Xsession.in 		\
@@ -95,6 +96,7 @@ CLEANFILES = 				\
 	$(NULL)
 
 DISTCLEANFILES =			\
+	$(dbusconf_DATA)			\
 	gdm.schemas			\
 	$(NULL)
 

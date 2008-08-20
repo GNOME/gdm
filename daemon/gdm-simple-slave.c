@@ -367,7 +367,7 @@ on_session_accredited (GdmSession     *session,
         queue_start_session (slave);
 
         /* Run the PostLogin script. gdmslave suspends until script has terminated */
-        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostLogin", "gdm");
+        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostLogin", GDM_USERNAME);
 }
 
 static void
@@ -855,7 +855,7 @@ run_greeter (GdmSimpleSlave *slave)
         }
 
         /* Run the init script. gdmslave suspends until script has terminated */
-        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", "gdm");
+        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
 
         create_new_session (slave);
 
