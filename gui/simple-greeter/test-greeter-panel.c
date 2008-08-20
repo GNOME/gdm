@@ -35,7 +35,11 @@
 int
 main (int argc, char *argv[])
 {
-        GtkWidget        *panel;
+        GtkWidget  *panel;
+        GdkDisplay *display;
+        GdkScreen  *screen;
+        int         monitor;
+        int         x, y;
 
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -45,7 +49,11 @@ main (int argc, char *argv[])
 
         gtk_init (&argc, &argv);
 
-        panel = gdm_greeter_panel_new ();
+        display = gdk_display_get_default ();
+        gdk_display_get_pointer (display, &screen, &x, &y, NULL);
+        monitor = gdk_screen_get_monitor_at_point (screen, x, y);
+
+        panel = gdm_greeter_panel_new (screen, monitor);
         gdm_greeter_panel_show_user_options (GDM_GREETER_PANEL (panel));
 
         gtk_widget_show (panel);

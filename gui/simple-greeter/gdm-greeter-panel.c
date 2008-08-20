@@ -65,6 +65,7 @@ struct GdmGreeterPanelPrivate
 
 enum {
         PROP_0,
+        PROP_MONITOR
 };
 
 enum {
@@ -83,12 +84,36 @@ static void     gdm_greeter_panel_finalize    (GObject              *object);
 G_DEFINE_TYPE (GdmGreeterPanel, gdm_greeter_panel, GTK_TYPE_WINDOW)
 
 static void
+gdm_greeter_panel_set_monitor (GdmGreeterPanel *panel,
+                               int              monitor)
+{
+        g_return_if_fail (GDM_IS_GREETER_PANEL (panel));
+
+        if (panel->priv->monitor == monitor) {
+                return;
+        }
+
+        panel->priv->monitor = monitor;
+
+        gtk_widget_queue_resize (GTK_WIDGET (panel));
+
+        g_object_notify (G_OBJECT (panel), "monitor");
+}
+
+static void
 gdm_greeter_panel_set_property (GObject        *object,
                                 guint           prop_id,
                                 const GValue   *value,
                                 GParamSpec     *pspec)
 {
+        GdmGreeterPanel *self;
+
+        self = GDM_GREETER_PANEL (object);
+
         switch (prop_id) {
+        case PROP_MONITOR:
+                gdm_greeter_panel_set_monitor (self, g_value_get_int (value));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -101,7 +126,14 @@ gdm_greeter_panel_get_property (GObject        *object,
                                 GValue         *value,
                                 GParamSpec     *pspec)
 {
+        GdmGreeterPanel *self;
+
+        self = GDM_GREETER_PANEL (object);
+
         switch (prop_id) {
+        case PROP_MONITOR:
+                g_value_set_int (value, self->priv->monitor);
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -419,6 +451,16 @@ gdm_greeter_panel_class_init (GdmGreeterPanelClass *klass)
                               G_TYPE_NONE,
                               1, G_TYPE_STRING);
 
+        g_object_class_install_property (object_class,
+                                         PROP_MONITOR,
+                                         g_param_spec_int ("monitor",
+                                                           "Xinerama monitor",
+                                                           "The monitor (in terms of Xinerama) which the window is on",
+                                                           0,
+                                                           G_MAXINT,
+                                                           0,
+                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+
         g_type_class_add_private (klass, sizeof (GdmGreeterPanelPrivate));
 }
 
@@ -453,8 +495,8 @@ on_layout_activated (GdmLayoutOptionWidget *widget,
                 return;
         }
 
-	g_debug ("GdmGreeterPanel: activating selected layout %s", layout);
-	gdm_layout_activate (layout);
+        g_debug ("GdmGreeterPanel: activating selected layout %s", layout);
+        gdm_layout_activate (layout);
 
         g_signal_emit (panel, signals[LAYOUT_SELECTED], 0, layout);
 
@@ -582,11 +624,14 @@ gdm_greeter_panel_finalize (GObject *object)
 }
 
 GtkWidget *
-gdm_greeter_panel_new (void)
+gdm_greeter_panel_new (GdkScreen *screen,
+                       int        monitor)
 {
         GObject *object;
 
         object = g_object_new (GDM_TYPE_GREETER_PANEL,
+                               "screen", screen,
+                               "monitor", monitor,
                                NULL);
 
         return GTK_WIDGET (object);
@@ -607,8 +652,8 @@ gdm_greeter_panel_hide_user_options (GdmGreeterPanel *panel)
         gtk_widget_hide (panel->priv->language_option_widget);
         gtk_widget_hide (panel->priv->layout_option_widget);
 
-	g_debug ("GdmGreeterPanel: activating default layout");
-	gdm_layout_activate (NULL); 
+        g_debug ("GdmGreeterPanel: activating default layout");
+        gdm_layout_activate (NULL);
 }
 
 void
@@ -664,8 +709,8 @@ gdm_greeter_panel_set_default_layout_name (GdmGreeterPanel *panel,
         gdm_option_widget_set_default_item (GDM_OPTION_WIDGET (panel->priv->layout_option_widget),
                                             layout_name);
 
-	g_debug ("GdmGreeterPanel: activating layout: %s", layout_name);
-	gdm_layout_activate (layout_name);
+        g_debug ("GdmGreeterPanel: activating layout: %s", layout_name);
+        gdm_layout_activate (layout_name);
 #endif
 }
 

@@ -126,7 +126,7 @@ on_default_layout_name_changed (GdmGreeterClient  *client,
 {
         g_debug ("GdmGreeterSession: default layout name changed: %s", text);
         gdm_greeter_panel_set_default_layout_name (GDM_GREETER_PANEL (session->priv->panel),
-                                                     text);
+                                                   text);
 }
 
 static void
@@ -274,7 +274,16 @@ toggle_panel (GdmGreeterSession *session,
         gdm_profile_start (NULL);
 
         if (enabled) {
-                session->priv->panel = gdm_greeter_panel_new ();
+                GdkDisplay *display;
+                GdkScreen  *screen;
+                int         monitor;
+                int         x, y;
+
+                display = gdk_display_get_default ();
+                gdk_display_get_pointer (display, &screen, &x, &y, NULL);
+                monitor = gdk_screen_get_monitor_at_point (screen, x, y);
+
+                session->priv->panel = gdm_greeter_panel_new (screen, monitor);
 
                 g_signal_connect_swapped (session->priv->panel,
                                           "language-selected",
