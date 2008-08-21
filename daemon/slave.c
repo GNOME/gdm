@@ -3518,8 +3518,11 @@ gdm_selinux_setup (const char *login)
 	if (is_selinux_enabled () <= 0)
 		return TRUE;
 
-	if (getseuserbyname(login, &seuser, &level) == 0)
+	if (getseuserbyname(login, &seuser, &level) == 0) {
 		ret=get_default_context_with_level(seuser, level, 0, &scontext);
+		free(seuser);
+		free(level);
+	}
 
 	if (ret < 0) {
 		gdm_error ("SELinux gdm login: unable to obtain default security context for %s.", login);
