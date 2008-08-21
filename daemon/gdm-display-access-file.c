@@ -254,7 +254,7 @@ _create_xauth_file_for_user (const char  *username,
                 }
 
                 g_chmod (GDM_XAUTH_DIR, S_ISVTX | S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-                _get_uid_and_gid_for_user ("gdm", &uid, &gid);
+                _get_uid_and_gid_for_user (GDM_USERNAME, &uid, &gid);
                 if (chown (GDM_XAUTH_DIR, 0, gid) != 0) {
                         g_warning ("Unable to change owner of '%s'",
                                    GDM_XAUTH_DIR);

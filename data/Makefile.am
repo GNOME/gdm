@@ -55,6 +55,8 @@ gdm.schemas.in: $(srcdir)/gdm.schemas.in.in
 	sed	-e 's,[@]GDMPREFETCHCMD[@],$(GDMPREFETCHCMD),g' \
 		-e 's,[@]GDM_CUSTOM_CONF[@],$(GDM_CUSTOM_CONF),g' \
 		-e 's,[@]GDM_USER_PATH[@],$(GDM_USER_PATH),g' \
+		-e 's,[@]GDM_USERNAME[@],$(GDM_USERNAME),g' \
+		-e 's,[@]GDM_GROUPNAME[@],$(GDM_GROUPNAME),g' \
 		-e 's,[@]HALT_COMMAND[@],$(HALT_COMMAND),g' \
 		-e 's,[@]REBOOT_COMMAND[@],$(REBOOT_COMMAND),g' \
 		-e 's,[@]SOUND_PROGRAM[@],$(SOUND_PROGRAM),g' \
