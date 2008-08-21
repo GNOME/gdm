@@ -110,10 +110,13 @@ PKG_CHECK_MODULES(LIBXKLAVIER,
         libxklavier >= $LIBXKLAVIER_REQUIRED_VERSION,
         have_libxklavier=yes,
         have_libxklavier=no)
+if test "x$have_libxklavier" = "xyes" ; then
+  AC_DEFINE(HAVE_LIBXKLAVIER, [], [Define if we have libxklavier])
+fi
 AM_CONDITIONAL(HAVE_LIBXKLAVIER, test x$have_libxklavier = xyes)
 AC_SUBST(HAVE_LIBXKLAVIER)
-AC_SUBST(LIBXLKAVIER_CFLAGS)
-AC_SUBST(LIBXKALVIER_LIBS)
+AC_SUBST(LIBXKLAVIER_CFLAGS)
+AC_SUBST(LIBXKLAVIER_LIBS)
 
 PKG_CHECK_MODULES(POLKIT_GNOME,
         polkit-gnome >= $POLICYKIT_REQUIRED_VERSION,
