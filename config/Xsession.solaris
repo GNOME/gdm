@@ -26,3 +26,8 @@ if [ "x$LANG" = "xzh" ] ; then
   export LANGUAGE=zh:zh_CN.EUC
 fi
 
+#Startup Input methods (SCIM->XIM)
+if [ -f /etc/scim/xsession ]; then
+       . /etc/scim/xsession
+fi
+
