@@ -1,3 +1,11 @@
+2008-08-20  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/user-switch-applet/applet.c (menuitem_destroy_cb),
+	(create_sub_menu), (destroy_sub_menu), (set_menu_visibility),
+	(client_notify_lockdown_func), (fill_applet):
+	Don't hide the entire applet when user switching is locked down,
+	just hide the submenu.
+
 2008-08-20  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.ac: Simplify the Solaris OS checks.

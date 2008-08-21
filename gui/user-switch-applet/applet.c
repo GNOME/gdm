@@ -652,7 +652,7 @@ menuitem_destroy_cb (GtkWidget *menuitem,
                      gpointer   data)
 {
         GdmAppletData *adata;
-        GSList *li;
+        GSList        *li;
 
         adata = data;
 
@@ -666,6 +666,7 @@ menuitem_destroy_cb (GtkWidget *menuitem,
                 }
         }
 
+        g_debug ("Menuitem destroyed - removing");
         li = g_slist_find (adata->items, menuitem);
         adata->items = g_slist_delete_link (adata->items, li);
         sort_menu (adata);
@@ -947,6 +948,96 @@ login_screen_activate_cb (GtkMenuItem *item,
 }
 
 static void
+create_sub_menu (GdmAppletData *adata)
+{
+        GSList *users;
+
+        adata->menu = gtk_menu_new ();
+        gtk_menu_item_set_submenu (GTK_MENU_ITEM (adata->menuitem), adata->menu);
+        g_signal_connect (adata->menu, "style-set",
+                          G_CALLBACK (menu_style_set_cb), adata);
+        g_signal_connect (adata->menu, "show",
+                          G_CALLBACK (menu_expose_cb), adata);
+        gtk_widget_show (adata->menu);
+
+
+        /* This next part populates the list with all the users we currently know
+         * about. For almost all cases, this is the empty list, because we're
+         * asynchronous, and the data hasn't come back from the callback saying who
+         * the users are yet. However, if someone has two GDMs on their toolbars (why,
+         * I have no freaking idea, but bear with me here), the menu of the second
+         * one to be initialised needs to be filled in from the start rather than
+         * depending on getting data from the callback like the first one.
+         */
+        users = gdm_user_manager_list_users (adata->manager);
+        while (users != NULL) {
+                add_user (adata, users->data);
+                update_user_item_visibility (adata, users->data);
+
+                users = g_slist_delete_link (users, users);
+        }
+
+        g_signal_connect (adata->manager,
+                          "user-added",
+                          G_CALLBACK (on_manager_user_added),
+                          adata);
+        g_signal_connect (adata->manager,
+                          "user-is-logged-in-changed",
+                          G_CALLBACK (on_manager_user_is_logged_in_changed),
+                          adata);
+
+        adata->separator_item = gtk_separator_menu_item_new ();
+        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), adata->separator_item);
+        g_signal_connect (adata->separator_item, "destroy",
+                          G_CALLBACK (menuitem_destroy_cb), adata);
+        adata->items = g_slist_prepend (adata->items, adata->separator_item);
+        gtk_widget_show (adata->separator_item);
+
+        adata->login_screen_item = gtk_image_menu_item_new_with_label (_("Other..."));
+        gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->login_screen_item),
+                                       gtk_image_new ());
+        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
+                               adata->login_screen_item);
+        g_signal_connect (adata->login_screen_item, "style-set",
+                          G_CALLBACK (menuitem_style_set_cb), adata);
+        g_signal_connect (adata->login_screen_item, "destroy",
+                          G_CALLBACK (menuitem_destroy_cb), adata);
+        g_signal_connect (adata->login_screen_item, "activate",
+                          G_CALLBACK (login_screen_activate_cb), adata);
+        adata->items = g_slist_prepend (adata->items, adata->login_screen_item);
+        gtk_widget_show (adata->login_screen_item);
+
+        adata->items = g_slist_sort_with_data (adata->items,
+                                               sort_menu_comparedatafunc,
+                                               adata);
+}
+
+static void
+destroy_sub_menu (GdmAppletData *adata)
+{
+        gtk_menu_item_set_submenu (GTK_MENU_ITEM (adata->menuitem), NULL);
+
+        g_signal_handlers_disconnect_by_func (adata->manager,
+                                              G_CALLBACK (on_manager_user_added),
+                                              adata);
+        g_signal_handlers_disconnect_by_func (adata->manager,
+                                              G_CALLBACK (on_manager_user_is_logged_in_changed),
+                                              adata);
+}
+
+static void
+set_menu_visibility (GdmAppletData *adata,
+                     gboolean       visible)
+{
+
+        if (visible) {
+                create_sub_menu (adata);
+        } else {
+                destroy_sub_menu (adata);
+        }
+}
+
+static void
 client_notify_lockdown_func (GConfClient   *client,
                              guint          cnxn_id,
                              GConfEntry    *entry,
@@ -958,14 +1049,15 @@ client_notify_lockdown_func (GConfClient   *client,
         value = gconf_entry_get_value (entry);
         key = gconf_entry_get_key (entry);
 
-        if (!value || !key)
+        if (value == NULL || key == NULL) {
                 return;
+        }
 
         if (strcmp (key, LOCKDOWN_KEY) == 0) {
                 if (gconf_value_get_bool (value)) {
-                        gtk_widget_hide ( GTK_WIDGET (adata->applet));
+                        set_menu_visibility (adata, FALSE);
                 } else {
-                        gtk_widget_show ( GTK_WIDGET (adata->applet));
+                        set_menu_visibility (adata, TRUE);
                 }
         }
 }
@@ -1041,7 +1133,6 @@ fill_applet (PanelApplet *applet)
                 BONOBO_UI_VERB_END
         };
         static gboolean    first_time = FALSE;
-        GSList            *users;
         char              *tmp;
         BonoboUIComponent *popup_component;
         GdmAppletData     *adata;
@@ -1074,7 +1165,6 @@ fill_applet (PanelApplet *applet)
         adata->active_only = TRUE;
 
         adata->client = gconf_client_get_default ();
-        adata->manager = gdm_user_manager_ref_default ();
 
         tmp = g_strdup_printf ("applet-user-menu-item-%p", adata);
         adata->user_menu_item_quark = g_quark_from_string (tmp);
@@ -1169,61 +1259,8 @@ fill_applet (PanelApplet *applet)
         gtk_container_add (GTK_CONTAINER (applet), adata->menubar);
         gtk_widget_show (adata->menubar);
 
+        adata->manager = gdm_user_manager_ref_default ();
         setup_current_user (adata);
-
-
-
-        adata->menu = gtk_menu_new ();
-        gtk_menu_item_set_submenu (GTK_MENU_ITEM (adata->menuitem), adata->menu);
-        g_signal_connect (adata->menu, "style-set",
-                          G_CALLBACK (menu_style_set_cb), adata);
-        g_signal_connect (adata->menu, "show",
-                          G_CALLBACK (menu_expose_cb), adata);
-        gtk_widget_show (adata->menu);
-
-        /* This next part populates the list with all the users we currently know
-         * about. For almost all cases, this is the empty list, because we're
-         * asynchronous, and the data hasn't come back from the callback saying who
-         * the users are yet. However, if someone has two GDMs on their toolbars (why,
-         * I have no freaking idea, but bear with me here), the menu of the second
-         * one to be initialised needs to be filled in from the start rather than
-         * depending on getting data from the callback like the first one.
-         */
-        users = gdm_user_manager_list_users (adata->manager);
-        while (users != NULL) {
-                add_user (adata, users->data);
-                update_user_item_visibility (adata, users->data);
-
-                users = g_slist_delete_link (users, users);
-        }
-
-        g_signal_connect (adata->manager,
-                          "user-added",
-                          G_CALLBACK (on_manager_user_added),
-                          adata);
-        g_signal_connect (adata->manager,
-                          "user-is-logged-in-changed",
-                          G_CALLBACK (on_manager_user_is_logged_in_changed),
-                          adata);
-
-        adata->separator_item = gtk_separator_menu_item_new ();
-        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), adata->separator_item);
-        adata->items = g_slist_prepend (adata->items, adata->separator_item);
-        gtk_widget_show (adata->separator_item);
-
-        adata->login_screen_item = gtk_image_menu_item_new_with_label (_("Other..."));
-        gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->login_screen_item),
-                                       gtk_image_new ());
-        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
-                               adata->login_screen_item);
-        g_signal_connect (adata->login_screen_item, "style-set",
-                          G_CALLBACK (menuitem_style_set_cb), adata);
-        g_signal_connect (adata->login_screen_item, "destroy",
-                          G_CALLBACK (menuitem_destroy_cb), adata);
-        g_signal_connect (adata->login_screen_item, "activate",
-                          G_CALLBACK (login_screen_activate_cb), adata);
-        adata->items = g_slist_prepend (adata->items, adata->login_screen_item);
-        gtk_widget_show (adata->login_screen_item);
 
         adata->client_notify_lockdown_id = gconf_client_notify_add (adata->client,
                                                                     LOCKDOWN_KEY,
@@ -1232,15 +1269,13 @@ fill_applet (PanelApplet *applet)
                                                                     NULL,
                                                                     NULL);
 
-        adata->items = g_slist_sort_with_data (adata->items,
-                                               sort_menu_comparedatafunc,
-                                               adata);
-
         if (gconf_client_get_bool (adata->client, LOCKDOWN_KEY, NULL)) {
-                gtk_widget_hide (GTK_WIDGET (applet));
+                set_menu_visibility (adata, FALSE);
         } else {
-                gtk_widget_show (GTK_WIDGET (applet));
+                set_menu_visibility (adata, TRUE);
         }
+
+        gtk_widget_show (GTK_WIDGET (adata->applet));
 
         return TRUE;
 }
