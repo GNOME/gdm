@@ -150,8 +150,8 @@ test_greeter_panel_LDADD =	\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
 	$(SIMPLE_GREETER_LIBS)		\
-	$(GTK_LIBS)		\
-	$(GCONF_LIBS)		\
+	$(GTK_LIBS)			\
+	$(GCONF_LIBS)			\
 	$(LIBXKLAVIER_LIBS)		\
 	$(NULL)
 
@@ -215,8 +215,9 @@ test_layout_chooser_SOURCES = 	\
 	gdm-layout-chooser-dialog.c	\
 	$(NULL)
 
-test_layout_chooser_LDADD =	\
-	$(GTK_LIBS)		\
+test_layout_chooser_LDADD =		\
+	$(GTK_LIBS)			\
+	$(LIBXKLAVIER_LIBS)		\
 	$(NULL)
 
 test_languages_SOURCES = 		\
@@ -337,6 +338,7 @@ gdm_simple_greeter_LDADD = 		\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(POLKIT_GNOME_LIBS)		\
 	$(RBAC_LIBS)			\
+	$(LIBXKLAVIER_LIBS)		\
 	$(NULL)
 
 gladedir = $(pkgdatadir)
