@@ -1427,8 +1427,6 @@ AC_CONFIG_FILES([
 Makefile
 daemon/Makefile
 gui/Makefile
-gui/simple-greeter/gdm-simple-greeter.desktop.in
-gui/simple-greeter/at-spi-registryd-wrapper.desktop.in
 gui/simple-greeter/Makefile
 gui/simple-greeter/libnotificationarea/Makefile
 gui/simple-chooser/Makefile
@@ -1437,6 +1435,7 @@ utils/Makefile
 data/gdm.conf
 data/Makefile
 data/faces/Makefile
+data/greeter-autostart/Makefile
 data/pixmaps/Makefile
 data/pixmaps/16x16/Makefile
 data/pixmaps/32x32/Makefile

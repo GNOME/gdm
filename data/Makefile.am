@@ -1,8 +1,9 @@
 NULL =
 
-SUBDIRS =		\
-	faces 		\
-	pixmaps		\
+SUBDIRS =			\
+	faces 			\
+	greeter-autostart	\
+	pixmaps			\
 	$(NULL)
 
 initdir = $(gdmconfdir)/Init

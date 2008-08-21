@@ -22,14 +22,6 @@ INCLUDES = \
 	$(POLKIT_GNOME_CFLAGS)				\
 	$(NULL)
 
-@INTLTOOL_DESKTOP_RULE@
-desktopdir = $(pkgdatadir)/autostart/LoginWindow
-desktop_in_files = 	\
-	at-spi-registryd-wrapper.desktop.in	\
-	gdm-simple-greeter.desktop.in		\
-	$(NULL)
-desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
-
 @INTLTOOL_SCHEMAS_RULE@
 
 schemasdir   = @GCONF_SCHEMA_FILE_DIR@
@@ -347,7 +339,6 @@ glade_DATA = 					\
 	$(NULL)
 
 EXTRA_DIST = 			\
-	$(desktop_in_files)	\
 	$(schemas_in_files)	\
 	$(glade_DATA)		\
 	$(NULL)
