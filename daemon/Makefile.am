@@ -109,6 +109,7 @@ gdm_binary_LDADD = \
 	$(X_LIBS)				\
 	$(XINERAMA_LIBS)			\
 	$(XDMCP_LIBS)				\
+	$(LIBWRAP_LIBS)				\
 	-lXau					\
 	-lX11					\
 	-lXext					\

@@ -1,3 +1,11 @@
+2008-08-20  Brian Cameron  <brian.cameron@sun.com>
+
+	* configure.ac: Fix broken check for TCP Wrappers.  Fixes bug
+	  #548676.  Patch by Stanislav Brabec <sbrabec@suse.cz> and
+	  Brian Cameron <Brian.Cameron@sun.com>
+	* daemon/Makefile.am: Add LIBWRAP_LIBS to LDFLAGS when building
+	  gdm-binary.
+
 2008-08-20 Brian Cameron <brian.cameron@sun.com>
 
 	* daemon/slave.c: Fix memory leak in the SELinux code.  Fixes bug

@@ -571,41 +571,23 @@ AC_SUBST(GDMXNESTCHOOSER)
 if test x$with_tcp_wrappers = xno ; then
 	echo "TCP wrappers disabled"
 else
-  AC_MSG_CHECKING([whether to use TCP wrappers])
   LIBWRAP_PATH=""
   case "$host" in
     *-*-solaris*)
-	if test -f /usr/sfw/lib/libwrap.so; then
-		LIBWRAP_PATH=/usr/sfw/lib/libwrap.so
+	if test -f /usr/lib/libwrap.so; then
+		LIBWRAP_PATH=/usr/lib/libwrap.so
 		echo "Found $LIBWRAP_PATH" 1>&5
+		nm $LIBWRAP_PATH | grep 'T setenv' && LIBWRAP_PATH=""
 	fi
-	EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -L/usr/sfw/lib -R/usr/sfw/lib -lwrap"
-	;;
-    *)
-        for I in $LDFLAGS $LIBS -L/usr/lib; do
-		case "$I" in
-		-L*)
-			THEFILE="`echo $I | sed -e 's,^-L,,'`"
-			echo "From $I, checking in dir $THEFILE for libwrap.a" 1>&5
-			if test -f $THEFILE/libwrap.a; then
-				LIBWRAP_PATH=$THEFILE/libwrap.a
-				echo "Found $LIBWRAP_PATH" 1>&5
-				break
-			fi
-			;;
-		esac
-	done
-	;;
-  esac
 
-  if test -n "$LIBWRAP_PATH"; then
-        AC_MSG_RESULT(yes)
-  else
-        AC_MSG_RESULT(no)
-  fi
+	if test -z "$LIBWRAP_PATH"; then
+		if test -f /usr/sfw/lib/libwrap.so; then
+			LIBWRAP_PATH=/usr/sfw/lib/libwrap.so
+			echo "Found $LIBWRAP_PATH" 1>&5
+			nm $LIBWRAP_PATH | grep 'T setenv' && LIBWRAP_PATH=""
+		fi
+	fi
 
-  if test -n "$LIBWRAP_PATH"; then
-	nm $LIBWRAP_PATH | grep 'T setenv' && LIBWRAP_PATH=""
 	if test -z "$LIBWRAP_PATH"; then
 		echo "*********************************************************"
 	        echo " You have a broken TCP wrappers library (setenv included)"
@@ -616,27 +598,31 @@ else
 		echo "Not using TCP wrappers after all."
 		echo "*********************************************************"
 	else
-                AC_DEFINE(HAVE_TCPWRAPPERS)
+		LIBWRAP_LIBS="-L/usr/sfw/lib -R/usr/sfw/lib -lwrap"
+		AC_DEFINE(HAVE_TCPWRAPPERS)
 	fi
-  fi
-
-  case "$host" in
-    *-*-solaris*)
-	# No need for extra libwrap checking.
 	;;
     *)
-	if test -n "$LIBWRAP_PATH"; then
-	AC_CHECK_LIB(wrap, hosts_ctl, [
-		EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lwrap"], [
-		EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS $LIBWRAP_PATH"])
-	fi
+ 	AC_CHECK_LIB([wrap], [hosts_ctl], [
+ 	LIBWRAP_LIBS="-lwrap"
+ 	LIBWRAP_PATH=auto
+ 	AC_DEFINE(HAVE_TCPWRAPPERS)])
+ 	;;
+  esac
+ 
+  AC_MSG_CHECKING([whether to use TCP wrappers])
+  if test -n "$LIBWRAP_PATH"; then
+        AC_MSG_RESULT(yes)
+  else
+        AC_MSG_RESULT(no)
+  fi
 
-	dnl find out if we need -lnsl or whatever
-	LIB_NSL=
-	if test -n "$LIBWRAP_PATH"; then
+  dnl find out if we need -lnsl or whatever
+  LIB_NSL=
+  if test -n "$LIBWRAP_PATH"; then
 		AC_MSG_CHECKING(whether -lwrap also requires -lnsl)
 		ORIG_LIBS="$LIBS"
-		LIBS="$EXTRA_DAEMON_LIBS $LIBS"
+		LIBS="$EXTRA_DAEMON_LIBS $LIBS $LIBWRAP_LIBS"
 		AC_TRY_LINK([
 #include <tcpd.h>
 int allow_severity, deny_severity;
@@ -658,10 +644,10 @@ LIBS="$OLD_LIBS"
 		else
 			AC_MSG_RESULT(no)
 		fi
-	fi
-	;;
-   esac
+  fi
 fi
+
+AC_SUBST(LIBWRAP_LIBS)
 
 AC_MSG_CHECKING([for corrupt government])
 AC_MSG_RESULT(yes)
