@@ -68,6 +68,7 @@ noinst_PROGRAMS = 			\
 	test-greeter-login-window	\
 	test-greeter-panel		\
 	test-language-chooser		\
+	test-layout-chooser		\
 	test-languages			\
 	test-sessions			\
 	test-remote-login-window	\
@@ -193,6 +194,28 @@ test_language_chooser_SOURCES = 	\
 	$(NULL)
 
 test_language_chooser_LDADD =	\
+	$(GTK_LIBS)		\
+	$(NULL)
+
+test_layout_chooser_SOURCES = 	\
+	test-layout-chooser.c		\
+	gdm-cell-renderer-timer.h	\
+	gdm-cell-renderer-timer.c	\
+	gdm-timer.h			\
+	gdm-timer.c			\
+	gdm-scrollable-widget.h		\
+	gdm-scrollable-widget.c		\
+	gdm-chooser-widget.h		\
+	gdm-chooser-widget.c		\
+	gdm-layouts.h			\
+	gdm-layouts.c			\
+	gdm-layout-chooser-widget.h	\
+	gdm-layout-chooser-widget.c	\
+	gdm-layout-chooser-dialog.h	\
+	gdm-layout-chooser-dialog.c	\
+	$(NULL)
+
+test_layout_chooser_LDADD =	\
 	$(GTK_LIBS)		\
 	$(NULL)
 
