@@ -685,6 +685,16 @@ else
 fi
 AC_SUBST(GDMCHOOSER)
 
+dnl ---------------------------------------------------------------------------
+dnl - Check OS
+dnl ---------------------------------------------------------------------------
+
+os_solaris=no
+case "$host" in
+   *solaris*) os_solaris=yes
+   ;;
+esac
+AM_CONDITIONAL(OS_SOLARIS, test x$os_solaris = xyes)
 
 dnl ---------------------------------------------------------------------------
 dnl - Check for TCP Wrappers for XDMCP access control
@@ -695,15 +705,13 @@ if test x$with_tcp_wrappers = xno ; then
 else
   AC_MSG_CHECKING([whether to use TCP wrappers])
   LIBWRAP_PATH=""
-  case "$host" in
-    *-*-solaris*)
+  if test x$os_solaris = xyes ; then
 	if test -f /usr/sfw/lib/libwrap.so; then
 		LIBWRAP_PATH=/usr/sfw/lib/libwrap.so
 		echo "Found $LIBWRAP_PATH" 1>&5
 	fi
 	LIBWRAP_LIBS="-L/usr/sfw/lib -R/usr/sfw/lib -lwrap"
-	;;
-    *)
+  else
         for I in $LDFLAGS $LIBS -L/usr/lib; do
 		case "$I" in
 		-L*)
@@ -717,8 +725,7 @@ else
 			;;
 		esac
 	done
-	;;
-  esac
+  fi
 
   if test -n "$LIBWRAP_PATH"; then
         AC_MSG_RESULT(yes)
@@ -742,11 +749,7 @@ else
 	fi
   fi
 
-  case "$host" in
-    *-*-solaris*)
-	# No need for extra libwrap checking.
-	;;
-    *)
+  if test x$os_solaris != xyes ; then
 	if test -n "$LIBWRAP_PATH"; then
 	AC_CHECK_LIB(wrap, hosts_ctl, [
 		LIBWRAP_LIBS="-lwrap"], [
@@ -781,8 +784,7 @@ LIBS="$OLD_LIBS"
 			AC_MSG_RESULT(no)
 		fi
 	fi
-	;;
-   esac
+  fi
 fi
 
 AC_SUBST(LIBWRAP_LIBS)
@@ -807,10 +809,9 @@ if test "x$XINPUT_LIBS" = x; then
   save_LIBS="$LIBS"
   for xinputpath in $x_libraries /usr/X11R6/lib /usr/openwin/lib; do
     LIBS="-L$xinputpath -lXi"
-    case "$host" in
-       *solaris*) XINPUT_RPATH_FLAGS="-R$xinputpath"
-       ;;
-    esac
+    if test x$os_solaris = xyes ; then
+       XINPUT_RPATH_FLAGS="-R$xinputpath"
+    fi
     AC_MSG_CHECKING(for -lXi in $xinputpath)
     AC_TRY_LINK([], [XOpenDevice()], [
 	AC_MSG_RESULT(yes)
@@ -851,8 +852,7 @@ fi
 ALL_X_LIBS="$X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS"
 
 if test ! x$with_xinerama = xno ; then
-  case "$host" in
-    *-*-solaris*)
+  if test x$os_solaris = xyes ; then
 	# Check for solaris
 	use_solaris_xinerama=yes
 	AC_CHECK_LIB(Xext, XineramaGetInfo,
@@ -872,8 +872,7 @@ if test ! x$with_xinerama = xno ; then
 	fi
         AC_MSG_CHECKING(for Xinerama support on Solaris)
 	AC_MSG_RESULT($use_solaris_xinerama);
-	;;
-    *)
+  else
       	# Check for XFree
 	use_xfree_xinerama=yes
 	AC_CHECK_LIB(Xinerama, XineramaQueryExtension,
@@ -890,8 +889,7 @@ if test ! x$with_xinerama = xno ; then
             use_xfree_xinerama=no, -lXext $ALL_X_LIBS)
 	AC_MSG_CHECKING(for Xinerama support on XFree86)
 	AC_MSG_RESULT($use_xfree_xinerama);
-	;;
-  esac
+  fi
 fi
 
 AC_SUBST(XINERAMA_LIBS)

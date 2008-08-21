@@ -3,7 +3,6 @@
 # This is SORT OF LIKE an X session, but not quite.  You get a command as the
 # first argument (it could be multiple words, so run it with "eval").  As a
 # special case, the command can be:
-#  failsafe - Run an xterm only
 #  default - Run the appropriate Xclients startup (see the code below)
 #  custom - Run ~/.xsession and if that's not available run 'default'
 #
@@ -25,10 +24,6 @@
 # $XConsortium: Xsession /main/10 1995/12/18 18:21:28 gildea $
 
 command="$@"
-
-if [ -z "$command" ] ; then
-  command=failsafe
-fi
 
 # this will go into the .xsession-errors along with all other echo's
 # good for debugging where things went wrong
@@ -76,16 +71,6 @@ gdmwhich () {
 }
 
 zenity=`gdmwhich zenity`
-
-if [ x"$command" = xfailsafe ] ; then
-  if [ -n "$zenity" ] ; then
-    disptext=`gettextfunc "This is the failsafe xterm session.  Windows now have focus only if you have your cursor above them.  To get out of this mode type 'exit' in the window."`
-    "$zenity" --info --text "$disptext"
-  else
-    echo "$0: Starting the failsafe xterm session."
-  fi
-  exec xterm -geometry 80x24+0+0
-fi
 
 # Note: ~/.xsession-errors is now done in the daemon so that it
 # works for ALL sessions (except ones named 'Failsafe')
@@ -192,14 +177,6 @@ if [ -n "$GDM_LANG" ]; then
   fi
 fi
 
-# Normalize all LC_* settings to $LANG
-for var in "LC_ALL" "LC_CTYPE" "LC_NUMERIC" "LC_TIME" "LC_COLLATE" "LC_MONETARY" "LC_MESSAGES" \
-	"LC_PAPER" "LC_NAME" "LC_ADDRESS" "LC_TELEPHONE" "LC_MEASUREMENT" "LC_IDENTIFICATION" ; do
-  if eval "[ -n \"\$$var\" -a \"\$$var\" != \"\$LANG\" ]" ; then
-    unset $var
-  fi
-done
-
 # run all system xinitrc shell scripts.
 if [ -d /etc/X11/xinit/xinitrc.d ]; then
     for i in /etc/X11/xinit/xinitrc.d/* ; do
@@ -209,27 +186,10 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
     done
 fi
 
+# @DISTRO_XSESSION@
 #
-# To determine the character set used for filenames with
-# glib's g_filename_to/from_utf8() functions, we set the
-# environment variables G_FILENAME_ENCODING and G_BROKEN_FILENAMES.
+# End of Distribution configuration section.
 #
-# G_BROKEN_FILENAMES, when set, lets the functions take the 
-# character set for the current locale for filename's encoding.
-#
-# G_FILENAME_ENCODING, which is introduced to glib 2.3.x and later, may be
-# set to a comma-separated list of character set names.
-# The special token "@locale" is taken to mean the character set 
-# for the current locale. The first character set from the list is taken 
-# as the filename encoding. 
-#
-# If G_FILENAME_ENCODING is not set, but G_BROKEN_FILENAMES is, the
-# character set of the current locale is taken as the filename encoding.
-
-G_BROKEN_FILENAMES=yes
-export G_BROKEN_FILENAMES
-# G_FILENAME_ENCODING=@locale
-# export G_FILENAME_ENCODING
 
 #Startup Input methods (IIIM->XIM)
 if [ -f /etc/iiim/xsession ]; then

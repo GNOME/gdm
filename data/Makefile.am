@@ -13,9 +13,17 @@ postlogindir = $(gdmconfdir)/PostLogin
 workingdir = $(GDM_WORKING_DIR)
 xauthdir = $(GDM_XAUTH_DIR)
 
+if OS_SOLARIS
+   DISTRO_XSESSION=$(srcdir)/Xsession.solaris
+else
+   DISTRO_XSESSION=$(srcdir)/Xsession.common
+endif
+
 Xsession: $(srcdir)/Xsession.in
 	sed	-e 's,[@]XSESSION_SHELL[@],$(XSESSION_SHELL),g' \
 		-e 's,[@]libexecdir[@],$(libexecdir),g' \
+		-e '/^# @DISTRO_XSESSION@/r $(DISTRO_XSESSION)' \
+		-e 's,[@]DISTRO_XSESSION[@],Distribution configuration section,g' \
 		<$(srcdir)/Xsession.in >Xsession
 
 Init: $(srcdir)/Init.in
@@ -77,6 +85,8 @@ EXTRA_DIST =			\
 	gdm.schemas.in.in	\
 	gdm.conf-custom.in 	\
 	Xsession.in 		\
+	Xsession.common		\
+	Xsession.solaris	\
 	gdm 			\
 	gdm-autologin 		\
 	Init.in 		\
