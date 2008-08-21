@@ -49,7 +49,8 @@ GCONF_REQUIRED_VERSION=2.6.1
 POLICYKIT_REQUIRED_VERSION=0.8
 GNOME_PANEL_REQUIRED_VERSION=2.0.0
 LIBXKLAVIER_REQUIRED_VERSION=3.5
-FONTCONFIG_REQUIRED_VERSION=2.6.0
+#FONTCONFIG_REQUIRED_VERSION=2.6.0
+FONTCONFIG_REQUIRED_VERSION=2.5.0
 
 EXTRA_COMPILE_WARNINGS(yes)
 
@@ -703,38 +704,22 @@ dnl ---------------------------------------------------------------------------
 if test x$with_tcp_wrappers = xno ; then
 	echo "TCP wrappers disabled"
 else
-  AC_MSG_CHECKING([whether to use TCP wrappers])
   LIBWRAP_PATH=""
   if test x$os_solaris = xyes ; then
-	if test -f /usr/sfw/lib/libwrap.so; then
-		LIBWRAP_PATH=/usr/sfw/lib/libwrap.so
+	if test -f /usr/lib/libwrap.so; then
+		LIBWRAP_PATH=/usr/lib/libwrap.so
 		echo "Found $LIBWRAP_PATH" 1>&5
-	fi
-	LIBWRAP_LIBS="-L/usr/sfw/lib -R/usr/sfw/lib -lwrap"
-  else
-        for I in $LDFLAGS $LIBS -L/usr/lib; do
-		case "$I" in
-		-L*)
-			THEFILE="`echo $I | sed -e 's,^-L,,'`"
-			echo "From $I, checking in dir $THEFILE for libwrap.a" 1>&5
-			if test -f $THEFILE/libwrap.a; then
-				LIBWRAP_PATH=$THEFILE/libwrap.a
-				echo "Found $LIBWRAP_PATH" 1>&5
-				break
-			fi
-			;;
-		esac
-	done
-  fi
+		nm $LIBWRAP_PATH | grep 'T setenv' && LIBWRAP_PATH=""
+        fi
 
-  if test -n "$LIBWRAP_PATH"; then
-        AC_MSG_RESULT(yes)
-  else
-        AC_MSG_RESULT(no)
-  fi
+	if test -z "$LIBWRAP_PATH"; then
+		if test -f /usr/sfw/lib/libwrap.so; then
+			LIBWRAP_PATH=/usr/sfw/lib/libwrap.so
+			echo "Found $LIBWRAP_PATH" 1>&5
+			nm $LIBWRAP_PATH | grep 'T setenv' && LIBWRAP_PATH=""
+        	fi
+        fi
 
-  if test -n "$LIBWRAP_PATH"; then
-	nm $LIBWRAP_PATH | grep 'T setenv' && LIBWRAP_PATH=""
 	if test -z "$LIBWRAP_PATH"; then
 		echo "*********************************************************"
 	        echo " You have a broken TCP wrappers library (setenv included)"
@@ -745,23 +730,29 @@ else
 		echo "Not using TCP wrappers after all."
 		echo "*********************************************************"
 	else
-                AC_DEFINE(HAVE_TCPWRAPPERS)
+		LIBWRAP_LIBS="-L/usr/sfw/lib -R/usr/sfw/lib -lwrap"
+		AC_DEFINE(HAVE_TCPWRAPPERS)
 	fi
+  else
+ 	AC_CHECK_LIB([wrap], [hosts_ctl], [
+ 	LIBWRAP_LIBS="-lwrap"
+ 	LIBWRAP_PATH=auto
+ 	AC_DEFINE(HAVE_TCPWRAPPERS)])
+  fi
+ 
+  AC_MSG_CHECKING([whether to use TCP wrappers])
+  if test -n "$LIBWRAP_PATH"; then
+        AC_MSG_RESULT(yes)
+  else
+        AC_MSG_RESULT(no)
   fi
 
-  if test x$os_solaris != xyes ; then
-	if test -n "$LIBWRAP_PATH"; then
-	AC_CHECK_LIB(wrap, hosts_ctl, [
-		LIBWRAP_LIBS="-lwrap"], [
-		LIBWRAP_LIBS="$LIBWRAP_PATH"])
-	fi
-
-	dnl find out if we need -lnsl or whatever
-	LIB_NSL=
-	if test -n "$LIBWRAP_PATH"; then
+  dnl find out if we need -lnsl or whatever
+  LIB_NSL=
+  if test -n "$LIBWRAP_PATH"; then
 		AC_MSG_CHECKING(whether -lwrap also requires -lnsl)
 		ORIG_LIBS="$LIBS"
-		LIBS="$EXTRA_DAEMON_LIBS $LIBS"
+		LIBS="$EXTRA_DAEMON_LIBS $LIBS $LIBWRAP_LIBS"
 		AC_TRY_LINK([
 #include <tcpd.h>
 int allow_severity, deny_severity;
@@ -783,7 +774,6 @@ LIBS="$OLD_LIBS"
 		else
 			AC_MSG_RESULT(no)
 		fi
-	fi
   fi
 fi
 
