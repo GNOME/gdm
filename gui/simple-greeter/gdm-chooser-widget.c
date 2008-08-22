@@ -2,6 +2,7 @@
  *
  * Copyright (C) 2007 Ray Strode <rstrode@redhat.com>
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
+ * Copyright (C) 2008 Red Hat, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -951,7 +952,14 @@ gdm_chooser_widget_activate_selected_item (GdmChooserWidget *widget)
         model = GTK_TREE_MODEL (widget->priv->list_store);
         is_already_active = FALSE;
 
+        path = NULL;
+
         get_selected_path (widget, &path);
+
+        if (path == NULL) {
+                g_debug ("GdmChooserWidget: no row selected");
+                return;
+        }
 
         if (widget->priv->active_row != NULL) {
                 GtkTreePath *active_path;
