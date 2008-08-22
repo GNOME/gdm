@@ -98,7 +98,7 @@ gdm_layout_chooser_dialog_size_request (GtkWidget      *widget,
 
 static void
 gdm_layout_chooser_dialog_response (GtkDialog *dialog,
-                                      int        response_id)
+                                    int        response_id)
 {
         GdmLayoutChooserDialog *chooser_dialog;
 
@@ -178,7 +178,7 @@ gdm_layout_chooser_dialog_init (GdmLayoutChooserDialog *dialog)
                                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                 GTK_STOCK_OK, GTK_RESPONSE_OK,
                                 NULL);
-        gtk_window_set_icon_name (GTK_WINDOW (dialog), "keyboard");
+
         gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
         gtk_container_set_border_width (GTK_CONTAINER (dialog), 12);
         gtk_container_set_border_width (GTK_CONTAINER (dialog->priv->chooser_widget), 5);
@@ -207,6 +207,7 @@ gdm_layout_chooser_dialog_new (void)
         GObject *object;
 
         object = g_object_new (GDM_TYPE_LAYOUT_CHOOSER_DIALOG,
+                               "icon-name", "preferences-desktop-keyboard",
                                "title", _("Keyboard layouts"),
                                "border-width", 8,
                                "modal", TRUE,

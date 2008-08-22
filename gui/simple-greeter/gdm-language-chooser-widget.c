@@ -104,87 +104,86 @@ gdm_language_chooser_widget_add_language (GdmLanguageChooserWidget *widget,
         char *normalized_name;
         char *readable_language;
         char *lang_tag;
-	char *tagged;
+        char *tagged;
 
         normalized_name = gdm_normalize_language_name (name);
-	gdm_parse_language_name (name, &lang_tag, NULL, NULL, NULL);
+        gdm_parse_language_name (name, &lang_tag, NULL, NULL, NULL);
         language = gdm_get_language_from_name (normalized_name, normalized_name);
         readable_language = gdm_get_language_from_name (normalized_name, NULL);
 
- 	tagged = g_strdup_printf ("<span lang=\"%s\">%s</span>", lang_tag, language);
-	
+        tagged = g_strdup_printf ("<span lang=\"%s\">%s</span>", lang_tag, language);
+
         if (language != NULL) {
                 gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                              normalized_name,
                                              NULL,
                                              tagged,
-					     readable_language,
+                                             readable_language,
                                              0,
                                              FALSE,
                                              FALSE);
                 g_free (language);
         }
         g_free (readable_language);
-	g_free (tagged);
-	g_free (lang_tag);
+        g_free (tagged);
+        g_free (lang_tag);
         g_free (normalized_name);
 }
 
 static gboolean
 language_has_font (const char *locale)
 {
-  const FcCharSet *charset;
-  FcPattern   *pattern;
-  FcObjectSet *object_set;
-  FcFontSet   *font_set;
-  char        *language_code;
-  gboolean     is_displayable;
+        const FcCharSet *charset;
+        FcPattern       *pattern;
+        FcObjectSet     *object_set;
+        FcFontSet       *font_set;
+        char            *language_code;
+        gboolean         is_displayable;
 
-  is_displayable = FALSE;
-  pattern = NULL;
-  object_set = NULL;
-  font_set = NULL;
+        is_displayable = FALSE;
+        pattern = NULL;
+        object_set = NULL;
+        font_set = NULL;
 
-  gdm_parse_language_name (locale, &language_code, NULL, NULL, NULL);
+        gdm_parse_language_name (locale, &language_code, NULL, NULL, NULL);
 
-  charset = FcLangGetCharSet ((FcChar8 *) language_code);
-  if (!charset)
-    /* fontconfig does not know about this language */
-    is_displayable = TRUE;
-  else
-    {
-      /* see if any fonts support rendering it */
-      pattern = FcPatternBuild (NULL, FC_LANG, FcTypeString, language_code, NULL);
+        charset = FcLangGetCharSet ((FcChar8 *) language_code);
+        if (!charset) {
+                /* fontconfig does not know about this language */
+                is_displayable = TRUE;
+        } else {
+                /* see if any fonts support rendering it */
+                pattern = FcPatternBuild (NULL, FC_LANG, FcTypeString, language_code, NULL);
 
-      if (pattern == NULL)
-	goto done;
+                if (pattern == NULL)
+                        goto done;
 
-      object_set = FcObjectSetCreate ();
+                object_set = FcObjectSetCreate ();
 
-      if (object_set == NULL)
-	goto done;
+                if (object_set == NULL)
+                        goto done;
 
-      font_set = FcFontList (NULL, pattern, object_set);
+                font_set = FcFontList (NULL, pattern, object_set);
 
-      if (font_set == NULL)
-	goto done;
+                if (font_set == NULL)
+                        goto done;
 
-      is_displayable = (font_set->nfont > 0);
-    }
+                is_displayable = (font_set->nfont > 0);
+        }
 
-done:
+ done:
 
-  if (font_set != NULL)
-    FcFontSetDestroy (font_set);
+        if (font_set != NULL)
+                FcFontSetDestroy (font_set);
 
-  if (object_set != NULL)
-    FcObjectSetDestroy (object_set);
+        if (object_set != NULL)
+                FcObjectSetDestroy (object_set);
 
-  if (pattern != NULL)
-    FcPatternDestroy (pattern);
+        if (pattern != NULL)
+                FcPatternDestroy (pattern);
 
-  g_free (language_code);
-  return is_displayable;
+        g_free (language_code);
+        return is_displayable;
 }
 
 static void
