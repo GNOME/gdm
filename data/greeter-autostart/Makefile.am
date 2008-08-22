@@ -15,8 +15,11 @@ desktopdir = $(pkgdatadir)/autostart/LoginWindow
 desktop_in_files = 	\
 	at-spi-registryd-wrapper.desktop.in	\
 	gdm-simple-greeter.desktop.in		\
+	gnome-mag.desktop.in			\
 	gnome-power-manager.desktop.in		\
 	gnome-settings-daemon.desktop.in	\
+	gok.desktop.in				\
+	orca-screen-reader.desktop.in		\
 	$(NULL)
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 
