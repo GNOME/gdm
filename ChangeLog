@@ -1,3 +1,9 @@
+2008-08-25  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/server.c:  Add -n argument to call to fbconsole so it
+	  doesn't open a connection to the X display, to avoid race
+	  conditions with XDMCP remote sessions.
+
 2008-08-20  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.ac: Fix broken check for TCP Wrappers.  Fixes bug

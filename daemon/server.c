@@ -141,9 +141,10 @@ gdm_exec_fbconsole (GdmDisplay *disp)
         char *argv[6];
 
         argv[0] = FBCONSOLE;
-        argv[1] = "-d";
-        argv[2] = disp->name;
-        argv[3] = NULL;
+        argv[1] = "-n";
+        argv[2] = "-d";
+        argv[3] = disp->name;
+        argv[4] = NULL;
 
 	gdm_debug ("Forking fbconsole");
 
