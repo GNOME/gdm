@@ -24,6 +24,10 @@ desktop_in_files = 	\
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 
 EXTRA_DIST = 			\
+	at-spi-registryd-wrapper.desktop.in.in	\
+	gdm-simple-greeter.desktop.in.in	\
+	gnome-power-manager.desktop.in.in	\
+	gnome-settings-daemon.desktop.in.in	\
 	$(desktop_in_files)	\
 	$(NULL)
 
