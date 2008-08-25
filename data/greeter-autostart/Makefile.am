@@ -31,6 +31,14 @@ EXTRA_DIST = 			\
 	$(desktop_in_files)	\
 	$(NULL)
 
+DISTCLEANFILES =			\
+	*.desktop			\
+	at-spi-registryd-wrapper.desktop.in	\
+	gdm-simple-greeter.desktop.in	\
+	gnome-power-manager.desktop.in	\
+	gnome-settings-daemon.desktop.in	\
+	$(NULL)
+
 MAINTAINERCLEANFILES =                  \
         *~                              \
         Makefile.in
