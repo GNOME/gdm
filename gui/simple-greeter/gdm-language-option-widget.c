@@ -57,7 +57,8 @@ static guint signals [NUMBER_OF_SIGNALS] = { 0, };
 
 static void     gdm_language_option_widget_class_init  (GdmLanguageOptionWidgetClass *klass);
 static void     gdm_language_option_widget_init        (GdmLanguageOptionWidget      *language_option_widget);
-static void     gdm_language_option_widget_finalize    (GObject                     *object);
+static void     gdm_language_option_widget_finalize    (GObject                      *object);
+static void     gdm_language_option_widget_hide_dialog (GdmLanguageOptionWidget      *widget);
 
 G_DEFINE_TYPE (GdmLanguageOptionWidget, gdm_language_option_widget, GDM_TYPE_RECENT_OPTION_WIDGET)
 
@@ -79,19 +80,51 @@ on_dialog_response (GtkDialog               *dialog,
         switch (response_id) {
                 case GTK_RESPONSE_OK:
                         gdm_language_option_widget_set_language_from_dialog (widget);
-                break;
+                        break;
 
                 default:
-                break;
+                        break;
         }
-        gtk_widget_hide (GTK_WIDGET (dialog));
+
+        gdm_language_option_widget_hide_dialog (widget);
 }
 
 static void
-gdm_language_option_widget_show_dialog (GdmLanguageOptionWidget *widget)
+gdm_language_option_widget_hide_dialog (GdmLanguageOptionWidget *widget)
 {
-        gdm_language_option_widget_set_language_from_dialog (widget);
+        gtk_widget_destroy (widget->priv->dialog);
+        widget->priv->dialog = NULL;
+}
+
+static void
+create_dialog (GdmLanguageOptionWidget *widget)
+{
+        gdm_profile_start (NULL);
+
+        g_assert (widget->priv->dialog == NULL);
+
+        widget->priv->dialog = gdm_language_chooser_dialog_new ();
+
+        gdm_profile_end (NULL);
+}
+
+static void
+gdm_language_option_widget_show_dialog (GdmLanguageOptionWidget *widget,
+                                        const char              *active_item_id)
+{
+        if (widget->priv->dialog == NULL) {
+                create_dialog (widget);
+        }
+
+        g_signal_connect (GTK_DIALOG (widget->priv->dialog),
+                          "response",
+                          G_CALLBACK (on_dialog_response),
+                          widget);
+
         gtk_widget_show_all (GTK_WIDGET (widget->priv->dialog));
+
+        gdm_language_chooser_dialog_set_current_language_name (GDM_LANGUAGE_CHOOSER_DIALOG (GDM_LANGUAGE_OPTION_WIDGET (widget)->priv->dialog),
+                                                               active_item_id);
 }
 
 static void
@@ -105,20 +138,22 @@ gdm_language_option_widget_activated (GdmOptionWidget *widget)
         }
 
         if (strcmp (active_item_id, "__other") == 0) {
-                gdm_language_option_widget_show_dialog (GDM_LANGUAGE_OPTION_WIDGET (widget));
-                return;
+                g_free (active_item_id);
+
+                active_item_id = gdm_option_widget_get_default_item (widget);
+                gdm_language_option_widget_set_current_language_name (GDM_LANGUAGE_OPTION_WIDGET (widget), active_item_id);
+                gdm_language_option_widget_show_dialog (GDM_LANGUAGE_OPTION_WIDGET (widget), active_item_id);
         }
 
-        gdm_language_chooser_dialog_set_current_language_name (GDM_LANGUAGE_CHOOSER_DIALOG (GDM_LANGUAGE_OPTION_WIDGET (widget)->priv->dialog),
-                                                               active_item_id);
-
         g_signal_emit (G_OBJECT (widget), signals[LANGUAGE_ACTIVATED], 0);
+
+        g_free (active_item_id);
 }
 
 static void
 gdm_language_option_widget_class_init (GdmLanguageOptionWidgetClass *klass)
 {
-        GObjectClass   *object_class = G_OBJECT_CLASS (klass);
+        GObjectClass         *object_class = G_OBJECT_CLASS (klass);
         GdmOptionWidgetClass *option_widget_class = GDM_OPTION_WIDGET_CLASS (klass);
 
         object_class->finalize = gdm_language_option_widget_finalize;
@@ -166,23 +201,6 @@ gdm_language_option_widget_lookup_item (GdmRecentOptionWidget *widget,
 }
 
 static void
-create_dialog (GdmLanguageOptionWidget *widget)
-{
-        gdm_profile_start (NULL);
-
-        g_assert (widget->priv->dialog == NULL);
-
-        widget->priv->dialog = gdm_language_chooser_dialog_new ();
-
-        g_signal_connect (GTK_DIALOG (widget->priv->dialog),
-                          "response",
-                          G_CALLBACK (on_dialog_response),
-                          widget);
-
-        gdm_profile_end (NULL);
-}
-
-static void
 gdm_language_option_widget_init (GdmLanguageOptionWidget *widget)
 {
         GError *error;
@@ -207,8 +225,6 @@ gdm_language_option_widget_init (GdmLanguageOptionWidget *widget)
                                     _("Choose a language from the "
                                       "full list of available languages."),
                                     GDM_OPTION_WIDGET_POSITION_BOTTOM);
-
-        create_dialog (widget);
 }
 
 static void
@@ -222,6 +238,10 @@ gdm_language_option_widget_finalize (GObject *object)
         language_option_widget = GDM_LANGUAGE_OPTION_WIDGET (object);
 
         g_return_if_fail (language_option_widget->priv != NULL);
+
+        if (language_option_widget->priv->dialog != NULL) {
+                gtk_widget_destroy (language_option_widget->priv->dialog);
+        }
 
         G_OBJECT_CLASS (gdm_language_option_widget_parent_class)->finalize (object);
 }

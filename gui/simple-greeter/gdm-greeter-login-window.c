@@ -1931,7 +1931,7 @@ on_gconf_key_changed (GConfClient           *client,
                         update_banner_message (login_window);
                 }
         } else {
-                g_debug ("Config key not handled: %s", key);
+                g_debug ("GdmGreeterLoginWindow: Config key not handled: %s", key);
         }
 }
 

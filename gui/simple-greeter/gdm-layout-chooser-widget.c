@@ -49,7 +49,7 @@ struct GdmLayoutChooserWidgetPrivate
 
 static void     gdm_layout_chooser_widget_class_init  (GdmLayoutChooserWidgetClass *klass);
 static void     gdm_layout_chooser_widget_init        (GdmLayoutChooserWidget      *layout_chooser_widget);
-static void     gdm_layout_chooser_widget_finalize    (GObject                       *object);
+static void     gdm_layout_chooser_widget_finalize    (GObject                     *object);
 
 G_DEFINE_TYPE (GdmLayoutChooserWidget, gdm_layout_chooser_widget, GDM_TYPE_CHOOSER_WIDGET)
 

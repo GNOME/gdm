@@ -63,7 +63,7 @@ gdm_layout_chooser_dialog_get_current_layout_name (GdmLayoutChooserDialog *dialo
 
 void
 gdm_layout_chooser_dialog_set_current_layout_name (GdmLayoutChooserDialog *dialog,
-                                                       const char               *layout_name)
+                                                   const char             *layout_name)
 {
 
         g_return_if_fail (GDM_IS_LAYOUT_CHOOSER_DIALOG (dialog));
@@ -73,7 +73,7 @@ gdm_layout_chooser_dialog_set_current_layout_name (GdmLayoutChooserDialog *dialo
 
 static void
 gdm_layout_chooser_dialog_size_request (GtkWidget      *widget,
-                                       GtkRequisition *requisition)
+                                        GtkRequisition *requisition)
 {
         int            screen_w;
         int            screen_h;
@@ -97,19 +97,6 @@ gdm_layout_chooser_dialog_size_request (GtkWidget      *widget,
 }
 
 static void
-gdm_layout_chooser_dialog_response (GtkDialog *dialog,
-                                    int        response_id)
-{
-        GdmLayoutChooserDialog *chooser_dialog;
-
-        chooser_dialog = GDM_LAYOUT_CHOOSER_DIALOG (dialog);
-
-        if (response_id == GTK_RESPONSE_OK) {
-                gdm_chooser_widget_activate_selected_item (GDM_CHOOSER_WIDGET (chooser_dialog->priv->chooser_widget));
-        }
-}
-
-static void
 gdm_layout_chooser_dialog_realize (GtkWidget *widget)
 {
         GdmLayoutChooserDialog *chooser_dialog;
@@ -126,16 +113,10 @@ gdm_layout_chooser_dialog_class_init (GdmLayoutChooserDialogClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
         GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
-#ifdef I_COULD_GO_BACK_IN_TIME_AND_MAKE_RESPONSE_RUN_FIRST
-        GtkDialogClass *dialog_class = GTK_DIALOG_CLASS (klass);
-#endif
 
         object_class->finalize = gdm_layout_chooser_dialog_finalize;
         widget_class->size_request = gdm_layout_chooser_dialog_size_request;
         widget_class->realize = gdm_layout_chooser_dialog_realize;
-#ifdef I_COULD_GO_BACK_IN_TIME_AND_MAKE_RESPONSE_RUN_FIRST
-        dialog_class->response = gdm_layout_chooser_dialog_response;
-#endif
 
         g_type_class_add_private (klass, sizeof (GdmLayoutChooserDialogPrivate));
 }
@@ -144,6 +125,7 @@ static gboolean
 respond (GdmLayoutChooserDialog *dialog)
 {
         gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+
         return FALSE;
 }
 
@@ -163,17 +145,14 @@ gdm_layout_chooser_dialog_init (GdmLayoutChooserDialog *dialog)
         gdm_chooser_widget_set_hide_inactive_items (GDM_CHOOSER_WIDGET (dialog->priv->chooser_widget),
                                                     FALSE);
 
-#ifndef I_COULD_GO_BACK_IN_TIME_AND_MAKE_RESPONSE_RUN_FIRST
-        g_signal_connect (G_OBJECT (dialog), "response", G_CALLBACK (gdm_layout_chooser_dialog_response), NULL);
-#endif
-
         gdm_layout_chooser_widget_set_current_layout_name (GDM_LAYOUT_CHOOSER_WIDGET (dialog->priv->chooser_widget),
                                                                setlocale (LC_MESSAGES, NULL));
         gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), dialog->priv->chooser_widget);
-
+#if 0
         g_signal_connect_swapped (G_OBJECT (dialog->priv->chooser_widget),
                                   "activated", G_CALLBACK (queue_response),
                                   dialog);
+#endif
         gtk_dialog_add_buttons (GTK_DIALOG (dialog),
                                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                 GTK_STOCK_OK, GTK_RESPONSE_OK,

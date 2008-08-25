@@ -1,3 +1,41 @@
+2008-08-25  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/simple-greeter/gdm-chooser-widget.c (find_item),
+	(translate_list_path_to_view_path), (get_list_path_to_active_row),
+	(get_view_path_to_active_row), (get_active_item_id),
+	(activate_from_item_id), (on_shrink_animation_step),
+	(start_shrink_animation), (deactivate),
+	(translate_view_path_to_list_path), (get_selected_list_path),
+	(gdm_chooser_widget_activate_selected_item), (add_separator),
+	(on_selection_changed), (gdm_chooser_widget_init):
+	* gui/simple-greeter/gdm-greeter-login-window.c
+	(on_gconf_key_changed):
+	* gui/simple-greeter/gdm-language-chooser-dialog.c
+	(gdm_language_chooser_dialog_class_init),
+	(gdm_language_chooser_dialog_init):
+	* gui/simple-greeter/gdm-language-option-widget.c
+	(on_dialog_response), (gdm_language_option_widget_hide_dialog),
+	(create_dialog), (gdm_language_option_widget_show_dialog),
+	(gdm_language_option_widget_activated),
+	(gdm_language_option_widget_init),
+	(gdm_language_option_widget_finalize):
+	* gui/simple-greeter/gdm-layout-chooser-dialog.c
+	(gdm_layout_chooser_dialog_class_init), (respond),
+	(gdm_layout_chooser_dialog_init):
+	* gui/simple-greeter/gdm-layout-option-widget.c
+	(gdm_layout_option_widget_set_layout_from_dialog),
+	(on_dialog_response), (gdm_layout_option_widget_hide_dialog),
+	(create_dialog), (gdm_layout_option_widget_show_dialog),
+	(gdm_layout_option_widget_activated),
+	(gdm_layout_option_widget_init),
+	(gdm_layout_option_widget_finalize),
+	(gdm_layout_option_widget_set_current_layout_name):
+	Fix a number of problems in the chooser widgets.  Remove
+	some unused code.  Drop handling activation as response
+	for now.  Fix a leak.  Fix some bugs with tranlating
+	child paths.
+	Fixes #549223
+
 2008-08-22  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/gdm-language-chooser-dialog.c
