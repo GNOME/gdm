@@ -44,14 +44,14 @@ struct GdmClockWidgetPrivate
 {
         GtkWidget *label;
         char      *time_format;
-        guint     update_clock_id;
-        guint     should_show_seconds : 1;
+        guint      update_clock_id;
+        guint      should_show_seconds : 1;
 };
 
 static void     gdm_clock_widget_class_init  (GdmClockWidgetClass *klass);
 static void     gdm_clock_widget_init        (GdmClockWidget      *clock_widget);
 static void     gdm_clock_widget_finalize    (GObject             *object);
-static gboolean update_timeout_cb            (GdmClockWidget *clock);
+static gboolean update_timeout_cb            (GdmClockWidget      *clock);
 
 G_DEFINE_TYPE (GdmClockWidget, gdm_clock_widget, GTK_TYPE_ALIGNMENT)
 
@@ -174,12 +174,17 @@ gdm_clock_widget_class_init (GdmClockWidgetClass *klass)
 static void
 gdm_clock_widget_init (GdmClockWidget *widget)
 {
+        GtkWidget *box;
+
         widget->priv = GDM_CLOCK_WIDGET_GET_PRIVATE (widget);
+
+        box = gtk_hbox_new (FALSE, 6);
+        gtk_widget_show (box);
+        gtk_container_add (GTK_CONTAINER (widget), box);
 
         widget->priv->label = gtk_label_new ("");
         gtk_widget_show (widget->priv->label);
-
-        gtk_container_add (GTK_CONTAINER (widget), widget->priv->label);
+        gtk_box_pack_start (GTK_BOX (box), widget->priv->label, FALSE, FALSE, 0);
 
         widget->priv->time_format = get_time_format (widget);
         update_timeout_cb (widget);
