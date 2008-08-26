@@ -19,6 +19,7 @@ desktop_in_files = 	\
 	gnome-power-manager.desktop.in		\
 	gnome-settings-daemon.desktop.in	\
 	gok.desktop.in				\
+	metacity.desktop.in			\
 	orca-screen-reader.desktop.in		\
 	$(NULL)
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
