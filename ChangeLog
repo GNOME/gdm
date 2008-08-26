@@ -1,5 +1,13 @@
 2008-08-26  William Jon McCann  <jmccann@redhat.com>
 
+	* gui/simple-greeter/gdm-clock-widget.c
+	(gdm_clock_widget_size_request), (gdm_clock_widget_class_init):
+	Request padding so that panel doesn't change size when
+	comboboxes or buttons are added.  Somewhat arbitrary but
+	it seems to work for now.
+
+2008-08-26  William Jon McCann  <jmccann@redhat.com>
+
 	* gui/simple-greeter/gdm-clock-widget.c (gdm_clock_widget_init):
 	Pack label in a box.
 

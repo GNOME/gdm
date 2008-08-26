@@ -160,13 +160,44 @@ remove_timeout (GdmClockWidget *clock)
 }
 
 static void
+gdm_clock_widget_size_request (GtkWidget      *widget,
+                               GtkRequisition *requisition)
+{
+        PangoFontMetrics *metrics;
+        PangoContext     *context;
+        int               ascent;
+        int               descent;
+        int               padding;
+
+        if (GTK_WIDGET_CLASS (gdm_clock_widget_parent_class)->size_request) {
+                GTK_WIDGET_CLASS (gdm_clock_widget_parent_class)->size_request (widget, requisition);
+        }
+
+        gtk_widget_ensure_style (widget);
+        context = gtk_widget_get_pango_context (widget);
+        metrics = pango_context_get_metrics (context,
+                                             widget->style->font_desc,
+                                             pango_context_get_language (context));
+
+        ascent = pango_font_metrics_get_ascent (metrics);
+        descent = pango_font_metrics_get_descent (metrics);
+        padding = PANGO_PIXELS (ascent + descent) / 2.0;
+        requisition->height += padding;
+
+        pango_font_metrics_unref (metrics);
+}
+
+static void
 gdm_clock_widget_class_init (GdmClockWidgetClass *klass)
 {
         GObjectClass *object_class;
+        GtkWidgetClass *widget_class;
 
         object_class = G_OBJECT_CLASS (klass);
+        widget_class = GTK_WIDGET_CLASS (klass);
 
         object_class->finalize = gdm_clock_widget_finalize;
+        widget_class->size_request = gdm_clock_widget_size_request;
 
         g_type_class_add_private (klass, sizeof (GdmClockWidgetPrivate));
 }
