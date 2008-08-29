@@ -1,7 +1,8 @@
 [Desktop Entry]
 Type=Application
 _Name=GNOME Settings Daemon
-Exec=@LIBEXECDIR@/gnome-settings-daemon
+TryExec=@LIBEXECDIR@/gnome-settings-daemon
+Exec=@LIBEXECDIR@/gnome-settings-daemon --gconf-prefix=/apps/gdm/simple-greeter/settings-manager-plugins
 OnlyShowIn=GNOME;
 X-GNOME-Autostart-Phase=Initialization
 X-GNOME-Autostart-Notify=true
