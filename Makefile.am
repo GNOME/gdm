@@ -4,6 +4,7 @@ SUBDIRS = 			\
 	data			\
 	common 			\
 	daemon 			\
+	docs			\
 	gui 			\
 	utils 			\
 	po 			\
@@ -11,7 +12,7 @@ SUBDIRS = 			\
 	$(NULL)
 
 # add these when help gets added back
-# docs omf-install
+# omf-install
 
 EXTRA_DIST = \
 	MAINTAINERS		\
