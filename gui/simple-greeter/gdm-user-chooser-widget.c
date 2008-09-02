@@ -62,9 +62,9 @@ struct GdmUserChooserWidgetPrivate
         GdkPixbuf      *stock_person_pixbuf;
 
         guint           loaded : 1;
-        guint           show_other_user : 1;
-        guint           show_guest_user : 1;
-        guint           show_auto_user : 1;
+        guint           show_user_other : 1;
+        guint           show_user_guest : 1;
+        guint           show_user_auto : 1;
         guint           show_normal_users : 1;
 
         guint           load_idle_id;
@@ -72,6 +72,9 @@ struct GdmUserChooserWidgetPrivate
 
 enum {
         PROP_0,
+        PROP_SHOW_USER_GUEST,
+        PROP_SHOW_USER_AUTO,
+        PROP_SHOW_USER_OTHER,
 };
 
 static void     gdm_user_chooser_widget_class_init  (GdmUserChooserWidgetClass *klass);
@@ -141,13 +144,13 @@ remove_user_auto (GdmUserChooserWidget *widget)
 }
 
 void
-gdm_user_chooser_widget_set_show_other_user (GdmUserChooserWidget *widget,
+gdm_user_chooser_widget_set_show_user_other (GdmUserChooserWidget *widget,
                                              gboolean              show_user)
 {
         g_return_if_fail (GDM_IS_USER_CHOOSER_WIDGET (widget));
 
-        if (widget->priv->show_other_user != show_user) {
-                widget->priv->show_other_user = show_user;
+        if (widget->priv->show_user_other != show_user) {
+                widget->priv->show_user_other = show_user;
                 if (show_user) {
                         add_user_other (widget);
                 } else {
@@ -157,13 +160,13 @@ gdm_user_chooser_widget_set_show_other_user (GdmUserChooserWidget *widget,
 }
 
 void
-gdm_user_chooser_widget_set_show_guest_user (GdmUserChooserWidget *widget,
+gdm_user_chooser_widget_set_show_user_guest (GdmUserChooserWidget *widget,
                                              gboolean              show_user)
 {
         g_return_if_fail (GDM_IS_USER_CHOOSER_WIDGET (widget));
 
-        if (widget->priv->show_guest_user != show_user) {
-                widget->priv->show_guest_user = show_user;
+        if (widget->priv->show_user_guest != show_user) {
+                widget->priv->show_user_guest = show_user;
                 if (show_user) {
                         add_user_guest (widget);
                 } else {
@@ -173,13 +176,13 @@ gdm_user_chooser_widget_set_show_guest_user (GdmUserChooserWidget *widget,
 }
 
 void
-gdm_user_chooser_widget_set_show_auto_user (GdmUserChooserWidget *widget,
+gdm_user_chooser_widget_set_show_user_auto (GdmUserChooserWidget *widget,
                                             gboolean              show_user)
 {
         g_return_if_fail (GDM_IS_USER_CHOOSER_WIDGET (widget));
 
-        if (widget->priv->show_auto_user != show_user) {
-                widget->priv->show_auto_user = show_user;
+        if (widget->priv->show_user_auto != show_user) {
+                widget->priv->show_user_auto = show_user;
                 if (show_user) {
                         add_user_auto (widget);
                 } else {
@@ -220,7 +223,20 @@ gdm_user_chooser_widget_set_property (GObject        *object,
                                       const GValue   *value,
                                       GParamSpec     *pspec)
 {
+        GdmUserChooserWidget *self;
+
+        self = GDM_USER_CHOOSER_WIDGET (object);
+
         switch (prop_id) {
+        case PROP_SHOW_USER_AUTO:
+                gdm_user_chooser_widget_set_show_user_auto (self, g_value_get_boolean (value));
+                break;
+        case PROP_SHOW_USER_GUEST:
+                gdm_user_chooser_widget_set_show_user_guest (self, g_value_get_boolean (value));
+                break;
+        case PROP_SHOW_USER_OTHER:
+                gdm_user_chooser_widget_set_show_user_other (self, g_value_get_boolean (value));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -233,7 +249,20 @@ gdm_user_chooser_widget_get_property (GObject        *object,
                                       GValue         *value,
                                       GParamSpec     *pspec)
 {
+        GdmUserChooserWidget *self;
+
+        self = GDM_USER_CHOOSER_WIDGET (object);
+
         switch (prop_id) {
+        case PROP_SHOW_USER_AUTO:
+                g_value_set_boolean (value, self->priv->show_user_auto);
+                break;
+        case PROP_SHOW_USER_GUEST:
+                g_value_set_boolean (value, self->priv->show_user_guest);
+                break;
+        case PROP_SHOW_USER_OTHER:
+                g_value_set_boolean (value, self->priv->show_user_other);
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -393,11 +422,6 @@ static gboolean
 load_users (GdmUserChooserWidget *widget)
 {
 
-        /* FIXME: make these construct properties */
-        gdm_user_chooser_widget_set_show_guest_user (widget, FALSE);
-        gdm_user_chooser_widget_set_show_auto_user (widget, FALSE);
-        gdm_user_chooser_widget_set_show_other_user (widget, TRUE);
-
         if (widget->priv->show_normal_users) {
                 widget->priv->manager = gdm_user_manager_ref_default ();
                 g_signal_connect (widget->priv->manager,
@@ -482,6 +506,29 @@ gdm_user_chooser_widget_class_init (GdmUserChooserWidgetClass *klass)
         object_class->constructor = gdm_user_chooser_widget_constructor;
         object_class->dispose = gdm_user_chooser_widget_dispose;
         object_class->finalize = gdm_user_chooser_widget_finalize;
+
+
+        g_object_class_install_property (object_class,
+                                         PROP_SHOW_USER_AUTO,
+                                         g_param_spec_boolean ("show-user-auto",
+                                                               "show user auto",
+                                                               "show user auto",
+                                                               FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_SHOW_USER_GUEST,
+                                         g_param_spec_boolean ("show-user-guest",
+                                                               "show user guest",
+                                                               "show user guest",
+                                                               FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_SHOW_USER_OTHER,
+                                         g_param_spec_boolean ("show-user-other",
+                                                               "show user other",
+                                                               "show user other",
+                                                               TRUE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
         g_type_class_add_private (klass, sizeof (GdmUserChooserWidgetPrivate));
 }

@@ -59,11 +59,11 @@ void                   gdm_user_chooser_widget_set_chosen_user_name       (GdmUs
                                                                            const char           *user_name);
 void                   gdm_user_chooser_widget_set_show_only_chosen       (GdmUserChooserWidget *widget,
                                                                            gboolean              show_only);
-void                   gdm_user_chooser_widget_set_show_other_user        (GdmUserChooserWidget *widget,
+void                   gdm_user_chooser_widget_set_show_user_other        (GdmUserChooserWidget *widget,
                                                                            gboolean              show);
-void                   gdm_user_chooser_widget_set_show_guest_user        (GdmUserChooserWidget *widget,
+void                   gdm_user_chooser_widget_set_show_user_guest        (GdmUserChooserWidget *widget,
                                                                            gboolean              show);
-void                   gdm_user_chooser_widget_set_show_auto_user         (GdmUserChooserWidget *widget,
+void                   gdm_user_chooser_widget_set_show_user_auto         (GdmUserChooserWidget *widget,
                                                                            gboolean              show);
 G_END_DECLS
 

@@ -63,30 +63,30 @@ gdm_user_chooser_dialog_get_chosen_user_name (GdmUserChooserDialog *dialog)
 }
 
 void
-gdm_user_chooser_dialog_set_show_other_user (GdmUserChooserDialog *dialog,
+gdm_user_chooser_dialog_set_show_user_other (GdmUserChooserDialog *dialog,
                                              gboolean              show_user)
 {
         g_return_if_fail (GDM_IS_USER_CHOOSER_DIALOG (dialog));
 
-        gdm_user_chooser_widget_set_show_other_user (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), show_user);
+        gdm_user_chooser_widget_set_show_user_other (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), show_user);
 }
 
 void
-gdm_user_chooser_dialog_set_show_guest_user (GdmUserChooserDialog *dialog,
+gdm_user_chooser_dialog_set_show_user_guest (GdmUserChooserDialog *dialog,
                                              gboolean              show_user)
 {
         g_return_if_fail (GDM_IS_USER_CHOOSER_DIALOG (dialog));
 
-        gdm_user_chooser_widget_set_show_guest_user (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), show_user);
+        gdm_user_chooser_widget_set_show_user_guest (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), show_user);
 }
 
 void
-gdm_user_chooser_dialog_set_show_auto_user (GdmUserChooserDialog *dialog,
+gdm_user_chooser_dialog_set_show_user_auto (GdmUserChooserDialog *dialog,
                                             gboolean              show_user)
 {
         g_return_if_fail (GDM_IS_USER_CHOOSER_DIALOG (dialog));
 
-        gdm_user_chooser_widget_set_show_auto_user (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), show_user);
+        gdm_user_chooser_widget_set_show_user_auto (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), show_user);
 }
 
 static void

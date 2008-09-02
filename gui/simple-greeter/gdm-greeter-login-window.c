@@ -837,7 +837,7 @@ gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_windo
         if (login_window->priv->dialog_mode != MODE_SELECTION) {
                 reset_dialog (login_window);
         }
-        gdm_user_chooser_widget_set_show_auto_user (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
+        gdm_user_chooser_widget_set_show_user_auto (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
 
         if (!timed_login_already_enabled) {
                 gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser),

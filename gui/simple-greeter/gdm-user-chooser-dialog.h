@@ -53,9 +53,9 @@ GtkWidget            * gdm_user_chooser_dialog_new                        (void)
 char *                 gdm_user_chooser_dialog_get_chosen_user_name       (GdmUserChooserDialog *dialog);
 void                   gdm_user_chooser_dialog_set_show_other_user        (GdmUserChooserDialog *dialog,
                                                                            gboolean              show);
-void                   gdm_user_chooser_dialog_set_show_guest_user        (GdmUserChooserDialog *dialog,
+void                   gdm_user_chooser_dialog_set_show_user_guest        (GdmUserChooserDialog *dialog,
                                                                            gboolean              show);
-void                   gdm_user_chooser_dialog_set_show_auto_user         (GdmUserChooserDialog *dialog,
+void                   gdm_user_chooser_dialog_set_show_user_auto         (GdmUserChooserDialog *dialog,
                                                                            gboolean              show);
 G_END_DECLS
 
