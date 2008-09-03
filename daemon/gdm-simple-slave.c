@@ -442,12 +442,26 @@ get_timed_login_details (GdmSimpleSlave  *slave,
         gboolean res;
 
         enabled = FALSE;
+        res = gdm_settings_client_get_boolean (GDM_KEY_AUTO_LOGIN_ENABLE, &enabled);
+        if (enabled) {
+
+            *username = NULL;
+            res = gdm_settings_client_get_string (GDM_KEY_AUTO_LOGIN_USER, username);
+        }
+
+        if (enabled && *username != NULL)
+        {
+            *delay = 0;
+            return TRUE;
+        }
+
+        *username = NULL;
+        enabled = FALSE;
         res = gdm_settings_client_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE, &enabled);
         if (! enabled) {
                 return FALSE;
         }
 
-        *username = NULL;
         res = gdm_settings_client_get_string (GDM_KEY_TIMED_LOGIN_USER, username);
 
         if (username == NULL) {
