@@ -1,3 +1,9 @@
+2008-09-03 Brian Cameron <brian.cameron@sun.com>
+
+	* Release 2.20.8:
+	* configure.ac: Updated to new release version
+	* NEWS: Updated.
+
 2008-09-03  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm.c:  Improve gdm_final_cleanup so that the slave daemon
@@ -12,8 +18,8 @@
 	  manage SMF so that when the slave daemon is forked, it is spawned
 	  in a separate contract.  This ensures that the user session, all
 	  GDM GUI programs, and the PAM interaction all happen in the user
-	  session contract.  This helps to ensure that if the Xserver crashes,
-	  it doesn't cause the GDM service to restart.  This only affects
+	  service contract.  This helps to ensure that if the Xserver crashes,
+	  it does not cause the GDM service to restart.  This only affects
 	  Solaris.
 	* gui/modules/dwellmouselistener.c, gui/modules/keymouselistener.c,
 	  daemon/slave.c: Remove ctrun integration.

@@ -1,5 +1,45 @@
 Ahh news...
 
+2.20.8 Stuff:
+
+- Improve gdm_final_cleanup so that the slave daemon exits after
+  receiving a shutdown or reboot event, and after completing all
+  cleanup.  This further fixes bug #517526. which was causing GDM
+  to crash on reboot or shutdown. (Josselin Mouette)
+
+- Fix broken check in configure for TCP wrappers.  Fixes bug #548676.
+  (Stanislav Brabec and Brian Cameron)
+
+- Correct memory leak in SELinux code.  (Julien Cristau)
+
+- Use g_strdup when copying strings in gdmchooser to avoid a
+  crash.  See bug #544730.  (Matthias Crochner and Brian Cameron)
+
+- Ignore ENXIO when processing ioctl since some distros, such as
+  FreeBSD, yields ENXIO for non-IP/non-configured interfaces.
+  Fixes bug #544790.  (Volker Stolz)
+
+- Prevent a negative value when processing SVG images in the
+  gdmgreeter themes.  (Pascal Brochart)
+
+- Add Kazakh language to locale.alias.
+
+- On Solaris, minor fix to Xsession script so that input methods
+  work.
+
+- On Solaris, no longer use ctrun for SMF integration, and instead
+  manage SMF so that when the slave daemon is forked, it is spawned
+  in a separate service contract.  This ensures that the user session
+  all GDM GUI programs, and the PAM interaction all happen in the
+  user service contract.  This helps to ensure that if the Xserver
+  crashes, it does not cause the GDM service to restart.  (Brian
+  Cameron)
+
+- On Solaris fbconsole is called with the "-n" argument to avoid
+  race conditions with XMDCP remote sessions.  (Brian Cameron)
+
+- Translation updates (Jorge Gonzalez, Alexander Shopov)
+
 2.20.7 Stuff:
 
 - When GDM checks the XFree86_VT atom, it does not set it if it
