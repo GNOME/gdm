@@ -1,5 +1,13 @@
 2008-09-03  Brian Cameron  <brian.cameron@sun.com>
 
+	* daemon/gdm.c:  Improve gdm_final_cleanup so that the slave daemon
+	  exits after receiving a shutdown or reboot event, and after 
+	  completing all cleanup.  This should fix all the remaining 
+	  issues in bug #517526.  Patch by Josselin Mouette
+	  <joss@malsain.org>
+
+2008-09-03  Brian Cameron  <brian.cameron@sun.com>
+
 	* acconfig.h, configure.ac: Rip out ctrun integration and instead
 	  manage SMF so that when the slave daemon is forked, it is spawned
 	  in a separate contract.  This ensures that the user session, all

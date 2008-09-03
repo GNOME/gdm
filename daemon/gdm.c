@@ -293,6 +293,22 @@ gdm_final_cleanup (void)
 	const char *pidfile;
 	gboolean first;
 	GSList *displays;
+	struct sigaction sig;
+
+	/* Remove all signal handlers, since we are freeing structures used by the handlers */
+	sig.sa_handler = SIG_DFL;
+	sig.sa_flags = SA_RESTART;
+	sigemptyset (&sig.sa_mask);
+	sigaction (SIGTERM, &sig, NULL);
+	sigaction (SIGINT,  &sig, NULL);
+	sigaction (SIGHUP,  &sig, NULL);
+	sigaction (SIGUSR1, &sig, NULL);
+#ifdef SIGXCPU
+	sigaction (SIGXCPU, &sig, NULL);
+#endif
+#ifdef SIGXFSZ
+	sigaction (SIGXFSZ, &sig, NULL);
+#endif
 
 	displays = gdm_daemon_config_get_display_list ();
 
@@ -708,6 +724,7 @@ halt_machine (void)
 		change_to_first_and_clear (FALSE);
 #endif /* __linux */
 
+		_exit (EXIT_SUCCESS);
 	}
 }
 
@@ -728,6 +745,7 @@ restart_machine (void)
 		change_to_first_and_clear (TRUE);
 #endif /* __linux */
 
+	_exit (EXIT_SUCCESS);
 	}
 }
 
