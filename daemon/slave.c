@@ -3851,10 +3851,6 @@ session_child_run (struct passwd *pwent,
 
 	fullexec = g_string_new (NULL);
 
-#ifdef HAVE_CTRUN
-	g_string_append (fullexec, "/usr/bin/ctrun -l child -i none ");
-#endif
-
 	if (sessionexec != NULL) {
 		const char *basexsession = gdm_daemon_config_get_value_string (GDM_KEY_BASE_XSESSION);
 		char **bxvec = g_strsplit (basexsession, " ", -1);
@@ -5791,9 +5787,6 @@ gdm_slave_exec_script (GdmDisplay *d,
 	gchar **argv = NULL;
 	gint status;
 	char *x_servers_file;
-#ifdef HAVE_CTRUN
-	char *ctrun;
-#endif
 
 	if G_UNLIKELY (!d || ve_string_empty (dir))
 		return EXIT_SUCCESS;
@@ -5920,15 +5913,7 @@ gdm_slave_exec_script (GdmDisplay *d,
 		if ( ! ve_string_empty (d->theme_name))
 			g_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
 
-#ifdef HAVE_CTRUN
-		ctrun = g_strdup_printf (
-			"/bin/sh -c \"/usr/bin/ctrun -l child -i none %s\"",
-			script);
-		g_shell_parse_argv (ctrun, NULL, &argv, NULL);
-		g_free (ctrun);
-#else
 		g_shell_parse_argv (script, NULL, &argv, NULL);
-#endif
 
 		VE_IGNORE_EINTR (execv (argv[0], argv));
 		g_strfreev (argv);

@@ -28,6 +28,13 @@
 #include <fcntl.h>
 #include <errno.h>
 
+#ifdef HAVE_SMF_CONTRACTS
+#include <sys/ctfs.h>
+#include <sys/contract.h>
+#include <sys/contract/process.h>
+#include <libcontract.h>
+#endif
+
 #include <glib/gi18n.h>
 
 #include "gdm.h"
@@ -318,6 +325,140 @@ wait_again:
     d->slavepid = 0;
 }
 
+#ifdef HAVE_SMF_CONTRACTS
+static int contracts_fd = -1;
+
+void
+contracts_pre_fork ()
+{
+   const char *errmsg = "opening process contract template";
+
+	/*
+	 * On failure, just continue since it is better to start with
+	 * children in the same contract than to not start them at all.
+	 */
+	if (contracts_fd == -1) {
+		if ((contracts_fd = open64 (CTFS_ROOT "/process/template",
+					    O_RDWR)) == -1)
+			goto exit;
+
+		errmsg = "setting contract terms";
+		if ((errno = ct_pr_tmpl_set_param (contracts_fd, CT_PR_PGRPONLY)))
+			goto exit;
+
+		if ((errno = ct_tmpl_set_informative (contracts_fd, CT_PR_EV_HWERR)))
+			goto exit;
+
+		if ((errno = ct_pr_tmpl_set_fatal (contracts_fd, CT_PR_EV_HWERR)))
+			goto exit;
+
+		if ((errno = ct_tmpl_set_critical (contracts_fd, 0)))
+			goto exit;
+	}
+
+	errmsg = "setting active template";
+	if ((errno = ct_tmpl_activate (contracts_fd)))
+		goto exit;
+
+	gdm_debug ("Set active contract");
+	return;
+
+exit:
+	if (contracts_fd != -1)
+		(void) close (contracts_fd);
+
+	contracts_fd = -1;
+
+	if (errno) {
+		gdm_debug (
+			"Error setting up active contract template: %s while %s",
+			strerror (errno), errmsg);
+	}
+}
+
+void
+contracts_post_fork_child ()
+{
+	/* Clear active template so no new contracts are created on fork */
+	if (contracts_fd == -1)
+		return;
+
+	if ((errno = (ct_tmpl_clear (contracts_fd)))) {
+		gdm_debug (
+			"Error clearing active contract template (child): %s",
+			strerror (errno));
+	} else {
+		gdm_debug ("Cleared active contract template (child)");
+	}
+
+	(void) close (contracts_fd);
+
+	contracts_fd = -1;
+}
+
+void
+contracts_post_fork_parent (int fork_succeeded)
+{
+	char path[PATH_MAX];
+	int cfd;
+	ct_stathdl_t status;
+	ctid_t latest;
+
+	/* Clear active template, abandon latest contract. */
+	if (contracts_fd == -1)
+		return;
+
+	if ((errno = ct_tmpl_clear (contracts_fd)))
+		gdm_debug ("Error while clearing active contract template: %s",
+			   strerror (errno));
+	else
+		gdm_debug ("Cleared active contract template (parent)");
+
+	if (!fork_succeeded)
+		return;
+
+	if ((cfd = open64 (CTFS_ROOT "/process/latest", O_RDONLY)) == -1) {
+		gdm_debug ("Error getting latest contract: %s",
+			   strerror(errno));
+		return;
+	}
+
+	if ((errno = ct_status_read (cfd, CTD_COMMON, &status)) != 0) {
+		gdm_debug ("Error getting latest contract ID: %s",
+			   strerror(errno));
+		(void) close (cfd);
+		return;
+	}
+
+	latest = ct_status_get_id (status);
+	ct_status_free (status);
+	(void) close (cfd);
+
+
+	if ((snprintf (path, PATH_MAX, CTFS_ROOT "/all/%ld/ctl", latest)) >=
+	     PATH_MAX) {
+		gdm_debug ("Error opening the latest contract ctl file: %s",
+			   strerror (ENAMETOOLONG));
+		return;
+	}
+
+	cfd = open64 (path, O_WRONLY);
+	if (cfd == -1) {
+		gdm_debug ("Error opening the latest contract ctl file: %s",
+			   strerror (errno));
+		return;
+	}
+ 
+	if ((errno = ct_ctl_abandon (cfd)))
+		gdm_debug ("Error abandoning latest contract: %s",
+			   strerror (errno));
+	else
+		gdm_debug ("Abandoned latest contract");
+
+	(void) close (cfd);
+}
+#endif HAVE_SMF_CONTRACTS
+
 /**
  * gdm_display_manage:
  * @d: Pointer to a GdmDisplay struct
@@ -359,12 +500,20 @@ gdm_display_manage (GdmDisplay *d)
 
     gdm_debug ("Forking slave process");
 
+#ifdef HAVE_SMF_CONTRACTS
+    contracts_pre_fork ();
+#endif
+
     /* Fork slave process */
     pid = d->slavepid = fork ();
 
     switch (pid) {
 
     case 0:
+#ifdef HAVE_SMF_CONTRACTS
+        contracts_post_fork_child ();
+#endif
+
 	setpgid (0, 0);
 
 	/* Make the slave it's own leader.  This 1) makes killing -pid of
@@ -427,13 +576,17 @@ gdm_display_manage (GdmDisplay *d)
 	break;
     }
 
+#ifdef HAVE_SMF_CONTRACTS
+    contracts_post_fork_parent ((pid > 0));
+#endif
+
     /* invalidate chosen hostname */
     g_free (d->chosen_hostname);
     d->chosen_hostname = NULL;
 
-    /* use_chooser can only be temporary, if you want it permanent you set it up
-       in the server definition with "chooser=true" and it will get set up during
-       server command line resolution */
+    /* use_chooser can only be temporary, if you want it permanent you set it
+       up in the server definition with "chooser=true" and it will get set up
+       during server command line resolution */
     d->use_chooser = FALSE;
 
     if (SERVER_IS_LOCAL (d)) {

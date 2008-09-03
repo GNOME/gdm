@@ -1018,18 +1018,12 @@ AC_CHECK_LIB(secdb, chkauthattr, [
 			    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lsecdb"
 			    EXTRA_GREETER_LIBS="$EXTRA_GREETER_LIBS -lsecdb"])
 
-# ctrun support for Solaris
+# Check for Solaris SMF contract support
 #
-AC_ARG_WITH(ctrun,
-  [  --with-ctrun=[yes/no]  Define to yes if GDM is started as a svcadm(1M) service,  [default=no]],,
-  with_ctrun=no)
-
-if test x$with_ctrun != xno ; then
-   AC_PATH_PROG(HAVE_CTRUN,ctrun,no,/usr/bin)
-   if test "x$HAVE_CTRUN" != "xno" ; then
-      AC_DEFINE(HAVE_CTRUN)
-   fi
-fi
+AC_MSG_CHECKING(for Solaris SMF contract support)
+AC_CHECK_LIB(contract, ct_tmpl_activate, [
+		     	AC_DEFINE(HAVE_SMF_CONTRACTS)
+			    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lcontract" ])
 
 # check for the nologin location
 AC_PATH_PROG(NOLOGIN, nologin, /sbin/nologin)
