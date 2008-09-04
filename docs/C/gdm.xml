@@ -320,15 +320,16 @@
         The GDM greeter program displays a panel docked at the bottom of the screen
         which provides additional functionality.  When a user is selected, the
         panel allows the user to select which session, language, and keyboard layout
-        to use when logging in.  The panel also contains an area for login services
-        to leave status icons.  Some example status icons include a battery icon
-        for current battery usage, and an icon for enabling accessibility features.
-        The greeter program also provides buttons which allow the user to shutdown or
-        restart the system.  It is possible to configure GDM to not provide
-        the shutdown and restart buttons, if desired.  GDM can also be
-        configured via PolicyKit (or via RBAC on Solaris) to require the
-        user have appropriate authorization before accepting the shutdown or
-        restart request.
+        to use after logging in.  The keyboard layout selector also changes the keyboard
+        layout used when typing your password.  The panel also contains an area
+        for login services to leave status icons.  Some example status icons
+        include a battery icon for current battery usage, and an icon for
+        enabling accessibility features.  The greeter program also provides
+        buttons which allow the user to shutdown or restart the system.  It is
+        possible to configure GDM to not provide the shutdown and restart
+        buttons, if desired.  GDM can also be configured via PolicyKit (or via
+        RBAC on Solaris) to require the user have appropriate authorization
+        before accepting the shutdown or restart request.
       </para>
     </sect2>
 
@@ -360,11 +361,12 @@
         username by clicking on an image.  This feature can be enabled or
         disabled via the /apps/gdm/simple-greeter/disable_user_list GConf
         key and is on by default.  When disabled, users must type their
-        complete username by hand.  When enabled, it displays all users which
-        are available on the local system (all users defined in the
-        /etc/passwd file) and remote users that have recently logged in.
-        The face browser in GDM 2.20 and earlier would attempt to display
-        all remote users, which caused performance problems in large,
+        complete username by hand.  When enabled, it displays all local users
+        which are available for login on the system (all user accounts defined
+        in the /etc/passwd file that have a valid shell and sufficiently high
+        UID) and remote users that have recently logged in.
+        The face browser in GDM 2.20 and earlier would attempt to display all
+        remote users, which caused performance problems in large,
         enterprise deployments.
       </para>
 
@@ -523,7 +525,9 @@
         user is logged in, additional, users can log in via the User Switcher
         on the GNOME Panel, or from the "Switch User" button in Lock Screen dialog
         of GNOME Screensaver.  The active session can be changed back and forth using
-        the same mechanism.
+        the same mechanism.  Note that some distributions may not add the User Switcher
+        to the default panel configuration.  It can be added using the panel context
+        menu.
       </para>
     </sect2>
   </sect1>
