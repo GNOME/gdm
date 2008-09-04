@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-02 09:02+0300\n"
-"PO-Revision-Date: 2008-08-02 07:43+0300\n"
+"POT-Creation-Date: 2008-09-04 22:59+0300\n"
+"PO-Revision-Date: 2008-09-04 17:37+0300\n"
 "Last-Translator: Alexander Shopov <ash@contact.bg>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
@@ -67,7 +67,7 @@ msgid "Unable to establish credentials"
 msgstr "Неуспех при установяване на акредитацията"
 
 #: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1048
+#: ../daemon/gdm-simple-slave.c:1062
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -460,6 +460,55 @@ msgstr "Само администраторът може да изпълни GDM
 msgid "GNOME Display Manager Session Worker"
 msgstr "Програмата за сесии към мениджъра на дисплеи на GNOME"
 
+#: ../data/greeter-autostart/at-spi-registryd-wrapper.desktop.in.in.h:1
+msgid "AT SPI Registry Wrapper"
+msgstr "Обвивка на регистъра на AT SPI"
+
+#: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1962
+msgid "Login Window"
+msgstr "Екран за идентификация"
+
+#: ../data/greeter-autostart/gnome-power-manager.desktop.in.in.h:1
+msgid "Power Manager"
+msgstr "Управление на захранването"
+
+#: ../data/greeter-autostart/gnome-power-manager.desktop.in.in.h:2
+msgid "Power management daemon"
+msgstr "Демон за управление на захранването"
+
+#: ../data/greeter-autostart/gnome-settings-daemon.desktop.in.in.h:1
+msgid "GNOME Settings Daemon"
+msgstr "Демон за настройките на GNOME"
+
+#: ../data/greeter-autostart/gnome-mag.desktop.in.h:1
+msgid "GNOME Screen Magnifier"
+msgstr "Лупа на GNOME"
+
+#: ../data/greeter-autostart/gnome-mag.desktop.in.h:2
+msgid "Magnify parts of the screen"
+msgstr "Увеличаване на части от екрана"
+
+#: ../data/greeter-autostart/gok.desktop.in.h:1
+msgid "GNOME Onscreen Keyboard"
+msgstr "Екранна клавиатура на GNOME"
+
+#: ../data/greeter-autostart/gok.desktop.in.h:2
+msgid "Use an onscreen keyboard"
+msgstr "Включване на екранната клавиатура"
+
+#: ../data/greeter-autostart/metacity.desktop.in.h:1
+msgid "Metacity"
+msgstr "Metacity"
+
+#: ../data/greeter-autostart/orca-screen-reader.desktop.in.h:1
+msgid "Orca Screen Reader"
+msgstr "Екранен четец (Orca)"
+
+#: ../data/greeter-autostart/orca-screen-reader.desktop.in.h:2
+msgid "Present on-screen information as speech or braille"
+msgstr "Представяне на информация от екрана чрез реч или брайл"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:148
 msgid "Select System"
 msgstr "Избор на система"
@@ -472,52 +521,6 @@ msgstr "Неуспех при създаването на буфер за XDMCP!
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "Неуспех при прочитането на заглавната част на XDMCP!"
 
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.c:808
-#: ../gui/simple-greeter/gdm-greeter-panel.c:569
-msgid "Accessibility Preferences"
-msgstr "Настройки на достъпността"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:1
-msgid "<b>Enable features that make your computer easier to use:</b>"
-msgstr "<b>Включване на възможностите за по-лесно ползване на компютъра:</b>"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:2
-msgid "Assistive Technology Preferences"
-msgstr "Настройки на помощните технологии"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:3
-msgid "_Hear text read aloud (Reader)"
-msgstr "_Текстът да бъде прочитан (Екранен четец)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:4
-msgid "_Ignore duplicate keypresses (Bounce Keys)"
-msgstr "_Без повторни натискания на клавиши (Подскачащи клавиши)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:5
-msgid "_Make items larger (Magnifier)"
-msgstr "_Увеличаване на обектите (Лупа)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:6
-msgid "_Only accept long held keypresses (Slow Keys)"
-msgstr "_Само натискане на клавиши със задържане (Бавни клавиши)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:7
-msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
-msgstr ""
-"_Последователно натискане на клавишите при комбинации (Лепкави клавиши)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:8
-msgid "_See more contrast in colors (High Contrast)"
-msgstr "Засилване на _контраста (Висок контраст)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:9
-msgid "_Type without the keyboard (On-screen Keyboard)"
-msgstr "Пи_сане без клавиатура (Екранна клавиатура)"
-
-#: ../gui/simple-greeter/gdm-a11y-preferences-dialog.glade.h:10
-msgid "_Use a larger font size (Large Print)"
-msgstr "По-голям размер на шрифта (Едри елементи)"
-
 #: ../gui/simple-greeter/gdm-cell-renderer-timer.c:253
 msgid "Value"
 msgstr "Стойност"
@@ -526,21 +529,21 @@ msgstr "Стойност"
 msgid "percentage of time complete"
 msgstr "процент от завършеното време"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1123
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1235
 msgid "Inactive Text"
 msgstr "Неактивен текст"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1124
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1236
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr ""
 "Текст, който да се ползва за етикет, ако потребителят все още не е избрал "
 "елемент"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1132
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1244
 msgid "Active Text"
 msgstr "Активен текст"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1133
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1245
 msgid "The text to use in the label if the user has picked an item"
 msgstr ""
 "Текстът, който да се ползва в етикета, когато потребителят е избрал елемент"
@@ -571,45 +574,41 @@ msgstr "%d %b, %a"
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:182
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:181
 msgid "You have the Caps Lock key on."
 msgstr "Клавишът „Caps Lock“ е натиснат."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:325
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:326
 msgid "Automatically logging in..."
 msgstr "Автоматично влизане…"
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:759
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:760
 msgid "Cancelling..."
 msgstr "Спиране…"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1228
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1229
 msgid "Failed to restart computer"
 msgstr "Неуспех при рестартирането на компютъра"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1231
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1232
 msgid ""
 "You are not allowed to restart the computer because multiple users are "
 "logged in"
 msgstr "Не можете да рестартирате компютъра, защото има включени потребители"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1312
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1313
 msgid "Failed to stop computer"
 msgstr "Неуспех при изключването на компютъра"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1315
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1316
 msgid ""
 "You are not allowed to stop the computer because multiple users are logged in"
 msgstr "Не можете да спрете компютъра, защото има включени потребители"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1390
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1400
 msgid "Select language and click Log In"
 msgstr "Изберете език и натиснете „Влизане“"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1949
-msgid "Login Window"
-msgstr "Екран за идентификация"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:1
 msgid "Authentication Dialog"
@@ -643,31 +642,31 @@ msgstr "Версия"
 msgid "page 5"
 msgstr "страница 5"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:551
+#: ../gui/simple-greeter/gdm-greeter-panel.c:540
 msgid "Panel"
 msgstr "Панел"
 
-#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:221
+#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:201
 msgid "Languages"
 msgstr "Езици"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:264
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:272
 msgid "_Languages:"
 msgstr "_Езици:"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:265
-#: ../gui/simple-greeter/gdm-language-option-widget.c:235
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
+#: ../gui/simple-greeter/gdm-language-option-widget.c:255
 msgid "_Language:"
 msgstr "_Език:"
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:206
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:199
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:87
-#: ../gui/user-switch-applet/applet.c:1228
+#: ../gui/simple-greeter/gdm-language-option-widget.c:224
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:220
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:92
+#: ../gui/user-switch-applet/applet.c:996
 msgid "Other..."
 msgstr "Други…"
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:207
+#: ../gui/simple-greeter/gdm-language-option-widget.c:225
 msgid "Choose a language from the full list of available languages."
 msgstr "Избор на език от пълния списък с налични езици."
 
@@ -675,17 +674,17 @@ msgstr "Избор на език от пълния списък с наличн�
 msgid "Unspecified"
 msgstr "Неуказан"
 
-#: ../gui/simple-greeter/gdm-layout-chooser-dialog.c:210
+#: ../gui/simple-greeter/gdm-layout-chooser-dialog.c:190
 msgid "Keyboard layouts"
 msgstr "Подредба на клавиатурата"
 
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:200
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:201
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:228
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:251
 msgid "_Keyboard:"
 msgstr "_Клавиатура:"
 
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:200
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:221
 msgid "Choose a keyboard layout from the full list of available layouts."
 msgstr "Изберете подредба на клавиатурата от пълния списък с подредби."
 
@@ -744,90 +743,79 @@ msgid "Banner message text"
 msgstr "Съобщение за поздрав"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
-msgid "Disable showing the accessibility button"
-msgstr "Бутонът за помощните технологии да не се показва"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
 msgid "Disable showing the restart buttons"
 msgstr "Бутонът за рестартиране да не се показва"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
 msgid "Do not show known users in the login window"
 msgstr "Да не се показва списъкът с познати потребители в прозореца за вход"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
 msgid "Enable accessibility keyboard plugin"
 msgstr "Включване на модула за достъпност на клавиатурата"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
 msgid "Enable debugging"
 msgstr "Включване на изчистването на грешки"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
 msgid "Enable debugging mode for the greeter."
 msgstr "Включване на изчистването на грешки в програмата за посрещане"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
 msgid "Enable on-screen keyboard"
 msgstr "Включване на екранната клавиатура"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Enable screen magnifier"
 msgstr "Включване на лупата"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
 msgid "Enable screen reader"
 msgstr "Включване на екранния четец"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
 msgid "Enable showing the banner message"
 msgstr "Включваме на показването на съобщение за поздрав"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "Icon name to use for greeter logo"
 msgstr "Икона, която да се ползва за програмата за посрещане"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Recently selected keyboard layouts"
 msgstr "Наскоро избрани подредби на клавиатурата"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid "Recently selected languages"
 msgstr "Наскоро избрани езици"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Set to TRUE to disable showing known users in the login window."
 msgstr ""
 "Задайте да е истина, за да не се показва списъкът с познати потребители в "
 "прозореца за вход"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
-msgid ""
-"Set to TRUE to disable showing the accessibility button in the login window."
-msgstr ""
-"Задайте да е истина, за да не си показва бутонът за достъпността в прозореца "
-"за вход."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
 msgid "Set to TRUE to disable showing the restart buttons in the login window."
 msgstr ""
 "Задайте да е истина, за да не си показват бутоните за рестартиране в "
 "прозореца за вход."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to True to enable the background settings manager plugin."
 msgstr "Задайте да е истина, за да включите приставката за управление на фона."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to True to enable the media-keys settings manager plugin."
 msgstr ""
 "Задайте да е истина, за да включите приставката за мултимедийните клавиши."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
 msgid "Set to True to enable the on-screen keyboard."
 msgstr "Задайте да е истина, за да включите екранната клавиатура."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid ""
 "Set to True to enable the plugin to manage the accessibility keyboard "
 "settings."
@@ -835,66 +823,75 @@ msgstr ""
 "Задайте да е истина, за да включите приставката за управление на "
 "достъпността на клавиатурата."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid "Set to True to enable the screen magnifier."
 msgstr "Задайте да е истина, за да включите лупата."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid "Set to True to enable the screen reader."
 msgstr "Задайте да е истина, за да включите екранният четец."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "Set to True to enable the sound settings manager plugin."
 msgstr ""
 "Задайте да е истина, за да включите приставката за управление на звука."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+msgid "Set to True to enable the xrandr settings manager plugin."
+msgstr ""
+"Задайте да е истина, за да включите приставката за управление на xrandr"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to True to enable the xsettings settings manager plugin."
 msgstr ""
 "Задайте да е истина, за да включите приставката за настройки на xsettings."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid ""
 "Set to a list of keyboard layouts to be shown by default at the login window."
 msgstr ""
 "Задайте да е списък с клавиатурни подредби, които стандартно да се показват "
 "в прозореца за вход."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
 msgid "Set to a list of languages to be shown by default at the login window."
 msgstr ""
 "Задайте да е списък с езици, които стандартно да се показват в прозореца за "
 "вход."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "Задайте да e иконата, която да се ползва за програмата за посрещане."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
 msgid "Set to true to show the banner message text."
 msgstr "Задайте да е истина, за да се показва съобщението за поздрав."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "Set to true to use compiz as the window manager."
 msgstr "Задайте да е истина, за да ползвате compiz за мениджър на прозорците."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "Text banner message to show on the login window."
 msgstr "Текстът на съобщението за поздрав в прозореца за вход."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
 msgid "True if the background settings manager plugin is enabled."
 msgstr "Истина, когато приставката за управление на фона е включена."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr ""
 "Истина, когато приставката за управление на мултимедийните клавиши е "
 "включена."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "Истина, когато приставката за управление на звука е включена."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+msgid "True if the xrandr settings manager plugin is enabled."
+msgstr "Истина, когато приставката за управление на xrandr е включена."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid "True if the xsettings settings manager plugin is enabled."
@@ -936,36 +933,36 @@ msgstr "Мениджър"
 msgid "The user manager object this user is controlled by."
 msgstr "Обектът-мениджър, който управлява този потребител."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:88
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:93
 msgid "Choose a different account"
 msgstr "Изберете различен потребител"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:100
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:105
 msgid "Guest"
 msgstr "Гост"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:101
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:106
 msgid "Login as a temporary guest"
 msgstr "Вход като гост"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:113
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:118
 msgid "Automatic Login"
 msgstr "Автоматично влизане"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:114
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:119
 msgid "Automatically login to the system after selecting options"
 msgstr "Автоматично влизане в системата след избор на настройки"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:434
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:308
 #, c-format
 msgid "Log in as %s"
 msgstr "Влизане като %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:554
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:647
 msgid "Currently logged in"
 msgstr "В момента е влязъл"
 
-#: ../gui/user-switch-applet/applet.c:162
+#: ../gui/user-switch-applet/applet.c:147
 msgid ""
 "The User Switch Applet is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -977,7 +974,7 @@ msgstr ""
 "GNU (GNU GPL), както е публикуван от Фондацията за свободен софтуер — версия "
 "2 на лиценза или (по ваше решение) по-късна версия."
 
-#: ../gui/user-switch-applet/applet.c:166
+#: ../gui/user-switch-applet/applet.c:151
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -988,7 +985,7 @@ msgstr ""
 "НИКАКВИ ГАРАНЦИИ, дори и косвените за ПРОДАЖБА или СЪОТВЕТСТВИЕ С КАКВАТО И "
 "ДА Е УПОТРЕБА. За подробности погледнете Общия публичен лиценз на GNU."
 
-#: ../gui/user-switch-applet/applet.c:170
+#: ../gui/user-switch-applet/applet.c:155
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "this program; if not, write to the Free Software Foundation, Inc., 51 "
@@ -998,11 +995,11 @@ msgstr ""
 "заедно с тази програма. Ако не сте, пишете до Free Software Foundation, "
 "Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA."
 
-#: ../gui/user-switch-applet/applet.c:184
+#: ../gui/user-switch-applet/applet.c:169
 msgid "A menu to quickly switch between users."
 msgstr "Меню за бърза промяна на потребители."
 
-#: ../gui/user-switch-applet/applet.c:188
+#: ../gui/user-switch-applet/applet.c:173
 msgid "translator-credits"
 msgstr ""
 "Александър Шопов <ash@contact.bg>\n"
@@ -1011,25 +1008,25 @@ msgstr ""
 "Научете повече за нас на http://gnome.cult.bg\n"
 "Докладвайте за грешки на http://gnome.cult.bg/bugs"
 
-#: ../gui/user-switch-applet/applet.c:795
+#: ../gui/user-switch-applet/applet.c:782
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "Екранът не може да бъде заключен: %s"
 
-#: ../gui/user-switch-applet/applet.c:817
+#: ../gui/user-switch-applet/applet.c:804
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "Програмата за защита на екрана не може да го затъмни временно: %s"
 
-#: ../gui/user-switch-applet/applet.c:1023
+#: ../gui/user-switch-applet/applet.c:1101
 msgid "Unknown"
 msgstr "Непознат"
 
-#: ../gui/user-switch-applet/applet.c:1081
+#: ../gui/user-switch-applet/applet.c:1157
 msgid "User Switch Applet"
 msgstr "Аплет за смяна на потребител"
 
-#: ../gui/user-switch-applet/applet.c:1105
+#: ../gui/user-switch-applet/applet.c:1181
 #: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:2
 msgid "User Switcher"
 msgstr "Смяна на потребител"
@@ -1120,3605 +1117,3 @@ msgstr "Основни настройки"
 #: ../utils/gdmflexiserver.c:759
 msgid "Unable to start new display"
 msgstr "Неуспех при стартирането на нов дисплей"
-
-#~ msgid "Send the specified protocol command to GDM"
-#~ msgstr "Изпращане на зададената протоколна команда на GDM"
-
-#~ msgid "Xnest mode"
-#~ msgstr "Режим на Xnest"
-
-#~ msgid "Do not lock current screen"
-#~ msgstr "Без заключване на текущия екран"
-
-#~ msgid "Authenticate before running --command"
-#~ msgstr "Идентификация преди изпълнение на „--команда“"
-
-#~ msgid "Start new flexible session; do not show popup"
-#~ msgstr "Начало на нова гъвкава сесия, да не се показва изскачащ прозорец"
-
-#~ msgid "CDE"
-#~ msgstr "CDE"
-
-#~ msgid "This session logs you into CDE"
-#~ msgstr "Тази сесия включва CDE"
-
-#~ msgid "Run Xclient script"
-#~ msgstr "Изпълняване на скрипт Xclient"
-
-#~ msgid "This session runs the Xclients script"
-#~ msgstr "Тази сесия изпълнява скрипта Xclient"
-
-#~ msgid "GNOME"
-#~ msgstr "GNOME"
-
-#~ msgid "This session logs you into GNOME"
-#~ msgstr "Тази сесия включва GNOME"
-
-#~ msgid "Secure Remote connection"
-#~ msgstr "Сигурна, отдалечена връзка"
-
-#~ msgid "This session logs you into a remote host using ssh"
-#~ msgstr "Тази сесия ще ви свърже към отдалечена машина през ssh"
-
-#~ msgid ""
-#~ "Failed to start the X server (your graphical interface).  It is likely "
-#~ "that it is not set up correctly.  You will need to log in on a console "
-#~ "and reconfigure the X server.  Then restart GDM."
-#~ msgstr ""
-#~ "Х сървърът не може да се стартира (графичната инфраструктура). Изглежда "
-#~ "не е настроен коректно. Ще трябва да влезете в конзола и да пренастроите "
-#~ "X. След това рестартирайте GDM."
-
-#~ msgid ""
-#~ "Would you like to try to configure the X server?  Note that you will need "
-#~ "the root password for this."
-#~ msgstr ""
-#~ "Искате ли да настроите X сървъра? Ще ви трябва паролата на администратора."
-
-#~ msgid "Please type in the root (privileged user) password."
-#~ msgstr "Въведете паролата на администратора."
-
-#~ msgid "Trying to restart the X server."
-#~ msgstr "Опитва се рестартиране на X сървъра."
-
-#~ msgid ""
-#~ "The X server is now disabled.  Restart GDM when it is configured "
-#~ "correctly."
-#~ msgstr ""
-#~ "Този X сървър ще бъде изключен засега. Рестартирайте GDM, когато сървърът "
-#~ "е настроен коректно."
-
-#~ msgid ""
-#~ "Failed to start the X server (your graphical interface).  It is likely "
-#~ "that it is not set up correctly.  Would you like to view the X server "
-#~ "output to diagnose the problem?"
-#~ msgstr ""
-#~ "X сървърът не може да се стартира (графичната инфраструктура). Вероятно "
-#~ "не е настроен коректно. Искате ли да видите изходящите му съобщения, за "
-#~ "да диагностицирате проблема?"
-
-#~ msgid "Would you like to view the detailed X server output as well?"
-#~ msgstr "Искате ли да видите и пълния изход на Х?"
-
-#~ msgid ""
-#~ "Failed to start the X server (your graphical interface).  It seems that "
-#~ "the pointer device (your mouse) is not set up correctly.  Would you like "
-#~ "to view the X server output to diagnose the problem?"
-#~ msgstr ""
-#~ "X сървърът не може да се стартира (графичната инфраструктура). Вероятно "
-#~ "посочващото устройство (мишката) не е настроено коректно. Искате ли да "
-#~ "видите изходящите му съобщения, за да диагностицирате проблема?"
-
-#~ msgid ""
-#~ "Would you like to try to configure the mouse?  Note that you will need "
-#~ "the root password for this."
-#~ msgstr ""
-#~ "Искате ли да настроите мишката? Ще ви трябва паролата на администратора."
-
-#~ msgid ""
-#~ "This is the failsafe xterm session.  Windows now have focus only if you "
-#~ "have your cursor above them.  To get out of this mode type 'exit' in the "
-#~ "window in the upper left corner"
-#~ msgstr ""
-#~ "Това е аварийната сесия с xterm. Можете да фокусирате прозорец, като "
-#~ "поставите курсора върху него. За да излезете от тази сесия, напишете "
-#~ "„exit“ в прозореца в горния ляв ъгъл."
-
-#~ msgid ""
-#~ "Failed to start the session, so starting a failsafe xterm session.  "
-#~ "Windows will have focus only if the mouse pointer is above them.  To get "
-#~ "out of this mode type 'exit' in the window in the upper left corner"
-#~ msgstr ""
-#~ "Неуспех при стартиране на избраната сесия, затова беше стартирана "
-#~ "аварийната сесия с xterm. Можете да фокусирате прозорец, единствено като "
-#~ "поставите курсора върху него. За да излезете от тази сесия, напишете "
-#~ "„exit“ в прозореца в горния ляв ъгъл."
-
-#~ msgid "%s: Could not write new authorization entry: %s"
-#~ msgstr "%s: Не може да се запише нов запис за упълномощаване: %s"
-
-#~ msgid ""
-#~ "%s: Could not write new authorization entry.  Possibly out of diskspace"
-#~ msgstr ""
-#~ "%s: Не може да се запише нов запис за упълномощаване. Вероятно няма "
-#~ "дисково пространство."
-
-#~ msgid ""
-#~ "GDM could not write a new authorization entry to disk.  Possibly out of "
-#~ "diskspace.%s%s"
-#~ msgstr ""
-#~ "GDM не може да запише нов запис за упълномощаване върху диска. Вероятно "
-#~ "няма дисково пространство.%s%s"
-
-#~ msgid "%s: Could not make new cookie file in %s"
-#~ msgstr "%s: Невъзможно е да се създаде нова бисквитка в %s"
-
-#~ msgid "%s: Cannot safely open %s"
-#~ msgstr "%s: Не може безопасно да се отвори %s"
-
-#~ msgid "%s: Could not open cookie file %s"
-#~ msgstr "%s: Неуспех при отваряне на файл с бисквитка %s"
-
-#~ msgid "%s: Could not lock cookie file %s"
-#~ msgstr "%s: Неуспех при заключването на файл с бисквитка %s"
-
-#~ msgid "%s: Could not write cookie"
-#~ msgstr "%s: Неуспех при запис на бисквитка"
-
-#~ msgid "%s: Ignoring suspiciously looking cookie file %s"
-#~ msgstr "%s: Игнориране на подозрителния файл с бисквитка %s"
-
-#~ msgid ""
-#~ "The display server has been shut down about 6 times in the last 90 "
-#~ "seconds. It is likely that something bad is going on.  Waiting for 2 "
-#~ "minutes before trying again on display %s."
-#~ msgstr ""
-#~ "Този X сървър беше спрян около 6 пъти за последните 90 секунди. Вероятно "
-#~ "се случва нещо лошо. Ще се изчакат 2 мин. преди следващия опит за "
-#~ "стартиране на дисплей %s."
-
-#~ msgid "%s: Cannot create pipe"
-#~ msgstr "%s: Неуспех при създаването на програмен канал"
-
-#~ msgid "%s: Failed forking GDM slave process for %s"
-#~ msgstr "%s: Неуспех при създаване на дъщерен процес на GDM за %s"
-
-#~ msgid "%s not a regular file!\n"
-#~ msgstr "%s не е обикновен файл!\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "... File too long to display ...\n"
-#~ msgstr ""
-#~ "\n"
-#~ "… Файлът е прекалено голям, за да бъде показан…\n"
-
-#~ msgid "%s could not be opened"
-#~ msgstr "%s не може да бъде отворен"
-
-#~ msgid "%s: Cannot fork to display error/info box"
-#~ msgstr ""
-#~ "%s: Неуспех при създаването на процес за показването на грешка/информация"
-
-#~ msgid "%s: Directory %s does not exist."
-#~ msgstr "%s: Папката %s не съществува."
-
-#~ msgid "%s: %s is not owned by uid %d."
-#~ msgstr "%s: %s не е собственост на uid %d."
-
-#~ msgid "%s: %s is writable by group."
-#~ msgstr "%s: %s е с възможност за писане от група."
-
-#~ msgid "%s: %s is writable by other."
-#~ msgstr "%s: %s е с възможност за писане от други."
-
-#~ msgid "%s: %s does not exist but must exist."
-#~ msgstr "%s: %s не съществува, а трябва."
-
-#~ msgid "%s: %s is not a regular file."
-#~ msgstr "%s: %s не е обикновен файл."
-
-#~ msgid "%s: %s is writable by group/other."
-#~ msgstr "%s: %s е с възможност за писане от група/други."
-
-#~ msgid "%s: %s is bigger than sysadmin specified maximum file size."
-#~ msgstr ""
-#~ "%s: %s е по-голям от максималния размер за големина на файл зададен от "
-#~ "администратора."
-
-#~ msgid "%s: Could not make socket"
-#~ msgstr "%s: Неуспех при създаването на гнездо"
-
-#~ msgid "%s: Could not bind socket"
-#~ msgstr "%s: Неуспех при свързването към гнездо"
-
-#~ msgid "%s: Could not make FIFO"
-#~ msgstr "%s: Неуспех при създаването на именуван канал"
-
-#~ msgid "%s: Could not open FIFO"
-#~ msgstr "%s: Неуспех при отварянето на именуван канал"
-
-#~ msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
-#~ msgstr ""
-#~ "Невъзможно е да се запише файл с номер на процес %s, най-вероятно няма "
-#~ "пространство на диска. Грешката е: %s\n"
-
-#~ msgid "%s: fork () failed!"
-#~ msgstr "%s: Неуспешен fork()!"
-
-#~ msgid "%s: setsid () failed: %s!"
-#~ msgstr "%s: Неуспешен setsid(): %s!"
-
-#~ msgid "%s: Trying failsafe X server %s"
-#~ msgstr "%s: Опит за аварийна сесия с X сървър %s"
-
-#~ msgid "%s: Running the XKeepsCrashing script"
-#~ msgstr "%s: Изпълнява се скрипта XKeepsCrashing"
-
-#~ msgid ""
-#~ "The X server (your graphical interface) cannot be started.  It is likely "
-#~ "that it is not set up correctly.  You will need to log in on a console "
-#~ "and rerun the X configuration application, then restart GDM."
-#~ msgstr ""
-#~ "Сървърът X не може да се стартира (графичната инфраструктура). Вероятно "
-#~ "не е настроен коректно. Ще трябва да влезете в конзолата и да стартирате "
-#~ "отново конфигурационната програма за X. След това рестартирайте GDM."
-
-#~ msgid ""
-#~ "Failed to start X server several times in a short time period; disabling "
-#~ "display %s"
-#~ msgstr ""
-#~ "Имаше няколко неуспешни опита за стартиране на X сървъра за кратък период "
-#~ "от време. Засега дисплей %s бива забранен"
-
-#~ msgid "Master suspending..."
-#~ msgstr "Компютърът преминава в състояние на заспиване…"
-
-#~ msgid "System is restarting, please wait ..."
-#~ msgstr "Компютърът се рестартира, изчакайте…"
-
-#~ msgid "System is shutting down, please wait ..."
-#~ msgstr "Компютърът се спира, изчакайте…"
-
-#~ msgid "%s: Halt failed: %s"
-#~ msgstr "%s: Спирането е неуспешно: %s!"
-
-#~ msgid "Restarting computer..."
-#~ msgstr "Рестартиране на компютъра…"
-
-#~ msgid "%s: Restart failed: %s"
-#~ msgstr "%s: Неуспешно рестартиране: %s"
-
-#~ msgid "custom_cmd: Custom command index %ld outside permitted range [0,%d)"
-#~ msgstr ""
-#~ "потр_кмнд: Индексът на потребителската команда — %ld, е извън допустимия "
-#~ "интервал [0,%d)"
-
-#~ msgid "%s%ld="
-#~ msgstr "%s%ld="
-
-#~ msgid "Executing custom command %ld with restart option..."
-#~ msgstr "Изпълнение на потребителската команда %ld с осигурено рестартиране…"
-
-#~ msgid "%s: Execution of custom command failed: %s"
-#~ msgstr "%s: Неуспех при изпълнението на потребителска команда: %s"
-
-#~ msgid "Executing custom command %ld with no restart option ..."
-#~ msgstr ""
-#~ "Изпълнение на потребителската команда %ld без осигурено рестартиране…"
-
-#~ msgid "custom_cmd: forking process for custom command %ld failed"
-#~ msgstr ""
-#~ "потр_кмнд: неуспех при отделяне на процес за потребителската команда %ld"
-
-#~ msgid "custom_cmd: child %d returned %d"
-#~ msgstr "потр_кмнд: дъщерният процес %d върна %d"
-
-#~ msgid ""
-#~ "Restart GDM, Restart machine, Suspend, or Halt request when there is no "
-#~ "system menu from display %s"
-#~ msgstr ""
-#~ "Рестартиране на GDM, рестартиране, приспиване или спиране на компютъра, "
-#~ "когато няма системно меню от дисплей %s"
-
-#~ msgid ""
-#~ "Restart GDM, Restart machine, Suspend or Halt request from a non-static "
-#~ "display %s"
-#~ msgstr ""
-#~ "Рестартиране на GDM, рестартиране, приспиване или спиране на компютъра от "
-#~ "отдалечен дисплей %s"
-
-#~ msgid "%s: Aborting display %s"
-#~ msgstr "%s: Отказ на дисплей %s"
-
-#~ msgid "GDM restarting ..."
-#~ msgstr "GDM се рестартира…"
-
-#~ msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
-#~ msgstr ""
-#~ "основният демон: получен е сигнал SIGABRT, случило се е нещо много лошо. "
-#~ "Програмата спира!"
-
-#~ msgid "Do not fork into the background"
-#~ msgstr "Без преминаване във фонов режим"
-
-#~ msgid "No console (static) servers to be run"
-#~ msgstr "Няма конзолни (статични) сървъри, които да се стартират"
-
-#~ msgid "Alternative defaults configuration file"
-#~ msgstr "Алтернативен конфигурационен файл за настройките по подразбиране"
-
-#~ msgid "CONFIGFILE"
-#~ msgstr "КОНФИГУРАЦИОНЕН_ФАЙЛ"
-
-#~ msgid "Preserve LD_* variables"
-#~ msgstr "Запазване на променливите LD_*"
-
-#~ msgid "Start the first X server but then halt until we get a GO in the fifo"
-#~ msgstr ""
-#~ "Да се стартира първият X сървър, но след това да се спре и изчака до "
-#~ "получаване на съобщение в програмния канал"
-
-#~ msgid "Can't open %s for writing"
-#~ msgstr "Неуспех при отварянето на %s за запис"
-
-#~ msgid "- The GNOME login manager"
-#~ msgstr "— програмата за вход на GNOME"
-
-#~ msgid "%s: Error setting up %s signal handler: %s"
-#~ msgstr "%s: Грешка при задаване на обработката на сигнал %s: %s"
-
-#~ msgid "GDM already running. Aborting!"
-#~ msgstr "GDM вече е стартиран. Преустановяване на действието!"
-
-#~ msgid "%s: Error setting up CHLD signal handler"
-#~ msgstr "%s: Грешка при задаване на обработка на сигнал CHLD"
-
-#~ msgid "DYNAMIC request denied: Not authenticated"
-#~ msgstr "Заявката DYNAMIC е отказана: няма идентификация"
-
-#~ msgid "%s request denied: Not authenticated"
-#~ msgstr "Заявката %s е отказана: няма идентификация"
-
-#~ msgid "Unknown server type requested; using standard server."
-#~ msgstr "Заявка за неизвестен вид сървър, използва се стандартен сървър."
-
-#~ msgid ""
-#~ "Requested server %s not allowed to be used for flexible servers; using "
-#~ "standard server."
-#~ msgstr ""
-#~ "Заявеният сървър %s не може да се използва като гъвкав, използва се "
-#~ "стандартен сървър."
-
-#~ msgid "%s%d="
-#~ msgstr "%s%d="
-
-#~ msgid "%s%d=Custom_%d"
-#~ msgstr "%s%d=Потребителска_%d"
-
-#~ msgid "%s%d=Execute custom command _%d"
-#~ msgstr "%s%d=Изпълнение на потребителска команда _%d"
-
-#~ msgid "%s%d=Are you sure?"
-#~ msgstr "%s%d=Сигурни ли сте?"
-
-#~ msgid "%s%d=Execute custom command %d"
-#~ msgstr "%s%d=Изпълнение на потребителска команда %d"
-
-#~ msgid "%s%d=false"
-#~ msgstr "%s%d=лъжа"
-
-#~ msgid "%s: No GDM configuration file: %s. Using defaults."
-#~ msgstr ""
-#~ "%s: Няма конфигурационен файл за GDM: %s. Използват се настройките по "
-#~ "подразбиране."
-
-#~ msgid "%s: BaseXsession empty; using %s/gdm/Xsession"
-#~ msgstr "%s: BaseXsession е празен. Използва се %s/gdm/Xsession"
-
-#~ msgid "%s: Standard X server not found; trying alternatives"
-#~ msgstr "%s: Стандартният X сървър не е намерен, опитват се алтернативните"
-
-#~ msgid "%s: No greeter specified."
-#~ msgstr "%s: Няма зададена програма за посрещане."
-
-#~ msgid "%s: No remote greeter specified."
-#~ msgstr "%s: Няма зададена програма за посрещане при отдалечен достъп."
-
-#~ msgid "%s: No sessions directory specified."
-#~ msgstr "%s: Няма зададена папка за сесии."
-
-#~ msgid "%s%d"
-#~ msgstr "%s%d"
-
-#~ msgid ""
-#~ "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
-#~ msgstr ""
-#~ "%s: Ползването на XDMCP е включено, но няма поддръжка за това. XDMCP се "
-#~ "изключва."
-
-#~ msgid "%s: TimedLoginDelay is less than 5, defaulting to 5."
-#~ msgstr "%s: TimedLoginDelay е по-малко от 5, ще се използва 5."
-
-#~ msgid "%s: Priority out of bounds; changed to %d"
-#~ msgstr ""
-#~ "%s: Приоритетът е извън рамките на допустимите стойности. Променен е на %d"
-
-#~ msgid "%s: Empty server command; using standard command."
-#~ msgstr "%s: Празна команда към сървър, ползва се стандартна."
-
-#~ msgid ""
-#~ "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
-#~ "does not exist. Please correct GDM configuration and restart GDM."
-#~ msgstr ""
-#~ "Папката за упълномощаване на сървъра (daemon/ServAuthDir) е зададена като "
-#~ "%s, но тя не съществува. Коригирайте конфигурацията на GDM и го "
-#~ "рестартирайте."
-
-#~ msgid ""
-#~ "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
-#~ "is not a directory. Please correct GDM configuration and restart GDM."
-#~ msgstr ""
-#~ "Папката за упълномощаване на сървъра (daemon/ServAuthDir) е зададена като "
-#~ "%s, но това не е папка. Коригирайте настройките на GDM и го рестартирайте."
-
-#~ msgid "%s: Invalid server line in config file. Ignoring!"
-#~ msgstr ""
-#~ "%s: Грешен ред в конфигурационния файл за сървър. Ще бъде игнориран!"
-
-#~ msgid "%s: Main config file (defaults.conf) is missing. Aborting!"
-#~ msgstr ""
-#~ "%s: Основният конфигурационен файл (defaults.conf) липсва. Програмата "
-#~ "спира!"
-
-#~ msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
-#~ msgstr ""
-#~ "%s: XDMCP е забранен и няма зададени статични сървъри. Програмата спира!"
-
-#~ msgid ""
-#~ "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to "
-#~ "allow configuration!"
-#~ msgstr ""
-#~ "%s: XDMCP е забранен и не са зададени статични сървъри. Ще се добави %s "
-#~ "за :%d, за да е възможно конфигуриране!"
-
-#~ msgid ""
-#~ "XDMCP is disabled and GDM cannot find any static server to start.  "
-#~ "Aborting!  Please correct the configuration and restart GDM."
-#~ msgstr ""
-#~ "XDMCP е забранен и GDM не може да намери статичен сървър за стартиране. "
-#~ "Програмата спира! Коригирайте конфигурацията %s и рестартирайте GDM."
-
-#~ msgid ""
-#~ "The GDM user '%s' does not exist. Please correct GDM configuration and "
-#~ "restart GDM."
-#~ msgstr ""
-#~ "Потребителят за GDM — „%s“ не съществува. Поправете настройките на GDM и "
-#~ "го рестартирайте."
-
-#~ msgid ""
-#~ "The GDM user is set to be root, but this is not allowed since it can pose "
-#~ "a security risk.  Please correct GDM configuration and restart GDM."
-#~ msgstr ""
-#~ "Потребителят на GDM е зададен да бъде администраторът, но това не е "
-#~ "позволено заради сигурността. Коригирайте %s и рестартирайте GDM."
-
-#~ msgid ""
-#~ "The GDM group '%s' does not exist. Please correct GDM configuration and "
-#~ "restart GDM."
-#~ msgstr ""
-#~ "Групата на GDM — „%s“ не съществува. Коригирайте конфигурацията и "
-#~ "рестартирайте GDM."
-
-#~ msgid ""
-#~ "The GDM group is set to be root, but this is not allowed since it can "
-#~ "pose a security risk. Please correct GDM configuration and restart GDM."
-#~ msgstr ""
-#~ "Групата на GDM е зададена да бъде администраторската, но това не е "
-#~ "позволено заради сигурността. Коригирайте настройките на GDM и го "
-#~ "рестартирайте."
-
-#~ msgid "%s: Greeter not found or can't be executed by the GDM user"
-#~ msgstr ""
-#~ "%s: Програмата за посрещане не е намерена или не може да бъде изпълнена "
-#~ "от потребителя за GDM"
-
-#~ msgid "%s: Remote greeter not found or can't be executed by the GDM user"
-#~ msgstr ""
-#~ "%s: Програмата за посрещане за отдалечен достъп не е намерена или не може "
-#~ "да бъде изпълнена от потребителя за GDM"
-
-#~ msgid "%s: Chooser not found or it can't be executed by the GDM user"
-#~ msgstr ""
-#~ "%s: Програмата за избор на машини не е намерена или не може да бъде "
-#~ "изпълнена от потребителя за GDM"
-
-#~ msgid "No daemon/ServAuthDir specified in the GDM configuration file"
-#~ msgstr "Няма зададен daemon/ServAuthDir в конфигурационния файл на GDM"
-
-#~ msgid "%s: No daemon/ServAuthDir specified."
-#~ msgstr "%s: Няма зададен daemon/ServAuthDir."
-
-#~ msgid ""
-#~ "Server Authorization directory (daemon/ServAuthDir) is set to %s but is "
-#~ "not owned by user %s and group %s. Please correct the ownership or GDM "
-#~ "configuration and restart GDM."
-#~ msgstr ""
-#~ "Папката за упълномощаване на сървъра (daemon/ServAuthDir) е зададена да е "
-#~ "%s, но тя не принадлежи на потребител %s и група %s. Коригирайте "
-#~ "собствениците или конфигурацията на GDM и го рестартирайте."
-
-#~ msgid ""
-#~ "Server Authorization directory (daemon/ServAuthDir) is set to %s but has "
-#~ "the wrong permissions: it should have permissions of %o. Please correct "
-#~ "the permissions or the GDM configuration and restart GDM."
-#~ msgstr ""
-#~ "Папката за упълномощаване на сървъра (daemon/ServAuthDir) е зададена да е "
-#~ "%s, но тя е с неподходящи права за достъп. Те трябва да са %o. "
-#~ "Коригирайте правата или конфигурацията на GDM и го рестартирайте."
-
-#~ msgid "y = Yes or n = No? >"
-#~ msgstr "y = „Да“ или n = „Не“? >"
-
-#~ msgid "%s: Cannot get local addresses!"
-#~ msgstr "%s: Локалните адреси не могат да бъдат получени!"
-
-#~ msgid "Could not setgid %d. Aborting."
-#~ msgstr "Не може да се зададе setgid %d. Програмата спира."
-
-#~ msgid "initgroups () failed for %s. Aborting."
-#~ msgstr "Неуспех при initgroups() за %s. Програмата спира."
-
-#~ msgid "%s: Error setting signal %d to %s"
-#~ msgstr "%s: Грешка при задаване на сигнал %d към %s"
-
-#~ msgid ""
-#~ "Last login:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Последно влизане:\n"
-#~ "%s"
-
-#~ msgid "Can not start fallback console"
-#~ msgstr "Не може да се стартира аварийната конзола"
-
-#~ msgid ""
-#~ "There already appears to be an X server running on display %s.  Should "
-#~ "another display number by tried?  Answering no will cause GDM to attempt "
-#~ "starting the server on %s again.%s"
-#~ msgstr ""
-#~ "Изглежда има работещ X сървър на дисплей %s. Да се пробва ли друг номер "
-#~ "за дисплей? Ако отговорите не, GDM отново ще опита да стартира сървър на %"
-#~ "s. %s"
-
-#~ msgid ""
-#~ "  (You can change consoles by pressing Ctrl-Alt plus a function key, such "
-#~ "as Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 "
-#~ "and higher.)"
-#~ msgstr ""
-#~ " (Можете да промените конзолите с натискане на Ctrl-Alt+ функционален "
-#~ "клавиш, напр. Ctrl-Alt-F7, за да отидете на конзола 7. X сървърът "
-#~ "обикновено работи на конзоли от 7 нагоре.)"
-
-#~ msgid "Display '%s' cannot be opened by Xnest"
-#~ msgstr "Дисплеят „%s“ не може да бъде отворен от Xnest"
-
-#~ msgid "Display %s is busy. There is another X server running already."
-#~ msgstr "Дисплеят %s е зает. На него работи друг X сървър."
-
-#~ msgid "%s: Error opening a pipe: %s"
-#~ msgstr "%s: Грешка при отваряне на програмен канал: %s"
-
-#~ msgid "%s: Cannot find a free display number"
-#~ msgstr "%s: Не може да се открие свободен номер на дисплей"
-
-#~ msgid "%s: Display %s busy.  Trying another display number."
-#~ msgstr "%s: Дисплеят %s е зает. Пробва се друг номер на дисплей."
-
-#~ msgid "Invalid server command '%s'"
-#~ msgstr "Грешна команда за сървър „%s“"
-
-#~ msgid "Server name '%s' not found; using standard server"
-#~ msgstr "Името на сървъра „%s“ не е намерено. Използва се стандартен сървър."
-
-#~ msgid "%s: Xserver not found: %s"
-#~ msgstr "%s: X сървърът не е открит: %s"
-
-#~ msgid "%s: Can't fork Xserver process!"
-#~ msgstr "%s: Не може да се създаде процес за X сървъра"
-
-#~ msgid "Can't set EGID to user GID"
-#~ msgstr "Не може да се установи EGID да е GID"
-
-#~ msgid "Can't set EUID to user UID"
-#~ msgstr "Не може да се установи EUID да е UID"
-
-#~ msgid ""
-#~ "You are already logged in.  You can log in anyway, return to your "
-#~ "previous login session, or abort this login"
-#~ msgstr ""
-#~ "Вече сте влезли. Какво желаете: да влезете отново, да се върнете към "
-#~ "предишното влизане или да прекратите това влизане?"
-
-#~ msgid "Return to previous login"
-#~ msgstr "Връщане към предишно влизане"
-
-#~ msgid "Abort login"
-#~ msgstr "Прекратяване на влизането"
-
-#~ msgid ""
-#~ "You are already logged in.  You can log in anyway or abort this login"
-#~ msgstr ""
-#~ "Вече сте влезли. Можете да влезете отново или да прекратите това влизане"
-
-#~ msgid "%s: cannot fork"
-#~ msgstr "%s: не може да се създаде процес"
-
-#~ msgid "%s: cannot open display %s"
-#~ msgstr "%s: невъзможно е да се отвори дисплей %s"
-
-#~ msgid ""
-#~ "Could not access configuration file (custom.conf). Make sure that the "
-#~ "file exists before launching  login manager config utility."
-#~ msgstr ""
-#~ "Конфигурационният файл (custom.conf) не може да бъде достъпен. Проверете "
-#~ "дали файлът съществува, преди да стартирате програмата за настройки на "
-#~ "мениджъра."
-
-#~ msgid ""
-#~ "Could not execute the configuration application.  Make sure its path is "
-#~ "set correctly in the configuration file.  Attempting to start it from the "
-#~ "default location."
-#~ msgstr ""
-#~ "Програмата за настройване не може да се изпълни. Проверете дали пътят до "
-#~ "нея в конфигурационния файл е правилен. Ще се пробва стартиране на "
-#~ "програмата от стандартното ѝ местоположение."
-
-#~ msgid ""
-#~ "Could not execute the configuration application.  Make sure its path is "
-#~ "set correctly in the configuration file."
-#~ msgstr ""
-#~ "Програмата за настройки не може да се изпълни. Проверете дали пътят до "
-#~ "нея в конфигурационния файл е правилен."
-
-#~ msgid "You must authenticate as root to run configuration."
-#~ msgstr "Трябва да сте администратор, за да настройвате."
-
-#~ msgid ""
-#~ "Login sound requested on non-local display or the play software cannot be "
-#~ "run or the sound does not exist."
-#~ msgstr ""
-#~ "Звукът за влизане в системата е заявен за отдалечен дисплей, програмата "
-#~ "за просвирване на файла не може да бъде стартирана или аудио файлът не "
-#~ "съществува."
-
-#~ msgid "%s: Can't init pipe to gdmgreeter"
-#~ msgstr "%s: Не може да се инициализира програмен канал за gdmgreeter"
-
-#~ msgid ""
-#~ "No servers were defined in the configuration file and XDMCP was "
-#~ "disabled.  This can only be a configuration error.  GDM has started a "
-#~ "single server for you.  You should log in and fix the configuration.  "
-#~ "Note that automatic and timed logins are disabled now."
-#~ msgstr ""
-#~ "Не е зададен сървър в конфигурационния файл, а XDMCP е забранен. Това "
-#~ "трябва да е грешка в конфигурацията. GDM е стартирал един сървър за вас. "
-#~ "Ще трябва да влезете и да коригирате конфигурацията. Автоматичното "
-#~ "влизане по време е забранено в момента."
-
-#~ msgid ""
-#~ "Could not start the regular X server (your graphical environment) and so "
-#~ "this is a failsafe X server.  You should log in and properly configure "
-#~ "the X server."
-#~ msgstr ""
-#~ "Не може да стартира обикновен X сървър (графичната инфраструктура). Това "
-#~ "е авариен X сървър. Ще трябва да влезете в системата и да коригирате "
-#~ "конфигурацията на X сървъра."
-
-#~ msgid ""
-#~ "The specified display number was busy, so this server was started on "
-#~ "display %s."
-#~ msgstr ""
-#~ "Зададеният номер дисплей е зает, този сървър е стартиран на дисплей %s."
-
-#~ msgid ""
-#~ "The greeter application appears to be crashing. Attempting to use a "
-#~ "different one."
-#~ msgstr "Програмата за посрещане явно забива. Ще се пробва с друга програма."
-
-#~ msgid ""
-#~ "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
-#~ msgstr ""
-#~ "%s: Програмата за посрещане не може да бъде стартирана с модулите за GTK"
-#~ "+: %s. Опитва се без модули."
-
-#~ msgid "%s: Cannot start greeter trying default: %s"
-#~ msgstr ""
-#~ "%s: Не може да се стартира програмата за посрещане, опитва се с тази по "
-#~ "подразбиране: %s"
-
-#~ msgid ""
-#~ "Cannot start the greeter application; you will not be able to log in.  "
-#~ "This display will be disabled.  Try logging in by other means and editing "
-#~ "the configuration file"
-#~ msgstr ""
-#~ "Не може да се стартира програмата за посрещане. Няма да сте в състояние "
-#~ "да влезете. Този дисплей ще бъде изключен. Опитайте се да влезете по друг "
-#~ "начин и да коригирате конфигурационния файл"
-
-#~ msgid "%s: Error starting greeter on display %s"
-#~ msgstr "%s: Грешка при стартиране на програмата за посрещане от дисплей %s"
-
-#~ msgid "%s: Can't fork gdmgreeter process"
-#~ msgstr "%s: Неуспех при създаването на процес gdmgreeter"
-
-#~ msgid "%s: Can't open fifo!"
-#~ msgstr "%s: Не може да се отвори програмен канал!"
-
-#~ msgid "%s: Can't init pipe to gdmchooser"
-#~ msgstr "%s: Не може да се инициализира програмен канал към gdmgreeter"
-
-#~ msgid ""
-#~ "Cannot start the chooser application. You will probably not be able to "
-#~ "log in.  Please contact the system administrator."
-#~ msgstr ""
-#~ "Програмата за избор на сесия не може да се стартира. Вероятно няма да "
-#~ "можете да влезете. Обърнете се към системния администратор."
-
-#~ msgid "%s: Error starting chooser on display %s"
-#~ msgstr ""
-#~ "%s: Грешка при стартиране на програмата за избор на сесия на дисплей %s"
-
-#~ msgid "%s: Can't fork gdmchooser process"
-#~ msgstr "%s: Не може да се създаде процес gdmchooser"
-
-#~ msgid "%s: Could not open ~/.xsession-errors"
-#~ msgstr "%s: Не може да се отвори ~/.xsession-errors"
-
-#~ msgid "%s: Execution of PreSession script returned > 0. Aborting."
-#~ msgstr ""
-#~ "%s: Изпълнението на скрипта PreSession върна резултат > 0. Влизането се "
-#~ "преустановява."
-
-#~ msgid "Language %s does not exist; using %s"
-#~ msgstr "Езикът %s не съществува, използва се %s"
-
-#~ msgid "System default"
-#~ msgstr "Системни настройки по подразбиране"
-
-#~ msgid "%s: Could not setup environment for %s. Aborting."
-#~ msgstr ""
-#~ "%s: Не може да се зададе обкръжението за %s. Влизането се преустановява."
-
-#~ msgid "%s: setusercontext () failed for %s. Aborting."
-#~ msgstr "%s: неуспешен setusercontext() за %s. Влизането се преустановява."
-
-#~ msgid "%s: Could not become %s. Aborting."
-#~ msgstr ""
-#~ "%s: Неуспех при придобиване на права на %s. Влизането се преустановява."
-
-#~ msgid ""
-#~ "No Exec line in the session file: %s.  Running the GNOME failsafe session "
-#~ "instead"
-#~ msgstr ""
-#~ "В сесийния файл %s не бе открит ред за изпълнение (с Exec). Ще се опита с "
-#~ "аварийна сесия за GNOME."
-
-#~ msgid ""
-#~ "%s: Cannot find or run the base Xsession script.  Running the GNOME "
-#~ "failsafe session instead."
-#~ msgstr ""
-#~ "%s: Основният скрипт за сесии или не беше открит, или може да се "
-#~ "стартира, ще се опита с аварийна сесия за GNOME."
-
-#~ msgid ""
-#~ "Cannot find or run the base session script.  Running the GNOME failsafe "
-#~ "session instead."
-#~ msgstr ""
-#~ "Основният скрипт за сесии или не беше открит, или може да се стартира, ще "
-#~ "се опита с аварийна сесия за GNOME."
-
-#~ msgid ""
-#~ "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
-#~ msgstr ""
-#~ "%s: gnome-session не беше открит и не може да се стартира аварийна сесия "
-#~ "на GNOME, пробва се xterm"
-
-#~ msgid ""
-#~ "Could not find the GNOME installation, will try running the \"Failsafe "
-#~ "xterm\" session."
-#~ msgstr ""
-#~ "Не може да се открие инсталацията на GNOME. Ще се пробва аварийна сесия с "
-#~ "xterm."
-
-#~ msgid ""
-#~ "This is the Failsafe GNOME session.  You will be logged into the "
-#~ "'Default' session of GNOME without the startup scripts being run.  This "
-#~ "should be used to fix problems in your installation."
-#~ msgstr ""
-#~ "Това е аварийна сесия на GNOME. Ще влезете в сесията по подразбиране на "
-#~ "GNOME, без да се стартират началните скриптове. Така ще можете да "
-#~ "коригирате проблемите във вашата инсталация."
-
-#~ msgid ""
-#~ "%s: gnome-session not found for a failsafe GNOME session; trying xterm"
-#~ msgstr ""
-#~ "%s: gnome-session не беше открит. Не може да се стартира аварийна сесия "
-#~ "на GNOME, пробва се xterm"
-
-#~ msgid ""
-#~ "Could not find the GNOME installation.  Running the \"Failsafe xterm\" "
-#~ "session instead."
-#~ msgstr ""
-#~ "Не може да се открие инсталацията на GNOME. Ще се пробва аварийна сесия с "
-#~ "xterm."
-
-#~ msgid "Cannot find \"xterm\" to start a failsafe session."
-#~ msgstr "Не може да се открие „xterm“, за да се стартира аварийна сесия."
-
-#~ msgid ""
-#~ "This is the Failsafe xterm session.  You will be logged into a terminal "
-#~ "console so that you may fix your system if you cannot log in any other "
-#~ "way.  To exit the terminal emulator, type 'exit' and an enter into the "
-#~ "window."
-#~ msgstr ""
-#~ "Това е аварийна сесия с xterm. Ще трябва да влезете в терминала, за да "
-#~ "коригирате проблемите в системата, ако не може да влезете по друг начин. "
-#~ "За да излезете от терминалния емулатор, напишете „exit“ (без кавичките) в "
-#~ "прозореца и натиснете клавиша „Enter“."
-
-#~ msgid ""
-#~ "This is the Failsafe xterm session.  You will be logged into a terminal "
-#~ "console and be prompted to enter the password for root so that you may "
-#~ "fix your system if you cannot log in any other way. To exit the terminal "
-#~ "emulator, type 'exit' and an enter into the window."
-#~ msgstr ""
-#~ "Това е аварийна сесия с xterm. Ще трябва да влезете в терминала, да "
-#~ "въведете паролата на системния администратор, за да коригирате проблемите "
-#~ "в системата, ако не може да влезете по друг начин. За да излезете от "
-#~ "терминалния емулатор, напишете „exit“ (без кавичките) в прозореца и "
-#~ "натиснете клавиша „Enter“."
-
-#~ msgid ""
-#~ "The failsafe session is restricted to users who have been assigned the "
-#~ "root role. If you cannot log in any other way please contact your system "
-#~ "administrator"
-#~ msgstr ""
-#~ "Единствено потребители, които са включени в групата „root“, могат да "
-#~ "влязат в аварийната сесия. Ако не можете да влезете по друг начин в "
-#~ "системата, обърнете се към вашия системен администратор."
-
-#~ msgid "%s: User not allowed to log in"
-#~ msgstr "%s: Забранено е на потребителя да влиза в системата"
-
-#~ msgid "The system administrator has disabled your account."
-#~ msgstr "Системният администратор е спрял достъпа ви до системата."
-
-#~ msgid "Error! Unable to set executable context."
-#~ msgstr "Грешка! Не може да се зададе контекст на изпълнение."
-
-#~ msgid "%s: Could not exec %s %s %s %s %s %s"
-#~ msgstr "%s: Неуспех при стартирането на %s %s %s %s %s %s"
-
-#~ msgid "%s: Could not exec %s %s %s"
-#~ msgstr "%s: Неуспех при стартирането на %s %s %s"
-
-#~ msgid "Cannot start the session due to some internal error."
-#~ msgstr "Не може да бъде стартирана сесията заради вътрешна грешка"
-
-#~ msgid "%s: User passed auth but getpwnam (%s) failed!"
-#~ msgstr ""
-#~ "%s: Потребителят е идентифициран, но изпълнението на getpwnam (%s) беше "
-#~ "неуспешно!"
-
-#~ msgid "%s: Execution of PostLogin script returned > 0. Aborting."
-#~ msgstr ""
-#~ "%s: Изпълнението на скрипта PostLogin върна резултат > 0. Влизането се "
-#~ "преустановява."
-
-#~ msgid ""
-#~ "Your home directory is listed as: '%s' but it does not appear to exist.  "
-#~ "Do you want to log in with the / (root) directory as your home directory? "
-#~ "It is unlikely anything will work unless you use a failsafe session."
-#~ msgstr ""
-#~ "Домашната ви папка е описана като: „%s“, но изглежда, че не съществува. "
-#~ "Искате ли да влезете в главната папка, все едно е ваша? Най-вероятно нищо "
-#~ "няма да работи по нормалния начин, освен ако не сте в аварийна сесия."
-
-#~ msgid "%s: Home directory for %s: '%s' does not exist!"
-#~ msgstr "%s: Домашната папка на %s: „%s“ не съществува!"
-
-#~ msgid ""
-#~ "User's $HOME/.dmrc file is being ignored.  This prevents the default "
-#~ "session and language from being saved.  File should be owned by user and "
-#~ "have 644 permissions.  User's $HOME directory must be owned by user and "
-#~ "not writable by other users."
-#~ msgstr ""
-#~ "Потребителският файл $HOME/.dmrc е игнориран. Това пречи да се запишат "
-#~ "настройките за сесията и езика по подразбиране. Файлът трябва да се "
-#~ "притежава от потребителя и да има настройки за достъп — 644. Домашната "
-#~ "папка на потребителя — $HOME трябва да се притежава от потребителя, а "
-#~ "другите потребители трябва да не могат да пишат в нея."
-
-#~ msgid ""
-#~ "GDM could not write to your authorization file.  This could mean that you "
-#~ "are out of disk space or that your home directory could not be opened for "
-#~ "writing.  In any case, it is not possible to log in.  Please contact your "
-#~ "system administrator"
-#~ msgstr ""
-#~ "GDM не може да пише във файла за упълномощаване. Това може да означава, "
-#~ "че нямате свободно място на диска или вашата домашна папка не може да "
-#~ "бъде отворена с права за писане. Във всеки случай е невъзможно да "
-#~ "влезете. Обърнете се към системния администратор."
-
-#~ msgid "%s: Error forking user session"
-#~ msgstr "%s: Грешка при създаването на процес за потребителска сесия"
-
-#~ msgid ""
-#~ "Your session only lasted less than 10 seconds.  If you have not logged "
-#~ "out yourself, this could mean that there is some installation problem or "
-#~ "that you may be out of diskspace.  Try logging in with one of the "
-#~ "failsafe sessions to see if you can fix this problem."
-#~ msgstr ""
-#~ "Сесията ви продължи по-малко от 10 секунди. Ако не сте излезли сами, това "
-#~ "означава, че има някакъв проблем с инсталацията или нямате дисково "
-#~ "пространство. Опитайте се да влезете с аварийна сесия, за да се опитате "
-#~ "да оправите проблема."
-
-#~ msgid "View details (~/.xsession-errors file)"
-#~ msgstr "Подробен преглед (на файла ~/.xsession-errors)"
-
-#~ msgid "GDM detected a halt or restart in progress."
-#~ msgstr ""
-#~ "GDM установи, че в момента тече спиране или рестартиране на компютъра."
-
-#~ msgid "%s: Fatal X error - Restarting %s"
-#~ msgstr "%s: Фатална грешка в X — рестартира се %s"
-
-#~ msgid ""
-#~ "Login sound requested on non-local display or the play software cannot be "
-#~ "run or the sound does not exist"
-#~ msgstr ""
-#~ "Звукът за влизане в системата е заявен за отдалечен дисплей, програмата "
-#~ "за просвирване на файла не може да бъде стартирана, или аудио файлът не "
-#~ "съществува."
-
-#~ msgid "%s: Failed starting: %s"
-#~ msgstr "%s: Неуспех при стартиране на %s"
-
-#~ msgid "%s: Can't fork script process!"
-#~ msgstr "%s: Не може да се създаде процес за скрипт!"
-
-#~ msgid "%s: Failed creating pipe"
-#~ msgstr "%s: Не може да се създаде програмен канал"
-
-#~ msgid "%s: Failed executing: %s"
-#~ msgstr "%s: Грешка при изпълнение на: %s"
-
-#~ msgid ""
-#~ "\n"
-#~ "Incorrect username or password.  Letters must be typed in the correct "
-#~ "case."
-#~ msgstr ""
-#~ "\n"
-#~ "Грешно име или парола. Регистърът (големината) на буквите е от значение."
-
-#~ msgid "Please enter your username"
-#~ msgstr "Въведете вашето потребителско име"
-
-#~ msgid "Password:"
-#~ msgstr "Парола:"
-
-#~ msgid "Couldn't authenticate user \"%s\""
-#~ msgstr "Неуспех при идентифицирането на потребителя „%s“"
-
-#~ msgid "Root login disallowed on display '%s'"
-#~ msgstr "Влизането като „root“ е отхвърлено от дисплей „%s“"
-
-#~ msgid "The system administrator is not allowed to login from this screen"
-#~ msgstr "На системния администратор не му е позволено да влиза от този екран"
-
-#~ msgid "User %s not allowed to log in"
-#~ msgstr "Потребител %s не може да влиза в системата"
-
-#~ msgid ""
-#~ "\n"
-#~ "The system administrator has disabled your account."
-#~ msgstr ""
-#~ "\n"
-#~ "Системният администратор е забранил достъпа ви до системата."
-
-#~ msgid "Cannot set user group for %s"
-#~ msgstr "Не може да се зададе потребителска група за %s"
-
-#~ msgid ""
-#~ "\n"
-#~ "Cannot set your user group; you will not be able to log in. Please "
-#~ "contact your system administrator."
-#~ msgstr ""
-#~ "\n"
-#~ "Групата на потребителя не може да бъде зададена, няма да може да влезете "
-#~ "в системата. Обърнете се към системния администратор."
-
-#~ msgid "Password of %s has expired"
-#~ msgstr "Изтече срокът на валидност на паролата на %s"
-
-#~ msgid ""
-#~ "You are required to change your password.\n"
-#~ "Please choose a new one."
-#~ msgstr ""
-#~ "От вас се изисква да промените\n"
-#~ "паролата си. Изберете нова."
-
-#~ msgid ""
-#~ "\n"
-#~ "Cannot change your password; you will not be able to log in. Please try "
-#~ "again later or contact your system administrator."
-#~ msgstr ""
-#~ "\n"
-#~ "Паролата ви не може да бъде сменена. Няма да може да влезете в системата. "
-#~ "Опитайте отново малко по-късно или се обърнете към системния "
-#~ "администратор."
-
-#~ msgid ""
-#~ "Your password has been changed but you may have to change it again. "
-#~ "Please try again later or contact your system administrator."
-#~ msgstr ""
-#~ "Паролата ви бе сменена, но може да се наложи отново да я промените. "
-#~ "Опитайте отново малко по-късно или се обърнете към системния "
-#~ "администратор."
-
-#~ msgid ""
-#~ "Your password has expired.\n"
-#~ "Only a system administrator can now change it"
-#~ msgstr ""
-#~ "вашата парола вече не е валидна.\n"
-#~ "Само системният администратор може да я промени"
-
-#~ msgid "Internal error on passwdexpired"
-#~ msgstr "Вътрешна грешка при паролата с изтекла валидност"
-
-#~ msgid ""
-#~ "An internal error occurred. You will not be able to log in.\n"
-#~ "Please try again later or contact your system administrator."
-#~ msgstr ""
-#~ "Възникна вътрешна грешка. Няма да можете да влезете.\n"
-#~ "Опитайте отново малко по-късно или се обърнете към системния "
-#~ "администратор."
-
-#~ msgid "Cannot get passwd structure for %s"
-#~ msgstr "Неуспех при получаването на структурата за „passwd“ за %s"
-
-#~ msgid "You are required to change your password immediately (password aged)"
-#~ msgstr "Задължени сте да смените паролата си веднага. (остаряла е)"
-
-#~ msgid "You are required to change your password immediately (root enforced)"
-#~ msgstr ""
-#~ "Трябва задължително да смените вашата парола веднага (изискване на "
-#~ "системния администратор)"
-
-#~ msgid "Your account has expired; please contact your system administrator"
-#~ msgstr ""
-#~ "Вашата регистрация е изтекла. Свържете се със системния администратор"
-
-#~ msgid "No password supplied"
-#~ msgstr "Не беше въведена парола"
-
-#~ msgid "Password unchanged"
-#~ msgstr "Паролата е непроменена"
-
-#~ msgid "Can not get username"
-#~ msgstr "Неуспех при взимане на име"
-
-#~ msgid "Retype new UNIX password:"
-#~ msgstr "Напишете отново новата парола:"
-
-#~ msgid "Enter new UNIX password:"
-#~ msgstr "Напишете новата парола:"
-
-#~ msgid "(current) UNIX password:"
-#~ msgstr "(текуща) парола:"
-
-#~ msgid "Error while changing NIS password."
-#~ msgstr "Грешка при сменяне на парола за NIS."
-
-#~ msgid "You must choose a longer password"
-#~ msgstr "Трябва да изберете по-дълга парола"
-
-#~ msgid "Password has been already used. Choose another."
-#~ msgstr "Паролата е вече използвана. Изберете друга."
-
-#~ msgid "You must wait longer to change your password"
-#~ msgstr "Трябва да почакате повече, за да смените паролата си."
-
-#~ msgid "Sorry, passwords do not match"
-#~ msgstr "За съжаление паролите не са еднакви"
-
-#~ msgid "Cannot setup pam handle with null display"
-#~ msgstr ""
-#~ "Неуспех при задаването на поддръжката на „pam“ за дисплей сочен от „null“"
-
-#~ msgid "Can't set PAM_TTY=%s"
-#~ msgstr "Неуспех при задаване на PAM_TTY=%s"
-
-#~ msgid "Can't set PAM_RHOST=%s"
-#~ msgstr "Неуспех при задаване на PAM_RHOST=%s"
-
-#~ msgid ""
-#~ "\n"
-#~ "The system administrator is not allowed to login from this screen"
-#~ msgstr ""
-#~ "\n"
-#~ "На системния администратор не е позволено да влиза от този екран"
-
-#~ msgid "Authentication token change failed for user %s"
-#~ msgstr ""
-#~ "Неуспех при промяната на жетона (token) за идентификация за потребител %s"
-
-#~ msgid ""
-#~ "\n"
-#~ "The change of the authentication token failed. Please try again later or "
-#~ "contact the system administrator."
-#~ msgstr ""
-#~ "\n"
-#~ "Неуспех при промяната на жетона (token) за идентификация. Опитайте отново "
-#~ "по-късно или се обърнете към системния администратор"
-
-#~ msgid "User %s no longer permitted to access the system"
-#~ msgstr "Потребител %s вече няма права за достъп до системата"
-
-#~ msgid "User %s not permitted to gain access at this time"
-#~ msgstr "Потребител %s няма права за достъп до системата в момента"
-
-#~ msgid ""
-#~ "\n"
-#~ "The system administrator has disabled access to the system temporarily."
-#~ msgstr ""
-#~ "\n"
-#~ "Системният администратор временно е забранил достъпа до системата."
-
-#~ msgid "Couldn't set acct. mgmt for %s"
-#~ msgstr "Неуспех при настройването на управлението на регистрациите за %s"
-
-#~ msgid "Couldn't set credentials for %s"
-#~ msgstr "Неуспех при задаване на акредитация за %s"
-
-#~ msgid "Couldn't open session for %s"
-#~ msgstr "Неуспех при отваряне на сесия за %s"
-
-#~ msgid ""
-#~ "\n"
-#~ "Authentication failed.  Letters must be typed in the correct case."
-#~ msgstr ""
-#~ "\n"
-#~ "Идентификацията пропадна. Регистърът (големината) на буквите е от "
-#~ "значение."
-
-#~ msgid ""
-#~ "The system administrator has disabled your access to the system "
-#~ "temporarily."
-#~ msgstr ""
-#~ "Системният администратор временно е забранил вашия достъп до системата."
-
-#~ msgid ""
-#~ "Cannot set your user group; you will not be able to log in. Please "
-#~ "contact your system administrator."
-#~ msgstr ""
-#~ "Групата на потребителя ви не може да бъде зададена, няма да може да "
-#~ "влезете в системата. Обърнете се към системния администратор."
-
-#~ msgid "Can't find PAM configuration for GDM."
-#~ msgstr "Не може да се открие конфигурацията на PAM за GDM."
-
-#~ msgid "%s: Could not bind to XDMCP socket!"
-#~ msgstr "%s: Неуспех при привързването към гнездо на XDMCP!"
-
-#~ msgid "%s: Unknown opcode from host %s"
-#~ msgstr "%s: Неизвестен код на операция от хост %s"
-
-#~ msgid ""
-#~ "%s: Failed to run '%s --display %s --display-authfile %s --to %s --to-"
-#~ "authfile %s': %s"
-#~ msgstr ""
-#~ "%s: Неуспех при стартирането на „%s --display %s --display-authfile %s --"
-#~ "to %s --to-authfile %s“: %s"
-
-#~ msgid "%s: No XDMCP support"
-#~ msgstr "%s: Няма поддръжка на XDMCP"
-
-#~ msgid "Xnest command line"
-#~ msgstr "Команден ред на Xnest"
-
-#~ msgid "STRING"
-#~ msgstr "НИЗ"
-
-#~ msgid "Extra options for Xnest"
-#~ msgstr "Допълнителни опции за Xnest"
-
-#~ msgid "OPTIONS"
-#~ msgstr "ОПЦИИ"
-
-#~ msgid "Run in background"
-#~ msgstr "Изпълнение във фонов режим"
-
-#~ msgid "Just run Xnest, no query (no chooser)"
-#~ msgstr "Изпълнение само на Xnest, без заявка (без chooser)"
-
-#~ msgid "Do direct query instead of indirect (chooser)"
-#~ msgstr "Пряка заявка вместо непряка (chooser)"
-
-#~ msgid "Run broadcast instead of indirect (chooser)"
-#~ msgstr ""
-#~ "Изпълняване на заявка в режим на „broadcast“ вместо непряка заявка "
-#~ "(chooser)"
-
-#~ msgid "Don't check for running GDM"
-#~ msgstr "Без проверка за работещ GDM"
-
-#~ msgid "- Nested gdm login chooser"
-#~ msgstr "— избор на вложени сесии чрез gdm"
-
-#~ msgid "- Nested gdm login"
-#~ msgstr "— вложена сесия чрез gdm"
-
-#~ msgid "Please ask your system administrator to install it."
-#~ msgstr "Помолете вашия системен администратор да го инсталира."
-
-#~ msgid "Indirect XDMCP is not enabled"
-#~ msgstr "Непрекият режим на XDMCP не е включен"
-
-#~ msgid "Please ask your system administrator to enable this feature."
-#~ msgstr "Помолете вашия системен администратор да включи тази възможност."
-
-#~ msgid "XDMCP is not enabled"
-#~ msgstr "XDMCP не е включен"
-
-#~ msgid "Please ask your system administrator to start it."
-#~ msgstr "Помолете системния администратор да го стартира."
-
-#~ msgid "Could not find a free display number"
-#~ msgstr "Неуспех при намирането на свободен номер за дисплей"
-
-#~ msgid "Please wait: scanning local network..."
-#~ msgstr "Изчакайте: локалната мрежа се сканира…"
-
-#~ msgid "No serving hosts were found."
-#~ msgstr "Не са намерени обслужващи хостове."
-
-#~ msgid "Choose a ho_st to connect to:"
-#~ msgstr "Избор на _хост за връзка:"
-
-#~ msgid ""
-#~ "The host \"%s\" is not willing to support a login session right now.  "
-#~ "Please try again later."
-#~ msgstr "В момента не са позволени влизания в хоста „%s“. Опитайте по-късно."
-
-#~ msgid "Cannot connect to remote server"
-#~ msgstr "Не може да осъществи връзка към отдалечен сървър"
-
-#~ msgid ""
-#~ "Did not receive any response from host \"%s\" in %d seconds.  Perhaps the "
-#~ "host is not turned on, or is not willing to support a login session right "
-#~ "now.  Please try again later."
-#~ msgstr ""
-#~ "Не е получен отговор от хоста „%s“ за последните %d секунди. Хостът може "
-#~ "да е изключен или да не са позволени влизания в момента. Опитайте по-"
-#~ "късно."
-
-#~ msgid "Did not receive response from server"
-#~ msgstr "Отговор от сървър не е получен"
-
-#~ msgid "Cannot find the host \"%s\". Perhaps you have mistyped it."
-#~ msgstr ""
-#~ "Неуспех при откриването на хоста „%s“. Може би сте го написали грешно."
-
-#~ msgid "Cannot find host"
-#~ msgstr "Неуспех при откриването на хост"
-
-#~ msgid ""
-#~ "The main area of this application shows the hosts on the local network "
-#~ "that have \"XDMCP\" enabled. This allows users to login remotely to other "
-#~ "computers as if they were logged on using the console.\n"
-#~ "\n"
-#~ "You can rescan the network for new hosts by clicking \"Refresh\".  When "
-#~ "you have selected a host click \"Connect\" to open a session to that "
-#~ "computer."
-#~ msgstr ""
-#~ "Главният прозорец на това приложение показва хостовете във вашата локална "
-#~ "мрежа, които имат включена поддръжка на „XDMCP“. Това позволява на "
-#~ "потребителите да влизат в системите отдалечено, все едно през локална "
-#~ "конзола.\n"
-#~ "\n"
-#~ "Може да сканирате отново мрежата за нови хостове като натиснете на "
-#~ "„Обновяване“ Когато изберете хост, натиснете „Връзка“, за да се отвори "
-#~ "сесия към тази машина."
-
-#~ msgid "Socket for xdm communication"
-#~ msgstr "Гнездо за комуникация тип xdm"
-
-#~ msgid "SOCKET"
-#~ msgstr "ГНЕЗДО"
-
-#~ msgid "Client address to return in response to xdm"
-#~ msgstr "Клиентски адрес за връщане при отговор на xdm"
-
-#~ msgid "ADDRESS"
-#~ msgstr "АДРЕС"
-
-#~ msgid "Connection type to return in response to xdm"
-#~ msgstr "Тип на връзка за връщане при отговор на xdm"
-
-#~ msgid "TYPE"
-#~ msgstr "ТИП"
-
-#~ msgid "- gdm login chooser"
-#~ msgstr "— избор на сесии чрез gdm"
-
-#~ msgid ""
-#~ "The chooser version (%s) does not match the daemon version (%s).  You "
-#~ "have probably just upgraded GDM.  Please restart the GDM daemon or the "
-#~ "computer."
-#~ msgstr ""
-#~ "Версията на програмата за избор на сесии (%s) не съвпада с тази на демона "
-#~ "(%s). Вероятно току що сте обновили GDM. Рестартирайте демона на GDM или "
-#~ "рестартирайте компютъра."
-
-#~ msgid "Cannot run chooser"
-#~ msgstr "Програмата за избор не може да се стартира"
-
-#~ msgid "A_dd host: "
-#~ msgstr "_Добавяне на хост: "
-
-#~ msgid "C_onnect"
-#~ msgstr "В_ръзка"
-
-#~ msgid "Exit the application"
-#~ msgstr "Спиране на програмата"
-
-#~ msgid "Login Host Chooser"
-#~ msgstr "Програма за избор на хостове"
-
-#~ msgid "Open a session to the selected host"
-#~ msgstr "Отваряне на сесия към избран хост"
-
-#~ msgid "Probe the network"
-#~ msgstr "Пробване на мрежата."
-
-#~ msgid "Query and add this host to the above list"
-#~ msgstr "Изпробване и добавяне на този хост в горния списък"
-
-#~ msgid "Status"
-#~ msgstr "Състояние"
-
-#~ msgid "_Add"
-#~ msgstr "_Добавяне"
-
-#~ msgid ""
-#~ "You might in fact be using a different display manager, such as KDM (KDE "
-#~ "Display Manager) or xdm. If you still wish to use this feature, either "
-#~ "start GDM yourself or ask your system administrator to start GDM."
-#~ msgstr ""
-#~ "Възможно е да използвате различен мениджър на дисплеи — например KDM "
-#~ "(мениджърът на дисплеи на KDE) или xdm. Ако все още искате да използвате "
-#~ "тази функция, стартирайте сами GDM или помолете вашия системен "
-#~ "администратор за това."
-
-#~ msgid "Cannot communicate with GDM (The GNOME Display Manager)"
-#~ msgstr ""
-#~ "Неуспех при свързване с GDM (програмата за управление на дисплеи на GNOME)"
-
-#~ msgid "Perhaps you have an old version of GDM running."
-#~ msgstr "Може би вече е стартирана стара версия на GDM."
-
-#~ msgid ""
-#~ "Cannot communicate with GDM. Perhaps you have an old version running."
-#~ msgstr ""
-#~ "Не може да се комуникира с GDM. Може би в момента е стартирана стара "
-#~ "версия."
-
-#~ msgid "The allowed limit of flexible X servers reached."
-#~ msgstr "Достигнат е лимитът на гъвкави X сървъри."
-
-#~ msgid "There were errors trying to start the X server."
-#~ msgstr "Имаше грешки при опит за стартиране на X сървъра."
-
-#~ msgid "The X server failed.  Perhaps it is not configured well."
-#~ msgstr "Неуспешно стартиране на X сървъра. Може би не е конфигуриран добре."
-
-#~ msgid "Too many X sessions running."
-#~ msgstr "Твърде много работещи сесии на X."
-
-#~ msgid ""
-#~ "The nested X server (Xnest) cannot connect to your current X server.  You "
-#~ "may be missing an X authorization file."
-#~ msgstr ""
-#~ "Вложеният X сървър (Xnest) не може да се свърже с текущия ви X сървър. "
-#~ "Може би липсва файлът за упълномощаване."
-
-#~ msgid ""
-#~ "The nested X server (Xnest) is not available, or GDM is badly "
-#~ "configured.\n"
-#~ "Please install the Xnest package in order to use the nested login."
-#~ msgstr ""
-#~ "Липсва вложен X сървър (Xnest) или GDM е лошо конфигуриран.\n"
-#~ "Инсталирайте пакета с Xnest, за да ползвате вложени влизания."
-
-#~ msgid "The X server is not available. GDM may be misconfigured."
-#~ msgstr "Липсва X сървър. Най-вероятно GDM е лошо конфигуриран."
-
-#~ msgid ""
-#~ "Trying to set an unknown logout action, or trying to set a logout action "
-#~ "which is not available."
-#~ msgstr ""
-#~ "Опит за задаване на непознато действие за излизане или за задаване на "
-#~ "действие, което не е достъпно."
-
-#~ msgid "Virtual terminals not supported."
-#~ msgstr "Не се поддържат виртуални терминали."
-
-#~ msgid "Trying to change to an invalid virtual terminal number."
-#~ msgstr "Опит да се премине към невалиден номер на виртуален терминал."
-
-#~ msgid "Trying to update an unsupported configuration key."
-#~ msgstr "Опит да се обнови неподдържан конфигурационен ключ."
-
-#~ msgid ""
-#~ "You do not seem to have the authentication needed for this operation.  "
-#~ "Perhaps your .Xauthority file is not set up correctly."
-#~ msgstr ""
-#~ "Изглежда нямате идентификация за тази операция. Най-вероятно вашият файл ."
-#~ "Xauthority не е коректен."
-
-#~ msgid "Too many messages were sent to GDM and it hung up on us."
-#~ msgstr "Прекалено много съобщения бяха пратени към GDM и той заби."
-
-#~ msgid "The accessibility registry was not found."
-#~ msgstr "Регистратурата за достъпност не беше открита."
-
-#~ msgid "The accessibility registry could not be started."
-#~ msgstr "Регистратурата за достъпност не може да бъде открита."
-
-#~ msgid "%d second"
-#~ msgid_plural "%d seconds"
-#~ msgstr[0] "%d секунда"
-#~ msgstr[1] "%d секунди"
-
-#~ msgid "Usage: %s [-b][-v] and one of the following:\n"
-#~ msgstr "Употреба: %s [-b][-v] и някой от следните варианти:\n"
-
-#~ msgid "\t-a display\n"
-#~ msgstr "\t-a дисплей\n"
-
-#~ msgid "\t-r display\n"
-#~ msgstr "\t-r дисплей\n"
-
-#~ msgid "\t-d display\n"
-#~ msgstr "\t-d дисплей\n"
-
-#~ msgid "\t-l [server_name]\n"
-#~ msgstr "\t-l [име_на_сървър]\n"
-
-#~ msgid "\t-t maximum tries to connect (default 15)\n"
-#~ msgstr "\t-t максимален_брой_опити_за_свързване (по подразбиране е 15)\n"
-
-#~ msgid "\t-s sleep value (default 8)\n"
-#~ msgstr "\t-s време_за_изчакване (по подразбиране е 8)\n"
-
-#~ msgid "Server busy, will sleep.\n"
-#~ msgstr "Сървърът е зает, ще се изчаква.\n"
-
-#~ msgid ""
-#~ "Connection to daemon failed, sleeping for %d seconds.  Retry %d of %d\n"
-#~ msgstr ""
-#~ "Неуспех при свързването към демона. Ще се бездейства %d секунди. Опит %d "
-#~ "от %d\n"
-
-#~ msgid "Failed to connect to server after %d retries\n"
-#~ msgstr "Свързването към сървър, дори след %d опита, е невъзможно\n"
-
-#~ msgid "Log in as another user inside a nested window"
-#~ msgstr "Влизане в системата като друг потребител във вложен прозорец"
-
-#~ msgid "New Login in a Nested Window"
-#~ msgstr "Ново влизане във вложен прозорец"
-
-#~ msgid "Cannot change display"
-#~ msgstr "Дисплеят не може да бъде променен"
-
-#~ msgid "Nobody"
-#~ msgstr "Никой"
-
-#~ msgid "Display %s on virtual terminal %d"
-#~ msgstr "Дисплей %s на виртуален терминал %d"
-
-#~ msgid "Nested display %s on virtual terminal %d"
-#~ msgstr "Вложен дисплей %s на виртуален терминал %d"
-
-#~ msgid "Open Displays"
-#~ msgstr "Отваряне на дисплеи"
-
-#~ msgid "_Open New Display"
-#~ msgstr "_Отваряне на нов дисплей"
-
-#~ msgid "Change to _Existing Display"
-#~ msgstr "Преминаване към _съществуващ дисплей"
-
-#~ msgid ""
-#~ "There are some displays already open.  You can select one from the list "
-#~ "below or open a new one."
-#~ msgstr ""
-#~ "Вече има отворени дисплеи. Можете да изберете някой от долния списък или "
-#~ "да отворите нов."
-
-#~ msgid "Choose server"
-#~ msgstr "Избор на сървър"
-
-#~ msgid "Choose the X server to start"
-#~ msgstr "Избор на X сървър за стартиране"
-
-#~ msgid "Standard server"
-#~ msgstr "Стандартен сървър"
-
-#~ msgid "You do not seem to have the authentication needed for this operation"
-#~ msgstr "Изглежда нямате идентификация за тази операция."
-
-#~ msgid "Perhaps your .Xauthority file is not set up correctly."
-#~ msgstr "Може би вашият файл .Xauthority не е коректен"
-
-#~ msgid "You do not seem to be logged in on the console"
-#~ msgstr "Изглежда не сте влезли в конзолата."
-
-#~ msgid "Starting a new login only works correctly on the console."
-#~ msgstr "Стартирането на ново влизане работи само на конзолата"
-
-#~ msgid "Log in as another user without logging out"
-#~ msgstr "Влизане като друг потребител без излизане от системата"
-
-#~ msgid "New Login"
-#~ msgstr "Ново влизане"
-
-#~ msgid "A-M|Afrikaans"
-#~ msgstr "А-К|Африкаанс"
-
-#~ msgid "A-M|Albanian"
-#~ msgstr "А-К|Албански"
-
-#~ msgid "A-M|Amharic"
-#~ msgstr "А-К|Амхарски"
-
-#~ msgid "A-M|Arabic (Egypt)"
-#~ msgstr "А-К|Арабски (Египетски)"
-
-#~ msgid "A-M|Arabic (Lebanon)"
-#~ msgstr "А-К|Арабски (Ливан)"
-
-#~ msgid "A-M|Arabic (Saudi Arabia)"
-#~ msgstr "А-К|Арабски (Саудитска Арабия)"
-
-#~ msgid "A-M|Armenian"
-#~ msgstr "А-К|Арменски"
-
-#~ msgid "A-M|Azerbaijani"
-#~ msgstr "А-К|Азербайджански"
-
-#~ msgid "A-M|Basque"
-#~ msgstr "А-К|Баски"
-
-#~ msgid "A-M|Belarusian"
-#~ msgstr "А-К|Белоруски"
-
-#~ msgid "A-M|Bengali"
-#~ msgstr "А-К|Бенгалски"
-
-#~ msgid "A-M|Bengali (India)"
-#~ msgstr "А-К|Бенгалски (Индия)"
-
-#~ msgid "A-M|Bulgarian"
-#~ msgstr "А-К|Български"
-
-#~ msgid "A-M|Bosnian"
-#~ msgstr "А-К|Босненски"
-
-#~ msgid "A-M|Catalan"
-#~ msgstr "А-К|Каталонски"
-
-#~ msgid "A-M|Chinese (China Mainland)"
-#~ msgstr "А-К|Китайски (континентален Китай)"
-
-#~ msgid "A-M|Chinese (Hong Kong)"
-#~ msgstr "А-К|Китайски (Хонконг)"
-
-#~ msgid "A-M|Chinese (Singapore)"
-#~ msgstr "А-К|Китайски (Сингапур)"
-
-#~ msgid "A-M|Chinese (Taiwan)"
-#~ msgstr "А-К|Китайски (Тайван)"
-
-#~ msgid "A-M|Croatian"
-#~ msgstr "Л-Я|Хърватски"
-
-#~ msgid "A-M|Czech"
-#~ msgstr "Л-Я|Чешки"
-
-#~ msgid "A-M|Danish"
-#~ msgstr "А-К|Датски"
-
-#~ msgid "A-M|Dutch"
-#~ msgstr "Л-Я|Холандски"
-
-#~ msgid "A-M|Dutch (Belgium)"
-#~ msgstr "Л-Я|Холандски (Белгия)"
-
-#~ msgid "A-M|English (USA)"
-#~ msgstr "А-К|Английски (САЩ)"
-
-#~ msgid "A-M|English (Australia)"
-#~ msgstr "А-К|Английски (Австралия)"
-
-#~ msgid "A-M|English (UK)"
-#~ msgstr "А-К|Английски (Обединено кралство)"
-
-#~ msgid "A-M|English (Canada)"
-#~ msgstr "А-К|Английски (Канада)"
-
-#~ msgid "A-M|English (Ireland)"
-#~ msgstr "А-К|Английски (Ирландия)"
-
-#~ msgid "A-M|English (Denmark)"
-#~ msgstr "А-К|Английски (Дания)"
-
-#~ msgid "A-M|English (South Africa)"
-#~ msgstr "А-К|Английски (ЮАР)"
-
-#~ msgid "A-M|English (Malta)"
-#~ msgstr "А-К|Английски (Малта)"
-
-#~ msgid "A-M|English (New Zealand)"
-#~ msgstr "А-К|Английски (Нова Зеландия)"
-
-#~ msgid "A-M|Estonian"
-#~ msgstr "А-К|Естонски"
-
-#~ msgid "A-M|Finnish"
-#~ msgstr "Л-Я|Фински"
-
-#~ msgid "A-M|French"
-#~ msgstr "Л-Я|Френски"
-
-#~ msgid "A-M|French (Belgium)"
-#~ msgstr "Л-Я|Френски (Белгия)"
-
-#~ msgid "A-M|French (Canada)"
-#~ msgstr "Л-Я|Френски (Канада)"
-
-#~ msgid "A-M|French (Luxembourg)"
-#~ msgstr "Л-Я|Френски (Люксембург)"
-
-#~ msgid "A-M|French (Switzerland)"
-#~ msgstr "Л-Я|Френски (Швейцария)"
-
-#~ msgid "A-M|Galician"
-#~ msgstr "А-К|Галицийски"
-
-#~ msgid "A-M|German"
-#~ msgstr "Л-Я|Немски"
-
-#~ msgid "A-M|German (Austria)"
-#~ msgstr "Л-Я|Немски (Австрия)"
-
-#~ msgid "A-M|German (Luxembourg)"
-#~ msgstr "Л-Я|Немски (Люксембург)"
-
-#~ msgid "A-M|German (Switzerland)"
-#~ msgstr "Л-Я|Немски (Швейцария)"
-
-#~ msgid "A-M|Greek"
-#~ msgstr "А-К|Гръцки"
-
-#~ msgid "A-M|Greek (Cyprus)"
-#~ msgstr "А-К|Гръцки (Кипър)"
-
-#~ msgid "A-M|Gujarati"
-#~ msgstr "А-К|Гуджарати"
-
-#~ msgid "A-M|Hebrew"
-#~ msgstr "А-К|Иврит"
-
-#~ msgid "A-M|Hindi"
-#~ msgstr "Л-Я|Хинди"
-
-#~ msgid "A-M|Hungarian"
-#~ msgstr "Л-Я|Унгарски"
-
-#~ msgid "A-M|Icelandic"
-#~ msgstr "А-К|Исландски"
-
-#~ msgid "A-M|Indonesian"
-#~ msgstr "А-К|Индонезийски"
-
-#~ msgid "A-M|Interlingua"
-#~ msgstr "А-К|Интерлингуа"
-
-#~ msgid "A-M|Irish"
-#~ msgstr "А-К|Ирландски"
-
-#~ msgid "A-M|Italian"
-#~ msgstr "А-К|Италиански"
-
-#~ msgid "A-M|Japanese"
-#~ msgstr "Л-Я|Японски"
-
-#~ msgid "A-M|Kannada"
-#~ msgstr "А-К|Канарески"
-
-#~ msgid "A-M|Kinyarwanda"
-#~ msgstr "А-К|Кинярвандски"
-
-#~ msgid "A-M|Korean"
-#~ msgstr "А-К|Корейски"
-
-#~ msgid "A-M|Latvian"
-#~ msgstr "Л-Я|Латвийски"
-
-#~ msgid "A-M|Lithuanian"
-#~ msgstr "Л-Я|Литовски"
-
-#~ msgid "A-M|Macedonian"
-#~ msgstr "Л-Я|Македонски"
-
-#~ msgid "A-M|Malay"
-#~ msgstr "Л-Я|Малайски"
-
-#~ msgid "A-M|Malayalam"
-#~ msgstr "Л-Я|Малаялам"
-
-#~ msgid "A-M|Maltese"
-#~ msgstr "Л-Я|Малтийски"
-
-#~ msgid "A-M|Marathi"
-#~ msgstr "Л-Я|Марати"
-
-#~ msgid "A-M|Mongolian"
-#~ msgstr "Л-Я|Монголски"
-
-#~ msgid "N-Z|Northern Sotho"
-#~ msgstr "Л-Я|Северно Сото"
-
-#~ msgid "N-Z|Norwegian (bokmal)"
-#~ msgstr "Л-Я|Норвежки (букмол)"
-
-#~ msgid "N-Z|Norwegian (nynorsk)"
-#~ msgstr "Л-Я|Норвежки (ниношк)"
-
-#~ msgid "N-Z|Oriya"
-#~ msgstr "Л-Я|Ория"
-
-#~ msgid "N-Z|Punjabi"
-#~ msgstr "Л-Я|Панджаби"
-
-#~ msgid "N-Z|Persian"
-#~ msgstr "Л-Я|Персийски"
-
-#~ msgid "N-Z|Polish"
-#~ msgstr "Л-Я|Полски"
-
-#~ msgid "N-Z|Portuguese"
-#~ msgstr "Л-Я|Португалски"
-
-#~ msgid "N-Z|Portuguese (Brazilian)"
-#~ msgstr "Л-Я|Португалски (Бразилия)"
-
-#~ msgid "N-Z|Romanian"
-#~ msgstr "Л-Я|Румънски"
-
-#~ msgid "N-Z|Russian"
-#~ msgstr "Л-Я|Руски"
-
-#~ msgid "N-Z|Serbian"
-#~ msgstr "Л-Я|Сръбски"
-
-#~ msgid "N-Z|Serbian (Serbia & Montenegro)"
-#~ msgstr "Л-Я|Сръбски (Сърбия и Черна гора)"
-
-#~ msgid "N-Z|Serbian (Montenegro)"
-#~ msgstr "Л-Я|Сръбски (Черна гора)"
-
-#~ msgid "N-Z|Serbian (Serbia)"
-#~ msgstr "Л-Я|Сръбски (Сърбия)"
-
-#~ msgid "N-Z|Serbian (Latin)"
-#~ msgstr "Л-Я|Сръбски (на латиница)"
-
-#~ msgid "N-Z|Serbian (Jekavian)"
-#~ msgstr "Л-Я|Сръбски (йекав диалект)"
-
-#~ msgid "N-Z|Serbian (Bosnia)"
-#~ msgstr "Л-Я|Сръбски (Босна)"
-
-#~ msgid "N-Z|Slovak"
-#~ msgstr "Л-Я|Словашки"
-
-#~ msgid "N-Z|Slovenian"
-#~ msgstr "Л-Я|Словенски"
-
-#~ msgid "N-Z|Spanish"
-#~ msgstr "А-К|Испански"
-
-#~ msgid "N-Z|Spanish (Argentina)"
-#~ msgstr "А-К|Испански (Аржентина)"
-
-#~ msgid "N-Z|Spanish (Bolivia)"
-#~ msgstr "А-К|Испански (Боливия)"
-
-#~ msgid "N-Z|Spanish (Chile)"
-#~ msgstr "А-К|Испански (Чили)"
-
-#~ msgid "N-Z|Spanish (Colombia)"
-#~ msgstr "А-К|Испански (Колумбия)"
-
-#~ msgid "N-Z|Spanish (Costa Rica)"
-#~ msgstr "А-К|Испански (Коста Рика)"
-
-#~ msgid "N-Z|Spanish (Ecuador)"
-#~ msgstr "А-К|Испански (Еквадор)"
-
-#~ msgid "N-Z|Spanish (Guatemala)"
-#~ msgstr "А-К|Испански (Гватемала)"
-
-#~ msgid "N-Z|Spanish (Mexico)"
-#~ msgstr "А-К|Испански (Мексико)"
-
-#~ msgid "N-Z|Spanish (Nicaragua)"
-#~ msgstr "А-К|Испански (Никарагуа)"
-
-#~ msgid "N-Z|Spanish (Panama)"
-#~ msgstr "А-К|Испански (Панама)"
-
-#~ msgid "N-Z|Spanish (Peru)"
-#~ msgstr "А-К|Испански (Перу)"
-
-#~ msgid "N-Z|Spanish (Paraguay)"
-#~ msgstr "А-К|Испански (Парагвай)"
-
-#~ msgid "N-Z|Spanish (El Salvador)"
-#~ msgstr "А-К|Испански (Ел Салвадор)"
-
-#~ msgid "N-Z|Spanish (Uruguay)"
-#~ msgstr "А-К|Испански (Уругвай)"
-
-#~ msgid "N-Z|Spanish (Venezuela)"
-#~ msgstr "А-К|Испански (Венецуела)"
-
-#~ msgid "N-Z|Swedish"
-#~ msgstr "Л-Я|Шведски"
-
-#~ msgid "N-Z|Swedish (Finland)"
-#~ msgstr "Л-Я|Шведски (Финландия)"
-
-#~ msgid "N-Z|Tamil"
-#~ msgstr "Л-Я|Тамилски"
-
-#~ msgid "N-Z|Telugu"
-#~ msgstr "Л-Я|Телугу"
-
-#~ msgid "N-Z|Thai"
-#~ msgstr "Л-Я|Тайски"
-
-#~ msgid "N-Z|Turkish"
-#~ msgstr "Л-Я|Турски"
-
-#~ msgid "N-Z|Ukrainian"
-#~ msgstr "Л-Я|Украински"
-
-#~ msgid "N-Z|Vietnamese"
-#~ msgstr "А-К|Виетнамски"
-
-#~ msgid "N-Z|Walloon"
-#~ msgstr "А-К|Валонски"
-
-#~ msgid "N-Z|Welsh"
-#~ msgstr "Л-Я|Уелски"
-
-#~ msgid "N-Z|Xhosa"
-#~ msgstr "А-К|Зоса"
-
-#~ msgid "N-Z|Yiddish"
-#~ msgstr "А-К|Идиш"
-
-#~ msgid "N-Z|Zulu"
-#~ msgstr "Л-Я|Зулу"
-
-#~ msgid "Other|POSIX/C English"
-#~ msgstr "Друг|Английски — POSIX/C"
-
-#~ msgid "A-M"
-#~ msgstr "А-К"
-
-#~ msgid "N-Z"
-#~ msgstr "Л-Я"
-
-#~ msgid "Cannot run command '%s': %s."
-#~ msgstr "Неуспех при стартирането на програмата „%s“: %s."
-
-#~ msgid "Cannot start background application"
-#~ msgstr "Неуспех при стартирането на програмата за фона"
-
-#~ msgid "User %u will login in %t"
-#~ msgstr "Потребителят %u ще влезе след %t"
-
-#~ msgid "Are you sure you want to restart the computer?"
-#~ msgstr "Сигурни ли сте, че искате да рестартирате компютъра?"
-
-#~ msgid "_Restart"
-#~ msgstr "_Рестартиране"
-
-#~ msgid "Are you sure you want to Shut Down the computer?"
-#~ msgstr "Сигурни ли сте, че искате да спрете компютъра?"
-
-#~ msgid "Are you sure you want to suspend the computer?"
-#~ msgstr "Сигурни ли сте, че искате да приспите компютъра?"
-
-#~ msgid "System Default"
-#~ msgstr "Системни настройки по подразбиране"
-
-#~ msgid "Do you wish to make %s the default for future sessions?"
-#~ msgstr "Искате ли да направите %s сесия по подразбиране?"
-
-#~ msgid "You have chosen %s for this session, but your default setting is %s."
-#~ msgstr "Избрахте %s за тази сесия, но по подразбиране е %s."
-
-#~ msgid "Make _Default"
-#~ msgstr "_Задаване по подразбиране"
-
-#~ msgid "Just For _This Session"
-#~ msgstr "Само за _тази сесия"
-
-#~ msgid "_Username:"
-#~ msgstr "_Потребителско име:"
-
-#~ msgid "%s session selected"
-#~ msgstr "Избрана е сесията %s"
-
-#~ msgid "_Last"
-#~ msgstr "_Последна"
-
-#~ msgid "%s language selected"
-#~ msgstr "Езикът %s е избран"
-
-#~ msgid "_System Default"
-#~ msgstr "_Системни настройки по подразбиране"
-
-#~ msgid "_Password:"
-#~ msgstr "_Парола:"
-
-#~ msgid "Your preferred session type %s is not installed on this computer."
-#~ msgstr "Сесията предпочитана от вас %s не е инсталирана на тази машина."
-
-#~ msgid "You have chosen %s for this session"
-#~ msgstr "Избрали сте „%s“ за тази сесия"
-
-#~ msgid ""
-#~ "If you wish to make %s the default for future sessions, run the "
-#~ "'switchdesk' utility (System->Desktop Switching Tool from the panel menu)."
-#~ msgstr ""
-#~ "Ако искате да направите %s сесия по подразбиране, изпълнете програмата "
-#~ "„switchdesk“ (Система->Инструмент за превключване от менюто на панела)."
-
-#~ msgid "Please insert 25 cents to log in."
-#~ msgstr "Поставете 50 стотинки, за да влезете."
-
-#~ msgid "Finger"
-#~ msgstr "Finger"
-
-#~ msgid "GDM Login"
-#~ msgstr "Влизане в системата чрез GDM"
-
-#~ msgid "_Configure Login Manager..."
-#~ msgstr "_Конфигуриране на програмата за вход…"
-
-#~ msgid "_Actions"
-#~ msgstr "_Действия"
-
-#~ msgid "_Theme"
-#~ msgstr "_Тема"
-
-#~ msgid "_Quit"
-#~ msgstr "_Изход"
-
-#~ msgid "D_isconnect"
-#~ msgstr "Р_азкачване"
-
-#~ msgid "Welcome"
-#~ msgstr "Здравейте"
-
-#~ msgid ""
-#~ "The greeter version (%s) does not match the daemon version. You have "
-#~ "probably just upgraded GDM. Please restart the GDM daemon or the computer."
-#~ msgstr ""
-#~ "Версията на програмата за посрещане (%s) не съвпада с версията на демона. "
-#~ "Вероятно току що сте обновили GDM. Рестартирайте демона на GDM или "
-#~ "рестартирайте компютъра."
-
-#~ msgid "Cannot start the greeter"
-#~ msgstr "Неуспех при стартиране на програмата за посрещане"
-
-#~ msgid ""
-#~ "The greeter version (%s) does not match the daemon version (%s).  You "
-#~ "have probably just upgraded GDM.  Please restart the GDM daemon or the "
-#~ "computer."
-#~ msgstr ""
-#~ "Версията на програмата за посрещане (%s) не съвпада с версията на демона "
-#~ "(%s). Вероятно току що сте обновили GDM. Рестартирайте демона на GDM или "
-#~ "рестартирайте компютъра."
-
-#~ msgid "Restart GDM"
-#~ msgstr "Рестартиране на GDM"
-
-#~ msgid "Restart computer"
-#~ msgstr "Рестартиране на компютъра"
-
-#~ msgid "Could not set signal mask!"
-#~ msgstr "Неуспех при задаването на маска на сигнала!"
-
-#~ msgid "Session directory is missing"
-#~ msgstr "Папката за сесии липсва"
-
-#~ msgid ""
-#~ "Your session directory is missing or empty!  There are two available "
-#~ "sessions you can use, but you should log in and correct the GDM "
-#~ "configuration."
-#~ msgstr ""
-#~ "Папка ви за сесии липсва или е празна! Има две възможни сесии, от които "
-#~ "може да избирате, но трябва да влезете и да коригирате конфигурацията на "
-#~ "GDM."
-
-#~ msgid "Configuration is not correct"
-#~ msgstr "Конфигурацията е грешна"
-
-#~ msgid ""
-#~ "The configuration file contains an invalid command line for the login "
-#~ "dialog, so running the default command.  Please fix your configuration."
-#~ msgstr ""
-#~ "Конфигурационният файл съдържа грешна команда за програмата за посрещане "
-#~ "и затова беше изпълнена командата по подразбиране. Оправете "
-#~ "конфигурацията."
-
-#~ msgid "File %s cannot be opened for writing."
-#~ msgstr "Файлът %s не може да бъде отворен за писане."
-
-#~ msgid "Cannot open file"
-#~ msgstr "Файлът не може да бъде отворен"
-
-#~ msgid "Images"
-#~ msgstr "Изображения"
-
-#~ msgid "All Files"
-#~ msgstr "Всички файлове"
-
-#~ msgid ""
-#~ "Change the picture that will show in the GDM (login manager) face browser"
-#~ msgstr ""
-#~ "Промяна на картинката, която ще бъде показвана в лентата за лица на GDM"
-
-#~ msgid "Login Photo"
-#~ msgstr "Снимка за влизане в системата"
-
-#~ msgid "<b>User Image</b>"
-#~ msgstr "<b>Потребителско изображение</b>"
-
-#~ msgid "Failsafe _GNOME"
-#~ msgstr "Аварийна сесия на _GNOME"
-
-#~ msgid "Failsafe GNOME"
-#~ msgstr "Аварийна сесия на GNOME"
-
-#~ msgid ""
-#~ "This is a failsafe session that will log you into GNOME. No startup "
-#~ "scripts will be read and it is only to be used when you can't log in "
-#~ "otherwise.  GNOME will use the 'Default' session."
-#~ msgstr ""
-#~ "Това е аварийна сесия, която ще ви позволи да влезете в GNOME. Няма да се "
-#~ "изпълнят стартовите скриптове. Тя се използва, само когато не може да "
-#~ "влезете по друг начин. GNOME ще използва сесията по подразбиране."
-
-#~ msgid "Failsafe _Terminal"
-#~ msgstr "Авариен _терминал"
-
-#~ msgid "Failsafe Terminal"
-#~ msgstr "Авариен терминал"
-
-#~ msgid ""
-#~ "This is a failsafe session that will log you into a terminal.  No startup "
-#~ "scripts will be read and it is only to be used when you can't log in "
-#~ "otherwise.  To exit the terminal, type 'exit'."
-#~ msgstr ""
-#~ "Това е аварийна сесия, която ще позволи да влезете в терминал. Няма да се "
-#~ "изпълнят стартовите скриптове. Тя се използва, само когато не може да "
-#~ "влезете по друг начин. За да излезете от терминала, напишете „exit“."
-
-#~ msgid ""
-#~ "An error occurred while trying to contact the login screens.  Not all "
-#~ "updates may have taken effect."
-#~ msgstr ""
-#~ "Появи се грешка при опит за контакт с екрана за вход в системата. Не "
-#~ "всички обновявания са влезли в сила."
-
-#~ msgid "Users include list modification"
-#~ msgstr "Промяна на списъка за включване на потребителите"
-
-#~ msgid ""
-#~ "Some of the users in the Include list (Users tab) now have uid lower than "
-#~ "MinimalUID and will be removed."
-#~ msgstr ""
-#~ "Някои от потребителите в списъка за включване (в прозореца за "
-#~ "потребители) са с потребителски идентификатор, който е под минималния. Те "
-#~ "няма да бъдат включени в списъка."
-
-#~ msgid "Themed"
-#~ msgstr "С тема"
-
-#~ msgid "Plain"
-#~ msgstr "Без тема"
-
-#~ msgid "Plain with face browser"
-#~ msgstr "Без тема, с лента за лицата"
-
-#~ msgid "Autologin or timed login to the root account is forbidden."
-#~ msgstr ""
-#~ "На системния администратор (root) не е позволено да влиза автоматично или "
-#~ "по определено време."
-
-#~ msgid "The \"%s\" user UID is lower than allowed MinimalUID."
-#~ msgstr "Идентификаторът на потребителя „%s“ е под минимално разрешения."
-
-#~ msgid "User not allowed"
-#~ msgstr "Потребителят не може да влиза в системата"
-
-#~ msgid "command_chooser_combobox"
-#~ msgstr "падащо_меню_за_избор_нa_команда"
-
-#~ msgid "(Enabled)"
-#~ msgstr "(Разрешена)"
-
-#~ msgid "(Disabled)"
-#~ msgstr "(Забранена)"
-
-#~ msgid "No themes selected!"
-#~ msgstr "Не е избрана тема!"
-
-#~ msgid ""
-#~ "You need one or more themes selected for the \"Random from selected\" "
-#~ "option to be valid. Failure to do so will force \"Selected only\" mode."
-#~ msgstr ""
-#~ "За режима „Случайна от избраните“ е необходимо да сте избрали една или "
-#~ "повече теми. В противен случай ще се използва режима „Определена тема“."
-
-#~ msgid "Apply changes to the modified command?"
-#~ msgstr "Прилагане на промените по командите?"
-
-#~ msgid "If you don't apply, the changes will be discarded."
-#~ msgstr "Ако не ги приложите, промените ще бъдат изгубени."
-
-#~ msgid "Autologin or timed login to the root account is not allowed."
-#~ msgstr ""
-#~ "На системния администратор (root) не е позволено да влиза автоматично или "
-#~ "по определено време."
-
-#~ msgid "The \"%s\" user already exists in the include list."
-#~ msgstr "Потребителят „%s“ вече е в списъка за включване."
-
-#~ msgid "Cannot add user"
-#~ msgstr "Потребителят не може да бъде добавен."
-
-#~ msgid "The \"%s\" user already exists in the exclude list."
-#~ msgstr "Потребителят „%s“ вече е в списъка за изключване."
-
-#~ msgid "The \"%s\" user does not exist."
-#~ msgstr "Потребителят „%s“ не съществува."
-
-#~ msgid "Invalid command path"
-#~ msgstr "Грешен път към команда"
-
-#~ msgid ""
-#~ "The path you provided for this command is not valid. The changes will not "
-#~ "be saved."
-#~ msgstr ""
-#~ "Пътят към тази команда е невалиден. Промените няма да бъдат запазени."
-
-#~ msgid ""
-#~ "Some of the users had uid lower than MinimalUID (Security tab) and could "
-#~ "not be added."
-#~ msgstr ""
-#~ "Някои от потребителите са с идентификатор под минималния (указан в таба "
-#~ "„Сигурност“) и не могат да бъдат добавени."
-
-#~ msgid "Select Command"
-#~ msgstr "Избор на команда"
-
-#~ msgid "No file selected"
-#~ msgstr "Не е избран файл"
-
-#~ msgid "Apply the changes to commands before closing?"
-#~ msgstr "Прилагане на промените по командите преди затваряне?"
-
-#~ msgid "If you don't apply, the changes made will be disregarded."
-#~ msgstr "Ако не ги приложите, промените ще бъдат изгубени."
-
-#~ msgid "Close _without Applying"
-#~ msgstr "Затваряне _без прилагане"
-
-#~ msgid "Halt command"
-#~ msgstr "Команда за спиране"
-
-#~ msgid "Reboot command"
-#~ msgstr "Команда за рестартиране"
-
-#~ msgid "Suspend command"
-#~ msgstr "Команда за приспиване"
-
-#~ msgid "Sounds"
-#~ msgstr "Звуци"
-
-#~ msgid "None"
-#~ msgstr "Без"
-
-#~ msgid "Archive is not of a subdirectory"
-#~ msgstr "Архивът не е на подпапка"
-
-#~ msgid "Archive is not of a single subdirectory"
-#~ msgstr "Архивът не е на една подпапка"
-
-#~ msgid "File not a tar.gz or tar archive"
-#~ msgstr "Файлът не е във формат tar.gz или tar"
-
-#~ msgid "Archive does not include a GdmGreeterTheme.info file"
-#~ msgstr "В архива липсва файл GdmGreeterTheme.info"
-
-#~ msgid "File does not exist"
-#~ msgstr "Файлът не съществува"
-
-#~ msgid "%s"
-#~ msgstr "%s"
-
-#~ msgid "Not a theme archive"
-#~ msgstr "Не е архив с тема"
-
-#~ msgid ""
-#~ "Theme directory '%s' seems to be already installed. Install again anyway?"
-#~ msgstr ""
-#~ "Папката на тема „%s“ изглежда вече е инсталирана. Да бъде ли проведена "
-#~ "повторна инсталация?"
-
-#~ msgid "Some error occurred when installing the theme"
-#~ msgstr "Появи се някаква грешка при инсталиране на темата"
-
-#~ msgid "Select Theme Archive"
-#~ msgstr "Избор на архив с тема"
-
-#~ msgid "_Install"
-#~ msgstr "_Инсталиране"
-
-#~ msgid "Theme active in \"Selected only\" mode"
-#~ msgstr "Темата е активна само в режима „Определена тема„"
-
-#~ msgid ""
-#~ "This theme cannot be deleted at this point. If you wish to delete this "
-#~ "theme switch to \"Selected only\" mode, and deselect it by choosing a "
-#~ "different theme."
-#~ msgstr ""
-#~ "Тази тема не може да бъде изтрита в момента. Ако искате да направите "
-#~ "това, минете в режим „Определена тема“, изберете друга тема, така че тази "
-#~ "да не бъде избрана."
-
-#~ msgid "Remove the \"%s\" theme?"
-#~ msgstr "Премахване на темата „%s“?"
-
-#~ msgid "If you choose to remove the theme, it will be permanently lost."
-#~ msgstr "Темата ще бъде окончателно изтрита, ако я премахнете."
-
-#~ msgid "_Remove Theme"
-#~ msgstr "П_ремахване на тема"
-
-#~ msgid "Install the theme from '%s'?"
-#~ msgstr "Инсталиране на темата от „%s“?"
-
-#~ msgid "Select install to add the theme from the file '%s'."
-#~ msgstr "Чрез инсталиране ще добавите темата от файла „%s“."
-
-#~ msgid ""
-#~ "This configuration window changes settings for the GDM daemon, which is "
-#~ "the graphical login screen for GNOME.  Changes that you make will take "
-#~ "effect immediately.\n"
-#~ "\n"
-#~ "Note that not all configuration options are listed here.  You may want to "
-#~ "edit %s if you cannot find what you are looking for.\n"
-#~ "\n"
-#~ "For complete documentation see the GNOME help browser under the \"Desktop"
-#~ "\" category."
-#~ msgstr ""
-#~ "Този конфигурационен прозорец сменя настройките на демона GDM, който е "
-#~ "графичният екран за вход на GNOME. Промените, които правите незабавно ще "
-#~ "влязат в сила.\n"
-#~ "\n"
-#~ "Забележете, че тук не са показани всички настройки. Може да се наложи да "
-#~ "да редактирате %s, ако не намирате това, което търсите.\n"
-#~ "\n"
-#~ "За пълна документация погледнете в помощната система на GNOME в категория "
-#~ "„Работен плот.“"
-
-#~ msgid "auto"
-#~ msgstr "автоматично"
-
-#~ msgid "yes"
-#~ msgstr "да"
-
-#~ msgid "no"
-#~ msgstr "не"
-
-#~ msgid "Random theme mode change"
-#~ msgstr "Промяна от режима на случайна тема"
-
-#~ msgid ""
-#~ "Since no themes were selected in random theme mode switching back to "
-#~ "single theme mode."
-#~ msgstr ""
-#~ "Понеже няма избрани теми в режима за случайна тема, се преминава към "
-#~ "режима на единична тема."
-
-#~ msgid "Apply the changes to users before closing?"
-#~ msgstr "Прилагане на промените по потребителите преди затваряне?"
-
-#~ msgid ""
-#~ "If you don't apply, the changes made on the Users tab will be disregarded."
-#~ msgstr ""
-#~ "Ако не ги приложите, промените в таба за потребителите ще бъдат изгубени."
-
-#~ msgid "Could not access configuration file (defaults.conf)"
-#~ msgstr "Конфигурационният файл (defaults.conf) не може да бъде достъпен."
-
-#~ msgid ""
-#~ "Make sure that the file exists before launching login manager config "
-#~ "utility."
-#~ msgstr ""
-#~ "Проверете дали файлът съществува, преди да стартирате програмата за "
-#~ "настройки на мениджъра."
-
-#~ msgid "Could not access configuration file (custom.conf)"
-#~ msgstr "Конфигурационният файл (custom.conf) не може да бъде достъпен."
-
-#~ msgid "You must be the root user to configure GDM."
-#~ msgstr ""
-#~ "Трябва да сте идентифицирани като администратор, за да настройвате GDM."
-
-#~ msgid "Configure GDM login window appearance and behavior"
-#~ msgstr "Настройване на поведението и външния вид на екрана за идентификация"
-
-#~ msgid " "
-#~ msgstr " "
-
-#~ msgid "    "
-#~ msgstr "    "
-
-#~ msgid "     "
-#~ msgstr "     "
-
-#~ msgid "         "
-#~ msgstr "         "
-
-#~ msgid "     LRla_bel:"
-#~ msgstr "     Е_тикет (Рб,Сп):"
-
-#~ msgid "     Messa_ge:"
-#~ msgstr "     _Съобщение:"
-
-#~ msgid "     Pa_th:"
-#~ msgstr "     _Път:"
-
-#~ msgid "     T_ooltip:"
-#~ msgstr "     Подск_азка:"
-
-#~ msgid "     _Label:"
-#~ msgstr "     _Етикет:"
-
-#~ msgid "     _Path:       "
-#~ msgstr "     _Път:     "
-
-#~ msgid " _X coordinate"
-#~ msgstr "Координата по _X"
-
-#~ msgid "%n will be replaced by hostname"
-#~ msgstr "%n ще бъде заменено с името на хоста"
-
-#~ msgid ""
-#~ "<b>Note:</b>  Users in the Include list will appear in the face browser "
-#~ "if enabled and will appear in the user drop-down lists for automatic and "
-#~ "timed logins on the Security tab. Users in the Exclude list will not "
-#~ "appear. MinimalUID setting in the Security tab will affect which users "
-#~ "will be allowed to join Include list."
-#~ msgstr ""
-#~ "<b>Бележка:</b> Потребителите в списъка за включване се показват в "
-#~ "лентата за избор на лица и са включени в падащите списъци за "
-#~ "автоматичното влизане и влизането по определено време в таба „Сигурност“. "
-#~ "Потребителите в списъка за изключване не се появяват там. Настройката за "
-#~ "минималния идентификатор от таба „Сигурност“ също ограничава, кои "
-#~ "потребители биват включени в списъка за включване."
-
-#~ msgid ""
-#~ "<b>Note:</b> You can select different commands from the drop-down list, "
-#~ "and modify them through relevant fields located below. To save changes "
-#~ "press Apply Command Changes button."
-#~ msgstr ""
-#~ "<b>Бележка:</b> Можете да избирате различни команди от падащия списък, "
-#~ "както и да ги променяте чрез съответните полета отдолу. За да запазите "
-#~ "промените, натиснете бутона „Прилагане на промените по командите“."
-
-#~ msgid ""
-#~ "<b>Warning:</b>  Incorrect settings could prevent the X server from "
-#~ "restarting.  Changes to these settings will not take effect until GDM is "
-#~ "restarted."
-#~ msgstr ""
-#~ "<b>Предупреждение:</b> Неправилна стойност може да попречи на X сървъра "
-#~ "да се рестартира. За да влезе настройката в сила, трябва да рестартирате "
-#~ "GDM."
-
-#~ msgid "A_dd..."
-#~ msgstr "_Добавяне…"
-
-#~ msgid "A_llow remote system administrator login"
-#~ msgstr "_Системният администратор да може да влиза отдалечено"
-
-#~ msgid "A_pply User Changes"
-#~ msgstr "П_рилагане на промените"
-
-#~ msgid "Accessible from the outside of the login manager"
-#~ msgstr "Достъпност извън програмата за вход"
-
-#~ msgid "Add / Modify Servers To Start"
-#~ msgstr "Добавяне/промяна на сървъри, които да се стартират"
-
-#~ msgid "Add S_erver..."
-#~ msgstr "Добавяне на с_ървър"
-
-#~ msgid "Add User"
-#~ msgstr "Добавяне на потребител"
-
-#~ msgid ""
-#~ "Adds a chooser button to the Actions menu that will restart the current X "
-#~ "server with a chooser.  XDMCP does not need to be enabled on the local "
-#~ "computer for this to work."
-#~ msgstr ""
-#~ "Добавяне на бутон към менюто „Действия“ за рестартиране на текущия X "
-#~ "сървър. За да работи това, не е необходимо да е включен XDMCP на локалния "
-#~ "компютър."
-
-#~ msgid ""
-#~ "All users with a lower UID will be excluded from the face browser, "
-#~ "automatic and timed login."
-#~ msgstr ""
-#~ "Всички потребители с идентификатор под минималния няма да бъдат включени "
-#~ "в лентата за избор на лица, както и няма да могат да влизат автоматично и "
-#~ "по определено време."
-
-#~ msgid "Allo_w remote timed logins"
-#~ msgstr "Поз_воляване на отдалечени влизания по определено време"
-
-#~ msgid ""
-#~ "Allow changing the GTK+ (widget) theme from the greeter. Currently this "
-#~ "only affects the standard greeter. The theme will stay in effect on this "
-#~ "display until changed and will affect all the other windows that are put "
-#~ "up by GDM."
-#~ msgstr ""
-#~ "Позволяване на промяната на темата на GTK+ от програмата за посрещане. В "
-#~ "момента това се отнася само за стандартната програма за вход. Темата ще "
-#~ "се запази докато бъде променена. Тя оказва влияние на всички прозорци, "
-#~ "които се отварят от GDM."
-
-#~ msgid "Allow group writable files and directories."
-#~ msgstr ""
-#~ "Допускане на файлове и папки, в които може да се пише от потребители в "
-#~ "групата."
-
-#~ msgid "Allow logi_n if group write permissions on user's home directory"
-#~ msgstr ""
-#~ "Вход дори при права за запис от _групата в потребителската домашна папка"
-
-#~ msgid "Allow login _if all write permissions on user's home directory"
-#~ msgstr ""
-#~ "В_ход дори права за запис от всички потребители в потребителската домашна "
-#~ "папка"
-
-#~ msgid "Allow world writable files and directories."
-#~ msgstr "Допускане на файлове и папки, в които може да се пише от всички."
-
-#~ msgid ""
-#~ "Allows the configurator to be run from the greeter. Note that the user "
-#~ "will need to type in the root password before the configurator will be "
-#~ "started."
-#~ msgstr ""
-#~ "Позволяване на програмата за настройки да се стартира от програмата за "
-#~ "посрещане. Потребителят ще трябва да въведе паролата на системния "
-#~ "администратор, за да бъде стартирана програмата за настройки."
-
-#~ msgid ""
-#~ "Always append -nolisten tcp to the command line of local X servers, thus "
-#~ "disallowing TCP connection.  This is useful if you do not care for "
-#~ "allowing remote connections, since the X protocol could really be "
-#~ "potentially a security hazard to leave open, even though no known "
-#~ "security problems exist. Also disables X forwarding, but does not affect "
-#~ "XDMCP."
-#~ msgstr ""
-#~ "Винаги да се добавя опцията „-nolisten“ към командата за изпълнение на "
-#~ "локалните X сървъри. Така се забраняват връзките по TCP. Това е полезно, "
-#~ "ако не ви трябват отдалечени връзки, понеже оставянето на протокола на X "
-#~ "Window отворен е потенциален проблем за сигурността. Това изключва и "
-#~ "предаването по X, но няма ефект върху XDMCP."
-
-#~ msgid "Apply Co_mmand Changes"
-#~ msgstr "П_рилагане на промените по командите"
-
-#~ msgid "Author:"
-#~ msgstr "Автор:"
-
-#~ msgid "Background"
-#~ msgstr "Фон"
-
-#~ msgid "Background color of the greeter."
-#~ msgstr "_Цвят за фон на програмата за посрещане."
-
-#~ msgid "Behaviour"
-#~ msgstr "Поведение"
-
-#~ msgid "C_ommand:"
-#~ msgstr "_Команда:"
-
-#~ msgid "C_ustom:"
-#~ msgstr "Потре_бителско:"
-
-#~ msgid ""
-#~ "Checks the ownership of the home directories before writing to them. This "
-#~ "prevents security issues in case of bad setup."
-#~ msgstr ""
-#~ "Проверка за собствеността на домашните папки преди запис в тях. Това "
-#~ "предотвратява проблеми със сигурността при лошо конфигуриране."
-
-#~ msgid "Co_lor:"
-#~ msgstr "_Цвят:"
-
-#~ msgid "Color depth:"
-#~ msgstr "Дълбочина на цвета:"
-
-#~ msgid "Comma_nd type:"
-#~ msgstr "_Вид команда:"
-
-#~ msgid "Configure XDMC_P..."
-#~ msgstr "Кон_фигуриране на XDMCP…"
-
-#~ msgid "Configure _X Server..."
-#~ msgstr "_Конфигуриране на X сървъра…"
-
-#~ msgid ""
-#~ "Controls which text to display next to the logo image in the greeter for "
-#~ "remote XDMCP sessions."
-#~ msgstr ""
-#~ "Задава текста, който да се показва до логото в програмата за посрещане "
-#~ "при отдалечени влизане с XDMCP."
-
-#~ msgid ""
-#~ "Controls which text to display next to the logo image in the standard "
-#~ "greeter. This string is only used for local logins."
-#~ msgstr ""
-#~ "Задава текста, който да се показва до логото в стандартната програма за "
-#~ "посрещане. Този низ се използва само за локални влизания."
-
-#~ msgid "Copyright:"
-#~ msgstr "Авторски права:"
-
-#~ msgid "De_fault session:"
-#~ msgstr "_Стандартна сесия:"
-
-#~ msgid "Delay in seconds before the Timed login user will be logged in."
-#~ msgstr ""
-#~ "Забавяне в секунди, след което потребителят за автоматично влизане по "
-#~ "определено време ще влезе в системата."
-
-#~ msgid ""
-#~ "Determines the maximum number of remote display connections which will be "
-#~ "managed simultaneously. I.e. the total number of remote displays that can "
-#~ "use your host."
-#~ msgstr ""
-#~ "Указва максималния брой от връзки с отдалечени дисплеи, които ще се "
-#~ "управляват едновременно. С други думи — общият брой отдалечени дисплеи, "
-#~ "които могат да ползват този компютър."
-
-#~ msgid ""
-#~ "Determines the maximum number of seconds between the time where a user "
-#~ "chooses a host and the subsequent indirect query where the user is "
-#~ "connected to the host.  When the timeout is exceeded, the information "
-#~ "about the chosen host is forgotten and the indirect slot freed up for "
-#~ "other displays."
-#~ msgstr ""
-#~ "Указва максималния интервал в секунди след избирането на хост от "
-#~ "потребители и последващото запитване откъде потребителят ще се свърже с "
-#~ "хоста. След изтичането на интервала информацията за избрания компютър се "
-#~ "изчиства и се освобождава място за други дисплеи."
-
-#~ msgid "Disa_ble multiple logins for a single user"
-#~ msgstr "Един потребител да може да влиза само по _веднъж"
-
-#~ msgid "Display the title bar in the greeter."
-#~ msgstr "Програмата за посрещане да има заглавна лента"
-
-#~ msgid "Displays per _host:"
-#~ msgstr "Дисплеи за _хост:"
-
-#~ msgid "Displays this image as the background in the greeter."
-#~ msgstr "Ползване на това изображение като фон в програмата за посрещане."
-
-#~ msgid "Do not show image for _remote logins"
-#~ msgstr "Да не се показва изображение при _отдалечените влизания"
-
-#~ msgid ""
-#~ "Does not place cookies into the users home directory if this directory is "
-#~ "on NFS."
-#~ msgstr ""
-#~ "Да не се слагат бисквитки в домашната папка на потребителя, ако тя е под "
-#~ "NFS."
-
-#~ msgid ""
-#~ "Does not reuse existing X servers, but kills them and starts over. "
-#~ "Normally, just reinitializing is a nicer way to go but if the X server "
-#~ "memory usage keeps growing this may be a safer option."
-#~ msgstr ""
-#~ "Да не се преизползва съществуващ X сървър, а да бъде убит и да се "
-#~ "стартира нов. Обикновено преинициализирането е по-добрият начин за "
-#~ "работа, но ако паметта използвана от X сървъра расте непрекъснато, това "
-#~ "може да е по-подходящия начин за работа."
-
-#~ msgid "Don't restart the login manager after the execution"
-#~ msgstr "Програмата за вход да не се рестартира след изпълнението"
-
-#~ msgid "E_dit Commands..."
-#~ msgstr "_Редактиране на командите…"
-
-#~ msgid "E_xclude:"
-#~ msgstr "_Изваждане:"
-
-#~ msgid "Ena_ble debug messages to system log"
-#~ msgstr "Съобщенията за грешка да се записват в _дневника на системата"
-
-#~ msgid ""
-#~ "Enables XDMCP INDIRECT choosing (i.e. remote execution of gdmchooser) for "
-#~ "X-terminals which don't supply their own display browser."
-#~ msgstr ""
-#~ "Включване на избор с XDMCP INDIRECT (т.е. отдалечено изпълнение на "
-#~ "gdmchooser) за X терминали, които не предоставят собствен браузър на "
-#~ "дисплеи."
-
-#~ msgid ""
-#~ "Enables greeter to be launched with additional Gtk+ modules. This is "
-#~ "useful when extra features are required such as accessible login. Note "
-#~ "that only \"trusted\" modules should be used to minimize security issues."
-#~ msgstr ""
-#~ "Включване на възможността програмата за посрещане да се стартира с "
-#~ "допълнителни модули на GTK+. Това е полезно за случаите на нужда от "
-#~ "допълнителни възможности — като достъпност. Трябва да се използват "
-#~ "единствено доверени модули, за да се минимизират евентуалните проблеми "
-#~ "със сигурността."
-
-#~ msgid ""
-#~ "Full path and arguments to command to be executed. If the value is "
-#~ "missing, the command will not available."
-#~ msgstr ""
-#~ "Пълен път и аргументи за командата, която да бъде изпълнена. Ако тази "
-#~ "стойност липсва, командата ще е недостъпна."
-
-#~ msgid "Full path and arguments to the command to be executed"
-#~ msgstr "Пълен път и аргументи за командата, която да бъде изпълнена."
-
-#~ msgid ""
-#~ "GDM should run the login window on this server and allow a user to log "
-#~ "in.  If not selected, then GDM will just run this server and wait for it "
-#~ "to terminate."
-#~ msgstr ""
-#~ "GDM трябва да изпълни програмата за вход на този сървър и да остави "
-#~ "потребителя да влезе. Ако това не е избрано, GDM просто стартира сървъра "
-#~ "и изчаква приключването на работата му."
-
-#~ msgid "General"
-#~ msgstr "Общи"
-
-#~ msgid ""
-#~ "Given user should be logged in after a number of seconds (set with Pause "
-#~ "before login) of inactivity on the login screen.  This is useful for "
-#~ "public access terminals or perhaps even home use."
-#~ msgstr ""
-#~ "Даденият потребител трябва да влезе в системата след определен интервал в "
-#~ "секунди на бездействие на екрана за вход (интервалът се задава в полето "
-#~ "„Пауза преди влизане в системата“). Това е полезно за терминали за общ "
-#~ "достъп или домашни условия."
-
-#~ msgid ""
-#~ "Given user should be logged in upon first bootup.  No password will be "
-#~ "asked.  This is useful for single user workstations where local console "
-#~ "security is not an issue."
-#~ msgstr ""
-#~ "Даденият потребител трябва да влезе в системата след първоначалното "
-#~ "стартиране. Няма да се иска парола. Това е полезно за лични работни "
-#~ "станции, при които сигурността на конзолата не е от значение."
-
-#~ msgid ""
-#~ "Greeter\n"
-#~ "Chooser"
-#~ msgstr ""
-#~ "Екран за вход\n"
-#~ "Лента за избор на лица"
-
-#~ msgid "Honor _indirect requests"
-#~ msgstr "Изпълняване на _непреки заявки"
-
-#~ msgid "I_mage:"
-#~ msgstr "Изобра_жение:"
-
-#~ msgid "I_nclude:"
-#~ msgstr "_Добавяне:"
-
-#~ msgid ""
-#~ "If a user has no defined face image, GDM will use the \"stock_person\" "
-#~ "icon defined in the current GTK+ theme.  If no such image is defined, the "
-#~ "image specified by DefaultFace will be used.  The image must be in an gdk-"
-#~ "pixbuf supported format and the file must be readable to the GDM user."
-#~ msgstr ""
-#~ "Ако потребителят не е указал лице за себе си, GDM ще ползва иконата "
-#~ "„stock_person“ от текущата тема на GTK+. Ако там не е дефинирана такава, "
-#~ "ще се използва изображението указано от DefaultFace. То трябва да бъде "
-#~ "във формат поддържан от gdk-pixbuf, а правата за достъп до него трябва да "
-#~ "позволяват да бъде прочетен от потребителя на GDM."
-
-#~ msgid ""
-#~ "Image file to display in the logo box. The file must be in an gdk-pixbuf "
-#~ "supported format and it must be readable by the GDM user. If no file is "
-#~ "specified the logo feature is disabled."
-#~ msgstr ""
-#~ "Изображение, което да се показва като лого. То трябва да бъде във формат "
-#~ "поддържан от gdk-pixbuf, а правата за достъп до него трябва да позволяват "
-#~ "да бъде прочетен от потребителя на GDM. Ако не е указан файл за това, "
-#~ "няма да бъде показвано никакво лого."
-
-#~ msgid "Includ_e Hostname Chooser (XDMCP) menu item"
-#~ msgstr "Включване на избора на _хост (XDMCP) в менюто"
-
-#~ msgid "Include Con_figure menu item"
-#~ msgstr "Включване на „_Настройки“ в менюто"
-
-#~ msgid ""
-#~ "Indicates that the X server should be started at a different process "
-#~ "priority."
-#~ msgstr "Указва, че X сървърът трябва да се стартира с различен приоритет."
-
-#~ msgid ""
-#~ "Interval in which to ping the X server in seconds.  If the X server "
-#~ "doesn't return before the next time we ping it, the connection is stopped "
-#~ "and the session ended."
-#~ msgstr ""
-#~ "Интервал в секунди, през който трябва да се проверява X сървъра. Ако той "
-#~ "не отговори до следващата проверка, връзката се преустановява и сесията "
-#~ "приключва."
-
-#~ msgid "La_unch:"
-#~ msgstr "Ста_ртиране:"
-
-#~ msgid "Listen on _UDP port: "
-#~ msgstr "_Следене на порт по UDP:"
-
-#~ msgid "Loc_k position of the window"
-#~ msgstr "_Заключване на позицията на прозореца"
-
-#~ msgid "Local"
-#~ msgstr "Локален"
-
-#~ msgid "Login Window Preferences"
-#~ msgstr "Настройки на екрана за идентификация"
-
-#~ msgid "Login _failed:"
-#~ msgstr "При _неуспешно влизане:"
-
-#~ msgid "Login _retry delay:"
-#~ msgstr "Забав_яне преди нов опит за влизане:"
-
-#~ msgid "Login _successful:"
-#~ msgstr "При _успешно влизане:"
-
-#~ msgid "Logo"
-#~ msgstr "Лого"
-
-#~ msgid "Maximum _remote sessions:"
-#~ msgstr "Максимален брой _отдалечени сесии:"
-
-#~ msgid "Maximum _wait time:"
-#~ msgstr "Максимално време на _изчакване:"
-
-#~ msgid "Maximum indirect w_ait time:"
-#~ msgstr "Максимално време за изчакване при непряка _заявка:"
-
-#~ msgid "Maximum p_ending indirect requests:"
-#~ msgstr "Максимален брой чакащи _непреки заявки:"
-
-#~ msgid "Menu Bar"
-#~ msgstr "Лента с меню"
-
-#~ msgid "Ne_ver place cookies on NFS"
-#~ msgstr "_Никога да не се слагат бисквитки в NIS"
-
-#~ msgid "No _restart required"
-#~ msgstr "Без _рестартиране"
-
-#~ msgid ""
-#~ "Number of simultaneously provided displays with host choosers.  If more "
-#~ "queries from different hosts come in, the oldest ones will be forgotten."
-#~ msgstr ""
-#~ "Брой на едновременно осигурените дисплеи с избор на хостове. Ако "
-#~ "пристигнат още заявки от други хостове, най старите заявки ще бъдат "
-#~ "забравени."
-
-#~ msgid "Only allow login i_f user owns their home directory"
-#~ msgstr ""
-#~ "Да се позволява влизане, само ако потребителят прите_жава домашната си "
-#~ "папка"
-
-#~ msgid "Op_tions:\t"
-#~ msgstr "На_стройки:\t"
-
-#~ msgid "Paranoia option. Only accepts user owned files and directories."
-#~ msgstr ""
-#~ "Параноична опция. Да се приемат само файлове и папки притежавани от "
-#~ "потребителя."
-
-#~ msgid "Per_sistent"
-#~ msgstr "П_остоянна"
-
-#~ msgid "Permissions"
-#~ msgstr "Права за достъп"
-
-#~ msgid "Pick Background Color"
-#~ msgstr "Избор на _цвят за фон:"
-
-#~ msgid ""
-#~ "Plain\n"
-#~ "Plain with face browser\n"
-#~ "Themed"
-#~ msgstr ""
-#~ "Без тема\n"
-#~ "Без тема, с лента за лицата\n"
-#~ "С тема"
-
-#~ msgid "Qui_ver when incorrect username/password entered"
-#~ msgstr ""
-#~ "_Разтърсване при неправилна комбинация от потребителско име и парола"
-
-#~ msgid "R_emove"
-#~ msgstr "_Премахване"
-
-#~ msgid "Re_move Server"
-#~ msgstr "_Премахване на сървър"
-
-#~ msgid "Reboot, Halt, Suspend and Custom Command Preferences"
-#~ msgstr "Настройки за рестартиране, спиране приспиване и други команди"
-
-#~ msgid "Refresh rate:"
-#~ msgstr "Честота на опресняване:"
-
-#~ msgid "Remote"
-#~ msgstr "Отдалечен"
-
-#~ msgid ""
-#~ "Remote connections through XDMCP will be allowed to log into the "
-#~ "\"TimedLogin\" user by letting the login window time out, just like the "
-#~ "local user on the first console."
-#~ msgstr ""
-#~ "На отдалечените връзки през XDMCP ще бъде позволено да се свързват "
-#~ "автоматично по определено време като съответния потребител след изтичане "
-#~ "на съответния интервал — също както това се позволява на локалните "
-#~ "потребители на първата конзола."
-
-#~ msgid ""
-#~ "Remote login disabled\n"
-#~ "Same as Local"
-#~ msgstr ""
-#~ "Отдалеченото влизане е изключено\n"
-#~ "Същият както локалния"
-
-#~ msgid "Resolution:"
-#~ msgstr "Разделителна способност:"
-
-#~ msgid "Sc_ale to fit screen"
-#~ msgstr "_Мащабиране към екрана"
-
-#~ msgid "Scale background image to fit the screen."
-#~ msgstr "Мащабиране на фоновото изображение към екрана"
-
-#~ msgid "Security"
-#~ msgstr "Сигурност"
-
-#~ msgid "Select Background Image"
-#~ msgstr "Избор на фоново изображение"
-
-#~ msgid "Select Logo Image"
-#~ msgstr "Избор на изображение за лого"
-
-#~ msgid "Select Sound File"
-#~ msgstr "Избор на звуков файл:"
-
-#~ msgid ""
-#~ "Selected only\n"
-#~ "Random from selected\n"
-#~ msgstr ""
-#~ "Определена тема\n"
-#~ "Случайна от избраните\n"
-
-#~ msgid ""
-#~ "Sends debug ouput to the syslog.  This can be useful for tracking down "
-#~ "problems with GDM.  This output tends to be verbose so should not be "
-#~ "turned on for general use."
-#~ msgstr ""
-#~ "Пращане на съобщенията за изчистване на грешки към системния дневник. "
-#~ "Това е полезно при диагностициране и коригиране на грешки в GDM. Понеже "
-#~ "се генерират много съобщения, в общия случай това не трябва а е включено."
-
-#~ msgid "Server Settings"
-#~ msgstr "Настройки на сървъра"
-
-#~ msgid "Server _name:"
-#~ msgstr "_Име на сървър:"
-
-#~ msgid "Servers To Start"
-#~ msgstr "Сървъри, които да се стартират"
-
-#~ msgid "Set positio_n of the window:"
-#~ msgstr "Задаване _позицията на прозореца"
-
-#~ msgid "Sh_ow title bar"
-#~ msgstr "Показване на заглавната _лента"
-
-#~ msgid "Shake the display when an incorrect username/password is entered."
-#~ msgstr ""
-#~ "Разтърсване на екрана при неправилна комбинация от потребителско име и "
-#~ "парола."
-
-#~ msgid "Sho_w Actions menu"
-#~ msgstr "Показване на _менюто „Действия“"
-
-#~ msgid ""
-#~ "Show visual feedback is the password entry. Turning this option on can be "
-#~ "a security hazard as the length of your password can be guessed."
-#~ msgstr ""
-#~ "Визуално подсказване за неправилна парола. Тази настройка може да е риск "
-#~ "за сигурността понеже позволява да се отгатне дължината на паролата ви."
-
-#~ msgid ""
-#~ "Specifies if Custom Command will appear outside the login manager, for "
-#~ "example on the desktop through the Log Out/Shut Down widgets."
-#~ msgstr ""
-#~ "Указва дали потребителската команда ще се появява извън програмата за "
-#~ "вход — например на работния плот чрез графичните обекти за излизане или "
-#~ "спиране на компютъра."
-
-#~ msgid ""
-#~ "Specifies if gdm will be stopped/restarted once Custom Command has been "
-#~ "executed."
-#~ msgstr ""
-#~ "Указва дали gdm ще бъде спрян/рестартиран след изпълнение на "
-#~ "потребителската команда."
-
-#~ msgid ""
-#~ "Specifies the label that will be displayed on the Custom Command buttons "
-#~ "and menu items."
-#~ msgstr ""
-#~ "Указва дали етикетът ще бъде показван на бутоните и менютата с "
-#~ "потребителските команди."
-
-#~ msgid ""
-#~ "Specifies the label that will be displayed on the Custom Command list "
-#~ "items and radio buttons."
-#~ msgstr ""
-#~ "Указва етикета, който ще се показва при списък или радиобутони с "
-#~ "потребителски команди."
-
-#~ msgid ""
-#~ "Specifies the message that will be displayed on Custom Command tooltip "
-#~ "entries."
-#~ msgstr ""
-#~ "Указва съобщението, което ще се показва като подсказка за потребителски "
-#~ "команди."
-
-#~ msgid ""
-#~ "Specifies the message that will be displayed on the warning dialog box "
-#~ "when one of the Custom Command widgets is activated."
-#~ msgstr ""
-#~ "Указва съобщението, което ще се показва на прозореца за предупреждение, "
-#~ "когато се използва някой от графичните обекти за потребителските команди."
-
-#~ msgid ""
-#~ "Systemwide directory for face files. The sysadmin can place icons for "
-#~ "users here without touching their homedirs. Faces are named after their "
-#~ "users' logins. The face images must be stored in gdk-pixbuf supported "
-#~ "formats and they must be readable for the GDM user."
-#~ msgstr ""
-#~ "Системна папка за изображенията с лицата. Системният администратор може "
-#~ "да слага тук икони за потребителите, без да променя домашните им папки. "
-#~ "Изображението за потребител трябва да е с името на потребителя. То трябва "
-#~ "да бъде във формат поддържан от gdk-pixbuf, а правата за достъп до него "
-#~ "трябва да позволяват да бъде прочетен от потребителя на GDM."
-
-#~ msgid "Text to appear in the warning pop-up dialogs"
-#~ msgstr "Текст за прозорците за предупреждение"
-
-#~ msgid "Text to appear on the buttons and menu items"
-#~ msgstr "Текст за бутоните и менютата"
-
-#~ msgid "Text to appear on the radio buttons and list items"
-#~ msgstr "Текст за списъците и радиобутоните"
-
-#~ msgid "Text to appear on the tooltips"
-#~ msgstr "Текст за подсказките"
-
-#~ msgid ""
-#~ "The UDP port number gdm should listen to for XDMCP requests. Don't change "
-#~ "this unless you know what you are doing."
-#~ msgstr ""
-#~ "Портът по UDP, на който GDM трябва да слуша за заявки XDMCP. Не "
-#~ "променяйте тази стойност, освен ако не знаете какво точно правите."
-
-#~ msgid ""
-#~ "The command to execute, with full path to the binary of the X server, and "
-#~ "any extra arguments needed. Example: /usr/X11R6/bin/X"
-#~ msgstr ""
-#~ "Командата, която да се изпълни с пълния път към изпълнимия, двоичен файл "
-#~ "на X сървъра, заедно с всички допълнителни аргументи. Например: /usr/"
-#~ "X11R6/bin/X"
-
-#~ msgid "The greeter will play a sound after a failed login attempt."
-#~ msgstr ""
-#~ "Програмата за посрещане ще изпълни звук след неуспешен опит за вход."
-
-#~ msgid "The greeter will play a sound after a successful login attempt."
-#~ msgstr "Програмата за посрещане ще изпълни звук след успешен опит за вход."
-
-#~ msgid "The greeter will play a sound or beep when it is ready for a login."
-#~ msgstr "Програмата за посрещане ще изпълни звук, когато е готова за вход."
-
-#~ msgid "The horizontal position of the login window."
-#~ msgstr "Хоризонталната позиция на прозореца за вход."
-
-#~ msgid "The name that will be displayed to the user."
-#~ msgstr "Името, което ще се покаже на потребителя."
-
-#~ msgid ""
-#~ "The number of seconds that should pass before reactivating the entry "
-#~ "field after a failed login."
-#~ msgstr ""
-#~ "Интервалът в секунди, след който полето за въвеждане на парола да се "
-#~ "активира след неуспешен опит за вход."
-
-#~ msgid "The position of the login window cannot be changed."
-#~ msgstr "Позицията на прозореца за вход не може да бъде променено."
-
-#~ msgid ""
-#~ "The position of the login window is determined by Position X / Position Y."
-#~ msgstr ""
-#~ "Позицията на прозореца за вход се определя от позицията по X и по Y."
-
-#~ msgid ""
-#~ "The session that is used by default if the user does not have a saved "
-#~ "preference and has picked 'Last' from the list of sessions."
-#~ msgstr ""
-#~ "Сесията, която да се ползва, ако потребителят няма запазени предпочитания "
-#~ "и избере „Последно избрана сесия“ от списъка на сесиите."
-
-#~ msgid "Themes"
-#~ msgstr "Теми"
-
-#~ msgid ""
-#~ "This server is available as a choice when a user wishes to run a "
-#~ "flexible, on demand server."
-#~ msgstr ""
-#~ "Този сървър е достъпен като избор, когато потребителят иска да стартира "
-#~ "гъвкав сървър при поискване."
-
-#~ msgid ""
-#~ "To avoid denial of service attacks, GDM has fixed size queue of pending "
-#~ "connections. Please note that this parameter does *not* limit the number "
-#~ "of remote displays which can be managed. It only limits the number of "
-#~ "displays initiating a connection simultaneously."
-#~ msgstr ""
-#~ "За да се избегнат атаки за отказване на услугата, GDM разполага с опашка "
-#~ "с ограничен размер за обработка на чакащи връзки. Този параметър не "
-#~ "ограничава броя на отдалечените дисплеи, които могат да се управляват. "
-#~ "Той ограничава само броя на дисплеите, които едновременно могат да "
-#~ "започнат осъществяването на връзка."
-
-#~ msgid ""
-#~ "To prevent attackers from filling up the pending queue, GDM will only "
-#~ "allow one connection for each remote computer.  If you want to provide "
-#~ "display services to computers with more than one screen, you should "
-#~ "increase the this value accordingly."
-#~ msgstr ""
-#~ "За да попречи на атакуващите да запълнят опашката за чакащи връзки, GDM "
-#~ "позволява само по една връзка от всеки отдалечен компютър. Ако искате да "
-#~ "позволите услуги за дисплея за компютри с повече от един екран, увеличете "
-#~ "тази стойност."
-
-#~ msgid ""
-#~ "Turns the Actions menu (which used to be called System menu) on or off.  "
-#~ "If this is off then one of the actions will be available anywhere.  These "
-#~ "actions include Shutdown, Restart, Custom, Configure, XDMCP chooser and "
-#~ "such."
-#~ msgstr ""
-#~ "Включва и изключва менюто „Действия“. Ако е изключено, едно от действията "
-#~ "ще бъде налично навсякъде. Тези действия включват спиране, рестартиране, "
-#~ "настройване, избор на XDMCP и др."
-
-#~ msgid "U_ser:"
-#~ msgstr "Потре_бител:"
-
-#~ msgid "Us_e 24 Hour Clock:"
-#~ msgstr "Ползване на 24-_часов часовник:"
-
-#~ msgid ""
-#~ "Use circles instead of asterisks in the password entry. This may not work "
-#~ "with all fonts however."
-#~ msgstr ""
-#~ "Използване на кръгчета вместо звездички за паролата. Това не работи с "
-#~ "всички шрифтове."
-
-#~ msgid "Welcome Message"
-#~ msgstr "Съобщение за добре дошли"
-
-#~ msgid ""
-#~ "When GDM is ready to manage a display an ACCEPT packet is sent to it "
-#~ "containing a unique session id which will be used in future XDMCP "
-#~ "conversations. GDM will then place the session id in the pending queue "
-#~ "waiting for the display to respond with a MANAGE request. If no response "
-#~ "is received within maximum wait time, GDM will declare the display dead "
-#~ "and erase it from the pending queue freeing up the slot for other "
-#~ "displays."
-#~ msgstr ""
-#~ "Веднъж щом GDM е готов да управлява един дисплей, GDM изпраща пакет "
-#~ "ACCEPT, който съдържа уникален сесиен идентификатор, който ще се ползва в "
-#~ "бъдещата връзка по XDMCP. След това GDM поставя идентификатора в опашката "
-#~ "за чакащи връзки и започва да чака дисплея да отговори със заявка MANAGE. "
-#~ "Ако такава не пристигне навреме, GDM обявява дисплея за умрял и го "
-#~ "изтрива от опашката, като с това освобождава място за други дисплеи."
-
-#~ msgid ""
-#~ "When the user logs in and already has an existing session, they are "
-#~ "connected to that session rather than starting a new session.  This only "
-#~ "works for session's running on Virtual Terminals started with "
-#~ "gdmflexiserver, and not with XDMCP."
-#~ msgstr ""
-#~ "Когато потребителят влезе и вече разполага със сесия, той бива свързан "
-#~ "към нея, а не се стартира нова. Това работи само със сесии, които работят "
-#~ "с виртуални терминали, стартирани с gdmflexiserver, а не с XDMCP."
-
-#~ msgid "X Server Login Window Preferences"
-#~ msgstr "Прозорец за екрана за идентификация през X сървъра"
-
-#~ msgid "XDMCP Login Window Preferences"
-#~ msgstr "Настройки на прозореца за идентификация през XDMCP"
-
-#~ msgid "_Add..."
-#~ msgstr "_Добавяне…"
-
-#~ msgid "_Add/Modify..."
-#~ msgstr "_Добавяне/промяна…"
-
-#~ msgid "_Allow local system administrator login"
-#~ msgstr "_Локалният администратор да може да влиза"
-
-#~ msgid "_Allow users to change fonts and colors of plain greeter"
-#~ msgstr ""
-#~ "Потребителите да могат да сменят _шрифтовете и цветовете на програмата за "
-#~ "посрещане без тема"
-
-#~ msgid "_Background color:"
-#~ msgstr "_Цвят за фон:"
-
-#~ msgid "_Default: \"Welcome to %n\""
-#~ msgstr "Ст_андартното съобщение „Добре дошли в %n“"
-
-#~ msgid "_Default: \"Welcome\""
-#~ msgstr "Ст_андартното съобщение „Добре дошли“"
-
-#~ msgid "_Deny TCP connections to Xserver"
-#~ msgstr "_Забраняване на връзки по TCP към X сървъра"
-
-#~ msgid "_Enable Automatic Login"
-#~ msgstr "Включване на _автоматичното влизане"
-
-#~ msgid "_Flexible (on demand)"
-#~ msgstr "_Гъвкав (при поискване)"
-
-#~ msgid "_Global face dir:"
-#~ msgstr "_Обща папка за лица:"
-
-#~ msgid "_GtkRC file:"
-#~ msgstr "_Файл GtkRC:"
-
-#~ msgid "_Image:"
-#~ msgstr "_Изображение:"
-
-#~ msgid "_Include all users from /etc/passwd (not for NIS)"
-#~ msgstr "_Включване на всички потребители от „/etc/passwd“ (не е за NIS)"
-
-#~ msgid "_Logins are handled by this computer"
-#~ msgstr "Заявките за вход се обработват от _този компютър"
-
-#~ msgid "_Maximum pending requests:"
-#~ msgstr "Максимален брой _чакащи заявки:"
-
-#~ msgid "_Minimal UID:"
-#~ msgstr "_Минимален идентификатор:"
-
-#~ msgid "_Only allow login if user's home directory permissions are secure"
-#~ msgstr ""
-#~ "_Позволяване на влизания, само ако правата за достъп са достатъчно сигурни"
-
-#~ msgid "_Pause before login:"
-#~ msgstr "Па_уза преди влизане в системата:"
-
-#~ msgid "_Ping interval:"
-#~ msgstr "_Интервал за проверка:"
-
-#~ msgid "_Priority:"
-#~ msgstr "Пр_иоритет:"
-
-#~ msgid "_Remove"
-#~ msgstr "_Премахване"
-
-#~ msgid "_Remove..."
-#~ msgstr "_Премахване…"
-
-#~ msgid "_Restart the Xserver with each login"
-#~ msgstr "_Рестартиране на X сървъра при всяко влизане"
-
-#~ msgid "_Server:"
-#~ msgstr "_Сървър:"
-
-#~ msgid "_Servers:"
-#~ msgstr "_Сървъри:"
-
-#~ msgid "_Show visual feedback (asterisks) in the password entry"
-#~ msgstr "Показване на въвеждането на паролата (със _звездички)"
-
-#~ msgid "_Style:"
-#~ msgstr "_Стил:"
-
-#~ msgid "_Theme:"
-#~ msgstr "_Тема:"
-
-#~ msgid "_Use circles instead of asterisks in the password entry"
-#~ msgstr "Използване на _кръгчета вместо звездички за паролата"
-
-#~ msgid "_User:"
-#~ msgstr "Потреби_тел:"
-
-#~ msgid "_VT:"
-#~ msgstr "_Терминал:"
-
-#~ msgid "_X coordinate"
-#~ msgstr "_Координата по X"
-
-#~ msgid "_Y coordinate"
-#~ msgstr "Коор_дината по Y"
-
-#~ msgid ""
-#~ "auto\n"
-#~ "yes\n"
-#~ "no"
-#~ msgstr ""
-#~ "автоматично\n"
-#~ "да\n"
-#~ "не"
-
-#~ msgid "dummy"
-#~ msgstr "глупав"
-
-#~ msgid "seconds"
-#~ msgstr "секунди"
-
-#~ msgid "Too many users to list here..."
-#~ msgstr "Прекалено много потребители…"
-
-#~ msgid "Restart Machine"
-#~ msgstr "Рестартиране на компютъра"
-
-#~ msgid "There was an error loading the theme %s"
-#~ msgstr "Грешка при зареждането на темата %s"
-
-#~ msgid "The greeter theme is corrupt"
-#~ msgstr "Темата за програмата за посрещане е развалена"
-
-#~ msgid ""
-#~ "The theme does not contain definition for the username/password entry "
-#~ "element."
-#~ msgstr ""
-#~ "Темата за програмата за вход не съдържа дефиниция за елементи за "
-#~ "въвеждане на потребителско име/парола."
-
-#~ msgid ""
-#~ "There was an error loading the theme, and the default theme could not be "
-#~ "loaded. Attempting to start the standard greeter"
-#~ msgstr ""
-#~ "Появи се грешка при зареждане на темата, а и темата по подразбиране също "
-#~ "не може да се зареди. Стартиране на стандартната програма за посрещане."
-
-#~ msgid ""
-#~ "The GTK+ greeter could not be started.  This display will abort and you "
-#~ "may have to login another way and fix the installation of GDM"
-#~ msgstr ""
-#~ "Не може да се стартира програмата за посрещане на GTK+. Този дисплей ще "
-#~ "прекъсне и ще трябва да влезете в системата по друг начин, за да оправите "
-#~ "инсталацията на GDM"
-
-#~ msgid ""
-#~ "Your session directory is missing or empty!  There are two available "
-#~ "sessions you can use, but you should log in and correct the gdm "
-#~ "configuration."
-#~ msgstr ""
-#~ "Папката ви за сесии липсва или е празна! Има две възможни сесии, от които "
-#~ "може да избирате, но трябва да влезете и да коригирате конфигурацията на "
-#~ "GDM."
-
-#~ msgid "Last language"
-#~ msgstr "Последно избран език"
-
-#~ msgid "Select a Language"
-#~ msgstr "Избор на език"
-
-#~ msgid "Change _Language"
-#~ msgstr "Смяна на _език"
-
-#~ msgid "_Select the language for your session to use:"
-#~ msgstr "_Избиране на език за вашата сесия:"
-
-#~ msgid "Select _Language..."
-#~ msgstr "Избор на _език…"
-
-#~ msgid "Select _Session..."
-#~ msgstr "Избор на _сесия…"
-
-#~ msgid ""
-#~ "Answer questions here and press Enter when done.  For a menu press F10."
-#~ msgstr ""
-#~ "Отговорете на тези въпроси и натиснете „Enter“, когато сте готови. За "
-#~ "меню настинете „F10“."
-
-#~ msgid "custom_cmd%d"
-#~ msgstr "потр_кмнд%d"
-
-#~ msgid "Last session"
-#~ msgstr "Последно избрана сесия"
-
-#~ msgid "Sus_pend"
-#~ msgstr "Прис_пиване"
-
-#~ msgid "Confi_gure"
-#~ msgstr "_Настройки"
-
-#~ msgid "Op_tions"
-#~ msgstr "_Опции"
-
-#~ msgid "_OK"
-#~ msgstr "_Да"
-
-#~ msgid "Change _Session"
-#~ msgstr "_Смяна на сесия"
-
-#~ msgid "Sessions"
-#~ msgstr "Сесии"
-
-#~ msgid "_Last session"
-#~ msgstr "_Последно избрана сесия"
-
-#~ msgid "Log in using the session that you have used last time you logged in"
-#~ msgstr "Влизане в системата с последната работна сесия"
-
-#~ msgid "Confi_gure Login Manager..."
-#~ msgstr "_Конфигуриране на програмата за вход…"
-
-#~ msgid "Shut _down the computer"
-#~ msgstr "_Спиране на компютъра"
-
-#~ msgid "Shut Down your computer so that you may turn it off."
-#~ msgstr "Спиране на компютъра, за да го загасите."
-
-#~ msgid "_Restart the computer"
-#~ msgstr "_Рестартиране на компютъра"
-
-#~ msgid "Restart your computer"
-#~ msgstr "Рестартиране на компютъра"
-
-#~ msgid "Sus_pend the computer"
-#~ msgstr "Прис_пиване на компютъра"
-
-#~ msgid "Suspend your computer"
-#~ msgstr "Приспиване на компютъра"
-
-#~ msgid "Run _XDMCP chooser"
-#~ msgstr "Стартирана на програмата за избор _чрез XDMCP"
-
-#~ msgid ""
-#~ "Run an XDMCP chooser which will allow you to log into available remote "
-#~ "computers, if there are any."
-#~ msgstr ""
-#~ "Стартиране на програмата за избор чрез XDMCP, което ще позволи да влизате "
-#~ "в наличните отдалечени машини, ако има такива."
-
-#~ msgid "Confi_gure the login manager"
-#~ msgstr "Нас_тройване на програмата за вход"
-
-#~ msgid ""
-#~ "Configure GDM (this login manager). This will require the root password."
-#~ msgstr ""
-#~ "Конфигуриране на GDM (тази програма за вход). Това изисква паролата на "
-#~ "потребителя „root“."
-
-#~ msgid "custom_cmd_button%d"
-#~ msgstr "бутон_потр_кмнд%d"
-
-#~ msgid "(c) 2002 Bond, James Bond"
-#~ msgstr "(c) 2002 Бонд, Джеймс Бонд"
-
-#~ msgid "Bond, James Bond"
-#~ msgstr "Бонд, Джеймс Бонд"
-
-#~ msgid "Circles"
-#~ msgstr "Кръгове"
-
-#~ msgid "Theme with blue circles"
-#~ msgstr "Тема със сини кръгове"
-
-#~ msgid "(c) 2002 GNOME"
-#~ msgstr "(c) 2002 GNOME"
-
-#~ msgid "GNOME Art variation of Circles with a Face Browser"
-#~ msgstr "Художествена вариация на темата „Кръгове“ с лента за лицата"
-
-#~ msgid "GNOME Artists"
-#~ msgstr "Художници на GNOME"
-
-#~ msgid "Happy GNOME with Browser"
-#~ msgstr "Щастлив GNOME с браузър"
-
-#~ msgid "GNOME Art variation of Circles"
-#~ msgstr "Художествен вариант на „Кръгове“"
-
-#~ msgid "Happy GNOME"
-#~ msgstr "Щастлив GNOME"
-
-#~ msgid ""
-#~ "Error while trying to run (%s)\n"
-#~ "which is linked to (%s)"
-#~ msgstr ""
-#~ "Грешка при опит за стартиране на (%s),\n"
-#~ "което е свързано с (%s)"
-
-#~ msgid "Cannot open gestures file: %s"
-#~ msgstr "Файлът с жестовете не може да бъде отворен: %s"
-
-#~ msgid "DMX display to migrate to"
-#~ msgstr "Към кой дисплей с DMX да се мигрира"
-
-#~ msgid "DISPLAY"
-#~ msgstr "ДИСПЛЕЙ"
-
-#~ msgid "Backend display name"
-#~ msgstr "Име на дисплея на заден режим"
-
-#~ msgid "Xauthority file for destination display"
-#~ msgstr "Файл за упълномощаване Xauthority за целевия дисплей"
-
-#~ msgid "AUTHFILE"
-#~ msgstr "ФАЙЛ_УПЪЛНОМОЩАВАНЕ"
-
-#~ msgid "Xauthority file for backend display"
-#~ msgstr "Файл за упълномощаване за дисплея на заден режим"
-
-#~ msgid "Failed to open display \"%s\"\n"
-#~ msgstr "Невъзможно е да се отвори дисплей „%s“\n"
-
-#~ msgid "DMX extension not present on \"%s\"\n"
-#~ msgstr "Разширението DMX липсва на „%s“\n"
-
-#~ msgid "- migrate a backend display from one DMX display to another"
-#~ msgstr ""
-#~ "— мигриране на дисплей на заден режим от един дисплей с DMX към друг"
-
-#~ msgid "You must specify a destination DMX display using %s\n"
-#~ msgstr "Трябва да укажете целеви дисплей с DMX като ползвате %s\n"
-
-#~ msgid "You must specify a backend display by using %s\n"
-#~ msgstr ""
-#~ "Трябва да укажете дисплей на заден режим като ползвате %s\n"
-#~ "\n"
-
-#~ msgid "DMXAddScreen \"%s\" failed on \"%s\"\n"
-#~ msgstr "Изпълнението на DMXAddScreen „%s“ бе неуспешно за „%s“\n"
-
-#~ msgid "gdmaskpass only runs as root\n"
-#~ msgstr "gdmaskpass се изпълнява само като root\n"
-
-#~ msgid "Authentication failure!\n"
-#~ msgstr "Идентификацията е неуспешна!\n"
-
-#~ msgid "(memory buffer)"
-#~ msgstr "(буфер в паметта)"
-
-#~ msgid ""
-#~ "An error occurred while loading user interface element %s%s from file %"
-#~ "s.  Possibly the glade interface description was corrupted.  %s cannot "
-#~ "continue and will exit now.  You should check your installation of %s or "
-#~ "reinstall %s."
-#~ msgstr ""
-#~ "Настъпи грешка при зареждане на елемента от потребителския интерфейс %s%s "
-#~ "от файла %s. Най-вероятно описанието на интерфейса за glade е невалидно. %"
-#~ "s не може да продължи и ще преустанови работа. Трябва да проверите "
-#~ "инсталацията на %s или да преинсталирате %s."
-
-#~ msgid "Cannot load user interface"
-#~ msgstr "Не може да се зареди потребителският интерфейс"
-
-#~ msgid ""
-#~ "Glade file is on crack! Make sure the correct file is installed!\n"
-#~ "file: %s widget: %s"
-#~ msgstr ""
-#~ "Файлът за Glade е невалиден! Уверете се, че правилният файл е "
-#~ "инсталиран!\n"
-#~ "файл: %s, елемент: %s"
-
-#~ msgid ""
-#~ "An error occurred while loading the user interface element %s%s from file "
-#~ "%s. CList type widget should have %d column. Possibly the glade interface "
-#~ "description was corrupted. %s cannot continue and will exit now. You "
-#~ "should check your installation of %s or reinstall %s."
-#~ msgid_plural ""
-#~ "An error occurred while loading the user interface element %s%s from file "
-#~ "%s. CList type widget should have %d columns. Possibly the glade "
-#~ "interface description was corrupted. %s cannot continue and will exit "
-#~ "now. You should check your installation of %s or reinstall %s."
-#~ msgstr[0] ""
-#~ "Настъпи грешка при зареждане на елемента от потребителския интерфейс %s%s "
-#~ "от файла %s. Графичният обект от тип clist трябва да има %d колона. Най-"
-#~ "вероятно описанието на интерфейса за glade е невалидно. %s не може да "
-#~ "продължи и ще преустанови работа. Трябва да проверите инсталацията на %s "
-#~ "или да преинсталирате %s."
-#~ msgstr[1] ""
-#~ "Настъпи грешка при зареждане на елемента от потребителския интерфейс %s%s "
-#~ "от файла %s. Графичният обект от тип clist трябва да има %d колони. Най-"
-#~ "вероятно описанието на интерфейса за glade е невалидно. %s не може да "
-#~ "продължи и ще преустанови работа. Трябва да проверите инсталацията на %s "
-#~ "или да преинсталирате %s."
-
-#~ msgid ""
-#~ "Glade file is on crack! Make sure the correct file is installed!\n"
-#~ "file: %s widget: %s expected clist columns: %d"
-#~ msgstr ""
-#~ "Файлът за glade е неправилен! Проверете дали правилният файл е "
-#~ "инсталиран!\n"
-#~ "файл: %s, елемент: %s очаква %d колони"
-
-#~ msgid ""
-#~ "An error occurred while loading the user interface from file %s.  "
-#~ "Possibly the glade interface description was not found.  %s cannot "
-#~ "continue and will exit now.  You should check your installation of %s or "
-#~ "reinstall %s."
-#~ msgstr ""
-#~ "Появи се грешка при зареждане на потребителски интерфейс от файла %s. "
-#~ "Възможно е описанието на интерфейса за glade да не е намерено. %s не може "
-#~ "да продължи и ще преустанови работа. Трябва да проверите инсталацията на %"
-#~ "s или да преинсталирате %s."
-
-#~ msgid "No interface could be loaded. This is BAD! (file: %s)"
-#~ msgstr "Интерфейсите не могат да се заредят. Това е ЛОШО! (файл: %s)"
-
-#~ msgid "Too many alias levels for a locale; may indicate a loop"
-#~ msgstr "Прекалено много нива на синоними за локал. Вероятно има зацикляне."
