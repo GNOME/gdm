@@ -1013,7 +1013,8 @@ gdm_chooser_widget_set_active_item (GdmChooserWidget *widget,
 {
         g_return_if_fail (GDM_IS_CHOOSER_WIDGET (widget));
 
-        g_debug ("GdmChooserWidget: setting active item '%s'", id);
+        g_debug ("GdmChooserWidget: setting active item '%s'",
+                 id ? id : "(null)");
 
         if (id != NULL) {
                 activate_from_item_id (widget, id);
