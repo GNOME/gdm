@@ -337,7 +337,12 @@ rotate_logs (GdmServer *server)
                 char *name_n1;
 
                 name_n = g_strdup_printf ("%s.%d", path, i);
-                name_n1 = g_strdup_printf ("%s.%d", path, i - 1);
+                if (i > 1) {
+                        name_n1 = g_strdup_printf ("%s.%d", path, i - 1);
+                } else {
+                        name_n1 = g_strdup (path);
+                }
+
                 g_unlink (name_n);
                 g_rename (name_n1, name_n);
 
