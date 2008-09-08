@@ -58,6 +58,8 @@ extern char **environ;
 #define SERVER_RUNNING 252      /* Server running and ready for connections */
 #define SERVER_ABORT 253        /* Server failed badly. Suspending display. */
 
+#define MAX_LOGS 5
+
 struct GdmServerPrivate
 {
         char    *command;
@@ -319,18 +321,10 @@ gdm_server_resolve_command_line (GdmServer  *server,
 }
 
 static void
-rotate_logs (GdmServer *server)
+rotate_logs (const char *path,
+             guint       n_copies)
 {
-        int   n_copies;
-        int   i;
-        char *filename;
-        char *path;
-
-        n_copies = 5;
-
-        filename = g_strdup_printf ("%s.log", server->priv->display_name);
-        path = g_build_filename (server->priv->log_dir, filename, NULL);
-        g_free (filename);
+        int i;
 
         for (i = n_copies - 1; i > 0; i--) {
                 char *name_n;
@@ -343,14 +337,14 @@ rotate_logs (GdmServer *server)
                         name_n1 = g_strdup (path);
                 }
 
-                g_unlink (name_n);
-                g_rename (name_n1, name_n);
+                VE_IGNORE_EINTR (g_unlink (name_n));
+                VE_IGNORE_EINTR (g_rename (name_n1, name_n));
 
                 g_free (name_n1);
                 g_free (name_n);
         }
 
-        g_unlink (path);
+        VE_IGNORE_EINTR (g_unlink (path));
 }
 
 static void
@@ -408,22 +402,26 @@ change_user (GdmServer *server)
 static void
 server_child_setup (GdmServer *server)
 {
-        char            *logfile;
         int              logfd;
         struct sigaction ign_signal;
         sigset_t         mask;
-        char            *temp;
+        char            *log_file;
+        char            *log_path;
+
+        log_file = g_strdup_printf ("%s.log", server->priv->display_name);
+        log_path = g_build_filename (server->priv->log_dir, log_file, NULL);
+        g_free (log_file);
 
         /* Rotate the X server logs */
-        rotate_logs (server);
+        rotate_logs (log_path, MAX_LOGS);
 
         /* Log all output from spawned programs to a file */
-        temp = g_strconcat (server->priv->display_name, ".log", NULL);
-        logfile = g_build_filename (server->priv->log_dir, temp, NULL);
-        g_debug ("GdmServer: Opening logfile for server %s", logfile);
+        g_debug ("GdmServer: Opening logfile for server %s", log_path);
 
-        VE_IGNORE_EINTR (g_unlink (logfile));
-        VE_IGNORE_EINTR (logfd = open (logfile, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644));
+        VE_IGNORE_EINTR (g_unlink (log_path));
+        VE_IGNORE_EINTR (logfd = open (log_path, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644));
+
+        g_free (log_path);
 
         if (logfd != -1) {
                 VE_IGNORE_EINTR (dup2 (logfd, 1));

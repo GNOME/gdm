@@ -48,6 +48,8 @@
 
 #define DBUS_LAUNCH_COMMAND BINDIR "/dbus-launch --exit-with-session"
 
+#define MAX_LOGS 5
+
 extern char **environ;
 
 #define GDM_WELCOME_SESSION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_WELCOME_SESSION, GdmWelcomeSessionPrivate))
@@ -376,6 +378,33 @@ welcome_session_child_watch (GPid               pid,
         stop_dbus_daemon (session);
 }
 
+static void
+rotate_logs (const char *path,
+             guint       n_copies)
+{
+        int i;
+
+        for (i = n_copies - 1; i > 0; i--) {
+                char *name_n;
+                char *name_n1;
+
+                name_n = g_strdup_printf ("%s.%d", path, i);
+                if (i > 1) {
+                        name_n1 = g_strdup_printf ("%s.%d", path, i - 1);
+                } else {
+                        name_n1 = g_strdup (path);
+                }
+
+                VE_IGNORE_EINTR (g_unlink (name_n));
+                VE_IGNORE_EINTR (g_rename (name_n1, name_n));
+
+                g_free (name_n1);
+                g_free (name_n);
+        }
+
+        VE_IGNORE_EINTR (g_unlink (path));
+}
+
 typedef struct {
         const char *user_name;
         const char *group_name;
@@ -450,14 +479,7 @@ spawn_child_setup (SpawnChildData *data)
         if (data->log_file != NULL) {
                 int logfd;
 
-                if (g_access (data->log_file, R_OK | W_OK) == 0) {
-                        char *filename_old;
-
-                        filename_old = g_strdup_printf ("%s.old", data->log_file);
-                        VE_IGNORE_EINTR (g_unlink (filename_old));
-                        VE_IGNORE_EINTR (g_rename (data->log_file, filename_old));
-                        g_free (filename_old);
-                }
+                rotate_logs (data->log_file, MAX_LOGS);
 
                 VE_IGNORE_EINTR (g_unlink (data->log_file));
                 VE_IGNORE_EINTR (logfd = open (data->log_file, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644));
