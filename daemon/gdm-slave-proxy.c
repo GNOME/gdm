@@ -32,6 +32,7 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <glib/gstdio.h>
 #include <glib-object.h>
 
 #include "gdm-common.h"
@@ -40,9 +41,12 @@
 
 #define GDM_SLAVE_PROXY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SLAVE_PROXY, GdmSlaveProxyPrivate))
 
+#define MAX_LOGS 5
+
 struct GdmSlaveProxyPrivate
 {
         char    *command;
+        char    *log_path;
         GPid     pid;
         guint    child_watch_id;
 };
@@ -50,6 +54,7 @@ struct GdmSlaveProxyPrivate
 enum {
         PROP_0,
         PROP_COMMAND,
+        PROP_LOG_PATH,
 };
 
 enum {
@@ -93,44 +98,124 @@ child_watch (GPid           pid,
         }
 }
 
+static void
+rotate_logs (const char *path,
+             guint       n_copies)
+{
+        int i;
+
+        for (i = n_copies - 1; i > 0; i--) {
+                char *name_n;
+                char *name_n1;
+
+                name_n = g_strdup_printf ("%s.%d", path, i);
+                if (i > 1) {
+                        name_n1 = g_strdup_printf ("%s.%d", path, i - 1);
+                } else {
+                        name_n1 = g_strdup (path);
+                }
+
+                VE_IGNORE_EINTR (g_unlink (name_n));
+                VE_IGNORE_EINTR (g_rename (name_n1, name_n));
+
+                g_free (name_n1);
+                g_free (name_n);
+        }
+
+        VE_IGNORE_EINTR (g_unlink (path));
+}
+
+typedef struct {
+        const char *log_file;
+} SpawnChildData;
+
+static void
+spawn_child_setup (SpawnChildData *data)
+{
+
+        if (data->log_file != NULL) {
+                int logfd;
+
+                rotate_logs (data->log_file, MAX_LOGS);
+
+                VE_IGNORE_EINTR (g_unlink (data->log_file));
+                VE_IGNORE_EINTR (logfd = open (data->log_file, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644));
+
+                if (logfd != -1) {
+                        VE_IGNORE_EINTR (dup2 (logfd, 1));
+                        VE_IGNORE_EINTR (dup2 (logfd, 2));
+                        close (logfd);
+                }
+        }
+}
+
+static gboolean
+spawn_command_line_async (const char *command_line,
+                          const char *log_file,
+                          char      **env,
+                          GPid       *child_pid,
+                          GError    **error)
+{
+        char           **argv;
+        GError          *local_error;
+        gboolean         ret;
+        gboolean         res;
+        SpawnChildData   data;
+
+        ret = FALSE;
+
+        argv = NULL;
+        local_error = NULL;
+        if (! g_shell_parse_argv (command_line, NULL, &argv, &local_error)) {
+                g_warning ("Could not parse command: %s", local_error->message);
+                g_propagate_error (error, local_error);
+                goto out;
+        }
+
+        data.log_file = log_file;
+
+        local_error = NULL;
+        res = g_spawn_async (NULL,
+                             argv,
+                             env,
+                             G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD,
+                             (GSpawnChildSetupFunc)spawn_child_setup,
+                             &data,
+                             child_pid,
+                             &local_error);
+
+        if (! res) {
+                g_warning ("Could not spawn command: %s", local_error->message);
+                g_propagate_error (error, local_error);
+                goto out;
+        }
+
+        ret = TRUE;
+ out:
+        g_strfreev (argv);
+
+        return ret;
+}
+
 static gboolean
 spawn_slave (GdmSlaveProxy *slave)
 {
-        char      **argv;
         gboolean    result;
-        GError     *error = NULL;
-
-        result = FALSE;
-
-        if (! g_shell_parse_argv (slave->priv->command, NULL, &argv, &error)) {
-                g_warning ("Could not parse command: %s", error->message);
-                g_error_free (error);
-                goto out;
-        }
+        GError     *error;
 
         g_debug ("GdmSlaveProxy: Running command: %s", slave->priv->command);
 
         error = NULL;
-        result = g_spawn_async_with_pipes (NULL,
-                                           argv,
-                                           NULL,
-                                           G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD,
-                                           NULL,
+        result = spawn_command_line_async (slave->priv->command,
+                                           slave->priv->log_path,
                                            NULL,
                                            &slave->priv->pid,
-                                           NULL,
-                                           NULL,
-                                           NULL,
                                            &error);
-
         if (! result) {
                 g_warning ("Could not start command '%s': %s", slave->priv->command, error->message);
                 g_error_free (error);
-                g_strfreev (argv);
                 goto out;
         }
-
-        g_strfreev (argv);
 
         g_debug ("GdmSlaveProxy: Started slave with pid %d", slave->priv->pid);
 
@@ -196,11 +281,19 @@ gdm_slave_proxy_set_command (GdmSlaveProxy *slave,
         slave->priv->command = g_strdup (command);
 }
 
+void
+gdm_slave_proxy_set_log_path (GdmSlaveProxy *slave,
+                              const char    *path)
+{
+        g_free (slave->priv->log_path);
+        slave->priv->log_path = g_strdup (path);
+}
+
 static void
 gdm_slave_proxy_set_property (GObject      *object,
-                        guint          prop_id,
-                        const GValue *value,
-                        GParamSpec   *pspec)
+                              guint         prop_id,
+                              const GValue *value,
+                              GParamSpec   *pspec)
 {
         GdmSlaveProxy *self;
 
@@ -209,6 +302,9 @@ gdm_slave_proxy_set_property (GObject      *object,
         switch (prop_id) {
         case PROP_COMMAND:
                 gdm_slave_proxy_set_command (self, g_value_get_string (value));
+                break;
+        case PROP_LOG_PATH:
+                gdm_slave_proxy_set_log_path (self, g_value_get_string (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -229,6 +325,9 @@ gdm_slave_proxy_get_property (GObject    *object,
         switch (prop_id) {
         case PROP_COMMAND:
                 g_value_set_string (value, self->priv->command);
+                break;
+        case PROP_LOG_PATH:
+                g_value_set_string (value, self->priv->log_path);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -267,7 +366,15 @@ gdm_slave_proxy_class_init (GdmSlaveProxyClass *klass)
                                                               "command",
                                                               "command",
                                                               NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_LOG_PATH,
+                                         g_param_spec_string ("log-path",
+                                                              "log path",
+                                                              "log path",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+
         signals [EXITED] =
                 g_signal_new ("exited",
                               G_OBJECT_CLASS_TYPE (object_class),

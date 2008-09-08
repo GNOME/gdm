@@ -1,5 +1,15 @@
 2008-09-08  William Jon McCann  <jmccann@redhat.com>
 
+	* daemon/gdm-display.c (gdm_display_real_manage):
+	* daemon/gdm-slave-proxy.c (rotate_logs), (spawn_child_setup),
+	(spawn_command_line_async), (spawn_slave),
+	(gdm_slave_proxy_set_log_path), (gdm_slave_proxy_set_property),
+	(gdm_slave_proxy_get_property), (gdm_slave_proxy_class_init):
+	* daemon/gdm-slave-proxy.h:
+	Log the slave messages to a file.
+
+2008-09-08  William Jon McCann  <jmccann@redhat.com>
+
 	* daemon/gdm-server.c (rotate_logs), (server_child_setup):
 	* daemon/gdm-welcome-session.c (rotate_logs), (spawn_child_setup):
 	Use the same log rotation for slave and greeter.

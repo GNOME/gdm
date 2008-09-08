@@ -458,6 +458,8 @@ static gboolean
 gdm_display_real_manage (GdmDisplay *display)
 {
         char *command;
+        char *log_file;
+        char *log_path;
 
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
@@ -483,10 +485,15 @@ gdm_display_real_manage (GdmDisplay *display)
                           G_CALLBACK (slave_died),
                           display);
 
+        log_file = g_strdup_printf ("%s-slave.log", display->priv->x11_display_name);
+        log_path = g_build_filename (LOGDIR, log_file, NULL);
+        g_free (log_file);
+        gdm_slave_proxy_set_log_path (display->priv->slave_proxy, log_path);
+        g_free (log_path);
+
         command = g_strdup_printf ("%s --display-id %s",
                                    display->priv->slave_command,
                                    display->priv->id);
-
         gdm_slave_proxy_set_command (display->priv->slave_proxy, command);
         g_free (command);
 

@@ -55,6 +55,8 @@ GType               gdm_slave_proxy_get_type     (void);
 GdmSlaveProxy *     gdm_slave_proxy_new          (void);
 void                gdm_slave_proxy_set_command  (GdmSlaveProxy *slave,
                                                   const char    *command);
+void                gdm_slave_proxy_set_log_path (GdmSlaveProxy *slave,
+                                                  const char    *path);
 gboolean            gdm_slave_proxy_start        (GdmSlaveProxy *slave);
 gboolean            gdm_slave_proxy_stop         (GdmSlaveProxy *slave);
 
