@@ -275,6 +275,26 @@ translate_list_path_to_view_path (GdmChooserWidget  *widget,
         *path = sorted_path;
 }
 
+
+static void
+translate_view_path_to_list_path (GdmChooserWidget  *widget,
+                                  GtkTreePath      **path)
+{
+        GtkTreePath *filtered_path;
+        GtkTreePath *list_path;
+
+        /* the child model is the source for the filter */
+        filtered_path = gtk_tree_model_sort_convert_path_to_child_path (widget->priv->model_sorter,
+                                                                        *path);
+
+        list_path = gtk_tree_model_filter_convert_path_to_child_path (widget->priv->model_filter,
+                                                                      filtered_path);
+        gtk_tree_path_free (filtered_path);
+
+        gtk_tree_path_free (*path);
+        *path = list_path;
+}
+
 static GtkTreePath *
 get_list_path_to_active_row (GdmChooserWidget *widget)
 {
@@ -335,7 +355,7 @@ get_active_item_id (GdmChooserWidget *widget,
                                     CHOOSER_ID_COLUMN,
                                     &item_id,
                                     -1);
-        };
+        }
         gtk_tree_path_free (path);
 
         return item_id;
@@ -347,6 +367,59 @@ gdm_chooser_widget_get_active_item (GdmChooserWidget *widget)
         GtkTreeIter iter;
 
         return get_active_item_id (widget, &iter);
+}
+
+static void
+get_selected_list_path (GdmChooserWidget *widget,
+                        GtkTreePath     **pathp)
+{
+        GtkTreeSelection    *selection;
+        GtkTreeModel        *sort_model;
+        GtkTreeIter          sorted_iter;
+        GtkTreePath         *path;
+
+        path = NULL;
+
+        selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget->priv->items_view));
+        if (gtk_tree_selection_get_selected (selection, &sort_model, &sorted_iter)) {
+
+                g_assert (sort_model == GTK_TREE_MODEL (widget->priv->model_sorter));
+
+                path = gtk_tree_model_get_path (sort_model, &sorted_iter);
+
+                translate_view_path_to_list_path (widget, &path);
+        } else {
+                g_debug ("GdmChooserWidget: no rows selected");
+        }
+
+        *pathp = path;
+}
+
+char *
+gdm_chooser_widget_get_selected_item (GdmChooserWidget *widget)
+{
+        GtkTreeIter   iter;
+        GtkTreeModel *model;
+        GtkTreePath  *path;
+        char         *id;
+
+        id = NULL;
+
+        get_selected_list_path (widget, &path);
+
+        model = GTK_TREE_MODEL (widget->priv->list_store);
+
+        if (gtk_tree_model_get_iter (model, &iter, path)) {
+                gtk_tree_model_get (model,
+                                    &iter,
+                                    CHOOSER_ID_COLUMN,
+                                    &id,
+                                    -1);
+        }
+
+        gtk_tree_path_free (path);
+
+        return id;
 }
 
 static void
@@ -918,51 +991,6 @@ deactivate (GdmChooserWidget *widget)
         }
 
         g_signal_emit (widget, signals[DEACTIVATED], 0);
-}
-
-static void
-translate_view_path_to_list_path (GdmChooserWidget  *widget,
-                                  GtkTreePath      **path)
-{
-        GtkTreePath *filtered_path;
-        GtkTreePath *list_path;
-
-        /* the child model is the source for the filter */
-        filtered_path = gtk_tree_model_sort_convert_path_to_child_path (widget->priv->model_sorter,
-                                                                        *path);
-
-        list_path = gtk_tree_model_filter_convert_path_to_child_path (widget->priv->model_filter,
-                                                                      filtered_path);
-        gtk_tree_path_free (filtered_path);
-
-        gtk_tree_path_free (*path);
-        *path = list_path;
-}
-
-static void
-get_selected_list_path (GdmChooserWidget *widget,
-                        GtkTreePath     **pathp)
-{
-        GtkTreeSelection    *selection;
-        GtkTreeModel        *sort_model;
-        GtkTreeIter          sorted_iter;
-        GtkTreePath         *path;
-
-        path = NULL;
-
-        selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget->priv->items_view));
-        if (gtk_tree_selection_get_selected (selection, &sort_model, &sorted_iter)) {
-
-                g_assert (sort_model == GTK_TREE_MODEL (widget->priv->model_sorter));
-
-                path = gtk_tree_model_get_path (sort_model, &sorted_iter);
-
-                translate_view_path_to_list_path (widget, &path);
-        } else {
-                g_debug ("GdmChooserWidget: no rows selected");
-        }
-
-        *pathp = path;
 }
 
 void

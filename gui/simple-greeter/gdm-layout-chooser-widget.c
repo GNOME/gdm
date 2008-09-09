@@ -66,7 +66,7 @@ gdm_layout_chooser_widget_get_current_layout_name (GdmLayoutChooserWidget *widge
 
         g_return_val_if_fail (GDM_IS_LAYOUT_CHOOSER_WIDGET (widget), NULL);
 
-        id = gdm_chooser_widget_get_active_item (GDM_CHOOSER_WIDGET (widget));
+        id = gdm_chooser_widget_get_selected_item (GDM_CHOOSER_WIDGET (widget));
 
         if (id == NULL) {
                 id = g_strdup ("us");

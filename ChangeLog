@@ -1,5 +1,20 @@
 2008-09-08  William Jon McCann  <jmccann@redhat.com>
 
+	* gui/simple-greeter/gdm-chooser-widget.c
+	(translate_view_path_to_list_path), (get_active_item_id),
+	(get_selected_list_path), (gdm_chooser_widget_get_selected_item):
+	* gui/simple-greeter/gdm-chooser-widget.h:
+	* gui/simple-greeter/gdm-language-chooser-widget.c
+	(gdm_language_chooser_widget_get_current_language_name):
+	* gui/simple-greeter/gdm-layout-chooser-widget.c
+	(gdm_layout_chooser_widget_get_current_layout_name):
+	Use the selected item instead of the active item for the
+	language and layout choosers.  We don't do this for the
+	user chooser because we change the selection of it in order
+	to work around the widget using the selection color.
+
+2008-09-08  William Jon McCann  <jmccann@redhat.com>
+
 	* daemon/gdm-display.c (gdm_display_real_manage):
 	* daemon/gdm-slave-proxy.c (rotate_logs), (spawn_child_setup),
 	(spawn_command_line_async), (spawn_slave),
