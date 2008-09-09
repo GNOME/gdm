@@ -1,6 +1,24 @@
 2008-09-08  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/simple-greeter/gdm-chooser-widget.c
+	(gdm_chooser_widget_set_selected_item):
+	* gui/simple-greeter/gdm-chooser-widget.h:
+	* gui/simple-greeter/gdm-language-chooser-dialog.c
+	(gdm_language_chooser_dialog_init):
+	* gui/simple-greeter/gdm-language-chooser-widget.c
+	(gdm_language_chooser_widget_set_current_language_name):
+	* gui/simple-greeter/gdm-layout-chooser-dialog.c
+	(gdm_layout_chooser_dialog_init):
+	* gui/simple-greeter/gdm-layout-chooser-widget.c
+	(gdm_layout_chooser_widget_set_current_layout_name):
+	Because we hacked single click to activate the entry in the user
+	chooser we broke the activation handling of the language and
+	layout choosers.  Fixed this by using a different method to
+	simply select the item instead of activating it.
+
+2008-09-08  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/simple-greeter/gdm-chooser-widget.c
 	(translate_view_path_to_list_path), (get_active_item_id),
 	(get_selected_list_path), (gdm_chooser_widget_get_selected_item):
 	* gui/simple-greeter/gdm-chooser-widget.h:

@@ -422,6 +422,48 @@ gdm_chooser_widget_get_selected_item (GdmChooserWidget *widget)
         return id;
 }
 
+void
+gdm_chooser_widget_set_selected_item (GdmChooserWidget *widget,
+                                      const char       *id)
+{
+        GtkTreeIter       iter;
+        GtkTreeSelection *selection;
+        GtkTreeModel     *model;
+
+        g_return_if_fail (GDM_IS_CHOOSER_WIDGET (widget));
+
+        g_debug ("GdmChooserWidget: setting selected item '%s'",
+                 id ? id : "(null)");
+
+        selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget->priv->items_view));
+
+        model = GTK_TREE_MODEL (widget->priv->list_store);
+
+        if (find_item (widget, id, &iter)) {
+                GtkTreePath  *path;
+
+                path = gtk_tree_model_get_path (model, &iter);
+                translate_list_path_to_view_path (widget, &path);
+
+                gtk_tree_selection_select_path (selection, path);
+
+                gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (widget->priv->items_view),
+                                              path,
+                                              NULL,
+                                              TRUE,
+                                              0.5,
+                                              0.0);
+
+                gtk_tree_view_set_cursor (GTK_TREE_VIEW (widget->priv->items_view),
+                                          path,
+                                          NULL,
+                                          FALSE);
+                gtk_tree_path_free (path);
+        } else {
+                gtk_tree_selection_unselect_all (selection);
+        }
+}
+
 static void
 activate_from_item_id (GdmChooserWidget *widget,
                        const char       *item_id)

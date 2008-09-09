@@ -82,12 +82,12 @@ gdm_layout_chooser_widget_set_current_layout_name (GdmLayoutChooserWidget *widge
         g_return_if_fail (GDM_IS_LAYOUT_CHOOSER_WIDGET (widget));
 
         if (id == NULL) {
-                gdm_chooser_widget_set_active_item (GDM_CHOOSER_WIDGET (widget),
-                                                   NULL);
+                gdm_chooser_widget_set_selected_item (GDM_CHOOSER_WIDGET (widget),
+                                                      NULL);
                 return;
         }
 
-        gdm_chooser_widget_set_active_item (GDM_CHOOSER_WIDGET (widget), id);
+        gdm_chooser_widget_set_selected_item (GDM_CHOOSER_WIDGET (widget), id);
 }
 
 static void

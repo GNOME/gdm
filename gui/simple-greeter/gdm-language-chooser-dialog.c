@@ -159,11 +159,10 @@ gdm_language_chooser_dialog_init (GdmLanguageChooserDialog *dialog)
                                                                setlocale (LC_MESSAGES, NULL));
         gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), dialog->priv->chooser_widget);
 
-#if 0
         g_signal_connect_swapped (G_OBJECT (dialog->priv->chooser_widget),
                                   "activated", G_CALLBACK (queue_response),
                                   dialog);
-#endif
+
         gtk_dialog_add_buttons (GTK_DIALOG (dialog),
                                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                 GTK_STOCK_OK, GTK_RESPONSE_OK,
@@ -174,6 +173,7 @@ gdm_language_chooser_dialog_init (GdmLanguageChooserDialog *dialog)
         gtk_container_set_border_width (GTK_CONTAINER (dialog->priv->chooser_widget), 5);
         gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
         gtk_window_set_default_size (GTK_WINDOW (dialog), 512, 440);
+        gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
 }
 
 static void

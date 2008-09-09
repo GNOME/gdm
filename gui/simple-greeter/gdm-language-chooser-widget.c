@@ -84,14 +84,14 @@ gdm_language_chooser_widget_set_current_language_name (GdmLanguageChooserWidget 
         g_return_if_fail (GDM_IS_LANGUAGE_CHOOSER_WIDGET (widget));
 
         if (lang_name == NULL) {
-                gdm_chooser_widget_set_active_item (GDM_CHOOSER_WIDGET (widget),
-                                                   NULL);
+                gdm_chooser_widget_set_selected_item (GDM_CHOOSER_WIDGET (widget),
+                                                      NULL);
                 return;
         }
 
         name = gdm_normalize_language_name (lang_name);
-        gdm_chooser_widget_set_active_item (GDM_CHOOSER_WIDGET (widget),
-                                            name);
+        gdm_chooser_widget_set_selected_item (GDM_CHOOSER_WIDGET (widget),
+                                              name);
 
         g_free (name);
 }

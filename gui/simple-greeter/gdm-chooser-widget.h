@@ -106,6 +106,8 @@ gboolean      gdm_chooser_widget_lookup_item                  (GdmChooserWidget 
                                                                gboolean                   *is_separate);
 
 char *         gdm_chooser_widget_get_selected_item            (GdmChooserWidget          *widget);
+void           gdm_chooser_widget_set_selected_item            (GdmChooserWidget          *widget,
+                                                                const char                *item);
 
 char *         gdm_chooser_widget_get_active_item              (GdmChooserWidget          *widget);
 void           gdm_chooser_widget_set_active_item              (GdmChooserWidget          *widget,
