@@ -7,12 +7,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: help.gnome-2-20\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-07 03:16+0000\n"
-"PO-Revision-Date: 2008-09-11 11:43+0200\n"
+"POT-Creation-Date: 2008-09-12 12:07+0000\n"
+"PO-Revision-Date: 2008-09-13 10:56+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type:  text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
@@ -409,6 +409,9 @@ msgid ""
 "category in <ulink type=\"http\" url=\"http://bugzilla.gnome.org/\"> http://"
 "bugzilla.gnome.org</ulink>."
 msgstr ""
+"Envíe cualquier informe de error o sugerencias de mejoras a la categoría "
+"«gdm» en <ulink type=\"http\" url=\"http://bugzilla.gnome.org/\">http://"
+"bugzilla.gnome.org</ulink>."
 
 #: C/gdm.xml:203(title)
 msgid "Interface Stability"
@@ -423,6 +426,13 @@ msgid ""
 "options never made sense, and in part because some functionaly hasn't been "
 "reimplemented yet."
 msgstr ""
+"Las versiones GDM 2.20 y anteriores soportaban configuraciones de interfaces "
+"estables. No obstante, el código base se ha reescrito completamente para "
+"GNOME 2.22 y no es totalmente compatible hacia atrás con las versiones "
+"anteriores. Esto es en parte porque las cosas funcionan de diferente forma, "
+"algunas opciones simplemente no tienen sentido, en parte porque algunas "
+"opciones nuevas las han sustituido y en parte porque algunas funcionalidades "
+"aún no se han implementado."
 
 #: C/gdm.xml:214(para)
 msgid ""
@@ -432,6 +442,11 @@ msgid ""
 "filename> file continue to be supported. Also, the <filename>~/.dmrc</"
 "filename>, and face browser image locations are still supported."
 msgstr ""
+"Las interfaces que continúan siendo soportadas de forma estable incluyen "
+"Init, PreSession, PostSession, PostLogin y los scripts Xsession. Algunas "
+"opciones de configuración del demonio en el archivo <filename>&lt;etc&gt;/"
+"gdm/custom.conf</filename> aún están soportadas. También, <filename>~/.dmrc</"
+"filename> y las ubicaciones del visor de rostros están soportadas."
 
 #: C/gdm.xml:223(para)
 msgid ""
@@ -442,6 +457,13 @@ msgid ""
 "login screen. These features are did not get added back during the 2.22 "
 "rewrite."
 msgstr ""
+"Las versiones de GDM 2.20 y anteriores soportaban la capacidad de gestionar "
+"pantallas múltiples con tarjetas gráficas separadas, como se usa en entornos "
+"de terminales de servidor, iniciando sesión a traes de programas como Xnest "
+"o Xephyr, el programa gdmsetup, la interfaz de entrada con temas y la "
+"capacidad de ejecutar el selector XDMCP desde la pantalla de inicio de "
+"sesión. Estas características no se han añadido durante la reescritura de la "
+"versión 2.22."
 
 #: C/gdm.xml:235(title)
 msgid "Functional Description"
@@ -454,7 +476,6 @@ msgstr "Descripción funcional"
 #.                technical aspects.
 #. </para>
 #: C/gdm.xml:246(para)
-#, fuzzy
 msgid ""
 "GDM is responsible for managing displays on the system. This includes "
 "authenticating users, starting the user session, and terminating the user "
@@ -462,14 +483,11 @@ msgid ""
 "in the \"Configuring GDM\" section of this document. GDM is also accessible "
 "for users with disabilities."
 msgstr ""
-"El demonio GDM es responsable de gestionar pantallas en el sistema. Esto "
-"incluye la autenticación de usuarios, iniciar la sesión del usuario y "
-"terminar la sesión del usuario. GDM es configurable y las formas en que "
-"puede configurarse se describen en la sección «Configurar GDM» de este "
-"documento. Los scripts <filename>Init</filename>, <filename>PostLogin</"
-"filename>, <filename>PreSession</filename>, y <filename>PostSession</"
-"filename> de los que se habla más abajo se tratan en esta sección «Configurar "
-"GDM»."
+"GDM es responsable de gestionar pantallas en el sistema. Esto incluye la "
+"autenticación de usuarios, iniciar la sesión del usuario y terminar la "
+"sesión del usuario. GDM es configurable y las formas en que puede "
+"configurarse se describen en la sección «Configurar GDM» de este documento. "
+"GDM también es accesible para usuarios con discapacidades."
 
 #: C/gdm.xml:254(para)
 msgid ""
@@ -479,6 +497,11 @@ msgid ""
 "the console via the Xserver Virtual Terminal (VT) interface. It also can "
 "manage XDMCP displays."
 msgstr ""
+"GDM proporciona la capacidad de gestionar la consola principal de la "
+"pantalla y las pantallas lanzadas a través de VT. Está integrado con otros "
+"programas, tales como la miniaplicación del selector de usuarios y el "
+"salvapantallas para gestionar múltiples pantallas en la consola a través del "
+"terminal virtual (TV) de Xserver. También puede gestionar pantallas XDMCP."
 
 #: C/gdm.xml:262(para)
 msgid ""
@@ -487,6 +510,10 @@ msgid ""
 "filename> script as the root user, and start the greeter program on the "
 "display."
 msgstr ""
+"Independientemente del tipo de pantalla, GDM hará lo siguiente cuando "
+"gestione la pantalla. Iniciará un proceso Xserver, después ejecutará el "
+"script <filename>Init</filename> como usuario root e iniciará el programa "
+"interfaz de entrada con temas en la pantalla."
 
 #: C/gdm.xml:269(para)
 msgid ""
@@ -534,9 +561,8 @@ msgid ""
 msgstr ""
 
 #: C/gdm.xml:318(title)
-#, fuzzy
 msgid "Greeter Panel"
-msgstr "Greeter"
+msgstr "El panel de la interfaz de entrada con temas"
 
 #: C/gdm.xml:319(para)
 msgid ""
@@ -560,7 +586,6 @@ msgid "Accessibility"
 msgstr "Accesibilidad"
 
 #: C/gdm.xml:339(para)
-#, fuzzy
 msgid ""
 "GDM supports \"Accessible Login\", allowing users to log into their desktop "
 "session even if they cannot easily use the screen, mouse, or keyboard in the "
@@ -571,25 +596,21 @@ msgid ""
 msgstr ""
 "GDM soporta «Inicio de sesión accesible» permitiendo que los usuarios inicien "
 "sesión en su escritorio incluso si no pueden usar fácilmente la pantalla, el "
-"ratón o el teclado de la forma usual. Los programas de tecnología de "
-"asistencia (TA) tales como <command>GOK</command> (teclado en pantalla) y "
-"<command>orca</command> (maginificador y texto a voz) están soportados. La "
-"«Interfaz de entrada GTK+» soporta mejor la accesibilidad, de tal forma que "
-"se recomienda. La «Interfaz de entrada con temas» soporta algunas "
-"características de accesibilidad y algunos usuarios pueden usarla. Pero "
-"algunos programas de TA, como <command>GOK</command>, aún no funcionan bien "
-"con la «Interfaz de entrada con temas»."
+"ratón o el teclado de la forma usual. Las características de las Tecnologías "
+"de asistencia, tales como el teclado en pantalla, el lector de pantalla, el "
+"magnificador de pantalla y la accesibilidad del teclado están disponibles. "
+"También es posible activar texto grande o mayor contraste de iconos y "
+"controles si es necesario."
 
 #: C/gdm.xml:349(para)
-#, fuzzy
 msgid ""
 "On some Operating Systems, it is necessary to make sure that the GDM user is "
 "a member of the \"audio\" group for AT programs that require audio output "
 "(such as text-to-speech) to be functional."
 msgstr ""
 "En algunos sistemas operativos es necesario asegurarse de que el usuario de "
-"GDM es un miembro del grupo \"audio\" para los programas de accesibilidad "
-"que necesiten salida de sonido (tal como texto-a-voz) para su funcionamiento."
+"GDM es un miembro del grupo «audio» para los programas de accesibilidad que "
+"necesiten salida de sonido (tal como texto-a-voz) para su funcionamiento."
 
 #: C/gdm.xml:357(title)
 msgid "The GDM Face Browser"
@@ -615,6 +636,10 @@ msgid ""
 "frequently at the top of the list. This helps to ensure that users who log "
 "in frequently can quickly find their login image."
 msgstr ""
+"El Visor de rostros está configurado para mostrar al principio de la lista a "
+"los usuarios que inician sesión más frecuentemente. Esto ayuda a que los "
+"usuarios que inician sesión frecuentemente puedan encontrar rápidamente su "
+"imagen de inicio de sesión."
 
 #: C/gdm.xml:379(para)
 msgid ""
@@ -626,7 +651,6 @@ msgid ""
 msgstr ""
 
 #: C/gdm.xml:387(para)
-#, fuzzy
 msgid ""
 "The icons used by GDM can be installed globally by the sysadmin or can be "
 "located in the user's home directories. If installed globally they should be "
@@ -638,14 +662,11 @@ msgstr ""
 "Los iconos usados por GDM pueden instalarse globalmente por el administrador "
 "del sistema o pueden colocarse en los directorios personales de los "
 "usuarios. Si se instalan globalmente deberían estar en el directorio "
-"<filename>&lt;share&gt;/pixmaps/faces/</filename> (aunque esto puede "
-"configurarse con la opción <filename>GlobalFaceDir</filename>) y el nombre "
-"del archivo debería ser el nombre del usuario, opcionalmente con un "
-"<filename>.png</filename> agregado. Los iconos de caras colocados en el "
-"directorio global de caras deben ser legibles por el usuario de GDM. Sin "
-"embargo, el demonio, proximiza las imágenes de los usuarios al interfaz y "
-"debido a esto no tienen que ser legibles por el usuario «gdm» sino por el "
-"root."
+"<filename>&lt;share&gt;/pixmaps/faces/</filename> y el nombre del archivo "
+"debería ser el nombre del usuario. Los archivos de imágenes de rostro "
+"deberían ser una imágen estándar que GTK+ pueda leer, como PNG o JPEG. Los "
+"iconos de caras colocados en el directorio global de caras deben ser "
+"legibles por el usuario de GDM."
 
 #. <para>
 #.         TODO - In the old GDM the ~/gnome2/gdm file is used, but the new code
@@ -827,7 +848,7 @@ msgstr ""
 
 #: C/gdm.xml:521(title)
 msgid "Fast User Switching"
-msgstr ""
+msgstr "Cambio rápido de usuarios"
 
 #: C/gdm.xml:523(para)
 msgid ""
@@ -1377,6 +1398,8 @@ msgid ""
 "The GDM script integration points can be found in the <filename>&lt;etc&gt;/"
 "gdm/</filename> directory:"
 msgstr ""
+"Los puntos de integración de scripts para GDM se pueden encontrar en el "
+"directorio <filename>&lt;etc&gt;/gdm/</filename>:"
 
 #: C/gdm.xml:928(screen)
 #, no-wrap
@@ -1551,6 +1574,8 @@ msgstr ""
 #: C/gdm.xml:1066(para)
 msgid "A full list of supported configuration keys follow:"
 msgstr ""
+"A continuación está la lista completa de las claves de configuración "
+"soportadas:"
 
 #: C/gdm.xml:1071(title)
 msgid "[daemon]"
@@ -1636,13 +1661,12 @@ msgid "TimedLoginDelay=30"
 msgstr "TimedLoginDelay=30"
 
 #: C/gdm.xml:1127(para)
-#, fuzzy
 msgid ""
 "Delay in seconds before the <filename>TimedLogin</filename> user will be "
 "logged in."
 msgstr ""
 "Retardo en segundos antes de que el usuario <filename>TimedLogin</filename> "
-"entre en la sesión. Debe ser mayor o igual a 10."
+"entre en la sesión."
 
 #: C/gdm.xml:1135(term)
 msgid "AutomaticLoginEnable"
@@ -1795,7 +1819,6 @@ msgstr ""
 "es <filename>gdm</filename>"
 
 #: C/gdm.xml:1237(para)
-#, fuzzy
 msgid ""
 "You should add <screen>\n"
 "gdm:.my.domain\n"
@@ -1803,10 +1826,11 @@ msgid ""
 "your TCP Wrappers configuration. See the <ulink type=\"help\" url=\"man:"
 "hosts.allow\">hosts.allow</ulink> man page for details."
 msgstr ""
-"Debería añadir <screen>gdm:.mi.dominio</screen> a su <filename>&lt;etc&gt;/"
-"hosts.allow</filename>, dependiendo de su configuración de TCP Wrappers. Vea "
-"la página del manual <ulink type=\"help\" url=\"man:hosts.allow\">hosts.allow"
-"(5)</ulink> para más detalles."
+"Debería añadir <screen>\n"
+"gdm:.mi.dominio\n"
+"</screen> a su <filename>&lt;etc&gt;/hosts.allow</filename>, dependiendo de "
+"su configuración de TCP Wrappers. Vea la página del manual <ulink type=\"help"
+"\" url=\"man:hosts.allow\">hosts.allow</ulink> para más detalles."
 
 #: C/gdm.xml:1248(para)
 msgid ""
@@ -2181,7 +2205,7 @@ msgstr "Configuración del interfaz"
 
 #: C/gdm.xml:1489(term)
 msgid "/apps/gdm/simple-greeter/banner_message_enable"
-msgstr ""
+msgstr "/apps/gdm/simple-greeter/banner_message_enable"
 
 #: C/gdm.xml:1491(synopsis) C/gdm.xml:1522(synopsis) C/gdm.xml:1533(synopsis)
 #, no-wrap
@@ -2194,7 +2218,7 @@ msgstr ""
 
 #: C/gdm.xml:1499(term)
 msgid "/apps/gdm/simple-greeter/banner_message_text"
-msgstr ""
+msgstr "/apps/gdm/simple-greeter/banner_message_text"
 
 #: C/gdm.xml:1501(synopsis)
 #, no-wrap
@@ -2207,7 +2231,7 @@ msgstr ""
 
 #: C/gdm.xml:1510(term)
 msgid "/apps/gdm/simple-greeter/logo_icon_name"
-msgstr ""
+msgstr "/apps/gdm/simple-greeter/logo_icon_name"
 
 #: C/gdm.xml:1512(synopsis)
 #, no-wrap
@@ -2220,7 +2244,7 @@ msgstr ""
 
 #: C/gdm.xml:1520(term)
 msgid "/apps/gdm/simple-greeter/disable_restart_buttons"
-msgstr ""
+msgstr "/apps/gdm/simple-greeter/disable_restart_buttons"
 
 #: C/gdm.xml:1523(para)
 msgid "Controls whether to show the restart buttons in the login window."
@@ -2228,7 +2252,7 @@ msgstr ""
 
 #: C/gdm.xml:1531(term)
 msgid "/apps/gdm/simple-greeter/wm_use_compiz"
-msgstr ""
+msgstr "/apps/gdm/simple-greeter/wm_use_compiz"
 
 #: C/gdm.xml:1534(para)
 msgid ""
@@ -2237,7 +2261,7 @@ msgstr ""
 
 #: C/gdm.xml:1544(title)
 msgid "General Session Settings"
-msgstr ""
+msgstr "Ajustes generales de sesión"
 
 #. <para>
 #.           TODO - I think this section should be expanded upon.  What specific
@@ -2257,7 +2281,7 @@ msgstr ""
 
 #: C/gdm.xml:1564(title)
 msgid "GNOME Settings Daemon"
-msgstr ""
+msgstr "Administrador de preferencias de GNOME"
 
 #. <para>
 #.           TODO - I think this section should be expanded upon.  What specific
@@ -2288,9 +2312,8 @@ msgid ""
 msgstr ""
 
 #: C/gdm.xml:1595(title)
-#, fuzzy
 msgid "GDM Session Configuration"
-msgstr "Configuración del demonio"
+msgstr "Configuración de sesión de GDM"
 
 #: C/gdm.xml:1597(para)
 msgid ""
@@ -2317,7 +2340,7 @@ msgstr ""
 
 #: C/gdm.xml:1620(title)
 msgid "GDM User Session and Language Configuration"
-msgstr ""
+msgstr "Sesión de usuario de GDM y configuración de idioma"
 
 #: C/gdm.xml:1621(para)
 msgid ""
@@ -2329,22 +2352,18 @@ msgid ""
 msgstr ""
 
 #: C/gdm.xml:1629(para)
-#, fuzzy
 msgid ""
 "The <filename>~/.dmrc</filename> file is in the standard <filename>INI</"
 "filename> format. It has one section called <filename>[Desktop]</filename> "
 "which has two keys: <filename>Session</filename> and <filename>Language</"
 "filename>."
 msgstr ""
-"Primero está el archivo <filename>~/.dmrc</filename>. En teoría este archivo "
-"debería ser compartido entre GDM y KDM, así que los usuarios sólo tienen que "
-"configurar las cosas una vez. Esto es un archivo de configuración de estilo "
-"<filename>.ini</filename> estándar. Tiene una sección llamada <filename>"
-"[Desktop]</filename> que tiene dos claves: <filename>Session</filename> y "
-"<filename>Language</filename>."
+"El archivo <filename>~/.dmrc</filename> está en el formato <filename>INI</"
+"filename> estándar. Tiene una sección llamada <filename>[Desktop]</filename> "
+"que tiene dos claves: <filename>Session</filename> y <filename>Language</"
+"filename>."
 
 #: C/gdm.xml:1636(para)
-#, fuzzy
 msgid ""
 "The <filename>Session</filename> key specifies the basename of the session "
 "<filename>.desktop</filename> file that the user wishes to normally use "
@@ -2355,11 +2374,11 @@ msgid ""
 msgstr ""
 "La clave <filename>Session</filename> especifica el nombre base del archivo "
 "<filename>.desktop</filename> de sesión que el usuario quiere usar "
-"normalmente (sin la extensión <filename>.desktop</filename>, en otras "
-"palabras). La clave <filename>Language</filename> especifica el idioma que "
-"el usuario quiere usar por omisión. Si cualquiera de estas dos claves falta, "
-"se usa el predeterminado del sistema. El archivo normalmente tiene la "
-"apariencia siguiente:"
+"normalmente, sin la extensión <filename>.desktop</filename>. La clave "
+"<filename>Language</filename> especifica el idioma que el usuario quiere "
+"usar de forma predeterminada. Si cualquiera de estas dos claves falta, se "
+"usa el predeterminado del sistema. El archivo normalmente tiene la siguiente "
+"apariencia:"
 
 #: C/gdm.xml:1645(screen)
 #, no-wrap
@@ -2383,13 +2402,12 @@ msgid "GDM Root User Commands"
 msgstr "Comandos del administrador de GDM"
 
 #: C/gdm.xml:1662(para)
-#, fuzzy
 msgid ""
 "The GDM package provides the following commands in <filename>sbindir</"
 "filename> intended to be run by the root user:"
 msgstr ""
-"El paquete GDM proporciona los siguientes comandos diferentes en "
-"<filename>sbindir</filename> con la intención de que los use el usario root:"
+"El paquete GDM proporciona los siguientes comandos en <filename>sbindir</"
+"filename> con la intención de que los use el usario root:"
 
 #: C/gdm.xml:1668(title) C/gdm.xml:1683(title)
 msgid ""
@@ -2420,18 +2438,16 @@ msgstr ""
 "algún entorno adicional antes de lanzar GDM, puede hacer eso en este script."
 
 #: C/gdm.xml:1687(term)
-#, fuzzy
 msgid "-?, --help"
-msgstr "--help"
+msgstr "-?, --help"
 
 #: C/gdm.xml:1689(para)
 msgid "Gives a brief overview of the command line options."
 msgstr "Da un breve resumen de las opciones de línea de comandos."
 
 #: C/gdm.xml:1696(term)
-#, fuzzy
 msgid "--debug"
-msgstr "-d, --debug"
+msgstr "--debug"
 
 #: C/gdm.xml:1698(para)
 msgid ""
@@ -2441,22 +2457,20 @@ msgid ""
 msgstr ""
 
 #: C/gdm.xml:1708(term)
-#, fuzzy
 msgid "--fatal-warnings"
-msgstr "caps-lock-warning"
+msgstr "--fatal-warnings"
 
 #: C/gdm.xml:1710(para)
 msgid "Make all warnings cause GDM to exit."
-msgstr ""
+msgstr "Causa que todas las advertencias hagan que GDM salga."
 
 #: C/gdm.xml:1717(term)
-#, fuzzy
 msgid "--timed-exit"
-msgstr "timed-label"
+msgstr "--timed-exit"
 
 #: C/gdm.xml:1719(para)
 msgid "Exit after 30 seconds. Useful for debugging."
-msgstr ""
+msgstr "Sale después de 30 segundos. Útil para depuración."
 
 #: C/gdm.xml:1726(term)
 msgid "--version"
@@ -2658,9 +2672,9 @@ msgstr ""
 #: C/gdm.xml:0(None)
 msgid "translator-credits"
 msgstr ""
-"Jorge González <jorgegonz@svn.gnome.org>, 2007-2008.\n"
-"Lucas Vieites <lucas@asixinformatica.com>, 2007.\n"
-"Francisco Javier F. Serrador <serrador@openshine.com>, 2003, 2006."
+"Jorge González <jorgegonz@svn.gnome.org>, 2007-2008\n"
+"Lucas Vieites <lucas@asixinformatica.com>, 2007\n"
+"Francisco Javier F. Serrador <serrador@openshine.com>, 2003, 2006"
 
 #~ msgid "Bill"
 #~ msgstr "Bill"
