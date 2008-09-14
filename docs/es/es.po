@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: help.gnome-2-20\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-09-12 12:07+0000\n"
-"PO-Revision-Date: 2008-09-13 20:29+0200\n"
+"PO-Revision-Date: 2008-09-14 13:48+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -317,7 +317,7 @@ msgid ""
 "webserver provided by the X.org Foundation <ulink type=\"http\" url=\"http://"
 "www.x.org/\">http://www.x.org</ulink>."
 msgstr ""
-"Xserver: Una implementación del X Windows System. Por ejemplo el servidor "
+"Servidor X: Una implementación del X Windows System. Por ejemplo el servidor "
 "web de Xorg proporcionado por la Fundación X.org <ulink type=\"http\" url="
 "\"http://www.x.org/\">http://www.x.org</ulink>."
 
@@ -501,7 +501,8 @@ msgstr ""
 "pantalla y las pantallas lanzadas a través de VT. Está integrado con otros "
 "programas, tales como la miniaplicación del selector de usuarios y el "
 "salvapantallas para gestionar múltiples pantallas en la consola a través del "
-"terminal virtual (TV) de Xserver. También puede gestionar pantallas XDMCP."
+"terminal virtual (TV) del servidor X. También puede gestionar pantallas "
+"XDMCP."
 
 #: C/gdm.xml:262(para)
 msgid ""
@@ -511,8 +512,8 @@ msgid ""
 "display."
 msgstr ""
 "Independientemente del tipo de pantalla, GDM hará lo siguiente cuando "
-"gestione la pantalla. Iniciará un proceso Xserver, después ejecutará el "
-"script <filename>Init</filename> como usuario root e iniciará el programa "
+"gestione la pantalla. Iniciará un proceso del servidor X, después ejecutará "
+"el script <filename>Init</filename> como usuario root e iniciará el programa "
 "interfaz de entrada con temas en la pantalla."
 
 #: C/gdm.xml:269(para)
@@ -1664,6 +1665,8 @@ msgid ""
 "This is the user that should be logged in after a specified number of "
 "seconds of inactivity."
 msgstr ""
+"Éste es el usuario que debería iniciar sesión después de un número de "
+"segundos de inactividad especificado."
 
 #: C/gdm.xml:1124(term)
 msgid "TimedLoginDelay"
@@ -1696,6 +1699,9 @@ msgid ""
 "If true, the user given in <filename>AutomaticLogin</filename> should be "
 "logged in immediately. This feature is like timed login with a delay of 0."
 msgstr ""
+"Si está activada, el usuario proporcionado en <filename>AutomaticLogin</"
+"filename> debería iniciar sesión inmediatamente. Esta característica es como "
+"un inicio de sesión temporizado con retraso 0."
 
 #: C/gdm.xml:1146(term)
 msgid "AutomaticLogin"
@@ -1711,6 +1717,8 @@ msgid ""
 "This is the user that should be logged in immediately if "
 "<filename>AutomaticLoginEnable</filename> is true."
 msgstr ""
+"Este es el usuario que debería iniciar sesión inmediatamente si "
+"<filename>AutomaticLoginEnable</filename> está activada (true)."
 
 #: C/gdm.xml:1157(term)
 msgid "User"
@@ -1727,6 +1735,10 @@ msgid ""
 "to the <filename>Group</filename> configuration key and to the \"Security-"
 "&gt;GDM User And Group\" section of this document for more information."
 msgstr ""
+"El usuario bajo el cual la interfaz y otros programas con IGU se ejecutan. "
+"Consulte la clave de configuración <filename>Group</filename> y la sección "
+"«Seguridad -&gt;El usuario y grupo GDM» de este documento para obtener más "
+"información."
 
 #: C/gdm.xml:1172(title)
 msgid "Security Options"
@@ -2124,7 +2136,6 @@ msgstr ""
 "terminal diferente."
 
 #: C/gdm.xml:1423(para)
-#, fuzzy
 msgid ""
 "In order to use this feature, you must have a nested Xserver available which "
 "supports disconnecting from its parent Xserver and reconnecting to another "
@@ -2132,11 +2143,11 @@ msgid ""
 "feature to some extent and other projects like NoMachine NX are busy "
 "implementing it."
 msgstr ""
-"Para usar esta característica, debe tener un servidor X anidado disponible "
+"Para usar esta característica debe tener un servidor X anidado disponible "
 "que soporte desconectar de su servidor X padre y reconectar a otro servidor "
 "X. Actualmente el servidor Distributed Multihead X (DMX) soporta esta "
 "característica hasta cierto punto y otros proyectos como NoMachine NX lo "
-"están implementándolo."
+"están implementándo."
 
 #: C/gdm.xml:1431(para)
 msgid ""
@@ -2158,7 +2169,6 @@ msgid "ProxyXServer="
 msgstr "ProxyXServer="
 
 #: C/gdm.xml:1443(para)
-#, fuzzy
 msgid ""
 "The Xserver command line for a XDMCP proxy. Any nested X server like Xnest, "
 "Xephyr or Xdmx should work fairly well."
@@ -2176,7 +2186,6 @@ msgid "Willing=&lt;etc&gt;/gdm/Xwilling"
 msgstr "Willing=&lt;etc&gt;/gdm/Xwilling"
 
 #: C/gdm.xml:1454(para)
-#, fuzzy
 msgid ""
 "When the machine sends a WILLING packet back after a QUERY it sends a string "
 "that gives the current status of this server. The default message is the "
@@ -2187,9 +2196,9 @@ msgid ""
 "every 3 seconds to prevent possible denial of service by flooding the "
 "machine with QUERY packets."
 msgstr ""
-"Cuando la máquina devuelve un paquete WILLING tras un QUERY envía una cadena "
-"que da el estado actual del servidor. El mensaje predeterminado es el ID de "
-"sistema, pero es posible crear un script que muestre un mensaje "
+"Cuando la máquina envía un paquete WILLING tras un QUERY envía una cadena "
+"que proporciona el estado actual del servidor. El mensaje predeterminado es "
+"el ID de sistema, pero es posible crear un script que muestre un mensaje "
 "personalizado. Si este script no existe o esta clave está vacía se envía el "
 "mensaje predeterminado. Si el script tiene éxito y produce alguna salida, se "
 "envía la primera línea de la salida (y sólo la primera línea). Se ejecuta "
@@ -2197,9 +2206,8 @@ msgstr ""
 "servicio inundando la máquina de paquetes QUERY."
 
 #: C/gdm.xml:1473(title)
-#, fuzzy
 msgid "Simple Greeter Configuration"
-msgstr "Configuración del interfaz"
+msgstr "Configuración simple de la interfaz"
 
 #: C/gdm.xml:1475(para)
 msgid ""
@@ -2213,9 +2221,8 @@ msgid ""
 msgstr ""
 
 #: C/gdm.xml:1486(title)
-#, fuzzy
 msgid "Greeter Configuration Keys"
-msgstr "Configuración del interfaz"
+msgstr "Claves de configuración de la interfaz"
 
 #: C/gdm.xml:1489(term)
 msgid "/apps/gdm/simple-greeter/banner_message_enable"
@@ -2224,11 +2231,11 @@ msgstr "/apps/gdm/simple-greeter/banner_message_enable"
 #: C/gdm.xml:1491(synopsis) C/gdm.xml:1522(synopsis) C/gdm.xml:1533(synopsis)
 #, no-wrap
 msgid "false (boolean)"
-msgstr ""
+msgstr "false (booleano)"
 
 #: C/gdm.xml:1492(para)
 msgid "Controls whether the banner message text is displayed."
-msgstr ""
+msgstr "Controla si se muestra o no el mensaje de texto."
 
 #: C/gdm.xml:1499(term)
 msgid "/apps/gdm/simple-greeter/banner_message_text"
@@ -2237,11 +2244,12 @@ msgstr "/apps/gdm/simple-greeter/banner_message_text"
 #: C/gdm.xml:1501(synopsis)
 #, no-wrap
 msgid "NULL (string)"
-msgstr ""
+msgstr "NULL (cadena)"
 
 #: C/gdm.xml:1502(para)
 msgid "Specifies the text banner message to show on the greeter window."
 msgstr ""
+"Especifica el mensaje de texto que mostrar en la ventana de la interfaz."
 
 #: C/gdm.xml:1510(term)
 msgid "/apps/gdm/simple-greeter/logo_icon_name"
@@ -2250,11 +2258,13 @@ msgstr "/apps/gdm/simple-greeter/logo_icon_name"
 #: C/gdm.xml:1512(synopsis)
 #, no-wrap
 msgid "computer (string)"
-msgstr ""
+msgstr "computer (cadena)"
 
 #: C/gdm.xml:1513(para)
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr ""
+"Establecida al nombre del tema de iconos que usar para el logotipo de la "
+"interfaz."
 
 #: C/gdm.xml:1520(term)
 msgid "/apps/gdm/simple-greeter/disable_restart_buttons"
@@ -2263,6 +2273,8 @@ msgstr "/apps/gdm/simple-greeter/disable_restart_buttons"
 #: C/gdm.xml:1523(para)
 msgid "Controls whether to show the restart buttons in the login window."
 msgstr ""
+"Controla si se deben mostrar los botones de reinicio en la ventana de "
+"entrada."
 
 #: C/gdm.xml:1531(term)
 msgid "/apps/gdm/simple-greeter/wm_use_compiz"
@@ -2272,6 +2284,7 @@ msgstr "/apps/gdm/simple-greeter/wm_use_compiz"
 msgid ""
 "Controls whether compiz is used as the window manager instead of metacity."
 msgstr ""
+"Controla si se usa compiz como gestor de ventanas en lugar de metacity."
 
 #: C/gdm.xml:1544(title)
 msgid "General Session Settings"
@@ -2311,12 +2324,16 @@ msgid ""
 "GDM enables the following gnome-settings-daemon plugins: a11y-keyboard, "
 "background, sound, xsettings."
 msgstr ""
+"GDM activa los siguientes complementos de gnome-settings-daemon: a11y-"
+"keyboard, background, sound, xsettings."
 
 #: C/gdm.xml:1582(para)
 msgid ""
 "These are responsible for things like the background image, font and theme "
 "settings, sound events, etc."
 msgstr ""
+"Éstos son responsables de cosas como la imagen de fondo, los ajustes de "
+"tipografía y tema, eventos de sonido, etc."
 
 #: C/gdm.xml:1587(para)
 msgid ""
@@ -2324,6 +2341,10 @@ msgid ""
 "disable the sound plugin then unset the following key: <filename>/apps/gdm/"
 "simple-greeter/settings-manager-plugins/sound/active</filename>."
 msgstr ""
+"Los complementos también se pueden desactivar usando GConf. Por ejemplo, si "
+"quiere desactivar el complemento de sonido desactive la siguiente clave: "
+"<filename>/apps/gdm/simple-greeter/settings-manager-plugins/sound/active</"
+"filename>."
 
 #: C/gdm.xml:1595(title)
 msgid "GDM Session Configuration"
@@ -2336,6 +2357,11 @@ msgid ""
 "\"http://www.freedesktop.org/wiki/Specifications/desktop-entry-spec\"> "
 "http://www.freedesktop.org/wiki/Specifications/desktop-entry-spec</ulink>."
 msgstr ""
+"Las sesiones de GDM se especifican usando la Especificación de Entrada de "
+"Escritorio de FreeDesktop.org, que se puede consultar en el siguiente URL: "
+"<ulink url=\"http://www.freedesktop.org/wiki/Specifications/desktop-entry-"
+"spec\"> http://www.freedesktop.org/wiki/Specifications/desktop-entry-spec</"
+"ulink>."
 
 #: C/gdm.xml:1604(para)
 msgid ""
@@ -2345,12 +2371,20 @@ msgid ""
 "xsessions</filename>, and <filename>&lt;share/gdm/BuiltInSessions</filename> "
 "directories are also recognized by GDM."
 msgstr ""
+"Estos archivos se instalan de forma predeterminada en <filename>&lt;etc&gt;/"
+"X11/sessions/</filename>. Para compatibilidad hacia atrás con cualquier "
+"archivo de escritorio GDM también reconoce cualquier archivo en los "
+"directorios <filename>&lt;etc&gt;/Sessions</filename>, <filename>&lt;"
+"share&gt;/xsessions</filename> y <filename>&lt;share/gdm/BuiltInSessions</"
+"filename>."
 
 #: C/gdm.xml:1613(para)
 msgid ""
 "A session can be disabled by editing the desktop file and adding a line that "
 "says <filename>Hidden=true</filename>."
 msgstr ""
+"Se puede desactivar una sesión editando el archivo de escritorio y añadiendo "
+"una línea que diga <filename>Hidden=true</filename>."
 
 #: C/gdm.xml:1620(title)
 msgid "GDM User Session and Language Configuration"
@@ -2364,6 +2398,12 @@ msgid ""
 "these default values by simply changing to a different value when logging "
 "in. GDM will remember this change for subsequent logins."
 msgstr ""
+"Las opciones de sesión e idioma de usuario se almacenan en el archivo "
+"<filename>~/.dmrc</filename>. Cuando un usuario inicia sesión la primera "
+"vez, el archivo se crea con las opciones iniciales del usuario. El usuario "
+"puede cambiar estos valores predeterminados simplemente cambiándolos a un "
+"valor diferente al iniciar sesión. GDM recordará estos cambios para inicios "
+"posteriores."
 
 #: C/gdm.xml:1629(para)
 msgid ""
@@ -2431,7 +2471,6 @@ msgstr ""
 "binary</command>"
 
 #: C/gdm.xml:1671(para)
-#, fuzzy
 msgid ""
 "The <command>gdm</command> command is really just a script which runs the "
 "<command>gdm-binary</command>, passing along any options. Before launching "
@@ -2443,13 +2482,13 @@ msgid ""
 "actual GDM daemon."
 msgstr ""
 "El comando <command>gdm</command> es realmente sólo un script que ejecuta el "
-"<command>gdm-binary</command>, pasando cualquier opción. Anted de lanzar "
+"<command>gdm-binary</command>, pasando cualquier opción. Antes de lanzar "
 "<command>gdm-binary</command>, el script de envoltura de gdm incluirá el "
 "archivo <filename>&lt;etc&gt;/profile</filename> para establecer las "
-"variables de entorno estándar. Para soportar mejor la internacionalización, "
-"establecerá la variable de entorno LC_MESSAGES a LANG si cualquiera de "
-"LC_MESSAGES o LC_ALL está establecida. Si realmente necesita establecer "
-"algún entorno adicional antes de lanzar GDM, puede hacer eso en este script."
+"variables de entorno del sistema estándar. Para soportar mejor la "
+"internacionalización establecerá la variable de entorno LC_MESSAGES a LANG "
+"si cualquiera de LC_MESSAGES o LC_ALL está establecida. <command>gdm-binary</"
+"command> es el demonio actual de GDM."
 
 #: C/gdm.xml:1687(term)
 msgid "-?, --help"
@@ -2469,6 +2508,9 @@ msgid ""
 "log/messages</filename> or <filename>&lt;var&gt;/adm/messages</filename> "
 "depending on your Operating System."
 msgstr ""
+"Imprime información de depuración al syslog. Éste generalmente es "
+"<filename>&lt;var&gt;/log/messages</filename> o <filename>&lt;var&gt;/adm/"
+"messages</filename> dependiendo de su sistema operativo."
 
 #: C/gdm.xml:1708(term)
 msgid "--fatal-warnings"
@@ -2541,21 +2583,18 @@ msgstr "Resolución de problemas"
 #.              common D-Bus configuration issues?
 #. </para>
 #: C/gdm.xml:1778(para)
-#, fuzzy
 msgid ""
 "This section discusses helpful tips for getting GDM working. In general, if "
 "you have a problem using GDM, you can submit a bug or send an email to the "
 "gdm-list mailing list. Information about how to do this is in the "
 "Introduction section of the document."
 msgstr ""
-"Esta sección hace acerca de consejos útiles para hacer funcionar GDM. En "
-"general, si tiene un problema al usar GDM, puede enviar un bug a la "
-"categoría «gdm» en <ulink type=\"http\" url=\"http://bugzilla.gnome.org/"
-"\">bugzilla.gnome.org</ulink> o enviar un correo-e a la lista de correo "
-"<address><email>gdm-list@gnome.org</email></address>."
+"Esta sección habla acerca de consejos útiles para hacer funcionar GDM. En "
+"general, si tiene un problema al usar GDM puede enviar un bug o un correo-e "
+"a la lista de correo. En la sección de introducción del documento se "
+"proporciona información sobre esto."
 
 #: C/gdm.xml:1785(para)
-#, fuzzy
 msgid ""
 "If GDM is failing to work properly, it is always a good idea to include "
 "debug information. To turn on debug, launch gdm with the --debug option. "
@@ -2569,16 +2608,16 @@ msgid ""
 "\"man:syslog\">syslog</ulink> man page)."
 msgstr ""
 "Si GDM comienza a no funcionar correctamente, siempre es buena idea incluir "
-"la información de depuración. Use el comando <command>gdmsetup</command> "
-"para activar la depuración (la casilla «Activar envío de mensajes de "
-"depuración al registro del sistema» en la solapa «Seguridad»), después use "
-"GDM hasta el punto donde falla, e incluya la salida de GDM que se envió a su "
-"registro del sistema (<filename>&lt;var&gt;/log/messages</filename> o "
-"<filename>&lt;var&gt;/adm/messages</filename> dependiendo de su sistema "
-"operativo). Ya que el registro del sistema puede ser muy grande, incluya "
-"sólo la información de depuración de GDM y no envíe el archivo entero. Si no "
-"ve ninguna salida de depuración de GDM, quizá necesite configurar el "
-"registro del sistema (consulte la página syslog.3c)."
+"la información de depuración. Para activar la depuración lance gdm con la "
+"opción «--debug». Después use GDM hasta el punto donde falla y la salida de "
+"depuración se enviará a su registro del sistema (<filename>&lt;var&gt;/log/"
+"messages</filename> o <filename>&lt;var&gt;/adm/messages</filename> "
+"dependiendo de su sistema operativo). YSi comparte esta salida con la "
+"comunidad de GDM a través de un informe de error o un correo electrónico, "
+"incluya sólo la información de depuración relativa a GDM y no el archivo "
+"completo ya que puede ser muy grande. Si no ve ninguna salida de depuración "
+"de GDM, quizá necesite configurar el registro del sistema (consulte la "
+"página man de <ulink type=\"help\" url=\"man:syslog\">syslog</ulink>)."
 
 #: C/gdm.xml:1800(title)
 msgid "GDM Will Not Start"
@@ -2599,7 +2638,6 @@ msgstr ""
 "seguir un problema cuando GDM falla de forma silenciosa."
 
 #: C/gdm.xml:1811(para)
-#, fuzzy
 msgid ""
 "First make sure that the Xserver is configured properly. The GDM "
 "configuration file contains a command in the [server-Standard] section that "
@@ -2614,13 +2652,13 @@ msgstr ""
 "Primero asegúrese de que el servidor X está configurado apropiadamente. El "
 "archivo de configuración de GDM contiene un comando en la sección [server-"
 "Standard] que se usa para iniciar el servidor X. Compruebe que este comando "
-"funciona en su sistema. Al ejecutar este comando se debería iniciar el "
-"servidor X desde la consola. Si falla, entonces el problema probablemente "
-"sea de la configuración de su servidor X. Consulte el registro de error de "
-"su servidor X para obtener una idea de cuál puede ser el problema. El "
-"problema también puede ser que su servidor X requiere diferentes opciones en "
-"la línea de comandos. Si es así, modifique el comando del servidor X en el "
-"archivo de configuración de GDM para que sea correcto en su sistema."
+"funciona en su sistema. Al ejecutar este comando desde la consola se debería "
+"iniciar el servidor X. Si falla, entonces el problema probablemente sea de "
+"la configuración de su servidor X. Consulte el registro de error de su "
+"servidor X para obtener una idea de cuál puede ser el problema. El problema "
+"también puede ser que su servidor X requiera diferentes opciones en la línea "
+"de comandos. Si es así, modifique el comando del servidor X en el archivo de "
+"configuración de GDM para que sea correcto para su sistema."
 
 #: C/gdm.xml:1824(para)
 msgid ""
