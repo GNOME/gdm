@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: help.gnome-2-20\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-09-12 12:07+0000\n"
-"PO-Revision-Date: 2008-09-14 22:11+0200\n"
+"PO-Revision-Date: 2008-09-15 07:01+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1339,6 +1339,9 @@ msgid ""
 "used to control this. Simply modify the <filename>/etc/user_attr</filename> "
 "file so that the \"gdm\" user has this authorization."
 msgstr ""
+"Por ejemplo, en Solaris, la autorización «solaris system shutdown» se usa "
+"para controlar esto. Simplemente modifique el archivo <filename>/etc/"
+"user_attr</filename> para que el usuario «gdm» tenga esta autorización."
 
 #: C/gdm.xml:854(title)
 msgid "Support for ConsoleKit"
@@ -1434,6 +1437,11 @@ msgid ""
 "session configuration. These types of integration are described in detail "
 "below."
 msgstr ""
+"GDM tiene un número de configuración de interfaces. Estas incluyen puntos de "
+"integración de scripts, configuración del demonio, configuración de la "
+"interfaz, ajustes generales de sesión, integración con la configuración de "
+"gnome-settings-daemon y configuración de la sesión. Estos tipos de "
+"integración se describen debajo en detalle."
 
 #: C/gdm.xml:921(title)
 msgid "Scripting Integration Points"
@@ -1641,6 +1649,10 @@ msgid ""
 "to the <filename>User</filename> configuration key and to the \"Security-&gt;"
 "GDM User And Group\" section of this document for more information."
 msgstr ""
+"El nombre de grupo bajo el cual la interfaz gráfica y otros programas IGU se "
+"ejecutan. Consulte la clave de configuración <filename>User</filename> y la "
+"sección «Seguridad -&gt;Usuario y grupo GDM» de este documento para obtener "
+"más información."
 
 #: C/gdm.xml:1088(term)
 msgid "TimedLoginEnable"
@@ -1817,17 +1829,16 @@ msgid "DisplaysPerHost=1"
 msgstr "DisplaysPerHost=1"
 
 #: C/gdm.xml:1202(para)
-#, fuzzy
 msgid ""
 "To prevent attackers from filling up the pending queue, GDM will only allow "
 "one connection for each remote computer. If you want to provide display "
 "services to computers with more than one screen, you should increase this "
 "value."
 msgstr ""
-"Para impedir que los atacantes llenen la cola de pendientes, GDM sólo "
+"Para prevenir que los atacantes llenen la cola de pendientes, GDM sólo "
 "permite una conexión para cada equipo remoto. Si quiere proporcionar "
-"servicios de pantalla a equipos con más de un monitor, debería incrementar "
-"el valor <filename>DisplaysPerHost</filename>."
+"servicios de pantalla a equipos con más de un monitor debería incrementar "
+"este valor."
 
 #: C/gdm.xml:1209(para)
 msgid ""
@@ -1906,17 +1917,16 @@ msgid "EnableProxy=false"
 msgstr "EnableProxy=false"
 
 #: C/gdm.xml:1260(para)
-#, fuzzy
 msgid ""
 "Setting this to true enables support for running XDMCP sessions on a local "
 "proxy Xserver. This may improve the performance of XDMCP sessions, "
 "especially on high latency networks, as many X protocol operations can be "
 "completed without going over the network."
 msgstr ""
-"Estableciendo esto a true se activa el soporte para ejecutar sesiones XDMCP "
+"Estableciendo esto a «true» se activa el soporte para ejecutar sesiones XDMCP "
 "en un servidor proxy local de X. De esta forma se puede mejorar el "
 "rendimiento de las sesiones XDMCP, especialmente en redes de alta latencia, "
-"debido a que muchas opraciones del protocolo X se pueden completar sin ir "
+"debido a que muchas operaciones del protocolo X se pueden completar sin ir "
 "por la red."
 
 #: C/gdm.xml:1268(para)
@@ -1947,7 +1957,6 @@ msgid "HonorIndirect=true"
 msgstr "HonorIndirect=true"
 
 #: C/gdm.xml:1285(para)
-#, fuzzy
 msgid ""
 "Enables XDMCP INDIRECT choosing (i.e. remote execution of "
 "<filename>gdmchooser</filename>) for X-terminals which do not supply their "
@@ -1976,7 +1985,6 @@ msgstr ""
 "pantallas."
 
 #: C/gdm.xml:1303(para)
-#, fuzzy
 msgid ""
 "Please note that this parameter does not limit the number of remote displays "
 "which can be managed. It only limits the number of displays initiating a "
@@ -2098,7 +2106,6 @@ msgid "Port=177"
 msgstr "Port=177"
 
 #: C/gdm.xml:1380(para)
-#, fuzzy
 msgid ""
 "The UDP port number <filename>gdm</filename> should listen to for XDMCP "
 "requests. Do not change this unless you know what you are doing."
@@ -2116,7 +2123,6 @@ msgid "PingIntervalSeconds=15"
 msgstr "PingIntervalSeconds=15"
 
 #: C/gdm.xml:1392(para)
-#, fuzzy
 msgid ""
 "Interval in which to ping the Xserver in seconds. If the Xserver does not "
 "return before the next time we ping it, the connection is stopped and the "
@@ -2124,7 +2130,7 @@ msgid ""
 "PingTimeout, but in seconds."
 msgstr ""
 "Intervalo en el que hacer ping al servidor X en segundos. Si el servidor X "
-"no responde antes de la siguiente vez que lanzamos un ping a él, la conexión "
+"no responde antes de la siguiente vez que se lance un ping a él, la conexión "
 "se detiene y la sesión termina. Esta es una combinación de las opciones de "
 "XDM PingInterval y PingTimeout, pero en segundos."
 
@@ -2236,7 +2242,7 @@ msgstr ""
 
 #: C/gdm.xml:1473(title)
 msgid "Simple Greeter Configuration"
-msgstr "Configuración simple de la interfaz"
+msgstr "Configuración de la interfaz simple"
 
 #: C/gdm.xml:1475(para)
 msgid ""
@@ -2248,6 +2254,14 @@ msgid ""
 "<command>gconf-editor</command> programs. The following configuration "
 "options are supported:"
 msgstr ""
+"El tema predeterminado de la interfaz gráfica se llama simple y se configura "
+"a través de GConf. Los valores predeterminados se almacenan en GConf en el "
+"archivo <filename>gdm-simple-greeter.schemas</filename>. Estos valores "
+"predeterminados se pueden sobreescribir si el usuario «gdm» tiene un "
+"directorio $HOME escribible para almacenar ajustes de GConf. Estos valores "
+"se pueden editar usando los programas <command>gconftool-2</command> o "
+"<command>gconf-editor</command>. Las siguientes opciones de configuración "
+"están soportadas:"
 
 #: C/gdm.xml:1486(title)
 msgid "Greeter Configuration Keys"
@@ -2334,6 +2348,13 @@ msgid ""
 "mandatory policy. GDM installs its own mandatory policy to lock down some "
 "settings for security."
 msgstr ""
+"La interfaz gráfica con temas de GDM usa algunos componentes del entorno de "
+"trabajo que su sesión de escritorio usará. Y por ello está influenciada por "
+"cierto número de los mismos ajustes de GConf. Para cada uno de estos ajustes "
+"la interfaz gráfica usará los valores predeterminados a no ser que se "
+"sobreescriban por a) La política obligatoria instalada de GDM; b) la "
+"política obligatoria del sistema. GDM instala su propia política obligatoria "
+"para bloquear algunos ajustes por seguridad."
 
 #: C/gdm.xml:1564(title)
 msgid "GNOME Settings Daemon"
