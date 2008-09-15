@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD.ar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-02 05:37+0000\n"
-"PO-Revision-Date: 2008-03-08 17:33-0000\n"
+"POT-Creation-Date: 2008-09-15 10:51+0100\n"
+"PO-Revision-Date: 2008-09-15 11:01+0100\n"
 "Last-Translator: Djihed Afifi <djihed@gmail.com>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "MIME-Version: 1.0\n"
@@ -179,8 +179,8 @@ msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: تجاهل ملف كوكي مريب %s"
 
 #: ../daemon/auth.c:867
-#: ../daemon/gdm.c:1510
-#: ../daemon/gdm.c:1881
+#: ../daemon/gdm.c:1554
+#: ../daemon/gdm.c:1925
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "لا يمكن الكتابة على %s: %s"
@@ -195,17 +195,17 @@ msgstr "لا يمكن الكتابة على %s: %s"
 #. * that should give people ample time to stop gdm if needed,
 #. * or just wait for the stupid malicious user to get bored
 #. * and go away
-#: ../daemon/display.c:196
+#: ../daemon/display.c:203
 #, c-format
 msgid "The display server has been shut down about 6 times in the last 90 seconds. It is likely that something bad is going on.  Waiting for 2 minutes before trying again on display %s."
 msgstr "أُطفِأ خادم العرض ستة مرّات في التسعين دقيقة الآخيرة، يبدو أن شيئا سيئاً يحدث. سأنتظر دقيقتان قبل المحوالة مرة أخرى على العرض %s."
 
-#: ../daemon/display.c:340
+#: ../daemon/display.c:481
 #, c-format
 msgid "%s: Cannot create pipe"
 msgstr "%s: لا يمكن إنشاء أنبوب"
 
-#: ../daemon/display.c:416
+#: ../daemon/display.c:565
 #, c-format
 msgid "%s: Failed forking GDM slave process for %s"
 msgstr "%s:·فشل تشعيب عملية عبد لم‌ع‌ج من أجل %s"
@@ -236,142 +236,152 @@ msgstr "%s لم يمكن فتحه"
 msgid "%s: Cannot fork to display error/info box"
 msgstr "%s: لا يمكن التشعيب لعرض صندوق المعلومات/الأخطاء"
 
-#: ../daemon/gdm-daemon-config.c:1127
+#: ../daemon/gdm-daemon-config-keys.h:44
+#: ../gui/gdmlogin.c:2501
+msgid "Welcome"
+msgstr "أهلا بك"
+
+#: ../daemon/gdm-daemon-config-keys.h:45
+#, c-format
+msgid "Welcome to %n"
+msgstr "أهلا بك في %n"
+
+#: ../daemon/gdm-daemon-config.c:1128
 #, c-format
 msgid "%s: Priority out of bounds; changed to %d"
 msgstr "%s: أولوية زائدة عن الحد، تم تغييرها إلى %Id"
 
-#: ../daemon/gdm-daemon-config.c:1133
+#: ../daemon/gdm-daemon-config.c:1134
 #, c-format
 msgid "%s: Empty server command; using standard command."
 msgstr "%s: أمر خادم فارغ، يجري استخدام الأمر القياسي"
 
-#: ../daemon/gdm-daemon-config.c:1350
+#: ../daemon/gdm-daemon-config.c:1256
 #, c-format
 msgid "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 msgstr "%s: دليل السجل %s غير موجود أو ليس دليلا. سيستخدم ServAuthDir %s."
 
-#: ../daemon/gdm-daemon-config.c:1375
+#: ../daemon/gdm-daemon-config.c:1281
 #, c-format
 msgid "Server Authorization directory (daemon/ServAuthDir) is set to %s but this does not exist. Please correct GDM configuration and restart GDM."
 msgstr "دليل تصاريح الخادم (daemon/ServAuthDir) ضبط لـ %s لكنه غير موجود. رجاء صحح إعداد م‌ع‌ج ثم أعد تشغيل م‌ع‌ج."
 
-#: ../daemon/gdm-daemon-config.c:1386
+#: ../daemon/gdm-daemon-config.c:1292
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: Authdir %s غير موجود. إلغاء."
 
-#: ../daemon/gdm-daemon-config.c:1391
+#: ../daemon/gdm-daemon-config.c:1297
 #, c-format
 msgid "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is not a directory. Please correct GDM configuration and restart GDM."
 msgstr "دليل تراخيص الخادم (daemon/ServAuthDir) مضبوط لـ %s لكن هذا ليس بدليل. رجاء اصلح إعداد م‌ع‌ج ثم أعد تشغيل م‌ع‌ج."
 
-#: ../daemon/gdm-daemon-config.c:1402
+#: ../daemon/gdm-daemon-config.c:1308
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: Authdir %s ليس دليلا. إلغاء."
 
-#: ../daemon/gdm-daemon-config.c:1578
+#: ../daemon/gdm-daemon-config.c:1484
 #, c-format
 msgid "%s: BaseXsession empty; using %s"
 msgstr "%s:·BaseXsession فارغة، سيستخدم %s"
 
-#: ../daemon/gdm-daemon-config.c:1622
+#: ../daemon/gdm-daemon-config.c:1528
 #, c-format
 msgid "%s: Standard X server not found; trying alternatives"
 msgstr "%s: تعذر ايجاد خادم X القياسي، يجري تجربة البدائل"
 
-#: ../daemon/gdm-daemon-config.c:1684
+#: ../daemon/gdm-daemon-config.c:1590
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: لم يحدد مُرِحّب."
 
-#: ../daemon/gdm-daemon-config.c:1700
+#: ../daemon/gdm-daemon-config.c:1606
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: لم يحدد مُرَحِّب بعيد."
 
-#: ../daemon/gdm-daemon-config.c:1716
+#: ../daemon/gdm-daemon-config.c:1622
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s:لم يحدد دليل جلسات."
 
-#: ../daemon/gdm-daemon-config.c:1764
+#: ../daemon/gdm-daemon-config.c:1670
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support; turning it off"
 msgstr "%s: مُكِّن XDMCP برغم انعدام دعمه، يجري تعطيله"
 
-#: ../daemon/gdm-daemon-config.c:1989
-#: ../daemon/gdm-daemon-config.c:2032
+#: ../daemon/gdm-daemon-config.c:1895
+#: ../daemon/gdm-daemon-config.c:1938
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Aborting!"
 msgstr "%s: عُطِّل XDMCP ولا يوجد خادم محلي معرف.إلغاء! "
 
 #. start
 #. server uid
-#: ../daemon/gdm-daemon-config.c:2008
+#: ../daemon/gdm-daemon-config.c:1914
 #, c-format
 msgid "%s: XDMCP disabled and no static servers defined. Adding %s on :%d to allow configuration!"
 msgstr "%s:  عُطِّل XDMCP ولم تحدد أي خوادم محلية يجري إضافة %s على :%Id لتمكين الإعداد!"
 
-#: ../daemon/gdm-daemon-config.c:2023
+#: ../daemon/gdm-daemon-config.c:1929
 msgid "XDMCP is disabled and GDM cannot find any static server to start.  Aborting!  Please correct the configuration and restart GDM."
 msgstr "عُطِّل XDMCP ولم يعثر م‌ع‌ج على أي خادم محلي للبدء.  إلغاء!  الرجاء تصحيح الإعدادات %s وإعادة تشغيل م‌ع‌ج."
 
-#: ../daemon/gdm-daemon-config.c:2066
+#: ../daemon/gdm-daemon-config.c:1972
 #, c-format
 msgid "The GDM user '%s' does not exist. Please correct GDM configuration and restart GDM."
 msgstr "مستخدم م‌ع‌ج '%s' غير موجود. رجاء صحح إعدادات م‌ع‌ج ثم أعد تشغيل م‌ع‌ج."
 
-#: ../daemon/gdm-daemon-config.c:2074
+#: ../daemon/gdm-daemon-config.c:1980
 #, c-format
 msgid "%s: Can't find the GDM user '%s'. Aborting!"
 msgstr "%s: لم أجد مستخدم م‌ع‌ج '%s'.إلغاء!"
 
-#: ../daemon/gdm-daemon-config.c:2081
+#: ../daemon/gdm-daemon-config.c:1987
 msgid "The GDM user is set to be root, but this is not allowed since it can pose a security risk.  Please correct GDM configuration and restart GDM."
 msgstr "مستخدم م‌ع‌ج ضبط كجذر، لكن ذلك ممنوع لكونه قد يشكل خطرا أمنيا.رجاء صحح إعداد م‌ع‌ج ثم أعدة تشغيل م‌ع‌ج."
 
-#: ../daemon/gdm-daemon-config.c:2091
+#: ../daemon/gdm-daemon-config.c:1997
 #, c-format
 msgid "%s: The GDM user should not be root. Aborting!"
 msgstr "%s:  يجب أن لا يكون مستخدم م‌ع‌ج جذر. إلغاء!"
 
-#: ../daemon/gdm-daemon-config.c:2098
+#: ../daemon/gdm-daemon-config.c:2004
 #, c-format
 msgid "The GDM group '%s' does not exist. Please correct GDM configuration and restart GDM."
 msgstr "مجموعة  م‌ع‌ج '%s' غير موجودة. رجاء صحح إعداد م‌ع‌ج ثم أعد تشغيل م‌ع‌ج."
 
-#: ../daemon/gdm-daemon-config.c:2106
+#: ../daemon/gdm-daemon-config.c:2012
 #, c-format
 msgid "%s: Can't find the GDM group '%s'. Aborting!"
 msgstr "%s: لم أجد ايجاد مجموعة م‌ع‌ج '%s'. إلغاء!"
 
-#: ../daemon/gdm-daemon-config.c:2113
+#: ../daemon/gdm-daemon-config.c:2019
 msgid "The GDM group is set to be root, but this is not allowed since it can pose a security risk. Please correct GDM configuration and restart GDM."
 msgstr "مجموعة م‌ع‌ج ضبطت لتكون جذر، لكن ذلك ممنوع لكونه قد يشكل خطرا أمنيا. رجاء تصحيح إعداد م‌ع‌ج ثم أعد تشغيل م‌ع‌ج."
 
-#: ../daemon/gdm-daemon-config.c:2122
+#: ../daemon/gdm-daemon-config.c:2028
 #, c-format
 msgid "%s: The GDM group should not be root. Aborting!"
 msgstr "%s: يجب أن لا تكون مجموعة م‌ع‌ج جذر. إلغاء!"
 
-#: ../daemon/gdm-daemon-config.c:2170
+#: ../daemon/gdm-daemon-config.c:2076
 #, c-format
 msgid "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not owned by user %d and group %d. Please correct the ownership or GDM configuration and restart GDM."
 msgstr "دليل توثيق الخادم (daemon/ServAuthDir) مضبوط لـ %s لكن ليس ملكا للمستخدم %Id و المجموعة %Id. رجاءا صحح الملكية أو إعدادات م‌ع‌ج ثم أعِد تشغيل م‌ع‌ج."
 
-#: ../daemon/gdm-daemon-config.c:2183
+#: ../daemon/gdm-daemon-config.c:2089
 #, c-format
 msgid "%s: Authdir %s is not owned by user %d, group %d. Aborting."
 msgstr "%s: الدليل Authdir·%s ليس ملكا للمستخدم %Id، المجموعة %Id. يجري الإجهاض."
 
-#: ../daemon/gdm-daemon-config.c:2192
+#: ../daemon/gdm-daemon-config.c:2098
 #, c-format
 msgid "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the wrong permissions: it should have permissions of %o. Please correct the permissions or the GDM configuration and restart GDM."
 msgstr "دليل تصاريح الخادم (daemon/ServAuthDir) مضبوط لـ %s لكن التصاريح خاطئة، يجب أن يملك التصاريح %o. رجاء صحح التصاريح أو إعدادات م‌ع‌ج ثم إعادة تشغيل م‌ع‌ج."
 
-#: ../daemon/gdm-daemon-config.c:2205
+#: ../daemon/gdm-daemon-config.c:2111
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr "%s: تصاريح الدليل Authdir·%s خاطئة %o. يجب أن تكون %o.·إلغاء."
@@ -403,16 +413,16 @@ msgstr "لا يمكن إنشاء ذاكرة XDMCP المؤقتّة!"
 #. FIXME: how to handle this?
 #: ../daemon/gdm.c:195
 #: ../daemon/gdm.c:203
-#: ../daemon/gdm.c:1643
-#: ../daemon/gdm.c:1651
+#: ../daemon/gdm.c:1687
+#: ../daemon/gdm.c:1695
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"
 msgstr "لا يمكن كتابة ملف الـ PID %s، ربما لعدم وجود فضاء على القرص. خطأ: %s\n"
 
 #: ../daemon/gdm.c:197
 #: ../daemon/gdm.c:205
-#: ../daemon/gdm.c:1645
-#: ../daemon/gdm.c:1653
+#: ../daemon/gdm.c:1689
+#: ../daemon/gdm.c:1697
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s"
 msgstr "لا يمكن كتابة ملف الـ PID %s، ربما لعدم وجود فضاء على القرص.  خطأ: %s"
@@ -424,22 +434,22 @@ msgstr "%s: فشل fork () !"
 
 #. should never happen
 #: ../daemon/gdm.c:219
-#: ../daemon/slave.c:3582
+#: ../daemon/slave.c:3585
 #, c-format
 msgid "%s: setsid () failed: %s!"
 msgstr "%s: فشل setsid() : %s!"
 
-#: ../daemon/gdm.c:447
+#: ../daemon/gdm.c:463
 #, c-format
 msgid "%s: Trying failsafe X server %s"
 msgstr "%s: يجري محاولة  تشغيل خادم X الآمن من الفشل %s"
 
-#: ../daemon/gdm.c:465
+#: ../daemon/gdm.c:481
 #, c-format
 msgid "%s: Running the XKeepsCrashing script"
 msgstr "%s: يجري تشغيل XKeepsCrashing script"
 
-#: ../daemon/gdm.c:579
+#: ../daemon/gdm.c:595
 msgid "The X server (your graphical interface) cannot be started.  It is likely that it is not set up correctly.  You will need to log in on a console and rerun the X configuration application, then restart GDM."
 msgstr "لا يمكنني تشغيل خادم X (واجهتك الرسومية). يبدو أنه لم يتم ضبطه بشكل صحيح. ستحتاج للولوج في شاشة طرفية (console) و إعادة تشغيل برنامج إعداد X. ثم اعد تشغيل م‌ع‌ج."
 
@@ -448,164 +458,164 @@ msgstr "لا يمكنني تشغيل خادم X (واجهتك الرسومية).
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: ../daemon/gdm.c:591
+#: ../daemon/gdm.c:607
 #, c-format
 msgid "Failed to start X server several times in a short time period; disabling display %s"
 msgstr "فشل تشغيل خادم X للعديد من المرات في وقت قصير، سيُعَطّل العرض %s"
 
-#: ../daemon/gdm.c:653
-#: ../daemon/gdm.c:2527
+#: ../daemon/gdm.c:669
+#: ../daemon/gdm.c:2571
 msgid "Master suspending..."
 msgstr "يجري تعليق السيد..."
 
-#: ../daemon/gdm.c:684
+#: ../daemon/gdm.c:700
 #, c-format
 msgid "System is restarting, please wait ..."
 msgstr "النظام بصدد إعادة التشغيل، رجاء الانتظار ..."
 
-#: ../daemon/gdm.c:686
+#: ../daemon/gdm.c:702
 #, c-format
 msgid "System is shutting down, please wait ..."
 msgstr "النظام بصدد الإطفاء، رجاء الانتظار ..."
 
-#: ../daemon/gdm.c:697
+#: ../daemon/gdm.c:713
 msgid "Master halting..."
 msgstr "يجري ايقاف السيد..."
 
-#: ../daemon/gdm.c:719
+#: ../daemon/gdm.c:736
 msgid "Restarting computer..."
 msgstr "يجري إعادة تشغيل الحاسوب..."
 
 #. We are just feeling very paranoid
-#: ../daemon/gdm.c:741
+#: ../daemon/gdm.c:759
 #, c-format
 msgid "custom_cmd: Custom command index %ld outside permitted range [0,%d)"
 msgstr "custom_cmd: فهرس الأمر المخصّص %ld خارج المدى المسموح [0,%Id)"
 
-#: ../daemon/gdm.c:762
+#: ../daemon/gdm.c:780
 #, c-format
 msgid "Executing custom command %ld with restart option..."
 msgstr "يجري تنفيذ الأمر المخصّص %ld مع خيار إعادة التشغيل..."
 
-#: ../daemon/gdm.c:785
-#: ../daemon/gdm.c:823
+#: ../daemon/gdm.c:803
+#: ../daemon/gdm.c:841
 #, c-format
 msgid "%s: Execution of custom command failed: %s"
 msgstr "%s: فشل تنفيذ الأمر المخصّص: %s"
 
-#: ../daemon/gdm.c:794
+#: ../daemon/gdm.c:812
 #, c-format
 msgid "Executing custom command %ld with no restart option ..."
 msgstr "يجري تنفيذ الأمر المخصّص %ld بدون خيار إعادة التشغيل..."
 
 #. failed fork
-#: ../daemon/gdm.c:800
+#: ../daemon/gdm.c:818
 #, c-format
 msgid "custom_cmd: forking process for custom command %ld failed"
 msgstr "custom_cmd: فشل تشعيب عمليّة الأمر المخصّص %ld "
 
-#: ../daemon/gdm.c:834
+#: ../daemon/gdm.c:852
 #, c-format
 msgid "custom_cmd: child %d returned %d"
 msgstr "custom_cmd: أرجع %Id الإبن %Id"
 
-#: ../daemon/gdm.c:943
+#: ../daemon/gdm.c:969
 #, c-format
 msgid "Restart GDM, Restart machine, Suspend, or Halt request when there is no system menu from display %s"
 msgstr "طلب اعادة تشغيل م‌ع‌ج، أو إعادة تشغيل الجهاز، أو الإطفاء عند عدم وجود قائمة نظام من قِبَل العرض %s"
 
-#: ../daemon/gdm.c:952
+#: ../daemon/gdm.c:975
 #, c-format
 msgid "Restart GDM, Restart machine, Suspend or Halt request from a non-static display %s"
 msgstr "طلب إعادة تشغيل م‌ع‌ج، أو إعادة تشغيل الجهاز، أو الإطفاء من عرض غير محلي %s"
 
 #. Bury this display for good
-#: ../daemon/gdm.c:1018
+#: ../daemon/gdm.c:1052
 #, c-format
 msgid "%s: Aborting display %s"
 msgstr "%s: إجهاض العرض %s"
 
-#: ../daemon/gdm.c:1169
+#: ../daemon/gdm.c:1213
 msgid "GDM restarting ..."
 msgstr "يجري إعادة تشغيل م‌ع‌ج..."
 
-#: ../daemon/gdm.c:1173
+#: ../daemon/gdm.c:1217
 msgid "Failed to restart self"
 msgstr "فشل في إعادة تشغيل نفسه"
 
 #. FIXME: note that this could mean out of memory
-#: ../daemon/gdm.c:1258
+#: ../daemon/gdm.c:1302
 msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
 msgstr "المراقب الرئيسي: تلقي SIGABRT، حدث شيئا خاطئ جدا. سيوقف الحاسوب!"
 
-#: ../daemon/gdm.c:1415
+#: ../daemon/gdm.c:1459
 msgid "Do not fork into the background"
 msgstr "لا تشعب إلى الخلفية"
 
-#: ../daemon/gdm.c:1417
+#: ../daemon/gdm.c:1461
 msgid "No console (static) servers to be run"
 msgstr "لا خوادم كونسول (محليّة) لتشغيلها"
 
-#: ../daemon/gdm.c:1419
+#: ../daemon/gdm.c:1463
 msgid "Alternative GDM System Defaults configuration file"
 msgstr "ملف م‌ع‌ج لإعدادات النظام الإفتراضية البديل"
 
-#: ../daemon/gdm.c:1419
+#: ../daemon/gdm.c:1463
 msgid "CONFIGFILE"
 msgstr "CONFIGFILE"
 
-#: ../daemon/gdm.c:1421
+#: ../daemon/gdm.c:1465
 msgid "Preserve LD_* variables"
 msgstr "حافظ على متغيرات LD_* "
 
-#: ../daemon/gdm.c:1423
+#: ../daemon/gdm.c:1467
 msgid "Print GDM version"
 msgstr "اطبع إصدارة م‌ع‌ج"
 
-#: ../daemon/gdm.c:1425
+#: ../daemon/gdm.c:1469
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr "ابدأ خادم X الأول ثم الإيقاف حتى نتلقّى GO في الـ fifo"
 
-#: ../daemon/gdm.c:1499
-#: ../daemon/gdm.c:1845
+#: ../daemon/gdm.c:1543
+#: ../daemon/gdm.c:1889
 #, c-format
 msgid "Can't open %s for writing"
 msgstr "لا يمكن فتح %s للكتابة"
 
-#: ../daemon/gdm.c:1550
+#: ../daemon/gdm.c:1594
 msgid "- The GNOME login manager"
 msgstr "- مدير ولوج جنوم"
 
-#: ../daemon/gdm.c:1551
+#: ../daemon/gdm.c:1595
 #: ../gui/gdmXnestchooser.c:487
 #: ../gui/gdmXnestchooser.c:495
-#: ../gui/gdmchooser.c:1976
+#: ../gui/gdmchooser.c:1981
 #: ../gui/gdmflexiserver.c:755
 msgid "main options"
 msgstr "الخيارات الرئيسية"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/gdm.c:1582
+#: ../daemon/gdm.c:1626
 msgid "Only root wants to run GDM\n"
 msgstr "فقط الجذر يريد تشغيل م‌ع‌ج\n"
 
-#: ../daemon/gdm.c:1599
-#: ../daemon/gdm.c:1603
-#: ../daemon/gdm.c:1681
-#: ../daemon/gdm.c:1685
-#: ../daemon/gdm.c:1689
-#: ../daemon/gdm.c:1693
-#: ../daemon/gdm.c:1703
-#: ../daemon/gdm.c:1709
-#: ../daemon/gdm.c:1720
+#: ../daemon/gdm.c:1643
+#: ../daemon/gdm.c:1647
+#: ../daemon/gdm.c:1725
+#: ../daemon/gdm.c:1729
+#: ../daemon/gdm.c:1733
+#: ../daemon/gdm.c:1737
+#: ../daemon/gdm.c:1747
+#: ../daemon/gdm.c:1753
+#: ../daemon/gdm.c:1764
 #: ../daemon/misc.c:1394
 #: ../daemon/misc.c:1398
 #: ../daemon/misc.c:1402
 #: ../daemon/misc.c:1409
 #: ../daemon/misc.c:1413
 #: ../daemon/misc.c:1417
-#: ../daemon/server.c:528
-#: ../daemon/server.c:541
+#: ../daemon/server.c:529
+#: ../daemon/server.c:542
 #: ../daemon/slave.c:873
 #: ../daemon/slave.c:887
 #: ../daemon/slave.c:897
@@ -618,39 +628,39 @@ msgstr "فقط الجذر يريد تشغيل م‌ع‌ج\n"
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: خطأ ضبط معالج الإشارات %s: %s"
 
-#: ../daemon/gdm.c:1625
+#: ../daemon/gdm.c:1669
 msgid "GDM already running. Aborting!"
 msgstr "م‌ع‌ج يعمل بالفعل. إلغاء!"
 
-#: ../daemon/gdm.c:1729
+#: ../daemon/gdm.c:1773
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s:·خطأ·ضبط·معالج·إشارات CHLD"
 
-#: ../daemon/gdm.c:3183
+#: ../daemon/gdm.c:3227
 msgid "DYNAMIC request denied: Not authenticated"
 msgstr "رفض طلب DYNAMIC: غير موثّق"
 
-#: ../daemon/gdm.c:3476
-#: ../daemon/gdm.c:3740
-#: ../daemon/gdm.c:3824
-#: ../daemon/gdm.c:3954
-#: ../daemon/gdm.c:4001
-#: ../daemon/gdm.c:4069
-#: ../daemon/gdm.c:4132
-#: ../daemon/gdm.c:4172
-#: ../daemon/gdm.c:4217
+#: ../daemon/gdm.c:3520
+#: ../daemon/gdm.c:3784
+#: ../daemon/gdm.c:3868
+#: ../daemon/gdm.c:3998
+#: ../daemon/gdm.c:4045
+#: ../daemon/gdm.c:4113
+#: ../daemon/gdm.c:4176
+#: ../daemon/gdm.c:4216
+#: ../daemon/gdm.c:4261
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "%s رُفِض الطلب: غير موثّقن"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: ../daemon/gdm.c:3510
+#: ../daemon/gdm.c:3554
 msgid "Unknown server type requested; using standard server."
 msgstr "طُلِب نوع خادم مجهول، سيستخدم الخادم القياسي."
 
-#: ../daemon/gdm.c:3514
+#: ../daemon/gdm.c:3558
 #, c-format
 msgid "Requested server %s not allowed to be used for flexible servers; using standard server."
 msgstr "ممنوع استخدام الخادم المطلوب %s كخادم مرن، سيستخدم الخادم القياسي."
@@ -685,119 +695,119 @@ msgstr ""
 "الولوج الأخير:\n"
 "%s"
 
-#: ../daemon/server.c:157
+#: ../daemon/server.c:158
 msgid "Can not start fallback console"
 msgstr "لا يمكن تشغيل الكونسول الإحتياطي"
 
-#: ../daemon/server.c:347
+#: ../daemon/server.c:348
 #, c-format
 msgid "There already appears to be an X server running on display %s.  Should another display number by tried?  Answering no will cause GDM to attempt starting the server on %s again.%s"
 msgstr "يبدو أن هناك خادم X يعمل بالفعل على العرض %s.  هل ترغب مني محاولة رقم عرض آخر؟ إذا كانت إجابتك لا، فسأحاول تشغيل الخادم على %s مرة أخرى.%s"
 
-#: ../daemon/server.c:355
+#: ../daemon/server.c:356
 msgid "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and higher.)"
 msgstr "  (يمكنك تغيير الكونسول بنقر Ctrl-Alt مع مفتاح و ظيفة، مثل Ctrl-Alt-F7 للذهاب للكونسول 7. خوادم X تعمل عادة على كونسول 7 فما فوق.)"
 
-#: ../daemon/server.c:401
+#: ../daemon/server.c:402
 #, c-format
 msgid "Display '%s' cannot be opened by nested display"
 msgstr "لا يمكن فتح العرض '%s' من قبل العرض المعشّش"
 
-#: ../daemon/server.c:432
+#: ../daemon/server.c:433
 #, c-format
 msgid "Display %s is busy. There is another X server running already."
 msgstr "العرض %s مشغول. هناك خادم X آخر يعمل بالفعل."
 
-#: ../daemon/server.c:516
+#: ../daemon/server.c:517
 #, c-format
 msgid "%s: Error opening a pipe: %s"
 msgstr "%s: خطأ فتح أنبوب: %s"
 
-#: ../daemon/server.c:705
+#: ../daemon/server.c:706
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: فشل الإتصال بالعرض الأب '%s'"
 
 #. Send X too busy
-#: ../daemon/server.c:847
+#: ../daemon/server.c:848
 #, c-format
 msgid "%s: Cannot find a free display number"
 msgstr "%s: لا يمكن ايجاد رقم عرض شاغر"
 
-#: ../daemon/server.c:874
+#: ../daemon/server.c:875
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
 msgstr "%s: العرض %s مشغول.  يجري محاولة رقم عرض آخر."
 
-#: ../daemon/server.c:1036
+#: ../daemon/server.c:1037
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr "أمر خادم غير سليم '%s'"
 
-#: ../daemon/server.c:1044
+#: ../daemon/server.c:1045
 #, c-format
 msgid "Server name '%s' not found; using standard server"
 msgstr "اسم الخادم '%s' غير موجود، سيستعمل الخادم القياسي"
 
-#: ../daemon/server.c:1254
+#: ../daemon/server.c:1255
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: لم أستطع فتح ملف السجل للعرض %s!"
 
-#: ../daemon/server.c:1268
-#: ../daemon/server.c:1274
-#: ../daemon/server.c:1279
+#: ../daemon/server.c:1269
+#: ../daemon/server.c:1275
+#: ../daemon/server.c:1280
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: خطأ ضبط %s كـ %s"
 
-#: ../daemon/server.c:1337
+#: ../daemon/server.c:1338
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: أمر خادم فارغ للعرض %s"
 
-#: ../daemon/server.c:1347
+#: ../daemon/server.c:1348
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s:لا يمكن ضبط أولوية الخادم لتكون %Id: %s"
 
-#: ../daemon/server.c:1359
+#: ../daemon/server.c:1360
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "%s:  كان الخادم سيوّلد من قبل هوية المستخدم %Id لكن ذلك المستخدم غير موجود"
 
-#: ../daemon/server.c:1374
+#: ../daemon/server.c:1375
 #: ../daemon/slave.c:2674
 #: ../daemon/slave.c:3161
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: لم يمكن ضبط هوية المجموعة لـ %Id"
 
-#: ../daemon/server.c:1380
+#: ../daemon/server.c:1381
 #: ../daemon/slave.c:2680
 #: ../daemon/slave.c:3167
 #, c-format
 msgid "%s: initgroups () failed for %s"
 msgstr "%s: فشل  initgroups () لـ %s"
 
-#: ../daemon/server.c:1386
+#: ../daemon/server.c:1387
 #: ../daemon/slave.c:2685
 #: ../daemon/slave.c:3172
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: لم يمكن ضبط هوية المستخدم لـ %Id"
 
-#: ../daemon/server.c:1393
+#: ../daemon/server.c:1394
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr "%s: لا يمكن ضبط هوية المجموعة لـ 0"
 
-#: ../daemon/server.c:1420
+#: ../daemon/server.c:1421
 #, c-format
 msgid "%s: Xserver not found: %s"
 msgstr "%s: لم يوجد خادم X: %s"
 
-#: ../daemon/server.c:1428
+#: ../daemon/server.c:1429
 #, c-format
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s: X!لا يمكن تشعيب عملية خادم"
@@ -958,41 +968,41 @@ msgstr "%s: لا يمكن تشعيب عملية مخَيِّر م‌ع‌ج"
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: لا يمكن فتح ~/.xsession-errors"
 
-#: ../daemon/slave.c:3635
+#: ../daemon/slave.c:3638
 #, c-format
 msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr "%s:·تنفيذ النص الشفري PreSession أرجع >·0.·إلغاء."
 
-#: ../daemon/slave.c:3708
+#: ../daemon/slave.c:3711
 #, c-format
 msgid "Language %s does not exist; using %s"
 msgstr "الللغة %s غير موجودة، سأستخدم %s"
 
-#: ../daemon/slave.c:3709
+#: ../daemon/slave.c:3712
 msgid "System default"
 msgstr "إفتراضي النظام"
 
-#: ../daemon/slave.c:3726
+#: ../daemon/slave.c:3729
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: لم يمكن ضبط البيئة لـ %s. إلغاء"
 
-#: ../daemon/slave.c:3793
+#: ../daemon/slave.c:3796
 #, c-format
 msgid "%s: setusercontext () failed for %s. Aborting."
 msgstr "%s: فشل setusercontext () لـ %s. إلغاء."
 
-#: ../daemon/slave.c:3799
+#: ../daemon/slave.c:3802
 #, c-format
 msgid "%s: Could not become %s. Aborting."
 msgstr "%s: لم يمكن أن يصبح %s. إلغاء."
 
-#: ../daemon/slave.c:3831
+#: ../daemon/slave.c:3834
 #, c-format
 msgid "No Exec line in the session file: %s.  Running the GNOME failsafe session instead"
 msgstr "لا يوجد سطر Exec  في ملف الجلسة: %s. سيبدأ تنفيذ جنوم الآمن من الفشل عوضا عنه"
 
-#: ../daemon/slave.c:3834
+#: ../daemon/slave.c:3837
 #, c-format
 msgid "%s: %s"
 msgstr "%s: %s"
@@ -1007,138 +1017,138 @@ msgid "Cannot find or run the base session script.  Running the GNOME failsafe s
 msgstr "لا يمكن ايجاد أو تشغيل النص الشفري الأساسي للجلسات. سأحاول جلسة جنوم الآمنة من الفشل عوضا."
 
 #. yaikes
-#: ../daemon/slave.c:3899
+#: ../daemon/slave.c:3900
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr "%s:  لم يوجد gnome-session لجلسة جنوم آمنة من الفشل، سأحاول xterm"
 
-#: ../daemon/slave.c:3904
+#: ../daemon/slave.c:3905
 msgid "Could not find the GNOME installation, will try running the \"Failsafe xterm\" session."
 msgstr "لم أجد جنوم مثبت، سأحاول تشغيل جلسة \"xterm الآمنة من الفشل\"."
 
-#: ../daemon/slave.c:3912
+#: ../daemon/slave.c:3913
 msgid "This is the Failsafe GNOME session.  You will be logged into the 'Default' session of GNOME without the startup scripts being run.  This should be used to fix problems in your installation."
 msgstr "هذه جلسة جنوم الآمنة من الفشل.ستسجل دخول في جلسة جنوم الإفتراضية بدون تشغيل نصوص بدأ التسغيل الشفرية. هذا فقط لإصلاح المشاكل في تثبيتك."
 
-#: ../daemon/slave.c:3931
+#: ../daemon/slave.c:3932
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "لا يمكن ايجاد \"xterm\" لتشغيل جلسة آمنة من الفشل."
 
-#: ../daemon/slave.c:3941
+#: ../daemon/slave.c:3942
 msgid "This is the Failsafe xterm session.  You will be logged into a terminal console so that you may fix your system if you cannot log in any other way.  To exit the terminal emulator, type 'exit' and an enter into the window."
 msgstr "هذه جلسة xterm الآمنة من الفشل .ستلِج في شاشة طرفية حتى تصلح نظامك إذا لم يمكنك الولوج بأي طريقة أخرى.  للخروج من محاكي الطرفية، اكتب 'exit' في النافذة ثم زر الإدخال."
 
-#: ../daemon/slave.c:3960
+#: ../daemon/slave.c:3961
 msgid "This is the Failsafe xterm session.  You will be logged into a terminal console and be prompted to enter the password for root so that you may fix your system if you cannot log in any other way. To exit the terminal emulator, type 'exit' and an enter into the window."
 msgstr "هذه جلسة xterm الآمنة من الفشل .ستسجل في شاشة طرفية وستسأل إدخال كلمة سر الجذر حتى تصلح نظامك إذا لم يمكنك التسجيل بأي طريقة أخرى.  للخروج من محاكي الشاشة الطرفية، اكتب 'exit' في النافذة ثم زر الإدخال."
 
-#: ../daemon/slave.c:3972
+#: ../daemon/slave.c:3973
 msgid "The failsafe session is restricted to users who have been assigned the root role. If you cannot log in any other way please contact your system administrator"
 msgstr "تم حصر الجلسة الآمنة من الفشل للمستخدمين المعطي لهم دور الجذر. إذالم يمكنك الولوج بطريق آخر فاتصل بمدير نظامك"
 
-#: ../daemon/slave.c:4001
+#: ../daemon/slave.c:4002
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s: مستخدم غير مسموح له بالولوج"
 
-#: ../daemon/slave.c:4004
-#: ../daemon/verify-pam.c:1493
+#: ../daemon/slave.c:4005
+#: ../daemon/verify-pam.c:1490
 msgid "The system administrator has disabled your account."
 msgstr "لقد عطّل مدير النظام حسابك."
 
-#: ../daemon/slave.c:4035
+#: ../daemon/slave.c:4036
 msgid "Error! Unable to set executable context."
 msgstr "خطأ! لا يمكن ضبط سياق التنفيذ."
 
 #. will go to .xsession-errors
-#: ../daemon/slave.c:4045
-#: ../daemon/slave.c:4047
+#: ../daemon/slave.c:4046
+#: ../daemon/slave.c:4048
 #, c-format
 msgid "%s: Could not exec %s"
 msgstr "%s: لم يمكن تشغيل %s"
 
 #. we can't really be any more specific
-#: ../daemon/slave.c:4056
+#: ../daemon/slave.c:4057
 msgid "Cannot start the session due to some internal error."
 msgstr "لا يمكن بدأ الجلسة بسبب أخطاء داخلية."
 
-#: ../daemon/slave.c:4467
+#: ../daemon/slave.c:4468
 #, c-format
 msgid "%s: User passed auth but getpwnam (%s) failed!"
 msgstr "%s:  نجح التحقق من هوية المستعمل لكن getpwnam(%s) فشل!"
 
-#: ../daemon/slave.c:4480
+#: ../daemon/slave.c:4481
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s:  تشغيل النص الشفري ل  PostLogin ارجع > 0. إلغاء."
 
-#: ../daemon/slave.c:4501
+#: ../daemon/slave.c:4502
 #, c-format
 msgid "Your home directory is listed as: '%s' but it does not appear to exist.  Do you want to log in with the / (root) directory as your home directory? It is unlikely anything will work unless you use a failsafe session."
 msgstr "دليلك المنزلي مسرود كـ:'%s' لكن يبدو انه غير موجود. هل تريد الولوج بالدليل الجذري (/) كدليلك المنزلي؟من المحتمل أن لا يعمل أي شيء ما لم تستعمل جلسة آمنة من الفشل."
 
-#: ../daemon/slave.c:4513
+#: ../daemon/slave.c:4514
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s:  الدليل المنزلي لـ %s: '%s' غير موجود!"
 
-#: ../daemon/slave.c:4572
+#: ../daemon/slave.c:4573
 msgid "User's $HOME/.dmrc file is being ignored.  This prevents the default session and language from being saved.  File should be owned by user and have 644 permissions.  User's $HOME directory must be owned by user and not writable by other users."
 msgstr "تم تجاهل ملف $HOME/.dmrc الخاص بالمستخدم. سيمنع هذا حفظ الجلسة واللغة الإفتراضية. يجدر أن يكون هذا الملف ملكا للمستخدم وله الصلاحيات 644. دليل $HOME الخاص بالمستخدم يجب أن يكون مملوكا لنفس المستخدم وليس مسموحا للكتابة فيه لأي مستخدم آخر."
 
-#: ../daemon/slave.c:4714
+#: ../daemon/slave.c:4715
 msgid "GDM could not write to your authorization file.  This could mean that you are out of disk space or that your home directory could not be opened for writing.  In any case, it is not possible to log in.  Please contact your system administrator"
 msgstr "لا يستطيع م‌ع‌ج كتابة ملف تصريحك. هذا يعني أن فضاء القرص لم يعد كافيا أو أن دليلك المنزلي لم يمكن فتحه للكتابة. على أي حال، لا يمكن الولوج. رجاء اتصل بمدير نظامك"
 
-#: ../daemon/slave.c:4796
+#: ../daemon/slave.c:4797
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: خطأ تشعيب جلسة المستخدم"
 
-#: ../daemon/slave.c:4906
+#: ../daemon/slave.c:4911
 msgid "Your session only lasted less than 10 seconds.  If you have not logged out yourself, this could mean that there is some installation problem or that you may be out of diskspace.  Try logging in with one of the failsafe sessions to see if you can fix this problem."
 msgstr "دامت جلستك أقل من 10 ثوان اذا لم تخرج بنفسك، ربما يعني هذا وجود مشاكل تثبيت أو انه لم يعد لديك فضاء كاف على القرص.حاول التسجيل بجلسة من الجلسات الآمنة من الفشل للنظر في إمكانية اصلاح الخطأ."
 
-#: ../daemon/slave.c:4920
+#: ../daemon/slave.c:4925
 msgid "View details (~/.xsession-errors file)"
 msgstr "عرض التفاصيل (ملف ~/.xsession-errors)"
 
-#: ../daemon/slave.c:5068
+#: ../daemon/slave.c:5073
 msgid "GDM detected a halt or restart in progress."
 msgstr "إكتشف م‌ع‌ج إطفاء أو إعادة تشغيل في تقدّم."
 
-#: ../daemon/slave.c:5444
+#: ../daemon/slave.c:5449
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: خطأ X فادح - يجري إعادة التشغيل %s"
 
-#: ../daemon/slave.c:5517
+#: ../daemon/slave.c:5522
 msgid "Login sound requested on non-local display or the play software cannot be run or the sound does not exist"
 msgstr "لم يمكن تشغيل صوت الولوج المطلوب على عرض غير محليّ أو البرنامج الذي يعزفه او أن الصوت غير موجود"
 
-#: ../daemon/slave.c:5926
+#: ../daemon/slave.c:5920
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: فشل بدأ: %s"
 
-#: ../daemon/slave.c:5934
-#: ../daemon/slave.c:6048
+#: ../daemon/slave.c:5928
+#: ../daemon/slave.c:6042
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: لا يمكن تشعيب العملية!"
 
-#: ../daemon/slave.c:5999
+#: ../daemon/slave.c:5993
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: فشل إنشاء الانبوب"
 
-#: ../daemon/slave.c:6042
+#: ../daemon/slave.c:6036
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: فشل تنفيذ %s"
 
 #: ../daemon/verify-crypt.c:73
-#: ../daemon/verify-pam.c:1310
+#: ../daemon/verify-pam.c:1307
 #: ../daemon/verify-shadow.c:74
 msgid ""
 "\n"
@@ -1148,7 +1158,7 @@ msgstr ""
 "اسم مستخدم أو كلمة سر خاطئة.  يجب أن تكتب الحروف الصحيحة."
 
 #: ../daemon/verify-crypt.c:78
-#: ../daemon/verify-pam.c:1320
+#: ../daemon/verify-pam.c:1317
 #: ../daemon/verify-shadow.c:79
 #: ../gui/greeter/greeter_parser.c:384
 msgid "Caps Lock is on."
@@ -1193,7 +1203,7 @@ msgstr "غير مسموح لمدير النظام أن يلِج من هذه ال
 
 #: ../daemon/verify-crypt.c:230
 #: ../daemon/verify-crypt.c:254
-#: ../daemon/verify-pam.c:1175
+#: ../daemon/verify-pam.c:1166
 #: ../daemon/verify-shadow.c:251
 #: ../daemon/verify-shadow.c:275
 msgid ""
@@ -1205,7 +1215,7 @@ msgstr ""
 
 #: ../daemon/verify-crypt.c:279
 #: ../daemon/verify-crypt.c:417
-#: ../daemon/verify-pam.c:1199
+#: ../daemon/verify-pam.c:1186
 #: ../daemon/verify-shadow.c:300
 #: ../daemon/verify-shadow.c:439
 msgid ""
@@ -1338,19 +1348,19 @@ msgstr "لا يمكن ضبط PAM_RHOST=%s"
 #. is not really an auth problem, but it will
 #. pretty much look as such, it shouldn't really
 #. happen
-#: ../daemon/verify-pam.c:1040
-#: ../daemon/verify-pam.c:1085
-#: ../daemon/verify-pam.c:1432
-#: ../daemon/verify-pam.c:1444
+#: ../daemon/verify-pam.c:1038
+#: ../daemon/verify-pam.c:1083
+#: ../daemon/verify-pam.c:1429
+#: ../daemon/verify-pam.c:1441
 msgid "Couldn't authenticate user"
 msgstr "لم يمكن التوثق من المستخدم"
 
-#: ../daemon/verify-pam.c:1119
+#: ../daemon/verify-pam.c:1114
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "ولوج الجذر ممنوع على العرض '%s'"
 
-#: ../daemon/verify-pam.c:1122
+#: ../daemon/verify-pam.c:1117
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1358,14 +1368,14 @@ msgstr ""
 "\n"
 "غير مسموح لمدير النظام أن يلِج من هذه الشاشة "
 
-#: ../daemon/verify-pam.c:1154
-#: ../daemon/verify-pam.c:1474
+#: ../daemon/verify-pam.c:1147
+#: ../daemon/verify-pam.c:1471
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr "فشل تغيير رمز التوثق للمستخدم %s"
 
-#: ../daemon/verify-pam.c:1156
-#: ../daemon/verify-pam.c:1477
+#: ../daemon/verify-pam.c:1149
+#: ../daemon/verify-pam.c:1474
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or contact the system administrator."
@@ -1373,19 +1383,19 @@ msgstr ""
 "\n"
 "فشل تغيير علامة التوثق. رجاء حاول مرة أخرى فيما بعد أو اتصل بمدير النظام."
 
-#: ../daemon/verify-pam.c:1173
-#: ../daemon/verify-pam.c:1490
+#: ../daemon/verify-pam.c:1164
+#: ../daemon/verify-pam.c:1487
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "لم يعد يسمح للمستخدم %s بالنفاذ إلى النظام"
 
-#: ../daemon/verify-pam.c:1181
-#: ../daemon/verify-pam.c:1496
+#: ../daemon/verify-pam.c:1170
+#: ../daemon/verify-pam.c:1493
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "منع المستخدم %s من النفاذ الآن"
 
-#: ../daemon/verify-pam.c:1183
+#: ../daemon/verify-pam.c:1172
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
@@ -1393,31 +1403,31 @@ msgstr ""
 "\n"
 "عطل مدير النظام النفاذ إلى النظام مؤقتًا."
 
-#: ../daemon/verify-pam.c:1190
-#: ../daemon/verify-pam.c:1503
+#: ../daemon/verify-pam.c:1177
+#: ../daemon/verify-pam.c:1500
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "لا يمكن ضبط acct. mgmt لـ %s"
 
-#: ../daemon/verify-pam.c:1197
-#: ../daemon/verify-pam.c:1510
+#: ../daemon/verify-pam.c:1184
+#: ../daemon/verify-pam.c:1507
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "لا يمكن ضبط مجموعة المستخدم لـ %s"
 
-#: ../daemon/verify-pam.c:1223
-#: ../daemon/verify-pam.c:1537
+#: ../daemon/verify-pam.c:1210
+#: ../daemon/verify-pam.c:1534
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "لم يمكن ضبط المؤهلات لـ %s"
 
-#: ../daemon/verify-pam.c:1237
-#: ../daemon/verify-pam.c:1553
+#: ../daemon/verify-pam.c:1224
+#: ../daemon/verify-pam.c:1550
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "لا يمكن فتح جلسة لـ%s"
 
-#: ../daemon/verify-pam.c:1314
+#: ../daemon/verify-pam.c:1311
 msgid ""
 "\n"
 "Authentication failed.  Letters must be typed in the correct case."
@@ -1425,21 +1435,21 @@ msgstr ""
 "\n"
 "فشل التحقق.  يجب أن تكتب الحروف بالحالة الصحيحة."
 
-#: ../daemon/verify-pam.c:1328
-#: ../daemon/verify-pam.c:1435
-#: ../daemon/verify-pam.c:1447
+#: ../daemon/verify-pam.c:1325
+#: ../daemon/verify-pam.c:1432
+#: ../daemon/verify-pam.c:1444
 msgid "Authentication failed"
 msgstr "فشل التحقق"
 
-#: ../daemon/verify-pam.c:1398
+#: ../daemon/verify-pam.c:1395
 msgid "Automatic login"
 msgstr "ولوج تلقائي"
 
-#: ../daemon/verify-pam.c:1499
+#: ../daemon/verify-pam.c:1496
 msgid "The system administrator has disabled your access to the system temporarily."
 msgstr "عطل مدير النظام النفاذ إلى النظام مؤقتًا."
 
-#: ../daemon/verify-pam.c:1513
+#: ../daemon/verify-pam.c:1510
 msgid "Cannot set your user group; you will not be able to log in. Please contact your system administrator."
 msgstr "لا يمكن ضبط مجموعة مستخدمك، لن تتمكن من الولوج، رجاء اتصل بمدير نظامك."
 
@@ -1559,25 +1569,25 @@ msgstr "لا يريد المستضيف \"%s\" دعم جلسة ولوج الآن.
 msgid "Cannot connect to remote server"
 msgstr "لا يمكن الإتصال بالخادم عن بعد"
 
-#: ../gui/gdmchooser.c:1306
+#: ../gui/gdmchooser.c:1311
 #, c-format
 msgid "Did not receive any response from host \"%s\" in %d seconds.  Perhaps the host is not turned on, or is not willing to support a login session right now.  Please try again later."
 msgstr "لم أتلقى أي إجابة من المستضيف \"%s\"·لمدة %Id·ثانية.  ربما كان المستضيف لا يعمل أو أنه لا يريد دعم جلسة ولوج الآن. الرجاء المحاولة فيما بعد."
 
-#: ../gui/gdmchooser.c:1318
+#: ../gui/gdmchooser.c:1323
 msgid "Did not receive response from server"
 msgstr "لم أتلقي إستجابة من الخادم"
 
-#: ../gui/gdmchooser.c:1420
+#: ../gui/gdmchooser.c:1425
 #, c-format
 msgid "Cannot find the host \"%s\". Perhaps you have mistyped it."
 msgstr "لا يمكنني ايجاد الخادم \"%s\"، ربما اخطأت في كتابته."
 
-#: ../gui/gdmchooser.c:1428
+#: ../gui/gdmchooser.c:1433
 msgid "Cannot find host"
 msgstr "لا يمكنني ايجاد المستضيف"
 
-#: ../gui/gdmchooser.c:1629
+#: ../gui/gdmchooser.c:1634
 msgid ""
 "The main area of this application shows the hosts on the local network that have \"XDMCP\" enabled. This allows users to login remotely to other computers as if they were logged on using the console.\n"
 "\n"
@@ -1587,40 +1597,40 @@ msgstr ""
 "\n"
 "يمكنك إعادة مسح الشبكة بحثا عن مستضيفين جدد بنقر \"انعاش\". عند اختيارك لمستضيف، انقر \"اتصال\"، لفتح جلسة في هذا الحاسوب."
 
-#: ../gui/gdmchooser.c:1905
+#: ../gui/gdmchooser.c:1910
 msgid "Socket for xdm communication"
 msgstr "مقبس لاتصالات xdm"
 
-#: ../gui/gdmchooser.c:1905
+#: ../gui/gdmchooser.c:1910
 msgid "SOCKET"
 msgstr "مقبس"
 
-#: ../gui/gdmchooser.c:1907
+#: ../gui/gdmchooser.c:1912
 msgid "Client address to return in response to xdm"
 msgstr "عنوان العميل ليتم ارجاعه استجابة لـ xdm"
 
-#: ../gui/gdmchooser.c:1907
+#: ../gui/gdmchooser.c:1912
 msgid "ADDRESS"
 msgstr "عنوان"
 
-#: ../gui/gdmchooser.c:1909
+#: ../gui/gdmchooser.c:1914
 msgid "Connection type to return in response to xdm"
 msgstr "نوع الاتصال ليتم إرجاع استجابة لـ xdm"
 
-#: ../gui/gdmchooser.c:1909
+#: ../gui/gdmchooser.c:1914
 msgid "TYPE"
 msgstr "نوع"
 
-#: ../gui/gdmchooser.c:1975
+#: ../gui/gdmchooser.c:1980
 msgid "- gdm login chooser"
 msgstr "- مُخَيِّر الولوج gdm"
 
-#: ../gui/gdmchooser.c:2042
+#: ../gui/gdmchooser.c:2047
 #, c-format
 msgid "The chooser version (%s) does not match the daemon version (%s).  You have probably just upgraded GDM.  Please restart the GDM daemon or the computer."
 msgstr "إصدارة المُخَيِّر (%s) لا توافق إصدارة المراقب (%s).ربما حدّثت م‌ع‌ج لِتَوّك. الرجاء إعادة تشغيل مراقب م‌ع‌ج أو الحاسوب."
 
-#: ../gui/gdmchooser.c:2052
+#: ../gui/gdmchooser.c:2057
 msgid "Cannot run chooser"
 msgstr "لا يمكن تشغيل المُخَيِّر"
 
@@ -1674,12 +1684,12 @@ msgid "You might be using a different display manager, such as KDM (KDE Display 
 msgstr "أنت ربما تستخدم مدير عرض آخر، مثل م‌ع‌ك (مدير عرض كيدي) أو xdm أو ولوج ب‌م‌ع (dtlogin). إذا كنت ما تزال تريد هذه الميزة فستحتاج إعداد نظامك ليستخدم  م‌ع‌ج بدلا منها."
 
 #: ../gui/gdmcomm.c:653
-#: ../gui/gdmflexiserver.c:843
+#: ../gui/gdmflexiserver.c:846
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "لا أستطيع الإتصال بم‌ع‌ج (مدير عرض جنوم)"
 
 #: ../gui/gdmcomm.c:655
-#: ../gui/gdmflexiserver.c:845
+#: ../gui/gdmflexiserver.c:848
 msgid "Perhaps you have an old version of GDM running."
 msgstr "ربما تعمل لديك إصدارة قديمة لم‌ع‌ج."
 
@@ -1748,15 +1758,15 @@ msgstr "أرسلت رسائل عديدة جدا لم‌ع‌ج و بقيت عا�
 msgid "Unknown error occurred."
 msgstr "حدث خطأ مجهول."
 
-#: ../gui/gdmcommon.c:756
+#: ../gui/gdmcommon.c:762
 msgid "The accessibility registry was not found."
 msgstr "سجل الإتاحة غير موجود."
 
-#: ../gui/gdmcommon.c:779
+#: ../gui/gdmcommon.c:785
 msgid "The accessibility registry could not be started."
 msgstr "تعذّر بدأ سجلّ الإتاحة."
 
-#: ../gui/gdmcommon.c:841
+#: ../gui/gdmcommon.c:847
 msgid "%a %b %d, %H:%M"
 msgstr "%A %Od %b، %OH:%OM"
 
@@ -1764,11 +1774,11 @@ msgstr "%A %Od %b، %OH:%OM"
 #. %H:%M if your language does not have AM and PM
 #. equivalent.  Note: %l is a strftime option for
 #. 12-hour clock format
-#: ../gui/gdmcommon.c:847
+#: ../gui/gdmcommon.c:853
 msgid "%a %b %d, %l:%M %p"
 msgstr "%A %Od %b، %OI:%OM %p"
 
-#: ../gui/gdmcommon.c:947
+#: ../gui/gdmcommon.c:953
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -1930,23 +1940,23 @@ msgstr "خطأ: م‌ع‌ج (مدير عرض جنوم) لا يعمل."
 msgid "You might be using a different display manager."
 msgstr "ربما تستخدم مدير عرض آخر."
 
-#: ../gui/gdmflexiserver.c:885
+#: ../gui/gdmflexiserver.c:888
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "يبدو أنك لا تملك التصريح المطلوب لهذه العمليّة"
 
-#: ../gui/gdmflexiserver.c:888
+#: ../gui/gdmflexiserver.c:891
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "ربما لم يضبط ملف .Xauthority لديك بسلامة."
 
-#: ../gui/gdmflexiserver.c:917
+#: ../gui/gdmflexiserver.c:920
 msgid "You do not seem to be logged in on the console"
 msgstr "يبدو أنك لست مسجلا في الهيكل."
 
-#: ../gui/gdmflexiserver.c:919
+#: ../gui/gdmflexiserver.c:922
 msgid "Starting a new login only works correctly on the console."
 msgstr "بدء ولوج جديد يعمل بسلامة فقط في الكونسول."
 
-#: ../gui/gdmflexiserver.c:967
+#: ../gui/gdmflexiserver.c:970
 msgid "Cannot start new display"
 msgstr "لا يمكن بدأ تشغيل الشاشة الجديدة"
 
@@ -2802,10 +2812,6 @@ msgstr "إ_قطع الإتصال"
 msgid "Icon"
 msgstr "أيقونة"
 
-#: ../gui/gdmlogin.c:2501
-msgid "Welcome"
-msgstr "أهلا بك"
-
 #: ../gui/gdmlogin.c:2620
 #: ../gui/greeter/greeter_parser.c:418
 msgid "_Start Again"
@@ -2884,20 +2890,20 @@ msgid "Select User Image"
 msgstr "اختر صورة المستخدم."
 
 #: ../gui/gdmphotosetup.c:300
-#: ../gui/gdmsetup.c:4299
-#: ../gui/gdmsetup.c:7102
-#: ../gui/gdmsetup.c:7242
-#: ../gui/gdmsetup.c:7552
-#: ../gui/gdmsetup.c:7691
+#: ../gui/gdmsetup.c:4312
+#: ../gui/gdmsetup.c:7115
+#: ../gui/gdmsetup.c:7255
+#: ../gui/gdmsetup.c:7567
+#: ../gui/gdmsetup.c:7706
 msgid "Images"
 msgstr "صور"
 
 #: ../gui/gdmphotosetup.c:305
-#: ../gui/gdmsetup.c:4437
-#: ../gui/gdmsetup.c:7107
-#: ../gui/gdmsetup.c:7247
-#: ../gui/gdmsetup.c:7557
-#: ../gui/gdmsetup.c:7696
+#: ../gui/gdmsetup.c:4450
+#: ../gui/gdmsetup.c:7120
+#: ../gui/gdmsetup.c:7260
+#: ../gui/gdmsetup.c:7572
+#: ../gui/gdmsetup.c:7711
 msgid "All Files"
 msgstr "كل الملفّات"
 
@@ -2918,32 +2924,32 @@ msgid "Login Photo Preferences"
 msgstr "تفضيلات صورة الولوج"
 
 #: ../gui/gdmsession.c:142
-#: ../gui/gdmsession.c:332
+#: ../gui/gdmsession.c:328
 msgid "Failsafe _GNOME"
 msgstr "_جنوم آمن من الفشل"
 
 #: ../gui/gdmsession.c:143
-#: ../gui/gdmsession.c:333
+#: ../gui/gdmsession.c:329
 msgid "Failsafe GNOME"
 msgstr "جنوم آمن من الفشل"
 
 #: ../gui/gdmsession.c:144
-#: ../gui/gdmsession.c:334
+#: ../gui/gdmsession.c:330
 msgid "This is a failsafe session that will log you into GNOME. No startup scripts will be read and it is only to be used when you can't log in otherwise.  GNOME will use the 'Default' session."
 msgstr "هذه جلسة آمنة من الفشل ستولِجك في جنوم. لن تُقرأ نصوص بدأ التشغيل الشفرية  و لا تستعمل الجلسة إلا اذا لم تتمكن من الولوج بطريقة أخرى.  سيستعمل جنوم الجلسة 'الافتراضية'."
 
 #: ../gui/gdmsession.c:155
-#: ../gui/gdmsession.c:345
+#: ../gui/gdmsession.c:341
 msgid "Failsafe _Terminal"
 msgstr "_طرفية آمنة من الفشل"
 
 #: ../gui/gdmsession.c:156
-#: ../gui/gdmsession.c:346
+#: ../gui/gdmsession.c:342
 msgid "Failsafe Terminal"
 msgstr "طرفية آمنة من الفشل"
 
 #: ../gui/gdmsession.c:157
-#: ../gui/gdmsession.c:347
+#: ../gui/gdmsession.c:343
 msgid "This is a failsafe session that will log you into a terminal.  No startup scripts will be read and it is only to be used when you can't log in otherwise.  To exit the terminal, type 'exit'."
 msgstr "هذه جلسة آمنة من الفشل ستولِجِك في طرفية.  لن تًقرء نصوص بدأ التشغيل الشفرية  و لا تستعمل الجلسة إلا اذا لم تتمكن من التسجيل بطريقة أخرى. للخروج من الطرفية، اكتب 'exit'."
 
@@ -2952,7 +2958,7 @@ msgid "An error occurred while trying to contact the login screens.  Not all upd
 msgstr "حصل خطأ عند محاولة الاتصال بشاشات الولوج. من المحتمل عدم نجاح كل التحديثات."
 
 #: ../gui/gdmsetup.c:786
-#: ../gui/gdmsetup.c:2976
+#: ../gui/gdmsetup.c:2989
 msgid "Users include list modification"
 msgstr "تعديلات قائمة المدرجين"
 
@@ -2963,7 +2969,7 @@ msgstr "الآن لدي بعض المستخدمين في قائمة المدرج
 #: ../gui/gdmsetup.c:1203
 #: ../gui/gdmsetup.c:1229
 #: ../gui/gdmsetup.c:1388
-#: ../gui/gdmsetup.c:1792
+#: ../gui/gdmsetup.c:1805
 msgid "Themed"
 msgstr "ذو سمة"
 
@@ -2988,8 +2994,8 @@ msgid "Autologin or timed login to the root account is forbidden."
 msgstr "لا يسمح بالولوج التلقائي أو المؤقت بوقت لحساب المستخدم الجذر."
 
 #: ../gui/gdmsetup.c:1442
-#: ../gui/gdmsetup.c:2713
-#: ../gui/gdmsetup.c:2817
+#: ../gui/gdmsetup.c:2726
+#: ../gui/gdmsetup.c:2830
 #, c-format
 msgid "The \"%s\" user UID is lower than allowed MinimalUID."
 msgstr "UID المستخدم \"%s\" أقل من MinimalUID المسموح به."
@@ -2998,207 +3004,215 @@ msgstr "UID المستخدم \"%s\" أقل من MinimalUID المسموح به."
 msgid "User not allowed"
 msgstr "المستخدم غير مسموح له"
 
-#: ../gui/gdmsetup.c:1626
+#: ../gui/gdmsetup.c:1531
+msgid "auto"
+msgstr "آلي"
+
+#: ../gui/gdmsetup.c:1535
+msgid "yes"
+msgstr "نعم"
+
+#: ../gui/gdmsetup.c:1639
 #: ../gui/gdmsetup.glade.h:3
 msgid "(Enabled)"
 msgstr "(مفعّل)"
 
-#: ../gui/gdmsetup.c:1628
+#: ../gui/gdmsetup.c:1641
 msgid "(Disabled)"
 msgstr "(مُعطّل)"
 
-#: ../gui/gdmsetup.c:1846
-#: ../gui/gdmsetup.c:1878
-#: ../gui/gdmsetup.c:5006
+#: ../gui/gdmsetup.c:1859
+#: ../gui/gdmsetup.c:1891
+#: ../gui/gdmsetup.c:5019
 msgid "No themes selected!"
 msgstr "لم تُنتقى أيّة سِمات!"
 
-#: ../gui/gdmsetup.c:1847
-#: ../gui/gdmsetup.c:1879
-#: ../gui/gdmsetup.c:5007
+#: ../gui/gdmsetup.c:1860
+#: ../gui/gdmsetup.c:1892
+#: ../gui/gdmsetup.c:5020
 msgid "You need one or more themes selected for the \"Random from selected\" option to be valid. Failure to do so will force \"Selected only\" mode."
 msgstr "تحتاج لانتقاء سِمة أو أكثر ليعمل خيار \"عشوائي من المُنتقى\". الفشل في هذا سيُجبِر على وضع \"المُنتقى فقط\"."
 
-#: ../gui/gdmsetup.c:2005
+#: ../gui/gdmsetup.c:2018
 msgid "Apply changes to the modified command?"
 msgstr "تطبيق التغييرات على الأمر المعدّل؟"
 
-#: ../gui/gdmsetup.c:2006
+#: ../gui/gdmsetup.c:2019
 msgid "If you don't apply, the changes will be discarded."
 msgstr "لم لم تطبّق، ستضيع تغيراتك."
 
-#: ../gui/gdmsetup.c:2439
+#: ../gui/gdmsetup.c:2452
 msgid "Autologin or timed login to the root account is not allowed."
 msgstr "لا يسمح بالولوج التلقائي أو الوقتي لحساب المستخدم الجذر."
 
-#: ../gui/gdmsetup.c:2658
+#: ../gui/gdmsetup.c:2671
 #, c-format
 msgid "The \"%s\" user already exists in the include list."
 msgstr "المستخدم \"%s\" موجود بالفعل على قائمة المدرجين."
 
-#: ../gui/gdmsetup.c:2666
-#: ../gui/gdmsetup.c:2694
-#: ../gui/gdmsetup.c:2721
-#: ../gui/gdmsetup.c:2751
-#: ../gui/gdmsetup.c:2825
+#: ../gui/gdmsetup.c:2679
+#: ../gui/gdmsetup.c:2707
+#: ../gui/gdmsetup.c:2734
+#: ../gui/gdmsetup.c:2764
+#: ../gui/gdmsetup.c:2838
 msgid "Cannot add user"
 msgstr "لا يمكن إضافة المستخدمم"
 
-#: ../gui/gdmsetup.c:2686
+#: ../gui/gdmsetup.c:2699
 #, c-format
 msgid "The \"%s\" user already exists in the exclude list."
 msgstr "المستخدم \"%s\" مدرج على لائحة المستبعدين بالفعل."
 
-#: ../gui/gdmsetup.c:2743
+#: ../gui/gdmsetup.c:2756
 #, c-format
 msgid "The \"%s\" user does not exist."
 msgstr "المستخدم \"%s\"' غير موجود."
 
-#: ../gui/gdmsetup.c:2907
+#: ../gui/gdmsetup.c:2920
 msgid "Invalid command path"
 msgstr "مسار أمر غير سليم."
 
-#: ../gui/gdmsetup.c:2908
+#: ../gui/gdmsetup.c:2921
 msgid "The path you provided for this command is not valid. The changes will not be saved."
 msgstr "مسار الأمر الذي قدّمته غير سليم. لن تُحفظ التغييرات."
 
-#: ../gui/gdmsetup.c:2977
+#: ../gui/gdmsetup.c:2990
 msgid "Some of the users had uid lower than MinimalUID (Security tab) and could not be added."
 msgstr "لدى بعض المستخدمين uid أقل من MinumalUID (لسان الأمن) ولا يمكن إضافتهم."
 
 #. first get the file
-#: ../gui/gdmsetup.c:3591
+#: ../gui/gdmsetup.c:3604
 msgid "Select Command"
 msgstr "انتقي أمر"
 
-#: ../gui/gdmsetup.c:3617
-#: ../gui/gdmsetup.c:5532
+#: ../gui/gdmsetup.c:3630
+#: ../gui/gdmsetup.c:5545
 msgid "No file selected"
 msgstr "لا ملف مختار"
 
-#: ../gui/gdmsetup.c:3782
+#: ../gui/gdmsetup.c:3795
 msgid "Apply the changes to commands before closing?"
 msgstr "أترغب بتطبيق تّغييرات الأوامر قبل الغلق؟"
 
-#: ../gui/gdmsetup.c:3783
+#: ../gui/gdmsetup.c:3796
 msgid "If you don't apply, the changes made will be disregarded."
 msgstr "لو لم توافق، ستهمل كل التغييرات التي حدثت في."
 
-#: ../gui/gdmsetup.c:3786
-#: ../gui/gdmsetup.c:8128
+#: ../gui/gdmsetup.c:3799
+#: ../gui/gdmsetup.c:8143
 msgid "Close _without Applying"
 msgstr "اغلق _دون تطبيق"
 
 #. Add halt, reboot and suspend commands
-#: ../gui/gdmsetup.c:3877
+#: ../gui/gdmsetup.c:3890
 msgid "Halt command"
 msgstr "أمر الإطفاء"
 
-#: ../gui/gdmsetup.c:3878
+#: ../gui/gdmsetup.c:3891
 msgid "Reboot command"
 msgstr "أمر إعادة التشغيل"
 
-#: ../gui/gdmsetup.c:3879
+#: ../gui/gdmsetup.c:3892
 msgid "Suspend command"
 msgstr "أمر التعليق"
 
-#: ../gui/gdmsetup.c:4432
+#: ../gui/gdmsetup.c:4445
 #: ../gui/gdmsetup.glade.h:135
 msgid "Sounds"
 msgstr "الأصوات"
 
-#: ../gui/gdmsetup.c:4651
-#: ../gui/gdmsetup.c:4705
+#: ../gui/gdmsetup.c:4664
+#: ../gui/gdmsetup.c:4718
 msgid "None"
 msgstr "لا شيء"
 
-#: ../gui/gdmsetup.c:5180
+#: ../gui/gdmsetup.c:5193
 msgid "Archive is not of a subdirectory"
 msgstr "الأرشيف ليس ذو دليل ثانوي"
 
-#: ../gui/gdmsetup.c:5188
+#: ../gui/gdmsetup.c:5201
 msgid "Archive is not of a single subdirectory"
 msgstr "الأرشيف ليست ذو دليل ثانوي واحد"
 
-#: ../gui/gdmsetup.c:5212
-#: ../gui/gdmsetup.c:5289
+#: ../gui/gdmsetup.c:5225
+#: ../gui/gdmsetup.c:5302
 msgid "File not a tar.gz or tar archive"
 msgstr "الملف ليس أرشيف tar.gz أو tar"
 
-#: ../gui/gdmsetup.c:5214
+#: ../gui/gdmsetup.c:5227
 msgid "Archive does not include a GdmGreeterTheme.info file"
 msgstr "لا يحتوي الأرشيف على ملف GdmGreeterTheme.info"
 
-#: ../gui/gdmsetup.c:5236
+#: ../gui/gdmsetup.c:5249
 msgid "File does not exist"
 msgstr "الملف غير موجود"
 
-#: ../gui/gdmsetup.c:5355
+#: ../gui/gdmsetup.c:5368
 #, c-format
 msgid "%s"
 msgstr "%s"
 
-#: ../gui/gdmsetup.c:5362
+#: ../gui/gdmsetup.c:5375
 msgid "Not a theme archive"
 msgstr "ليس أرشيف سِمة"
 
 #. FIXME: if exists already perhaps we could also have an
 #. * option to change the dir name
-#: ../gui/gdmsetup.c:5384
+#: ../gui/gdmsetup.c:5397
 #, c-format
 msgid "Theme directory '%s' seems to be already installed. Install again anyway?"
 msgstr "دليل السِمة '%s' يبدو أنه مثبت بالفعل، هل ترغب في تثيبتها مجددًا على أي حال؟"
 
-#: ../gui/gdmsetup.c:5476
+#: ../gui/gdmsetup.c:5489
 msgid "Some error occurred when installing the theme"
 msgstr "حدث خطأ ما أثناء تثبيت السمة"
 
-#: ../gui/gdmsetup.c:5554
+#: ../gui/gdmsetup.c:5567
 msgid "Select Theme Archive"
 msgstr "اختر أرشيف سِمة"
 
-#: ../gui/gdmsetup.c:5558
-#: ../gui/gdmsetup.c:6651
+#: ../gui/gdmsetup.c:5571
+#: ../gui/gdmsetup.c:6664
 msgid "_Install"
 msgstr "_ثَبِّت"
 
-#: ../gui/gdmsetup.c:5562
+#: ../gui/gdmsetup.c:5575
 msgid "Theme archives"
 msgstr "أرشيفات السِمات"
 
-#: ../gui/gdmsetup.c:5663
+#: ../gui/gdmsetup.c:5676
 msgid "Theme active in \"Selected only\" mode"
 msgstr "السِمة النشِطة في وضع \"المنتقى فقط\""
 
-#: ../gui/gdmsetup.c:5664
+#: ../gui/gdmsetup.c:5677
 msgid "This theme cannot be deleted at this point. If you wish to delete this theme switch to \"Selected only\" mode, and deselect it by choosing a different theme."
 msgstr "لا يمكن حذف هذه السِمة في هذه اللحظة. إذا كنت ترغب في حذفها تحوّل إلى وضع \"المنتقى فقط\" والغِ انتقاء هذه السِمة باختيار واحدة غيرها."
 
-#: ../gui/gdmsetup.c:5693
+#: ../gui/gdmsetup.c:5706
 #, c-format
 msgid "Remove the \"%s\" theme?"
 msgstr "هل أحذف السمة \"%s\" ؟"
 
-#: ../gui/gdmsetup.c:5701
+#: ../gui/gdmsetup.c:5714
 msgid "If you choose to remove the theme, it will be permanently lost."
 msgstr "لو اخترت حذف السمة ستفقد إلي غير رجعة."
 
-#: ../gui/gdmsetup.c:5709
+#: ../gui/gdmsetup.c:5722
 msgid "_Remove Theme"
 msgstr "ا_حذف السمة"
 
-#: ../gui/gdmsetup.c:6640
+#: ../gui/gdmsetup.c:6653
 #, c-format
 msgid "Install the theme from '%s'?"
 msgstr "أتريد تثبيت ِِمة من '%s'؟ت س"
 
-#: ../gui/gdmsetup.c:6641
+#: ../gui/gdmsetup.c:6654
 #, c-format
 msgid "Select install to add the theme from the file '%s'."
 msgstr "اختر تثبيت لتضيف السمة من الملف '%s'."
 
 #. This is the temporary help dialog
-#: ../gui/gdmsetup.c:6896
+#: ../gui/gdmsetup.c:6909
 #, c-format
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the graphical login screen for GNOME.  Changes that you make will take effect immediately.\n"
@@ -3212,48 +3226,36 @@ msgstr ""
 "لاحظ عدم ذكر جميع خيارات الإعداد هنا. ربما تريد تحرير %s إذ لم تجد ما تبحث عنه.\n"
 " لتوثيق كامل راجع متصفح مساعدة جنوم تحت الفئة \"سطح المكتب\"."
 
-#: ../gui/gdmsetup.c:7491
-msgid "auto"
-msgstr "آلي"
-
-#: ../gui/gdmsetup.c:7494
-msgid "yes"
-msgstr "نعم"
-
-#: ../gui/gdmsetup.c:7497
-msgid "no"
-msgstr "لا"
-
-#: ../gui/gdmsetup.c:8106
+#: ../gui/gdmsetup.c:8121
 msgid "Random theme mode change"
 msgstr "تغيير وضع سِمة عشوائية"
 
-#: ../gui/gdmsetup.c:8107
+#: ../gui/gdmsetup.c:8122
 msgid "Since no themes were selected in random theme mode switching back to single theme mode."
 msgstr "بما أنه لم تُنتقى أية سِمات فيسعود نمط السِّمة العشوائية إلى نمط السِّمة الواحدة."
 
-#: ../gui/gdmsetup.c:8124
+#: ../gui/gdmsetup.c:8139
 msgid "Apply the changes to users before closing?"
 msgstr "هل تريد تطبيق تّغييرات المستخدمين قبل الغلق؟"
 
-#: ../gui/gdmsetup.c:8125
+#: ../gui/gdmsetup.c:8140
 msgid "If you don't apply, the changes made on the Users tab will be disregarded."
 msgstr "لو لم توافق، ستهمل كل التغييرات التي حدثت في لسان المستخدمين."
 
-#: ../gui/gdmsetup.c:8197
+#: ../gui/gdmsetup.c:8212
 msgid "Could not access configuration file (defaults.conf)"
 msgstr "لا أستطيع الوصول لملف الإعدادات (defaults.conf)"
 
-#: ../gui/gdmsetup.c:8198
-#: ../gui/gdmsetup.c:8215
+#: ../gui/gdmsetup.c:8213
+#: ../gui/gdmsetup.c:8230
 msgid "Make sure that the file exists before launching login manager config utility."
 msgstr "تأكد من وجود الملف قبل تشغيل أداة إعداد مدير الولوج."
 
-#: ../gui/gdmsetup.c:8214
+#: ../gui/gdmsetup.c:8229
 msgid "Could not access configuration file (custom.conf)"
 msgstr "لا أستطيع الوصول لملف الإعدادت (defaults.conf)"
 
-#: ../gui/gdmsetup.c:8262
+#: ../gui/gdmsetup.c:8277
 msgid "You must be the root user to configure GDM."
 msgstr "يجب أن تكون جذرا لإعداد م‌ع‌ج."
 
@@ -4284,8 +4286,8 @@ msgstr "تعديل جنوم أرت على \"دوائر\""
 msgid "Happy GNOME"
 msgstr "جنوم سعيد"
 
-#: ../gui/modules/dwellmouselistener.c:594
-#: ../gui/modules/keymouselistener.c:947
+#: ../gui/modules/dwellmouselistener.c:579
+#: ../gui/modules/keymouselistener.c:932
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -4365,6 +4367,8 @@ msgstr "م‌ع‌جaskpass يعمل فقط كجذر\n"
 msgid "Authentication failure!\n"
 msgstr "فشل التحقق!\n"
 
+#~ msgid "no"
+#~ msgstr "لا"
 #~ msgid ""
 #~ "Use circles instead of asterisks in the password entry. This may not work "
 #~ "with all fonts however."
