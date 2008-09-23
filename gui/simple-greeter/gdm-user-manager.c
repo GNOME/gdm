@@ -667,6 +667,7 @@ add_sessions_for_user (GdmUserManager *manager,
                 maybe_add_session_for_user (manager, user, ssid);
         }
 
+        g_ptr_array_foreach (sessions, (GFunc)g_free, NULL);
         g_ptr_array_free (sessions, TRUE);
 
  out:
@@ -1147,11 +1148,13 @@ process_ck_history_line (GdmUserManager *manager,
         user = gdm_user_manager_get_user (manager, username);
         if (user == NULL) {
                 g_debug ("GdmUserManager: unable to lookup user '%s'", username);
+                g_free (username);
                 return;
         }
 
         g_object_set (user, "login-frequency", frequency, NULL);
         g_signal_emit (manager, signals [USER_LOGIN_FREQUENCY_CHANGED], 0, user);
+        g_free (username);
 }
 
 static gboolean

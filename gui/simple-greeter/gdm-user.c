@@ -1093,6 +1093,7 @@ frame_pixbuf (GdkPixbuf *source)
         cairo_to_pixbuf (data, dest);
 
         cairo_destroy (cr);
+        g_free (data);
 
         return dest;
 }
