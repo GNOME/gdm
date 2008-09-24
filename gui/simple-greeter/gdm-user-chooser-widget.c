@@ -51,7 +51,7 @@ enum {
 
 #define GDM_USER_CHOOSER_WIDGET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_USER_CHOOSER_WIDGET, GdmUserChooserWidgetPrivate))
 
-#define ICON_SIZE 96
+#define MAX_ICON_SIZE 128
 
 struct GdmUserChooserWidgetPrivate
 {
@@ -82,6 +82,45 @@ static void     gdm_user_chooser_widget_init        (GdmUserChooserWidget      *
 static void     gdm_user_chooser_widget_finalize    (GObject                   *object);
 
 G_DEFINE_TYPE (GdmUserChooserWidget, gdm_user_chooser_widget, GDM_TYPE_CHOOSER_WIDGET)
+
+static int
+get_font_height_for_widget (GtkWidget *widget)
+{
+        PangoFontMetrics *metrics;
+        PangoContext     *context;
+        int               ascent;
+        int               descent;
+        int               height;
+
+        gtk_widget_ensure_style (widget);
+        context = gtk_widget_get_pango_context (widget);
+        metrics = pango_context_get_metrics (context,
+                                             widget->style->font_desc,
+                                             pango_context_get_language (context));
+
+        ascent = pango_font_metrics_get_ascent (metrics);
+        descent = pango_font_metrics_get_descent (metrics);
+        height = PANGO_PIXELS (ascent + descent);
+        pango_font_metrics_unref (metrics);
+        return height;
+}
+
+static int
+get_icon_height_for_widget (GtkWidget *widget)
+{
+        int font_height;
+        int height;
+
+        font_height = get_font_height_for_widget (widget);
+        height = 3 * font_height;
+        if (height > MAX_ICON_SIZE) {
+                height = MAX_ICON_SIZE;
+        }
+
+        g_debug ("GdmUserChooserWidget: font height %d; using icon size %d", font_height, height);
+
+        return height;
+}
 
 static void
 add_user_other (GdmUserChooserWidget *widget)
@@ -295,12 +334,14 @@ add_user (GdmUserChooserWidget *widget,
         GdkPixbuf    *pixbuf;
         char         *tooltip;
         gboolean      is_logged_in;
+        int           size;
 
         if (!widget->priv->show_normal_users) {
                 return;
         }
 
-        pixbuf = gdm_user_render_icon (user, ICON_SIZE);
+        size = get_icon_height_for_widget (widget);
+        pixbuf = gdm_user_render_icon (user, size);
         if (pixbuf == NULL && widget->priv->stock_person_pixbuf != NULL) {
                 pixbuf = g_object_ref (widget->priv->stock_person_pixbuf);
         }
@@ -537,10 +578,13 @@ static GdkPixbuf *
 get_stock_person_pixbuf (GdmUserChooserWidget *widget)
 {
         GdkPixbuf *pixbuf;
+        int        size;
+
+        size = get_icon_height_for_widget (widget);
 
         pixbuf = gtk_icon_theme_load_icon (widget->priv->icon_theme,
                                            DEFAULT_USER_ICON,
-                                           ICON_SIZE,
+                                           size,
                                            0,
                                            NULL);
 
@@ -551,10 +595,13 @@ static GdkPixbuf *
 get_logged_in_pixbuf (GdmUserChooserWidget *widget)
 {
         GdkPixbuf *pixbuf;
+        int        size;
+
+        size = get_icon_height_for_widget (widget);
 
         pixbuf = gtk_icon_theme_load_icon (widget->priv->icon_theme,
                                            "emblem-default",
-                                           ICON_SIZE / 3,
+                                           size / 3,
                                            0,
                                            NULL);
 
