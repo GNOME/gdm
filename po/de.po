@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GDM HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-03 21:37+0200\n"
+"POT-Creation-Date: 2008-09-26 21:05+0200\n"
 "PO-Revision-Date: 2008-07-17 16:03+0200\n"
 "Last-Translator: Jochen Skulj <jochen@jochenskulj.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -72,7 +72,7 @@ msgid "Unable to establish credentials"
 msgstr "Berechtigungsnachweis konnte nicht engerichtet werden"
 
 #: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1048
+#: ../daemon/gdm-simple-slave.c:1062
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -85,54 +85,54 @@ msgstr ""
 "Systemprotokoll. Bis auf Weiteres wird diese Anzeige deaktiviert. Bitte "
 "starten Sie GDM neu, wenn der Fehler behoben ist."
 
-#: ../daemon/gdm-server.c:244
+#: ../daemon/gdm-server.c:246
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: Verbindung zur Elternanzeige »%s« gescheitert"
 
-#: ../daemon/gdm-server.c:362
+#: ../daemon/gdm-server.c:361
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Server sollte für den Benutzer %s gestartet werden, aber dieser "
 "Benutzerexistiert nicht"
 
-#: ../daemon/gdm-server.c:373 ../daemon/gdm-welcome-session.c:415
+#: ../daemon/gdm-server.c:372 ../daemon/gdm-welcome-session.c:444
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "%d konnte nicht als Gruppenkennung festgelegt werden"
 
-#: ../daemon/gdm-server.c:379 ../daemon/gdm-welcome-session.c:421
+#: ../daemon/gdm-server.c:378 ../daemon/gdm-welcome-session.c:450
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () für %s gescheitert"
 
-#: ../daemon/gdm-server.c:385 ../daemon/gdm-welcome-session.c:427
+#: ../daemon/gdm-server.c:384 ../daemon/gdm-welcome-session.c:456
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "%d konnte nicht als Benutzerkennung festgelegt werden"
 
-#: ../daemon/gdm-server.c:393 ../daemon/gdm-welcome-session.c:435
+#: ../daemon/gdm-server.c:392 ../daemon/gdm-welcome-session.c:464
 msgid "Couldn't set groupid to 0"
 msgstr "0 konnte nicht als Gruppenkennung festgelegt werden"
 
-#: ../daemon/gdm-server.c:428
+#: ../daemon/gdm-server.c:431
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: Protokolldatei für Anzeige %s konnte nicht geöffnet werden!"
 
-#: ../daemon/gdm-server.c:439 ../daemon/gdm-server.c:445
-#: ../daemon/gdm-server.c:451
+#: ../daemon/gdm-server.c:442 ../daemon/gdm-server.c:448
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s konnte nicht auf %s gesetzt werden"
 
-#: ../daemon/gdm-server.c:466
+#: ../daemon/gdm-server.c:469
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Priorität des Servers konnte nicht auf %d gesetzt werden: %s"
 
-#: ../daemon/gdm-server.c:618
+#: ../daemon/gdm-server.c:621
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Leerer Server-Befehl für Anzeige %s"
@@ -240,12 +240,12 @@ msgstr "Zum Benutzer konnte nicht gewechselt werden"
 msgid "Unable establish credentials"
 msgstr "Berechtigungsnachweis konnte nicht engerichtet werden"
 
-#: ../daemon/gdm-welcome-session.c:397
+#: ../daemon/gdm-welcome-session.c:426
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Benutzer %s existiert nicht."
 
-#: ../daemon/gdm-welcome-session.c:404
+#: ../daemon/gdm-welcome-session.c:433
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Gruppe %s existiert nicht."
@@ -536,21 +536,21 @@ msgstr "Wert"
 msgid "percentage of time complete"
 msgstr "Prozent der abgeschlossenen Zeit"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1235
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1306
 msgid "Inactive Text"
 msgstr "Inaktiver Text"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1236
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1307
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr ""
 "Der Text wird in der Bezeichnung verwendet, wenn der Benutzer noch kein "
 "Element ausgewählt hat"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1244
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1315
 msgid "Active Text"
 msgstr "Aktiver Text"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1245
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1316
 msgid "The text to use in the label if the user has picked an item"
 msgstr ""
 "Der Text wird in der Bezeichnung verwendet, wenn der Benutzer ein Element "
@@ -644,7 +644,7 @@ msgstr "Ausschalten"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
 msgid "Suspend"
-msgstr "Ruhezustand"
+msgstr "Bereitschaft"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
 msgid "Version"
@@ -674,7 +674,7 @@ msgstr "Spra_che:"
 
 #: ../gui/simple-greeter/gdm-language-option-widget.c:224
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:220
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:89
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:131
 #: ../gui/user-switch-applet/applet.c:996
 msgid "Other..."
 msgstr "Andere …"
@@ -688,7 +688,7 @@ msgstr ""
 msgid "Unspecified"
 msgstr "nicht angegeben"
 
-#: ../gui/simple-greeter/gdm-layout-chooser-dialog.c:190
+#: ../gui/simple-greeter/gdm-layout-chooser-dialog.c:191
 msgid "Keyboard layouts"
 msgstr "Tastaturlayout"
 
@@ -970,32 +970,32 @@ msgid "The user manager object this user is controlled by."
 msgstr ""
 "Das Benutzerverwaltungsobjekt, von dem diese Benutzerkennung gesteuert wird"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:90
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:132
 msgid "Choose a different account"
 msgstr "Eine andere Benutzerkennung wählen"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:102
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:144
 msgid "Guest"
 msgstr "Gast"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:103
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:145
 msgid "Login as a temporary guest"
 msgstr "Als temporärer Gast anmelden"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:115
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:157
 msgid "Automatic Login"
 msgstr "Automatische Anmeldung"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:116
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:158
 msgid "Automatically login to the system after selecting options"
 msgstr "Automatische Anmeldung ans System nach Auswahl der Einstellungen"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:279
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:349
 #, c-format
 msgid "Log in as %s"
 msgstr "Als %s anmelden"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:600
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:694
 msgid "Currently logged in"
 msgstr "Momentan angemeldet"
 
