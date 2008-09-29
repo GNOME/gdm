@@ -1,3 +1,10 @@
+2008-09-29 Brian Cameron <brian.cameron@sun.com>
+
+	* daemon/display.h, daemon/server.c: Update the code which launches
+	  fbconsole so that fbconsole is killed after the display is done being
+	  used.  This only affects Solaris, which uses fbconsole.
+	* daemon/server.[ch]: Remove unused gdm_server_reinit function.
+
 2008-09-17 Brian Cameron <brian.cameron@sun.com>
 
 	* config/Xsession.solaris: Use bourne-shell syntax for setting

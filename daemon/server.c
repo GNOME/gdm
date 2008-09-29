@@ -137,7 +137,6 @@ jumpback_xioerror_handler (Display *disp)
 static void
 gdm_exec_fbconsole (GdmDisplay *disp)
 {
-        pid_t pid;
         char *argv[6];
 
         argv[0] = FBCONSOLE;
@@ -148,111 +147,17 @@ gdm_exec_fbconsole (GdmDisplay *disp)
 
 	gdm_debug ("Forking fbconsole");
 
-        pid = fork ();
-        if (pid == 0) {
+        d->fbconsolepid = fork ();
+        if (d->fbconsolepid == 0) {
                 gdm_close_all_descriptors (0 /* from */, -1 /* except */, -1 /* except2 */)
 ;
                 VE_IGNORE_EINTR (execv (argv[0], argv));
         }
-        if (pid == -1) {
+        if (d->fbconsolepid == -1) {
                 gdm_error (_("Can not start fallback console"));
         }
 }
 #endif
-
-/**
- * gdm_server_reinit:
- * @disp: Pointer to a GdmDisplay structure
- *
- * Reinit the display, basically sends a HUP signal
- * but only if the display exists
- */
-
-gboolean
-gdm_server_reinit (GdmDisplay *disp)
-{
-	if (disp == NULL)
-		return FALSE;
-
-	if (disp->servpid <= 0) {
-		/* Kill our connection if one existed, likely to result
-		 * in some bizzaro error right now */
-		if (disp->dsp != NULL) {
-			XCloseDisplay (disp->dsp);
-			disp->dsp = NULL;
-		}
-		return FALSE;
-	}
-
-	gdm_debug ("gdm_server_reinit: Server for %s is about to be reinitialized!", disp->name);
-
-	if ( ! setup_server_wait (disp))
-		return FALSE;
-
-	d->servstat = SERVER_PENDING;
-
-	if (disp->dsp != NULL) {
-		/* static because of the Setjmp */
-		static int (*old_xerror_handler)(Display *, XErrorEvent *) = NULL;
-		static int (*old_xioerror_handler)(Display *) = NULL;
-
-		old_xerror_handler = NULL;
-		old_xioerror_handler = NULL;
-
-		/* Do note the interaction of this Setjmp and the signal
-	   	   handlers and the Setjmp in slave.c */
-
-		/* Long live Setjmp, DIE DIE DIE XSetIOErrorHandler */
-
-		if (Setjmp (reinitjmp) == 0)  {
-			/* come here and we'll whack the server and wait to get
-			   an xio error */
-			old_xerror_handler = XSetErrorHandler (ignore_xerror_handler);
-			old_xioerror_handler = XSetIOErrorHandler (jumpback_xioerror_handler);
-
-			/* Now whack the server with a SIGHUP */
-			gdm_sigchld_block_push ();
-			if (disp->servpid > 1)
-				kill (disp->servpid, SIGHUP);
-			else
-				d->servstat = SERVER_DEAD;
-			gdm_sigchld_block_pop ();
-
-			/* the server is dead, weird */
-			if (disp->dsp != NULL) {
-				XCloseDisplay (disp->dsp);
-				disp->dsp = NULL;
-			}
-		}
-		/* no more display */
-		disp->dsp = NULL;
-		XSetErrorHandler (old_xerror_handler);
-		XSetIOErrorHandler (old_xioerror_handler);
-	} else {
-		/* Now whack the server with a SIGHUP */
-		gdm_sigchld_block_push ();
-		if (disp->servpid > 1)
-			kill (disp->servpid, SIGHUP);
-		else
-			d->servstat = SERVER_DEAD;
-		gdm_sigchld_block_pop ();
-	}
-
-	/* Wait for the SIGUSR1 */
-	do_server_wait (d);
-
-	if (d->servstat == SERVER_RUNNING) {
-#ifdef HAVE_FBCONSOLE
-		gdm_exec_fbconsole (d);
-#endif
-		return TRUE;
-        } else {
-		/* if something really REALLY screwed up, then whack the
-		   lockfiles for safety */
-		gdm_server_whack_lockfile (d);
-		return FALSE;
-	}
-}
 
 /**
  * gdm_server_stop:
@@ -335,6 +240,13 @@ gdm_server_stop (GdmDisplay *disp)
     }
 
     gdm_server_wipe_cookies (disp);
+
+#ifdef HAVE_FBCONSOLE
+    /* Kill fbconsole if it is running */
+    if (d->fbconsolepid > 0)
+        kill (d->fbconsolepid, SIGTERM);
+    d->fbconsolepid = 0;
+#endif
 
     gdm_slave_whack_temp_auth_file ();
 }
@@ -731,6 +643,10 @@ gdm_server_start (GdmDisplay *disp,
 	    return FALSE;
 
     d = disp;
+
+#ifdef HAVE_FBCONSOLE
+    d->fbconsolepid = 0;
+#endif
 
     /* if an X server exists, wipe it */
     gdm_server_stop (d);

@@ -126,6 +126,7 @@ struct _GdmDisplay
 	pid_t slavepid;
 	pid_t greetpid;
 	pid_t sesspid;
+	pid_t fbconsolepid;
 	int last_sess_status; /* status returned by last session */
 
 	/* Notification connection */
