@@ -20,6 +20,7 @@
 
 #include "config.h"
 
+#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/time.h>
@@ -40,6 +41,7 @@
 #include "gdm-language-option-widget.h"
 #include "gdm-layout-option-widget.h"
 #include "gdm-session-option-widget.h"
+#include "gdm-timer.h"
 #include "gdm-profile.h"
 
 #include "na-tray.h"
@@ -58,6 +60,9 @@ struct GdmGreeterPanelPrivate
         GtkWidget              *language_option_widget;
         GtkWidget              *layout_option_widget;
         GtkWidget              *session_option_widget;
+
+        GdmTimer               *animation_timer;
+        double                  progress;
 
         char                   *default_session_name;
         char                   *default_language_name;
@@ -349,7 +354,7 @@ update_geometry (GdmGreeterPanel *panel,
         panel->priv->geometry.height = requisition->height + 2 * GTK_CONTAINER (panel)->border_width;
 
         panel->priv->geometry.x = geometry.x;
-        panel->priv->geometry.y = geometry.y + geometry.height - panel->priv->geometry.height;
+        panel->priv->geometry.y = geometry.y + geometry.height - panel->priv->geometry.height + (1.0 - panel->priv->progress) * panel->priv->geometry.height;
 
 #if 0
         g_debug ("Setting geometry x:%d y:%d w:%d h:%d",
@@ -402,6 +407,39 @@ gdm_greeter_panel_real_size_request (GtkWidget      *widget,
 
         gdm_greeter_panel_move_resize_window (panel, position_changed, size_changed);
 }
+static void
+gdm_greeter_panel_real_show (GtkWidget *widget)
+{
+        GdmGreeterPanel *panel;
+        GtkSettings *settings;
+        gboolean     animations_are_enabled;
+
+        settings = gtk_settings_get_for_screen (gtk_widget_get_screen (widget));
+        g_object_get (settings, "gtk-enable-animations", &animations_are_enabled, NULL);
+
+        panel = GDM_GREETER_PANEL (widget);
+
+        if (animations_are_enabled) {
+                gdm_timer_start (panel->priv->animation_timer, 1.0);
+        } else {
+                panel->priv->progress = 1.0;
+        }
+
+        GTK_WIDGET_CLASS (gdm_greeter_panel_parent_class)->show (widget);
+}
+
+static void
+gdm_greeter_panel_real_hide (GtkWidget *widget)
+{
+        GdmGreeterPanel *panel;
+
+        panel = GDM_GREETER_PANEL (widget);
+
+        gdm_timer_stop (panel->priv->animation_timer);
+        panel->priv->progress = 0.0;
+
+        GTK_WIDGET_CLASS (gdm_greeter_panel_parent_class)->hide (widget);
+}
 
 static void
 gdm_greeter_panel_class_init (GdmGreeterPanelClass *klass)
@@ -418,6 +456,9 @@ gdm_greeter_panel_class_init (GdmGreeterPanelClass *klass)
         widget_class->realize = gdm_greeter_panel_real_realize;
         widget_class->unrealize = gdm_greeter_panel_real_unrealize;
         widget_class->size_request = gdm_greeter_panel_real_size_request;
+        widget_class->show = gdm_greeter_panel_real_show;
+        widget_class->hide = gdm_greeter_panel_real_hide;
+
         signals[LANGUAGE_SELECTED] =
                 g_signal_new ("language-selected",
                               G_TYPE_FROM_CLASS (object_class),
@@ -521,6 +562,15 @@ on_session_activated (GdmSessionOptionWidget *widget,
 }
 
 static void
+on_animation_tick (GdmGreeterPanel *panel,
+                   double           progress)
+{
+        panel->priv->progress = progress * log ((G_E - 1.0) * progress + 1.0);
+
+        gtk_widget_queue_resize (GTK_WIDGET (panel));
+}
+
+static void
 gdm_greeter_panel_init (GdmGreeterPanel *panel)
 {
         NaTray    *tray;
@@ -605,6 +655,13 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
 
         gdm_greeter_panel_hide_user_options (panel);
 
+        panel->priv->progress = 0.0;
+        panel->priv->animation_timer = gdm_timer_new ();
+        g_signal_connect_swapped (panel->priv->animation_timer,
+                                  "tick",
+                                  G_CALLBACK (on_animation_tick),
+                                  panel);
+
         gdm_profile_end (NULL);
 }
 
@@ -619,6 +676,9 @@ gdm_greeter_panel_finalize (GObject *object)
         greeter_panel = GDM_GREETER_PANEL (object);
 
         g_return_if_fail (greeter_panel->priv != NULL);
+
+        g_signal_handlers_disconnect_by_func (object, on_animation_tick, greeter_panel);
+        g_object_unref (greeter_panel->priv->animation_timer);
 
         G_OBJECT_CLASS (gdm_greeter_panel_parent_class)->finalize (object);
 }

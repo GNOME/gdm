@@ -1,3 +1,25 @@
+2008-10-01  Ray Strode <rstrode@redhat.com>
+
+	Add slide animation to panel to be more
+	consistent with gnome-panel animation.
+
+	* gui/simple-greeter/gdm-greeter-panel.c
+	(update_geometry): place the panel only as
+	on screen as the animation progress.
+	(gdm_greeter_panel_class_init):
+	(gdm_greeter_panel_real_show): initiate
+	the slide in when the widget is shown, unless
+	gtk-enable-animations is false.
+	(gdm_greeter_panel_real_hide): stop any
+	pending animations if the widget is hidden
+	(on_animation_tick): set animation progress
+	to be some logarithmic curve based on the
+	timer
+	(gdm_greeter_panel_init): create timer for
+	use in animation.
+	(gdm_greeter_panel_finalize): destroy animation
+	timer
+
 2008-09-28  Mario Blättermann <mariobl@svn.gnome.org>
 
 	* docs/de/de.po: Updated German translation
