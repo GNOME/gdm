@@ -216,6 +216,25 @@ construct_language_name (const char *language,
         return name;
 }
 
+static void
+make_codeset_canonical_for_locale (const       *name,
+                                   const char **codeset)
+{
+        char *old_locale;
+        char *canonical_codeset;
+
+        old_locale = setlocale (LC_CTYPE, name);
+
+        if (old_locale == NULL) {
+                return;
+        }
+
+        g_free (*codeset);
+        *codeset = g_strdup (nl_langinfo (CODESET));
+
+        setlocale (LC_CTYPE, old_locale);
+}
+
 char *
 gdm_normalize_language_name (const char *name)
 {
@@ -233,6 +252,10 @@ gdm_normalize_language_name (const char *name)
                                  &language_code,
                                  &territory_code,
                                  &codeset, &modifier);
+
+        if (codeset != NULL) {
+                make_codeset_canonical_for_locale (name, &codeset);
+        }
 
         normalized_name = construct_language_name (language_code,
                                                    territory_code,

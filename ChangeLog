@@ -1,5 +1,14 @@
 2008-10-01  Ray Strode <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-languages.c
+	(make_codeset_canonical_for_locale),
+	(gdm_normalize_language_name):
+	change codeset in locale to follow canonical
+	form so we end up with ".UTF-8" instead of
+	".utf8" etc.
+
+2008-10-01  Ray Strode <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-language-option-widget.c:
 	* gui/simple-greeter/gdm-recent-option-widget.[ch]:
 	Filter out duplicates from gconf mru lists that
