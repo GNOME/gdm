@@ -314,8 +314,9 @@ applet_change_background_cb (PanelApplet               *applet,
                 break;
         case PANEL_PIXMAP_BACKGROUND:
                 style = gtk_style_copy (adata->menubar->style);
-                if (style->bg_pixmap[GTK_STATE_NORMAL])
+                if (style->bg_pixmap[GTK_STATE_NORMAL]) {
                         g_object_unref (style->bg_pixmap[GTK_STATE_NORMAL]);
+                }
 
                 style->bg_pixmap[GTK_STATE_NORMAL] = g_object_ref (pixmap);
                 gtk_widget_set_style (adata->menubar, style);
