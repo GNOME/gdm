@@ -148,7 +148,8 @@ get_active_item_id (GdmOptionWidget *widget,
         model = GTK_TREE_MODEL (widget->priv->list_store);
         item_id = NULL;
 
-        if (widget->priv->active_row == NULL) {
+        if (widget->priv->active_row == NULL ||
+            !gtk_tree_row_reference_valid (widget->priv->active_row)) {
                 return NULL;
         }
 
