@@ -159,13 +159,24 @@ gdm_recent_option_widget_sync_items_from_gconf (GdmRecentOptionWidget *widget)
         default_is_set = FALSE;
 
         for (tmp = list; tmp != NULL; tmp = tmp->next) {
-                const char *id;
+                const char *key;
+                char       *id;
                 char       *name;
                 char       *comment;
 
-                id = (char *) tmp->data;
+                key = (char *) tmp->data;
 
-                if (widget->priv->lookup_item_func (widget, id, &name, &comment)) {
+                id = widget->priv->lookup_item_func (widget, key, &name, &comment);
+
+                if (id != NULL) {
+                        gboolean item_exists;
+
+                        item_exists = gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (widget), id, NULL, NULL, NULL);
+
+                        if (item_exists) {
+                                continue;
+                        }
+
                         gdm_option_widget_add_item (GDM_OPTION_WIDGET (widget),
                                                     id, name, comment,
                                                     GDM_OPTION_WIDGET_POSITION_MIDDLE);
@@ -177,6 +188,7 @@ gdm_recent_option_widget_sync_items_from_gconf (GdmRecentOptionWidget *widget)
 
                         g_free (name);
                         g_free (comment);
+                        g_free (id);
                 }
         }
 

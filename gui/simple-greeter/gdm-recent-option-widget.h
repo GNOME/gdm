@@ -48,10 +48,10 @@ typedef struct
         GdmOptionWidgetClass       parent_class;
 } GdmRecentOptionWidgetClass;
 
-typedef gboolean (* GdmRecentOptionLookupItemFunc) (GdmRecentOptionWidget  *widget,
-                                                    const char             *id,
-                                                    char                  **name,
-                                                    char                  **comment);
+typedef char * (* GdmRecentOptionLookupItemFunc) (GdmRecentOptionWidget  *widget,
+                                                  const char             *key,
+                                                  char                  **name,
+                                                  char                  **comment);
 
 
 GType                  gdm_recent_option_widget_get_type               (void);

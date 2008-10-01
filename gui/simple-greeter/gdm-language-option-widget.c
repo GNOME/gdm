@@ -173,7 +173,7 @@ gdm_language_option_widget_class_init (GdmLanguageOptionWidgetClass *klass)
         g_type_class_add_private (klass, sizeof (GdmLanguageOptionWidgetPrivate));
 }
 
-static gboolean
+static char *
 gdm_language_option_widget_lookup_item (GdmRecentOptionWidget *widget,
                                         const char            *locale,
                                         char                 **name,
@@ -182,11 +182,15 @@ gdm_language_option_widget_lookup_item (GdmRecentOptionWidget *widget,
         char *language;
         char *readable_language;
         char *lang_tag;
+        char *normalized_locale;
 
-        language = gdm_get_language_from_name (locale, locale);
+        normalized_locale = gdm_normalize_language_name (locale);
+
+        language = gdm_get_language_from_name (locale, normalized_locale);
 
         if (language == NULL) {
-                return FALSE;
+                g_free (normalized_locale);
+                return NULL;
         }
 
         readable_language = gdm_get_language_from_name (locale, NULL);
@@ -197,7 +201,7 @@ gdm_language_option_widget_lookup_item (GdmRecentOptionWidget *widget,
         g_free (language);
         g_free (lang_tag);
 
-        return TRUE;
+        return normalized_locale;
 }
 
 static void
@@ -294,7 +298,7 @@ gdm_language_option_widget_set_current_language_name (GdmLanguageOptionWidget *w
 
         if (normalized_language_name != NULL &&
             !gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (widget),
-                                            normalized_language_name, NULL, NULL, NULL)) {
+                                            &normalized_language_name, NULL, NULL, NULL)) {
                 gdm_recent_option_widget_add_item (GDM_RECENT_OPTION_WIDGET (widget),
                                                    normalized_language_name);
         }

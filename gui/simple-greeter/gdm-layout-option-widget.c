@@ -176,24 +176,24 @@ gdm_layout_option_widget_class_init (GdmLayoutOptionWidgetClass *klass)
         g_type_class_add_private (klass, sizeof (GdmLayoutOptionWidgetPrivate));
 }
 
-static gboolean
+static char *
 gdm_layout_option_widget_lookup_item (GdmRecentOptionWidget *widget,
-                                      const char            *id,
+                                      const char            *key,
                                       char                 **name,
                                       char                 **comment)
 {
         char *layout;
 
-        layout = gdm_get_layout_from_name (id);
+        layout = gdm_get_layout_from_name (key);
 
         if (layout == NULL) {
-                return FALSE;
+                return NULL;
         }
 
         *name = layout;
         *comment = NULL;
 
-        return TRUE;
+        return g_strdup (key);
 }
 
 static void
