@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GDM HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-22 18:08+0000\n"
-"PO-Revision-Date: 2008-09-18 06:56+0300\n"
+"POT-Creation-Date: 2008-10-01 22:32+0000\n"
+"PO-Revision-Date: 2008-10-03 15:51+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -71,7 +71,7 @@ msgid "Unable to establish credentials"
 msgstr ""
 
 #: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1048
+#: ../daemon/gdm-simple-slave.c:1062
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -83,54 +83,54 @@ msgstr ""
 "jälilejõudmiseks süsteemi logisid.  Vahepeal on see kuva blokitud.  "
 "Probleemide kõrvaldamise järel taaskäivita palun GDM."
 
-#: ../daemon/gdm-server.c:244
+#: ../daemon/gdm-server.c:246
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: tõrge ühendumisel vanemkuvaga '%s'"
 
-#: ../daemon/gdm-server.c:362
+#: ../daemon/gdm-server.c:361
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Server proovis luua uut protsessi kasutaja %s õigustes, kuid sellist "
 "kasutajat pole olemas"
 
-#: ../daemon/gdm-server.c:373 ../daemon/gdm-welcome-session.c:415
+#: ../daemon/gdm-server.c:372 ../daemon/gdm-welcome-session.c:444
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Grupi ID'd (groupid) pole võimalik %d-ks seada"
 
-#: ../daemon/gdm-server.c:379 ../daemon/gdm-welcome-session.c:421
+#: ../daemon/gdm-server.c:378 ../daemon/gdm-welcome-session.c:450
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "tõrge initgroups() täitmisel %s jaoks"
 
-#: ../daemon/gdm-server.c:385 ../daemon/gdm-welcome-session.c:427
+#: ../daemon/gdm-server.c:384 ../daemon/gdm-welcome-session.c:456
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Kasutaja ID'd (userid) pole võimalik %d-ks seada"
 
-#: ../daemon/gdm-server.c:393 ../daemon/gdm-welcome-session.c:435
+#: ../daemon/gdm-server.c:392 ../daemon/gdm-welcome-session.c:464
 msgid "Couldn't set groupid to 0"
 msgstr "Grupi ID'd (groupid) pole võimalik 0-ks seada"
 
-#: ../daemon/gdm-server.c:428
+#: ../daemon/gdm-server.c:431
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: Kuva %s jaoks pole võimalik logfaili avada!"
 
-#: ../daemon/gdm-server.c:439 ../daemon/gdm-server.c:445
-#: ../daemon/gdm-server.c:451
+#: ../daemon/gdm-server.c:442 ../daemon/gdm-server.c:448
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Viga signaali %s sättimisel signaaliks %s"
 
-#: ../daemon/gdm-server.c:466
+#: ../daemon/gdm-server.c:469
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Serveri prioriteeti pole võimalik %d-ks seada: %s"
 
-#: ../daemon/gdm-server.c:618
+#: ../daemon/gdm-server.c:621
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tühi serverikäsk kuva %s jaoks"
@@ -198,21 +198,25 @@ msgstr ""
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
+"viga autentimissüsteemile kasutaja hostinime kohta teavituse saatamisel - %s"
 
 #: ../daemon/gdm-session-worker.c:1125
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
+"viga autentimissüsteemile kasutaja konsooli kohta teavituse saatamisel - %s"
 
 #: ../daemon/gdm-session-worker.c:1138
 #, c-format
 msgid "error informing authentication system of display string - %s"
 msgstr ""
+"viga autentimissüsteemile kuvatava stringi kohta teavituse saatamisel - %s"
 
 #: ../daemon/gdm-session-worker.c:1153
 #, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
 msgstr ""
+"viga autentimissüsteemile xauth tõendite kohta teavituse saatamisel - %s"
 
 #: ../daemon/gdm-session-worker.c:1433 ../daemon/gdm-session-worker.c:1451
 #, c-format
@@ -227,12 +231,12 @@ msgstr "Kasutajat pole võimalik vahetada"
 msgid "Unable establish credentials"
 msgstr ""
 
-#: ../daemon/gdm-welcome-session.c:397
+#: ../daemon/gdm-welcome-session.c:426
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Kasutajat %s pole olemas"
 
-#: ../daemon/gdm-welcome-session.c:404
+#: ../daemon/gdm-welcome-session.c:433
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Gruppi %s pole olemas"
@@ -429,7 +433,7 @@ msgstr "GDM-i grupp ei tohi olla juurkasutaja grupp. Katkestatakse!"
 
 #: ../daemon/main.c:517
 msgid "Make all warnings fatal"
-msgstr ""
+msgstr "Kõikide hoiatuste fataalseks muutmine"
 
 #: ../daemon/main.c:518
 msgid "Exit after a time - for debugging"
@@ -489,6 +493,10 @@ msgstr "GNOME ekraaniklaviatuur"
 msgid "Use an onscreen keyboard"
 msgstr "Ekraaniklaviatuuri kasutamine"
 
+#: ../data/greeter-autostart/metacity.desktop.in.h:1
+msgid "Metacity"
+msgstr "Metacity"
+
 #: ../data/greeter-autostart/orca-screen-reader.desktop.in.h:1
 msgid "Orca Screen Reader"
 msgstr "Orca Ekraanilugeja"
@@ -517,19 +525,19 @@ msgstr "Väärtus"
 msgid "percentage of time complete"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1203
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1306
 msgid "Inactive Text"
 msgstr "Passiivne tekst"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1204
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1307
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr "Sildil kasutatav tekst, kui kasutaja pole ühtegi kirjet valinud"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1212
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1315
 msgid "Active Text"
 msgstr "Aktiivne tekst"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1213
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1316
 msgid "The text to use in the label if the user has picked an item"
 msgstr "Sildil kasutatav tekst, kui kasutaja on kirje valinud"
 
@@ -631,81 +639,81 @@ msgstr "Versioon"
 msgid "page 5"
 msgstr "5. leht"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:540
+#: ../gui/simple-greeter/gdm-greeter-panel.c:590
 msgid "Panel"
 msgstr "Paneel"
 
-#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:221
+#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:201
 msgid "Languages"
 msgstr "Keeled"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:272
 msgid "_Languages:"
 msgstr "_Keeled:"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:274
-#: ../gui/simple-greeter/gdm-language-option-widget.c:235
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
+#: ../gui/simple-greeter/gdm-language-option-widget.c:259
 msgid "_Language:"
 msgstr "Kee_l:"
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:206
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:199
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:89
-#: ../gui/user-switch-applet/applet.c:996
+#: ../gui/simple-greeter/gdm-language-option-widget.c:228
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:220
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:131
+#: ../gui/user-switch-applet/applet.c:997
 msgid "Other..."
 msgstr "Muu..."
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:207
+#: ../gui/simple-greeter/gdm-language-option-widget.c:229
 msgid "Choose a language from the full list of available languages."
 msgstr "Vali saadaolevate keelte nimekirjast sobiv keel."
 
-#: ../gui/simple-greeter/gdm-languages.c:587
+#: ../gui/simple-greeter/gdm-languages.c:610
 msgid "Unspecified"
 msgstr "Määramata"
 
-#: ../gui/simple-greeter/gdm-layout-chooser-dialog.c:210
+#: ../gui/simple-greeter/gdm-layout-chooser-dialog.c:191
 msgid "Keyboard layouts"
 msgstr "Klaviatuuripaigutused"
 
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:200
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:201
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:228
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:251
 msgid "_Keyboard:"
 msgstr "_Klaviatuur:"
 
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:200
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:221
 msgid "Choose a keyboard layout from the full list of available layouts."
 msgstr "Vali saadaolevate klaviatuuripaigutuste nimekirjast sobiv paigutus."
 
-#: ../gui/simple-greeter/gdm-option-widget.c:493
+#: ../gui/simple-greeter/gdm-option-widget.c:494
 msgid "Label Text"
 msgstr "Sildi tekst"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:494
+#: ../gui/simple-greeter/gdm-option-widget.c:495
 msgid "The text to use as a label"
 msgstr "Sildil kasutatav tekst"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:501
+#: ../gui/simple-greeter/gdm-option-widget.c:502
 msgid "Icon name"
 msgstr "Ikooni nimi"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:502
+#: ../gui/simple-greeter/gdm-option-widget.c:503
 msgid "The icon to use with the label"
 msgstr "Sildiga kasutatav ikoon"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:510
+#: ../gui/simple-greeter/gdm-option-widget.c:511
 msgid "Default Item"
 msgstr "Vaikimisi kirje"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:511
+#: ../gui/simple-greeter/gdm-option-widget.c:512
 msgid "The id of the default item"
 msgstr "Vaikimisi kirje id"
 
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:298
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:310
 msgid "Max Item Count"
 msgstr "Suurim kirjete arv"
 
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:299
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:311
 msgid "The maximum number of items to keep around in the list"
 msgstr "Suurim nimekirjas hoitavate kirjete arv"
 
@@ -907,32 +915,32 @@ msgstr "Haldur"
 msgid "The user manager object this user is controlled by."
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:90
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:132
 msgid "Choose a different account"
 msgstr "Vali mõni teine konto"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:102
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:144
 msgid "Guest"
 msgstr "Külaline"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:103
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:145
 msgid "Login as a temporary guest"
 msgstr "Sisselogimine külalisena"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:115
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:157
 msgid "Automatic Login"
 msgstr "Automaatne sisselogimine"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:116
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:158
 msgid "Automatically login to the system after selecting options"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:279
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:349
 #, c-format
 msgid "Log in as %s"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:600
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:694
 msgid "Currently logged in"
 msgstr "Hetkel sisselogitud"
 
@@ -982,26 +990,26 @@ msgstr ""
 "Ivar Smolin <okul@linux.ee>, 2005-2008.\n"
 "Priit Laes <amd@store20.com>, 2005."
 
-#: ../gui/user-switch-applet/applet.c:782
+#: ../gui/user-switch-applet/applet.c:783
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "Ekraani pole võimalik lukustada: %s"
 
-#: ../gui/user-switch-applet/applet.c:804
+#: ../gui/user-switch-applet/applet.c:805
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr ""
 "Ekraani ajutiseks puhastamiseks pole ekraanisäästjat võimalik kehtestada: %s"
 
-#: ../gui/user-switch-applet/applet.c:1101
+#: ../gui/user-switch-applet/applet.c:1102
 msgid "Unknown"
 msgstr "Tundmatu"
 
-#: ../gui/user-switch-applet/applet.c:1157
+#: ../gui/user-switch-applet/applet.c:1158
 msgid "User Switch Applet"
 msgstr "Kasutajate vahel lülitumise rakend"
 
-#: ../gui/user-switch-applet/applet.c:1181
+#: ../gui/user-switch-applet/applet.c:1182
 #: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:2
 msgid "User Switcher"
 msgstr "Kasutajate vahel lülituja"
@@ -1058,10 +1066,6 @@ msgstr "_Programmist lähemalt"
 msgid "_Edit Users and Groups"
 msgstr ""
 
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:4
-msgid "_Help"
-msgstr "A_bi"
-
 #: ../utils/gdmflexiserver.c:60 ../utils/gdmflexiserver.c:61
 #: ../utils/gdmflexiserver.c:62 ../utils/gdmflexiserver.c:64
 #: ../utils/gdmflexiserver.c:65
@@ -1092,6 +1096,9 @@ msgstr "Peamised valikud"
 #: ../utils/gdmflexiserver.c:759
 msgid "Unable to start new display"
 msgstr "Uut kuva pole võimalik käivitada"
+
+#~ msgid "_Help"
+#~ msgstr "A_bi"
 
 #~ msgid "Accessibility Preferences"
 #~ msgstr "Hõlbustuste eelistused"
