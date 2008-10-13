@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-04 02:32+0200\n"
-"PO-Revision-Date: 2008-09-04 02:36+0100\n"
+"POT-Creation-Date: 2008-10-14 00:21+0200\n"
+"PO-Revision-Date: 2008-10-14 00:22+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -83,57 +83,57 @@ msgstr "Kan inte etablera behörighet"
 msgid "Could not start the X server (your graphical environment) due to some internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 msgstr "Kunde inte starta X-servern (din grafiska miljö) på grund av ett internt fel. Kontakta din systemadministratör eller kontrollera din systemlogg för att analysera felet. Under tiden kommer denna display att vara inaktiverad. Starta om GDM när problemet är åtgärdat."
 
-#: ../daemon/gdm-server.c:244
+#: ../daemon/gdm-server.c:246
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: misslyckades med att ansluta till förälderdisplayen \"%s\""
 
-#: ../daemon/gdm-server.c:362
+#: ../daemon/gdm-server.c:361
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Servern skulle startas av användaren %s, men den användaren finns inte"
 
-#: ../daemon/gdm-server.c:373
-#: ../daemon/gdm-welcome-session.c:415
+#: ../daemon/gdm-server.c:372
+#: ../daemon/gdm-welcome-session.c:444
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Kunde inte ställa in grupp-id till %d"
 
-#: ../daemon/gdm-server.c:379
-#: ../daemon/gdm-welcome-session.c:421
+#: ../daemon/gdm-server.c:378
+#: ../daemon/gdm-welcome-session.c:450
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () misslyckades för %s"
 
-#: ../daemon/gdm-server.c:385
-#: ../daemon/gdm-welcome-session.c:427
+#: ../daemon/gdm-server.c:384
+#: ../daemon/gdm-welcome-session.c:456
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Kunde inte ställa in användar-id till %d"
 
-#: ../daemon/gdm-server.c:393
-#: ../daemon/gdm-welcome-session.c:435
+#: ../daemon/gdm-server.c:392
+#: ../daemon/gdm-welcome-session.c:464
 msgid "Couldn't set groupid to 0"
 msgstr "Kunde inte ställa in grupp-id till 0"
 
-#: ../daemon/gdm-server.c:428
+#: ../daemon/gdm-server.c:431
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: Kunde inte öppna loggfilen för display %s!"
 
-#: ../daemon/gdm-server.c:439
-#: ../daemon/gdm-server.c:445
-#: ../daemon/gdm-server.c:451
+#: ../daemon/gdm-server.c:442
+#: ../daemon/gdm-server.c:448
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Fel vid inställning av %s till %s"
 
-#: ../daemon/gdm-server.c:466
+#: ../daemon/gdm-server.c:469
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Serverprioritet kunde inte ställas in till %d: %s"
 
-#: ../daemon/gdm-server.c:618
+#: ../daemon/gdm-server.c:621
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tomt serverkommando för display %s"
@@ -232,12 +232,12 @@ msgstr "Kunde inte byta till användare"
 msgid "Unable establish credentials"
 msgstr "Kan inte etablera behörighet"
 
-#: ../daemon/gdm-welcome-session.c:397
+#: ../daemon/gdm-welcome-session.c:426
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Användaren %s finns inte"
 
-#: ../daemon/gdm-welcome-session.c:404
+#: ../daemon/gdm-welcome-session.c:433
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Gruppen %s finns inte"
@@ -522,19 +522,19 @@ msgstr "Värde"
 msgid "percentage of time complete"
 msgstr "procentdel av tid"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1235
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1306
 msgid "Inactive Text"
 msgstr "Inaktiv text"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1236
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1307
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr "Texten att använda i etiketten om användaren inte har valt ett objekt än"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1244
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1315
 msgid "Active Text"
 msgstr "Aktiv text"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1245
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1316
 msgid "The text to use in the label if the user has picked an item"
 msgstr "Texten att använda i etiketten om användaren har valt ett objekt"
 
@@ -629,7 +629,7 @@ msgstr "Version"
 msgid "page 5"
 msgstr "sida 5"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:540
+#: ../gui/simple-greeter/gdm-greeter-panel.c:590
 msgid "Panel"
 msgstr "Panel"
 
@@ -642,26 +642,25 @@ msgid "_Languages:"
 msgstr "S_pråk:"
 
 #: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
-#: ../gui/simple-greeter/gdm-language-option-widget.c:255
+#: ../gui/simple-greeter/gdm-language-option-widget.c:259
 msgid "_Language:"
 msgstr "S_pråk:"
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:224
+#: ../gui/simple-greeter/gdm-language-option-widget.c:228
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:220
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:92
-#: ../gui/user-switch-applet/applet.c:996
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:131
 msgid "Other..."
 msgstr "Annat..."
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:225
+#: ../gui/simple-greeter/gdm-language-option-widget.c:229
 msgid "Choose a language from the full list of available languages."
 msgstr "Välj ett språk från den fullständiga listan över tillgängliga språk."
 
-#: ../gui/simple-greeter/gdm-languages.c:587
+#: ../gui/simple-greeter/gdm-languages.c:610
 msgid "Unspecified"
 msgstr "Inte angivet"
 
-#: ../gui/simple-greeter/gdm-layout-chooser-dialog.c:190
+#: ../gui/simple-greeter/gdm-layout-chooser-dialog.c:191
 msgid "Keyboard layouts"
 msgstr "Tangentbordslayouter"
 
@@ -675,35 +674,35 @@ msgstr "_Tangentbord:"
 msgid "Choose a keyboard layout from the full list of available layouts."
 msgstr "Välj en tangentbordslayout från den fullständiga listan över tillgängliga layouter."
 
-#: ../gui/simple-greeter/gdm-option-widget.c:493
+#: ../gui/simple-greeter/gdm-option-widget.c:494
 msgid "Label Text"
 msgstr "Etikettext"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:494
+#: ../gui/simple-greeter/gdm-option-widget.c:495
 msgid "The text to use as a label"
 msgstr "Texten att använda som en etikett"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:501
+#: ../gui/simple-greeter/gdm-option-widget.c:502
 msgid "Icon name"
 msgstr "Ikonnamn"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:502
+#: ../gui/simple-greeter/gdm-option-widget.c:503
 msgid "The icon to use with the label"
 msgstr "Ikonen att använda med etiketten"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:510
+#: ../gui/simple-greeter/gdm-option-widget.c:511
 msgid "Default Item"
 msgstr "Standardobjekt"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:511
+#: ../gui/simple-greeter/gdm-option-widget.c:512
 msgid "The id of the default item"
 msgstr "Id för standardobjektet"
 
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:298
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:310
 msgid "Max Item Count"
 msgstr "Max antal objekt"
 
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:299
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:311
 msgid "The maximum number of items to keep around in the list"
 msgstr "Maximalt antal objekt i listan"
 
@@ -901,52 +900,52 @@ msgstr "Hanterare"
 msgid "The user manager object this user is controlled by."
 msgstr "Användarhanterarobjektet som denna användare styrs av."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:93
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:132
 msgid "Choose a different account"
 msgstr "Välj ett annat konto"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:105
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:144
 msgid "Guest"
 msgstr "Gäst"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:106
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:145
 msgid "Login as a temporary guest"
 msgstr "Logga in som temporär gäst"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:118
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:157
 msgid "Automatic Login"
 msgstr "Automatisk inloggning"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:119
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:158
 msgid "Automatically login to the system after selecting options"
 msgstr "Logga automatiskt in i systemet efter alternativ valts"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:308
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:349
 #, c-format
 msgid "Log in as %s"
 msgstr "Logga in som %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:647
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:694
 msgid "Currently logged in"
 msgstr "Redan inloggad"
 
-#: ../gui/user-switch-applet/applet.c:147
+#: ../gui/user-switch-applet/applet.c:148
 msgid "The User Switch Applet is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
 msgstr "Panelprogrammet Användarväxlare är fri programvara; du kan distribuera det och/eller ändra det under villkoren GNU General Public License som publicerats av Free Software Foundation; antingen version 2 av licensen, eller (enligt dig) någon senare version."
 
-#: ../gui/user-switch-applet/applet.c:151
+#: ../gui/user-switch-applet/applet.c:152
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
 msgstr "Detta program distribueras i hopp om att det ska vara användbart, men UTAN NÅGON GARANTI; även utan underförstådd garanti om SÄLJBARHET eller LÄMPLIGHET FÖR ETT SPECIFIKT ÄNDAMÅL.  Se GNU General Public License för mer information."
 
-#: ../gui/user-switch-applet/applet.c:155
+#: ../gui/user-switch-applet/applet.c:156
 msgid "You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
 msgstr "Du bör ha fått en kopia av GNU General Public License tillsammans med detta program. Om inte, skriv till Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
 
-#: ../gui/user-switch-applet/applet.c:169
+#: ../gui/user-switch-applet/applet.c:170
 msgid "A menu to quickly switch between users."
 msgstr "En meny för att snabbt växla mellan användare."
 
-#: ../gui/user-switch-applet/applet.c:173
+#: ../gui/user-switch-applet/applet.c:174
 msgid "translator-credits"
 msgstr ""
 "Daniel Nylander\n"
@@ -957,25 +956,33 @@ msgstr ""
 "Skicka synpunkter på översättningen till\n"
 "tp-sv@listor.tp-sv.se"
 
-#: ../gui/user-switch-applet/applet.c:782
+#: ../gui/user-switch-applet/applet.c:786
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "Kan inte låsa skärm: %s"
 
-#: ../gui/user-switch-applet/applet.c:804
+#: ../gui/user-switch-applet/applet.c:808
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "Kan inte temporärt ställa in skärmsläckare till att dämpa skärmen: %s"
 
-#: ../gui/user-switch-applet/applet.c:1101
+#: ../gui/user-switch-applet/applet.c:1011
+msgid "Lock Screen..."
+msgstr "Lås skärmen..."
+
+#: ../gui/user-switch-applet/applet.c:1022
+msgid "Switch User..."
+msgstr "Växla användare..."
+
+#: ../gui/user-switch-applet/applet.c:1127
 msgid "Unknown"
 msgstr "Okänt"
 
-#: ../gui/user-switch-applet/applet.c:1157
+#: ../gui/user-switch-applet/applet.c:1183
 msgid "User Switch Applet"
 msgstr "Panelprogram för användarväxling"
 
-#: ../gui/user-switch-applet/applet.c:1181
+#: ../gui/user-switch-applet/applet.c:1207
 #: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:2
 msgid "User Switcher"
 msgstr "Användarväxlare"
@@ -1032,10 +1039,6 @@ msgstr "_Om"
 msgid "_Edit Users and Groups"
 msgstr "R_edigera användare och grupper"
 
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:4
-msgid "_Help"
-msgstr "_Hjälp"
-
 #: ../utils/gdmflexiserver.c:60
 #: ../utils/gdmflexiserver.c:61
 #: ../utils/gdmflexiserver.c:62
@@ -1071,6 +1074,8 @@ msgstr "Huvudalternativ"
 msgid "Unable to start new display"
 msgstr "Kunde inte starta ny display"
 
+#~ msgid "_Help"
+#~ msgstr "_Hjälp"
 #~ msgid "Accessibility Preferences"
 #~ msgstr "Tillgänglighetsinställningar"
 #~ msgid "<b>Enable features that make your computer easier to use:</b>"
