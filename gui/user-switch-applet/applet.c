@@ -57,6 +57,7 @@ typedef struct _GdmAppletData
         GtkWidget      *menuitem;
         GtkWidget      *menu;
         GtkWidget      *separator_item;
+        GtkWidget      *lock_screen_item;
         GtkWidget      *login_screen_item;
         GSList         *items;
 
@@ -691,6 +692,8 @@ menuitem_style_set_cb (GtkWidget *menuitem,
 
                 if (menuitem == adata->login_screen_item) {
                         icon_name = "gdm";
+                } else if (menuitem == adata->lock_screen_item) {
+                        icon_name = "system-lock-screen";
                 } else {
                         icon_name = GTK_STOCK_MISSING_IMAGE;
                 }
@@ -936,7 +939,18 @@ on_manager_user_is_logged_in_changed (GdmUserManager *manager,
 }
 
 static void
-login_screen_activate_cb (GtkMenuItem *item,
+on_lock_screen_activate (GtkMenuItem *item,
+                         gpointer     data)
+{
+        GdmAppletData *adata;
+
+        adata = data;
+
+        maybe_lock_screen (adata);
+}
+
+static void
+on_login_screen_activate (GtkMenuItem *item,
                           gpointer     data)
 {
         GdmAppletData *adata;
@@ -994,6 +1008,17 @@ create_sub_menu (GdmAppletData *adata)
         adata->items = g_slist_prepend (adata->items, adata->separator_item);
         gtk_widget_show (adata->separator_item);
 
+        adata->lock_screen_item = gtk_image_menu_item_new_with_label (_("Lock Screen..."));
+        gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->lock_screen_item),
+                                       gtk_image_new ());
+        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
+                               adata->lock_screen_item);
+        g_signal_connect (adata->lock_screen_item, "style-set",
+                          G_CALLBACK (menuitem_style_set_cb), adata);
+        g_signal_connect (adata->lock_screen_item, "activate",
+                          G_CALLBACK (on_lock_screen_activate), adata);
+        gtk_widget_show (adata->lock_screen_item);
+
         adata->login_screen_item = gtk_image_menu_item_new_with_label (_("Switch User..."));
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->login_screen_item),
                                        gtk_image_new ());
@@ -1004,7 +1029,7 @@ create_sub_menu (GdmAppletData *adata)
         g_signal_connect (adata->login_screen_item, "destroy",
                           G_CALLBACK (menuitem_destroy_cb), adata);
         g_signal_connect (adata->login_screen_item, "activate",
-                          G_CALLBACK (login_screen_activate_cb), adata);
+                          G_CALLBACK (on_login_screen_activate), adata);
         adata->items = g_slist_prepend (adata->items, adata->login_screen_item);
         gtk_widget_show (adata->login_screen_item);
 
