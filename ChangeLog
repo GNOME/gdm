@@ -1,5 +1,27 @@
 2008-10-13  William Jon McCann  <jmccann@redhat.com>
 
+	* gui/user-switch-applet/applet.c (menu_style_set_cb),
+	(menuitem_destroy_cb), (do_switch), (update_switch_user),
+	(on_manager_user_added), (on_manager_user_removed),
+	(on_manager_users_loaded), (create_sub_menu), (destroy_sub_menu),
+	(fill_applet):
+	Don't list users in the menu anymore.  Only show
+	Switch User if there are other users on the system.
+
+2008-10-13  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/user-switch-applet/applet.c (menuitem_style_set_cb),
+	(on_lock_screen_activate), (on_login_screen_activate),
+	(create_sub_menu):
+	Add Lock Screen menu item.
+
+2008-10-13  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/user-switch-applet/applet.c (create_sub_menu):
+	Rename item to Switch User...
+
+2008-10-13  William Jon McCann  <jmccann@redhat.com>
+
 	* configure.ac: Post branch version bump
 
 2008-10-11  Nickolay V. Shmyrev  <nshmyrev@yandex.ru>

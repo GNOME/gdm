@@ -61,7 +61,7 @@ typedef struct _GdmAppletData
         GtkWidget      *login_screen_item;
         GSList         *items;
 
-        gboolean        active_only;
+        gboolean        has_other_users;
 
         guint           client_notify_lockdown_id;
 
@@ -505,118 +505,6 @@ menubar_expose_event_cb (GtkWidget      *widget,
         return FALSE;
 }
 
-static gint
-sort_menu_comparedatafunc (gconstpointer a,
-                           gconstpointer b,
-                           gpointer      data)
-{
-        GdmAppletData *adata;
-        gboolean a_is_user, b_is_user;
-
-        a_is_user = GDM_IS_USER_MENU_ITEM (a);
-        b_is_user = GDM_IS_USER_MENU_ITEM (b);
-
-        if (a_is_user && !b_is_user) {
-                return -1;
-        }
-
-        if (b_is_user && !a_is_user) {
-                return 1;
-        }
-
-        if (a_is_user && b_is_user) {
-                return gdm_user_collate (gdm_user_menu_item_get_user ((GdmUserMenuItem *) a),
-                                         gdm_user_menu_item_get_user ((GdmUserMenuItem *) b));
-        }
-
-        adata = data;
-        if (a == adata->separator_item) {
-                return -1;
-        }
-
-        if (b == adata->separator_item) {
-                return 1;
-        }
-
-        if (a == adata->login_screen_item) {
-                return -1;
-        }
-
-        if (b == adata->login_screen_item) {
-                return 1;
-        }
-
-        return 0;
-}
-
-static void
-sort_menu (GdmAppletData *adata)
-{
-        GSList *items;
-        guint   n_items;
-        guint   n_rows;
-        guint   n_cols;
-        guint   row;
-        guint   column;
-        guint   count;
-        int     screen_height;
-
-        if (!gtk_widget_has_screen (adata->menu)) {
-                return;
-        }
-
-        adata->items = g_slist_sort_with_data (adata->items,
-                                               sort_menu_comparedatafunc,
-                                               adata);
-
-        screen_height = gdk_screen_get_height (gtk_widget_get_screen (adata->menu));
-
-        n_items = 0;
-        items = adata->items;
-        while (items) {
-                if (GTK_WIDGET_VISIBLE (items->data)) {
-                        n_items++;
-                }
-
-                items = items->next;
-        }
-
-        /* FIXME: Do a better job of figuring out exactly how big the menuitems are */
-        n_rows = (gdouble) screen_height / (gdouble) (adata->pixel_size + 16);
-        n_cols = (gdouble) n_items / (gdouble) n_rows;
-        n_rows = (gdouble) n_items / (gdouble) (n_cols + 1);
-
-        row = 0;
-        column = 0;
-        count = 0;
-        items = adata->items;
-        while (items != NULL) {
-                if (GTK_WIDGET_VISIBLE (items->data)) {
-                        gtk_menu_attach (GTK_MENU (adata->menu),
-                                         items->data,
-                                         column,
-                                         column + 1,
-                                         row,
-                                         row + 1);
-                        row++;
-                        if (row > n_rows) {
-                                row = 0;
-                                column++;
-                        }
-
-                        /* Just re-attaching them doesn't alter the order you get them
-                         * in when you move through with the arrow keys, though; we
-                         * have to set that explicitly.
-                         */
-                        gtk_menu_reorder_child (GTK_MENU (adata->menu),
-                                                items->data,
-                                                count++);
-                }
-
-                items = items->next;
-        }
-}
-
 static void
 menu_style_set_cb (GtkWidget *menu,
                    GtkStyle  *old_style,
@@ -645,8 +533,6 @@ menu_style_set_cb (GtkWidget *menu,
         } else {
                 adata->pixel_size = MAX (width, height);
         }
-
-        sort_menu (adata);
 }
 
 static void
@@ -671,7 +557,6 @@ menuitem_destroy_cb (GtkWidget *menuitem,
         g_debug ("Menuitem destroyed - removing");
         li = g_slist_find (adata->items, menuitem);
         adata->items = g_slist_delete_link (adata->items, li);
-        sort_menu (adata);
 }
 
 static void
@@ -717,7 +602,6 @@ user_notify_display_name_cb (GObject       *object,
         gtk_label_set_text (GTK_LABEL (label), gdm_user_get_real_name (GDM_USER (object)));
 }
 
-
 /* Called every time the menu is displayed (and also for some reason
  * immediately it's created, which does no harm). All we have to do
  * here is kick off a request to GDM to let us know which users are
@@ -729,13 +613,6 @@ menu_expose_cb (GtkWidget *menu,
 {
 
         return FALSE;
-}
-
-static void
-switch_to_user_session (GdmAppletData *adata,
-                        GdmUser       *user)
-{
-        gdm_user_manager_activate_user_session (adata->manager, user);
 }
 
 static void
@@ -828,7 +705,7 @@ do_switch (GdmAppletData *adata,
 
         num_sessions = gdm_user_get_num_sessions (user);
         if (num_sessions > 0) {
-                switch_to_user_session (adata, user);
+                gdm_user_manager_activate_user_session (adata->manager, user);
         } else {
                 gdm_user_manager_goto_login_session (adata->manager);
         }
@@ -837,86 +714,23 @@ do_switch (GdmAppletData *adata,
 }
 
 static void
-user_item_activate_cb (GtkWidget     *menuitem,
-                       GdmAppletData *adata)
+update_switch_user (GdmAppletData  *adata)
 {
-        GdmUserMenuItem *item;
-        GdmUser         *user;
+        GSList *users;
 
-        item = GDM_USER_MENU_ITEM (menuitem);
-        user = gdm_user_menu_item_get_user (item);
-
-        do_switch (adata, user);
-}
-
-static void
-update_user_item_visibility (GdmAppletData  *adata,
-                             GdmUser        *user)
-{
-        GtkWidget *menuitem;
-
-        g_debug ("Updating menu item visibility for %s", gdm_user_get_user_name (user));
-
-        menuitem = g_object_get_qdata (G_OBJECT (user), adata->user_menu_item_quark);
-        if (menuitem == NULL) {
-                return;
+        users = gdm_user_manager_list_users (adata->manager);
+        adata->has_other_users = FALSE;
+        if (users != NULL) {
+                adata->has_other_users = (g_slist_length (users) > 1);
         }
+        g_slist_free (users);
 
-        if (adata->active_only) {
-                guint num_sessions;
-
-                num_sessions = gdm_user_get_num_sessions (user);
-                g_debug ("Sessions changed for %s num=%u", gdm_user_get_user_name (user), num_sessions);
-
-                if (num_sessions > 0) {
-                        gtk_widget_show (menuitem);
-                } else {
-                        gtk_widget_hide (menuitem);
-                }
+        if (adata->has_other_users) {
+                gtk_widget_show (adata->login_screen_item);
         } else {
-                gtk_widget_show (menuitem);
+
+                gtk_widget_hide (adata->login_screen_item);
         }
-
-        sort_menu (adata);
-}
-
-static void
-on_user_sessions_changed (GdmUser       *user,
-                          GdmAppletData *adata)
-{
-        g_debug ("Sessions changed for %s", gdm_user_get_user_name (user));
-        update_user_item_visibility (adata, user);
-}
-
-static void
-add_user (GdmAppletData  *adata,
-          GdmUser        *user)
-{
-        GtkWidget *menuitem;
-
-        menuitem = gdm_user_menu_item_new (user);
-        g_object_set_qdata (G_OBJECT (user), adata->user_menu_item_quark, menuitem);
-        g_signal_connect (menuitem,
-                          "style-set",
-                          G_CALLBACK (menuitem_style_set_cb),
-                          adata);
-        g_signal_connect (menuitem,
-                          "destroy",
-                          G_CALLBACK (menuitem_destroy_cb),
-                          adata);
-        g_signal_connect (menuitem,
-                          "activate",
-                          G_CALLBACK (user_item_activate_cb),
-                          adata);
-        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), menuitem);
-        adata->items = g_slist_prepend (adata->items, menuitem);
-
-        gtk_widget_show (menuitem);
-
-        g_signal_connect (user,
-                          "sessions-changed",
-                          G_CALLBACK (on_user_sessions_changed),
-                          adata);
 }
 
 static void
@@ -924,18 +738,22 @@ on_manager_user_added (GdmUserManager *manager,
                        GdmUser        *user,
                        GdmAppletData  *adata)
 {
-        add_user (adata, user);
-        update_user_item_visibility (adata, user);
-        sort_menu (adata);
+        update_switch_user (adata);
 }
 
 static void
-on_manager_user_is_logged_in_changed (GdmUserManager *manager,
-                                      GdmUser        *user,
-                                      GdmAppletData  *adata)
+on_manager_user_removed (GdmUserManager *manager,
+                         GdmUser        *user,
+                         GdmAppletData  *adata)
 {
-        update_user_item_visibility (adata, user);
-        sort_menu (adata);
+        update_switch_user (adata);
+}
+
+static void
+on_manager_users_loaded (GdmUserManager *manager,
+                         GdmAppletData  *adata)
+{
+        update_switch_user (adata);
 }
 
 static void
@@ -975,30 +793,17 @@ create_sub_menu (GdmAppletData *adata)
                           G_CALLBACK (menu_expose_cb), adata);
         gtk_widget_show (adata->menu);
 
-
-        /* This next part populates the list with all the users we currently know
-         * about. For almost all cases, this is the empty list, because we're
-         * asynchronous, and the data hasn't come back from the callback saying who
-         * the users are yet. However, if someone has two GDMs on their toolbars (why,
-         * I have no freaking idea, but bear with me here), the menu of the second
-         * one to be initialised needs to be filled in from the start rather than
-         * depending on getting data from the callback like the first one.
-         */
-        users = gdm_user_manager_list_users (adata->manager);
-        while (users != NULL) {
-                add_user (adata, users->data);
-                update_user_item_visibility (adata, users->data);
-
-                users = g_slist_delete_link (users, users);
-        }
-
+        g_signal_connect (adata->manager,
+                          "users-loaded",
+                          G_CALLBACK (on_manager_users_loaded),
+                          adata);
         g_signal_connect (adata->manager,
                           "user-added",
                           G_CALLBACK (on_manager_user_added),
                           adata);
         g_signal_connect (adata->manager,
-                          "user-is-logged-in-changed",
-                          G_CALLBACK (on_manager_user_is_logged_in_changed),
+                          "user-removed",
+                          G_CALLBACK (on_manager_user_added),
                           adata);
 
         adata->separator_item = gtk_separator_menu_item_new ();
@@ -1015,8 +820,11 @@ create_sub_menu (GdmAppletData *adata)
                                adata->lock_screen_item);
         g_signal_connect (adata->lock_screen_item, "style-set",
                           G_CALLBACK (menuitem_style_set_cb), adata);
+        g_signal_connect (adata->lock_screen_item, "destroy",
+                          G_CALLBACK (menuitem_destroy_cb), adata);
         g_signal_connect (adata->lock_screen_item, "activate",
                           G_CALLBACK (on_lock_screen_activate), adata);
+        adata->items = g_slist_prepend (adata->items, adata->lock_screen_item);
         gtk_widget_show (adata->lock_screen_item);
 
         adata->login_screen_item = gtk_image_menu_item_new_with_label (_("Switch User..."));
@@ -1031,11 +839,7 @@ create_sub_menu (GdmAppletData *adata)
         g_signal_connect (adata->login_screen_item, "activate",
                           G_CALLBACK (on_login_screen_activate), adata);
         adata->items = g_slist_prepend (adata->items, adata->login_screen_item);
-        gtk_widget_show (adata->login_screen_item);
-
-        adata->items = g_slist_sort_with_data (adata->items,
-                                               sort_menu_comparedatafunc,
-                                               adata);
+        /* Only show switch user if there are other users */
 }
 
 static void
@@ -1047,7 +851,7 @@ destroy_sub_menu (GdmAppletData *adata)
                                               G_CALLBACK (on_manager_user_added),
                                               adata);
         g_signal_handlers_disconnect_by_func (adata->manager,
-                                              G_CALLBACK (on_manager_user_is_logged_in_changed),
+                                              G_CALLBACK (on_manager_user_removed),
                                               adata);
 }
 
@@ -1186,9 +990,6 @@ fill_applet (PanelApplet *applet)
         adata = g_new0 (GdmAppletData, 1);
         adata->applet = applet;
         adata->panel_size = 24;
-
-        /* Until we add user selecting to GDM */
-        adata->active_only = TRUE;
 
         adata->client = gconf_client_get_default ();
 
