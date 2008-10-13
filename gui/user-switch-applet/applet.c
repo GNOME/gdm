@@ -994,7 +994,7 @@ create_sub_menu (GdmAppletData *adata)
         adata->items = g_slist_prepend (adata->items, adata->separator_item);
         gtk_widget_show (adata->separator_item);
 
-        adata->login_screen_item = gtk_image_menu_item_new_with_label (_("Other..."));
+        adata->login_screen_item = gtk_image_menu_item_new_with_label (_("Switch User..."));
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->login_screen_item),
                                        gtk_image_new ());
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
