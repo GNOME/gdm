@@ -56,6 +56,7 @@ typedef struct _GdmAppletData
         GtkWidget      *menubar;
         GtkWidget      *menuitem;
         GtkWidget      *menu;
+        GtkWidget      *control_panel_item;
         GtkWidget      *separator_item;
         GtkWidget      *lock_screen_item;
         GtkWidget      *login_screen_item;
@@ -757,6 +758,48 @@ on_manager_users_loaded (GdmUserManager *manager,
 }
 
 static void
+on_control_panel_activate (GtkMenuItem *item,
+                           gpointer     data)
+{
+        char      *args[2];
+        GError    *error;
+        GdkScreen *screen;
+        gboolean   res;
+        GdmAppletData *adata;
+
+        adata = data;
+
+        args[0] = g_find_program_in_path ("gnome-control-center");
+        if (args[0] == NULL) {
+                return;
+        }
+        args[1] = NULL;
+
+        if (gtk_widget_has_screen (GTK_WIDGET (adata->applet))) {
+                screen = gtk_widget_get_screen (GTK_WIDGET (adata->applet));
+        } else {
+                screen = gdk_screen_get_default ();
+        }
+
+        error = NULL;
+        res = gdk_spawn_on_screen (screen,
+                                   g_get_home_dir (),
+                                   args,
+                                   NULL,
+                                   0,
+                                   NULL,
+                                   NULL,
+                                   NULL,
+                                   &error);
+        if (! res) {
+                g_warning (_("Can't lock screen: %s"), error->message);
+                g_error_free (error);
+        }
+
+        g_free (args[0]);
+}
+
+static void
 on_lock_screen_activate (GtkMenuItem *item,
                          gpointer     data)
 {
@@ -783,8 +826,6 @@ on_login_screen_activate (GtkMenuItem *item,
 static void
 create_sub_menu (GdmAppletData *adata)
 {
-        GSList *users;
-
         adata->menu = gtk_menu_new ();
         gtk_menu_item_set_submenu (GTK_MENU_ITEM (adata->menuitem), adata->menu);
         g_signal_connect (adata->menu, "style-set",
@@ -805,6 +846,22 @@ create_sub_menu (GdmAppletData *adata)
                           "user-removed",
                           G_CALLBACK (on_manager_user_added),
                           adata);
+
+
+        adata->control_panel_item = gtk_image_menu_item_new_with_label (_("System Preferences..."));
+        gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->control_panel_item),
+                                       gtk_image_new ());
+        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
+                               adata->control_panel_item);
+        g_signal_connect (adata->control_panel_item, "style-set",
+                          G_CALLBACK (menuitem_style_set_cb), adata);
+        g_signal_connect (adata->control_panel_item, "destroy",
+                          G_CALLBACK (menuitem_destroy_cb), adata);
+        g_signal_connect (adata->control_panel_item, "activate",
+                          G_CALLBACK (on_control_panel_activate), adata);
+        adata->items = g_slist_prepend (adata->items, adata->control_panel_item);
+        gtk_widget_show (adata->control_panel_item);
+
 
         adata->separator_item = gtk_separator_menu_item_new ();
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), adata->separator_item);
