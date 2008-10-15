@@ -60,6 +60,7 @@ typedef struct _GdmAppletData
         GtkWidget      *separator_item;
         GtkWidget      *lock_screen_item;
         GtkWidget      *login_screen_item;
+        GtkWidget      *quit_session_item;
         GSList         *items;
 
         gboolean        has_other_users;
@@ -97,7 +98,7 @@ PANEL_APPLET_BONOBO_FACTORY ("OAFIID:GNOME_FastUserSwitchApplet_Factory",
 static void
 about_me_cb (BonoboUIComponent *ui_container,
              gpointer           data,
-             const char       *cname)
+             const char        *cname)
 {
         GError *err;
 
@@ -137,7 +138,7 @@ menubar_button_press_event_cb (GtkWidget      *menubar,
 static void
 about_cb (BonoboUIComponent *ui_container,
           gpointer           data,
-          const char       *cname)
+          const char        *cname)
 {
         static const char *authors[] = {
                 "James M. Cape <jcape@ignore-your.tv>",
@@ -183,7 +184,7 @@ about_cb (BonoboUIComponent *ui_container,
 static void
 admin_cb (BonoboUIComponent *ui_container,
           gpointer           data,
-          const char       *cname)
+          const char        *cname)
 {
 #ifdef USERS_ADMIN
         char   **args;
@@ -258,9 +259,11 @@ applet_style_set_cb (GtkWidget *widget,
                      gpointer   data)
 {
         BonoboUIComponent *component;
-        GdkScreen *screen;
-        GtkIconTheme *theme;
-        gint width, height, icon_size;
+        GdkScreen         *screen;
+        GtkIconTheme      *theme;
+        int                width;
+        int                height;
+        int                icon_size;
 
         if (gtk_widget_has_screen (widget)) {
                 screen = gtk_widget_get_screen (widget);
@@ -295,13 +298,10 @@ applet_change_background_cb (PanelApplet               *applet,
                              PanelAppletBackgroundType  type,
                              GdkColor                  *color,
                              GdkPixmap                 *pixmap,
-                             gpointer                   data)
+                             GdmAppletData             *adata)
 {
-        GdmAppletData *adata;
-        GtkRcStyle    *rc_style;
-        GtkStyle      *style;
-
-        adata = data;
+        GtkRcStyle *rc_style;
+        GtkStyle   *style;
 
         gtk_widget_set_style (adata->menubar, NULL);
         rc_style = gtk_rc_style_new ();
@@ -335,11 +335,10 @@ applet_change_background_cb (PanelApplet               *applet,
  * Copyright (C) 2000 Helix Code, Inc.
  */
 static gboolean
-applet_key_press_event_cb (GtkWidget   *widget,
-                           GdkEventKey *event,
-                           gpointer     data)
+applet_key_press_event_cb (GtkWidget     *widget,
+                           GdkEventKey   *event,
+                           GdmAppletData *adata)
 {
-        GdmAppletData *adata;
         GtkMenuShell *menu_shell;
 
         switch (event->keyval) {
@@ -349,7 +348,6 @@ applet_key_press_event_cb (GtkWidget   *widget,
         case GDK_Return:
         case GDK_space:
         case GDK_KP_Space:
-                adata = data;
                 menu_shell = GTK_MENU_SHELL (adata->menubar);
                 /*
                  * We need to call _gtk_menu_shell_activate() here as is done in
@@ -493,12 +491,8 @@ gdm_applet_data_free (GdmAppletData *adata)
 static gboolean
 menubar_expose_event_cb (GtkWidget      *widget,
                          GdkEventExpose *event,
-                         gpointer        data)
+                         GdmAppletData  *adata)
 {
-        GdmAppletData *adata;
-
-        adata = data;
-
         if (GTK_WIDGET_HAS_FOCUS (adata->applet))
                 gtk_paint_focus (widget->style, widget->window, GTK_WIDGET_STATE (widget),
                                  NULL, widget, "menu-applet", 0, 0, -1, -1);
@@ -507,15 +501,14 @@ menubar_expose_event_cb (GtkWidget      *widget,
 }
 
 static void
-menu_style_set_cb (GtkWidget *menu,
-                   GtkStyle  *old_style,
-                   gpointer   data)
+menu_style_set_cb (GtkWidget     *menu,
+                   GtkStyle      *old_style,
+                   GdmAppletData *adata)
 {
-        GdmAppletData *adata;
         GtkSettings *settings;
-        gint width, height;
+        int          width;
+        int          height;
 
-        adata = data;
         adata->icon_size = gtk_icon_size_from_name ("panel-menu");
 
         if (adata->icon_size == GTK_ICON_SIZE_INVALID) {
@@ -537,13 +530,10 @@ menu_style_set_cb (GtkWidget *menu,
 }
 
 static void
-menuitem_destroy_cb (GtkWidget *menuitem,
-                     gpointer   data)
+menuitem_destroy_cb (GtkWidget     *menuitem,
+                     GdmAppletData *adata)
 {
-        GdmAppletData *adata;
-        GSList        *li;
-
-        adata = data;
+        GSList *li;
 
         if (GDM_IS_USER_MENU_ITEM (menuitem)) {
                 GdmUser *user;
@@ -561,17 +551,14 @@ menuitem_destroy_cb (GtkWidget *menuitem,
 }
 
 static void
-menuitem_style_set_cb (GtkWidget *menuitem,
-                       GtkStyle  *old_style,
-                       gpointer   data)
+menuitem_style_set_cb (GtkWidget     *menuitem,
+                       GtkStyle      *old_style,
+                       GdmAppletData *adata)
 {
-        GdmAppletData *adata;
-
-        adata = data;
 
         if (GDM_IS_USER_MENU_ITEM (menuitem)) {
                 gdm_user_menu_item_set_icon_size (GDM_USER_MENU_ITEM (menuitem),
-                                                   adata->pixel_size);
+                                                  adata->pixel_size);
         } else {
                 GtkWidget *image;
                 const char *icon_name;
@@ -580,6 +567,8 @@ menuitem_style_set_cb (GtkWidget *menuitem,
                         icon_name = "gdm";
                 } else if (menuitem == adata->lock_screen_item) {
                         icon_name = "system-lock-screen";
+                } else if (menuitem == adata->quit_session_item) {
+                        icon_name = "system-log-out";
                 } else {
                         icon_name = GTK_STOCK_MISSING_IMAGE;
                 }
@@ -715,7 +704,7 @@ do_switch (GdmAppletData *adata,
 }
 
 static void
-update_switch_user (GdmAppletData  *adata)
+update_switch_user (GdmAppletData *adata)
 {
         GSList *users;
 
@@ -758,16 +747,13 @@ on_manager_users_loaded (GdmUserManager *manager,
 }
 
 static void
-on_control_panel_activate (GtkMenuItem *item,
-                           gpointer     data)
+on_control_panel_activate (GtkMenuItem   *item,
+                           GdmAppletData *adata)
 {
         char      *args[2];
         GError    *error;
         GdkScreen *screen;
         gboolean   res;
-        GdmAppletData *adata;
-
-        adata = data;
 
         args[0] = g_find_program_in_path ("gnome-control-center");
         if (args[0] == NULL) {
@@ -800,27 +786,62 @@ on_control_panel_activate (GtkMenuItem *item,
 }
 
 static void
-on_lock_screen_activate (GtkMenuItem *item,
-                         gpointer     data)
+on_lock_screen_activate (GtkMenuItem   *item,
+                         GdmAppletData *adata)
 {
-        GdmAppletData *adata;
-
-        adata = data;
-
         maybe_lock_screen (adata);
 }
 
 static void
-on_login_screen_activate (GtkMenuItem *item,
-                          gpointer     data)
+on_login_screen_activate (GtkMenuItem   *item,
+                          GdmAppletData *adata)
 {
-        GdmAppletData *adata;
-        GdmUser       *user;
+        GdmUser *user;
 
-        adata = data;
         user = NULL;
 
         do_switch (adata, user);
+}
+
+static void
+on_quit_session_activate (GtkMenuItem   *item,
+                          GdmAppletData *adata)
+{
+        char      *args[3];
+        GError    *error;
+        GdkScreen *screen;
+        gboolean   res;
+
+        args[0] = g_find_program_in_path ("gnome-session-save");
+        if (args[0] == NULL) {
+                return;
+        }
+
+        args[1] = "--logout-dialog";
+        args[2] = NULL;
+
+        if (gtk_widget_has_screen (GTK_WIDGET (adata->applet))) {
+                screen = gtk_widget_get_screen (GTK_WIDGET (adata->applet));
+        } else {
+                screen = gdk_screen_get_default ();
+        }
+
+        error = NULL;
+        res = gdk_spawn_on_screen (screen,
+                                   g_get_home_dir (),
+                                   args,
+                                   NULL,
+                                   0,
+                                   NULL,
+                                   NULL,
+                                   NULL,
+                                   &error);
+        if (! res) {
+                g_warning (_("Can't logout: %s"), error->message);
+                g_error_free (error);
+        }
+
+        g_free (args[0]);
 }
 
 static void
@@ -897,6 +918,20 @@ create_sub_menu (GdmAppletData *adata)
                           G_CALLBACK (on_login_screen_activate), adata);
         adata->items = g_slist_prepend (adata->items, adata->login_screen_item);
         /* Only show switch user if there are other users */
+
+        adata->quit_session_item = gtk_image_menu_item_new_with_label (_("Quit..."));
+        gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->quit_session_item),
+                                       gtk_image_new ());
+        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
+                               adata->quit_session_item);
+        g_signal_connect (adata->quit_session_item, "style-set",
+                          G_CALLBACK (menuitem_style_set_cb), adata);
+        g_signal_connect (adata->quit_session_item, "destroy",
+                          G_CALLBACK (menuitem_destroy_cb), adata);
+        g_signal_connect (adata->quit_session_item, "activate",
+                          G_CALLBACK (on_quit_session_activate), adata);
+        adata->items = g_slist_prepend (adata->items, adata->quit_session_item);
+        gtk_widget_show (adata->quit_session_item);
 }
 
 static void
