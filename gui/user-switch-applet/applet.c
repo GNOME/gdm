@@ -1010,10 +1010,32 @@ on_user_icon_changed (GdmUser         *user,
         reset_icon (adata);
 }
 
+/* copied from eel */
+static void
+_gtk_label_make_bold (GtkLabel *label)
+{
+        PangoFontDescription *font_desc;
+
+        font_desc = pango_font_description_new ();
+
+        pango_font_description_set_weight (font_desc,
+                                           PANGO_WEIGHT_BOLD);
+
+        /* This will only affect the weight of the font, the rest is
+         * from the current state of the widget, which comes from the
+         * theme or user prefs, since the font desc only has the
+         * weight flag turned on.
+         */
+        gtk_widget_modify_font (GTK_WIDGET (label), font_desc);
+
+        pango_font_description_free (font_desc);
+}
+
 static void
 setup_current_user (GdmAppletData *adata)
 {
         const char *name;
+        GtkWidget  *label;
 
         adata->user = gdm_user_manager_get_user_by_uid (adata->manager, getuid ());
         if (adata->user != NULL) {
@@ -1024,6 +1046,8 @@ setup_current_user (GdmAppletData *adata)
         }
 
         adata->menuitem = gtk_image_menu_item_new_with_label (name);
+        label = GTK_BIN (adata->menuitem)->child;
+        _gtk_label_make_bold (GTK_LABEL (label));
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->menuitem),
                                        gtk_image_new ());
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menubar), adata->menuitem);
