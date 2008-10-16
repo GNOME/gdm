@@ -58,7 +58,7 @@ typedef struct _GdmAppletData
         GtkWidget      *menu;
         GtkWidget      *user_item;
         GtkWidget      *control_panel_item;
-        GtkWidget      *separator_item;
+        GtkWidget      *account_item;
         GtkWidget      *lock_screen_item;
         GtkWidget      *login_screen_item;
         GtkWidget      *quit_session_item;
@@ -545,6 +545,10 @@ menuitem_style_set_cb (GtkWidget     *menuitem,
                         icon_name = "system-lock-screen";
                 } else if (menuitem == adata->quit_session_item) {
                         icon_name = "system-log-out";
+                } else if (menuitem == adata->account_item) {
+                        icon_name = "user-info";
+                } else if (menuitem == adata->control_panel_item) {
+                        icon_name = "preferences-desktop";
                 } else {
                         icon_name = GTK_STOCK_MISSING_IMAGE;
                 }
@@ -555,7 +559,6 @@ menuitem_style_set_cb (GtkWidget     *menuitem,
                                               adata->icon_size);
         }
 }
-
 
 static void
 user_notify_display_name_cb (GObject       *object,
@@ -769,6 +772,45 @@ on_control_panel_activate (GtkMenuItem   *item,
 }
 
 static void
+on_account_activate (GtkMenuItem   *item,
+                     GdmAppletData *adata)
+{
+        char      *args[2];
+        GError    *error;
+        GdkScreen *screen;
+        gboolean   res;
+
+        args[0] = g_find_program_in_path ("gnome-about-me");
+        if (args[0] == NULL) {
+                return;
+        }
+        args[1] = NULL;
+
+        if (gtk_widget_has_screen (GTK_WIDGET (adata->applet))) {
+                screen = gtk_widget_get_screen (GTK_WIDGET (adata->applet));
+        } else {
+                screen = gdk_screen_get_default ();
+        }
+
+        error = NULL;
+        res = gdk_spawn_on_screen (screen,
+                                   g_get_home_dir (),
+                                   args,
+                                   NULL,
+                                   0,
+                                   NULL,
+                                   NULL,
+                                   NULL,
+                                   &error);
+        if (! res) {
+                g_warning (_("Can't lock screen: %s"), error->message);
+                g_error_free (error);
+        }
+
+        g_free (args[0]);
+}
+
+static void
 on_lock_screen_activate (GtkMenuItem   *item,
                          GdmAppletData *adata)
 {
@@ -842,9 +884,52 @@ on_menu_key_press_event (GtkWidget     *widget,
 }
 
 static void
+on_status_available_activate (GtkWidget     *widget,
+                              GdmAppletData *adata)
+{
+}
+
+static void
+on_status_away_activate (GtkWidget     *widget,
+                         GdmAppletData *adata)
+{
+}
+
+static void
+on_status_busy_activate (GtkWidget     *widget,
+                         GdmAppletData *adata)
+{
+}
+
+static void
+on_status_invisible_activate (GtkWidget     *widget,
+                              GdmAppletData *adata)
+{
+}
+
+static void
+on_status_offline_activate (GtkWidget     *widget,
+                            GdmAppletData *adata)
+{
+}
+
+static struct {
+        char  *icon_name;
+        char  *display_name;
+        void  *callback;
+} statuses[] = {
+        { "user-online", N_("Available"), on_status_available_activate },
+        { "user-away", N_("Away"), on_status_away_activate },
+        { "user-busy", N_("Busy"), on_status_busy_activate },
+        { "user-invisible", N_("Invisible"), on_status_invisible_activate },
+        { "user-offline", N_("Offline"), on_status_offline_activate },
+};
+
+static void
 create_sub_menu (GdmAppletData *adata)
 {
         GtkWidget *item;
+        int        i;
 
         adata->menu = gtk_menu_new ();
         g_signal_connect (adata->menu,
@@ -882,6 +967,48 @@ create_sub_menu (GdmAppletData *adata)
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), item);
         gtk_widget_show (item);
 
+        for (i = 0; i < G_N_ELEMENTS (statuses); i++) {
+                GtkWidget *hbox;
+                GtkWidget *label;
+                GtkWidget *image;
+                GtkWidget *item;
+
+                item = gtk_menu_item_new ();
+                hbox = gtk_hbox_new (FALSE, 3);
+                label = gtk_label_new (statuses[i].display_name);
+                gtk_label_set_justify (GTK_LABEL(label), GTK_JUSTIFY_LEFT);
+                gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+                gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
+                gtk_widget_show (label);
+                image = gtk_image_new_from_icon_name (statuses[i].icon_name, GTK_ICON_SIZE_MENU);
+                gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, TRUE, 0);
+                gtk_widget_show (image);
+                gtk_widget_show (hbox);
+                gtk_container_add (GTK_CONTAINER (item), hbox);
+
+                gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
+                                       item);
+                g_signal_connect (item, "activate",
+                                  G_CALLBACK (statuses[i].callback), adata);
+                gtk_widget_show (item);
+        }
+
+        item = gtk_separator_menu_item_new ();
+        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), item);
+        gtk_widget_show (item);
+
+        adata->account_item = gtk_image_menu_item_new_with_label (_("Account Information..."));
+        gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->account_item),
+                                       gtk_image_new ());
+        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
+                               adata->account_item);
+        g_signal_connect (adata->account_item, "style-set",
+                          G_CALLBACK (menuitem_style_set_cb), adata);
+        g_signal_connect (adata->account_item, "activate",
+                          G_CALLBACK (on_account_activate), adata);
+        gtk_widget_show (adata->account_item);
+
+
         adata->control_panel_item = gtk_image_menu_item_new_with_label (_("System Preferences..."));
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->control_panel_item),
                                        gtk_image_new ());
@@ -894,9 +1021,9 @@ create_sub_menu (GdmAppletData *adata)
         gtk_widget_show (adata->control_panel_item);
 
 
-        adata->separator_item = gtk_separator_menu_item_new ();
-        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), adata->separator_item);
-        gtk_widget_show (adata->separator_item);
+        item = gtk_separator_menu_item_new ();
+        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), item);
+        gtk_widget_show (item);
 
         adata->lock_screen_item = gtk_image_menu_item_new_with_label (_("Lock Screen..."));
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->lock_screen_item),
