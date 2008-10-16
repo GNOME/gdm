@@ -1117,7 +1117,7 @@ fill_applet (PanelApplet *applet)
                 g_object_ref (tooltips);
         }
 
-        gtk_tooltips_set_tip (tooltips, GTK_WIDGET (applet), _("User Switcher"), NULL);
+        gtk_tooltips_set_tip (tooltips, GTK_WIDGET (applet), _("Change account settings and status"), NULL);
         gtk_container_set_border_width (GTK_CONTAINER (applet), 0);
         gtk_widget_set_name (GTK_WIDGET (applet), "gdm-user-switch-applet");
         panel_applet_set_flags (applet, PANEL_APPLET_EXPAND_MINOR);
