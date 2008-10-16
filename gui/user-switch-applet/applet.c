@@ -1025,7 +1025,7 @@ create_sub_menu (GdmAppletData *adata)
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), item);
         gtk_widget_show (item);
 
-        adata->lock_screen_item = gtk_image_menu_item_new_with_label (_("Lock Screen..."));
+        adata->lock_screen_item = gtk_image_menu_item_new_with_label (_("Lock Screen"));
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->lock_screen_item),
                                        gtk_image_new ());
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
@@ -1036,7 +1036,7 @@ create_sub_menu (GdmAppletData *adata)
                           G_CALLBACK (on_lock_screen_activate), adata);
         gtk_widget_show (adata->lock_screen_item);
 
-        adata->login_screen_item = gtk_image_menu_item_new_with_label (_("Switch User..."));
+        adata->login_screen_item = gtk_image_menu_item_new_with_label (_("Switch User"));
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->login_screen_item),
                                        gtk_image_new ());
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
@@ -1121,7 +1121,7 @@ reset_icon (GdmAppletData *adata)
 
         if (adata->user_item != NULL) {
                 image = gdm_entry_menu_item_get_image (GDM_ENTRY_MENU_ITEM (adata->user_item));
-                pixbuf = gdm_user_render_icon (adata->user, adata->panel_size * 2);
+                pixbuf = gdm_user_render_icon (adata->user, adata->panel_size * 3);
                 if (pixbuf == NULL) {
                         return;
                 }
