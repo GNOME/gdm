@@ -992,15 +992,6 @@ reset_icon (GdmAppletData *adata)
                 return;
         }
 
-        pixbuf = gdm_user_render_icon (adata->user, adata->panel_size);
-        if (pixbuf == NULL) {
-                return;
-        }
-
-        image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (adata->menuitem));
-        gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
-        g_object_unref (pixbuf);
-
         if (adata->user_item != NULL) {
                 image = gdm_entry_menu_item_get_image (GDM_ENTRY_MENU_ITEM (adata->user_item));
                 pixbuf = gdm_user_render_icon (adata->user, adata->panel_size * 2);
@@ -1059,8 +1050,6 @@ setup_current_user (GdmAppletData *adata)
         adata->menuitem = gtk_image_menu_item_new_with_label (name);
         label = GTK_BIN (adata->menuitem)->child;
         _gtk_label_make_bold (GTK_LABEL (label));
-        gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->menuitem),
-                                       gtk_image_new ());
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menubar), adata->menuitem);
         gtk_widget_show (adata->menuitem);
 
