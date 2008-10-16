@@ -21,8 +21,8 @@ libexec_PROGRAMS =			\
 
 gdm_user_switch_applet_SOURCES =  	\
 	applet.c 			\
-	gdm-user-menu-item.h		\
-	gdm-user-menu-item.c		\
+	gdm-entry-menu-item.h		\
+	gdm-entry-menu-item.c		\
 	$(NULL)
 
 gdm_user_switch_applet_LDADD = 		\

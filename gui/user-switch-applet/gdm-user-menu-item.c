@@ -27,7 +27,7 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include "gdm-user-menu-item.h"
+#include "gdm-entry-menu-item.h"
 
 #define DEFAULT_ICON_SIZE               24
 #define CLOSE_ENOUGH_SIZE               2

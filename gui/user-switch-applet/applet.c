@@ -40,7 +40,7 @@
 #include <panel-applet-gconf.h>
 
 #include "gdm-user-manager.h"
-#include "gdm-user-menu-item.h"
+#include "gdm-entry-menu-item.h"
 
 #define LOCKDOWN_DIR    "/desktop/gnome/lockdown"
 #define LOCKDOWN_KEY    LOCKDOWN_DIR "/disable_user_switching"
@@ -56,12 +56,12 @@ typedef struct _GdmAppletData
         GtkWidget      *menubar;
         GtkWidget      *menuitem;
         GtkWidget      *menu;
+        GtkWidget      *user_item;
         GtkWidget      *control_panel_item;
         GtkWidget      *separator_item;
         GtkWidget      *lock_screen_item;
         GtkWidget      *login_screen_item;
         GtkWidget      *quit_session_item;
-        GSList         *items;
 
         gboolean        has_other_users;
 
@@ -69,7 +69,6 @@ typedef struct _GdmAppletData
 
         guint           user_icon_changed_id;
         guint           user_notify_id;
-        GQuark          user_menu_item_quark;
         gint8           pixel_size;
         gint            panel_size;
         GtkIconSize     icon_size;
@@ -530,37 +529,14 @@ menu_style_set_cb (GtkWidget     *menu,
 }
 
 static void
-menuitem_destroy_cb (GtkWidget     *menuitem,
-                     GdmAppletData *adata)
-{
-        GSList *li;
-
-        if (GDM_IS_USER_MENU_ITEM (menuitem)) {
-                GdmUser *user;
-
-                user = gdm_user_menu_item_get_user (GDM_USER_MENU_ITEM (menuitem));
-                if (user != NULL) {
-                        g_object_set_qdata (G_OBJECT (user),
-                                            adata->user_menu_item_quark, NULL);
-                }
-        }
-
-        g_debug ("Menuitem destroyed - removing");
-        li = g_slist_find (adata->items, menuitem);
-        adata->items = g_slist_delete_link (adata->items, li);
-}
-
-static void
 menuitem_style_set_cb (GtkWidget     *menuitem,
                        GtkStyle      *old_style,
                        GdmAppletData *adata)
 {
+        GtkWidget *image;
 
-        if (GDM_IS_USER_MENU_ITEM (menuitem)) {
-                gdm_user_menu_item_set_icon_size (GDM_USER_MENU_ITEM (menuitem),
-                                                  adata->pixel_size);
+        if (GDM_IS_ENTRY_MENU_ITEM (menuitem)) {
         } else {
-                GtkWidget *image;
                 const char *icon_name;
 
                 if (menuitem == adata->login_screen_item) {
@@ -747,6 +723,13 @@ on_manager_users_loaded (GdmUserManager *manager,
 }
 
 static void
+on_user_item_activate (GtkMenuItem   *item,
+                       GdmAppletData *adata)
+{
+        g_signal_stop_emission_by_name (item, "activate");
+}
+
+static void
 on_control_panel_activate (GtkMenuItem   *item,
                            GdmAppletData *adata)
 {
@@ -844,10 +827,30 @@ on_quit_session_activate (GtkMenuItem   *item,
         g_free (args[0]);
 }
 
+static gboolean
+on_menu_key_press_event (GtkWidget     *widget,
+                         GdkEventKey   *event,
+                         GdmAppletData *adata)
+{
+        GtkWidget *entry;
+
+        entry = gdm_entry_menu_item_get_entry (GDM_ENTRY_MENU_ITEM (adata->user_item));
+
+        gtk_widget_event (entry, (GdkEvent *)event);
+
+        return FALSE;
+}
+
 static void
 create_sub_menu (GdmAppletData *adata)
 {
+        GtkWidget *item;
+
         adata->menu = gtk_menu_new ();
+        g_signal_connect (adata->menu,
+                          "key-press-event",
+                          G_CALLBACK (on_menu_key_press_event),
+                          adata);
         gtk_menu_item_set_submenu (GTK_MENU_ITEM (adata->menuitem), adata->menu);
         g_signal_connect (adata->menu, "style-set",
                           G_CALLBACK (menu_style_set_cb), adata);
@@ -868,6 +871,16 @@ create_sub_menu (GdmAppletData *adata)
                           G_CALLBACK (on_manager_user_added),
                           adata);
 
+        adata->user_item = gdm_entry_menu_item_new ();
+        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
+                               adata->user_item);
+        gtk_widget_show (adata->user_item);
+        g_signal_connect (adata->user_item, "activate",
+                          G_CALLBACK (on_user_item_activate), adata);
+
+        item = gtk_separator_menu_item_new ();
+        gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), item);
+        gtk_widget_show (item);
 
         adata->control_panel_item = gtk_image_menu_item_new_with_label (_("System Preferences..."));
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->control_panel_item),
@@ -876,19 +889,13 @@ create_sub_menu (GdmAppletData *adata)
                                adata->control_panel_item);
         g_signal_connect (adata->control_panel_item, "style-set",
                           G_CALLBACK (menuitem_style_set_cb), adata);
-        g_signal_connect (adata->control_panel_item, "destroy",
-                          G_CALLBACK (menuitem_destroy_cb), adata);
         g_signal_connect (adata->control_panel_item, "activate",
                           G_CALLBACK (on_control_panel_activate), adata);
-        adata->items = g_slist_prepend (adata->items, adata->control_panel_item);
         gtk_widget_show (adata->control_panel_item);
 
 
         adata->separator_item = gtk_separator_menu_item_new ();
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), adata->separator_item);
-        g_signal_connect (adata->separator_item, "destroy",
-                          G_CALLBACK (menuitem_destroy_cb), adata);
-        adata->items = g_slist_prepend (adata->items, adata->separator_item);
         gtk_widget_show (adata->separator_item);
 
         adata->lock_screen_item = gtk_image_menu_item_new_with_label (_("Lock Screen..."));
@@ -898,11 +905,8 @@ create_sub_menu (GdmAppletData *adata)
                                adata->lock_screen_item);
         g_signal_connect (adata->lock_screen_item, "style-set",
                           G_CALLBACK (menuitem_style_set_cb), adata);
-        g_signal_connect (adata->lock_screen_item, "destroy",
-                          G_CALLBACK (menuitem_destroy_cb), adata);
         g_signal_connect (adata->lock_screen_item, "activate",
                           G_CALLBACK (on_lock_screen_activate), adata);
-        adata->items = g_slist_prepend (adata->items, adata->lock_screen_item);
         gtk_widget_show (adata->lock_screen_item);
 
         adata->login_screen_item = gtk_image_menu_item_new_with_label (_("Switch User..."));
@@ -912,11 +916,8 @@ create_sub_menu (GdmAppletData *adata)
                                adata->login_screen_item);
         g_signal_connect (adata->login_screen_item, "style-set",
                           G_CALLBACK (menuitem_style_set_cb), adata);
-        g_signal_connect (adata->login_screen_item, "destroy",
-                          G_CALLBACK (menuitem_destroy_cb), adata);
         g_signal_connect (adata->login_screen_item, "activate",
                           G_CALLBACK (on_login_screen_activate), adata);
-        adata->items = g_slist_prepend (adata->items, adata->login_screen_item);
         /* Only show switch user if there are other users */
 
         adata->quit_session_item = gtk_image_menu_item_new_with_label (_("Quit..."));
@@ -926,11 +927,8 @@ create_sub_menu (GdmAppletData *adata)
                                adata->quit_session_item);
         g_signal_connect (adata->quit_session_item, "style-set",
                           G_CALLBACK (menuitem_style_set_cb), adata);
-        g_signal_connect (adata->quit_session_item, "destroy",
-                          G_CALLBACK (menuitem_destroy_cb), adata);
         g_signal_connect (adata->quit_session_item, "activate",
                           G_CALLBACK (on_quit_session_activate), adata);
-        adata->items = g_slist_prepend (adata->items, adata->quit_session_item);
         gtk_widget_show (adata->quit_session_item);
 }
 
@@ -995,8 +993,21 @@ reset_icon (GdmAppletData *adata)
         }
 
         pixbuf = gdm_user_render_icon (adata->user, adata->panel_size);
-        if (pixbuf != NULL) {
-                image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (adata->menuitem));
+        if (pixbuf == NULL) {
+                return;
+        }
+
+        image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (adata->menuitem));
+        gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
+        g_object_unref (pixbuf);
+
+        if (adata->user_item != NULL) {
+                image = gdm_entry_menu_item_get_image (GDM_ENTRY_MENU_ITEM (adata->user_item));
+                pixbuf = gdm_user_render_icon (adata->user, adata->panel_size * 2);
+                if (pixbuf == NULL) {
+                        return;
+                }
+
                 gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
                 g_object_unref (pixbuf);
         }
@@ -1108,10 +1119,6 @@ fill_applet (PanelApplet *applet)
         adata->panel_size = 24;
 
         adata->client = gconf_client_get_default ();
-
-        tmp = g_strdup_printf ("applet-user-menu-item-%p", adata);
-        adata->user_menu_item_quark = g_quark_from_string (tmp);
-        g_free (tmp);
 
         if (tooltips == NULL) {
                 tooltips = gtk_tooltips_new ();
