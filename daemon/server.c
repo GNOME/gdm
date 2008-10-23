@@ -152,6 +152,10 @@ gdm_exec_fbconsole (GdmDisplay *disp)
                 gdm_close_all_descriptors (0 /* from */, -1 /* except */, -1 /* except2 */)
 ;
                 VE_IGNORE_EINTR (execv (argv[0], argv));
+
+		gdm_error ("Can not start fallback console: %s",
+			   strerror (errno));
+		_exit (0);
         }
         if (d->fbconsolepid == -1) {
                 gdm_error (_("Can not start fallback console"));
