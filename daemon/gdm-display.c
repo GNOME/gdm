@@ -37,6 +37,9 @@
 #include "gdm-display-glue.h"
 #include "gdm-display-access-file.h"
 
+#include "gdm-settings-direct.h"
+#include "gdm-settings-keys.h"
+
 #include "gdm-slave-proxy.h"
 
 static guint32 display_serial = 1;
@@ -297,6 +300,90 @@ gdm_display_set_slave_bus_name (GdmDisplay *display,
         g_object_unref (display);
 
         return ret;
+}
+
+static void
+gdm_display_real_get_timed_login_details (GdmDisplay *display,
+                                          gboolean   *enabledp,
+                                          char      **usernamep,
+                                          int        *delayp)
+{
+        gboolean res;
+        gboolean enabled;
+        int      delay;
+        char    *username;
+
+        enabled = FALSE;
+        username = NULL;
+        delay = 0;
+
+        res = gdm_settings_direct_get_boolean (GDM_KEY_AUTO_LOGIN_ENABLE, &enabled);
+        if (enabled) {
+            res = gdm_settings_direct_get_string (GDM_KEY_AUTO_LOGIN_USER, &username);
+        }
+
+        if (enabled && username != NULL && username[0] != '\0') {
+                goto out;
+        }
+
+        g_free (username);
+        username = NULL;
+        enabled = FALSE;
+
+        res = gdm_settings_direct_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE, &enabled);
+        if (! enabled) {
+                goto out;
+        }
+
+        res = gdm_settings_direct_get_string (GDM_KEY_TIMED_LOGIN_USER, &username);
+        if (username == NULL || username[0] == '\0') {
+                enabled = FALSE;
+                g_free (username);
+                username = NULL;
+                /* FIXME: check if a valid username? */
+                goto out;
+        }
+
+        delay = 0;
+        res = gdm_settings_direct_get_int (GDM_KEY_TIMED_LOGIN_DELAY, &delay);
+
+        if (delay <= 0) {
+                /* we don't allow the timed login to have a zero delay */
+                delay = 10;
+        }
+
+ out:
+        if (enabledp != NULL) {
+                *enabledp = enabled;
+        }
+        if (usernamep != NULL) {
+                *usernamep = username;
+        } else {
+                g_free (username);
+        }
+        if (delayp != NULL) {
+                *delayp = delay;
+        }
+}
+
+gboolean
+gdm_display_get_timed_login_details (GdmDisplay *display,
+                                     gboolean   *enabled,
+                                     char      **username,
+                                     int        *delay,
+                                     GError    **error)
+{
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        GDM_DISPLAY_GET_CLASS (display)->get_timed_login_details (display, enabled, username, delay);
+
+        g_debug ("GdmSlave: Got timed login details for display %s: %d '%s' %d",
+                 display->priv->x11_display_name,
+                 *enabled,
+                 *username,
+                 *delay);
+
+        return TRUE;
 }
 
 static gboolean
@@ -579,7 +666,7 @@ gdm_display_real_unmanage (GdmDisplay *display)
         }
 
         elapsed = g_timer_elapsed (display->priv->slave_timer, NULL);
-        if (elapsed < 10) {
+        if (elapsed < 3) {
                 g_warning ("GdmDisplay: display lasted %lf seconds", elapsed);
                 _gdm_display_set_status (display, GDM_DISPLAY_FAILED);
         } else {
@@ -897,6 +984,7 @@ gdm_display_class_init (GdmDisplayClass *klass)
         klass->add_user_authorization = gdm_display_real_add_user_authorization;
         klass->remove_user_authorization = gdm_display_real_remove_user_authorization;
         klass->set_slave_bus_name = gdm_display_real_set_slave_bus_name;
+        klass->get_timed_login_details = gdm_display_real_get_timed_login_details;
         klass->manage = gdm_display_real_manage;
         klass->finish = gdm_display_real_finish;
         klass->unmanage = gdm_display_real_unmanage;

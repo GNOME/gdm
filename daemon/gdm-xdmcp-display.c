@@ -182,6 +182,17 @@ gdm_xdmcp_display_get_property (GObject    *object,
 }
 
 static void
+gdm_xdmcp_display_get_timed_login_details (GdmDisplay *display,
+                                           gboolean   *enabledp,
+                                           char      **usernamep,
+                                           int        *delayp)
+{
+        *enabledp = FALSE;
+        *usernamep = g_strdup ("");
+        *delayp = 0;
+}
+
+static void
 gdm_xdmcp_display_class_init (GdmXdmcpDisplayClass *klass)
 {
         GObjectClass    *object_class = G_OBJECT_CLASS (klass);
@@ -196,6 +207,7 @@ gdm_xdmcp_display_class_init (GdmXdmcpDisplayClass *klass)
         display_class->remove_user_authorization = gdm_xdmcp_display_remove_user_authorization;
         display_class->manage = gdm_xdmcp_display_manage;
         display_class->unmanage = gdm_xdmcp_display_unmanage;
+        display_class->get_timed_login_details = gdm_xdmcp_display_get_timed_login_details;
 
         g_type_class_add_private (klass, sizeof (GdmXdmcpDisplayPrivate));
 

@@ -701,6 +701,60 @@ gdm_slave_add_user_authorization (GdmSlave   *slave,
         return res;
 }
 
+gboolean
+gdm_slave_get_timed_login_details (GdmSlave   *slave,
+                                   gboolean   *enabledp,
+                                   char      **usernamep,
+                                   int        *delayp)
+{
+        GError  *error;
+        gboolean res;
+        gboolean enabled;
+        char    *username;
+        int      delay;
+
+        username = NULL;
+        enabled = FALSE;
+        delay = 0;
+
+        g_debug ("GdmSlave: Requesting timed login details");
+
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->display_proxy,
+                                 "GetTimedLoginDetails",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_BOOLEAN, &enabled,
+                                 G_TYPE_STRING, &username,
+                                 G_TYPE_INT, &delay,
+                                 G_TYPE_INVALID);
+
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get timed login details: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get timed login details");
+                }
+        } else {
+                g_debug ("GdmSlave: Got timed login details: %d %s %d", enabled, username, delay);
+        }
+
+        if (usernamep != NULL) {
+                *usernamep = username;
+        } else {
+                g_free (username);
+        }
+        if (enabledp != NULL) {
+                *enabledp = enabled;
+        }
+        if (delayp != NULL) {
+                *delayp = delay;
+        }
+
+        return res;
+}
+
 static gboolean
 _get_uid_and_gid_for_user (const char *username,
                            uid_t      *uid,

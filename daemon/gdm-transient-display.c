@@ -145,6 +145,17 @@ gdm_transient_display_get_property (GObject    *object,
 }
 
 static void
+gdm_transient_display_get_timed_login_details (GdmDisplay *display,
+                                               gboolean   *enabledp,
+                                               char      **usernamep,
+                                               int        *delayp)
+{
+        *enabledp = FALSE;
+        *usernamep = g_strdup ("");
+        *delayp = 0;
+}
+
+static void
 gdm_transient_display_class_init (GdmTransientDisplayClass *klass)
 {
         GObjectClass    *object_class = G_OBJECT_CLASS (klass);
@@ -160,6 +171,7 @@ gdm_transient_display_class_init (GdmTransientDisplayClass *klass)
         display_class->manage = gdm_transient_display_manage;
         display_class->finish = gdm_transient_display_finish;
         display_class->unmanage = gdm_transient_display_unmanage;
+        display_class->get_timed_login_details = gdm_transient_display_get_timed_login_details;
 
         g_type_class_add_private (klass, sizeof (GdmTransientDisplayPrivate));
 

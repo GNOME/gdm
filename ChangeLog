@@ -1,3 +1,36 @@
+2008-10-23  William Jon McCann  <jmccann@redhat.com>
+
+	* daemon/gdm-display.c (gdm_display_real_get_timed_login_details),
+	(gdm_display_get_timed_login_details), (gdm_display_real_unmanage),
+	(gdm_display_class_init):
+	* daemon/gdm-display.h:
+	* daemon/gdm-display.xml:
+	* daemon/gdm-simple-slave.c (greeter_reset_timeout),
+	(on_session_setup_failed), (on_session_authentication_failed),
+	(on_session_authorized), (on_session_authorization_failed),
+	(stop_greeter), (start_session_timeout), (on_session_accredited),
+	(on_session_accreditation_failed), (on_session_info),
+	(on_session_opened), (on_session_selected_user_changed),
+	(on_default_language_name_changed),
+	(on_default_layout_name_changed),
+	(on_default_session_name_changed), (start_greeter),
+	(idle_connect_to_display), (gdm_simple_slave_stop):
+	* daemon/gdm-slave.c (gdm_slave_get_timed_login_details):
+	* daemon/gdm-slave.h:
+	* daemon/gdm-static-display.c (gdm_static_display_unmanage),
+	(gdm_static_display_get_timed_login_details),
+	(gdm_static_display_class_init), (gdm_static_display_init):
+	* daemon/gdm-transient-display.c
+	(gdm_transient_display_get_timed_login_details),
+	(gdm_transient_display_class_init):
+	* daemon/gdm-xdmcp-display.c
+	(gdm_xdmcp_display_get_timed_login_details),
+	(gdm_xdmcp_display_class_init):
+	Add support for a real automatic login.  Make
+	automatic and timed login only work the first time a display
+	is managed.  Also prevent automatic and timed login
+	from working on transient and xdmcp displays.
+
 2008-10-22  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/user-switch-applet/gdm-entry-menu-item.c

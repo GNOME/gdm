@@ -68,6 +68,10 @@ typedef struct
         gboolean (*manage)                    (GdmDisplay *display);
         gboolean (*finish)                    (GdmDisplay *display);
         gboolean (*unmanage)                  (GdmDisplay *display);
+        void     (*get_timed_login_details)   (GdmDisplay *display,
+                                               gboolean   *enabled,
+                                               char      **username,
+                                               int        *delay);
 } GdmDisplayClass;
 
 typedef enum
@@ -109,6 +113,11 @@ gboolean            gdm_display_get_seat_id                    (GdmDisplay *disp
                                                                 GError    **error);
 gboolean            gdm_display_is_local                       (GdmDisplay *display,
                                                                 gboolean   *local,
+                                                                GError    **error);
+gboolean            gdm_display_get_timed_login_details        (GdmDisplay *display,
+                                                                gboolean   *enabled,
+                                                                char      **username,
+                                                                int        *delay,
                                                                 GError    **error);
 
 /* exported but protected */

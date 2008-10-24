@@ -74,9 +74,10 @@ struct GdmSimpleSlavePrivate
         guint              connection_attempts;
 
         GdmServer         *server;
+        GdmSessionDirect  *session;
+
         GdmGreeterServer  *greeter_server;
         GdmGreeterSession *greeter;
-        GdmSessionDirect  *session;
 
         guint              start_session_when_ready : 1;
         guint              waiting_to_start_session : 1;
@@ -93,6 +94,7 @@ static void     gdm_simple_slave_finalize       (GObject             *object);
 G_DEFINE_TYPE (GdmSimpleSlave, gdm_simple_slave, GDM_TYPE_SLAVE)
 
 static void create_new_session (GdmSimpleSlave *slave);
+static void start_greeter      (GdmSimpleSlave *slave);
 
 static void
 on_session_started (GdmSession       *session,
@@ -176,8 +178,14 @@ static gboolean
 greeter_reset_timeout (GdmSimpleSlave *slave)
 {
         g_debug ("GdmSimpleSlave: resetting greeter");
-        gdm_greeter_server_reset (slave->priv->greeter_server);
-        reset_session (slave);
+
+        if (slave->priv->greeter_server != NULL) {
+                gdm_greeter_server_reset (slave->priv->greeter_server);
+                reset_session (slave);
+        } else {
+                start_greeter (slave);
+                create_new_session (slave);
+        }
         slave->priv->greeter_reset_id = 0;
         return FALSE;
 }
@@ -204,7 +212,10 @@ on_session_setup_failed (GdmSession     *session,
                          const char     *message,
                          GdmSimpleSlave *slave)
 {
-        gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to initialize login system"));
+        if (slave->priv->greeter_server != NULL) {
+                gdm_greeter_server_problem (slave->priv->greeter_server,
+                                            _("Unable to initialize login system"));
+        }
 
         destroy_session (slave);
         queue_greeter_reset (slave);
@@ -237,7 +248,10 @@ on_session_authentication_failed (GdmSession     *session,
                                   const char     *message,
                                   GdmSimpleSlave *slave)
 {
-        gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to authenticate user"));
+        if (slave->priv->greeter_server != NULL) {
+                gdm_greeter_server_problem (slave->priv->greeter_server,
+                                            _("Unable to authenticate user"));
+        }
         destroy_session (slave);
         queue_greeter_reset (slave);
 }
@@ -274,8 +288,13 @@ static void
 on_session_authorized (GdmSession     *session,
                        GdmSimpleSlave *slave)
 {
-        gdm_greeter_server_user_authorized (slave->priv->greeter_server);
-        gdm_simple_slave_accredit_when_ready (slave);
+        if (slave->priv->greeter_server != NULL) {
+                gdm_greeter_server_user_authorized (slave->priv->greeter_server);
+                gdm_simple_slave_accredit_when_ready (slave);
+        } else {
+                slave->priv->start_session_when_ready = TRUE;
+                gdm_simple_slave_accredit_when_ready (slave);
+        }
 }
 
 static void
@@ -283,7 +302,10 @@ on_session_authorization_failed (GdmSession     *session,
                                  const char     *message,
                                  GdmSimpleSlave *slave)
 {
-        gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to authorize user"));
+        if (slave->priv->greeter_server != NULL) {
+                gdm_greeter_server_problem (slave->priv->greeter_server,
+                                            _("Unable to authorize user"));
+        }
 
         destroy_session (slave);
         queue_greeter_reset (slave);
@@ -306,6 +328,25 @@ try_migrate_session (GdmSimpleSlave *slave)
         return res;
 }
 
+static void
+stop_greeter (GdmSimpleSlave *slave)
+{
+        g_debug ("GdmSimpleSlave: Stopping greeter");
+
+        if (slave->priv->greeter == NULL) {
+                g_debug ("GdmSimpleSlave: No greeter running");
+                return;
+        }
+
+        /* Run the PostLogin script. gdmslave suspends until script has terminated */
+        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostLogin", GDM_USERNAME);
+
+        gdm_welcome_session_stop (GDM_WELCOME_SESSION (slave->priv->greeter));
+        gdm_greeter_server_stop (slave->priv->greeter_server);
+
+        g_object_unref (slave->priv->greeter);
+        slave->priv->greeter = NULL;
+}
 
 static gboolean
 start_session_timeout (GdmSimpleSlave *slave)
@@ -330,8 +371,7 @@ start_session_timeout (GdmSimpleSlave *slave)
                 goto out;
         }
 
-        gdm_welcome_session_stop (GDM_WELCOME_SESSION (slave->priv->greeter));
-        gdm_greeter_server_stop (slave->priv->greeter_server);
+        stop_greeter (slave);
 
         auth_file = NULL;
         add_user_authorization (slave, &auth_file);
@@ -365,9 +405,6 @@ on_session_accredited (GdmSession     *session,
                        GdmSimpleSlave *slave)
 {
         queue_start_session (slave);
-
-        /* Run the PostLogin script. gdmslave suspends until script has terminated */
-        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostLogin", GDM_USERNAME);
 }
 
 static void
@@ -384,7 +421,10 @@ on_session_accreditation_failed (GdmSession     *session,
         /* If we switched to another session we don't care if
            accreditation fails */
         if (! migrated) {
-                gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable establish credentials"));
+                if (slave->priv->greeter_server != NULL) {
+                        gdm_greeter_server_problem (slave->priv->greeter_server,
+                                                    _("Unable establish credentials"));
+                }
         }
 
         /* We don't stop the slave here after migrating because
@@ -402,7 +442,9 @@ on_session_info (GdmSession     *session,
                  GdmSimpleSlave *slave)
 {
         g_debug ("GdmSimpleSlave: Info: %s", text);
-        gdm_greeter_server_info (slave->priv->greeter_server, text);
+        if (slave->priv->greeter_server != NULL) {
+                gdm_greeter_server_info (slave->priv->greeter_server, text);
+        }
 }
 
 static void
@@ -433,64 +475,39 @@ on_session_secret_info_query (GdmSession     *session,
         gdm_greeter_server_secret_info_query (slave->priv->greeter_server, text);
 }
 
-static gboolean
-get_timed_login_details (GdmSimpleSlave  *slave,
-                         char           **username,
-                         int             *delay)
-{
-        gboolean enabled;
-        gboolean res;
-
-        enabled = FALSE;
-        res = gdm_settings_client_get_boolean (GDM_KEY_AUTO_LOGIN_ENABLE, &enabled);
-        if (enabled) {
-
-            *username = NULL;
-            res = gdm_settings_client_get_string (GDM_KEY_AUTO_LOGIN_USER, username);
-        }
-
-        if (enabled && *username != NULL)
-        {
-            *delay = 0;
-            return TRUE;
-        }
-
-        *username = NULL;
-        enabled = FALSE;
-        res = gdm_settings_client_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE, &enabled);
-        if (! enabled) {
-                return FALSE;
-        }
-
-        res = gdm_settings_client_get_string (GDM_KEY_TIMED_LOGIN_USER, username);
-
-        if (username == NULL) {
-                return FALSE;
-        }
-
-        res = gdm_settings_client_get_int (GDM_KEY_TIMED_LOGIN_DELAY, delay);
-
-        return TRUE;
-}
-
 static void
 on_session_opened (GdmSession     *session,
                    GdmSimpleSlave *slave)
 {
         gboolean res;
+        gboolean enabled;
         char    *username;
         int      delay;
 
         g_debug ("GdmSimpleSlave: session opened");
-        res = gdm_greeter_server_ready (slave->priv->greeter_server);
-        if (! res) {
-                g_warning ("Unable to send ready");
+        if (slave->priv->greeter_server != NULL) {
+                res = gdm_greeter_server_ready (slave->priv->greeter_server);
+                if (! res) {
+                        g_warning ("Unable to send ready");
+                }
         }
 
-        if (get_timed_login_details (slave, &username, &delay)) {
-                gdm_greeter_server_request_timed_login (slave->priv->greeter_server, username, delay);
-                g_free (username);
+        enabled = FALSE;
+        gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &enabled, &username, &delay);
+        if (! enabled) {
+                return;
         }
+
+        if (slave->priv->greeter_server != NULL) {
+                gdm_greeter_server_request_timed_login (slave->priv->greeter_server, username, delay);
+        } else {
+                g_debug ("GdmSimpleSlave: begin auto login for user '%s'", username);
+                gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
+                                            "gdm-autologin",
+                                            username);
+        }
+
+        g_free (username);
 }
 
 static void
@@ -500,7 +517,9 @@ on_session_selected_user_changed (GdmSession     *session,
 {
         g_debug ("GdmSimpleSlave: Selected user changed: %s", text);
 
-        gdm_greeter_server_selected_user_changed (slave->priv->greeter_server, text);
+        if (slave->priv->greeter_server != NULL) {
+                gdm_greeter_server_selected_user_changed (slave->priv->greeter_server, text);
+        }
 }
 
 static void
@@ -510,7 +529,9 @@ on_default_language_name_changed (GdmSession     *session,
 {
         g_debug ("GdmSimpleSlave: Default language name changed: %s", text);
 
-        gdm_greeter_server_default_language_name_changed (slave->priv->greeter_server, text);
+        if (slave->priv->greeter_server != NULL) {
+                gdm_greeter_server_default_language_name_changed (slave->priv->greeter_server, text);
+        }
 }
 
 static void
@@ -520,7 +541,9 @@ on_default_layout_name_changed (GdmSession     *session,
 {
         g_debug ("GdmSimpleSlave: Default layout name changed: %s", text);
 
-        gdm_greeter_server_default_layout_name_changed (slave->priv->greeter_server, text);
+        if (slave->priv->greeter_server != NULL) {
+                gdm_greeter_server_default_layout_name_changed (slave->priv->greeter_server, text);
+        }
 }
 
 static void
@@ -530,7 +553,9 @@ on_default_session_name_changed (GdmSession     *session,
 {
         g_debug ("GdmSimpleSlave: Default session name changed: %s", text);
 
-        gdm_greeter_server_default_session_name_changed (slave->priv->greeter_server, text);
+        if (slave->priv->greeter_server != NULL) {
+                gdm_greeter_server_default_session_name_changed (slave->priv->greeter_server, text);
+        }
 }
 
 static void
@@ -828,7 +853,7 @@ setup_server (GdmSimpleSlave *slave)
 }
 
 static void
-run_greeter (GdmSimpleSlave *slave)
+start_greeter (GdmSimpleSlave *slave)
 {
         gboolean       display_is_local;
         char          *display_id;
@@ -870,8 +895,6 @@ run_greeter (GdmSimpleSlave *slave)
 
         /* Run the init script. gdmslave suspends until script has terminated */
         gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
-
-        create_new_session (slave);
 
         slave->priv->greeter_server = gdm_greeter_server_new (display_id);
         g_signal_connect (slave->priv->greeter_server,
@@ -971,10 +994,22 @@ idle_connect_to_display (GdmSimpleSlave *slave)
 
         res = gdm_slave_connect_to_x11_display (GDM_SLAVE (slave));
         if (res) {
+                gboolean enabled;
+                int      delay;
+
                 /* FIXME: handle wait-for-go */
 
                 setup_server (slave);
-                run_greeter (slave);
+
+                delay = 0;
+                enabled = FALSE;
+                gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &enabled, NULL, &delay);
+                if (! enabled || delay > 0) {
+                        start_greeter (slave);
+                        create_new_session (slave);
+                } else {
+                        reset_session (slave);
+                }
         } else {
                 if (slave->priv->connection_attempts >= MAX_CONNECT_ATTEMPTS) {
                         g_warning ("Unable to connect to display after %d tries - bailing out", slave->priv->connection_attempts);
@@ -1099,9 +1134,7 @@ gdm_simple_slave_stop (GdmSlave *slave)
         GDM_SLAVE_CLASS (gdm_simple_slave_parent_class)->stop (slave);
 
         if (GDM_SIMPLE_SLAVE (slave)->priv->greeter != NULL) {
-                gdm_welcome_session_stop (GDM_WELCOME_SESSION (GDM_SIMPLE_SLAVE (slave)->priv->greeter));
-                g_object_unref (GDM_SIMPLE_SLAVE (slave)->priv->greeter);
-                GDM_SIMPLE_SLAVE (slave)->priv->greeter = NULL;
+                stop_greeter (GDM_SIMPLE_SLAVE (slave));
         }
 
         if (GDM_SIMPLE_SLAVE (slave)->priv->session != NULL) {
