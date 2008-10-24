@@ -1,5 +1,11 @@
 2008-10-23 Brian Cameron <brian.cameron@sun.com>
 
+	* daemon/gdm.c: Move call to gdm_final_cleanup after accessing
+	  configuration options since gdm_final_cleanup will clear them.
+	  An obvious error uncovered after looking at bug #502975.
+
+2008-10-23 Brian Cameron <brian.cameron@sun.com>
+
 	* daemon/server.c: Fix fbconsole launching code so that if it fails
 	  to run, the forked child just exits.
 

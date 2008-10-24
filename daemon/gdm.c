@@ -779,7 +779,6 @@ custom_cmd_restart (long cmd_id)
 
         gdm_debug (_("Executing custom command %ld with restart option..."), cmd_id);
 
-	gdm_final_cleanup ();
 	VE_IGNORE_EINTR (g_chdir ("/"));
 
 #ifdef __linux__
@@ -794,6 +793,8 @@ custom_cmd_restart (long cmd_id)
 	if (s != NULL) {
 		g_shell_parse_argv (s, NULL, &argv, NULL);
 	}
+
+	gdm_final_cleanup ();
 
 	if (argv != NULL && argv[0] != NULL)
 		VE_IGNORE_EINTR (execv (argv[0], argv));
