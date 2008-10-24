@@ -111,13 +111,10 @@ struct GdmGreeterLoginWindowPrivate
 {
         GladeXML        *xml;
         GtkWidget       *user_chooser;
-        GtkWidget       *auth_capslock_label;
         GtkWidget       *auth_banner_label;
         guint            display_is_local : 1;
         guint            is_interactive : 1;
         GConfClient     *client;
-
-        gboolean         caps_lock_on;
 
         gboolean         banner_message_enabled;
         guint            gconf_cnxn;
@@ -164,41 +161,6 @@ static void     on_user_unchosen            (GdmUserChooserWidget *user_chooser,
                                              GdmGreeterLoginWindow *login_window);
 
 G_DEFINE_TYPE (GdmGreeterLoginWindow, gdm_greeter_login_window, GTK_TYPE_WINDOW)
-
-static void
-capslock_update (GdmGreeterLoginWindow *login_window,
-                 gboolean               is_on)
-{
-
-        login_window->priv->caps_lock_on = is_on;
-
-        if (login_window->priv->auth_capslock_label == NULL) {
-                return;
-        }
-
-        if (is_on) {
-                gtk_label_set_text (GTK_LABEL (login_window->priv->auth_capslock_label),
-                                    _("You have the Caps Lock key on."));
-        } else {
-                gtk_label_set_text (GTK_LABEL (login_window->priv->auth_capslock_label),
-                                    "");
-        }
-}
-
-static gboolean
-is_capslock_on (void)
-{
-        XkbStateRec states;
-        Display     *dsp;
-
-        dsp = GDK_DISPLAY ();
-
-        if (XkbGetState (dsp, XkbUseCoreKbd, &states) != Success) {
-              return FALSE;
-        }
-
-        return (states.locked_mods & LockMask) != 0;
-}
 
 static void
 set_busy (GdmGreeterLoginWindow *login_window)
@@ -1641,8 +1603,6 @@ load_theme (GdmGreeterLoginWindow *login_window)
         login_window->priv->auth_banner_label = glade_xml_get_widget (login_window->priv->xml, "auth-banner-label");
         /*make_label_small_italic (login_window->priv->auth_banner_label);*/
 
-        login_window->priv->auth_capslock_label = glade_xml_get_widget (login_window->priv->xml, "auth-capslock-label");
-
         button = glade_xml_get_widget (login_window->priv->xml, "suspend-button");
         g_signal_connect (button, "clicked", G_CALLBACK (suspend_button_clicked), login_window);
 
@@ -1680,7 +1640,6 @@ gdm_greeter_login_window_key_press_event (GtkWidget   *widget,
                                           GdkEventKey *event)
 {
         GdmGreeterLoginWindow *login_window;
-        gboolean               capslock_on;
 
         login_window = GDM_GREETER_LOGIN_WINDOW (widget);
 
@@ -1688,12 +1647,6 @@ gdm_greeter_login_window_key_press_event (GtkWidget   *widget,
                 if (login_window->priv->dialog_mode == MODE_AUTHENTICATION) {
                         do_cancel (GDM_GREETER_LOGIN_WINDOW (widget));
                 }
-        }
-
-        capslock_on = is_capslock_on ();
-
-        if (capslock_on != login_window->priv->caps_lock_on) {
-                capslock_update (login_window, capslock_on);
         }
 
         return GTK_WIDGET_CLASS (gdm_greeter_login_window_parent_class)->key_press_event (widget, event);

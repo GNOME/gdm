@@ -30,9 +30,9 @@
         </child>
         <child>
           <widget class="GtkEventBox" id="computer-info-event-box">
-            <property name="visible-window">False</property>
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+            <property name="visible_window">False</property>
             <child>
               <widget class="GtkNotebook" id="computer-info-notebook">
                 <property name="visible">True</property>
@@ -138,7 +138,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                        <property name="invisible_char">•</property>
                         <property name="activates_default">True</property>
                       </widget>
                       <packing>
@@ -168,21 +167,6 @@
                     <property name="expand">False</property>
                     <property name="fill">False</property>
                     <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkHBox" id="auth-capslock-box">
-                    <property name="visible">True</property>
-                    <child>
-                      <widget class="GtkLabel" id="auth-capslock-label">
-                        <property name="visible">True</property>
-                      </widget>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">3</property>
                   </packing>
                 </child>
               </widget>
