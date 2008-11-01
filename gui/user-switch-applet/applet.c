@@ -45,6 +45,13 @@
 #define LOCKDOWN_DIR    "/desktop/gnome/lockdown"
 #define LOCKDOWN_KEY    LOCKDOWN_DIR "/disable_user_switching"
 
+enum {
+        GDM_USER_STATUS_AVAILABLE,
+        GDM_USER_STATUS_BUSY,
+        GDM_USER_STATUS_INVISIBLE,
+        GDM_USER_STATUS_AWAY,
+};
+
 typedef struct _GdmAppletData
 {
         PanelApplet    *applet;
@@ -67,6 +74,7 @@ typedef struct _GdmAppletData
 
         guint           client_notify_lockdown_id;
 
+        guint           current_status;
         guint           user_icon_changed_id;
         guint           user_notify_id;
         gint8           pixel_size;
@@ -82,7 +90,8 @@ typedef struct _SelectorResponseData
 
 static GtkTooltips *tooltips = NULL;
 
-static void reset_icon (GdmAppletData *adata);
+static void reset_icon   (GdmAppletData *adata);
+static void update_label (GdmAppletData *adata);
 
 static gboolean applet_factory (PanelApplet   *applet,
                                 const char    *iid,
@@ -565,10 +574,7 @@ user_notify_display_name_cb (GObject       *object,
                              GParamSpec    *pspec,
                              GdmAppletData *adata)
 {
-        GtkWidget *label;
-
-        label = gtk_bin_get_child (GTK_BIN (adata->menuitem));
-        gtk_label_set_text (GTK_LABEL (label), gdm_user_get_real_name (GDM_USER (object)));
+        update_label (adata);
 }
 
 /* Called every time the menu is displayed (and also for some reason
@@ -884,32 +890,59 @@ on_menu_key_press_event (GtkWidget     *widget,
 }
 
 static void
+set_status (GdmAppletData *adata,
+            guint          status)
+{
+        adata->current_status = status;
+        update_label (adata);
+}
+
+static void
 on_status_available_activate (GtkWidget     *widget,
                               GdmAppletData *adata)
 {
+        set_status (adata, GDM_USER_STATUS_AVAILABLE);
 }
 
 static void
 on_status_busy_activate (GtkWidget     *widget,
                          GdmAppletData *adata)
 {
+        set_status (adata, GDM_USER_STATUS_BUSY);
 }
 
 static void
 on_status_invisible_activate (GtkWidget     *widget,
                               GdmAppletData *adata)
 {
+        set_status (adata, GDM_USER_STATUS_INVISIBLE);
 }
 
 static struct {
-        char  *icon_name;
-        char  *display_name;
-        void  *callback;
+        char    *icon_name;
+        char    *display_name;
+        void    *menu_callback;
 } statuses[] = {
         { "user-online", N_("Available"), on_status_available_activate },
         { "user-busy", N_("Busy"), on_status_busy_activate },
         { "user-invisible", N_("Invisible"), on_status_invisible_activate },
+        { "user-away", N_("Away"), NULL },
 };
+
+static void
+update_label (GdmAppletData *adata)
+{
+        GtkWidget *label;
+        char      *markup;
+
+        label = gtk_bin_get_child (GTK_BIN (adata->menuitem));
+
+        markup = g_strdup_printf ("<b>%s</b> <small>(%s)</small>",
+                                  gdm_user_get_real_name (GDM_USER (adata->user)),
+                                  statuses[adata->current_status].display_name);
+        gtk_label_set_markup (GTK_LABEL (label), markup);
+        g_free (markup);
+}
 
 static void
 create_sub_menu (GdmAppletData *adata)
@@ -961,6 +994,10 @@ create_sub_menu (GdmAppletData *adata)
                 GtkWidget *image;
                 GtkWidget *item;
 
+                if (statuses[i].menu_callback == NULL) {
+                        continue;
+                }
+
                 item = gtk_radio_menu_item_new (radio_group);
                 radio_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
                 hbox = gtk_hbox_new (FALSE, 3);
@@ -978,7 +1015,7 @@ create_sub_menu (GdmAppletData *adata)
                 gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
                                        item);
                 g_signal_connect (item, "activate",
-                                  G_CALLBACK (statuses[i].callback), adata);
+                                  G_CALLBACK (statuses[i].menu_callback), adata);
                 gtk_widget_show (item);
         }
 
@@ -1128,27 +1165,6 @@ on_user_icon_changed (GdmUser         *user,
         reset_icon (adata);
 }
 
-/* copied from eel */
-static void
-_gtk_label_make_bold (GtkLabel *label)
-{
-        PangoFontDescription *font_desc;
-
-        font_desc = pango_font_description_new ();
-
-        pango_font_description_set_weight (font_desc,
-                                           PANGO_WEIGHT_BOLD);
-
-        /* This will only affect the weight of the font, the rest is
-         * from the current state of the widget, which comes from the
-         * theme or user prefs, since the font desc only has the
-         * weight flag turned on.
-         */
-        gtk_widget_modify_font (GTK_WIDGET (label), font_desc);
-
-        pango_font_description_free (font_desc);
-}
-
 static void
 setup_current_user (GdmAppletData *adata)
 {
@@ -1165,9 +1181,10 @@ setup_current_user (GdmAppletData *adata)
 
         adata->menuitem = gtk_image_menu_item_new_with_label (name);
         label = GTK_BIN (adata->menuitem)->child;
-        _gtk_label_make_bold (GTK_LABEL (label));
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menubar), adata->menuitem);
         gtk_widget_show (adata->menuitem);
+
+        update_label (adata);
 
         if (adata->user != NULL) {
                 reset_icon (adata);
