@@ -890,12 +890,6 @@ on_status_available_activate (GtkWidget     *widget,
 }
 
 static void
-on_status_away_activate (GtkWidget     *widget,
-                         GdmAppletData *adata)
-{
-}
-
-static void
 on_status_busy_activate (GtkWidget     *widget,
                          GdmAppletData *adata)
 {
@@ -907,22 +901,14 @@ on_status_invisible_activate (GtkWidget     *widget,
 {
 }
 
-static void
-on_status_offline_activate (GtkWidget     *widget,
-                            GdmAppletData *adata)
-{
-}
-
 static struct {
         char  *icon_name;
         char  *display_name;
         void  *callback;
 } statuses[] = {
         { "user-online", N_("Available"), on_status_available_activate },
-        { "user-away", N_("Away"), on_status_away_activate },
         { "user-busy", N_("Busy"), on_status_busy_activate },
         { "user-invisible", N_("Invisible"), on_status_invisible_activate },
-        { "user-offline", N_("Offline"), on_status_offline_activate },
 };
 
 static void
@@ -930,6 +916,7 @@ create_sub_menu (GdmAppletData *adata)
 {
         GtkWidget *item;
         int        i;
+        GSList    *radio_group;
 
         adata->menu = gtk_menu_new ();
         g_signal_connect (adata->menu,
@@ -967,13 +954,15 @@ create_sub_menu (GdmAppletData *adata)
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), item);
         gtk_widget_show (item);
 
+        radio_group = NULL;
         for (i = 0; i < G_N_ELEMENTS (statuses); i++) {
                 GtkWidget *hbox;
                 GtkWidget *label;
                 GtkWidget *image;
                 GtkWidget *item;
 
-                item = gtk_menu_item_new ();
+                item = gtk_radio_menu_item_new (radio_group);
+                radio_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
                 hbox = gtk_hbox_new (FALSE, 3);
                 label = gtk_label_new (statuses[i].display_name);
                 gtk_label_set_justify (GTK_LABEL(label), GTK_JUSTIFY_LEFT);
