@@ -1387,6 +1387,15 @@ if test "$enable_profiling" = "yes"; then
     AC_DEFINE(ENABLE_PROFILING,1,[enable profiling])
 fi
 
+#
+# Set SHELL to use in scripts.
+#
+if test x$os_solaris = xyes ; then
+   XSESSION_SHELL=/bin/ksh
+else
+   XSESSION_SHELL=/bin/sh
+fi
+
 # Set configuration choices.
 #
 AC_SUBST(XSESSION_SHELL)
