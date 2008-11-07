@@ -974,10 +974,6 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
         if (worker->priv->pam_handle == NULL)
                 return;
 
-        if (worker->priv->state >= GDM_SESSION_WORKER_STATE_ACCREDITED) {
-                pam_setcred (worker->priv->pam_handle, PAM_DELETE_CRED);
-        }
-
         if (worker->priv->state >= GDM_SESSION_WORKER_STATE_SESSION_OPENED) {
                 pam_close_session (worker->priv->pam_handle, 0);
                 gdm_session_auditor_report_logout (worker->priv->auditor);
@@ -985,6 +981,10 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
                 gdm_session_auditor_report_login_failure (worker->priv->auditor,
                                                           status,
                                                           pam_strerror (worker->priv->pam_handle, status));
+        }
+
+        if (worker->priv->state >= GDM_SESSION_WORKER_STATE_ACCREDITED) {
+                pam_setcred (worker->priv->pam_handle, PAM_DELETE_CRED);
         }
 
         pam_end (worker->priv->pam_handle, status);
