@@ -45,8 +45,9 @@ static void gdm_session_linux_auditor_finalize (GObject *object);
 G_DEFINE_TYPE (GdmSessionLinuxAuditor, gdm_session_linux_auditor, GDM_TYPE_SESSION_AUDITOR)
 
 static void
-gdm_session_linux_auditor_report_login_attempt (GdmSessionAuditor *auditor,
-                                                gboolean           was_successful)
+log_user_message (GdmSessionAuditor *auditor,
+                  gint               type,
+                  gint               result)
 {
         GdmSessionLinuxAuditor   *linux_auditor;
         char                      buf[512];
@@ -70,14 +71,14 @@ gdm_session_linux_auditor_report_login_attempt (GdmSessionAuditor *auditor,
 
         if (pw != NULL) {
                 g_snprintf (buf, sizeof (buf), "uid=%d", pw->pw_uid);
-                audit_log_user_message (linux_auditor->priv->audit_fd, AUDIT_USER_LOGIN,
+                audit_log_user_message (linux_auditor->priv->audit_fd, type,
                                         buf, hostname, NULL, display_device,
-                                        was_successful != FALSE);
+                                        result);
         } else {
                 g_snprintf (buf, sizeof (buf), "acct=%s", username);
-                audit_log_user_message (linux_auditor->priv->audit_fd, AUDIT_USER_LOGIN,
+                audit_log_user_message (linux_auditor->priv->audit_fd, type,
                                         buf, hostname, NULL, display_device,
-                                        was_successful != FALSE);
+                                        result);
         }
 
         g_free (username);
@@ -88,7 +89,7 @@ gdm_session_linux_auditor_report_login_attempt (GdmSessionAuditor *auditor,
 static void
 gdm_session_linux_auditor_report_login (GdmSessionAuditor *auditor)
 {
-        gdm_session_linux_auditor_report_login_attempt (auditor, TRUE);
+        log_user_message (auditor, AUDIT_USER_LOGIN, 1);
 }
 
 static void
@@ -96,8 +97,13 @@ gdm_session_linux_auditor_report_login_failure (GdmSessionAuditor *auditor,
                                                   int                pam_error_code,
                                                   const char        *pam_error_string)
 {
+        log_user_message (auditor, AUDIT_USER_LOGIN, 0);
+}
 
-        gdm_session_linux_auditor_report_login_attempt (auditor, FALSE);
+static void
+gdm_session_linux_auditor_report_logout (GdmSessionAuditor *auditor)
+{
+        log_user_message (auditor, AUDIT_USER_LOGOUT, 1);
 }
 
 static void
@@ -113,6 +119,7 @@ gdm_session_linux_auditor_class_init (GdmSessionLinuxAuditorClass *klass)
 
         auditor_class->report_login = gdm_session_linux_auditor_report_login;
         auditor_class->report_login_failure = gdm_session_linux_auditor_report_login_failure;
+        auditor_class->report_logout = gdm_session_linux_auditor_report_logout;
 
         g_type_class_add_private (auditor_class, sizeof (GdmSessionLinuxAuditorPrivate));
 }
