@@ -48,6 +48,7 @@ enum {
         PROP_0,
         PROP_MANAGER,
         PROP_REAL_NAME,
+        PROP_DISPLAY_NAME,
         PROP_USER_NAME,
         PROP_UID,
         PROP_HOME_DIR,
@@ -69,6 +70,7 @@ struct _GdmUser {
         uid_t           uid;
         char           *user_name;
         char           *real_name;
+        char           *display_name;
         char           *home_dir;
         char           *shell;
         GList          *sessions;
@@ -207,6 +209,9 @@ gdm_user_get_property (GObject    *object,
         case PROP_REAL_NAME:
                 g_value_set_string (value, user->real_name);
                 break;
+        case PROP_DISPLAY_NAME:
+                g_value_set_string (value, user->display_name);
+                break;
         case PROP_HOME_DIR:
                 g_value_set_string (value, user->home_dir);
                 break;
@@ -250,6 +255,14 @@ gdm_user_class_init (GdmUserClass *class)
                                          g_param_spec_string ("real-name",
                                                               "Real Name",
                                                               "The real name to display for this user.",
+                                                              NULL,
+                                                              G_PARAM_READABLE));
+
+        g_object_class_install_property (gobject_class,
+                                         PROP_DISPLAY_NAME,
+                                         g_param_spec_string ("display-name",
+                                                              "Display Name",
+                                                              "The unique name to display for this user.",
                                                               NULL,
                                                               G_PARAM_READABLE));
 
@@ -370,6 +383,7 @@ gdm_user_init (GdmUser *user)
         user->manager = NULL;
         user->user_name = NULL;
         user->real_name = NULL;
+        user->display_name = NULL;
         user->sessions = NULL;
 }
 
@@ -384,6 +398,7 @@ gdm_user_finalize (GObject *object)
 
         g_free (user->user_name);
         g_free (user->real_name);
+        g_free (user->display_name);
 
         if (G_OBJECT_CLASS (gdm_user_parent_class)->finalize)
                 (*G_OBJECT_CLASS (gdm_user_parent_class)->finalize) (object);
@@ -442,6 +457,16 @@ _gdm_user_update (GdmUser             *user,
                 g_object_notify (G_OBJECT (user), "real-name");
         } else {
                 g_free (real_name);
+        }
+
+        /* Unique Display Name */
+        if ((!user->real_name && user->display_name) ||
+            (user->real_name &&
+             user->display_name &&
+             strncmp (user->real_name, user->display_name, strlen (user->real_name)) != 0)) {
+                g_free (user->display_name);
+                user->display_name = NULL;
+                g_object_notify (G_OBJECT (user), "display-name");
         }
 
         /* UID */
@@ -543,6 +568,26 @@ gdm_user_get_real_name (GdmUser *user)
 }
 
 /**
+ * gdm_user_get_display_name:
+ * @user: the user object to examine.
+ *
+ * Retrieves the unique display name of @user.
+ *
+ * Returns: a pointer to an array of characters which must not be modified or
+ *  freed, or %NULL.
+ *
+ * Since: 1.0
+ **/
+G_CONST_RETURN gchar *
+gdm_user_get_display_name (GdmUser *user)
+{
+        g_return_val_if_fail (GDM_IS_USER (user), NULL);
+
+        return (user->display_name ? user->display_name
+                : gdm_user_get_real_name (user));
+}
+
+/**
  * gdm_user_get_user_name:
  * @user: the user object to examine.
  *
@@ -608,6 +653,62 @@ gdm_user_get_login_frequency (GdmUser *user)
         g_return_val_if_fail (GDM_IS_USER (user), 0);
 
         return user->login_frequency;
+}
+
+/**
+ * _gdm_user_show_full_display_name:
+ * @user: the user object to examine.
+ *
+ * Updates the unique display name of @user to "Real Name (username)".
+ *
+ * Since: 1.0
+ **/
+void
+_gdm_user_show_full_display_name (GdmUser *user)
+{
+        char *uniq_name;
+
+        g_return_if_fail (GDM_IS_USER (user));
+
+        if (user->real_name != NULL) {
+                uniq_name = g_strdup_printf ("%s (%s)",
+                                             user->real_name,
+                                             user->user_name);
+        } else {
+                uniq_name = NULL;
+        }
+
+        if ((user->real_name && !user->display_name) ||
+            (!user->real_name && user->display_name) ||
+            (user->real_name &&
+             user->display_name &&
+             strcmp (uniq_name, user->display_name) != 0)) {
+                g_free (user->display_name);
+                user->display_name = uniq_name;
+                g_object_notify (G_OBJECT (user), "display-name");
+        } else {
+                g_free (uniq_name);
+        }
+}
+
+/**
+ * _gdm_user_show_short_display_name:
+ * @user: the user object to examine.
+ *
+ * Resets the unique display name of @user.
+ *
+ * Since: 1.0
+ **/
+void
+_gdm_user_show_short_display_name (GdmUser *user)
+{
+        g_return_if_fail (GDM_IS_USER (user));
+
+        if (user->display_name) {
+                g_free (user->display_name);
+                user->display_name = NULL;
+                g_object_notify (G_OBJECT (user), "display-name");
+        }
 }
 
 int

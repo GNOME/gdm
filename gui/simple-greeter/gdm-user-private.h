@@ -39,6 +39,9 @@ void _gdm_user_remove_session   (GdmUser             *user,
 
 void _gdm_user_icon_changed     (GdmUser             *user);
 
+void _gdm_user_show_full_display_name (GdmUser   *user);
+void _gdm_user_show_short_display_name  (GdmUser   *user);
+
 G_END_DECLS
 
 #endif /* !__GDM_USER_PRIVATE__ */

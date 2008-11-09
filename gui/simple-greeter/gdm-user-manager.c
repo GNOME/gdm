@@ -693,11 +693,39 @@ create_user (GdmUserManager *manager)
         return user;
 }
 
+static gint
+match_real_name_cmpfunc (gconstpointer a,
+                         gconstpointer b)
+{
+        if (a == b)
+                return -1;
+
+        return g_strcmp0 (gdm_user_get_real_name ((GdmUser *) a),
+                          gdm_user_get_real_name ((GdmUser *) b));
+}
+
+static gboolean
+match_real_name_hrfunc (gpointer key,
+                        gpointer value,
+                        gpointer user_data)
+{
+        return (g_strcmp0 (user_data, gdm_user_get_real_name (value)) == 0);
+}
+
 static void
 add_user (GdmUserManager *manager,
           GdmUser        *user)
 {
+        GdmUser *dup;
+
         add_sessions_for_user (manager, user);
+        dup = g_hash_table_find (manager->priv->users,
+                                 match_real_name_hrfunc,
+                                 (char *) gdm_user_get_real_name (user));
+        if (dup != NULL) {
+                _gdm_user_show_full_display_name (user);
+                _gdm_user_show_full_display_name (dup);
+        }
         g_hash_table_insert (manager->priv->users,
                              g_strdup (gdm_user_get_user_name (user)),
                              g_object_ref (user));
@@ -1274,6 +1302,7 @@ reload_passwd (GdmUserManager *manager)
         GSList        *old_users;
         GSList        *new_users;
         GSList        *list;
+        GSList        *dup;
         FILE          *fp;
 
         old_users = NULL;
@@ -1293,6 +1322,7 @@ reload_passwd (GdmUserManager *manager)
         for (list = old_users; list; list = list->next) {
                 if (gdm_user_get_num_sessions (list->data) > 0) {
                         g_object_freeze_notify (G_OBJECT (list->data));
+                        _gdm_user_show_short_display_name (list->data);
                         new_users = g_slist_prepend (new_users, g_object_ref (list->data));
                 }
         }
@@ -1341,19 +1371,27 @@ reload_passwd (GdmUserManager *manager)
                 new_users = g_slist_prepend (new_users, user);
         }
 
-        /* Go through and handle added users */
-        for (list = new_users; list; list = list->next) {
-                if (! g_slist_find (old_users, list->data)) {
-                        add_user (manager, list->data);
-                }
-        }
-
         /* Go through and handle removed users */
         for (list = old_users; list; list = list->next) {
                 if (! g_slist_find (new_users, list->data)) {
                         g_signal_emit (manager, signals[USER_REMOVED], 0, list->data);
                         g_hash_table_remove (manager->priv->users,
                                              gdm_user_get_user_name (list->data));
+                }
+        }
+
+        /* Go through and handle added users or update display names */
+        for (list = new_users; list; list = list->next) {
+                if (g_slist_find (old_users, list->data)) {
+                        dup = g_slist_find_custom (new_users,
+                                                   list->data,
+                                                   match_real_name_cmpfunc);
+                        if (dup != NULL) {
+                                _gdm_user_show_full_display_name (list->data);
+                                _gdm_user_show_full_display_name (dup->data);
+                        }
+                } else {
+                        add_user (manager, list->data);
                 }
         }
 
