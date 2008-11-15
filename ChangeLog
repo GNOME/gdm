@@ -1,3 +1,10 @@
+2008-11-14 Brian Cameron <brian.cameron@sun.com>
+
+	* daemon/misc.c: Modify the gdm_ensure_sanity function so that it
+	  does nothing on Solaris.  Solaris Trusted Extensions has different
+	  assumptions about how sockets should be set up, and it's better for
+	  GDM to not second-guess this.
+ 
 2008-10-23 Brian Cameron <brian.cameron@sun.com>
 
 	* daemon/gdm.c: Move call to gdm_final_cleanup after accessing

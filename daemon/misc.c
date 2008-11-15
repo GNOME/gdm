@@ -874,13 +874,21 @@ ensure_tmp_socket_dir (const char *dir)
  * Done on startup and when running display_manage
  * This can do some sanity ensuring, one of the things it does now is make
  * sure /tmp/.ICE-unix and /tmp/.X11-unix exist and have the correct
- * permissions
+ * permissions.
+ *
+ * Do nothing on Solaris since this logic breaks Trusted Extensions, and
+ * the Solaris X permissions model (socket & pipe directories only writable
+ * by gid-root), and it ignores the Solaris /tmp/.X11-pipe directory.
  */
 void
 gdm_ensure_sanity (void)
 {
 	uid_t old_euid;
 	gid_t old_egid;
+
+#ifdef __sun
+	return;
+#endif
 
 	old_euid = geteuid ();
 	old_egid = getegid ();
