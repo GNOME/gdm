@@ -1547,7 +1547,7 @@ load_theme (GdmGreeterLoginWindow *login_window)
         glade_set_custom_handler ((GladeXMLCustomWidgetHandler) custom_widget_constructor,
                                   login_window);
         login_window->priv->xml = glade_xml_new (GLADEDIR "/" GLADE_XML_FILE,
-                                                 "window-box",
+                                                 "window-frame",
                                                  PACKAGE);
 
         g_assert (login_window->priv->xml != NULL);
@@ -1574,7 +1574,7 @@ load_theme (GdmGreeterLoginWindow *login_window)
                 }
         }
 
-        box = glade_xml_get_widget (login_window->priv->xml, "window-box");
+        box = glade_xml_get_widget (login_window->priv->xml, "window-frame");
         gtk_container_add (GTK_CONTAINER (login_window), box);
 
         login_window->priv->user_chooser = glade_xml_get_widget (login_window->priv->xml,
@@ -1921,7 +1921,7 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         gtk_window_set_skip_taskbar_hint (GTK_WINDOW (login_window), TRUE);
         gtk_window_set_skip_pager_hint (GTK_WINDOW (login_window), TRUE);
         gtk_window_stick (GTK_WINDOW (login_window));
-        gtk_container_set_border_width (GTK_CONTAINER (login_window), 25);
+        gtk_container_set_border_width (GTK_CONTAINER (login_window), 0);
 
         g_signal_connect (login_window,
                           "window-state-event",
