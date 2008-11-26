@@ -88,8 +88,6 @@ typedef struct _SelectorResponseData
         GtkRadioButton *radio;
 } SelectorResponseData;
 
-static GtkTooltips *tooltips = NULL;
-
 static void reset_icon   (GdmAppletData *adata);
 static void update_label (GdmAppletData *adata);
 
@@ -483,7 +481,6 @@ gdm_applet_data_free (GdmAppletData *adata)
         }
         g_object_unref (adata->client);
         g_object_unref (adata->manager);
-        g_object_unref (tooltips);
 
         g_free (adata);
 }
@@ -1242,15 +1239,7 @@ fill_applet (PanelApplet *applet)
 
         adata->client = gconf_client_get_default ();
 
-        if (tooltips == NULL) {
-                tooltips = gtk_tooltips_new ();
-                g_object_ref (tooltips);
-                gtk_object_sink (GTK_OBJECT (tooltips));
-        } else {
-                g_object_ref (tooltips);
-        }
-
-        gtk_tooltips_set_tip (tooltips, GTK_WIDGET (applet), _("Change account settings and status"), NULL);
+        gtk_widget_set_tooltip_text (GTK_WIDGET (applet), _("Change account settings and status"));
         gtk_container_set_border_width (GTK_CONTAINER (applet), 0);
         gtk_widget_set_name (GTK_WIDGET (applet), "gdm-user-switch-applet");
         panel_applet_set_flags (applet, PANEL_APPLET_EXPAND_MINOR);
