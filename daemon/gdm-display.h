@@ -38,6 +38,7 @@ typedef struct GdmDisplayPrivate GdmDisplayPrivate;
 
 typedef enum {
         GDM_DISPLAY_UNMANAGED = 0,
+        GDM_DISPLAY_PREPARED,
         GDM_DISPLAY_MANAGED,
         GDM_DISPLAY_FINISHED,
         GDM_DISPLAY_FAILED,
@@ -65,6 +66,7 @@ typedef struct
         gboolean (*set_slave_bus_name)        (GdmDisplay *display,
                                                const char *name,
                                                GError    **error);
+        gboolean (*prepare)                   (GdmDisplay *display);
         gboolean (*manage)                    (GdmDisplay *display);
         gboolean (*finish)                    (GdmDisplay *display);
         gboolean (*unmanage)                  (GdmDisplay *display);
@@ -90,6 +92,7 @@ time_t              gdm_display_get_creation_time              (GdmDisplay *disp
 char *              gdm_display_get_user_auth                  (GdmDisplay *display);
 
 gboolean            gdm_display_create_authority               (GdmDisplay *display);
+gboolean            gdm_display_prepare                        (GdmDisplay *display);
 gboolean            gdm_display_manage                         (GdmDisplay *display);
 gboolean            gdm_display_finish                         (GdmDisplay *display);
 gboolean            gdm_display_unmanage                       (GdmDisplay *display);

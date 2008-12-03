@@ -324,6 +324,8 @@ on_static_display_status_changed (GdmDisplay             *display,
                 break;
         case GDM_DISPLAY_UNMANAGED:
                 break;
+        case GDM_DISPLAY_PREPARED:
+                break;
         case GDM_DISPLAY_MANAGED:
                 break;
         default:

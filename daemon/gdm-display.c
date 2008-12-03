@@ -542,7 +542,7 @@ _gdm_display_set_status (GdmDisplay *display,
 }
 
 static gboolean
-gdm_display_real_manage (GdmDisplay *display)
+gdm_display_real_prepare (GdmDisplay *display)
 {
         char *command;
         char *log_file;
@@ -550,7 +550,7 @@ gdm_display_real_manage (GdmDisplay *display)
 
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-        g_debug ("GdmDisplay: manage display");
+        g_debug ("GdmDisplay: prepare display");
 
         g_assert (display->priv->slave_proxy == NULL);
 
@@ -560,7 +560,7 @@ gdm_display_real_manage (GdmDisplay *display)
                 return FALSE;
         }
 
-        _gdm_display_set_status (display, GDM_DISPLAY_MANAGED);
+        _gdm_display_set_status (display, GDM_DISPLAY_PREPARED);
 
         display->priv->slave_proxy = gdm_slave_proxy_new ();
         g_signal_connect (display->priv->slave_proxy,
@@ -583,6 +583,48 @@ gdm_display_real_manage (GdmDisplay *display)
                                    display->priv->id);
         gdm_slave_proxy_set_command (display->priv->slave_proxy, command);
         g_free (command);
+
+        return TRUE;
+}
+
+gboolean
+gdm_display_prepare (GdmDisplay *display)
+{
+        gboolean ret;
+
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        g_debug ("GdmDisplay: Preparing display: %s", display->priv->id);
+
+        g_object_ref (display);
+        ret = GDM_DISPLAY_GET_CLASS (display)->prepare (display);
+        g_object_unref (display);
+
+        return ret;
+}
+
+
+static gboolean
+gdm_display_real_manage (GdmDisplay *display)
+{
+        char    *command;
+        char    *log_file;
+        char    *log_path;
+        gboolean res;
+
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        g_debug ("GdmDisplay: manage display");
+
+        /* If not explicitly prepared, do it now */
+        if (display->priv->status == GDM_DISPLAY_UNMANAGED) {
+                res = gdm_display_prepare (display);
+                if (! res) {
+                        return FALSE;
+                }
+        }
+
+        g_assert (display->priv->slave_proxy != NULL);
 
         g_timer_start (display->priv->slave_timer);
 
@@ -985,6 +1027,7 @@ gdm_display_class_init (GdmDisplayClass *klass)
         klass->remove_user_authorization = gdm_display_real_remove_user_authorization;
         klass->set_slave_bus_name = gdm_display_real_set_slave_bus_name;
         klass->get_timed_login_details = gdm_display_real_get_timed_login_details;
+        klass->prepare = gdm_display_real_prepare;
         klass->manage = gdm_display_real_manage;
         klass->finish = gdm_display_real_finish;
         klass->unmanage = gdm_display_real_unmanage;

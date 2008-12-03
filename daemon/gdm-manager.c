@@ -61,6 +61,7 @@ struct GdmManagerPrivate
 #endif
         gboolean                xdmcp_enabled;
 
+        gboolean                started;
         gboolean                wait_for_go;
         gboolean                no_console;
 
@@ -138,9 +139,27 @@ gdm_manager_get_displays (GdmManager *manager,
 }
 
 void
+gdm_manager_stop (GdmManager *manager)
+{
+        g_debug ("GdmManager: GDM stopping");
+
+        if (manager->priv->local_factory != NULL) {
+                gdm_display_factory_stop (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
+        }
+
+#ifdef HAVE_LIBXDMCP
+        if (manager->priv->xdmcp_factory != NULL) {
+                gdm_display_factory_stop (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
+        }
+#endif
+
+        manager->priv->started = FALSE;
+}
+
+void
 gdm_manager_start (GdmManager *manager)
 {
-        g_debug ("GdmManager: GDM starting to manage");
+        g_debug ("GdmManager: GDM starting to manage displays");
 
         if (! manager->priv->wait_for_go) {
                 gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->local_factory));
@@ -155,6 +174,8 @@ gdm_manager_start (GdmManager *manager)
                 }
         }
 #endif
+
+        manager->priv->started = TRUE;
 }
 
 void
@@ -271,7 +292,24 @@ gdm_manager_set_xdmcp_enabled (GdmManager *manager,
 {
         g_return_if_fail (GDM_IS_MANAGER (manager));
 
-        manager->priv->xdmcp_enabled = enabled;
+        if (manager->priv->xdmcp_enabled != enabled) {
+                manager->priv->xdmcp_enabled = enabled;
+
+                if (manager->priv->xdmcp_enabled) {
+                        manager->priv->xdmcp_factory = gdm_xdmcp_display_factory_new (manager->priv->display_store);
+                        if (manager->priv->started) {
+                                gdm_display_factory_start (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
+                        }
+                } else {
+                        if (manager->priv->started) {
+                                gdm_display_factory_stop (GDM_DISPLAY_FACTORY (manager->priv->xdmcp_factory));
+                        }
+
+                        g_object_unref (manager->priv->xdmcp_factory);
+                        manager->priv->xdmcp_factory = NULL;
+                }
+        }
+
 }
 
 static void

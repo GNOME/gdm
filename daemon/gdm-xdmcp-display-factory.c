@@ -2041,6 +2041,13 @@ gdm_xdmcp_display_create (GdmXdmcpDisplayFactory *factory,
                 goto out;
         }
 
+        if (! gdm_display_prepare (display)) {
+                gdm_display_unmanage (display);
+                g_object_unref (display);
+                display = NULL;
+                goto out;
+        }
+
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
         gdm_display_store_add (store, display);
 
@@ -2507,7 +2514,7 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
 
         display = gdm_xdmcp_display_lookup (factory, clnt_sessid);
         if (display != NULL &&
-            gdm_display_get_status (display) == GDM_DISPLAY_UNMANAGED) {
+            gdm_display_get_status (display) == GDM_DISPLAY_PREPARED) {
                 char *name;
 
                 name = NULL;

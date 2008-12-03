@@ -1,3 +1,22 @@
+2008-12-02  William Jon McCann  <jmccann@redhat.com>
+
+	* daemon/gdm-display.c (gdm_display_real_prepare),
+	(gdm_display_prepare), (gdm_display_real_manage),
+	(gdm_display_class_init):
+	* daemon/gdm-display.h:
+	* daemon/gdm-local-display-factory.c
+	(on_static_display_status_changed):
+	* daemon/gdm-manager.c (gdm_manager_stop), (gdm_manager_start),
+	(gdm_manager_set_xdmcp_enabled):
+	* daemon/gdm-manager.h:
+	* daemon/gdm-xdmcp-display-factory.c (gdm_xdmcp_display_create),
+	(gdm_xdmcp_handle_manage):
+	Correctly handle changes in the xdmcp enabled property.
+	Add a display state called prepared that sets up the display
+	before actually managing (starting) it.  This is required
+	for the XDMCP Request phase to work.
+	Fixes #561396
+
 2008-11-25  Matthias Clasen  <mclasen@redhat.com>
 
 	Bug 561956 – Remove deprecated GTK+ symbols
