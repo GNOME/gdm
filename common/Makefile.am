@@ -2,7 +2,7 @@
 
 NULL =
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I.						\
 	-I..						\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\

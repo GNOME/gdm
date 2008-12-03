@@ -31,7 +31,7 @@ GNOME_DOC_INIT
 
 GETTEXT_PACKAGE=gdm
 AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [gettext package])
 
 AM_GLIB_GNU_GETTEXT
 
@@ -295,7 +295,7 @@ AC_CHECK_HEADERS(stropts.h)
 dnl socklen_t may be declared, but not in a "standard" C header location
 AC_CHECK_HEADERS(sys/socket.h)
 AC_CHECK_TYPE(socklen_t,,
-        AC_DEFINE(socklen_t,size_t,Compatibility type),
+        AC_DEFINE(socklen_t, size_t, [Compatibility type]),
 [AC_INCLUDES_DEFAULT]
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
@@ -335,9 +335,9 @@ AC_CHECK_FUNC(gethostbyname,,[
 			   EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lnsl"
 			   EXTRA_TEST_LIBS="$EXTRA_TEST_LIBS -lnsl"])])
 AC_CHECK_FUNC(sched_yield,[
-	      AC_DEFINE(HAVE_SCHED_YIELD)],[
+	      AC_DEFINE(HAVE_SCHED_YIELD, 1, [Define if we have sched yield])],[
 	      AC_CHECK_LIB(rt,sched_yield, [
-			   AC_DEFINE(HAVE_SCHED_YIELD)
+			   AC_DEFINE(HAVE_SCHED_YIELD, 1, [Define if we have sched yield])
 			   EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lrt"], [
 			   echo "No sched_yield found"])])
 AC_CHECK_FUNC(inet_aton,,[
@@ -394,7 +394,7 @@ if test x$enable_ipv6 = xyes; then
     if test x$have_getaddrinfo = xyes; then
       if test x$have_inet_ntop = xyes; then
         have_ipv6=yes
-        AC_DEFINE(ENABLE_IPV6)
+        AC_DEFINE(ENABLE_IPV6, 1, [Define if we have ipv6])
         AC_MSG_RESULT($have_ipv6)
       else
         have_ipv6=no
@@ -406,50 +406,10 @@ else
   AC_MSG_RESULT(no)
 fi
 
-AC_ARG_WITH(afs,
-            AS_HELP_STRING([--with-afs],
-	                   [support -fstype afs]),
-            [AC_DEFINE(AFS, [], [Define if you have the Andrew File System])
-	     CPPFLAGS="$CPPFLAGS -I/usr/afsws/include"
-	     LIBS="$LIBS -L/usr/afsws/lib -L/usr/afsws/lib/afs -lsys -lrx -llwp"])
-
-
 dnl ---------------------------------------------------------------------------
-dnl - Check for filesystem type support
+dnl - Check for GDM user
 dnl ---------------------------------------------------------------------------
 
-AC_MSG_CHECKING(how to get filesystem type)
-fstype=no
-# The order of these tests is important.
-AC_TRY_CPP([#include <sys/statvfs.h>
-#include <sys/fstyp.h>], AC_DEFINE(FSTYPE_STATVFS, [],
-							[Define to use SVR4 statvfs to get filesystem type]) fstype=SVR4)
-if test $fstype = no; then
-AC_TRY_CPP([#include <sys/statfs.h>
-#include <sys/fstyp.h>], AC_DEFINE(FSTYPE_USG_STATFS, [],
-							[Define to use SVR3.2 statfs to get filesystem type]) fstype=SVR3)
-fi
-if test $fstype = no; then
-AC_TRY_CPP([#include <sys/statfs.h>
-#include <sys/vmount.h>], AC_DEFINE(FSTYPE_AIX_STATFS, [],
-							 [Define to use AIX3 statfs to get filesystem type]) fstype=AIX)
-fi
-if test $fstype = no; then
-AC_TRY_CPP([#include <mntent.h>], AC_DEFINE(FSTYPE_MNTENT, [],
-						    [Define to use 4.3BSD getmntent to get filesystem typ]) fstype=4.3BSD)
-fi
-if test $fstype = no; then
-AC_EGREP_HEADER(f_type;, sys/mount.h, AC_DEFINE(FSTYPE_STATFS, [],
-							   [Define to use 4.4BSD and OSF1 statfs to get filesystem typ]) fstype=4.4BSD/OSF1)
-fi
-if test $fstype = no; then
-AC_TRY_CPP([#include <sys/mount.h>
-#include <sys/fs_types.h>], AC_DEFINE(FSTYPE_GETMNT, [],
-							   [Define to use Ultrix getmnt to get filesystem typ]) fstype=Ultrix)
-fi
-AC_MSG_RESULT($fstype)
-
-dnl GDM user
 withval=""
 AC_ARG_WITH(user,
             AS_HELP_STRING([--with-user=<username>],
@@ -463,7 +423,10 @@ fi
 AC_SUBST(GDM_USERNAME)
 AC_DEFINE_UNQUOTED([GDM_USERNAME], "$GDM_USERNAME", [User to use])
 
-dnl GDM group
+dnl ---------------------------------------------------------------------------
+dnl - Check for GDM group
+dnl ---------------------------------------------------------------------------
+
 withval=""
 AC_ARG_WITH(group,
             AS_HELP_STRING([--with-group=<username>],
@@ -551,19 +514,19 @@ fi
 #
 AC_CHECK_HEADER(login_cap.h, [
 		EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lutil"
-		AC_DEFINE(HAVE_LOGINCAP)])
+		AC_DEFINE(HAVE_LOGINCAP, 1, [Define if we have logincap])])
 
 #
 # Check for sys/sockio.h
 #
 AC_CHECK_HEADERS(sys/sockio.h, [
-		 AC_DEFINE(HAVE_SYS_SOCKIO_H)])
+		 AC_DEFINE(HAVE_SYS_SOCKIO_H, 1, [Define if we have sys/sockio.h])])
 
 #
 # Check for libgen.h
 #
 AC_CHECK_HEADERS(libgen.h, [
-		 AC_DEFINE(HAVE_LIBGEN_H)])
+		 AC_DEFINE(HAVE_LIBGEN_H, 1, [Define if we have libgen.h])])
 
 
 dnl ---------------------------------------------------------------------------
@@ -628,13 +591,13 @@ dnl ---------------------------------------------------------------------------
 AC_CHECK_HEADERS(utmp.h utmpx.h libutil.h sys/param.h)
 AC_CHECK_FUNCS([getutxent updwtmpx updwtmp])
 AC_CHECK_LIB(util, login, [
-		   AC_DEFINE(HAVE_LOGIN)
+		   AC_DEFINE(HAVE_LOGIN, 1, [Define if have login])
 		       EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lutil" ])
 AC_CHECK_LIB(util, logout, [
-		   AC_DEFINE(HAVE_LOGOUT)
+		   AC_DEFINE(HAVE_LOGOUT, 1, [Define if have logout])
 		       EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lutil" ])
 AC_CHECK_LIB(util, logwtmp, [
-	  	   AC_DEFINE(HAVE_LOGWTMP)
+	  	   AC_DEFINE(HAVE_LOGWTMP, 1, [Define if have logwtmp])
 		       EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lutil" ])
 GDM_CHECK_UTMP
 
@@ -648,7 +611,7 @@ AC_TRY_COMPILE([
   have_ut_syslen=no
   )
 if test x$have_ut_syslen = xyes; then
-  AC_DEFINE(HAVE_UT_SYSLEN)
+  AC_DEFINE(HAVE_UT_SYSLEN, 1, [Define if have ut_syslen record])
 fi
 AC_MSG_RESULT($have_ut_syslen)
 
@@ -663,7 +626,7 @@ if test x$with_xdmcp != xno ; then
 	CPPFLAGS="$CPPFLAGS $X_CFLAGS"
 	AC_CHECK_HEADER(X11/Xdmcp.h, [
 		AC_CHECK_LIB(Xdmcp, XdmcpFlush, [
-		     	AC_DEFINE(HAVE_LIBXDMCP)
+		     	AC_DEFINE(HAVE_LIBXDMCP, 1, [Define if have libxdmcp])
 		     	XDMCP_LIBS="-lXdmcp"
 		     	XDMCP_SUPPORT=yes],,[$X_LIBS -lX11 $X_EXTRA_LIBS])
 	],,[#include <X11/Xproto.h>])
@@ -734,13 +697,13 @@ else
 		echo "*********************************************************"
 	else
 		LIBWRAP_LIBS="-L/usr/sfw/lib -R/usr/sfw/lib -lwrap"
-		AC_DEFINE(HAVE_TCPWRAPPERS)
+		AC_DEFINE(HAVE_TCPWRAPPERS, 1, [Define if have tcp wrappers])
 	fi
   else
  	AC_CHECK_LIB([wrap], [hosts_ctl], [
  	LIBWRAP_LIBS="-lwrap"
  	LIBWRAP_PATH=auto
- 	AC_DEFINE(HAVE_TCPWRAPPERS)])
+ 	AC_DEFINE(HAVE_TCPWRAPPERS, 1, [Define if have tcp wrappers])])
   fi
  
   AC_MSG_CHECKING([whether to use TCP wrappers])
@@ -818,7 +781,7 @@ if test "x$XINPUT_LIBS" = x; then
 fi
 AC_CHECK_HEADER(X11/extensions/XInput.h, have_xinput=yes)
 if test "x$have_xinput" = xyes; then
-   AC_DEFINE(HAVE_XINPUT)
+   AC_DEFINE(HAVE_XINPUT, 1, [Define if have xinput])
    X_EXTRA_LIBS="$X_EXTRA_LIBS $XINPUT_LIBS"
 fi
 
@@ -838,7 +801,7 @@ if test -f /etc/default/login; then
   AC_CHECK_LIB(cmd, defopen, use_defopen=yes, use_defopen=no)
   if test "x$use_defopen" = "xyes"; then
     EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lcmd"
-    AC_DEFINE(HAVE_DEFOPEN)
+    AC_DEFINE(HAVE_DEFOPEN, 1, [Define if have defopen])
   fi
 fi
 
@@ -856,8 +819,8 @@ if test ! x$with_xinerama = xno ; then
                             if test -z "`echo $ALL_X_LIBS | grep "\-lXext" 2> /dev/null`"; then
  				X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS"
                             fi
-                            AC_DEFINE(HAVE_SOLARIS_XINERAMA)
-                            AC_DEFINE(HAVE_XINERAMA)
+                            AC_DEFINE(HAVE_SOLARIS_XINERAMA, 1, [Define if have Solaris xinerama])
+                            AC_DEFINE(HAVE_XINERAMA, 1, [Define if have xinerama])
 		     	    XINERAMA_LIBS=""
 		     	    XINERAMA_SUPPORT=yes,
                             use_solaris_xinerama=no,
@@ -873,8 +836,8 @@ if test ! x$with_xinerama = xno ; then
                              if test -z "`echo $ALL_X_LIBS | grep "\-lXext" 2> /dev/null`"; then
   				 X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS"
                              fi
-                             AC_DEFINE(HAVE_XFREE_XINERAMA)
-                             AC_DEFINE(HAVE_XINERAMA)
+                             AC_DEFINE(HAVE_XFREE_XINERAMA, 1, [Define if have xfree xinerama])
+                             AC_DEFINE(HAVE_XINERAMA, 1, [Define if have xinerama])
 		     	     XINERAMA_LIBS="-lXinerama"
 		     	     XINERAMA_SUPPORT=yes,
                              use_xfree_xinerama=no,
@@ -909,7 +872,7 @@ if test "x$with_selinux" = "xyes" ; then
 	AC_CHECK_LIB(selinux,freeconary,/bin/true)
 	AC_CHECK_LIB(selinux,setexeccon,/bin/true)
 	AC_CHECK_LIB(selinux,is_selinux_enabled,/bin/true)
-	AC_DEFINE(HAVE_SELINUX)
+	AC_DEFINE(HAVE_SELINUX, 1, [Define if have selinux])
 	EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lselinux -lattr"
 fi
 
@@ -1052,7 +1015,7 @@ else
 fi
 
 AC_SUBST(XEVIE_OPTION)
-AC_DEFINE_UNQUOTED(XEVIE_OPTION,"$XEVIE_OPTION")
+AC_DEFINE_UNQUOTED(XEVIE_OPTION,"$XEVIE_OPTION",[Define xevie option])
 
 
 dnl ---------------------------------------------------------------------------
@@ -1061,7 +1024,7 @@ dnl ---------------------------------------------------------------------------
 
 AC_MSG_CHECKING(for Solaris fbconsole)
 if test -x /usr/openwin/bin/fbconsole; then
-   AC_DEFINE(HAVE_FBCONSOLE)
+   AC_DEFINE(HAVE_FBCONSOLE, 1, [Define if have fbconsole])
    AC_MSG_RESULT(yes)
 else
    AC_MSG_RESULT(no)
@@ -1085,7 +1048,7 @@ adt_user_context = ADT_USER;
 
 if test ${check_sun_audit} = yes
 then
-   AC_DEFINE(HAVE_ADT)
+   AC_DEFINE(HAVE_ADT, 1, [Define if have adt])
    PAM_LIBS="$PAM_LIBS -lbsm"
    AC_MSG_RESULT(yes)
 else
@@ -1399,26 +1362,26 @@ fi
 # Set configuration choices.
 #
 AC_SUBST(XSESSION_SHELL)
-AC_DEFINE_UNQUOTED(XSESSION_SHELL,"$XSESSION_SHELL")
+AC_DEFINE_UNQUOTED(XSESSION_SHELL,"$XSESSION_SHELL",[xsession shell])
 AC_SUBST(GDM_USER_PATH)
-AC_DEFINE_UNQUOTED(GDM_USER_PATH,"$GDM_USER_PATH")
+AC_DEFINE_UNQUOTED(GDM_USER_PATH,"$GDM_USER_PATH",[])
 AC_SUBST(SOUND_PROGRAM)
-AC_DEFINE_UNQUOTED(SOUND_PROGRAM,"$SOUND_PROGRAM")
+AC_DEFINE_UNQUOTED(SOUND_PROGRAM,"$SOUND_PROGRAM",[])
 
 AC_SUBST(X_PATH)
 AC_SUBST(X_SERVER)
 AC_SUBST(X_SERVER_PATH)
 AC_SUBST(X_CONFIG_OPTIONS)
-AC_DEFINE_UNQUOTED(X_SERVER,"$X_SERVER")
-AC_DEFINE_UNQUOTED(X_SERVER_PATH,"$X_SERVER_PATH")
-AC_DEFINE_UNQUOTED(X_CONFIG_OPTIONS,"$X_CONFIG_OPTIONS", Options used when launching xserver)
+AC_DEFINE_UNQUOTED(X_SERVER,"$X_SERVER",[])
+AC_DEFINE_UNQUOTED(X_SERVER_PATH,"$X_SERVER_PATH",[])
+AC_DEFINE_UNQUOTED(X_CONFIG_OPTIONS,"$X_CONFIG_OPTIONS", [Options used when launching xserver])
 
 AC_SUBST(X_XNEST_CMD)
 AC_SUBST(X_XNEST_CONFIG_OPTIONS)
 AC_SUBST(X_XNEST_UNSCALED_FONTPATH)
-AC_DEFINE_UNQUOTED(X_XNEST_CMD,"$X_XNEST_CMD")
-AC_DEFINE_UNQUOTED(X_XNEST_CONFIG_OPTIONS,"$X_XNEST_CONFIG_OPTIONS")
-AC_DEFINE_UNQUOTED(X_XNEST_UNSCALED_FONTPATH,"$X_XNEST_UNSCALED_FONTPATH")
+AC_DEFINE_UNQUOTED(X_XNEST_CMD,"$X_XNEST_CMD",[])
+AC_DEFINE_UNQUOTED(X_XNEST_CONFIG_OPTIONS,"$X_XNEST_CONFIG_OPTIONS",[])
+AC_DEFINE_UNQUOTED(X_XNEST_UNSCALED_FONTPATH,"$X_XNEST_UNSCALED_FONTPATH",[])
 
 ## Stuff for debian/changelog.in
 #if test -e "debian/changelog"; then

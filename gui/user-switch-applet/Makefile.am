@@ -1,6 +1,6 @@
 NULL =
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I$(top_srcdir)/gui/simple-greeter		\
 	-DPREFIX=\""$(prefix)"\" 			\
 	-DLIBDIR=\""$(libdir)"\" 			\
