@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <locale.h>
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -704,10 +705,12 @@ main (int argc, char *argv[])
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
         textdomain (GETTEXT_PACKAGE);
+        setlocale (LC_ALL, "");
 
         /* Option parsing */
-        ctx = g_option_context_new ("- New GDM login");
-        g_option_context_add_main_entries (ctx, options, _("Main Options"));
+        ctx = g_option_context_new (_("- New GDM login"));
+        g_option_context_set_translation_domain (ctx, GETTEXT_PACKAGE);
+        g_option_context_add_main_entries (ctx, options, NULL);
         g_option_context_parse (ctx, &argc, &argv, NULL);
         g_option_context_free (ctx);
 

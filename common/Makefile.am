@@ -26,7 +26,7 @@ INCLUDES = \
 
 noinst_LTLIBRARIES = 		\
 	libgdmcommon.la		\
-	$(null)
+	$(NULL)
 
 BUILT_SOURCES =			\
 	gdm-settings-glue.h	\
