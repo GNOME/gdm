@@ -40,6 +40,7 @@ gdm_DATA = gdb-cmd
 libexec_PROGRAMS = gdm-crash-logger
 gdm_crash_logger_SOURCES = gdm-crash-logger.c
 gdm_crash_logger_CPPFLAGS = \
+	$(AM_CPPFLAGS)				\
 	$(GTHREAD_CFLAGS)			\
 	-DG_DISABLE_DEPRECATED			\
 	-DBINDIR=\"$(bindir)\"			\
@@ -100,6 +101,7 @@ libgdmcommon_la_SOURCES =	\
 	$(NULL)
 
 libgdmcommon_la_CPPFLAGS = 		\
+	$(AM_CPPFLAGS)			\
 	$(DISABLE_DEPRECATED_CFLAGS)	\
 	$(NULL)
 
