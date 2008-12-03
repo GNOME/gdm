@@ -17,6 +17,7 @@ AM_CPPFLAGS = \
 	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
 	-DSBINDIR=\""$(sbindir)"\"		 	\
 	-DAT_SPI_REGISTRYD_DIR="\"$(AT_SPI_REGISTRYD_DIR)\""	\
+	$(DISABLE_DEPRECATED_CFLAGS)	\
 	$(GTK_CFLAGS)					\
 	$(SIMPLE_GREETER_CFLAGS)			\
 	$(POLKIT_GNOME_CFLAGS)				\
@@ -38,10 +39,6 @@ libgdmuser_la_SOURCES =			\
 	gdm-user-private.h		\
 	gdm-user-manager.c		\
 	gdm-user-manager.h		\
-	$(NULL)
-
-libgdmuser_la_CPPFLAGS = 		\
-	$(DISABLE_DEPRECATED_CFLAGS)	\
 	$(NULL)
 
 libgdmuser_la_CFLAGS =			\
