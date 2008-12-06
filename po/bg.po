@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-04 22:59+0300\n"
+"POT-Creation-Date: 2008-12-06 05:10+0200\n"
 "PO-Revision-Date: 2008-09-04 17:37+0300\n"
 "Last-Translator: Alexander Shopov <ash@contact.bg>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
@@ -50,15 +50,15 @@ msgstr "Дъщерен процес на мениджъра на дисплеи 
 msgid "could not find user \"%s\" on system"
 msgstr "потребителят „%s“ не бе открит в системата"
 
-#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:207
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:217
 msgid "Unable to initialize login system"
 msgstr "Системата за влизане не може да бъде инициализирана"
 
-#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:240
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:253
 msgid "Unable to authenticate user"
 msgstr "Неуспех при идентификацията на потребителя"
 
-#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:286
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:307
 msgid "Unable to authorize user"
 msgstr "Неуспех при оторизацията на потребителя"
 
@@ -67,7 +67,7 @@ msgid "Unable to establish credentials"
 msgstr "Неуспех при установяване на акредитацията"
 
 #: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1062
+#: ../daemon/gdm-simple-slave.c:1097
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -79,52 +79,53 @@ msgstr ""
 "диагностика. Този дисплей ще бъде забранен. Рестартирайте GDM, когато "
 "проблемът е коригиран."
 
-#: ../daemon/gdm-server.c:244
+#: ../daemon/gdm-server.c:246
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: невъзможно е да направи връзка с родителския дисплей „\\%s“"
 
-#: ../daemon/gdm-server.c:362
+#: ../daemon/gdm-server.c:361
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
-msgstr "Сървърът бе породен от uid %d, но такъв потребител не съществува"
+msgstr ""
+"Сървърът бе породен от потребителя %s, но такъв потребител не съществува"
 
-#: ../daemon/gdm-server.c:373 ../daemon/gdm-welcome-session.c:415
+#: ../daemon/gdm-server.c:372 ../daemon/gdm-welcome-session.c:444
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "groupid не може да се зададе да е %d"
 
-#: ../daemon/gdm-server.c:379 ../daemon/gdm-welcome-session.c:421
+#: ../daemon/gdm-server.c:378 ../daemon/gdm-welcome-session.c:450
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "неуспех на initgroups() за %s"
 
-#: ../daemon/gdm-server.c:385 ../daemon/gdm-welcome-session.c:427
+#: ../daemon/gdm-server.c:384 ../daemon/gdm-welcome-session.c:456
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "userid не може да се зададе да е %d"
 
-#: ../daemon/gdm-server.c:393 ../daemon/gdm-welcome-session.c:435
+#: ../daemon/gdm-server.c:392 ../daemon/gdm-welcome-session.c:464
 msgid "Couldn't set groupid to 0"
 msgstr "groupid не може да се зададе да е 0"
 
-#: ../daemon/gdm-server.c:428
+#: ../daemon/gdm-server.c:431
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: Не може да се отвори журналният файл за дисплей %s!"
 
-#: ../daemon/gdm-server.c:439 ../daemon/gdm-server.c:445
-#: ../daemon/gdm-server.c:451
+#: ../daemon/gdm-server.c:442 ../daemon/gdm-server.c:448
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Грешка при задаване на %s да е %s"
 
-#: ../daemon/gdm-server.c:466
+#: ../daemon/gdm-server.c:469
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Не може да се зададе %d като приоритет на сървър: %s"
 
-#: ../daemon/gdm-server.c:618
+#: ../daemon/gdm-server.c:621
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Празна команда за дисплей %s"
@@ -229,16 +230,16 @@ msgstr "няма потребител"
 msgid "Unable to change to user"
 msgstr "Потребителят не може да бъде сменен"
 
-#: ../daemon/gdm-simple-slave.c:387
+#: ../daemon/gdm-simple-slave.c:426
 msgid "Unable establish credentials"
 msgstr "Неуспех при установяване на акредитацията"
 
-#: ../daemon/gdm-welcome-session.c:397
+#: ../daemon/gdm-welcome-session.c:426
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Потребителят „%s“ не съществува"
 
-#: ../daemon/gdm-welcome-session.c:404
+#: ../daemon/gdm-welcome-session.c:433
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Групата „%s“ не съществува"
@@ -286,97 +287,97 @@ msgstr "%s: Неуспех при извличането на „authlist“ о�
 msgid "%s: Error in checksum"
 msgstr "%s: Грешка в контролната сума"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2120
+#: ../daemon/gdm-xdmcp-display-factory.c:2127
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Получена е заявка от забранената система %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2130
-#: ../daemon/gdm-xdmcp-display-factory.c:2485
-#: ../daemon/gdm-xdmcp-display-factory.c:2737
+#: ../daemon/gdm-xdmcp-display-factory.c:2137
+#: ../daemon/gdm-xdmcp-display-factory.c:2492
+#: ../daemon/gdm-xdmcp-display-factory.c:2744
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Неуспех при прочитането на номера на дисплея"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2137
+#: ../daemon/gdm-xdmcp-display-factory.c:2144
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Неуспех при прочитането на типа на връзката"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2144
+#: ../daemon/gdm-xdmcp-display-factory.c:2151
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Неуспех при прочитането на адреса на клиента"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2152
+#: ../daemon/gdm-xdmcp-display-factory.c:2159
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Неуспех при прочитането на имената за идентификация"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2161
+#: ../daemon/gdm-xdmcp-display-factory.c:2168
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Неуспех при прочитането на данните за идентификация"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2171
+#: ../daemon/gdm-xdmcp-display-factory.c:2178
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Неуспех при прочитането на списъка за идентификация"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2190
+#: ../daemon/gdm-xdmcp-display-factory.c:2197
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Неуспех при прочитането на идентификатора на производителя"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2217
+#: ../daemon/gdm-xdmcp-display-factory.c:2224
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Грешка в контролната сума на %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2469
+#: ../daemon/gdm-xdmcp-display-factory.c:2476
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Получена е заявка за управление от забранения хост %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2478
-#: ../daemon/gdm-xdmcp-display-factory.c:2744
+#: ../daemon/gdm-xdmcp-display-factory.c:2485
+#: ../daemon/gdm-xdmcp-display-factory.c:2751
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Неуспех при прочитането на идентификатора на сесията"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2492
+#: ../daemon/gdm-xdmcp-display-factory.c:2499
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Неуспех при прочитането на класа на дисплей"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2597
-#: ../daemon/gdm-xdmcp-display-factory.c:2647
-#: ../daemon/gdm-xdmcp-display-factory.c:2653
+#: ../daemon/gdm-xdmcp-display-factory.c:2604
+#: ../daemon/gdm-xdmcp-display-factory.c:2654
+#: ../daemon/gdm-xdmcp-display-factory.c:2660
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Неуспех при прочитането на адреса"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2727
+#: ../daemon/gdm-xdmcp-display-factory.c:2734
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Получена е заявка за поддържане на връзката от забранения хост %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2816
+#: ../daemon/gdm-xdmcp-display-factory.c:2823
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr ""
 "GdmXdmcpDisplayFactory: Неуспех при прочитането на заглавната част на XDMCP!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2822
+#: ../daemon/gdm-xdmcp-display-factory.c:2829
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XMDCP: Грешна версия на XDMCP!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2828
+#: ../daemon/gdm-xdmcp-display-factory.c:2835
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
 msgid "XMDCP: Unable to parse address"
 msgstr "XMDCP: Адресът не може да се анализира"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3226
+#: ../daemon/gdm-xdmcp-display-factory.c:3233
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Неуспех при получаване на името на сървър: %s!"
@@ -386,7 +387,7 @@ msgstr "Неуспех при получаване на името на сърв
 msgid "Cannot write PID file %s: possibly out of diskspace: %s"
 msgstr ""
 "Невъзможно е да се запише файл с номер на процес %s, най-вероятно няма "
-"пространство на диска"
+"пространство на диска: %s"
 
 #: ../daemon/main.c:270
 #, c-format
@@ -407,7 +408,7 @@ msgstr "Папката за упълномощаване %s не е папка. 
 #, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
 msgstr ""
-"Папката за упълномощаване %s не принадлежи на потребител %s, група %s. "
+"Папката за упълномощаване %s не принадлежи на потребител %d, група %d. "
 "Програмата спира."
 
 #: ../daemon/main.c:368
@@ -465,7 +466,7 @@ msgid "AT SPI Registry Wrapper"
 msgstr "Обвивка на регистъра на AT SPI"
 
 #: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1962
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1915
 msgid "Login Window"
 msgstr "Екран за идентификация"
 
@@ -529,21 +530,21 @@ msgstr "Стойност"
 msgid "percentage of time complete"
 msgstr "процент от завършеното време"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1235
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1306
 msgid "Inactive Text"
 msgstr "Неактивен текст"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1236
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1307
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr ""
 "Текст, който да се ползва за етикет, ако потребителят все още не е избрал "
 "елемент"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1244
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1315
 msgid "Active Text"
 msgstr "Активен текст"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1245
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1316
 msgid "The text to use in the label if the user has picked an item"
 msgstr ""
 "Текстът, който да се ползва в етикета, когато потребителят е избрал елемент"
@@ -574,39 +575,35 @@ msgstr "%d %b, %a"
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:181
-msgid "You have the Caps Lock key on."
-msgstr "Клавишът „Caps Lock“ е натиснат."
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:326
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:288
 msgid "Automatically logging in..."
 msgstr "Автоматично влизане…"
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:760
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:722
 msgid "Cancelling..."
 msgstr "Спиране…"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1229
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1191
 msgid "Failed to restart computer"
 msgstr "Неуспех при рестартирането на компютъра"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1232
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1194
 msgid ""
 "You are not allowed to restart the computer because multiple users are "
 "logged in"
 msgstr "Не можете да рестартирате компютъра, защото има включени потребители"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1313
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1275
 msgid "Failed to stop computer"
 msgstr "Неуспех при изключването на компютъра"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1316
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1278
 msgid ""
 "You are not allowed to stop the computer because multiple users are logged in"
 msgstr "Не можете да спрете компютъра, защото има включени потребители"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1400
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1362
 msgid "Select language and click Log In"
 msgstr "Изберете език и натиснете „Влизане“"
 
@@ -642,7 +639,7 @@ msgstr "Версия"
 msgid "page 5"
 msgstr "страница 5"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:540
+#: ../gui/simple-greeter/gdm-greeter-panel.c:590
 msgid "Panel"
 msgstr "Панел"
 
@@ -655,26 +652,25 @@ msgid "_Languages:"
 msgstr "_Езици:"
 
 #: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
-#: ../gui/simple-greeter/gdm-language-option-widget.c:255
+#: ../gui/simple-greeter/gdm-language-option-widget.c:259
 msgid "_Language:"
 msgstr "_Език:"
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:224
+#: ../gui/simple-greeter/gdm-language-option-widget.c:228
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:220
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:92
-#: ../gui/user-switch-applet/applet.c:996
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:131
 msgid "Other..."
 msgstr "Други…"
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:225
+#: ../gui/simple-greeter/gdm-language-option-widget.c:229
 msgid "Choose a language from the full list of available languages."
 msgstr "Избор на език от пълния списък с налични езици."
 
-#: ../gui/simple-greeter/gdm-languages.c:587
+#: ../gui/simple-greeter/gdm-languages.c:610
 msgid "Unspecified"
 msgstr "Неуказан"
 
-#: ../gui/simple-greeter/gdm-layout-chooser-dialog.c:190
+#: ../gui/simple-greeter/gdm-layout-chooser-dialog.c:191
 msgid "Keyboard layouts"
 msgstr "Подредба на клавиатурата"
 
@@ -688,35 +684,35 @@ msgstr "_Клавиатура:"
 msgid "Choose a keyboard layout from the full list of available layouts."
 msgstr "Изберете подредба на клавиатурата от пълния списък с подредби."
 
-#: ../gui/simple-greeter/gdm-option-widget.c:493
+#: ../gui/simple-greeter/gdm-option-widget.c:494
 msgid "Label Text"
 msgstr "Текст за етикета"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:494
+#: ../gui/simple-greeter/gdm-option-widget.c:495
 msgid "The text to use as a label"
 msgstr "Текст, който да се ползва за етикет"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:501
+#: ../gui/simple-greeter/gdm-option-widget.c:502
 msgid "Icon name"
 msgstr "Име на икона"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:502
+#: ../gui/simple-greeter/gdm-option-widget.c:503
 msgid "The icon to use with the label"
 msgstr "Иконата, която да се ползва с етикета"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:510
+#: ../gui/simple-greeter/gdm-option-widget.c:511
 msgid "Default Item"
 msgstr "Стандартен елемент"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:511
+#: ../gui/simple-greeter/gdm-option-widget.c:512
 msgid "The id of the default item"
 msgstr "Идентификаторът на стандартния елемент"
 
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:298
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:310
 msgid "Max Item Count"
 msgstr "Максимален брой елементи"
 
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:299
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:311
 msgid "The maximum number of items to keep around in the list"
 msgstr "Максималният брой елементи, които да се съдържат в списъка"
 
@@ -933,36 +929,36 @@ msgstr "Мениджър"
 msgid "The user manager object this user is controlled by."
 msgstr "Обектът-мениджър, който управлява този потребител."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:93
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:132
 msgid "Choose a different account"
 msgstr "Изберете различен потребител"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:105
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:144
 msgid "Guest"
 msgstr "Гост"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:106
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:145
 msgid "Login as a temporary guest"
 msgstr "Вход като гост"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:118
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:157
 msgid "Automatic Login"
 msgstr "Автоматично влизане"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:119
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:158
 msgid "Automatically login to the system after selecting options"
 msgstr "Автоматично влизане в системата след избор на настройки"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:308
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:349
 #, c-format
 msgid "Log in as %s"
 msgstr "Влизане като %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:647
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:694
 msgid "Currently logged in"
 msgstr "В момента е влязъл"
 
-#: ../gui/user-switch-applet/applet.c:147
+#: ../gui/user-switch-applet/applet.c:156
 msgid ""
 "The User Switch Applet is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -974,7 +970,7 @@ msgstr ""
 "GNU (GNU GPL), както е публикуван от Фондацията за свободен софтуер — версия "
 "2 на лиценза или (по ваше решение) по-късна версия."
 
-#: ../gui/user-switch-applet/applet.c:151
+#: ../gui/user-switch-applet/applet.c:160
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -985,7 +981,7 @@ msgstr ""
 "НИКАКВИ ГАРАНЦИИ, дори и косвените за ПРОДАЖБА или СЪОТВЕТСТВИЕ С КАКВАТО И "
 "ДА Е УПОТРЕБА. За подробности погледнете Общия публичен лиценз на GNU."
 
-#: ../gui/user-switch-applet/applet.c:155
+#: ../gui/user-switch-applet/applet.c:164
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "this program; if not, write to the Free Software Foundation, Inc., 51 "
@@ -995,11 +991,11 @@ msgstr ""
 "заедно с тази програма. Ако не сте, пишете до Free Software Foundation, "
 "Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA."
 
-#: ../gui/user-switch-applet/applet.c:169
+#: ../gui/user-switch-applet/applet.c:178
 msgid "A menu to quickly switch between users."
 msgstr "Меню за бърза промяна на потребители."
 
-#: ../gui/user-switch-applet/applet.c:173
+#: ../gui/user-switch-applet/applet.c:182
 msgid "translator-credits"
 msgstr ""
 "Александър Шопов <ash@contact.bg>\n"
@@ -1008,64 +1004,84 @@ msgstr ""
 "Научете повече за нас на http://gnome.cult.bg\n"
 "Докладвайте за грешки на http://gnome.cult.bg/bugs"
 
-#: ../gui/user-switch-applet/applet.c:782
+#: ../gui/user-switch-applet/applet.c:635
+#: ../gui/user-switch-applet/applet.c:770
+#: ../gui/user-switch-applet/applet.c:809
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "Екранът не може да бъде заключен: %s"
 
-#: ../gui/user-switch-applet/applet.c:804
+#: ../gui/user-switch-applet/applet.c:657
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "Програмата за защита на екрана не може да го затъмни временно: %s"
 
-#: ../gui/user-switch-applet/applet.c:1101
+#: ../gui/user-switch-applet/applet.c:868
+#, fuzzy, c-format
+msgid "Can't logout: %s"
+msgstr "Екранът не може да бъде заключен: %s"
+
+#: ../gui/user-switch-applet/applet.c:923
+msgid "Available"
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:924
+msgid "Busy"
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:925
+msgid "Invisible"
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:926
+msgid "Away"
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:1023
+msgid "Account Information..."
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:1035
+msgid "System Preferences..."
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:1051
+msgid "Lock Screen"
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:1062
+#, fuzzy
+msgid "Switch User"
+msgstr "Смяна на потребител"
+
+#. Only show switch user if there are other users
+#: ../gui/user-switch-applet/applet.c:1073
+msgid "Quit..."
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:1176
 msgid "Unknown"
 msgstr "Непознат"
 
-#: ../gui/user-switch-applet/applet.c:1157
+#: ../gui/user-switch-applet/applet.c:1233
 msgid "User Switch Applet"
 msgstr "Аплет за смяна на потребител"
 
-#: ../gui/user-switch-applet/applet.c:1181
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:2
-msgid "User Switcher"
-msgstr "Смяна на потребител"
+#: ../gui/user-switch-applet/applet.c:1242
+msgid "Change account settings and status"
+msgstr ""
 
-#: ../gui/user-switch-applet/gdm-user-menu-item.c:338
-msgid "User"
-msgstr "Потребител"
-
-#: ../gui/user-switch-applet/gdm-user-menu-item.c:339
-msgid "The user this menu item represents."
-msgstr "Потребителят представен от този елемент в менюто."
-
-#: ../gui/user-switch-applet/gdm-user-menu-item.c:346
-msgid "Icon Size"
-msgstr "Размер на иконата"
-
-#: ../gui/user-switch-applet/gdm-user-menu-item.c:347
-msgid "The size of the icon to use."
-msgstr "Размерът на иконата, който да се ползва."
-
-#: ../gui/user-switch-applet/gdm-user-menu-item.c:353
-msgid "Indicator Size"
-msgstr "Размер на индикатора"
-
-#: ../gui/user-switch-applet/gdm-user-menu-item.c:354
-msgid "Size of check indicator"
-msgstr "Размерът на индикатора, който да се ползва."
-
-#: ../gui/user-switch-applet/gdm-user-menu-item.c:359
-msgid "Indicator Spacing"
-msgstr "Отстояние на индикатора"
-
-#: ../gui/user-switch-applet/gdm-user-menu-item.c:360
-msgid "Space between the username and the indicator"
-msgstr "Отстоянието на индикатора спрямо потребителското име."
+#: ../gui/user-switch-applet/gdm-entry-menu-item.c:204
+msgid "Status"
+msgstr ""
 
 #: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:1
 msgid "A menu to quickly switch between users"
 msgstr "Меню за бърза смяна на потребител"
+
+#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:2
+msgid "User Switcher"
+msgstr "Смяна на потребител"
 
 #: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:3
 msgid "User Switcher Applet Factory"
@@ -1083,37 +1099,73 @@ msgstr "_Относно"
 msgid "_Edit Users and Groups"
 msgstr "_Редактиране на потребители и групи"
 
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:4
-msgid "_Help"
-msgstr "Помо_щ"
-
-#: ../utils/gdmflexiserver.c:60 ../utils/gdmflexiserver.c:61
-#: ../utils/gdmflexiserver.c:62 ../utils/gdmflexiserver.c:64
-#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:61 ../utils/gdmflexiserver.c:62
+#: ../utils/gdmflexiserver.c:63 ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:66
 msgid "Ignored - retained for compatibility"
 msgstr "Игнорира се — оставена е за съвместимост"
 
-#: ../utils/gdmflexiserver.c:60
+#: ../utils/gdmflexiserver.c:61
 msgid "COMMAND"
 msgstr "КОМАНДА"
 
-#: ../utils/gdmflexiserver.c:63 ../utils/gdm-screenshot.c:41
+#: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:42
 msgid "Debugging output"
 msgstr "Съобщения за грешка"
 
-#: ../utils/gdmflexiserver.c:67
+#: ../utils/gdmflexiserver.c:68
 msgid "Version of this application"
 msgstr "Версията на това приложение"
 
-#: ../utils/gdmflexiserver.c:674
+#: ../utils/gdmflexiserver.c:675
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Текущата сесия не може да бъде определена."
 
-#: ../utils/gdmflexiserver.c:710 ../utils/gdm-screenshot.c:230
-msgid "Main Options"
-msgstr "Основни настройки"
+#. Option parsing
+#: ../utils/gdmflexiserver.c:711
+msgid "- New GDM login"
+msgstr ""
 
-#: ../utils/gdmflexiserver.c:759
+#: ../utils/gdmflexiserver.c:762
 msgid "Unable to start new display"
 msgstr "Неуспех при стартирането на нов дисплей"
+
+#. Option parsing
+#: ../utils/gdm-screenshot.c:231
+#, fuzzy
+msgid "Take a picture of the screeen"
+msgstr "Увеличаване на части от екрана"
+
+#~ msgid "You have the Caps Lock key on."
+#~ msgstr "Клавишът „Caps Lock“ е натиснат."
+
+#~ msgid "User"
+#~ msgstr "Потребител"
+
+#~ msgid "The user this menu item represents."
+#~ msgstr "Потребителят представен от този елемент в менюто."
+
+#~ msgid "Icon Size"
+#~ msgstr "Размер на иконата"
+
+#~ msgid "The size of the icon to use."
+#~ msgstr "Размерът на иконата, който да се ползва."
+
+#~ msgid "Indicator Size"
+#~ msgstr "Размер на индикатора"
+
+#~ msgid "Size of check indicator"
+#~ msgstr "Размерът на индикатора, който да се ползва."
+
+#~ msgid "Indicator Spacing"
+#~ msgstr "Отстояние на индикатора"
+
+#~ msgid "Space between the username and the indicator"
+#~ msgstr "Отстоянието на индикатора спрямо потребителското име."
+
+#~ msgid "_Help"
+#~ msgstr "Помо_щ"
+
+#~ msgid "Main Options"
+#~ msgstr "Основни настройки"
