@@ -20,8 +20,12 @@ export G_BROKEN_FILENAMES
 # G_FILENAME_ENCODING=@locale
 # export G_FILENAME_ENCODING
 
-VTE_CJK_WIDTH=1
-export VTE_CJK_WIDTH
+case $LANG in
+ja*) VTE_CJK_WIDTH=1; export VTE_CJK_WIDTH;;
+ko*) VTE_CJK_WIDTH=1; export VTE_CJK_WIDTH;;
+zh*) VTE_CJK_WIDTH=1; export VTE_CJK_WIDTH;;
+*) ;;
+esac
 
 if [ "x$LANG" = "xzh" ] ; then
   export LANGUAGE=zh:zh_CN.EUC

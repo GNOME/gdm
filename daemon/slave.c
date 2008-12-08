@@ -2631,9 +2631,20 @@ gdm_slave_greeter (void)
 	/*
 	 * Set access control for audio device so that GDM owned programs can
 	 * play audio and work with accessibility programs that require audio.
+	 * This is only needed if a11y is turned on.
 	 */
-	system ("/usr/bin/setfacl -m user:gdm:rwx,mask:rwx /dev/audio");
-	system ("/usr/bin/setfacl -m user:gdm:rwx,mask:rwx /dev/audioctl");
+	if (gdm_daemon_config_get_value_bool (GDM_KEY_ADD_GTK_MODULES)) {
+		int acl_flavor;
+		acl_flavor = pathconf("/dev/audio", _PC_ACL_ENABLED);
+
+		if (acl_flavor & _ACL_ACLENT_ENABLED) {
+			system ("/usr/bin/setfacl -m user:gdm:rwx,mask:rwx /dev/audio");
+			system ("/usr/bin/setfacl -m user:gdm:rwx,mask:rwx /dev/audioctl");
+		} else if (acl_flavor & _ACL_ACE_ENABLED) {
+			system ("chmod A+user:gdm:rwx:allow /dev/audio");
+			system ("chmod A+user:gdm:rwx:allow /dev/audioctl");
+		}
+	}
 #endif
 	gdm_debug ("Forking greeter process: %s", command);
 
