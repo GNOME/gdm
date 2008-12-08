@@ -7,34 +7,3 @@
 # Note that output goes into the .xsession-errors file for easy debugging
 #
 PATH="@X_PATH@:$PATH:/bin:/usr/bin"
-OLD_IFS=$IFS
-
-gdmwhich () {
-  COMMAND="$1"
-  OUTPUT=
-  IFS=:
-  for dir in $PATH
-  do
-    if test -x "$dir/$COMMAND" ; then
-      if test "x$OUTPUT" = "x" ; then
-        OUTPUT="$dir/$COMMAND"
-      fi
-    fi
-  done
-  IFS=$OLD_IFS
-  echo "$OUTPUT"
-}
-
-SESSREG=`gdmwhich sessreg`
-if [ "x$SESSREG" != "x" ] ; then
-	# some output for easy debugging
-	echo "$0: Registering your session with wtmp and utmp"
-	echo "$0: running: $SESSREG -a -w /var/log/wtmp -u /var/run/utmp -x \"$X_SERVERS\" -h \"$REMOTE_HOST\" -l \"$DISPLAY\" \"$USER\""
-
-	exec "$SESSREG" -a -w /var/log/wtmp -u /var/run/utmp -x "$X_SERVERS" -h "$REMOTE_HOST" -l "$DISPLAY" "$USER"
-	# this is not reached
-fi
-
-# some output for easy debugging
-echo "$0: could not find the sessreg utility, cannot update wtmp and utmp"
-exit 0
