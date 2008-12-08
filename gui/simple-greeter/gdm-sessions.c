@@ -177,6 +177,7 @@ collect_sessions_from_directory (const char *dirname)
 
                 load_session_file (id, full_path);
 
+                g_free (id);
                 g_free (full_path);
         }
 
