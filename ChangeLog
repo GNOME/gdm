@@ -1,5 +1,10 @@
 2008-12-10 Brian Cameron <brian.cameron@sun.com>
 
+	* daemon/slave.c: Use full path to chmod when setting ACL's with ZFS
+	  filesystems.
+
+2008-12-10 Brian Cameron <brian.cameron@sun.com>
+
 	* daemon/verify-pam.c: Correct processing of CONSOLE and PASSREQ
 	  /etc/default/login parameters so they are checked each time a
 	  user logs in, and the latest value honored.  The previous code
@@ -8,11 +13,12 @@
 
 2008-12-08 Brian Cameron <brian.cameron@sun.com>
 
-	* daemon/slave.c: Correct setting of VTE_CJK_WIDTH when on Solaris.
-	  Updated patch from Takao Fujiwara <Takao.Fujiwara@sun.com>.  
 	* daemon/slave.c: Fix how GDM sets ACL's on Solaris so it also works
 	  with ZFS filesystems.  Now only set ACL's when a11y is turned on,
 	  since they are not needed otherwise.
+	* config/Xsession.solaris: Correct setting of VTE_CJK_WIDTH when on
+	  Solaris.  Updated patch from Takao Fujiwara
+	  <Takao.Fujiwara@sun.com>.  
 
 2008-12-07 Brian Cameron <brian.cameron@sun.com>
 

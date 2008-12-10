@@ -2641,8 +2641,8 @@ gdm_slave_greeter (void)
 			system ("/usr/bin/setfacl -m user:gdm:rwx,mask:rwx /dev/audio");
 			system ("/usr/bin/setfacl -m user:gdm:rwx,mask:rwx /dev/audioctl");
 		} else if (acl_flavor & _ACL_ACE_ENABLED) {
-			system ("chmod A+user:gdm:rwx:allow /dev/audio");
-			system ("chmod A+user:gdm:rwx:allow /dev/audioctl");
+			system ("/usr/bin/chmod A+user:gdm:rwx:allow /dev/audio");
+			system ("/usr/bin/chmod A+user:gdm:rwx:allow /dev/audioctl");
 		}
 	}
 #endif
