@@ -1765,8 +1765,10 @@ PostSession/
       <para>
         GDM also supports per-display configuration for parameters in the
         &quot;gui&quot;, &quot;greeter&quot; sections of the configuration file
-        Also the security/PamStack key may be customized per-display.
-        Per-display configuration is specified by creating a file named
+        Also the <filename>security/PamStack</filename> and
+        <filename>daemon/LockScreen</filename> keys may be customized
+        per-display.  Per-display configuration is specified by creating a file
+        named
         <filename>&lt;etc&gt;/gdm/custom.conf&lt;display num&gt;</filename>.
         In this file the section and keys to use on this display can be 
         specified.  For example, configuration overrides for display
@@ -2306,6 +2308,21 @@ Greeter=/usr/lib/gdmgreeter
                 starts with a &quot;@&quot; character, it will process the file
                 assuming it is an ASCII file containing a list of libraries,
                 one per line, and load each library in the file.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>PamStack</term>
+            <listitem>
+              <synopsis>PamStack=gdm</synopsis>
+              <para>
+                If using PAM, this specifies the PAM service name to use when
+                calling pam_start.  This option may be configured per-display
+                so that GDM can be configured to have a different PAM stack
+                on a given display.  Note that autologin sessions append
+                &quot;-autologin&quot; to this value, so by default autologin
+                sessions use the service name &quot;gdm-autologin&quot;.
               </para>
             </listitem>
           </varlistentry>
@@ -6637,20 +6654,20 @@ homogeneous=&quot;bool&quot;&gt;
 &lt;/item&gt;
 </screen>
 
-	<para>
+        <para>
           If no item node has &quot;background&quot; property set, then the
           background is not modified when greeter exits.
-	</para>
+        </para>
 
-	<para>
+        <para>
           To use a different background for login transition than the one 
-	  used for login, the theme should specify two item nodes (which
+          used for login, the theme should specify two item nodes (which
           could contain pixmaps or svg images, for example).  The item
           which corresponds to the greeter background should not have the
           &quot;background&quot; property while the item which corresponds
           to the transition background should have the &quot;background&quot;
           property.  For instance :
-	</para>
+        </para>
 <screen>
 &lt;?xml version="1.0" encoding=&quot;UTF-8&quot;?&gt;
 &lt;!DOCTYPE greeter SYSTEM &quot;greeter.dtd&quot;&gt;
