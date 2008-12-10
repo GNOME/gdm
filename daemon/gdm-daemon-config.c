@@ -1615,12 +1615,21 @@ validate_session_desktop_dir (GdmConfig          *config,
 			      GdmConfigValue     *value)
 {
 	const char *str;
+#ifdef HAVE_TSOL
+	char *new;
+#endif
 
 	str = gdm_config_value_get_string (value);
 
 	if (str == NULL || str[0] == '\0') {
 		gdm_error (_("%s: No sessions directory specified."), "gdm_config_parse");
 	}
+
+#ifdef HAVE_TSOL
+	new = g_strconcat (str, ":" DATADIR "/xsessions/multilabel/", NULL);
+	gdm_config_value_set_string (value, new);
+	g_free (new);
+#endif
 
 	return TRUE;
 }
