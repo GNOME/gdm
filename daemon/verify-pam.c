@@ -91,7 +91,7 @@ static gboolean did_we_ask_for_password = FALSE;
 static char *selected_user = NULL;
 
 static gboolean opened_session = FALSE;
-static gboolean did_setcred = FALSE;
+static gboolean did_setcred    = FALSE;
 
 extern char *gdm_ack_question_response;
 
@@ -900,6 +900,7 @@ gdm_verify_user (GdmDisplay *d,
 	gboolean credentials_set = FALSE;
 	gboolean error_msg_given = FALSE;
 	gboolean started_timer   = FALSE;
+	gboolean allow_remote    = TRUE;
 
 #ifdef HAVE_ADT
 	int pw_change = PW_FALSE;   /* if got to trying to change password */
@@ -980,11 +981,9 @@ gdm_verify_user (GdmDisplay *d,
 #endif
 
 	passreq = gdm_read_default ("PASSREQ=");
-	if ((passreq != NULL) &&
-	    g_ascii_strcasecmp (passreq, "YES") == 0)
-		gdm_daemon_config_set_value_bool (GDM_KEY_PASSWORD_REQUIRED, TRUE);
 
-	if (gdm_daemon_config_get_value_bool (GDM_KEY_PASSWORD_REQUIRED))
+	if (gdm_daemon_config_get_value_bool (GDM_KEY_PASSWORD_REQUIRED) ||
+            ((passreq != NULL) && g_ascii_strcasecmp (passreq, "YES") == 0))
 		null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
 
 	gdm_verify_select_user (NULL);
@@ -1103,14 +1102,16 @@ gdm_verify_user (GdmDisplay *d,
 
 	/* Check if user is root and is allowed to log in */
 	consoleonly = gdm_read_default ("CONSOLE=");
-	if ((consoleonly != NULL) &&
-	    g_ascii_strcasecmp (consoleonly, "/dev/console") == 0)
-		gdm_daemon_config_set_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT, FALSE);
+	if (( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT)) ||
+            ((consoleonly != NULL) &&
+	     (g_ascii_strcasecmp (consoleonly, "/dev/console") == 0))) {
+		allow_remote = FALSE;
+	}
 
 	pwent = getpwnam (login);
 	if (( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_ROOT) ||
-	    ( ! gdm_daemon_config_get_value_bool (GDM_KEY_ALLOW_REMOTE_ROOT) &&
-	      ! d->attached)) && pwent != NULL && pwent->pw_uid == 0) {
+            ( ! d->attached && allow_remote == FALSE)) &&
+            (pwent != NULL && pwent->pw_uid == 0)) {
 		gdm_error (_("Root login disallowed on display '%s'"),
 			   d->name);
 		gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
@@ -1415,11 +1416,9 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, char **new_login)
 	g_free (pam_service_name);
 
 	passreq = gdm_read_default ("PASSREQ=");
-	if ((passreq != NULL) &&
-	    g_ascii_strcasecmp (passreq, "YES") == 0)
-		gdm_daemon_config_set_value_bool (GDM_KEY_PASSWORD_REQUIRED, TRUE);
 
-	if (gdm_daemon_config_get_value_bool (GDM_KEY_PASSWORD_REQUIRED))
+	if (gdm_daemon_config_get_value_bool (GDM_KEY_PASSWORD_REQUIRED) ||
+            ((passreq != NULL) && g_ascii_strcasecmp (passreq, "YES") == 0))
 		null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
 
 	/* Start authentication session */

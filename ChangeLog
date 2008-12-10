@@ -1,3 +1,11 @@
+2008-12-10 Brian Cameron <brian.cameron@sun.com>
+
+	* daemon/verify-pam.c: Correct processing of CONSOLE and PASSREQ
+	  /etc/default/login parameters so they are checked each time a
+	  user logs in, and the latest value honored.  The previous code
+	  would not unset the setting even if you modified the
+	  /etc/default/login file 
+
 2008-12-08 Brian Cameron <brian.cameron@sun.com>
 
 	* daemon/slave.c: Correct setting of VTE_CJK_WIDTH when on Solaris.
