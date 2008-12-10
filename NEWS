@@ -1,5 +1,42 @@
 Ahh news...
 
+2.20.9 Stuff:
+
+- Fix processing of configuration variables in GDM's cleanup function so
+  that configuration options aren't checked after they are freed.  (Brian
+  Cameron)
+
+- Fix for underquoted strings in comparisons in the Init script.  (Pacho
+  Ramos)
+
+- Update docs so that the PamStack configuration option is explained.
+  (Brian Cameron)
+
+- Correct processing of CONSOLE and PASSREQ /etc/default/login parameters
+  so that they are checked each time a user logs in, and the most recent
+  setting is used.  Thus, if the value is changed, GDM honors it immediately.
+  (Brian Cameron)
+
+- Trusted Solaris integration now supports multilabel session entires.
+  (Stephen Browne)
+
+- Fix so that the gdm_ensure_sanity function is non-functional on Solaris.
+  This function sets file permissions on sockets which are inappropriate o
+  Solaris.  (Brian Cameron)
+
+- When using the Solaris ZFS filesystem, the ACL's are now properly set
+  so that the "gdm" user has access to the sound device, so text-to-speech
+  can work.  (Brian Cameron)
+
+- Fix for Solaris fbconsole launching code so that fbconsole is killed when
+  the user logs out.  (Brian Cameron)
+
+- Use bourne-shell syntax in config/Xsession.solaris which is more portable.
+  (Takao Fujiwara)
+
+- Translation updates (Djihed Afifi, Pema Geyleg, Kenneth Nielsen, Mugurel
+  Tudor, Changwoo Ryu)
+
 2.20.8 Stuff:
 
 - Improve gdm_final_cleanup so that the slave daemon exits after
