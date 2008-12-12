@@ -380,7 +380,7 @@ gdm_display_get_timed_login_details (GdmDisplay *display,
         g_debug ("GdmSlave: Got timed login details for display %s: %d '%s' %d",
                  display->priv->x11_display_name,
                  *enabled,
-                 *username,
+                 *username ? *username : "(null)",
                  *delay);
 
         return TRUE;
