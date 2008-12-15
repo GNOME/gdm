@@ -29,6 +29,9 @@
 
 #include "gdm-entry-menu-item.h"
 
+/* same as twitter */
+#define TEXT_BUFFER_MAX_CHARS 64
+
 enum
 {
         PROP_0,
@@ -155,10 +158,12 @@ gdm_entry_menu_item_class_init (GdmEntryMenuItemClass *klass)
         GObjectClass     *gobject_class;
         GtkWidgetClass   *widget_class;
         GtkMenuItemClass *menu_item_class;
+        GtkItemClass     *item_class;
 
         gobject_class = G_OBJECT_CLASS (klass);
         widget_class = GTK_WIDGET_CLASS (klass);
-        menu_item_class = (GtkMenuItemClass*) klass;
+        menu_item_class = GTK_MENU_ITEM_CLASS (klass);
+        item_class = GTK_ITEM_CLASS (klass);
 
         gobject_class->set_property = gdm_entry_menu_item_set_property;
         gobject_class->get_property = gdm_entry_menu_item_get_property;
@@ -180,6 +185,18 @@ on_entry_show (GtkWidget        *widget,
 }
 
 static void
+on_text_buffer_changed (GtkTextBuffer    *buffer,
+                        GdmEntryMenuItem *item)
+{
+        int len;
+
+        len = gtk_text_buffer_get_char_count (buffer);
+        if (len > TEXT_BUFFER_MAX_CHARS) {
+                gdk_window_beep (GTK_WIDGET (item)->window);
+        }
+}
+
+static void
 gdm_entry_menu_item_init (GdmEntryMenuItem *item)
 {
         PangoFontDescription *fontdesc;
@@ -187,6 +204,7 @@ gdm_entry_menu_item_init (GdmEntryMenuItem *item)
         PangoContext         *context;
         PangoLanguage        *lang;
         int                   ascent;
+        GtkTextBuffer        *buffer;
 
         item->hbox = gtk_hbox_new (FALSE, 6);
         gtk_container_add (GTK_CONTAINER (item), item->hbox);
@@ -194,14 +212,19 @@ gdm_entry_menu_item_init (GdmEntryMenuItem *item)
         item->image = gtk_image_new ();
         gtk_box_pack_start (GTK_BOX (item->hbox), item->image, FALSE, FALSE, 0);
 
-        item->entry = gtk_entry_new ();
+        item->entry = gtk_text_view_new ();
+        gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (item->entry),
+                                     GTK_WRAP_WORD);
         g_signal_connect (item->entry,
                           "show",
                           G_CALLBACK (on_entry_show),
                           item);
-        gtk_editable_set_editable (GTK_EDITABLE (item->entry), TRUE);
-        gtk_entry_set_max_length (GTK_ENTRY (item->entry), 64);
-        gtk_entry_set_text (GTK_ENTRY (item->entry), _("Status"));
+        buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (item->entry));
+        gtk_text_buffer_set_text (buffer, _("Status"), 0);
+        g_signal_connect (buffer,
+                          "changed",
+                          G_CALLBACK (on_text_buffer_changed),
+                          item);
 
         /* get the font ascent for the current font and language */
         context = gtk_widget_get_pango_context (item->entry);
