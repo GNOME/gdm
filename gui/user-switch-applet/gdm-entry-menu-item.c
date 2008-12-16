@@ -153,6 +153,20 @@ gdm_entry_menu_item_realize (GtkWidget *widget)
 }
 
 static void
+gdm_entry_menu_item_select (GtkItem *item)
+{
+        g_return_if_fail (GDM_IS_ENTRY_MENU_ITEM (item));
+        /* We ignore it */
+}
+
+static void
+gdm_entry_menu_item_deselect (GtkItem *item)
+{
+        g_return_if_fail (GDM_IS_ENTRY_MENU_ITEM (item));
+        /* We ignore it */
+}
+
+static void
 gdm_entry_menu_item_class_init (GdmEntryMenuItemClass *klass)
 {
         GObjectClass     *gobject_class;
@@ -172,6 +186,9 @@ gdm_entry_menu_item_class_init (GdmEntryMenuItemClass *klass)
         widget_class->button_release_event = gdm_entry_menu_item_button_release;
         widget_class->button_press_event = gdm_entry_menu_item_button_press;
         widget_class->realize = gdm_entry_menu_item_realize;
+
+        item_class->select = gdm_entry_menu_item_select;
+        item_class->deselect = gdm_entry_menu_item_deselect;
 
         menu_item_class->hide_on_activate = FALSE;
 }
