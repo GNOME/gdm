@@ -110,10 +110,11 @@ send_focus_change (GtkWidget *widget,
 
         g_object_ref (widget);
 
-        if (in)
+        if (in) {
                 GTK_WIDGET_SET_FLAGS (widget, GTK_HAS_FOCUS);
-        else
+        } else {
                 GTK_WIDGET_UNSET_FLAGS (widget, GTK_HAS_FOCUS);
+        }
 
         fevent->focus_change.type = GDK_FOCUS_CHANGE;
         fevent->focus_change.window = g_object_ref (widget->window);
@@ -156,14 +157,15 @@ static void
 gdm_entry_menu_item_select (GtkItem *item)
 {
         g_return_if_fail (GDM_IS_ENTRY_MENU_ITEM (item));
-        /* We ignore it */
+        send_focus_change (GTK_WIDGET (GDM_ENTRY_MENU_ITEM (item)->entry), TRUE);
 }
 
 static void
 gdm_entry_menu_item_deselect (GtkItem *item)
 {
         g_return_if_fail (GDM_IS_ENTRY_MENU_ITEM (item));
-        /* We ignore it */
+
+        send_focus_change (GTK_WIDGET (GDM_ENTRY_MENU_ITEM (item)->entry), FALSE);
 }
 
 static void
@@ -214,6 +216,18 @@ on_text_buffer_changed (GtkTextBuffer    *buffer,
 }
 
 static void
+on_entry_move_focus (GtkWidget        *widget,
+                     GtkDirectionType  direction,
+                     GdmEntryMenuItem *item)
+{
+        g_debug ("focus move");
+        send_focus_change (GTK_WIDGET (GDM_ENTRY_MENU_ITEM (item)->entry), FALSE);
+        g_signal_emit_by_name (item,
+                               "move-focus",
+                               GTK_DIR_TAB_FORWARD);
+}
+
+static void
 gdm_entry_menu_item_init (GdmEntryMenuItem *item)
 {
         PangoFontDescription *fontdesc;
@@ -230,12 +244,19 @@ gdm_entry_menu_item_init (GdmEntryMenuItem *item)
         gtk_box_pack_start (GTK_BOX (item->hbox), item->image, FALSE, FALSE, 0);
 
         item->entry = gtk_text_view_new ();
+        gtk_text_view_set_accepts_tab (GTK_TEXT_VIEW (item->entry), FALSE);
+        gtk_text_view_set_editable (GTK_TEXT_VIEW (item->entry), TRUE);
         gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (item->entry),
                                      GTK_WRAP_WORD);
         g_signal_connect (item->entry,
                           "show",
                           G_CALLBACK (on_entry_show),
                           item);
+        g_signal_connect (item->entry,
+                          "move-focus",
+                          G_CALLBACK (on_entry_move_focus),
+                          item);
+
         buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (item->entry));
         gtk_text_buffer_set_text (buffer, _("Status"), 0);
         g_signal_connect (buffer,

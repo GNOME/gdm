@@ -881,9 +881,12 @@ on_menu_key_press_event (GtkWidget     *widget,
 
         entry = gdm_entry_menu_item_get_entry (GDM_ENTRY_MENU_ITEM (adata->user_item));
 
-        gtk_widget_event (entry, (GdkEvent *)event);
-
-        return FALSE;
+        if (GTK_WIDGET_HAS_FOCUS (entry)) {
+                gtk_widget_event (entry, (GdkEvent *)event);
+                return TRUE;
+        } else {
+                return FALSE;
+        }
 }
 
 static void
