@@ -1,3 +1,12 @@
+2008-12-17 Brian Cameron <brian.cameron@sun.com>
+
+	* gui/simple-greeter/gdm-option-widget.c: Fix so that the option
+	  widget will be marked hidden if there are no middle rows.  This
+	  fixes a problem where the layout widget was showing up even though
+	  it had no middle entries.  Note a bottom row is added to the layout
+	  widget in the function gdm_layout_option_widget_init, so empty
+	  widgets can have a bottom row.  Fixes bug #564789.
+
 2008-12-16  William Jon McCann  <jmccann@redhat.com>
 
 	* configure.ac: Post release bump

@@ -618,9 +618,10 @@ path_is_separator (GdmOptionWidget *widget,
 static gboolean
 gdm_option_widget_check_visibility (GdmOptionWidget *widget)
 {
-        if (widget->priv->number_of_top_rows > 0 ||
-            widget->priv->number_of_middle_rows > 1 || 
-            widget->priv->number_of_bottom_rows > 0) {
+        if ((widget->priv->number_of_middle_rows != 0) &&
+            (widget->priv->number_of_top_rows > 0 ||
+             widget->priv->number_of_middle_rows > 1 || 
+             widget->priv->number_of_bottom_rows > 0)) {
                 gtk_widget_show (widget->priv->items_combo_box);
                 gtk_widget_show (widget->priv->label);
 
