@@ -57,6 +57,12 @@
 
 #include "gdm-socket-protocol.h"
 
+#if __sun
+#define GDM_PRIO_DEFAULT NZERO
+#else
+#define GDM_PRIO_DEFAULT 0
+#endif
+
 /* Local prototypes */
 static void gdm_server_spawn (GdmDisplay *d, const char *vtarg);
 static void gdm_server_usr1_handler (gint);
@@ -1042,7 +1048,7 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 		disp->handled = FALSE;
 		/* never ever ever use chooser here */
 		disp->use_chooser = FALSE;
-		disp->priority = 0;
+		disp->priority = GDM_PRIO_DEFAULT;
 		/* run just one session */
 		argv[len++] = g_strdup ("-terminate");
 		argv[len++] = g_strdup ("-query");
@@ -1263,7 +1269,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 
 	gdm_debug ("gdm_server_spawn: '%s'", command);
 	
-	if (d->priority != 0) {
+	if (d->priority != GDM_PRIO_DEFAULT) {
 		if (setpriority (PRIO_PROCESS, 0, d->priority)) {
 			gdm_error (_("%s: Server priority couldn't be set to %d: %s"),
 				   "gdm_server_spawn", d->priority,

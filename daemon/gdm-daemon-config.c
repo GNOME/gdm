@@ -1050,14 +1050,14 @@ gdm_daemon_config_get_xservers (void)
 	return retval;
 }
 
-/* PRIO_MIN and PRIO_MAX are not defined on Solaris, but are -20 and 20 */
 #if __sun
-#ifndef PRIO_MIN
-#define PRIO_MIN 0
-#endif
-#ifndef PRIO_MAX
-#define PRIO_MAX (NZERO*2)-1
-#endif
+#define GDM_PRIO_MIN 0
+#define GDM_PRIO_MAX (NZERO*2)-1
+#define GDM_PRIO_DEFAULT NZERO
+#else
+#define GDM_PRIO_MIN PRIO_MIN
+#define GDM_PRIO_MAX PRIO_MAX
+#define GDM_PRIO_DEFAULT 0
 #endif
 
 /**
@@ -1119,10 +1119,10 @@ gdm_daemon_config_load_xserver (GdmConfig  *config,
 
 	/* do some bounds checking */
 	n = svr->priority;
-	if (n < PRIO_MIN)
-		n = PRIO_MIN;
-	else if (n > PRIO_MAX)
-		n = PRIO_MAX;
+	if (n < GDM_PRIO_MIN)
+		n = GDM_PRIO_MIN;
+	else if (n > GDM_PRIO_MAX)
+		n = GDM_PRIO_MAX;
 
 	if (n != svr->priority) {
 		gdm_error (_("%s: Priority out of bounds; changed to %d"),
@@ -1173,7 +1173,7 @@ gdm_daemon_config_ensure_one_xserver (GdmConfig *config)
 		svr->flexible  = TRUE;
 		svr->choosable = TRUE;
 		svr->handled   = TRUE;
-		svr->priority  = 0;
+		svr->priority  = GDM_PRIO_DEFAULT;
 
 		xservers       = g_slist_append (xservers, svr);
 	}
