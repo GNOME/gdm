@@ -862,7 +862,7 @@ ensure_tmp_socket_dir (const char *dir)
                          * There is a file/link/whatever of the same name?
 			 * whack and try mkdir
                          */
-			VE_IGNORE_EINTR (g_unlink (dir));
+			VE_IGNORE_EINTR (g_remove (dir));
 			g_mkdir (dir, 01777);
 		}
 	}

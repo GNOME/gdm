@@ -628,7 +628,7 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 		   was of wrong permissions, but more likely this is
 		   file on NFS dir with root-squashing enabled) */
 		if ( ! user_auth_exists && d->userauth != NULL)
-			g_unlink (d->userauth);
+			g_remove (d->userauth);
 
 		/* No go. Let's create a fallback file in GDM_KEY_USER_AUTHDIR_FALLBACK (/tmp)
 		 * or perhaps userauthfile directory (usually would be /tmp) */
@@ -789,7 +789,7 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 	/* If we are using the fallback cookie location, simply nuke the
 	 * cookie file */
 	if (d->authfb) {
-		VE_IGNORE_EINTR (g_unlink (d->userauth));
+		VE_IGNORE_EINTR (g_remove (d->userauth));
 		g_free (d->userauth);
 		d->userauth = NULL;
 		return;
@@ -962,7 +962,7 @@ gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty)
 
 	if (remove_when_empty &&
 	    keep == NULL) {
-		VE_IGNORE_EINTR (g_unlink (d->userauth));
+		VE_IGNORE_EINTR (g_remove (d->userauth));
 		return NULL;
 	}
 
