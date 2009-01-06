@@ -1264,6 +1264,19 @@ gdm_verify_user (GdmDisplay *d,
 	return login;
 
  pamerr:
+	/*
+	 * Take care of situation where we get here before setting pwent.
+	 * Since login can be passed in as NULL, get the actual value if
+	 * possible.
+	 */
+	if ((pam_get_item (pamh, PAM_USER, &p)) == PAM_SUCCESS) {
+		g_free (login);
+		login = g_strdup ((const char *)p);
+	}
+	if (pwent == NULL && login != NULL) {
+		pwent = getpwnam (login);
+	}
+
 #ifdef  HAVE_ADT
 	audit_fail_login (d, pw_change, pwent, pamerr);
 #endif	/* HAVE_ADT */
@@ -1450,11 +1463,6 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, char **new_login)
 		*new_login = g_strdup (after_login);
 	}
 
-#ifdef  HAVE_ADT
-	/* to set up for same auditing calls as in gdm_verify_user */
-	pwent = getpwnam (login);
-#endif	/* HAVE_ADT */
-
 	/* Check if the user's account is healthy. */
 	pamerr = pam_acct_mgmt (pamh, null_tok);
 	switch (pamerr) {
@@ -1590,6 +1598,14 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, char **new_login)
 	return TRUE;
 
  setup_pamerr:
+	/*
+	 * Take care of situation where we get here before setting pwent.
+	 * Note login is never NULL when this function is called.
+	 */
+	if (pwent == NULL) {
+		pwent = getpwnam (login);
+	}
+
 #ifdef  HAVE_ADT
 	audit_fail_login (d, pw_change, pwent, pamerr);
 #endif	/* HAVE_ADT */
