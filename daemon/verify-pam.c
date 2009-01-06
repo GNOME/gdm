@@ -360,17 +360,17 @@ solaris_xserver_cred (char *login, GdmDisplay *d, struct passwd *pwent)
                 displayNumber = atoi (tmp);
 	}
 
-        sprintf (pipe, "%s/%d", SDTLOGIN_DIR, displayNumber);
+        sprintf (pipe, "%s/%d", GDM_SDTLOGIN_DIR, displayNumber);
 
-        if (g_stat (SDTLOGIN_DIR, &statbuf) == 0) {
+        if (g_stat (GDM_SDTLOGIN_DIR, &statbuf) == 0) {
 		if (! statbuf.st_mode & S_IFDIR) {
 			gdm_debug ("solaris_xserver_cred: %s is not a directory\n",
-				   SDTLOGIN_DIR);
+				   GDM_SDTLOGIN_DIR);
 			return;
 		}
 	}
 	else {
-		gdm_debug ("solaris_xserver_cred: %s does not exist\n", SDTLOGIN_DIR);
+		gdm_debug ("solaris_xserver_cred: %s does not exist\n", GDM_SDTLOGIN_DIR);
 		return;
 	}
 

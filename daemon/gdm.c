@@ -1707,8 +1707,18 @@ main (int argc, char *argv[])
 		gdm_daemonify ();
 
 #ifdef __sun
-	g_unlink (SDTLOGIN_DIR);
-	g_mkdir (SDTLOGIN_DIR, 0700);
+	{
+		struct stat statbuf;
+		int r;
+
+		r = stat (GDM_DT_DIR, &statbuf);
+		if (r < 0) {
+			g_mkdir (GDM_DT_DIR, 0755);
+		}
+		
+		g_unlink (GDM_SDTLOGIN_DIR);
+		g_mkdir (GDM_SDTLOGIN_DIR, 0700);
+	}
 #endif
 
 	/* Signal handling */

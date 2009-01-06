@@ -1320,12 +1320,12 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 		setgroups (1, groups);
 	}
 
-#if sun
+#if __sun
     {
         /* Remove old communication pipe, if present */
         char old_pipe[MAXPATHLEN];
 
-        sprintf (old_pipe, "%s/%d", SDTLOGIN_DIR, d->name);
+        sprintf (old_pipe, "%s/%d", GDM_SDTLOGIN_DIR, d->name);
         g_unlink (old_pipe);
     }
 #endif

@@ -68,7 +68,8 @@ enum {
 #define GDM_CUSTOM_COMMAND_MAX 10 /* maximum number of supported custom commands */
 
 #ifdef __sun
-#define SDTLOGIN_DIR "/var/dt/sdtlogin"
+#define GDM_DT_DIR "/var/dt"
+#define GDM_SDTLOGIN_DIR "/var/dt/sdtlogin"
 #endif
 
 /* If id == NULL, then get the first X server */
