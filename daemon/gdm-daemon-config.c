@@ -1053,10 +1053,10 @@ gdm_daemon_config_get_xservers (void)
 /* PRIO_MIN and PRIO_MAX are not defined on Solaris, but are -20 and 20 */
 #if __sun
 #ifndef PRIO_MIN
-#define PRIO_MIN -20
+#define PRIO_MIN 0
 #endif
 #ifndef PRIO_MAX
-#define PRIO_MAX 20
+#define PRIO_MAX (NZERO*2)-1
 #endif
 #endif
 
