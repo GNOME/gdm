@@ -258,7 +258,7 @@ gdm_entry_menu_item_init (GdmEntryMenuItem *item)
                           item);
 
         buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (item->entry));
-        gtk_text_buffer_set_text (buffer, _("Status"), 0);
+        gtk_text_buffer_set_text (buffer, _("Status"), -1);
         g_signal_connect (buffer,
                           "changed",
                           G_CALLBACK (on_text_buffer_changed),

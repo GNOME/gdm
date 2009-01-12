@@ -21,6 +21,8 @@
 #include "config.h"
 
 #include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
 
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
@@ -30,6 +32,7 @@
 #include <gconf/gconf-client.h>
 
 #include <glade/glade-xml.h>
+#include <dbus/dbus-glib.h>
 
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-ui-util.h>
@@ -45,12 +48,12 @@
 #define LOCKDOWN_DIR    "/desktop/gnome/lockdown"
 #define LOCKDOWN_KEY    LOCKDOWN_DIR "/disable_user_switching"
 
-enum {
-        GDM_USER_STATUS_AVAILABLE,
-        GDM_USER_STATUS_BUSY,
-        GDM_USER_STATUS_INVISIBLE,
-        GDM_USER_STATUS_AWAY,
-};
+typedef enum {
+        GSM_PRESENCE_STATUS_AVAILABLE = 0,
+        GSM_PRESENCE_STATUS_INVISIBLE,
+        GSM_PRESENCE_STATUS_BUSY,
+        GSM_PRESENCE_STATUS_IDLE,
+} GsmPresenceStatus;
 
 typedef struct _GdmAppletData
 {
@@ -80,6 +83,7 @@ typedef struct _GdmAppletData
         gint8           pixel_size;
         gint            panel_size;
         GtkIconSize     icon_size;
+        DBusGProxy     *presence_proxy;
 } GdmAppletData;
 
 typedef struct _SelectorResponseData
@@ -475,6 +479,10 @@ gdm_applet_data_free (GdmAppletData *adata)
 
         g_signal_handler_disconnect (adata->user, adata->user_notify_id);
         g_signal_handler_disconnect (adata->user, adata->user_icon_changed_id);
+
+        if (adata->presence_proxy) {
+                g_object_unref (adata->presence_proxy);
+        }
 
         if (adata->user != NULL) {
                 g_object_unref (adata->user);
@@ -893,7 +901,25 @@ static void
 set_status (GdmAppletData *adata,
             guint          status)
 {
-        adata->current_status = status;
+        if (adata->current_status != status) {
+                GError *error;
+
+                adata->current_status = status;
+
+                error = NULL;
+                dbus_g_proxy_call (adata->presence_proxy,
+                                   "SetStatus",
+                                   &error,
+                                   G_TYPE_UINT, status,
+                                   G_TYPE_INVALID,
+                                   G_TYPE_INVALID);
+
+                if (error != NULL) {
+                        g_warning ("Couldn't set presence status: %s", error->message);
+                        g_error_free (error);
+                }
+        }
+
         update_label (adata);
 }
 
@@ -901,32 +927,33 @@ static void
 on_status_available_activate (GtkWidget     *widget,
                               GdmAppletData *adata)
 {
-        set_status (adata, GDM_USER_STATUS_AVAILABLE);
+        set_status (adata, GSM_PRESENCE_STATUS_AVAILABLE);
 }
 
 static void
 on_status_busy_activate (GtkWidget     *widget,
                          GdmAppletData *adata)
 {
-        set_status (adata, GDM_USER_STATUS_BUSY);
+        set_status (adata, GSM_PRESENCE_STATUS_BUSY);
 }
 
 static void
 on_status_invisible_activate (GtkWidget     *widget,
                               GdmAppletData *adata)
 {
-        set_status (adata, GDM_USER_STATUS_INVISIBLE);
+        set_status (adata, GSM_PRESENCE_STATUS_INVISIBLE);
 }
 
 static struct {
-        char    *icon_name;
-        char    *display_name;
-        void    *menu_callback;
+        char      *icon_name;
+        char      *display_name;
+        void      *menu_callback;
+        GtkWidget *widget;
 } statuses[] = {
-        { "user-online", N_("Available"), on_status_available_activate },
-        { "user-busy", N_("Busy"), on_status_busy_activate },
-        { "user-invisible", N_("Invisible"), on_status_invisible_activate },
-        { "user-away", N_("Away"), NULL },
+        { "user-online", N_("Available"), on_status_available_activate, NULL },
+        { "user-invisible", N_("Invisible"), on_status_invisible_activate, NULL },
+        { "user-busy", N_("Busy"), on_status_busy_activate, NULL },
+        { "user-away", N_("Away"), NULL, NULL },
 };
 
 static void
@@ -942,6 +969,49 @@ update_label (GdmAppletData *adata)
                                   statuses[adata->current_status].display_name);
         gtk_label_set_markup (GTK_LABEL (label), markup);
         g_free (markup);
+}
+
+static void
+save_status_text (GdmAppletData *adata)
+{
+        GtkWidget     *entry;
+        GtkTextBuffer *buffer;
+        char          *escaped_text;
+        char          *text;
+        GtkTextIter    start, end;
+
+        entry = gdm_entry_menu_item_get_entry (GDM_ENTRY_MENU_ITEM (adata->user_item));
+        buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (entry));
+        gtk_text_buffer_get_bounds (buffer, &start, &end);
+        text = gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
+        escaped_text = g_markup_escape_text (text, -1);
+
+        if (escaped_text != NULL) {
+                GError *error;
+
+                error = NULL;
+                dbus_g_proxy_call (adata->presence_proxy,
+                                   "SetStatusText",
+                                   &error,
+                                   G_TYPE_STRING, escaped_text,
+                                   G_TYPE_INVALID,
+                                   G_TYPE_INVALID);
+
+                if (error != NULL) {
+                        g_warning ("Couldn't set presence status text: %s", error->message);
+                        g_error_free (error);
+                }
+        }
+
+        g_free (text);
+        g_free (escaped_text);
+}
+
+static void
+on_user_item_deselect (GtkWidget     *item,
+                       GdmAppletData *adata)
+{
+        save_status_text (adata);
 }
 
 static void
@@ -982,6 +1052,10 @@ create_sub_menu (GdmAppletData *adata)
         gtk_widget_show (adata->user_item);
         g_signal_connect (adata->user_item, "activate",
                           G_CALLBACK (on_user_item_activate), adata);
+        g_signal_connect (adata->user_item,
+                                "deselect",
+                                G_CALLBACK (on_user_item_deselect),
+                                adata);
 
         item = gtk_separator_menu_item_new ();
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), item);
@@ -1017,6 +1091,8 @@ create_sub_menu (GdmAppletData *adata)
                 g_signal_connect (item, "activate",
                                   G_CALLBACK (statuses[i].menu_callback), adata);
                 gtk_widget_show (item);
+
+                statuses[i].widget = item;
         }
 
         item = gtk_separator_menu_item_new ();
@@ -1202,6 +1278,42 @@ setup_current_user (GdmAppletData *adata)
         }
 }
 
+static void
+on_presence_status_changed (DBusGProxy    *presence_proxy,
+                            guint          status,
+                            GdmAppletData *adata)
+{
+        int i;
+
+        g_debug ("Status changed: %u", status);
+
+        adata->current_status = status;
+        for (i = 0; i < G_N_ELEMENTS (statuses); i++) {
+                if (statuses[i].widget == NULL) {
+                        continue;
+                }
+                gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (statuses[i].widget),
+                                                (i == status));
+        }
+
+        update_label (adata);
+}
+
+static void
+on_presence_status_text_changed (DBusGProxy    *presence_proxy,
+                                 const char    *status_text,
+                                 GdmAppletData *adata)
+{
+        GtkWidget     *entry;
+        GtkTextBuffer *buffer;
+
+        g_debug ("Status text changed: %s", status_text);
+
+        entry = gdm_entry_menu_item_get_entry (GDM_ENTRY_MENU_ITEM (adata->user_item));
+        buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (entry));
+        gtk_text_buffer_set_text (buffer, status_text, -1);
+}
+
 static gboolean
 fill_applet (PanelApplet *applet)
 {
@@ -1215,6 +1327,8 @@ fill_applet (PanelApplet *applet)
         char              *tmp;
         BonoboUIComponent *popup_component;
         GdmAppletData     *adata;
+        GError            *error;
+        DBusGConnection   *bus;
 
         if (!first_time) {
                 first_time = TRUE;
@@ -1339,6 +1453,41 @@ fill_applet (PanelApplet *applet)
                 set_menu_visibility (adata, TRUE);
         }
 
+        error = NULL;
+        bus = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+        if (bus == NULL) {
+                g_warning ("Unable to get session bus: %s", error->message);
+                g_error_free (error);
+                goto done;
+        }
+
+        adata->presence_proxy = dbus_g_proxy_new_for_name (bus,
+                                                          "org.gnome.SessionManager",
+                                                          "/org/gnome/SessionManager/Presence",
+                                                          "org.gnome.SessionManager.Presence");
+        if (adata->presence_proxy) {
+                dbus_g_proxy_add_signal (adata->presence_proxy,
+                                         "StatusChanged",
+                                         G_TYPE_UINT,
+                                         G_TYPE_INVALID);
+                dbus_g_proxy_connect_signal (adata->presence_proxy,
+                                             "StatusChanged",
+                                             G_CALLBACK (on_presence_status_changed),
+                                             adata,
+                                             NULL);
+                dbus_g_proxy_add_signal (adata->presence_proxy,
+                                         "StatusTextChanged",
+                                         G_TYPE_STRING,
+                                         G_TYPE_INVALID);
+                dbus_g_proxy_connect_signal (adata->presence_proxy,
+                                             "StatusTextChanged",
+                                             G_CALLBACK (on_presence_status_text_changed),
+                                             adata,
+                                             NULL);
+        } else {
+                g_warning ("Failed to get session presence proxy");
+        }
+ done:
         gtk_widget_show (GTK_WIDGET (adata->applet));
 
         return TRUE;
