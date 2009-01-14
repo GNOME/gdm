@@ -1,3 +1,23 @@
+2009-01-14  Ray Strode <rstrode@redhat.com>
+
+	Don't truncate long pam messages
+
+	At some point I made the greeter login window set it's
+	size requisition to it's size allocation to prevent it
+	from shrinking horizontally as the window hierarchy
+	changed.
+
+	That change actually prevents the window from growing
+	horizontally also.
+
+	This commit reworks things from within the size-request
+	handler so it can always grow but never shrink.
+
+	* gui/simple-greeter/gdm-greeter-login-window.c
+	(switch_mode): don't set size_request anymore
+	(gdm_greeter_login_window_size_request): handle
+	size constraints here.
+
 2009-01-11  William Jon McCann  <jmccann@redhat.com>
 
 	* gui/user-switch-applet/applet.c (gdm_applet_data_free),

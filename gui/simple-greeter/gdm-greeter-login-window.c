@@ -543,7 +543,6 @@ switch_mode (GdmGreeterLoginWindow *login_window,
 
         switch (number) {
         case MODE_SELECTION:
-                gtk_widget_set_size_request (GTK_WIDGET (login_window), -1, -1);
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_HIDDEN);
 
                 show_widget (login_window, "cancel-button", FALSE);
@@ -568,9 +567,6 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 default_name = NULL;
                 break;
         case MODE_AUTHENTICATION:
-                gtk_widget_set_size_request (GTK_WIDGET (login_window),
-                                             GTK_WIDGET (login_window)->allocation.width,
-                                             -1);
                 show_widget (login_window, "cancel-button", TRUE);
                 show_widget (login_window, "shutdown-button", FALSE);
                 show_widget (login_window, "restart-button", FALSE);
@@ -1678,6 +1674,10 @@ gdm_greeter_login_window_size_request (GtkWidget      *widget,
          */
         requisition->width = MAX (requisition->width, .33 * screen_w);
         requisition->height = MIN (requisition->height, .80 * screen_h);
+
+       /* Don't ever shrink window width
+        */
+       requisition->width = MAX (requisition->width, widget->allocation.width);
 }
 
 static void
