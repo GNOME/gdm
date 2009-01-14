@@ -1652,16 +1652,22 @@ static void
 gdm_greeter_login_window_size_request (GtkWidget      *widget,
                                        GtkRequisition *requisition)
 {
-        int            screen_w;
-        int            screen_h;
-        GtkRequisition child_requisition;
+        int             monitor;
+        GdkScreen      *screen;
+        GtkRequisition  child_requisition;
+        GdkRectangle    area;
 
         if (GTK_WIDGET_CLASS (gdm_greeter_login_window_parent_class)->size_request) {
                 GTK_WIDGET_CLASS (gdm_greeter_login_window_parent_class)->size_request (widget, requisition);
         }
 
-        screen_w = gdk_screen_get_width (gtk_widget_get_screen (widget));
-        screen_h = gdk_screen_get_height (gtk_widget_get_screen (widget));
+        if (!GTK_WIDGET_REALIZED (widget)) {
+                return;
+        }
+
+        screen = gtk_widget_get_screen (widget);
+        monitor = gdk_screen_get_monitor_at_window (screen, widget->window);
+        gdk_screen_get_monitor_geometry (screen, monitor, &area);
 
         gtk_widget_get_child_requisition (GTK_BIN (widget)->child, &child_requisition);
         *requisition = child_requisition;
@@ -1672,8 +1678,8 @@ gdm_greeter_login_window_size_request (GtkWidget      *widget,
         /* Make width be at least 33% screen width
          * and height be at most 80% of screen height
          */
-        requisition->width = MAX (requisition->width, .33 * screen_w);
-        requisition->height = MIN (requisition->height, .80 * screen_h);
+        requisition->width = MAX (requisition->width, .33 * area.width);
+        requisition->height = MIN (requisition->height, .80 * area.height);
 
        /* Don't ever shrink window width
         */

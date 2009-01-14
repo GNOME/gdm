@@ -1,5 +1,14 @@
 2009-01-14  Ray Strode <rstrode@redhat.com>
 
+	* gui/simple-greeter/gdm-greeter-login-window.c
+	(gdm_greeter_login_window_size_request): Compute
+	size constraint based on current monitor
+
+	Before we were computing it based on the current
+	screen (which may be multiple monitors)
+
+2009-01-14  Ray Strode <rstrode@redhat.com>
+
 	Don't truncate long pam messages
 
 	At some point I made the greeter login window set it's
