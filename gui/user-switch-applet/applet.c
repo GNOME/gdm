@@ -554,7 +554,7 @@ menuitem_style_set_cb (GtkWidget     *menuitem,
                 const char *icon_name;
 
                 if (menuitem == adata->login_screen_item) {
-                        icon_name = "gdm";
+                        icon_name = "system-users";
                 } else if (menuitem == adata->lock_screen_item) {
                         icon_name = "system-lock-screen";
                 } else if (menuitem == adata->quit_session_item) {
