@@ -136,7 +136,9 @@ gdm_entry_menu_item_button_press (GtkWidget      *widget,
 
         entry = GDM_ENTRY_MENU_ITEM (widget)->entry;
 
-        gdk_window_raise (entry->window);
+        if (entry->window != NULL) {
+                gdk_window_raise (entry->window);
+        }
 
         if (!GTK_WIDGET_HAS_FOCUS (entry)) {
                 gtk_widget_grab_focus (entry);
@@ -199,7 +201,9 @@ static void
 on_entry_show (GtkWidget        *widget,
                GdmEntryMenuItem *item)
 {
-        gdk_window_raise (widget->window);
+        if (widget->window != NULL) {
+                gdk_window_raise (widget->window);
+        }
         send_focus_change (widget, TRUE);
 }
 
