@@ -480,7 +480,7 @@ gdm_applet_data_free (GdmAppletData *adata)
         g_signal_handler_disconnect (adata->user, adata->user_notify_id);
         g_signal_handler_disconnect (adata->user, adata->user_icon_changed_id);
 
-        if (adata->presence_proxy) {
+        if (adata->presence_proxy != NULL) {
                 g_object_unref (adata->presence_proxy);
         }
 
@@ -898,14 +898,15 @@ on_menu_key_press_event (GtkWidget     *widget,
 }
 
 static void
-set_status (GdmAppletData *adata,
-            guint          status)
+save_status (GdmAppletData *adata,
+             guint          status)
 {
         if (adata->current_status != status) {
                 GError *error;
 
                 adata->current_status = status;
 
+                g_debug ("Saving status: %u", status);
                 error = NULL;
                 dbus_g_proxy_call (adata->presence_proxy,
                                    "SetStatus",
@@ -915,33 +916,38 @@ set_status (GdmAppletData *adata,
                                    G_TYPE_INVALID);
 
                 if (error != NULL) {
-                        g_warning ("Couldn't set presence status: %s", error->message);
+                        g_warning ("Couldn't save presence status: %s", error->message);
                         g_error_free (error);
                 }
         }
-
-        update_label (adata);
 }
 
 static void
 on_status_available_activate (GtkWidget     *widget,
                               GdmAppletData *adata)
 {
-        set_status (adata, GSM_PRESENCE_STATUS_AVAILABLE);
+
+        if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget))) {
+                save_status (adata, GSM_PRESENCE_STATUS_AVAILABLE);
+        }
 }
 
 static void
 on_status_busy_activate (GtkWidget     *widget,
                          GdmAppletData *adata)
 {
-        set_status (adata, GSM_PRESENCE_STATUS_BUSY);
+         if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget))) {
+                 save_status (adata, GSM_PRESENCE_STATUS_BUSY);
+         }
 }
 
 static void
 on_status_invisible_activate (GtkWidget     *widget,
                               GdmAppletData *adata)
 {
-        set_status (adata, GSM_PRESENCE_STATUS_INVISIBLE);
+         if (gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (widget))) {
+                 save_status (adata, GSM_PRESENCE_STATUS_INVISIBLE);
+         }
 }
 
 static struct {
@@ -1053,9 +1059,9 @@ create_sub_menu (GdmAppletData *adata)
         g_signal_connect (adata->user_item, "activate",
                           G_CALLBACK (on_user_item_activate), adata);
         g_signal_connect (adata->user_item,
-                                "deselect",
-                                G_CALLBACK (on_user_item_deselect),
-                                adata);
+                          "deselect",
+                          G_CALLBACK (on_user_item_deselect),
+                          adata);
 
         item = gtk_separator_menu_item_new ();
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), item);
@@ -1279,30 +1285,39 @@ setup_current_user (GdmAppletData *adata)
 }
 
 static void
-on_presence_status_changed (DBusGProxy    *presence_proxy,
-                            guint          status,
-                            GdmAppletData *adata)
+set_status (GdmAppletData *adata,
+            guint status)
 {
         int i;
 
-        g_debug ("Status changed: %u", status);
-
+        g_debug ("Setting current status: %u", status);
         adata->current_status = status;
         for (i = 0; i < G_N_ELEMENTS (statuses); i++) {
                 if (statuses[i].widget == NULL) {
                         continue;
                 }
-                gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (statuses[i].widget),
-                                                (i == status));
+                if (i == status) {
+                        gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (statuses[i].widget),
+                                                        TRUE);
+                }
         }
 
         update_label (adata);
 }
 
 static void
-on_presence_status_text_changed (DBusGProxy    *presence_proxy,
-                                 const char    *status_text,
-                                 GdmAppletData *adata)
+on_presence_status_changed (DBusGProxy    *presence_proxy,
+                            guint          status,
+                            GdmAppletData *adata)
+{
+        g_debug ("Status changed: %u", status);
+
+        set_status (adata, status);
+}
+
+static void
+set_status_text (GdmAppletData *adata,
+                 const char    *status_text)
 {
         GtkWidget     *entry;
         GtkTextBuffer *buffer;
@@ -1312,6 +1327,14 @@ on_presence_status_text_changed (DBusGProxy    *presence_proxy,
         entry = gdm_entry_menu_item_get_entry (GDM_ENTRY_MENU_ITEM (adata->user_item));
         buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (entry));
         gtk_text_buffer_set_text (buffer, status_text, -1);
+}
+
+static void
+on_presence_status_text_changed (DBusGProxy    *presence_proxy,
+                                 const char    *status_text,
+                                 GdmAppletData *adata)
+{
+        set_status_text (adata, status_text);
 }
 
 static gboolean
@@ -1465,7 +1488,9 @@ fill_applet (PanelApplet *applet)
                                                           "org.gnome.SessionManager",
                                                           "/org/gnome/SessionManager/Presence",
                                                           "org.gnome.SessionManager.Presence");
-        if (adata->presence_proxy) {
+        if (adata->presence_proxy != NULL) {
+                DBusGProxy *proxy;
+
                 dbus_g_proxy_add_signal (adata->presence_proxy,
                                          "StatusChanged",
                                          G_TYPE_UINT,
@@ -1484,9 +1509,62 @@ fill_applet (PanelApplet *applet)
                                              G_CALLBACK (on_presence_status_text_changed),
                                              adata,
                                              NULL);
+
+
+                proxy = dbus_g_proxy_new_from_proxy (adata->presence_proxy,
+                                                     "org.freedesktop.DBus.Properties",
+                                                     "/org/gnome/SessionManager/Presence");
+                if (proxy != NULL) {
+                        guint       status;
+                        const char *status_text;
+                        GValue      value = { 0, };
+
+                        status = 0;
+                        status_text = NULL;
+
+                        error = NULL;
+                        dbus_g_proxy_call (proxy,
+                                           "Get",
+                                           &error,
+                                           G_TYPE_STRING, "org.gnome.SessionManager.Presence",
+                                           G_TYPE_STRING, "status",
+                                           G_TYPE_INVALID,
+                                           G_TYPE_VALUE, &value,
+                                           G_TYPE_INVALID);
+
+                        if (error != NULL) {
+                                g_warning ("Couldn't get presence status: %s", error->message);
+                                g_error_free (error);
+                        } else {
+                                status = g_value_get_uint (&value);
+                        }
+
+                        g_value_unset (&value);
+
+                        error = NULL;
+                        dbus_g_proxy_call (proxy,
+                                           "Get",
+                                           &error,
+                                           G_TYPE_STRING, "org.gnome.SessionManager.Presence",
+                                           G_TYPE_STRING, "status-text",
+                                           G_TYPE_INVALID,
+                                           G_TYPE_VALUE, &value,
+                                           G_TYPE_INVALID);
+
+                        if (error != NULL) {
+                                g_warning ("Couldn't get presence status text: %s", error->message);
+                                g_error_free (error);
+                        } else {
+                                status_text = g_value_get_string (&value);
+                        }
+
+                        set_status (adata, status);
+                        set_status_text (adata, status_text);
+                }
         } else {
                 g_warning ("Failed to get session presence proxy");
         }
+
  done:
         gtk_widget_show (GTK_WIDGET (adata->applet));
 

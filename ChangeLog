@@ -1,3 +1,15 @@
+2009-01-14  William Jon McCann  <jmccann@redhat.com>
+
+	* gui/user-switch-applet/applet.c (gdm_applet_data_free),
+	(save_status), (on_status_available_activate),
+	(on_status_busy_activate), (on_status_invisible_activate),
+	(set_status), (on_presence_status_changed), (set_status_text),
+	(on_presence_status_text_changed), (fill_applet):
+	* gui/user-switch-applet/gdm-entry-menu-item.c
+	(gdm_entry_menu_item_init):
+	Update for changes to gnome-session presence api.
+	Load the current state from the session at applet startup.
+
 2009-01-14  Ray Strode <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-greeter-login-window.c
