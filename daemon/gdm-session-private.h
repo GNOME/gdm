@@ -27,7 +27,8 @@
 G_BEGIN_DECLS
 
 /* state changes */
-void             _gdm_session_conversation_started         (GdmSession   *session);
+void             _gdm_session_conversation_started         (GdmSession   *session,
+                                                            const char   *service_name);
 void             _gdm_session_setup_complete               (GdmSession   *session);
 void             _gdm_session_setup_failed                 (GdmSession   *session,
                                                             const char   *message);

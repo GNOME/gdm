@@ -180,10 +180,11 @@ send_dbus_void_signal (GdmSessionRelay *session_relay,
 }
 
 static void
-gdm_session_relay_start_conversation (GdmSession *session)
+gdm_session_relay_start_conversation (GdmSession *session,
+                                      const char *service_name)
 {
         GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
-        send_dbus_void_signal (impl, "StartConversation");
+        send_dbus_string_signal (impl, "StartConversation", service_name);
 }
 
 static void
@@ -720,8 +721,14 @@ handle_conversation_started (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
+        char *service_name;
 
         dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
 
         g_debug ("GdmSessionRelay: Conversation Started");
 
@@ -729,7 +736,7 @@ handle_conversation_started (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_conversation_started (GDM_SESSION (session_relay));
+        _gdm_session_conversation_started (GDM_SESSION (session_relay), service_name);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -804,6 +811,7 @@ do_introspect (DBusConnection *connection,
         xml = g_string_append (xml,
                                "  <interface name=\"org.gnome.DisplayManager.SessionRelay\">\n"
                                "    <method name=\"ConversationStarted\">\n"
+                               "      <arg name=\"service_name\" direction=\"in\" type=\"s\"/>\n"
                                "    </method>\n"
                                "    <method name=\"SetupComplete\">\n"
                                "    </method>\n"
@@ -865,6 +873,7 @@ do_introspect (DBusConnection *connection,
                                "    </signal>\n"
 
                                "    <signal name=\"StartConversation\">\n"
+                               "      <arg name=\"service_name\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"Close\">\n"
                                "    </signal>\n"

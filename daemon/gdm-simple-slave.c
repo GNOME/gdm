@@ -244,7 +244,6 @@ reset_session (GdmSimpleSlave *slave)
 {
         destroy_session (slave);
         create_new_session (slave);
-        gdm_session_start_conversation (GDM_SESSION (slave->priv->session));
 }
 
 static gboolean
@@ -1040,8 +1039,6 @@ on_greeter_connected (GdmGreeterServer *greeter_server,
         if (slave->priv->greeter_reset_id > 0) {
                 return;
         }
-
-        gdm_session_start_conversation (GDM_SESSION (slave->priv->session));
 
         g_object_get (slave,
                       "display-is-local", &display_is_local,
