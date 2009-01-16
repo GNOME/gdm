@@ -84,13 +84,15 @@ GQuark             gdm_greeter_client_error_quark                    (void);
 GdmGreeterClient * gdm_greeter_client_new                            (void);
 
 gboolean           gdm_greeter_client_start                          (GdmGreeterClient *client,
-                                                                         GError          **error);
+                                                                      GError          **error);
 void               gdm_greeter_client_stop                           (GdmGreeterClient *client);
 
 gboolean           gdm_greeter_client_get_display_is_local           (GdmGreeterClient *client);
 
 char *             gdm_greeter_client_call_get_display_id            (GdmGreeterClient *client);
 
+void               gdm_greeter_client_call_start_conversation        (GdmGreeterClient *client,
+                                                                      const char       *service_name);
 void               gdm_greeter_client_call_begin_auto_login          (GdmGreeterClient *client,
                                                                       const char       *username);
 void               gdm_greeter_client_call_begin_verification        (GdmGreeterClient *client);

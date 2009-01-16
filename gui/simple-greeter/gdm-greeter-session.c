@@ -84,6 +84,7 @@ on_problem (GdmGreeterClient  *client,
 
 static void
 on_ready (GdmGreeterClient  *client,
+          const char        *service_name,
           GdmGreeterSession *session)
 {
         g_debug ("GdmGreeterSession: Ready");
@@ -251,6 +252,7 @@ on_cancelled (GdmGreeterLoginWindow *login_window,
 {
         gdm_greeter_panel_hide_user_options (GDM_GREETER_PANEL (session->priv->panel));
         gdm_greeter_client_call_cancel (session->priv->client);
+        gdm_greeter_client_call_start_conversation (session->priv->client, "gdm");
 }
 
 static void
@@ -412,6 +414,8 @@ gdm_greeter_session_start (GdmGreeterSession *session,
 
         toggle_panel (session, TRUE);
         toggle_login_window (session, TRUE);
+
+        gdm_greeter_client_call_start_conversation (session->priv->client, "gdm");
 
         gdm_profile_end (NULL);
 

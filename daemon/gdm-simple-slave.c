@@ -478,17 +478,19 @@ on_session_secret_info_query (GdmSession     *session,
 }
 
 static void
-on_session_opened (GdmSession     *session,
-                   GdmSimpleSlave *slave)
+on_session_conversation_started (GdmSession     *session,
+                                 const char     *service_name,
+                                 GdmSimpleSlave *slave)
 {
         gboolean res;
         gboolean enabled;
         char    *username;
         int      delay;
 
-        g_debug ("GdmSimpleSlave: session opened");
+        g_debug ("GdmSimpleSlave: conversation started");
         if (slave->priv->greeter_server != NULL) {
-                res = gdm_greeter_server_ready (slave->priv->greeter_server);
+                res = gdm_greeter_server_ready (slave->priv->greeter_server,
+                                                service_name);
                 if (! res) {
                         g_warning ("Unable to send ready");
                 }
@@ -504,8 +506,10 @@ on_session_opened (GdmSession     *session,
                 gdm_greeter_server_request_timed_login (slave->priv->greeter_server, username, delay);
         } else {
                 g_debug ("GdmSimpleSlave: begin auto login for user '%s'", username);
+                /* service_name will be "gdm-autologin"
+                 */
                 gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
-                                            "gdm-autologin",
+                                            service_name,
                                             username);
         }
 
@@ -597,8 +601,8 @@ create_new_session (GdmSimpleSlave *slave)
         g_free (display_hostname);
 
         g_signal_connect (slave->priv->session,
-                          "opened",
-                          G_CALLBACK (on_session_opened),
+                          "conversation-started",
+                          G_CALLBACK (on_session_conversation_started),
                           slave);
         g_signal_connect (slave->priv->session,
                           "setup-complete",
@@ -726,6 +730,16 @@ on_greeter_session_died (GdmGreeterSession    *greeter,
 {
         g_debug ("GdmSimpleSlave: Greeter died: %d", signal);
         gdm_slave_stopped (GDM_SLAVE (slave));
+}
+
+static void
+on_greeter_start_conversation (GdmGreeterServer *greeter_server,
+                               const char       *service_name,
+                               GdmSimpleSlave   *slave)
+{
+        g_debug ("GdmSimpleSlave: starting conversation with '%s' pam service'", service_name);
+        gdm_session_start_conversation (GDM_SESSION (slave->priv->session),
+                                        service_name);
 }
 
 static void
@@ -902,6 +916,10 @@ start_greeter (GdmSimpleSlave *slave)
         gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
 
         slave->priv->greeter_server = gdm_greeter_server_new (display_id);
+        g_signal_connect (slave->priv->greeter_server,
+                          "start-conversation",
+                          G_CALLBACK (on_greeter_start_conversation),
+                          slave);
         g_signal_connect (slave->priv->greeter_server,
                           "begin-auto-login",
                           G_CALLBACK (on_greeter_begin_auto_login),

@@ -237,11 +237,7 @@ static void
 on_ready (GdmGreeterClient *client,
           DBusMessage      *message)
 {
-        g_debug ("GdmGreeterClient: Ready");
-
-        g_signal_emit (client,
-                       gdm_greeter_client_signals[READY],
-                       0);
+        emit_string_signal_for_message (client, "Ready", message, READY);
 }
 
 static void
@@ -397,6 +393,14 @@ send_dbus_void_method (DBusConnection *connection,
         dbus_connection_flush (connection);
 
         return TRUE;
+}
+
+void
+gdm_greeter_client_call_start_conversation (GdmGreeterClient *client,
+                                            const char       *service_name)
+{
+        send_dbus_string_method (client->priv->connection,
+                                 "StartConversation", service_name);
 }
 
 void
@@ -879,9 +883,9 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterClientClass, ready),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__VOID,
+                              g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
-                              0);
+                              1, G_TYPE_STRING);
 
         gdm_greeter_client_signals[RESET] =
                 g_signal_new ("reset",
