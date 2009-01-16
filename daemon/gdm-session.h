@@ -45,7 +45,8 @@ struct _GdmSessionIface
         GTypeInterface base_iface;
 
         /* Methods */
-        void (* start_conversation)          (GdmSession   *session);
+        void (* start_conversation)          (GdmSession   *session,
+                                              const char   *service_name);
         void (* setup)                       (GdmSession   *session,
                                               const char   *service_name);
         void (* setup_for_user)              (GdmSession   *session,
@@ -105,7 +106,8 @@ struct _GdmSessionIface
                                               int           exit_code);
         void (* session_died)                (GdmSession   *session,
                                               int           signal_number);
-        void (* conversation_started)        (GdmSession   *session);
+        void (* conversation_started)        (GdmSession   *session,
+                                              const char   *service_name);
         void (* closed)                      (GdmSession   *session);
         void (* selected_user_changed)       (GdmSession   *session,
                                               const char   *text);
@@ -118,7 +120,8 @@ struct _GdmSessionIface
 
 GType    gdm_session_get_type                    (void) G_GNUC_CONST;
 
-void     gdm_session_start_conversation          (GdmSession *session);
+void     gdm_session_start_conversation          (GdmSession *session,
+                                                  const char *service_name);
 void     gdm_session_setup                       (GdmSession *session,
                                                   const char *service_name);
 void     gdm_session_setup_for_user              (GdmSession *session,

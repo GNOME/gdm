@@ -67,6 +67,16 @@
 #define GDM_SESSION_DEFAULT_PATH "/usr/local/bin:/usr/bin:/bin"
 #endif
 
+typedef struct
+{
+        GdmSessionDirect    *session;
+        GdmSessionWorkerJob *job;
+        GPid                 worker_pid;
+        char                *service_name;
+        DBusConnection      *worker_connection;
+        DBusMessage         *message_pending_reply;
+} GdmSessionConversation;
+
 struct _GdmSessionDirectPrivate
 {
         /* per open scope */
@@ -77,8 +87,7 @@ struct _GdmSessionDirectPrivate
         char                *selected_user;
         char                *user_x11_authority_file;
 
-        DBusMessage         *message_pending_reply;
-        DBusConnection      *worker_connection;
+        GdmSessionConversation *conversation;
 
         GdmSessionWorkerJob *job;
         GPid                 session_pid;
@@ -121,39 +130,39 @@ G_DEFINE_TYPE_WITH_CODE (GdmSessionDirect,
                                                 gdm_session_iface_init))
 
 static gboolean
-send_dbus_message (DBusConnection *connection,
-                   DBusMessage    *message)
+send_dbus_message (GdmSessionConversation *conversation,
+                   DBusMessage            *message)
 {
         gboolean is_connected;
         gboolean sent;
 
         g_return_val_if_fail (message != NULL, FALSE);
 
-        if (connection == NULL) {
+        if (conversation->worker_connection == NULL) {
                 g_warning ("There is no valid connection");
                 return FALSE;
         }
 
-        is_connected = dbus_connection_get_is_connected (connection);
+        is_connected = dbus_connection_get_is_connected (conversation->worker_connection);
         if (! is_connected) {
                 g_warning ("Not connected!");
                 return FALSE;
         }
 
-        sent = dbus_connection_send (connection, message, NULL);
+        sent = dbus_connection_send (conversation->worker_connection, message, NULL);
 
         return sent;
 }
 
 static void
-send_dbus_string_signal (GdmSessionDirect *session,
+send_dbus_string_signal (GdmSessionConversation *conversation,
                          const char *name,
                          const char *text)
 {
         DBusMessage    *message;
         DBusMessageIter iter;
 
-        g_return_if_fail (session != NULL);
+        g_return_if_fail (conversation != NULL);
 
         message = dbus_message_new_signal (GDM_SESSION_DBUS_PATH,
                                            GDM_SESSION_DBUS_INTERFACE,
@@ -162,7 +171,7 @@ send_dbus_string_signal (GdmSessionDirect *session,
         dbus_message_iter_init_append (message, &iter);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &text);
 
-        if (! send_dbus_message (session->priv->worker_connection, message)) {
+        if (! send_dbus_message (conversation, message)) {
                 g_debug ("GdmSessionDirect: Could not send %s signal",
                          name ? name : "(null)");
         }
@@ -171,18 +180,18 @@ send_dbus_string_signal (GdmSessionDirect *session,
 }
 
 static void
-send_dbus_void_signal (GdmSessionDirect *session,
-                       const char       *name)
+send_dbus_void_signal (GdmSessionConversation *conversation,
+                       const char             *name)
 {
         DBusMessage *message;
 
-        g_return_if_fail (session != NULL);
+        g_return_if_fail (conversation != NULL);
 
         message = dbus_message_new_signal (GDM_SESSION_DBUS_PATH,
                                            GDM_SESSION_DBUS_INTERFACE,
                                            name);
 
-        if (! send_dbus_message (session->priv->worker_connection, message)) {
+        if (! send_dbus_message (conversation, message)) {
                 g_debug ("GdmSessionDirect: Could not send %s signal", name);
         }
 
@@ -194,22 +203,32 @@ on_authentication_failed (GdmSession *session,
                           const char *message)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
-        gdm_session_record_failed (impl->priv->session_pid,
-                                   impl->priv->selected_user,
-                                   impl->priv->display_hostname,
-                                   impl->priv->display_name,
-                                   impl->priv->display_device);
+        GdmSessionConversation *conversation;
+
+        conversation = impl->priv->conversation;
+        if (conversation != NULL) {
+                gdm_session_record_failed (conversation->worker_pid,
+                                           impl->priv->selected_user,
+                                           impl->priv->display_hostname,
+                                           impl->priv->display_name,
+                                           impl->priv->display_device);
+        }
 }
 
 static void
 on_session_started (GdmSession *session)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
-        gdm_session_record_login (impl->priv->session_pid,
-                                  impl->priv->selected_user,
-                                  impl->priv->display_hostname,
-                                  impl->priv->display_name,
-                                  impl->priv->display_device);
+        GdmSessionConversation *conversation;
+
+        conversation = impl->priv->conversation;
+        if (conversation != NULL) {
+                gdm_session_record_login (conversation->worker_pid,
+                                          impl->priv->selected_user,
+                                          impl->priv->display_hostname,
+                                          impl->priv->display_name,
+                                          impl->priv->display_device);
+        }
 }
 
 static void
@@ -217,11 +236,16 @@ on_session_start_failed (GdmSession *session,
                          const char *message)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
-        gdm_session_record_login (impl->priv->session_pid,
-                                  impl->priv->selected_user,
-                                  impl->priv->display_hostname,
-                                  impl->priv->display_name,
-                                  impl->priv->display_device);
+        GdmSessionConversation *conversation;
+
+        conversation = impl->priv->conversation;
+        if (conversation != NULL) {
+                gdm_session_record_login (conversation->worker_pid,
+                                          impl->priv->selected_user,
+                                          impl->priv->display_hostname,
+                                          impl->priv->display_name,
+                                          impl->priv->display_device);
+        }
 }
 
 static void
@@ -229,6 +253,7 @@ on_session_exited (GdmSession *session,
                    int        exit_code)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+
         gdm_session_record_logout (impl->priv->session_pid,
                                    impl->priv->selected_user,
                                    impl->priv->display_hostname,
@@ -765,54 +790,52 @@ gdm_session_direct_handle_username_changed (GdmSessionDirect *session,
 }
 
 static void
-cancel_pending_query (GdmSessionDirect *session)
+cancel_pending_query (GdmSessionConversation *conversation)
 {
         DBusMessage *reply;
 
-        if (session->priv->message_pending_reply == NULL) {
+        if (conversation->message_pending_reply == NULL) {
                 return;
         }
 
         g_debug ("GdmSessionDirect: Cancelling pending query");
 
-        reply = dbus_message_new_error (session->priv->message_pending_reply,
+        reply = dbus_message_new_error (conversation->message_pending_reply,
                                         GDM_SESSION_DBUS_ERROR_CANCEL,
                                         "Operation cancelled");
-        dbus_connection_send (session->priv->worker_connection, reply, NULL);
-        dbus_connection_flush (session->priv->worker_connection);
+        dbus_connection_send (conversation->worker_connection, reply, NULL);
+        dbus_connection_flush (conversation->worker_connection);
 
         dbus_message_unref (reply);
-        dbus_message_unref (session->priv->message_pending_reply);
-        session->priv->message_pending_reply = NULL;
+        dbus_message_unref (conversation->message_pending_reply);
+        conversation->message_pending_reply = NULL;
 }
 
 static void
-answer_pending_query (GdmSessionDirect *session,
-                      const char       *answer)
+answer_pending_query (GdmSessionConversation *conversation,
+                      const char             *answer)
 {
         DBusMessage    *reply;
         DBusMessageIter iter;
 
-        g_assert (session->priv->message_pending_reply != NULL);
-
-        reply = dbus_message_new_method_return (session->priv->message_pending_reply);
+        reply = dbus_message_new_method_return (conversation->message_pending_reply);
         dbus_message_iter_init_append (reply, &iter);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &answer);
 
-        dbus_connection_send (session->priv->worker_connection, reply, NULL);
+        dbus_connection_send (conversation->worker_connection, reply, NULL);
         dbus_message_unref (reply);
 
-        dbus_message_unref (session->priv->message_pending_reply);
-        session->priv->message_pending_reply = NULL;
+        dbus_message_unref (conversation->message_pending_reply);
+        conversation->message_pending_reply = NULL;
 }
 
 static void
-set_pending_query (GdmSessionDirect *session,
-                   DBusMessage      *message)
+set_pending_query (GdmSessionConversation *conversation,
+                   DBusMessage            *message)
 {
-        g_assert (session->priv->message_pending_reply == NULL);
+        g_assert (conversation->message_pending_reply == NULL);
 
-        session->priv->message_pending_reply = dbus_message_ref (message);
+        conversation->message_pending_reply = dbus_message_ref (message);
 }
 
 static DBusHandlerResult
@@ -822,6 +845,9 @@ gdm_session_direct_handle_info_query (GdmSessionDirect *session,
 {
         DBusError    error;
         const char  *text;
+        GdmSessionConversation *conversation;
+
+        conversation = session->priv->conversation;
 
         dbus_error_init (&error);
         if (! dbus_message_get_args (message, &error,
@@ -830,7 +856,7 @@ gdm_session_direct_handle_info_query (GdmSessionDirect *session,
                 g_warning ("ERROR: %s", error.message);
         }
 
-        set_pending_query (session, message);
+        set_pending_query (conversation, message);
 
         g_debug ("GdmSessionDirect: Emitting 'info-query' signal");
         _gdm_session_info_query (GDM_SESSION (session), text);
@@ -845,6 +871,9 @@ gdm_session_direct_handle_secret_info_query (GdmSessionDirect *session,
 {
         DBusError    error;
         const char  *text;
+        GdmSessionConversation *conversation;
+
+        conversation = session->priv->conversation;
 
         dbus_error_init (&error);
         if (! dbus_message_get_args (message, &error,
@@ -853,7 +882,7 @@ gdm_session_direct_handle_secret_info_query (GdmSessionDirect *session,
                 g_warning ("ERROR: %s", error.message);
         }
 
-        set_pending_query (session, message);
+        set_pending_query (conversation, message);
 
         g_debug ("GdmSessionDirect: Emitting 'secret-info-query' signal");
         _gdm_session_secret_info_query (GDM_SESSION (session), text);
@@ -893,9 +922,13 @@ gdm_session_direct_handle_cancel_pending_query (GdmSessionDirect *session,
                                                 DBusMessage      *message)
 {
         DBusMessage *reply;
+        GdmSessionConversation *conversation;
 
         g_debug ("GdmSessionDirect: worker cancelling pending query");
-        cancel_pending_query (session);
+
+        conversation = session->priv->conversation;
+
+        cancel_pending_query (conversation);
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
@@ -1482,16 +1515,18 @@ handle_connection (DBusServer      *server,
                    void            *user_data)
 {
         GdmSessionDirect *session = GDM_SESSION_DIRECT (user_data);
+        GdmSessionConversation *conversation;
 
         g_debug ("GdmSessionDirect: Handing new connection");
 
-        if (session->priv->worker_connection == NULL) {
+        conversation = session->priv->conversation;
+        if (conversation->worker_connection == NULL) {
                 DBusObjectPathVTable vtable = { &session_unregister_handler,
                                                 &session_message_handler,
                                                 NULL, NULL, NULL, NULL
                 };
 
-                session->priv->worker_connection = new_connection;
+                conversation->worker_connection = new_connection;
                 dbus_connection_ref (new_connection);
                 dbus_connection_setup_with_g_main (new_connection, NULL);
 
@@ -1509,7 +1544,8 @@ handle_connection (DBusServer      *server,
                                                       session);
 
                 g_debug ("GdmSessionDirect: Emitting conversation-started signal");
-                _gdm_session_conversation_started (GDM_SESSION (session));
+                _gdm_session_conversation_started (GDM_SESSION (session),
+                                                   conversation->service_name);
         }
 }
 
@@ -1579,8 +1615,6 @@ gdm_session_direct_init (GdmSessionDirect *session)
                           G_CALLBACK (on_session_exited),
                           NULL);
 
-        session->priv->session_pid = -1;
-
         session->priv->environment = g_hash_table_new_full (g_str_hash,
                                                             g_str_equal,
                                                             (GDestroyNotify) g_free,
@@ -1592,7 +1626,7 @@ gdm_session_direct_init (GdmSessionDirect *session)
 
 static void
 worker_started (GdmSessionWorkerJob *job,
-                GdmSessionDirect    *session)
+                GdmSessionConversation *conversation)
 {
         g_debug ("GdmSessionDirect: Worker job started");
 }
@@ -1600,87 +1634,105 @@ worker_started (GdmSessionWorkerJob *job,
 static void
 worker_exited (GdmSessionWorkerJob *job,
                int                  code,
-               GdmSessionDirect    *session)
+               GdmSessionConversation *conversation)
 {
         g_debug ("GdmSessionDirect: Worker job exited: %d", code);
 
-        if (session->priv->is_running) {
-                _gdm_session_session_exited (GDM_SESSION (session), code);
+        if (conversation->session->priv->is_running) {
+                _gdm_session_session_exited (GDM_SESSION (conversation->session), code);
         }
 }
 
 static void
 worker_died (GdmSessionWorkerJob *job,
              int                  signum,
-             GdmSessionDirect    *session)
+             GdmSessionConversation *conversation)
 {
         g_debug ("GdmSessionDirect: Worker job died: %d", signum);
 
-        if (session->priv->is_running) {
-                _gdm_session_session_died (GDM_SESSION (session), signum);
+        if (conversation->session->priv->is_running) {
+                _gdm_session_session_died (GDM_SESSION (conversation->session), signum);
         }
 }
 
-static gboolean
-start_worker (GdmSessionDirect *session)
+static GdmSessionConversation *
+start_conversation (GdmSessionDirect *session,
+                    const char       *service_name)
 {
-        gboolean res;
+        GdmSessionConversation *conversation;
 
-        session->priv->job = gdm_session_worker_job_new ();
-        gdm_session_worker_job_set_server_address (session->priv->job, session->priv->server_address);
-        g_signal_connect (session->priv->job,
+        conversation = g_new0 (GdmSessionConversation, 1);
+        conversation->session = session;
+        conversation->service_name = g_strdup (service_name);
+        conversation->worker_pid = -1;
+        conversation->job = gdm_session_worker_job_new ();
+        gdm_session_worker_job_set_server_address (conversation->job, session->priv->server_address);
+        g_signal_connect (conversation->job,
                           "started",
                           G_CALLBACK (worker_started),
-                          session);
-        g_signal_connect (session->priv->job,
+                          conversation);
+        g_signal_connect (conversation->job,
                           "exited",
                           G_CALLBACK (worker_exited),
-                          session);
-        g_signal_connect (session->priv->job,
+                          conversation);
+        g_signal_connect (conversation->job,
                           "died",
                           G_CALLBACK (worker_died),
-                          session);
+                          conversation);
 
-        res = gdm_session_worker_job_start (session->priv->job);
-
-        return res;
-}
-
-static void
-stop_worker (GdmSessionDirect *session)
-{
-        g_signal_handlers_disconnect_by_func (session->priv->job,
-                                              G_CALLBACK (worker_started),
-                                              session);
-        g_signal_handlers_disconnect_by_func (session->priv->job,
-                                              G_CALLBACK (worker_exited),
-                                              session);
-        g_signal_handlers_disconnect_by_func (session->priv->job,
-                                              G_CALLBACK (worker_died),
-                                              session);
-
-        cancel_pending_query (session);
-
-        if (session->priv->worker_connection != NULL) {
-                dbus_connection_close (session->priv->worker_connection);
-                session->priv->worker_connection = NULL;
+        if (!gdm_session_worker_job_start (conversation->job)) {
+                g_object_unref (conversation->job);
+                g_free (conversation->service_name);
+                g_free (conversation);
+                return NULL;
         }
 
-        gdm_session_worker_job_stop (session->priv->job);
-        g_object_unref (session->priv->job);
-        session->priv->job = NULL;
+        conversation->worker_pid = gdm_session_worker_job_get_pid (conversation->job);
+
+        return conversation;
 }
 
 static void
-gdm_session_direct_start_conversation (GdmSession *session)
+stop_conversation (GdmSessionConversation *conversation)
+{
+        GdmSessionDirect *session;
+
+        session = conversation->session;
+
+        g_signal_handlers_disconnect_by_func (conversation->job,
+                                              G_CALLBACK (worker_started),
+                                              conversation);
+        g_signal_handlers_disconnect_by_func (conversation->job,
+                                              G_CALLBACK (worker_exited),
+                                              conversation);
+        g_signal_handlers_disconnect_by_func (conversation->job,
+                                              G_CALLBACK (worker_died),
+                                              conversation);
+
+        cancel_pending_query (conversation);
+
+        if (conversation->worker_connection != NULL) {
+                dbus_connection_close (conversation->worker_connection);
+                conversation->worker_connection = NULL;
+        }
+
+        gdm_session_worker_job_stop (conversation->job);
+        g_object_unref (conversation->job);
+        g_free (conversation->service_name);
+        g_free (conversation);
+}
+
+static void
+gdm_session_direct_start_conversation (GdmSession *session,
+                                       const char *service_name)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
 
         g_return_if_fail (session != NULL);
 
-        g_debug ("GdmSessionDirect: Starting conversation");
+        g_debug ("GdmSessionDirect: starting conversation");
 
-        start_worker (impl);
+        impl->priv->conversation = start_conversation (impl, service_name);
 }
 
 static void
@@ -1693,6 +1745,7 @@ send_setup (GdmSessionDirect *session,
         const char     *display_device;
         const char     *display_hostname;
         const char     *display_x11_authority_file;
+        GdmSessionConversation *conversation;
 
         g_assert (service_name != NULL);
 
@@ -1730,7 +1783,8 @@ send_setup (GdmSessionDirect *session,
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_hostname);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_x11_authority_file);
 
-        if (! send_dbus_message (session->priv->worker_connection, message)) {
+        conversation = session->priv->conversation;
+        if (! send_dbus_message (conversation, message)) {
                 g_debug ("GdmSessionDirect: Could not send %s signal", "Setup");
         }
 
@@ -1748,6 +1802,7 @@ send_setup_for_user (GdmSessionDirect *session,
         const char     *display_hostname;
         const char     *display_x11_authority_file;
         const char     *selected_user;
+        GdmSessionConversation *conversation;
 
         g_assert (service_name != NULL);
 
@@ -1791,7 +1846,8 @@ send_setup_for_user (GdmSessionDirect *session,
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_x11_authority_file);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &selected_user);
 
-        if (! send_dbus_message (session->priv->worker_connection, message)) {
+        conversation = session->priv->conversation;
+        if (! send_dbus_message (conversation, message)) {
                 g_debug ("GdmSessionDirect: Could not send %s signal", "SetupForUser");
         }
 
@@ -1805,7 +1861,8 @@ gdm_session_direct_setup (GdmSession *session,
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
 
         g_return_if_fail (session != NULL);
-        g_return_if_fail (dbus_connection_get_is_connected (impl->priv->worker_connection));
+        g_return_if_fail (impl->priv->conversation != NULL);
+        g_return_if_fail (dbus_connection_get_is_connected (impl->priv->conversation->worker_connection));
 
         send_setup (impl, service_name);
         gdm_session_direct_defaults_changed (impl);
@@ -1819,7 +1876,8 @@ gdm_session_direct_setup_for_user (GdmSession *session,
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
 
         g_return_if_fail (session != NULL);
-        g_return_if_fail (dbus_connection_get_is_connected (impl->priv->worker_connection));
+        g_return_if_fail (impl->priv->conversation != NULL);
+        g_return_if_fail (dbus_connection_get_is_connected (impl->priv->conversation->worker_connection));
         g_return_if_fail (username != NULL);
 
         gdm_session_direct_select_user (session, username);
@@ -1832,22 +1890,28 @@ static void
 gdm_session_direct_authenticate (GdmSession *session)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+        GdmSessionConversation *conversation;
 
         g_return_if_fail (session != NULL);
-        g_return_if_fail (dbus_connection_get_is_connected (impl->priv->worker_connection));
+        g_return_if_fail (impl->priv->conversation != NULL);
+        g_return_if_fail (dbus_connection_get_is_connected (impl->priv->conversation->worker_connection));
 
-        send_dbus_void_signal (impl, "Authenticate");
+        conversation = impl->priv->conversation;
+        send_dbus_void_signal (conversation, "Authenticate");
 }
 
 static void
 gdm_session_direct_authorize (GdmSession *session)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+        GdmSessionConversation *conversation;
 
         g_return_if_fail (session != NULL);
-        g_return_if_fail (dbus_connection_get_is_connected (impl->priv->worker_connection));
+        g_return_if_fail (impl->priv->conversation != NULL);
+        g_return_if_fail (dbus_connection_get_is_connected (impl->priv->conversation->worker_connection));
 
-        send_dbus_void_signal (impl, "Authorize");
+        conversation = impl->priv->conversation;
+        send_dbus_void_signal (conversation, "Authorize");
 }
 
 static void
@@ -1855,16 +1919,19 @@ gdm_session_direct_accredit (GdmSession *session,
                              int         cred_flag)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+        GdmSessionConversation *conversation;
 
         g_return_if_fail (session != NULL);
-        g_return_if_fail (dbus_connection_get_is_connected (impl->priv->worker_connection));
+        g_return_if_fail (impl->priv->conversation != NULL);
+        g_return_if_fail (dbus_connection_get_is_connected (impl->priv->conversation->worker_connection));
 
+        conversation = impl->priv->conversation;
         switch (cred_flag) {
         case GDM_SESSION_CRED_ESTABLISH:
-                send_dbus_void_signal (impl, "EstablishCredentials");
+                send_dbus_void_signal (conversation, "EstablishCredentials");
                 break;
         case GDM_SESSION_CRED_REFRESH:
-                send_dbus_void_signal (impl, "RefreshCredentials");
+                send_dbus_void_signal (conversation, "RefreshCredentials");
                 break;
         default:
                 g_assert_not_reached ();
@@ -1878,6 +1945,7 @@ send_environment_variable (const char       *key,
 {
         DBusMessage    *message;
         DBusMessageIter iter;
+        GdmSessionConversation *conversation;
 
         message = dbus_message_new_signal (GDM_SESSION_DBUS_PATH,
                                            GDM_SESSION_DBUS_INTERFACE,
@@ -1887,7 +1955,8 @@ send_environment_variable (const char       *key,
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &key);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &value);
 
-        if (! send_dbus_message (session->priv->worker_connection, message)) {
+        conversation = session->priv->conversation;
+        if (! send_dbus_message (conversation, message)) {
                 g_debug ("GdmSessionDirect: Could not send %s signal", "SetEnvironmentVariable");
         }
 
@@ -2018,6 +2087,7 @@ static void
 gdm_session_direct_start_session (GdmSession *session)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+        GdmSessionConversation *conversation;
         char             *command;
         char             *program;
 
@@ -2037,7 +2107,8 @@ gdm_session_direct_start_session (GdmSession *session)
         setup_session_environment (impl);
         send_environment (impl);
 
-        send_dbus_string_signal (impl, "StartProgram", program);
+        conversation = impl->priv->conversation;
+        send_dbus_string_signal (conversation, "StartProgram", program);
         g_free (program);
 }
 
@@ -2050,16 +2121,12 @@ gdm_session_direct_close (GdmSession *session)
 
         g_debug ("GdmSessionDirect: Closing session");
 
-        if (impl->priv->job != NULL) {
-                if (impl->priv->is_running) {
-                        gdm_session_record_logout (impl->priv->session_pid,
-                                                   impl->priv->selected_user,
-                                                   impl->priv->display_hostname,
-                                                   impl->priv->display_name,
-                                                   impl->priv->display_device);
-                }
-
-                stop_worker (impl);
+        if (impl->priv->is_running) {
+                gdm_session_record_logout (impl->priv->session_pid,
+                                           impl->priv->selected_user,
+                                           impl->priv->display_hostname,
+                                           impl->priv->display_name,
+                                           impl->priv->display_device);
         }
 
         g_free (impl->priv->selected_user);
@@ -2091,10 +2158,13 @@ gdm_session_direct_answer_query  (GdmSession *session,
                                   const char *text)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+        GdmSessionConversation *conversation;
 
         g_return_if_fail (session != NULL);
 
-        answer_pending_query (impl, text);
+        conversation = impl->priv->conversation;
+
+        answer_pending_query (conversation, text);
 }
 
 static void
@@ -2104,7 +2174,7 @@ gdm_session_direct_cancel  (GdmSession *session)
 
         g_return_if_fail (session != NULL);
 
-        cancel_pending_query (impl);
+        cancel_pending_query (impl->priv->conversation);
 }
 
 char *
@@ -2176,6 +2246,7 @@ gdm_session_direct_select_session (GdmSession *session,
                                    const char *text)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+        GdmSessionConversation *conversation;
 
         g_free (impl->priv->selected_session);
 
@@ -2185,7 +2256,8 @@ gdm_session_direct_select_session (GdmSession *session,
                 impl->priv->selected_session = g_strdup (text);
         }
 
-        send_dbus_string_signal (impl, "SetSessionName",
+        conversation = impl->priv->conversation;
+        send_dbus_string_signal (conversation, "SetSessionName",
                                  get_session_name (impl));
 }
 
@@ -2194,6 +2266,7 @@ gdm_session_direct_select_language (GdmSession *session,
                                     const char *text)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+        GdmSessionConversation *conversation;
 
         g_free (impl->priv->selected_language);
 
@@ -2203,7 +2276,8 @@ gdm_session_direct_select_language (GdmSession *session,
                 impl->priv->selected_language = g_strdup (text);
         }
 
-        send_dbus_string_signal (impl, "SetLanguageName",
+        conversation = impl->priv->conversation;
+        send_dbus_string_signal (conversation, "SetLanguageName",
                                  get_language_name (impl));
 }
 

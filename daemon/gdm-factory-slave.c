@@ -181,7 +181,8 @@ on_session_secret_info_query (GdmSession      *session,
 
 static void
 on_session_conversation_started (GdmSession      *session,
-                                 GdmFactorySlave *slave)
+                                 GdmFactorySlave *slave,
+                                 const char      *service_name)
 {
         g_debug ("GdmFactorySlave: session conversation started");
 
@@ -389,7 +390,7 @@ on_session_relay_connected (GdmSessionRelay *session,
 {
         g_debug ("GdmFactorySlave: Relay Connected");
 
-        gdm_session_start_conversation (GDM_SESSION (slave->priv->session));
+        gdm_session_start_conversation (GDM_SESSION (slave->priv->session), "gdm");
 }
 
 static void

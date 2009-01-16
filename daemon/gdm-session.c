@@ -79,11 +79,12 @@ gdm_session_get_type (void)
 }
 
 void
-gdm_session_start_conversation (GdmSession *session)
+gdm_session_start_conversation (GdmSession *session,
+                                const char *service_name)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
 
-        GDM_SESSION_GET_IFACE (session)->start_conversation (session);
+        GDM_SESSION_GET_IFACE (session)->start_conversation (session, service_name);
 }
 
 void
@@ -210,7 +211,7 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, conversation_started),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__VOID,
+                              g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
                               0);
         signals [SETUP_COMPLETE] =
@@ -633,10 +634,11 @@ _gdm_session_session_died (GdmSession   *session,
 }
 
 void
-_gdm_session_conversation_started (GdmSession   *session)
+_gdm_session_conversation_started (GdmSession   *session,
+                                   const char   *service_name)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
-        g_signal_emit (session, signals [CONVERSATION_STARTED], 0);
+        g_signal_emit (session, signals [CONVERSATION_STARTED], 0, service_name);
 }
 
 void

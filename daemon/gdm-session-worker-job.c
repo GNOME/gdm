@@ -303,6 +303,13 @@ gdm_session_worker_job_stop (GdmSessionWorkerJob *session_worker_job)
         return TRUE;
 }
 
+GPid
+gdm_session_worker_job_get_pid (GdmSessionWorkerJob *session_worker_job)
+{
+        g_return_val_if_fail (GDM_IS_SESSION_WORKER_JOB (session_worker_job), 0);
+        return session_worker_job->priv->pid;
+}
+
 void
 gdm_session_worker_job_set_server_address (GdmSessionWorkerJob *session_worker_job,
                                            const char      *address)

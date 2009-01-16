@@ -246,19 +246,21 @@ relay_session_started (GdmProductSlave *slave,
 }
 
 static void
-relay_session_conversation_started (GdmProductSlave *slave)
+relay_session_conversation_started (GdmProductSlave *slave,
+                                    const char      *service_name)
 {
-        send_dbus_void_method (slave->priv->session_relay_connection,
-                               "ConversationStarted");
+        send_dbus_string_method (slave->priv->session_relay_connection,
+                                 "ConversationStarted", service_name);
 }
 
 static void
 on_session_conversation_started (GdmSession      *session,
+                                 const char      *service_name,
                                  GdmProductSlave *slave)
 {
         g_debug ("GdmProductSlave: session conversation started");
 
-        relay_session_conversation_started (slave);
+        relay_session_conversation_started (slave, service_name);
 }
 
 static void
@@ -783,7 +785,24 @@ static void
 on_relay_start_conversation (GdmProductSlave *slave,
                              DBusMessage     *message)
 {
-        gdm_session_start_conversation (GDM_SESSION (slave->priv->session));
+        DBusError   error;
+        char *service_name;
+        dbus_bool_t res;
+
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("GdmProductSlave: Started conversation with %s service", service_name);
+                gdm_session_start_conversation (GDM_SESSION (slave->priv->session),
+                                                service_name);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+        }
+
+        dbus_error_free (&error);
 }
 
 static void
