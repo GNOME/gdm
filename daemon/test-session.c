@@ -33,12 +33,13 @@
 static GMainLoop *loop;
 
 static void
-on_open (GdmSession *session,
-         const char *username)
+on_conversation_started (GdmSession *session,
+                         const char *service_name,
+                         const char *username)
 {
         g_debug ("Got opened: calling setup...");
 
-        gdm_session_setup (session, "gdm");
+        gdm_session_setup (session, service_name);
 }
 
 static void
@@ -256,11 +257,11 @@ main (int   argc,
                         username = argv[1];
                 }
 
-                gdm_session_open (GDM_SESSION (session));
+                gdm_session_start_conversation (GDM_SESSION (session), "gdm");
 
                 g_signal_connect (session,
-                                  "opened",
-                                  G_CALLBACK (on_open),
+                                  "conversation-started",
+                                  G_CALLBACK (on_conversation_started),
                                   username);
                 g_signal_connect (session,
                                   "setup-complete",

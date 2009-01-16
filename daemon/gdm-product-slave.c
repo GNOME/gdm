@@ -246,19 +246,21 @@ relay_session_started (GdmProductSlave *slave,
 }
 
 static void
-relay_session_opened (GdmProductSlave *slave)
+relay_session_conversation_started (GdmProductSlave *slave,
+                                    const char      *service_name)
 {
-        send_dbus_void_method (slave->priv->session_relay_connection,
-                               "Opened");
+        send_dbus_string_method (slave->priv->session_relay_connection,
+                                 "ConversationStarted", service_name);
 }
 
 static void
-on_session_opened (GdmSession      *session,
-                   GdmProductSlave *slave)
+on_session_conversation_started (GdmSession      *session,
+                                 const char      *service_name,
+                                 GdmProductSlave *slave)
 {
-        g_debug ("GdmProductSlave: session opened");
+        g_debug ("GdmProductSlave: session conversation started");
 
-        relay_session_opened (slave);
+        relay_session_conversation_started (slave, service_name);
 }
 
 static void
@@ -784,10 +786,27 @@ on_relay_user_selected (GdmProductSlave *slave,
 }
 
 static void
-on_relay_open (GdmProductSlave *slave,
-               DBusMessage     *message)
+on_relay_start_conversation (GdmProductSlave *slave,
+                             DBusMessage     *message)
 {
-        gdm_session_open (GDM_SESSION (slave->priv->session));
+        DBusError   error;
+        char *service_name;
+        dbus_bool_t res;
+
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("GdmProductSlave: Started conversation with %s service", service_name);
+                gdm_session_start_conversation (GDM_SESSION (slave->priv->session),
+                                                service_name);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+        }
+
+        dbus_error_free (&error);
 }
 
 static void
@@ -832,8 +851,8 @@ create_new_session (GdmProductSlave *slave)
         g_free (display_device);
 
         g_signal_connect (slave->priv->session,
-                          "opened",
-                          G_CALLBACK (on_session_opened),
+                          "conversation-started",
+                          G_CALLBACK (on_session_conversation_started),
                           slave);
         g_signal_connect (slave->priv->session,
                           "setup-complete",
@@ -991,8 +1010,8 @@ relay_dbus_handle_message (DBusConnection *connection,
                 on_relay_user_selected (slave, message);
         } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "StartSession")) {
                 on_relay_start_session (slave, message);
-        } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "Open")) {
-                on_relay_open (slave, message);
+        } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "StartConversation")) {
+                on_relay_start_conversation (slave, message);
         } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "Cancelled")) {
                 on_relay_cancelled (slave, message);
         } else {

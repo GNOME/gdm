@@ -60,6 +60,8 @@ void                    gdm_session_worker_job_set_server_address (GdmSessionWor
 gboolean                gdm_session_worker_job_start              (GdmSessionWorkerJob *session_worker_job);
 gboolean                gdm_session_worker_job_stop               (GdmSessionWorkerJob *session_worker_job);
 
+GPid                    gdm_session_worker_job_get_pid            (GdmSessionWorkerJob *session_worker_job);
+
 G_END_DECLS
 
 #endif /* __GDM_SESSION_WORKER_JOB_H */

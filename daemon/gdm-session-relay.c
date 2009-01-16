@@ -180,10 +180,11 @@ send_dbus_void_signal (GdmSessionRelay *session_relay,
 }
 
 static void
-gdm_session_relay_open (GdmSession *session)
+gdm_session_relay_start_conversation (GdmSession *session,
+                                      const char *service_name)
 {
         GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
-        send_dbus_void_signal (impl, "Open");
+        send_dbus_string_signal (impl, "StartConversation", service_name);
 }
 
 static void
@@ -664,22 +665,28 @@ handle_session_stopped (GdmSessionRelay *session_relay,
 }
 
 static DBusHandlerResult
-handle_opened (GdmSessionRelay *session_relay,
+handle_conversation_started (GdmSessionRelay *session_relay,
                DBusConnection  *connection,
                DBusMessage     *message)
 {
         DBusMessage *reply;
         DBusError    error;
+        char *service_name;
 
         dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
 
-        g_debug ("GdmSessionRelay: Opened");
+        g_debug ("GdmSessionRelay: Conversation Started");
 
         reply = dbus_message_new_method_return (message);
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_opened (GDM_SESSION (session_relay));
+        _gdm_session_conversation_started (GDM_SESSION (session_relay), service_name);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -719,8 +726,8 @@ session_handle_child_message (DBusConnection *connection,
                 return handle_session_started (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "SessionStopped")) {
                 return handle_session_stopped (session_relay, connection, message);
-        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "Opened")) {
-                return handle_opened (session_relay, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "ConversationStarted")) {
+                return handle_conversation_started (session_relay, connection, message);
         }
 
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -749,7 +756,8 @@ do_introspect (DBusConnection *connection,
         /* interface */
         xml = g_string_append (xml,
                                "  <interface name=\"org.gnome.DisplayManager.SessionRelay\">\n"
-                               "    <method name=\"Opened\">\n"
+                               "    <method name=\"ConversationStarted\">\n"
+                               "      <arg name=\"service_name\" direction=\"in\" type=\"s\"/>\n"
                                "    </method>\n"
                                "    <method name=\"SetupComplete\">\n"
                                "    </method>\n"
@@ -810,7 +818,8 @@ do_introspect (DBusConnection *connection,
                                "    <signal name=\"RefreshCredentials\">\n"
                                "    </signal>\n"
 
-                               "    <signal name=\"Open\">\n"
+                               "    <signal name=\"StartConversation\">\n"
+                               "      <arg name=\"service_name\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"Close\">\n"
                                "    </signal>\n"
@@ -1106,7 +1115,7 @@ static void
 gdm_session_iface_init (GdmSessionIface *iface)
 {
 
-        iface->open = gdm_session_relay_open;
+        iface->start_conversation = gdm_session_relay_start_conversation;
         iface->setup = gdm_session_relay_setup;
         iface->setup_for_user = gdm_session_relay_setup_for_user;
         iface->authenticate = gdm_session_relay_authenticate;

@@ -180,10 +180,11 @@ on_session_secret_info_query (GdmSession      *session,
 }
 
 static void
-on_session_opened (GdmSession      *session,
-                   GdmFactorySlave *slave)
+on_session_conversation_started (GdmSession      *session,
+                                 GdmFactorySlave *slave,
+                                 const char      *service_name)
 {
-        g_debug ("GdmFactorySlave:  session opened");
+        g_debug ("GdmFactorySlave:  session conversation started");
 
         gdm_greeter_server_ready (slave->priv->greeter_server);
 }
@@ -367,7 +368,7 @@ on_session_relay_connected (GdmSessionRelay *session,
 {
         g_debug ("GdmFactorySlave: Relay Connected");
 
-        gdm_session_open (GDM_SESSION (slave->priv->session));
+        gdm_session_start_conversation (GDM_SESSION (slave->priv->session), "gdm");
 }
 
 static void
@@ -694,8 +695,8 @@ gdm_factory_slave_start (GdmSlave *slave)
 
         GDM_FACTORY_SLAVE (slave)->priv->session = gdm_session_relay_new ();
         g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "opened",
-                          G_CALLBACK (on_session_opened),
+                          "conversation-started",
+                          G_CALLBACK (on_session_conversation_started),
                           slave);
         g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
                           "setup-complete",
