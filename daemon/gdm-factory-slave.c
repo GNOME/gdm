@@ -186,7 +186,8 @@ on_session_conversation_started (GdmSession      *session,
 {
         g_debug ("GdmFactorySlave: session conversation started");
 
-        gdm_greeter_server_ready (slave->priv->greeter_server);
+        gdm_greeter_server_ready (slave->priv->greeter_server,
+                                  service_name);
 }
 
 static void

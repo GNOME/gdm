@@ -70,6 +70,7 @@ enum {
 };
 
 enum {
+        START_CONVERSATION,
         BEGIN_AUTO_LOGIN,
         BEGIN_VERIFICATION,
         BEGIN_VERIFICATION_FOR_USER,
@@ -253,9 +254,10 @@ gdm_greeter_server_reset (GdmGreeterServer *greeter_server)
 }
 
 gboolean
-gdm_greeter_server_ready (GdmGreeterServer *greeter_server)
+gdm_greeter_server_ready (GdmGreeterServer *greeter_server,
+                          const char       *service_name)
 {
-        send_dbus_void_signal (greeter_server, "Ready");
+        send_dbus_string_signal (greeter_server, "Ready", service_name);
         return TRUE;
 }
 
@@ -320,6 +322,34 @@ generate_address (void)
 #endif
 
         return path;
+}
+
+static DBusHandlerResult
+handle_start_conversation (GdmGreeterServer *greeter_server,
+                           DBusConnection   *connection,
+                           DBusMessage      *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+        const char  *service_name;
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+        dbus_error_free (&error);
+
+        g_debug ("GreeterServer: StartConversation");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        g_signal_emit (greeter_server, signals [START_CONVERSATION], 0, service_name);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 static DBusHandlerResult
@@ -618,7 +648,9 @@ greeter_handle_child_message (DBusConnection *connection,
 {
         GdmGreeterServer *greeter_server = GDM_GREETER_SERVER (user_data);
 
-        if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "BeginVerification")) {
+        if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "StartConversation")) {
+                return handle_start_conversation (greeter_server, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "BeginVerification")) {
                 return handle_begin_verification (greeter_server, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_GREETER_SERVER_DBUS_INTERFACE, "BeginVerificationForUser")) {
                 return handle_begin_verification_for_user (greeter_server, connection, message);
@@ -670,6 +702,9 @@ do_introspect (DBusConnection *connection,
         /* interface */
         xml = g_string_append (xml,
                                "  <interface name=\"org.gnome.DisplayManager.GreeterServer\">\n"
+                               "    <method name=\"StartConversation\">\n"
+                               "      <arg name=\"service_name\" direction=\"in\" type=\"s\"/>\n"
+                               "    </method>\n"
                                "    <method name=\"BeginVerification\">\n"
                                "    </method>\n"
                                "    <method name=\"BeginTimedLogin\">\n"
@@ -728,6 +763,7 @@ do_introspect (DBusConnection *connection,
                                "      <arg name=\"delay\" type=\"i\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"Ready\">\n"
+                               "      <arg name=\"service-name\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"Reset\">\n"
                                "    </signal>\n"
@@ -1092,6 +1128,16 @@ gdm_greeter_server_class_init (GdmGreeterServerClass *klass)
                                                               "group name",
                                                               GDM_GROUPNAME,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        signals [START_CONVERSATION] =
+                g_signal_new ("start-conversation",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmGreeterServerClass, start_conversation),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1, G_TYPE_STRING);
         signals [BEGIN_VERIFICATION] =
                 g_signal_new ("begin-verification",
                               G_OBJECT_CLASS_TYPE (object_class),
