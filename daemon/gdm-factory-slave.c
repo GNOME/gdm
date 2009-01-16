@@ -144,45 +144,49 @@ on_greeter_session_died (GdmGreeterSession    *greeter,
 
 static void
 on_session_info (GdmSession      *session,
+                 const char      *service_name,
                  const char      *text,
                  GdmFactorySlave *slave)
 {
         g_debug ("GdmFactorySlave: Info: %s", text);
-        gdm_greeter_server_info (slave->priv->greeter_server, text);
+        gdm_greeter_server_info (slave->priv->greeter_server, service_name, text);
 }
 
 static void
 on_session_problem (GdmSession      *session,
+                    const char      *service_name,
                     const char      *text,
                     GdmFactorySlave *slave)
 {
         g_debug ("GdmFactorySlave: Problem: %s", text);
-        gdm_greeter_server_problem (slave->priv->greeter_server, text);
+        gdm_greeter_server_problem (slave->priv->greeter_server, service_name, text);
 }
 
 static void
 on_session_info_query (GdmSession      *session,
+                       const char      *service_name,
                        const char      *text,
                        GdmFactorySlave *slave)
 {
 
         g_debug ("GdmFactorySlave: Info query: %s", text);
-        gdm_greeter_server_info_query (slave->priv->greeter_server, text);
+        gdm_greeter_server_info_query (slave->priv->greeter_server, service_name, text);
 }
 
 static void
 on_session_secret_info_query (GdmSession      *session,
+                              const char      *service_name,
                               const char      *text,
                               GdmFactorySlave *slave)
 {
         g_debug ("GdmFactorySlave: Secret info query: %s", text);
-        gdm_greeter_server_secret_info_query (slave->priv->greeter_server, text);
+        gdm_greeter_server_secret_info_query (slave->priv->greeter_server, service_name, text);
 }
 
 static void
 on_session_conversation_started (GdmSession      *session,
-                                 GdmFactorySlave *slave,
-                                 const char      *service_name)
+                                 const char      *service_name,
+                                 GdmFactorySlave *slave)
 {
         g_debug ("GdmFactorySlave: session conversation started");
 
@@ -192,17 +196,19 @@ on_session_conversation_started (GdmSession      *session,
 
 static void
 on_session_setup_complete (GdmSession      *session,
+                           const char      *service_name,
                            GdmFactorySlave *slave)
 {
-        gdm_session_authenticate (session);
+        gdm_session_authenticate (session, service_name);
 }
 
 static void
 on_session_setup_failed (GdmSession      *session,
+                         const char      *service_name,
                          const char      *message,
                          GdmFactorySlave *slave)
 {
-        gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to initialize login system"));
+        gdm_greeter_server_problem (slave->priv->greeter_server, service_name, _("Unable to initialize login system"));
 
         queue_greeter_reset (slave);
 }
@@ -224,23 +230,26 @@ on_session_reset_failed (GdmSession      *session,
 
 static void
 on_session_authenticated (GdmSession      *session,
+                          const char      *service_name,
                           GdmFactorySlave *slave)
 {
-        gdm_session_authorize (session);
+        gdm_session_authorize (session, service_name);
 }
 
 static void
 on_session_authentication_failed (GdmSession      *session,
+                                  const char      *service_name,
                                   const char      *message,
                                   GdmFactorySlave *slave)
 {
-        gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to authenticate user"));
+        gdm_greeter_server_problem (slave->priv->greeter_server, service_name, _("Unable to authenticate user"));
 
         queue_greeter_reset (slave);
 }
 
 static void
 on_session_authorized (GdmSession      *session,
+                       const char      *service_name,
                        GdmFactorySlave *slave)
 {
         int flag;
@@ -248,60 +257,65 @@ on_session_authorized (GdmSession      *session,
         /* FIXME: check for migration? */
         flag = GDM_SESSION_CRED_ESTABLISH;
 
-        gdm_session_accredit (session, flag);
+        gdm_session_accredit (session, service_name, flag);
 }
 
 static void
 on_session_authorization_failed (GdmSession      *session,
+                                 const char      *service_name,
                                  const char      *message,
                                  GdmFactorySlave *slave)
 {
-        gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to authorize user"));
+        gdm_greeter_server_problem (slave->priv->greeter_server, service_name, _("Unable to authorize user"));
 
         queue_greeter_reset (slave);
 }
 
 static void
 on_session_accredited (GdmSession      *session,
+                       const char      *service_name,
                        GdmFactorySlave *slave)
 {
         g_debug ("GdmFactorySlave:  session user verified");
 
-        gdm_session_open_session (session);
+        gdm_session_open_session (session, service_name);
 }
 
 static void
 on_session_accreditation_failed (GdmSession      *session,
+                                 const char      *service_name,
                                  const char      *message,
                                  GdmFactorySlave *slave)
 {
         g_debug ("GdmFactorySlave: could not successfully authenticate user: %s",
                  message);
 
-        gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to establish credentials"));
+        gdm_greeter_server_problem (slave->priv->greeter_server, service_name, _("Unable to establish credentials"));
 
         queue_greeter_reset (slave);
 }
 
 static void
 on_session_opened (GdmSession      *session,
+                   const char      *service_name,
                    GdmFactorySlave *slave)
 {
         g_debug ("GdmFactorySlave: session opened");
 
-        gdm_session_start_session (session);
+        gdm_session_start_session (session, service_name);
 
         gdm_greeter_server_reset (slave->priv->greeter_server);
 }
 
 static void
 on_session_open_failed (GdmSession      *session,
+                        const char      *service_name,
                         const char      *message,
                         GdmFactorySlave *slave)
 {
         g_debug ("GdmFactorySlave: could not open session: %s", message);
 
-        gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to open session"));
+        gdm_greeter_server_problem (slave->priv->greeter_server, service_name, _("Unable to open session"));
 
         queue_greeter_reset (slave);
 }
@@ -390,37 +404,48 @@ on_session_relay_connected (GdmSessionRelay *session,
                             GdmFactorySlave *slave)
 {
         g_debug ("GdmFactorySlave: Relay Connected");
+}
 
-        gdm_session_start_conversation (GDM_SESSION (slave->priv->session), "gdm");
+static void
+on_greeter_start_conversation (GdmGreeterServer *greeter_server,
+                               const char       *service_name,
+                               GdmFactorySlave  *slave)
+{
+        g_debug ("GdmFactorySlave: start conversation");
+
+        gdm_session_start_conversation (GDM_SESSION (slave->priv->session), service_name);
 }
 
 static void
 on_greeter_begin_verification (GdmGreeterServer *greeter_server,
+                               const char       *service_name,
                                GdmFactorySlave  *slave)
 {
         g_debug ("GdmFactorySlave: begin verification");
         gdm_session_setup (GDM_SESSION (slave->priv->session),
-                           "gdm");
+                           service_name);
 }
 
 static void
 on_greeter_begin_verification_for_user (GdmGreeterServer *greeter_server,
+                                        const char       *service_name,
                                         const char       *username,
                                         GdmFactorySlave  *slave)
 {
         g_debug ("GdmFactorySlave: begin verification for user");
         gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
-                                    "gdm",
+                                    service_name,
                                     username);
 }
 
 static void
 on_greeter_answer (GdmGreeterServer *greeter_server,
+                   const char       *service_name,
                    const char       *text,
                    GdmFactorySlave  *slave)
 {
         g_debug ("GdmFactorySlave: Greeter answer");
-        gdm_session_answer_query (GDM_SESSION (slave->priv->session), text);
+        gdm_session_answer_query (GDM_SESSION (slave->priv->session), service_name, text);
 }
 
 static void
@@ -511,6 +536,10 @@ run_greeter (GdmFactorySlave *slave)
         gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
 
         slave->priv->greeter_server = gdm_greeter_server_new (display_id);
+        g_signal_connect (slave->priv->greeter_server,
+                          "start-conversation",
+                          G_CALLBACK (on_greeter_start_conversation),
+                          slave);
         g_signal_connect (slave->priv->greeter_server,
                           "begin-verification",
                           G_CALLBACK (on_greeter_begin_verification),

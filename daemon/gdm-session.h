@@ -47,18 +47,25 @@ struct _GdmSessionIface
         /* Methods */
         void (* start_conversation)          (GdmSession   *session,
                                               const char   *service_name);
+        void (* stop_conversation)           (GdmSession   *session,
+                                              const char   *service_name);
         void (* setup)                       (GdmSession   *session,
                                               const char   *service_name);
         void (* setup_for_user)              (GdmSession   *session,
                                               const char   *service_name,
                                               const char   *username);
         void (* reset)                       (GdmSession   *session);
-        void (* authenticate)                (GdmSession   *session);
-        void (* authorize)                   (GdmSession   *session);
+        void (* authenticate)                (GdmSession   *session,
+                                              const char   *service_name);
+        void (* authorize)                   (GdmSession   *session,
+                                              const char   *service_name);
         void (* accredit)                    (GdmSession   *session,
+                                              const char   *service_name,
                                               int           cred_flag);
-        void (* open_session)                (GdmSession   *session);
+        void (* open_session)                (GdmSession   *session,
+                                              const char   *service_name);
         void (* answer_query)                (GdmSession   *session,
+                                              const char   *service_name,
                                               const char   *text);
         void (* select_language)             (GdmSession   *session,
                                               const char   *text);
@@ -66,47 +73,66 @@ struct _GdmSessionIface
                                               const char   *text);
         void (* select_user)                 (GdmSession   *session,
                                               const char   *text);
-        void (* start_session)               (GdmSession   *session);
+        void (* start_session)               (GdmSession   *session,
+                                              const char   *service_name);
         void (* close)                       (GdmSession   *session);
         void (* cancel)                      (GdmSession   *session);
 
         /* Signals */
-        void (* setup_complete)              (GdmSession   *session);
+        void (* setup_complete)              (GdmSession   *session,
+                                              const char   *service_name);
         void (* setup_failed)                (GdmSession   *session,
+                                              const char   *service_name,
                                               const char   *message);
         void (* reset_complete)              (GdmSession   *session);
         void (* reset_failed)                (GdmSession   *session,
                                               const char   *message);
-        void (* authenticated)               (GdmSession   *session);
+        void (* authenticated)               (GdmSession   *session,
+                                              const char   *service_name);
         void (* authentication_failed)       (GdmSession   *session,
+                                              const char   *service_name,
                                               const char   *message);
-        void (* authorized)                  (GdmSession   *session);
+        void (* authorized)                  (GdmSession   *session,
+                                              const char   *service_name);
         void (* authorization_failed)        (GdmSession   *session,
+                                              const char   *service_name,
                                               const char   *message);
-        void (* accredited)                  (GdmSession   *session);
+        void (* accredited)                  (GdmSession   *session,
+                                              const char   *service_name);
         void (* accreditation_failed)        (GdmSession   *session,
+                                              const char   *service_name,
                                               const char   *message);
 
         void (* info_query)                  (GdmSession   *session,
+                                              const char   *service_name,
                                               const char   *query_text);
         void (* secret_info_query)           (GdmSession   *session,
+                                              const char   *service_name,
                                               const char   *query_text);
         void (* info)                        (GdmSession   *session,
+                                              const char   *service_name,
                                               const char   *info);
         void (* problem)                     (GdmSession   *session,
+                                              const char   *service_name,
                                               const char   *problem);
-        void (* session_opened)              (GdmSession   *session);
+        void (* session_opened)              (GdmSession   *session,
+                                              const char   *service_name);
         void (* session_open_failed)         (GdmSession   *session,
+                                              const char   *service_name,
                                               const char   *message);
         void (* session_started)             (GdmSession   *session,
+                                              const char   *service_name,
                                               int           pid);
         void (* session_start_failed)        (GdmSession   *session,
+                                              const char   *service_name,
                                               const char   *message);
         void (* session_exited)              (GdmSession   *session,
                                               int           exit_code);
         void (* session_died)                (GdmSession   *session,
                                               int           signal_number);
         void (* conversation_started)        (GdmSession   *session,
+                                              const char   *service_name);
+        void (* conversation_stopped)        (GdmSession   *session,
                                               const char   *service_name);
         void (* closed)                      (GdmSession   *session);
         void (* selected_user_changed)       (GdmSession   *session,
@@ -122,21 +148,29 @@ GType    gdm_session_get_type                    (void) G_GNUC_CONST;
 
 void     gdm_session_start_conversation          (GdmSession *session,
                                                   const char *service_name);
+void     gdm_session_stop_conversation           (GdmSession *session,
+                                                  const char *service_name);
 void     gdm_session_setup                       (GdmSession *session,
                                                   const char *service_name);
 void     gdm_session_setup_for_user              (GdmSession *session,
                                                   const char *service_name,
                                                   const char *username);
 void     gdm_session_reset                       (GdmSession *session);
-void     gdm_session_authenticate                (GdmSession *session);
-void     gdm_session_authorize                   (GdmSession *session);
+void     gdm_session_authenticate                (GdmSession *session,
+                                                  const char *service_name);
+void     gdm_session_authorize                   (GdmSession *session,
+                                                  const char *service_name);
 void     gdm_session_accredit                    (GdmSession *session,
+                                                  const char *service_name,
                                                   int         cred_flag);
-void     gdm_session_open_session                (GdmSession *session);
-void     gdm_session_start_session               (GdmSession *session);
+void     gdm_session_open_session                (GdmSession *session,
+                                                  const char *service_name);
+void     gdm_session_start_session               (GdmSession *session,
+                                                  const char *service_name);
 void     gdm_session_close                       (GdmSession *session);
 
 void     gdm_session_answer_query                (GdmSession *session,
+                                                  const char *service_name,
                                                   const char *text);
 void     gdm_session_select_session              (GdmSession *session,
                                                   const char *session_name);

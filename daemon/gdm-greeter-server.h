@@ -48,10 +48,13 @@ typedef struct
         void (* start_conversation)         (GdmGreeterServer  *greeter_server,
                                              const char        *service_name);
         void (* begin_auto_login)           (GdmGreeterServer  *greeter_server);
-        void (* begin_verification)         (GdmGreeterServer  *greeter_server);
+        void (* begin_verification)         (GdmGreeterServer  *greeter_server,
+                                             const char        *service_name);
         void (* begin_verification_for_user)(GdmGreeterServer  *greeter_server,
+                                             const char        *service_name,
                                              const char        *username);
         void (* query_answer)               (GdmGreeterServer  *greeter_server,
+                                             const char        *service_name,
                                              const char        *text);
         void (* session_selected)           (GdmGreeterServer  *greeter_server,
                                              const char        *name);
@@ -64,7 +67,8 @@ typedef struct
         void (* cancelled)                  (GdmGreeterServer  *greeter_server);
         void (* connected)                  (GdmGreeterServer  *greeter_server);
         void (* disconnected)               (GdmGreeterServer  *greeter_server);
-        void (* start_session_when_ready)   (GdmGreeterServer  *greeter_server);
+        void (* start_session_when_ready)   (GdmGreeterServer  *greeter_server,
+                                             const char        *service_name);
         void (* start_session_later)        (GdmGreeterServer  *greeter_server);
 } GdmGreeterServerClass;
 
@@ -75,18 +79,23 @@ gboolean            gdm_greeter_server_start                 (GdmGreeterServer *
 gboolean            gdm_greeter_server_stop                  (GdmGreeterServer *greeter_server);
 char *              gdm_greeter_server_get_address           (GdmGreeterServer *greeter_server);
 
-
 gboolean            gdm_greeter_server_info_query            (GdmGreeterServer *greeter_server,
+                                                              const char       *service_name,
                                                               const char       *text);
 gboolean            gdm_greeter_server_secret_info_query     (GdmGreeterServer *greeter_server,
+                                                              const char       *service_name,
                                                               const char       *text);
 gboolean            gdm_greeter_server_info                  (GdmGreeterServer *greeter_server,
+                                                              const char       *service_name,
                                                               const char       *text);
 gboolean            gdm_greeter_server_problem               (GdmGreeterServer *greeter_server,
+                                                              const char       *service_name,
                                                               const char       *text);
 gboolean            gdm_greeter_server_authentication_failed (GdmGreeterServer *greeter_server);
 gboolean            gdm_greeter_server_reset                 (GdmGreeterServer *greeter_server);
 gboolean            gdm_greeter_server_ready                 (GdmGreeterServer *greeter_server,
+                                                              const char       *service_name);
+gboolean            gdm_greeter_server_conversation_stopped  (GdmGreeterServer *greeter_server,
                                                               const char       *service_name);
 void                gdm_greeter_server_selected_user_changed (GdmGreeterServer *greeter_server,
                                                               const char       *text);
@@ -98,8 +107,8 @@ void                gdm_greeter_server_default_session_name_changed (GdmGreeterS
 void                gdm_greeter_server_request_timed_login   (GdmGreeterServer *greeter_server,
                                                               const char       *username,
                                                               int               delay);
-void                gdm_greeter_server_user_authorized       (GdmGreeterServer *greeter_server);
-
+void                gdm_greeter_server_session_opened        (GdmGreeterServer *greeter_server,
+                                                              const char       *service_name);
 
 G_END_DECLS
 

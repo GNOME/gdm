@@ -212,31 +212,34 @@ gdm_session_relay_setup_for_user (GdmSession *session,
 }
 
 static void
-gdm_session_relay_authenticate (GdmSession *session)
+gdm_session_relay_authenticate (GdmSession *session,
+                                const char *service_name)
 {
         GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
-        send_dbus_void_signal (impl, "Authenticate");
+        send_dbus_string_signal (impl, "Authenticate", service_name);
 }
 
 static void
-gdm_session_relay_authorize (GdmSession *session)
+gdm_session_relay_authorize (GdmSession *session,
+                             const char *service_name)
 {
         GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
-        send_dbus_void_signal (impl, "Authorize");
+        send_dbus_string_signal (impl, "Authorize", service_name);
 }
 
 static void
 gdm_session_relay_accredit (GdmSession *session,
+                            const char *service_name,
                             int         cred_flag)
 {
         GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
 
         switch (cred_flag) {
         case GDM_SESSION_CRED_ESTABLISH:
-                send_dbus_void_signal (impl, "EstablishCredentials");
+                send_dbus_string_signal (impl, "EstablishCredentials", service_name);
                 break;
         case GDM_SESSION_CRED_REFRESH:
-                send_dbus_void_signal (impl, "RefreshCredentials");
+                send_dbus_string_signal (impl, "RefreshCredentials", service_name);
                 break;
         default:
                 g_assert_not_reached ();
@@ -244,18 +247,20 @@ gdm_session_relay_accredit (GdmSession *session,
 }
 
 static void
-gdm_session_relay_open_session (GdmSession *session)
+gdm_session_relay_open_session (GdmSession *session,
+                                const char *service_name)
 {
         GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
-        send_dbus_void_signal (impl, "OpenSession");
+        send_dbus_string_signal (impl, "OpenSession", service_name);
 }
 
 static void
 gdm_session_relay_answer_query (GdmSession *session,
+                                const char *service_name,
                                 const char *text)
 {
         GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
-        send_dbus_string_signal (impl, "AnswerQuery", text);
+        send_dbus_string_string_signal (impl, "AnswerQuery", service_name, text);
 }
 
 static void
@@ -291,11 +296,12 @@ gdm_session_relay_cancel (GdmSession *session)
 }
 
 static void
-gdm_session_relay_start_session (GdmSession *session)
+gdm_session_relay_start_session (GdmSession *session,
+                                 const char *service_name)
 {
         GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
 
-        send_dbus_void_signal (impl, "StartSession");
+        send_dbus_string_signal (impl, "StartSession", service_name);
 }
 
 /* Note: Use abstract sockets like dbus does by default on Linux. Abstract
@@ -333,10 +339,12 @@ handle_info_query (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
-        const char  *text;
+        char  *service_name;
+        char  *text;
 
         dbus_error_init (&error);
         if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
                                      DBUS_TYPE_STRING, &text,
                                      DBUS_TYPE_INVALID)) {
                 g_warning ("ERROR: %s", error.message);
@@ -348,7 +356,7 @@ handle_info_query (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_info_query (GDM_SESSION (session_relay), text);
+        _gdm_session_info_query (GDM_SESSION (session_relay), service_name, text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -360,12 +368,14 @@ handle_secret_info_query (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
-        const char  *text;
+        char        *service_name;
+        char  *text;
 
         text = NULL;
 
         dbus_error_init (&error);
         if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
                                      DBUS_TYPE_STRING, &text,
                                      DBUS_TYPE_INVALID)) {
                 g_warning ("ERROR: %s", error.message);
@@ -377,7 +387,7 @@ handle_secret_info_query (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_secret_info_query (GDM_SESSION (session_relay), text);
+        _gdm_session_secret_info_query (GDM_SESSION (session_relay), service_name, text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -389,12 +399,14 @@ handle_info (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
-        const char  *text;
+        char        *service_name;
+        char        *text;
 
         text = NULL;
 
         dbus_error_init (&error);
         if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
                                      DBUS_TYPE_STRING, &text,
                                      DBUS_TYPE_INVALID)) {
                 g_warning ("ERROR: %s", error.message);
@@ -406,7 +418,7 @@ handle_info (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_info (GDM_SESSION (session_relay), text);
+        _gdm_session_info (GDM_SESSION (session_relay), service_name, text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -418,12 +430,14 @@ handle_problem (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
-        const char  *text;
+        char        *service_name;
+        char        *text;
 
         text = NULL;
 
         dbus_error_init (&error);
         if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
                                      DBUS_TYPE_STRING, &text,
                                      DBUS_TYPE_INVALID)) {
                 g_warning ("ERROR: %s", error.message);
@@ -435,7 +449,7 @@ handle_problem (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_problem (GDM_SESSION (session_relay), text);
+        _gdm_session_problem (GDM_SESSION (session_relay), service_name, text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -447,8 +461,15 @@ handle_setup_complete (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
+        char        *service_name;
 
         dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+        dbus_error_free (&error);
 
         g_debug ("GdmSessionRelay: SetupComplete");
 
@@ -456,7 +477,7 @@ handle_setup_complete (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_setup_complete (GDM_SESSION (session_relay));
+        _gdm_session_setup_complete (GDM_SESSION (session_relay), service_name);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -468,8 +489,15 @@ handle_setup_failed (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
+        char        *service_name;
 
         dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+        dbus_error_free (&error);
 
         g_debug ("GdmSessionRelay: SetupFailed");
 
@@ -477,7 +505,7 @@ handle_setup_failed (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_setup_failed (GDM_SESSION (session_relay), NULL);
+        _gdm_session_setup_failed (GDM_SESSION (session_relay), service_name, NULL);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -490,8 +518,15 @@ handle_authenticated (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
+        char        *service_name;
 
         dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+        dbus_error_free (&error);
 
         g_debug ("GdmSessionRelay: Authenticated");
 
@@ -499,7 +534,7 @@ handle_authenticated (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_authenticated (GDM_SESSION (session_relay));
+        _gdm_session_authenticated (GDM_SESSION (session_relay), service_name);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -511,8 +546,15 @@ handle_authentication_failed (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
+        char        *service_name;
 
         dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+        dbus_error_free (&error);
 
         g_debug ("GdmSessionRelay: AuthenticationFailed");
 
@@ -520,7 +562,7 @@ handle_authentication_failed (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_authentication_failed (GDM_SESSION (session_relay), NULL);
+        _gdm_session_authentication_failed (GDM_SESSION (session_relay), service_name, NULL);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -532,8 +574,15 @@ handle_authorized (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
+        char        *service_name;
 
         dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+        dbus_error_free (&error);
 
         g_debug ("GdmSessionRelay: Authorized");
 
@@ -541,7 +590,7 @@ handle_authorized (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_authorized (GDM_SESSION (session_relay));
+        _gdm_session_authorized (GDM_SESSION (session_relay), service_name);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -553,8 +602,15 @@ handle_authorization_failed (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
+        char        *service_name;
 
         dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+        dbus_error_free (&error);
 
         g_debug ("GdmSessionRelay: AuthorizationFailed");
 
@@ -562,7 +618,7 @@ handle_authorization_failed (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_authorization_failed (GDM_SESSION (session_relay), NULL);
+        _gdm_session_authorization_failed (GDM_SESSION (session_relay), service_name, NULL);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -574,8 +630,15 @@ handle_accredited (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
+        char        *service_name;
 
         dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+        dbus_error_free (&error);
 
         g_debug ("GdmSessionRelay: Accredited");
 
@@ -583,7 +646,7 @@ handle_accredited (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_accredited (GDM_SESSION (session_relay));
+        _gdm_session_accredited (GDM_SESSION (session_relay), service_name);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -595,8 +658,15 @@ handle_accreditation_failed (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
+        char        *service_name;
 
         dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+        dbus_error_free (&error);
 
         g_debug ("GdmSessionRelay: AccreditationFailed");
 
@@ -604,7 +674,7 @@ handle_accreditation_failed (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_accreditation_failed (GDM_SESSION (session_relay), NULL);
+        _gdm_session_accreditation_failed (GDM_SESSION (session_relay), service_name, NULL);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -615,9 +685,11 @@ handle_session_opened (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
+        char        *service_name;
 
         dbus_error_init (&error);
         if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
                                      DBUS_TYPE_INVALID)) {
                 g_warning ("ERROR: %s", error.message);
         }
@@ -629,7 +701,7 @@ handle_session_opened (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_session_opened (GDM_SESSION (session_relay));
+        _gdm_session_session_opened (GDM_SESSION (session_relay), service_name);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -641,9 +713,11 @@ handle_session_open_failed (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
+        char        *service_name;
 
         dbus_error_init (&error);
         if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
                                      DBUS_TYPE_INVALID)) {
                 g_warning ("ERROR: %s", error.message);
         }
@@ -655,7 +729,7 @@ handle_session_open_failed (GdmSessionRelay *session_relay,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        _gdm_session_session_open_failed (GDM_SESSION (session_relay), NULL);
+        _gdm_session_session_open_failed (GDM_SESSION (session_relay), service_name, NULL);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -667,6 +741,7 @@ handle_session_started (GdmSessionRelay *session_relay,
 {
         DBusMessage *reply;
         DBusError    error;
+        char        *service_name;
         int          pid;
 
         dbus_error_init (&error);
@@ -674,6 +749,7 @@ handle_session_started (GdmSessionRelay *session_relay,
         pid = 0;
         if (! dbus_message_get_args (message,
                                      &error,
+                                     DBUS_TYPE_STRING, &service_name,
                                      DBUS_TYPE_INT32, &pid,
                                      DBUS_TYPE_INVALID)) {
                 g_warning ("ERROR: %s", error.message);
@@ -686,6 +762,7 @@ handle_session_started (GdmSessionRelay *session_relay,
         dbus_message_unref (reply);
 
         _gdm_session_session_started (GDM_SESSION (session_relay),
+                                      service_name,
                                       pid);
 
         return DBUS_HANDLER_RESULT_HANDLED;
