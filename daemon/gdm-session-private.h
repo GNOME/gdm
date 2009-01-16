@@ -29,27 +29,41 @@ G_BEGIN_DECLS
 /* state changes */
 void             _gdm_session_conversation_started         (GdmSession   *session,
                                                             const char   *service_name);
-void             _gdm_session_setup_complete               (GdmSession   *session);
+void             _gdm_session_conversation_stopped         (GdmSession   *session,
+                                                            const char   *service_name);
+void             _gdm_session_setup_complete               (GdmSession   *session,
+                                                            const char   *service_name);
 void             _gdm_session_setup_failed                 (GdmSession   *session,
+                                                            const char   *service_name,
                                                             const char   *message);
 void             _gdm_session_reset_complete               (GdmSession   *session);
 void             _gdm_session_reset_failed                 (GdmSession   *session,
                                                             const char   *message);
-void             _gdm_session_authenticated                (GdmSession   *session);
+void             _gdm_session_authenticated                (GdmSession   *session,
+                                                            const char   *service_name);
 void             _gdm_session_authentication_failed        (GdmSession   *session,
+                                                            const char   *service_name,
                                                             const char   *text);
-void             _gdm_session_authorized                   (GdmSession   *session);
+void             _gdm_session_authorized                   (GdmSession   *session,
+                                                            const char   *service_name);
 void             _gdm_session_authorization_failed         (GdmSession   *session,
+                                                            const char   *service_name,
                                                             const char   *text);
-void             _gdm_session_accredited                   (GdmSession   *session);
+void             _gdm_session_accredited                   (GdmSession   *session,
+                                                            const char   *service_name);
 void             _gdm_session_accreditation_failed         (GdmSession   *session,
+                                                            const char   *service_name,
                                                             const char   *text);
-void             _gdm_session_session_opened               (GdmSession   *session);
+void             _gdm_session_session_opened               (GdmSession   *session,
+                                                            const char   *service_name);
 void             _gdm_session_session_open_failed          (GdmSession   *session,
+                                                            const char   *service_name,
                                                             const char   *message);
 void             _gdm_session_session_started              (GdmSession   *session,
+                                                            const char   *service_name,
                                                             int           pid);
 void             _gdm_session_session_start_failed         (GdmSession   *session,
+                                                            const char   *service_name,
                                                             const char   *message);
 void             _gdm_session_session_exited               (GdmSession   *session,
                                                             int           exit_code);
@@ -68,12 +82,16 @@ void             _gdm_session_selected_user_changed        (GdmSession   *sessio
 
 /* call and response stuff */
 void             _gdm_session_info_query                   (GdmSession   *session,
+                                                            const char   *service_name,
                                                             const char   *text);
 void             _gdm_session_secret_info_query            (GdmSession   *session,
+                                                            const char   *service_name,
                                                             const char   *text);
 void             _gdm_session_info                         (GdmSession   *session,
+                                                            const char   *service_name,
                                                             const char   *text);
 void             _gdm_session_problem                      (GdmSession   *session,
+                                                            const char   *service_name,
                                                             const char   *text);
 
 G_END_DECLS
