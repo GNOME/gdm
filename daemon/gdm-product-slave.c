@@ -79,6 +79,8 @@ struct GdmProductSlavePrivate
 
         DBusGProxy       *product_display_proxy;
         DBusGConnection  *connection;
+
+        char             *start_session_service_name;
 };
 
 enum {
@@ -92,6 +94,68 @@ static void     gdm_product_slave_finalize      (GObject             *object);
 
 G_DEFINE_TYPE (GdmProductSlave, gdm_product_slave, GDM_TYPE_SLAVE)
 
+static gboolean
+send_dbus_string_string_method (DBusConnection *connection,
+                                const char     *method,
+                                const char     *payload1,
+                                const char     *payload2)
+{
+        DBusError       error;
+        DBusMessage    *message;
+        DBusMessage    *reply;
+        DBusMessageIter iter;
+        const char     *str;
+
+        g_debug ("GdmProductSlave: Calling %s", method);
+        message = dbus_message_new_method_call (NULL,
+                                                RELAY_SERVER_DBUS_PATH,
+                                                RELAY_SERVER_DBUS_INTERFACE,
+                                                method);
+        if (message == NULL) {
+                g_warning ("Couldn't allocate the D-Bus message");
+                return FALSE;
+        }
+
+        dbus_message_iter_init_append (message, &iter);
+
+        if (payload1 != NULL) {
+                str = payload1;
+        } else {
+                str = "";
+        }
+        dbus_message_iter_append_basic (&iter,
+                                        DBUS_TYPE_STRING,
+                                        &str);
+        if (payload2 != NULL) {
+                str = payload2;
+        } else {
+                str = "";
+        }
+        dbus_message_iter_append_basic (&iter,
+                                        DBUS_TYPE_STRING,
+                                        &str);
+        dbus_error_init (&error);
+        reply = dbus_connection_send_with_reply_and_block (connection,
+                                                           message,
+                                                           -1,
+                                                           &error);
+
+        dbus_message_unref (message);
+
+        if (dbus_error_is_set (&error)) {
+                g_warning ("%s %s raised: %s\n",
+                           method,
+                           error.name,
+                           error.message);
+                return FALSE;
+        }
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
+        dbus_connection_flush (connection);
+
+        return TRUE;
+}
 static gboolean
 send_dbus_string_method (DBusConnection *connection,
                          const char     *method,
@@ -356,7 +420,8 @@ setup_session (GdmProductSlave *slave)
         g_free (display_device);
         g_free (auth_file);
 
-        gdm_session_start_session (GDM_SESSION (slave->priv->session));
+        gdm_session_start_session (GDM_SESSION (slave->priv->session),
+                                   slave->priv->start_session_service_name);
 
         return TRUE;
 }
@@ -508,96 +573,112 @@ on_session_reset_failed (GdmSession      *session,
 
 static void
 on_session_authenticated (GdmSession      *session,
+                          const char      *service_name,
                           GdmProductSlave *slave)
 {
-        send_dbus_void_method (slave->priv->session_relay_connection,
-                               "Authenticated");
+        send_dbus_string_method (slave->priv->session_relay_connection,
+                                 "Authenticated", service_name);
 }
 
 static void
 on_session_authentication_failed (GdmSession      *session,
+                                  const char      *service_name,
                                   const char      *message,
                                   GdmProductSlave *slave)
 {
-        send_dbus_string_method (slave->priv->session_relay_connection,
-                                 "AuthenticationFailed",
-                                 message);
+        send_dbus_string_string_method (slave->priv->session_relay_connection,
+                                        "AuthenticationFailed",
+                                        service_name,
+                                        message);
 }
 
 static void
 on_session_authorized (GdmSession      *session,
+                       const char      *service_name,
                        GdmProductSlave *slave)
 {
-        send_dbus_void_method (slave->priv->session_relay_connection,
-                               "Authorized");
+        send_dbus_string_method (slave->priv->session_relay_connection,
+                                 "Authorized", service_name);
 }
 
 static void
 on_session_authorization_failed (GdmSession      *session,
+                                 const char      *service_name,
                                  const char      *message,
                                  GdmProductSlave *slave)
 {
-        send_dbus_string_method (slave->priv->session_relay_connection,
-                                 "AuthorizationFailed",
-                                 message);
+        send_dbus_string_string_method (slave->priv->session_relay_connection,
+                                        "AuthorizationFailed",
+                                        service_name,
+                                        message);
 }
 
 static void
 on_session_accredited (GdmSession      *session,
+                       const char      *service_name,
                        GdmProductSlave *slave)
 {
-        send_dbus_void_method (slave->priv->session_relay_connection,
-                               "Accredited");
+        send_dbus_string_method (slave->priv->session_relay_connection,
+                                 "Accredited", service_name);
 }
 
 static void
 on_session_accreditation_failed (GdmSession      *session,
+                                 const char      *service_name,
                                  const char      *message,
                                  GdmProductSlave *slave)
 {
-        send_dbus_string_method (slave->priv->session_relay_connection,
-                                 "AccreditationFailed",
-                                 message);
+        send_dbus_string_string_method (slave->priv->session_relay_connection,
+                                        "AccreditationFailed",
+                                        service_name,
+                                        message);
 }
 
 static void
 on_session_info (GdmSession      *session,
+                 const char      *service_name,
                  const char      *text,
                  GdmProductSlave *slave)
 {
-        send_dbus_string_method (slave->priv->session_relay_connection,
-                                 "Info",
-                                 text);
+        send_dbus_string_string_method (slave->priv->session_relay_connection,
+                                        "Info",
+                                        service_name,
+                                        text);
 }
 
 static void
 on_session_problem (GdmSession      *session,
+                    const char      *service_name,
                     const char      *text,
                     GdmProductSlave *slave)
 {
-        send_dbus_string_method (slave->priv->session_relay_connection,
-                                 "Problem",
-                                 text);
+        send_dbus_string_string_method (slave->priv->session_relay_connection,
+                                        "Problem",
+                                        service_name,
+                                        text);
 }
 
 static void
 on_session_info_query (GdmSession      *session,
+                       const char      *service_name,
                        const char      *text,
                        GdmProductSlave *slave)
 {
-        send_dbus_string_method (slave->priv->session_relay_connection,
-                                 "InfoQuery",
-                                 text);
+        send_dbus_string_string_method (slave->priv->session_relay_connection,
+                                        "InfoQuery",
+                                        service_name, text);
 }
 
 static void
 on_session_secret_info_query (GdmSession      *session,
+                              const char      *service_name,
                               const char      *text,
                               GdmProductSlave *slave)
 {
-        send_dbus_string_method (slave->priv->session_relay_connection,
-                                 "SecretInfoQuery",
-                                 text);
+        send_dbus_string_string_method (slave->priv->session_relay_connection,
+                                        "SecretInfoQuery",
+                                        service_name,
+                                        text);
 }
 
 static void
@@ -658,36 +739,92 @@ static void
 on_relay_authenticate (GdmProductSlave *slave,
                        DBusMessage     *message)
 {
-        g_debug ("GdmProductSlave: Relay Authenticate");
+        DBusError   error;
+        char *service_name;
+        dbus_bool_t res;
 
-        gdm_session_authenticate (GDM_SESSION (slave->priv->session));
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("GdmProductSlave: Relay Authenticate");
+                gdm_session_authenticate (GDM_SESSION (slave->priv->session), service_name);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
+        dbus_error_free (&error);
 }
 
 static void
 on_relay_authorize (GdmProductSlave *slave,
                     DBusMessage     *message)
 {
-        g_debug ("GdmProductSlave: Relay Authorize");
+        DBusError   error;
+        char *service_name;
+        dbus_bool_t res;
 
-        gdm_session_authorize (GDM_SESSION (slave->priv->session));
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("GdmProductSlave: Relay Authorize");
+                gdm_session_authorize (GDM_SESSION (slave->priv->session), service_name);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
+        dbus_error_free (&error);
 }
 
 static void
 on_relay_establish_credentials (GdmProductSlave *slave,
                                 DBusMessage     *message)
 {
-        g_debug ("GdmProductSlave: Relay EstablishCredentials");
+        DBusError   error;
+        char *service_name;
+        dbus_bool_t res;
 
-        gdm_session_accredit (GDM_SESSION (slave->priv->session), GDM_SESSION_CRED_ESTABLISH);
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("GdmProductSlave: Relay EstablishCredentials");
+                gdm_session_accredit (GDM_SESSION (slave->priv->session), service_name, GDM_SESSION_CRED_ESTABLISH);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
+        dbus_error_free (&error);
 }
 
 static void
 on_relay_refresh_credentials (GdmProductSlave *slave,
                               DBusMessage     *message)
 {
-        g_debug ("GdmProductSlave: Relay RefreshCredentials");
+        DBusError   error;
+        char *service_name;
+        dbus_bool_t res;
 
-        gdm_session_accredit (GDM_SESSION (slave->priv->session), GDM_SESSION_CRED_REFRESH);
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("GdmProductSlave: Relay RefreshCredentials");
+                gdm_session_accredit (GDM_SESSION (slave->priv->session), service_name, GDM_SESSION_CRED_REFRESH);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
+        dbus_error_free (&error);
 }
 
 static void
@@ -696,16 +833,18 @@ on_relay_answer_query (GdmProductSlave *slave,
 {
         DBusError   error;
         const char *text;
+        const char *service_name;
         dbus_bool_t res;
 
         dbus_error_init (&error);
         res = dbus_message_get_args (message,
                                      &error,
+                                     DBUS_TYPE_STRING, &service_name,
                                      DBUS_TYPE_STRING, &text,
                                      DBUS_TYPE_INVALID);
         if (res) {
                 g_debug ("GdmProductSlave: Relay AnswerQuery");
-                gdm_session_answer_query (GDM_SESSION (slave->priv->session), text);
+                gdm_session_answer_query (GDM_SESSION (slave->priv->session), service_name, text);
         } else {
                 g_warning ("Unable to get arguments: %s", error.message);
                 dbus_error_free (&error);
@@ -813,7 +952,25 @@ static void
 on_relay_start_session (GdmProductSlave *slave,
                         DBusMessage     *message)
 {
-        gdm_product_slave_create_server (slave);
+        DBusError   error;
+        const char *service_name;
+        dbus_bool_t res;
+
+        dbus_error_init (&error);
+
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("GdmProductSlave: Relay StartSession");
+                g_free (slave->priv->start_session_service_name);
+                slave->priv->start_session_service_name = g_strdup (service_name);
+                gdm_product_slave_create_server (slave);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
 }
 
 static void

@@ -45,17 +45,22 @@ typedef struct
         GObjectClass   parent_class;
 
         void (* info_query)              (GdmGreeterClient  *client,
+                                          const char        *service_name,
                                           const char        *query_text);
 
         void (* secret_info_query)       (GdmGreeterClient  *client,
+                                          const char        *service_name,
                                           const char        *query_text);
 
         void (* info)                    (GdmGreeterClient  *client,
+                                          const char        *service_name,
                                           const char        *info);
 
         void (* problem)                 (GdmGreeterClient  *client,
+                                          const char        *service_name,
                                           const char        *problem);
-        void (* ready)                   (GdmGreeterClient  *client);
+        void (* ready)                   (GdmGreeterClient  *client,
+                                          const char        *service_name);
         void (* reset)                   (GdmGreeterClient  *client);
         void (* selected_user_changed)   (GdmGreeterClient  *client,
                                           const char        *username);
@@ -69,7 +74,8 @@ typedef struct
         void (* timed_login_requested)   (GdmGreeterClient  *client,
                                           const char        *username,
                                           int                delay);
-        void (* user_authorized)         (GdmGreeterClient  *client);
+        void (* user_authorized)         (GdmGreeterClient  *client,
+                                          const char        *service_name);
 } GdmGreeterClientClass;
 
 #define GDM_GREETER_CLIENT_ERROR (gdm_greeter_client_error_quark ())
@@ -95,8 +101,10 @@ void               gdm_greeter_client_call_start_conversation        (GdmGreeter
                                                                       const char       *service_name);
 void               gdm_greeter_client_call_begin_auto_login          (GdmGreeterClient *client,
                                                                       const char       *username);
-void               gdm_greeter_client_call_begin_verification        (GdmGreeterClient *client);
+void               gdm_greeter_client_call_begin_verification        (GdmGreeterClient *client,
+                                                                      const char       *service_name);
 void               gdm_greeter_client_call_begin_verification_for_user (GdmGreeterClient *client,
+                                                                        const char       *service_name,
                                                                         const char       *username);
 void               gdm_greeter_client_call_cancel                    (GdmGreeterClient *client);
 void               gdm_greeter_client_call_disconnect                (GdmGreeterClient *client);
@@ -111,9 +119,11 @@ void               gdm_greeter_client_call_select_layout             (GdmGreeter
 void               gdm_greeter_client_call_select_session            (GdmGreeterClient *client,
                                                                       const char       *text);
 void               gdm_greeter_client_call_answer_query              (GdmGreeterClient *client,
+                                                                      const char       *service_name,
                                                                       const char       *text);
 
 void               gdm_greeter_client_call_start_session_when_ready  (GdmGreeterClient *client,
+                                                                      const char       *service_name,
                                                                       gboolean          should_start_session);
 
 

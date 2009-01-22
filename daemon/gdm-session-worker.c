@@ -2574,6 +2574,28 @@ worker_dbus_filter_function (DBusConnection *connection,
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
+static void
+send_hello (GdmSessionWorker *worker)
+{
+        DBusMessage *message, *reply;
+        DBusError error;
+
+        message = dbus_message_new_method_call (NULL,
+                                                GDM_SESSION_DBUS_PATH,
+                                                GDM_SESSION_DBUS_INTERFACE,
+                                                "Hello");
+
+        dbus_error_init (&error);
+        reply = dbus_connection_send_with_reply_and_block (worker->priv->connection,
+                                                           message, -1, &error);
+        dbus_message_unref (message);
+        dbus_error_free (&error);
+
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
+}
+
 static GObject *
 gdm_session_worker_constructor (GType                  type,
                                 guint                  n_construct_properties,
@@ -2599,6 +2621,11 @@ gdm_session_worker_constructor (GType                  type,
                 }
                 exit (1);
         }
+
+        /* Send an initial Hello message so that the session can associate
+         * the conversation we manage with our pid.
+         */
+        send_hello (worker);
 
         dbus_connection_setup_with_g_main (worker->priv->connection, NULL);
         dbus_connection_set_exit_on_disconnect (worker->priv->connection, TRUE);

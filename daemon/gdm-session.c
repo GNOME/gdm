@@ -24,6 +24,7 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 
+#include "gdm-marshal.h"
 #include "gdm-session.h"
 #include "gdm-session-private.h"
 
@@ -114,37 +115,41 @@ gdm_session_setup_for_user (GdmSession *session,
 }
 
 void
-gdm_session_authenticate (GdmSession *session)
+gdm_session_authenticate (GdmSession *session,
+                          const char *service_name)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
 
-        GDM_SESSION_GET_IFACE (session)->authenticate (session);
+        GDM_SESSION_GET_IFACE (session)->authenticate (session, service_name);
 }
 
 void
-gdm_session_authorize (GdmSession *session)
+gdm_session_authorize (GdmSession *session,
+                       const char *service_name)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
 
-        GDM_SESSION_GET_IFACE (session)->authorize (session);
+        GDM_SESSION_GET_IFACE (session)->authorize (session, service_name);
 }
 
 void
 gdm_session_accredit (GdmSession *session,
+                      const char *service_name,
                       int         flag)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
 
-        GDM_SESSION_GET_IFACE (session)->accredit (session, flag);
+        GDM_SESSION_GET_IFACE (session)->accredit (session, service_name, flag);
 }
 
 void
 gdm_session_answer_query (GdmSession *session,
+                          const char *service_name,
                           const char *text)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
 
-        GDM_SESSION_GET_IFACE (session)->answer_query (session, text);
+        GDM_SESSION_GET_IFACE (session)->answer_query (session, service_name, text);
 }
 
 void
@@ -192,11 +197,12 @@ gdm_session_cancel (GdmSession *session)
 }
 
 void
-gdm_session_start_session (GdmSession *session)
+gdm_session_start_session (GdmSession *session,
+                           const char *service_name)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
 
-        GDM_SESSION_GET_IFACE (session)->start_session (session);
+        GDM_SESSION_GET_IFACE (session)->start_session (session, service_name);
 }
 
 static void
@@ -213,7 +219,7 @@ gdm_session_class_init (gpointer g_iface)
                               NULL,
                               g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
-                              0);
+                              1, G_TYPE_STRING);
         signals [SETUP_COMPLETE] =
                 g_signal_new ("setup-complete",
                               iface_type,
@@ -221,9 +227,10 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, setup_complete),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__VOID,
+                              g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
-                              0);
+                              1,
+                              G_TYPE_STRING);
         signals [SETUP_FAILED] =
                 g_signal_new ("setup-failed",
                               iface_type,
@@ -231,10 +238,10 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, setup_failed),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__STRING,
+                              gdm_marshal_VOID__STRING_STRING,
                               G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
+                              2,
+                              G_TYPE_STRING, G_TYPE_STRING);
         signals [RESET_COMPLETE] =
                 g_signal_new ("reset-complete",
                               iface_type,
@@ -263,9 +270,9 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, authenticated),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__VOID,
+                              g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
-                              0);
+                              1, G_TYPE_STRING);
         signals [AUTHENTICATION_FAILED] =
                 g_signal_new ("authentication-failed",
                               iface_type,
@@ -273,10 +280,10 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, authentication_failed),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__STRING,
+                              gdm_marshal_VOID__STRING_STRING,
                               G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
+                              2,
+                              G_TYPE_STRING, G_TYPE_STRING);
         signals [AUTHORIZED] =
                 g_signal_new ("authorized",
                               iface_type,
@@ -284,9 +291,9 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, authorized),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__VOID,
+                              g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
-                              0);
+                              1, G_TYPE_STRING);
         signals [AUTHORIZATION_FAILED] =
                 g_signal_new ("authorization-failed",
                               iface_type,
@@ -294,10 +301,10 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, authorization_failed),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__STRING,
+                              gdm_marshal_VOID__STRING_STRING,
                               G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
+                              2,
+                              G_TYPE_STRING, G_TYPE_STRING);
         signals [ACCREDITED] =
                 g_signal_new ("accredited",
                               iface_type,
@@ -305,9 +312,9 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, accredited),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__VOID,
+                              g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
-                              0);
+                              1, G_TYPE_STRING);
         signals [ACCREDITATION_FAILED] =
                 g_signal_new ("accreditation-failed",
                               iface_type,
@@ -315,10 +322,10 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, accreditation_failed),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__STRING,
+                              gdm_marshal_VOID__STRING_STRING,
                               G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
+                              2,
+                              G_TYPE_STRING, G_TYPE_STRING);
 
          signals [INFO_QUERY] =
                 g_signal_new ("info-query",
@@ -327,10 +334,10 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, info_query),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__STRING,
+                              gdm_marshal_VOID__STRING_STRING,
                               G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
+                              2,
+                              G_TYPE_STRING, G_TYPE_STRING);
         signals [SECRET_INFO_QUERY] =
                 g_signal_new ("secret-info-query",
                               iface_type,
@@ -338,10 +345,10 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, secret_info_query),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__STRING,
+                              gdm_marshal_VOID__STRING_STRING,
                               G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
+                              2,
+                              G_TYPE_STRING, G_TYPE_STRING);
         signals [INFO] =
                 g_signal_new ("info",
                               iface_type,
@@ -349,10 +356,10 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, info),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__STRING,
+                              gdm_marshal_VOID__STRING_STRING,
                               G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
+                              2,
+                              G_TYPE_STRING, G_TYPE_STRING);
         signals [PROBLEM] =
                 g_signal_new ("problem",
                               iface_type,
@@ -360,10 +367,10 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, problem),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__STRING,
+                              gdm_marshal_VOID__STRING_STRING,
                               G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
+                              2,
+                              G_TYPE_STRING, G_TYPE_STRING);
         signals [SESSION_STARTED] =
                 g_signal_new ("session-started",
                               iface_type,
@@ -371,10 +378,10 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, session_started),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__INT,
+                              gdm_marshal_VOID__STRING_INT,
                               G_TYPE_NONE,
-                              1,
-                              G_TYPE_INT);
+                              2,
+                              G_TYPE_STRING, G_TYPE_INT);
         signals [SESSION_START_FAILED] =
                 g_signal_new ("session-start-failed",
                               iface_type,
@@ -382,10 +389,10 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, session_start_failed),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__STRING,
+                              gdm_marshal_VOID__STRING_STRING,
                               G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
+                              2,
+                              G_TYPE_STRING, G_TYPE_STRING);
         signals [SESSION_EXITED] =
                 g_signal_new ("session-exited",
                               iface_type,
@@ -465,19 +472,21 @@ gdm_session_class_init (gpointer g_iface)
 }
 
 void
-_gdm_session_setup_complete (GdmSession   *session)
+_gdm_session_setup_complete (GdmSession   *session,
+                             const char   *service_name)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
 
-        g_signal_emit (session, signals [SETUP_COMPLETE], 0);
+        g_signal_emit (session, signals [SETUP_COMPLETE], 0, service_name);
 }
 
 void
 _gdm_session_setup_failed (GdmSession   *session,
+                           const char   *service_name,
                            const char   *text)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
-        g_signal_emit (session, signals [SETUP_FAILED], 0, text);
+        g_signal_emit (session, signals [SETUP_FAILED], 0, service_name, text);
 }
 
 void
@@ -497,99 +506,111 @@ _gdm_session_reset_failed (GdmSession   *session,
 }
 
 void
-_gdm_session_authenticated (GdmSession   *session)
+_gdm_session_authenticated (GdmSession   *session,
+                            const char   *service_name)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
 
-        g_signal_emit (session, signals [AUTHENTICATED], 0);
+        g_signal_emit (session, signals [AUTHENTICATED], 0, service_name);
 }
 
 void
 _gdm_session_authentication_failed (GdmSession   *session,
+                                    const char   *service_name,
                                     const char   *text)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
-        g_signal_emit (session, signals [AUTHENTICATION_FAILED], 0, text);
+        g_signal_emit (session, signals [AUTHENTICATION_FAILED], 0, service_name, text);
 }
 
 void
-_gdm_session_authorized (GdmSession   *session)
+_gdm_session_authorized (GdmSession   *session,
+                         const char   *service_name)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
 
-        g_signal_emit (session, signals [AUTHORIZED], 0);
+        g_signal_emit (session, signals [AUTHORIZED], 0, service_name);
 }
 
 void
 _gdm_session_authorization_failed (GdmSession   *session,
+                                   const char   *service_name,
                                    const char   *text)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
-        g_signal_emit (session, signals [AUTHORIZATION_FAILED], 0, text);
+        g_signal_emit (session, signals [AUTHORIZATION_FAILED], 0, service_name, text);
 }
 
 void
-_gdm_session_accredited (GdmSession   *session)
+_gdm_session_accredited (GdmSession   *session,
+                         const char   *service_name)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
 
-        g_signal_emit (session, signals [ACCREDITED], 0);
+        g_signal_emit (session, signals [ACCREDITED], 0, service_name);
 }
 
 void
 _gdm_session_accreditation_failed (GdmSession   *session,
+                                   const char   *service_name,
                                    const char   *text)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
-        g_signal_emit (session, signals [ACCREDITATION_FAILED], 0, text);
+        g_signal_emit (session, signals [ACCREDITATION_FAILED], 0, service_name, text);
 }
 
 void
 _gdm_session_info_query (GdmSession   *session,
+                         const char   *service_name,
                          const char   *text)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
-        g_signal_emit (session, signals [INFO_QUERY], 0, text);
+        g_signal_emit (session, signals [INFO_QUERY], 0, service_name, text);
 }
 
 void
 _gdm_session_secret_info_query (GdmSession   *session,
+                                const char   *service_name,
                                 const char   *text)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
-        g_signal_emit (session, signals [SECRET_INFO_QUERY], 0, text);
+        g_signal_emit (session, signals [SECRET_INFO_QUERY], 0, service_name, text);
 }
 
 void
 _gdm_session_info (GdmSession   *session,
+                   const char   *service_name,
                    const char   *text)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
-        g_signal_emit (session, signals [INFO], 0, text);
+        g_signal_emit (session, signals [INFO], 0, service_name, text);
 }
 
 void
 _gdm_session_problem (GdmSession   *session,
+                      const char   *service_name,
                       const char   *text)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
-        g_signal_emit (session, signals [PROBLEM], 0, text);
+        g_signal_emit (session, signals [PROBLEM], 0, service_name, text);
 }
 
 void
 _gdm_session_session_started (GdmSession   *session,
+                              const char   *service_name,
                               int           pid)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
-        g_signal_emit (session, signals [SESSION_STARTED], 0, pid);
+        g_signal_emit (session, signals [SESSION_STARTED], 0, service_name, pid);
 }
 
 void
 _gdm_session_session_start_failed (GdmSession   *session,
+                                   const char   *service_name,
                                    const char   *text)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
-        g_signal_emit (session, signals [SESSION_START_FAILED], 0, text);
+        g_signal_emit (session, signals [SESSION_START_FAILED], 0, service_name, text);
 }
 
 void

@@ -64,6 +64,7 @@ static gpointer session_object = NULL;
 
 static void
 on_info (GdmGreeterClient  *client,
+         const char        *service_name,
          const char        *text,
          GdmGreeterSession *session)
 {
@@ -74,6 +75,7 @@ on_info (GdmGreeterClient  *client,
 
 static void
 on_problem (GdmGreeterClient  *client,
+            const char        *service_name,
             const char        *text,
             GdmGreeterSession *session)
 {
@@ -160,6 +162,7 @@ on_user_authorized (GdmGreeterClient  *client,
 
 static void
 on_info_query (GdmGreeterClient  *client,
+               const char        *service_name,
                const char        *text,
                GdmGreeterSession *session)
 {
@@ -170,6 +173,7 @@ on_info_query (GdmGreeterClient  *client,
 
 static void
 on_secret_info_query (GdmGreeterClient  *client,
+                      const char        *service_name,
                       const char        *text,
                       GdmGreeterSession *session)
 {
@@ -191,7 +195,8 @@ static void
 on_begin_verification (GdmGreeterLoginWindow *login_window,
                        GdmGreeterSession     *session)
 {
-        gdm_greeter_client_call_begin_verification (session->priv->client);
+        gdm_greeter_client_call_begin_verification (session->priv->client,
+                                                    "gdm");
 }
 
 static void
@@ -200,6 +205,7 @@ on_begin_verification_for_user (GdmGreeterLoginWindow *login_window,
                                 GdmGreeterSession     *session)
 {
         gdm_greeter_client_call_begin_verification_for_user (session->priv->client,
+                                                             "gdm",
                                                              username);
 }
 
@@ -209,6 +215,7 @@ on_query_answer (GdmGreeterLoginWindow *login_window,
                  GdmGreeterSession     *session)
 {
         gdm_greeter_client_call_answer_query (session->priv->client,
+                                              "gdm",
                                               text);
 }
 
@@ -266,7 +273,7 @@ static void
 on_start_session (GdmGreeterLoginWindow *login_window,
                   GdmGreeterSession     *session)
 {
-        gdm_greeter_client_call_start_session_when_ready (session->priv->client, TRUE);
+        gdm_greeter_client_call_start_session_when_ready (session->priv->client, "gdm", TRUE);
 }
 
 static int

@@ -71,6 +71,8 @@ struct GdmSimpleSlavePrivate
         guint              greeter_reset_id;
         guint              start_session_id;
 
+        char              *start_session_service_name;
+
         int                ping_interval;
 
         GPid               server_pid;
@@ -101,6 +103,7 @@ static void start_greeter      (GdmSimpleSlave *slave);
 
 static void
 on_session_started (GdmSession       *session,
+                    const char       *service_name,
                     int               pid,
                     GdmSimpleSlave   *slave)
 {
@@ -204,18 +207,21 @@ queue_greeter_reset (GdmSimpleSlave *slave)
 
 static void
 on_session_setup_complete (GdmSession     *session,
+                           const char     *service_name,
                            GdmSimpleSlave *slave)
 {
-        gdm_session_authenticate (session);
+        gdm_session_authenticate (session, service_name);
 }
 
 static void
 on_session_setup_failed (GdmSession     *session,
+                         const char     *service_name,
                          const char     *message,
                          GdmSimpleSlave *slave)
 {
         if (slave->priv->greeter_server != NULL) {
                 gdm_greeter_server_problem (slave->priv->greeter_server,
+                                            service_name,
                                             _("Unable to initialize login system"));
         }
 
@@ -240,18 +246,21 @@ on_session_reset_failed (GdmSession     *session,
 
 static void
 on_session_authenticated (GdmSession     *session,
+                          const char     *service_name,
                           GdmSimpleSlave *slave)
 {
-        gdm_session_authorize (session);
+        gdm_session_authorize (session, service_name);
 }
 
 static void
 on_session_authentication_failed (GdmSession     *session,
+                                  const char     *service_name,
                                   const char     *message,
                                   GdmSimpleSlave *slave)
 {
         if (slave->priv->greeter_server != NULL) {
                 gdm_greeter_server_problem (slave->priv->greeter_server,
+                                            service_name,
                                             _("Unable to authenticate user"));
         }
         destroy_session (slave);
@@ -259,7 +268,8 @@ on_session_authentication_failed (GdmSession     *session,
 }
 
 static void
-gdm_simple_slave_accredit_when_ready (GdmSimpleSlave *slave)
+gdm_simple_slave_accredit_when_ready (GdmSimpleSlave *slave,
+                                      const char     *service_name)
 {
         if (slave->priv->start_session_when_ready) {
                 char *ssid;
@@ -280,7 +290,7 @@ gdm_simple_slave_accredit_when_ready (GdmSimpleSlave *slave)
                 g_free (ssid);
                 g_free (username);
 
-                gdm_session_accredit (GDM_SESSION (slave->priv->session), cred_flag);
+                gdm_session_accredit (GDM_SESSION (slave->priv->session), service_name, cred_flag);
         } else {
                 slave->priv->waiting_to_start_session = TRUE;
         }
@@ -288,24 +298,27 @@ gdm_simple_slave_accredit_when_ready (GdmSimpleSlave *slave)
 
 static void
 on_session_authorized (GdmSession     *session,
+                       const char     *service_name,
                        GdmSimpleSlave *slave)
 {
         if (slave->priv->greeter_server != NULL) {
-                gdm_greeter_server_user_authorized (slave->priv->greeter_server);
-                gdm_simple_slave_accredit_when_ready (slave);
+                gdm_greeter_server_user_authorized (slave->priv->greeter_server, service_name);
+                gdm_simple_slave_accredit_when_ready (slave, service_name);
         } else {
                 slave->priv->start_session_when_ready = TRUE;
-                gdm_simple_slave_accredit_when_ready (slave);
+                gdm_simple_slave_accredit_when_ready (slave, service_name);
         }
 }
 
 static void
 on_session_authorization_failed (GdmSession     *session,
+                                 const char     *service_name,
                                  const char     *message,
                                  GdmSimpleSlave *slave)
 {
         if (slave->priv->greeter_server != NULL) {
                 gdm_greeter_server_problem (slave->priv->greeter_server,
+                                            service_name,
                                             _("Unable to authorize user"));
         }
 
@@ -386,31 +399,38 @@ start_session_timeout (GdmSimpleSlave *slave)
 
         g_free (auth_file);
 
-        gdm_session_start_session (GDM_SESSION (slave->priv->session));
+        gdm_session_start_session (GDM_SESSION (slave->priv->session),
+                                   slave->priv->start_session_service_name);
  out:
         slave->priv->start_session_id = 0;
+        g_free (slave->priv->start_session_service_name);
+        slave->priv->start_session_service_name = NULL;
         return FALSE;
 }
 
 static void
-queue_start_session (GdmSimpleSlave *slave)
+queue_start_session (GdmSimpleSlave *slave,
+                     const char     *service_name)
 {
         if (slave->priv->start_session_id > 0) {
                 return;
         }
 
         slave->priv->start_session_id = g_idle_add ((GSourceFunc)start_session_timeout, slave);
+        slave->priv->start_session_service_name = g_strdup (service_name);
 }
 
 static void
 on_session_accredited (GdmSession     *session,
+                       const char     *service_name,
                        GdmSimpleSlave *slave)
 {
-        queue_start_session (slave);
+        queue_start_session (slave, service_name);
 }
 
 static void
 on_session_accreditation_failed (GdmSession     *session,
+                                 const char     *service_name,
                                  const char     *message,
                                  GdmSimpleSlave *slave)
 {
@@ -425,6 +445,7 @@ on_session_accreditation_failed (GdmSession     *session,
         if (! migrated) {
                 if (slave->priv->greeter_server != NULL) {
                         gdm_greeter_server_problem (slave->priv->greeter_server,
+                                                    service_name,
                                                     _("Unable establish credentials"));
                 }
         }
@@ -440,41 +461,45 @@ on_session_accreditation_failed (GdmSession     *session,
 
 static void
 on_session_info (GdmSession     *session,
+                 const char     *service_name,
                  const char     *text,
                  GdmSimpleSlave *slave)
 {
         g_debug ("GdmSimpleSlave: Info: %s", text);
         if (slave->priv->greeter_server != NULL) {
-                gdm_greeter_server_info (slave->priv->greeter_server, text);
+                gdm_greeter_server_info (slave->priv->greeter_server, service_name, text);
         }
 }
 
 static void
 on_session_problem (GdmSession     *session,
+                    const char     *service_name,
                     const char     *text,
                     GdmSimpleSlave *slave)
 {
         g_debug ("GdmSimpleSlave: Problem: %s", text);
-        gdm_greeter_server_problem (slave->priv->greeter_server, text);
+        gdm_greeter_server_problem (slave->priv->greeter_server, service_name, text);
 }
 
 static void
 on_session_info_query (GdmSession     *session,
+                       const char     *service_name,
                        const char     *text,
                        GdmSimpleSlave *slave)
 {
 
         g_debug ("GdmSimpleSlave: Info query: %s", text);
-        gdm_greeter_server_info_query (slave->priv->greeter_server, text);
+        gdm_greeter_server_info_query (slave->priv->greeter_server, service_name, text);
 }
 
 static void
 on_session_secret_info_query (GdmSession     *session,
+                              const char     *service_name,
                               const char     *text,
                               GdmSimpleSlave *slave)
 {
         g_debug ("GdmSimpleSlave: Secret info query: %s", text);
-        gdm_greeter_server_secret_info_query (slave->priv->greeter_server, text);
+        gdm_greeter_server_secret_info_query (slave->priv->greeter_server, service_name, text);
 }
 
 static void
@@ -744,11 +769,12 @@ on_greeter_start_conversation (GdmGreeterServer *greeter_server,
 
 static void
 on_greeter_begin_verification (GdmGreeterServer *greeter_server,
+                               const char       *service_name,
                                GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: begin verification");
         gdm_session_setup (GDM_SESSION (slave->priv->session),
-                           "gdm");
+                           service_name);
 }
 
 static void
@@ -764,21 +790,23 @@ on_greeter_begin_auto_login (GdmGreeterServer *greeter_server,
 
 static void
 on_greeter_begin_verification_for_user (GdmGreeterServer *greeter_server,
+                                        const char       *service_name,
                                         const char       *username,
                                         GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: begin verification");
         gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
-                                    "gdm",
+                                    service_name,
                                     username);
 }
 
 static void
 on_greeter_answer (GdmGreeterServer *greeter_server,
+                   const char       *service_name,
                    const char       *text,
                    GdmSimpleSlave   *slave)
 {
-        gdm_session_answer_query (GDM_SESSION (slave->priv->session), text);
+        gdm_session_answer_query (GDM_SESSION (slave->priv->session), service_name, text);
 }
 
 static void
@@ -841,18 +869,20 @@ on_greeter_connected (GdmGreeterServer *greeter_server,
 
 static void
 on_start_session_when_ready (GdmGreeterServer *session,
+                             const char       *service_name,
                              GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: Will start session when ready");
         slave->priv->start_session_when_ready = TRUE;
 
         if (slave->priv->waiting_to_start_session) {
-                gdm_simple_slave_accredit_when_ready (slave);
+                gdm_simple_slave_accredit_when_ready (slave, service_name);
         }
 }
 
 static void
 on_start_session_later (GdmGreeterServer *session,
+                        const char       *service_name,
                         GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: Will start session when ready and told");
