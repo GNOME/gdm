@@ -228,7 +228,7 @@ main (int argc, char *argv[])
         setlocale (LC_ALL, "");
 
         /* Option parsing */
-        ctx = g_option_context_new (_("Take a picture of the screeen"));
+        ctx = g_option_context_new (_("Take a picture of the screen"));
         g_option_context_set_translation_domain (ctx, GETTEXT_PACKAGE);
         g_option_context_add_main_entries (ctx, options, NULL);
         g_option_context_parse (ctx, &argc, &argv, NULL);
