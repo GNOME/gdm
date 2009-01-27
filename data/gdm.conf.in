@@ -7,52 +7,76 @@
   <policy user="root">
     <allow own="org.gnome.DisplayManager"/>
 
-    <allow send_interface="org.gnome.DisplayManager.Manager"/>
-    <allow send_interface="org.gnome.DisplayManager.Display"/>
-    <allow send_interface="org.gnome.DisplayManager.LocalDisplayFactory"/>
-    <allow send_interface="org.gnome.DisplayManager.Settings"/>
-    <allow send_interface="org.gnome.DisplayManager.Slave"/>
-    <allow send_interface="org.gnome.DisplayManager.Session"/>
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.Manager"/>
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.Display"/>
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.LocalDisplayFactory"/>
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.Settings"/>
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.Slave"/>
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.Session"/>
     <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.gnome.DBus.Properties" />
   </policy>
 
   <policy context="default">
-    <deny send_interface="org.gnome.DisplayManager.Manager"/>
-    <deny send_interface="org.gnome.DisplayManager.Display"/>
-    <deny send_interface="org.gnome.DisplayManager.LocalDisplayFactory"/>
-    <deny send_interface="org.gnome.DisplayManager.Settings"/>
-    <deny send_interface="org.gnome.DisplayManager.Slave"/>
-    <deny send_interface="org.gnome.DisplayManager.Session"/>
+    <deny send_destination="org.gnome.DisplayManager"
+          send_interface="org.gnome.DisplayManager.Manager"/>
+    <deny send_destination="org.gnome.DisplayManager"
+          send_interface="org.gnome.DisplayManager.Display"/>
+    <deny send_destination="org.gnome.DisplayManager"
+          send_interface="org.gnome.DisplayManager.LocalDisplayFactory"/>
+    <deny send_destination="org.gnome.DisplayManager"
+          send_interface="org.gnome.DisplayManager.Settings"/>
+    <deny send_destination="org.gnome.DisplayManager"
+          send_interface="org.gnome.DisplayManager.Slave"/>
+    <deny send_destination="org.gnome.DisplayManager"
+          send_interface="org.gnome.DisplayManager.Session"/>
     <deny send_destination="org.gnome.DisplayManager"
           send_interface="org.gnome.DBus.Properties" />
 
-    <allow send_interface="org.gnome.DisplayManager.Display"
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.Display"
            send_member="GetId"/>
-    <allow send_interface="org.gnome.DisplayManager.Display"
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.Display"
            send_member="GetRemoteHostname"/>
-    <allow send_interface="org.gnome.DisplayManager.Display"
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.Display"
            send_member="GetSeatId"/>
-    <allow send_interface="org.gnome.DisplayManager.Display"
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.Display"
            send_member="GetX11DisplayName"/>
-    <allow send_interface="org.gnome.DisplayManager.Display"
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.Display"
            send_member="GetX11DisplayNumber"/>
-    <allow send_interface="org.gnome.DisplayManager.Display"
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.Display"
            send_member="IsLocal"/>
 
-    <allow send_interface="org.gnome.DisplayManager.LocalDisplayFactory"
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.LocalDisplayFactory"
            send_member="CreateTransientDisplay"/>
 
-    <allow send_interface="org.gnome.DisplayManager.Manager"
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.Manager"
            send_member="GetDisplays"/>
 
   </policy>
 
   <policy user="@GDM_USERNAME@">
-    <allow send_interface="org.gnome.DisplayManager.Manager"/>
-    <allow send_interface="org.gnome.DisplayManager.Display"/>
-    <allow send_interface="org.gnome.DisplayManager.LocalDisplayFactory"/>
-    <allow send_interface="org.gnome.DisplayManager.Settings"/>
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.Manager"/>
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.Display"/>
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.LocalDisplayFactory"/>
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.Settings"/>
     <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.gnome.DBus.Properties" />
   </policy>
