@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
- * Copyright (C) 2008 Red Hat, Inc.
+ * Copyright (C) 2008, 2009 Red Hat, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ * Written by: William Jon McCann <mccann@jhu.edu>
+ *             Ray Strode <rstrode@redhat.com>
  *
  */
 
@@ -50,13 +53,19 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
+#include "gdm-marshal.h"
+
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 #include "gdm-profile.h"
 
+#include "gdm-greeter-client.h"
 #include "gdm-greeter-login-window.h"
 #include "gdm-user-chooser-widget.h"
 #include "gdm-session-option-widget.h"
+#include "gdm-extension-list.h"
+
+#include "extensions/unified/gdm-unified-extension.h"
 
 #ifdef HAVE_PAM
 #include <security/pam_appl.h>
@@ -96,6 +105,7 @@ enum {
         MODE_TIMED_LOGIN,
         MODE_SELECTION,
         MODE_AUTHENTICATION,
+        MODE_MULTIPLE_AUTHENTICATION,
 };
 
 enum {
@@ -109,19 +119,24 @@ struct GdmGreeterLoginWindowPrivate
         GtkBuilder      *builder;
         GtkWidget       *session_option_widget;
         GtkWidget       *user_chooser;
+        GtkWidget       *extension_list;
         GtkWidget       *auth_banner_label;
         GtkWidget       *current_button;
-
+        GtkWidget       *auth_page_box;
         guint            display_is_local : 1;
         guint            user_chooser_loaded : 1;
-        gboolean         session_ready_to_start : 1;
         GConfClient     *client;
+        GList           *extensions;
+        GdmLoginExtension *active_extension;
+        GList           *extensions_to_enable;
+        GList           *extensions_to_stop;
 
         gboolean         banner_message_enabled;
         guint            gconf_cnxn;
 
         guint            last_mode;
         guint            dialog_mode;
+        guint            next_mode;
 
         gboolean         user_list_disabled;
         guint            num_queries;
@@ -135,20 +150,8 @@ struct GdmGreeterLoginWindowPrivate
         guint            login_button_handler_id;
         guint            start_session_handler_id;
 
-        GQueue          *message_queue;
-        guint            message_timeout_id;
-        guint            message_queue_empty_reset_dialog_mode;
+        char            *service_name_of_session_ready_to_start;
 };
-
-typedef enum {
-        QUEUE_MESSAGE_TYPE_INFO,
-        QUEUE_MESSAGE_TYPE_PROBLEM
-} QueuedMessageType;
-
-typedef struct {
-        char              *text;
-        QueuedMessageType  type;
-} QueuedMessage;
 
 enum {
         PROP_0,
@@ -156,6 +159,7 @@ enum {
 };
 
 enum {
+        START_CONVERSATION,
         BEGIN_AUTO_LOGIN,
         BEGIN_VERIFICATION,
         BEGIN_VERIFICATION_FOR_USER,
@@ -182,6 +186,13 @@ static void     switch_mode                 (GdmGreeterLoginWindow *login_window
 static void     update_banner_message       (GdmGreeterLoginWindow *login_window);
 static void     reset_dialog                (GdmGreeterLoginWindow *login_window,
                                              guint                  dialog_mode);
+static void     gdm_greeter_login_window_start_session_when_ready (GdmGreeterLoginWindow *login_window,
+                                                                   const char            *service_name);
+static void     handle_stopped_conversation (GdmGreeterLoginWindow *login_window,
+                                             const char            *service_name);
+
+static void     begin_single_service_verification (GdmGreeterLoginWindow *login_window,
+                                                   const char            *service_name);
 
 G_DEFINE_TYPE (GdmGreeterLoginWindow, gdm_greeter_login_window, GTK_TYPE_WINDOW)
 
@@ -207,9 +218,6 @@ set_sensitive (GdmGreeterLoginWindow *login_window,
 {
         GtkWidget *box;
 
-        box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "auth-input-box"));
-        gtk_widget_set_sensitive (box, sensitive);
-
         box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "buttonbox"));
         gtk_widget_set_sensitive (box, sensitive);
 
@@ -219,117 +227,39 @@ set_sensitive (GdmGreeterLoginWindow *login_window,
 static void
 set_focus (GdmGreeterLoginWindow *login_window)
 {
-        GtkWidget *entry;
-
-        entry = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-entry"));
-
         gdk_window_focus (gtk_widget_get_window (GTK_WIDGET (login_window)), GDK_CURRENT_TIME);
 
-        if (gtk_widget_get_realized (entry) && ! gtk_widget_has_focus (entry)) {
-                gtk_widget_grab_focus (entry);
+        if (login_window->priv->active_extension != NULL &&
+            gdm_login_extension_focus (login_window->priv->active_extension)) {
+                char *name;
+                name = gdm_login_extension_get_name (login_window->priv->active_extension);
+                g_debug ("GdmGreeterLoginWindow: focusing extension %s", name);
+                g_free (name);
         } else if (gtk_widget_get_realized (login_window->priv->user_chooser) && ! gtk_widget_has_focus (login_window->priv->user_chooser)) {
                 gtk_widget_grab_focus (login_window->priv->user_chooser);
         }
+
+}
+
+static gboolean
+queue_message_for_extension (GdmLoginExtension *extension,
+                             const char          *message)
+{
+        gdm_login_extension_queue_message (extension,
+                                             GDM_SERVICE_MESSAGE_TYPE_INFO,
+                                             message);
+        return FALSE;
 }
 
 static void
 set_message (GdmGreeterLoginWindow *login_window,
              const char            *text)
 {
-        GtkWidget *label;
+        g_return_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window));
 
-        label = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "auth-message-label"));
-        gtk_label_set_text (GTK_LABEL (label), text);
-}
-
-static void
-free_queued_message (QueuedMessage *message)
-{
-        g_free (message->text);
-        g_slice_free (QueuedMessage, message);
-}
-
-static void
-purge_message_queue (GdmGreeterLoginWindow *login_window)
-{
-        if (login_window->priv->message_timeout_id) {
-                g_source_remove (login_window->priv->message_timeout_id);
-                login_window->priv->message_timeout_id = 0;
-        }
-
-        g_queue_foreach (login_window->priv->message_queue,
-                         (GFunc) free_queued_message,
-                         NULL);
-        g_queue_clear (login_window->priv->message_queue);
-
-        login_window->priv->message_queue_empty_reset_dialog_mode = MODE_UNDEFINED;
-}
-
-static gboolean
-set_next_message_or_continue (GdmGreeterLoginWindow *login_window)
-{
-        if (!g_queue_is_empty (login_window->priv->message_queue)) {
-                int duration;
-                gboolean needs_beep;
-
-                QueuedMessage *message;
-                message = (QueuedMessage *) g_queue_pop_head (login_window->priv->message_queue);
-
-                switch (message->type) {
-                        case QUEUE_MESSAGE_TYPE_INFO:
-                                duration = INFO_MESSAGE_DURATION;
-                                needs_beep = FALSE;
-                                break;
-                        case QUEUE_MESSAGE_TYPE_PROBLEM:
-                                duration = PROBLEM_MESSAGE_DURATION;
-                                needs_beep = TRUE;
-                                break;
-                        default:
-                                g_assert_not_reached ();
-                }
-                set_message (login_window, message->text);
-                login_window->priv->message_timeout_id = g_timeout_add_seconds (duration,
-                                                                                (GSourceFunc) set_next_message_or_continue,
-                                                                                login_window);
-                if (needs_beep) {
-                        gdk_window_beep (gtk_widget_get_window (GTK_WIDGET (login_window)));
-                }
-
-                free_queued_message (message);
-        } else {
-                set_message (login_window, "");
-                login_window->priv->message_timeout_id = 0;
-
-                if (login_window->priv->message_queue_empty_reset_dialog_mode != MODE_UNDEFINED) {
-                        /* All messages have been shown, reset */
-                        g_debug ("GdmGreeterLoginWindow: finally resetting dialog");
-                        reset_dialog (login_window,
-                                      login_window->priv->message_queue_empty_reset_dialog_mode);
-
-                } else if (login_window->priv->session_ready_to_start) {
-                        /* All messages have been shown, proceed */
-                        g_debug ("GdmGreeterLoginWindow: finally starting session");
-                        g_signal_emit (login_window, signals[START_SESSION], 0);
-                }
-        }
-        return FALSE;
-}
-
-static void
-queue_message (GdmGreeterLoginWindow *login_window,
-               QueuedMessageType      message_type,
-               const char            *text)
-{
-        QueuedMessage *message = g_slice_new (QueuedMessage);
-
-        message->text = g_strdup (text);
-        message->type = message_type;
-
-        g_queue_push_tail (login_window->priv->message_queue, message);
-
-        if (login_window->priv->message_timeout_id == 0) {
-                set_next_message_or_continue (login_window);
-        }
+        g_list_foreach (login_window->priv->extensions,
+                        (GFunc) queue_message_for_extension,
+                        (gpointer) text);
 }
 
 static void
@@ -440,19 +370,64 @@ show_widget (GdmGreeterLoginWindow *login_window,
 }
 
 static void
-on_login_button_clicked_answer_query (GtkButton             *button,
-                                      GdmGreeterLoginWindow *login_window)
+hide_extension_actions (GdmLoginExtension *extension)
 {
-        GtkWidget  *entry;
-        const char *text;
+        GtkActionGroup *actions;
 
-        set_busy (login_window);
-        set_sensitive (login_window, FALSE);
+        actions = gdm_login_extension_get_actions (extension);
 
-        entry = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "auth-prompt-entry"));
-        text = gtk_entry_get_text (GTK_ENTRY (entry));
+        if (actions != NULL) {
+                gtk_action_group_set_visible (actions, FALSE);
+                gtk_action_group_set_sensitive (actions, FALSE);
+                g_object_unref (actions);
+        }
+}
 
-        g_signal_emit (login_window, signals[QUERY_ANSWER], 0, text);
+static void
+grab_default_button_for_extension (GdmLoginExtension *extension)
+{
+        GtkActionGroup *actions;
+        GtkAction *action;
+        GSList    *proxies, *node;
+
+        actions = gdm_login_extension_get_actions (extension);
+
+        if (actions == NULL) {
+                return;
+        }
+
+        action = gtk_action_group_get_action (actions, GDM_LOGIN_EXTENSION_DEFAULT_ACTION);
+        g_object_unref (actions);
+
+        if (action == NULL) {
+                return;
+        }
+
+        proxies = gtk_action_get_proxies (action);
+        for (node = proxies; node != NULL; node = node->next) {
+                GtkWidget *widget;
+
+                widget = GTK_WIDGET (node->data);
+
+                if (gtk_widget_get_can_default (widget) &&
+                    gtk_widget_get_visible (widget)) {
+                        gtk_widget_grab_default (widget);
+                        break;
+                }
+        }
+}
+
+static void
+show_extension_actions (GdmLoginExtension *extension)
+{
+        GtkActionGroup *actions;
+
+        actions = gdm_login_extension_get_actions (extension);
+        if (actions != NULL) {
+                gtk_action_group_set_sensitive (actions, TRUE);
+                gtk_action_group_set_visible (actions, TRUE);
+                g_object_unref (actions);
+        }
 }
 
 static void
@@ -515,13 +490,23 @@ set_log_in_button_mode (GdmGreeterLoginWindow *login_window,
 
         login_window->priv->current_button = button;
 
+        g_list_foreach (login_window->priv->extensions, (GFunc) hide_extension_actions, NULL);
+
         switch (mode) {
         case LOGIN_BUTTON_HIDDEN:
+                if (login_window->priv->active_extension != NULL) {
+                        hide_extension_actions (login_window->priv->active_extension);
+                }
+
                 gtk_widget_hide (button);
                 break;
         case LOGIN_BUTTON_ANSWER_QUERY:
-                login_window->priv->login_button_handler_id = g_signal_connect (button, "clicked", G_CALLBACK (on_login_button_clicked_answer_query), login_window);
-                gtk_widget_show (button);
+                if (login_window->priv->active_extension != NULL) {
+                        show_extension_actions (login_window->priv->active_extension);
+                        grab_default_button_for_extension (login_window->priv->active_extension);
+                }
+
+                gtk_widget_hide (button);
                 break;
         case LOGIN_BUTTON_TIMED_LOGIN:
                 login_window->priv->login_button_handler_id = g_signal_connect (button, "clicked", G_CALLBACK (on_login_button_clicked_timed_login), login_window);
@@ -565,6 +550,7 @@ maybe_show_cancel_button (GdmGreeterLoginWindow *login_window)
                 show = TRUE;
                 break;
         case MODE_AUTHENTICATION:
+        case MODE_MULTIPLE_AUTHENTICATION:
                 if (login_window->priv->num_queries > 1) {
                         /* if we are inside a pam conversation past
                            the first step */
@@ -585,6 +571,24 @@ maybe_show_cancel_button (GdmGreeterLoginWindow *login_window)
 }
 
 static void
+update_extension_list_visibility (GdmGreeterLoginWindow *login_window)
+{
+        int number_of_extensions;
+
+        if (login_window->priv->dialog_mode != MODE_MULTIPLE_AUTHENTICATION) {
+                gtk_widget_hide (login_window->priv->extension_list);
+                return;
+        }
+
+        number_of_extensions = gdm_extension_list_get_number_of_visible_extensions (GDM_EXTENSION_LIST (login_window->priv->extension_list));
+        if (number_of_extensions > 1) {
+                gtk_widget_show (login_window->priv->extension_list);
+        } else {
+                gtk_widget_hide (login_window->priv->extension_list);
+        }
+}
+
+static void
 switch_mode (GdmGreeterLoginWindow *login_window,
              int                    number)
 {
@@ -601,6 +605,8 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 login_window->priv->dialog_mode = number;
         }
 
+        login_window->priv->next_mode = MODE_UNDEFINED;
+
         switch (number) {
         case MODE_SELECTION:
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_HIDDEN);
@@ -613,6 +619,7 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 gtk_widget_show (login_window->priv->session_option_widget);
                 break;
         case MODE_AUTHENTICATION:
+        case MODE_MULTIPLE_AUTHENTICATION:
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_ANSWER_QUERY);
                 set_sensitive (login_window, FALSE);
                 gtk_widget_show (login_window->priv->session_option_widget);
@@ -622,6 +629,7 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         }
 
         show_widget (login_window, "auth-input-box", FALSE);
+        update_extension_list_visibility (login_window);
         maybe_show_cancel_button (login_window);
 
         /*
@@ -652,58 +660,72 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         }
 }
 
-static void
-choose_user (GdmGreeterLoginWindow *login_window,
-             const char            *user_name)
+static GdmLoginExtension *
+find_extension_with_service_name (GdmGreeterLoginWindow *login_window,
+                                  const char            *service_name)
 {
-        guint mode;
+        GList *node;
 
-        g_assert (user_name != NULL);
+        node = login_window->priv->extensions;
+        while (node != NULL) {
+                GdmLoginExtension *extension;
+                char *extension_service_name;
+                gboolean has_service_name;
 
-        g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
-                       0, user_name);
+                extension = GDM_LOGIN_EXTENSION (node->data);
 
-        mode = MODE_AUTHENTICATION;
-        if (strcmp (user_name, GDM_USER_CHOOSER_USER_OTHER) == 0) {
-                g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
-        } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_GUEST) == 0) {
-                /* FIXME: handle guest account stuff */
-        } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_AUTO) == 0) {
-                g_signal_emit (login_window, signals[BEGIN_AUTO_LOGIN], 0,
-                               login_window->priv->timed_login_username);
+                extension_service_name = gdm_login_extension_get_service_name (extension);
+                has_service_name = strcmp (service_name, extension_service_name) == 0;
+                g_free (extension_service_name);
 
-                login_window->priv->timed_login_enabled = TRUE;
-                restart_timed_login_timeout (login_window);
+                if (has_service_name) {
+                        return extension;
+                }
 
-                /* just wait for the user to select language and stuff */
-                mode = MODE_TIMED_LOGIN;
-                set_message (login_window, _("Select language and click Log In"));
-        } else {
-                g_signal_emit (login_window, signals[BEGIN_VERIFICATION_FOR_USER], 0, user_name);
+                node = node->next;
         }
 
-        switch_mode (login_window, mode);
+        return NULL;
 }
 
-static void
-retry_login (GdmGreeterLoginWindow *login_window)
+static gboolean
+reset_extension (GdmLoginExtension   *extension,
+                 GdmGreeterLoginWindow *login_window)
 {
-        GtkWidget  *entry;
-        char       *user_name;
+        char *name;
 
-        user_name = gdm_user_chooser_widget_get_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser));
-        if (user_name == NULL) {
-                return;
+        name = gdm_login_extension_get_name (extension);
+        g_debug ("Resetting extension '%s'", name);
+        g_free (name);
+
+        login_window->priv->extensions_to_enable = g_list_remove (login_window->priv->extensions_to_enable, extension);
+
+        hide_extension_actions (extension);
+        gdm_extension_list_remove_extension (GDM_EXTENSION_LIST (login_window->priv->extension_list), extension);
+        gdm_login_extension_reset (extension);
+        return FALSE;
+}
+
+static gboolean
+extensions_are_enabled (GdmGreeterLoginWindow *login_window)
+{
+
+        GList *node;
+
+        node = login_window->priv->extensions;
+        while (node != NULL) {
+                GdmLoginExtension *extension;
+
+                extension = GDM_LOGIN_EXTENSION (node->data);
+
+                if (!gdm_login_extension_is_enabled (extension)) {
+                        return FALSE;
+                }
+
+                node = node->next;
         }
 
-        g_debug ("GdmGreeterLoginWindow: Retrying login for %s", user_name);
-
-        entry = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-entry"));
-        gtk_editable_delete_text (GTK_EDITABLE (entry), 0, -1);
-
-        choose_user (login_window, user_name);
-
-        g_free (user_name);
+        return TRUE;
 }
 
 static gboolean
@@ -712,6 +734,12 @@ can_jump_to_authenticate (GdmGreeterLoginWindow *login_window)
         gboolean res;
 
         if (!login_window->priv->user_chooser_loaded) {
+                res = FALSE;
+        } else if (!extensions_are_enabled (login_window)) {
+                res = FALSE;
+        } else if (login_window->priv->dialog_mode == MODE_AUTHENTICATION) {
+                res = FALSE;
+        } else if (login_window->priv->dialog_mode == MODE_MULTIPLE_AUTHENTICATION) {
                 res = FALSE;
         } else if (login_window->priv->user_list_disabled) {
                 res = (login_window->priv->timed_login_username == NULL);
@@ -723,20 +751,93 @@ can_jump_to_authenticate (GdmGreeterLoginWindow *login_window)
 }
 
 static void
+begin_other_verification (GdmGreeterLoginWindow *login_window)
+{
+        /* FIXME: we should drop this code and do all OTHER handling
+         * entirely from within the password plugin
+         * (ala how smart card manages its "Smartcard Authentication" item)
+         */
+        begin_single_service_verification (login_window, "gdm-password");
+}
+
+static void
+set_extension_active (GdmGreeterLoginWindow *login_window,
+                      GdmLoginExtension     *extension)
+{
+        GtkWidget *container;
+        char *name;
+
+        name = gdm_login_extension_get_name (extension);
+        g_debug ("GdmGreeterLoginWindow: extension '%s' activated", name);
+        g_free (name);
+
+        container = g_object_get_data (G_OBJECT (extension),
+                                       "gdm-greeter-login-window-page-container");
+
+        if (container == NULL) {
+                GtkWidget *page;
+
+                container = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
+                gtk_container_add (GTK_CONTAINER (login_window->priv->auth_page_box),
+                                   container);
+
+                page = gdm_login_extension_get_page (extension);
+                if (page != NULL) {
+                        gtk_container_add (GTK_CONTAINER (container), page);
+                        gtk_widget_show (page);
+                }
+                g_object_set_data (G_OBJECT (extension),
+                                   "gdm-greeter-login-window-page-container",
+                                   container);
+        }
+
+        gtk_widget_show (container);
+
+        login_window->priv->active_extension = extension;
+        switch_mode (login_window, login_window->priv->dialog_mode);
+}
+
+static void
+clear_active_extension (GdmGreeterLoginWindow *login_window)
+{
+
+        GtkWidget *container;
+        GtkActionGroup *actions;
+
+        if (login_window->priv->active_extension == NULL) {
+                return;
+        }
+
+        container = g_object_get_data (G_OBJECT (login_window->priv->active_extension),
+                                       "gdm-greeter-login-window-page-container");
+
+        if (container != NULL) {
+                gtk_widget_hide (container);
+        }
+
+        actions = gdm_login_extension_get_actions (login_window->priv->active_extension);
+
+        if (actions != NULL) {
+                gtk_action_group_set_sensitive (actions, FALSE);
+                gtk_action_group_set_visible (actions, FALSE);
+                g_object_unref (actions);
+        }
+
+        login_window->priv->active_extension = NULL;
+}
+
+static void
 reset_dialog (GdmGreeterLoginWindow *login_window,
               guint                  dialog_mode)
 {
-        GtkWidget  *entry;
-        GtkWidget  *label;
-
         g_debug ("GdmGreeterLoginWindow: Resetting dialog to mode %u", dialog_mode);
         set_busy (login_window);
         set_sensitive (login_window, FALSE);
 
         login_window->priv->num_queries = 0;
 
-        purge_message_queue (login_window);
-        login_window->priv->session_ready_to_start = FALSE;
+        g_free (login_window->priv->service_name_of_session_ready_to_start);
+        login_window->priv->service_name_of_session_ready_to_start = NULL;
 
         if (dialog_mode == MODE_SELECTION) {
                 if (login_window->priv->timed_login_enabled) {
@@ -760,28 +861,20 @@ reset_dialog (GdmGreeterLoginWindow *login_window,
                 set_message (login_window, "");
         }
 
-        entry = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-entry"));
-
-        gtk_editable_delete_text (GTK_EDITABLE (entry), 0, -1);
-
-        gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
-
-        label = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-label"));
-        gtk_label_set_text (GTK_LABEL (label), "");
+        g_list_foreach (login_window->priv->extensions, (GFunc) reset_extension, login_window);
 
         if (can_jump_to_authenticate (login_window)) {
                 /* If we don't have a user list jump straight to authenticate */
                 g_debug ("GdmGreeterLoginWindow: jumping straight to authenticate");
-                switch_mode (login_window, MODE_AUTHENTICATION);
-
-                g_debug ("Starting PAM conversation since no local users");
                 g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
                                0, GDM_USER_CHOOSER_USER_OTHER);
-                g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
+                begin_other_verification (login_window);
         } else {
+                clear_active_extension (login_window);
                 switch_mode (login_window, dialog_mode);
         }
 
+        gtk_widget_set_sensitive (login_window->priv->extension_list, TRUE);
         set_ready (login_window);
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
         update_banner_message (login_window);
@@ -792,54 +885,40 @@ reset_dialog (GdmGreeterLoginWindow *login_window,
 }
 
 static void
-do_cancel (GdmGreeterLoginWindow *login_window)
+restart_conversations (GdmGreeterLoginWindow *login_window)
 {
-        /* need to wait for response from backend */
-        set_message (login_window, _("Cancelling…"));
         set_busy (login_window);
         set_sensitive (login_window, FALSE);
         g_signal_emit (login_window, signals[CANCELLED], 0);
 }
 
-gboolean
-gdm_greeter_login_window_ready (GdmGreeterLoginWindow *login_window)
+static gboolean
+has_queued_messages (GdmGreeterLoginWindow *login_window)
 {
-        g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
+        GList *node;
 
-        if (login_window->priv->message_queue_empty_reset_dialog_mode != MODE_UNDEFINED) {
-                g_debug ("GdmGreeterLoginWindow: Ignoring daemon Ready event since still showing messages");
-                return TRUE;
-        }
+        node = login_window->priv->extensions;
+        while (node != NULL) {
+                GdmLoginExtension *extension;
 
-        set_sensitive (GDM_GREETER_LOGIN_WINDOW (login_window), TRUE);
-        set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
-        set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
-        gdk_window_beep (gtk_widget_get_window (GTK_WIDGET (login_window)));
+                extension = (GdmLoginExtension *) node->data;
 
-        /* If we are retrying a previously selected user */
-        if (!login_window->priv->user_list_disabled &&
-            login_window->priv->dialog_mode == MODE_AUTHENTICATION) {
-                retry_login (login_window);
-        } else {
-                /* If the user list is disabled, then start the PAM conversation */
-                if (can_jump_to_authenticate (login_window)) {
-                        g_debug ("Starting PAM conversation since user list disabled");
-                        g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
-                                       0, GDM_USER_CHOOSER_USER_OTHER);
-                        g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
+                if (gdm_login_extension_has_queued_messages (extension)) {
+                        return TRUE;
                 }
+                node = node->next;
         }
 
-        return TRUE;
+        return FALSE;
 }
 
 static void
 reset_dialog_after_messages (GdmGreeterLoginWindow *login_window,
                              guint                  dialog_mode)
 {
-        if (!g_queue_is_empty (login_window->priv->message_queue)) {
+        if (has_queued_messages (login_window)) {
                 g_debug ("GdmGreeterLoginWindow: will reset dialog after pending messages");
-                login_window->priv->message_queue_empty_reset_dialog_mode = dialog_mode;
+                login_window->priv->next_mode = dialog_mode;
         } else {
                 g_debug ("GdmGreeterLoginWindow: resetting dialog");
                 reset_dialog (login_window, dialog_mode);
@@ -847,55 +926,217 @@ reset_dialog_after_messages (GdmGreeterLoginWindow *login_window,
 
 }
 
-gboolean
-gdm_greeter_login_window_authentication_failed (GdmGreeterLoginWindow *login_window)
+static void
+do_cancel (GdmGreeterLoginWindow *login_window)
 {
+        /* need to wait for response from backend */
+        set_message (login_window, _("Cancelling…"));
+        restart_conversations (login_window);
+        reset_dialog_after_messages (login_window, MODE_SELECTION);
+}
+
+gboolean
+gdm_greeter_login_window_ready (GdmGreeterLoginWindow *login_window,
+                                const char            *service_name)
+{
+        GdmLoginExtension *extension;
+
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
-        g_debug ("GdmGreeterLoginWindow: got authentication failed");
-        reset_dialog_after_messages (login_window, MODE_AUTHENTICATION);
+        extension = find_extension_with_service_name (login_window, service_name);
+
+        if (extension != NULL) {
+                if (!login_window->priv->user_chooser_loaded) {
+                        g_debug ("GdmGreeterLoginWindow: Ignoring daemon Ready event since not loaded yet");
+                        login_window->priv->extensions_to_enable = g_list_prepend (login_window->priv->extensions_to_enable,
+                                                                              extension);
+                        return TRUE;
+                } else if (login_window->priv->next_mode != MODE_UNDEFINED) {
+                        g_debug ("GdmGreeterLoginWindow: Ignoring daemon Ready event since still showing messages");
+                        login_window->priv->extensions_to_enable = g_list_prepend (login_window->priv->extensions_to_enable,
+                                                                              extension);
+                        return TRUE;
+                }
+
+                gdm_login_extension_set_ready (extension);
+        }
+
+        set_sensitive (GDM_GREETER_LOGIN_WINDOW (login_window), TRUE);
+        set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
+        set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
+        gdk_window_beep (gtk_widget_get_window (GTK_WIDGET (login_window)));
+
+        /* If the user list is disabled, then start the PAM conversation */
+        if (can_jump_to_authenticate (login_window)) {
+                g_debug ("Starting PAM conversation since user list disabled or no local users");
+                g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
+                               0, GDM_USER_CHOOSER_USER_OTHER);
+                begin_other_verification (login_window);
+        }
+
         return TRUE;
+}
+
+static void
+handle_stopped_conversation (GdmGreeterLoginWindow *login_window,
+                             const char            *service_name)
+{
+        GdmLoginExtension *extension;
+
+        /* If the password conversation failed, then start over
+         *
+         * FIXME: we need to get this policy out of the source code
+         */
+        if (strcmp (service_name, "gdm-password") == 0) {
+                g_debug ("GdmGreeterLoginWindow: main conversation failed, starting over");
+                restart_conversations (login_window);
+                reset_dialog_after_messages (login_window, MODE_SELECTION);
+                return;
+        }
+
+        if (login_window->priv->dialog_mode == MODE_AUTHENTICATION) {
+                g_debug ("GdmGreeterLoginWindow: conversation failed, starting over");
+                restart_conversations (login_window);
+                reset_dialog_after_messages (login_window, MODE_AUTHENTICATION);
+                return;
+        } else if (login_window->priv->dialog_mode != MODE_MULTIPLE_AUTHENTICATION) {
+                g_warning ("conversation %s stopped when it shouldn't have been running (mode %d)",
+                           service_name, login_window->priv->dialog_mode);
+                restart_conversations (login_window);
+                return;
+        }
+
+        extension = find_extension_with_service_name (login_window, service_name);
+
+        if (extension != NULL) {
+                gdm_login_extension_reset (extension);
+
+                login_window->priv->extensions_to_stop = g_list_remove (login_window->priv->extensions_to_stop, extension);
+        }
+
+        /* If every conversation has failed, then just start over.
+         */
+        extension = gdm_extension_list_get_active_extension (GDM_EXTENSION_LIST (login_window->priv->extension_list));
+
+        if (extension == NULL || !gdm_login_extension_is_enabled (extension)) {
+                g_debug ("GdmGreeterLoginWindow: No conversations left, starting over");
+                restart_conversations (login_window);
+                reset_dialog_after_messages (login_window, MODE_SELECTION);
+        }
+
+        if (extension != NULL) {
+                g_object_unref (extension);
+        }
+
+        update_extension_list_visibility (login_window);
+}
+
+gboolean
+gdm_greeter_login_window_conversation_stopped (GdmGreeterLoginWindow *login_window,
+                                               const char            *service_name)
+{
+        GdmLoginExtension *extension;
+
+        g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
+
+        g_debug ("GdmGreeterLoginWindow: conversation '%s' has stopped", service_name);
+
+        extension = find_extension_with_service_name (login_window, service_name);
+
+        if (extension != NULL && gdm_login_extension_is_enabled (extension)) {
+                if (gdm_login_extension_has_queued_messages (extension)) {
+                        login_window->priv->extensions_to_stop = g_list_prepend (login_window->priv->extensions_to_stop, extension);
+                } else {
+                        handle_stopped_conversation (login_window, service_name);
+                }
+        }
+
+        return TRUE;
+}
+
+static gboolean
+restart_extension_conversation (GdmLoginExtension     *extension,
+                                GdmGreeterLoginWindow *login_window)
+{
+        char *service_name;
+
+        login_window->priv->extensions_to_stop = g_list_remove (login_window->priv->extensions_to_stop, extension);
+
+        service_name = gdm_login_extension_get_service_name (extension);
+        if (service_name != NULL) {
+                char *name;
+
+                name = gdm_login_extension_get_name (extension);
+                g_debug ("GdmGreeterLoginWindow: restarting '%s' conversation", name);
+                g_free (name);
+
+                g_signal_emit (login_window, signals[START_CONVERSATION], 0, service_name);
+                g_free (service_name);
+        }
+
+        return FALSE;
 }
 
 gboolean
 gdm_greeter_login_window_reset (GdmGreeterLoginWindow *login_window)
 {
+        g_debug ("GdmGreeterLoginWindow: window reset");
+
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
-        g_debug ("GdmGreeterLoginWindow: got reset");
         reset_dialog_after_messages (login_window, MODE_SELECTION);
+        g_list_foreach (login_window->priv->extensions,
+                        (GFunc) restart_extension_conversation,
+                        login_window);
+
+        g_free (login_window->priv->service_name_of_session_ready_to_start);
+        login_window->priv->service_name_of_session_ready_to_start = NULL;
 
         return TRUE;
 }
 
 gboolean
 gdm_greeter_login_window_info (GdmGreeterLoginWindow *login_window,
+                               const char            *service_name,
                                const char            *text)
 {
-        g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
+        GdmLoginExtension *extension;
 
+        g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
         g_debug ("GdmGreeterLoginWindow: info: %s", text);
 
-        queue_message (GDM_GREETER_LOGIN_WINDOW (login_window),
-                       QUEUE_MESSAGE_TYPE_INFO,
-                       text);
         maybe_show_cancel_button (login_window);
+        extension = find_extension_with_service_name (login_window, service_name);
+
+        if (extension != NULL) {
+                gdm_login_extension_queue_message (extension,
+                                                     GDM_SERVICE_MESSAGE_TYPE_INFO,
+                                                     text);
+                show_extension_actions (extension);
+        }
 
         return TRUE;
 }
 
 gboolean
 gdm_greeter_login_window_problem (GdmGreeterLoginWindow *login_window,
+                                  const char            *service_name,
                                   const char            *text)
 {
-        g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
+        GdmLoginExtension *extension;
 
+        g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
         g_debug ("GdmGreeterLoginWindow: problem: %s", text);
         maybe_show_cancel_button (login_window);
 
-        queue_message (GDM_GREETER_LOGIN_WINDOW (login_window),
-                       QUEUE_MESSAGE_TYPE_PROBLEM,
-                       text);
+        extension = find_extension_with_service_name (login_window, service_name);
+
+        if (extension != NULL) {
+                gdm_login_extension_queue_message (extension,
+                                                     GDM_SERVICE_MESSAGE_TYPE_PROBLEM,
+                                                     text);
+                show_extension_actions (extension);
+        }
 
         return TRUE;
 }
@@ -917,6 +1158,36 @@ request_timed_login (GdmGreeterLoginWindow *login_window)
         }
 
         login_window->priv->timed_login_already_enabled = TRUE;
+}
+
+gboolean
+gdm_greeter_login_window_service_unavailable (GdmGreeterLoginWindow *login_window,
+                                              const char            *service_name)
+{
+        GdmLoginExtension *extension;
+
+        g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
+        g_debug ("GdmGreeterLoginWindow: service unavailable: %s", service_name);
+
+        extension = find_extension_with_service_name (login_window, service_name);
+
+        if (extension != NULL) {
+                GdmLoginExtension *active_extension;
+
+                gdm_login_extension_set_enabled (extension, FALSE);
+
+                active_extension = gdm_extension_list_get_active_extension (GDM_EXTENSION_LIST (login_window->priv->extension_list));
+
+                if (active_extension == extension) {
+                        restart_conversations (login_window);
+                }
+
+                if (active_extension != NULL) {
+                        g_object_unref (active_extension);
+                }
+        }
+
+        return TRUE;
 }
 
 void
@@ -946,21 +1217,40 @@ gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_windo
 }
 
 static void
-gdm_greeter_login_window_start_session_when_ready (GdmGreeterLoginWindow *login_window)
+gdm_greeter_login_window_start_session (GdmGreeterLoginWindow *login_window)
 {
-        login_window->priv->session_ready_to_start = TRUE;
+        g_debug ("GdmGreeterLoginWindow: starting session");
+        g_signal_emit (login_window,
+                       signals[START_SESSION],
+                       0,
+                       login_window->priv->service_name_of_session_ready_to_start);
+        g_free (login_window->priv->service_name_of_session_ready_to_start);
+        login_window->priv->service_name_of_session_ready_to_start = NULL;
+}
 
-        if (login_window->priv->message_timeout_id == 0) {
-                set_next_message_or_continue (login_window);
+static void
+gdm_greeter_login_window_start_session_when_ready (GdmGreeterLoginWindow *login_window,
+                                                   const char            *service_name)
+{
+        GdmLoginExtension *extension;
+
+        extension = find_extension_with_service_name (login_window, service_name);
+
+        login_window->priv->service_name_of_session_ready_to_start = g_strdup (service_name);
+
+        if (!gdm_login_extension_has_queued_messages (extension)) {
+                g_debug ("GdmGreeterLoginWindow: starting session");
+                g_signal_emit (login_window, signals[START_SESSION], 0, service_name);
+                gdm_greeter_login_window_start_session (login_window);
         }
 }
 
 gboolean
 gdm_greeter_login_window_info_query (GdmGreeterLoginWindow *login_window,
+                                     const char            *service_name,
                                      const char            *text)
 {
-        GtkWidget  *entry;
-        GtkWidget  *label;
+        GdmLoginExtension *extension;
 
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
@@ -969,16 +1259,13 @@ gdm_greeter_login_window_info_query (GdmGreeterLoginWindow *login_window,
 
         g_debug ("GdmGreeterLoginWindow: info query: %s", text);
 
-        entry = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-entry"));
-        gtk_editable_delete_text (GTK_EDITABLE (entry), 0, -1);
-        gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
+        extension = find_extension_with_service_name (login_window, service_name);
+
+        if (extension != NULL) {
+                gdm_login_extension_ask_question (extension, text);
+        }
+
         set_log_in_button_mode (login_window, LOGIN_BUTTON_ANSWER_QUERY);
-
-        label = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-label"));
-        gtk_label_set_text (GTK_LABEL (label), text);
-
-        show_widget (login_window, "auth-input-box", TRUE);
-
         set_sensitive (GDM_GREETER_LOGIN_WINDOW (login_window), TRUE);
         set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
@@ -990,26 +1277,24 @@ gdm_greeter_login_window_info_query (GdmGreeterLoginWindow *login_window,
 
 gboolean
 gdm_greeter_login_window_secret_info_query (GdmGreeterLoginWindow *login_window,
+                                            const char            *service_name,
                                             const char            *text)
 {
-        GtkWidget  *entry;
-        GtkWidget  *label;
+
+        GdmLoginExtension *extension;
 
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
         login_window->priv->num_queries++;
         maybe_show_cancel_button (login_window);
 
-        entry = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-entry"));
-        gtk_editable_delete_text (GTK_EDITABLE (entry), 0, -1);
-        gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
+        extension = find_extension_with_service_name (login_window, service_name);
+
+        if (extension != NULL) {
+                gdm_login_extension_ask_secret (extension, text);
+        }
+
         set_log_in_button_mode (login_window, LOGIN_BUTTON_ANSWER_QUERY);
-
-        label = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-label"));
-        gtk_label_set_text (GTK_LABEL (label), text);
-
-        show_widget (login_window, "auth-input-box", TRUE);
-        gtk_widget_show (login_window->priv->session_option_widget);
         set_sensitive (GDM_GREETER_LOGIN_WINDOW (login_window), TRUE);
         set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
@@ -1020,13 +1305,16 @@ gdm_greeter_login_window_secret_info_query (GdmGreeterLoginWindow *login_window,
 }
 
 void
-gdm_greeter_login_window_session_opened (GdmGreeterLoginWindow *login_window)
+gdm_greeter_login_window_session_opened (GdmGreeterLoginWindow *login_window,
+                                          const char            *service_name)
 {
         g_return_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window));
 
-        g_debug ("GdmGreeterLoginWindow: session now opened");
+        g_debug ("GdmGreeterLoginWindow: session now opened via service %s",
+                 service_name);
 
-        gdm_greeter_login_window_start_session_when_ready (login_window);
+        gdm_greeter_login_window_start_session_when_ready (login_window,
+                                                           service_name);
 }
 
 static void
@@ -1090,6 +1378,51 @@ on_user_chooser_visibility_changed (GdmGreeterLoginWindow *login_window)
         update_banner_message (login_window);
 }
 
+static gboolean
+begin_extension_verification_for_selected_user (GdmLoginExtension     *extension,
+                                                GdmGreeterLoginWindow *login_window)
+{
+        char *user_name;
+        char *service_name;
+
+        user_name = gdm_user_chooser_widget_get_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser));
+
+        if (user_name == NULL) {
+                return TRUE;
+        }
+
+        service_name = gdm_login_extension_get_service_name (extension);
+        if (service_name != NULL) {
+                g_signal_emit (login_window, signals[BEGIN_VERIFICATION_FOR_USER], 0, service_name, user_name);
+                g_free (service_name);
+        }
+
+        gdm_extension_list_add_extension (GDM_EXTENSION_LIST (login_window->priv->extension_list),
+                                          extension);
+
+        g_free (user_name);
+        return FALSE;
+}
+
+static void
+enable_waiting_extensions (GdmGreeterLoginWindow *login_window)
+{
+        GList *node;
+
+        node = login_window->priv->extensions_to_enable;
+        while (node != NULL) {
+                GdmLoginExtension *extension;
+
+                extension = GDM_LOGIN_EXTENSION (node->data);
+
+                gdm_login_extension_set_ready (extension);
+
+                node = node->next;
+        }
+
+        login_window->priv->extensions_to_enable = NULL;
+}
+
 static void
 on_users_loaded (GdmUserChooserWidget  *user_chooser,
                  GdmGreeterLoginWindow *login_window)
@@ -1103,37 +1436,155 @@ on_users_loaded (GdmUserChooserWidget  *user_chooser,
                 gtk_widget_show (login_window->priv->user_chooser);
         }
 
+        enable_waiting_extensions (login_window);
+
         if (login_window->priv->timed_login_username != NULL
             && !login_window->priv->timed_login_already_enabled) {
                 request_timed_login (login_window);
         } else if (can_jump_to_authenticate (login_window)) {
+
                 /* jump straight to authenticate */
                 g_debug ("GdmGreeterLoginWindow: jumping straight to authenticate");
-
-                switch_mode (login_window, MODE_AUTHENTICATION);
-
-                g_debug ("Starting PAM conversation since no local users");
                 g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
                                0, GDM_USER_CHOOSER_USER_OTHER);
-                g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
+                begin_other_verification (login_window);
         }
 }
 
 static void
-on_user_chosen (GdmUserChooserWidget  *user_chooser,
-                GdmGreeterLoginWindow *login_window)
+choose_user (GdmGreeterLoginWindow *login_window,
+             const char            *user_name)
 {
-        char *user_name;
+        GdmLoginExtension *extension;
 
-        user_name = gdm_user_chooser_widget_get_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser));
+        g_assert (user_name != NULL);
         g_debug ("GdmGreeterLoginWindow: user chosen '%s'", user_name);
 
-        if (user_name == NULL) {
+        g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
+                       0, user_name);
+
+        g_list_foreach (login_window->priv->extensions,
+                        (GFunc) begin_extension_verification_for_selected_user,
+                        login_window);
+
+        extension = gdm_extension_list_get_active_extension (GDM_EXTENSION_LIST (login_window->priv->extension_list));
+        set_extension_active (login_window, extension);
+        g_object_unref (extension);
+
+        switch_mode (login_window, MODE_MULTIPLE_AUTHENTICATION);
+        update_extension_list_visibility (login_window);
+}
+
+static void
+begin_auto_login (GdmGreeterLoginWindow *login_window)
+{
+        g_signal_emit (login_window, signals[BEGIN_AUTO_LOGIN], 0,
+                       login_window->priv->timed_login_username);
+
+        login_window->priv->timed_login_enabled = TRUE;
+        restart_timed_login_timeout (login_window);
+
+        /* just wait for the user to select language and stuff */
+        set_message (login_window, _("Select language and click Log In"));
+
+        clear_active_extension (login_window);
+        switch_mode (login_window, MODE_TIMED_LOGIN);
+
+        show_widget (login_window, "conversation-list", FALSE);
+        g_list_foreach (login_window->priv->extensions,
+                        (GFunc) reset_extension,
+                        login_window);
+}
+
+static void
+reset_extension_if_not_given (GdmLoginExtension  *extension,
+                              GdmLoginExtension  *given_extension)
+{
+        if (extension == given_extension) {
                 return;
         }
 
-        choose_user (login_window, user_name);
-        g_free (user_name);
+        gdm_login_extension_reset (extension);
+}
+
+static void
+reset_every_extension_but_given_extension (GdmGreeterLoginWindow *login_window,
+                                 GdmLoginExtension   *extension)
+{
+        g_list_foreach (login_window->priv->extensions,
+                        (GFunc) reset_extension_if_not_given,
+                        extension);
+
+}
+
+static void
+begin_single_service_verification (GdmGreeterLoginWindow *login_window,
+                                   const char            *service_name)
+{
+        GdmLoginExtension *extension;
+
+        extension = find_extension_with_service_name (login_window, service_name);
+
+        if (extension == NULL) {
+                g_debug ("GdmGreeterLoginWindow: %s has no extension associated with it", service_name);
+                return;
+        }
+
+        g_debug ("GdmGreeterLoginWindow: Beginning %s auth conversation", service_name);
+
+        /* FIXME: we should probably give the plugin more say for
+         * what happens here.
+         */
+        g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0, service_name);
+
+        reset_every_extension_but_given_extension (login_window, extension);
+
+        set_extension_active (login_window, extension);
+        switch_mode (login_window, MODE_AUTHENTICATION);
+
+        show_widget (login_window, "conversation-list", FALSE);
+}
+
+static void
+on_user_chooser_activated (GdmUserChooserWidget  *user_chooser,
+                           GdmGreeterLoginWindow *login_window)
+{
+        char *user_name;
+        char *item_id;
+
+        user_name = gdm_user_chooser_widget_get_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser));
+
+        if (user_name != NULL) {
+                g_debug ("GdmGreeterLoginWindow: user chosen '%s'", user_name);
+                choose_user (login_window, user_name);
+                g_free (user_name);
+                return;
+        }
+
+        item_id = gdm_chooser_widget_get_active_item (GDM_CHOOSER_WIDGET (user_chooser));
+        g_debug ("GdmGreeterLoginWindow: item chosen '%s'", item_id);
+
+        g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
+                       0, item_id);
+
+        if (strcmp (item_id, GDM_USER_CHOOSER_USER_OTHER) == 0) {
+                g_debug ("GdmGreeterLoginWindow: Starting all auth conversations");
+                g_free (item_id);
+
+                begin_other_verification (login_window);
+        } else if (strcmp (item_id, GDM_USER_CHOOSER_USER_GUEST) == 0) {
+                /* FIXME: handle guest account stuff */
+                g_free (item_id);
+        } else if (strcmp (item_id, GDM_USER_CHOOSER_USER_AUTO) == 0) {
+                g_debug ("GdmGreeterLoginWindow: Starting auto login");
+                g_free (item_id);
+
+                begin_auto_login (login_window);
+        } else {
+                g_debug ("GdmGreeterLoginWindow: Starting single auth conversation");
+                begin_single_service_verification (login_window, item_id);
+                g_free (item_id);
+        }
 }
 
 static void
@@ -1354,12 +1805,40 @@ create_computer_info (GdmGreeterLoginWindow *login_window)
 #define INVISIBLE_CHAR_BULLET        0x2022
 #define INVISIBLE_CHAR_NONE          0
 
+static void
+on_extension_activated (GdmGreeterLoginWindow *login_window,
+                        GdmLoginExtension   *extension)
+{
+        set_extension_active (login_window, extension);
+}
+
+static void
+on_extension_deactivated (GdmGreeterLoginWindow *login_window,
+                          GdmLoginExtension   *extension)
+{
+        char *name;
+
+        if (login_window->priv->active_extension != extension) {
+                g_warning ("inactive extension has been deactivated");
+                return;
+        }
+
+        name = gdm_login_extension_get_name (extension);
+        g_debug ("GdmGreeterLoginWindow: extension '%s' now in background", name);
+        g_free (name);
+
+        clear_active_extension (login_window);
+
+        login_window->priv->active_extension = gdm_extension_list_get_active_extension (GDM_EXTENSION_LIST (login_window->priv->extension_list));
+        g_object_unref (login_window->priv->active_extension);
+}
 
 static void
 register_custom_types (GdmGreeterLoginWindow *login_window)
 {
         GType types[] = { GDM_TYPE_USER_CHOOSER_WIDGET,
-                          GDM_TYPE_SESSION_OPTION_WIDGET };
+                          GDM_TYPE_SESSION_OPTION_WIDGET,
+                          GDM_TYPE_EXTENSION_LIST };
         int i;
 
         for (i = 0; i < G_N_ELEMENTS (types); i++) {
@@ -1370,7 +1849,6 @@ register_custom_types (GdmGreeterLoginWindow *login_window)
 static void
 load_theme (GdmGreeterLoginWindow *login_window)
 {
-        GtkWidget *entry;
         GtkWidget *button;
         GtkWidget *box;
         GtkWidget *image;
@@ -1423,7 +1901,7 @@ load_theme (GdmGreeterLoginWindow *login_window)
                           login_window);
         g_signal_connect (login_window->priv->user_chooser,
                           "activated",
-                          G_CALLBACK (on_user_chosen),
+                          G_CALLBACK (on_user_chooser_activated),
                           login_window);
         g_signal_connect (login_window->priv->user_chooser,
                           "deactivated",
@@ -1442,30 +1920,31 @@ load_theme (GdmGreeterLoginWindow *login_window)
                           G_CALLBACK (on_session_activated),
                           login_window);
 
+        login_window->priv->extension_list = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "extension-list"));
+
+        g_signal_connect_swapped (GDM_EXTENSION_LIST (login_window->priv->extension_list),
+                                  "activated",
+                                  G_CALLBACK (on_extension_activated),
+                                  login_window);
+        g_signal_connect_swapped (GDM_EXTENSION_LIST (login_window->priv->extension_list),
+                                  "deactivated",
+                                  G_CALLBACK (on_extension_deactivated),
+                                  login_window);
+
         login_window->priv->auth_banner_label = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "auth-banner-label"));
         /*make_label_small_italic (login_window->priv->auth_banner_label);*/
+        login_window->priv->auth_page_box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "auth-page-box"));
 
         button = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "cancel-button"));
         g_signal_connect (button, "clicked", G_CALLBACK (cancel_button_clicked), login_window);
-
-        entry = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "auth-prompt-entry"));
-        /* Only change the invisible character if it '*' otherwise assume it is OK */
-        if ('*' == gtk_entry_get_invisible_char (GTK_ENTRY (entry))) {
-                gunichar invisible_char;
-                invisible_char = INVISIBLE_CHAR_BLACK_CIRCLE;
-                gtk_entry_set_invisible_char (GTK_ENTRY (entry), invisible_char);
-        }
 
         create_computer_info (login_window);
 
         box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "computer-info-event-box"));
         g_signal_connect (box, "button-press-event", G_CALLBACK (on_computer_info_label_button_press), login_window);
 
-        if (login_window->priv->user_list_disabled) {
-                switch_mode (login_window, MODE_AUTHENTICATION);
-        } else {
-                switch_mode (login_window, MODE_SELECTION);
-        }
+        clear_active_extension (login_window);
+        switch_mode (login_window, MODE_SELECTION);
 
         gdm_profile_end (NULL);
 }
@@ -1656,6 +2135,15 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
 
         gtk_container_class_handle_border_width (container_class);
 
+        signals [START_CONVERSATION] =
+                g_signal_new ("start-conversation",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, start_conversation),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE, 1, G_TYPE_STRING);
         signals [BEGIN_AUTO_LOGIN] =
                 g_signal_new ("begin-auto-login",
                               G_TYPE_FROM_CLASS (object_class),
@@ -1672,9 +2160,9 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, begin_verification),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__VOID,
+                              g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
-                              0);
+                              1, G_TYPE_STRING);
         signals [BEGIN_VERIFICATION_FOR_USER] =
                 g_signal_new ("begin-verification-for-user",
                               G_TYPE_FROM_CLASS (object_class),
@@ -1682,9 +2170,9 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, begin_verification_for_user),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__STRING,
+                              gdm_marshal_VOID__STRING_STRING,
                               G_TYPE_NONE,
-                              1, G_TYPE_STRING);
+                              2, G_TYPE_STRING, G_TYPE_STRING);
         signals [QUERY_ANSWER] =
                 g_signal_new ("query-answer",
                               G_TYPE_FROM_CLASS (object_class),
@@ -1692,9 +2180,9 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, query_answer),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__STRING,
+                              gdm_marshal_VOID__STRING_STRING,
                               G_TYPE_NONE,
-                              1, G_TYPE_STRING);
+                              2, G_TYPE_STRING, G_TYPE_STRING);
         signals [USER_SELECTED] =
                 g_signal_new ("user-selected",
                               G_TYPE_FROM_CLASS (object_class),
@@ -1732,9 +2220,9 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, start_session),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__VOID,
+                              g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
-                              0);
+                              1, G_TYPE_STRING);
 
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_IS_LOCAL,
@@ -1779,6 +2267,254 @@ on_gconf_key_changed (GConfClient           *client,
         }
 }
 
+static void
+on_login_extension_answer (GdmGreeterLoginWindow *login_window,
+                             const char            *text,
+                             GdmLoginExtension   *extension)
+{
+        if (text != NULL) {
+                char *service_name;
+
+                service_name = gdm_login_extension_get_service_name (extension);
+                if (service_name != NULL) {
+                        g_signal_emit (login_window, signals[QUERY_ANSWER], 0, service_name, text);
+                        g_free (service_name);
+                }
+        }
+
+        set_sensitive (login_window, TRUE);
+        set_ready (login_window);
+}
+
+static void
+on_login_extension_cancel (GdmGreeterLoginWindow *login_window,
+                             GdmLoginExtension   *extension)
+{
+        restart_conversations (login_window);
+}
+
+static gboolean
+on_login_extension_chose_user (GdmGreeterLoginWindow *login_window,
+                                 const char            *username,
+                                 GdmLoginExtension   *extension)
+{
+        if (!login_window->priv->user_chooser_loaded) {
+                char *name;
+
+                name = gdm_login_extension_get_name (extension);
+                g_warning ("Task %s is trying to choose user before list is loaded", name);
+                g_free (name);
+                return FALSE;
+        }
+
+        /* If we're already authenticating then we can't pick a user
+         */
+        if (login_window->priv->dialog_mode == MODE_AUTHENTICATION || login_window->priv->dialog_mode == MODE_MULTIPLE_AUTHENTICATION) {
+                return FALSE;
+        }
+
+        gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser),
+                                                      username);
+
+        return TRUE;
+}
+
+static void
+on_login_extension_message_queue_empty (GdmGreeterLoginWindow *login_window,
+                                          GdmLoginExtension   *extension)
+{
+        gboolean needs_to_be_stopped;
+
+        needs_to_be_stopped = g_list_find (login_window->priv->extensions_to_stop, extension) != NULL;
+
+        if (needs_to_be_stopped) {
+                char *service_name;
+
+                service_name = gdm_login_extension_get_service_name (extension);
+                handle_stopped_conversation (login_window, service_name);
+                g_free (service_name);
+        }
+
+        if (login_window->priv->service_name_of_session_ready_to_start != NULL) {
+                if (login_window->priv->active_extension == extension) {
+                        gdm_greeter_login_window_start_session (login_window);
+                }
+        } else if (login_window->priv->next_mode != MODE_UNDEFINED) {
+                reset_dialog_after_messages (login_window, login_window->priv->next_mode);
+        }
+}
+
+static void
+on_button_action_label_changed (GtkWidget *button)
+{
+        GtkAction *action;
+        char *text;
+
+        action = gtk_activatable_get_related_action (GTK_ACTIVATABLE (button));
+
+        g_object_get (G_OBJECT (action), "label", &text, NULL);
+
+        gtk_button_set_label (GTK_BUTTON (button), text);
+        g_free (text);
+}
+
+static void
+on_button_action_icon_name_changed (GtkWidget *button)
+{
+        GtkAction *action;
+        GtkWidget *image;
+
+        action = gtk_activatable_get_related_action (GTK_ACTIVATABLE (button));
+
+        if (gtk_action_get_is_important (action)) {
+                image = gtk_action_create_icon (GTK_ACTION (action), GTK_ICON_SIZE_BUTTON);
+        } else {
+                image = NULL;
+        }
+
+        gtk_button_set_image (GTK_BUTTON (button), image);
+
+}
+
+static void
+on_button_action_tooltip_changed (GtkWidget *button)
+{
+        GtkAction *action;
+        char *text;
+
+        action = gtk_activatable_get_related_action (GTK_ACTIVATABLE (button));
+
+        g_object_get (G_OBJECT (action), "tooltip", &text, NULL);
+
+        gtk_widget_set_tooltip_text (button, text);
+        g_free (text);
+}
+
+static GtkWidget *
+create_button_from_action (GtkAction *action)
+{
+        GtkWidget *button;
+
+        button = gtk_button_new ();
+
+        gtk_activatable_set_related_action (GTK_ACTIVATABLE (button), action);
+
+        g_signal_connect_swapped (action,
+                                  "notify::label",
+                                  G_CALLBACK (on_button_action_label_changed),
+                                  button);
+        g_signal_connect_swapped (action,
+                                  "notify::icon-name",
+                                  G_CALLBACK (on_button_action_icon_name_changed),
+                                  button);
+        g_signal_connect_swapped (action,
+                                  "notify::tooltip",
+                                  G_CALLBACK (on_button_action_tooltip_changed),
+                                  button);
+
+        on_button_action_label_changed (button);
+        on_button_action_icon_name_changed (button);
+        on_button_action_tooltip_changed (button);
+
+        if (strcmp (gtk_action_get_name (action),
+                    GDM_LOGIN_EXTENSION_DEFAULT_ACTION) == 0) {
+                gtk_widget_set_can_default (button, TRUE);
+        }
+
+        return button;
+}
+
+static void
+create_buttons_for_actions (GdmGreeterLoginWindow *login_window,
+                            GtkActionGroup        *actions)
+{
+        GList *action_list;
+        GList *node;
+        GtkWidget *box;
+
+        action_list = gtk_action_group_list_actions (actions);
+
+        box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "buttonbox"));
+        for (node = action_list; node != NULL; node = node->next) {
+                GtkAction *action;
+                GtkWidget *button;
+
+                action = node->data;
+
+                button = create_button_from_action (action);
+                gtk_container_add (GTK_CONTAINER (box), button);
+        }
+
+        g_list_free (action_list);
+}
+
+static void
+gdm_greeter_login_window_add_extension (GdmGreeterLoginWindow *login_window,
+                                        GdmLoginExtension     *extension)
+{
+        char *name;
+        char *description;
+        char *service_name;
+        GtkActionGroup *actions;
+
+        g_return_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window));
+        g_return_if_fail (GDM_IS_LOGIN_EXTENSION (extension));
+
+        name = gdm_login_extension_get_name (extension);
+        description = gdm_login_extension_get_description (extension);
+
+        if (!gdm_login_extension_is_visible (extension)) {
+                g_debug ("GdmGreeterLoginWindow: new extension '%s - %s' won't be added",
+                         name, description);
+                g_free (name);
+                g_free (description);
+                return;
+        }
+
+        actions = gdm_login_extension_get_actions (extension);
+
+        create_buttons_for_actions (login_window, actions);
+        hide_extension_actions (extension);
+
+        g_object_unref (actions);
+
+        g_signal_connect_swapped (extension,
+                                  "answer",
+                                  G_CALLBACK (on_login_extension_answer),
+                                  login_window);
+        g_signal_connect_swapped (extension,
+                                  "cancel",
+                                  G_CALLBACK (on_login_extension_cancel),
+                                  login_window);
+        g_signal_connect_swapped (extension,
+                                  "user-chosen",
+                                  G_CALLBACK (on_login_extension_chose_user),
+                                  login_window);
+        g_signal_connect_swapped (extension,
+                                  "message-queue-empty",
+                                  G_CALLBACK (on_login_extension_message_queue_empty),
+                                  login_window);
+
+        g_debug ("GdmGreeterLoginWindow: new extension '%s - %s' added",
+                name, description);
+
+        login_window->priv->extensions = g_list_append (login_window->priv->extensions, extension);
+        service_name = gdm_login_extension_get_service_name (extension);
+
+        if (gdm_login_extension_is_choosable (extension)) {
+                gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser),
+                                             service_name, NULL, name, description, ~0,
+                                             FALSE, TRUE, NULL, NULL);
+        }
+
+        g_free (name);
+        g_free (description);
+
+        g_debug ("GdmGreeterLoginWindow: starting conversation with '%s'", service_name);
+        g_signal_emit (login_window, signals[START_CONVERSATION], 0, service_name);
+        g_free (service_name);
+}
+
 static gboolean
 on_window_state_event (GtkWidget           *widget,
                        GdkEventWindowState *event,
@@ -1793,6 +2529,45 @@ on_window_state_event (GtkWidget           *widget,
 }
 
 static void
+load_login_extensions (GdmGreeterLoginWindow *login_window)
+{
+        GList *extensions, *node;
+        GIOExtensionPoint *extension_point;
+
+        g_debug ("GdmGreeterLoginWindow: loading extensions");
+
+        extension_point = g_io_extension_point_register (GDM_LOGIN_EXTENSION_POINT_NAME);
+        g_io_extension_point_set_required_type (extension_point,
+                                                GDM_TYPE_LOGIN_EXTENSION);
+
+        g_io_modules_load_all_in_directory (GDM_SIMPLE_GREETER_PLUGINS_DIR);
+
+        extensions = g_io_extension_point_get_extensions (extension_point);
+
+        if (extensions == NULL) {
+                gdm_unified_extension_load ();
+                extensions = g_io_extension_point_get_extensions (extension_point);
+        }
+
+        for (node = extensions; node != NULL; node = node->next) {
+                GIOExtension *extension;
+                GdmLoginExtension *login_extension;
+
+                extension = (GIOExtension *) node->data;
+
+                g_debug ("GdmGreeterLoginWindow: adding extension '%s'",
+                         g_io_extension_get_name (extension));
+
+                login_extension = g_object_new (g_io_extension_get_type (extension), NULL);
+
+                gdm_greeter_login_window_add_extension (GDM_GREETER_LOGIN_WINDOW (login_window),
+                                                        login_extension);
+        }
+
+        g_debug ("GdmGreeterLoginWindow: done loading extensions");
+}
+
+static void
 gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
 {
         GConfClient *client;
@@ -1804,8 +2579,7 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         login_window->priv = GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE (login_window);
         login_window->priv->timed_login_enabled = FALSE;
         login_window->priv->dialog_mode = MODE_UNDEFINED;
-        login_window->priv->message_queue = g_queue_new ();
-        login_window->priv->message_queue_empty_reset_dialog_mode = MODE_UNDEFINED;
+        login_window->priv->next_mode = MODE_UNDEFINED;
 
         client = gconf_client_get_default ();
         error = NULL;
@@ -1850,6 +2624,7 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
                                                                   login_window,
                                                                   NULL,
                                                                   NULL);
+        g_idle_add ((GSourceFunc) load_login_extensions, login_window);
         gdm_profile_end (NULL);
 }
 
@@ -1868,9 +2643,6 @@ gdm_greeter_login_window_finalize (GObject *object)
         if (login_window->priv->client != NULL) {
                 g_object_unref (login_window->priv->client);
         }
-
-        purge_message_queue (login_window);
-        g_queue_free (login_window->priv->message_queue);
 
         G_OBJECT_CLASS (gdm_greeter_login_window_parent_class)->finalize (object);
 }

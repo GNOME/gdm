@@ -1,8 +1,13 @@
 NULL =
+SUBDIRS = 				\
+	libgdmsimplegreeter		\
+	extensions				\
+	$(NULL)
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/common				\
 	-I$(top_builddir)/common			\
+	-I$(top_srcdir)/gui/simple-greeter/libgdmsimplegreeter	\
 	-DDMCONFDIR=\""$(dmconfdir)"\"			\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"                  \
 	-DDATADIR=\""$(datadir)"\"		 	\
@@ -15,6 +20,7 @@ AM_CPPFLAGS = \
 	-DGDM_CACHE_DIR=\""$(localstatedir)/cache/gdm"\"	\
 	-DAT_SPI_REGISTRYD_DIR="\"$(AT_SPI_REGISTRYD_DIR)\""	\
 	$(UPOWER_CFLAGS)				\
+	-DGDM_SIMPLE_GREETER_PLUGINS_DIR="\"$(GDM_SIMPLE_GREETER_PLUGINS_DIR)\""\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(GTK_CFLAGS)					\
 	$(SIMPLE_GREETER_CFLAGS)			\
@@ -60,10 +66,14 @@ test_greeter_login_window_SOURCES = 	\
 	gdm-user-chooser-widget.c	\
 	gdm-user-chooser-dialog.h	\
 	gdm-user-chooser-dialog.c	\
+	gdm-extension-list.h		\
+	gdm-extension-list.c		\
 	$(NULL)
 
 test_greeter_login_window_LDADD =	\
 	$(top_builddir)/common/libgdmcommon.la	\
+	$(top_builddir)/gui/simple-greeter/libgdmsimplegreeter/libgdmsimplegreeter.la	\
+	$(top_builddir)/gui/simple-greeter/extensions/unified/libunified.la	\
 	$(COMMON_LIBS)			\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(RBAC_LIBS)			\
@@ -104,6 +114,7 @@ test_greeter_panel_SOURCES = 	\
 
 test_greeter_panel_LDADD =	\
 	$(top_builddir)/common/libgdmcommon.la	\
+	$(top_builddir)/gui/simple-greeter/libgdmsimplegreeter/libgdmsimplegreeter.la	\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(GTK_LIBS)			\
 	$(GCONF_LIBS)			\
@@ -251,10 +262,14 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-session-option-widget.c	\
 	gdm-user-chooser-widget.h	\
 	gdm-user-chooser-widget.c	\
+	gdm-extension-list.h		\
+	gdm-extension-list.c		\
 	$(NULL)
 
 gdm_simple_greeter_LDADD = 		\
 	$(top_builddir)/common/libgdmcommon.la	\
+	$(top_builddir)/gui/simple-greeter/libgdmsimplegreeter/libgdmsimplegreeter.la	\
+	$(top_builddir)/gui/simple-greeter/extensions/unified/libunified.la	\
 	$(COMMON_LIBS)			\
 	$(EXTRA_GREETER_LIBS)   	\
 	$(SIMPLE_GREETER_LIBS)		\

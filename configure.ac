@@ -18,6 +18,22 @@ AC_PROG_CXX
 AM_PROG_CC_C_O
 AC_PROG_LIBTOOL()
 
+## increment if the plugin interface has additions, changes, removals.
+LT_CURRENT=1
+
+## increment any time the source changes; set to
+##  0 if you increment CURRENT
+LT_REVISION=0
+
+## increment if any interfaces have been added; set to 0
+## if any interfaces have been changed or removed. removal has
+## precedence over adding, so set to 0 if both happened.
+LT_AGE=0
+
+AC_SUBST(LT_CURRENT)
+AC_SUBST(LT_REVISION)
+AC_SUBST(LT_AGE)
+
 AC_HEADER_STDC
 
 AC_SUBST(VERSION)
@@ -75,6 +91,8 @@ PKG_CHECK_MODULES(DAEMON,
 )
 AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
+
+GLIB_GSETTINGS
 
 PKG_CHECK_MODULES(XLIB, x11 xau xrandr, ,
   [AC_PATH_XTRA
@@ -195,6 +213,11 @@ AC_SUBST(dmconfdir)
 dnl ---------------------------------------------------------------------------
 dnl - Configure arguments
 dnl ---------------------------------------------------------------------------
+AC_ARG_ENABLE(split-authentication,
+	      AS_HELP_STRING([--enable-split-authentication],
+                             [Enable multiple simultaneous PAM conversations during login @<:@default=yes@:>@]),,
+              enable_split_authentication=no)
+AM_CONDITIONAL(ENABLE_SPLIT_AUTHENTICATION, test x$enable_split_authentication = xyes)
 
 AC_ARG_ENABLE(console-helper,
 	      AS_HELP_STRING([--enable-console-helper],
@@ -1259,6 +1282,14 @@ fi
 
 AC_SUBST(GDM_SCREENSHOT_DIR)
 
+dnl ---------------------------------------------------------------------------
+dnl - Directory for simple greeter extensions
+dnl ---------------------------------------------------------------------------
+GDM_SIMPLE_GREETER_PLUGINS_DIR=${libdir}/gdm/simple-greeter/extensions
+AC_SUBST(GDM_SIMPLE_GREETER_PLUGINS_DIR)
+
+GDM_SIMPLE_GREETER_EXTENSIONS_DATA_DIR=${datadir}/gdm/simple-greeter/extensions
+AC_SUBST(GDM_SIMPLE_GREETER_EXTENSIONS_DATA_DIR)
 
 dnl ---------------------------------------------------------------------------
 dnl - Finish
@@ -1384,6 +1415,11 @@ daemon/Makefile
 docs/Makefile
 gui/Makefile
 gui/simple-greeter/Makefile
+gui/simple-greeter/libgdmsimplegreeter/Makefile
+gui/simple-greeter/libgdmsimplegreeter/gdmsimplegreeter.pc
+gui/simple-greeter/extensions/Makefile
+gui/simple-greeter/extensions/unified/Makefile
+gui/simple-greeter/extensions/password/Makefile
 gui/simple-chooser/Makefile
 utils/Makefile
 data/gdm.conf

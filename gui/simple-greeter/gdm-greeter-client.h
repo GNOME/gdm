@@ -63,6 +63,8 @@ typedef struct
                                           const char        *service_name);
         void (* ready)                   (GdmGreeterClient  *client,
                                           const char        *service_name);
+        void (* conversation_stopped)    (GdmGreeterClient  *client,
+                                          const char        *service_name);
         void (* reset)                   (GdmGreeterClient  *client);
         void (* authentication_failed)   (GdmGreeterClient  *client);
         void (* selected_user_changed)   (GdmGreeterClient  *client,

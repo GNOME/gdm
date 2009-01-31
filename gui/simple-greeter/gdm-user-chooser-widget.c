@@ -654,9 +654,30 @@ gdm_user_chooser_widget_set_show_user_auto (GdmUserChooserWidget *widget,
 char *
 gdm_user_chooser_widget_get_chosen_user_name (GdmUserChooserWidget *widget)
 {
+        char *active_item_id;
+        gboolean isnt_user;
+
         g_return_val_if_fail (GDM_IS_USER_CHOOSER_WIDGET (widget), NULL);
 
-        return gdm_chooser_widget_get_active_item (GDM_CHOOSER_WIDGET (widget));
+        active_item_id = gdm_chooser_widget_get_active_item (GDM_CHOOSER_WIDGET (widget));
+        if (active_item_id == NULL) {
+                g_debug ("GdmUserChooserWidget: no active item in list");
+                return NULL;
+        }
+
+        gdm_chooser_widget_lookup_item (GDM_CHOOSER_WIDGET (widget), active_item_id,
+                                        NULL, NULL, NULL, NULL, NULL,
+                                        &isnt_user);
+
+        if (isnt_user) {
+                g_debug ("GdmUserChooserWidget: active item '%s' isn't a user", active_item_id);
+                g_free (active_item_id);
+                return NULL;
+        }
+
+        g_debug ("GdmUserChooserWidget: active item '%s' is a user", active_item_id);
+
+        return active_item_id;
 }
 
 void
