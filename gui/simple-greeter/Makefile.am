@@ -83,6 +83,8 @@ test_greeter_login_window_SOURCES = 	\
 	gdm-user-chooser-widget.c	\
 	gdm-user-chooser-dialog.h	\
 	gdm-user-chooser-dialog.c	\
+	gdm-task-list.h			\
+	gdm-task-list.c			\
 	$(NULL)
 
 test_greeter_login_window_LDADD =	\
@@ -316,6 +318,8 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-session-option-widget.c	\
 	gdm-user-chooser-widget.h	\
 	gdm-user-chooser-widget.c	\
+	gdm-task-list.h			\
+	gdm-task-list.c			\
 	$(NULL)
 
 gdm_simple_greeter_LDADD = 		\

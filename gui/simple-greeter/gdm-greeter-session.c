@@ -70,7 +70,7 @@ on_info (GdmGreeterClient  *client,
 {
         g_debug ("GdmGreeterSession: Info: %s", text);
 
-        gdm_greeter_login_window_info (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
+        gdm_greeter_login_window_info (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), service_name, text);
 }
 
 static void
@@ -81,7 +81,7 @@ on_problem (GdmGreeterClient  *client,
 {
         g_debug ("GdmGreeterSession: Problem: %s", text);
 
-        gdm_greeter_login_window_problem (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
+        gdm_greeter_login_window_problem (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), service_name, text);
 }
 
 static void
@@ -168,7 +168,7 @@ on_info_query (GdmGreeterClient  *client,
 {
         g_debug ("GdmGreeterSession: Info query: %s", text);
 
-        gdm_greeter_login_window_info_query (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
+        gdm_greeter_login_window_info_query (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), service_name, text);
 }
 
 static void
@@ -179,9 +179,17 @@ on_secret_info_query (GdmGreeterClient  *client,
 {
         g_debug ("GdmGreeterSession: Secret info query: %s", text);
 
-        gdm_greeter_login_window_secret_info_query (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
+        gdm_greeter_login_window_secret_info_query (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), service_name, text);
 }
 
+static void
+on_start_conversation (GdmGreeterLoginWindow *login_window,
+                       const char            *service_name,
+                       GdmGreeterSession     *session)
+{
+        gdm_greeter_client_call_start_conversation (session->priv->client,
+                                                    service_name);
+}
 static void
 on_begin_auto_login (GdmGreeterLoginWindow *login_window,
                      const char            *username,
@@ -193,29 +201,32 @@ on_begin_auto_login (GdmGreeterLoginWindow *login_window,
 
 static void
 on_begin_verification (GdmGreeterLoginWindow *login_window,
+                       const char            *service_name,
                        GdmGreeterSession     *session)
 {
         gdm_greeter_client_call_begin_verification (session->priv->client,
-                                                    "gdm");
+                                                    service_name);
 }
 
 static void
 on_begin_verification_for_user (GdmGreeterLoginWindow *login_window,
+                                const char            *service_name,
                                 const char            *username,
                                 GdmGreeterSession     *session)
 {
         gdm_greeter_client_call_begin_verification_for_user (session->priv->client,
-                                                             "gdm",
+                                                             service_name,
                                                              username);
 }
 
 static void
 on_query_answer (GdmGreeterLoginWindow *login_window,
+                 const char            *service_name,
                  const char            *text,
                  GdmGreeterSession     *session)
 {
         gdm_greeter_client_call_answer_query (session->priv->client,
-                                              "gdm",
+                                              service_name,
                                               text);
 }
 
@@ -366,7 +377,10 @@ toggle_login_window (GdmGreeterSession *session,
                 is_local = gdm_greeter_client_get_display_is_local (session->priv->client);
                 g_debug ("GdmGreeterSession: Starting a login window local:%d", is_local);
                 session->priv->login_window = gdm_greeter_login_window_new (is_local);
-
+                g_signal_connect (session->priv->login_window,
+                                  "start-conversation",
+                                  G_CALLBACK (on_start_conversation),
+                                  session);
                 g_signal_connect (session->priv->login_window,
                                   "begin-auto-login",
                                   G_CALLBACK (on_begin_auto_login),

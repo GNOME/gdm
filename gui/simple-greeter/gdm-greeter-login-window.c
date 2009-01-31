@@ -60,12 +60,16 @@
 #include <polkit-gnome/polkit-gnome.h>
 #endif
 
+#include "gdm-marshal.h"
+
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 #include "gdm-profile.h"
 
+#include "gdm-greeter-client.h"
 #include "gdm-greeter-login-window.h"
 #include "gdm-user-chooser-widget.h"
+#include "gdm-task-list.h"
 
 #ifdef HAVE_PAM
 #include <security/pam_appl.h>
@@ -111,6 +115,7 @@ struct GdmGreeterLoginWindowPrivate
 {
         GladeXML        *xml;
         GtkWidget       *user_chooser;
+        GtkWidget       *conversation_list;
         GtkWidget       *auth_banner_label;
         guint            display_is_local : 1;
         guint            is_interactive : 1;
@@ -139,6 +144,7 @@ enum {
 };
 
 enum {
+        START_CONVERSATION,
         BEGIN_AUTO_LOGIN,
         BEGIN_VERIFICATION,
         BEGIN_VERIFICATION_FOR_USER,
@@ -395,7 +401,7 @@ on_login_button_clicked_answer_query (GtkButton             *button,
         text = gtk_entry_get_text (GTK_ENTRY (entry));
 
         _gdm_greeter_login_window_set_interactive (login_window, TRUE);
-        g_signal_emit (login_window, signals[QUERY_ANSWER], 0, text);
+        g_signal_emit (login_window, signals[QUERY_ANSWER], 0, "gdm", text);
 }
 
 static void
@@ -747,26 +753,32 @@ gdm_greeter_login_window_reset (GdmGreeterLoginWindow *login_window)
 
 gboolean
 gdm_greeter_login_window_info (GdmGreeterLoginWindow *login_window,
+                               const char            *service_name,
                                const char            *text)
 {
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
         g_debug ("GdmGreeterLoginWindow: info: %s", text);
 
-        set_message (GDM_GREETER_LOGIN_WINDOW (login_window), text);
+        if (strcmp (service_name, gdm_task_list_get_active_task (GDM_TASK_LIST (login_window->priv->conversation_list))) == 0) {
+                set_message (GDM_GREETER_LOGIN_WINDOW (login_window), text);
+        }
 
         return TRUE;
 }
 
 gboolean
 gdm_greeter_login_window_problem (GdmGreeterLoginWindow *login_window,
+                                  const char            *service_name,
                                   const char            *text)
 {
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
         g_debug ("GdmGreeterLoginWindow: problem: %s", text);
 
-        set_message (GDM_GREETER_LOGIN_WINDOW (login_window), text);
+        if (strcmp (service_name, gdm_task_list_get_active_task (GDM_TASK_LIST (login_window->priv->conversation_list))) == 0) {
+                set_message (GDM_GREETER_LOGIN_WINDOW (login_window), text);
+        }
         gdk_window_beep (GTK_WIDGET (login_window)->window);
 
         return TRUE;
@@ -842,12 +854,17 @@ gdm_greeter_login_window_start_session_when_ready (GdmGreeterLoginWindow *login_
 
 gboolean
 gdm_greeter_login_window_info_query (GdmGreeterLoginWindow *login_window,
+                                     const char            *service_name,
                                      const char            *text)
 {
         GtkWidget  *entry;
         GtkWidget  *label;
 
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
+
+        if (strcmp (service_name, gdm_task_list_get_active_task (GDM_TASK_LIST (login_window->priv->conversation_list))) != 0) {
+                return TRUE;
+        }
 
         g_debug ("GdmGreeterLoginWindow: info query: %s", text);
 
@@ -871,6 +888,7 @@ gdm_greeter_login_window_info_query (GdmGreeterLoginWindow *login_window,
 
 gboolean
 gdm_greeter_login_window_secret_info_query (GdmGreeterLoginWindow *login_window,
+                                            const char            *service_name,
                                             const char            *text)
 {
         GtkWidget  *entry;
@@ -1343,7 +1361,10 @@ on_user_chosen (GdmUserChooserWidget  *user_chooser,
                        0, user_name);
 
         if (strcmp (user_name, GDM_USER_CHOOSER_USER_OTHER) == 0) {
-                g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
+                const char *service_name;
+
+                service_name = gdm_task_list_get_active_task (GDM_TASK_LIST (login_window->priv->conversation_list));
+                g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0, service_name);
         } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_GUEST) == 0) {
                 /* FIXME: handle guest account stuff */
         } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_AUTO) == 0) {
@@ -1357,7 +1378,10 @@ on_user_chosen (GdmUserChooserWidget  *user_chooser,
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_TIMED_LOGIN);
                 set_message (login_window, _("Select language and click Log In"));
         } else {
-                g_signal_emit (login_window, signals[BEGIN_VERIFICATION_FOR_USER], 0, user_name);
+                const char *service_name;
+
+                service_name = gdm_task_list_get_active_task (GDM_TASK_LIST (login_window->priv->conversation_list));
+                g_signal_emit (login_window, signals[BEGIN_VERIFICATION_FOR_USER], 0, service_name, user_name);
         }
 
         switch_mode (login_window, MODE_AUTHENTICATION);
@@ -1501,6 +1525,21 @@ create_computer_info (GdmGreeterLoginWindow *login_window)
 #define INVISIBLE_CHAR_BULLET        0x2022
 #define INVISIBLE_CHAR_NONE          0
 
+static void
+on_task_activated (GdmGreeterLoginWindow *login_window,
+                   const char            *name)
+{
+        g_debug ("GdmGreeterLoginWindow: starting conversation with '%s'", name);
+        g_signal_emit (login_window, signals[START_CONVERSATION], 0, name);
+}
+
+static void
+on_task_deactivated (GdmGreeterLoginWindow *login_window,
+                     const char            *name)
+{
+        g_debug ("GdmGreeterLoginWindow: conversation '%s' now in background", name);
+}
+
 static GtkWidget *
 custom_widget_constructor (GladeXML              *xml,
                            char                  *func_name,
@@ -1523,6 +1562,8 @@ custom_widget_constructor (GladeXML              *xml,
 
         if (strcmp (name, "user-chooser") == 0) {
                widget = gdm_user_chooser_widget_new ();
+        } else if (strcmp (name, "conversation-list") == 0) {
+               widget = gdm_task_list_new ();
         }
 
         gdm_profile_end (NULL);
@@ -1595,6 +1636,25 @@ load_theme (GdmGreeterLoginWindow *login_window)
                           login_window);
 
         gtk_widget_show (login_window->priv->user_chooser);
+
+        login_window->priv->conversation_list = glade_xml_get_widget (login_window->priv->xml,
+                                                                      "conversation-list");
+        g_signal_connect_swapped (GDM_TASK_LIST (login_window->priv->conversation_list),
+                                  "activated",
+                                  G_CALLBACK (on_task_activated),
+                                  login_window);
+        g_signal_connect_swapped (GDM_TASK_LIST (login_window->priv->conversation_list),
+                                  "deactivated",
+                                  G_CALLBACK (on_task_deactivated),
+                                  login_window);
+        gtk_widget_show (login_window->priv->conversation_list);
+
+        gdm_task_list_add_task (GDM_TASK_LIST (login_window->priv->conversation_list),
+                                "password-auth", "dialog-password");
+        gdm_task_list_add_task (GDM_TASK_LIST (login_window->priv->conversation_list),
+                                "fingerprint-auth", "stock_allow-effects");
+        gdm_task_list_add_task (GDM_TASK_LIST (login_window->priv->conversation_list),
+                                "smartcard-auth", "badge-small");
 
         login_window->priv->auth_banner_label = glade_xml_get_widget (login_window->priv->xml, "auth-banner-label");
         /*make_label_small_italic (login_window->priv->auth_banner_label);*/
@@ -1763,6 +1823,15 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
         widget_class->key_press_event = gdm_greeter_login_window_key_press_event;
         widget_class->size_request = gdm_greeter_login_window_size_request;
 
+        signals [START_CONVERSATION] =
+                g_signal_new ("start-conversation",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, start_conversation),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE, 1, G_TYPE_STRING);
         signals [BEGIN_AUTO_LOGIN] =
                 g_signal_new ("begin-auto-login",
                               G_TYPE_FROM_CLASS (object_class),
@@ -1779,9 +1848,9 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, begin_verification),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__VOID,
+                              g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
-                              0);
+                              1, G_TYPE_STRING);
         signals [BEGIN_VERIFICATION_FOR_USER] =
                 g_signal_new ("begin-verification-for-user",
                               G_TYPE_FROM_CLASS (object_class),
@@ -1789,9 +1858,9 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, begin_verification_for_user),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__STRING,
+                              gdm_marshal_VOID__STRING_STRING,
                               G_TYPE_NONE,
-                              1, G_TYPE_STRING);
+                              2, G_TYPE_STRING, G_TYPE_STRING);
         signals [QUERY_ANSWER] =
                 g_signal_new ("query-answer",
                               G_TYPE_FROM_CLASS (object_class),
@@ -1799,9 +1868,9 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, query_answer),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__STRING,
+                              gdm_marshal_VOID__STRING_STRING,
                               G_TYPE_NONE,
-                              1, G_TYPE_STRING);
+                              2, G_TYPE_STRING, G_TYPE_STRING);
         signals [USER_SELECTED] =
                 g_signal_new ("user-selected",
                               G_TYPE_FROM_CLASS (object_class),
