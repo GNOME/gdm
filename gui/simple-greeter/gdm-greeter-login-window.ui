@@ -158,7 +158,24 @@
                     <child>
                       <object class="GtkVBox" id="selection-box">
                         <property name="visible">True</property>
-                        <property name="spacing">10</property>
+                        <property name="spacing">2</property>
+                        <child>
+                          <object class="GtkAlignment" id="task-list-alignment">
+                            <property name="visible">True</property>
+                            <property name="xalign">1.0</property>
+                            <property name="xscale">0.0</property>
+                            <child>
+                              <object class="GdmExtensionList" id="extension-list">
+                                <property name="visible">False</property>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
                         <child>
                           <object class="GdmUserChooserWidget" id="user-chooser">
                             <property name="visible">False</property>
@@ -166,61 +183,15 @@
                           <packing>
                             <property name="expand">True</property>
                             <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkHBox" id="auth-input-box">
-                            <property name="visible">True</property>
-                            <property name="spacing">6</property>
-                            <child>
-                              <object class="GtkLabel" id="auth-prompt-label">
-                                <property name="visible">True</property>
-
-                                <accessibility>
-                                  <relation type="label-for" target="auth-prompt-entry"/>
-                                </accessibility>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkEntry" id="auth-prompt-entry">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                <property name="activates_default">True</property>
-                                <accessibility>
-                                  <relation type="labelled-by" target="auth-prompt-label"/>
-                                </accessibility>
-                              </object>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkHBox" id="auth-message-box">
+                          <object class="GtkHBox" id="auth-page-box">
                             <property name="visible">True</property>
+                            <property name="border_width">10</property>
                             <child>
-                              <object class="GtkLabel" id="auth-message-label">
-                                <property name="visible">True</property>
-                              </object>
-                              <packing>
-                                <property name="position">0</property>
-                              </packing>
+                              <placeholder/>
                             </child>
                           </object>
                           <packing>

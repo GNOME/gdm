@@ -65,6 +65,7 @@ enum {
         SECRET_INFO_QUERY,
         SERVICE_UNAVAILABLE,
         READY,
+        CONVERSATION_STOPPED,
         RESET,
         AUTHENTICATION_FAILED,
         SELECTED_USER_CHANGED,
@@ -268,6 +269,13 @@ on_ready (GdmGreeterClient *client,
           DBusMessage      *message)
 {
         emit_string_signal_for_message (client, "Ready", message, READY);
+}
+
+static void
+on_conversation_stopped (GdmGreeterClient *client,
+                         DBusMessage      *message)
+{
+        emit_string_signal_for_message (client, "ConversationStopped", message, CONVERSATION_STOPPED);
 }
 
 static void
@@ -742,6 +750,8 @@ client_dbus_handle_message (DBusConnection *connection,
                 on_service_unavailable (client, message);
         } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "Ready")) {
                 on_ready (client, message);
+        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "ConversationStopped")) {
+                on_conversation_stopped (client, message);
         } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "Reset")) {
                 on_reset (client, message);
         } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "AuthenticationFailed")) {
@@ -986,6 +996,17 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
                               G_STRUCT_OFFSET (GdmGreeterClientClass, ready),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1, G_TYPE_STRING);
+
+        gdm_greeter_client_signals[CONVERSATION_STOPPED] =
+                g_signal_new ("conversation-stopped",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmGreeterClientClass, conversation_stopped),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,

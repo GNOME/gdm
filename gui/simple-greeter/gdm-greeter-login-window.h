@@ -23,6 +23,7 @@
 #define __GDM_GREETER_LOGIN_WINDOW_H
 
 #include <glib-object.h>
+#include "gdm-login-extension.h"
 
 G_BEGIN_DECLS
 
@@ -46,12 +47,17 @@ typedef struct
         GtkWindowClass   parent_class;
 
         /* signals */
+        void (* start_conversation)          (GdmGreeterLoginWindow *login_window,
+                                              const char            *service_name);
         void (* begin_auto_login)            (GdmGreeterLoginWindow *login_window,
                                               const char            *username);
-        void (* begin_verification)          (GdmGreeterLoginWindow *login_window);
+        void (* begin_verification)          (GdmGreeterLoginWindow *login_window,
+                                              const char            *service_name);
         void (* begin_verification_for_user) (GdmGreeterLoginWindow *login_window,
+                                              const char            *service_name,
                                               const char            *username);
         void (* query_answer)                (GdmGreeterLoginWindow *login_window,
+                                              const char            *service_name,
                                               const char            *text);
         void (* user_selected)               (GdmGreeterLoginWindow *login_window,
                                               const char            *text);
@@ -67,23 +73,33 @@ GtkWidget *         gdm_greeter_login_window_new                (gboolean displa
 
 
 gboolean            gdm_greeter_login_window_reset              (GdmGreeterLoginWindow *login_window);
-gboolean            gdm_greeter_login_window_authentication_failed (GdmGreeterLoginWindow *login_window);
-gboolean            gdm_greeter_login_window_ready              (GdmGreeterLoginWindow *login_window);
+gboolean            gdm_greeter_login_window_ready              (GdmGreeterLoginWindow *login_window,
+                                                                 const char            *service_name);
+gboolean            gdm_greeter_login_window_conversation_stopped (GdmGreeterLoginWindow *login_window,
+                                                                   const char            *service_name);
 gboolean            gdm_greeter_login_window_info_query         (GdmGreeterLoginWindow *login_window,
+                                                                 const char *service_name,
                                                                  const char *text);
 gboolean            gdm_greeter_login_window_secret_info_query  (GdmGreeterLoginWindow *login_window,
+                                                                 const char *service_name,
                                                                  const char *text);
 gboolean            gdm_greeter_login_window_info               (GdmGreeterLoginWindow *login_window,
+                                                                 const char *service_name,
                                                                  const char *text);
 gboolean            gdm_greeter_login_window_problem            (GdmGreeterLoginWindow *login_window,
+                                                                 const char *service_name,
                                                                  const char *text);
 void                gdm_greeter_login_window_set_default_session_name (GdmGreeterLoginWindow *login_window,
                                                                        const char *text);
 
+gboolean            gdm_greeter_login_window_service_unavailable (GdmGreeterLoginWindow *login_window,
+                                                                  const char *service_name);
+
 void               gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_window,
                                                                  const char            *username,
                                                                  int                    delay);
-void               gdm_greeter_login_window_session_opened      (GdmGreeterLoginWindow *login_window);
+void               gdm_greeter_login_window_session_opened      (GdmGreeterLoginWindow *login_window,
+                                                                 const char            *service_name);
 
 G_END_DECLS
 
