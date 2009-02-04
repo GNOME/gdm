@@ -1660,6 +1660,7 @@ start_conversation (GdmSessionDirect *session,
                     const char       *service_name)
 {
         GdmSessionConversation *conversation;
+        char                   *job_name;
 
         conversation = g_new0 (GdmSessionConversation, 1);
         conversation->session = session;
@@ -1680,12 +1681,16 @@ start_conversation (GdmSessionDirect *session,
                           G_CALLBACK (worker_died),
                           conversation);
 
-        if (!gdm_session_worker_job_start (conversation->job)) {
+        job_name = g_strdup_printf ("gdm-session-worker [pam/%s]", service_name);
+        if (!gdm_session_worker_job_start (conversation->job,
+                                           job_name)) {
                 g_object_unref (conversation->job);
                 g_free (conversation->service_name);
                 g_free (conversation);
+                g_free (job_name);
                 return NULL;
         }
+        g_free (job_name);
 
         conversation->worker_pid = gdm_session_worker_job_get_pid (conversation->job);
 
