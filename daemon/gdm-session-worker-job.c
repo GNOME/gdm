@@ -156,6 +156,37 @@ copy_environment_to_hash (GHashTable *hash)
 }
 
 static GPtrArray *
+get_job_arguments (GdmSessionWorkerJob *job,
+                   const char          *name)
+{
+        GPtrArray  *args;
+        GError     *error;
+        char      **argv;
+        int         i;
+
+        args = NULL;
+        argv = NULL;
+        error = NULL;
+        if (! g_shell_parse_argv (job->priv->command, NULL, &argv, &error)) {
+                g_warning ("Could not parse command: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+        args = g_ptr_array_new ();
+        g_ptr_array_add (args, g_strdup (argv[0]));
+        g_ptr_array_add (args, g_strdup (name));
+        for (i = 1; argv[i] != NULL; i++) {
+                g_ptr_array_add (args, g_strdup (argv[i]));
+        }
+        g_strfreev (argv);
+
+        g_ptr_array_add (args, NULL);
+out:
+        return args;
+}
+
+static GPtrArray *
 get_job_environment (GdmSessionWorkerJob *job)
 {
         GPtrArray     *env;
@@ -178,31 +209,31 @@ get_job_environment (GdmSessionWorkerJob *job)
 }
 
 static gboolean
-gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job)
+gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job,
+                              const char          *name)
 {
-        gchar          **argv;
         GError          *error;
         gboolean         ret;
+        GPtrArray       *args;
         GPtrArray       *env;
 
         ret = FALSE;
 
-        g_debug ("GdmSessionWorkerJob: Running session_worker_job process: %s", session_worker_job->priv->command);
+        g_debug ("GdmSessionWorkerJob: Running session_worker_job process: %s %s",
+                 name != NULL? name : "", session_worker_job->priv->command);
 
-        argv = NULL;
-        if (! g_shell_parse_argv (session_worker_job->priv->command, NULL, &argv, &error)) {
-                g_warning ("Could not parse command: %s", error->message);
-                g_error_free (error);
-                goto out;
+        args = get_job_arguments (session_worker_job, name);
+
+        if (args == NULL) {
+                return FALSE;
         }
-
         env = get_job_environment (session_worker_job);
 
         error = NULL;
         ret = g_spawn_async_with_pipes (NULL,
-                                        argv,
+                                        (char **) args->pdata,
                                         (char **)env->pdata,
-                                        G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD,
+                                        G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_FILE_AND_ARGV_ZERO,
                                         (GSpawnChildSetupFunc)session_worker_job_child_setup,
                                         session_worker_job,
                                         &session_worker_job->priv->pid,
@@ -210,6 +241,9 @@ gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job)
                                         NULL,
                                         NULL,
                                         &error);
+
+        g_ptr_array_foreach (args, (GFunc)g_free, NULL);
+        g_ptr_array_free (args, TRUE);
 
         g_ptr_array_foreach (env, (GFunc)g_free, NULL);
         g_ptr_array_free (env, TRUE);
@@ -227,7 +261,6 @@ gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job)
                                                                       (GChildWatchFunc)session_worker_job_child_watch,
                                                                       session_worker_job);
 
-        g_strfreev (argv);
  out:
 
         return ret;
@@ -240,13 +273,14 @@ gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job)
  * Starts a local X session_worker_job. Handles retries and fatal errors properly.
  */
 gboolean
-gdm_session_worker_job_start (GdmSessionWorkerJob *session_worker_job)
+gdm_session_worker_job_start (GdmSessionWorkerJob *session_worker_job,
+                              const char          *name)
 {
         gboolean    res;
 
         g_debug ("GdmSessionWorkerJob: Starting worker...");
 
-        res = gdm_session_worker_job_spawn (session_worker_job);
+        res = gdm_session_worker_job_spawn (session_worker_job, name);
 
         if (res) {
 
@@ -294,6 +328,7 @@ gdm_session_worker_job_stop (GdmSessionWorkerJob *session_worker_job)
         g_debug ("GdmSessionWorkerJob: Stopping job pid:%d", session_worker_job->priv->pid);
 
         res = gdm_signal_pid (session_worker_job->priv->pid, SIGTERM);
+
         if (res < 0) {
                 g_warning ("Unable to kill session worker process");
         } else {

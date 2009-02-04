@@ -57,7 +57,8 @@ GType                   gdm_session_worker_job_get_type           (void);
 GdmSessionWorkerJob *   gdm_session_worker_job_new                (void);
 void                    gdm_session_worker_job_set_server_address (GdmSessionWorkerJob *session_worker_job,
                                                                    const char          *server_address);
-gboolean                gdm_session_worker_job_start              (GdmSessionWorkerJob *session_worker_job);
+gboolean                gdm_session_worker_job_start              (GdmSessionWorkerJob *session_worker_job,
+                                                                   const char          *name);
 gboolean                gdm_session_worker_job_stop               (GdmSessionWorkerJob *session_worker_job);
 
 GPid                    gdm_session_worker_job_get_pid            (GdmSessionWorkerJob *session_worker_job);
