@@ -812,6 +812,9 @@ on_greeter_start_conversation (GdmGreeterServer *greeter_server,
                                GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: starting conversation with '%s' pam service'", service_name);
+        if (slave->priv->greeter_reset_id > 0) {
+                return;
+        }
         gdm_session_start_conversation (GDM_SESSION (slave->priv->session),
                                         service_name);
 }
@@ -822,6 +825,9 @@ on_greeter_begin_verification (GdmGreeterServer *greeter_server,
                                GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: begin verification");
+        if (slave->priv->greeter_reset_id > 0) {
+                return;
+        }
         gdm_session_setup (GDM_SESSION (slave->priv->session),
                            service_name);
 }
@@ -832,6 +838,9 @@ on_greeter_begin_auto_login (GdmGreeterServer *greeter_server,
                              GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: begin auto login for user '%s'", username);
+        if (slave->priv->greeter_reset_id > 0) {
+                return;
+        }
         gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
                                     "gdm-autologin",
                                     username);
@@ -844,6 +853,9 @@ on_greeter_begin_verification_for_user (GdmGreeterServer *greeter_server,
                                         GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: begin verification");
+        if (slave->priv->greeter_reset_id > 0) {
+                return;
+        }
         gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
                                     service_name,
                                     username);
@@ -855,6 +867,9 @@ on_greeter_answer (GdmGreeterServer *greeter_server,
                    const char       *text,
                    GdmSimpleSlave   *slave)
 {
+        if (slave->priv->greeter_reset_id > 0) {
+                return;
+        }
         gdm_session_answer_query (GDM_SESSION (slave->priv->session), service_name, text);
 }
 
@@ -863,6 +878,9 @@ on_greeter_session_selected (GdmGreeterServer *greeter_server,
                              const char       *text,
                              GdmSimpleSlave   *slave)
 {
+        if (slave->priv->greeter_reset_id > 0) {
+                return;
+        }
         gdm_session_select_session (GDM_SESSION (slave->priv->session), text);
 }
 
@@ -871,6 +889,9 @@ on_greeter_language_selected (GdmGreeterServer *greeter_server,
                               const char       *text,
                               GdmSimpleSlave   *slave)
 {
+        if (slave->priv->greeter_reset_id > 0) {
+                return;
+        }
         gdm_session_select_language (GDM_SESSION (slave->priv->session), text);
 }
 
@@ -879,6 +900,9 @@ on_greeter_layout_selected (GdmGreeterServer *greeter_server,
                             const char       *text,
                             GdmSimpleSlave   *slave)
 {
+        if (slave->priv->greeter_reset_id > 0) {
+                return;
+        }
         gdm_session_select_layout (GDM_SESSION (slave->priv->session), text);
 }
 
@@ -895,7 +919,11 @@ on_greeter_cancel (GdmGreeterServer *greeter_server,
                    GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: Greeter cancelled");
+        if (slave->priv->greeter_reset_id > 0) {
+                return;
+        }
         reset_session (slave);
+        queue_greeter_reset (slave);
 }
 
 static void
@@ -905,6 +933,9 @@ on_greeter_connected (GdmGreeterServer *greeter_server,
         gboolean display_is_local;
 
         g_debug ("GdmSimpleSlave: Greeter connected");
+        if (slave->priv->greeter_reset_id > 0) {
+                return;
+        }
 
         g_object_get (slave,
                       "display-is-local", &display_is_local,
@@ -922,6 +953,9 @@ on_start_session_when_ready (GdmGreeterServer *session,
                              GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: Will start session when ready");
+        if (slave->priv->greeter_reset_id > 0) {
+                return;
+        }
         slave->priv->start_session_when_ready = TRUE;
 
         if (slave->priv->waiting_to_start_session) {
@@ -935,6 +969,9 @@ on_start_session_later (GdmGreeterServer *session,
                         GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: Will start session when ready and told");
+        if (slave->priv->greeter_reset_id > 0) {
+                return;
+        }
         slave->priv->start_session_when_ready = FALSE;
 }
 
