@@ -974,15 +974,19 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 			g_shell_parse_argv (str, &argc, &argv, NULL);
 
 		} else {
+			GError* error_p;
 			char **svr_command;
 			const char *str;
 			int svr_argc;
 
 			str = ve_sure_string (svr->command);
 			svr_command = NULL;
-			g_shell_parse_argv (str, &svr_argc, &svr_command, NULL);
 
-			g_shell_parse_argv (disp->command, &argc, &argv, NULL);
+			g_shell_parse_argv (str, &svr_argc,
+				&svr_command, &error_p);
+
+			g_shell_parse_argv (disp->command, &argc,
+				&argv, &error_p);
 
 			if (argv[0] == NULL || argv[1] == NULL) {
 				g_strfreev (argv);

@@ -401,12 +401,12 @@ create_socket (struct addrinfo *ai)
 
 	sock = socket (ai->ai_family, ai->ai_socktype, ai->ai_protocol);
 	if (sock < 0) {
-		gdm_debug ("socket: %s", g_strerror (errno));
+		gdm_error ("socket: %s", g_strerror (errno));
 		return sock;
 	}
 
 	if (bind (sock, ai->ai_addr, ai->ai_addrlen) < 0) {
-		gdm_debug ("bind: %s", g_strerror (errno));
+		gdm_error ("bind: %s", g_strerror (errno));
 		close (sock);
 		return -1;
 	}
@@ -728,7 +728,6 @@ gdm_xdmcp_send_willing (GdmXdmcpManager         *manager,
 
 		s = get_willing_output (manager);
 		if (s != NULL) {
-			g_free (last_status);
 			last_status = s;
 		} else {
 			last_status = g_strdup (manager->priv->sysid);
@@ -2169,12 +2168,12 @@ gdm_xdmcp_handle_manage (GdmXdmcpManager         *manager,
 		g_free (host);
 		return;
 	}
-	g_free (host);
 
 	/* SessionID */
 	if G_UNLIKELY (! XdmcpReadCARD32 (&manager->priv->buf, &clnt_sessid)) {
 		gdm_debug ("%s: Could not read Session ID",
 			   "gdm_xdmcp_handle_manage");
+		g_free (host);
 		return;
 	}
 
@@ -2182,6 +2181,7 @@ gdm_xdmcp_handle_manage (GdmXdmcpManager         *manager,
 	if G_UNLIKELY (! XdmcpReadCARD16 (&manager->priv->buf, &clnt_dspnum)) {
 		gdm_debug ("%s: Could not read Display Number",
 			   "gdm_xdmcp_handle_manage");
+		g_free (host);
 		return;
 	}
 
@@ -2189,6 +2189,7 @@ gdm_xdmcp_handle_manage (GdmXdmcpManager         *manager,
 	if G_UNLIKELY (! XdmcpReadARRAY8 (&manager->priv->buf, &clnt_dspclass)) {
 		gdm_debug ("%s: Could not read Display Class",
 			   "gdm_xdmcp_handle_manage");
+		g_free (host);
 		return;
 	}
 
@@ -2198,6 +2199,7 @@ gdm_xdmcp_handle_manage (GdmXdmcpManager         *manager,
 			   (int)clnt_dspnum, (long)clnt_sessid, ve_sure_string (s), host);
 		g_free (s);
 	}
+	g_free (host);
 
 	d = gdm_xdmcp_display_lookup (manager, clnt_sessid);
 	if (d != NULL &&
