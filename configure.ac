@@ -1420,6 +1420,10 @@ gui/simple-greeter/libgdmsimplegreeter/gdmsimplegreeter.pc
 gui/simple-greeter/extensions/Makefile
 gui/simple-greeter/extensions/unified/Makefile
 gui/simple-greeter/extensions/password/Makefile
+gui/simple-greeter/extensions/fingerprint/Makefile
+gui/simple-greeter/extensions/fingerprint/icons/Makefile
+gui/simple-greeter/extensions/fingerprint/icons/16x16/Makefile
+gui/simple-greeter/extensions/fingerprint/icons/48x48/Makefile
 gui/simple-chooser/Makefile
 utils/Makefile
 data/gdm.conf
