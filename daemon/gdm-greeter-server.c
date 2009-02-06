@@ -752,7 +752,6 @@ do_introspect (DBusConnection *connection,
                                "      <arg name=\"layout_name\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"DefaultSessionNameChanged\">\n"
-                               "    <signal name=\"DefaultSessionNameChanged\">\n"
                                "      <arg name=\"session_name\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"TimedLoginRequested\">\n"
