@@ -68,6 +68,7 @@ LIBCANBERRA_GTK_REQUIRED_VERSION=0.4
 FONTCONFIG_REQUIRED_VERSION=2.5.0
 UPOWER_REQUIRED_VERSION=0.9.0
 ACCOUNTS_SERVICE_REQUIRED_VERSION=0.6.12
+NSS_REQUIRED_VERSION=3.11.1
 
 EXTRA_COMPILE_WARNINGS(yes)
 
@@ -93,6 +94,12 @@ AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
 
 GLIB_GSETTINGS
+
+PKG_CHECK_MODULES(NSS,
+        nss >= $NSS_REQUIRED_VERSION
+)
+AC_SUBST(NSS_CFLAGS)
+AC_SUBST(NSS_LIBS)
 
 PKG_CHECK_MODULES(XLIB, x11 xau xrandr, ,
   [AC_PATH_XTRA
@@ -1424,6 +1431,10 @@ gui/simple-greeter/extensions/fingerprint/Makefile
 gui/simple-greeter/extensions/fingerprint/icons/Makefile
 gui/simple-greeter/extensions/fingerprint/icons/16x16/Makefile
 gui/simple-greeter/extensions/fingerprint/icons/48x48/Makefile
+gui/simple-greeter/extensions/smartcard/Makefile
+gui/simple-greeter/extensions/smartcard/icons/Makefile
+gui/simple-greeter/extensions/smartcard/icons/16x16/Makefile
+gui/simple-greeter/extensions/smartcard/icons/48x48/Makefile
 gui/simple-chooser/Makefile
 utils/Makefile
 data/gdm.conf
