@@ -68,7 +68,6 @@ enum {
 
 enum {
         STARTED,
-        STOPPED,
         EXITED,
         DIED,
         LAST_SIGNAL
@@ -385,16 +384,6 @@ gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
                               G_STRUCT_OFFSET (GdmSessionWorkerJobClass, started),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__VOID,
-                              G_TYPE_NONE,
-                              0);
-        signals [STOPPED] =
-                g_signal_new ("stopped",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionWorkerJobClass, stopped),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,

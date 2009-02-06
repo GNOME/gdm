@@ -1548,13 +1548,6 @@ gdm_session_direct_init (GdmSessionDirect *session)
 }
 
 static void
-worker_stopped (GdmSessionWorkerJob *job,
-                GdmSessionDirect    *session)
-{
-        g_debug ("GdmSessionDirect: Worker job stopped");
-}
-
-static void
 worker_started (GdmSessionWorkerJob *job,
                 GdmSessionDirect    *session)
 {
@@ -1605,10 +1598,6 @@ start_worker (GdmSessionDirect *session)
         session->priv->job = gdm_session_worker_job_new ();
         gdm_session_worker_job_set_server_address (session->priv->job, session->priv->server_address);
         g_signal_connect (session->priv->job,
-                          "stopped",
-                          G_CALLBACK (worker_stopped),
-                          session);
-        g_signal_connect (session->priv->job,
                           "started",
                           G_CALLBACK (worker_started),
                           session);
@@ -1629,9 +1618,6 @@ start_worker (GdmSessionDirect *session)
 static void
 stop_worker (GdmSessionDirect *session)
 {
-        g_signal_handlers_disconnect_by_func (session->priv->job,
-                                              G_CALLBACK (worker_stopped),
-                                              session);
         g_signal_handlers_disconnect_by_func (session->priv->job,
                                               G_CALLBACK (worker_started),
                                               session);

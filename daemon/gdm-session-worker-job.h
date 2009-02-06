@@ -46,7 +46,6 @@ typedef struct
         GObjectClass   parent_class;
 
         void (* started)           (GdmSessionWorkerJob  *session_worker_job);
-        void (* stopped)           (GdmSessionWorkerJob  *session_worker_job);
         void (* exited)            (GdmSessionWorkerJob  *session_worker_job,
                                     int                   exit_code);
 
