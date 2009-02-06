@@ -37,12 +37,6 @@
 
 #define GDM_TASK_LIST_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_TASK_LIST, GdmTaskListPrivate))
 
-typedef struct
-{
-        GtkWidget *radio_button;
-        char      *name;
-} GdmTask;
-
 struct GdmTaskListPrivate
 {
         GtkWidget *box;
@@ -59,54 +53,161 @@ static guint    signals[NUMBER_OF_SIGNALS];
 
 static void     gdm_task_list_class_init  (GdmTaskListClass *klass);
 static void     gdm_task_list_init        (GdmTaskList      *task_list);
-static void     gdm_task_list_finalize    (GObject              *object);
+static void     gdm_task_list_finalize    (GObject          *object);
 
 G_DEFINE_TYPE (GdmTaskList, gdm_task_list, GTK_TYPE_ALIGNMENT);
 
 static void
 on_task_toggled (GdmTaskList    *widget,
-                 GtkRadioButton *radio_button)
+                 GtkRadioButton *button)
 {
         GdmTask *task;
 
-        task = g_object_get_data (G_OBJECT (radio_button), "gdm-task");
+        task = g_object_get_data (G_OBJECT (button), "gdm-task");
 
-        if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (radio_button))) {
-                g_signal_emit (widget, signals[ACTIVATED], 0, task->name);
+        if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button))) {
+                g_signal_emit (widget, signals[ACTIVATED], 0, task);
         } else {
-                g_signal_emit (widget, signals[DEACTIVATED], 0, task->name);
+                g_signal_emit (widget, signals[DEACTIVATED], 0, task);
+        }
+}
+
+GdmTask *
+gdm_task_list_foreach_task (GdmTaskList           *task_list,
+                            GdmTaskListForeachFunc  search_func,
+                            gpointer               data)
+{
+        GList *node;
+
+        for (node = task_list->priv->tasks; node != NULL; node = node->next) {
+                GdmTask *task;
+
+                task = node->data;
+
+                if (search_func (task_list, task, data)) {
+                        return g_object_ref (task);
+                }
+        }
+
+        return NULL;
+}
+
+static void
+on_task_enabled (GdmTaskList *task_list,
+                 GdmTask     *task)
+{
+        GtkWidget *button;
+        GList     *task_node;
+
+        button = g_object_get_data (G_OBJECT (task), "gdm-task-list-button");
+
+        gtk_widget_set_sensitive (button, TRUE);
+
+        /* Sort the list such that the tasks the user clicks last end
+         * up first.  This doesn't change the order in which the tasks
+         * appear in the UI, but will affect which tasks we implicitly
+         * activate if the currently active task gets disabled.
+         */
+        task_node = g_list_find (task_list->priv->tasks, task);
+        if (task_node != NULL) {
+                task_list->priv->tasks = g_list_delete_link (task_list->priv->tasks, task_node);
+                task_list->priv->tasks = g_list_prepend (task_list->priv->tasks,
+                                                         task);
+        }
+}
+
+static void
+activate_first_available_task (GdmTaskList *task_list)
+{
+        GList *node;
+
+        node = task_list->priv->tasks;
+        while (node != NULL) {
+                GdmTask   *task;
+
+                task = GDM_TASK (node->data);
+
+                if (gdm_task_list_set_active_task (task_list, task)) {
+                        break;
+                }
+
+                node = node->next;
+        }
+
+}
+
+static void
+on_task_disabled (GdmTaskList *task_list,
+                  GdmTask     *task)
+{
+        GtkWidget *button;
+        gboolean   was_active;
+
+        button = g_object_get_data (G_OBJECT (task), "gdm-task-list-button");
+        was_active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
+
+        gtk_widget_set_sensitive (button, FALSE);
+
+        if (was_active) {
+                activate_first_available_task (task_list);
         }
 }
 
 void
 gdm_task_list_add_task (GdmTaskList *task_list,
-                        const char  *name,
-                        const char  *icon_name)
+                        GdmTask     *task)
 {
-        GdmTask   *task;
         GtkWidget *image;
+        GtkWidget *button;
+        GIcon     *icon;
+        char      *description;
 
-        task = g_new0 (GdmTask, 1);
-
-        task->name = g_strdup (name);
         if (task_list->priv->tasks == NULL) {
-                task->radio_button = gtk_radio_button_new (NULL);
+                button = gtk_radio_button_new (NULL);
         } else {
-                task->radio_button = gtk_radio_button_new_from_widget (GTK_RADIO_BUTTON (((GdmTask *) task_list->priv->tasks->data)->radio_button));
+                GdmTask *previous_task;
+                GtkRadioButton *previous_button;
+
+                previous_task = GDM_TASK (task_list->priv->tasks->data);
+                previous_button = GTK_RADIO_BUTTON (g_object_get_data (G_OBJECT (previous_task), "gdm-task-list-button"));
+                button = gtk_radio_button_new_from_widget (previous_button);
         }
+        g_object_set_data (G_OBJECT (task), "gdm-task-list-button", button);
 
-        g_object_set (task->radio_button, "draw-indicator", FALSE, NULL);
-        g_object_set_data (G_OBJECT (task->radio_button), "gdm-task", task);
-        g_signal_connect_swapped (task->radio_button,
-                                  "toggled", G_CALLBACK (on_task_toggled), task_list);
-        image = gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_DND);
+        g_object_set (G_OBJECT (button), "draw-indicator", FALSE, NULL);
+        g_object_set_data (G_OBJECT (button), "gdm-task", task);
+        g_signal_connect_swapped (button, "toggled",
+                                  G_CALLBACK (on_task_toggled),
+                                  task_list);
+
+        gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
+        gtk_widget_set_sensitive (button, gdm_task_is_enabled (task));
+
+        g_signal_connect_swapped (G_OBJECT (task), "enabled",
+                                  G_CALLBACK (on_task_enabled),
+                                  task_list);
+
+        g_signal_connect_swapped (G_OBJECT (task), "disabled",
+                                  G_CALLBACK (on_task_disabled),
+                                  task_list);
+
+        icon = gdm_task_get_icon (task);
+        image = gtk_image_new_from_gicon (icon, GTK_ICON_SIZE_SMALL_TOOLBAR);
+        g_object_unref (icon);
+
         gtk_widget_show (image);
-        gtk_container_add (GTK_CONTAINER (task->radio_button), image);
-        gtk_widget_show (task->radio_button);
-        gtk_container_add (GTK_CONTAINER (task->radio_button), task_list->priv->box);
+        gtk_container_add (GTK_CONTAINER (button), image);
+        description = gdm_task_get_description (task);
+        gtk_widget_set_tooltip_text (button, description);
+        g_free (description);
+        gtk_widget_show (button);
 
-        gtk_container_add (GTK_CONTAINER (task_list->priv->box), task->radio_button);
+        gtk_container_add (GTK_CONTAINER (task_list->priv->box), button);
         task_list->priv->tasks = g_list_append (task_list->priv->tasks, task);
+
+        if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button))) {
+                g_signal_emit (task_list, signals[ACTIVATED], 0, task);
+        }
 }
 
 static void
@@ -122,9 +223,9 @@ gdm_task_list_class_init (GdmTaskListClass *klass)
                                             G_STRUCT_OFFSET (GdmTaskListClass, activated),
                                             NULL,
                                             NULL,
-                                            g_cclosure_marshal_VOID__STRING,
+                                            g_cclosure_marshal_VOID__OBJECT,
                                             G_TYPE_NONE,
-                                            1, G_TYPE_STRING);
+                                            1, G_TYPE_OBJECT);
 
         signals [DEACTIVATED] = g_signal_new ("deactivated",
                                             G_TYPE_FROM_CLASS (object_class),
@@ -132,22 +233,19 @@ gdm_task_list_class_init (GdmTaskListClass *klass)
                                             G_STRUCT_OFFSET (GdmTaskListClass, deactivated),
                                             NULL,
                                             NULL,
-                                            g_cclosure_marshal_VOID__STRING,
+                                            g_cclosure_marshal_VOID__OBJECT,
                                             G_TYPE_NONE,
-                                            1, G_TYPE_STRING);
+                                            1, G_TYPE_OBJECT);
 
         g_type_class_add_private (klass, sizeof (GdmTaskListPrivate));
-}
-
-static void
-gdm_task_list_init (GdmTaskList *widget)
+} static void gdm_task_list_init (GdmTaskList *widget)
 {
         widget->priv = GDM_TASK_LIST_GET_PRIVATE (widget);
 
         gtk_alignment_set_padding (GTK_ALIGNMENT (widget), 0, 0, 0, 0);
         gtk_alignment_set (GTK_ALIGNMENT (widget), 0.0, 0.0, 0, 0);
 
-        widget->priv->box = gtk_hbox_new (FALSE, 2);
+        widget->priv->box = gtk_hbox_new (TRUE, 2);
         gtk_widget_show (widget->priv->box);
         gtk_container_add (GTK_CONTAINER (widget),
                            widget->priv->box);
@@ -179,20 +277,46 @@ gdm_task_list_new (void)
         return GTK_WIDGET (object);
 }
 
-const char *
+gboolean
+gdm_task_list_task_is_active (GdmTaskList *task_list,
+                              GdmTask     *task)
+{
+        GtkWidget *button;
+
+        button = g_object_get_data (G_OBJECT (task), "gdm-task-list-button");
+
+        return gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
+}
+
+GdmTask *
 gdm_task_list_get_active_task (GdmTaskList *widget)
 {
-        GList *node;
+        return gdm_task_list_foreach_task (widget,
+                                        (GdmTaskListForeachFunc)
+                                        gdm_task_list_task_is_active,
+                                        NULL);
+}
 
-        for (node = widget->priv->tasks; node != NULL; node = node->next) {
-                GdmTask *task;
+gboolean
+gdm_task_list_set_active_task (GdmTaskList *widget,
+                               GdmTask     *task)
+{
+        GtkWidget *button;
 
-                task = node->data;
+        button = GTK_WIDGET (g_object_get_data (G_OBJECT (task),
+                             "gdm-task-list-button"));
 
-                if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (task->radio_button)) ) {
-                        return task->name;
+        if (GTK_WIDGET_IS_SENSITIVE (button)) {
+                if (gtk_widget_activate (button)) {
+                        return TRUE;
                 }
         }
 
-        return NULL;
+        return FALSE;
+}
+
+int
+gdm_task_list_get_number_of_tasks (GdmTaskList *widget)
+{
+        return g_list_length (widget->priv->tasks);
 }

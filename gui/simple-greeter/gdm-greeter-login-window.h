@@ -23,6 +23,9 @@
 #define __GDM_GREETER_LOGIN_WINDOW_H
 
 #include <glib-object.h>
+#include "gdm-conversation.h"
+#include "gdm-task.h"
+#include "gdm-greeter-extension.h"
 
 G_BEGIN_DECLS
 
@@ -32,6 +35,8 @@ G_BEGIN_DECLS
 #define GDM_IS_GREETER_LOGIN_WINDOW(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GDM_TYPE_GREETER_LOGIN_WINDOW))
 #define GDM_IS_GREETER_LOGIN_WINDOW_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), GDM_TYPE_GREETER_LOGIN_WINDOW))
 #define GDM_GREETER_LOGIN_WINDOW_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_GREETER_LOGIN_WINDOW, GdmGreeterLoginWindowClass))
+
+#define GDM_IS_GREETER_LOGIN_WINDOW_EXTENSION(e) (GDM_IS_CONVERSATION(e) && GDM_IS_TASK(e))
 
 typedef struct GdmGreeterLoginWindowPrivate GdmGreeterLoginWindowPrivate;
 
@@ -62,7 +67,8 @@ typedef struct
                                               const char            *text);
         void (* cancelled)                   (GdmGreeterLoginWindow *login_window);
         void (* disconnected)                (GdmGreeterLoginWindow *login_window);
-        void (* start_session)               (GdmGreeterLoginWindow *login_window);
+        void (* start_session)               (GdmGreeterLoginWindow *login_window,
+                                              const char            *sevice_name);
 
 } GdmGreeterLoginWindowClass;
 
@@ -71,7 +77,10 @@ GtkWidget *         gdm_greeter_login_window_new                (gboolean displa
 
 
 gboolean            gdm_greeter_login_window_reset              (GdmGreeterLoginWindow *login_window);
-gboolean            gdm_greeter_login_window_ready              (GdmGreeterLoginWindow *login_window);
+gboolean            gdm_greeter_login_window_ready              (GdmGreeterLoginWindow *login_window,
+                                                                 const char            *service_name);
+gboolean            gdm_greeter_login_window_conversation_stopped (GdmGreeterLoginWindow *login_window,
+                                                                   const char            *service_name);
 gboolean            gdm_greeter_login_window_info_query         (GdmGreeterLoginWindow *login_window,
                                                                  const char *service_name,
                                                                  const char *text);
@@ -88,7 +97,13 @@ gboolean            gdm_greeter_login_window_problem            (GdmGreeterLogin
 void               gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_window,
                                                                  const char            *username,
                                                                  int                    delay);
-void               gdm_greeter_login_window_user_authorized     (GdmGreeterLoginWindow *login_window);
+void               gdm_greeter_login_window_user_authorized     (GdmGreeterLoginWindow *login_window,
+                                                                 const char            *service_name);
+
+void               gdm_greeter_login_window_add_extension (GdmGreeterLoginWindow *login_window,
+                    GdmGreeterExtension *extension);
+void               gdm_greeter_login_window_remove_extension (GdmGreeterLoginWindow *login_window,
+ GdmGreeterExtension *extension);
 
 G_END_DECLS
 

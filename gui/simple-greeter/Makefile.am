@@ -2,11 +2,14 @@ NULL =
 
 SUBDIRS = 				\
 	libnotificationarea		\
+	libgdmsimplegreeter		\
+	plugins				\
 	$(NULL)
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/common				\
 	-I$(top_srcdir)/gui/simple-greeter/libnotificationarea	\
+	-I$(top_srcdir)/gui/simple-greeter/libgdmsimplegreeter	\
 	-DDMCONFDIR=\""$(dmconfdir)"\"			\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"                  \
 	-DDATADIR=\""$(datadir)"\"		 	\
@@ -17,6 +20,7 @@ AM_CPPFLAGS = \
 	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
 	-DSBINDIR=\""$(sbindir)"\"		 	\
 	-DAT_SPI_REGISTRYD_DIR="\"$(AT_SPI_REGISTRYD_DIR)\""	\
+	-DGDM_SIMPLE_GREETER_PLUGINS_DIR="\"$(GDM_SIMPLE_GREETER_PLUGINS_DIR)\""\
 	$(DISABLE_DEPRECATED_CFLAGS)	\
 	$(GTK_CFLAGS)					\
 	$(SIMPLE_GREETER_CFLAGS)			\
@@ -85,10 +89,15 @@ test_greeter_login_window_SOURCES = 	\
 	gdm-user-chooser-dialog.c	\
 	gdm-task-list.h			\
 	gdm-task-list.c			\
+	gdm-plugin-manager.h		\
+	gdm-plugin-manager.c		\
+	gdm-greeter-plugin.h		\
+	gdm-greeter-plugin.c		\
 	$(NULL)
 
 test_greeter_login_window_LDADD =	\
 	$(top_builddir)/common/libgdmcommon.la	\
+	$(top_builddir)/gui/simple-greeter/libgdmsimplegreeter/libgdmsimplegreeter.la	\
 	libgdmuser.la			\
 	$(COMMON_LIBS)			\
 	$(SIMPLE_GREETER_LIBS)		\
@@ -140,6 +149,7 @@ test_greeter_panel_SOURCES = 	\
 test_greeter_panel_LDADD =	\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
+	$(top_builddir)/gui/simple-greeter/libgdmsimplegreeter/libgdmsimplegreeter.la	\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(GTK_LIBS)			\
 	$(GCONF_LIBS)			\
@@ -312,10 +322,14 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-language-chooser-dialog.c	\
 	gdm-language-option-widget.h	\
 	gdm-language-option-widget.c	\
+	gdm-plugin-manager.h		\
+	gdm-plugin-manager.c		\
 	gdm-sessions.h			\
 	gdm-sessions.c			\
 	gdm-session-option-widget.h	\
 	gdm-session-option-widget.c	\
+	gdm-greeter-plugin.h		\
+	gdm-greeter-plugin.c		\
 	gdm-user-chooser-widget.h	\
 	gdm-user-chooser-widget.c	\
 	gdm-task-list.h			\
@@ -326,6 +340,7 @@ gdm_simple_greeter_LDADD = 		\
 	$(top_builddir)/common/libgdmcommon.la	\
 	libgdmuser.la			\
 	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
+	$(top_builddir)/gui/simple-greeter/libgdmsimplegreeter/libgdmsimplegreeter.la	\
 	$(COMMON_LIBS)			\
 	$(EXTRA_GREETER_LIBS)   	\
 	$(SIMPLE_GREETER_LIBS)		\

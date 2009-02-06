@@ -611,30 +611,29 @@
 	      </child>
 
 	      <child>
-		<widget class="GtkLabel" id="auth-banner-label">
-		  <property name="visible">True</property>
-		  <property name="label" translatable="yes"></property>
-		  <property name="use_underline">False</property>
-		  <property name="use_markup">False</property>
-		  <property name="justify">GTK_JUSTIFY_CENTER</property>
-		  <property name="wrap">True</property>
-		  <property name="selectable">False</property>
-		  <property name="xalign">0.5</property>
-		  <property name="yalign">0.5</property>
-		  <property name="xpad">0</property>
-		  <property name="ypad">0</property>
-		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-		  <property name="width_chars">-1</property>
-		  <property name="single_line_mode">False</property>
-		  <property name="angle">0</property>
-		</widget>
-		<packing>
-		  <property name="padding">0</property>
-		  <property name="expand">True</property>
-		  <property name="fill">True</property>
-		</packing>
+		 <widget class="GtkLabel" id="auth-banner-label">
+		   <property name="visible">True</property>
+		   <property name="label" translatable="yes"></property>
+		   <property name="use_underline">False</property>
+		   <property name="use_markup">False</property>
+		   <property name="justify">GTK_JUSTIFY_CENTER</property>
+		   <property name="wrap">True</property>
+		   <property name="selectable">False</property>
+		   <property name="xalign">0.5</property>
+		   <property name="yalign">0.5</property>
+		   <property name="xpad">0</property>
+		   <property name="ypad">0</property>
+		   <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		   <property name="width_chars">-1</property>
+		   <property name="single_line_mode">False</property>
+		   <property name="angle">0</property>
+		 </widget>
+		 <packing>
+		   <property name="padding">0</property>
+		   <property name="expand">False</property>
+		   <property name="fill">False</property>
+		 </packing>
 	      </child>
-
 	      <child>
 		<widget class="GtkAlignment" id="alignment2">
 		  <property name="visible">True</property>
@@ -660,20 +659,6 @@
 			  <property name="spacing">0</property>
 
 			  <child>
-			    <widget class="Custom" id="user-chooser">
-			      <property name="visible">True</property>
-			      <property name="int1">0</property>
-			      <property name="int2">0</property>
-			      <property name="last_modification_time">Tue, 18 Nov 2008 21:55:38 GMT</property>
-			    </widget>
-			    <packing>
-			      <property name="padding">0</property>
-			      <property name="expand">True</property>
-			      <property name="fill">True</property>
-			    </packing>
-			  </child>
-
-			  <child>
 			    <widget class="Custom" id="conversation-list">
 			      <property name="visible">True</property>
 			      <property name="int1">0</property>
@@ -686,6 +671,20 @@
 			      <property name="fill">False</property>
 			    </packing>
 			  </child>
+
+			  <child>
+			    <widget class="Custom" id="user-chooser">
+			      <property name="int1">0</property>
+			      <property name="int2">0</property>
+			      <property name="last_modification_time">Tue, 18 Nov 2008 21:55:38 GMT</property>
+			    </widget>
+			    <packing>
+			      <property name="padding">0</property>
+			      <property name="expand">True</property>
+			      <property name="fill">True</property>
+			    </packing>
+			  </child>
+
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -695,95 +694,12 @@
 		      </child>
 
 		      <child>
-			<widget class="GtkHBox" id="auth-input-box">
-			  <property name="visible">True</property>
-			  <property name="homogeneous">False</property>
-			  <property name="spacing">6</property>
-
-			  <child>
-			    <widget class="GtkLabel" id="auth-prompt-label">
-			      <property name="visible">True</property>
-			      <property name="label" translatable="yes"></property>
-			      <property name="use_underline">False</property>
-			      <property name="use_markup">False</property>
-			      <property name="justify">GTK_JUSTIFY_LEFT</property>
-			      <property name="wrap">False</property>
-			      <property name="selectable">False</property>
-			      <property name="xalign">0.5</property>
-			      <property name="yalign">0.5</property>
-			      <property name="xpad">0</property>
-			      <property name="ypad">0</property>
-			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-			      <property name="width_chars">-1</property>
-			      <property name="single_line_mode">False</property>
-			      <property name="angle">0</property>
-			    </widget>
-			    <packing>
-			      <property name="padding">0</property>
-			      <property name="expand">False</property>
-			      <property name="fill">False</property>
-			    </packing>
-			  </child>
-
-			  <child>
-			    <widget class="GtkEntry" id="auth-prompt-entry">
-			      <property name="visible">True</property>
-			      <property name="can_focus">True</property>
-			      <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-			      <property name="editable">True</property>
-			      <property name="visibility">True</property>
-			      <property name="max_length">0</property>
-			      <property name="text" translatable="yes"></property>
-			      <property name="has_frame">True</property>
-			      <property name="activates_default">True</property>
-			    </widget>
-			    <packing>
-			      <property name="padding">0</property>
-			      <property name="expand">True</property>
-			      <property name="fill">True</property>
-			    </packing>
-			  </child>
-
-			  <child>
-			    <placeholder/>
-			  </child>
-			</widget>
-			<packing>
-			  <property name="padding">0</property>
-			  <property name="expand">False</property>
-			  <property name="fill">False</property>
-			</packing>
-		      </child>
-
-		      <child>
-			<widget class="GtkHBox" id="auth-message-box">
+			<widget class="GtkHBox" id="auth-page-box">
 			  <property name="visible">True</property>
 			  <property name="homogeneous">False</property>
 			  <property name="spacing">0</property>
-
 			  <child>
-			    <widget class="GtkLabel" id="auth-message-label">
-			      <property name="visible">True</property>
-			      <property name="label" translatable="yes"></property>
-			      <property name="use_underline">False</property>
-			      <property name="use_markup">False</property>
-			      <property name="justify">GTK_JUSTIFY_LEFT</property>
-			      <property name="wrap">False</property>
-			      <property name="selectable">False</property>
-			      <property name="xalign">0.5</property>
-			      <property name="yalign">0.5</property>
-			      <property name="xpad">0</property>
-			      <property name="ypad">0</property>
-			      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-			      <property name="width_chars">-1</property>
-			      <property name="single_line_mode">False</property>
-			      <property name="angle">0</property>
-			    </widget>
-			    <packing>
-			      <property name="padding">0</property>
-			      <property name="expand">True</property>
-			      <property name="fill">True</property>
-			    </packing>
+				<placeholder/>
 			  </child>
 			</widget>
 			<packing>

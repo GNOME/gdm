@@ -18,6 +18,22 @@ AC_PROG_CXX
 AM_PROG_CC_C_O
 AC_PROG_LIBTOOL()
 
+## increment if the plugin interface has additions, changes, removals.
+LT_CURRENT=1
+
+## increment any time the source changes; set to
+##  0 if you increment CURRENT
+LT_REVISION=0
+
+## increment if any interfaces have been added; set to 0
+## if any interfaces have been changed or removed. removal has
+## precedence over adding, so set to 0 if both happened.
+LT_AGE=0
+
+AC_SUBST(LT_CURRENT)
+AC_SUBST(LT_REVISION)
+AC_SUBST(LT_AGE)
+
 AC_HEADER_STDC
 
 AC_SUBST(VERSION)
@@ -197,6 +213,15 @@ AC_ARG_WITH(dmconfdir,
                            [directory where Sessions are stored, default=SYSCONFDIR/dm]),
             dmconfdir=${withval}, dmconfdir=${sysconfdir}/dm)
 AC_SUBST(dmconfdir)
+
+dnl ---------------------------------------------------------------------------
+dnl - Configuration file stuff
+dnl ---------------------------------------------------------------------------
+AC_ARG_WITH(extensionsdatadir,
+            AS_HELP_STRING([--with-extensions-datadir],
+                           [directory where extensions store data, default=DATADIR/gdm/simple-greeter/extensions]),
+            extensionsdatadir=${withval}, extensionsdatadir=${datadir}/gdm/simple-greeter/extensions)
+AC_SUBST(extensionsdatadir)
 
 dnl ---------------------------------------------------------------------------
 dnl - Configure arguments
@@ -1231,6 +1256,22 @@ fi
 AC_SUBST(GDM_XAUTH_DIR)
 
 dnl ---------------------------------------------------------------------------
+dnl - Directory for simple greeter plugins
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_WITH(simple-greeter-plugins-dir,
+            AS_HELP_STRING([--with-simple-greeter-plugins-dir=<dir>],
+                           [simple greeter plugins directory]))
+
+if ! test -z "$with_simple_greeter_plugins_dir"; then
+   GDM_SIMPLE_GREETER_PLUGINS_DIR=$with_simple_greeter_plugins_dir
+else
+   GDM_SIMPLE_GREETER_PLUGINS_DIR=${libdir}/gdm/simple-greeter/plugins
+fi
+
+AC_SUBST(GDM_SIMPLE_GREETER_PLUGINS_DIR)
+
+dnl ---------------------------------------------------------------------------
 dnl - Finish
 dnl ---------------------------------------------------------------------------
 
@@ -1357,6 +1398,10 @@ docs/Makefile
 gui/Makefile
 gui/simple-greeter/Makefile
 gui/simple-greeter/libnotificationarea/Makefile
+gui/simple-greeter/libgdmsimplegreeter/Makefile
+gui/simple-greeter/libgdmsimplegreeter/gdmsimplegreeter.pc
+gui/simple-greeter/plugins/Makefile
+gui/simple-greeter/plugins/password/Makefile
 gui/simple-chooser/Makefile
 gui/user-switch-applet/Makefile
 utils/Makefile

@@ -38,6 +38,8 @@
 #include "gdm-greeter-panel.h"
 #include "gdm-greeter-login-window.h"
 
+#include "gdm-plugin-manager.h"
+
 #include "gdm-profile.h"
 
 #define GDM_GREETER_SESSION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_SESSION, GdmGreeterSessionPrivate))
@@ -45,9 +47,11 @@
 struct GdmGreeterSessionPrivate
 {
         GdmGreeterClient      *client;
+        GdmPluginManager      *plugin_manager;
 
         GtkWidget             *login_window;
         GtkWidget             *panel;
+
 };
 
 enum {
@@ -91,7 +95,19 @@ on_ready (GdmGreeterClient  *client,
 {
         g_debug ("GdmGreeterSession: Ready");
 
-        gdm_greeter_login_window_ready (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
+        gdm_greeter_login_window_ready (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window),
+                                        service_name);
+}
+
+static void
+on_conversation_stopped (GdmGreeterClient  *client,
+                         const char        *service_name,
+                         GdmGreeterSession *session)
+{
+        g_debug ("GdmGreeterSession: Conversation '%s' stopped", service_name);
+
+        gdm_greeter_login_window_conversation_stopped (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window),
+                                                       service_name);
 }
 
 static void
@@ -154,10 +170,11 @@ on_timed_login_requested (GdmGreeterClient  *client,
 
 static void
 on_user_authorized (GdmGreeterClient  *client,
+                    const char        *service_name,
                     GdmGreeterSession *session)
 {
         g_debug ("GdmGreeterSession: user authorized");
-        gdm_greeter_login_window_user_authorized (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
+        gdm_greeter_login_window_user_authorized (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), service_name);
 }
 
 static void
@@ -270,7 +287,6 @@ on_cancelled (GdmGreeterLoginWindow *login_window,
 {
         gdm_greeter_panel_hide_user_options (GDM_GREETER_PANEL (session->priv->panel));
         gdm_greeter_client_call_cancel (session->priv->client);
-        gdm_greeter_client_call_start_conversation (session->priv->client, "gdm");
 }
 
 static void
@@ -282,9 +298,10 @@ on_disconnected (GdmGreeterLoginWindow *login_window,
 
 static void
 on_start_session (GdmGreeterLoginWindow *login_window,
+                  const char            *service_name,
                   GdmGreeterSession     *session)
 {
-        gdm_greeter_client_call_start_session_when_ready (session->priv->client, "gdm", TRUE);
+        gdm_greeter_client_call_start_session_when_ready (session->priv->client, service_name, TRUE);
 }
 
 static int
@@ -436,8 +453,6 @@ gdm_greeter_session_start (GdmGreeterSession *session,
         toggle_panel (session, TRUE);
         toggle_login_window (session, TRUE);
 
-        gdm_greeter_client_call_start_conversation (session->priv->client, "gdm");
-
         gdm_profile_end (NULL);
 
         return res;
@@ -547,6 +562,64 @@ gdm_greeter_session_event_handler (GdkEvent          *event,
 }
 
 static void
+on_plugins_loaded (GdmGreeterSession *session)
+{
+        g_debug ("GdmGreeterSession: done loading plugins");
+}
+
+static void
+on_plugin_removed (GdmGreeterSession *session,
+                   GdmGreeterPlugin  *plugin)
+{
+        GdmGreeterExtension *extension;
+
+        extension = gdm_greeter_plugin_get_extension (plugin);
+
+        if (GDM_IS_GREETER_LOGIN_WINDOW_EXTENSION (extension)) {
+                gdm_greeter_login_window_remove_extension (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), extension);
+        }
+        g_object_unref (extension);
+}
+
+static void
+on_plugin_added (GdmGreeterSession *session,
+                 GdmGreeterPlugin  *plugin)
+{
+        GdmGreeterExtension *extension;
+
+        extension = gdm_greeter_plugin_get_extension (plugin);
+
+        if (GDM_IS_GREETER_LOGIN_WINDOW_EXTENSION (extension)) {
+                gdm_greeter_login_window_add_extension (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), extension);
+        }
+        g_object_unref (extension);
+}
+
+static void
+load_plugins (GdmGreeterSession *session)
+{
+        g_debug ("GdmGreeterSession: loading plugins");
+
+        session->priv->plugin_manager = gdm_plugin_manager_ref_default ();
+
+        g_signal_connect_swapped (session->priv->plugin_manager,
+                                  "plugins-loaded",
+                                  G_CALLBACK (on_plugins_loaded),
+                                  session);
+
+        g_signal_connect_swapped (session->priv->plugin_manager,
+                                  "plugin-added",
+                                  G_CALLBACK (on_plugin_added),
+                                  session);
+
+        g_signal_connect_swapped (session->priv->plugin_manager,
+                                  "plugin-removed",
+                                  G_CALLBACK (on_plugin_removed),
+                                  session);
+
+}
+
+static void
 gdm_greeter_session_init (GdmGreeterSession *session)
 {
         gdm_profile_start (NULL);
@@ -573,6 +646,10 @@ gdm_greeter_session_init (GdmGreeterSession *session)
         g_signal_connect (session->priv->client,
                           "ready",
                           G_CALLBACK (on_ready),
+                          session);
+        g_signal_connect (session->priv->client,
+                          "conversation-stopped",
+                          G_CALLBACK (on_conversation_stopped),
                           session);
         g_signal_connect (session->priv->client,
                           "reset",
@@ -609,6 +686,8 @@ gdm_greeter_session_init (GdmGreeterSession *session)
         gdk_event_handler_set ((GdkEventFunc) gdm_greeter_session_event_handler,
                                session, NULL);
 
+
+        load_plugins (session);
         gdm_profile_end (NULL);
 }
 

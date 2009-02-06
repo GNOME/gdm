@@ -22,7 +22,10 @@
 #define __GDM_TASK_LIST_H
 
 #include <glib-object.h>
+#include <gio/gio.h>
 #include <gtk/gtkalignment.h>
+
+#include "gdm-task.h"
 
 G_BEGIN_DECLS
 
@@ -34,31 +37,44 @@ G_BEGIN_DECLS
 #define GDM_TASK_LIST_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_TASK_LIST, GdmTaskListClass))
 
 typedef struct GdmTaskListPrivate GdmTaskListPrivate;
+typedef struct _GdmTaskList GdmTaskList;
 
-typedef struct
+typedef gboolean (* GdmTaskListForeachFunc) (GdmTaskList *task_list,
+                                            GdmTask     *task,
+                                            gpointer     data);
+
+struct _GdmTaskList
 {
         GtkAlignment             parent;
         GdmTaskListPrivate *priv;
-} GdmTaskList;
+};
 
 typedef struct
 {
         GtkAlignmentClass       parent_class;
 
         void (* deactivated)      (GdmTaskList *widget,
-                                   const char  *name);
+                                   GdmTask     *task);
         void (* activated)      (GdmTaskList *widget,
-                                 const char  *name);
+                                 GdmTask     *task);
 } GdmTaskListClass;
 
+GType       gdm_task_list_get_type               (void);
+GtkWidget * gdm_task_list_new                    (void);
 
-GType                  gdm_task_list_get_type               (void);
-GtkWidget *            gdm_task_list_new                    (void);
 
-const char *           gdm_task_list_get_active_task (GdmTaskList *widget);
-void                   gdm_task_list_add_task (GdmTaskList *widget,
-                                               const char  *name,
-                                               const char  *icon_name);
+gboolean    gdm_task_list_task_is_active (GdmTaskList *task_list,
+                                          GdmTask     *task);
+GdmTask *   gdm_task_list_get_active_task (GdmTaskList *widget);
+gboolean    gdm_task_list_set_active_task (GdmTaskList *widget,
+                                           GdmTask     *task);
+GdmTask *   gdm_task_list_foreach_task (GdmTaskList           *widget,
+                                     GdmTaskListForeachFunc  foreach_func,
+                                     gpointer               data);
+void        gdm_task_list_add_task        (GdmTaskList *widget,
+                                           GdmTask     *task);
+
+int         gdm_task_list_get_number_of_tasks (GdmTaskList *widget);
 G_END_DECLS
 
 #endif /* __GDM_TASK_LIST_H */
