@@ -1402,6 +1402,10 @@ gui/simple-greeter/libgdmsimplegreeter/Makefile
 gui/simple-greeter/libgdmsimplegreeter/gdmsimplegreeter.pc
 gui/simple-greeter/plugins/Makefile
 gui/simple-greeter/plugins/password/Makefile
+gui/simple-greeter/plugins/fingerprint/Makefile
+gui/simple-greeter/plugins/fingerprint/icons/Makefile
+gui/simple-greeter/plugins/fingerprint/icons/16x16/Makefile
+gui/simple-greeter/plugins/fingerprint/icons/48x48/Makefile
 gui/simple-chooser/Makefile
 gui/user-switch-applet/Makefile
 utils/Makefile
