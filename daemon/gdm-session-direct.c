@@ -1714,6 +1714,7 @@ worker_exited (GdmSessionWorkerJob *job,
 {
         g_debug ("GdmSessionDirect: Worker job exited: %d", code);
 
+        g_object_ref (conversation);
         if (!conversation->session->priv->is_authenticated) {
                 char *msg;
 
@@ -1723,6 +1724,11 @@ worker_exited (GdmSessionWorkerJob *job,
         } else if (conversation->session->priv->is_running) {
                 _gdm_session_session_exited (GDM_SESSION (conversation->session), code);
         }
+
+        g_debug ("GdmSessionDirect: Emitting conversation-stopped signal");
+        _gdm_session_conversation_stopped (GDM_SESSION (conversation->session),
+                                           conversation->service_name);
+        g_object_unref (conversation);
 }
 
 static void
@@ -1732,6 +1738,7 @@ worker_died (GdmSessionWorkerJob *job,
 {
         g_debug ("GdmSessionDirect: Worker job died: %d", signum);
 
+        g_object_ref (conversation);
         if (!conversation->session->priv->is_authenticated) {
                 char *msg;
 
@@ -1741,6 +1748,11 @@ worker_died (GdmSessionWorkerJob *job,
         } else if (conversation->session->priv->is_running) {
                 _gdm_session_session_died (GDM_SESSION (conversation->session), signum);
         }
+
+        g_debug ("GdmSessionDirect: Emitting conversation-stopped signal");
+        _gdm_session_conversation_stopped (GDM_SESSION (conversation->session),
+                                           conversation->service_name);
+        g_object_unref (conversation);
 }
 
 static GdmSessionConversation *
@@ -1813,6 +1825,10 @@ stop_conversation (GdmSessionConversation *conversation)
 
         g_object_unref (conversation->job);
         conversation->job = NULL;
+
+        g_debug ("GdmSessionDirect: Emitting conversation-stopped signal");
+        _gdm_session_conversation_stopped (GDM_SESSION (session),
+                                           conversation->service_name);
 }
 
 static void
@@ -1830,6 +1846,25 @@ gdm_session_direct_start_conversation (GdmSession *session,
 
         g_hash_table_insert (impl->priv->conversations,
                              g_strdup (service_name), conversation);
+}
+
+static void
+gdm_session_direct_stop_conversation (GdmSession *session,
+                                      const char *service_name)
+{
+        GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+        GdmSessionConversation *conversation;
+
+        g_return_if_fail (session != NULL);
+
+        g_debug ("GdmSessionDirect: stopping conversation");
+
+        conversation = find_conversation_by_name (impl, service_name);
+
+        if (conversation != NULL) {
+                stop_conversation (conversation);
+                g_hash_table_remove (impl->priv->conversations, service_name);
+        }
 }
 
 static void
@@ -2646,6 +2681,7 @@ static void
 gdm_session_iface_init (GdmSessionIface *iface)
 {
         iface->start_conversation = gdm_session_direct_start_conversation;
+        iface->stop_conversation = gdm_session_direct_stop_conversation;
         iface->setup = gdm_session_direct_setup;
         iface->setup_for_user = gdm_session_direct_setup_for_user;
         iface->authenticate = gdm_session_direct_authenticate;

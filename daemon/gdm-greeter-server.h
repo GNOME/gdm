@@ -96,6 +96,8 @@ gboolean            gdm_greeter_server_problem               (GdmGreeterServer *
 gboolean            gdm_greeter_server_reset                 (GdmGreeterServer *greeter_server);
 gboolean            gdm_greeter_server_ready                 (GdmGreeterServer *greeter_server,
                                                               const char       *service_name);
+gboolean            gdm_greeter_server_conversation_stopped  (GdmGreeterServer *greeter_server,
+                                                              const char       *service_name);
 void                gdm_greeter_server_selected_user_changed (GdmGreeterServer *greeter_server,
                                                               const char       *text);
 void                gdm_greeter_server_default_language_name_changed (GdmGreeterServer *greeter_server,

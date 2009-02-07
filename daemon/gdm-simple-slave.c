@@ -225,8 +225,7 @@ on_session_setup_failed (GdmSession     *session,
                                             _("Unable to initialize login system"));
         }
 
-        destroy_session (slave);
-        queue_greeter_reset (slave);
+        gdm_session_stop_conversation (session, service_name);
 }
 
 static void
@@ -263,8 +262,8 @@ on_session_authentication_failed (GdmSession     *session,
                                             service_name,
                                             _("Unable to authenticate user"));
         }
-        destroy_session (slave);
-        queue_greeter_reset (slave);
+
+        gdm_session_stop_conversation (session, service_name);
 }
 
 static void
@@ -322,8 +321,7 @@ on_session_authorization_failed (GdmSession     *session,
                                             _("Unable to authorize user"));
         }
 
-        destroy_session (slave);
-        queue_greeter_reset (slave);
+        gdm_session_stop_conversation (session, service_name);
 }
 
 static gboolean
@@ -454,9 +452,8 @@ on_session_accreditation_failed (GdmSession     *session,
            when Xorg exits it switches to the VT it was
            started from.  That interferes with fast
            user switching. */
-        destroy_session (slave);
 
-        queue_greeter_reset (slave);
+        gdm_session_stop_conversation (session, service_name);
 }
 
 static void
@@ -539,6 +536,23 @@ on_session_conversation_started (GdmSession     *session,
         }
 
         g_free (username);
+}
+
+static void
+on_session_conversation_stopped (GdmSession     *session,
+                                 const char     *service_name,
+                                 GdmSimpleSlave *slave)
+{
+        gboolean res;
+        g_debug ("GdmSimpleSlave: conversation stopped");
+
+        if (slave->priv->greeter_server != NULL) {
+                res = gdm_greeter_server_conversation_stopped (slave->priv->greeter_server,
+                                                               service_name);
+                if (! res) {
+                        g_warning ("Unable to send conversation stopped");
+                }
+        }
 }
 
 static void
@@ -628,6 +642,10 @@ create_new_session (GdmSimpleSlave *slave)
         g_signal_connect (slave->priv->session,
                           "conversation-started",
                           G_CALLBACK (on_session_conversation_started),
+                          slave);
+        g_signal_connect (slave->priv->session,
+                          "conversation-stopped",
+                          G_CALLBACK (on_session_conversation_stopped),
                           slave);
         g_signal_connect (slave->priv->session,
                           "setup-complete",

@@ -299,6 +299,14 @@ gdm_greeter_server_ready (GdmGreeterServer *greeter_server,
         return TRUE;
 }
 
+gboolean
+gdm_greeter_server_conversation_stopped (GdmGreeterServer *greeter_server,
+                                         const char       *service_name)
+{
+        send_dbus_string_signal (greeter_server, "ConversationStopped", service_name);
+        return TRUE;
+}
+
 void
 gdm_greeter_server_selected_user_changed (GdmGreeterServer *greeter_server,
                                           const char       *username)
@@ -797,6 +805,9 @@ do_introspect (DBusConnection *connection,
                                "    <method name=\"StartConversation\">\n"
                                "      <arg name=\"service_name\" direction=\"in\" type=\"s\"/>\n"
                                "    </method>\n"
+                               "    <method name=\"StopConversation\">\n"
+                               "      <arg name=\"service_name\" direction=\"in\" type=\"s\"/>\n"
+                               "    </method>\n"
                                "    <method name=\"BeginVerification\">\n"
                                "      <arg name=\"service_name\" direction=\"in\" type=\"s\"/>\n"
                                "    </method>\n"
@@ -866,6 +877,9 @@ do_introspect (DBusConnection *connection,
                                "      <arg name=\"delay\" type=\"i\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"Ready\">\n"
+                               "      <arg name=\"service-name\" type=\"s\"/>\n"
+                               "    </signal>\n"
+                               "    <signal name=\"ConversationStopped\">\n"
                                "      <arg name=\"service-name\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"Reset\">\n"

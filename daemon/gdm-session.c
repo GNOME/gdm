@@ -30,6 +30,7 @@
 
 enum {
         CONVERSATION_STARTED = 0,
+        CONVERSATION_STOPPED,
         SETUP_COMPLETE,
         SETUP_FAILED,
         RESET_COMPLETE,
@@ -85,6 +86,15 @@ gdm_session_start_conversation (GdmSession *session,
         g_return_if_fail (GDM_IS_SESSION (session));
 
         GDM_SESSION_GET_IFACE (session)->start_conversation (session, service_name);
+}
+
+void
+gdm_session_stop_conversation (GdmSession *session,
+                              const char *service_name)
+{
+        g_return_if_fail (GDM_IS_SESSION (session));
+
+        GDM_SESSION_GET_IFACE (session)->stop_conversation (session, service_name);
 }
 
 void
@@ -215,6 +225,16 @@ gdm_session_class_init (gpointer g_iface)
                               iface_type,
                               G_SIGNAL_RUN_FIRST,
                               G_STRUCT_OFFSET (GdmSessionIface, conversation_started),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1, G_TYPE_STRING);
+        signals [CONVERSATION_STOPPED] =
+                g_signal_new ("conversation-stopped",
+                              iface_type,
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmSessionIface, conversation_stopped),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,
@@ -635,6 +655,14 @@ _gdm_session_conversation_started (GdmSession   *session,
 {
         g_return_if_fail (GDM_IS_SESSION (session));
         g_signal_emit (session, signals [CONVERSATION_STARTED], 0, service_name);
+}
+
+void
+_gdm_session_conversation_stopped (GdmSession   *session,
+                                   const char   *service_name)
+{
+        g_return_if_fail (GDM_IS_SESSION (session));
+        g_signal_emit (session, signals [CONVERSATION_STOPPED], 0, service_name);
 }
 
 void

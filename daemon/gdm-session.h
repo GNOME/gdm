@@ -47,6 +47,8 @@ struct _GdmSessionIface
         /* Methods */
         void (* start_conversation)          (GdmSession   *session,
                                               const char   *service_name);
+        void (* stop_conversation)           (GdmSession   *session,
+                                              const char   *service_name);
         void (* setup)                       (GdmSession   *session,
                                               const char   *service_name);
         void (* setup_for_user)              (GdmSession   *session,
@@ -125,6 +127,8 @@ struct _GdmSessionIface
                                               int           signal_number);
         void (* conversation_started)        (GdmSession   *session,
                                               const char   *service_name);
+        void (* conversation_stopped)        (GdmSession   *session,
+                                              const char   *service_name);
         void (* closed)                      (GdmSession   *session);
         void (* selected_user_changed)       (GdmSession   *session,
                                               const char   *text);
@@ -140,6 +144,8 @@ struct _GdmSessionIface
 GType    gdm_session_get_type                    (void) G_GNUC_CONST;
 
 void     gdm_session_start_conversation          (GdmSession *session,
+                                                  const char *service_name);
+void     gdm_session_stop_conversation           (GdmSession *session,
                                                   const char *service_name);
 void     gdm_session_setup                       (GdmSession *session,
                                                   const char *service_name);
