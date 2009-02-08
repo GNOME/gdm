@@ -810,13 +810,19 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
 }
 
 static void
+restart_conversations (GdmGreeterLoginWindow *login_window)
+{
+        set_busy (login_window);
+        set_sensitive (login_window, FALSE);
+        g_signal_emit (login_window, signals[CANCELLED], 0);
+}
+
+static void
 do_cancel (GdmGreeterLoginWindow *login_window)
 {
         /* need to wait for response from backend */
         set_message (login_window, _("Cancelling..."));
-        set_busy (login_window);
-        set_sensitive (login_window, FALSE);
-        g_signal_emit (login_window, signals[CANCELLED], 0);
+        restart_conversations (login_window);
 }
 
 gboolean
@@ -863,6 +869,16 @@ gdm_greeter_login_window_conversation_stopped (GdmGreeterLoginWindow *login_wind
                 gdm_conversation_reset (GDM_CONVERSATION (task));
                 g_object_unref (task);
         }
+
+        /* If every conversation has failed, then just start over.
+         */
+        task = gdm_task_list_get_active_task (GDM_TASK_LIST (login_window->priv->conversation_list));
+
+        if (!gdm_task_is_enabled (task)) {
+                g_debug ("GdmGreeterLoginWindow: No conversations left, starting over");
+                restart_conversations (login_window);
+        }
+        g_object_unref (task);
 
         return TRUE;
 }
