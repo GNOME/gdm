@@ -1000,11 +1000,7 @@ static char *
 _get_tty_for_pam (const char *x11_display_name,
                   const char *display_device)
 {
-#ifdef __sun
-        return g_strdup (display_device);
-#else
         return g_strdup (x11_display_name);
-#endif
 }
 
 #ifdef PAM_XAUTHDATA
