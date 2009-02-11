@@ -1,1 +1,1 @@
-SUBDIRS = password fingerprint
+SUBDIRS = password fingerprint smartcard

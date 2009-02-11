@@ -67,6 +67,7 @@ GNOME_PANEL_REQUIRED_VERSION=2.0.0
 LIBXKLAVIER_REQUIRED_VERSION=3.5
 #FONTCONFIG_REQUIRED_VERSION=2.6.0
 FONTCONFIG_REQUIRED_VERSION=2.5.0
+NSS_REQUIRED_VERSION=3.11.1
 
 EXTRA_COMPILE_WARNINGS(yes)
 
@@ -88,6 +89,12 @@ PKG_CHECK_MODULES(DAEMON,
 )
 AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
+
+PKG_CHECK_MODULES(NSS,
+        nss >= $NSS_REQUIRED_VERSION
+)
+AC_SUBST(NSS_CFLAGS)
+AC_SUBST(NSS_LIBS)
 
 PKG_CHECK_MODULES(XLIB, x11 xau, ,
   [AC_PATH_XTRA
@@ -1406,6 +1413,10 @@ gui/simple-greeter/plugins/fingerprint/Makefile
 gui/simple-greeter/plugins/fingerprint/icons/Makefile
 gui/simple-greeter/plugins/fingerprint/icons/16x16/Makefile
 gui/simple-greeter/plugins/fingerprint/icons/48x48/Makefile
+gui/simple-greeter/plugins/smartcard/Makefile
+gui/simple-greeter/plugins/smartcard/icons/Makefile
+gui/simple-greeter/plugins/smartcard/icons/16x16/Makefile
+gui/simple-greeter/plugins/smartcard/icons/48x48/Makefile
 gui/simple-chooser/Makefile
 gui/user-switch-applet/Makefile
 utils/Makefile
