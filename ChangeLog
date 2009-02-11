@@ -1,3 +1,12 @@
+2009-02-11 Brian Cameron <brian.cameron@sun.com>
+
+	* config/Makefile.am, config/Xsession.common, config/Xsession.in
+	  Backout change for bug #509141.  This is no longer needed on
+	  Solaris since the code was reworked to make use of more
+	  general /etc/X11/xinit/xinitrc.d scripts.  Better to keep distro
+	  specific code out of the upstream GDM.
+	* config/Xsession.solaris, config/Xsession.common: Removed.
+
 2009-02-05 Brian Cameron <brian.cameron@sun.com>
 
 	* daemon/gdm-xdmcp-manager.c: Remove double free and improve error

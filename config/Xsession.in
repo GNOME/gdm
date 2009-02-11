@@ -186,24 +186,6 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
     done
 fi
 
-# @DISTRO_XSESSION@
-#
-# End of Distribution configuration section.
-#
-
-#Startup Input methods (IIIM->XIM)
-if [ -f /etc/iiim/xsession ]; then
-	. /etc/iiim/xsession
-fi
-#Startup XIM stuff
-if [ "x$XMODIFIERS" = "x" ]; then
- if [ -f "$HOME/.xim" ]; then
-	. $HOME/.xim
- elif [ -f "/etc/skel/.xim" ]; then
-	. /etc/skel/.xim
- fi
-fi
-
 if [ "x$command" = "xcustom" ] ; then
   if [ -x "$HOME/.xsession" ]; then
     command="$HOME/.xsession"
