@@ -1,3 +1,13 @@
+2009-02-11 Brian Cameron <brian.cameron@sun.com>
+
+	* config/Makefile.am, config/Xsession.common, config/Xsession.in
+	  Backout change for bug #509141.  This is no longer needed on
+	  Solaris since the code was reworked to make use of more
+	  general /etc/X11/xinit/xinitrc.d scripts.  Better to keep distro
+	  specific code out of the upstream GDM.  Fixes bug #571319.  Patch by
+	  Takao Fujiwara <Takao.Fujiwara@sun.com>.
+	* config/Xsession.solaris, config/Xsession.common: Removed.
+
 2009-02-11  Ray Strode  <rstrode@redhat.com>
 
 	* gui/simple-greeter/gdm-language-option-widget.c
