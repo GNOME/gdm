@@ -1,11 +1,11 @@
 2009-02-11 Brian Cameron <brian.cameron@sun.com>
 
 	* config/Makefile.am, config/Xsession.common, config/Xsession.in
-	  Backout change for bug #509141.  This is no longer needed on
-	  Solaris since the code was reworked to make use of more
-	  general /etc/X11/xinit/xinitrc.d scripts.  Better to keep distro
-	  specific code out of the upstream GDM.  Fixes bug #571319.  Patch by
-	  Takao Fujiwara <Takao.Fujiwara@sun.com>.
+	Backout change for bug #509141.  This is no longer needed on
+	Solaris since the code was reworked to make use of more
+	general /etc/X11/xinit/xinitrc.d scripts.  Better to keep distro
+	specific code out of the upstream GDM.  Fixes bug #571319.  Patch by
+	Takao Fujiwara <Takao.Fujiwara@sun.com>.
 	* config/Xsession.solaris, config/Xsession.common: Removed.
 
 2009-02-11  Ray Strode  <rstrode@redhat.com>
@@ -120,11 +120,11 @@
 2008-12-17 Brian Cameron <brian.cameron@sun.com>
 
 	* gui/simple-greeter/gdm-option-widget.c: Fix so that the option
-	  widget will be marked hidden if there are no middle rows.  This
-	  fixes a problem where the layout widget was showing up even though
-	  it had no middle entries.  Note a bottom row is added to the layout
-	  widget in the function gdm_layout_option_widget_init, so empty
-	  widgets can have a bottom row.  Fixes bug #564789.
+	widget will be marked hidden if there are no middle rows.  This
+	fixes a problem where the layout widget was showing up even though
+	it had no middle entries.  Note a bottom row is added to the layout
+	widget in the function gdm_layout_option_widget_init, so empty
+	widgets can have a bottom row.  Fixes bug #564789.
 
 2008-12-16  William Jon McCann  <jmccann@redhat.com>
 
@@ -161,7 +161,7 @@
 2008-12-12 Brian Cameron <brian.cameron@sun.com>
 
 	* daemon/gdm-display.c: One-line patch to address NULL printf
-	  crashing issue on Solaris.
+	crashing issue on Solaris.
 
 2008-12-10  Luca Ferretti  <elle.uca@libero.it>
 
@@ -285,7 +285,7 @@
 2008-11-04 Brian Cameron <brian.cameron@sun.com>
 
 	* configure.ac: Set XSESSION_SHELL, otherwise the data/Xsession
-	  script does not get set up with a default shell to use.
+	script does not get set up with a default shell to use.
 
 2008-11-01  William Jon McCann  <jmccann@redhat.com>
 
@@ -530,7 +530,7 @@
 2008-09-17 Brian Cameron <brian.cameron@sun.com>
 
 	* config/Xsession.solaris: Use bourne-shell syntax for setting
-	  VTE_CJK_WIDTH.  Just works better on Solaris.
+	VTE_CJK_WIDTH.  Just works better on Solaris.
 
 2008-09-14  Mario Blättermann <mariobl@svn.gnome.org>
 
@@ -614,7 +614,7 @@
 2008-09-05  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/simple-greeter/gdm-chooser-widget.c: Fix NULL argument in printf,
-	  which causes crashing on Solaris.
+	which causes crashing on Solaris.
 
 2008-09-03  Ray Strode <rstrode@redhat.com>
 
@@ -836,8 +836,8 @@
 2008-08-20  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.ac: Fix broken check for TCP Wrappers.  Fixes bug
-	  #548676.  Patch by Stanislav Brabec <sbrabec@suse.cz> and
-	  Brian Cameron <Brian.Cameron@sun.com>
+	#548676.  Patch by Stanislav Brabec <sbrabec@suse.cz> and
+	Brian Cameron <Brian.Cameron@sun.com>
 
 2008-08-20  William Jon McCann  <jmccann@redhat.com>
 
@@ -851,11 +851,11 @@
 
 	* configure.ac: Simplify the Solaris OS checks.
 	* data/Makefile.am, data/Xsession.in: Make it easy to insert
-	  Distribution specific scripting into the Xsession script.
+	Distribution specific scripting into the Xsession script.
 	* data/Xsession.common, data/Xsession.solaris: Provide Solaris
-	  and default script.  Patch by Takao Fujiwara <Takao.Fujiwara@sun.com>
-	  and Brian Cameron <Brian.Cameron@sun.com>.  Fixes bugs #509141
-	  and #547549.
+	and default script.  Patch by Takao Fujiwara <Takao.Fujiwara@sun.com>
+	and Brian Cameron <Brian.Cameron@sun.com>.  Fixes bugs #509141
+	and #547549.
 
 2008-08-20  William Jon McCann  <jmccann@redhat.com>
 
@@ -1332,10 +1332,10 @@
 2008-06-05  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.ac, gui/simple-greeter/Makefile.am, 
-	  gui/simple-greeter/gdm-layouts.c,
-	  gui/simple-greeter/gdm-greeter-panel.c,
-	  gui/simple-greeter/gdm-layout-chooser-widget.c:  Make libxklavier an
-	  optional dependency.
+	gui/simple-greeter/gdm-layouts.c,
+	gui/simple-greeter/gdm-greeter-panel.c,
+	gui/simple-greeter/gdm-layout-chooser-widget.c:  Make libxklavier an
+	optional dependency.
 
 2008-06-03  Brian Cameron  <brian.cameron@sun.com>
 
@@ -1347,12 +1347,12 @@
 2008-05-23  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm-display-access-file.c:  Update patch so it contains
-	  some improvements by Simon Zheng.  Fixes bug #534605.
+	some improvements by Simon Zheng.  Fixes bug #534605.
 
 2008-05-23  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm-display-access-file.c:  Create and set permissions
-	  to 1777 and owner root:gdm on /var/run/gdm if it does not exist.
+	to 1777 and owner root:gdm on /var/run/gdm if it does not exist.
 
 2008-05-14  William Jon McCann  <jmccann@redhat.com>
 
@@ -1712,10 +1712,10 @@
 2008-04-15  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.ac: Add "#define _POSIX_PTHREAD_SEMANTICS" to
-	  test for POSIX getpwnam_r.  This is needed to be able
-	  to identify that Solaris does have the POSIX version of
-	  this function.  Otherwise the build fails when building
-	  gdm-session-worker.c, which uses this function.
+	test for POSIX getpwnam_r.  This is needed to be able
+	to identify that Solaris does have the POSIX version of
+	this function.  Otherwise the build fails when building
+	gdm-session-worker.c, which uses this function.
 
 2008-04-15  William Jon McCann  <jmccann@redhat.com>
 
@@ -2245,9 +2245,9 @@
 2008-03-27  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm-session-linux-auditor.[ch],
-	  daemon/gdm-session-auditor.[ch],
-	  daemon/gdm-session-solaris-auditor.[ch]:  Add ", Inc." to
-	  "Sun Microsystems, Inc." copyright notice so it is correct.
+	daemon/gdm-session-auditor.[ch],
+	daemon/gdm-session-solaris-auditor.[ch]:  Add ", Inc." to
+	"Sun Microsystems, Inc." copyright notice so it is correct.
 
 2008-03-26  William Jon McCann  <jmccann@redhat.com>
 
@@ -2947,7 +2947,7 @@
 2008-03-06  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/simple-greeter/gdm-greeter-login-window.c:  Fix NULL string
-	  issue in debug statement.
+	issue in debug statement.
 
 2008-03-06  William Jon McCann  <jmccann@redhat.com>
 
@@ -4207,9 +4207,9 @@
 2008-02-08  Brian Cameron  <brian.cameron@sun.com>
 
 	* gui/simple-greeter/gdm-option-widget.c:  Fix NULL print
-	  issue causing crash on Solaris.
+	issue causing crash on Solaris.
 	* gui/gdm-languages.c:  Fix NULL print issue causing crash
-	  on Solaris.
+	on Solaris.
 
 2008-02-08  Ray Strode  <rstrode@redhat.com>
 
@@ -4622,10 +4622,10 @@
 2008-02-05  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.ac:  Add gio to COMMON_LIBS, needed to link on
-	  Solaris.
+	Solaris.
 	* gui/simple-greeter/Makefile.am,
-	  gui/user-switch-applet/Makefile.am:  Reference COMMON_LIBS
-	  so programs link.
+	gui/user-switch-applet/Makefile.am:  Reference COMMON_LIBS
+	so programs link.
 
 2008-02-05  William Jon McCann  <jmccann@redhat.com>
 
@@ -4750,7 +4750,7 @@
 2008-02-01  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.ac, common/gdm-address.c use HAVE_SYS_SOCKIO_H
-	  for sys/sockio.h inclusion.
+	for sys/sockio.h inclusion.
 
 2008-02-01  William Jon McCann  <mccann@jhu.edu>
 
@@ -4761,7 +4761,7 @@
 
 	* configure.ac:  Make check an optional dependency.
 	* common/gdm-address.c: Add needed includes to build on 
-	  Solaris.
+	Solaris.
 
 2008-02-01  William Jon McCann  <mccann@jhu.edu>
 
@@ -5149,14 +5149,14 @@
 2008-01-28  Brian Cameron  <brian.cameron@sun.com>
 
 	* acconfig.h, configure.ac, gui/simple-greeter/Makefile.am,
-	  gui/simple-greeter/gdm-greeter-login-window.c:  Make
-	  polkit-gnome an optional dependency.  Also support
-	  RBAC for shutdown/reboot if the --enable-rbac-shutdown
-	  configure option is provided.
+	gui/simple-greeter/gdm-greeter-login-window.c:  Make
+	polkit-gnome an optional dependency.  Also support
+	RBAC for shutdown/reboot if the --enable-rbac-shutdown
+	configure option is provided.
 	* configure.ac: Remove old RBAC configuration options that
-	  were used in the GDM 2.20 branch.
+	were used in the GDM 2.20 branch.
 	* gui/simple-greeter/gdm-chooser-widget.c: Fix a null string
-	  argument problem causing core dumping on Solaris.
+	argument problem causing core dumping on Solaris.
 
 2008-01-28  William Jon McCann  <mccann@jhu.edu>
 
@@ -5420,10 +5420,10 @@
 2007-12-21  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.ac, tests/Makefile.am:  Minor change to
-	  add -lsocket and -lnsl when building the test programs
-	  on Solaris.  This is needed to link getnameinfo,
-	  getaddrinfo, freeaddrinfo, and gai_strerror which
-	  are references from libgdmcommon.
+	add -lsocket and -lnsl when building the test programs
+	on Solaris.  This is needed to link getnameinfo,
+	getaddrinfo, freeaddrinfo, and gai_strerror which
+	are references from libgdmcommon.
 
 2007-12-21  William Jon McCann  <mccann@jhu.edu>
 
@@ -7351,9 +7351,9 @@
 2007-10-18  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/gdm-session-record.c: Some trivial fixes.  The #ifdef
-	  GETUTXENT got lost in the logout function.  It should match the
-	  login function.  Also make sure to set both tv_sec and tv_usec when
-	  doing logout.
+	GETUTXENT got lost in the logout function.  It should match the
+	login function.  Also make sure to set both tv_sec and tv_usec when
+	doing logout.
 
 2007-10-19  William Jon McCann  <mccann@jhu.edu>
 
