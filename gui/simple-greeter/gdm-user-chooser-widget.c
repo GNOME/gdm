@@ -128,7 +128,7 @@ add_user_other (GdmUserChooserWidget *widget)
         gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                      GDM_USER_CHOOSER_USER_OTHER,
                                      NULL,
-                                     _("Other..."),
+                                     C_("user", "Other..."),
                                      _("Choose a different account"),
                                      0,
                                      FALSE,

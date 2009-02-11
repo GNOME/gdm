@@ -217,7 +217,7 @@ gdm_layout_option_widget_init (GdmLayoutOptionWidget *widget)
 
         gdm_option_widget_add_item (GDM_OPTION_WIDGET (widget),
                                     "__other",
-                                    _("Other..."),
+                                    C_("language", "Other..."),
                                     _("Choose a keyboard layout from the "
                                       "full list of available layouts."),
                                     GDM_OPTION_WIDGET_POSITION_BOTTOM);
