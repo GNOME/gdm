@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: gdm.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&component=general\n"
-"POT-Creation-Date: 2009-01-27 23:44+0000\n"
-"PO-Revision-Date: 2009-01-28 22:10+0100\n"
+"POT-Creation-Date: 2009-02-12 03:20+0000\n"
+"PO-Revision-Date: 2009-02-12 15:12+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -167,71 +167,71 @@ msgstr "La pantalla"
 msgid "worker exited with status %d"
 msgstr "worker se detuvo con estado %d"
 
-#: ../daemon/gdm-session-worker.c:1079
+#: ../daemon/gdm-session-worker.c:1075
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "error al iniciar la conversación con el sistema de autenticación - %s"
 
-#: ../daemon/gdm-session-worker.c:1080
+#: ../daemon/gdm-session-worker.c:1076
 msgid "general failure"
 msgstr "fallo general"
 
-#: ../daemon/gdm-session-worker.c:1081
+#: ../daemon/gdm-session-worker.c:1077
 msgid "out of memory"
 msgstr "sin memoria"
 
-#: ../daemon/gdm-session-worker.c:1082
+#: ../daemon/gdm-session-worker.c:1078
 msgid "application programmer error"
 msgstr "error del programador de la aplicación"
 
-#: ../daemon/gdm-session-worker.c:1083
+#: ../daemon/gdm-session-worker.c:1079
 msgid "unknown error"
 msgstr "error desconocido"
 
-#: ../daemon/gdm-session-worker.c:1090
+#: ../daemon/gdm-session-worker.c:1086
 msgid "Username:"
 msgstr "Usuario:"
 
-#: ../daemon/gdm-session-worker.c:1096
+#: ../daemon/gdm-session-worker.c:1092
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "error al informar al sistema de autenticación del diálogo del nombre de "
 "usuario preferido - %s"
 
-#: ../daemon/gdm-session-worker.c:1110
+#: ../daemon/gdm-session-worker.c:1106
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 "error al informar al sistema de autenticación del nombre del equipo del "
 "usuario - %s"
 
-#: ../daemon/gdm-session-worker.c:1125
+#: ../daemon/gdm-session-worker.c:1121
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
 "error al informar al sistema de autenticación acerca de la consola del "
 "usuario - %s"
 
-#: ../daemon/gdm-session-worker.c:1138
+#: ../daemon/gdm-session-worker.c:1134
 #, c-format
 msgid "error informing authentication system of display string - %s"
 msgstr ""
 "error al informar al sistema de autenticación de la cadena de pantalla - %s"
 
-#: ../daemon/gdm-session-worker.c:1153
+#: ../daemon/gdm-session-worker.c:1149
 #, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
 msgstr ""
 "error al informar al sistema de autenticación de las credenciales xauth de "
 "la pantalla - %s"
 
-#: ../daemon/gdm-session-worker.c:1433 ../daemon/gdm-session-worker.c:1451
+#: ../daemon/gdm-session-worker.c:1429 ../daemon/gdm-session-worker.c:1447
 #, c-format
 msgid "no user account available"
 msgstr "no hay cuentas de usuario disponibles"
 
-#: ../daemon/gdm-session-worker.c:1478
+#: ../daemon/gdm-session-worker.c:1474
 msgid "Unable to change to user"
 msgstr "No se pudo cambiar el usuario"
 
@@ -662,17 +662,20 @@ msgid "_Languages:"
 msgstr "_Idiomas:"
 
 #: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
-#: ../gui/simple-greeter/gdm-language-option-widget.c:259
+#: ../gui/simple-greeter/gdm-language-option-widget.c:262
 msgid "_Language:"
 msgstr "_Idioma:"
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:228
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:220
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:131
+#. translators: This brings up a dialog
+#. * with a list of languages to choose from
+#.
+#: ../gui/simple-greeter/gdm-language-option-widget.c:231
+#| msgid "Other..."
+msgctxt "language"
 msgid "Other..."
 msgstr "Otro…"
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:229
+#: ../gui/simple-greeter/gdm-language-option-widget.c:232
 msgid "Choose a language from the full list of available languages."
 msgstr "Elija un idioma de la lista de idiomas disponibles."
 
@@ -686,11 +689,20 @@ msgstr "Distribuciones de teclado"
 
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:200
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:201
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:251
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:254
 msgid "_Keyboard:"
 msgstr "_Teclado:"
 
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:221
+#. translators: This brings up a dialog of
+#. * available keyboard layouts
+#.
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:223
+#| msgid "Other..."
+msgctxt "keyboard"
+msgid "Other..."
+msgstr "Otra…"
+
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:224
 msgid "Choose a keyboard layout from the full list of available layouts."
 msgstr ""
 "Elija una distribución de teclado de la lista de distribuciones disponibles."
@@ -947,32 +959,43 @@ msgstr "Gestor"
 msgid "The user manager object this user is controlled by."
 msgstr "El objeto de gestión de usuarios que controla a este usuario."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:132
+#. translators: This option prompts
+#. * the user to type in a username
+#. * manually instead of choosing from
+#. * a list.
+#.
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:136
+#| msgid "Other..."
+msgctxt "user"
+msgid "Other..."
+msgstr "Otro…"
+
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:137
 msgid "Choose a different account"
 msgstr "Elija una cuenta distinta"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:144
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:149
 msgid "Guest"
 msgstr "Invitado"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:145
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:150
 msgid "Login as a temporary guest"
 msgstr "Iniciar sesión como invitado temporal"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:157
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:162
 msgid "Automatic Login"
 msgstr "Inicio de sesión automático"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:158
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:163
 msgid "Automatically login to the system after selecting options"
 msgstr "Iniciar sesión en el sistema después de seleccionar las opciones"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:349
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:354
 #, c-format
 msgid "Log in as %s"
 msgstr "Iniciar sesión como %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:694
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:699
 msgid "Currently logged in"
 msgstr "Sesión iniciada"
 
@@ -1146,7 +1169,6 @@ msgstr "No se pudo iniciar la pantalla nueva"
 
 #. Option parsing
 #: ../utils/gdm-screenshot.c:231
-#| msgid "Take a picture of the screeen"
 msgid "Take a picture of the screen"
 msgstr "Tomar una captura de la pantalla"
 
