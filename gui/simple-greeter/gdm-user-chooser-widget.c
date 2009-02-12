@@ -128,6 +128,11 @@ add_user_other (GdmUserChooserWidget *widget)
         gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                      GDM_USER_CHOOSER_USER_OTHER,
                                      NULL,
+                                     /* translators: This option prompts
+                                      * the user to type in a username
+                                      * manually instead of choosing from
+                                      * a list.
+                                      */
                                      C_("user", "Other..."),
                                      _("Choose a different account"),
                                      0,

@@ -225,6 +225,9 @@ gdm_language_option_widget_init (GdmLanguageOptionWidget *widget)
 
         gdm_option_widget_add_item (GDM_OPTION_WIDGET (widget),
                                     "__other",
+                                    /* translators: This brings up a dialog
+                                     * with a list of languages to choose from
+                                     */
                                     C_("language", "Other..."),
                                     _("Choose a language from the "
                                       "full list of available languages."),
