@@ -316,7 +316,7 @@ applet_change_background_cb (PanelApplet               *applet,
         gtk_widget_set_style (adata->menubar, NULL);
         rc_style = gtk_rc_style_new ();
         gtk_widget_modify_style (GTK_WIDGET (adata->menubar), rc_style);
-        gtk_rc_style_unref (rc_style);
+        g_object_unref (rc_style);
 
         switch (type) {
         case PANEL_NO_BACKGROUND:

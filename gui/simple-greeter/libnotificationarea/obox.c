@@ -73,10 +73,10 @@ get_class (NaOBox *obox)
   switch (obox->orientation)
     {
     case GTK_ORIENTATION_HORIZONTAL:
-      klass = GTK_WIDGET_CLASS (gtk_type_class (GTK_TYPE_HBOX));
+      klass = GTK_WIDGET_CLASS (g_type_class_peek (GTK_TYPE_HBOX));
       break;
     case GTK_ORIENTATION_VERTICAL:
-      klass = GTK_WIDGET_CLASS (gtk_type_class (GTK_TYPE_VBOX));
+      klass = GTK_WIDGET_CLASS (g_type_class_peek (GTK_TYPE_VBOX));
       break;
     default:
       g_assert_not_reached ();
