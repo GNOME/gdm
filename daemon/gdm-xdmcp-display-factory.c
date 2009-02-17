@@ -794,7 +794,6 @@ gdm_xdmcp_send_willing (GdmXdmcpDisplayFactory *factory,
 
                 s = get_willing_output (factory);
                 if (s != NULL) {
-                        g_free (last_status);
                         last_status = s;
                 } else {
                         last_status = g_strdup (factory->priv->sysid);

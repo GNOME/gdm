@@ -1,5 +1,10 @@
 2009-02-17 Brian Cameron <brian.cameron@sun.com>
 
+	* daemon/gdm-xdmcp-display-factory.c: Remove double free.  Fixes bug
+	#565018.  Patch by William Jan Palenstijn <wjp@usecode.org>.
+
+2009-02-17 Brian Cameron <brian.cameron@sun.com>
+
 	* utils/gdmflexiserver.c: Support VERSION command so that if user's
 	run gdmflexiser --command=VERSION, it will return the version number.
 	This is nice for backwards compatibility.  Fixes bug #535450.
