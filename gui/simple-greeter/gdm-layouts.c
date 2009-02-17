@@ -120,7 +120,7 @@ gdm_get_layout_from_name (const char *name)
 
         item = xkl_config_item_new ();
 
-        g_snprintf (item->name, XKL_MAX_CI_NAME_LENGTH, id1);
+        g_snprintf (item->name, XKL_MAX_CI_NAME_LENGTH, "%s", id1);
         if (xkl_config_registry_find_layout (config_registry, item)) {
                 layout = xci_desc_to_utf8 (item);
         } else {
@@ -128,7 +128,7 @@ gdm_get_layout_from_name (const char *name)
         }
 
         if (id2 != NULL) {
-                g_snprintf (item->name, XKL_MAX_CI_NAME_LENGTH, id2);
+                g_snprintf (item->name, XKL_MAX_CI_NAME_LENGTH, "%s", id2);
                 if (xkl_config_registry_find_variant (config_registry, id1, item))
                         variant = xci_desc_to_utf8 (item);
                 else

@@ -58,7 +58,7 @@ main (int argc, char *argv[])
         error = NULL;
         re = g_regex_new ("hostname: (?P<hostname>[a-zA-Z0-9.-]+)", 0, 0, &error);
         if (re == NULL) {
-                g_warning (error->message);
+                g_warning ("%s", error->message);
                 goto out;
         }
 
