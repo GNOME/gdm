@@ -2,6 +2,17 @@
   <schemalist>
 
     <schema>
+      <key>chooser/Multicast</key>
+      <signature>b</signature>
+      <default>false</default>
+    </schema>
+    <schema>
+      <key>chooser/MulticastAddr</key>
+      <signature>s</signature>
+      <default>ff02::1</default>
+    </schema>
+
+    <schema>
       <key>daemon/User</key>
       <signature>s</signature>
       <default>@GDM_USERNAME@</default>
@@ -61,12 +72,12 @@
     <schema>
       <key>xdmcp/MaxWait</key>
       <signature>i</signature>
-      <default>15</default>
+      <default>30</default>
     </schema>
     <schema>
       <key>xdmcp/DisplaysPerHost</key>
       <signature>i</signature>
-      <default>2</default>
+      <default>1</default>
     </schema>
     <schema>
       <key>xdmcp/Port</key>
@@ -79,14 +90,9 @@
       <default>true</default>
     </schema>
     <schema>
-      <key>xdmcp/MaxPendingIndirect</key>
-      <signature>i</signature>
-      <default>4</default>
-    </schema>
-    <schema>
       <key>xdmcp/MaxWaitIndirect</key>
       <signature>i</signature>
-      <default>15</default>
+      <default>30</default>
     </schema>
     <schema>
       <key>xdmcp/PingIntervalSeconds</key>
@@ -98,22 +104,5 @@
       <signature>s</signature>
       <default>@gdmconfdir@/Xwilling</default>
     </schema>
-
-    <schema>
-      <key>xdmcp/EnableProxy</key>
-      <signature>b</signature>
-      <default>false</default>
-    </schema>
-    <schema>
-      <key>xdmcp/ProxyXServer</key>
-      <signature>s</signature>
-      <default></default>
-    </schema>
-    <schema>
-      <key>xdmcp/ProxyReconnect</key>
-      <signature>s</signature>
-      <default></default>
-    </schema>
-
   </schemalist>
 </gdmschemafile>

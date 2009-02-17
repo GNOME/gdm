@@ -57,6 +57,8 @@
 #include "gdm-display-factory.h"
 #include "gdm-xdmcp-display-factory.h"
 #include "gdm-display-store.h"
+#include "gdm-settings-direct.h"
+#include "gdm-settings-keys.h"
 
 /*
  * On Sun, we need to define allow_severity and deny_severity to link
@@ -74,10 +76,11 @@ int deny_severity = LOG_WARNING;
 #define DEFAULT_USE_MULTICAST         FALSE
 #define DEFAULT_MULTICAST_ADDRESS     "ff02::1"
 #define DEFAULT_HONOR_INDIRECT        TRUE
-#define DEFAULT_MAX_DISPLAYS_PER_HOST 2
+#define DEFAULT_MAX_DISPLAYS_PER_HOST 1
 #define DEFAULT_MAX_DISPLAYS          16
 #define DEFAULT_MAX_PENDING_DISPLAYS  4
-#define DEFAULT_MAX_WAIT              15
+#define DEFAULT_MAX_WAIT              30
+#define DEFAULT_MAX_WAIT_INDIRECT     30
 #define DEFAULT_WILLING_SCRIPT        GDMCONFDIR "/Xwilling"
 
 #define GDM_MAX_FORWARD_QUERIES 10
@@ -186,6 +189,7 @@ struct GdmXdmcpDisplayFactoryPrivate
         guint            max_displays;
         guint            max_pending_displays;
         guint            max_wait;
+        guint            max_wait_indirect;
 };
 
 enum {
@@ -199,6 +203,7 @@ enum {
         PROP_MAX_DISPLAYS,
         PROP_MAX_PENDING_DISPLAYS,
         PROP_MAX_WAIT,
+        PROP_MAX_WAIT_INDIRECT,
 };
 
 static void     gdm_xdmcp_display_factory_class_init    (GdmXdmcpDisplayFactoryClass *klass);
@@ -1174,7 +1179,7 @@ indirect_client_lookup (GdmXdmcpDisplayFactory *factory,
                         break;
                 }
 
-                if (ic->acctime > 0 && curtime > ic->acctime + factory->priv->max_wait) {
+                if (ic->acctime > 0 && curtime > ic->acctime + factory->priv->max_wait_indirect) {
                         g_debug ("GdmXdmcpDisplayFactory: Disposing stale forward query from %s:%s",
                                  host, serv);
 
@@ -2905,9 +2910,32 @@ gdm_xdmcp_display_factory_start (GdmDisplayFactory *base_factory)
         gboolean                ret;
         GIOChannel             *ioc;
         GdmXdmcpDisplayFactory *factory = GDM_XDMCP_DISPLAY_FACTORY (base_factory);
+        gboolean                res;
 
         g_return_val_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory), FALSE);
         g_return_val_if_fail (factory->priv->socket_fd == -1, FALSE);
+
+        /* read configuration */
+        res = gdm_settings_direct_get_uint    (GDM_KEY_UDP_PORT,
+                                               &(factory->priv->port));
+        res = gdm_settings_direct_get_boolean (GDM_KEY_MULTICAST,
+                                               &(factory->priv->use_multicast));
+        res = gdm_settings_direct_get_string  (GDM_KEY_MULTICAST_ADDR,
+                                               &(factory->priv->multicast_address));
+        res = gdm_settings_direct_get_boolean (GDM_KEY_INDIRECT,
+                                               &(factory->priv->honor_indirect));
+        res = gdm_settings_direct_get_uint    (GDM_KEY_DISPLAYS_PER_HOST,
+                                               &(factory->priv->max_displays_per_host));
+        res = gdm_settings_direct_get_uint    (GDM_KEY_MAX_SESSIONS,
+                                               &(factory->priv->max_displays));
+        res = gdm_settings_direct_get_uint    (GDM_KEY_MAX_PENDING,
+                                               &(factory->priv->max_pending_displays));
+        res = gdm_settings_direct_get_uint    (GDM_KEY_MAX_WAIT,
+                                               &(factory->priv->max_wait));
+        res = gdm_settings_direct_get_uint    (GDM_KEY_MAX_WAIT_INDIRECT,
+                                               &(factory->priv->max_wait_indirect));
+        res = gdm_settings_direct_get_string  (GDM_KEY_WILLING,
+                                               &(factory->priv->willing_script));
 
         ret = open_port (factory);
         if (! ret) {
@@ -3027,6 +3055,15 @@ gdm_xdmcp_display_factory_set_max_wait (GdmXdmcpDisplayFactory *factory,
 }
 
 static void
+gdm_xdmcp_display_factory_set_max_wait_indirect (GdmXdmcpDisplayFactory *factory,
+                                                 guint                   num)
+{
+        g_return_if_fail (GDM_IS_XDMCP_DISPLAY_FACTORY (factory));
+
+        factory->priv->max_wait_indirect = num;
+}
+
+static void
 gdm_xdmcp_display_factory_set_willing_script (GdmXdmcpDisplayFactory *factory,
                                               const char             *script)
 {
@@ -3071,6 +3108,9 @@ gdm_xdmcp_display_factory_set_property (GObject       *object,
         case PROP_MAX_WAIT:
                 gdm_xdmcp_display_factory_set_max_wait (self, g_value_get_uint (value));
                 break;
+        case PROP_MAX_WAIT_INDIRECT:
+                gdm_xdmcp_display_factory_set_max_wait_indirect (self, g_value_get_uint (value));
+                break;
         case PROP_WILLING_SCRIPT:
                 gdm_xdmcp_display_factory_set_willing_script (self, g_value_get_string (value));
                 break;
@@ -3114,6 +3154,9 @@ gdm_xdmcp_display_factory_get_property (GObject    *object,
                 break;
         case PROP_MAX_WAIT:
                 g_value_set_uint (value, self->priv->max_wait);
+                break;
+        case PROP_MAX_WAIT_INDIRECT:
+                g_value_set_uint (value, self->priv->max_wait_indirect);
                 break;
         case PROP_WILLING_SCRIPT:
                 g_value_set_string (value, self->priv->willing_script);
@@ -3209,6 +3252,15 @@ gdm_xdmcp_display_factory_class_init (GdmXdmcpDisplayFactoryClass *klass)
                                                             0,
                                                             G_MAXINT,
                                                             DEFAULT_MAX_WAIT,
+                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_MAX_WAIT_INDIRECT,
+                                         g_param_spec_uint ("max-wait-indirect",
+                                                            "max-wait-indirect",
+                                                            "max-wait-indirect",
+                                                            0,
+                                                            G_MAXINT,
+                                                            DEFAULT_MAX_WAIT_INDIRECT,
                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
         g_type_class_add_private (klass, sizeof (GdmXdmcpDisplayFactoryPrivate));

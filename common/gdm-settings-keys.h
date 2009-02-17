@@ -42,13 +42,12 @@ G_BEGIN_DECLS
 #define GDM_KEY_DISPLAYS_PER_HOST "xdmcp/DisplaysPerHost"
 #define GDM_KEY_UDP_PORT "xdmcp/Port"
 #define GDM_KEY_INDIRECT "xdmcp/HonorIndirect"
-#define GDM_KEY_MAX_INDIRECT "xdmcp/MaxPendingIndirect"
 #define GDM_KEY_MAX_WAIT_INDIRECT "xdmcp/MaxWaitIndirect"
 #define GDM_KEY_PING_INTERVAL "xdmcp/PingIntervalSeconds"
 #define GDM_KEY_WILLING "xdmcp/Willing"
-#define GDM_KEY_XDMCP_PROXY "xdmcp/EnableProxy"
-#define GDM_KEY_XDMCP_PROXY_XSERVER "xdmcp/ProxyXServer"
-#define GDM_KEY_XDMCP_PROXY_RECONNECT "xdmcp/ProxyReconnect"
+
+#define GDM_KEY_MULTICAST "chooser/Multicast"
+#define GDM_KEY_MULTICAST_ADDR "chooser/MulticastAddr"
 
 G_END_DECLS
 

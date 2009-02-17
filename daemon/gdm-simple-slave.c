@@ -53,13 +53,16 @@
 #include "gdm-session-direct.h"
 #include "gdm-greeter-server.h"
 #include "gdm-greeter-session.h"
+#include "gdm-settings-direct.h"
+#include "gdm-settings-keys.h"
 
 #define GDM_SIMPLE_SLAVE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SIMPLE_SLAVE, GdmSimpleSlavePrivate))
 
 #define GDM_DBUS_NAME              "org.gnome.DisplayManager"
 #define GDM_DBUS_DISPLAY_INTERFACE "org.gnome.DisplayManager.Display"
 
-#define MAX_CONNECT_ATTEMPTS 10
+#define MAX_CONNECT_ATTEMPTS  10
+#define DEFAULT_PING_INTERVAL 15
 
 struct GdmSimpleSlavePrivate
 {
@@ -862,6 +865,7 @@ start_greeter (GdmSimpleSlave *slave)
         char          *display_hostname;
         char          *auth_file;
         char          *address;
+        gboolean       res;
 
         g_debug ("GdmSimpleSlave: Running greeter");
 
@@ -889,6 +893,10 @@ start_greeter (GdmSimpleSlave *slave)
         /* FIXME: send a signal back to the master */
 
         /* If XDMCP setup pinging */
+        slave->priv->ping_interval = DEFAULT_PING_INTERVAL;
+        res = gdm_settings_direct_get_int (GDM_KEY_PING_INTERVAL,
+                                           &(slave->priv->ping_interval));
+
         if ( ! display_is_local && slave->priv->ping_interval > 0) {
                 alarm (slave->priv->ping_interval);
         }

@@ -1,5 +1,18 @@
 2009-02-17 Brian Cameron <brian.cameron@sun.com>
 
+	* common/gdm-settings-direct.[ch], common/gdm-settings-keys.h,
+	daemon/gdm-simple-slave.c, daemon/gdm-xdmcp-chooser-slave.c,
+	daemon/gdm-xdmcp-display-factory.c, data/gdm.schemas.in.in,
+	docs/C/gdm.xml: Enable XDMCP configuration so it works.  Previously
+	only xdmcp/Enable was being used in the code.  Also add support for
+	chooser/Multicast and chooser/MulticastAddr configuration options.
+	Now set the default values of MAX_DISPLAY_PER_HOST to 1 and MAX_WAIT to
+	30 as specified in the docs.  Add a gdm_settings_direct_get_uint
+	function to get unsigned integer configuration values more cleanly
+	without the need to cast.  Fixes bug #569876.
+
+2009-02-17 Brian Cameron <brian.cameron@sun.com>
+
 	* daemon/gdm-xdmcp-display-factory.c: Remove double free.  Fixes bug
 	#565018.  Patch by William Jan Palenstijn <wjp@usecode.org>.
 
