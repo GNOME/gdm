@@ -2,8 +2,8 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
-    <!ENTITY version "2.24.0"> 
-    <!ENTITY date    "08/27/2008"> 
+    <!ENTITY version "2.26.0"> 
+    <!ENTITY date    "02/10/2009"> 
     <!ENTITY mdash   "&#8212;"> 
     <!ENTITY percnt  "&#x0025;">
 ]>
@@ -317,19 +317,25 @@
     <sect2 id="greeterpanel">
       <title>Greeter Panel</title>
       <para>
-        The GDM greeter program displays a panel docked at the bottom of the screen
-        which provides additional functionality.  When a user is selected, the
-        panel allows the user to select which session, language, and keyboard layout
-        to use after logging in.  The keyboard layout selector also changes the keyboard
-        layout used when typing your password.  The panel also contains an area
-        for login services to leave status icons.  Some example status icons
-        include a battery icon for current battery usage, and an icon for
-        enabling accessibility features.  The greeter program also provides
-        buttons which allow the user to shutdown or restart the system.  It is
-        possible to configure GDM to not provide the shutdown and restart
-        buttons, if desired.  GDM can also be configured via PolicyKit (or via
-        RBAC on Solaris) to require the user have appropriate authorization
-        before accepting the shutdown or restart request.
+        The GDM greeter program displays a panel docked at the bottom of the
+        screen which provides additional functionality.  When a user is
+        selected, the panel allows the user to select which session, language,
+        and keyboard layout to use after logging in.  The keyboard layout
+        selector also changes the keyboard layout used when typing your
+        password.  The panel also contains an area for login services to leave
+        status icons.  Some example status icons include a battery icon for
+        current battery usage, and an icon for enabling accessibility features.
+        The greeter program also provides buttons which allow the user to
+        shutdown or restart the system.  It is possible to configure GDM to not
+        provide the shutdown and restart buttons, if desired.  GDM can also be
+        configured via PolicyKit (or via RBAC on Solaris) to require the user
+        have appropriate authorization before accepting the shutdown or restart
+        request.
+      </para>
+
+      <para>
+        Note that keyboard layout features are only available on systems that
+        support libxklavier.
       </para>
     </sect2>
 
@@ -343,7 +349,9 @@
           features such as an on-screen keyboard, screen reader, screen
           magnifier, and Xserver AccessX keyboard accessibility are available.
           It is also possible to enable large text or high contrast icons and
-          controls, if needed.
+          controls, if needed.  Refer to the &quot;Accessibility
+          Configuration&quot; section of the document for more information
+          how various accessibility features can be configured.
         </para>
 
         <para>
@@ -528,6 +536,11 @@
         the same mechanism.  Note that some distributions may not add the User Switcher
         to the default panel configuration.  It can be added using the panel context
         menu.
+      </para>
+      <para>
+        Note this feature is available on systems that support Virtual
+        Terminals.  This feature will not function if Virtual Terminals is not
+        available.
       </para>
     </sect2>
   </sect1>
@@ -920,10 +933,10 @@ gdm: .your.domain
     <sect2 id="scripting">
       <title>Scripting Integration Points</title>
       
-    <para>
-      The GDM script integration points can be found in the
-      <filename>&lt;etc&gt;/gdm/</filename> directory:
-    </para>
+      <para>
+        The GDM script integration points can be found in the
+        <filename>&lt;etc&gt;/gdm/</filename> directory:
+      </para>
 
 <screen>
 Xsession
@@ -960,7 +973,8 @@ PostSession/
       </para>
 
       <para>
-        When the Xserver has been successfully started, GDM will run the
+        When the Xserver for the login GUI has been successfully started, but
+        before the login GUI is actually displayed, GDM will run the
         <filename>Init</filename> script.  This script is useful for starting
         programs that should be run while the login screen is showing, or for
         doing any special initialization required.
@@ -973,13 +987,6 @@ PostSession/
         script is useful for doing any session initialization that needs to
         happen before the session starts.  For example, you might setup the
         user's $HOME directory if needed.
-      </para>
-
-      <para>
-        Note that the <filename>PostSession</filename> script will be run
-        even when the display fails to respond due to an I/O error or
-        similar. Thus, there is no guarantee that X applications will work
-        during script execution.
       </para>
 
       <para>
@@ -998,11 +1005,43 @@ PostSession/
       </para>
 
       <para>
+        Note that the <filename>PostSession</filename> script will be run
+        even when the display fails to respond due to an I/O error or
+        similar. Thus, there is no guarantee that X applications will work
+        during script execution.
+      </para>
+
+      <para>
         All of the above scripts will set the
         <filename>$RUNNING_UNDER_GDM</filename> environment variable to
         <filename>yes</filename>.  If the scripts are also shared with other
         display managers, this allows you to identify when GDM is calling these
         scripts, so you can run specific code when GDM is used.
+      </para>
+    </sect2>
+
+    <sect2 id="autostart">
+      <title>Autostart Configuration</title>
+      
+      <para>
+        The <filename>&lt;share&gt;/gdm/autostart/LoginWindow</filename>
+        directory contains files in the format specified by the
+        &quot;FreeDesktop.org Desktop Application Autostart
+        Specification&quot;.  Standard features in the specification may be
+        used to specify programs should auto-restart or only be launched if a
+        GConf configuration value is set, etc.
+      </para>
+
+      <para>
+        Any <filename>.desktop</filename> files in this directory will cause
+        the associated program to automatically start with the login GUI
+        greeter.  By default, GDM is shipped with files which will autostart
+        the gdm-simple-greeter login GUI greeter itself, the
+        gnome-power-manager application, the gnome-settings-daemon, and the
+        metacity window manager.  These programs are needed for the greeter
+        program to work.  In addition, desktop files are provided for starting
+        various AT programs if the configuration values specified in the
+        Accessibility Configuration section below are set.
       </para>
     </sect2>
 
@@ -1507,11 +1546,11 @@ gdm:.my.domain
           </varlistentry>
 
           <varlistentry>
-            <term>/apps/gdm/simple-greeter/logo_icon_name</term>
+            <term>/apps/gdm/simple-greeter/debug</term>
             <listitem>
-              <synopsis>computer (string)</synopsis>
+              <synopsis>false (boolean)</synopsis>
               <para>
-                Set to the themed icon name to use for the greeter logo.
+                If true, then debugging mode is enabled for the greeter.
               </para>
             </listitem>
           </varlistentry>
@@ -1528,12 +1567,133 @@ gdm:.my.domain
           </varlistentry>
 
           <varlistentry>
+            <term>/apps/gdm/simple-greeter/disable_user_list</term>
+            <listitem>
+              <synopsis>false (boolean)</synopsis>
+              <para>
+                If true, then the face browser with known users is not shown
+                in the login window.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/apps/gdm/simple-greeter/logo_icon_name</term>
+            <listitem>
+              <synopsis>computer (string)</synopsis>
+              <para>
+                Set to the themed icon name to use for the greeter logo.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/apps/gdm/simple-greeter/recent-languages</term>
+            <listitem>
+              <synopsis>[] (string list)</synopsis>
+              <para>
+                Set to a list of languages to be shown by default in the login
+                window.  Default value is "[]".  With the default setting only
+                the system default language is shown and the option "Other..."
+                which pops-up a dialog box showing a full list of available
+                languages which the user can select.
+              </para>
+
+              <para>
+                Users are not intended to change this setting by hand.  Instead
+                GDM keeps track of any languages selected in this configuration
+                key, and will show them in the language combo box along with
+                the "Other..." choice.  This way, commonly selected languages
+                are easier to select.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/apps/gdm/simple-greeter/recent-layouts</term>
+            <listitem>
+              <synopsis>[] (string list)</synopsis>
+              <para>
+                Set to a list of keyboard layouts to be shown by default in the
+                login panel.  Default value is "[]".  With the default setting
+                only the system default keyboard layout is shown and the option
+                "Other..." which pops-up a dialog box showing a full list of
+                available keyboard layouts which the user can select.
+              </para>
+
+              <para>
+                Users are not intended to change this setting by hand.  Instead
+                GDM keeps track of any keyboard layouts selected in this
+                configuration key, and will show them in the keyboard layout
+                combo box along with the "Other..." choice.  This way, commonly
+                selected keyboard layouts are easier to select.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>/apps/gdm/simple-greeter/wm_use_compiz</term>
             <listitem>
               <synopsis>false (boolean)</synopsis>
               <para>
                 Controls whether compiz is used as the window manager instead
                 of metacity.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+    </sect2>
+
+    <sect2 id="accessibilityconfiguration">
+        <title>Accessibility Configuration</title>
+
+        <para>
+          If the user associated with running the GDM GUI programs has 
+          accessibility features enabled via GConf configuration, then the
+          GDM GUI programs will recognize these.
+        </para>
+
+        <variablelist>
+          <title>Greeter Configuration Keys</title>
+
+          <varlistentry>
+            <term>/desktop/gnome/interface/accessibility</term>
+            <listitem>
+              <synopsis>false (boolean)</synopsis>
+              <para>
+                Controls whether the Accessibility infrastructure will be
+                started with the GDM GUI.  This is needed for any accessibility
+                technology programs to work.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>/desktop/gnome/applications/at/screen_magnifier_enabled</term>
+            <listitem>
+              <synopsis>false (boolean)</synopsis>
+              <para>
+                If set, then the GNOME magnifier will be started with the GDM
+                GUI programs.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>/desktop/gnome/applications/at/screen_keyboard_enabled</term>
+            <listitem>
+              <synopsis>false (boolean)</synopsis>
+              <para>
+                If set, then the GNOME on-screen keyboard will be started with 
+                the GDM GUI programs.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>/desktop/gnome/applications/at/screen_reader_enabled</term>
+            <listitem>
+              <synopsis>false (boolean)</synopsis>
+              <para>
+                If set, then the GNOME screen reader will be started with 
+                the GDM GUI programs.
               </para>
             </listitem>
           </varlistentry>
