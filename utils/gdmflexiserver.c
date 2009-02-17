@@ -720,9 +720,14 @@ main (int argc, char *argv[])
                 exit (1);
         }
 
-        /* don't support commands */
+        /* don't support commands other than VERSION */
         if (send_command != NULL) {
-                g_warning ("No longer supported");
+                if (strcmp (send_command, "VERSION") == 0) {
+                        g_print ("GDM  %s \n", VERSION);
+                        return 0;
+                } else {
+                        g_warning ("No longer supported");
+                }
                 return 1;
         }
 
