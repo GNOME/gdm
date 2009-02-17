@@ -9,17 +9,13 @@ AM_CPPFLAGS = \
 	-DDATADIR=\"$(datadir)\"			\
 	-DDMCONFDIR=\"$(dmconfdir)\"			\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
-	-DGDMLOCALEDIR=\"$(gdmlocaledir)\"		\
 	-DLIBDIR=\"$(libdir)\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
 	-DLOGDIR=\"$(logdir)\"				\
-	-DPIXMAPDIR=\"$(pixmapdir)\"			\
 	-DSBINDIR=\"$(sbindir)\"			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-DGDM_XAUTH_DIR=\"$(GDM_XAUTH_DIR)\"		\
-	-DGDM_DEFAULTS_CONF=\"$(GDM_DEFAULTS_CONF)\"	\
-	-DGDM_CUSTOM_CONF=\"$(GDM_CUSTOM_CONF)\"	\
-	-DGDM_OLD_CONF=\"$(GDM_OLD_CONF)\"		\
+	-DGDM_SESSION_DEFAULT_PATH=\"$(GDM_SESSION_DEFAULT_PATH)\" \
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(DAEMON_CFLAGS)				\
 	$(XLIB_CFLAGS)					\

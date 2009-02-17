@@ -244,31 +244,22 @@ AC_ARG_WITH(at-spi-registryd-directory,
 AT_SPI_REGISTRYD_DIR=$with_at_spi_registryd_directory
 AC_SUBST(AT_SPI_REGISTRYD_DIR)
 
-# On Solaris, Xnest is only shipped in /usr/openwin/, but your
-# should use "--with-post-path=/usr/openwin/bin" for full
-# Xserver support (such as access to Xnest and other X executables
-# that are only in /usr/openwin/bin and not yet in /usr/X11/bin).
-# Someday the Xserver team at Sun may fix this, then you don't
-# have to do this anymore.
-#
-# For other platforms it may be useful to add stuff you want to the
-# end of the default path, if your distribution provider has
-# specific directories for branded applications or whatever or
-# clever directories like /usr/sfw/bin or whatever that OpenView
-# binary directory is for those OpenView users forced to use GDM.
-# OpenView users like to recompile code anyway.
+# Allow configuration of default PATH
 #
 withval=""
-AC_ARG_WITH(post-path,
-            AS_HELP_STRING([--with-post-path=<PATH>],
-	                   [add PATH to end of user's PATH when logging in]),
+AC_ARG_WITH(default-path,
+            AS_HELP_STRING([--with-default-path=<PATH>],
+	                   [PATH GDM will use as the user's default PATH]),
             [if test x$withval != x; then
-               AC_MSG_RESULT("PATH ${withval} will be added to end of user's PATH when logging in.")
+               AC_MSG_RESULT("PATH ${withval} will be the default PATH.")
              fi])
 
 if test x$withval != x; then
-	USER_POST_PATH="$withval"
+	GDM_SESSION_DEFAULT_PATH="$withval"
+else
+	GDM_SESSION_DEFAULT_PATH="/usr/local/bin:/usr/bin:/bin"
 fi
+AC_SUBST(GDM_SESSION_DEFAULT_PATH)
 
 dnl
 dnl file that sets LANG
@@ -1017,19 +1008,6 @@ fi
 AC_SUBST(XEVIE_OPTION)
 AC_DEFINE_UNQUOTED(XEVIE_OPTION,"$XEVIE_OPTION",[Define xevie option])
 
-
-dnl ---------------------------------------------------------------------------
-dnl - Check for Solaris fbconsole
-dnl ---------------------------------------------------------------------------
-
-AC_MSG_CHECKING(for Solaris fbconsole)
-if test -x /usr/openwin/bin/fbconsole; then
-   AC_DEFINE(HAVE_FBCONSOLE, 1, [Define if have fbconsole])
-   AC_MSG_RESULT(yes)
-else
-   AC_MSG_RESULT(no)
-fi
-
 dnl ---------------------------------------------------------------------------
 dnl - Check for audit framework
 dnl ---------------------------------------------------------------------------
@@ -1111,25 +1089,21 @@ if test -x /usr/X11/bin/Xserver; then
    X_PATH="/usr/X11/bin"
    X_SERVER_PATH="/usr/X11/bin"
    X_SERVER="/usr/X11/bin/Xserver"
-   GDM_USER_PATH="$GDM_USER_PATH:/usr/X11/bin"
    X_CONFIG_OPTIONS="-audit 0"
 elif test ! -h /usr/X11R6 -a -x /usr/X11R6/bin/X; then
    X_PATH="/usr/X11R6/bin"
    X_SERVER_PATH="/usr/X11R6/bin"
    X_SERVER="/usr/X11R6/bin/X"
-   GDM_USER_PATH="$GDM_USER_PATH:/usr/X11R6/bin"
    X_CONFIG_OPTIONS="-audit 0"
 elif test ! -h /usr/X11 -a -x /usr/X11/bin/X; then
    X_PATH="/usr/X11/bin"
    X_SERVER_PATH="/usr/X11/bin"
    X_SERVER="/usr/X11/bin/X"
-   GDM_USER_PATH="$GDM_USER_PATH:/usr/X11/bin"
    X_CONFIG_OPTIONS="-audit 0"
 elif test -x /usr/X11R6/bin/X; then
    X_PATH="/usr/X11R6/bin"
    X_SERVER_PATH="/usr/X11R6/bin"
    X_SERVER="/usr/X11R6/bin/X"
-   GDM_USER_PATH="$GDM_USER_PATH:/usr/X11R6/bin"
    X_CONFIG_OPTIONS="-audit 0"
 elif test -x /usr/bin/Xorg; then
    X_PATH="/usr/bin"
@@ -1140,7 +1114,6 @@ elif test -x /usr/X11/bin/X; then
    X_PATH="/usr/X11/bin"
    X_SERVER_PATH="/usr/X11/bin"
    X_SERVER="/usr/X11/bin/X"
-   GDM_USER_PATH="$GDM_USER_PATH:/usr/X11/bin"
    X_CONFIG_OPTIONS="-audit 0"
 elif test -x /usr/openwin/bin/Xsun; then
    # Do not add /usr/openwin/bin here because on Solaris you need
@@ -1154,7 +1127,6 @@ elif test -x /opt/X11R6/bin/X; then
    X_PATH="/opt/X11R6/bin"
    X_SERVER_PATH="/opt/X11R6/bin"
    X_SERVER="/opt/X11R6/bin/X"
-   GDM_USER_PATH="$GDM_USER_PATH:/opt/X11R6/bin"
    X_CONFIG_OPTIONS="-audit 0"
 elif test -x /usr/bin/X; then
    X_PATH="/usr/bin"
@@ -1167,14 +1139,7 @@ else
    X_PATH="/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin"
    X_SERVER_PATH="/usr/X11R6/bin"
    X_SERVER="/usr/X11R6/bin/X"
-   GDM_USER_PATH="$GDM_USER_PATH:/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:/opt/X11R6/bin"
    X_CONFIG_OPTIONS="-audit 0"
-fi
-
-# Don't add bindir to GDM_USER_PATH if it is already in the PATH.
-# If it is /bin or /usr/bin, for example.
-if test "x$real_gdm_prefix" != "x/" -a "x$real_gdm_prefix" != "x/usr"; then
-    GDM_USER_PATH="$GDM_USER_PATH:${bindir}"
 fi
 
 dnl ---------------------------------------------------------------------------
@@ -1202,14 +1167,6 @@ else
             X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest"
         fi
     fi
-fi
-
-# Set POST_PATH after doing system specific case above just in case
-# any platforms want to update the PATH for a specific OS or distro.
-# None currently, but might be useful.
-#
-if test "x$USER_POST_PATH" != "x"; then
-   GDM_USER_PATH="$GDM_USER_PATH:$USER_POST_PATH"
 fi
 
 dnl ---------------------------------------------------------------------------
@@ -1363,8 +1320,6 @@ fi
 #
 AC_SUBST(XSESSION_SHELL)
 AC_DEFINE_UNQUOTED(XSESSION_SHELL,"$XSESSION_SHELL",[xsession shell])
-AC_SUBST(GDM_USER_PATH)
-AC_DEFINE_UNQUOTED(GDM_USER_PATH,"$GDM_USER_PATH",[])
 AC_SUBST(SOUND_PROGRAM)
 AC_DEFINE_UNQUOTED(SOUND_PROGRAM,"$SOUND_PROGRAM",[])
 
