@@ -2256,6 +2256,34 @@ on_conversation_answer (GdmGreeterLoginWindow *login_window,
         set_ready (login_window);
 }
 
+static void
+on_conversation_cancel (GdmGreeterLoginWindow *login_window,
+                        GdmConversation       *conversation)
+{
+        do_cancel (login_window);
+}
+
+static void
+on_conversation_chose_user (GdmGreeterLoginWindow *login_window,
+                            const char            *username,
+                            GdmConversation       *conversation)
+{
+        if (!gdm_chooser_widget_is_loaded (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser))) {
+                char *name;
+
+                name = gdm_task_get_name (GDM_TASK (conversation));
+                g_warning ("Task %s is trying to choose user before list is loaded", name);
+                g_free (name);
+                return;
+        }
+
+        if (gdm_task_list_set_active_task (GDM_TASK_LIST (login_window->priv->conversation_list),
+                                           GDM_TASK (conversation))) {
+                gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser),
+                                                              username);
+        }
+}
+
 void
 gdm_greeter_login_window_remove_extension (GdmGreeterLoginWindow *login_window,
  GdmGreeterExtension *extension)
@@ -2392,6 +2420,14 @@ gdm_greeter_login_window_add_extension (GdmGreeterLoginWindow *login_window,
         g_signal_connect_swapped (GDM_CONVERSATION (extension),
                                   "answer",
                                   G_CALLBACK (on_conversation_answer),
+                                  login_window);
+        g_signal_connect_swapped (GDM_CONVERSATION (extension),
+                                  "cancel",
+                                  G_CALLBACK (on_conversation_cancel),
+                                  login_window);
+        g_signal_connect_swapped (GDM_CONVERSATION (extension),
+                                  "user-chosen",
+                                  G_CALLBACK (on_conversation_chose_user),
                                   login_window);
 
         name = gdm_task_get_name (GDM_TASK (extension));

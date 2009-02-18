@@ -34,6 +34,7 @@ G_BEGIN_DECLS
 #define GDM_CONVERSATION_GET_IFACE(o) (G_TYPE_INSTANCE_GET_INTERFACE ((o), GDM_TYPE_CONVERSATION, GdmConversationIface))
 
 #define GDM_CONVERSATION_DEFAULT_ACTION "default-action"
+#define GDM_CONVERSATION_OTHER_USER "__other"
 
 typedef struct _GdmConversation      GdmConversation;
 typedef struct _GdmConversationIface GdmConversationIface;
@@ -59,6 +60,8 @@ struct _GdmConversationIface
 
         /* signals */
         char * (* answer)       (GdmConversation *conversation);
+        void   (* cancel)       (GdmConversation *conversation);
+        void   (* user_chosen)     (GdmConversation *conversation);
 };
 
 GType  gdm_conversation_get_type     (void) G_GNUC_CONST;
@@ -81,6 +84,9 @@ gboolean   gdm_conversation_focus    (GdmConversation *conversation);
  */
 void   gdm_conversation_answer (GdmConversation   *conversation,
                                 const char        *answer);
+void   gdm_conversation_cancel (GdmConversation   *conversation);
+void   gdm_conversation_choose_user (GdmConversation   *conversation,
+                                     const char        *username);
 
 G_END_DECLS
 

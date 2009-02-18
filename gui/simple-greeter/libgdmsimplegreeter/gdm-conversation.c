@@ -30,6 +30,8 @@
 
 enum {
         ANSWER,
+        USER_CHOSEN,
+        CANCEL,
         LAST_SIGNAL
 };
 
@@ -71,6 +73,25 @@ gdm_conversation_class_init (gpointer g_iface)
                               g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
                               1, G_TYPE_STRING);
+        signals [USER_CHOSEN] =
+                g_signal_new ("user-chosen",
+                              iface_type,
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmConversationIface, user_chosen),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1, G_TYPE_STRING);
+        signals [CANCEL] =
+                g_signal_new ("cancel",
+                              iface_type,
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmConversationIface, cancel),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE, 0);
 }
 
 void
@@ -145,3 +166,14 @@ gdm_conversation_answer (GdmConversation   *conversation,
         g_signal_emit (conversation, signals [ANSWER], 0, answer);
 }
 
+void
+gdm_conversation_cancel (GdmConversation   *conversation)
+{
+        g_signal_emit (conversation, signals [CANCEL], 0);
+}
+void
+gdm_conversation_choose_user (GdmConversation *conversation,
+                              const char      *username)
+{
+        g_signal_emit (conversation, signals [USER_CHOSEN], 0, username);
+}
