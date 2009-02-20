@@ -279,8 +279,6 @@ get_tallest_monitor_at_point (GdkScreen *screen,
         int n_monitors;
         int tallest_height;
 
-        monitor = gdk_screen_get_monitor_at_point (screen, x, y);
-
         tallest_height = 0;
         n_monitors = gdk_screen_get_n_monitors (screen);
         monitor = -1;
