@@ -825,6 +825,27 @@ do_cancel (GdmGreeterLoginWindow *login_window)
         restart_conversations (login_window);
 }
 
+static void
+on_can_set_task_ready (GtkWidget *user_chooser,
+                       GdmTask   *task)
+{
+        g_signal_handlers_disconnect_by_func (user_chooser,
+                                              on_can_set_task_ready,
+                                              task);
+        gdm_conversation_set_ready (GDM_CONVERSATION (task));
+        g_object_unref (task);
+}
+
+static void
+set_task_ready_when_loaded (GdmGreeterLoginWindow *login_window,
+                            GdmTask               *task)
+{
+        g_signal_connect (login_window->priv->user_chooser,
+                          "loaded",
+                          G_CALLBACK (on_can_set_task_ready),
+                          g_object_ref (task));
+}
+
 gboolean
 gdm_greeter_login_window_ready (GdmGreeterLoginWindow *login_window,
                                 const char            *service_name)
@@ -839,7 +860,12 @@ gdm_greeter_login_window_ready (GdmGreeterLoginWindow *login_window,
                                            (gpointer) service_name);
 
         if (task != NULL) {
-                gdm_conversation_set_ready (GDM_CONVERSATION (task));
+                if (gdm_chooser_widget_is_loaded (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser))) {
+                        gdm_conversation_set_ready (GDM_CONVERSATION (task));
+                } else {
+
+                        set_task_ready_when_loaded (login_window, task);
+                }
                 g_object_unref (task);
         }
 
