@@ -1,3 +1,21 @@
+2009-02-19 Ray Strode  <rstrode@redhat.com>
+
+	Work better in broken randr fake clone mode
+
+	* gui/simple-greeter/gdm-greeter-panel.c
+	(get_outside_region), (get_monitor_geometry): drop
+	(update_struts), (update_geometry):
+	and just use gdk_screen_get_monitor_geometry.
+	The logic here is wrong, so let's just solve this
+	problem in a different way.
+
+	* gui/simple-greeter/gdm-greeter-session.c
+	(get_tallest_monitor_at_point), (toggle_panel):
+	When picking a monitor, don't pick the first
+	one in the unsorted list that happens to be
+	under the pointer, but instead pick the tallest
+	one in the list that's under the pointer.
+
 2009-02-17 Brian Cameron <brian.cameron@sun.com>
 
 	* common/gdm-settings-direct.[ch], common/gdm-settings-keys.h,

@@ -267,6 +267,43 @@ on_start_session (GdmGreeterLoginWindow *login_window,
         gdm_greeter_client_call_start_session_when_ready (session->priv->client, TRUE);
 }
 
+static int
+get_tallest_monitor_at_point (GdkScreen *screen,
+                              int        x,
+                              int        y)
+{
+        GdkRectangle area;
+        GdkRegion *region;
+        int i;
+        int monitor;
+        int n_monitors;
+        int tallest_height;
+
+        monitor = gdk_screen_get_monitor_at_point (screen, x, y);
+
+        tallest_height = 0;
+        n_monitors = gdk_screen_get_n_monitors (screen);
+        monitor = -1;
+        for (i = 0; i < n_monitors; i++) {
+                gdk_screen_get_monitor_geometry (screen, i, &area);
+                region = gdk_region_rectangle (&area);
+
+                if (gdk_region_point_in (region, x, y)) {
+                        if (area.height > tallest_height) {
+                                monitor = i;
+                                tallest_height = area.height;
+                        }
+                }
+                gdk_region_destroy (region);
+        }
+
+        if (monitor == -1) {
+                monitor = gdk_screen_get_monitor_at_point (screen, x, y);
+        }
+
+        return monitor;
+}
+
 static void
 toggle_panel (GdmGreeterSession *session,
               gboolean           enabled)
@@ -281,7 +318,8 @@ toggle_panel (GdmGreeterSession *session,
 
                 display = gdk_display_get_default ();
                 gdk_display_get_pointer (display, &screen, &x, &y, NULL);
-                monitor = gdk_screen_get_monitor_at_point (screen, x, y);
+
+                monitor = get_tallest_monitor_at_point (screen, x, y);
 
                 session->priv->panel = gdm_greeter_panel_new (screen, monitor);
 

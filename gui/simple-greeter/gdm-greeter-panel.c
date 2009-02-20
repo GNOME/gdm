@@ -232,46 +232,6 @@ gdm_greeter_panel_real_unrealize (GtkWidget *widget)
         }
 }
 
-static GdkRegion *
-get_outside_region (GdmGreeterPanel *panel)
-{
-        int        i;
-        GdkRegion *region;
-
-        region = gdk_region_new ();
-        for (i = 0; i < panel->priv->monitor; i++) {
-                GdkRectangle geometry;
-
-                gdk_screen_get_monitor_geometry (GTK_WINDOW (panel)->screen,
-                                                 i,
-                                                 &geometry);
-                gdk_region_union_with_rect (region, &geometry);
-        }
-
-        return region;
-}
-
-static void
-get_monitor_geometry (GdmGreeterPanel *panel,
-                      GdkRectangle    *geometry)
-{
-        GdkRegion   *outside_region;
-        GdkRegion   *monitor_region;
-        GdkRectangle geom;
-
-        outside_region = get_outside_region (panel);
-
-        gdk_screen_get_monitor_geometry (GTK_WINDOW (panel)->screen,
-                                         panel->priv->monitor,
-                                         &geom);
-        monitor_region = gdk_region_rectangle (&geom);
-        gdk_region_subtract (monitor_region, outside_region);
-        gdk_region_destroy (outside_region);
-
-        gdk_region_get_clipbox (monitor_region, geometry);
-        gdk_region_destroy (monitor_region);
-}
-
 static void
 set_struts (GdmGreeterPanel *panel,
             int              x,
@@ -332,7 +292,9 @@ update_struts (GdmGreeterPanel *panel)
 {
         GdkRectangle geometry;
 
-        get_monitor_geometry (panel, &geometry);
+        gdk_screen_get_monitor_geometry (GTK_WINDOW (panel)->screen,
+                                         panel->priv->monitor,
+                                         &geometry);
 
         /* FIXME: assumes only one panel */
         set_struts (panel,
@@ -348,7 +310,9 @@ update_geometry (GdmGreeterPanel *panel,
 {
         GdkRectangle geometry;
 
-        get_monitor_geometry (panel, &geometry);
+        gdk_screen_get_monitor_geometry (GTK_WINDOW (panel)->screen,
+                                         panel->priv->monitor,
+                                         &geometry);
 
         panel->priv->geometry.width = geometry.width;
         panel->priv->geometry.height = requisition->height + 2 * GTK_CONTAINER (panel)->border_width;
