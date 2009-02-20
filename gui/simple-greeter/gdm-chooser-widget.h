@@ -136,6 +136,8 @@ int            gdm_chooser_widget_get_number_of_items          (GdmChooserWidget
 void           gdm_chooser_widget_activate_if_one_item         (GdmChooserWidget          *widget);
 void           gdm_chooser_widget_propagate_pending_key_events (GdmChooserWidget          *widget);
 
+/* Protected
+ */
 void           gdm_chooser_widget_loaded                       (GdmChooserWidget          *widget);
 
 G_END_DECLS
