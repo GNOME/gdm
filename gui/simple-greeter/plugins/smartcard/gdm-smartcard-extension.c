@@ -290,12 +290,19 @@ gdm_smartcard_extension_get_description (GdmTask *task)
         return g_strdup (_("Log into session with smartcard"));
 }
 
+gboolean
+gdm_smartcard_extension_is_choosable (GdmTask *task)
+{
+        return TRUE;
+}
+
 static void
 gdm_task_iface_init (GdmTaskIface *iface)
 {
         iface->get_icon = gdm_smartcard_extension_get_icon;
         iface->get_description = gdm_smartcard_extension_get_description;
         iface->get_name = gdm_smartcard_extension_get_name;
+        iface->is_choosable = gdm_smartcard_extension_is_choosable;
 }
 
 static void

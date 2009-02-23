@@ -44,6 +44,7 @@ struct _GdmTaskIface
         GIcon * (* get_icon)        (GdmTask   *task);
         char *  (* get_description) (GdmTask   *task);
         char *  (* get_name)        (GdmTask   *task);
+        gboolean  (* is_choosable)    (GdmTask   *task);
         /* signals */
         void (* enabled) (GdmTask *task);
         void (* disabled) (GdmTask *task);
@@ -57,6 +58,7 @@ char  *gdm_task_get_name        (GdmTask   *task);
 void   gdm_task_set_enabled     (GdmTask   *task,
                                  gboolean   should_enable);
 gboolean   gdm_task_is_enabled     (GdmTask   *task);
+gboolean   gdm_task_is_choosable   (GdmTask   *task);
 G_END_DECLS
 
 #endif /* __GDM_TASK_H */

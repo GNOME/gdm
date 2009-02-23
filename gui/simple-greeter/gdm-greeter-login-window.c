@@ -2462,9 +2462,6 @@ gdm_greeter_login_window_add_extension (GdmGreeterLoginWindow *login_window,
         g_debug ("GdmGreeterLoginWindow: new extension '%s - %s' added",
                 name, description);
 
-        g_free (name);
-        g_free (description);
-
         if (gdm_task_list_get_number_of_tasks (GDM_TASK_LIST (login_window->priv->conversation_list)) == 0) {
                 gtk_widget_hide (login_window->priv->conversation_list);
         } else {
@@ -2475,6 +2472,16 @@ gdm_greeter_login_window_add_extension (GdmGreeterLoginWindow *login_window,
                                 GDM_TASK (extension));
 
         service_name = gdm_conversation_get_service_name (GDM_CONVERSATION (extension));
+
+        if (gdm_task_is_choosable (GDM_TASK (extension))) {
+                gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser),
+                                             service_name, NULL, name, description, ~0,
+                                             FALSE, TRUE);
+        }
+
+        g_free (name);
+        g_free (description);
+
         g_debug ("GdmGreeterLoginWindow: starting conversation with '%s'", service_name);
         g_signal_emit (login_window, signals[START_CONVERSATION], 0, service_name);
         g_free (service_name);

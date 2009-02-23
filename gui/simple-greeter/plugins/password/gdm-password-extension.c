@@ -188,12 +188,19 @@ gdm_password_extension_get_description (GdmTask *task)
         return g_strdup (_("Log into session with username and password"));
 }
 
+gboolean
+gdm_password_extension_is_choosable (GdmTask *task)
+{
+        return FALSE;
+}
+
 static void
 gdm_task_iface_init (GdmTaskIface *iface)
 {
         iface->get_icon = gdm_password_extension_get_icon;
         iface->get_description = gdm_password_extension_get_description;
         iface->get_name = gdm_password_extension_get_name;
+        iface->is_choosable = gdm_password_extension_is_choosable;
 }
 
 static void

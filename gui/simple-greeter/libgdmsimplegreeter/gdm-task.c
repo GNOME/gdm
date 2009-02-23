@@ -88,6 +88,12 @@ gdm_task_is_enabled (GdmTask   *task)
         return !g_object_get_data (G_OBJECT (task), "gdm-task-is-disabled");
 }
 
+gboolean
+gdm_task_is_choosable (GdmTask *task)
+{
+        return GDM_TASK_GET_IFACE (task)->is_choosable (task);
+}
+
 static void
 gdm_task_class_init (gpointer g_iface)
 {
