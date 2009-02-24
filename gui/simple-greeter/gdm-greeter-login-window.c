@@ -1612,29 +1612,49 @@ begin_task_verification_for_selected_user (GdmTaskList           *task_list,
 }
 
 static void
-on_user_chosen (GdmUserChooserWidget  *user_chooser,
-                GdmGreeterLoginWindow *login_window)
+on_user_chosen (GdmGreeterLoginWindow *login_window,
+                const char            *user_name)
 {
-        char *user_name;
-
-        user_name = gdm_user_chooser_widget_get_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser));
         g_debug ("GdmGreeterLoginWindow: user chosen '%s'", user_name);
-
-        if (user_name == NULL) {
-                return;
-        }
 
         g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
                        0, user_name);
 
-        if (strcmp (user_name, GDM_USER_CHOOSER_USER_OTHER) == 0) {
+        gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
+                                    (GdmTaskListForeachFunc)
+                                    begin_task_verification_for_selected_user,
+                                    login_window);
+
+        switch_mode (login_window, MODE_AUTHENTICATION);
+}
+
+static void
+on_user_chooser_activated (GdmUserChooserWidget  *user_chooser,
+                           GdmGreeterLoginWindow *login_window)
+{
+        char *item_id;
+
+        user_name = gdm_user_chooser_widget_get_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser));
+
+        if (user_name != NULL) {
+                g_debug ("GdmGreeterLoginWindow: user chosen '%s'", user_name);
+                on_user_chosen (login_window, user_name);
+                g_free (user_name);
+                return;
+        }
+
+        item_id = gdm_chooser_widget_get_active_item (GDM_CHOOSER_WIDGET (user_chooser));
+        g_debug ("GdmGreeterLoginWindow: item chosen '%s'", item_id);
+
+        if (strcmp (item_id, GDM_USER_CHOOSER_USER_OTHER) == 0) {
+                g_debug ("GdmGreeterLoginWindow: Starting all auth conversations");
                 gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
                                             (GdmTaskListForeachFunc)
                                             begin_task_verification,
                                             login_window);
-        } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_GUEST) == 0) {
-                /* FIXME: handle guest account stuff */
-        } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_AUTO) == 0) {
+                g_free (item_id);
+        } else if (strcmp (item_id, GDM_USER_CHOOSER_USER_AUTO) == 0) {
+                g_debug ("GdmGreeterLoginWindow: Starting auto login");
                 g_signal_emit (login_window, signals[BEGIN_AUTO_LOGIN], 0,
                                login_window->priv->timed_login_username);
 
@@ -1644,16 +1664,11 @@ on_user_chosen (GdmUserChooserWidget  *user_chooser,
                 /* just wait for the user to select language and stuff */
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_TIMED_LOGIN);
                 set_message (login_window, _("Select language and click Log In"));
-        } else {
-                gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
-                                            (GdmTaskListForeachFunc)
-                                            begin_task_verification_for_selected_user,
-                                            login_window);
+                g_free (item_id);
         }
 
+        g_debug ("GdmGreeterLoginWindow: Switching to shrunken authentication mode");
         switch_mode (login_window, MODE_AUTHENTICATION);
-
-        g_free (user_name);
 }
 
 static void
@@ -1942,7 +1957,7 @@ load_theme (GdmGreeterLoginWindow *login_window)
                           login_window);
         g_signal_connect (login_window->priv->user_chooser,
                           "activated",
-                          G_CALLBACK (on_user_chosen),
+                          G_CALLBACK (on_user_chooser_activated),
                           login_window);
         g_signal_connect (login_window->priv->user_chooser,
                           "deactivated",

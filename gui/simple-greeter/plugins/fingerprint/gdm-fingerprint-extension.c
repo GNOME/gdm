@@ -287,8 +287,6 @@ create_page (GdmFingerprintExtension *extension)
 static void
 create_actions (GdmFingerprintExtension *extension)
 {
-        GtkAction *action;
-
         extension->priv->actions = gtk_action_group_new ("gdm-fingerprint-extension");
 }
 
