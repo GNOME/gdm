@@ -1,5 +1,13 @@
 2009-02-19 Ray Strode  <rstrode@redhat.com>
 
+	* gui/user-switch-applet/gdm-user-menu-item.c:
+	Don't call gettext on some strings that aren't
+	user visible and are in a file that didn't get
+	added to POTFILES.in before string freeze,
+	bug 570086
+
+2009-02-19 Ray Strode  <rstrode@redhat.com>
+
 	* gui/simple-greeter/gdm-greeter-session.c
 	(get_tallest_monitor_at_point):
 	Drop superfluous call to gdk_screen_get_monitor_at_point

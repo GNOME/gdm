@@ -335,29 +335,29 @@ gdm_user_menu_item_class_init (GdmUserMenuItemClass *class)
         g_object_class_install_property (gobject_class,
                                          PROP_USER,
                                          g_param_spec_object ("user",
-                                                              _("User"),
-                                                              _("The user this menu item represents."),
+                                                              "User",
+                                                              "The user this menu item represents.",
                                                               GDM_TYPE_USER,
                                                               (G_PARAM_READWRITE |
                                                                G_PARAM_CONSTRUCT_ONLY)));
         g_object_class_install_property (gobject_class,
                                          PROP_ICON_SIZE,
                                          g_param_spec_int ("icon-size",
-                                                           _("Icon Size"),
-                                                           _("The size of the icon to use."),
+                                                           "Icon Size",
+                                                           "The size of the icon to use.",
                                                            12, G_MAXINT, DEFAULT_ICON_SIZE,
                                                            G_PARAM_READWRITE));
 
         gtk_widget_class_install_style_property (widget_class,
                                                  g_param_spec_int ("indicator-size",
-                                                                   _("Indicator Size"),
-                                                                   _("Size of check indicator"),
+                                                                   "Indicator Size",
+                                                                   "Size of check indicator",
                                                                    0, G_MAXINT, 12,
                                                                    G_PARAM_READABLE));
         gtk_widget_class_install_style_property (widget_class,
                                                  g_param_spec_int ("indicator-spacing",
-                                                                   _("Indicator Spacing"),
-                                                                   _("Space between the username and the indicator"),
+                                                                   "Indicator Spacing",
+                                                                   "Space between the username and the indicator",
                                                                    0, G_MAXINT, 8,
                                                                    G_PARAM_READABLE));
 }
