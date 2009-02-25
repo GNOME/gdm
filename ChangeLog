@@ -1,3 +1,11 @@
+2009-02-24 Brian Cameron <brian.cameron@sun.com>
+
+	* gui/modules/keymouselistener.c: Using Xorg 1.5, the parse_line
+	  function can fail to set the keycode if XKB is not initialized
+	  when gdmlogin starts.  This fix causes GDM to check if the keycode
+	  failed to be initialized on keypress.  If so, it sets it and
+	  addresses the problem.
+
 2009-02-11 Brian Cameron <brian.cameron@sun.com>
 
 	* config/Makefile.am, config/Xsession.common, config/Xsession.in

@@ -364,8 +364,9 @@ parse_line (gchar *buf)
 	gint    button = 0;
 	
 	if (!display) {
-		if ((display = gdk_display_get_default()) == NULL)
+		if ((display = gdk_display_get_default()) == NULL) {
 			return NULL;
+		}
 	}
 	lineno++;
 
@@ -578,11 +579,34 @@ keycodes_equal (XEvent *ev1, XEvent *ev2)
 static gint
 key_gesture_compare_func (gconstpointer a, gconstpointer b)
 {
-	const Gesture *gesture = a;
-	const XEvent  *xev     = b;
+	Gesture *gesture   = a;
+	const XEvent  *xev = b;
 
 	if (gesture->type == GESTURE_TYPE_KEY) 
 	{
+	    /*
+	     * Using some Xservers, the parse_line function fails to get the
+	     * keycode because XKB is not initialized when gdmlogin starts.
+	     * If the keycode value is 0, try to set it again.
+	     */
+	    if (gesture->input.key.keycode == 0) {
+		static GdkDisplay *display = NULL;
+
+		if (!display)
+		    display = gdk_display_get_default();
+
+		if (display) {
+		    gesture->input.key.keycode =
+			XKeysymToKeycode (GDK_DISPLAY_XDISPLAY (display),
+			gesture->input.key.keysym);
+
+		    if (debug_gestures)
+			syslog (LOG_WARNING, "Reset keycode to a real value");
+		} else if (debug_gestures) {
+		   syslog (LOG_WARNING, "Failed to reset keycode to a real value");
+		}
+	    }
+
 	    if (((xev->type == KeyPress) || (xev->type == KeyRelease)) &&
 		(xev->xkey.keycode == gesture->input.key.keycode) &&
 		((xev->xkey.state & USED_MODS) == gesture->input.key.state))
