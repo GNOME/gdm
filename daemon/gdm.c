@@ -1874,16 +1874,24 @@ write_x_servers (GdmDisplay *d)
 	}
 
 	if (SERVER_IS_LOCAL (d)) {
-		char **argv;
-		char *command;
-		int argc;
+		char    **argv;
+		char     *command;
+		int       argc;
+		gboolean  rc;
+
 		argc = 0;
 		argv = NULL;
-		gdm_server_resolve_command_line (d,
-						 FALSE, /* resolve_flags */
-						 NULL, /* vtarg */
-						 &argc,
-						 &argv);
+		rc   = gdm_server_resolve_command_line (d,
+						        FALSE, /* resolve_flags */
+						        NULL, /* vtarg */
+						        &argc,
+						        &argv);
+
+		if (rc == FALSE) {
+			g_free (file);
+			return;
+		}
+
 		command = g_strjoinv (" ", argv);
 		g_strfreev (argv);
 		VE_IGNORE_EINTR (fprintf (fp, "%s local %s\n", d->name, command));

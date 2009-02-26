@@ -988,6 +988,12 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 			g_shell_parse_argv (disp->command, &argc,
 				&argv, &error_p);
 
+			if (argv == NULL) {
+				gdm_debug ("Problem parsing server command <%s>",
+					disp->command ? disp->command : "(null)");
+				return FALSE;
+			}
+
 			if (argv[0] == NULL || argv[1] == NULL) {
 				g_strfreev (argv);
 				argv = svr_command;
@@ -1102,6 +1108,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
     int logfd;
     char *command;
     pid_t pid;
+    gboolean rc;
 
     if (d == NULL ||
 	ve_string_empty (d->command)) {
@@ -1124,11 +1131,13 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
     /* Figure out the server command */
     argv = NULL;
     argc = 0;
-    gdm_server_resolve_command_line (d,
-				     TRUE /* resolve flags */,
-				     vtarg,
-				     &argc,
-				     &argv);
+    rc = gdm_server_resolve_command_line (d,
+				         TRUE /* resolve flags */,
+				         vtarg,
+				         &argc,
+				         &argv);
+    if (rc == FALSE)
+       return;
 
     /* Do not support additional session arguments with Xnest. */
     if (d->type != TYPE_FLEXI_XNEST) {
