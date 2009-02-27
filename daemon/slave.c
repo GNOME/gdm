@@ -5569,6 +5569,12 @@ check_for_interruption (const char *msg)
 				if (!strcmp (locale, DEFAULT_LANGUAGE)) {
 					locale = gdm_system_locale;
 				}
+				/*
+				 * Do not lose DISPLAY.  It should always be
+				 * available for use, PAM modules use it for
+				 * example.
+				 */
+				g_setenv ("DISPLAY", d->name, TRUE);
 				g_setenv ("GDM_LANG", locale, TRUE);
 				g_setenv ("LANG", locale, TRUE);
 				g_unsetenv ("LC_ALL");

@@ -208,6 +208,8 @@ gdm_fdprintf (int fd, const gchar *format, ...)
 /*
  * Clear environment, but keep the i18n ones,
  * note that this leaks memory so only use before exec
+ * Also do not clear DISPLAY since we want to ensure that
+ * this environment variable is always available.
  */
 void
 gdm_clearenv_no_lang (void)
@@ -219,7 +221,8 @@ gdm_clearenv_no_lang (void)
 		char *env = environ[i];
 		if (strncmp (env, "LC_", 3) == 0 ||
 		    strncmp (env, "LANG", 4) == 0 ||
-		    strncmp (env, "LINGUAS", 7) == 0) {
+		    strncmp (env, "LINGUAS", 7) == 0 ||
+		    strncmp (env, "DISPLAY", 7) == 0) {
 			envs = g_list_prepend (envs, g_strdup (env));
 		}
 	}

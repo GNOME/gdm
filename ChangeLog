@@ -1,5 +1,11 @@
 2009-02-26 Brian Cameron <brian.cameron@sun.com>
 
+	* daemon/slave.c, daemon/misc.c: Ensure that the DISPLAY environment
+	  variable is never cleared on changing language.  Otherwise, it will
+	  not be available for the PAM module to use, for example.
+
+2009-02-26 Brian Cameron <brian.cameron@sun.com>
+
 	* daemon/gdm.c, daemon/server.c:  Provide better error reporting when
 	  GDM is unable to parse the command.  Another partial fix for bug
 	  #530585.
