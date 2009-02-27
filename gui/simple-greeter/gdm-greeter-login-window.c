@@ -803,6 +803,7 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         set_message (login_window, "");
         switch_mode (login_window, MODE_SELECTION);
 
+        gtk_widget_set_sensitive (login_window->priv->conversation_list, TRUE);
         set_sensitive (login_window, TRUE);
         set_ready (login_window);
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
@@ -1632,6 +1633,7 @@ static void
 on_user_chooser_activated (GdmUserChooserWidget  *user_chooser,
                            GdmGreeterLoginWindow *login_window)
 {
+        char *user_name;
         char *item_id;
 
         user_name = gdm_user_chooser_widget_get_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser));
@@ -1665,6 +1667,28 @@ on_user_chooser_activated (GdmUserChooserWidget  *user_chooser,
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_TIMED_LOGIN);
                 set_message (login_window, _("Select language and click Log In"));
                 g_free (item_id);
+        } else {
+                GdmTask *task;
+
+                task = gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
+                                                   (GdmTaskListForeachFunc)
+                                                   task_has_service_name,
+                                                   (gpointer) item_id);
+
+                if (task == NULL) {
+                        g_debug ("GdmGreeterLoginWindow: %s has no task associated with it", item_id);
+                        g_free (item_id);
+                        return;
+                }
+                g_debug ("GdmGreeterLoginWindow: Beginning auth conversation for item %s", item_id);
+
+                /* FIXME: we should probably give the plugin more say for
+                 * what happens here.
+                 */
+                g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0, item_id);
+                g_free (item_id);
+
+                gtk_widget_set_sensitive (login_window->priv->conversation_list, FALSE);
         }
 
         g_debug ("GdmGreeterLoginWindow: Switching to shrunken authentication mode");

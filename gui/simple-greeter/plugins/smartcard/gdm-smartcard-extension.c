@@ -103,7 +103,7 @@ on_smartcard_event (GIOChannel   *io_channel,
 
                 if (extension->priv->number_of_tokens == 1) {
                         gdm_conversation_choose_user (GDM_CONVERSATION (extension),
-                                                      GDM_CONVERSATION_OTHER_USER);
+                                                      PAMSERVICENAME);
                 } else if (extension->priv->number_of_tokens == 0) {
                         gdm_conversation_cancel (GDM_CONVERSATION (extension));
                 }
