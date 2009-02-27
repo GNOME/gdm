@@ -37,8 +37,6 @@
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-ui-util.h>
 
-#include <libgnome/gnome-init.h>
-
 #include <panel-applet.h>
 #include <panel-applet-gconf.h>
 
