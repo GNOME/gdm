@@ -170,7 +170,7 @@ about_cb (BonoboUIComponent *ui_container,
         };
         char *license_i18n;
 
-        license_i18n = g_strjoinv ("\n\n", license);
+        license_i18n = g_strconcat (_(license[0]), "\n\n", _(license[1]), "\n\n", _(license[2]), NULL); 
 
         gtk_show_about_dialog (NULL,
                                "version", VERSION,
@@ -970,7 +970,7 @@ update_label (GdmAppletData *adata)
 
         markup = g_strdup_printf ("<b>%s</b> <small>(%s)</small>",
                                   gdm_user_get_real_name (GDM_USER (adata->user)),
-                                  statuses[adata->current_status].display_name);
+                                  _(statuses[adata->current_status].display_name));
         gtk_label_set_markup (GTK_LABEL (label), markup);
         g_free (markup);
 }
@@ -1079,7 +1079,7 @@ create_sub_menu (GdmAppletData *adata)
                 item = gtk_radio_menu_item_new (radio_group);
                 radio_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
                 hbox = gtk_hbox_new (FALSE, 3);
-                label = gtk_label_new (statuses[i].display_name);
+                label = gtk_label_new (_(statuses[i].display_name));
                 gtk_label_set_justify (GTK_LABEL(label), GTK_JUSTIFY_LEFT);
                 gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
                 gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
