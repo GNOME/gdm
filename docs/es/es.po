@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: help.gnome-2-20\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-17 19:45+0000\n"
-"PO-Revision-Date: 2009-02-24 22:59+0100\n"
+"POT-Creation-Date: 2009-02-24 22:00+0000\n"
+"PO-Revision-Date: 2009-02-28 13:16+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -255,9 +255,6 @@ msgstr ""
 "Y TENIENDO EN CUENTA QUE: <placeholder-1/>"
 
 #: C/gdm.xml:90(releaseinfo) C/gdm.xml:101(para)
-#| msgid ""
-#| "This manual describes version 2.24.0 of the GNOME Display Manager. It was "
-#| "last updated on 08/27/2008."
 msgid ""
 "This manual describes version 2.26.0 of the GNOME Display Manager. It was "
 "last updated on 02/10/2009."
@@ -644,13 +641,14 @@ msgid ""
 "Note that keyboard layout features are only available on systems that "
 "support libxklavier."
 msgstr ""
+"Note que las características de distribución del teclado sólo están "
+"disponibles en sistemas que soporten libxklavier."
 
 #: C/gdm.xml:343(title)
 msgid "Accessibility"
 msgstr "Accesibilidad"
 
 #: C/gdm.xml:345(para)
-#, fuzzy
 #| msgid ""
 #| "GDM supports \"Accessible Login\", allowing users to log into their "
 #| "desktop session even if they cannot easily use the screen, mouse, or "
@@ -674,7 +672,9 @@ msgstr ""
 "de asistencia, tales como el teclado en pantalla, el lector de pantalla, el "
 "magnificador de pantalla y la accesibilidad del teclado están disponibles. "
 "También es posible activar texto grande o mayor contraste de iconos y "
-"controles si es necesario."
+"controles si es necesario. Para obtener más información acerca de cómo "
+"configurar las características de accesibilidad consulte la sección "
+"«Configuración de la accesibilidad» del documento."
 
 #: C/gdm.xml:357(para)
 msgid ""
@@ -974,6 +974,9 @@ msgid ""
 "Note this feature is available on systems that support Virtual Terminals. "
 "This feature will not function if Virtual Terminals is not available."
 msgstr ""
+"Note que esta característica está disponible en sistemas que soporten "
+"Terminales virtuales. Esta característica no funcionará si los Terminales "
+"virtuales no están disponibles."
 
 #: C/gdm.xml:551(title)
 msgid "Security"
@@ -1655,7 +1658,6 @@ msgstr ""
 "hará que también se cuelgue el proceso de inicio de sesión."
 
 #: C/gdm.xml:975(para)
-#, fuzzy
 #| msgid ""
 #| "When the Xserver has been successfully started, GDM will run the "
 #| "<filename>Init</filename> script. This script is useful for starting "
@@ -1668,10 +1670,11 @@ msgid ""
 "run while the login screen is showing, or for doing any special "
 "initialization required."
 msgstr ""
-"Cuando el servidor X se ha iniciado satisfactoriamente, GDM ejecutará el "
-"script <filename>Init</filename>. Este script es útil para iniciar programas "
-"que deberían ejecutarse mientras se está mostrando la pantalla de inicio, o "
-"para cualquier inicialización especial requerida."
+"Cuando el servidor X para la IGU se ha iniciado satisfactoriamente pero "
+"antes de que se muestre la IGU de inicio de sesión, GDM ejecutará el script "
+"<filename>Init</filename>. Este script es útil para iniciar programas que "
+"deberían ejecutarse mientras se está mostrando la pantalla de inicio, o para "
+"cualquier inicialización especial requerida."
 
 #: C/gdm.xml:983(para)
 msgid ""
@@ -1740,7 +1743,6 @@ msgstr ""
 "ejecutar código específico cuando se use GDM."
 
 #: C/gdm.xml:1024(title)
-#| msgid "Solaris Configuration"
 msgid "Autostart Configuration"
 msgstr "Configuración automática al inicio"
 
@@ -1752,6 +1754,12 @@ msgid ""
 "specification may be used to specify programs should auto-restart or only be "
 "launched if a GConf configuration value is set, etc."
 msgstr ""
+"El directorio <filename>&lt;share&gt;/gdm/autostart/LoginWindow</filename> "
+"contiene archivos en el formato especificado por la Especificación de Inicio "
+"Automático de Aplicación de FreeDesktop.org. Se pueden usar características "
+"estándar en la especificación para especificar que los programas se inicien "
+"automáticamente o sólo se lancen si un valor de configuración de GConf está "
+"establecido, etc."
 
 #: C/gdm.xml:1035(para)
 msgid ""
@@ -1764,6 +1772,15 @@ msgid ""
 "provided for starting various AT programs if the configuration values "
 "specified in the Accessibility Configuration section below are set."
 msgstr ""
+"Cualquier archivo <filename>.desktop</filename> en este directorio hará que "
+"el programa asociado se inicie automáticamente con la IGU de inicio de "
+"sesión. De forma predeterminada GDM viene con archivos que iniciarán el IGU "
+"de inicio de sesión gdm-simple-greeter, la aplicación Gestor de energía, el "
+"Demonio de ajustes de GNOME y el gestor de ventanas Metacity. Estos "
+"programas son necesarios para que funcione el programa gráfico. Además, se "
+"proporcionan archivos .desktop para iniciar varios programas de TA si los "
+"valores de configuración especificados en la sección Configuración de la "
+"accesibilidad están establecidos."
 
 #: C/gdm.xml:1049(title)
 msgid "Xsession Script"
@@ -1875,12 +1892,10 @@ msgstr "Multicast"
 
 #: C/gdm.xml:1116(synopsis)
 #, no-wrap
-#| msgid "Multicast=true"
 msgid "Multicast=false"
 msgstr "Multicast=false"
 
 #: C/gdm.xml:1117(para)
-#, fuzzy
 #| msgid ""
 #| "If true and IPv6 is enabled, the chooser will send a multicast query to "
 #| "the local network and collect responses from the hosts who have joined "
@@ -1892,11 +1907,9 @@ msgid ""
 "local network and collect responses from the hosts who have joined multicast "
 "group."
 msgstr ""
-"Si es «true» y está activado IPv6, el selector emitirá una petición multicast "
-"a la red local y recogerá las respuestas de los servidores que se hayan "
-"unido al grupo multicast. Si no desea emitir un multicast puede indicar una "
-"dirección IPv6 en la clave <filename>Hosts</filename>. El servidor "
-"responderá si está escuchando a las peticiones XDMCP y tiene activado IPv6."
+"Si está activado e IPv6 está activado, el selector emitirá una petición "
+"multicast a la red local y recogerá las respuestas de los servidores que se "
+"hayan unido al grupo multicast."
 
 #: C/gdm.xml:1126(term)
 msgid "MulticastAddr"
@@ -1908,10 +1921,9 @@ msgid "MulticastAddr=ff02::1"
 msgstr "MulticastAddr=ff02::1"
 
 #: C/gdm.xml:1129(para)
-#, fuzzy
 #| msgid "This is the Link-local Multicast address and is hardcoded here."
 msgid "This is the Link-local Multicast address."
-msgstr "Esta es la dirección de enlace local multicast y está codificada aquí."
+msgstr "Esta es la dirección de enlace local multicast."
 
 #: C/gdm.xml:1138(title)
 msgid "[daemon]"
@@ -2461,13 +2473,14 @@ msgstr ""
 "Especifica el mensaje de texto que mostrar en la ventana de la interfaz."
 
 #: C/gdm.xml:1502(term)
-#| msgid "/apps/gdm/simple-greeter/wm_use_compiz"
 msgid "/apps/gdm/simple-greeter/debug"
 msgstr "/apps/gdm/simple-greeter/debug"
 
 #: C/gdm.xml:1505(para)
 msgid "If true, then debugging mode is enabled for the greeter."
 msgstr ""
+"Si está activada, entonces el modo de depuración está activado para la "
+"interfaz gráfica."
 
 #: C/gdm.xml:1512(term)
 msgid "/apps/gdm/simple-greeter/disable_restart_buttons"
@@ -2480,7 +2493,6 @@ msgstr ""
 "entrada."
 
 #: C/gdm.xml:1523(term)
-#| msgid "/apps/gdm/simple-greeter/disable_restart_buttons"
 msgid "/apps/gdm/simple-greeter/disable_user_list"
 msgstr "/apps/gdm/simple-greeter/disable_user_list"
 
@@ -2489,6 +2501,8 @@ msgid ""
 "If true, then the face browser with known users is not shown in the login "
 "window."
 msgstr ""
+"Si está activada, entonces no se muestra el examinador de rostros con "
+"usuarios conocidos en la ventana de inicio."
 
 #: C/gdm.xml:1534(term)
 msgid "/apps/gdm/simple-greeter/logo_icon_name"
@@ -2506,15 +2520,14 @@ msgstr ""
 "interfaz."
 
 #: C/gdm.xml:1544(term)
-#| msgid "/apps/gdm/simple-greeter/logo_icon_name"
 msgid "/apps/gdm/simple-greeter/recent-languages"
 msgstr "/apps/gdm/simple-greeter/recent-languages"
 
 #: C/gdm.xml:1546(synopsis) C/gdm.xml:1568(synopsis)
-#, fuzzy, no-wrap
+#, no-wrap
 #| msgid "NULL (string)"
 msgid "[] (string list)"
-msgstr "NULL (cadena)"
+msgstr "[] (lista de cadenas)"
 
 #: C/gdm.xml:1547(para)
 msgid ""
@@ -2523,6 +2536,11 @@ msgid ""
 "language is shown and the option \"Other...\" which pops-up a dialog box "
 "showing a full list of available languages which the user can select."
 msgstr ""
+"Establecido a una lista de idiomas que mostrar de forma predeterminada en el "
+"panel de inicio. El valor predeterminado es «[]». Con el ajuste "
+"predeterminado sólo se mostrará el idioma predeterminado y la opción "
+"«Otros...» que mostrará un diálogo emergente con una lista completa de "
+"idiomas disponibles entre los que el usuario puede seleccionar."
 
 #: C/gdm.xml:1555(para)
 msgid ""
@@ -2531,9 +2549,13 @@ msgid ""
 "them in the language combo box along with the \"Other...\" choice. This way, "
 "commonly selected languages are easier to select."
 msgstr ""
+"No está previsto que los usuarios cambien este ajuste a mano. En lugar de "
+"ello, GDM mantiene un seguimiento de cualquier idioma seleccionado en esta "
+"clave de configuración y los mostrará en la caja de combinación de idioma "
+"junto con la opción «Otros...». De esta forma los idiomas seleccionados son "
+"más fáciles de seleccionar."
 
 #: C/gdm.xml:1566(term)
-#| msgid "/apps/gdm/simple-greeter/disable_restart_buttons"
 msgid "/apps/gdm/simple-greeter/recent-layouts"
 msgstr "/apps/gdm/simple-greeter/recent-layouts"
 
@@ -2545,6 +2567,12 @@ msgid ""
 "box showing a full list of available keyboard layouts which the user can "
 "select."
 msgstr ""
+"Establecido a una lista de distribuciones de teclado que mostrar de forma "
+"predeterminada en el panel de inicio. El valor predeterminado es «[]». Con el "
+"ajuste predeterminado sólo se mostrará la distribución de teclado "
+"predeterminada y la opción «Otras...» que mostrará un diálogo emergente con "
+"una lista completa de distribuciones de teclado disponibles entre las que el "
+"usuario puede seleccionar."
 
 #: C/gdm.xml:1577(para)
 msgid ""
@@ -2553,6 +2581,12 @@ msgid ""
 "show them in the keyboard layout combo box along with the \"Other...\" "
 "choice. This way, commonly selected keyboard layouts are easier to select."
 msgstr ""
+"No está previsto que los usuarios cambien este ajuste a mano. En lugar de "
+"ello, GDM mantiene un seguimiento de las distribuciones de teclado "
+"seleccionadas en esta clave de configuración y las mostrará en la caja de "
+"combinación de distribución de teclado junto con la opción «Otras...». De "
+"esta forma las distribuciones de teclado seleccionadas son más fáciles de "
+"seleccionar."
 
 #: C/gdm.xml:1588(term)
 msgid "/apps/gdm/simple-greeter/wm_use_compiz"
@@ -2566,7 +2600,7 @@ msgstr ""
 
 #: C/gdm.xml:1601(title)
 msgid "Accessibility Configuration"
-msgstr "Configuración de accesibilidad"
+msgstr "Configuración de la accesibilidad"
 
 #: C/gdm.xml:1603(para)
 msgid ""
@@ -2574,6 +2608,9 @@ msgid ""
 "features enabled via GConf configuration, then the GDM GUI programs will "
 "recognize these."
 msgstr ""
+"Si el usuario asociado con la ejecución de programas de IGU de GDM tiene las "
+"características de accesibilidad activadas a través de GConf, entonces los "
+"programas de IGU de GDM lo reconocerán."
 
 #: C/gdm.xml:1613(term)
 msgid "/desktop/gnome/interface/accessibility"
@@ -2584,6 +2621,8 @@ msgid ""
 "Controls whether the Accessibility infrastructure will be started with the "
 "GDM GUI. This is needed for any accessibility technology programs to work."
 msgstr ""
+"Controla si la infraestructura de accesibilidad se iniciará con la IGU de "
+"GDM. Esto es necesario para que los programas de accesibilidad funcionen."
 
 #: C/gdm.xml:1624(term)
 msgid "/desktop/gnome/applications/at/screen_magnifier_enabled"
