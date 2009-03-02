@@ -775,6 +775,20 @@ task_has_service_name (GdmTaskList *task_list,
         return has_service_name;
 }
 
+GdmTask *
+find_task_with_service_name (GdmGreeterLoginWindow *login_window,
+                             const char            *service_name)
+{
+        GdmTask *task;
+
+        task = gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
+                                           (GdmTaskListForeachFunc)
+                                           task_has_service_name,
+                                           (gpointer) service_name);
+
+        return task;
+}
+
 static gboolean
 reset_task (GdmTaskList           *task_list,
             GdmTask               *task,
@@ -876,10 +890,7 @@ gdm_greeter_login_window_ready (GdmGreeterLoginWindow *login_window,
 
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
-        task = gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
-                                           (GdmTaskListForeachFunc)
-                                           task_has_service_name,
-                                           (gpointer) service_name);
+        task = find_task_with_service_name (login_window, service_name);
 
         if (task != NULL) {
                 if (gdm_chooser_widget_is_loaded (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser))) {
@@ -908,10 +919,7 @@ gdm_greeter_login_window_conversation_stopped (GdmGreeterLoginWindow *login_wind
 
         g_debug ("GdmGreeterLoginWindow: conversation '%s' has stopped", service_name);
 
-        task = gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
-                                           (GdmTaskListForeachFunc)
-                                           task_has_service_name,
-                                           (gpointer) service_name);
+        task = find_task_with_service_name (login_window, service_name);
 
         if (task != NULL) {
                 gdm_conversation_reset (GDM_CONVERSATION (task));
@@ -979,10 +987,7 @@ gdm_greeter_login_window_info (GdmGreeterLoginWindow *login_window,
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
         g_debug ("GdmGreeterLoginWindow: info: %s", text);
 
-        task = gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
-                                        (GdmTaskListForeachFunc)
-                                        task_has_service_name,
-                                        (gpointer) service_name);
+        task = find_task_with_service_name (login_window, service_name);
 
         if (task != NULL) {
                 gdm_conversation_set_message (GDM_CONVERSATION (task),
@@ -1003,10 +1008,7 @@ gdm_greeter_login_window_problem (GdmGreeterLoginWindow *login_window,
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
         g_debug ("GdmGreeterLoginWindow: problem: %s", text);
 
-        task = gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
-                                        (GdmTaskListForeachFunc)
-                                        task_has_service_name,
-                                        (gpointer) service_name);
+        task = find_task_with_service_name (login_window, service_name);
 
         if (task != NULL) {
                 gdm_conversation_set_message (GDM_CONVERSATION (task),
@@ -1108,10 +1110,8 @@ gdm_greeter_login_window_info_query (GdmGreeterLoginWindow *login_window,
 
         g_debug ("GdmGreeterLoginWindow: info query: %s", text);
 
-        task = gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
-                                        (GdmTaskListForeachFunc)
-                                        task_has_service_name,
-                                        (gpointer) service_name);
+
+        task = find_task_with_service_name (login_window, service_name);
 
         if (task != NULL) {
                 gdm_conversation_ask_question (GDM_CONVERSATION (task),
@@ -1139,10 +1139,7 @@ gdm_greeter_login_window_secret_info_query (GdmGreeterLoginWindow *login_window,
 
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
-        task = gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
-                                        (GdmTaskListForeachFunc)
-                                        task_has_service_name,
-                                        (gpointer) service_name);
+        task = find_task_with_service_name (login_window, service_name);
 
         if (task != NULL) {
                 gdm_conversation_ask_secret (GDM_CONVERSATION (task),
@@ -1689,10 +1686,7 @@ begin_single_service_verification (GdmGreeterLoginWindow *login_window,
 {
         GdmTask *task;
 
-        task = gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
-                                           (GdmTaskListForeachFunc)
-                                           task_has_service_name,
-                                           (gpointer) service_name);
+        task = find_task_with_service_name (login_window, service_name);
 
         if (task == NULL) {
                 g_debug ("GdmGreeterLoginWindow: %s has no task associated with it", service_name);
