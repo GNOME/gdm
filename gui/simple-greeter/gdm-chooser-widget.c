@@ -2132,13 +2132,30 @@ gdm_chooser_widget_lookup_item (GdmChooserWidget *widget,
         }
         g_free (active_item_id);
 
-        gtk_tree_model_get (GTK_TREE_MODEL (widget->priv->list_store), &iter,
-                            CHOOSER_IMAGE_COLUMN, image,
-                            CHOOSER_NAME_COLUMN, name,
-                            CHOOSER_PRIORITY_COLUMN, priority,
-                            CHOOSER_ITEM_IS_IN_USE_COLUMN, is_in_use,
-                            CHOOSER_ITEM_IS_SEPARATED_COLUMN, is_separate,
-                            -1);
+        if (image != NULL) {
+                gtk_tree_model_get (GTK_TREE_MODEL (widget->priv->list_store), &iter,
+                                    CHOOSER_IMAGE_COLUMN, image, -1);
+        }
+
+        if (name != NULL) {
+                gtk_tree_model_get (GTK_TREE_MODEL (widget->priv->list_store), &iter,
+                                    CHOOSER_NAME_COLUMN, name, -1);
+        }
+
+        if (priority != NULL) {
+                gtk_tree_model_get (GTK_TREE_MODEL (widget->priv->list_store), &iter,
+                                    CHOOSER_PRIORITY_COLUMN, priority, -1);
+        }
+
+        if (is_in_use != NULL) {
+                gtk_tree_model_get (GTK_TREE_MODEL (widget->priv->list_store), &iter,
+                                    CHOOSER_ITEM_IS_IN_USE_COLUMN, is_in_use, -1);
+        }
+
+        if (is_separate != NULL) {
+                gtk_tree_model_get (GTK_TREE_MODEL (widget->priv->list_store), &iter,
+                                    CHOOSER_ITEM_IS_SEPARATED_COLUMN, is_separate, -1);
+        }
 
         return TRUE;
 }
