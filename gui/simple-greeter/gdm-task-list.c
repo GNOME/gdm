@@ -302,17 +302,24 @@ gdm_task_list_set_active_task (GdmTaskList *widget,
                                GdmTask     *task)
 {
         GtkWidget *button;
+        gboolean   was_sensitive;
+        gboolean   was_activated;
+
+        was_sensitive = GTK_WIDGET_SENSITIVE (widget);
+        gtk_widget_set_sensitive (GTK_WIDGET (widget), TRUE);
 
         button = GTK_WIDGET (g_object_get_data (G_OBJECT (task),
                              "gdm-task-list-button"));
 
+        was_activated = FALSE;
         if (GTK_WIDGET_IS_SENSITIVE (button)) {
                 if (gtk_widget_activate (button)) {
-                        return TRUE;
+                        was_activated = TRUE;
                 }
         }
 
-        return FALSE;
+        gtk_widget_set_sensitive (GTK_WIDGET (widget), was_sensitive);
+        return was_activated;
 }
 
 int

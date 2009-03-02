@@ -105,7 +105,8 @@
 
 enum {
         MODE_SELECTION = 0,
-        MODE_AUTHENTICATION
+        MODE_SINGLE_AUTHENTICATION,
+        MODE_MULTIPLE_AUTHENTICATION,
 };
 
 enum {
@@ -586,7 +587,8 @@ sensitize_power_buttons_timeout (GdmGreeterLoginWindow *login_window)
                 sensitize_widget (login_window, "suspend-button", TRUE);
                 sensitize_widget (login_window, "disconnect-button", TRUE);
                 break;
-        case MODE_AUTHENTICATION:
+        case MODE_SINGLE_AUTHENTICATION:
+        case MODE_MULTIPLE_AUTHENTICATION:
                 break;
         default:
                 g_assert_not_reached ();
@@ -614,6 +616,7 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         GtkWidget  *box;
         gboolean    show_restart_buttons;
         gboolean    show_suspend_button;
+        int         number_of_tasks;
 
         show_restart_buttons = get_show_restart_buttons (login_window);
         show_suspend_button = can_suspend (login_window);
@@ -643,6 +646,8 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                              ! login_window->priv->display_is_local);
 
                 show_widget (login_window, "auth-page-box", FALSE);
+                show_widget (login_window, "conversation-list", FALSE);
+                gtk_widget_set_sensitive (login_window->priv->conversation_list, TRUE);
 
                 add_sensitize_power_buttons_timeout (login_window);
                 sensitize_widget (login_window, "shutdown-button", FALSE);
@@ -652,13 +657,29 @@ switch_mode (GdmGreeterLoginWindow *login_window,
 
                 default_name = NULL;
                 break;
-        case MODE_AUTHENTICATION:
+        case MODE_SINGLE_AUTHENTICATION:
+        case MODE_MULTIPLE_AUTHENTICATION:
+                gtk_widget_set_size_request (GTK_WIDGET (login_window),
+                                             GTK_WIDGET (login_window)->allocation.width,
+                                             -1);
                 show_widget (login_window, "cancel-button", TRUE);
                 show_widget (login_window, "shutdown-button", FALSE);
                 show_widget (login_window, "restart-button", FALSE);
                 show_widget (login_window, "suspend-button", FALSE);
                 show_widget (login_window, "disconnect-button", FALSE);
                 show_widget (login_window, "auth-page-box", TRUE);
+
+                number_of_tasks = gdm_task_list_get_number_of_tasks (GDM_TASK_LIST (login_window->priv->conversation_list));
+                show_widget (login_window, "conversation-list", number_of_tasks > 1);
+
+                if (number == MODE_SINGLE_AUTHENTICATION) {
+                        g_debug ("GdmGreeterLoginWindow: Single authentication, 1 task");
+                        gtk_widget_set_sensitive (login_window->priv->conversation_list, FALSE);
+                } else {
+                        g_debug ("GdmGreeterLoginWindow: Multiple authentication, %d tasks", number_of_tasks);
+                        gtk_widget_set_sensitive (login_window->priv->conversation_list, TRUE);
+                }
+
                 default_name = "log-in-button";
                 break;
         default:
@@ -1626,7 +1647,7 @@ on_user_chosen (GdmGreeterLoginWindow *login_window,
                                     begin_task_verification_for_selected_user,
                                     login_window);
 
-        switch_mode (login_window, MODE_AUTHENTICATION);
+        switch_mode (login_window, MODE_MULTIPLE_AUTHENTICATION);
 }
 
 static void
@@ -1655,6 +1676,8 @@ on_user_chooser_activated (GdmUserChooserWidget  *user_chooser,
                                             begin_task_verification,
                                             login_window);
                 g_free (item_id);
+
+                switch_mode (login_window, MODE_MULTIPLE_AUTHENTICATION);
         } else if (strcmp (item_id, GDM_USER_CHOOSER_USER_AUTO) == 0) {
                 g_debug ("GdmGreeterLoginWindow: Starting auto login");
                 g_signal_emit (login_window, signals[BEGIN_AUTO_LOGIN], 0,
@@ -1667,6 +1690,8 @@ on_user_chooser_activated (GdmUserChooserWidget  *user_chooser,
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_TIMED_LOGIN);
                 set_message (login_window, _("Select language and click Log In"));
                 g_free (item_id);
+
+                switch_mode (login_window, MODE_SINGLE_AUTHENTICATION);
         } else {
                 GdmTask *task;
 
@@ -1681,18 +1706,17 @@ on_user_chooser_activated (GdmUserChooserWidget  *user_chooser,
                         return;
                 }
                 g_debug ("GdmGreeterLoginWindow: Beginning auth conversation for item %s", item_id);
-
                 /* FIXME: we should probably give the plugin more say for
                  * what happens here.
                  */
                 g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0, item_id);
                 g_free (item_id);
 
-                gtk_widget_set_sensitive (login_window->priv->conversation_list, FALSE);
-        }
+                switch_mode (login_window, MODE_SINGLE_AUTHENTICATION);
+                gdm_task_list_set_active_task (GDM_TASK_LIST (login_window->priv->conversation_list), task);
 
-        g_debug ("GdmGreeterLoginWindow: Switching to shrunken authentication mode");
-        switch_mode (login_window, MODE_AUTHENTICATION);
+                g_object_unref (task);
+        }
 }
 
 static void
@@ -2000,7 +2024,6 @@ load_theme (GdmGreeterLoginWindow *login_window)
                                   "deactivated",
                                   G_CALLBACK (on_task_deactivated),
                                   login_window);
-        gtk_widget_show (login_window->priv->conversation_list);
 
         login_window->priv->auth_banner_label = glade_xml_get_widget (login_window->priv->xml, "auth-banner-label");
         /*make_label_small_italic (login_window->priv->auth_banner_label);*/
@@ -2039,7 +2062,8 @@ gdm_greeter_login_window_key_press_event (GtkWidget   *widget,
         login_window = GDM_GREETER_LOGIN_WINDOW (widget);
 
         if (event->keyval == GDK_Escape) {
-                if (login_window->priv->dialog_mode == MODE_AUTHENTICATION) {
+                if (login_window->priv->dialog_mode == MODE_SINGLE_AUTHENTICATION ||
+                    login_window->priv->dialog_mode == MODE_MULTIPLE_AUTHENTICATION) {
                         do_cancel (GDM_GREETER_LOGIN_WINDOW (widget));
                 }
         }
@@ -2500,12 +2524,6 @@ gdm_greeter_login_window_add_extension (GdmGreeterLoginWindow *login_window,
 
         g_debug ("GdmGreeterLoginWindow: new extension '%s - %s' added",
                 name, description);
-
-        if (gdm_task_list_get_number_of_tasks (GDM_TASK_LIST (login_window->priv->conversation_list)) == 0) {
-                gtk_widget_hide (login_window->priv->conversation_list);
-        } else {
-                gtk_widget_show (login_window->priv->conversation_list);
-        }
 
         gdm_task_list_add_task (GDM_TASK_LIST (login_window->priv->conversation_list),
                                 GDM_TASK (extension));
