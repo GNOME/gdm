@@ -2389,7 +2389,7 @@ on_conversation_cancel (GdmGreeterLoginWindow *login_window,
         do_cancel (login_window);
 }
 
-static void
+static gboolean
 on_conversation_chose_user (GdmGreeterLoginWindow *login_window,
                             const char            *username,
                             GdmConversation       *conversation)
@@ -2400,7 +2400,13 @@ on_conversation_chose_user (GdmGreeterLoginWindow *login_window,
                 name = gdm_task_get_name (GDM_TASK (conversation));
                 g_warning ("Task %s is trying to choose user before list is loaded", name);
                 g_free (name);
-                return;
+                return FALSE;
+        }
+
+        /* If we're already authenticating then we can't pick a user
+         */
+        if (login_window->priv->dialog_mode == MODE_AUTHENTICATION) {
+                return FALSE;
         }
 
         if (gdm_task_list_set_active_task (GDM_TASK_LIST (login_window->priv->conversation_list),
@@ -2408,6 +2414,8 @@ on_conversation_chose_user (GdmGreeterLoginWindow *login_window,
                 gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser),
                                                               username);
         }
+
+        return TRUE;
 }
 
 void

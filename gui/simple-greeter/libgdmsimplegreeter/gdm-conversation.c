@@ -25,8 +25,8 @@
 #include <gtk/gtk.h>
 
 #include "gdm-conversation.h"
+#include "gdm-marshal.h"
 #include "gdm-task.h"
-
 
 enum {
         ANSWER,
@@ -76,12 +76,12 @@ gdm_conversation_class_init (gpointer g_iface)
         signals [USER_CHOSEN] =
                 g_signal_new ("user-chosen",
                               iface_type,
-                              G_SIGNAL_RUN_FIRST,
+                              G_SIGNAL_RUN_LAST,
                               G_STRUCT_OFFSET (GdmConversationIface, user_chosen),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__STRING,
-                              G_TYPE_NONE,
+                              gdm_marshal_BOOLEAN__STRING,
+                              G_TYPE_BOOLEAN,
                               1, G_TYPE_STRING);
         signals [CANCEL] =
                 g_signal_new ("cancel",
@@ -171,9 +171,16 @@ gdm_conversation_cancel (GdmConversation   *conversation)
 {
         g_signal_emit (conversation, signals [CANCEL], 0);
 }
-void
+
+gboolean
 gdm_conversation_choose_user (GdmConversation *conversation,
                               const char      *username)
 {
-        g_signal_emit (conversation, signals [USER_CHOSEN], 0, username);
+        gboolean was_chosen;
+
+        was_chosen = FALSE;
+
+        g_signal_emit (conversation, signals [USER_CHOSEN], 0, username, &was_chosen);
+
+        return was_chosen;
 }

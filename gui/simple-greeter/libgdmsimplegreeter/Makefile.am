@@ -3,6 +3,7 @@ NULL =
 AM_CPPFLAGS = \
 	-I.					\
 	-I..					\
+	-I$(top_srcdir)/common			\
 	-DBINDIR=\"$(bindir)\"			\
 	-DDATADIR=\"$(datadir)\"		\
 	-DLIBDIR=\"$(libdir)\"			\
@@ -28,6 +29,7 @@ libgdmsimplegreeter_la_SOURCES =		\
 
 libgdmsimplegreeter_la_LIBADD =			\
 	$(GTK_LIBS)				\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
 libgdmsimplegreeter_la_LDFLAGS = 		\

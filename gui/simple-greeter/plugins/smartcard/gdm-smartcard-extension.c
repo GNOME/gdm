@@ -53,6 +53,7 @@ struct _GdmSmartcardExtensionPrivate
         int        number_of_tokens;
 
         guint      answer_pending : 1;
+        guint      select_when_ready : 1;
 };
 
 static void gdm_smartcard_extension_finalize (GObject *object);
@@ -102,8 +103,14 @@ on_smartcard_event (GIOChannel   *io_channel,
                 }
 
                 if (extension->priv->number_of_tokens == 1) {
-                        gdm_conversation_choose_user (GDM_CONVERSATION (extension),
-                                                      PAMSERVICENAME);
+                        if (!gdm_conversation_choose_user (GDM_CONVERSATION (extension),
+                                                          PAMSERVICENAME)) {
+                                g_debug ("could not choose smart card user, cancelling...");
+                                gdm_conversation_cancel (GDM_CONVERSATION (extension));
+                                extension->priv->select_when_ready = TRUE;
+                        } else {
+                                g_debug ("chose smart card user!");
+                        }
                 } else if (extension->priv->number_of_tokens == 0) {
                         gdm_conversation_cancel (GDM_CONVERSATION (extension));
                 }
@@ -210,10 +217,16 @@ gdm_smartcard_extension_set_ready (GdmConversation *conversation)
         GdmSmartcardExtension *extension = GDM_SMARTCARD_EXTENSION (conversation);
         gdm_task_set_enabled (GDM_TASK (conversation), TRUE);
 
-        if (extension->priv->worker_pid <= 0)
-          {
+        if (extension->priv->worker_pid <= 0) {
                 watch_for_smartcards (extension);
-          }
+        }
+
+        if (extension->priv->select_when_ready) {
+                if (gdm_conversation_choose_user (GDM_CONVERSATION (extension),
+                                                  PAMSERVICENAME)) {
+                        extension->priv->select_when_ready = FALSE;
+                }
+        }
 }
 
 char *
