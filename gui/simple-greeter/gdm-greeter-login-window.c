@@ -1609,6 +1609,17 @@ begin_task_verification (GdmTaskList           *task_list,
         return FALSE;
 }
 
+static void
+begin_verification (GdmGreeterLoginWindow *login_window)
+{
+        gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
+                                    (GdmTaskListForeachFunc)
+                                    begin_task_verification,
+                                    login_window);
+
+        switch_mode (login_window, MODE_MULTIPLE_AUTHENTICATION);
+}
+
 static gboolean
 begin_task_verification_for_selected_user (GdmTaskList           *task_list,
                                            GdmTask               *task,
@@ -1634,6 +1645,15 @@ begin_task_verification_for_selected_user (GdmTaskList           *task_list,
 }
 
 static void
+begin_verification_for_selected_user (GdmGreeterLoginWindow *login_window)
+{
+        gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
+                                    (GdmTaskListForeachFunc)
+                                    begin_task_verification_for_selected_user,
+                                    login_window);
+}
+
+static void
 on_user_chosen (GdmGreeterLoginWindow *login_window,
                 const char            *user_name)
 {
@@ -1642,12 +1662,52 @@ on_user_chosen (GdmGreeterLoginWindow *login_window,
         g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
                        0, user_name);
 
-        gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
-                                    (GdmTaskListForeachFunc)
-                                    begin_task_verification_for_selected_user,
-                                    login_window);
+        begin_verification_for_selected_user (login_window);
 
         switch_mode (login_window, MODE_MULTIPLE_AUTHENTICATION);
+}
+
+static void
+begin_auto_login (GdmGreeterLoginWindow *login_window)
+{
+        g_signal_emit (login_window, signals[BEGIN_AUTO_LOGIN], 0,
+                       login_window->priv->timed_login_username);
+
+        login_window->priv->timed_login_enabled = TRUE;
+        restart_timed_login_timeout (login_window);
+
+        /* just wait for the user to select language and stuff */
+        set_log_in_button_mode (login_window, LOGIN_BUTTON_TIMED_LOGIN);
+        set_message (login_window, _("Select language and click Log In"));
+
+        switch_mode (login_window, MODE_SINGLE_AUTHENTICATION);
+}
+
+static void
+begin_single_service_verification (GdmGreeterLoginWindow *login_window,
+                                   const char            *service_name)
+{
+        GdmTask *task;
+
+        task = gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
+                                           (GdmTaskListForeachFunc)
+                                           task_has_service_name,
+                                           (gpointer) service_name);
+
+        if (task == NULL) {
+                g_debug ("GdmGreeterLoginWindow: %s has no task associated with it", service_name);
+                return;
+        }
+        g_debug ("GdmGreeterLoginWindow: Beginning auth conversation for item %s", service_name);
+        /* FIXME: we should probably give the plugin more say for
+         * what happens here.
+         */
+        g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0, service_name);
+
+        switch_mode (login_window, MODE_SINGLE_AUTHENTICATION);
+        gdm_task_list_set_active_task (GDM_TASK_LIST (login_window->priv->conversation_list), task);
+
+        g_object_unref (task);
 }
 
 static void
@@ -1669,53 +1729,23 @@ on_user_chooser_activated (GdmUserChooserWidget  *user_chooser,
         item_id = gdm_chooser_widget_get_active_item (GDM_CHOOSER_WIDGET (user_chooser));
         g_debug ("GdmGreeterLoginWindow: item chosen '%s'", item_id);
 
+        g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
+                       0, item_id);
+
         if (strcmp (item_id, GDM_USER_CHOOSER_USER_OTHER) == 0) {
                 g_debug ("GdmGreeterLoginWindow: Starting all auth conversations");
-                gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
-                                            (GdmTaskListForeachFunc)
-                                            begin_task_verification,
-                                            login_window);
                 g_free (item_id);
 
-                switch_mode (login_window, MODE_MULTIPLE_AUTHENTICATION);
+                begin_verification (login_window);
         } else if (strcmp (item_id, GDM_USER_CHOOSER_USER_AUTO) == 0) {
                 g_debug ("GdmGreeterLoginWindow: Starting auto login");
-                g_signal_emit (login_window, signals[BEGIN_AUTO_LOGIN], 0,
-                               login_window->priv->timed_login_username);
-
-                login_window->priv->timed_login_enabled = TRUE;
-                restart_timed_login_timeout (login_window);
-
-                /* just wait for the user to select language and stuff */
-                set_log_in_button_mode (login_window, LOGIN_BUTTON_TIMED_LOGIN);
-                set_message (login_window, _("Select language and click Log In"));
                 g_free (item_id);
 
-                switch_mode (login_window, MODE_SINGLE_AUTHENTICATION);
+                begin_auto_login (login_window);
         } else {
-                GdmTask *task;
 
-                task = gdm_task_list_foreach_task (GDM_TASK_LIST (login_window->priv->conversation_list),
-                                                   (GdmTaskListForeachFunc)
-                                                   task_has_service_name,
-                                                   (gpointer) item_id);
-
-                if (task == NULL) {
-                        g_debug ("GdmGreeterLoginWindow: %s has no task associated with it", item_id);
-                        g_free (item_id);
-                        return;
-                }
-                g_debug ("GdmGreeterLoginWindow: Beginning auth conversation for item %s", item_id);
-                /* FIXME: we should probably give the plugin more say for
-                 * what happens here.
-                 */
-                g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0, item_id);
+                begin_single_service_verification (login_window, item_id);
                 g_free (item_id);
-
-                switch_mode (login_window, MODE_SINGLE_AUTHENTICATION);
-                gdm_task_list_set_active_task (GDM_TASK_LIST (login_window->priv->conversation_list), task);
-
-                g_object_unref (task);
         }
 }
 
