@@ -121,9 +121,6 @@ gdm_static_display_unmanage (GdmDisplay *display)
 {
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-        /* Only allow timed/automatic login once */
-        GDM_STATIC_DISPLAY (display)->priv->enable_timed_login = FALSE;
-
         GDM_DISPLAY_CLASS (gdm_static_display_parent_class)->unmanage (display);
 
         return TRUE;

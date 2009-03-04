@@ -1,3 +1,10 @@
+2009-03-03  William Jon McCann  <jmccann@redhat.com>
+
+	* daemon/gdm-static-display.c (gdm_static_display_unmanage):
+	Don't limit autologin to one time.  This was
+	a lame attempt to try to avoid loops on failed logins.
+	Should probably handle this better.
+
 2009-02-27  Mario Blättermann <mariobl@svn.gnome.org>
 
 	* docs/de/de.po: Updated German translation
