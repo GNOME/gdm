@@ -1030,8 +1030,18 @@ idle_connect_to_display (GdmSimpleSlave *slave)
                 if (! enabled || delay > 0) {
                         start_greeter (slave);
                         create_new_session (slave);
+
+                        if (enabled) {
+                                g_debug ("GdmSimpleSlave: Starting timed login conversation");
+                                gdm_session_start_conversation (GDM_SESSION (slave->priv->session),
+                                                                "gdm-autologin");
+                        }
                 } else {
                         reset_session (slave);
+
+                        g_debug ("GdmSimpleSlave: Starting automatic login conversation");
+                        gdm_session_start_conversation (GDM_SESSION (slave->priv->session),
+                                                        "gdm-autologin");
                 }
         } else {
                 if (slave->priv->connection_attempts >= MAX_CONNECT_ATTEMPTS) {
