@@ -54,6 +54,11 @@ void             _gdm_session_accredited                   (GdmSession   *sessio
 void             _gdm_session_accreditation_failed         (GdmSession   *session,
                                                             const char   *service_name,
                                                             const char   *text);
+void             _gdm_session_session_opened               (GdmSession   *session,
+                                                            const char   *service_name);
+void             _gdm_session_session_open_failed          (GdmSession   *session,
+                                                            const char   *service_name,
+                                                            const char   *message);
 void             _gdm_session_session_started              (GdmSession   *session,
                                                             const char   *service_name,
                                                             int           pid);

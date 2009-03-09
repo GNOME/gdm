@@ -635,6 +635,27 @@ on_session_accreditation_failed (GdmSession      *session,
 }
 
 static void
+on_session_opened (GdmSession      *session,
+                   const char      *service_name,
+                   GdmProductSlave *slave)
+{
+        send_dbus_string_method (slave->priv->session_relay_connection,
+                                 "SessionOpened", service_name);
+}
+
+static void
+on_session_open_failed (GdmSession      *session,
+                        const char      *service_name,
+                        const char      *message,
+                        GdmProductSlave *slave)
+{
+        send_dbus_string_string_method (slave->priv->session_relay_connection,
+                                        "SessionOpenFailed",
+                                        service_name,
+                                        message);
+}
+
+static void
 on_session_info (GdmSession      *session,
                  const char      *service_name,
                  const char      *text,
@@ -1051,7 +1072,14 @@ create_new_session (GdmProductSlave *slave)
                           "accreditation-failed",
                           G_CALLBACK (on_session_accreditation_failed),
                           slave);
-
+        g_signal_connect (slave->priv->session,
+                          "session-opened",
+                          G_CALLBACK (on_session_opened),
+                          slave);
+        g_signal_connect (slave->priv->session,
+                          "session-open-failed",
+                          G_CALLBACK (on_session_open_failed),
+                          slave);
         g_signal_connect (slave->priv->session,
                           "info",
                           G_CALLBACK (on_session_info),

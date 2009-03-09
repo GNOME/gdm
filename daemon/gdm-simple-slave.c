@@ -423,7 +423,7 @@ on_session_accredited (GdmSession     *session,
                        const char     *service_name,
                        GdmSimpleSlave *slave)
 {
-        queue_start_session (slave, service_name);
+        gdm_session_open_session (session, service_name);
 }
 
 static void
@@ -452,6 +452,29 @@ on_session_accreditation_failed (GdmSession     *session,
            when Xorg exits it switches to the VT it was
            started from.  That interferes with fast
            user switching. */
+
+        gdm_session_stop_conversation (session, service_name);
+}
+
+static void
+on_session_opened (GdmSession     *session,
+                   const char     *service_name,
+                   GdmSimpleSlave *slave)
+{
+        queue_start_session (slave, service_name);
+}
+
+static void
+on_session_open_failed (GdmSession     *session,
+                        const char     *service_name,
+                        const char     *message,
+                        GdmSimpleSlave *slave)
+{
+        if (slave->priv->greeter_server != NULL) {
+                gdm_greeter_server_problem (slave->priv->greeter_server,
+                                            service_name,
+                                            _("Unable to open session"));
+        }
 
         gdm_session_stop_conversation (session, service_name);
 }
@@ -686,6 +709,14 @@ create_new_session (GdmSimpleSlave *slave)
         g_signal_connect (slave->priv->session,
                           "accreditation-failed",
                           G_CALLBACK (on_session_accreditation_failed),
+                          slave);
+        g_signal_connect (slave->priv->session,
+                          "session-opened",
+                          G_CALLBACK (on_session_opened),
+                          slave);
+        g_signal_connect (slave->priv->session,
+                          "session-open-failed",
+                          G_CALLBACK (on_session_open_failed),
                           slave);
         g_signal_connect (slave->priv->session,
                           "info",

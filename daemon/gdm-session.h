@@ -62,6 +62,8 @@ struct _GdmSessionIface
         void (* accredit)                    (GdmSession   *session,
                                               const char   *service_name,
                                               int           cred_flag);
+        void (* open_session)                (GdmSession   *session,
+                                              const char   *service_name);
         void (* answer_query)                (GdmSession   *session,
                                               const char   *service_name,
                                               const char   *text);
@@ -115,6 +117,11 @@ struct _GdmSessionIface
         void (* problem)                     (GdmSession   *session,
                                               const char   *service_name,
                                               const char   *problem);
+        void (* session_opened)              (GdmSession   *session,
+                                              const char   *service_name);
+        void (* session_open_failed)         (GdmSession   *session,
+                                              const char   *service_name,
+                                              const char   *message);
         void (* session_started)             (GdmSession   *session,
                                               const char   *service_name,
                                               int           pid);
@@ -160,6 +167,8 @@ void     gdm_session_authorize                   (GdmSession *session,
 void     gdm_session_accredit                    (GdmSession *session,
                                                   const char *service_name,
                                                   int         cred_flag);
+void     gdm_session_open_session                (GdmSession *session,
+                                                  const char *service_name);
 void     gdm_session_start_session               (GdmSession *session,
                                                   const char *service_name);
 void     gdm_session_close                       (GdmSession *session);
