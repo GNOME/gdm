@@ -265,9 +265,7 @@ on_session_accredited (GdmSession      *session,
 {
         g_debug ("GdmFactorySlave:  session user verified");
 
-        gdm_session_start_session (session);
-
-        gdm_greeter_server_reset (slave->priv->greeter_server);
+        gdm_session_open_session (session);
 }
 
 static void
@@ -279,6 +277,29 @@ on_session_accreditation_failed (GdmSession      *session,
                  message);
 
         gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to establish credentials"));
+
+        queue_greeter_reset (slave);
+}
+
+static void
+on_session_opened (GdmSession      *session,
+                   GdmFactorySlave *slave)
+{
+        g_debug ("GdmFactorySlave: session opened");
+
+        gdm_session_start_session (session);
+
+        gdm_greeter_server_reset (slave->priv->greeter_server);
+}
+
+static void
+on_session_open_failed (GdmSession      *session,
+                        const char      *message,
+                        GdmFactorySlave *slave)
+{
+        g_debug ("GdmFactorySlave: could not open session: %s", message);
+
+        gdm_greeter_server_problem (slave->priv->greeter_server, _("Unable to open session"));
 
         queue_greeter_reset (slave);
 }
@@ -736,6 +757,14 @@ gdm_factory_slave_start (GdmSlave *slave)
         g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
                           "accreditation-failed",
                           G_CALLBACK (on_session_accreditation_failed),
+                          slave);
+        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
+                          "session-opened",
+                          G_CALLBACK (on_session_opened),
+                          slave);
+        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
+                          "session-open-failed",
+                          G_CALLBACK (on_session_open_failed),
                           slave);
         g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
                           "info",

@@ -2453,13 +2453,13 @@ do_open_session (GdmSessionWorker *worker)
         res = gdm_session_worker_open_user_session (worker, &error);
         if (! res) {
                 send_dbus_string_method (worker->priv->connection,
-                                         "StartFailed",
+                                         "OpenFailed",
                                          error->message);
                 g_error_free (error);
                 return;
         }
 
-        queue_state_change (worker);
+        send_dbus_void_method (worker->priv->connection, "SessionOpened");
 }
 
 static void
@@ -2575,7 +2575,7 @@ on_start_program (GdmSessionWorker *worker,
         const char *text;
         dbus_bool_t res;
 
-        if (worker->priv->state != GDM_SESSION_WORKER_STATE_ACCREDITED) {
+        if (worker->priv->state != GDM_SESSION_WORKER_STATE_SESSION_OPENED) {
                 g_debug ("GdmSessionWorker: ignoring spurious start program while in state %s", get_state_name (worker->priv->state));
                 return;
         }
@@ -2734,6 +2734,18 @@ on_establish_credentials (GdmSessionWorker *worker,
 }
 
 static void
+on_open_session (GdmSessionWorker *worker,
+                 DBusMessage      *message)
+{
+        if (worker->priv->state != GDM_SESSION_WORKER_STATE_ACCREDITED) {
+                g_debug ("GdmSessionWorker: ignoring spurious open session for user while in state %s", get_state_name (worker->priv->state));
+                return;
+        }
+
+        queue_state_change (worker);
+}
+
+static void
 on_reauthenticate (GdmSessionWorker *worker,
                    DBusMessage      *message)
 {
@@ -2805,6 +2817,8 @@ worker_dbus_handle_message (DBusConnection *connection,
                 on_authorize (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "EstablishCredentials")) {
                 on_establish_credentials (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "OpenSession")) {
+                on_open_session (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "StartProgram")) {
                 on_start_program (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "Reauthenticate")) {

@@ -43,6 +43,9 @@ void             _gdm_session_authorization_failed         (GdmSession   *sessio
 void             _gdm_session_accredited                   (GdmSession   *session);
 void             _gdm_session_accreditation_failed         (GdmSession   *session,
                                                             const char   *text);
+void             _gdm_session_session_opened               (GdmSession   *session);
+void             _gdm_session_session_open_failed          (GdmSession   *session,
+                                                            const char   *message);
 void             _gdm_session_session_started              (GdmSession   *session,
                                                             int           pid);
 void             _gdm_session_session_start_failed         (GdmSession   *session,

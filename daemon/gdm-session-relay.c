@@ -243,6 +243,13 @@ gdm_session_relay_accredit (GdmSession *session,
 }
 
 static void
+gdm_session_relay_open_session (GdmSession *session)
+{
+        GdmSessionRelay *impl = GDM_SESSION_RELAY (session);
+        send_dbus_void_signal (impl, "OpenSession");
+}
+
+static void
 gdm_session_relay_answer_query (GdmSession *session,
                                 const char *text)
 {
@@ -608,6 +615,57 @@ handle_accreditation_failed (GdmSessionRelay *session_relay,
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
+static DBusHandlerResult
+handle_session_opened (GdmSessionRelay *session_relay,
+                       DBusConnection  *connection,
+                       DBusMessage     *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+        dbus_error_free (&error);
+
+        g_debug ("GdmSessionRelay: Session Opened");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        _gdm_session_session_opened (GDM_SESSION (session_relay));
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+handle_session_open_failed (GdmSessionRelay *session_relay,
+                            DBusConnection  *connection,
+                            DBusMessage     *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+        dbus_error_free (&error);
+
+        g_debug ("GdmSessionRelay: Session Open Failed");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        _gdm_session_session_open_failed (GDM_SESSION (session_relay), NULL);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
 
 static DBusHandlerResult
 handle_session_started (GdmSessionRelay *session_relay,
@@ -715,6 +773,10 @@ session_handle_child_message (DBusConnection *connection,
                 return handle_accredited (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "AccreditationFailed")) {
                 return handle_accreditation_failed (session_relay, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "SessionOpened")) {
+                return handle_session_opened (session_relay, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "SessionOpenFailed")) {
+                return handle_session_open_failed (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "SessionStarted")) {
                 return handle_session_started (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "SessionStopped")) {
@@ -1112,6 +1174,7 @@ gdm_session_iface_init (GdmSessionIface *iface)
         iface->authenticate = gdm_session_relay_authenticate;
         iface->authorize = gdm_session_relay_authorize;
         iface->accredit = gdm_session_relay_accredit;
+        iface->open_session = gdm_session_relay_open_session;
         iface->close = gdm_session_relay_close;
 
         iface->cancel = gdm_session_relay_cancel;

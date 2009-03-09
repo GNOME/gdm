@@ -44,6 +44,8 @@ enum {
         PROBLEM,
         INFO_QUERY,
         SECRET_INFO_QUERY,
+        SESSION_OPENED,
+        SESSION_OPEN_FAILED,
         SESSION_STARTED,
         SESSION_START_FAILED,
         SESSION_EXITED,
@@ -188,6 +190,14 @@ gdm_session_cancel (GdmSession *session)
         g_return_if_fail (GDM_IS_SESSION (session));
 
         GDM_SESSION_GET_IFACE (session)->cancel (session);
+}
+
+void
+gdm_session_open_session (GdmSession *session)
+{
+        g_return_if_fail (GDM_IS_SESSION (session));
+
+        GDM_SESSION_GET_IFACE (session)->open_session (session);
 }
 
 void
@@ -357,6 +367,27 @@ gdm_session_class_init (gpointer g_iface)
                               iface_type,
                               G_SIGNAL_RUN_FIRST,
                               G_STRUCT_OFFSET (GdmSessionIface, problem),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_STRING);
+        signals [SESSION_OPENED] =
+                g_signal_new ("session-opened",
+                              iface_type,
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmSessionIface, session_opened),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE,
+                              0);
+        signals [SESSION_OPEN_FAILED] =
+                g_signal_new ("session-open-failed",
+                              iface_type,
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmSessionIface, session_open_failed),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,
@@ -573,6 +604,21 @@ _gdm_session_problem (GdmSession   *session,
 {
         g_return_if_fail (GDM_IS_SESSION (session));
         g_signal_emit (session, signals [PROBLEM], 0, text);
+}
+
+void
+_gdm_session_session_opened (GdmSession   *session)
+{
+        g_return_if_fail (GDM_IS_SESSION (session));
+        g_signal_emit (session, signals [SESSION_OPENED], 0);
+}
+
+void
+_gdm_session_session_open_failed (GdmSession   *session,
+                                  const char   *text)
+{
+        g_return_if_fail (GDM_IS_SESSION (session));
+        g_signal_emit (session, signals [SESSION_OPEN_FAILED], 0, text);
 }
 
 void

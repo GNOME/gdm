@@ -56,6 +56,7 @@ struct _GdmSessionIface
         void (* authorize)                   (GdmSession   *session);
         void (* accredit)                    (GdmSession   *session,
                                               int           cred_flag);
+        void (* open_session)                (GdmSession   *session);
         void (* answer_query)                (GdmSession   *session,
                                               const char   *text);
         void (* select_language)             (GdmSession   *session,
@@ -95,6 +96,9 @@ struct _GdmSessionIface
                                               const char   *info);
         void (* problem)                     (GdmSession   *session,
                                               const char   *problem);
+        void (* session_opened)              (GdmSession   *session);
+        void (* session_open_failed)         (GdmSession   *session,
+                                              const char   *message);
         void (* session_started)             (GdmSession   *session,
                                               int           pid);
         void (* session_start_failed)        (GdmSession   *session,
@@ -129,6 +133,7 @@ void     gdm_session_authenticate                (GdmSession *session);
 void     gdm_session_authorize                   (GdmSession *session);
 void     gdm_session_accredit                    (GdmSession *session,
                                                   int         cred_flag);
+void     gdm_session_open_session                (GdmSession *session);
 void     gdm_session_start_session               (GdmSession *session);
 void     gdm_session_close                       (GdmSession *session);
 

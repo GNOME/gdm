@@ -936,6 +936,58 @@ gdm_session_direct_handle_problem (GdmSessionDirect *session,
 }
 
 static DBusHandlerResult
+gdm_session_direct_handle_session_opened (GdmSessionDirect *session,
+                                          DBusConnection   *connection,
+                                          DBusMessage      *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+
+        g_debug ("GdmSessionDirect: Handling SessionOpened");
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error, DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+
+        g_debug ("GdmSessionDirect: Emitting 'session-opened' signal");
+
+        _gdm_session_session_opened (GDM_SESSION (session));
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+gdm_session_direct_handle_open_failed (GdmSessionDirect *session,
+                                       DBusConnection   *connection,
+                                       DBusMessage      *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+        const char  *text;
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &text,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        g_debug ("GdmSessionDirect: Emitting 'session-open-failed' signal");
+        _gdm_session_session_open_failed (GDM_SESSION (session), text);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
 gdm_session_direct_handle_session_started (GdmSessionDirect *session,
                                            DBusConnection   *connection,
                                            DBusMessage      *message)
@@ -1199,6 +1251,10 @@ session_worker_message (DBusConnection *connection,
                 return gdm_session_direct_handle_accreditation_failed (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "UsernameChanged")) {
                 return gdm_session_direct_handle_username_changed (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SessionOpened")) {
+                return gdm_session_direct_handle_session_opened (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "OpenFailed")) {
+                return gdm_session_direct_handle_open_failed (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SessionStarted")) {
                 return gdm_session_direct_handle_session_started (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "StartFailed")) {
@@ -2001,6 +2057,16 @@ setup_session_environment (GdmSessionDirect *session)
 }
 
 static void
+gdm_session_direct_open_session (GdmSession *session)
+{
+        GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+
+        g_return_if_fail (session != NULL);
+
+        send_dbus_void_signal (impl, "OpenSession");
+}
+
+static void
 gdm_session_direct_start_session (GdmSession *session)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
@@ -2472,6 +2538,7 @@ gdm_session_iface_init (GdmSessionIface *iface)
         iface->authenticate = gdm_session_direct_authenticate;
         iface->authorize = gdm_session_direct_authorize;
         iface->accredit = gdm_session_direct_accredit;
+        iface->open_session = gdm_session_direct_open_session;
         iface->close = gdm_session_direct_close;
 
         iface->cancel = gdm_session_direct_cancel;
