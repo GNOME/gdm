@@ -64,7 +64,9 @@ typedef struct _GdmAppletData
         GtkWidget      *menubar;
         GtkWidget      *menuitem;
         GtkWidget      *menu;
+#ifdef BUILD_PRESENSE_STUFF
         GtkWidget      *user_item;
+#endif
         GtkWidget      *control_panel_item;
         GtkWidget      *account_item;
         GtkWidget      *lock_screen_item;
@@ -81,7 +83,9 @@ typedef struct _GdmAppletData
         gint8           pixel_size;
         gint            panel_size;
         GtkIconSize     icon_size;
+#ifdef BUILD_PRESENSE_STUFF
         DBusGProxy     *presence_proxy;
+#endif
 } GdmAppletData;
 
 typedef struct _SelectorResponseData
@@ -478,9 +482,11 @@ gdm_applet_data_free (GdmAppletData *adata)
         g_signal_handler_disconnect (adata->user, adata->user_notify_id);
         g_signal_handler_disconnect (adata->user, adata->user_icon_changed_id);
 
+#ifdef BUILD_PRESENSE_STUFF
         if (adata->presence_proxy != NULL) {
                 g_object_unref (adata->presence_proxy);
         }
+#endif
 
         if (adata->user != NULL) {
                 g_object_unref (adata->user);
@@ -734,12 +740,14 @@ on_manager_users_loaded (GdmUserManager *manager,
         update_switch_user (adata);
 }
 
+#ifdef BUILD_PRESENSE_STUFF
 static void
 on_user_item_activate (GtkMenuItem   *item,
                        GdmAppletData *adata)
 {
         g_signal_stop_emission_by_name (item, "activate");
 }
+#endif
 
 static void
 on_control_panel_activate (GtkMenuItem   *item,
@@ -878,6 +886,7 @@ on_quit_session_activate (GtkMenuItem   *item,
         g_free (args[0]);
 }
 
+#ifdef BUILD_PRESENSE_STUFF
 static gboolean
 on_menu_key_press_event (GtkWidget     *widget,
                          GdkEventKey   *event,
@@ -959,6 +968,7 @@ static struct {
         { "user-busy", N_("Busy"), on_status_busy_activate, NULL },
         { "user-away", N_("Away"), NULL, NULL },
 };
+#endif
 
 static void
 update_label (GdmAppletData *adata)
@@ -968,13 +978,19 @@ update_label (GdmAppletData *adata)
 
         label = gtk_bin_get_child (GTK_BIN (adata->menuitem));
 
+#ifdef BUILD_PRESENSE_STUFF
         markup = g_strdup_printf ("<b>%s</b> <small>(%s)</small>",
                                   gdm_user_get_real_name (GDM_USER (adata->user)),
                                   _(statuses[adata->current_status].display_name));
+#else
+        markup = g_strdup_printf ("<b>%s</b>",
+                                  gdm_user_get_real_name (GDM_USER (adata->user)));
+#endif
         gtk_label_set_markup (GTK_LABEL (label), markup);
         g_free (markup);
 }
 
+#ifdef BUILD_PRESENSE_STUFF
 static void
 save_status_text (GdmAppletData *adata)
 {
@@ -1017,19 +1033,24 @@ on_user_item_deselect (GtkWidget     *item,
 {
         save_status_text (adata);
 }
+#endif
 
 static void
 create_sub_menu (GdmAppletData *adata)
 {
         GtkWidget *item;
+#ifdef BUILD_PRESENSE_STUFF
         int        i;
         GSList    *radio_group;
+#endif
 
         adata->menu = gtk_menu_new ();
+#ifdef BUILD_PRESENSE_STUFF
         g_signal_connect (adata->menu,
                           "key-press-event",
                           G_CALLBACK (on_menu_key_press_event),
                           adata);
+#endif
         gtk_menu_item_set_submenu (GTK_MENU_ITEM (adata->menuitem), adata->menu);
         g_signal_connect (adata->menu, "style-set",
                           G_CALLBACK (menu_style_set_cb), adata);
@@ -1050,6 +1071,7 @@ create_sub_menu (GdmAppletData *adata)
                           G_CALLBACK (on_manager_user_added),
                           adata);
 
+#ifdef BUILD_PRESENSE_STUFF
         adata->user_item = gdm_entry_menu_item_new ();
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
                                adata->user_item);
@@ -1102,6 +1124,7 @@ create_sub_menu (GdmAppletData *adata)
         item = gtk_separator_menu_item_new ();
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), item);
         gtk_widget_show (item);
+#endif
 
         adata->account_item = gtk_image_menu_item_new_with_label (_("Account Information..."));
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->account_item),
@@ -1225,6 +1248,7 @@ reset_icon (GdmAppletData *adata)
                 return;
         }
 
+#ifdef BUILD_PRESENSE_STUFF
         if (adata->user_item != NULL) {
                 image = gdm_entry_menu_item_get_image (GDM_ENTRY_MENU_ITEM (adata->user_item));
                 pixbuf = gdm_user_render_icon (adata->user, adata->panel_size * 3);
@@ -1235,6 +1259,17 @@ reset_icon (GdmAppletData *adata)
                 gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
                 g_object_unref (pixbuf);
         }
+#else
+        pixbuf = gdm_user_render_icon (adata->user, adata->panel_size);
+
+        if (pixbuf == NULL) {
+                return;
+        }
+
+        image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (adata->menuitem));
+        gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
+        g_object_unref (pixbuf);
+#endif
 }
 
 static void
@@ -1260,6 +1295,10 @@ setup_current_user (GdmAppletData *adata)
         }
 
         adata->menuitem = gtk_image_menu_item_new_with_label (name);
+#ifndef BUILD_PRESENSE_STUFF
+        gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->menuitem),
+                                       gtk_image_new ());
+#endif
         label = GTK_BIN (adata->menuitem)->child;
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menubar), adata->menuitem);
         gtk_widget_show (adata->menuitem);
@@ -1282,6 +1321,7 @@ setup_current_user (GdmAppletData *adata)
         }
 }
 
+#ifdef BUILD_PRESENSE_STUFF
 static void
 set_status (GdmAppletData *adata,
             guint status)
@@ -1334,6 +1374,7 @@ on_presence_status_text_changed (DBusGProxy    *presence_proxy,
 {
         set_status_text (adata, status_text);
 }
+#endif
 
 static gboolean
 fill_applet (PanelApplet *applet)
@@ -1482,6 +1523,7 @@ fill_applet (PanelApplet *applet)
                 goto done;
         }
 
+#ifdef BUILD_PRESENSE_STUFF
         adata->presence_proxy = dbus_g_proxy_new_for_name (bus,
                                                           "org.gnome.SessionManager",
                                                           "/org/gnome/SessionManager/Presence",
@@ -1562,6 +1604,7 @@ fill_applet (PanelApplet *applet)
         } else {
                 g_warning ("Failed to get session presence proxy");
         }
+#endif
 
  done:
         gtk_widget_show (GTK_WIDGET (adata->applet));
