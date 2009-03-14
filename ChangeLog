@@ -1,3 +1,10 @@
+2009-03-13  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/xdmcp-chooser-slave-main.c, daemon/simple-slave-main.c:
+	  Call gdm_settings_direct_init.  Otherwise when these programs try
+	  to read the xdmcp/PingIntervalSeconds configuration value, they
+	  fail to load it.
+
 2009-03-13  Ray Strode  <rstrode@redhat.com>
 
 	* configure.ac: Post release bump
