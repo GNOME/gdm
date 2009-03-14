@@ -2683,18 +2683,21 @@ gdm_slave_greeter (void)
 		if G_UNLIKELY (setgid (gdm_daemon_config_get_gdmgid ()) < 0)
 			gdm_child_exit (DISPLAY_ABORT,
 					_("%s: Couldn't set groupid to %d"),
-					"gdm_slave_greeter", gdm_daemon_config_get_gdmgid ());
+					"gdm_slave_greeter",
+					gdm_daemon_config_get_gdmgid ());
 
 		gdmuser = gdm_daemon_config_get_value_string (GDM_KEY_USER);
 		if G_UNLIKELY (initgroups (gdmuser, gdm_daemon_config_get_gdmgid ()) < 0)
 			gdm_child_exit (DISPLAY_ABORT,
 					_("%s: initgroups () failed for %s"),
-					"gdm_slave_greeter", gdmuser);
+					"gdm_slave_greeter",
+					gdmuser ? gdmuser : "(null)");
 
 		if G_UNLIKELY (setuid (gdm_daemon_config_get_gdmuid ()) < 0)
 			gdm_child_exit (DISPLAY_ABORT,
 					_("%s: Couldn't set userid to %d"),
-					"gdm_slave_greeter", gdm_daemon_config_get_gdmuid ());
+					"gdm_slave_greeter",
+					gdm_daemon_config_get_gdmuid ());
 
 		gdm_restoreenv ();
 		gdm_reset_locale ();
@@ -2865,7 +2868,10 @@ gdm_slave_greeter (void)
 				 "editing the configuration file"));
 
 		/* If no greeter we really have to disable the display */
-		gdm_child_exit (DISPLAY_ABORT, _("%s: Error starting greeter on display %s"), "gdm_slave_greeter", d->name);
+		gdm_child_exit (DISPLAY_ABORT,
+				_("%s: Error starting greeter on display %s"),
+				"gdm_slave_greeter",
+				d->name ? d->name : "(null)");
 
 	case -1:
 		d->greetpid = 0;
@@ -3170,18 +3176,21 @@ gdm_slave_chooser (void)
 		if G_UNLIKELY (setgid (gdm_daemon_config_get_gdmgid ()) < 0)
 			gdm_child_exit (DISPLAY_ABORT,
 					_("%s: Couldn't set groupid to %d"),
-					"gdm_slave_chooser", gdm_daemon_config_get_gdmgid ());
+					"gdm_slave_chooser",
+					gdm_daemon_config_get_gdmgid ());
 
 		gdmuser = gdm_daemon_config_get_value_string (GDM_KEY_USER);
 		if G_UNLIKELY (initgroups (gdmuser, gdm_daemon_config_get_gdmgid ()) < 0)
 			gdm_child_exit (DISPLAY_ABORT,
 					_("%s: initgroups () failed for %s"),
-					"gdm_slave_chooser", gdmuser);
+					"gdm_slave_chooser",
+					gdmuser ? gdmuser : "(null)");
 
 		if G_UNLIKELY (setuid (gdm_daemon_config_get_gdmuid ()) < 0)
 			gdm_child_exit (DISPLAY_ABORT,
 					_("%s: Couldn't set userid to %d"),
-					"gdm_slave_chooser", gdm_daemon_config_get_gdmuid ());
+					"gdm_slave_chooser",
+					gdm_daemon_config_get_gdmuid ());
 
 		gdm_restoreenv ();
 		gdm_reset_locale ();
@@ -3242,7 +3251,10 @@ gdm_slave_chooser (void)
 				 "You will probably not be able to log in.  "
 				 "Please contact the system administrator."));
 
-		gdm_child_exit (DISPLAY_REMANAGE, _("%s: Error starting chooser on display %s"), "gdm_slave_chooser", d->name);
+		gdm_child_exit (DISPLAY_REMANAGE,
+				_("%s: Error starting chooser on display %s"),
+				"gdm_slave_chooser",
+				d->name ? d->name : "(null)");
 
 	case -1:
 		gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't fork gdmchooser process"), "gdm_slave_chooser");
@@ -3646,7 +3658,8 @@ session_child_run (struct passwd *pwent,
 		       ! failsafe)
 		/* If script fails reset X server and restart greeter */
 		gdm_child_exit (DISPLAY_REMANAGE,
-				_("%s: Execution of PreSession script returned > 0. Aborting."), "session_child_run");
+				_("%s: Execution of PreSession script returned > 0. Aborting."),
+				"session_child_run");
 
 	old_system_data_dirs = g_getenv ("XDG_DATA_DIRS") ?
 			       g_getenv ("XDG_DATA_DIRS") :
@@ -3739,7 +3752,8 @@ session_child_run (struct passwd *pwent,
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("%s: Could not setup environment for %s. "
 				  "Aborting."),
-				"session_child_run", login_user);
+				"session_child_run",
+				login_user ? login_user : "(null)");
 
         /* setup euid/egid to the correct user,
          * not to leave the egid around.  It's
@@ -3806,11 +3820,13 @@ session_child_run (struct passwd *pwent,
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("%s: setusercontext () failed for %s. "
 				  "Aborting."), "session_child_run",
-				login);
+				login ? login : "(null)");
 #else
 	if G_UNLIKELY (setuid (pwent->pw_uid) < 0)
 		gdm_child_exit (DISPLAY_REMANAGE,
-				_("%s: Could not become %s. Aborting."), "session_child_run", login_user);
+				_("%s: Could not become %s. Aborting."),
+				"session_child_run",
+				login_user ? login_user : "(null)");
 #endif
 
 	/* Only force GDM_LANG to something if there is other then
