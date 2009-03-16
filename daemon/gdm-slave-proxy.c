@@ -139,7 +139,7 @@ spawn_child_setup (SpawnChildData *data)
                 rotate_logs (data->log_file, MAX_LOGS);
 
                 VE_IGNORE_EINTR (g_unlink (data->log_file));
-                VE_IGNORE_EINTR (logfd = open (data->log_file, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644));
+                VE_IGNORE_EINTR (logfd = open (data->log_file, O_CREAT|O_APPEND|O_TRUNC|O_WRONLY|O_EXCL, 0644));
 
                 if (logfd != -1) {
                         VE_IGNORE_EINTR (dup2 (logfd, 1));

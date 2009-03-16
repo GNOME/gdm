@@ -1,5 +1,12 @@
 2009-03-16  Ray Strode  <rstrode@redhat.com>
 
+	* daemon/gdm-slave-proxy.c (spawn_child_setup):
+	* daemon/gdm-server.c (server_child_setup):
+	* daemon/gdm-welcome-session.c (spawn_child_setup):
+	Use O_APPEND when opening log files.
+
+2009-03-16  Ray Strode  <rstrode@redhat.com>
+
 	* configure.ac: Post release bump
 
 ==== 2.26.0 ====

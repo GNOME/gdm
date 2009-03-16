@@ -419,7 +419,7 @@ server_child_setup (GdmServer *server)
         g_debug ("GdmServer: Opening logfile for server %s", log_path);
 
         VE_IGNORE_EINTR (g_unlink (log_path));
-        VE_IGNORE_EINTR (logfd = open (log_path, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644));
+        VE_IGNORE_EINTR (logfd = open (log_path, O_CREAT|O_APPEND|O_TRUNC|O_WRONLY|O_EXCL, 0644));
 
         g_free (log_path);
 
