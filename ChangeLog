@@ -1,5 +1,12 @@
 2009-03-16  Ray Strode  <rstrode@redhat.com>
 
+	* data/greeter-autostart/gnome-power-manager.desktop.in.in:
+	Don't try to start gnome-power-manager in Initialization
+	phase, since it doesn't know to register with the
+	session manager like INIT apps are supposed to.
+
+2009-03-16  Ray Strode  <rstrode@redhat.com>
+
 	* daemon/gdm-slave-proxy.c (spawn_child_setup):
 	* daemon/gdm-server.c (server_child_setup):
 	* daemon/gdm-welcome-session.c (spawn_child_setup):
