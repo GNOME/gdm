@@ -1,5 +1,21 @@
 2009-03-16  Ray Strode  <rstrode@redhat.com>
 
+	Fix the GetX11Cookie dbus method
+	* daemon/gdm-display.xml:
+	Send the cookie as a byte array instead of utf-8
+	string
+
+	* daemon/gdm-display.[ch] (gdm_display_get_x11_cookie):
+	pass in a GArray instead of the more natural
+	char array and size pointers to make dbus-glib
+	happy.
+
+	* daemon/gdm-xdmcp-display-factory.c
+	(gdm_xdmcp_handle_request): Update to use new
+	get_x11_cookie signature.
+
+2009-03-16  Ray Strode  <rstrode@redhat.com>
+
 	* data/greeter-autostart/gnome-power-manager.desktop.in.in:
 	Don't try to start gnome-power-manager in Initialization
 	phase, since it doesn't know to register with the

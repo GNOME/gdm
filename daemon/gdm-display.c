@@ -416,19 +416,16 @@ gdm_display_remove_user_authorization (GdmDisplay *display,
 
 gboolean
 gdm_display_get_x11_cookie (GdmDisplay *display,
-                            char      **x11_cookie,
-                            gsize      *x11_cookie_size,
+                            GArray    **x11_cookie,
                             GError    **error)
 {
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
         if (x11_cookie != NULL) {
-                *x11_cookie = g_memdup (display->priv->x11_cookie,
-                                        display->priv->x11_cookie_size);
-        }
-
-        if (x11_cookie_size != NULL) {
-                *x11_cookie_size = display->priv->x11_cookie_size;
+                *x11_cookie = g_array_new (FALSE, FALSE, sizeof (char));
+                g_array_append_vals (*x11_cookie,
+                                     display->priv->x11_cookie,
+                                     display->priv->x11_cookie_size);
         }
 
         return TRUE;

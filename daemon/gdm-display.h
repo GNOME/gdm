@@ -125,8 +125,7 @@ gboolean            gdm_display_get_timed_login_details        (GdmDisplay *disp
 
 /* exported but protected */
 gboolean            gdm_display_get_x11_cookie                 (GdmDisplay *display,
-                                                                char      **x11_cookie,
-                                                                gsize      *cookie_size,
+                                                                GArray     **x11_cookie,
                                                                 GError    **error);
 gboolean            gdm_display_get_x11_authority_file         (GdmDisplay *display,
                                                                 char      **filename,

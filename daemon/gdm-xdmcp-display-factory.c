@@ -2281,19 +2281,17 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                 ARRAY8  authorization_name;
                                 ARRAY8  authorization_data;
                                 gint32  session_number;
-                                char   *cookie;
-                                gsize   cookie_size;
+                                GArray *cookie;
                                 char   *name;
 
-                                gdm_display_get_x11_cookie (display, &cookie,
-                                                            &cookie_size, NULL);
+                                gdm_display_get_x11_cookie (display, &cookie, NULL);
 
                                 gdm_display_get_x11_display_name (display, &name, NULL);
 
                                 g_debug ("GdmXdmcpDisplayFactory: Sending authorization key for display %s", name);
                                 g_free (name);
 
-                                g_debug ("GdmXdmcpDisplayFactory: cookie len %d", (int) cookie_size);
+                                g_debug ("GdmXdmcpDisplayFactory: cookie len %d", (int) cookie->len);
 
                                 session_number = gdm_xdmcp_display_get_session_number (GDM_XDMCP_DISPLAY (display));
 
@@ -2308,8 +2306,10 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                 authorization_name.data     = (CARD8 *) "MIT-MAGIC-COOKIE-1";
                                 authorization_name.length   = strlen ((char *) authorization_name.data);
 
-                                authorization_data.data     = (CARD8 *) cookie;
-                                authorization_data.length   = cookie_size;
+                                authorization_data.data     = (CARD8 *) cookie->data;
+                                authorization_data.length   = cookie->len;
+
+                                g_array_free (cookie, TRUE);
 
                                 /* the addrs are NOT copied */
                                 gdm_xdmcp_send_accept (factory,
