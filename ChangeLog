@@ -1,5 +1,19 @@
 2009-03-16  Ray Strode  <rstrode@redhat.com>
 
+	Give greeter and slave access to display
+	independent of hostname.
+
+	* daemon/gdm-slave.c
+	(gdm_slave_connect_to_x11_display):
+	XSetAuthorization before XOpenDisplay so
+	that the slave can connect even if hostname
+	changes.  Call XAddHosts after XOpenDisplay
+	so that clients run by the slave and the
+	greeter can connect even if the hostname
+	changes.
+
+2009-03-16  Ray Strode  <rstrode@redhat.com>
+
 	Fix the GetX11Cookie dbus method
 	* daemon/gdm-display.xml:
 	Send the cookie as a byte array instead of utf-8

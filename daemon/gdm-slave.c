@@ -88,6 +88,8 @@ struct GdmSlavePrivate
         char            *parent_display_name;
         char            *parent_display_x11_authority_file;
 
+        GArray          *display_x11_cookie;
+
         DBusGProxy      *display_proxy;
         DBusGConnection *connection;
 };
@@ -377,6 +379,12 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
         sigaddset (&mask, SIGCHLD);
         sigprocmask (SIG_BLOCK, &mask, &omask);
 
+        /* Give slave access to the display independent of current hostname */
+        XSetAuthorization ("MIT-MAGIC-COOKIE-1",
+                           strlen ("MIT-MAGIC-COOKIE-1"),
+                           slave->priv->display_x11_cookie->data,
+                           slave->priv->display_x11_cookie->len);
+
         slave->priv->server_display = XOpenDisplay (slave->priv->display_name);
 
         sigprocmask (SIG_SETMASK, &omask, NULL);
@@ -386,8 +394,35 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
                 g_warning ("Unable to connect to display %s", slave->priv->display_name);
                 ret = FALSE;
         } else {
+                XHostAddress host_entries[2] = {
+                        { FamilyServerInterpreted },
+                        { FamilyServerInterpreted }
+                };
+                XServerInterpretedAddress si_entries[2];
+
                 g_debug ("GdmSlave: Connected to display %s", slave->priv->display_name);
                 ret = TRUE;
+
+                /* Give programs run by the slave and greeter access to the display
+                 * independent of current hostname
+                 */
+                si_entries[0].type = "localuser";
+                si_entries[0].typelength = strlen ("localuser");
+                si_entries[1].type = "localuser";
+                si_entries[1].typelength = strlen ("localuser");
+
+                si_entries[0].value = "root";
+                si_entries[0].valuelength = strlen ("root");
+                si_entries[1].value = GDM_USERNAME;
+                si_entries[1].valuelength = strlen (GDM_USERNAME);
+
+                host_entries[0].address = (char *) &si_entries[0];
+                host_entries[0].length = sizeof (XServerInterpretedAddress);
+                host_entries[1].address = (char *) &si_entries[1];
+                host_entries[1].length = sizeof (XServerInterpretedAddress);
+
+                XAddHosts (slave->priv->server_display, host_entries,
+                           G_N_ELEMENTS (host_entries));
         }
 
         return ret;
@@ -553,6 +588,25 @@ gdm_slave_real_start (GdmSlave *slave)
                                  &error,
                                  G_TYPE_INVALID,
                                  G_TYPE_STRING, &slave->priv->display_hostname,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get value: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get value");
+                }
+
+                return FALSE;
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->display_proxy,
+                                 "GetX11Cookie",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 dbus_g_type_get_collection ("GArray", G_TYPE_CHAR),
+                                 &slave->priv->display_x11_cookie,
                                  G_TYPE_INVALID);
         if (! res) {
                 if (error != NULL) {
@@ -1403,6 +1457,7 @@ gdm_slave_finalize (GObject *object)
         g_free (slave->priv->display_x11_authority_file);
         g_free (slave->priv->parent_display_name);
         g_free (slave->priv->parent_display_x11_authority_file);
+        g_array_free (slave->priv->display_x11_cookie, TRUE);
 
         G_OBJECT_CLASS (gdm_slave_parent_class)->finalize (object);
 }
