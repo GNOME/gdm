@@ -1,5 +1,49 @@
 Ahh news...
 
+2.20.10 Stuff:
+
+- Ensure that gid/egid are set to 0 when running the Init, PostLogin,
+  PreSession, and PostSession scripts.  This ensures that all scripts are
+  run with consistent permissions.  (Brian Cameron)
+
+- Ensure that the DISPLAY environment variable is never cleared upon changing
+  language.  It is important for some PAM modules to have the DISPLAY variable
+  available.  (Brian Cameron)
+
+- Improve the way that keycode values are initialized in the keymouselistener
+  gesture listener.  Using Xorg 1.5 the keycode initialization code does not
+  always work if XKB is not initialized by the time the login GUI starts.
+  So the gesture listener now checks if the initialization failed and 
+  reinitializes upon keypress if there was a failure.  (Brian Cameron)
+
+- Enhance gdm-ssh-session so that the port value can be specified when doing
+  a remote ssh connection.  (Thomas Bechtold)
+
+- Fix double-free issue and provide better error reporting when the command
+  specified by gdmdynamic can not be parsed.  (Chris Wilson, Brian Cameron)
+
+- Correct how the host variable is freed in gdm_xdmcp_handle_message so it
+  is not freed before it is last used.  (Brian Cameron)
+
+- Make sure that pwent gets set before calling audit_fail_login, otherwise
+  failed audit records are not set properly.  (Brian Cameron)
+
+- Avoid printing NULL strings in the slave daemon.  (Brian Cameron)
+
+- Backout Solaris specific code from the Xsession script.  This code was moved
+  to /etc/X11/xinit/xinitrc.d scripts, which is a better place to store such
+  distro specific code than in the GDM module.  (Takao Fujiwara)
+
+- Set default PRIO values properly on Solaris.  (Brian Cameron)
+
+- Improve Solaris SDTLOGIN logic so that the "/var/dt" directory gets created
+  if it is missing.  (Brian Cameron)
+
+- Use g_remove instead of g_unlink when removing directories since it is
+  safer.  (Brian Cameron)
+
+- Translation updates (\303\205smund Skj\303\246veland)
+
 2.20.9 Stuff:
 
 - Fix processing of configuration variables in GDM's cleanup function so
