@@ -23,6 +23,7 @@
 #include "config.h"
 
 #include <errno.h>
+#include <limits.h>
 #include <pwd.h>
 #include <string.h>
 #include <sys/types.h>
@@ -220,6 +221,31 @@ _get_uid_and_gid_for_user (const char *username,
         return TRUE;
 }
 
+static void
+clean_up_stale_auth_subdirs (void)
+{
+        GDir *dir;
+        const char *filename;
+
+        dir = g_dir_open (GDM_XAUTH_DIR, 0, NULL);
+
+        if (dir == NULL) {
+                return;
+        }
+
+        while ((filename = g_dir_read_name (dir)) != NULL) {
+                char *path;
+
+                path = g_build_filename (GDM_XAUTH_DIR, filename, NULL);
+
+                /* Will only succeed if the directory is empty
+                 */
+                g_rmdir (path);
+                g_free (path);
+        }
+        g_dir_close (dir);
+}
+
 static FILE *
 _create_xauth_file_for_user (const char  *username,
                              char       **filename,
@@ -262,6 +288,9 @@ _create_xauth_file_for_user (const char  *username,
         } else {
                 /* if it does exist make sure it has correct mode 01775 */
                 g_chmod (GDM_XAUTH_DIR, S_ISVTX | S_IRWXU |S_IRWXG | S_IROTH | S_IXOTH);
+
+                /* and clean up any stale auth subdirs */
+                clean_up_stale_auth_subdirs ();
         }
 
         if (!_get_uid_and_gid_for_user (username, &uid, &gid)) {
