@@ -5816,6 +5816,8 @@ gdm_slave_exec_script (GdmDisplay *d,
 		       gboolean pass_stdout)
 {
 	pid_t pid;
+	gid_t save_gid;
+	gid_t save_egid;
 	char *script;
 	gchar **argv = NULL;
 	gint status;
@@ -5864,6 +5866,16 @@ gdm_slave_exec_script (GdmDisplay *d,
 	if (script == NULL) {
 		return EXIT_SUCCESS;
 	}
+
+	/*
+	 * Make sure that gid/egid are set to 0 when running the scripts, so
+	 * that the scripts are run with standard permisions.  Reset gid/egid
+	 * back to their original values after running the script.
+	 */
+	save_egid = getegid ();
+	save_gid  = getgid ();
+	setegid (0);
+	setgid (0);
 
 	create_temp_auth_file ();
 
@@ -5959,14 +5971,19 @@ gdm_slave_exec_script (GdmDisplay *d,
 		gdm_slave_whack_temp_auth_file ();
 		g_free (script);
 		g_error (_("%s: Can't fork script process!"), "gdm_slave_exec_script");
+
+		setgid (save_gid);
+		setegid (save_egid);
+
 		return EXIT_SUCCESS;
 
 	default:
 		gdm_wait_for_extra (extra_process, &status);
-
 		gdm_slave_whack_temp_auth_file ();
-
 		g_free (script);
+
+		setgid (save_gid);
+		setegid (save_egid);
 
 		if (WIFEXITED (status))
 			return WEXITSTATUS (status);

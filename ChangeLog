@@ -1,3 +1,9 @@
+2009-03-19 Brian Cameron <brian.cameron@sun.com>
+
+	* daemon/slave.c: Make sure that gid/egid are set to 0 when running
+	  the Init, PostLogin, PreSession, and PostSession scripts.  This
+	  ensures that all scripts are run with consistent permisions.
+
 2009-03-14 Brian Cameron <brian.cameron@sun.com>
 
 	* daemon/slave.c: Do not print NULL strings when calling
