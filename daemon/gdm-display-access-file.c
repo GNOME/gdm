@@ -438,8 +438,13 @@ _get_auth_info_for_display (GdmDisplayAccessFile *file,
         gdm_display_is_local (display, &is_local, NULL);
 
         if (is_local) {
+                char localhost[HOST_NAME_MAX + 1] = "";
                 *family = FamilyLocal;
-                *address = g_strdup (g_get_host_name ());
+                if (gethostname (localhost, HOST_NAME_MAX) == 0) {
+                        *address = g_strdup (localhost);
+                } else {
+                        *address = g_strdup ("localhost");
+                }
         } else {
                 *family = FamilyWild;
                 gdm_display_get_remote_hostname (display, address, NULL);

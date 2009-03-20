@@ -1,6 +1,14 @@
 2009-03-19  Ray Strode  <rstrode@redhat.com>
 
 	* daemon/gdm-display-access-file.c
+	(_get_auth_info_for_display):
+	Use gethostname() instead of g_get_host_name(),
+	in xauth database since the latter doesn't give
+	up to date information when the hostname changes.
+
+2009-03-19  Ray Strode  <rstrode@redhat.com>
+
+	* daemon/gdm-display-access-file.c
 	(_create_xauth_file_for_user),
 	(_clean_up_stale_auth_subdirs):
 	Remove empty auth subdirs which can
