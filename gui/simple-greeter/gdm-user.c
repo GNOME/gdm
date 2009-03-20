@@ -1156,8 +1156,8 @@ gdm_user_render_icon (GdmUser   *user,
         } else {
                 pixbuf = NULL;
         }
- out:
         g_free (path);
+ out:
 
         if (pixbuf != NULL) {
                 framed = frame_pixbuf (pixbuf);

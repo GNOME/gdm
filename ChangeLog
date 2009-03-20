@@ -1,5 +1,14 @@
 2009-03-19  Ray Strode  <rstrode@redhat.com>
 
+	Bug 575949 – User switcher hangs when
+	{GlobalFaceDir}/{username} exists
+
+	* gui/simple-greeter/gdm-user.c
+	(gdm_user_render_icon): Fix double free.
+	Patch by Jeffrey S. Smith.
+
+2009-03-19  Ray Strode  <rstrode@redhat.com>
+
 	* daemon/gdm-display-access-file.c
 	(_get_auth_info_for_display):
 	Use gethostname() instead of g_get_host_name(),
