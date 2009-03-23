@@ -1,3 +1,14 @@
+2009-03-23  Ray Strode  <rstrode@redhat.com>
+
+	Bug 573461 - Load user's settings through "other entry"
+
+	* daemon/gdm-session-worker.c
+	(gdm_session_worker_update_username):
+	Don't try to load new user settings until after updating
+	username state.  This allows saved settings to load
+	when choosing "Other" instead of the associated name
+	from the chooser.  Based on Patch by Mingxi Wu
+
 2009-03-19  Ray Strode  <rstrode@redhat.com>
 
 	Bug 575949 – User switcher hangs when

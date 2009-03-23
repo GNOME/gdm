@@ -637,16 +637,6 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
 
                 gdm_session_auditor_set_username (worker->priv->auditor, worker->priv->username);
 
-                /* We have a new username to try. If we haven't been able to
-                 * read user settings up until now, then give it a go now
-                 * (see the comment in do_setup for rationale on why it's useful
-                 * to keep trying to read settings)
-                 */
-                if (username != NULL &&
-                    !gdm_session_settings_is_loaded (worker->priv->user_settings)) {
-                        attempt_to_load_user_settings (worker, username);
-                }
-
                 if ((worker->priv->username == username) ||
                     ((worker->priv->username != NULL) && (username != NULL) &&
                      (strcmp (worker->priv->username, username) == 0)))
@@ -661,6 +651,16 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
                 send_dbus_string_method (worker->priv->connection,
                                          "UsernameChanged",
                                          worker->priv->username);
+
+                /* We have a new username to try. If we haven't been able to
+                 * read user settings up until now, then give it a go now
+                 * (see the comment in do_setup for rationale on why it's useful
+                 * to keep trying to read settings)
+                 */
+                if (worker->priv->username != NULL &&
+                    !gdm_session_settings_is_loaded (worker->priv->user_settings)) {
+                        attempt_to_load_user_settings (worker, worker->priv->username);
+                }
         }
 
  out:
