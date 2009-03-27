@@ -67,42 +67,6 @@ static void     gdm_remote_login_window_finalize     (GObject                   
 G_DEFINE_TYPE (GdmRemoteLoginWindow, gdm_remote_login_window, GTK_TYPE_WINDOW)
 
 static void
-xserver_died (GdmRemoteLoginWindow *login_window)
-{
-        int exit_status;
-
-        g_debug ("GdmRemoteLoginWindow: Waiting on process %d", login_window->priv->xserver_pid);
-        exit_status = gdm_wait_on_pid (login_window->priv->xserver_pid);
-
-        if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
-                g_debug ("GdmRemoteLoginWindow: Wait on child process failed");
-        } else {
-                /* exited normally */
-        }
-
-        g_spawn_close_pid (login_window->priv->xserver_pid);
-        login_window->priv->xserver_pid = -1;
-
-        g_debug ("GdmRemoteLoginWindow: xserver died");
-}
-
-static void
-stop_xserver (GdmRemoteLoginWindow *login_window)
-{
-        /* remove watch before killing so we don't restart */
-        if (login_window->priv->xserver_watch_id > 0) {
-                g_source_remove (login_window->priv->xserver_watch_id);
-                login_window->priv->xserver_watch_id = 0;
-        }
-
-        g_debug ("GdmRemoteLoginWindow: Stopping xserver");
-        if (login_window->priv->xserver_pid > 0) {
-                gdm_signal_pid (login_window->priv->xserver_pid, SIGTERM);
-                xserver_died (login_window);
-        }
-}
-
-static void
 xserver_child_watch (GPid                  pid,
                      int                   status,
                      GdmRemoteLoginWindow *login_window)

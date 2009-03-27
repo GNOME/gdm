@@ -37,8 +37,8 @@
 #include "mkdtemp.h"
 #endif
 
-char *
-gdm_make_temp_dir (const char *template)
+const char *
+gdm_make_temp_dir (char *template)
 {
         return mkdtemp (template);
 }

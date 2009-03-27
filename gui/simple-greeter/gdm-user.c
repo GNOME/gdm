@@ -20,6 +20,7 @@
 
 #include <config.h>
 
+#include <float.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -881,7 +882,7 @@ curved_rectangle (cairo_t *cr,
         x1 = x0 + width;
         y1 = y0 + height;
 
-        if (!width || !height) {
+        if (width < FLT_EPSILON || height < FLT_EPSILON) {
                 return;
         }
 

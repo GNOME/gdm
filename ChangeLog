@@ -1,3 +1,39 @@
+2009-03-27  Ray Strode  <rstrode@redhat.com>
+
+	Fix assorted compiler warnings.
+
+	* gui/simple-greeter/gdm-user-chooser-widget.c
+	(add_user), (get_stock_person_pixbuf),
+	(get_logged_in_pixbuf): Add some widget casts.
+
+	* gui/simple-greeter/gdm-languages.c
+	(make_codeset_canonical_for_locale): remove unused
+	variable
+
+	* gui/simple-greeter/gdm-layouts.c: Make the layout
+	member of LayoutData const char *.
+
+	* gui/simple-greeter/gdm-remote-login-window.c
+	(xserver_died), (stop_xserver): drop unused functions
+
+	* gui/simple-greeter/gdm-language-option-widget.c
+	(gdm_language_option_widget_set_current_language):
+	drop misplaced &
+
+	* gui/simple-greeter/gdm-user.c (curved_rectangle): don't
+	assume width == 0, height == 0 conditions will work reliably,
+	instead check for < EPSILON
+
+	* common/gdm-common.[hc] (gdm_make_temp_dir):
+	Make the constness of the return value and inout argument
+	reflect the way it's being called.
+
+	* daemon/gdm-display-access-file.c
+	(_create_xauth_file_for_user): Make dir_name const
+
+	* daemon/gdm-display.c (gdm_display_real_manage):
+	drop unused variables
+
 2009-03-23  Ray Strode  <rstrode@redhat.com>
 
 	Bug 573461 - Load user's settings through "other entry"

@@ -252,7 +252,7 @@ _create_xauth_file_for_user (const char  *username,
                              GError     **error)
 {
         char   *template;
-        char   *dir_name;
+        const char *dir_name;
         char   *auth_filename;
         int     fd;
         FILE   *fp;

@@ -345,7 +345,7 @@ add_user (GdmUserChooserWidget *widget,
                 return;
         }
 
-        size = get_icon_height_for_widget (widget);
+        size = get_icon_height_for_widget (GTK_WIDGET (widget));
         pixbuf = gdm_user_render_icon (user, size);
         if (pixbuf == NULL && widget->priv->stock_person_pixbuf != NULL) {
                 pixbuf = g_object_ref (widget->priv->stock_person_pixbuf);
@@ -585,7 +585,7 @@ get_stock_person_pixbuf (GdmUserChooserWidget *widget)
         GdkPixbuf *pixbuf;
         int        size;
 
-        size = get_icon_height_for_widget (widget);
+        size = get_icon_height_for_widget (GTK_WIDGET (widget));
 
         pixbuf = gtk_icon_theme_load_icon (widget->priv->icon_theme,
                                            DEFAULT_USER_ICON,
@@ -602,7 +602,7 @@ get_logged_in_pixbuf (GdmUserChooserWidget *widget)
         GdkPixbuf *pixbuf;
         int        size;
 
-        size = get_icon_height_for_widget (widget);
+        size = get_icon_height_for_widget (GTK_WIDGET (widget));
 
         pixbuf = gtk_icon_theme_load_icon (widget->priv->icon_theme,
                                            "emblem-default",

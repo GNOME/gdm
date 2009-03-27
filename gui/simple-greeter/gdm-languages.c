@@ -217,11 +217,10 @@ construct_language_name (const char *language,
 }
 
 static void
-make_codeset_canonical_for_locale (const       *name,
-                                   const char **codeset)
+make_codeset_canonical_for_locale (const char  *name,
+                                   char       **codeset)
 {
         char *old_locale;
-        char *canonical_codeset;
 
         old_locale = setlocale (LC_CTYPE, name);
 

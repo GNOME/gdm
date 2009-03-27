@@ -604,9 +604,6 @@ gdm_display_prepare (GdmDisplay *display)
 static gboolean
 gdm_display_real_manage (GdmDisplay *display)
 {
-        char    *command;
-        char    *log_file;
-        char    *log_path;
         gboolean res;
 
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);

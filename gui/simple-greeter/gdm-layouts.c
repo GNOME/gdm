@@ -37,7 +37,7 @@
 
 typedef struct {
         GSList *list;
-        char *layout;
+        const char *layout;
 } LayoutData;
 
 #ifdef HAVE_LIBXKLAVIER

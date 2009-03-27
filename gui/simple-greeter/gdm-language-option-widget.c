@@ -301,7 +301,7 @@ gdm_language_option_widget_set_current_language_name (GdmLanguageOptionWidget *w
 
         if (normalized_language_name != NULL &&
             !gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (widget),
-                                            &normalized_language_name, NULL, NULL, NULL)) {
+                                            normalized_language_name, NULL, NULL, NULL)) {
                 gdm_recent_option_widget_add_item (GDM_RECENT_OPTION_WIDGET (widget),
                                                    normalized_language_name);
         }
