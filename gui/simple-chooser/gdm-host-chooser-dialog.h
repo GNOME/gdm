@@ -22,7 +22,7 @@
 #define __GDM_HOST_CHOOSER_DIALOG_H
 
 #include <glib-object.h>
-#include <gtk/gtkdialog.h>
+#include <gtk/gtk.h>
 #include "gdm-chooser-host.h"
 
 G_BEGIN_DECLS

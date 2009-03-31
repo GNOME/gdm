@@ -28,7 +28,7 @@
 #ifndef __NA_OBOX_H__
 #define __NA_OBOX_H__
 
-#include <gtk/gtkbox.h>
+#include <gtk/gtk.h>
 
 #ifdef __cplusplus
 extern "C" {

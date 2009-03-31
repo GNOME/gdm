@@ -21,7 +21,7 @@
 #ifndef __GDM_CELL_RENDERER_TIMER_H
 #define __GDM_CELL_RENDERER_TIMER_H
 
-#include <gtk/gtkcellrenderer.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

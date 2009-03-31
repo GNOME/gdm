@@ -20,7 +20,7 @@
 #ifndef __GDM_ENTRY_MENU_ITEM__
 #define __GDM_ENTRY_MENU_ITEM__
 
-#include <gtk/gtkmenuitem.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

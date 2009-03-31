@@ -27,8 +27,7 @@
 
 #include "obox.h"
 
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkvbox.h>
+#include <gtk/gtk.h>
 
 static void na_obox_size_request  (GtkWidget       *widget,
 				   GtkRequisition  *requisition);

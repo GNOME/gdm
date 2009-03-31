@@ -23,7 +23,7 @@
 #define __GDM_CHOOSER_WIDGET_H
 
 #include <glib-object.h>
-#include <gtk/gtkalignment.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
