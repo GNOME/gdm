@@ -1,3 +1,14 @@
+2009-04-01  Hans Petter Jansson  <hpj@novell.com>
+
+        Bug 568590 - Environment doesn't get passed on to jobs, leading
+        to unlocalized PAM messages.
+
+        * daemon/gdm-session-worker-job.c
+        (listify_hash): Make sure values are not NULL.
+        (copy_environment_to_hash): New function.
+        (get_job_environment): Actually copy the environment into the hash
+        to get passed on to job.
+
 2009-03-31  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* gui/simple-chooser/gdm-host-chooser-dialog.h:

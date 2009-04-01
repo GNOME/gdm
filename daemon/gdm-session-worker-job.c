@@ -119,8 +119,34 @@ listify_hash (const char *key,
               GPtrArray  *env)
 {
         char *str;
+
+        if (value == NULL)
+                value = "";
+
         str = g_strdup_printf ("%s=%s", key, value);
         g_ptr_array_add (env, str);
+}
+
+static void
+copy_environment_to_hash (GHashTable *hash)
+{
+        gchar **env_strv;
+        gint    i;
+
+        env_strv = g_listenv ();
+
+        for (i = 0; env_strv [i]; i++) {
+                gchar *key = env_strv [i];
+                const gchar *value;
+
+                value = g_getenv (key);
+                if (!value)
+                        continue;
+
+                g_hash_table_insert (hash, g_strdup (key), g_strdup (value));
+        }
+
+        g_strfreev (env_strv);
 }
 
 static GPtrArray *
@@ -133,6 +159,7 @@ get_job_environment (GdmSessionWorkerJob *job)
 
         /* create a hash table of current environment, then update keys has necessary */
         hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+        copy_environment_to_hash (hash);
 
         g_hash_table_insert (hash, g_strdup ("GDM_SESSION_DBUS_ADDRESS"), g_strdup (job->priv->server_address));
 
