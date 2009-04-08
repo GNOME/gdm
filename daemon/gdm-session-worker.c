@@ -978,6 +978,12 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
                 pam_close_session (worker->priv->pam_handle, 0);
                 gdm_session_auditor_report_logout (worker->priv->auditor);
         } else {
+                void *p;
+
+                if ((pam_get_item (worker->priv->pam_handle, PAM_USER, &p)) == PAM_SUCCESS) {
+                        gdm_session_auditor_set_username (worker->priv->auditor, (const char *)p);
+                }
+
                 gdm_session_auditor_report_login_failure (worker->priv->auditor,
                                                           status,
                                                           pam_strerror (worker->priv->pam_handle, status));
@@ -1000,7 +1006,11 @@ static char *
 _get_tty_for_pam (const char *x11_display_name,
                   const char *display_device)
 {
+#ifdef __sun
+        return g_strdup (display_device);
+#else
         return g_strdup (x11_display_name);
+#endif
 }
 
 #ifdef PAM_XAUTHDATA

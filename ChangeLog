@@ -1,3 +1,11 @@
+2009-04-08  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/gdm-session-solaris-auditor.c: Correct reversed if-test.
+	* daemon/gdm-session-worker.c: Fix setting of PAM_TTY on Solaris.
+	Also make sure that the auditor is provided the username on failed
+	login by getting PAM_USER.  Without this patch, if you select the
+	"Other" button and have a failed login, username will not be set.
+
 2009-04-01  Hans Petter Jansson  <hpj@novell.com>
 
         Bug 568590 - Environment doesn't get passed on to jobs, leading
@@ -157,9 +165,9 @@
 2009-03-13  Brian Cameron  <brian.cameron@sun.com>
 
 	* daemon/xdmcp-chooser-slave-main.c, daemon/simple-slave-main.c:
-	  Call gdm_settings_direct_init.  Otherwise when these programs try
-	  to read the xdmcp/PingIntervalSeconds configuration value, they
-	  fail to load it.
+	Call gdm_settings_direct_init.  Otherwise when these programs try
+	to read the xdmcp/PingIntervalSeconds configuration value, they
+	fail to load it.
 
 2009-03-13  Ray Strode  <rstrode@redhat.com>
 

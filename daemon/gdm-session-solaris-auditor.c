@@ -177,16 +177,16 @@ gdm_session_solaris_auditor_report_login_failure (GdmSessionAuditor *auditor,
 
                 /* If display is on console or VT */
                 if (hostname != NULL && hostname[0] != '\0') {
-                        /* login from the local host */
-                        if (adt_load_ttyname (display_device, &tid) != 0) {
-                                syslog (LOG_AUTH | LOG_ALERT,
-                                        "adt_loadhostname (localhost): %m");
-                        }
-                } else {
                         /* Login from a remote host */
                         if (adt_load_hostname (hostname, &tid) != 0) {
                                 syslog (LOG_AUTH | LOG_ALERT,
                                         "adt_loadhostname (%s): %m", hostname);
+                        }
+                } else {
+                        /* login from the local host */
+                        if (adt_load_ttyname (display_device, &tid) != 0) {
+                                syslog (LOG_AUTH | LOG_ALERT,
+                                        "adt_loadhostname (localhost): %m");
                         }
                 }
 
