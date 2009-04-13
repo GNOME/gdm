@@ -907,6 +907,16 @@ gdm_greeter_login_window_conversation_stopped (GdmGreeterLoginWindow *login_wind
 
         g_debug ("GdmGreeterLoginWindow: conversation '%s' has stopped", service_name);
 
+        /* If the password conversation failed, then start over
+         *
+         * FIXME: we need to get this policy out of the source code
+         */
+        if (strcmp (service_name, "gdm-password") == 0) {
+                g_debug ("GdmGreeterLoginWindow: main conversation failed, starting over");
+                restart_conversations (login_window);
+                return TRUE;
+        }
+
         task = find_task_with_service_name (login_window, service_name);
 
         if (task != NULL) {
