@@ -569,7 +569,7 @@ on_session_conversation_stopped (GdmSession     *session,
         gboolean res;
         g_debug ("GdmSimpleSlave: conversation stopped");
 
-        if (slave->priv->greeter_server != NULL) {
+        if (slave->priv->greeter != NULL) {
                 res = gdm_greeter_server_conversation_stopped (slave->priv->greeter_server,
                                                                service_name);
                 if (! res) {

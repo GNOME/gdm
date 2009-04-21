@@ -2284,6 +2284,40 @@ gdm_session_direct_open_session (GdmSession *session,
 }
 
 static void
+stop_all_other_conversations (GdmSessionDirect        *session,
+                              GdmSessionConversation  *conversation_to_keep)
+{
+        GHashTableIter iter;
+        gpointer key, value;
+
+        if (session->priv->conversations == NULL) {
+                return;
+        }
+
+        if (conversation_to_keep == NULL) {
+                g_debug ("GdmSessionDirect: Stopping all conversations");
+        } else {
+                g_debug ("GdmSessionDirect: Stopping all conversations "
+                         "except for %s", conversation_to_keep->service_name);
+        }
+
+        g_hash_table_iter_init (&iter, session->priv->conversations);
+        while (g_hash_table_iter_next (&iter, &key, &value)) {
+                GdmSessionConversation *conversation;
+
+                conversation = (GdmSessionConversation *) value;
+
+                if (conversation == conversation_to_keep) {
+                        continue;
+                }
+
+                stop_conversation (conversation);
+        }
+
+        g_hash_table_remove_all (session->priv->conversations);
+}
+
+static void
 gdm_session_direct_start_session (GdmSession *session,
                                   const char *service_name)
 {
@@ -2295,11 +2329,19 @@ gdm_session_direct_start_session (GdmSession *session,
         g_return_if_fail (session != NULL);
         g_return_if_fail (impl->priv->is_running == FALSE);
 
+        conversation = find_conversation_by_name (impl, service_name);
+
+        if (conversation == NULL) {
+                g_warning ("GdmSessionDirect: Tried to start session of "
+                           "nonexistent conversation %s", service_name);
+                return;
+        }
+
+        stop_all_other_conversations (impl, conversation);
+
         command = get_session_command (impl);
         program = g_strdup_printf (GDMCONFDIR "/Xsession \"%s\"", command);
         g_free (command);
-
-        conversation = find_conversation_by_name (impl, service_name);
 
         setup_session_environment (impl);
         send_environment (impl, conversation);
@@ -2311,23 +2353,7 @@ gdm_session_direct_start_session (GdmSession *session,
 static void
 stop_all_conversations (GdmSessionDirect *session)
 {
-        GHashTableIter iter;
-        gpointer key, value;
-
-        if (session->priv->conversations == NULL) {
-                return;
-        }
-
-        g_hash_table_iter_init (&iter, session->priv->conversations);
-        while (g_hash_table_iter_next (&iter, &key, &value)) {
-                GdmSessionConversation *conversation;
-
-                conversation = (GdmSessionConversation *) value;
-
-                stop_conversation (conversation);
-        }
-
-        g_hash_table_remove_all (session->priv->conversations);
+        stop_all_other_conversations (session, NULL);
 }
 
 static void
