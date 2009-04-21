@@ -2308,13 +2308,20 @@ stop_all_other_conversations (GdmSessionDirect        *session,
                 conversation = (GdmSessionConversation *) value;
 
                 if (conversation == conversation_to_keep) {
-                        continue;
+                        g_hash_table_iter_steal (&iter);
+                        g_free (key);
+                } else {
+                        stop_conversation (conversation);
                 }
-
-                stop_conversation (conversation);
         }
 
         g_hash_table_remove_all (session->priv->conversations);
+
+        if (conversation_to_keep != NULL) {
+                g_hash_table_insert (session->priv->conversations,
+                                     g_strdup (conversation_to_keep->service_name),
+                                     conversation_to_keep);
+        }
 }
 
 static void
