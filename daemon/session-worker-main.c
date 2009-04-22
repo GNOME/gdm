@@ -28,7 +28,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <signal.h>
 #include <locale.h>
 
 #include <glib.h>
@@ -39,78 +38,12 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
-#include "gdm-signal-handler.h"
 #include "gdm-common.h"
 #include "gdm-log.h"
 #include "gdm-session-worker.h"
 
 #define SERVER_DBUS_PATH      "/org/gnome/DisplayManager/SessionServer"
 #define SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.SessionServer"
-
-static gboolean
-signal_cb (int      signo,
-           gpointer data)
-{
-        int ret;
-
-        g_debug ("Got callback for signal %d", signo);
-
-        ret = TRUE;
-
-        switch (signo) {
-        case SIGSEGV:
-        case SIGBUS:
-        case SIGILL:
-        case SIGABRT:
-                g_debug ("Caught signal %d.", signo);
-
-                ret = FALSE;
-                break;
-
-        case SIGFPE:
-        case SIGPIPE:
-                /* let the fatal signals interrupt us */
-                g_debug ("Caught signal %d, shutting down abnormally.", signo);
-                ret = FALSE;
-
-                break;
-
-        case SIGINT:
-        case SIGTERM:
-                /* let the fatal signals interrupt us */
-                g_debug ("Caught signal %d, shutting down normally.", signo);
-                ret = FALSE;
-                break;
-
-        case SIGHUP:
-                g_debug ("Got HUP signal");
-                /* FIXME:
-                 * Reread config stuff like system config files, VPN service files, etc
-                 */
-                ret = TRUE;
-
-                break;
-
-        case SIGUSR1:
-                g_debug ("Got USR1 signal");
-                /* FIXME:
-                 * Play with log levels or something
-                 */
-                ret = TRUE;
-
-                gdm_log_toggle_debug ();
-
-                break;
-
-        default:
-                g_debug ("Caught unhandled signal %d", signo);
-                ret = TRUE;
-
-                break;
-        }
-
-        return ret;
-}
 
 static gboolean
 is_debug_set (gboolean arg)
@@ -130,7 +63,6 @@ main (int    argc,
         GMainLoop        *main_loop;
         GOptionContext   *context;
         GdmSessionWorker *worker;
-        GdmSignalHandler *signal_handler;
         const char       *address;
         static gboolean   debug      = FALSE;
         static GOptionEntry entries []   = {
@@ -165,28 +97,10 @@ main (int    argc,
 
         main_loop = g_main_loop_new (NULL, FALSE);
 
-        signal_handler = gdm_signal_handler_new ();
-        gdm_signal_handler_set_fatal_func (signal_handler,
-                                           (GDestroyNotify)g_main_loop_quit,
-                                           main_loop);
-        gdm_signal_handler_add (signal_handler, SIGTERM, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGINT, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGILL, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGBUS, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGFPE, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGHUP, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGSEGV, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGABRT, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGUSR1, signal_cb, NULL);
-
         g_main_loop_run (main_loop);
 
         if (worker != NULL) {
                 g_object_unref (worker);
-        }
-
-        if (signal_handler != NULL) {
-                g_object_unref (signal_handler);
         }
 
         g_main_loop_unref (main_loop);
