@@ -54,6 +54,7 @@ extern char **environ;
 struct GdmSessionWorkerJobPrivate
 {
         char           *command;
+        char           *name;
         GPid            pid;
 
         guint           child_watch_id;
@@ -91,7 +92,8 @@ session_worker_job_child_watch (GPid                 pid,
                                 int                  status,
                                 GdmSessionWorkerJob *job)
 {
-        g_debug ("GdmSessionWorkerJob: child (pid:%d) done (%s:%d)",
+        g_warning ("GdmSessionWorkerJob: child '%s' (pid:%d) done (%s:%d)",
+                 job->priv->name,
                  (int) pid,
                  WIFEXITED (status) ? "status"
                  : WIFSIGNALED (status) ? "signal"
@@ -102,6 +104,9 @@ session_worker_job_child_watch (GPid                 pid,
 
         g_spawn_close_pid (job->priv->pid);
         job->priv->pid = -1;
+
+        g_free (job->priv->name);
+        job->priv->name = NULL;
 
         if (WIFEXITED (status)) {
                 int code = WEXITSTATUS (status);
@@ -273,6 +278,7 @@ gdm_session_worker_job_start (GdmSessionWorkerJob *session_worker_job,
 
         g_debug ("GdmSessionWorkerJob: Starting worker...");
 
+        session_worker_job->priv->name = g_strdup (name);
         res = gdm_session_worker_job_spawn (session_worker_job, name);
 
         if (res) {
