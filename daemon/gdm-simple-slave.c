@@ -1153,7 +1153,7 @@ idle_connect_to_display (GdmSimpleSlave *slave)
                                                                 "gdm-autologin");
                         }
                 } else {
-                        reset_session (slave);
+                        create_new_session (slave);
 
                         g_debug ("GdmSimpleSlave: Starting automatic login conversation");
                         gdm_session_start_conversation (GDM_SESSION (slave->priv->session),
