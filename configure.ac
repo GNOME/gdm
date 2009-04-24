@@ -699,9 +699,27 @@ fi
 ALL_X_LIBS="$X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS"
 
 if test ! x$with_xinerama = xno ; then
-  case "$host" in
-    *-*-solaris*)
-	# Check for solaris
+  # Check for XFree
+  use_xfree_xinerama=yes
+  AC_CHECK_LIB(Xinerama, XineramaQueryExtension,
+            [AC_CHECK_HEADER(X11/extensions/Xinerama.h,
+            if test -z "`echo $ALL_X_LIBS | grep "\-lXext" 2> /dev/null`"; then
+		X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS"
+            fi
+            AC_DEFINE(HAVE_XFREE_XINERAMA)
+            AC_DEFINE(HAVE_XINERAMA)
+            XINERAMA_LIBS="-lXinerama"
+            XINERAMA_SUPPORT=yes,
+            use_xfree_xinerama=no,
+            [#include <X11/Xlib.h>])],
+            use_xfree_xinerama=no, -lXext $ALL_X_LIBS)
+  AC_MSG_CHECKING(for Xinerama support on XFree86)
+  AC_MSG_RESULT($use_xfree_xinerama);
+
+  if test x$use_xfree_xinerama = xno ; then
+    case "$host" in
+      *-*-solaris*)
+        # Check for solaris
 	use_solaris_xinerama=yes
 	AC_CHECK_LIB(Xext, XineramaGetInfo,
                      use_solaris_xinerama=yes, use_solaris_xinerama=no,
@@ -721,25 +739,10 @@ if test ! x$with_xinerama = xno ; then
         AC_MSG_CHECKING(for Xinerama support on Solaris)
 	AC_MSG_RESULT($use_solaris_xinerama);
 	;;
-    *)
-      	# Check for XFree
-	use_xfree_xinerama=yes
-	AC_CHECK_LIB(Xinerama, XineramaQueryExtension,
-            [AC_CHECK_HEADER(X11/extensions/Xinerama.h,
-                             if test -z "`echo $ALL_X_LIBS | grep "\-lXext" 2> /dev/null`"; then
-  				 X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS"
-                             fi
-                             AC_DEFINE(HAVE_XFREE_XINERAMA)
-                             AC_DEFINE(HAVE_XINERAMA)
-		     	     XINERAMA_LIBS="-lXinerama"
-		     	     XINERAMA_SUPPORT=yes,
-                             use_xfree_xinerama=no,
-                             [#include <X11/Xlib.h>])],
-            use_xfree_xinerama=no, -lXext $ALL_X_LIBS)
-	AC_MSG_CHECKING(for Xinerama support on XFree86)
-	AC_MSG_RESULT($use_xfree_xinerama);
+      *)
 	;;
-  esac
+    esac
+  fi
 fi
 
 AC_SUBST(XINERAMA_LIBS)
