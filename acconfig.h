@@ -14,7 +14,6 @@
 #undef HAVE_CHPASS
 #undef HAVE_CLEARENV
 #undef HAVE_CRYPT
-#undef HAVE_DEFOPEN
 #undef HAVE_GETTEXT
 #undef HAVE_LC_MESSAGES
 #undef HAVE_LIBSM
