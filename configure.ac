@@ -679,13 +679,6 @@ if test "x$have_xinput" = xyes; then
    X_EXTRA_LIBS="$X_EXTRA_LIBS $XINPUT_LIBS"
 fi
 
-#
-# X11 Xinerama extension
-#
-# Check for Xinerama extension (Solaris impl or Xfree impl)
-xinerama_save_cppflags="$CPPFLAGS"
-CPPFLAGS="$CPPFLAGS $X_CFLAGS"
-
 # Check for defopen
 #
 if test -f /etc/default/login; then
@@ -695,6 +688,13 @@ if test -f /etc/default/login; then
     AC_DEFINE(HAVE_DEFOPEN)
   fi
 fi
+
+#
+# X11 Xinerama extension
+#
+# Check for Xinerama extension (Solaris impl or Xfree impl)
+xinerama_save_cppflags="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS $X_CFLAGS"
 
 ALL_X_LIBS="$X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS"
 
