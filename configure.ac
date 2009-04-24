@@ -799,7 +799,25 @@ fi
 ALL_X_LIBS="$X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS"
 
 if test ! x$with_xinerama = xno ; then
-  if test x$os_solaris = xyes ; then
+  # Check for XFree
+  use_xfree_xinerama=yes
+  AC_CHECK_LIB(Xinerama, XineramaQueryExtension,
+         [AC_CHECK_HEADER(X11/extensions/Xinerama.h,
+                       if test -z "`echo $ALL_X_LIBS | grep "\-lXext" 2> /dev/null`"; then
+                          X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS"
+                       fi
+                       AC_DEFINE(HAVE_XFREE_XINERAMA, 1, [Define if have xfree xinerama])
+                       AC_DEFINE(HAVE_XINERAMA, 1, [Define if have xinerama])
+                       XINERAMA_LIBS="-lXinerama"
+                       XINERAMA_SUPPORT=yes,
+                       use_xfree_xinerama=no,
+                       [#include <X11/Xlib.h>])],
+         use_xfree_xinerama=no, -lXext $ALL_X_LIBS)
+  AC_MSG_CHECKING(for Xinerama support on XFree86)
+  AC_MSG_RESULT($use_xfree_xinerama);
+
+  if test x$use_xfree_xinerama = xno ; then
+    if test x$os_solaris = xyes ; then
 	# Check for solaris
 	use_solaris_xinerama=yes
 	AC_CHECK_LIB(Xext, XineramaGetInfo,
@@ -819,23 +837,7 @@ if test ! x$with_xinerama = xno ; then
 	fi
         AC_MSG_CHECKING(for Xinerama support on Solaris)
 	AC_MSG_RESULT($use_solaris_xinerama);
-  else
-      	# Check for XFree
-	use_xfree_xinerama=yes
-	AC_CHECK_LIB(Xinerama, XineramaQueryExtension,
-            [AC_CHECK_HEADER(X11/extensions/Xinerama.h,
-                             if test -z "`echo $ALL_X_LIBS | grep "\-lXext" 2> /dev/null`"; then
-  				 X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS"
-                             fi
-                             AC_DEFINE(HAVE_XFREE_XINERAMA, 1, [Define if have xfree xinerama])
-                             AC_DEFINE(HAVE_XINERAMA, 1, [Define if have xinerama])
-		     	     XINERAMA_LIBS="-lXinerama"
-		     	     XINERAMA_SUPPORT=yes,
-                             use_xfree_xinerama=no,
-                             [#include <X11/Xlib.h>])],
-            use_xfree_xinerama=no, -lXext $ALL_X_LIBS)
-	AC_MSG_CHECKING(for Xinerama support on XFree86)
-	AC_MSG_RESULT($use_xfree_xinerama);
+    fi
   fi
 fi
 
