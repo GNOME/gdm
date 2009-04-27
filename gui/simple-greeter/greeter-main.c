@@ -155,6 +155,46 @@ session_manager_connect (void)
         return (sm_proxy != NULL);
 }
 
+static void
+stop_cb (gpointer data)
+{
+        gtk_main_quit ();
+}
+
+static gboolean
+end_session_response (gboolean is_okay, const gchar *reason)
+{
+        gboolean ret;
+        GError *error = NULL;
+
+        ret = dbus_g_proxy_call (client_proxy, "EndSessionResponse",
+                                 &error,
+                                 G_TYPE_BOOLEAN, is_okay,
+                                 G_TYPE_STRING, reason,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_INVALID);
+
+        if (!ret) {
+                g_warning ("Failed to send session response %s", error->message);
+                g_error_free (error);
+        }
+
+        return ret;
+}
+
+static void
+query_end_session_cb (guint flags, gpointer data)
+{
+        end_session_response (TRUE, NULL);
+}
+
+static void
+end_session_cb (guint flags, gpointer data)
+{
+        end_session_response (TRUE, NULL);
+        gtk_main_quit ();
+}
+
 static gboolean
 register_client (void)
 {
@@ -186,6 +226,19 @@ register_client (void)
                                                   SM_DBUS_NAME,
                                                   client_id,
                                                   SM_CLIENT_DBUS_INTERFACE);
+
+        dbus_g_proxy_add_signal (client_proxy, "Stop", G_TYPE_INVALID);
+        dbus_g_proxy_connect_signal (client_proxy, "Stop",
+                                     G_CALLBACK (stop_cb), NULL, NULL);
+
+        dbus_g_proxy_add_signal (client_proxy, "QueryEndSession", G_TYPE_UINT, G_TYPE_INVALID);
+        dbus_g_proxy_connect_signal (client_proxy, "QueryEndSession",
+                                     G_CALLBACK (query_end_session_cb), NULL, NULL);
+
+        dbus_g_proxy_add_signal (client_proxy, "EndSession", G_TYPE_UINT, G_TYPE_INVALID);
+        dbus_g_proxy_connect_signal (client_proxy, "EndSession",
+                                     G_CALLBACK (end_session_cb), NULL, NULL);
+
         g_unsetenv ("DESKTOP_AUTOSTART_ID");
 
         return TRUE;
