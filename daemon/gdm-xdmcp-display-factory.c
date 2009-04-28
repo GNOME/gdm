@@ -2309,8 +2309,6 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                 authorization_data.data     = (CARD8 *) cookie->data;
                                 authorization_data.length   = cookie->len;
 
-                                g_array_free (cookie, TRUE);
-
                                 /* the addrs are NOT copied */
                                 gdm_xdmcp_send_accept (factory,
                                                        address,
@@ -2319,6 +2317,8 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                                        &authentication_data,
                                                        &authorization_name,
                                                        &authorization_data);
+
+                                g_array_free (cookie, TRUE);
                         }
                 }
         } else {
