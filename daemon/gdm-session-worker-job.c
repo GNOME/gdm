@@ -289,50 +289,16 @@ gdm_session_worker_job_start (GdmSessionWorkerJob *session_worker_job,
         return res;
 }
 
-static void
-session_worker_job_died (GdmSessionWorkerJob *session_worker_job)
-{
-        int exit_status;
-
-        g_debug ("GdmSessionWorkerJob: Waiting on process %d", session_worker_job->priv->pid);
-        exit_status = gdm_wait_on_pid (session_worker_job->priv->pid);
-
-        if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
-                g_debug ("GdmSessionWorkerJob: Wait on child process failed");
-        } else {
-                /* exited normally */
-        }
-
-        g_spawn_close_pid (session_worker_job->priv->pid);
-        session_worker_job->priv->pid = -1;
-
-        g_debug ("GdmSessionWorkerJob: SessionWorkerJob died");
-}
-
 gboolean
 gdm_session_worker_job_stop (GdmSessionWorkerJob *session_worker_job)
 {
-        int res;
-
         if (session_worker_job->priv->pid <= 1) {
                 return TRUE;
         }
 
-        /* remove watch source before we can wait on child */
-        if (session_worker_job->priv->child_watch_id > 0) {
-                g_source_remove (session_worker_job->priv->child_watch_id);
-                session_worker_job->priv->child_watch_id = 0;
-        }
-
         g_debug ("GdmSessionWorkerJob: Stopping job pid:%d", session_worker_job->priv->pid);
 
-        res = gdm_signal_pid (session_worker_job->priv->pid, SIGTERM);
-
-        if (res < 0) {
-                g_warning ("Unable to kill session worker process");
-        } else {
-                session_worker_job_died (session_worker_job);
-        }
+        gdm_signal_pid (session_worker_job->priv->pid, SIGTERM);
 
         return TRUE;
 }

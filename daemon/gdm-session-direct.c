@@ -61,11 +61,21 @@
 #define GDM_SESSION_DEFAULT_PATH "/usr/local/bin:/usr/bin:/bin"
 #endif
 
+typedef enum
+{
+        GDM_SESSION_WORKER_STARTING = 0,
+        GDM_SESSION_WORKER_STARTED,
+        GDM_SESSION_WORKER_WAITING_ON_SESSION,
+        GDM_SESSION_WORKER_STOPPING,
+        GDM_SESSION_WORKER_STOPPED
+} GdmSessionWorkerState;
+
 typedef struct
 {
         GdmSessionDirect    *session;
         GdmSessionWorkerJob *job;
         GPid                 worker_pid;
+        GdmSessionWorkerState worker_state;
         char                *service_name;
         DBusConnection      *worker_connection;
         DBusMessage         *message_pending_reply;
@@ -84,11 +94,11 @@ struct _GdmSessionDirectPrivate
         char                *user_x11_authority_file;
 
         GHashTable          *conversations;
+        GdmSessionConversation *waiting_conversation;
 
         GList               *pending_connections;
 
         guint32              is_authenticated : 1;
-        guint32              is_running : 1;
         GPid                 session_pid;
 
         /* object lifetime scope */
@@ -118,6 +128,14 @@ enum {
 };
 
 static void     gdm_session_iface_init          (GdmSessionIface      *iface);
+
+static void     worker_exited                   (GdmSessionWorkerJob    *job,
+                                                 int                     code,
+                                                 GdmSessionConversation *conversation);
+
+static void     worker_died                     (GdmSessionWorkerJob    *job,
+                                                 int                     signum,
+                                                 GdmSessionConversation *conversation);
 
 G_DEFINE_TYPE_WITH_CODE (GdmSessionDirect,
                          gdm_session_direct,
@@ -234,7 +252,9 @@ on_session_started (GdmSession *session,
         GdmSessionConversation *conversation;
 
         conversation = find_conversation_by_name (impl, service_name);
+
         if (conversation != NULL) {
+                conversation->worker_state = GDM_SESSION_WORKER_STARTED;
                 gdm_session_record_login (conversation->worker_pid,
                                           impl->priv->selected_user,
                                           impl->priv->display_hostname,
@@ -253,6 +273,7 @@ on_session_start_failed (GdmSession *session,
 
         conversation = find_conversation_by_name (impl, service_name);
         if (conversation != NULL) {
+                conversation->worker_state = GDM_SESSION_WORKER_STOPPED;
                 gdm_session_record_login (conversation->worker_pid,
                                           impl->priv->selected_user,
                                           impl->priv->display_hostname,
@@ -379,7 +400,6 @@ gdm_session_direct_handle_authenticated (GdmSessionDirect *session,
         dbus_message_unref (reply);
 
         _gdm_session_authenticated (GDM_SESSION (session), conversation->service_name);
-
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
@@ -1024,7 +1044,9 @@ gdm_session_direct_handle_session_started (GdmSessionDirect *session,
                  pid);
 
         session->priv->session_pid = pid;
-        session->priv->is_running = TRUE;
+
+        conversation->worker_state = GDM_SESSION_WORKER_WAITING_ON_SESSION;
+        session->priv->waiting_conversation = conversation;
 
         _gdm_session_session_started (GDM_SESSION (session), conversation->service_name, pid);
 
@@ -1080,7 +1102,11 @@ gdm_session_direct_handle_session_exited (GdmSessionDirect *session,
         g_debug ("GdmSessionDirect: Emitting 'session-exited' signal with exit code '%d'",
                  code);
 
-        session->priv->is_running = FALSE;
+        conversation->worker_state = GDM_SESSION_WORKER_STOPPED;
+
+        if (conversation == session->priv->waiting_conversation) {
+                session->priv->waiting_conversation = NULL;
+        }
         _gdm_session_session_exited (GDM_SESSION (session), code);
 
         return DBUS_HANDLER_RESULT_HANDLED;
@@ -1109,7 +1135,11 @@ gdm_session_direct_handle_session_died (GdmSessionDirect *session,
         g_debug ("GdmSessionDirect: Emitting 'session-died' signal with signal number '%d'",
                  code);
 
-        session->priv->is_running = FALSE;
+        conversation->worker_state = GDM_SESSION_WORKER_STOPPED;
+
+        if (conversation == session->priv->waiting_conversation) {
+                session->priv->waiting_conversation = NULL;
+        }
         _gdm_session_session_died (GDM_SESSION (session), code);
 
         return DBUS_HANDLER_RESULT_HANDLED;
@@ -1761,6 +1791,24 @@ worker_started (GdmSessionWorkerJob *job,
                 GdmSessionConversation *conversation)
 {
         g_debug ("GdmSessionDirect: Worker job started");
+        conversation->worker_state = GDM_SESSION_WORKER_STARTED;
+}
+
+static void
+free_conversation_job (GdmSessionConversation *conversation)
+{
+        g_signal_handlers_disconnect_by_func (conversation->job,
+                                              G_CALLBACK (worker_started),
+                                              conversation);
+        g_signal_handlers_disconnect_by_func (conversation->job,
+                                              G_CALLBACK (worker_exited),
+                                              conversation);
+        g_signal_handlers_disconnect_by_func (conversation->job,
+                                              G_CALLBACK (worker_died),
+                                              conversation);
+
+        g_object_unref (conversation->job);
+        conversation->job = NULL;
 }
 
 static void
@@ -1768,23 +1816,32 @@ worker_exited (GdmSessionWorkerJob *job,
                int                  code,
                GdmSessionConversation *conversation)
 {
+        GdmSessionDirect *session;
+
         g_debug ("GdmSessionDirect: Worker job exited: %d", code);
 
-        g_object_ref (conversation);
+        session = conversation->session;
         if (!conversation->session->priv->is_authenticated) {
                 char *msg;
 
                 msg = g_strdup_printf (_("worker exited with status %d"), code);
                 _gdm_session_authentication_failed (GDM_SESSION (conversation->session), conversation->service_name, msg);
                 g_free (msg);
-        } else if (conversation->session->priv->is_running) {
+        } else if (conversation == session->priv->waiting_conversation) {
+                session->priv->waiting_conversation = NULL;
                 _gdm_session_session_exited (GDM_SESSION (conversation->session), code);
         }
 
-        g_debug ("GdmSessionDirect: Emitting conversation-stopped signal");
-        _gdm_session_conversation_stopped (GDM_SESSION (conversation->session),
-                                           conversation->service_name);
-        g_object_unref (conversation);
+        free_conversation_job (conversation);
+
+        conversation->worker_state = GDM_SESSION_WORKER_STOPPED;
+
+        if (session->priv->waiting_conversation == NULL) {
+                g_debug ("GdmSessionDirect: Emitting conversation-stopped signal");
+                _gdm_session_conversation_stopped (GDM_SESSION (conversation->session),
+                                                   conversation->service_name);
+                g_hash_table_remove (session->priv->conversations, conversation->service_name);
+        }
 }
 
 static void
@@ -1792,23 +1849,32 @@ worker_died (GdmSessionWorkerJob *job,
              int                  signum,
              GdmSessionConversation *conversation)
 {
+        GdmSessionDirect *session;
+
         g_debug ("GdmSessionDirect: Worker job died: %d", signum);
 
-        g_object_ref (conversation);
+        session = conversation->session;
         if (!conversation->session->priv->is_authenticated) {
                 char *msg;
 
                 msg = g_strdup_printf (_("worker exited with status %d"), signum);
                 _gdm_session_authentication_failed (GDM_SESSION (conversation->session), conversation->service_name, msg);
                 g_free (msg);
-        } else if (conversation->session->priv->is_running) {
+        } else if (conversation == session->priv->waiting_conversation) {
+                session->priv->waiting_conversation = NULL;
                 _gdm_session_session_died (GDM_SESSION (conversation->session), signum);
         }
 
-        g_debug ("GdmSessionDirect: Emitting conversation-stopped signal");
-        _gdm_session_conversation_stopped (GDM_SESSION (conversation->session),
-                                           conversation->service_name);
-        g_object_unref (conversation);
+        free_conversation_job (conversation);
+
+        conversation->worker_state = GDM_SESSION_WORKER_STOPPED;
+
+        if (session->priv->waiting_conversation == NULL) {
+                g_debug ("GdmSessionDirect: Emitting conversation-stopped signal");
+                _gdm_session_conversation_stopped (GDM_SESSION (conversation->session),
+                                                   conversation->service_name);
+                g_hash_table_remove (session->priv->conversations, conversation->service_name);
+        }
 }
 
 static GdmSessionConversation *
@@ -1823,6 +1889,7 @@ start_conversation (GdmSessionDirect *session,
         conversation->service_name = g_strdup (service_name);
         conversation->worker_pid = -1;
         conversation->job = gdm_session_worker_job_new ();
+        conversation->worker_state = GDM_SESSION_WORKER_STARTING;
         gdm_session_worker_job_set_server_address (conversation->job, session->priv->server_address);
         g_signal_connect (conversation->job,
                           "started",
@@ -1860,15 +1927,7 @@ stop_conversation (GdmSessionConversation *conversation)
 
         session = conversation->session;
 
-        g_signal_handlers_disconnect_by_func (conversation->job,
-                                              G_CALLBACK (worker_started),
-                                              conversation);
-        g_signal_handlers_disconnect_by_func (conversation->job,
-                                              G_CALLBACK (worker_exited),
-                                              conversation);
-        g_signal_handlers_disconnect_by_func (conversation->job,
-                                              G_CALLBACK (worker_died),
-                                              conversation);
+        conversation->worker_state = GDM_SESSION_WORKER_STOPPING;
 
         if (conversation->worker_connection != NULL) {
                 dbus_connection_remove_filter (conversation->worker_connection, on_message, session);
@@ -1878,13 +1937,6 @@ stop_conversation (GdmSessionConversation *conversation)
         }
 
         gdm_session_worker_job_stop (conversation->job);
-
-        g_object_unref (conversation->job);
-        conversation->job = NULL;
-
-        g_debug ("GdmSessionDirect: Emitting conversation-stopped signal");
-        _gdm_session_conversation_stopped (GDM_SESSION (session),
-                                           conversation->service_name);
 }
 
 static void
@@ -1919,7 +1971,6 @@ gdm_session_direct_stop_conversation (GdmSession *session,
 
         if (conversation != NULL) {
                 stop_conversation (conversation);
-                g_hash_table_remove (impl->priv->conversations, service_name);
         }
 }
 
@@ -2307,20 +2358,9 @@ stop_all_other_conversations (GdmSessionDirect        *session,
 
                 conversation = (GdmSessionConversation *) value;
 
-                if (conversation == conversation_to_keep) {
-                        g_hash_table_iter_steal (&iter);
-                        g_free (key);
-                } else {
+                if (conversation != conversation_to_keep) {
                         stop_conversation (conversation);
                 }
-        }
-
-        g_hash_table_remove_all (session->priv->conversations);
-
-        if (conversation_to_keep != NULL) {
-                g_hash_table_insert (session->priv->conversations,
-                                     g_strdup (conversation_to_keep->service_name),
-                                     conversation_to_keep);
         }
 }
 
@@ -2334,7 +2374,7 @@ gdm_session_direct_start_session (GdmSession *session,
         char             *program;
 
         g_return_if_fail (session != NULL);
-        g_return_if_fail (impl->priv->is_running == FALSE);
+        g_return_if_fail (impl->priv->waiting_conversation == NULL);
 
         conversation = find_conversation_by_name (impl, service_name);
 
@@ -2372,7 +2412,7 @@ gdm_session_direct_close (GdmSession *session)
 
         g_debug ("GdmSessionDirect: Closing session");
 
-        if (impl->priv->is_running) {
+        if (impl->priv->waiting_conversation != NULL) {
                 gdm_session_record_logout (impl->priv->session_pid,
                                            impl->priv->selected_user,
                                            impl->priv->display_hostname,
@@ -2414,7 +2454,7 @@ gdm_session_direct_close (GdmSession *session)
         g_hash_table_remove_all (impl->priv->environment);
 
         impl->priv->is_authenticated = FALSE;
-        impl->priv->is_running = FALSE;
+        impl->priv->waiting_conversation = NULL;
 }
 
 static void

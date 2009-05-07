@@ -84,6 +84,7 @@ struct GdmSimpleSlavePrivate
         GdmGreeterServer  *greeter_server;
         GdmGreeterSession *greeter;
 
+        guint              recreate_session_on_close : 1;
         guint              start_session_when_ready : 1;
         guint              waiting_to_start_session : 1;
 };
@@ -163,20 +164,36 @@ add_user_authorization (GdmSimpleSlave *slave,
 }
 
 static void
+on_session_close (GdmSimpleSlave *slave)
+{
+        g_object_unref (slave->priv->session);
+        slave->priv->session = NULL;
+        slave->priv->recreate_session_on_close = FALSE;
+
+        create_new_session (slave);
+}
+
+static void
 destroy_session (GdmSimpleSlave *slave)
 {
         if (slave->priv->session != NULL) {
+                /* Close is asynchronous, we should wait for it to finish
+                 * before going on.
+                 */
                 gdm_session_close (GDM_SESSION (slave->priv->session));
-                g_object_unref (slave->priv->session);
-                slave->priv->session = NULL;
+
+                g_signal_connect_swapped (slave->priv->session,
+                                          "closed",
+                                          G_CALLBACK (on_session_close),
+                                          slave);
         }
 }
 
 static void
 reset_session (GdmSimpleSlave *slave)
 {
+        slave->priv->recreate_session_on_close = TRUE;
         destroy_session (slave);
-        create_new_session (slave);
 }
 
 static gboolean
