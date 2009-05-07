@@ -334,6 +334,7 @@ gdm_session_direct_handle_authenticated (GdmSessionDirect *session,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
+        session->priv->is_authenticated = TRUE;
         _gdm_session_authenticated (GDM_SESSION (session));
 
         return DBUS_HANDLER_RESULT_HANDLED;
@@ -361,6 +362,7 @@ gdm_session_direct_handle_authentication_failed (GdmSessionDirect *session,
 
         g_debug ("GdmSessionDirect: Emitting 'authentication-failed' signal");
 
+        session->priv->is_authenticated = FALSE;
         _gdm_session_authentication_failed (GDM_SESSION (session), NULL);
 
         return DBUS_HANDLER_RESULT_HANDLED;
