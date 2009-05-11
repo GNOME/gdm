@@ -105,15 +105,6 @@ gboolean            gdm_display_get_id                         (GdmDisplay *disp
 gboolean            gdm_display_get_x11_command                (GdmDisplay *display,
                                                                 char      **command,
                                                                 GError    **error);
-gboolean            gdm_display_get_x11_arguments              (GdmDisplay *display,
-                                                                char      **arguments,
-                                                                GError    **error);
-gboolean            gdm_display_get_tty_device                 (GdmDisplay *display,
-                                                                char      **tty_device,
-                                                                GError    **error);
-gboolean            gdm_display_get_priority                   (GdmDisplay *display,
-                                                                int        *priority,
-                                                                GError    **error);
 gboolean            gdm_display_get_remote_hostname            (GdmDisplay *display,
                                                                 char      **hostname,
                                                                 GError    **error);

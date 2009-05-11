@@ -268,7 +268,7 @@ AC_CHECK_TYPE(socklen_t,,
 #endif
 )
 AC_CHECK_HEADERS(sys/sockio.h)
-AC_CHECK_FUNCS([setresuid setenv unsetenv clearenv])
+AC_CHECK_FUNCS([setresuid setenv unsetenv clearenv strrep])
 
 dnl checks needed for Darwin compatibility to linux **environ.
 AC_CHECK_HEADERS(crt_externs.h)

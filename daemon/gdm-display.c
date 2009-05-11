@@ -48,17 +48,6 @@ static guint32 display_serial = 1;
 
 #define DEFAULT_SLAVE_COMMAND LIBEXECDIR "/gdm-simple-slave"
 
-#if __sun
-#define GDM_PRIO_MIN 0
-#define GDM_PRIO_MAX (NZERO*2)-1
-#define GDM_PRIO_DEFAULT NZERO
-#else
-#include <sys/resource.h>
-#define GDM_PRIO_MIN PRIO_MIN
-#define GDM_PRIO_MAX PRIO_MAX
-#define GDM_PRIO_DEFAULT 0
-#endif
-
 struct GdmDisplayPrivate
 {
         char                 *id;
@@ -66,9 +55,6 @@ struct GdmDisplayPrivate
 
         char                 *remote_hostname;
         char                 *x11_command;
-        char                 *x11_arguments;
-        char                 *tty_device;
-        int                   priority;
         int                   x11_display_number;
         char                 *x11_display_name;
         int                   status;
@@ -96,9 +82,6 @@ enum {
         PROP_STATUS,
         PROP_SEAT_ID,
         PROP_X11_COMMAND,
-        PROP_X11_ARGUMENTS,
-        PROP_TTY_DEVICE,
-        PROP_PRIORITY,
         PROP_REMOTE_HOSTNAME,
         PROP_X11_DISPLAY_NUMBER,
         PROP_X11_DISPLAY_NAME,
@@ -782,46 +765,6 @@ gdm_display_get_x11_command (GdmDisplay *display,
 }
 
 gboolean
-gdm_display_get_x11_arguments (GdmDisplay *display,
-                               char      **arguments,
-                               GError    **error)
-{
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        if (arguments != NULL) {
-                *arguments = g_strdup (display->priv->x11_arguments);
-        }
-
-        return TRUE;
-}
-
-gboolean
-gdm_display_get_tty_device (GdmDisplay *display,
-                            char      **tty_device,
-                            GError    **error)
-{
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        if (tty_device != NULL) {
-                *tty_device = g_strdup (display->priv->tty_device);
-        }
-
-        return TRUE;
-}
-
-gboolean
-gdm_display_get_priority (GdmDisplay *display,
-                          int        *priority,
-                          GError    **error)
-{
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        *priority = display->priv->priority;
-
-        return TRUE;
-}
-
-gboolean
 gdm_display_get_x11_display_name (GdmDisplay   *display,
                                   char        **x11_display,
                                   GError      **error)
@@ -891,35 +834,6 @@ _gdm_display_set_x11_command (GdmDisplay     *display,
 {
         g_free (display->priv->x11_command);
         display->priv->x11_command = g_strdup (x11_command);
-}
-
-static void
-_gdm_display_set_x11_arguments (GdmDisplay     *display,
-                                const char     *x11_arguments)
-{
-        g_free (display->priv->x11_arguments);
-        display->priv->x11_arguments = g_strdup (x11_arguments);
-}
-
-static void
-_gdm_display_set_tty_device (GdmDisplay     *display,
-                             const char     *tty_device)
-{
-        g_free (display->priv->tty_device);
-        display->priv->tty_device = g_strdup (tty_device);
-}
-
-static void
-_gdm_display_set_priority (GdmDisplay     *display,
-                           int             priority)
-{
-        /* do some bounds checking */
-        if (priority < GDM_PRIO_MIN)
-                display->priv->priority = GDM_PRIO_MIN;
-        else if (priority > GDM_PRIO_MAX)
-                display->priv->priority = GDM_PRIO_MAX;
-        else
-                display->priv->priority = priority;
 }
 
 static void
@@ -1007,15 +921,6 @@ gdm_display_set_property (GObject        *object,
         case PROP_X11_COMMAND:
                 _gdm_display_set_x11_command (self, g_value_get_string (value));
                 break;
-        case PROP_X11_ARGUMENTS:
-                _gdm_display_set_x11_arguments (self, g_value_get_string (value));
-                break;
-        case PROP_TTY_DEVICE:
-                _gdm_display_set_tty_device (self, g_value_get_string (value));
-                break;
-        case PROP_PRIORITY:
-                _gdm_display_set_priority (self, g_value_get_int (value));
-                break;
         case PROP_STATUS:
                 _gdm_display_set_status (self, g_value_get_int (value));
                 break;
@@ -1068,15 +973,6 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_X11_COMMAND:
                 g_value_set_string (value, self->priv->x11_command);
-                break;
-        case PROP_X11_ARGUMENTS:
-                g_value_set_string (value, self->priv->x11_arguments);
-                break;
-        case PROP_TTY_DEVICE:
-                g_value_set_string (value, self->priv->tty_device);
-                break;
-        case PROP_PRIORITY:
-                g_value_set_int (value, self->priv->priority);
                 break;
         case PROP_STATUS:
                 g_value_set_int (value, self->priv->status);
@@ -1235,29 +1131,6 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
-                                         PROP_X11_ARGUMENTS,
-                                         g_param_spec_string ("x11-arguments",
-                                                              "x11 arguments",
-                                                              "x11 arguments",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-        g_object_class_install_property (object_class,
-                                         PROP_TTY_DEVICE,
-                                         g_param_spec_string ("tty-device",
-                                                              "tty device",
-                                                              "tty device",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-        g_object_class_install_property (object_class,
-                                         PROP_PRIORITY,
-                                         g_param_spec_int ("priority",
-                                                           "priority",
-                                                           "priority",
-                                                           GDM_PRIO_MIN,
-                                                           GDM_PRIO_MAX,
-                                                           GDM_PRIO_DEFAULT,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-        g_object_class_install_property (object_class,
                                          PROP_REMOTE_HOSTNAME,
                                          g_param_spec_string ("remote-hostname",
                                                               "remote-hostname",
@@ -1369,8 +1242,6 @@ gdm_display_finalize (GObject *object)
         g_debug ("GdmDisplay: Finalizing display: %s", display->priv->id);
         g_free (display->priv->id);
         g_free (display->priv->x11_command);
-        g_free (display->priv->x11_arguments);
-        g_free (display->priv->tty_device);
         g_free (display->priv->seat_id);
         g_free (display->priv->remote_hostname);
         g_free (display->priv->x11_display_name);
