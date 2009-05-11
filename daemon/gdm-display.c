@@ -48,12 +48,27 @@ static guint32 display_serial = 1;
 
 #define DEFAULT_SLAVE_COMMAND LIBEXECDIR "/gdm-simple-slave"
 
+#if __sun
+#define GDM_PRIO_MIN 0
+#define GDM_PRIO_MAX (NZERO*2)-1
+#define GDM_PRIO_DEFAULT NZERO
+#else
+#include <sys/resource.h>
+#define GDM_PRIO_MIN PRIO_MIN
+#define GDM_PRIO_MAX PRIO_MAX
+#define GDM_PRIO_DEFAULT 0
+#endif
+
 struct GdmDisplayPrivate
 {
         char                 *id;
         char                 *seat_id;
 
         char                 *remote_hostname;
+        char                 *x11_command;
+        char                 *x11_arguments;
+        char                 *tty_device;
+        int                   priority;
         int                   x11_display_number;
         char                 *x11_display_name;
         int                   status;
@@ -66,6 +81,8 @@ struct GdmDisplayPrivate
         GdmDisplayAccessFile *access_file;
 
         gboolean              is_local;
+        gboolean              is_dynamic;
+        gboolean              use_auth;
         guint                 finish_idle_id;
 
         GdmSlaveProxy        *slave_proxy;
@@ -78,12 +95,18 @@ enum {
         PROP_ID,
         PROP_STATUS,
         PROP_SEAT_ID,
+        PROP_X11_COMMAND,
+        PROP_X11_ARGUMENTS,
+        PROP_TTY_DEVICE,
+        PROP_PRIORITY,
         PROP_REMOTE_HOSTNAME,
         PROP_X11_DISPLAY_NUMBER,
         PROP_X11_DISPLAY_NAME,
         PROP_X11_COOKIE,
         PROP_X11_AUTHORITY_FILE,
         PROP_IS_LOCAL,
+        PROP_IS_DYNAMIC,
+        PROP_USE_AUTH,
         PROP_SLAVE_COMMAND,
 };
 
@@ -551,10 +574,12 @@ gdm_display_real_prepare (GdmDisplay *display)
 
         g_assert (display->priv->slave_proxy == NULL);
 
-        if (!gdm_display_create_authority (display)) {
-                g_warning ("Unable to set up access control for display %d",
-                           display->priv->x11_display_number);
-                return FALSE;
+        if (display->priv->use_auth) {
+                if (!gdm_display_create_authority (display)) {
+                        g_warning ("Unable to set up access control for display %d",
+                                   display->priv->x11_display_number);
+                        return FALSE;
+                }
         }
 
         _gdm_display_set_status (display, GDM_DISPLAY_PREPARED);
@@ -743,6 +768,60 @@ gdm_display_get_id (GdmDisplay         *display,
 }
 
 gboolean
+gdm_display_get_x11_command (GdmDisplay *display,
+                             char      **command,
+                             GError    **error)
+{
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        if (command != NULL) {
+                *command = g_strdup (display->priv->x11_command);
+        }
+
+        return TRUE;
+}
+
+gboolean
+gdm_display_get_x11_arguments (GdmDisplay *display,
+                               char      **arguments,
+                               GError    **error)
+{
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        if (arguments != NULL) {
+                *arguments = g_strdup (display->priv->x11_arguments);
+        }
+
+        return TRUE;
+}
+
+gboolean
+gdm_display_get_tty_device (GdmDisplay *display,
+                            char      **tty_device,
+                            GError    **error)
+{
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        if (tty_device != NULL) {
+                *tty_device = g_strdup (display->priv->tty_device);
+        }
+
+        return TRUE;
+}
+
+gboolean
+gdm_display_get_priority (GdmDisplay *display,
+                          int        *priority,
+                          GError    **error)
+{
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        *priority = display->priv->priority;
+
+        return TRUE;
+}
+
+gboolean
 gdm_display_get_x11_display_name (GdmDisplay   *display,
                                   char        **x11_display,
                                   GError      **error)
@@ -770,12 +849,77 @@ gdm_display_is_local (GdmDisplay *display,
         return TRUE;
 }
 
+gboolean
+gdm_display_is_dynamic (GdmDisplay *display,
+                        gboolean   *dynamic,
+                        GError    **error)
+{
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        if (dynamic != NULL) {
+                *dynamic = display->priv->is_dynamic;
+        }
+
+        return TRUE;
+}
+
+gboolean
+gdm_display_use_auth (GdmDisplay *display,
+                      gboolean   *use_auth,
+                      GError    **error)
+{
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        if (use_auth != NULL) {
+                *use_auth = display->priv->use_auth;
+        }
+
+        return TRUE;
+}
+
 static void
 _gdm_display_set_id (GdmDisplay     *display,
                      const char     *id)
 {
         g_free (display->priv->id);
         display->priv->id = g_strdup (id);
+}
+
+static void
+_gdm_display_set_x11_command (GdmDisplay     *display,
+                              const char     *x11_command)
+{
+        g_free (display->priv->x11_command);
+        display->priv->x11_command = g_strdup (x11_command);
+}
+
+static void
+_gdm_display_set_x11_arguments (GdmDisplay     *display,
+                                const char     *x11_arguments)
+{
+        g_free (display->priv->x11_arguments);
+        display->priv->x11_arguments = g_strdup (x11_arguments);
+}
+
+static void
+_gdm_display_set_tty_device (GdmDisplay     *display,
+                             const char     *tty_device)
+{
+        g_free (display->priv->tty_device);
+        display->priv->tty_device = g_strdup (tty_device);
+}
+
+static void
+_gdm_display_set_priority (GdmDisplay     *display,
+                           int             priority)
+{
+        /* do some bounds checking */
+        if (priority < GDM_PRIO_MIN)
+                display->priv->priority = GDM_PRIO_MIN;
+        else if (priority > GDM_PRIO_MAX)
+                display->priv->priority = GDM_PRIO_MAX;
+        else
+                display->priv->priority = priority;
 }
 
 static void
@@ -825,6 +969,20 @@ _gdm_display_set_is_local (GdmDisplay     *display,
 }
 
 static void
+_gdm_display_set_is_dynamic (GdmDisplay     *display,
+                             gboolean        is_dynamic)
+{
+        display->priv->is_dynamic = is_dynamic;
+}
+
+static void
+_gdm_display_set_use_auth (GdmDisplay     *display,
+                           gboolean        use_auth)
+{
+        display->priv->use_auth = use_auth;
+}
+
+static void
 _gdm_display_set_slave_command (GdmDisplay     *display,
                                 const char     *command)
 {
@@ -846,6 +1004,18 @@ gdm_display_set_property (GObject        *object,
         case PROP_ID:
                 _gdm_display_set_id (self, g_value_get_string (value));
                 break;
+        case PROP_X11_COMMAND:
+                _gdm_display_set_x11_command (self, g_value_get_string (value));
+                break;
+        case PROP_X11_ARGUMENTS:
+                _gdm_display_set_x11_arguments (self, g_value_get_string (value));
+                break;
+        case PROP_TTY_DEVICE:
+                _gdm_display_set_tty_device (self, g_value_get_string (value));
+                break;
+        case PROP_PRIORITY:
+                _gdm_display_set_priority (self, g_value_get_int (value));
+                break;
         case PROP_STATUS:
                 _gdm_display_set_status (self, g_value_get_int (value));
                 break;
@@ -866,6 +1036,12 @@ gdm_display_set_property (GObject        *object,
                 break;
         case PROP_IS_LOCAL:
                 _gdm_display_set_is_local (self, g_value_get_boolean (value));
+                break;
+        case PROP_IS_DYNAMIC:
+                _gdm_display_set_is_dynamic (self, g_value_get_boolean (value));
+                break;
+        case PROP_USE_AUTH:
+                _gdm_display_set_use_auth (self, g_value_get_boolean (value));
                 break;
         case PROP_SLAVE_COMMAND:
                 _gdm_display_set_slave_command (self, g_value_get_string (value));
@@ -889,6 +1065,18 @@ gdm_display_get_property (GObject        *object,
         switch (prop_id) {
         case PROP_ID:
                 g_value_set_string (value, self->priv->id);
+                break;
+        case PROP_X11_COMMAND:
+                g_value_set_string (value, self->priv->x11_command);
+                break;
+        case PROP_X11_ARGUMENTS:
+                g_value_set_string (value, self->priv->x11_arguments);
+                break;
+        case PROP_TTY_DEVICE:
+                g_value_set_string (value, self->priv->tty_device);
+                break;
+        case PROP_PRIORITY:
+                g_value_set_int (value, self->priv->priority);
                 break;
         case PROP_STATUS:
                 g_value_set_int (value, self->priv->status);
@@ -914,6 +1102,12 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->is_local);
+                break;
+        case PROP_IS_DYNAMIC:
+                g_value_set_boolean (value, self->priv->is_dynamic);
+                break;
+        case PROP_USE_AUTH:
+                g_value_set_boolean (value, self->priv->use_auth);
                 break;
         case PROP_SLAVE_COMMAND:
                 g_value_set_string (value, self->priv->slave_command);
@@ -1034,6 +1228,36 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
+                                         PROP_X11_COMMAND,
+                                         g_param_spec_string ("x11-command",
+                                                              "x11 command",
+                                                              "x11 command",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_X11_ARGUMENTS,
+                                         g_param_spec_string ("x11-arguments",
+                                                              "x11 arguments",
+                                                              "x11 arguments",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_TTY_DEVICE,
+                                         g_param_spec_string ("tty-device",
+                                                              "tty device",
+                                                              "tty device",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_PRIORITY,
+                                         g_param_spec_int ("priority",
+                                                           "priority",
+                                                           "priority",
+                                                           GDM_PRIO_MIN,
+                                                           GDM_PRIO_MAX,
+                                                           GDM_PRIO_DEFAULT,
+                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
                                          PROP_REMOTE_HOSTNAME,
                                          g_param_spec_string ("remote-hostname",
                                                               "remote-hostname",
@@ -1077,7 +1301,6 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               "authority file",
                                                               NULL,
                                                               G_PARAM_READABLE));
-
         g_object_class_install_property (object_class,
                                          PROP_IS_LOCAL,
                                          g_param_spec_boolean ("is-local",
@@ -1085,7 +1308,20 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                                NULL,
                                                                TRUE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-
+        g_object_class_install_property (object_class,
+                                         PROP_IS_DYNAMIC,
+                                         g_param_spec_boolean ("is-dynamic",
+                                                               NULL,
+                                                               NULL,
+                                                               FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_USE_AUTH,
+                                         g_param_spec_boolean ("use-auth",
+                                                               NULL,
+                                                               NULL,
+                                                               TRUE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
                                          PROP_SLAVE_COMMAND,
                                          g_param_spec_string ("slave-command",
@@ -1132,6 +1368,9 @@ gdm_display_finalize (GObject *object)
 
         g_debug ("GdmDisplay: Finalizing display: %s", display->priv->id);
         g_free (display->priv->id);
+        g_free (display->priv->x11_command);
+        g_free (display->priv->x11_arguments);
+        g_free (display->priv->tty_device);
         g_free (display->priv->seat_id);
         g_free (display->priv->remote_hostname);
         g_free (display->priv->x11_display_name);

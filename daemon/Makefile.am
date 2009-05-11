@@ -296,6 +296,8 @@ gdm_binary_SOURCES = 			\
 	gdm-static-display.h		\
 	gdm-transient-display.c		\
 	gdm-transient-display.h		\
+	gdm-dynamic-display.c		\
+	gdm-dynamic-display.h		\
 	gdm-static-factory-display.c	\
 	gdm-static-factory-display.h	\
 	gdm-product-display.c		\

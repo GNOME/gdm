@@ -65,10 +65,12 @@ struct GdmWelcomeSessionPrivate
         char           *group_name;
 
         char           *x11_display_name;
+        char           *x11_display_seat_id;
         char           *x11_display_device;
         char           *x11_display_hostname;
         char           *x11_authority_file;
         gboolean        x11_display_is_local;
+        gboolean        x11_display_is_dynamic;
 
         guint           child_watch_id;
 
@@ -85,10 +87,12 @@ struct GdmWelcomeSessionPrivate
 enum {
         PROP_0,
         PROP_X11_DISPLAY_NAME,
+        PROP_X11_DISPLAY_SEAT_ID,
         PROP_X11_DISPLAY_DEVICE,
         PROP_X11_DISPLAY_HOSTNAME,
         PROP_X11_AUTHORITY_FILE,
         PROP_X11_DISPLAY_IS_LOCAL,
+        PROP_X11_DISPLAY_IS_DYNAMIC,
         PROP_USER_NAME,
         PROP_GROUP_NAME,
         PROP_SERVER_ADDRESS,
@@ -133,6 +137,7 @@ open_welcome_session (GdmWelcomeSession *welcome_session)
         const char    *session_type;
         const char    *hostname;
         const char    *x11_display_device;
+        const char    *seat_id;
         int            res;
         gboolean       ret;
         DBusError      error;
@@ -168,12 +173,19 @@ open_welcome_session (GdmWelcomeSession *welcome_session)
                 x11_display_device = "";
         }
 
-        g_debug ("GdmWelcomeSession: Opening ConsoleKit session for user:%d x11-display:'%s' x11-display-device:'%s' remote-host-name:'%s' is-local:%d",
+        if (welcome_session->priv->x11_display_seat_id != NULL) {
+                seat_id = welcome_session->priv->x11_display_seat_id;
+        } else {
+                seat_id = "";
+        }
+
+        g_debug ("GdmWelcomeSession: Opening ConsoleKit session for user:%d x11-display:'%s' x11-display-device:'%s' remote-host-name:'%s' is-local:%d is-dynamic:%d",
                  pwent->pw_uid,
                  welcome_session->priv->x11_display_name,
                  x11_display_device,
                  hostname,
-                 welcome_session->priv->x11_display_is_local);
+                 welcome_session->priv->x11_display_is_local,
+                 welcome_session->priv->x11_display_is_dynamic);
 
         dbus_error_init (&error);
         res = ck_connector_open_session_with_parameters (welcome_session->priv->ckc,
@@ -181,9 +193,11 @@ open_welcome_session (GdmWelcomeSession *welcome_session)
                                                          "unix-user", &pwent->pw_uid,
                                                          "session-type", &session_type,
                                                          "x11-display", &welcome_session->priv->x11_display_name,
+                                                         "seat-id", &seat_id,
                                                          "x11-display-device", &x11_display_device,
                                                          "remote-host-name", &hostname,
                                                          "is-local", &welcome_session->priv->x11_display_is_local,
+                                                         "is-dynamic", &welcome_session->priv->x11_display_is_dynamic,
                                                          NULL);
         if (! res) {
                 if (dbus_error_is_set (&error)) {
@@ -880,6 +894,14 @@ _gdm_welcome_session_set_x11_display_name (GdmWelcomeSession *welcome_session,
 }
 
 static void
+_gdm_welcome_session_set_x11_display_seat_id (GdmWelcomeSession *welcome_session,
+                                              const char        *sid)
+{
+        g_free (welcome_session->priv->x11_display_seat_id);
+        welcome_session->priv->x11_display_seat_id = g_strdup (sid);
+}
+
+static void
 _gdm_welcome_session_set_x11_display_hostname (GdmWelcomeSession *welcome_session,
                                                const char        *name)
 {
@@ -902,6 +924,12 @@ _gdm_welcome_session_set_x11_display_is_local (GdmWelcomeSession *welcome_sessio
         welcome_session->priv->x11_display_is_local = is_local;
 }
 
+static void
+_gdm_welcome_session_set_x11_display_is_dynamic (GdmWelcomeSession *welcome_session,
+                                                 gboolean           is_dynamic)
+{
+        welcome_session->priv->x11_display_is_dynamic = is_dynamic;
+}
 
 static void
 _gdm_welcome_session_set_x11_authority_file (GdmWelcomeSession *welcome_session,
@@ -980,6 +1008,9 @@ gdm_welcome_session_set_property (GObject      *object,
         case PROP_X11_DISPLAY_NAME:
                 _gdm_welcome_session_set_x11_display_name (self, g_value_get_string (value));
                 break;
+        case PROP_X11_DISPLAY_SEAT_ID:
+                _gdm_welcome_session_set_x11_display_seat_id (self, g_value_get_string (value));
+                break;
         case PROP_X11_DISPLAY_HOSTNAME:
                 _gdm_welcome_session_set_x11_display_hostname (self, g_value_get_string (value));
                 break;
@@ -988,6 +1019,9 @@ gdm_welcome_session_set_property (GObject      *object,
                 break;
         case PROP_X11_DISPLAY_IS_LOCAL:
                 _gdm_welcome_session_set_x11_display_is_local (self, g_value_get_boolean (value));
+                break;
+        case PROP_X11_DISPLAY_IS_DYNAMIC:
+                _gdm_welcome_session_set_x11_display_is_dynamic (self, g_value_get_boolean (value));
                 break;
         case PROP_X11_AUTHORITY_FILE:
                 _gdm_welcome_session_set_x11_authority_file (self, g_value_get_string (value));
@@ -1036,6 +1070,9 @@ gdm_welcome_session_get_property (GObject    *object,
         case PROP_X11_DISPLAY_NAME:
                 g_value_set_string (value, self->priv->x11_display_name);
                 break;
+        case PROP_X11_DISPLAY_SEAT_ID:
+                g_value_set_string (value, self->priv->x11_display_seat_id);
+                break;
         case PROP_X11_DISPLAY_HOSTNAME:
                 g_value_set_string (value, self->priv->x11_display_hostname);
                 break;
@@ -1044,6 +1081,9 @@ gdm_welcome_session_get_property (GObject    *object,
                 break;
         case PROP_X11_DISPLAY_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->x11_display_is_local);
+                break;
+        case PROP_X11_DISPLAY_IS_DYNAMIC:
+                g_value_set_boolean (value, self->priv->x11_display_is_dynamic);
                 break;
         case PROP_X11_AUTHORITY_FILE:
                 g_value_set_string (value, self->priv->x11_authority_file);
@@ -1112,6 +1152,13 @@ gdm_welcome_session_class_init (GdmWelcomeSessionClass *klass)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
+                                         PROP_X11_DISPLAY_SEAT_ID,
+                                         g_param_spec_string ("x11-display-seat-id",
+                                                              "seat id",
+                                                              "seat id",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
                                          PROP_X11_DISPLAY_HOSTNAME,
                                          g_param_spec_string ("x11-display-hostname",
                                                               "hostname",
@@ -1130,6 +1177,13 @@ gdm_welcome_session_class_init (GdmWelcomeSessionClass *klass)
                                          g_param_spec_boolean ("x11-display-is-local",
                                                                "is local",
                                                                "is local",
+                                                               FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_X11_DISPLAY_IS_DYNAMIC,
+                                         g_param_spec_boolean ("x11-display-is-dynamic",
+                                                               "is dynamic",
+                                                               "is dynamic",
                                                                FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
@@ -1268,6 +1322,7 @@ gdm_welcome_session_finalize (GObject *object)
         g_free (welcome_session->priv->user_name);
         g_free (welcome_session->priv->group_name);
         g_free (welcome_session->priv->x11_display_name);
+        g_free (welcome_session->priv->x11_display_seat_id);
         g_free (welcome_session->priv->x11_display_device);
         g_free (welcome_session->priv->x11_display_hostname);
         g_free (welcome_session->priv->x11_authority_file);

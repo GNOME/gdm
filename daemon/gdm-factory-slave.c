@@ -458,8 +458,10 @@ static void
 run_greeter (GdmFactorySlave *slave)
 {
         gboolean       display_is_local;
+        gboolean       display_is_dynamic;
         char          *display_id;
         char          *display_name;
+        char          *seat_id;
         char          *display_device;
         char          *display_hostname;
         char          *auth_file;
@@ -468,16 +470,20 @@ run_greeter (GdmFactorySlave *slave)
         g_debug ("GdmFactorySlave: Running greeter");
 
         display_is_local = FALSE;
+        display_is_dynamic = FALSE;
         display_id = NULL;
         display_name = NULL;
+        seat_id = NULL;
         auth_file = NULL;
         display_device = NULL;
         display_hostname = NULL;
 
         g_object_get (slave,
                       "display-is-local", &display_is_local,
+                      "display-is-dynamic", &display_is_dynamic,
                       "display-id", &display_id,
                       "display-name", &display_name,
+                      "seat-id", &seat_id,
                       "display-hostname", &display_hostname,
                       "display-x11-authority-file", &auth_file,
                       NULL);
@@ -534,9 +540,11 @@ run_greeter (GdmFactorySlave *slave)
 
         g_debug ("GdmFactorySlave: Creating greeter on %s %s", display_name, display_device);
         slave->priv->greeter = gdm_greeter_session_new (display_name,
+                                                        seat_id,
                                                         display_device,
                                                         display_hostname,
-                                                        display_is_local);
+                                                        display_is_local,
+                                                        display_is_dynamic);
         g_signal_connect (slave->priv->greeter,
                           "started",
                           G_CALLBACK (on_greeter_session_start),
@@ -563,6 +571,7 @@ run_greeter (GdmFactorySlave *slave)
 
         g_free (display_id);
         g_free (display_name);
+        g_free (seat_id);
         g_free (display_device);
         g_free (display_hostname);
         g_free (auth_file);
@@ -628,14 +637,12 @@ on_server_died (GdmServer       *server,
 static gboolean
 gdm_factory_slave_run (GdmFactorySlave *slave)
 {
-        char    *display_name;
-        char    *auth_file;
+        char    *display_id;
         gboolean display_is_local;
 
         g_object_get (slave,
+                      "display-id", &display_id,
                       "display-is-local", &display_is_local,
-                      "display-name", &display_name,
-                      "display-x11-authority-file", &auth_file,
                       NULL);
 
         /* if this is local display start a server if one doesn't
@@ -643,7 +650,7 @@ gdm_factory_slave_run (GdmFactorySlave *slave)
         if (display_is_local) {
                 gboolean res;
 
-                slave->priv->server = gdm_server_new (display_name, auth_file);
+                slave->priv->server = gdm_server_new (display_id);
                 g_signal_connect (slave->priv->server,
                                   "exited",
                                   G_CALLBACK (on_server_exited),
@@ -675,8 +682,7 @@ gdm_factory_slave_run (GdmFactorySlave *slave)
                 g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
         }
 
-        g_free (display_name);
-        g_free (auth_file);
+        g_free (display_id);
 
         return TRUE;
 }

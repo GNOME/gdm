@@ -33,6 +33,7 @@
 
 #include "gdm-display-store.h"
 #include "gdm-static-display.h"
+#include "gdm-dynamic-display.h"
 #include "gdm-transient-display.h"
 #include "gdm-static-factory-display.h"
 #include "gdm-product-display.h"
@@ -53,6 +54,8 @@
 
 #define MAX_DISPLAY_FAILURES 5
 
+#define IS_STR_SET(x) (x != NULL && x[0] != '\0')
+
 struct GdmLocalDisplayFactoryPrivate
 {
         DBusGConnection *connection;
@@ -72,6 +75,10 @@ static void     gdm_local_display_factory_init          (GdmLocalDisplayFactory 
 static void     gdm_local_display_factory_finalize      (GObject                     *object);
 
 static GdmDisplay *create_display                       (GdmLocalDisplayFactory      *factory);
+static gboolean create_static_displays                  (GdmLocalDisplayFactory      *factory);
+static void     on_display_status_changed               (GdmDisplay                  *display,
+                                                         GParamSpec                  *arg1,
+                                                         GdmLocalDisplayFactory      *factory);
 
 static gpointer local_display_factory_object = NULL;
 
@@ -185,6 +192,185 @@ store_display (GdmLocalDisplayFactory *factory,
         g_hash_table_insert (factory->priv->displays, GUINT_TO_POINTER (num), NULL);
 }
 
+static void
+store_remove_display (GdmLocalDisplayFactory *factory,
+                      guint32                 num,
+                      GdmDisplay             *display)
+{
+        GdmDisplayStore *store;
+
+        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+        gdm_display_store_remove (store, display);
+
+        /* remove from our reserved spot */
+        g_hash_table_remove (factory->priv->displays, GUINT_TO_POINTER (num));
+}
+
+static gboolean
+lookup_by_display_number (const char *id,
+                          GdmDisplay *display,
+                          gpointer    data)
+{
+        gint32 number;
+        gint32 display_number = -1;
+
+        number = GPOINTER_TO_INT (data);
+
+        if (! GDM_IS_DISPLAY (display)) {
+                return FALSE;
+        }
+
+        gdm_display_get_x11_display_number (display, &display_number, NULL);
+
+        if (display_number == number) {
+                return TRUE;
+        }
+
+        return FALSE;
+}
+
+static GdmDisplay *
+gdm_local_display_lookup_by_number (GdmLocalDisplayFactory *factory,
+                                    gint32                  number)
+{
+        GdmDisplay      *display;
+        GdmDisplayStore *store;
+
+        if (number < 0)
+                return NULL;
+               
+        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+        display = gdm_display_store_find (store,
+                                          (GdmDisplayStoreFunc)lookup_by_display_number,
+                                          GINT_TO_POINTER (number));
+
+        return display;
+}
+
+/*
+  Example:
+  dbus-send --system --dest=org.gnome.DisplayManager \
+  --type=method_call --print-reply --reply-timeout=2000 \
+  /org/gnome/DisplayManager/LocalDisplayFactory \
+  org.gnome.DisplayManager.LocalDisplayFactory.CreateDisplay \
+  string:"/org/freedesktop/ConsoleKit/Seat1" \
+  int32:0 string:"/usr/X11/bin/Xorg" string:"-br -verbose -nolisten tcp" \
+  boolean:true int32:0 boolean:true \
+  string:"" boolean:false
+*/
+gboolean
+gdm_local_display_factory_create_display (GdmLocalDisplayFactory *factory,
+                                          char                   *sid,
+                                          gint32                  display_number,
+                                          char                   *xserver_command,
+                                          char                   *arguments,
+                                          gboolean                is_chooser,
+                                          gboolean                use_auth,
+                                          gint32                  priority,
+                                          char                   *tty_device,
+                                          gboolean                is_dynamic,
+                                          char                  **id,
+                                          GError                **error)
+{
+        GdmDisplay *display;
+
+        g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
+
+        if (display_number == -1)
+                display_number = take_next_display_number (factory);
+        else {
+                /* Make sure number doesn't exist */
+        }
+
+        if (is_chooser) {
+                /* TODO: Start a xdmcp chooser as request */
+
+                /* display = gdm_xdmcp_chooser_display_new (display_number); */
+        } else {
+                if (is_dynamic)
+                        display = gdm_dynamic_display_new (display_number);
+                else
+                        display = gdm_static_display_new (display_number);
+        }
+
+        if (display == NULL) {
+                g_warning ("Unable to create display: %d", display_number);
+                return FALSE;
+        }
+
+        if (IS_STR_SET (sid))
+                g_object_set (display, "seat-id", sid, NULL);
+        if (IS_STR_SET (xserver_command))
+                g_object_set (display, "x11-command", xserver_command, NULL);
+        if (IS_STR_SET (arguments))
+                g_object_set (display, "x11-arguments", arguments, NULL);
+        g_object_set (display, "use-auth", use_auth, NULL);
+        g_object_set (display, "priority", priority, NULL);
+        if (IS_STR_SET (tty_device))
+                g_object_set (display, "tty-device", tty_device, NULL);
+
+        store_display (factory, display_number, display);
+
+        /* let store own the ref */
+        g_object_unref (display);
+
+        if (! gdm_display_manage (display)) {
+                gdm_display_unmanage (display);
+                return FALSE;
+        }
+
+        if (! gdm_display_get_id (display, id, NULL)) {
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
+/*
+  Example:
+  dbus-send --system --dest=org.gnome.DisplayManager \
+  --type=method_call --print-reply --reply-timeout=2000 \
+  /org/gnome/DisplayManager/LocalDisplayFactory \
+  org.gnome.DisplayManager.LocalDisplayFactory.RemoveDisplay \
+  int32:101
+*/
+gboolean
+gdm_local_display_factory_remove_display (GdmLocalDisplayFactory *factory,
+                                          gint32                  display_number,
+                                          GError                **error)
+{
+        gboolean         ret;
+        GdmDisplay      *display;
+
+        g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
+
+        ret = FALSE;
+
+        /* Make sure number already exist */
+        if (! g_hash_table_lookup_extended (factory->priv->displays,
+                                        GINT_TO_POINTER (display_number),
+                                        NULL,
+                                        NULL)) {
+                g_debug ("GdmLocalDisplayFactory: display number doesn't exists");
+                goto out;
+        }
+
+        g_debug ("GdmLocalDisplayFactory: Removing dynamic display %d", display_number);
+
+        display = gdm_local_display_lookup_by_number (factory, display_number);
+
+        if (! gdm_display_unmanage (display)) {
+                display = NULL;
+                goto out;
+        }
+
+        store_remove_display (factory, display_number, display);
+
+        ret = TRUE;
+ out:
+        return ret;
+}
+
 /*
   Example:
   dbus-send --system --dest=org.gnome.DisplayManager \
@@ -282,9 +468,9 @@ gdm_local_display_factory_create_product_display (GdmLocalDisplayFactory *factor
 }
 
 static void
-on_static_display_status_changed (GdmDisplay             *display,
-                                  GParamSpec             *arg1,
-                                  GdmLocalDisplayFactory *factory)
+on_display_status_changed (GdmDisplay             *display,
+                           GParamSpec             *arg1,
+                           GdmLocalDisplayFactory *factory)
 {
         int              status;
         GdmDisplayStore *store;
@@ -357,7 +543,7 @@ create_display (GdmLocalDisplayFactory *factory)
 
         g_signal_connect (display,
                           "notify::status",
-                          G_CALLBACK (on_static_display_status_changed),
+                          G_CALLBACK (on_display_status_changed),
                           factory);
 
         store_display (factory, num, display);
@@ -370,6 +556,35 @@ create_display (GdmLocalDisplayFactory *factory)
         }
 
         return display;
+}
+
+
+static gboolean
+create_static_displays (GdmLocalDisplayFactory *factory)
+{
+        DBusGProxy      *proxy;
+        GError          *error = NULL;
+
+        proxy = dbus_g_proxy_new_for_name_owner (factory->priv->connection,
+                                                 "org.freedesktop.ConsoleKit",
+                                                 "/org/freedesktop/ConsoleKit/Manager",
+                                                 "org.freedesktop.ConsoleKit.Manager",
+                                                 &error);
+
+        if (proxy == NULL) {
+                g_warning ("Failed to create a new proxy, %s", error->message);
+                g_error_free (error);
+                return FALSE;
+        }
+
+        dbus_g_proxy_call_no_reply (proxy, 
+                                   "CreateStaticSessions", 
+                                   G_TYPE_INVALID,
+                                   G_TYPE_INVALID);
+
+        g_object_unref (proxy);
+        return TRUE;
+
 }
 
 #if 0
@@ -463,7 +678,7 @@ gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
 #if 0
         create_displays_for_pci_devices (factory);
 #else
-        create_display (factory);
+        create_static_displays (factory);
 #endif
 
         return ret;

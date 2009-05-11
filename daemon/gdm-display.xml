@@ -4,11 +4,23 @@
     <method name="GetId">
       <arg name="id" direction="out" type="o"/>
     </method>
+    <method name="GetX11Command">
+      <arg name="command" direction="out" type="s"/>
+    </method>
+    <method name="GetX11Arguments">
+      <arg name="arguments" direction="out" type="s"/>
+    </method>
+    <method name="GetTtyDevice">
+      <arg name="tty_device" direction="out" type="s"/>
+    </method>
+    <method name="GetPriority">
+      <arg name="priority" direction="out" type="i"/>
+    </method>
     <method name="GetX11DisplayName">
       <arg name="name" direction="out" type="s"/>
     </method>
     <method name="GetX11DisplayNumber">
-      <arg name="name" direction="out" type="i"/>
+      <arg name="number" direction="out" type="i"/>
     </method>
     <method name="GetX11Cookie">
       <arg name="x11_cookie" direction="out" type="ay"/>
@@ -17,13 +29,19 @@
       <arg name="filename" direction="out" type="s"/>
     </method>
     <method name="GetSeatId">
-      <arg name="filename" direction="out" type="s"/>
+      <arg name="seat_id" direction="out" type="s"/>
     </method>
     <method name="GetRemoteHostname">
       <arg name="hostname" direction="out" type="s"/>
     </method>
     <method name="IsLocal">
       <arg name="local" direction="out" type="b"/>
+    </method>
+    <method name="IsDynamic">
+      <arg name="dynamic" direction="out" type="b"/>
+    </method>
+    <method name="UseAuth">
+      <arg name="dynamic" direction="out" type="b"/>
     </method>
     <method name="AddUserAuthorization">
       <arg name="username" direction="in" type="s"/>

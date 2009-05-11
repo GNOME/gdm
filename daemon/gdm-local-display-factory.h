@@ -71,6 +71,23 @@ gboolean                   gdm_local_display_factory_create_product_display   (G
                                                                                char                  **id,
                                                                                GError                **error);
 
+gboolean                   gdm_local_display_factory_create_display           (GdmLocalDisplayFactory *factory,
+                                                                               char                   *sid,
+                                                                               gint32                  display_number,
+                                                                               char                   *xserver_command,
+                                                                               char                   *arguments,
+                                                                               gboolean                is_chooser,
+                                                                               gboolean                use_auth,
+                                                                               gint32                  priority,
+                                                                               char                   *tty_device,
+                                                                               gboolean                is_dynamic,
+                                                                               char                  **id,
+                                                                               GError                **error);
+
+gboolean                   gdm_local_display_factory_remove_display           (GdmLocalDisplayFactory *factory,
+                                                                               gint32                  display_number,
+                                                                               GError                **error);
+
 G_END_DECLS
 
 #endif /* __GDM_LOCAL_DISPLAY_FACTORY_H */

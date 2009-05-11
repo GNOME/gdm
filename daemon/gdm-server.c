@@ -39,6 +39,8 @@
 #include <glib/gstdio.h>
 #include <glib-object.h>
 
+#include <dbus/dbus-glib.h>
+
 #include <X11/Xlib.h> /* for Display */
 
 #include "gdm-common.h"
@@ -49,6 +51,9 @@
 extern char **environ;
 
 #define GDM_SERVER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SERVER, GdmServerPrivate))
+
+#define GDM_DBUS_NAME              "org.gnome.DisplayManager"
+#define GDM_DBUS_DISPLAY_INTERFACE "org.gnome.DisplayManager.Display"
 
 /* These are the servstat values, also used as server
  * process exit codes */
@@ -62,42 +67,37 @@ extern char **environ;
 
 struct GdmServerPrivate
 {
-        char    *command;
         GPid     pid;
 
-        gboolean disable_tcp;
-        int      priority;
         char    *user_name;
-        char    *session_args;
-
         char    *log_dir;
+        gboolean disable_tcp;
+
+        /* cached display values */
+        char    *display_id;
+        char    *command;
+        char    *session_args;
+        char    *tty_device;
         char    *display_name;
-        char    *display_device;
         char    *auth_file;
+        int      priority;
+
+        char    *display_device;
 
         gboolean is_parented;
         char    *parent_display_name;
         char    *parent_auth_file;
-        char    *chosen_hostname;
 
         guint    child_watch_id;
 };
 
 enum {
         PROP_0,
-        PROP_DISPLAY_NAME,
-        PROP_DISPLAY_DEVICE,
-        PROP_AUTH_FILE,
-        PROP_IS_PARENTED,
-        PROP_PARENT_DISPLAY_NAME,
-        PROP_PARENT_AUTH_FILE,
-        PROP_CHOSEN_HOSTNAME,
-        PROP_COMMAND,
-        PROP_PRIORITY,
         PROP_USER_NAME,
-        PROP_SESSION_ARGS,
         PROP_LOG_DIR,
         PROP_DISABLE_TCP,
+        PROP_DISPLAY_ID,
+        PROP_DISPLAY_DEVICE,
 };
 
 enum {
@@ -252,72 +252,48 @@ connect_to_parent (GdmServer *server)
 
 static gboolean
 gdm_server_resolve_command_line (GdmServer  *server,
-                                 const char *vtarg,
                                  int        *argcp,
                                  char     ***argvp)
 {
-        int      argc;
-        char   **argv;
-        int      len;
-        int      i;
-        gboolean gotvtarg = FALSE;
-        gboolean query_in_arglist = FALSE;
+        gboolean  ret;
+        char     *command = NULL;
+        char     *tmp = NULL;
 
-        g_shell_parse_argv (server->priv->command, &argc, &argv, NULL);
-
-        for (len = 0; argv != NULL && argv[len] != NULL; len++) {
-                char *arg = argv[len];
-
-                /* HACK! Not to add vt argument to servers that already force
-                 * allocation.  Mostly for backwards compat only */
-                if (strncmp (arg, "vt", 2) == 0 &&
-                    isdigit (arg[2]) &&
-                    (arg[3] == '\0' ||
-                     (isdigit (arg[3]) && arg[4] == '\0')))
-                        gotvtarg = TRUE;
-                if (strcmp (arg, "-query") == 0 ||
-                    strcmp (arg, "-indirect") == 0)
-                        query_in_arglist = TRUE;
+        if (server->priv->session_args != NULL) {
+                command = g_strdup_printf ("%s %s %s",
+                                           server->priv->command,
+                                           server->priv->display_name,
+                                           server->priv->session_args);
+        } else {
+                command = g_strdup_printf ("%s %s",
+                                           server->priv->command,
+                                           server->priv->display_name);
         }
-
-        argv = g_renew (char *, argv, len + 10);
-        /* shift args down one */
-        for (i = len - 1; i >= 1; i--) {
-                argv[i+1] = argv[i];
-        }
-
-        /* server number is the FIRST argument, before any others */
-        argv[1] = g_strdup (server->priv->display_name);
-        len++;
 
         if (server->priv->auth_file != NULL) {
-                argv[len++] = g_strdup ("-auth");
-                argv[len++] = g_strdup (server->priv->auth_file);
+                tmp = g_strdup (command);
+                g_free (command);
+                command = g_strdup_printf ("%s -auth %s ",
+                                           tmp, server->priv->auth_file);
+                g_free (tmp);
         }
-
-        if (server->priv->chosen_hostname) {
-                /* run just one session */
-                argv[len++] = g_strdup ("-terminate");
-                argv[len++] = g_strdup ("-query");
-                argv[len++] = g_strdup (server->priv->chosen_hostname);
-                query_in_arglist = TRUE;
+#ifndef __sun
+        /* TODO:
+           Solaris Xorg does not accept vt argument, remove #ifndef
+           when VT part for Xorg goes into Solaris.
+         */
+        if (server->priv->tty_device != NULL) {
+                tmp = g_strdup (command);
+                g_free (command);
+                command = g_strdup_printf ("%s %s", tmp, server->priv->tty_device);
+                g_free (tmp);
         }
+#endif
 
-        if (server->priv->disable_tcp && ! query_in_arglist) {
-                argv[len++] = g_strdup ("-nolisten");
-                argv[len++] = g_strdup ("tcp");
-        }
+        ret = g_shell_parse_argv (command, argcp, argvp, NULL);
+        g_free (command);
 
-        if (vtarg != NULL && ! gotvtarg) {
-                argv[len++] = g_strdup (vtarg);
-        }
-
-        argv[len++] = NULL;
-
-        *argvp = argv;
-        *argcp = len;
-
-        return TRUE;
+        return ret;
 }
 
 static void
@@ -464,7 +440,14 @@ server_child_setup (GdmServer *server)
         sigemptyset (&mask);
         sigprocmask (SIG_SETMASK, &mask, NULL);
 
-        if (server->priv->priority != 0) {
+#if __sun
+#define GDM_PRIO_DEFAULT NZERO
+#else
+#include <sys/resource.h>
+#define GDM_PRIO_DEFAULT 0
+#endif
+
+        if (server->priv->priority != GDM_PRIO_DEFAULT) {
                 if (setpriority (PRIO_PROCESS, 0, server->priv->priority)) {
                         g_warning (_("%s: Server priority couldn't be set to %d: %s"),
                                    "gdm_server_spawn",
@@ -543,30 +526,6 @@ get_server_environment (GdmServer *server)
 }
 
 static void
-server_add_xserver_args (GdmServer *server,
-                         int       *argc,
-                         char    ***argv)
-{
-        int    count;
-        char **args;
-        int    len;
-        int    i;
-
-        len = *argc;
-        g_shell_parse_argv (server->priv->session_args, &count, &args, NULL);
-        *argv = g_renew (char *, *argv, len + count + 1);
-
-        for (i=0; i < count;i++) {
-                *argv[len++] = g_strdup (args[i]);
-        }
-
-        *argc += count;
-
-        argv[len] = NULL;
-        g_strfreev (args);
-}
-
-static void
 server_child_watch (GPid       pid,
                     int        status,
                     GdmServer *server)
@@ -593,8 +552,7 @@ server_child_watch (GPid       pid,
 }
 
 static gboolean
-gdm_server_spawn (GdmServer  *server,
-                  const char *vtarg)
+gdm_server_spawn (GdmServer  *server)
 {
         int              argc;
         gchar          **argv = NULL;
@@ -609,13 +567,8 @@ gdm_server_spawn (GdmServer  *server,
         argv = NULL;
         argc = 0;
         gdm_server_resolve_command_line (server,
-                                         vtarg,
                                          &argc,
                                          &argv);
-
-        if (server->priv->session_args) {
-                server_add_xserver_args (server, &argc, &argv);
-        }
 
         if (argv[0] == NULL) {
                 g_warning (_("%s: Empty server command for display %s"),
@@ -676,7 +629,7 @@ gdm_server_start (GdmServer *server)
         gboolean res;
 
         /* fork X server process */
-        res = gdm_server_spawn (server, NULL);
+        res = gdm_server_spawn (server);
 
         return res;
 }
@@ -733,21 +686,12 @@ gdm_server_stop (GdmServer *server)
         return TRUE;
 }
 
-
 static void
-_gdm_server_set_display_name (GdmServer  *server,
-                              const char *name)
+_gdm_server_set_display_id (GdmServer  *server,
+                            const char *id)
 {
-        g_free (server->priv->display_name);
-        server->priv->display_name = g_strdup (name);
-}
-
-static void
-_gdm_server_set_auth_file (GdmServer  *server,
-                           const char *auth_file)
-{
-        g_free (server->priv->auth_file);
-        server->priv->auth_file = g_strdup (auth_file);
+        g_free (server->priv->display_id);
+        server->priv->display_id = g_strdup (id);
 }
 
 static void
@@ -776,11 +720,8 @@ gdm_server_set_property (GObject      *object,
         self = GDM_SERVER (object);
 
         switch (prop_id) {
-        case PROP_DISPLAY_NAME:
-                _gdm_server_set_display_name (self, g_value_get_string (value));
-                break;
-        case PROP_AUTH_FILE:
-                _gdm_server_set_auth_file (self, g_value_get_string (value));
+        case PROP_DISPLAY_ID:
+                _gdm_server_set_display_id (self, g_value_get_string (value));
                 break;
         case PROP_USER_NAME:
                 _gdm_server_set_user_name (self, g_value_get_string (value));
@@ -805,15 +746,12 @@ gdm_server_get_property (GObject    *object,
         self = GDM_SERVER (object);
 
         switch (prop_id) {
-        case PROP_DISPLAY_NAME:
-                g_value_set_string (value, self->priv->display_name);
+        case PROP_DISPLAY_ID:
+                g_value_set_string (value, self->priv->display_id);
                 break;
         case PROP_DISPLAY_DEVICE:
                 g_value_take_string (value,
                                      gdm_server_get_display_device (self));
-                break;
-        case PROP_AUTH_FILE:
-                g_value_set_string (value, self->priv->auth_file);
                 break;
         case PROP_USER_NAME:
                 g_value_set_string (value, self->priv->user_name);
@@ -886,10 +824,10 @@ gdm_server_class_init (GdmServerClass *klass)
                               G_TYPE_INT);
 
         g_object_class_install_property (object_class,
-                                         PROP_DISPLAY_NAME,
-                                         g_param_spec_string ("display-name",
-                                                              "name",
-                                                              "name",
+                                         PROP_DISPLAY_ID,
+                                         g_param_spec_string ("display-id",
+                                                              "display id",
+                                                              "display id",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
@@ -899,14 +837,6 @@ gdm_server_class_init (GdmServerClass *klass)
                                                               "Path to terminal display is running on",
                                                               NULL,
                                                               G_PARAM_READABLE));
-        g_object_class_install_property (object_class,
-                                         PROP_AUTH_FILE,
-                                         g_param_spec_string ("auth-file",
-                                                              "Authorization File",
-                                                              "Path to X authorization file",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-
         g_object_class_install_property (object_class,
                                          PROP_USER_NAME,
                                          g_param_spec_string ("user-name",
@@ -922,19 +852,13 @@ gdm_server_class_init (GdmServerClass *klass)
                                                                TRUE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
+
 }
 
 static void
 gdm_server_init (GdmServer *server)
 {
-
         server->priv = GDM_SERVER_GET_PRIVATE (server);
-
-        server->priv->pid = -1;
-        server->priv->command = g_strdup (X_SERVER " -br -verbose");
-        server->priv->log_dir = g_strdup (LOGDIR);
-
-        add_ready_handler (server);
 }
 
 static void
@@ -953,19 +877,203 @@ gdm_server_finalize (GObject *object)
 
         gdm_server_stop (server);
 
+        g_free (server->priv->command);
+        g_free (server->priv->log_dir);
+
         G_OBJECT_CLASS (gdm_server_parent_class)->finalize (object);
 }
 
 GdmServer *
-gdm_server_new (const char *display_name,
-                const char *auth_file)
+gdm_server_new (const char *display_id)
 {
-        GObject *object;
+        GObject         *object;
+        GdmServer       *server;
+        DBusGConnection *connection;
+        DBusGProxy      *proxy;
+        GError          *error;
+        gboolean         res;
+        char            *id;
 
         object = g_object_new (GDM_TYPE_SERVER,
-                               "display-name", display_name,
-                               "auth-file", auth_file,
+                               "display-id", display_id,
                                NULL);
 
-        return GDM_SERVER (object);
+        server = GDM_SERVER (object);
+
+        server->priv->pid = -1;
+        server->priv->log_dir = g_strdup (LOGDIR);
+
+        g_assert (server->priv->display_id != NULL);
+
+        error = NULL;
+        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (connection == NULL) {
+                if (error != NULL) {
+                        g_critical ("error getting system bus: %s", error->message);
+                        g_error_free (error);
+                }
+
+                exit (1);
+        }               
+
+        g_debug ("GdmServer: Creating proxy for %s", server->priv->display_id);
+        error = NULL;
+        proxy = dbus_g_proxy_new_for_name_owner (connection,
+                                                 GDM_DBUS_NAME,
+                                                 server->priv->display_id,
+                                                 GDM_DBUS_DISPLAY_INTERFACE,
+                                                 &error);
+        if (proxy == NULL) {
+                if (error != NULL) {
+                        g_warning ("Failed to create display proxy %s: %s", server->priv->display_id, error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Unable to create display proxy");
+                }
+
+                exit (1);
+        }                        
+                                 
+        /* cache some values up front */
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 "GetX11DisplayName",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &server->priv->display_name,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get value: %s", error->message);
+                        g_error_free (error);
+                } else {         
+                        g_warning ("Failed to get value");
+                }
+
+                exit (1);
+        }
+
+        /* If display_name is not set, quit */
+        if (! server->priv->display_name || (strlen (server->priv->display_name) == 0)) {
+                g_warning ("Wrong value of method GetX11DisplayName for %s",server->priv->display_id);
+                exit (1);
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 "GetX11Command",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &server->priv->command,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get value: %s", error->message);
+                        g_error_free (error);
+                } else {         
+                        g_warning ("Failed to get value");
+                }
+        
+                exit (1);
+        }
+
+        /* If command is not set, set it X_SERVER */
+        if (! server->priv->command || (strlen (server->priv->command) == 0)) {
+                g_free (server->priv->command);
+                server->priv->command = g_strdup (X_SERVER);
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 "GetX11Arguments",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &server->priv->session_args,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get value: %s", error->message);
+                        g_error_free (error);
+                } else {         
+                        g_warning ("Failed to get value");
+                }
+        
+                exit (1);
+        }
+
+        /* If session_args is not set, set it NULL */
+        if (server->priv->session_args && (strlen (server->priv->session_args ) == 0)) {
+                g_free (server->priv->session_args);
+                server->priv->session_args = NULL;
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 "GetTtyDevice",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &server->priv->tty_device,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get value: %s", error->message);
+                        g_error_free (error);
+                } else {         
+                        g_warning ("Failed to get value");
+                }
+        
+                exit (1);
+        }
+
+        /* If tty_device is not set, set it NULL */
+        if (server->priv->tty_device && (strlen (server->priv->tty_device) == 0)) {
+                g_free (server->priv->tty_device);
+                server->priv->tty_device = NULL;
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 "GetPriority",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_INT, &server->priv->priority,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get value: %s", error->message);
+                        g_error_free (error);
+                } else {         
+                        g_warning ("Failed to get value");
+                }
+        
+                exit (1);    
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (proxy,
+                                 "GetX11AuthorityFile",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &server->priv->auth_file,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get value: %s", error->message);
+                        g_error_free (error);
+                } else {         
+                        g_warning ("Failed to get value");
+                }
+        
+                exit (1);   
+        }
+
+        /* If tty_device is not set, set it NULL */
+        if (server->priv->auth_file && (strlen (server->priv->auth_file) == 0)) {
+                g_free (server->priv->auth_file);
+                server->priv->auth_file = NULL;
+        }
+
+        add_ready_handler (server);
+
+        return server;
 }
