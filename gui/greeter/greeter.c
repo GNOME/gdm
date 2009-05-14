@@ -332,10 +332,10 @@ process_operation (guchar       op_code,
 		case SESSION_LOOKUP_PREFERRED_MISSING:
 			firstmsg = g_strdup_printf (_("Do you wish to make %s the default for "
 						      "future sessions?"),
-						    gdm_session_name (tmp));	    
+						      gdm_session_name (gdm_get_default_session ()));
 			secondmsg = g_strdup_printf (_("Your preferred session type %s is not "
 						       "installed on this computer."),
-						     gdm_session_name (gdm_get_default_session ()));
+						       gdm_session_name (tmp));	    
 			save_session = gdm_wm_query_dialog (firstmsg, secondmsg,
 							    _("Make _Default"), _("Just _Log In"), TRUE);
 			

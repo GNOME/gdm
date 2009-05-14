@@ -1,3 +1,17 @@
+2009-05-13 Brian Cameron <brian.cameron@sun.com>
+
+	* gui/gdmlogin.c, gui/greeter/greeter.c: Fix the dialog that asks the
+	  user if they want to change their default session when the one in the
+	  user's .dmrc file is not installed on the system.
+
+2009-04-24 Brian Cameron <brian.cameron@sun.com>
+
+	* configure.ac: Now configure favors the Xfree Xinerama interfaces over
+	  the obsolete Solaris specific interfaces.  This ensures that Xinerama
+	  works on OpenSolaris where Xfree should be used, and also on Solaris
+	  10 where the Solaris specific interfaces should be used.  Fixes bug
+	  #580060.  Also move DEFOPEN configure checks before Xinerama checks.
+
 2009-03-19 Brian Cameron <brian.cameron@sun.com>
 
 	* Release 2.20.10:
