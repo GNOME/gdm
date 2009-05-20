@@ -93,8 +93,8 @@ static void     gdm_host_chooser_widget_finalize    (GObject                   *
 G_DEFINE_TYPE (GdmHostChooserWidget, gdm_host_chooser_widget, GTK_TYPE_VBOX)
 
 #define GDM_XDMCP_PROTOCOL_VERSION 1001
-#define SCAN_TIMEOUT 30000
-#define PING_TIMEOUT 2000
+#define SCAN_TIMEOUT 30
+#define PING_TIMEOUT 2
 #define PING_TRIES 3
 
 enum {
@@ -378,9 +378,9 @@ xdmcp_discover (GdmHostChooserWidget *widget)
                 g_source_remove (widget->priv->scan_time_id);
         }
 
-        widget->priv->scan_time_id = g_timeout_add (SCAN_TIMEOUT,
-                                                    chooser_scan_time_update,
-                                                    widget);
+        widget->priv->scan_time_id = g_timeout_add_seconds (SCAN_TIMEOUT,
+                                                            chooser_scan_time_update,
+                                                            widget);
 #endif
         /* Note we already used up one try */
         widget->priv->ping_tries = PING_TRIES - 1;
@@ -388,9 +388,9 @@ xdmcp_discover (GdmHostChooserWidget *widget)
                 g_source_remove (widget->priv->ping_try_id);
         }
 
-        widget->priv->ping_try_id = g_timeout_add (PING_TIMEOUT,
-                                                   (GSourceFunc)ping_try,
-                                                   widget);
+        widget->priv->ping_try_id = g_timeout_add_seconds (PING_TIMEOUT,
+                                                           (GSourceFunc)ping_try,
+                                                           widget);
 }
 
 /* Find broadcast address for all active, non pointopoint interfaces */

@@ -215,7 +215,7 @@ bus_proxy_destroyed_cb (DBusGProxy  *bus_proxy,
         g_object_unref (*managerp);
         *managerp = NULL;
 
-        g_timeout_add (3000, (GSourceFunc)bus_reconnect, managerp);
+        g_timeout_add_seconds (3, (GSourceFunc)bus_reconnect, managerp);
 }
 
 static void
@@ -631,7 +631,7 @@ main (int    argc,
         gdm_signal_handler_add (signal_handler, SIGUSR1, signal_cb, NULL);
 
         if (do_timed_exit) {
-                g_timeout_add (1000 * 30, (GSourceFunc) timed_exit_cb, main_loop);
+                g_timeout_add_seconds (30, (GSourceFunc) timed_exit_cb, main_loop);
         }
 
         gdm_manager_start (manager);
