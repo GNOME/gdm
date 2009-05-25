@@ -1,64 +1,71 @@
 # Irish language translations for gdm package.
-# Copyright (C) 2000-2007 Free Software Foundation, Inc.
+# Copyright (C) 2000-2009 Free Software Foundation, Inc.
 # Alastair McKinstry <mckinstry@computer.org>, 2000.
 # Paul Duffy <dubhthach@frink.nuigalway.ie>, 2003.
 # David O'Callaghan <david.ocallaghan@cs.tcd.ie>, 2003.
-# Seán de Búrca <leftmostcat@gmail.com>, 2007.
+# Seán de Búrca <leftmostcat@gmail.com>, 2007-2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-24 11:10-0700\n"
-"PO-Revision-Date: 2007-12-24 11:10-0700\n"
+"POT-Creation-Date: 2009-05-25 17:25+0100\n"
+"PO-Revision-Date: 2009-05-25 17:25+0100\n"
 "Last-Translator: Seán de Búrca <leftmostcat@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../common/gdm-common.c:382
+#: ../common/gdm-common.c:437
+#, c-format
 msgid "/dev/urandom is not a character device"
 msgstr ""
 
-#: ../daemon/factory-slave-main.c:156 ../daemon/product-slave-main.c:156
-#: ../daemon/simple-slave-main.c:156
+#: ../daemon/factory-slave-main.c:170 ../daemon/main.c:516
+#: ../daemon/product-slave-main.c:174 ../daemon/session-worker-main.c:137
+#: ../daemon/simple-slave-main.c:179 ../daemon/xdmcp-chooser-slave-main.c:179
+msgid "Enable debugging code"
+msgstr ""
+
+#: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
+#: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
 msgid "Display ID"
 msgstr "CA Taispeána"
 
-#: ../daemon/factory-slave-main.c:156 ../daemon/product-slave-main.c:156
-#: ../daemon/simple-slave-main.c:156
+#: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
+#: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
 msgid "id"
 msgstr "ca"
 
-#: ../daemon/factory-slave-main.c:168 ../daemon/product-slave-main.c:168
-#: ../daemon/simple-slave-main.c:168
+#: ../daemon/factory-slave-main.c:183 ../daemon/product-slave-main.c:187
+#: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:192
 msgid "GNOME Display Manager Slave"
 msgstr "Sclábhaí Bhainisteoir Thaispeáint GNOME"
 
-#: ../daemon/gdm-display-access-file.c:246
+#: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr ""
 
-#: ../daemon/gdm-factory-slave.c:185 ../daemon/gdm-simple-slave.c:169
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:220
 msgid "Unable to initialize login system"
 msgstr ""
 
-#: ../daemon/gdm-factory-slave.c:217 ../daemon/gdm-simple-slave.c:201
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:256
 msgid "Unable to authenticate user"
 msgstr ""
 
-#: ../daemon/gdm-factory-slave.c:239 ../daemon/gdm-simple-slave.c:223
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:310
 msgid "Unable to authorize user"
 msgstr ""
 
-#: ../daemon/gdm-factory-slave.c:263
+#: ../daemon/gdm-factory-slave.c:281
 msgid "Unable to establish credentials"
 msgstr ""
 
-#: ../daemon/gdm-factory-slave.c:591 ../daemon/gdm-product-slave.c:361
-#: ../daemon/gdm-simple-slave.c:706
+#: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
+#: ../daemon/gdm-simple-slave.c:1105
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -66,392 +73,458 @@ msgid ""
 "restart GDM when the problem is corrected."
 msgstr ""
 
-#: ../daemon/gdm-greeter-session.c:334
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "Níl úsáideoir %s ann"
-
-#: ../daemon/gdm-greeter-session.c:341
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "Níl grúpa %s ann"
-
-#: ../daemon/gdm-greeter-session.c:352 ../daemon/gdm-server.c:371
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr ""
-
-#: ../daemon/gdm-greeter-session.c:358 ../daemon/gdm-server.c:377
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "theip ar initgroups () le %s"
-
-#: ../daemon/gdm-greeter-session.c:364 ../daemon/gdm-server.c:383
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr ""
-
-#: ../daemon/gdm-greeter-session.c:372 ../daemon/gdm-server.c:391
-msgid "Couldn't set groupid to 0"
-msgstr ""
-
-#: ../daemon/gdm-server.c:242
+#: ../daemon/gdm-server.c:246
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr ""
 
-#: ../daemon/gdm-server.c:360
+#: ../daemon/gdm-server.c:361
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 
-#: ../daemon/gdm-server.c:426
+#: ../daemon/gdm-server.c:372 ../daemon/gdm-welcome-session.c:444
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr ""
+
+#: ../daemon/gdm-server.c:378 ../daemon/gdm-welcome-session.c:450
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "theip ar initgroups () do %s"
+
+#: ../daemon/gdm-server.c:384 ../daemon/gdm-welcome-session.c:456
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr ""
+
+#: ../daemon/gdm-server.c:392 ../daemon/gdm-welcome-session.c:464
+msgid "Couldn't set groupid to 0"
+msgstr ""
+
+#: ../daemon/gdm-server.c:431
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr ""
 
-#: ../daemon/gdm-server.c:437 ../daemon/gdm-server.c:443
-#: ../daemon/gdm-server.c:449
+#: ../daemon/gdm-server.c:442 ../daemon/gdm-server.c:448
+#: ../daemon/gdm-server.c:454
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Earráid agus %s á shocrú mar %s"
 
-#: ../daemon/gdm-server.c:464
+#: ../daemon/gdm-server.c:469
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr ""
 
-#: ../daemon/gdm-server.c:608
+#: ../daemon/gdm-server.c:621
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr ""
 
-#: ../daemon/gdm-session-direct.c:1194 ../daemon/gdm-session-direct.c:1212
+#: ../daemon/gdm-session-auditor.c:90
+msgid "Username"
+msgstr "Ainm Úsáideora"
+
+#: ../daemon/gdm-session-auditor.c:91
+msgid "The username"
+msgstr "An t-ainm úsáideora"
+
+#: ../daemon/gdm-session-auditor.c:95
+msgid "Hostname"
+msgstr "Óstainm"
+
+#: ../daemon/gdm-session-auditor.c:96
+msgid "The hostname"
+msgstr ""
+
+#: ../daemon/gdm-session-auditor.c:101
+msgid "Display Device"
+msgstr "Gléas Taispeána"
+
+#: ../daemon/gdm-session-auditor.c:102
+msgid "The display device"
+msgstr ""
+
+#: ../daemon/gdm-session-direct.c:1576 ../daemon/gdm-session-direct.c:1594
 #, c-format
 msgid "worker exited with status %d"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:837
+#: ../daemon/gdm-session-worker.c:1085
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:838
+#: ../daemon/gdm-session-worker.c:1086
 msgid "general failure"
 msgstr "teip ginearálta"
 
-#: ../daemon/gdm-session-worker.c:839
+#: ../daemon/gdm-session-worker.c:1087
 msgid "out of memory"
 msgstr "cuimhne ídithe"
 
-#: ../daemon/gdm-session-worker.c:840
+#: ../daemon/gdm-session-worker.c:1088
 msgid "application programmer error"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:841
-msgid "unscoped error"
-msgstr ""
+#: ../daemon/gdm-session-worker.c:1089
+msgid "unknown error"
+msgstr "earráid anaithnid"
 
-#: ../daemon/gdm-session-worker.c:848
+#: ../daemon/gdm-session-worker.c:1096
 msgid "Username:"
 msgstr "Ainm Úsáideora:"
 
-#: ../daemon/gdm-session-worker.c:854
+#: ../daemon/gdm-session-worker.c:1102
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:868
+#: ../daemon/gdm-session-worker.c:1116
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:883
+#: ../daemon/gdm-session-worker.c:1131
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:1039
+#: ../daemon/gdm-session-worker.c:1144
+#, c-format
+msgid "error informing authentication system of display string - %s"
+msgstr ""
+
+#: ../daemon/gdm-session-worker.c:1159
+#, c-format
+msgid "error informing authentication system of display xauth credentials - %s"
+msgstr ""
+
+#: ../daemon/gdm-session-worker.c:1439 ../daemon/gdm-session-worker.c:1457
+#, c-format
 msgid "no user account available"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:1088
-msgid "user account not available on system"
+#: ../daemon/gdm-session-worker.c:1484
+msgid "Unable to change to user"
 msgstr ""
 
-#: ../daemon/gdm-session-worker.c:1290
-#, c-format
-msgid ""
-"session log '%s' is not a normal file, logging session to '%s' instead.\n"
-msgstr ""
-
-#: ../daemon/gdm-session-worker.c:1314
-msgid "unable to log session"
-msgstr "ní féidir seisiún a logáil"
-
-#: ../daemon/gdm-simple-slave.c:254
+#: ../daemon/gdm-simple-slave.c:429
 msgid "Unable establish credentials"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:581
+#: ../daemon/gdm-welcome-session.c:426
+#, c-format
+msgid "User %s doesn't exist"
+msgstr "Níl úsáideoir %s ann"
+
+#: ../daemon/gdm-welcome-session.c:433
+#, c-format
+msgid "Group %s doesn't exist"
+msgstr "Níl grúpa %s ann"
+
+#: ../daemon/gdm-xdmcp-display-factory.c:595
 msgid "Could not create socket!"
 msgstr "Níorbh fhéidir soicéad a chruthú!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:847
+#: ../daemon/gdm-xdmcp-display-factory.c:860
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1010
-#: ../daemon/gdm-xdmcp-display-factory.c:1075
+#: ../daemon/gdm-xdmcp-display-factory.c:1017
+#: ../daemon/gdm-xdmcp-display-factory.c:1238
 msgid "Could not extract authlist from packet"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1023
-#: ../daemon/gdm-xdmcp-display-factory.c:1090
+#: ../daemon/gdm-xdmcp-display-factory.c:1030
+#: ../daemon/gdm-xdmcp-display-factory.c:1253
 msgid "Error in checksum"
 msgstr "Earráid i suim sheiceála"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1342
+#: ../daemon/gdm-xdmcp-display-factory.c:1504
 msgid "Bad address"
 msgstr "Drochsheoladh"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1423
+#: ../daemon/gdm-xdmcp-display-factory.c:1585
 #, c-format
 msgid "%s: Could not read display address"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1431
+#: ../daemon/gdm-xdmcp-display-factory.c:1593
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1440
+#: ../daemon/gdm-xdmcp-display-factory.c:1602
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1460
+#: ../daemon/gdm-xdmcp-display-factory.c:1622
 #, c-format
 msgid "%s: Error in checksum"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1896
+#: ../daemon/gdm-xdmcp-display-factory.c:2131
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1906
-#: ../daemon/gdm-xdmcp-display-factory.c:2261
-#: ../daemon/gdm-xdmcp-display-factory.c:2518
+#: ../daemon/gdm-xdmcp-display-factory.c:2141
+#: ../daemon/gdm-xdmcp-display-factory.c:2496
+#: ../daemon/gdm-xdmcp-display-factory.c:2748
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1913
+#: ../daemon/gdm-xdmcp-display-factory.c:2148
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1920
+#: ../daemon/gdm-xdmcp-display-factory.c:2155
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1928
+#: ../daemon/gdm-xdmcp-display-factory.c:2163
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1937
+#: ../daemon/gdm-xdmcp-display-factory.c:2172
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1947
+#: ../daemon/gdm-xdmcp-display-factory.c:2182
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1966
+#: ../daemon/gdm-xdmcp-display-factory.c:2201
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1993
+#: ../daemon/gdm-xdmcp-display-factory.c:2228
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2245
+#: ../daemon/gdm-xdmcp-display-factory.c:2480
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2254
-#: ../daemon/gdm-xdmcp-display-factory.c:2525
+#: ../daemon/gdm-xdmcp-display-factory.c:2489
+#: ../daemon/gdm-xdmcp-display-factory.c:2755
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2268
+#: ../daemon/gdm-xdmcp-display-factory.c:2503
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2374
-#: ../daemon/gdm-xdmcp-display-factory.c:2428
-#: ../daemon/gdm-xdmcp-display-factory.c:2434
+#: ../daemon/gdm-xdmcp-display-factory.c:2608
+#: ../daemon/gdm-xdmcp-display-factory.c:2658
+#: ../daemon/gdm-xdmcp-display-factory.c:2664
 #, c-format
 msgid "%s: Could not read address"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2508
+#: ../daemon/gdm-xdmcp-display-factory.c:2738
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2597
+#: ../daemon/gdm-xdmcp-display-factory.c:2827
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2603
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:240
+#: ../daemon/gdm-xdmcp-display-factory.c:2833
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XMDCP: Leagan XDMCP mícheart!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2609
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:246
+#: ../daemon/gdm-xdmcp-display-factory.c:2839
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
 msgid "XMDCP: Unable to parse address"
 msgstr ""
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3007
+#: ../daemon/gdm-xdmcp-display-factory.c:3284
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr ""
 
-#: ../daemon/main.c:230 ../daemon/main.c:243
+#: ../daemon/main.c:237 ../daemon/main.c:250
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace: %s"
 msgstr ""
 
-#: ../daemon/main.c:263
+#: ../daemon/main.c:270
 #, c-format
 msgid "Logdir %s does not exist or isn't a directory."
 msgstr ""
 
-#: ../daemon/main.c:276
+#: ../daemon/main.c:283
 #, c-format
 msgid "Authdir %s does not exist. Aborting."
 msgstr ""
 
-#: ../daemon/main.c:280
+#: ../daemon/main.c:287
 #, c-format
 msgid "Authdir %s is not a directory. Aborting."
 msgstr ""
 
-#: ../daemon/main.c:354
+#: ../daemon/main.c:361
 #, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
 msgstr ""
 
-#: ../daemon/main.c:361
+#: ../daemon/main.c:368
 #, c-format
 msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
 
-#: ../daemon/main.c:398
+#: ../daemon/main.c:405
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr ""
 
-#: ../daemon/main.c:404
+#: ../daemon/main.c:411
 msgid "The GDM user should not be root. Aborting!"
 msgstr ""
 
-#: ../daemon/main.c:410
+#: ../daemon/main.c:417
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr ""
 
-#: ../daemon/main.c:416
+#: ../daemon/main.c:423
 msgid "The GDM group should not be root. Aborting!"
 msgstr ""
 
-#: ../daemon/main.c:521
-msgid "Alternative GDM System Defaults configuration file"
-msgstr ""
-
-#: ../daemon/main.c:521
-msgid "CONFIGFILE"
-msgstr ""
-
-#: ../daemon/main.c:523
-msgid "Enable debugging code"
-msgstr ""
-
-#: ../daemon/main.c:524
+#: ../daemon/main.c:517
 msgid "Make all warnings fatal"
 msgstr ""
 
-#: ../daemon/main.c:525
-msgid "Don't become a daemon"
-msgstr ""
-
-#: ../daemon/main.c:526
-msgid "No console (static) servers to be run"
-msgstr ""
-
-#: ../daemon/main.c:528
+#: ../daemon/main.c:518
 msgid "Exit after a time - for debugging"
 msgstr ""
 
-#: ../daemon/main.c:529
+#: ../daemon/main.c:519
 msgid "Print GDM version"
 msgstr "Priontáil leagan GDM"
 
-#: ../daemon/main.c:544
+#: ../daemon/main.c:534
 msgid "GNOME Display Manager"
-msgstr "Bainisteoir Thaispeáint GNOME"
+msgstr "Bainisteoir Taispeána GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:617
+#: ../daemon/main.c:595
 msgid "Only root wants to run GDM"
 msgstr ""
 
-#: ../daemon/session-worker-main.c:134
+#: ../daemon/session-worker-main.c:149
 msgid "GNOME Display Manager Session Worker"
 msgstr ""
 
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:228
+#: ../data/greeter-autostart/at-spi-registryd-wrapper.desktop.in.in.h:1
+msgid "AT SPI Registry Wrapper"
+msgstr ""
+
+#: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1921
+msgid "Login Window"
+msgstr "Fuinneog Logála Isteach"
+
+#: ../data/greeter-autostart/gnome-power-manager.desktop.in.in.h:1
+msgid "Power Manager"
+msgstr "Bainisteoir na Cumhachta"
+
+#: ../data/greeter-autostart/gnome-power-manager.desktop.in.in.h:2
+msgid "Power management daemon"
+msgstr ""
+
+#: ../data/greeter-autostart/gnome-settings-daemon.desktop.in.in.h:1
+msgid "GNOME Settings Daemon"
+msgstr ""
+
+#: ../data/greeter-autostart/gnome-mag.desktop.in.h:1
+msgid "GNOME Screen Magnifier"
+msgstr ""
+
+#: ../data/greeter-autostart/gnome-mag.desktop.in.h:2
+msgid "Magnify parts of the screen"
+msgstr ""
+
+#: ../data/greeter-autostart/gok.desktop.in.h:1
+msgid "GNOME Onscreen Keyboard"
+msgstr ""
+
+#: ../data/greeter-autostart/gok.desktop.in.h:2
+msgid "Use an onscreen keyboard"
+msgstr ""
+
+#: ../data/greeter-autostart/metacity.desktop.in.h:1
+msgid "Metacity"
+msgstr "Metacity"
+
+#: ../data/greeter-autostart/orca-screen-reader.desktop.in.h:1
+msgid "Orca Screen Reader"
+msgstr ""
+
+#: ../data/greeter-autostart/orca-screen-reader.desktop.in.h:2
+msgid "Present on-screen information as speech or braille"
+msgstr ""
+
+#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:148
+msgid "Select System"
+msgstr "Roghnaigh Córas"
+
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:214
 msgid "XMCP: Could not create XDMCP buffer!"
 msgstr ""
 
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:234
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:220
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1145
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:253
+msgid "Value"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:254
+msgid "percentage of time complete"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1306
 msgid "Inactive Text"
 msgstr "Téacs Neamhghníomhach"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1146
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1307
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1154
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1315
 msgid "Active Text"
 msgstr "Téacs Gníomhach"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1155
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1316
 msgid "The text to use in the label if the user has picked an item"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:707
+#: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M:%S %p"
 msgstr "%l:%M:%S %p"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:707
+#: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
@@ -460,7 +533,7 @@ msgstr "%l:%M %p"
 #. *              should begin with a 0 in your locale (e.g. "May
 #. *              01" instead of "May  1").
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:713
+#: ../gui/simple-greeter/gdm-clock-widget.c:72
 msgid "%a %b %e"
 msgstr "%a %b %e"
 
@@ -468,10 +541,42 @@ msgstr "%a %b %e"
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:718
+#: ../gui/simple-greeter/gdm-clock-widget.c:77
 #, c-format
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:288
+msgid "Automatically logging in..."
+msgstr ""
+
+#. need to wait for response from backend
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:718
+msgid "Cancelling..."
+msgstr "Á Chealú..."
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1187
+msgid "Failed to restart computer"
+msgstr "Theip ar atosú an ríomhaire"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1190
+msgid ""
+"You are not allowed to restart the computer because multiple users are "
+"logged in"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1271
+msgid "Failed to stop computer"
+msgstr "Theip ar stad an ríomhaire"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1274
+msgid ""
+"You are not allowed to stop the computer because multiple users are logged in"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1358
+msgid "Select language and click Log In"
+msgstr ""
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:1
 msgid "Authentication Dialog"
@@ -482,820 +587,510 @@ msgid "Computer Name"
 msgstr "Ainm Ríomhaire"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:3
-msgid "Disconnect"
-msgstr "Dínasc"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:4
-msgid "IP Address"
-msgstr "Seoladh IP"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
 msgid "Log In"
 msgstr "Logáil Isteach"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
-msgid "Network status"
-msgstr "Stádas líonra"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
-msgid "Prompt:"
-msgstr "Leid:"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:4
 msgid "Restart"
 msgstr "Atosaigh"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:9
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
 msgid "Shut Down"
 msgstr "Múch"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:10
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
 msgid "Suspend"
 msgstr "Cuir ar Fionraí"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:11
-msgid "Tue Oct 23 21:16:50 EDT 2007"
-msgstr "Máirt 23 DFómh 21:16:50 WEST 2007"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:12
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
 msgid "Version"
 msgstr "Leagan"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:13
-msgid "page 1"
-msgstr "leathanach 1"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:14
-msgid "page 2"
-msgstr "leathanach 2"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:15
-msgid "page 3"
-msgstr "leathanach 3"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:16
-msgid "page 4"
-msgstr "leathanach 4"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:17
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
 msgid "page 5"
 msgstr "leathanach 5"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:380
-msgid "Default"
-msgstr "Réamhshocrú"
+#: ../gui/simple-greeter/gdm-greeter-panel.c:554
+msgid "Panel"
+msgstr "Painéal"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:381
-msgid "Login with the same session as last time."
+#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:201
+msgid "Languages"
+msgstr "Teangacha"
+
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:272
+msgid "_Languages:"
+msgstr "_Teangacha:"
+
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
+#: ../gui/simple-greeter/gdm-language-option-widget.c:262
+msgid "_Language:"
+msgstr "_Teanga:"
+
+#. translators: This brings up a dialog
+#. * with a list of languages to choose from
+#.
+#: ../gui/simple-greeter/gdm-language-option-widget.c:231
+msgctxt "language"
+msgid "Other..."
+msgstr "Teanga Eile..."
+
+#: ../gui/simple-greeter/gdm-language-option-widget.c:232
+msgid "Choose a language from the full list of available languages."
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:386
-msgid "Legacy"
-msgstr "Oidhreacht"
-
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:387
-msgid "Login based on preset legacy configuration"
+#: ../gui/simple-greeter/gdm-languages.c:609
+msgid "Unspecified"
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:430
+#: ../gui/simple-greeter/gdm-layout-chooser-dialog.c:191
+msgid "Keyboard layouts"
+msgstr "Leaganacha amach an mhéarchláir"
+
+#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:200
+#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:201
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:254
+msgid "_Keyboard:"
+msgstr "_Méarchlár:"
+
+#. translators: This brings up a dialog of
+#. * available keyboard layouts
+#.
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:223
+msgctxt "keyboard"
+msgid "Other..."
+msgstr "Leagan Amach Eile..."
+
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:224
+msgid "Choose a keyboard layout from the full list of available layouts."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-option-widget.c:494
+msgid "Label Text"
+msgstr "Téacs "
+
+#: ../gui/simple-greeter/gdm-option-widget.c:495
+msgid "The text to use as a label"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-option-widget.c:502
+msgid "Icon name"
+msgstr "Ainm deilbhín"
+
+#: ../gui/simple-greeter/gdm-option-widget.c:503
+msgid "The icon to use with the label"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-option-widget.c:511
+msgid "Default Item"
+msgstr "Mír Réamhshocraithe"
+
+#: ../gui/simple-greeter/gdm-option-widget.c:512
+msgid "The id of the default item"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:310
+msgid "Max Item Count"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-recent-option-widget.c:311
+msgid "The maximum number of items to keep around in the list"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-remote-login-window.c:188
+#, c-format
+msgid "Remote Login (Connecting to %s...)"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-remote-login-window.c:202
+#, c-format
+msgid "Remote Login (Connected to %s)"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-remote-login-window.c:281
+msgid "Remote Login"
+msgstr "Cianlogáil Isteach"
+
+#: ../gui/simple-greeter/gdm-session-option-widget.c:162
 msgid "_Sessions:"
 msgstr "_Seisiúin:"
 
-#: ../gui/simple-greeter/gdm-session-chooser-widget.c:431
-msgid "_Session:"
-msgstr "_Seisiún:"
-
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
-msgid "Set to True to enable the background settings manager plugin."
+msgid "Banner message text"
 msgstr ""
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
-msgid "Set to True to enable the xsettings settings manager plugin."
+msgid "Disable showing the restart buttons"
 msgstr ""
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
-msgid "True if the background settings manager plugin is enabled."
+msgid "Do not show known users in the login window"
 msgstr ""
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
+msgid "Enable accessibility keyboard plugin"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
+msgid "Enable debugging"
+msgstr "Cumasaigh dífhabhtú"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
+msgid "Enable debugging mode for the greeter."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
+msgid "Enable on-screen keyboard"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
+msgid "Enable screen magnifier"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+msgid "Enable screen reader"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
+msgid "Enable showing the banner message"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
+msgid "Icon name to use for greeter logo"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+msgid "Recently selected keyboard layouts"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+msgid "Recently selected languages"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
+msgid "Set to TRUE to disable showing known users in the login window."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
+msgid "Set to TRUE to disable showing the restart buttons in the login window."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
+msgid "Set to True to enable the background settings manager plugin."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
+msgid "Set to True to enable the media-keys settings manager plugin."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+msgid "Set to True to enable the on-screen keyboard."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+msgid ""
+"Set to True to enable the plugin to manage the accessibility keyboard "
+"settings."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+msgid "Set to True to enable the screen magnifier."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+msgid "Set to True to enable the screen reader."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+msgid "Set to True to enable the sound settings manager plugin."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+msgid "Set to True to enable the xrandr settings manager plugin."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+msgid "Set to True to enable the xsettings settings manager plugin."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+msgid ""
+"Set to a list of keyboard layouts to be shown by default at the login window."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+msgid "Set to a list of languages to be shown by default at the login window."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+msgid "Set to the themed icon name to use for the greeter logo."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+msgid "Set to true to show the banner message text."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+msgid "Set to true to use compiz as the window manager."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+msgid "Text banner message to show on the login window."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+msgid "True if the background settings manager plugin is enabled."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+msgid "True if the media-keys settings manager plugin is enabled."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+msgid "True if the sound settings manager plugin is enabled."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+msgid "True if the xrandr settings manager plugin is enabled."
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-user.c:218
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
+msgid "Use compiz as the window manager"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-timer.c:149
+msgid "Duration"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-timer.c:150
+msgid "Number of seconds until timer stops"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-timer.c:157
+msgid "Start time"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-timer.c:158
+msgid "Time the timer was started"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-timer.c:165
+msgid "Is it Running?"
+msgstr "An bhFuil Sé á Rith?"
+
+#: ../gui/simple-greeter/gdm-timer.c:166
+msgid "Whether or not the timer is currently ticking"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-user.c:242
 msgid "Manager"
 msgstr "Bainisteoir"
 
-#: ../gui/simple-greeter/gdm-user.c:219
+#: ../gui/simple-greeter/gdm-user.c:243
 msgid "The user manager object this user is controlled by."
 msgstr ""
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:314
+#. translators: This option prompts
+#. * the user to type in a username
+#. * manually instead of choosing from
+#. * a list.
+#.
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:136
+msgctxt "user"
 msgid "Other..."
-msgstr "Eile..."
+msgstr "Úsáideoir Eile..."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:315
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:137
 msgid "Choose a different account"
 msgstr "Roghnaigh cuntas eile"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:321
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:149
 msgid "Guest"
 msgstr "Cuairteoir"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:322
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:150
 msgid "Login as a temporary guest"
-msgstr "Logáil isteach mar cuairteoir sealadach"
+msgstr "Logáil isteach mar chuairteoir sealadach"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:342
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:162
+msgid "Automatic Login"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:163
+msgid "Automatically login to the system after selecting options"
+msgstr ""
+
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:354
 #, c-format
 msgid "Log in as %s"
 msgstr "Logáil isteach mar %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:407
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:699
 msgid "Currently logged in"
 msgstr "Logáilte isteach faoi láthair"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:448
-msgid "_Users:"
-msgstr "Ú_sáideoirí:"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:449
-msgid "_User:"
-msgstr "Ú_sáideoir:"
-
-#~ msgid "GNOME"
-#~ msgstr "GNOME"
-
-#~ msgid "Restarting computer..."
-#~ msgstr "Ríomhaire á atosú..."
-
-#~ msgid "main options"
-#~ msgstr "príomhroghanna"
-
-#~ msgid "y = Yes or n = No? >"
-#~ msgstr "y = Tá nó n = Níl? >"
-
-#~ msgid "System default"
-#~ msgstr "Loicéad na corás"
-
-#~ msgid "Password:"
-#~ msgstr "Focal Faire:"
-
-#~ msgid "STRING"
-#~ msgstr "TEAGHRÁN"
-
-#~ msgid "OPTIONS"
-#~ msgstr "ROGHANNA"
-
-#~ msgid "GDM is not running"
-#~ msgstr "Níl GDM ag rith"
-
-#~ msgid "Socket for xdm communication"
-#~ msgstr "Soicéad le haighaidh cumarsáid xdm"
-
-#~ msgid "SOCKET"
-#~ msgstr "SOICÉAD"
-
-#~ msgid "ADDRESS"
-#~ msgstr "SEOLADH"
-
-#~ msgid "TYPE"
-#~ msgstr "CINEÁL"
-
-#~ msgid "A_dd host: "
-#~ msgstr "C_uir óstach leis: "
-
-#~ msgid "C_onnect"
-#~ msgstr "_Nasc"
-
-#~ msgid "Exit the application"
-#~ msgstr "Scoir an feidhmchlár"
-
-#~ msgid "Status"
-#~ msgstr "Stádas"
-
-#~ msgid "_Add"
-#~ msgstr "_Cuir Leis"
-
-#~ msgid "New Login in a Window"
-#~ msgstr "Logáil Isteach Nua i bhFuinneog"
-
-#~ msgid "COMMAND"
-#~ msgstr "ORDÚ"
-
-#~ msgid "Xnest mode"
-#~ msgstr "mód Xnest"
-
-#~ msgid "Username"
-#~ msgstr "Ainm Úsáideora"
-
-#~ msgid "Standard server"
-#~ msgstr "Freastalaí loicéad"
-
-#~ msgid "New Login"
-#~ msgstr "Logáil Isteach Nua"
-
-#, fuzzy
-#~ msgid "A-M|Afrikaans"
-#~ msgstr "A-M|Asarbaiseáinis"
-
-#~ msgid "A-M|Arabic (Egypt)"
-#~ msgstr "A-M|Araibis (an Eigipt)"
-
-#~ msgid "A-M|Arabic (Lebanon)"
-#~ msgstr "A-M|Araibis (an Liobáin)"
-
-#, fuzzy
-#~ msgid "A-M|Arabic (Saudi Arabia)"
-#~ msgstr "A-M|Araibis (an Liobáin)"
-
-#, fuzzy
-#~ msgid "A-M|Armenian"
-#~ msgstr "A-M|Gearmáinis"
-
-#~ msgid "A-M|Azerbaijani"
-#~ msgstr "A-M|Asarbaiseáinis"
-
-#~ msgid "A-M|Basque"
-#~ msgstr "A-M|Bascais"
-
-#~ msgid "A-M|Bulgarian"
-#~ msgstr "A-M|Bulgáiris"
-
-#~ msgid "A-M|Bosnian"
-#~ msgstr "A-M|Boisnis"
-
-#~ msgid "A-M|Catalan"
-#~ msgstr "A-M|Catalóinis"
-
-#, fuzzy
-#~ msgid "A-M|Chinese (China Mainland)"
-#~ msgstr "A-M|an t'Sínis (traidisiúnta)"
-
-#, fuzzy
-#~ msgid "A-M|Chinese (Hong Kong)"
-#~ msgstr "A-M|an t'Sínis (traidisiúnta)"
-
-#, fuzzy
-#~ msgid "A-M|Chinese (Singapore)"
-#~ msgstr "A-M|an t'Sínis (simpleach)"
-
-#, fuzzy
-#~ msgid "A-M|Chinese (Taiwan)"
-#~ msgstr "A-M|an t'Sínis (traidisiúnta)"
-
-#~ msgid "A-M|Croatian"
-#~ msgstr "A-M|Cróaitis"
-
-#~ msgid "A-M|Czech"
-#~ msgstr "N-Z|Seicis"
-
-#~ msgid "A-M|Danish"
-#~ msgstr "A-M|Danmhairgis"
-
-#~ msgid "A-M|Dutch"
-#~ msgstr "N-Z|Ollainis"
-
-#, fuzzy
-#~ msgid "A-M|Dutch (Belgium)"
-#~ msgstr "N-Z|Ollainis"
-
-#, fuzzy
-#~ msgid "A-M|English (USA)"
-#~ msgstr "A-M|Bearla"
-
-#, fuzzy
-#~ msgid "A-M|English (Australia)"
-#~ msgstr "A-M|Bearla (Astrálach)"
-
-#, fuzzy
-#~ msgid "A-M|English (UK)"
-#~ msgstr "A-M|Bearla"
-
-#, fuzzy
-#~ msgid "A-M|English (Canada)"
-#~ msgstr "A-M|Bearla (éire)"
-
-#~ msgid "A-M|English (Ireland)"
-#~ msgstr "A-M|Bearla (éire)"
-
-#, fuzzy
-#~ msgid "A-M|English (Denmark)"
-#~ msgstr "A-M|Bearla (éire)"
-
-#, fuzzy
-#~ msgid "A-M|English (South Africa)"
-#~ msgstr "A-M|Bearla (Meirica)"
-
-#, fuzzy
-#~ msgid "A-M|English (Malta)"
-#~ msgstr "A-M|Bearla (éire)"
-
-#, fuzzy
-#~ msgid "A-M|English (New Zealand)"
-#~ msgstr "A-M|Bearla (éire)"
-
-#~ msgid "A-M|Finnish"
-#~ msgstr "A-M|Fionlainnis"
-
-#~ msgid "A-M|French"
-#~ msgstr "A-M|Fraincis"
-
-#, fuzzy
-#~ msgid "A-M|French (Belgium)"
-#~ msgstr "A-M|Fraincis"
-
-#, fuzzy
-#~ msgid "A-M|French (Canada)"
-#~ msgstr "A-M|Fraincis"
-
-#, fuzzy
-#~ msgid "A-M|French (Luxembourg)"
-#~ msgstr "A-M|Fraincis"
-
-#, fuzzy
-#~ msgid "A-M|French (Switzerland)"
-#~ msgstr "A-M|Bearla (éire)"
-
-#~ msgid "A-M|Galician"
-#~ msgstr "A-M|Gailísis"
-
-#~ msgid "A-M|German"
-#~ msgstr "A-M|Gearmáinis"
-
-#, fuzzy
-#~ msgid "A-M|German (Austria)"
-#~ msgstr "A-M|Bearla (Astrálach)"
-
-#, fuzzy
-#~ msgid "A-M|German (Luxembourg)"
-#~ msgstr "A-M|Gearmáinis"
-
-#~ msgid "A-M|Greek"
-#~ msgstr "A-M|Gréigis"
-
-#, fuzzy
-#~ msgid "A-M|Greek (Cyprus)"
-#~ msgstr "A-M|Gréigis"
-
-#~ msgid "A-M|Hebrew"
-#~ msgstr "A-M|Eabhrais"
-
-#~ msgid "A-M|Hindi"
-#~ msgstr "A-M|Hiondis"
-
-#~ msgid "A-M|Hungarian"
-#~ msgstr "N-Z|Ungáiris"
-
-#~ msgid "A-M|Indonesian"
-#~ msgstr "A-M|Indinéisis"
-
-#~ msgid "A-M|Interlingua"
-#~ msgstr "A-M|Interteangach"
-
-#~ msgid "A-M|Irish"
-#~ msgstr "A-M|Gaeilge"
-
-#~ msgid "A-M|Italian"
-#~ msgstr "A-M|Iodáilis"
-
-#~ msgid "A-M|Japanese"
-#~ msgstr "N-Z|Seapáinis"
-
-#, fuzzy
-#~ msgid "A-M|Kinyarwanda"
-#~ msgstr "N-Z|Ungáiris"
-
-#~ msgid "A-M|Korean"
-#~ msgstr "A-M|Córéis"
-
-#~ msgid "A-M|Latvian"
-#~ msgstr "A-M|Laitvis"
-
-#~ msgid "A-M|Lithuanian"
-#~ msgstr "A-M|Liotuáinis"
-
-#~ msgid "A-M|Macedonian"
-#~ msgstr "A-M|Macadóinis"
-
-#, fuzzy
-#~ msgid "A-M|Maltese"
-#~ msgstr "N-Z|Seapáinis"
-
-#~ msgid "A-M|Mongolian"
-#~ msgstr "A-M|Mongóilis"
-
-#~ msgid "N-Z|Norwegian (bokmal)"
-#~ msgstr "A-M|Ioruais (bokmal)"
-
-#~ msgid "N-Z|Norwegian (nynorsk)"
-#~ msgstr "A-M|Ioruais (nynorsk)"
-
-#, fuzzy
-#~ msgid "N-Z|Punjabi"
-#~ msgstr "N-Z|Panjabis"
-
-#~ msgid "N-Z|Persian"
-#~ msgstr "N-Z|Peirsis"
-
-#~ msgid "N-Z|Polish"
-#~ msgstr "N-Z|Polainnis"
-
-#~ msgid "N-Z|Portuguese"
-#~ msgstr "N-Z|Portaingéilis"
-
-#~ msgid "N-Z|Portuguese (Brazilian)"
-#~ msgstr "N-Z|Portaingéilis na Brasaíle"
-
-#~ msgid "N-Z|Romanian"
-#~ msgstr "N-Z|Rómáinis"
-
-#~ msgid "N-Z|Russian"
-#~ msgstr "N-Z|Rúisis"
-
-#~ msgid "N-Z|Serbian"
-#~ msgstr "N-Z|Seirbis"
-
-#, fuzzy
-#~ msgid "N-Z|Serbian (Montenegro)"
-#~ msgstr "N-Z|Seirbis"
-
-#, fuzzy
-#~ msgid "N-Z|Serbian (Serbia)"
-#~ msgstr "N-Z|Seirbis"
-
-#, fuzzy
-#~ msgid "N-Z|Serbian (Latin)"
-#~ msgstr "N-Z|Seirbis"
-
-#, fuzzy
-#~ msgid "N-Z|Serbian (Jekavian)"
-#~ msgstr "N-Z|Seirbis"
-
-#, fuzzy
-#~ msgid "N-Z|Serbian (Bosnia)"
-#~ msgstr "N-Z|Seirbis"
-
-#~ msgid "N-Z|Slovak"
-#~ msgstr "N-Z|Slóvaicis"
-
-#~ msgid "N-Z|Slovenian"
-#~ msgstr "N-Z|Slóivéinis"
-
-#~ msgid "N-Z|Spanish"
-#~ msgstr "N-Z|Spáinnis"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Argentina)"
-#~ msgstr "N-Z|Spáinnis (Meicsiceo)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Bolivia)"
-#~ msgstr "N-Z|Spáinnis (Meicsiceo)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Chile)"
-#~ msgstr "N-Z|Spáinnis (Meicsiceo)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Colombia)"
-#~ msgstr "N-Z|Spáinnis (Meicsiceo)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Costa Rica)"
-#~ msgstr "N-Z|Spáinnis (Meicsiceo)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Ecuador)"
-#~ msgstr "N-Z|Spáinnis (Meicsiceo)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Guatemala)"
-#~ msgstr "N-Z|Spáinnis (Meicsiceo)"
-
-#~ msgid "N-Z|Spanish (Mexico)"
-#~ msgstr "N-Z|Spáinnis (Meicsiceo)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Nicaragua)"
-#~ msgstr "N-Z|Spáinnis (Meicsiceo)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Panama)"
-#~ msgstr "N-Z|Spáinnis"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Peru)"
-#~ msgstr "N-Z|Spáinnis (Meicsiceo)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Paraguay)"
-#~ msgstr "N-Z|Spáinnis"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (El Salvador)"
-#~ msgstr "N-Z|Spáinnis (Meicsiceo)"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Uruguay)"
-#~ msgstr "N-Z|Spáinnis"
-
-#, fuzzy
-#~ msgid "N-Z|Spanish (Venezuela)"
-#~ msgstr "N-Z|Spáinnis (Meicsiceo)"
-
-#~ msgid "N-Z|Swedish"
-#~ msgstr "N-Z|Sualainnis"
-
-#~ msgid "N-Z|Swedish (Finland)"
-#~ msgstr "N-Z|Sualainnis (An Fhionlainn)"
-
-#~ msgid "N-Z|Tamil"
-#~ msgstr "N-Z|Tamailis"
-
-#~ msgid "N-Z|Thai"
-#~ msgstr "N-Z|Téalannais"
-
-#~ msgid "N-Z|Turkish"
-#~ msgstr "N-Z|Tuircis"
-
-#~ msgid "N-Z|Ukrainian"
-#~ msgstr "N-Z|Ucráinis"
-
-#~ msgid "N-Z|Vietnamese"
-#~ msgstr "N-Z|Vítneaimis"
-
-#~ msgid "N-Z|Walloon"
-#~ msgstr "N-Z|Vallúnais"
-
-#~ msgid "N-Z|Welsh"
-#~ msgstr "A-M|Briotáinis"
-
-#, fuzzy
-#~ msgid "N-Z|Xhosa"
-#~ msgstr "N-Z|Téalannais"
-
-#~ msgid "Other|POSIX/C English"
-#~ msgstr "Ceann Eile| POSIX/C Bearla"
-
-#~ msgid "A-M"
-#~ msgstr "A-M"
-
-#~ msgid "N-Z"
-#~ msgstr "N-Z"
-
-#, fuzzy
-#~ msgid "Last language"
-#~ msgstr "_Teanga"
-
-#, fuzzy
-#~ msgid "Select a Language"
-#~ msgstr "Pioc Teanga"
-
-#, fuzzy
-#~ msgid "Change _Language"
-#~ msgstr "_Teanga"
-
-#~ msgid "_Yes"
-#~ msgstr "_Tá"
-
-#~ msgid "_No"
-#~ msgstr "_Níl"
-
-#~ msgid "_Restart"
-#~ msgstr "_Atosaigh"
-
-#~ msgid "_Username:"
-#~ msgstr "_Ainm Úsáideora:"
-
-#~ msgid "_Last"
-#~ msgstr "_Deireadh"
-
-#, fuzzy
-#~ msgid "Select _Language..."
-#~ msgstr "Pioc Teanga"
-
-#~ msgid "_Password:"
-#~ msgstr "_Focal Faire:"
-
-#~ msgid "GDM Login"
-#~ msgstr "Logáil Isteach GDM"
-
-#~ msgid "_Actions"
-#~ msgstr "_Gníomhartha"
-
-#~ msgid "_Quit"
-#~ msgstr "_Scoir"
-
-#~ msgid "Icon"
-#~ msgstr "Deilbhín"
-
-#~ msgid "Welcome"
-#~ msgstr "Fáilte"
-
-#~ msgid "Restart GDM"
-#~ msgstr "Atosaigh GDM"
-
-#~ msgid "Restart computer"
-#~ msgstr "Atosaigh ríomhaire"
-
-#, fuzzy
-#~ msgid "Select User Image"
-#~ msgstr "Pioc Teanga"
-
-#~ msgid "Images"
-#~ msgstr "Íomhánna"
-
-#~ msgid "All Files"
-#~ msgstr "Gach Comhad"
-
-#~ msgid "(Enabled)"
-#~ msgstr "(Cumasaithe)"
-
-#~ msgid "(Disabled)"
-#~ msgstr "(Díchumasaithe)"
-
-#, fuzzy
-#~ msgid "No themes selected!"
-#~ msgstr "Níl aon comhad piocadh agat"
-
-#~ msgid "No file selected"
-#~ msgstr "Níl aon comhad piocadh agat"
-
-#, fuzzy
-#~ msgid "Reboot command"
-#~ msgstr "Athosnú..."
-
-#~ msgid "None"
-#~ msgstr "Neamhní"
-
-#~ msgid "%s"
-#~ msgstr "%s"
-
-#~ msgid "_Install"
-#~ msgstr "_Suiteáil"
-
-#, fuzzy
-#~ msgid "_Remove Theme"
-#~ msgstr "_Scoite:"
-
-#, fuzzy
-#~ msgid "auto"
-#~ msgstr "údar"
-
-#~ msgid "A_dd..."
-#~ msgstr "_Cuir Leis..."
-
-#~ msgid "Add User"
-#~ msgstr "Cuir Úsáideoir Leis"
-
-#~ msgid "Author:"
-#~ msgstr "Údar:"
-
-#~ msgid "Background"
-#~ msgstr "Cúlra"
-
-#~ msgid "Co_lor:"
-#~ msgstr "_Dath:"
-
-#~ msgid "Copyright:"
-#~ msgstr "Cóipcheart:"
-
-#, fuzzy
-#~ msgid "Enable _Timed Login"
-#~ msgstr "Logann:"
-
-#~ msgid "General"
-#~ msgstr "Ginearálta"
-
-#~ msgid "I_mage:"
-#~ msgstr "Í_omhá:"
-
-#~ msgid "Local"
-#~ msgstr "Logánta"
-
-#~ msgid "Op_tions:\t"
-#~ msgstr "_Roghanna:\t"
-
-#, fuzzy
-#~ msgid "Permissions"
-#~ msgstr "_Seisiún"
-
-#, fuzzy
-#~ msgid "Pick Background Color"
-#~ msgstr "Pioc ceann de na Dáthanna"
-
-#, fuzzy
-#~ msgid "R_emove"
-#~ msgstr "_Scoite:"
-
-#~ msgid "Remote"
-#~ msgstr "Cianda"
-
-#, fuzzy
-#~ msgid "Resolution:"
-#~ msgstr "Tuarascail:"
-
-#~ msgid "Security"
-#~ msgstr "Slándáil"
-
-#, fuzzy
-#~ msgid "Select Background Image"
-#~ msgstr "Pioc Teanga"
-
-#, fuzzy
-#~ msgid "Select Logo Image"
-#~ msgstr "Pioc Teanga"
-
-#, fuzzy
-#~ msgid "Server _name:"
-#~ msgstr "Úsáideoir:"
-
-#~ msgid "U_ser:"
-#~ msgstr "Ú_sáideoir:"
-
-#~ msgid "Users"
-#~ msgstr "Úsáideoirí"
-
-#, fuzzy
-#~ msgid "Welcome Message"
-#~ msgstr "Fáilte do %s"
-
-#~ msgid "_Add..."
-#~ msgstr "_Cuir Leis..."
-
-#, fuzzy
-#~ msgid "_Background color:"
-#~ msgstr "Cúlra"
-
-#, fuzzy
-#~ msgid "_Default: \"Welcome to %n\""
-#~ msgstr "Fáilte do %n"
-
-#~ msgid "_Image:"
-#~ msgstr "Í_omhá:"
-
-#~ msgid "_Remove"
-#~ msgstr "_Bain"
-
-#~ msgid "_Remove..."
-#~ msgstr "_Bain..."
-
-#~ msgid "_Theme:"
-#~ msgstr "_Téama:"
-
-#, fuzzy
-#~ msgid "Restart Machine"
-#~ msgstr "Aththosnaigh"
-
-#~ msgid "Select _Session..."
-#~ msgstr "Roghnaigh _Seisiún..."
-
-#~ msgid "Confi_gure"
-#~ msgstr "Cumrai_gh"
-
-#~ msgid "Op_tions"
-#~ msgstr "_Roghanna"
-
-#~ msgid "_OK"
-#~ msgstr "_Tá go Maith"
-
-#~ msgid "_Cancel"
-#~ msgstr "_Cealaigh"
-
-#~ msgid "Change _Session"
-#~ msgstr "Athraigh _Seisiún"
-
-#~ msgid "Sessions"
-#~ msgstr "Seisiúin"
-
-#, fuzzy
-#~ msgid "_Last session"
-#~ msgstr "_Seisiún"
-
-#~ msgid "_Restart the computer"
-#~ msgstr "_Atosaigh an ríomhaire"
-
-#~ msgid "Restart your computer"
-#~ msgstr "Atosaigh do ríomhaire"
-
-#~ msgid "(c) 2002 Bond, James Bond"
-#~ msgstr "(2) 2002 Bond, James Bond"
-
-#~ msgid "Bond, James Bond"
-#~ msgstr "Bond, James Bond"
-
-#~ msgid "Circles"
-#~ msgstr "Ciorcail"
-
-#~ msgid "(c) 2002 GNOME"
-#~ msgstr "(c) 2002 GNOME"
-
-#, fuzzy
-#~ msgid "Happy GNOME with Browser"
-#~ msgstr "GNOME Sasta"
-
-#~ msgid "Happy GNOME"
-#~ msgstr "GNOME Sona"
-
-#~ msgid "DISPLAY"
-#~ msgstr "TAISPEÁINT"
+#: ../gui/user-switch-applet/applet.c:162
+msgid ""
+"The User Switch Applet is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 2 of the License, or (at your "
+"option) any later version."
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:166
+msgid ""
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details."
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:170
+msgid ""
+"You should have received a copy of the GNU General Public License along with "
+"this program; if not, write to the Free Software Foundation, Inc., 51 "
+"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:184
+msgid "A menu to quickly switch between users."
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:188
+msgid "translator-credits"
+msgstr ""
+"Alastair McKinstry <mckinstry@computer.org>\n"
+"Paul Duffy <dubhthach@frink.nuigalway.ie>\n"
+"David O'Callaghan <david.ocallaghan@cs.tcd.ie>\n"
+"Seán de Búrca <leftmostcat@gmail.com>"
+
+#: ../gui/user-switch-applet/applet.c:647
+#: ../gui/user-switch-applet/applet.c:784
+#: ../gui/user-switch-applet/applet.c:823
+#, c-format
+msgid "Can't lock screen: %s"
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:669
+#, c-format
+msgid "Can't temporarily set screensaver to blank screen: %s"
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:882
+#, c-format
+msgid "Can't logout: %s"
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:966
+msgid "Available"
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:967
+msgid "Invisible"
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:968
+msgid "Busy"
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:969
+msgid "Away"
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:1129
+msgid "Account Information..."
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:1141
+msgid "System Preferences..."
+msgstr ""
+
+#: ../gui/user-switch-applet/applet.c:1157
+msgid "Lock Screen"
+msgstr "Cuir Scáileán Faoi Ghlas"
+
+#: ../gui/user-switch-applet/applet.c:1168
+msgid "Switch User"
+msgstr "Athraigh an tÚsáideoir"
+
+#. Only show switch user if there are other users
+#: ../gui/user-switch-applet/applet.c:1179
+msgid "Quit..."
+msgstr "Scoir..."
+
+#: ../gui/user-switch-applet/applet.c:1294
+msgid "Unknown"
+msgstr "Anaithnid"
+
+#: ../gui/user-switch-applet/applet.c:1412
+msgid "User Switch Applet"
+msgstr "Feidhmchláirín Athraithe an Úsáideora"
+
+#: ../gui/user-switch-applet/applet.c:1421
+msgid "Change account settings and status"
+msgstr ""
+
+#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:1
+msgid "A menu to quickly switch between users"
+msgstr ""
+
+#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:2
+msgid "User Switcher"
+msgstr "Athraitheoir an Úsáideora"
+
+#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:3
+msgid "User Switcher Applet Factory"
+msgstr ""
+
+#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:1
+msgid "Edit Personal _Information"
+msgstr "Cuir Eolas _Pearsanta in Eagar"
+
+#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:2
+msgid "_About"
+msgstr "_Maidir Leis Seo"
+
+#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:3
+msgid "_Edit Users and Groups"
+msgstr "Cuir Úsáideoirí agus Grúpaí in _Eagar"
+
+#: ../utils/gdmflexiserver.c:61 ../utils/gdmflexiserver.c:62
+#: ../utils/gdmflexiserver.c:63 ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:66
+msgid "Ignored - retained for compatibility"
+msgstr ""
+
+#: ../utils/gdmflexiserver.c:61
+msgid "COMMAND"
+msgstr "ORDÚ"
+
+#: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:42
+msgid "Debugging output"
+msgstr ""
+
+#: ../utils/gdmflexiserver.c:68
+msgid "Version of this application"
+msgstr "Leagan an fheidhmchlár seo"
+
+#: ../utils/gdmflexiserver.c:675
+#, c-format
+msgid "Could not identify the current session."
+msgstr ""
+
+#. Option parsing
+#: ../utils/gdmflexiserver.c:711
+msgid "- New GDM login"
+msgstr "- Logáil Isteach GDM Nua"
+
+#: ../utils/gdmflexiserver.c:767
+msgid "Unable to start new display"
+msgstr ""
+
+#. Option parsing
+#: ../utils/gdm-screenshot.c:231
+msgid "Take a picture of the screen"
+msgstr ""
