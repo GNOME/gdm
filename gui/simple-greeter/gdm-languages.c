@@ -123,7 +123,7 @@ gdm_parse_language_name (const char *name,
         error = NULL;
         re = g_regex_new ("^(?P<language>[^_.@[:space:]]+)"
                           "(_(?P<territory>[[:upper:]]+))?"
-                          "(.(?P<codeset>[-_0-9a-zA-Z]+))?"
+                          "(\\.(?P<codeset>[-_0-9a-zA-Z]+))?"
                           "(@(?P<modifier>[[:ascii:]]+))?$",
                           0, 0, &error);
         if (re == NULL) {
