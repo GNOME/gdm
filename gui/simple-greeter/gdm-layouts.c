@@ -189,6 +189,56 @@ gdm_get_all_layout_names (void)
 #endif
 }
 
+gboolean
+gdm_layout_is_valid (const char *layout_variant)
+{
+#ifdef HAVE_LIBXKLAVIER
+        XklConfigItem *item;
+        char          *layout;
+        char          *variant;
+        gboolean       retval;
+
+        layout = g_strdup (layout_variant);
+        variant = strchr (layout, '\t');
+        if (variant != NULL) {
+                variant[0] = '\0';
+                variant++;
+        }
+
+        item = xkl_config_item_new ();
+        g_snprintf (item->name, XKL_MAX_CI_NAME_LENGTH, "%s", layout);
+
+        retval = xkl_config_registry_find_layout (config_registry, item);
+
+        if (retval && variant != NULL) {
+                g_snprintf (item->name, XKL_MAX_CI_NAME_LENGTH, "%s", variant);
+                retval = xkl_config_registry_find_variant (config_registry, layout, item);
+        }
+
+        g_object_unref (item);
+        g_free (layout);
+
+        return retval;
+#else
+        return TRUE;
+#endif
+}
+
+const char *
+gdm_layout_get_default_layout (void)
+{
+#ifdef HAVE_LIBXKLAVIER
+        init_xkl ();
+
+        if (initial_config->layouts)
+                return initial_config->layouts[0];
+        else
+                return NULL;
+#else
+        return NULL;
+#endif
+}
+
 void
 gdm_layout_activate (const char *layout)
 {

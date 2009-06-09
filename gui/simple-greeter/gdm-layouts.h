@@ -24,9 +24,11 @@
 
 G_BEGIN_DECLS
 
-char *        gdm_get_layout_from_name  (const char *name);
-char **       gdm_get_all_layout_names  (void);
-void          gdm_layout_activate       (const char *layout);
+char *        gdm_get_layout_from_name   (const char *name);
+char **       gdm_get_all_layout_names   (void);
+gboolean      gdm_layout_is_valid        (const char *layout);
+const char *  gdm_layout_get_default_layout (void);
+void          gdm_layout_activate        (const char *layout);
 
 G_END_DECLS
 

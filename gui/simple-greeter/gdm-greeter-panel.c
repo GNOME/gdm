@@ -724,6 +724,20 @@ gdm_greeter_panel_set_default_layout_name (GdmGreeterPanel *panel,
         g_return_if_fail (GDM_IS_GREETER_PANEL (panel));
 
         if (layout_name != NULL &&
+            !gdm_layout_is_valid (layout_name)) {
+                const char *default_layout;
+
+                default_layout = gdm_layout_get_default_layout ();
+
+                g_debug ("GdmGreeterPanel: default layout %s is invalid, resetting to: %s",
+                         layout_name, default_layout ? default_layout : "null");
+
+                g_signal_emit (panel, signals[LAYOUT_SELECTED], 0, default_layout);
+
+                layout_name = default_layout;
+        }
+
+        if (layout_name != NULL &&
             !gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (panel->priv->layout_option_widget),
                                             layout_name, NULL, NULL, NULL)) {
                 gdm_recent_option_widget_add_item (GDM_RECENT_OPTION_WIDGET (panel->priv->layout_option_widget),
