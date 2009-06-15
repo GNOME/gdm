@@ -31,6 +31,7 @@
 #include "gdm-local-display-factory.h"
 #include "gdm-local-display-factory-glue.h"
 
+#include "gdm-marshal.h"
 #include "gdm-display-store.h"
 #include "gdm-static-display.h"
 #include "gdm-dynamic-display.h"
@@ -62,6 +63,8 @@
 #define MAX_DISPLAY_FAILURES 5
 
 #define IS_STR_SET(x) (x != NULL && x[0] != '\0')
+
+#define GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_STRING))
 
 struct GdmLocalDisplayFactoryPrivate
 {
@@ -479,7 +482,10 @@ strrep (char* in, char** out, char* old, char* new)
 static void
 seat_session_to_add (DBusGProxy             *seat_proxy,
                      gboolean                is_dynamic,
-                     const char             *xserver_command,
+                     const char             *type,
+                     GHashTable             *display_variables,
+                     const char             *display_type,
+                     GHashTable             *parameters,
                      GdmLocalDisplayFactory *factory)
 {
         GdmDisplay *display;
@@ -493,9 +499,16 @@ seat_session_to_add (DBusGProxy             *seat_proxy,
         gboolean    use_auth;
         int         i;
         gboolean    res;
+        char       *xserver_command;
 
         g_return_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory));
-        g_return_if_fail (IS_STR_SET (xserver_command));
+
+        if (strcmp (display_type, "X11") != 0) {
+                g_warning ("Unknown display type '%s' requested", display_type);
+                return;
+        }
+
+        xserver_command = g_hash_table_lookup (parameters, "Exec");
 
         if (! g_shell_parse_argv (xserver_command, &argc, &argv, &error)) {
                 g_warning ("Could not parse command %s: %s", xserver_command, error->message);
@@ -596,42 +609,6 @@ seat_session_to_remove (DBusGProxy             *seat_proxy,
         store_remove_display (factory, display_number, display);
 }
 
-static void                                                        
-marshal_VOID__BOOLEAN_STRING (GClosure     *closure,
-                              GValue       *return_value,
-                              guint         n_param_values,
-                              const GValue *param_values,
-                              gpointer      invocation_hint,
-                              gpointer      marshal_data)
-{
-  typedef void (*GMarshalFunc_VOID__BOOLEAN_STRING) (gpointer     data1,
-                                                     guint        arg_1,
-                                                     gpointer     arg_2,
-                                                     gpointer     data2);
-  register GMarshalFunc_VOID__BOOLEAN_STRING callback;
-  register GCClosure *cc = (GCClosure*) closure;
-  register gpointer data1, data2;
-
-  g_return_if_fail (n_param_values == 3);
-
-  if (G_CCLOSURE_SWAP_DATA (closure))
-    {
-      data1 = closure->data;
-      data2 = g_value_peek_pointer (param_values + 0);
-    }
-  else
-    {
-      data1 = g_value_peek_pointer (param_values + 0);
-      data2 = closure->data;
-    }
-  callback = (GMarshalFunc_VOID__BOOLEAN_STRING) (marshal_data ? marshal_data : cc->callback);
-
-  callback (data1,
-            g_marshal_value_peek_boolean (param_values + 1),
-            g_marshal_value_peek_string (param_values + 2),
-            data2);
-}
-
 static void
 manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
                                  const char             *sid)
@@ -648,15 +625,20 @@ manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
                 return;
         }
 
-        dbus_g_object_register_marshaller (marshal_VOID__BOOLEAN_STRING,
+        dbus_g_object_register_marshaller (gdm_marshal_VOID__BOOLEAN_STRING_POINTER_STRING_POINTER,
                                            G_TYPE_NONE,
-                                           G_TYPE_BOOLEAN,
+                                           G_TYPE_BOOLEAN, G_TYPE_STRING,
+                                           GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
                                            G_TYPE_STRING,
+                                           GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
                                            G_TYPE_INVALID);
         dbus_g_proxy_add_signal (proxy,
                                  "SessionToAdd",
                                  G_TYPE_BOOLEAN,
                                  G_TYPE_STRING,
+                                 GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
+                                 G_TYPE_STRING,
+                                 GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
                                  G_TYPE_INVALID);
         dbus_g_proxy_add_signal (proxy,
                                  "SessionToRemove",
