@@ -66,6 +66,7 @@ struct GdmWelcomeSessionPrivate
 
         char           *x11_display_name;
         char           *x11_display_seat_id;
+        char           *x11_display_session_id;
         char           *x11_display_device;
         char           *x11_display_hostname;
         char           *x11_authority_file;
@@ -88,6 +89,7 @@ enum {
         PROP_0,
         PROP_X11_DISPLAY_NAME,
         PROP_X11_DISPLAY_SEAT_ID,
+        PROP_X11_DISPLAY_SESSION_ID,
         PROP_X11_DISPLAY_DEVICE,
         PROP_X11_DISPLAY_HOSTNAME,
         PROP_X11_AUTHORITY_FILE,
@@ -138,6 +140,7 @@ open_welcome_session (GdmWelcomeSession *welcome_session)
         const char    *hostname;
         const char    *x11_display_device;
         const char    *seat_id;
+        const char    *session_id;
         int            res;
         gboolean       ret;
         DBusError      error;
@@ -179,6 +182,12 @@ open_welcome_session (GdmWelcomeSession *welcome_session)
                 seat_id = "";
         }
 
+        if (welcome_session->priv->x11_display_session_id != NULL) {
+                session_id = welcome_session->priv->x11_display_session_id;
+        } else {
+                session_id = "";
+        }
+
         g_debug ("GdmWelcomeSession: Opening ConsoleKit session for user:%d x11-display:'%s' x11-display-device:'%s' remote-host-name:'%s' is-local:%d is-dynamic:%d",
                  pwent->pw_uid,
                  welcome_session->priv->x11_display_name,
@@ -194,6 +203,7 @@ open_welcome_session (GdmWelcomeSession *welcome_session)
                                                          "session-type", &session_type,
                                                          "x11-display", &welcome_session->priv->x11_display_name,
                                                          "seat-id", &seat_id,
+                                                         "session", &session_id,
                                                          "x11-display-device", &x11_display_device,
                                                          "remote-host-name", &hostname,
                                                          "is-local", &welcome_session->priv->x11_display_is_local,
@@ -902,6 +912,14 @@ _gdm_welcome_session_set_x11_display_seat_id (GdmWelcomeSession *welcome_session
 }
 
 static void
+_gdm_welcome_session_set_x11_display_session_id (GdmWelcomeSession *welcome_session,
+                                                 const char        *ssid)
+{
+        g_free (welcome_session->priv->x11_display_session_id);
+        welcome_session->priv->x11_display_session_id = g_strdup (ssid);
+}
+
+static void
 _gdm_welcome_session_set_x11_display_hostname (GdmWelcomeSession *welcome_session,
                                                const char        *name)
 {
@@ -1011,6 +1029,9 @@ gdm_welcome_session_set_property (GObject      *object,
         case PROP_X11_DISPLAY_SEAT_ID:
                 _gdm_welcome_session_set_x11_display_seat_id (self, g_value_get_string (value));
                 break;
+        case PROP_X11_DISPLAY_SESSION_ID:
+                _gdm_welcome_session_set_x11_display_session_id (self, g_value_get_string (value));
+                break;
         case PROP_X11_DISPLAY_HOSTNAME:
                 _gdm_welcome_session_set_x11_display_hostname (self, g_value_get_string (value));
                 break;
@@ -1072,6 +1093,9 @@ gdm_welcome_session_get_property (GObject    *object,
                 break;
         case PROP_X11_DISPLAY_SEAT_ID:
                 g_value_set_string (value, self->priv->x11_display_seat_id);
+                break;
+        case PROP_X11_DISPLAY_SESSION_ID:
+                g_value_set_string (value, self->priv->x11_display_session_id);
                 break;
         case PROP_X11_DISPLAY_HOSTNAME:
                 g_value_set_string (value, self->priv->x11_display_hostname);
@@ -1156,6 +1180,13 @@ gdm_welcome_session_class_init (GdmWelcomeSessionClass *klass)
                                          g_param_spec_string ("x11-display-seat-id",
                                                               "seat id",
                                                               "seat id",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_X11_DISPLAY_SESSION_ID,
+                                         g_param_spec_string ("x11-display-session-id",
+                                                              "session id",
+                                                              "session id",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,

@@ -85,6 +85,7 @@ struct GdmSlavePrivate
         gboolean         display_is_dynamic;
         gboolean         display_is_parented;
         char            *display_seat_id;
+        char            *display_session_id;
         char            *display_x11_authority_file;
         char            *parent_display_name;
         char            *parent_display_x11_authority_file;
@@ -104,6 +105,7 @@ enum {
         PROP_DISPLAY_IS_LOCAL,
         PROP_DISPLAY_IS_DYNAMIC,
         PROP_DISPLAY_SEAT_ID,
+        PROP_DISPLAY_SESSION_ID,
         PROP_DISPLAY_X11_AUTHORITY_FILE
 };
 
@@ -675,6 +677,24 @@ gdm_slave_real_start (GdmSlave *slave)
                 return FALSE;
         }
 
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->display_proxy,
+                                 "GetSessionId",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &slave->priv->display_session_id,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get value: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get value");
+                }
+
+                return FALSE;
+        }
+
         return TRUE;
 }
 
@@ -1231,6 +1251,14 @@ _gdm_slave_set_display_seat_id (GdmSlave   *slave,
 }
 
 static void
+_gdm_slave_set_display_session_id (GdmSlave   *slave,
+                                   const char *id)
+{
+        g_free (slave->priv->display_session_id);
+        slave->priv->display_session_id = g_strdup (id);
+}
+
+static void
 _gdm_slave_set_display_is_local (GdmSlave   *slave,
                                  gboolean    is)
 {
@@ -1269,6 +1297,9 @@ gdm_slave_set_property (GObject      *object,
                 break;
         case PROP_DISPLAY_SEAT_ID:
                 _gdm_slave_set_display_seat_id (self, g_value_get_string (value));
+                break;
+        case PROP_DISPLAY_SESSION_ID:
+                _gdm_slave_set_display_session_id (self, g_value_get_string (value));
                 break;
         case PROP_DISPLAY_X11_AUTHORITY_FILE:
                 _gdm_slave_set_display_x11_authority_file (self, g_value_get_string (value));
@@ -1310,6 +1341,9 @@ gdm_slave_get_property (GObject    *object,
                 break;
         case PROP_DISPLAY_SEAT_ID:
                 g_value_set_string (value, self->priv->display_seat_id);
+                break;
+        case PROP_DISPLAY_SESSION_ID:
+                g_value_set_string (value, self->priv->display_session_id);
                 break;
         case PROP_DISPLAY_X11_AUTHORITY_FILE:
                 g_value_set_string (value, self->priv->display_x11_authority_file);
@@ -1426,6 +1460,13 @@ gdm_slave_class_init (GdmSlaveClass *klass)
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_SEAT_ID,
                                          g_param_spec_string ("display-seat-id",
+                                                              "",
+                                                              "",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_SESSION_ID,
+                                         g_param_spec_string ("display-session-id",
                                                               "",
                                                               "",
                                                               NULL,

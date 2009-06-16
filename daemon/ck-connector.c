@@ -77,6 +77,7 @@ static struct {
         { "x11-display-device", DBUS_TYPE_STRING },
         { "x11-display",        DBUS_TYPE_STRING },
         { "seat-id",            DBUS_TYPE_STRING },
+        { "session",            DBUS_TYPE_STRING },
         { "remote-host-name",   DBUS_TYPE_STRING },
         { "session-type",       DBUS_TYPE_STRING },
         { "is-local",           DBUS_TYPE_BOOLEAN },

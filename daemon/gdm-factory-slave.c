@@ -462,6 +462,7 @@ run_greeter (GdmFactorySlave *slave)
         char          *display_id;
         char          *display_name;
         char          *seat_id;
+        char          *session_id;
         char          *display_device;
         char          *display_hostname;
         char          *auth_file;
@@ -474,6 +475,7 @@ run_greeter (GdmFactorySlave *slave)
         display_id = NULL;
         display_name = NULL;
         seat_id = NULL;
+        session_id = NULL;
         auth_file = NULL;
         display_device = NULL;
         display_hostname = NULL;
@@ -484,6 +486,7 @@ run_greeter (GdmFactorySlave *slave)
                       "display-id", &display_id,
                       "display-name", &display_name,
                       "seat-id", &seat_id,
+                      "session-id", &session_id,
                       "display-hostname", &display_hostname,
                       "display-x11-authority-file", &auth_file,
                       NULL);
@@ -541,6 +544,7 @@ run_greeter (GdmFactorySlave *slave)
         g_debug ("GdmFactorySlave: Creating greeter on %s %s", display_name, display_device);
         slave->priv->greeter = gdm_greeter_session_new (display_name,
                                                         seat_id,
+                                                        session_id,
                                                         display_device,
                                                         display_hostname,
                                                         display_is_local,

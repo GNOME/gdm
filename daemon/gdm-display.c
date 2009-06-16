@@ -51,6 +51,7 @@ static guint32 display_serial = 1;
 struct GdmDisplayPrivate
 {
         char                 *id;
+        char                 *session_id;
         char                 *seat_id;
 
         char                 *remote_hostname;
@@ -81,6 +82,7 @@ enum {
         PROP_ID,
         PROP_STATUS,
         PROP_SEAT_ID,
+        PROP_SESSION_ID,
         PROP_X11_COMMAND,
         PROP_REMOTE_HOSTNAME,
         PROP_X11_DISPLAY_NUMBER,
@@ -496,6 +498,20 @@ gdm_display_get_seat_id (GdmDisplay *display,
        return TRUE;
 }
 
+gboolean
+gdm_display_get_session_id (GdmDisplay *display,
+                            char      **session_id,
+                            GError    **error)
+{
+       g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+       if (session_id != NULL) {
+               *session_id = g_strdup (display->priv->session_id);
+       }
+
+       return TRUE;
+}
+
 static gboolean
 finish_idle (GdmDisplay *display)
 {
@@ -845,6 +861,14 @@ _gdm_display_set_seat_id (GdmDisplay     *display,
 }
 
 static void
+_gdm_display_set_session_id (GdmDisplay     *display,
+                             const char     *session_id)
+{
+        g_free (display->priv->session_id);
+        display->priv->session_id = g_strdup (session_id);
+}
+
+static void
 _gdm_display_set_remote_hostname (GdmDisplay     *display,
                                   const char     *hostname)
 {
@@ -927,6 +951,9 @@ gdm_display_set_property (GObject        *object,
         case PROP_SEAT_ID:
                 _gdm_display_set_seat_id (self, g_value_get_string (value));
                 break;
+        case PROP_SESSION_ID:
+                _gdm_display_set_session_id (self, g_value_get_string (value));
+                break;
         case PROP_REMOTE_HOSTNAME:
                 _gdm_display_set_remote_hostname (self, g_value_get_string (value));
                 break;
@@ -979,6 +1006,9 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_SEAT_ID:
                 g_value_set_string (value, self->priv->seat_id);
+                break;
+        case PROP_SESSION_ID:
+                g_value_set_string (value, self->priv->session_id);
                 break;
         case PROP_REMOTE_HOSTNAME:
                 g_value_set_string (value, self->priv->remote_hostname);
@@ -1161,6 +1191,13 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
+                                         PROP_SESSION_ID,
+                                         g_param_spec_string ("session-id",
+                                                              "session id",
+                                                              "session id",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
                                          PROP_X11_COOKIE,
                                          g_param_spec_string ("x11-cookie",
                                                               "cookie",
@@ -1243,6 +1280,7 @@ gdm_display_finalize (GObject *object)
         g_free (display->priv->id);
         g_free (display->priv->x11_command);
         g_free (display->priv->seat_id);
+        g_free (display->priv->session_id);
         g_free (display->priv->remote_hostname);
         g_free (display->priv->x11_display_name);
         g_free (display->priv->x11_cookie);

@@ -481,6 +481,7 @@ strrep (char* in, char** out, char* old, char* new)
 
 static void
 seat_session_to_add (DBusGProxy             *seat_proxy,
+                     const char             *ssid,
                      gboolean                is_dynamic,
                      const char             *type,
                      GHashTable             *display_variables,
@@ -562,6 +563,8 @@ seat_session_to_add (DBusGProxy             *seat_proxy,
                 return;
         }
 
+        g_object_set (display, "session-id", ssid, NULL);
+
         sid = dbus_g_proxy_get_path (seat_proxy);
         if (IS_STR_SET (sid))
                 g_object_set (display, "seat-id", sid, NULL);
@@ -625,15 +628,16 @@ manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
                 return;
         }
 
-        dbus_g_object_register_marshaller (gdm_marshal_VOID__BOOLEAN_STRING_POINTER_STRING_POINTER,
+        dbus_g_object_register_marshaller (gdm_marshal_VOID__STRING_BOOLEAN_STRING_POINTER_STRING_POINTER,
                                            G_TYPE_NONE,
-                                           G_TYPE_BOOLEAN, G_TYPE_STRING,
+                                           G_TYPE_STRING, G_TYPE_BOOLEAN, G_TYPE_STRING,
                                            GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
                                            G_TYPE_STRING,
                                            GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
                                            G_TYPE_INVALID);
         dbus_g_proxy_add_signal (proxy,
                                  "SessionToAdd",
+                                 G_TYPE_STRING,
                                  G_TYPE_BOOLEAN,
                                  G_TYPE_STRING,
                                  GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
@@ -642,7 +646,7 @@ manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
                                  G_TYPE_INVALID);
         dbus_g_proxy_add_signal (proxy,
                                  "SessionToRemove",
-                                 G_TYPE_INT,
+                                 G_TYPE_STRING,
                                  G_TYPE_INVALID);
         dbus_g_proxy_connect_signal (proxy,
                                      "SessionToAdd",
