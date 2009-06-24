@@ -1231,6 +1231,59 @@ gdm_slave_switch_to_user_session (GdmSlave   *slave,
         return ret;
 }
 
+void
+gdm_slave_block_console_session_requests_on_display (GdmSlave *slave)
+{
+        gboolean res;
+        GError  *error;
+
+        g_debug ("GdmSlave: Asking display to ignore ConsoleKit");
+
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->display_proxy,
+                                 "BlockConsoleSessionRequests",
+                                 &error,
+                                 G_TYPE_INVALID, G_TYPE_INVALID);
+
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get display to ignore ConsoleKit: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get display to ignore ConsoleKit");
+                }
+        } else {
+                g_debug ("GdmSlave: Display is now ignoring ConsoleKit");
+        }
+}
+
+void
+gdm_slave_unblock_console_session_requests_on_display (GdmSlave *slave)
+{
+        gboolean res;
+        GError  *error;
+
+        g_debug ("GdmSlave: Informing display to stop ignoring ConsoleKit");
+
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->display_proxy,
+                                 "UnblockConsoleSessionRequests",
+                                 &error,
+                                 G_TYPE_INVALID, G_TYPE_INVALID);
+
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get display to stop ignoring ConsoleKit: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get display to stop ignoring ConsoleKit");
+                }
+        } else {
+                g_debug ("GdmSlave: Display is no longer ignoring ConsoleKit");
+        }
+}
+
+
 static void
 _gdm_slave_set_display_id (GdmSlave   *slave,
                            const char *id)

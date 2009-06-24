@@ -155,6 +155,11 @@ gboolean            gdm_display_remove_user_authorization      (GdmDisplay *disp
 gboolean            gdm_display_set_slave_bus_name             (GdmDisplay *display,
                                                                 const char *name,
                                                                 GError    **error);
+gboolean            gdm_display_block_console_session_requests (GdmDisplay *display,
+                                                                GError    **error);
+
+gboolean            gdm_display_unblock_console_session_requests (GdmDisplay *display,
+                                                                  GError    **error);
 
 
 G_END_DECLS

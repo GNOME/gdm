@@ -70,6 +70,7 @@ struct GdmDisplayPrivate
         gboolean              is_local;
         gboolean              is_dynamic;
         gboolean              use_auth;
+        gboolean              block_console_session_requests;
         guint                 finish_idle_id;
 
         GdmSlaveProxy        *slave_proxy;
@@ -93,6 +94,7 @@ enum {
         PROP_IS_DYNAMIC,
         PROP_USE_AUTH,
         PROP_SLAVE_COMMAND,
+        PROP_BLOCK_CONSOLE_SESSION_REQUESTS,
 };
 
 static void     gdm_display_class_init  (GdmDisplayClass *klass);
@@ -939,6 +941,13 @@ _gdm_display_set_slave_command (GdmDisplay     *display,
 }
 
 static void
+_gdm_display_set_block_console_session_requests (GdmDisplay     *display,
+                                                 gboolean        block_console_session_requests)
+{
+        display->priv->block_console_session_requests = block_console_session_requests;
+}
+
+static void
 gdm_display_set_property (GObject        *object,
                           guint           prop_id,
                           const GValue   *value,
@@ -987,6 +996,9 @@ gdm_display_set_property (GObject        *object,
                 break;
         case PROP_SLAVE_COMMAND:
                 _gdm_display_set_slave_command (self, g_value_get_string (value));
+                break;
+        case PROP_BLOCK_CONSOLE_SESSION_REQUESTS:
+                _gdm_display_set_block_console_session_requests (self, g_value_get_boolean (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1047,6 +1059,9 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_SLAVE_COMMAND:
                 g_value_set_string (value, self->priv->slave_command);
+                break;
+        case PROP_BLOCK_CONSOLE_SESSION_REQUESTS:
+                g_value_set_boolean (value, self->priv->block_console_session_requests);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1250,6 +1265,13 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               DEFAULT_SLAVE_COMMAND,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
+                                         PROP_BLOCK_CONSOLE_SESSION_REQUESTS,
+                                         g_param_spec_boolean ("block-console-session-requests",
+                                                              "Block Console Session Requests",
+                                                              "Block session requests from ConsoleKit",
+                                                              FALSE,
+                                                              G_PARAM_READWRITE));
+        g_object_class_install_property (object_class,
                                          PROP_STATUS,
                                          g_param_spec_int ("status",
                                                            "status",
@@ -1309,4 +1331,26 @@ gdm_display_finalize (GObject *object)
         }
 
         G_OBJECT_CLASS (gdm_display_parent_class)->finalize (object);
+}
+
+gboolean
+gdm_display_block_console_session_requests (GdmDisplay *display,
+                                            GError    **error)
+{
+        if (!display->priv->block_console_session_requests) {
+                _gdm_display_set_block_console_session_requests (display, TRUE);
+                g_object_notify (G_OBJECT (display), "block-console-session-requests");
+        }
+        return TRUE;
+}
+
+gboolean
+gdm_display_unblock_console_session_requests (GdmDisplay *display,
+                                              GError    **error)
+{
+        if (display->priv->block_console_session_requests) {
+                _gdm_display_set_block_console_session_requests (display, FALSE);
+                g_object_notify (G_OBJECT (display), "block-console-session-requests");
+        }
+        return TRUE;
 }
