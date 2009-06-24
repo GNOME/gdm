@@ -88,6 +88,7 @@ struct _GdmSessionDirectPrivate
         char                *display_hostname;
         char                *display_device;
         char                *display_x11_authority_file;
+        char                *display_console_session;
         gboolean             display_is_local;
 
         DBusServer          *server;
@@ -104,6 +105,7 @@ enum {
         PROP_DISPLAY_IS_LOCAL,
         PROP_DISPLAY_DEVICE,
         PROP_DISPLAY_X11_AUTHORITY_FILE,
+        PROP_DISPLAY_CONSOLE_SESSION,
         PROP_USER_X11_AUTHORITY_FILE,
 };
 
@@ -732,6 +734,34 @@ gdm_session_direct_handle_username_changed (GdmSessionDirect *session,
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
+static DBusHandlerResult
+gdm_session_direct_handle_display_console_session_updated (GdmSessionDirect *session,
+                                                           DBusConnection   *connection,
+                                                           DBusMessage      *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+        const char  *text;
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &text,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        g_debug ("GdmSessionDirect: changing ck session id to '%s'",
+                 text);
+
+
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
 static void
 cancel_pending_query (GdmSessionDirect *session)
 {
@@ -1162,6 +1192,8 @@ session_worker_message (DBusConnection *connection,
                 return gdm_session_direct_handle_accreditation_failed (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "UsernameChanged")) {
                 return gdm_session_direct_handle_username_changed (session, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "DisplayConsoleSessionUpdated")) {
+                return gdm_session_direct_handle_display_console_session_updated (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SessionStarted")) {
                 return gdm_session_direct_handle_session_started (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "StartFailed")) {
@@ -2189,6 +2221,14 @@ _gdm_session_direct_set_display_x11_authority_file (GdmSessionDirect *session,
 }
 
 static void
+_gdm_session_direct_set_display_console_session (GdmSessionDirect *session,
+                                            const char       *console_session)
+{
+        g_free (session->priv->display_console_session);
+        session->priv->display_console_session = g_strdup (console_session);
+}
+
+static void
 _gdm_session_direct_set_display_is_local (GdmSessionDirect *session,
                                           gboolean          is)
 {
@@ -2223,6 +2263,9 @@ gdm_session_direct_set_property (GObject      *object,
                 break;
         case PROP_DISPLAY_X11_AUTHORITY_FILE:
                 _gdm_session_direct_set_display_x11_authority_file (self, g_value_get_string (value));
+                break;
+        case PROP_DISPLAY_CONSOLE_SESSION:
+                _gdm_session_direct_set_display_console_session (self, g_value_get_string (value));
                 break;
         case PROP_DISPLAY_IS_LOCAL:
                 _gdm_session_direct_set_display_is_local (self, g_value_get_boolean (value));
@@ -2261,6 +2304,9 @@ gdm_session_direct_get_property (GObject    *object,
                 break;
         case PROP_DISPLAY_X11_AUTHORITY_FILE:
                 g_value_set_string (value, self->priv->display_x11_authority_file);
+                break;
+        case PROP_DISPLAY_CONSOLE_SESSION:
+                g_value_set_string (value, self->priv->display_console_session);
                 break;
         case PROP_DISPLAY_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->display_is_local);
@@ -2458,6 +2504,14 @@ gdm_session_direct_class_init (GdmSessionDirectClass *session_class)
                                          g_param_spec_string ("display-x11-authority-file",
                                                               "display x11 authority file",
                                                               "display x11 authority file",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+        g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_CONSOLE_SESSION,
+                                         g_param_spec_string ("display-console-session",
+                                                              "Display ConsoleKit session",
+                                                              "The ConsoleKit Session Id for the display",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         /* not construct only */

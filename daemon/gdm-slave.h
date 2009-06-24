@@ -78,7 +78,8 @@ gboolean            gdm_slave_run_script             (GdmSlave   *slave,
                                                       const char *dir,
                                                       const char *username);
 void                gdm_slave_stopped                (GdmSlave   *slave);
-
+void                gdm_slave_set_console_session_id (GdmSlave   *slave,
+                                                      const char *session_id);
 G_END_DECLS
 
 #endif /* __GDM_SLAVE_H */

@@ -868,6 +868,16 @@ _gdm_display_set_session_id (GdmDisplay     *display,
         display->priv->session_id = g_strdup (session_id);
 }
 
+gboolean
+gdm_display_set_session_id (GdmDisplay *display,
+                            const char *session_id,
+                            GError    **error)
+{
+        _gdm_display_set_session_id (display, session_id);
+        g_object_notify (G_OBJECT (display), "session-id");
+        return TRUE;
+}
+
 static void
 _gdm_display_set_remote_hostname (GdmDisplay     *display,
                                   const char     *hostname)

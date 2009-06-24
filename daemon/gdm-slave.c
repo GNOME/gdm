@@ -750,6 +750,34 @@ gdm_slave_stopped (GdmSlave *slave)
         g_signal_emit (slave, signals [STOPPED], 0);
 }
 
+void
+gdm_slave_set_console_session_id (GdmSlave   *slave,
+                                  const char *session_id)
+{
+        gboolean res;
+        GError  *error;
+
+        g_debug ("GdmSlave: Informing display of new session id");
+
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->display_proxy,
+                                 "SetConsoleSessionId",
+                                 &error,
+                                 G_TYPE_STRING, session_id,
+                                 G_TYPE_INVALID, G_TYPE_INVALID);
+
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to set console session id: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to set console session id");
+                }
+        } else {
+                g_debug ("GdmSlave: Set console session id");
+        }
+}
+
 gboolean
 gdm_slave_add_user_authorization (GdmSlave   *slave,
                                   const char *username,

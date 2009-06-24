@@ -1569,6 +1569,7 @@ static void
 register_ck_session (GdmSessionWorker *worker)
 {
         const char *session_cookie;
+        const char *session_id;
         gboolean    res;
 
         session_cookie = NULL;
@@ -1581,6 +1582,12 @@ register_ck_session (GdmSessionWorker *worker)
                                                              "XDG_SESSION_COOKIE",
                                                              session_cookie);
         }
+
+        session_id = ck_connector_get_session_id (worker->priv->ckc);
+
+        send_dbus_string_method (worker->priv->connection,
+                                 "DisplayConsoleSessionUpdated",
+                                 session_id);
 }
 
 static void

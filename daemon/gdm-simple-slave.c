@@ -568,6 +568,16 @@ on_default_session_name_changed (GdmSession     *session,
 }
 
 static void
+on_console_session_changed (GdmSession     *session,
+                            const char     *text,
+                            GdmSimpleSlave *slave)
+{
+        g_debug ("GdmSimpleSlave: Default session name changed: %s", text);
+
+        gdm_slave_set_console_session_id (GDM_SLAVE (slave), text);
+}
+
+static void
 create_new_session (GdmSimpleSlave *slave)
 {
         gboolean       display_is_local;
@@ -699,6 +709,11 @@ create_new_session (GdmSimpleSlave *slave)
         g_signal_connect (slave->priv->session,
                           "default-session-name-changed",
                           G_CALLBACK (on_default_session_name_changed),
+                          slave);
+
+        g_signal_connect (slave->priv->session,
+                          "notify::display-console-session",
+                          G_CALLBACK (on_console_session_changed),
                           slave);
 }
 
