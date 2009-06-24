@@ -86,7 +86,6 @@ static void     gdm_local_display_factory_class_init    (GdmLocalDisplayFactoryC
 static void     gdm_local_display_factory_init          (GdmLocalDisplayFactory      *factory);
 static void     gdm_local_display_factory_finalize      (GObject                     *object);
 
-static GdmDisplay *create_display                       (GdmLocalDisplayFactory      *factory);
 static gboolean create_static_displays                  (GdmLocalDisplayFactory      *factory);
 static void     on_display_status_changed               (GdmDisplay                  *display,
                                                          GParamSpec                  *arg1,
@@ -381,7 +380,6 @@ on_display_status_changed (GdmDisplay             *display,
                 gdm_display_store_remove (store, display);
                 /* reset num failures */
                 factory->priv->num_failures = 0;
-                create_display (factory);
                 break;
         case GDM_DISPLAY_FAILED:
                 /* leave the display number in factory->priv->displays
@@ -393,8 +391,6 @@ on_display_status_changed (GdmDisplay             *display,
                         g_warning ("GdmLocalDisplayFactory: maximum number of X display failures reached: check X server log for errors");
                         exit (1);
                 }
-
-                create_display (factory);
                 break;
         case GDM_DISPLAY_UNMANAGED:
                 break;
@@ -406,44 +402,6 @@ on_display_status_changed (GdmDisplay             *display,
                 g_assert_not_reached ();
                 break;
         }
-}
-
-static GdmDisplay *
-create_display (GdmLocalDisplayFactory *factory)
-{
-        GdmDisplay *display;
-        guint32     num;
-
-        num = take_next_display_number (factory);
-
-#if 0
-        display = gdm_static_factory_display_new (num);
-#else
-        display = gdm_static_display_new (num);
-#endif
-        if (display == NULL) {
-                g_warning ("Unable to create display: %d", num);
-                return NULL;
-        }
-
-        /* FIXME: don't hardcode seat1? */
-        g_object_set (display, "seat-id", CK_SEAT1_PATH, NULL);
-
-        g_signal_connect (display,
-                          "notify::status",
-                          G_CALLBACK (on_display_status_changed),
-                          factory);
-
-        store_display (factory, num, display);
-
-        /* let store own the ref */
-        g_object_unref (display);
-
-        if (! gdm_display_manage (display)) {
-                gdm_display_unmanage (display);
-        }
-
-        return display;
 }
 
 #ifndef HAVE_STRREP
