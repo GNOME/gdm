@@ -374,6 +374,10 @@ start_session_timeout (GdmSimpleSlave *slave)
                 goto out;
         }
 
+        /* Defer requests to use this display from ConsoleKit
+         * for the time being
+         */
+        gdm_slave_block_console_session_requests_on_display (GDM_SLAVE (slave));
         stop_greeter (slave);
 
         auth_file = NULL;
@@ -388,6 +392,7 @@ start_session_timeout (GdmSimpleSlave *slave)
         g_free (auth_file);
 
         gdm_session_start_session (GDM_SESSION (slave->priv->session));
+        gdm_slave_unblock_console_session_requests_on_display (GDM_SLAVE (slave));
  out:
         slave->priv->start_session_id = 0;
         return FALSE;
