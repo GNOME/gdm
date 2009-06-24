@@ -98,17 +98,11 @@ gdm_dynamic_display_manage (GdmDisplay *display)
 static gboolean
 gdm_dynamic_display_finish (GdmDisplay *display)
 {
-        int status;
-
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
-        /* restart dynamic display */
-        gdm_display_unmanage (display);
+        GDM_DISPLAY_CLASS (gdm_dynamic_display_parent_class)->finish (display);
 
-        status = gdm_display_get_status (display);
-        if (status != GDM_DISPLAY_FAILED) {
-                gdm_display_manage (display);
-        }
+        gdm_display_unmanage (display);
 
         return TRUE;
 }
