@@ -689,6 +689,22 @@
 <screen>
        gdm-autologin session required pam_unix_session.so.1
 </screen>
+
+      <para>
+        If the computer is used by several people, which makes automatic login
+        unsuitable, you may want to allow some users to log in without entering
+        their password. This feature can be enabled as a per-user option in
+        the users-admin tool from the gnome-system-tools; it is achieved by
+        checking that the user is member a Unix group called
+        &quot;nopasswdlogin&quot; before asking for password. For this to work,
+        the PAM configuration file for the &quot;gdm&quot; service must include
+        a line such as:
+      </para>
+
+<screen>
+      gdm auth  sufficient  pam_succeed_if.so  user ingroup nopasswdlogin
+</screen>
+
     </sect2>
 
     <sect2 id="utmpwtmp">
