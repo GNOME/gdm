@@ -689,6 +689,63 @@ seat_session_to_remove (DBusGProxy             *seat_proxy,
 }
 
 static void
+seat_remove_request (DBusGProxy             *seat_proxy,
+                     GdmLocalDisplayFactory *factory)
+{
+        GHashTableIter iter;
+        gpointer key, value;
+        const char *sid_to_remove;
+        GQueue      ssids_to_remove;
+
+        sid_to_remove = dbus_g_proxy_get_path (seat_proxy);
+
+        g_queue_init (&ssids_to_remove);
+        g_hash_table_iter_init (&iter, factory->priv->displays_by_session);
+        while (g_hash_table_iter_next (&iter, &key, &value)) {
+                GdmDisplay *display;
+                char       *sid;
+
+                display = value;
+
+                gdm_display_get_seat_id (display, &sid, NULL);
+
+                if (strcmp (sid, sid_to_remove) == 0) {
+                        char       *ssid;
+
+                        gdm_display_get_session_id (display, &ssid, NULL);
+
+                        g_queue_push_tail (&ssids_to_remove, ssid);
+                }
+
+                g_free (sid);
+        }
+
+        while (!g_queue_is_empty (&ssids_to_remove)) {
+                char       *ssid;
+
+                ssid = g_queue_pop_head (&ssids_to_remove);
+
+                seat_session_to_remove (seat_proxy, ssid, factory);
+
+                g_free (ssid);
+        }
+
+        g_hash_table_remove (factory->priv->managed_seat_proxies, sid_to_remove);
+
+        dbus_g_proxy_call_no_reply (seat_proxy,
+                                    "UnmanageSeat",
+                                    DBUS_TYPE_G_OBJECT_PATH, sid_to_remove,
+                                    G_TYPE_INVALID,
+                                    G_TYPE_INVALID);
+
+        dbus_g_proxy_call_no_reply (seat_proxy,
+                                    "RemoveSeat",
+                                    DBUS_TYPE_G_OBJECT_PATH, sid_to_remove,
+                                    G_TYPE_INVALID,
+                                    G_TYPE_INVALID);
+}
+
+static void
 manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
                                  const char             *sid)
 {
@@ -724,6 +781,9 @@ manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
                                  "SessionToRemove",
                                  G_TYPE_STRING,
                                  G_TYPE_INVALID);
+        dbus_g_proxy_add_signal (proxy,
+                                 "RemoveRequest",
+                                 G_TYPE_INVALID);
         dbus_g_proxy_connect_signal (proxy,
                                      "SessionToAdd",
                                      G_CALLBACK (seat_session_to_add),
@@ -732,6 +792,12 @@ manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
         dbus_g_proxy_connect_signal (proxy,
                                      "SessionToRemove",
                                      G_CALLBACK (seat_session_to_remove),
+                                     factory,
+                                     NULL);
+
+        dbus_g_proxy_connect_signal (proxy,
+                                     "RemoveRequest",
+                                     G_CALLBACK (seat_remove_request),
                                      factory,
                                      NULL);
 
