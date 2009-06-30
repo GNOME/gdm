@@ -583,6 +583,11 @@ seat_session_to_add (DBusGProxy             *seat_proxy,
                 strrep (comm, &comm, "-auth $auth", "");
         }
 
+        if (strstr (comm, "$vt")) {
+                use_auth = TRUE;
+                strrep (comm, &comm, "$vt", "");
+        }
+
         if (display == NULL) {
                 if (is_chooser) {
                         /* TODO: Start a xdmcp chooser as request */
