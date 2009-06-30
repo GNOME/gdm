@@ -73,7 +73,7 @@ struct GdmLocalDisplayFactoryPrivate
         DBusGProxy      *proxy_ck;
         GHashTable      *displays;
         GHashTable      *displays_by_session;
-        GSList          *lst_proxy;
+        GHashTable      *managed_seat_proxies;
 
         /* FIXME: this needs to be per seat? */
         guint            num_failures;
@@ -740,8 +740,9 @@ manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
                                     G_TYPE_INVALID,
                                     G_TYPE_INVALID);
 
-        factory->priv->lst_proxy = g_slist_append (factory->priv->lst_proxy, proxy);
-
+        g_hash_table_insert (factory->priv->managed_seat_proxies,
+                             g_strdup (dbus_g_proxy_get_path (proxy)),
+                             proxy);
 }
 
 static void
@@ -1053,6 +1054,10 @@ gdm_local_display_factory_init (GdmLocalDisplayFactory *factory)
         factory->priv->displays_by_session = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                                     (GDestroyNotify) g_free,
                                                                     (GDestroyNotify) g_object_unref);
+
+        factory->priv->managed_seat_proxies = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                                    (GDestroyNotify) g_free,
+                                                                    (GDestroyNotify) g_object_unref);
 }
 
 static void
@@ -1069,8 +1074,7 @@ gdm_local_display_factory_finalize (GObject *object)
 
         g_hash_table_destroy (factory->priv->displays);
         g_hash_table_destroy (factory->priv->displays_by_session);
-
-        g_slist_foreach (factory->priv->lst_proxy, g_object_unref, NULL);
+        g_hash_table_destroy (factory->priv->managed_seat_proxies);
 
         disconnect_from_hal (factory);
         disconnect_from_ck (factory);
