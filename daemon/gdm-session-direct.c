@@ -270,7 +270,7 @@ gdm_session_direct_handle_setup_failed (GdmSessionDirect *session,
 
         g_debug ("GdmSessionDirect: Emitting 'setup-failed' signal");
 
-        _gdm_session_setup_failed (GDM_SESSION (session), NULL);
+        _gdm_session_setup_failed (GDM_SESSION (session), text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -316,7 +316,7 @@ gdm_session_direct_handle_reset_failed (GdmSessionDirect *session,
 
         g_debug ("GdmSessionDirect: Emitting 'reset-failed' signal");
 
-        _gdm_session_reset_failed (GDM_SESSION (session), NULL);
+        _gdm_session_reset_failed (GDM_SESSION (session), text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -363,7 +363,7 @@ gdm_session_direct_handle_authentication_failed (GdmSessionDirect *session,
         g_debug ("GdmSessionDirect: Emitting 'authentication-failed' signal");
 
         session->priv->is_authenticated = FALSE;
-        _gdm_session_authentication_failed (GDM_SESSION (session), NULL);
+        _gdm_session_authentication_failed (GDM_SESSION (session), text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -408,7 +408,7 @@ gdm_session_direct_handle_authorization_failed (GdmSessionDirect *session,
 
         g_debug ("GdmSessionDirect: Emitting 'authorization-failed' signal");
 
-        _gdm_session_authorization_failed (GDM_SESSION (session), NULL);
+        _gdm_session_authorization_failed (GDM_SESSION (session), text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -453,7 +453,7 @@ gdm_session_direct_handle_accreditation_failed (GdmSessionDirect *session,
 
         g_debug ("GdmSessionDirect: Emitting 'accreditation-failed' signal");
 
-        _gdm_session_accreditation_failed (GDM_SESSION (session), NULL);
+        _gdm_session_accreditation_failed (GDM_SESSION (session), text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }

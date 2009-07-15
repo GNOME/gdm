@@ -217,7 +217,7 @@ on_session_setup_failed (GdmSession     *session,
 {
         if (slave->priv->greeter_server != NULL) {
                 gdm_greeter_server_problem (slave->priv->greeter_server,
-                                            _("Unable to initialize login system"));
+                                           message != NULL ? message:  _("Unable to initialize login system"));
         }
 
         destroy_session (slave);
@@ -253,7 +253,7 @@ on_session_authentication_failed (GdmSession     *session,
 {
         if (slave->priv->greeter_server != NULL) {
                 gdm_greeter_server_problem (slave->priv->greeter_server,
-                                            _("Unable to authenticate user"));
+                                            message != NULL ? message : _("Unable to authenticate user"));
         }
         destroy_session (slave);
         queue_greeter_reset (slave);
@@ -307,7 +307,7 @@ on_session_authorization_failed (GdmSession     *session,
 {
         if (slave->priv->greeter_server != NULL) {
                 gdm_greeter_server_problem (slave->priv->greeter_server,
-                                            _("Unable to authorize user"));
+                                           message != NULL ? message :  _("Unable to authorize user"));
         }
 
         destroy_session (slave);
