@@ -278,10 +278,10 @@ gboolean
 gdm_settings_parse_value_as_boolean (const char *value,
                                      gboolean   *bool)
 {
-        if (strcmp (value, "true") == 0 || strcmp (value, "1") == 0) {
+        if (g_ascii_strcasecmp (value, "true") == 0 || strcmp (value, "1") == 0) {
                 *bool = TRUE;
                 return TRUE;
-        } else if (strcmp (value, "false") == 0 || strcmp (value, "0") == 0) {
+        } else if (g_ascii_strcasecmp (value, "false") == 0 || strcmp (value, "0") == 0) {
                 *bool = FALSE;
                 return TRUE;
         } else {
