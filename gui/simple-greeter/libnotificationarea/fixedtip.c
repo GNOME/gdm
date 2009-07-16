@@ -81,7 +81,6 @@ na_fixed_tip_class_init (NaFixedTipClass *class)
   g_type_class_add_private (class, sizeof (NaFixedTipPrivate));
 }
 
-/* Did you already see this code? Yes, it's gtk_tooltips_force_window() ;-) */
 static void
 na_fixed_tip_init (NaFixedTip *fixedtip)
 {
