@@ -37,6 +37,7 @@
 #include "gdm-greeter-client.h"
 #include "gdm-greeter-panel.h"
 #include "gdm-greeter-login-window.h"
+#include "gdm-user-chooser-widget.h"
 
 #include "gdm-profile.h"
 
@@ -102,11 +103,23 @@ on_reset (GdmGreeterClient  *client,
 }
 
 static void
+show_or_hide_user_options (GdmGreeterSession *session,
+                           const char        *username)
+{
+    if (username != NULL && strcmp (username, GDM_USER_CHOOSER_USER_OTHER) != 0) {
+            gdm_greeter_panel_show_user_options (GDM_GREETER_PANEL (session->priv->panel));
+    } else {
+            gdm_greeter_panel_hide_user_options (GDM_GREETER_PANEL (session->priv->panel));
+    }
+}
+
+static void
 on_selected_user_changed (GdmGreeterClient  *client,
                           const char        *text,
                           GdmGreeterSession *session)
 {
         g_debug ("GdmGreeterSession: selected user changed: %s", text);
+        show_or_hide_user_options (session, text);
 }
 
 static void
@@ -240,7 +253,7 @@ on_select_user (GdmGreeterLoginWindow *login_window,
                 const char            *text,
                 GdmGreeterSession     *session)
 {
-        gdm_greeter_panel_show_user_options (GDM_GREETER_PANEL (session->priv->panel));
+        show_or_hide_user_options (session, text);
         gdm_greeter_client_call_select_user (session->priv->client,
                                              text);
 }

@@ -92,6 +92,7 @@
 #define KEY_GREETER_DIR             "/apps/gdm/simple-greeter"
 #define KEY_BANNER_MESSAGE_ENABLED  KEY_GREETER_DIR "/banner_message_enable"
 #define KEY_BANNER_MESSAGE_TEXT     KEY_GREETER_DIR "/banner_message_text"
+#define KEY_BANNER_MESSAGE_TEXT_NOCHOOSER     KEY_GREETER_DIR "/banner_message_text_nochooser"
 #define KEY_LOGO                    KEY_GREETER_DIR "/logo_icon_name"
 #define KEY_DISABLE_RESTART_BUTTONS KEY_GREETER_DIR "/disable_restart_buttons"
 #define GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_LOGIN_WINDOW, GdmGreeterLoginWindowPrivate))
@@ -103,6 +104,7 @@ enum {
 
 enum {
         LOGIN_BUTTON_HIDDEN = 0,
+        LOGIN_BUTTON_START_OTHER,
         LOGIN_BUTTON_ANSWER_QUERY,
         LOGIN_BUTTON_TIMED_LOGIN
 };
@@ -114,6 +116,7 @@ struct GdmGreeterLoginWindowPrivate
         GtkWidget       *auth_banner_label;
         guint            display_is_local : 1;
         guint            is_interactive : 1;
+        guint            user_chooser_loaded : 1;
         GConfClient     *client;
 
         gboolean         banner_message_enabled;
@@ -159,6 +162,10 @@ static void     gdm_greeter_login_window_finalize     (GObject                  
 static void     restart_timed_login_timeout (GdmGreeterLoginWindow *login_window);
 static void     on_user_unchosen            (GdmUserChooserWidget *user_chooser,
                                              GdmGreeterLoginWindow *login_window);
+
+static void     switch_mode                 (GdmGreeterLoginWindow *login_window,
+                                             int                    number);
+static void     update_banner_message       (GdmGreeterLoginWindow *login_window);
 
 G_DEFINE_TYPE (GdmGreeterLoginWindow, gdm_greeter_login_window, GTK_TYPE_WINDOW)
 
@@ -407,6 +414,17 @@ on_login_button_clicked_timed_login (GtkButton             *button,
 
         _gdm_greeter_login_window_set_interactive (login_window, TRUE);
 }
+static void
+on_login_button_clicked_start_other (GtkButton             *button,
+                                     GdmGreeterLoginWindow *login_window)
+{
+        g_debug ("GdmGreeterLoginWindow: starting OTHER login");
+
+        g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
+                       0, GDM_USER_CHOOSER_USER_OTHER);
+        g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
+        switch_mode (login_window, MODE_AUTHENTICATION);
+}
 
 static void
 set_log_in_button_mode (GdmGreeterLoginWindow *login_window,
@@ -427,6 +445,10 @@ set_log_in_button_mode (GdmGreeterLoginWindow *login_window,
         case LOGIN_BUTTON_HIDDEN:
                 gtk_widget_hide (button);
                 break;
+        case LOGIN_BUTTON_START_OTHER:
+                login_window->priv->login_button_handler_id = g_signal_connect (button, "clicked", G_CALLBACK (on_login_button_clicked_start_other), login_window);
+                gtk_widget_show (button);
+                break;
         case LOGIN_BUTTON_ANSWER_QUERY:
                 login_window->priv->login_button_handler_id = g_signal_connect (button, "clicked", G_CALLBACK (on_login_button_clicked_answer_query), login_window);
                 gtk_widget_show (button);
@@ -438,6 +460,24 @@ set_log_in_button_mode (GdmGreeterLoginWindow *login_window,
         default:
                 g_assert_not_reached ();
                 break;
+        }
+}
+
+static void
+adjust_other_login_visibility(GdmGreeterLoginWindow *login_window)
+{
+        if (! login_window->priv->user_chooser_loaded) {
+                return;
+        }
+
+        if (login_window->priv->dialog_mode != MODE_SELECTION) {
+                return;
+        }
+
+        if (gdm_chooser_widget_get_number_of_items (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser)) == 0) {
+                set_log_in_button_mode (login_window, LOGIN_BUTTON_START_OTHER);
+        } else {
+                set_log_in_button_mode (login_window, LOGIN_BUTTON_HIDDEN);
         }
 }
 
@@ -708,7 +748,11 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         set_sensitive (login_window, TRUE);
         set_ready (login_window);
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
-        gdm_chooser_widget_propagate_pending_key_events (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser));
+        update_banner_message (login_window);
+        adjust_other_login_visibility (login_window);
+        if (gdm_chooser_widget_get_number_of_items (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser)) >= 1) {
+                gdm_chooser_widget_propagate_pending_key_events (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser));
+        }
 }
 
 static void
@@ -1320,9 +1364,21 @@ shutdown_button_clicked (GtkButton             *button,
 }
 
 static void
+on_user_chooser_visibility_changed (GdmGreeterLoginWindow *login_window)
+{
+        update_banner_message (login_window);
+        adjust_other_login_visibility (login_window);
+}
+
+static void
 on_users_loaded (GdmUserChooserWidget  *user_chooser,
                  GdmGreeterLoginWindow *login_window)
 {
+        g_debug ("GdmGreeterLoginWindow: users loaded");
+        login_window->priv->user_chooser_loaded = TRUE;
+        update_banner_message (login_window);
+        adjust_other_login_visibility (login_window);
+
         gdm_chooser_widget_activate_if_one_item (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser));
 }
 
@@ -1594,6 +1650,11 @@ load_theme (GdmGreeterLoginWindow *login_window)
                           G_CALLBACK (on_user_unchosen),
                           login_window);
 
+        g_signal_connect_swapped (login_window->priv->user_chooser,
+                                 "notify::list-visible",
+                                 G_CALLBACK (on_user_chooser_visibility_changed),
+                                 login_window);
+
         gtk_widget_show (login_window->priv->user_chooser);
 
         login_window->priv->auth_banner_label = glade_xml_get_widget (login_window->priv->xml, "auth-banner-label");
@@ -1711,9 +1772,23 @@ update_banner_message (GdmGreeterLoginWindow *login_window)
                 g_debug ("GdmGreeterLoginWindow: banner message disabled");
                 gtk_widget_hide (login_window->priv->auth_banner_label);
         } else {
-                char *message;
+                char *message = NULL;
                 error = NULL;
-                message = gconf_client_get_string (login_window->priv->client, KEY_BANNER_MESSAGE_TEXT, &error);
+                if (login_window->priv->user_chooser_loaded && gdm_chooser_widget_get_number_of_items (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser)) == 0) {
+                        message = gconf_client_get_string (login_window->priv->client, KEY_BANNER_MESSAGE_TEXT_NOCHOOSER, &error);
+                        if (error != NULL) {
+                                g_debug("GdmGreeterLoginWindow: unable to get nochooser banner text: %s", error->message);
+                                g_error_free(error);
+                        }
+                }
+                error = NULL;
+                if (message == NULL) {
+                        message = gconf_client_get_string (login_window->priv->client, KEY_BANNER_MESSAGE_TEXT, &error);
+                        if (error != NULL) {
+                                g_debug("GdmGreeterLoginWindow: unable to get banner text: %s", error->message);
+                                g_error_free(error);
+                        }
+                }
                 if (message != NULL) {
                         char *markup;
                         markup = g_markup_printf_escaped ("<small><i>%s</i></small>", message);
@@ -1885,7 +1960,7 @@ on_gconf_key_changed (GConfClient           *client,
                         g_warning ("Error retrieving configuration key '%s': Invalid type",
                                    key);
                 }
-        } else if (strcmp (key, KEY_BANNER_MESSAGE_TEXT) == 0) {
+        } else if (strcmp (key, KEY_BANNER_MESSAGE_TEXT) == 0 || strcmp (key, KEY_BANNER_MESSAGE_TEXT_NOCHOOSER) == 0) {
                 if (login_window->priv->banner_message_enabled) {
                         update_banner_message (login_window);
                 }

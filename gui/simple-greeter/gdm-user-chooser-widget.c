@@ -67,6 +67,8 @@ struct GdmUserChooserWidgetPrivate
         guint           show_user_auto : 1;
         guint           show_normal_users : 1;
 
+        guint           has_user_other : 1;
+
         guint           load_idle_id;
 };
 
@@ -82,6 +84,9 @@ static void     gdm_user_chooser_widget_init        (GdmUserChooserWidget      *
 static void     gdm_user_chooser_widget_finalize    (GObject                   *object);
 
 G_DEFINE_TYPE (GdmUserChooserWidget, gdm_user_chooser_widget, GDM_TYPE_CHOOSER_WIDGET)
+
+static void     add_user_other    (GdmUserChooserWidget *widget);
+static void     remove_user_other (GdmUserChooserWidget *widget);
 
 static int
 get_font_height_for_widget (GtkWidget *widget)
@@ -123,8 +128,31 @@ get_icon_height_for_widget (GtkWidget *widget)
 }
 
 static void
+update_other_user_visibility (GdmUserChooserWidget *widget)
+{
+        if (!widget->priv->show_user_other) {
+                if (widget->priv->has_user_other) {
+                        remove_user_other (widget);
+                }
+
+                return;
+        }
+
+        if (gdm_chooser_widget_get_number_of_items (GDM_CHOOSER_WIDGET (widget)) == 1) {
+                /* we hide the Other user if it's the last one, and we show it
+                 * if there's another user */
+                if (widget->priv->has_user_other) {
+                        remove_user_other (widget);
+                } else {
+                        add_user_other (widget);
+                }
+        }
+}
+
+static void
 add_user_other (GdmUserChooserWidget *widget)
 {
+        widget->priv->has_user_other = TRUE;
         gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                      GDM_USER_CHOOSER_USER_OTHER,
                                      NULL,
@@ -151,6 +179,7 @@ add_user_guest (GdmUserChooserWidget *widget)
                                      0,
                                      FALSE,
                                      TRUE);
+        update_other_user_visibility (widget);
 }
 
 static void
@@ -164,11 +193,13 @@ add_user_auto (GdmUserChooserWidget *widget)
                                      0,
                                      FALSE,
                                      TRUE);
+        update_other_user_visibility (widget);
 }
 
 static void
 remove_user_other (GdmUserChooserWidget *widget)
 {
+        widget->priv->has_user_other = FALSE;
         gdm_chooser_widget_remove_item (GDM_CHOOSER_WIDGET (widget),
                                         GDM_USER_CHOOSER_USER_OTHER);
 }
@@ -178,6 +209,7 @@ remove_user_guest (GdmUserChooserWidget *widget)
 {
         gdm_chooser_widget_remove_item (GDM_CHOOSER_WIDGET (widget),
                                         GDM_USER_CHOOSER_USER_GUEST);
+        update_other_user_visibility (widget);
 }
 
 static void
@@ -185,6 +217,7 @@ remove_user_auto (GdmUserChooserWidget *widget)
 {
         gdm_chooser_widget_remove_item (GDM_CHOOSER_WIDGET (widget),
                                         GDM_USER_CHOOSER_USER_AUTO);
+        update_other_user_visibility (widget);
 }
 
 void
@@ -195,11 +228,7 @@ gdm_user_chooser_widget_set_show_user_other (GdmUserChooserWidget *widget,
 
         if (widget->priv->show_user_other != show_user) {
                 widget->priv->show_user_other = show_user;
-                if (show_user) {
-                        add_user_other (widget);
-                } else {
-                        remove_user_other (widget);
-                }
+                update_other_user_visibility (widget);
         }
 }
 
@@ -374,6 +403,8 @@ add_user (GdmUserChooserWidget *widget,
         if (pixbuf != NULL) {
                 g_object_unref (pixbuf);
         }
+
+        update_other_user_visibility (widget);
 }
 
 static void
@@ -405,6 +436,8 @@ on_user_removed (GdmUserManager       *manager,
 
         gdm_chooser_widget_remove_item (GDM_CHOOSER_WIDGET (widget),
                                         user_name);
+
+        update_other_user_visibility (widget);
 }
 
 static void
@@ -448,8 +481,7 @@ on_users_loaded (GdmUserManager       *manager,
                  GdmUserChooserWidget *widget)
 {
         GSList *users;
-
-        widget->priv->loaded = TRUE;
+        gboolean list_visible;
 
         g_debug ("GdmUserChooserWidget: Users loaded");
 
@@ -459,7 +491,12 @@ on_users_loaded (GdmUserManager       *manager,
                 users = g_slist_delete_link (users, users);
         }
 
-        gtk_widget_grab_focus (GTK_WIDGET (widget));
+        g_object_get (G_OBJECT (widget), "list-visible", &list_visible, NULL);
+
+        if (list_visible) {
+                gtk_widget_grab_focus (GTK_WIDGET (widget));
+        }
+        widget->priv->loaded = TRUE;
 
         gdm_chooser_widget_loaded (GDM_CHOOSER_WIDGET (widget));
 }
@@ -510,6 +547,7 @@ gdm_user_chooser_widget_constructor (GType                  type,
                                                                                                               n_construct_properties,
                                                                                                               construct_properties));
 
+        widget->priv->has_user_other = FALSE;
         widget->priv->show_normal_users = !is_user_list_disabled (widget);
 
         widget->priv->load_idle_id = g_idle_add ((GSourceFunc)load_users, widget);

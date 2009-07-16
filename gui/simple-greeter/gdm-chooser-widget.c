@@ -104,7 +104,8 @@ struct GdmChooserWidgetPrivate
 enum {
         PROP_0,
         PROP_INACTIVE_TEXT,
-        PROP_ACTIVE_TEXT
+        PROP_ACTIVE_TEXT,
+        PROP_LIST_VISIBLE
 };
 
 enum {
@@ -590,6 +591,17 @@ update_separator_visibility (GdmChooserWidget *widget)
                             &iter,
                             CHOOSER_ITEM_IS_VISIBLE_COLUMN, is_visible,
                             -1);
+}
+
+static void
+update_chooser_visibility (GdmChooserWidget *widget)
+{
+        if (gdm_chooser_widget_get_number_of_items (widget) > 0) {
+                gtk_widget_show (widget->priv->scrollable_widget);
+        } else {
+                gtk_widget_hide (widget->priv->scrollable_widget);
+        }
+        g_object_notify (G_OBJECT (widget), "list-visible");
 }
 
 static void
@@ -1147,6 +1159,9 @@ gdm_chooser_widget_get_property (GObject        *object,
         case PROP_ACTIVE_TEXT:
                 g_value_set_string (value, self->priv->active_text);
                 break;
+        case PROP_LIST_VISIBLE:
+                g_value_set_boolean (value, GTK_WIDGET_VISIBLE (self->priv->scrollable_widget));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -1318,6 +1333,14 @@ gdm_chooser_widget_class_init (GdmChooserWidgetClass *klass)
                                                               NULL,
                                                               (G_PARAM_READWRITE |
                                                                G_PARAM_CONSTRUCT)));
+
+        g_object_class_install_property (object_class,
+                                         PROP_LIST_VISIBLE,
+                                         g_param_spec_boolean ("list-visible",
+                                                              _("List Visible"),
+                                                              _("Whether or not the chooser list is visible"),
+                                                              TRUE,
+                                                              G_PARAM_READABLE));
 
         g_type_class_add_private (klass, sizeof (GdmChooserWidgetPrivate));
 }
@@ -1771,7 +1794,6 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
         add_frame (widget);
 
         widget->priv->scrollable_widget = gdm_scrollable_widget_new ();
-        gtk_widget_show (widget->priv->scrollable_widget);
         gtk_container_add (GTK_CONTAINER (widget->priv->frame_alignment),
                            widget->priv->scrollable_widget);
 
@@ -2055,6 +2077,7 @@ gdm_chooser_widget_add_item (GdmChooserWidget *widget,
                                            -1);
 
         move_cursor_to_top (widget);
+        update_chooser_visibility (widget);
 }
 
 void
@@ -2103,6 +2126,7 @@ gdm_chooser_widget_remove_item (GdmChooserWidget *widget,
         gtk_list_store_remove (widget->priv->list_store, &iter);
 
         move_cursor_to_top (widget);
+        update_chooser_visibility (widget);
 }
 
 gboolean

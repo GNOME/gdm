@@ -1,6 +1,5 @@
 <gconfschemafile>
   <schemalist>
-
     <schema>
       <key>/schemas/apps/gdm/simple-greeter/debug</key>
       <applyto>/apps/gdm/simple-greeter/debug</applyto>
@@ -32,6 +31,17 @@
       <locale name="C">
         <short>Banner message text</short>
         <long>Text banner message to show on the login window.</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/gdm/simple-greeter/banner_message_text_nochooser</key>
+      <applyto>/apps/gdm/simple-greeter/banner_message_text_nochooser</applyto>
+      <owner>gdm-simple-greeter</owner>
+      <type>string</type>
+      <default></default>
+      <locale name="C">
+        <short>Banner message text when chooser is empty</short>
+        <long>Text banner message to show on the login window when the user chooser is empty, instead of banner_message_text.</long>
       </locale>
     </schema>
     <schema>
