@@ -2387,7 +2387,7 @@ on_setup (GdmSessionWorker *worker,
                 worker->priv->hostname = g_strdup (hostname);
                 worker->priv->username = NULL;
 
-                g_debug ("GdmSessionWorker: queing setup: %s %s", service, console);
+                g_debug ("GdmSessionWorker: queuing setup: %s %s", service, console);
                 queue_state_change (worker);
         } else {
                 g_warning ("Unable to get arguments: %s", error.message);
