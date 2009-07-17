@@ -322,8 +322,10 @@ gdm_session_record_logout (GPid                  session_pid,
 #elif defined(HAVE_UT_UT_TIME)
                 u->ut_time = session_record.ut_time;
 #endif
+#ifdef HAVE_UT_UT_EXIT_E_TERMINATION
                 u->ut_exit.e_termination = 0;
                 u->ut_exit.e_exit = 0;
+#endif
 
                 pututxline (u);
 
