@@ -1559,11 +1559,7 @@ worker_exited (GdmSessionWorkerJob *job,
         g_debug ("GdmSessionDirect: Worker job exited: %d", code);
 
         if (!session->priv->is_authenticated) {
-                char *msg;
-
-                msg = g_strdup_printf (_("worker exited with status %d"), code);
-                _gdm_session_authentication_failed (GDM_SESSION (session), msg);
-                g_free (msg);
+                _gdm_session_authentication_failed (GDM_SESSION (session), NULL);
         } else if (session->priv->is_running) {
                 _gdm_session_session_exited (GDM_SESSION (session), code);
         }
@@ -1577,11 +1573,7 @@ worker_died (GdmSessionWorkerJob *job,
         g_debug ("GdmSessionDirect: Worker job died: %d", signum);
 
         if (!session->priv->is_authenticated) {
-                char *msg;
-
-                msg = g_strdup_printf (_("worker exited with status %d"), signum);
-                _gdm_session_authentication_failed (GDM_SESSION (session), msg);
-                g_free (msg);
+                _gdm_session_authentication_failed (GDM_SESSION (session), NULL);
         } else if (session->priv->is_running) {
                 _gdm_session_session_died (GDM_SESSION (session), signum);
         }
