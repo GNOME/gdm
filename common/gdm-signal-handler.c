@@ -27,7 +27,9 @@
 #include <unistd.h>
 #include <string.h>
 #include <signal.h>
+#if HAVE_EXECINFO_H
 #include <execinfo.h>
+#endif
 #include <syslog.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
@@ -160,6 +162,7 @@ signal_io_watch (GIOChannel       *ioc,
 static void
 fallback_get_backtrace (void)
 {
+#ifdef HAVE_EXECINFO_H
         void *  frames[64];
         size_t  size;
         char ** strings;
@@ -173,9 +176,10 @@ fallback_get_backtrace (void)
                 }
                 free (strings);
                 syslog (LOG_CRIT, "******************* END **********************************");
-        } else {
-                g_warning ("GDM crashed, but symbols couldn't be retrieved.");
+                return;
         }
+#endif
+        g_warning ("GDM crashed, but symbols couldn't be retrieved.");
 }
 
 
