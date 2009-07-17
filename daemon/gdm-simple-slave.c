@@ -1033,7 +1033,7 @@ static void
 on_server_ready (GdmServer      *server,
                  GdmSimpleSlave *slave)
 {
-        g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
+        g_idle_add ((GSourceFunc)idle_connect_to_display, slave);
 }
 
 static void
