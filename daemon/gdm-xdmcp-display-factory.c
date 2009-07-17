@@ -605,9 +605,6 @@ open_port (GdmXdmcpDisplayFactory *factory)
         return TRUE;
 }
 
-static gboolean
-gdm_xdmcp_host_allow (GdmAddress *address)
-{
 #ifdef HAVE_TCPWRAPPERS
 
         /*
@@ -618,7 +615,12 @@ gdm_xdmcp_host_allow (GdmAddress *address)
                               char *client_name,
                               char *client_addr,
                               char *client_user);
+#endif
 
+static gboolean
+gdm_xdmcp_host_allow (GdmAddress *address)
+{
+#ifdef HAVE_TCPWRAPPERS
         char       *client;
         char       *host;
         gboolean    ret;
