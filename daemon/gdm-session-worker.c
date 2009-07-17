@@ -2319,7 +2319,10 @@ on_start_program (GdmSessionWorker *worker,
         const char *text;
         dbus_bool_t res;
 
-        /* FIXME: return error if not in ACCREDITED state */
+        if (worker->priv->state != GDM_SESSION_WORKER_STATE_ACCREDITED) {
+                g_debug ("GdmSessionWorker: ignoring spurious start program while in state %s", get_state_name (worker->priv->state));
+                return;
+        }
 
         dbus_error_init (&error);
         res = dbus_message_get_args (message,
@@ -2362,7 +2365,10 @@ on_setup (GdmSessionWorker *worker,
         const char *hostname;
         dbus_bool_t res;
 
-        /* FIXME: return error if not in NONE state */
+        if (worker->priv->state != GDM_SESSION_WORKER_STATE_NONE) {
+                g_debug ("GdmSessionWorker: ignoring spurious setup while in state %s", get_state_name (worker->priv->state));
+                return;
+        }
 
         dbus_error_init (&error);
         res = dbus_message_get_args (message,
@@ -2402,7 +2408,10 @@ on_setup_for_user (GdmSessionWorker *worker,
         const char *username;
         dbus_bool_t res;
 
-        /* FIXME: return error if not in NONE state */
+        if (worker->priv->state != GDM_SESSION_WORKER_STATE_NONE) {
+                g_debug ("GdmSessionWorker: ignoring spurious setup for user while in state %s", get_state_name (worker->priv->state));
+                return;
+        }
 
         dbus_error_init (&error);
         res = dbus_message_get_args (message,
@@ -2422,7 +2431,7 @@ on_setup_for_user (GdmSessionWorker *worker,
                 worker->priv->hostname = g_strdup (hostname);
                 worker->priv->username = g_strdup (username);
 
-                g_debug ("GdmSessionWorker: queuing setup for user %s %s", service, console);
+                g_debug ("GdmSessionWorker: queuing setup for user: %s %s", service, console);
                 queue_state_change (worker);
         } else {
                 g_warning ("Unable to get arguments: %s", error.message);
@@ -2434,7 +2443,11 @@ static void
 on_authenticate (GdmSessionWorker *worker,
                  DBusMessage      *message)
 {
-        /* FIXME: return error if not in SETUP_COMPLETE state */
+        if (worker->priv->state != GDM_SESSION_WORKER_STATE_SETUP_COMPLETE) {
+                g_debug ("GdmSessionWorker: ignoring spurious authenticate for user while in state %s", get_state_name (worker->priv->state));
+                return;
+        }
+
         queue_state_change (worker);
 }
 
@@ -2442,7 +2455,11 @@ static void
 on_authorize (GdmSessionWorker *worker,
               DBusMessage      *message)
 {
-        /* FIXME: return error if not in AUTHENTICATED state */
+        if (worker->priv->state != GDM_SESSION_WORKER_STATE_AUTHENTICATED) {
+                g_debug ("GdmSessionWorker: ignoring spurious authorize for user while in state %s", get_state_name (worker->priv->state));
+                return;
+        }
+
         queue_state_change (worker);
 }
 
@@ -2450,7 +2467,10 @@ static void
 on_establish_credentials (GdmSessionWorker *worker,
                           DBusMessage      *message)
 {
-        /* FIXME: return error if not in AUTHORIZED state */
+        if (worker->priv->state != GDM_SESSION_WORKER_STATE_AUTHORIZED) {
+                g_debug ("GdmSessionWorker: ignoring spurious establish credentials for user while in state %s", get_state_name (worker->priv->state));
+                return;
+        }
 
         worker->priv->cred_flags = PAM_ESTABLISH_CRED;
 
@@ -2461,7 +2481,11 @@ static void
 on_reauthenticate (GdmSessionWorker *worker,
                    DBusMessage      *message)
 {
-        /* FIXME: return error if not in SESSION_STARTED state */
+        if (worker->priv->state != GDM_SESSION_WORKER_STATE_SESSION_STARTED) {
+                g_debug ("GdmSessionWorker: ignoring spurious reauthenticate for user while in state %s", get_state_name (worker->priv->state));
+                return;
+        }
+
         queue_state_change (worker);
 }
 
@@ -2469,7 +2493,11 @@ static void
 on_reauthorize (GdmSessionWorker *worker,
                 DBusMessage      *message)
 {
-        /* FIXME: return error if not in REAUTHENTICATED state */
+        if (worker->priv->state != GDM_SESSION_WORKER_STATE_REAUTHENTICATED) {
+                g_debug ("GdmSessionWorker: ignoring spurious reauthorize for user while in state %s", get_state_name (worker->priv->state));
+                return;
+        }
+
         queue_state_change (worker);
 }
 
@@ -2479,7 +2507,11 @@ on_refresh_credentials (GdmSessionWorker *worker,
 {
         int error_code;
 
-        /* FIXME: return error if not in REAUTHORIZED state */
+        if (worker->priv->state != GDM_SESSION_WORKER_STATE_REAUTHORIZED) {
+                g_debug ("GdmSessionWorker: ignoring spurious refreshing credentials for user while in state %s", get_state_name (worker->priv->state));
+                return;
+        }
+
         g_debug ("GdmSessionWorker: refreshing credentials");
 
         error_code = pam_setcred (worker->priv->pam_handle, PAM_REFRESH_CRED);
