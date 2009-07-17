@@ -425,8 +425,14 @@ on_session_accreditation_failed (GdmSession     *session,
            accreditation fails */
         if (! migrated) {
                 if (slave->priv->greeter_server != NULL) {
+                        const char *problem;
+                        if (message) {
+                                problem = message;
+                        } else {
+                                problem = _("Unable to establish credentials");
+                        }
                         gdm_greeter_server_problem (slave->priv->greeter_server,
-                                                    _("Unable establish credentials"));
+                                                    problem);
                 }
         }
 
