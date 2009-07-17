@@ -94,15 +94,15 @@ rh6sysmodmap=/etc/X11/xinit/Xmodmap
 
 # merge in defaults
 if [ -f "$rh6sysresources" ]; then
-    xrdb -merge "$rh6sysresources"
+    xrdb -nocpp -merge "$rh6sysresources"
 fi
 
 if [ -f "$sysresources" ]; then
-    xrdb -merge "$sysresources"
+    xrdb -nocpp -merge "$sysresources"
 fi
 
 if [ -f "$userresources" ]; then
-    xrdb -merge "$userresources"
+    xrdb -nocpp -merge "$userresources"
 fi
 
 # merge in keymaps
