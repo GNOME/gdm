@@ -20,7 +20,6 @@ AM_CPPFLAGS = \
 	$(DISABLE_DEPRECATED_CFLAGS)	\
 	$(GTK_CFLAGS)					\
 	$(SIMPLE_GREETER_CFLAGS)			\
-	$(POLKIT_GNOME_CFLAGS)				\
 	$(NULL)
 
 @INTLTOOL_SCHEMAS_RULE@
@@ -90,7 +89,6 @@ test_greeter_login_window_LDADD =	\
 	libgdmuser.la			\
 	$(COMMON_LIBS)			\
 	$(SIMPLE_GREETER_LIBS)		\
-	$(POLKIT_GNOME_LIBS)		\
 	$(RBAC_LIBS)			\
 	$(NULL)
 
@@ -250,7 +248,6 @@ test_user_chooser_LDADD =	\
 	libgdmuser.la		\
 	$(COMMON_LIBS)		\
 	$(SIMPLE_GREETER_LIBS)	\
-	$(POLKIT_GNOME_LIBS)	\
 	$(NULL)
 
 test_user_manager_SOURCES = 	\
@@ -261,7 +258,6 @@ test_user_manager_LDADD =	\
 	libgdmuser.la		\
 	$(COMMON_LIBS)		\
 	$(SIMPLE_GREETER_LIBS)	\
-	$(POLKIT_GNOME_LIBS)	\
 	$(NULL)
 
 libexec_PROGRAMS =			\
@@ -325,7 +321,6 @@ gdm_simple_greeter_LDADD = 		\
 	$(COMMON_LIBS)			\
 	$(EXTRA_GREETER_LIBS)   	\
 	$(SIMPLE_GREETER_LIBS)		\
-	$(POLKIT_GNOME_LIBS)		\
 	$(RBAC_LIBS)			\
 	$(LIBXKLAVIER_LIBS)		\
 	$(NULL)

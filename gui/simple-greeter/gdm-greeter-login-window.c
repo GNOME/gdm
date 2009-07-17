@@ -56,10 +56,6 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
-#ifdef HAVE_POLKIT_GNOME
-#include <polkit-gnome/polkit-gnome.h>
-#endif
-
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 #include "gdm-profile.h"
@@ -1074,119 +1070,6 @@ try_system_restart (DBusGConnection *connection,
         return res;
 }
 
-#ifdef HAVE_POLKIT_GNOME
-static void
-system_restart_auth_cb (PolKitAction          *action,
-                        gboolean               gained_privilege,
-                        GError                *error,
-                        GdmGreeterLoginWindow *login_window)
-{
-        GError          *local_error;
-        DBusGConnection *connection;
-        gboolean         res;
-
-        g_debug ("GdmGreeterLoginWindow: system restart auth callback gained=%s", gained_privilege ? "yes" : "no");
-
-        if (! gained_privilege) {
-                if (error != NULL) {
-                        g_warning ("GdmGreeterLoginWindow: system restart error: %s", error->message);
-                }
-                return;
-        }
-
-        local_error = NULL;
-        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &local_error);
-        if (connection == NULL) {
-                g_warning ("Unable to get system bus connection: %s", local_error->message);
-                g_error_free (local_error);
-                return;
-        }
-
-        res = try_system_restart (connection, &local_error);
-        if (! res) {
-                g_warning ("Unable to restart system: %s", local_error->message);
-                g_error_free (local_error);
-                return;
-        }
-}
-
-static void
-system_stop_auth_cb (PolKitAction          *action,
-                     gboolean               gained_privilege,
-                     GError                *error,
-                     GdmGreeterLoginWindow *login_window)
-{
-        GError          *local_error;
-        DBusGConnection *connection;
-        gboolean         res;
-
-        g_debug ("GdmGreeterLoginWindow: system stop auth callback gained=%s", gained_privilege ? "yes" : "no");
-
-        if (! gained_privilege) {
-                if (error != NULL) {
-                        g_warning ("GdmGreeterLoginWindow: system stop error: %s", error->message);
-                }
-                return;
-        }
-
-        local_error = NULL;
-        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &local_error);
-        if (connection == NULL) {
-                g_warning ("Unable to get system bus connection: %s", local_error->message);
-                g_error_free (local_error);
-                return;
-        }
-
-        res = try_system_stop (connection, &local_error);
-        if (! res) {
-                g_warning ("Unable to stop system: %s", local_error->message);
-                g_error_free (local_error);
-                return;
-        }
-}
-
-static PolKitAction *
-get_action_from_error (GError *error)
-{
-        PolKitAction *action;
-        char         *paction;
-        char         *p;
-
-        action = polkit_action_new ();
-
-        paction = NULL;
-        if (g_str_has_prefix (error->message, "Not privileged for action: ")) {
-                paction = g_strdup (error->message + strlen ("Not privileged for action: "));
-                p = strchr (paction, ' ');
-                if (p != NULL) {
-                        *p = '\0';
-                }
-        }
-        g_debug ("GdmGreeterLoginWindow: Requesting priv for '%s'", paction);
-
-        polkit_action_set_action_id (action, paction);
-
-        g_free (paction);
-
-        return action;
-}
-
-static PolKitResult
-get_result_from_error (GError *error)
-{
-        PolKitResult result = POLKIT_RESULT_UNKNOWN;
-        const char  *p;
-
-        p = strrchr (error->message, ' ');
-        if (p != NULL) {
-                p++;
-                polkit_result_from_string_representation (p, &result);
-        }
-
-        return result;
-}
-#endif
-
 static void
 do_system_restart (GdmGreeterLoginWindow *login_window)
 {
@@ -1203,69 +1086,12 @@ do_system_restart (GdmGreeterLoginWindow *login_window)
         }
 
         res = try_system_restart (connection, &error);
-#ifdef HAVE_POLKIT_GNOME
-        if (! res) {
+        if (!res) {
                 g_debug ("GdmGreeterLoginWindow: unable to restart system: %s: %s",
                          dbus_g_error_get_name (error),
                          error->message);
-
-                if (dbus_g_error_has_name (error, "org.freedesktop.ConsoleKit.Manager.NotPrivileged")) {
-                        PolKitAction *action;
-                        PolKitAction *action2;
-                        PolKitResult  result;
-                        GtkWidget    *dialog;
-                        guint         xid;
-                        pid_t         pid;
-
-                        result = get_result_from_error (error);
-                        action = get_action_from_error (error);
-
-                        if (result == POLKIT_RESULT_NO) {
-                                action2 = polkit_action_new ();
-                                polkit_action_set_action_id (action2,
-                                                             "org.freedesktop.consolekit.system.restart-multiple-users");
-                                dialog = gtk_message_dialog_new (GTK_WINDOW (login_window),
-                                                                 GTK_DIALOG_MODAL,
-                                                                 GTK_MESSAGE_ERROR,
-                                                                 GTK_BUTTONS_OK,
-                                                                 _("Failed to restart computer"));
-                                if (polkit_action_equal (action, action2)) {
-                                        gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-                                                                                  _("You are not allowed to restart the computer "
-                                                                                    "because multiple users are logged in"));
-                                }
-                                gtk_dialog_run (GTK_DIALOG (dialog));
-                                gtk_widget_destroy (dialog);
-
-                                polkit_action_unref (action);
-                                polkit_action_unref (action2);
-
-                                g_error_free (error);
-
-                                return;
-                        }
-
-                        xid = 0;
-                        pid = getpid ();
-
-                        g_error_free (error);
-                        error = NULL;
-                        res = polkit_gnome_auth_obtain (action,
-                                                        xid,
-                                                        pid,
-                                                        (PolKitGnomeAuthCB) system_restart_auth_cb,
-                                                        login_window,
-                                                        &error);
-                        polkit_action_unref (action);
-
-                        if (! res) {
-                                g_warning ("Unable to request privilege for action: %s", error->message);
-                                g_error_free (error);
-                        }
-
-                }
+		g_error_free (error);
         }
-#endif
 }
 
 static void
@@ -1284,67 +1110,12 @@ do_system_stop (GdmGreeterLoginWindow *login_window)
         }
 
         res = try_system_stop (connection, &error);
-#ifdef HAVE_POLKIT_GNOME
-        if (! res) {
+        if (!res) {
                 g_debug ("GdmGreeterLoginWindow: unable to stop system: %s: %s",
                          dbus_g_error_get_name (error),
                          error->message);
-
-                if (dbus_g_error_has_name (error, "org.freedesktop.ConsoleKit.Manager.NotPrivileged")) {
-                        PolKitAction *action;
-                        PolKitAction *action2;
-                        PolKitResult  result;
-                        GtkWidget    *dialog;
-                        guint         xid;
-                        pid_t         pid;
-
-                        xid = 0;
-                        pid = getpid ();
-
-                        result = get_result_from_error (error);
-                        action = get_action_from_error (error);
-
-                        if (result == POLKIT_RESULT_NO) {
-                                action2 = polkit_action_new ();
-                                polkit_action_set_action_id (action2,
-                                                             "org.freedesktop.consolekit.system.stop-multiple-users");
-                                dialog = gtk_message_dialog_new (GTK_WINDOW (login_window),
-                                                                 GTK_DIALOG_MODAL,
-                                                                 GTK_MESSAGE_ERROR,
-                                                                 GTK_BUTTONS_OK,
-                                                                 _("Failed to stop computer"));
-                                if (polkit_action_equal (action, action2)) {
-                                        gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-                                                                                  _("You are not allowed to stop the computer "
-                                                                                    "because multiple users are logged in"));
-                                }
-                                gtk_dialog_run (GTK_DIALOG (dialog));
-                                gtk_widget_destroy (dialog);
-
-                                polkit_action_unref (action);
-                                polkit_action_unref (action2);
-
-                                return;
-                        }
-
-                        g_error_free (error);
-                        error = NULL;
-                        res = polkit_gnome_auth_obtain (action,
-                                                        xid,
-                                                        pid,
-                                                        (PolKitGnomeAuthCB) system_stop_auth_cb,
-                                                        login_window,
-                                                        &error);
-                        polkit_action_unref (action);
-
-                        if (! res) {
-                                g_warning ("Unable to request privilege for action: %s", error->message);
-                                g_error_free (error);
-                        }
-
-                }
+                g_error_free (error);
         }
-#endif
 }
 
 static void

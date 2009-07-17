@@ -46,7 +46,6 @@ PANGO_REQUIRED_VERSION=1.3.0
 LIBGLADE_REQUIRED_VERSION=1.99.2
 SCROLLKEEPER_REQUIRED_VERSION=0.1.4
 GCONF_REQUIRED_VERSION=2.6.1
-POLICYKIT_REQUIRED_VERSION=0.8
 GNOME_PANEL_REQUIRED_VERSION=2.0.0
 LIBXKLAVIER_REQUIRED_VERSION=4.0
 #FONTCONFIG_REQUIRED_VERSION=2.6.0
@@ -117,30 +116,6 @@ AM_CONDITIONAL(HAVE_LIBXKLAVIER, test x$have_libxklavier = xyes)
 AC_SUBST(HAVE_LIBXKLAVIER)
 AC_SUBST(LIBXKLAVIER_CFLAGS)
 AC_SUBST(LIBXKLAVIER_LIBS)
-
-PKG_CHECK_MODULES(POLKIT_GNOME,
-        polkit-gnome >= $POLICYKIT_REQUIRED_VERSION,
-        have_polkit=yes,
-        have_polkit=no)
-
-AC_ARG_ENABLE([polkit],
-              AS_HELP_STRING([--enable-polkit],
-                             [Enable PolicyKit support @<:@default=auto@:>@]),
-              enable_polkit=$enableval, enable_polkit=auto)
-
-if test "x$enable_polkit" != "xno"; then
-  if test "x$enable_polkit" = "xyes" -a "x$have_polkit" = "xno"; then
-    AC_MSG_ERROR([PolicyKit support explicitly requested but dependencies not found])
-  fi
-
-  if test "x$have_polkit" = "xyes" ; then
-    AC_DEFINE(HAVE_POLKIT_GNOME, [], [Define if we have polkit])
-  fi
-fi
-AM_CONDITIONAL(HAVE_POLKIT_GNOME, test x$have_polkit = xyes)
-AC_SUBST(HAVE_POLKIT_GNOME)
-AC_SUBST(POLKIT_GNOME_CFLAGS)
-AC_SUBST(POLKIT_GNOME_LIBS)
 
 PKG_CHECK_MODULES(SIMPLE_CHOOSER,
         dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
