@@ -1794,6 +1794,7 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
         add_frame (widget);
 
         widget->priv->scrollable_widget = gdm_scrollable_widget_new ();
+        gtk_widget_show (widget->priv->scrollable_widget);
         gtk_container_add (GTK_CONTAINER (widget->priv->frame_alignment),
                            widget->priv->scrollable_widget);
 
