@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: GDM HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&component=general\n"
-"POT-Creation-Date: 2009-06-15 16:17+0000\n"
-"PO-Revision-Date: 2009-06-25 20:28+0300\n"
+"POT-Creation-Date: 2009-07-17 20:04+0000\n"
+"PO-Revision-Date: 2009-07-20 10:47+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -128,10 +128,6 @@ msgstr "Kuvaseade"
 msgid "The display device"
 msgstr "Kuvaseade"
 
-#, fuzzy, c-format
-msgid "worker exited with status %d"
-msgstr "tööline lõpetas olekuga %d"
-
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "viga autentimissüsteemiga suhtluse alustamisel - %s"
@@ -182,9 +178,6 @@ msgstr "kasutajakonto pole saadaval"
 
 msgid "Unable to change to user"
 msgstr "Kasutajat pole võimalik vahetada"
-
-msgid "Unable establish credentials"
-msgstr "Autentimistunnuseid pole võimalik tuvastada"
 
 #, c-format
 msgid "User %s doesn't exist"
@@ -421,6 +414,12 @@ msgstr "Aktiivne tekst"
 msgid "The text to use in the label if the user has picked an item"
 msgstr "Sildil kasutatav tekst, kui kasutaja on kirje valinud"
 
+msgid "List Visible"
+msgstr "Nimekiri nähtaval"
+
+msgid "Whether or not the chooser list is visible"
+msgstr "Kas kasutajate nimekiri on nähtaval või mitte"
+
 msgid "%l:%M:%S %p"
 msgstr "%H:%M:%S"
 
@@ -450,25 +449,6 @@ msgstr "Automaatne sisselogimine..."
 msgid "Cancelling..."
 msgstr "Tühistamine..."
 
-msgid "Failed to restart computer"
-msgstr "Tõrge arvuti taaskäivitamisel"
-
-msgid ""
-"You are not allowed to restart the computer because multiple users are "
-"logged in"
-msgstr ""
-"Sul pole lubatud arvutit taaskäivitada, kuna sellesse on mitu kasutajat "
-"sisse loginud"
-
-msgid "Failed to stop computer"
-msgstr "Tõrge arvuti seiskamisel"
-
-msgid ""
-"You are not allowed to stop the computer because multiple users are logged in"
-msgstr ""
-"Sul pole lubatud arvutit seisma jätta, kuna sellesse on mitu kasutajat sisse "
-"loginud"
-
 msgid "Select language and click Log In"
 msgstr "Vali keel ja klõpsa sisselogimise nupul"
 
@@ -492,9 +472,6 @@ msgstr "Peata"
 
 msgid "Version"
 msgstr "Versioon"
-
-msgid "page 5"
-msgstr "5. leht"
 
 msgid "Panel"
 msgstr "Paneel"
@@ -578,6 +555,9 @@ msgstr "_Seansid:"
 msgid "Banner message text"
 msgstr "Bännersõnumi tekst"
 
+msgid "Banner message text when chooser is empty"
+msgstr "Bännersõnumi tekst kasutajate tühja nimekirja korral"
+
 msgid "Disable showing the restart buttons"
 msgstr "Taaskäivitamise nuppude näitamise keelamine"
 
@@ -614,44 +594,6 @@ msgstr "Viimati valitud klaviatuuripaigutused"
 msgid "Recently selected languages"
 msgstr "Viimati valitud keeled"
 
-msgid "Set to TRUE to disable showing known users in the login window."
-msgstr ""
-"Kui märgitud, siis on tuntud kasutajate näitamine sisselogimisaknas keelatud."
-
-msgid "Set to TRUE to disable showing the restart buttons in the login window."
-msgstr ""
-"Kui märgitud, siis on taaskäivitamise nuppude näitamine sisselogimisaknas "
-"keelatud."
-
-msgid "Set to True to enable the background settings manager plugin."
-msgstr "Kui märgitud, siis on taustasätete halduri plugin lubatud."
-
-msgid "Set to True to enable the media-keys settings manager plugin."
-msgstr "Kui märgitud, siis on meediaklahvide sätete halduri plugin lubatud."
-
-msgid "Set to True to enable the on-screen keyboard."
-msgstr "Kui märgitud, siis on ekraaniklaviatuur lubatud."
-
-msgid ""
-"Set to True to enable the plugin to manage the accessibility keyboard "
-"settings."
-msgstr "Kui märgitud, siis on klaviatuurihõlbustuste sätete haldamine lubatud."
-
-msgid "Set to True to enable the screen magnifier."
-msgstr "Kui märgitud, siis on ekraani luup lubatud."
-
-msgid "Set to True to enable the screen reader."
-msgstr "Kui märgitud, siis on ekraanilugeja lubatud."
-
-msgid "Set to True to enable the sound settings manager plugin."
-msgstr "Kui märgitud, siis on helisätete halduri plugin lubatud."
-
-msgid "Set to True to enable the xrandr settings manager plugin."
-msgstr "Kui märgitud, siis on xrandr sätetehalduri plugin lubatud."
-
-msgid "Set to True to enable the xsettings settings manager plugin."
-msgstr "Kui märgitud, siis on xsettings sätetehalduri plugin lubatud."
-
 msgid ""
 "Set to a list of keyboard layouts to be shown by default at the login window."
 msgstr ""
@@ -663,11 +605,56 @@ msgstr "Sisselogimisaknaga näidatavate keelte nimekirja määramine."
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "Tervitaja logona kasutatava teemaikooni nimi."
 
+msgid "Set to true to disable showing known users in the login window."
+msgstr ""
+"Kui märgitud, siis on tuntud kasutajate näitamine sisselogimisaknas keelatud."
+
+msgid "Set to true to disable showing the restart buttons in the login window."
+msgstr ""
+"Kui märgitud, siis on taaskäivitamise nuppude näitamine sisselogimisaknas "
+"keelatud."
+
+msgid "Set to true to enable the background settings manager plugin."
+msgstr "Kui märgitud, siis on taustasätete halduri plugin lubatud."
+
+msgid "Set to true to enable the media-keys settings manager plugin."
+msgstr "Kui märgitud, siis on meediaklahvide sätete halduri plugin lubatud."
+
+msgid "Set to true to enable the on-screen keyboard."
+msgstr "Kui märgitud, siis on ekraaniklaviatuur lubatud."
+
+msgid ""
+"Set to true to enable the plugin to manage the accessibility keyboard "
+"settings."
+msgstr "Kui märgitud, siis on klaviatuurihõlbustuste sätete haldamine lubatud."
+
+msgid "Set to true to enable the screen magnifier."
+msgstr "Kui märgitud, siis on ekraani luup lubatud."
+
+msgid "Set to true to enable the screen reader."
+msgstr "Kui märgitud, siis on ekraanilugeja lubatud."
+
+msgid "Set to true to enable the sound settings manager plugin."
+msgstr "Kui märgitud, siis on helisätete halduri plugin lubatud."
+
+msgid "Set to true to enable the xrandr settings manager plugin."
+msgstr "Kui märgitud, siis on xrandr sätetehalduri plugin lubatud."
+
+msgid "Set to true to enable the xsettings settings manager plugin."
+msgstr "Kui märgitud, siis on xsettings sätetehalduri plugin lubatud."
+
 msgid "Set to true to show the banner message text."
 msgstr "Kui märgitud, siis kuvatakse bännerisõnumit."
 
 msgid "Set to true to use compiz as the window manager."
 msgstr "Kui märgitud, siis kasutatakse aknahalduriks compiz'i."
+
+msgid ""
+"Text banner message to show on the login window when the user chooser is "
+"empty, instead of banner_message_text."
+msgstr ""
+"Sisselogimisakna bänneris kuvatav tekst, mida kasutatakse "
+"banner_message_text asemel juhul, kui kasutajate nimekiri on tühi."
 
 msgid "Text banner message to show on the login window."
 msgstr "Sisselogimisakna bänneris kuvatav tekst."
@@ -881,3 +868,23 @@ msgstr "Uut kuva pole võimalik käivitada"
 #. Option parsing
 msgid "Take a picture of the screen"
 msgstr "Ekraani pildistamine"
+
+#~ msgid "Unable establish credentials"
+#~ msgstr "Autentimistunnuseid pole võimalik tuvastada"
+
+#~ msgid "Failed to restart computer"
+#~ msgstr "Tõrge arvuti taaskäivitamisel"
+
+#~ msgid ""
+#~ "You are not allowed to restart the computer because multiple users are "
+#~ "logged in"
+#~ msgstr ""
+#~ "Sul pole lubatud arvutit taaskäivitada, kuna sellesse on mitu kasutajat "
+#~ "sisse loginud"
+
+#~ msgid ""
+#~ "You are not allowed to stop the computer because multiple users are "
+#~ "logged in"
+#~ msgstr ""
+#~ "Sul pole lubatud arvutit seisma jätta, kuna sellesse on mitu kasutajat "
+#~ "sisse loginud"
