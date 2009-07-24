@@ -262,7 +262,7 @@ session_worker_job_died (GdmSessionWorkerJob *session_worker_job)
         int exit_status;
 
         g_debug ("GdmSessionWorkerJob: Waiting on process %d", session_worker_job->priv->pid);
-        exit_status = gdm_wait_on_pid (session_worker_job->priv->pid);
+        exit_status = gdm_wait_on_and_kill_pid (session_worker_job->priv->pid, 3);
 
         if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
                 g_debug ("GdmSessionWorkerJob: Wait on child process failed");

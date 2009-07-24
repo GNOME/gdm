@@ -93,13 +93,25 @@ gdm_get_pwent_for_name (const char     *name,
 }
 
 int
-gdm_wait_on_pid (int pid)
+gdm_wait_on_and_kill_pid (int pid,
+                          int timeout)
 {
         int status;
+        int ret;
+        int num_tries;
+        int flags;
 
+        if (timeout > 0) {
+                flags = WNOHANG;
+                num_tries = 10 * timeout;
+        } else {
+                flags = 0;
+                num_tries = 0;
+        }
  wait_again:
         errno = 0;
-        if (waitpid (pid, &status, 0) < 0) {
+        ret = waitpid (pid, &status, flags);
+        if (ret < 0) {
                 if (errno == EINTR) {
                         goto wait_again;
                 } else if (errno == ECHILD) {
@@ -107,6 +119,30 @@ gdm_wait_on_pid (int pid)
                 } else {
                         g_debug ("GdmCommon: waitpid () should not fail");
                 }
+        } else if (ret == 0) {
+                num_tries--;
+
+                if (num_tries > 0) {
+                        g_usleep (G_USEC_PER_SEC / 10);
+                } else {
+                        char *path;
+                        char *command;
+
+                        path = g_strdup_printf ("/proc/%ld/cmdline", (long) pid);
+                        if (g_file_get_contents (path, &command, NULL, NULL)) {;
+                                g_debug ("GdmCommon: process (pid:%d, command '%s') isn't dying, now killing it.",
+                                         (int) pid, command);
+                                g_free (command);
+                        } else {
+                                g_debug ("GdmCommon: process (pid:%d) isn't dying, now killing it.",
+                                         (int) pid);
+                        }
+                        g_free (path);
+
+                        kill (pid, SIGKILL);
+                        flags = 0;
+                }
+                goto wait_again;
         }
 
         g_debug ("GdmCommon: process (pid:%d) done (%s:%d)",
@@ -119,6 +155,12 @@ gdm_wait_on_pid (int pid)
                  : -1);
 
         return status;
+}
+
+int
+gdm_wait_on_pid (int pid)
+{
+    return gdm_wait_on_and_kill_pid (pid, 0);
 }
 
 int
