@@ -132,7 +132,7 @@
     </para>
 
     <para>
-      Xserver - An implemention of the X Window System.  For example the
+      Xserver - An implementation of the X Window System.  For example the
       Xorg webserver provided by the X.org Foundation
       <ulink type="http" url="http://www.x.org/">http://www.x.org</ulink>.
     </para>
@@ -162,7 +162,7 @@
 
       <para>
         Note that GDM is configurable, and many configuration settings have
-        an impact on security.  Issues to be aware of are highlighted in this
+        an impact on security. Issues to be aware of are highlighted in this
         document.
       </para> 
 
@@ -193,7 +193,7 @@
 
       <para>
         Please submit any bug reports or enhancement requests to the
-        &quot;gdm&quot; category in
+        "gdm" category in
         <ulink type="http" url="http://bugzilla.gnome.org/">
         http://bugzilla.gnome.org</ulink>.
       </para>
@@ -208,7 +208,7 @@
         is not completely backward compatible with older releases. This is
         in part because things work differently, so some options just don't
         make sense, in part because some options never made sense, and in
-        part because some functionaly hasn't been reimplemented yet.
+        part because some functionality has not been reimplemented yet.
       </para>
 
       <para>
@@ -225,7 +225,7 @@
         with separate graphics cards, such as used in terminal server
         environments, login in a window via a program like Xnest or Xephyr, the
         gdmsetup program, XML-based greeter themes, and the ability to run the
-        XDMCP chooser from the login screen.  These features are did not get
+        XDMCP chooser from the login screen.  These features were not 
         added back during the 2.22 rewrite.
       </para>
 
@@ -247,7 +247,7 @@
         GDM is responsible for managing displays on the system.  This includes
         authenticating users, starting the user session, and terminating the
         user session.  GDM is configurable and the ways it can be configured
-        are described in the &quot;Configuring GDM&quot; section of this
+        are described in the "Configuring GDM" section of this
         document.  GDM is also accessible for users with disabilities.
       </para>
 
@@ -267,9 +267,9 @@
       </para>
 
       <para>
-        The greeter program is run as the unpriviledged &quot;gdm&quot;
+        The greeter program is run as the unprivileged "gdm"
         user/group.  This user and group are described in the
-        &quot;Security&quot; section of this document.  The main function of
+        "Security" section of this document.  The main function of
         the greeter program is to authenticate the user.  The authentication
         process is driven by Pluggable Authentication Modules (PAM).  The PAM
         modules determine what prompts (if any) are shown to the user to
@@ -286,7 +286,7 @@
         In addition to authentication, the greeter program allows the user to
         select which session to start and which language to use.  Sessions are
         defined by files that end in the .desktop suffix and more information
-        about these files can be found in the &quot;Configuration&quot;
+        about these files can be found in the "asking for pConfiguration"
         section of this document.  By default, GDM is configured to display a
         face browser so the user can select their user account by clicking on
         an image instead of having to type their username. GDM keeps track of
@@ -343,20 +343,20 @@
       <title>Accessibility</title>
 
         <para>
-          GDM supports &quot;Accessible Login&quot;, allowing users to log into
+          GDM supports "Accessible Login", allowing users to log into
           their desktop session even if they cannot easily use the screen,
           mouse, or keyboard in the usual way.  Accessible Technology (AT)
           features such as an on-screen keyboard, screen reader, screen
           magnifier, and Xserver AccessX keyboard accessibility are available.
           It is also possible to enable large text or high contrast icons and
-          controls, if needed.  Refer to the &quot;Accessibility
-          Configuration&quot; section of the document for more information
+          controls, if needed.  Refer to the "Accessibility
+          Configuration" section of the document for more information
           how various accessibility features can be configured.
         </para>
 
         <para>
           On some Operating Systems, it is necessary to make sure that the GDM
-          user is a member of the &quot;audio&quot; group for AT programs that
+          user is a member of the "audio" group for AT programs that
           require audio output (such as text-to-speech) to be functional.
         </para>
     </sect2>
@@ -385,7 +385,7 @@
       </para>
 
       <para>
-        The Face Browser supports &quot;type-ahead search&quot; which dynamically
+        The Face Browser supports "type-ahead search" which dynamically
         moves the face selection as the user types to the corresponding username
         in the list.  This means that a user with a long username will only
         have to type the first few characters of the username before the correct
@@ -413,13 +413,13 @@
         $HOME directory for the image file.  GDM will first look for the user's
         face image in <filename>~/.face</filename>.  If not found, it will try 
         <filename>~/.face.icon</filename>.  If still not found, it will use the
-        value defined for &quot;face/picture=&quot; in the 
+        value defined for "face/picture=" in the 
         <filename>~/.gnome2/gdm</filename> file.
       </para>
 
       <para>
         If a user has no defined face image, GDM will use the
-        &quot;stock_person&quot; icon defined in the current GTK+ theme.  If no
+        "stock_person" icon defined in the current GTK+ theme.  If no
         such image is defined, it will fallback to a generic face image.
       </para>
 
@@ -464,7 +464,7 @@
         GDM includes several measures making it more resistant to denial of
         service attacks on the XDMCP service.  A lot of the protocol
         parameters, handshaking timeouts, etc. can be fine tuned. The default
-        configuration should work reasonably most systems. 
+        configuration should work reasonably on most systems. 
       </para>
 
       <para>
@@ -489,7 +489,7 @@
       </para>
 
       <para>
-        Refer to the &quot;Security&quot; section for information about
+        Refer to the "Security" section for information about
         security concerns when using XDMCP.
       </para>
     </sect2>
@@ -501,7 +501,7 @@
         GDM uses syslog to log errors and status.  It can also log debugging
         information, which can be useful for tracking down problems if GDM is
         not working properly.  This can be enabled by starting the GDM daemon
-        with the &quot;--debug&quot; option.
+        with the "--debug" option.
       </para>
 
       <para>
@@ -530,7 +530,7 @@
 
       <para>
         GDM allows multiple users to be logged in at the same time.  After one
-        user is logged in, additional, users can log in via the User Switcher
+        user is logged in, additional users can log in via the User Switcher
         on the GNOME Panel, or from the "Switch User" button in Lock Screen dialog
         of GNOME Screensaver.  The active session can be changed back and forth using
         the same mechanism.  Note that some distributions may not add the User Switcher
@@ -555,7 +555,7 @@
 
       <para>
         For security reasons a dedicated user and group id are recommended for
-        proper operation.  This user and group are normally &quot;gdm&quot; on
+        proper operation.  This user and group are normally "gdm" on
         most systems, but can be configured to any user or group.  All GDM
         GUI programs are run as this user, so that the programs which interact
         with the user are run in a sandbox.  This user and group should have
@@ -563,7 +563,7 @@
       </para>
 
       <para>
-        The only special privilege the &quot;gdm&quot; user requires is the
+        The only special privilege the "gdm" user requires is the
         ability to read and write Xauth files to the
         <filename>&lt;var&gt;/run/gdm</filename> directory.  The
         <filename>&lt;var&gt;/run/gdm</filename> directory should have
@@ -575,9 +575,9 @@
         to a user which a user could easily gain access to, such as the user
         <filename>nobody</filename>.  Any user who gains access to an Xauth
         key can snoop on and control running GUI programs running in the
-        associated or perform a denial-of-service attack on that session.  It
+        associated session or perform a denial-of-service attack on it.  It
         is important to ensure that the system is configured properly so that
-        only the &quot;gdm&quot; user has access to these files and that it
+        only the "gdm" user has access to these files and that it
         is not easy to login to this account.  For example, the account should
         be setup to not have a password or allow non-root users to login to the
         account.
@@ -586,9 +586,9 @@
       <para>
         The GDM greeter configuration is stored in GConf.  To allow the GDM
         user to be able to write configuration, it is necessary for the 
-        &quot;gdm&quot; user to have a writable $HOME directory.  Users may
+        "gdm" user to have a writable $HOME directory.  Users may
         configure the default GConf configuration as desired to avoid the 
-        need to provide the &quot;gdm&quot; user with a writable $HOME
+        need to provide the "gdm" user with a writable $HOME
         directory.  However, some features of GDM may be disabled if it is
         unable to write state information to GConf configuration.
       </para>
@@ -620,14 +620,14 @@
         Operating Systems, so check the
         <ulink type="help" url="man:pam.d">pam.d</ulink> or
         <ulink type="help" url="man:pam.conf">pam.conf</ulink> man page for
-        details.  Be sure to you read the PAM documentation and are comfortable
+        details.  Be sure you read the PAM documentation and are comfortable
         with the security implications of any changes you intend to make to
         your configuration.
       </para>
 
       <para>
-        Note that, by default, GDM uses the &quot;gdm&quot; PAM service name
-        for normal login and the &quot;gdm-autologin&quot; PAM service name for
+        Note that, by default, GDM uses the "gdm" PAM service name
+        for normal login and the "gdm-autologin" PAM service name for
         automatic login.  These services may not be defined in your pam.d or
         pam.conf configured file.  If there is no entry, then GDM will use the
         default PAM behavior.  On most systems this should work fine.
@@ -683,7 +683,7 @@
 
       <para>
         The above setup will cause no lastlog entry to be generated.  If a
-        lastlog entry is desired, then use the following for session:
+        lastlog entry is desired, then use the following for the session:
       </para>
 
 <screen>
@@ -696,8 +696,8 @@
         their password. This feature can be enabled as a per-user option in
         the users-admin tool from the gnome-system-tools; it is achieved by
         checking that the user is member a Unix group called
-        &quot;nopasswdlogin&quot; before asking for password. For this to work,
-        the PAM configuration file for the &quot;gdm&quot; service must include
+        "nopasswdlogin" before asking for a password. For this to work,
+        the PAM configuration file for the "gdm" service must include
         a line such as:
       </para>
 
@@ -730,9 +730,9 @@
       <para>
         X server authorization files are stored in a newly created subdirectory
         of <filename>&lt;var&gt;/run/gdm</filename> at start up.  These files
-        contain a is used to store a &quot;password&quot; between X clients
-        and the X server.  This &quot;password&quot; is unqiue for each logged
-        in session, so users from one session can't snoop on users from another.
+        are used to store and share a "password" between X clients
+        and the X server.  This "password" is unique for each session
+        logged in, so users from one session can't snoop on users from another.
       </para>
 
       <para>
@@ -746,7 +746,7 @@
         possible and undesirable, then you should use ssh for tunneling an X
         connection rather then using XDMCP.  You could think of XDMCP as a sort
         of graphical telnet, having the same security issues.  In most cases,
-        ssh -Y should be prefered over GDM's XDMCP features.
+        ssh -Y should be preferred over GDM's XDMCP features.
       </para>
 
     </sect2>
@@ -816,19 +816,20 @@ gdm: .your.domain
         guards against denial of service attacks, but the X protocol is still
         inherently insecure and should only be used in controlled environments.
         Also each remote connection takes up lots of resources, so it is much
-        easier to do a denial of service attack via XDMCP then a webserver.
+        easier to do a denial of service attack via XDMCP than attacking a
+        webserver.
       </para>
 
       <para>
         It is also wise to block all of the X Server ports.  These are TCP
-        ports 6000 + the display number of course) on your firewall.  Note that
+        ports 6000+ (one for each display number) on your firewall.  Note that
         GDM will use display numbers 20 and higher for flexible on-demand
         servers.
       </para>
 
       <para>
-         X is not a very safe protocol for using over the net, and XDMCP is
-         even less safe.
+         X is not a very safe protocol when using it over the Internet, and
+         XDMCP is even less safe.
       </para>
     </sect2>
 
@@ -863,14 +864,14 @@ gdm: .your.domain
 
       <para>
         GDM may be configured to use RBAC instead of PolicyKit.  In this
-        case, RBAC configuration is used to control whether the login screen
+        case the RBAC configuration is used to control whether the login screen
         should provide the shutdown and restart buttons on the greeter screen.
       </para>
 
       <para>
-        For example, on Solaris, the &quot;solaris.system.shutdown&quot;
+        For example, on Solaris, the "solaris.system.shutdown"
         authorization is used to control this.  Simply modify the 
-        <filename>/etc/user_attr</filename> file so that the &quot;gdm&quot;
+        <filename>/etc/user_attr</filename> file so that the "gdm"
         user has this authorization.
       </para>
     </sect2>
@@ -887,7 +888,7 @@ gdm: .your.domain
     TODO - Should we update these docs?  Probably should mention any 
            configuration that users may want to do for using it with GDM?
            If so, perhaps this section should be moved to a subsection of
-           the &quot;Configure&quot; section?
+           the "Configure" section?
 </para>
 -->
 
@@ -907,16 +908,17 @@ gdm: .your.domain
       associated with the session, the host-name from which the session
       originates (useful in the case of an XDMCP session), whether or not this
       session is attached, etc.  As the entity that initiates the user process,
-      GDM is in a unique position know and to be trusted to provide these bits
-      of information about the user session.  The use of this privileged method
-      is restricted by the use of D-Bus system message bus security policy.
+      GDM is in a unique position to know about the user session and to be 
+      trusted to provide these bits of information. The use of this privileged 
+      method is restricted by the use of the D-Bus system message bus security 
+      policy.
     </para>
 
     <para>
-      In the case where a user with an existing session and has authenticated
-      at GDM and requests to resume that existing session GDM calls a
+      In case a user with an existing session has authenticated
+      at GDM and requests to resume that existing session, GDM calls a
       privileged method of ConsoleKit to unlock that session.  The exact
-      details of what happens when the session receives this unlock signal is
+      details of what happens when the session receives this unlock signal are
       undefined and session-specific.  However, most sessions will unlock a
       screensaver in response.
     </para>
@@ -928,7 +930,7 @@ gdm: .your.domain
 
     <para>
       If support for ConsoleKit is not desired it can be disabled at build
-      time using the &quot;--with-console-kit=no&quot; option when running
+      time using the "--with-console-kit=no" option when running
       configure.
     </para>
   </sect1>
@@ -970,18 +972,18 @@ PostSession/
 
       <para>
         For each type of script, the default one which will be executed is
-        called &quot;Default&quot; and is stored in a directory associated with
+        called "Default" and is stored in a directory associated with
         the script type.  So the default <filename>Init</filename> script is 
         <filename>&lt;etc&gt;/gdm/Init/Default</filename>.  A per-display
         script can be provided, and if it exists it will be run instead of the 
         default script.  Such scripts are stored in the same directory as the
         default script and have the same name as the Xserver DISPLAY value for
         that display.  For example, if the <filename>&lt;Init&gt;/:0</filename>
-        script exists, it will be run for DISPLAY &quot;:0&quot;.
+        script exists, it will be run for DISPLAY ":0".
      </para>
 
      <para>
-        All of these scripts are run with root privilege return 0 if run
+        All of these scripts are run with root privilege and return 0 if run
         successfully, and a non-zero return code if there was any failure that
         should cause the login session to be aborted.  Also note that GDM will
         block until the scripts finish, so if any of these scripts hang, this
@@ -993,7 +995,7 @@ PostSession/
         before the login GUI is actually displayed, GDM will run the
         <filename>Init</filename> script.  This script is useful for starting
         programs that should be run while the login screen is showing, or for
-        doing any special initialization required.
+        doing any special initialization if required.
       </para>
 
       <para>
@@ -1042,9 +1044,9 @@ PostSession/
       <para>
         The <filename>&lt;share&gt;/gdm/autostart/LoginWindow</filename>
         directory contains files in the format specified by the
-        &quot;FreeDesktop.org Desktop Application Autostart
-        Specification&quot;.  Standard features in the specification may be
-        used to specify programs should auto-restart or only be launched if a
+        "FreeDesktop.org Desktop Application Autostart
+        Specification".  Standard features in the specification may be
+        used to specify programs that should auto-restart or only be launched if a
         GConf configuration value is set, etc.
       </para>
 
@@ -1054,7 +1056,7 @@ PostSession/
         greeter.  By default, GDM is shipped with files which will autostart
         the gdm-simple-greeter login GUI greeter itself, the
         gnome-power-manager application, the gnome-settings-daemon, and the
-        metacity window manager.  These programs are needed for the greeter
+        Metacity window manager.  These programs are needed for the greeter
         program to work.  In addition, desktop files are provided for starting
         various AT programs if the configuration values specified in the
         Accessibility Configuration section below are set.
@@ -1069,7 +1071,7 @@ PostSession/
         <filename>&lt;etc&gt;/gdm/Xsession</filename> which is called between
         the <filename>PreSession</filename> and the
         <filename>PostSession</filename> scripts.  This script does not
-        supports per-display like the other scripts.  This script is used for
+        support per-display like the other scripts.  This script is used for
         actually starting the user session.  This script is run as the user,
         and it will run whatever session was specified by the Desktop session
         file the user selected to start. 
@@ -1103,12 +1105,12 @@ PostSession/
       </para>
 
       <para>
-        The <filename>/etc/gdm/custom.conf</filename> supports the
-        &quot;[daemon]&quot;, &quot;[security]&quot;, and &quot;[xdmcp]&quot;
+        The file <filename>/etc/gdm/custom.conf</filename> supports the
+        "[daemon]", "[security]", and "[xdmcp]"
         group sections.  Within each group, there are particular key/value
         pairs that can be specified to modify how GDM behaves.  For example,
         to enable timed login and specify the timed login user to be a user
-        named &quot;you&quot;, you would modify the file so it contains the
+        named "you", you would modify the file so it contains the
         following lines:
       </para>
      
@@ -1161,8 +1163,8 @@ TimedLogin=you
               <para>
                 The group name under which the greeter and other GUI programs
                 are run.  Refer to the <filename>User</filename>
-                configuration key and to the &quot;Security->GDM User And
-                Group&quot; section of this document for more information.
+                configuration key and to the "Security->GDM User And
+                Group" section of this document for more information.
               </para>
             </listitem>
           </varlistentry>
@@ -1185,7 +1187,7 @@ TimedLogin=you
                 immediately as the timed user.  Note that no password will be
                 asked for this user so you should be careful, although if using
                 PAM it can be configured to require password entry before
-                allowing login.  Refer to the &quot;Security->PAM&quot;
+                allowing login.  Refer to the "Security->PAM"
                 section of the manual for more information, or for help if this
                 feature does not seem to work.
               </para>
@@ -1221,7 +1223,7 @@ TimedLogin=you
               <para>
                 If true, the user given in <filename>AutomaticLogin</filename>
                 should be logged in immediately. This feature is like timed
-                login with a delay of 0.
+                login with a delay of 0 seconds.
               </para>
             </listitem>
           </varlistentry>
@@ -1244,8 +1246,8 @@ TimedLogin=you
               <para>
                 The username under which the greeter and other GUI programs
                 are run.  Refer to the <filename>Group</filename>
-                configuration key and to the &quot;Security->GDM User And
-                Group&quot; section of this document for more information.
+                configuration key and to the "Security->GDM User And
+                Group" section of this document for more information.
               </para>
             </listitem>
           </varlistentry>
@@ -1425,7 +1427,7 @@ gdm:.my.domain
               <synopsis>PingIntervalSeconds=15</synopsis>
               <para>
                 Interval in which to ping the Xserver in seconds.  If the
-                Xserver does not return before the next time we ping it, the
+                Xserver does not respond before the next time we ping it, the
                 connection is stopped and the session ended.  This is a
                 combination of the XDM PingInterval and PingTimeout, but in
                 seconds.
@@ -1435,7 +1437,7 @@ gdm:.my.domain
                 Note that GDM in the past used to have a
                 <filename>PingInterval</filename> configuration key which was
                 also in minutes.  For most purposes you'd want this setting
-                to be lower then one minute however since in most cases where
+                to be lower than one minute. However since in most cases where
                 XDMCP would be used (such as terminal labs), a lag of more
                 than 15 or so seconds would really mean that the terminal was
                 turned off or restarted and you would want to end the session.
@@ -1484,7 +1486,7 @@ gdm:.my.domain
           The GDM default greeter is called the simple Greeter and is
           configured via GConf.  Default values are stored in GConf in the
           <filename>gdm-simple-greeter.schemas</filename> file.  These defaults
-          can be overridden if the &quot;gdm&quot; user has a writable $HOME
+          can be overridden if the "gdm" user has a writable $HOME
           directory to store GConf settings.  These values can be edited using
           the <command>gconftool-2</command> or <command>gconf-editor</command>
           programs.  The following configuration options are supported:
