@@ -656,9 +656,9 @@ seat_open_session_request (DBusGProxy             *seat_proxy,
 }
 
 static void
-seat_session_to_remove (DBusGProxy             *seat_proxy,
-                        const char             *ssid,
-                        GdmLocalDisplayFactory *factory)
+seat_close_session_request (DBusGProxy             *seat_proxy,
+                            const char             *ssid,
+                            GdmLocalDisplayFactory *factory)
 {
         GdmDisplay      *display;
         int              display_number;
@@ -729,7 +729,7 @@ seat_remove_request (DBusGProxy             *seat_proxy,
 
                 ssid = g_queue_pop_head (&ssids_to_remove);
 
-                seat_session_to_remove (seat_proxy, ssid, factory);
+                seat_close_session_request (seat_proxy, ssid, factory);
 
                 g_free (ssid);
         }
@@ -781,7 +781,7 @@ manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
                                  GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
                                  G_TYPE_INVALID);
         dbus_g_proxy_add_signal (proxy,
-                                 "SessionToRemove",
+                                 "CloseSessionRequest",
                                  DBUS_TYPE_G_OBJECT_PATH,
                                  G_TYPE_INVALID);
         dbus_g_proxy_add_signal (proxy,
@@ -793,8 +793,8 @@ manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
                                      factory,
                                      NULL);
         dbus_g_proxy_connect_signal (proxy,
-                                     "SessionToRemove",
-                                     G_CALLBACK (seat_session_to_remove),
+                                     "CloseSessionRequest",
+                                     G_CALLBACK (seat_close_session_request),
                                      factory,
                                      NULL);
 
