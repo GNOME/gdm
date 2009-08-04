@@ -506,13 +506,13 @@ strrep (char* in, char** out, char* old, char* new)
 #endif
 
 static void
-seat_session_to_add (DBusGProxy             *seat_proxy,
-                     const char             *ssid,
-                     const char             *type,
-                     GHashTable             *display_variables,
-                     const char             *display_type,
-                     GHashTable             *parameters,
-                     GdmLocalDisplayFactory *factory)
+seat_open_session_request (DBusGProxy             *seat_proxy,
+                           const char             *ssid,
+                           const char             *type,
+                           GHashTable             *display_variables,
+                           const char             *display_type,
+                           GHashTable             *parameters,
+                           GdmLocalDisplayFactory *factory)
 {
         GdmDisplay *display;
         gint        argc;
@@ -773,7 +773,7 @@ manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
                                            GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
                                            G_TYPE_INVALID);
         dbus_g_proxy_add_signal (proxy,
-                                 "SessionToAdd",
+                                 "OpenSessionRequest",
                                  DBUS_TYPE_G_OBJECT_PATH,
                                  G_TYPE_STRING,
                                  GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
@@ -788,8 +788,8 @@ manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
                                  "RemoveRequest",
                                  G_TYPE_INVALID);
         dbus_g_proxy_connect_signal (proxy,
-                                     "SessionToAdd",
-                                     G_CALLBACK (seat_session_to_add),
+                                     "OpenSessionRequest",
+                                     G_CALLBACK (seat_open_session_request),
                                      factory,
                                      NULL);
         dbus_g_proxy_connect_signal (proxy,
