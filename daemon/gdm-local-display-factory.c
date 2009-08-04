@@ -738,7 +738,7 @@ seat_remove_request (DBusGProxy             *seat_proxy,
         g_hash_table_remove (factory->priv->managed_seat_proxies, sid_to_remove);
 
         dbus_g_proxy_call_no_reply (seat_proxy,
-                                    "UnmanageSeat",
+                                    "Unmanage",
                                     DBUS_TYPE_G_OBJECT_PATH, sid_to_remove,
                                     G_TYPE_INVALID,
                                     G_TYPE_INVALID);
@@ -807,7 +807,7 @@ manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
                                      NULL);
 
         dbus_g_proxy_call_no_reply (proxy,
-                                    "ManageSeat",
+                                    "Manage",
                                     G_TYPE_INVALID,
                                     G_TYPE_INVALID);
 
