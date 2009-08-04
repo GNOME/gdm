@@ -817,9 +817,12 @@ manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
 static void
 seat_added (DBusGProxy             *mgr_proxy,
             const char             *sid,
+            const char             *type,
             GdmLocalDisplayFactory *factory)
 {
-        manage_static_sessions_per_seat (factory, sid);
+        if (strcmp (type, "Default") == 0) {
+                manage_static_sessions_per_seat (factory, sid);
+        }
 }
 
 static gboolean
