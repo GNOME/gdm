@@ -738,11 +738,10 @@ seat_remove_request (DBusGProxy             *seat_proxy,
 
         dbus_g_proxy_call_no_reply (seat_proxy,
                                     "Unmanage",
-                                    DBUS_TYPE_G_OBJECT_PATH, sid_to_remove,
                                     G_TYPE_INVALID,
                                     G_TYPE_INVALID);
 
-        dbus_g_proxy_call_no_reply (seat_proxy,
+        dbus_g_proxy_call_no_reply (factory->priv->proxy_ck,
                                     "RemoveSeat",
                                     DBUS_TYPE_G_OBJECT_PATH, sid_to_remove,
                                     G_TYPE_INVALID,
@@ -1056,9 +1055,14 @@ connect_to_ck (GdmLocalDisplayFactory *factory)
                 return FALSE;
         }
 
+        dbus_g_object_register_marshaller (gdm_marshal_VOID__STRING_STRING,
+                                           G_TYPE_NONE,
+                                           G_TYPE_STRING, G_TYPE_STRING,
+                                           G_TYPE_INVALID);
         dbus_g_proxy_add_signal (priv->proxy_ck,
                                  "SeatAdded",
-                                 DBUS_TYPE_G_OBJECT_PATH,
+                                 G_TYPE_STRING,
+                                 G_TYPE_STRING,
                                  G_TYPE_INVALID);
         dbus_g_proxy_connect_signal (priv->proxy_ck,
                                      "SeatAdded",
