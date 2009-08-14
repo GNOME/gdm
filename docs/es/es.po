@@ -1,14 +1,9 @@
-# translation of help.gnome-2-20.po to Español
-# Francisco Javier F. Serrador <serrador@openshine.com>, 2003, 2007.
-# Lucas Vieites <lucas@asixinformatica.com>, 2007.
-# translation of es.po to
-# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: help.gnome-2-20\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-08-10 18:20+0000\n"
-"PO-Revision-Date: 2009-08-13 20:01+0200\n"
+"PO-Revision-Date: 2009-08-14 16:58+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -571,7 +566,6 @@ msgstr ""
 "entornos, tales como kioskos."
 
 #: C/gdm.xml:285(para)
-#, fuzzy
 #| msgid ""
 #| "In addition to authentication, the greeter program allows the user to "
 #| "select which session to start and which language to use. Sessions are "
@@ -1057,7 +1051,6 @@ msgstr ""
 "debería tener un propietario root:gdm y permisos 1777."
 
 #: C/gdm.xml:573(para)
-#, fuzzy
 #| msgid ""
 #| "You should not, under any circumstances, configure the GDM user/group to "
 #| "a user which a user could easily gain access to, such as the user "
@@ -1145,7 +1138,6 @@ msgstr ""
 "sección."
 
 #: C/gdm.xml:618(para)
-#, fuzzy
 #| msgid ""
 #| "PAM configuration has different, but similar, interfaces on different "
 #| "Operating Systems, so check the <ulink type=\"help\" url=\"man:pam.d"
@@ -1269,7 +1261,6 @@ msgstr ""
 "    gdm-autologin password sufficient pam_allow.so.1\n"
 
 #: C/gdm.xml:684(para)
-#, fuzzy
 #| msgid ""
 #| "The above setup will cause no lastlog entry to be generated. If a lastlog "
 #| "entry is desired, then use the following for session:"
@@ -1278,7 +1269,7 @@ msgid ""
 "entry is desired, then use the following for the session:"
 msgstr ""
 "La configuración anterior hará que no se genere información de «lastlog». Si "
-"se desea una entrada de «lastlog», use lo siguiente para la sesión:"
+"quiere una entrada de «lastlog», use lo siguiente para la sesión:"
 
 #: C/gdm.xml:689(screen)
 #, no-wrap
@@ -1290,7 +1281,6 @@ msgstr ""
 "    gdm-autologin session required pam_unix_session.so.1\n"
 
 #: C/gdm.xml:693(para)
-#, fuzzy
 #| msgid ""
 #| "If the computer is used by several people, which makes automatic login "
 #| "unsuitable, you may want to allow some users to log in without entering "
@@ -1313,9 +1303,9 @@ msgstr ""
 "inicien sesión sin su contraseña. Esta característica se puede activar como "
 "una opción por usuario en la herramienta de usuarios desde las gnome-system-"
 "tools; se consigue comprobando que dichos usuarios están en un grupo Unix "
-"llamado «nopasswdlogin» antes de pedir la contraseña. Para que esto funcione "
-"el archivo de configuración PAM para el servicio «gdm» debe incluir una línea "
-"así:"
+"llamado «nopasswdlogin» antes de preguntar la contraseña. Para que esto "
+"funcione el archivo de configuración PAM para el servicio «gdm» debe incluir "
+"una línea así:"
 
 #: C/gdm.xml:704(screen)
 #, no-wrap
@@ -1356,7 +1346,6 @@ msgid "X Server Authentication Scheme"
 msgstr "Esquema de autenticación del servidor X"
 
 #: C/gdm.xml:730(para)
-#, fuzzy
 #| msgid ""
 #| "X server authorization files are stored in a newly created subdirectory "
 #| "of <filename>&lt;var&gt;/run/gdm</filename> at start up. These files "
@@ -1372,12 +1361,12 @@ msgid ""
 msgstr ""
 "Los archivos de autorización del servidor X se almacenan en un subdirectorio "
 "nuevo de <filename>&lt;var&gt;/run/gdm</filename> creado al inicio. Estos "
-"archivos se usan para almacenar una «contraseña» entre los clientes X y el "
-"servidor X. Esta «contraseña» es única para cada inicio de sesión, de tal "
-"forma que los usuarios de una sesión no pueden fisgar sobre otros."
+"archivos se usan para almacenar y compartir una «contraseña» entre los "
+"clientes X y el servidor X. Esta «contraseña» es única para cada inicio de "
+"sesión, de tal forma que los usuarios de una sesión no pueden fisgar sobre "
+"otros."
 
 #: C/gdm.xml:738(para)
-#, fuzzy
 #| msgid ""
 #| "GDM only supports the MIT-MAGIC-COOKIE-1 Xserver authentication scheme. "
 #| "Normally little is gained from the other schemes, and no effort has been "
@@ -1405,8 +1394,8 @@ msgstr ""
 "GDM sólo soporta el esquema de autenticación del servidor X MIT-MAGIC-COOKIE-"
 "1. Normalmente se gana poco con otros esquemas, no se ha hecho ningún "
 "esfuerzo en implementarlos hasta ahora. Sea especialmente cuidadoso acerca "
-"de usar XDMCP porque las cookies de autenticación del servidor X van sobre "
-"el cable en texto plano. Si el espionaje es posible, entonces el atacante "
+"de usar XDMCP porque la cookie de autenticación del servidor X va sobre el "
+"cable en texto plano. Si el espionaje es posible, entonces el atacante "
 "podría simplemente espiar su contraseña de autenticación mientras usted "
 "inicia una sesión, independientemente del esquema de autenticación que se "
 "esté usando. Si el espionaje es posible y no deseable, entonces tendrá que "
@@ -1514,7 +1503,6 @@ msgid "Firewall Security"
 msgstr "Seguridad con cortafuegos"
 
 #: C/gdm.xml:812(para)
-#, fuzzy
 #| msgid ""
 #| "Even though GDM tries to outsmart potential attackers trying to take "
 #| "advantage of XDMCP, it is still advised that you block the XDMCP port "
@@ -1541,7 +1529,6 @@ msgstr ""
 "una denegación de servicios a un servidor XDMCP que a un servidor web."
 
 #: C/gdm.xml:823(para)
-#, fuzzy
 #| msgid ""
 #| "It is also wise to block all of the X Server ports. These are TCP ports "
 #| "6000 + the display number of course) on your firewall. Note that GDM will "
@@ -1551,12 +1538,12 @@ msgid ""
 "+ (one for each display number) on your firewall. Note that GDM will use "
 "display numbers 20 and higher for flexible on-demand servers."
 msgstr ""
-"También es sabio bloquear todos los puertos del servidor X (puertos TCP 6000 "
-"+ número de pantalla) en el cortafuegos. Note que GDM usará los números de "
-"pantalla 20 y superiores para los servidores flexibles bajo demanda."
+"También es inteligente bloquear todos los puertos del servidor X (puertos "
+"TCP 6000 + número de pantalla) en el cortafuegos. Note que GDM usará los "
+"números de pantalla 20 y superiores para los servidores flexibles bajo "
+"demanda."
 
 #: C/gdm.xml:830(para)
-#, fuzzy
 #| msgid ""
 #| "X is not a very safe protocol for using over the net, and XDMCP is even "
 #| "less safe."
@@ -1564,8 +1551,8 @@ msgid ""
 "X is not a very safe protocol when using it over the Internet, and XDMCP is "
 "even less safe."
 msgstr ""
-"X no es un protocolo muy seguro para dejarlo en la red, y XDMCP es incluso "
-"menos seguro."
+"X no es un protocolo muy seguro para dejarlo en la red, y XDMCP es aún menos "
+"seguro."
 
 #: C/gdm.xml:837(title)
 msgid "PolicyKit"
@@ -1604,7 +1591,6 @@ msgid "RBAC (Role Based Access Control)"
 msgstr "RBAC (Control de acceso basado en rol)"
 
 #: C/gdm.xml:865(para)
-#, fuzzy
 #| msgid ""
 #| "GDM may be configured to use RBAC instead of PolicyKit. In this case, "
 #| "RBAC configuration is used to control whether the login screen should "
@@ -1655,7 +1641,6 @@ msgstr ""
 "de los sistemas Unix."
 
 #: C/gdm.xml:903(para)
-#, fuzzy
 #| msgid ""
 #| "When GDM is about to create a new login process for a user it will call a "
 #| "privileged method of ConsoleKit in order to open a new session for this "
@@ -1692,7 +1677,6 @@ msgstr ""
 "sistema de bus de mensajes D-Bus."
 
 #: C/gdm.xml:917(para)
-#, fuzzy
 #| msgid ""
 #| "In the case where a user with an existing session and has authenticated "
 #| "at GDM and requests to resume that existing session GDM calls a "
@@ -1707,10 +1691,10 @@ msgid ""
 "the session receives this unlock signal are undefined and session-specific. "
 "However, most sessions will unlock a screensaver in response."
 msgstr ""
-"En caso donde un usuario con una sesión existente y que se haya autenticado "
-"en GDM y pida continuar una sesión existente, GDM llama un proceso "
-"privilegiado de ConsoleKit para desbloquear esa sesión. Los detalles exactos "
-"de qué ocurre cuando la sesión recibe esta señal de desbloqueo están "
+"En el caso donde un usuario con una sesión existente y que se haya "
+"autenticado en GDM y pida continuar una sesión existente, GDM llama un "
+"proceso privilegiado de ConsoleKit para desbloquear esa sesión. Los detalles "
+"exactos de qué ocurre cuando la sesión recibe esta señal de desbloqueo están "
 "indefinidos y son específicos de la sesión. Sin embargo la mayoría de las "
 "sesiones desbloquearán un salvapantallas en respuesta."
 
@@ -1809,7 +1793,6 @@ msgstr ""
 "filename>&lt;Init&gt;/:0</filename>, se ejecutará para la PANTALLA «:0»."
 
 #: C/gdm.xml:985(para)
-#, fuzzy
 #| msgid ""
 #| "All of these scripts are run with root privilege return 0 if run "
 #| "successfully, and a non-zero return code if there was any failure that "
@@ -1830,7 +1813,6 @@ msgstr ""
 "hará que también se cuelgue el proceso de inicio de sesión."
 
 #: C/gdm.xml:993(para)
-#, fuzzy
 #| msgid ""
 #| "When the Xserver for the login GUI has been successfully started, but "
 #| "before the login GUI is actually displayed, GDM will run the "
