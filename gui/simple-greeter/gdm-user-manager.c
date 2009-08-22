@@ -89,6 +89,8 @@
                                   "uucp",       \
                                   "operator",   \
                                   "nobody",     \
+                                  "nobody4",    \
+                                  "noaccess",   \
                                   GDM_USERNAME, \
                                   "postgres",   \
                                   "pvm",        \
