@@ -725,13 +725,13 @@
     </sect2>
 
     <sect2 id="xauth">
-      <title>X Server Authentication Scheme</title>
+      <title>Xserver Authentication Scheme</title>
 
       <para>
-        X server authorization files are stored in a newly created subdirectory
+        Xserver authorization files are stored in a newly created subdirectory
         of <filename>&lt;var&gt;/run/gdm</filename> at start up.  These files
         are used to store and share a "password" between X clients
-        and the X server.  This "password" is unique for each session
+        and the Xserver.  This "password" is unique for each session
         logged in, so users from one session can't snoop on users from another.
       </para>
 
@@ -821,7 +821,7 @@ gdm: .your.domain
       </para>
 
       <para>
-        It is also wise to block all of the X Server ports.  These are TCP
+        It is also wise to block all of the Xserver ports.  These are TCP
         ports 6000+ (one for each display number) on your firewall.  Note that
         GDM will use display numbers 20 and higher for flexible on-demand
         servers.
@@ -1016,7 +1016,7 @@ PostSession/
       </para>
 
       <para> 
-        When the user terminates his session, GDM will run the
+        When a user terminates their session, GDM will run the
         <filename>PostSession</filename> script.  Note that the Xserver will
         have been stopped by the time this script is run, so it should not be
         accessed.  
@@ -1616,16 +1616,55 @@ gdm:.my.domain
     </sect2>
 
     <sect2 id="accessibilityconfiguration">
-        <title>Accessibility Configuration</title>
+     <title>Accessibility Configuration</title>
+
+      <para>
+       This section describes the accessibility configuration options available
+       in GDM.
+      </para>
+
+      <sect3 id="accessibilitydialog">
+        <title>GDM Accessibility Dialog And Gconf Keys</title>
 
         <para>
-          If the user associated with running the GDM GUI programs has 
-          accessibility features enabled via GConf configuration, then the
-          GDM GUI programs will recognize these.
+         The GDM greeter panel at the login screen displays an accessibility
+         icon.  Clicking on that icon opens the GDM Accessibility Dialog.  In
+         the GDM Accessibility Dialog, there is a list of checkboxes, so the
+         user can enable or disable the associated assistive tools.
+        </para>
+
+        <para>
+         The checkboxes that correspond to the on-screen keyboard, screen
+         magnifier and screen reader assistive tools act on the three GConf
+         keys that are described in the next section of this document. By
+         enabling or disabling these checkboxes, the associated GConf key is
+         set to "true" or "false.  When the key is set to true, the 
+         assistive tools linked to this GConf key are launched.  When the key
+         is set to "false", any running assistive tool linked to this GConf
+         key are terminated.  Also these keys could be set to "true" by default
+         so that the assistive programs are always launched with the GDM login
+         GUI.
+        </para>
+
+        <para>
+         The other checkboxes in the GDM Accessibility Dialog do not have
+         corresponding GConf keys because no additional program is launched
+         to provide the accessibility features that they offer.  These other
+         options coorespond to accessibility features that are provided by the
+         Xserver, which is always running during the GDM session.
+        </para>
+      </sect3>
+
+      <sect3 id="accessibilitygconfconfiguration">
+        <title>Accessibility GConf Keys</title>
+
+        <para>
+         GDM offers the following GConf keys to control its accessibility
+         features:
         </para>
 
         <variablelist>
-          <title>Greeter Configuration Keys</title>
+          <title>GDM Configuration Keys</title>
 
           <varlistentry>
             <term>/desktop/gnome/interface/accessibility</term>
@@ -1633,8 +1672,8 @@ gdm:.my.domain
               <synopsis>false (boolean)</synopsis>
               <para>
                 Controls whether the Accessibility infrastructure will be
-                started with the GDM GUI.  This is needed for any accessibility
-                technology programs to work.
+                started with the GDM GUI.  This is needed for many
+                accessibility technology programs to work.
               </para>
             </listitem>
           </varlistentry>
@@ -1643,7 +1682,7 @@ gdm:.my.domain
             <listitem>
               <synopsis>false (boolean)</synopsis>
               <para>
-                If set, then the GNOME magnifier will be started with the GDM
+                If set, then the screen magnifier will be started with the GDM
                 GUI programs.
               </para>
             </listitem>
@@ -1669,6 +1708,108 @@ gdm:.my.domain
             </listitem>
           </varlistentry>
         </variablelist>
+      </sect3>
+
+      <sect3 id="accessibilitytoolsconfiguration">
+        <title>Linking GConf Keys to Accessbility Tools</title>
+
+        <para>
+         For magnification, on-screen keyboard, and screen reader; the
+         assistive tool which gets launched depends on the desktop files
+         located in the GDM autostart directory as described in the "Autostart
+         Configuration" section of this manual.  Any desktop file in the GDM
+         autostart directory can be linked to a GDM Accessibility GConf key via
+         specifying that GConf key in the AutostartCondition value in the
+         desktop file.  For example, the value could be one of the following:
+        </para>
+
+<screen>
+AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled
+AutostartCondition=GNOME /desktop/gnome/applications/at/screen_magnifier_enabled
+AutostartCondition=GNOME /desktop/gnome/applications/at/screen_reader_enabled
+</screen>
+
+        <para>
+         When an accesibility key is true, then any program which is linked to
+         that key in a GDM autostart desktop file will be launched (unless the
+         Hidden key is set to true in that desktop file).  A single GConf key
+         can even start multiple assistive tools if there are multiple desktop
+         files with this AutostartCondition in the GDM autostart directory.
+        </para>
+      </sect3>
+
+      <sect3 id="accessibilitytoolexample">
+        <title>Example Of Modifying Accessibility Tool Configuration</title>
+
+        <para>
+         For example, if GNOME is distributed with GOK as the default on-screen
+         keyboard, then this could be replaced with a different program if
+         desired.  To replace GOK with the on-screen keyboard application
+         "onboard" and additionally activate the assistive tool "mousetweaks"
+         for dwelling support, then the following configuration is needed.
+        </para>
+
+        <para>
+         Create a desktop file for onboard and a second one for mousetweaks;
+         for example, onboard.desktop and mousetweaks.desktop. These files
+         must be placed in the GDM autostart directory and be in the format
+         as explained in the "Autostart Configuration" section of this
+         document.  The following is an example
+         <filename>onboard.desktop</filename> file:
+        </para>
+
+<screen>
+[Desktop Entry]
+Encoding=UTF-8
+Name=Onboard Onscreen Keyboard
+Comment=Use an on-screen keyboard
+TryExec=onboard
+Exec=onboard --size 500x180 -x 20 -y 10
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=GNOME;GTK;Accessibility;
+AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled
+</screen>
+
+        <para>
+         The following is an example <filename>mousetweaks.desktop</filename>
+         file:
+        </para>
+
+<screen>
+[Desktop Entry]
+Encoding=UTF-8
+Name=Software Mouse-Clicks
+Comment=Perform clicks by dwelling with the pointer
+TryExec=mousetweaks
+Exec=mousetweaks --enable-dwell -m window -c -x 20 -y 240 
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=GNOME;GTK;Accessibility;
+AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled
+</screen>
+
+        <para>
+         Note the line with the AutostartCondition that links both desktop
+         files to the GConf key for the on-screen keyboard.
+        </para>
+
+        <para>
+         To disable GOK from starting, the desktop file for the GOK on-screen
+         keyboard must be removed or deactivated.  Otherwise onboard and GOK
+         would simultaneously be started.  This can be done by removing the
+         gok.desktop file from the GDM autostart directory, or by adding the
+         "Hidden=true" key setting to the gok.desktop file.
+        </para>
+
+        <para>
+         After making these changes, GOK will no longer be started when the
+         user activates the on-screen keyboard in the GDM session; but onboard
+         and mousetweaks will instead be launched instead.
+        </para>
+      </sect3>
     </sect2>
 
     <sect2 id="generalsessionconfig">
