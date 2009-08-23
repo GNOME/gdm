@@ -10,9 +10,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-17 17:35+0700\n"
-"PO-Revision-Date: 2009-02-17 17:38+0700\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gdm&component=general\n"
+"POT-Creation-Date: 2009-08-21 23:21+0000\n"
+"PO-Revision-Date: 2009-08-23 17:16+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -27,48 +28,48 @@ msgstr "/dev/urandom ไม่ได้เป็นอุปกรณ์แบ�
 
 #: ../daemon/factory-slave-main.c:170 ../daemon/main.c:516
 #: ../daemon/product-slave-main.c:174 ../daemon/session-worker-main.c:137
-#: ../daemon/simple-slave-main.c:176 ../daemon/xdmcp-chooser-slave-main.c:176
+#: ../daemon/simple-slave-main.c:179 ../daemon/xdmcp-chooser-slave-main.c:179
 msgid "Enable debugging code"
 msgstr "เปิดใช้การดีบั๊ก"
 
 #: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:177
+#: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
 msgid "Display ID"
 msgstr "หมายเลขดิสเพลย์"
 
 #: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:177
+#: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
 msgid "id"
 msgstr "id"
 
 #: ../daemon/factory-slave-main.c:183 ../daemon/product-slave-main.c:187
-#: ../daemon/simple-slave-main.c:189 ../daemon/xdmcp-chooser-slave-main.c:189
+#: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:192
 msgid "GNOME Display Manager Slave"
 msgstr "หน่วยลูกของโปรแกรมจัดการการเข้าระบบของ GNOME"
 
-#: ../daemon/gdm-display-access-file.c:271
+#: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "ไม่พบผู้ใช้ \"%s\" ในระบบ"
 
-#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:217
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:220
 msgid "Unable to initialize login system"
 msgstr "ไม่สามารถตั้งต้นกระบวนการเข้าระบบได้"
 
-#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:253
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:256
 msgid "Unable to authenticate user"
 msgstr "ไม่สามารถยืนยันตัวบุคคลผู้ใช้ได้"
 
-#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:307
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:310
 msgid "Unable to authorize user"
 msgstr "ไม่สามารถอนุญาตสิทธิ์ผู้ใช้ได้"
 
-#: ../daemon/gdm-factory-slave.c:281
+#: ../daemon/gdm-factory-slave.c:281 ../daemon/gdm-simple-slave.c:432
 msgid "Unable to establish credentials"
 msgstr "ไม่สามารถจัดตั้งรหัสลับได้"
 
 #: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1097
+#: ../daemon/gdm-simple-slave.c:1111
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -154,73 +155,64 @@ msgstr "อุปกรณ์ดิสเพลย์"
 msgid "The display device"
 msgstr "อุปกรณ์ดิสเพลย์"
 
-#: ../daemon/gdm-session-direct.c:1574 ../daemon/gdm-session-direct.c:1592
-#, c-format
-msgid "worker exited with status %d"
-msgstr "worker จบการทำงานด้วยสถานะ %d"
-
-#: ../daemon/gdm-session-worker.c:1075
+#: ../daemon/gdm-session-worker.c:1085
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "เกิดข้อผิดพลาดขณะเตรียมการโต้ตอบกับระบบยืนยันตัวบุคคล - %s"
 
-#: ../daemon/gdm-session-worker.c:1076
+#: ../daemon/gdm-session-worker.c:1086
 msgid "general failure"
 msgstr "ข้อผิดพลาดทั่วไป"
 
-#: ../daemon/gdm-session-worker.c:1077
+#: ../daemon/gdm-session-worker.c:1087
 msgid "out of memory"
 msgstr "หน่วยความจำหมด"
 
-#: ../daemon/gdm-session-worker.c:1078
+#: ../daemon/gdm-session-worker.c:1088
 msgid "application programmer error"
 msgstr "ข้อผิดพลาดของผู้เขียนโปรแกรม"
 
-#: ../daemon/gdm-session-worker.c:1079
+#: ../daemon/gdm-session-worker.c:1089
 msgid "unknown error"
 msgstr "ข้อผิดพลาดไม่ทราบสาเหตุ"
 
-#: ../daemon/gdm-session-worker.c:1086
+#: ../daemon/gdm-session-worker.c:1096
 msgid "Username:"
 msgstr "ชื่อผู้ใช้:"
 
-#: ../daemon/gdm-session-worker.c:1092
+#: ../daemon/gdm-session-worker.c:1102
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr "เกิดข้อผิดพลาดขณะแจ้งพร็อมต์ที่จะใช้ต่อระบบยืนยันตัวบุคคล - %s"
 
-#: ../daemon/gdm-session-worker.c:1106
+#: ../daemon/gdm-session-worker.c:1116
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr "เกิดข้อผิดพลาดขณะแจ้งชื่อโฮสต์ของผู้ใช้ต่อระบบยืนยันตัวบุคคล - %s"
 
-#: ../daemon/gdm-session-worker.c:1121
+#: ../daemon/gdm-session-worker.c:1131
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr "เกิดข้อผิดพลาดขณะแจ้งชื่อคอนโซลของผู้ใช้ต่อระบบยืนยันตัวบุคคล - %s"
 
-#: ../daemon/gdm-session-worker.c:1134
+#: ../daemon/gdm-session-worker.c:1144
 #, c-format
 msgid "error informing authentication system of display string - %s"
 msgstr "เกิดข้อผิดพลาดขณะแจ้งชื่อดิสเพลย์ต่อระบบยืนยันตัวบุคคล - %s"
 
-#: ../daemon/gdm-session-worker.c:1149
+#: ../daemon/gdm-session-worker.c:1159
 #, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
 msgstr "เกิดข้อผิดพลาดขณะแจ้งข้อมูลลับ xauth ของดิสเพลย์ต่อระบบยืนยันตัวบุคคล - %s"
 
-#: ../daemon/gdm-session-worker.c:1429 ../daemon/gdm-session-worker.c:1447
+#: ../daemon/gdm-session-worker.c:1439 ../daemon/gdm-session-worker.c:1457
 #, c-format
 msgid "no user account available"
 msgstr "ไม่มีบัญชีผู้ใช้"
 
-#: ../daemon/gdm-session-worker.c:1474
+#: ../daemon/gdm-session-worker.c:1484
 msgid "Unable to change to user"
 msgstr "ไม่สามารถเปลี่ยนไปเป็นผู้ใช้ได้"
-
-#: ../daemon/gdm-simple-slave.c:426
-msgid "Unable establish credentials"
-msgstr "ไม่สามารถจัดตั้งรหัสลับได้"
 
 #: ../daemon/gdm-welcome-session.c:426
 #, c-format
@@ -232,139 +224,139 @@ msgstr "ไม่มีผู้ใช้ %s"
 msgid "Group %s doesn't exist"
 msgstr "ไม่มีกลุ่ม %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:590
+#: ../daemon/gdm-xdmcp-display-factory.c:595
 msgid "Could not create socket!"
 msgstr "ไม่สามารถสร้างซ็อกเก็ตได้!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:856
+#: ../daemon/gdm-xdmcp-display-factory.c:862
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "ปฏิเสธการสอบถาม XDMCP จากโฮสต์ %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1013
-#: ../daemon/gdm-xdmcp-display-factory.c:1234
+#: ../daemon/gdm-xdmcp-display-factory.c:1019
+#: ../daemon/gdm-xdmcp-display-factory.c:1240
 msgid "Could not extract authlist from packet"
 msgstr "ไม่สามารถดึงรายการการอนุญาตสิทธิ์จากแพ็กเก็ต"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1026
-#: ../daemon/gdm-xdmcp-display-factory.c:1249
+#: ../daemon/gdm-xdmcp-display-factory.c:1032
+#: ../daemon/gdm-xdmcp-display-factory.c:1255
 msgid "Error in checksum"
 msgstr "เกิดข้อผิดพลาดในผลรวมตรวจสอบ"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1500
+#: ../daemon/gdm-xdmcp-display-factory.c:1506
 msgid "Bad address"
 msgstr "ที่อยู่ไม่ถูกต้อง"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1581
+#: ../daemon/gdm-xdmcp-display-factory.c:1587
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: ไม่สามารถอ่านค่าที่อยู่ของดิสเพลย์"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1589
+#: ../daemon/gdm-xdmcp-display-factory.c:1595
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s: ไม่สามารถอ่านค่าหมายเลขพอร์ตของดิสเพลย์"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1598
+#: ../daemon/gdm-xdmcp-display-factory.c:1604
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s: ไม่สามารถดึงรายการการอนุญาตสิทธิ์จากแพ็กเก็ต"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1618
+#: ../daemon/gdm-xdmcp-display-factory.c:1624
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: เกิดข้อผิดพลาดในผลรวมตรวจสอบ"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2127
+#: ../daemon/gdm-xdmcp-display-factory.c:2133
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: ได้รับการร้องขอจากโฮสต์ที่ถูกห้าม %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2137
-#: ../daemon/gdm-xdmcp-display-factory.c:2492
-#: ../daemon/gdm-xdmcp-display-factory.c:2744
+#: ../daemon/gdm-xdmcp-display-factory.c:2143
+#: ../daemon/gdm-xdmcp-display-factory.c:2498
+#: ../daemon/gdm-xdmcp-display-factory.c:2750
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: ไม่สามารถอ่านค่าหมายเลขดิสเพลย์ได้"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2144
+#: ../daemon/gdm-xdmcp-display-factory.c:2150
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: ไม่สามารถอ่านค่าชนิดของการเชื่อมต่อได้"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2151
+#: ../daemon/gdm-xdmcp-display-factory.c:2157
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: ไม่สามารถอ่านค่าที่อยู่ของลูกข่ายได้"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2159
+#: ../daemon/gdm-xdmcp-display-factory.c:2165
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: ไม่สามารถอ่านชื่อที่จะยืนยันตัวบุคคลได้"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2168
+#: ../daemon/gdm-xdmcp-display-factory.c:2174
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: ไม่สามารถอ่านข้อมูลการยืนยันตัวบุคคลได้"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2178
+#: ../daemon/gdm-xdmcp-display-factory.c:2184
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: ไม่สามารถอ่านรายการการตรวจสอบสิทธิ์ได้"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2197
+#: ../daemon/gdm-xdmcp-display-factory.c:2203
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: ไม่สามารถอ่านค่าหมายเลขประจำตัวของผู้ผลิตได้"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2224
+#: ../daemon/gdm-xdmcp-display-factory.c:2230
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: ผลรวมตรวจสอบผิดพลาดจาก %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2476
+#: ../daemon/gdm-xdmcp-display-factory.c:2482
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: ได้รับการจัดการจากโฮสต์ที่ถูกห้าม %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2485
-#: ../daemon/gdm-xdmcp-display-factory.c:2751
+#: ../daemon/gdm-xdmcp-display-factory.c:2491
+#: ../daemon/gdm-xdmcp-display-factory.c:2757
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: ไม่สามารถอ่านหมายเลขวาระได้"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2499
+#: ../daemon/gdm-xdmcp-display-factory.c:2505
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: ไม่สามารถอ่านค่าคลาสของดิสเพลย์"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2604
-#: ../daemon/gdm-xdmcp-display-factory.c:2654
+#: ../daemon/gdm-xdmcp-display-factory.c:2610
 #: ../daemon/gdm-xdmcp-display-factory.c:2660
+#: ../daemon/gdm-xdmcp-display-factory.c:2666
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: ไม่สามารถอ่านค่าที่อยู่ได้"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2734
+#: ../daemon/gdm-xdmcp-display-factory.c:2740
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: ได้รับ KEEPALIVE จากโฮสต์ที่ถูกห้าม %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2823
+#: ../daemon/gdm-xdmcp-display-factory.c:2829
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory: ไม่สามารถอ่านข้อมูลส่วนหัวของ XDMCP ได้"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2829
+#: ../daemon/gdm-xdmcp-display-factory.c:2835
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XDMCP: รุ่นของ XDMCP ไม่ถูกต้อง"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2835
+#: ../daemon/gdm-xdmcp-display-factory.c:2841
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
 msgid "XMDCP: Unable to parse address"
 msgstr "XDMCP: ไม่สามารถแจงที่อยู่"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3233
+#: ../daemon/gdm-xdmcp-display-factory.c:3286
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "ไม่สามารถอ่านชื่อโฮสต์ของเซิร์ฟเวอร์: %s"
@@ -447,7 +439,7 @@ msgid "AT SPI Registry Wrapper"
 msgstr "โปรแกรมครอบเรจิสตรี AT SPI"
 
 #: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1921
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1767
 msgid "Login Window"
 msgstr "หน้าจอเข้าระบบ"
 
@@ -491,12 +483,16 @@ msgstr "Orca: โปรแกรมอ่านหน้าจอ"
 msgid "Present on-screen information as speech or braille"
 msgstr "นำเสนอข้อมูลหน้าจอเป็นเสียงพูดหรืออักษรเบรลล์"
 
+#: ../data/greeter-autostart/polkit-gnome-authentication-agent-1.desktop.in.h:1
+msgid "PolicyKit Authentication Agent"
+msgstr "เครื่องมือยืนยันตัวบุคคลของ PolicyKit"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:148
 msgid "Select System"
 msgstr "เลือกระบบ"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:214
-msgid "XMCP: Could not create XDMCP buffer!"
+msgid "XDMCP: Could not create XDMCP buffer!"
 msgstr "XDMCP: ไม่สามารถสร้างบัฟเฟอร์ของ XDMCP ได้"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:220
@@ -511,21 +507,29 @@ msgstr "ค่า"
 msgid "percentage of time complete"
 msgstr "เปอร์เซ็นต์ของเวลาที่จะทำเสร็จ"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1306
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1321
 msgid "Inactive Text"
 msgstr "ข้อความส่วนปิดใช้งาน"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1307
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1322
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr "ข้อความที่จะใช้เป็นป้ายชื่อถ้าผู้ใช้ยังไม่เลือกรายการใด"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1315
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1330
 msgid "Active Text"
 msgstr "ข้อความส่วนใช้งาน"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1316
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1331
 msgid "The text to use in the label if the user has picked an item"
 msgstr "ข้อความที่จะใช้เป็นป้ายชื่อถ้าผู้ใช้เลือกรายการ"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1340
+msgid "List Visible"
+msgstr "แสดงรายชื่อ"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1341
+msgid "Whether or not the chooser list is visible"
+msgstr "แสดงรายชื่อสำหรับเลือกหรือไม่"
 
 #: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M:%S %p"
@@ -553,35 +557,16 @@ msgstr "%a %e %b"
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:288
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:291
 msgid "Automatically logging in..."
 msgstr "กำลังเข้าระบบโดยอัตโนมัติ..."
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:718
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:758
 msgid "Cancelling..."
 msgstr "กำลังยกเลิก..."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1187
-msgid "Failed to restart computer"
-msgstr "เริ่มเปิดเครื่องใหม่ไม่สำเร็จ"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1190
-msgid ""
-"You are not allowed to restart the computer because multiple users are "
-"logged in"
-msgstr "ไม่อนุญาตให้เริ่มเปิดเครื่องใหม่ เนื่องจากมีผู้ใช้หลายคนเข้าระบบอยู่"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1271
-msgid "Failed to stop computer"
-msgstr "ปิดเครื่องไม่สำเร็จ"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1274
-msgid ""
-"You are not allowed to stop the computer because multiple users are logged in"
-msgstr "ไม่อนุญาตให้ปิดเครื่อง เนื่องจากมีผู้ใช้หลายคนเข้าระบบอยู่"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1358
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1185
 msgid "Select language and click Log In"
 msgstr "เลือกภาษาแล้วคลิกที่ปุ่มเข้าระบบ"
 
@@ -613,11 +598,7 @@ msgstr "พักเครื่อง"
 msgid "Version"
 msgstr "รุ่น"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
-msgid "page 5"
-msgstr "หน้า 5"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:590
+#: ../gui/simple-greeter/gdm-greeter-panel.c:554
 msgid "Panel"
 msgstr "พาเนล"
 
@@ -646,7 +627,7 @@ msgstr "อื่นๆ..."
 msgid "Choose a language from the full list of available languages."
 msgstr "เลือกภาษาจากรายชื่อภาษาที่มีทั้งหมด"
 
-#: ../gui/simple-greeter/gdm-languages.c:610
+#: ../gui/simple-greeter/gdm-languages.c:609
 msgid "Unspecified"
 msgstr "ไม่ระบุ"
 
@@ -704,17 +685,17 @@ msgstr "จำนวนรายการสูงสุด"
 msgid "The maximum number of items to keep around in the list"
 msgstr "จำนวนรายการสูงสุดที่จะเก็บไว้ในรายชื่อ"
 
-#: ../gui/simple-greeter/gdm-remote-login-window.c:224
+#: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
 msgid "Remote Login (Connecting to %s...)"
 msgstr "เข้าระบบผ่านเครื่อข่าย (กำลังเชื่อมต่อไปยัง %s...)"
 
-#: ../gui/simple-greeter/gdm-remote-login-window.c:238
+#: ../gui/simple-greeter/gdm-remote-login-window.c:202
 #, c-format
 msgid "Remote Login (Connected to %s)"
 msgstr "เข้าระบบผ่านเครื่อข่าย (เชื่อมต่อกับ %s)"
 
-#: ../gui/simple-greeter/gdm-remote-login-window.c:317
+#: ../gui/simple-greeter/gdm-remote-login-window.c:281
 msgid "Remote Login"
 msgstr "เข้าระบบผ่านเครื่อข่าย"
 
@@ -727,145 +708,157 @@ msgid "Banner message text"
 msgstr "ข้อความพาดหัว"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
+msgid "Banner message text when chooser is empty"
+msgstr "ข้อความพาดหัวเมื่อรายชื่อสำหรับเลือกว่างเปล่า"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
 msgid "Disable showing the restart buttons"
 msgstr "ปิดการแสดงปุ่มเริ่มเปิดเครื่องใหม่"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
 msgid "Do not show known users in the login window"
 msgstr "ไม่ต้องแสดงรายชื่อผู้ใช้ในหน้าต่างเข้าระบบ"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
 msgid "Enable accessibility keyboard plugin"
 msgstr "เปิดใช้ปลั๊กอินสิ่งอำนวยความสะดวกสำหรับแป้นพิมพ์"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
 msgid "Enable debugging"
 msgstr "เปิดใช้การดีบั๊ก"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
 msgid "Enable debugging mode for the greeter."
 msgstr "เปิดใช้โหมดดีบั๊กสำหรับหน้าต่างต้อนรับ"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Enable on-screen keyboard"
 msgstr "เปิดใช้แป้นพิมพ์บนจอ"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
-msgid "Enable screen magnifier"
-msgstr "เปิดใช้แว่นขยาย"
-
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+msgid "Enable screen magnifier"
+msgstr "เปิดใช้แว่นขยายหน้าจอ"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
 msgid "Enable screen reader"
 msgstr "เปิดใช้โปรแกรมอ่านหน้าจอ"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "Enable showing the banner message"
 msgstr "เปิดใช้การแสดงข้อความพาดหัว"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Icon name to use for greeter logo"
 msgstr "ชื่อของไอคอนที่จะใช้เป็นโลโก้ของหน้าต่างต้อนรับ"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid "Recently selected keyboard layouts"
 msgstr "ผังแป้นพิมพ์ที่เลือกล่าสุด"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Recently selected languages"
 msgstr "ภาษาที่เลือกล่าสุด"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-msgid "Set to TRUE to disable showing known users in the login window."
-msgstr "ตั้งเป็นค่าจริงถ้าต้องการปิดการแสดงรายชื่อผู้ใช้ในหน้าต่างเข้าระบบ"
-
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
-msgid "Set to TRUE to disable showing the restart buttons in the login window."
-msgstr "ตั้งเป็นค่าจริงถ้าต้องการปิดการแสดงปุ่มเริ่มเปิดเครื่องใหม่ในหน้าต่างเข้าระบบ"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
-msgid "Set to True to enable the background settings manager plugin."
-msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้งพื้นหลัง"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
-msgid "Set to True to enable the media-keys settings manager plugin."
-msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้งปุ่มสื่อผสม"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
-msgid "Set to True to enable the on-screen keyboard."
-msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินแป้นพิมพ์บนจอ"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
-msgid ""
-"Set to True to enable the plugin to manage the accessibility keyboard "
-"settings."
-msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้งสิ่งอำนวยความสะดวกสำหรับแป้นพิมพ์"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
-msgid "Set to True to enable the screen magnifier."
-msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้แว่นขยาย"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
-msgid "Set to True to enable the screen reader."
-msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้โปรแกรมอ่านหน้าจอ"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
-msgid "Set to True to enable the sound settings manager plugin."
-msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้งเสียง"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
-msgid "Set to True to enable the xrandr settings manager plugin."
-msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้ง xrandr"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
-msgid "Set to True to enable the xsettings settings manager plugin."
-msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้ง xsettings"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid ""
 "Set to a list of keyboard layouts to be shown by default at the login window."
 msgstr "ตั้งเป็นรายชื่อผังแป้นพิมพ์ที่จะแสดงโดยปริยายในหน้าต่างเข้าระบบ"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to a list of languages to be shown by default at the login window."
 msgstr "ตั้งเป็นรายชื่อภาษาที่จะแสดงโดยปริยายในหน้าต่างเข้าระบบ"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "ตั้งเป็นชื่อของไอคอนที่จะใช้เป็นโลโก้ของหน้าต่างต้อนรับ โดยใช้ชื่อที่อ้างในชุดตกแต่ง"
 
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+msgid "Set to true to disable showing known users in the login window."
+msgstr "ตั้งเป็นค่าจริงถ้าต้องการปิดการแสดงรายชื่อผู้ใช้ในหน้าต่างเข้าระบบ"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+msgid "Set to true to disable showing the restart buttons in the login window."
+msgstr "ตั้งเป็นค่าจริงถ้าต้องการปิดการแสดงปุ่มเริ่มเปิดเครื่องใหม่ในหน้าต่างเข้าระบบ"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+msgid "Set to true to enable the background settings manager plugin."
+msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้งพื้นหลัง"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+msgid "Set to true to enable the media-keys settings manager plugin."
+msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้งปุ่มสื่อผสม"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+msgid "Set to true to enable the on-screen keyboard."
+msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินแป้นพิมพ์บนจอ"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+msgid ""
+"Set to true to enable the plugin to manage the accessibility keyboard "
+"settings."
+msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้งสิ่งอำนวยความสะดวกสำหรับแป้นพิมพ์"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+msgid "Set to true to enable the screen magnifier."
+msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้แว่นขยายหน้าจอ"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+msgid "Set to true to enable the screen reader."
+msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้โปรแกรมอ่านหน้าจอ"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+msgid "Set to true to enable the sound settings manager plugin."
+msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้งเสียง"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+msgid "Set to true to enable the xrandr settings manager plugin."
+msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้ง xrandr"
+
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+msgid "Set to true to enable the xsettings settings manager plugin."
+msgstr "ตั้งเป็นค่าจริงถ้าต้องการเปิดใช้ปลั๊กอินจัดการค่าตั้ง xsettings"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "Set to true to show the banner message text."
 msgstr "ตั้งเป็นค่าจริงถ้าต้องการแสดงข้อความพาดหัว"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "Set to true to use compiz as the window manager."
 msgstr "ตั้งเป็นค่าจริงถ้าต้องการใช้ compiz เป็นโปรแกรมจัดการหน้าต่าง"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+msgid ""
+"Text banner message to show on the login window when the user chooser is "
+"empty, instead of banner_message_text."
+msgstr ""
+"ข้อความพาดหัวที่จะแสดงในหน้าต่างเข้าระบบ เมื่อรายชื่อผู้ใช้สำหรับเลือกว่างเปล่า โดยใช้แทน "
+"banner_message_text"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "Text banner message to show on the login window."
 msgstr "ข้อความพาดหัวที่จะแสดงในหน้าต่างเข้าระบบ"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the background settings manager plugin is enabled."
 msgstr "เปิดใช้ปลั๊กอินจัดการค่าตั้งพื้นหลัง"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr "เปิดใช้ปลั๊กอินจัดการค่าตั้งปุ่มสื่อผสม"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "เปิดใช้ปลั๊กอินจัดการค่าตั้งเสียง"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
 msgid "True if the xrandr settings manager plugin is enabled."
 msgstr "เปิดใช้ปลั๊กอินจัดการค่าตั้ง xrandr"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:37
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "เปิดใช้ปลั๊กอินจัดการค่าตั้ง xsettings"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:38
 msgid "Use compiz as the window manager"
 msgstr "ใช้ compiz เป็นโปรแกรมจัดการหน้าต่าง"
 
@@ -893,11 +886,11 @@ msgstr "ทำงานอยู่หรือไม่?"
 msgid "Whether or not the timer is currently ticking"
 msgstr "นาฬิกาตั้งเวลากำลังนับเวลาคอยอยู่หรือไม่"
 
-#: ../gui/simple-greeter/gdm-user.c:241
+#: ../gui/simple-greeter/gdm-user.c:247
 msgid "Manager"
 msgstr "ตัวจัดการ"
 
-#: ../gui/simple-greeter/gdm-user.c:242
+#: ../gui/simple-greeter/gdm-user.c:248
 msgid "The user manager object this user is controlled by."
 msgstr "ออบเจกต์ตัวจัดการผู้ใช้ที่ควบคุมผู้ใช้นี้"
 
@@ -906,41 +899,41 @@ msgstr "ออบเจกต์ตัวจัดการผู้ใช้ท
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:136
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:164
 msgctxt "user"
 msgid "Other..."
 msgstr "อื่นๆ..."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:137
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:165
 msgid "Choose a different account"
 msgstr "เลือกบัญชีผู้ใช้อื่น "
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:149
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:177
 msgid "Guest"
 msgstr "ผู้มาเยือน"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:150
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:178
 msgid "Login as a temporary guest"
 msgstr "เข้าระบบด้วยบัญชีชั่วคราวสำหรับผู้มาเยือน"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:162
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:191
 msgid "Automatic Login"
 msgstr "เข้าระบบโดยอัตโนมัติ"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:163
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:192
 msgid "Automatically login to the system after selecting options"
 msgstr "เข้าระบบโดบอัตโนมัติหลังจากเลือกตัวเลือกต่างๆ"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:354
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:383
 #, c-format
 msgid "Log in as %s"
 msgstr "เข้าระบบในนาม %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:699
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:737
 msgid "Currently logged in"
 msgstr "เข้าระบบอยู่"
 
-#: ../gui/user-switch-applet/applet.c:160
+#: ../gui/user-switch-applet/applet.c:162
 msgid ""
 "The User Switch Applet is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -951,7 +944,7 @@ msgstr ""
 "ภายใต้เงื่อนไขของ GNU General Public License ที่เผยแพร่โดยมูลนิธิซอฟต์แวร์เสรี "
 "ไม่ว่าจะเป็นสัญญาอนุญาตรุ่นที่ 2 หรือรุ่นถัดมา (ตามแต่คุณจะเลือก)"
 
-#: ../gui/user-switch-applet/applet.c:164
+#: ../gui/user-switch-applet/applet.c:166
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -963,7 +956,7 @@ msgstr ""
 "*ความเหมาะสมสำหรับวัตถุประสงค์เฉพาะกิจใดๆ* กรุณาอ่าน GNU General Public License "
 "เพื่อดูรายละเอียดเพิ่มเติม"
 
-#: ../gui/user-switch-applet/applet.c:168
+#: ../gui/user-switch-applet/applet.c:170
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "this program; if not, write to the Free Software Foundation, Inc., 51 "
@@ -973,77 +966,77 @@ msgstr ""
 "กรุณาติดต่อไปที่ Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, "
 "Boston, MA 02110-1301, USA"
 
-#: ../gui/user-switch-applet/applet.c:182
+#: ../gui/user-switch-applet/applet.c:184
 msgid "A menu to quickly switch between users."
 msgstr "เมนูสำหรับสลับผู้ใช้อย่างเร็ว"
 
-#: ../gui/user-switch-applet/applet.c:186
+#: ../gui/user-switch-applet/applet.c:188
 msgid "translator-credits"
 msgstr "เทพพิทักษ์ การุญบุญญานันท์ <thep@linux.thai.net>"
 
-#: ../gui/user-switch-applet/applet.c:643
-#: ../gui/user-switch-applet/applet.c:778
-#: ../gui/user-switch-applet/applet.c:817
+#: ../gui/user-switch-applet/applet.c:647
+#: ../gui/user-switch-applet/applet.c:784
+#: ../gui/user-switch-applet/applet.c:823
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "ไม่สามารถล็อคหน้าจอได้: %s"
 
-#: ../gui/user-switch-applet/applet.c:665
+#: ../gui/user-switch-applet/applet.c:669
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "ไม่สามารถสั่งให้โปรแกรมรักษาหน้าจอล้างหน้าจอได้: %s"
 
-#: ../gui/user-switch-applet/applet.c:876
+#: ../gui/user-switch-applet/applet.c:882
 #, c-format
 msgid "Can't logout: %s"
 msgstr "ไม่สามารถออกจากระบบได้: %s"
 
-#: ../gui/user-switch-applet/applet.c:959
+#: ../gui/user-switch-applet/applet.c:966
 msgid "Available"
 msgstr "อยู่"
 
-#: ../gui/user-switch-applet/applet.c:960
+#: ../gui/user-switch-applet/applet.c:967
 msgid "Invisible"
 msgstr "ซ่อนตัว"
 
-#: ../gui/user-switch-applet/applet.c:961
+#: ../gui/user-switch-applet/applet.c:968
 msgid "Busy"
 msgstr "ไม่ว่าง"
 
-#: ../gui/user-switch-applet/applet.c:962
+#: ../gui/user-switch-applet/applet.c:969
 msgid "Away"
 msgstr "ไม่อยู่"
 
-#: ../gui/user-switch-applet/applet.c:1108
+#: ../gui/user-switch-applet/applet.c:1129
 msgid "Account Information..."
 msgstr "ข้อมูลบัญชี..."
 
-#: ../gui/user-switch-applet/applet.c:1120
+#: ../gui/user-switch-applet/applet.c:1141
 msgid "System Preferences..."
 msgstr "ปรับแต่งระบบ..."
 
-#: ../gui/user-switch-applet/applet.c:1136
+#: ../gui/user-switch-applet/applet.c:1157
 msgid "Lock Screen"
 msgstr "ล็อคหน้าจอ"
 
-#: ../gui/user-switch-applet/applet.c:1147
+#: ../gui/user-switch-applet/applet.c:1168
 msgid "Switch User"
 msgstr "สลับผู้ใช้"
 
 #. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1158
+#: ../gui/user-switch-applet/applet.c:1179
 msgid "Quit..."
 msgstr "ออก..."
 
-#: ../gui/user-switch-applet/applet.c:1261
+#: ../gui/user-switch-applet/applet.c:1294
 msgid "Unknown"
 msgstr "ไม่ทราบ"
 
-#: ../gui/user-switch-applet/applet.c:1373
+#: ../gui/user-switch-applet/applet.c:1412
 msgid "User Switch Applet"
 msgstr "แอพเพล็ตสลับผู้ใช้"
 
-#: ../gui/user-switch-applet/applet.c:1382
+#: ../gui/user-switch-applet/applet.c:1421
 msgid "Change account settings and status"
 msgstr "ตั้งค่าและเปลี่ยนสถานะของบัญชี"
 
@@ -1099,7 +1092,7 @@ msgstr "ไม่สามารถระบุวาระปัจจุบั
 msgid "- New GDM login"
 msgstr "- การเข้าระบบครั้งใหม่ด้วย GDM"
 
-#: ../utils/gdmflexiserver.c:762
+#: ../utils/gdmflexiserver.c:767
 msgid "Unable to start new display"
 msgstr "ไม่สามารถเริ่มการทำงานดิสเพลย์ชุดใหม่"
 
@@ -1107,6 +1100,31 @@ msgstr "ไม่สามารถเริ่มการทำงานดิ
 #: ../utils/gdm-screenshot.c:231
 msgid "Take a picture of the screen"
 msgstr "จับภาพหน้าจอ"
+
+#~ msgid "worker exited with status %d"
+#~ msgstr "worker จบการทำงานด้วยสถานะ %d"
+
+#~ msgid "Unable establish credentials"
+#~ msgstr "ไม่สามารถจัดตั้งรหัสลับได้"
+
+#~ msgid "Failed to restart computer"
+#~ msgstr "เริ่มเปิดเครื่องใหม่ไม่สำเร็จ"
+
+#~ msgid ""
+#~ "You are not allowed to restart the computer because multiple users are "
+#~ "logged in"
+#~ msgstr "ไม่อนุญาตให้เริ่มเปิดเครื่องใหม่ เนื่องจากมีผู้ใช้หลายคนเข้าระบบอยู่"
+
+#~ msgid "Failed to stop computer"
+#~ msgstr "ปิดเครื่องไม่สำเร็จ"
+
+#~ msgid ""
+#~ "You are not allowed to stop the computer because multiple users are "
+#~ "logged in"
+#~ msgstr "ไม่อนุญาตให้ปิดเครื่อง เนื่องจากมีผู้ใช้หลายคนเข้าระบบอยู่"
+
+#~ msgid "page 5"
+#~ msgstr "หน้า 5"
 
 #~ msgid "You have the Caps Lock key on."
 #~ msgstr "ปุ่ม CapsLock ติดอยู่"
