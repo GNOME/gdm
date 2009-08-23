@@ -6,6 +6,7 @@ AM_CPPFLAGS = \
 	-DLOCALSTATEDIR=\""$(localstatedir)"\" 		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	$(UTILS_CFLAGS)					\
+	$(CANBERRA_GTK_CFLAGS)				\
 	$(GTK_CFLAGS)					\
 	$(COMMON_CFLAGS)				\
 	$(NULL)
@@ -49,6 +50,7 @@ gdm_screenshot_SOURCES =	\
 
 gdm_screenshot_LDADD =		\
 	$(GTK_LIBS)		\
+	$(CANBERRA_GTK_LIBS)	\
 	$(COMMON_LIBS)		\
 	$(NULL)
 

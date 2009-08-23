@@ -28,6 +28,7 @@
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+#include <canberra-gtk.h>
 
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
@@ -188,6 +189,56 @@ screenshot_save (GdkPixbuf *pixbuf)
 }
 
 static void
+sound_effect_finished (ca_context *c,
+                       uint32_t    id,
+                       int         error_code,
+                       void       *userdata)
+{
+}
+
+static void
+play_sound_effect (Window xid)
+{
+        ca_context  *c;
+        ca_proplist *p;
+        int          res;
+
+        c = ca_gtk_context_get ();
+
+        p = NULL;
+        res = ca_proplist_create (&p);
+        if (res < 0) {
+                goto done;
+        }
+
+        res = ca_proplist_sets (p, CA_PROP_EVENT_ID, "screen-capture");
+        if (res < 0) {
+                goto done;
+        }
+
+        res = ca_proplist_sets (p, CA_PROP_EVENT_DESCRIPTION, _("Screenshot taken"));
+        if (res < 0) {
+                goto done;
+        }
+
+        res = ca_proplist_setf (p,
+                                CA_PROP_WINDOW_X11_XID,
+                                "%lu",
+                                (unsigned long) xid);
+        if (res < 0) {
+                goto done;
+        }
+
+        ca_context_play_full (c, 0, p, sound_effect_finished, NULL);
+
+ done:
+        if (p != NULL) {
+                ca_proplist_destroy (p);
+        }
+
+}
+
+static void
 prepare_screenshot (void)
 {
         Window     win;
@@ -208,6 +259,8 @@ prepare_screenshot (void)
                 /* FIXME: dialog? */
                 exit (1);
         }
+
+        play_sound_effect (win);
 
         filename = screenshot_save (screenshot);
         if (filename != NULL) {
