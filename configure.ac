@@ -1056,6 +1056,12 @@ AC_SUBST(EXTRA_SETUP_LIBS)
 AC_SUBST(EXTRA_TEST_LIBS)
 AC_SUBST(EXTRA_GREETER_LIBS)
 
+# Check for Solaris logindevperm support
+#
+AC_CHECK_LIB(devinfo, di_devperm_login, [
+                        AC_DEFINE(HAVE_LOGINDEVPERM)
+                            PAM_LIBS="$PAM_LIBS -ldevinfo" ])
+
 dnl ---------------------------------------------------------------------------
 dnl - Check for X Server location
 dnl ---------------------------------------------------------------------------

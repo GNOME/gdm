@@ -32,6 +32,10 @@
 #include <grp.h>
 #include <pwd.h>
 
+#ifdef  HAVE_LOGINDEVPERM
+#include <libdevinfo.h>
+#endif  /* HAVE_LOGINDEVPERM */
+
 #include <security/pam_appl.h>
 
 #include <glib.h>
@@ -977,6 +981,22 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
         if (worker->priv->state >= GDM_SESSION_WORKER_STATE_SESSION_OPENED) {
                 pam_close_session (worker->priv->pam_handle, 0);
                 gdm_session_auditor_report_logout (worker->priv->auditor);
+
+#ifdef  HAVE_LOGINDEVPERM
+                /*
+                 * Only do logindevperm processing if /dev/console or
+                 * a device associated with a VT
+                 */
+                if (worker->priv->display_device != NULL &&
+                   (strncmp (worker->priv->display_device, "/dev/vt/", strlen ("/dev/vt/")) == 0 ||
+                    strcmp  (worker->priv->display_device, "/dev/console") == 0)) {
+                        g_debug ("Logindevperm logout for user %s, device %s",
+                                 worker->priv->username,
+                                 worker->priv->display_device);
+                        (void) di_devperm_logout (worker->priv->display_device);
+                }
+#endif  /* HAVE_LOGINDEVPERM */
+
         } else {
                 void *p;
 
@@ -1729,6 +1749,7 @@ static gboolean
 gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
                                        GError           **error)
 {
+        struct passwd *passwd_entry;
         pid_t session_pid;
         int   error_code;
 
@@ -1736,6 +1757,26 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
         gdm_session_worker_update_environment_from_pam (worker);
 
         register_ck_session (worker);
+
+        passwd_entry = getpwnam (worker->priv->username);
+
+#ifdef  HAVE_LOGINDEVPERM
+        /*
+         * Only do logindevperm processing if /dev/console or
+         * a device associated with a VT
+         */
+        if (worker->priv->display_device != NULL &&
+           (strncmp (worker->priv->display_device, "/dev/vt/", strlen ("/dev/vt/")) == 0 ||
+            strcmp  (worker->priv->display_device, "/dev/console") == 0)) {
+                g_debug ("Logindevperm login for user %s, device %s",
+                         worker->priv->username,
+                         worker->priv->display_device);
+                (void) di_devperm_login (worker->priv->display_device,
+                                         passwd_entry->pw_uid,
+                                         passwd_entry->pw_gid,
+                                         NULL);
+        }
+#endif  /* HAVE_LOGINDEVPERM */
 
         g_debug ("GdmSessionWorker: opening user session with program '%s'",
                  worker->priv->arguments[0]);
