@@ -307,6 +307,12 @@ AC_CHECK_FUNC(gethostbyname,,[
 			   EXTRA_SLAVE_LIBS="$EXTRA_SLAVE_LIBS -lnsl"
 			   EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lnsl"
 			   EXTRA_TEST_LIBS="$EXTRA_TEST_LIBS -lnsl"])])
+AC_CHECK_DECL(HOST_NAME_MAX, ,
+             AC_CHECK_DECL(_POSIX_HOST_NAME_MAX,
+                           AC_DEFINE(HOST_NAME_MAX, _POSIX_HOST_NAME_MAX, []),
+                           AC_DEFINE(HOST_NAME_MAX, 256, [Define to 256 if neither have HOST_NAME_MAX nor _POSIX_HOST_NAME_MAX]),
+                           [[#include <limits.h>]]),
+             [[#include <limits.h>]])
 AC_CHECK_FUNC(sched_yield,[
 	      AC_DEFINE(HAVE_SCHED_YIELD, 1, [Define if we have sched yield])],[
 	      AC_CHECK_LIB(rt,sched_yield, [
