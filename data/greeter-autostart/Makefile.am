@@ -21,7 +21,7 @@ desktop_in_files = 	\
 	gok.desktop.in				\
 	metacity.desktop.in			\
 	orca-screen-reader.desktop.in		\
-	polkit-gnome-authentication-agent-1.desktop	\
+	polkit-gnome-authentication-agent-1.desktop.in	\
 	$(NULL)
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 
