@@ -1638,18 +1638,19 @@ gdm:.my.domain
          magnifier and screen reader assistive tools act on the three GConf
          keys that are described in the next section of this document. By
          enabling or disabling these checkboxes, the associated GConf key is
-         set to "true" or "false.  When the key is set to true, the 
-         assistive tools linked to this GConf key are launched.  When the key
-         is set to "false", any running assistive tool linked to this GConf
-         key are terminated.  Also these keys could be set to "true" by default
-         so that the assistive programs are always launched with the GDM login
-         GUI.
+         set to "true" or "false".  When the GConf key is set to true, the 
+         assistive tools linked to this GConf key are launched.  When the 
+         GConf key is set to "false", any running assistive tool linked to
+         this GConf key are terminated.  These GConf keys are not automatically
+         reset to a default state after the user has logged in.  Consequently,
+         the assistive tools that were running during the last GDM login
+         session will automatically be launched at the next GDM login session.
         </para>
 
         <para>
          The other checkboxes in the GDM Accessibility Dialog do not have
-         corresponding GConf keys because no additional program is launched
-         to provide the accessibility features that they offer.  These other
+         corresponding GConf keys because no additional program is launched to
+         provide the accessibility features that they offer.  These other
          options coorespond to accessibility features that are provided by the
          Xserver, which is always running during the GDM session.
         </para>
@@ -1682,8 +1683,9 @@ gdm:.my.domain
             <listitem>
               <synopsis>false (boolean)</synopsis>
               <para>
-                If set, then the screen magnifier will be started with the GDM
-                GUI programs.
+                If set, then the assistive tools linked to this GConf key will
+                be started with the GDM GUI program.  By default this is a
+                screen magnifier application.
               </para>
             </listitem>
           </varlistentry>
@@ -1692,8 +1694,9 @@ gdm:.my.domain
             <listitem>
               <synopsis>false (boolean)</synopsis>
               <para>
-                If set, then the GNOME on-screen keyboard will be started with 
-                the GDM GUI programs.
+                If set, then the assistive tools linked to this GConf key will
+                be started with the GDM GUI program.  By default this is an
+                on-screen keyboard application.
               </para>
             </listitem>
           </varlistentry>
@@ -1702,8 +1705,9 @@ gdm:.my.domain
             <listitem>
               <synopsis>false (boolean)</synopsis>
               <para>
-                If set, then the GNOME screen reader will be started with 
-                the GDM GUI programs.
+                If set, then the assistive tools linked to this GConf key will
+                be started with the GDM GUI program.  By default this is a
+                screen reader application.
               </para>
             </listitem>
           </varlistentry>
@@ -1714,13 +1718,15 @@ gdm:.my.domain
         <title>Linking GConf Keys to Accessbility Tools</title>
 
         <para>
-         For magnification, on-screen keyboard, and screen reader; the
-         assistive tool which gets launched depends on the desktop files
-         located in the GDM autostart directory as described in the "Autostart
-         Configuration" section of this manual.  Any desktop file in the GDM
-         autostart directory can be linked to a GDM Accessibility GConf key via
-         specifying that GConf key in the AutostartCondition value in the
-         desktop file.  For example, the value could be one of the following:
+         For the screen_magnifier_enabled, the screen_keyboard_enabled, and the
+         screen_reader_enabled GConf keys, the assistive tool which gets
+         launched depends on the desktop files located in the GDM autostart
+         directory as described in the "Autostart Configuration" section of
+         this manual.  Any desktop file in the GDM autostart directory can be
+         linked to these GConf key via specifying that GConf key in the
+         AutostartCondition value in the desktop file.  So the exact
+         AutostartCondition line in the desktop file could be one of the
+         following:
         </para>
 
 <screen>
@@ -1754,8 +1760,11 @@ AutostartCondition=GNOME /desktop/gnome/applications/at/screen_reader_enabled
          for example, onboard.desktop and mousetweaks.desktop. These files
          must be placed in the GDM autostart directory and be in the format
          as explained in the "Autostart Configuration" section of this
-         document.  The following is an example
-         <filename>onboard.desktop</filename> file:
+         document.
+        </para>
+
+        <para>
+         The following is an example <filename>onboard.desktop</filename> file:
         </para>
 
 <screen>
@@ -1807,7 +1816,7 @@ AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled
         <para>
          After making these changes, GOK will no longer be started when the
          user activates the on-screen keyboard in the GDM session; but onboard
-         and mousetweaks will instead be launched instead.
+         and mousetweaks will instead be launched.
         </para>
       </sect3>
     </sect2>
