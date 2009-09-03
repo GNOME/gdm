@@ -158,7 +158,8 @@ send_dbus_string_signal (GdmSessionDirect *session,
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &text);
 
         if (! send_dbus_message (session->priv->worker_connection, message)) {
-                g_debug ("GdmSessionDirect: Could not send %s signal", name);
+                g_debug ("GdmSessionDirect: Could not send %s signal",
+                         name ? name : "(null)");
         }
 
         dbus_message_unref (message);
