@@ -1607,19 +1607,24 @@ session_worker_child_watch (GPid              pid,
         if (WIFEXITED (status)) {
                 int code = WEXITSTATUS (status);
 
+                ck_connector_set_remove_on_close (worker->priv->ckc,
+                                                  TRUE,
+                                                  NULL);
                 send_dbus_int_method (worker->priv->connection,
                                       "SessionExited",
                                       code);
         } else if (WIFSIGNALED (status)) {
                 int num = WTERMSIG (status);
 
+                ck_connector_set_remove_on_close (worker->priv->ckc,
+                                                  TRUE,
+                                                  NULL);
                 send_dbus_int_method (worker->priv->connection,
                                       "SessionDied",
                                       num);
         }
 
         if (worker->priv->ckc != NULL) {
-                ck_connector_close_session (worker->priv->ckc, NULL);
                 ck_connector_unref (worker->priv->ckc);
                 worker->priv->ckc = NULL;
         }
