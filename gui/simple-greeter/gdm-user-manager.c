@@ -157,8 +157,12 @@ start_new_login_session (GdmUserManager *manager)
 
         res = g_spawn_command_line_async ("gdmflexiserver -s", &error);
         if (! res) {
-                g_warning ("Unable to start new login: %s", error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_warning ("Unable to start new login: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Unable to start new login");
+                }
         }
 
         return res;
@@ -194,9 +198,13 @@ _get_primary_user_session_id (GdmUserManager *manager,
                                  G_TYPE_BOOLEAN, &can_activate_sessions,
                                  G_TYPE_INVALID);
         if (! res) {
-                g_warning ("unable to determine if seat can activate sessions: %s",
-                           error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_warning ("unable to determine if seat can activate sessions: %s",
+                                   error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("unable to determine if seat can activate sessions");
+                }
                 goto out;
         }
 
@@ -313,8 +321,12 @@ session_is_login_window (GdmUserManager *manager,
                                  G_TYPE_STRING, &session_type,
                                  G_TYPE_INVALID);
         if (! res) {
-                g_debug ("Failed to identify the session type: %s", error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_debug ("Failed to identify the session type: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_debug ("Failed to identify the session type");
+                }
                 goto out;
         }
 
@@ -360,9 +372,13 @@ _get_login_window_session_id (GdmUserManager *manager)
                                  G_TYPE_BOOLEAN, &can_activate_sessions,
                                  G_TYPE_INVALID);
         if (! res) {
-                g_warning ("unable to determine if seat can activate sessions: %s",
-                           error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_warning ("unable to determine if seat can activate sessions: %s",
+                                   error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("unable to determine if seat can activate sessions");
+                }
                 goto out;
         }
 
@@ -379,9 +395,13 @@ _get_login_window_session_id (GdmUserManager *manager)
                                  dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH), &sessions,
                                  G_TYPE_INVALID);
         if (! res) {
-                g_warning ("unable to determine sessions for user: %s",
-                           error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_warning ("unable to determine sessions for user: %s",
+                                   error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("unable to determine sessions for user");
+                }
                 goto out;
         }
 
@@ -520,8 +540,12 @@ get_seat_id_for_session (DBusGConnection *connection,
                                  DBUS_TYPE_G_OBJECT_PATH, &seat_id,
                                  G_TYPE_INVALID);
         if (! res) {
-                g_debug ("Failed to identify the current seat: %s", error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_debug ("Failed to identify the current seat: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_debug ("Failed to identify the current seat");
+                }
         }
  out:
         if (proxy != NULL) {
@@ -560,8 +584,12 @@ get_x11_display_for_session (DBusGConnection *connection,
                                  G_TYPE_STRING, &x11_display,
                                  G_TYPE_INVALID);
         if (! res) {
-                g_debug ("Failed to identify the x11 display: %s", error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_debug ("Failed to identify the x11 display: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_debug ("Failed to identify the x11 display");
+                }
         }
  out:
         if (proxy != NULL) {
@@ -655,8 +683,12 @@ add_sessions_for_user (GdmUserManager *manager,
                                  &sessions,
                                  G_TYPE_INVALID);
         if (! res) {
-                g_debug ("Failed to find sessions for user: %s", error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_debug ("Failed to find sessions for user: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_debug ("Failed to find sessions for user");
+                }
                 goto out;
         }
 
@@ -782,8 +814,12 @@ get_current_seat_id (DBusGConnection *connection)
                                  &session_id,
                                  G_TYPE_INVALID);
         if (! res) {
-                g_debug ("Failed to identify the current session: %s", error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_debug ("Failed to identify the current session: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_debug ("Failed to identify the current session");
+                }
                 goto out;
         }
 
@@ -827,8 +863,12 @@ get_uid_from_session_id (GdmUserManager *manager,
         g_object_unref (proxy);
 
         if (! res) {
-                g_warning ("Failed to query the session: %s", error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_warning ("Failed to query the session: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to query the session");
+                }
                 return FALSE;
         }
 
@@ -942,8 +982,12 @@ get_seat_proxy (GdmUserManager *manager)
         error = NULL;
         manager->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
         if (manager->priv->connection == NULL) {
-                g_warning ("Failed to connect to the D-Bus daemon: %s", error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_warning ("Failed to connect to the D-Bus daemon: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to connect to the D-Bus daemon");
+                }
                 return;
         }
 
@@ -962,8 +1006,13 @@ get_seat_proxy (GdmUserManager *manager)
                                                  &error);
 
         if (proxy == NULL) {
-                g_warning ("Failed to connect to the ConsoleKit seat object: %s", error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_warning ("Failed to connect to the ConsoleKit seat object: %s",
+                                   error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to connect to the ConsoleKit seat object");
+                }
                 return;
         }
 
@@ -1115,7 +1164,11 @@ parse_ck_history_line (const char *line,
         error = NULL;
         re = g_regex_new ("(?P<username>[0-9a-zA-Z]+)[ ]+(?P<frequency>[0-9]+)", 0, 0, &error);
         if (re == NULL) {
-                g_critical ("%s", error->message);
+                if (error != NULL) {
+                        g_critical ("%s", error->message);
+                } else {
+                        g_critical ("Error in regex call");
+                }
                 goto out;
         }
 
@@ -1258,8 +1311,12 @@ reload_ck_history (GdmUserManager *manager)
         g_debug ("GdmUserManager: running '%s'", command);
         error = NULL;
         if (! g_shell_parse_argv (command, NULL, &argv, &error)) {
-                g_warning ("Could not parse command: %s", error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_warning ("Could not parse command: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Could not parse command");
+                }
                 goto out;
         }
 
@@ -1277,8 +1334,12 @@ reload_ck_history (GdmUserManager *manager)
                                         &error);
         g_strfreev (argv);
         if (! res) {
-                g_warning ("Unable to run ck-history: %s", error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_warning ("Unable to run ck-history: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Unable to run ck-history");
+                }
                 goto out;
         }
 
@@ -1596,8 +1657,12 @@ gdm_user_manager_init (GdmUserManager *manager)
                                   G_CALLBACK (on_shells_monitor_changed),
                                   manager);
         } else {
-                g_warning ("Unable to monitor %s: %s", _PATH_SHELLS, error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_warning ("Unable to monitor %s: %s", _PATH_SHELLS, error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Unable to monitor %s", _PATH_SHELLS);
+                }
         }
         g_object_unref (file);
 
@@ -1617,8 +1682,12 @@ gdm_user_manager_init (GdmUserManager *manager)
                                   G_CALLBACK (on_passwd_monitor_changed),
                                   manager);
         } else {
-                g_warning ("Unable to monitor %s: %s", PATH_PASSWD, error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_warning ("Unable to monitor %s: %s", PATH_PASSWD, error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Unable to monitor %s", PATH_PASSWD);
+                }
         }
         g_object_unref (file);
 
