@@ -11,14 +11,15 @@
 # Gabor Kelemen <kelemeng@gnome.hu>, 2004, 2005, 2006, 2007, 2008, 2009.
 # Attila Szervác as sas-guest see : <sas-guest@haydn.debian.org>, 2006.
 # Kováts Dóra <dorcssa@gmail.com>, 2008.
+# Gabor Kelemen <kelemeng at gnome dot hu>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm HEAD\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&component=general\n"
-"POT-Creation-Date: 2009-02-12 03:20+0000\n"
-"PO-Revision-Date: 2009-02-14 02:41+0100\n"
-"Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
-"Language-Team: Hungarian <gnome@fsf.hu>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-09-06 01:23+0200\n"
+"PO-Revision-Date: 2009-09-06 01:23+0200\n"
+"Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
+"Language-Team: Hungarian <gnome at fsf dot hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -34,48 +35,48 @@ msgstr "a /dev/urandom nem karakteres eszköz"
 
 #: ../daemon/factory-slave-main.c:170 ../daemon/main.c:516
 #: ../daemon/product-slave-main.c:174 ../daemon/session-worker-main.c:137
-#: ../daemon/simple-slave-main.c:176 ../daemon/xdmcp-chooser-slave-main.c:176
+#: ../daemon/simple-slave-main.c:179 ../daemon/xdmcp-chooser-slave-main.c:179
 msgid "Enable debugging code"
 msgstr "Hibakereső kód engedélyezése"
 
 #: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:177
+#: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
 msgid "Display ID"
 msgstr "Képernyő-azonosító"
 
 #: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:177
+#: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
 msgid "id"
 msgstr "azonosító"
 
 #: ../daemon/factory-slave-main.c:183 ../daemon/product-slave-main.c:187
-#: ../daemon/simple-slave-main.c:189 ../daemon/xdmcp-chooser-slave-main.c:189
+#: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:192
 msgid "GNOME Display Manager Slave"
 msgstr "GNOME bejelentkezéskezelő szolga"
 
-#: ../daemon/gdm-display-access-file.c:271
+#: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "„%s” nevű felhasználó nem található a rendszeren"
 
-#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:217
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:220
 msgid "Unable to initialize login system"
 msgstr "A bejelentkező képernyő előkészítése sikertelen"
 
-#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:253
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:256
 msgid "Unable to authenticate user"
 msgstr "A felhasználó nem hitelesíthető"
 
-#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:307
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:310
 msgid "Unable to authorize user"
 msgstr "A felhasználó nem hitelesíthető"
 
-#: ../daemon/gdm-factory-slave.c:281
+#: ../daemon/gdm-factory-slave.c:281 ../daemon/gdm-simple-slave.c:432
 msgid "Unable to establish credentials"
 msgstr "A hitelesítési adatok létrehozása sikertelen"
 
 #: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1097
+#: ../daemon/gdm-simple-slave.c:1111
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -163,77 +164,70 @@ msgstr "Képernyő"
 msgid "The display device"
 msgstr "A képernyő"
 
-#: ../daemon/gdm-session-direct.c:1574 ../daemon/gdm-session-direct.c:1592
-#, c-format
-msgid "worker exited with status %d"
-msgstr "a folyamat %d állapottal lépett ki"
-
-#: ../daemon/gdm-session-worker.c:1075
+#: ../daemon/gdm-session-worker.c:1105
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "hiba a hitelesítőrendszerrel való kommunikáció indítása közben - %s"
 
-#: ../daemon/gdm-session-worker.c:1076
+#: ../daemon/gdm-session-worker.c:1106
 msgid "general failure"
 msgstr "általános hiba"
 
-#: ../daemon/gdm-session-worker.c:1077
+#: ../daemon/gdm-session-worker.c:1107
 msgid "out of memory"
 msgstr "elfogyott a memória"
 
-#: ../daemon/gdm-session-worker.c:1078
+#: ../daemon/gdm-session-worker.c:1108
 msgid "application programmer error"
 msgstr "alkalmazásprogramozási hiba"
 
-#: ../daemon/gdm-session-worker.c:1079
+#: ../daemon/gdm-session-worker.c:1109
 msgid "unknown error"
 msgstr "Ismeretlen hiba"
 
-#: ../daemon/gdm-session-worker.c:1086
+#: ../daemon/gdm-session-worker.c:1116
 msgid "Username:"
 msgstr "Felhasználónév:"
 
-#: ../daemon/gdm-session-worker.c:1092
+#: ../daemon/gdm-session-worker.c:1122
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "hiba a hitelesítőrendszer értesítésekor a felhasználó által választott "
 "parancsorról - %s"
 
-#: ../daemon/gdm-session-worker.c:1106
+#: ../daemon/gdm-session-worker.c:1136
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr "hiba a hitelesítőrendszer értesítésekor a felhasználó gépnevéről - %s"
 
-#: ../daemon/gdm-session-worker.c:1121
+#: ../daemon/gdm-session-worker.c:1151
 #, c-format
 msgid "error informing authentication system of user's console - %s"
-msgstr "hiba a hitelesítőrendszer értesítésekor a felhasználó termináljáról - %s"
+msgstr ""
+"hiba a hitelesítőrendszer értesítésekor a felhasználó termináljáról - %s"
 
-#: ../daemon/gdm-session-worker.c:1134
+#: ../daemon/gdm-session-worker.c:1164
 #, c-format
 msgid "error informing authentication system of display string - %s"
-msgstr "hiba a hitelesítőrendszer értesítésekor a megjelenítő-karakterláncról - %s"
+msgstr ""
+"hiba a hitelesítőrendszer értesítésekor a megjelenítő-karakterláncról - %s"
 
-#: ../daemon/gdm-session-worker.c:1149
+#: ../daemon/gdm-session-worker.c:1179
 #, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
 msgstr ""
 "hiba a hitelesítőrendszer értesítésekor a kijelző xatuh hitelesítési "
 "adatairól - %s"
 
-#: ../daemon/gdm-session-worker.c:1429 ../daemon/gdm-session-worker.c:1447
+#: ../daemon/gdm-session-worker.c:1459 ../daemon/gdm-session-worker.c:1477
 #, c-format
 msgid "no user account available"
 msgstr "nem létezik felhasználói fiók"
 
-#: ../daemon/gdm-session-worker.c:1474
+#: ../daemon/gdm-session-worker.c:1504
 msgid "Unable to change to user"
 msgstr "Nem lehet a felhasználóra váltani"
-
-#: ../daemon/gdm-simple-slave.c:426
-msgid "Unable establish credentials"
-msgstr "A hitelesítési adatok nem hozhatók létre"
 
 #: ../daemon/gdm-welcome-session.c:426
 #, c-format
@@ -245,139 +239,139 @@ msgstr "A(z) %s felhasználó nem létezik"
 msgid "Group %s doesn't exist"
 msgstr "A(z) %s csoport nem létezik"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:590
+#: ../daemon/gdm-xdmcp-display-factory.c:595
 msgid "Could not create socket!"
 msgstr "Nem hozható létre a foglalat!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:856
+#: ../daemon/gdm-xdmcp-display-factory.c:862
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Megtagadott XDMCP kérés a(z) %s géptől"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1013
-#: ../daemon/gdm-xdmcp-display-factory.c:1234
+#: ../daemon/gdm-xdmcp-display-factory.c:1019
+#: ../daemon/gdm-xdmcp-display-factory.c:1240
 msgid "Could not extract authlist from packet"
 msgstr "Nem bontható ki a joglista a csomagból"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1026
-#: ../daemon/gdm-xdmcp-display-factory.c:1249
+#: ../daemon/gdm-xdmcp-display-factory.c:1032
+#: ../daemon/gdm-xdmcp-display-factory.c:1255
 msgid "Error in checksum"
 msgstr "Hiba az ellenőrzőösszegben"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1500
+#: ../daemon/gdm-xdmcp-display-factory.c:1506
 msgid "Bad address"
 msgstr "Hibás cím"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1581
+#: ../daemon/gdm-xdmcp-display-factory.c:1587
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: Nem olvasható a képernyő címe"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1589
+#: ../daemon/gdm-xdmcp-display-factory.c:1595
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s: Nem olvasható a képernyő portszáma"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1598
+#: ../daemon/gdm-xdmcp-display-factory.c:1604
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s: Nem bontható ki a joglista a csomagból"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1618
+#: ../daemon/gdm-xdmcp-display-factory.c:1624
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: Hiba az ellenőrzőösszegben"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2127
+#: ../daemon/gdm-xdmcp-display-factory.c:2133
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Kérés érkezett a kitiltott %s géptől"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2137
-#: ../daemon/gdm-xdmcp-display-factory.c:2492
-#: ../daemon/gdm-xdmcp-display-factory.c:2744
+#: ../daemon/gdm-xdmcp-display-factory.c:2143
+#: ../daemon/gdm-xdmcp-display-factory.c:2498
+#: ../daemon/gdm-xdmcp-display-factory.c:2750
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Nem olvasható a képernyő száma"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2144
+#: ../daemon/gdm-xdmcp-display-factory.c:2150
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Nem olvasható a kapcsolat típusa"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2151
+#: ../daemon/gdm-xdmcp-display-factory.c:2157
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Nem olvasható a kliens címe"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2159
+#: ../daemon/gdm-xdmcp-display-factory.c:2165
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Nem olvashatók a hitelesítési nevek"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2168
+#: ../daemon/gdm-xdmcp-display-factory.c:2174
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Nem olvashatók a hitelesítési adatok"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2178
+#: ../daemon/gdm-xdmcp-display-factory.c:2184
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Nem olvasható a hitelesítési lista"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2197
+#: ../daemon/gdm-xdmcp-display-factory.c:2203
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Nem olvasható a gyártó azonosítója"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2224
+#: ../daemon/gdm-xdmcp-display-factory.c:2230
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Ellenőrzőösszeg hiba ettől: %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2476
+#: ../daemon/gdm-xdmcp-display-factory.c:2482
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Vezérlés érkezett a kitiltott %s géptől"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2485
-#: ../daemon/gdm-xdmcp-display-factory.c:2751
+#: ../daemon/gdm-xdmcp-display-factory.c:2491
+#: ../daemon/gdm-xdmcp-display-factory.c:2757
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Nem olvasható a környezet címe"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2499
+#: ../daemon/gdm-xdmcp-display-factory.c:2505
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Nem olvasható a képernyő osztálya"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2604
-#: ../daemon/gdm-xdmcp-display-factory.c:2654
+#: ../daemon/gdm-xdmcp-display-factory.c:2610
 #: ../daemon/gdm-xdmcp-display-factory.c:2660
+#: ../daemon/gdm-xdmcp-display-factory.c:2666
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Nem olvasható a cím"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2734
+#: ../daemon/gdm-xdmcp-display-factory.c:2740
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: KEEPALIVE érkezett a kitiltott %s géptől"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2823
+#: ../daemon/gdm-xdmcp-display-factory.c:2829
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory: Nem olvasható az XDMCP fejléc!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2829
+#: ../daemon/gdm-xdmcp-display-factory.c:2835
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XMDCP: Nem megfelelő XDMCP verzió!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2835
+#: ../daemon/gdm-xdmcp-display-factory.c:2841
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
 msgid "XMDCP: Unable to parse address"
 msgstr "XMDCP: A cím feldolgozása nem sikerült"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3233
+#: ../daemon/gdm-xdmcp-display-factory.c:3286
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Nem határozható meg a(z) %s kiszolgáló gépneve!"
@@ -385,7 +379,8 @@ msgstr "Nem határozható meg a(z) %s kiszolgáló gépneve!"
 #: ../daemon/main.c:237 ../daemon/main.c:250
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace: %s"
-msgstr "Nem írható a(z) %s PID fájl, lehetséges, hogy elfogyott a lemezterület: %s"
+msgstr ""
+"Nem írható a(z) %s PID fájl, lehetséges, hogy elfogyott a lemezterület: %s"
 
 #: ../daemon/main.c:270
 #, c-format
@@ -464,7 +459,7 @@ msgid "AT SPI Registry Wrapper"
 msgstr "AT SPI nyilvántartás-átalakító"
 
 #: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1921
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1767
 msgid "Login Window"
 msgstr "Bejelentkezési ablak"
 
@@ -508,12 +503,16 @@ msgstr "Orka képernyő-felolvasó"
 msgid "Present on-screen information as speech or braille"
 msgstr "A megjelenő információk átalakítása beszéddé vagy braille-kimenetté"
 
+#: ../data/greeter-autostart/polkit-gnome-authentication-agent-1.desktop.in.h:1
+msgid "PolicyKit Authentication Agent"
+msgstr "PolicyKit hitelesítési ügynök"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:148
 msgid "Select System"
 msgstr "Válasszon rendszert"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:214
-msgid "XMCP: Could not create XDMCP buffer!"
+msgid "XDMCP: Could not create XDMCP buffer!"
 msgstr "XDMCP: Nem hozható létre XDMCP puffer!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:220
@@ -529,21 +528,31 @@ msgstr "Érték"
 msgid "percentage of time complete"
 msgstr "eltelt idő százaléka"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1306
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1321
 msgid "Inactive Text"
 msgstr "Inaktív szöveg"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1307
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1322
 msgid "The text to use in the label if the user hasn't picked an item yet"
-msgstr "A címkében használandó szöveg, ha a felhasználó még nem választott ki elemet"
+msgstr ""
+"A címkében használandó szöveg, ha a felhasználó még nem választott ki elemet"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1315
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1330
 msgid "Active Text"
 msgstr "Aktív szöveg"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1316
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1331
 msgid "The text to use in the label if the user has picked an item"
-msgstr "A címkében használandó szöveg, ha a felhasználó már kiválasztott egy elemet"
+msgstr ""
+"A címkében használandó szöveg, ha a felhasználó már kiválasztott egy elemet"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1340
+msgid "List Visible"
+msgstr "A lista látható"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1341
+msgid "Whether or not the chooser list is visible"
+msgstr "A választólista látható-e?"
 
 #: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M:%S %p"
@@ -571,38 +580,16 @@ msgstr "%a %b %e"
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:288
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:291
 msgid "Automatically logging in..."
 msgstr "Automatikus bejelentkezés…"
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:718
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:758
 msgid "Cancelling..."
 msgstr "Megszakítás…"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1187
-msgid "Failed to restart computer"
-msgstr "A számítógép újraindítása meghiúsult"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1190
-msgid ""
-"You are not allowed to restart the computer because multiple users are "
-"logged in"
-msgstr ""
-"A számítógép újraindítása nem engedélyezett, mivel több felhasználó is be "
-"van jelentkezve"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1271
-msgid "Failed to stop computer"
-msgstr "A számítógép leállítása meghiúsult"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1274
-msgid "You are not allowed to stop the computer because multiple users are logged in"
-msgstr ""
-"A számítógép leállítása nem engedélyezett, mivel több felhasználó is be van "
-"jelentkezve"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1358
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1185
 msgid "Select language and click Log In"
 msgstr "Válasszon nyelvet és nyomja meg a Bejelentkezés gombot"
 
@@ -634,11 +621,7 @@ msgstr "Felfüggesztés"
 msgid "Version"
 msgstr "Verzió"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
-msgid "page 5"
-msgstr "damn bug #552195"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:590
+#: ../gui/simple-greeter/gdm-greeter-panel.c:554
 msgid "Panel"
 msgstr "Panel"
 
@@ -659,7 +642,6 @@ msgstr "_Nyelv:"
 #. * with a list of languages to choose from
 #.
 #: ../gui/simple-greeter/gdm-language-option-widget.c:231
-#| msgid "Other..."
 msgctxt "language"
 msgid "Other..."
 msgstr "Egyéb…"
@@ -668,7 +650,7 @@ msgstr "Egyéb…"
 msgid "Choose a language from the full list of available languages."
 msgstr "Válasszon egy nyelvet az elérhető nyelvek teljes listájából."
 
-#: ../gui/simple-greeter/gdm-languages.c:610
+#: ../gui/simple-greeter/gdm-languages.c:609
 msgid "Unspecified"
 msgstr "Nem definiált"
 
@@ -686,14 +668,14 @@ msgstr "Bille_ntyűzet:"
 #. * available keyboard layouts
 #.
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:223
-#| msgid "Other..."
 msgctxt "keyboard"
 msgid "Other..."
 msgstr "Egyéb…"
 
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:224
 msgid "Choose a keyboard layout from the full list of available layouts."
-msgstr "Válasszon egy billentyűzetkiosztást az elérhető kiosztások teljes listájából."
+msgstr ""
+"Válasszon egy billentyűzetkiosztást az elérhető kiosztások teljes listájából."
 
 #: ../gui/simple-greeter/gdm-option-widget.c:494
 msgid "Label Text"
@@ -727,17 +709,17 @@ msgstr "Az elemek maximális száma"
 msgid "The maximum number of items to keep around in the list"
 msgstr "A listán tartandó elemek maximális száma"
 
-#: ../gui/simple-greeter/gdm-remote-login-window.c:224
+#: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
 msgid "Remote Login (Connecting to %s...)"
 msgstr "Távoli bejelentkezés (Kapcsolódás a következőhöz: %s…)"
 
-#: ../gui/simple-greeter/gdm-remote-login-window.c:238
+#: ../gui/simple-greeter/gdm-remote-login-window.c:202
 #, c-format
 msgid "Remote Login (Connected to %s)"
 msgstr "Távoli bejelentkezés (Kapcsolódva a következőhöz: %s)"
 
-#: ../gui/simple-greeter/gdm-remote-login-window.c:317
+#: ../gui/simple-greeter/gdm-remote-login-window.c:281
 msgid "Remote Login"
 msgstr "Távoli bejelentkezés"
 
@@ -750,151 +732,170 @@ msgstr "_Munkamenetek:"
 msgid "Banner message text"
 msgstr "Fejlécüzenet szövege"
 
+# fixme
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
+msgid "Banner message text when chooser is empty"
+msgstr "Fejlécüzenet szövege, ha a választó üres"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
 msgid "Disable showing the restart buttons"
 msgstr "Az újraindítása gombok megjelenítésének letiltása"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
 msgid "Do not show known users in the login window"
 msgstr "Az ismert felhasználók ne jelenjenek meg a bejelentkezési ablakban"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
 msgid "Enable accessibility keyboard plugin"
 msgstr "Akadálymentes billentyűzet bővítmény engedélyezése"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
 msgid "Enable debugging"
 msgstr "Hibakeresés engedélyezése"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
 msgid "Enable debugging mode for the greeter."
 msgstr "Az üdvözlő hibakeresési módjának engedélyezése."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Enable on-screen keyboard"
 msgstr "Képernyő-billentyűzet engedélyezése"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
 msgid "Enable screen magnifier"
 msgstr "Képernyő-nagyítás engedélyezése"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
 msgid "Enable screen reader"
 msgstr "Képernyő-felolvasó engedélyezése"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "Enable showing the banner message"
 msgstr "Hiba a fejlécüzenet megjelenítésekor"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Icon name to use for greeter logo"
 msgstr "Az üdvözlő logójaként használandó ikon neve"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid "Recently selected keyboard layouts"
 msgstr "Nemrég használt billentyűzetkiosztások"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Recently selected languages"
 msgstr "Nemrég használt nyelvek"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-msgid "Set to TRUE to disable showing known users in the login window."
-msgstr ""
-"Állítsa igazra az ismert felhasználók megjelenítésének letiltásához a "
-"bejelentkezési ablakban."
-
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
-msgid "Set to TRUE to disable showing the restart buttons in the login window."
-msgstr ""
-"Állítsa igazra az újraindítás gombok megjelenítésének letiltásához a "
-"bejelentkezési ablakban."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
-msgid "Set to True to enable the background settings manager plugin."
-msgstr "Állítsa igazra a háttér beállításait kezelő bővítmény engedélyezéséhez."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
-msgid "Set to True to enable the media-keys settings manager plugin."
-msgstr "Állítsa igazra a médiabillentyűbeállítás-kezelő bővítmény engedélyezéséhez."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
-msgid "Set to True to enable the on-screen keyboard."
-msgstr "Állítsa igazra a képernyő-billentyűzet engedélyezéséhez."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid ""
-"Set to True to enable the plugin to manage the accessibility keyboard "
-"settings."
-msgstr "Állítsa igazra az akadálymentes billentyűzet beállításainak engedélyezéséhez."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
-msgid "Set to True to enable the screen magnifier."
-msgstr "Állítsa igazra a képernyőnagyító engedélyezéséhez."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
-msgid "Set to True to enable the screen reader."
-msgstr "Állítsa igazra a képernyőolvasó engedélyezéséhez."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
-msgid "Set to True to enable the sound settings manager plugin."
-msgstr "Állítsa igazra a hangbeállítás-kezelő bővítmény engedélyezéséhez."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
-msgid "Set to True to enable the xrandr settings manager plugin."
-msgstr "Állítsa igazra az xrandr-beállításkezelő bővítmény engedélyezéséhez."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
-msgid "Set to True to enable the xsettings settings manager plugin."
-msgstr "Állítsa igazra az xsettings beállításkezelő bővítmény engedélyezéséhez."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
-msgid "Set to a list of keyboard layouts to be shown by default at the login window."
+"Set to a list of keyboard layouts to be shown by default at the login window."
 msgstr ""
 "A bejelentkezési ablakban alapértelmezésben megjelenítendő "
 "billentyűzetkiosztások listája."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to a list of languages to be shown by default at the login window."
-msgstr "A bejelentkezési ablakban alapértelmezésben megjelenítendő nyelvek listája."
+msgstr ""
+"A bejelentkezési ablakban alapértelmezésben megjelenítendő nyelvek listája."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "Az üdvözlőlogóhoz használandó témázott ikon neve."
 
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+msgid "Set to true to disable showing known users in the login window."
+msgstr ""
+"Állítsa igazra az ismert felhasználók megjelenítésének letiltásához a "
+"bejelentkezési ablakban."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+msgid "Set to true to disable showing the restart buttons in the login window."
+msgstr ""
+"Állítsa igazra az újraindítás gombok megjelenítésének letiltásához a "
+"bejelentkezési ablakban."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+msgid "Set to true to enable the background settings manager plugin."
+msgstr ""
+"Állítsa igazra a háttér beállításait kezelő bővítmény engedélyezéséhez."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+msgid "Set to true to enable the media-keys settings manager plugin."
+msgstr ""
+"Állítsa igazra a médiabillentyűbeállítás-kezelő bővítmény engedélyezéséhez."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+msgid "Set to true to enable the on-screen keyboard."
+msgstr "Állítsa igazra a képernyő-billentyűzet engedélyezéséhez."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+msgid ""
+"Set to true to enable the plugin to manage the accessibility keyboard "
+"settings."
+msgstr ""
+"Állítsa igazra az akadálymentes billentyűzet beállításainak engedélyezéséhez."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+msgid "Set to true to enable the screen magnifier."
+msgstr "Állítsa igazra a képernyőnagyító engedélyezéséhez."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+msgid "Set to true to enable the screen reader."
+msgstr "Állítsa igazra a képernyőolvasó engedélyezéséhez."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+msgid "Set to true to enable the sound settings manager plugin."
+msgstr "Állítsa igazra a hangbeállítás-kezelő bővítmény engedélyezéséhez."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+msgid "Set to true to enable the xrandr settings manager plugin."
+msgstr "Állítsa igazra az xrandr-beállításkezelő bővítmény engedélyezéséhez."
+
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+msgid "Set to true to enable the xsettings settings manager plugin."
+msgstr ""
+"Állítsa igazra az xsettings beállításkezelő bővítmény engedélyezéséhez."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "Set to true to show the banner message text."
 msgstr "Állítsa igazra a fejléc szövegének megjelenítéséhez."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "Set to true to use compiz as the window manager."
 msgstr "Állítsa igazra a compiz használatához ablakkezelőként."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+msgid ""
+"Text banner message to show on the login window when the user chooser is "
+"empty, instead of banner_message_text."
+msgstr ""
+"A bejelentkezési ablakban megjelenítendő fejlécszöveg, ha a "
+"felhasználóválasztó üres, a banner_message_text helyett."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "Text banner message to show on the login window."
 msgstr "A bejelentkezési ablakban megjelenítendő fejlécszöveg."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the background settings manager plugin is enabled."
 msgstr "Igaz, ha a háttérképbeállítás-kezelő bővítmény engedélyezve van."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr "Igaz, ha a médiabillentyűbeállítás-kezelő bővítmény engedélyezve van."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "Igaz, ha a hangbeállítás-kezelő bővítmény engedélyezve van."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
 msgid "True if the xrandr settings manager plugin is enabled."
 msgstr "Igaz, ha az xrandr-beállításkezelő bővítmény engedélyezve van."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:37
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "Igaz, ha az xsettings beállításkezelő bővítmény engedélyezve van."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:38
 msgid "Use compiz as the window manager"
 msgstr "A compiz használata ablakkezelőként"
 
@@ -922,11 +923,11 @@ msgstr "Fut?"
 msgid "Whether or not the timer is currently ticking"
 msgstr "Az időzítő visszaszámol-e?"
 
-#: ../gui/simple-greeter/gdm-user.c:241
+#: ../gui/simple-greeter/gdm-user.c:247
 msgid "Manager"
 msgstr "Kezelő"
 
-#: ../gui/simple-greeter/gdm-user.c:242
+#: ../gui/simple-greeter/gdm-user.c:248
 msgid "The user manager object this user is controlled by."
 msgstr "A felhasználót kezelő felhasználókezelő objektum."
 
@@ -935,42 +936,41 @@ msgstr "A felhasználót kezelő felhasználókezelő objektum."
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:136
-#| msgid "Other..."
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:164
 msgctxt "user"
 msgid "Other..."
 msgstr "Más…"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:137
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:165
 msgid "Choose a different account"
 msgstr "Válasszon másik felhasználói fiókot"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:149
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:177
 msgid "Guest"
 msgstr "Vendég"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:150
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:178
 msgid "Login as a temporary guest"
 msgstr "bejelentkezés ideiglenes vendégként"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:162
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:191
 msgid "Automatic Login"
 msgstr "Automatikus bejelentkezés"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:163
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:192
 msgid "Automatically login to the system after selecting options"
 msgstr "Automatikus bejelentkezés a rendszerbe a beállítások kiválasztása után"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:354
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:383
 #, c-format
 msgid "Log in as %s"
 msgstr "Bejelentkezés mint %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:699
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:737
 msgid "Currently logged in"
 msgstr "Be van jelentkezve"
 
-#: ../gui/user-switch-applet/applet.c:160
+#: ../gui/user-switch-applet/applet.c:162
 msgid ""
 "The User Switch Applet is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -981,7 +981,7 @@ msgstr ""
 "módosíthatja a Free Software Foundation által kiadott GNU General Public "
 "License második (vagy bármely későbbi) változatában foglaltak alapján."
 
-#: ../gui/user-switch-applet/applet.c:164
+#: ../gui/user-switch-applet/applet.c:166
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -993,7 +993,7 @@ msgstr ""
 "alkalmas-e a KÖZREADÁSRA vagy EGY BIZONYOS FELADAT ELVÉGZÉSÉRE. További "
 "részletekért tanulmányozza a GNU GPL licencet."
 
-#: ../gui/user-switch-applet/applet.c:168
+#: ../gui/user-switch-applet/applet.c:170
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "this program; if not, write to the Free Software Foundation, Inc., 51 "
@@ -1003,11 +1003,11 @@ msgstr ""
 "meg, írjon a Free Software Foundation Inc.-nek. Levélcímük: 51 Franklin St, "
 "Fifth Floor, Boston, MA 02110-1301, USA."
 
-#: ../gui/user-switch-applet/applet.c:182
+#: ../gui/user-switch-applet/applet.c:184
 msgid "A menu to quickly switch between users."
 msgstr "Menü a felhasználók közti gyors váltáshoz"
 
-#: ../gui/user-switch-applet/applet.c:186
+#: ../gui/user-switch-applet/applet.c:188
 msgid "translator-credits"
 msgstr ""
 "Bán Szabolcs <shooby@gnome.hu>\n"
@@ -1020,71 +1020,71 @@ msgstr ""
 "Szervác Attila <sas@321.hu>\n"
 "Tímár András <timar@gnome.hu>"
 
-#: ../gui/user-switch-applet/applet.c:643
-#: ../gui/user-switch-applet/applet.c:778
-#: ../gui/user-switch-applet/applet.c:817
+#: ../gui/user-switch-applet/applet.c:647
+#: ../gui/user-switch-applet/applet.c:784
+#: ../gui/user-switch-applet/applet.c:823
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "Nem lehet zárolni a képernyőt: %s "
 
-#: ../gui/user-switch-applet/applet.c:665
+#: ../gui/user-switch-applet/applet.c:669
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr ""
 "Átmenetileg nem lehet beállítani a képernyővédőt a képernyő elsötétítésére: %"
 "s"
 
-#: ../gui/user-switch-applet/applet.c:876
+#: ../gui/user-switch-applet/applet.c:882
 #, c-format
 msgid "Can't logout: %s"
 msgstr "Nem lehet kijelentkezni: %s"
 
-#: ../gui/user-switch-applet/applet.c:959
+#: ../gui/user-switch-applet/applet.c:966
 msgid "Available"
 msgstr "Elérhető"
 
-#: ../gui/user-switch-applet/applet.c:960
+#: ../gui/user-switch-applet/applet.c:967
 msgid "Invisible"
 msgstr "Láthatatlan"
 
-#: ../gui/user-switch-applet/applet.c:961
+#: ../gui/user-switch-applet/applet.c:968
 msgid "Busy"
 msgstr "Elfoglalt"
 
-#: ../gui/user-switch-applet/applet.c:962
+#: ../gui/user-switch-applet/applet.c:969
 msgid "Away"
 msgstr "Távol"
 
-#: ../gui/user-switch-applet/applet.c:1108
+#: ../gui/user-switch-applet/applet.c:1129
 msgid "Account Information..."
 msgstr "Fiókinformációk..."
 
-#: ../gui/user-switch-applet/applet.c:1120
+#: ../gui/user-switch-applet/applet.c:1141
 msgid "System Preferences..."
 msgstr "Rendszerbeállítások…"
 
-#: ../gui/user-switch-applet/applet.c:1136
+#: ../gui/user-switch-applet/applet.c:1157
 msgid "Lock Screen"
 msgstr "Képernyő zárolása"
 
-#: ../gui/user-switch-applet/applet.c:1147
+#: ../gui/user-switch-applet/applet.c:1168
 msgid "Switch User"
 msgstr "Felhasználóváltás"
 
 #. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1158
+#: ../gui/user-switch-applet/applet.c:1179
 msgid "Quit..."
 msgstr "Kilépés…"
 
-#: ../gui/user-switch-applet/applet.c:1261
+#: ../gui/user-switch-applet/applet.c:1294
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: ../gui/user-switch-applet/applet.c:1373
+#: ../gui/user-switch-applet/applet.c:1412
 msgid "User Switch Applet"
 msgstr "Felhasználóváltás"
 
-#: ../gui/user-switch-applet/applet.c:1382
+#: ../gui/user-switch-applet/applet.c:1421
 msgid "Change account settings and status"
 msgstr "Fiókbeállítások és -állapot módosítása"
 
@@ -1122,7 +1122,7 @@ msgstr "Mellőzve - csak a kompatibilitás miatt"
 msgid "COMMAND"
 msgstr "PARANCS"
 
-#: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:42
+#: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Hibakereső-kimenet bekapcsolása"
 
@@ -1140,12 +1140,15 @@ msgstr "A jelenlegi munkamenet nem azonosítható."
 msgid "- New GDM login"
 msgstr "- Új GDM bejelentkezés"
 
-#: ../utils/gdmflexiserver.c:762
+#: ../utils/gdmflexiserver.c:767
 msgid "Unable to start new display"
 msgstr "Nem indítható új képernyő"
 
+#: ../utils/gdm-screenshot.c:219
+msgid "Screenshot taken"
+msgstr "A képernyőkép elkészült"
+
 #. Option parsing
-#: ../utils/gdm-screenshot.c:231
+#: ../utils/gdm-screenshot.c:284
 msgid "Take a picture of the screen"
 msgstr "Kép készítése a képernyőről"
-
