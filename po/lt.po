@@ -1,8 +1,6 @@
 # translation of lt to Lithuanian
 # Lithuanian translation of GDM2
 # Copyright (C) 2001-2006, 2008 Free Software Foundation, Inc.
-#
-#
 # Gediminas Paulauskas <menesis@delfi.lt>, 2001.
 # Mantas Kriaučiūnas <mantelis@centras.lt>, 2002-2003.
 # Eglė Girinaitė <eglyte@centras.lt>, 2002.
@@ -10,20 +8,22 @@
 # Justina Klingaitė <justina.klingaite@gmail.com>, 2005.
 # Vytautas Liuolia <vytautas.liuolia@gmail.com>, 2007.
 # Gintautas Miliauskas <gintas@akl.lt>, 2008.
+# Gintautas Miliauskas <gintautas@miliauskas.lt>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: lt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-06 00:28+0200\n"
-"PO-Revision-Date: 2009-03-02 03:36+0200\n"
-"Last-Translator: Vytautas Rėkus <v.rekus@gmail.com>\n"
+"POT-Creation-Date: 2009-09-07 12:15+0300\n"
+"PO-Revision-Date: 2009-09-07 12:15+0300\n"
+"Last-Translator: Gintautas Miliauskas <gintautas@miliauskas.lt>\n"
 "Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: lt\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
 "100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Virtaal 0.4.0\n"
 
 #: ../common/gdm-common.c:437
 #, c-format
@@ -32,26 +32,26 @@ msgstr "/dev/urandom nėra simbolių įrenginys"
 
 #: ../daemon/factory-slave-main.c:170 ../daemon/main.c:516
 #: ../daemon/product-slave-main.c:174 ../daemon/session-worker-main.c:137
-#: ../daemon/simple-slave-main.c:176 ../daemon/xdmcp-chooser-slave-main.c:176
+#: ../daemon/simple-slave-main.c:179 ../daemon/xdmcp-chooser-slave-main.c:179
 msgid "Enable debugging code"
 msgstr "Įjungti derinimo kodą"
 
 #: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:177
+#: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
 msgid "Display ID"
 msgstr "Ekrano ID"
 
 #: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:177
+#: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
 msgid "id"
 msgstr "id"
 
 #: ../daemon/factory-slave-main.c:183 ../daemon/product-slave-main.c:187
-#: ../daemon/simple-slave-main.c:189 ../daemon/xdmcp-chooser-slave-main.c:189
+#: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:192
 msgid "GNOME Display Manager Slave"
 msgstr "GNOME darbo valdyklės šalutinis modulis"
 
-#: ../daemon/gdm-display-access-file.c:271
+#: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "nepavyko sistemoje rasti naudotojo „%s“"
@@ -68,12 +68,12 @@ msgstr "Nepavyko patvirtinti naudotojo tapatybės"
 msgid "Unable to authorize user"
 msgstr "Nepavyko autorizuoti naudotojo"
 
-#: ../daemon/gdm-factory-slave.c:281
+#: ../daemon/gdm-factory-slave.c:281 ../daemon/gdm-simple-slave.c:432
 msgid "Unable to establish credentials"
 msgstr "Nepavyko patvirtinti kredencialų"
 
 #: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1105
+#: ../daemon/gdm-simple-slave.c:1111
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -160,79 +160,70 @@ msgstr "Vaizdavimo įrenginys"
 msgid "The display device"
 msgstr "Vaizdavimo įrenginys"
 
-#: ../daemon/gdm-session-direct.c:1574 ../daemon/gdm-session-direct.c:1592
-#, c-format
-msgid "worker exited with status %d"
-msgstr "procesas baigė darbą su kodu %d"
-
-#: ../daemon/gdm-session-worker.c:1075
+#: ../daemon/gdm-session-worker.c:1105
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "klaida užmezgant kontaktą su autentikacijos sistema: %s"
 
-#: ../daemon/gdm-session-worker.c:1076
+#: ../daemon/gdm-session-worker.c:1106
 msgid "general failure"
 msgstr "bendroji klaida"
 
-#: ../daemon/gdm-session-worker.c:1077
+#: ../daemon/gdm-session-worker.c:1107
 msgid "out of memory"
 msgstr "baigėsi atmintis"
 
-#: ../daemon/gdm-session-worker.c:1078
+#: ../daemon/gdm-session-worker.c:1108
 msgid "application programmer error"
 msgstr "programuotojo klaida"
 
-#: ../daemon/gdm-session-worker.c:1079
+#: ../daemon/gdm-session-worker.c:1109
 msgid "unknown error"
 msgstr "nežinoma klaida"
 
-#: ../daemon/gdm-session-worker.c:1086
+#: ../daemon/gdm-session-worker.c:1116
 msgid "Username:"
 msgstr "Naudotojo vardas:"
 
-#: ../daemon/gdm-session-worker.c:1092
+#: ../daemon/gdm-session-worker.c:1122
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "klaida pranešant autentikacijos sistemai apie pageidaujamą naudotojo vardo "
 "užklausimą - %s"
 
-#: ../daemon/gdm-session-worker.c:1106
+#: ../daemon/gdm-session-worker.c:1136
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 "klaida pranešant autentikacijos sistemai apie naudotojo kompiuterio vardą - %"
 "s"
 
-#: ../daemon/gdm-session-worker.c:1121
+#: ../daemon/gdm-session-worker.c:1151
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr "klaida pranešant autentikacijos sistemai apie naudotojo konsolę - %s"
 
-#: ../daemon/gdm-session-worker.c:1134
+#: ../daemon/gdm-session-worker.c:1164
 #, c-format
 msgid "error informing authentication system of display string - %s"
 msgstr ""
 "klaida pranešant autentikacijos sistemai apie ekrano id (display string) - %s"
 
-#: ../daemon/gdm-session-worker.c:1149
+#: ../daemon/gdm-session-worker.c:1179
 #, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
 msgstr ""
 "klaida pranešant autentikacijos sistemai apie ekrano xauth kredencialus - %s"
 
-#: ../daemon/gdm-session-worker.c:1429 ../daemon/gdm-session-worker.c:1447
+#: ../daemon/gdm-session-worker.c:1459 ../daemon/gdm-session-worker.c:1477
 #, c-format
 msgid "no user account available"
 msgstr "naudotojų paskyrų nėra"
 
-#: ../daemon/gdm-session-worker.c:1474
+#: ../daemon/gdm-session-worker.c:1504
 msgid "Unable to change to user"
 msgstr "Nepavyko pakeisti naudotojo"
-
-#: ../daemon/gdm-simple-slave.c:429
-msgid "Unable establish credentials"
-msgstr "Nepavyko patvirtinti kredencialų"
 
 #: ../daemon/gdm-welcome-session.c:426
 #, c-format
@@ -248,135 +239,135 @@ msgstr "Grupė %s neegzistuoja"
 msgid "Could not create socket!"
 msgstr "Nepavyko sukurti lizdo!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:860
+#: ../daemon/gdm-xdmcp-display-factory.c:862
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Atmesta XDMCP užklausa iš hosto %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1017
-#: ../daemon/gdm-xdmcp-display-factory.c:1238
+#: ../daemon/gdm-xdmcp-display-factory.c:1019
+#: ../daemon/gdm-xdmcp-display-factory.c:1240
 msgid "Could not extract authlist from packet"
 msgstr "Nepavyko iš paketo ištraukti authlist"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1030
-#: ../daemon/gdm-xdmcp-display-factory.c:1253
+#: ../daemon/gdm-xdmcp-display-factory.c:1032
+#: ../daemon/gdm-xdmcp-display-factory.c:1255
 msgid "Error in checksum"
 msgstr "Klaida kontrolinėje sumoje"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1504
+#: ../daemon/gdm-xdmcp-display-factory.c:1506
 msgid "Bad address"
 msgstr "Blogas adresas"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1585
+#: ../daemon/gdm-xdmcp-display-factory.c:1587
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: Nepavyko perskaityti ekrano adreso"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1593
+#: ../daemon/gdm-xdmcp-display-factory.c:1595
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s: Nepavyko perskaityti ekrano prievado numerio"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1602
+#: ../daemon/gdm-xdmcp-display-factory.c:1604
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s: Nepavyko iš paketo ištraukti authlist"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1622
+#: ../daemon/gdm-xdmcp-display-factory.c:1624
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: Klaida kontrolinėje sumoje"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2131
+#: ../daemon/gdm-xdmcp-display-factory.c:2133
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Gautas REQUEST iš uždrausto hosto %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2141
-#: ../daemon/gdm-xdmcp-display-factory.c:2496
-#: ../daemon/gdm-xdmcp-display-factory.c:2748
+#: ../daemon/gdm-xdmcp-display-factory.c:2143
+#: ../daemon/gdm-xdmcp-display-factory.c:2498
+#: ../daemon/gdm-xdmcp-display-factory.c:2750
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Nepavyko perskaityti Display Number"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2148
+#: ../daemon/gdm-xdmcp-display-factory.c:2150
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Nepavyko perskaityti Connection Type"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2155
+#: ../daemon/gdm-xdmcp-display-factory.c:2157
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Nepavyko perskaityti Client Address"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2163
+#: ../daemon/gdm-xdmcp-display-factory.c:2165
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Nepavyko perskaityti Authentication Names"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2172
+#: ../daemon/gdm-xdmcp-display-factory.c:2174
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Nepavyko perskaityti Authentication Data"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2182
+#: ../daemon/gdm-xdmcp-display-factory.c:2184
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Nepavyko perskaityti Authorization List"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2201
+#: ../daemon/gdm-xdmcp-display-factory.c:2203
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Nepavyko perskaityti Manufacturer ID"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2228
+#: ../daemon/gdm-xdmcp-display-factory.c:2230
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Bloga kontrolinė suma iš %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2480
+#: ../daemon/gdm-xdmcp-display-factory.c:2482
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Gautas Manage iš uždrausto hosto %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2489
-#: ../daemon/gdm-xdmcp-display-factory.c:2755
+#: ../daemon/gdm-xdmcp-display-factory.c:2491
+#: ../daemon/gdm-xdmcp-display-factory.c:2757
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Nepavyko perskaityti Sesijos ID"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2503
+#: ../daemon/gdm-xdmcp-display-factory.c:2505
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Nepavyko perskaityti Display Class"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2608
-#: ../daemon/gdm-xdmcp-display-factory.c:2658
-#: ../daemon/gdm-xdmcp-display-factory.c:2664
+#: ../daemon/gdm-xdmcp-display-factory.c:2610
+#: ../daemon/gdm-xdmcp-display-factory.c:2660
+#: ../daemon/gdm-xdmcp-display-factory.c:2666
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Nepavyko perskaityti adreso"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2738
+#: ../daemon/gdm-xdmcp-display-factory.c:2740
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Gautas KEEPALIVE iš uždrausto hosto %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2827
+#: ../daemon/gdm-xdmcp-display-factory.c:2829
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory: Nepavyko perskaityti XDMCP antraštės!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2833
+#: ../daemon/gdm-xdmcp-display-factory.c:2835
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XMDCP: Neteisinga XDMCP versija!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2839
+#: ../daemon/gdm-xdmcp-display-factory.c:2841
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
 msgid "XMDCP: Unable to parse address"
 msgstr "XMDCP: Nepavyko apdoroti adreso"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3284
+#: ../daemon/gdm-xdmcp-display-factory.c:3286
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Nepavyko gauti serverio vardo: %s!"
@@ -459,7 +450,7 @@ msgid "AT SPI Registry Wrapper"
 msgstr "AT SPI registro sąsaja"
 
 #: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1921
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1767
 msgid "Login Window"
 msgstr "Prisijungimo langas"
 
@@ -503,13 +494,17 @@ msgstr "Orca ekrano skaitytuvas"
 msgid "Present on-screen information as speech or braille"
 msgstr "Pateikti informaciją ekrane kaip kalbą arba Brailio raštą"
 
+#: ../data/greeter-autostart/polkit-gnome-authentication-agent-1.desktop.in.h:1
+msgid "PolicyKit Authentication Agent"
+msgstr "PolicyKit tapatybės patvirtinimo agentas"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:148
 msgid "Select System"
 msgstr "Pasirinkite sistemą"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:214
-msgid "XMCP: Could not create XDMCP buffer!"
-msgstr "XMCP: Nepavyko sukurti XDMCP buferio!"
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP: Nepavyko sukurti XDMCP buferio!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:220
 msgid "XDMCP: Could not read XDMCP header!"
@@ -523,21 +518,29 @@ msgstr "Reikšmė"
 msgid "percentage of time complete"
 msgstr "praėjusio laiko procentai"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1306
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1321
 msgid "Inactive Text"
 msgstr "Neaktyvus tekstas"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1307
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1322
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr "Tekstas, naudojamas užrašui, jei naudotojas dar nepasirinko elemento"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1315
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1330
 msgid "Active Text"
 msgstr "Aktyvus tekstas"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1316
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1331
 msgid "The text to use in the label if the user has picked an item"
 msgstr "Tekstas, naudojamas užrašui, jei naudotojas pasirinko elementą"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1340
+msgid "List Visible"
+msgstr "Sąrašas matomas"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1341
+msgid "Whether or not the chooser list is visible"
+msgstr "Ar pasirinkimo sąrašas matomas"
 
 #: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M:%S %p"
@@ -565,35 +568,16 @@ msgstr "%b %e (%a)"
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:288
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:291
 msgid "Automatically logging in..."
 msgstr "Automatiškai prijungiama..."
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:718
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:758
 msgid "Cancelling..."
 msgstr "Atmetama..."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1187
-msgid "Failed to restart computer"
-msgstr "Nepavyko kompiuterio paleisti iš naujo"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1190
-msgid ""
-"You are not allowed to restart the computer because multiple users are "
-"logged in"
-msgstr "Neleidžiama sistemą perkrauti, nes prisijungę kiti naudotojai"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1271
-msgid "Failed to stop computer"
-msgstr "Nepavyko sustabdyti kompiuterio"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1274
-msgid ""
-"You are not allowed to stop the computer because multiple users are logged in"
-msgstr "Neleidžiama sustabdyti kompiuterio, nes prisijungę kiti naudotojai"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1358
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1185
 msgid "Select language and click Log In"
 msgstr "Pasirinkite kalbą ir spauskite „Prisijungti“"
 
@@ -625,10 +609,6 @@ msgstr "Sustabdyti"
 msgid "Version"
 msgstr "Versija"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
-msgid "page 5"
-msgstr "5 puslapis"
-
 #: ../gui/simple-greeter/gdm-greeter-panel.c:554
 msgid "Panel"
 msgstr "Skydelis"
@@ -658,7 +638,7 @@ msgstr "Kita..."
 msgid "Choose a language from the full list of available languages."
 msgstr "Pasirinkite kalbą iš sąrašo."
 
-#: ../gui/simple-greeter/gdm-languages.c:610
+#: ../gui/simple-greeter/gdm-languages.c:609
 msgid "Unspecified"
 msgstr "Nenurodyta"
 
@@ -716,17 +696,17 @@ msgstr "Maksimalus elementų skaičius"
 msgid "The maximum number of items to keep around in the list"
 msgstr "Maksimalus elementų, laikytinų sąraše, skaičius"
 
-#: ../gui/simple-greeter/gdm-remote-login-window.c:224
+#: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
 msgid "Remote Login (Connecting to %s...)"
 msgstr "Nutolęs prisijungimas (jungiamasi prie %s...)"
 
-#: ../gui/simple-greeter/gdm-remote-login-window.c:238
+#: ../gui/simple-greeter/gdm-remote-login-window.c:202
 #, c-format
 msgid "Remote Login (Connected to %s)"
 msgstr "Nutolęs prisijungimas (prisijungta prie %s)"
 
-#: ../gui/simple-greeter/gdm-remote-login-window.c:317
+#: ../gui/simple-greeter/gdm-remote-login-window.c:281
 msgid "Remote Login"
 msgstr "Nutolęs prisijungimas"
 
@@ -739,155 +719,167 @@ msgid "Banner message text"
 msgstr "Pranešimo tekstas"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
+msgid "Banner message text when chooser is empty"
+msgstr "Pranešimo tekstas, kai pasirinkimo nėra"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
 msgid "Disable showing the restart buttons"
 msgstr "Paslėpti perkrovimo mygtukus"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
 msgid "Do not show known users in the login window"
 msgstr "Nerodyti žinomų naudotojų prisijungimo lange"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
 msgid "Enable accessibility keyboard plugin"
 msgstr "Į_jungti klaviatūros prieinamumo įskiepį"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
 msgid "Enable debugging"
 msgstr "Įjungti derinimą"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
 msgid "Enable debugging mode for the greeter."
 msgstr "Įjungti pasveikintuvo derinimo veikseną."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Enable on-screen keyboard"
 msgstr "Įjungti klaviatūrą ekrane"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
 msgid "Enable screen magnifier"
 msgstr "Įjungti ekrano didinimą"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
 msgid "Enable screen reader"
 msgstr "Įjungti ekrano skaitytuvą"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "Enable showing the banner message"
 msgstr "Įjungti pasitinkančio pranešimo rodymą"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Icon name to use for greeter logo"
 msgstr "Pasveikintuvo logotipo piktogramos pavadinimas"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid "Recently selected keyboard layouts"
 msgstr "Neseniai pasirinkti klaviatūros išdėstymai"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Recently selected languages"
 msgstr "Neseniai pasirinktos kalbos"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-msgid "Set to TRUE to disable showing known users in the login window."
-msgstr ""
-"Nustatykite TRUE, jei nenorite rodyti žinomų naudotojų prisijungimo lange."
-
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
-msgid "Set to TRUE to disable showing the restart buttons in the login window."
-msgstr ""
-"Nustatykite TRUE, jei nenorite rodyti kompiuterio perkrovimo mygtukų "
-"prisijungimo lange."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
-msgid "Set to True to enable the background settings manager plugin."
-msgstr "Nustatykite True, jei norite įjungti fono nustatymų valdyklės įskiepį."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
-msgid "Set to True to enable the media-keys settings manager plugin."
-msgstr ""
-"Nustatykite True, jei norite įjungti media-keys nustatymų valdyklės įskiepį."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
-msgid "Set to True to enable the on-screen keyboard."
-msgstr "Nustatykite True, jei norite įjungti klaviatūrą ekrane."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
-msgid ""
-"Set to True to enable the plugin to manage the accessibility keyboard "
-"settings."
-msgstr ""
-"Nustatykite True, jei norite, kad įskiepis automatiškai valdytų klaviatūros "
-"prieinamumo nustatymus."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
-msgid "Set to True to enable the screen magnifier."
-msgstr "Nustatykite True, jei norite įjungti ekrano didintuvą."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
-msgid "Set to True to enable the screen reader."
-msgstr "Nustatykite True, jei norite įjungti ekrano skaitytuvą."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
-msgid "Set to True to enable the sound settings manager plugin."
-msgstr ""
-"Nustatykite True, jei norite įjungti garso nustatymų valdyklės įskiepį."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
-msgid "Set to True to enable the xrandr settings manager plugin."
-msgstr ""
-"Nustatykite True, jei norite įjungti xrandr nustatymų valdyklės įskiepį."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
-msgid "Set to True to enable the xsettings settings manager plugin."
-msgstr ""
-"Nustatykite True, jei norite įjungti xsettings nustatymų valdyklės įskiepį."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid ""
 "Set to a list of keyboard layouts to be shown by default at the login window."
 msgstr ""
 "Sąrašas klaviatūros išdėstymų, rodomų pagal nutylėjimą prisijungimo lange."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to a list of languages to be shown by default at the login window."
 msgstr "Sąrašas kalbų, rodomų pagal nutylėjimą prisijungimo lange."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "Piktogramos pavadinimas, naudojamas pasveikintuvo logotipui."
 
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+msgid "Set to true to disable showing known users in the login window."
+msgstr ""
+"Nustatykite true, jei nenorite rodyti žinomų naudotojų prisijungimo lange."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+msgid "Set to true to disable showing the restart buttons in the login window."
+msgstr ""
+"Nustatykite true, jei nenorite rodyti kompiuterio perkrovimo mygtukų "
+"prisijungimo lange."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+msgid "Set to true to enable the background settings manager plugin."
+msgstr "Nustatykite true, jei norite įjungti fono nustatymų valdyklės įskiepį."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+msgid "Set to true to enable the media-keys settings manager plugin."
+msgstr ""
+"Nustatykite true, jei norite įjungti media-keys nustatymų valdyklės įskiepį."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+msgid "Set to true to enable the on-screen keyboard."
+msgstr "Nustatykite true, jei norite įjungti klaviatūrą ekrane."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+msgid ""
+"Set to true to enable the plugin to manage the accessibility keyboard "
+"settings."
+msgstr ""
+"Nustatykite true, jei norite, kad įskiepis automatiškai valdytų klaviatūros "
+"prieinamumo nustatymus."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+msgid "Set to true to enable the screen magnifier."
+msgstr "Nustatykite true, jei norite įjungti ekrano didintuvą."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+msgid "Set to true to enable the screen reader."
+msgstr "Nustatykite true, jei norite įjungti ekrano skaitytuvą."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+msgid "Set to true to enable the sound settings manager plugin."
+msgstr ""
+"Nustatykite true, jei norite įjungti garso nustatymų valdyklės įskiepį."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+msgid "Set to true to enable the xrandr settings manager plugin."
+msgstr ""
+"Nustatykite true, jei norite įjungti xrandr nustatymų valdyklės įskiepį."
+
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+msgid "Set to true to enable the xsettings settings manager plugin."
+msgstr ""
+"Nustatykite true, jei norite įjungti xsettings nustatymų valdyklės įskiepį."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "Set to true to show the banner message text."
 msgstr "Nustatykite True, jei norite rodyti pasitikimo pranešimą."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "Set to true to use compiz as the window manager."
 msgstr "Nustatykite True, jei norite naudoti compiz kaip langų valdyklę."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+msgid ""
+"Text banner message to show on the login window when the user chooser is "
+"empty, instead of banner_message_text."
+msgstr ""
+"Tekstinio pranešimo tekstas, rodomas vietoje banner_message_text "
+"prisijungimo lange, kai naudotojų pasirinkimo nėra."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "Text banner message to show on the login window."
 msgstr "Tekstinio pranešimo tekstas, rodomas prisijungimo lange."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the background settings manager plugin is enabled."
 msgstr "True, jei fono nustatymų valdyklės įskiepis įjungtas."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr "True, jei media-keys nustatymų valdyklės įskiepis įjungtas."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "True, jei garso nustatymų valdyklės įskiepis įjungtas."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
 msgid "True if the xrandr settings manager plugin is enabled."
 msgstr "True, jei xrandr nustatymų valdyklės įskiepis įjungtas."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:37
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "True, jei xsettings nustatymų valdyklės įskiepis įjungtas."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:38
 msgid "Use compiz as the window manager"
 msgstr "Naudoti compiz kaip langų valdyklę"
 
@@ -915,11 +907,11 @@ msgstr "Ar jis veikia?"
 msgid "Whether or not the timer is currently ticking"
 msgstr "Ar chronometras dabar veikia"
 
-#: ../gui/simple-greeter/gdm-user.c:241
+#: ../gui/simple-greeter/gdm-user.c:247
 msgid "Manager"
 msgstr "Valdyklė"
 
-#: ../gui/simple-greeter/gdm-user.c:242
+#: ../gui/simple-greeter/gdm-user.c:248
 msgid "The user manager object this user is controlled by."
 msgstr "Naudotojo valdyklės, valdančios šį naudotoją, objektas."
 
@@ -928,41 +920,41 @@ msgstr "Naudotojo valdyklės, valdančios šį naudotoją, objektas."
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:136
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:164
 msgctxt "user"
 msgid "Other..."
 msgstr "Kita..."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:137
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:165
 msgid "Choose a different account"
 msgstr "Pasirinkite kitą paskyrą"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:149
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:177
 msgid "Guest"
 msgstr "Svečias"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:150
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:178
 msgid "Login as a temporary guest"
 msgstr "Prisijungti kaip svečiui"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:162
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:191
 msgid "Automatic Login"
 msgstr "Automatinis prijungimas"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:163
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:192
 msgid "Automatically login to the system after selecting options"
 msgstr "Automatiškai prisijungti prie sistemos sužymėjus parinktis"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:354
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:383
 #, c-format
 msgid "Log in as %s"
 msgstr "Prijungti kaip %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:699
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:737
 msgid "Currently logged in"
 msgstr "Jau prisijungė"
 
-#: ../gui/user-switch-applet/applet.c:158
+#: ../gui/user-switch-applet/applet.c:162
 msgid ""
 "The User Switch Applet is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -974,7 +966,7 @@ msgstr ""
 "paskelbtos Laisvosios programinės įrangos fondo; 2-osios arba (Jūsų "
 "pasirinkimu) bet kurios vėlesnės licencijos versijos sąlygomis."
 
-#: ../gui/user-switch-applet/applet.c:162
+#: ../gui/user-switch-applet/applet.c:166
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -986,7 +978,7 @@ msgstr ""
 "garantijų. Dėl išsamesnės informacijos žiūrėkite GNU bendrąją viešąją "
 "licenciją."
 
-#: ../gui/user-switch-applet/applet.c:166
+#: ../gui/user-switch-applet/applet.c:170
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "this program; if not, write to the Free Software Foundation, Inc., 51 "
@@ -996,77 +988,77 @@ msgstr ""
 "programa; jeigu negavote, rašykite laišką Free Software Foundation, Inc., 51 "
 "Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
 
-#: ../gui/user-switch-applet/applet.c:180
+#: ../gui/user-switch-applet/applet.c:184
 msgid "A menu to quickly switch between users."
 msgstr "Meniu greitam naudotojo perjungimui."
 
-#: ../gui/user-switch-applet/applet.c:184
+#: ../gui/user-switch-applet/applet.c:188
 msgid "translator-credits"
 msgstr "Gintautas Miliauskas <gintas@akl.lt>"
 
-#: ../gui/user-switch-applet/applet.c:641
-#: ../gui/user-switch-applet/applet.c:776
-#: ../gui/user-switch-applet/applet.c:815
+#: ../gui/user-switch-applet/applet.c:647
+#: ../gui/user-switch-applet/applet.c:784
+#: ../gui/user-switch-applet/applet.c:823
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "Nepavyko užrakinti ekrano: %s"
 
-#: ../gui/user-switch-applet/applet.c:663
+#: ../gui/user-switch-applet/applet.c:669
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "Nepavyko laikinai nustatyti ekrano saugo į juodą ekraną: %s"
 
-#: ../gui/user-switch-applet/applet.c:874
+#: ../gui/user-switch-applet/applet.c:882
 #, c-format
 msgid "Can't logout: %s"
 msgstr "Nepavyko atsijungti: %s"
 
-#: ../gui/user-switch-applet/applet.c:957
+#: ../gui/user-switch-applet/applet.c:966
 msgid "Available"
 msgstr "Laisvas"
 
-#: ../gui/user-switch-applet/applet.c:958
+#: ../gui/user-switch-applet/applet.c:967
 msgid "Invisible"
 msgstr "Nematomas"
 
-#: ../gui/user-switch-applet/applet.c:959
+#: ../gui/user-switch-applet/applet.c:968
 msgid "Busy"
 msgstr "Užimtas"
 
-#: ../gui/user-switch-applet/applet.c:960
+#: ../gui/user-switch-applet/applet.c:969
 msgid "Away"
 msgstr "Nėra"
 
-#: ../gui/user-switch-applet/applet.c:1106
+#: ../gui/user-switch-applet/applet.c:1129
 msgid "Account Information..."
 msgstr "Paskyros informacija..."
 
-#: ../gui/user-switch-applet/applet.c:1118
+#: ../gui/user-switch-applet/applet.c:1141
 msgid "System Preferences..."
 msgstr "Sistemos nustatymai..."
 
-#: ../gui/user-switch-applet/applet.c:1134
+#: ../gui/user-switch-applet/applet.c:1157
 msgid "Lock Screen"
 msgstr "Užrakinti ekraną"
 
-#: ../gui/user-switch-applet/applet.c:1145
+#: ../gui/user-switch-applet/applet.c:1168
 msgid "Switch User"
 msgstr "Keisti naudotoją"
 
 #. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1156
+#: ../gui/user-switch-applet/applet.c:1179
 msgid "Quit..."
 msgstr "Išeiti..."
 
-#: ../gui/user-switch-applet/applet.c:1259
+#: ../gui/user-switch-applet/applet.c:1294
 msgid "Unknown"
 msgstr "Nežinoma"
 
-#: ../gui/user-switch-applet/applet.c:1371
+#: ../gui/user-switch-applet/applet.c:1412
 msgid "User Switch Applet"
 msgstr "Naudotojo keitimo įtaisas"
 
-#: ../gui/user-switch-applet/applet.c:1380
+#: ../gui/user-switch-applet/applet.c:1421
 msgid "Change account settings and status"
 msgstr "Pakeisti paskyros nustatymus ir būseną"
 
@@ -1104,7 +1096,7 @@ msgstr "Ignoruojama - palikta suderinamumui"
 msgid "COMMAND"
 msgstr "KOMANDA"
 
-#: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:42
+#: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Derinimo išvestis"
 
@@ -1126,10 +1118,39 @@ msgstr "- Naujas GDM prisijungimas"
 msgid "Unable to start new display"
 msgstr "Nepavyko paleisti naujo ekrano"
 
+#: ../utils/gdm-screenshot.c:219
+msgid "Screenshot taken"
+msgstr "Ekrano paveikslėlis įrašytas"
+
 #. Option parsing
-#: ../utils/gdm-screenshot.c:231
+#: ../utils/gdm-screenshot.c:284
 msgid "Take a picture of the screen"
 msgstr "Įrašyti ekrano paveikslėlį"
+
+#~ msgid "worker exited with status %d"
+#~ msgstr "procesas baigė darbą su kodu %d"
+
+#~ msgid "Unable establish credentials"
+#~ msgstr "Nepavyko patvirtinti kredencialų"
+
+#~ msgid "Failed to restart computer"
+#~ msgstr "Nepavyko kompiuterio paleisti iš naujo"
+
+#~ msgid ""
+#~ "You are not allowed to restart the computer because multiple users are "
+#~ "logged in"
+#~ msgstr "Neleidžiama sistemą perkrauti, nes prisijungę kiti naudotojai"
+
+#~ msgid "Failed to stop computer"
+#~ msgstr "Nepavyko sustabdyti kompiuterio"
+
+#~ msgid ""
+#~ "You are not allowed to stop the computer because multiple users are "
+#~ "logged in"
+#~ msgstr "Neleidžiama sustabdyti kompiuterio, nes prisijungę kiti naudotojai"
+
+#~ msgid "page 5"
+#~ msgstr "5 puslapis"
 
 #~ msgid "You have the Caps Lock key on."
 #~ msgstr "Įjungtas Caps Lock."
