@@ -603,7 +603,6 @@ seat_open_session_request (DBusGProxy             *seat_proxy,
                 }
 
                 g_object_set (display, "session-id", ssid, NULL);
-                g_hash_table_insert (factory->priv->displays_by_session, g_strdup (ssid), g_object_ref (display));
 
                 sid = dbus_g_proxy_get_path (seat_proxy);
                 if (IS_STR_SET (sid))
@@ -690,6 +689,7 @@ seat_close_session_request (DBusGProxy             *seat_proxy,
 
         gdm_display_get_x11_display_number (display, &display_number, NULL);
         store_remove_display (factory, display_number, display);
+        g_object_unref (display);
 }
 
 static void
