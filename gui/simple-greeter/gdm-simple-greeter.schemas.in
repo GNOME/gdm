@@ -281,6 +281,41 @@
         <long></long>
       </locale>
     </schema>
+    <schema>
+      <key>/schemas/apps/gdm/simple-greeter/include_all</key>
+      <applyto>/apps/gdm/simple-greeter/include_all</applyto>
+      <owner>gdm-simple-greeter</owner>
+      <type>bool</type>
+      <default>TRUE</default>
+      <locale name="C">
+        <short>Include local users in Face Browser</short>
+        <long>Set to true to include system local users in Face Browser</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/gdm/simple-greeter/include</key>
+      <applyto>/apps/gdm/simple-greeter/include</applyto>
+      <owner>gdm-simple-greeter</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[]</default>
+      <locale name="C">
+        <short>Users to include in the Face Browser</short>
+        <long>Set to a list of users to be shown by default in the Face Browser.</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/gdm/simple-greeter/exclude</key>
+      <applyto>/apps/gdm/simple-greeter/exclude</applyto>
+      <owner>gdm-simple-greeter</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[bin,root,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,nobody4,noaccess,postgres,pvm,rpm,nfsnobody,pcap]</default>
+      <locale name="C">
+        <short>Users to exclude in the Face Browser</short>
+        <long>Set to a list of users not to be shown in the Face Browser.</long>
+      </locale>
+    </schema>
 
   </schemalist>
 </gconfschemafile>
