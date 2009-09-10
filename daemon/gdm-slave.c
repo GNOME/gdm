@@ -189,18 +189,26 @@ get_script_environment (GdmSlave   *slave,
         g_hash_table_insert (hash, g_strdup ("PWD"), g_strdup ("/"));
         g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup ("/bin/sh"));
 
-        g_hash_table_insert (hash, g_strdup ("LOGNAME"), g_strdup (username));
-        g_hash_table_insert (hash, g_strdup ("USER"), g_strdup (username));
-        g_hash_table_insert (hash, g_strdup ("USERNAME"), g_strdup (username));
+        if (username != NULL) {
+                g_hash_table_insert (hash, g_strdup ("LOGNAME"),
+                                     g_strdup (username));
+                g_hash_table_insert (hash, g_strdup ("USER"),
+                                     g_strdup (username));
+                g_hash_table_insert (hash, g_strdup ("USERNAME"),
+                                     g_strdup (username));
 
-        pwent = getpwnam (username);
-        if (pwent != NULL) {
-                if (pwent->pw_dir != NULL && pwent->pw_dir[0] != '\0') {
-                        g_hash_table_insert (hash, g_strdup ("HOME"), g_strdup (pwent->pw_dir));
-                        g_hash_table_insert (hash, g_strdup ("PWD"), g_strdup (pwent->pw_dir));
+                pwent = getpwnam (username);
+                if (pwent != NULL) {
+                        if (pwent->pw_dir != NULL && pwent->pw_dir[0] != '\0') {
+                                g_hash_table_insert (hash, g_strdup ("HOME"),
+                                                     g_strdup (pwent->pw_dir));
+                                g_hash_table_insert (hash, g_strdup ("PWD"),
+                                                     g_strdup (pwent->pw_dir));
+                        }
+
+                        g_hash_table_insert (hash, g_strdup ("SHELL"),
+                                             g_strdup (pwent->pw_shell));
                 }
-
-                g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup (pwent->pw_shell));
         }
 
 #if 0
@@ -755,17 +763,93 @@ gdm_slave_add_user_authorization (GdmSlave   *slave,
         return res;
 }
 
+static gchar *
+gdm_slave_parse_enriched_login (GdmSlave *slave,
+                                char *username,
+                                char *display_name)
+{
+        char in_buffer[20];
+        char **argv = NULL;
+        gint pipe1[2], in_buffer_len;
+        int  username_length;
+        pid_t pid;
+
+        if (username == NULL)
+                return (NULL);
+
+        /* A script may be used to generate the automatic/timed login name
+           based on the display/host by ending the name with the pipe symbol
+           '|'. */
+
+        username_length = strlen (username);
+        if (username_length > 0 && username[username_length-1] == '|') {
+                GPtrArray *env;
+                GError    *error;
+                gboolean   res;
+                char     **argv;
+                char      *std_output;
+                char      *std_error;
+                int       *exit_status;
+
+                /* Remove the pipe symbol */
+                username[username_length-1] = '\0';
+
+                argv = NULL;
+                error = NULL;
+                if (! g_shell_parse_argv (username, NULL, &argv, &error)) {
+                      g_warning ("Could not parse command: %s", error->message);
+                      return (NULL);
+                }
+
+                g_debug ("Calling script %s to acquire auto/timed username",
+                         username);
+
+                env = get_script_environment (slave, NULL);
+                error = NULL;
+                res = g_spawn_sync (NULL,
+                                    argv,
+                                    (char **)env->pdata,
+                                    G_SPAWN_SEARCH_PATH,
+                                    NULL,
+                                    NULL,
+                                    &std_output,
+                                    &std_error,
+                                    exit_status,
+                                    &error);
+
+                g_ptr_array_foreach (env, (GFunc)g_free, NULL);
+                g_ptr_array_free (env, TRUE);
+                g_strfreev (argv);
+
+                if (! res) {
+                        g_warning ("Unable to launch auto/timed login script: %s", error->message);
+                        g_error_free (error);
+	        } else {
+                        if (std_output != NULL) {
+                                g_strchomp (std_output);
+                                if (std_output[0] != '\0') {
+                                        return (g_strdup (std_output));
+                                }
+                        }
+                        return NULL;
+                }
+        } else {
+                return (g_strdup (username));
+        }
+}
+
 gboolean
 gdm_slave_get_timed_login_details (GdmSlave   *slave,
                                    gboolean   *enabledp,
                                    char      **usernamep,
                                    int        *delayp)
 {
-        GError  *error;
-        gboolean res;
-        gboolean enabled;
-        char    *username;
-        int      delay;
+        struct passwd *pwent;
+        GError        *error;
+        gboolean       res;
+        gboolean       enabled;
+        char          *username;
+        int            delay;
 
         username = NULL;
         enabled = FALSE;
@@ -795,15 +879,31 @@ gdm_slave_get_timed_login_details (GdmSlave   *slave,
         }
 
         if (usernamep != NULL) {
-                *usernamep = username;
+                *usernamep = gdm_slave_parse_enriched_login (slave,
+                        username, slave->priv->display_name);
+        }
+        g_free (username);
+
+        if (usernamep != NULL && *usernamep != NULL) {
+                pwent = getpwnam (*usernamep);
+                if (pwent == NULL) {
+                        g_debug ("Invalid username %s for auto/timed login",
+                                 *usernamep);
+                        g_free (*usernamep);
+                        *usernamep = NULL;
+                } else {
+                        g_debug ("Using username %s for auto/timed login",
+                                 *usernamep);
+
+                        if (enabledp != NULL) {
+                                *enabledp = enabled;
+                        }
+                        if (delayp != NULL) {
+                                *delayp = delay;
+                        }
+               }
         } else {
-                g_free (username);
-        }
-        if (enabledp != NULL) {
-                *enabledp = enabled;
-        }
-        if (delayp != NULL) {
-                *delayp = delay;
+                g_debug ("Invalid NULL username for auto/timed login");
         }
 
         return res;

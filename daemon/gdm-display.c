@@ -340,7 +340,6 @@ gdm_display_real_get_timed_login_details (GdmDisplay *display,
                 enabled = FALSE;
                 g_free (username);
                 username = NULL;
-                /* FIXME: check if a valid username? */
                 goto out;
         }
 

@@ -1202,6 +1202,16 @@ TimedLogin=you
                 This is the user that should be logged in after a specified
                 number of seconds of inactivity.
               </para>
+              <para>
+                If the value ends with a vertical bar | (the pipe symbol),
+                then GDM will execute the program specified and use whatever
+                value is returned on standard out from the program as the user.
+                The program is run with the DISPLAY environment variable set so
+                that it is possible to specify the user in a per-display
+                fashion.  For example if the value is "/usr/bin/getloginuser|",
+                then the program "/usr/bin/getloginuser" will be run to get the
+                user value.
+              </para>
             </listitem>
           </varlistentry>
 
@@ -1235,6 +1245,16 @@ TimedLogin=you
               <para>
                 This is the user that should be logged in immediately if
                 <filename>AutomaticLoginEnable</filename> is true.
+              </para>
+              <para>
+                If the value ends with a vertical bar | (the pipe symbol),
+                then GDM will execute the program specified and use whatever
+                value is returned on standard out from the program as the user.
+                The program is run with the DISPLAY environment variable set so
+                that it is possible to specify the user in a per-display
+                fashion.  For example if the value is "/usr/bin/getloginuser|",
+                then the program "/usr/bin/getloginuser" will be run to get the
+                user value.
               </para>
             </listitem>
           </varlistentry>
