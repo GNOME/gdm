@@ -48,6 +48,7 @@ typedef struct
         GdmRecentOptionWidgetClass    parent_class;
 
         void (* layout_activated)        (GdmLayoutOptionWidget *widget);
+        void (* dialog_hidden)           (GdmLayoutOptionWidget *widget);
 } GdmLayoutOptionWidgetClass;
 
 GType                  gdm_layout_option_widget_get_type               (void);

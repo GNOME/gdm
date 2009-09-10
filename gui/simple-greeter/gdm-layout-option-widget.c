@@ -50,6 +50,7 @@ struct GdmLayoutOptionWidgetPrivate
 
 enum {
         LAYOUT_ACTIVATED,
+        DIALOG_HIDDEN,
         NUMBER_OF_SIGNALS
 };
 
@@ -97,6 +98,7 @@ gdm_layout_option_widget_hide_dialog (GdmLayoutOptionWidget *widget)
 {
         gtk_widget_destroy (widget->priv->dialog);
         widget->priv->dialog = NULL;
+        g_signal_emit (G_OBJECT (widget), signals [DIALOG_HIDDEN], 0);
 }
 
 static void
@@ -172,6 +174,16 @@ gdm_layout_option_widget_class_init (GdmLayoutOptionWidgetClass *klass)
                                                   g_cclosure_marshal_VOID__VOID,
                                                   G_TYPE_NONE,
                                                   0);
+
+        signals[DIALOG_HIDDEN] = g_signal_new ("dialog-hidden",
+                                               G_TYPE_FROM_CLASS (object_class),
+                                               G_SIGNAL_RUN_FIRST,
+                                               G_STRUCT_OFFSET (GdmLayoutOptionWidgetClass, dialog_hidden),
+                                               NULL,
+                                               NULL,
+                                               g_cclosure_marshal_VOID__VOID,
+                                               G_TYPE_NONE,
+                                               0);
 
         g_type_class_add_private (klass, sizeof (GdmLayoutOptionWidgetPrivate));
 }

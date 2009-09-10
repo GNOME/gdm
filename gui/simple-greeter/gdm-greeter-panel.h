@@ -53,6 +53,8 @@ typedef struct
 
         void (* session_selected)            (GdmGreeterPanel *panel,
                                               const char      *text);
+
+        void (* dialog_hidden)               (GdmGreeterPanel *panel);
 } GdmGreeterPanelClass;
 
 GType                  gdm_greeter_panel_get_type                       (void);
