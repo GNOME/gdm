@@ -281,6 +281,8 @@ void
 gdm_option_widget_set_default_item (GdmOptionWidget *widget,
                                     const char      *item)
 {
+        char *active;
+
         g_return_if_fail (GDM_IS_OPTION_WIDGET (widget));
         g_return_if_fail (item == NULL ||
                           gdm_option_widget_lookup_item (widget, item,
@@ -299,6 +301,31 @@ gdm_option_widget_set_default_item (GdmOptionWidget *widget,
                 widget->priv->default_item_id = g_strdup (item);
 
                 g_object_notify (G_OBJECT (widget), "default-item");
+
+        } 
+
+        /* If a row has already been selected, then reset the selection to
+         * the active row.  This way when a user fails to authenticate, any
+         * previously selected value will still be selected.
+         */
+        active = gdm_option_widget_get_active_item (widget);
+
+        if (active != NULL && item != NULL &&
+            strcmp (gdm_option_widget_get_active_item (widget),
+                    item) != 0) {
+                GtkTreeRowReference *row;
+                GtkTreePath         *active_path;
+                GtkTreeModel        *model;
+
+                gdm_option_widget_set_active_item (widget, active);
+                active_path = gtk_tree_row_reference_get_path (widget->priv->active_row);
+                model = GTK_TREE_MODEL (widget->priv->list_store);
+                if (active_path != NULL) {
+                        row = gtk_tree_row_reference_new (model, active_path);
+                        activate_from_row (widget, row);
+                        gtk_tree_path_free (active_path);
+                        gtk_tree_row_reference_free (row);
+                }
         }
 }
 
