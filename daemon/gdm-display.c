@@ -58,6 +58,7 @@ struct GdmDisplayPrivate
         char                 *x11_command;
         int                   x11_display_number;
         char                 *x11_display_name;
+        char                 *x11_display_type;
         int                   status;
         time_t                creation_time;
         GTimer               *slave_timer;
@@ -88,6 +89,7 @@ enum {
         PROP_REMOTE_HOSTNAME,
         PROP_X11_DISPLAY_NUMBER,
         PROP_X11_DISPLAY_NAME,
+        PROP_X11_DISPLAY_TYPE,
         PROP_X11_COOKIE,
         PROP_X11_AUTHORITY_FILE,
         PROP_IS_LOCAL,
@@ -797,6 +799,20 @@ gdm_display_get_x11_display_name (GdmDisplay   *display,
 }
 
 gboolean
+gdm_display_get_x11_display_type (GdmDisplay   *display,
+                                  char        **type,
+                                  GError      **error)
+{
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        if (type != NULL) {
+                *type = g_strdup (display->priv->x11_display_type);
+        }
+
+        return TRUE;
+}
+
+gboolean
 gdm_display_is_local (GdmDisplay *display,
                       gboolean   *local,
                       GError    **error)
@@ -904,6 +920,14 @@ _gdm_display_set_x11_display_name (GdmDisplay     *display,
 }
 
 static void
+_gdm_display_set_x11_display_type (GdmDisplay     *display,
+                                   const char     *display_type)
+{
+        g_free (display->priv->x11_display_type);
+        display->priv->x11_display_type = g_strdup (display_type);
+}
+
+static void
 _gdm_display_set_x11_cookie (GdmDisplay     *display,
                              const char     *x11_cookie)
 {
@@ -982,6 +1006,9 @@ gdm_display_set_property (GObject        *object,
         case PROP_X11_DISPLAY_NAME:
                 _gdm_display_set_x11_display_name (self, g_value_get_string (value));
                 break;
+        case PROP_X11_DISPLAY_TYPE:
+                _gdm_display_set_x11_display_type (self, g_value_get_string (value));
+                break;
         case PROP_X11_COOKIE:
                 _gdm_display_set_x11_cookie (self, g_value_get_string (value));
                 break;
@@ -1040,6 +1067,9 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_X11_DISPLAY_NAME:
                 g_value_set_string (value, self->priv->x11_display_name);
+                break;
+        case PROP_X11_DISPLAY_TYPE:
+                g_value_set_string (value, self->priv->x11_display_type);
                 break;
         case PROP_X11_COOKIE:
                 g_value_set_string (value, self->priv->x11_cookie);
@@ -1209,6 +1239,13 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
+                                         PROP_X11_DISPLAY_TYPE,
+                                         g_param_spec_string ("x11-display-type",
+                                                              "x11-display-type",
+                                                              "x11-display-type",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
                                          PROP_SEAT_ID,
                                          g_param_spec_string ("seat-id",
                                                               "seat id",
@@ -1315,6 +1352,7 @@ gdm_display_finalize (GObject *object)
         g_free (display->priv->session_id);
         g_free (display->priv->remote_hostname);
         g_free (display->priv->x11_display_name);
+        g_free (display->priv->x11_display_type);
         g_free (display->priv->x11_cookie);
         g_free (display->priv->slave_command);
 

@@ -85,6 +85,7 @@ struct _GdmSessionDirectPrivate
         char                *id;
         char                *display_id;
         char                *display_name;
+        char                *display_type;
         char                *display_hostname;
         char                *display_device;
         char                *display_x11_authority_file;
@@ -101,6 +102,7 @@ enum {
         PROP_0,
         PROP_DISPLAY_ID,
         PROP_DISPLAY_NAME,
+        PROP_DISPLAY_TYPE,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
         PROP_DISPLAY_DEVICE,
@@ -1298,6 +1300,7 @@ do_introspect (DBusConnection *connection,
                                "    <signal name=\"Setup\">\n"
                                "      <arg name=\"service_name\" type=\"s\"/>\n"
                                "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
+                               "      <arg name=\"x11_display_type\" type=\"s\"/>\n"
                                "      <arg name=\"display_device\" type=\"s\"/>\n"
                                "      <arg name=\"hostname\" type=\"s\"/>\n"
                                "      <arg name=\"x11_authority_file\" type=\"s\"/>\n"
@@ -1305,6 +1308,7 @@ do_introspect (DBusConnection *connection,
                                "    <signal name=\"SetupForUser\">\n"
                                "      <arg name=\"service_name\" type=\"s\"/>\n"
                                "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
+                               "      <arg name=\"x11_display_type\" type=\"s\"/>\n"
                                "      <arg name=\"display_device\" type=\"s\"/>\n"
                                "      <arg name=\"hostname\" type=\"s\"/>\n"
                                "      <arg name=\"x11_authority_file\" type=\"s\"/>\n"
@@ -1687,6 +1691,7 @@ send_setup (GdmSessionDirect *session,
         DBusMessage    *message;
         DBusMessageIter iter;
         const char     *display_name;
+        const char     *display_type;
         const char     *display_device;
         const char     *display_hostname;
         const char     *display_x11_authority_file;
@@ -1697,6 +1702,11 @@ send_setup (GdmSessionDirect *session,
                 display_name = session->priv->display_name;
         } else {
                 display_name = "";
+        }
+        if (session->priv->display_type != NULL) {
+                display_type = session->priv->display_type;
+        } else {
+                display_type = "";
         }
         if (session->priv->display_hostname != NULL) {
                 display_hostname = session->priv->display_hostname;
@@ -1723,6 +1733,7 @@ send_setup (GdmSessionDirect *session,
         dbus_message_iter_init_append (message, &iter);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &service_name);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_name);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_type);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_device);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_hostname);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_x11_authority_file);
@@ -1741,6 +1752,7 @@ send_setup_for_user (GdmSessionDirect *session,
         DBusMessage    *message;
         DBusMessageIter iter;
         const char     *display_name;
+        const char     *display_type;
         const char     *display_device;
         const char     *display_hostname;
         const char     *display_x11_authority_file;
@@ -1752,6 +1764,11 @@ send_setup_for_user (GdmSessionDirect *session,
                 display_name = session->priv->display_name;
         } else {
                 display_name = "";
+        }
+        if (session->priv->display_type != NULL) {
+                display_type = session->priv->display_type;
+        } else {
+                display_type = "";
         }
         if (session->priv->display_hostname != NULL) {
                 display_hostname = session->priv->display_hostname;
@@ -1783,6 +1800,7 @@ send_setup_for_user (GdmSessionDirect *session,
         dbus_message_iter_init_append (message, &iter);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &service_name);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_name);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_type);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_device);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_hostname);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_x11_authority_file);
@@ -2188,6 +2206,14 @@ _gdm_session_direct_set_display_name (GdmSessionDirect *session,
 }
 
 static void
+_gdm_session_direct_set_display_type (GdmSessionDirect *session,
+                                      const char       *type)
+{
+        g_free (session->priv->display_type);
+        session->priv->display_type = g_strdup (type);
+}
+
+static void
 _gdm_session_direct_set_display_hostname (GdmSessionDirect *session,
                                           const char       *name)
 {
@@ -2252,6 +2278,9 @@ gdm_session_direct_set_property (GObject      *object,
         case PROP_DISPLAY_NAME:
                 _gdm_session_direct_set_display_name (self, g_value_get_string (value));
                 break;
+        case PROP_DISPLAY_TYPE:
+                _gdm_session_direct_set_display_type (self, g_value_get_string (value));
+                break;
         case PROP_DISPLAY_HOSTNAME:
                 _gdm_session_direct_set_display_hostname (self, g_value_get_string (value));
                 break;
@@ -2293,6 +2322,9 @@ gdm_session_direct_get_property (GObject    *object,
         case PROP_DISPLAY_NAME:
                 g_value_set_string (value, self->priv->display_name);
                 break;
+        case PROP_DISPLAY_TYPE:
+                g_value_set_string (value, self->priv->display_type);
+                break;
         case PROP_DISPLAY_HOSTNAME:
                 g_value_set_string (value, self->priv->display_hostname);
                 break;
@@ -2333,6 +2365,9 @@ gdm_session_direct_dispose (GObject *object)
 
         g_free (session->priv->display_name);
         session->priv->display_name = NULL;
+
+        g_free (session->priv->display_type);
+        session->priv->display_type = NULL;
 
         g_free (session->priv->display_hostname);
         session->priv->display_hostname = NULL;
@@ -2486,6 +2521,13 @@ gdm_session_direct_class_init (GdmSessionDirectClass *session_class)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_TYPE,
+                                         g_param_spec_string ("display-type",
+                                                              "display type",
+                                                              "display type",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
                                          PROP_DISPLAY_HOSTNAME,
                                          g_param_spec_string ("display-hostname",
                                                               "display hostname",
@@ -2537,6 +2579,7 @@ gdm_session_direct_class_init (GdmSessionDirectClass *session_class)
 GdmSessionDirect *
 gdm_session_direct_new (const char *display_id,
                         const char *display_name,
+                        const char *display_type,
                         const char *display_hostname,
                         const char *display_device,
                         const char *display_x11_authority_file,
@@ -2547,6 +2590,7 @@ gdm_session_direct_new (const char *display_id,
         session = g_object_new (GDM_TYPE_SESSION_DIRECT,
                                 "display-id", display_id,
                                 "display-name", display_name,
+                                "display-type", display_type,
                                 "display-hostname", display_hostname,
                                 "display-device", display_device,
                                 "display-x11-authority-file", display_x11_authority_file,

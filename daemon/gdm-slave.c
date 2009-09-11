@@ -79,6 +79,7 @@ struct GdmSlavePrivate
         /* cached display values */
         char            *display_id;
         char            *display_name;
+        char            *display_type;
         int              display_number;
         char            *display_hostname;
         gboolean         display_is_local;
@@ -100,6 +101,7 @@ enum {
         PROP_0,
         PROP_DISPLAY_ID,
         PROP_DISPLAY_NAME,
+        PROP_DISPLAY_TYPE,
         PROP_DISPLAY_NUMBER,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
@@ -574,6 +576,24 @@ gdm_slave_real_start (GdmSlave *slave)
                                  &error,
                                  G_TYPE_INVALID,
                                  G_TYPE_STRING, &slave->priv->display_name,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get value: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get value");
+                }
+
+                return FALSE;
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->display_proxy,
+                                 "GetX11DisplayType",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &slave->priv->display_type,
                                  G_TYPE_INVALID);
         if (! res) {
                 if (error != NULL) {
@@ -1300,6 +1320,15 @@ _gdm_slave_set_display_name (GdmSlave   *slave,
         slave->priv->display_name = g_strdup (name);
 }
 
+
+static void
+_gdm_slave_set_display_type (GdmSlave   *slave,
+                             const char *type)
+{
+        g_free (slave->priv->display_type);
+        slave->priv->display_type = g_strdup (type);
+}
+
 static void
 _gdm_slave_set_display_number (GdmSlave   *slave,
                                int         number)
@@ -1370,6 +1399,9 @@ gdm_slave_set_property (GObject      *object,
         case PROP_DISPLAY_NAME:
                 _gdm_slave_set_display_name (self, g_value_get_string (value));
                 break;
+        case PROP_DISPLAY_TYPE:
+                _gdm_slave_set_display_type (self, g_value_get_string (value));
+                break;
         case PROP_DISPLAY_NUMBER:
                 _gdm_slave_set_display_number (self, g_value_get_int (value));
                 break;
@@ -1413,6 +1445,9 @@ gdm_slave_get_property (GObject    *object,
                 break;
         case PROP_DISPLAY_NAME:
                 g_value_set_string (value, self->priv->display_name);
+                break;
+        case PROP_DISPLAY_TYPE:
+                g_value_set_string (value, self->priv->display_type);
                 break;
         case PROP_DISPLAY_NUMBER:
                 g_value_set_int (value, self->priv->display_number);
@@ -1523,6 +1558,13 @@ gdm_slave_class_init (GdmSlaveClass *klass)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_TYPE,
+                                         g_param_spec_string ("display-type",
+                                                              "display type",
+                                                              "display type",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
                                          PROP_DISPLAY_NUMBER,
                                          g_param_spec_int ("display-number",
                                                            "display number",
@@ -1614,6 +1656,7 @@ gdm_slave_finalize (GObject *object)
         g_free (slave->priv->id);
         g_free (slave->priv->display_id);
         g_free (slave->priv->display_name);
+        g_free (slave->priv->display_type);
         g_free (slave->priv->display_hostname);
         g_free (slave->priv->display_seat_id);
         g_free (slave->priv->display_x11_authority_file);

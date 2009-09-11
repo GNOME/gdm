@@ -508,7 +508,8 @@ strrep (char* in, char** out, char* old, char* new)
 static void
 seat_open_session_request (DBusGProxy             *seat_proxy,
                            const char             *ssid,
-                           const char             *type,
+                           const char             *session_type,
+                           const char             *display_template_name,
                            GHashTable             *display_variables,
                            const char             *display_type,
                            GHashTable             *parameters,
@@ -610,6 +611,8 @@ seat_open_session_request (DBusGProxy             *seat_proxy,
                 if (IS_STR_SET (comm))
                         g_object_set (display, "x11-command", comm, NULL);
                 g_free (comm);
+                if (IS_STR_SET (display_template_name))
+                        g_object_set (display, "x11-display-type", display_template_name, NULL);
                 g_object_set (display, "use-auth", use_auth, NULL);
 
                 g_signal_connect (display,
@@ -764,9 +767,11 @@ manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
                 return;
         }
 
-        dbus_g_object_register_marshaller (gdm_marshal_VOID__STRING_STRING_POINTER_STRING_POINTER,
+        dbus_g_object_register_marshaller (gdm_marshal_VOID__STRING_STRING_STRING_POINTER_STRING_POINTER,
                                            G_TYPE_NONE,
-                                           DBUS_TYPE_G_OBJECT_PATH, G_TYPE_STRING,
+                                           DBUS_TYPE_G_OBJECT_PATH,
+                                           G_TYPE_STRING,
+                                           G_TYPE_STRING,
                                            GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
                                            G_TYPE_STRING,
                                            GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
@@ -774,6 +779,7 @@ manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
         dbus_g_proxy_add_signal (proxy,
                                  "OpenSessionRequest",
                                  DBUS_TYPE_G_OBJECT_PATH,
+                                 G_TYPE_STRING,
                                  G_TYPE_STRING,
                                  GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
                                  G_TYPE_STRING,

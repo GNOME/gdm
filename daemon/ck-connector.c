@@ -81,6 +81,7 @@ static struct {
         { "session",            DBUS_TYPE_STRING },
         { "remote-host-name",   DBUS_TYPE_STRING },
         { "session-type",       DBUS_TYPE_STRING },
+        { "display-type",       DBUS_TYPE_STRING },
         { "is-local",           DBUS_TYPE_BOOLEAN },
         { "is-dynamic",         DBUS_TYPE_BOOLEAN },
         { "unix-user",          DBUS_TYPE_INT32 },
