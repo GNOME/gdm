@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&component=general\n"
-"POT-Creation-Date: 2009-08-25 17:45+0000\n"
-"PO-Revision-Date: 2009-08-26 12:34+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-09-11 10:05+0200\n"
+"PO-Revision-Date: 2009-09-11 10:07+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -613,7 +613,7 @@ msgstr "Eseki"
 msgid "Version"
 msgstr "Bertsioa"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:554
+#: ../gui/simple-greeter/gdm-greeter-panel.c:583
 msgid "Panel"
 msgstr "Panela"
 
@@ -627,19 +627,11 @@ msgid "_Languages:"
 msgstr "_Hizkuntzak:"
 
 #: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
-#: ../gui/simple-greeter/gdm-language-option-widget.c:262
+#: ../gui/simple-greeter/gdm-language-option-widget.c:274
 msgid "_Language:"
 msgstr "_Hizkuntza:"
 
-#. translators: This brings up a dialog
-#. * with a list of languages to choose from
-#.
-#: ../gui/simple-greeter/gdm-language-option-widget.c:231
-msgctxt "language"
-msgid "Other..."
-msgstr "Bestelakoa..."
-
-#: ../gui/simple-greeter/gdm-language-option-widget.c:232
+#: ../gui/simple-greeter/gdm-language-option-widget.c:244
 msgid "Choose a language from the full list of available languages."
 msgstr "Hizkuntza erabilgarrien zerrenda osotik aukeratu hizkuntza."
 
@@ -653,43 +645,35 @@ msgstr "Teklatuen diseinuak"
 
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:200
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:201
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:254
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:266
 msgid "_Keyboard:"
 msgstr "_Teklatua:"
 
-#. translators: This brings up a dialog of
-#. * available keyboard layouts
-#.
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:223
-msgctxt "keyboard"
-msgid "Other..."
-msgstr "Bestelakoa..."
-
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:224
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:236
 msgid "Choose a keyboard layout from the full list of available layouts."
 msgstr "Diseinu erabilgarrien zerrenda osotik aukeratu teklatu-diseinu bat."
 
-#: ../gui/simple-greeter/gdm-option-widget.c:494
+#: ../gui/simple-greeter/gdm-option-widget.c:521
 msgid "Label Text"
 msgstr "Etiketaren testua"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:495
+#: ../gui/simple-greeter/gdm-option-widget.c:522
 msgid "The text to use as a label"
 msgstr "Testua etiketa gisa erabiltzeko"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:502
+#: ../gui/simple-greeter/gdm-option-widget.c:529
 msgid "Icon name"
 msgstr "Ikono-izena"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:503
+#: ../gui/simple-greeter/gdm-option-widget.c:530
 msgid "The icon to use with the label"
 msgstr "Ikonoa etiketarekin erabiltzeko"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:511
+#: ../gui/simple-greeter/gdm-option-widget.c:538
 msgid "Default Item"
 msgstr "Elementu lehenetsia"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:512
+#: ../gui/simple-greeter/gdm-option-widget.c:539
 msgid "The id of the default item"
 msgstr "Elementu lehenetsiaren IDa"
 
@@ -769,56 +753,68 @@ msgid "Icon name to use for greeter logo"
 msgstr "Ikonoaren izena ongi etorriko logotipoan erabiltzeko"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+msgid "Include local users in Face Browser"
+msgstr "Sartu lokaleko erabiltzaileak aurpegien arakatzailean"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Recently selected keyboard layouts"
 msgstr "Hautatutako azken teklatu-diseinuak"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
 msgid "Recently selected languages"
 msgstr "Hautatutako azken hizkuntzak"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to a list of keyboard layouts to be shown by default at the login window."
 msgstr ""
 "Ezarri teklatu-diseinuen zerrenda lehenetsi gisa erakusteko saio-hasierako "
 "leihoan."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to a list of languages to be shown by default at the login window."
 msgstr "Ezarri hizkuntzen zerrenda lehenetsi gisa erakusteko saio-hasierako leihoan."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+msgid "Set to a list of users not to be shown in the Face Browser."
+msgstr "Ezarri erabiltzaileen zerrenda ez erakustea aurpegien arakatzailean."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+msgid "Set to a list of users to be shown by default in the Face Browser."
+msgstr "Ezarri erabiltzaileen zerrenda lehenetsi gisa erakustea aurpegien arakatzailean."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "Ezarri gaiaren ikonoaren izena ongi etorriko logotipoan erabiltzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid "Set to true to disable showing known users in the login window."
 msgstr ""
 "Ezarri TRUE (egia) gisa erabiltzaile ezagunak erakustea desgaitzeko saio-"
 "hasierako leihoan."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Ezarri TRUE (egia) gisa berrabiarazteko botoiak erakustea desgaitzeko saio-"
 "hasierako leihoan."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
 msgid "Set to true to enable the background settings manager plugin."
 msgstr ""
 "Ezarri TRUE (egia) gisa atzeko planoaren ezarpenen kudeatzailearen plugina "
 "gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to true to enable the media-keys settings manager plugin."
 msgstr ""
 "Ezarri TRUE (egia) gisa multimediako teklen ezarpenen kudeatzailearen "
 "plugina gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid "Set to true to enable the on-screen keyboard."
 msgstr "Ezarri TRUE (egia) gisa pantailako teklatua gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
 msgid ""
 "Set to true to enable the plugin to manage the accessibility keyboard "
 "settings."
@@ -826,39 +822,43 @@ msgstr ""
 "Ezarri TRUE (egia) gisa erabilerraztasuneko teklatuaren ezarpenak kudeatzeko "
 "plugina gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
 msgid "Set to true to enable the screen magnifier."
 msgstr "Ezarri TRUE (egia) gisa pantailako lupa gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
 msgid "Set to true to enable the screen reader."
 msgstr "Ezarri TRUE (egia) gisa pantailaren irakurlea gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "Set to true to enable the sound settings manager plugin."
 msgstr "Ezarri TRUE (egia) gisa soinuaren ezarpenen kudeatzailearen plugina gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "Set to true to enable the xrandr settings manager plugin."
 msgstr ""
 "Ezarri TRUE (egia) gisa xrandr-ren ezarpenen kudeatzailearen plugina "
 "gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
 msgid "Set to true to enable the xsettings settings manager plugin."
 msgstr ""
 "Ezarri TRUE (egia) gisa xsettings-en ezarpenen kudeatzailearen plugina "
 "gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+msgid "Set to true to include system local users in Face Browser"
+msgstr "Ezarri TRUE (egia) gisa sistema lokaleko erabiltzaileak sartzeko aurpegien arakatzailean"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "Set to true to show the banner message text."
 msgstr "Ezarri true (egia) gisa harrerako mezuaren testua erakusteko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "Set to true to use compiz as the window manager."
 msgstr "Ezarri TRUE (egia) gisa compiz erabiltzeko leiho-kudeatzaile gisa."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid ""
 "Text banner message to show on the login window when the user chooser is "
 "empty, instead of banner_message_text."
@@ -866,35 +866,43 @@ msgstr ""
 "Harrerako mezuaren testua saio-hasierako leihoan erakusteko, erabiltzaile-"
 "hautatzailea hutsik dagoenean banner_message_text ordez."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
 msgid "Text banner message to show on the login window."
 msgstr "Harrerako mezuaren testua saio-hasierako leihoan erakusteko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:37
 msgid "True if the background settings manager plugin is enabled."
 msgstr "EGIA atzeko planoaren ezarpenen kudeatzailearen plugina gaituta badago."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:38
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr ""
 "True (egia) multimediako teklen ezarpenen kudeatzailearen plugina gaituta "
 "badago."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:39
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "True (egia) soinuaren ezarpenen kudeatzailearen plugina gaituta badago."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:40
 msgid "True if the xrandr settings manager plugin is enabled."
 msgstr "True (egia) xrandr-ren ezarpenen kudeatzailearen plugina gaituta badago."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:37
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:41
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "EGIA xsettings-en ezarpenen kudeatzailearen plugina gaituta badago."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:38
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:42
 msgid "Use compiz as the window manager"
 msgstr "Erabili compiz leiho-kudeatzaile gisa"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:43
+msgid "Users to exclude in the Face Browser"
+msgstr "Erabiltzaileak aurpegien arakatzailetik baztertzeko"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:44
+msgid "Users to include in the Face Browser"
+msgstr "Erabiltzaileak aurpegien arakatzailean sartzeko"
 
 #: ../gui/simple-greeter/gdm-timer.c:149
 msgid "Duration"
@@ -928,16 +936,6 @@ msgstr "Kudeatzailea"
 #: ../gui/simple-greeter/gdm-user.c:248
 msgid "The user manager object this user is controlled by."
 msgstr "Erabiltzaile hau kontrolatzen duen erabiltzaile-kudeatzailea."
-
-#. translators: This option prompts
-#. * the user to type in a username
-#. * manually instead of choosing from
-#. * a list.
-#.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:164
-msgctxt "user"
-msgid "Other..."
-msgstr "Bestelakoa..."
 
 #
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:165
