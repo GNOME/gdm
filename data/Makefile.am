@@ -13,6 +13,7 @@ predir = $(gdmconfdir)/PreSession
 postlogindir = $(gdmconfdir)/PostLogin
 workingdir = $(GDM_WORKING_DIR)
 xauthdir = $(GDM_XAUTH_DIR)
+cachedir = $(localstatedir)/cache/gdm
 
 Xsession: $(srcdir)/Xsession.in
 	sed	-e 's,[@]XSESSION_SHELL[@],$(XSESSION_SHELL),g' \
@@ -207,6 +208,12 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 		$(mkinstalldirs) $(DESTDIR)$(workingdir); \
 		chmod 1770 $(DESTDIR)$(workingdir); \
 		chown root:gdm $(DESTDIR)$(workingdir) || : ; \
+	fi
+
+	if test '!' -d $(DESTDIR)$(cachedir); then \
+		$(mkinstalldirs) $(DESTDIR)$(cachedir); \
+		chmod 1755 $(DESTDIR)$(cachedir); \
+		chown root:gdm $(DESTDIR)$(cachedir) || : ; \
 	fi
 
 	$(INSTALL_DATA) $(srcdir)/gconf.path $(DESTDIR)$(workingdir)/.gconf.path

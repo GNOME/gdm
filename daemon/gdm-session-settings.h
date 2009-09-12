@@ -54,7 +54,7 @@ GType               gdm_session_settings_get_type           (void);
 GdmSessionSettings *gdm_session_settings_new                (void);
 
 gboolean            gdm_session_settings_load               (GdmSessionSettings  *settings,
-                                                             const char          *home_directory,
+                                                             const char          *username,
                                                              GError             **error);
 gboolean            gdm_session_settings_save               (GdmSessionSettings  *settings,
                                                              const char          *home_directory,

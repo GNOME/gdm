@@ -41,8 +41,6 @@
 #define MAX_ICON_SIZE     128
 #define MAX_FILE_SIZE     65536
 #define MINIMAL_UID       100
-#define RELAX_GROUP       TRUE
-#define RELAX_OTHER       TRUE
 
 enum {
         PROP_0,
@@ -764,10 +762,7 @@ gdm_user_collate (GdmUser *user1,
 
 static gboolean
 check_user_file (const char *filename,
-                 uid_t       user,
-                 gssize      max_file_size,
-                 gboolean    relax_group,
-                 gboolean    relax_other)
+                 gssize      max_file_size)
 {
         struct stat fileinfo;
 
@@ -777,31 +772,19 @@ check_user_file (const char *filename,
 
         /* Exists/Readable? */
         if (stat (filename, &fileinfo) < 0) {
+                g_debug ("File does not exist");
                 return FALSE;
         }
 
         /* Is a regular file */
         if (G_UNLIKELY (!S_ISREG (fileinfo.st_mode))) {
-                return FALSE;
-        }
-
-        /* Owned by user? */
-        if (G_UNLIKELY (fileinfo.st_uid != user)) {
-                return FALSE;
-        }
-
-        /* Group not writable or relax_group? */
-        if (G_UNLIKELY ((fileinfo.st_mode & S_IWGRP) == S_IWGRP && !relax_group)) {
-                return FALSE;
-        }
-
-        /* Other not writable or relax_other? */
-        if (G_UNLIKELY ((fileinfo.st_mode & S_IWOTH) == S_IWOTH && !relax_other)) {
+                g_debug ("File is not a regular file");
                 return FALSE;
         }
 
         /* Size is kosher? */
         if (G_UNLIKELY (fileinfo.st_size > max_file_size)) {
+                g_debug ("File is too large");
                 return FALSE;
         }
 
@@ -842,132 +825,28 @@ get_filesystem_type (const char *path)
 }
 
 static GdkPixbuf *
-render_icon_from_home (GdmUser *user,
-                       int      icon_size)
+render_icon_from_cache (GdmUser *user,
+                        int      icon_size)
 {
         GdkPixbuf  *retval;
         char       *path;
-        gboolean    is_local;
         gboolean    is_autofs;
         gboolean    res;
         char       *filesystem_type;
 
-        is_local = FALSE;
-
-        /* special case: look at parent of home to detect autofs
-           this is so we don't try to trigger an automount */
-        path = g_path_get_dirname (user->home_dir);
-        filesystem_type = get_filesystem_type (path);
-        is_autofs = (filesystem_type != NULL && strcmp (filesystem_type, "autofs") == 0);
-        g_free (filesystem_type);
-        g_free (path);
-
-        if (is_autofs) {
-                return NULL;
-        }
-
-        /* now check that home dir itself is local */
-        filesystem_type = get_filesystem_type (user->home_dir);
-        is_local = ((filesystem_type != NULL) &&
-                    (strcmp (filesystem_type, "nfs") != 0) &&
-                    (strcmp (filesystem_type, "afs") != 0) &&
-                    (strcmp (filesystem_type, "autofs") != 0) &&
-                    (strcmp (filesystem_type, "unknown") != 0) &&
-                    (strcmp (filesystem_type, "ncpfs") != 0));
-        g_free (filesystem_type);
-
-        /* only look at local home directories so we don't try to
-           read from remote (e.g. NFS) volumes */
-        if (! is_local) {
-                return NULL;
-        }
-
-        /* First, try "~/.face" */
-        path = g_build_filename (user->home_dir, ".face", NULL);
+        path = g_build_filename (GDM_CACHE_DIR, user->user_name, "face", NULL);
         res = check_user_file (path,
-                               user->uid,
-                               MAX_FILE_SIZE,
-                               RELAX_GROUP,
-                               RELAX_OTHER);
+                               MAX_FILE_SIZE);
         if (res) {
                 retval = gdk_pixbuf_new_from_file_at_size (path,
                                                            icon_size,
                                                            icon_size,
                                                            NULL);
         } else {
+                g_debug ("Could not access face icon %s", path);
                 retval = NULL;
         }
         g_free (path);
-
-        /* Next, try "~/.face.icon" */
-        if (retval == NULL) {
-                path = g_build_filename (user->home_dir,
-                                         ".face.icon",
-                                         NULL);
-                res = check_user_file (path,
-                                       user->uid,
-                                       MAX_FILE_SIZE,
-                                       RELAX_GROUP,
-                                       RELAX_OTHER);
-                if (res) {
-                        retval = gdk_pixbuf_new_from_file_at_size (path,
-                                                                   icon_size,
-                                                                   icon_size,
-                                                                   NULL);
-                } else {
-                        retval = NULL;
-                }
-
-                g_free (path);
-        }
-
-        /* Still nothing, try the user's personal GDM config */
-        if (retval == NULL) {
-                path = g_build_filename (user->home_dir,
-                                         ".gnome",
-                                         "gdm",
-                                         NULL);
-                res = check_user_file (path,
-                                       user->uid,
-                                       MAX_FILE_SIZE,
-                                       RELAX_GROUP,
-                                       RELAX_OTHER);
-                if (res) {
-                        GKeyFile *keyfile;
-                        char     *icon_path;
-
-                        keyfile = g_key_file_new ();
-                        g_key_file_load_from_file (keyfile,
-                                                   path,
-                                                   G_KEY_FILE_NONE,
-                                                   NULL);
-
-                        icon_path = g_key_file_get_string (keyfile,
-                                                           "face",
-                                                           "picture",
-                                                           NULL);
-                        res = check_user_file (icon_path,
-                                               user->uid,
-                                               MAX_FILE_SIZE,
-                                               RELAX_GROUP,
-                                               RELAX_OTHER);
-                        if (icon_path && res) {
-                                retval = gdk_pixbuf_new_from_file_at_size (path,
-                                                                           icon_size,
-                                                                           icon_size,
-                                                                           NULL);
-                        } else {
-                                retval = NULL;
-                        }
-
-                        g_free (icon_path);
-                        g_key_file_free (keyfile);
-                } else {
-                        retval = NULL;
-                }
-
-                g_free (path);
-        }
 
         return retval;
 }
@@ -1218,7 +1097,7 @@ gdm_user_render_icon (GdmUser   *user,
 
         path = NULL;
 
-        pixbuf = render_icon_from_home (user, icon_size);
+        pixbuf = render_icon_from_cache (user, icon_size);
         if (pixbuf != NULL) {
                 goto out;
         }
@@ -1226,16 +1105,14 @@ gdm_user_render_icon (GdmUser   *user,
         /* Try ${GlobalFaceDir}/${username} */
         path = g_build_filename (GLOBAL_FACEDIR, user->user_name, NULL);
         res = check_user_file (path,
-                               user->uid,
-                               MAX_FILE_SIZE,
-                               RELAX_GROUP,
-                               RELAX_OTHER);
+                               MAX_FILE_SIZE);
         if (res) {
                 pixbuf = gdk_pixbuf_new_from_file_at_size (path,
                                                            icon_size,
                                                            icon_size,
                                                            NULL);
         } else {
+                g_debug ("Could not access global face icon %s", path);
                 pixbuf = NULL;
         }
 
@@ -1249,16 +1126,14 @@ gdm_user_render_icon (GdmUser   *user,
         path = g_build_filename (GLOBAL_FACEDIR, tmp, NULL);
         g_free (tmp);
         res = check_user_file (path,
-                               user->uid,
-                               MAX_FILE_SIZE,
-                               RELAX_GROUP,
-                               RELAX_OTHER);
+                               MAX_FILE_SIZE);
         if (res) {
                 pixbuf = gdk_pixbuf_new_from_file_at_size (path,
                                                            icon_size,
                                                            icon_size,
                                                            NULL);
         } else {
+                g_debug ("Could not access global face icon %s", path);
                 pixbuf = NULL;
         }
         g_free (path);

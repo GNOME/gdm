@@ -267,7 +267,7 @@ gdm_session_settings_is_loaded (GdmSessionSettings  *settings)
 
 gboolean
 gdm_session_settings_load (GdmSessionSettings  *settings,
-                           const char          *home_directory,
+                           const char          *username,
                            GError             **error)
 {
         GKeyFile *key_file;
@@ -279,9 +279,10 @@ gdm_session_settings_load (GdmSessionSettings  *settings,
         char     *filename;
 
         g_return_val_if_fail (settings != NULL, FALSE);
-        g_return_val_if_fail (home_directory != NULL, FALSE);
+        g_return_val_if_fail (username != NULL, FALSE);
         g_return_val_if_fail (!gdm_session_settings_is_loaded (settings), FALSE);
-        filename = g_build_filename (home_directory, ".dmrc", NULL);
+
+        filename = g_build_filename (GDM_CACHE_DIR, username, "dmrc", NULL);
 
         is_loaded = FALSE;
         key_file = g_key_file_new ();

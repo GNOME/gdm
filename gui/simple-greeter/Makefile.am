@@ -13,11 +13,12 @@ AM_CPPFLAGS = \
 	-DSYSCONFDIR=\""$(sysconfdir)"\"		\
 	-DLIBLOCALEDIR=\""$(prefix)/lib/locale"\"	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
-	-DGLADEDIR=\""$(pkgdatadir)"\" 	\
+	-DGLADEDIR=\""$(pkgdatadir)"\"			\
 	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
 	-DSBINDIR=\""$(sbindir)"\"		 	\
+	-DGDM_CACHE_DIR=\""$(localstatedir)/cache/gdm"\"	\
 	-DAT_SPI_REGISTRYD_DIR="\"$(AT_SPI_REGISTRYD_DIR)\""	\
-	$(DISABLE_DEPRECATED_CFLAGS)	\
+	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(GTK_CFLAGS)					\
 	$(SIMPLE_GREETER_CFLAGS)			\
 	$(NULL)

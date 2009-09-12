@@ -15,6 +15,7 @@ AM_CPPFLAGS = \
 	-DSBINDIR=\"$(sbindir)\"			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-DGDM_XAUTH_DIR=\"$(GDM_XAUTH_DIR)\"		\
+	-DGDM_CACHE_DIR=\""$(localstatedir)/cache/gdm"\"	\
 	-DGDM_SESSION_DEFAULT_PATH=\"$(GDM_SESSION_DEFAULT_PATH)\" \
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(DAEMON_CFLAGS)				\
