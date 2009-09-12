@@ -40,8 +40,6 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#include <gconf/gconf-client.h>
-
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
@@ -78,14 +76,34 @@
 
 #define DEFAULT_GLOBAL_FACE_DIR DATADIR "/faces"
 #define DEFAULT_USER_ICON       "stock_person"
-#define KEY_INCLUDE_ALL "/apps/gdm/simple-greeter/include_all"
-#define KEY_INCLUDE     "/apps/gdm/simple-greeter/include"
-#define KEY_EXCLUDE     "/apps/gdm/simple-greeter/exclude"
+#define DEFAULT_EXCLUDE         { "bin",        \
+                                  "root",       \
+                                  "daemon",     \
+                                  "adm",        \
+                                  "lp",         \
+                                  "sync",       \
+                                  "shutdown",   \
+                                  "halt",       \
+                                  "mail",       \
+                                  "news",       \
+                                  "uucp",       \
+                                  "operator",   \
+                                  "nobody",     \
+                                  "nobody4",    \
+                                  "noaccess",   \
+                                  GDM_USERNAME, \
+                                  "postgres",   \
+                                  "pvm",        \
+                                  "rpm",        \
+                                  "nfsnobody",  \
+                                  "pcap",       \
+                                  NULL }
 
 struct GdmUserManagerPrivate
 {
         GHashTable            *users;
         GHashTable            *sessions;
+        GHashTable            *exclusions;
         GHashTable            *shells;
         DBusGConnection       *connection;
         DBusGProxy            *seat_proxy;
@@ -93,10 +111,6 @@ struct GdmUserManagerPrivate
 
         GFileMonitor          *passwd_monitor;
         GFileMonitor          *shells_monitor;
-
-        GSList                *exclude;
-        GSList                *include;
-        gboolean               include_all;
 
         guint                  reload_id;
         guint                  ck_history_id;
@@ -585,39 +599,6 @@ get_x11_display_for_session (DBusGConnection *connection,
         return x11_display;
 }
 
-static gint
-match_name_cmpfunc (gconstpointer a,
-                    gconstpointer b)
-{
-        if (a == NULL || b == NULL)
-                return -1;
-
-        return g_strcmp0 ((char *) a,
-                          (char *) b);
-}
-
-static gboolean
-check_excludes (GdmUserManager *manager, const char *user)
-{
-        GSList   *found;
-        gboolean  ret = FALSE;
-
-        g_debug ("checking exclude list");
-
-        /* always exclude the "gdm" user. */
-        if (user == NULL || (strcmp (user, GDM_USERNAME) == 0))
-                return TRUE;
-
-        if (manager->priv->exclude != NULL) {
-                found = g_slist_find_custom (manager->priv->exclude,
-                                             user,
-                                             match_name_cmpfunc);
-                if (found != NULL)
-                        ret = TRUE;
-        }
-        return ret;
-}
-
 static gboolean
 maybe_add_session_for_user (GdmUserManager *manager,
                             GdmUser        *user,
@@ -647,7 +628,7 @@ maybe_add_session_for_user (GdmUserManager *manager,
                 goto out;
         }
 
-        if (check_excludes (manager, gdm_user_get_user_name (user))) {
+        if (g_hash_table_lookup (manager->priv->exclusions, gdm_user_get_user_name (user))) {
                 g_debug ("GdmUserManager: excluding user '%s'", gdm_user_get_user_name (user));
                 goto out;
         }
@@ -925,7 +906,7 @@ seat_session_added (DBusGProxy     *seat_proxy,
         }
 
         /* check exclusions up front */
-        if (check_excludes (manager, pwent->pw_name)) {
+        if (g_hash_table_lookup (manager->priv->exclusions, pwent->pw_name)) {
                 g_debug ("GdmUserManager: excluding user '%s'", pwent->pw_name);
                 return;
         }
@@ -1241,7 +1222,7 @@ process_ck_history_line (GdmUserManager *manager,
                 return;
         }
 
-        if (check_excludes (manager, username)) {
+        if (g_hash_table_lookup (manager->priv->exclusions, username)) {
                 g_debug ("GdmUserManager: excluding user '%s'", username);
                 g_free (username);
                 return;
@@ -1378,20 +1359,6 @@ reload_ck_history (GdmUserManager *manager)
 }
 
 static void
-add_included_user (char *username, GdmUserManager *manager)
-{
-        GdmUser     *user;
-
-        g_debug ("Adding included user %s", username);
-        user = gdm_user_manager_get_user (manager, username);
-        if (user == NULL) {
-                g_debug ("GdmUserManager: unable to lookup user '%s'", username);
-                g_free (username);
-                return;
-        }
-}
-
-static void
 reload_passwd (GdmUserManager *manager)
 {
         struct passwd *pwent;
@@ -1423,58 +1390,48 @@ reload_passwd (GdmUserManager *manager)
                 }
         }
 
-        if (manager->priv->include_all != TRUE) {
-                g_debug ("GdmUserManager: include_all is FALSE");
-        } else {
-                g_debug ("GdmUserManager: include_all is TRUE");
+        for (pwent = fgetpwent (fp); pwent != NULL; pwent = fgetpwent (fp)) {
+                GdmUser *user;
 
-                for (pwent = fgetpwent (fp);
-                     pwent != NULL;
-                     pwent = fgetpwent (fp)) {
-                        GdmUser *user;
+                user = NULL;
 
-                        user = NULL;
-
-                        /* Skip users below MinimalUID... */
-                        if (pwent->pw_uid < DEFAULT_MINIMAL_UID) {
-                                continue;
-                        }
-
-                        /* ...And users w/ invalid shells... */
-                        if (pwent->pw_shell == NULL ||
-                            !g_hash_table_lookup (manager->priv->shells,
-                                                  pwent->pw_shell)) {
-                                g_debug ("GdmUserManager: skipping user with bad shell: %s", pwent->pw_name);
-                                continue;
-                        }
-
-                        /* ...And explicitly excluded users */
-                        if (check_excludes (manager, pwent->pw_name)) {
-                                g_debug ("GdmUserManager: explicitly skipping user: %s", pwent->pw_name);
-                                continue;
-                        }
-
-                        user = g_hash_table_lookup (manager->priv->users,
-                                                    pwent->pw_name);
-
-                        /* Update users already in the *new* list */
-                        if (g_slist_find (new_users, user)) {
-                                _gdm_user_update (user, pwent);
-                                continue;
-                        }
-
-                        if (user == NULL) {
-                                user = create_user (manager);
-                        } else {
-                                g_object_ref (user);
-                        }
-
-                        /* Freeze & update users not already in the new list */
-                        g_object_freeze_notify (G_OBJECT (user));
-                        _gdm_user_update (user, pwent);
-
-                        new_users = g_slist_prepend (new_users, user);
+                /* Skip users below MinimalUID... */
+                if (pwent->pw_uid < DEFAULT_MINIMAL_UID) {
+                        continue;
                 }
+
+                /* ...And users w/ invalid shells... */
+                if (pwent->pw_shell == NULL ||
+                    !g_hash_table_lookup (manager->priv->shells, pwent->pw_shell)) {
+                        g_debug ("GdmUserManager: skipping user with bad shell: %s", pwent->pw_name);
+                        continue;
+                }
+
+                /* ...And explicitly excluded users */
+                if (g_hash_table_lookup (manager->priv->exclusions, pwent->pw_name)) {
+                        g_debug ("GdmUserManager: explicitly skipping user: %s", pwent->pw_name);
+                        continue;
+                }
+
+                user = g_hash_table_lookup (manager->priv->users, pwent->pw_name);
+
+                /* Update users already in the *new* list */
+                if (g_slist_find (new_users, user)) {
+                        _gdm_user_update (user, pwent);
+                        continue;
+                }
+
+                if (user == NULL) {
+                        user = create_user (manager);
+                } else {
+                        g_object_ref (user);
+                }
+
+                /* Freeze & update users not already in the new list */
+                g_object_freeze_notify (G_OBJECT (user));
+                _gdm_user_update (user, pwent);
+
+                new_users = g_slist_prepend (new_users, user);
         }
 
         /* Go through and handle removed users */
@@ -1499,13 +1456,6 @@ reload_passwd (GdmUserManager *manager)
                 } else {
                         add_user (manager, list->data);
                 }
-        }
-
-        /* Add users who are specifically included */
-        if (manager->priv->include != NULL) {
-                g_slist_foreach (manager->priv->include,
-                                 (GFunc)add_included_user,
-                                 (gpointer)manager);
         }
 
  out:
@@ -1668,37 +1618,9 @@ gdm_user_manager_init (GdmUserManager *manager)
         int            i;
         GFile         *file;
         GError        *error;
-        GConfClient   *client;
+        const char    *exclude_default[] = DEFAULT_EXCLUDE;
 
         manager->priv = GDM_USER_MANAGER_GET_PRIVATE (manager);
-
-        /* exclude/include */
-        error = NULL;
-        client = gconf_client_get_default ();
-        manager->priv->exclude = gconf_client_get_list (client, KEY_EXCLUDE, GCONF_VALUE_STRING, &error);
-        if (error != NULL) {
-                g_debug ("GdmUserManager: unable to get exclude configuration: %s", error->message);
-                g_error_free (error);
-                manager->priv->exclude = NULL;
-        }
-
-        error = NULL;
-        manager->priv->include = gconf_client_get_list (client, KEY_INCLUDE, GCONF_VALUE_STRING, &error);
-        if (error != NULL) {
-                g_debug ("GdmUserManager: unable to get include configuration: %s", error->message);
-                g_error_free (error);
-                manager->priv->include = NULL;
-        }
-
-        error = NULL;
-        manager->priv->include_all = gconf_client_get_bool (client, KEY_INCLUDE_ALL, &error);
-
-        if (error != NULL) {
-                g_debug ("GdmUserManager: unable to get include_all configuration: %s", error->message);
-                g_error_free (error);
-                manager->priv->include_all = TRUE;
-        }
-        g_object_unref (client);
 
         /* sessions */
         manager->priv->sessions = g_hash_table_new_full (g_str_hash,
@@ -1706,61 +1628,61 @@ gdm_user_manager_init (GdmUserManager *manager)
                                                          g_free,
                                                          g_free);
 
-        /* users */
+        /* exclusions */
+        manager->priv->exclusions = g_hash_table_new_full (g_str_hash,
+                                                           g_str_equal,
+                                                           g_free,
+                                                           NULL);
+        for (i = 0; exclude_default[i] != NULL; i++) {
+                g_hash_table_insert (manager->priv->exclusions,
+                                     g_strdup (exclude_default [i]),
+                                     GUINT_TO_POINTER (TRUE));
+        }
+
+        /* /etc/shells */
+        manager->priv->shells = g_hash_table_new_full (g_str_hash,
+                                                       g_str_equal,
+                                                       g_free,
+                                                       NULL);
+        reload_shells (manager);
+        file = g_file_new_for_path (_PATH_SHELLS);
+        error = NULL;
+        manager->priv->shells_monitor = g_file_monitor_file (file,
+                                                             G_FILE_MONITOR_NONE,
+                                                             NULL,
+                                                             &error);
+        if (manager->priv->shells_monitor != NULL) {
+                g_signal_connect (manager->priv->shells_monitor,
+                                  "changed",
+                                  G_CALLBACK (on_shells_monitor_changed),
+                                  manager);
+        } else {
+                g_warning ("Unable to monitor %s: %s", _PATH_SHELLS, error->message);
+                g_error_free (error);
+        }
+        g_object_unref (file);
+
+        /* /etc/passwd */
         manager->priv->users = g_hash_table_new_full (g_str_hash,
                                                       g_str_equal,
                                                       g_free,
                                                       (GDestroyNotify) g_object_run_dispose);
-
-        if (manager->priv->include_all == TRUE) {
-                /* /etc/shells */
-                manager->priv->shells = g_hash_table_new_full (g_str_hash,
-                                                               g_str_equal,
-                                                               g_free,
-                                                               NULL);
-                reload_shells (manager);
-                file = g_file_new_for_path (_PATH_SHELLS);
-                error = NULL;
-                manager->priv->shells_monitor = g_file_monitor_file (file,
-                                                                     G_FILE_MONITOR_NONE,
-                                                                     NULL,
-                                                                     &error);
-                if (manager->priv->shells_monitor != NULL) {
-                        g_signal_connect (manager->priv->shells_monitor,
-                                          "changed",
-                                          G_CALLBACK (on_shells_monitor_changed),
-                                          manager);
-                } else {
-                        if (error != NULL) {
-	        		g_warning ("Unable to monitor %s: %s", _PATH_SHELLS, error->message);
-                     		g_error_free (error);
-        		} else {
-                                g_warning ("Unable to monitor %s", _PATH_SHELLS);
-	        	}
-                }
-                g_object_unref (file);
-
-                /* /etc/passwd */
-                file = g_file_new_for_path (PATH_PASSWD);
-                manager->priv->passwd_monitor = g_file_monitor_file (file,
-                                                                     G_FILE_MONITOR_NONE,
-                                                                     NULL,
-                                                                     &error);
-                if (manager->priv->passwd_monitor != NULL) {
-                        g_signal_connect (manager->priv->passwd_monitor,
-                                          "changed",
-                                          G_CALLBACK (on_passwd_monitor_changed),
-                                          manager);
-                } else {
-                        if (error != NULL) {
-                                g_warning ("Unable to monitor %s: %s", PATH_PASSWD, error->message);
-                                g_error_free (error);
-        		} else {
-                                g_warning ("Unable to monitor %s", PATH_PASSWD);
-	        	}
-                }
-                g_object_unref (file);
+        file = g_file_new_for_path (PATH_PASSWD);
+        manager->priv->passwd_monitor = g_file_monitor_file (file,
+                                                             G_FILE_MONITOR_NONE,
+                                                             NULL,
+                                                             &error);
+        if (manager->priv->passwd_monitor != NULL) {
+                g_signal_connect (manager->priv->passwd_monitor,
+                                  "changed",
+                                  G_CALLBACK (on_passwd_monitor_changed),
+                                  manager);
+        } else {
+                g_warning ("Unable to monitor %s: %s", PATH_PASSWD, error->message);
+                g_error_free (error);
         }
+        g_object_unref (file);
+
 
         get_seat_proxy (manager);
 
@@ -1780,14 +1702,6 @@ gdm_user_manager_finalize (GObject *object)
         manager = GDM_USER_MANAGER (object);
 
         g_return_if_fail (manager->priv != NULL);
-
-        if (manager->priv->exclude != NULL) {
-                g_slist_free (manager->priv->exclude);
-        }
-
-        if (manager->priv->include != NULL) {
-                g_slist_free (manager->priv->include);
-        }
 
         if (manager->priv->seat_proxy != NULL) {
                 g_object_unref (manager->priv->seat_proxy);
