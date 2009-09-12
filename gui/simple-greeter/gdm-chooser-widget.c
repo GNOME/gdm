@@ -408,6 +408,10 @@ gdm_chooser_widget_get_selected_item (GdmChooserWidget *widget)
 
         get_selected_list_path (widget, &path);
 
+        if (path == NULL) {
+                return NULL;
+        }
+
         model = GTK_TREE_MODEL (widget->priv->list_store);
 
         if (gtk_tree_model_get_iter (model, &iter, path)) {
