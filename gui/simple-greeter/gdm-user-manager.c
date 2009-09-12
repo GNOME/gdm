@@ -1657,8 +1657,12 @@ gdm_user_manager_init (GdmUserManager *manager)
                                   G_CALLBACK (on_shells_monitor_changed),
                                   manager);
         } else {
-                g_warning ("Unable to monitor %s: %s", _PATH_SHELLS, error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_warning ("Unable to monitor %s: %s", _PATH_SHELLS, error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Unable to monitor %s", _PATH_SHELLS);
+                }
         }
         g_object_unref (file);
 
@@ -1678,8 +1682,12 @@ gdm_user_manager_init (GdmUserManager *manager)
                                   G_CALLBACK (on_passwd_monitor_changed),
                                   manager);
         } else {
-                g_warning ("Unable to monitor %s: %s", PATH_PASSWD, error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_warning ("Unable to monitor %s: %s", PATH_PASSWD, error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Unable to monitor %s", PATH_PASSWD);
+                }
         }
         g_object_unref (file);
 
