@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-11 10:05+0200\n"
-"PO-Revision-Date: 2009-09-11 10:07+0200\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&component=general\n"
+"POT-Creation-Date: 2009-09-12 01:28+0000\n"
+"PO-Revision-Date: 2009-09-14 10:12+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -153,68 +153,68 @@ msgstr "Pantailaren gailua"
 msgid "The display device"
 msgstr "Pantailaren gailua"
 
-#: ../daemon/gdm-session-worker.c:1105
+#: ../daemon/gdm-session-worker.c:1293
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "errorea autentifikazio-sistemarekin harremanetan jartzean - %s"
 
-#: ../daemon/gdm-session-worker.c:1106
+#: ../daemon/gdm-session-worker.c:1294
 msgid "general failure"
 msgstr "Hutsegite orokorra"
 
-#: ../daemon/gdm-session-worker.c:1107
+#: ../daemon/gdm-session-worker.c:1295
 msgid "out of memory"
 msgstr "Memoriarik ez"
 
-#: ../daemon/gdm-session-worker.c:1108
+#: ../daemon/gdm-session-worker.c:1296
 msgid "application programmer error"
 msgstr "aplikazioaren programazioko errorea"
 
-#: ../daemon/gdm-session-worker.c:1109
+#: ../daemon/gdm-session-worker.c:1297
 msgid "unknown error"
 msgstr "errore ezezaguna"
 
-#: ../daemon/gdm-session-worker.c:1116
+#: ../daemon/gdm-session-worker.c:1304
 msgid "Username:"
 msgstr "Erabiltzaile-izena:"
 
-#: ../daemon/gdm-session-worker.c:1122
+#: ../daemon/gdm-session-worker.c:1310
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "errorea erabiltzaile-izenaren galdera hobetsiaren autentifikazio-sistema "
 "informatzean - %s"
 
-#: ../daemon/gdm-session-worker.c:1136
+#: ../daemon/gdm-session-worker.c:1324
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 "errorea erabiltzailearen ostalari-izenaren autentifikazio-sistema "
 "informatzean - %s"
 
-#: ../daemon/gdm-session-worker.c:1151
+#: ../daemon/gdm-session-worker.c:1339
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr "errorea erabiltzailearen kontsolaren autentifikazio-sistema informatzean - %s"
 
-#: ../daemon/gdm-session-worker.c:1164
+#: ../daemon/gdm-session-worker.c:1352
 #, c-format
 msgid "error informing authentication system of display string - %s"
 msgstr "errorea pantailaren katearen autentifikazio-sistema informatzean - %s"
 
-#: ../daemon/gdm-session-worker.c:1179
+#: ../daemon/gdm-session-worker.c:1367
 #, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
 msgstr ""
 "errorea pantailaren xauth kredentzialen autentifikazio-sistema informatzean "
 "- %s"
 
-#: ../daemon/gdm-session-worker.c:1459 ../daemon/gdm-session-worker.c:1477
+#: ../daemon/gdm-session-worker.c:1648 ../daemon/gdm-session-worker.c:1666
 #, c-format
 msgid "no user account available"
 msgstr "ez dago erabiltzailearen konturik erabilgarri"
 
-#: ../daemon/gdm-session-worker.c:1504
+#: ../daemon/gdm-session-worker.c:1693
 msgid "Unable to change to user"
 msgstr "Ezin da erabiltzailez aldatu"
 
@@ -631,6 +631,14 @@ msgstr "_Hizkuntzak:"
 msgid "_Language:"
 msgstr "_Hizkuntza:"
 
+#. translators: This brings up a dialog
+#. * with a list of languages to choose from
+#.
+#: ../gui/simple-greeter/gdm-language-option-widget.c:243
+msgctxt "language"
+msgid "Other..."
+msgstr "Bestelakoa..."
+
 #: ../gui/simple-greeter/gdm-language-option-widget.c:244
 msgid "Choose a language from the full list of available languages."
 msgstr "Hizkuntza erabilgarrien zerrenda osotik aukeratu hizkuntza."
@@ -648,6 +656,14 @@ msgstr "Teklatuen diseinuak"
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:266
 msgid "_Keyboard:"
 msgstr "_Teklatua:"
+
+#. translators: This brings up a dialog of
+#. * available keyboard layouts
+#.
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:235
+msgctxt "keyboard"
+msgid "Other..."
+msgstr "Bestelakoa..."
 
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:236
 msgid "Choose a keyboard layout from the full list of available layouts."
@@ -753,68 +769,56 @@ msgid "Icon name to use for greeter logo"
 msgstr "Ikonoaren izena ongi etorriko logotipoan erabiltzeko"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
-msgid "Include local users in Face Browser"
-msgstr "Sartu lokaleko erabiltzaileak aurpegien arakatzailean"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Recently selected keyboard layouts"
 msgstr "Hautatutako azken teklatu-diseinuak"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Recently selected languages"
 msgstr "Hautatutako azken hizkuntzak"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
 msgid "Set to a list of keyboard layouts to be shown by default at the login window."
 msgstr ""
 "Ezarri teklatu-diseinuen zerrenda lehenetsi gisa erakusteko saio-hasierako "
 "leihoan."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to a list of languages to be shown by default at the login window."
 msgstr "Ezarri hizkuntzen zerrenda lehenetsi gisa erakusteko saio-hasierako leihoan."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
-msgid "Set to a list of users not to be shown in the Face Browser."
-msgstr "Ezarri erabiltzaileen zerrenda ez erakustea aurpegien arakatzailean."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
-msgid "Set to a list of users to be shown by default in the Face Browser."
-msgstr "Ezarri erabiltzaileen zerrenda lehenetsi gisa erakustea aurpegien arakatzailean."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "Ezarri gaiaren ikonoaren izena ongi etorriko logotipoan erabiltzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
 msgid "Set to true to disable showing known users in the login window."
 msgstr ""
 "Ezarri TRUE (egia) gisa erabiltzaile ezagunak erakustea desgaitzeko saio-"
 "hasierako leihoan."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Ezarri TRUE (egia) gisa berrabiarazteko botoiak erakustea desgaitzeko saio-"
 "hasierako leihoan."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid "Set to true to enable the background settings manager plugin."
 msgstr ""
 "Ezarri TRUE (egia) gisa atzeko planoaren ezarpenen kudeatzailearen plugina "
 "gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid "Set to true to enable the media-keys settings manager plugin."
 msgstr ""
 "Ezarri TRUE (egia) gisa multimediako teklen ezarpenen kudeatzailearen "
 "plugina gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "Set to true to enable the on-screen keyboard."
 msgstr "Ezarri TRUE (egia) gisa pantailako teklatua gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
 msgid ""
 "Set to true to enable the plugin to manage the accessibility keyboard "
 "settings."
@@ -822,43 +826,39 @@ msgstr ""
 "Ezarri TRUE (egia) gisa erabilerraztasuneko teklatuaren ezarpenak kudeatzeko "
 "plugina gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to true to enable the screen magnifier."
 msgstr "Ezarri TRUE (egia) gisa pantailako lupa gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid "Set to true to enable the screen reader."
 msgstr "Ezarri TRUE (egia) gisa pantailaren irakurlea gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
 msgid "Set to true to enable the sound settings manager plugin."
 msgstr "Ezarri TRUE (egia) gisa soinuaren ezarpenen kudeatzailearen plugina gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
 msgid "Set to true to enable the xrandr settings manager plugin."
 msgstr ""
 "Ezarri TRUE (egia) gisa xrandr-ren ezarpenen kudeatzailearen plugina "
 "gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
 msgid "Set to true to enable the xsettings settings manager plugin."
 msgstr ""
 "Ezarri TRUE (egia) gisa xsettings-en ezarpenen kudeatzailearen plugina "
 "gaitzeko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
-msgid "Set to true to include system local users in Face Browser"
-msgstr "Ezarri TRUE (egia) gisa sistema lokaleko erabiltzaileak sartzeko aurpegien arakatzailean"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "Set to true to show the banner message text."
 msgstr "Ezarri true (egia) gisa harrerako mezuaren testua erakusteko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "Set to true to use compiz as the window manager."
 msgstr "Ezarri TRUE (egia) gisa compiz erabiltzeko leiho-kudeatzaile gisa."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
 msgid ""
 "Text banner message to show on the login window when the user chooser is "
 "empty, instead of banner_message_text."
@@ -866,43 +866,35 @@ msgstr ""
 "Harrerako mezuaren testua saio-hasierako leihoan erakusteko, erabiltzaile-"
 "hautatzailea hutsik dagoenean banner_message_text ordez."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "Text banner message to show on the login window."
 msgstr "Harrerako mezuaren testua saio-hasierako leihoan erakusteko."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:37
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the background settings manager plugin is enabled."
 msgstr "EGIA atzeko planoaren ezarpenen kudeatzailearen plugina gaituta badago."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:38
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr ""
 "True (egia) multimediako teklen ezarpenen kudeatzailearen plugina gaituta "
 "badago."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:39
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "True (egia) soinuaren ezarpenen kudeatzailearen plugina gaituta badago."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:40
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
 msgid "True if the xrandr settings manager plugin is enabled."
 msgstr "True (egia) xrandr-ren ezarpenen kudeatzailearen plugina gaituta badago."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:41
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:37
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "EGIA xsettings-en ezarpenen kudeatzailearen plugina gaituta badago."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:42
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:38
 msgid "Use compiz as the window manager"
 msgstr "Erabili compiz leiho-kudeatzaile gisa"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:43
-msgid "Users to exclude in the Face Browser"
-msgstr "Erabiltzaileak aurpegien arakatzailetik baztertzeko"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:44
-msgid "Users to include in the Face Browser"
-msgstr "Erabiltzaileak aurpegien arakatzailean sartzeko"
 
 #: ../gui/simple-greeter/gdm-timer.c:149
 msgid "Duration"
@@ -929,13 +921,23 @@ msgid "Whether or not the timer is currently ticking"
 msgstr "Tenporizadorea exekutatzen ari den edo ez"
 
 #
-#: ../gui/simple-greeter/gdm-user.c:247
+#: ../gui/simple-greeter/gdm-user.c:245
 msgid "Manager"
 msgstr "Kudeatzailea"
 
-#: ../gui/simple-greeter/gdm-user.c:248
+#: ../gui/simple-greeter/gdm-user.c:246
 msgid "The user manager object this user is controlled by."
 msgstr "Erabiltzaile hau kontrolatzen duen erabiltzaile-kudeatzailea."
+
+#. translators: This option prompts
+#. * the user to type in a username
+#. * manually instead of choosing from
+#. * a list.
+#.
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:164
+msgctxt "user"
+msgid "Other..."
+msgstr "Bestelakoa..."
 
 #
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:165
