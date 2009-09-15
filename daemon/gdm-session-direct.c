@@ -53,6 +53,8 @@
 #include "gdm-session-record.h"
 #include "gdm-session-worker-job.h"
 
+#define GDM_DBUS_NAME                 "org.gnome.DisplayManager"
+#define GDM_DBUS_DISPLAY_INTERFACE    "org.gnome.DisplayManager.Display"
 #define GDM_SESSION_DBUS_PATH         "/org/gnome/DisplayManager/Session"
 #define GDM_SESSION_DBUS_INTERFACE    "org.gnome.DisplayManager.Session"
 #define GDM_SESSION_DBUS_ERROR_CANCEL "org.gnome.DisplayManager.Session.Error.Cancel"
@@ -85,16 +87,18 @@ struct _GdmSessionDirectPrivate
         char                *id;
         char                *display_id;
         char                *display_name;
-        char                *display_type;
         char                *display_hostname;
         char                *display_device;
         char                *display_x11_authority_file;
         char                *display_console_session;
+        char                *display_type;
+        char                *display_seat_id;
         gboolean             display_is_local;
 
         DBusServer          *server;
         char                *server_address;
         GHashTable          *environment;
+        DBusGProxy          *display_proxy;
         DBusGConnection     *connection;
 };
 
@@ -102,13 +106,14 @@ enum {
         PROP_0,
         PROP_DISPLAY_ID,
         PROP_DISPLAY_NAME,
-        PROP_DISPLAY_TYPE,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
         PROP_DISPLAY_DEVICE,
         PROP_DISPLAY_X11_AUTHORITY_FILE,
         PROP_DISPLAY_CONSOLE_SESSION,
         PROP_USER_X11_AUTHORITY_FILE,
+        PROP_DISPLAY_TYPE,
+        PROP_DISPLAY_SEAT_ID,
 };
 
 static void     gdm_session_iface_init          (GdmSessionIface      *iface);
@@ -1301,6 +1306,7 @@ do_introspect (DBusConnection *connection,
                                "      <arg name=\"service_name\" type=\"s\"/>\n"
                                "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
                                "      <arg name=\"x11_display_type\" type=\"s\"/>\n"
+                               "      <arg name=\"x11_display_seat_id\" type=\"s\"/>\n"
                                "      <arg name=\"display_device\" type=\"s\"/>\n"
                                "      <arg name=\"hostname\" type=\"s\"/>\n"
                                "      <arg name=\"x11_authority_file\" type=\"s\"/>\n"
@@ -1309,6 +1315,7 @@ do_introspect (DBusConnection *connection,
                                "      <arg name=\"service_name\" type=\"s\"/>\n"
                                "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
                                "      <arg name=\"x11_display_type\" type=\"s\"/>\n"
+                               "      <arg name=\"x11_seat_id\" type=\"s\"/>\n"
                                "      <arg name=\"display_device\" type=\"s\"/>\n"
                                "      <arg name=\"hostname\" type=\"s\"/>\n"
                                "      <arg name=\"x11_authority_file\" type=\"s\"/>\n"
@@ -1692,6 +1699,7 @@ send_setup (GdmSessionDirect *session,
         DBusMessageIter iter;
         const char     *display_name;
         const char     *display_type;
+        const char     *display_seat_id;
         const char     *display_device;
         const char     *display_hostname;
         const char     *display_x11_authority_file;
@@ -1707,6 +1715,11 @@ send_setup (GdmSessionDirect *session,
                 display_type = session->priv->display_type;
         } else {
                 display_type = "";
+        }
+        if (session->priv->display_seat_id!= NULL) {
+                display_seat_id = session->priv->display_seat_id;
+        } else {
+                display_seat_id = "";
         }
         if (session->priv->display_hostname != NULL) {
                 display_hostname = session->priv->display_hostname;
@@ -1734,6 +1747,7 @@ send_setup (GdmSessionDirect *session,
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &service_name);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_name);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_type);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_seat_id);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_device);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_hostname);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_x11_authority_file);
@@ -1753,6 +1767,7 @@ send_setup_for_user (GdmSessionDirect *session,
         DBusMessageIter iter;
         const char     *display_name;
         const char     *display_type;
+        const char     *display_seat_id;
         const char     *display_device;
         const char     *display_hostname;
         const char     *display_x11_authority_file;
@@ -1769,6 +1784,11 @@ send_setup_for_user (GdmSessionDirect *session,
                 display_type = session->priv->display_type;
         } else {
                 display_type = "";
+        }
+        if (session->priv->display_seat_id != NULL) {
+                display_seat_id = session->priv->display_seat_id;
+        } else {
+                display_seat_id = "";
         }
         if (session->priv->display_hostname != NULL) {
                 display_hostname = session->priv->display_hostname;
@@ -1801,6 +1821,7 @@ send_setup_for_user (GdmSessionDirect *session,
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &service_name);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_name);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_type);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_seat_id);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_device);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_hostname);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_x11_authority_file);
@@ -2206,14 +2227,6 @@ _gdm_session_direct_set_display_name (GdmSessionDirect *session,
 }
 
 static void
-_gdm_session_direct_set_display_type (GdmSessionDirect *session,
-                                      const char       *type)
-{
-        g_free (session->priv->display_type);
-        session->priv->display_type = g_strdup (type);
-}
-
-static void
 _gdm_session_direct_set_display_hostname (GdmSessionDirect *session,
                                           const char       *name)
 {
@@ -2244,6 +2257,22 @@ _gdm_session_direct_set_display_x11_authority_file (GdmSessionDirect *session,
 {
         g_free (session->priv->display_x11_authority_file);
         session->priv->display_x11_authority_file = g_strdup (name);
+}
+
+static void
+_gdm_session_direct_set_display_type (GdmSessionDirect *session,
+                                      const char       *type)
+{
+        g_free (session->priv->display_type);
+        session->priv->display_type = g_strdup (type);
+}
+
+static void
+_gdm_session_direct_set_display_seat_id (GdmSessionDirect *session,
+                                         const char       *sid)
+{
+        g_free (session->priv->display_seat_id);
+        session->priv->display_seat_id = g_strdup (sid);
 }
 
 static void
@@ -2278,9 +2307,6 @@ gdm_session_direct_set_property (GObject      *object,
         case PROP_DISPLAY_NAME:
                 _gdm_session_direct_set_display_name (self, g_value_get_string (value));
                 break;
-        case PROP_DISPLAY_TYPE:
-                _gdm_session_direct_set_display_type (self, g_value_get_string (value));
-                break;
         case PROP_DISPLAY_HOSTNAME:
                 _gdm_session_direct_set_display_hostname (self, g_value_get_string (value));
                 break;
@@ -2298,6 +2324,12 @@ gdm_session_direct_set_property (GObject      *object,
                 break;
         case PROP_DISPLAY_IS_LOCAL:
                 _gdm_session_direct_set_display_is_local (self, g_value_get_boolean (value));
+                break;
+        case PROP_DISPLAY_TYPE:
+                _gdm_session_direct_set_display_type (self, g_value_get_string (value));
+                break;
+        case PROP_DISPLAY_SEAT_ID:
+                _gdm_session_direct_set_display_seat_id (self, g_value_get_string (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2322,9 +2354,6 @@ gdm_session_direct_get_property (GObject    *object,
         case PROP_DISPLAY_NAME:
                 g_value_set_string (value, self->priv->display_name);
                 break;
-        case PROP_DISPLAY_TYPE:
-                g_value_set_string (value, self->priv->display_type);
-                break;
         case PROP_DISPLAY_HOSTNAME:
                 g_value_set_string (value, self->priv->display_hostname);
                 break;
@@ -2342,6 +2371,12 @@ gdm_session_direct_get_property (GObject    *object,
                 break;
         case PROP_DISPLAY_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->display_is_local);
+                break;
+        case PROP_DISPLAY_TYPE:
+                g_value_set_string (value, self->priv->display_type);
+                break;
+        case PROP_DISPLAY_SEAT_ID:
+                g_value_set_string (value, self->priv->display_seat_id);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2366,9 +2401,6 @@ gdm_session_direct_dispose (GObject *object)
         g_free (session->priv->display_name);
         session->priv->display_name = NULL;
 
-        g_free (session->priv->display_type);
-        session->priv->display_type = NULL;
-
         g_free (session->priv->display_hostname);
         session->priv->display_hostname = NULL;
 
@@ -2381,6 +2413,12 @@ gdm_session_direct_dispose (GObject *object)
         g_free (session->priv->server_address);
         session->priv->server_address = NULL;
 
+        g_free (session->priv->display_type);
+        session->priv->display_type = NULL;
+
+        g_free (session->priv->display_seat_id);
+        session->priv->display_seat_id = NULL;
+
         if (session->priv->server != NULL) {
                 dbus_server_disconnect (session->priv->server);
                 dbus_server_unref (session->priv->server);
@@ -2391,6 +2429,11 @@ gdm_session_direct_dispose (GObject *object)
                 g_hash_table_destroy (session->priv->environment);
                 session->priv->environment = NULL;
         }
+
+        if (session->priv->display_proxy != NULL) {
+                g_object_unref (session->priv->display_proxy);
+        }
+
 
         G_OBJECT_CLASS (gdm_session_direct_parent_class)->dispose (object);
 }
@@ -2521,13 +2564,6 @@ gdm_session_direct_class_init (GdmSessionDirectClass *session_class)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
-                                         PROP_DISPLAY_TYPE,
-                                         g_param_spec_string ("display-type",
-                                                              "display type",
-                                                              "display type",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-        g_object_class_install_property (object_class,
                                          PROP_DISPLAY_HOSTNAME,
                                          g_param_spec_string ("display-hostname",
                                                               "display hostname",
@@ -2571,15 +2607,143 @@ gdm_session_direct_class_init (GdmSessionDirectClass *session_class)
                                                               "display device",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_TYPE,
+                                         g_param_spec_string ("display-type",
+                                                              "display type",
+                                                              "display type",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_SEAT_ID,
+                                         g_param_spec_string ("seat-id",
+                                                              "seat id",
+                                                              "seat id",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
 
         dbus_g_object_type_install_info (GDM_TYPE_SESSION_DIRECT, &dbus_glib_gdm_session_direct_object_info);
 }
 
+static void
+display_proxy_destroyed_cb (DBusGProxy       *display_proxy,
+                            GdmSessionDirect *session)
+{
+        g_debug ("GdmSessionDirect: Disconnected from display");
+
+        session->priv->display_proxy = NULL;
+}
+
+static gboolean
+init_display_data (GdmSessionDirect *session)
+{
+        gboolean    res;
+        char       *id;
+        GError     *error;
+
+        g_assert (session->priv->display_proxy == NULL);
+
+        error = NULL; 
+        session->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (session->priv->connection == NULL) {
+                if (error != NULL) {
+                        g_critical ("error getting system bus: %s", error->message);
+                        g_error_free (error);
+                }
+                exit (1);
+        }
+
+        error = NULL;
+        session->priv->display_proxy = dbus_g_proxy_new_for_name_owner (
+                                                 session->priv->connection,
+                                                 GDM_DBUS_NAME,
+                                                 session->priv->display_id,
+                                                 GDM_DBUS_DISPLAY_INTERFACE,
+                                                 &error);
+
+        g_signal_connect (session->priv->display_proxy,
+                          "destroy",
+                          G_CALLBACK (display_proxy_destroyed_cb),
+                          session);
+
+        if (session->priv->display_proxy == NULL) {
+                if (error != NULL) {
+                        g_warning ("Failed to create display proxy %s: %s", session->priv->display_id, error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Unable to create display proxy");
+                }
+                return FALSE;
+        }
+
+        /* Make sure display ID works */
+        error = NULL;
+        res = dbus_g_proxy_call (session->priv->display_proxy,
+                                 "GetId",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 DBUS_TYPE_G_OBJECT_PATH, &id,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get display id %s: %s", session->priv->display_id, error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get display id %s", session->priv->display_id);
+                }
+
+                return FALSE;
+        }
+
+        if (strcmp (id, session->priv->display_id) != 0) {
+                g_critical ("Display ID doesn't match");
+                exit (1);
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (session->priv->display_proxy,
+                                 "GetX11DisplayType",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &session->priv->display_type,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get value: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get value");
+                }
+        
+                return FALSE;    
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (session->priv->display_proxy,
+                                 "GetSeatId",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &session->priv->display_seat_id,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get value: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get value");
+                }
+
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
+
 GdmSessionDirect *
 gdm_session_direct_new (const char *display_id,
                         const char *display_name,
-                        const char *display_type,
                         const char *display_hostname,
                         const char *display_device,
                         const char *display_x11_authority_file,
@@ -2590,12 +2754,13 @@ gdm_session_direct_new (const char *display_id,
         session = g_object_new (GDM_TYPE_SESSION_DIRECT,
                                 "display-id", display_id,
                                 "display-name", display_name,
-                                "display-type", display_type,
                                 "display-hostname", display_hostname,
                                 "display-device", display_device,
                                 "display-x11-authority-file", display_x11_authority_file,
                                 "display-is-local", display_is_local,
                                 NULL);
+
+        init_display_data (session);
 
         return session;
 }

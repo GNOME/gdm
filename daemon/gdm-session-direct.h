@@ -50,7 +50,6 @@ GType              gdm_session_direct_get_type                 (void);
 
 GdmSessionDirect * gdm_session_direct_new                      (const char *display_id,
                                                                 const char *display_name,
-                                                                const char *display_type,
                                                                 const char *display_hostname,
                                                                 const char *display_device,
                                                                 const char *display_x11_authority_file,

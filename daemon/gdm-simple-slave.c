@@ -588,7 +588,6 @@ create_new_session (GdmSimpleSlave *slave)
         gboolean       display_is_local;
         char          *display_id;
         char          *display_name;
-        char          *display_type;
         char          *display_hostname;
         char          *display_device;
         char          *display_x11_authority_file;
@@ -598,7 +597,6 @@ create_new_session (GdmSimpleSlave *slave)
         g_object_get (slave,
                       "display-id", &display_id,
                       "display-name", &display_name,
-                      "display-type", &display_type,
                       "display-hostname", &display_hostname,
                       "display-is-local", &display_is_local,
                       "display-x11-authority-file", &display_x11_authority_file,
@@ -611,7 +609,6 @@ create_new_session (GdmSimpleSlave *slave)
 
         slave->priv->session = gdm_session_direct_new (display_id,
                                                        display_name,
-                                                       display_type,
                                                        display_hostname,
                                                        display_device,
                                                        display_x11_authority_file,
@@ -620,6 +617,7 @@ create_new_session (GdmSimpleSlave *slave)
         g_free (display_name);
         g_free (display_device);
         g_free (display_hostname);
+        g_free (display_x11_authority_file);
 
         g_signal_connect (slave->priv->session,
                           "opened",
