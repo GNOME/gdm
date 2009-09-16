@@ -11,20 +11,19 @@
 # Petr Tomeš <ptomes@gmail.com>, 2006.
 # Jakub Friedl <jfriedl@suse.cz>, 2007.
 # Petr Kovar <pknbe@volny.cz>, 2008, 2009.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-08 18:22+0100\n"
-"PO-Revision-Date: 2009-03-08 18:21+0100\n"
+"POT-Creation-Date: 2009-09-16 22:17+0200\n"
+"PO-Revision-Date: 2009-09-16 22:16+0200\n"
 "Last-Translator: Petr Kovar <pknbe@volny.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.0\n"
 
 #: ../common/gdm-common.c:437
 #, c-format
@@ -33,26 +32,26 @@ msgstr "/dev/urandom není znakovým zobrazovačem"
 
 #: ../daemon/factory-slave-main.c:170 ../daemon/main.c:516
 #: ../daemon/product-slave-main.c:174 ../daemon/session-worker-main.c:137
-#: ../daemon/simple-slave-main.c:176 ../daemon/xdmcp-chooser-slave-main.c:176
+#: ../daemon/simple-slave-main.c:179 ../daemon/xdmcp-chooser-slave-main.c:179
 msgid "Enable debugging code"
 msgstr "Povolit ladicí kód"
 
 #: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:177
+#: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
 msgid "Display ID"
 msgstr "ID displeje"
 
 #: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:177
+#: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
 msgid "id"
 msgstr "id"
 
 #: ../daemon/factory-slave-main.c:183 ../daemon/product-slave-main.c:187
-#: ../daemon/simple-slave-main.c:189 ../daemon/xdmcp-chooser-slave-main.c:189
+#: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:192
 msgid "GNOME Display Manager Slave"
 msgstr "Pomocný správce displeje GNOME"
 
-#: ../daemon/gdm-display-access-file.c:271
+#: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "v systému nelze najít uživatele \"%s\""
@@ -69,12 +68,12 @@ msgstr "Nelze ověřit uživatele"
 msgid "Unable to authorize user"
 msgstr "Nelze potvrdit uživatele"
 
-#: ../daemon/gdm-factory-slave.c:281
+#: ../daemon/gdm-factory-slave.c:281 ../daemon/gdm-simple-slave.c:432
 msgid "Unable to establish credentials"
 msgstr "Nelze vytvořit pověření"
 
 #: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1105
+#: ../daemon/gdm-simple-slave.c:1111
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -160,77 +159,68 @@ msgstr "Zařízení displeje"
 msgid "The display device"
 msgstr "Zařízení displeje"
 
-#: ../daemon/gdm-session-direct.c:1574 ../daemon/gdm-session-direct.c:1592
-#, c-format
-msgid "worker exited with status %d"
-msgstr "worker skončil se stavem %d"
-
-#: ../daemon/gdm-session-worker.c:1075
+#: ../daemon/gdm-session-worker.c:1293
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "chyba při spouštění komunikace s ověřovacím systémem - %s"
 
-#: ../daemon/gdm-session-worker.c:1076
+#: ../daemon/gdm-session-worker.c:1294
 msgid "general failure"
 msgstr "obecné selhání"
 
-#: ../daemon/gdm-session-worker.c:1077
+#: ../daemon/gdm-session-worker.c:1295
 msgid "out of memory"
 msgstr "nedostatek paměti"
 
-#: ../daemon/gdm-session-worker.c:1078
+#: ../daemon/gdm-session-worker.c:1296
 msgid "application programmer error"
 msgstr "aplikační chyba programátora"
 
-#: ../daemon/gdm-session-worker.c:1079
+#: ../daemon/gdm-session-worker.c:1297
 msgid "unknown error"
 msgstr "neznámá chyba"
 
-#: ../daemon/gdm-session-worker.c:1086
+#: ../daemon/gdm-session-worker.c:1304
 msgid "Username:"
 msgstr "Uživatel:"
 
-#: ../daemon/gdm-session-worker.c:1092
+#: ../daemon/gdm-session-worker.c:1310
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "chyba při informování ověřovacího systému o preferovaném dotazu na "
 "uživatelské jméno - %s"
 
-#: ../daemon/gdm-session-worker.c:1106
+#: ../daemon/gdm-session-worker.c:1324
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 "chyba při informování ověřovacího systému o názvu počítače uživatele - %s"
 
-#: ../daemon/gdm-session-worker.c:1121
+#: ../daemon/gdm-session-worker.c:1339
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr "chyba př informování ověřovacího systému o uživatelově konzole - %s"
 
-#: ../daemon/gdm-session-worker.c:1134
+#: ../daemon/gdm-session-worker.c:1352
 #, c-format
 msgid "error informing authentication system of display string - %s"
 msgstr "chyba při informování ověřovacího systému o řetězci displeje - %s"
 
-#: ../daemon/gdm-session-worker.c:1149
+#: ../daemon/gdm-session-worker.c:1367
 #, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
 msgstr ""
 "chyba při informování ověřovacího systému o pověření xauth displeje - %s"
 
-#: ../daemon/gdm-session-worker.c:1429 ../daemon/gdm-session-worker.c:1447
+#: ../daemon/gdm-session-worker.c:1648 ../daemon/gdm-session-worker.c:1666
 #, c-format
 msgid "no user account available"
 msgstr "není dostupný žádný uživatelský účet"
 
-#: ../daemon/gdm-session-worker.c:1474
+#: ../daemon/gdm-session-worker.c:1693
 msgid "Unable to change to user"
 msgstr "Nelze změnit uživatele"
-
-#: ../daemon/gdm-simple-slave.c:429
-msgid "Unable establish credentials"
-msgstr "Nelze vytvořit pověření"
 
 #: ../daemon/gdm-welcome-session.c:426
 #, c-format
@@ -246,135 +236,135 @@ msgstr "Skupina %s neexistuje"
 msgid "Could not create socket!"
 msgstr "Nelze vytvořit socket!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:860
+#: ../daemon/gdm-xdmcp-display-factory.c:862
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Dotaz protokolem XDMCP odepřen počítačem %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1017
-#: ../daemon/gdm-xdmcp-display-factory.c:1238
+#: ../daemon/gdm-xdmcp-display-factory.c:1019
+#: ../daemon/gdm-xdmcp-display-factory.c:1240
 msgid "Could not extract authlist from packet"
 msgstr "Nelze získat authlist z paketu"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1030
-#: ../daemon/gdm-xdmcp-display-factory.c:1253
+#: ../daemon/gdm-xdmcp-display-factory.c:1032
+#: ../daemon/gdm-xdmcp-display-factory.c:1255
 msgid "Error in checksum"
 msgstr "Chyba v kontrolním součtu"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1504
+#: ../daemon/gdm-xdmcp-display-factory.c:1506
 msgid "Bad address"
 msgstr "Chybná adresa"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1585
+#: ../daemon/gdm-xdmcp-display-factory.c:1587
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: Nelze přečíst adresu displeje"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1593
+#: ../daemon/gdm-xdmcp-display-factory.c:1595
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s: Nelze přečíst číslo portu displeje"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1602
+#: ../daemon/gdm-xdmcp-display-factory.c:1604
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s: Nelze získat authlist z paketu"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1622
+#: ../daemon/gdm-xdmcp-display-factory.c:1624
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: Chyba v kontrolním součtu"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2131
+#: ../daemon/gdm-xdmcp-display-factory.c:2133
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Obdrženo REQUEST ze zakázaného počítače %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2141
-#: ../daemon/gdm-xdmcp-display-factory.c:2496
-#: ../daemon/gdm-xdmcp-display-factory.c:2748
+#: ../daemon/gdm-xdmcp-display-factory.c:2143
+#: ../daemon/gdm-xdmcp-display-factory.c:2498
+#: ../daemon/gdm-xdmcp-display-factory.c:2750
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Nelze přečíst Display Number"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2148
+#: ../daemon/gdm-xdmcp-display-factory.c:2150
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Nelze přečíst Connection Type"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2155
+#: ../daemon/gdm-xdmcp-display-factory.c:2157
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Nelze přečíst Client Address"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2163
+#: ../daemon/gdm-xdmcp-display-factory.c:2165
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Nelze přečíst Authentication Names"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2172
+#: ../daemon/gdm-xdmcp-display-factory.c:2174
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Nelze přečíst Authentication Data"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2182
+#: ../daemon/gdm-xdmcp-display-factory.c:2184
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Nelze přečíst Authorization List"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2201
+#: ../daemon/gdm-xdmcp-display-factory.c:2203
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Nelze přečíst Manufacturer ID"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2228
+#: ../daemon/gdm-xdmcp-display-factory.c:2230
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Chybný kontrolní součet od %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2480
+#: ../daemon/gdm-xdmcp-display-factory.c:2482
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Obdrženo Manage od zakázaného počítače %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2489
-#: ../daemon/gdm-xdmcp-display-factory.c:2755
+#: ../daemon/gdm-xdmcp-display-factory.c:2491
+#: ../daemon/gdm-xdmcp-display-factory.c:2757
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Nelze přečíst Session ID"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2503
+#: ../daemon/gdm-xdmcp-display-factory.c:2505
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Nelze přečíst Display Class"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2608
-#: ../daemon/gdm-xdmcp-display-factory.c:2658
-#: ../daemon/gdm-xdmcp-display-factory.c:2664
+#: ../daemon/gdm-xdmcp-display-factory.c:2610
+#: ../daemon/gdm-xdmcp-display-factory.c:2660
+#: ../daemon/gdm-xdmcp-display-factory.c:2666
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Nelze přečíst adresu"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2738
+#: ../daemon/gdm-xdmcp-display-factory.c:2740
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Obdrženo KEEPALIVE od zakázaného počítače %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2827
+#: ../daemon/gdm-xdmcp-display-factory.c:2829
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory: Nelze přečíst záhlaví XDMCP!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2833
+#: ../daemon/gdm-xdmcp-display-factory.c:2835
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XMDCP: Nesprávná verze XDMCP!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2839
+#: ../daemon/gdm-xdmcp-display-factory.c:2841
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
 msgid "XMDCP: Unable to parse address"
 msgstr "XMDCP: Nelze analyzovat adresu"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3284
+#: ../daemon/gdm-xdmcp-display-factory.c:3286
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Nelze získat název serveru: %s!"
@@ -457,7 +447,7 @@ msgid "AT SPI Registry Wrapper"
 msgstr "Objekt registru AT SPI"
 
 #: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1921
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1767
 msgid "Login Window"
 msgstr "Přihlašovací okno"
 
@@ -501,13 +491,17 @@ msgstr "Čtení obrazovky Orca"
 msgid "Present on-screen information as speech or braille"
 msgstr "Zprostředkovat informace na obrazovce řečí nebo Braillovým písmem"
 
+#: ../data/greeter-autostart/polkit-gnome-authentication-agent-1.desktop.in.h:1
+msgid "PolicyKit Authentication Agent"
+msgstr "Ověřovací agent PolicyKit"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:148
 msgid "Select System"
 msgstr "Vybrat systém"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:214
-msgid "XMCP: Could not create XDMCP buffer!"
-msgstr "XMCP: Nelze vytvořit vyrovnávací paměť XDMCP!"
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP: Nelze vytvořit vyrovnávací paměť XDMCP!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:220
 msgid "XDMCP: Could not read XDMCP header!"
@@ -521,22 +515,30 @@ msgstr "Hodnota"
 msgid "percentage of time complete"
 msgstr "procent z času dokončení"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1306
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1325
 msgid "Inactive Text"
 msgstr "Neaktivní text"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1307
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1326
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr ""
 "Text, který se má použít v popisku, pokud uživatel dosud nevybral položku"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1315
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1334
 msgid "Active Text"
 msgstr "Aktivní text"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1316
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1335
 msgid "The text to use in the label if the user has picked an item"
 msgstr "Text, který se má použít v popisku, pokud uživatel vybral položku"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1344
+msgid "List Visible"
+msgstr "Seznam je viditelný"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1345
+msgid "Whether or not the chooser list is visible"
+msgstr "Zda je seznam výběru viditelný či nikoliv"
 
 #: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M:%S %p"
@@ -564,37 +566,16 @@ msgstr "%a, %e. %B"
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:288
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:291
 msgid "Automatically logging in..."
 msgstr "Automatické přihlašování..."
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:718
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:758
 msgid "Cancelling..."
 msgstr "Probíhá zrušení..."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1187
-msgid "Failed to restart computer"
-msgstr "Nezdařilo se restartovat počítač"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1190
-msgid ""
-"You are not allowed to restart the computer because multiple users are "
-"logged in"
-msgstr ""
-"Restartovat počítač vám není umožněno, jelikož je přihlášeno více uživatelů"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1271
-msgid "Failed to stop computer"
-msgstr "Nezdařilo se zastavit počítač"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1274
-msgid ""
-"You are not allowed to stop the computer because multiple users are logged in"
-msgstr ""
-"Zastavit počítač vám není umožněno, jelikož je přihlášeno více uživatelů"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1358
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1185
 msgid "Select language and click Log In"
 msgstr "Zvolte prosím jazyk a klikněte na Přihlásit se"
 
@@ -626,11 +607,7 @@ msgstr "Uspat"
 msgid "Version"
 msgstr "Verze"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
-msgid "page 5"
-msgstr "strana 5"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:554
+#: ../gui/simple-greeter/gdm-greeter-panel.c:583
 msgid "Panel"
 msgstr "Panel"
 
@@ -643,23 +620,23 @@ msgid "_Languages:"
 msgstr "_Jazyky:"
 
 #: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
-#: ../gui/simple-greeter/gdm-language-option-widget.c:262
+#: ../gui/simple-greeter/gdm-language-option-widget.c:274
 msgid "_Language:"
 msgstr "_Jazyk:"
 
 #. translators: This brings up a dialog
 #. * with a list of languages to choose from
 #.
-#: ../gui/simple-greeter/gdm-language-option-widget.c:231
+#: ../gui/simple-greeter/gdm-language-option-widget.c:243
 msgctxt "language"
 msgid "Other..."
 msgstr "Ostatní..."
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:232
+#: ../gui/simple-greeter/gdm-language-option-widget.c:244
 msgid "Choose a language from the full list of available languages."
 msgstr "Vyberte jazyk z úplného seznamu dostupných jazyků."
 
-#: ../gui/simple-greeter/gdm-languages.c:610
+#: ../gui/simple-greeter/gdm-languages.c:609
 msgid "Unspecified"
 msgstr "Neurčeno"
 
@@ -669,43 +646,43 @@ msgstr "Rozložení klávesnice"
 
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:200
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:201
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:254
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:266
 msgid "_Keyboard:"
 msgstr "_Klávesnice:"
 
 #. translators: This brings up a dialog of
 #. * available keyboard layouts
 #.
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:223
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:235
 msgctxt "keyboard"
 msgid "Other..."
 msgstr "Ostatní..."
 
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:224
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:236
 msgid "Choose a keyboard layout from the full list of available layouts."
 msgstr "Vyberte klávesnici z úplného seznamu dostupných rozložení."
 
-#: ../gui/simple-greeter/gdm-option-widget.c:494
+#: ../gui/simple-greeter/gdm-option-widget.c:521
 msgid "Label Text"
 msgstr "Text popisku"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:495
+#: ../gui/simple-greeter/gdm-option-widget.c:522
 msgid "The text to use as a label"
 msgstr "Text, který se má použít jako popisek"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:502
+#: ../gui/simple-greeter/gdm-option-widget.c:529
 msgid "Icon name"
 msgstr "Název ikony"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:503
+#: ../gui/simple-greeter/gdm-option-widget.c:530
 msgid "The icon to use with the label"
 msgstr "Ikona, která se má použít s popiskem"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:511
+#: ../gui/simple-greeter/gdm-option-widget.c:538
 msgid "Default Item"
 msgstr "Výchozí položka"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:512
+#: ../gui/simple-greeter/gdm-option-widget.c:539
 msgid "The id of the default item"
 msgstr "ID výchozí položky"
 
@@ -717,17 +694,17 @@ msgstr "Maximální počet položek"
 msgid "The maximum number of items to keep around in the list"
 msgstr "Maximum položek, které se má ponechat v seznamu"
 
-#: ../gui/simple-greeter/gdm-remote-login-window.c:224
+#: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
 msgid "Remote Login (Connecting to %s...)"
 msgstr "Vzdálené přihlášení (připojování k %s...)"
 
-#: ../gui/simple-greeter/gdm-remote-login-window.c:238
+#: ../gui/simple-greeter/gdm-remote-login-window.c:202
 #, c-format
 msgid "Remote Login (Connected to %s)"
 msgstr "Vzdálené přihlášení (připojeno k %s)"
 
-#: ../gui/simple-greeter/gdm-remote-login-window.c:317
+#: ../gui/simple-greeter/gdm-remote-login-window.c:281
 msgid "Remote Login"
 msgstr "Vzdálené přihlášení"
 
@@ -740,168 +717,180 @@ msgid "Banner message text"
 msgstr "Text nápisu"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
+msgid "Banner message text when chooser is empty"
+msgstr "Text nápisu při prázdném výběru"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
 msgid "Disable showing the restart buttons"
 msgstr "Vypnout zobrazování tlačítek restartu"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
 msgid "Do not show known users in the login window"
 msgstr "Nezobrazovat v okně přihlášení známé uživatele"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
 msgid "Enable accessibility keyboard plugin"
 msgstr "Povolit zásuvný modul zpřístupnění klávesnice"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
 msgid "Enable debugging"
 msgstr "Povolit ladění"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
 msgid "Enable debugging mode for the greeter."
 msgstr "Povolit ladicí režim u uvítacího programu."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Enable on-screen keyboard"
 msgstr "Povolit klávesnici na obrazovce"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
 msgid "Enable screen magnifier"
 msgstr "Povolit lupu obrazovky"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
 msgid "Enable screen reader"
 msgstr "Povolit čtení obrazovky"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "Enable showing the banner message"
 msgstr "Povolit zobrazování nápisu"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Icon name to use for greeter logo"
 msgstr "Název ikony, který se má použít u loga uvítacího programu"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid "Recently selected keyboard layouts"
 msgstr "Naposledy zvolená rozložení klávesnice"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Recently selected languages"
 msgstr "Naposledy zvolené jazyky"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-msgid "Set to TRUE to disable showing known users in the login window."
-msgstr ""
-"Nastavte na \"TRUE\", chcete-li vypnout zobrazování uživatelů v okně "
-"přihlášení."
-
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
-msgid "Set to TRUE to disable showing the restart buttons in the login window."
-msgstr ""
-"Nastavte na \"TRUE\", má-li být vypnuto zobrazování tlačítek restartu v okně "
-"přihlášení."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
-msgid "Set to True to enable the background settings manager plugin."
-msgstr ""
-"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení "
-"pozadí."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
-msgid "Set to True to enable the media-keys settings manager plugin."
-msgstr ""
-"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení "
-"mediálních kláves."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
-msgid "Set to True to enable the on-screen keyboard."
-msgstr "Nastavte na \"true\", má-li být zapnuta klávesnice na obrazovce."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
-msgid ""
-"Set to True to enable the plugin to manage the accessibility keyboard "
-"settings."
-msgstr ""
-"Nastavte na \"true\", má-li být zapnut zásuvný modul na správu nastavení "
-"zpřístupnění klávesnice."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
-msgid "Set to True to enable the screen magnifier."
-msgstr "Nastavte na \"true\", má-li být zapnuta lupa obrazovky."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
-msgid "Set to True to enable the screen reader."
-msgstr "Nastavte na \"true\", má-li být zapnuto čtení obrazovky."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
-msgid "Set to True to enable the sound settings manager plugin."
-msgstr ""
-"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení zvuku."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
-msgid "Set to True to enable the xrandr settings manager plugin."
-msgstr ""
-"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení "
-"xrandr."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
-msgid "Set to True to enable the xsettings settings manager plugin."
-msgstr ""
-"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení "
-"xsettings."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid ""
 "Set to a list of keyboard layouts to be shown by default at the login window."
 msgstr ""
 "Nastavte na seznam rozložení klávesnice, které mají být ve výchozím stavu "
 "zobrazovány v okně přihlášení."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to a list of languages to be shown by default at the login window."
 msgstr ""
 "Nastavte na seznam jazyků, které mají být ve výchozím stavu zobrazovány v "
 "okně přihlášení."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr ""
 "Nastavte na název ikony opatřené motivem, která má být použita v logu "
 "uvítacího programu."
 
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+msgid "Set to true to disable showing known users in the login window."
+msgstr ""
+"Nastavte na \"true\", chcete-li vypnout zobrazování známých uživatelů v okně "
+"přihlášení."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+msgid "Set to true to disable showing the restart buttons in the login window."
+msgstr ""
+"Nastavte na \"true\", má-li být vypnuto zobrazování tlačítek restartu v okně "
+"přihlášení."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+msgid "Set to true to enable the background settings manager plugin."
+msgstr ""
+"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení "
+"pozadí."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+msgid "Set to true to enable the media-keys settings manager plugin."
+msgstr ""
+"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení "
+"mediálních kláves."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+msgid "Set to true to enable the on-screen keyboard."
+msgstr "Nastavte na \"true\", má-li být zapnuta klávesnice na obrazovce."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+msgid ""
+"Set to true to enable the plugin to manage the accessibility keyboard "
+"settings."
+msgstr ""
+"Nastavte na \"true\", má-li být zapnut zásuvný modul na správu nastavení "
+"zpřístupnění klávesnice."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+msgid "Set to true to enable the screen magnifier."
+msgstr "Nastavte na \"true\", má-li být zapnuta lupa obrazovky."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+msgid "Set to true to enable the screen reader."
+msgstr "Nastavte na \"true\", má-li být zapnuto čtení obrazovky."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+msgid "Set to true to enable the sound settings manager plugin."
+msgstr ""
+"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení zvuku."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+msgid "Set to true to enable the xrandr settings manager plugin."
+msgstr ""
+"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení "
+"xrandr."
+
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+msgid "Set to true to enable the xsettings settings manager plugin."
+msgstr ""
+"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení "
+"xsettings."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "Set to true to show the banner message text."
 msgstr "Nastavte na \"true\", má-li být zobrazen text nápisu."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "Set to true to use compiz as the window manager."
 msgstr "Nastavte na \"true\", má-li být použit compiz jako správce oken."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+msgid ""
+"Text banner message to show on the login window when the user chooser is "
+"empty, instead of banner_message_text."
+msgstr ""
+"Text nápisu, který se má zobrazovat v okně přihlášení při prázdném výběru "
+"uživatelů, namísto banner_message_text."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "Text banner message to show on the login window."
 msgstr "Text nápisu, který se má zobrazovat v okně přihlášení."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the background settings manager plugin is enabled."
 msgstr "\"True\", je-li zásuvný modul správce nastavení pozadí povolen."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr ""
 "\"True\", je-li zásuvný modul správce nastavení multimediálních kláves "
 "povolen."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "\"True\", je-li zásuvný modul správce nastavení zvuku povolen."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
 msgid "True if the xrandr settings manager plugin is enabled."
 msgstr "\"True\", je-li zásuvný modul správce nastavení xrandr povolen."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:37
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "\"True\", je-li zásuvný modul správce nastavení xsettings povolen."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:38
 msgid "Use compiz as the window manager"
 msgstr "Použít compiz jako správce oken"
 
@@ -929,11 +918,11 @@ msgstr "Běží?"
 msgid "Whether or not the timer is currently ticking"
 msgstr "Zda časovač právě běží či neběží"
 
-#: ../gui/simple-greeter/gdm-user.c:241
+#: ../gui/simple-greeter/gdm-user.c:245
 msgid "Manager"
 msgstr "Správce"
 
-#: ../gui/simple-greeter/gdm-user.c:242
+#: ../gui/simple-greeter/gdm-user.c:246
 msgid "The user manager object this user is controlled by."
 msgstr "Objekt správce uživatele, kterým je tento uživatel ovládán."
 
@@ -942,41 +931,41 @@ msgstr "Objekt správce uživatele, kterým je tento uživatel ovládán."
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:136
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:164
 msgctxt "user"
 msgid "Other..."
 msgstr "Ostatní..."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:137
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:165
 msgid "Choose a different account"
 msgstr "Vybrat jiný účet"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:149
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:177
 msgid "Guest"
 msgstr "Host"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:150
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:178
 msgid "Login as a temporary guest"
 msgstr "Přihlásit se jako dočasný host"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:162
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:191
 msgid "Automatic Login"
 msgstr "Automatické přihlášení"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:163
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:192
 msgid "Automatically login to the system after selecting options"
 msgstr "Automaticky přihlásit k systému po vybrání voleb"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:354
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:383
 #, c-format
 msgid "Log in as %s"
 msgstr "Přihlásit se jako %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:699
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:737
 msgid "Currently logged in"
 msgstr "Aktuálně přihlášen"
 
-#: ../gui/user-switch-applet/applet.c:158
+#: ../gui/user-switch-applet/applet.c:162
 msgid ""
 "The User Switch Applet is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -988,7 +977,7 @@ msgstr ""
 "Software Foundation; a to buď verze 2 této licence anebo (podle vlastního "
 "uvážení) kterékoliv pozdější verze."
 
-#: ../gui/user-switch-applet/applet.c:162
+#: ../gui/user-switch-applet/applet.c:166
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -999,7 +988,7 @@ msgstr ""
 "ZÁRUKY; neposkytují se ani odvozené záruky PRODEJNOSTI anebo VHODNOSTI PRO "
 "URČITÝ ÚČEL. Další podrobnosti hledejte v GNU General Public License."
 
-#: ../gui/user-switch-applet/applet.c:166
+#: ../gui/user-switch-applet/applet.c:170
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "this program; if not, write to the Free Software Foundation, Inc., 51 "
@@ -1009,11 +998,11 @@ msgstr ""
 "programem; pokud se tak nestalo, napište o ni Free Software Foundation, "
 "Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 
-#: ../gui/user-switch-applet/applet.c:180
+#: ../gui/user-switch-applet/applet.c:184
 msgid "A menu to quickly switch between users."
 msgstr "Nabídka rychlého přepínání mezi uživateli."
 
-#: ../gui/user-switch-applet/applet.c:184
+#: ../gui/user-switch-applet/applet.c:188
 msgid "translator-credits"
 msgstr ""
 "George Lebl <jirka@5z.com>\n"
@@ -1024,69 +1013,69 @@ msgstr ""
 "Jakub Friedl <jfriedl@suse.cz>\n"
 "Petr Kovář <pknbe@volny.cz>"
 
-#: ../gui/user-switch-applet/applet.c:641
-#: ../gui/user-switch-applet/applet.c:776
-#: ../gui/user-switch-applet/applet.c:815
+#: ../gui/user-switch-applet/applet.c:647
+#: ../gui/user-switch-applet/applet.c:784
+#: ../gui/user-switch-applet/applet.c:823
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "Nelze uzamknout obrazovku: %s"
 
-#: ../gui/user-switch-applet/applet.c:663
+#: ../gui/user-switch-applet/applet.c:669
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "Šetřič obrazovky nelze dočasně nastavit na prázdnou obrazovku: %s"
 
-#: ../gui/user-switch-applet/applet.c:874
+#: ../gui/user-switch-applet/applet.c:882
 #, c-format
 msgid "Can't logout: %s"
 msgstr "Nelze se odhlásit: %s"
 
-#: ../gui/user-switch-applet/applet.c:957
+#: ../gui/user-switch-applet/applet.c:966
 msgid "Available"
 msgstr "Přítomen"
 
-#: ../gui/user-switch-applet/applet.c:958
+#: ../gui/user-switch-applet/applet.c:967
 msgid "Invisible"
 msgstr "Neviditelný"
 
-#: ../gui/user-switch-applet/applet.c:959
+#: ../gui/user-switch-applet/applet.c:968
 msgid "Busy"
 msgstr "Zaneprázdněn"
 
-#: ../gui/user-switch-applet/applet.c:960
+#: ../gui/user-switch-applet/applet.c:969
 msgid "Away"
 msgstr "Pryč"
 
-#: ../gui/user-switch-applet/applet.c:1106
+#: ../gui/user-switch-applet/applet.c:1129
 msgid "Account Information..."
 msgstr "Informace o účtu..."
 
-#: ../gui/user-switch-applet/applet.c:1118
+#: ../gui/user-switch-applet/applet.c:1141
 msgid "System Preferences..."
 msgstr "Předvolby systému..."
 
-#: ../gui/user-switch-applet/applet.c:1134
+#: ../gui/user-switch-applet/applet.c:1157
 msgid "Lock Screen"
 msgstr "Uzamknout obrazovku"
 
-#: ../gui/user-switch-applet/applet.c:1145
+#: ../gui/user-switch-applet/applet.c:1168
 msgid "Switch User"
 msgstr "Přepnout uživatele"
 
 #. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1156
+#: ../gui/user-switch-applet/applet.c:1179
 msgid "Quit..."
 msgstr "Ukončit..."
 
-#: ../gui/user-switch-applet/applet.c:1259
+#: ../gui/user-switch-applet/applet.c:1294
 msgid "Unknown"
 msgstr "Neznámý"
 
-#: ../gui/user-switch-applet/applet.c:1371
+#: ../gui/user-switch-applet/applet.c:1412
 msgid "User Switch Applet"
 msgstr "Applet přepínání uživatelů"
 
-#: ../gui/user-switch-applet/applet.c:1380
+#: ../gui/user-switch-applet/applet.c:1421
 msgid "Change account settings and status"
 msgstr "Změnit nastavení účtu a stav"
 
@@ -1124,7 +1113,7 @@ msgstr "Ignorováno - ponecháno kvůli kompatibilitě"
 msgid "COMMAND"
 msgstr "PŘÍKAZ"
 
-#: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:42
+#: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Ladicí výstup"
 
@@ -1146,7 +1135,11 @@ msgstr "- nové přihlášení GDM"
 msgid "Unable to start new display"
 msgstr "Nelze spustit nový displej"
 
+#: ../utils/gdm-screenshot.c:219
+msgid "Screenshot taken"
+msgstr "Vytvořen snímek obrazovky"
+
 #. Option parsing
-#: ../utils/gdm-screenshot.c:231
+#: ../utils/gdm-screenshot.c:284
 msgid "Take a picture of the screen"
 msgstr "Pořídit snímek obrazovky"
