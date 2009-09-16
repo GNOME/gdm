@@ -7,11 +7,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.5.90.0\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&component=general\n"
-"POT-Creation-Date: 2009-06-15 16:17+0000\n"
-"PO-Revision-Date: 2009-07-07 16:41+0300\n"
-"Last-Translator: wanderlust <wanderlust@ukr.net>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-09-16 17:57+0300\n"
+"PO-Revision-Date: 2009-09-16 16:41+0300\n"
+"Last-Translator: Maxim Dziumanenko <dziumanenko@gmail.com>\n"
 "Language-Team: ukrainian <Ukrainian <uk@li.org>>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,7 +27,7 @@ msgstr "/dev/urandom не є символьним пристроєм"
 #: ../daemon/product-slave-main.c:174 ../daemon/session-worker-main.c:137
 #: ../daemon/simple-slave-main.c:179 ../daemon/xdmcp-chooser-slave-main.c:179
 msgid "Enable debugging code"
-msgstr "Увімкнути відлагоджування коду"
+msgstr "Увімкнути налагодження коду"
 
 #: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
 #: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
@@ -62,12 +61,12 @@ msgstr "Не вдається автентифікувати користува�
 msgid "Unable to authorize user"
 msgstr "Неможливо авторизувати користувача"
 
-#: ../daemon/gdm-factory-slave.c:281
+#: ../daemon/gdm-factory-slave.c:281 ../daemon/gdm-simple-slave.c:432
 msgid "Unable to establish credentials"
 msgstr "Не вдається встановити довірені відносини"
 
 #: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1105
+#: ../daemon/gdm-simple-slave.c:1111
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -153,76 +152,67 @@ msgstr "Пристрій відображення"
 msgid "The display device"
 msgstr "Пристрій відображення"
 
-#: ../daemon/gdm-session-direct.c:1576 ../daemon/gdm-session-direct.c:1594
-#, c-format
-msgid "worker exited with status %d"
-msgstr "робітник вийшов з станом %d"
-
-#: ../daemon/gdm-session-worker.c:1085
+#: ../daemon/gdm-session-worker.c:1293
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "помилка початкового обміну з системою автентифікації - %s"
 
-#: ../daemon/gdm-session-worker.c:1086
+#: ../daemon/gdm-session-worker.c:1294
 msgid "general failure"
 msgstr "загальна відмова в роботі"
 
-#: ../daemon/gdm-session-worker.c:1087
+#: ../daemon/gdm-session-worker.c:1295
 msgid "out of memory"
 msgstr "немає вільної пам'яті"
 
-#: ../daemon/gdm-session-worker.c:1088
+#: ../daemon/gdm-session-worker.c:1296
 msgid "application programmer error"
 msgstr "помилка програміста системи"
 
-#: ../daemon/gdm-session-worker.c:1089
+#: ../daemon/gdm-session-worker.c:1297
 msgid "unknown error"
 msgstr "невідома помилка"
 
-#: ../daemon/gdm-session-worker.c:1096
+#: ../daemon/gdm-session-worker.c:1304
 msgid "Username:"
 msgstr "Користувач:"
 
-#: ../daemon/gdm-session-worker.c:1102
+#: ../daemon/gdm-session-worker.c:1310
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "помилка сповіщення автентифікаційної системи підтримуваного запиту імені "
 "користувача - %s"
 
-#: ../daemon/gdm-session-worker.c:1116
+#: ../daemon/gdm-session-worker.c:1324
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 "помилка сповіщення автентифікаційної системи назви вузла користувача - %s"
 
-#: ../daemon/gdm-session-worker.c:1131
+#: ../daemon/gdm-session-worker.c:1339
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr "помилка сповіщення автентифікаційної системи консолі користувача - %s"
 
-#: ../daemon/gdm-session-worker.c:1144
+#: ../daemon/gdm-session-worker.c:1352
 #, c-format
 msgid "error informing authentication system of display string - %s"
 msgstr "помилка сповіщення автентифікаційної системи рядка екрану - %s"
 
-#: ../daemon/gdm-session-worker.c:1159
+#: ../daemon/gdm-session-worker.c:1367
 #, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
 msgstr "помилка сповіщення автентифікаційної системи паролю екрану xauth - %s"
 
-#: ../daemon/gdm-session-worker.c:1439 ../daemon/gdm-session-worker.c:1457
+#: ../daemon/gdm-session-worker.c:1648 ../daemon/gdm-session-worker.c:1666
 #, c-format
 msgid "no user account available"
 msgstr "недоступний обліковий запис користувача"
 
-#: ../daemon/gdm-session-worker.c:1484
+#: ../daemon/gdm-session-worker.c:1693
 msgid "Unable to change to user"
 msgstr "Неможливо змінити користувача"
-
-#: ../daemon/gdm-simple-slave.c:429
-msgid "Unable establish credentials"
-msgstr "Не вдається встеновити довірені відносини"
 
 #: ../daemon/gdm-welcome-session.c:426
 #, c-format
@@ -238,136 +228,136 @@ msgstr "Група %s не існує"
 msgid "Could not create socket!"
 msgstr "Не вдається створити сокет!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:860
+#: ../daemon/gdm-xdmcp-display-factory.c:862
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Отримано відмову на запит XDMCP від комп'ютера %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1017
-#: ../daemon/gdm-xdmcp-display-factory.c:1238
+#: ../daemon/gdm-xdmcp-display-factory.c:1019
+#: ../daemon/gdm-xdmcp-display-factory.c:1240
 msgid "Could not extract authlist from packet"
 msgstr "Не вдається виділити перелік авторизації з пакету"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1030
-#: ../daemon/gdm-xdmcp-display-factory.c:1253
+#: ../daemon/gdm-xdmcp-display-factory.c:1032
+#: ../daemon/gdm-xdmcp-display-factory.c:1255
 msgid "Error in checksum"
 msgstr "Помилка в контрольній сумі"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1504
+#: ../daemon/gdm-xdmcp-display-factory.c:1506
 msgid "Bad address"
 msgstr "Невірна адреса"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1585
+#: ../daemon/gdm-xdmcp-display-factory.c:1587
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: не вдається зчитати адресу дисплея"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1593
+#: ../daemon/gdm-xdmcp-display-factory.c:1595
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s: не вдається зчитати номер порта дисплея"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1602
+#: ../daemon/gdm-xdmcp-display-factory.c:1604
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s: не вдається виділити список авторизації з пакету"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1622
+#: ../daemon/gdm-xdmcp-display-factory.c:1624
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: помилка в контрольній сумі"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2131
+#: ../daemon/gdm-xdmcp-display-factory.c:2133
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: отримано REQUEST(запит) від забороненого комп'ютера %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2141
-#: ../daemon/gdm-xdmcp-display-factory.c:2496
-#: ../daemon/gdm-xdmcp-display-factory.c:2748
+#: ../daemon/gdm-xdmcp-display-factory.c:2143
+#: ../daemon/gdm-xdmcp-display-factory.c:2498
+#: ../daemon/gdm-xdmcp-display-factory.c:2750
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: не вдається зчитати номер дисплея"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2148
+#: ../daemon/gdm-xdmcp-display-factory.c:2150
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: не вдається зчитати тип з'єднання"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2155
+#: ../daemon/gdm-xdmcp-display-factory.c:2157
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: не вдається зчитати адресу клієнта"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2163
+#: ../daemon/gdm-xdmcp-display-factory.c:2165
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: не вдається зчитати імена автентифікації"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2172
+#: ../daemon/gdm-xdmcp-display-factory.c:2174
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: не вдається зчитати дані автентифікації"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2182
+#: ../daemon/gdm-xdmcp-display-factory.c:2184
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: не вдається зчитати список авторизації"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2201
+#: ../daemon/gdm-xdmcp-display-factory.c:2203
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Не вдається зчитати ідентифікатор виробника"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2228
+#: ../daemon/gdm-xdmcp-display-factory.c:2230
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Неправильна контрольна сума з %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2480
+#: ../daemon/gdm-xdmcp-display-factory.c:2482
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr ""
 "%s: отримано Manage(запит обслуговування) від забороненого комп'ютера %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2489
-#: ../daemon/gdm-xdmcp-display-factory.c:2755
+#: ../daemon/gdm-xdmcp-display-factory.c:2491
+#: ../daemon/gdm-xdmcp-display-factory.c:2757
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: не вдається зчитати ідентифікатор сеансу"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2503
+#: ../daemon/gdm-xdmcp-display-factory.c:2505
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: не вдається зчитати клас дисплея"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2608
-#: ../daemon/gdm-xdmcp-display-factory.c:2658
-#: ../daemon/gdm-xdmcp-display-factory.c:2664
+#: ../daemon/gdm-xdmcp-display-factory.c:2610
+#: ../daemon/gdm-xdmcp-display-factory.c:2660
+#: ../daemon/gdm-xdmcp-display-factory.c:2666
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: не вдається зчитати адресу"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2738
+#: ../daemon/gdm-xdmcp-display-factory.c:2740
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Отримано KEEPALIVE від забороненого комп'ютера %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2827
+#: ../daemon/gdm-xdmcp-display-factory.c:2829
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory: не вдається прочитати заголовок XDMCP!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2833
+#: ../daemon/gdm-xdmcp-display-factory.c:2835
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XMDCP: невірна версія XDMCP!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2839
+#: ../daemon/gdm-xdmcp-display-factory.c:2841
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
 msgid "XMDCP: Unable to parse address"
 msgstr "XMDCP: неможливо розібрати адресу"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3284
+#: ../daemon/gdm-xdmcp-display-factory.c:3286
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Не вдається отримати назву сервера: %s!"
@@ -456,7 +446,7 @@ msgstr ""
 "SPI)"
 
 #: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1921
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1767
 msgid "Login Window"
 msgstr "Вікно входу в систему"
 
@@ -500,13 +490,17 @@ msgstr "Читач екрану Orca"
 msgid "Present on-screen information as speech or braille"
 msgstr "Представляти інформацію на екрані як розмову або шрифтом Брайля"
 
+#: ../data/greeter-autostart/polkit-gnome-authentication-agent-1.desktop.in.h:1
+msgid "PolicyKit Authentication Agent"
+msgstr "Агент автентифікації PolicyKit"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:148
 msgid "Select System"
 msgstr "Виберіть систему"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:214
-msgid "XMCP: Could not create XDMCP buffer!"
-msgstr "XMCP: Не вдається створити буфер XDMCP!"
+msgid "XDMCP: Could not create XDMCP buffer!"
+msgstr "XDMCP: Не вдається створити буфер XDMCP!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:220
 msgid "XDMCP: Could not read XDMCP header!"
@@ -520,22 +514,30 @@ msgstr "Значення"
 msgid "percentage of time complete"
 msgstr "відсотків часу до завершення"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1306
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1325
 msgid "Inactive Text"
 msgstr "Неактивний текст"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1307
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1326
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr ""
 "Текст, що буде вкористаний, в мітках, якщо користувач ще не вибрав значення"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1315
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1334
 msgid "Active Text"
 msgstr "Активний текст"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1316
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1335
 msgid "The text to use in the label if the user has picked an item"
-msgstr "Текст, що буде вкористаний, в мітках, якщо користувач вибрав значення"
+msgstr "Текст, що буде використаний, в мітках, якщо користувач вибрав значення"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1344
+msgid "List Visible"
+msgstr "Показувати список"
+
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1345
+msgid "Whether or not the chooser list is visible"
+msgstr "Чи виводиться список входу"
 
 #: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M:%S %p"
@@ -563,38 +565,16 @@ msgstr "%a %b %e"
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:288
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:291
 msgid "Automatically logging in..."
 msgstr "Автоматичний вхід у систему..."
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:718
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:758
 msgid "Cancelling..."
 msgstr "Скасування..."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1187
-msgid "Failed to restart computer"
-msgstr "Не вдалося перезавантажити комп'ютер"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1190
-msgid ""
-"You are not allowed to restart the computer because multiple users are "
-"logged in"
-msgstr ""
-"Вам не дозволено перезавантажувати комп'ютер, тому що декілька користувачів "
-"увійшли"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1271
-msgid "Failed to stop computer"
-msgstr "Не вдалося зупинити комп'ютер"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1274
-msgid ""
-"You are not allowed to stop the computer because multiple users are logged in"
-msgstr ""
-"Вам не дозволено вимикати комп'ютер, тому що декілька користувачів увійшли"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1358
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1185
 msgid "Select language and click Log In"
 msgstr "Виберіть мову та натисніть \"Увійти\""
 
@@ -626,11 +606,7 @@ msgstr "Режим сну"
 msgid "Version"
 msgstr "Версія"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
-msgid "page 5"
-msgstr "сторінка 5"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:554
+#: ../gui/simple-greeter/gdm-greeter-panel.c:583
 msgid "Panel"
 msgstr "Панель"
 
@@ -643,19 +619,19 @@ msgid "_Languages:"
 msgstr "_Мови:"
 
 #: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
-#: ../gui/simple-greeter/gdm-language-option-widget.c:262
+#: ../gui/simple-greeter/gdm-language-option-widget.c:274
 msgid "_Language:"
 msgstr "_Мова:"
 
 #. translators: This brings up a dialog
 #. * with a list of languages to choose from
 #.
-#: ../gui/simple-greeter/gdm-language-option-widget.c:231
+#: ../gui/simple-greeter/gdm-language-option-widget.c:243
 msgctxt "language"
 msgid "Other..."
 msgstr "Інший..."
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:232
+#: ../gui/simple-greeter/gdm-language-option-widget.c:244
 msgid "Choose a language from the full list of available languages."
 msgstr "Виберіть мову з повного переліку наявних мов."
 
@@ -669,43 +645,43 @@ msgstr "Розкладки клавіатури"
 
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:200
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:201
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:254
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:266
 msgid "_Keyboard:"
 msgstr "_Клавіатура:"
 
 #. translators: This brings up a dialog of
 #. * available keyboard layouts
 #.
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:223
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:235
 msgctxt "keyboard"
 msgid "Other..."
 msgstr "Інший..."
 
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:224
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:236
 msgid "Choose a keyboard layout from the full list of available layouts."
 msgstr "Виберіть розкладку клавіатури з повного переліку наявних розкладок."
 
-#: ../gui/simple-greeter/gdm-option-widget.c:494
+#: ../gui/simple-greeter/gdm-option-widget.c:521
 msgid "Label Text"
 msgstr "Текст міток"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:495
+#: ../gui/simple-greeter/gdm-option-widget.c:522
 msgid "The text to use as a label"
 msgstr "Текст, що використовується у мітках"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:502
+#: ../gui/simple-greeter/gdm-option-widget.c:529
 msgid "Icon name"
 msgstr "Назва піктограми"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:503
+#: ../gui/simple-greeter/gdm-option-widget.c:530
 msgid "The icon to use with the label"
 msgstr "Піктограма, що використовується з міткою"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:511
+#: ../gui/simple-greeter/gdm-option-widget.c:538
 msgid "Default Item"
 msgstr "Елемент за замовчуванням"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:512
+#: ../gui/simple-greeter/gdm-option-widget.c:539
 msgid "The id of the default item"
 msgstr "id елемента за замовчуванням"
 
@@ -740,157 +716,167 @@ msgid "Banner message text"
 msgstr "Текст повідомлення заголовку"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
+msgid "Banner message text when chooser is empty"
+msgstr "Текст повідомлення, коли вікно входу порожнє"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
 msgid "Disable showing the restart buttons"
 msgstr "Вимкнути показ кнопки перезавантаження"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
 msgid "Do not show known users in the login window"
 msgstr "Не показувати відомих користувачів у вікні входу"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
 msgid "Enable accessibility keyboard plugin"
 msgstr "Увімкнути додаток підтримки спеціальних можливостей"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
 msgid "Enable debugging"
 msgstr "Увімкнути налагодження"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
 msgid "Enable debugging mode for the greeter."
 msgstr "Увімкнути режим відлагодження для привітання."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Enable on-screen keyboard"
 msgstr "Увімкнути наекранну клавіатуру"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
 msgid "Enable screen magnifier"
 msgstr "Увімкнути екранну лупу"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
 msgid "Enable screen reader"
 msgstr "Увімкнути читача екрану"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "Enable showing the banner message"
 msgstr "Увімкнути показ повідомлення заголовку"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Icon name to use for greeter logo"
 msgstr "Назва піктограми, що буде використана для логотипу привітання"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid "Recently selected keyboard layouts"
 msgstr "Нещодавно вибрані розкладки клавіатури"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Recently selected languages"
 msgstr "Нещодавно вибрані мови"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-msgid "Set to TRUE to disable showing known users in the login window."
-msgstr ""
-"Встановити \"Так\", щоб вимкнути показ відомих користувачів у вікні входу."
-
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
-msgid "Set to TRUE to disable showing the restart buttons in the login window."
-msgstr ""
-"Встановити \"Так\", щоб вимкнути показ кнопки перезавантаження у вікні входу."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
-msgid "Set to True to enable the background settings manager plugin."
-msgstr ""
-"Встановити \"Так\", щоб увімкнути додаток фонового керівника налаштувань."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
-msgid "Set to True to enable the media-keys settings manager plugin."
-msgstr ""
-"Встановити \"Так\", щоб увімкнути додаток керівника медіа-клавіш налаштувань."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
-msgid "Set to True to enable the on-screen keyboard."
-msgstr "Встановити \"Так\", щоб увімкнути додаток наекранної клавіатури."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
-msgid ""
-"Set to True to enable the plugin to manage the accessibility keyboard "
-"settings."
-msgstr ""
-"Встановити \"Так\", щоб увімкнути додаток керування доступністю налаштувань "
-"клавіатури."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
-msgid "Set to True to enable the screen magnifier."
-msgstr "Встановити \"Так\", щоб увімкнути екранну лупу."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
-msgid "Set to True to enable the screen reader."
-msgstr "Встановити \"Так\", щоб увімкнути читач екрану."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
-msgid "Set to True to enable the sound settings manager plugin."
-msgstr "Встановити \"Так\", щоб увімкнути додаток керівника налаштувань звуку."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
-msgid "Set to True to enable the xrandr settings manager plugin."
-msgstr ""
-"Встановити \"Так\", щоб увімкнути додаток керівника налаштувань xrandr."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
-msgid "Set to True to enable the xsettings settings manager plugin."
-msgstr ""
-"Встановити \"Так\", щоб увімкнути додаток керівника налаштувань xsettings."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid ""
 "Set to a list of keyboard layouts to be shown by default at the login window."
 msgstr ""
 "Встановити перелік розкладок клавіатури, що будуть показані за замовчуванням "
 "у вікні входу."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to a list of languages to be shown by default at the login window."
 msgstr ""
 "Встановити перелік мов, що будуть показані за замовчуванням у вікні входу."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr ""
 "Встановити тематичну назву піктограм для використання у логотипі привітання."
 
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+msgid "Set to true to disable showing known users in the login window."
+msgstr ""
+"Встановити \"Так\", щоб вимкнути показ відомих користувачів у вікні входу."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+msgid "Set to true to disable showing the restart buttons in the login window."
+msgstr ""
+"Встановити \"Так\", щоб вимкнути показ кнопки перезавантаження у вікні входу."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+msgid "Set to true to enable the background settings manager plugin."
+msgstr ""
+"Встановити \"Так\", щоб увімкнути додаток менеджера параметрів тла."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+msgid "Set to true to enable the media-keys settings manager plugin."
+msgstr ""
+"Встановити \"Так\", щоб увімкнути додаток менеджера параметрів медіа-клавіш."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+msgid "Set to true to enable the on-screen keyboard."
+msgstr "Встановити \"Так\", щоб увімкнути додаток екранної клавіатури."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+msgid ""
+"Set to true to enable the plugin to manage the accessibility keyboard "
+"settings."
+msgstr ""
+"Встановити \"Так\", щоб увімкнути додаток керування доступністю налаштувань "
+"клавіатури."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+msgid "Set to true to enable the screen magnifier."
+msgstr "Встановити \"Так\", щоб увімкнути екранну лупу."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+msgid "Set to true to enable the screen reader."
+msgstr "Встановити \"Так\", щоб увімкнути читач екрану."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+msgid "Set to true to enable the sound settings manager plugin."
+msgstr "Встановити \"Так\", щоб увімкнути додаток налаштувань звуку."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+msgid "Set to true to enable the xrandr settings manager plugin."
+msgstr ""
+"Встановити \"Так\", щоб увімкнути додаток менеджера параметрів xrandr."
+
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+msgid "Set to true to enable the xsettings settings manager plugin."
+msgstr ""
+"Встановити \"Так\", щоб увімкнути додаток менеджера параметрів xsettings."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "Set to true to show the banner message text."
 msgstr "Встановити \"Так\", щоб показати текст повідомлення заголовку"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
-msgid "Set to true to use compiz as the window manager."
-msgstr "Встановити \"Так\", щоб використовувати compiz як менеджен вікон"
-
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+msgid "Set to true to use compiz as the window manager."
+msgstr "Встановити \"Так\", щоб використовувати compiz як менеджер вікон"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+msgid ""
+"Text banner message to show on the login window when the user chooser is "
+"empty, instead of banner_message_text."
+msgstr "Текст повідомлення, що буде показаний у вікні входу, коли воно порожнє, замість banner_message_text"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "Text banner message to show on the login window."
 msgstr "Текст повідомлення заголовку, що буде показаний у вікні входу."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
-msgid "True if the background settings manager plugin is enabled."
-msgstr "\"Так\", якщо додаток фонового керівника налаштувань увімкнений."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
-msgid "True if the media-keys settings manager plugin is enabled."
-msgstr "\"Так\", якщо додаток керівника налаштувать медіа-клавіш увімкнений."
-
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
-msgid "True if the sound settings manager plugin is enabled."
-msgstr "\"Так\", якщо додаток керівника налаштувань звуку увімкнений."
+msgid "True if the background settings manager plugin is enabled."
+msgstr "\"Так\", якщо додаток фонового менеджера параметрів увімкнений."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
-msgid "True if the xrandr settings manager plugin is enabled."
-msgstr "\"Так\", якщо додаток керівника налаштувань xrandr увімкнений."
+msgid "True if the media-keys settings manager plugin is enabled."
+msgstr "\"Так\", якщо додаток менеджера параметрів медіа-клавіш увімкнений."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
-msgid "True if the xsettings settings manager plugin is enabled."
-msgstr "\"Так\", якщо додаток керівника налаштувань xsettings увімкнений."
+msgid "True if the sound settings manager plugin is enabled."
+msgstr "\"Так\", якщо додаток менеджера параметрів звуку увімкнений."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
+msgid "True if the xrandr settings manager plugin is enabled."
+msgstr "\"Так\", якщо додаток менеджера параметрів xrandr увімкнений."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:37
+msgid "True if the xsettings settings manager plugin is enabled."
+msgstr "\"Так\", якщо додаток менеджера параметрів xsettings увімкнений."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:38
 msgid "Use compiz as the window manager"
 msgstr "Використовувати compiz у якості менеджера вікон"
 
@@ -918,11 +904,11 @@ msgstr "Запущений?"
 msgid "Whether or not the timer is currently ticking"
 msgstr "Увімкнений чи ні зараз таймер"
 
-#: ../gui/simple-greeter/gdm-user.c:242
+#: ../gui/simple-greeter/gdm-user.c:245
 msgid "Manager"
 msgstr "Керівник"
 
-#: ../gui/simple-greeter/gdm-user.c:243
+#: ../gui/simple-greeter/gdm-user.c:246
 msgid "The user manager object this user is controlled by."
 msgstr "Об'єкт керівника користувача, яким керується користувач."
 
@@ -931,37 +917,37 @@ msgstr "Об'єкт керівника користувача, яким керу
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:136
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:164
 msgctxt "user"
 msgid "Other..."
 msgstr "Інші..."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:137
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:165
 msgid "Choose a different account"
 msgstr "Виберіть інший обліковий запис"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:149
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:177
 msgid "Guest"
 msgstr "Гість"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:150
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:178
 msgid "Login as a temporary guest"
 msgstr "Увійти як тимчасовий користувач"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:162
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:191
 msgid "Automatic Login"
 msgstr "Автоматичний вхід"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:163
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:192
 msgid "Automatically login to the system after selecting options"
 msgstr "Автоматично входити у систему після вибору опцій"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:354
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:383
 #, c-format
 msgid "Log in as %s"
 msgstr "Увійшов як %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:699
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:737
 msgid "Currently logged in"
 msgstr "Вже увішов"
 
@@ -1109,7 +1095,7 @@ msgstr "Пропущено - збережено для сумістності"
 msgid "COMMAND"
 msgstr "КОМАНДА"
 
-#: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:42
+#: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Налагоджувальний вивід"
 
@@ -1131,8 +1117,12 @@ msgstr "- Новий вхід gdm"
 msgid "Unable to start new display"
 msgstr "Не вдається запустити новий дисплей"
 
+#: ../utils/gdm-screenshot.c:219
+msgid "Screenshot taken"
+msgstr "Знімок зроблено"
+
 #. Option parsing
-#: ../utils/gdm-screenshot.c:231
+#: ../utils/gdm-screenshot.c:284
 msgid "Take a picture of the screen"
 msgstr "Зробити знімок екрану"
 
