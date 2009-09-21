@@ -1,4 +1,27 @@
 ===============
+Version 2.28.0
+===============
+
+- Now GDM supports the ability to specify the automatic/timed login user via a
+  script via the same interface that the old GDM supported.
+- Now the user's dmrc and face image files are stored in /var/cache/gdm, so 
+  that the login process does not need to access the user's $HOME directory 
+  before authentication.  Refer to bug #565151.
+- Fix the login GUI options widget so the language/session/layout choices are
+  not reset after a failed login.
+- Fix language dialog so it does not crash if the user click's the "OK" button
+  when no language is selected.
+- Fix to ensure that the login dialog regains focus after the language or
+  layout dialogs are used.
+- The language dialog has improved logic to sort the language names more
+  correctly.
+- Make sure to check error variable is not NULL before referencing it in the
+  gdm-user-manager code.
+- Make sure to not print NULL strings since this causes crashes on some
+  platforms.
+- Improve documentation.
+
+===============
 Version 2.27.90
 ===============
 
