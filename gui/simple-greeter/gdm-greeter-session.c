@@ -332,13 +332,15 @@ toggle_panel (GdmGreeterSession *session,
                 GdkScreen  *screen;
                 int         monitor;
                 int         x, y;
+                gboolean    is_local;
 
                 display = gdk_display_get_default ();
                 gdk_display_get_pointer (display, &screen, &x, &y, NULL);
 
                 monitor = get_tallest_monitor_at_point (screen, x, y);
 
-                session->priv->panel = gdm_greeter_panel_new (screen, monitor);
+                is_local = gdm_greeter_client_get_display_is_local (session->priv->client);
+                session->priv->panel = gdm_greeter_panel_new (screen, monitor, is_local);
 
                 g_signal_connect_swapped (session->priv->panel,
                                           "language-selected",

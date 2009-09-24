@@ -92,7 +92,6 @@ test_greeter_login_window_LDADD =	\
 	libgdmuser.la			\
 	$(COMMON_LIBS)			\
 	$(SIMPLE_GREETER_LIBS)		\
-	$(DEVKIT_POWER_LIBS)		\
 	$(RBAC_LIBS)			\
 	$(NULL)
 
@@ -144,6 +143,7 @@ test_greeter_panel_LDADD =	\
 	$(GTK_LIBS)			\
 	$(GCONF_LIBS)			\
 	$(LIBXKLAVIER_LIBS)		\
+	$(DEVKIT_POWER_LIBS)		\
 	$(NULL)
 
 test_remote_login_window_SOURCES = 	\

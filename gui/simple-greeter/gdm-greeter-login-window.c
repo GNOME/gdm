@@ -34,11 +34,6 @@
 #include <errno.h>
 #include <pwd.h>
 
-#ifdef ENABLE_RBAC_SHUTDOWN
-#include <auth_attr.h>
-#include <secdb.h>
-#endif
-
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -55,10 +50,6 @@
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
-
-#ifdef HAVE_DEVICEKIT_POWER
-#include <devkit-power-gobject/devicekit-power.h>
-#endif
 
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
@@ -90,7 +81,6 @@
 #define KEY_BANNER_MESSAGE_TEXT     KEY_GREETER_DIR "/banner_message_text"
 #define KEY_BANNER_MESSAGE_TEXT_NOCHOOSER     KEY_GREETER_DIR "/banner_message_text_nochooser"
 #define KEY_LOGO                    KEY_GREETER_DIR "/logo_icon_name"
-#define KEY_DISABLE_RESTART_BUTTONS KEY_GREETER_DIR "/disable_restart_buttons"
 #define GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_LOGIN_WINDOW, GdmGreeterLoginWindowPrivate))
 
 enum {
@@ -124,8 +114,6 @@ struct GdmGreeterLoginWindowPrivate
         guint            timed_login_delay;
         char            *timed_login_username;
         guint            timed_login_timeout_id;
-
-        guint            sensitize_power_buttons_timeout_id;
 
         guint            login_button_handler_id;
         guint            start_session_handler_id;
@@ -353,37 +341,6 @@ sensitize_widget (GdmGreeterLoginWindow *login_window,
         }
 }
 
-static gboolean
-get_show_restart_buttons (GdmGreeterLoginWindow *login_window)
-{
-        gboolean     show;
-        GError      *error;
-
-        error = NULL;
-        show = ! gconf_client_get_bool (login_window->priv->client, KEY_DISABLE_RESTART_BUTTONS, &error);
-        if (error != NULL) {
-                g_debug ("GdmGreeterLoginWindow: unable to get disable-restart-buttons configuration: %s", error->message);
-                g_error_free (error);
-        }
-
-#ifdef ENABLE_RBAC_SHUTDOWN
-        {
-                char *username;
-
-                username = g_get_user_name ();
-                if (username == NULL || !chkauthattr (RBAC_SHUTDOWN_KEY, username)) {
-                        show = FALSE;
-                        g_debug ("GdmGreeterLoginWindow: Not showing stop/restart buttons for user %s due to RBAC key %s",
-                                 username, RBAC_SHUTDOWN_KEY);
-                } else {
-                        g_debug ("GdmGreeterLoginWindow: Showing stop/restart buttons for user %s due to RBAC key %s",
-                                 username, RBAC_SHUTDOWN_KEY);
-                }
-        }
-#endif
-        return show;
-}
-
 static void
 on_login_button_clicked_answer_query (GtkButton             *button,
                                       GdmGreeterLoginWindow *login_window)
@@ -477,61 +434,6 @@ adjust_other_login_visibility(GdmGreeterLoginWindow *login_window)
         }
 }
 
-#ifdef HAVE_DEVICEKIT_POWER
-static gboolean
-can_suspend (GdmGreeterLoginWindow *login_window)
-{
-        gboolean ret;
-        DkpClient *dkp_client;
-
-        /* use DeviceKit-power to get data */
-        dkp_client = dkp_client_new ();
-        g_object_get (dkp_client,
-                      "can-suspend", &ret,
-                      NULL);
-        g_object_unref (dkp_client);
-        return ret;
-}
-#endif
-
-static void
-remove_sensitize_power_buttons_timeout (GdmGreeterLoginWindow *login_window)
-{
-        if (login_window->priv->sensitize_power_buttons_timeout_id > 0) {
-                g_source_remove (login_window->priv->sensitize_power_buttons_timeout_id);
-                login_window->priv->sensitize_power_buttons_timeout_id = 0;
-        }
-}
-
-static gboolean
-sensitize_power_buttons_timeout (GdmGreeterLoginWindow *login_window)
-{
-        switch (login_window->priv->dialog_mode) {
-        case MODE_SELECTION:
-                sensitize_widget (login_window, "shutdown-button", TRUE);
-                sensitize_widget (login_window, "restart-button", TRUE);
-                sensitize_widget (login_window, "suspend-button", TRUE);
-                sensitize_widget (login_window, "disconnect-button", TRUE);
-                break;
-        case MODE_AUTHENTICATION:
-                break;
-        default:
-                g_assert_not_reached ();
-        }
-
-        login_window->priv->sensitize_power_buttons_timeout_id = 0;
-        return FALSE;
-}
-
-static void
-add_sensitize_power_buttons_timeout (GdmGreeterLoginWindow *login_window)
-{
-        remove_sensitize_power_buttons_timeout (login_window);
-        login_window->priv->sensitize_power_buttons_timeout_id = g_timeout_add_seconds (1,
-                                                                                   (GSourceFunc)sensitize_power_buttons_timeout,
-                                                                                   login_window);
-}
-
 static void
 switch_mode (GdmGreeterLoginWindow *login_window,
              int                    number)
@@ -539,16 +441,6 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         const char *default_name;
         GtkWidget  *user_chooser;
         GtkWidget  *box;
-        gboolean    show_restart_buttons;
-        gboolean    show_suspend_button;
-
-        show_restart_buttons = get_show_restart_buttons (login_window);
-
-#ifdef HAVE_DEVICEKIT_POWER
-        show_suspend_button = can_suspend (login_window);
-#else
-        show_suspend_button = FALSE;
-#endif
 
         /* we want to run this even if we're supposed to
            be in the mode already so that we reset everything
@@ -557,38 +449,20 @@ switch_mode (GdmGreeterLoginWindow *login_window,
 
         default_name = NULL;
 
-        remove_sensitize_power_buttons_timeout (login_window);
-
         switch (number) {
         case MODE_SELECTION:
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_HIDDEN);
 
                 show_widget (login_window, "cancel-button", FALSE);
 
-                show_widget (login_window, "shutdown-button",
-                             login_window->priv->display_is_local && show_restart_buttons);
-                show_widget (login_window, "restart-button",
-                             login_window->priv->display_is_local && show_restart_buttons);
-                show_widget (login_window, "suspend-button",
-                             login_window->priv->display_is_local && show_restart_buttons && show_suspend_button);
-                show_widget (login_window, "disconnect-button",
-                             ! login_window->priv->display_is_local);
-
                 show_widget (login_window, "auth-input-box", FALSE);
 
-                add_sensitize_power_buttons_timeout (login_window);
-                sensitize_widget (login_window, "shutdown-button", FALSE);
-                sensitize_widget (login_window, "restart-button", FALSE);
-                sensitize_widget (login_window, "suspend-button", FALSE);
                 sensitize_widget (login_window, "disconnect-button", FALSE);
 
                 default_name = NULL;
                 break;
         case MODE_AUTHENTICATION:
                 show_widget (login_window, "cancel-button", TRUE);
-                show_widget (login_window, "shutdown-button", FALSE);
-                show_widget (login_window, "restart-button", FALSE);
-                show_widget (login_window, "suspend-button", FALSE);
                 show_widget (login_window, "disconnect-button", FALSE);
                 default_name = "log-in-button";
                 break;
@@ -627,32 +501,6 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 gtk_widget_grab_default (widget);
         }
 }
-
-static void
-do_disconnect (GdmGreeterLoginWindow *login_window)
-{
-        gtk_main_quit ();
-}
-
-#ifdef HAVE_DEVICEKIT_POWER
-static void
-do_suspend (GdmGreeterLoginWindow *login_window)
-{
-        gboolean ret;
-        DkpClient *dkp_client;
-        GError *error = NULL;
-
-        /* use DeviceKit-power to get data */
-        dkp_client = dkp_client_new ();
-        ret = dkp_client_suspend (dkp_client, &error);
-        if (!ret) {
-                g_warning ("Couldn't suspend: %s", error->message);
-                g_error_free (error);
-                return;
-        }
-        g_object_unref (dkp_client);
-}
-#endif
 
 static void
 delete_entry_text (GtkWidget *entry)
@@ -968,139 +816,10 @@ gdm_greeter_login_window_get_property (GObject    *object,
 }
 
 static void
-suspend_button_clicked (GtkButton             *button,
-                        GdmGreeterLoginWindow *login_window)
-{
-#ifdef HAVE_DEVICEKIT_POWER
-        do_suspend (login_window);
-#endif
-}
-
-
-static void
 cancel_button_clicked (GtkButton             *button,
                        GdmGreeterLoginWindow *login_window)
 {
         do_cancel (login_window);
-}
-
-static void
-disconnect_button_clicked (GtkButton             *button,
-                           GdmGreeterLoginWindow *login_window)
-{
-        do_disconnect (login_window);
-}
-
-static gboolean
-try_system_stop (DBusGConnection *connection,
-                 GError         **error)
-{
-        DBusGProxy      *proxy;
-        gboolean         res;
-
-        g_debug ("GdmGreeterLoginWindow: trying to stop system");
-
-        proxy = dbus_g_proxy_new_for_name (connection,
-                                           CK_NAME,
-                                           CK_MANAGER_PATH,
-                                           CK_MANAGER_INTERFACE);
-        res = dbus_g_proxy_call_with_timeout (proxy,
-                                              "Stop",
-                                              INT_MAX,
-                                              error,
-                                              /* parameters: */
-                                              G_TYPE_INVALID,
-                                              /* return values: */
-                                              G_TYPE_INVALID);
-        return res;
-}
-
-static gboolean
-try_system_restart (DBusGConnection *connection,
-                    GError         **error)
-{
-        DBusGProxy      *proxy;
-        gboolean         res;
-
-        g_debug ("GdmGreeterLoginWindow: trying to restart system");
-
-        proxy = dbus_g_proxy_new_for_name (connection,
-                                           CK_NAME,
-                                           CK_MANAGER_PATH,
-                                           CK_MANAGER_INTERFACE);
-        res = dbus_g_proxy_call_with_timeout (proxy,
-                                              "Restart",
-                                              INT_MAX,
-                                              error,
-                                              /* parameters: */
-                                              G_TYPE_INVALID,
-                                              /* return values: */
-                                              G_TYPE_INVALID);
-        return res;
-}
-
-static void
-do_system_restart (GdmGreeterLoginWindow *login_window)
-{
-        gboolean         res;
-        GError          *error;
-        DBusGConnection *connection;
-
-        error = NULL;
-        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-        if (connection == NULL) {
-                g_warning ("Unable to get system bus connection: %s", error->message);
-                g_error_free (error);
-                return;
-        }
-
-        res = try_system_restart (connection, &error);
-        if (!res) {
-                g_debug ("GdmGreeterLoginWindow: unable to restart system: %s: %s",
-                         dbus_g_error_get_name (error),
-                         error->message);
-		g_error_free (error);
-        }
-}
-
-static void
-do_system_stop (GdmGreeterLoginWindow *login_window)
-{
-        gboolean         res;
-        GError          *error;
-        DBusGConnection *connection;
-
-        error = NULL;
-        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-        if (connection == NULL) {
-                g_warning ("Unable to get system bus connection: %s", error->message);
-                g_error_free (error);
-                return;
-        }
-
-        res = try_system_stop (connection, &error);
-        if (!res) {
-                g_debug ("GdmGreeterLoginWindow: unable to stop system: %s: %s",
-                         dbus_g_error_get_name (error),
-                         error->message);
-                g_error_free (error);
-        }
-}
-
-static void
-restart_button_clicked (GtkButton             *button,
-                        GdmGreeterLoginWindow *login_window)
-{
-        g_debug ("GdmGreeterLoginWindow: restart button clicked");
-        do_system_restart (login_window);
-}
-
-static void
-shutdown_button_clicked (GtkButton             *button,
-                         GdmGreeterLoginWindow *login_window)
-{
-        g_debug ("GdmGreeterLoginWindow: stop button clicked");
-        do_system_stop (login_window);
 }
 
 static void
@@ -1400,19 +1119,8 @@ load_theme (GdmGreeterLoginWindow *login_window)
         login_window->priv->auth_banner_label = glade_xml_get_widget (login_window->priv->xml, "auth-banner-label");
         /*make_label_small_italic (login_window->priv->auth_banner_label);*/
 
-        button = glade_xml_get_widget (login_window->priv->xml, "suspend-button");
-        g_signal_connect (button, "clicked", G_CALLBACK (suspend_button_clicked), login_window);
-
         button = glade_xml_get_widget (login_window->priv->xml, "cancel-button");
         g_signal_connect (button, "clicked", G_CALLBACK (cancel_button_clicked), login_window);
-
-        button = glade_xml_get_widget (login_window->priv->xml, "disconnect-button");
-        g_signal_connect (button, "clicked", G_CALLBACK (disconnect_button_clicked), login_window);
-
-        button = glade_xml_get_widget (login_window->priv->xml, "restart-button");
-        g_signal_connect (button, "clicked", G_CALLBACK (restart_button_clicked), login_window);
-        button = glade_xml_get_widget (login_window->priv->xml, "shutdown-button");
-        g_signal_connect (button, "clicked", G_CALLBACK (shutdown_button_clicked), login_window);
 
         entry = glade_xml_get_widget (login_window->priv->xml, "auth-prompt-entry");
         /* Only change the invisible character if it '*' otherwise assume it is OK */
@@ -1779,8 +1487,6 @@ gdm_greeter_login_window_finalize (GObject *object)
         if (login_window->priv->client != NULL) {
                 g_object_unref (login_window->priv->client);
         }
-
-        remove_sensitize_power_buttons_timeout (login_window);
 
         G_OBJECT_CLASS (gdm_greeter_login_window_parent_class)->finalize (object);
 }
