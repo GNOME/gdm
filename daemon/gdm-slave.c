@@ -881,6 +881,16 @@ gdm_slave_get_timed_login_details (GdmSlave   *slave,
         if (usernamep != NULL) {
                 *usernamep = gdm_slave_parse_enriched_login (slave,
                         username, slave->priv->display_name);
+        } else {
+                g_free (username);
+
+                if (enabledp != NULL) {
+                        *enabledp = enabled;
+                }
+                if (delayp != NULL) {
+                        *delayp = delay;
+                }
+                return TRUE;
         }
         g_free (username);
 
