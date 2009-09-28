@@ -18,6 +18,8 @@ AM_CPPFLAGS = \
 	-DSBINDIR=\""$(sbindir)"\"		 	\
 	-DGDM_CACHE_DIR=\""$(localstatedir)/cache/gdm"\"	\
 	-DAT_SPI_REGISTRYD_DIR="\"$(AT_SPI_REGISTRYD_DIR)\""	\
+	$(DEVKIT_POWER_CFLAGS)				\
+	-DI_KNOW_THE_DEVICEKIT_POWER_API_IS_SUBJECT_TO_CHANGE	\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(GTK_CFLAGS)					\
 	$(SIMPLE_GREETER_CFLAGS)			\
@@ -90,6 +92,7 @@ test_greeter_login_window_LDADD =	\
 	libgdmuser.la			\
 	$(COMMON_LIBS)			\
 	$(SIMPLE_GREETER_LIBS)		\
+	$(DEVKIT_POWER_LIBS)		\
 	$(RBAC_LIBS)			\
 	$(NULL)
 
@@ -324,6 +327,7 @@ gdm_simple_greeter_LDADD = 		\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(RBAC_LIBS)			\
 	$(LIBXKLAVIER_LIBS)		\
+	$(DEVKIT_POWER_LIBS)		\
 	$(NULL)
 
 gladedir = $(pkgdatadir)
