@@ -836,6 +836,8 @@ gdm_slave_parse_enriched_login (GdmSlave *slave,
         } else {
                 return (g_strdup (username));
         }
+
+	return NULL;
 }
 
 gboolean
