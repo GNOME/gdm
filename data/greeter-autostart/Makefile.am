@@ -30,6 +30,7 @@ EXTRA_DIST = 			\
 	gdm-simple-greeter.desktop.in.in	\
 	gnome-power-manager.desktop.in.in	\
 	gnome-settings-daemon.desktop.in.in	\
+	polkit-gnome-authentication-agent-1.desktop.in.in \
 	$(desktop_in_files)	\
 	$(NULL)
 
@@ -39,6 +40,7 @@ DISTCLEANFILES =			\
 	gdm-simple-greeter.desktop.in	\
 	gnome-power-manager.desktop.in	\
 	gnome-settings-daemon.desktop.in	\
+	polkit-gnome-authentication-agent-1.desktop.in \
 	$(NULL)
 
 MAINTAINERCLEANFILES =                  \
