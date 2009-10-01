@@ -45,7 +45,7 @@
 
 struct GdmStaticDisplayPrivate
 {
-        gboolean enable_timed_login;
+        gboolean first_login;
 };
 
 enum {
@@ -121,6 +121,8 @@ gdm_static_display_unmanage (GdmDisplay *display)
 {
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
+        GDM_STATIC_DISPLAY (display)->priv->first_login = FALSE;
+
         GDM_DISPLAY_CLASS (gdm_static_display_parent_class)->unmanage (display);
 
         return TRUE;
@@ -158,12 +160,14 @@ gdm_static_display_get_timed_login_details (GdmDisplay *display,
                                             char      **usernamep,
                                             int        *delayp)
 {
-        if (GDM_STATIC_DISPLAY (display)->priv->enable_timed_login) {
-                GDM_DISPLAY_CLASS (gdm_static_display_parent_class)->get_timed_login_details (display, enabledp, usernamep, delayp);
-        } else {
-                *enabledp = FALSE;
-                *usernamep = g_strdup ("");
-                *delayp = 0;
+        GDM_DISPLAY_CLASS (gdm_static_display_parent_class)->get_timed_login_details (display, enabledp, usernamep, delayp);
+
+        if (!GDM_STATIC_DISPLAY (display)->priv->first_login) {
+                /* if this is autologin but not timed login, then disable
+                 * autologin after the first one */
+                if (*enabledp && *delayp == 0) {
+                        *enabledp = FALSE;
+                }
         }
 }
 
@@ -196,7 +200,7 @@ gdm_static_display_init (GdmStaticDisplay *static_display)
 
         static_display->priv = GDM_STATIC_DISPLAY_GET_PRIVATE (static_display);
 
-        static_display->priv->enable_timed_login = TRUE;
+        static_display->priv->first_login = TRUE;
 }
 
 static void
