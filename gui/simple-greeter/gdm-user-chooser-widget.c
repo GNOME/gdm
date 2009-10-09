@@ -130,6 +130,8 @@ get_icon_height_for_widget (GtkWidget *widget)
 static void
 update_other_user_visibility (GdmUserChooserWidget *widget)
 {
+        int number_of_users;
+
         if (!widget->priv->show_user_other) {
                 if (widget->priv->has_user_other) {
                         remove_user_other (widget);
@@ -138,14 +140,14 @@ update_other_user_visibility (GdmUserChooserWidget *widget)
                 return;
         }
 
-        if (gdm_chooser_widget_get_number_of_items (GDM_CHOOSER_WIDGET (widget)) == 1) {
-                /* we hide the Other user if it's the last one, and we show it
-                 * if there's another user */
-                if (widget->priv->has_user_other) {
-                        remove_user_other (widget);
-                } else {
-                        add_user_other (widget);
-                }
+        number_of_users = gdm_chooser_widget_get_number_of_items (GDM_CHOOSER_WIDGET (widget));
+
+        /* we hide the Other user if it's the last one, and we show it
+         * if there's another user */
+        if (number_of_users == 1 && widget->priv->has_user_other) {
+                remove_user_other (widget);
+        } if (number_of_users >= 1 && !widget->priv->has_user_other) {
+                add_user_other (widget);
         }
 }
 
