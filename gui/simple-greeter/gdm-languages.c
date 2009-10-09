@@ -222,9 +222,9 @@ make_codeset_canonical_for_locale (const char  *name,
 {
         char *old_locale;
 
-        old_locale = setlocale (LC_CTYPE, name);
+        old_locale = setlocale (LC_CTYPE, NULL);
 
-        if (old_locale == NULL) {
+        if (setlocale (LC_CTYPE, name) == NULL) {
                 return;
         }
 
