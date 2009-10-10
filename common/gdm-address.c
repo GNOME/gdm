@@ -132,6 +132,7 @@ gdm_address_get_sockaddr_storage (GdmAddress *address)
         struct sockaddr_storage *ss;
 
         g_return_val_if_fail (address != NULL, NULL);
+        g_return_val_if_fail (address->ss != NULL, NULL);
 
         ss = g_memdup (address->ss, sizeof (struct sockaddr_storage));
 
@@ -200,7 +201,8 @@ gdm_address_get_hostname (GdmAddress *address,
         int      res;
         gboolean ret;
 
-        g_return_val_if_fail (address != NULL || address->ss != NULL, FALSE);
+        g_return_val_if_fail (address != NULL, FALSE);
+        g_return_val_if_fail (address->ss != NULL, FALSE);
 
         ret = FALSE;
 
@@ -238,7 +240,8 @@ gdm_address_get_numeric_info (GdmAddress *address,
         int      res;
         gboolean ret;
 
-        g_return_val_if_fail (address != NULL || address->ss != NULL, FALSE);
+        g_return_val_if_fail (address != NULL, FALSE);
+        g_return_val_if_fail (address->ss != NULL, FALSE);
 
         ret = FALSE;
 

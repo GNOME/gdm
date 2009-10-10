@@ -183,6 +183,8 @@ open_ck_session (GdmSessionWorker  *worker)
         const char     *display_hostname;
         gboolean        is_local;
 
+        ret = FALSE;
+
         if (worker->priv->x11_display_name != NULL) {
                 display_name = worker->priv->x11_display_name;
         } else {
@@ -212,7 +214,7 @@ open_ck_session (GdmSessionWorker  *worker)
 
         pwent = getpwnam (worker->priv->username);
         if (pwent == NULL) {
-                return FALSE;
+                goto out;
         }
 
         worker->priv->ckc = ck_connector_new ();
@@ -1660,6 +1662,7 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
                                    &shell);
         if (! res) {
                 g_debug ("GdmSessionWorker: Unable to lookup account info");
+                error_code = PAM_AUTHINFO_UNAVAIL;
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_GIVING_CREDENTIALS,

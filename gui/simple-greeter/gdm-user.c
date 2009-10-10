@@ -718,8 +718,8 @@ gdm_user_collate (GdmUser *user1,
         gulong      num1;
         gulong      num2;
 
-        g_return_val_if_fail (user1 == NULL || GDM_IS_USER (user1), 0);
-        g_return_val_if_fail (user2 == NULL || GDM_IS_USER (user2), 0);
+        g_return_val_if_fail (GDM_IS_USER (user1), 0);
+        g_return_val_if_fail (GDM_IS_USER (user2), 0);
 
         if (user1->real_name != NULL) {
                 str1 = user1->real_name;

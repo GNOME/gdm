@@ -39,7 +39,7 @@ main (int argc, char *argv[])
         char             *std_out;
         char             *hostname;
         GRegex           *re;
-        GMatchInfo       *match_info;
+        GMatchInfo       *match_info = NULL;
         gboolean          res;
         GError           *error;
 

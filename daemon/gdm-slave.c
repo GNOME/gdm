@@ -789,7 +789,6 @@ gdm_slave_parse_enriched_login (GdmSlave *slave,
                 char     **argv;
                 char      *std_output;
                 char      *std_error;
-                int       *exit_status;
 
                 /* Remove the pipe symbol */
                 username[username_length-1] = '\0';
@@ -814,7 +813,7 @@ gdm_slave_parse_enriched_login (GdmSlave *slave,
                                     NULL,
                                     &std_output,
                                     &std_error,
-                                    exit_status,
+                                    NULL,
                                     &error);
 
                 g_ptr_array_foreach (env, (GFunc)g_free, NULL);
