@@ -401,7 +401,7 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
         if (slave->priv->server_display == NULL) {
                 g_warning ("Unable to connect to display %s", slave->priv->display_name);
                 ret = FALSE;
-        } else {
+        } else if (slave->priv->display_is_local) {
                 XHostAddress host_entries[2] = {
                         { FamilyServerInterpreted },
                         { FamilyServerInterpreted }
@@ -431,6 +431,9 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
 
                 XAddHosts (slave->priv->server_display, host_entries,
                            G_N_ELEMENTS (host_entries));
+        } else {
+                g_debug ("GdmSlave: Connected to display %s", slave->priv->display_name);
+                ret = TRUE;
         }
 
         return ret;
