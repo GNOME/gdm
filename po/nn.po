@@ -8,10 +8,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nn\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
-"cgi?product=gdm&component=general\n"
-"POT-Creation-Date: 2009-09-12 01:28+0000\n"
-"PO-Revision-Date: 2009-10-16 10:33+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-10-16 10:35+0200\n"
+"PO-Revision-Date: 2009-10-16 10:37+0200\n"
 "Last-Translator: Åsmund Skjæveland <aasmunds@ulrik.uio.no>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +32,6 @@ msgstr "Bruk feilsøkingskode"
 
 #: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
 #: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
-#| msgid "Display"
 msgid "Display ID"
 msgstr "Display-ID"
 
@@ -44,7 +42,6 @@ msgstr "id"
 
 #: ../daemon/factory-slave-main.c:183 ../daemon/product-slave-main.c:187
 #: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:192
-#| msgid "GNOME Desktop Manager"
 msgid "GNOME Display Manager Slave"
 msgstr "GNOME displayhandsamar-slave"
 
@@ -58,7 +55,6 @@ msgid "Unable to initialize login system"
 msgstr "Klarte ikkje å starta påloggingsystemet"
 
 #: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:256
-#| msgid "Couldn't authenticate user"
 msgid "Unable to authenticate user"
 msgstr "Klarte ikkje autentisera brukar"
 
@@ -66,22 +62,12 @@ msgstr "Klarte ikkje autentisera brukar"
 msgid "Unable to authorize user"
 msgstr "Klarte ikkje å autorisera brukar"
 
-#: ../daemon/gdm-factory-slave.c:281 ../daemon/gdm-simple-slave.c:432
-#| msgid "Unable to establish service %s: %s\n"
+#: ../daemon/gdm-factory-slave.c:281
 msgid "Unable to establish credentials"
 msgstr "Klarte ikkje å fastslå akkreditering"
 
 #: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1111
-#| msgid ""
-#| "Could not start the X\n"
-#| "server (your graphical environment)\n"
-#| "due to some internal error.\n"
-#| "Please contact your system administrator\n"
-#| "or check your syslog to diagnose.\n"
-#| "In the meantime this display will be\n"
-#| "disabled.  Please restart GDM when\n"
-#| "the problem is corrected."
+#: ../daemon/gdm-simple-slave.c:1105
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -98,28 +84,27 @@ msgstr ""
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: Klarte ikkje kopla til forelderdisplay «%s»"
 
-#: ../daemon/gdm-server.c:361, c-format
-#| msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
+#: ../daemon/gdm-server.c:361
+#, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Tenaren skulle startast av brukar %s, men den brukaren finst ikkje"
 
-#: ../daemon/gdm-server.c:372 ../daemon/gdm-welcome-session.c:444, c-format
-#| msgid "%s: Couldn't set groupid to %d"
+#: ../daemon/gdm-server.c:372 ../daemon/gdm-welcome-session.c:444
+#, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Klarte ikkje setja groupid til %d"
 
-#: ../daemon/gdm-server.c:378 ../daemon/gdm-welcome-session.c:450, c-format
-#| msgid "%s: initgroups () failed for %s"
+#: ../daemon/gdm-server.c:378 ../daemon/gdm-welcome-session.c:450
+#, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () feila for %s"
 
-#: ../daemon/gdm-server.c:384 ../daemon/gdm-welcome-session.c:456, c-format
-#| msgid "%s: Couldn't set userid to %d"
+#: ../daemon/gdm-server.c:384 ../daemon/gdm-welcome-session.c:456
+#, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Klarte ikkje setja brukarid til %d"
 
 #: ../daemon/gdm-server.c:392 ../daemon/gdm-welcome-session.c:464
-#| msgid "%s: Couldn't set groupid to 0"
 msgid "Couldn't set groupid to 0"
 msgstr "Klarte ikkje setja groupid til 0"
 
@@ -149,12 +134,10 @@ msgid "Username"
 msgstr "Brukarnamn"
 
 #: ../daemon/gdm-session-auditor.c:91
-#| msgid "Username"
 msgid "The username"
 msgstr "Brukarnamnet"
 
 #: ../daemon/gdm-session-auditor.c:95
-#| msgid "Username"
 msgid "Hostname"
 msgstr "Vertsnamn"
 
@@ -163,7 +146,6 @@ msgid "The hostname"
 msgstr "Vertsnamnet"
 
 #: ../daemon/gdm-session-auditor.c:101
-#| msgid "Display"
 msgid "Display Device"
 msgstr "Display-eining"
 
@@ -171,275 +153,275 @@ msgstr "Display-eining"
 msgid "The display device"
 msgstr "Display-eininga"
 
-#: ../daemon/gdm-session-worker.c:1293
+#: ../daemon/gdm-session-direct.c:1564 ../daemon/gdm-session-direct.c:1582
+#, c-format
+msgid "worker exited with status %d"
+msgstr "arbeidar avslutta med status %d"
+
+#: ../daemon/gdm-session-worker.c:1085
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "feil under oppstart av samtale med autentiseringssystemet - %s"
 
-#: ../daemon/gdm-session-worker.c:1294
+#: ../daemon/gdm-session-worker.c:1086
 msgid "general failure"
 msgstr "uspesifikk feil"
 
-#: ../daemon/gdm-session-worker.c:1295
+#: ../daemon/gdm-session-worker.c:1087
 msgid "out of memory"
 msgstr "tom for minne"
 
-#: ../daemon/gdm-session-worker.c:1296
+#: ../daemon/gdm-session-worker.c:1088
 msgid "application programmer error"
 msgstr "programmeringsfeil"
 
-#: ../daemon/gdm-session-worker.c:1297
-#| msgid "Unknown error occurred."
+#: ../daemon/gdm-session-worker.c:1089
 msgid "unknown error"
 msgstr "ukjent feil"
 
-#: ../daemon/gdm-session-worker.c:1304
+#: ../daemon/gdm-session-worker.c:1096
 msgid "Username:"
 msgstr "Brukarnamn:"
 
-#: ../daemon/gdm-session-worker.c:1310
+#: ../daemon/gdm-session-worker.c:1102
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "feil under varsling av autentiseringssystemet om foretrukken "
 "brukarnamndialog - %s"
 
-#: ../daemon/gdm-session-worker.c:1324
+#: ../daemon/gdm-session-worker.c:1116
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
-"feil under varsling av autentiseringssystemet om vertsnamnet til brukaren - "
-"%s"
+"feil under varsling av autentiseringssystemet om vertsnamnet til brukaren - %"
+"s"
 
-#: ../daemon/gdm-session-worker.c:1339
+#: ../daemon/gdm-session-worker.c:1131
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
 "feil under varsling av autentiseringssystemet om konsollet til brukaren - %s"
 
-#: ../daemon/gdm-session-worker.c:1352
+#: ../daemon/gdm-session-worker.c:1144
 #, c-format
 msgid "error informing authentication system of display string - %s"
 msgstr "feil under varsling av autentiseringssystemet om display-streng - %s"
 
-#: ../daemon/gdm-session-worker.c:1367, c-format
+#: ../daemon/gdm-session-worker.c:1159
+#, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
 msgstr ""
 "feil under varsling av autentiseringssystemet om display-xauth-akkreditering "
 "- %s"
 
-#: ../daemon/gdm-session-worker.c:1648 ../daemon/gdm-session-worker.c:1666
+#: ../daemon/gdm-session-worker.c:1439 ../daemon/gdm-session-worker.c:1457
 #, c-format
 msgid "no user account available"
 msgstr "ingen brukarkonto tilgjengeleg"
 
-#: ../daemon/gdm-session-worker.c:1693
+#: ../daemon/gdm-session-worker.c:1484
 msgid "Unable to change to user"
 msgstr "Klarte ikkje å byta til brukar"
 
-#: ../daemon/gdm-welcome-session.c:426, c-format
-#| msgid "Xnest doesn't exist."
+#: ../daemon/gdm-simple-slave.c:429
+msgid "Unable establish credentials"
+msgstr "Klarte ikkje å fastslå akkreditering"
+
+#: ../daemon/gdm-welcome-session.c:426
+#, c-format
 msgid "User %s doesn't exist"
 msgstr "Brukaren %s finst ikkje"
 
-#: ../daemon/gdm-welcome-session.c:433, c-format
-#| msgid "Xnest doesn't exist."
+#: ../daemon/gdm-welcome-session.c:433
+#, c-format
 msgid "Group %s doesn't exist"
 msgstr "Gruppa %s finst ikkje"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:595
-#| msgid "%s: Could not create socket!"
 msgid "Could not create socket!"
 msgstr "Klarte ikkje laga sokkel!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:862
+#: ../daemon/gdm-xdmcp-display-factory.c:860
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Avslo XDCMP-førespurnad frå vert %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1019
-#: ../daemon/gdm-xdmcp-display-factory.c:1240
-#| msgid "%s: Could not extract authlist from packet"
+#: ../daemon/gdm-xdmcp-display-factory.c:1017
+#: ../daemon/gdm-xdmcp-display-factory.c:1238
 msgid "Could not extract authlist from packet"
 msgstr "Klarte ikkje henta autentiseringsliste frå pakken"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1032
-#: ../daemon/gdm-xdmcp-display-factory.c:1255
-#| msgid "%s: Error in checksum"
+#: ../daemon/gdm-xdmcp-display-factory.c:1030
+#: ../daemon/gdm-xdmcp-display-factory.c:1253
 msgid "Error in checksum"
 msgstr "Feil i sjekksum"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1506
-#| msgid "%s: Bad address"
+#: ../daemon/gdm-xdmcp-display-factory.c:1504
 msgid "Bad address"
 msgstr "Ugyldig adresse"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1587
+#: ../daemon/gdm-xdmcp-display-factory.c:1585
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: Klarte ikkje lesa displayadresse"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1595
+#: ../daemon/gdm-xdmcp-display-factory.c:1593
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s: Klarte ikkje lesa portnummeret til displayet."
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1604
+#: ../daemon/gdm-xdmcp-display-factory.c:1602
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s: Klarte ikkje henta autentiseringsliste frå pakken"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1624
+#: ../daemon/gdm-xdmcp-display-factory.c:1622
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: Feil i sjekksum"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2133
+#: ../daemon/gdm-xdmcp-display-factory.c:2131
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Fekk REQUEST frå bannlyst vert %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2143
-#: ../daemon/gdm-xdmcp-display-factory.c:2498
-#: ../daemon/gdm-xdmcp-display-factory.c:2750
+#: ../daemon/gdm-xdmcp-display-factory.c:2141
+#: ../daemon/gdm-xdmcp-display-factory.c:2496
+#: ../daemon/gdm-xdmcp-display-factory.c:2748
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Klarte ikkje lesa displaynummer"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2150
+#: ../daemon/gdm-xdmcp-display-factory.c:2148
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Klarte ikkje lesa tilkoplingstype"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2157
+#: ../daemon/gdm-xdmcp-display-factory.c:2155
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Klarte ikkje lesa klientadressa"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2165
+#: ../daemon/gdm-xdmcp-display-factory.c:2163
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Klarte ikkje lesa autentiseringsnamn"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2174
+#: ../daemon/gdm-xdmcp-display-factory.c:2172
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Klarte ikkje lesa autentiseringsdata"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2184
+#: ../daemon/gdm-xdmcp-display-factory.c:2182
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Klarte ikkje lesa autoriseringslista"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2203
+#: ../daemon/gdm-xdmcp-display-factory.c:2201
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Klarte ikkje lesa produsent-ID"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2230
+#: ../daemon/gdm-xdmcp-display-factory.c:2228
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Sjekksum feila for %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2482
+#: ../daemon/gdm-xdmcp-display-factory.c:2480
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Fekk Manage frå bannlyst vert %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2491
-#: ../daemon/gdm-xdmcp-display-factory.c:2757
+#: ../daemon/gdm-xdmcp-display-factory.c:2489
+#: ../daemon/gdm-xdmcp-display-factory.c:2755
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Klarte ikkje lesa økt-ID"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2505
+#: ../daemon/gdm-xdmcp-display-factory.c:2503
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Klarte ikkje lesa displayklasse"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2610
-#: ../daemon/gdm-xdmcp-display-factory.c:2660
-#: ../daemon/gdm-xdmcp-display-factory.c:2666
+#: ../daemon/gdm-xdmcp-display-factory.c:2608
+#: ../daemon/gdm-xdmcp-display-factory.c:2658
+#: ../daemon/gdm-xdmcp-display-factory.c:2664
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Klarte ikkje lesa adresse"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2740
+#: ../daemon/gdm-xdmcp-display-factory.c:2738
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Fekk KEEPALIVE frå bannlyst vert %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2829
-#| msgid "%s: Could not read XDMCP header!"
+#: ../daemon/gdm-xdmcp-display-factory.c:2827
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory: Klarte ikkje lesa XDMCP-hovud!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2835
+#: ../daemon/gdm-xdmcp-display-factory.c:2833
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
-#| msgid "%s: Incorrect XDMCP version!"
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XDMCP: Feil versjon av XDMCP!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2841
+#: ../daemon/gdm-xdmcp-display-factory.c:2839
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
 msgid "XMDCP: Unable to parse address"
 msgstr "XDMCP: Klarte ikkje å tolka adressa"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3286, c-format
-#| msgid "%s: Could not get server hostname: %s!"
+#: ../daemon/gdm-xdmcp-display-factory.c:3284
+#, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Klarte ikkje å få tak i maskinnamnet til tenaren: %s!"
 
-#: ../daemon/main.c:237 ../daemon/main.c:250, c-format
-#| msgid "Cannot write PID file %s: possibly out of diskspace.  Error: %s"
+#: ../daemon/main.c:237 ../daemon/main.c:250
+#, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace: %s"
 msgstr "Klarte ikkje skriva PID-fila %s. Kanskje disken er full: %s"
 
-#: ../daemon/main.c:270, c-format
-#| msgid ""
-#| "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
+#: ../daemon/main.c:270
+#, c-format
 msgid "Logdir %s does not exist or isn't a directory."
 msgstr "Loggkatalogen %s finst ikkje eller er ikkje ein katalog."
 
 # TRN: Authorization or authentication?
-#: ../daemon/main.c:283, c-format
-#| msgid "%s: Authdir %s does not exist. Aborting."
+#: ../daemon/main.c:283
+#, c-format
 msgid "Authdir %s does not exist. Aborting."
 msgstr "Autorisasjonskatalogen %s finst ikkje. Stoppar."
 
-#: ../daemon/main.c:287, c-format
-#| msgid "%s: Authdir %s is not a directory. Aborting."
+#: ../daemon/main.c:287
+#, c-format
 msgid "Authdir %s is not a directory. Aborting."
 msgstr "Autorisasjonskatalogen %s er ikkje ein katalog. Stoppar."
 
-#: ../daemon/main.c:361, c-format
-#| msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
+#: ../daemon/main.c:361
+#, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
 msgstr ""
 " Autorisasjonskatalogen %s er ikkje eigd av brukar %d gruppe %d. Stoppar."
 
-#: ../daemon/main.c:368, c-format
-#| msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
+#: ../daemon/main.c:368
+#, c-format
 msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr "Autorisasjonskatalogen %s har feil løyve %o. Må ha %o. Stoppar."
 
-#: ../daemon/main.c:405, c-format
-#| msgid "%s: Can't find the GDM user '%s'. Aborting!"
+#: ../daemon/main.c:405
+#, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Klarte ikkje finna GDM-brukaren «%s». Stoppar."
 
 #: ../daemon/main.c:411
-#| msgid "%s: The GDM user should not be root. Aborting!"
 msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM-brukaren skal ikkje vera root. Stoppar."
 
-#: ../daemon/main.c:417, c-format
-#| msgid "%s: Can't find the GDM group '%s'. Aborting!"
+#: ../daemon/main.c:417
+#, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Klarte ikkje finna GDM-gruppa «%s». Stoppar."
 
 #: ../daemon/main.c:423
-#| msgid "%s: The GDM group should not be root. Aborting!"
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM-gruppa skal ikkje vera root. Stoppar."
 
@@ -456,18 +438,15 @@ msgid "Print GDM version"
 msgstr "Skriv GDM-versjon"
 
 #: ../daemon/main.c:534
-#| msgid "GNOME Desktop Manager"
 msgid "GNOME Display Manager"
 msgstr "GNOME displayhandsamar"
 
 #. make sure the pid file doesn't get wiped
 #: ../daemon/main.c:595
-#| msgid "Only root wants to run GDM\n"
 msgid "Only root wants to run GDM"
 msgstr "Det er berre root som skal starta GDM"
 
 #: ../daemon/session-worker-main.c:149
-#| msgid "GDM (The GNOME Display Manager) is not running."
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Display Manager øktarbeidar"
 
@@ -476,7 +455,7 @@ msgid "AT SPI Registry Wrapper"
 msgstr "AT SPI registerinnpakking"
 
 #: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1767
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1921
 msgid "Login Window"
 msgstr "Innloggingsvindauge"
 
@@ -493,7 +472,6 @@ msgid "GNOME Settings Daemon"
 msgstr "GNOME innstillingsnisse"
 
 #: ../data/greeter-autostart/gnome-mag.desktop.in.h:1
-#| msgid "GNOME Desktop Manager"
 msgid "GNOME Screen Magnifier"
 msgstr "GNOME skjermforstørrar"
 
@@ -510,7 +488,6 @@ msgid "Use an onscreen keyboard"
 msgstr "Vis tastatur på skjermen"
 
 #: ../data/greeter-autostart/metacity.desktop.in.h:1
-#| msgid "Security"
 msgid "Metacity"
 msgstr "Metacity"
 
@@ -522,23 +499,15 @@ msgstr "Orca skjermlesar"
 msgid "Present on-screen information as speech or braille"
 msgstr "Legg fram informasjon på skjermen som tale eller blindeskrift"
 
-#: ../data/greeter-autostart/polkit-gnome-authentication-agent-1.desktop.in.h:1
-#| msgid "Authentication failed"
-msgid "PolicyKit Authentication Agent"
-msgstr "PolicyKit autentiseringsagent"
-
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:148
-#| msgid "Select User Image"
 msgid "Select System"
 msgstr "Vel system"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:214
-#| msgid "%s: Could not create XDMCP buffer!"
-msgid "XDMCP: Could not create XDMCP buffer!"
+msgid "XMCP: Could not create XDMCP buffer!"
 msgstr "XDMCP: Klarte ikkje laga XDMCP-mellomlager."
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:220
-#| msgid "%s: Could not read XDMCP header!"
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Klarte ikkje lesa XDMCP-hovud."
 
@@ -550,37 +519,28 @@ msgstr "Verdi"
 msgid "percentage of time complete"
 msgstr "prosent ferdig, i tid"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1321
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1306
 msgid "Inactive Text"
 msgstr "Inaktiv tekst"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1322
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1307
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr ""
 "Tekst som vert brukt i merkelappen om brukaren ikkje har gjort eit val enno"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1330
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1315
 msgid "Active Text"
 msgstr "Aktiv tekst"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1331
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1316
 msgid "The text to use in the label if the user has picked an item"
 msgstr "Tekst som vert brukt i merkelappen om brukaren har gjort eit val"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1340
-msgid "List Visible"
-msgstr "Liste synleg"
-
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1341
-msgid "Whether or not the chooser list is visible"
-msgstr "Om veljarlista er synleg"
 
 #: ../gui/simple-greeter/gdm-clock-widget.c:66
 msgid "%l:%M:%S %p"
 msgstr "%H.%M.%S"
 
 #: ../gui/simple-greeter/gdm-clock-widget.c:66
-#| msgid "%a %b %d, %l:%M %p"
 msgid "%l:%M %p"
 msgstr "%H.%M"
 
@@ -590,7 +550,6 @@ msgstr "%H.%M"
 #. *              01" instead of "May  1").
 #.
 #: ../gui/simple-greeter/gdm-clock-widget.c:72
-#| msgid "%a %b %d, %H:%M"
 msgid "%a %b %e"
 msgstr "%a %e. %b"
 
@@ -598,28 +557,45 @@ msgstr "%a %e. %b"
 #. *              if the time should come before the
 #. *              date on a clock in your locale.
 #.
-#: ../gui/simple-greeter/gdm-clock-widget.c:77, c-format
-#| msgid "%s: %s"
+#: ../gui/simple-greeter/gdm-clock-widget.c:77
+#, c-format
 msgid "%1$s, %2$s"
 msgstr "%1$s %2$s"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:291
-#| msgid "Automatic login"
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:288
 msgid "Automatically logging in..."
 msgstr "Loggar inn automatisk …"
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:758
-#| msgid "Master halting..."
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:718
 msgid "Cancelling..."
 msgstr "Stoppar …"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1185
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1187
+msgid "Failed to restart computer"
+msgstr "Klarte ikkje å starta datamaskina på nytt"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1190
+msgid ""
+"You are not allowed to restart the computer because multiple users are "
+"logged in"
+msgstr ""
+"Du kan ikkje starta datamaskina på nytt fordi fleire brukarar er logga inn"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1271
+msgid "Failed to stop computer"
+msgstr "Klarte ikkje å slå av datamaskina"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1274
+msgid ""
+"You are not allowed to stop the computer because multiple users are logged in"
+msgstr "Du kan ikkje slå av datamaskina fordi fleire brukarar er logga inn"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1358
 msgid "Select language and click Log In"
 msgstr "Vel språk og klikk «Logg inn»"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:1
-#| msgid "Authentication failed"
 msgid "Authentication Dialog"
 msgstr "Autentiseringsdialog"
 
@@ -628,7 +604,6 @@ msgid "Computer Name"
 msgstr "Maskinnamn"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:3
-#| msgid "Just _Log In"
 msgid "Log In"
 msgstr "Logg inn"
 
@@ -637,51 +612,47 @@ msgid "Restart"
 msgstr "Start om att"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
-#| msgid "Shut _Down"
 msgid "Shut Down"
 msgstr "Slå av"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
-#| msgid "_Suspend"
 msgid "Suspend"
 msgstr "Gå i kvilemodus"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
-#| msgid "_Session"
 msgid "Version"
 msgstr "Versjon"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:583
-#| msgid "_Cancel"
+#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:8
+msgid "page 5"
+msgstr "side 5"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:554
 msgid "Panel"
 msgstr "Panel"
 
 #: ../gui/simple-greeter/gdm-language-chooser-dialog.c:201
-#| msgid "_Language"
 msgid "Languages"
 msgstr "Språk"
 
 #: ../gui/simple-greeter/gdm-language-chooser-widget.c:272
-#| msgid "_Language"
 msgid "_Languages:"
 msgstr "S_pråk:"
 
 #: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
-#: ../gui/simple-greeter/gdm-language-option-widget.c:274
-#| msgid "_Language"
+#: ../gui/simple-greeter/gdm-language-option-widget.c:262
 msgid "_Language:"
 msgstr "S_pråk:"
 
 #. translators: This brings up a dialog
 #. * with a list of languages to choose from
 #.
-#: ../gui/simple-greeter/gdm-language-option-widget.c:243
-#| msgid "_Other"
+#: ../gui/simple-greeter/gdm-language-option-widget.c:231
 msgctxt "language"
 msgid "Other..."
 msgstr "Anna …"
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:244
+#: ../gui/simple-greeter/gdm-language-option-widget.c:232
 msgid "Choose a language from the full list of available languages."
 msgstr "Vel eit språk frå den fulle lista over tilgjengelege språk."
 
@@ -695,48 +666,44 @@ msgstr "Tastaturoppsett"
 
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:200
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:201
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:266
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:254
 msgid "_Keyboard:"
 msgstr "_Tastatur:"
 
 #. translators: This brings up a dialog of
 #. * available keyboard layouts
 #.
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:235
-#| msgid "_Other"
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:223
 msgctxt "keyboard"
 msgid "Other..."
 msgstr "Anna …"
 
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:236
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:224
 msgid "Choose a keyboard layout from the full list of available layouts."
 msgstr ""
 "Vel eit tastaturoppsett frå den fulle lista over tilgjengelege oppsett."
 
-#: ../gui/simple-greeter/gdm-option-widget.c:521
+#: ../gui/simple-greeter/gdm-option-widget.c:494
 msgid "Label Text"
 msgstr "Tekst på merkelapp"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:522
+#: ../gui/simple-greeter/gdm-option-widget.c:495
 msgid "The text to use as a label"
 msgstr "Tekst å bruka på merkelapp"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:529
-#| msgid "Icon"
+#: ../gui/simple-greeter/gdm-option-widget.c:502
 msgid "Icon name"
 msgstr "Ikonnamn"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:530
+#: ../gui/simple-greeter/gdm-option-widget.c:503
 msgid "The icon to use with the label"
 msgstr "Ikon å bruka på merkelapp"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:538
-#| msgid "Default System Session"
+#: ../gui/simple-greeter/gdm-option-widget.c:511
 msgid "Default Item"
 msgstr "Standardelement"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:539
-#| msgid "This is the default system session"
+#: ../gui/simple-greeter/gdm-option-widget.c:512
 msgid "The id of the default item"
 msgstr "Id på standardelementet"
 
@@ -748,8 +715,8 @@ msgstr "Største tal på element"
 msgid "The maximum number of items to keep around in the list"
 msgstr "Det største talet på element å ha i lista"
 
-#: ../gui/simple-greeter/gdm-remote-login-window.c:188, c-format
-#| msgid "Remote Login via _XDMCP..."
+#: ../gui/simple-greeter/gdm-remote-login-window.c:188
+#, c-format
 msgid "Remote Login (Connecting to %s...)"
 msgstr "Fjerninnlogging ( Koplar til %s …)"
 
@@ -759,12 +726,10 @@ msgid "Remote Login (Connected to %s)"
 msgstr "Fjerninnlogging (kopla til %s)"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:281
-#| msgid "Remote Login via _XDMCP"
 msgid "Remote Login"
 msgstr "Fjerninnlogging"
 
 #: ../gui/simple-greeter/gdm-session-option-widget.c:162
-#| msgid "_Session"
 msgid "_Sessions:"
 msgstr "_Økter:"
 
@@ -773,170 +738,155 @@ msgid "Banner message text"
 msgstr "Overskrift"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
-msgid "Banner message text when chooser is empty"
-msgstr "Overskrift når veljaren er tom"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
 msgid "Disable showing the restart buttons"
 msgstr "Ikkje vis omstartknappane"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
 msgid "Do not show known users in the login window"
 msgstr "Ikkje vis kjende brukarar i påloggingsvindauget"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
-#| msgid "_Enable accessible login"
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
 msgid "Enable accessibility keyboard plugin"
 msgstr "Slå på tilgjengetillegg for tastatur"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
-#| msgid "Enable _Timed Login"
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
 msgid "Enable debugging"
 msgstr "Bruk feilsøking"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
 msgid "Enable debugging mode for the greeter."
 msgstr "Bruk feilsøkingsmodus i velkomsten."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
 msgid "Enable on-screen keyboard"
 msgstr "Bruk skrivebord på skjermen"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Enable screen magnifier"
 msgstr "Bruk skjermforstørrar"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
-#| msgid "_Login screen ready:"
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
 msgid "Enable screen reader"
 msgstr "Bruk skjermlesar"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
 msgid "Enable showing the banner message"
 msgstr "Vis overskrifta"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "Icon name to use for greeter logo"
 msgstr "Ikonnamn til velkomstlogoen"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Recently selected keyboard layouts"
 msgstr "Nyleg valde tastaturopsett"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid "Recently selected languages"
 msgstr "Nyleg valde språk"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
-msgid ""
-"Set to a list of keyboard layouts to be shown by default at the login window."
-msgstr ""
-".Lag ei liste over tastaturoppsett som skal visast i påloggingsvindauget"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
-msgid "Set to a list of languages to be shown by default at the login window."
-msgstr ".Lag ei liste over språk som skal visast i påloggingsvindauget"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
-msgid "Set to the themed icon name to use for the greeter logo."
-msgstr "Vel draktikonet som skal brukast i velkomstlogoen."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
-msgid "Set to true to disable showing known users in the login window."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
+msgid "Set to TRUE to disable showing known users in the login window."
 msgstr "Sett til sann for å ikkje visa kjende brukarar i påloggingsvindauget."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
-msgid "Set to true to disable showing the restart buttons in the login window."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
+msgid "Set to TRUE to disable showing the restart buttons in the login window."
 msgstr ""
 "Sett til sann for å slå av framsyning av omstartknappane i "
 "påloggingsvindauget."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
-msgid "Set to true to enable the background settings manager plugin."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
+msgid "Set to True to enable the background settings manager plugin."
 msgstr ""
 "Sett til sann for å bruka tillegget for bakgrunnsinnstillingshandsamaren."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
-msgid "Set to true to enable the media-keys settings manager plugin."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
+msgid "Set to True to enable the media-keys settings manager plugin."
 msgstr ""
 "Sett til sann for å bruka tillegget for mediatastinnstillingshandsamaren."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
-msgid "Set to true to enable the on-screen keyboard."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+msgid "Set to True to enable the on-screen keyboard."
 msgstr "Sett til sann for å bruka tastatur på skjermen."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid ""
-"Set to true to enable the plugin to manage the accessibility keyboard "
+"Set to True to enable the plugin to manage the accessibility keyboard "
 "settings."
 msgstr ""
 "Sett til sann for å bruka tillegget til å styra innstillingar for "
 "tastaturhjelpefunksjonar."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
-msgid "Set to true to enable the screen magnifier."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+msgid "Set to True to enable the screen magnifier."
 msgstr "Sett til sann for å bruka skjermforstørraren."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
-msgid "Set to true to enable the screen reader."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+msgid "Set to True to enable the screen reader."
 msgstr "Sett til sann for å bruka skjermlesaren."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
-msgid "Set to true to enable the sound settings manager plugin."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+msgid "Set to True to enable the sound settings manager plugin."
 msgstr "Sett til sann for å bruka tillegget for handsaming av lydstyring."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
-msgid "Set to true to enable the xrandr settings manager plugin."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+msgid "Set to True to enable the xrandr settings manager plugin."
 msgstr ""
 "Sett til sann for å bruka tillegget for handsaming av xrandr-innstillingar."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
-msgid "Set to true to enable the xsettings settings manager plugin."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+msgid "Set to True to enable the xsettings settings manager plugin."
 msgstr ""
 "Sett til sann for å bruka tillegget for styring av xsettings-innstillingar."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+msgid ""
+"Set to a list of keyboard layouts to be shown by default at the login window."
+msgstr ""
+".Lag ei liste over tastaturoppsett som skal visast i påloggingsvindauget"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+msgid "Set to a list of languages to be shown by default at the login window."
+msgstr ".Lag ei liste over språk som skal visast i påloggingsvindauget"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+msgid "Set to the themed icon name to use for the greeter logo."
+msgstr "Vel draktikonet som skal brukast i velkomstlogoen."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
 msgid "Set to true to show the banner message text."
 msgstr "Sett til sann for å visa tekstoverskrifta."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "Set to true to use compiz as the window manager."
 msgstr "Sett til sann for å bruka compiz som vindaugehandsamar."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
-msgid ""
-"Text banner message to show on the login window when the user chooser is "
-"empty, instead of banner_message_text."
-msgstr ""
-"Tekstoverskrift å visa på påloggingsskjermen når brukarveljaren er tom, i "
-"staden for banner_message_text."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "Text banner message to show on the login window."
 msgstr "Tekstoverskrift å visa på påloggingsskjermen."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
 msgid "True if the background settings manager plugin is enabled."
 msgstr "Sann om tillegget for styring av bakgrunnsinnstillingar er i bruk."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr ""
 "Sann om tillegget for styring av innstillingar for mediatastar er i bruk."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "Sann om tillegget for styring av lydinnstillingar er i bruk."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "True if the xrandr settings manager plugin is enabled."
 msgstr "Sann om tillegget for styring av xrandr-innstillingar er i bruk."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:37
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "Sann om tillegget for styring av xsettings-innstillingar er i bruk."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:38
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
 msgid "Use compiz as the window manager"
 msgstr "Bruk compiz som vindaugehandsamar"
 
@@ -949,7 +899,6 @@ msgid "Number of seconds until timer stops"
 msgstr "Kor mange sekund til nedteljinga stoggar"
 
 #: ../gui/simple-greeter/gdm-timer.c:157
-#| msgid "_Start Again"
 msgid "Start time"
 msgstr "Starttid"
 
@@ -958,7 +907,6 @@ msgid "Time the timer was started"
 msgstr "Tida nedteljinga starta"
 
 #: ../gui/simple-greeter/gdm-timer.c:165
-#| msgid "GDM is not running"
 msgid "Is it Running?"
 msgstr "Går ho?"
 
@@ -966,12 +914,11 @@ msgstr "Går ho?"
 msgid "Whether or not the timer is currently ticking"
 msgstr "Om nedteljinga går"
 
-#: ../gui/simple-greeter/gdm-user.c:245
-#| msgid "_Language"
+#: ../gui/simple-greeter/gdm-user.c:242
 msgid "Manager"
 msgstr "Handsamar"
 
-#: ../gui/simple-greeter/gdm-user.c:246
+#: ../gui/simple-greeter/gdm-user.c:243
 msgid "The user manager object this user is controlled by."
 msgstr "Brukarhandsamarobjektet denne brukaren er kontrollert av."
 
@@ -980,41 +927,37 @@ msgstr "Brukarhandsamarobjektet denne brukaren er kontrollert av."
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:164
-#| msgid "_Other"
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:136
 msgctxt "user"
 msgid "Other..."
 msgstr "Anna …"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:165
-#| msgid "Choose an Action"
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:137
 msgid "Choose a different account"
 msgstr "Vel ein annan konto"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:177
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:149
 msgid "Guest"
 msgstr "Gjest"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:178
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:150
 msgid "Login as a temporary guest"
 msgstr "Logg inn som mellombels gjest"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:191
-#| msgid "Automatic login"
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:162
 msgid "Automatic Login"
 msgstr "Automatisk innlogging"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:192
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:163
 msgid "Automatically login to the system after selecting options"
 msgstr "Logg inn på systemet automatisk etter å ha gjort val"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:383, c-format
-#| msgid "Log in anyway"
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:354
+#, c-format
 msgid "Log in as %s"
 msgstr "Logg inn som %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:737
-#| msgid "Already logged in"
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:699
 msgid "Currently logged in"
 msgstr "Er logga inn"
 
@@ -1066,8 +1009,8 @@ msgstr ""
 
 #: ../gui/user-switch-applet/applet.c:647
 #: ../gui/user-switch-applet/applet.c:784
-#: ../gui/user-switch-applet/applet.c:823, c-format
-#| msgid "Can't write to %s: %s"
+#: ../gui/user-switch-applet/applet.c:823
+#, c-format
 msgid "Can't lock screen: %s"
 msgstr "Klarte ikke låsa skjermen: %s"
 
@@ -1076,10 +1019,8 @@ msgstr "Klarte ikke låsa skjermen: %s"
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "Klarte ikkje å mellombels byta til skjermsparar med blank skjerm: %s"
 
-#: ../gui/user-switch-applet/applet.c:882, c-format
-#| msgid ""
-#| "Last login:\n"
-#| "%s"
+#: ../gui/user-switch-applet/applet.c:882
+#, c-format
 msgid "Can't logout: %s"
 msgstr "Klarte ikkje logga ut: %s"
 
@@ -1117,7 +1058,6 @@ msgstr "Byt brukar"
 
 #. Only show switch user if there are other users
 #: ../gui/user-switch-applet/applet.c:1179
-#| msgid "_Quit"
 msgid "Quit..."
 msgstr "Avslutt …"
 
@@ -1167,12 +1107,11 @@ msgstr "Ignorert - teke med av kompatibilitetsomsyn"
 msgid "COMMAND"
 msgstr "KOMMANDO"
 
-#: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:42
 msgid "Debugging output"
 msgstr "Utdata frå feilsøking"
 
 #: ../utils/gdmflexiserver.c:68
-#| msgid "How to use this application"
 msgid "Version of this application"
 msgstr "Versjonen av dette programmet"
 
@@ -1183,23 +1122,40 @@ msgstr "Klarte ikkje identifisera den noverande økta."
 
 #. Option parsing
 #: ../utils/gdmflexiserver.c:711
-#| msgid "- Nested gdm login"
 msgid "- New GDM login"
 msgstr "- Ny GDM-innlogging"
 
 #: ../utils/gdmflexiserver.c:767
-#| msgid "Cannot start new display"
 msgid "Unable to start new display"
 msgstr "Klarte ikkje starta nytt display"
 
-#: ../utils/gdm-screenshot.c:219
-msgid "Screenshot taken"
-msgstr "Skjermbilete teke"
-
 #. Option parsing
-#: ../utils/gdm-screenshot.c:284
+#: ../utils/gdm-screenshot.c:231
 msgid "Take a picture of the screen"
 msgstr "Ta eit bilete av skjermen"
+
+#~| msgid "Authentication failed"
+#~ msgid "PolicyKit Authentication Agent"
+#~ msgstr "PolicyKit autentiseringsagent"
+
+#~ msgid "List Visible"
+#~ msgstr "Liste synleg"
+
+#~ msgid "Whether or not the chooser list is visible"
+#~ msgstr "Om veljarlista er synleg"
+
+#~ msgid "Banner message text when chooser is empty"
+#~ msgstr "Overskrift når veljaren er tom"
+
+#~ msgid ""
+#~ "Text banner message to show on the login window when the user chooser is "
+#~ "empty, instead of banner_message_text."
+#~ msgstr ""
+#~ "Tekstoverskrift å visa på påloggingsskjermen når brukarveljaren er tom, i "
+#~ "staden for banner_message_text."
+
+#~ msgid "Screenshot taken"
+#~ msgstr "Skjermbilete teke"
 
 #~ msgid "CDE"
 #~ msgstr "CDE"
@@ -1465,9 +1421,6 @@ msgstr "Ta eit bilete av skjermen"
 
 #~ msgid "GDM restarting ..."
 #~ msgstr "Gdm startar på nytt..."
-
-#~ msgid "Failed to restart self"
-#~ msgstr "Klarte ikkje å starta meg sjølv om att"
 
 #~ msgid "main daemon: Got SIGABRT. Something went very wrong. Going down!"
 #~ msgstr "hovudnisse: Fekk SIGABRT. Noko gjekk veldig feil. Avsluttar."
