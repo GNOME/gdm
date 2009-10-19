@@ -267,7 +267,11 @@ check_logdir (void)
 
         r = g_stat (log_path, &statbuf);
         if (r < 0 || ! S_ISDIR (statbuf.st_mode))  {
-                gdm_fail (_("Logdir %s does not exist or isn't a directory."), log_path);
+                if (g_mkdir (log_path, 0755) < 0) {
+                        gdm_fail (_("Logdir %s does not exist or isn't a directory."),
+                                  log_path);
+                }
+                g_chmod (log_path, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
         }
 }
 
