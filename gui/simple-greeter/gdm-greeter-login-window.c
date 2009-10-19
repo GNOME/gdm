@@ -56,7 +56,9 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
+#ifdef HAVE_DEVICEKIT_POWER
 #include <devkit-power-gobject/devicekit-power.h>
+#endif
 
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
@@ -475,6 +477,7 @@ adjust_other_login_visibility(GdmGreeterLoginWindow *login_window)
         }
 }
 
+#ifdef HAVE_DEVICEKIT_POWER
 static gboolean
 can_suspend (GdmGreeterLoginWindow *login_window)
 {
@@ -489,6 +492,7 @@ can_suspend (GdmGreeterLoginWindow *login_window)
         g_object_unref (dkp_client);
         return ret;
 }
+#endif
 
 static void
 remove_sensitize_power_buttons_timeout (GdmGreeterLoginWindow *login_window)
@@ -539,7 +543,12 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         gboolean    show_suspend_button;
 
         show_restart_buttons = get_show_restart_buttons (login_window);
+
+#ifdef HAVE_DEVICEKIT_POWER
         show_suspend_button = can_suspend (login_window);
+#else
+        show_suspend_button = FALSE;
+#endif
 
         /* we want to run this even if we're supposed to
            be in the mode already so that we reset everything
@@ -625,6 +634,7 @@ do_disconnect (GdmGreeterLoginWindow *login_window)
         gtk_main_quit ();
 }
 
+#ifdef HAVE_DEVICEKIT_POWER
 static void
 do_suspend (GdmGreeterLoginWindow *login_window)
 {
@@ -642,6 +652,7 @@ do_suspend (GdmGreeterLoginWindow *login_window)
         }
         g_object_unref (dkp_client);
 }
+#endif
 
 static void
 delete_entry_text (GtkWidget *entry)
@@ -960,7 +971,9 @@ static void
 suspend_button_clicked (GtkButton             *button,
                         GdmGreeterLoginWindow *login_window)
 {
+#ifdef HAVE_DEVICEKIT_POWER
         do_suspend (login_window);
+#endif
 }
 
 

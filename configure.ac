@@ -105,8 +105,14 @@ AC_SUBST(GCONF_CFLAGS)
 AC_SUBST(GCONF_LIBS)
 
 PKG_CHECK_MODULES(DEVKIT_POWER,
-        devkit-power-gobject >= $DEVKIT_POWER_REQUIRED_VERSION
+        devkit-power-gobject >= $DEVKIT_POWER_REQUIRED_VERSION,
+        have_devicekit_power=yes,
+        have_devicekit_power=no
 )
+if test "x$have_devicekit_power" = "xyes" ; then
+  AC_DEFINE(HAVE_DEVICEKIT_POWER, [], [Define if we have DeviceKit-power])
+fi
+AC_SUBST(HAVE_DEVICEKIT_POWER)
 AC_SUBST(DEVKIT_POWER_CFLAGS)
 AC_SUBST(DEVKIT_POWER_LIBS)
 
