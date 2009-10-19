@@ -1,4 +1,21 @@
 ===============
+Version 2.28.1
+===============
+
+- GDM will now avoid calling XAddHosts for remote connections.  Refer to bug
+  #598142 for more information.
+- Now GDM uses DeviceKit-power instead of gnome-power-manager for Suspend
+  support.
+- Now the at-spi-registryd-wrapper.desktop GDM autostart file will run
+  at-spi-registryd directly instead of calling at-spi-registryd-wrapper.
+- Fix to the visibility check for the "Other" button which corrects some
+  situations where the button would not appear when it was supposed to.
+- Now the GDM daemon will make the /var/log/gdm directory if it does not exist.
+- Fixes to avoid autologin failure when a NULL username is passed in.
+- Restore CTYPE when canonicalizing codesets.
+- Several fixes to avoid warnings.
+
+===============
 Version 2.28.0
 ===============
 
