@@ -77,6 +77,8 @@ struct GdmGreeterPanelPrivate
         GtkWidget              *option_hbox;
         GtkWidget              *hostname_label;
         GtkWidget              *clock;
+        GtkWidget              *shutdown_button;
+        GtkWidget              *shutdown_menu;
         GtkWidget              *language_option_widget;
         GtkWidget              *layout_option_widget;
         GtkWidget              *session_option_widget;
@@ -780,12 +782,48 @@ get_show_restart_buttons (GdmGreeterPanel *panel)
 }
 
 static void
+position_shutdown_menu (GtkMenu         *menu,
+                        int             *x,
+                        int             *y,
+                        gboolean        *push_in,
+                        GdmGreeterPanel *panel)
+{
+        GtkRequisition menu_requisition;
+
+        *push_in = TRUE;
+
+        *x = panel->priv->shutdown_button->allocation.x;
+        gtk_window_get_position (GTK_WINDOW (panel), NULL, y);
+
+        gtk_widget_size_request (GTK_WIDGET (menu), &menu_requisition);
+
+        *y -= menu_requisition.height;
+}
+
+static void
+on_shutdown_button_toggled (GdmGreeterPanel *panel)
+{
+        if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (panel->priv->shutdown_button))) {
+                gtk_menu_popup (GTK_MENU (panel->priv->shutdown_menu), NULL, NULL,
+                                (GtkMenuPositionFunc) position_shutdown_menu,
+                                panel, 0, 0);
+        } else {
+                gtk_menu_popdown (GTK_MENU (panel->priv->shutdown_menu));
+        }
+}
+
+static void
+on_shutdown_menu_deactivate (GdmGreeterPanel *panel)
+{
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (panel->priv->shutdown_button),
+                                      FALSE);
+}
+
+static void
 gdm_greeter_panel_init (GdmGreeterPanel *panel)
 {
         NaTray    *tray;
         GtkWidget *spacer;
-        GtkWidget *shutdown_menu;
-        GtkWidget *menu, *menu_item;
 
         gdm_profile_start (NULL);
 
@@ -863,39 +901,48 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
         }
 
         if (panel->priv->display_is_local || get_show_restart_buttons (panel)) {
-                shutdown_menu = gtk_menu_bar_new ();
+                GtkWidget *menu_item;
+                GtkWidget *image;
 
-                menu_item = gtk_image_menu_item_new ();
-                menu = gtk_menu_new ();
-                gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), menu);
-                gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (menu_item), TRUE);
-                gtk_menu_item_set_label (GTK_MENU_ITEM (menu_item), "");
-                gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item),
-                                               gtk_image_new_from_icon_name ("system-shutdown", GTK_ICON_SIZE_BUTTON));
-                gtk_menu_shell_append (GTK_MENU_SHELL (shutdown_menu), menu_item);
+                panel->priv->shutdown_button = gtk_toggle_button_new ();
+                gtk_button_set_relief (GTK_BUTTON (panel->priv->shutdown_button),
+                                       GTK_RELIEF_NONE);
+
+                panel->priv->shutdown_menu = gtk_menu_new ();
+                gtk_menu_attach_to_widget (GTK_MENU (panel->priv->shutdown_menu),
+                                           panel->priv->shutdown_button, NULL);
+                g_signal_connect_swapped (panel->priv->shutdown_button, "toggled",
+                                          G_CALLBACK (on_shutdown_button_toggled), panel);
+                g_signal_connect_swapped (panel->priv->shutdown_menu, "deactivate",
+                                          G_CALLBACK (on_shutdown_menu_deactivate), panel);
+
+                image = gtk_image_new_from_icon_name ("system-shutdown", GTK_ICON_SIZE_BUTTON);
+                gtk_widget_show (image);
+                gtk_container_add (GTK_CONTAINER (panel->priv->shutdown_button), image);
 
                 if (panel->priv->display_is_local) {
                         menu_item = gtk_menu_item_new_with_label ("Disconnect");
                         g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_disconnect), NULL);
-                        gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+                        gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
                 } else {
                         if (can_suspend ()) {
                                 menu_item = gtk_menu_item_new_with_label ("Suspend");
                                 g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_system_suspend), NULL);
-                                gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+                                gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
                         }
 
                         menu_item = gtk_menu_item_new_with_label ("Restart");
                         g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_system_restart), NULL);
-                        gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+                        gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
 
                         menu_item = gtk_menu_item_new_with_label ("Shut Down");
                         g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_system_stop), NULL);
-                        gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+                        gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
                 }
 
-                gtk_box_pack_end (GTK_BOX (panel->priv->hbox), GTK_WIDGET (shutdown_menu), FALSE, FALSE, 0);
-                gtk_widget_show_all (GTK_WIDGET (shutdown_menu));
+                gtk_box_pack_end (GTK_BOX (panel->priv->hbox), GTK_WIDGET (panel->priv->shutdown_button), FALSE, FALSE, 0);
+                gtk_widget_show_all (panel->priv->shutdown_menu);
+                gtk_widget_show_all (GTK_WIDGET (panel->priv->shutdown_button));
         }
 
         panel->priv->clock = gdm_clock_widget_new ();
