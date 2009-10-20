@@ -926,16 +926,16 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
                         gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
                 } else {
                         if (can_suspend ()) {
-                                menu_item = gtk_menu_item_new_with_label ("Suspend");
+                                menu_item = gtk_menu_item_new_with_label (_("Suspend"));
                                 g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_system_suspend), NULL);
                                 gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
                         }
 
-                        menu_item = gtk_menu_item_new_with_label ("Restart");
+                        menu_item = gtk_menu_item_new_with_label (_("Restart"));
                         g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_system_restart), NULL);
                         gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
 
-                        menu_item = gtk_menu_item_new_with_label ("Shut Down");
+                        menu_item = gtk_menu_item_new_with_label (_("Shut Down"));
                         g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_system_stop), NULL);
                         gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
                 }
