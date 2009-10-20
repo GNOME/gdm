@@ -60,7 +60,8 @@ typedef struct
 GType                  gdm_greeter_panel_get_type                       (void);
 
 GtkWidget            * gdm_greeter_panel_new                            (GdkScreen *screen,
-                                                                         int        monitor);
+                                                                         int        monitor,
+                                                                         gboolean   is_local);
 
 void                   gdm_greeter_panel_show_user_options              (GdmGreeterPanel *panel);
 void                   gdm_greeter_panel_hide_user_options              (GdmGreeterPanel *panel);
