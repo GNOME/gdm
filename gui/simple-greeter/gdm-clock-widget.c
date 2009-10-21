@@ -44,8 +44,10 @@ struct GdmClockWidgetPrivate
 {
         GtkWidget *label;
         char      *time_format;
+        char      *tooltip_format;
         guint      update_clock_id;
         guint      should_show_seconds : 1;
+        guint      should_show_date : 1;
 };
 
 static void     gdm_clock_widget_class_init  (GdmClockWidgetClass *klass);
@@ -55,38 +57,59 @@ static gboolean update_timeout_cb            (GdmClockWidget      *clock);
 
 G_DEFINE_TYPE (GdmClockWidget, gdm_clock_widget, GTK_TYPE_ALIGNMENT)
 
-static char *
-get_time_format (GdmClockWidget *clock)
+static void
+update_time_format (GdmClockWidget *clock)
 {
-        const char *time_format;
-        const char *date_format;
         char       *clock_format;
-        char       *result;
+        char       *tooltip_format;
 
-        time_format = clock->priv->should_show_seconds ? _("%l:%M:%S %p") : _("%l:%M %p");
-        /* translators: replace %e with %d if, when the day of the
-         *              month as a decimal number is a single digit, it
-         *              should begin with a 0 in your locale (e.g. "May
-         *              01" instead of "May  1").
-         */
-        date_format = _("%a %b %e");
-        /* translators: reverse the order of these arguments
-         *              if the time should come before the
-         *              date on a clock in your locale.
-         */
-        clock_format = g_strdup_printf (_("%1$s, %2$s"),
-                                        date_format,
-                                        time_format);
+        if (clock->priv->should_show_date && clock->priv->should_show_seconds) {
+                /* translators: This is the time format to use when both
+                 * the date and time with seconds are being shown together.
+                 */
+                clock_format = _("%a %b %e, %l:%M:%S %p");
+                tooltip_format = NULL;
+        } else if (clock->priv->should_show_date && !clock->priv->should_show_seconds) {
+                /* translators: This is the time format to use when both
+                 * the date and time without seconds are being shown together.
+                 */
+                clock_format = _("%a %b %e, %l:%M %p");
 
-        result = g_locale_from_utf8 (clock_format, -1, NULL, NULL, NULL);
-        g_free (clock_format);
+                tooltip_format = NULL;
+        } else if (!clock->priv->should_show_date && clock->priv->should_show_seconds) {
+                /* translators: This is the time format to use when there is
+                 * no date, just weekday and time with seconds.
+                 */
+                clock_format = _("%a %l:%M:%S %p");
 
-        return result;
+                /* translators: This is the time format to use for the date
+                 */
+                tooltip_format = _("%x");
+        } else {
+                /* translators: This is the time format to use when there is
+                 * no date, just weekday and time without seconds.
+                 */
+                clock_format = _("%a %l:%M %p");
+
+                tooltip_format = _("%x");
+        }
+
+        g_free (clock->priv->time_format);
+        clock->priv->time_format = g_locale_from_utf8 (clock_format, -1, NULL, NULL, NULL);
+
+        g_free (clock->priv->tooltip_format);
+
+        if (tooltip_format != NULL) {
+                clock->priv->tooltip_format = g_locale_from_utf8 (tooltip_format, -1, NULL, NULL, NULL);
+        } else {
+                clock->priv->tooltip_format = NULL;
+        }
 }
 
 static void
 update_clock (GtkLabel   *label,
-              const char *format)
+              const char *clock_format,
+              const char *tooltip_format)
 {
         time_t     t;
         struct tm *tm;
@@ -99,13 +122,25 @@ update_clock (GtkLabel   *label,
                 g_warning ("Unable to get broken down local time");
                 return;
         }
-        if (strftime (buf, sizeof (buf), format, tm) == 0) {
-                g_warning ("Couldn't format time: %s", format);
+        if (strftime (buf, sizeof (buf), clock_format, tm) == 0) {
+                g_warning ("Couldn't format time: %s", clock_format);
                 strcpy (buf, "???");
         }
         utf8 = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
         gtk_label_set_text (label, utf8);
         g_free (utf8);
+
+        if (tooltip_format != NULL) {
+                if (strftime (buf, sizeof (buf), tooltip_format, tm) == 0) {
+                        g_warning ("Couldn't format tooltip date: %s", tooltip_format);
+                        strcpy (buf, "???");
+                }
+                utf8 = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+                gtk_widget_set_tooltip_text (GTK_WIDGET (label), utf8);
+                g_free (utf8);
+        } else {
+                gtk_widget_set_has_tooltip (GTK_WIDGET (label), FALSE);
+        }
 }
 
 static void
@@ -142,7 +177,8 @@ update_timeout_cb (GdmClockWidget *clock)
 
         if (clock->priv->label != NULL) {
                 update_clock (GTK_LABEL (clock->priv->label),
-                              clock->priv->time_format);
+                              clock->priv->time_format,
+                              clock->priv->tooltip_format);
         }
 
         set_clock_timeout (clock, new_time);
@@ -214,10 +250,11 @@ gdm_clock_widget_init (GdmClockWidget *widget)
         gtk_container_add (GTK_CONTAINER (widget), box);
 
         widget->priv->label = gtk_label_new ("");
+
         gtk_widget_show (widget->priv->label);
         gtk_box_pack_start (GTK_BOX (box), widget->priv->label, FALSE, FALSE, 0);
 
-        widget->priv->time_format = get_time_format (widget);
+        update_time_format (widget);
         update_timeout_cb (widget);
 }
 
