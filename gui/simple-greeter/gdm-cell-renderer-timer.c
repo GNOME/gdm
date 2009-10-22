@@ -164,7 +164,6 @@ draw_timer (GdmCellRendererTimer *renderer,
         cairo_arc (context, 0, 0, radius + 1, 0, 2 * G_PI);
         cairo_fill (context);
 
-        cairo_set_operator (context, CAIRO_OPERATOR_SOURCE);
         cairo_set_source_rgb (context,
                               bg->red / 65535.0,
                               bg->green / 65535.0,
