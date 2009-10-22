@@ -108,19 +108,11 @@ gdm_cell_renderer_timer_get_size (GtkCellRenderer *cell,
         }
 
         if (width != NULL) {
-                if (cell->width >= 0) {
-                        *width = cell->width;
-                } else {
-                        *width = renderer->priv->value <= G_MINDOUBLE?  0 : 64;
-                }
+                *width = cell->xpad * 2 + 42;
         }
 
         if (height != NULL) {
-                if (cell->height >= 0) {
-                        *height = cell->height;
-                } else {
-                        *height = renderer->priv->value <= G_MINDOUBLE?  0 : 64;
-                }
+                *height = cell->ypad * 2 + 42;
         }
 }
 
