@@ -12,7 +12,7 @@
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
@@ -26,7 +26,6 @@
 
 #include "na-tray-manager.h"
 #include "fixedtip.h"
-#include "obox.h"
 
 #include "na-tray.h"
 
@@ -83,6 +82,27 @@ static TraysScreen *trays_screens = NULL;
 
 static void icon_tip_show_next (IconTip *icontip);
 
+/* NaBox, an instantiable GtkBox */
+
+typedef GtkBox      NaBox;
+typedef GtkBoxClass NaBoxClass;
+
+static GType na_box_get_type (void);
+
+G_DEFINE_TYPE (NaBox, na_box, GTK_TYPE_BOX)
+
+static void
+na_box_init (NaBox *box)
+{
+}
+
+static void
+na_box_class_init (NaBoxClass *klass)
+{
+}
+
+/* NaTray */
+
 G_DEFINE_TYPE (NaTray, na_tray, GTK_TYPE_BIN)
 
 static NaTray *
@@ -115,7 +135,6 @@ tray_added (NaTrayManager *manager,
   gtk_box_pack_end (GTK_BOX (priv->box), icon, FALSE, FALSE, 0);
 
   gtk_widget_show (icon);
-  na_tray_force_redraw (tray);
 }
 
 static void
@@ -130,8 +149,6 @@ tray_removed (NaTrayManager *manager,
     return;
 
   g_assert (tray->priv->trays_screen == trays_screen);
-
-  na_tray_force_redraw (tray);
 
   g_hash_table_remove (trays_screen->icon_table, icon);
   /* this will also destroy the tip associated to this icon */
@@ -247,8 +264,9 @@ icon_tip_show_next (IconTip *icontip)
   icontip->id = buffer->id;
 
   if (buffer->timeout > 0)
-    icontip->source_id = g_timeout_add (buffer->timeout * 1000,
-                                        icon_tip_show_next_timeout, icontip);
+    icontip->source_id = g_timeout_add_seconds (buffer->timeout,
+                                                icon_tip_show_next_timeout,
+                                                icontip);
 
   icon_tip_buffer_free (buffer, NULL);
 }
@@ -375,7 +393,7 @@ update_size_and_orientation (NaTray *tray)
 {
   NaTrayPrivate *priv = tray->priv;
 
-  na_obox_set_orientation (NA_OBOX (priv->box), priv->orientation);
+  gtk_orientable_set_orientation (GTK_ORIENTABLE (priv->box), priv->orientation);
 
   /* This only happens when setting the property during object construction */
   if (!priv->trays_screen)
@@ -399,8 +417,38 @@ update_size_and_orientation (NaTray *tray)
       gtk_widget_set_size_request (priv->box, -1, MIN_BOX_SIZE);
       break;
     }
+}
 
-  na_tray_force_redraw (tray);
+/* Children with alpha channels have been set to be composited by calling
+ * gdk_window_set_composited(). We need to paint these children ourselves.
+ */
+static void
+na_tray_expose_icon (GtkWidget *widget,
+		     gpointer   data)
+{
+  cairo_t *cr = data;
+
+  if (na_tray_child_has_alpha (NA_TRAY_CHILD (widget)))
+    {
+      gdk_cairo_set_source_pixmap (cr, widget->window,
+				   widget->allocation.x,
+				   widget->allocation.y);
+      cairo_paint (cr);
+    }
+}
+
+static void
+na_tray_expose_box (GtkWidget      *box,
+		    GdkEventExpose *event)
+{
+  cairo_t *cr = gdk_cairo_create (box->window);
+
+  gdk_cairo_region (cr, event->region);
+  cairo_clip (cr);
+
+  gtk_container_foreach (GTK_CONTAINER (box), na_tray_expose_icon, cr);
+
+  cairo_destroy (cr);
 }
 
 static void
@@ -417,7 +465,9 @@ na_tray_init (NaTray *tray)
   gtk_container_add (GTK_CONTAINER (tray), priv->frame);
   gtk_widget_show (priv->frame);
 
-  priv->box = na_obox_new ();
+  priv->box = g_object_new (na_box_get_type (), NULL);
+  g_signal_connect (priv->box, "expose-event",
+		    G_CALLBACK (na_tray_expose_box), tray);
   gtk_box_set_spacing (GTK_BOX (priv->box), ICON_SPACING);
   gtk_container_add (GTK_CONTAINER (priv->frame), priv->box);
   gtk_widget_show (priv->box);
@@ -658,9 +708,9 @@ idle_redraw_cb (NaTray *tray)
 {
   NaTrayPrivate *priv = tray->priv;
 
+  gtk_container_foreach (GTK_CONTAINER (priv->box), (GtkCallback)na_tray_child_force_redraw, tray);
+  
   priv->idle_redraw_id = 0;
-  gtk_widget_hide (priv->box);
-  gtk_widget_show (priv->box);
 
   return FALSE;
 }
@@ -671,8 +721,6 @@ na_tray_force_redraw (NaTray *tray)
   NaTrayPrivate *priv = tray->priv;
 
   /* Force the icons to redraw their backgrounds.
-   * gtk_widget_queue_draw() doesn't work across process boundaries,
-   * so we do this instead.
    */
   if (priv->idle_redraw_id == 0)
     priv->idle_redraw_id = g_idle_add ((GSourceFunc) idle_redraw_cb, tray);

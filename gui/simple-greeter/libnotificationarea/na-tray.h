@@ -24,10 +24,10 @@
 #ifndef __NA_TRAY_H__
 #define __NA_TRAY_H__
 
-#include <gtk/gtk.h>
 #ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
 #endif
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
@@ -41,7 +41,6 @@ G_BEGIN_DECLS
 typedef struct _NaTray		NaTray;
 typedef struct _NaTrayPrivate	NaTrayPrivate;
 typedef struct _NaTrayClass	NaTrayClass;
-typedef struct _NaTrayChild	NaTrayChild;
 
 struct _NaTray
 {

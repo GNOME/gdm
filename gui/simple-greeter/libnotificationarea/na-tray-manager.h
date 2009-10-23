@@ -24,10 +24,12 @@
 #ifndef __NA_TRAY_MANAGER_H__
 #define __NA_TRAY_MANAGER_H__
 
-#include <gtk/gtk.h>
 #ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
 #endif
+#include <gtk/gtk.h>
+
+#include "na-tray-child.h"
 
 G_BEGIN_DECLS
 
@@ -40,7 +42,6 @@ G_BEGIN_DECLS
 	
 typedef struct _NaTrayManager	    NaTrayManager;
 typedef struct _NaTrayManagerClass  NaTrayManagerClass;
-typedef struct _NaTrayManagerChild  NaTrayManagerChild;
 
 struct _NaTrayManager
 {
@@ -64,18 +65,18 @@ struct _NaTrayManagerClass
   GObjectClass parent_class;
 
   void (* tray_icon_added)   (NaTrayManager      *manager,
-			      NaTrayManagerChild *child);
+			      NaTrayChild        *child);
   void (* tray_icon_removed) (NaTrayManager      *manager,
-			      NaTrayManagerChild *child);
+			      NaTrayChild        *child);
 
   void (* message_sent)      (NaTrayManager      *manager,
-			      NaTrayManagerChild *child,
+			      NaTrayChild        *child,
 			      const gchar        *message,
 			      glong               id,
 			      glong               timeout);
   
   void (* message_cancelled) (NaTrayManager      *manager,
-			      NaTrayManagerChild *child,
+			      NaTrayChild        *child,
 			      glong               id);
 
   void (* lost_selection)    (NaTrayManager      *manager);
@@ -87,8 +88,6 @@ gboolean        na_tray_manager_check_running   (GdkScreen          *screen);
 NaTrayManager  *na_tray_manager_new             (void);
 gboolean        na_tray_manager_manage_screen   (NaTrayManager      *manager,
 						 GdkScreen          *screen);
-char           *na_tray_manager_get_child_title (NaTrayManager      *manager,
-						 NaTrayManagerChild *child);
 void            na_tray_manager_set_orientation (NaTrayManager      *manager,
 						 GtkOrientation      orientation);
 GtkOrientation  na_tray_manager_get_orientation (NaTrayManager      *manager);
