@@ -599,6 +599,8 @@ na_tray_constructor (GType type,
         {
           trays_screens [screen_number].tray_manager = tray_manager;
 
+          na_tray_manager_set_padding (tray_manager, 0);
+
           g_signal_connect (tray_manager, "tray_icon_added",
                             G_CALLBACK (tray_added),
                             &trays_screens [screen_number]);
@@ -798,6 +800,16 @@ idle_redraw_cb (NaTray *tray)
   priv->idle_redraw_id = 0;
 
   return FALSE;
+}
+
+void
+na_tray_set_padding (NaTray *tray,
+                     gint    padding)
+{
+  NaTrayPrivate *priv = tray->priv;
+
+  if (get_tray (priv->trays_screen) == tray)
+    na_tray_manager_set_padding (priv->trays_screen->tray_manager, padding);
 }
 
 void

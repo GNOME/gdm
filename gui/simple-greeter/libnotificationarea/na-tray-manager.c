@@ -653,6 +653,32 @@ na_tray_manager_set_visual_property (NaTrayManager *manager)
 #endif
 }
 
+static void
+na_tray_manager_set_padding_property (NaTrayManager *manager)
+{
+#ifdef GDK_WINDOWING_X11
+  GdkDisplay *display;
+  Atom        orientation_atom;
+  gulong      data[1];
+
+  if (!manager->invisible || !manager->invisible->window)
+    return;
+
+  display = gtk_widget_get_display (manager->invisible);
+  orientation_atom = gdk_x11_get_xatom_by_name_for_display (display,
+                                                            "_NET_SYSTEM_TRAY_PADDING");
+
+  data[0] = manager->padding;
+
+  XChangeProperty (GDK_DISPLAY_XDISPLAY (display),
+		   GDK_WINDOW_XWINDOW (manager->invisible->window),
+                   orientation_atom,
+		   XA_CARDINAL, 32,
+		   PropModeReplace,
+		   (guchar *) &data, 1);
+#endif
+}
+
 #ifdef GDK_WINDOWING_X11
 
 static gboolean
@@ -697,6 +723,7 @@ na_tray_manager_manage_screen_x11 (NaTrayManager *manager,
 
   na_tray_manager_set_orientation_property (manager);
   na_tray_manager_set_visual_property (manager);
+  na_tray_manager_set_padding_property (manager);
   
   timestamp = gdk_x11_get_server_time (invisible->window);
 
@@ -833,6 +860,20 @@ na_tray_manager_set_orientation (NaTrayManager  *manager,
       na_tray_manager_set_orientation_property (manager);
 
       g_object_notify (G_OBJECT (manager), "orientation");
+    }
+}
+
+void
+na_tray_manager_set_padding (NaTrayManager *manager,
+                             gint           padding)
+{
+  g_return_if_fail (NA_IS_TRAY_MANAGER (manager));
+
+  if (manager->padding != padding)
+    {
+      manager->padding = padding;
+
+      na_tray_manager_set_padding_property (manager);
     }
 }
 
