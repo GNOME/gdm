@@ -65,6 +65,7 @@
 #define GPM_DBUS_INTERFACE "org.freedesktop.PowerManagement"
 
 #define KEY_DISABLE_RESTART_BUTTONS "/apps/gdm/simple-greeter/disable_restart_buttons"
+#define KEY_NOTIFICATION_AREA_PADDING "/apps/notification_area_applet/prefs/padding"
 
 #define GDM_GREETER_PANEL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_PANEL, GdmGreeterPanelPrivate))
 
@@ -824,6 +825,7 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
 {
         NaTray    *tray;
         GtkWidget *spacer;
+        int padding;
 
         gdm_profile_start (NULL);
 
@@ -955,6 +957,9 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
 
         tray = na_tray_new_for_screen (gtk_window_get_screen (GTK_WINDOW (panel)),
                                        GTK_ORIENTATION_HORIZONTAL);
+
+        padding = gconf_client_get_int (panel->priv->client, KEY_NOTIFICATION_AREA_PADDING, NULL);
+        na_tray_set_padding (tray, padding);
         gtk_box_pack_end (GTK_BOX (panel->priv->hbox), GTK_WIDGET (tray), FALSE, FALSE, 6);
         gtk_widget_show (GTK_WIDGET (tray));
         gdm_greeter_panel_hide_user_options (panel);
