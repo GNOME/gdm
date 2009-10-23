@@ -549,7 +549,6 @@ gdm_user_chooser_widget_constructor (GType                  type,
                                                                                                               n_construct_properties,
                                                                                                               construct_properties));
 
-        widget->priv->has_user_other = FALSE;
         widget->priv->show_normal_users = !is_user_list_disabled (widget);
 
         widget->priv->load_idle_id = g_idle_add ((GSourceFunc)load_users, widget);
