@@ -887,10 +887,8 @@ on_user_unchosen (GdmUserChooserWidget  *user_chooser,
         do_cancel (login_window);
 }
 
-static gboolean
-on_computer_info_label_button_press (GtkWidget             *widget,
-                                     GdkEventButton        *event,
-                                     GdmGreeterLoginWindow *login_window)
+static void
+rotate_computer_info (GdmGreeterLoginWindow *login_window)
 {
         GtkWidget *notebook;
         int        current_page;
@@ -907,6 +905,14 @@ on_computer_info_label_button_press (GtkWidget             *widget,
                 gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), 0);
         }
 
+}
+
+static gboolean
+on_computer_info_label_button_press (GtkWidget             *widget,
+                                     GdkEventButton        *event,
+                                     GdmGreeterLoginWindow *login_window)
+{
+        rotate_computer_info (login_window);
         return FALSE;
 }
 
@@ -996,10 +1002,19 @@ create_computer_info (GdmGreeterLoginWindow *login_window)
 
         label = glade_xml_get_widget (login_window->priv->xml, "computer-info-name-label");
         if (label != NULL) {
-                char localhost[HOST_NAME_MAX + 1] = "";•
+                char localhost[HOST_NAME_MAX + 1] = "";
 
-                if (gethostname (localhost, HOST_NAME_MAX) == 0) {•
+                if (gethostname (localhost, HOST_NAME_MAX) == 0) {
                         gtk_label_set_text (GTK_LABEL (label), localhost);
+                }
+
+                /* If this isn't actually unique identifier for the computer, then
+                 * don't bother showing it by default.
+                 */
+                if (strcmp (localhost, "localhost") == 0 ||
+                    strcmp (localhost, "localhost.localdomain") == 0) {
+
+                    rotate_computer_info (login_window);
                 }
         }
 
