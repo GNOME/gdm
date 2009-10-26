@@ -790,10 +790,21 @@ position_shutdown_menu (GtkMenu         *menu,
                         GdmGreeterPanel *panel)
 {
         GtkRequisition menu_requisition;
+        GdkScreen *screen;
+        int monitor;
 
         *push_in = TRUE;
 
-        *x = panel->priv->shutdown_button->allocation.x;
+        screen = gtk_widget_get_screen (GTK_WIDGET (panel));
+        monitor = gdk_screen_get_monitor_at_window (screen, GTK_WIDGET (panel)->window);
+        gtk_menu_set_monitor (menu, monitor);
+
+        gtk_widget_translate_coordinates (GTK_WIDGET (panel->priv->shutdown_button),
+                                          GTK_WIDGET (panel),
+                                          panel->priv->shutdown_button->allocation.x,
+                                          panel->priv->shutdown_button->allocation.y,
+                                          x, y);
+
         gtk_window_get_position (GTK_WINDOW (panel), NULL, y);
 
         gtk_widget_size_request (GTK_WIDGET (menu), &menu_requisition);
