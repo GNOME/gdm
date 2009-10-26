@@ -2074,7 +2074,6 @@ gdm_session_direct_close (GdmSession *session)
 
         g_hash_table_remove_all (impl->priv->environment);
 
-        impl->priv->session_pid = -1;
         impl->priv->is_running = FALSE;
 }
 
