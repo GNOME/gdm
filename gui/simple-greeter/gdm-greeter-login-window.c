@@ -996,7 +996,11 @@ create_computer_info (GdmGreeterLoginWindow *login_window)
 
         label = glade_xml_get_widget (login_window->priv->xml, "computer-info-name-label");
         if (label != NULL) {
-                gtk_label_set_text (GTK_LABEL (label), g_get_host_name ());
+                char localhost[HOST_NAME_MAX + 1] = "";•
+
+                if (gethostname (localhost, HOST_NAME_MAX) == 0) {•
+                        gtk_label_set_text (GTK_LABEL (label), localhost);
+                }
         }
 
         label = glade_xml_get_widget (login_window->priv->xml, "computer-info-version-label");
