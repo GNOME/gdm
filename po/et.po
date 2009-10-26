@@ -5,19 +5,19 @@
 # Copyright (C) 2007-2009 The GNOME Project.
 # This file is distributed under the same license as the GDM package.
 #
-# Lauris Kaplinski <lauris@ariman.ee>, 1999.
-# Tõivo Leedjärv <toivo@linux.ee>, 2002, 2003.
-# Ivar Smolin <okul@linux.ee>, 2005-2009.
-# Priit Laes <amd@store20.com>, 2005.
+# Lauris Kaplinski <lauris ariman ee>, 1999.
+# Tõivo Leedjärv <toivo linux ee>, 2002, 2003.
+# Ivar Smolin <okul linux ee>, 2005-2009.
+# Priit Laes <amd store20 com>, 2005.
 # Mattias Põldaru <mahfiaz gmail com>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: GDM HEAD\n"
+"Project-Id-Version: GDM MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&component=general\n"
-"POT-Creation-Date: 2009-09-10 01:13+0000\n"
-"PO-Revision-Date: 2009-09-10 22:09+0300\n"
+"POT-Creation-Date: 2009-10-26 14:55+0000\n"
+"PO-Revision-Date: 2009-10-26 17:41+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -421,27 +421,35 @@ msgstr "Nimekiri nähtaval"
 msgid "Whether or not the chooser list is visible"
 msgstr "Kas kasutajate valimise nimekiri on nähtaval või mitte"
 
-msgid "%l:%M:%S %p"
-msgstr "%H:%M:%S"
-
-msgid "%l:%M %p"
-msgstr "%H:%M"
-
-#. translators: replace %e with %d if, when the day of the
-#. *              month as a decimal number is a single digit, it
-#. *              should begin with a 0 in your locale (e.g. "May
-#. *              01" instead of "May  1").
+#. translators: This is the time format to use when both
+#. * the date and time with seconds are being shown together.
 #.
-msgid "%a %b %e"
-msgstr "%a, %e. %b"
+msgid "%a %b %e, %l:%M:%S %p"
+msgstr "%a, %e. %b, %H:%M:%S"
 
-#. translators: reverse the order of these arguments
-#. *              if the time should come before the
-#. *              date on a clock in your locale.
+#. translators: This is the time format to use when both
+#. * the date and time without seconds are being shown together.
+#.
+msgid "%a %b %e, %l:%M %p"
+msgstr "%a, %e. %b, %H:%M"
+
+#. translators: This is the time format to use when there is
+#. * no date, just weekday and time with seconds.
+#.
+msgid "%a %l:%M:%S %p"
+msgstr "%a %H:%M:%S"
+
+#. translators: This is the time format to use for the date
 #.
 #, c-format
-msgid "%1$s, %2$s"
-msgstr "%1$s, %2$s"
+msgid "%x"
+msgstr "%x"
+
+#. translators: This is the time format to use when there is
+#. * no date, just weekday and time without seconds.
+#.
+msgid "%a %l:%M %p"
+msgstr "%a %H:%M"
 
 msgid "Automatically logging in..."
 msgstr "Automaatne sisselogimine..."
@@ -462,20 +470,23 @@ msgstr "Arvuti nimi"
 msgid "Log In"
 msgstr "Logi sisse"
 
-msgid "Restart"
-msgstr "Taaskäivitamine"
-
-msgid "Shut Down"
-msgstr "Seiska"
-
-msgid "Suspend"
-msgstr "Peata"
-
 msgid "Version"
 msgstr "Versioon"
 
 msgid "Panel"
 msgstr "Paneel"
+
+msgid "Shutdown Options..."
+msgstr "Seiskamise valikud..."
+
+msgid "Suspend"
+msgstr "Peata"
+
+msgid "Restart"
+msgstr "Taaskäivitamine"
+
+msgid "Shut Down"
+msgstr "Seiska"
 
 msgid "Languages"
 msgstr "Keeled"
@@ -589,9 +600,6 @@ msgstr "Bännerisõnumi näitamise lubamine"
 msgid "Icon name to use for greeter logo"
 msgstr "Tervitaja logona kasutatava ikooni nimi"
 
-msgid "Include local users in Face Browser"
-msgstr "Kohalike kasutajate kaasamine nägudesirvijasse"
-
 msgid "Recently selected keyboard layouts"
 msgstr "Viimati valitud klaviatuuripaigutused"
 
@@ -605,12 +613,6 @@ msgstr ""
 
 msgid "Set to a list of languages to be shown by default at the login window."
 msgstr "Sisselogimisaknaga näidatavate keelte nimekirja määramine."
-
-msgid "Set to a list of users not to be shown in the Face Browser."
-msgstr "Nägudesirvijas näitamata jäetavate kasutajate nimekirja määramine."
-
-msgid "Set to a list of users to be shown by default in the Face Browser."
-msgstr "Nägudesirvijas vaikimisi näidatavate kasutajate nimekirja määramine."
 
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "Tervitaja logona kasutatava teemaikooni nimi."
@@ -654,11 +656,6 @@ msgstr "Kui märgitud, siis on xrandr sätetehalduri plugin lubatud."
 msgid "Set to true to enable the xsettings settings manager plugin."
 msgstr "Kui märgitud, siis on xsettings sätetehalduri plugin lubatud."
 
-msgid "Set to true to include system local users in Face Browser"
-msgstr ""
-"Kui märgitud, siis kaasatakse nägudesirvijasse ka kohalikud süsteemsed "
-"kasutajad"
-
 msgid "Set to true to show the banner message text."
 msgstr "Kui märgitud, siis kuvatakse bännerisõnumit."
 
@@ -692,12 +689,6 @@ msgstr "Kui märgitud, siis on xsettings sätetehalduri plugin lubatud."
 
 msgid "Use compiz as the window manager"
 msgstr "Compiz'i kasutamine aknahalduriks"
-
-msgid "Users to exclude in the Face Browser"
-msgstr "Nägudesirvijast väljajäetavad kasutajad"
-
-msgid "Users to include in the Face Browser"
-msgstr "Nägudesirvijasse kaasatavad kasutajad"
 
 msgid "Duration"
 msgstr "Kestus"
@@ -790,10 +781,10 @@ msgstr "Kiirmenüü kasutajate vahel lülitumiseks."
 
 msgid "translator-credits"
 msgstr ""
-"Lauris Kaplinski <lauris@ariman.ee>, 1999.\n"
-"Tõivo Leedjärv <toivo@linux.ee>, 2002, 2003.\n"
-"Ivar Smolin <okul@linux.ee>, 2005-2009.\n"
-"Priit Laes <amd@store20.com>, 2005.\n"
+"Lauris Kaplinski <lauris ariman ee>, 1999.\n"
+"Tõivo Leedjärv <toivo linux ee>, 2002, 2003.\n"
+"Ivar Smolin <okul linux ee>, 2005-2009.\n"
+"Priit Laes <amd store20 com>, 2005.\n"
 "Mattias Põldaru <mahfiaz gmail com>, 2009."
 
 #, c-format
