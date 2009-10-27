@@ -1247,7 +1247,7 @@ AC_ARG_WITH(screenshot-dir,
 if ! test -z "$with_screenshot_dir"; then
    GDM_SCREENSHOT_DIR=$with_screenshot_dir
 else
-   GDM_SCREENSHOT_DIR=${localstatedir}/run/gdm
+   GDM_SCREENSHOT_DIR=${localstatedir}/run/gdm/greeter
 fi
 
 AC_SUBST(GDM_SCREENSHOT_DIR)
