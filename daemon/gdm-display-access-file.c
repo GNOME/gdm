@@ -268,10 +268,10 @@ _create_xauth_file_for_user (const char  *username,
         fp = NULL;
         fd = -1;
 
-        /* Create directory if not exist, then set permission 01775 and ownership root:gdm */
+        /* Create directory if not exist, then set permission 0711 and ownership root:gdm */
         if (g_file_test (GDM_XAUTH_DIR, G_FILE_TEST_IS_DIR) == FALSE) {
                 g_unlink (GDM_XAUTH_DIR);
-                if (g_mkdir (GDM_XAUTH_DIR, S_ISVTX | S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != 0) {
+                if (g_mkdir (GDM_XAUTH_DIR, 0711) != 0) {
                         g_set_error (error,
                                      G_FILE_ERROR,
                                      g_file_error_from_errno (errno),
@@ -279,15 +279,15 @@ _create_xauth_file_for_user (const char  *username,
                         goto out;
                 }
 
-                g_chmod (GDM_XAUTH_DIR, S_ISVTX | S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+                g_chmod (GDM_XAUTH_DIR, 0711);
                 _get_uid_and_gid_for_user (GDM_USERNAME, &uid, &gid);
                 if (chown (GDM_XAUTH_DIR, 0, gid) != 0) {
                         g_warning ("Unable to change owner of '%s'",
                                    GDM_XAUTH_DIR);
                 }
         } else {
-                /* if it does exist make sure it has correct mode 01775 */
-                g_chmod (GDM_XAUTH_DIR, S_ISVTX | S_IRWXU |S_IRWXG | S_IROTH | S_IXOTH);
+                /* if it does exist make sure it has correct mode 0711 */
+                g_chmod (GDM_XAUTH_DIR, 0711);
 
                 /* and clean up any stale auth subdirs */
                 clean_up_stale_auth_subdirs ();
@@ -368,8 +368,8 @@ _create_xauth_file_for_user (const char  *username,
         }
 
         /* now open up permissions on per-session directory */
-        g_debug ("GdmDisplayAccessFile: chmoding %s to 1777", dir_name);
-        g_chmod (dir_name, S_ISVTX | S_IRWXU | S_IRWXG | S_IRWXO);
+        g_debug ("GdmDisplayAccessFile: chmoding %s to 0711", dir_name);
+        g_chmod (dir_name, 0711);
 
         errno = 0;
         fp = fdopen (fd, "w");

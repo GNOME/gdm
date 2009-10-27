@@ -202,7 +202,7 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 
 	if test '!' -d $(DESTDIR)$(xauthdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(xauthdir); \
-		chmod 1777 $(DESTDIR)$(xauthdir); \
+		chmod 0711 $(DESTDIR)$(xauthdir); \
 		chown root:gdm $(DESTDIR)$(xauthdir) || : ; \
 	fi
 
