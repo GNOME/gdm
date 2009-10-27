@@ -63,6 +63,7 @@ struct GdmWelcomeSessionPrivate
 
         char           *user_name;
         char           *group_name;
+        char           *runtime_dir;
 
         char           *x11_display_name;
         char           *x11_display_device;
@@ -91,6 +92,7 @@ enum {
         PROP_X11_DISPLAY_IS_LOCAL,
         PROP_USER_NAME,
         PROP_GROUP_NAME,
+        PROP_RUNTIME_DIR,
         PROP_SERVER_ADDRESS,
         PROP_COMMAND,
         PROP_SERVER_DBUS_PATH,
@@ -408,6 +410,7 @@ rotate_logs (const char *path,
 typedef struct {
         const char *user_name;
         const char *group_name;
+        const char *runtime_dir;
         const char *log_file;
 } SpawnChildData;
 
@@ -434,6 +437,10 @@ spawn_child_setup (SpawnChildData *data)
                            data->group_name);
                 _exit (1);
         }
+
+        g_debug ("GdmWelcomeSession: Setting up run time dir %s", data->runtime_dir);
+        g_mkdir (data->runtime_dir, 0755);
+        chown (data->runtime_dir, pwent->pw_uid, pwent->pw_gid);
 
         g_debug ("GdmWelcomeSession: Changing (uid:gid) for child process to (%d:%d)",
                  pwent->pw_uid,
@@ -552,6 +559,7 @@ static gboolean
 spawn_command_line_async_as_user (const char *command_line,
                                   const char *user_name,
                                   const char *group_name,
+                                  const char *runtime_dir,
                                   const char *log_file,
                                   char      **env,
                                   GPid       *child_pid,
@@ -575,6 +583,7 @@ spawn_command_line_async_as_user (const char *command_line,
 
         data.user_name = user_name;
         data.group_name = group_name;
+        data.runtime_dir = runtime_dir;
         data.log_file = log_file;
 
         local_error = NULL;
@@ -756,6 +765,7 @@ gdm_welcome_session_spawn (GdmWelcomeSession *welcome_session)
         ret = spawn_command_line_async_as_user (welcome_session->priv->command,
                                                 welcome_session->priv->user_name,
                                                 welcome_session->priv->group_name,
+                                                welcome_session->priv->runtime_dir,
                                                 log_path,
                                                 (char **)env->pdata,
                                                 &welcome_session->priv->pid,
@@ -928,6 +938,14 @@ _gdm_welcome_session_set_group_name (GdmWelcomeSession *welcome_session,
 }
 
 static void
+_gdm_welcome_session_set_runtime_dir (GdmWelcomeSession *welcome_session,
+                                      const char        *dir)
+{
+        g_free (welcome_session->priv->runtime_dir);
+        welcome_session->priv->runtime_dir = g_strdup (dir);
+}
+
+static void
 _gdm_welcome_session_set_server_dbus_path (GdmWelcomeSession *welcome_session,
                                            const char        *name)
 {
@@ -998,6 +1016,9 @@ gdm_welcome_session_set_property (GObject      *object,
         case PROP_GROUP_NAME:
                 _gdm_welcome_session_set_group_name (self, g_value_get_string (value));
                 break;
+        case PROP_RUNTIME_DIR:
+                _gdm_welcome_session_set_runtime_dir (self, g_value_get_string (value));
+                break;
         case PROP_SERVER_ADDRESS:
                 gdm_welcome_session_set_server_address (self, g_value_get_string (value));
                 break;
@@ -1053,6 +1074,9 @@ gdm_welcome_session_get_property (GObject    *object,
                 break;
         case PROP_GROUP_NAME:
                 g_value_set_string (value, self->priv->group_name);
+                break;
+        case PROP_RUNTIME_DIR:
+                g_value_set_string (value, self->priv->runtime_dir);
                 break;
         case PROP_SERVER_ADDRESS:
                 g_value_set_string (value, self->priv->server_address);
@@ -1152,6 +1176,13 @@ gdm_welcome_session_class_init (GdmWelcomeSessionClass *klass)
                                                               "group name",
                                                               "group name",
                                                               GDM_GROUPNAME,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_RUNTIME_DIR,
+                                         g_param_spec_string ("runtime-dir",
+                                                              "runtime dir",
+                                                              "runtime dir",
+                                                              NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
                                          PROP_SERVER_ADDRESS,
@@ -1267,6 +1298,7 @@ gdm_welcome_session_finalize (GObject *object)
         g_free (welcome_session->priv->command);
         g_free (welcome_session->priv->user_name);
         g_free (welcome_session->priv->group_name);
+        g_free (welcome_session->priv->runtime_dir);
         g_free (welcome_session->priv->x11_display_name);
         g_free (welcome_session->priv->x11_display_device);
         g_free (welcome_session->priv->x11_display_hostname);

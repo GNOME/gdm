@@ -156,6 +156,7 @@ gdm_greeter_session_new (const char *display_name,
                                "x11-display-device", display_device,
                                "x11-display-hostname", display_hostname,
                                "x11-display-is-local", display_is_local,
+                               "runtime-dir", GDM_SCREENSHOT_DIR,
                                NULL);
 
         return GDM_GREETER_SESSION (object);
