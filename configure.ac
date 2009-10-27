@@ -1237,6 +1237,23 @@ fi
 AC_SUBST(GDM_XAUTH_DIR)
 
 dnl ---------------------------------------------------------------------------
+dnl - Directory for greeter screenshot
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_WITH(screenshot-dir,
+            AS_HELP_STRING([--with-screenshot-dir=<dir>],
+                           [directory to store greeter screenshot]))
+
+if ! test -z "$with_screenshot_dir"; then
+   GDM_SCREENSHOT_DIR=$with_screenshot_dir
+else
+   GDM_SCREENSHOT_DIR=${localstatedir}/run/gdm
+fi
+
+AC_SUBST(GDM_SCREENSHOT_DIR)
+
+
+dnl ---------------------------------------------------------------------------
 dnl - Finish
 dnl ---------------------------------------------------------------------------
 

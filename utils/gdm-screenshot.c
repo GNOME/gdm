@@ -163,11 +163,8 @@ screenshot_save (GdkPixbuf *pixbuf)
         char       *filename;
         gboolean    res;
         GError     *error;
-        const char *save_dir;
 
-        save_dir = LOCALSTATEDIR "/run/gdm";
-
-        filename = g_build_filename (save_dir,
+        filename = g_build_filename (GDM_SCREENSHOT_DIR,
                                      "GDM-Screenshot.png",
                                      NULL);
 

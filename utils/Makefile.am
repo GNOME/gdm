@@ -4,6 +4,7 @@ AM_CPPFLAGS = \
 	-I.						\
 	-I..						\
 	-DLOCALSTATEDIR=\""$(localstatedir)"\" 		\
+	-DGDM_SCREENSHOT_DIR=\""$(GDM_SCREENSHOT_DIR)"\"\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	$(UTILS_CFLAGS)					\
 	$(CANBERRA_GTK_CFLAGS)				\
