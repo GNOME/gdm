@@ -835,7 +835,7 @@ gdm_xdmcp_send_willing (GdmXdmcpDisplayFactory *factory,
         XdmcpFlush (factory->priv->socket_fd,
                     &factory->priv->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
-                    (int)sizeof (struct sockaddr_storage));
+                    (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 
         g_free (status.data);
 }
@@ -879,7 +879,7 @@ gdm_xdmcp_send_unwilling (GdmXdmcpDisplayFactory *factory,
         XdmcpFlush (factory->priv->socket_fd,
                     &factory->priv->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
-                    (int)sizeof (struct sockaddr_storage));
+                    (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 
         last_time = time (NULL);
 }
@@ -988,7 +988,7 @@ gdm_xdmcp_send_forward_query (GdmXdmcpDisplayFactory  *factory,
         XdmcpFlush (factory->priv->socket_fd,
                     &factory->priv->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (ic->chosen_address),
-                    (int)sizeof (struct sockaddr_storage));
+                    (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (ic->chosen_address)));
 
         g_free (port.data);
         g_free (addr.data);
@@ -1691,7 +1691,7 @@ gdm_xdmcp_really_send_managed_forward (GdmXdmcpDisplayFactory *factory,
         XdmcpFlush (factory->priv->socket_fd,
                     &factory->priv->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
-                    (int)sizeof (struct sockaddr_storage));
+                    (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 
         g_free (addr.data);
 }
@@ -1772,7 +1772,7 @@ gdm_xdmcp_send_got_managed_forward (GdmXdmcpDisplayFactory *factory,
         XdmcpFlush (factory->priv->socket_fd,
                     &factory->priv->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
-                    (int)sizeof (struct sockaddr_storage));
+                    (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 }
 
 static gboolean
@@ -1945,7 +1945,7 @@ gdm_xdmcp_send_decline (GdmXdmcpDisplayFactory *factory,
         XdmcpFlush (factory->priv->socket_fd,
                     &factory->priv->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
-                    (int)sizeof (struct sockaddr_storage));
+                    (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 
         /* Send MANAGED_FORWARD to indicate that the connection
          * reached some sort of resolution */
@@ -2093,7 +2093,7 @@ gdm_xdmcp_send_accept (GdmXdmcpDisplayFactory *factory,
         XdmcpFlush (factory->priv->socket_fd,
                     &factory->priv->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
-                    (int)sizeof (struct sockaddr_storage));
+                    (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
@@ -2424,7 +2424,7 @@ gdm_xdmcp_send_failed (GdmXdmcpDisplayFactory *factory,
         XdmcpFlush (factory->priv->socket_fd,
                     &factory->priv->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
-                    (int)sizeof (struct sockaddr_storage));
+                    (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 }
 
 static void
@@ -2448,7 +2448,7 @@ gdm_xdmcp_send_refuse (GdmXdmcpDisplayFactory *factory,
         XdmcpFlush (factory->priv->socket_fd,
                     &factory->priv->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
-                    (int)sizeof (struct sockaddr_storage));
+                    (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 
         /*
          * This was from a forwarded query quite apparently so
@@ -2719,7 +2719,7 @@ gdm_xdmcp_send_alive (GdmXdmcpDisplayFactory *factory,
         XdmcpFlush (factory->priv->socket_fd,
                     &factory->priv->buf,
                     (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
-                    (int)sizeof (struct sockaddr_storage));
+                    (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
 }
 
 static void

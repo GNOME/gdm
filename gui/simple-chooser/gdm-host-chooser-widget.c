@@ -311,7 +311,8 @@ do_ping (GdmHostChooserWidget *widget,
                 res = XdmcpFlush (widget->priv->socket_fd,
                                   &widget->priv->broadcast_buf,
                                   (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
-                                  (int)sizeof (struct sockaddr_storage));
+                                  (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
+
                 if (! res) {
                         g_warning ("Unable to flush the XDMCP broadcast packet: %s", g_strerror (errno));
                 }
@@ -328,7 +329,7 @@ do_ping (GdmHostChooserWidget *widget,
                         res = XdmcpFlush (widget->priv->socket_fd,
                                           &widget->priv->query_buf,
                                           (XdmcpNetaddr)gdm_address_peek_sockaddr_storage (address),
-                                          (int)sizeof (struct sockaddr_storage));
+                                          (int)gdm_sockaddr_len (gdm_address_peek_sockaddr_storage (address)));
                         if (! res) {
                                 g_warning ("Unable to flush the XDMCP query packet");
                         }

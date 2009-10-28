@@ -35,6 +35,7 @@
 G_BEGIN_DECLS
 
 #define GDM_TYPE_ADDRESS (gdm_address_get_type ())
+#define	gdm_sockaddr_len(sa) (((struct sockaddr *)sa)->sa_family == AF_INET6 ? sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in))
 
 typedef struct _GdmAddress GdmAddress;
 
