@@ -44,7 +44,9 @@
 #include "gdm-entry-menu-item.h"
 
 #define LOCKDOWN_DIR    "/desktop/gnome/lockdown"
-#define LOCKDOWN_KEY    LOCKDOWN_DIR "/disable_user_switching"
+#define LOCKDOWN_USER_SWITCHING_KEY LOCKDOWN_DIR "/disable_user_switching"
+#define LOCKDOWN_LOCK_SCREEN_KEY    LOCKDOWN_DIR "/disable_lock_screen"
+#define LOCKDOWN_COMMAND_LINE_KEY   LOCKDOWN_DIR "/disable_command_line"
 
 typedef enum {
         GSM_PRESENCE_STATUS_AVAILABLE = 0,
@@ -1163,7 +1165,7 @@ create_sub_menu (GdmAppletData *adata)
                           G_CALLBACK (menuitem_style_set_cb), adata);
         g_signal_connect (adata->lock_screen_item, "activate",
                           G_CALLBACK (on_lock_screen_activate), adata);
-        gtk_widget_show (adata->lock_screen_item);
+        /* Only show if not locked down */
 
         adata->login_screen_item = gtk_image_menu_item_new_with_label (_("Switch User"));
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->login_screen_item),
@@ -1229,11 +1231,17 @@ client_notify_lockdown_func (GConfClient   *client,
                 return;
         }
 
-        if (strcmp (key, LOCKDOWN_KEY) == 0) {
+        if (strcmp (key, LOCKDOWN_USER_SWITCHING_KEY) == 0) {
                 if (gconf_value_get_bool (value)) {
                         set_menu_visibility (adata, FALSE);
                 } else {
                         set_menu_visibility (adata, TRUE);
+                }
+        } else if (strcmp (key, LOCKDOWN_LOCK_SCREEN_KEY) == 0) {
+                if (gconf_value_get_bool (value)) {
+                        gtk_widget_hide (adata->lock_screen_item);
+                } else {
+                        gtk_widget_show (adata->lock_screen_item);
                 }
         }
 }
@@ -1430,7 +1438,7 @@ fill_applet (PanelApplet *applet)
 
         /* Hide the admin context menu items if locked down or no cmd-line */
         if (gconf_client_get_bool (adata->client,
-                                   "/desktop/gnome/lockdown/inhibit_command_line",
+                                   LOCKDOWN_COMMAND_LINE_KEY,
                                    NULL) ||
             panel_applet_get_locked_down (applet)) {
                 bonobo_ui_component_set_prop (popup_component,
@@ -1502,17 +1510,27 @@ fill_applet (PanelApplet *applet)
         adata->manager = gdm_user_manager_ref_default ();
         setup_current_user (adata);
 
+        gconf_client_add_dir (adata->client,
+                              LOCKDOWN_DIR,
+                              GCONF_CLIENT_PRELOAD_ONELEVEL,
+                              NULL);
+
         adata->client_notify_lockdown_id = gconf_client_notify_add (adata->client,
-                                                                    LOCKDOWN_KEY,
+                                                                    LOCKDOWN_DIR,
                                                                     (GConfClientNotifyFunc)client_notify_lockdown_func,
                                                                     adata,
                                                                     NULL,
                                                                     NULL);
 
-        if (gconf_client_get_bool (adata->client, LOCKDOWN_KEY, NULL)) {
+        if (gconf_client_get_bool (adata->client, LOCKDOWN_USER_SWITCHING_KEY, NULL)) {
                 set_menu_visibility (adata, FALSE);
         } else {
                 set_menu_visibility (adata, TRUE);
+        }
+        if (gconf_client_get_bool (adata->client, LOCKDOWN_LOCK_SCREEN_KEY, NULL)) {
+                        gtk_widget_hide (adata->lock_screen_item);
+        } else {
+                        gtk_widget_show (adata->lock_screen_item);
         }
 
         error = NULL;
