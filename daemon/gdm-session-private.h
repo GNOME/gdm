@@ -31,6 +31,8 @@ void             _gdm_session_conversation_started         (GdmSession   *sessio
                                                             const char   *service_name);
 void             _gdm_session_conversation_stopped         (GdmSession   *session,
                                                             const char   *service_name);
+void             _gdm_session_service_unavailable          (GdmSession   *session,
+                                                            const char   *service_name);
 void             _gdm_session_setup_complete               (GdmSession   *session,
                                                             const char   *service_name);
 void             _gdm_session_setup_failed                 (GdmSession   *session,

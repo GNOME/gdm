@@ -285,9 +285,18 @@ gdm_greeter_server_problem (GdmGreeterServer *greeter_server,
 }
 
 gboolean
-gdm_greeter_server_authentication_failed (GdmGreeterServer *greeter_server)
+gdm_greeter_server_authentication_failed (GdmGreeterServer *greeter_server,
+                                          const char       *service_name)
 {
-        send_dbus_void_signal (greeter_server, "AuthenticationFailed");
+        send_dbus_string_signal (greeter_server, "AuthenticationFailed", service_name);
+        return TRUE;
+}
+
+gboolean
+gdm_greeter_server_service_unavailable (GdmGreeterServer *greeter_server,
+                                        const char       *service_name)
+{
+        send_dbus_string_signal (greeter_server, "ServiceUnavailable", service_name);
         return TRUE;
 }
 

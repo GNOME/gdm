@@ -49,6 +49,8 @@ struct _GdmSessionIface
                                               const char   *service_name);
         void (* stop_conversation)           (GdmSession   *session,
                                               const char   *service_name);
+        void (* service_unavailable)         (GdmSession   *session,
+                                              const char   *service_name);
         void (* setup)                       (GdmSession   *session,
                                               const char   *service_name);
         void (* setup_for_user)              (GdmSession   *session,

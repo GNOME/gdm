@@ -2004,9 +2004,16 @@ do_setup (GdmSessionWorker *worker)
                                                  worker->priv->display_device,
                                                  &error);
         if (! res) {
-                send_dbus_string_method (worker->priv->connection,
-                                         "SetupFailed",
-                                         error->message);
+                if (g_error_matches (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE)) {
+                        send_dbus_void_method (worker->priv->connection,
+                                               "ServiceUnavailable");
+                } else {
+                        send_dbus_string_method (worker->priv->connection,
+                                                 "SetupFailed",
+                                                 error->message);
+                }
                 g_error_free (error);
                 return;
         }
@@ -2027,10 +2034,18 @@ do_authenticate (GdmSessionWorker *worker)
                                                     worker->priv->password_is_required,
                                                     &error);
         if (! res) {
-                g_debug ("GdmSessionWorker: Unable to verify user");
-                send_dbus_string_method (worker->priv->connection,
-                                         "AuthenticationFailed",
-                                         error->message);
+                if (g_error_matches (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE)) {
+                        g_debug ("GdmSessionWorker: Unable to use authentication service");
+                        send_dbus_void_method (worker->priv->connection,
+                                               "ServiceUnavailable");
+                } else {
+                        g_debug ("GdmSessionWorker: Unable to verify user");
+                        send_dbus_string_method (worker->priv->connection,
+                                                 "AuthenticationFailed",
+                                                 error->message);
+                }
                 g_error_free (error);
                 return;
         }
