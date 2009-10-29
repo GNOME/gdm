@@ -63,6 +63,7 @@ enum {
         PROBLEM,
         INFO_QUERY,
         SECRET_INFO_QUERY,
+        SERVICE_UNAVAILABLE,
         READY,
         RESET,
         AUTHENTICATION_FAILED,
@@ -253,6 +254,13 @@ on_problem (GdmGreeterClient *client,
             DBusMessage      *message)
 {
         emit_string_and_string_signal_for_message (client, "Problem", message, PROBLEM);
+}
+
+static void
+on_service_unavailable (GdmGreeterClient *client,
+                        DBusMessage      *message)
+{
+        emit_string_signal_for_message (client, "ServiceUnavailable", message, SERVICE_UNAVAILABLE);
 }
 
 static void
@@ -730,6 +738,8 @@ client_dbus_handle_message (DBusConnection *connection,
                 on_info (client, message);
         } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "Problem")) {
                 on_problem (client, message);
+        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "ServiceUnavailable")) {
+                on_service_unavailable (client, message);
         } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "Ready")) {
                 on_ready (client, message);
         } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "Reset")) {
@@ -960,6 +970,16 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
+
+        gdm_greeter_client_signals[SERVICE_UNAVAILABLE] =
+                g_signal_new ("service-unavailable",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmGreeterClientClass, service_unavailable),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE, 1, G_TYPE_STRING);
 
         gdm_greeter_client_signals[READY] =
                 g_signal_new ("ready",

@@ -281,9 +281,27 @@ on_session_exited (GdmSession *session,
 }
 
 static DBusHandlerResult
-gdm_session_direct_handle_setup_complete (GdmSessionDirect *session,
-                                          GdmSessionConversation *conversation,
-                                          DBusMessage      *message)
+gdm_session_direct_handle_service_unavailable (GdmSessionDirect *session,
+                                               GdmSessionConversation *conversation,
+                                               DBusMessage      *message)
+{
+        DBusMessage *reply;
+
+        g_debug ("GdmSessionDirect: Emitting 'service-unavailable' signal");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (conversation->worker_connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        _gdm_session_service_unavailable (GDM_SESSION (session), conversation->service_name);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
+gdm_session_direct_handle_setup_complete  (GdmSessionDirect *session,
+                                           GdmSessionConversation *conversation,
+                                           DBusMessage      *message)
 {
         DBusMessage *reply;
 
@@ -1237,6 +1255,8 @@ session_worker_message (DBusConnection *connection,
                 return gdm_session_direct_handle_problem (session, conversation, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "CancelPendingQuery")) {
                 return gdm_session_direct_handle_cancel_pending_query (session, conversation, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "ServiceUnavailable")) {
+                return gdm_session_direct_handle_service_unavailable (session, conversation, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SetupComplete")) {
                 return gdm_session_direct_handle_setup_complete (session, conversation, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SetupFailed")) {

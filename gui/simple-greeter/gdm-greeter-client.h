@@ -59,6 +59,8 @@ typedef struct
         void (* problem)                 (GdmGreeterClient  *client,
                                           const char        *service_name,
                                           const char        *problem);
+        void (* service_unavailable)     (GdmGreeterClient  *client,
+                                          const char        *service_name);
         void (* ready)                   (GdmGreeterClient  *client,
                                           const char        *service_name);
         void (* reset)                   (GdmGreeterClient  *client);

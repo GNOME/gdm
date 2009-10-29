@@ -455,6 +455,34 @@ handle_problem (GdmSessionRelay *session_relay,
 }
 
 static DBusHandlerResult
+handle_service_unavailable (GdmSessionRelay *session_relay,
+                            DBusConnection  *connection,
+                            DBusMessage     *message)
+{
+        DBusMessage *reply;
+        DBusError    error;
+        char        *service_name;
+
+        dbus_error_init (&error);
+        if (! dbus_message_get_args (message, &error,
+                                     DBUS_TYPE_STRING, &service_name,
+                                     DBUS_TYPE_INVALID)) {
+                g_warning ("ERROR: %s", error.message);
+        }
+        dbus_error_free (&error);
+
+        g_debug ("GdmSessionRelay: ServiceUnavailable");
+
+        reply = dbus_message_new_method_return (message);
+        dbus_connection_send (connection, reply, NULL);
+        dbus_message_unref (reply);
+
+        _gdm_session_service_unavailable (GDM_SESSION (session_relay), service_name);
+
+        return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+static DBusHandlerResult
 handle_setup_complete (GdmSessionRelay *session_relay,
                        DBusConnection  *connection,
                        DBusMessage     *message)
@@ -833,6 +861,8 @@ session_handle_child_message (DBusConnection *connection,
                 return handle_info (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "Problem")) {
                 return handle_problem (session_relay, connection, message);
+        } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "ServiceUnavailable")) {
+                return handle_service_unavailable (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "SetupComplete")) {
                 return handle_setup_complete (session_relay, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_RELAY_DBUS_INTERFACE, "SetupFailed")) {
@@ -889,6 +919,9 @@ do_introspect (DBusConnection *connection,
                                "  <interface name=\"org.gnome.DisplayManager.SessionRelay\">\n"
                                "    <method name=\"ConversationStarted\">\n"
                                "      <arg name=\"service_name\" direction=\"in\" type=\"s\"/>\n"
+                               "    </method>\n"
+                               "    <method name=\"ServiceUnavailable\">\n"
+                               "      <arg name=\"message\" direction=\"in\" type=\"s\"/>\n"
                                "    </method>\n"
                                "    <method name=\"SetupComplete\">\n"
                                "    </method>\n"

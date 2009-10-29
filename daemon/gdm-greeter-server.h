@@ -91,7 +91,10 @@ gboolean            gdm_greeter_server_info                  (GdmGreeterServer *
 gboolean            gdm_greeter_server_problem               (GdmGreeterServer *greeter_server,
                                                               const char       *service_name,
                                                               const char       *text);
-gboolean            gdm_greeter_server_authentication_failed (GdmGreeterServer *greeter_server);
+gboolean            gdm_greeter_server_authentication_failed (GdmGreeterServer *greeter_server,
+                                                              const char       *service_name);
+gboolean            gdm_greeter_server_service_unavailable   (GdmGreeterServer *greeter_server,
+                                                              const char       *service_name);
 gboolean            gdm_greeter_server_reset                 (GdmGreeterServer *greeter_server);
 gboolean            gdm_greeter_server_ready                 (GdmGreeterServer *greeter_server,
                                                               const char       *service_name);

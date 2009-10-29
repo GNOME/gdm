@@ -266,22 +266,6 @@ greeter_reset_timeout (GdmSimpleSlave *slave)
         return FALSE;
 }
 
-static gboolean
-auth_failed_reset_timeout (GdmSimpleSlave *slave)
-{
-        g_debug ("GdmSimpleSlave: auth failed resetting slave");
-
-        if (slave->priv->greeter_server != NULL) {
-                gdm_greeter_server_authentication_failed (slave->priv->greeter_server);
-                reset_session (slave);
-        } else {
-                start_greeter (slave);
-                create_new_session (slave);
-        }
-        slave->priv->greeter_reset_id = 0;
-        return FALSE;
-}
-
 static void
 queue_greeter_reset (GdmSimpleSlave *slave)
 {
@@ -293,14 +277,16 @@ queue_greeter_reset (GdmSimpleSlave *slave)
 }
 
 static void
-queue_auth_failed_reset (GdmSimpleSlave *slave)
+on_session_service_unavailable (GdmSession     *session,
+                                const char     *service_name,
+                                GdmSimpleSlave *slave)
 {
-        /* use the greeter reset idle id so we don't do both at once */
-        if (slave->priv->greeter_reset_id > 0) {
-                return;
+        if (slave->priv->greeter_server != NULL) {
+                gdm_greeter_server_service_unavailable (slave->priv->greeter_server,
+                                                        service_name);
         }
 
-        slave->priv->greeter_reset_id = g_idle_add ((GSourceFunc)auth_failed_reset_timeout, slave);
+        gdm_session_stop_conversation (session, service_name);
 }
 
 static void
@@ -363,7 +349,6 @@ on_session_authentication_failed (GdmSession     *session,
 
         g_debug ("GdmSimpleSlave: Authentication failed - may retry");
         gdm_session_stop_conversation (session, service_name);
-        queue_auth_failed_reset (slave);
 }
 
 static void
@@ -788,6 +773,10 @@ create_new_session (GdmSimpleSlave *slave)
                           G_CALLBACK (on_session_conversation_stopped),
                           slave);
         g_signal_connect (slave->priv->session,
+                          "service-unavailable",
+                          G_CALLBACK (on_session_service_unavailable),
+                          slave);
+        g_signal_connect (slave->priv->session,
                           "setup-complete",
                           G_CALLBACK (on_session_setup_complete),
                           slave);
@@ -899,6 +888,9 @@ destroy_session (GdmSimpleSlave *slave)
                                               slave);
         g_signal_handlers_disconnect_by_func (slave->priv->session,
                                               G_CALLBACK (on_session_conversation_stopped),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_service_unavailable),
                                               slave);
         g_signal_handlers_disconnect_by_func (slave->priv->session,
                                               G_CALLBACK (on_session_setup_complete),
