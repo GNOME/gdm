@@ -252,7 +252,7 @@ gdm_scrollable_widget_animation_stop (GdmScrollableWidgetAnimation *animation)
 static gboolean
 gdm_scrollable_widget_needs_scrollbar (GdmScrollableWidget *widget)
 {
-        GtkAdjustment *adjustment;
+        gboolean needs_scrollbar;
 
         if (widget->priv->scrollbar == NULL) {
                 return FALSE;
@@ -266,9 +266,19 @@ gdm_scrollable_widget_needs_scrollbar (GdmScrollableWidget *widget)
                 return FALSE;
         }
 
-        adjustment = gtk_range_get_adjustment (GTK_RANGE (widget->priv->scrollbar));
+        if (GTK_BIN (widget)->child != NULL) {
+                GtkRequisition child_requisition;
+                int available_height;
 
-        return adjustment->upper - adjustment->lower > adjustment->page_size;
+                gtk_widget_get_child_requisition (GTK_BIN (widget)->child,
+                                                  &child_requisition);
+                available_height = GTK_WIDGET (widget)->allocation.height;
+                needs_scrollbar = child_requisition.height > available_height;
+        } else {
+                needs_scrollbar = FALSE;
+        }
+
+        return needs_scrollbar;
 }
 
 static void
