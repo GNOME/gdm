@@ -894,7 +894,7 @@ start_grow_animation (GdmChooserWidget *widget)
                 height = get_height_of_screen (widget);
         }
         gdm_scrollable_widget_slide_to_height (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget),
-                                               widget->priv->height_when_grown,
+                                               height,
                                                (GdmScrollableWidgetSlideStepFunc)
                                                on_grow_animation_step, widget,
                                                (GdmScrollableWidgetSlideDoneFunc)
