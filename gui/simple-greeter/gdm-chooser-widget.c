@@ -92,7 +92,6 @@ struct GdmChooserWidgetPrivate
 
         guint32                  should_hide_inactive_items : 1;
         guint32                  emit_activated_after_resize_animation : 1;
-        guint32                  was_fully_grown : 1;
 
         GdmChooserWidgetPosition separator_position;
         GdmChooserWidgetState    state;
@@ -807,26 +806,9 @@ on_grow_animation_complete (GdmScrollableWidget *scrollable_widget,
 {
         g_assert (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING);
         widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
-        widget->priv->was_fully_grown = TRUE;
         gtk_tree_view_set_enable_search (GTK_TREE_VIEW (widget->priv->items_view), TRUE);
 
         _grab_focus (GTK_WIDGET (widget));
-}
-
-static int
-get_height_of_screen (GdmChooserWidget *widget)
-{
-        GdkScreen    *screen;
-        GdkRectangle  area;
-        int           monitor;
-
-        screen = gtk_widget_get_screen (GTK_WIDGET (widget));
-
-        monitor = gdk_screen_get_monitor_at_window (screen,
-                                                    gdk_screen_get_root_window (screen));
-        gdk_screen_get_monitor_geometry (screen, monitor, &area);
-
-        return area.height;
 }
 
 static int
@@ -876,7 +858,6 @@ start_grow_animation (GdmChooserWidget *widget)
 {
         int number_of_visible_rows;
         int number_of_rows;
-        int height;
 
         number_of_visible_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->model_sorter), NULL);
         number_of_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->list_store), NULL);
@@ -888,13 +869,8 @@ start_grow_animation (GdmChooserWidget *widget)
 
         set_inactive_items_visible (widget, TRUE);
 
-        if (widget->priv->was_fully_grown) {
-                height = widget->priv->height_when_grown;
-        } else {
-                height = get_height_of_screen (widget);
-        }
         gdm_scrollable_widget_slide_to_height (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget),
-                                               height,
+                                               widget->priv->height_when_grown,
                                                (GdmScrollableWidgetSlideStepFunc)
                                                on_grow_animation_step, widget,
                                                (GdmScrollableWidgetSlideDoneFunc)
@@ -912,7 +888,6 @@ skip_resize_animation (GdmChooserWidget *widget)
                 set_inactive_items_visible (GDM_CHOOSER_WIDGET (widget), TRUE);
                 gtk_tree_view_set_enable_search (GTK_TREE_VIEW (widget->priv->items_view), TRUE);
                 widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
-                widget->priv->was_fully_grown = FALSE;
                 _grab_focus (GTK_WIDGET (widget));
         }
 }
@@ -922,7 +897,6 @@ gdm_chooser_widget_grow (GdmChooserWidget *widget)
 {
         if (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_SHRINKING) {
                 gdm_scrollable_widget_stop_sliding (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget));
-                widget->priv->was_fully_grown = FALSE;
         }
 
         gtk_alignment_set (GTK_ALIGNMENT (widget->priv->frame_alignment),
@@ -1233,9 +1207,7 @@ gdm_chooser_widget_size_allocate (GtkWidget     *widget,
         chooser_widget = GDM_CHOOSER_WIDGET (widget);
 
         if (chooser_widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWN) {
-                if (chooser_widget->priv->was_fully_grown) {
-                        chooser_widget->priv->height_when_grown = allocation->height;
-                }
+                chooser_widget->priv->height_when_grown = allocation->height;
         }
 }
 
@@ -1801,8 +1773,6 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
          */
         GTK_WIDGET_SET_FLAGS (widget, GTK_CAN_FOCUS);
 
-        widget->priv->height_when_grown = get_height_of_screen (widget);
-
         gtk_alignment_set_padding (GTK_ALIGNMENT (widget), 0, 0, 0, 0);
 
         add_frame (widget);
@@ -1935,9 +1905,7 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
                                   gtk_tree_row_reference_free);
 
         add_separator (widget);
-
         queue_column_visibility_update (widget);
-        gdm_chooser_widget_grow (widget);
 }
 
 static void
@@ -2544,5 +2512,6 @@ gdm_chooser_widget_propagate_pending_key_events (GdmChooserWidget *widget)
 void
 gdm_chooser_widget_loaded (GdmChooserWidget *widget)
 {
+        gdm_chooser_widget_grow (widget);
         g_signal_emit (widget, signals[LOADED], 0);
 }
