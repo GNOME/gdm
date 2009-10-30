@@ -848,28 +848,12 @@ on_grow_animation_step (GdmScrollableWidget *scrollable_widget,
         number_of_visible_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->model_sorter), NULL);
         number_of_on_screen_rows = get_number_of_on_screen_rows (widget);
 
-        if (number_of_on_screen_rows >= number_of_visible_rows) {
-                gdm_scrollable_widget_stop_sliding (scrollable_widget);
-                return;
-        }
-
         *new_height = GTK_BIN (scrollable_widget)->child->requisition.height;
 }
 
 static void
 start_grow_animation (GdmChooserWidget *widget)
 {
-        int number_of_visible_rows;
-        int number_of_rows;
-
-        number_of_visible_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->model_sorter), NULL);
-        number_of_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->list_store), NULL);
-
-        if (number_of_visible_rows >= number_of_rows) {
-               on_grow_animation_complete (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget), widget);
-               return;
-        }
-
         set_inactive_items_visible (widget, TRUE);
 
         gdm_scrollable_widget_slide_to_height (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget),
