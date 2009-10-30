@@ -600,9 +600,9 @@ static void
 update_chooser_visibility (GdmChooserWidget *widget)
 {
         if (gdm_chooser_widget_get_number_of_items (widget) > 0) {
-                gtk_widget_show (widget->priv->scrollable_widget);
+                gtk_widget_show (widget->priv->frame);
         } else {
-                gtk_widget_hide (widget->priv->scrollable_widget);
+                gtk_widget_hide (widget->priv->frame);
         }
         g_object_notify (G_OBJECT (widget), "list-visible");
 }
