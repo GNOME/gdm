@@ -132,9 +132,26 @@ on_animation_tick (GdmScrollableWidgetAnimation *animation,
         gtk_widget_set_size_request (animation->widget, width, height);
 
         if (animation->step_func != NULL) {
+                GdmTimer *timer;
+
+                height = animation->desired_height;
+
+                height -= animation->widget->style->ythickness * 2;
+                height -= GTK_CONTAINER (animation->widget)->border_width * 2;
+
+                timer = g_object_ref (animation->timer);
                 animation->step_func (GDM_SCROLLABLE_WIDGET (animation->widget),
                                       progress,
+                                      &height,
                                       animation->step_func_user_data);
+
+                if (gdm_timer_is_started (timer)) {
+                        height += animation->widget->style->ythickness * 2;
+                        height += GTK_CONTAINER (animation->widget)->border_width * 2;
+
+                        animation->desired_height = height;
+                }
+                g_object_unref (timer);
         }
 }
 
@@ -708,7 +725,7 @@ gdm_scrollable_widget_slide_to_height (GdmScrollableWidget *scrollable_widget,
 
         if (!input_redirected || gdm_scrollable_widget_animations_are_disabled (scrollable_widget)) {
                 if (step_func != NULL) {
-                        step_func (scrollable_widget, 0.0, step_user_data);
+                        step_func (scrollable_widget, 0.0, &height, step_user_data);
                 }
 
                 if (done_func != NULL) {

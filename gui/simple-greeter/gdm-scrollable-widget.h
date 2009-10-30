@@ -40,6 +40,7 @@ typedef struct GdmScrollableWidget GdmScrollableWidget;
 typedef struct GdmScrollableWidgetPrivate GdmScrollableWidgetPrivate;
 typedef void (* GdmScrollableWidgetSlideStepFunc) (GdmScrollableWidget *scrollable_widget,
                                                    double               progress,
+                                                   int                 *new_height,
                                                    gpointer            *user_data);
 typedef void (* GdmScrollableWidgetSlideDoneFunc) (GdmScrollableWidget *scrollable_widget,
                                                    gpointer            *user_data);

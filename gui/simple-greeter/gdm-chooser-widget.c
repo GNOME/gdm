@@ -97,7 +97,6 @@ struct GdmChooserWidgetPrivate
         GdmChooserWidgetState    state;
 
         double                   active_row_normalized_position;
-        int                      height_when_grown;
 };
 
 enum {
@@ -552,6 +551,7 @@ set_frame_text (GdmChooserWidget *widget,
 static void
 on_shrink_animation_step (GdmScrollableWidget *scrollable_widget,
                           double               progress,
+                          int                 *new_height,
                           GdmChooserWidget    *widget)
 {
         GtkTreePath   *active_row_path;
@@ -839,6 +839,7 @@ get_number_of_on_screen_rows (GdmChooserWidget *widget)
 static void
 on_grow_animation_step (GdmScrollableWidget *scrollable_widget,
                         double               progress,
+                        int                 *new_height,
                         GdmChooserWidget    *widget)
 {
         int number_of_visible_rows;
@@ -851,6 +852,8 @@ on_grow_animation_step (GdmScrollableWidget *scrollable_widget,
                 gdm_scrollable_widget_stop_sliding (scrollable_widget);
                 return;
         }
+
+        *new_height = GTK_BIN (scrollable_widget)->child->requisition.height;
 }
 
 static void
@@ -870,7 +873,7 @@ start_grow_animation (GdmChooserWidget *widget)
         set_inactive_items_visible (widget, TRUE);
 
         gdm_scrollable_widget_slide_to_height (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget),
-                                               widget->priv->height_when_grown,
+                                               GTK_BIN (widget->priv->scrollable_widget)->child->requisition.height,
                                                (GdmScrollableWidgetSlideStepFunc)
                                                on_grow_animation_step, widget,
                                                (GdmScrollableWidgetSlideDoneFunc)
@@ -1206,9 +1209,6 @@ gdm_chooser_widget_size_allocate (GtkWidget     *widget,
 
         chooser_widget = GDM_CHOOSER_WIDGET (widget);
 
-        if (chooser_widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWN) {
-                chooser_widget->priv->height_when_grown = allocation->height;
-        }
 }
 
 static gboolean
