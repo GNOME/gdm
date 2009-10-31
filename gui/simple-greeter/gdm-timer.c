@@ -163,7 +163,7 @@ gdm_timer_class_init (GdmTimerClass *klass)
                                          PROP_IS_STARTED,
                                          g_param_spec_boolean ("is-started",
                                                                _("Is it Running?"),
-                                                               _("Whether or not the timer "
+                                                               _("Whether the timer "
                                                                  "is currently ticking"),
                                                                FALSE, G_PARAM_READABLE));
 

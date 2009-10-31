@@ -1298,7 +1298,7 @@ gdm_chooser_widget_class_init (GdmChooserWidgetClass *klass)
                                          PROP_LIST_VISIBLE,
                                          g_param_spec_boolean ("list-visible",
                                                               _("List Visible"),
-                                                              _("Whether or not the chooser list is visible"),
+                                                              _("Whether the chooser list is visible"),
                                                               TRUE,
                                                               G_PARAM_READABLE));
 
