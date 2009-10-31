@@ -520,16 +520,16 @@ gdm_slave_real_start (GdmSlave *slave)
                                  G_TYPE_INVALID);
         if (! res) {
                 if (error != NULL) {
-                        g_warning ("Failed to get display id %s: %s", slave->priv->display_id, error->message);
+                        g_warning ("Failed to get display ID %s: %s", slave->priv->display_id, error->message);
                         g_error_free (error);
                 } else {
-                        g_warning ("Failed to get display id %s", slave->priv->display_id);
+                        g_warning ("Failed to get display ID %s", slave->priv->display_id);
                 }
 
                 return FALSE;
         }
 
-        g_debug ("GdmSlave: Got display id: %s", id);
+        g_debug ("GdmSlave: Got display ID: %s", id);
 
         if (strcmp (id, slave->priv->display_id) != 0) {
                 g_critical ("Display ID doesn't match");
@@ -1062,7 +1062,7 @@ gdm_slave_get_primary_session_id_for_user (GdmSlave   *slave,
         uid_t       uid;
 
         if (slave->priv->display_seat_id == NULL || slave->priv->display_seat_id[0] == '\0') {
-                g_debug ("GdmSlave: display seat id is not set; can't switch sessions");
+                g_debug ("GdmSlave: display seat ID is not set; can't switch sessions");
                 return NULL;
         }
 

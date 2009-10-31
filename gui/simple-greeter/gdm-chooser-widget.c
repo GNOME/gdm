@@ -2395,7 +2395,7 @@ gdm_chooser_widget_set_item_timer (GdmChooserWidget *widget,
 
         if (timeout == 0) {
                 if (row == NULL) {
-                        g_warning ("could not find item with id '%s' to "
+                        g_warning ("could not find item with ID '%s' to "
                                    "remove timer", id);
                         return;
                 }
@@ -2411,7 +2411,7 @@ gdm_chooser_widget_set_item_timer (GdmChooserWidget *widget,
                 GtkTreePath *path;
 
                 if (!find_item (widget, id, &iter)) {
-                        g_warning ("could not find item with id '%s' to "
+                        g_warning ("could not find item with ID '%s' to "
                                    "add timer", id);
                         return;
                 }

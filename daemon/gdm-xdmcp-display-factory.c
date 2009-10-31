@@ -2568,10 +2568,10 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
                 }
         } else if (display != NULL &&
                    gdm_display_get_status (display) == GDM_DISPLAY_MANAGED) {
-                g_debug ("GdmXdmcpDisplayFactory: Session id %ld already managed",
+                g_debug ("GdmXdmcpDisplayFactory: Session ID %ld already managed",
                          (long)clnt_sessid);
         } else {
-                g_warning ("GdmXdmcpDisplayFactory: Failed to look up session id %ld",
+                g_warning ("GdmXdmcpDisplayFactory: Failed to look up session ID %ld",
                            (long)clnt_sessid);
                 gdm_xdmcp_send_refuse (factory, address, clnt_sessid);
         }

@@ -596,7 +596,7 @@ main (int    argc,
         /* XDM compliant error message */
         if (getuid () != 0) {
                 /* make sure the pid file doesn't get wiped */
-                g_warning (_("Only root wants to run GDM"));
+                g_warning (_("Only the root user can run GDM"));
                 exit (-1);
         }
 

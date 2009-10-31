@@ -172,7 +172,7 @@ main (int    argc,
         GdmSignalHandler *signal_handler;
         static GOptionEntry entries []   = {
                 { "debug", 0, 0, G_OPTION_ARG_NONE, &debug, N_("Enable debugging code"), NULL },
-                { "display-id", 0, 0, G_OPTION_ARG_STRING, &display_id, N_("Display ID"), N_("id") },
+                { "display-id", 0, 0, G_OPTION_ARG_STRING, &display_id, N_("Display ID"), N_("ID") },
                 { NULL }
         };
 

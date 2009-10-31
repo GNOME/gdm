@@ -181,7 +181,7 @@ _get_primary_user_session_id (GdmUserManager *manager,
         char       *primary_ssid;
 
         if (manager->priv->seat_id == NULL || manager->priv->seat_id[0] == '\0') {
-                g_debug ("GdmUserManager: display seat id is not set; can't switch sessions");
+                g_debug ("GdmUserManager: display seat ID is not set; can't switch sessions");
                 return NULL;
         }
 
@@ -355,7 +355,7 @@ _get_login_window_session_id (GdmUserManager *manager)
         int         i;
 
         if (manager->priv->seat_id == NULL || manager->priv->seat_id[0] == '\0') {
-                g_debug ("GdmUserManager: display seat id is not set; can't switch sessions");
+                g_debug ("GdmUserManager: display seat ID is not set; can't switch sessions");
                 return NULL;
         }
 
@@ -901,7 +901,7 @@ seat_session_added (DBusGProxy     *seat_proxy,
         errno = 0;
         pwent = getpwuid (uid);
         if (pwent == NULL) {
-                g_warning ("Unable to lookup user id %d: %s", (int)uid, g_strerror (errno));
+                g_warning ("Unable to lookup user ID %d: %s", (int)uid, g_strerror (errno));
                 return;
         }
 
