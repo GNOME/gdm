@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: gdm.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&component=general\n"
-"POT-Creation-Date: 2009-10-26 23:32+0000\n"
-"PO-Revision-Date: 2009-10-27 21:49+0100\n"
+"POT-Creation-Date: 2009-10-31 02:58+0000\n"
+"PO-Revision-Date: 2009-11-02 01:21+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -45,8 +45,8 @@ msgstr "ID de pantalla"
 
 #: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
 #: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
-msgid "id"
-msgstr "id"
+msgid "ID"
+msgstr "ID"
 
 #: ../daemon/factory-slave-main.c:183 ../daemon/product-slave-main.c:187
 #: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:192
@@ -449,8 +449,9 @@ msgstr "Gestor de entrada de GNOME"
 
 #. make sure the pid file doesn't get wiped
 #: ../daemon/main.c:599
-msgid "Only root wants to run GDM"
-msgstr "Solamente el administrador puede ejecutar GDM"
+#| msgid "Only root wants to run GDM"
+msgid "Only the root user can run GDM"
+msgstr "Solo el administrador puede ejecutar GDM"
 
 #: ../daemon/session-worker-main.c:149
 msgid "GNOME Display Manager Session Worker"
@@ -529,38 +530,38 @@ msgstr "Valor"
 msgid "percentage of time complete"
 msgstr "porcentaje de tiempo completado"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1325
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1281
 msgid "Inactive Text"
 msgstr "Texto inactivo"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1326
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1282
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr ""
 "El texto que se usará en la etiqueta si el usuario todavía no ha elegido un "
 "elemento"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1334
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1290
 msgid "Active Text"
 msgstr "Texto activo"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1335
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1291
 msgid "The text to use in the label if the user has picked an item"
 msgstr ""
 "El texto que se usará en la etiqueta si el usuario ha elegido un elemento"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1344
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1300
 msgid "List Visible"
 msgstr "Listar visibles"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1345
-msgid "Whether or not the chooser list is visible"
-msgstr "Indica si el selector de lista es visible"
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1301
+#| msgid "Whether or not the chooser list is visible"
+msgid "Whether the chooser list is visible"
+msgstr "Indica si la lista del selector es visible"
 
 #. translators: This is the time format to use when both
 #. * the date and time with seconds are being shown together.
 #.
 #: ../gui/simple-greeter/gdm-clock-widget.c:70
-#| msgid "%l:%M:%S %p"
 msgid "%a %b %e, %l:%M:%S %p"
 msgstr "%a %b %e, %H:%M:%S"
 
@@ -569,7 +570,6 @@ msgstr "%a %b %e, %H:%M:%S"
 #. * the date and time without seconds are being shown together.
 #.
 #: ../gui/simple-greeter/gdm-clock-widget.c:76
-#| msgid "%l:%M %p"
 msgid "%a %b %e, %l:%M %p"
 msgstr "%a %b %e, %H:%M"
 
@@ -577,7 +577,6 @@ msgstr "%a %b %e, %H:%M"
 #. * no date, just weekday and time with seconds.
 #.
 #: ../gui/simple-greeter/gdm-clock-widget.c:83
-#| msgid "%l:%M:%S %p"
 msgid "%a %l:%M:%S %p"
 msgstr "%a %H:%M:%S"
 
@@ -594,7 +593,6 @@ msgstr "%x"
 #. * no date, just weekday and time without seconds.
 #.
 #: ../gui/simple-greeter/gdm-clock-widget.c:92
-#| msgid "%l:%M %p"
 msgid "%a %l:%M %p"
 msgstr "%a %H:%M"
 
@@ -720,8 +718,9 @@ msgid "Default Item"
 msgstr "Elemento predeterminado"
 
 #: ../gui/simple-greeter/gdm-option-widget.c:539
-msgid "The id of the default item"
-msgstr "El id del elemento predeterminado"
+#| msgid "The id of the default item"
+msgid "The ID of the default item"
+msgstr "El ID del elemento predeterminado"
 
 #: ../gui/simple-greeter/gdm-recent-option-widget.c:310
 msgid "Max Item Count"
@@ -958,7 +957,8 @@ msgid "Is it Running?"
 msgstr "¿Se está ejecutando?"
 
 #: ../gui/simple-greeter/gdm-timer.c:166
-msgid "Whether or not the timer is currently ticking"
+#| msgid "Whether or not the timer is currently ticking"
+msgid "Whether the timer is currently ticking"
 msgstr "Indica si el contador está ejecutándose actualmente"
 
 #: ../gui/simple-greeter/gdm-user.c:245
@@ -1008,7 +1008,7 @@ msgstr "Iniciar sesión como %s"
 msgid "Currently logged in"
 msgstr "Sesión iniciada"
 
-#: ../gui/user-switch-applet/applet.c:162
+#: ../gui/user-switch-applet/applet.c:164
 msgid ""
 "The User Switch Applet is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -1020,7 +1020,7 @@ msgstr ""
 "General GNU publicada por la Free Software Foundation; bien en la versión 2 "
 "de la Licencia, o (a su elección) cualquier versión posterior."
 
-#: ../gui/user-switch-applet/applet.c:166
+#: ../gui/user-switch-applet/applet.c:168
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -1032,7 +1032,7 @@ msgstr ""
 "IDONEIDAD PARA UN PROPÓSITO PARTICULAR. Vea la Licencia Pública General GNU "
 "para más detalles."
 
-#: ../gui/user-switch-applet/applet.c:170
+#: ../gui/user-switch-applet/applet.c:172
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "this program; if not, write to the Free Software Foundation, Inc., 51 "
@@ -1042,81 +1042,82 @@ msgstr ""
 "con este programa, si no es así, escriba a la Free Software Foundation, Inc, "
 "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 EE. UU."
 
-#: ../gui/user-switch-applet/applet.c:184
+#: ../gui/user-switch-applet/applet.c:186
 msgid "A menu to quickly switch between users."
 msgstr "Un menú para cambiar rápidamente entre usuarios."
 
-#: ../gui/user-switch-applet/applet.c:188
+#: ../gui/user-switch-applet/applet.c:190
 msgid "translator-credits"
 msgstr ""
 "Lucas Vieites <lucas@codexion.com>, 2008\n"
 "Jorge González <jorgegonz@svn.gnome.org>, 2009"
 
-#: ../gui/user-switch-applet/applet.c:647
-#: ../gui/user-switch-applet/applet.c:784
-#: ../gui/user-switch-applet/applet.c:823
+#: ../gui/user-switch-applet/applet.c:649
+#: ../gui/user-switch-applet/applet.c:786
+#: ../gui/user-switch-applet/applet.c:825
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "No se puede bloquear la pantalla: %s"
 
-#: ../gui/user-switch-applet/applet.c:669
+#: ../gui/user-switch-applet/applet.c:671
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr ""
 "No se puede establecer temporalmente el salvapantallas a oscurecer pantalla: "
 "%s"
 
-#: ../gui/user-switch-applet/applet.c:882
+#: ../gui/user-switch-applet/applet.c:884
 #, c-format
 msgid "Can't logout: %s"
 msgstr "No se puede salir de la sesión: %s"
 
-#: ../gui/user-switch-applet/applet.c:966
+#: ../gui/user-switch-applet/applet.c:968
 msgid "Available"
 msgstr "Disponible"
 
-#: ../gui/user-switch-applet/applet.c:967
+#: ../gui/user-switch-applet/applet.c:969
 msgid "Invisible"
 msgstr "Invisible"
 
-#: ../gui/user-switch-applet/applet.c:968
+#: ../gui/user-switch-applet/applet.c:970
 msgid "Busy"
 msgstr "Ocupado"
 
-#: ../gui/user-switch-applet/applet.c:969
+#: ../gui/user-switch-applet/applet.c:971
 msgid "Away"
 msgstr "Ausente"
 
-#: ../gui/user-switch-applet/applet.c:1129
+#: ../gui/user-switch-applet/applet.c:1131
 msgid "Account Information..."
 msgstr "Información de la cuenta…"
 
-#: ../gui/user-switch-applet/applet.c:1141
+#: ../gui/user-switch-applet/applet.c:1143
 msgid "System Preferences..."
 msgstr "Preferencias del sistema…"
 
-#: ../gui/user-switch-applet/applet.c:1157
+#: ../gui/user-switch-applet/applet.c:1159
 msgid "Lock Screen"
 msgstr "Bloquear la pantalla"
 
-#: ../gui/user-switch-applet/applet.c:1168
+#. Only show if not locked down
+#: ../gui/user-switch-applet/applet.c:1170
 msgid "Switch User"
 msgstr "Cambiar de usuario"
 
 #. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1179
+#: ../gui/user-switch-applet/applet.c:1181
 msgid "Quit..."
 msgstr "Salir…"
 
-#: ../gui/user-switch-applet/applet.c:1294
+#: ../gui/user-switch-applet/applet.c:1302
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: ../gui/user-switch-applet/applet.c:1412
+#: ../gui/user-switch-applet/applet.c:1420
 msgid "User Switch Applet"
 msgstr "Miniaplicación del selector de usuarios"
 
-#: ../gui/user-switch-applet/applet.c:1421
+#: ../gui/user-switch-applet/applet.c:1429
 msgid "Change account settings and status"
 msgstr "Cambiar los ajustes de la cuenta y el estado"
 
@@ -1187,6 +1188,9 @@ msgstr "Captura de pantalla obtenida"
 #: ../utils/gdm-screenshot.c:284
 msgid "Take a picture of the screen"
 msgstr "Tomar una captura de la pantalla"
+
+#~ msgid "id"
+#~ msgstr "id"
 
 # El formato de la fecha, día y 24-horas Dom 12 de jun, 14:00)
 #~ msgid "%a %b %e"
