@@ -71,7 +71,6 @@ struct GdmWelcomeSessionPrivate
         char           *x11_display_hostname;
         char           *x11_authority_file;
         gboolean        x11_display_is_local;
-        gboolean        x11_display_is_dynamic;
 
         guint           child_watch_id;
 
@@ -94,7 +93,6 @@ enum {
         PROP_X11_DISPLAY_HOSTNAME,
         PROP_X11_AUTHORITY_FILE,
         PROP_X11_DISPLAY_IS_LOCAL,
-        PROP_X11_DISPLAY_IS_DYNAMIC,
         PROP_USER_NAME,
         PROP_GROUP_NAME,
         PROP_SERVER_ADDRESS,
@@ -188,13 +186,12 @@ open_welcome_session (GdmWelcomeSession *welcome_session)
                 session_id = "";
         }
 
-        g_debug ("GdmWelcomeSession: Opening ConsoleKit session for user:%d x11-display:'%s' x11-display-device:'%s' remote-host-name:'%s' is-local:%d is-dynamic:%d",
+        g_debug ("GdmWelcomeSession: Opening ConsoleKit session for user:%d x11-display:'%s' x11-display-device:'%s' remote-host-name:'%s' is-local:%d",
                  pwent->pw_uid,
                  welcome_session->priv->x11_display_name,
                  x11_display_device,
                  hostname,
-                 welcome_session->priv->x11_display_is_local,
-                 welcome_session->priv->x11_display_is_dynamic);
+                 welcome_session->priv->x11_display_is_local);
 
         dbus_error_init (&error);
         res = ck_connector_open_session_with_parameters (welcome_session->priv->ckc,
@@ -207,7 +204,6 @@ open_welcome_session (GdmWelcomeSession *welcome_session)
                                                          "x11-display-device", &x11_display_device,
                                                          "remote-host-name", &hostname,
                                                          "is-local", &welcome_session->priv->x11_display_is_local,
-                                                         "is-dynamic", &welcome_session->priv->x11_display_is_dynamic,
                                                          NULL);
         if (! res) {
                 if (dbus_error_is_set (&error)) {
@@ -943,13 +939,6 @@ _gdm_welcome_session_set_x11_display_is_local (GdmWelcomeSession *welcome_sessio
 }
 
 static void
-_gdm_welcome_session_set_x11_display_is_dynamic (GdmWelcomeSession *welcome_session,
-                                                 gboolean           is_dynamic)
-{
-        welcome_session->priv->x11_display_is_dynamic = is_dynamic;
-}
-
-static void
 _gdm_welcome_session_set_x11_authority_file (GdmWelcomeSession *welcome_session,
                                              const char        *file)
 {
@@ -1041,9 +1030,6 @@ gdm_welcome_session_set_property (GObject      *object,
         case PROP_X11_DISPLAY_IS_LOCAL:
                 _gdm_welcome_session_set_x11_display_is_local (self, g_value_get_boolean (value));
                 break;
-        case PROP_X11_DISPLAY_IS_DYNAMIC:
-                _gdm_welcome_session_set_x11_display_is_dynamic (self, g_value_get_boolean (value));
-                break;
         case PROP_X11_AUTHORITY_FILE:
                 _gdm_welcome_session_set_x11_authority_file (self, g_value_get_string (value));
                 break;
@@ -1105,9 +1091,6 @@ gdm_welcome_session_get_property (GObject    *object,
                 break;
         case PROP_X11_DISPLAY_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->x11_display_is_local);
-                break;
-        case PROP_X11_DISPLAY_IS_DYNAMIC:
-                g_value_set_boolean (value, self->priv->x11_display_is_dynamic);
                 break;
         case PROP_X11_AUTHORITY_FILE:
                 g_value_set_string (value, self->priv->x11_authority_file);
@@ -1208,13 +1191,6 @@ gdm_welcome_session_class_init (GdmWelcomeSessionClass *klass)
                                          g_param_spec_boolean ("x11-display-is-local",
                                                                "is local",
                                                                "is local",
-                                                               FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-        g_object_class_install_property (object_class,
-                                         PROP_X11_DISPLAY_IS_DYNAMIC,
-                                         g_param_spec_boolean ("x11-display-is-dynamic",
-                                                               "is dynamic",
-                                                               "is dynamic",
                                                                FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,

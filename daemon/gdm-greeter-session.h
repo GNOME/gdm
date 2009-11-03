@@ -54,8 +54,7 @@ GdmGreeterSession *   gdm_greeter_session_new                (const char        
                                                               const char        *session_id,
                                                               const char        *display_device,
                                                               const char        *display_hostname,
-                                                              gboolean           display_is_local,
-                                                              gboolean           display_is_dynamic);
+                                                              gboolean           display_is_local);
 
 G_END_DECLS
 

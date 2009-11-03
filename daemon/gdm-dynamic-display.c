@@ -196,7 +196,6 @@ gdm_dynamic_display_new (int display_number)
         object = g_object_new (GDM_TYPE_DYNAMIC_DISPLAY,
                                "x11-display-number", display_number,
                                "x11-display-name", x11_display,
-                               "is-dynamic", TRUE,
                                NULL);
         g_free (x11_display);
 

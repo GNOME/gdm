@@ -83,7 +83,6 @@ struct GdmSlavePrivate
         int              display_number;
         char            *display_hostname;
         gboolean         display_is_local;
-        gboolean         display_is_dynamic;
         gboolean         display_is_parented;
         char            *display_seat_id;
         char            *display_session_id;
@@ -105,7 +104,6 @@ enum {
         PROP_DISPLAY_NUMBER,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
-        PROP_DISPLAY_IS_DYNAMIC,
         PROP_DISPLAY_SEAT_ID,
         PROP_DISPLAY_SESSION_ID,
         PROP_DISPLAY_X11_AUTHORITY_FILE
@@ -540,24 +538,6 @@ gdm_slave_real_start (GdmSlave *slave)
                                  &error,
                                  G_TYPE_INVALID,
                                  G_TYPE_BOOLEAN, &slave->priv->display_is_local,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to get value: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to get value");
-                }
-
-                return FALSE;
-        }
-
-        error = NULL;
-        res = dbus_g_proxy_call (slave->priv->display_proxy,
-                                 "IsDynamic",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_BOOLEAN, &slave->priv->display_is_dynamic,
                                  G_TYPE_INVALID);
         if (! res) {
                 if (error != NULL) {
@@ -1376,13 +1356,6 @@ _gdm_slave_set_display_is_local (GdmSlave   *slave,
 }
 
 static void
-_gdm_slave_set_display_is_dynamic (GdmSlave   *slave,
-                                   gboolean    is)
-{
-        slave->priv->display_is_dynamic = is;
-}
-
-static void
 gdm_slave_set_property (GObject      *object,
                         guint         prop_id,
                         const GValue *value,
@@ -1419,9 +1392,6 @@ gdm_slave_set_property (GObject      *object,
                 break;
         case PROP_DISPLAY_IS_LOCAL:
                 _gdm_slave_set_display_is_local (self, g_value_get_boolean (value));
-                break;
-        case PROP_DISPLAY_IS_DYNAMIC:
-                _gdm_slave_set_display_is_dynamic (self, g_value_get_boolean (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1466,9 +1436,6 @@ gdm_slave_get_property (GObject    *object,
                 break;
         case PROP_DISPLAY_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->display_is_local);
-                break;
-        case PROP_DISPLAY_IS_DYNAMIC:
-                g_value_set_boolean (value, self->priv->display_is_dynamic);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1607,13 +1574,6 @@ gdm_slave_class_init (GdmSlaveClass *klass)
                                                                "display is local",
                                                                "display is local",
                                                                TRUE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-        g_object_class_install_property (object_class,
-                                         PROP_DISPLAY_IS_DYNAMIC,
-                                         g_param_spec_boolean ("display-is-dynamic",
-                                                               "display is dynamic",
-                                                               "display is dynamic",
-                                                               FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
         signals [STOPPED] =

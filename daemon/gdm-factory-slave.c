@@ -458,7 +458,6 @@ static void
 run_greeter (GdmFactorySlave *slave)
 {
         gboolean       display_is_local;
-        gboolean       display_is_dynamic;
         char          *display_id;
         char          *display_name;
         char          *seat_id;
@@ -471,7 +470,6 @@ run_greeter (GdmFactorySlave *slave)
         g_debug ("GdmFactorySlave: Running greeter");
 
         display_is_local = FALSE;
-        display_is_dynamic = FALSE;
         display_id = NULL;
         display_name = NULL;
         seat_id = NULL;
@@ -482,7 +480,6 @@ run_greeter (GdmFactorySlave *slave)
 
         g_object_get (slave,
                       "display-is-local", &display_is_local,
-                      "display-is-dynamic", &display_is_dynamic,
                       "display-id", &display_id,
                       "display-name", &display_name,
                       "seat-id", &seat_id,
@@ -547,8 +544,7 @@ run_greeter (GdmFactorySlave *slave)
                                                         session_id,
                                                         display_device,
                                                         display_hostname,
-                                                        display_is_local,
-                                                        display_is_dynamic);
+                                                        display_is_local);
         g_signal_connect (slave->priv->greeter,
                           "started",
                           G_CALLBACK (on_greeter_session_start),

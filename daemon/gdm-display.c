@@ -69,7 +69,6 @@ struct GdmDisplayPrivate
         GdmDisplayAccessFile *access_file;
 
         gboolean              is_local;
-        gboolean              is_dynamic;
         gboolean              use_auth;
         gboolean              block_console_session_requests;
         guint                 finish_idle_id;
@@ -93,7 +92,6 @@ enum {
         PROP_X11_COOKIE,
         PROP_X11_AUTHORITY_FILE,
         PROP_IS_LOCAL,
-        PROP_IS_DYNAMIC,
         PROP_USE_AUTH,
         PROP_SLAVE_COMMAND,
         PROP_BLOCK_CONSOLE_SESSION_REQUESTS,
@@ -827,20 +825,6 @@ gdm_display_is_local (GdmDisplay *display,
 }
 
 gboolean
-gdm_display_is_dynamic (GdmDisplay *display,
-                        gboolean   *dynamic,
-                        GError    **error)
-{
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        if (dynamic != NULL) {
-                *dynamic = display->priv->is_dynamic;
-        }
-
-        return TRUE;
-}
-
-gboolean
 gdm_display_use_auth (GdmDisplay *display,
                       gboolean   *use_auth,
                       GError    **error)
@@ -943,13 +927,6 @@ _gdm_display_set_is_local (GdmDisplay     *display,
 }
 
 static void
-_gdm_display_set_is_dynamic (GdmDisplay     *display,
-                             gboolean        is_dynamic)
-{
-        display->priv->is_dynamic = is_dynamic;
-}
-
-static void
 _gdm_display_set_use_auth (GdmDisplay     *display,
                            gboolean        use_auth)
 {
@@ -1015,9 +992,6 @@ gdm_display_set_property (GObject        *object,
         case PROP_IS_LOCAL:
                 _gdm_display_set_is_local (self, g_value_get_boolean (value));
                 break;
-        case PROP_IS_DYNAMIC:
-                _gdm_display_set_is_dynamic (self, g_value_get_boolean (value));
-                break;
         case PROP_USE_AUTH:
                 _gdm_display_set_use_auth (self, g_value_get_boolean (value));
                 break;
@@ -1080,9 +1054,6 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->is_local);
-                break;
-        case PROP_IS_DYNAMIC:
-                g_value_set_boolean (value, self->priv->is_dynamic);
                 break;
         case PROP_USE_AUTH:
                 g_value_set_boolean (value, self->priv->use_auth);
@@ -1279,13 +1250,6 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                                NULL,
                                                                NULL,
                                                                TRUE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-        g_object_class_install_property (object_class,
-                                         PROP_IS_DYNAMIC,
-                                         g_param_spec_boolean ("is-dynamic",
-                                                               NULL,
-                                                               NULL,
-                                                               FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
                                          PROP_USE_AUTH,
