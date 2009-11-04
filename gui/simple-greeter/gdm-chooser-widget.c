@@ -1725,6 +1725,26 @@ search_equal_func (GtkTreeModel     *model,
 }
 
 static void
+search_position_func (GtkTreeView *tree_view,
+                      GtkWidget   *search_dialog,
+                      gpointer     user_data)
+{
+        /* Move it outside the region viewable by
+         * the user.
+         * FIXME: This is pretty inelegant.
+         *
+         * It might be nicer to make a GdmOffscreenBin
+         * widget that we pack into the chooser widget below
+         * the frame but gets redirected offscreen.
+         *
+         * Then we would add a GtkEntry to the bin and set
+         * that entry as the search entry for the tree view
+         * instead of using a search position func.
+         */
+        gtk_window_move (GTK_WINDOW (search_dialog), -24000, -24000);
+}
+
+static void
 on_selection_changed (GtkTreeSelection *selection,
                       GdmChooserWidget *widget)
 {
@@ -1778,6 +1798,11 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
                                              (GtkTreeViewSearchEqualFunc)search_equal_func,
                                              widget,
                                              NULL);
+
+        gtk_tree_view_set_search_position_func (GTK_TREE_VIEW (widget->priv->items_view),
+                                                (GtkTreeViewSearchPositionFunc)search_position_func,
+                                                widget,
+                                                NULL);
 
         /* hack to make single-click activate work
          */
