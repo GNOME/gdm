@@ -70,7 +70,6 @@ struct GdmServerPrivate
         char    *command;
         GPid     pid;
 
-        gboolean disable_tcp;
         int      priority;
         char    *user_name;
         char    *session_args;
@@ -103,7 +102,6 @@ enum {
         PROP_USER_NAME,
         PROP_SESSION_ARGS,
         PROP_LOG_DIR,
-        PROP_DISABLE_TCP,
         PROP_DISPLAY_ID,
 };
 
@@ -760,13 +758,6 @@ _gdm_server_set_user_name (GdmServer  *server,
 }
 
 static void
-_gdm_server_set_disable_tcp (GdmServer  *server,
-                             gboolean    disabled)
-{
-        server->priv->disable_tcp = disabled;
-}
-
-static void
 gdm_server_set_property (GObject      *object,
                          guint         prop_id,
                          const GValue *value,
@@ -785,9 +776,6 @@ gdm_server_set_property (GObject      *object,
                 break;
         case PROP_USER_NAME:
                 _gdm_server_set_user_name (self, g_value_get_string (value));
-                break;
-        case PROP_DISABLE_TCP:
-                _gdm_server_set_disable_tcp (self, g_value_get_boolean (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -818,9 +806,6 @@ gdm_server_get_property (GObject    *object,
                 break;
         case PROP_USER_NAME:
                 g_value_set_string (value, self->priv->user_name);
-                break;
-        case PROP_DISABLE_TCP:
-                g_value_set_boolean (value, self->priv->disable_tcp);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -915,13 +900,6 @@ gdm_server_class_init (GdmServerClass *klass)
                                                               "user name",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-        g_object_class_install_property (object_class,
-                                         PROP_DISABLE_TCP,
-                                         g_param_spec_boolean ("disable-tcp",
-                                                               NULL,
-                                                               NULL,
-                                                               TRUE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
 }
 

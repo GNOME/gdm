@@ -1109,17 +1109,8 @@ gdm_simple_slave_run (GdmSimpleSlave *slave)
          * exist */
         if (display_is_local) {
                 gboolean res;
-                gboolean disable_tcp;
 
                 slave->priv->server = gdm_server_new (display_id);
-
-                disable_tcp = TRUE;
-                if (gdm_settings_client_get_boolean (GDM_KEY_DISALLOW_TCP,
-                                                     &disable_tcp)) {
-                        g_object_set (slave->priv->server,
-                                      "disable-tcp", disable_tcp,
-                                      NULL);
-                }
 
                 g_signal_connect (slave->priv->server,
                                   "exited",
