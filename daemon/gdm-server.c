@@ -910,7 +910,7 @@ gdm_server_init (GdmServer *server)
         server->priv = GDM_SERVER_GET_PRIVATE (server);
 
         server->priv->pid = -1;
-        server->priv->command = g_strdup (X_SERVER " -br -verbose");
+        server->priv->command = NULL;
         server->priv->log_dir = g_strdup (LOGDIR);
 
         add_ready_handler (server);
@@ -1030,12 +1030,6 @@ gdm_server_new (const char *display_id)
                 }
         
                 exit (1);
-        }
-
-        /* If command is not set, set it X_SERVER */
-        if (! server->priv->command || (strlen (server->priv->command) == 0)) {
-                g_free (server->priv->command);
-                server->priv->command = g_strdup (X_SERVER);
         }
 
         error = NULL;
