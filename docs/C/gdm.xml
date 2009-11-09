@@ -500,8 +500,9 @@
       <para>
         GDM uses syslog to log errors and status.  It can also log debugging
         information, which can be useful for tracking down problems if GDM is
-        not working properly.  This can be enabled by starting the GDM daemon
-        with the "--debug" option.
+        not working properly.  Debug output can be enabled by setting the
+        debug/Enable key to &quot;true&quot; in the
+        <filename>&lt;etc&gt;/gdm/custom.conf</filename> file.
       </para>
 
       <para>
@@ -1080,7 +1081,7 @@ PostSession/
         <filename>&lt;etc&gt;/gdm/custom.conf</filename> file.  Default
         values are stored in GConf in the <filename>gdm.schemas</filename>
         file.  It is recommended that end-users modify the
-        <filename>/etc/gdm/custom.conf</filename> file because the
+        <filename>&lt;etc&gt;/gdm/custom.conf</filename> file because the
         schemas file may be overwritten when the user updates their system to
         have a newer version of GDM.
       </para>
@@ -1099,7 +1100,7 @@ PostSession/
       </para>
 
       <para>
-        The file <filename>/etc/gdm/custom.conf</filename> supports the
+        The file <filename>&lt;etc&gt;/gdm/custom.conf</filename> supports the
         "[daemon]", "[security]", and "[xdmcp]"
         group sections.  Within each group, there are particular key/value
         pairs that can be specified to modify how GDM behaves.  For example,
@@ -1261,6 +1262,30 @@ TimedLogin=you
                 are run.  Refer to the <filename>User</filename>
                 configuration key and to the "Security->GDM User And
                 Group" section of this document for more information.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </sect3>
+
+      <sect3 id="debugsection">
+        <title>Debug Options</title>
+      
+        <variablelist>
+          <title>[debug]</title>
+          
+          <varlistentry>
+            <term>Enable</term>
+            <listitem>
+              <synopsis>Enable=false</synopsis>
+              <para>
+                To enable debugging, set the debug/Enable key to
+                &quot;true&quot; in the
+                <filename>&lt;etc&gt;/gdm/custom.conf</filename>
+                file and restart GDM.  Then debug output will be sent to the
+                system log file (<filename>&lt;var&gt;/log/messages</filename>
+                or <filename>&lt;var&gt;/adm/messages</filename> depending on
+                your Operating System).
               </para>
             </listitem>
           </varlistentry>
@@ -1525,16 +1550,6 @@ gdm:.my.domain
               <para>
                 Specifies the text banner message to show on the greeter
                 window.
-              </para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>/apps/gdm/simple-greeter/debug</term>
-            <listitem>
-              <synopsis>false (boolean)</synopsis>
-              <para>
-                If true, then debugging mode is enabled for the greeter.
               </para>
             </listitem>
           </varlistentry>
@@ -1991,18 +2006,6 @@ Language=cs_CZ.UTF-8
           </varlistentry>
 
           <varlistentry>
-            <term>--debug</term>
-            <listitem>
-              <para>
-                Print debug output to the syslog.  This is typically
-                <filename>&lt;var&gt;/log/messages</filename> or
-                <filename>&lt;var&gt;/adm/messages</filename> depending on
-                your Operating System.
-              </para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
             <term>--fatal-warnings</term>
             <listitem>
               <para>
@@ -2082,9 +2085,10 @@ Language=cs_CZ.UTF-8
 
     <para>
       If GDM is failing to work properly, it is always a good idea to include
-      debug information.  To turn on debug, launch gdm with the --debug
-      option.  Then use GDM to the point where it fails, and debug output will
-      be sent to your system log
+      debug information.  To enable debugging, set the debug/Enable key to
+      &quot;true&quot; in the <filename>&lt;etc&gt;/gdm/custom.conf</filename>
+      file and restart GDM.  Then use GDM to the point where it fails, and
+      debug output will be sent to the system log file
       (<filename>&lt;var&gt;/log/messages</filename> or
       <filename>&lt;var&gt;/adm/messages</filename> depending on your Operating
       System).  If you share this output with the GDM community via a bug

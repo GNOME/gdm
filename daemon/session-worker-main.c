@@ -44,8 +44,14 @@
 #include "gdm-log.h"
 #include "gdm-session-worker.h"
 
+#include "gdm-settings.h"
+#include "gdm-settings-direct.h"
+#include "gdm-settings-keys.h"
+
 #define SERVER_DBUS_PATH      "/org/gnome/DisplayManager/SessionServer"
 #define SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.SessionServer"
+
+static GdmSettings *settings = NULL;
 
 static gboolean
 signal_cb (int      signo,
@@ -113,14 +119,17 @@ signal_cb (int      signo,
 }
 
 static gboolean
-is_debug_set (gboolean arg)
+is_debug_set (void)
 {
+        gboolean debug = FALSE;
+
         /* enable debugging for unstable builds */
         if (gdm_is_version_unstable ()) {
                 return TRUE;
         }
 
-        return arg;
+        gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);
+        return debug;
 }
 
 int
@@ -132,9 +141,7 @@ main (int    argc,
         GdmSessionWorker *worker;
         GdmSignalHandler *signal_handler;
         const char       *address;
-        static gboolean   debug      = FALSE;
         static GOptionEntry entries []   = {
-                { "debug", 0, 0, G_OPTION_ARG_NONE, &debug, N_("Enable debugging code"), NULL },
                 { NULL }
         };
 
@@ -153,7 +160,19 @@ main (int    argc,
         g_option_context_free (context);
 
         gdm_log_init ();
-        gdm_log_set_debug (is_debug_set (debug));
+
+        settings = gdm_settings_new ();
+        if (settings == NULL) {
+                g_warning ("Unable to initialize settings");
+                exit (1);
+        }
+
+        if (! gdm_settings_direct_init (settings, GDMCONFDIR "/gdm.schemas", "/")) {
+                g_warning ("Unable to initialize settings");
+                exit (1);
+        }
+
+        gdm_log_set_debug (is_debug_set ());
 
         address = g_getenv ("GDM_SESSION_DBUS_ADDRESS");
         if (address == NULL) {

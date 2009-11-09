@@ -44,7 +44,12 @@
 #include "gdm-common.h"
 #include "gdm-factory-slave.h"
 
-static int gdm_return_code = 0;
+#include "gdm-settings.h"
+#include "gdm-settings-direct.h"
+#include "gdm-settings-keys.h"
+
+static GdmSettings     *settings        = NULL;
+static int              gdm_return_code = 0;
 
 static DBusGConnection *
 get_system_bus (void)
@@ -145,14 +150,17 @@ on_slave_stopped (GdmSlave   *slave,
 }
 
 static gboolean
-is_debug_set (gboolean arg)
+is_debug_set (void)
 {
+        gboolean debug = FALSE;
+
         /* enable debugging for unstable builds */
         if (gdm_is_version_unstable ()) {
                 return TRUE;
         }
 
-        return arg;
+        gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);
+        return debug;
 }
 
 int
@@ -164,10 +172,8 @@ main (int    argc,
         DBusGConnection  *connection;
         GdmSlave         *slave;
         static char      *display_id = NULL;
-        static gboolean   debug      = FALSE;
         GdmSignalHandler *signal_handler;
         static GOptionEntry entries []   = {
-                { "debug", 0, 0, G_OPTION_ARG_NONE, &debug, N_("Enable debugging code"), NULL },
                 { "display-id", 0, 0, G_OPTION_ARG_STRING, &display_id, N_("Display ID"), N_("ID") },
                 { NULL }
         };
@@ -193,7 +199,18 @@ main (int    argc,
 
         gdm_log_init ();
 
-        gdm_log_set_debug (is_debug_set (debug));
+        settings = gdm_settings_new ();
+        if (settings == NULL) {
+                g_warning ("Unable to initialize settings");
+                exit (1);
+        }
+
+        if (! gdm_settings_direct_init (settings, GDMCONFDIR "/gdm.schemas", "/")) {
+                g_warning ("Unable to initialize settings");
+                exit (1);
+        }
+
+        gdm_log_set_debug (is_debug_set ());
 
         if (display_id == NULL) {
                 g_critical ("No display ID set");

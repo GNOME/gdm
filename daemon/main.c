@@ -499,6 +499,20 @@ signal_cb (int      signo,
         return ret;
 }
 
+static gboolean
+is_debug_set (void)
+{
+        gboolean debug = FALSE;
+
+        /* enable debugging for unstable builds */
+        if (gdm_is_version_unstable ()) {
+                return TRUE;
+        }
+
+        gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);
+        return debug;
+}
+
 int
 main (int    argc,
       char **argv)
@@ -512,12 +526,10 @@ main (int    argc,
         gboolean            res;
         gboolean            xdmcp_enabled;
         GdmSignalHandler   *signal_handler;
-        static gboolean     debug            = FALSE;
         static gboolean     do_timed_exit    = FALSE;
         static gboolean     print_version    = FALSE;
         static gboolean     fatal_warnings   = FALSE;
         static GOptionEntry entries []   = {
-                { "debug", 0, 0, G_OPTION_ARG_NONE, &debug, N_("Enable debugging code"), NULL },
                 { "fatal-warnings", 0, 0, G_OPTION_ARG_NONE, &fatal_warnings, N_("Make all warnings fatal"), NULL },
                 { "timed-exit", 0, 0, G_OPTION_ARG_NONE, &do_timed_exit, N_("Exit after a time - for debugging"), NULL },
                 { "version", 0, 0, G_OPTION_ARG_NONE, &print_version, N_("Print GDM version"), NULL },
@@ -585,7 +597,7 @@ main (int    argc,
                 goto out;
         }
 
-        gdm_log_set_debug (debug);
+        gdm_log_set_debug (is_debug_set ());
 
         gdm_daemon_change_user (&gdm_uid, &gdm_gid);
         gdm_daemon_check_permissions (gdm_uid, gdm_gid);

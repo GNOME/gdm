@@ -42,8 +42,6 @@
 
 #include "gdm-greeter-session.h"
 
-#define DEBUG_KEY                 "/apps/gdm/simple-greeter/debug"
-
 #define SM_DBUS_NAME      "org.gnome.SessionManager"
 #define SM_DBUS_PATH      "/org/gnome/SessionManager"
 #define SM_DBUS_INTERFACE "org.gnome.SessionManager"
@@ -58,19 +56,15 @@ static DBusGProxy      *client_proxy = NULL;
 static gboolean
 is_debug_set (void)
 {
-        GConfClient *client;
-        gboolean     is;
+        gboolean debug = FALSE;
 
         /* enable debugging for unstable builds */
         if (gdm_is_version_unstable ()) {
                 return TRUE;
         }
 
-        client = gconf_client_get_default ();
-        is = gconf_client_get_bool (client, DEBUG_KEY, NULL);
-        g_object_unref (client);
-
-        return is;
+        gdm_settings_client_get_boolean (GDM_KEY_DEBUG, &debug);
+        return debug;
 }
 
 
