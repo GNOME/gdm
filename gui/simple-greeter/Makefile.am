@@ -250,6 +250,7 @@ test_user_chooser_SOURCES = 		\
 
 test_user_chooser_LDADD =	\
 	libgdmuser.la		\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(COMMON_LIBS)		\
 	$(SIMPLE_GREETER_LIBS)	\
 	$(NULL)
@@ -260,6 +261,7 @@ test_user_manager_SOURCES = 	\
 
 test_user_manager_LDADD =	\
 	libgdmuser.la		\
+	$(top_builddir)/common/libgdmcommon.la	\
 	$(COMMON_LIBS)		\
 	$(SIMPLE_GREETER_LIBS)	\
 	$(NULL)

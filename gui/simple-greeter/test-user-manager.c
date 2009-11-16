@@ -31,6 +31,7 @@
 #include <gtk/gtk.h>
 
 #include "gdm-user-manager.h"
+#include "gdm-settings-client.h"
 
 static GdmUserManager *manager = NULL;
 
@@ -77,6 +78,11 @@ main (int argc, char *argv[])
         setlocale (LC_ALL, "");
 
         gtk_init (&argc, &argv);
+
+        if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
+                g_critical ("Unable to initialize settings client");
+                exit (1);
+        }
 
         manager = gdm_user_manager_ref_default ();
         g_signal_connect (manager,

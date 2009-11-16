@@ -2,6 +2,7 @@ NULL =
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/gui/simple-greeter		\
+	-I$(top_srcdir)/common				\
 	-DPREFIX=\""$(prefix)"\" 			\
 	-DLIBDIR=\""$(libdir)"\" 			\
 	-DDATADIR=\""$(datadir)"\"		 	\
@@ -11,6 +12,7 @@ AM_CPPFLAGS = \
 	-DGLADEDIR=\""$(pkgdatadir)"\" 			\
 	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
 	-DSBINDIR=\""$(sbindir)"\"		 	\
+	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
 	$(GTK_CFLAGS)					\
 	$(APPLET_CFLAGS)				\
 	$(NULL)
@@ -27,6 +29,7 @@ gdm_user_switch_applet_SOURCES =  	\
 
 gdm_user_switch_applet_LDADD = 		\
 	$(top_builddir)/gui/simple-greeter/libgdmuser.la	\
+	$(top_builddir)/common/libgdmcommon.la		\
 	$(COMMON_LIBS)					\
 	$(APPLET_LIBS)					\
 	$(NULL)

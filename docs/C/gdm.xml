@@ -1292,6 +1292,72 @@ TimedLogin=you
         </variablelist>
       </sect3>
 
+      <sect3 id="greetersection">
+        <title>Greeter Options</title>
+      
+        <variablelist>
+          <title>[greeter]</title>
+          
+          <varlistentry>
+            <term>IncludeAll</term>
+            <listitem>
+              <synopsis>IncludeAll=true</synopsis>
+              <para>
+                If true, then the face browser will show all users on the local
+                machine.  If false, the face browser will only show users who
+                have recently logged in.
+              </para>
+
+              <para>
+                When this key is true, GDM will call fgetpwent() to get a list
+                of local users on the system.  Any users with a user id less
+                than 500 (or 100 if running on Solaris) are filtered out.  The
+                Face Browser also will display any users that have previously
+                logged in on the system  (for example NIS/LDAP users).  It gets
+                this list via calling the <command>ck-history</command>
+                ConsoleKit interface.  It will also filter out any users which
+                do not have a valid shell (valid shells are any shell that
+                getusershell() returns - /sbin/nologin or /bin/false are
+                considered invalid shells even if getusershell() returns them).
+              </para>
+
+              <para>
+                If false, then GDM more simply only displays users that have
+                previously logged in on the system (local or NIS/LDAP users) by
+                calling the <command>ck-history</command> ConsoleKit interface.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Include</term>
+            <listitem>
+              <synopsis>Include=</synopsis>
+              <para>
+                Set to a list of users to always include in the Face Browser.
+                This value is set to a list of users separated by commas.  By
+                default, the value is empty.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Exclude</term>
+            <listitem>
+              <synopsis>Exclude=bin,root,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,nobody4,noaccess,postgres,pvm,rpm,nfsnobody,pcap</synopsis>
+              <para>
+                Set to a list of users to always exclude in the Face Browser.
+                This value is set to a list of users separated by commas.  Note
+                that the setting in the <filename>custom.conf</filename>
+                overrides the default value, so if you wish to add additional
+                users to the list, then you need to set the value to the
+                default value with additional users appended to the list.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </sect3>
+
       <sect3 id="securitysection">
         <title>Security Options</title>
       

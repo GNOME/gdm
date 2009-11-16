@@ -42,6 +42,7 @@
 
 #include "gdm-user-manager.h"
 #include "gdm-entry-menu-item.h"
+#include "gdm-settings-client.h"
 
 #define LOCKDOWN_DIR    "/desktop/gnome/lockdown"
 #define LOCKDOWN_USER_SWITCHING_KEY LOCKDOWN_DIR "/disable_user_switching"
@@ -1423,6 +1424,11 @@ fill_applet (PanelApplet *applet)
         adata = g_new0 (GdmAppletData, 1);
         adata->applet = applet;
         adata->panel_size = 24;
+
+        if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
+                g_critical ("Unable to initialize settings client");
+                exit (1);
+        }
 
         adata->client = gconf_client_get_default ();
 
