@@ -1,4 +1,43 @@
 ===============
+Version 2.29.2
+===============
+
+- Now GDM supports Include, Exclude, and IncludeAll configuration options to
+  allow the ability to configure which users are displayed in the FaceBrowser.
+- Now GDM supports better debugging.  Users can set the debug/Enable
+  configuration option to turn on GDM debugging.
+- The directory where GDM screenshots are placed has been moved to its own
+  directory: /var/run/gdm/greeter/GDM-Screenshot.png.  The screenshot directory
+  can now be specified at build time via the --with-screenshot-dir configure
+  argument.
+- Many simple-greeter Face Browser usability improvements.
+- The simple-greeter Face Browser tree view search entry is now obscured to
+  help prevent accidental display of passwords.
+- Shutdown and reboot functions are moved to a menu in the simple-greeter panel
+  instead of being presented as buttons.  The shutdown menu is better
+  positioned on multi-monitor displays.
+- The simple-greeter panel notification area has been improved and now honors
+  the GConf setting for /apps/notification_area_applet/prefs/padding.
+- The entry field in the simple-greeter now has accessibility labels so it will
+  work better with accessibility programs.
+- The clock in the simple-greeter panel no longer shows the date, making the
+  screen look a little cleaner.  The date is moved to the clock tooltip so it
+  is still available.
+- The simple-greeter now uses gethostname instead of g_get_host_name since
+  is more reliable when the hostname changes at runtime.
+- The user switch applet now honors disable_lock_screen.  The option to lock
+  screen is now not shown if disable_lock_screen is set.
+- The /var/run/gdm directory is better locked down.
+- GDM no longer crashes on bad UTF-8 in the /etc/passwd file.
+- When the worker dies, the auth-failed signal is no longer sent.  This 
+  prevents a crash that happens when switching run-levels when the login screen
+  is displayed.
+- Ensure that the length of sockaddr structure is set to the correct length for
+  IPv4 or IPv6.  This makes GDM work better on some operating systems that are
+  picky about the length being exact.
+- String and documentation improvements.
+
+===============
 Version 2.28.1
 ===============
 
