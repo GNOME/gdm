@@ -123,8 +123,8 @@ uninstall-hook:
 	$(DESTDIR)$(workingdir)/.gconf.path \
 	-rf \
 	$(DESTDIR)$(workingdir)/.gconf.mandatory \
+	$(DESTDIR)$(screenshotdir) \
 	$(DESTDIR)$(xauthdir)
-	$(DESTDIR)$(screenshotdir)
 
 install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.path
 	if test '!' -d $(DESTDIR)$(gdmconfdir); then \
