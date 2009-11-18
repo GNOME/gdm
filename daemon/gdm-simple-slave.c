@@ -112,7 +112,11 @@ on_session_started (GdmSession       *session,
         username = gdm_session_direct_get_username (slave->priv->session);
         gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PreSession", username);
 
-        /* FIXME: should we do something here? */
+        /* FIXME: should we do something here?
+         * Note that error return status from PreSession script should
+         * be ignored in the case of a X-GDM-BypassXSession session, which can be checked
+         * by calling: gdm_session_direct_bypasses_xsession (session)
+         */
 }
 
 static void

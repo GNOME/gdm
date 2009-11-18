@@ -56,6 +56,7 @@ GdmSessionDirect * gdm_session_direct_new                      (const char *disp
                                                                 gboolean    display_is_local) G_GNUC_MALLOC;
 
 char             * gdm_session_direct_get_username             (GdmSessionDirect     *session_direct);
+gboolean           gdm_session_direct_bypasses_xsession        (GdmSessionDirect     *session_direct);
 
 /* Exported methods */
 gboolean           gdm_session_direct_restart                  (GdmSessionDirect     *session_direct,

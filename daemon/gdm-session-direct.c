@@ -1972,7 +1972,13 @@ gdm_session_direct_start_session (GdmSession *session)
         g_return_if_fail (impl->priv->is_running == FALSE);
 
         command = get_session_command (impl);
-        program = g_strdup_printf (GDMCONFDIR "/Xsession \"%s\"", command);
+
+        if (gdm_session_direct_bypasses_xsession (impl)) {
+                program = g_strdup (command);
+        } else {
+                program = g_strdup_printf (GDMCONFDIR "/Xsession \"%s\"", command);
+        }
+
         g_free (command);
 
         setup_session_environment (impl);
@@ -2060,6 +2066,55 @@ gdm_session_direct_get_username (GdmSessionDirect *session)
         g_return_val_if_fail (session != NULL, NULL);
 
         return g_strdup (session->priv->selected_user);
+}
+
+gboolean
+gdm_session_direct_bypasses_xsession (GdmSessionDirect *session_direct)
+{
+        GError     *error;
+        GKeyFile   *key_file;
+        gboolean    res;
+        gboolean    bypasses_xsession = FALSE;
+        char       *filename;
+        char       *full_path;
+
+        g_return_val_if_fail (session_direct != NULL, FALSE);
+        g_return_val_if_fail (GDM_IS_SESSION_DIRECT (session_direct), FALSE);
+
+        filename = g_strdup_printf ("%s.desktop", get_session_name (session_direct));
+
+        key_file = g_key_file_new ();
+        error = NULL;
+        res = g_key_file_load_from_dirs (key_file,
+                                         filename,
+                                         get_system_session_dirs (),
+                                         &full_path,
+                                         G_KEY_FILE_NONE,
+                                         &error);
+        if (! res) {
+                g_debug ("GdmSessionDirect: File '%s' not found: %s", filename, error->message);
+                goto out;
+        }
+
+        error = NULL;
+        res = g_key_file_has_key (key_file, G_KEY_FILE_DESKTOP_GROUP, "X-GDM-BypassXsession", NULL);
+        if (!res) {
+                goto out;
+        } else {
+                bypasses_xsession = g_key_file_get_boolean (key_file, G_KEY_FILE_DESKTOP_GROUP, "X-GDM-BypassXSession", &error);
+                if (error) {
+                        bypasses_xsession = FALSE;
+                        g_error_free (error);
+                        goto out;
+                }
+                if (bypasses_xsession) {
+                        g_debug ("GdmSessionDirect: Session %s bypasses Xsession wrapper script", filename);
+                }
+        }
+
+out:
+        g_free (filename);
+        return bypasses_xsession;
 }
 
 static void
