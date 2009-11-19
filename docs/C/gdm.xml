@@ -1056,6 +1056,22 @@ PostSession/
         various AT programs if the configuration values specified in the
         Accessibility Configuration section below are set.
       </para>
+
+      <para>
+        Desktop files support a GDM specific key
+        &quot;X-GDM-BypassXsession&quot;.  If the key is not specified in a
+        desktop file, the value defaults to &quot;false&quot;.  If this key is
+        specified to be &quot;true&quot; in a desktop file, then GDM will
+        launch the program specified by the desktop file &quotExec&quot; key
+        directly when starting the user session.  It will not run the program
+        via the <filename>&lt;etc&gt;/gdm/Xsession</filename> script, which is
+        the normal behavior.  Since bypassing the
+        <filename>&lt;etc&gt;/gdm/Xsession</filename> script avoids setting up
+        the user session with the normal system and user settings, sessions
+        started this way can be useful for debugging problems in the system or
+        user scripts that might be preventing a user from being able to start
+        a session.
+      </para>
     </sect2>
 
     <sect2 id="xsessionscript">
