@@ -2101,7 +2101,7 @@ gdm_session_direct_bypasses_xsession (GdmSessionDirect *session_direct)
         if (!res) {
                 goto out;
         } else {
-                bypasses_xsession = g_key_file_get_boolean (key_file, G_KEY_FILE_DESKTOP_GROUP, "X-GDM-BypassXSession", &error);
+                bypasses_xsession = g_key_file_get_boolean (key_file, G_KEY_FILE_DESKTOP_GROUP, "X-GDM-BypassXsession", &error);
                 if (error) {
                         bypasses_xsession = FALSE;
                         g_error_free (error);

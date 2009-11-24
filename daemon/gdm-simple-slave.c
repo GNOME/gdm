@@ -114,8 +114,9 @@ on_session_started (GdmSession       *session,
 
         /* FIXME: should we do something here?
          * Note that error return status from PreSession script should
-         * be ignored in the case of a X-GDM-BypassXSession session, which can be checked
-         * by calling: gdm_session_direct_bypasses_xsession (session)
+         * be ignored in the case of a X-GDM-BypassXsession session, which can
+         * be checked by calling:
+         * gdm_session_direct_bypasses_xsession (session)
          */
 }
 
