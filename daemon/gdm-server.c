@@ -630,6 +630,7 @@ gdm_server_spawn (GdmServer  *server,
         if ((tmp = strstr (server->priv->display_name, ":")) != NULL) {
                 char *socket_file;
                 int   display_num;
+                int   count;
                 char *p;
 
                 tmp++;
@@ -637,10 +638,12 @@ gdm_server_spawn (GdmServer  *server,
 
                 socket_file = g_strdup_printf ("/tmp/.X11-unix/X%d",
                                                display_num);
-                while (1) {
+                count = 0;
+                while (count < 5) {
                         if (!g_file_test (socket_file, G_FILE_TEST_EXISTS))
                                 break;
                         sleep (1);
+                        count ++;
                 }
                 g_free (socket_file);
         }
