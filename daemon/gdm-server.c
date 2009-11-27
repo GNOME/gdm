@@ -602,6 +602,7 @@ gdm_server_spawn (GdmServer  *server,
         GPtrArray       *env;
         gboolean         ret;
         char            *freeme;
+        char            *tmp;
 
         ret = FALSE;
 
@@ -622,6 +623,26 @@ gdm_server_spawn (GdmServer  *server,
                            "gdm_server_spawn",
                            server->priv->display_name);
                 _exit (SERVER_ABORT);
+        }
+
+        /* Sometimes quit X slowly, adding this  to avoid restart session
+           failure */
+        if ((tmp = strstr (server->priv->display_name, ":")) != NULL) {
+                char *socket_file;
+                int   display_num;
+                char *p;
+
+                tmp++;
+                display_num = g_ascii_strtod (tmp, &p);
+
+                socket_file = g_strdup_printf ("/tmp/.X11-unix/X%d",
+                                               display_num);
+                while (1) {
+                        if (!g_file_test (socket_file, G_FILE_TEST_EXISTS))
+                                break;
+                        sleep (1);
+                }
+                g_free (socket_file);
         }
 
         env = get_server_environment (server);
