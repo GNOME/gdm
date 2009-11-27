@@ -32,6 +32,7 @@
 #include <pwd.h>
 #include <grp.h>
 #include <signal.h>
+#include <sys/ioctl.h>
 #include <sys/resource.h>
 
 #ifdef HAVE_SYS_PRCTL_H
@@ -40,6 +41,10 @@
 
 #ifdef WITH_SYSTEMD
 #include <systemd/sd-daemon.h>
+#endif
+
+#ifdef WITH_PLYMOUTH
+#include <linux/vt.h>
 #endif
 
 #include <glib.h>
@@ -750,6 +755,61 @@ gdm_server_spawn (GdmServer  *server,
 
         return ret;
 }
+
+#ifdef WITH_PLYMOUTH
+static int
+get_active_vt (void)
+{
+        int console_fd;
+        struct vt_stat console_state = { 0 };
+
+        console_fd = open ("/dev/tty0", O_RDONLY | O_NOCTTY);
+
+        if (console_fd < 0) {
+                goto out;
+        }
+
+        if (ioctl (console_fd, VT_GETSTATE, &console_state) < 0) {
+                goto out;
+        }
+
+out:
+        if (console_fd >= 0) {
+                close (console_fd);
+        }
+
+        return console_state.v_active;
+}
+
+static char *
+get_active_vt_as_string (void)
+{
+        int vt;
+
+        vt = get_active_vt ();
+
+        if (vt <= 0) {
+                return NULL;
+        }
+
+        return g_strdup_printf ("vt%d", vt);
+}
+
+gboolean
+gdm_server_start_on_active_vt (GdmServer *server)
+{
+        gboolean res;
+        char *vt;
+
+        g_free (server->priv->command);
+        server->priv->command = g_strdup (X_SERVER " -background none -logverbose 7");
+        vt = get_active_vt_as_string ();
+        res = gdm_server_spawn (server, vt);
+        g_free (vt);
+
+        return res;
+}
+#endif
 
 /**
  * gdm_server_start:

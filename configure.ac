@@ -264,6 +264,10 @@ AC_ARG_WITH(systemd,
             AS_HELP_STRING([--with-systemd],
                            [Add systemd support @<:@default=auto@:>@]),
             [with_systemd=$withval], [with_systemd=auto])
+AC_ARG_WITH(plymouth,
+            AS_HELP_STRING([--with-plymouth],
+                           [Add plymouth support @<:@default=auto@:>@]),
+            [with_plymouth=$withval], [with_plymouth=auto])
 
 AC_ARG_WITH(at-spi-registryd-directory,
             AS_HELP_STRING([--with-at-spi-registryd-directory],
@@ -952,6 +956,33 @@ AC_SUBST(SYSTEMD_X_SERVER)
 AC_DEFINE_UNQUOTED(SYSTEMD_X_SERVER,"$SYSTEMD_X_SERVER",[Path to systemd X server wrapper])
 
 dnl ---------------------------------------------------------------------------
+dnl - Check for plymouth support
+dnl ---------------------------------------------------------------------------
+PKG_CHECK_MODULES(PLYMOUTH,
+                  [ply-boot-client],
+                  [have_plymouth=yes], [have_plymouth=no])
+
+if test "x$with_plymouth" = "xauto" ; then
+        if test x$have_plymouth = xno ; then
+                use_plymouth=no
+        else
+                use_plymouth=yes
+        fi
+else
+        use_plymouth="$with_plymouth"
+fi
+
+if test "x$use_plymouth" != "xno" ; then
+        if test "x$have_plymouth" = "xno"; then
+                AC_MSG_ERROR([Plymouth support explicitly required, but plymouth not found])
+        fi
+
+        AC_DEFINE(WITH_PLYMOUTH, 1, [Define to enable plymouth support])
+fi
+AC_SUBST(PLYMOUTH_CFLAGS)
+AC_SUBST(PLYMOUTH_LIBS)
+
+dnl ---------------------------------------------------------------------------
 dnl - Check for D-Bus
 dnl ---------------------------------------------------------------------------
 
@@ -1537,6 +1568,7 @@ echo \
         SELinux support:          ${with_selinux}
         ConsoleKit support:       ${use_console_kit}
         systemd support:          ${use_systemd}
+        plymouth support:         ${use_plymouth}
         UPower support:           ${have_upower}
         Build with RBAC:          ${msg_rbac_shutdown}
 "

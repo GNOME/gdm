@@ -57,6 +57,9 @@ GdmServer *         gdm_server_new       (const char *display_id,
                                           const char *seat_id,
                                           const char *auth_file);
 gboolean            gdm_server_start     (GdmServer   *server);
+#ifdef HAVE_PLYMOUTH
+gboolean            gdm_server_start_on_active_vt (GdmServer   *server);
+#endif
 gboolean            gdm_server_stop      (GdmServer   *server);
 char *              gdm_server_get_display_device (GdmServer *server);
 
