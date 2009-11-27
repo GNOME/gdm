@@ -43,6 +43,7 @@
 #include <dbus/dbus-glib-lowlevel.h>
 
 #include <X11/Xlib.h> /* for Display */
+#include <X11/Xatom.h> /* for XA_PIXMAP */
 #include <X11/cursorfont.h> /* for watch cursor */
 #include <X11/extensions/Xrandr.h>
 #include <X11/Xatom.h>
@@ -362,6 +363,77 @@ gdm_slave_run_script (GdmSlave   *slave,
         g_free (script);
 
         return ret;
+}
+
+static void
+gdm_slave_save_root_window_of_screen (GdmSlave *slave,
+                                      Atom      id_atom,
+                                      int       screen_number)
+{
+        Window root_window;
+        GC gc;
+        XGCValues values;
+        Pixmap pixmap;
+        int width, height, depth;
+
+        root_window = RootWindow (slave->priv->server_display,
+                                  screen_number);
+
+        width = DisplayWidth (slave->priv->server_display, screen_number);
+        height = DisplayHeight (slave->priv->server_display, screen_number);
+        depth = DefaultDepth (slave->priv->server_display, screen_number);
+        pixmap = XCreatePixmap (slave->priv->server_display,
+                                root_window,
+                                width, height, depth);
+
+        values.function = GXcopy;
+        values.plane_mask = AllPlanes;
+        values.fill_style = FillSolid;
+        values.subwindow_mode = IncludeInferiors;
+
+        gc = XCreateGC (slave->priv->server_display,
+                        root_window,
+                        GCFunction | GCPlaneMask | GCFillStyle | GCSubwindowMode,
+                        &values);
+
+        if (XCopyArea (slave->priv->server_display,
+                       root_window, pixmap, gc, 0, 0,
+                       width, height, 0, 0)) {
+
+                long pixmap_as_long;
+
+                pixmap_as_long = (long) pixmap;
+
+                XChangeProperty (slave->priv->server_display,
+                                 root_window, id_atom, XA_PIXMAP,
+                                 32, PropModeReplace, (guchar *) &pixmap_as_long,
+                                 1);
+
+        }
+
+        XFreeGC (slave->priv->server_display, gc);
+}
+
+void
+gdm_slave_save_root_windows (GdmSlave *slave)
+{
+        int i, number_of_screens;
+        Atom atom;
+
+        number_of_screens = ScreenCount (slave->priv->server_display);
+
+        atom = XInternAtom (slave->priv->server_display,
+                            "_XROOTPMAP_ID", False);
+
+        if (atom == 0) {
+                return;
+        }
+
+        for (i = 0; i < number_of_screens; i++) {
+                gdm_slave_save_root_window_of_screen (slave, atom, i);
+        }
+
+        XSync (slave->priv->server_display, False);
 }
 
 void
