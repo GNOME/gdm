@@ -1,4 +1,21 @@
 ===============
+Version 2.29.1
+===============
+
+- A new desktop extension is now supported in GDM session desktop files
+  (normally found in /usr/share/xsessions). Setting the key to true as follows:
+
+  X-GDM_BypassXsession=true
+
+  will cause the Xsession script to not be used to launch the session.  This
+  can be useful if you want to create a "failsafe" xterm session.  The Xsession
+  script sources the user's $HOME/.profile, for example, so setting this key
+  to true will ensure that any errors in the user's $HOME/.profile will not
+  cause the session to fail to start.
+
+- Fix makedist problem.
+
+===============
 Version 2.29.0
 ===============
 
