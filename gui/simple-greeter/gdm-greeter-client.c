@@ -938,7 +938,7 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                 g_signal_new ("timed-login-requested",
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterClientClass, default_session_name_changed),
+                              G_STRUCT_OFFSET (GdmGreeterClientClass, timed_login_requested),
                               NULL,
                               NULL,
                               gdm_marshal_VOID__STRING_INT,
