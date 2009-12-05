@@ -503,6 +503,7 @@ static gboolean
 spawn_command_line_sync_as_user (const char *command_line,
                                  const char *user_name,
                                  const char *group_name,
+                                 const char *runtime_dir,
                                  const char *log_file,
                                  char       **env,
                                  char       **std_output,
@@ -528,6 +529,7 @@ spawn_command_line_sync_as_user (const char *command_line,
 
         data.user_name = user_name;
         data.group_name = group_name;
+        data.runtime_dir = runtime_dir;
         data.log_file = log_file;
 
         local_error = NULL;
@@ -703,6 +705,7 @@ start_dbus_daemon (GdmWelcomeSession *welcome_session)
         res = spawn_command_line_sync_as_user (DBUS_LAUNCH_COMMAND,
                                                welcome_session->priv->user_name,
                                                welcome_session->priv->group_name,
+                                               welcome_session->priv->runtime_dir,
                                                NULL, /* log file */
                                                (char **)env->pdata,
                                                &std_out,
