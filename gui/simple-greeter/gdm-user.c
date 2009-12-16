@@ -415,7 +415,7 @@ void
 _gdm_user_update (GdmUser             *user,
                   const struct passwd *pwent)
 {
-        gchar *real_name;
+        gchar *real_name = NULL;
 
         g_return_if_fail (GDM_IS_USER (user));
         g_return_if_fail (pwent != NULL);
@@ -424,20 +424,28 @@ _gdm_user_update (GdmUser             *user,
 
         /* Display Name */
         if (pwent->pw_gecos && pwent->pw_gecos[0] != '\0') {
-                gchar *first_comma;
-                gchar *real_name_utf8;
+                gchar *first_comma = NULL;
+                gchar *valid_utf8_name = NULL;
 
-                real_name_utf8 = g_locale_to_utf8 (pwent->pw_gecos, -1, NULL, NULL, NULL);
-
-                first_comma = strchr (real_name_utf8, ',');
-                if (first_comma) {
-                        real_name = g_strndup (real_name_utf8, first_comma - real_name_utf8);
-                        g_free (real_name_utf8);
+                if (g_utf8_validate (pwent->pw_gecos, -1, NULL)) {
+                        valid_utf8_name = pwent->pw_gecos;
+                        first_comma = g_utf8_strchr (valid_utf8_name, -1, ',');
                 } else {
-                        real_name = real_name_utf8;
+                        g_warning ("User %s has invalid UTF-8 in GECOS field. "
+                                   "It would be a good thing to check /etc/passwd.",
+                                   pwent->pw_name ? pwent->pw_name : "");
                 }
 
-                if (real_name[0] == '\0') {
+                if (first_comma) {
+                        real_name = g_strndup (valid_utf8_name,
+                                                  (first_comma - valid_utf8_name));
+                } else if (valid_utf8_name) {
+                        real_name = g_strdup (valid_utf8_name);
+                } else {
+                        real_name = NULL;
+                }
+
+                if (real_name && real_name[0] == '\0') {
                         g_free (real_name);
                         real_name = NULL;
                 }
