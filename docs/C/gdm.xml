@@ -1050,7 +1050,7 @@ PostSession/
         greeter.  By default, GDM is shipped with files which will autostart
         the gdm-simple-greeter login GUI greeter itself, the
         gnome-power-manager application, the gnome-settings-daemon, and the
-        Metacity window manager.  These programs are needed for the greeter
+        metacity window manager.  These programs are needed for the greeter
         program to work.  In addition, desktop files are provided for starting
         various AT programs if the configuration values specified in the
         Accessibility Configuration section below are set.
@@ -1080,7 +1080,7 @@ PostSession/
         <filename>&lt;etc&gt;/gdm/custom.conf</filename> file.  Default
         values are stored in GConf in the <filename>gdm.schemas</filename>
         file.  It is recommended that end-users modify the
-        <filename>/etc/gdm/custom.conf</filename> file because the
+        <filename>&lt;etc&gt;/gdm/custom.conf</filename> file because the
         schemas file may be overwritten when the user updates their system to
         have a newer version of GDM.
       </para>
@@ -1099,7 +1099,7 @@ PostSession/
       </para>
 
       <para>
-        The file <filename>/etc/gdm/custom.conf</filename> supports the
+        The file <filename>&lt;etc&gt;/gdm/custom.conf</filename> supports the
         "[daemon]", "[security]", and "[xdmcp]"
         group sections.  Within each group, there are particular key/value
         pairs that can be specified to modify how GDM behaves.  For example,
@@ -1139,7 +1139,7 @@ TimedLogin=you
             <listitem>
               <synopsis>MulticastAddr=ff02::1</synopsis>
               <para>
-                This is the Link-local Multicast address.
+                This is the Link-local multicast address.
               </para>
             </listitem>
           </varlistentry>
@@ -1150,19 +1150,6 @@ TimedLogin=you
         <title>[daemon]</title>
         <variablelist>
 
-          <varlistentry>
-            <term>Group</term>
-            <listitem>
-              <synopsis>Group=gdm</synopsis>
-              <para>
-                The group name under which the greeter and other GUI programs
-                are run.  Refer to the <filename>User</filename>
-                configuration key and to the "Security->GDM User And
-                Group" section of this document for more information.
-              </para>
-            </listitem>
-          </varlistentry>
-          
           <varlistentry>
             <term>TimedLoginEnable</term>
             <listitem>
@@ -1260,6 +1247,19 @@ TimedLogin=you
               <para>
                 The username under which the greeter and other GUI programs
                 are run.  Refer to the <filename>Group</filename>
+                configuration key and to the "Security->GDM User And
+                Group" section of this document for more information.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Group</term>
+            <listitem>
+              <synopsis>Group=gdm</synopsis>
+              <para>
+                The group name under which the greeter and other GUI programs
+                are run.  Refer to the <filename>User</filename>
                 configuration key and to the "Security->GDM User And
                 Group" section of this document for more information.
               </para>
@@ -1563,62 +1563,6 @@ gdm:.my.domain
           </varlistentry>
 
           <varlistentry>
-            <term>/apps/gdm/simple-greeter/include</term>
-            <listitem>
-              <synopsis>[] (string list)</synopsis>
-              <para>
-               Set to a list of users to always include in the Face Browser.
-              </para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>/apps/gdm/simple-greeter/include_all</term>
-            <listitem>
-              <synopsis>true (boolean)</synopsis>
-              <para>
-                If true, then the face browser will show all users on the
-                local machine.  If false, the face browser will only show
-                users who have recently logged in.
-              </para>
-              <para>
-               To provide more detail on how this option works. When this key
-               is true, GDM will call fgetpwent() to get a list of local users
-               on the system.  The Face Browser also will display any users
-               that have previously logged in on the system (for example
-               NIS/LDAP users).  It gets this list via calling the ck-history
-               ConsoleKit interface.  It will also filter out any users which
-               do not have a valid shell (valid shells are any shell that
-               getusershell() returns.  <filename>/sbin/nologin</filename> or
-               <filename>/bin/false</filename> are considered invalid shells
-               even if getusershell() returns them).
-              </para>
-
-              <para>
-               If false, then GDM more simply only displays users that have 
-               previously logged in on the system (local or NIS/LDAP users) by
-               calling the ck-history ConsoleKit interface.
-              </para>
-
-              <para>
-               In both cases, GDM filters out any users with a UID less than
-               500 (or 100 if running on Solaris).  Such users are considered
-               system users.
-              </para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>/apps/gdm/simple-greeter/exclude</term>
-            <listitem>
-              <synopsis>[] (string list)</synopsis>
-              <para>
-                Set to a list of users to always exclude in the Face Browser.
-              </para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
             <term>/apps/gdm/simple-greeter/logo_icon_name</term>
             <listitem>
               <synopsis>computer (string)</synopsis>
@@ -1694,7 +1638,7 @@ gdm:.my.domain
       </para>
 
       <sect3 id="accessibilitydialog">
-        <title>GDM Accessibility Dialog And Gconf Keys</title>
+        <title>GDM Accessibility Dialog And GConf Keys</title>
 
         <para>
          The GDM greeter panel at the login screen displays an accessibility
@@ -1721,7 +1665,7 @@ gdm:.my.domain
          The other checkboxes in the GDM Accessibility Dialog do not have
          corresponding GConf keys because no additional program is launched to
          provide the accessibility features that they offer.  These other
-         options coorespond to accessibility features that are provided by the
+         options correspond to accessibility features that are provided by the
          Xserver, which is always running during the GDM session.
         </para>
       </sect3>
@@ -1806,7 +1750,7 @@ AutostartCondition=GNOME /desktop/gnome/applications/at/screen_reader_enabled
 </screen>
 
         <para>
-         When an accesibility key is true, then any program which is linked to
+         When an accessibility key is true, then any program which is linked to
          that key in a GDM autostart desktop file will be launched (unless the
          Hidden key is set to true in that desktop file).  A single GConf key
          can even start multiple assistive tools if there are multiple desktop
@@ -1959,7 +1903,7 @@ AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled
         <filename>&lt;etc&gt;/X11/sessions/</filename>,
         <filename>&lt;dmconfdir&gt;/Sessions</filename>, 
         <filename>&lt;share&gt;/xsessions</filename>, and
-        <filename>&lt;share/gdm/BuiltInSessions</filename>.  By default the
+        <filename>&lt;share&gt;/gdm/BuiltInSessions</filename>.  By default the
         <filename>&lt;dmconfdir&gt;</filename> is set to
         <filename>&lt;etc&gt;/dm/</filename> unless GDM is configured to use
         a different directory via the "--with-dmconfdir" option.
@@ -1967,7 +1911,7 @@ AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled
 
       <para>
         A session can be disabled by editing the desktop file and adding a line
-        that says <filename>Hidden=true</filename>.
+        as follows: <filename>Hidden=true</filename>.
       </para>
     </sect2>
 
