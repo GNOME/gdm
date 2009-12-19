@@ -3,44 +3,45 @@
 # Marius Andreiana <marius galuna.ro>, 2000, 2002.
 # Dan Damian <dand@gnome.ro>, 2001.
 # Mișu Moldovan <dumol@gnome.ro>, 2003 - 2009.
-#
+# Lucian Adrian Grijincu <lucian.grijincu@gmail.com>, 2009
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-18 21:05+0300\n"
-"PO-Revision-Date: 2009-09-18 21:12+0300\n"
-"Last-Translator: Mișu Moldovan <dumol@gnome.ro>\n"
-"Language-Team: Romanian <gnomero-list@lists.sourceforge.net>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&component=general\n"
+"POT-Creation-Date: 2009-11-24 07:27+0000\n"
+"PO-Revision-Date: 2009-12-19 11:05+0200\n"
+"Last-Translator: Adi Roiban <adi@roiban.ro>\n"
+"Language-Team: Gnome Romanian Team <gnomero-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3;plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?"
-"2:1))\n"
+"Language: ro\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);;\n"
+"X-Generator: Virtaal 0.3.1\n"
 
 #: ../common/gdm-common.c:437
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom nu este un dispozitiv de tip caracter"
 
-#: ../daemon/factory-slave-main.c:170 ../daemon/main.c:516
-#: ../daemon/product-slave-main.c:174 ../daemon/session-worker-main.c:137
-#: ../daemon/simple-slave-main.c:179 ../daemon/xdmcp-chooser-slave-main.c:179
-msgid "Enable debugging code"
-msgstr "Activare a codului de depanare"
-
-#: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
-#: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
+#: ../daemon/factory-slave-main.c:177
+#: ../daemon/product-slave-main.c:181
+#: ../daemon/simple-slave-main.c:183
+#: ../daemon/xdmcp-chooser-slave-main.c:183
 msgid "Display ID"
 msgstr "ID display"
 
-#: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
-#: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
-msgid "id"
-msgstr "id"
+#: ../daemon/factory-slave-main.c:177
+#: ../daemon/product-slave-main.c:181
+#: ../daemon/simple-slave-main.c:183
+#: ../daemon/xdmcp-chooser-slave-main.c:183
+msgid "ID"
+msgstr "ID"
 
-#: ../daemon/factory-slave-main.c:183 ../daemon/product-slave-main.c:187
-#: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:192
+#: ../daemon/factory-slave-main.c:189
+#: ../daemon/product-slave-main.c:193
+#: ../daemon/simple-slave-main.c:195
+#: ../daemon/xdmcp-chooser-slave-main.c:195
 msgid "GNOME Display Manager Slave"
 msgstr "Copil al administratorului de display GNOME"
 
@@ -49,34 +50,31 @@ msgstr "Copil al administratorului de display GNOME"
 msgid "could not find user \"%s\" on system"
 msgstr "nu s-a putut găsi „%s” în sistem"
 
-#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:220
+#: ../daemon/gdm-factory-slave.c:203
+#: ../daemon/gdm-simple-slave.c:225
 msgid "Unable to initialize login system"
 msgstr "Nu s-a putut inițializa sistemul de autentificare"
 
-#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:256
+#: ../daemon/gdm-factory-slave.c:235
+#: ../daemon/gdm-simple-slave.c:261
 msgid "Unable to authenticate user"
 msgstr "Nu s-a putut autentifica utilizatorul"
 
-#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:310
+#: ../daemon/gdm-factory-slave.c:257
+#: ../daemon/gdm-simple-slave.c:315
 msgid "Unable to authorize user"
 msgstr "Nu s-a putut autoriza utilizatorul"
 
-#: ../daemon/gdm-factory-slave.c:281 ../daemon/gdm-simple-slave.c:432
+#: ../daemon/gdm-factory-slave.c:281
+#: ../daemon/gdm-simple-slave.c:437
 msgid "Unable to establish credentials"
 msgstr "Nu s-au putut verifica credențialele"
 
-#: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1111
-msgid ""
-"Could not start the X server (your graphical environment) due to some "
-"internal error. Please contact your system administrator or check your "
-"syslog to diagnose. In the meantime this display will be disabled.  Please "
-"restart GDM when the problem is corrected."
-msgstr ""
-"Nu s-a putut porni serverul X (mediul grafic) datorită unei erori interne. "
-"Contactați administratorul sistemului sau citiți mesajele din logurile de "
-"sistem pentru diagnosticare. Între timp acest ecran va fi dezactivat. "
-"Reinițializați GDM după ce remediați problema apărută."
+#: ../daemon/gdm-factory-slave.c:662
+#: ../daemon/gdm-product-slave.c:449
+#: ../daemon/gdm-simple-slave.c:1116
+msgid "Could not start the X server (your graphical environment) due to some internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
+msgstr "Nu s-a putut porni serverul X (mediul grafic) datorită unei erori interne. Contactați administratorul sistemului sau citiți mesajele din logurile de sistem pentru diagnosticare. Între timp acest ecran va fi dezactivat. Reinițializați GDM după ce remediați problema apărută."
 
 #: ../daemon/gdm-server.c:246
 #, c-format
@@ -88,22 +86,26 @@ msgstr "%s: nu s-a reușit conectarea la ecranul părinte „%s”"
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Serverul trebuia pornit de utilizatorul %s, dar acesta nu există"
 
-#: ../daemon/gdm-server.c:372 ../daemon/gdm-welcome-session.c:444
+#: ../daemon/gdm-server.c:372
+#: ../daemon/gdm-welcome-session.c:451
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Nu s-a putut seta „groupid” ca fiind %d"
 
-#: ../daemon/gdm-server.c:378 ../daemon/gdm-welcome-session.c:450
+#: ../daemon/gdm-server.c:378
+#: ../daemon/gdm-welcome-session.c:457
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () a eșuat pentru %s"
 
-#: ../daemon/gdm-server.c:384 ../daemon/gdm-welcome-session.c:456
+#: ../daemon/gdm-server.c:384
+#: ../daemon/gdm-welcome-session.c:463
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Nu s-a putut seta „userid” ca fiind %d"
 
-#: ../daemon/gdm-server.c:392 ../daemon/gdm-welcome-session.c:464
+#: ../daemon/gdm-server.c:392
+#: ../daemon/gdm-welcome-session.c:471
 msgid "Couldn't set groupid to 0"
 msgstr "Nu s-a putut seta „groupid” ca fiind 0"
 
@@ -112,11 +114,12 @@ msgstr "Nu s-a putut seta „groupid” ca fiind 0"
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: Nu s-a putut deschide fișierul log pentru displayul %s!"
 
-#: ../daemon/gdm-server.c:442 ../daemon/gdm-server.c:448
+#: ../daemon/gdm-server.c:442
+#: ../daemon/gdm-server.c:448
 #: ../daemon/gdm-server.c:454
 #, c-format
 msgid "%s: Error setting %s to %s"
-msgstr "%s: Eroare la setarea %s în %s"
+msgstr "%s: A apărut o eroare în timp ce se definea opțiunea de configurare %s la valoarea %s"
 
 #: ../daemon/gdm-server.c:469
 #, c-format
@@ -152,81 +155,72 @@ msgstr "Dispozitiv tip display"
 msgid "The display device"
 msgstr "Dispozitivul de tip display"
 
-#: ../daemon/gdm-session-worker.c:1293
+#: ../daemon/gdm-session-worker.c:1295
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "eroare la inițierea conversației cu sistemul de autentificare - %s"
 
-#: ../daemon/gdm-session-worker.c:1294
+#: ../daemon/gdm-session-worker.c:1296
 msgid "general failure"
 msgstr "eșec total"
 
-#: ../daemon/gdm-session-worker.c:1295
+#: ../daemon/gdm-session-worker.c:1297
 msgid "out of memory"
 msgstr "memorie insuficientă"
 
-#: ../daemon/gdm-session-worker.c:1296
+#: ../daemon/gdm-session-worker.c:1298
 msgid "application programmer error"
 msgstr "eroare de programare a aplicației"
 
-#: ../daemon/gdm-session-worker.c:1297
+#: ../daemon/gdm-session-worker.c:1299
 msgid "unknown error"
 msgstr "eroare necunoscută"
 
-#: ../daemon/gdm-session-worker.c:1304
+#: ../daemon/gdm-session-worker.c:1306
 msgid "Username:"
 msgstr "Nume utilizator:"
 
-#: ../daemon/gdm-session-worker.c:1310
+#: ../daemon/gdm-session-worker.c:1312
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
-msgstr ""
-"eroare la informarea sistemului de autentificare cu privire la promptul "
-"preferat pentru numele de utilizator - %s"
+msgstr "eroare la informarea sistemului de autentificare cu privire la promptul preferat pentru numele de utilizator - %s"
 
-#: ../daemon/gdm-session-worker.c:1324
+#: ../daemon/gdm-session-worker.c:1326
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
-msgstr ""
-"eroare la informarea sistemului de autentificare cu privire la numele "
-"calculatorului utilizatorului - %s"
+msgstr "eroare la informarea sistemului de autentificare cu privire la numele calculatorului utilizatorului - %s"
 
-#: ../daemon/gdm-session-worker.c:1339
+#: ../daemon/gdm-session-worker.c:1341
 #, c-format
 msgid "error informing authentication system of user's console - %s"
-msgstr ""
-"eroare la informarea sistemului de autentificare cu privire la consola "
-"utilizatorului - %s"
+msgstr "eroare la informarea sistemului de autentificare cu privire la consola utilizatorului - %s"
 
-#: ../daemon/gdm-session-worker.c:1352
+#: ../daemon/gdm-session-worker.c:1354
 #, c-format
 msgid "error informing authentication system of display string - %s"
-msgstr ""
-"eroare la informarea sistemului de autentificare cu privire la variabila "
-"DISPLAY - %s"
+msgstr "eroare la informarea sistemului de autentificare cu privire la variabila DISPLAY - %s"
 
-#: ../daemon/gdm-session-worker.c:1367
+#: ../daemon/gdm-session-worker.c:1369
 #, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
-msgstr ""
-"eroare la informarea sistemului de autentificare cu privire la credențialele "
-"xauth - %s"
+msgstr "eroare la informarea sistemului de autentificare cu privire la credențialele xauth - %s"
 
-#: ../daemon/gdm-session-worker.c:1648 ../daemon/gdm-session-worker.c:1666
+#: ../daemon/gdm-session-worker.c:1650
+#: ../daemon/gdm-session-worker.c:1669
 #, c-format
 msgid "no user account available"
 msgstr "nici un cont disponibil de utilizator"
 
-#: ../daemon/gdm-session-worker.c:1693
+#: ../daemon/gdm-session-worker.c:1696
 msgid "Unable to change to user"
 msgstr "Nu se poate schimba utilizatorul"
 
-#: ../daemon/gdm-welcome-session.c:426
+#: ../daemon/gdm-welcome-session.c:429
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Utilizatorul %s nu există"
 
-#: ../daemon/gdm-welcome-session.c:433
+#: ../daemon/gdm-welcome-session.c:436
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Grupul %s nu există"
@@ -368,79 +362,77 @@ msgstr "XMDCP: Nu s-a putut prelucra adresa"
 msgid "Could not get server hostname: %s!"
 msgstr "Nu s-a putut obține numele serverului: %s!"
 
-#: ../daemon/main.c:237 ../daemon/main.c:250
+#: ../daemon/main.c:237
+#: ../daemon/main.c:250
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace: %s"
-msgstr ""
-"Nu s-a putut scrie fișierul PID %s, probabil din lipsă de spațiu pe disc: %s"
+msgstr "Nu s-a putut scrie fișierul PID %s, probabil din lipsă de spațiu pe disc: %s"
 
-#: ../daemon/main.c:270
+#: ../daemon/main.c:271
 #, c-format
 msgid "Logdir %s does not exist or isn't a directory."
 msgstr "Logdir %s nu există sau nu este un director."
 
-#: ../daemon/main.c:283
+#: ../daemon/main.c:287
 #, c-format
 msgid "Authdir %s does not exist. Aborting."
 msgstr "Authdir %s nu există. Abandon..."
 
-#: ../daemon/main.c:287
+#: ../daemon/main.c:291
 #, c-format
 msgid "Authdir %s is not a directory. Aborting."
 msgstr "Authdir %s nu este un director. Abandon..."
 
-#: ../daemon/main.c:361
+#: ../daemon/main.c:365
 #, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-msgstr ""
-"Authdir %s nu este deținut de utilizatorul „%d“, grupul „%d“. Abandon..."
+msgstr "Authdir %s nu este deținut de utilizatorul „%d“, grupul „%d“. Abandon..."
 
-#: ../daemon/main.c:368
+#: ../daemon/main.c:372
 #, c-format
 msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-msgstr ""
-"Authdir %s are drepturi de acces greșite %o. Ar trebui să fie %o. Abandon..."
+msgstr "Authdir %s are drepturi de acces greșite %o. Ar trebui să fie %o. Abandon..."
 
-#: ../daemon/main.c:405
+#: ../daemon/main.c:409
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Nu s-a găsit utilizatorul GDM „%s”. Abandon!"
 
-#: ../daemon/main.c:411
+#: ../daemon/main.c:415
 msgid "The GDM user should not be root. Aborting!"
 msgstr "Utilizatorul GDM n-ar trebui să fie administrator (root). Abandon!"
 
-#: ../daemon/main.c:417
+#: ../daemon/main.c:421
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Nu s-a găsit grupul GDM „%s”. Abandon!"
 
-#: ../daemon/main.c:423
+#: ../daemon/main.c:427
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Grupul GDM n-ar trebui să fie administrator (root). Abandon!"
 
-#: ../daemon/main.c:517
+#: ../daemon/main.c:533
 msgid "Make all warnings fatal"
 msgstr "Consideră orice eroare ca fiind fatală"
 
-#: ../daemon/main.c:518
+#: ../daemon/main.c:534
 msgid "Exit after a time - for debugging"
 msgstr "Ieși după un anumit timp (pentru depanare)"
 
-#: ../daemon/main.c:519
+#: ../daemon/main.c:535
 msgid "Print GDM version"
 msgstr "Arată versiunea GDM"
 
-#: ../daemon/main.c:534
+#: ../daemon/main.c:550
 msgid "GNOME Display Manager"
 msgstr "Administrator display GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:595
-msgid "Only root wants to run GDM"
-msgstr "Doar administratorul (root) poate dori să pornească GDM"
+#: ../daemon/main.c:611
+msgid "Only the root user can run GDM"
+msgstr "Doar administratorul (root) poate porni GDM"
 
-#: ../daemon/session-worker-main.c:149
+#: ../daemon/session-worker-main.c:156
 msgid "GNOME Display Manager Session Worker"
 msgstr "Worker de sesiune al administratorului de display GNOME"
 
@@ -449,7 +441,7 @@ msgid "AT SPI Registry Wrapper"
 msgstr "Wrapper al registrului AT SPI"
 
 #: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1767
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1463
 msgid "Login Window"
 msgstr "Fereastră de autentificare"
 
@@ -491,8 +483,7 @@ msgstr "Cititorul de ecran Orca"
 
 #: ../data/greeter-autostart/orca-screen-reader.desktop.in.h:2
 msgid "Present on-screen information as speech or braille"
-msgstr ""
-"Prezintă informațiile de pe ecran prin sinteză vocală ori în sistem Braille"
+msgstr "Prezintă informațiile de pe ecran prin sinteză vocală ori în sistem Braille"
 
 #: ../data/greeter-autostart/polkit-gnome-authentication-agent-1.desktop.in.h:1
 msgid "PolicyKit Authentication Agent"
@@ -510,74 +501,84 @@ msgstr "XDMCP: Nu s-a putut crea un buffer XDMCP!"
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Nu s-a putut citi antetul XDMCP!"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:253
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:244
 msgid "Value"
 msgstr "Valoare"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:254
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:245
 msgid "percentage of time complete"
 msgstr "procentaj din timpul total"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1325
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1281
 msgid "Inactive Text"
 msgstr "Text inactiv"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1326
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1282
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr "Textul de utilizat în etichetă, dacă utilizatorul nu a ales un element"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1334
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1290
 msgid "Active Text"
 msgstr "Text activ"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1335
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1291
 msgid "The text to use in the label if the user has picked an item"
 msgstr "Textul de utilizat în etichetă, dacă utilizatorul a ales un element"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1344
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1300
 msgid "List Visible"
 msgstr "Listă vizibilă"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1345
-msgid "Whether or not the chooser list is visible"
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1301
+msgid "Whether the chooser list is visible"
 msgstr "Specifică dacă lista de utilizatori este vizibilă"
 
-#: ../gui/simple-greeter/gdm-clock-widget.c:66
-msgid "%l:%M:%S %p"
-msgstr "%l:%M:%S %p"
-
-#: ../gui/simple-greeter/gdm-clock-widget.c:66
-msgid "%l:%M %p"
-msgstr "%l:%M %p"
-
-#. translators: replace %e with %d if, when the day of the
-#. *              month as a decimal number is a single digit, it
-#. *              should begin with a 0 in your locale (e.g. "May
-#. *              01" instead of "May  1").
+#. translators: This is the time format to use when both
+#. * the date and time with seconds are being shown together.
 #.
-#: ../gui/simple-greeter/gdm-clock-widget.c:72
-msgid "%a %b %e"
-msgstr "%a %e %b"
+#: ../gui/simple-greeter/gdm-clock-widget.c:70
+msgid "%a %b %e, %l:%M:%S %p"
+msgstr "%a %e %b, %k:%M:%S"
 
-#. translators: reverse the order of these arguments
-#. *              if the time should come before the
-#. *              date on a clock in your locale.
+#. translators: This is the time format to use when both
+#. * the date and time without seconds are being shown together.
 #.
-#: ../gui/simple-greeter/gdm-clock-widget.c:77
+#: ../gui/simple-greeter/gdm-clock-widget.c:76
+msgid "%a %b %e, %l:%M %p"
+msgstr "%a %e %b, %k:%M"
+
+#. translators: This is the time format to use when there is
+#. * no date, just weekday and time with seconds.
+#.
+#: ../gui/simple-greeter/gdm-clock-widget.c:83
+msgid "%a %l:%M:%S %p"
+msgstr "%a %k:%M:%S"
+
+#. translators: This is the time format to use for the date
+#.
+#: ../gui/simple-greeter/gdm-clock-widget.c:87
+#: ../gui/simple-greeter/gdm-clock-widget.c:94
 #, c-format
-msgid "%1$s, %2$s"
-msgstr "%2$s, %1$s"
+msgid "%x"
+msgstr "%x"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:291
+#. translators: This is the time format to use when there is
+#. * no date, just weekday and time without seconds.
+#.
+#: ../gui/simple-greeter/gdm-clock-widget.c:92
+msgid "%a %l:%M %p"
+msgstr "%a %k:%M"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:279
 msgid "Automatically logging in..."
 msgstr "Autentificare automată în..."
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:758
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:573
 msgid "Cancelling..."
 msgstr "Se renunță..."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1185
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:873
 msgid "Select language and click Log In"
 msgstr "Selectați limba și autentificați-vă"
 
@@ -594,24 +595,28 @@ msgid "Log In"
 msgstr "Autentificare"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:4
-msgid "Restart"
-msgstr "Repornire"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
-msgid "Shut Down"
-msgstr "Oprire"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
-msgid "Suspend"
-msgstr "Suspendare"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
 msgid "Version"
 msgstr "Versiune"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:583
+#: ../gui/simple-greeter/gdm-greeter-panel.c:852
 msgid "Panel"
 msgstr "Panou"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:923
+msgid "Shutdown Options..."
+msgstr "Opțiuni închidere..."
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:945
+msgid "Suspend"
+msgstr "Suspendare"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:950
+msgid "Restart"
+msgstr "Repornire"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:954
+msgid "Shut Down"
+msgstr "Oprire"
 
 #: ../gui/simple-greeter/gdm-language-chooser-dialog.c:201
 msgid "Languages"
@@ -662,8 +667,7 @@ msgstr "Alta..."
 
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:236
 msgid "Choose a keyboard layout from the full list of available layouts."
-msgstr ""
-"Alegeți un aranjament de tastatură din lista aranjamentelor disponibile."
+msgstr "Alegeți un aranjament de tastatură din lista aranjamentelor disponibile."
 
 #: ../gui/simple-greeter/gdm-option-widget.c:521
 msgid "Label Text"
@@ -686,8 +690,8 @@ msgid "Default Item"
 msgstr "Element implicit"
 
 #: ../gui/simple-greeter/gdm-option-widget.c:539
-msgid "The id of the default item"
-msgstr "ID-ul elementului implicit"
+msgid "The ID of the default item"
+msgstr "Identificatorul elementului implicit"
 
 #: ../gui/simple-greeter/gdm-recent-option-widget.c:310
 msgid "Max Item Count"
@@ -736,159 +740,126 @@ msgid "Enable accessibility keyboard plugin"
 msgstr "Activare module de accesibilitate"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
-msgid "Enable debugging"
-msgstr "Activare depanare"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
-msgid "Enable debugging mode for the greeter."
-msgstr "Activare a modului de depanare pentru greeter"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Enable on-screen keyboard"
 msgstr "Activare tastatură virtuală"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
 msgid "Enable screen magnifier"
 msgstr "Activare lupă de ecran"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Enable screen reader"
 msgstr "Activare cititor ecran"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
 msgid "Enable showing the banner message"
 msgstr "Activare afișare mesaj de banner"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
 msgid "Icon name to use for greeter logo"
 msgstr "Nume de iconiță de folosit pentru logoul greeter"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "Recently selected keyboard layouts"
 msgstr "Aranjamente de tastatură recent utilizate"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Recently selected languages"
 msgstr "Limbi recent selectate"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
-msgid ""
-"Set to a list of keyboard layouts to be shown by default at the login window."
-msgstr ""
-"Precizați o listă a aranjamentelor de tastatură de afișat implicit în "
-"fereastra de autentificare"
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+msgid "Set to a list of keyboard layouts to be shown by default at the login window."
+msgstr "Precizați o listă a aranjamentelor de tastatură de afișat implicit în fereastra de autentificare"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Set to a list of languages to be shown by default at the login window."
-msgstr ""
-"Precizați o listă de limbi de afișat implicit în fereastra de autentificare"
+msgstr "Precizați o listă de limbi de afișat implicit în fereastra de autentificare"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "Precizați numele temei de iconițe de utilizat pentru logoul greeter"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to true to disable showing known users in the login window."
-msgstr "Alegeți TRUE pentru a dezactiva afișarea utilizatorilor cunoscuți în "
-"fereastra de autentificare."
+msgstr "Alegeți TRUE pentru a dezactiva afișarea utilizatorilor cunoscuți în fereastra de autentificare."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
+msgid "Set to true to disable showing the restart buttons in the login window."
+msgstr "Alegeți TRUE pentru a dezactiva afișarea butoanelor de repornire în fereastra de autentificare."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+msgid "Set to true to enable the background settings manager plugin."
+msgstr "Alegeți TRUE pentru a activa modului pentru gestionarea opțiunilor fundalului."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
-msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr "Alegeți TRUE pentru a dezactiva afișarea butoanelor de repornire în "
-"fereastra de autentificare."
+msgid "Set to true to enable the media-keys settings manager plugin."
+msgstr "Alegeți TRUE pentru a activa modului pentru gestionarea opțiunilor tastelor multimedia."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
-msgid "Set to true to enable the background settings manager plugin."
-msgstr "Alegeți TRUE pentru a activa modului pentru gestionarea opțiunilor "
-"fundalului."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
-msgid "Set to true to enable the media-keys settings manager plugin."
-msgstr "Alegeți TRUE pentru a activa modului pentru gestionarea opțiunilor "
-"tastelor multimedia."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "Set to true to enable the on-screen keyboard."
 msgstr "Alegeți TRUE pentru a activa afișarea pe ecran a tastaturii virtuale."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
-msgid ""
-"Set to true to enable the plugin to manage the accessibility keyboard "
-"settings."
-msgstr ""
-"Alegeți TRUE pentru a activa modulul pentru gestionarea opțiunilor de "
-"accesibilitate a tastaturii."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+msgid "Set to true to enable the plugin to manage the accessibility keyboard settings."
+msgstr "Alegeți TRUE pentru a activa modulul pentru gestionarea opțiunilor de accesibilitate a tastaturii."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "Set to true to enable the screen magnifier."
 msgstr "Alegeți TRUE pentru a activa lupa de ecran."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
 msgid "Set to true to enable the screen reader."
 msgstr "Alegeți TRUE pentru a activa citirea ecranului."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to true to enable the sound settings manager plugin."
-msgstr ""
-"Alegeți TRUE pentru a activa modulul pentru gestionarea opțiunilor de sunet."
+msgstr "Alegeți TRUE pentru a activa modulul pentru gestionarea opțiunilor de sunet."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+msgid "Set to true to enable the xrandr settings manager plugin."
+msgstr "Alegeți TRUE pentru a activa modulul pentru gestionarea opțiunilor xrandr."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+msgid "Set to true to enable the xsettings settings manager plugin."
+msgstr "Alegeți TRUE pentru a activa modulul pentru gestionarea opțiunilor xsettings."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
-msgid "Set to true to enable the xrandr settings manager plugin."
-msgstr ""
-"Alegeți TRUE pentru a activa modulul pentru gestionarea opțiunilor xrandr."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
-msgid "Set to true to enable the xsettings settings manager plugin."
-msgstr "Alegeți TRUE pentru a activa modulul pentru gestionarea opțiunilor "
-"xsettings."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "Set to true to show the banner message text."
 msgstr "Alegeți TRUE pentru a afișa textului mesajului banner"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
 msgid "Set to true to use compiz as the window manager."
 msgstr "Alegeți TRUE pentru a utiliza Compiz ca administrator de ferestre"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
-msgid ""
-"Text banner message to show on the login window when the user chooser is "
-"empty, instead of banner_message_text."
-msgstr ""
-"Textul mesajului banner de afișat în fereastra de autentificare când lista "
-"de utilizatori este goală în locul textului banner_message_text."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+msgid "Text banner message to show on the login window when the user chooser is empty, instead of banner_message_text."
+msgstr "Textul mesajului banner de afișat în fereastra de autentificare când lista de utilizatori este goală în locul textului banner_message_text."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "Text banner message to show on the login window."
 msgstr "Textul mesajului banner de afișat în fereastra de autentificare"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
 msgid "True if the background settings manager plugin is enabled."
-msgstr ""
-"TRUE atunci când modulul de gestionare a opțiunilor fundalului este activat"
+msgstr "TRUE atunci când modulul de gestionare a opțiunilor fundalului este activat"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+msgid "True if the media-keys settings manager plugin is enabled."
+msgstr "TRUE atunci când modulul de gestionare a opțiunilor tastelor multimedia este activat"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+msgid "True if the sound settings manager plugin is enabled."
+msgstr "TRUE atunci când modulul de gestionare a opțiunilor de sunet este activat"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
-msgid "True if the media-keys settings manager plugin is enabled."
-msgstr ""
-"TRUE atunci când modulul de gestionare a opțiunilor tastelor multimedia este "
-"activat"
+msgid "True if the xrandr settings manager plugin is enabled."
+msgstr "TRUE atunci când modulul de gestionare a opțiunilor xrandr este activat"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
-msgid "True if the sound settings manager plugin is enabled."
-msgstr ""
-"TRUE atunci când modulul de gestionare a opțiunilor de sunet este activat"
+msgid "True if the xsettings settings manager plugin is enabled."
+msgstr "TRUE atunci când modulul de gestionare a opțiunilor xsettings este activat"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
-msgid "True if the xrandr settings manager plugin is enabled."
-msgstr ""
-"TRUE atunci când modulul de gestionare a opțiunilor xrandr este activat"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:37
-msgid "True if the xsettings settings manager plugin is enabled."
-msgstr ""
-"TRUE atunci când modulul de gestionare a opțiunilor xsettings este activat"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:38
 msgid "Use compiz as the window manager"
 msgstr "Utilizează Compiz ca administrator de ferestre"
 
@@ -913,7 +884,7 @@ msgid "Is it Running?"
 msgstr "E pornit?"
 
 #: ../gui/simple-greeter/gdm-timer.c:166
-msgid "Whether or not the timer is currently ticking"
+msgid "Whether the timer is currently ticking"
 msgstr "Specifică dacă cronometrul este pornit"
 
 #: ../gui/simple-greeter/gdm-user.c:245
@@ -922,158 +893,134 @@ msgstr "Administrator"
 
 #: ../gui/simple-greeter/gdm-user.c:246
 msgid "The user manager object this user is controlled by."
-msgstr ""
-"Obiectul administratorului de utilizatori ce controlează acest utilizator"
+msgstr "Obiectul administratorului de utilizatori ce controlează acest utilizator"
 
 #. translators: This option prompts
 #. * the user to type in a username
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:164
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:166
 msgctxt "user"
 msgid "Other..."
 msgstr "Altul..."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:165
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:167
 msgid "Choose a different account"
 msgstr "Alegeți un alt cont"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:177
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:179
 msgid "Guest"
 msgstr "Musafir"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:178
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:180
 msgid "Login as a temporary guest"
 msgstr "Autentificare ca musafir ocazional"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:191
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:193
 msgid "Automatic Login"
 msgstr "Autentificare automată"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:192
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:194
 msgid "Automatically login to the system after selecting options"
 msgstr "Autentificare automată în sistem după alegerea opțiunilor"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:383
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:385
 #, c-format
 msgid "Log in as %s"
 msgstr "Autentificare drept „%s”"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:737
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:738
 msgid "Currently logged in"
 msgstr "Autentificat deja"
 
-#: ../gui/user-switch-applet/applet.c:162
-msgid ""
-"The User Switch Applet is free software; you can redistribute it and/or "
-"modify it under the terms of the GNU General Public License as published by "
-"the Free Software Foundation; either version 2 of the License, or (at your "
-"option) any later version."
-msgstr ""
-"Miniaplicația de schimbare a utilizatorului este „free software”. Poate fi "
-"redistribuită și/sau modificată în termenii licenței GNU General Public "
-"License în forma publicată de Free Software Foundation, versiunea 2 sau "
-"(dacă preferați) orice altă versiune ulterioară."
+#: ../gui/user-switch-applet/applet.c:165
+msgid "The User Switch Applet is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
+msgstr "Miniaplicația de schimbare a utilizatorului este „free software”. Poate fi redistribuită și/sau modificată în termenii licenței GNU General Public License în forma publicată de Free Software Foundation, versiunea 2 sau (dacă preferați) orice altă versiune ulterioară."
 
-#: ../gui/user-switch-applet/applet.c:166
-msgid ""
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
-"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details."
-msgstr ""
-"Acest program este distribuit în speranța că vă va fi util, dar FĂRĂ NICI O "
-"GARANȚIE, nici măcar garanția unei posibile COMERCIALIZĂRI ori a UTILIZĂRII "
-"PENTRU UN ANUME SCOP. Consultați licența GNU General Public License pentru "
-"mai multe detalii."
+#: ../gui/user-switch-applet/applet.c:169
+msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
+msgstr "Acest program este distribuit în speranța că vă va fi util, dar FĂRĂ NICI O GARANȚIE, nici măcar garanția unei posibile COMERCIALIZĂRI ori a UTILIZĂRII PENTRU UN ANUME SCOP. Consultați licența GNU General Public License pentru mai multe detalii."
 
-#: ../gui/user-switch-applet/applet.c:170
-msgid ""
-"You should have received a copy of the GNU General Public License along with "
-"this program; if not, write to the Free Software Foundation, Inc., 51 "
-"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
-msgstr ""
-"Ar fi trebuit să primiți o copie a licenței GNU General Public License "
-"împreună cu acest program. În caz contrar, scrieți la Free Software "
-"Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
+#: ../gui/user-switch-applet/applet.c:173
+msgid "You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
+msgstr "Ar fi trebuit să primiți o copie a licenței GNU General Public License împreună cu acest program. În caz contrar, scrieți la Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
 
-#: ../gui/user-switch-applet/applet.c:184
+#: ../gui/user-switch-applet/applet.c:187
 msgid "A menu to quickly switch between users."
 msgstr "Un meniu pentru schimbarea utilizatorului curent."
 
-#: ../gui/user-switch-applet/applet.c:188
+#: ../gui/user-switch-applet/applet.c:191
 msgid "translator-credits"
 msgstr ""
 "Marius Andreiana <marius galuna.ro>\n"
 "Dan Damian <dand@gnome.ro\n"
 "Mișu Moldovan <dumol@gnome.ro>"
 
-#: ../gui/user-switch-applet/applet.c:647
-#: ../gui/user-switch-applet/applet.c:784
-#: ../gui/user-switch-applet/applet.c:823
+#: ../gui/user-switch-applet/applet.c:650
+#: ../gui/user-switch-applet/applet.c:787
+#: ../gui/user-switch-applet/applet.c:826
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "Nu se poate bloca ecranul: %s"
 
-#: ../gui/user-switch-applet/applet.c:669
+#: ../gui/user-switch-applet/applet.c:672
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
-msgstr ""
-"Nu s-a putut inițializa temporar economizorul de ecran pentru înnegrirea "
-"ecranului: %s"
+msgstr "Nu s-a putut inițializa temporar economizorul de ecran pentru înnegrirea ecranului: %s"
 
-#: ../gui/user-switch-applet/applet.c:882
+#: ../gui/user-switch-applet/applet.c:885
 #, c-format
 msgid "Can't logout: %s"
 msgstr "Nu se poate ieși din sesiune: %s"
 
-#: ../gui/user-switch-applet/applet.c:966
+#: ../gui/user-switch-applet/applet.c:969
 msgid "Available"
 msgstr "Disponibil"
 
-#: ../gui/user-switch-applet/applet.c:967
+#: ../gui/user-switch-applet/applet.c:970
 msgid "Invisible"
 msgstr "Invizibil"
 
-#: ../gui/user-switch-applet/applet.c:968
+#: ../gui/user-switch-applet/applet.c:971
 msgid "Busy"
 msgstr "Ocupat "
 
-#: ../gui/user-switch-applet/applet.c:969
+#: ../gui/user-switch-applet/applet.c:972
 msgid "Away"
 msgstr "Absent"
 
-#: ../gui/user-switch-applet/applet.c:1129
+#: ../gui/user-switch-applet/applet.c:1132
 msgid "Account Information..."
 msgstr "Detalii cont..."
 
-#: ../gui/user-switch-applet/applet.c:1141
+#: ../gui/user-switch-applet/applet.c:1144
 msgid "System Preferences..."
 msgstr "Preferințe de sistem..."
 
-#: ../gui/user-switch-applet/applet.c:1157
+#: ../gui/user-switch-applet/applet.c:1160
 msgid "Lock Screen"
 msgstr "Blocare ecran"
 
-#: ../gui/user-switch-applet/applet.c:1168
+#. Only show if not locked down
+#: ../gui/user-switch-applet/applet.c:1171
 msgid "Switch User"
 msgstr "Schimbare utilizator"
 
 #. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1179
+#: ../gui/user-switch-applet/applet.c:1182
 msgid "Quit..."
 msgstr "Ieșire..."
 
-#: ../gui/user-switch-applet/applet.c:1294
+#: ../gui/user-switch-applet/applet.c:1303
 msgid "Unknown"
 msgstr "Nu se cunoaște"
 
-#: ../gui/user-switch-applet/applet.c:1412
+#: ../gui/user-switch-applet/applet.c:1421
 msgid "User Switch Applet"
 msgstr "Miniaplicație pentru schimbarea utilizatorului"
 
-#: ../gui/user-switch-applet/applet.c:1421
+#: ../gui/user-switch-applet/applet.c:1435
 msgid "Change account settings and status"
 msgstr "Modificare opțiuni cont și stare"
 
@@ -1101,17 +1048,23 @@ msgstr "_Despre"
 msgid "_Edit Users and Groups"
 msgstr "_Editare utilizatori și grupuri"
 
-#: ../utils/gdmflexiserver.c:61 ../utils/gdmflexiserver.c:62
-#: ../utils/gdmflexiserver.c:63 ../utils/gdmflexiserver.c:65
-#: ../utils/gdmflexiserver.c:66
-msgid "Ignored - retained for compatibility"
-msgstr "Opțiune ignorată, păstrată doar pentru compatibilitate"
+#: ../utils/gdmflexiserver.c:61
+msgid "Only the VERSION command is supported"
+msgstr "Doar comanda VERSION este suportată"
 
 #: ../utils/gdmflexiserver.c:61
 msgid "COMMAND"
 msgstr "COMANDĂ"
 
-#: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:62
+#: ../utils/gdmflexiserver.c:63
+#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:66
+msgid "Ignored - retained for compatibility"
+msgstr "Opțiune ignorată, păstrată doar pentru compatibilitate"
+
+#: ../utils/gdmflexiserver.c:64
+#: ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Mesaje detaliate pentru depanare"
 
@@ -1133,12 +1086,25 @@ msgstr "- Autentificare nouă GDM"
 msgid "Unable to start new display"
 msgstr "Nu s-a putut porni un nou display"
 
-#: ../utils/gdm-screenshot.c:219
+#: ../utils/gdm-screenshot.c:216
 msgid "Screenshot taken"
 msgstr "S-a capturat ecranul"
 
 #. Option parsing
-#: ../utils/gdm-screenshot.c:284
+#: ../utils/gdm-screenshot.c:281
 msgid "Take a picture of the screen"
 msgstr "Capturează imaginea ecranului"
+
+#~ msgid "Enable debugging code"
+#~ msgstr "Activare a codului de depanare"
+#~ msgid "id"
+#~ msgstr "id"
+#~ msgid "%a %b %e"
+#~ msgstr "%a %e %b"
+#~ msgid "%1$s, %2$s"
+#~ msgstr "%2$s, %1$s"
+#~ msgid "Enable debugging"
+#~ msgstr "Activare depanare"
+#~ msgid "Enable debugging mode for the greeter."
+#~ msgstr "Activare a modului de depanare pentru greeter"
 
