@@ -477,19 +477,6 @@ gdm_option_widget_dispose (GObject *object)
         G_OBJECT_CLASS (gdm_option_widget_parent_class)->dispose (object);
 }
 
-static gboolean
-gdm_option_widget_mnemonic_activate (GtkWidget *widget,
-                                     gboolean   group_cycling)
-{
-        GdmOptionWidget *option_widget;
-
-        option_widget = GDM_OPTION_WIDGET (widget);
-        gtk_widget_grab_focus (option_widget->priv->items_combo_box);
-        gtk_combo_box_popup (GTK_COMBO_BOX (option_widget->priv->items_combo_box));
-
-        return TRUE;
-}
-
 static void
 gdm_option_widget_class_init (GdmOptionWidgetClass *klass)
 {
@@ -501,7 +488,6 @@ gdm_option_widget_class_init (GdmOptionWidgetClass *klass)
         object_class->constructor = gdm_option_widget_constructor;
         object_class->dispose = gdm_option_widget_dispose;
         object_class->finalize = gdm_option_widget_finalize;
-        widget_class->mnemonic_activate = gdm_option_widget_mnemonic_activate;
 
         gtk_rc_parse_string (GDM_OPTION_WIDGET_RC_STRING);
 
@@ -536,7 +522,7 @@ gdm_option_widget_class_init (GdmOptionWidgetClass *klass)
                                          PROP_DEFAULT_ITEM,
                                          g_param_spec_string ("default-item",
                                                               _("Default Item"),
-                                                              _("The ID of the default item"),
+                                                              _("The id of the default item"),
                                                               NULL,
                                                               G_PARAM_READWRITE));
 
@@ -878,6 +864,17 @@ add_separators (GdmOptionWidget *widget)
         gtk_tree_path_free (path);
 }
 
+static gboolean
+on_combo_box_mnemonic_activate (GtkWidget *widget,
+                                gboolean   arg1,
+                                gpointer   user_data)
+{
+        g_return_val_if_fail (GTK_IS_COMBO_BOX (widget), FALSE);
+        gtk_combo_box_popup (GTK_COMBO_BOX (widget));
+
+        return TRUE;
+}
+
 static void
 gdm_option_widget_init (GdmOptionWidget *widget)
 {
@@ -922,8 +919,12 @@ gdm_option_widget_init (GdmOptionWidget *widget)
         gtk_widget_set_no_show_all (widget->priv->items_combo_box, TRUE);
         gtk_container_add (GTK_CONTAINER (box),
                            widget->priv->items_combo_box);
+        g_signal_connect (widget->priv->items_combo_box,
+                          "mnemonic-activate",
+                          G_CALLBACK (on_combo_box_mnemonic_activate),
+                          NULL);
         gtk_label_set_mnemonic_widget (GTK_LABEL (widget->priv->label),
-                                       GTK_WIDGET (widget));
+                                       GTK_WIDGET (widget->priv->items_combo_box));
 
         g_assert (NUMBER_OF_OPTION_COLUMNS == 4);
         widget->priv->list_store = gtk_list_store_new (NUMBER_OF_OPTION_COLUMNS,
