@@ -271,7 +271,7 @@ AC_ARG_WITH(lang-file,
 if test x$withval != x; then
 	LANG_CONFIG_FILE="$withval"
 else
-	LANG_CONFIG_FILE='${sysconfdir}/sysconfig/i18n'
+	LANG_CONFIG_FILE='$(sysconfdir)/sysconfig/i18n'
 fi
 AC_SUBST(LANG_CONFIG_FILE)
 

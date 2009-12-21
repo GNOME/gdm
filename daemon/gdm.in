@@ -6,10 +6,6 @@
 
 test -f /etc/profile && . /etc/profile
 
-# Try to set LC_MESSAGES to LANG if neither LC_MESSAGES or LC_ALL is set.
-# This ensures that gdm can display in a system's default language if only
-# LANG is set.
-
 # Make sure LANG is set
 #
 if [ -z "$LANG" ]
@@ -18,15 +14,6 @@ then
   then
     LANG=`. /etc/sysconfig/language; echo $RC_LANG`
     export LANG
-  fi
-fi
-
-if [ -z "$LC_MESSAGES" ]
-then
-  if [ -z "$LC_ALL" ]
-  then
-    LC_MESSAGES=$LANG
-    export LC_MESSAGES
   fi
 fi
 
