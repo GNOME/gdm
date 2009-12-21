@@ -327,7 +327,7 @@ gdm_settings_desktop_backend_init (GdmSettingsDesktopBackend *backend)
         backend->priv = GDM_SETTINGS_DESKTOP_BACKEND_GET_PRIVATE (backend);
 
         backend->priv->key_file = g_key_file_new ();
-        backend->priv->filename = g_strdup (GDMCONFDIR "/custom.conf");
+        backend->priv->filename = g_strdup (GDM_CUSTOM_CONF);
 
         error = NULL;
         res = g_key_file_load_from_file (backend->priv->key_file,
