@@ -50,12 +50,11 @@ init_xkl (void)
 {
         if (config_registry == NULL) {
                 engine = xkl_engine_get_instance (GDK_DISPLAY ());
-                xkl_engine_backup_names_prop (engine);
                 config_registry = xkl_config_registry_get_instance (engine);
                 xkl_config_registry_load (config_registry, FALSE);
 
                 initial_config = xkl_config_rec_new ();
-                if (!xkl_config_rec_get_from_backup (initial_config, engine)) {
+                if (!xkl_config_rec_get_from_server (initial_config, engine)) {
                         g_warning ("failed to load XKB configuration");
                         initial_config->model = g_strdup ("pc105");
                 }
