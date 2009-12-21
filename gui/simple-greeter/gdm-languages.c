@@ -460,7 +460,7 @@ collect_locales_from_archive (void)
         locales_collected = TRUE;
  out:
 
-        g_mapped_file_free (mapped);
+        g_mapped_file_unref (mapped);
         return locales_collected;
 }
 
