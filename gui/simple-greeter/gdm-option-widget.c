@@ -522,7 +522,7 @@ gdm_option_widget_class_init (GdmOptionWidgetClass *klass)
                                          PROP_DEFAULT_ITEM,
                                          g_param_spec_string ("default-item",
                                                               _("Default Item"),
-                                                              _("The id of the default item"),
+                                                              _("The ID of the default item"),
                                                               NULL,
                                                               G_PARAM_READWRITE));
 
