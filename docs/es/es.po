@@ -1,12 +1,11 @@
 # translation of gdm-help.master.po to Español
-# Jorge Gonzalez <jorgegonz@svn.gnome.org>, 2009.
-# Jorge González <jorgegonz@svn.gnome.org>, 2009.
+# Jorge Gonzalez <jorgegonz@svn.gnome.org>, 2008, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm-help.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-19 09:12+0000\n"
-"PO-Revision-Date: 2009-12-29 20:55+0100\n"
+"POT-Creation-Date: 2009-12-29 19:56+0000\n"
+"PO-Revision-Date: 2010-01-08 21:46+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2128,7 +2127,6 @@ msgstr ""
 "var&gt;/adm/messages</filename> dependiendo de su sistema operativo)."
 
 #: C/gdm.xml:1296(title)
-#| msgid "Security Options"
 msgid "Greeter Options"
 msgstr "Opciones de la interfaz"
 
@@ -2150,6 +2148,9 @@ msgid ""
 "If true, then the face browser will show all users on the local machine. If "
 "false, the face browser will only show users who have recently logged in."
 msgstr ""
+"Si es cierto, entonces el examinador de rostros mostrará todos los usuarios "
+"en el equipo local. Si es falso, el examinador de rostros sólo mostrará los "
+"usuarios que han iniciado sesión recientemente."
 
 #: C/gdm.xml:1311(para)
 msgid ""
@@ -2163,6 +2164,16 @@ msgid ""
 "nologin or /bin/false are considered invalid shells even if getusershell() "
 "returns them)."
 msgstr ""
+"Cuando esta clave es cierta, GDM llamará a fgetpwent() para obtener una "
+"lista de los usuarios locales en el sistema. Cualquier usuario con un ID de "
+"usuario inferior a 500 (o 100 si se está ejecutando en Solaris) se filtra. "
+"El examinador de rostros también mostrará cualquier usuario que "
+"anteriormente haya iniciado sesión en el sistema (por ejemplo, usuarios NIS/"
+"LDAP). Obtiene la lista a través de la interfaz de ConsoleKit, llamando a "
+"<command>ck-history</command>. También filtrará cualquier usuario que no "
+"tenga una «shell» válida (las «shell» válidas son aquellas que getusershell() "
+"devuelve; /sbin/nologin o /bin/false se consideran «shell» no válidas incluso "
+"si getusershell() las devuelve)."
 
 #: C/gdm.xml:1324(para)
 msgid ""
@@ -2170,6 +2181,9 @@ msgid ""
 "logged in on the system (local or NIS/LDAP users) by calling the <command>ck-"
 "history</command> ConsoleKit interface."
 msgstr ""
+"Si es falso, entonces GDM solamente muestra usuarios que previamente han "
+"iniciado sesión en el sistema (localmente o usuarios NIS/LDAP) llamando a la "
+"interfaz de ConsoleKit <command>ck-history</command>."
 
 #: C/gdm.xml:1333(term)
 msgid "Include"
@@ -2206,6 +2220,12 @@ msgid ""
 "to add additional users to the list, then you need to set the value to the "
 "default value with additional users appended to the list."
 msgstr ""
+"Establecida a una lista de usuarios que excluir del examinador de rostros. "
+"Este valor se establece a una lista de usuarios separados por comas. Note "
+"que la configuración en <filename>custom.conf</filename> sobreescribe el "
+"valor predeterminado, de tal forma que si quiere añadir usuarios adicionales "
+"a la lista, entonces debe establecer el valor al predeterminado con los "
+"valores adicionales añadidos a la lista."
 
 #: C/gdm.xml:1362(title)
 msgid "Security Options"
@@ -3143,9 +3163,6 @@ msgstr ""
 "diferente a través de la opción «--with-dmconfdir»."
 
 #: C/gdm.xml:1992(para)
-#| msgid ""
-#| "A session can be disabled by editing the desktop file and adding a line "
-#| "that says <filename>Hidden=true</filename>."
 msgid ""
 "A session can be disabled by editing the desktop file and adding a line as "
 "follows: <filename>Hidden=true</filename>."
@@ -3167,6 +3184,19 @@ msgid ""
 "problems in the system or user scripts that might be preventing a user from "
 "being able to start a session."
 msgstr ""
+"Los archivos de escritorio de GDM soportan una extensión específica de GDM, "
+"una clave llamada «X-GDM-BypassXsession». Si la clave no se especifica en el "
+"archivo de escritorio, se toma el valor predeterminado de falso («false»). Si "
+"esta clave se especifica a cierta («true») en el archivo de escritorio, "
+"entonces GDM lanzará directamente el programa especificado por la clave "
+"«Exec» del archivo de escritorio al iniciar la sesión del usuario. No "
+"ejecutará el programa a través del script <filename>&lt;etc&gt;/gdm/"
+"Xsession</filename>, lo que es el comportamiento normal. Ya que al evitar el "
+"script <filename>&lt;etc&gt;/gdm/Xsession</filename> se evita configurar la "
+"sesión del usuario con la configuración normal del sistema y usuario; las "
+"sesiones iniciadas de esta manera pueden ser útiles para depurar problemas "
+"en el sistema o en scripts de usuario que puedan impedir que un usuario "
+"pueda iniciar una sesión."
 
 #: C/gdm.xml:2016(title)
 msgid "GDM User Session and Language Configuration"
@@ -3495,7 +3525,7 @@ msgstr ""
 #: C/gdm.xml:0(None)
 msgid "translator-credits"
 msgstr ""
-"Jorge González <jorgegonz@svn.gnome.org>, 2007-2009\n"
+"Jorge González <jorgegonz@svn.gnome.org>, 2007-2010\n"
 "Lucas Vieites <lucas@asixinformatica.com>, 2007\n"
 "Francisco Javier F. Serrador <serrador@openshine.com>, 2003, 2006"
 
