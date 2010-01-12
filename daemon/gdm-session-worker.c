@@ -1406,6 +1406,14 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
         if (error_code != PAM_SUCCESS) {
                 g_debug ("GdmSessionWorker: authentication returned %d: %s", error_code, pam_strerror (worker->priv->pam_handle, error_code));
 
+                /*
+                 * Do not display a different message for user unknown versus
+                 * a failed password for a valid user.
+                 */
+                if (error_code = PAM_USER_UNKNOWN) {
+                        error_code = PAM_AUTH_ERR;
+                }
+
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
