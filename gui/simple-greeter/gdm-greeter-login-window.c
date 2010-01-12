@@ -1080,6 +1080,7 @@ load_theme (GdmGreeterLoginWindow *login_window)
         login_window->priv->user_chooser = gdm_user_chooser_widget_new ();
         box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "selection-box"));
         gtk_box_pack_start (GTK_BOX (box), login_window->priv->user_chooser, TRUE, TRUE, 0);
+        gtk_box_reorder_child (GTK_BOX (box), login_window->priv->user_chooser, 0);
 
         gdm_user_chooser_widget_set_show_only_chosen (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
 
