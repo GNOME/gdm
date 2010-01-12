@@ -1077,6 +1077,8 @@ load_theme (GdmGreeterLoginWindow *login_window)
         box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "window-frame"));
         gtk_container_add (GTK_CONTAINER (login_window), box);
 
+        /* FIXME: user chooser should implement GtkBuildable and this should get dropped
+         */
         login_window->priv->user_chooser = gdm_user_chooser_widget_new ();
         box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "selection-box"));
         gtk_box_pack_start (GTK_BOX (box), login_window->priv->user_chooser, TRUE, TRUE, 0);
