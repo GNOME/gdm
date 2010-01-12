@@ -42,6 +42,9 @@
 #include <glib/gstdio.h>
 #include <glib-object.h>
 
+#include <libxklavier/xklavier.h>
+#include <X11/Xlib.h> /* for Display */
+
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
@@ -595,14 +598,44 @@ get_default_language_name (GdmSessionDirect *session)
     return setlocale (LC_MESSAGES, NULL);
 }
 
+static char *
+get_system_default_layout (GdmSessionDirect *session)
+{
+    char *result;
+    Display *display;
+    
+    result = NULL;    
+    display = XOpenDisplay (session->priv->display_name);
+    if (display) {
+        XklConfigRec *config;
+        XklEngine *engine = xkl_engine_get_instance (display);
+        if (engine)
+        {
+            XklConfigRec *config = xkl_config_rec_new ();
+            if (xkl_config_rec_get_from_server (config, engine) && config->layouts && config->layouts[0]) {
+                    if (config->variants && config->variants[0] && config->variants[0][0])
+			    result = g_strdup_printf("%s\t%s", config->layouts[0], config->variants[0]);
+                    else
+			    result = g_strdup (config->layouts[0]);
+            }
+            g_object_unref (config);
+        }
+        XCloseDisplay (display);
+    }
+
+    if (!result)
+        result = g_strdup ("us");    
+    return result;
+}
+
 static const char *
 get_default_layout_name (GdmSessionDirect *session)
 {
-    if (session->priv->saved_layout != NULL) {
-                return session->priv->saved_layout;
+    if (!session->priv->saved_layout) {
+        session->priv->saved_layout = get_system_default_layout (session);
     }
 
-    return "us";
+    return session->priv->saved_layout;
 }
 
 static char *

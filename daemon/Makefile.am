@@ -106,6 +106,7 @@ test_session_LDADD =		\
 	$(EXTRA_DAEMON_LIBS)	\
 	$(DAEMON_LIBS)		\
 	$(PAM_LIBS)		\
+	$(LIBXKLAVIER_LIBS)	\
 	$(NULL)
 
 libexec_PROGRAMS = 			\
@@ -152,6 +153,7 @@ gdm_simple_slave_LDADD = 			\
 	$(XLIB_LIBS)				\
 	$(DAEMON_LIBS)				\
 	$(EXTRA_DAEMON_LIBS)                    \
+	$(LIBXKLAVIER_LIBS)			\
 	$(NULL)
 
 gdm_factory_slave_SOURCES = 		\
@@ -215,6 +217,7 @@ gdm_product_slave_LDADD = 			\
 	$(XLIB_LIBS)				\
 	$(DAEMON_LIBS)				\
 	$(EXTRA_DAEMON_LIBS)                    \
+	$(LIBXKLAVIER_LIBS)			\
 	$(NULL)
 
 gdm_xdmcp_chooser_slave_SOURCES = 		\
