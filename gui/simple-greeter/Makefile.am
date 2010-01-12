@@ -13,7 +13,7 @@ AM_CPPFLAGS = \
 	-DSYSCONFDIR=\""$(sysconfdir)"\"		\
 	-DLIBLOCALEDIR=\""$(prefix)/lib/locale"\"	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
-	-DGLADEDIR=\""$(pkgdatadir)"\"			\
+	-DUIDIR=\""$(pkgdatadir)"\"			\
 	-DLIBEXECDIR=\""$(libexecdir)"\" 		\
 	-DSBINDIR=\""$(sbindir)"\"		 	\
 	-DGDM_CACHE_DIR=\""$(localstatedir)/cache/gdm"\"	\
@@ -332,14 +332,14 @@ gdm_simple_greeter_LDADD = 		\
 	$(DEVKIT_POWER_LIBS)		\
 	$(NULL)
 
-gladedir = $(pkgdatadir)
-glade_DATA = 					\
-	gdm-greeter-login-window.glade		\
+uidir = $(pkgdatadir)
+ui_DATA = 					\
+	gdm-greeter-login-window.ui		\
 	$(NULL)
 
 EXTRA_DIST = 			\
 	$(schemas_in_files)	\
-	$(glade_DATA)		\
+	$(ui_DATA)		\
 	$(NULL)
 
 DISTCLEANFILES =                        \
