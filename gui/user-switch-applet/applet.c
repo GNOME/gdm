@@ -31,7 +31,6 @@
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 
-#include <glade/glade-xml.h>
 #include <dbus/dbus-glib.h>
 
 #include <bonobo/bonobo-main.h>

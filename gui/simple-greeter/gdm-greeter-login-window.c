@@ -45,7 +45,6 @@
 
 #include <gtk/gtk.h>
 
-#include <glade/glade-xml.h>
 #include <gconf/gconf-client.h>
 
 #include <dbus/dbus-glib.h>
@@ -74,7 +73,7 @@
 #define CK_SEAT_INTERFACE    "org.freedesktop.ConsoleKit.Seat"
 #define CK_SESSION_INTERFACE "org.freedesktop.ConsoleKit.Session"
 
-#define GLADE_XML_FILE       "gdm-greeter-login-window.glade"
+#define UI_XML_FILE       "gdm-greeter-login-window.ui"
 
 #define KEY_GREETER_DIR             "/apps/gdm/simple-greeter"
 #define KEY_BANNER_MESSAGE_ENABLED  KEY_GREETER_DIR "/banner_message_enable"
@@ -97,7 +96,7 @@ enum {
 
 struct GdmGreeterLoginWindowPrivate
 {
-        GladeXML        *xml;
+        GtkBuilder      *builder;
         GtkWidget       *user_chooser;
         GtkWidget       *auth_banner_label;
         guint            display_is_local : 1;
@@ -175,10 +174,10 @@ set_sensitive (GdmGreeterLoginWindow *login_window,
 {
         GtkWidget *box;
 
-        box = glade_xml_get_widget (login_window->priv->xml, "auth-input-box");
+        box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "auth-input-box"));
         gtk_widget_set_sensitive (box, sensitive);
 
-        box = glade_xml_get_widget (login_window->priv->xml, "buttonbox");
+        box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "buttonbox"));
         gtk_widget_set_sensitive (box, sensitive);
 
         gtk_widget_set_sensitive (login_window->priv->user_chooser, sensitive);
@@ -189,7 +188,7 @@ set_focus (GdmGreeterLoginWindow *login_window)
 {
         GtkWidget *entry;
 
-        entry = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-entry");
+        entry = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-entry"));
 
         gdk_window_focus (GTK_WIDGET (login_window)->window, GDK_CURRENT_TIME);
 
@@ -206,7 +205,7 @@ set_message (GdmGreeterLoginWindow *login_window,
 {
         GtkWidget *label;
 
-        label = glade_xml_get_widget (login_window->priv->xml, "auth-message-label");
+        label = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "auth-message-label"));
         gtk_label_set_text (GTK_LABEL (label), text);
 }
 
@@ -318,7 +317,7 @@ show_widget (GdmGreeterLoginWindow *login_window,
 {
         GtkWidget *widget;
 
-        widget = glade_xml_get_widget (login_window->priv->xml, name);
+        widget = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, name));
         if (widget != NULL) {
                 if (visible) {
                         gtk_widget_show (widget);
@@ -335,7 +334,7 @@ sensitize_widget (GdmGreeterLoginWindow *login_window,
 {
         GtkWidget *widget;
 
-        widget = glade_xml_get_widget (login_window->priv->xml, name);
+        widget = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, name));
         if (widget != NULL) {
                 gtk_widget_set_sensitive (widget, sense);
         }
@@ -351,7 +350,7 @@ on_login_button_clicked_answer_query (GtkButton             *button,
         set_busy (login_window);
         set_sensitive (login_window, FALSE);
 
-        entry = glade_xml_get_widget (login_window->priv->xml, "auth-prompt-entry");
+        entry = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "auth-prompt-entry"));
         text = gtk_entry_get_text (GTK_ENTRY (entry));
 
         _gdm_greeter_login_window_set_interactive (login_window, TRUE);
@@ -385,7 +384,7 @@ set_log_in_button_mode (GdmGreeterLoginWindow *login_window,
 {
         GtkWidget *button;
 
-        button = glade_xml_get_widget (login_window->priv->xml, "log-in-button");
+        button = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "log-in-button"));
         gtk_widget_grab_default (button);
 
         /* disconnect any signals */
@@ -439,7 +438,6 @@ switch_mode (GdmGreeterLoginWindow *login_window,
              int                    number)
 {
         const char *default_name;
-        GtkWidget  *user_chooser;
         GtkWidget  *box;
 
         /* we want to run this even if we're supposed to
@@ -470,24 +468,23 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 g_assert_not_reached ();
         }
 
-        box = glade_xml_get_widget (login_window->priv->xml, "buttonbox");
+        box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "buttonbox"));
         gtk_button_box_set_layout (GTK_BUTTON_BOX (box),
                                    (number == MODE_SELECTION) ? GTK_BUTTONBOX_SPREAD : GTK_BUTTONBOX_END );
 
-        user_chooser = glade_xml_get_widget (login_window->priv->xml, "user-chooser");
-        box = gtk_widget_get_parent (user_chooser);
+        box = gtk_widget_get_parent (login_window->priv->user_chooser);
         if (GTK_IS_BOX (box)) {
                 guint       padding;
                 GtkPackType pack_type;
 
                 gtk_box_query_child_packing (GTK_BOX (box),
-                                             user_chooser,
+                                             login_window->priv->user_chooser,
                                              NULL,
                                              NULL,
                                              &padding,
                                              &pack_type);
                 gtk_box_set_child_packing (GTK_BOX (box),
-                                           user_chooser,
+                                           login_window->priv->user_chooser,
                                            number == MODE_SELECTION,
                                            number == MODE_SELECTION,
                                            padding,
@@ -497,7 +494,7 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         if (default_name != NULL) {
                 GtkWidget *widget;
 
-                widget = glade_xml_get_widget (login_window->priv->xml, default_name);
+                widget = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, default_name));
                 gtk_widget_grab_default (widget);
         }
 }
@@ -544,14 +541,14 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
                 login_window->priv->start_session_handler_id = 0;
         }
 
-        entry = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-entry");
+        entry = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-entry"));
 
         delete_entry_text (entry);
 
         gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
         set_message (login_window, "");
 
-        label = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-label");
+        label = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-label"));
         gtk_label_set_text (GTK_LABEL (label), "");
 
         switch_mode (login_window, MODE_SELECTION);
@@ -706,12 +703,12 @@ gdm_greeter_login_window_info_query (GdmGreeterLoginWindow *login_window,
 
         g_debug ("GdmGreeterLoginWindow: info query: %s", text);
 
-        entry = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-entry");
+        entry = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-entry"));
         delete_entry_text (entry);
         gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
         set_log_in_button_mode (login_window, LOGIN_BUTTON_ANSWER_QUERY);
 
-        label = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-label");
+        label = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-label"));
         gtk_label_set_text (GTK_LABEL (label), text);
 
         show_widget (login_window, "auth-input-box", TRUE);
@@ -733,12 +730,12 @@ gdm_greeter_login_window_secret_info_query (GdmGreeterLoginWindow *login_window,
 
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
-        entry = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-entry");
+        entry = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-entry"));
         delete_entry_text (entry);
         gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
         set_log_in_button_mode (login_window, LOGIN_BUTTON_ANSWER_QUERY);
 
-        label = glade_xml_get_widget (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->xml, "auth-prompt-label");
+        label = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-label"));
         gtk_label_set_text (GTK_LABEL (label), text);
 
         show_widget (login_window, "auth-input-box", TRUE);
@@ -895,7 +892,7 @@ rotate_computer_info (GdmGreeterLoginWindow *login_window)
         int        n_pages;
 
         /* switch page */
-        notebook = glade_xml_get_widget (login_window->priv->xml, "computer-info-notebook");
+        notebook = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "computer-info-notebook"));
         current_page = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
         n_pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
 
@@ -1000,7 +997,7 @@ create_computer_info (GdmGreeterLoginWindow *login_window)
 
         gdm_profile_start (NULL);
 
-        label = glade_xml_get_widget (login_window->priv->xml, "computer-info-name-label");
+        label = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "computer-info-name-label"));
         if (label != NULL) {
                 char localhost[HOST_NAME_MAX + 1] = "";
 
@@ -1018,7 +1015,7 @@ create_computer_info (GdmGreeterLoginWindow *login_window)
                 }
         }
 
-        label = glade_xml_get_widget (login_window->priv->xml, "computer-info-version-label");
+        label = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "computer-info-version-label"));
         if (label != NULL) {
                 char *version;
                 version = get_system_version ();
@@ -1035,34 +1032,6 @@ create_computer_info (GdmGreeterLoginWindow *login_window)
 #define INVISIBLE_CHAR_BULLET        0x2022
 #define INVISIBLE_CHAR_NONE          0
 
-static GtkWidget *
-custom_widget_constructor (GladeXML              *xml,
-                           char                  *func_name,
-                           char                  *name,
-                           char                  *string1,
-                           char                  *string2,
-                           int                    int1,
-                           int                    int2,
-                           GdmGreeterLoginWindow *login_window)
-{
-        GtkWidget *widget;
-
-        g_assert (GLADE_IS_XML (xml));
-        g_assert (name != NULL);
-        g_assert (GDM_IS_GREETER_LOGIN_WINDOW (login_window));
-
-        gdm_profile_start (NULL);
-
-        widget = NULL;
-
-        if (strcmp (name, "user-chooser") == 0) {
-               widget = gdm_user_chooser_widget_new ();
-        }
-
-        gdm_profile_end (NULL);
-
-        return widget;
-}
 
 static void
 load_theme (GdmGreeterLoginWindow *login_window)
@@ -1071,18 +1040,19 @@ load_theme (GdmGreeterLoginWindow *login_window)
         GtkWidget *button;
         GtkWidget *box;
         GtkWidget *image;
+        GError* error = NULL;
 
         gdm_profile_start (NULL);
 
-        glade_set_custom_handler ((GladeXMLCustomWidgetHandler) custom_widget_constructor,
-                                  login_window);
-        login_window->priv->xml = glade_xml_new (GLADEDIR "/" GLADE_XML_FILE,
-                                                 "window-frame",
-                                                 PACKAGE);
+        login_window->priv->builder = gtk_builder_new ();
+        if (!gtk_builder_add_from_file (login_window->priv->builder, UIDIR "/" UI_XML_FILE, &error)) {
+                g_warning ("Couldn't load builder file: %s", error->message);
+                g_error_free (error);
+        }
 
-        g_assert (login_window->priv->xml != NULL);
+        g_assert (login_window->priv->builder != NULL);
 
-        image = glade_xml_get_widget (login_window->priv->xml, "logo-image");
+        image = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "logo-image"));
         if (image != NULL) {
                 char        *icon_name;
                 GError      *error;
@@ -1104,14 +1074,12 @@ load_theme (GdmGreeterLoginWindow *login_window)
                 }
         }
 
-        box = glade_xml_get_widget (login_window->priv->xml, "window-frame");
+        box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "window-frame"));
         gtk_container_add (GTK_CONTAINER (login_window), box);
 
-        login_window->priv->user_chooser = glade_xml_get_widget (login_window->priv->xml,
-                                                                 "user-chooser");
-        if (login_window->priv->user_chooser == NULL) {
-                g_critical ("Userlist box not found");
-        }
+        login_window->priv->user_chooser = gdm_user_chooser_widget_new ();
+        box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "selection-box"));
+        gtk_box_pack_start (GTK_BOX (box), login_window->priv->user_chooser, TRUE, TRUE, 0);
 
         gdm_user_chooser_widget_set_show_only_chosen (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
 
@@ -1135,13 +1103,13 @@ load_theme (GdmGreeterLoginWindow *login_window)
 
         gtk_widget_show (login_window->priv->user_chooser);
 
-        login_window->priv->auth_banner_label = glade_xml_get_widget (login_window->priv->xml, "auth-banner-label");
+        login_window->priv->auth_banner_label = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "auth-banner-label"));
         /*make_label_small_italic (login_window->priv->auth_banner_label);*/
 
-        button = glade_xml_get_widget (login_window->priv->xml, "cancel-button");
+        button = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "cancel-button"));
         g_signal_connect (button, "clicked", G_CALLBACK (cancel_button_clicked), login_window);
 
-        entry = glade_xml_get_widget (login_window->priv->xml, "auth-prompt-entry");
+        entry = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "auth-prompt-entry"));
         /* Only change the invisible character if it '*' otherwise assume it is OK */
         if ('*' == gtk_entry_get_invisible_char (GTK_ENTRY (entry))) {
                 gunichar invisible_char;
@@ -1151,7 +1119,7 @@ load_theme (GdmGreeterLoginWindow *login_window)
 
         create_computer_info (login_window);
 
-        box = glade_xml_get_widget (login_window->priv->xml, "computer-info-event-box");
+        box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "computer-info-event-box"));
         g_signal_connect (box, "button-press-event", G_CALLBACK (on_computer_info_label_button_press), login_window);
 
         switch_mode (login_window, MODE_SELECTION);
