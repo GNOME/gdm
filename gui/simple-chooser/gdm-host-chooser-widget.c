@@ -208,12 +208,12 @@ decode_packet (GIOChannel           *source,
                 return TRUE;
         }
 
-        ss_len = sizeof (clnt_ss);
         res = XdmcpFill (widget->priv->socket_fd, &buf, (XdmcpNetaddr)&clnt_ss, &ss_len);
         if G_UNLIKELY (! res) {
                 g_debug (_("XDMCP: Could not create XDMCP buffer!"));
                 return TRUE;
         }
+        ss_len = (int)gdm_sockaddr_len (&clnt_ss);
 
         res = XdmcpReadHeader (&buf, &header);
         if G_UNLIKELY (! res) {
@@ -443,7 +443,7 @@ find_broadcast_addresses (GdmHostChooserWidget *widget)
                         /* paranoia */
                         ifreq.ifr_name[sizeof (ifreq.ifr_name) - 1] = '\0';
 
-                        if (ioctl (sock, SIOCGIFFLAGS, &ifreq) < 0) {
+                        if ((ioctl (sock, SIOCGIFFLAGS, &ifreq) < 0) && (errno != ENXIO)) {
                                 g_warning ("Could not get SIOCGIFFLAGS for %s", ifr[i].ifr_name);
                         }
 

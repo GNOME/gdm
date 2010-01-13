@@ -270,7 +270,7 @@ gdm_address_get_hostname (GdmAddress *address,
 
         host [0] = '\0';
         res = getnameinfo ((const struct sockaddr *)address->ss,
-                           sizeof (struct sockaddr_storage),
+                           (int) gdm_sockaddr_len (address->ss),
                            host, sizeof (host),
                            NULL, 0,
                            0);

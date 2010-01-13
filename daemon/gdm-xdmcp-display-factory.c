@@ -1518,9 +1518,12 @@ create_address_from_request (ARRAY8      *req_addr,
 
         memset (&hints, 0, sizeof (hints));
         hints.ai_family = family;
-        hints.ai_flags = AI_V4MAPPED; /* this should convert IPv4 address to IPv6 if needed */
+        /* this should convert IPv4 address to IPv6 if needed */
+        hints.ai_flags = AI_V4MAPPED;
+        hints.ai_socktype = SOCK_DGRAM;
+
         if ((gaierr = getaddrinfo (host, serv, &hints, &ai_list)) != 0) {
-                g_warning ("Unable get address: %s", gai_strerror (gaierr));
+                g_warning ("Unable to get address: %s", gai_strerror (gaierr));
                 return FALSE;
         }
 
@@ -1997,9 +2000,11 @@ on_hostname_selected (GdmXdmcpChooserDisplay *display,
 
         memset (&hints, 0, sizeof (hints));
         hints.ai_family = gdm_address_get_family_type (address);
-        hints.ai_flags = AI_V4MAPPED; /* this should convert IPv4 address to IPv6 if needed */
+        /* this should convert IPv4 address to IPv6 if needed */
+        hints.ai_flags = AI_V4MAPPED;
+
         if ((gaierr = getaddrinfo (hostname, NULL, &hints, &ai_list)) != 0) {
-                g_warning ("Unable get address: %s", gai_strerror (gaierr));
+                g_warning ("Unable to get address: %s", gai_strerror (gaierr));
                 return;
         }
 
@@ -2837,12 +2842,12 @@ decode_packet (GIOChannel             *source,
                 return TRUE;
         }
 
-        ss_len = sizeof (clnt_ss);
         res = XdmcpFill (factory->priv->socket_fd, &factory->priv->buf, (XdmcpNetaddr)&clnt_ss, &ss_len);
         if G_UNLIKELY (! res) {
                 g_debug ("GdmXdmcpDisplayFactory: Could not create XDMCP buffer!");
                 return TRUE;
         }
+        ss_len = (int)gdm_sockaddr_len (&clnt_ss);
 
         res = XdmcpReadHeader (&factory->priv->buf, &header);
         if G_UNLIKELY (! res) {
