@@ -45,7 +45,7 @@
 #endif
 #include "locarchive.h"
 
-#define ALIASES_FILE LIBLOCALEDIR "/locale.alias"
+#define ALIASES_FILE DATADIR "/gdm/locale.alias"
 #define ARCHIVE_FILE LIBLOCALEDIR "/locale-archive"
 #define ISO_CODES_DATADIR ISO_CODES_PREFIX "/share/xml/iso-codes"
 #define ISO_CODES_LOCALESDIR ISO_CODES_PREFIX "/share/locale"
@@ -62,6 +62,13 @@ typedef struct _GdmLocale {
 static GHashTable *gdm_languages_map;
 static GHashTable *gdm_territories_map;
 static GHashTable *gdm_available_locales_map;
+
+static char * construct_language_name (const char *language,
+                                       const char *territory,
+                                       const char *codeset,
+                                       const char *modifier);
+
+static gboolean language_name_is_valid (const char *language_name);
 
 static void
 gdm_locale_free (GdmLocale *locale)
@@ -119,6 +126,8 @@ gdm_parse_language_name (const char *name,
         GMatchInfo *match_info;
         gboolean    res;
         GError     *error;
+        gchar      *normalized_codeset = NULL;
+        gchar      *normalized_name = NULL;
 
         error = NULL;
         re = g_regex_new ("^(?P<language>[^_.@[:space:]]+)"
@@ -167,14 +176,6 @@ gdm_parse_language_name (const char *name,
                         g_free (*codesetp);
                         *codesetp = NULL;
                 }
-
-                if (*codesetp != NULL) {
-                        char *codeset;
-
-                        codeset = normalize_codeset (*codesetp);
-                        g_free (*codesetp);
-                        *codesetp = codeset;
-                }
         }
 
         if (modifierp != NULL) {
@@ -185,6 +186,22 @@ gdm_parse_language_name (const char *name,
                         g_free (*modifierp);
                         *modifierp = NULL;
                 }
+        }
+
+        if (codesetp != NULL && *codesetp != NULL) {
+                normalized_codeset = normalize_codeset (*codesetp);
+                normalized_name = construct_language_name (language_codep ? *language_codep : NULL,
+                                                           territory_codep ? *territory_codep : NULL,
+                                                           normalized_codeset,
+                                                           modifierp ? *modifierp : NULL);
+
+                if (language_name_is_valid (normalized_name)) {
+                        g_free (*codesetp);
+                        *codesetp = normalized_codeset;
+                } else {
+                        g_free (normalized_codeset);
+                }
+                g_free (normalized_name);
         }
 
         g_match_info_free (match_info);
@@ -216,24 +233,6 @@ construct_language_name (const char *language,
         return name;
 }
 
-static void
-make_codeset_canonical_for_locale (const char  *name,
-                                   char       **codeset)
-{
-        char *old_locale;
-
-        old_locale = setlocale (LC_CTYPE, NULL);
-
-        if (setlocale (LC_CTYPE, name) == NULL) {
-                return;
-        }
-
-        g_free (*codeset);
-        *codeset = g_strdup (nl_langinfo (CODESET));
-
-        setlocale (LC_CTYPE, old_locale);
-}
-
 char *
 gdm_normalize_language_name (const char *name)
 {
@@ -252,10 +251,6 @@ gdm_normalize_language_name (const char *name)
                                  &territory_code,
                                  &codeset, &modifier);
 
-        if (codeset != NULL) {
-                make_codeset_canonical_for_locale (name, &codeset);
-        }
-
         normalized_name = construct_language_name (language_code,
                                                    territory_code,
                                                    codeset, modifier);
@@ -272,38 +267,50 @@ language_name_is_valid (const char *language_name)
 {
         char     *old_locale;
         gboolean  is_valid;
+#ifdef WITH_INCOMPLETE_LOCALES
+        int lc_type_id = LC_CTYPE;
+#else
+        int lc_type_id = LC_MESSAGES;
+#endif
 
-        old_locale = g_strdup (setlocale (LC_MESSAGES, NULL));
-        is_valid = setlocale (LC_MESSAGES, language_name) != NULL;
-        setlocale (LC_MESSAGES, old_locale);
+        old_locale = g_strdup (setlocale (lc_type_id, NULL));
+        is_valid = setlocale (lc_type_id, language_name) != NULL;
+        setlocale (lc_type_id, old_locale);
         g_free (old_locale);
 
         return is_valid;
 }
 
-static gboolean
-language_name_is_utf8 (const char *language_name)
+static void
+language_name_get_codeset_details (const char  *language_name,
+                                   char       **pcodeset,
+                                   gboolean    *is_utf8)
 {
         char     *old_locale;
         char     *codeset;
-        gboolean  is_utf8;
 
         old_locale = g_strdup (setlocale (LC_CTYPE, NULL));
 
         if (setlocale (LC_CTYPE, language_name) == NULL) {
                 g_free (old_locale);
-                return FALSE;
+                return;
         }
 
-        codeset = normalize_codeset (nl_langinfo (CODESET));
+        codeset = nl_langinfo (CODESET);
 
-        is_utf8 = strcmp (codeset, "utf8") == 0;
-        g_free (codeset);
+        if (pcodeset != NULL) {
+                *pcodeset = codeset;
+        }
+
+        if (is_utf8 != NULL) {
+                codeset = normalize_codeset (codeset);
+
+                *is_utf8 = strcmp (codeset, "utf8") == 0;
+                g_free (codeset);
+        }
 
         setlocale (LC_CTYPE, old_locale);
         g_free (old_locale);
-
-        return is_utf8;
 }
 
 static gboolean
@@ -343,28 +350,37 @@ out:
 }
 
 static gboolean
-add_locale (const char *language_name)
+add_locale (const char *language_name,
+            gboolean    utf8_only)
 {
         GdmLocale *locale;
         GdmLocale *old_locale;
         char      *name;
+        gboolean   is_utf8;
 
-        if (language_name_is_utf8 (language_name)) {
+        g_return_val_if_fail (language_name != NULL, FALSE);
+
+        language_name_get_codeset_details (language_name, NULL, &is_utf8);
+
+        if (is_utf8) {
                 name = g_strdup (language_name);
-        } else {
+        } else if (utf8_only) {
                 name = g_strdup_printf ("%s.utf8", language_name);
 
-                if (!language_name_is_utf8 (name)) {
+                language_name_get_codeset_details (name, NULL, &is_utf8);
+                if (is_utf8) {
                         g_free (name);
                         return FALSE;
                 }
+        } else {
+                name = g_strdup (language_name);
         }
 
         if (!language_name_is_valid (name)) {
+                g_warning ("Your locale '%s' was failed by setlocale()", name);
                 g_free (name);
                 return FALSE;
         }
-
 
         locale = g_new0 (GdmLocale, 1);
         gdm_parse_language_name (name,
@@ -375,16 +391,35 @@ add_locale (const char *language_name)
         g_free (name);
         name = NULL;
 
+#ifdef WITH_INCOMPLETE_LOCALES
+        if (utf8_only) {
+                if (locale->territory_code == NULL || locale->modifier) {
+                        gdm_locale_free (locale);
+                        return FALSE;
+                }
+        }
+#endif
+
         locale->id = construct_language_name (locale->language_code, locale->territory_code,
                                               NULL, locale->modifier);
         locale->name = construct_language_name (locale->language_code, locale->territory_code,
                                                 locale->codeset, locale->modifier);
 
+#ifndef WITH_INCOMPLETE_LOCALES
         if (!language_name_has_translations (locale->name) &&
             !language_name_has_translations (locale->id) &&
-            !language_name_has_translations (locale->language_code)) {
+            !language_name_has_translations (locale->language_code) &&
+            utf8_only) {
+                g_warning ("Your locale '%s' doesn't have message catalog files",
+                           language_name);
                 gdm_locale_free (locale);
                 return FALSE;
+        }
+#endif
+
+        if (!utf8_only) {
+                g_free (locale->id);
+                locale->id = g_strdup (locale->name);
         }
 
         old_locale = g_hash_table_lookup (gdm_available_locales_map, locale->id);
@@ -452,7 +487,7 @@ collect_locales_from_archive (void)
         }
 
         for (cnt = 0; cnt < used; ++cnt) {
-                add_locale (names[cnt].name);
+                add_locale (names[cnt].name, TRUE);
         }
 
         g_free (names);
@@ -504,12 +539,65 @@ collect_locales_from_directory (void)
         ndirents = scandir (LIBLOCALEDIR, &dirents, select_dirs, alphasort);
 
         for (cnt = 0; cnt < ndirents; ++cnt) {
-                add_locale (dirents[cnt]->d_name);
+                add_locale (dirents[cnt]->d_name, TRUE);
         }
 
         if (ndirents > 0) {
                 free (dirents);
         }
+}
+
+static void
+collect_locales_from_locale_file (const char *locale_file)
+{
+        FILE *langlist;
+        char curline[256];
+        char *getsret;
+
+        if (locale_file == NULL)
+                return;
+
+        langlist = fopen (locale_file, "r");
+
+        if (langlist == NULL)
+                return;
+
+        for (;;) {
+                char *name;
+                char *lang;
+                char **lang_list;
+                int i;
+
+                getsret = fgets (curline, sizeof (curline), langlist);
+                if (getsret == NULL)
+                        break;
+
+                if (curline[0] <= ' ' ||
+                    curline[0] == '#')
+                        continue;
+
+                name = strtok (curline, " \t\r\n");
+                if (name == NULL)
+                        continue;
+
+                lang = strtok (NULL, " \t\r\n");
+                if (lang == NULL)
+                        continue;
+
+                lang_list = g_strsplit (lang, ",", -1);
+                if (lang_list == NULL)
+                        continue;
+
+                lang = NULL;
+                for (i = 0; lang_list[i] != NULL; i++) {
+                        if (add_locale (lang_list[i], FALSE)) {
+                                break;
+                        }
+                }
+                g_strfreev (lang_list);
+        }
+
+        fclose (langlist);
 }
 
 static void
@@ -520,15 +608,16 @@ collect_locales (void)
                 gdm_available_locales_map = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) gdm_locale_free);
         }
 
-        if (collect_locales_from_archive ()) {
-                return;
-        } else {
+        if (!collect_locales_from_archive ()) {
+#ifndef WITH_INCOMPLETE_LOCALES
                 g_warning ("Could not read list of available locales from libc, "
                            "guessing possible locales from available translations, "
                            "but list may be incomplete!");
+#endif
 
                 collect_locales_from_directory ();
         }
+        collect_locales_from_locale_file (ALIASES_FILE);
 }
 
 static gboolean
@@ -928,8 +1017,11 @@ gdm_get_language_from_name (const char *name,
         char *full_language;
         char *language_code;
         char *territory_code;
-        const char *language;
+        char *codeset_code;
+        char *langinfo_codeset;
+        char *language;
         const char *territory;
+        gboolean is_utf8 = TRUE;
 
         if (gdm_languages_map == NULL) {
                 languages_init ();
@@ -941,10 +1033,10 @@ gdm_get_language_from_name (const char *name,
 
         language_code = NULL;
         territory_code = NULL;
-        full_language = NULL;
+        codeset_code = NULL;
 
         gdm_parse_language_name (name, &language_code, &territory_code,
-                                 NULL, NULL);
+                                 &codeset_code, NULL);
 
         if (language_code == NULL) {
                 goto out;
@@ -958,17 +1050,38 @@ gdm_get_language_from_name (const char *name,
                 territory = NULL;
         }
 
-        if (territory != NULL) {
-                full_language  = g_strdup_printf ("%s (%s)",
-                        language ? language : "",
-                        territory ? territory : "");
-        } else {
+        language_name_get_codeset_details (name, &langinfo_codeset, &is_utf8);
+
+        if (codeset_code == NULL && langinfo_codeset != NULL) {
+            codeset_code = g_strdup (langinfo_codeset);
+        }
+
+        full_language  = NULL;
+
+        if (language) {
                 full_language  = g_strdup (language);
+        } else {
+                goto out;
+        }
+
+        if (territory) {
+                language = full_language;
+                full_language  = g_strdup_printf ("%s (%s)",
+                                                  language, territory);
+                g_free (language);
+        }
+
+        if (!is_utf8 && codeset_code) {
+                language = full_language;
+                full_language  = g_strdup_printf ("%s [%s]",
+                                                  language, codeset_code);
+                g_free (language);
         }
 
 out:
        g_free (language_code);
        g_free (territory_code);
+       g_free (codeset_code);
 
        return full_language;
 }

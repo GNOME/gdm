@@ -75,10 +75,14 @@ gdm.schemas.in: $(srcdir)/gdm.schemas.in.in
 		-e 's,[@]sbindir[@],$(sbindir),g' \
 		<$(srcdir)/gdm.schemas.in.in >gdm.schemas.in
 
+localealiasdir = $(datadir)/gdm
+localealias_DATA = locale.alias
+
 EXTRA_DIST =			\
 	$(schemas_in_files)	\
 	$(schemas_DATA)		\
 	$(dbusconf_in_files)	\
+	$(localealias_DATA)	\
 	gdm.schemas.in.in	\
 	gdm.conf-custom.in 	\
 	Xsession.in 		\
