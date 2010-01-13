@@ -437,7 +437,7 @@ add_local_addrinfo (GList **list)
         hints.ai_family = AF_UNSPEC;
         hints.ai_flags = AI_CANONNAME;
 
-        g_debug ("GdmAddress: looking up hostname: %s", hostbuf ? hostbuf : "(null)");
+        g_debug ("GdmAddress: looking up hostname: %s", hostbuf);
         result = NULL;
         if (getaddrinfo (hostbuf, NULL, &hints, &result) != 0) {
                 g_debug ("%s: Could not get address from hostname!", "gdm_peek_local_address_list");
