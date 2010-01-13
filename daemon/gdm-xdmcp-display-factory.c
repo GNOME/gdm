@@ -464,7 +464,8 @@ do_bind (guint                     port,
                         host = NULL;
                         serv = NULL;
                         gdm_address_get_numeric_info (addr, &host, &serv);
-                        g_debug ("GdmXdmcpDisplayFactory: Attempting to bind to host %s port %s", host, serv);
+                        g_debug ("GdmXdmcpDisplayFactory: Attempting to bind to host %s port %s",
+                                host ? host : "(null)", serv ? serv : "(null)");
                         g_free (host);
                         g_free (serv);
                         gdm_address_free (addr);
@@ -581,7 +582,7 @@ open_port (GdmXdmcpDisplayFactory *factory)
         struct sockaddr_storage serv_sa = { 0 };
 
         g_debug ("GdmXdmcpDisplayFactory: Start up on host %s, port %d",
-                 factory->priv->hostname,
+                 factory->priv->hostname ? factory->priv->hostname : "(null)",
                  factory->priv->port);
 
         /* Open socket for communications */
@@ -791,7 +792,8 @@ gdm_xdmcp_send_willing (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("GdmXdmcpDisplayFactory: Sending WILLING to %s", host);
+        g_debug ("GdmXdmcpDisplayFactory: Sending WILLING to %s",
+                host ? host : "(null)");
         g_free (host);
 
         if (last_willing == 0 || time (NULL) - 3 > last_willing) {
@@ -858,8 +860,10 @@ gdm_xdmcp_send_unwilling (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("GdmXdmcpDisplayFactory: Sending UNWILLING to %s", host);
-        g_warning (_("Denied XDMCP query from host %s"), host);
+        g_debug ("GdmXdmcpDisplayFactory: Sending UNWILLING to %s",
+                 host ? host : "(null)");
+        g_warning (_("Denied XDMCP query from host %s"),
+                 host ? host : "(null)");
         g_free (host);
 
         /*
@@ -956,14 +960,14 @@ gdm_xdmcp_send_forward_query (GdmXdmcpDisplayFactory  *factory,
         host = NULL;
         gdm_address_get_numeric_info (ic->chosen_address, &host, NULL);
         g_debug ("GdmXdmcpDisplayFactory: Sending forward query to %s",
-                   host);
+                   host ? host : "(null)");
         g_free (host);
 
         host = NULL;
         serv = NULL;
         gdm_address_get_numeric_info (display_address, &host, &serv);
         g_debug ("GdmXdmcpDisplayFactory: Query contains %s:%s",
-                 host, serv);
+                 host ? host : "(null)", serv ? serv : "(null)");
         g_free (host);
         g_free (serv);
 
@@ -1090,7 +1094,8 @@ indirect_client_destroy (GdmXdmcpDisplayFactory *factory,
 
                 host = NULL;
                 gdm_address_get_numeric_info (ic->dsp_address, &host, NULL);
-                g_debug ("GdmXdmcpDisplayFactory: Disposing IndirectClient for %s", host);
+                g_debug ("GdmXdmcpDisplayFactory: Disposing IndirectClient for %s",
+                        host ? host : "(null)");
                 g_free (host);
         }
 
@@ -1135,7 +1140,8 @@ indirect_client_lookup_by_chosen (GdmXdmcpDisplayFactory *factory,
 
         gdm_address_get_numeric_info (chosen_address, &host, NULL);
 
-        g_debug ("GdmXdmcpDisplayFactory: Chosen %s host not found", host);
+        g_debug ("GdmXdmcpDisplayFactory: Chosen %s host not found",
+                 host ? host : "(null)");
         g_free (host);
  out:
         return ret;
@@ -1173,7 +1179,8 @@ indirect_client_lookup (GdmXdmcpDisplayFactory *factory,
                 serv = NULL;
                 gdm_address_get_numeric_info (ic->dsp_address, &host, &serv);
 
-                g_debug ("GdmXdmcpDisplayFactory: comparing %s:%s", host, serv);
+                g_debug ("GdmXdmcpDisplayFactory: comparing %s:%s",
+                        host ? host : "(null)", serv ? serv : "(null)");
                 if (gdm_address_equal (ic->dsp_address, address)) {
                         ret = ic;
                         g_free (host);
@@ -1183,7 +1190,7 @@ indirect_client_lookup (GdmXdmcpDisplayFactory *factory,
 
                 if (ic->acctime > 0 && curtime > ic->acctime + factory->priv->max_wait_indirect) {
                         g_debug ("GdmXdmcpDisplayFactory: Disposing stale forward query from %s:%s",
-                                 host, serv);
+                                 host ? host : "(null)", serv ? serv : "(null)");
 
                         indirect_client_destroy (factory, ic);
                 }
@@ -1200,7 +1207,7 @@ indirect_client_lookup (GdmXdmcpDisplayFactory *factory,
                 host = NULL;
                 gdm_address_get_numeric_info (address, &host, NULL);
                 g_debug ("GdmXdmcpDisplayFactory: Host %s not found",
-                         host);
+                         host ? host : "(null)");
                 g_free (host);
         }
 
@@ -1328,7 +1335,8 @@ forward_query_destroy (GdmXdmcpDisplayFactory *factory,
 
                 host = NULL;
                 gdm_address_get_numeric_info (q->dsp_address, &host, NULL);
-                g_debug ("GdmXdmcpDisplayFactory: Disposing %s", host);
+                g_debug ("GdmXdmcpDisplayFactory: Disposing %s",
+                        host ? host : "(null)");
                 g_free (host);
         }
 
@@ -1414,7 +1422,8 @@ forward_query_lookup (GdmXdmcpDisplayFactory *factory,
                 serv = NULL;
                 gdm_address_get_numeric_info (q->dsp_address, &host, &serv);
 
-                g_debug ("GdmXdmcpDisplayFactory: comparing %s:%s", host, serv);
+                g_debug ("GdmXdmcpDisplayFactory: comparing %s:%s",
+                        host ? host : "(null)", serv ? serv : "(null)");
                 if (gdm_address_equal (q->dsp_address, address)) {
                         ret = q;
                         g_free (host);
@@ -1424,7 +1433,7 @@ forward_query_lookup (GdmXdmcpDisplayFactory *factory,
 
                 if (q->acctime > 0 &&  curtime > q->acctime + GDM_FORWARD_QUERY_TIMEOUT) {
                         g_debug ("GdmXdmcpDisplayFactory: Disposing stale forward query from %s:%s",
-                                 host, serv);
+                                 host ? host : "(null)", serv ? serv : "(null)");
 
                         forward_query_destroy (factory, q);
                 }
@@ -1441,7 +1450,7 @@ forward_query_lookup (GdmXdmcpDisplayFactory *factory,
                 host = NULL;
                 gdm_address_get_numeric_info (address, &host, NULL);
                 g_debug ("GdmXdmcpDisplayFactory: Host %s not found",
-                         host);
+                         host ? host : "(null)");
                 g_free (host);
         }
 
@@ -1577,7 +1586,7 @@ gdm_xdmcp_handle_forward_query (GdmXdmcpDisplayFactory *factory,
 
                 g_warning ("%s: Got FORWARD_QUERY from banned host %s",
                            "gdm_xdmcp_handle_forward query",
-                           host2);
+                           host2 ? host2 : "(null)");
                 g_free (host2);
                 return;
         }
@@ -1639,7 +1648,7 @@ gdm_xdmcp_handle_forward_query (GdmXdmcpDisplayFactory *factory,
         serv = NULL;
         gdm_address_get_numeric_info (disp_address, &host, &serv);
         g_debug ("GdmXdmcpDisplayFactory: Got FORWARD_QUERY for display: %s, port %s",
-                 host, serv);
+                 host ? host : "(null)", serv ? serv : "(null)");
         g_free (host);
         g_free (serv);
 
@@ -1677,7 +1686,8 @@ gdm_xdmcp_really_send_managed_forward (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("GdmXdmcpDisplayFactory: Sending MANAGED_FORWARD to %s", host);
+        g_debug ("GdmXdmcpDisplayFactory: Sending MANAGED_FORWARD to %s",
+                host ? host : "(null)");
         g_free (host);
 
         set_address_for_request (origin, &addr);
@@ -1758,7 +1768,8 @@ gdm_xdmcp_send_got_managed_forward (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("GdmXdmcpDisplayFactory: Sending GOT_MANAGED_FORWARD to %s", host);
+        g_debug ("GdmXdmcpDisplayFactory: Sending GOT_MANAGED_FORWARD to %s",
+                host ? host : "(null)");
         g_free (host);
 
         set_address_for_request (origin, &addr);
@@ -1892,7 +1903,8 @@ display_dispose_check (GdmXdmcpDisplayFactory *factory,
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
-        g_debug ("GdmXdmcpDisplayFactory: display_dispose_check (%s:%d)", hostname, display_num);
+        g_debug ("GdmXdmcpDisplayFactory: display_dispose_check (%s:%d)",
+                hostname ? hostname : "(null)", display_num);
 
         data = g_new0 (RemoveHostData, 1);
         data->hostname = hostname;
@@ -1919,7 +1931,8 @@ gdm_xdmcp_send_decline (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("GdmXdmcpDisplayFactory: Sending DECLINE to %s", host);
+        g_debug ("GdmXdmcpDisplayFactory: Sending DECLINE to %s",
+                host ? host : "(null)");
         g_free (host);
 
         authentype.data   = (CARD8 *) 0;
@@ -1968,7 +1981,8 @@ on_hostname_selected (GdmXdmcpChooserDisplay *display,
         GdmAddress      *address;
         IndirectClient  *ic;
 
-        g_debug ("GdmXdmcpDisplayFactory: hostname selected: %s", hostname);
+        g_debug ("GdmXdmcpDisplayFactory: hostname selected: %s",
+                hostname ? hostname : "(null)");
 
         address = gdm_xdmcp_display_get_remote_address (GDM_XDMCP_DISPLAY (display));
 
@@ -1998,7 +2012,8 @@ on_hostname_selected (GdmXdmcpChooserDisplay *display,
 
                 ip = NULL;
                 gdm_address_get_numeric_info (ic->chosen_address, &ip, NULL);
-                g_debug ("GdmXdmcpDisplayFactory: hostname resolves to %s", ip);
+                g_debug ("GdmXdmcpDisplayFactory: hostname resolves to %s",
+                        ip ? ip : "(null)");
                 g_free (ip);
         }
 
@@ -2015,7 +2030,8 @@ gdm_xdmcp_display_create (GdmXdmcpDisplayFactory *factory,
         GdmDisplayStore *store;
         gboolean         use_chooser;
 
-        g_debug ("GdmXdmcpDisplayFactory: Creating xdmcp display for %s:%d", hostname, displaynum);
+        g_debug ("GdmXdmcpDisplayFactory: Creating xdmcp display for %s:%d",
+                hostname ? hostname : "(null)", displaynum);
 
         use_chooser = FALSE;
         if (factory->priv->honor_indirect) {
@@ -2098,7 +2114,7 @@ gdm_xdmcp_send_accept (GdmXdmcpDisplayFactory *factory,
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
         g_debug ("GdmXdmcpDisplayFactory: Sending ACCEPT to %s with SessionID=%ld",
-                 host,
+                 host ? host : "(null)",
                  (long)session_id);
         g_free (host);
 }
@@ -2126,13 +2142,14 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
 
         hostname = NULL;
         gdm_address_get_numeric_info (address, &hostname, NULL);
-        g_debug ("GdmXdmcpDisplayFactory: Got REQUEST from %s", hostname);
+        g_debug ("GdmXdmcpDisplayFactory: Got REQUEST from %s",
+                hostname ? hostname : "(null)");
 
         /* Check with tcp_wrappers if client is allowed to access */
         if (! gdm_xdmcp_host_allow (address)) {
                 g_warning (_("%s: Got REQUEST from banned host %s"),
                            "gdm_xdmcp_handle_request",
-                           hostname);
+                           hostname ? hostname : "(null)");
                 goto out;
         }
 
@@ -2229,7 +2246,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
         if G_UNLIKELY (explen != len) {
                 g_warning (_("%s: Failed checksum from %s"),
                            "gdm_xdmcp_handle_request",
-                           hostname);
+                           hostname ? hostname : "(null)");
 
                 XdmcpDisposeARRAY8 (&clnt_authname);
                 XdmcpDisposeARRAY8 (&clnt_authdata);
@@ -2290,7 +2307,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
 
                                 gdm_display_get_x11_display_name (display, &name, NULL);
 
-                                g_debug ("GdmXdmcpDisplayFactory: Sending authorization key for display %s", name);
+                                g_debug ("GdmXdmcpDisplayFactory: Sending authorization key for display %s", name ? name : "(null)");
                                 g_free (name);
 
                                 g_debug ("GdmXdmcpDisplayFactory: cookie len %d", (int) cookie->len);
@@ -2337,7 +2354,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                                 "Maximum number of open sessions reached");
                 } else {
                         g_debug ("GdmXdmcpDisplayFactory: Maximum number of open XDMCP sessions from host %s reached",
-                                 hostname);
+                                 hostname ? hostname : "(null)");
                         gdm_xdmcp_send_decline (factory,
                                                 address,
                                                 "Maximum number of open sessions from your host reached");
@@ -2475,13 +2492,14 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("GdmXdmcpDisplayFactory: Got MANAGE from %s", host);
+        g_debug ("GdmXdmcpDisplayFactory: Got MANAGE from %s",
+                host ? host : "(null)");
 
         /* Check with tcp_wrappers if client is allowed to access */
         if (! gdm_xdmcp_host_allow (address)) {
                 g_warning (_("%s: Got Manage from banned host %s"),
                            "gdm_xdmcp_handle_manage",
-                           host);
+                           host ? host : "(null)");
                 g_free (host);
                 return;
         }
@@ -2525,7 +2543,8 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
 
                 name = NULL;
                 gdm_display_get_x11_display_name (display, &name, NULL);
-                g_debug ("GdmXdmcpDisplayFactory: Looked up %s", name);
+                g_debug ("GdmXdmcpDisplayFactory: Looked up %s",
+                        name ? name : "(null)");
                 g_free (name);
 
                 if (factory->priv->honor_indirect) {
@@ -2594,12 +2613,12 @@ gdm_xdmcp_handle_managed_forward (GdmXdmcpDisplayFactory *factory,
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
         g_debug ("GdmXdmcpDisplayFactory: Got MANAGED_FORWARD from %s",
-                   host);
+                   host ? host : "(null)");
 
         /* Check with tcp_wrappers if client is allowed to access */
         if (! gdm_xdmcp_host_allow (address)) {
                 g_warning ("GdmXdmcpDisplayFactory: Got MANAGED_FORWARD from banned host %s",
-                           host);
+                           host ? host : "(null)");
                 g_free (host);
                 return;
         }
@@ -2645,11 +2664,11 @@ gdm_xdmcp_handle_got_managed_forward (GdmXdmcpDisplayFactory *factory,
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
         g_debug ("GdmXdmcpDisplayFactory: Got MANAGED_FORWARD from %s",
-                   host);
+                   host ? host : "(null)");
 
         if (! gdm_xdmcp_host_allow (address)) {
                 g_warning ("%s: Got GOT_MANAGED_FORWARD from banned host %s",
-                           "gdm_xdmcp_handle_request", host);
+                           "gdm_xdmcp_handle_request", host ? host : "(null)");
                 g_free (host);
                 return;
         }
@@ -2733,13 +2752,14 @@ gdm_xdmcp_handle_keepalive (GdmXdmcpDisplayFactory *factory,
 
         host = NULL;
         gdm_address_get_numeric_info (address, &host, NULL);
-        g_debug ("GdmXdmcpDisplayFactory: Got KEEPALIVE from %s", host);
+        g_debug ("GdmXdmcpDisplayFactory: Got KEEPALIVE from %s",
+                host ? host : "(null)");
 
         /* Check with tcp_wrappers if client is allowed to access */
         if (! gdm_xdmcp_host_allow (address)) {
                 g_warning (_("%s: Got KEEPALIVE from banned host %s"),
                            "gdm_xdmcp_handle_keepalive",
-                           host);
+                           host ? host : "(null)");
                 g_free (host);
                 return;
         }
@@ -2850,8 +2870,8 @@ decode_packet (GIOChannel             *source,
 
         g_debug ("GdmXdmcpDisplayFactory: Received opcode %s from client %s : %s",
                  opcode_string (header.opcode),
-                 host,
-                 port);
+                 host ? host : "(null)",
+                 port ? port : "(null)");
 
         switch (header.opcode) {
         case BROADCAST_QUERY:
@@ -2892,8 +2912,8 @@ decode_packet (GIOChannel             *source,
 
         default:
                 g_debug ("GdmXdmcpDisplayFactory: Unknown opcode from client %s : %s",
-                         host,
-                         port);
+                         host ? host : "(null)",
+                         port ? port : "(null)");
 
                 break;
         }

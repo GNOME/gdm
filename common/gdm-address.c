@@ -193,6 +193,68 @@ gdm_address_equal (GdmAddress *a,
         return FALSE;
 }
 
+/* for debugging */
+static const char *
+address_family_str (GdmAddress *address)
+{
+        const char *str;
+        switch (address->ss->ss_family) {
+        case AF_INET:
+                str = "inet";
+                break;
+        case AF_INET6:
+                str = "inet6";
+                break;
+        case AF_UNIX:
+                str = "unix";
+                break;
+        case AF_UNSPEC:
+                str = "unspecified";
+                break;
+        default:
+                str = "unknown";
+                break;
+        }
+        return str;
+}
+
+void
+_gdm_address_debug (GdmAddress *address, char *hostname, char *host, char *port)
+{
+        g_return_if_fail (address != NULL);
+
+        hostname = NULL;
+        host = NULL;
+        port = NULL;
+
+
+        g_debug ("Address family:%d (%s) hostname:%s host:%s port:%s local:%d loopback:%d",
+                 address->ss->ss_family,
+                 address_family_str (address) ? address_family_str (address) : "(null)",
+                 hostname ? hostname : "(null)",
+                 host ? host : "(null)",
+                 port ? port : "(null)",
+                 gdm_address_is_local (address),
+                 gdm_address_is_loopback (address));
+
+        g_free (hostname);
+        g_free (host);
+        g_free (port);
+}
+
+void
+gdm_address_debug (GdmAddress *address)
+{
+        char *hostname;
+        char *host;
+        char *port;
+
+        gdm_address_get_hostname (address, &hostname);
+        gdm_address_get_numeric_info (address, &host, &port);
+
+        _gdm_address_debug (address, hostname, host, port);
+}
+
 gboolean
 gdm_address_get_hostname (GdmAddress *address,
                           char      **hostnamep)
@@ -216,8 +278,12 @@ gdm_address_get_hostname (GdmAddress *address,
                 ret = TRUE;
                 goto done;
         } else {
-                g_warning ("Unable lookup hostname: %s", gai_strerror (res));
-                gdm_address_debug (address);
+                const char *err_msg;
+
+                err_msg = gai_strerror (res);
+                g_warning ("Unable to lookup hostname: %s",
+                        err_msg ? err_msg : "(null)");
+                _gdm_address_debug (address, NULL, NULL, NULL);
         }
 
         /* try numeric? */
@@ -248,12 +314,17 @@ gdm_address_get_numeric_info (GdmAddress *address,
         host [0] = '\0';
         serv [0] = '\0';
         res = getnameinfo ((const struct sockaddr *)address->ss,
-                           sizeof (struct sockaddr_storage),
+                           (int) gdm_sockaddr_len (address->ss),
                            host, sizeof (host),
                            serv, sizeof (serv),
                            NI_NUMERICHOST | NI_NUMERICSERV);
         if (res != 0) {
-                g_warning ("Unable lookup numeric info: %s", gai_strerror (res));
+                const char *err_msg;
+
+                err_msg = gai_strerror (res);
+                g_warning ("Unable to lookup numeric info: %s",
+                        err_msg ? err_msg : "(null)");
+                _gdm_address_debug (address, NULL, NULL, NULL);
         } else {
                 ret = TRUE;
         }
@@ -366,7 +437,7 @@ add_local_addrinfo (GList **list)
         hints.ai_family = AF_UNSPEC;
         hints.ai_flags = AI_CANONNAME;
 
-        g_debug ("GdmAddress: looking up hostname: %s", hostbuf);
+        g_debug ("GdmAddress: looking up hostname: %s", hostbuf ? hostbuf : "(null)");
         result = NULL;
         if (getaddrinfo (hostbuf, NULL, &hints, &result) != 0) {
                 g_debug ("%s: Could not get address from hostname!", "gdm_peek_local_address_list");
@@ -382,7 +453,7 @@ add_local_addrinfo (GList **list)
                          res->ai_socktype,
                          res->ai_protocol,
                          res->ai_flags,
-                         res->ai_canonname);
+                         res->ai_canonname ? res->ai_canonname : "(null)");
                 address = gdm_address_new_from_sockaddr (res->ai_addr, res->ai_addrlen);
                 *list = g_list_append (*list, address);
         }
@@ -476,57 +547,3 @@ gdm_address_free (GdmAddress *address)
         g_free (address);
 }
 
-/* for debugging */
-static const char *
-address_family_str (GdmAddress *address)
-{
-        const char *str;
-        switch (address->ss->ss_family) {
-        case AF_INET:
-                str = "inet";
-                break;
-        case AF_INET6:
-                str = "inet6";
-                break;
-        case AF_UNIX:
-                str = "unix";
-                break;
-        case AF_UNSPEC:
-                str = "unspecified";
-                break;
-        default:
-                str = "unknown";
-                break;
-        }
-        return str;
-}
-
-void
-gdm_address_debug (GdmAddress *address)
-{
-        char *hostname;
-        char *host;
-        char *port;
-
-        g_return_if_fail (address != NULL);
-
-        hostname = NULL;
-        host = NULL;
-        port = NULL;
-
-        gdm_address_get_hostname (address, &hostname);
-        gdm_address_get_numeric_info (address, &host, &port);
-
-        g_debug ("Address family:%d (%s) hostname:%s host:%s port:%s local:%d loopback:%d",
-                 address->ss->ss_family,
-                 address_family_str (address),
-                 hostname,
-                 host,
-                 port,
-                 gdm_address_is_local (address),
-                 gdm_address_is_loopback (address));
-
-        g_free (hostname);
-        g_free (host);
-        g_free (port);
-}
