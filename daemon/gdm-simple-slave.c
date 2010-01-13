@@ -339,6 +339,8 @@ try_migrate_session (GdmSimpleSlave *slave)
 static void
 stop_greeter (GdmSimpleSlave *slave)
 {
+        char *username;
+
         g_debug ("GdmSimpleSlave: Stopping greeter");
 
         if (slave->priv->greeter == NULL) {
@@ -347,7 +349,8 @@ stop_greeter (GdmSimpleSlave *slave)
         }
 
         /* Run the PostLogin script. gdmslave suspends until script has terminated */
-        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostLogin", GDM_USERNAME);
+        username = gdm_session_direct_get_username (slave->priv->session);
+        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostLogin", username);
 
         gdm_welcome_session_stop (GDM_WELCOME_SESSION (slave->priv->greeter));
         gdm_greeter_server_stop (slave->priv->greeter_server);
