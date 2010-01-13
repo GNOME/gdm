@@ -218,7 +218,7 @@ address_family_str (GdmAddress *address)
         return str;
 }
 
-void
+static void
 _gdm_address_debug (GdmAddress *address, char *hostname, char *host, char *port)
 {
         g_return_if_fail (address != NULL);
