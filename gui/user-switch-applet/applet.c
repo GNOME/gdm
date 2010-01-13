@@ -1128,7 +1128,7 @@ create_sub_menu (GdmAppletData *adata)
         gtk_widget_show (item);
 #endif
 
-        adata->account_item = gtk_image_menu_item_new_with_label (_("Account Information..."));
+        adata->account_item = gtk_image_menu_item_new_with_label (_("Account Information"));
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->account_item),
                                        gtk_image_new ());
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
@@ -1140,7 +1140,7 @@ create_sub_menu (GdmAppletData *adata)
         gtk_widget_show (adata->account_item);
 
 
-        adata->control_panel_item = gtk_image_menu_item_new_with_label (_("System Preferences..."));
+        adata->control_panel_item = gtk_image_menu_item_new_with_label (_("System Preferences"));
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->control_panel_item),
                                        gtk_image_new ());
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
