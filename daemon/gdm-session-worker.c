@@ -1410,7 +1410,7 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
                  * Do not display a different message for user unknown versus
                  * a failed password for a valid user.
                  */
-                if (error_code = PAM_USER_UNKNOWN) {
+                if (error_code == PAM_USER_UNKNOWN) {
                         error_code = PAM_AUTH_ERR;
                 }
 
