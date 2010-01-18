@@ -601,16 +601,19 @@ get_default_language_name (GdmSessionDirect *session)
 static char *
 get_system_default_layout (GdmSessionDirect *session)
 {
-    char *result;
-    Display *display;
+    char *result = NULL;
+    static XklEngine *engine = NULL;
     
-    result = NULL;    
-    display = XOpenDisplay (session->priv->display_name);
-    if (display) {
-        XklConfigRec *config;
-        XklEngine *engine = xkl_engine_get_instance (display);
-        if (engine)
-        {
+    if (engine == NULL) {
+	    Display *display = XOpenDisplay (session->priv->display_name);
+	    if (display != NULL) {
+		    engine = xkl_engine_get_instance (display);
+	    }
+	    /* do NOT call XCloseDisplay (display) here;
+	     * xkl_engine_get_instance() is a singleton which saves the display */
+    }
+    
+    if (engine != NULL) {
             XklConfigRec *config = xkl_config_rec_new ();
             if (xkl_config_rec_get_from_server (config, engine) && config->layouts && config->layouts[0]) {
                     if (config->variants && config->variants[0] && config->variants[0][0])
@@ -619,8 +622,6 @@ get_system_default_layout (GdmSessionDirect *session)
 			    result = g_strdup (config->layouts[0]);
             }
             g_object_unref (config);
-        }
-        XCloseDisplay (display);
     }
 
     if (!result)
