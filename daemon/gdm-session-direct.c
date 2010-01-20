@@ -540,6 +540,7 @@ get_session_command_for_file (const char *file,
         if (exec != NULL) {
                 res = is_prog_in_path (exec);
                 g_free (exec);
+                exec = NULL;
 
                 if (! res) {
                         g_debug ("GdmSessionDirect: Command not found: %s",
