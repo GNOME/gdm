@@ -45,12 +45,6 @@
 #define GDM_LOCAL_DISPLAY_FACTORY_DBUS_PATH GDM_DBUS_PATH "/LocalDisplayFactory"
 #define GDM_MANAGER_DBUS_NAME               "org.gnome.DisplayManager.LocalDisplayFactory"
 
-#define HAL_DBUS_NAME                           "org.freedesktop.Hal"
-#define HAL_DBUS_MANAGER_PATH                   "/org/freedesktop/Hal/Manager"
-#define HAL_DBUS_MANAGER_INTERFACE              "org.freedesktop.Hal.Manager"
-#define HAL_DBUS_DEVICE_INTERFACE               "org.freedesktop.Hal.Device"
-#define SEAT_PCI_DEVICE_CLASS                   3
-
 #define MAX_DISPLAY_FAILURES 5
 
 struct GdmLocalDisplayFactoryPrivate
@@ -372,83 +366,6 @@ create_display (GdmLocalDisplayFactory *factory)
         return display;
 }
 
-#if 0
-static void
-create_display_for_device (GdmLocalDisplayFactory *factory,
-                           DBusGProxy             *device_proxy)
-{
-        create_display (factory);
-}
-
-static void
-create_displays_for_pci_devices (GdmLocalDisplayFactory *factory)
-{
-        char      **devices;
-        const char *key;
-        const char *value;
-        GError     *error;
-        gboolean    res;
-        int         i;
-
-        g_debug ("GdmLocalDisplayFactory: Getting PCI seat devices");
-
-        key = "info.bus";
-        value = "pci";
-
-        devices = NULL;
-        error = NULL;
-        res = dbus_g_proxy_call (factory->priv->proxy,
-                                 "FindDeviceStringMatch",
-                                 &error,
-                                 G_TYPE_STRING, key,
-                                 G_TYPE_STRING, value,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_STRV, &devices,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("Unable to query HAL: %s", error->message);
-                g_error_free (error);
-        }
-
-        /* now look for pci class 3 */
-        key = "pci.device_class";
-        for (i = 0; devices [i] != NULL; i++) {
-                DBusGProxy *device_proxy;
-                int         class_val;
-
-                device_proxy = dbus_g_proxy_new_for_name (factory->priv->connection,
-                                                          HAL_DBUS_NAME,
-                                                          devices [i],
-                                                          HAL_DBUS_DEVICE_INTERFACE);
-                if (device_proxy == NULL) {
-                        continue;
-                }
-
-                error = NULL;
-                res = dbus_g_proxy_call (device_proxy,
-                                         "GetPropertyInteger",
-                                         &error,
-                                         G_TYPE_STRING, key,
-                                         G_TYPE_INVALID,
-                                         G_TYPE_INT, &class_val,
-                                         G_TYPE_INVALID);
-                if (! res) {
-                        g_warning ("Unable to query HAL: %s", error->message);
-                        g_error_free (error);
-                }
-
-                if (class_val == SEAT_PCI_DEVICE_CLASS) {
-                        g_debug ("GdmLocalDisplayFactory: Found device: %s", devices [i]);
-                        create_display_for_device (factory, device_proxy);
-                }
-
-                g_object_unref (device_proxy);
-        }
-
-        g_strfreev (devices);
-}
-#endif
-
 static gboolean
 gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
 {
@@ -525,29 +442,6 @@ register_factory (GdmLocalDisplayFactory *factory)
         return TRUE;
 }
 
-static gboolean
-connect_to_hal (GdmLocalDisplayFactory *factory)
-{
-        factory->priv->proxy = dbus_g_proxy_new_for_name (factory->priv->connection,
-                                                          HAL_DBUS_NAME,
-                                                          HAL_DBUS_MANAGER_PATH,
-                                                          HAL_DBUS_MANAGER_INTERFACE);
-        if (factory->priv->proxy == NULL) {
-                g_warning ("Couldn't create proxy for HAL Manager");
-                return FALSE;
-        }
-
-        return TRUE;
-}
-
-static void
-disconnect_from_hal (GdmLocalDisplayFactory *factory)
-{
-        if (factory->priv->proxy == NULL) {
-                g_object_unref (factory->priv->proxy);
-        }
-}
-
 static GObject *
 gdm_local_display_factory_constructor (GType                  type,
                                        guint                  n_construct_properties,
@@ -564,8 +458,6 @@ gdm_local_display_factory_constructor (GType                  type,
         if (! res) {
                 g_warning ("Unable to register local display factory with system bus");
         }
-
-        connect_to_hal (factory);
 
         return G_OBJECT (factory);
 }
@@ -610,8 +502,6 @@ gdm_local_display_factory_finalize (GObject *object)
         g_return_if_fail (factory->priv != NULL);
 
         g_hash_table_destroy (factory->priv->displays);
-
-        disconnect_from_hal (factory);
 
         G_OBJECT_CLASS (gdm_local_display_factory_parent_class)->finalize (object);
 }
