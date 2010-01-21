@@ -1191,11 +1191,11 @@ else
 fi
 
 dnl ---------------------------------------------------------------------------
-dnl - Directory for X11 programs
+dnl - PATH in scripts
 dnl ---------------------------------------------------------------------------
-AC_ARG_WITH(x11-path,
-            AS_HELP_STRING([--with-x11-path=<dir>],
-                           [x11 path]))
+AC_ARG_WITH(script-path,
+            AS_HELP_STRING([--with-script-path=<dir>],
+                           [script path]))
 
 if ! test -z "$with_script_path"; then
    SCRIPT_PATH=$with_script_path
