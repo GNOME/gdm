@@ -1190,27 +1190,27 @@ else
    XSESSION_SHELL=/bin/sh
 fi
 
+dnl ---------------------------------------------------------------------------
+dnl - Directory for X11 programs
+dnl ---------------------------------------------------------------------------
+AC_ARG_WITH(x11-path,
+            AS_HELP_STRING([--with-x11-path=<dir>],
+                           [x11 path]))
+
+if ! test -z "$with_script_path"; then
+   SCRIPT_PATH=$with_script_path
+else
+   SCRIPT_PATH=/usr/bin
+fi
+
+AC_SUBST(SCRIPT_PATH)
+
 # Set configuration choices.
 #
 AC_SUBST(XSESSION_SHELL)
 AC_DEFINE_UNQUOTED(XSESSION_SHELL,"$XSESSION_SHELL",[xsession shell])
 AC_SUBST(SOUND_PROGRAM)
 AC_DEFINE_UNQUOTED(SOUND_PROGRAM,"$SOUND_PROGRAM",[])
-
-AC_SUBST(X_PATH)
-AC_SUBST(X_SERVER)
-AC_SUBST(X_SERVER_PATH)
-AC_SUBST(X_CONFIG_OPTIONS)
-AC_DEFINE_UNQUOTED(X_SERVER,"$X_SERVER",[])
-AC_DEFINE_UNQUOTED(X_SERVER_PATH,"$X_SERVER_PATH",[])
-AC_DEFINE_UNQUOTED(X_CONFIG_OPTIONS,"$X_CONFIG_OPTIONS", [Options used when launching xserver])
-
-AC_SUBST(X_XNEST_CMD)
-AC_SUBST(X_XNEST_CONFIG_OPTIONS)
-AC_SUBST(X_XNEST_UNSCALED_FONTPATH)
-AC_DEFINE_UNQUOTED(X_XNEST_CMD,"$X_XNEST_CMD",[])
-AC_DEFINE_UNQUOTED(X_XNEST_CONFIG_OPTIONS,"$X_XNEST_CONFIG_OPTIONS",[])
-AC_DEFINE_UNQUOTED(X_XNEST_UNSCALED_FONTPATH,"$X_XNEST_UNSCALED_FONTPATH",[])
 
 ## Stuff for debian/changelog.in
 #if test -e "debian/changelog"; then
@@ -1236,6 +1236,9 @@ gui/user-switch-applet/Makefile
 utils/Makefile
 data/gdm.conf
 data/Makefile
+data/Init
+data/PostSession
+data/PreSession
 data/faces/Makefile
 data/greeter-autostart/Makefile
 data/pixmaps/Makefile
@@ -1278,7 +1281,7 @@ echo "
 
         dbus-1 system.d dir:      ${DBUS_SYS_DIR}
         PAM prefix:               ${PAM_PREFIX}
-        X server:                 ${X_SERVER}
+        script path:              ${SCRIPT_PATH}
 "
 
 dnl TCP Wrappers support?
