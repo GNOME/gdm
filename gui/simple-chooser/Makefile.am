@@ -13,6 +13,7 @@ AM_CPPFLAGS = \
 	-DPIXMAPDIR=\""$(pixmapdir)"\"		 	\
 	-DAT_SPI_REGISTRYD_DIR="\"$(AT_SPI_REGISTRYD_DIR)\""	\
 	$(GTK_CFLAGS)					\
+	$(XLIB_CFLAGS)					\
 	$(XDMCP_CFLAGS)					\
 	$(EXTRA_CHOOSER_CFLAGS)				\
 	$(SIMPLE_CHOOSER_CFLAGS)			\
@@ -43,6 +44,7 @@ gdm_simple_chooser_LDADD = 		\
 	$(EXTRA_CHOOSER_LIBS)   	\
 	$(SIMPLE_CHOOSER_LIBS)		\
 	$(XDMCP_LIBS)			\
+	$(XLIB_LIBS)			\
 	$(NULL)
 
 gdm_host_chooser_SOURCES = 		\
@@ -61,6 +63,7 @@ gdm_host_chooser_LDADD =		\
 	$(EXTRA_CHOOSER_LIBS)   	\
 	$(SIMPLE_CHOOSER_LIBS)		\
 	$(XDMCP_LIBS)			\
+	$(XLIB_LIBS)			\
 	$(NULL)
 
 EXTRA_DIST = 			\

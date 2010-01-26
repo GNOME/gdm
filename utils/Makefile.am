@@ -9,6 +9,7 @@ AM_CPPFLAGS = \
 	$(UTILS_CFLAGS)					\
 	$(CANBERRA_GTK_CFLAGS)				\
 	$(GTK_CFLAGS)					\
+	$(XLIB_CFLAGS)					\
 	$(COMMON_CFLAGS)				\
 	$(NULL)
 
@@ -52,6 +53,7 @@ gdm_screenshot_SOURCES =	\
 gdm_screenshot_LDADD =		\
 	$(GTK_LIBS)		\
 	$(CANBERRA_GTK_LIBS)	\
+	$(XLIB_LIBS)		\
 	$(COMMON_LIBS)		\
 	$(NULL)
 

@@ -11,6 +11,7 @@ INCLUDES = \
 	-DPIXMAPDIR=\"$(pixmapdir)\"		\
 	-DSBINDIR=\"$(sbindir)\"		\
 	$(GTK_CFLAGS)				\
+	$(XLIB_CFLAGS)				\
 	$(NULL)
 
 noinst_LTLIBRARIES = 			\
@@ -39,6 +40,7 @@ libnotificationarea_la_SOURCES =		\
 
 libnotificationarea_la_LIBADD =			\
 	$(GTK_LIBS)				\
+	$(XLIB_LIBS)				\
 	$(NULL)
 
 libnotificationarea_la_LDFLAGS = 		\
@@ -65,4 +67,5 @@ testtray_SOURCES = 		\
 testtray_LDADD = 		\
 	libnotificationarea.la	\
 	$(GREETER_LIBS)		\
+	$(XLIB_LIBS)		\
 	$(NULL)
