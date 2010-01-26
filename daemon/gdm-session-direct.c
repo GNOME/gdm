@@ -42,8 +42,10 @@
 #include <glib/gstdio.h>
 #include <glib-object.h>
 
+#ifdef HAVE_LIBXKLAVIER
 #include <libxklavier/xklavier.h>
 #include <X11/Xlib.h> /* for Display */
+#endif
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
@@ -603,6 +605,7 @@ static char *
 get_system_default_layout (GdmSessionDirect *session)
 {
     char *result = NULL;
+#ifdef HAVE_LIBXKLAVIER
     static XklEngine *engine = NULL;
     
     if (engine == NULL) {
@@ -618,12 +621,13 @@ get_system_default_layout (GdmSessionDirect *session)
             XklConfigRec *config = xkl_config_rec_new ();
             if (xkl_config_rec_get_from_server (config, engine) && config->layouts && config->layouts[0]) {
                     if (config->variants && config->variants[0] && config->variants[0][0])
-			    result = g_strdup_printf("%s\t%s", config->layouts[0], config->variants[0]);
+                            result = g_strdup_printf("%s\t%s", config->layouts[0], config->variants[0]);
                     else
-			    result = g_strdup (config->layouts[0]);
+                            result = g_strdup (config->layouts[0]);
             }
             g_object_unref (config);
     }
+#endif
 
     if (!result)
         result = g_strdup ("us");    
