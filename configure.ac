@@ -232,7 +232,7 @@ AC_ARG_WITH(console-kit,
 AC_ARG_WITH(at-spi-registryd-directory,
             AS_HELP_STRING([--with-at-spi-registryd-directory],
 	                   [Specify the directory of at-spi-registryd @<:@default=libexecdir@:>@])],,
-            [with_at_spi_registryd_directory="\${libexecdir}"])
+            [with_at_spi_registryd_directory="${libexecdir}"])
 
 AT_SPI_REGISTRYD_DIR=$with_at_spi_registryd_directory
 AC_SUBST(AT_SPI_REGISTRYD_DIR)
@@ -1397,6 +1397,7 @@ data/gdm.conf
 data/Makefile
 data/faces/Makefile
 data/greeter-autostart/Makefile
+data/greeter-autostart/at-spi-registryd-wrapper.desktop.in
 data/pixmaps/Makefile
 data/pixmaps/16x16/Makefile
 data/pixmaps/32x32/Makefile
