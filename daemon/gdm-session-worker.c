@@ -87,8 +87,6 @@
 #define GDM_SESSION_LOG_FILENAME ".xsession-errors"
 #endif
 
-#define MESSAGE_REPLY_TIMEOUT (10 * 60 * 1000)
-
 #define MAX_FILE_SIZE     65536
 
 enum {
@@ -678,9 +676,14 @@ send_question_method (GdmSessionWorker *worker,
                                         &question);
 
         dbus_error_init (&error);
+
+        /*
+         * Pass in INT_MAX for the timeout.  This is a special value that
+         * means block forever.  This fixes bug #607861
+         */
         reply = dbus_connection_send_with_reply_and_block (worker->priv->connection,
                                                            message,
-                                                           MESSAGE_REPLY_TIMEOUT,
+                                                           INT_MAX,
                                                            &error);
         dbus_message_unref (message);
 
