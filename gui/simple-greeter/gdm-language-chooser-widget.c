@@ -196,6 +196,8 @@ add_available_languages (GdmLanguageChooserWidget *widget)
 
         for (i = 0; language_names[i] != NULL; i++) {
                 if (!language_has_font (language_names[i])) {
+                        g_debug ("There is insufficient font coverage to display messages in the '%s' locale",
+                                 language_names[i]);
                         continue;
                 }
                 gdm_language_chooser_widget_add_language (widget,
