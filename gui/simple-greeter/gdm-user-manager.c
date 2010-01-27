@@ -155,9 +155,7 @@ static char *
 _get_primary_user_session_id (GdmUserManager *manager,
                               GdmUser        *user)
 {
-        gboolean    res;
         gboolean    can_activate_sessions;
-        GError     *error;
         GList      *sessions;
         GList      *l;
         char       *primary_ssid;
@@ -170,25 +168,7 @@ _get_primary_user_session_id (GdmUserManager *manager,
         primary_ssid = NULL;
         sessions = NULL;
 
-        g_debug ("GdmUserManager: checking if seat can activate sessions");
-
-        error = NULL;
-        res = dbus_g_proxy_call (manager->priv->seat_proxy,
-                                 "CanActivateSessions",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_BOOLEAN, &can_activate_sessions,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                if (error != NULL) {
-                        g_warning ("unable to determine if seat can activate sessions: %s",
-                                   error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("unable to determine if seat can activate sessions");
-                }
-                goto out;
-        }
+        can_activate_sessions = gdm_user_manager_can_switch (manager);
 
         if (! can_activate_sessions) {
                 g_debug ("GdmUserManager: seat is unable to activate sessions");
@@ -344,25 +324,7 @@ _get_login_window_session_id (GdmUserManager *manager)
         primary_ssid = NULL;
         sessions = NULL;
 
-        g_debug ("GdmSlave: checking if seat can activate sessions");
-
-        error = NULL;
-        res = dbus_g_proxy_call (manager->priv->seat_proxy,
-                                 "CanActivateSessions",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_BOOLEAN, &can_activate_sessions,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                if (error != NULL) {
-                        g_warning ("unable to determine if seat can activate sessions: %s",
-                                   error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("unable to determine if seat can activate sessions");
-                }
-                goto out;
-        }
+        can_activate_sessions = gdm_user_manager_can_switch (manager);
 
         if (! can_activate_sessions) {
                 g_debug ("GdmSlave: seat is unable to activate sessions");
@@ -435,6 +397,41 @@ gdm_user_manager_goto_login_session (GdmUserManager *manager)
         }
 
         return ret;
+}
+
+gboolean
+gdm_user_manager_can_switch (GdmUserManager *manager)
+{
+        gboolean    res;
+        gboolean    can_activate_sessions;
+        GError     *error;
+
+        if (manager->priv->seat_id == NULL || manager->priv->seat_id[0] == '\0') {
+                g_debug ("GdmUserManager: display seat ID is not set; can't switch sessions");
+                return FALSE;
+        }
+
+        g_debug ("GdmUserManager: checking if seat can activate sessions");
+
+        error = NULL;
+        res = dbus_g_proxy_call (manager->priv->seat_proxy,
+                                 "CanActivateSessions",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_BOOLEAN, &can_activate_sessions,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("unable to determine if seat can activate sessions: %s",
+                                   error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("unable to determine if seat can activate sessions");
+                }
+                return FALSE;
+        }
+
+        return can_activate_sessions;
 }
 
 gboolean

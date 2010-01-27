@@ -80,6 +80,8 @@ GdmUser *           gdm_user_manager_get_user_by_uid       (GdmUserManager *mana
 gboolean            gdm_user_manager_activate_user_session (GdmUserManager *manager,
                                                             GdmUser        *user);
 
+gboolean            gdm_user_manager_can_switch            (GdmUserManager *manager);
+
 gboolean            gdm_user_manager_goto_login_session    (GdmUserManager *manager);
 
 G_END_DECLS

@@ -703,7 +703,9 @@ static void
 update_switch_user (GdmAppletData *adata)
 {
         GSList *users;
+        gboolean can_switch;
 
+        can_switch = gdm_user_manager_can_switch (adata->manager);
         users = gdm_user_manager_list_users (adata->manager);
         adata->has_other_users = FALSE;
         if (users != NULL) {
@@ -711,7 +713,7 @@ update_switch_user (GdmAppletData *adata)
         }
         g_slist_free (users);
 
-        if (adata->has_other_users) {
+        if (can_switch && adata->has_other_users) {
                 gtk_widget_show (adata->login_screen_item);
         } else {
 
