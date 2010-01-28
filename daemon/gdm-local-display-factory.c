@@ -69,7 +69,7 @@
 struct GdmLocalDisplayFactoryPrivate
 {
         DBusGConnection *connection;
-        DBusGProxy      *proxy_hal;
+        DBusGProxy      *proxy;
         DBusGProxy      *proxy_ck;
         GHashTable      *displays;
         GHashTable      *displays_by_session;
@@ -1024,11 +1024,11 @@ register_factory (GdmLocalDisplayFactory *factory)
 static gboolean
 connect_to_hal (GdmLocalDisplayFactory *factory)
 {
-        factory->priv->proxy_hal = dbus_g_proxy_new_for_name (factory->priv->connection,
-                                                              HAL_DBUS_NAME,
-                                                              HAL_DBUS_MANAGER_PATH,
-                                                              HAL_DBUS_MANAGER_INTERFACE);
-        if (factory->priv->proxy_hal == NULL) {
+        factory->priv->proxy = dbus_g_proxy_new_for_name (factory->priv->connection,
+                                                          HAL_DBUS_NAME,
+                                                          HAL_DBUS_MANAGER_PATH,
+                                                          HAL_DBUS_MANAGER_INTERFACE);
+        if (factory->priv->proxy == NULL) {
                 g_warning ("Couldn't create proxy for HAL Manager");
                 return FALSE;
         }
@@ -1039,8 +1039,8 @@ connect_to_hal (GdmLocalDisplayFactory *factory)
 static void
 disconnect_from_hal (GdmLocalDisplayFactory *factory)
 {
-        if (factory->priv->proxy_hal == NULL) {
-                g_object_unref (factory->priv->proxy_hal);
+        if (factory->priv->proxy == NULL) {
+                g_object_unref (factory->priv->proxy);
         }
 }
 
@@ -1080,8 +1080,8 @@ connect_to_ck (GdmLocalDisplayFactory *factory)
 static void
 disconnect_from_ck (GdmLocalDisplayFactory *factory)
 {
-        if (factory->priv->proxy_hal == NULL) {
-                g_object_unref (factory->priv->proxy_hal);
+        if (factory->priv->proxy_ck == NULL) {
+                g_object_unref (factory->priv->proxy_ck);
         }
 }
 
