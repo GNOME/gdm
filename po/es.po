@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: gdm.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&component=general\n"
-"POT-Creation-Date: 2010-01-13 17:11+0000\n"
-"PO-Revision-Date: 2010-01-18 06:08+0100\n"
+"POT-Creation-Date: 2010-02-08 22:00+0000\n"
+"PO-Revision-Date: 2010-02-08 23:46+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Group-Coordinator: Francisco Javier F. Serrador <serrador@openshine.com>\n"
 "Translation-Asignee: Lucas Vieites <lucas@asixinformatica.com> \n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #: ../common/gdm-common.c:437
@@ -64,12 +64,17 @@ msgstr "No se pudo autenticar al usuario"
 msgid "Unable to authorize user"
 msgstr "No se pudo autorizar al usuario"
 
-#: ../daemon/gdm-factory-slave.c:281 ../daemon/gdm-simple-slave.c:437
+#: ../daemon/gdm-factory-slave.c:279 ../daemon/gdm-simple-slave.c:443
 msgid "Unable to establish credentials"
 msgstr "No se pudieron establecer las credenciales"
 
-#: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1116
+#: ../daemon/gdm-factory-slave.c:302 ../daemon/gdm-simple-slave.c:473
+#| msgid "Unable to authorize user"
+msgid "Unable to open session"
+msgstr "No se pudo abrir la sesión"
+
+#: ../daemon/gdm-factory-slave.c:683 ../daemon/gdm-product-slave.c:449
+#: ../daemon/gdm-simple-slave.c:1151
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -156,71 +161,71 @@ msgstr "Pantalla"
 msgid "The display device"
 msgstr "La pantalla"
 
-#: ../daemon/gdm-session-worker.c:1295
+#: ../daemon/gdm-session-worker.c:1298
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "error al iniciar la conversación con el sistema de autenticación - %s"
 
-#: ../daemon/gdm-session-worker.c:1296
+#: ../daemon/gdm-session-worker.c:1299
 msgid "general failure"
 msgstr "fallo general"
 
-#: ../daemon/gdm-session-worker.c:1297
+#: ../daemon/gdm-session-worker.c:1300
 msgid "out of memory"
 msgstr "sin memoria"
 
-#: ../daemon/gdm-session-worker.c:1298
+#: ../daemon/gdm-session-worker.c:1301
 msgid "application programmer error"
 msgstr "error del programador de la aplicación"
 
-#: ../daemon/gdm-session-worker.c:1299
+#: ../daemon/gdm-session-worker.c:1302
 msgid "unknown error"
 msgstr "error desconocido"
 
-#: ../daemon/gdm-session-worker.c:1306
+#: ../daemon/gdm-session-worker.c:1309
 msgid "Username:"
 msgstr "Usuario:"
 
-#: ../daemon/gdm-session-worker.c:1312
+#: ../daemon/gdm-session-worker.c:1315
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "error al informar al sistema de autenticación del diálogo del nombre de "
 "usuario preferido - %s"
 
-#: ../daemon/gdm-session-worker.c:1326
+#: ../daemon/gdm-session-worker.c:1329
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 "error al informar al sistema de autenticación del nombre del equipo del "
 "usuario - %s"
 
-#: ../daemon/gdm-session-worker.c:1341
+#: ../daemon/gdm-session-worker.c:1344
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
 "error al informar al sistema de autenticación acerca de la consola del "
 "usuario - %s"
 
-#: ../daemon/gdm-session-worker.c:1354
+#: ../daemon/gdm-session-worker.c:1357
 #, c-format
 msgid "error informing authentication system of display string - %s"
 msgstr ""
 "error al informar al sistema de autenticación de la cadena de pantalla - %s"
 
-#: ../daemon/gdm-session-worker.c:1369
+#: ../daemon/gdm-session-worker.c:1372
 #, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
 msgstr ""
 "error al informar al sistema de autenticación de las credenciales xauth de "
 "la pantalla - %s"
 
-#: ../daemon/gdm-session-worker.c:1658 ../daemon/gdm-session-worker.c:1677
+#: ../daemon/gdm-session-worker.c:1661 ../daemon/gdm-session-worker.c:1680
 #, c-format
 msgid "no user account available"
 msgstr "no hay cuentas de usuario disponibles"
 
-#: ../daemon/gdm-session-worker.c:1704
+#: ../daemon/gdm-session-worker.c:1707
 msgid "Unable to change to user"
 msgstr "No se pudo cambiar el usuario"
 
@@ -637,11 +642,11 @@ msgstr "Apagar"
 msgid "Languages"
 msgstr "Idiomas"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:272
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:274
 msgid "_Languages:"
 msgstr "_Idiomas:"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:275
 #: ../gui/simple-greeter/gdm-language-option-widget.c:274
 msgid "_Language:"
 msgstr "_Idioma:"
@@ -1031,8 +1036,8 @@ msgstr ""
 "Jorge González <jorgegonz@svn.gnome.org>, 2009-2010"
 
 #: ../gui/user-switch-applet/applet.c:649
-#: ../gui/user-switch-applet/applet.c:786
-#: ../gui/user-switch-applet/applet.c:825
+#: ../gui/user-switch-applet/applet.c:788
+#: ../gui/user-switch-applet/applet.c:827
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "No se puede bloquear la pantalla: %s"
@@ -1044,60 +1049,58 @@ msgstr ""
 "No se puede establecer temporalmente el salvapantallas a oscurecer pantalla: "
 "%s"
 
-#: ../gui/user-switch-applet/applet.c:884
+#: ../gui/user-switch-applet/applet.c:886
 #, c-format
 msgid "Can't logout: %s"
 msgstr "No se puede salir de la sesión: %s"
 
-#: ../gui/user-switch-applet/applet.c:968
+#: ../gui/user-switch-applet/applet.c:970
 msgid "Available"
 msgstr "Disponible"
 
-#: ../gui/user-switch-applet/applet.c:969
+#: ../gui/user-switch-applet/applet.c:971
 msgid "Invisible"
 msgstr "Invisible"
 
-#: ../gui/user-switch-applet/applet.c:970
+#: ../gui/user-switch-applet/applet.c:972
 msgid "Busy"
 msgstr "Ocupado"
 
-#: ../gui/user-switch-applet/applet.c:971
+#: ../gui/user-switch-applet/applet.c:973
 msgid "Away"
 msgstr "Ausente"
 
-#: ../gui/user-switch-applet/applet.c:1131
-#| msgid "Account Information..."
+#: ../gui/user-switch-applet/applet.c:1133
 msgid "Account Information"
 msgstr "Información de la cuenta"
 
-#: ../gui/user-switch-applet/applet.c:1143
-#| msgid "System Preferences..."
+#: ../gui/user-switch-applet/applet.c:1145
 msgid "System Preferences"
 msgstr "Preferencias del sistema"
 
-#: ../gui/user-switch-applet/applet.c:1159
+#: ../gui/user-switch-applet/applet.c:1161
 msgid "Lock Screen"
 msgstr "Bloquear la pantalla"
 
 #. Only show if not locked down
-#: ../gui/user-switch-applet/applet.c:1170
+#: ../gui/user-switch-applet/applet.c:1172
 msgid "Switch User"
 msgstr "Cambiar de usuario"
 
 #. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1181
+#: ../gui/user-switch-applet/applet.c:1183
 msgid "Quit..."
 msgstr "Salir…"
 
-#: ../gui/user-switch-applet/applet.c:1302
+#: ../gui/user-switch-applet/applet.c:1304
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: ../gui/user-switch-applet/applet.c:1420
+#: ../gui/user-switch-applet/applet.c:1422
 msgid "User Switch Applet"
 msgstr "Miniaplicación del selector de usuarios"
 
-#: ../gui/user-switch-applet/applet.c:1434
+#: ../gui/user-switch-applet/applet.c:1436
 msgid "Change account settings and status"
 msgstr "Cambiar los ajustes de la cuenta y el estado"
 
