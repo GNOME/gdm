@@ -179,7 +179,7 @@ reset_session (GdmSimpleSlave *slave)
 {
         destroy_session (slave);
         create_new_session (slave);
-        gdm_session_open (GDM_SESSION (slave->priv->session));
+        gdm_session_start_conversation (GDM_SESSION (slave->priv->session));
 }
 
 static gboolean
@@ -496,15 +496,15 @@ on_session_secret_info_query (GdmSession     *session,
 }
 
 static void
-on_session_opened (GdmSession     *session,
-                   GdmSimpleSlave *slave)
+on_session_conversation_started (GdmSession     *session,
+                                 GdmSimpleSlave *slave)
 {
         gboolean res;
         gboolean enabled;
         char    *username;
         int      delay;
 
-        g_debug ("GdmSimpleSlave: session opened");
+        g_debug ("GdmSimpleSlave: session conversation started");
         if (slave->priv->greeter_server != NULL) {
                 res = gdm_greeter_server_ready (slave->priv->greeter_server);
                 if (! res) {
@@ -615,8 +615,8 @@ create_new_session (GdmSimpleSlave *slave)
         g_free (display_hostname);
 
         g_signal_connect (slave->priv->session,
-                          "opened",
-                          G_CALLBACK (on_session_opened),
+                          "conversation-started",
+                          G_CALLBACK (on_session_conversation_started),
                           slave);
         g_signal_connect (slave->priv->session,
                           "setup-complete",
@@ -833,7 +833,7 @@ on_greeter_connected (GdmGreeterServer *greeter_server,
 
         g_debug ("GdmSimpleSlave: Greeter connected");
 
-        gdm_session_open (GDM_SESSION (slave->priv->session));
+        gdm_session_start_conversation (GDM_SESSION (slave->priv->session));
 
         g_object_get (slave,
                       "display-is-local", &display_is_local,

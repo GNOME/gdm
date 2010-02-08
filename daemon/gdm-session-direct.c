@@ -1492,8 +1492,8 @@ handle_connection (DBusServer      *server,
                                                       &vtable,
                                                       session);
 
-                g_debug ("GdmSessionDirect: Emitting opened signal");
-                _gdm_session_opened (GDM_SESSION (session));
+                g_debug ("GdmSessionDirect: Emitting conversation-started signal");
+                _gdm_session_conversation_started (GDM_SESSION (session));
         }
 }
 
@@ -1656,13 +1656,13 @@ stop_worker (GdmSessionDirect *session)
 }
 
 static void
-gdm_session_direct_open (GdmSession *session)
+gdm_session_direct_start_conversation (GdmSession *session)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
 
         g_return_if_fail (session != NULL);
 
-        g_debug ("GdmSessionDirect: Opening session");
+        g_debug ("GdmSessionDirect: Starting conversation");
 
         start_worker (impl);
 }
@@ -2466,7 +2466,7 @@ gdm_session_direct_constructor (GType                  type,
 static void
 gdm_session_iface_init (GdmSessionIface *iface)
 {
-        iface->open = gdm_session_direct_open;
+        iface->start_conversation = gdm_session_direct_start_conversation;
         iface->setup = gdm_session_direct_setup;
         iface->setup_for_user = gdm_session_direct_setup_for_user;
         iface->authenticate = gdm_session_direct_authenticate;

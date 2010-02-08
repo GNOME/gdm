@@ -246,19 +246,19 @@ relay_session_started (GdmProductSlave *slave,
 }
 
 static void
-relay_session_opened (GdmProductSlave *slave)
+relay_session_conversation_started (GdmProductSlave *slave)
 {
         send_dbus_void_method (slave->priv->session_relay_connection,
-                               "Opened");
+                               "ConversationStarted");
 }
 
 static void
-on_session_opened (GdmSession      *session,
-                   GdmProductSlave *slave)
+on_session_conversation_started (GdmSession      *session,
+                                 GdmProductSlave *slave)
 {
-        g_debug ("GdmProductSlave: session opened");
+        g_debug ("GdmProductSlave: session conversation started");
 
-        relay_session_opened (slave);
+        relay_session_conversation_started (slave);
 }
 
 static void
@@ -784,10 +784,10 @@ on_relay_user_selected (GdmProductSlave *slave,
 }
 
 static void
-on_relay_open (GdmProductSlave *slave,
-               DBusMessage     *message)
+on_relay_start_conversation (GdmProductSlave *slave,
+                             DBusMessage     *message)
 {
-        gdm_session_open (GDM_SESSION (slave->priv->session));
+        gdm_session_start_conversation (GDM_SESSION (slave->priv->session));
 }
 
 static void
@@ -833,7 +833,7 @@ create_new_session (GdmProductSlave *slave)
 
         g_signal_connect (slave->priv->session,
                           "opened",
-                          G_CALLBACK (on_session_opened),
+                          G_CALLBACK (on_session_conversation_started),
                           slave);
         g_signal_connect (slave->priv->session,
                           "setup-complete",
@@ -991,8 +991,8 @@ relay_dbus_handle_message (DBusConnection *connection,
                 on_relay_user_selected (slave, message);
         } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "StartSession")) {
                 on_relay_start_session (slave, message);
-        } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "Open")) {
-                on_relay_open (slave, message);
+        } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "StartConversation")) {
+                on_relay_start_conversation (slave, message);
         } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "Cancelled")) {
                 on_relay_cancelled (slave, message);
         } else {

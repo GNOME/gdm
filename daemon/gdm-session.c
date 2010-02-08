@@ -28,7 +28,7 @@
 #include "gdm-session-private.h"
 
 enum {
-        OPENED = 0,
+        CONVERSATION_STARTED = 0,
         SETUP_COMPLETE,
         SETUP_FAILED,
         RESET_COMPLETE,
@@ -78,11 +78,11 @@ gdm_session_get_type (void)
 }
 
 void
-gdm_session_open (GdmSession *session)
+gdm_session_start_conversation (GdmSession *session)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
 
-        GDM_SESSION_GET_IFACE (session)->open (session);
+        GDM_SESSION_GET_IFACE (session)->start_conversation (session);
 }
 
 void
@@ -203,11 +203,11 @@ gdm_session_class_init (gpointer g_iface)
 {
         GType iface_type = G_TYPE_FROM_INTERFACE (g_iface);
 
-        signals [OPENED] =
-                g_signal_new ("opened",
+        signals [CONVERSATION_STARTED] =
+                g_signal_new ("conversation-started",
                               iface_type,
                               G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionIface, opened),
+                              G_STRUCT_OFFSET (GdmSessionIface, conversation_started),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,
@@ -608,10 +608,10 @@ _gdm_session_session_died (GdmSession   *session,
 }
 
 void
-_gdm_session_opened (GdmSession   *session)
+_gdm_session_conversation_started (GdmSession   *session)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
-        g_signal_emit (session, signals [OPENED], 0);
+        g_signal_emit (session, signals [CONVERSATION_STARTED], 0);
 }
 
 void
