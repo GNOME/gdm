@@ -850,7 +850,7 @@ create_new_session (GdmProductSlave *slave)
         g_free (display_device);
 
         g_signal_connect (slave->priv->session,
-                          "opened",
+                          "conversation-started",
                           G_CALLBACK (on_session_conversation_started),
                           slave);
         g_signal_connect (slave->priv->session,
