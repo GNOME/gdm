@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.29.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-13 20:00+0100\n"
-"PO-Revision-Date: 2010-01-13 20:00+0100\n"
+"POT-Creation-Date: 2010-02-10 22:25+0100\n"
+"PO-Revision-Date: 2010-02-10 22:25+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -54,12 +54,16 @@ msgstr "Kan ikke autentisere bruker"
 msgid "Unable to authorize user"
 msgstr "Kan ikke autorisere bruker"
 
-#: ../daemon/gdm-factory-slave.c:281 ../daemon/gdm-simple-slave.c:443
+#: ../daemon/gdm-factory-slave.c:279 ../daemon/gdm-simple-slave.c:443
 msgid "Unable to establish credentials"
 msgstr "Kan ikke bruke autentiseringsinformasjonen"
 
-#: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1122
+#: ../daemon/gdm-factory-slave.c:302 ../daemon/gdm-simple-slave.c:473
+msgid "Unable to open session"
+msgstr "Kan ikke åpne sesjon"
+
+#: ../daemon/gdm-factory-slave.c:683 ../daemon/gdm-product-slave.c:449
+#: ../daemon/gdm-simple-slave.c:1151
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -146,68 +150,68 @@ msgstr "Skjerm-enhet"
 msgid "The display device"
 msgstr "Skjermenheten"
 
-#: ../daemon/gdm-session-worker.c:1295
+#: ../daemon/gdm-session-worker.c:1298
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "feil i initiering av kommunikasjon med autentiseringssystemet - %s"
 
-#: ../daemon/gdm-session-worker.c:1296
+#: ../daemon/gdm-session-worker.c:1299
 msgid "general failure"
 msgstr "generell feil"
 
-#: ../daemon/gdm-session-worker.c:1297
+#: ../daemon/gdm-session-worker.c:1300
 msgid "out of memory"
 msgstr "ikke mer minne"
 
-#: ../daemon/gdm-session-worker.c:1298
+#: ../daemon/gdm-session-worker.c:1301
 msgid "application programmer error"
 msgstr "feil i programkoden"
 
-#: ../daemon/gdm-session-worker.c:1299
+#: ../daemon/gdm-session-worker.c:1302
 msgid "unknown error"
 msgstr "ukjent feil"
 
-#: ../daemon/gdm-session-worker.c:1306
+#: ../daemon/gdm-session-worker.c:1309
 msgid "Username:"
 msgstr "Brukernavn:"
 
-#: ../daemon/gdm-session-worker.c:1312
+#: ../daemon/gdm-session-worker.c:1315
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om foretrukket spørring "
 "etter brukernavn - %s"
 
-#: ../daemon/gdm-session-worker.c:1326
+#: ../daemon/gdm-session-worker.c:1329
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om brukers vertsnavn - %s"
 
-#: ../daemon/gdm-session-worker.c:1341
+#: ../daemon/gdm-session-worker.c:1344
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om brukers konsoll - %s"
 
-#: ../daemon/gdm-session-worker.c:1354
+#: ../daemon/gdm-session-worker.c:1357
 #, c-format
 msgid "error informing authentication system of display string - %s"
 msgstr "feil ved informasjon til autentiseringssystemet om skjermstrengen - %s"
 
-#: ../daemon/gdm-session-worker.c:1369
+#: ../daemon/gdm-session-worker.c:1372
 #, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om xauth-"
 "påloggingsinformasjon for skjermen - %s"
 
-#: ../daemon/gdm-session-worker.c:1658 ../daemon/gdm-session-worker.c:1677
+#: ../daemon/gdm-session-worker.c:1661 ../daemon/gdm-session-worker.c:1680
 #, c-format
 msgid "no user account available"
 msgstr "ingen brukerkonto tilgjengelig"
 
-#: ../daemon/gdm-session-worker.c:1704
+#: ../daemon/gdm-session-worker.c:1707
 msgid "Unable to change to user"
 msgstr "Kan ikke bytte til denne brukeren"
 
@@ -617,11 +621,11 @@ msgstr "Slå av"
 msgid "Languages"
 msgstr "Språk"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:272
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:274
 msgid "_Languages:"
 msgstr "_Språk:"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:275
 #: ../gui/simple-greeter/gdm-language-option-widget.c:274
 msgid "_Language:"
 msgstr "_Språk:"
@@ -1000,8 +1004,8 @@ msgid "translator-credits"
 msgstr "Kjartan Maraas <kmaraas@gnome.org>"
 
 #: ../gui/user-switch-applet/applet.c:649
-#: ../gui/user-switch-applet/applet.c:786
-#: ../gui/user-switch-applet/applet.c:825
+#: ../gui/user-switch-applet/applet.c:788
+#: ../gui/user-switch-applet/applet.c:827
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "Kan ikke låse skjerm: %s"
@@ -1011,58 +1015,58 @@ msgstr "Kan ikke låse skjerm: %s"
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "Kan ikke sette skjermsparer til blank skjerm midlertidig: %s"
 
-#: ../gui/user-switch-applet/applet.c:884
+#: ../gui/user-switch-applet/applet.c:886
 #, c-format
 msgid "Can't logout: %s"
 msgstr "Kan ikke logge ut: %s"
 
-#: ../gui/user-switch-applet/applet.c:968
+#: ../gui/user-switch-applet/applet.c:970
 msgid "Available"
 msgstr "Tilgjengelig"
 
-#: ../gui/user-switch-applet/applet.c:969
+#: ../gui/user-switch-applet/applet.c:971
 msgid "Invisible"
 msgstr "Usynlig"
 
-#: ../gui/user-switch-applet/applet.c:970
+#: ../gui/user-switch-applet/applet.c:972
 msgid "Busy"
 msgstr "Opptatt"
 
-#: ../gui/user-switch-applet/applet.c:971
+#: ../gui/user-switch-applet/applet.c:973
 msgid "Away"
 msgstr "Borte"
 
-#: ../gui/user-switch-applet/applet.c:1131
+#: ../gui/user-switch-applet/applet.c:1133
 msgid "Account Information"
 msgstr "Kontoinformasjon"
 
-#: ../gui/user-switch-applet/applet.c:1143
+#: ../gui/user-switch-applet/applet.c:1145
 msgid "System Preferences"
 msgstr "Brukervalg for systemet"
 
-#: ../gui/user-switch-applet/applet.c:1159
+#: ../gui/user-switch-applet/applet.c:1161
 msgid "Lock Screen"
 msgstr "Lås skjerm"
 
 #. Only show if not locked down
-#: ../gui/user-switch-applet/applet.c:1170
+#: ../gui/user-switch-applet/applet.c:1172
 msgid "Switch User"
 msgstr "Bytt bruker"
 
 #. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1181
+#: ../gui/user-switch-applet/applet.c:1183
 msgid "Quit..."
 msgstr "Avslutt..."
 
-#: ../gui/user-switch-applet/applet.c:1302
+#: ../gui/user-switch-applet/applet.c:1304
 msgid "Unknown"
 msgstr "Ukjent"
 
-#: ../gui/user-switch-applet/applet.c:1420
+#: ../gui/user-switch-applet/applet.c:1422
 msgid "User Switch Applet"
 msgstr "Panelprogram for brukerbytte"
 
-#: ../gui/user-switch-applet/applet.c:1434
+#: ../gui/user-switch-applet/applet.c:1436
 msgid "Change account settings and status"
 msgstr "Bytt innstillinger og status for konto"
 
