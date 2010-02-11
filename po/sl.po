@@ -1,11 +1,9 @@
-# Slovenian translation for gdm
+# Slovenian translation for gdm.
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gdm package.
 #
-# Urban Borstnik <urban@cmm.ki.si>, 2000.
-# Andraž Tori <andraz.tori1@guest.arnes.si>, 2001.
-# Urban Borstnik <urban@cmm.ki.si>, 2001.
-# minmax <andraz.tori1@guest.arnes.si>, 2002.
+# Urban Borštnik <urban@cmm.ki.si>, 2000 - 2001.
+# Andraž Tori <andraz.tori1@guest.arnes.si>, 2001 - 2002.
 # Matjaž Horvat <m@owca.info>, 2006.
 # Matej Urbančič <mateju@svn.gnome.org>, 2007 - 2010.
 #
@@ -13,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&component=general\n"
-"POT-Creation-Date: 2010-01-25 13:05+0000\n"
-"PO-Revision-Date: 2010-01-26 08:34+0100\n"
+"POT-Creation-Date: 2010-02-10 21:25+0000\n"
+"PO-Revision-Date: 2010-02-11 08:00+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -71,14 +69,19 @@ msgstr "Ni mogoče pooblastiti uporabnika"
 msgid "Unable to authorize user"
 msgstr "Ni mogoče pooblastiti uporabnika"
 
-#: ../daemon/gdm-factory-slave.c:281
+#: ../daemon/gdm-factory-slave.c:279
 #: ../daemon/gdm-simple-slave.c:443
 msgid "Unable to establish credentials"
 msgstr "Ni mogoče vzpostaviti pooblastila"
 
-#: ../daemon/gdm-factory-slave.c:662
+#: ../daemon/gdm-factory-slave.c:302
+#: ../daemon/gdm-simple-slave.c:473
+msgid "Unable to open session"
+msgstr "Ni mogoče odpreti seje"
+
+#: ../daemon/gdm-factory-slave.c:683
 #: ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1122
+#: ../daemon/gdm-simple-slave.c:1151
 msgid "Could not start the X server (your graphical environment) due to some internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 msgstr "Ni mogoče zagnati strežnika X (vašega grafičnega okolja) zaradi notranje napake. Obrnite se na vašega skrbnika sistema ali preverite vaš sistemski dnevnik. V vmesnem času bo ta zaslon izključen. Poskusite s ponovnim zagonom GDM, ko bo problem odpravljen."
 
@@ -161,63 +164,63 @@ msgstr "Naprava za prikazovanje"
 msgid "The display device"
 msgstr "Naprava za prikazovanje"
 
-#: ../daemon/gdm-session-worker.c:1295
+#: ../daemon/gdm-session-worker.c:1298
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "napaka zaganjanja povezave s sistemom pooblastitve - %s"
 
-#: ../daemon/gdm-session-worker.c:1296
+#: ../daemon/gdm-session-worker.c:1299
 msgid "general failure"
 msgstr "splošna napaka"
 
-#: ../daemon/gdm-session-worker.c:1297
+#: ../daemon/gdm-session-worker.c:1300
 msgid "out of memory"
 msgstr "primanjkuje pomnilnika"
 
-#: ../daemon/gdm-session-worker.c:1298
+#: ../daemon/gdm-session-worker.c:1301
 msgid "application programmer error"
 msgstr "programerska napaka programa"
 
-#: ../daemon/gdm-session-worker.c:1299
+#: ../daemon/gdm-session-worker.c:1302
 msgid "unknown error"
 msgstr "neznana napaka"
 
-#: ../daemon/gdm-session-worker.c:1306
+#: ../daemon/gdm-session-worker.c:1309
 msgid "Username:"
 msgstr "Uporabniško ime:"
 
-#: ../daemon/gdm-session-worker.c:1312
+#: ../daemon/gdm-session-worker.c:1315
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr "napaka obvestitve sistema pooblastitve o pozivniku uporabniškega imena - %s"
 
-#: ../daemon/gdm-session-worker.c:1326
+#: ../daemon/gdm-session-worker.c:1329
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr "napaka obvestitve sistema pooblastitve o imenu gostitelja - %s"
 
-#: ../daemon/gdm-session-worker.c:1341
+#: ../daemon/gdm-session-worker.c:1344
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr "napaka obvestitve sistema pooblastitve o konzoli - %s"
 
-#: ../daemon/gdm-session-worker.c:1354
+#: ../daemon/gdm-session-worker.c:1357
 #, c-format
 msgid "error informing authentication system of display string - %s"
 msgstr "napaka obvestitve sistema pooblastitve zaslonskih niti - %s"
 
-#: ../daemon/gdm-session-worker.c:1369
+#: ../daemon/gdm-session-worker.c:1372
 #, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
 msgstr "napaka obveščanja sistema pooblastitve xauth varoval- %s"
 
-#: ../daemon/gdm-session-worker.c:1658
-#: ../daemon/gdm-session-worker.c:1677
+#: ../daemon/gdm-session-worker.c:1661
+#: ../daemon/gdm-session-worker.c:1680
 #, c-format
 msgid "no user account available"
 msgstr "na voljo ni nobenega uporabniškega računa"
 
-#: ../daemon/gdm-session-worker.c:1704
+#: ../daemon/gdm-session-worker.c:1707
 msgid "Unable to change to user"
 msgstr "Ni mogoče zamenjati uporabnika"
 
@@ -624,11 +627,11 @@ msgstr "Izklopi računalnik"
 msgid "Languages"
 msgstr "Jeziki"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:272
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:274
 msgid "_Languages:"
 msgstr "_Jeziki:"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:275
 #: ../gui/simple-greeter/gdm-language-option-widget.c:274
 msgid "_Language:"
 msgstr "_Jezik:"
@@ -957,8 +960,8 @@ msgid "translator-credits"
 msgstr "Matej Urbančič <mateju@svn.gnome.org>"
 
 #: ../gui/user-switch-applet/applet.c:649
-#: ../gui/user-switch-applet/applet.c:786
-#: ../gui/user-switch-applet/applet.c:825
+#: ../gui/user-switch-applet/applet.c:788
+#: ../gui/user-switch-applet/applet.c:827
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "Ni mogoče zakleniti zaslona: %s"
@@ -968,58 +971,58 @@ msgstr "Ni mogoče zakleniti zaslona: %s"
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "Ni mogoče začasno nastaviti črnega zaslona za ohranjevalnik zaslona: %s"
 
-#: ../gui/user-switch-applet/applet.c:884
+#: ../gui/user-switch-applet/applet.c:886
 #, c-format
 msgid "Can't logout: %s"
 msgstr "Ni se mogoče odjaviti: %s"
 
-#: ../gui/user-switch-applet/applet.c:968
+#: ../gui/user-switch-applet/applet.c:970
 msgid "Available"
 msgstr "Na voljo"
 
-#: ../gui/user-switch-applet/applet.c:969
+#: ../gui/user-switch-applet/applet.c:971
 msgid "Invisible"
 msgstr "Nevidno"
 
-#: ../gui/user-switch-applet/applet.c:970
+#: ../gui/user-switch-applet/applet.c:972
 msgid "Busy"
 msgstr "Zasedeno"
 
-#: ../gui/user-switch-applet/applet.c:971
+#: ../gui/user-switch-applet/applet.c:973
 msgid "Away"
 msgstr "Odsotno"
 
-#: ../gui/user-switch-applet/applet.c:1131
+#: ../gui/user-switch-applet/applet.c:1133
 msgid "Account Information"
 msgstr "Podrobnosti računa"
 
-#: ../gui/user-switch-applet/applet.c:1143
+#: ../gui/user-switch-applet/applet.c:1145
 msgid "System Preferences"
 msgstr "Sistemske možnosti"
 
-#: ../gui/user-switch-applet/applet.c:1159
+#: ../gui/user-switch-applet/applet.c:1161
 msgid "Lock Screen"
 msgstr "Zakleni zaslon"
 
 #. Only show if not locked down
-#: ../gui/user-switch-applet/applet.c:1170
+#: ../gui/user-switch-applet/applet.c:1172
 msgid "Switch User"
 msgstr "Preklop uporabnika"
 
 #. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1181
+#: ../gui/user-switch-applet/applet.c:1183
 msgid "Quit..."
 msgstr "Končaj ..."
 
-#: ../gui/user-switch-applet/applet.c:1302
+#: ../gui/user-switch-applet/applet.c:1304
 msgid "Unknown"
 msgstr "Neznano"
 
-#: ../gui/user-switch-applet/applet.c:1420
+#: ../gui/user-switch-applet/applet.c:1422
 msgid "User Switch Applet"
 msgstr "Aplet preklopa uporabnikov"
 
-#: ../gui/user-switch-applet/applet.c:1434
+#: ../gui/user-switch-applet/applet.c:1436
 msgid "Change account settings and status"
 msgstr "Spremeni nastavitve računa in stanje"
 
