@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-13 20:32+0100\n"
-"PO-Revision-Date: 2010-01-13 20:32+0100\n"
+"POT-Creation-Date: 2010-02-21 17:03+0100\n"
+"PO-Revision-Date: 2010-02-21 17:04+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -62,16 +62,21 @@ msgstr "Kunde inte autentisera användaren"
 #: ../daemon/gdm-factory-slave.c:257
 #: ../daemon/gdm-simple-slave.c:315
 msgid "Unable to authorize user"
-msgstr "Kunde inte auktorisera användare"
+msgstr "Kunde inte auktorisera användaren"
 
-#: ../daemon/gdm-factory-slave.c:281
+#: ../daemon/gdm-factory-slave.c:279
 #: ../daemon/gdm-simple-slave.c:443
 msgid "Unable to establish credentials"
 msgstr "Kan inte etablera behörighet"
 
-#: ../daemon/gdm-factory-slave.c:662
+#: ../daemon/gdm-factory-slave.c:302
+#: ../daemon/gdm-simple-slave.c:473
+msgid "Unable to open session"
+msgstr "Kunde inte öppna sessionen"
+
+#: ../daemon/gdm-factory-slave.c:683
 #: ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1122
+#: ../daemon/gdm-simple-slave.c:1151
 msgid "Could not start the X server (your graphical environment) due to some internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 msgstr "Kunde inte starta X-servern (din grafiska miljö) på grund av ett internt fel. Kontakta din systemadministratör eller kontrollera din systemlogg för att analysera felet. Under tiden kommer denna display att vara inaktiverad. Starta om GDM när problemet är åtgärdat."
 
@@ -154,63 +159,63 @@ msgstr "Visningsenhet"
 msgid "The display device"
 msgstr "Visningsenheten"
 
-#: ../daemon/gdm-session-worker.c:1295
+#: ../daemon/gdm-session-worker.c:1298
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "fel vid initiering av konversation med autentiseringssystemet - %s"
 
-#: ../daemon/gdm-session-worker.c:1296
+#: ../daemon/gdm-session-worker.c:1299
 msgid "general failure"
 msgstr "allmänt fel"
 
-#: ../daemon/gdm-session-worker.c:1297
+#: ../daemon/gdm-session-worker.c:1300
 msgid "out of memory"
 msgstr "slut på minne"
 
-#: ../daemon/gdm-session-worker.c:1298
+#: ../daemon/gdm-session-worker.c:1301
 msgid "application programmer error"
 msgstr "programmeringsfel i programmet"
 
-#: ../daemon/gdm-session-worker.c:1299
+#: ../daemon/gdm-session-worker.c:1302
 msgid "unknown error"
 msgstr "okänt fel"
 
-#: ../daemon/gdm-session-worker.c:1306
+#: ../daemon/gdm-session-worker.c:1309
 msgid "Username:"
 msgstr "Användarnamn:"
 
-#: ../daemon/gdm-session-worker.c:1312
+#: ../daemon/gdm-session-worker.c:1315
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr "fel när autentiseringssystemet informerades om föredragen prompt för användarnamn - %s"
 
-#: ../daemon/gdm-session-worker.c:1326
+#: ../daemon/gdm-session-worker.c:1329
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr "fel när autentiseringssystemet informerades om användarens värdnamn - %s"
 
-#: ../daemon/gdm-session-worker.c:1341
+#: ../daemon/gdm-session-worker.c:1344
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr "fel när autentiseringssystemet informerades om användarens konsoll - %s"
 
-#: ../daemon/gdm-session-worker.c:1354
+#: ../daemon/gdm-session-worker.c:1357
 #, c-format
 msgid "error informing authentication system of display string - %s"
 msgstr "fel när autentiseringssystemet informerades om display-sträng - %s"
 
-#: ../daemon/gdm-session-worker.c:1369
+#: ../daemon/gdm-session-worker.c:1372
 #, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
 msgstr "fel när autentiseringssystemet informerades om displayens xauth-behörighet - %s"
 
-#: ../daemon/gdm-session-worker.c:1658
-#: ../daemon/gdm-session-worker.c:1677
+#: ../daemon/gdm-session-worker.c:1661
+#: ../daemon/gdm-session-worker.c:1680
 #, c-format
 msgid "no user account available"
 msgstr "inget användarkonto tillgängligt"
 
-#: ../daemon/gdm-session-worker.c:1704
+#: ../daemon/gdm-session-worker.c:1707
 msgid "Unable to change to user"
 msgstr "Kunde inte byta till användare"
 
@@ -617,11 +622,11 @@ msgstr "Stäng av"
 msgid "Languages"
 msgstr "Språk"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:272
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:274
 msgid "_Languages:"
 msgstr "S_pråk:"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:275
 #: ../gui/simple-greeter/gdm-language-option-widget.c:274
 msgid "_Language:"
 msgstr "S_pråk:"
@@ -957,8 +962,8 @@ msgstr ""
 "<tp-sv@listor.tp-sv.se>"
 
 #: ../gui/user-switch-applet/applet.c:649
-#: ../gui/user-switch-applet/applet.c:786
-#: ../gui/user-switch-applet/applet.c:825
+#: ../gui/user-switch-applet/applet.c:788
+#: ../gui/user-switch-applet/applet.c:827
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "Kan inte låsa skärm: %s"
@@ -968,58 +973,58 @@ msgstr "Kan inte låsa skärm: %s"
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "Kan inte temporärt ställa in skärmsläckare till att dämpa skärmen: %s"
 
-#: ../gui/user-switch-applet/applet.c:884
+#: ../gui/user-switch-applet/applet.c:886
 #, c-format
 msgid "Can't logout: %s"
 msgstr "Kan inte logga ut: %s"
 
-#: ../gui/user-switch-applet/applet.c:968
+#: ../gui/user-switch-applet/applet.c:970
 msgid "Available"
 msgstr "Tillgänglig"
 
-#: ../gui/user-switch-applet/applet.c:969
+#: ../gui/user-switch-applet/applet.c:971
 msgid "Invisible"
 msgstr "Osynlig"
 
-#: ../gui/user-switch-applet/applet.c:970
+#: ../gui/user-switch-applet/applet.c:972
 msgid "Busy"
 msgstr "Upptagen"
 
-#: ../gui/user-switch-applet/applet.c:971
+#: ../gui/user-switch-applet/applet.c:973
 msgid "Away"
 msgstr "Frånvarande"
 
-#: ../gui/user-switch-applet/applet.c:1131
+#: ../gui/user-switch-applet/applet.c:1133
 msgid "Account Information"
 msgstr "Kontoinformation"
 
-#: ../gui/user-switch-applet/applet.c:1143
+#: ../gui/user-switch-applet/applet.c:1145
 msgid "System Preferences"
 msgstr "Systeminställningar"
 
-#: ../gui/user-switch-applet/applet.c:1159
+#: ../gui/user-switch-applet/applet.c:1161
 msgid "Lock Screen"
 msgstr "Lås skärmen"
 
 #. Only show if not locked down
-#: ../gui/user-switch-applet/applet.c:1170
+#: ../gui/user-switch-applet/applet.c:1172
 msgid "Switch User"
 msgstr "Växla användare"
 
 #. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1181
+#: ../gui/user-switch-applet/applet.c:1183
 msgid "Quit..."
 msgstr "Avsluta..."
 
-#: ../gui/user-switch-applet/applet.c:1302
+#: ../gui/user-switch-applet/applet.c:1304
 msgid "Unknown"
 msgstr "Okänt"
 
-#: ../gui/user-switch-applet/applet.c:1420
+#: ../gui/user-switch-applet/applet.c:1422
 msgid "User Switch Applet"
 msgstr "Panelprogram för användarväxling"
 
-#: ../gui/user-switch-applet/applet.c:1434
+#: ../gui/user-switch-applet/applet.c:1436
 msgid "Change account settings and status"
 msgstr "Ändra kontoinställningar och status"
 
@@ -1340,8 +1345,6 @@ msgstr "Ta en bild av skärmen"
 #~ msgstr ""
 #~ "sessionsloggen \"%s\" är inte en vanlig fil, loggar sessionen till \"%s\" "
 #~ "istället.\n"
-#~ msgid "unable to log session"
-#~ msgstr "kunde inte logga session"
 #~ msgid "Tue Oct 23 21:16:50 EDT 2007"
 #~ msgstr "Tis okt 23 21:16:50 CET 2007"
 #~ msgid "IP Address"
