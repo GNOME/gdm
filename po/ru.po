@@ -6,43 +6,39 @@
 # Dmitry G. Mastrukov <dmitry@taurussoft.org>, 2002-2003.
 # Leonid Kanter <leon@asplinux.ru>, 2003, 2004, 2005, 2006, 2007, 2008.
 # Alexander Saprykin <xelfium@gmail.com>, 2009.
+# der_FeniX <kofenix@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-12 12:35+0300\n"
-"PO-Revision-Date: 2009-10-09 17:00+0400\n"
-"Last-Translator: Alexander Saprykin <xelfium@gmail.com>\n"
+"POT-Creation-Date: 2010-02-24 11:18+0200\n"
+"PO-Revision-Date: 2010-02-11 20:08+0300\n"
+"Last-Translator: der_FeniX <kofenix@gmail.com>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: UTF-8\n"
 "Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.0\n"
 
 #: ../common/gdm-common.c:437
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom не является символьным устройством"
 
-#: ../daemon/factory-slave-main.c:170 ../daemon/main.c:516
-#: ../daemon/product-slave-main.c:174 ../daemon/session-worker-main.c:137
-#: ../daemon/simple-slave-main.c:179 ../daemon/xdmcp-chooser-slave-main.c:179
-msgid "Enable debugging code"
-msgstr "Включить отладочный код"
-
-#: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
-#: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
+#: ../daemon/factory-slave-main.c:177 ../daemon/product-slave-main.c:181
+#: ../daemon/simple-slave-main.c:183 ../daemon/xdmcp-chooser-slave-main.c:183
 msgid "Display ID"
 msgstr "ID Дисплея"
 
-#: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
-#: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
-msgid "id"
-msgstr "id"
+#: ../daemon/factory-slave-main.c:177 ../daemon/product-slave-main.c:181
+#: ../daemon/simple-slave-main.c:183 ../daemon/xdmcp-chooser-slave-main.c:183
+msgid "ID"
+msgstr "идентификатор"
 
-#: ../daemon/factory-slave-main.c:183 ../daemon/product-slave-main.c:187
-#: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:192
+#: ../daemon/factory-slave-main.c:189 ../daemon/product-slave-main.c:193
+#: ../daemon/simple-slave-main.c:195 ../daemon/xdmcp-chooser-slave-main.c:195
 msgid "GNOME Display Manager Slave"
 msgstr "GNOME Display Manager Slave"
 
@@ -51,24 +47,28 @@ msgstr "GNOME Display Manager Slave"
 msgid "could not find user \"%s\" on system"
 msgstr "не удалось найти в системе пользователя «%s»"
 
-#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:220
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:225
 msgid "Unable to initialize login system"
 msgstr "Не удалось инициализировать систему входа"
 
-#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:256
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:261
 msgid "Unable to authenticate user"
 msgstr "Не удалось аутентифицировать пользователя"
 
-#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:310
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:315
 msgid "Unable to authorize user"
 msgstr "Не удалось авторизовать пользователя"
 
-#: ../daemon/gdm-factory-slave.c:281 ../daemon/gdm-simple-slave.c:432
+#: ../daemon/gdm-factory-slave.c:279 ../daemon/gdm-simple-slave.c:443
 msgid "Unable to establish credentials"
 msgstr "Не удалось установить верительные данные"
 
-#: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1111
+#: ../daemon/gdm-factory-slave.c:302 ../daemon/gdm-simple-slave.c:473
+msgid "Unable to open session"
+msgstr "Не удалось открыть сеанс"
+
+#: ../daemon/gdm-factory-slave.c:683 ../daemon/gdm-product-slave.c:449
+#: ../daemon/gdm-simple-slave.c:1151
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -92,22 +92,22 @@ msgstr ""
 "Сервер был запущен с идентификатором (uid) %s, но такой пользователь не "
 "существует"
 
-#: ../daemon/gdm-server.c:372 ../daemon/gdm-welcome-session.c:444
+#: ../daemon/gdm-server.c:372 ../daemon/gdm-welcome-session.c:554
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Не удалось установить идентификатор группы в %d"
 
-#: ../daemon/gdm-server.c:378 ../daemon/gdm-welcome-session.c:450
+#: ../daemon/gdm-server.c:378 ../daemon/gdm-welcome-session.c:560
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "сбой функции initgroups() для %s"
 
-#: ../daemon/gdm-server.c:384 ../daemon/gdm-welcome-session.c:456
+#: ../daemon/gdm-server.c:384 ../daemon/gdm-welcome-session.c:566
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Не удалось установить идентификатор пользователя в %d"
 
-#: ../daemon/gdm-server.c:392 ../daemon/gdm-welcome-session.c:464
+#: ../daemon/gdm-server.c:392 ../daemon/gdm-welcome-session.c:574
 msgid "Couldn't set groupid to 0"
 msgstr "Не удалось установить идентификатор группы в 0"
 
@@ -156,212 +156,212 @@ msgstr "Устройство дисплея"
 msgid "The display device"
 msgstr "Устройство дисплея"
 
-#: ../daemon/gdm-session-worker.c:1295
+#: ../daemon/gdm-session-worker.c:1298
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "ошибка инициализации диалога с системой аутентификации - %s"
 
-#: ../daemon/gdm-session-worker.c:1296
+#: ../daemon/gdm-session-worker.c:1299
 msgid "general failure"
 msgstr "общий сбой"
 
-#: ../daemon/gdm-session-worker.c:1297
+#: ../daemon/gdm-session-worker.c:1300
 msgid "out of memory"
 msgstr "недостаточно памяти"
 
-#: ../daemon/gdm-session-worker.c:1298
+#: ../daemon/gdm-session-worker.c:1301
 msgid "application programmer error"
 msgstr "программная ошибка приложения"
 
-#: ../daemon/gdm-session-worker.c:1299
+#: ../daemon/gdm-session-worker.c:1302
 msgid "unknown error"
 msgstr "неизвестная ошибка"
 
-#: ../daemon/gdm-session-worker.c:1306
+#: ../daemon/gdm-session-worker.c:1309
 msgid "Username:"
 msgstr "Имя пользователя:"
 
-#: ../daemon/gdm-session-worker.c:1312
+#: ../daemon/gdm-session-worker.c:1315
 #, c-format
 msgid "error informing authentication system of preferred username prompt - %s"
 msgstr ""
 "ошибка извещения системы аутентификации о предпочтительном формате имени "
 "пользователя - %s"
 
-#: ../daemon/gdm-session-worker.c:1326
+#: ../daemon/gdm-session-worker.c:1329
 #, c-format
 msgid "error informing authentication system of user's hostname - %s"
 msgstr ""
 "ошибка извещения системы аутентификации об имени узла пользователя - %s"
 
-#: ../daemon/gdm-session-worker.c:1341
+#: ../daemon/gdm-session-worker.c:1344
 #, c-format
 msgid "error informing authentication system of user's console - %s"
 msgstr "ошибка извещения системы аутентификации о консоли пользователя - %s"
 
-#: ../daemon/gdm-session-worker.c:1354
+#: ../daemon/gdm-session-worker.c:1357
 #, c-format
 msgid "error informing authentication system of display string - %s"
 msgstr "ошибка извещения системы аутентификации об имени строке дисплея - %s"
 
-#: ../daemon/gdm-session-worker.c:1369
+#: ../daemon/gdm-session-worker.c:1372
 #, c-format
 msgid "error informing authentication system of display xauth credentials - %s"
 msgstr ""
 "ошибка извещения системы аутентификации о мандате xauth для дисплея - %s"
 
-#: ../daemon/gdm-session-worker.c:1650 ../daemon/gdm-session-worker.c:1669
+#: ../daemon/gdm-session-worker.c:1661 ../daemon/gdm-session-worker.c:1680
 #, c-format
 msgid "no user account available"
 msgstr "учетная запись пользователя недоступна"
 
-#: ../daemon/gdm-session-worker.c:1696
+#: ../daemon/gdm-session-worker.c:1707
 msgid "Unable to change to user"
 msgstr "Не удалось сменить пользователя"
 
-#: ../daemon/gdm-welcome-session.c:426
+#: ../daemon/gdm-welcome-session.c:532
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Пользователь %s не существует"
 
-#: ../daemon/gdm-welcome-session.c:433
+#: ../daemon/gdm-welcome-session.c:539
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Группа %s не существует"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:595
+#: ../daemon/gdm-xdmcp-display-factory.c:596
 msgid "Could not create socket!"
 msgstr "Не удалось создать сокет!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:862
+#: ../daemon/gdm-xdmcp-display-factory.c:865
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Получен отказ на запрос XDMCP от системы %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1019
-#: ../daemon/gdm-xdmcp-display-factory.c:1240
+#: ../daemon/gdm-xdmcp-display-factory.c:1023
+#: ../daemon/gdm-xdmcp-display-factory.c:1247
 msgid "Could not extract authlist from packet"
 msgstr "Не удалось извлечь поле authlist из пакета"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1032
-#: ../daemon/gdm-xdmcp-display-factory.c:1255
+#: ../daemon/gdm-xdmcp-display-factory.c:1036
+#: ../daemon/gdm-xdmcp-display-factory.c:1262
 msgid "Error in checksum"
 msgstr "Ошибка контрольной суммы"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1506
+#: ../daemon/gdm-xdmcp-display-factory.c:1515
 msgid "Bad address"
 msgstr "Плохой адрес"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1587
+#: ../daemon/gdm-xdmcp-display-factory.c:1599
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: Не удалось прочитать адрес дисплея"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1595
+#: ../daemon/gdm-xdmcp-display-factory.c:1607
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s: Не удалось прочитать номер порта дисплея"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1604
+#: ../daemon/gdm-xdmcp-display-factory.c:1616
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s: Не удалось извлечь поле authlist из пакета"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1624
+#: ../daemon/gdm-xdmcp-display-factory.c:1636
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: Ошибка контрольной суммы"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2133
+#: ../daemon/gdm-xdmcp-display-factory.c:2155
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Получен REQUEST(запрос) от исключенной системы %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2143
-#: ../daemon/gdm-xdmcp-display-factory.c:2498
-#: ../daemon/gdm-xdmcp-display-factory.c:2750
+#: ../daemon/gdm-xdmcp-display-factory.c:2165
+#: ../daemon/gdm-xdmcp-display-factory.c:2521
+#: ../daemon/gdm-xdmcp-display-factory.c:2775
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Не удалось прочитать номер дисплея"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2150
+#: ../daemon/gdm-xdmcp-display-factory.c:2172
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Не удалось прочитать тип соединения"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2157
+#: ../daemon/gdm-xdmcp-display-factory.c:2179
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Не удалось прочитать адрес клиента"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2165
+#: ../daemon/gdm-xdmcp-display-factory.c:2187
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Не удалось прочитать аутентификационные имена"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2174
+#: ../daemon/gdm-xdmcp-display-factory.c:2196
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Не удалось прочитать аутентификационные данные"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2184
+#: ../daemon/gdm-xdmcp-display-factory.c:2206
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Не удалось прочитать список авторизации"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2203
+#: ../daemon/gdm-xdmcp-display-factory.c:2225
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Не удалось прочитать идентификатор производителя"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2230
+#: ../daemon/gdm-xdmcp-display-factory.c:2252
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Ошибка контрольной суммы из %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2482
+#: ../daemon/gdm-xdmcp-display-factory.c:2505
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Получен Manage(запрос обслуживания) от исключенной системы %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2491
-#: ../daemon/gdm-xdmcp-display-factory.c:2757
+#: ../daemon/gdm-xdmcp-display-factory.c:2514
+#: ../daemon/gdm-xdmcp-display-factory.c:2782
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Не удалось прочитать идентификатор сеанса"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2505
+#: ../daemon/gdm-xdmcp-display-factory.c:2528
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Не удалось прочитать Display Class"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2610
-#: ../daemon/gdm-xdmcp-display-factory.c:2660
-#: ../daemon/gdm-xdmcp-display-factory.c:2666
+#: ../daemon/gdm-xdmcp-display-factory.c:2634
+#: ../daemon/gdm-xdmcp-display-factory.c:2684
+#: ../daemon/gdm-xdmcp-display-factory.c:2690
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Не удалось прочитать адрес"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2740
+#: ../daemon/gdm-xdmcp-display-factory.c:2765
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Получен запрос KEEPALIVE от исключенной системы %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2829
+#: ../daemon/gdm-xdmcp-display-factory.c:2854
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory: Не удалось прочитать заголовок XDMCP!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2835
+#: ../daemon/gdm-xdmcp-display-factory.c:2860
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XMDCP: Неверная версия XDMCP!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2841
+#: ../daemon/gdm-xdmcp-display-factory.c:2866
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
 msgid "XMDCP: Unable to parse address"
 msgstr "XMDCP: Не удалось разобрать адрес"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3286
+#: ../daemon/gdm-xdmcp-display-factory.c:3311
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Не удалось получить имя сервера: %s!"
@@ -371,83 +371,83 @@ msgstr "Не удалось получить имя сервера: %s!"
 msgid "Cannot write PID file %s: possibly out of diskspace: %s"
 msgstr "Не удалось записать PID-файл %s, возможно диск переполнен: %s"
 
-#: ../daemon/main.c:270
+#: ../daemon/main.c:271
 #, c-format
 msgid "Logdir %s does not exist or isn't a directory."
 msgstr "Каталог logdir «%s» не существует или не является каталогом."
 
-#: ../daemon/main.c:283
+#: ../daemon/main.c:287
 #, c-format
 msgid "Authdir %s does not exist. Aborting."
 msgstr ""
 "Каталог с файлами для проверки подлинности «%s» не существует. Происходит "
 "аварийное окончание работы."
 
-#: ../daemon/main.c:287
+#: ../daemon/main.c:291
 #, c-format
 msgid "Authdir %s is not a directory. Aborting."
 msgstr ""
 "Путь «%s», где должны находиться файлы для проверки подлинности, не является "
 "каталогом. Происходит аварийное окончание работы."
 
-#: ../daemon/main.c:361
+#: ../daemon/main.c:365
 #, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
 msgstr ""
 "Каталог с файлами для проверки подлинности «%s» не принадлежит пользователю  %"
 "d, группе %d. Происходит аварийное окончание работы!"
 
-#: ../daemon/main.c:368
+#: ../daemon/main.c:372
 #, c-format
 msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
 "Каталог с файлами для проверки подлинности «%s» имеет неверные права %o. "
 "Должно быть %o. Происходит аварийное прерывание работы."
 
-#: ../daemon/main.c:405
+#: ../daemon/main.c:409
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Не найден пользователь GDM «%s». Происходит аварийное окончание работы!"
 
-#: ../daemon/main.c:411
+#: ../daemon/main.c:415
 msgid "The GDM user should not be root. Aborting!"
 msgstr ""
 "Пользователь GDM не может быть суперпользователем. Происходит аварийное "
 "окончание работы!"
 
-#: ../daemon/main.c:417
+#: ../daemon/main.c:421
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Не найдена группа GDM «%s». Происходит аварийное окончание работы!"
 
-#: ../daemon/main.c:423
+#: ../daemon/main.c:427
 msgid "The GDM group should not be root. Aborting!"
 msgstr ""
 "Группа GDM не должна быть суперпользовательской. Происходит аварийное "
 "окончание работы!"
 
-#: ../daemon/main.c:517
+#: ../daemon/main.c:533
 msgid "Make all warnings fatal"
 msgstr "Сделать все ошибки фатальными"
 
-#: ../daemon/main.c:518
+#: ../daemon/main.c:534
 msgid "Exit after a time - for debugging"
 msgstr "Выйти через определенное время - для отладки"
 
-#: ../daemon/main.c:519
+#: ../daemon/main.c:535
 msgid "Print GDM version"
 msgstr "Вывести версию GDM"
 
-#: ../daemon/main.c:534
+#: ../daemon/main.c:550
 msgid "GNOME Display Manager"
 msgstr "Менеджер дисплеев среды GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:595
-msgid "Only root wants to run GDM"
-msgstr "Только пользователь root может запустить GDM"
+#: ../daemon/main.c:611
+msgid "Only the root user can run GDM"
+msgstr "Только суперпользователь может запустить GDM"
 
-#: ../daemon/session-worker-main.c:149
+#: ../daemon/session-worker-main.c:156
 msgid "GNOME Display Manager Session Worker"
 msgstr "GDM (Менеджер дисплеев среды GNOME) не запущен"
 
@@ -456,7 +456,7 @@ msgid "AT SPI Registry Wrapper"
 msgstr "Оболочка реестра AT-SPI"
 
 #: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1767
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1434
 msgid "Login Window"
 msgstr "Окно входа в систему"
 
@@ -500,7 +500,7 @@ msgstr "Чтение c экрана Orca"
 msgid "Present on-screen information as speech or braille"
 msgstr "Читает содержимое экрана или отображает его на дисплее Брайля"
 
-#: ../data/greeter-autostart/polkit-gnome-authentication-agent-1.desktop.in.h:1
+#: ../data/greeter-autostart/polkit-gnome-authentication-agent-1.desktop.in.in.h:1
 msgid "PolicyKit Authentication Agent"
 msgstr "Диалог аутентификации PolicyKit"
 
@@ -508,7 +508,7 @@ msgstr "Диалог аутентификации PolicyKit"
 msgid "Select System"
 msgstr "Выберите систему"
 
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:214
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:213
 msgid "XDMCP: Could not create XDMCP buffer!"
 msgstr "XDMCP: Не удалось создать буфер XDMCP!"
 
@@ -516,121 +516,131 @@ msgstr "XDMCP: Не удалось создать буфер XDMCP!"
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Не удалось прочитать заголовок XDMCP!"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:253
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:244
 msgid "Value"
 msgstr "Значение"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:254
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:245
 msgid "percentage of time complete"
 msgstr "процент затраченного времени"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1325
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1281
 msgid "Inactive Text"
 msgstr "Неактивный текст"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1326
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1282
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr ""
 "Текст, используемый в качестве ярлыка, если пользователь еще не выделил "
 "элемент"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1334
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1290
 msgid "Active Text"
 msgstr "Активный текст"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1335
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1291
 msgid "The text to use in the label if the user has picked an item"
 msgstr ""
 "Текст, используемый в качестве ярлыка, если пользователь выделил элемент"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1344
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1300
 msgid "List Visible"
 msgstr "Показывать список"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1345
-msgid "Whether or not the chooser list is visible"
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1301
+msgid "Whether the chooser list is visible"
 msgstr "Показывает список выбора для удалённого подключения"
 
-#: ../gui/simple-greeter/gdm-clock-widget.c:66
-msgid "%l:%M:%S %p"
-msgstr "%l:%M:%S %p"
-
-#: ../gui/simple-greeter/gdm-clock-widget.c:66
-msgid "%l:%M %p"
-msgstr "%l:%M %p"
-
-#. translators: replace %e with %d if, when the day of the
-#. *              month as a decimal number is a single digit, it
-#. *              should begin with a 0 in your locale (e.g. "May
-#. *              01" instead of "May  1").
+#. translators: This is the time format to use when both
+#. * the date and time with seconds are being shown together.
 #.
-#: ../gui/simple-greeter/gdm-clock-widget.c:72
-msgid "%a %b %e"
-msgstr "%a %b %e"
+#: ../gui/simple-greeter/gdm-clock-widget.c:70
+msgid "%a %b %e, %l:%M:%S %p"
+msgstr "%a %b %e, %l:%M:%S %p"
 
-#. translators: reverse the order of these arguments
-#. *              if the time should come before the
-#. *              date on a clock in your locale.
+#. translators: This is the time format to use when both
+#. * the date and time without seconds are being shown together.
 #.
-#: ../gui/simple-greeter/gdm-clock-widget.c:77
+#: ../gui/simple-greeter/gdm-clock-widget.c:76
+msgid "%a %b %e, %l:%M %p"
+msgstr "%a %b %e, %l:%M %p"
+
+#. translators: This is the time format to use when there is
+#. * no date, just weekday and time with seconds.
+#.
+#: ../gui/simple-greeter/gdm-clock-widget.c:83
+msgid "%a %l:%M:%S %p"
+msgstr "%a %l:%M:%S %p"
+
+#. translators: This is the time format to use for the date
+#.
+#: ../gui/simple-greeter/gdm-clock-widget.c:87
+#: ../gui/simple-greeter/gdm-clock-widget.c:94
 #, c-format
-msgid "%1$s, %2$s"
-msgstr "%1$s, %2$s"
+msgid "%x"
+msgstr "%x"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:291
+#. translators: This is the time format to use when there is
+#. * no date, just weekday and time without seconds.
+#.
+#: ../gui/simple-greeter/gdm-clock-widget.c:92
+msgid "%a %l:%M %p"
+msgstr "%a %l:%M %p"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:278
 msgid "Automatically logging in..."
 msgstr "Автоматический вход в систему..."
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:758
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:570
 msgid "Cancelling..."
 msgstr "Отмена..."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1185
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:870
 msgid "Select language and click Log In"
 msgstr "Выберите язык и нажмите «Войти»"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:1
-msgid "Authentication Dialog"
-msgstr "Диалог аутентификации"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:2
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
 msgid "Computer Name"
 msgstr "Имя компьютера"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:3
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
 msgid "Log In"
 msgstr "Войти в систему"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:4
-msgid "Restart"
-msgstr "Перезапустить"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
-msgid "Shut Down"
-msgstr "Выключить"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
-msgid "Suspend"
-msgstr "Спящий режим"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
 msgid "Version"
 msgstr "Версия"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:583
+#: ../gui/simple-greeter/gdm-greeter-panel.c:852
 msgid "Panel"
 msgstr "Панель"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:923
+msgid "Shutdown Options..."
+msgstr "Параметры выключения..."
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:945
+msgid "Suspend"
+msgstr "Спящий режим"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:950
+msgid "Restart"
+msgstr "Перезапустить"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:954
+msgid "Shut Down"
+msgstr "Выключить"
 
 #: ../gui/simple-greeter/gdm-language-chooser-dialog.c:201
 msgid "Languages"
 msgstr "Языки"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:272
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:274
 msgid "_Languages:"
 msgstr "_Языки:"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:275
 #: ../gui/simple-greeter/gdm-language-option-widget.c:274
 msgid "_Language:"
 msgstr "_Язык:"
@@ -647,7 +657,7 @@ msgstr "Другой..."
 msgid "Choose a language from the full list of available languages."
 msgstr "Выберите язык из списка доступных языков."
 
-#: ../gui/simple-greeter/gdm-languages.c:609
+#: ../gui/simple-greeter/gdm-languages.c:698
 msgid "Unspecified"
 msgstr "Не указано"
 
@@ -673,28 +683,28 @@ msgstr "Другая..."
 msgid "Choose a keyboard layout from the full list of available layouts."
 msgstr "Выберите раскладку клавиатуры из списка доступных раскладок."
 
-#: ../gui/simple-greeter/gdm-option-widget.c:521
+#: ../gui/simple-greeter/gdm-option-widget.c:507
 msgid "Label Text"
 msgstr "Текст ярлыка"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:522
+#: ../gui/simple-greeter/gdm-option-widget.c:508
 msgid "The text to use as a label"
 msgstr "Текст, используемый в качестве ярлыка"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:529
+#: ../gui/simple-greeter/gdm-option-widget.c:515
 msgid "Icon name"
 msgstr "Имя значка"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:530
+#: ../gui/simple-greeter/gdm-option-widget.c:516
 msgid "The icon to use with the label"
 msgstr "Значок, используемый с ярлыком"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:538
+#: ../gui/simple-greeter/gdm-option-widget.c:524
 msgid "Default Item"
 msgstr "Элемент по умолчанию"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:539
-msgid "The id of the default item"
+#: ../gui/simple-greeter/gdm-option-widget.c:525
+msgid "The ID of the default item"
 msgstr "Идентификатор элемента по умолчанию"
 
 #: ../gui/simple-greeter/gdm-recent-option-widget.c:310
@@ -744,84 +754,76 @@ msgid "Enable accessibility keyboard plugin"
 msgstr "Включить специальные возможности клавиатуры"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
-msgid "Enable debugging"
-msgstr "Включить отладку"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
-msgid "Enable debugging mode for the greeter."
-msgstr "Включить отладочный режим экрана приветствия."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Enable on-screen keyboard"
 msgstr "Включить экранную клавиатуру"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
 msgid "Enable screen magnifier"
 msgstr "Включить увеличитель экрана"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Enable screen reader"
 msgstr "Включить чтение экрана"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
 msgid "Enable showing the banner message"
 msgstr "Включить отображение текстового транспаранта"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
 msgid "Icon name to use for greeter logo"
 msgstr "Имя значка для отображения в качестве логотипа приветствия"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "Recently selected keyboard layouts"
 msgstr "Недавние раскладки клавиатуры"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Recently selected languages"
 msgstr "Надавно выбранные языки"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid ""
 "Set to a list of keyboard layouts to be shown by default at the login window."
 msgstr ""
 "Установите список раскладок клавиатуры, отображаемых по умолчанию в окне "
 "входа в систему."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Set to a list of languages to be shown by default at the login window."
 msgstr ""
 "Установите список языков, отображаемых по умолчанию в окне входа в систему."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr ""
 "Присваивается значение имени значка из темы, используемого в качестве "
 "логотипа экрана приветствия."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to true to disable showing known users in the login window."
 msgstr ""
 "Установите, чтобы запретить отображение списка известных пользователей в "
 "окне входа в систему."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Установите, чтобы запретить отображение кнопок перезапуска в окне входа в "
 "систему."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
 msgid "Set to true to enable the background settings manager plugin."
 msgstr "Установите, чтобы включить модуль настройки фона."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid "Set to true to enable the media-keys settings manager plugin."
 msgstr "Установите, чтобы включить модуль настройки мультимедийных клавиш."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid "Set to true to enable the on-screen keyboard."
 msgstr "Установите, чтобы включить экранную клавиатуру."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid ""
 "Set to true to enable the plugin to manage the accessibility keyboard "
 "settings."
@@ -829,35 +831,35 @@ msgstr ""
 "Установите, чтобы включить модуль управления специальными возможностями "
 "клавиатуры."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "Set to true to enable the screen magnifier."
 msgstr "Установите, чтобы включить увеличитель экрана."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
 msgid "Set to true to enable the screen reader."
 msgstr "Установите, чтобы включить чтение экрана."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to true to enable the sound settings manager plugin."
 msgstr "Установите, чтобы включить модуль управления параметрами звука."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid "Set to true to enable the xrandr settings manager plugin."
 msgstr "Установите, чтобы включить модуль управления параметрами xrandr."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
 msgid "Set to true to enable the xsettings settings manager plugin."
 msgstr "Установите, чтобы включить модуль управления xsettings."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
 msgid "Set to true to show the banner message text."
 msgstr "Установите, чтобы отображать текстовый транспарант."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
 msgid "Set to true to use compiz as the window manager."
 msgstr "Установите, чтобы использовать в качестве менеджера окон compiz."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid ""
 "Text banner message to show on the login window when the user chooser is "
 "empty, instead of banner_message_text."
@@ -865,31 +867,31 @@ msgstr ""
 "Текстовый транспарант, отображаемый в окне приветствия, когда список выбора "
 "пользователей пуст, вместо стандартного транспаранта."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "Text banner message to show on the login window."
 msgstr "Текстовый транспарант, отображаемый в окне приветствия."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
 msgid "True if the background settings manager plugin is enabled."
 msgstr "Установлено, если включен модуль настройки фона."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr "Установлено, если включен модуль настройки мультимедийных клавиш."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "Установлено, если включен модуль настройки звука."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "True if the xrandr settings manager plugin is enabled."
 msgstr "Установлено, если включен модуль управления настройками xrandr."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:37
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "Установлено, если включен модуль настройки xsettings"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:38
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
 msgid "Use compiz as the window manager"
 msgstr "Использовать compiz в качестве менеджера окон"
 
@@ -914,7 +916,7 @@ msgid "Is it Running?"
 msgstr "Работает ли сейчас?"
 
 #: ../gui/simple-greeter/gdm-timer.c:166
-msgid "Whether or not the timer is currently ticking"
+msgid "Whether the timer is currently ticking"
 msgstr "Работает ли таймер в текущий момент"
 
 #: ../gui/simple-greeter/gdm-user.c:245
@@ -960,11 +962,11 @@ msgstr "Автоматически входить в систему после �
 msgid "Log in as %s"
 msgstr "Войти в систему как %s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:739
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:738
 msgid "Currently logged in"
 msgstr "Уже зарегистрирован в системе"
 
-#: ../gui/user-switch-applet/applet.c:162
+#: ../gui/user-switch-applet/applet.c:164
 msgid ""
 "The User Switch Applet is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -976,7 +978,7 @@ msgstr ""
 "общественной лицензии GNU, опубликованной Фондом Свободного Программного "
 "Обеспечения, версии 2 или (на ваше усмотрение) более поздней."
 
-#: ../gui/user-switch-applet/applet.c:166
+#: ../gui/user-switch-applet/applet.c:168
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -989,7 +991,7 @@ msgstr ""
 "ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ. Для получения дополнительных сведений "
 "обратитесь к Универсальной Общественной Лицензии GNU."
 
-#: ../gui/user-switch-applet/applet.c:170
+#: ../gui/user-switch-applet/applet.c:172
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "this program; if not, write to the Free Software Foundation, Inc., 51 "
@@ -1000,77 +1002,78 @@ msgstr ""
 "адресу Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, "
 "MA  02111-1307  USA "
 
-#: ../gui/user-switch-applet/applet.c:184
+#: ../gui/user-switch-applet/applet.c:186
 msgid "A menu to quickly switch between users."
 msgstr "Меню для быстрого переключения между пользователями."
 
-#: ../gui/user-switch-applet/applet.c:188
+#: ../gui/user-switch-applet/applet.c:190
 msgid "translator-credits"
 msgstr "Леонид Кантер <leon@asplinux.ru>"
 
-#: ../gui/user-switch-applet/applet.c:647
-#: ../gui/user-switch-applet/applet.c:784
-#: ../gui/user-switch-applet/applet.c:823
+#: ../gui/user-switch-applet/applet.c:649
+#: ../gui/user-switch-applet/applet.c:788
+#: ../gui/user-switch-applet/applet.c:827
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "Не удалось заблокировать экран: %s"
 
-#: ../gui/user-switch-applet/applet.c:669
+#: ../gui/user-switch-applet/applet.c:671
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "Не удалось временно сменить хранитель экрана на пустой экран: %s"
 
-#: ../gui/user-switch-applet/applet.c:882
+#: ../gui/user-switch-applet/applet.c:886
 #, c-format
 msgid "Can't logout: %s"
 msgstr "Не удалось завершить сеанс: %s"
 
-#: ../gui/user-switch-applet/applet.c:966
+#: ../gui/user-switch-applet/applet.c:970
 msgid "Available"
 msgstr "Доступен"
 
-#: ../gui/user-switch-applet/applet.c:967
+#: ../gui/user-switch-applet/applet.c:971
 msgid "Invisible"
 msgstr "Невидимый"
 
-#: ../gui/user-switch-applet/applet.c:968
+#: ../gui/user-switch-applet/applet.c:972
 msgid "Busy"
 msgstr "Занят"
 
-#: ../gui/user-switch-applet/applet.c:969
+#: ../gui/user-switch-applet/applet.c:973
 msgid "Away"
 msgstr "Отошёл"
 
-#: ../gui/user-switch-applet/applet.c:1129
-msgid "Account Information..."
-msgstr "Информация об учётной записи..."
+#: ../gui/user-switch-applet/applet.c:1133
+msgid "Account Information"
+msgstr "Информация об учётной записи"
 
-#: ../gui/user-switch-applet/applet.c:1141
-msgid "System Preferences..."
-msgstr "Администрирование..."
+#: ../gui/user-switch-applet/applet.c:1145
+msgid "System Preferences"
+msgstr "Параметры системы"
 
-#: ../gui/user-switch-applet/applet.c:1157
+#: ../gui/user-switch-applet/applet.c:1161
 msgid "Lock Screen"
 msgstr "Заблокировать экран"
 
-#: ../gui/user-switch-applet/applet.c:1168
+#. Only show if not locked down
+#: ../gui/user-switch-applet/applet.c:1172
 msgid "Switch User"
 msgstr "Переключить пользователя"
 
 #. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1179
+#: ../gui/user-switch-applet/applet.c:1183
 msgid "Quit..."
 msgstr "Выход..."
 
-#: ../gui/user-switch-applet/applet.c:1294
+#: ../gui/user-switch-applet/applet.c:1304
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: ../gui/user-switch-applet/applet.c:1412
+#: ../gui/user-switch-applet/applet.c:1422
 msgid "User Switch Applet"
 msgstr "Апплет переключения пользователей"
 
-#: ../gui/user-switch-applet/applet.c:1421
+#: ../gui/user-switch-applet/applet.c:1436
 msgid "Change account settings and status"
 msgstr "Изменить текущую учётную запись или статус сеанса"
 
@@ -1098,15 +1101,18 @@ msgstr "_О программе"
 msgid "_Edit Users and Groups"
 msgstr "_Изменить пользователей и группы"
 
-#: ../utils/gdmflexiserver.c:61 ../utils/gdmflexiserver.c:62
-#: ../utils/gdmflexiserver.c:63 ../utils/gdmflexiserver.c:65
-#: ../utils/gdmflexiserver.c:66
-msgid "Ignored - retained for compatibility"
-msgstr "Игнорируется - осталось для совместимости"
+#: ../utils/gdmflexiserver.c:61
+msgid "Only the VERSION command is supported"
+msgstr "Поддерживается только команда VERSION"
 
 #: ../utils/gdmflexiserver.c:61
 msgid "COMMAND"
 msgstr "COMMAND"
+
+#: ../utils/gdmflexiserver.c:62 ../utils/gdmflexiserver.c:63
+#: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
+msgid "Ignored - retained for compatibility"
+msgstr "Игнорируется - осталось для совместимости"
 
 #: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
@@ -1130,14 +1136,35 @@ msgstr "- вход в систему GDM"
 msgid "Unable to start new display"
 msgstr "Не удалось запустить новый дисплей"
 
-#: ../utils/gdm-screenshot.c:219
+#: ../utils/gdm-screenshot.c:216
 msgid "Screenshot taken"
 msgstr "Снимок экрана сделан"
 
 #. Option parsing
-#: ../utils/gdm-screenshot.c:284
+#: ../utils/gdm-screenshot.c:281
 msgid "Take a picture of the screen"
 msgstr "Сделать снимок экрана"
+
+#~ msgid "Enable debugging code"
+#~ msgstr "Включить отладочный код"
+
+#~ msgid "id"
+#~ msgstr "id"
+
+#~ msgid "%a %b %e"
+#~ msgstr "%a %b %e"
+
+#~ msgid "%1$s, %2$s"
+#~ msgstr "%1$s, %2$s"
+
+#~ msgid "Authentication Dialog"
+#~ msgstr "Диалог аутентификации"
+
+#~ msgid "Enable debugging"
+#~ msgstr "Включить отладку"
+
+#~ msgid "Enable debugging mode for the greeter."
+#~ msgstr "Включить отладочный режим экрана приветствия."
 
 #~ msgid "worker exited with status %d"
 #~ msgstr "обработчик завершился с состоянием %d"
