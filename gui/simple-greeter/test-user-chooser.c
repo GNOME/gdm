@@ -31,6 +31,7 @@
 #include <gtk/gtk.h>
 
 #include "gdm-user-chooser-dialog.h"
+#include "gdm-settings-client.h"
 
 int
 main (int argc, char *argv[])
@@ -44,6 +45,11 @@ main (int argc, char *argv[])
         setlocale (LC_ALL, "");
 
         gtk_init (&argc, &argv);
+
+        if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
+                g_critical ("Unable to initialize settings client");
+                exit (1);
+        }
 
         dialog = gdm_user_chooser_dialog_new ();
         /*gtk_widget_set_size_request (dialog, 480, 128);*/
