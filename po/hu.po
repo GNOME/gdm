@@ -10,13 +10,13 @@
 # Laszlo Dvornik <dvornik at gnome dot hu>, 2004, 2005.
 # Gabor Kelemen <kelemeng at gnome dot hu>, 2004, 2005, 2006, 2007, 2008, 2009, 2010.
 # Attila Szervác as sas-guest see : <sas-guest at haydn dot debian dot org>, 2006.
-# Kováts Dóra <dorcssa at gmail.com>, 2008.
+# Kováts Dóra <dorcssa at gmail dot com>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-08 13:30+0100\n"
-"PO-Revision-Date: 2010-02-08 13:33+0100\n"
+"POT-Creation-Date: 2010-03-05 01:28+0100\n"
+"PO-Revision-Date: 2010-03-05 01:26+0100\n"
 "Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
 "Language-Team: Hungarian <gnome at fsf dot hu>\n"
 "MIME-Version: 1.0\n"
@@ -64,12 +64,16 @@ msgstr "A felhasználó nem hitelesíthető"
 msgid "Unable to authorize user"
 msgstr "A felhasználó nem hitelesíthető"
 
-#: ../daemon/gdm-factory-slave.c:281 ../daemon/gdm-simple-slave.c:443
+#: ../daemon/gdm-factory-slave.c:279 ../daemon/gdm-simple-slave.c:443
 msgid "Unable to establish credentials"
 msgstr "A hitelesítési adatok létrehozása sikertelen"
 
-#: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1122
+#: ../daemon/gdm-factory-slave.c:302 ../daemon/gdm-simple-slave.c:473
+msgid "Unable to open session"
+msgstr "Nem nyitható meg munkamenet"
+
+#: ../daemon/gdm-factory-slave.c:683 ../daemon/gdm-product-slave.c:449
+#: ../daemon/gdm-simple-slave.c:1151
 msgid ""
 "Could not start the X server (your graphical environment) due to some "
 "internal error. Please contact your system administrator or check your "
@@ -197,12 +201,14 @@ msgstr "hiba a hitelesítőrendszer értesítésekor a felhasználó gépnevér�
 #: ../daemon/gdm-session-worker.c:1344
 #, c-format
 msgid "error informing authentication system of user's console - %s"
-msgstr "hiba a hitelesítőrendszer értesítésekor a felhasználó termináljáról - %s"
+msgstr ""
+"hiba a hitelesítőrendszer értesítésekor a felhasználó termináljáról - %s"
 
 #: ../daemon/gdm-session-worker.c:1357
 #, c-format
 msgid "error informing authentication system of display string - %s"
-msgstr "hiba a hitelesítőrendszer értesítésekor a megjelenítő-karakterláncról - %s"
+msgstr ""
+"hiba a hitelesítőrendszer értesítésekor a megjelenítő-karakterláncról - %s"
 
 #: ../daemon/gdm-session-worker.c:1372
 #, c-format
@@ -370,7 +376,8 @@ msgstr "Nem határozható meg a(z) %s kiszolgáló gépneve!"
 #: ../daemon/main.c:237 ../daemon/main.c:250
 #, c-format
 msgid "Cannot write PID file %s: possibly out of diskspace: %s"
-msgstr "Nem írható a(z) %s PID fájl, lehetséges, hogy elfogyott a lemezterület: %s"
+msgstr ""
+"Nem írható a(z) %s PID fájl, lehetséges, hogy elfogyott a lemezterület: %s"
 
 #: ../daemon/main.c:271
 #, c-format
@@ -524,7 +531,8 @@ msgstr "Inaktív szöveg"
 
 #: ../gui/simple-greeter/gdm-chooser-widget.c:1282
 msgid "The text to use in the label if the user hasn't picked an item yet"
-msgstr "A címkében használandó szöveg, ha a felhasználó még nem választott ki elemet"
+msgstr ""
+"A címkében használandó szöveg, ha a felhasználó még nem választott ki elemet"
 
 #: ../gui/simple-greeter/gdm-chooser-widget.c:1290
 msgid "Active Text"
@@ -532,7 +540,8 @@ msgstr "Aktív szöveg"
 
 #: ../gui/simple-greeter/gdm-chooser-widget.c:1291
 msgid "The text to use in the label if the user has picked an item"
-msgstr "A címkében használandó szöveg, ha a felhasználó már kiválasztott egy elemet"
+msgstr ""
+"A címkében használandó szöveg, ha a felhasználó már kiválasztott egy elemet"
 
 #: ../gui/simple-greeter/gdm-chooser-widget.c:1300
 msgid "List Visible"
@@ -672,7 +681,8 @@ msgstr "Egyéb…"
 
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:236
 msgid "Choose a keyboard layout from the full list of available layouts."
-msgstr "Válasszon egy billentyűzetkiosztást az elérhető kiosztások teljes listájából."
+msgstr ""
+"Válasszon egy billentyűzetkiosztást az elérhető kiosztások teljes listájából."
 
 #: ../gui/simple-greeter/gdm-option-widget.c:507
 msgid "Label Text"
@@ -775,14 +785,16 @@ msgid "Recently selected languages"
 msgstr "Nemrég használt nyelvek"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
-msgid "Set to a list of keyboard layouts to be shown by default at the login window."
+msgid ""
+"Set to a list of keyboard layouts to be shown by default at the login window."
 msgstr ""
 "A bejelentkezési ablakban alapértelmezésben megjelenítendő "
 "billentyűzetkiosztások listája."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Set to a list of languages to be shown by default at the login window."
-msgstr "A bejelentkezési ablakban alapértelmezésben megjelenítendő nyelvek listája."
+msgstr ""
+"A bejelentkezési ablakban alapértelmezésben megjelenítendő nyelvek listája."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
 msgid "Set to the themed icon name to use for the greeter logo."
@@ -802,11 +814,13 @@ msgstr ""
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
 msgid "Set to true to enable the background settings manager plugin."
-msgstr "Állítsa igazra a háttér beállításait kezelő bővítmény engedélyezéséhez."
+msgstr ""
+"Állítsa igazra a háttér beállításait kezelő bővítmény engedélyezéséhez."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid "Set to true to enable the media-keys settings manager plugin."
-msgstr "Állítsa igazra a médiabillentyűbeállítás-kezelő bővítmény engedélyezéséhez."
+msgstr ""
+"Állítsa igazra a médiabillentyűbeállítás-kezelő bővítmény engedélyezéséhez."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid "Set to true to enable the on-screen keyboard."
@@ -816,7 +830,8 @@ msgstr "Állítsa igazra a képernyő-billentyűzet engedélyezéséhez."
 msgid ""
 "Set to true to enable the plugin to manage the accessibility keyboard "
 "settings."
-msgstr "Állítsa igazra az akadálymentes billentyűzet beállításainak engedélyezéséhez."
+msgstr ""
+"Állítsa igazra az akadálymentes billentyűzet beállításainak engedélyezéséhez."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "Set to true to enable the screen magnifier."
@@ -836,7 +851,8 @@ msgstr "Állítsa igazra az xrandr-beállításkezelő bővítmény engedélyez�
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
 msgid "Set to true to enable the xsettings settings manager plugin."
-msgstr "Állítsa igazra az xsettings beállításkezelő bővítmény engedélyezéséhez."
+msgstr ""
+"Állítsa igazra az xsettings beállításkezelő bővítmény engedélyezéséhez."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
 msgid "Set to true to show the banner message text."
@@ -993,15 +1009,15 @@ msgstr "Menü a felhasználók közti gyors váltáshoz"
 #: ../gui/user-switch-applet/applet.c:190
 msgid "translator-credits"
 msgstr ""
-"Bán Szabolcs <shooby@gnome.hu>\n"
-"Czakó Krisztián <slapic@linux.co.hu>\n"
-"Dvornik László <dvornik@gnome.hu>\n"
-"Kelemen Gábor <kelemeng@gnome.hu>\n"
-"Kovács Emese <emese@gnome.hu>\n"
-"Kováts Dóra <dorcssa@gmail.com>\n"
-"Sári Gábor <saga@gnome.hu>\n"
-"Szervác Attila <sas@321.hu>\n"
-"Tímár András <timar@gnome.hu>"
+"Bán Szabolcs <shooby at gnome dot hu>\n"
+"Czakó Krisztián <slapic at linux.co dot hu>\n"
+"Dvornik László <dvornik at gnome dot hu>\n"
+"Kelemen Gábor <kelemeng at gnome dot hu>\n"
+"Kovács Emese <emese at gnome dot hu>\n"
+"Kováts Dóra <dorcssa at gmail dot com>\n"
+"Sári Gábor <saga at gnome dot hu>\n"
+"Szervác Attila <sas at 321 dot hu>\n"
+"Tímár András <timar at gnome dot hu>"
 
 #: ../gui/user-switch-applet/applet.c:649
 #: ../gui/user-switch-applet/applet.c:788
@@ -1139,4 +1155,3 @@ msgstr "A képernyőkép elkészült"
 #: ../utils/gdm-screenshot.c:281
 msgid "Take a picture of the screen"
 msgstr "Kép készítése a képernyőről"
-
