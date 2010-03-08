@@ -961,7 +961,7 @@ gdm_welcome_session_stop (GdmWelcomeSession *welcome_session)
 
         g_debug ("GdmWelcomeSession: Stopping welcome_session");
 
-        res = gdm_signal_pid (-1 * welcome_session->priv->pid, SIGTERM);
+        res = gdm_signal_pid (welcome_session->priv->pid, SIGTERM);
         if (res < 0) {
                 g_warning ("Unable to kill welcome session process");
         } else {
