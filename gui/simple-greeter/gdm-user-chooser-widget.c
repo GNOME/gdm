@@ -385,7 +385,7 @@ add_user (GdmUserChooserWidget *widget,
         tooltip = g_strdup_printf (_("Log in as %s"),
                                    gdm_user_get_user_name (user));
 
-        is_logged_in = gdm_user_get_num_sessions (user) > 0;
+        is_logged_in = gdm_user_is_logged_in (user);
 
         g_debug ("GdmUserChooserWidget: User added name:%s logged-in:%d pixbuf:%p",
                  gdm_user_get_user_name (user),
@@ -453,7 +453,7 @@ on_user_is_logged_in_changed (GdmUserManager       *manager,
         g_debug ("GdmUserChooserWidget: User logged in changed: %s", gdm_user_get_user_name (user));
 
         user_name = gdm_user_get_user_name (user);
-        is_logged_in = gdm_user_get_num_sessions (user) > 0;
+        is_logged_in = gdm_user_is_logged_in (user);
 
         gdm_chooser_widget_set_item_in_use (GDM_CHOOSER_WIDGET (widget),
                                             user_name,
