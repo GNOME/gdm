@@ -856,6 +856,12 @@ frame_pixbuf (GdkPixbuf *source)
         return dest;
 }
 
+gboolean
+gdm_user_is_logged_in (GdmUser *user)
+{
+        return user->sessions != NULL;
+}
+
 GdkPixbuf *
 gdm_user_render_icon (GdmUser   *user,
                       gint       icon_size)
