@@ -62,8 +62,6 @@ struct _GdmUser {
 typedef struct _GdmUserClass
 {
         GObjectClass parent_class;
-
-        void (* sessions_changed) (GdmUser *user);
 } GdmUserClass;
 
 static void gdm_user_finalize     (GObject      *object);
@@ -157,7 +155,7 @@ gdm_user_class_init (GdmUserClass *class)
                 g_signal_new ("sessions-changed",
                               G_TYPE_FROM_CLASS (class),
                               G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmUserClass, sessions_changed),
+                              0,
                               NULL, NULL,
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE, 0);
