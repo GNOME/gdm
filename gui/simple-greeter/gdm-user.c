@@ -30,7 +30,6 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
-#include "gdm-user-manager.h"
 #include "gdm-user-private.h"
 
 #define GDM_USER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), GDM_TYPE_USER, GdmUserClass))
@@ -44,7 +43,6 @@
 
 enum {
         PROP_0,
-        PROP_MANAGER,
         PROP_REAL_NAME,
         PROP_DISPLAY_NAME,
         PROP_USER_NAME,
@@ -61,8 +59,6 @@ enum {
 
 struct _GdmUser {
         GObject         parent;
-
-        GdmUserManager *manager;
 
         uid_t           uid;
         char           *user_name;
@@ -170,10 +166,6 @@ gdm_user_set_property (GObject      *object,
         user = GDM_USER (object);
 
         switch (param_id) {
-        case PROP_MANAGER:
-                user->manager = g_value_get_object (value);
-                g_assert (user->manager);
-                break;
         case PROP_LOGIN_FREQUENCY:
                 _gdm_user_set_login_frequency (user, g_value_get_ulong (value));
                 break;
@@ -194,9 +186,6 @@ gdm_user_get_property (GObject    *object,
         user = GDM_USER (object);
 
         switch (param_id) {
-        case PROP_MANAGER:
-                g_value_set_object (value, user->manager);
-                break;
         case PROP_USER_NAME:
                 g_value_set_string (value, user->user_name);
                 break;
@@ -234,15 +223,6 @@ gdm_user_class_init (GdmUserClass *class)
         gobject_class->set_property = gdm_user_set_property;
         gobject_class->get_property = gdm_user_get_property;
         gobject_class->finalize = gdm_user_finalize;
-
-        g_object_class_install_property (gobject_class,
-                                         PROP_MANAGER,
-                                         g_param_spec_object ("manager",
-                                                              _("Manager"),
-                                                              _("The user manager object this user is controlled by."),
-                                                              GDM_TYPE_USER_MANAGER,
-                                                              (G_PARAM_READWRITE |
-                                                               G_PARAM_CONSTRUCT_ONLY)));
 
         g_object_class_install_property (gobject_class,
                                          PROP_REAL_NAME,
@@ -311,7 +291,6 @@ gdm_user_class_init (GdmUserClass *class)
 static void
 gdm_user_init (GdmUser *user)
 {
-        user->manager = NULL;
         user->user_name = NULL;
         user->real_name = NULL;
         user->display_name = NULL;

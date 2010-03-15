@@ -683,7 +683,7 @@ create_user (GdmUserManager *manager)
 {
         GdmUser *user;
 
-        user = g_object_new (GDM_TYPE_USER, "manager", manager, NULL);
+        user = g_object_new (GDM_TYPE_USER, NULL);
         g_signal_connect (user,
                           "sessions-changed",
                           G_CALLBACK (on_user_sessions_changed),
