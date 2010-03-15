@@ -150,55 +150,6 @@ start_new_login_session (GdmUserManager *manager)
         return res;
 }
 
-/* needs to stay in sync with gdm-slave */
-static char *
-_get_primary_user_session_id (GdmUserManager *manager,
-                              GdmUser        *user)
-{
-        gboolean    can_activate_sessions;
-        GList      *sessions;
-        GList      *l;
-        char       *primary_ssid;
-
-        if (manager->priv->seat_id == NULL || manager->priv->seat_id[0] == '\0') {
-                g_debug ("GdmUserManager: display seat ID is not set; can't switch sessions");
-                return NULL;
-        }
-
-        primary_ssid = NULL;
-        sessions = NULL;
-
-        can_activate_sessions = gdm_user_manager_can_switch (manager);
-
-        if (! can_activate_sessions) {
-                g_debug ("GdmUserManager: seat is unable to activate sessions");
-                goto out;
-        }
-
-        sessions = gdm_user_get_sessions (user);
-        if (sessions == NULL) {
-                g_warning ("unable to determine sessions for user: %s",
-                           gdm_user_get_user_name (user));
-                goto out;
-        }
-
-        for (l = sessions; l != NULL; l = l->next) {
-                const char *ssid;
-
-                ssid = l->data;
-
-                /* FIXME: better way to choose? */
-                if (ssid != NULL) {
-                        primary_ssid = g_strdup (ssid);
-                        break;
-                }
-        }
-
- out:
-
-        return primary_ssid;
-}
-
 static gboolean
 activate_session_id (GdmUserManager *manager,
                      const char     *seat_id,
@@ -439,15 +390,23 @@ gdm_user_manager_activate_user_session (GdmUserManager *manager,
                                         GdmUser        *user)
 {
         gboolean ret;
-        char    *ssid;
+        const char *ssid;
         gboolean res;
 
+        gboolean can_activate_sessions;
         g_return_val_if_fail (GDM_IS_USER_MANAGER (manager), FALSE);
         g_return_val_if_fail (GDM_IS_USER (user), FALSE);
 
         ret = FALSE;
 
-        ssid = _get_primary_user_session_id (manager, user);
+        can_activate_sessions = gdm_user_manager_can_switch (manager);
+
+        if (! can_activate_sessions) {
+                g_debug ("GdmUserManager: seat is unable to activate sessions");
+                goto out;
+        }
+
+        ssid = gdm_user_get_primary_session_id (user);
         if (ssid == NULL) {
                 goto out;
         }

@@ -49,6 +49,7 @@ guint                 gdm_user_get_num_sessions    (GdmUser   *user);
 GList                *gdm_user_get_sessions        (GdmUser   *user);
 gboolean              gdm_user_is_logged_in        (GdmUser   *user);
 gulong                gdm_user_get_login_frequency (GdmUser   *user);
+G_CONST_RETURN char  *gdm_user_get_primary_session_id (GdmUser *user);
 
 GdkPixbuf            *gdm_user_render_icon         (GdmUser   *user,
                                                     gint       icon_size);
