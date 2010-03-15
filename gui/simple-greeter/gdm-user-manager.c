@@ -746,9 +746,9 @@ match_real_name_cmpfunc (gconstpointer a,
 static gboolean
 match_real_name_hrfunc (gpointer key,
                         gpointer value,
-                        gpointer user_data)
+                        gpointer user)
 {
-        return (g_strcmp0 (user_data, gdm_user_get_real_name (value)) == 0);
+        return (value != user && g_strcmp0 (gdm_user_get_real_name (user), gdm_user_get_real_name (value)) == 0);
 }
 
 static void
@@ -760,7 +760,7 @@ add_user (GdmUserManager *manager,
         add_sessions_for_user (manager, user);
         dup = g_hash_table_find (manager->priv->users,
                                  match_real_name_hrfunc,
-                                 (char *) gdm_user_get_real_name (user));
+                                 user);
         if (dup != NULL) {
                 _gdm_user_show_full_display_name (user);
                 _gdm_user_show_full_display_name (dup);
