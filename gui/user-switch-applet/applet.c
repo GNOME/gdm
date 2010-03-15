@@ -81,7 +81,6 @@ typedef struct _GdmAppletData
         guint           client_notify_lockdown_id;
 
         guint           current_status;
-        guint           user_icon_changed_id;
         guint           user_notify_id;
         gint8           pixel_size;
         gint            panel_size;
@@ -483,7 +482,6 @@ gdm_applet_data_free (GdmAppletData *adata)
         gconf_client_notify_remove (adata->client, adata->client_notify_lockdown_id);
 
         g_signal_handler_disconnect (adata->user, adata->user_notify_id);
-        g_signal_handler_disconnect (adata->user, adata->user_icon_changed_id);
 
 #ifdef BUILD_PRESENSE_STUFF
         if (adata->presence_proxy != NULL) {
@@ -584,11 +582,12 @@ menuitem_style_set_cb (GtkWidget     *menuitem,
 }
 
 static void
-user_notify_display_name_cb (GObject       *object,
-                             GParamSpec    *pspec,
-                             GdmAppletData *adata)
+on_user_changed (GdmUser         *user,
+                 GdmAppletData   *adata)
 {
+        g_debug ("user changed");
         update_label (adata);
+        reset_icon (adata);
 }
 
 /* Called every time the menu is displayed (and also for some reason
@@ -1287,14 +1286,6 @@ reset_icon (GdmAppletData *adata)
 }
 
 static void
-on_user_icon_changed (GdmUser         *user,
-                      GdmAppletData   *adata)
-{
-        g_debug ("User icon changed");
-        reset_icon (adata);
-}
-
-static void
 setup_current_user (GdmAppletData *adata)
 {
         const char *name;
@@ -1322,16 +1313,11 @@ setup_current_user (GdmAppletData *adata)
         if (adata->user != NULL) {
                 reset_icon (adata);
 
-                adata->user_icon_changed_id =
-                        g_signal_connect (adata->user,
-                                          "icon-changed",
-                                          G_CALLBACK (on_user_icon_changed),
-                                          adata);
                 adata->user_notify_id =
                         g_signal_connect (adata->user,
-                                         "notify::display-name",
-                                         G_CALLBACK (user_notify_display_name_cb),
-                                         adata);
+                                          "changed",
+                                          G_CALLBACK (on_user_changed),
+                                          adata);
         }
 }
 
