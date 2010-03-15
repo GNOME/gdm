@@ -42,17 +42,7 @@
 #define MINIMAL_UID       100
 
 enum {
-        PROP_0,
-        PROP_REAL_NAME,
-        PROP_DISPLAY_NAME,
-        PROP_USER_NAME,
-        PROP_UID,
-        PROP_HOME_DIR,
-        PROP_SHELL,
-        PROP_LOGIN_FREQUENCY,
-};
-
-enum {
+        CHANGED,
         SESSIONS_CHANGED,
         LAST_SIGNAL
 };
@@ -148,136 +138,22 @@ gdm_user_get_sessions (GdmUser *user)
 }
 
 static void
-_gdm_user_set_login_frequency (GdmUser *user,
-                               gulong   login_frequency)
-{
-        user->login_frequency = login_frequency;
-        g_object_notify (G_OBJECT (user), "login-frequency");
-}
-
-static void
-gdm_user_set_property (GObject      *object,
-                       guint         param_id,
-                       const GValue *value,
-                       GParamSpec   *pspec)
-{
-        GdmUser *user;
-
-        user = GDM_USER (object);
-
-        switch (param_id) {
-        case PROP_LOGIN_FREQUENCY:
-                _gdm_user_set_login_frequency (user, g_value_get_ulong (value));
-                break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
-                break;
-        }
-}
-
-static void
-gdm_user_get_property (GObject    *object,
-                       guint       param_id,
-                       GValue     *value,
-                       GParamSpec *pspec)
-{
-        GdmUser *user;
-
-        user = GDM_USER (object);
-
-        switch (param_id) {
-        case PROP_USER_NAME:
-                g_value_set_string (value, user->user_name);
-                break;
-        case PROP_REAL_NAME:
-                g_value_set_string (value, user->real_name);
-                break;
-        case PROP_DISPLAY_NAME:
-                g_value_set_string (value, user->display_name);
-                break;
-        case PROP_HOME_DIR:
-                g_value_set_string (value, user->home_dir);
-                break;
-        case PROP_UID:
-                g_value_set_ulong (value, user->uid);
-                break;
-        case PROP_SHELL:
-                g_value_set_string (value, user->shell);
-                break;
-        case PROP_LOGIN_FREQUENCY:
-                g_value_set_ulong (value, user->login_frequency);
-                break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
-                break;
-        }
-}
-
-static void
 gdm_user_class_init (GdmUserClass *class)
 {
         GObjectClass *gobject_class;
 
         gobject_class = G_OBJECT_CLASS (class);
 
-        gobject_class->set_property = gdm_user_set_property;
-        gobject_class->get_property = gdm_user_get_property;
         gobject_class->finalize = gdm_user_finalize;
 
-        g_object_class_install_property (gobject_class,
-                                         PROP_REAL_NAME,
-                                         g_param_spec_string ("real-name",
-                                                              "Real Name",
-                                                              "The real name to display for this user.",
-                                                              NULL,
-                                                              G_PARAM_READABLE));
-
-        g_object_class_install_property (gobject_class,
-                                         PROP_DISPLAY_NAME,
-                                         g_param_spec_string ("display-name",
-                                                              "Display Name",
-                                                              "The unique name to display for this user.",
-                                                              NULL,
-                                                              G_PARAM_READABLE));
-
-        g_object_class_install_property (gobject_class,
-                                         PROP_UID,
-                                         g_param_spec_ulong ("uid",
-                                                             "User ID",
-                                                             "The UID for this user.",
-                                                             0, G_MAXULONG, 0,
-                                                             G_PARAM_READABLE));
-        g_object_class_install_property (gobject_class,
-                                         PROP_USER_NAME,
-                                         g_param_spec_string ("user-name",
-                                                              "User Name",
-                                                              "The login name for this user.",
-                                                              NULL,
-                                                              G_PARAM_READABLE));
-        g_object_class_install_property (gobject_class,
-                                         PROP_HOME_DIR,
-                                         g_param_spec_string ("home-directory",
-                                                              "Home Directory",
-                                                              "The home directory for this user.",
-                                                              NULL,
-                                                              G_PARAM_READABLE));
-        g_object_class_install_property (gobject_class,
-                                         PROP_SHELL,
-                                         g_param_spec_string ("shell",
-                                                              "Shell",
-                                                              "The shell for this user.",
-                                                              NULL,
-                                                              G_PARAM_READABLE));
-        g_object_class_install_property (gobject_class,
-                                         PROP_LOGIN_FREQUENCY,
-                                         g_param_spec_ulong ("login-frequency",
-                                                             "login frequency",
-                                                             "login frequency",
-                                                             0,
-                                                             G_MAXULONG,
-                                                             0,
-                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-
+        signals [CHANGED] =
+                g_signal_new ("changed",
+                              G_TYPE_FROM_CLASS (class),
+                              G_SIGNAL_RUN_LAST,
+                              0,
+                              NULL, NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE, 0);
         signals [SESSIONS_CHANGED] =
                 g_signal_new ("sessions-changed",
                               G_TYPE_FROM_CLASS (class),
@@ -326,11 +202,12 @@ _gdm_user_update (GdmUser             *user,
                   const struct passwd *pwent)
 {
         gchar *real_name = NULL;
+        gboolean changed;
 
         g_return_if_fail (GDM_IS_USER (user));
         g_return_if_fail (pwent != NULL);
 
-        g_object_freeze_notify (G_OBJECT (user));
+        changed = FALSE;
 
         /* Display Name */
         if (pwent->pw_gecos && pwent->pw_gecos[0] != '\0') {
@@ -370,7 +247,7 @@ _gdm_user_update (GdmUser             *user,
              strcmp (real_name, user->real_name) != 0)) {
                 g_free (user->real_name);
                 user->real_name = real_name;
-                g_object_notify (G_OBJECT (user), "real-name");
+                changed = TRUE;
         } else {
                 g_free (real_name);
         }
@@ -382,13 +259,13 @@ _gdm_user_update (GdmUser             *user,
              strncmp (user->real_name, user->display_name, strlen (user->real_name)) != 0)) {
                 g_free (user->display_name);
                 user->display_name = NULL;
-                g_object_notify (G_OBJECT (user), "display-name");
+                changed = TRUE;
         }
 
         /* UID */
         if (pwent->pw_uid != user->uid) {
                 user->uid = pwent->pw_uid;
-                g_object_notify (G_OBJECT (user), "uid");
+                changed = TRUE;
         }
 
         /* Username */
@@ -399,7 +276,7 @@ _gdm_user_update (GdmUser             *user,
              strcmp (user->user_name, pwent->pw_name) != 0)) {
                 g_free (user->user_name);
                 user->user_name = g_strdup (pwent->pw_name);
-                g_object_notify (G_OBJECT (user), "user-name");
+                changed = TRUE;
         }
 
         /* Home Directory */
@@ -408,7 +285,7 @@ _gdm_user_update (GdmUser             *user,
             strcmp (user->home_dir, pwent->pw_dir) != 0) {
                 g_free (user->home_dir);
                 user->home_dir = g_strdup (pwent->pw_dir);
-                g_object_notify (G_OBJECT (user), "home-directory");
+                changed = TRUE;
         }
 
         /* Shell */
@@ -419,10 +296,12 @@ _gdm_user_update (GdmUser             *user,
              strcmp (user->shell, pwent->pw_shell) != 0)) {
                 g_free (user->shell);
                 user->shell = g_strdup (pwent->pw_shell);
-                g_object_notify (G_OBJECT (user), "shell");
+                changed = TRUE;
         }
 
-        g_object_thaw_notify (G_OBJECT (user));
+        if (changed) {
+                g_signal_emit (user, signals[CHANGED], 0);
+        }
 }
 
 /**
@@ -582,7 +461,7 @@ _gdm_user_show_full_display_name (GdmUser *user)
              strcmp (uniq_name, user->display_name) != 0)) {
                 g_free (user->display_name);
                 user->display_name = uniq_name;
-                g_object_notify (G_OBJECT (user), "display-name");
+                g_signal_emit (user, signals[CHANGED], 0);
         } else {
                 g_free (uniq_name);
         }
@@ -604,7 +483,7 @@ _gdm_user_show_short_display_name (GdmUser *user)
         if (user->display_name) {
                 g_free (user->display_name);
                 user->display_name = NULL;
-                g_object_notify (G_OBJECT (user), "display-name");
+                g_signal_emit (user, signals[CHANGED], 0);
         }
 }
 
