@@ -929,3 +929,33 @@ gdm_user_render_icon (GdmUser   *user,
 
         return pixbuf;
 }
+
+G_CONST_RETURN char *
+gdm_user_get_primary_session_id (GdmUser *user)
+{
+        GList *l;
+        const char *primary_ssid;
+
+        primary_ssid = NULL;
+
+        if (!gdm_user_is_logged_in (user)) {
+                g_debug ("User %s is not logged in, so has no primary session",
+                         gdm_user_get_user_name (user));
+                goto out;
+        }
+
+        for (l = user->sessions; l != NULL; l = l->next) {
+                const char *ssid;
+
+                ssid = l->data;
+
+                /* FIXME: better way to choose? */
+                if (ssid != NULL) {
+                        primary_ssid = ssid;
+                        break;
+                }
+        }
+out:
+        return primary_ssid;
+}
+
