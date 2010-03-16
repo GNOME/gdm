@@ -972,18 +972,6 @@ get_seat_proxy (GdmUserManager *manager)
 
         g_assert (manager->priv->seat_proxy == NULL);
 
-        error = NULL;
-        manager->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-        if (manager->priv->connection == NULL) {
-                if (error != NULL) {
-                        g_warning ("Failed to connect to the D-Bus daemon: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to connect to the D-Bus daemon");
-                }
-                return;
-        }
-
         manager->priv->seat_id = get_current_seat_id (manager->priv->connection);
         if (manager->priv->seat_id == NULL) {
                 return;
@@ -1714,6 +1702,7 @@ static void
 gdm_user_manager_init (GdmUserManager *manager)
 {
         char          *temp;
+        GError        *error;
         gboolean       res;
 
         manager->priv = GDM_USER_MANAGER_GET_PRIVATE (manager);
@@ -1746,6 +1735,21 @@ gdm_user_manager_init (GdmUserManager *manager)
 
         if (manager->priv->include_all == TRUE) {
                 monitor_local_users (manager);
+        }
+
+
+        g_assert (manager->priv->seat_proxy == NULL);
+
+        error = NULL;
+        manager->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (manager->priv->connection == NULL) {
+                if (error != NULL) {
+                        g_warning ("Failed to connect to the D-Bus daemon: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to connect to the D-Bus daemon");
+                }
+                return;
         }
 
         get_seat_proxy (manager);
