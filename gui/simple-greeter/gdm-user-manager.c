@@ -101,7 +101,6 @@ struct GdmUserManagerPrivate
 };
 
 enum {
-        LOADING_USERS,
         USERS_LOADED,
         USER_ADDED,
         USER_REMOVED,
@@ -1499,7 +1498,6 @@ queue_reload_users (GdmUserManager *manager)
                 return;
         }
 
-        g_signal_emit (G_OBJECT (manager), signals[LOADING_USERS], 0);
         manager->priv->reload_id = g_idle_add ((GSourceFunc)reload_users_timeout, manager);
 }
 
@@ -1565,14 +1563,6 @@ gdm_user_manager_class_init (GdmUserManagerClass *klass)
 
         object_class->finalize = gdm_user_manager_finalize;
 
-        signals [LOADING_USERS] =
-                g_signal_new ("loading-users",
-                              G_TYPE_FROM_CLASS (klass),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmUserManagerClass, loading_users),
-                              NULL, NULL,
-                              g_cclosure_marshal_VOID__VOID,
-                              G_TYPE_NONE, 0);
         signals [USERS_LOADED] =
                 g_signal_new ("users-loaded",
                               G_TYPE_FROM_CLASS (klass),
