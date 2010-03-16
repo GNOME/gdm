@@ -61,9 +61,9 @@
 /* Prefs Defaults */
 
 #ifdef __sun
-#define DEFAULT_MINIMAL_UID     100
+#define FALLBACK_MINIMAL_UID     100
 #else
-#define DEFAULT_MINIMAL_UID     500
+#define FALLBACK_MINIMAL_UID     500
 #endif
 
 #ifndef _PATH_SHELLS
@@ -78,13 +78,19 @@
 #define GDM_USERNAME "gdm"
 #endif
 
+#define ACCOUNTS_NAME      "org.freedesktop.Accounts"
+#define ACCOUNTS_PATH      "/org/freedesktop/Accounts"
+#define ACCOUNTS_INTERFACE "org.freedesktop.Accounts"
+
 struct GdmUserManagerPrivate
 {
         GHashTable            *users_by_name;
+        GHashTable            *users_by_object_path;
         GHashTable            *sessions;
         GHashTable            *shells;
         DBusGConnection       *connection;
         DBusGProxy            *seat_proxy;
+        DBusGProxy            *accounts_proxy;
         char                  *seat_id;
 
         GFileMonitor          *passwd_monitor;
@@ -127,7 +133,7 @@ static void     gdm_user_manager_class_init (GdmUserManagerClass *klass);
 static void     gdm_user_manager_init       (GdmUserManager      *user_manager);
 static void     gdm_user_manager_finalize   (GObject             *object);
 
-static void load_users (GdmUserManager *manager);
+static void load_users_manually (GdmUserManager *manager);
 static void monitor_local_users (GdmUserManager *manager);
 
 static gpointer user_manager_object = NULL;
@@ -638,9 +644,18 @@ static void
 add_user (GdmUserManager *manager,
           GdmUser        *user)
 {
+        const char *object_path;
+
         g_hash_table_insert (manager->priv->users_by_name,
                              g_strdup (gdm_user_get_user_name (user)),
                              g_object_ref (user));
+
+        object_path = gdm_user_get_object_path (user);
+        if (object_path != NULL) {
+                g_hash_table_insert (manager->priv->users_by_object_path,
+                                     (gpointer) object_path,
+                                     g_object_ref (user));
+        }
 
         if (manager->priv->is_loaded) {
                 g_signal_emit (manager, signals[USER_ADDED], 0, user);
@@ -657,12 +672,15 @@ add_new_user_for_pwent (GdmUserManager *manager,
 {
         GdmUser *user;
 
-        g_debug ("Creating new user");
+        g_debug ("Creating new user from password entry");
 
         user = create_user (manager);
         _gdm_user_update_from_pwent (user, pwent);
 
         add_user (manager, user);
+        g_object_unref (user);
+
+        user = g_hash_table_lookup (manager->priv->users_by_name, pwent->pw_name);
 
         return user;
 }
@@ -673,12 +691,71 @@ remove_user (GdmUserManager *manager,
 {
         g_signal_handlers_disconnect_by_func (user, on_user_changed, manager);
         g_signal_handlers_disconnect_by_func (user, on_user_sessions_changed, manager);
+        if (gdm_user_get_object_path (user) != NULL) {
+                g_hash_table_remove (manager->priv->users_by_object_path, gdm_user_get_object_path (user));
+        }
         g_hash_table_remove (manager->priv->users_by_name, gdm_user_get_user_name (user));
         g_signal_emit (manager, signals[USER_REMOVED], 0, user);
 
         if (g_hash_table_size (manager->priv->users_by_name) > 1) {
                 set_has_multiple_users (manager, FALSE);
         }
+}
+
+static void
+add_new_user_for_object_path (const char     *object_path,
+                              GdmUserManager *manager)
+{
+        GdmUser *user;
+        const char *username;
+
+        if (g_hash_table_lookup (manager->priv->users_by_object_path, object_path)) {
+                return;
+        }
+        user = gdm_user_new_from_object_path (object_path);
+
+        if (user == NULL) {
+                return;
+        }
+
+        username = gdm_user_get_user_name (user);
+        if (user_in_exclude_list (manager, username)) {
+                g_debug ("GdmUserManager: excluding user '%s'", username);
+                g_object_unref (user);
+                return;
+        }
+
+        g_signal_connect (user, "sessions-changed",
+                          G_CALLBACK (on_user_sessions_changed), manager);
+        g_signal_connect (user, "changed",
+                          G_CALLBACK (on_user_changed), manager);
+
+        add_user (manager, user);
+        g_object_unref (user);
+}
+
+static void
+on_new_user_in_accounts_service (DBusGProxy *proxy,
+                                 const char *object_path,
+                                 gpointer    user_data)
+{
+        GdmUserManager *manager = GDM_USER_MANAGER (user_data);
+
+        add_new_user_for_object_path (object_path, manager);
+}
+
+static void
+on_user_removed_in_accounts_service (DBusGProxy *proxy,
+                                     const char *object_path,
+                                     gpointer    user_data)
+{
+        GdmUserManager *manager = GDM_USER_MANAGER (user_data);
+        GdmUser *user;
+
+        user = g_hash_table_lookup (manager->priv->users_by_object_path, object_path);
+        g_object_ref (user);
+        remove_user (manager, user);
+        g_object_unref (user);
 }
 
 static char *
@@ -777,6 +854,101 @@ get_uid_from_session_id (GdmUserManager *manager,
         return TRUE;
 }
 
+static char *
+get_user_object_path_from_accounts_service (GdmUserManager *manager,
+                                            const char     *name)
+{
+        GError          *error;
+        char            *object_path;
+        gboolean         res;
+
+        g_assert (manager->priv->accounts_proxy != NULL);
+
+        error = NULL;
+        object_path = NULL;
+        res = dbus_g_proxy_call (manager->priv->accounts_proxy,
+                                 "FindUserByName",
+                                 &error,
+                                 G_TYPE_STRING,
+                                 name,
+                                 G_TYPE_INVALID,
+                                 DBUS_TYPE_G_OBJECT_PATH,
+                                 &object_path,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_debug ("Failed to find user %s: %s", name, error->message);
+                        g_error_free (error);
+                } else {
+                        g_debug ("Failed to find user %s", name);
+                }
+                return NULL;
+        }
+        return object_path;
+}
+
+static void
+set_is_loaded (GdmUserManager *manager,
+               gboolean        is_loaded)
+{
+        if (manager->priv->is_loaded != is_loaded) {
+                manager->priv->is_loaded = is_loaded;
+                g_object_notify (G_OBJECT (manager), "is-loaded");
+        }
+}
+
+static void
+on_list_cached_users_finished (DBusGProxy     *proxy,
+                               DBusGProxyCall *call_id,
+                               gpointer        data)
+{
+        GdmUserManager *manager = data;
+        GError *error = NULL;
+        GPtrArray *paths;
+
+        if (!dbus_g_proxy_end_call (proxy,
+                                    call_id,
+                                    &error,
+                                    dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH), &paths,
+                                    G_TYPE_INVALID)) {
+                g_debug ("ListCachedUsers failed: %s", error->message);
+                g_error_free (error);
+
+                g_object_unref (manager->priv->accounts_proxy);
+                manager->priv->accounts_proxy = NULL;
+
+                load_users_manually (manager);
+
+                return;
+        }
+
+        g_ptr_array_foreach (paths, (GFunc)add_new_user_for_object_path, manager);
+
+        g_ptr_array_foreach (paths, (GFunc)g_free, NULL);
+        g_ptr_array_free (paths, TRUE);
+
+        /* Add users who are specifically included */
+        if (manager->priv->include_usernames != NULL) {
+                GSList *l;
+
+                for (l = manager->priv->include_usernames; l != NULL; l = l->next) {
+                        GdmUser *user;
+
+                        g_debug ("Adding included user %s", (char *)l->data);
+                        /*
+                         * The call to gdm_user_manager_get_user will add the user if it is
+                         * valid and not already in the hash.
+                         */
+                        user = gdm_user_manager_get_user (manager, l->data);
+                        if (user == NULL) {
+                                g_debug ("GdmUserManager: unable to lookup user '%s'", (char *)l->data);
+                        }
+                }
+        }
+
+        set_is_loaded (manager, TRUE);
+}
+
 static void
 maybe_add_session (GdmUserManager *manager,
                    const char     *session_id)
@@ -785,7 +957,6 @@ maybe_add_session (GdmUserManager *manager,
         gboolean       res;
         struct passwd *pwent;
         GdmUser       *user;
-        gboolean       is_new;
         char          *x11_display;
 
         res = get_uid_from_session_id (manager, session_id, &uid);
@@ -816,22 +987,9 @@ maybe_add_session (GdmUserManager *manager,
                 return;
         }
 
-        user = g_hash_table_lookup (manager->priv->users_by_name, pwent->pw_name);
-        if (user == NULL) {
-                g_debug ("Creating new user");
-
-                user = create_user (manager);
-                _gdm_user_update_from_pwent (user, pwent);
-                is_new = TRUE;
-        } else {
-                is_new = FALSE;
-        }
-
-        add_session_for_user (manager, user, session_id);
-
-        /* only add the user if it was newly created */
-        if (is_new) {
-                add_user (manager, user);
+        user = gdm_user_manager_get_user (manager, pwent->pw_name);
+        if (user != NULL) {
+                add_session_for_user (manager, user, session_id);
         }
 }
 
@@ -939,6 +1097,60 @@ get_seat_proxy (GdmUserManager *manager)
 
 }
 
+static void
+on_accounts_proxy_destroy (DBusGProxy     *proxy,
+                           GdmUserManager *manager)
+{
+        g_debug ("GdmUserManager: accounts proxy destroyed");
+
+        manager->priv->accounts_proxy = NULL;
+}
+
+static void
+get_accounts_proxy (GdmUserManager *manager)
+{
+        DBusGProxy      *proxy;
+        GError          *error;
+
+        g_assert (manager->priv->accounts_proxy == NULL);
+
+        error = NULL;
+        proxy = dbus_g_proxy_new_for_name_owner (manager->priv->connection,
+                                                 ACCOUNTS_NAME,
+                                                 ACCOUNTS_PATH,
+                                                 ACCOUNTS_INTERFACE,
+                                                 &error);
+        manager->priv->accounts_proxy = proxy;
+
+        if (proxy != NULL) {
+                g_signal_connect (proxy, "destroy",
+                                  G_CALLBACK (on_accounts_proxy_destroy),
+                                  manager);
+
+                dbus_g_proxy_add_signal (proxy,
+                                         "UserAdded",
+                                         DBUS_TYPE_G_OBJECT_PATH,
+                                         G_TYPE_INVALID);
+                dbus_g_proxy_add_signal (proxy,
+                                         "UserDeleted",
+                                         DBUS_TYPE_G_OBJECT_PATH,
+                                         G_TYPE_INVALID);
+
+                dbus_g_proxy_connect_signal (proxy,
+                                             "UserAdded",
+                                             G_CALLBACK (on_new_user_in_accounts_service),
+                                             manager,
+                                             NULL);
+                dbus_g_proxy_connect_signal (proxy,
+                                             "UserDeleted",
+                                             G_CALLBACK (on_user_removed_in_accounts_service),
+                                             manager,
+                                             NULL);
+        } else {
+                g_debug ("GdmUserManager: Unable to connect to accounts service");
+        }
+}
+
 /**
  * gdm_manager_get_user:
  * @manager: the manager to query.
@@ -960,13 +1172,24 @@ gdm_user_manager_get_user (GdmUserManager *manager,
 
         user = g_hash_table_lookup (manager->priv->users_by_name, username);
 
+        /* if we don't have it loaded try to load it now */
         if (user == NULL) {
-                struct passwd *pwent;
+                if (manager->priv->accounts_proxy != NULL) {
+                        char *object_path;
 
-                pwent = getpwnam (username);
+                        object_path = get_user_object_path_from_accounts_service (manager, username);
 
-                if (pwent != NULL) {
-                        user = add_new_user_for_pwent (manager, pwent);
+                        if (object_path != NULL) {
+                                add_new_user_for_object_path (object_path, manager);
+                                g_free (object_path);
+                                user = g_hash_table_lookup (manager->priv->users_by_name, username);
+                        }
+                } else {
+                        struct passwd *pwent;
+                        pwent = getpwnam (username);
+                        if (pwent != NULL) {
+                                user = add_new_user_for_pwent (manager, pwent);
+                        }
                 }
         }
 
@@ -977,7 +1200,6 @@ GdmUser *
 gdm_user_manager_get_user_by_uid (GdmUserManager *manager,
                                   gulong          uid)
 {
-        GdmUser       *user;
         struct passwd *pwent;
 
         g_return_val_if_fail (GDM_IS_USER_MANAGER (manager), NULL);
@@ -988,13 +1210,7 @@ gdm_user_manager_get_user_by_uid (GdmUserManager *manager,
                 return NULL;
         }
 
-        user = g_hash_table_lookup (manager->priv->users_by_name, pwent->pw_name);
-
-        if (user == NULL) {
-                user = add_new_user_for_pwent (manager, pwent);
-        }
-
-        return user;
+        return gdm_user_manager_get_user (manager, pwent->pw_name);
 }
 
 static void
@@ -1136,16 +1352,6 @@ process_ck_history_line (GdmUserManager *manager,
 
         _gdm_user_update_login_frequency (user, frequency);
         g_free (username);
-}
-
-static void
-set_is_loaded (GdmUserManager *manager,
-               gboolean        is_loaded)
-{
-        if (manager->priv->is_loaded != is_loaded) {
-                manager->priv->is_loaded = is_loaded;
-                g_object_notify (G_OBJECT (manager), "is-loaded");
-        }
 }
 
 static gboolean
@@ -1351,7 +1557,7 @@ reload_passwd_file (GHashTable *valid_shells,
                      pwent = fgetpwent (fp)) {
 
                         /* Skip users below MinimalUID... */
-                        if (pwent->pw_uid < DEFAULT_MINIMAL_UID) {
+                        if (pwent->pw_uid < FALLBACK_MINIMAL_UID) {
                                 continue;
                         }
 
@@ -1575,6 +1781,65 @@ load_sessions (GdmUserManager *manager)
         g_ptr_array_free (sessions, TRUE);
 }
 
+static void
+reload_shells (GdmUserManager *manager)
+{
+        char *shell;
+
+        setusershell ();
+
+        g_hash_table_remove_all (manager->priv->shells);
+        for (shell = getusershell (); shell != NULL; shell = getusershell ()) {
+                /* skip well known not-real shells */
+                if (shell == NULL
+                    || strcmp (shell, "/sbin/nologin") == 0
+                    || strcmp (shell, "/bin/false") == 0) {
+                        g_debug ("GdmUserManager: skipping shell %s", shell);
+                        continue;
+                }
+                g_hash_table_insert (manager->priv->shells,
+                                     g_strdup (shell),
+                                     GUINT_TO_POINTER (TRUE));
+        }
+
+        endusershell ();
+}
+
+static void
+load_users_manually (GdmUserManager *manager)
+{
+        gboolean res;
+
+        manager->priv->shells = g_hash_table_new_full (g_str_hash,
+                                                       g_str_equal,
+                                                       g_free,
+                                                       NULL);
+        reload_shells (manager);
+
+        load_sessions (manager);
+
+        res = load_ck_history (manager);
+        schedule_reload_passwd (manager);
+}
+
+static void
+load_users (GdmUserManager *manager)
+{
+        if (manager->priv->accounts_proxy != NULL) {
+                g_debug ("GdmUserManager: calling 'ListCachedUsers'");
+
+                dbus_g_proxy_begin_call (manager->priv->accounts_proxy,
+                                         "ListCachedUsers",
+                                         on_list_cached_users_finished,
+                                         manager,
+                                         NULL,
+                                         G_TYPE_INVALID);
+        } else {
+                g_debug ("GdmUserManager: Getting users manually");
+                load_users_manually (manager);
+        }
+}
+
 static gboolean
 load_users_idle (GdmUserManager *manager)
 {
@@ -1611,30 +1876,6 @@ queue_reload_passwd (GdmUserManager *manager)
         }
 
         manager->priv->reload_passwd_id = g_timeout_add_seconds (5, (GSourceFunc)reload_passwd_idle, manager);
-}
-
-static void
-reload_shells (GdmUserManager *manager)
-{
-        char *shell;
-
-        setusershell ();
-
-        g_hash_table_remove_all (manager->priv->shells);
-        for (shell = getusershell (); shell != NULL; shell = getusershell ()) {
-                /* skip well known not-real shells */
-                if (shell == NULL
-                    || strcmp (shell, "/sbin/nologin") == 0
-                    || strcmp (shell, "/bin/false") == 0) {
-                        g_debug ("GdmUserManager: skipping shell %s", shell);
-                        continue;
-                }
-                g_hash_table_insert (manager->priv->shells,
-                                     g_strdup (shell),
-                                     GUINT_TO_POINTER (TRUE));
-        }
-
-        endusershell ();
 }
 
 static void
@@ -1819,23 +2060,6 @@ monitor_local_users (GdmUserManager *manager)
 }
 
 static void
-load_users (GdmUserManager *manager)
-{
-        gboolean res;
-
-        manager->priv->shells = g_hash_table_new_full (g_str_hash,
-                                                       g_str_equal,
-                                                       g_free,
-                                                       NULL);
-        reload_shells (manager);
-
-        load_sessions (manager);
-
-        res = load_ck_history (manager);
-        schedule_reload_passwd (manager);
-}
-
-static void
 gdm_user_manager_class_init (GdmUserManagerClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
@@ -1944,9 +2168,10 @@ gdm_user_manager_init (GdmUserManager *manager)
                                                               g_free,
                                                               (GDestroyNotify) g_object_run_dispose);
 
-        if (manager->priv->include_all == TRUE) {
-                monitor_local_users (manager);
-        }
+        manager->priv->users_by_object_path = g_hash_table_new_full (g_str_hash,
+                                                                     g_str_equal,
+                                                                     NULL,
+                                                                     (GDestroyNotify) g_object_unref);
 
         g_assert (manager->priv->seat_proxy == NULL);
 
@@ -1965,7 +2190,7 @@ gdm_user_manager_init (GdmUserManager *manager)
         manager->priv->cancellable = g_cancellable_new ();
 
         get_seat_proxy (manager);
-
+        get_accounts_proxy (manager);
         queue_load_users (manager);
 }
 
@@ -2017,10 +2242,16 @@ gdm_user_manager_finalize (GObject *object)
 
         g_hash_table_destroy (manager->priv->sessions);
 
-        g_file_monitor_cancel (manager->priv->passwd_monitor);
-        g_hash_table_destroy (manager->priv->users_by_name);
+        if (manager->priv->passwd_monitor != NULL) {
+                g_file_monitor_cancel (manager->priv->passwd_monitor);
+        }
 
-        g_file_monitor_cancel (manager->priv->shells_monitor);
+        g_hash_table_destroy (manager->priv->users_by_name);
+        g_hash_table_destroy (manager->priv->users_by_object_path);
+
+        if (manager->priv->shells_monitor != NULL) {
+                g_file_monitor_cancel (manager->priv->shells_monitor);
+        }
         g_hash_table_destroy (manager->priv->shells);
 
         g_free (manager->priv->seat_id);

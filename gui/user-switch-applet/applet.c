@@ -791,9 +791,12 @@ on_account_activate (GtkMenuItem   *item,
         GdkScreen *screen;
         gboolean   res;
 
-        args[0] = g_find_program_in_path ("gnome-about-me");
+        args[0] = g_find_program_in_path ("accounts-dialog");
         if (args[0] == NULL) {
-                return;
+                args[0] = g_find_program_in_path ("gnome-about-me");
+                if (args[0] == NULL) {
+                        return;
+                }
         }
         args[1] = NULL;
 

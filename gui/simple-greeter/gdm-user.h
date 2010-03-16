@@ -39,12 +39,16 @@ typedef struct _GdmUser GdmUser;
 
 GType                 gdm_user_get_type            (void) G_GNUC_CONST;
 
+GdmUser              *gdm_user_new_from_object_path (const gchar *path);
+const char           *gdm_user_get_object_path      (GdmUser *user);
+
 gulong                gdm_user_get_uid             (GdmUser   *user);
 G_CONST_RETURN char  *gdm_user_get_user_name       (GdmUser   *user);
 G_CONST_RETURN char  *gdm_user_get_real_name       (GdmUser   *user);
 guint                 gdm_user_get_num_sessions    (GdmUser   *user);
 gboolean              gdm_user_is_logged_in        (GdmUser   *user);
 gulong                gdm_user_get_login_frequency (GdmUser   *user);
+G_CONST_RETURN char  *gdm_user_get_icon_file       (GdmUser   *user);
 G_CONST_RETURN char  *gdm_user_get_primary_session_id (GdmUser *user);
 
 GdkPixbuf            *gdm_user_render_icon         (GdmUser   *user,
