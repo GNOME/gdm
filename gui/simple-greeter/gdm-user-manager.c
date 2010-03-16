@@ -105,7 +105,7 @@ enum {
         USER_ADDED,
         USER_REMOVED,
         USER_IS_LOGGED_IN_CHANGED,
-        USER_LOGIN_FREQUENCY_CHANGED,
+        USER_CHANGED,
         LAST_SIGNAL
 };
 
@@ -114,6 +114,10 @@ static guint signals [LAST_SIGNAL] = { 0, };
 static void     gdm_user_manager_class_init (GdmUserManagerClass *klass);
 static void     gdm_user_manager_init       (GdmUserManager      *user_manager);
 static void     gdm_user_manager_finalize   (GObject             *object);
+
+static gboolean match_real_name_hrfunc (gpointer key,
+                                        gpointer value,
+                                        gpointer user);
 
 static gpointer user_manager_object = NULL;
 
@@ -441,6 +445,27 @@ on_user_sessions_changed (GdmUser        *user,
         g_signal_emit (manager, signals [USER_IS_LOGGED_IN_CHANGED], 0, user);
 }
 
+static void
+on_user_changed (GdmUser        *user,
+                 GdmUserManager *manager)
+{
+        GdmUser *dup;
+
+        g_debug ("GdmUserManager: user changed");
+
+        dup = g_hash_table_find (manager->priv->users,
+                                 match_real_name_hrfunc,
+                                 user);
+        if (dup != NULL) {
+                _gdm_user_show_full_display_name (user);
+                _gdm_user_show_full_display_name (dup);
+        } else {
+                _gdm_user_show_short_display_name (user);
+        }
+
+        g_signal_emit (manager, signals[USER_CHANGED], 0, user);
+}
+
 static char *
 get_seat_id_for_session (DBusGConnection *connection,
                          const char      *session_id)
@@ -686,6 +711,10 @@ create_user (GdmUserManager *manager)
         g_signal_connect (user,
                           "sessions-changed",
                           G_CALLBACK (on_user_sessions_changed),
+                          manager);
+        g_signal_connect (user,
+                          "changed",
+                          G_CALLBACK (on_user_changed),
                           manager);
         return user;
 }
@@ -1198,8 +1227,7 @@ process_ck_history_line (GdmUserManager *manager,
                 return;
         }
 
-        g_object_set (user, "login-frequency", frequency, NULL);
-        g_signal_emit (manager, signals [USER_LOGIN_FREQUENCY_CHANGED], 0, user);
+        _gdm_user_update_login_frequency (user, frequency);
         g_free (username);
 }
 
@@ -1595,11 +1623,11 @@ gdm_user_manager_class_init (GdmUserManagerClass *klass)
                               NULL, NULL,
                               g_cclosure_marshal_VOID__OBJECT,
                               G_TYPE_NONE, 1, GDM_TYPE_USER);
-        signals [USER_LOGIN_FREQUENCY_CHANGED] =
-                g_signal_new ("user-login-frequency-changed",
+        signals [USER_CHANGED] =
+                g_signal_new ("user-changed",
                               G_TYPE_FROM_CLASS (klass),
                               G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmUserManagerClass, user_login_frequency_changed),
+                              G_STRUCT_OFFSET (GdmUserManagerClass, user_changed),
                               NULL, NULL,
                               g_cclosure_marshal_VOID__OBJECT,
                               G_TYPE_NONE, 1, GDM_TYPE_USER);

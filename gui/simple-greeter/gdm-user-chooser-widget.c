@@ -461,21 +461,53 @@ on_user_is_logged_in_changed (GdmUserManager       *manager,
 }
 
 static void
-on_user_login_frequency_changed (GdmUserManager       *manager,
-                                 GdmUser              *user,
-                                 GdmUserChooserWidget *widget)
+on_user_changed (GdmUserManager       *manager,
+                 GdmUser              *user,
+                 GdmUserChooserWidget *widget)
 {
-        const char *user_name;
-        gulong      freq;
+        GdkPixbuf    *pixbuf;
+        char         *tooltip;
+        gboolean      is_logged_in;
+        int           size;
 
-        g_debug ("GdmUserChooserWidget: User login frequency changed: %s", gdm_user_get_user_name (user));
+        /* wait for all users to be loaded */
+        if (! widget->priv->loaded) {
+                return;
+        }
+        if (! widget->priv->show_normal_users) {
+                return;
+        }
 
-        user_name = gdm_user_get_user_name (user);
-        freq = gdm_user_get_login_frequency (user);
+        size = get_icon_height_for_widget (GTK_WIDGET (widget));
+        pixbuf = gdm_user_render_icon (user, size);
 
-        gdm_chooser_widget_set_item_priority (GDM_CHOOSER_WIDGET (widget),
-                                              user_name,
-                                              freq);
+        if (pixbuf == NULL && widget->priv->stock_person_pixbuf != NULL) {
+                pixbuf = g_object_ref (widget->priv->stock_person_pixbuf);
+        }
+
+        tooltip = g_strdup_printf (_("Log in as %s"),
+                                   gdm_user_get_user_name (user));
+
+        is_logged_in = gdm_user_is_logged_in (user);
+
+        g_debug ("GdmUserChooserWidget: User added name:%s logged-in:%d pixbuf:%p",
+                 gdm_user_get_user_name (user),
+                 is_logged_in,
+                 pixbuf);
+
+        gdm_chooser_widget_update_item (GDM_CHOOSER_WIDGET (widget),
+                                        gdm_user_get_user_name (user),
+                                        pixbuf,
+                                        gdm_user_get_display_name (user),
+                                        tooltip,
+                                        gdm_user_get_login_frequency (user),
+                                        is_logged_in,
+                                        FALSE);
+        g_free (tooltip);
+
+        if (pixbuf != NULL) {
+                g_object_unref (pixbuf);
+        }
 }
 
 static void
@@ -526,8 +558,8 @@ load_users (GdmUserChooserWidget *widget)
                                   G_CALLBACK (on_user_is_logged_in_changed),
                                   widget);
                 g_signal_connect (widget->priv->manager,
-                                  "user-login-frequency-changed",
-                                  G_CALLBACK (on_user_login_frequency_changed),
+                                  "user-changed",
+                                  G_CALLBACK (on_user_changed),
                                   widget);
         } else {
                 gdm_chooser_widget_loaded (GDM_CHOOSER_WIDGET (widget));
