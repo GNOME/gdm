@@ -129,12 +129,6 @@ gdm_user_get_num_sessions (GdmUser    *user)
         return g_list_length (user->sessions);
 }
 
-GList *
-gdm_user_get_sessions (GdmUser *user)
-{
-        return user->sessions;
-}
-
 static void
 gdm_user_class_init (GdmUserClass *class)
 {
