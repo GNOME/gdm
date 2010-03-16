@@ -53,7 +53,7 @@ typedef struct
                                                      GdmUser        *user);
         void          (* user_is_logged_in_changed) (GdmUserManager *user_manager,
                                                      GdmUser        *user);
-        void          (* user_login_frequency_changed) (GdmUserManager *user_manager,
+        void          (* user_changed)              (GdmUserManager *user_manager,
                                                         GdmUser        *user);
 } GdmUserManagerClass;
 

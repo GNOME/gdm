@@ -264,6 +264,28 @@ _gdm_user_update (GdmUser             *user,
 }
 
 /**
+ * _gdm_user_update_login_frequency:
+ * @user: the user object to update
+ *
+ * Updates the login frequency of @user
+ *
+ * Since: 1.0
+ **/
+void
+_gdm_user_update_login_frequency (GdmUser *user,
+                                  guint64  login_frequency)
+{
+        g_return_if_fail (GDM_IS_USER (user));
+
+        if (login_frequency == user->login_frequency) {
+                return;
+        }
+
+        user->login_frequency = login_frequency;
+        g_signal_emit (user, signals[CHANGED], 0);
+}
+
+/**
  * gdm_user_get_uid:
  * @user: the user object to examine.
  *
