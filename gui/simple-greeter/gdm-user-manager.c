@@ -956,8 +956,8 @@ seat_session_removed (DBusGProxy     *seat_proxy,
 }
 
 static void
-on_proxy_destroy (DBusGProxy     *proxy,
-                  GdmUserManager *manager)
+on_seat_proxy_destroy (DBusGProxy     *proxy,
+                       GdmUserManager *manager)
 {
         g_debug ("GdmUserManager: seat proxy destroyed");
 
@@ -997,7 +997,7 @@ get_seat_proxy (GdmUserManager *manager)
                 return;
         }
 
-        g_signal_connect (proxy, "destroy", G_CALLBACK (on_proxy_destroy), manager);
+        g_signal_connect (proxy, "destroy", G_CALLBACK (on_seat_proxy_destroy), manager);
 
         dbus_g_proxy_add_signal (proxy,
                                  "SessionAdded",
