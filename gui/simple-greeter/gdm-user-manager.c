@@ -94,8 +94,6 @@ struct GdmUserManagerPrivate
 
         guint                  reload_id;
         guint                  ck_history_id;
-
-        guint8                 users_dirty : 1;
 };
 
 enum {
@@ -1752,8 +1750,6 @@ gdm_user_manager_init (GdmUserManager *manager)
         get_seat_proxy (manager);
 
         queue_reload_users (manager);
-
-        manager->priv->users_dirty = FALSE;
 }
 
 static void
