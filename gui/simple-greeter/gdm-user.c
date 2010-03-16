@@ -181,7 +181,7 @@ gdm_user_finalize (GObject *object)
 }
 
 /**
- * _gdm_user_update:
+ * _gdm_user_update_from_pwent:
  * @user: the user object to update.
  * @pwent: the user data to use.
  *
@@ -190,8 +190,8 @@ gdm_user_finalize (GObject *object)
  * Since: 1.0
  **/
 void
-_gdm_user_update (GdmUser             *user,
-                  const struct passwd *pwent)
+_gdm_user_update_from_pwent (GdmUser             *user,
+                             const struct passwd *pwent)
 {
         gchar *real_name = NULL;
         gboolean changed;

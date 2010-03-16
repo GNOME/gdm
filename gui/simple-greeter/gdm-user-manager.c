@@ -766,7 +766,7 @@ add_new_user_for_pwent (GdmUserManager *manager,
         g_debug ("Creating new user");
 
         user = create_user (manager);
-        _gdm_user_update (user, pwent);
+        _gdm_user_update_from_pwent (user, pwent);
 
         add_user (manager, user);
 
@@ -906,7 +906,7 @@ seat_session_added (DBusGProxy     *seat_proxy,
                 g_debug ("Creating new user");
 
                 user = create_user (manager);
-                _gdm_user_update (user, pwent);
+                _gdm_user_update_from_pwent (user, pwent);
                 is_new = TRUE;
         } else {
                 is_new = FALSE;
@@ -1432,7 +1432,7 @@ reload_passwd (GdmUserManager *manager)
 
                         /* Update users already in the *new* list */
                         if (g_slist_find (new_users, user)) {
-                                _gdm_user_update (user, pwent);
+                                _gdm_user_update_from_pwent (user, pwent);
                                 continue;
                         }
 
@@ -1444,7 +1444,7 @@ reload_passwd (GdmUserManager *manager)
 
                         /* Freeze & update users not already in the new list */
                         g_object_freeze_notify (G_OBJECT (user));
-                        _gdm_user_update (user, pwent);
+                        _gdm_user_update_from_pwent (user, pwent);
 
                         new_users = g_slist_prepend (new_users, user);
                 }
