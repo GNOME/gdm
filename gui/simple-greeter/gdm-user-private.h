@@ -30,8 +30,8 @@
 
 G_BEGIN_DECLS
 
-void _gdm_user_update           (GdmUser             *user,
-                                 const struct passwd *pwent);
+void _gdm_user_update_from_pwent (GdmUser             *user,
+                                  const struct passwd *pwent);
 
 void _gdm_user_update_login_frequency (GdmUser *user,
                                        guint64  login_frequency);
