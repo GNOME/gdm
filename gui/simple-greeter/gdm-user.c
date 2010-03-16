@@ -258,26 +258,6 @@ _gdm_user_update (GdmUser             *user,
                 changed = TRUE;
         }
 
-        /* Home Directory */
-        if ((pwent->pw_dir && !user->home_dir) ||
-            (!pwent->pw_dir && user->home_dir) ||
-            strcmp (user->home_dir, pwent->pw_dir) != 0) {
-                g_free (user->home_dir);
-                user->home_dir = g_strdup (pwent->pw_dir);
-                changed = TRUE;
-        }
-
-        /* Shell */
-        if ((pwent->pw_shell && !user->shell) ||
-            (!pwent->pw_shell && user->shell) ||
-            (pwent->pw_shell &&
-             user->shell &&
-             strcmp (user->shell, pwent->pw_shell) != 0)) {
-                g_free (user->shell);
-                user->shell = g_strdup (pwent->pw_shell);
-                changed = TRUE;
-        }
-
         if (changed) {
                 g_signal_emit (user, signals[CHANGED], 0);
         }
@@ -340,46 +320,6 @@ gdm_user_get_user_name (GdmUser *user)
         g_return_val_if_fail (GDM_IS_USER (user), NULL);
 
         return user->user_name;
-}
-
-/**
- * gdm_user_get_home_directory:
- * @user: the user object to examine.
- *
- * Retrieves the home directory of @user.
- *
- * Returns: a pointer to an array of characters which must not be modified or
- *  freed, or %NULL.
- *
- * Since: 1.0
- **/
-
-G_CONST_RETURN gchar *
-gdm_user_get_home_directory (GdmUser *user)
-{
-        g_return_val_if_fail (GDM_IS_USER (user), NULL);
-
-        return user->home_dir;
-}
-
-/**
- * gdm_user_get_shell:
- * @user: the user object to examine.
- *
- * Retrieves the login shell of @user.
- *
- * Returns: a pointer to an array of characters which must not be modified or
- *  freed, or %NULL.
- *
- * Since: 1.0
- **/
-
-G_CONST_RETURN gchar *
-gdm_user_get_shell (GdmUser *user)
-{
-        g_return_val_if_fail (GDM_IS_USER (user), NULL);
-
-        return user->shell;
 }
 
 gulong
