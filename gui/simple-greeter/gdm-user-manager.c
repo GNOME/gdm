@@ -1586,6 +1586,55 @@ on_passwd_monitor_changed (GFileMonitor     *monitor,
 }
 
 static void
+monitor_local_users (GdmUserManager *manager)
+{
+        GFile *file;
+        GError *error;
+
+        g_debug ("Monitoring local users");
+
+        /* /etc/shells */
+        manager->priv->shells = g_hash_table_new_full (g_str_hash,
+                                                       g_str_equal,
+                                                       g_free,
+                                                       NULL);
+        reload_shells (manager);
+        file = g_file_new_for_path (_PATH_SHELLS);
+        error = NULL;
+        manager->priv->shells_monitor = g_file_monitor_file (file,
+                                                             G_FILE_MONITOR_NONE,
+                                                             NULL,
+                                                             &error);
+        if (manager->priv->shells_monitor != NULL) {
+                g_signal_connect (manager->priv->shells_monitor,
+                                  "changed",
+                                  G_CALLBACK (on_shells_monitor_changed),
+                                  manager);
+        } else {
+                g_warning ("Unable to monitor %s: %s", _PATH_SHELLS, error->message);
+                g_error_free (error);
+        }
+        g_object_unref (file);
+
+        /* /etc/passwd */
+        file = g_file_new_for_path (PATH_PASSWD);
+        manager->priv->passwd_monitor = g_file_monitor_file (file,
+                                                             G_FILE_MONITOR_NONE,
+                                                             NULL,
+                                                             &error);
+        if (manager->priv->passwd_monitor != NULL) {
+                g_signal_connect (manager->priv->passwd_monitor,
+                                  "changed",
+                                  G_CALLBACK (on_passwd_monitor_changed),
+                                  manager);
+        } else {
+                g_warning ("Unable to monitor %s: %s", PATH_PASSWD, error->message);
+                g_error_free (error);
+        }
+        g_object_unref (file);
+}
+
+static void
 gdm_user_manager_class_init (GdmUserManagerClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
@@ -1664,9 +1713,6 @@ gdm_set_string_list (char *value, GSList **retval)
 static void
 gdm_user_manager_init (GdmUserManager *manager)
 {
-        int            i;
-        GFile         *file;
-        GError        *error;
         char          *temp;
         gboolean       res;
 
@@ -1699,45 +1745,7 @@ gdm_user_manager_init (GdmUserManager *manager)
                                                               (GDestroyNotify) g_object_run_dispose);
 
         if (manager->priv->include_all == TRUE) {
-                /* /etc/shells */
-                manager->priv->shells = g_hash_table_new_full (g_str_hash,
-                                                               g_str_equal,
-                                                               g_free,
-                                                               NULL);
-                reload_shells (manager);
-                file = g_file_new_for_path (_PATH_SHELLS);
-                error = NULL;
-                manager->priv->shells_monitor = g_file_monitor_file (file,
-                                                                     G_FILE_MONITOR_NONE,
-                                                                     NULL,
-                                                                     &error);
-                if (manager->priv->shells_monitor != NULL) {
-                        g_signal_connect (manager->priv->shells_monitor,
-                                          "changed",
-                                          G_CALLBACK (on_shells_monitor_changed),
-                                          manager);
-                } else {
-                        g_warning ("Unable to monitor %s: %s", _PATH_SHELLS, error->message);
-                        g_error_free (error);
-                }
-                g_object_unref (file);
-
-                /* /etc/passwd */
-                file = g_file_new_for_path (PATH_PASSWD);
-                manager->priv->passwd_monitor = g_file_monitor_file (file,
-                                                                     G_FILE_MONITOR_NONE,
-                                                                     NULL,
-                                                                     &error);
-                if (manager->priv->passwd_monitor != NULL) {
-                        g_signal_connect (manager->priv->passwd_monitor,
-                                          "changed",
-                                          G_CALLBACK (on_passwd_monitor_changed),
-                                          manager);
-                } else {
-                        g_warning ("Unable to monitor %s: %s", PATH_PASSWD, error->message);
-                        g_error_free (error);
-                }
-                g_object_unref (file);
+                monitor_local_users (manager);
         }
 
         get_seat_proxy (manager);
