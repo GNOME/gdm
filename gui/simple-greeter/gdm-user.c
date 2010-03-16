@@ -523,39 +523,6 @@ check_user_file (const char *filename,
         return TRUE;
 }
 
-static char *
-get_filesystem_type (const char *path)
-{
-        GFile      *file;
-        GFileInfo  *file_info;
-        GError     *error;
-        char       *filesystem_type;
-
-        file = g_file_new_for_path (path);
-        error = NULL;
-        file_info = g_file_query_filesystem_info (file,
-                                                  G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
-                                                  NULL,
-                                                  &error);
-        if (file_info == NULL) {
-                g_warning ("Unable to query filesystem type for %s: %s", path, error->message);
-                g_error_free (error);
-                g_object_unref (file);
-                return NULL;
-        }
-
-        filesystem_type = g_strdup (g_file_info_get_attribute_string (file_info,
-                                                                      G_FILE_ATTRIBUTE_FILESYSTEM_TYPE));
-        if (filesystem_type == NULL) {
-                g_warning ("GIO returned NULL filesystem type for %s", path);
-        }
-
-        g_object_unref (file);
-        g_object_unref (file_info);
-
-        return filesystem_type;
-}
-
 static GdkPixbuf *
 render_icon_from_cache (GdmUser *user,
                         int      icon_size)
