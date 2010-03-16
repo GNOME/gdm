@@ -61,9 +61,6 @@
 #define CK_SESSION_INTERFACE "org.freedesktop.ConsoleKit.Session"
 
 /* Prefs Defaults */
-#define DEFAULT_ALLOW_ROOT      TRUE
-#define DEFAULT_MAX_ICON_SIZE   128
-#define DEFAULT_USER_MAX_FILE   65536
 
 #ifdef __sun
 #define DEFAULT_MINIMAL_UID     100
