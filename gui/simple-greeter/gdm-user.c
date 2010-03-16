@@ -26,6 +26,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <dbus/dbus-glib.h>
+
+#include <glib.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <gtk/gtk.h>
@@ -41,6 +44,9 @@
 #define MAX_FILE_SIZE     65536
 #define MINIMAL_UID       100
 
+#define USER_ACCOUNTS_NAME      "org.freedesktop.Accounts"
+#define USER_ACCOUNTS_INTERFACE "org.freedesktop.Accounts.User"
+
 enum {
         CHANGED,
         SESSIONS_CHANGED,
@@ -50,12 +56,15 @@ enum {
 struct _GdmUser {
         GObject         parent;
 
+        DBusGConnection *connection;
+        DBusGProxy      *accounts_proxy;
+        gchar           *object_path;
+
         uid_t           uid;
         char           *user_name;
         char           *real_name;
         char           *display_name;
-        char           *home_dir;
-        char           *shell;
+        gchar          *icon_file;
         GList          *sessions;
         gulong          login_frequency;
 };
@@ -66,6 +75,8 @@ typedef struct _GdmUserClass
 } GdmUserClass;
 
 static void gdm_user_finalize     (GObject      *object);
+static gboolean check_user_file (const char *filename,
+                                 gssize      max_file_size);
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
@@ -159,10 +170,18 @@ gdm_user_class_init (GdmUserClass *class)
 static void
 gdm_user_init (GdmUser *user)
 {
+        GError *error;
+
         user->user_name = NULL;
         user->real_name = NULL;
         user->display_name = NULL;
         user->sessions = NULL;
+
+        error = NULL;
+        user->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        if (user->connection == NULL) {
+                g_warning ("Couldn't connect to system bus: %s", error->message);
+        }
 }
 
 static void
@@ -175,6 +194,15 @@ gdm_user_finalize (GObject *object)
         g_free (user->user_name);
         g_free (user->real_name);
         g_free (user->display_name);
+        g_free (user->icon_file);
+
+        if (user->accounts_proxy != NULL) {
+                g_object_unref (user->accounts_proxy);
+        }
+
+        if (user->connection != NULL) {
+                dbus_g_connection_unref (user->connection);
+        }
 
         if (G_OBJECT_CLASS (gdm_user_parent_class)->finalize)
                 (*G_OBJECT_CLASS (gdm_user_parent_class)->finalize) (object);
@@ -198,6 +226,7 @@ _gdm_user_update_from_pwent (GdmUser             *user,
 
         g_return_if_fail (GDM_IS_USER (user));
         g_return_if_fail (pwent != NULL);
+        g_return_if_fail (user->object_path == NULL);
 
         changed = FALSE;
 
@@ -266,6 +295,23 @@ _gdm_user_update_from_pwent (GdmUser             *user,
             (pwent->pw_name &&
              user->user_name &&
              strcmp (user->user_name, pwent->pw_name) != 0)) {
+
+                g_free (user->icon_file);
+                user->icon_file = NULL;
+                if (pwent->pw_name != NULL) {
+                        gboolean      res;
+
+                        user->icon_file = g_build_filename (GDM_CACHE_DIR, pwent->pw_name, "face", NULL);
+
+                        res = check_user_file (user->icon_file,
+                                               MAX_FILE_SIZE);
+
+                        if (!res) {
+                                g_free (user->icon_file);
+                                user->icon_file = g_build_filename (GLOBAL_FACEDIR, pwent->pw_name, NULL);
+                        }
+                }
+
                 g_free (user->user_name);
                 user->user_name = g_strdup (pwent->pw_name);
                 changed = TRUE;
@@ -523,33 +569,6 @@ check_user_file (const char *filename,
         return TRUE;
 }
 
-static GdkPixbuf *
-render_icon_from_cache (GdmUser *user,
-                        int      icon_size)
-{
-        GdkPixbuf  *retval;
-        char       *path;
-        gboolean    is_autofs;
-        gboolean    res;
-        char       *filesystem_type;
-
-        path = g_build_filename (GDM_CACHE_DIR, user->user_name, "face", NULL);
-        res = check_user_file (path,
-                               MAX_FILE_SIZE);
-        if (res) {
-                retval = gdk_pixbuf_new_from_file_at_size (path,
-                                                           icon_size,
-                                                           icon_size,
-                                                           NULL);
-        } else {
-                g_debug ("Could not access face icon %s", path);
-                retval = NULL;
-        }
-        g_free (path);
-
-        return retval;
-}
-
 static void
 rounded_rectangle (cairo_t *cr,
                    gdouble  aspect,
@@ -783,55 +802,41 @@ gdm_user_render_icon (GdmUser   *user,
 {
         GdkPixbuf    *pixbuf;
         GdkPixbuf    *framed;
-        char         *path;
-        char         *tmp;
         gboolean      res;
+        GError       *error;
 
         g_return_val_if_fail (GDM_IS_USER (user), NULL);
         g_return_val_if_fail (icon_size > 12, NULL);
 
-        path = NULL;
+        pixbuf = NULL;
+        if (user->icon_file) {
+                res = check_user_file (user->icon_file,
+                                       MAX_FILE_SIZE);
+                if (res) {
+                        pixbuf = gdk_pixbuf_new_from_file_at_size (user->icon_file,
+                                                                   icon_size,
+                                                                   icon_size,
+                                                                   NULL);
+                } else {
+                        pixbuf = NULL;
+                }
+        }
 
-        pixbuf = render_icon_from_cache (user, icon_size);
         if (pixbuf != NULL) {
                 goto out;
         }
 
-        /* Try ${GlobalFaceDir}/${username} */
-        path = g_build_filename (GLOBAL_FACEDIR, user->user_name, NULL);
-        res = check_user_file (path,
-                               MAX_FILE_SIZE);
-        if (res) {
-                pixbuf = gdk_pixbuf_new_from_file_at_size (path,
-                                                           icon_size,
-                                                           icon_size,
-                                                           NULL);
-        } else {
-                g_debug ("Could not access global face icon %s", path);
-                pixbuf = NULL;
-        }
+        error = NULL;
+        pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
 
-        g_free (path);
-        if (pixbuf != NULL) {
-                goto out;
+                                           "stock_person",
+                                           icon_size,
+                                           GTK_ICON_LOOKUP_FORCE_SIZE,
+                                           &error);
+        if (error) {
+                g_warning ("%s", error->message);
+                g_error_free (error);
         }
-
-        /* Finally, ${GlobalFaceDir}/${username}.png */
-        tmp = g_strconcat (user->user_name, ".png", NULL);
-        path = g_build_filename (GLOBAL_FACEDIR, tmp, NULL);
-        g_free (tmp);
-        res = check_user_file (path,
-                               MAX_FILE_SIZE);
-        if (res) {
-                pixbuf = gdk_pixbuf_new_from_file_at_size (path,
-                                                           icon_size,
-                                                           icon_size,
-                                                           NULL);
-        } else {
-                g_debug ("Could not access global face icon %s", path);
-                pixbuf = NULL;
-        }
-        g_free (path);
  out:
 
         if (pixbuf != NULL) {
@@ -843,6 +848,22 @@ gdm_user_render_icon (GdmUser   *user,
         }
 
         return pixbuf;
+}
+
+G_CONST_RETURN gchar *
+gdm_user_get_icon_file (GdmUser *user)
+{
+        g_return_val_if_fail (GDM_IS_USER (user), NULL);
+
+        return user->icon_file;
+}
+
+G_CONST_RETURN gchar *
+gdm_user_get_object_path (GdmUser *user)
+{
+        g_return_val_if_fail (GDM_IS_USER (user), NULL);
+
+        return user->object_path;
 }
 
 G_CONST_RETURN char *
@@ -874,3 +895,128 @@ out:
         return primary_ssid;
 }
 
+static void
+collect_props (const gchar    *key,
+               const GValue   *value,
+               GdmUser        *user)
+{
+        gboolean handled = TRUE;
+
+        if (strcmp (key, "Uid") == 0) {
+                user->uid = g_value_get_uint64 (value);
+        } else if (strcmp (key, "UserName") == 0) {
+                g_free (user->user_name);
+                user->user_name = g_value_dup_string (value);
+        } else if (strcmp (key, "RealName") == 0) {
+                g_free (user->real_name);
+                user->real_name = g_value_dup_string (value);
+        } else if (strcmp (key, "AccountType") == 0) {
+                /* ignore */
+        } else if (strcmp (key, "Email") == 0) {
+                /* ignore */
+        } else if (strcmp (key, "Language") == 0) {
+                /* ignore */
+        } else if (strcmp (key, "Location") == 0) {
+                /* ignore */
+        } else if (strcmp (key, "LoginFrequency") == 0) {
+                user->login_frequency = g_value_get_uint64 (value);
+        } else if (strcmp (key, "IconFile") == 0) {
+                g_free (user->icon_file);
+                user->icon_file = g_value_dup_string (value);
+        } else if (strcmp (key, "Locked") == 0) {
+                /* ignore */
+        } else if (strcmp (key, "AutomaticLogin") == 0) {
+                /* ignore */
+        } else if (strcmp (key, "PasswordMode") == 0) {
+                /* ignore */
+        } else if (strcmp (key, "PasswordHint") == 0) {
+                /* ignore */
+        } else if (strcmp (key, "HomeDirectory") == 0) {
+                /* ignore */
+        } else if (strcmp (key, "Shell") == 0) {
+                /* ignore */
+        } else {
+                handled = FALSE;
+        }
+
+        if (!handled) {
+                g_debug ("unhandled property %s", key);
+        }
+}
+
+static gboolean
+update_info (GdmUser *user)
+{
+        GError *error;
+        DBusGProxy *proxy;
+        GHashTable *hash_table;
+        gboolean retval;
+
+        proxy = dbus_g_proxy_new_for_name (user->connection,
+                                           USER_ACCOUNTS_NAME,
+                                           user->object_path,
+                                           DBUS_INTERFACE_PROPERTIES);
+
+        error = NULL;
+        if (!dbus_g_proxy_call (proxy,
+                                "GetAll",
+                                &error,
+                                G_TYPE_STRING,
+                                USER_ACCOUNTS_INTERFACE,
+                                G_TYPE_INVALID,
+                                dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE),
+                                &hash_table,
+                                G_TYPE_INVALID)) {
+                g_debug ("Error calling GetAll() when retrieving properties for %s: %s", user->object_path, error->message);
+                g_error_free (error);
+                retval = FALSE;
+                goto out;
+        }
+        g_hash_table_foreach (hash_table, (GHFunc) collect_props, user);
+        g_hash_table_unref (hash_table);
+
+        retval = TRUE;
+ out:
+        g_object_unref (proxy);
+        return retval;
+}
+
+static void
+changed_handler (DBusGProxy *proxy,
+                 gpointer   *data)
+{
+        GdmUser *user = GDM_USER (data);
+
+        if (update_info (user)) {
+                g_signal_emit (user, signals[CHANGED], 0);
+        }
+}
+
+GdmUser *
+gdm_user_new_from_object_path (const gchar *object_path)
+{
+        GdmUser *user;
+
+        user = (GdmUser *)g_object_new (GDM_TYPE_USER, NULL);
+        user->object_path = g_strdup (object_path);
+
+        user->accounts_proxy = dbus_g_proxy_new_for_name (user->connection,
+                                                          USER_ACCOUNTS_NAME,
+                                                          user->object_path,
+                                                          USER_ACCOUNTS_INTERFACE);
+        dbus_g_proxy_set_default_timeout (user->accounts_proxy, INT_MAX);
+        dbus_g_proxy_add_signal (user->accounts_proxy, "Changed", G_TYPE_INVALID);
+
+        dbus_g_proxy_connect_signal (user->accounts_proxy, "Changed",
+                                     G_CALLBACK (changed_handler), user, NULL);
+
+        if (!update_info (user)) {
+                goto error;
+        }
+
+        return user;
+
+ error:
+        g_object_unref (user);
+        return NULL;
+}
