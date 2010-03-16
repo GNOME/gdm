@@ -453,18 +453,6 @@ gdm_user_collate (GdmUser *user1,
         g_return_val_if_fail (GDM_IS_USER (user1), 0);
         g_return_val_if_fail (GDM_IS_USER (user2), 0);
 
-        if (user1->real_name != NULL) {
-                str1 = user1->real_name;
-        } else {
-                str1 = user1->user_name;
-        }
-
-        if (user2->real_name != NULL) {
-                str2 = user2->real_name;
-        } else {
-                str2 = user2->user_name;
-        }
-
         num1 = user1->login_frequency;
         num2 = user2->login_frequency;
         g_debug ("Login freq 1=%u 2=%u", (guint)num1, (guint)num2);
@@ -477,6 +465,18 @@ gdm_user_collate (GdmUser *user1,
         }
 
         /* if login frequency is equal try names */
+        if (user1->real_name != NULL) {
+                str1 = user1->real_name;
+        } else {
+                str1 = user1->user_name;
+        }
+
+        if (user2->real_name != NULL) {
+                str2 = user2->real_name;
+        } else {
+                str2 = user2->user_name;
+        }
+
         if (str1 == NULL && str2 != NULL) {
                 return -1;
         }
