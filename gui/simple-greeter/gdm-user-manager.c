@@ -47,6 +47,7 @@
 #include "gdm-user-manager.h"
 #include "gdm-user-private.h"
 #include "gdm-settings-keys.h"
+#include "gdm-settings-client.h"
 
 #define GDM_USER_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_USER_MANAGER, GdmUserManagerPrivate))
 
