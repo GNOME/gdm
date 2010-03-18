@@ -1410,16 +1410,17 @@ fill_applet (PanelApplet *applet)
                                      "widget \"*.gdm-user-switch-applet\" style \"gdm-user-switch-applet-style\"\n");
                 gtk_window_set_default_icon_name ("stock_people");
                 g_set_application_name (_("User Switch Applet"));
+
+                if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
+                        g_critical ("Unable to initialize settings client");
+                        exit (1);
+                }
+
         }
 
         adata = g_new0 (GdmAppletData, 1);
         adata->applet = applet;
         adata->panel_size = 24;
-
-        if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
-                g_critical ("Unable to initialize settings client");
-                exit (1);
-        }
 
         adata->client = gconf_client_get_default ();
 
