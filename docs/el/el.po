@@ -1,18 +1,19 @@
 # translation of gdm-master-help-el-5161.merged.po to
 # Sterios Prosiniklis <steriosprosiniklis@gmail.com>, 2009.
+# Marios Zindilis <m.zindilis@dmajor.org>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm-master-help-el-5161.merged\n"
-"POT-Creation-Date: 2009-09-12 16:34+0000\n"
-"PO-Revision-Date: 2009-10-10 04:12+0300\n"
-"Last-Translator: Sterios Prosiniklis <steriosprosiniklis@gmail.com>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-03-25 09:10+0000\n"
+"PO-Revision-Date: 2010-03-26 09:01+0200\n"
+"Last-Translator: Marios Zindilis <m.zindilis@dmajor.org>\n"
 "Language-Team: Greek <team@gnome.gr>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.0\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: C/gdm.xml:13(title)
 msgid "GNOME Display Manager Reference Manual"
@@ -286,8 +287,7 @@ msgstr ""
 "σαν σύνολο."
 
 #: C/gdm.xml:122(para)
-msgid ""
-"Greeter - The graphical login window (<command>gdm-simple-greeter</command>)."
+msgid "Greeter - The graphical login window (<command>gdm-simple-greeter</command>)."
 msgstr ""
 "Greeter - Το παράθυρο γραφικού περιβάλλοντος για την είσοδο (σύνδεση) "
 "(<command>gdm-simple-greeter</command>)."
@@ -888,19 +888,22 @@ msgid "Logging"
 msgstr "Καταγραφή συστήματος"
 
 #: C/gdm.xml:500(para)
+#| msgid ""
+#| "GDM uses syslog to log errors and status. It can also log debugging "
+#| "information, which can be useful for tracking down problems if GDM is not "
+#| "working properly. This can be enabled by starting the GDM daemon with the "
+#| "\"--debug\" option."
 msgid ""
 "GDM uses syslog to log errors and status. It can also log debugging "
 "information, which can be useful for tracking down problems if GDM is not "
-"working properly. This can be enabled by starting the GDM daemon with the "
-"\"--debug\" option."
+"working properly. Debug output can be enabled by setting the debug/Enable "
+"key to \"true\" in the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file."
 msgstr ""
-"Το GDM χρησιμοποιεί το syslog για την καταχώρηση σφαλμάτων και κατάστασης. "
-"Μπορεί επίσης να καταχωρήσει πληροφορίες αποσφαλμάτωσης, οι οποίες είναι "
-"χρήσιμες κατά την διερεύνηση προβλημάτων όταν το GDM δεν λειτουργεί "
-"κανονικά. Αυτή η συμπεριφορά μπορεί να ενεργοποιηθεί εκκινώντας τον δαίμονα "
-"του GDM με το όρισμα \"--debug\"."
+"Το GDM χρησιμοποιεί το syslog για την καταγραφή σφαλμάτων και κατάστασης. Μπορεί επίσης να καταγράψει πληροφορίες αποσφαλμάτωσης, οι "
+"οποίες είναι χρήσιμες κατά τη διερεύνηση προβλημάτων όταν το GDM δεν λειτουργεί κανονικά. Αυτή η συμπεριφορά μπορεί να ενεργοποιηθεί "
+"θέτοντας το κλειδί debug/Enable σε «true» στο αρχείο <filename>&lt;etc&gt;/gdm/custom.conf</filename>."
 
-#: C/gdm.xml:507(para)
+#: C/gdm.xml:508(para)
 msgid ""
 "Output from the various Xservers is stored in the GDM log directory, which "
 "is normally <filename>&lt;var&gt;/log/gdm/</filename>. Any Xserver messages "
@@ -912,7 +915,7 @@ msgstr ""
 "filename>. Τα μηνύματα του Xserver αποθηκεύονται σε ένα αρχείο συσχετισμένο "
 "με την τιμή οθόνης, <filename>&lt;display&gt;.log</filename>."
 
-#: C/gdm.xml:514(para)
+#: C/gdm.xml:515(para)
 msgid ""
 "The session output is piped through the GDM daemon to the <filename>~/."
 "xsession-errors</filename> file. The file is overwritten on each login, so "
@@ -924,7 +927,7 @@ msgstr ""
 "είσοδο, έτσι εξερχόμενοι και συνδεόμενοι ξανά στον ίδιο χρήστη μέσω του GDM "
 "κάθε μήνυμα από την προηγούμενη συνεδρία χάνεται."
 
-#: C/gdm.xml:521(para)
+#: C/gdm.xml:522(para)
 msgid ""
 "Note that if GDM can not create this file for some reason, then a fallback "
 "file will be created named <filename>~/.xsession-errors.XXXXXXXX</filename> "
@@ -935,11 +938,11 @@ msgstr ""
 "<filename>~/.xsession-errors.XXXXXXXX</filename> όπου <filename>XXXXXXXX</"
 "filename> είναι κάποιοι τυχαίοι χαρακτήρες."
 
-#: C/gdm.xml:529(title)
+#: C/gdm.xml:530(title)
 msgid "Fast User Switching"
 msgstr "Γρήγορη εναλλαγή χρήστη"
 
-#: C/gdm.xml:531(para)
+#: C/gdm.xml:532(para)
 msgid ""
 "GDM allows multiple users to be logged in at the same time. After one user "
 "is logged in, additional users can log in via the User Switcher on the GNOME "
@@ -957,7 +960,7 @@ msgstr ""
 "προεπιλεγμένη διαμόρφωση του πίνακα εφαρμογών. Μπορείτε να την προσθέσετε "
 "χρησιμοποιώντας το σχετικό μενού περιεχομένων του πίνακα εφαρμογών."
 
-#: C/gdm.xml:540(para)
+#: C/gdm.xml:541(para)
 msgid ""
 "Note this feature is available on systems that support Virtual Terminals. "
 "This feature will not function if Virtual Terminals is not available."
@@ -966,15 +969,15 @@ msgstr ""
 "υποστηρίζουν εικονικά τερματικά. Αυτό το χαρακτηριστικό δεν θα λειτουργήσει "
 "αν δεν είναι διαθέσιμα τα εικονικά τερματικά."
 
-#: C/gdm.xml:551(title)
+#: C/gdm.xml:552(title)
 msgid "Security"
 msgstr "Ασφάλεια"
 
-#: C/gdm.xml:554(title)
+#: C/gdm.xml:555(title)
 msgid "The GDM User And Group"
 msgstr "Χρήστης και ομάδα GDM"
 
-#: C/gdm.xml:556(para)
+#: C/gdm.xml:557(para)
 msgid ""
 "For security reasons a dedicated user and group id are recommended for "
 "proper operation. This user and group are normally \"gdm\" on most systems, "
@@ -990,7 +993,7 @@ msgstr ""
 "να εκτελούνται σε μια περιορισμένη περιοχή (sandbox). Ο χρήστης και η ομάδα "
 "αυτή πρέπει να έχουν περιορισμένα δικαιώματα."
 
-#: C/gdm.xml:565(para)
+#: C/gdm.xml:566(para)
 msgid ""
 "The only special privilege the \"gdm\" user requires is the ability to read "
 "and write Xauth files to the <filename>&lt;var&gt;/run/gdm</filename> "
@@ -1002,7 +1005,7 @@ msgstr ""
 "filename>. Ο κατάλογος <filename>&lt;var&gt;/run/gdm</filename> πρέπει να "
 "έχει ιδιοκτησία root:gdm και δικαιώματα 1777."
 
-#: C/gdm.xml:573(para)
+#: C/gdm.xml:574(para)
 msgid ""
 "You should not, under any circumstances, configure the GDM user/group to a "
 "user which a user could easily gain access to, such as the user "
@@ -1026,7 +1029,7 @@ msgstr ""
 "παράδειγμα, ο λογαριασμός πρέπει να ρυθμιστεί χωρίς κωδικό ή να μην "
 "επιτρέπει σε χρήστες χωρίς δικαιώματα root να συνδέονται."
 
-#: C/gdm.xml:586(para)
+#: C/gdm.xml:587(para)
 msgid ""
 "The GDM greeter configuration is stored in GConf. To allow the GDM user to "
 "be able to write configuration, it is necessary for the \"gdm\" user to have "
@@ -1044,11 +1047,11 @@ msgstr ""
 "δεν έχει την δυνατότητα να εγγράψει πληροφορίες κατάστασης στην διαμόρφωση "
 "του GConf."
 
-#: C/gdm.xml:598(title)
+#: C/gdm.xml:599(title)
 msgid "PAM"
 msgstr "PAM"
 
-#: C/gdm.xml:600(para)
+#: C/gdm.xml:601(para)
 msgid ""
 "GDM uses PAM for login authentication. PAM stands for Pluggable "
 "Authentication Module, and is used by most programs that request "
@@ -1063,7 +1066,7 @@ msgstr ""
 "πιστοποίησης για διαφορετικά προγράμματα σύνδεσης (όπως ssh, είσοδος GUI, "
 "προστασία οθόνης, κλπ)"
 
-#: C/gdm.xml:608(para)
+#: C/gdm.xml:609(para)
 msgid ""
 "PAM is complicated and highly configurable, and this documentation does not "
 "intend to explain this in detail. Instead, it is intended to give an "
@@ -1082,7 +1085,7 @@ msgstr ""
 "τεκμηρίωση του PAM για να καταλάβει πως θα το διαμορφώσει και για να "
 "κατανοήσει τους όρους που χρησιμοποιούνται σε αυτήν την ενότητα."
 
-#: C/gdm.xml:618(para)
+#: C/gdm.xml:619(para)
 msgid ""
 "PAM configuration has different, but similar, interfaces on different "
 "Operating Systems, so check the <ulink type=\"help\" url=\"man:pam.d\">pam."
@@ -1098,7 +1101,7 @@ msgstr ""
 "τεκμηρίωση του PAM και ότι αισθάνεστε άνετα με τις επιπτώσεις στην ασφάλεια "
 "των όποιων αλλαγών προτίθεστε να κάνετε στην διαμόρφωση σας."
 
-#: C/gdm.xml:628(para)
+#: C/gdm.xml:629(para)
 msgid ""
 "Note that, by default, GDM uses the \"gdm\" PAM service name for normal "
 "login and the \"gdm-autologin\" PAM service name for automatic login. These "
@@ -1116,7 +1119,7 @@ msgstr ""
 "χαρακτηριστικό της αυτόματης εισόδου (automatic login) μπορεί να μην "
 "λειτουργήσει αν η υπηρεσία gdm-autologin δεν είναι ορισμένη."
 
-#: C/gdm.xml:638(para)
+#: C/gdm.xml:639(para)
 msgid ""
 "The <filename>PostLogin</filename> script is run before pam_open_session is "
 "called, and the <filename>PreSession</filename> script is called after. This "
@@ -1129,7 +1132,7 @@ msgstr ""
 "σενάριο εντολών στην διεργασία σύνδεσης είτε πριν είτε μετά την έγκριση "
 "έναρξης της συνεδρίας από το PAM."
 
-#: C/gdm.xml:646(para)
+#: C/gdm.xml:647(para)
 msgid ""
 "If you wish to make GDM work with other types of authentication mechanisms "
 "(such as a fingerprint or SmartCard reader), then you should implement this "
@@ -1148,7 +1151,7 @@ msgstr ""
 "<address><email>gdm-list@gnome.org</email></address>, επομένως μπορείτε να "
 "χρησιμοποιήσετε τα αρχεία της λίστας για περισσότερες πληροφορίες."
 
-#: C/gdm.xml:657(para)
+#: C/gdm.xml:658(para)
 msgid ""
 "PAM does have some limitations regarding being able to work with multiple "
 "types of authentication at the same time, like supporting the ability to "
@@ -1165,7 +1168,7 @@ msgstr ""
 "καλό να ερευνήσετε πως λύνεται συνήθως αυτό το πρόβλημα όταν ρυθμίζετε μια "
 "διαμόρφωση αυτού του τύπου."
 
-#: C/gdm.xml:666(para)
+#: C/gdm.xml:667(para)
 msgid ""
 "If automatic login does not work on a system, check to see if the \"gdm-"
 "autologin\" PAM stack is defined in the PAM configuration. For this to work, "
@@ -1182,7 +1185,7 @@ msgstr ""
 "pam_allow.so που λειτουργεί με αυτόν τον τρόπο, μια διαμόρφωση του PAM που "
 "ενεργοποιεί το \"gdm-autologin\" θα ήταν ως εξής:"
 
-#: C/gdm.xml:676(screen)
+#: C/gdm.xml:677(screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -1199,7 +1202,7 @@ msgstr ""
 "       gdm-autologin session  sufficient  pam_allow.so.1\n"
 "       gdm-autologin password  sufficient  pam_allow.so.1\n"
 
-#: C/gdm.xml:684(para)
+#: C/gdm.xml:685(para)
 msgid ""
 "The above setup will cause no lastlog entry to be generated. If a lastlog "
 "entry is desired, then use the following for the session:"
@@ -1208,7 +1211,7 @@ msgstr ""
 "Αν επιθυμείτε εγγραφή στο lastlog, χρησιμοποιήστε το παρακάτω για την "
 "συνεδρία:"
 
-#: C/gdm.xml:689(screen)
+#: C/gdm.xml:690(screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -1217,7 +1220,7 @@ msgstr ""
 "\n"
 "       gdm-autologin session required pam_unix_session.so.1\n"
 
-#: C/gdm.xml:693(para)
+#: C/gdm.xml:694(para)
 msgid ""
 "If the computer is used by several people, which makes automatic login "
 "unsuitable, you may want to allow some users to log in without entering "
@@ -1237,7 +1240,7 @@ msgstr ""
 "κωδικό. Για να λειτουργήσει η διαδικασία, το αρχείο διαμόρφωσης του PAM για "
 "την υπηρεσία \"gdm\" πρέπει να περιέχει μία γραμμή όπως η παρακάτω:"
 
-#: C/gdm.xml:704(screen)
+#: C/gdm.xml:705(screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -1246,11 +1249,11 @@ msgstr ""
 "\n"
 "      gdm auth  sufficient  pam_succeed_if.so  user ingroup nopasswdlogin\n"
 
-#: C/gdm.xml:711(title)
+#: C/gdm.xml:712(title)
 msgid "utmp and wtmp"
 msgstr "utmp και wtmp"
 
-#: C/gdm.xml:713(para)
+#: C/gdm.xml:714(para)
 msgid ""
 "GDM generates utmp and wtmp User Accounting Database entries upon session "
 "login and logout. The utmp database contains user access and accounting "
@@ -1272,11 +1275,11 @@ msgstr ""
 "<ulink type=\"help\" url=\"man:wtmp\">wtmp</ulink> man pages του συστήματος "
 "σας για περισσότερες λεπτομέρειες."
 
-#: C/gdm.xml:728(title)
+#: C/gdm.xml:729(title)
 msgid "Xserver Authentication Scheme"
 msgstr "Σχήμα πιστοποίησης εξυπηρετητή X"
 
-#: C/gdm.xml:730(para)
+#: C/gdm.xml:731(para)
 msgid ""
 "Xserver authorization files are stored in a newly created subdirectory of "
 "<filename>&lt;var&gt;/run/gdm</filename> at start up. These files are used "
@@ -1291,7 +1294,7 @@ msgstr ""
 "συνδεδεμένη συνεδρία, έτσι ώστε οι χρήστες μιας συνεδρίας δεν μπορούν να "
 "παρακολουθούν απαρατήρητοι τους χρήστες μιας άλλης."
 
-#: C/gdm.xml:738(para)
+#: C/gdm.xml:739(para)
 msgid ""
 "GDM only supports the MIT-MAGIC-COOKIE-1 Xserver authentication scheme. "
 "Normally little is gained from the other schemes, and no effort has been "
@@ -1318,11 +1321,11 @@ msgstr ""
 "περιπτώσεις, το ssh -Y θα έπρεπε να προτιμάται έναντι των λειτουργιών XDMCP "
 "του GDM."
 
-#: C/gdm.xml:755(title)
+#: C/gdm.xml:756(title)
 msgid "XDMCP Security"
 msgstr "Ασφάλεια XDMCP"
 
-#: C/gdm.xml:757(para)
+#: C/gdm.xml:758(para)
 msgid ""
 "Even though your display is protected by cookies, XEvents and thus "
 "keystrokes typed when entering passwords will still go over the wire in "
@@ -1332,7 +1335,7 @@ msgstr ""
 "πατήματα των πλήκτρων κατά την εισαγωγή κωδικών θα ταξιδέψουν στο δίκτυο σαν "
 "απλό κείμενο. Είναι τετριμμένο να υποκλαπούν."
 
-#: C/gdm.xml:763(para)
+#: C/gdm.xml:764(para)
 msgid ""
 "XDMCP is primarily useful for running thin clients such as in terminal labs. "
 "Those thin clients will only ever need the network to access the server, and "
@@ -1352,11 +1355,11 @@ msgstr ""
 "ποτέ να χρησιμοποιεί ένα κομβικό σημείο (hub) χωρίς διαχείριση ή άλλον μη "
 "ασφαλή τύπο δικτύου."
 
-#: C/gdm.xml:776(title)
+#: C/gdm.xml:777(title)
 msgid "XDMCP Access Control"
 msgstr "Έλεγχος πρόσβασης του XDMCP"
 
-#: C/gdm.xml:778(para)
+#: C/gdm.xml:779(para)
 msgid ""
 "XDMCP access control is done using TCP wrappers. It is possible to compile "
 "GDM without TCP wrapper support, so this feature may not be supported on "
@@ -1367,7 +1370,7 @@ msgstr ""
 "αυτό το χαρακτηριστικό μπορεί να μην υποστηρίζεται σε κάποια λειτουργικά "
 "συστήματα."
 
-#: C/gdm.xml:784(para)
+#: C/gdm.xml:785(para)
 msgid ""
 "You should use the daemon name <command>gdm</command> in the <filename>&lt;"
 "etc&gt;/hosts.allow</filename> and <filename>&lt;etc&gt;/hosts.deny</"
@@ -1379,7 +1382,7 @@ msgstr ""
 "deny</filename>. Για παράδειγμα για να αρνηθείτε σε υπολογιστές από το "
 "<filename>.evil.domain</filename> την σύνδεση, στην συνέχεια προσθέστε"
 
-#: C/gdm.xml:791(screen)
+#: C/gdm.xml:792(screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -1388,14 +1391,13 @@ msgstr ""
 "\n"
 "gdm: .evil.domain\n"
 
-#: C/gdm.xml:794(para)
-msgid ""
-"to <filename>&lt;etc&gt;/hosts.deny</filename>. You may also need to add"
+#: C/gdm.xml:795(para)
+msgid "to <filename>&lt;etc&gt;/hosts.deny</filename>. You may also need to add"
 msgstr ""
 "στο <filename>&lt;etc&gt;/hosts.deny</filename>. Επίσης μπορεί να χρειαστεί "
 "να προσθέσετε"
 
-#: C/gdm.xml:798(screen)
+#: C/gdm.xml:799(screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -1404,7 +1406,7 @@ msgstr ""
 "\n"
 "gdm: .your.domain\n"
 
-#: C/gdm.xml:801(para)
+#: C/gdm.xml:802(para)
 msgid ""
 "to your <filename>&lt;etc&gt;/hosts.allow</filename> if you normally "
 "disallow all services from all hosts. See the <ulink type=\"help\" url=\"man:"
@@ -1415,11 +1417,11 @@ msgstr ""
 "type=\"help\" url=\"man:hosts.allow\">hosts.allow(5)</ulink> man page για "
 "λεπτομέρειες."
 
-#: C/gdm.xml:810(title)
+#: C/gdm.xml:811(title)
 msgid "Firewall Security"
 msgstr "Ασφάλεια firewall"
 
-#: C/gdm.xml:812(para)
+#: C/gdm.xml:813(para)
 msgid ""
 "Even though GDM tries to outsmart potential attackers trying to take "
 "advantage of XDMCP, it is still advised that you block the XDMCP port "
@@ -1439,7 +1441,7 @@ msgstr ""
 "πολύ ευκολότερο να πραγματοποιηθεί μια επίθεση denial of service μέσω XDMCP "
 "παρά μέσω ενός διακομιστή διαδικτύου."
 
-#: C/gdm.xml:823(para)
+#: C/gdm.xml:824(para)
 msgid ""
 "It is also wise to block all of the Xserver ports. These are TCP ports 6000+ "
 "(one for each display number) on your firewall. Note that GDM will use "
@@ -1450,7 +1452,7 @@ msgstr ""
 "Σημειώστε ότι το GDM θα χρησιμοποιήσει αριθμούς τερματικού από 20 και πάνω "
 "για ευέλικτους εξυπηρετητές κατόπιν ζήτησης (flexible on-demand servers)."
 
-#: C/gdm.xml:830(para)
+#: C/gdm.xml:831(para)
 msgid ""
 "X is not a very safe protocol when using it over the Internet, and XDMCP is "
 "even less safe."
@@ -1458,14 +1460,14 @@ msgstr ""
 "Το X δεν είναι πολύ ασφαλές πρωτόκολλο για χρήση στο διαδίκτυο και το XDMCP "
 "είναι ακόμη πιο ανασφαλές."
 
-#: C/gdm.xml:837(title)
+#: C/gdm.xml:838(title)
 msgid "PolicyKit"
 msgstr "PolicyKit"
 
 #. <para>
 #.         TODO - Should we say more?
 #. </para>
-#: C/gdm.xml:845(para)
+#: C/gdm.xml:846(para)
 msgid ""
 "GDM may be configured to use PolicyKit to allow the system administrator to "
 "control whether the login screen should provide the shutdown and restart "
@@ -1475,7 +1477,7 @@ msgstr ""
 "επιτρέπει στον διαχειριστή συστήματος να ελέγχει αν η οθόνη εισόδου θα "
 "παρέχει τα πλήκτρα τερματισμού και επανεκκίνησης στην οθόνη του greeter."
 
-#: C/gdm.xml:851(para)
+#: C/gdm.xml:852(para)
 msgid ""
 "These buttons are controlled by the <filename>org.freedesktop.consolekit."
 "system.stop-multiple-users</filename> and <filename>org.freedesktop."
@@ -1490,11 +1492,11 @@ msgstr ""
 "εργαλείο polkit-gnome-authorization, ή το πρόγραμμα γραμμής εντολών polkit-"
 "auth."
 
-#: C/gdm.xml:863(title)
+#: C/gdm.xml:864(title)
 msgid "RBAC (Role Based Access Control)"
 msgstr "RBAC (Έλεγχος προσπέλασης βάσει ρόλου)"
 
-#: C/gdm.xml:865(para)
+#: C/gdm.xml:866(para)
 msgid ""
 "GDM may be configured to use RBAC instead of PolicyKit. In this case the "
 "RBAC configuration is used to control whether the login screen should "
@@ -1505,7 +1507,7 @@ msgstr ""
 "για να ελέγχει αν η οθόνη εισόδου θα παρέχει τα πλήκτρα τερματισμού και "
 "επανεκκίνησης στην οθόνη του greeter."
 
-#: C/gdm.xml:871(para)
+#: C/gdm.xml:872(para)
 msgid ""
 "For example, on Solaris, the \"solaris.system.shutdown\" authorization is "
 "used to control this. Simply modify the <filename>/etc/user_attr</filename> "
@@ -1516,17 +1518,17 @@ msgstr ""
 "user_attr</filename> έτσι ώστε ο χρήστης \"gdm\" να έχει αυτή την "
 "εξουσιοδότηση."
 
-#: C/gdm.xml:884(title)
+#: C/gdm.xml:885(title)
 msgid "Support for ConsoleKit"
 msgstr "Υποστήριξη για το ConsoleKit"
 
 #. <para>
-#.     TODO - Should we update these docs?  Probably should mention any 
+#.     TODO - Should we update these docs?  Probably should mention any
 #.            configuration that users may want to do for using it with GDM?
 #.            If so, perhaps this section should be moved to a subsection of
 #.            the "Configure" section?
 #. </para>
-#: C/gdm.xml:895(para)
+#: C/gdm.xml:896(para)
 msgid ""
 "GDM includes support for publishing user login information with the user and "
 "login session accounting framework known as ConsoleKit. ConsoleKit is able "
@@ -1541,7 +1543,7 @@ msgstr ""
 "χρησιμοποιηθεί σαν αντικαταστάτης των αρχείων utmp και utmpx που είναι "
 "διαθέσιμα στα περισσότερα λειτουργικά συστήματα τύπου Unix."
 
-#: C/gdm.xml:903(para)
+#: C/gdm.xml:904(para)
 msgid ""
 "When GDM is about to create a new login process for a user it will call a "
 "privileged method of ConsoleKit in order to open a new session for this "
@@ -1566,7 +1568,7 @@ msgstr ""
 "σχετικά με την συνεδρία του χρήστη. Η χρήση αυτής της προνομιούχας μεθόδου "
 "περιορίζεται από την χρήση των κανόνων ασφαλείας D-Bus system message bus."
 
-#: C/gdm.xml:917(para)
+#: C/gdm.xml:918(para)
 msgid ""
 "In case a user with an existing session has authenticated at GDM and "
 "requests to resume that existing session, GDM calls a privileged method of "
@@ -1581,7 +1583,7 @@ msgstr ""
 "απροσδιόριστες και ιδιαίτερες για την συνεδρία. Εντούτοις, οι περισσότερες "
 "συνεδρίες θα ξεκλειδώσουν την προστασία οθόνης σε απάντηση."
 
-#: C/gdm.xml:926(para)
+#: C/gdm.xml:927(para)
 msgid ""
 "When the user chooses to log out, or if GDM or the session quit unexpectedly "
 "the user session will be unregistered from ConsoleKit."
@@ -1590,11 +1592,11 @@ msgstr ""
 "σταματήσουν απρόσμενα η συνεδρία του χρήστη θα σταματήσει να καταγράφεται "
 "από το ConsoleKit."
 
-#: C/gdm.xml:935(title)
+#: C/gdm.xml:936(title)
 msgid "Configuration"
 msgstr "Διαμόρφωση"
 
-#: C/gdm.xml:937(para)
+#: C/gdm.xml:938(para)
 msgid ""
 "GDM has a number of configuration interfaces. These include scripting "
 "integration points, daemon configuration, greeter configuration, general "
@@ -1608,11 +1610,11 @@ msgstr ""
 "settings-daemon, και διαμόρφωση συνεδρίας. Αυτοί οι τρόποι ενοποίησης "
 "λειτουργιών περιγράφονται με λεπτομέρεια παρακάτω."
 
-#: C/gdm.xml:946(title)
+#: C/gdm.xml:947(title)
 msgid "Scripting Integration Points"
 msgstr "Σημεία ενσωμάτωσης σεναρίου εντολών φλοιού"
 
-#: C/gdm.xml:948(para)
+#: C/gdm.xml:949(para)
 msgid ""
 "The GDM script integration points can be found in the <filename>&lt;etc&gt;/"
 "gdm/</filename> directory:"
@@ -1620,7 +1622,7 @@ msgstr ""
 "Τα σημεία ενσωμάτωσης σεναρίων εντολών του GDM μπορείτε να τα βρείτε στον "
 "κατάλογο <filename>&lt;etc&gt;/gdm/</filename>:"
 
-#: C/gdm.xml:953(screen)
+#: C/gdm.xml:954(screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -1637,7 +1639,7 @@ msgstr ""
 "PreSession/\n"
 "PostSession/\n"
 
-#: C/gdm.xml:961(para)
+#: C/gdm.xml:962(para)
 msgid ""
 "The <filename>Init</filename>, <filename>PostLogin</filename>, "
 "<filename>PreSession</filename>, and <filename>PostSession</filename> "
@@ -1647,7 +1649,7 @@ msgstr ""
 "filename>, <filename>PreSession</filename> και <filename>PostSession</"
 "filename> λειτουργούν όπως περιγράφεται παρακάτω."
 
-#: C/gdm.xml:967(para)
+#: C/gdm.xml:968(para)
 msgid ""
 "For each type of script, the default one which will be executed is called "
 "\"Default\" and is stored in a directory associated with the script type. So "
@@ -1668,7 +1670,7 @@ msgstr ""
 "την κάθε οθόνη. Για παράδειγμα, αν υπάρχει το σενάριο <filename>&lt;"
 "Init&gt;/:0</filename>, θα εκτελεστεί για το DISPLAY \":0\"."
 
-#: C/gdm.xml:979(para)
+#: C/gdm.xml:980(para)
 msgid ""
 "All of these scripts are run with root privilege and return 0 if run "
 "successfully, and a non-zero return code if there was any failure that "
@@ -1683,7 +1685,7 @@ msgstr ""
 "της εκτέλεσης του σεναρίου, έτσι αν κάποιο από αυτά τα σενάρια κρεμάσει, "
 "αυτό θα προκαλέσει το κρέμασμα και της διεργασίας εισόδου."
 
-#: C/gdm.xml:987(para)
+#: C/gdm.xml:988(para)
 msgid ""
 "When the Xserver for the login GUI has been successfully started, but before "
 "the login GUI is actually displayed, GDM will run the <filename>Init</"
@@ -1697,7 +1699,7 @@ msgstr ""
 "εκτελούνται κατά την προβολή της οθόνης εισόδου, ή για την υλοποίηση "
 "οποιασδήποτε ειδικής αρχικοποίησης απαιτείται."
 
-#: C/gdm.xml:995(para)
+#: C/gdm.xml:996(para)
 msgid ""
 "After the user has been successfully authenticated GDM will run the "
 "<filename>PostLogin</filename> script. This is done before any session setup "
@@ -1714,7 +1716,7 @@ msgstr ""
 "εκκίνηση της. Για παράδειγμα, μπορείτε να ρυθμίσετε τον κατάλογο $HOME του "
 "χρήστη αν χρειάζεται."
 
-#: C/gdm.xml:1004(para)
+#: C/gdm.xml:1005(para)
 msgid ""
 "After the user session has been initialized, GDM will run the "
 "<filename>PreSession</filename> script. This script is useful for doing any "
@@ -1728,7 +1730,7 @@ msgstr ""
 "εκκίνηση της συνεδρίας. Μπορεί να χρησιμοποιηθεί για την διαχείριση της "
 "συνεδρίας ή για καταγραφή δεδομένων της, για παράδειγμα."
 
-#: C/gdm.xml:1012(para)
+#: C/gdm.xml:1013(para)
 msgid ""
 "When a user terminates their session, GDM will run the "
 "<filename>PostSession</filename> script. Note that the Xserver will have "
@@ -1739,7 +1741,7 @@ msgstr ""
 "την στιγμή που θα εκτελείται αυτό το σενάριο, έτσι δεν θα πρέπει να είναι "
 "αναγκαία η πρόσβαση σ' αυτόν."
 
-#: C/gdm.xml:1019(para)
+#: C/gdm.xml:1020(para)
 msgid ""
 "Note that the <filename>PostSession</filename> script will be run even when "
 "the display fails to respond due to an I/O error or similar. Thus, there is "
@@ -1750,7 +1752,7 @@ msgstr ""
 "συναφούς. Κατά συνέπεια, δεν υπάρχει βεβαιότητα ότι οι εφαρμογές X θα "
 "δουλέψουν κατά την εκτέλεση του σεναρίου."
 
-#: C/gdm.xml:1026(para)
+#: C/gdm.xml:1027(para)
 msgid ""
 "All of the above scripts will set the <filename>$RUNNING_UNDER_GDM</"
 "filename> environment variable to <filename>yes</filename>. If the scripts "
@@ -1764,11 +1766,11 @@ msgstr ""
 "αναγνωρίσετε πότε το GDM καλεί αυτά τα σενάρια, έτσι ώστε να εκτελείτε "
 "συγκεκριμένο κώδικα όταν χρησιμοποιείται το GDM."
 
-#: C/gdm.xml:1036(title)
+#: C/gdm.xml:1037(title)
 msgid "Autostart Configuration"
 msgstr "Ρύθμιση αυτόματης εκκίνησης"
 
-#: C/gdm.xml:1038(para)
+#: C/gdm.xml:1039(para)
 msgid ""
 "The <filename>&lt;share&gt;/gdm/autostart/LoginWindow</filename> directory "
 "contains files in the format specified by the \"FreeDesktop.org Desktop "
@@ -1783,13 +1785,22 @@ msgstr ""
 "πρέπει να επανεκκινούν αυτόματα ή θα εκκινούν μόνο αν έχει οριστεί μια τιμή "
 "στην διαμόρφωση του GConf, κλπ."
 
-#: C/gdm.xml:1047(para)
+#: C/gdm.xml:1048(para)
+#| msgid ""
+#| "Any <filename>.desktop</filename> files in this directory will cause the "
+#| "associated program to automatically start with the login GUI greeter. By "
+#| "default, GDM is shipped with files which will autostart the gdm-simple-"
+#| "greeter login GUI greeter itself, the gnome-power-manager application, "
+#| "the gnome-settings-daemon, and the Metacity window manager. These "
+#| "programs are needed for the greeter program to work. In addition, desktop "
+#| "files are provided for starting various AT programs if the configuration "
+#| "values specified in the Accessibility Configuration section below are set."
 msgid ""
 "Any <filename>.desktop</filename> files in this directory will cause the "
 "associated program to automatically start with the login GUI greeter. By "
 "default, GDM is shipped with files which will autostart the gdm-simple-"
 "greeter login GUI greeter itself, the gnome-power-manager application, the "
-"gnome-settings-daemon, and the Metacity window manager. These programs are "
+"gnome-settings-daemon, and the metacity window manager. These programs are "
 "needed for the greeter program to work. In addition, desktop files are "
 "provided for starting various AT programs if the configuration values "
 "specified in the Accessibility Configuration section below are set."
@@ -1804,11 +1815,11 @@ msgstr ""
 "διαφόρων εφαρμογών AT αν τιμές διαμόρφωσης που προσδιορίζονται στην ενότητα "
 "διαμόρφωση προσβασιμότητας παρακάτω ρυθμιστούν κατάλληλα."
 
-#: C/gdm.xml:1061(title)
+#: C/gdm.xml:1062(title)
 msgid "Xsession Script"
 msgstr "Σενάριο εντολών Xsession"
 
-#: C/gdm.xml:1063(para)
+#: C/gdm.xml:1064(para)
 msgid ""
 "There is also an <filename>Xsession</filename> script located at "
 "<filename>&lt;etc&gt;/gdm/Xsession</filename> which is called between the "
@@ -1827,27 +1838,34 @@ msgstr ""
 "συνεδρία και αν προσδιορίστηκε από το αρχείο Desktop session που επέλεξε ο "
 "χρήστης για να εκκινήσει."
 
-#: C/gdm.xml:1076(title)
+#: C/gdm.xml:1077(title)
 msgid "Daemon Configuration"
 msgstr "Διαμόρφωση δαίμονα"
 
-#: C/gdm.xml:1078(para)
+#: C/gdm.xml:1079(para)
+#| msgid ""
+#| "The GDM daemon is configured using the <filename>&lt;etc&gt;/gdm/custom."
+#| "conf</filename> file. Default values are stored in GConf in the "
+#| "<filename>gdm.schemas</filename> file. It is recommended that end-users "
+#| "modify the <filename>/etc/gdm/custom.conf</filename> file because the "
+#| "schemas file may be overwritten when the user updates their system to "
+#| "have a newer version of GDM."
 msgid ""
 "The GDM daemon is configured using the <filename>&lt;etc&gt;/gdm/custom."
 "conf</filename> file. Default values are stored in GConf in the "
 "<filename>gdm.schemas</filename> file. It is recommended that end-users "
-"modify the <filename>/etc/gdm/custom.conf</filename> file because the "
+"modify the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file because the "
 "schemas file may be overwritten when the user updates their system to have a "
 "newer version of GDM."
 msgstr ""
 "Ο δαίμονας του GDM ρυθμίζεται χρησιμοποιώντας το αρχείο <filename>&lt;"
 "etc&gt;/gdm/custom.conf</filename>. Οι προεπιλεγμένες τιμές είναι "
 "αποθηκευμένες στο αρχείο του GConf <filename>gdm.schemas</filename>. "
-"Συνίσταται οι τελικοί χρήστες να μετατρέπουν το αρχείο <filename>/etc/gdm/"
-"custom.conf</filename> επειδή το αρχείο gdm.schemas μπορεί να επανεγγραφεί "
-"κατά την αναβάθμιση του συστήματος με μια νεώτερη έκδοση του GDM."
+"Συνίσταται οι τελικοί χρήστες να μετατρέπουν το αρχείο <filename>&lt;etc&gt;/gdm/custom.conf</filename> επειδή το αρχείο gdm.schemas "
+"μπορεί να επανεγγραφεί "
+"κατά την αναβάθμιση του συστήματος με μια νεότερη έκδοση του GDM."
 
-#: C/gdm.xml:1088(para)
+#: C/gdm.xml:1089(para)
 msgid ""
 "Note that older versions of GDM supported additional configuration options "
 "which are no longer supported in the latest versions of GDM."
@@ -1855,7 +1873,7 @@ msgstr ""
 "Σημειώστε ότι παλαιότερες εκδόσεις του GDM υποστήριζαν πρόσθετες επιλογές "
 "διαμόρφωσης που δεν υποστηρίζονται πλέον στις τελευταίες εκδόσεις του GDM."
 
-#: C/gdm.xml:1093(para)
+#: C/gdm.xml:1094(para)
 msgid ""
 "The <filename>&lt;etc&gt;/gdm/custom.conf</filename> file is in the "
 "<filename>keyfile</filename> format. Keywords in brackets define group "
@@ -1869,16 +1887,23 @@ msgstr ""
 "μετά το σημείο ίσον αντιπροσωπεύουν την τιμή τους. Οι άδειες γραμμές ή "
 "εκείνες που αρχίζουν με το σημείο δίεση (#) αγνοούνται."
 
-#: C/gdm.xml:1101(para)
+#: C/gdm.xml:1102(para)
+#| msgid ""
+#| "The file <filename>/etc/gdm/custom.conf</filename> supports the \"[daemon]"
+#| "\", \"[security]\", and \"[xdmcp]\" group sections. Within each group, "
+#| "there are particular key/value pairs that can be specified to modify how "
+#| "GDM behaves. For example, to enable timed login and specify the timed "
+#| "login user to be a user named \"you\", you would modify the file so it "
+#| "contains the following lines:"
 msgid ""
-"The file <filename>/etc/gdm/custom.conf</filename> supports the \"[daemon]"
-"\", \"[security]\", and \"[xdmcp]\" group sections. Within each group, there "
-"are particular key/value pairs that can be specified to modify how GDM "
-"behaves. For example, to enable timed login and specify the timed login user "
-"to be a user named \"you\", you would modify the file so it contains the "
-"following lines:"
+"The file <filename>&lt;etc&gt;/gdm/custom.conf</filename> supports the "
+"\"[daemon]\", \"[security]\", and \"[xdmcp]\" group sections. Within each "
+"group, there are particular key/value pairs that can be specified to modify "
+"how GDM behaves. For example, to enable timed login and specify the timed "
+"login user to be a user named \"you\", you would modify the file so it "
+"contains the following lines:"
 msgstr ""
-"Το <filename>/etc/gdm/custom.conf</filename> υποστηρίζει τις ενότητες ομάδων "
+"Το <filename>&lt;etc&gt;/gdm/custom.conf</filename> υποστηρίζει τις ενότητες ομάδων "
 "\"[daemon]\", \"[security]\", και \"[xdmcp]\". Μέσα σε κάθε ομάδα, υπάρχουν "
 "ιδιαίτερα ζεύγη κλειδιού/τιμής που μπορούν να προσδιοριστούν για να "
 "μετατραπεί η συμπεριφορά του GDM. Για παράδειγμα, για να ενεργοποιήσουμε "
@@ -1886,7 +1911,7 @@ msgstr ""
 "όνομα \"you\", θα πρέπει να τροποποιήσουμε το αρχείο ώστε να περιέχει τις "
 "παρακάτω γραμμές:"
 
-#: C/gdm.xml:1111(screen)
+#: C/gdm.xml:1112(screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -1899,24 +1924,24 @@ msgstr ""
 "TimedLoginEnable=true\n"
 "TimedLogin=you\n"
 
-#: C/gdm.xml:1117(para)
+#: C/gdm.xml:1118(para)
 msgid "A full list of supported configuration keys follow:"
 msgstr "Ακολουθεί πλήρης λίστα υποστηριζόμενων κλειδιών διαμόρφωσης:"
 
-#: C/gdm.xml:1122(title)
+#: C/gdm.xml:1123(title)
 msgid "[chooser]"
 msgstr "[chooser]"
 
-#: C/gdm.xml:1126(term)
+#: C/gdm.xml:1127(term)
 msgid "Multicast"
 msgstr "Multicast"
 
-#: C/gdm.xml:1128(synopsis)
+#: C/gdm.xml:1129(synopsis)
 #, no-wrap
 msgid "Multicast=false"
 msgstr "Multicast=false"
 
-#: C/gdm.xml:1129(para)
+#: C/gdm.xml:1130(para)
 msgid ""
 "If true and IPv6 is enabled, the chooser will send a multicast query to the "
 "local network and collect responses from the hosts who have joined multicast "
@@ -1926,53 +1951,34 @@ msgstr ""
 "στείλει multicast query στο τοπικό δίκτυο και θα συλλέξει απαντήσεις από "
 "τους υπολογιστές που ανήκουν στην ομάδα multicast."
 
-#: C/gdm.xml:1138(term)
+#: C/gdm.xml:1139(term)
 msgid "MulticastAddr"
 msgstr "MulticastAddr"
 
-#: C/gdm.xml:1140(synopsis)
+#: C/gdm.xml:1141(synopsis)
 #, no-wrap
 msgid "MulticastAddr=ff02::1"
 msgstr "MulticastAddr=ff02::1"
 
-#: C/gdm.xml:1141(para)
-msgid "This is the Link-local Multicast address."
-msgstr "Αυτός είναι ο σύνδεσμος-local Multicast address."
+#: C/gdm.xml:1142(para)
+#| msgid "This is the Link-local Multicast address."
+msgid "This is the Link-local multicast address."
+msgstr "Αυτός είναι η multicast διεύθυνση Link-local."
 
-#: C/gdm.xml:1150(title)
+#: C/gdm.xml:1151(title)
 msgid "[daemon]"
 msgstr "[daemon]"
 
 #: C/gdm.xml:1154(term)
-msgid "Group"
-msgstr "Ομάδα"
-
-#: C/gdm.xml:1156(synopsis)
-#, no-wrap
-msgid "Group=gdm"
-msgstr "Group=gdm"
-
-#: C/gdm.xml:1157(para)
-msgid ""
-"The group name under which the greeter and other GUI programs are run. Refer "
-"to the <filename>User</filename> configuration key and to the \"Security-&gt;"
-"GDM User And Group\" section of this document for more information."
-msgstr ""
-"Το όνομα ομάδας υπό την οποία η εφαρμογή greeter και άλλα προγράμματα GUI "
-"εκτελούνται. Ανατρέξτε στο κλειδί διαμόρφωσης <filename>User</filename> και "
-"στην ενότητα \"Security-&gt;GDM User And Group\" αυτού του εγγράφου για "
-"περισσότερες πληροφορίες."
-
-#: C/gdm.xml:1167(term)
 msgid "TimedLoginEnable"
 msgstr "Ενεργοποίηση σύνδεσης με καθορισμένη καθυστέρηση"
 
-#: C/gdm.xml:1169(synopsis)
+#: C/gdm.xml:1156(synopsis)
 #, no-wrap
 msgid "TimedLoginEnable=false"
 msgstr "TimedLoginEnable=false"
 
-#: C/gdm.xml:1170(para)
+#: C/gdm.xml:1157(para)
 msgid ""
 "If the user given in <filename>TimedLogin</filename> should be logged in "
 "after a number of seconds (set with <filename>TimedLoginDelay</filename>) of "
@@ -2003,16 +2009,16 @@ msgstr ""
 "&gt;PAM\" του εγχειριδίου για περισσότερες πληροφορίες, ή για βοήθεια αν "
 "αυτό το χαρακτηριστικό φαίνεται να μην λειτουργεί."
 
-#: C/gdm.xml:1192(term)
+#: C/gdm.xml:1179(term)
 msgid "TimedLogin"
 msgstr "Σύνδεση σε καθορισμένο χρονικό διάστημα"
 
-#: C/gdm.xml:1194(synopsis)
+#: C/gdm.xml:1181(synopsis)
 #, no-wrap
 msgid "TimedLogin="
 msgstr "TimedLogin="
 
-#: C/gdm.xml:1195(para)
+#: C/gdm.xml:1182(para)
 msgid ""
 "This is the user that should be logged in after a specified number of "
 "seconds of inactivity."
@@ -2020,7 +2026,7 @@ msgstr ""
 "Αυτός είναι ο χρήστης που πρέπει να συνδεθεί μετά από ένα καθορισμένο αριθμό "
 "δευτερολέπτων αδράνειας."
 
-#: C/gdm.xml:1199(para) C/gdm.xml:1243(para)
+#: C/gdm.xml:1186(para) C/gdm.xml:1230(para)
 msgid ""
 "If the value ends with a vertical bar | (the pipe symbol), then GDM will "
 "execute the program specified and use whatever value is returned on standard "
@@ -2038,16 +2044,16 @@ msgstr ""
 "θα εκτελεστεί το πρόγραμμα \"/usr/bin/getloginuser\" για να βρεθεί η τιμή "
 "που ορίζει τον χρήστη."
 
-#: C/gdm.xml:1213(term)
+#: C/gdm.xml:1200(term)
 msgid "TimedLoginDelay"
 msgstr "Σύνδεση με καθορισμένη χρονική καθυστέρηση"
 
-#: C/gdm.xml:1215(synopsis)
+#: C/gdm.xml:1202(synopsis)
 #, no-wrap
 msgid "TimedLoginDelay=30"
 msgstr "TimedLoginDelay=30"
 
-#: C/gdm.xml:1216(para)
+#: C/gdm.xml:1203(para)
 msgid ""
 "Delay in seconds before the <filename>TimedLogin</filename> user will be "
 "logged in."
@@ -2055,16 +2061,16 @@ msgstr ""
 "Καθυστέρηση σε δευτερόλεπτα πριν ο χρήστης <filename>TimedLogin</filename> "
 "συνδεθεί."
 
-#: C/gdm.xml:1224(term)
+#: C/gdm.xml:1211(term)
 msgid "AutomaticLoginEnable"
 msgstr "Ενεργοποίηση αυτόματης σύνδεσης"
 
-#: C/gdm.xml:1226(synopsis)
+#: C/gdm.xml:1213(synopsis)
 #, no-wrap
 msgid "AutomaticLoginEnable=false"
 msgstr "AutomaticLoginEnable=false"
 
-#: C/gdm.xml:1227(para)
+#: C/gdm.xml:1214(para)
 msgid ""
 "If true, the user given in <filename>AutomaticLogin</filename> should be "
 "logged in immediately. This feature is like timed login with a delay of 0 "
@@ -2074,16 +2080,16 @@ msgstr ""
 "πρέπει να συνδεθεί άμεσα. Αυτό το χαρακτηριστικό είναι σαν το timed login με "
 "καθυστέρηση 0."
 
-#: C/gdm.xml:1236(term)
+#: C/gdm.xml:1223(term)
 msgid "AutomaticLogin"
 msgstr "Αυτόματη σύνδεση"
 
-#: C/gdm.xml:1238(synopsis)
+#: C/gdm.xml:1225(synopsis)
 #, no-wrap
 msgid "AutomaticLogin="
 msgstr "AutomaticLogin="
 
-#: C/gdm.xml:1239(para)
+#: C/gdm.xml:1226(para)
 msgid ""
 "This is the user that should be logged in immediately if "
 "<filename>AutomaticLoginEnable</filename> is true."
@@ -2091,16 +2097,16 @@ msgstr ""
 "Αυτός είναι ο χρήστης που πρέπει να συνδεθεί αμέσως αν το "
 "<filename>AutomaticLoginEnable</filename> είναι αληθές."
 
-#: C/gdm.xml:1257(term)
+#: C/gdm.xml:1244(term)
 msgid "User"
 msgstr "Χρήστης"
 
-#: C/gdm.xml:1259(synopsis)
+#: C/gdm.xml:1246(synopsis)
 #, no-wrap
 msgid "User=gdm"
 msgstr "User=gdm"
 
-#: C/gdm.xml:1260(para)
+#: C/gdm.xml:1247(para)
 msgid ""
 "The username under which the greeter and other GUI programs are run. Refer "
 "to the <filename>Group</filename> configuration key and to the \"Security-"
@@ -2111,24 +2117,189 @@ msgstr ""
 "στην ενότητα \"Security-&gt;GDM User And Group\" αυτού του εγγράφου για "
 "περισσότερες πληροφορίες."
 
+#: C/gdm.xml:1257(term)
+msgid "Group"
+msgstr "Ομάδα"
+
+#: C/gdm.xml:1259(synopsis)
+#, no-wrap
+msgid "Group=gdm"
+msgstr "Group=gdm"
+
+#: C/gdm.xml:1260(para)
+msgid ""
+"The group name under which the greeter and other GUI programs are run. Refer "
+"to the <filename>User</filename> configuration key and to the \"Security-&gt;"
+"GDM User And Group\" section of this document for more information."
+msgstr ""
+"Το όνομα ομάδας υπό την οποία η εφαρμογή greeter και άλλα προγράμματα GUI "
+"εκτελούνται. Ανατρέξτε στο κλειδί διαμόρφωσης <filename>User</filename> και "
+"στην ενότητα \"Security-&gt;GDM User And Group\" αυτού του εγγράφου για "
+"περισσότερες πληροφορίες."
+
 #: C/gdm.xml:1272(title)
+#| msgid "Security Options"
+msgid "Debug Options"
+msgstr "Επιλογές αποσφαλμάτωσης"
+
+#: C/gdm.xml:1275(title)
+#| msgid "--debug"
+msgid "[debug]"
+msgstr "[debug]"
+
+#: C/gdm.xml:1278(term) C/gdm.xml:1408(term)
+msgid "Enable"
+msgstr "Ενεργοποίηση"
+
+#: C/gdm.xml:1280(synopsis) C/gdm.xml:1410(synopsis)
+#, no-wrap
+msgid "Enable=false"
+msgstr "Enable=false"
+
+#: C/gdm.xml:1281(para)
+#| msgid ""
+#| "Print debug output to the syslog. This is typically <filename>&lt;var&gt;/"
+#| "log/messages</filename> or <filename>&lt;var&gt;/adm/messages</filename> "
+#| "depending on your Operating System."
+msgid ""
+"To enable debugging, set the debug/Enable key to \"true\" in the "
+"<filename>&lt;etc&gt;/gdm/custom.conf</filename> file and restart GDM. Then "
+"debug output will be sent to the system log file (<filename>&lt;var&gt;/log/"
+"messages</filename> or <filename>&lt;var&gt;/adm/messages</filename> "
+"depending on your Operating System)."
+msgstr ""
+"Για να ενεργοποιήσετε την αποσφαλμάτωση, ορίστε το κλειδί debug/Enable σε «true» στο αρχείο <filename>&lt;etc&gt;/gdm/custom.conf<"
+"/filename> και επανεκκινήστε το GDM. Μετά, η έξοδος αποσφαλμάτωσης θα καταγράφεται στο αρχείο καταγραφής συστήματος (<filename>"
+"&lt;var&gt;/log/"
+"messages</filename> ή <filename>&lt;var&gt;/adm/messages</filename> ανάλογα με το Λειτουργικό σας σύστημα)."
+
+#: C/gdm.xml:1296(title)
+#| msgid "Security Options"
+msgid "Greeter Options"
+msgstr "Επιλογές του Greeter"
+
+#: C/gdm.xml:1299(title)
+msgid "[greeter]"
+msgstr "[greeter]"
+
+#: C/gdm.xml:1302(term)
+msgid "IncludeAll"
+msgstr "IncludeAll"
+
+#: C/gdm.xml:1304(synopsis)
+#, no-wrap
+msgid "IncludeAll=true"
+msgstr "IncludeAll=true"
+
+#: C/gdm.xml:1305(para)
+msgid ""
+"If true, then the face browser will show all users on the local machine. If "
+"false, the face browser will only show users who have recently logged in."
+msgstr ""
+"Αν αληθές, ο περιηγητής προσώπων θα εμφανίζει όλους τους χρήστες στο τοπικό "
+"μηχάνημα. Αν ψευδές, ο περιηγητής προσώπων θα εμφανίζει μόνο τους χρήστες "
+"που έχουν συνδεθεί πρόσφατα."
+
+#: C/gdm.xml:1311(para)
+#| msgid ""
+#| "To provide more detail on how this option works. When this key is true, "
+#| "GDM will call fgetpwent() to get a list of local users on the system. The "
+#| "Face Browser also will display any users that have previously logged in "
+#| "on the system (for example NIS/LDAP users). It gets this list via calling "
+#| "the ck-history ConsoleKit interface. It will also filter out any users "
+#| "which do not have a valid shell (valid shells are any shell that "
+#| "getusershell() returns. <filename>/sbin/nologin</filename> or <filename>/"
+#| "bin/false</filename> are considered invalid shells even if getusershell() "
+#| "returns them)."
+msgid ""
+"When this key is true, GDM will call fgetpwent() to get a list of local "
+"users on the system. Any users with a user id less than 500 (or 100 if "
+"running on Solaris) are filtered out. The Face Browser also will display any "
+"users that have previously logged in on the system (for example NIS/LDAP "
+"users). It gets this list via calling the <command>ck-history</command> "
+"ConsoleKit interface. It will also filter out any users which do not have a "
+"valid shell (valid shells are any shell that getusershell() returns - /sbin/"
+"nologin or /bin/false are considered invalid shells even if getusershell() "
+"returns them)."
+msgstr ""
+"Όταν το κλειδί αυτό είναι αληθές (true), το GDM θα καλέσει την fgetpwent() για να ανακτήσει μία λίστα τοπικών χρηστών του συστήματος. "
+"Δε συμπεριλαμβάνονται όλοι οι χρήστες με user id χαμηλότερο του 500 (ή του 100 αν τρέχετε Solaris). Ο περιηγητής προσώπων επίσης θα "
+"προβάλει όλους τους χρήστες που έχουν συνδεθεί προηγουμένως στο σύστημα (για παράδειγμα χρήστες NIS/LDAP). Ανακτά αυτή την λίστα μέσω "
+"κλήσης της διεπαφής <command>ck-history</command> του ConsoleKit. Θα αποκλείσει επίσης όλους τους χρήστες που δεν έχουν ένα έγκυρο "
+"κέλυφος (έγκυρα κελύφη είναι εκείνα που αποδίδει το getusershell() - τα /sbin/nologin ή /bin/false δε θεωρούνται έγκυρα κελύφη ακόμη "
+"και αν το getusershell() τα περιλάβει στα αποτελέσματα του)."
+
+#: C/gdm.xml:1324(para)
+#| msgid ""
+#| "If false, then GDM more simply only displays users that have previously "
+#| "logged in on the system (local or NIS/LDAP users) by calling the ck-"
+#| "history ConsoleKit interface."
+msgid ""
+"If false, then GDM more simply only displays users that have previously "
+"logged in on the system (local or NIS/LDAP users) by calling the <command>ck-"
+"history</command> ConsoleKit interface."
+msgstr ""
+"Αν είναι ψευδές (false), τότε το GDM προβάλλει μόνο τους χρήστες που έχουν προηγουμένως συνδεθεί στο σύστημα (τοπικούς ή NIS/LDAP) "
+"καλώντας τη διεπαφή <command>ck-history</command> του ConsoleKit."
+
+#: C/gdm.xml:1333(term)
+msgid "Include"
+msgstr "Include"
+
+#: C/gdm.xml:1335(synopsis)
+#, no-wrap
+msgid "Include="
+msgstr "Include="
+
+#: C/gdm.xml:1336(para)
+msgid ""
+"Set to a list of users to always include in the Face Browser. This value is "
+"set to a list of users separated by commas. By default, the value is empty."
+msgstr ""
+"Ορίζεται σε μια λίστα από χρήστες που να συμπεριλαμβάνονται πάντα στον Περιηγητή προσώπων. Αυτή η τιμή ορίζεται σε μια λίστα από "
+"χρήστες που χωρίζονται με κόμμα. Από προεπιλογή, η τιμή είναι άδεια."
+
+#: C/gdm.xml:1345(term)
+msgid "Exclude"
+msgstr "Exclude"
+
+#: C/gdm.xml:1347(synopsis)
+#, no-wrap
+msgid "Exclude=bin,root,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,nobody4,noaccess,postgres,pvm,rpm,nfsnobody,pcap"
+msgstr ""
+"Exclude=bin,root,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,nobody4,noaccess,postgres,pvm,rpm,nfsnobody,pcap"
+
+#: C/gdm.xml:1348(para)
+msgid ""
+"Set to a list of users to always exclude in the Face Browser. This value is "
+"set to a list of users separated by commas. Note that the setting in the "
+"<filename>custom.conf</filename> overrides the default value, so if you wish "
+"to add additional users to the list, then you need to set the value to the "
+"default value with additional users appended to the list."
+msgstr ""
+"Ορίζεται σε μια λίστα από χρήστες που να αποκλείονται πάντα από τον Περιηγητή προσώπων. Αυτή η τιμή ορίζεται σε μια λίστα από χρήστες "
+"που χωρίζονται από κόμμα. Σημειώστε ότι η ρύθμιση στο <filename>custom.conf</filename> παρακάμπτει την προεπιλογή, οπότε αν θέλετε να "
+"προσθέσετε επιπλέον χρήστες στη λίστα, τότε πρέπει να ορίσετε την τιμή στην προεπιλεγμένη τιμή με τους επιπλέον χρήστες να "
+"προστίθενται στη λίστα."
+
+#: C/gdm.xml:1362(title)
 msgid "Security Options"
 msgstr "Επιλογές ασφαλείας"
 
-#: C/gdm.xml:1275(title)
+#: C/gdm.xml:1365(title)
 msgid "[security]"
 msgstr "[security]"
 
-#: C/gdm.xml:1278(term)
+#: C/gdm.xml:1368(term)
 msgid "DisallowTCP"
 msgstr "Απαγόρευση TCP"
 
-#: C/gdm.xml:1280(synopsis)
+#: C/gdm.xml:1370(synopsis)
 #, no-wrap
 msgid "DisallowTCP=true"
 msgstr "DisallowTCP=true"
 
-#: C/gdm.xml:1281(para)
+#: C/gdm.xml:1371(para)
 msgid ""
 "If true, then always append <filename>-nolisten tcp</filename> to the "
 "command line when starting attached Xservers, thus disallowing TCP "
@@ -2140,24 +2311,24 @@ msgstr ""
 "συνέπεια απαγορεύει συνδέσεις TCP. Αυτή είναι μια πιο ασφαλής διαμόρφωση αν "
 "δεν χρησιμοποιείτε απομακρυσμένες συνδέσεις."
 
-#: C/gdm.xml:1293(title)
+#: C/gdm.xml:1383(title)
 msgid "XDCMP Support"
 msgstr "Υποστήριξη XDCMP"
 
-#: C/gdm.xml:1296(title)
+#: C/gdm.xml:1386(title)
 msgid "[xdmcp]"
 msgstr "[xdmcp]"
 
-#: C/gdm.xml:1299(term)
+#: C/gdm.xml:1389(term)
 msgid "DisplaysPerHost"
 msgstr "Οθόνες-τερματικά ανά υπολογιστή δικτύου"
 
-#: C/gdm.xml:1301(synopsis)
+#: C/gdm.xml:1391(synopsis)
 #, no-wrap
 msgid "DisplaysPerHost=1"
 msgstr "DisplaysPerHost=1"
 
-#: C/gdm.xml:1302(para)
+#: C/gdm.xml:1392(para)
 msgid ""
 "To prevent attackers from filling up the pending queue, GDM will only allow "
 "one connection for each remote computer. If you want to provide display "
@@ -2169,7 +2340,7 @@ msgstr ""
 "παρέχετε υπηρεσίες οθόνης σε υπολογιστές με περισσότερες από μία οθόνες, "
 "πρέπει να αυξήσετε αυτή την τιμή."
 
-#: C/gdm.xml:1309(para)
+#: C/gdm.xml:1399(para)
 msgid ""
 "Note that the number of attached DISPLAYS allowed is not limited. Only "
 "remote connections via XDMCP are limited by this configuration option."
@@ -2178,16 +2349,7 @@ msgstr ""
 "απομακρυσμένες συνδέσεις μέσω XDMCP περιορίζονται από αυτή την επιλογή "
 "διαμόρφωσης."
 
-#: C/gdm.xml:1318(term)
-msgid "Enable"
-msgstr "Ενεργοποίηση"
-
-#: C/gdm.xml:1320(synopsis)
-#, no-wrap
-msgid "Enable=false"
-msgstr "Enable=false"
-
-#: C/gdm.xml:1321(para)
+#: C/gdm.xml:1411(para)
 msgid ""
 "Setting this to true enables XDMCP support allowing remote displays/X "
 "terminals to be managed by GDM."
@@ -2195,7 +2357,7 @@ msgstr ""
 "Ρυθμίζοντας την τιμή σε true ενεργοποιείται η υποστήριξη XDMCP επιτρέποντας "
 "την διαχείριση από το GDM απομακρυσμένων οθονών/τερματικών X."
 
-#: C/gdm.xml:1326(para)
+#: C/gdm.xml:1416(para)
 msgid ""
 "<filename>gdm</filename> listens for requests on UDP port 177. See the Port "
 "option for more information."
@@ -2203,7 +2365,7 @@ msgstr ""
 "Το <filename>gdm</filename> παρακολουθεί για αιτήσεις στην θύρα UDP 177. "
 "Δείτε την επιλογή θύρας για περισσότερες πληροφορίες."
 
-#: C/gdm.xml:1331(para)
+#: C/gdm.xml:1421(para)
 msgid ""
 "If GDM is compiled to support it, access from remote displays can be "
 "controlled using the TCP Wrappers library. The service name is "
@@ -2213,7 +2375,7 @@ msgstr ""
 "απομακρυσμένες οθόνες μπορεί να ελεγχθεί χρησιμοποιώντας την βιβλιοθήκη του "
 "TCP Wrapper. Το όνομα της υπηρεσίας είναι <filename>gdm</filename>"
 
-#: C/gdm.xml:1337(para)
+#: C/gdm.xml:1427(para)
 msgid ""
 "You should add <screen>\n"
 "gdm:.my.domain\n"
@@ -2228,7 +2390,7 @@ msgstr ""
 "<ulink type=\"help\" url=\"man:hosts.allow\">hosts.allow</ulink> man page "
 "για λεπτομέρειες."
 
-#: C/gdm.xml:1348(para)
+#: C/gdm.xml:1438(para)
 msgid ""
 "Please note that XDMCP is not a particularly secure protocol and that it is "
 "a good idea to block UDP port 177 on your firewall unless you really need it."
@@ -2237,16 +2399,16 @@ msgstr ""
 "ότι είναι καλή ιδέα να φράξετε την θύρα UDP 177 στο τείχος προστασίας εκτός "
 "και αν το χρειάζεστε πραγματικά."
 
-#: C/gdm.xml:1357(term)
+#: C/gdm.xml:1447(term)
 msgid "HonorIndirect"
 msgstr "HonorIndirect"
 
-#: C/gdm.xml:1359(synopsis)
+#: C/gdm.xml:1449(synopsis)
 #, no-wrap
 msgid "HonorIndirect=true"
 msgstr "HonorIndirect=true"
 
-#: C/gdm.xml:1360(para)
+#: C/gdm.xml:1450(para)
 msgid ""
 "Enables XDMCP INDIRECT choosing (i.e. remote execution of "
 "<filename>gdmchooser</filename>) for X-terminals which do not supply their "
@@ -2256,16 +2418,16 @@ msgstr ""
 "εκτέλεση του <filename>gdmchooser</filename>) για τερματικά-X που δεν "
 "παρέχουν τον δικό τους περιηγητή οθόνης."
 
-#: C/gdm.xml:1369(term)
+#: C/gdm.xml:1459(term)
 msgid "MaxPending"
 msgstr "MaxPending"
 
-#: C/gdm.xml:1371(synopsis)
+#: C/gdm.xml:1461(synopsis)
 #, no-wrap
 msgid "MaxPending=4"
 msgstr "MaxPending=4"
 
-#: C/gdm.xml:1372(para)
+#: C/gdm.xml:1462(para)
 msgid ""
 "To avoid denial of service attacks, GDM has fixed size queue of pending "
 "connections. Only MaxPending displays can start at the same time."
@@ -2274,7 +2436,7 @@ msgstr ""
 "μέγεθος λίστας αναμονής συνδέσεων που εκκρεμούν. Μόνο ο αριθμός των οθονών "
 "που δίνει η τιμή του MaxPending μπορούν να εκκινήσουν ταυτόχρονα."
 
-#: C/gdm.xml:1378(para)
+#: C/gdm.xml:1468(para)
 msgid ""
 "Please note that this parameter does not limit the number of remote displays "
 "which can be managed. It only limits the number of displays initiating a "
@@ -2284,16 +2446,16 @@ msgstr ""
 "απομακρυσμένων οθονών που μπορούμε να διαχειριστούμε. Περιορίζει μόνο τον "
 "αριθμό των οθονών που εκκινούν μια σύνδεση ταυτόχρονα."
 
-#: C/gdm.xml:1387(term)
+#: C/gdm.xml:1477(term)
 msgid "MaxSessions"
 msgstr "MaxSessions"
 
-#: C/gdm.xml:1389(synopsis)
+#: C/gdm.xml:1479(synopsis)
 #, no-wrap
 msgid "MaxSessions=16"
 msgstr "MaxSessions=16"
 
-#: C/gdm.xml:1390(para)
+#: C/gdm.xml:1480(para)
 msgid ""
 "Determines the maximum number of remote display connections which will be "
 "managed simultaneously. I.e. the total number of remote displays that can "
@@ -2303,16 +2465,16 @@ msgstr ""
 "υπό διαχείριση ταυτόχρονα. Π.χ. ο συνολικός αριθμός απομακρυσμένων οθονών "
 "που επιτρέπεται να χρησιμοποιήσουν τον υπολογιστή σας."
 
-#: C/gdm.xml:1399(term)
+#: C/gdm.xml:1489(term)
 msgid "MaxWait"
 msgstr "MaxWait"
 
-#: C/gdm.xml:1401(synopsis)
+#: C/gdm.xml:1491(synopsis)
 #, no-wrap
 msgid "MaxWait=30"
 msgstr "MaxWait=30"
 
-#: C/gdm.xml:1402(para)
+#: C/gdm.xml:1492(para)
 msgid ""
 "When GDM is ready to manage a display an ACCEPT packet is sent to it "
 "containing a unique session id which will be used in future XDMCP "
@@ -2322,7 +2484,7 @@ msgstr ""
 "σε αυτό που περιέχει ένα μοναδικό id συνεδρίας το οποίο θα χρησιμοποιηθεί σε "
 "μελλοντικές συνομιλίες XDMCP."
 
-#: C/gdm.xml:1408(para)
+#: C/gdm.xml:1498(para)
 msgid ""
 "GDM will then place the session id in the pending queue waiting for the "
 "display to respond with a MANAGE request."
@@ -2330,7 +2492,7 @@ msgstr ""
 "Το GDM τοποθετεί το session id στην εκκρεμή λίστα αναμονής περιμένοντας το "
 "τερματικό να απαντήσει με ένα αίτημα MANAGE."
 
-#: C/gdm.xml:1413(para)
+#: C/gdm.xml:1503(para)
 msgid ""
 "If no response is received within MaxWait seconds, GDM will declare the "
 "display dead and erase it from the pending queue freeing up the slot for "
@@ -2340,16 +2502,16 @@ msgstr ""
 "δηλώνει το τερματικό dead και το διαγράφει από την εκκρεμή λίστα αναμονής "
 "ελευθερώνοντας την θέση για άλλες οθόνες."
 
-#: C/gdm.xml:1422(term)
+#: C/gdm.xml:1512(term)
 msgid "MaxWaitIndirect"
 msgstr "MaxWaitIndirect"
 
-#: C/gdm.xml:1424(synopsis)
+#: C/gdm.xml:1514(synopsis)
 #, no-wrap
 msgid "MaxWaitIndirect=30"
 msgstr "MaxWaitIndirect=30"
 
-#: C/gdm.xml:1425(para)
+#: C/gdm.xml:1515(para)
 msgid ""
 "The MaxWaitIndirect parameter determines the maximum number of seconds "
 "between the time where a user chooses a host and the subsequent indirect "
@@ -2368,16 +2530,16 @@ msgstr ""
 "υπολογιστές που προσπαθούν να στείλουν indirect queries τότε "
 "<filename>MaxPendingIndirect</filename>."
 
-#: C/gdm.xml:1439(term)
+#: C/gdm.xml:1529(term)
 msgid "PingIntervalSeconds"
 msgstr "PingIntervalSeconds"
 
-#: C/gdm.xml:1441(synopsis)
+#: C/gdm.xml:1531(synopsis)
 #, no-wrap
 msgid "PingIntervalSeconds=15"
 msgstr "PingIntervalSeconds=15"
 
-#: C/gdm.xml:1442(para)
+#: C/gdm.xml:1532(para)
 msgid ""
 "Interval in which to ping the Xserver in seconds. If the Xserver does not "
 "respond before the next time we ping it, the connection is stopped and the "
@@ -2389,7 +2551,7 @@ msgstr ""
 "σύνδεση διακόπτεται και η συνεδρία τερματίζεται. Αυτός είναι ένας συνδυασμός "
 "του XDM PingInterval και του PingTimeout, αλλά σε δευτερόλεπτα."
 
-#: C/gdm.xml:1450(para)
+#: C/gdm.xml:1540(para)
 msgid ""
 "Note that GDM in the past used to have a <filename>PingInterval</filename> "
 "configuration key which was also in minutes. For most purposes you'd want "
@@ -2406,16 +2568,16 @@ msgstr ""
 "σήμαινε στην πραγματικότητα ότι το τερματικό έσβησε ή επανεκκινήθηκε και θα "
 "θέλατε να τερματίσετε την συνεδρία."
 
-#: C/gdm.xml:1463(term)
+#: C/gdm.xml:1553(term)
 msgid "Port"
 msgstr "Θύρα"
 
-#: C/gdm.xml:1465(synopsis)
+#: C/gdm.xml:1555(synopsis)
 #, no-wrap
 msgid "Port=177"
 msgstr "Port=177"
 
-#: C/gdm.xml:1466(para)
+#: C/gdm.xml:1556(para)
 msgid ""
 "The UDP port number <filename>gdm</filename> should listen to for XDMCP "
 "requests. Do not change this unless you know what you are doing."
@@ -2423,16 +2585,16 @@ msgstr ""
 "Ο αριθμός της θύρας UDP που το <filename>gdm</filename> παρακολουθεί για "
 "αιτήματα XDMCP. Μην κάνετε αλλαγές εκτός και αν γνωρίζετε τι κάνετε."
 
-#: C/gdm.xml:1475(term)
+#: C/gdm.xml:1565(term)
 msgid "Willing"
 msgstr "Willing"
 
-#: C/gdm.xml:1477(synopsis)
+#: C/gdm.xml:1567(synopsis)
 #, no-wrap
 msgid "Willing=&lt;etc&gt;/gdm/Xwilling"
 msgstr "Willing=&lt;etc&gt;/gdm/Xwilling"
 
-#: C/gdm.xml:1478(para)
+#: C/gdm.xml:1568(para)
 msgid ""
 "When the machine sends a WILLING packet back after a QUERY it sends a string "
 "that gives the current status of this server. The default message is the "
@@ -2453,11 +2615,11 @@ msgstr ""
 "γραμμή). Εκτελείται το πολύ μία φορά κάθε τρία δευτερόλεπτα για να προλάβει "
 "πιθανό denial of service πλημμυρίζοντας το μηχάνημα με πακέτα QUERY."
 
-#: C/gdm.xml:1497(title)
+#: C/gdm.xml:1587(title)
 msgid "Simple Greeter Configuration"
 msgstr "Απλή διαμόρφωση του greeter"
 
-#: C/gdm.xml:1499(para)
+#: C/gdm.xml:1589(para)
 msgid ""
 "The GDM default greeter is called the simple Greeter and is configured via "
 "GConf. Default values are stored in GConf in the <filename>gdm-simple-"
@@ -2476,63 +2638,55 @@ msgstr ""
 "command> ή <command>gconf-editor</command>. Οι παρακάτω επιλογές διαμόρφωσης "
 "υποστηρίζονται:"
 
-#: C/gdm.xml:1510(title)
+#: C/gdm.xml:1600(title)
 msgid "Greeter Configuration Keys"
 msgstr "Κλειδιά διαμόρφωσης του greeter"
 
-#: C/gdm.xml:1513(term)
+#: C/gdm.xml:1603(term)
 msgid "/apps/gdm/simple-greeter/banner_message_enable"
 msgstr "/apps/gdm/simple-greeter/banner_message_enable"
 
-#: C/gdm.xml:1515(synopsis) C/gdm.xml:1536(synopsis) C/gdm.xml:1546(synopsis)
-#: C/gdm.xml:1557(synopsis) C/gdm.xml:1678(synopsis) C/gdm.xml:1743(synopsis)
-#: C/gdm.xml:1754(synopsis) C/gdm.xml:1765(synopsis) C/gdm.xml:1776(synopsis)
+#: C/gdm.xml:1605(synopsis) C/gdm.xml:1626(synopsis) C/gdm.xml:1637(synopsis)
+#: C/gdm.xml:1702(synopsis) C/gdm.xml:1767(synopsis) C/gdm.xml:1778(synopsis)
+#: C/gdm.xml:1789(synopsis) C/gdm.xml:1800(synopsis)
 #, no-wrap
 msgid "false (boolean)"
 msgstr "false (boolean)"
 
-#: C/gdm.xml:1516(para)
+#: C/gdm.xml:1606(para)
 msgid "Controls whether the banner message text is displayed."
 msgstr "Ελέγχει αν το μήνυμα κειμένου banner προβάλλεται."
 
-#: C/gdm.xml:1523(term)
+#: C/gdm.xml:1613(term)
 msgid "/apps/gdm/simple-greeter/banner_message_text"
 msgstr "/apps/gdm/simple-greeter/banner_message_text"
 
-#: C/gdm.xml:1525(synopsis)
+#: C/gdm.xml:1615(synopsis)
 #, no-wrap
 msgid "NULL (string)"
 msgstr "NULL (συμβολοσειρά)"
 
-#: C/gdm.xml:1526(para)
+#: C/gdm.xml:1616(para)
 msgid "Specifies the text banner message to show on the greeter window."
 msgstr ""
 "Καθορίζει το κείμενο του μηνύματος banner που θα προβάλλεται στο παράθυρο "
 "του greeter."
 
-#: C/gdm.xml:1534(term)
-msgid "/apps/gdm/simple-greeter/debug"
-msgstr "/apps/gdm/simple-greeter/debug"
-
-#: C/gdm.xml:1537(para)
-msgid "If true, then debugging mode is enabled for the greeter."
-msgstr "Αν αληθές, ενεργοποιείται η λειτουργία αποσφαλμάτωσης για τον greeter."
-
-#: C/gdm.xml:1544(term)
+#: C/gdm.xml:1624(term)
 msgid "/apps/gdm/simple-greeter/disable_restart_buttons"
 msgstr "/apps/gdm/simple-greeter/disable_restart_buttons"
 
-#: C/gdm.xml:1547(para)
+#: C/gdm.xml:1627(para)
 msgid "Controls whether to show the restart buttons in the login window."
 msgstr ""
 "Ελέγχει αν θα προβάλλονται τα πλήκτρα τερματισμού και επανεκκίνησης στο "
 "παράθυρο εισόδου."
 
-#: C/gdm.xml:1555(term)
+#: C/gdm.xml:1635(term)
 msgid "/apps/gdm/simple-greeter/disable_user_list"
 msgstr "/apps/gdm/simple-greeter/disable_user_list"
 
-#: C/gdm.xml:1558(para)
+#: C/gdm.xml:1638(para)
 msgid ""
 "If true, then the face browser with known users is not shown in the login "
 "window."
@@ -2540,110 +2694,29 @@ msgstr ""
 "Αν αληθές, ο περιηγητής προσώπων με γνωστούς χρήστες δεν προβάλλεται στο "
 "παράθυρο εισόδου."
 
-#: C/gdm.xml:1566(term)
-msgid "/apps/gdm/simple-greeter/include"
-msgstr "/apps/gdm/simple-greeter/include"
-
-#: C/gdm.xml:1568(synopsis) C/gdm.xml:1614(synopsis) C/gdm.xml:1634(synopsis)
-#: C/gdm.xml:1656(synopsis)
-#, no-wrap
-msgid "[] (string list)"
-msgstr "[] (string list)"
-
-#: C/gdm.xml:1569(para)
-msgid "Set to a list of users to always include in the Face Browser."
-msgstr ""
-"Καθορίστε μία λίστα χρηστών που θα περιλαμβάνονται πάντα στον περιηγητή "
-"προσώπων."
-
-#: C/gdm.xml:1576(term)
-msgid "/apps/gdm/simple-greeter/include_all"
-msgstr "/apps/gdm/simple-greeter/include_all"
-
-#: C/gdm.xml:1578(synopsis)
-#, no-wrap
-msgid "true (boolean)"
-msgstr "true (boolean)"
-
-#: C/gdm.xml:1579(para)
-msgid ""
-"If true, then the face browser will show all users on the local machine. If "
-"false, the face browser will only show users who have recently logged in."
-msgstr ""
-"Αν αληθές, ο περιηγητής προσώπων θα εμφανίζει όλους τους χρήστες στο τοπικό "
-"μηχάνημα. Αν ψευδές, ο περιηγητής προσώπων θα εμφανίζει μόνο τους χρήστες "
-"που έχουν συνδεθεί πρόσφατα."
-
-#: C/gdm.xml:1584(para)
-msgid ""
-"To provide more detail on how this option works. When this key is true, GDM "
-"will call fgetpwent() to get a list of local users on the system. The Face "
-"Browser also will display any users that have previously logged in on the "
-"system (for example NIS/LDAP users). It gets this list via calling the ck-"
-"history ConsoleKit interface. It will also filter out any users which do not "
-"have a valid shell (valid shells are any shell that getusershell() returns. "
-"<filename>/sbin/nologin</filename> or <filename>/bin/false</filename> are "
-"considered invalid shells even if getusershell() returns them)."
-msgstr ""
-"Περισσότερες λεπτομέρειες για την λειτουργία αυτής της επιλογής. Όταν το "
-"κλειδί είναι αληθές (true), το GDM θα καλέσει το fgetpwent() για να "
-"ανακτήσει μία λίστα τοπικών χρηστών του συστήματος. Ο περιηγητής προσώπων "
-"επίσης θα προβάλει όλους τους χρήστες που έχουν συνδεθεί προηγουμένως στο "
-"σύστημα (για παράδειγμα χρήστες NIS/LDAP). Ανακτά αυτή την λίστα μέσω κλήσης "
-"της διεπαφής ck-history ConsoleKit. Θα αποκλείσει επίσης όλους τους χρήστες "
-"που δεν έχουν ένα έγκυρο κέλυφος (έγκυρα κελύφη είναι εκείνα που αποδίδει το "
-"getusershell(). Τα <filename>/sbin/nologin</filename> ή <filename>/bin/"
-"false</filename> δεν θεωρούνται έγκυρα κελύφη ακόμη και αν το getusershell() "
-"τα περιλάβει στα αποτελέσματα του)."
-
-#: C/gdm.xml:1597(para)
-msgid ""
-"If false, then GDM more simply only displays users that have previously "
-"logged in on the system (local or NIS/LDAP users) by calling the ck-history "
-"ConsoleKit interface."
-msgstr ""
-"Αν ψευδές (false), τότε το GDM προβάλλει μόνο τους χρήστες που έχουν "
-"προηγουμένως συνδεθεί στο σύστημα (τοπικούς ή NIS/LDAP) καλώντας την διεπαφή "
-"ck-history ConsoleKit."
-
-#: C/gdm.xml:1603(para)
-msgid ""
-"In both cases, GDM filters out any users with a UID less than 500 (or 100 if "
-"running on Solaris). Such users are considered system users."
-msgstr ""
-"Και στις δύο περιπτώσεις, το GDM αποκλείει κάθε χρήστη με UID μικρότερο από "
-"500 ( ή 100 αν εκτελείται σε Solaris). Τέτοιοι χρήστες θεωρούνται χρήστες "
-"συστήματος."
-
-#: C/gdm.xml:1612(term)
-msgid "/apps/gdm/simple-greeter/exclude"
-msgstr "/apps/gdm/simple-greeter/exclude"
-
-#: C/gdm.xml:1615(para)
-msgid "Set to a list of users to always exclude in the Face Browser."
-msgstr ""
-"Καθορισμός μίας λίστας χρηστών που θα αποκλείονται πάντα από τον περιηγητή "
-"προσώπων."
-
-#: C/gdm.xml:1622(term)
+#: C/gdm.xml:1646(term)
 msgid "/apps/gdm/simple-greeter/logo_icon_name"
 msgstr "/apps/gdm/simple-greeter/logo_icon_name"
 
-#: C/gdm.xml:1624(synopsis)
+#: C/gdm.xml:1648(synopsis)
 #, no-wrap
 msgid "computer (string)"
 msgstr "computer (συμβολοσειρά)"
 
-#: C/gdm.xml:1625(para)
+#: C/gdm.xml:1649(para)
 msgid "Set to the themed icon name to use for the greeter logo."
-msgstr ""
-"Ορισμός του ονόματος της προσαρμοσμένης εικόνας για χρήση με το greeter."
+msgstr "Ορισμός του ονόματος της προσαρμοσμένης εικόνας για χρήση με το greeter."
 
-#: C/gdm.xml:1632(term)
+#: C/gdm.xml:1656(term)
 msgid "/apps/gdm/simple-greeter/recent-languages"
 msgstr "/apps/gdm/simple-greeter/recent-languages"
 
-#: C/gdm.xml:1635(para)
+#: C/gdm.xml:1658(synopsis) C/gdm.xml:1680(synopsis)
+#, no-wrap
+msgid "[] (string list)"
+msgstr "[] (string list)"
+
+#: C/gdm.xml:1659(para)
 msgid ""
 "Set to a list of languages to be shown by default in the login window. "
 "Default value is \"[]\". With the default setting only the system default "
@@ -2656,7 +2729,7 @@ msgstr ""
 "οποία αναπτύσσει ένα παράθυρο διαλόγου που δείχνει μια πλήρη λίστα των "
 "διαθέσιμων γλωσσών από τις οποίες μπορεί να επιλέξει ο χρήστης."
 
-#: C/gdm.xml:1643(para)
+#: C/gdm.xml:1667(para)
 msgid ""
 "Users are not intended to change this setting by hand. Instead GDM keeps "
 "track of any languages selected in this configuration key, and will show "
@@ -2669,11 +2742,11 @@ msgstr ""
 "\"Other...\". Με αυτό τον τρόπο οι συχνότερα χρησιμοποιούμενες γλώσσες είναι "
 "ευκολότερο να επιλεγούν."
 
-#: C/gdm.xml:1654(term)
+#: C/gdm.xml:1678(term)
 msgid "/apps/gdm/simple-greeter/recent-layouts"
 msgstr "/apps/gdm/simple-greeter/recent-layouts"
 
-#: C/gdm.xml:1657(para)
+#: C/gdm.xml:1681(para)
 msgid ""
 "Set to a list of keyboard layouts to be shown by default in the login panel. "
 "Default value is \"[]\". With the default setting only the system default "
@@ -2688,7 +2761,7 @@ msgstr ""
 "διαλόγου που περιέχει μια πλήρη λίστα διαθέσιμων διατάξεων πληκτρολογίου που "
 "μπορεί να επιλέξει ο χρήστης."
 
-#: C/gdm.xml:1665(para)
+#: C/gdm.xml:1689(para)
 msgid ""
 "Users are not intended to change this setting by hand. Instead GDM keeps "
 "track of any keyboard layouts selected in this configuration key, and will "
@@ -2701,22 +2774,21 @@ msgstr ""
 "επιλογή \"Other...\". Με αυτόν τον τρόπο, οι συχνά χρησιμοποιούμενες "
 "διατάξεις πληκτρολογίου είναι ευκολότερο να επιλεγούν."
 
-#: C/gdm.xml:1676(term)
+#: C/gdm.xml:1700(term)
 msgid "/apps/gdm/simple-greeter/wm_use_compiz"
 msgstr "/apps/gdm/simple-greeter/wm_use_compiz"
 
-#: C/gdm.xml:1679(para)
-msgid ""
-"Controls whether compiz is used as the window manager instead of metacity."
+#: C/gdm.xml:1703(para)
+msgid "Controls whether compiz is used as the window manager instead of metacity."
 msgstr ""
 "Ελέγχει αν χρησιμοποιείται το compiz αντί για το metacity σαν διαχειριστής "
 "παραθύρων."
 
-#: C/gdm.xml:1689(title)
+#: C/gdm.xml:1713(title)
 msgid "Accessibility Configuration"
 msgstr "Διαμόρφωση προσιτότητας"
 
-#: C/gdm.xml:1691(para)
+#: C/gdm.xml:1715(para)
 msgid ""
 "This section describes the accessibility configuration options available in "
 "GDM."
@@ -2724,11 +2796,12 @@ msgstr ""
 "Αυτή η ενότητα περιγράφει τις επιλογές διαμόρφωσης της διευκόλυνσης "
 "πρόσβασης που διαθέτει το GDM."
 
-#: C/gdm.xml:1697(title)
-msgid "GDM Accessibility Dialog And Gconf Keys"
-msgstr "Διάλογος προσιτότητας του GDM και κλειδιά Gconf"
+#: C/gdm.xml:1721(title)
+#| msgid "GDM Accessibility Dialog And Gconf Keys"
+msgid "GDM Accessibility Dialog And GConf Keys"
+msgstr "GDM Accessibility Dialog And GConf Keys"
 
-#: C/gdm.xml:1699(para)
+#: C/gdm.xml:1723(para)
 msgid ""
 "The GDM greeter panel at the login screen displays an accessibility icon. "
 "Clicking on that icon opens the GDM Accessibility Dialog. In the GDM "
@@ -2741,7 +2814,7 @@ msgstr ""
 "μπορεί ο χρήστης να ενεργοποιήσει ή να απενεργοποιήσει τα σχετικά εργαλεία "
 "διευκόλυνσης της πρόσβασης."
 
-#: C/gdm.xml:1706(para)
+#: C/gdm.xml:1730(para)
 msgid ""
 "The checkboxes that correspond to the on-screen keyboard, screen magnifier "
 "and screen reader assistive tools act on the three GConf keys that are "
@@ -2767,40 +2840,45 @@ msgstr ""
 "τελευταία συνεδρία εισόδου του GDM θα εκκινήσουν αυτόματα στην επόμενη "
 "συνεδρία σύνδεσης του GDM."
 
-#: C/gdm.xml:1720(para)
+#: C/gdm.xml:1744(para)
+#| msgid ""
+#| "The other checkboxes in the GDM Accessibility Dialog do not have "
+#| "corresponding GConf keys because no additional program is launched to "
+#| "provide the accessibility features that they offer. These other options "
+#| "coorespond to accessibility features that are provided by the Xserver, "
+#| "which is always running during the GDM session."
 msgid ""
 "The other checkboxes in the GDM Accessibility Dialog do not have "
 "corresponding GConf keys because no additional program is launched to "
 "provide the accessibility features that they offer. These other options "
-"coorespond to accessibility features that are provided by the Xserver, which "
+"correspond to accessibility features that are provided by the Xserver, which "
 "is always running during the GDM session."
 msgstr ""
 "Τα άλλα πλαίσια ελέγχου στον διάλογο προσιτότητας του GDM δεν έχουν "
-"αντιστοιχισμένα κλειδιά GConf επειδή δεν εκκινούν πρόσθετες εφαρμογές για να "
+"αντιστοιχα κλειδιά GConf επειδή δεν εκκινούν πρόσθετες εφαρμογές για να "
 "παρέχουν τις λειτουργίες διευκόλυνσης της πρόσβασης που προσφέρουν. Αυτές οι "
 "επιλογές αντιστοιχούν σε λειτουργίες προσιτότητας που παρέχονται από τον "
 "εξυπηρετητή Χ, ο οποίος εκτελείται πάντα κατά την συνεδρία GDM."
 
-#: C/gdm.xml:1730(title)
+#: C/gdm.xml:1754(title)
 msgid "Accessibility GConf Keys"
 msgstr "Κλειδιά GConf διαμόρφωσης προσιτότητας"
 
-#: C/gdm.xml:1732(para)
-msgid ""
-"GDM offers the following GConf keys to control its accessibility features:"
+#: C/gdm.xml:1756(para)
+msgid "GDM offers the following GConf keys to control its accessibility features:"
 msgstr ""
 "Το GDM παρέχει τα παρακάτω κλειδιά GConf για τον έλεγχο των λειτουργιών "
 "προσιτότητας που προσφέρει:"
 
-#: C/gdm.xml:1738(title)
+#: C/gdm.xml:1762(title)
 msgid "GDM Configuration Keys"
 msgstr "Κλειδιά διαμόρφωσης του GDM"
 
-#: C/gdm.xml:1741(term)
+#: C/gdm.xml:1765(term)
 msgid "/desktop/gnome/interface/accessibility"
 msgstr "/desktop/gnome/interface/accessibility"
 
-#: C/gdm.xml:1744(para)
+#: C/gdm.xml:1768(para)
 msgid ""
 "Controls whether the Accessibility infrastructure will be started with the "
 "GDM GUI. This is needed for many accessibility technology programs to work."
@@ -2809,11 +2887,11 @@ msgstr ""
 "GDM. Αυτό είναι αναγκαίο για να λειτουργήσουν πολλές εφαρμογές της "
 "κατηγορίας accessibility technology (τεχνολογία προσιτότητας)."
 
-#: C/gdm.xml:1752(term)
+#: C/gdm.xml:1776(term)
 msgid "/desktop/gnome/applications/at/screen_magnifier_enabled"
 msgstr "/desktop/gnome/applications/at/screen_magnifier_enabled"
 
-#: C/gdm.xml:1755(para)
+#: C/gdm.xml:1779(para)
 msgid ""
 "If set, then the assistive tools linked to this GConf key will be started "
 "with the GDM GUI program. By default this is a screen magnifier application."
@@ -2822,11 +2900,11 @@ msgstr ""
 "GConf θα εκκινήσουν με την εφαρμογή γραφικού περιβάλλοντος του GDM. Από "
 "προεπιλογή αυτή είναι μια εφαρμογή μεγέθυνσης της οθόνης."
 
-#: C/gdm.xml:1763(term)
+#: C/gdm.xml:1787(term)
 msgid "/desktop/gnome/applications/at/screen_keyboard_enabled"
 msgstr "/desktop/gnome/applications/at/screen_keyboard_enabled"
 
-#: C/gdm.xml:1766(para)
+#: C/gdm.xml:1790(para)
 msgid ""
 "If set, then the assistive tools linked to this GConf key will be started "
 "with the GDM GUI program. By default this is an on-screen keyboard "
@@ -2836,11 +2914,11 @@ msgstr ""
 "GConf θα εκκινήσουν με την εφαρμογή γραφικού περιβάλλοντος του GDM. Από "
 "προεπιλογή αυτή είναι μία εφαρμογή προβολής πληκτρολογίου οθόνης."
 
-#: C/gdm.xml:1774(term)
+#: C/gdm.xml:1798(term)
 msgid "/desktop/gnome/applications/at/screen_reader_enabled"
 msgstr "/desktop/gnome/applications/at/screen_reader_enabled"
 
-#: C/gdm.xml:1777(para)
+#: C/gdm.xml:1801(para)
 msgid ""
 "If set, then the assistive tools linked to this GConf key will be started "
 "with the GDM GUI program. By default this is a screen reader application."
@@ -2849,11 +2927,11 @@ msgstr ""
 "GConf θα εκκινήσουν με την εφαρμογή γραφικού περιβάλλοντος του GDM. Από "
 "προεπιλογή αυτή είναι μία εφαρμογή αναγνώστη οθόνης."
 
-#: C/gdm.xml:1788(title)
+#: C/gdm.xml:1812(title)
 msgid "Linking GConf Keys to Accessbility Tools"
 msgstr "Αντιστοιχίζοντας κλειδιά GConf σε εργαλεία υποβοήθησης της πρόσβασης"
 
-#: C/gdm.xml:1790(para)
+#: C/gdm.xml:1814(para)
 msgid ""
 "For the screen_magnifier_enabled, the screen_keyboard_enabled, and the "
 "screen_reader_enabled GConf keys, the assistive tool which gets launched "
@@ -2874,7 +2952,7 @@ msgstr ""
 "ακριβής γραμμή AutostartCondition στο αρχείο desktop θα μπορούσε να είναι "
 "μία από τις παρακάτω:"
 
-#: C/gdm.xml:1802(screen)
+#: C/gdm.xml:1826(screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -2887,27 +2965,30 @@ msgstr ""
 "AutostartCondition=GNOME /desktop/gnome/applications/at/screen_magnifier_enabled\n"
 "AutostartCondition=GNOME /desktop/gnome/applications/at/screen_reader_enabled\n"
 
-#: C/gdm.xml:1808(para)
+#: C/gdm.xml:1832(para)
+#| msgid ""
+#| "When an accesibility key is true, then any program which is linked to "
+#| "that key in a GDM autostart desktop file will be launched (unless the "
+#| "Hidden key is set to true in that desktop file). A single GConf key can "
+#| "even start multiple assistive tools if there are multiple desktop files "
+#| "with this AutostartCondition in the GDM autostart directory."
 msgid ""
-"When an accesibility key is true, then any program which is linked to that "
+"When an accessibility key is true, then any program which is linked to that "
 "key in a GDM autostart desktop file will be launched (unless the Hidden key "
 "is set to true in that desktop file). A single GConf key can even start "
 "multiple assistive tools if there are multiple desktop files with this "
 "AutostartCondition in the GDM autostart directory."
 msgstr ""
-"Όταν ένα κλειδί προσιτότητας είναι αληθές, τότε κάθε εφαρμογή που είναι "
-"αντιστοιχισμένη με αυτό το κλειδί σε ένα αρχείο desktop του καταλόγου "
-"autostart του GDM θα εκκινηθεί (εκτός και αν το κλειδί Hidden έχει "
-"καθοριστεί σε true στο ίδιο αρχείο desktop). Ένα μόνο κλειδί GConf μπορεί "
-"δηλαδή, να εκκινήσει περισσότερα εργαλεία υποβοήθησης της πρόσβασης αν "
-"υπάρχουν τα αντίστοιχα περισσότερα αρχεία desktop με αυτή την "
+"Όταν ένα κλειδί προσιτότητας είναι αληθές, τότε κάθε εφαρμογή που είναι συνδεδεμένη με αυτό το κλειδί σε ένα αρχείο αυτόματης "
+"εκκίνησης desktop του  GDM θα εκκινηθεί (εκτός και αν το κλειδί Hidden έχει καθοριστεί σε true στο ίδιο αρχείο desktop). Ένα μοναδικό "
+"κλειδί GConf μπορεί δηλαδή να εκκινήσει πολλαπλά εργαλεία υποβοήθησης αν υπάρχουν τα αντίστοιχα πολλαπλά αρχεία desktop με αυτή την "
 "AutostartCondition στον κατάλογο autostart του GDM."
 
-#: C/gdm.xml:1818(title)
+#: C/gdm.xml:1842(title)
 msgid "Example Of Modifying Accessibility Tool Configuration"
 msgstr "Παράδειγμα μετατροπής της διαμόρφωσης εργαλείου προσιτότητας"
 
-#: C/gdm.xml:1820(para)
+#: C/gdm.xml:1844(para)
 msgid ""
 "For example, if GNOME is distributed with GOK as the default on-screen "
 "keyboard, then this could be replaced with a different program if desired. "
@@ -2922,7 +3003,7 @@ msgstr ""
 "το εργαλείο υποβοήθησης \"mousetweaks\" για υποστήριξη κρατήματος κλικ, τότε "
 "χρειάζεται η παρακάτω διαμόρφωση."
 
-#: C/gdm.xml:1828(para)
+#: C/gdm.xml:1852(para)
 msgid ""
 "Create a desktop file for onboard and a second one for mousetweaks; for "
 "example, onboard.desktop and mousetweaks.desktop. These files must be placed "
@@ -2935,13 +3016,13 @@ msgstr ""
 "είναι στην μορφή που περιγράφηκε στην ενότητα \"Ρύθμιση αυτόματης εκκίνησης"
 "\" αυτού του εγγράφου."
 
-#: C/gdm.xml:1836(para)
+#: C/gdm.xml:1860(para)
 msgid "The following is an example <filename>onboard.desktop</filename> file:"
 msgstr ""
 "Το παρακάτω είναι ένα παράδειγμα αρχείου  <filename>onboard.desktop</"
 "filename>:"
 
-#: C/gdm.xml:1840(screen)
+#: C/gdm.xml:1864(screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -2970,14 +3051,13 @@ msgstr ""
 "Categories=GNOME;GTK;Accessibility;\n"
 "AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled\n"
 
-#: C/gdm.xml:1854(para)
-msgid ""
-"The following is an example <filename>mousetweaks.desktop</filename> file:"
+#: C/gdm.xml:1878(para)
+msgid "The following is an example <filename>mousetweaks.desktop</filename> file:"
 msgstr ""
 "Το παρακάτω είναι ένα παράδειγμα αρχείου <filename>mousetweaks.desktop</"
 "filename>:"
 
-#: C/gdm.xml:1859(screen)
+#: C/gdm.xml:1883(screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -3006,7 +3086,7 @@ msgstr ""
 "Categories=GNOME;GTK;Accessibility;\n"
 "AutostartCondition=GNOME /desktop/gnome/applications/at/screen_keyboard_enabled\n"
 
-#: C/gdm.xml:1873(para)
+#: C/gdm.xml:1897(para)
 msgid ""
 "Note the line with the AutostartCondition that links both desktop files to "
 "the GConf key for the on-screen keyboard."
@@ -3014,7 +3094,7 @@ msgstr ""
 "Προσέξτε την γραμμή με την AutostartCondition που συνδέει και τα δύο αρχεία "
 "desktop με το κλειδί GConf για το πληκτρολόγιο οθόνης."
 
-#: C/gdm.xml:1878(para)
+#: C/gdm.xml:1902(para)
 msgid ""
 "To disable GOK from starting, the desktop file for the GOK on-screen "
 "keyboard must be removed or deactivated. Otherwise onboard and GOK would "
@@ -3029,7 +3109,7 @@ msgstr ""
 "GDM, ή προσθέτοντας τον ορισμό κλειδιού \"Hidden=true\" στο αρχείο gok."
 "desktop."
 
-#: C/gdm.xml:1886(para)
+#: C/gdm.xml:1910(para)
 msgid ""
 "After making these changes, GOK will no longer be started when the user "
 "activates the on-screen keyboard in the GDM session; but onboard and "
@@ -3039,7 +3119,7 @@ msgstr ""
 "ο χρήστης ενεργοποιεί το πληκτρολόγιο οθόνης στην συνεδρία GDM· αντί γι' "
 "αυτό θα εκκινούν το onboard και το mousetweaks."
 
-#: C/gdm.xml:1895(title)
+#: C/gdm.xml:1919(title)
 msgid "General Session Settings"
 msgstr "Γενικές ρυθμίσεις συνεδρίας"
 
@@ -3049,7 +3129,7 @@ msgstr "Γενικές ρυθμίσεις συνεδρίας"
 #.                  to configure?  Also, would be good to be more specific about
 #.                  how lock down management is handled.
 #. </para>
-#: C/gdm.xml:1904(para)
+#: C/gdm.xml:1928(para)
 msgid ""
 "The GDM Greeter uses some of the same framework that your desktop session "
 "will use. And so, it is influenced by a number of the same GConf settings. "
@@ -3067,7 +3147,7 @@ msgstr ""
 "επιτακτικούς κανόνες για να αποκλείσει κάποιες ρυθμίσεις για λόγους "
 "ασφαλείας."
 
-#: C/gdm.xml:1915(title)
+#: C/gdm.xml:1939(title)
 msgid "GNOME Settings Daemon"
 msgstr "Δαίμονας ρυθμίσεων του GNOME"
 
@@ -3080,7 +3160,7 @@ msgstr "Δαίμονας ρυθμίσεων του GNOME"
 #.                  configuration setting?  Oddly I do not find this key used
 #.                  in anything but the chooser in SVN.
 #. </para>
-#: C/gdm.xml:1928(para)
+#: C/gdm.xml:1952(para)
 msgid ""
 "GDM enables the following gnome-settings-daemon plugins: a11y-keyboard, "
 "background, sound, xsettings."
@@ -3088,7 +3168,7 @@ msgstr ""
 "Το GDM ενεργοποιεί τα εξής πρόσθετα του gnome-settings-daemon: a11y-"
 "keyboard, background, sound, xsettings."
 
-#: C/gdm.xml:1933(para)
+#: C/gdm.xml:1957(para)
 msgid ""
 "These are responsible for things like the background image, font and theme "
 "settings, sound events, etc."
@@ -3096,7 +3176,7 @@ msgstr ""
 "Αυτά είναι υπεύθυνα για πράγματα όπως η εικόνα παρασκηνίου, οι ρυθμίσεις "
 "γραμματοσειράς και θέματος, ηχητικά γεγονότα, κλπ."
 
-#: C/gdm.xml:1938(para)
+#: C/gdm.xml:1962(para)
 msgid ""
 "Plugins can also be disabled using GConf. For example, if you want to "
 "disable the sound plugin then unset the following key: <filename>/apps/gdm/"
@@ -3107,11 +3187,11 @@ msgstr ""
 "απενεργοποιήστε το ακόλουθο κλειδί: <filename>/apps/gdm/simple-greeter/"
 "settings-manager-plugins/sound/active</filename>."
 
-#: C/gdm.xml:1946(title)
+#: C/gdm.xml:1970(title)
 msgid "GDM Session Configuration"
 msgstr "Διαμόρφωση της συνεδρίας GDM"
 
-#: C/gdm.xml:1948(para)
+#: C/gdm.xml:1972(para)
 msgid ""
 "GDM sessions are specified using the FreeDesktop.org Desktop Entry "
 "Specification, which can be referenced at the following URL: <ulink url="
@@ -3124,40 +3204,71 @@ msgstr ""
 "Specifications/desktop-entry-spec\"> http://www.freedesktop.org/wiki/"
 "Specifications/desktop-entry-spec</ulink>."
 
-#: C/gdm.xml:1955(para)
+#: C/gdm.xml:1979(para)
+#| msgid ""
+#| "By default, GDM will install desktop files in the <filename>&lt;share&gt;/"
+#| "xsessions</filename> directory. GDM will search the following directories "
+#| "in this order to find desktop files: <filename>&lt;etc&gt;/X11/sessions/</"
+#| "filename>, <filename>&lt;dmconfdir&gt;/Sessions</filename>, <filename>&lt;"
+#| "share&gt;/xsessions</filename>, and <filename>&lt;share/gdm/"
+#| "BuiltInSessions</filename>. By default the <filename>&lt;dmconfdir&gt;</"
+#| "filename> is set to <filename>&lt;etc&gt;/dm/</filename> unless GDM is "
+#| "configured to use a different directory via the \"--with-dmconfdir\" "
+#| "option."
 msgid ""
 "By default, GDM will install desktop files in the <filename>&lt;share&gt;/"
 "xsessions</filename> directory. GDM will search the following directories in "
 "this order to find desktop files: <filename>&lt;etc&gt;/X11/sessions/</"
 "filename>, <filename>&lt;dmconfdir&gt;/Sessions</filename>, <filename>&lt;"
-"share&gt;/xsessions</filename>, and <filename>&lt;share/gdm/BuiltInSessions</"
-"filename>. By default the <filename>&lt;dmconfdir&gt;</filename> is set to "
-"<filename>&lt;etc&gt;/dm/</filename> unless GDM is configured to use a "
-"different directory via the \"--with-dmconfdir\" option."
+"share&gt;/xsessions</filename>, and <filename>&lt;share&gt;/gdm/"
+"BuiltInSessions</filename>. By default the <filename>&lt;dmconfdir&gt;</"
+"filename> is set to <filename>&lt;etc&gt;/dm/</filename> unless GDM is "
+"configured to use a different directory via the \"--with-dmconfdir\" option."
 msgstr ""
-"Από προεπιλογή, το GDM θα εγκαταστήσει τα αρχεία desktop στον κατάλογο "
-"<filename>&lt;share&gt;/xsessions</filename> Το GDM θα ερευνήσει τους "
-"παρακάτω καταλόγους με αυτή την σειρά για αρχεία desktop: <filename>&lt;"
-"etc&gt;/X11/sessions/</filename>, <filename>&lt;dmconfdir&gt;/Sessions</"
-"filename>, <filename>&lt;share&gt;/xsessions</filename>, and <filename>&lt;"
-"share/gdm/BuiltInSessions</filename>. Από προεπιλογή σαν <filename>&lt;"
-"dmconfdir&gt;</filename> ορίζεται το <filename>&lt;etc&gt;/dm/</filename> "
-"εκτός και αν το GDM προσαρμοστεί ώστε να χρησιμοποιεί άλλον κατάλογο μέσω "
-"του ορίσματος\"--with-dmconfdir\"."
+"Από προεπιλογή, το GDM θα εγκαταστήσει τα αρχεία desktop στον κατάλογο <filename>&lt;share&gt;/xsessions</filename>. Το GDM θα "
+"ερευνήσει τους παρακάτω καταλόγους με αυτή τη σειρά για αρχεία desktop: <filename>&lt;etc&gt;/X11/sessions/</filename>, <filename>"
+"&lt;dmconfdir&gt;/Sessions</filename>, <filename>&lt;share&gt;/xsessions</filename>, and <filename>&lt;share&gt;/gdm/BuiltInSessions<"
+"/filename>. Από προεπιλογή το <filename>&lt;dmconfdir&gt;</filename> ορίζεται σε <filename>&lt;etc&gt;/dm/</filename> "
+"εκτός και αν το GDM προσαρμοστεί ώστε να χρησιμοποιεί άλλον κατάλογο μέσω του ορίσματος «--with-dmconfdir»."
 
-#: C/gdm.xml:1968(para)
+#: C/gdm.xml:1992(para)
+#| msgid ""
+#| "A session can be disabled by editing the desktop file and adding a line "
+#| "that says <filename>Hidden=true</filename>."
 msgid ""
-"A session can be disabled by editing the desktop file and adding a line that "
-"says <filename>Hidden=true</filename>."
+"A session can be disabled by editing the desktop file and adding a line as "
+"follows: <filename>Hidden=true</filename>."
 msgstr ""
-"Μια συνεδρία μπορεί να απενεργοποιηθεί μετατρέποντας το αρχείο desktop με "
-"την προσθήκη μιας γραμμής που περιέχει <filename>Hidden=true</filename>."
+"Μια συνεδρία μπορεί να απενεργοποιηθεί μετατρέποντας το αρχείο desktop με την προσθήκη μιας γραμμής που περιέχει <filename>"
+"Hidden=true</filename>."
 
-#: C/gdm.xml:1975(title)
+#: C/gdm.xml:1997(para)
+msgid ""
+"GDM desktop files support a GDM-specific extension, a key named \"X-GDM-"
+"BypassXsession\". If the key is not specified in a desktop file, the value "
+"defaults to \"false\". If this key is specified to be \"true\" in a desktop "
+"file, then GDM will launch the program specified by the desktop file \"Exec"
+"\" key directly when starting the user session. It will not run the program "
+"via the <filename>&lt;etc&gt;/gdm/Xsession</filename> script, which is the "
+"normal behavior. Since bypassing the <filename>&lt;etc&gt;/gdm/Xsession</"
+"filename> script avoids setting up the user session with the normal system "
+"and user settings, sessions started this way can be useful for debugging "
+"problems in the system or user scripts that might be preventing a user from "
+"being able to start a session."
+msgstr ""
+"Τα αρχεία desktop του GDM υποστηρίζουν μια επέκταση ειδική για το GDM, ένα κλειδί που ονομάζεται «X-GDM-"
+"BypassXsession». Αν το κλειδί δεν καθορίζεται σε ένα αρχείο desktop, η τιμή από προεπιλογή είναι «false». Αν αυτό το κλειδί ορίζεται "
+"σε «true» σε ένα αρχείο desktop, τότε το GDM θα εκκινήσει το πρόγραμμα που καθορίζεται στο κλειδί «Exec» του αρχείου desktop όταν "
+"ξεκινά τη συνεδρία του χρήστη. Δε θα τρέξει το πρόγραμμα μέσω του σεναρίου <filename>&lt;etc&gt;/gdm/Xsession</filename>, που είναι η "
+"κανονική συμπεριφορά. Αφού η παράκαμψη του σεναρίου <filename>&lt;etc&gt;/gdm/Xsession</filename> αποφεύγει την έναρξη της συνεδρίας "
+"του χρήστη με τις κανονικές ρυθμίσεις του συστήματος και του χρήστη, οι συνερδίες που ξεκινούν με αυτόν τον τρόπο είναι χρήσιμες για "
+"προβλήματα αποσφαλμάτωσης στα σενάρια του συστήματος ή του χρήστη που μπορεί να αποτρέπουν ένα χρήστη από την έναρξη μιας συνεδρίας."
+
+#: C/gdm.xml:2016(title)
 msgid "GDM User Session and Language Configuration"
 msgstr "Συνεδρία χρήστη του GDM και διαμόρφωση γλώσσας"
 
-#: C/gdm.xml:1976(para)
+#: C/gdm.xml:2017(para)
 msgid ""
 "The user's default session and language choices are stored in the "
 "<filename>~/.dmrc</filename> file. When a user logs in for the first time, "
@@ -3171,7 +3282,7 @@ msgstr ""
 "μπορεί να αλλάξει αυτές τις τιμές απλά επιλέγοντας διαφορετική τιμή κατά την "
 "είσοδο του. Το GDM θα αποθηκεύσει την αλλαγή για τις επόμενες συνδέσεις."
 
-#: C/gdm.xml:1984(para)
+#: C/gdm.xml:2025(para)
 msgid ""
 "The <filename>~/.dmrc</filename> file is in the standard <filename>INI</"
 "filename> format. It has one section called <filename>[Desktop]</filename> "
@@ -3183,7 +3294,7 @@ msgstr ""
 "filename> η οποία έχει δύο κλειδιά: <filename>Session</filename> και "
 "<filename>Language</filename>."
 
-#: C/gdm.xml:1991(para)
+#: C/gdm.xml:2032(para)
 msgid ""
 "The <filename>Session</filename> key specifies the basename of the session "
 "<filename>.desktop</filename> file that the user wishes to normally use "
@@ -3200,7 +3311,7 @@ msgstr ""
 "λείπει, χρησιμοποιείται η προεπιλογή του συστήματος. Το αρχείο κανονικά θα "
 "είναι όπως παρακάτω:"
 
-#: C/gdm.xml:2000(screen)
+#: C/gdm.xml:2041(screen)
 #, no-wrap
 msgid ""
 "\n"
@@ -3213,15 +3324,15 @@ msgstr ""
 "Session=gnome\n"
 "Language=cs_CZ.UTF-8\n"
 
-#: C/gdm.xml:2012(title)
+#: C/gdm.xml:2053(title)
 msgid "GDM Commands"
 msgstr "Εντολές GDM"
 
-#: C/gdm.xml:2015(title)
+#: C/gdm.xml:2056(title)
 msgid "GDM Root User Commands"
 msgstr "Εντολές GDM για τον χρήστη root"
 
-#: C/gdm.xml:2017(para)
+#: C/gdm.xml:2058(para)
 msgid ""
 "The GDM package provides the following commands in <filename>sbindir</"
 "filename> intended to be run by the root user:"
@@ -3229,14 +3340,13 @@ msgstr ""
 "Το πακέτο GDM παρέχει τις παρακάτω εντολές στο <filename>sbindir</filename> "
 "που προορίζονται για εκτέλεση από τον χρήστη root:"
 
-#: C/gdm.xml:2023(title) C/gdm.xml:2038(title)
-msgid ""
-"<command>gdm</command> and <command>gdm-binary</command> Command Line Options"
+#: C/gdm.xml:2064(title) C/gdm.xml:2079(title)
+msgid "<command>gdm</command> and <command>gdm-binary</command> Command Line Options"
 msgstr ""
 "<command>gdm</command> και <command>gdm-binary</command> Επιλογές γραμμής "
 "εντολών"
 
-#: C/gdm.xml:2026(para)
+#: C/gdm.xml:2067(para)
 msgid ""
 "The <command>gdm</command> command is really just a script which runs the "
 "<command>gdm-binary</command>, passing along any options. Before launching "
@@ -3257,57 +3367,43 @@ msgstr ""
 "LC_ALL είναι ρυθμισμένα. Το <command>gdm-binary</command> είναι o "
 "πραγματικός δαίμονας του GDM."
 
-#: C/gdm.xml:2042(term)
+#: C/gdm.xml:2083(term)
 msgid "-?, --help"
 msgstr "-?, --help"
 
-#: C/gdm.xml:2044(para)
+#: C/gdm.xml:2085(para)
 msgid "Gives a brief overview of the command line options."
 msgstr "Δίνει μια σύντομη επισκόπηση των επιλογών της γραμμής εντολών."
 
-#: C/gdm.xml:2051(term)
-msgid "--debug"
-msgstr "--debug"
-
-#: C/gdm.xml:2053(para)
-msgid ""
-"Print debug output to the syslog. This is typically <filename>&lt;var&gt;/"
-"log/messages</filename> or <filename>&lt;var&gt;/adm/messages</filename> "
-"depending on your Operating System."
-msgstr ""
-"Τυπώνει την έξοδο της αποσφαλμάτωσης στο syslog. Αυτό είναι συνήθως το "
-"<filename>&lt;var&gt;/log/messages</filename> ή το <filename>&lt;var&gt;/adm/"
-"messages</filename> ανάλογα με το λειτουργικό σύστημα."
-
-#: C/gdm.xml:2063(term)
+#: C/gdm.xml:2092(term)
 msgid "--fatal-warnings"
 msgstr "--fatal-warnings"
 
-#: C/gdm.xml:2065(para)
+#: C/gdm.xml:2094(para)
 msgid "Make all warnings cause GDM to exit."
 msgstr "Όρισε όλες οι προειδοποιήσεις να προκαλούν τον τερματισμό του GDM."
 
-#: C/gdm.xml:2072(term)
+#: C/gdm.xml:2101(term)
 msgid "--timed-exit"
 msgstr "--timed-exit"
 
-#: C/gdm.xml:2074(para)
+#: C/gdm.xml:2103(para)
 msgid "Exit after 30 seconds. Useful for debugging."
 msgstr "Έξοδος μετά από 30 δευτερόλεπτα. Χρήσιμο για την αποσφαλμάτωση."
 
-#: C/gdm.xml:2081(term)
+#: C/gdm.xml:2110(term)
 msgid "--version"
 msgstr "--version"
 
-#: C/gdm.xml:2083(para)
+#: C/gdm.xml:2112(para)
 msgid "Print the version of the GDM daemon."
 msgstr "Εκτύπωση της έκδοσης του δαίμονα του GDM."
 
-#: C/gdm.xml:2092(title)
+#: C/gdm.xml:2121(title)
 msgid "<command>gdm-restart</command> Command Line Options"
 msgstr "<command>gdm-restart</command> Επιλογές γραμμής εντολών"
 
-#: C/gdm.xml:2094(para)
+#: C/gdm.xml:2123(para)
 msgid ""
 "<command>gdm-restart</command> stops and restarts GDM by sending the GDM "
 "daemon a HUP signal. This command will immediately terminate all sessions "
@@ -3318,11 +3414,11 @@ msgstr ""
 "άμεσα όλες τις συνεδρίες και θα αποσυνδέσει τους χρήστες που είναι "
 "συνδεδεμένοι με το GDM."
 
-#: C/gdm.xml:2102(title)
+#: C/gdm.xml:2131(title)
 msgid "<command>gdm-safe-restart</command> Command Line Options"
 msgstr "<command>gdm-safe-restart</command> Επιλογές γραμμής εντολών"
 
-#: C/gdm.xml:2104(para)
+#: C/gdm.xml:2133(para)
 msgid ""
 "<command>gdm-safe-restart</command> stops and restarts GDM by sending the "
 "GDM daemon a USR1 signal. GDM will be restarted as soon as all users log out."
@@ -3331,11 +3427,11 @@ msgstr ""
 "στέλνοντας στον δαίμονα του GDM ένα σήμα USR1. Το GDM θα επανεκκινηθεί μόλις "
 "όλοι οι χρήστες αποσυνδεθούν."
 
-#: C/gdm.xml:2112(title)
+#: C/gdm.xml:2141(title)
 msgid "<command>gdm-stop</command> Command Line Options"
 msgstr "<command>gdm-stop</command> Επιλογές γραμμής εντολών"
 
-#: C/gdm.xml:2114(para)
+#: C/gdm.xml:2143(para)
 msgid ""
 "<command>gdm-stop</command> stops GDM by sending the GDM daemon a TERM "
 "signal."
@@ -3343,7 +3439,7 @@ msgstr ""
 "Το <command>gdm-stop</command> τερματίζει το GDM στέλνοντας στον δαίμονα του "
 "GDM ένα σήμα TERM."
 
-#: C/gdm.xml:2125(title)
+#: C/gdm.xml:2154(title)
 msgid "Troubleshooting"
 msgstr "Αντιμετώπιση προβλημάτων"
 
@@ -3351,7 +3447,7 @@ msgstr "Αντιμετώπιση προβλημάτων"
 #.       TODO - any other tips we should add?  Might be useful to highlight any
 #.              common D-Bus configuration issues?
 #. </para>
-#: C/gdm.xml:2133(para)
+#: C/gdm.xml:2162(para)
 msgid ""
 "This section discusses helpful tips for getting GDM working. In general, if "
 "you have a problem using GDM, you can submit a bug or send an email to the "
@@ -3364,12 +3460,24 @@ msgstr ""
 "Πληροφορίες σχετικές με το πως μπορείτε να το κάνετε βρίσκονται στην "
 "εισαγωγή του εγγράφου."
 
-#: C/gdm.xml:2140(para)
+#: C/gdm.xml:2169(para)
+#| msgid ""
+#| "If GDM is failing to work properly, it is always a good idea to include "
+#| "debug information. To turn on debug, launch gdm with the --debug option. "
+#| "Then use GDM to the point where it fails, and debug output will be sent "
+#| "to your system log (<filename>&lt;var&gt;/log/messages</filename> or "
+#| "<filename>&lt;var&gt;/adm/messages</filename> depending on your Operating "
+#| "System). If you share this output with the GDM community via a bug report "
+#| "or email, please only include the GDM related debug information and not "
+#| "the entire file since it can be large. If you do not see any GDM syslog "
+#| "output, you may need to configure syslog (refer to the <ulink type=\"help"
+#| "\" url=\"man:syslog\">syslog</ulink> man page)."
 msgid ""
 "If GDM is failing to work properly, it is always a good idea to include "
-"debug information. To turn on debug, launch gdm with the --debug option. "
-"Then use GDM to the point where it fails, and debug output will be sent to "
-"your system log (<filename>&lt;var&gt;/log/messages</filename> or "
+"debug information. To enable debugging, set the debug/Enable key to \"true\" "
+"in the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file and restart "
+"GDM. Then use GDM to the point where it fails, and debug output will be sent "
+"to the system log file (<filename>&lt;var&gt;/log/messages</filename> or "
 "<filename>&lt;var&gt;/adm/messages</filename> depending on your Operating "
 "System). If you share this output with the GDM community via a bug report or "
 "email, please only include the GDM related debug information and not the "
@@ -3377,24 +3485,20 @@ msgid ""
 "you may need to configure syslog (refer to the <ulink type=\"help\" url="
 "\"man:syslog\">syslog</ulink> man page)."
 msgstr ""
-"Αν το GDM αποτυγχάνει να λειτουργήσει κανονικά, είναι πάντα καλή ιδέα να "
-"συμπεριλαμβάνετε πληροφορίες αποσφαλμάτωσης. Για να ενεργοποιήσετε την "
-"αποσφαλμάτωση, εκκινήστε το gdm με το όρισμα --debug. Μετά χρησιμοποιήστε το "
-"GDM μέχρι το σημείο που αποτυγχάνει, και το αποτέλεσμα της αποσφαλμάτωσης θα "
-"σταλεί στο system log σας (<filename>&lt;var&gt;/log/messages</filename> ή "
-"<filename>&lt;var&gt;/adm/messages</filename> ανάλογα με το λειτουργικό "
-"σύστημα). Αν μοιραστείτε αυτό το αποτέλεσμα με την κοινότητα του GDM μέσω "
-"μιας αναφοράς σφάλματος η με ένα email, παρακαλούμε να συμπεριλάβετε μόνο "
-"τις σχετικές με το GDM πληροφορίες αποσφαλμάτωσης και όχι ολόκληρο το αρχείο "
-"αφού μπορεί να είναι πολύ μεγάλο. Αν δεν δείτε κάποιο αποτέλεσμα στο GDM "
-"syslog, μπορεί να χρειαστεί να διαμορφώσετε το syslog (ανατρέξτε στην σελίδα "
-"<ulink type=\"help\" url=\"man:syslog\">syslog</ulink> man page)."
+"Αν το GDM αποτυγχάνει να λειτουργήσει κανονικά, είναι πάντα καλή ιδέα να συμπεριλαμβάνετε πληροφορίες αποσφαλμάτωσης. Για να "
+"ενεργοποιήσετε την αποσφαλμάτωση, ορίστε το κλειδί debug/Enable σε «true» στο αρχείο <filename>&lt;etc&gt;/gdm/custom.conf</filename> "
+"και επανεκκινείστε το GDM. Μετά χρησιμοποιήστε το GDM μέχρι το σημείο που αποτυγχάνει, και το αποτέλεσμα της αποσφαλμάτωσης θα σταλεί "
+"στο αρχείο καταγραφής του συστήματός σας (<filename>&lt;var&gt;/log/messages</filename> ή <filename>&lt;var&gt;/adm/messages</filename>"
+" ανάλογα με το λειτουργικό σύστημα). Αν μοιραστείτε αυτό το αποτέλεσμα με την κοινότητα του GDM μέσω μιας αναφοράς σφάλματος η με ένα "
+"email, παρακαλούμε να συμπεριλάβετε μόνο τις σχετικές με το GDM πληροφορίες αποσφαλμάτωσης και όχι ολόκληρο το αρχείο αφού μπορεί να "
+"είναι πολύ μεγάλο. Αν δεν δείτε κάποιο αποτέλεσμα σχετικό με το GDM στο αρχείο καταγραφής του συστήματος, μπορεί να χρειαστεί να "
+"διαμορφώσετε το syslog (ανατρέξτε στην σελίδα <ulink type=\"help\" url=\"man:syslog\">syslog</ulink> man page)."
 
-#: C/gdm.xml:2155(title)
+#: C/gdm.xml:2185(title)
 msgid "GDM Will Not Start"
 msgstr "Το GDM δεν εκκινεί"
 
-#: C/gdm.xml:2157(para)
+#: C/gdm.xml:2187(para)
 msgid ""
 "There are a many problems that can cause GDM to fail to start, but this "
 "section will discuss a few common problems and how to approach tracking down "
@@ -3409,7 +3513,7 @@ msgstr ""
 "προσπαθεί να εκκινήσει, αλλά μπορεί να είναι δύσκολος ο εντοπισμός του "
 "προβλήματος όταν το GDM αποτυγχάνει σιωπηρά."
 
-#: C/gdm.xml:2166(para)
+#: C/gdm.xml:2196(para)
 msgid ""
 "First make sure that the Xserver is configured properly. The GDM "
 "configuration file contains a command in the [server-Standard] section that "
@@ -3433,7 +3537,7 @@ msgstr ""
 "μετατρέψτε την εντολή εκκίνησης του Xserver στο αρχείο διαμόρφωσης του GDM "
 "έτσι ώστε να είναι σωστή για το σύστημα σας."
 
-#: C/gdm.xml:2179(para)
+#: C/gdm.xml:2209(para)
 msgid ""
 "Also make sure that the <filename>/tmp</filename> directory has reasonable "
 "ownership and permissions, and that the machine's file system is not full. "
@@ -3444,11 +3548,11 @@ msgstr ""
 "είναι γεμάτο. Αυτά τα προβλήματα θα προκαλέσουν την αποτυχία εκκίνησης του "
 "GDM."
 
-#: C/gdm.xml:2190(title)
+#: C/gdm.xml:2220(title)
 msgid "License"
 msgstr "Άδεια χρήσης"
 
-#: C/gdm.xml:2191(para)
+#: C/gdm.xml:2221(para)
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the <ulink type=\"help\" url=\"gnome-help:gpl"
@@ -3463,7 +3567,7 @@ msgstr ""
 "Λογισμικού (Free Software Foundation) - είτε της έκδοσης 2 της άδειας, είτε "
 "(κατ' επιλογήν) οποιασδήποτε μεταγενέστερης έκδοσης."
 
-#: C/gdm.xml:2199(para)
+#: C/gdm.xml:2229(para)
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -3476,7 +3580,7 @@ msgstr ""
 "περισσότερες λεπτομέρειες την Γενική Άδεια Δημόσιας Χρήσης GNU "
 "(<citetitle>GNU General Public License</citetitle>)."
 
-#: C/gdm.xml:2205(para)
+#: C/gdm.xml:2235(para)
 msgid ""
 "A copy of the <citetitle>GNU General Public License</citetitle> is included "
 "as an appendix to the <citetitle>GNOME Users Guide</citetitle>. You may also "
@@ -3497,12 +3601,49 @@ msgstr ""
 "<city>Boston</city>, <state>MA</state><postcode>02110-1301</"
 "postcode><country>USA</country></address>"
 
-#. Put one translator per line, in the form of NAME <EMAIL>, YEAR1, YEAR2.
+#. Put one translator per line, in the form of NAME <EMAIL>, YEAR1, YEAR2
 #: C/gdm.xml:0(None)
 msgid "translator-credits"
 msgstr ""
 "Ελληνική μεταφραστική ομάδα GNOME <team@gnome.gr>, 2009\n"
 "Στέργιος Προσινικλής <steriosprosiniklis@gmail.com>, 2009"
+
+#~ msgid "/apps/gdm/simple-greeter/debug"
+#~ msgstr "/apps/gdm/simple-greeter/debug"
+
+#~ msgid "If true, then debugging mode is enabled for the greeter."
+#~ msgstr ""
+#~ "Αν αληθές, ενεργοποιείται η λειτουργία αποσφαλμάτωσης για τον greeter."
+
+#~ msgid "/apps/gdm/simple-greeter/include"
+#~ msgstr "/apps/gdm/simple-greeter/include"
+
+#~ msgid "Set to a list of users to always include in the Face Browser."
+#~ msgstr ""
+#~ "Καθορίστε μία λίστα χρηστών που θα περιλαμβάνονται πάντα στον περιηγητή "
+#~ "προσώπων."
+
+#~ msgid "/apps/gdm/simple-greeter/include_all"
+#~ msgstr "/apps/gdm/simple-greeter/include_all"
+
+#~ msgid "true (boolean)"
+#~ msgstr "true (boolean)"
+
+#~ msgid ""
+#~ "In both cases, GDM filters out any users with a UID less than 500 (or 100 "
+#~ "if running on Solaris). Such users are considered system users."
+#~ msgstr ""
+#~ "Και στις δύο περιπτώσεις, το GDM αποκλείει κάθε χρήστη με UID μικρότερο "
+#~ "από 500 ( ή 100 αν εκτελείται σε Solaris). Τέτοιοι χρήστες θεωρούνται "
+#~ "χρήστες συστήματος."
+
+#~ msgid "/apps/gdm/simple-greeter/exclude"
+#~ msgstr "/apps/gdm/simple-greeter/exclude"
+
+#~ msgid "Set to a list of users to always exclude in the Face Browser."
+#~ msgstr ""
+#~ "Καθορισμός μίας λίστας χρηστών που θα αποκλείονται πάντα από τον "
+#~ "περιηγητή προσώπων."
 
 #~ msgid ""
 #~ "If support for ConsoleKit is not desired it can be disabled at build time "
