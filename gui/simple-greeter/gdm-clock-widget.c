@@ -84,14 +84,14 @@ update_time_format (GdmClockWidget *clock)
 
                 /* translators: This is the time format to use for the date
                  */
-                tooltip_format = _("%x");
+                tooltip_format = "%x";
         } else {
                 /* translators: This is the time format to use when there is
                  * no date, just weekday and time without seconds.
                  */
                 clock_format = _("%a %l:%M %p");
 
-                tooltip_format = _("%x");
+                tooltip_format = "%x";
         }
 
         g_free (clock->priv->time_format);
