@@ -364,6 +364,27 @@ gdm_slave_set_busy_cursor (GdmSlave *slave)
         }
 }
 
+static gboolean
+gdm_slave_setup_xhost_auth (XHostAddress *host_entries, XServerInterpretedAddress *si_entries)
+{
+        si_entries[0].type        = "localuser";
+        si_entries[0].typelength  = strlen ("localuser");
+        si_entries[1].type        = "localuser";
+        si_entries[1].typelength  = strlen ("localuser");
+
+        si_entries[0].value       = "root";
+        si_entries[0].valuelength = strlen ("root");
+        si_entries[1].value       = GDM_USERNAME;
+        si_entries[1].valuelength = strlen (GDM_USERNAME);
+
+        host_entries[0].family    = FamilyServerInterpreted;
+        host_entries[0].address   = (char *) &si_entries[0];
+        host_entries[0].length    = sizeof (XServerInterpretedAddress);
+        host_entries[1].family    = FamilyServerInterpreted;
+        host_entries[1].address   = (char *) &si_entries[1];
+        host_entries[1].length    = sizeof (XServerInterpretedAddress);
+}
+
 gboolean
 gdm_slave_connect_to_x11_display (GdmSlave *slave)
 {
@@ -400,11 +421,8 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
                 g_warning ("Unable to connect to display %s", slave->priv->display_name);
                 ret = FALSE;
         } else if (slave->priv->display_is_local) {
-                XHostAddress host_entries[2] = {
-                        { FamilyServerInterpreted },
-                        { FamilyServerInterpreted }
-                };
                 XServerInterpretedAddress si_entries[2];
+                XHostAddress              host_entries[2];
 
                 g_debug ("GdmSlave: Connected to display %s", slave->priv->display_name);
                 ret = TRUE;
@@ -412,21 +430,7 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
                 /* Give programs run by the slave and greeter access to the display
                  * independent of current hostname
                  */
-                si_entries[0].type = "localuser";
-                si_entries[0].typelength = strlen ("localuser");
-                si_entries[1].type = "localuser";
-                si_entries[1].typelength = strlen ("localuser");
-
-                si_entries[0].value = "root";
-                si_entries[0].valuelength = strlen ("root");
-                si_entries[1].value = GDM_USERNAME;
-                si_entries[1].valuelength = strlen (GDM_USERNAME);
-
-                host_entries[0].address = (char *) &si_entries[0];
-                host_entries[0].length = sizeof (XServerInterpretedAddress);
-                host_entries[1].address = (char *) &si_entries[1];
-                host_entries[1].length = sizeof (XServerInterpretedAddress);
-
+                gdm_slave_setup_xhost_auth (host_entries, si_entries);
                 XAddHosts (slave->priv->server_display, host_entries,
                            G_N_ELEMENTS (host_entries));
         } else {
@@ -724,9 +728,11 @@ gdm_slave_add_user_authorization (GdmSlave   *slave,
                                   const char *username,
                                   char      **filenamep)
 {
-        gboolean res;
-        GError  *error;
-        char    *filename;
+        XServerInterpretedAddress si_entries[2];
+        XHostAddress              host_entries[2];
+        gboolean                  res;
+        GError                   *error;
+        char                     *filename;
 
         filename = NULL;
 
@@ -760,6 +766,13 @@ gdm_slave_add_user_authorization (GdmSlave   *slave,
                 *filenamep = g_strdup (filename);
         }
         g_free (filename);
+
+        /* Remove access for the programs run by slave and greeter now that the
+         * user session is starting.
+         */
+        gdm_slave_setup_xhost_auth (host_entries, si_entries);
+        XRemoveHosts (slave->priv->server_display, host_entries,
+                      G_N_ELEMENTS (host_entries));
 
         return res;
 }
