@@ -45,10 +45,8 @@
 #include "gdm-simple-slave.h"
 #include "gdm-settings.h"
 #include "gdm-settings-direct.h"
-
-#include "gdm-settings.h"
-#include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
+#include "gdm-settings-client.h"
 
 static GdmSettings     *settings        = NULL;
 static int              gdm_return_code = 0;
