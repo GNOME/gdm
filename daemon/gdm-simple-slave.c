@@ -1062,6 +1062,8 @@ idle_connect_to_display (GdmSimpleSlave *slave)
                         start_greeter (slave);
                         create_new_session (slave);
                 } else {
+                        /* Run the init script. gdmslave suspends until script has terminated */
+                        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
                         reset_session (slave);
                 }
         } else {
