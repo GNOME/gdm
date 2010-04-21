@@ -571,7 +571,7 @@ spawn_child_setup (SpawnChildData *data)
                 gid_t groups[1] = { 0 };
 
                 if (setgid (0) < 0)  {
-                        g_warning (_("Couldn't set groupid to 0"));
+                        g_warning (_("Couldn't set groupid to %d"), 0);
                         /* Don't error out, it's not fatal, if it fails we'll
                          * just still be */
                 }
