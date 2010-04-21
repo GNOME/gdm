@@ -109,6 +109,7 @@ struct GdmGreeterLoginWindowPrivate
 
         guint            dialog_mode;
 
+        gboolean         timed_login_already_enabled;
         gboolean         timed_login_enabled;
         guint            timed_login_delay;
         char            *timed_login_username;
@@ -624,34 +625,55 @@ gdm_greeter_login_window_problem (GdmGreeterLoginWindow *login_window,
         return TRUE;
 }
 
-void
-gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_window,
-                                              const char            *username,
-                                              int                    delay)
+static void
+handle_request_timed_login (GdmGreeterLoginWindow *login_window)
 {
-        static gboolean timed_login_already_enabled;
-
-        g_return_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window));
-
-        g_debug ("GdmGreeterLoginWindow: requested automatic login for user '%s' in %d seconds", username, delay);
-
-        if (login_window->priv->timed_login_username != NULL) {
-                timed_login_already_enabled = TRUE;
-                g_free (login_window->priv->timed_login_username);
-        } else {
-                timed_login_already_enabled = FALSE;
-        }
-        login_window->priv->timed_login_username = g_strdup (username);
-        login_window->priv->timed_login_delay = delay;
-
         if (login_window->priv->dialog_mode != MODE_SELECTION) {
                 reset_dialog (login_window);
         }
         gdm_user_chooser_widget_set_show_user_auto (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
 
-        if (!timed_login_already_enabled) {
+        if (!login_window->priv->timed_login_already_enabled) {
                 gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser),
                                                               GDM_USER_CHOOSER_USER_AUTO);
+        }
+}
+
+static void
+on_request_timed_login_after_users_loaded (GdmUserChooserWidget  *user_chooser,
+                                           GdmGreeterLoginWindow *login_window)
+{
+        g_debug ("Users now loaded, handling timed login request");
+        handle_request_timed_login (login_window);
+}
+
+void
+gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_window,
+                                              const char            *username,
+                                              int                    delay)
+{
+        g_return_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window));
+
+        g_debug ("GdmGreeterLoginWindow: requested automatic login for user '%s' in %d seconds", username, delay);
+
+        if (login_window->priv->timed_login_username != NULL) {
+                login_window->priv->timed_login_already_enabled = TRUE;
+                g_free (login_window->priv->timed_login_username);
+        } else {
+                login_window->priv->timed_login_already_enabled = FALSE;
+        }
+        login_window->priv->timed_login_username = g_strdup (username);
+        login_window->priv->timed_login_delay = delay;
+
+        if (login_window->priv->user_chooser_loaded) {
+                g_debug ("Handling timed login request since users are already loaded.");
+                handle_request_timed_login (login_window);
+        } else {
+                g_debug ("Waiting to handle timed login request until users are loaded.");
+                g_signal_connect (login_window->priv->user_chooser,
+                                  "loaded",
+                                  G_CALLBACK (on_request_timed_login_after_users_loaded),
+                                  login_window);
         }
 }
 
