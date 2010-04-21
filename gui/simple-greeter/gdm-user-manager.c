@@ -483,13 +483,6 @@ on_user_sessions_changed (GdmUser        *user,
         g_signal_emit (manager, signals [USER_IS_LOGGED_IN_CHANGED], 0, user);
 }
 
-static void
-on_user_icon_changed (GdmUser        *user,
-                      GdmUserManager *manager)
-{
-        g_debug ("GdmUserManager: user icon changed");
-}
-
 static char *
 get_seat_id_for_session (DBusGConnection *connection,
                          const char      *session_id)
@@ -735,10 +728,6 @@ create_user (GdmUserManager *manager)
         g_signal_connect (user,
                           "sessions-changed",
                           G_CALLBACK (on_user_sessions_changed),
-                          manager);
-        g_signal_connect (user,
-                          "icon-changed",
-                          G_CALLBACK (on_user_icon_changed),
                           manager);
         return user;
 }

@@ -55,7 +55,6 @@ enum {
 };
 
 enum {
-        ICON_CHANGED,
         SESSIONS_CHANGED,
         LAST_SIGNAL
 };
@@ -73,15 +72,12 @@ struct _GdmUser {
         char           *shell;
         GList          *sessions;
         gulong          login_frequency;
-
-        GFileMonitor   *icon_monitor;
 };
 
 typedef struct _GdmUserClass
 {
         GObjectClass parent_class;
 
-        void (* icon_changed)     (GdmUser *user);
         void (* sessions_changed) (GdmUser *user);
 } GdmUserClass;
 
@@ -302,14 +298,6 @@ gdm_user_class_init (GdmUserClass *class)
                                                              0,
                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
-        signals [ICON_CHANGED] =
-                g_signal_new ("icon-changed",
-                              G_TYPE_FROM_CLASS (class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmUserClass, icon_changed),
-                              NULL, NULL,
-                              g_cclosure_marshal_VOID__VOID,
-                              G_TYPE_NONE, 0);
         signals [SESSIONS_CHANGED] =
                 g_signal_new ("sessions-changed",
                               G_TYPE_FROM_CLASS (class),
@@ -318,61 +306,6 @@ gdm_user_class_init (GdmUserClass *class)
                               NULL, NULL,
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE, 0);
-}
-
-
-static void
-on_icon_monitor_changed (GFileMonitor     *monitor,
-                         GFile            *file,
-                         GFile            *other_file,
-                         GFileMonitorEvent event_type,
-                         GdmUser          *user)
-{
-        g_debug ("Icon changed: %d", event_type);
-
-        if (event_type != G_FILE_MONITOR_EVENT_CHANGED &&
-            event_type != G_FILE_MONITOR_EVENT_CREATED) {
-                return;
-        }
-
-        _gdm_user_icon_changed (user);
-}
-
-static void
-update_icon_monitor (GdmUser *user)
-{
-        GFile  *file;
-        GError *error;
-        char   *path;
-
-        if (user->home_dir == NULL) {
-                return;
-        }
-
-        if (user->icon_monitor != NULL) {
-                g_file_monitor_cancel (user->icon_monitor);
-                user->icon_monitor = NULL;
-        }
-
-        path = g_build_filename (user->home_dir, ".face", NULL);
-        g_debug ("adding monitor for '%s'", path);
-        file = g_file_new_for_path (path);
-        error = NULL;
-        user->icon_monitor = g_file_monitor_file (file,
-                                                  G_FILE_MONITOR_NONE,
-                                                  NULL,
-                                                  &error);
-        if (user->icon_monitor != NULL) {
-                g_signal_connect (user->icon_monitor,
-                                  "changed",
-                                  G_CALLBACK (on_icon_monitor_changed),
-                                  user);
-        } else {
-                g_warning ("Unable to monitor %s: %s", path, error->message);
-                g_error_free (error);
-        }
-        g_object_unref (file);
-        g_free (path);
 }
 
 static void
@@ -391,8 +324,6 @@ gdm_user_finalize (GObject *object)
         GdmUser *user;
 
         user = GDM_USER (object);
-
-        g_file_monitor_cancel (user->icon_monitor);
 
         g_free (user->user_name);
         g_free (user->real_name);
@@ -499,7 +430,6 @@ _gdm_user_update (GdmUser             *user,
                 g_free (user->home_dir);
                 user->home_dir = g_strdup (pwent->pw_dir);
                 g_object_notify (G_OBJECT (user), "home-directory");
-                g_signal_emit (user, signals[ICON_CHANGED], 0);
         }
 
         /* Shell */
@@ -513,25 +443,7 @@ _gdm_user_update (GdmUser             *user,
                 g_object_notify (G_OBJECT (user), "shell");
         }
 
-        update_icon_monitor (user);
-
         g_object_thaw_notify (G_OBJECT (user));
-}
-
-/**
- * _gdm_user_icon_changed:
- * @user: the user to emit the signal for.
- *
- * Emits the "icon-changed" signal for @user.
- *
- * Since: 1.0
- **/
-void
-_gdm_user_icon_changed (GdmUser *user)
-{
-        g_return_if_fail (GDM_IS_USER (user));
-
-        g_signal_emit (user, signals[ICON_CHANGED], 0);
 }
 
 /**
