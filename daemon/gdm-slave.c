@@ -43,6 +43,7 @@
 
 #include <X11/Xlib.h> /* for Display */
 #include <X11/cursorfont.h> /* for watch cursor */
+#include <X11/Xatom.h>
 
 #include "gdm-common.h"
 
@@ -87,6 +88,7 @@ struct GdmSlavePrivate
         char            *display_x11_authority_file;
         char            *parent_display_name;
         char            *parent_display_x11_authority_file;
+        char            *windowpath;
 
         GArray          *display_x11_cookie;
 
@@ -385,6 +387,83 @@ gdm_slave_setup_xhost_auth (XHostAddress *host_entries, XServerInterpretedAddres
         host_entries[1].length    = sizeof (XServerInterpretedAddress);
 }
 
+static void
+gdm_slave_set_windowpath (GdmSlave *slave)
+{
+        /* setting WINDOWPATH for clients */
+        Atom prop;
+        Atom actualtype;
+        int actualformat;
+        unsigned long nitems;
+        unsigned long bytes_after;
+        unsigned char *buf;
+        const char *windowpath;
+        char *newwindowpath;
+        unsigned long num;
+        char nums[10];
+        int numn;
+
+        prop = XInternAtom (slave->priv->server_display, "XFree86_VT", False);
+        if (prop == None) {
+                g_debug ("no XFree86_VT atom\n");
+                return;
+        }
+        if (XGetWindowProperty (slave->priv->server_display,
+                DefaultRootWindow (slave->priv->server_display), prop, 0, 1, 
+                False, AnyPropertyType, &actualtype, &actualformat, 
+                &nitems, &bytes_after, &buf)) {
+                g_debug ("no XFree86_VT property\n");
+                return;
+        }
+
+        if (nitems != 1) {
+                g_debug ("%lu items in XFree86_VT property!\n", nitems);
+                XFree (buf);
+                return;
+        }
+
+        switch (actualtype) {
+        case XA_CARDINAL:
+        case XA_INTEGER:
+        case XA_WINDOW:
+                switch (actualformat) {
+                case  8:
+                        num = (*(uint8_t  *)(void *)buf);
+                        break;
+                case 16:
+                        num = (*(uint16_t *)(void *)buf);
+                        break;
+                case 32:
+                        num = (*(uint32_t *)(void *)buf);
+                        break;
+                default:
+                        g_debug ("format %d in XFree86_VT property!\n", actualformat);
+                        XFree (buf);
+                        return;
+                }
+                break;
+        default:
+                g_debug ("type %lx in XFree86_VT property!\n", actualtype);
+                XFree (buf);
+                return;
+        }
+        XFree (buf);
+
+        windowpath = getenv ("WINDOWPATH");
+        numn = snprintf (nums, sizeof (nums), "%lu", num);
+        if (!windowpath) {
+                newwindowpath = malloc (numn + 1);
+                sprintf (newwindowpath, "%s", nums);
+        } else {
+                newwindowpath = malloc (strlen (windowpath) + 1 + numn + 1);
+                sprintf (newwindowpath, "%s:%s", windowpath, nums);
+        }
+
+        slave->priv->windowpath = newwindowpath;
+
+        g_setenv ("WINDOWPATH", newwindowpath, TRUE);
+}
+
 gboolean
 gdm_slave_connect_to_x11_display (GdmSlave *slave)
 {
@@ -427,12 +506,14 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
                 g_debug ("GdmSlave: Connected to display %s", slave->priv->display_name);
                 ret = TRUE;
 
-                /* Give programs run by the slave and greeter access to the display
-                 * independent of current hostname
+                /* Give programs run by the slave and greeter access to the
+                 * display independent of current hostname
                  */
                 gdm_slave_setup_xhost_auth (host_entries, si_entries);
                 XAddHosts (slave->priv->server_display, host_entries,
                            G_N_ELEMENTS (host_entries));
+
+                gdm_slave_set_windowpath (slave);
         } else {
                 g_debug ("GdmSlave: Connected to display %s", slave->priv->display_name);
                 ret = TRUE;
@@ -1582,6 +1663,7 @@ gdm_slave_finalize (GObject *object)
         g_free (slave->priv->display_x11_authority_file);
         g_free (slave->priv->parent_display_name);
         g_free (slave->priv->parent_display_x11_authority_file);
+        g_free (slave->priv->windowpath);
         g_array_free (slave->priv->display_x11_cookie, TRUE);
 
         G_OBJECT_CLASS (gdm_slave_parent_class)->finalize (object);

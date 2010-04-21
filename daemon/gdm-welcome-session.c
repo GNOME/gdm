@@ -422,7 +422,7 @@ get_welcome_environment (GdmWelcomeSession *welcome_session)
 
 
         g_hash_table_insert (hash, g_strdup ("PATH"), g_strdup (g_getenv ("PATH")));
-
+        g_hash_table_insert (hash, g_strdup ("WINDOWPATH"), g_strdup (g_getenv ("WINDOWPATH")));
         g_hash_table_insert (hash, g_strdup ("RUNNING_UNDER_GDM"), g_strdup ("true"));
         g_hash_table_insert (hash, g_strdup ("GVFS_DISABLE_FUSE"), g_strdup ("1"));
 

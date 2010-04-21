@@ -609,12 +609,12 @@ get_system_default_layout (GdmSessionDirect *session)
     static XklEngine *engine = NULL;
     
     if (engine == NULL) {
-	    Display *display = XOpenDisplay (session->priv->display_name);
-	    if (display != NULL) {
-		    engine = xkl_engine_get_instance (display);
-	    }
-	    /* do NOT call XCloseDisplay (display) here;
-	     * xkl_engine_get_instance() is a singleton which saves the display */
+            Display *display = XOpenDisplay (session->priv->display_name);
+            if (display != NULL) {
+                    engine = xkl_engine_get_instance (display);
+            }
+            /* do NOT call XCloseDisplay (display) here;
+             * xkl_engine_get_instance() is a singleton which saves the display */
     }
     
     if (engine != NULL) {
@@ -2044,6 +2044,11 @@ setup_session_environment (GdmSessionDirect *session)
                                                              "XAUTHORITY",
                                                              session->priv->user_x11_authority_file);
         }
+
+        gdm_session_direct_set_environment_variable (session,
+                                                     "WINDOWPATH",
+                                                     g_getenv ("WINDOWPATH"));
+
 
         /* FIXME: We do this here and in the session worker.  We should consolidate
          * somehow.
