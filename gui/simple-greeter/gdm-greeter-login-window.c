@@ -80,16 +80,18 @@
 #define KEY_BANNER_MESSAGE_TEXT     KEY_GREETER_DIR "/banner_message_text"
 #define KEY_BANNER_MESSAGE_TEXT_NOCHOOSER     KEY_GREETER_DIR "/banner_message_text_nochooser"
 #define KEY_LOGO                    KEY_GREETER_DIR "/logo_icon_name"
+#define KEY_DISABLE_USER_LIST       "/apps/gdm/simple-greeter/disable_user_list"
+
 #define GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_LOGIN_WINDOW, GdmGreeterLoginWindowPrivate))
 
 enum {
-        MODE_SELECTION = 0,
+        MODE_UNDEFINED = 0,
+        MODE_SELECTION,
         MODE_AUTHENTICATION
 };
 
 enum {
         LOGIN_BUTTON_HIDDEN = 0,
-        LOGIN_BUTTON_START_OTHER,
         LOGIN_BUTTON_ANSWER_QUERY,
         LOGIN_BUTTON_TIMED_LOGIN
 };
@@ -108,6 +110,9 @@ struct GdmGreeterLoginWindowPrivate
         guint            gconf_cnxn;
 
         guint            dialog_mode;
+
+        gboolean         user_list_disabled;
+        gboolean         show_cancel_button;
 
         gboolean         timed_login_already_enabled;
         gboolean         timed_login_enabled;
@@ -367,17 +372,6 @@ on_login_button_clicked_timed_login (GtkButton             *button,
 
         _gdm_greeter_login_window_set_interactive (login_window, TRUE);
 }
-static void
-on_login_button_clicked_start_other (GtkButton             *button,
-                                     GdmGreeterLoginWindow *login_window)
-{
-        g_debug ("GdmGreeterLoginWindow: starting OTHER login");
-
-        g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
-                       0, GDM_USER_CHOOSER_USER_OTHER);
-        g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
-        switch_mode (login_window, MODE_AUTHENTICATION);
-}
 
 static void
 set_log_in_button_mode (GdmGreeterLoginWindow *login_window,
@@ -397,10 +391,6 @@ set_log_in_button_mode (GdmGreeterLoginWindow *login_window,
         switch (mode) {
         case LOGIN_BUTTON_HIDDEN:
                 gtk_widget_hide (button);
-                break;
-        case LOGIN_BUTTON_START_OTHER:
-                login_window->priv->login_button_handler_id = g_signal_connect (button, "clicked", G_CALLBACK (on_login_button_clicked_start_other), login_window);
-                gtk_widget_show (button);
                 break;
         case LOGIN_BUTTON_ANSWER_QUERY:
                 login_window->priv->login_button_handler_id = g_signal_connect (button, "clicked", G_CALLBACK (on_login_button_clicked_answer_query), login_window);
@@ -428,7 +418,7 @@ adjust_other_login_visibility(GdmGreeterLoginWindow *login_window)
         }
 
         if (gdm_chooser_widget_get_number_of_items (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser)) == 0) {
-                set_log_in_button_mode (login_window, LOGIN_BUTTON_START_OTHER);
+                set_log_in_button_mode (login_window, LOGIN_BUTTON_ANSWER_QUERY);
         } else {
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_HIDDEN);
         }
@@ -440,6 +430,9 @@ switch_mode (GdmGreeterLoginWindow *login_window,
 {
         const char *default_name;
         GtkWidget  *box;
+
+        /* Should never switch to MODE_UNDEFINED */
+        g_assert (number != MODE_UNDEFINED);
 
         /* we want to run this even if we're supposed to
            be in the mode already so that we reset everything
@@ -458,10 +451,17 @@ switch_mode (GdmGreeterLoginWindow *login_window,
 
                 sensitize_widget (login_window, "disconnect-button", FALSE);
 
-                default_name = NULL;
+                /*
+                 * Although the cancel button is not shown in the selection
+                 * dialog, the show_cancel_button flag manages when the
+                 * cancel button is shown on subsequent PAM queries.  Set the
+                 * flag to true initially since the button should appear on
+                 * the first query, since the button takes the user back to
+                 * selection mode.
+                 */
+                login_window->priv->show_cancel_button = TRUE;
                 break;
         case MODE_AUTHENTICATION:
-                show_widget (login_window, "cancel-button", TRUE);
                 show_widget (login_window, "disconnect-button", FALSE);
                 default_name = "log-in-button";
                 break;
@@ -469,9 +469,27 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 g_assert_not_reached ();
         }
 
-        box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "buttonbox"));
+        box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder,
+                          "buttonbox"));
         gtk_button_box_set_layout (GTK_BUTTON_BOX (box),
-                                   (number == MODE_SELECTION) ? GTK_BUTTONBOX_SPREAD : GTK_BUTTONBOX_END );
+                                   (number == MODE_SELECTION) ?
+                                    GTK_BUTTONBOX_SPREAD :
+                                    GTK_BUTTONBOX_END );
+
+        if (default_name != NULL) {
+                GtkWidget *widget;
+
+                widget = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, default_name));
+                gtk_widget_grab_default (widget);
+        }
+
+        /*
+         * The rest of this function sets up the user list, so just return if
+         * the user list is disabled.
+         */
+        if (login_window->priv->user_list_disabled) {
+                return;
+        }
 
         box = gtk_widget_get_parent (login_window->priv->user_chooser);
         if (GTK_IS_BOX (box)) {
@@ -490,13 +508,6 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                                            number == MODE_SELECTION,
                                            padding,
                                            pack_type);
-        }
-
-        if (default_name != NULL) {
-                GtkWidget *widget;
-
-                widget = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, default_name));
-                gtk_widget_grab_default (widget);
         }
 }
 
@@ -522,6 +533,8 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         g_debug ("GdmGreeterLoginWindow: Resetting dialog");
         set_busy (login_window);
         set_sensitive (login_window, FALSE);
+
+        login_window->priv->show_cancel_button = FALSE;
 
         if (login_window->priv->timed_login_enabled) {
                 gdm_chooser_widget_set_item_timer (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser),
@@ -552,7 +565,11 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         label = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-label"));
         gtk_label_set_text (GTK_LABEL (label), "");
 
-        switch_mode (login_window, MODE_SELECTION);
+        if (login_window->priv->user_list_disabled) {
+                switch_mode (login_window, MODE_AUTHENTICATION);
+        } else {
+                switch_mode (login_window, MODE_SELECTION);
+        }
 
         set_sensitive (login_window, TRUE);
         set_ready (login_window);
@@ -584,6 +601,14 @@ gdm_greeter_login_window_ready (GdmGreeterLoginWindow *login_window)
         set_sensitive (GDM_GREETER_LOGIN_WINDOW (login_window), TRUE);
         set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
+
+        /* If the user list is disabled, then start the PAM conversation */
+        if (login_window->priv->user_list_disabled) {
+                g_debug ("Starting PAM conversation since user list disabled");
+                g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
+                               0, GDM_USER_CHOOSER_USER_OTHER);
+                g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
+        }
 
         return TRUE;
 }
@@ -714,6 +739,21 @@ gdm_greeter_login_window_start_session_when_ready (GdmGreeterLoginWindow *login_
         }
 }
 
+static void
+_show_cancel_button (GdmGreeterLoginWindow *login_window)
+{
+        /*
+         * If show_cancel_button is false, this is because the face browser
+         * is disabled and the first query is showing.  It does not make sense
+         * to display the cancel button when showing the initial query and
+         * the face browser is disabled.  Set the flag to true so that the
+         * button is shown on following queries.
+         */
+        show_widget (login_window, "cancel-button",
+                     login_window->priv->show_cancel_button);
+        login_window->priv->show_cancel_button = TRUE;
+}
+
 gboolean
 gdm_greeter_login_window_info_query (GdmGreeterLoginWindow *login_window,
                                      const char            *text)
@@ -722,6 +762,8 @@ gdm_greeter_login_window_info_query (GdmGreeterLoginWindow *login_window,
         GtkWidget  *label;
 
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
+
+        _show_cancel_button (login_window);
 
         g_debug ("GdmGreeterLoginWindow: info query: %s", text);
 
@@ -751,6 +793,8 @@ gdm_greeter_login_window_secret_info_query (GdmGreeterLoginWindow *login_window,
         GtkWidget  *label;
 
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
+
+        _show_cancel_button (login_window);
 
         entry = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-entry"));
         delete_entry_text (entry);
@@ -1126,7 +1170,9 @@ load_theme (GdmGreeterLoginWindow *login_window)
                                  G_CALLBACK (on_user_chooser_visibility_changed),
                                  login_window);
 
-        gtk_widget_show (login_window->priv->user_chooser);
+        if (!login_window->priv->user_list_disabled) {
+                gtk_widget_show (login_window->priv->user_chooser);
+        }
 
         login_window->priv->auth_banner_label = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "auth-banner-label"));
         /*make_label_small_italic (login_window->priv->auth_banner_label);*/
@@ -1147,7 +1193,11 @@ load_theme (GdmGreeterLoginWindow *login_window)
         box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "computer-info-event-box"));
         g_signal_connect (box, "button-press-event", G_CALLBACK (on_computer_info_label_button_press), login_window);
 
-        switch_mode (login_window, MODE_SELECTION);
+        if (login_window->priv->user_list_disabled) {
+                switch_mode (login_window, MODE_AUTHENTICATION);
+        } else {
+                switch_mode (login_window, MODE_SELECTION);
+        }
 
         gdm_profile_end (NULL);
 }
@@ -1445,13 +1495,40 @@ on_window_state_event (GtkWidget           *widget,
 static void
 gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
 {
+        GConfClient *client;
+        GError      *error;
+        gboolean     user_list_disable;
+        gboolean     timed_login_enable;
+
         gdm_profile_start (NULL);
 
         login_window->priv = GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE (login_window);
-
         login_window->priv->timed_login_enabled = FALSE;
+        login_window->priv->dialog_mode = MODE_UNDEFINED;
 
-        login_window->priv->dialog_mode = MODE_SELECTION;
+        client = gconf_client_get_default ();
+        error = NULL;
+
+        /* The user list is not shown only if the user list is disabled and
+         * timed login is also not being used.
+         */
+        user_list_disable = gconf_client_get_bool (client,
+                KEY_DISABLE_USER_LIST, &error);
+        if (error != NULL) {
+                g_debug ("GdmUserChooserWidget: unable to get disable-user-list configuration: %s", error->message);
+                g_error_free (error);
+        }
+
+        gdm_settings_client_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE,
+                                         &timed_login_enable);
+
+        login_window->priv->user_list_disabled = FALSE;
+        if (user_list_disable && !timed_login_enable) {
+                g_debug ("Disabling user list");
+                login_window->priv->user_list_disabled = TRUE;
+        } else {
+                g_debug ("Enabling user list");
+        }
 
         gtk_window_set_title (GTK_WINDOW (login_window), _("Login Window"));
         /*gtk_window_set_opacity (GTK_WINDOW (login_window), 0.85);*/

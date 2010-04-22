@@ -186,6 +186,7 @@ test_language_chooser_SOURCES = 	\
 
 test_language_chooser_LDADD =	\
 	$(GTK_LIBS)		\
+	$(GCONF_LIBS)		\
 	$(NULL)
 
 test_layout_chooser_SOURCES = 	\
@@ -208,6 +209,7 @@ test_layout_chooser_SOURCES = 	\
 
 test_layout_chooser_LDADD =		\
 	$(GTK_LIBS)			\
+	$(GCONF_LIBS)			\
 	$(LIBXKLAVIER_LIBS)		\
 	$(NULL)
 
