@@ -2025,6 +2025,38 @@ on_hostname_selected (GdmXdmcpChooserDisplay *display,
         freeaddrinfo (ai_list);
 }
 
+static void
+on_display_status_changed (GdmDisplay             *display,
+                           GParamSpec             *arg1,
+                           GdmXdmcpDisplayFactory *factory)
+{
+        int              status;
+        GdmDisplayStore *store;
+
+        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+
+        status = gdm_display_get_status (display);
+
+        g_debug ("GdmXdmcpDisplayFactory: xdmcp display status changed: %d", status);
+        switch (status) {
+        case GDM_DISPLAY_FINISHED:
+                gdm_display_store_remove (store, display);
+                break;
+        case GDM_DISPLAY_FAILED:
+                gdm_display_store_remove (store, display);
+                break;
+        case GDM_DISPLAY_UNMANAGED:
+                break;
+        case GDM_DISPLAY_PREPARED:
+                break;
+        case GDM_DISPLAY_MANAGED:
+                break;
+        default:
+                g_assert_not_reached ();
+                break;
+        }
+}
+
 static GdmDisplay *
 gdm_xdmcp_display_create (GdmXdmcpDisplayFactory *factory,
                           const char             *hostname,
@@ -2074,6 +2106,11 @@ gdm_xdmcp_display_create (GdmXdmcpDisplayFactory *factory,
                 display = NULL;
                 goto out;
         }
+
+        g_signal_connect (display,
+                          "notify::status",
+                          G_CALLBACK (on_display_status_changed),
+                          factory);
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
         gdm_display_store_add (store, display);
