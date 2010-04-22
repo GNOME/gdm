@@ -59,6 +59,7 @@ enum {
 static void     gdm_xdmcp_greeter_display_class_init    (GdmXdmcpGreeterDisplayClass *klass);
 static void     gdm_xdmcp_greeter_display_init          (GdmXdmcpGreeterDisplay      *xdmcp_greeter_display);
 static void     gdm_xdmcp_greeter_display_finalize      (GObject                     *object);
+static gboolean gdm_xdmcp_greeter_display_finish (GdmDisplay *display);
 
 G_DEFINE_TYPE (GdmXdmcpGreeterDisplay, gdm_xdmcp_greeter_display, GDM_TYPE_XDMCP_DISPLAY)
 
@@ -66,8 +67,10 @@ static void
 gdm_xdmcp_greeter_display_class_init (GdmXdmcpGreeterDisplayClass *klass)
 {
         GObjectClass    *object_class = G_OBJECT_CLASS (klass);
+        GdmDisplayClass *display_class = GDM_DISPLAY_CLASS (klass);
 
         object_class->finalize = gdm_xdmcp_greeter_display_finalize;
+        display_class->finish = gdm_xdmcp_greeter_display_finish;
 
         g_type_class_add_private (klass, sizeof (GdmXdmcpGreeterDisplayPrivate));
 
@@ -94,6 +97,18 @@ gdm_xdmcp_greeter_display_finalize (GObject *object)
         g_return_if_fail (xdmcp_greeter_display->priv != NULL);
 
         G_OBJECT_CLASS (gdm_xdmcp_greeter_display_parent_class)->finalize (object);
+}
+
+static gboolean
+gdm_xdmcp_greeter_display_finish (GdmDisplay *display)
+{
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        GDM_DISPLAY_CLASS (gdm_xdmcp_greeter_display_parent_class)->finish (display);
+
+        gdm_display_unmanage (display);
+
+        return TRUE;
 }
 
 GdmDisplay *
