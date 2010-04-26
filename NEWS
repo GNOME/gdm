@@ -1,4 +1,33 @@
 ===============
+Version 2.30.1 
+===============
+
+- Accessibility is now enabled by default for the GDM login screen.
+- When the face browser is disabled, the PAM conversation is started
+  immediately, so users do not need to click a button to start entering the
+  username and password.  Fixes bug #591082.
+- Add label-for and labelled-by a11y relations to the entry field in the
+  login GUI.  This makes the login GUI more accessible when using AT programs.
+  Fixes bug #613434.
+- Fixed bugs that were causing XDMCP to not show the greeter again after
+  logout.  Fixes bug #606724.
+- The default XDMCP PingIntervalSeconds was increased from 15 to
+  60 seconds.
+- The WINDOWPATH environment variable is now set for the user session.  Fixes
+  bug #609272.
+- Ensure Init script is called when using Automatic Login.  Fixes bug #614488.
+- Fix race condition with Timed Login.  Fixes bug #614062.
+- Drop xhost localuser:gdm and localuser:root when the user session starts.
+  Fixes bug #605350.
+- Removed the icon monitor from the GDM login GUI since it was not functional
+  and was causing problems with automounting user's $HOME directories.  Fixes
+  bug #609321.
+- Do not mark "%x" for translation.  Fixes bug #613306.
+- Remove duplicated strings for translation.  Fixes bug #609179.
+- Minor doc corrections.
+- Translation updates.
+
+===============
 Version 2.30.0 
 ===============
 
