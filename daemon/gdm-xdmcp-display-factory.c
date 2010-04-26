@@ -411,6 +411,14 @@ create_socket (struct addrinfo *ai)
                 return sock;
         }
 
+#if defined(ENABLE_IPV6) && defined(IPV6_V6ONLY)
+	if (ai->ai_family == AF_INET6) {
+		int zero = 0;
+		if (setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, &zero, sizeof(zero)) < 0)
+			g_warning("setsockopt(IPV6_V6ONLY): %s", g_strerror(errno));
+	}
+#endif
+
         if (bind (sock, ai->ai_addr, ai->ai_addrlen) < 0) {
                 g_warning ("bind: %s", g_strerror (errno));
                 close (sock);

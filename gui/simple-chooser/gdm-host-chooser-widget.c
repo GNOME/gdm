@@ -544,6 +544,13 @@ xdmcp_init (GdmHostChooserWidget *widget)
         widget->priv->socket_fd = socket (AF_INET6, SOCK_DGRAM, 0);
         if (widget->priv->socket_fd != -1) {
                 widget->priv->have_ipv6 = TRUE;
+#ifdef IPV6_V6ONLY
+		{
+			int zero = 0;
+			if (setsockopt(widget->priv->socket_fd, IPPROTO_IPV6, IPV6_V6ONLY, &zero, sizeof(zero)) < 0)
+				g_warning("setsockopt(IPV6_V6ONLY): %s", g_strerror(errno));
+		}
+#endif
         }
 #endif
         if (! widget->priv->have_ipv6) {
