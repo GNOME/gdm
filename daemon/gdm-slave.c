@@ -367,7 +367,7 @@ gdm_slave_set_busy_cursor (GdmSlave *slave)
         }
 }
 
-static gboolean
+static void
 gdm_slave_setup_xhost_auth (XHostAddress *host_entries, XServerInterpretedAddress *si_entries)
 {
         si_entries[0].type        = "localuser";
