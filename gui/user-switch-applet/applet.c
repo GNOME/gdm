@@ -886,7 +886,7 @@ on_quit_session_activate (GtkMenuItem   *item,
                                    NULL,
                                    &error);
         if (! res) {
-                g_warning (_("Can't logout: %s"), error->message);
+                g_warning (_("Can't log out: %s"), error->message);
                 g_error_free (error);
         }
 
@@ -1183,7 +1183,7 @@ create_sub_menu (GdmAppletData *adata)
                           G_CALLBACK (on_login_screen_activate), adata);
         /* Only show switch user if there are other users */
 
-        adata->quit_session_item = gtk_image_menu_item_new_with_label (_("Quit..."));
+        adata->quit_session_item = gtk_image_menu_item_new_with_label (_("Quit…"));
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->quit_session_item),
                                        gtk_image_new ());
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),

@@ -185,7 +185,7 @@ gdm_remote_login_window_connect (GdmRemoteLoginWindow *login_window,
         gboolean res;
         char    *title;
 
-        title = g_strdup_printf (_("Remote Login (Connecting to %s...)"), hostname);
+        title = g_strdup_printf (_("Remote Login (Connecting to %s…)"), hostname);
 
         gtk_window_set_title (GTK_WINDOW (login_window), title);
 

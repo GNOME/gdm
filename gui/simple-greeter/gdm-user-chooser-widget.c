@@ -163,7 +163,7 @@ add_user_other (GdmUserChooserWidget *widget)
                                       * manually instead of choosing from
                                       * a list.
                                       */
-                                     C_("user", "Other..."),
+                                     C_("user", "Other…"),
                                      _("Choose a different account"),
                                      0,
                                      FALSE,
@@ -177,7 +177,7 @@ add_user_guest (GdmUserChooserWidget *widget)
                                      GDM_USER_CHOOSER_USER_GUEST,
                                      widget->priv->stock_person_pixbuf,
                                      _("Guest"),
-                                     _("Login as a temporary guest"),
+                                     _("Log in as a temporary guest"),
                                      0,
                                      FALSE,
                                      TRUE);
@@ -191,7 +191,7 @@ add_user_auto (GdmUserChooserWidget *widget)
                                      GDM_USER_CHOOSER_USER_AUTO,
                                      NULL,
                                      _("Automatic Login"),
-                                     _("Automatically login to the system after selecting options"),
+                                     _("Automatically log into the system after selecting options"),
                                      0,
                                      FALSE,
                                      TRUE);

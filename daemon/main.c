@@ -234,7 +234,7 @@ write_pid (void)
         errno = 0;
         pf = open (GDM_PID_FILE, O_WRONLY|O_CREAT|O_TRUNC|O_EXCL, 0644);
         if (pf < 0) {
-                g_warning (_("Cannot write PID file %s: possibly out of diskspace: %s"),
+                g_warning (_("Cannot write PID file %s: possibly out of disk space: %s"),
                            GDM_PID_FILE,
                            g_strerror (errno));
 
@@ -247,7 +247,7 @@ write_pid (void)
         close (pf);
 
         if (written < 0) {
-                g_warning (_("Cannot write PID file %s: possibly out of diskspace: %s"),
+                g_warning (_("Cannot write PID file %s: possibly out of disk space: %s"),
                            GDM_PID_FILE,
                            g_strerror (errno));
                 return;
@@ -531,7 +531,7 @@ main (int    argc,
         static gboolean     fatal_warnings   = FALSE;
         static GOptionEntry entries []   = {
                 { "fatal-warnings", 0, 0, G_OPTION_ARG_NONE, &fatal_warnings, N_("Make all warnings fatal"), NULL },
-                { "timed-exit", 0, 0, G_OPTION_ARG_NONE, &do_timed_exit, N_("Exit after a time - for debugging"), NULL },
+                { "timed-exit", 0, 0, G_OPTION_ARG_NONE, &do_timed_exit, N_("Exit after a time (for debugging)"), NULL },
                 { "version", 0, 0, G_OPTION_ARG_NONE, &print_version, N_("Print GDM version"), NULL },
 
                 { NULL }

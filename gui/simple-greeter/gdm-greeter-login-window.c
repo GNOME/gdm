@@ -281,7 +281,7 @@ static gboolean
 timed_login_timer (GdmGreeterLoginWindow *login_window)
 {
         set_sensitive (login_window, FALSE);
-        set_message (login_window, _("Automatically logging in..."));
+        set_message (login_window, _("Automatically logging in…"));
 
         g_debug ("GdmGreeterLoginWindow: timer expired");
         _gdm_greeter_login_window_set_interactive (login_window, TRUE);
@@ -585,7 +585,7 @@ static void
 do_cancel (GdmGreeterLoginWindow *login_window)
 {
         /* need to wait for response from backend */
-        set_message (login_window, _("Cancelling..."));
+        set_message (login_window, _("Cancelling…"));
         set_busy (login_window);
         set_sensitive (login_window, FALSE);
         g_signal_emit (login_window, signals[CANCELLED], 0);

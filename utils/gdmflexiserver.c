@@ -59,11 +59,11 @@ static char      **args_remaining   = NULL;
 /* Keep all config options for compatibility even if they are noops */
 GOptionEntry options [] = {
         { "command", 'c', 0, G_OPTION_ARG_STRING, &send_command, N_("Only the VERSION command is supported"), N_("COMMAND") },
-        { "xnest", 'n', 0, G_OPTION_ARG_NONE, &use_xnest, N_("Ignored - retained for compatibility"), NULL },
-        { "no-lock", 'l', 0, G_OPTION_ARG_NONE, &no_lock, N_("Ignored - retained for compatibility"), NULL },
+        { "xnest", 'n', 0, G_OPTION_ARG_NONE, &use_xnest, N_("Ignored — retained for compatibility"), NULL },
+        { "no-lock", 'l', 0, G_OPTION_ARG_NONE, &no_lock, N_("Ignored — retained for compatibility"), NULL },
         { "debug", 'd', 0, G_OPTION_ARG_NONE, &debug_in, N_("Debugging output"), NULL },
-        { "authenticate", 'a', 0, G_OPTION_ARG_NONE, &authenticate, N_("Ignored - retained for compatibility"), NULL },
-        { "startnew", 's', 0, G_OPTION_ARG_NONE, &startnew, N_("Ignored - retained for compatibility"), NULL },
+        { "authenticate", 'a', 0, G_OPTION_ARG_NONE, &authenticate, N_("Ignored — retained for compatibility"), NULL },
+        { "startnew", 's', 0, G_OPTION_ARG_NONE, &startnew, N_("Ignored — retained for compatibility"), NULL },
         { "monte-carlo-pi", 0, 0, G_OPTION_ARG_NONE, &monte_carlo_pi, NULL, NULL },
         { "version", 0, 0, G_OPTION_ARG_NONE, &show_version, N_("Version of this application"), NULL },
         { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args_remaining, NULL, NULL },

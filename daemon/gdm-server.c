@@ -428,7 +428,7 @@ server_child_setup (GdmServer *server)
                 VE_IGNORE_EINTR (dup2 (logfd, 2));
                 close (logfd);
         } else {
-                g_warning (_("%s: Could not open logfile for display %s!"),
+                g_warning (_("%s: Could not open log file for display %s!"),
                            "gdm_server_spawn",
                            server->priv->display_name);
         }

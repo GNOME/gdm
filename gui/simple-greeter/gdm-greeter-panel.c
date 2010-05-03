@@ -921,7 +921,7 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
                 panel->priv->shutdown_button = gtk_toggle_button_new ();
 
                 gtk_widget_set_tooltip_text (panel->priv->shutdown_button,
-                                             _("Shutdown Options..."));
+                                             _("Shutdown Options…"));
                 gtk_button_set_relief (GTK_BUTTON (panel->priv->shutdown_button),
                                        GTK_RELIEF_NONE);
 

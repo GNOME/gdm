@@ -1295,7 +1295,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                             _("error initiating conversation with authentication system - %s"),
+                             _("error initiating conversation with authentication system: %s"),
                              error_code == PAM_ABORT? _("general failure") :
                              error_code == PAM_BUF_ERR? _("out of memory") :
                              error_code == PAM_SYSTEM_ERR? _("application programmer error") :
@@ -1312,7 +1312,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                         g_set_error (error,
                                      GDM_SESSION_WORKER_ERROR,
                                      GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                                     _("error informing authentication system of preferred username prompt - %s"),
+                                     _("error informing authentication system of preferred username prompt: %s"),
                                      pam_strerror (worker->priv->pam_handle, error_code));
                         goto out;
                 }
@@ -1326,7 +1326,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                         g_set_error (error,
                                      GDM_SESSION_WORKER_ERROR,
                                      GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                                     _("error informing authentication system of user's hostname - %s"),
+                                     _("error informing authentication system of user's hostname: %s"),
                                      pam_strerror (worker->priv->pam_handle, error_code));
                         goto out;
                 }
@@ -1341,7 +1341,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                             _("error informing authentication system of user's console - %s"),
+                             _("error informing authentication system of user's console: %s"),
                              pam_strerror (worker->priv->pam_handle, error_code));
                 goto out;
         }
@@ -1354,7 +1354,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                             _("error informing authentication system of display string - %s"),
+                             _("error informing authentication system of display string: %s"),
                              pam_strerror (worker->priv->pam_handle, error_code));
                 goto out;
         }
@@ -1369,7 +1369,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                 g_set_error (error,
                              GDM_SESSION_WORKER_ERROR,
                              GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                             _("error informing authentication system of display xauth credentials - %s"),
+                             _("error informing authentication system of display xauth credentials: %s"),
                              pam_strerror (worker->priv->pam_handle, error_code));
                 goto out;
         }
@@ -2015,12 +2015,12 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
                 g_free (cachedirname);
 
                 if (setuid (worker->priv->uid) < 0) {
-                        g_debug ("GdmSessionWorker: could not reset uid - %s", g_strerror (errno));
+                        g_debug ("GdmSessionWorker: could not reset uid: %s", g_strerror (errno));
                         _exit (1);
                 }
 
                 if (setsid () < 0) {
-                        g_debug ("GdmSessionWorker: could not set pid '%u' as leader of new session and process group - %s",
+                        g_debug ("GdmSessionWorker: could not set pid '%u' as leader of new session and process group: %s",
                                  (guint) getpid (), g_strerror (errno));
                         _exit (2);
                 }
@@ -2052,7 +2052,7 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
                                      environment,
                                      TRUE);
 
-                g_debug ("GdmSessionWorker: child '%s' could not be started - %s",
+                g_debug ("GdmSessionWorker: child '%s' could not be started: %s",
                          worker->priv->arguments[0],
                          g_strerror (errno));
                 g_strfreev (environment);

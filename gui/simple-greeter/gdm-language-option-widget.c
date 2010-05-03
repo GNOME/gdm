@@ -240,7 +240,7 @@ gdm_language_option_widget_init (GdmLanguageOptionWidget *widget)
                                     /* translators: This brings up a dialog
                                      * with a list of languages to choose from
                                      */
-                                    C_("language", "Other..."),
+                                    C_("language", "Other…"),
                                     _("Choose a language from the "
                                       "full list of available languages."),
                                     GDM_OPTION_WIDGET_POSITION_BOTTOM);

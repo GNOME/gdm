@@ -232,7 +232,7 @@ gdm_layout_option_widget_init (GdmLayoutOptionWidget *widget)
                                     /* translators: This brings up a dialog of
                                      * available keyboard layouts
                                      */
-                                    C_("keyboard", "Other..."),
+                                    C_("keyboard", "Other…"),
                                     _("Choose a keyboard layout from the "
                                       "full list of available layouts."),
                                     GDM_OPTION_WIDGET_POSITION_BOTTOM);
