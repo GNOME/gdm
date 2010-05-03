@@ -86,11 +86,11 @@ gdm_language_chooser_dialog_size_request (GtkWidget      *widget,
         screen_w = gdk_screen_get_width (gtk_widget_get_screen (widget));
         screen_h = gdk_screen_get_height (gtk_widget_get_screen (widget));
 
-        gtk_widget_get_child_requisition (GTK_BIN (widget)->child, &child_requisition);
+        gtk_widget_get_child_requisition (gtk_bin_get_child (GTK_BIN (widget)), &child_requisition);
         *requisition = child_requisition;
 
-        requisition->width += 2 * GTK_CONTAINER (widget)->border_width;
-        requisition->height += 2 * GTK_CONTAINER (widget)->border_width;
+        requisition->width += 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
+        requisition->height += 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
 
         requisition->width = MIN (requisition->width, .50 * screen_w);
         requisition->height = MIN (requisition->height, .80 * screen_h);
@@ -157,7 +157,7 @@ gdm_language_chooser_dialog_init (GdmLanguageChooserDialog *dialog)
 
         gdm_language_chooser_widget_set_current_language_name (GDM_LANGUAGE_CHOOSER_WIDGET (dialog->priv->chooser_widget),
                                                                setlocale (LC_MESSAGES, NULL));
-        gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), dialog->priv->chooser_widget);
+        gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), dialog->priv->chooser_widget);
 
         g_signal_connect_swapped (G_OBJECT (dialog->priv->chooser_widget),
                                   "activated", G_CALLBACK (queue_response),

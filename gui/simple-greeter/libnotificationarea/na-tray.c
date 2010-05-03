@@ -343,7 +343,7 @@ icon_tip_show_next (IconTip *icontip)
 
   na_fixed_tip_set_markup (icontip->fixedtip, buffer->text);
 
-  if (!GTK_WIDGET_MAPPED (icontip->fixedtip))
+  if (!gtk_widget_get_mapped (icontip->fixedtip))
     gtk_widget_show (icontip->fixedtip);
 
   icontip->id = buffer->id;
@@ -515,9 +515,12 @@ na_tray_expose_icon (GtkWidget *widget,
 
   if (na_tray_child_has_alpha (NA_TRAY_CHILD (widget)))
     {
-      gdk_cairo_set_source_pixmap (cr, widget->window,
-				   widget->allocation.x,
-				   widget->allocation.y);
+      GtkAllocation widget_allocation;
+      gtk_widget_get_allocation (widget, &widget_allocation);
+
+      gdk_cairo_set_source_pixmap (cr, gtk_widget_get_window (widget),
+				   widget_allocation.x,
+				   widget_allocation.y);
       cairo_paint (cr);
     }
 }
@@ -526,7 +529,7 @@ static void
 na_tray_expose_box (GtkWidget      *box,
 		    GdkEventExpose *event)
 {
-  cairo_t *cr = gdk_cairo_create (box->window);
+  cairo_t *cr = gdk_cairo_create (gtk_widget_get_window (box));
 
   gdk_cairo_region (cr, event->region);
   cairo_clip (cr);

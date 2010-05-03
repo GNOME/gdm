@@ -220,20 +220,20 @@ gdm_greeter_panel_move_resize_window (GdmGreeterPanel *panel,
 
         widget = GTK_WIDGET (panel);
 
-        g_assert (GTK_WIDGET_REALIZED (widget));
+        g_assert (gtk_widget_get_realized (widget));
 
         if (move && resize) {
-                gdk_window_move_resize (widget->window,
+                gdk_window_move_resize (gtk_widget_get_window (widget),
                                         panel->priv->geometry.x,
                                         panel->priv->geometry.y,
                                         panel->priv->geometry.width,
                                         panel->priv->geometry.height);
         } else if (move) {
-                gdk_window_move (widget->window,
+                gdk_window_move (gtk_widget_get_window (widget),
                                  panel->priv->geometry.x,
                                  panel->priv->geometry.y);
         } else if (resize) {
-                gdk_window_resize (widget->window,
+                gdk_window_resize (gtk_widget_get_window (widget),
                                    panel->priv->geometry.width,
                                    panel->priv->geometry.height);
         }
@@ -309,7 +309,7 @@ set_struts (GdmGreeterPanel *panel,
 
         gdk_error_trap_push ();
 
-        gdk_property_change (GTK_WIDGET (panel)->window,
+        gdk_property_change (gtk_widget_get_window (GTK_WIDGET (panel)),
                              gdk_atom_intern ("_NET_WM_STRUT_PARTIAL", FALSE),
                              gdk_atom_intern ("CARDINAL", FALSE),
                              32,
@@ -317,7 +317,7 @@ set_struts (GdmGreeterPanel *panel,
                              (guchar *) &data,
                              12);
 
-        gdk_property_change (GTK_WIDGET (panel)->window,
+        gdk_property_change (gtk_widget_get_window (GTK_WIDGET (panel)),
                              gdk_atom_intern ("_NET_WM_STRUT", FALSE),
                              gdk_atom_intern ("CARDINAL", FALSE),
                              32,
@@ -333,7 +333,7 @@ update_struts (GdmGreeterPanel *panel)
 {
         GdkRectangle geometry;
 
-        gdk_screen_get_monitor_geometry (GTK_WINDOW (panel)->screen,
+        gdk_screen_get_monitor_geometry (gtk_window_get_screen (GTK_WINDOW (panel)),
                                          panel->priv->monitor,
                                          &geometry);
 
@@ -351,12 +351,12 @@ update_geometry (GdmGreeterPanel *panel,
 {
         GdkRectangle geometry;
 
-        gdk_screen_get_monitor_geometry (GTK_WINDOW (panel)->screen,
+        gdk_screen_get_monitor_geometry (gtk_window_get_screen (GTK_WINDOW (panel)),
                                          panel->priv->monitor,
                                          &geometry);
 
         panel->priv->geometry.width = geometry.width;
-        panel->priv->geometry.height = requisition->height + 2 * GTK_CONTAINER (panel)->border_width;
+        panel->priv->geometry.height = requisition->height + 2 * gtk_container_get_border_width (GTK_CONTAINER (panel));
 
         panel->priv->geometry.x = geometry.x;
         panel->priv->geometry.y = geometry.y + geometry.height - panel->priv->geometry.height + (1.0 - panel->priv->progress) * panel->priv->geometry.height;
@@ -385,8 +385,8 @@ gdm_greeter_panel_real_size_request (GtkWidget      *widget,
         panel = GDM_GREETER_PANEL (widget);
         bin = GTK_BIN (widget);
 
-        if (bin->child && GTK_WIDGET_VISIBLE (bin->child)) {
-                gtk_widget_size_request (bin->child, requisition);
+        if (gtk_bin_get_child (bin) && gtk_widget_get_visible (gtk_bin_get_child (bin))) {
+                gtk_widget_size_request (gtk_bin_get_child (bin), requisition);
         }
 
         old_geometry = panel->priv->geometry;
@@ -396,7 +396,7 @@ gdm_greeter_panel_real_size_request (GtkWidget      *widget,
         requisition->width  = panel->priv->geometry.width;
         requisition->height = panel->priv->geometry.height;
 
-        if (! GTK_WIDGET_REALIZED (widget)) {
+        if (! gtk_widget_get_realized (widget)) {
                 return;
         }
 
@@ -792,17 +792,18 @@ position_shutdown_menu (GtkMenu         *menu,
         GtkRequisition menu_requisition;
         GdkScreen *screen;
         int monitor;
-
+        GtkAllocation shutdown_button_allocation;
+        gtk_widget_get_allocation (panel->priv->shutdown_button, &shutdown_button_allocation);
         *push_in = TRUE;
 
         screen = gtk_widget_get_screen (GTK_WIDGET (panel));
-        monitor = gdk_screen_get_monitor_at_window (screen, GTK_WIDGET (panel)->window);
+        monitor = gdk_screen_get_monitor_at_window (screen, gtk_widget_get_window (GTK_WIDGET (panel)));
         gtk_menu_set_monitor (menu, monitor);
 
         gtk_widget_translate_coordinates (GTK_WIDGET (panel->priv->shutdown_button),
                                           GTK_WIDGET (panel),
-                                          panel->priv->shutdown_button->allocation.x,
-                                          panel->priv->shutdown_button->allocation.y,
+                                          shutdown_button_allocation.x,
+                                          shutdown_button_allocation.y,
                                           x, y);
 
         gtk_window_get_position (GTK_WINDOW (panel), NULL, y);
@@ -842,7 +843,7 @@ gdm_greeter_panel_init (GdmGreeterPanel *panel)
 
         panel->priv = GDM_GREETER_PANEL_GET_PRIVATE (panel);
 
-        GTK_WIDGET_SET_FLAGS (GTK_WIDGET (panel), GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus (GTK_WIDGET (panel), TRUE);
 
         panel->priv->geometry.x      = -1;
         panel->priv->geometry.y      = -1;

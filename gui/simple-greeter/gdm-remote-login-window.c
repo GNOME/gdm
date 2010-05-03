@@ -100,7 +100,7 @@ start_xephyr (GdmRemoteLoginWindow *login_window)
 
         command = g_strdup_printf ("Xephyr -query %s -parent 0x%x -br -once %s",
                                    login_window->priv->hostname,
-                                   (unsigned int)GDK_WINDOW_XID (GTK_WIDGET (login_window)->window),
+                                   (unsigned int)GDK_WINDOW_XID (gtk_widget_get_window (GTK_WIDGET (login_window))),
                                    login_window->priv->display);
         g_debug ("GdmRemoteLoginWindow: Running: %s", command);
 

@@ -22,6 +22,7 @@
 
 #include <string.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <sys/types.h>
 
 #include <glib/gi18n.h>
@@ -329,7 +330,7 @@ applet_change_background_cb (PanelApplet               *applet,
                 gtk_widget_modify_bg (adata->menubar, GTK_STATE_NORMAL, color);
                 break;
         case PANEL_PIXMAP_BACKGROUND:
-                style = gtk_style_copy (adata->menubar->style);
+                style = gtk_style_copy (gtk_widget_get_style (adata->menubar));
                 if (style->bg_pixmap[GTK_STATE_NORMAL]) {
                         g_object_unref (style->bg_pixmap[GTK_STATE_NORMAL]);
                 }
@@ -393,7 +394,7 @@ set_item_text_angle_and_alignment (GtkWidget *item,
 {
         GtkWidget *label;
 
-        label = GTK_BIN (item)->child;
+        label = gtk_bin_get_child (GTK_BIN (item));
 
         gtk_label_set_angle (GTK_LABEL (label), text_angle);
 
@@ -436,11 +437,11 @@ applet_size_allocate_cb (GtkWidget     *widget,
         case PANEL_APPLET_ORIENT_UP:
         case PANEL_APPLET_ORIENT_DOWN:
                 gtk_widget_set_size_request (top_item, -1, allocation->height);
-                pixel_size = allocation->height - top_item->style->ythickness * 2;
+                pixel_size = allocation->height - gtk_widget_get_style (top_item)->ythickness * 2;
                 break;
         case PANEL_APPLET_ORIENT_LEFT:
                 gtk_widget_set_size_request (top_item, allocation->width, -1);
-                pixel_size = allocation->width - top_item->style->xthickness * 2;
+                pixel_size = allocation->width - gtk_widget_get_style (top_item)->xthickness * 2;
                 pack_direction = GTK_PACK_DIRECTION_TTB;
                 text_angle = 270.0;
                 text_xalign = 0.5;
@@ -448,7 +449,7 @@ applet_size_allocate_cb (GtkWidget     *widget,
                 break;
         case PANEL_APPLET_ORIENT_RIGHT:
                 gtk_widget_set_size_request (top_item, allocation->width, -1);
-                pixel_size = allocation->width - top_item->style->xthickness * 2;
+                pixel_size = allocation->width - gtk_widget_get_style (top_item)->xthickness * 2;
                 pack_direction = GTK_PACK_DIRECTION_BTT;
                 text_angle = 90.0;
                 text_xalign = 0.5;
@@ -512,8 +513,10 @@ menubar_expose_event_cb (GtkWidget      *widget,
                          GdkEventExpose *event,
                          GdmAppletData  *adata)
 {
-        if (GTK_WIDGET_HAS_FOCUS (adata->applet))
-                gtk_paint_focus (widget->style, widget->window, GTK_WIDGET_STATE (widget),
+        if (gtk_widget_has_focus (GTK_WIDGET (adata->applet)))
+                gtk_paint_focus (gtk_widget_get_style (widget),
+                                 gtk_widget_get_window (widget),
+                                 gtk_widget_get_state (widget),
                                  NULL, widget, "menu-applet", 0, 0, -1, -1);
 
         return FALSE;
@@ -1309,7 +1312,7 @@ setup_current_user (GdmAppletData *adata)
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->menuitem),
                                        gtk_image_new ());
 #endif
-        label = GTK_BIN (adata->menuitem)->child;
+        label = gtk_bin_get_child (GTK_BIN (adata->menuitem));
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menubar), adata->menuitem);
         gtk_widget_show (adata->menuitem);
 

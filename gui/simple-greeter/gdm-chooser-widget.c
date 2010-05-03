@@ -699,6 +699,9 @@ get_normalized_position_of_row_at_path (GdmChooserWidget *widget,
 {
         GdkRectangle area_of_row_at_path;
         GdkRectangle area_of_visible_rows;
+        GtkAllocation items_view_allocation;
+
+        gtk_widget_get_allocation (widget->priv->items_view, &items_view_allocation);
 
         gtk_tree_view_get_background_area (GTK_TREE_VIEW (widget->priv->items_view),
                                            path, NULL, &area_of_row_at_path);
@@ -708,7 +711,7 @@ get_normalized_position_of_row_at_path (GdmChooserWidget *widget,
                                                      area_of_visible_rows.y,
                                                      &area_of_visible_rows.x,
                                                      &area_of_visible_rows.y);
-        return CLAMP (((double) area_of_row_at_path.y) / widget->priv->items_view->allocation.height, 0.0, 1.0);
+        return CLAMP (((double) area_of_row_at_path.y) / items_view_allocation.height, 0.0, 1.0);
 }
 
 static void
@@ -787,12 +790,12 @@ _grab_focus (GtkWidget *widget)
 
         foc_widget = GDM_CHOOSER_WIDGET (widget)->priv->items_view;
         g_debug ("GdmChooserWidget: grabbing focus");
-        if (! GTK_WIDGET_REALIZED (foc_widget)) {
+        if (! gtk_widget_get_realized (foc_widget)) {
                 g_debug ("GdmChooserWidget: not grabbing focus - not realized");
                 return;
         }
 
-        if (GTK_WIDGET_HAS_FOCUS (foc_widget)) {
+        if (gtk_widget_has_focus (foc_widget)) {
                 g_debug ("GdmChooserWidget: not grabbing focus - already has it");
                 return;
         }
@@ -848,16 +851,22 @@ on_grow_animation_step (GdmScrollableWidget *scrollable_widget,
         number_of_visible_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (widget->priv->model_sorter), NULL);
         number_of_on_screen_rows = get_number_of_on_screen_rows (widget);
 
-        *new_height = GTK_BIN (scrollable_widget)->child->requisition.height;
+        GtkRequisition scrollable_widget_req;
+        gtk_widget_get_requisition (gtk_bin_get_child (GTK_BIN (scrollable_widget)), &scrollable_widget_req);
+        *new_height = scrollable_widget_req.height;
 }
 
 static void
 start_grow_animation (GdmChooserWidget *widget)
 {
+        GtkRequisition scrollable_widget_req;
+        gtk_widget_get_requisition (gtk_bin_get_child (GTK_BIN (widget->priv->scrollable_widget)),
+                                    &scrollable_widget_req);
+
         set_inactive_items_visible (widget, TRUE);
 
         gdm_scrollable_widget_slide_to_height (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget),
-                                               GTK_BIN (widget->priv->scrollable_widget)->child->requisition.height,
+                                               scrollable_widget_req.height,
                                                (GdmScrollableWidgetSlideStepFunc)
                                                on_grow_animation_step, widget,
                                                (GdmScrollableWidgetSlideDoneFunc)
@@ -893,7 +902,7 @@ gdm_chooser_widget_grow (GdmChooserWidget *widget)
 
         widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWING;
 
-        if (GTK_WIDGET_VISIBLE (widget)) {
+        if (gtk_widget_get_visible (GTK_WIDGET (widget))) {
                 start_grow_animation (widget);
         } else {
                 skip_resize_animation (widget);
@@ -956,7 +965,7 @@ gdm_chooser_widget_shrink (GdmChooserWidget *widget)
 
         widget->priv->state = GDM_CHOOSER_WIDGET_STATE_SHRINKING;
 
-        if (GTK_WIDGET_VISIBLE (widget)) {
+        if (gtk_widget_get_visible (GTK_WIDGET (widget))) {
                 start_shrink_animation (widget);
         } else {
                 skip_resize_animation (widget);
@@ -1125,7 +1134,7 @@ gdm_chooser_widget_get_property (GObject        *object,
                 g_value_set_string (value, self->priv->active_text);
                 break;
         case PROP_LIST_VISIBLE:
-                g_value_set_boolean (value, GTK_WIDGET_VISIBLE (self->priv->scrollable_widget));
+                g_value_set_boolean (value, gtk_widget_get_visible (self->priv->scrollable_widget));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1207,7 +1216,7 @@ gdm_chooser_widget_focus (GtkWidget        *widget,
          *    that focus.
          *    2) if it doesn't already have focus, then grab it
          */
-        if (GTK_CONTAINER (widget)->focus_child != NULL) {
+        if (gtk_container_get_focus_child (GTK_CONTAINER (widget)) != NULL) {
                 g_debug ("GdmChooserWidget: not focusing - focus child not null");
                 return FALSE;
         }
@@ -1775,7 +1784,7 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
          * works on us.  We then override grab_focus requests to
          * be redirected our internal tree view
          */
-        GTK_WIDGET_SET_FLAGS (widget, GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus (GTK_WIDGET (widget), TRUE);
 
         gtk_alignment_set_padding (GTK_ALIGNMENT (widget), 0, 0, 0, 0);
 

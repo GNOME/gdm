@@ -167,7 +167,7 @@ gdm_user_chooser_dialog_init (GdmUserChooserDialog *dialog)
 
         dialog->priv->chooser_widget = gdm_user_chooser_widget_new ();
 
-        gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), dialog->priv->chooser_widget);
+        gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), dialog->priv->chooser_widget);
 
         gtk_dialog_add_buttons (GTK_DIALOG (dialog),
                                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,

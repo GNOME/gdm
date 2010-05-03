@@ -164,14 +164,14 @@ set_busy (GdmGreeterLoginWindow *login_window)
         GdkCursor *cursor;
 
         cursor = gdk_cursor_new (GDK_WATCH);
-        gdk_window_set_cursor (GTK_WIDGET (login_window)->window, cursor);
+        gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (login_window)), cursor);
         gdk_cursor_unref (cursor);
 }
 
 static void
 set_ready (GdmGreeterLoginWindow *login_window)
 {
-        gdk_window_set_cursor (GTK_WIDGET (login_window)->window, NULL);
+        gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (login_window)), NULL);
 }
 
 static void
@@ -196,11 +196,11 @@ set_focus (GdmGreeterLoginWindow *login_window)
 
         entry = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-entry"));
 
-        gdk_window_focus (GTK_WIDGET (login_window)->window, GDK_CURRENT_TIME);
+        gdk_window_focus (gtk_widget_get_window (GTK_WIDGET (login_window)), GDK_CURRENT_TIME);
 
-        if (GTK_WIDGET_REALIZED (entry) && ! GTK_WIDGET_HAS_FOCUS (entry)) {
+        if (gtk_widget_get_realized (entry) && ! gtk_widget_has_focus (entry)) {
                 gtk_widget_grab_focus (entry);
-        } else if (GTK_WIDGET_REALIZED (login_window->priv->user_chooser) && ! GTK_WIDGET_HAS_FOCUS (login_window->priv->user_chooser)) {
+        } else if (gtk_widget_get_realized (login_window->priv->user_chooser) && ! gtk_widget_has_focus (login_window->priv->user_chooser)) {
                 gtk_widget_grab_focus (login_window->priv->user_chooser);
         }
 }
@@ -645,7 +645,7 @@ gdm_greeter_login_window_problem (GdmGreeterLoginWindow *login_window,
         g_debug ("GdmGreeterLoginWindow: problem: %s", text);
 
         set_message (GDM_GREETER_LOGIN_WINDOW (login_window), text);
-        gdk_window_beep (GTK_WIDGET (login_window)->window);
+        gdk_window_beep (gtk_widget_get_window (GTK_WIDGET (login_window)));
 
         return TRUE;
 }
@@ -1232,19 +1232,20 @@ gdm_greeter_login_window_size_request (GtkWidget      *widget,
                 GTK_WIDGET_CLASS (gdm_greeter_login_window_parent_class)->size_request (widget, requisition);
         }
 
-        if (!GTK_WIDGET_REALIZED (widget)) {
+        if (!gtk_widget_get_realized (widget)) {
                 return;
         }
 
         screen = gtk_widget_get_screen (widget);
-        monitor = gdk_screen_get_monitor_at_window (screen, widget->window);
+        monitor = gdk_screen_get_monitor_at_window (screen, gtk_widget_get_window (widget));
         gdk_screen_get_monitor_geometry (screen, monitor, &area);
 
-        gtk_widget_get_child_requisition (GTK_BIN (widget)->child, &child_requisition);
+        gtk_widget_get_child_requisition (gtk_bin_get_child (GTK_BIN (widget)), &child_requisition);
         *requisition = child_requisition;
 
-        requisition->width += 2 * GTK_CONTAINER (widget)->border_width;
-        requisition->height += 2 * GTK_CONTAINER (widget)->border_width;
+        guint border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
+        requisition->width += 2 * border_width;
+        requisition->height += 2 * border_width;
 
         /* Make width be at least 33% screen width
          * and height be at most 80% of screen height
@@ -1254,7 +1255,10 @@ gdm_greeter_login_window_size_request (GtkWidget      *widget,
 
        /* Don't ever shrink window width
         */
-       requisition->width = MAX (requisition->width, widget->allocation.width);
+        GtkAllocation widget_allocation;
+        gtk_widget_get_allocation (widget, &widget_allocation);
+
+        requisition->width = MAX (requisition->width, widget_allocation.width);
 }
 
 static void

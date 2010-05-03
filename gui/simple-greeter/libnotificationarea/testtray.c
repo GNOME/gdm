@@ -53,7 +53,7 @@ update_child_count (TrayData *data)
   guint n_children = 0;
   char text[64];
 
-  if (!GTK_WIDGET_REALIZED (data->window))
+  if (!gtk_widget_get_realized (GTK_WIDGET (data)))
     return;
 
   gtk_container_foreach (GTK_CONTAINER (data->box), (GtkCallback) do_add, &n_children);
@@ -177,7 +177,7 @@ create_tray_on_screen (GdkScreen *screen,
   data->tray = na_tray_new_for_screen (screen, GTK_ORIENTATION_HORIZONTAL);
   gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (data->tray), TRUE, TRUE, 0);
 
-  data->box = GTK_BIN (GTK_BIN (data->tray)->child)->child;
+  data->box = gtk_bin_get_child (GTK_BIN (gtk_bin_get_child (GTK_BIN (data->tray))));
   g_signal_connect_after (data->box, "add", G_CALLBACK (tray_added_cb), data);
   g_signal_connect_after (data->box, "remove", G_CALLBACK (tray_removed_cb), data);
 

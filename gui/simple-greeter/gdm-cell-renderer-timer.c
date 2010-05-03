@@ -107,12 +107,15 @@ gdm_cell_renderer_timer_get_size (GtkCellRenderer *cell,
                 }
         }
 
+	gfloat xpad, ypad;
+	gtk_cell_renderer_get_alignment (cell, &xpad, &ypad);
+
         if (width != NULL) {
-                *width = cell->xpad * 2 + 24;
+                *width = xpad * 2 + 24;
         }
 
         if (height != NULL) {
-                *height = cell->ypad * 2 + 24;
+                *height = ypad * 2 + 24;
         }
 }
 
@@ -201,13 +204,16 @@ gdm_cell_renderer_timer_render (GtkCellRenderer      *cell,
                 cairo_clip (context);
         }
 
+	gfloat xpad, ypad;
+	gtk_cell_renderer_get_alignment (cell, &xpad, &ypad);
+
         cairo_translate (context,
-                         cell_area->x + cell->xpad,
-                         cell_area->y + cell->ypad);
+                         cell_area->x + xpad,
+                         cell_area->y + ypad);
 
         widget_state = GTK_STATE_NORMAL;
         if (renderer_state & GTK_CELL_RENDERER_SELECTED) {
-                if (GTK_WIDGET_HAS_FOCUS (widget)) {
+                if (gtk_widget_has_focus (widget)) {
                         widget_state = GTK_STATE_SELECTED;
                 } else {
                         widget_state = GTK_STATE_ACTIVE;
@@ -219,8 +225,8 @@ gdm_cell_renderer_timer_render (GtkCellRenderer      *cell,
         }
 
         draw_timer (renderer, context,
-                    &widget->style->text_aa[widget_state],
-                    &widget->style->base[widget_state],
+                    &gtk_widget_get_style (widget)->text_aa[widget_state],
+                    &gtk_widget_get_style (widget)->base[widget_state],
                     cell_area->width, cell_area->height);
 
         cairo_destroy (context);

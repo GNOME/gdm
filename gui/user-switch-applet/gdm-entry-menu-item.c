@@ -110,14 +110,10 @@ send_focus_change (GtkWidget *widget,
 
         g_object_ref (widget);
 
-        if (in) {
-                GTK_WIDGET_SET_FLAGS (widget, GTK_HAS_FOCUS);
-        } else {
-                GTK_WIDGET_UNSET_FLAGS (widget, GTK_HAS_FOCUS);
-        }
+        gtk_widget_set_can_focus (widget, in);
 
         fevent->focus_change.type = GDK_FOCUS_CHANGE;
-        fevent->focus_change.window = g_object_ref (widget->window);
+        fevent->focus_change.window = g_object_ref (gtk_widget_get_window (widget));
         fevent->focus_change.in = in;
 
         gtk_widget_event (widget, fevent);
@@ -136,11 +132,11 @@ gdm_entry_menu_item_button_press (GtkWidget      *widget,
 
         entry = GDM_ENTRY_MENU_ITEM (widget)->entry;
 
-        if (entry->window != NULL) {
-                gdk_window_raise (entry->window);
+        if (gtk_widget_get_window (entry) != NULL) {
+                gdk_window_raise (gtk_widget_get_window (entry));
         }
 
-        if (!GTK_WIDGET_HAS_FOCUS (entry)) {
+        if (!gtk_widget_has_focus (entry)) {
                 gtk_widget_grab_focus (entry);
         }
 
@@ -201,8 +197,8 @@ static void
 on_entry_show (GtkWidget        *widget,
                GdmEntryMenuItem *item)
 {
-        if (widget->window != NULL) {
-                gdk_window_raise (widget->window);
+        if (gtk_widget_get_window (widget) != NULL) {
+                gdk_window_raise (gtk_widget_get_window (widget));
         }
         send_focus_change (widget, TRUE);
 }
@@ -215,7 +211,7 @@ on_text_buffer_changed (GtkTextBuffer    *buffer,
 
         len = gtk_text_buffer_get_char_count (buffer);
         if (len > TEXT_BUFFER_MAX_CHARS) {
-                gdk_window_beep (GTK_WIDGET (item)->window);
+                gdk_window_beep (gtk_widget_get_window (GTK_WIDGET (item)));
         }
 }
 
