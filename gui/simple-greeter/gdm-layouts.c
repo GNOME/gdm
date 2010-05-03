@@ -61,14 +61,6 @@ init_xkl (void)
         }
 }
 
-static char *
-xci_desc_to_utf8 (XklConfigItem * ci)
-{
-        char *sd = g_strstrip (ci->description);
-        return sd[0] == 0 ? g_strdup (ci->name) :
-                g_locale_to_utf8 (sd, -1, NULL, NULL, NULL);
-}
-
 static void
 add_variant (XklConfigRegistry   *config,
              const XklConfigItem *item,
@@ -121,7 +113,7 @@ gdm_get_layout_from_name (const char *name)
 
         g_snprintf (item->name, XKL_MAX_CI_NAME_LENGTH, "%s", id1);
         if (xkl_config_registry_find_layout (config_registry, item)) {
-                layout = xci_desc_to_utf8 (item);
+                layout = g_strdup(item->description);
         } else {
                 layout =  g_strdup_printf ("Layout %s", id1);
         }
@@ -129,7 +121,7 @@ gdm_get_layout_from_name (const char *name)
         if (id2 != NULL) {
                 g_snprintf (item->name, XKL_MAX_CI_NAME_LENGTH, "%s", id2);
                 if (xkl_config_registry_find_variant (config_registry, id1, item))
-                        variant = xci_desc_to_utf8 (item);
+                        variant = g_strdup(item->description);
                 else
                         variant = g_strdup_printf ("Variant %s", id2);
         } else {
