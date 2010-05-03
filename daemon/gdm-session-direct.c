@@ -650,11 +650,15 @@ get_fallback_session_name (void)
         const char  **search_dirs;
         int           i;
         char         *name;
+        GSequence    *sessions;
+        GSequenceIter *session;
 
         name = g_strdup ("gnome");
         if (get_session_command_for_name (name, NULL)) {
                 return name;
         }
+
+        sessions = g_sequence_new (g_free);
 
         search_dirs = get_system_session_dirs ();
         for (i = 0; search_dirs[i] != NULL; i++) {
@@ -679,17 +683,31 @@ get_fallback_session_name (void)
                         }
 
                         if (get_session_command_for_file (base_name, NULL)) {
-                                g_free (name);
 
-                                name = g_strndup (base_name,
-                                                  strlen (base_name) -
-                                                  strlen (".desktop"));
-                                break;
+                                g_sequence_insert_sorted (sessions, g_strdup (base_name), (GCompareDataFunc) g_strcmp0, NULL);
                         }
                 } while (base_name != NULL);
 
                 g_dir_close (dir);
         }
+
+        session = g_sequence_get_begin_iter (sessions);
+        do {
+               if (g_sequence_get (session)) {
+                       char *base_name;
+
+                       g_free (name);
+                       base_name = g_sequence_get (session);
+                       name = g_strndup (base_name,
+                                         strlen (base_name) -
+                                         strlen (".desktop"));
+
+                       break;
+               }
+               session = g_sequence_iter_next (session);
+        } while (!g_sequence_iter_is_end (session));
+
+        g_sequence_free (sessions);
 
         return name;
 }
