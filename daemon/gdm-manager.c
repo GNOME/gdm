@@ -294,7 +294,7 @@ gdm_manager_set_xdmcp_enabled (GdmManager *manager,
 
         if (manager->priv->xdmcp_enabled != enabled) {
                 manager->priv->xdmcp_enabled = enabled;
-
+#ifdef HAVE_LIBXDMCP
                 if (manager->priv->xdmcp_enabled) {
                         manager->priv->xdmcp_factory = gdm_xdmcp_display_factory_new (manager->priv->display_store);
                         if (manager->priv->started) {
@@ -308,6 +308,7 @@ gdm_manager_set_xdmcp_enabled (GdmManager *manager,
                         g_object_unref (manager->priv->xdmcp_factory);
                         manager->priv->xdmcp_factory = NULL;
                 }
+#endif
         }
 
 }
