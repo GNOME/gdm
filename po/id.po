@@ -1,4 +1,6 @@
-# Mudah2an membantu proses penerjemahan GNOME ;-)
+# Indonesian translation of gdm.
+# Copyright (C) 2004 THE gdm's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gdm package.
 # -=Dicky Wahyu Purnomo=- <dicky.wahyu@massaint.or.id>
 # Mohammad DAMT <mdamt@bisnisweb.com>, 2004.
 # ahmad riza h nst <rizahnst@eriagempita.co.id>, 2005.
@@ -8,16 +10,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&component=general\n"
-"POT-Creation-Date: 2010-04-01 06:49+0000\n"
-"PO-Revision-Date: 2010-04-02 19:33+0700\n"
+"POT-Creation-Date: 2010-05-06 07:30+0000\n"
+"PO-Revision-Date: 2010-05-07 12:46+0700\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
-"Language-Team: Indonesian <kontak@id.gnome.org>\n"
+"Language-Team: GNOME Indonesian Translation Team <gnome@i15n.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Indonesian\n"
 "X-Poedit-Country: Indonesia\n"
-"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../common/gdm-common.c:437
 #, c-format
@@ -26,21 +29,21 @@ msgstr "/dev/urandom bukan perangkat karakter"
 
 #: ../daemon/factory-slave-main.c:177
 #: ../daemon/product-slave-main.c:181
-#: ../daemon/simple-slave-main.c:183
+#: ../daemon/simple-slave-main.c:181
 #: ../daemon/xdmcp-chooser-slave-main.c:183
 msgid "Display ID"
 msgstr "ID Tampilan"
 
 #: ../daemon/factory-slave-main.c:177
 #: ../daemon/product-slave-main.c:181
-#: ../daemon/simple-slave-main.c:183
+#: ../daemon/simple-slave-main.c:181
 #: ../daemon/xdmcp-chooser-slave-main.c:183
 msgid "ID"
 msgstr "ID"
 
 #: ../daemon/factory-slave-main.c:189
 #: ../daemon/product-slave-main.c:193
-#: ../daemon/simple-slave-main.c:195
+#: ../daemon/simple-slave-main.c:193
 #: ../daemon/xdmcp-chooser-slave-main.c:195
 msgid "GNOME Display Manager Slave"
 msgstr "Slave Manajer Tampilan GNOME"
@@ -77,9 +80,9 @@ msgstr "Tak bisa membukan sesi"
 
 #: ../daemon/gdm-factory-slave.c:683
 #: ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1151
-msgid "Could not start the X server (your graphical environment) due to some internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
-msgstr "Tidak dapat menjalankan server X (lingkungan grafis anda) karena galat internal. Silahkan hubungi administrator sistem Anda atau periksa syslog untuk diagnosa. Untuk sementara, tampilan ini akan dimatikan. Silakan start ulang GDM setelah masalah diperbaiki."
+#: ../daemon/gdm-simple-slave.c:1153
+msgid "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
+msgstr "Tidak dapat menjalankan server X (lingkungan grafis Anda) karena galat internal. Silahkan hubungi administrator sistem Anda atau periksa syslog untuk diagnosa. Untuk sementara, tampilan ini akan dimatikan. Silakan start ulang GDM setelah masalah diperbaiki."
 
 #: ../daemon/gdm-server.c:246
 #, c-format
@@ -92,7 +95,9 @@ msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Server mestinya dijalankan oleh pengguna %s tetapi pengguna tersebut tak ada"
 
 #: ../daemon/gdm-server.c:372
+#: ../daemon/gdm-server.c:392
 #: ../daemon/gdm-welcome-session.c:554
+#: ../daemon/gdm-welcome-session.c:574
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Tak dapat mengubah groupid menjadi %d"
@@ -109,15 +114,10 @@ msgstr "initgroups () gagal untuk %s"
 msgid "Couldn't set userid to %d"
 msgstr "Tak dapat mengubah userid menjadi %d"
 
-#: ../daemon/gdm-server.c:392
-#: ../daemon/gdm-welcome-session.c:574
-msgid "Couldn't set groupid to 0"
-msgstr "Tak dapat mengubah groupid menjadi 0"
-
 #: ../daemon/gdm-server.c:431
 #, c-format
-msgid "%s: Could not open logfile for display %s!"
-msgstr "%s: Tidak dapat membuat berkas log untuk tampil %s!"
+msgid "%s: Could not open log file for display %s!"
+msgstr "%s: Tidak dapat membuka berkas log untuk ditampilkan %s!"
 
 #: ../daemon/gdm-server.c:442
 #: ../daemon/gdm-server.c:448
@@ -146,7 +146,7 @@ msgstr "Nama pengguna"
 
 #: ../daemon/gdm-session-auditor.c:95
 msgid "Hostname"
-msgstr "Nama host"
+msgstr "Nama Host"
 
 #: ../daemon/gdm-session-auditor.c:96
 msgid "The hostname"
@@ -162,8 +162,8 @@ msgstr "Piranti tampilan"
 
 #: ../daemon/gdm-session-worker.c:1298
 #, c-format
-msgid "error initiating conversation with authentication system - %s"
-msgstr "galat mengawali percakapan dengan sistem otentikasi - %s"
+msgid "error initiating conversation with authentication system: %s"
+msgstr "galat mengawali percakapan dengan sistem otentikasi: %s"
 
 #: ../daemon/gdm-session-worker.c:1299
 msgid "general failure"
@@ -187,28 +187,28 @@ msgstr "Nama Pengguna:"
 
 #: ../daemon/gdm-session-worker.c:1315
 #, c-format
-msgid "error informing authentication system of preferred username prompt - %s"
-msgstr "galat memberitahu sistem otentikasi tentang sapaan nama pengguna yang disukai - %s"
+msgid "error informing authentication system of preferred username prompt: %s"
+msgstr "galat memberitahu sistem otentikasi tentang sapaan nama pengguna yang disukai: %s"
 
 #: ../daemon/gdm-session-worker.c:1329
 #, c-format
-msgid "error informing authentication system of user's hostname - %s"
-msgstr "galat memberitahu sistem otentikasi tentang nama host pengguna - %s"
+msgid "error informing authentication system of user's hostname: %s"
+msgstr "galat memberitahu sistem otentikasi tentang nama host pengguna: %s"
 
 #: ../daemon/gdm-session-worker.c:1344
 #, c-format
-msgid "error informing authentication system of user's console - %s"
-msgstr "galat memberitahu sistem otentikasi tentang konsol pengguna - %s"
+msgid "error informing authentication system of user's console: %s"
+msgstr "galat memberitahu sistem otentikasi tentang konsol pengguna: %s"
 
 #: ../daemon/gdm-session-worker.c:1357
 #, c-format
-msgid "error informing authentication system of display string - %s"
-msgstr "galat memberitahu sistem otentikasi tentang kalimat tampilan - %s"
+msgid "error informing authentication system of display string: %s"
+msgstr "galat memberitahu sistem otentikasi tentang kalimat tampilan: %s"
 
 #: ../daemon/gdm-session-worker.c:1372
 #, c-format
-msgid "error informing authentication system of display xauth credentials - %s"
-msgstr "galat memberitahu sistem otentikasi tentang kredensial xauth tampilan - %s"
+msgid "error informing authentication system of display xauth credentials: %s"
+msgstr "galat memberitahu sistem otentikasi tentang kredensial xauth tampilan: %s"
 
 #: ../daemon/gdm-session-worker.c:1661
 #: ../daemon/gdm-session-worker.c:1680
@@ -273,96 +273,96 @@ msgstr "%s: Tidak dapat menguraikan daftar auth dari paket"
 msgid "%s: Error in checksum"
 msgstr "%s: Kesalahan pada checksum"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2155
+#: ../daemon/gdm-xdmcp-display-factory.c:2192
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Mendapatkan REQUEST dari host yang dikucilkan %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2165
-#: ../daemon/gdm-xdmcp-display-factory.c:2521
-#: ../daemon/gdm-xdmcp-display-factory.c:2775
+#: ../daemon/gdm-xdmcp-display-factory.c:2202
+#: ../daemon/gdm-xdmcp-display-factory.c:2558
+#: ../daemon/gdm-xdmcp-display-factory.c:2812
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Tidak dapat membaca Nomor Tampil"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2172
+#: ../daemon/gdm-xdmcp-display-factory.c:2209
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Tidak dapat membaca Jenis Sambungan"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2179
+#: ../daemon/gdm-xdmcp-display-factory.c:2216
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Tidak dapat membaca Alamat Client"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2187
+#: ../daemon/gdm-xdmcp-display-factory.c:2224
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Tidak dapat membaca Nama Pembuktian"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2196
+#: ../daemon/gdm-xdmcp-display-factory.c:2233
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Tidak dapat membaca Data Pembuktian"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2206
+#: ../daemon/gdm-xdmcp-display-factory.c:2243
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Tidak dapat membaca Daftar Kuasa"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2225
+#: ../daemon/gdm-xdmcp-display-factory.c:2262
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Tidak dapat membaca ID Pabrikan"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2252
+#: ../daemon/gdm-xdmcp-display-factory.c:2289
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Gagal melakukan checksum dari %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2505
+#: ../daemon/gdm-xdmcp-display-factory.c:2542
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Berhasil mengatur dari host yang dikucilkan %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2514
-#: ../daemon/gdm-xdmcp-display-factory.c:2782
+#: ../daemon/gdm-xdmcp-display-factory.c:2551
+#: ../daemon/gdm-xdmcp-display-factory.c:2819
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Tidak dapat membuka ID Session"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2528
+#: ../daemon/gdm-xdmcp-display-factory.c:2565
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Tidak dapat membaca Kelas Tampil"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2634
-#: ../daemon/gdm-xdmcp-display-factory.c:2684
-#: ../daemon/gdm-xdmcp-display-factory.c:2690
+#: ../daemon/gdm-xdmcp-display-factory.c:2671
+#: ../daemon/gdm-xdmcp-display-factory.c:2721
+#: ../daemon/gdm-xdmcp-display-factory.c:2727
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Tidak dapat membaca alamat"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2765
+#: ../daemon/gdm-xdmcp-display-factory.c:2802
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Mendapatkan KEEPALIVE dari host yang dikucilkan %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2854
+#: ../daemon/gdm-xdmcp-display-factory.c:2891
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory: Tak bisa baca header XDMCP!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2860
+#: ../daemon/gdm-xdmcp-display-factory.c:2897
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XDMCP: Versi XDMCP salah!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2866
+#: ../daemon/gdm-xdmcp-display-factory.c:2903
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
 msgid "XMDCP: Unable to parse address"
 msgstr "XDMCP: Tak bisa mengurai alamat"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3311
+#: ../daemon/gdm-xdmcp-display-factory.c:3348
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Tak bisa memperoleh nama host server: %s!"
@@ -370,7 +370,7 @@ msgstr "Tak bisa memperoleh nama host server: %s!"
 #: ../daemon/main.c:237
 #: ../daemon/main.c:250
 #, c-format
-msgid "Cannot write PID file %s: possibly out of diskspace: %s"
+msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "Tak dapat menulis berkas PID %s: kemungkinan ruang cakram penuh: %s"
 
 #: ../daemon/main.c:271
@@ -421,8 +421,8 @@ msgid "Make all warnings fatal"
 msgstr "Buat semua peringatan menjadi fatal"
 
 #: ../daemon/main.c:534
-msgid "Exit after a time - for debugging"
-msgstr "Keluar setelah tundaan sejenak - untuk pengawa-kutuan"
+msgid "Exit after a time (for debugging)"
+msgstr "Keluar setelah tundaan sejenak (untuk pengawakutuan)"
 
 #: ../daemon/main.c:535
 msgid "Print GDM version"
@@ -442,11 +442,11 @@ msgid "GNOME Display Manager Session Worker"
 msgstr "Pekerja Sesi Manajer Tampilan GNOME"
 
 #: ../data/greeter-autostart/at-spi-registryd-wrapper.desktop.in.in.h:1
-msgid "AT SPI Registry Wrapper"
-msgstr "Pembungkus Registri AT SPI"
+msgid "AT-SPI Registry Wrapper"
+msgstr "Pembungkus Registri AT-SPI"
 
 #: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1434
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1537
 msgid "Login Window"
 msgstr "Jendela Login"
 
@@ -471,12 +471,12 @@ msgid "Magnify parts of the screen"
 msgstr "Perbesar bagian dari layar"
 
 #: ../data/greeter-autostart/gok.desktop.in.h:1
-msgid "GNOME Onscreen Keyboard"
-msgstr "Papan Ketik OnScreen GNOME"
+msgid "GNOME On-Screen Keyboard"
+msgstr "Papan Tik On-Screen GNOME"
 
 #: ../data/greeter-autostart/gok.desktop.in.h:2
-msgid "Use an onscreen keyboard"
-msgstr "Gunakan papan ketik pada layar"
+msgid "Use an on-screen keyboard"
+msgstr "Gunakan papan tik pada layar"
 
 #: ../data/greeter-autostart/metacity.desktop.in.h:1
 msgid "Metacity"
@@ -506,35 +506,35 @@ msgstr "XDMCP: Tak dapat membuat penyangga XDMCP!"
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Tak dapat membaca header XDMCP!"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:244
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:250
 msgid "Value"
 msgstr "Nilai"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:245
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:251
 msgid "percentage of time complete"
 msgstr "persentase waktu lengkap"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1281
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1290
 msgid "Inactive Text"
 msgstr "Teks Tak Aktif"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1282
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1291
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr "Teks yang dipakai pada label bila pengguna belum memilih"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1290
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1299
 msgid "Active Text"
 msgstr "Teks Aktif"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1291
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1300
 msgid "The text to use in the label if the user has picked an item"
 msgstr "Teks yang dipakai pada label bila pengguna telah memilih"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1300
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1309
 msgid "List Visible"
 msgstr "Daftar Nampak"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1301
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1310
 msgid "Whether the chooser list is visible"
 msgstr "Apakah daftar pemilih nampak"
 
@@ -566,16 +566,16 @@ msgstr "%a %k:%M:%S"
 msgid "%a %l:%M %p"
 msgstr "%a %k:%M"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:278
-msgid "Automatically logging in..."
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:284
+msgid "Automatically logging in…"
 msgstr "Otomatis log masuk..."
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:570
-msgid "Cancelling..."
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:588
+msgid "Cancelling…"
 msgstr "Membatalkan..."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:870
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:936
 msgid "Select language and click Log In"
 msgstr "Pilih bahasa dan klik Log Masuk"
 
@@ -591,23 +591,23 @@ msgstr "Log Masuk"
 msgid "Version"
 msgstr "Versi"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:852
+#: ../gui/simple-greeter/gdm-greeter-panel.c:853
 msgid "Panel"
 msgstr "Panel"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:923
-msgid "Shutdown Options..."
+#: ../gui/simple-greeter/gdm-greeter-panel.c:924
+msgid "Shutdown Options…"
 msgstr "Opsi Matikan Mesin..."
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:945
+#: ../gui/simple-greeter/gdm-greeter-panel.c:946
 msgid "Suspend"
 msgstr "Suspensi"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:950
+#: ../gui/simple-greeter/gdm-greeter-panel.c:951
 msgid "Restart"
 msgstr "Restart"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:954
+#: ../gui/simple-greeter/gdm-greeter-panel.c:955
 msgid "Shut Down"
 msgstr "Matikan"
 
@@ -629,7 +629,7 @@ msgstr "_Bahasa:"
 #.
 #: ../gui/simple-greeter/gdm-language-option-widget.c:243
 msgctxt "language"
-msgid "Other..."
+msgid "Other…"
 msgstr "Lainnya..."
 
 #: ../gui/simple-greeter/gdm-language-option-widget.c:244
@@ -655,7 +655,7 @@ msgstr "Papan _kunci:"
 #.
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:235
 msgctxt "keyboard"
-msgid "Other..."
+msgid "Other…"
 msgstr "Lainnya..."
 
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:236
@@ -696,7 +696,7 @@ msgstr "Cacah objek maksimum untuk dipertahankan dalam daftar"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
-msgid "Remote Login (Connecting to %s...)"
+msgid "Remote Login (Connecting to %s…)"
 msgstr "Login Jauh (Menyambung ke %s...)"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:202
@@ -761,11 +761,11 @@ msgid "Recently selected languages"
 msgstr "Bahasa yang dipilih baru-baru ini"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
-msgid "Set to a list of keyboard layouts to be shown by default at the login window."
-msgstr "Tata ke daftar tata letak papan ketik yang ditampilkan secara baku pada jendela login."
+msgid "Set to a list of keyboard layouts to be shown by default in the login window."
+msgstr "Tata ke daftar tata letak papan tik yang ditampilkan secara baku pada jendela login."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-msgid "Set to a list of languages to be shown by default at the login window."
+msgid "Set to a list of languages to be shown by default in the login window."
 msgstr "Tata ke daftar bahasa yang ditampilkan secara baku pada jendela login."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
@@ -781,36 +781,36 @@ msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr "Isi dengan true untuk tidak menampilkan tombol start ulang di jendela login."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+msgid "Set to true to enable the XRandR settings manager plugin."
+msgstr "Isi dengan true untuk mengaktifkan plugin pengelola penataan XRandR."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid "Set to true to enable the background settings manager plugin."
 msgstr "Isi dengan true untuk mengaktifkan plugin manajer penataan latar belakang."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid "Set to true to enable the media-keys settings manager plugin."
 msgstr "Isi dengan true untuk mengaktifkan plugin manajer penataan kunci media."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid "Set to true to enable the on-screen keyboard."
 msgstr "Isi dengan true untuk mengaktifkan papan ketik pada layar."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "Set to true to enable the plugin to manage the accessibility keyboard settings."
 msgstr "Isi dengan true untuk mengaktifkan plugin untuk mengelola penataan papan kunci aksesibilitas."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
 msgid "Set to true to enable the screen magnifier."
 msgstr "Isi dengan true untuk mengaktifkan pembesar layar."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to true to enable the screen reader."
 msgstr "Isi dengan true untuk mengaktifkan pembaca layar."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid "Set to true to enable the sound settings manager plugin."
 msgstr "Isi dengan true untuk mengaktifkan plugin pengelola penataan suara."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
-msgid "Set to true to enable the xrandr settings manager plugin."
-msgstr "Isi dengan true untuk mengaktifkan plugin pengelola penataan xrandr."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
 msgid "Set to true to enable the xsettings settings manager plugin."
@@ -821,40 +821,40 @@ msgid "Set to true to show the banner message text."
 msgstr "Isi dengan true untuk menampilkan teks pesan banner."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
-msgid "Set to true to use compiz as the window manager."
-msgstr "Isi dengan true untuk menggunakan compiz sebagai manajer jendela."
+msgid "Set to true to use Compiz as the window manager."
+msgstr "Isi dengan true untuk menggunakan Compiz sebagai manajer jendela."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
-msgid "Text banner message to show on the login window when the user chooser is empty, instead of banner_message_text."
+msgid "Text banner message to show in the login window when the user chooser is empty, instead of banner_message_text."
 msgstr "Pesan banner teks untuk ditampilkan pada jendela login ketika pemilih pengguna kosong, alih-alih banner_message_text."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
-msgid "Text banner message to show on the login window."
+msgid "Text banner message to show in the login window."
 msgstr "Pesan banner teks untuk ditampilkan pada jendela login."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+msgid "True if the XRandR settings manager plugin is enabled."
+msgstr "True bila plugin manajer penataan XRandR diaktifkan."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "True if the background settings manager plugin is enabled."
 msgstr "True bila plugin manajer penataan latar belakang diaktifkan."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr "True bila plugin manajer penataan kunci media diaktifkan."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "True bila plugin manajer penataan suara diaktifkan."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
-msgid "True if the xrandr settings manager plugin is enabled."
-msgstr "True bila plugin manajer penataan xrandr diaktifkan."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "True bila plugin manajer penataan xsettings diaktifkan."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
-msgid "Use compiz as the window manager"
-msgstr "Gunakan compiz sebagai manajer jendela"
+msgid "Use Compiz as the window manager"
+msgstr "Gunakan Compiz sebagai manajer jendela"
 
 #: ../gui/simple-greeter/gdm-timer.c:149
 msgid "Duration"
@@ -880,11 +880,11 @@ msgstr "Dia Jalan?"
 msgid "Whether the timer is currently ticking"
 msgstr "Apakah pewaktu sekarang sedang berjalan"
 
-#: ../gui/simple-greeter/gdm-user.c:245
+#: ../gui/simple-greeter/gdm-user.c:241
 msgid "Manager"
 msgstr "Manajer"
 
-#: ../gui/simple-greeter/gdm-user.c:246
+#: ../gui/simple-greeter/gdm-user.c:242
 msgid "The user manager object this user is controlled by."
 msgstr "Objek manajer pengguna yang mengendalikan pengguna ini."
 
@@ -895,7 +895,7 @@ msgstr "Objek manajer pengguna yang mengendalikan pengguna ini."
 #.
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:166
 msgctxt "user"
-msgid "Other..."
+msgid "Other…"
 msgstr "Lainnya..."
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:167
@@ -907,7 +907,7 @@ msgid "Guest"
 msgstr "Tamu"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:180
-msgid "Login as a temporary guest"
+msgid "Log in as a temporary guest"
 msgstr "Log masuk sebagai tamu sementara"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:193
@@ -915,7 +915,7 @@ msgid "Automatic Login"
 msgstr "Login Otomatis"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:194
-msgid "Automatically login to the system after selecting options"
+msgid "Automatically log into the system after selecting options"
 msgstr "Otomatis log masuk ke sistem setelah memilih opsi"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:385
@@ -927,23 +927,23 @@ msgstr "Sedang login sebagai %s"
 msgid "Currently logged in"
 msgstr "Kini sedang login"
 
-#: ../gui/user-switch-applet/applet.c:164
+#: ../gui/user-switch-applet/applet.c:165
 msgid "The User Switch Applet is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
 msgstr "Aplet Pindah Cepat Pengguna adalah perangkat lunak bebas; Anda dapat menyebar ulang dan/atau mengubahnya dibawah persyaratan GNU General Public License sebagaimana dipublikasikan oleh Free Software Foundation; versi 2 dari Lisensi, atau (sesuai pilihan Anda) sebarang versi selanjutnya."
 
-#: ../gui/user-switch-applet/applet.c:168
+#: ../gui/user-switch-applet/applet.c:169
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
 msgstr "Program ini disebarkan dengan harapan agar berguna, tapi TANPA JAMINAN APAPUN; bahkan tanpa jaminan tersirat tentang KETERDAGANGAN atau KECOCOKAN UNTUK KEPERLUAN TERTENTU. Lihat GNU General Public License untuk lebih detil."
 
-#: ../gui/user-switch-applet/applet.c:172
+#: ../gui/user-switch-applet/applet.c:173
 msgid "You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
 msgstr "Salinan GNU General Public License seharusnya sudah Anda dapatkan bersamaan dengan program ini; bila tidak, silakan hubungi Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA"
 
-#: ../gui/user-switch-applet/applet.c:186
+#: ../gui/user-switch-applet/applet.c:187
 msgid "A menu to quickly switch between users."
 msgstr "Menu untuk berpindah cepat antar pengguna."
 
-#: ../gui/user-switch-applet/applet.c:190
+#: ../gui/user-switch-applet/applet.c:191
 msgid "translator-credits"
 msgstr ""
 "Dicky Wahyu Purnomo <dicky.wahyu@massaint.or.id>.\n"
@@ -951,70 +951,70 @@ msgstr ""
 "Ahmad Riza H Nst <rizahnst@eriagempita.co.id>, 2005.\n"
 "Andika Triwidada <andika@gmail.com>, 2009."
 
-#: ../gui/user-switch-applet/applet.c:649
-#: ../gui/user-switch-applet/applet.c:788
-#: ../gui/user-switch-applet/applet.c:827
+#: ../gui/user-switch-applet/applet.c:652
+#: ../gui/user-switch-applet/applet.c:791
+#: ../gui/user-switch-applet/applet.c:830
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "Tidak dapat mengunci layar: %s"
 
-#: ../gui/user-switch-applet/applet.c:671
+#: ../gui/user-switch-applet/applet.c:674
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "Untuk sementara tidak dapat membuat screensaver menjadi layar kosong: %s"
 
-#: ../gui/user-switch-applet/applet.c:886
+#: ../gui/user-switch-applet/applet.c:889
 #, c-format
-msgid "Can't logout: %s"
+msgid "Can't log out: %s"
 msgstr "Tak bisa log keluar: %s"
 
-#: ../gui/user-switch-applet/applet.c:970
+#: ../gui/user-switch-applet/applet.c:973
 msgid "Available"
 msgstr "Ada"
 
-#: ../gui/user-switch-applet/applet.c:971
+#: ../gui/user-switch-applet/applet.c:974
 msgid "Invisible"
 msgstr "Tak nampak"
 
-#: ../gui/user-switch-applet/applet.c:972
+#: ../gui/user-switch-applet/applet.c:975
 msgid "Busy"
 msgstr "Sibuk"
 
-#: ../gui/user-switch-applet/applet.c:973
+#: ../gui/user-switch-applet/applet.c:976
 msgid "Away"
 msgstr "Pergi"
 
-#: ../gui/user-switch-applet/applet.c:1133
+#: ../gui/user-switch-applet/applet.c:1136
 msgid "Account Information"
 msgstr "Informasi Akun"
 
-#: ../gui/user-switch-applet/applet.c:1145
+#: ../gui/user-switch-applet/applet.c:1148
 msgid "System Preferences"
 msgstr "Preferensi Sistem"
 
-#: ../gui/user-switch-applet/applet.c:1161
+#: ../gui/user-switch-applet/applet.c:1164
 msgid "Lock Screen"
 msgstr "Kunci Layar"
 
 #. Only show if not locked down
-#: ../gui/user-switch-applet/applet.c:1172
+#: ../gui/user-switch-applet/applet.c:1175
 msgid "Switch User"
 msgstr "Pindah Pengguna"
 
 #. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1183
-msgid "Quit..."
+#: ../gui/user-switch-applet/applet.c:1186
+msgid "Quit…"
 msgstr "Keluar..."
 
-#: ../gui/user-switch-applet/applet.c:1304
+#: ../gui/user-switch-applet/applet.c:1307
 msgid "Unknown"
 msgstr "Tak dikenal"
 
-#: ../gui/user-switch-applet/applet.c:1422
+#: ../gui/user-switch-applet/applet.c:1425
 msgid "User Switch Applet"
 msgstr "Aplet Pindah Pengguna"
 
-#: ../gui/user-switch-applet/applet.c:1436
+#: ../gui/user-switch-applet/applet.c:1439
 msgid "Change account settings and status"
 msgstr "Ubah tatanan dan status akun"
 
@@ -1054,8 +1054,8 @@ msgstr "PERINTAH"
 #: ../utils/gdmflexiserver.c:63
 #: ../utils/gdmflexiserver.c:65
 #: ../utils/gdmflexiserver.c:66
-msgid "Ignored - retained for compatibility"
-msgstr "Diabaikan - dipertahankan untuk kompatibilitas"
+msgid "Ignored — retained for compatibility"
+msgstr "Diabaikan — dipertahankan untuk kompatibilitas"
 
 #: ../utils/gdmflexiserver.c:64
 #: ../utils/gdm-screenshot.c:43
@@ -1088,19 +1088,4 @@ msgstr "Gambar layar telah diambil"
 #: ../utils/gdm-screenshot.c:281
 msgid "Take a picture of the screen"
 msgstr "Ambil gambar layar"
-
-#~ msgid "Enable debugging code"
-#~ msgstr "Aktifkan kode awakutu"
-#~ msgid "id"
-#~ msgstr "id"
-#~ msgid "%a %b %e"
-#~ msgstr "%a %d %b"
-#~ msgid "%1$s, %2$s"
-#~ msgstr "%1$s, %2$s"
-#~ msgid "Authentication Dialog"
-#~ msgstr "Dialog Otentikasi"
-#~ msgid "Enable debugging"
-#~ msgstr "Aktifkan pengawa-kutuan"
-#~ msgid "Enable debugging mode for the greeter."
-#~ msgstr "Fungsikan mode pengawa-kutuan bagi penyapa."
 
