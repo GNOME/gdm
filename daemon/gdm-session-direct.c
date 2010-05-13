@@ -2063,9 +2063,11 @@ setup_session_environment (GdmSessionDirect *session)
                                                              session->priv->user_x11_authority_file);
         }
 
-        gdm_session_direct_set_environment_variable (session,
-                                                     "WINDOWPATH",
-                                                     g_getenv ("WINDOWPATH"));
+        if (g_getenv ("WINDOWPATH") != NULL) {
+                gdm_session_direct_set_environment_variable (session,
+                                                             "WINDOWPATH",
+                                                             g_getenv ("WINDOWPATH"));
+        }
 
 
         /* FIXME: We do this here and in the session worker.  We should consolidate
