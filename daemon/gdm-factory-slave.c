@@ -482,8 +482,8 @@ run_greeter (GdmFactorySlave *slave)
                       "display-is-local", &display_is_local,
                       "display-id", &display_id,
                       "display-name", &display_name,
-                      "seat-id", &seat_id,
-                      "session-id", &session_id,
+                      "display-seat-id", &seat_id,
+                      "display-session-id", &session_id,
                       "display-hostname", &display_hostname,
                       "display-x11-authority-file", &auth_file,
                       NULL);
