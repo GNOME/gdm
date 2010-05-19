@@ -907,6 +907,7 @@ start_greeter (GdmSimpleSlave *slave)
         gboolean       display_is_local;
         char          *display_id;
         char          *display_name;
+        char          *seat_id;
         char          *display_device;
         char          *display_hostname;
         char          *auth_file;
@@ -918,6 +919,7 @@ start_greeter (GdmSimpleSlave *slave)
         display_is_local = FALSE;
         display_id = NULL;
         display_name = NULL;
+        seat_id = NULL;
         auth_file = NULL;
         display_device = NULL;
         display_hostname = NULL;
@@ -926,6 +928,7 @@ start_greeter (GdmSimpleSlave *slave)
                       "display-id", &display_id,
                       "display-is-local", &display_is_local,
                       "display-name", &display_name,
+                      "display-seat-id", &seat_id,
                       "display-hostname", &display_hostname,
                       "display-x11-authority-file", &auth_file,
                       NULL);
@@ -1007,6 +1010,7 @@ start_greeter (GdmSimpleSlave *slave)
 
         g_debug ("GdmSimpleSlave: Creating greeter on %s %s %s", display_name, display_device, display_hostname);
         slave->priv->greeter = gdm_greeter_session_new (display_name,
+                                                        seat_id,
                                                         display_device,
                                                         display_hostname,
                                                         display_is_local);
@@ -1034,6 +1038,7 @@ start_greeter (GdmSimpleSlave *slave)
 
         g_free (display_id);
         g_free (display_name);
+        g_free (seat_id);
         g_free (display_device);
         g_free (display_hostname);
         g_free (auth_file);

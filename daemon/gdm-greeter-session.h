@@ -50,6 +50,7 @@ typedef struct
 
 GType                 gdm_greeter_session_get_type           (void);
 GdmGreeterSession *   gdm_greeter_session_new                (const char        *display_name,
+                                                              const char        *seat_id,
                                                               const char        *display_device,
                                                               const char        *display_hostname,
                                                               gboolean           display_is_local);

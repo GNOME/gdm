@@ -66,6 +66,7 @@ struct GdmWelcomeSessionPrivate
         char           *runtime_dir;
 
         char           *x11_display_name;
+        char           *x11_display_seat_id;
         char           *x11_display_device;
         char           *x11_display_hostname;
         char           *x11_authority_file;
@@ -86,6 +87,7 @@ struct GdmWelcomeSessionPrivate
 enum {
         PROP_0,
         PROP_X11_DISPLAY_NAME,
+        PROP_X11_DISPLAY_SEAT_ID,
         PROP_X11_DISPLAY_DEVICE,
         PROP_X11_DISPLAY_HOSTNAME,
         PROP_X11_AUTHORITY_FILE,
@@ -341,7 +343,7 @@ next_line:
 }
 
 static GPtrArray *
-get_welcome_environment (GdmWelcomeSession *welcome_session)
+get_welcome_environment (GdmWelcomeSession *welcome_session, gboolean start_session)
 {
         GPtrArray     *env;
         GHashTable    *hash;
@@ -420,6 +422,15 @@ get_welcome_environment (GdmWelcomeSession *welcome_session)
                 g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup (pwent->pw_shell));
         }
 
+        if (start_session && welcome_session->priv->x11_display_seat_id != NULL) {
+                char *seat_id;
+
+                seat_id = welcome_session->priv->x11_display_seat_id +
+                        strlen ("/org/freedesktop/ConsoleKit/");
+
+                g_hash_table_insert (hash, g_strdup ("GCONF_DEFAULT_SOURCE_PATH"), g_strdup (GCONF_DEFAULTPATH));
+                g_hash_table_insert (hash, g_strdup ("GDM_SEAT_ID"), g_strdup (seat_id));
+        }
 
         g_hash_table_insert (hash, g_strdup ("PATH"), g_strdup (g_getenv ("PATH")));
         g_hash_table_insert (hash, g_strdup ("WINDOWPATH"), g_strdup (g_getenv ("WINDOWPATH")));
@@ -515,6 +526,7 @@ typedef struct {
         const char *group_name;
         const char *runtime_dir;
         const char *log_file;
+        const char *seat_id;
 } SpawnChildData;
 
 static void
@@ -539,6 +551,26 @@ spawn_child_setup (SpawnChildData *data)
                 g_warning (_("Group %s doesn't exist"),
                            data->group_name);
                 _exit (1);
+        }
+
+        if (pwent->pw_dir != NULL) {
+                struct stat statbuf;
+                const char *seat_id;
+                char       *gconf_dir;
+                int         r;
+
+                seat_id = data->seat_id + strlen ("/org/freedesktop/ConsoleKit/");
+                gconf_dir = g_strdup_printf ("%s/%s", pwent->pw_dir, seat_id);
+
+                /* Verify per-seat gconf directory exists, create if needed */
+                r = g_stat (gconf_dir, &statbuf);
+                if (r < 0) {
+                        g_debug ("Making per-seat gconf directory %s", gconf_dir);
+                        g_mkdir (gconf_dir, S_IRWXU | S_IXGRP | S_IRGRP);
+                        g_chmod (gconf_dir, S_IRWXU | S_IXGRP | S_IRGRP);
+                        chown (gconf_dir, pwent->pw_uid, grent->gr_gid);
+                }
+                g_free (gconf_dir);
         }
 
         g_debug ("GdmWelcomeSession: Setting up run time dir %s", data->runtime_dir);
@@ -606,6 +638,7 @@ static gboolean
 spawn_command_line_sync_as_user (const char *command_line,
                                  const char *user_name,
                                  const char *group_name,
+                                 const char *seat_id,
                                  const char *runtime_dir,
                                  const char *log_file,
                                  char       **env,
@@ -634,6 +667,7 @@ spawn_command_line_sync_as_user (const char *command_line,
         data.group_name = group_name;
         data.runtime_dir = runtime_dir;
         data.log_file = log_file;
+        data.seat_id = seat_id;
 
         local_error = NULL;
         res = g_spawn_sync (NULL,
@@ -664,6 +698,7 @@ static gboolean
 spawn_command_line_async_as_user (const char *command_line,
                                   const char *user_name,
                                   const char *group_name,
+                                  const char *seat_id,
                                   const char *runtime_dir,
                                   const char *log_file,
                                   char      **env,
@@ -690,6 +725,7 @@ spawn_command_line_async_as_user (const char *command_line,
         data.group_name = group_name;
         data.runtime_dir = runtime_dir;
         data.log_file = log_file;
+        data.seat_id = seat_id;
 
         local_error = NULL;
         res = g_spawn_async (NULL,
@@ -802,12 +838,13 @@ start_dbus_daemon (GdmWelcomeSession *welcome_session)
 
         g_debug ("GdmWelcomeSession: Starting D-Bus daemon");
 
-        env = get_welcome_environment (welcome_session);
+        env = get_welcome_environment (welcome_session, FALSE);
 
         error = NULL;
         res = spawn_command_line_sync_as_user (DBUS_LAUNCH_COMMAND,
                                                welcome_session->priv->user_name,
                                                welcome_session->priv->group_name,
+                                               welcome_session->priv->x11_display_seat_id,
                                                welcome_session->priv->runtime_dir,
                                                NULL, /* log file */
                                                (char **)env->pdata,
@@ -860,7 +897,7 @@ gdm_welcome_session_spawn (GdmWelcomeSession *welcome_session)
                 /* FIXME: */
         }
 
-        env = get_welcome_environment (welcome_session);
+        env = get_welcome_environment (welcome_session, TRUE);
 
         error = NULL;
 
@@ -871,6 +908,7 @@ gdm_welcome_session_spawn (GdmWelcomeSession *welcome_session)
         ret = spawn_command_line_async_as_user (welcome_session->priv->command,
                                                 welcome_session->priv->user_name,
                                                 welcome_session->priv->group_name,
+                                                welcome_session->priv->x11_display_seat_id,
                                                 welcome_session->priv->runtime_dir,
                                                 log_path,
                                                 (char **)env->pdata,
@@ -996,6 +1034,14 @@ _gdm_welcome_session_set_x11_display_name (GdmWelcomeSession *welcome_session,
 }
 
 static void
+_gdm_welcome_session_set_x11_display_seat_id (GdmWelcomeSession *welcome_session,
+                                              const char        *sid)
+{
+        g_free (welcome_session->priv->x11_display_seat_id);
+        welcome_session->priv->x11_display_seat_id = g_strdup (sid);
+}
+
+static void
 _gdm_welcome_session_set_x11_display_hostname (GdmWelcomeSession *welcome_session,
                                                const char        *name)
 {
@@ -1104,6 +1150,9 @@ gdm_welcome_session_set_property (GObject      *object,
         case PROP_X11_DISPLAY_NAME:
                 _gdm_welcome_session_set_x11_display_name (self, g_value_get_string (value));
                 break;
+        case PROP_X11_DISPLAY_SEAT_ID:
+                _gdm_welcome_session_set_x11_display_seat_id (self, g_value_get_string (value));
+                break;
         case PROP_X11_DISPLAY_HOSTNAME:
                 _gdm_welcome_session_set_x11_display_hostname (self, g_value_get_string (value));
                 break;
@@ -1162,6 +1211,9 @@ gdm_welcome_session_get_property (GObject    *object,
         switch (prop_id) {
         case PROP_X11_DISPLAY_NAME:
                 g_value_set_string (value, self->priv->x11_display_name);
+                break;
+        case PROP_X11_DISPLAY_SEAT_ID:
+                g_value_set_string (value, self->priv->x11_display_seat_id);
                 break;
         case PROP_X11_DISPLAY_HOSTNAME:
                 g_value_set_string (value, self->priv->x11_display_hostname);
@@ -1239,6 +1291,13 @@ gdm_welcome_session_class_init (GdmWelcomeSessionClass *klass)
                                          g_param_spec_string ("x11-display-name",
                                                               "name",
                                                               "name",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+         g_object_class_install_property (object_class,
+                                         PROP_X11_DISPLAY_SEAT_ID,
+                                         g_param_spec_string ("x11-display-seat-id",
+                                                              "seat id",
+                                                              "seat id",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
@@ -1406,6 +1465,7 @@ gdm_welcome_session_finalize (GObject *object)
         g_free (welcome_session->priv->group_name);
         g_free (welcome_session->priv->runtime_dir);
         g_free (welcome_session->priv->x11_display_name);
+        g_free (welcome_session->priv->x11_display_seat_id);
         g_free (welcome_session->priv->x11_display_device);
         g_free (welcome_session->priv->x11_display_hostname);
         g_free (welcome_session->priv->x11_authority_file);

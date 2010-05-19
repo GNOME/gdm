@@ -6,3 +6,7 @@ xml:readonly:/etc/gconf/gconf.xml.system
 # owned by GDM.  Sysadmins should create
 # another source if they wish to override them.
 xml:readonly:$(HOME)/.gconf.mandatory
+
+# Set per-seat configuration directory
+xml:readwrite:$(HOME)/$(ENV_GDM_SEAT_ID)/.gconf
+
