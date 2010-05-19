@@ -488,6 +488,8 @@ gdm_signal_handler_init (GdmSignalHandler *handler)
         if (pipe (signal_pipes) == -1) {
                 g_error ("Could not create pipe() for signal handling");
         }
+        fcntl(signal_pipes[0], F_SETFD, FD_CLOEXEC);
+        fcntl(signal_pipes[1], F_SETFD, FD_CLOEXEC);
 
         ioc = g_io_channel_unix_new (signal_pipes[0]);
         g_io_channel_set_flags (ioc, G_IO_FLAG_NONBLOCK, NULL);
