@@ -270,7 +270,7 @@ _create_xauth_file_for_user (const char  *username,
 
         /* Create directory if not exist, then set permission 0711 and ownership root:gdm */
         if (g_file_test (GDM_XAUTH_DIR, G_FILE_TEST_IS_DIR) == FALSE) {
-                g_unlink (GDM_XAUTH_DIR);
+                g_remove (GDM_XAUTH_DIR);
                 if (g_mkdir (GDM_XAUTH_DIR, 0711) != 0) {
                         g_set_error (error,
                                      G_FILE_ERROR,
