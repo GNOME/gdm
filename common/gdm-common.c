@@ -382,8 +382,8 @@ _read_bytes (int      fd,
         if (premature_eof) {
                 g_set_error (error,
                              G_FILE_ERROR,
-                             g_file_error_from_errno (ENODATA),
-                             "%s", g_strerror (ENODATA));
+                             G_FILE_ERROR_FAILED,
+                             "No data available");
 
                 return FALSE;
         } else if (bytes_left_to_read > 0) {
