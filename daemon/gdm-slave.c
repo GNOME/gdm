@@ -435,7 +435,7 @@ gdm_slave_set_windowpath (GdmSlave *slave)
                         num = (*(uint16_t *)(void *)buf);
                         break;
                 case 32:
-                        num = (*(uint32_t *)(void *)buf);
+                        num = (*(long *)(void *)buf);
                         break;
                 default:
                         g_debug ("format %d in XFree86_VT property!\n", actualformat);
