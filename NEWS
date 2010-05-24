@@ -1,4 +1,21 @@
 ===============
+Version 2.31.1 
+===============
+
+- Now GDM saves its GConf settings per-seat.  This fixes bug #594818.  So now
+  if the user launches or exits an AT program it only affects the display where
+  the request was made, not all displays running the GDM dialog.
+- Enable FD_CLOEXEC for signal self-pipe.  Fixes bug #617661.
+- Improvements so compiling with -DGSEAL_ENABLE works better.
+- Use g_remove() to remove directories instead of g_unlink().
+- No longer clear the entry field by setting it to a list of '\b' characters.
+  Now use gtk_editable_delete_text which safely clears the entry field instead.
+  See bug #576801.
+- Fix setting of WINDOWPATH so it does not assume the format is 32 bit.  Fixes
+  bug #609272.
+- Fix bug #591937 so the code compiles when ENODATA is not available.
+
+===============
 Version 2.31.0 
 ===============
 
