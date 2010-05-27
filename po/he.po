@@ -7,11 +7,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD.he\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&component=general\n"
-"POT-Creation-Date: 2010-02-12 23:31+0000\n"
-"PO-Revision-Date: 2010-02-13 12:33+0200\n"
-"Last-Translator: Liel Fridman <lielft@gmail.com>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-05-27 10:30+0300\n"
+"PO-Revision-Date: 2010-05-27 10:48+0200\n"
+"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,17 +23,17 @@ msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom is not a character device"
 
 #: ../daemon/factory-slave-main.c:177 ../daemon/product-slave-main.c:181
-#: ../daemon/simple-slave-main.c:183 ../daemon/xdmcp-chooser-slave-main.c:183
+#: ../daemon/simple-slave-main.c:181 ../daemon/xdmcp-chooser-slave-main.c:183
 msgid "Display ID"
 msgstr "Display ID"
 
 #: ../daemon/factory-slave-main.c:177 ../daemon/product-slave-main.c:181
-#: ../daemon/simple-slave-main.c:183 ../daemon/xdmcp-chooser-slave-main.c:183
+#: ../daemon/simple-slave-main.c:181 ../daemon/xdmcp-chooser-slave-main.c:183
 msgid "ID"
 msgstr "ID"
 
 #: ../daemon/factory-slave-main.c:189 ../daemon/product-slave-main.c:193
-#: ../daemon/simple-slave-main.c:195 ../daemon/xdmcp-chooser-slave-main.c:195
+#: ../daemon/simple-slave-main.c:193 ../daemon/xdmcp-chooser-slave-main.c:195
 msgid "GNOME Display Manager Slave"
 msgstr "GNOME Display Manager Slave"
 
@@ -63,18 +62,18 @@ msgstr "לא ניתן להקים את פרטי הזיהוי"
 msgid "Unable to open session"
 msgstr "לא ניתן לפתוח את ההפעלה"
 
-#: ../daemon/gdm-factory-slave.c:683 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1151
+#: ../daemon/gdm-factory-slave.c:688 ../daemon/gdm-product-slave.c:449
+#: ../daemon/gdm-simple-slave.c:1158
 msgid ""
-"Could not start the X server (your graphical environment) due to some "
-"internal error. Please contact your system administrator or check your "
-"syslog to diagnose. In the meantime this display will be disabled.  Please "
-"restart GDM when the problem is corrected."
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
 msgstr ""
-"Could not start the X server (your graphical environment) due to some "
-"internal error. Please contact your system administrator or check your "
-"syslog to diagnose. In the meantime this display will be disabled.  Please "
-"restart GDM when the problem is corrected."
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
 
 #: ../daemon/gdm-server.c:246
 #, c-format
@@ -86,29 +85,26 @@ msgstr "%s: failed to connect to parent display '%s'"
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Server was to be spawned by user %s but that user doesn't exist"
 
-#: ../daemon/gdm-server.c:372 ../daemon/gdm-welcome-session.c:554
+#: ../daemon/gdm-server.c:372 ../daemon/gdm-server.c:392
+#: ../daemon/gdm-welcome-session.c:586 ../daemon/gdm-welcome-session.c:606
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Couldn't set groupid to %d"
 
-#: ../daemon/gdm-server.c:378 ../daemon/gdm-welcome-session.c:560
+#: ../daemon/gdm-server.c:378 ../daemon/gdm-welcome-session.c:592
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () failed for %s"
 
-#: ../daemon/gdm-server.c:384 ../daemon/gdm-welcome-session.c:566
+#: ../daemon/gdm-server.c:384 ../daemon/gdm-welcome-session.c:598
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Couldn't set userid to %d"
 
-#: ../daemon/gdm-server.c:392 ../daemon/gdm-welcome-session.c:574
-msgid "Couldn't set groupid to 0"
-msgstr "Couldn't set groupid to 0"
-
 #: ../daemon/gdm-server.c:431
 #, c-format
-msgid "%s: Could not open logfile for display %s!"
-msgstr "%s: Could not open logfile for display %s!"
+msgid "%s: Could not open log file for display %s!"
+msgstr "%s: Could not open log file for display %s!"
 
 #: ../daemon/gdm-server.c:442 ../daemon/gdm-server.c:448
 #: ../daemon/gdm-server.c:454
@@ -152,8 +148,8 @@ msgstr "התקן התצוגה"
 
 #: ../daemon/gdm-session-worker.c:1298
 #, c-format
-msgid "error initiating conversation with authentication system - %s"
-msgstr "error initiating conversation with authentication system - %s"
+msgid "error initiating conversation with authentication system: %s"
+msgstr "error initiating conversation with authentication system: %s"
 
 #: ../daemon/gdm-session-worker.c:1299
 msgid "general failure"
@@ -177,30 +173,28 @@ msgstr "שם משתמש:"
 
 #: ../daemon/gdm-session-worker.c:1315
 #, c-format
-msgid "error informing authentication system of preferred username prompt - %s"
-msgstr ""
-"error informing authentication system of preferred username prompt - %s"
+msgid "error informing authentication system of preferred username prompt: %s"
+msgstr "error informing authentication system of preferred username prompt: %s"
 
 #: ../daemon/gdm-session-worker.c:1329
 #, c-format
-msgid "error informing authentication system of user's hostname - %s"
-msgstr "error informing authentication system of user's hostname - %s"
+msgid "error informing authentication system of user's hostname: %s"
+msgstr "error informing authentication system of user's hostname: %s"
 
 #: ../daemon/gdm-session-worker.c:1344
 #, c-format
-msgid "error informing authentication system of user's console - %s"
-msgstr "error informing authentication system of user's console - %s"
+msgid "error informing authentication system of user's console: %s"
+msgstr "error informing authentication system of user's console: %s"
 
 #: ../daemon/gdm-session-worker.c:1357
 #, c-format
-msgid "error informing authentication system of display string - %s"
-msgstr "error informing authentication system of display string - %s"
+msgid "error informing authentication system of display string: %s"
+msgstr "error informing authentication system of display string: %s"
 
 #: ../daemon/gdm-session-worker.c:1372
 #, c-format
-msgid "error informing authentication system of display xauth credentials - %s"
-msgstr ""
-"error informing authentication system of display xauth credentials - %s"
+msgid "error informing authentication system of display xauth credentials: %s"
+msgstr "error informing authentication system of display xauth credentials: %s"
 
 #: ../daemon/gdm-session-worker.c:1661 ../daemon/gdm-session-worker.c:1680
 #, c-format
@@ -211,12 +205,12 @@ msgstr "אין חשבון משתמש זמין"
 msgid "Unable to change to user"
 msgstr "לא ניתן להחליף משתמש"
 
-#: ../daemon/gdm-welcome-session.c:532
+#: ../daemon/gdm-welcome-session.c:544
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "User %s doesn't exist"
 
-#: ../daemon/gdm-welcome-session.c:539
+#: ../daemon/gdm-welcome-session.c:551
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Group %s doesn't exist"
@@ -264,104 +258,104 @@ msgstr "%s: Could not extract authlist from packet"
 msgid "%s: Error in checksum"
 msgstr "%s: Error in checksum"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2155
+#: ../daemon/gdm-xdmcp-display-factory.c:2192
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: Got REQUEST from banned host %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2165
-#: ../daemon/gdm-xdmcp-display-factory.c:2521
-#: ../daemon/gdm-xdmcp-display-factory.c:2775
+#: ../daemon/gdm-xdmcp-display-factory.c:2202
+#: ../daemon/gdm-xdmcp-display-factory.c:2558
+#: ../daemon/gdm-xdmcp-display-factory.c:2812
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Could not read Display Number"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2172
+#: ../daemon/gdm-xdmcp-display-factory.c:2209
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: Could not read Connection Type"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2179
+#: ../daemon/gdm-xdmcp-display-factory.c:2216
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: Could not read Client Address"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2187
+#: ../daemon/gdm-xdmcp-display-factory.c:2224
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: Could not read Authentication Names"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2196
+#: ../daemon/gdm-xdmcp-display-factory.c:2233
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: Could not read Authentication Data"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2206
+#: ../daemon/gdm-xdmcp-display-factory.c:2243
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: Could not read Authorization List"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2225
+#: ../daemon/gdm-xdmcp-display-factory.c:2262
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: Could not read Manufacturer ID"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2252
+#: ../daemon/gdm-xdmcp-display-factory.c:2289
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: Failed checksum from %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2505
+#: ../daemon/gdm-xdmcp-display-factory.c:2542
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: Got Manage from banned host %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2514
-#: ../daemon/gdm-xdmcp-display-factory.c:2782
+#: ../daemon/gdm-xdmcp-display-factory.c:2551
+#: ../daemon/gdm-xdmcp-display-factory.c:2819
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: Could not read Session ID"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2528
+#: ../daemon/gdm-xdmcp-display-factory.c:2565
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Could not read Display Class"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2634
-#: ../daemon/gdm-xdmcp-display-factory.c:2684
-#: ../daemon/gdm-xdmcp-display-factory.c:2690
+#: ../daemon/gdm-xdmcp-display-factory.c:2671
+#: ../daemon/gdm-xdmcp-display-factory.c:2721
+#: ../daemon/gdm-xdmcp-display-factory.c:2727
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Could not read address"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2765
+#: ../daemon/gdm-xdmcp-display-factory.c:2802
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Got KEEPALIVE from banned host %s"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2854
+#: ../daemon/gdm-xdmcp-display-factory.c:2891
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2860
+#: ../daemon/gdm-xdmcp-display-factory.c:2897
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XMDCP: Incorrect XDMCP version!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2866
+#: ../daemon/gdm-xdmcp-display-factory.c:2903
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
 msgid "XMDCP: Unable to parse address"
 msgstr "XMDCP: Unable to parse address"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3311
+#: ../daemon/gdm-xdmcp-display-factory.c:3348
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Could not get server hostname: %s!"
 
 #: ../daemon/main.c:237 ../daemon/main.c:250
 #, c-format
-msgid "Cannot write PID file %s: possibly out of diskspace: %s"
-msgstr "Cannot write PID file %s: possibly out of diskspace: %s"
+msgid "Cannot write PID file %s: possibly out of disk space: %s"
+msgstr "Cannot write PID file %s: possibly out of disk space: %s"
 
 #: ../daemon/main.c:271
 #, c-format
@@ -411,8 +405,8 @@ msgid "Make all warnings fatal"
 msgstr "Make all warnings fatal"
 
 #: ../daemon/main.c:534
-msgid "Exit after a time - for debugging"
-msgstr "Exit after a time - for debugging"
+msgid "Exit after a time (for debugging)"
+msgstr "Exit after a time (for debugging)"
 
 #: ../daemon/main.c:535
 msgid "Print GDM version"
@@ -432,11 +426,11 @@ msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Display Manager Session Worker"
 
 #: ../data/greeter-autostart/at-spi-registryd-wrapper.desktop.in.in.h:1
-msgid "AT SPI Registry Wrapper"
+msgid "AT-SPI Registry Wrapper"
 msgstr "עוטף רישום AT SPI"
 
 #: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1434
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1524
 msgid "Login Window"
 msgstr "חלון התחברות"
 
@@ -461,12 +455,12 @@ msgid "Magnify parts of the screen"
 msgstr "מגדיל חלקים מהמסך"
 
 #: ../data/greeter-autostart/gok.desktop.in.h:1
-msgid "GNOME Onscreen Keyboard"
+msgid "GNOME On-Screen Keyboard"
 msgstr "מקלדת על המסך של GNOME"
 
 #: ../data/greeter-autostart/gok.desktop.in.h:2
-msgid "Use an onscreen keyboard"
-msgstr "השתמש במקלדת על המסך"
+msgid "Use an on-screen keyboard"
+msgstr "שימוש במקלדת על המסך"
 
 #: ../data/greeter-autostart/metacity.desktop.in.h:1
 msgid "Metacity"
@@ -496,35 +490,35 @@ msgstr "XDMCP: Could not create XDMCP buffer!"
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Could not read XDMCP header!"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:244
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:250
 msgid "Value"
 msgstr "ערך"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:245
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:251
 msgid "percentage of time complete"
 msgstr "אחוז הזמן שהסתיים"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1281
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1290
 msgid "Inactive Text"
 msgstr "Inactive Text"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1282
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1291
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr "The text to use in the label if the user hasn't picked an item yet"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1290
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1299
 msgid "Active Text"
 msgstr "Active Text"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1291
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1300
 msgid "The text to use in the label if the user has picked an item"
 msgstr "The text to use in the label if the user has picked an item"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1300
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1309
 msgid "List Visible"
 msgstr "הרשימה גלויה"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1301
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1310
 msgid "Whether the chooser list is visible"
 msgstr "האם רשימת הבחירה גלויה "
 
@@ -549,14 +543,6 @@ msgstr "%a %b %e, %l:%M %p"
 msgid "%a %l:%M:%S %p"
 msgstr "%a %l:%M:%S %p"
 
-#. translators: This is the time format to use for the date
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:87
-#: ../gui/simple-greeter/gdm-clock-widget.c:94
-#, c-format
-msgid "%x"
-msgstr "%x"
-
 #. translators: This is the time format to use when there is
 #. * no date, just weekday and time without seconds.
 #.
@@ -564,16 +550,16 @@ msgstr "%x"
 msgid "%a %l:%M %p"
 msgstr "%a %l:%M %p"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:278
-msgid "Automatically logging in..."
-msgstr "התחברות אוטומטית..."
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:284
+msgid "Automatically logging in…"
+msgstr "מתבצעת התחברות אוטומטית..."
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:570
-msgid "Cancelling..."
-msgstr "מבטל..."
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:575
+msgid "Cancelling…"
+msgstr "בהליכי ביטול..."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:870
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:923
 msgid "Select language and click Log In"
 msgstr "בחר שפה ולחץ להתחבר"
 
@@ -589,23 +575,23 @@ msgstr "התחברות"
 msgid "Version"
 msgstr "גירסה"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:852
+#: ../gui/simple-greeter/gdm-greeter-panel.c:853
 msgid "Panel"
 msgstr "לוח"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:923
-msgid "Shutdown Options..."
+#: ../gui/simple-greeter/gdm-greeter-panel.c:924
+msgid "Shutdown Options…"
 msgstr "אפשרויות כיבוי..."
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:945
+#: ../gui/simple-greeter/gdm-greeter-panel.c:946
 msgid "Suspend"
 msgstr "השהה"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:950
+#: ../gui/simple-greeter/gdm-greeter-panel.c:951
 msgid "Restart"
 msgstr "הפעל מחדש"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:954
+#: ../gui/simple-greeter/gdm-greeter-panel.c:955
 msgid "Shut Down"
 msgstr "כיבוי"
 
@@ -627,7 +613,7 @@ msgstr "_שפה:"
 #.
 #: ../gui/simple-greeter/gdm-language-option-widget.c:243
 msgctxt "language"
-msgid "Other..."
+msgid "Other…"
 msgstr "אחר..."
 
 #: ../gui/simple-greeter/gdm-language-option-widget.c:244
@@ -653,12 +639,12 @@ msgstr "_מקלדת:"
 #.
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:235
 msgctxt "keyboard"
-msgid "Other..."
+msgid "Other…"
 msgstr "אחר..."
 
 #: ../gui/simple-greeter/gdm-layout-option-widget.c:236
 msgid "Choose a keyboard layout from the full list of available layouts."
-msgstr "בחר פריסת מקלדת מתוך רשימת הפריסות הזמינות המלאה."
+msgstr "נא לבחור פריסת מקלדת מתוך הרשימה המלאה של הפריסות הזמינות."
 
 #: ../gui/simple-greeter/gdm-option-widget.c:507
 msgid "Label Text"
@@ -694,8 +680,8 @@ msgstr "המספר המקסימלי של פריטים ברשימה"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
-msgid "Remote Login (Connecting to %s...)"
-msgstr "התחברות מרוחקת (מתחבר אל %s...)"
+msgid "Remote Login (Connecting to %s…)"
+msgstr "התחברות מרוחקת (התחברות אל %s...)"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:202
 #, c-format
@@ -760,13 +746,13 @@ msgstr "Recently selected languages"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid ""
-"Set to a list of keyboard layouts to be shown by default at the login window."
+"Set to a list of keyboard layouts to be shown by default in the login window."
 msgstr ""
-"Set to a list of keyboard layouts to be shown by default at the login window."
+"Set to a list of keyboard layouts to be shown by default in the login window."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-msgid "Set to a list of languages to be shown by default at the login window."
-msgstr "Set to a list of languages to be shown by default at the login window."
+msgid "Set to a list of languages to be shown by default in the login window."
+msgstr "Set to a list of languages to be shown by default in the login window."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
 msgid "Set to the themed icon name to use for the greeter logo."
@@ -782,18 +768,22 @@ msgstr ""
 "Set to true to disable showing the restart buttons in the login window."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+msgid "Set to true to enable the XRandR settings manager plugin."
+msgstr "Set to true to enable the XRandR settings manager plugin."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid "Set to true to enable the background settings manager plugin."
 msgstr "Set to true to enable the background settings manager plugin."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid "Set to true to enable the media-keys settings manager plugin."
 msgstr "Set to true to enable the media-keys settings manager plugin."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid "Set to true to enable the on-screen keyboard."
 msgstr "Set to true to enable the on-screen keyboard."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid ""
 "Set to true to enable the plugin to manage the accessibility keyboard "
 "settings."
@@ -801,21 +791,17 @@ msgstr ""
 "Set to true to enable the plugin to manage the accessibility keyboard "
 "settings."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
 msgid "Set to true to enable the screen magnifier."
 msgstr "Set to true to enable the screen magnifier."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to true to enable the screen reader."
 msgstr "Set to true to enable the screen reader."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid "Set to true to enable the sound settings manager plugin."
 msgstr "Set to true to enable the sound settings manager plugin."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
-msgid "Set to true to enable the xrandr settings manager plugin."
-msgstr "Set to true to enable the xrandr settings manager plugin."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
 msgid "Set to true to enable the xsettings settings manager plugin."
@@ -826,44 +812,44 @@ msgid "Set to true to show the banner message text."
 msgstr "Set to true to show the banner message text."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
-msgid "Set to true to use compiz as the window manager."
-msgstr "Set to true to use compiz as the window manager."
+msgid "Set to true to use Compiz as the window manager."
+msgstr "Set to true to use Compiz as the window manager."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid ""
-"Text banner message to show on the login window when the user chooser is "
+"Text banner message to show in the login window when the user chooser is "
 "empty, instead of banner_message_text."
 msgstr ""
-"Text banner message to show on the login window when the user chooser is "
+"Text banner message to show in the login window when the user chooser is "
 "empty, instead of banner_message_text."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
-msgid "Text banner message to show on the login window."
-msgstr "Text banner message to show on the login window."
+msgid "Text banner message to show in the login window."
+msgstr "Text banner message to show in the login window."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+msgid "True if the XRandR settings manager plugin is enabled."
+msgstr "True if the XRandR settings manager plugin is enabled."
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "True if the background settings manager plugin is enabled."
 msgstr "True if the background settings manager plugin is enabled."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr "True if the media-keys settings manager plugin is enabled."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "True if the sound settings manager plugin is enabled."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
-msgid "True if the xrandr settings manager plugin is enabled."
-msgstr "True if the xrandr settings manager plugin is enabled."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "True if the xsettings settings manager plugin is enabled."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
-msgid "Use compiz as the window manager"
-msgstr "Use compiz as the window manager"
+msgid "Use Compiz as the window manager"
+msgstr "Use Compiz as the window manager"
 
 #: ../gui/simple-greeter/gdm-timer.c:149
 msgid "Duration"
@@ -883,17 +869,17 @@ msgstr "השעה בה קוצב הזמן התחיל"
 
 #: ../gui/simple-greeter/gdm-timer.c:165
 msgid "Is it Running?"
-msgstr "האם זה רץ?"
+msgstr "האם הקוצב רץ?"
 
 #: ../gui/simple-greeter/gdm-timer.c:166
 msgid "Whether the timer is currently ticking"
 msgstr "האם קוצב הזמן מתקתק"
 
-#: ../gui/simple-greeter/gdm-user.c:245
+#: ../gui/simple-greeter/gdm-user.c:241
 msgid "Manager"
 msgstr "מנהל"
 
-#: ../gui/simple-greeter/gdm-user.c:246
+#: ../gui/simple-greeter/gdm-user.c:242
 msgid "The user manager object this user is controlled by."
 msgstr "אובייקט מנהל המשתמש ששולט במשתמש זה."
 
@@ -904,7 +890,7 @@ msgstr "אובייקט מנהל המשתמש ששולט במשתמש זה."
 #.
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:166
 msgctxt "user"
-msgid "Other..."
+msgid "Other…"
 msgstr "אחר..."
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:167
@@ -916,15 +902,15 @@ msgid "Guest"
 msgstr "אורח"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:180
-msgid "Login as a temporary guest"
-msgstr "התחבר כאורח זמני"
+msgid "Log in as a temporary guest"
+msgstr "התחברות כאורח זמני"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:193
 msgid "Automatic Login"
 msgstr "התחברות אוטומטית"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:194
-msgid "Automatically login to the system after selecting options"
+msgid "Automatically log into the system after selecting options"
 msgstr "התחברות אוטומטית למערכת לאחר בחירת אפשרויות"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:385
@@ -936,7 +922,7 @@ msgstr "התחבר כ־%s"
 msgid "Currently logged in"
 msgstr "כבר מחובר"
 
-#: ../gui/user-switch-applet/applet.c:164
+#: ../gui/user-switch-applet/applet.c:165
 msgid ""
 "The User Switch Applet is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -948,7 +934,7 @@ msgstr ""
 "the Free Software Foundation; either version 2 of the License, or (at your "
 "option) any later version."
 
-#: ../gui/user-switch-applet/applet.c:168
+#: ../gui/user-switch-applet/applet.c:169
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -960,7 +946,7 @@ msgstr ""
 "FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
 "more details."
 
-#: ../gui/user-switch-applet/applet.c:172
+#: ../gui/user-switch-applet/applet.c:173
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "this program; if not, write to the Free Software Foundation, Inc., 51 "
@@ -970,81 +956,81 @@ msgstr ""
 "this program; if not, write to the Free Software Foundation, Inc., 51 "
 "Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
 
-#: ../gui/user-switch-applet/applet.c:186
+#: ../gui/user-switch-applet/applet.c:187
 msgid "A menu to quickly switch between users."
 msgstr "תפריט להחלפה מהירה של המשתמשים"
 
-#: ../gui/user-switch-applet/applet.c:190
+#: ../gui/user-switch-applet/applet.c:191
 msgid "translator-credits"
 msgstr ""
 "Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "פרוייקט תרגום GNOME לעברית\n"
 "‏http://gnome-il.brelios.de"
 
-#: ../gui/user-switch-applet/applet.c:649
-#: ../gui/user-switch-applet/applet.c:788
-#: ../gui/user-switch-applet/applet.c:827
+#: ../gui/user-switch-applet/applet.c:652
+#: ../gui/user-switch-applet/applet.c:791
+#: ../gui/user-switch-applet/applet.c:830
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "לא ניתן לנעול את המסך: %s"
 
-#: ../gui/user-switch-applet/applet.c:671
+#: ../gui/user-switch-applet/applet.c:674
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "לא ניתן להגדיר את שומר המסך באופן זמני למסך ריק: %s"
 
-#: ../gui/user-switch-applet/applet.c:886
+#: ../gui/user-switch-applet/applet.c:889
 #, c-format
-msgid "Can't logout: %s"
-msgstr "לא ניתן להתנתק: %s"
+msgid "Can't log out: %s"
+msgstr "לא ניתן להינתק: %s"
 
-#: ../gui/user-switch-applet/applet.c:970
+#: ../gui/user-switch-applet/applet.c:973
 msgid "Available"
 msgstr "זמין"
 
-#: ../gui/user-switch-applet/applet.c:971
+#: ../gui/user-switch-applet/applet.c:974
 msgid "Invisible"
 msgstr "בלתי נראה"
 
-#: ../gui/user-switch-applet/applet.c:972
+#: ../gui/user-switch-applet/applet.c:975
 msgid "Busy"
 msgstr "עסוק"
 
-#: ../gui/user-switch-applet/applet.c:973
+#: ../gui/user-switch-applet/applet.c:976
 msgid "Away"
 msgstr "מרוחק"
 
-#: ../gui/user-switch-applet/applet.c:1133
+#: ../gui/user-switch-applet/applet.c:1136
 msgid "Account Information"
 msgstr "נתוני החשבון"
 
-#: ../gui/user-switch-applet/applet.c:1145
+#: ../gui/user-switch-applet/applet.c:1148
 msgid "System Preferences"
 msgstr "העדפות המערכת"
 
-#: ../gui/user-switch-applet/applet.c:1161
+#: ../gui/user-switch-applet/applet.c:1164
 msgid "Lock Screen"
 msgstr "נעל את המסך"
 
 #. Only show if not locked down
-#: ../gui/user-switch-applet/applet.c:1172
+#: ../gui/user-switch-applet/applet.c:1175
 msgid "Switch User"
 msgstr "החלף משתמש"
 
 #. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1183
-msgid "Quit..."
+#: ../gui/user-switch-applet/applet.c:1186
+msgid "Quit…"
 msgstr "יציאה..."
 
-#: ../gui/user-switch-applet/applet.c:1304
+#: ../gui/user-switch-applet/applet.c:1307
 msgid "Unknown"
 msgstr "לא ידוע"
 
-#: ../gui/user-switch-applet/applet.c:1422
+#: ../gui/user-switch-applet/applet.c:1425
 msgid "User Switch Applet"
 msgstr "יישומון החלפת משתמשים"
 
-#: ../gui/user-switch-applet/applet.c:1436
+#: ../gui/user-switch-applet/applet.c:1439
 msgid "Change account settings and status"
 msgstr "שינוי הגדרות המצב והחשבון"
 
@@ -1082,8 +1068,8 @@ msgstr "COMMAND"
 
 #: ../utils/gdmflexiserver.c:62 ../utils/gdmflexiserver.c:63
 #: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
-msgid "Ignored - retained for compatibility"
-msgstr "נתעלם - נשמר לצורכי תאימות"
+msgid "Ignored — retained for compatibility"
+msgstr "נתעלם — נשמר לצורכי תאימות"
 
 #: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
@@ -1115,6 +1101,27 @@ msgstr "המסך צולם"
 #: ../utils/gdm-screenshot.c:281
 msgid "Take a picture of the screen"
 msgstr "צלם את המסך"
+
+#~ msgid "Couldn't set groupid to 0"
+#~ msgstr "Couldn't set groupid to 0"
+
+#~ msgid "%x"
+#~ msgstr "%x"
+
+#~ msgctxt "language"
+#~ msgid "Other..."
+#~ msgstr "אחר..."
+
+#~ msgctxt "keyboard"
+#~ msgid "Other..."
+#~ msgstr "אחר..."
+
+#~ msgctxt "user"
+#~ msgid "Other..."
+#~ msgstr "אחר..."
+
+#~ msgid "Quit..."
+#~ msgstr "יציאה..."
 
 #~ msgid "Authentication Dialog"
 #~ msgstr "חלון אימות"
@@ -1259,9 +1266,6 @@ msgstr "צלם את המסך"
 
 #~ msgid "Users"
 #~ msgstr "משתמשים"
-
-#~ msgid "Other"
-#~ msgstr "אחר"
 
 #~ msgid "Appearance"
 #~ msgstr "מראה"
