@@ -531,31 +531,32 @@ static void
 strrep (char* in, char** out, char* old, char* new)
 {
         char* temp;
-        char* orig = strdup(in);
-        char* found = strstr(orig, old);
+        char* found = strstr(in, old);
         if(!found) {
-                *out = malloc(strlen(orig) + 1);
-                strcpy(*out, orig);
+                *out = malloc(strlen(in) + 1);
+                strcpy(*out, in);
                 return;
         }
-        
-        int idx = found - orig;
-        
-        *out = realloc(*out, strlen(orig) - strlen(old) + strlen(new) + 1);
-        strncpy(*out, orig, idx);
+
+        int idx = found - in;
+
+        *out = realloc(*out, strlen(in) - strlen(old) + strlen(new) + 1);
+        strncpy(*out, in, idx);
         strcpy(*out + idx, new);
-        strcpy(*out + idx + strlen(new), orig + idx + strlen(old));
-        
+        strcpy(*out + idx + strlen(new), in + idx + strlen(old));
 
         temp = malloc(idx+strlen(new)+1);
-        strncpy(temp,*out,idx+strlen(new)); 
+        strncpy(temp,*out,idx+strlen(new));
         temp[idx + strlen(new)] = '\0';
+
+        free (*out);
+        *out = NULL;
 
         strrep(found + strlen(old), out, old, new);
         temp = realloc(temp, strlen(temp) + strlen(*out) + 1);
         strcat(temp,*out);
         free(*out);
-        *out = temp;
+        *out = temp; 
 }
 #endif
 
@@ -574,6 +575,7 @@ seat_open_session_request (DBusGProxy             *seat_proxy,
         gchar     **argv;
         GError     *error;
         char       *comm = NULL;
+        char       *comm_tmp = NULL;
         const char *sid = NULL;
         gint32      display_number;
         gboolean    is_chooser;
@@ -613,14 +615,20 @@ seat_open_session_request (DBusGProxy             *seat_proxy,
                 /* replase $display in case of not specified */
                 if (g_str_equal (argv[i], "$display")) {
                         display_number = take_next_display_number (factory);
-                        strrep (comm, &comm, "$display", "");
+                        comm_tmp = NULL;
+                        strrep (comm, &comm_tmp, "$display", "");
+                        g_free (comm);
+                        comm = comm_tmp;
                         break;
                 }
 
                 /* get display_number in case of specified */
                 if (g_str_has_prefix (argv[i], ":")) {
                         display_number = atoi (argv[i]+1);
-                        strrep (comm, &comm, argv[i], "");
+                        comm_tmp = NULL;
+                        strrep (comm, &comm_tmp, argv[i], "");
+                        g_free (comm);
+                        comm = comm_tmp;
                         break;
                 }
         }
@@ -634,12 +642,17 @@ seat_open_session_request (DBusGProxy             *seat_proxy,
         use_auth = FALSE;
         if (strstr (comm, "-auth $auth")) {
                 use_auth = TRUE;
-                strrep (comm, &comm, "-auth $auth", "");
+                comm_tmp = NULL;
+                strrep (comm, &comm_tmp, "-auth $auth", "");
+                g_free (comm);
+                comm = comm_tmp;
         }
 
         if (strstr (comm, "$vt")) {
-                use_auth = TRUE;
-                strrep (comm, &comm, "$vt", "");
+                comm_tmp = NULL;
+                strrep (comm, &comm_tmp, "$vt", "");
+                g_free (comm);
+                comm = comm_tmp;
         }
 
         if (display == NULL) {
