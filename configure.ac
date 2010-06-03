@@ -1399,6 +1399,7 @@ config/Init
 config/PreSession
 config/PostSession
 config/gdmprefetchlist
+config/default.desktop.in
 config/gnome.desktop.in
 config/ssh.desktop.in
 ])
