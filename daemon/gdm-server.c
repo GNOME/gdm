@@ -980,7 +980,6 @@ gdm_server_new (const char *display_id)
         server = GDM_SERVER (object);
 
         server->priv->pid = -1;
-        server->priv->log_dir = g_strdup (LOGDIR);
 
         g_assert (server->priv->display_id != NULL);
 
