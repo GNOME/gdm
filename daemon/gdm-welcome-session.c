@@ -1329,6 +1329,7 @@ gdm_welcome_session_finalize (GObject *object)
         g_free (welcome_session->priv->user_name);
         g_free (welcome_session->priv->group_name);
         g_free (welcome_session->priv->x11_display_name);
+        g_free (welcome_session->priv->x11_display_session_id);
         g_free (welcome_session->priv->x11_display_seat_id);
         g_free (welcome_session->priv->x11_display_device);
         g_free (welcome_session->priv->x11_display_hostname);
