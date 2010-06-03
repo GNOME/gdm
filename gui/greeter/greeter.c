@@ -229,7 +229,7 @@ process_operation (guchar       op_code,
     gint lookup_status = SESSION_LOOKUP_SUCCESS;
     gchar *firstmsg = NULL;
     gchar *secondmsg = NULL;
-    gint save_session = GTK_RESPONSE_NO;
+    gint dont_save_session = GTK_RESPONSE_YES;
 
     /* Parse opcode */
     switch (op_code) {
@@ -336,9 +336,9 @@ process_operation (guchar       op_code,
 			secondmsg = g_strdup_printf (_("Your preferred session type %s is not "
 						       "installed on this computer."),
 						       gdm_session_name (tmp));	    
-			save_session = gdm_wm_query_dialog (firstmsg, secondmsg,
-							    _("Make _Default"), _("Just _Log In"), TRUE);
-			
+			dont_save_session = gdm_wm_query_dialog (firstmsg, secondmsg,
+					_("Just _Log In"), _("Make _Default"), TRUE);
+
 			g_free (firstmsg);
 			g_free (secondmsg);
 			gdm_set_save_session (save_session);
@@ -353,12 +353,12 @@ process_operation (guchar       op_code,
 						       "setting is %s."),
 						     gdm_session_name (session),
 						     gdm_session_name (tmp));
-			save_session = gdm_wm_query_dialog (firstmsg, secondmsg,
-							    _("Make _Default"), _("Just For _This Session"), TRUE);
+			dont_save_session = gdm_wm_query_dialog (firstmsg, secondmsg,
+							    _("Just For _This Session"), _("Make _Default"), TRUE);
 			
 			g_free (firstmsg);
 			g_free (secondmsg);
-			gdm_set_save_session (save_session);
+			gdm_set_save_session (dont_save_session);
 			break;
 		case SESSION_LOOKUP_USE_SWITCHDESK:
 			firstmsg = g_strdup_printf (_("You have chosen %s for this "
@@ -396,7 +396,7 @@ process_operation (guchar       op_code,
 	break;
 
     case GDM_SSESS:
-	if (gdm_get_save_session () == GTK_RESPONSE_YES)
+	if (gdm_get_save_session () == GTK_RESPONSE_NO)
 	  printf ("%cY\n", STX);
 	else
 	  printf ("%c\n", STX);

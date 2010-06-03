@@ -46,7 +46,7 @@ GHashTable *sessnames        = NULL;
 gchar *default_session       = NULL;
 const gchar *current_session = NULL;
 GList *sessions              = NULL;
-static gint save_session     = GTK_RESPONSE_NO;
+static gint dont_save_session     = GTK_RESPONSE_YES;
 
 
 /* This is true if session dir doesn't exist or is whacked out
@@ -414,7 +414,7 @@ gdm_session_lookup (const char *saved_session, gint *lookup_status)
   *lookup_status = SESSION_LOOKUP_SUCCESS;
 
   /* Don't save session unless told otherwise */
-  save_session = GTK_RESPONSE_NO;
+  dont_save_session = GTK_RESPONSE_YES;
 
   /* Previously saved session not found in ~/.dmrc */
   if ( ! (saved_session != NULL &&
@@ -427,7 +427,7 @@ gdm_session_lookup (const char *saved_session, gint *lookup_status)
     else
       session = g_strdup (current_session);
     
-    save_session = GTK_RESPONSE_YES;
+    dont_save_session = GTK_RESPONSE_NO;
     return session;
   }
 
@@ -461,7 +461,7 @@ gdm_session_lookup (const char *saved_session, gint *lookup_status)
            * These are intended to be used for debugging or temporary 
            * purposes.
            */
-	  save_session = GTK_RESPONSE_NO;
+	  dont_save_session = GTK_RESPONSE_YES;
 	}
       else if (strcmp (saved_session, session) != 0)
 	{	 	  
@@ -482,7 +482,7 @@ gdm_session_lookup (const char *saved_session, gint *lookup_status)
 	        {
 			*lookup_status = SESSION_LOOKUP_USE_SWITCHDESK;
 		}
-	      save_session = GTK_RESPONSE_NO;
+	      dont_save_session = GTK_RESPONSE_YES;
 	    }
 	}
     }
@@ -493,13 +493,13 @@ gdm_session_lookup (const char *saved_session, gint *lookup_status)
 gint
 gdm_get_save_session (void)
 {
-  return save_session;
+  return dont_save_session;
 }
 
 void
 gdm_set_save_session (const gint session)
 {
-	save_session = session;
+	dont_save_session = session;
 }
 
 const char*

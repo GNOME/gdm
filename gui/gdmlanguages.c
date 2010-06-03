@@ -51,7 +51,7 @@ static GtkListStore *lang_model               = NULL;
 static GtkWidget    *dialog                   = NULL;
 static gchar        *current_language         = NULL;
 static gchar        *dialog_selected_language = NULL;
-static gint          savelang                 = GTK_RESPONSE_NO;
+static gint          dont_savelang            = GTK_RESPONSE_YES;
 static gboolean      always_restart           = FALSE;
 
 #include "gdm-common.h"
@@ -727,7 +727,7 @@ gdm_lang_initialize_model (gchar * locale_file)
 gint
 gdm_lang_get_savelang_setting (void)
 {
-  return savelang;
+  return dont_savelang;
 }
 
 gchar *
@@ -736,7 +736,7 @@ gdm_lang_check_language (const char *old_language)
   gchar *retval = NULL;
 
   /* Don't save language unless told otherwise */
-  savelang = GTK_RESPONSE_NO;
+  dont_savelang = GTK_RESPONSE_YES;
 
   if (old_language == NULL)
     old_language = "";
@@ -780,8 +780,8 @@ gdm_lang_check_language (const char *old_language)
 	  g_free (current_name);
 	  g_free (saved_name);
 
-	  savelang = gdm_wm_query_dialog (primary_message, secondary_message,
-		_("Make _Default"), _("Just For _This Session"), TRUE);
+	  dont_savelang = gdm_wm_query_dialog (primary_message, secondary_message,
+		_("Just For _This Session"), _("Make _Default"), TRUE);
 	  g_free (primary_message);
 	  g_free (secondary_message);
 	}
@@ -1092,7 +1092,7 @@ gdm_lang_op_lang (const gchar *args)
 void
 gdm_lang_op_slang (const gchar *args)
 {
-  if (gdm_lang_get_savelang_setting () == GTK_RESPONSE_YES)
+  if (gdm_lang_get_savelang_setting () == GTK_RESPONSE_NO)
     printf ("%cY\n", STX);
   else
     printf ("%c\n", STX);

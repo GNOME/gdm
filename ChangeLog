@@ -1,3 +1,16 @@
+2010-06-03 Brian Cameron <brian.cameron@sun.com>
+
+	* gui/gdmlanguages.c, gui/gdmsession.c, gui/gdmlogin.c,
+	  gui/greeter/greeter.c:  Switch buttons "Make Default" and 
+	  "Just For This Session" for better usability.  Fixes bug #597661.
+
+2010-06-02 Brian Cameron <brian.cameron@sun.com>
+
+	* vicious-extensions/ve-misc.c:  Fix bug #571846.  No longer print
+	  invalid encoded strings since this can causemaster the user's
+	  password to be logged in the syslog if it contains invalid characters
+	  and if GDM debug is enabled. 
+
 2009-06-08 Brian Cameron <brian.cameron@sun.com>
 
 	* gui/gdmsetup.c: Fix call to g_markup_printf_escaped so that NULL
