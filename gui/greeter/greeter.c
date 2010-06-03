@@ -341,7 +341,7 @@ process_operation (guchar       op_code,
 
 			g_free (firstmsg);
 			g_free (secondmsg);
-			gdm_set_save_session (save_session);
+			gdm_set_save_session (dont_save_session);
 			break;
 			
 		case SESSION_LOOKUP_DEFAULT_MISMATCH:
