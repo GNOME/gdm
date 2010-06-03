@@ -1,5 +1,27 @@
 Ahh news...
 
+2.20.11 Stuff:
+
+- No longer print invalid encoded strings since this can causemaster the user's 
+  password to be logged in the syslog if it contains invalid characters
+  and if GDM debug is enabled.  Fixes bug #571846.
+
+- Fix call to g_markup_printf_escaped so NULL strings are not passed in.
+
+- Fix the login GUI dialog that asks the user if they want to change their
+  default session when the one in the user's .dmrc file is not installed on
+  the system.
+
+- Switch buttons "Make Default" and "Just For This Session" for better
+  usability.  Fixes bug #597661.
+
+- On Solaris, GDM now configure favors the Xfree Xinerama interfaces over 
+  the obsolete Solaris specific interfaces.  This ensures that Xinerama
+  works on OpenSolaris where Xfree should be used, and also on Solaris 10
+  where the Solaris specific interfaces should be used.  Fixes bug #580060.
+
+- Fixes for "make distcheck".
+
 2.20.10 Stuff:
 
 - Ensure that gid/egid are set to 0 when running the Init, PostLogin,
