@@ -19,22 +19,9 @@ edit = sed \
 	-e 's|@localstatedir[@]|$(localstatedir)|g' \
 	-e 's|@GDM_PID_FILE[@]|$(GDM_PID_FILE)|g'
 
-gdm-stop: gdm-stop.in Makefile
-	$(edit) $< >$@
-gdm-restart: gdm-restart.in Makefile
-	$(edit) $< >$@
-gdm-safe-restart: gdm-safe-restart.in Makefile
-	$(edit) $< >$@
-
 bin_PROGRAMS = \
 	gdmflexiserver		\
 	gdm-screenshot		\
-	$(NULL)
-
-sbin_SCRIPTS = 			\
-	gdm-stop		\
-	gdm-restart		\
-	gdm-safe-restart	\
 	$(NULL)
 
 gdmflexiserver_SOURCES =	\
@@ -57,18 +44,9 @@ gdm_screenshot_LDADD =		\
 	$(COMMON_LIBS)		\
 	$(NULL)
 
-EXTRA_DIST = 			\
-	gdm-stop.in		\
-	gdm-restart.in		\
-	gdm-safe-restart.in	\
-	$(NULL)
-
 CLEANFILES = 			\
 	$(NULL)
 
 DISTCLEANFILES = 		\
-	gdm-stop		\
-	gdm-restart		\
-	gdm-safe-restart	\
 	$(NULL)
 
