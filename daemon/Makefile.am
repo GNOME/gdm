@@ -104,9 +104,14 @@ libexec_PROGRAMS = 			\
 	gdm-simple-slave		\
 	gdm-factory-slave		\
 	gdm-product-slave		\
-	gdm-xdmcp-chooser-slave		\
 	gdm-session-worker		\
 	$(NULL)
+
+if XDMCP_SUPPORT
+libexec_PROGRAMS += 			\
+	gdm-xdmcp-chooser-slave		\
+	$(NULL)
+endif
 
 gdm_simple_slave_SOURCES = 		\
 	simple-slave-main.c 		\
@@ -282,12 +287,6 @@ gdm_binary_SOURCES = 			\
 	gdm-local-display-factory.h	\
 	gdm-display.c			\
 	gdm-display.h			\
-	gdm-xdmcp-display.c		\
-	gdm-xdmcp-display.h		\
-	gdm-xdmcp-greeter-display.c	\
-	gdm-xdmcp-greeter-display.h	\
-	gdm-xdmcp-chooser-display.c	\
-	gdm-xdmcp-chooser-display.h	\
 	gdm-static-display.c		\
 	gdm-static-display.h		\
 	gdm-transient-display.c		\
@@ -305,6 +304,12 @@ gdm_binary_SOURCES = 			\
 XDMCP_SOURCES =				\
 	gdm-xdmcp-display-factory.c	\
 	gdm-xdmcp-display-factory.h	\
+	gdm-xdmcp-display.c		\
+	gdm-xdmcp-display.h		\
+	gdm-xdmcp-greeter-display.c	\
+	gdm-xdmcp-greeter-display.h	\
+	gdm-xdmcp-chooser-display.c	\
+	gdm-xdmcp-chooser-display.h	\
 	$(NULL)
 
 if XDMCP_SUPPORT
