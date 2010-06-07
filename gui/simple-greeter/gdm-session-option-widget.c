@@ -159,7 +159,7 @@ gdm_session_option_widget_new (void)
         GObject *object;
 
         object = g_object_new (GDM_TYPE_SESSION_OPTION_WIDGET,
-                               "label-text", _("_Sessions:"),
+                               "label-text", _("Session"),
                                "icon-name", "session-properties",
                                NULL);
 

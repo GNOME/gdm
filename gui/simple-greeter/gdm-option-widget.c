@@ -343,8 +343,7 @@ gdm_option_widget_set_label_text (GdmOptionWidget *widget,
             strcmp (widget->priv->label_text, text) != 0) {
                 g_free (widget->priv->label_text);
                 widget->priv->label_text = g_strdup (text);
-                gtk_label_set_markup_with_mnemonic (GTK_LABEL (widget->priv->label),
-                                      text);
+                gtk_widget_set_tooltip_markup (widget->priv->image, text);
                 g_object_notify (G_OBJECT (widget), "label-text");
         }
 }
@@ -481,7 +480,6 @@ static void
 gdm_option_widget_class_init (GdmOptionWidgetClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
-        GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
         object_class->get_property = gdm_option_widget_get_property;
         object_class->set_property = gdm_option_widget_set_property;
@@ -633,17 +631,15 @@ gdm_option_widget_check_visibility (GdmOptionWidget *widget)
 {
         if ((widget->priv->number_of_middle_rows != 0) &&
             (widget->priv->number_of_top_rows > 0 ||
-             widget->priv->number_of_middle_rows > 1 || 
+             widget->priv->number_of_middle_rows > 1 ||
              widget->priv->number_of_bottom_rows > 0)) {
                 gtk_widget_show (widget->priv->items_combo_box);
-                gtk_widget_show (widget->priv->label);
 
                 if (widget->priv->icon_name != NULL) {
                         gtk_widget_show (widget->priv->image);
                 }
         } else {
                 gtk_widget_hide (widget->priv->items_combo_box);
-                gtk_widget_hide (widget->priv->label);
                 gtk_widget_hide (widget->priv->image);
         }
 
@@ -895,12 +891,6 @@ gdm_option_widget_init (GdmOptionWidget *widget)
         gtk_widget_set_no_show_all (widget->priv->image, TRUE);
         gtk_box_pack_start (GTK_BOX (box), widget->priv->image, FALSE, FALSE, 0);
 
-        widget->priv->label = gtk_label_new ("");
-        gtk_label_set_use_underline (GTK_LABEL (widget->priv->label), TRUE);
-        gtk_label_set_use_markup (GTK_LABEL (widget->priv->label), TRUE);
-        gtk_widget_set_no_show_all (widget->priv->label, TRUE);
-        gtk_box_pack_start (GTK_BOX (box), widget->priv->label, FALSE, FALSE, 0);
-
         widget->priv->items_combo_box = gtk_combo_box_new ();
 
         g_signal_connect (widget->priv->items_combo_box,
@@ -923,8 +913,6 @@ gdm_option_widget_init (GdmOptionWidget *widget)
                           "mnemonic-activate",
                           G_CALLBACK (on_combo_box_mnemonic_activate),
                           NULL);
-        gtk_label_set_mnemonic_widget (GTK_LABEL (widget->priv->label),
-                                       GTK_WIDGET (widget->priv->items_combo_box));
 
         g_assert (NUMBER_OF_OPTION_COLUMNS == 4);
         widget->priv->list_store = gtk_list_store_new (NUMBER_OF_OPTION_COLUMNS,

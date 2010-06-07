@@ -271,7 +271,7 @@ gdm_language_option_widget_new (void)
         GObject *object;
 
         object = g_object_new (GDM_TYPE_LANGUAGE_OPTION_WIDGET,
-                               "label-text", _("_Language:"),
+                               "label-text", _("Language"),
                                "icon-name", "preferences-desktop-locale",
                                "max-item-count", 8,
                                NULL);
