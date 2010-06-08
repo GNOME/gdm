@@ -99,7 +99,12 @@ struct GdmUserManagerPrivate
         guint                  reload_passwd_id;
         guint                  ck_history_id;
 
-        guint8                 users_dirty : 1;
+        gboolean               is_loaded;
+};
+
+enum {
+        PROP_0,
+        PROP_IS_LOADED
 };
 
 enum {
@@ -1246,6 +1251,16 @@ process_ck_history_line (GdmUserManager *manager,
         g_free (username);
 }
 
+static void
+set_is_loaded (GdmUserManager *manager,
+               gboolean        is_loaded)
+{
+        if (manager->priv->is_loaded != is_loaded) {
+                manager->priv->is_loaded = is_loaded;
+                g_object_notify (G_OBJECT (manager), "is-loaded");
+        }
+}
+
 static gboolean
 ck_history_watch (GIOChannel     *source,
                   GIOCondition    condition,
@@ -1280,7 +1295,7 @@ ck_history_watch (GIOChannel     *source,
         }
 
         if (done) {
-                g_signal_emit (G_OBJECT (manager), signals[USERS_LOADED], 0);
+                set_is_loaded (manager, TRUE);
 
                 manager->priv->ck_history_id = 0;
                 return FALSE;
@@ -1533,7 +1548,7 @@ load_users (GdmUserManager *manager)
         res = load_ck_history (manager);
         reload_passwd (manager);
         if (! res) {
-                g_signal_emit (G_OBJECT (manager), signals[USERS_LOADED], 0);
+                set_is_loaded (manager, TRUE);
         }
 }
 
@@ -1632,25 +1647,46 @@ on_passwd_monitor_changed (GFileMonitor     *monitor,
 }
 
 static void
+gdm_user_manager_get_property (GObject        *object,
+                               guint           prop_id,
+                               GValue         *value,
+                               GParamSpec     *pspec)
+{
+        GdmUserManager *manager;
+
+        manager = GDM_USER_MANAGER (object);
+
+        switch (prop_id) {
+        case PROP_IS_LOADED:
+                g_value_set_boolean (value, manager->priv->is_loaded);
+                break;
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+                break;
+        }
+}
+
+static void
 gdm_user_manager_class_init (GdmUserManagerClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
         object_class->finalize = gdm_user_manager_finalize;
+        object_class->get_property = gdm_user_manager_get_property;
+
+        g_object_class_install_property (object_class,
+                                         PROP_IS_LOADED,
+                                         g_param_spec_boolean ("is-loaded",
+                                                               NULL,
+                                                               NULL,
+                                                               FALSE,
+                                                               G_PARAM_READABLE));
 
         signals [LOADING_USERS] =
                 g_signal_new ("loading-users",
                               G_TYPE_FROM_CLASS (klass),
                               G_SIGNAL_RUN_LAST,
                               G_STRUCT_OFFSET (GdmUserManagerClass, loading_users),
-                              NULL, NULL,
-                              g_cclosure_marshal_VOID__VOID,
-                              G_TYPE_NONE, 0);
-        signals [USERS_LOADED] =
-                g_signal_new ("users-loaded",
-                              G_TYPE_FROM_CLASS (klass),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmUserManagerClass, users_loaded),
                               NULL, NULL,
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE, 0);
@@ -1796,8 +1832,6 @@ gdm_user_manager_init (GdmUserManager *manager)
         get_seat_proxy (manager);
 
         queue_load_users (manager);
-
-        manager->priv->users_dirty = FALSE;
 }
 
 static void

@@ -479,8 +479,9 @@ on_user_login_frequency_changed (GdmUserManager       *manager,
 }
 
 static void
-on_users_loaded (GdmUserManager       *manager,
-                 GdmUserChooserWidget *widget)
+on_is_loaded_changed (GdmUserManager       *manager,
+                      GParamSpec           *pspec,
+                      GdmUserChooserWidget *widget)
 {
         GSList *users;
         gboolean list_visible;
@@ -518,8 +519,8 @@ load_users (GdmUserChooserWidget *widget)
                                   G_CALLBACK (on_user_removed),
                                   widget);
                 g_signal_connect (widget->priv->manager,
-                                  "users-loaded",
-                                  G_CALLBACK (on_users_loaded),
+                                  "notify::is-loaded",
+                                  G_CALLBACK (on_is_loaded_changed),
                                   widget);
                 g_signal_connect (widget->priv->manager,
                                   "user-is-logged-in-changed",
