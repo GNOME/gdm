@@ -95,7 +95,7 @@ struct GdmUserManagerPrivate
         GSList                *include;
         gboolean               include_all;
 
-        guint                  reload_id;
+        guint                  load_id;
         guint                  ck_history_id;
 
         guint8                 users_dirty : 1;
@@ -1288,8 +1288,8 @@ ck_history_watch (GIOChannel     *source,
         return TRUE;
 }
 
-static void
-reload_ck_history (GdmUserManager *manager)
+static gboolean
+load_ck_history (GdmUserManager *manager)
 {
         char       *command;
         const char *seat_id;
@@ -1298,6 +1298,10 @@ reload_ck_history (GdmUserManager *manager)
         char      **argv;
         int         standard_out;
         GIOChannel *channel;
+
+        g_assert (manager->priv->ck_history_id == 0);
+
+        command = NULL;
 
         seat_id = NULL;
         if (manager->priv->seat_id != NULL
@@ -1308,7 +1312,7 @@ reload_ck_history (GdmUserManager *manager)
 
         if (seat_id == NULL) {
                 g_warning ("Unable to find users: no seat-id found");
-                return;
+                goto out;
         }
 
         command = g_strdup_printf ("ck-history --frequent --seat='%s' --session-type=''",
@@ -1360,7 +1364,10 @@ reload_ck_history (GdmUserManager *manager)
         g_io_channel_unref (channel);
 
  out:
+
         g_free (command);
+
+        return manager->priv->ck_history_id != 0;
 }
 
 static void
@@ -1518,30 +1525,35 @@ reload_passwd (GdmUserManager *manager)
 }
 
 static void
-reload_users (GdmUserManager *manager)
+load_users (GdmUserManager *manager)
 {
-        reload_ck_history (manager);
+        gboolean res;
+
+        res = load_ck_history (manager);
         reload_passwd (manager);
+        if (! res) {
+                g_signal_emit (G_OBJECT (manager), signals[USERS_LOADED], 0);
+        }
 }
 
 static gboolean
-reload_users_timeout (GdmUserManager *manager)
+load_users_idle (GdmUserManager *manager)
 {
-        reload_users (manager);
-        manager->priv->reload_id = 0;
+        load_users (manager);
+        manager->priv->load_id = 0;
 
         return FALSE;
 }
 
 static void
-queue_reload_users (GdmUserManager *manager)
+queue_load_users (GdmUserManager *manager)
 {
-        if (manager->priv->reload_id > 0) {
+        if (manager->priv->load_id > 0) {
                 return;
         }
 
         g_signal_emit (G_OBJECT (manager), signals[LOADING_USERS], 0);
-        manager->priv->reload_id = g_idle_add ((GSourceFunc)reload_users_timeout, manager);
+        manager->priv->load_id = g_idle_add ((GSourceFunc)load_users_idle, manager);
 }
 
 static void
@@ -1763,7 +1775,7 @@ gdm_user_manager_init (GdmUserManager *manager)
 
         get_seat_proxy (manager);
 
-        queue_reload_users (manager);
+        queue_load_users (manager);
 
         manager->priv->users_dirty = FALSE;
 }
@@ -1797,9 +1809,9 @@ gdm_user_manager_finalize (GObject *object)
                 manager->priv->ck_history_id = 0;
         }
 
-        if (manager->priv->reload_id > 0) {
-                g_source_remove (manager->priv->reload_id);
-                manager->priv->reload_id = 0;
+        if (manager->priv->load_id > 0) {
+                g_source_remove (manager->priv->load_id);
+                manager->priv->load_id = 0;
         }
 
         g_hash_table_destroy (manager->priv->sessions);
