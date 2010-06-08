@@ -108,7 +108,9 @@ gdm_layout_chooser_widget_add_layout (GdmLayoutChooserWidget *widget,
                                              NULL,
                                              0,
                                              FALSE,
-                                             FALSE);
+                                             FALSE,
+                                             NULL,
+                                             NULL);
                 g_free (escaped);
                 g_free (layout);
         }
