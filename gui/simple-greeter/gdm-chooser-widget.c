@@ -88,6 +88,7 @@ struct GdmChooserWidgetPrivate
         gint                     number_of_active_timers;
 
         guint                    update_idle_id;
+        guint                    update_visibility_idle_id;
         guint                    timer_animation_timeout_id;
 
         guint32                  should_hide_inactive_items : 1;
@@ -596,7 +597,7 @@ update_separator_visibility (GdmChooserWidget *widget)
                             -1);
 }
 
-static void
+static gboolean
 update_chooser_visibility (GdmChooserWidget *widget)
 {
         if (gdm_chooser_widget_get_number_of_items (widget) > 0) {
@@ -605,6 +606,10 @@ update_chooser_visibility (GdmChooserWidget *widget)
                 gtk_widget_hide (widget->priv->frame);
         }
         g_object_notify (G_OBJECT (widget), "list-visible");
+
+        widget->priv->update_visibility_idle_id = 0;
+
+        return FALSE;
 }
 
 static void
@@ -1149,6 +1154,11 @@ gdm_chooser_widget_dispose (GObject *object)
 
         widget = GDM_CHOOSER_WIDGET (object);
 
+        if (widget->priv->update_visibility_idle_id > 0) {
+                g_source_remove (widget->priv->update_visibility_idle_id);
+                widget->priv->update_visibility_idle_id = 0;
+        }
+
         if (widget->priv->separator_row != NULL) {
                 gtk_tree_row_reference_free (widget->priv->separator_row);
                 widget->priv->separator_row = NULL;
@@ -1587,6 +1597,8 @@ add_separator (GdmChooserWidget *widget)
 static gboolean
 update_column_visibility (GdmChooserWidget *widget)
 {
+        g_debug ("GdmChooserWidget: updating column visibility");
+
         if (widget->priv->number_of_rows_with_images > 0) {
                 gtk_tree_view_column_set_visible (widget->priv->image_column,
                                                   TRUE);
@@ -2032,6 +2044,15 @@ gdm_chooser_widget_update_item (GdmChooserWidget *widget,
                             -1);
 }
 
+static void
+queue_update_chooser_visibility (GdmChooserWidget *widget)
+{
+        if (widget->priv->update_visibility_idle_id == 0) {
+                widget->priv->update_visibility_idle_id =
+                        g_idle_add ((GSourceFunc) update_chooser_visibility, widget);
+        }
+}
+
 void
 gdm_chooser_widget_add_item (GdmChooserWidget *widget,
                              const char       *id,
@@ -2078,7 +2099,7 @@ gdm_chooser_widget_add_item (GdmChooserWidget *widget,
                                            -1);
 
         move_cursor_to_top (widget);
-        update_chooser_visibility (widget);
+        queue_update_chooser_visibility (widget);
 }
 
 void
@@ -2127,7 +2148,7 @@ gdm_chooser_widget_remove_item (GdmChooserWidget *widget,
         gtk_list_store_remove (widget->priv->list_store, &iter);
 
         move_cursor_to_top (widget);
-        update_chooser_visibility (widget);
+        queue_update_chooser_visibility (widget);
 }
 
 gboolean
