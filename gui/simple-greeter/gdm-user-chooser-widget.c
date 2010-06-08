@@ -168,6 +168,63 @@ queue_update_other_user_visibility (GdmUserChooserWidget *widget)
 }
 
 static void
+update_item_for_user (GdmUserChooserWidget *widget,
+                      GdmUser              *user)
+{
+        GdkPixbuf    *pixbuf;
+        char         *tooltip;
+        gboolean      is_logged_in;
+        int           size;
+
+
+        size = get_icon_height_for_widget (GTK_WIDGET (widget));
+        pixbuf = gdm_user_render_icon (user, size);
+
+        if (pixbuf == NULL && widget->priv->stock_person_pixbuf != NULL) {
+                pixbuf = g_object_ref (widget->priv->stock_person_pixbuf);
+        }
+
+        tooltip = g_strdup_printf (_("Log in as %s"),
+                                   gdm_user_get_user_name (user));
+
+        is_logged_in = gdm_user_is_logged_in (user);
+
+        g_debug ("GdmUserChooserWidget: User added name:%s logged-in:%d pixbuf:%p",
+                 gdm_user_get_user_name (user),
+                 is_logged_in,
+                 pixbuf);
+
+        gdm_chooser_widget_update_item (GDM_CHOOSER_WIDGET (widget),
+                                        gdm_user_get_user_name (user),
+                                        pixbuf,
+                                        gdm_user_get_real_name (user),
+                                        tooltip,
+                                        gdm_user_get_login_frequency (user),
+                                        is_logged_in,
+                                        FALSE);
+        g_free (tooltip);
+
+        if (pixbuf != NULL) {
+                g_object_unref (pixbuf);
+        }
+}
+
+static void
+on_item_load (GdmChooserWidget     *widget,
+              const char           *id,
+              GdmUserChooserWidget *user_chooser)
+{
+        GdmUser *user;
+
+        g_debug ("GdmUserChooserWidget: Loading item for id=%s", id);
+
+        user = gdm_user_manager_get_user (user_chooser->priv->manager, id);
+        if (user != NULL) {
+                update_item_for_user (user_chooser, user);
+        }
+}
+
+static void
 add_user_other (GdmUserChooserWidget *widget)
 {
         widget->priv->has_user_other = TRUE;
@@ -183,7 +240,9 @@ add_user_other (GdmUserChooserWidget *widget)
                                      _("Choose a different account"),
                                      0,
                                      FALSE,
-                                     TRUE);
+                                     TRUE,
+                                     (GdmChooserWidgetItemLoadFunc) on_item_load,
+                                     widget);
 }
 
 static void
@@ -196,7 +255,9 @@ add_user_guest (GdmUserChooserWidget *widget)
                                      _("Login as a temporary guest"),
                                      0,
                                      FALSE,
-                                     TRUE);
+                                     TRUE,
+                                     (GdmChooserWidgetItemLoadFunc) on_item_load,
+                                     widget);
         queue_update_other_user_visibility (widget);
 }
 
@@ -210,7 +271,9 @@ add_user_auto (GdmUserChooserWidget *widget)
                                      _("Automatically login to the system after selecting options"),
                                      0,
                                      FALSE,
-                                     TRUE);
+                                     TRUE,
+                                     (GdmChooserWidgetItemLoadFunc) on_item_load,
+                                     widget);
         queue_update_other_user_visibility (widget);
 }
 
@@ -386,18 +449,12 @@ add_user (GdmUserChooserWidget *widget,
         GdkPixbuf    *pixbuf;
         char         *tooltip;
         gboolean      is_logged_in;
-        int           size;
 
         if (!widget->priv->show_normal_users) {
                 return;
         }
 
-        size = get_icon_height_for_widget (GTK_WIDGET (widget));
-        pixbuf = gdm_user_render_icon (user, size);
-        if (pixbuf == NULL && widget->priv->stock_person_pixbuf != NULL) {
-                pixbuf = g_object_ref (widget->priv->stock_person_pixbuf);
-        }
-
+        pixbuf = NULL;
         tooltip = g_strdup_printf (_("Log in as %s"),
                                    gdm_user_get_user_name (user));
 
@@ -415,7 +472,9 @@ add_user (GdmUserChooserWidget *widget,
                                      tooltip,
                                      gdm_user_get_login_frequency (user),
                                      is_logged_in,
-                                     FALSE);
+                                     FALSE,
+                                     (GdmChooserWidgetItemLoadFunc) on_item_load,
+                                     widget);
         g_free (tooltip);
 
         if (pixbuf != NULL) {
@@ -481,11 +540,6 @@ on_user_changed (GdmUserManager       *manager,
                  GdmUser              *user,
                  GdmUserChooserWidget *widget)
 {
-        GdkPixbuf    *pixbuf;
-        char         *tooltip;
-        gboolean      is_logged_in;
-        int           size;
-
         /* wait for all users to be loaded */
         if (! widget->priv->loaded) {
                 return;
@@ -494,36 +548,7 @@ on_user_changed (GdmUserManager       *manager,
                 return;
         }
 
-        size = get_icon_height_for_widget (GTK_WIDGET (widget));
-        pixbuf = gdm_user_render_icon (user, size);
-
-        if (pixbuf == NULL && widget->priv->stock_person_pixbuf != NULL) {
-                pixbuf = g_object_ref (widget->priv->stock_person_pixbuf);
-        }
-
-        tooltip = g_strdup_printf (_("Log in as %s"),
-                                   gdm_user_get_user_name (user));
-
-        is_logged_in = gdm_user_is_logged_in (user);
-
-        g_debug ("GdmUserChooserWidget: User added name:%s logged-in:%d pixbuf:%p",
-                 gdm_user_get_user_name (user),
-                 is_logged_in,
-                 pixbuf);
-
-        gdm_chooser_widget_update_item (GDM_CHOOSER_WIDGET (widget),
-                                        gdm_user_get_user_name (user),
-                                        pixbuf,
-                                        gdm_user_get_real_name (user),
-                                        tooltip,
-                                        gdm_user_get_login_frequency (user),
-                                        is_logged_in,
-                                        FALSE);
-        g_free (tooltip);
-
-        if (pixbuf != NULL) {
-                g_object_unref (pixbuf);
-        }
+        update_item_for_user (widget, user);
 }
 
 static void

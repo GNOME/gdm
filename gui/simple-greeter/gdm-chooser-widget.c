@@ -139,6 +139,8 @@ enum {
         CHOOSER_TIMER_DURATION_COLUMN,
         CHOOSER_TIMER_VALUE_COLUMN,
         CHOOSER_ID_COLUMN,
+        CHOOSER_LOAD_FUNC_COLUMN,
+        CHOOSER_LOAD_DATA_COLUMN,
         NUMBER_OF_CHOOSER_COLUMNS
 };
 
@@ -598,9 +600,49 @@ update_separator_visibility (GdmChooserWidget *widget)
                             -1);
 }
 
+static void
+update_visible_items (GdmChooserWidget *widget)
+{
+        GtkTreePath *path;
+        GtkTreePath *end;
+        GtkTreeIter  iter;
+
+        if (! gtk_tree_view_get_visible_range (GTK_TREE_VIEW (widget->priv->items_view), &path, &end)) {
+                g_debug ("Unable to get visible range");
+                return;
+        }
+
+        for (; gtk_tree_path_compare (path, end) <= 0; gtk_tree_path_next (path)) {
+                char                        *id;
+                gpointer                     user_data;
+                GdmChooserWidgetItemLoadFunc func;
+
+                if (! gtk_tree_model_get_iter (GTK_TREE_MODEL (widget->priv->model_sorter), &iter, path))
+                        break;
+
+                id = NULL;
+                gtk_tree_model_get (GTK_TREE_MODEL (widget->priv->model_sorter),
+                                    &iter,
+                                    CHOOSER_ID_COLUMN, &id,
+                                    CHOOSER_LOAD_FUNC_COLUMN, &func,
+                                    CHOOSER_LOAD_DATA_COLUMN, &user_data,
+                                    -1);
+                if (id != NULL && func != NULL) {
+                        func (widget, id, user_data);
+                }
+
+                g_free (id);
+        }
+
+        gtk_tree_path_free (path);
+        gtk_tree_path_free (end);
+}
+
 static gboolean
 update_chooser_visibility (GdmChooserWidget *widget)
 {
+        update_visible_items (widget);
+
         if (gdm_chooser_widget_get_number_of_items (widget) > 0) {
                 gtk_widget_show (widget->priv->frame);
         } else {
@@ -1783,11 +1825,20 @@ on_selection_changed (GtkTreeSelection *selection,
 }
 
 static void
+on_adjustment_value_changed (GtkAdjustment    *adjustment,
+                             GdmChooserWidget *widget)
+{
+        g_debug ("Treeview scrolled");
+        update_visible_items (widget);
+}
+
+static void
 gdm_chooser_widget_init (GdmChooserWidget *widget)
 {
         GtkTreeViewColumn *column;
         GtkTreeSelection  *selection;
         GtkCellRenderer   *renderer;
+        GtkAdjustment     *adjustment;
 
         widget->priv = GDM_CHOOSER_WIDGET_GET_PRIVATE (widget);
 
@@ -1841,7 +1892,7 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
 
         g_signal_connect (selection, "changed", G_CALLBACK (on_selection_changed), widget);
 
-        g_assert (NUMBER_OF_CHOOSER_COLUMNS == 11);
+        g_assert (NUMBER_OF_CHOOSER_COLUMNS == 13);
         widget->priv->list_store = gtk_list_store_new (NUMBER_OF_CHOOSER_COLUMNS,
                                                        GDK_TYPE_PIXBUF,
                                                        G_TYPE_STRING,
@@ -1853,7 +1904,9 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
                                                        G_TYPE_DOUBLE,
                                                        G_TYPE_DOUBLE,
                                                        G_TYPE_DOUBLE,
-                                                       G_TYPE_STRING);
+                                                       G_TYPE_STRING,
+                                                       G_TYPE_POINTER,
+                                                       G_TYPE_POINTER);
 
         widget->priv->model_filter = GTK_TREE_MODEL_FILTER (gtk_tree_model_filter_new (GTK_TREE_MODEL (widget->priv->list_store), NULL));
 
@@ -1936,6 +1989,9 @@ gdm_chooser_widget_init (GdmChooserWidget *widget)
 
         add_separator (widget);
         queue_column_visibility_update (widget);
+
+        adjustment = gtk_tree_view_get_vadjustment (GTK_TREE_VIEW (widget->priv->items_view));
+        g_signal_connect (adjustment, "value-changed", G_CALLBACK (on_adjustment_value_changed), widget);
 }
 
 static void
@@ -2070,7 +2126,9 @@ gdm_chooser_widget_add_item (GdmChooserWidget *widget,
                              const char       *comment,
                              gulong            priority,
                              gboolean          in_use,
-                             gboolean          keep_separate)
+                             gboolean          keep_separate,
+                             GdmChooserWidgetItemLoadFunc load_func,
+                             gpointer                     load_data)
 {
         gboolean is_visible;
 
@@ -2105,6 +2163,8 @@ gdm_chooser_widget_add_item (GdmChooserWidget *widget,
                                            CHOOSER_ITEM_IS_SEPARATED_COLUMN, keep_separate,
                                            CHOOSER_ITEM_IS_VISIBLE_COLUMN, is_visible,
                                            CHOOSER_ID_COLUMN, id,
+                                           CHOOSER_LOAD_FUNC_COLUMN, load_func,
+                                           CHOOSER_LOAD_DATA_COLUMN, load_data,
                                            -1);
 
         queue_move_cursor_to_top (widget);

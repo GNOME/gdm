@@ -57,6 +57,10 @@ typedef enum {
         GDM_CHOOSER_WIDGET_POSITION_BOTTOM,
 } GdmChooserWidgetPosition;
 
+typedef void     (*GdmChooserWidgetItemLoadFunc)         (GdmChooserWidget *widget,
+                                                          const char       *id,
+                                                          gpointer          data);
+
 typedef gboolean (*GdmChooserUpdateForeachFunc)          (GdmChooserWidget *widget,
                                                           const char       *id,
                                                           GdkPixbuf       **image,
@@ -78,7 +82,9 @@ void         gdm_chooser_widget_add_item                     (GdmChooserWidget *
                                                               const char       *comment,
                                                               gulong            priority,
                                                               gboolean          is_in_use,
-                                                              gboolean          keep_separate);
+                                                              gboolean          keep_separate,
+                                                              GdmChooserWidgetItemLoadFunc load_func,
+                                                              gpointer                     load_data);
 
 void         gdm_chooser_widget_update_foreach_item          (GdmChooserWidget           *widget,
                                                               GdmChooserUpdateForeachFunc cb,

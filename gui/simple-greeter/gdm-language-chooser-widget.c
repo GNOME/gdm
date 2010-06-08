@@ -121,7 +121,9 @@ gdm_language_chooser_widget_add_language (GdmLanguageChooserWidget *widget,
                                              readable_language,
                                              0,
                                              FALSE,
-                                             FALSE);
+                                             FALSE,
+                                             NULL,
+                                             NULL);
                 g_free (language);
         }
         g_free (readable_language);
