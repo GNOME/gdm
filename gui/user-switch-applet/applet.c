@@ -985,11 +985,11 @@ update_label (GdmAppletData *adata)
 
 #ifdef BUILD_PRESENSE_STUFF
         markup = g_strdup_printf ("<b>%s</b> <small>(%s)</small>",
-                                  gdm_user_get_display_name (GDM_USER (adata->user)),
+                                  gdm_user_get_real_name (GDM_USER (adata->user)),
                                   _(statuses[adata->current_status].display_name));
 #else
         markup = g_strdup_printf ("<b>%s</b>",
-                                  gdm_user_get_display_name (GDM_USER (adata->user)));
+                                  gdm_user_get_real_name (GDM_USER (adata->user)));
 #endif
         gtk_label_set_markup (GTK_LABEL (label), markup);
         g_free (markup);
