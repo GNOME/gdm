@@ -72,13 +72,15 @@ int
 main (int argc, char *argv[])
 {
 
+	GMainLoop *loop;
+
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
         textdomain (GETTEXT_PACKAGE);
 
         setlocale (LC_ALL, "");
 
-        gtk_init (&argc, &argv);
+        g_type_init ();
 
         if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
                 g_critical ("Unable to initialize settings client");
@@ -98,8 +100,9 @@ main (int argc, char *argv[])
                           "user-removed",
                           G_CALLBACK (on_user_removed),
                           NULL);
+        loop = g_main_loop_new (NULL, FALSE);
 
-        gtk_main ();
+        g_main_loop_run (loop);
 
         return 0;
 }
