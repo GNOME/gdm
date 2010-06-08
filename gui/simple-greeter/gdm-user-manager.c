@@ -81,7 +81,7 @@
 
 struct GdmUserManagerPrivate
 {
-        GHashTable            *users;
+        GHashTable            *users_by_name;
         GHashTable            *sessions;
         GHashTable            *shells;
         DBusGConnection       *connection;
@@ -615,7 +615,7 @@ static void
 add_user (GdmUserManager *manager,
           GdmUser        *user)
 {
-        g_hash_table_insert (manager->priv->users,
+        g_hash_table_insert (manager->priv->users_by_name,
                              g_strdup (gdm_user_get_user_name (user)),
                              g_object_ref (user));
 
@@ -775,7 +775,7 @@ maybe_add_session (GdmUserManager *manager,
                 return;
         }
 
-        user = g_hash_table_lookup (manager->priv->users, pwent->pw_name);
+        user = g_hash_table_lookup (manager->priv->users_by_name, pwent->pw_name);
         if (user == NULL) {
                 g_debug ("Creating new user");
 
@@ -822,7 +822,7 @@ seat_session_removed (DBusGProxy     *seat_proxy,
                 return;
         }
 
-        user = g_hash_table_lookup (manager->priv->users, username);
+        user = g_hash_table_lookup (manager->priv->users_by_name, username);
         if (user == NULL) {
                 /* nothing to do */
                 return;
@@ -929,7 +929,7 @@ gdm_user_manager_get_user (GdmUserManager *manager,
         g_return_val_if_fail (GDM_IS_USER_MANAGER (manager), NULL);
         g_return_val_if_fail (username != NULL && username[0] != '\0', NULL);
 
-        user = g_hash_table_lookup (manager->priv->users, username);
+        user = g_hash_table_lookup (manager->priv->users_by_name, username);
 
         if (user == NULL) {
                 struct passwd *pwent;
@@ -959,7 +959,7 @@ gdm_user_manager_get_user_by_uid (GdmUserManager *manager,
                 return NULL;
         }
 
-        user = g_hash_table_lookup (manager->priv->users, pwent->pw_name);
+        user = g_hash_table_lookup (manager->priv->users_by_name, pwent->pw_name);
 
         if (user == NULL) {
                 user = add_new_user_for_pwent (manager, pwent);
@@ -986,7 +986,7 @@ gdm_user_manager_list_users (GdmUserManager *manager)
         g_return_val_if_fail (GDM_IS_USER_MANAGER (manager), NULL);
 
         retval = NULL;
-        g_hash_table_foreach (manager->priv->users, listify_hash_values_hfunc, &retval);
+        g_hash_table_foreach (manager->priv->users_by_name, listify_hash_values_hfunc, &retval);
 
         return g_slist_sort (retval, (GCompareFunc) gdm_user_collate);
 }
@@ -1292,7 +1292,7 @@ reload_passwd (GdmUserManager *manager)
                 goto out;
         }
 
-        g_hash_table_foreach (manager->priv->users, listify_hash_values_hfunc, &old_users);
+        g_hash_table_foreach (manager->priv->users_by_name, listify_hash_values_hfunc, &old_users);
         g_slist_foreach (old_users, (GFunc) g_object_ref, NULL);
 
         /* Make sure we keep users who are logged in no matter what. */
@@ -1334,7 +1334,7 @@ reload_passwd (GdmUserManager *manager)
                                 continue;
                         }
 
-                        user = g_hash_table_lookup (manager->priv->users,
+                        user = g_hash_table_lookup (manager->priv->users_by_name,
                                                     pwent->pw_name);
 
                         /* Update users already in the *new* list */
@@ -1368,7 +1368,7 @@ reload_passwd (GdmUserManager *manager)
         for (list = old_users; list; list = list->next) {
                 if (! g_slist_find (new_users, list->data)) {
                         g_signal_emit (manager, signals[USER_REMOVED], 0, list->data);
-                        g_hash_table_remove (manager->priv->users,
+                        g_hash_table_remove (manager->priv->users_by_name,
                                              gdm_user_get_user_name (list->data));
                 }
         }
@@ -1665,10 +1665,10 @@ gdm_user_manager_init (GdmUserManager *manager)
                                                          g_free);
 
         /* users */
-        manager->priv->users = g_hash_table_new_full (g_str_hash,
-                                                      g_str_equal,
-                                                      g_free,
-                                                      (GDestroyNotify) g_object_run_dispose);
+        manager->priv->users_by_name = g_hash_table_new_full (g_str_hash,
+                                                              g_str_equal,
+                                                              g_free,
+                                                              (GDestroyNotify) g_object_run_dispose);
 
         if (manager->priv->include_all == TRUE) {
                 /* /etc/shells */
@@ -1759,7 +1759,7 @@ gdm_user_manager_finalize (GObject *object)
         g_hash_table_destroy (manager->priv->sessions);
 
         g_file_monitor_cancel (manager->priv->passwd_monitor);
-        g_hash_table_destroy (manager->priv->users);
+        g_hash_table_destroy (manager->priv->users_by_name);
 
         g_file_monitor_cancel (manager->priv->shells_monitor);
         g_hash_table_destroy (manager->priv->shells);
