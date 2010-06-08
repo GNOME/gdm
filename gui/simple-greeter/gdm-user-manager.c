@@ -614,115 +614,17 @@ user_in_exclude_list (GdmUserManager *manager,
         return ret;
 }
 
-static gboolean
-maybe_add_session_for_user (GdmUserManager *manager,
-                            GdmUser        *user,
-                            const char     *ssid)
+static void
+add_session_for_user (GdmUserManager *manager,
+                      GdmUser        *user,
+                      const char     *ssid)
 {
-        char    *sid;
-        char    *x11_display;
-        gboolean ret;
-
-        ret = FALSE;
-        sid = NULL;
-        x11_display = NULL;
-
-        /* skip if on another seat */
-        sid = get_seat_id_for_session (manager->priv->connection, ssid);
-        if (sid == NULL
-            || manager->priv->seat_id == NULL
-            || strcmp (sid, manager->priv->seat_id) != 0) {
-                g_debug ("GdmUserManager: not adding session on other seat: %s", ssid);
-                goto out;
-        }
-
-        /* skip if doesn't have an x11 display */
-        x11_display = get_x11_display_for_session (manager->priv->connection, ssid);
-        if (x11_display == NULL || x11_display[0] == '\0') {
-                g_debug ("GdmUserManager: not adding session without a x11 display: %s", ssid);
-                goto out;
-        }
-
-        if (user_in_exclude_list (manager, gdm_user_get_user_name (user))) {
-                g_debug ("GdmUserManager: excluding user '%s'", gdm_user_get_user_name (user));
-                goto out;
-        }
-
         g_hash_table_insert (manager->priv->sessions,
                              g_strdup (ssid),
                              g_strdup (gdm_user_get_user_name (user)));
 
         _gdm_user_add_session (user, ssid);
         g_debug ("GdmUserManager: added session for user: %s", gdm_user_get_user_name (user));
-
-        ret = TRUE;
-
- out:
-        g_free (sid);
-        g_free (x11_display);
-
-        return ret;
-}
-
-static void
-add_sessions_for_user (GdmUserManager *manager,
-                       GdmUser        *user)
-{
-        DBusGProxy      *proxy;
-        GError          *error;
-        gboolean         res;
-        guint32          uid;
-        GPtrArray       *sessions;
-        int              i;
-
-        proxy = dbus_g_proxy_new_for_name (manager->priv->connection,
-                                           CK_NAME,
-                                           CK_MANAGER_PATH,
-                                           CK_MANAGER_INTERFACE);
-        if (proxy == NULL) {
-                g_warning ("Failed to connect to the ConsoleKit manager object");
-                goto out;
-        }
-
-        uid = gdm_user_get_uid (user);
-
-        g_debug ("Getting list of sessions for user %u", uid);
-
-        error = NULL;
-        res = dbus_g_proxy_call (proxy,
-                                 "GetSessionsForUnixUser",
-                                 &error,
-                                 G_TYPE_UINT, uid,
-                                 G_TYPE_INVALID,
-                                 dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH),
-                                 &sessions,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                if (error != NULL) {
-                        g_debug ("Failed to find sessions for user: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_debug ("Failed to find sessions for user");
-                }
-                goto out;
-        }
-
-        g_debug ("Found %d sessions for user %s", sessions->len, gdm_user_get_user_name (user));
-
-        for (i = 0; i < sessions->len; i++) {
-                char *ssid;
-
-                ssid = g_ptr_array_index (sessions, i);
-                maybe_add_session_for_user (manager, user, ssid);
-        }
-
-        g_ptr_array_foreach (sessions, (GFunc)g_free, NULL);
-        g_ptr_array_free (sessions, TRUE);
-
- out:
-        if (proxy != NULL) {
-                g_object_unref (proxy);
-        }
 }
 
 static GdmUser *
@@ -742,7 +644,6 @@ static void
 add_user (GdmUserManager *manager,
           GdmUser        *user)
 {
-        add_sessions_for_user (manager, user);
         g_hash_table_insert (manager->priv->users,
                              g_strdup (gdm_user_get_user_name (user)),
                              g_object_ref (user));
@@ -865,17 +766,15 @@ get_uid_from_session_id (GdmUserManager *manager,
 }
 
 static void
-seat_session_added (DBusGProxy     *seat_proxy,
-                    const char     *session_id,
-                    GdmUserManager *manager)
+maybe_add_session (GdmUserManager *manager,
+                   const char     *session_id)
 {
         uid_t          uid;
         gboolean       res;
         struct passwd *pwent;
         GdmUser       *user;
         gboolean       is_new;
-
-        g_debug ("Session added: %s", session_id);
+        char          *x11_display;
 
         res = get_uid_from_session_id (manager, session_id, &uid);
         if (! res) {
@@ -889,6 +788,15 @@ seat_session_added (DBusGProxy     *seat_proxy,
                 g_warning ("Unable to lookup user ID %d: %s", (int)uid, g_strerror (errno));
                 return;
         }
+
+        /* skip if doesn't have an x11 display */
+        x11_display = get_x11_display_for_session (manager->priv->connection, session_id);
+        if (x11_display == NULL || x11_display[0] == '\0') {
+                g_debug ("GdmUserManager: not adding session without a x11 display: %s", session_id);
+                g_free (x11_display);
+                return;
+        }
+        g_free (x11_display);
 
         /* check exclusions up front */
         if (user_in_exclude_list (manager, pwent->pw_name)) {
@@ -907,16 +815,22 @@ seat_session_added (DBusGProxy     *seat_proxy,
                 is_new = FALSE;
         }
 
-        res = maybe_add_session_for_user (manager, user, session_id);
+        add_session_for_user (manager, user, session_id);
 
-        /* only add the user if we added a session */
+        /* only add the user if it was newly created */
         if (is_new) {
-                if (res) {
-                        add_user (manager, user);
-                } else {
-                        g_object_unref (user);
-                }
+                add_user (manager, user);
         }
+}
+
+static void
+seat_session_added (DBusGProxy     *seat_proxy,
+                    const char     *session_id,
+                    GdmUserManager *manager)
+{
+        g_debug ("Session added: %s", session_id);
+
+        maybe_add_session (manager, session_id);
 }
 
 static void
@@ -1505,9 +1419,54 @@ reload_passwd (GdmUserManager *manager)
 }
 
 static void
+load_sessions (GdmUserManager *manager)
+{
+        gboolean    res;
+        GError     *error;
+        GPtrArray  *sessions;
+        int         i;
+
+        if (manager->priv->seat_proxy == NULL) {
+                g_debug ("GdmUserManager: no seat proxy; can't load sessions");
+                return;
+        }
+
+        sessions = NULL;
+        error = NULL;
+        res = dbus_g_proxy_call (manager->priv->seat_proxy,
+                                 "GetSessions",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH), &sessions,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("unable to determine sessions for seat: %s",
+                                   error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("unable to determine sessions for seat");
+                }
+                return;
+        }
+
+        for (i = 0; i < sessions->len; i++) {
+                char *ssid;
+
+                ssid = g_ptr_array_index (sessions, i);
+
+                maybe_add_session (manager, ssid);
+        }
+        g_ptr_array_foreach (sessions, (GFunc)g_free, NULL);
+        g_ptr_array_free (sessions, TRUE);
+}
+
+static void
 load_users (GdmUserManager *manager)
 {
         gboolean res;
+
+        load_sessions (manager);
 
         res = load_ck_history (manager);
         reload_passwd (manager);
@@ -1713,7 +1672,6 @@ gdm_set_string_list (char *value, GSList **retval)
 
         g_strfreev (temp_array);
 }
-
 
 static void
 gdm_user_manager_init (GdmUserManager *manager)
