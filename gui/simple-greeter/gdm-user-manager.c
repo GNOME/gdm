@@ -591,8 +591,6 @@ user_in_exclude_list (GdmUserManager *manager,
         GSList   *found;
         gboolean  ret = FALSE;
 
-        g_debug ("checking exclude list");
-
         /* always exclude the "gdm" user. */
         if (user == NULL || (strcmp (user, GDM_USERNAME) == 0)) {
                 return TRUE;
@@ -606,6 +604,7 @@ user_in_exclude_list (GdmUserManager *manager,
                         ret = TRUE;
                 }
         }
+
         return ret;
 }
 
