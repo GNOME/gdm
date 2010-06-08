@@ -415,19 +415,16 @@ check_user_file (const char *filename,
 
         /* Exists/Readable? */
         if (stat (filename, &fileinfo) < 0) {
-                g_debug ("File does not exist");
                 return FALSE;
         }
 
         /* Is a regular file */
         if (G_UNLIKELY (!S_ISREG (fileinfo.st_mode))) {
-                g_debug ("File is not a regular file");
                 return FALSE;
         }
 
         /* Size is kosher? */
         if (G_UNLIKELY (fileinfo.st_size > max_file_size)) {
-                g_debug ("File is too large");
                 return FALSE;
         }
 

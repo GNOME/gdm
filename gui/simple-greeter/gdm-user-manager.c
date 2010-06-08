@@ -1170,7 +1170,7 @@ load_ck_history (GdmUserManager *manager)
         }
 
         if (seat_id == NULL) {
-                g_warning ("Unable to find users: no seat-id found");
+                g_warning ("Unable to load CK history: no seat-id found");
                 goto out;
         }
 
