@@ -96,6 +96,7 @@ struct GdmUserManagerPrivate
         gboolean               include_all;
 
         guint                  load_id;
+        guint                  reload_passwd_id;
         guint                  ck_history_id;
 
         guint8                 users_dirty : 1;
@@ -1556,6 +1557,25 @@ queue_load_users (GdmUserManager *manager)
         manager->priv->load_id = g_idle_add ((GSourceFunc)load_users_idle, manager);
 }
 
+static gboolean
+reload_passwd_idle (GdmUserManager *manager)
+{
+        reload_passwd (manager);
+        manager->priv->reload_passwd_id = 0;
+
+        return FALSE;
+}
+
+static void
+queue_reload_passwd (GdmUserManager *manager)
+{
+        if (manager->priv->reload_passwd_id > 0) {
+                g_source_remove (manager->priv->reload_passwd_id);
+        }
+
+        manager->priv->reload_passwd_id = g_timeout_add_seconds (5, (GSourceFunc)reload_passwd_idle, manager);
+}
+
 static void
 reload_shells (GdmUserManager *manager)
 {
@@ -1593,7 +1613,7 @@ on_shells_monitor_changed (GFileMonitor     *monitor,
         }
 
         reload_shells (manager);
-        reload_passwd (manager);
+        queue_reload_passwd (manager);
 }
 
 static void
@@ -1608,7 +1628,7 @@ on_passwd_monitor_changed (GFileMonitor     *monitor,
                 return;
         }
 
-        reload_passwd (manager);
+        queue_reload_passwd (manager);
 }
 
 static void
@@ -1812,6 +1832,11 @@ gdm_user_manager_finalize (GObject *object)
         if (manager->priv->load_id > 0) {
                 g_source_remove (manager->priv->load_id);
                 manager->priv->load_id = 0;
+        }
+
+        if (manager->priv->reload_passwd_id > 0) {
+                g_source_remove (manager->priv->reload_passwd_id);
+                manager->priv->reload_passwd_id = 0;
         }
 
         g_hash_table_destroy (manager->priv->sessions);
