@@ -36,8 +36,9 @@
 static GdmUserManager *manager = NULL;
 
 static void
-on_users_loaded (GdmUserManager *manager,
-                 gpointer        data)
+on_is_loaded_changed (GdmUserManager *manager,
+                      GParamSpec     *pspec,
+                      gpointer        data)
 {
         GSList *users;
 
@@ -86,8 +87,8 @@ main (int argc, char *argv[])
 
         manager = gdm_user_manager_ref_default ();
         g_signal_connect (manager,
-                          "users-loaded",
-                          G_CALLBACK (on_users_loaded),
+                          "notify::is-loaded",
+                          G_CALLBACK (on_is_loaded_changed),
                           NULL);
         g_signal_connect (manager,
                           "user-added",

@@ -738,8 +738,9 @@ on_manager_user_removed (GdmUserManager *manager,
 }
 
 static void
-on_manager_users_loaded (GdmUserManager *manager,
-                         GdmAppletData  *adata)
+on_manager_is_loaded_changed (GdmUserManager *manager,
+                              GParamSpec     *pspec,
+                              GdmAppletData  *adata)
 {
         update_switch_user (adata);
 }
@@ -1063,8 +1064,8 @@ create_sub_menu (GdmAppletData *adata)
         gtk_widget_show (adata->menu);
 
         g_signal_connect (adata->manager,
-                          "users-loaded",
-                          G_CALLBACK (on_manager_users_loaded),
+                          "notify::is-loaded",
+                          G_CALLBACK (on_manager_is_loaded_changed),
                           adata);
         g_signal_connect (adata->manager,
                           "user-added",
