@@ -69,6 +69,7 @@ struct GdmUserChooserWidgetPrivate
 
         guint           has_user_other : 1;
 
+        guint           update_other_visibility_idle_id;
         guint           load_idle_id;
 };
 
@@ -127,17 +128,19 @@ get_icon_height_for_widget (GtkWidget *widget)
         return height;
 }
 
-static void
+static gboolean
 update_other_user_visibility (GdmUserChooserWidget *widget)
 {
         int number_of_users;
+
+        g_debug ("GdmUserChooserWidget: updating other user visibility");
 
         if (!widget->priv->show_user_other) {
                 if (widget->priv->has_user_other) {
                         remove_user_other (widget);
                 }
 
-                return;
+                goto out;
         }
 
         number_of_users = gdm_chooser_widget_get_number_of_items (GDM_CHOOSER_WIDGET (widget));
@@ -148,6 +151,19 @@ update_other_user_visibility (GdmUserChooserWidget *widget)
                 remove_user_other (widget);
         } if (number_of_users >= 1 && !widget->priv->has_user_other) {
                 add_user_other (widget);
+        }
+
+ out:
+        widget->priv->update_other_visibility_idle_id = 0;
+        return FALSE;
+}
+
+static void
+queue_update_other_user_visibility (GdmUserChooserWidget *widget)
+{
+        if (widget->priv->update_other_visibility_idle_id == 0) {
+                widget->priv->update_other_visibility_idle_id =
+                        g_idle_add ((GSourceFunc) update_other_user_visibility, widget);
         }
 }
 
@@ -181,7 +197,7 @@ add_user_guest (GdmUserChooserWidget *widget)
                                      0,
                                      FALSE,
                                      TRUE);
-        update_other_user_visibility (widget);
+        queue_update_other_user_visibility (widget);
 }
 
 static void
@@ -195,7 +211,7 @@ add_user_auto (GdmUserChooserWidget *widget)
                                      0,
                                      FALSE,
                                      TRUE);
-        update_other_user_visibility (widget);
+        queue_update_other_user_visibility (widget);
 }
 
 static void
@@ -211,7 +227,7 @@ remove_user_guest (GdmUserChooserWidget *widget)
 {
         gdm_chooser_widget_remove_item (GDM_CHOOSER_WIDGET (widget),
                                         GDM_USER_CHOOSER_USER_GUEST);
-        update_other_user_visibility (widget);
+        queue_update_other_user_visibility (widget);
 }
 
 static void
@@ -219,7 +235,7 @@ remove_user_auto (GdmUserChooserWidget *widget)
 {
         gdm_chooser_widget_remove_item (GDM_CHOOSER_WIDGET (widget),
                                         GDM_USER_CHOOSER_USER_AUTO);
-        update_other_user_visibility (widget);
+        queue_update_other_user_visibility (widget);
 }
 
 void
@@ -230,7 +246,7 @@ gdm_user_chooser_widget_set_show_user_other (GdmUserChooserWidget *widget,
 
         if (widget->priv->show_user_other != show_user) {
                 widget->priv->show_user_other = show_user;
-                update_other_user_visibility (widget);
+                queue_update_other_user_visibility (widget);
         }
 }
 
@@ -406,7 +422,7 @@ add_user (GdmUserChooserWidget *widget,
                 g_object_unref (pixbuf);
         }
 
-        update_other_user_visibility (widget);
+        queue_update_other_user_visibility (widget);
 }
 
 static void
@@ -439,7 +455,7 @@ on_user_removed (GdmUserManager       *manager,
         gdm_chooser_widget_remove_item (GDM_CHOOSER_WIDGET (widget),
                                         user_name);
 
-        update_other_user_visibility (widget);
+        queue_update_other_user_visibility (widget);
 }
 
 static void
@@ -601,6 +617,11 @@ gdm_user_chooser_widget_dispose (GObject *object)
         if (widget->priv->load_idle_id > 0) {
                 g_source_remove (widget->priv->load_idle_id);
                 widget->priv->load_idle_id = 0;
+        }
+
+        if (widget->priv->update_other_visibility_idle_id > 0) {
+                g_source_remove (widget->priv->update_other_visibility_idle_id);
+                widget->priv->update_other_visibility_idle_id = 0;
         }
 
         if (widget->priv->logged_in_pixbuf != NULL) {

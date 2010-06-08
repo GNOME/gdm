@@ -875,6 +875,7 @@ cancel_button_clicked (GtkButton             *button,
 static void
 on_user_chooser_visibility_changed (GdmGreeterLoginWindow *login_window)
 {
+        g_debug ("GdmGreeterLoginWindow: Chooser visibility changed");
         update_banner_message (login_window);
         adjust_other_login_visibility (login_window);
 }
