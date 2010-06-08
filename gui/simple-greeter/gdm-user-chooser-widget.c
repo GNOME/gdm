@@ -47,7 +47,7 @@ enum {
         USER_ACCOUNT_DISABLED        = 1 << 1,
 };
 
-#define DEFAULT_USER_ICON "stock_person"
+#define DEFAULT_USER_ICON "avatar-default"
 
 #define GDM_USER_CHOOSER_WIDGET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_USER_CHOOSER_WIDGET, GdmUserChooserWidgetPrivate))
 
