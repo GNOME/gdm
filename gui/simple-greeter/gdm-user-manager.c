@@ -74,7 +74,7 @@
 #define PATH_PASSWD     "/etc/passwd"
 
 #define DEFAULT_GLOBAL_FACE_DIR DATADIR "/faces"
-#define DEFAULT_USER_ICON       "stock_person"
+#define DEFAULT_USER_ICON       "avatar-default"
 
 struct GdmUserManagerPrivate
 {
