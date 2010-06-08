@@ -431,6 +431,10 @@ on_user_sessions_changed (GdmUser        *user,
 {
         guint nsessions;
 
+        if (! manager->priv->is_loaded) {
+                return;
+        }
+
         nsessions = gdm_user_get_num_sessions (user);
 
         g_debug ("GdmUserManager: sessions changed user=%s num=%d",
@@ -449,9 +453,10 @@ static void
 on_user_changed (GdmUser        *user,
                  GdmUserManager *manager)
 {
-        g_debug ("GdmUserManager: user changed");
-
-        g_signal_emit (manager, signals[USER_CHANGED], 0, user);
+        if (manager->priv->is_loaded) {
+                g_debug ("GdmUserManager: user changed");
+                g_signal_emit (manager, signals[USER_CHANGED], 0, user);
+        }
 }
 
 static char *
