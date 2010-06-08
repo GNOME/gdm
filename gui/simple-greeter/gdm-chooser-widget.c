@@ -88,6 +88,7 @@ struct GdmChooserWidgetPrivate
         gint                     number_of_active_timers;
 
         guint                    update_idle_id;
+        guint                    update_cursor_idle_id;
         guint                    update_visibility_idle_id;
         guint                    timer_animation_timeout_id;
 
@@ -905,7 +906,7 @@ gdm_chooser_widget_grow (GdmChooserWidget *widget)
         }
 }
 
-static void
+static gboolean
 move_cursor_to_top (GdmChooserWidget *widget)
 {
         GtkTreeModel *model;
@@ -921,6 +922,9 @@ move_cursor_to_top (GdmChooserWidget *widget)
                                           FALSE);
         }
         gtk_tree_path_free (path);
+
+        widget->priv->update_cursor_idle_id = 0;
+        return FALSE;
 }
 
 static gboolean
@@ -1148,6 +1152,11 @@ gdm_chooser_widget_dispose (GObject *object)
         if (widget->priv->update_visibility_idle_id > 0) {
                 g_source_remove (widget->priv->update_visibility_idle_id);
                 widget->priv->update_visibility_idle_id = 0;
+        }
+
+        if (widget->priv->update_cursor_idle_id > 0) {
+                g_source_remove (widget->priv->update_cursor_idle_id);
+                widget->priv->update_cursor_idle_id = 0;
         }
 
         if (widget->priv->separator_row != NULL) {
@@ -2044,6 +2053,15 @@ queue_update_chooser_visibility (GdmChooserWidget *widget)
         }
 }
 
+static void
+queue_move_cursor_to_top (GdmChooserWidget *widget)
+{
+        if (widget->priv->update_cursor_idle_id == 0) {
+                widget->priv->update_cursor_idle_id =
+                        g_idle_add ((GSourceFunc) move_cursor_to_top, widget);
+        }
+}
+
 void
 gdm_chooser_widget_add_item (GdmChooserWidget *widget,
                              const char       *id,
@@ -2089,7 +2107,7 @@ gdm_chooser_widget_add_item (GdmChooserWidget *widget,
                                            CHOOSER_ID_COLUMN, id,
                                            -1);
 
-        move_cursor_to_top (widget);
+        queue_move_cursor_to_top (widget);
         queue_update_chooser_visibility (widget);
 }
 
@@ -2138,7 +2156,7 @@ gdm_chooser_widget_remove_item (GdmChooserWidget *widget,
 
         gtk_list_store_remove (widget->priv->list_store, &iter);
 
-        move_cursor_to_top (widget);
+        queue_move_cursor_to_top (widget);
         queue_update_chooser_visibility (widget);
 }
 
