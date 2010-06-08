@@ -775,7 +775,9 @@ add_user (GdmUserManager *manager,
                              g_strdup (gdm_user_get_user_name (user)),
                              g_object_ref (user));
 
-        g_signal_emit (manager, signals[USER_ADDED], 0, user);
+        if (manager->priv->is_loaded) {
+                g_signal_emit (manager, signals[USER_ADDED], 0, user);
+        }
 }
 
 static GdmUser *
