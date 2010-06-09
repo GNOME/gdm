@@ -460,11 +460,6 @@ add_user (GdmUserChooserWidget *widget,
 
         is_logged_in = gdm_user_is_logged_in (user);
 
-        g_debug ("GdmUserChooserWidget: User added name:%s logged-in:%d pixbuf:%p",
-                 gdm_user_get_user_name (user),
-                 is_logged_in,
-                 pixbuf);
-
         gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                      gdm_user_get_user_name (user),
                                      pixbuf,
