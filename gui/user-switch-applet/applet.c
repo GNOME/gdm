@@ -76,8 +76,6 @@ typedef struct _GdmAppletData
         GtkWidget      *login_screen_item;
         GtkWidget      *quit_session_item;
 
-        gboolean        has_other_users;
-
         guint           client_notify_lockdown_id;
 
         guint           current_status;
@@ -704,18 +702,15 @@ do_switch (GdmAppletData *adata,
 static void
 update_switch_user (GdmAppletData *adata)
 {
-        GSList *users;
         gboolean can_switch;
+        gboolean has_other_users;
 
         can_switch = gdm_user_manager_can_switch (adata->manager);
-        users = gdm_user_manager_list_users (adata->manager);
-        adata->has_other_users = FALSE;
-        if (users != NULL) {
-                adata->has_other_users = (g_slist_length (users) > 1);
-        }
-        g_slist_free (users);
+        g_object_get (adata->manager,
+                      "has-multiple-users", &has_other_users,
+                      NULL);
 
-        if (can_switch && adata->has_other_users) {
+        if (can_switch && has_other_users) {
                 gtk_widget_show (adata->login_screen_item);
         } else {
 
@@ -724,25 +719,17 @@ update_switch_user (GdmAppletData *adata)
 }
 
 static void
-on_manager_user_added (GdmUserManager *manager,
-                       GdmUser        *user,
-                       GdmAppletData  *adata)
-{
-        update_switch_user (adata);
-}
-
-static void
-on_manager_user_removed (GdmUserManager *manager,
-                         GdmUser        *user,
-                         GdmAppletData  *adata)
-{
-        update_switch_user (adata);
-}
-
-static void
 on_manager_is_loaded_changed (GdmUserManager *manager,
                               GParamSpec     *pspec,
                               GdmAppletData  *adata)
+{
+        update_switch_user (adata);
+}
+
+static void
+on_manager_has_multiple_users_changed (GdmUserManager       *manager,
+                                       GParamSpec           *pspec,
+                                       GdmAppletData        *adata)
 {
         update_switch_user (adata);
 }
@@ -1065,19 +1052,6 @@ create_sub_menu (GdmAppletData *adata)
                           G_CALLBACK (menu_expose_cb), adata);
         gtk_widget_show (adata->menu);
 
-        g_signal_connect (adata->manager,
-                          "notify::is-loaded",
-                          G_CALLBACK (on_manager_is_loaded_changed),
-                          adata);
-        g_signal_connect (adata->manager,
-                          "user-added",
-                          G_CALLBACK (on_manager_user_added),
-                          adata);
-        g_signal_connect (adata->manager,
-                          "user-removed",
-                          G_CALLBACK (on_manager_user_added),
-                          adata);
-
 #ifdef BUILD_PRESENSE_STUFF
         adata->user_item = gdm_entry_menu_item_new ();
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu),
@@ -1199,13 +1173,6 @@ static void
 destroy_sub_menu (GdmAppletData *adata)
 {
         gtk_menu_item_set_submenu (GTK_MENU_ITEM (adata->menuitem), NULL);
-
-        g_signal_handlers_disconnect_by_func (adata->manager,
-                                              G_CALLBACK (on_manager_user_added),
-                                              adata);
-        g_signal_handlers_disconnect_by_func (adata->manager,
-                                              G_CALLBACK (on_manager_user_removed),
-                                              adata);
 }
 
 static void
@@ -1506,6 +1473,15 @@ fill_applet (PanelApplet *applet)
         gtk_widget_show (adata->menubar);
 
         adata->manager = gdm_user_manager_ref_default ();
+        g_signal_connect (adata->manager,
+                          "notify::is-loaded",
+                          G_CALLBACK (on_manager_is_loaded_changed),
+                          adata);
+        g_signal_connect (adata->manager,
+                          "notify::has-multiple-users",
+                          G_CALLBACK (on_manager_has_multiple_users_changed),
+                          adata);
+
         gdm_user_manager_queue_load (adata->manager);
         setup_current_user (adata);
 
