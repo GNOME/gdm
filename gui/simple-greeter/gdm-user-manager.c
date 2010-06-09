@@ -92,6 +92,8 @@ struct GdmUserManagerPrivate
         GSList                *include;
         gboolean               include_all;
 
+        GCancellable          *cancellable;
+
         guint                  load_id;
         guint                  reload_passwd_id;
         guint                  ck_history_id;
@@ -119,6 +121,9 @@ static guint signals [LAST_SIGNAL] = { 0, };
 static void     gdm_user_manager_class_init (GdmUserManagerClass *klass);
 static void     gdm_user_manager_init       (GdmUserManager      *user_manager);
 static void     gdm_user_manager_finalize   (GObject             *object);
+
+static void load_users (GdmUserManager *manager);
+static void monitor_local_users (GdmUserManager *manager);
 
 static gpointer user_manager_object = NULL;
 
@@ -1172,8 +1177,6 @@ ck_history_watch (GIOChannel     *source,
         }
 
         if (done) {
-                set_is_loaded (manager, TRUE);
-
                 manager->priv->ck_history_id = 0;
                 return FALSE;
         }
@@ -1264,45 +1267,24 @@ load_ck_history (GdmUserManager *manager)
 }
 
 static void
-add_included_user (char *username, GdmUserManager *manager)
+reload_passwd_file (GHashTable *valid_shells,
+                    GSList     *exclude_users,
+                    GSList     *include_users,
+                    gboolean    include_all,
+                    GHashTable *current_users_by_name,
+                    GSList    **added_users,
+                    GSList    **removed_users)
 {
-        GdmUser     *user;
+        FILE           *fp;
+        GHashTableIter  iter;
+        GHashTable     *new_users_by_name;
+        GdmUser        *user;
+        char           *name;
 
-        g_debug ("Adding included user %s", username);
-        /*
-         * The call to gdm_user_manager_get_user will add the user if it is
-         * valid and not already in the hash.
-         */
-        user = gdm_user_manager_get_user (manager, username);
-        if (user == NULL) {
-                g_debug ("GdmUserManager: unable to lookup user '%s'", username);
-                g_free (username);
-                return;
-        }
-}
-
-static void
-add_included_users (GdmUserManager *manager)
-{
-        /* Add users who are specifically included */
-        if (manager->priv->include != NULL) {
-                g_slist_foreach (manager->priv->include,
-                                 (GFunc)add_included_user,
-                                 (gpointer)manager);
-        }
-}
-
-static void
-reload_passwd (GdmUserManager *manager)
-{
-        struct passwd *pwent;
-        GSList        *old_users;
-        GSList        *new_users;
-        GSList        *list;
-        FILE          *fp;
-
-        old_users = NULL;
-        new_users = NULL;
+        new_users_by_name = g_hash_table_new_full (g_str_hash,
+                                                   g_str_equal,
+                                                   NULL,
+                                                   g_object_unref);
 
         errno = 0;
         fp = fopen (PATH_PASSWD, "r");
@@ -1311,28 +1293,57 @@ reload_passwd (GdmUserManager *manager)
                 goto out;
         }
 
-        g_hash_table_foreach (manager->priv->users_by_name, listify_hash_values_hfunc, &old_users);
-        g_slist_foreach (old_users, (GFunc) g_object_ref, NULL);
-
         /* Make sure we keep users who are logged in no matter what. */
-        for (list = old_users; list; list = list->next) {
-                if (gdm_user_get_num_sessions (list->data) > 0) {
-                        g_object_freeze_notify (G_OBJECT (list->data));
-                        new_users = g_slist_prepend (new_users, g_object_ref (list->data));
+        g_hash_table_iter_init (&iter, current_users_by_name);
+        while (g_hash_table_iter_next (&iter, (gpointer *) &name, (gpointer *) &user)) {
+                struct passwd *pwent;
+                pwent = getpwnam (name);
+                if (pwent == NULL) {
+                        continue;
+                }
+
+                g_object_freeze_notify (G_OBJECT (user));
+                _gdm_user_update_from_pwent (user, pwent);
+                g_hash_table_insert (new_users_by_name, (char *)gdm_user_get_user_name (user), g_object_ref (user));
+        }
+
+        if (include_users != NULL) {
+                GSList *l;
+                for (l = include_users; l != NULL; l = l->next) {
+                        struct passwd *pwent;
+                        pwent = getpwnam (l->data);
+                        if (pwent == NULL) {
+                                continue;
+                        }
+
+                        user = g_hash_table_lookup (new_users_by_name, pwent->pw_name);
+                        if (user != NULL) {
+                                /* already there */
+                                continue;
+                        }
+
+                        user = g_hash_table_lookup (current_users_by_name, pwent->pw_name);
+                        if (user == NULL) {
+                                user = g_object_new (GDM_TYPE_USER, NULL);
+                        } else {
+                                g_object_ref (user);
+                        }
+                        g_object_freeze_notify (G_OBJECT (user));
+                        _gdm_user_update_from_pwent (user, pwent);
+                        g_hash_table_insert (new_users_by_name, (char *)gdm_user_get_user_name (user), user);
                 }
         }
 
-        if (manager->priv->include_all != TRUE) {
+        if (include_all != TRUE) {
                 g_debug ("GdmUserManager: include_all is FALSE");
         } else {
+                struct passwd *pwent;
+
                 g_debug ("GdmUserManager: include_all is TRUE");
 
                 for (pwent = fgetpwent (fp);
                      pwent != NULL;
                      pwent = fgetpwent (fp)) {
-                        GdmUser *user;
-
-                        user = NULL;
 
                         /* Skip users below MinimalUID... */
                         if (pwent->pw_uid < DEFAULT_MINIMAL_UID) {
@@ -1340,30 +1351,39 @@ reload_passwd (GdmUserManager *manager)
                         }
 
                         /* ...And users w/ invalid shells... */
-                        if (pwent->pw_shell == NULL ||
-                            !g_hash_table_lookup (manager->priv->shells,
-                                                  pwent->pw_shell)) {
+                        if (pwent->pw_shell == NULL
+                            || !g_hash_table_lookup (valid_shells, pwent->pw_shell)) {
                                 g_debug ("GdmUserManager: skipping user with bad shell: %s", pwent->pw_name);
                                 continue;
                         }
 
+                        /* always exclude the "gdm" user. */
+                        if (strcmp (pwent->pw_name, GDM_USERNAME) == 0) {
+                                continue;
+                        }
+
                         /* ...And explicitly excluded users */
-                        if (user_in_exclude_list (manager, pwent->pw_name)) {
-                                g_debug ("GdmUserManager: explicitly skipping user: %s", pwent->pw_name);
+                        if (exclude_users != NULL) {
+                                GSList   *found;
+
+                                found = g_slist_find_custom (exclude_users,
+                                                             pwent->pw_name,
+                                                             match_name_cmpfunc);
+                                if (found != NULL) {
+                                        g_debug ("GdmUserManager: explicitly skipping user: %s", pwent->pw_name);
+                                        continue;
+                                }
+                        }
+
+                        user = g_hash_table_lookup (new_users_by_name, pwent->pw_name);
+                        if (user != NULL) {
+                                /* already there */
                                 continue;
                         }
 
-                        user = g_hash_table_lookup (manager->priv->users_by_name,
-                                                    pwent->pw_name);
-
-                        /* Update users already in the *new* list */
-                        if (g_slist_find (new_users, user)) {
-                                _gdm_user_update_from_pwent (user, pwent);
-                                continue;
-                        }
-
+                        user = g_hash_table_lookup (current_users_by_name, pwent->pw_name);
                         if (user == NULL) {
-                                user = create_user (manager);
+                                user = g_object_new (GDM_TYPE_USER, NULL);
                         } else {
                                 g_object_ref (user);
                         }
@@ -1371,38 +1391,140 @@ reload_passwd (GdmUserManager *manager)
                         /* Freeze & update users not already in the new list */
                         g_object_freeze_notify (G_OBJECT (user));
                         _gdm_user_update_from_pwent (user, pwent);
-
-                        new_users = g_slist_prepend (new_users, user);
+                        g_hash_table_insert (new_users_by_name, (char *)gdm_user_get_user_name (user), user);
                 }
         }
 
         /* Go through and handle added users */
-        for (list = new_users; list; list = list->next) {
-                if (! g_slist_find (old_users, list->data)) {
-                        add_user (manager, list->data);
+        g_hash_table_iter_init (&iter, new_users_by_name);
+        while (g_hash_table_iter_next (&iter, (gpointer *) &name, (gpointer *) &user)) {
+                GdmUser *user2;
+                user2 = g_hash_table_lookup (current_users_by_name, name);
+                if (user2 == NULL) {
+                        *added_users = g_slist_prepend (*added_users, g_object_ref (user));
                 }
         }
 
         /* Go through and handle removed users */
-        for (list = old_users; list; list = list->next) {
-                if (! g_slist_find (new_users, list->data)) {
-                        remove_user (manager, list->data);
+        g_hash_table_iter_init (&iter, current_users_by_name);
+        while (g_hash_table_iter_next (&iter, (gpointer *) &name, (gpointer *) &user)) {
+                GdmUser *user2;
+                user2 = g_hash_table_lookup (new_users_by_name, name);
+                if (user2 == NULL) {
+                        *removed_users = g_slist_prepend (*removed_users, g_object_ref (user));
                 }
         }
-
-        add_included_users (manager);
 
  out:
         /* Cleanup */
 
         fclose (fp);
 
-        g_slist_foreach (new_users, (GFunc) g_object_thaw_notify, NULL);
-        g_slist_foreach (new_users, (GFunc) g_object_unref, NULL);
-        g_slist_free (new_users);
+        g_hash_table_destroy (new_users_by_name);
+}
 
-        g_slist_foreach (old_users, (GFunc) g_object_unref, NULL);
-        g_slist_free (old_users);
+typedef struct {
+        GdmUserManager *manager;
+        GSList         *exclude_users;
+        GSList         *include_users;
+        gboolean        include_all;
+        GHashTable     *shells;
+        GHashTable     *current_users_by_name;
+        GSList         *added_users;
+        GSList         *removed_users;
+} PasswdData;
+
+static void
+passwd_data_free (PasswdData *data)
+{
+        if (data->manager != NULL) {
+                g_object_unref (data->manager);
+        }
+
+        g_slist_foreach (data->added_users, (GFunc) g_object_ref, NULL);
+        g_slist_free (data->added_users);
+
+        g_slist_foreach (data->removed_users, (GFunc) g_object_ref, NULL);
+        g_slist_free (data->removed_users);
+
+        g_slice_free (PasswdData, data);
+}
+
+static gboolean
+reload_passwd_job_done (PasswdData *data)
+{
+        GSList *l;
+
+        g_debug ("GdmUserManager: done reloading passwd file");
+
+        /* Go through and handle added users */
+        for (l = data->added_users; l != NULL; l = l->next) {
+                add_user (data->manager, l->data);
+        }
+
+        /* Go through and handle removed users */
+        for (l = data->removed_users; l != NULL; l = l->next) {
+                remove_user (data->manager, l->data);
+        }
+
+        if (! data->manager->priv->is_loaded) {
+                set_is_loaded (data->manager, TRUE);
+
+                if (data->manager->priv->include_all == TRUE) {
+                        monitor_local_users (data->manager);
+                }
+        }
+
+        passwd_data_free (data);
+
+        return FALSE;
+}
+
+static gboolean
+do_reload_passwd_job (GIOSchedulerJob *job,
+                      GCancellable    *cancellable,
+                      PasswdData      *data)
+{
+        g_debug ("GdmUserManager: reloading passwd file worker");
+
+        reload_passwd_file (data->shells,
+                            data->exclude_users,
+                            data->include_users,
+                            data->include_all,
+                            data->current_users_by_name,
+                            &data->added_users,
+                            &data->removed_users);
+
+        g_io_scheduler_job_send_to_mainloop_async (job,
+                                                   (GSourceFunc) reload_passwd_job_done,
+                                                   data,
+                                                   NULL);
+
+        return FALSE;
+}
+
+static void
+schedule_reload_passwd (GdmUserManager *manager)
+{
+        PasswdData *passwd_data;
+
+        passwd_data = g_slice_new0 (PasswdData);
+        passwd_data->manager = g_object_ref (manager);
+        passwd_data->shells = manager->priv->shells;
+        passwd_data->exclude_users = manager->priv->exclude;
+        passwd_data->include_users = manager->priv->include;
+        passwd_data->include_all = manager->priv->include_all;
+        passwd_data->current_users_by_name = manager->priv->users_by_name;
+        passwd_data->added_users = NULL;
+        passwd_data->removed_users = NULL;
+
+        g_debug ("GdmUserManager: scheduling a passwd file update");
+
+        g_io_scheduler_push_job ((GIOSchedulerJobFunc) do_reload_passwd_job,
+                                 passwd_data,
+                                 NULL,
+                                 G_PRIORITY_DEFAULT,
+                                 manager->priv->cancellable);
 }
 
 static void
@@ -1448,20 +1570,6 @@ load_sessions (GdmUserManager *manager)
         g_ptr_array_free (sessions, TRUE);
 }
 
-static void
-load_users (GdmUserManager *manager)
-{
-        gboolean res;
-
-        load_sessions (manager);
-
-        res = load_ck_history (manager);
-        reload_passwd (manager);
-        if (! res) {
-                set_is_loaded (manager, TRUE);
-        }
-}
-
 static gboolean
 load_users_idle (GdmUserManager *manager)
 {
@@ -1484,7 +1592,7 @@ queue_load_users (GdmUserManager *manager)
 static gboolean
 reload_passwd_idle (GdmUserManager *manager)
 {
-        reload_passwd (manager);
+        schedule_reload_passwd (manager);
         manager->priv->reload_passwd_id = 0;
 
         return FALSE;
@@ -1587,11 +1695,6 @@ monitor_local_users (GdmUserManager *manager)
         g_debug ("Monitoring local users");
 
         /* /etc/shells */
-        manager->priv->shells = g_hash_table_new_full (g_str_hash,
-                                                       g_str_equal,
-                                                       g_free,
-                                                       NULL);
-        reload_shells (manager);
         file = g_file_new_for_path (_PATH_SHELLS);
         error = NULL;
         manager->priv->shells_monitor = g_file_monitor_file (file,
@@ -1625,6 +1728,23 @@ monitor_local_users (GdmUserManager *manager)
                 g_error_free (error);
         }
         g_object_unref (file);
+}
+
+static void
+load_users (GdmUserManager *manager)
+{
+        gboolean res;
+
+        manager->priv->shells = g_hash_table_new_full (g_str_hash,
+                                                       g_str_equal,
+                                                       g_free,
+                                                       NULL);
+        reload_shells (manager);
+
+        load_sessions (manager);
+
+        res = load_ck_history (manager);
+        schedule_reload_passwd (manager);
 }
 
 static void
@@ -1773,6 +1893,8 @@ gdm_user_manager_init (GdmUserManager *manager)
                 return;
         }
 
+        manager->priv->cancellable = g_cancellable_new ();
+
         get_seat_proxy (manager);
 
         queue_load_users (manager);
@@ -1789,6 +1911,11 @@ gdm_user_manager_finalize (GObject *object)
         manager = GDM_USER_MANAGER (object);
 
         g_return_if_fail (manager->priv != NULL);
+
+        if (manager->priv->cancellable != NULL) {
+                g_object_unref (manager->priv->cancellable);
+                manager->priv->cancellable = NULL;
+        }
 
         if (manager->priv->exclude != NULL) {
                 g_slist_free (manager->priv->exclude);
