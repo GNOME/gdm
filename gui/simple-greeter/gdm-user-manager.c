@@ -970,7 +970,7 @@ gdm_user_manager_get_user (GdmUserManager *manager,
 
 GdmUser *
 gdm_user_manager_get_user_by_uid (GdmUserManager *manager,
-                                  uid_t           uid)
+                                  gulong          uid)
 {
         GdmUser       *user;
         struct passwd *pwent;
