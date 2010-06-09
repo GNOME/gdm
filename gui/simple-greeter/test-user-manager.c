@@ -136,6 +136,8 @@ main (int argc, char *argv[])
                           "user-removed",
                           G_CALLBACK (on_user_removed),
                           NULL);
+        gdm_user_manager_queue_load (manager);
+
         main_loop = g_main_loop_new (NULL, FALSE);
 
         g_main_loop_run (main_loop);
