@@ -97,11 +97,13 @@ struct GdmUserManagerPrivate
         guint                  ck_history_id;
 
         gboolean               is_loaded;
+        gboolean               has_multiple_users;
 };
 
 enum {
         PROP_0,
-        PROP_IS_LOADED
+        PROP_IS_LOADED,
+        PROP_HAS_MULTIPLE_USERS
 };
 
 enum {
@@ -613,6 +615,16 @@ create_user (GdmUserManager *manager)
 }
 
 static void
+set_has_multiple_users (GdmUserManager *manager,
+                        gboolean        has_multiple_users)
+{
+        if (manager->priv->has_multiple_users != has_multiple_users) {
+                manager->priv->has_multiple_users = has_multiple_users;
+                g_object_notify (G_OBJECT (manager), "has-multiple-users");
+        }
+}
+
+static void
 add_user (GdmUserManager *manager,
           GdmUser        *user)
 {
@@ -622,6 +634,10 @@ add_user (GdmUserManager *manager,
 
         if (manager->priv->is_loaded) {
                 g_signal_emit (manager, signals[USER_ADDED], 0, user);
+        }
+
+        if (g_hash_table_size (manager->priv->users_by_name) > 1) {
+                set_has_multiple_users (manager, TRUE);
         }
 }
 
@@ -639,6 +655,20 @@ add_new_user_for_pwent (GdmUserManager *manager,
         add_user (manager, user);
 
         return user;
+}
+
+static void
+remove_user (GdmUserManager *manager,
+             GdmUser        *user)
+{
+        g_signal_handlers_disconnect_by_func (user, on_user_changed, manager);
+        g_signal_handlers_disconnect_by_func (user, on_user_sessions_changed, manager);
+        g_hash_table_remove (manager->priv->users_by_name, gdm_user_get_user_name (user));
+        g_signal_emit (manager, signals[USER_REMOVED], 0, user);
+
+        if (g_hash_table_size (manager->priv->users_by_name) > 1) {
+                set_has_multiple_users (manager, FALSE);
+        }
 }
 
 static char *
@@ -1356,9 +1386,7 @@ reload_passwd (GdmUserManager *manager)
         /* Go through and handle removed users */
         for (list = old_users; list; list = list->next) {
                 if (! g_slist_find (new_users, list->data)) {
-                        g_signal_emit (manager, signals[USER_REMOVED], 0, list->data);
-                        g_hash_table_remove (manager->priv->users_by_name,
-                                             gdm_user_get_user_name (list->data));
+                        remove_user (manager, list->data);
                 }
         }
 
@@ -1541,6 +1569,9 @@ gdm_user_manager_get_property (GObject        *object,
         case PROP_IS_LOADED:
                 g_value_set_boolean (value, manager->priv->is_loaded);
                 break;
+        case PROP_HAS_MULTIPLE_USERS:
+                g_value_set_boolean (value, manager->priv->has_multiple_users);
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -1607,6 +1638,13 @@ gdm_user_manager_class_init (GdmUserManagerClass *klass)
         g_object_class_install_property (object_class,
                                          PROP_IS_LOADED,
                                          g_param_spec_boolean ("is-loaded",
+                                                               NULL,
+                                                               NULL,
+                                                               FALSE,
+                                                               G_PARAM_READABLE));
+        g_object_class_install_property (object_class,
+                                         PROP_HAS_MULTIPLE_USERS,
+                                         g_param_spec_boolean ("has-multiple-users",
                                                                NULL,
                                                                NULL,
                                                                FALSE,
