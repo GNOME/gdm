@@ -1506,6 +1506,7 @@ fill_applet (PanelApplet *applet)
         gtk_widget_show (adata->menubar);
 
         adata->manager = gdm_user_manager_ref_default ();
+        gdm_user_manager_queue_load (adata->manager);
         setup_current_user (adata);
 
         gconf_client_add_dir (adata->client,

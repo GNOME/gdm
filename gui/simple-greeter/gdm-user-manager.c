@@ -1672,6 +1672,16 @@ gdm_set_string_list (char *value, GSList **retval)
         g_strfreev (temp_array);
 }
 
+void
+gdm_user_manager_queue_load (GdmUserManager *manager)
+{
+        g_return_if_fail (GDM_IS_USER_MANAGER (manager));
+
+        if (! manager->priv->is_loaded) {
+                queue_load_users (manager);
+        }
+}
+
 static void
 gdm_user_manager_init (GdmUserManager *manager)
 {
