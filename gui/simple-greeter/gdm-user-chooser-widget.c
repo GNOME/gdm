@@ -454,7 +454,8 @@ add_user (GdmUserChooserWidget *widget,
                 return;
         }
 
-        pixbuf = NULL;
+        pixbuf = g_object_ref (widget->priv->stock_person_pixbuf);
+
         tooltip = g_strdup_printf (_("Log in as %s"),
                                    gdm_user_get_user_name (user));
 
