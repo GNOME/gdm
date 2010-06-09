@@ -965,6 +965,11 @@ skip_resize_animation (GdmChooserWidget *widget)
 static void
 gdm_chooser_widget_grow (GdmChooserWidget *widget)
 {
+        if (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWN) {
+                g_debug ("GdmChooserWidget: Asking for grow but already grown");
+                return;
+        }
+
         if (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_SHRINKING) {
                 gdm_scrollable_widget_stop_sliding (GDM_SCROLLABLE_WIDGET (widget->priv->scrollable_widget));
         }
