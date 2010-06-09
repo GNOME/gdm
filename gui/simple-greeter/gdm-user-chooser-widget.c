@@ -52,11 +52,14 @@ enum {
 #define GDM_USER_CHOOSER_WIDGET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_USER_CHOOSER_WIDGET, GdmUserChooserWidgetPrivate))
 
 #define MAX_ICON_SIZE 128
+#define NUM_USERS_TO_ADD_PER_ITERATION 50
 
 struct GdmUserChooserWidgetPrivate
 {
         GdmUserManager *manager;
         GtkIconTheme   *icon_theme;
+
+        GSList         *users_to_add;
 
         GdkPixbuf      *logged_in_pixbuf;
         GdkPixbuf      *stock_person_pixbuf;
@@ -71,6 +74,7 @@ struct GdmUserChooserWidgetPrivate
 
         guint           update_other_visibility_idle_id;
         guint           load_idle_id;
+        guint           add_users_idle_id;
 };
 
 enum {
@@ -547,6 +551,31 @@ on_user_changed (GdmUserManager       *manager,
         update_item_for_user (widget, user);
 }
 
+static gboolean
+add_users (GdmUserChooserWidget *widget)
+{
+        guint cnt;
+
+        cnt = 0;
+        while (widget->priv->users_to_add != NULL && cnt < NUM_USERS_TO_ADD_PER_ITERATION) {
+                add_user (widget, widget->priv->users_to_add->data);
+                g_object_unref (widget->priv->users_to_add->data);
+                widget->priv->users_to_add = g_slist_delete_link (widget->priv->users_to_add, widget->priv->users_to_add);
+                cnt++;
+        }
+        g_debug ("GdmUserChooserWidget: added %u items", cnt);
+
+        return (widget->priv->users_to_add != NULL);
+}
+
+static void
+queue_add_users (GdmUserChooserWidget *widget)
+{
+        if (widget->priv->add_users_idle_id == 0) {
+                widget->priv->add_users_idle_id = g_idle_add ((GSourceFunc) add_users, widget);
+        }
+}
+
 static void
 on_is_loaded_changed (GdmUserManager       *manager,
                       GParamSpec           *pspec,
@@ -555,13 +584,15 @@ on_is_loaded_changed (GdmUserManager       *manager,
         GSList *users;
         gboolean list_visible;
 
+        /* FIXME: handle is-loaded=FALSE */
+
         g_debug ("GdmUserChooserWidget: Users loaded");
 
         users = gdm_user_manager_list_users (manager);
-        while (users != NULL) {
-                add_user (widget, users->data);
-                users = g_slist_delete_link (users, users);
-        }
+        g_slist_foreach (users, (GFunc) g_object_ref, NULL);
+        widget->priv->users_to_add = g_slist_concat (widget->priv->users_to_add, g_slist_copy (users));
+
+        queue_add_users (widget);
 
         g_object_get (G_OBJECT (widget), "list-visible", &list_visible, NULL);
 
@@ -641,9 +672,20 @@ gdm_user_chooser_widget_dispose (GObject *object)
                 widget->priv->load_idle_id = 0;
         }
 
+        if (widget->priv->add_users_idle_id > 0) {
+                g_source_remove (widget->priv->add_users_idle_id);
+                widget->priv->add_users_idle_id = 0;
+        }
+
         if (widget->priv->update_other_visibility_idle_id > 0) {
                 g_source_remove (widget->priv->update_other_visibility_idle_id);
                 widget->priv->update_other_visibility_idle_id = 0;
+        }
+
+        if (widget->priv->users_to_add != NULL) {
+                g_slist_foreach (widget->priv->users_to_add, (GFunc) g_object_ref, NULL);
+                g_slist_free (widget->priv->users_to_add);
+                widget->priv->users_to_add = NULL;
         }
 
         if (widget->priv->logged_in_pixbuf != NULL) {
