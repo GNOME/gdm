@@ -599,6 +599,7 @@ load_users (GdmUserChooserWidget *widget)
                                   "user-changed",
                                   G_CALLBACK (on_user_changed),
                                   widget);
+                gdm_user_manager_queue_load (widget->priv->manager);
         } else {
                 gdm_chooser_widget_loaded (GDM_CHOOSER_WIDGET (widget));
         }
