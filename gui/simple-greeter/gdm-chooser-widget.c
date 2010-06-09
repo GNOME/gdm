@@ -90,6 +90,7 @@ struct GdmChooserWidgetPrivate
         guint                    update_idle_id;
         guint                    update_cursor_idle_id;
         guint                    update_visibility_idle_id;
+        guint                    update_items_idle_id;
         guint                    timer_animation_timeout_id;
 
         guint32                  should_hide_inactive_items : 1;
@@ -600,7 +601,7 @@ update_separator_visibility (GdmChooserWidget *widget)
                             -1);
 }
 
-static void
+static gboolean
 update_visible_items (GdmChooserWidget *widget)
 {
         GtkTreePath *path;
@@ -609,7 +610,7 @@ update_visible_items (GdmChooserWidget *widget)
 
         if (! gtk_tree_view_get_visible_range (GTK_TREE_VIEW (widget->priv->items_view), &path, &end)) {
                 g_debug ("Unable to get visible range");
-                return;
+                goto out;
         }
 
         for (; gtk_tree_path_compare (path, end) <= 0; gtk_tree_path_next (path)) {
@@ -628,6 +629,24 @@ update_visible_items (GdmChooserWidget *widget)
                                     CHOOSER_LOAD_DATA_COLUMN, &user_data,
                                     -1);
                 if (id != NULL && func != NULL) {
+                        GtkTreeIter  child_iter;
+                        GtkTreeIter  list_iter;
+
+                        g_debug ("Updating for %s", id);
+
+                        gtk_tree_model_sort_convert_iter_to_child_iter (widget->priv->model_sorter,
+                                                                        &child_iter,
+                                                                        &iter);
+
+                        gtk_tree_model_filter_convert_iter_to_child_iter (widget->priv->model_filter,
+                                                                          &list_iter,
+                                                                          &child_iter);
+                        /* remove the func so it doesn't need to load again */
+                        gtk_list_store_set (GTK_LIST_STORE (widget->priv->list_store),
+                                            &list_iter,
+                                            CHOOSER_LOAD_FUNC_COLUMN, NULL,
+                                            -1);
+
                         func (widget, id, user_data);
                 }
 
@@ -636,6 +655,10 @@ update_visible_items (GdmChooserWidget *widget)
 
         gtk_tree_path_free (path);
         gtk_tree_path_free (end);
+ out:
+        widget->priv->update_items_idle_id = 0;
+
+        return FALSE;
 }
 
 static gboolean
@@ -1190,6 +1213,11 @@ gdm_chooser_widget_dispose (GObject *object)
         GdmChooserWidget *widget;
 
         widget = GDM_CHOOSER_WIDGET (object);
+
+        if (widget->priv->update_items_idle_id > 0) {
+                g_source_remove (widget->priv->update_items_idle_id);
+                widget->priv->update_items_idle_id = 0;
+        }
 
         if (widget->priv->update_visibility_idle_id > 0) {
                 g_source_remove (widget->priv->update_visibility_idle_id);
@@ -1825,11 +1853,21 @@ on_selection_changed (GtkTreeSelection *selection,
 }
 
 static void
+queue_update_visible_items (GdmChooserWidget *widget)
+{
+        if (widget->priv->update_items_idle_id != 0) {
+                g_source_remove (widget->priv->update_items_idle_id);
+        }
+
+        widget->priv->update_items_idle_id =
+                g_timeout_add (100, (GSourceFunc) update_visible_items, widget);
+}
+
+static void
 on_adjustment_value_changed (GtkAdjustment    *adjustment,
                              GdmChooserWidget *widget)
 {
-        g_debug ("Treeview scrolled");
-        update_visible_items (widget);
+        queue_update_visible_items (widget);
 }
 
 static void
