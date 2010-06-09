@@ -306,6 +306,7 @@ on_session_open_failed (GdmSession      *session,
 
 static void
 on_session_session_started (GdmSession      *session,
+                            int              pid,
                             GdmFactorySlave *slave)
 {
         g_debug ("GdmFactorySlave: Relay session started");
