@@ -678,6 +678,21 @@ update_chooser_visibility (GdmChooserWidget *widget)
         return FALSE;
 }
 
+static inline gboolean
+iters_equal (GtkTreeIter *a,
+             GtkTreeIter *b)
+{
+        if (a->stamp != b->stamp)
+                return FALSE;
+
+        if (a->user_data != b->user_data)
+                return FALSE;
+
+        /* user_data2 and user_data3 are not used in GtkListStore */
+
+        return TRUE;
+}
+
 static void
 set_inactive_items_visible (GdmChooserWidget *widget,
                             gboolean          should_show)
@@ -687,38 +702,26 @@ set_inactive_items_visible (GdmChooserWidget *widget,
         GtkTreeIter   active_item_iter;
         GtkTreeIter   iter;
 
+        active_item_id = get_active_item_id (widget, &active_item_iter);
+        if (active_item_id == NULL) {
+                g_debug ("No active item set");
+        }
+
         model = GTK_TREE_MODEL (widget->priv->list_store);
 
         if (!gtk_tree_model_get_iter_first (model, &iter)) {
                 return;
         }
 
-        active_item_id = get_active_item_id (widget, &active_item_iter);
-
         do {
-                gboolean is_active;
-
-                is_active = FALSE;
-                if (active_item_id != NULL) {
-                        char *id;
-
-                        gtk_tree_model_get (model, &iter,
-                                            CHOOSER_ID_COLUMN, &id, -1);
-
-                        if (strcmp (active_item_id, id) == 0) {
-                                is_active = TRUE;
-                                g_free (active_item_id);
-                                active_item_id = NULL;
-                        }
-                        g_free (id);
-                }
-
-                if (!is_active) {
+                if (active_item_id == NULL || !iters_equal (&active_item_iter, &iter)) {
+                        /* inactive item */
                         gtk_list_store_set (widget->priv->list_store,
                                             &iter,
                                             CHOOSER_ITEM_IS_VISIBLE_COLUMN, should_show,
                                             -1);
                 } else {
+                        /* always show the active item */
                         gtk_list_store_set (widget->priv->list_store,
                                             &iter,
                                             CHOOSER_ITEM_IS_VISIBLE_COLUMN, TRUE,
