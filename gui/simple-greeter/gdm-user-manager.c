@@ -105,7 +105,6 @@ enum {
 };
 
 enum {
-        USERS_LOADED,
         USER_ADDED,
         USER_REMOVED,
         USER_IS_LOGGED_IN_CHANGED,
