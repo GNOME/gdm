@@ -583,10 +583,21 @@ get_session_command_for_name (const char *name,
         char    *filename;
 
         filename = g_strdup_printf ("%s.desktop", name);
-
-        command = NULL;
         res = get_session_command_for_file (filename, command);
         g_free (filename);
+
+        /*
+         * The GDM Xsession script honors "custom" as a valid session.  If the
+         * session is one of these, no file is needed, then just run the
+         * command as "custom".
+         */
+        if (!res && strcmp (name, GDM_CUSTOM_SESSION) == 0) {
+                g_debug ("No custom desktop file, but accepting it anyway.");
+                if (command != NULL) {
+                        *command = g_strdup (GDM_CUSTOM_SESSION);
+                }
+                res = TRUE;
+        }
 
         return res;
 }
@@ -1998,18 +2009,13 @@ get_session_command (GdmSessionDirect *session)
 {
         gboolean res;
         char    *command;
-        char    *filename;
-
-        filename = g_strdup_printf ("%s.desktop", get_session_name (session));
 
         command = NULL;
-        res = get_session_command_for_file (filename, &command);
+        res = get_session_command_for_name (get_session_name (session), &command);
         if (! res) {
-                g_critical ("Cannot read specified session file: %s", filename);
-                g_free (filename);
+                g_critical ("Cannot read specified session file: %s.desktop", session);
                 exit (1);
         }
-        g_free (filename);
 
         return command;
 }

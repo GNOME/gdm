@@ -53,6 +53,7 @@
 #include "gdm-session-option-widget.h"
 #include "gdm-timer.h"
 #include "gdm-profile.h"
+#include "gdm-common.h"
 
 #include "na-tray.h"
 
@@ -1120,8 +1121,16 @@ gdm_greeter_panel_set_default_session_name (GdmGreeterPanel *panel,
         if (session_name != NULL &&
             !gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (panel->priv->session_option_widget),
                                             session_name, NULL, NULL, NULL)) {
-                g_warning ("Default session is not available");
-                return;
+                if (strcmp (session_name, GDM_CUSTOM_SESSION) == 0) {
+                        gdm_option_widget_add_item (GDM_OPTION_WIDGET (panel->priv->session_option_widget),
+                                                    GDM_CUSTOM_SESSION,
+                                                    C_("customsession", "Custom"),
+                                                    _("Custom session"),
+                                                    GDM_OPTION_WIDGET_POSITION_TOP);
+                } else {
+                        g_warning ("Default session is not available");
+                        return;
+                }
         }
 
         gdm_option_widget_set_default_item (GDM_OPTION_WIDGET (panel->priv->session_option_widget),
