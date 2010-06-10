@@ -700,6 +700,7 @@ set_inactive_items_visible (GdmChooserWidget *widget,
                             gboolean          should_show)
 {
         GtkTreeModel *model;
+        GtkTreeModel *view_model;
         char         *active_item_id;
         GtkTreeIter   active_item_iter;
         GtkTreeIter   iter;
@@ -714,6 +715,11 @@ set_inactive_items_visible (GdmChooserWidget *widget,
         if (!gtk_tree_model_get_iter_first (model, &iter)) {
                 return;
         }
+
+        /* unset tree view model to hide row add/remove signals from gail */
+        view_model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget->priv->items_view));
+        g_object_ref (view_model);
+        gtk_tree_view_set_model (GTK_TREE_VIEW (widget->priv->items_view), NULL);
 
         g_debug ("GdmChooserWidget: Setting inactive items visible: %s", should_show ? "true" : "false");
 
@@ -732,6 +738,9 @@ set_inactive_items_visible (GdmChooserWidget *widget,
                                             -1);
                 }
         } while (gtk_tree_model_iter_next (model, &iter));
+
+        gtk_tree_view_set_model (GTK_TREE_VIEW (widget->priv->items_view), view_model);
+        g_object_unref (view_model);
 
         g_free (active_item_id);
 
