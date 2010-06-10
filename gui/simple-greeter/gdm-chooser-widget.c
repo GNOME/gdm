@@ -578,6 +578,8 @@ update_separator_visibility (GdmChooserWidget *widget)
         GtkTreeIter  iter;
         gboolean     is_visible;
 
+        g_debug ("GdmChooserWidget: updating separator visibility");
+
         separator_path = gtk_tree_row_reference_get_path (widget->priv->separator_row);
 
         if (separator_path == NULL) {
@@ -609,7 +611,7 @@ update_visible_items (GdmChooserWidget *widget)
         GtkTreeIter  iter;
 
         if (! gtk_tree_view_get_visible_range (GTK_TREE_VIEW (widget->priv->items_view), &path, &end)) {
-                g_debug ("Unable to get visible range");
+                g_debug ("GdmChooserWidget: Unable to get visible range");
                 goto out;
         }
 
@@ -704,7 +706,7 @@ set_inactive_items_visible (GdmChooserWidget *widget,
 
         active_item_id = get_active_item_id (widget, &active_item_iter);
         if (active_item_id == NULL) {
-                g_debug ("No active item set");
+                g_debug ("GdmChooserWidget: No active item set");
         }
 
         model = GTK_TREE_MODEL (widget->priv->list_store);
@@ -712,6 +714,8 @@ set_inactive_items_visible (GdmChooserWidget *widget,
         if (!gtk_tree_model_get_iter_first (model, &iter)) {
                 return;
         }
+
+        g_debug ("GdmChooserWidget: Setting inactive items visible: %s", should_show ? "true" : "false");
 
         do {
                 if (active_item_id == NULL || !iters_equal (&active_item_iter, &iter)) {
