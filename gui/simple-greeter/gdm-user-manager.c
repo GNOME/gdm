@@ -74,6 +74,10 @@
 #define DEFAULT_GLOBAL_FACE_DIR DATADIR "/faces"
 #define DEFAULT_USER_ICON       "avatar-default"
 
+#ifndef GDM_USERNAME
+#define GDM_USERNAME "gdm"
+#endif
+
 struct GdmUserManagerPrivate
 {
         GHashTable            *users_by_name;
