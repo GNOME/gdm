@@ -124,6 +124,7 @@ main (int argc, char *argv[])
         }
 
         manager = gdm_user_manager_ref_default ();
+        g_object_set (manager, "include-all", TRUE, NULL);
         g_signal_connect (manager,
                           "notify::is-loaded",
                           G_CALLBACK (on_is_loaded_changed),
