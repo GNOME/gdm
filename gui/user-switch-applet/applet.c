@@ -1473,6 +1473,7 @@ fill_applet (PanelApplet *applet)
         gtk_widget_show (adata->menubar);
 
         adata->manager = gdm_user_manager_ref_default ();
+        g_object_set (adata->manager, "include-all", TRUE, NULL);
         g_signal_connect (adata->manager,
                           "notify::is-loaded",
                           G_CALLBACK (on_manager_is_loaded_changed),
