@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-27 10:30+0300\n"
-"PO-Revision-Date: 2010-05-27 10:48+0200\n"
+"POT-Creation-Date: 2010-06-10 17:00+0300\n"
+"PO-Revision-Date: 2010-06-10 17:01+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -62,7 +62,7 @@ msgstr "לא ניתן להקים את פרטי הזיהוי"
 msgid "Unable to open session"
 msgstr "לא ניתן לפתוח את ההפעלה"
 
-#: ../daemon/gdm-factory-slave.c:688 ../daemon/gdm-product-slave.c:449
+#: ../daemon/gdm-factory-slave.c:689 ../daemon/gdm-product-slave.c:449
 #: ../daemon/gdm-simple-slave.c:1158
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
@@ -575,25 +575,34 @@ msgstr "התחברות"
 msgid "Version"
 msgstr "גירסה"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:853
+#: ../gui/simple-greeter/gdm-greeter-panel.c:854
 msgid "Panel"
 msgstr "לוח"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:924
+#: ../gui/simple-greeter/gdm-greeter-panel.c:925
 msgid "Shutdown Options…"
 msgstr "אפשרויות כיבוי..."
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:946
+#: ../gui/simple-greeter/gdm-greeter-panel.c:947
 msgid "Suspend"
 msgstr "השהה"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:951
+#: ../gui/simple-greeter/gdm-greeter-panel.c:952
 msgid "Restart"
 msgstr "הפעל מחדש"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:955
+#: ../gui/simple-greeter/gdm-greeter-panel.c:956
 msgid "Shut Down"
 msgstr "כיבוי"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1127
+msgctxt "customsession"
+msgid "Custom"
+msgstr "מותאם אישית"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1128
+msgid "Custom session"
+msgstr "הפעלה מותאמת אישית"
 
 #: ../gui/simple-greeter/gdm-language-chooser-dialog.c:201
 msgid "Languages"
@@ -604,7 +613,6 @@ msgid "_Languages:"
 msgstr "_שפות:"
 
 #: ../gui/simple-greeter/gdm-language-chooser-widget.c:275
-#: ../gui/simple-greeter/gdm-language-option-widget.c:274
 msgid "_Language:"
 msgstr "_שפה:"
 
@@ -620,6 +628,10 @@ msgstr "אחר..."
 msgid "Choose a language from the full list of available languages."
 msgstr "בחר שפה מתוך רשימת השפות הזמינות המלאה."
 
+#: ../gui/simple-greeter/gdm-language-option-widget.c:274
+msgid "Language"
+msgstr "שפה"
+
 #: ../gui/simple-greeter/gdm-languages.c:698
 msgid "Unspecified"
 msgstr "לא מצויין"
@@ -630,7 +642,6 @@ msgstr "פריסות מקלדת"
 
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:200
 #: ../gui/simple-greeter/gdm-layout-chooser-widget.c:201
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:266
 msgid "_Keyboard:"
 msgstr "_מקלדת:"
 
@@ -646,27 +657,31 @@ msgstr "אחר..."
 msgid "Choose a keyboard layout from the full list of available layouts."
 msgstr "נא לבחור פריסת מקלדת מתוך הרשימה המלאה של הפריסות הזמינות."
 
-#: ../gui/simple-greeter/gdm-option-widget.c:507
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:266
+msgid "Keyboard"
+msgstr "מקלדת"
+
+#: ../gui/simple-greeter/gdm-option-widget.c:505
 msgid "Label Text"
 msgstr "טקסט התווית"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:508
+#: ../gui/simple-greeter/gdm-option-widget.c:506
 msgid "The text to use as a label"
 msgstr "הטקסט לשימוש כתווית"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:515
+#: ../gui/simple-greeter/gdm-option-widget.c:513
 msgid "Icon name"
 msgstr "שם איקון"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:516
+#: ../gui/simple-greeter/gdm-option-widget.c:514
 msgid "The icon to use with the label"
 msgstr "האיקון לשימוש עם התווית"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:524
+#: ../gui/simple-greeter/gdm-option-widget.c:522
 msgid "Default Item"
 msgstr "פריט ברירת המחדל"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:525
+#: ../gui/simple-greeter/gdm-option-widget.c:523
 msgid "The ID of the default item"
 msgstr "המזהה של פריט ברירת המחדל"
 
@@ -693,8 +708,8 @@ msgid "Remote Login"
 msgstr "התחברות מרוחקת"
 
 #: ../gui/simple-greeter/gdm-session-option-widget.c:162
-msgid "_Sessions:"
-msgstr "_תצורות הפעלה:"
+msgid "Session"
+msgstr "הפעלה"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
 msgid "Banner message text"
@@ -875,11 +890,11 @@ msgstr "האם הקוצב רץ?"
 msgid "Whether the timer is currently ticking"
 msgstr "האם קוצב הזמן מתקתק"
 
-#: ../gui/simple-greeter/gdm-user.c:241
+#: ../gui/simple-greeter/gdm-user.c:236
 msgid "Manager"
 msgstr "מנהל"
 
-#: ../gui/simple-greeter/gdm-user.c:242
+#: ../gui/simple-greeter/gdm-user.c:237
 msgid "The user manager object this user is controlled by."
 msgstr "אובייקט מנהל המשתמש ששולט במשתמש זה."
 
@@ -918,7 +933,7 @@ msgstr "התחברות אוטומטית למערכת לאחר בחירת אפש�
 msgid "Log in as %s"
 msgstr "התחבר כ־%s"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:738
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:739
 msgid "Currently logged in"
 msgstr "כבר מחובר"
 
@@ -968,8 +983,8 @@ msgstr ""
 "‏http://gnome-il.brelios.de"
 
 #: ../gui/user-switch-applet/applet.c:652
-#: ../gui/user-switch-applet/applet.c:791
-#: ../gui/user-switch-applet/applet.c:830
+#: ../gui/user-switch-applet/applet.c:792
+#: ../gui/user-switch-applet/applet.c:831
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "לא ניתן לנעול את המסך: %s"
@@ -979,58 +994,58 @@ msgstr "לא ניתן לנעול את המסך: %s"
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "לא ניתן להגדיר את שומר המסך באופן זמני למסך ריק: %s"
 
-#: ../gui/user-switch-applet/applet.c:889
+#: ../gui/user-switch-applet/applet.c:890
 #, c-format
 msgid "Can't log out: %s"
 msgstr "לא ניתן להינתק: %s"
 
-#: ../gui/user-switch-applet/applet.c:973
+#: ../gui/user-switch-applet/applet.c:974
 msgid "Available"
 msgstr "זמין"
 
-#: ../gui/user-switch-applet/applet.c:974
+#: ../gui/user-switch-applet/applet.c:975
 msgid "Invisible"
 msgstr "בלתי נראה"
 
-#: ../gui/user-switch-applet/applet.c:975
+#: ../gui/user-switch-applet/applet.c:976
 msgid "Busy"
 msgstr "עסוק"
 
-#: ../gui/user-switch-applet/applet.c:976
+#: ../gui/user-switch-applet/applet.c:977
 msgid "Away"
 msgstr "מרוחק"
 
-#: ../gui/user-switch-applet/applet.c:1136
+#: ../gui/user-switch-applet/applet.c:1137
 msgid "Account Information"
 msgstr "נתוני החשבון"
 
-#: ../gui/user-switch-applet/applet.c:1148
+#: ../gui/user-switch-applet/applet.c:1149
 msgid "System Preferences"
 msgstr "העדפות המערכת"
 
-#: ../gui/user-switch-applet/applet.c:1164
+#: ../gui/user-switch-applet/applet.c:1165
 msgid "Lock Screen"
 msgstr "נעל את המסך"
 
 #. Only show if not locked down
-#: ../gui/user-switch-applet/applet.c:1175
+#: ../gui/user-switch-applet/applet.c:1176
 msgid "Switch User"
 msgstr "החלף משתמש"
 
 #. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1186
+#: ../gui/user-switch-applet/applet.c:1187
 msgid "Quit…"
 msgstr "יציאה..."
 
-#: ../gui/user-switch-applet/applet.c:1307
+#: ../gui/user-switch-applet/applet.c:1308
 msgid "Unknown"
 msgstr "לא ידוע"
 
-#: ../gui/user-switch-applet/applet.c:1425
+#: ../gui/user-switch-applet/applet.c:1426
 msgid "User Switch Applet"
 msgstr "יישומון החלפת משתמשים"
 
-#: ../gui/user-switch-applet/applet.c:1439
+#: ../gui/user-switch-applet/applet.c:1440
 msgid "Change account settings and status"
 msgstr "שינוי הגדרות המצב והחשבון"
 
@@ -1101,6 +1116,9 @@ msgstr "המסך צולם"
 #: ../utils/gdm-screenshot.c:281
 msgid "Take a picture of the screen"
 msgstr "צלם את המסך"
+
+#~ msgid "_Sessions:"
+#~ msgstr "_תצורות הפעלה:"
 
 #~ msgid "Couldn't set groupid to 0"
 #~ msgstr "Couldn't set groupid to 0"
@@ -1256,9 +1274,6 @@ msgstr "צלם את המסך"
 
 #~ msgid "No console (static) servers to be run"
 #~ msgstr "No console (static) servers to be run"
-
-#~ msgid "_Session:"
-#~ msgstr "_תצורת הפעלה:"
 
 #, fuzzy
 #~ msgid "_Setup Login Screen"
