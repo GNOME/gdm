@@ -38,7 +38,8 @@
 
 #include "gdm-user-manager.h"
 #include "gdm-user-chooser-widget.h"
-
+#include "gdm-settings-keys.h"
+#include "gdm-settings-client.h"
 
 #define KEY_DISABLE_USER_LIST "/apps/gdm/simple-greeter/disable_user_list"
 
@@ -604,12 +605,68 @@ on_is_loaded_changed (GdmUserManager       *manager,
         gdm_chooser_widget_loaded (GDM_CHOOSER_WIDGET (widget));
 }
 
+static void
+parse_string_list (char *value, GSList **retval)
+{
+        char **temp_array;
+        int    i;
+
+        *retval = NULL;
+
+        if (value == NULL || *value == '\0') {
+                g_debug ("Not adding NULL user");
+                *retval = NULL;
+                return;
+        }
+
+        temp_array = g_strsplit (value, ",", 0);
+        for (i = 0; temp_array[i] != NULL; i++) {
+                g_debug ("Adding value %s", temp_array[i]);
+                g_strstrip (temp_array[i]);
+                *retval = g_slist_prepend (*retval, g_strdup (temp_array[i]));
+        }
+
+        g_strfreev (temp_array);
+}
+
 static gboolean
 load_users (GdmUserChooserWidget *widget)
 {
 
         if (widget->priv->show_normal_users) {
+                char          *temp;
+                gboolean       res;
+                gboolean       include_all;
+                GSList        *includes;
+                GSList        *excludes;
+
                 widget->priv->manager = gdm_user_manager_ref_default ();
+
+                /* exclude/include */
+                g_debug ("Setting users to include:");
+                res = gdm_settings_client_get_string (GDM_KEY_INCLUDE,
+                                                      &temp);
+                parse_string_list (temp, &includes);
+
+                g_debug ("Setting users to exclude:");
+                res = gdm_settings_client_get_string  (GDM_KEY_EXCLUDE,
+                                                       &temp);
+                parse_string_list (temp, &excludes);
+
+                include_all = FALSE;
+                res = gdm_settings_client_get_boolean (GDM_KEY_INCLUDE_ALL,
+                                                       &include_all);
+                g_object_set (widget->priv->manager,
+                              "include-all", include_all,
+                              "include-usernames-list", includes,
+                              "exclude-usernames-list", excludes,
+                              NULL);
+
+                g_slist_foreach (includes, (GFunc) g_free, NULL);
+                g_slist_free (includes);
+                g_slist_foreach (excludes, (GFunc) g_free, NULL);
+                g_slist_free (excludes);
+
                 g_signal_connect (widget->priv->manager,
                                   "user-added",
                                   G_CALLBACK (on_user_added),
