@@ -46,8 +46,6 @@
 
 #include "gdm-user-manager.h"
 #include "gdm-user-private.h"
-#include "gdm-settings-keys.h"
-#include "gdm-settings-client.h"
 
 #define GDM_USER_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_USER_MANAGER, GdmUserManagerPrivate))
 
@@ -88,8 +86,8 @@ struct GdmUserManagerPrivate
         GFileMonitor          *passwd_monitor;
         GFileMonitor          *shells_monitor;
 
-        GSList                *exclude;
-        GSList                *include;
+        GSList                *exclude_usernames;
+        GSList                *include_usernames;
         gboolean               include_all;
 
         GCancellable          *cancellable;
@@ -104,6 +102,9 @@ struct GdmUserManagerPrivate
 
 enum {
         PROP_0,
+        PROP_INCLUDE_ALL,
+        PROP_INCLUDE_USERNAMES_LIST,
+        PROP_EXCLUDE_USERNAMES_LIST,
         PROP_IS_LOADED,
         PROP_HAS_MULTIPLE_USERS
 };
@@ -577,8 +578,8 @@ user_in_exclude_list (GdmUserManager *manager,
                 return TRUE;
         }
 
-        if (manager->priv->exclude != NULL) {
-                found = g_slist_find_custom (manager->priv->exclude,
+        if (manager->priv->exclude_usernames != NULL) {
+                found = g_slist_find_custom (manager->priv->exclude_usernames,
                                              user,
                                              match_name_cmpfunc);
                 if (found != NULL) {
@@ -1511,8 +1512,8 @@ schedule_reload_passwd (GdmUserManager *manager)
         passwd_data = g_slice_new0 (PasswdData);
         passwd_data->manager = g_object_ref (manager);
         passwd_data->shells = manager->priv->shells;
-        passwd_data->exclude_users = manager->priv->exclude;
-        passwd_data->include_users = manager->priv->include;
+        passwd_data->exclude_users = manager->priv->exclude_usernames;
+        passwd_data->include_users = manager->priv->include_usernames;
         passwd_data->include_all = manager->priv->include_all;
         passwd_data->current_users_by_name = manager->priv->users_by_name;
         passwd_data->added_users = NULL;
@@ -1680,6 +1681,89 @@ gdm_user_manager_get_property (GObject        *object,
         case PROP_HAS_MULTIPLE_USERS:
                 g_value_set_boolean (value, manager->priv->has_multiple_users);
                 break;
+        case PROP_INCLUDE_ALL:
+                g_value_set_boolean (value, manager->priv->include_all);
+                break;
+        case PROP_INCLUDE_USERNAMES_LIST:
+                g_value_set_pointer (value, manager->priv->include_usernames);
+                break;
+        case PROP_EXCLUDE_USERNAMES_LIST:
+                g_value_set_pointer (value, manager->priv->exclude_usernames);
+                break;
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+                break;
+        }
+}
+
+static GSList *
+slist_deep_copy (const GSList *list)
+{
+        GSList *retval;
+        GSList *l;
+
+        if (list == NULL)
+                return NULL;
+
+        retval = g_slist_copy ((GSList *) list);
+        for (l = retval; l != NULL; l = l->next) {
+                l->data = g_strdup (l->data);
+        }
+
+        return retval;
+}
+
+static void
+set_include_usernames (GdmUserManager *manager,
+                       GSList         *list)
+{
+        if (manager->priv->include_usernames != NULL) {
+                g_slist_foreach (manager->priv->include_usernames, (GFunc) g_free, NULL);
+                g_slist_free (manager->priv->include_usernames);
+        }
+        manager->priv->include_usernames = slist_deep_copy (list);
+}
+
+static void
+set_exclude_usernames (GdmUserManager *manager,
+                       GSList         *list)
+{
+        if (manager->priv->exclude_usernames != NULL) {
+                g_slist_foreach (manager->priv->exclude_usernames, (GFunc) g_free, NULL);
+                g_slist_free (manager->priv->exclude_usernames);
+        }
+        manager->priv->exclude_usernames = slist_deep_copy (list);
+}
+
+static void
+set_include_all (GdmUserManager *manager,
+                 gboolean        all)
+{
+        if (manager->priv->include_all != all) {
+                manager->priv->include_all = all;
+        }
+}
+
+static void
+gdm_user_manager_set_property (GObject        *object,
+                               guint           prop_id,
+                               const GValue   *value,
+                               GParamSpec     *pspec)
+{
+        GdmUserManager *self;
+
+        self = GDM_USER_MANAGER (object);
+
+        switch (prop_id) {
+        case PROP_INCLUDE_ALL:
+                set_include_all (self, g_value_get_boolean (value));
+                break;
+        case PROP_INCLUDE_USERNAMES_LIST:
+                set_include_usernames (self, g_value_get_pointer (value));
+                break;
+        case PROP_EXCLUDE_USERNAMES_LIST:
+                set_exclude_usernames (self, g_value_get_pointer (value));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -1754,6 +1838,7 @@ gdm_user_manager_class_init (GdmUserManagerClass *klass)
 
         object_class->finalize = gdm_user_manager_finalize;
         object_class->get_property = gdm_user_manager_get_property;
+        object_class->set_property = gdm_user_manager_set_property;
 
         g_object_class_install_property (object_class,
                                          PROP_IS_LOADED,
@@ -1769,6 +1854,26 @@ gdm_user_manager_class_init (GdmUserManagerClass *klass)
                                                                NULL,
                                                                FALSE,
                                                                G_PARAM_READABLE));
+        g_object_class_install_property (object_class,
+                                         PROP_INCLUDE_ALL,
+                                         g_param_spec_boolean ("include-all",
+                                                               NULL,
+                                                               NULL,
+                                                               FALSE,
+                                                               G_PARAM_READWRITE));
+        g_object_class_install_property (object_class,
+                                         PROP_INCLUDE_USERNAMES_LIST,
+                                         g_param_spec_pointer ("include-usernames-list",
+                                                               NULL,
+                                                               NULL,
+                                                               G_PARAM_READWRITE));
+
+        g_object_class_install_property (object_class,
+                                         PROP_EXCLUDE_USERNAMES_LIST,
+                                         g_param_spec_pointer ("exclude-usernames-list",
+                                                               NULL,
+                                                               NULL,
+                                                               G_PARAM_READWRITE));
 
         signals [USER_ADDED] =
                 g_signal_new ("user-added",
@@ -1806,30 +1911,6 @@ gdm_user_manager_class_init (GdmUserManagerClass *klass)
         g_type_class_add_private (klass, sizeof (GdmUserManagerPrivate));
 }
 
-static void
-gdm_set_string_list (char *value, GSList **retval)
-{
-        char **temp_array;
-        int    i;
-
-        *retval = NULL;
-
-        if (value == NULL || *value == '\0') {
-                g_debug ("Not adding NULL user");
-                *retval = NULL;
-                return;
-        }
-
-        temp_array = g_strsplit (value, ",", 0);
-        for (i = 0; temp_array[i] != NULL; i++) {
-                g_debug ("Adding value %s", temp_array[i]);
-                g_strstrip (temp_array[i]);
-                *retval = g_slist_prepend (*retval, g_strdup (temp_array[i]));
-        }
-
-        g_strfreev (temp_array);
-}
-
 void
 gdm_user_manager_queue_load (GdmUserManager *manager)
 {
@@ -1843,25 +1924,9 @@ gdm_user_manager_queue_load (GdmUserManager *manager)
 static void
 gdm_user_manager_init (GdmUserManager *manager)
 {
-        char          *temp;
         GError        *error;
-        gboolean       res;
 
         manager->priv = GDM_USER_MANAGER_GET_PRIVATE (manager);
-
-        /* exclude/include */
-        g_debug ("Setting users to include:");
-        res = gdm_settings_client_get_string  (GDM_KEY_INCLUDE,
-                                               &temp);
-        gdm_set_string_list (temp, &manager->priv->include);
-
-        g_debug ("Setting users to exclude:");
-        res = gdm_settings_client_get_string  (GDM_KEY_EXCLUDE,
-                                               &temp);
-        gdm_set_string_list (temp, &manager->priv->exclude);
-
-        res = gdm_settings_client_get_boolean (GDM_KEY_INCLUDE_ALL,
-                                               &manager->priv->include_all);
 
         /* sessions */
         manager->priv->sessions = g_hash_table_new_full (g_str_hash,
@@ -1917,12 +1982,14 @@ gdm_user_manager_finalize (GObject *object)
                 manager->priv->cancellable = NULL;
         }
 
-        if (manager->priv->exclude != NULL) {
-                g_slist_free (manager->priv->exclude);
+        if (manager->priv->exclude_usernames != NULL) {
+                g_slist_foreach (manager->priv->exclude_usernames, (GFunc) g_free, NULL);
+                g_slist_free (manager->priv->exclude_usernames);
         }
 
-        if (manager->priv->include != NULL) {
-                g_slist_free (manager->priv->include);
+        if (manager->priv->include_usernames != NULL) {
+                g_slist_foreach (manager->priv->include_usernames, (GFunc) g_free, NULL);
+                g_slist_free (manager->priv->include_usernames);
         }
 
         if (manager->priv->seat_proxy != NULL) {
