@@ -566,6 +566,12 @@ add_users (GdmUserChooserWidget *widget)
         }
         g_debug ("GdmUserChooserWidget: added %u items", cnt);
 
+        if (! widget->priv->loaded) {
+                widget->priv->loaded = TRUE;
+
+                gdm_chooser_widget_loaded (GDM_CHOOSER_WIDGET (widget));
+        }
+
         return (widget->priv->users_to_add != NULL);
 }
 
@@ -600,9 +606,6 @@ on_is_loaded_changed (GdmUserManager       *manager,
         if (list_visible) {
                 gtk_widget_grab_focus (GTK_WIDGET (widget));
         }
-        widget->priv->loaded = TRUE;
-
-        gdm_chooser_widget_loaded (GDM_CHOOSER_WIDGET (widget));
 }
 
 static void
