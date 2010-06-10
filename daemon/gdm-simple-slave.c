@@ -205,7 +205,7 @@ queue_greeter_reset (GdmSimpleSlave *slave)
                 return;
         }
 
-        slave->priv->greeter_reset_id = g_timeout_add_seconds (2, (GSourceFunc)greeter_reset_timeout, slave);
+        slave->priv->greeter_reset_id = g_idle_add ((GSourceFunc)greeter_reset_timeout, slave);
 }
 
 static void
