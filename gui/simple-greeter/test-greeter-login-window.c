@@ -34,6 +34,39 @@
 
 #include "gdm-greeter-login-window.h"
 
+static guint cancel_idle_id = 0;
+
+static gboolean
+do_cancel (GdmGreeterLoginWindow *login_window)
+{
+        gdm_greeter_login_window_reset (GDM_GREETER_LOGIN_WINDOW (login_window));
+        cancel_idle_id = 0;
+        return FALSE;
+}
+
+static void
+on_select_user (GdmGreeterLoginWindow *login_window,
+                const char            *text,
+                gpointer               data)
+{
+        g_debug ("user selected: %s", text);
+        if (cancel_idle_id != 0) {
+                return;
+        }
+        cancel_idle_id = g_timeout_add_seconds (5, (GSourceFunc) do_cancel, login_window);
+}
+
+static void
+on_cancelled (GdmGreeterLoginWindow *login_window,
+              gpointer               data)
+{
+        g_debug ("login cancelled");
+        if (cancel_idle_id != 0) {
+                g_source_remove (cancel_idle_id);
+                cancel_idle_id = 0;
+        }
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -53,6 +86,15 @@ main (int argc, char *argv[])
         }
 
         login_window = gdm_greeter_login_window_new (TRUE);
+        g_signal_connect (login_window,
+                          "user-selected",
+                          G_CALLBACK (on_select_user),
+                          NULL);
+        g_signal_connect (login_window,
+                          "cancelled",
+                          G_CALLBACK (on_cancelled),
+                          NULL);
+
         gtk_widget_show (login_window);
 
         gtk_main ();
