@@ -57,6 +57,7 @@
 
 #include "gdm-session-record.h"
 #include "gdm-session-worker-job.h"
+#include "gdm-common.h"
 
 #define GDM_SESSION_DBUS_PATH         "/org/gnome/DisplayManager/Session"
 #define GDM_SESSION_DBUS_INTERFACE    "org.gnome.DisplayManager.Session"
