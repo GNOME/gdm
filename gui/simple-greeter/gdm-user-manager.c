@@ -829,6 +829,12 @@ maybe_add_session (GdmUserManager *manager,
 
         add_session_for_user (manager, user, session_id);
 
+        /* if we haven't yet gotten the login frequency
+           then at least add one because the session exists */
+        if (gdm_user_get_login_frequency (user) == 0) {
+                _gdm_user_update_login_frequency (user, 1);
+        }
+
         /* only add the user if it was newly created */
         if (is_new) {
                 add_user (manager, user);
