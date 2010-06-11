@@ -406,6 +406,8 @@ gdm_user_collate (GdmUser *user1,
         const char *str2;
         gulong      num1;
         gulong      num2;
+        guint       len1;
+        guint       len2;
 
         g_return_val_if_fail (GDM_IS_USER (user1), 0);
         g_return_val_if_fail (GDM_IS_USER (user2), 0);
@@ -418,6 +420,18 @@ gdm_user_collate (GdmUser *user1,
         }
 
         if (num1 < num2) {
+                return 1;
+        }
+
+
+        len1 = g_list_length (user1->sessions);
+        len2 = g_list_length (user2->sessions);
+
+        if (len1 > len2) {
+                return -1;
+        }
+
+        if (len1 < len2) {
                 return 1;
         }
 
