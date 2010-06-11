@@ -102,6 +102,7 @@ struct GdmUserManagerPrivate
         GSList                *include_usernames;
         gboolean               include_all;
 
+        gboolean               load_passwd_pending;
         GCancellable          *cancellable;
 
         guint                  load_id;
@@ -1407,6 +1408,11 @@ ck_history_watch (GIOChannel     *source,
                         manager->priv->ck_history_watchdog_id = 0;
                         manager->priv->ck_history_pid = 0;
                 }
+
+                if (! manager->priv->load_passwd_pending) {
+                        set_is_loaded (manager, TRUE);
+                }
+
                 return FALSE;
         }
 
@@ -1776,12 +1782,19 @@ reload_passwd_job_done (PasswdData *data)
         }
 
         if (! data->manager->priv->is_loaded) {
-                set_is_loaded (data->manager, TRUE);
+                /* if there is an outstanding history
+                   request then wait to emit loaded */
+                if (data->manager->priv->ck_history_pid == 0) {
+                        set_is_loaded (data->manager, TRUE);
+                }
 
                 if (data->manager->priv->include_all == TRUE) {
                         monitor_local_users (data->manager);
                 }
         }
+
+        data->manager->priv->load_passwd_pending = FALSE;
+
 
         passwd_data_free (data);
 
@@ -1815,6 +1828,8 @@ static void
 schedule_reload_passwd (GdmUserManager *manager)
 {
         PasswdData *passwd_data;
+
+        manager->priv->load_passwd_pending = TRUE;
 
         passwd_data = g_slice_new0 (PasswdData);
         passwd_data->manager = g_object_ref (manager);
