@@ -88,6 +88,7 @@ struct GdmChooserWidgetPrivate
         gint                     number_of_active_timers;
 
         guint                    update_idle_id;
+        guint                    update_separator_idle_id;
         guint                    update_cursor_idle_id;
         guint                    update_visibility_idle_id;
         guint                    update_items_idle_id;
@@ -571,7 +572,7 @@ on_shrink_animation_step (GdmScrollableWidget *scrollable_widget,
         gtk_tree_path_free (active_row_path);
 }
 
-static void
+static gboolean
 update_separator_visibility (GdmChooserWidget *widget)
 {
         GtkTreePath *separator_path;
@@ -583,7 +584,7 @@ update_separator_visibility (GdmChooserWidget *widget)
         separator_path = gtk_tree_row_reference_get_path (widget->priv->separator_row);
 
         if (separator_path == NULL) {
-                return;
+                goto out;
         }
 
         gtk_tree_model_get_iter (GTK_TREE_MODEL (widget->priv->list_store),
@@ -601,6 +602,21 @@ update_separator_visibility (GdmChooserWidget *widget)
                             &iter,
                             CHOOSER_ITEM_IS_VISIBLE_COLUMN, is_visible,
                             -1);
+
+ out:
+        widget->priv->update_separator_idle_id = 0;
+        return FALSE;
+}
+
+static void
+queue_update_separator_visibility (GdmChooserWidget *widget)
+{
+        if (widget->priv->update_separator_idle_id == 0) {
+                g_debug ("GdmChooserWidget: queuing update separator visibility");
+
+                widget->priv->update_separator_idle_id =
+                        g_idle_add ((GSourceFunc) update_separator_visibility, widget);
+        }
 }
 
 static gboolean
@@ -705,6 +721,8 @@ set_inactive_items_visible (GdmChooserWidget *widget,
         GtkTreeIter   active_item_iter;
         GtkTreeIter   iter;
 
+        g_debug ("setting inactive items visible");
+
         active_item_id = get_active_item_id (widget, &active_item_iter);
         if (active_item_id == NULL) {
                 g_debug ("GdmChooserWidget: No active item set");
@@ -744,7 +762,7 @@ set_inactive_items_visible (GdmChooserWidget *widget,
 
         g_free (active_item_id);
 
-        update_separator_visibility (widget);
+        queue_update_separator_visibility (widget);
 }
 
 static void
@@ -760,7 +778,7 @@ on_shrink_animation_complete (GdmScrollableWidget *scrollable_widget,
         gtk_tree_view_set_enable_search (GTK_TREE_VIEW (widget->priv->items_view), FALSE);
         widget->priv->state = GDM_CHOOSER_WIDGET_STATE_SHRUNK;
 
-        update_separator_visibility (widget);
+        queue_update_separator_visibility (widget);
 
         if (widget->priv->emit_activated_after_resize_animation) {
                 g_signal_emit (widget, signals[ACTIVATED], 0);
@@ -1238,6 +1256,11 @@ gdm_chooser_widget_dispose (GObject *object)
         if (widget->priv->update_items_idle_id > 0) {
                 g_source_remove (widget->priv->update_items_idle_id);
                 widget->priv->update_items_idle_id = 0;
+        }
+
+        if (widget->priv->update_separator_idle_id > 0) {
+                g_source_remove (widget->priv->update_separator_idle_id);
+                widget->priv->update_separator_idle_id = 0;
         }
 
         if (widget->priv->update_visibility_idle_id > 0) {
@@ -2145,7 +2168,7 @@ gdm_chooser_widget_update_item (GdmChooserWidget *widget,
                         widget->priv->number_of_separated_rows--;
                         widget->priv->number_of_normal_rows++;
                 }
-                update_separator_visibility (widget);
+                queue_update_separator_visibility (widget);
         }
 
         gtk_list_store_set (widget->priv->list_store,
@@ -2198,7 +2221,7 @@ gdm_chooser_widget_add_item (GdmChooserWidget *widget,
         } else {
                 widget->priv->number_of_normal_rows++;
         }
-        update_separator_visibility (widget);
+        queue_update_separator_visibility (widget);
 
         if (in_use) {
                 widget->priv->number_of_rows_with_status++;
@@ -2271,7 +2294,7 @@ gdm_chooser_widget_remove_item (GdmChooserWidget *widget,
         } else {
                 widget->priv->number_of_normal_rows--;
         }
-        update_separator_visibility (widget);
+        queue_update_separator_visibility (widget);
 
         gtk_list_store_remove (widget->priv->list_store, &iter);
 
