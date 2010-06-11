@@ -1466,8 +1466,7 @@ fill_applet (PanelApplet *applet)
 
         adata->menubar = gtk_menu_bar_new ();
         gtk_widget_set_name (adata->menubar, "gdm-user-switch-menubar");
-        GTK_WIDGET_SET_FLAGS (adata->menubar,
-                              GTK_WIDGET_FLAGS (adata->menubar) | GTK_CAN_FOCUS);
+        gtk_widget_set_can_focus (adata->menubar, TRUE);
         g_signal_connect (adata->menubar, "button-press-event",
                           G_CALLBACK (menubar_button_press_event_cb), adata);
         g_signal_connect_after (adata->menubar, "expose-event",
