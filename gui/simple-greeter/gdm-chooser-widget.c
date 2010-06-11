@@ -1501,8 +1501,6 @@ compare_item  (GtkTreeModel *model,
         GdmChooserWidget *widget;
         char             *name_a;
         char             *name_b;
-        char             *text_a;
-        char             *text_b;
         gulong            prio_a;
         gulong            prio_b;
         gboolean          is_separate_a;
@@ -1571,12 +1569,24 @@ compare_item  (GtkTreeModel *model,
                 result *= direction;
         } else if (is_separate_b == is_separate_a) {
                 if (prio_a == prio_b) {
+                        char *text_a;
+                        char *text_b;
+
+                        text_a = NULL;
+                        text_b = NULL;
                         pango_parse_markup (name_a, -1, 0, &attrs, &text_a, NULL, NULL);
+                        if (text_a == NULL) {
+                                g_debug ("GdmChooserWidget: unable to parse markup: '%s'", name_a);
+                        }
                         pango_parse_markup (name_b, -1, 0, &attrs, &text_b, NULL, NULL);
-                        if (text_a && text_b)
-                            result = g_utf8_collate (text_a, text_b);
-                        else
-                            result = g_utf8_collate (name_a, name_b);
+                        if (text_b == NULL) {
+                                g_debug ("GdmChooserWidget: unable to parse markup: '%s'", name_b);
+                        }
+                        if (text_a != NULL && text_b != NULL) {
+                                result = g_utf8_collate (text_a, text_b);
+                        } else {
+                                result = g_utf8_collate (name_a, name_b);
+                        }
                         g_free (text_a);
                         g_free (text_b);
                 } else if (prio_a > prio_b) {
