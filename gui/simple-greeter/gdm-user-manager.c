@@ -255,10 +255,10 @@ session_is_login_window (GdmUserManager *manager,
                                  G_TYPE_INVALID);
         if (! res) {
                 if (error != NULL) {
-                        g_debug ("Failed to identify the session type: %s", error->message);
+                        g_debug ("GdmUserManager: Failed to identify the session type: %s", error->message);
                         g_error_free (error);
                 } else {
-                        g_debug ("Failed to identify the session type");
+                        g_debug ("GdmUserManager: Failed to identify the session type");
                 }
                 goto out;
         }
@@ -298,7 +298,7 @@ _get_login_window_session_id (GdmUserManager *manager)
         can_activate_sessions = gdm_user_manager_can_switch (manager);
 
         if (! can_activate_sessions) {
-                g_debug ("GdmSlave: seat is unable to activate sessions");
+                g_debug ("GdmUserManager: seat is unable to activate sessions");
                 goto out;
         }
 
@@ -506,10 +506,10 @@ get_seat_id_for_session (DBusGConnection *connection,
                                  G_TYPE_INVALID);
         if (! res) {
                 if (error != NULL) {
-                        g_debug ("Failed to identify the current seat: %s", error->message);
+                        g_debug ("GdmUserManager: Failed to identify the current seat: %s", error->message);
                         g_error_free (error);
                 } else {
-                        g_debug ("Failed to identify the current seat");
+                        g_debug ("GdmUserManager: Failed to identify the current seat");
                 }
         }
  out:
@@ -550,10 +550,10 @@ get_x11_display_for_session (DBusGConnection *connection,
                                  G_TYPE_INVALID);
         if (! res) {
                 if (error != NULL) {
-                        g_debug ("Failed to identify the x11 display: %s", error->message);
+                        g_debug ("GdmUserManager: Failed to identify the x11 display: %s", error->message);
                         g_error_free (error);
                 } else {
-                        g_debug ("Failed to identify the x11 display");
+                        g_debug ("GdmUserManager: Failed to identify the x11 display");
                 }
         }
  out:
@@ -672,7 +672,7 @@ add_new_user_for_pwent (GdmUserManager *manager,
 {
         GdmUser *user;
 
-        g_debug ("Creating new user from password entry");
+        g_debug ("GdmUserManager: Creating new user from password entry: %s", pwent->pw_name);
 
         user = create_user (manager);
         _gdm_user_update_from_pwent (user, pwent);
@@ -790,10 +790,10 @@ get_current_seat_id (DBusGConnection *connection)
                                  G_TYPE_INVALID);
         if (! res) {
                 if (error != NULL) {
-                        g_debug ("Failed to identify the current session: %s", error->message);
+                        g_debug ("GdmUserManager: Failed to identify the current session: %s", error->message);
                         g_error_free (error);
                 } else {
-                        g_debug ("Failed to identify the current session");
+                        g_debug ("GdmUserManager: Failed to identify the current session");
                 }
                 goto out;
         }
@@ -877,10 +877,10 @@ get_user_object_path_from_accounts_service (GdmUserManager *manager,
                                  G_TYPE_INVALID);
         if (! res) {
                 if (error != NULL) {
-                        g_debug ("Failed to find user %s: %s", name, error->message);
+                        g_debug ("GdmUserManager: Failed to find user %s: %s", name, error->message);
                         g_error_free (error);
                 } else {
-                        g_debug ("Failed to find user %s", name);
+                        g_debug ("GdmUserManager: Failed to find user %s", name);
                 }
                 return NULL;
         }
@@ -911,7 +911,7 @@ on_list_cached_users_finished (DBusGProxy     *proxy,
                                     &error,
                                     dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH), &paths,
                                     G_TYPE_INVALID)) {
-                g_debug ("ListCachedUsers failed: %s", error->message);
+                g_debug ("GdmUserManager: ListCachedUsers failed: %s", error->message);
                 g_error_free (error);
 
                 g_object_unref (manager->priv->accounts_proxy);
@@ -934,7 +934,7 @@ on_list_cached_users_finished (DBusGProxy     *proxy,
                 for (l = manager->priv->include_usernames; l != NULL; l = l->next) {
                         GdmUser *user;
 
-                        g_debug ("Adding included user %s", (char *)l->data);
+                        g_debug ("GdmUserManager: Adding included user %s", (char *)l->data);
                         /*
                          * The call to gdm_user_manager_get_user will add the user if it is
                          * valid and not already in the hash.
@@ -1007,7 +1007,7 @@ seat_session_added (DBusGProxy     *seat_proxy,
                     const char     *session_id,
                     GdmUserManager *manager)
 {
-        g_debug ("Session added: %s", session_id);
+        g_debug ("GdmUserManager: Session added: %s", session_id);
 
         maybe_add_session (manager, session_id);
 }
@@ -1020,7 +1020,7 @@ seat_session_removed (DBusGProxy     *seat_proxy,
         GdmUser *user;
         char    *username;
 
-        g_debug ("Session removed: %s", session_id);
+        g_debug ("GdmUserManager: Session removed: %s", session_id);
 
         /* since the session object may already be gone
          * we can't query CK directly */
@@ -2030,7 +2030,7 @@ monitor_local_users (GdmUserManager *manager)
         GFile *file;
         GError *error;
 
-        g_debug ("Monitoring local users");
+        g_debug ("GdmUserManager: Monitoring local users");
 
         /* /etc/shells */
         file = g_file_new_for_path (_PATH_SHELLS);
