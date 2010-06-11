@@ -80,6 +80,9 @@
 #define GDM_USERNAME "gdm"
 #endif
 
+/* approximately two months */
+#define LOGIN_FREQUENCY_TIME_WINDOW_SECS (60 * 24 * 60 * 60)
+
 #define ACCOUNTS_NAME      "org.freedesktop.Accounts"
 #define ACCOUNTS_PATH      "/org/freedesktop/Accounts"
 #define ACCOUNTS_INTERFACE "org.freedesktop.Accounts"
@@ -1501,12 +1504,14 @@ static gboolean
 load_ck_history (GdmUserManager *manager)
 {
         char       *command;
+        char       *since;
         const char *seat_id;
         GError     *error;
         gboolean    res;
         char      **argv;
         int         standard_out;
         GIOChannel *channel;
+        GTimeVal    tv;
 
         g_assert (manager->priv->ck_history_id == 0);
 
@@ -1524,8 +1529,14 @@ load_ck_history (GdmUserManager *manager)
                 goto out;
         }
 
-        command = g_strdup_printf ("ck-history --frequent --seat='%s' --session-type=''",
+        g_get_current_time (&tv);
+        tv.tv_sec -= LOGIN_FREQUENCY_TIME_WINDOW_SECS;
+        since = g_time_val_to_iso8601 (&tv);
+
+        command = g_strdup_printf ("ck-history --frequent --since='%s' --seat='%s' --session-type=''",
+                                   since,
                                    seat_id);
+        g_free (since);
         g_debug ("GdmUserManager: running '%s'", command);
         error = NULL;
         if (! g_shell_parse_argv (command, NULL, &argv, &error)) {
