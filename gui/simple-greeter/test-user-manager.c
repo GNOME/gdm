@@ -145,6 +145,7 @@ main (int argc, char *argv[])
         if (main_loop != NULL) {
                 g_main_loop_unref (main_loop);
         }
+        g_object_unref (manager);
 
         return 0;
 }

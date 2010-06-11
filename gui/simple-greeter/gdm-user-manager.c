@@ -29,6 +29,8 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <signal.h>
+#include <errno.h>
 
 #ifdef HAVE_PATHS_H
 #include <paths.h>
@@ -105,6 +107,8 @@ struct GdmUserManagerPrivate
         guint                  load_id;
         guint                  reload_passwd_id;
         guint                  ck_history_id;
+        guint                  ck_history_watchdog_id;
+        GPid                   ck_history_pid;
 
         gboolean               is_loaded;
         gboolean               has_multiple_users;
@@ -1398,10 +1402,93 @@ ck_history_watch (GIOChannel     *source,
 
         if (done) {
                 manager->priv->ck_history_id = 0;
+                if (manager->priv->ck_history_watchdog_id != 0) {
+                        g_source_remove (manager->priv->ck_history_watchdog_id);
+                        manager->priv->ck_history_watchdog_id = 0;
+                        manager->priv->ck_history_pid = 0;
+                }
                 return FALSE;
         }
 
         return TRUE;
+}
+
+static int block_sigchld_handler = 0;
+
+static sigset_t
+block_sigchld (void)
+{
+        sigset_t child_set;
+        sigemptyset (&child_set);
+        sigaddset (&child_set, SIGCHLD);
+        sigaddset (&child_set, SIGPIPE);
+        sigprocmask (SIG_BLOCK, &child_set, 0);
+
+        block_sigchld_handler++;
+
+        return child_set;
+}
+
+static void
+unblock_sigchld (void)
+{
+        sigset_t child_set;
+        sigemptyset (&child_set);
+        sigaddset (&child_set, SIGCHLD);
+        sigaddset (&child_set, SIGPIPE);
+        sigprocmask (SIG_UNBLOCK, &child_set, 0);
+
+        block_sigchld_handler--;
+}
+
+static int
+signal_pid (int pid,
+            int signal)
+{
+        int status = -1;
+
+        /* This function should not be called from the signal handler. */
+        if (block_sigchld_handler) {
+                abort ();
+        }
+
+        block_sigchld ();
+
+        status = kill (pid, signal);
+
+        if (status < 0) {
+                if (errno == ESRCH) {
+                        g_debug ("Child process %lu was already dead.",
+                                 (unsigned long) pid);
+                } else {
+                        char buf [1024];
+                        snprintf (buf,
+                                  sizeof (buf),
+                                  "Couldn't kill child process %lu",
+                                  (unsigned long) pid);
+                        perror (buf);
+                }
+        }
+
+        unblock_sigchld ();
+
+        if (block_sigchld_handler < 0) {
+                abort ();
+        }
+
+        return status;
+}
+
+static gboolean
+ck_history_watchdog (GdmUserManager *manager)
+{
+        if (manager->priv->ck_history_pid > 0) {
+                g_debug ("Killing ck-history process");
+                signal_pid (manager->priv->ck_history_pid, SIGTERM);
+        }
+
+        manager->priv->ck_history_watchdog_id = 0;
+        return FALSE;
 }
 
 static gboolean
@@ -1452,7 +1539,7 @@ load_ck_history (GdmUserManager *manager)
                                         G_SPAWN_SEARCH_PATH,
                                         NULL,
                                         NULL,
-                                        NULL, /* pid */
+                                        &manager->priv->ck_history_pid, /* pid */
                                         NULL,
                                         &standard_out,
                                         NULL,
@@ -1473,6 +1560,7 @@ load_ck_history (GdmUserManager *manager)
         g_io_channel_set_flags (channel,
                                 g_io_channel_get_flags (channel) | G_IO_FLAG_NONBLOCK,
                                 NULL);
+        manager->priv->ck_history_watchdog_id = g_timeout_add_seconds (1, (GSourceFunc) ck_history_watchdog, manager);
         manager->priv->ck_history_id = g_io_add_watch (channel,
                                                        G_IO_IN | G_IO_HUP | G_IO_ERR | G_IO_NVAL,
                                                        (GIOFunc)ck_history_watch,
@@ -2215,6 +2303,11 @@ gdm_user_manager_finalize (GObject *object)
 
         g_return_if_fail (manager->priv != NULL);
 
+        if (manager->priv->ck_history_pid > 0) {
+                g_debug ("Killing ck-history process");
+                signal_pid (manager->priv->ck_history_pid, SIGTERM);
+        }
+
         if (manager->priv->cancellable != NULL) {
                 g_object_unref (manager->priv->cancellable);
                 manager->priv->cancellable = NULL;
@@ -2237,6 +2330,11 @@ gdm_user_manager_finalize (GObject *object)
         if (manager->priv->ck_history_id != 0) {
                 g_source_remove (manager->priv->ck_history_id);
                 manager->priv->ck_history_id = 0;
+        }
+
+        if (manager->priv->ck_history_watchdog_id != 0) {
+                g_source_remove (manager->priv->ck_history_watchdog_id);
+                manager->priv->ck_history_watchdog_id = 0;
         }
 
         if (manager->priv->load_id > 0) {
