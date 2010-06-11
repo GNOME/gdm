@@ -94,6 +94,8 @@ struct GdmChooserWidgetPrivate
         guint                    update_items_idle_id;
         guint                    timer_animation_timeout_id;
 
+        gboolean                 list_visible;
+
         guint32                  should_hide_inactive_items : 1;
         guint32                  emit_activated_after_resize_animation : 1;
 
@@ -679,6 +681,16 @@ update_visible_items (GdmChooserWidget *widget)
         return FALSE;
 }
 
+static void
+set_chooser_list_visible (GdmChooserWidget *widget,
+                          gboolean          is_visible)
+{
+        if (widget->priv->list_visible != is_visible) {
+                widget->priv->list_visible = is_visible;
+                g_object_notify (G_OBJECT (widget), "list-visible");
+        }
+}
+
 static gboolean
 update_chooser_visibility (GdmChooserWidget *widget)
 {
@@ -689,7 +701,8 @@ update_chooser_visibility (GdmChooserWidget *widget)
         } else {
                 gtk_widget_hide (widget->priv->frame);
         }
-        g_object_notify (G_OBJECT (widget), "list-visible");
+
+        set_chooser_list_visible (widget, TRUE);
 
         widget->priv->update_visibility_idle_id = 0;
 
@@ -1239,7 +1252,7 @@ gdm_chooser_widget_get_property (GObject        *object,
                 g_value_set_string (value, self->priv->active_text);
                 break;
         case PROP_LIST_VISIBLE:
-                g_value_set_boolean (value, GTK_WIDGET_VISIBLE (self->priv->scrollable_widget));
+                g_value_set_boolean (value, self->priv->list_visible);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1433,7 +1446,7 @@ gdm_chooser_widget_class_init (GdmChooserWidgetClass *klass)
                                          g_param_spec_boolean ("list-visible",
                                                               _("List Visible"),
                                                               _("Whether the chooser list is visible"),
-                                                              TRUE,
+                                                              FALSE,
                                                               G_PARAM_READABLE));
 
         g_type_class_add_private (klass, sizeof (GdmChooserWidgetPrivate));
