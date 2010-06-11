@@ -731,7 +731,7 @@ set_inactive_items_visible (GdmChooserWidget *widget,
         model = GTK_TREE_MODEL (widget->priv->list_store);
 
         if (!gtk_tree_model_get_iter_first (model, &iter)) {
-                return;
+                goto out;
         }
 
         /* unset tree view model to hide row add/remove signals from gail */
@@ -760,9 +760,10 @@ set_inactive_items_visible (GdmChooserWidget *widget,
         gtk_tree_view_set_model (GTK_TREE_VIEW (widget->priv->items_view), view_model);
         g_object_unref (view_model);
 
-        g_free (active_item_id);
-
         queue_update_separator_visibility (widget);
+
+ out:
+        g_free (active_item_id);
 }
 
 static void
