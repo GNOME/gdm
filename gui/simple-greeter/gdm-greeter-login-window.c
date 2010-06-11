@@ -378,8 +378,36 @@ set_log_in_button_mode (GdmGreeterLoginWindow *login_window,
                         int                    mode)
 {
         GtkWidget *button;
+        GtkWidget *login_button;
+        GtkWidget *unlock_button;
+        char      *item;
+        gboolean   in_use;
 
-        button = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "log-in-button"));
+        in_use = FALSE;
+        item = gdm_chooser_widget_get_active_item (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser));
+        if (item != NULL) {
+                gboolean res;
+
+                res = gdm_chooser_widget_lookup_item (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser),
+                                                      item,
+                                                      NULL, /* image */
+                                                      NULL, /* name */
+                                                      NULL, /* comment */
+                                                      NULL, /* priority */
+                                                      &in_use,
+                                                      NULL); /* is separate */
+        }
+
+        unlock_button = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "unlock-button"));
+        login_button = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "log-in-button"));
+
+        if (in_use) {
+                gtk_widget_hide (login_button);
+                button = unlock_button;
+        } else {
+                gtk_widget_hide (unlock_button);
+                button = login_button;
+        }
         gtk_widget_grab_default (button);
 
         /* disconnect any signals */
