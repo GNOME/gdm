@@ -988,9 +988,11 @@ maybe_add_session (GdmUserManager *manager,
         }
 
         user = gdm_user_manager_get_user (manager, pwent->pw_name);
-        if (user != NULL) {
-                add_session_for_user (manager, user, session_id);
+        if (user == NULL) {
+                return;
         }
+
+        add_session_for_user (manager, user, session_id);
 
         /* if we haven't yet gotten the login frequency
            then at least add one because the session exists */
