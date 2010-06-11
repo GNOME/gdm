@@ -991,6 +991,13 @@ maybe_add_session (GdmUserManager *manager,
         if (user != NULL) {
                 add_session_for_user (manager, user, session_id);
         }
+
+        /* if we haven't yet gotten the login frequency
+           then at least add one because the session exists */
+        if (gdm_user_get_login_frequency (user) == 0) {
+                _gdm_user_update_login_frequency (user, 1);
+        }
+
 }
 
 static void
