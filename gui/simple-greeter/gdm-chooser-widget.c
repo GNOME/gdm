@@ -1047,6 +1047,14 @@ move_cursor_to_top (GdmChooserWidget *widget)
                                           path,
                                           NULL,
                                           FALSE);
+
+                gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (widget->priv->items_view),
+                                              path,
+                                              NULL,
+                                              TRUE,
+                                              0.5,
+                                              0.0);
+
         }
         gtk_tree_path_free (path);
 
