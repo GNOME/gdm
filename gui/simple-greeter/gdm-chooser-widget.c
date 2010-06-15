@@ -2281,7 +2281,6 @@ gdm_chooser_widget_add_item (GdmChooserWidget *widget,
                                            CHOOSER_LOAD_DATA_COLUMN, load_data,
                                            -1);
 
-        queue_move_cursor_to_top (widget);
         queue_update_chooser_visibility (widget);
 }
 
@@ -2330,7 +2329,6 @@ gdm_chooser_widget_remove_item (GdmChooserWidget *widget,
 
         gtk_list_store_remove (widget->priv->list_store, &iter);
 
-        queue_move_cursor_to_top (widget);
         queue_update_chooser_visibility (widget);
 }
 
@@ -2734,6 +2732,6 @@ gdm_chooser_widget_propagate_pending_key_events (GdmChooserWidget *widget)
 void
 gdm_chooser_widget_loaded (GdmChooserWidget *widget)
 {
-        gdm_chooser_widget_grow (widget);
         g_signal_emit (widget, signals[LOADED], 0);
+        queue_move_cursor_to_top (widget);
 }
