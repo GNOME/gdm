@@ -1808,7 +1808,7 @@ add_frame (GdmChooserWidget *widget)
         gtk_widget_show (widget->priv->frame);
         gtk_container_add (GTK_CONTAINER (widget), widget->priv->frame);
 
-        widget->priv->frame_alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
+        widget->priv->frame_alignment = gtk_alignment_new (0.0, 0.0, 1.0, 1.0);
         gtk_widget_show (widget->priv->frame_alignment);
         gtk_container_add (GTK_CONTAINER (widget->priv->frame),
                            widget->priv->frame_alignment);
