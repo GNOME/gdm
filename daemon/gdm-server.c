@@ -33,6 +33,9 @@
 #include <grp.h>
 #include <signal.h>
 #include <sys/resource.h>
+#if defined (__linux__)
+#include <sys/prctl.h>
+#endif
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -463,6 +466,11 @@ server_child_setup (GdmServer *server)
          * can control the X server */
         sigemptyset (&mask);
         sigprocmask (SIG_SETMASK, &mask, NULL);
+
+        /* Terminate the process when the parent dies */
+#if defined (__linux__)
+        prctl (PR_SET_PDEATHSIG, SIGTERM);
+#endif
 
         if (server->priv->priority != 0) {
                 if (setpriority (PRIO_PROCESS, 0, server->priv->priority)) {

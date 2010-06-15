@@ -32,6 +32,9 @@
 #include <pwd.h>
 #include <grp.h>
 #include <signal.h>
+#if defined (__linux__)
+#include <sys/prctl.h>
+#endif
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -84,6 +87,10 @@ G_DEFINE_TYPE (GdmSessionWorkerJob, gdm_session_worker_job, G_TYPE_OBJECT)
 static void
 session_worker_job_child_setup (GdmSessionWorkerJob *session_worker_job)
 {
+        /* Terminate the process when the parent dies */
+#if defined (__linux__)
+        prctl (PR_SET_PDEATHSIG, SIGTERM);
+#endif
 }
 
 static void
