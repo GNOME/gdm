@@ -101,6 +101,8 @@ struct GdmGreeterLoginWindowPrivate
         GtkBuilder      *builder;
         GtkWidget       *user_chooser;
         GtkWidget       *auth_banner_label;
+        GtkWidget       *current_button;
+
         guint            display_is_local : 1;
         guint            is_interactive : 1;
         guint            user_chooser_loaded : 1;
@@ -398,6 +400,15 @@ set_log_in_button_mode (GdmGreeterLoginWindow *login_window,
                                                       NULL); /* is separate */
         }
 
+        if (login_window->priv->current_button != NULL) {
+                /* disconnect any signals */
+                if (login_window->priv->login_button_handler_id > 0) {
+                        g_signal_handler_disconnect (login_window->priv->current_button,
+                                                     login_window->priv->login_button_handler_id);
+                        login_window->priv->login_button_handler_id = 0;
+                }
+        }
+
         unlock_button = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "unlock-button"));
         login_button = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "log-in-button"));
 
@@ -410,11 +421,7 @@ set_log_in_button_mode (GdmGreeterLoginWindow *login_window,
         }
         gtk_widget_grab_default (button);
 
-        /* disconnect any signals */
-        if (login_window->priv->login_button_handler_id > 0) {
-                g_signal_handler_disconnect (button, login_window->priv->login_button_handler_id);
-                login_window->priv->login_button_handler_id = 0;
-       }
+        login_window->priv->current_button = button;
 
         switch (mode) {
         case LOGIN_BUTTON_HIDDEN:
