@@ -253,6 +253,8 @@ gdm_greeter_panel_real_realize (GtkWidget *widget)
                 GTK_WIDGET_CLASS (gdm_greeter_panel_parent_class)->realize (widget);
         }
 
+        gdk_window_set_geometry_hints (widget->window, NULL, GDK_HINT_POS);
+
         gdm_greeter_panel_move_resize_window (GDM_GREETER_PANEL (widget), TRUE, TRUE);
 
         g_signal_connect (gtk_window_get_screen (GTK_WINDOW (widget)),
@@ -385,16 +387,16 @@ gdm_greeter_panel_real_size_request (GtkWidget      *widget,
         panel = GDM_GREETER_PANEL (widget);
         bin = GTK_BIN (widget);
 
-        if (bin->child && GTK_WIDGET_VISIBLE (bin->child)) {
-                gtk_widget_size_request (bin->child, requisition);
-        }
-
         old_geometry = panel->priv->geometry;
 
         update_geometry (panel, requisition);
 
         requisition->width  = panel->priv->geometry.width;
         requisition->height = panel->priv->geometry.height;
+
+        if (bin->child && GTK_WIDGET_VISIBLE (bin->child)) {
+                gtk_widget_size_request (bin->child, requisition);
+        }
 
         if (! GTK_WIDGET_REALIZED (widget)) {
                 return;
@@ -412,6 +414,7 @@ gdm_greeter_panel_real_size_request (GtkWidget      *widget,
 
         gdm_greeter_panel_move_resize_window (panel, position_changed, size_changed);
 }
+
 static void
 gdm_greeter_panel_real_show (GtkWidget *widget)
 {
