@@ -377,11 +377,7 @@ gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
         ret = TRUE;
 
         /* FIXME: use seat configuration */
-#if 0
-        create_displays_for_pci_devices (factory);
-#else
         create_display (factory);
-#endif
 
         return ret;
 }
