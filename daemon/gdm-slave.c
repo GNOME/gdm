@@ -47,6 +47,7 @@
 #include <X11/Xatom.h>
 
 #include "gdm-common.h"
+#include "gdm-xerrors.h"
 
 #include "gdm-slave.h"
 #include "gdm-slave-glue.h"

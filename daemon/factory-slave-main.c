@@ -39,6 +39,7 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
+#include "gdm-xerrors.h"
 #include "gdm-signal-handler.h"
 #include "gdm-log.h"
 #include "gdm-common.h"
@@ -197,6 +198,7 @@ main (int    argc,
                 goto out;
         }
 
+        gdm_xerrors_init ();
         gdm_log_init ();
 
         settings = gdm_settings_new ();
