@@ -512,8 +512,14 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
                  * display independent of current hostname
                  */
                 gdm_slave_setup_xhost_auth (host_entries, si_entries);
+
+                gdm_error_trap_push ();
                 XAddHosts (slave->priv->server_display, host_entries,
                            G_N_ELEMENTS (host_entries));
+                XSync (slave->priv->server_display, False);
+                if (gdm_error_trap_pop ()) {
+                        g_warning ("Failed to give slave programs access to the display. Trying to proceed.");
+                }
 
                 gdm_slave_set_windowpath (slave);
         } else {
@@ -854,8 +860,14 @@ gdm_slave_add_user_authorization (GdmSlave   *slave,
          * user session is starting.
          */
         gdm_slave_setup_xhost_auth (host_entries, si_entries);
+        gdm_error_trap_push ();
         XRemoveHosts (slave->priv->server_display, host_entries,
                       G_N_ELEMENTS (host_entries));
+        XSync (slave->priv->server_display, False);
+        if (gdm_error_trap_pop ()) {
+                g_warning ("Failed to remove slave program access to the display. Trying to proceed.");
+        }
+
 
         return res;
 }
