@@ -311,10 +311,11 @@ on_static_display_status_changed (GdmDisplay             *display,
                 if (factory->priv->num_failures > MAX_DISPLAY_FAILURES) {
                         /* oh shit */
                         g_warning ("GdmLocalDisplayFactory: maximum number of X display failures reached: check X server log for errors");
-                        exit (1);
+                        /* FIXME: should monitor hardware changes to
+                           try again when seats change */
+                } else {
+                        create_display (factory);
                 }
-
-                create_display (factory);
                 break;
         case GDM_DISPLAY_UNMANAGED:
                 break;
@@ -371,13 +372,17 @@ gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
 {
         gboolean                ret;
         GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (base_factory);
+        GdmDisplay             *display;
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 
         ret = TRUE;
 
         /* FIXME: use seat configuration */
-        create_display (factory);
+        display = create_display (factory);
+        if (display == NULL) {
+                ret = FALSE;
+        }
 
         return ret;
 }
