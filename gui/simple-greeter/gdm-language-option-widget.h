@@ -48,7 +48,6 @@ typedef struct
         GdmRecentOptionWidgetClass    parent_class;
 
         void (* language_activated)        (GdmLanguageOptionWidget *widget);
-        void (* dialog_hidden)             (GdmLanguageOptionWidget *widget);
 } GdmLanguageOptionWidgetClass;
 
 GType                  gdm_language_option_widget_get_type               (void);
