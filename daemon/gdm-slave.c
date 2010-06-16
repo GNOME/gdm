@@ -1678,7 +1678,9 @@ gdm_slave_finalize (GObject *object)
         g_free (slave->priv->parent_display_name);
         g_free (slave->priv->parent_display_x11_authority_file);
         g_free (slave->priv->windowpath);
-        g_array_free (slave->priv->display_x11_cookie, TRUE);
+        if (slave->priv->display_x11_cookie != NULL) {
+                g_array_free (slave->priv->display_x11_cookie, TRUE);
+        }
 
         G_OBJECT_CLASS (gdm_slave_parent_class)->finalize (object);
 }
