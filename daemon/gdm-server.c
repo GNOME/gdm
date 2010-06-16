@@ -33,7 +33,8 @@
 #include <grp.h>
 #include <signal.h>
 #include <sys/resource.h>
-#if defined (__linux__)
+
+#ifdef HAVE_SYS_PRCTL_H
 #include <sys/prctl.h>
 #endif
 
@@ -468,7 +469,7 @@ server_child_setup (GdmServer *server)
         sigprocmask (SIG_SETMASK, &mask, NULL);
 
         /* Terminate the process when the parent dies */
-#if defined (__linux__)
+#ifdef HAVE_SYS_PRCTL_H
         prctl (PR_SET_PDEATHSIG, SIGTERM);
 #endif
 

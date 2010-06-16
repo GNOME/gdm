@@ -32,7 +32,7 @@
 #include <pwd.h>
 #include <grp.h>
 #include <signal.h>
-#if defined (__linux__)
+#ifdef HAVE_SYS_PRCTL_H
 #include <sys/prctl.h>
 #endif
 
@@ -88,7 +88,7 @@ static void
 session_worker_job_child_setup (GdmSessionWorkerJob *session_worker_job)
 {
         /* Terminate the process when the parent dies */
-#if defined (__linux__)
+#ifdef HAVE_SYS_PRCTL_H
         prctl (PR_SET_PDEATHSIG, SIGTERM);
 #endif
 }
