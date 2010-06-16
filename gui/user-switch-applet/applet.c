@@ -597,7 +597,16 @@ static gboolean
 menu_expose_cb (GtkWidget *menu,
                 gpointer   data)
 {
+        char *program;
+        GdmAppletData *adata = data;
 
+        program = g_find_program_in_path ("gnome-control-center");
+        if (program != NULL) {
+                gtk_widget_show (adata->control_panel_item);
+        } else {
+                gtk_widget_hide (adata->control_panel_item);
+        }
+        g_free (program);
         return FALSE;
 }
 
@@ -1131,8 +1140,6 @@ create_sub_menu (GdmAppletData *adata)
                           G_CALLBACK (menuitem_style_set_cb), adata);
         g_signal_connect (adata->control_panel_item, "activate",
                           G_CALLBACK (on_control_panel_activate), adata);
-        gtk_widget_show (adata->control_panel_item);
-
 
         item = gtk_separator_menu_item_new ();
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menu), item);
