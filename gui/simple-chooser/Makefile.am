@@ -43,8 +43,8 @@ gdm_simple_chooser_LDADD = 		\
 	$(GTK_LIBS)			\
 	$(EXTRA_CHOOSER_LIBS)   	\
 	$(SIMPLE_CHOOSER_LIBS)		\
-	$(XDMCP_LIBS)			\
 	$(XLIB_LIBS)			\
+	$(XDMCP_LIBS)			\
 	$(NULL)
 
 gdm_host_chooser_SOURCES = 		\
@@ -62,8 +62,8 @@ gdm_host_chooser_LDADD =		\
 	$(GTK_LIBS)			\
 	$(EXTRA_CHOOSER_LIBS)   	\
 	$(SIMPLE_CHOOSER_LIBS)		\
-	$(XDMCP_LIBS)			\
 	$(XLIB_LIBS)			\
+	$(XDMCP_LIBS)			\
 	$(NULL)
 
 EXTRA_DIST = 			\
