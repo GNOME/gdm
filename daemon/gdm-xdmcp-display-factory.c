@@ -2353,8 +2353,10 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
                                 GArray *cookie;
                                 char   *name;
 
+                                cookie = NULL;
                                 gdm_display_get_x11_cookie (display, &cookie, NULL);
 
+                                name = NULL;
                                 gdm_display_get_x11_display_name (display, &name, NULL);
 
                                 g_debug ("GdmXdmcpDisplayFactory: Sending authorization key for display %s", name ? name : "(null)");
