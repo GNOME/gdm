@@ -2879,12 +2879,13 @@ decode_packet (GIOChannel             *source,
                 return TRUE;
         }
 
+        ss_len = (int)gdm_sockaddr_len (&clnt_ss);
+
         res = XdmcpFill (factory->priv->socket_fd, &factory->priv->buf, (XdmcpNetaddr)&clnt_ss, &ss_len);
         if G_UNLIKELY (! res) {
                 g_debug ("GdmXdmcpDisplayFactory: Could not create XDMCP buffer!");
                 return TRUE;
         }
-        ss_len = (int)gdm_sockaddr_len (&clnt_ss);
 
         res = XdmcpReadHeader (&factory->priv->buf, &header);
         if G_UNLIKELY (! res) {
