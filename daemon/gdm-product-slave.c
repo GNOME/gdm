@@ -854,6 +854,7 @@ create_new_session (GdmProductSlave *slave)
         g_free (display_id);
         g_free (display_name);
         g_free (display_hostname);
+        g_free (display_x11_authority_file);
         g_free (display_device);
 
         g_signal_connect (slave->priv->session,

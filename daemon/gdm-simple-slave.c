@@ -110,7 +110,10 @@ on_session_started (GdmSession       *session,
 
         /* Run the PreSession script. gdmslave suspends until script has terminated */
         username = gdm_session_direct_get_username (slave->priv->session);
-        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PreSession", username);
+        if (username != NULL) {
+                gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PreSession", username);
+        }
+        g_free (username);
 
         /* FIXME: should we do something here?
          * Note that error return status from PreSession script should
@@ -131,7 +134,10 @@ on_session_exited (GdmSession     *session,
 
         /* Run the PostSession script. gdmslave suspends until script has terminated */
         username = gdm_session_direct_get_username (slave->priv->session);
-        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostSession", username);
+        if (username != NULL) {
+                gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostSession", username);
+        }
+        g_free (username);
 
         gdm_slave_stopped (GDM_SLAVE (slave));
 }
@@ -354,6 +360,7 @@ stop_greeter (GdmSimpleSlave *slave)
         if (username != NULL) {
                 gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostLogin", username);
         }
+        g_free (username);
 
         gdm_welcome_session_stop (GDM_WELCOME_SESSION (slave->priv->greeter));
         gdm_greeter_server_stop (slave->priv->greeter_server);
@@ -1006,8 +1013,6 @@ start_greeter (GdmSimpleSlave *slave)
 
         gdm_greeter_server_start (slave->priv->greeter_server);
 
-        address = gdm_greeter_server_get_address (slave->priv->greeter_server);
-
         g_debug ("GdmSimpleSlave: Creating greeter on %s %s %s", display_name, display_device, display_hostname);
         slave->priv->greeter = gdm_greeter_session_new (display_name,
                                                         seat_id,
@@ -1033,7 +1038,10 @@ start_greeter (GdmSimpleSlave *slave)
         g_object_set (slave->priv->greeter,
                       "x11-authority-file", auth_file,
                       NULL);
+
+        address = gdm_greeter_server_get_address (slave->priv->greeter_server);
         gdm_welcome_session_set_server_address (GDM_WELCOME_SESSION (slave->priv->greeter), address);
+        g_free (address);
         gdm_welcome_session_start (GDM_WELCOME_SESSION (slave->priv->greeter));
 
         g_free (display_id);

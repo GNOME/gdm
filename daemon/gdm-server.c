@@ -512,6 +512,7 @@ get_server_environment (GdmServer *server)
                 char **str;
                 str = g_strsplit (*l, "=", 2);
                 g_hash_table_insert (hash, str[0], str[1]);
+                g_free (str);
         }
 
         /* modify environment here */
@@ -961,6 +962,17 @@ gdm_server_finalize (GObject *object)
         remove_ready_handler (server);
 
         gdm_server_stop (server);
+
+        g_free (server->priv->command);
+        g_free (server->priv->user_name);
+        g_free (server->priv->session_args);
+        g_free (server->priv->log_dir);
+        g_free (server->priv->display_name);
+        g_free (server->priv->display_device);
+        g_free (server->priv->auth_file);
+        g_free (server->priv->parent_display_name);
+        g_free (server->priv->parent_auth_file);
+        g_free (server->priv->chosen_hostname);
 
         G_OBJECT_CLASS (gdm_server_parent_class)->finalize (object);
 }

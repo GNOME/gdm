@@ -494,7 +494,6 @@ get_session_command_for_file (const char *file,
 {
         GKeyFile   *key_file;
         GError     *error;
-        char       *full_path;
         char       *exec;
         gboolean    ret;
         gboolean    res;
@@ -510,11 +509,10 @@ get_session_command_for_file (const char *file,
         g_debug ("GdmSessionDirect: looking for session file '%s'", file);
 
         error = NULL;
-        full_path = NULL;
         res = g_key_file_load_from_dirs (key_file,
                                          file,
                                          get_system_session_dirs (),
-                                         &full_path,
+                                         NULL,
                                          G_KEY_FILE_NONE,
                                          &error);
         if (! res) {
@@ -2213,7 +2211,6 @@ gdm_session_direct_bypasses_xsession (GdmSessionDirect *session_direct)
         gboolean    res;
         gboolean    bypasses_xsession = FALSE;
         char       *filename;
-        char       *full_path;
 
         g_return_val_if_fail (session_direct != NULL, FALSE);
         g_return_val_if_fail (GDM_IS_SESSION_DIRECT (session_direct), FALSE);
@@ -2225,7 +2222,7 @@ gdm_session_direct_bypasses_xsession (GdmSessionDirect *session_direct)
         res = g_key_file_load_from_dirs (key_file,
                                          filename,
                                          get_system_session_dirs (),
-                                         &full_path,
+                                         NULL,
                                          G_KEY_FILE_NONE,
                                          &error);
         if (! res) {
