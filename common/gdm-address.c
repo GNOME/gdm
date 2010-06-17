@@ -218,6 +218,22 @@ address_family_str (GdmAddress *address)
         return str;
 }
 
+static void
+_gdm_address_debug (GdmAddress *address,
+                    const char *hostname,
+                    const char *host,
+                    const char *port)
+{
+        g_debug ("Address family:%d (%s) hostname:%s host:%s port:%s local:%d loopback:%d",
+                 address->ss->ss_family,
+                 address_family_str (address) ? address_family_str (address) : "(null)",
+                 hostname ? hostname : "(null)",
+                 host ? host : "(null)",
+                 port ? port : "(null)",
+                 gdm_address_is_local (address),
+                 gdm_address_is_loopback (address));
+}
+
 void
 gdm_address_debug (GdmAddress *address)
 {
@@ -227,15 +243,6 @@ gdm_address_debug (GdmAddress *address)
 
         gdm_address_get_hostname (address, &hostname);
         gdm_address_get_numeric_info (address, &host, &port);
-
-        g_debug ("Address family:%d (%s) hostname:%s host:%s port:%s local:%d loopback:%d",
-                 address->ss->ss_family,
-                 address_family_str (address) ? address_family_str (address) : "(null)",
-                 hostname ? hostname : "(null)",
-                 host ? host : "(null)",
-                 port ? port : "(null)",
-                 gdm_address_is_local (address),
-                 gdm_address_is_loopback (address));
 
         g_free (hostname);
         g_free (host);
