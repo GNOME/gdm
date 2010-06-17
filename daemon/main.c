@@ -344,6 +344,7 @@ gdm_daemon_check_permissions (uid_t uid,
 {
         struct stat statbuf;
         const char *auth_path;
+        int         res;
 
         auth_path = LOGDIR;
 
@@ -353,7 +354,12 @@ gdm_daemon_check_permissions (uid_t uid,
         set_effective_user_group (0, 0);
 
         /* Now set things up for us as  */
-        chown (auth_path, 0, gid);
+        res = chown (auth_path, 0, gid);
+        if (res == -1) {
+                g_warning ("Unable to change owner for auth file: %s",
+                           g_strerror (errno));
+        }
+
         g_chmod (auth_path, (S_IRWXU|S_IRWXG|S_ISVTX));
 
         set_effective_user_group (uid, gid);
