@@ -560,6 +560,11 @@ main (int    argc,
                 goto out;
         }
 
+        if (print_version) {
+                g_print ("GDM %s\n", VERSION);
+                exit (1);
+        }
+
         if (fatal_warnings) {
                 GLogLevelFlags fatal_mask;
 
