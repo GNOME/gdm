@@ -129,6 +129,8 @@ gdm_parse_language_name (const char *name,
         gchar      *normalized_codeset = NULL;
         gchar      *normalized_name = NULL;
 
+        match_info = NULL;
+
         error = NULL;
         re = g_regex_new ("^(?P<language>[^_.@[:space:]]+)"
                           "(_(?P<territory>[[:upper:]]+))?"
@@ -136,22 +138,20 @@ gdm_parse_language_name (const char *name,
                           "(@(?P<modifier>[[:ascii:]]+))?$",
                           0, 0, &error);
         if (re == NULL) {
-                g_critical ("%s", error->message);
-                return;
+                g_warning ("%s", error->message);
+                goto out;
         }
 
         if (!g_regex_match (re, name, 0, &match_info) ||
             g_match_info_is_partial_match (match_info)) {
-                g_match_info_free (match_info);
-                g_regex_unref (re);
                 g_warning ("locale %s isn't valid\n", name);
-                return;
+                goto out;
         }
 
         res = g_match_info_matches (match_info);
         if (! res) {
                 g_warning ("Unable to parse locale: %s", name);
-                return;
+                goto out;
         }
 
         if (language_codep != NULL) {
@@ -204,6 +204,7 @@ gdm_parse_language_name (const char *name,
                 g_free (normalized_name);
         }
 
+ out:
         g_match_info_free (match_info);
         g_regex_unref (re);
 }
@@ -299,7 +300,7 @@ language_name_get_codeset_details (const char  *language_name,
         codeset = nl_langinfo (CODESET);
 
         if (pcodeset != NULL) {
-                *pcodeset = codeset;
+                *pcodeset = g_strdup (codeset);
         }
 
         if (is_utf8 != NULL) {
@@ -695,7 +696,7 @@ get_translated_language (const char *code,
                 }
 
                 if (is_fallback_language (code)) {
-                        name = _("Unspecified");
+                        name = g_strdup (_("Unspecified"));
                 } else {
                         translated_name = dgettext ("iso_639", language);
                         name = get_first_item_in_semicolon_list (translated_name);
@@ -728,12 +729,12 @@ get_territory (const char *code)
         return name;
 }
 
-static const char *
+static char *
 get_translated_territory (const char *code,
                           const char *locale)
 {
         const char *territory;
-        char *name;
+        char       *name;
 
         territory = get_territory (code);
 
@@ -1014,14 +1015,20 @@ char *
 gdm_get_language_from_name (const char *name,
                             const char *locale)
 {
-        char *full_language;
+        GString *full_language;
         char *language_code;
         char *territory_code;
         char *codeset_code;
         char *langinfo_codeset;
-        char *language;
-        const char *territory;
+        char *translated_language;
+        char *translated_territory;
         gboolean is_utf8 = TRUE;
+
+        translated_territory = NULL;
+        translated_language = NULL;
+        langinfo_codeset = NULL;
+
+        full_language = g_string_new (NULL);
 
         if (gdm_languages_map == NULL) {
                 languages_init ();
@@ -1035,19 +1042,30 @@ gdm_get_language_from_name (const char *name,
         territory_code = NULL;
         codeset_code = NULL;
 
-        gdm_parse_language_name (name, &language_code, &territory_code,
-                                 &codeset_code, NULL);
+        gdm_parse_language_name (name,
+                                 &language_code,
+                                 &territory_code,
+                                 &codeset_code,
+                                 NULL);
 
         if (language_code == NULL) {
                 goto out;
         }
 
-        language = get_translated_language (language_code, locale);
+        translated_language = get_translated_language (language_code, locale);
+        if (translated_language == NULL) {
+                goto out;
+        }
+
+        full_language = g_string_append (full_language, translated_language);
 
         if (territory_code != NULL) {
-                territory = get_translated_territory (territory_code, locale);
-        } else {
-                territory = NULL;
+                translated_territory = get_translated_territory (territory_code, locale);
+        }
+        if (translated_territory != NULL) {
+                g_string_append_printf (full_language,
+                                        " (%s)",
+                                        translated_territory);
         }
 
         language_name_get_codeset_details (name, &langinfo_codeset, &is_utf8);
@@ -1056,34 +1074,26 @@ gdm_get_language_from_name (const char *name,
             codeset_code = g_strdup (langinfo_codeset);
         }
 
-        full_language  = NULL;
-
-        if (language) {
-                full_language  = g_strdup (language);
-        } else {
-                goto out;
-        }
-
-        if (territory) {
-                language = full_language;
-                full_language  = g_strdup_printf ("%s (%s)",
-                                                  language, territory);
-                g_free (language);
-        }
-
         if (!is_utf8 && codeset_code) {
-                language = full_language;
-                full_language  = g_strdup_printf ("%s [%s]",
-                                                  language, codeset_code);
-                g_free (language);
+                g_string_append_printf (full_language,
+                                        " [%s]",
+                                        codeset_code);
         }
 
 out:
        g_free (language_code);
        g_free (territory_code);
        g_free (codeset_code);
+       g_free (langinfo_codeset);
+       g_free (translated_language);
+       g_free (translated_territory);
 
-       return full_language;
+       if (full_language->len == 0) {
+               g_string_free (full_language, TRUE);
+               return NULL;
+       }
+
+       return g_string_free (full_language, FALSE);
 }
 
 char **
