@@ -6,6 +6,7 @@ SUBDIRS = 				\
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/common				\
+	-I$(top_builddir)/common			\
 	-I$(top_srcdir)/gui/simple-greeter/libnotificationarea	\
 	-DDMCONFDIR=\""$(dmconfdir)"\"			\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"                  \

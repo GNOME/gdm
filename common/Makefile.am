@@ -70,8 +70,6 @@ endif
 libgdmcommon_la_SOURCES =	\
 	gdm-address.h		\
 	gdm-address.c		\
-	gdm-marshal.c		\
-	gdm-marshal.h		\
 	gdm-common.h		\
 	gdm-common.c		\
 	gdm-common-unknown-origin.h	\
@@ -99,6 +97,10 @@ libgdmcommon_la_SOURCES =	\
 	gdm-signal-handler.c	\
 	$(MKDTEMP_FILES) 	\
 	$(NULL)
+
+nodist_libgdmcommon_la_SOURCES =	\
+	gdm-marshal.c		\
+	gdm-marshal.h
 
 libgdmcommon_la_CPPFLAGS = 		\
 	$(AM_CPPFLAGS)			\
