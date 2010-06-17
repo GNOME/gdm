@@ -95,6 +95,8 @@ struct _GdmSessionDirectPrivate
         char                *display_x11_authority_file;
         gboolean             display_is_local;
 
+        char                *fallback_session_name;
+
         DBusServer          *server;
         char                *server_address;
         GHashTable          *environment;
@@ -654,8 +656,8 @@ get_default_layout_name (GdmSessionDirect *session)
     return session->priv->saved_layout;
 }
 
-static char *
-get_fallback_session_name (void)
+static const char *
+get_fallback_session_name (GdmSessionDirect *session_direct)
 {
         const char  **search_dirs;
         int           i;
@@ -663,16 +665,26 @@ get_fallback_session_name (void)
         GSequence    *sessions;
         GSequenceIter *session;
 
+        if (session_direct->priv->fallback_session_name != NULL) {
+                /* verify that the cached version still exists */
+                if (get_session_command_for_name (session_direct->priv->fallback_session_name, NULL)) {
+                        goto out;
+                }
+        }
+
         name = g_strdup ("gnome");
         if (get_session_command_for_name (name, NULL)) {
-                return name;
+                g_free (session_direct->priv->fallback_session_name);
+                session_direct->priv->fallback_session_name = name;
+                goto out;
         }
+        g_free (name);
 
         sessions = g_sequence_new (g_free);
 
         search_dirs = get_system_session_dirs ();
         for (i = 0; search_dirs[i] != NULL; i++) {
-                GDir *dir;
+                GDir       *dir;
                 const char *base_name;
 
                 dir = g_dir_open (search_dirs[i], 0, NULL);
@@ -701,6 +713,7 @@ get_fallback_session_name (void)
                 g_dir_close (dir);
         }
 
+        name = NULL;
         session = g_sequence_get_begin_iter (sessions);
         do {
                if (g_sequence_get (session)) {
@@ -717,9 +730,13 @@ get_fallback_session_name (void)
                session = g_sequence_iter_next (session);
         } while (!g_sequence_iter_is_end (session));
 
+        g_free (session_direct->priv->fallback_session_name);
+        session_direct->priv->fallback_session_name = name;
+
         g_sequence_free (sessions);
 
-        return name;
+ out:
+        return session_direct->priv->fallback_session_name;
 }
 
 static const char *
@@ -729,7 +746,7 @@ get_default_session_name (GdmSessionDirect *session)
                 return session->priv->saved_session;
         }
 
-        return get_fallback_session_name ();
+        return get_fallback_session_name (session);
 }
 
 static void
@@ -2499,6 +2516,8 @@ gdm_session_direct_finalize (GObject *object)
         g_free (session->priv->saved_language);
         g_free (session->priv->selected_layout);
         g_free (session->priv->saved_layout);
+
+        g_free (session->priv->fallback_session_name);
 
         parent_class = G_OBJECT_CLASS (gdm_session_direct_parent_class);
 
