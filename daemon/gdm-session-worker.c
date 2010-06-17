@@ -1003,7 +1003,7 @@ gdm_cache_copy_file (GdmSessionWorker *worker,
 {
         gboolean res;
 
-        g_debug ("Checking if %s should be copied to cache %s",
+        g_debug ("GdmSessionWorker: Checking if %s should be copied to cache %s",
                  userfilename, cachefilename);
 
         res = check_user_copy_file (userfilename,
@@ -1034,9 +1034,16 @@ gdm_cache_copy_file (GdmSessionWorker *worker,
                                    error->message);
                         g_error_free (error);
                  } else {
-                        chown (cachefilename,
-                               worker->priv->uid,
-                               worker->priv->gid);
+                         int res;
+
+                         res = chown (cachefilename,
+                                      worker->priv->uid,
+                                      worker->priv->gid);
+                         if (res == -1) {
+                                 g_warning ("GdmSessionWorker: Error setting owner of cache file: %s",
+                                            g_strerror (errno));
+                         }
+
                         g_chmod (cachefilename, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
                         g_debug ("Copy successful");
                 }
@@ -1070,7 +1077,11 @@ gdm_session_worker_create_cachedir (GdmSessionWorker *worker)
                 g_chmod (cachedir,
                          S_IRWXU | S_IXGRP | S_IRGRP | S_IXOTH | S_IROTH);
         }
-        chown (cachedir, worker->priv->uid, worker->priv->gid);
+        r = chown (cachedir, worker->priv->uid, worker->priv->gid);
+        if (r == -1) {
+                g_warning ("GdmSessionWorker: Error setting owner of cache directory: %s",
+                           g_strerror (errno));
+        }
 
         return cachedir;
 }
@@ -1191,7 +1202,7 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
 #endif  /* HAVE_LOGINDEVPERM */
 
         } else {
-                void *p;
+                const void *p;
 
                 if ((pam_get_item (worker->priv->pam_handle, PAM_USER, &p)) == PAM_SUCCESS) {
                         gdm_session_auditor_set_username (worker->priv->auditor, (const char *)p);

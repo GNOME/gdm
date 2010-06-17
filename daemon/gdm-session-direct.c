@@ -2023,13 +2023,16 @@ get_session_name (GdmSessionDirect *session)
 static char *
 get_session_command (GdmSessionDirect *session)
 {
-        gboolean res;
-        char    *command;
+        gboolean    res;
+        char       *command;
+        const char *session_name;
+
+        session_name = get_session_name (session);
 
         command = NULL;
-        res = get_session_command_for_name (get_session_name (session), &command);
+        res = get_session_command_for_name (session_name, &command);
         if (! res) {
-                g_critical ("Cannot read specified session file: %s.desktop", session);
+                g_critical ("Cannot find a command for specified session: %s", session_name);
                 exit (1);
         }
 
