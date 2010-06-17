@@ -166,12 +166,18 @@ static void
 on_info_query (GdmSession *session,
                const char *query_text)
 {
-        char answer[1024];
+        char  answer[1024];
+        char *res;
 
         g_print ("%s ", query_text);
 
-        fgets (answer, sizeof (answer), stdin);
-        answer[strlen(answer) - 1] = '\0';
+        answer[0] = '\0';
+        res = fgets (answer, sizeof (answer), stdin);
+        if (res == NULL) {
+                g_warning ("Couldn't get an answer");
+        }
+
+        answer[strlen (answer) - 1] = '\0';
 
         if (answer[0] == '\0') {
                 gdm_session_close (session);
@@ -200,6 +206,7 @@ on_secret_info_query (GdmSession *session,
                       const char *query_text)
 {
         char           answer[1024];
+        char          *res;
         struct termios ts0;
         struct termios ts1;
 
@@ -214,8 +221,12 @@ on_secret_info_query (GdmSession *session,
                 exit (1);
         }
 
-        fgets (answer, sizeof (answer), stdin);
+        answer[0] = '\0';
+        res = fgets (answer, sizeof (answer), stdin);
         answer[strlen (answer) - 1] = '\0';
+        if (res == NULL) {
+                g_warning ("Couldn't get an answer");
+        }
 
         tcsetattr (fileno (stdin), TCSANOW, &ts0);
 

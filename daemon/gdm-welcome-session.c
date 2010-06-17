@@ -239,7 +239,8 @@ close_welcome_session (GdmWelcomeSession *welcome_session)
 }
 
 static void
-load_lang_config_file (const gchar *config_file, const gchar **str_array)
+load_lang_config_file (const char  *config_file,
+                       const char **str_array)
 {
         gchar         *contents = NULL;
         gchar         *p;
@@ -275,7 +276,7 @@ load_lang_config_file (const gchar *config_file, const gchar **str_array)
                 return;
         }
 
-        str_joinv = g_strjoinv ("|", str_array);
+        str_joinv = g_strjoinv ("|", (char **) str_array);
         if (str_joinv == NULL) {
                 g_warning ("Error in joined");
                 g_free (contents);
@@ -355,7 +356,8 @@ get_welcome_environment (GdmWelcomeSession *welcome_session)
         };
         int i;
 
-        load_lang_config_file (LANG_CONFIG_FILE, optional_environment);
+        load_lang_config_file (LANG_CONFIG_FILE,
+                               (const char **) optional_environment);
         env = g_ptr_array_new ();
 
         /* create a hash table of current environment, then update keys has necessary */
@@ -522,6 +524,7 @@ spawn_child_setup (SpawnChildData *data)
 {
         struct passwd *pwent;
         struct group  *grent;
+        int            res;
 
         if (data->user_name == NULL) {
                 return;
@@ -543,7 +546,11 @@ spawn_child_setup (SpawnChildData *data)
 
         g_debug ("GdmWelcomeSession: Setting up run time dir %s", data->runtime_dir);
         g_mkdir (data->runtime_dir, 0755);
-        chown (data->runtime_dir, pwent->pw_uid, pwent->pw_gid);
+        res = chown (data->runtime_dir, pwent->pw_uid, pwent->pw_gid);
+        if (res == -1) {
+                g_warning ("GdmWelcomeSession: Error setting owner of run time directory: %s",
+                           g_strerror (errno));
+        }
 
         g_debug ("GdmWelcomeSession: Changing (uid:gid) for child process to (%d:%d)",
                  pwent->pw_uid,

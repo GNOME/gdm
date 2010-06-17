@@ -391,7 +391,7 @@ na_tray_child_force_redraw (NaTrayChild *child)
 {
   GtkWidget *widget = GTK_WIDGET (child);
 
-  if (GTK_WIDGET_MAPPED (child) && child->parent_relative_bg)
+  if (GTK_WIDGET_MAPPED (widget) && child->parent_relative_bg)
     {
 #if 1
       /* Sending an ExposeEvent might cause redraw problems if the

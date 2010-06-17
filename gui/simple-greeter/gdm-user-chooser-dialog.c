@@ -63,15 +63,6 @@ gdm_user_chooser_dialog_get_chosen_user_name (GdmUserChooserDialog *dialog)
 }
 
 void
-gdm_user_chooser_dialog_set_show_user_other (GdmUserChooserDialog *dialog,
-                                             gboolean              show_user)
-{
-        g_return_if_fail (GDM_IS_USER_CHOOSER_DIALOG (dialog));
-
-        gdm_user_chooser_widget_set_show_user_other (GDM_USER_CHOOSER_WIDGET (dialog->priv->chooser_widget), show_user);
-}
-
-void
 gdm_user_chooser_dialog_set_show_user_guest (GdmUserChooserDialog *dialog,
                                              gboolean              show_user)
 {
