@@ -208,12 +208,13 @@ decode_packet (GIOChannel           *source,
                 return TRUE;
         }
 
+        ss_len = (int)gdm_sockaddr_len (&clnt_ss);
+
         res = XdmcpFill (widget->priv->socket_fd, &buf, (XdmcpNetaddr)&clnt_ss, &ss_len);
         if G_UNLIKELY (! res) {
                 g_debug (_("XDMCP: Could not create XDMCP buffer!"));
                 return TRUE;
         }
-        ss_len = (int)gdm_sockaddr_len (&clnt_ss);
 
         res = XdmcpReadHeader (&buf, &header);
         if G_UNLIKELY (! res) {
