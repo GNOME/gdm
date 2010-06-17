@@ -82,6 +82,8 @@
 #define KEY_LOGO                    KEY_GREETER_DIR "/logo_icon_name"
 #define KEY_DISABLE_USER_LIST       "/apps/gdm/simple-greeter/disable_user_list"
 
+#define LSB_RELEASE_COMMAND "lsb_release -d"
+
 #define GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_LOGIN_WINDOW, GdmGreeterLoginWindowPrivate))
 
 enum {
@@ -1046,9 +1048,23 @@ static char *
 get_system_version (void)
 {
         char *version;
+        char *output;
         int i;
 
         version = NULL;
+
+        output = NULL;
+        if (g_spawn_command_line_sync (LSB_RELEASE_COMMAND, &output, NULL, NULL, NULL)) {
+                if (g_str_has_prefix (output, "Description:")) {
+                        version = g_strdup (output + strlen ("Description:"));
+                } else {
+                        version = g_strdup (output);
+                }
+                version = g_strstrip (version);
+                g_free (output);
+
+                goto out;
+        }
 
         for (i = 0; known_etc_info_files [i]; i++) {
                 char *path1;
@@ -1069,13 +1085,12 @@ get_system_version (void)
         }
 
         if (version == NULL) {
-                char *output;
                 output = NULL;
                 if (g_spawn_command_line_sync ("uname -sr", &output, NULL, NULL, NULL)) {
                         version = g_strchomp (output);
                 }
         }
-
+ out:
         return version;
 }
 
