@@ -271,6 +271,8 @@ int
 main (int argc, char *argv[])
 {
         GOptionContext *ctx;
+        gboolean        res;
+        GError         *error;
 
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -278,13 +280,19 @@ main (int argc, char *argv[])
         setlocale (LC_ALL, "");
 
         /* Option parsing */
-        ctx = g_option_context_new (_("Take a picture of the screen"));
+        ctx = g_option_context_new (N_("Take a picture of the screen"));
         g_option_context_set_translation_domain (ctx, GETTEXT_PACKAGE);
         g_option_context_add_main_entries (ctx, options, NULL);
-        g_option_context_parse (ctx, &argc, &argv, NULL);
+        g_option_context_add_group (ctx, gtk_get_option_group (TRUE));
+        error = NULL;
+        res = g_option_context_parse (ctx, &argc, &argv, &error);
         g_option_context_free (ctx);
 
-        gtk_init (&argc, &argv);
+        if (! res) {
+                g_warning ("%s", error->message);
+                g_error_free (error);
+                exit (1);
+        }
 
         prepare_screenshot ();
 
