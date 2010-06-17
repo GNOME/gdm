@@ -1652,6 +1652,9 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
 
         ret = FALSE;
 
+        home = NULL;
+        shell = NULL;
+
         if (worker->priv->username == NULL) {
                 g_debug ("GdmSessionWorker: Username not set");
                 error_code = PAM_USER_UNKNOWN;
@@ -1662,8 +1665,6 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
                 goto out;
         }
 
-        home = NULL;
-        shell = NULL;
         uid = 0;
         gid = 0;
         res = _lookup_passwd_info (worker->priv->username,
@@ -1722,6 +1723,8 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
         ret = TRUE;
 
  out:
+        g_free (home);
+        g_free (shell);
         if (ret) {
                 g_debug ("GdmSessionWorker: state ACCREDITED");
                 ret = TRUE;
@@ -2970,19 +2973,16 @@ gdm_session_worker_finalize (GObject *object)
 
         gdm_session_worker_unwatch_child (worker);
 
-        if (worker->priv->username != NULL) {
-                g_free (worker->priv->username);
-                worker->priv->username = NULL;
-        }
-
-        if (worker->priv->arguments != NULL) {
-                g_strfreev (worker->priv->arguments);
-                worker->priv->arguments = NULL;
-        }
-
+        g_free (worker->priv->service);
+        g_free (worker->priv->x11_display_name);
+        g_free (worker->priv->x11_authority_file);
+        g_free (worker->priv->display_device);
+        g_free (worker->priv->hostname);
+        g_free (worker->priv->username);
+        g_free (worker->priv->server_address);
+        g_strfreev (worker->priv->arguments);
         if (worker->priv->environment != NULL) {
                 g_hash_table_destroy (worker->priv->environment);
-                worker->priv->environment = NULL;
         }
 
         G_OBJECT_CLASS (gdm_session_worker_parent_class)->finalize (object);

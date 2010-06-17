@@ -332,6 +332,7 @@ gdm_slave_run_script (GdmSlave   *slave,
 
         g_ptr_array_foreach (env, (GFunc)g_free, NULL);
         g_ptr_array_free (env, TRUE);
+        g_strfreev (argv);
 
         if (! res) {
                 g_warning ("GdmSlave: Unable to run script: %s", error->message);

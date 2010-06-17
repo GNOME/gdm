@@ -767,7 +767,7 @@ parse_dbus_launch_output (const char *output,
         }
 
         if (addressp != NULL) {
-                *addressp = g_strdup (g_match_info_fetch (match_info, 1));
+                *addressp = g_match_info_fetch (match_info, 1);
         }
 
         if (pidp != NULL) {
@@ -804,6 +804,8 @@ start_dbus_daemon (GdmWelcomeSession *welcome_session)
 
         env = get_welcome_environment (welcome_session);
 
+        std_out = NULL;
+        std_err = NULL;
         error = NULL;
         res = spawn_command_line_sync_as_user (DBUS_LAUNCH_COMMAND,
                                                welcome_session->priv->user_name,
@@ -834,6 +836,8 @@ start_dbus_daemon (GdmWelcomeSession *welcome_session)
                 g_debug ("GdmWelcomeSession: Started D-Bus daemon on pid %d", welcome_session->priv->dbus_pid);
         }
  out:
+        g_free (std_out);
+        g_free (std_err);
         return res;
 }
 
@@ -1401,6 +1405,10 @@ gdm_welcome_session_finalize (GObject *object)
 
         gdm_welcome_session_stop (welcome_session);
 
+        if (welcome_session->priv->ckc != NULL) {
+                ck_connector_unref (welcome_session->priv->ckc);
+        }
+
         g_free (welcome_session->priv->command);
         g_free (welcome_session->priv->user_name);
         g_free (welcome_session->priv->group_name);
@@ -1412,6 +1420,8 @@ gdm_welcome_session_finalize (GObject *object)
         g_free (welcome_session->priv->server_address);
         g_free (welcome_session->priv->server_dbus_path);
         g_free (welcome_session->priv->server_dbus_interface);
+        g_free (welcome_session->priv->server_env_var_name);
+        g_free (welcome_session->priv->dbus_bus_address);
 
         G_OBJECT_CLASS (gdm_welcome_session_parent_class)->finalize (object);
 }

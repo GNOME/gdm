@@ -446,6 +446,9 @@ gdm_session_worker_job_finalize (GObject *object)
 
         gdm_session_worker_job_stop (session_worker_job);
 
+        g_free (session_worker_job->priv->command);
+        g_free (session_worker_job->priv->server_address);
+
         G_OBJECT_CLASS (gdm_session_worker_job_parent_class)->finalize (object);
 }
 

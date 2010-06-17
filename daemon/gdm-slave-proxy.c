@@ -422,6 +422,7 @@ gdm_slave_proxy_finalize (GObject *object)
         g_return_if_fail (slave->priv != NULL);
 
         g_free (slave->priv->command);
+        g_free (slave->priv->log_path);
 
         G_OBJECT_CLASS (gdm_slave_proxy_parent_class)->finalize (object);
 }

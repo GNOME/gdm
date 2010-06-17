@@ -244,6 +244,8 @@ gdm_product_display_finalize (GObject *object)
 
         g_return_if_fail (product_display->priv != NULL);
 
+        g_free (product_display->priv->relay_address);
+
         G_OBJECT_CLASS (gdm_product_display_parent_class)->finalize (object);
 }
 
