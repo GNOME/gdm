@@ -153,6 +153,8 @@ main (int    argc,
 
         gdm_set_fatal_warnings_if_unstable ();
 
+        /* Translators: worker is a helper process that does the work
+           of starting up a session */
         context = g_option_context_new (_("GNOME Display Manager Session Worker"));
         g_option_context_add_main_entries (context, entries, NULL);
 
