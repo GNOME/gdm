@@ -204,6 +204,22 @@ greeter_reset_timeout (GdmSimpleSlave *slave)
         return FALSE;
 }
 
+static gboolean
+auth_failed_reset_timeout (GdmSimpleSlave *slave)
+{
+        g_debug ("GdmSimpleSlave: auth failed resetting slave");
+
+        if (slave->priv->greeter_server != NULL) {
+                gdm_greeter_server_authentication_failed (slave->priv->greeter_server);
+                reset_session (slave);
+        } else {
+                start_greeter (slave);
+                create_new_session (slave);
+        }
+        slave->priv->greeter_reset_id = 0;
+        return FALSE;
+}
+
 static void
 queue_greeter_reset (GdmSimpleSlave *slave)
 {
@@ -212,6 +228,17 @@ queue_greeter_reset (GdmSimpleSlave *slave)
         }
 
         slave->priv->greeter_reset_id = g_idle_add ((GSourceFunc)greeter_reset_timeout, slave);
+}
+
+static void
+queue_auth_failed_reset (GdmSimpleSlave *slave)
+{
+        /* use the greeter reset idle id so we don't do both at once */
+        if (slave->priv->greeter_reset_id > 0) {
+                return;
+        }
+
+        slave->priv->greeter_reset_id = g_idle_add ((GSourceFunc)auth_failed_reset_timeout, slave);
 }
 
 static void
@@ -266,8 +293,11 @@ on_session_authentication_failed (GdmSession     *session,
                 gdm_greeter_server_problem (slave->priv->greeter_server,
                                             message != NULL ? message : _("Unable to authenticate user"));
         }
+
         destroy_session (slave);
-        queue_greeter_reset (slave);
+
+        g_debug ("GdmSimpleSlave: Authentication failed - may retry");
+        queue_auth_failed_reset (slave);
 }
 
 static void

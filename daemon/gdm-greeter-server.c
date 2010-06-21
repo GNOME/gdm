@@ -239,6 +239,13 @@ gdm_greeter_server_problem (GdmGreeterServer *greeter_server,
 }
 
 gboolean
+gdm_greeter_server_authentication_failed (GdmGreeterServer *greeter_server)
+{
+        send_dbus_void_signal (greeter_server, "AuthenticationFailed");
+        return TRUE;
+}
+
+gboolean
 gdm_greeter_server_reset (GdmGreeterServer *greeter_server)
 {
         send_dbus_void_signal (greeter_server, "Reset");
@@ -761,6 +768,8 @@ do_introspect (DBusConnection *connection,
                                "    <signal name=\"Ready\">\n"
                                "    </signal>\n"
                                "    <signal name=\"Reset\">\n"
+                               "    </signal>\n"
+                               "    <signal name=\"AuthenticationFailed\">\n"
                                "    </signal>\n"
                                "    <signal name=\"UserAuthorized\">\n"
                                "    </signal>\n"

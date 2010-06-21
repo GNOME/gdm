@@ -65,6 +65,7 @@ enum {
         SECRET_INFO_QUERY,
         READY,
         RESET,
+        AUTHENTICATION_FAILED,
         SELECTED_USER_CHANGED,
         DEFAULT_LANGUAGE_NAME_CHANGED,
         DEFAULT_LAYOUT_NAME_CHANGED,
@@ -252,6 +253,17 @@ on_reset (GdmGreeterClient *client,
 
         g_signal_emit (client,
                        gdm_greeter_client_signals[RESET],
+                       0);
+}
+
+static void
+on_authentication_failed (GdmGreeterClient *client,
+                          DBusMessage      *message)
+{
+        g_debug ("GdmGreeterClient: Authentication failed");
+
+        g_signal_emit (client,
+                       gdm_greeter_client_signals[AUTHENTICATION_FAILED],
                        0);
 }
 
@@ -645,6 +657,8 @@ client_dbus_handle_message (DBusConnection *connection,
                 on_ready (client, message);
         } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "Reset")) {
                 on_reset (client, message);
+        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "AuthenticationFailed")) {
+                on_authentication_failed (client, message);
         } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "SelectedUserChanged")) {
                 on_selected_user_changed (client, message);
         } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "DefaultLanguageNameChanged")) {
@@ -888,6 +902,16 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               G_OBJECT_CLASS_TYPE (object_class),
                               G_SIGNAL_RUN_FIRST,
                               G_STRUCT_OFFSET (GdmGreeterClientClass, reset),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE,
+                              0);
+        gdm_greeter_client_signals[AUTHENTICATION_FAILED] =
+                g_signal_new ("authentication-failed",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmGreeterClientClass, authentication_failed),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,

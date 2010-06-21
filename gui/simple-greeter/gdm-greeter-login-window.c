@@ -546,34 +546,90 @@ switch_mode (GdmGreeterLoginWindow *login_window,
 }
 
 static void
-reset_dialog (GdmGreeterLoginWindow *login_window)
+choose_user (GdmGreeterLoginWindow *login_window,
+             const char            *user_name)
+{
+        g_assert (user_name != NULL);
+
+        g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
+                       0, user_name);
+
+        if (strcmp (user_name, GDM_USER_CHOOSER_USER_OTHER) == 0) {
+                g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
+        } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_GUEST) == 0) {
+                /* FIXME: handle guest account stuff */
+        } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_AUTO) == 0) {
+                g_signal_emit (login_window, signals[BEGIN_AUTO_LOGIN], 0,
+                               login_window->priv->timed_login_username);
+
+                login_window->priv->timed_login_enabled = TRUE;
+                restart_timed_login_timeout (login_window);
+
+                /* just wait for the user to select language and stuff */
+                set_log_in_button_mode (login_window, LOGIN_BUTTON_TIMED_LOGIN);
+                set_message (login_window, _("Select language and click Log In"));
+        } else {
+                g_signal_emit (login_window, signals[BEGIN_VERIFICATION_FOR_USER], 0, user_name);
+        }
+
+        switch_mode (login_window, MODE_AUTHENTICATION);
+}
+
+static void
+retry_login (GdmGreeterLoginWindow *login_window)
+{
+        GtkWidget  *entry;
+        char       *user_name;
+
+        user_name = gdm_user_chooser_widget_get_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser));
+        if (user_name == NULL) {
+                return;
+        }
+
+        g_debug ("GdmGreeterLoginWindow: Retrying login for %s", user_name);
+
+        entry = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-entry"));
+        gtk_editable_delete_text (GTK_EDITABLE (entry), 0, -1);
+
+        choose_user (login_window, user_name);
+
+        g_free (user_name);
+}
+
+static void
+reset_dialog (GdmGreeterLoginWindow *login_window,
+              guint                  dialog_mode)
 {
         GtkWidget  *entry;
         GtkWidget  *label;
 
-        g_debug ("GdmGreeterLoginWindow: Resetting dialog");
+        g_debug ("GdmGreeterLoginWindow: Resetting dialog to mode %u", dialog_mode);
         set_busy (login_window);
         set_sensitive (login_window, FALSE);
 
-        login_window->priv->show_cancel_button = FALSE;
+        if (dialog_mode == MODE_SELECTION) {
+                login_window->priv->show_cancel_button = FALSE;
 
-        if (login_window->priv->timed_login_enabled) {
-                gdm_chooser_widget_set_item_timer (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser),
-                                                   GDM_USER_CHOOSER_USER_AUTO, 0);
-                remove_timed_login_timeout (login_window);
-                login_window->priv->timed_login_enabled = FALSE;
-        }
-        _gdm_greeter_login_window_set_interactive (login_window, FALSE);
+                if (login_window->priv->timed_login_enabled) {
+                        gdm_chooser_widget_set_item_timer (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser),
+                                                           GDM_USER_CHOOSER_USER_AUTO, 0);
+                        remove_timed_login_timeout (login_window);
+                        login_window->priv->timed_login_enabled = FALSE;
+                }
+                _gdm_greeter_login_window_set_interactive (login_window, FALSE);
 
-        g_signal_handlers_block_by_func (G_OBJECT (login_window->priv->user_chooser),
-                                         G_CALLBACK (on_user_unchosen), login_window);
-        gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), NULL);
-        g_signal_handlers_unblock_by_func (G_OBJECT (login_window->priv->user_chooser),
-                                           G_CALLBACK (on_user_unchosen), login_window);
+                g_signal_handlers_block_by_func (G_OBJECT (login_window->priv->user_chooser),
+                                                 G_CALLBACK (on_user_unchosen), login_window);
+                gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), NULL);
+                g_signal_handlers_unblock_by_func (G_OBJECT (login_window->priv->user_chooser),
+                                                   G_CALLBACK (on_user_unchosen), login_window);
 
-        if (login_window->priv->start_session_handler_id > 0) {
-                g_signal_handler_disconnect (login_window, login_window->priv->start_session_handler_id);
-                login_window->priv->start_session_handler_id = 0;
+                if (login_window->priv->start_session_handler_id > 0) {
+                        g_signal_handler_disconnect (login_window, login_window->priv->start_session_handler_id);
+                        login_window->priv->start_session_handler_id = 0;
+                }
+
+                set_message (login_window, "");
         }
 
         entry = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-entry"));
@@ -581,7 +637,6 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         gtk_editable_delete_text (GTK_EDITABLE (entry), 0, -1);
 
         gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
-        set_message (login_window, "");
 
         label = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-label"));
         gtk_label_set_text (GTK_LABEL (label), "");
@@ -589,7 +644,7 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         if (login_window->priv->user_list_disabled) {
                 switch_mode (login_window, MODE_AUTHENTICATION);
         } else {
-                switch_mode (login_window, MODE_SELECTION);
+                switch_mode (login_window, dialog_mode);
         }
 
         set_sensitive (login_window, TRUE);
@@ -597,6 +652,7 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
         update_banner_message (login_window);
         adjust_other_login_visibility (login_window);
+
         if (gdm_chooser_widget_get_number_of_items (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser)) >= 1) {
                 gdm_chooser_widget_propagate_pending_key_events (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser));
         }
@@ -617,19 +673,35 @@ gdm_greeter_login_window_ready (GdmGreeterLoginWindow *login_window)
 {
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
-        reset_dialog (login_window);
-
         set_sensitive (GDM_GREETER_LOGIN_WINDOW (login_window), TRUE);
         set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
 
-        /* If the user list is disabled, then start the PAM conversation */
-        if (login_window->priv->user_list_disabled) {
-                g_debug ("Starting PAM conversation since user list disabled");
-                g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
-                               0, GDM_USER_CHOOSER_USER_OTHER);
-                g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
+        /* If we are retrying a previously selected user */
+        if (login_window->priv->dialog_mode != MODE_SELECTION) {
+                retry_login (login_window);
+        } else {
+                /* If the user list is disabled, then start the PAM conversation */
+                if (login_window->priv->user_list_disabled) {
+                        g_debug ("Starting PAM conversation since user list disabled");
+                        g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
+                                       0, GDM_USER_CHOOSER_USER_OTHER);
+                        g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
+                }
         }
+
+        return TRUE;
+}
+
+gboolean
+gdm_greeter_login_window_authentication_failed (GdmGreeterLoginWindow *login_window)
+{
+        g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
+
+        g_debug ("GdmGreeterLoginWindow: got authentication failed");
+
+        /* FIXME: shake? */
+        reset_dialog (login_window, MODE_AUTHENTICATION);
 
         return TRUE;
 }
@@ -639,7 +711,8 @@ gdm_greeter_login_window_reset (GdmGreeterLoginWindow *login_window)
 {
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
-        reset_dialog (GDM_GREETER_LOGIN_WINDOW (login_window));
+        g_debug ("GdmGreeterLoginWindow: got reset");
+        reset_dialog (login_window, MODE_SELECTION);
 
         return TRUE;
 }
@@ -675,7 +748,7 @@ static void
 handle_request_timed_login (GdmGreeterLoginWindow *login_window)
 {
         if (login_window->priv->dialog_mode != MODE_SELECTION) {
-                reset_dialog (login_window);
+                reset_dialog (login_window, MODE_SELECTION);
         }
         gdm_user_chooser_widget_set_show_user_auto (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
 
@@ -939,28 +1012,7 @@ on_user_chosen (GdmUserChooserWidget  *user_chooser,
                 return;
         }
 
-        g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
-                       0, user_name);
-
-        if (strcmp (user_name, GDM_USER_CHOOSER_USER_OTHER) == 0) {
-                g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
-        } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_GUEST) == 0) {
-                /* FIXME: handle guest account stuff */
-        } else if (strcmp (user_name, GDM_USER_CHOOSER_USER_AUTO) == 0) {
-                g_signal_emit (login_window, signals[BEGIN_AUTO_LOGIN], 0,
-                               login_window->priv->timed_login_username);
-
-                login_window->priv->timed_login_enabled = TRUE;
-                restart_timed_login_timeout (login_window);
-
-                /* just wait for the user to select language and stuff */
-                set_log_in_button_mode (login_window, LOGIN_BUTTON_TIMED_LOGIN);
-                set_message (login_window, _("Select language and click Log In"));
-        } else {
-                g_signal_emit (login_window, signals[BEGIN_VERIFICATION_FOR_USER], 0, user_name);
-        }
-
-        switch_mode (login_window, MODE_AUTHENTICATION);
+        choose_user (login_window, user_name);
 
         g_free (user_name);
 }

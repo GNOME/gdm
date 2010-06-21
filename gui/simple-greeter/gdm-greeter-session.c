@@ -43,12 +43,16 @@
 
 #define GDM_GREETER_SESSION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_SESSION, GdmGreeterSessionPrivate))
 
+#define MAX_LOGIN_TRIES 3
+
 struct GdmGreeterSessionPrivate
 {
         GdmGreeterClient      *client;
 
         GtkWidget             *login_window;
         GtkWidget             *panel;
+
+        guint                  num_tries;
 };
 
 enum {
@@ -98,8 +102,33 @@ on_reset (GdmGreeterClient  *client,
 {
         g_debug ("GdmGreeterSession: Reset");
 
+        session->priv->num_tries = 0;
+
         gdm_greeter_panel_reset (GDM_GREETER_PANEL (session->priv->panel));
         gdm_greeter_login_window_reset (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
+}
+
+static void
+on_authentication_failed (GdmGreeterClient  *client,
+                          GdmGreeterSession *session)
+{
+        g_debug ("GdmGreeterSession: Authentication failed");
+
+        session->priv->num_tries++;
+
+        if (session->priv->num_tries < MAX_LOGIN_TRIES) {
+                g_debug ("GdmGreeterSession: Retrying login (%d)",
+                         session->priv->num_tries);
+
+                gdm_greeter_login_window_authentication_failed (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
+        } else {
+                g_debug ("GdmGreeterSession: Maximum number of login tries exceeded (%d) - resetting",
+                         session->priv->num_tries - 1);
+                session->priv->num_tries = 0;
+
+                gdm_greeter_panel_reset (GDM_GREETER_PANEL (session->priv->panel));
+                gdm_greeter_login_window_reset (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
+        }
 }
 
 static void
@@ -567,6 +596,10 @@ gdm_greeter_session_init (GdmGreeterSession *session)
         g_signal_connect (session->priv->client,
                           "reset",
                           G_CALLBACK (on_reset),
+                          session);
+        g_signal_connect (session->priv->client,
+                          "authentication-failed",
+                          G_CALLBACK (on_authentication_failed),
                           session);
         g_signal_connect (session->priv->client,
                           "selected-user-changed",

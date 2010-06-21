@@ -66,6 +66,7 @@ GtkWidget *         gdm_greeter_login_window_new                (gboolean displa
 
 
 gboolean            gdm_greeter_login_window_reset              (GdmGreeterLoginWindow *login_window);
+gboolean            gdm_greeter_login_window_authentication_failed (GdmGreeterLoginWindow *login_window);
 gboolean            gdm_greeter_login_window_ready              (GdmGreeterLoginWindow *login_window);
 gboolean            gdm_greeter_login_window_info_query         (GdmGreeterLoginWindow *login_window,
                                                                  const char *text);

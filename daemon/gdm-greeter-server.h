@@ -84,6 +84,7 @@ gboolean            gdm_greeter_server_info                  (GdmGreeterServer *
                                                               const char       *text);
 gboolean            gdm_greeter_server_problem               (GdmGreeterServer *greeter_server,
                                                               const char       *text);
+gboolean            gdm_greeter_server_authentication_failed (GdmGreeterServer *greeter_server);
 gboolean            gdm_greeter_server_reset                 (GdmGreeterServer *greeter_server);
 gboolean            gdm_greeter_server_ready                 (GdmGreeterServer *greeter_server);
 void                gdm_greeter_server_selected_user_changed (GdmGreeterServer *greeter_server,
