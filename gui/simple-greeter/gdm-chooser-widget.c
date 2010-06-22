@@ -2749,6 +2749,7 @@ gdm_chooser_widget_propagate_pending_key_events (GdmChooserWidget *widget)
 void
 gdm_chooser_widget_loaded (GdmChooserWidget *widget)
 {
+        update_chooser_visibility (widget);
         g_signal_emit (widget, signals[LOADED], 0);
         queue_move_cursor_to_top (widget);
 }
