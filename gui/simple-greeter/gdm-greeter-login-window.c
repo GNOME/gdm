@@ -406,8 +406,15 @@ set_log_in_button_mode (GdmGreeterLoginWindow *login_window,
         }
 }
 
+static gboolean
+user_chooser_has_no_user (GdmGreeterLoginWindow *login_window)
+{
+        return (login_window->priv->user_chooser_loaded &&
+                gdm_chooser_widget_get_number_of_items (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser)) == 0);
+}
+
 static void
-adjust_other_login_visibility(GdmGreeterLoginWindow *login_window)
+adjust_other_login_visibility (GdmGreeterLoginWindow *login_window)
 {
         if (! login_window->priv->user_chooser_loaded) {
                 return;
@@ -562,7 +569,7 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         label = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-label"));
         gtk_label_set_text (GTK_LABEL (label), "");
 
-        if (login_window->priv->user_list_disabled) {
+        if (login_window->priv->user_list_disabled || user_chooser_has_no_user (login_window)) {
                 switch_mode (login_window, MODE_AUTHENTICATION);
         } else {
                 switch_mode (login_window, MODE_SELECTION);
@@ -600,8 +607,8 @@ gdm_greeter_login_window_ready (GdmGreeterLoginWindow *login_window)
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
 
         /* If the user list is disabled, then start the PAM conversation */
-        if (login_window->priv->user_list_disabled) {
-                g_debug ("Starting PAM conversation since user list disabled");
+        if (login_window->priv->user_list_disabled || user_chooser_has_no_user (login_window)) {
+                g_debug ("Starting PAM conversation since user list disabled or no local users");
                 g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
                                0, GDM_USER_CHOOSER_USER_OTHER);
                 g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
@@ -899,7 +906,16 @@ on_users_loaded (GdmUserChooserWidget  *user_chooser,
         update_banner_message (login_window);
         adjust_other_login_visibility (login_window);
 
-        gdm_chooser_widget_activate_if_one_item (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser));
+        if (user_chooser_has_no_user (login_window)) {
+                /* There's no face browser to show */
+                login_window->priv->show_cancel_button = FALSE;
+                switch_mode (login_window, MODE_AUTHENTICATION);
+
+                g_debug ("Starting PAM conversation since no local users");
+                g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
+                               0, GDM_USER_CHOOSER_USER_OTHER);
+                g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
+        }
 }
 
 static void
@@ -1282,7 +1298,7 @@ update_banner_message (GdmGreeterLoginWindow *login_window)
         } else {
                 char *message = NULL;
                 error = NULL;
-                if (login_window->priv->user_chooser_loaded && gdm_chooser_widget_get_number_of_items (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser)) == 0) {
+                if (user_chooser_has_no_user (login_window)) {
                         message = gconf_client_get_string (login_window->priv->client, KEY_BANNER_MESSAGE_TEXT_NOCHOOSER, &error);
                         if (error != NULL) {
                                 g_debug("GdmGreeterLoginWindow: unable to get nochooser banner text: %s", error->message);
