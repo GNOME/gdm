@@ -104,7 +104,6 @@ enum {
         LANGUAGE_SELECTED,
         LAYOUT_SELECTED,
         SESSION_SELECTED,
-        DIALOG_HIDDEN,
         NUMBER_OF_SIGNALS
 };
 
@@ -453,14 +452,6 @@ on_language_activated (GdmLanguageOptionWidget *widget,
 }
 
 static void
-on_language_dialog_hidden(GdmLanguageOptionWidget *widget,
-                          GdmGreeterPanel         *panel)
-{
-
-        g_signal_emit (panel, signals[DIALOG_HIDDEN], 0);
-}
-
-static void
 on_layout_activated (GdmLayoutOptionWidget *widget,
                      GdmGreeterPanel       *panel)
 {
@@ -480,15 +471,6 @@ on_layout_activated (GdmLayoutOptionWidget *widget,
 
         g_free (layout);
 }
-
-static void
-on_layout_dialog_hidden (GdmLayoutOptionWidget *widget,
-                         GdmGreeterPanel         *panel)
-{
-
-        g_signal_emit (panel, signals[DIALOG_HIDDEN], 0);
-}
-
 static void
 on_session_activated (GdmSessionOptionWidget *widget,
                       GdmGreeterPanel        *panel)
@@ -784,9 +766,6 @@ setup_panel (GdmGreeterPanel *panel)
         g_signal_connect (G_OBJECT (panel->priv->language_option_widget),
                           "language-activated",
                           G_CALLBACK (on_language_activated), panel);
-        g_signal_connect (G_OBJECT (panel->priv->language_option_widget),
-                          "dialog-hidden",
-                          G_CALLBACK (on_language_dialog_hidden), panel);
         gtk_box_pack_start (GTK_BOX (panel->priv->option_hbox), panel->priv->language_option_widget, FALSE, FALSE, 6);
         gdm_profile_end ("creating option widget");
 
@@ -794,9 +773,6 @@ setup_panel (GdmGreeterPanel *panel)
         g_signal_connect (G_OBJECT (panel->priv->layout_option_widget),
                           "layout-activated",
                           G_CALLBACK (on_layout_activated), panel);
-        g_signal_connect (G_OBJECT (panel->priv->layout_option_widget),
-                          "dialog-hidden",
-                          G_CALLBACK (on_layout_dialog_hidden), panel);
         gtk_box_pack_start (GTK_BOX (panel->priv->option_hbox), panel->priv->layout_option_widget, FALSE, FALSE, 6);
 
         panel->priv->session_option_widget = gdm_session_option_widget_new ();
@@ -988,17 +964,6 @@ gdm_greeter_panel_class_init (GdmGreeterPanelClass *klass)
                               g_cclosure_marshal_VOID__STRING,
                               G_TYPE_NONE,
                               1, G_TYPE_STRING);
-
-        signals[DIALOG_HIDDEN] =
-                g_signal_new ("dialog-hidden",
-                              G_TYPE_FROM_CLASS (object_class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmGreeterPanelClass, dialog_hidden),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__VOID,
-                              G_TYPE_NONE,
-                              0);
 
         g_object_class_install_property (object_class,
                                          PROP_MONITOR,
