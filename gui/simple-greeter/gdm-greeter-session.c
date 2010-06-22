@@ -167,8 +167,8 @@ on_default_layout_name_changed (GdmGreeterClient  *client,
                                 GdmGreeterSession *session)
 {
         g_debug ("GdmGreeterSession: default layout name changed: %s", text);
-        gdm_greeter_panel_set_default_layout_name (GDM_GREETER_PANEL (session->priv->panel),
-                                                   text);
+        gdm_greeter_panel_set_keyboard_layout (GDM_GREETER_PANEL (session->priv->panel),
+                                               text);
 }
 
 static void
