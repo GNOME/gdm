@@ -338,19 +338,6 @@ show_widget (GdmGreeterLoginWindow *login_window,
 }
 
 static void
-sensitize_widget (GdmGreeterLoginWindow *login_window,
-                  const char            *name,
-                  gboolean               sense)
-{
-        GtkWidget *widget;
-
-        widget = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, name));
-        if (widget != NULL) {
-                gtk_widget_set_sensitive (widget, sense);
-        }
-}
-
-static void
 on_login_button_clicked_answer_query (GtkButton             *button,
                                       GdmGreeterLoginWindow *login_window)
 {
