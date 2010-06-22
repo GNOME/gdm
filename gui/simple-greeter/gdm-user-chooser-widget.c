@@ -27,6 +27,7 @@
 #include <string.h>
 #include <errno.h>
 #include <dirent.h>
+#include <stdarg.h>
 #include <sys/stat.h>
 
 #include <glib.h>
@@ -49,6 +50,7 @@ enum {
 };
 
 #define DEFAULT_USER_ICON "avatar-default"
+#define OLD_DEFAULT_USER_ICON "stock_person"
 
 #define GDM_USER_CHOOSER_WIDGET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_USER_CHOOSER_WIDGET, GdmUserChooserWidgetPrivate))
 
@@ -797,18 +799,67 @@ gdm_user_chooser_widget_class_init (GdmUserChooserWidgetClass *klass)
 }
 
 static GdkPixbuf *
-get_stock_person_pixbuf (GdmUserChooserWidget *widget)
+get_pixbuf_from_icon_names (GdmUserChooserWidget *widget,
+                            const char           *first_name,
+                            ...)
 {
-        GdkPixbuf *pixbuf;
-        int        size;
+        GdkPixbuf   *pixbuf;
+        GtkIconInfo *icon_info;
+        GPtrArray   *array;
+        int          size;
+        const char  *icon_name;
+        va_list      argument_list;
+
+        array = g_ptr_array_new ();
+
+        g_ptr_array_add (array, (gpointer) first_name);
+
+        va_start (argument_list, first_name);
+        icon_name = (const char *) va_arg (argument_list, const char *);
+        while (icon_name != NULL) {
+                g_ptr_array_add (array, (gpointer) icon_name);
+                icon_name = (const char *) va_arg (argument_list, const char *);
+        }
+        va_end (argument_list);
+        g_ptr_array_add (array, NULL);
 
         size = get_icon_height_for_widget (GTK_WIDGET (widget));
 
-        pixbuf = gtk_icon_theme_load_icon (widget->priv->icon_theme,
-                                           DEFAULT_USER_ICON,
-                                           size,
-                                           0,
-                                           NULL);
+        icon_info = gtk_icon_theme_choose_icon (widget->priv->icon_theme,
+                                                (const char **) array->pdata,
+                                                size,
+                                                GTK_ICON_LOOKUP_GENERIC_FALLBACK);
+        g_ptr_array_free (array, FALSE);
+
+        if (icon_info != NULL) {
+                GError *error;
+
+                error = NULL;
+                pixbuf = gtk_icon_info_load_icon (icon_info, &error);
+                gtk_icon_info_free (icon_info);
+
+                if (error != NULL) {
+                        g_warning ("Could not load icon '%s': %s",
+                                   first_name, error->message);
+                        g_error_free (error);
+                }
+        } else {
+                g_warning ("Could not find icon '%s' or fallbacks", first_name);
+                pixbuf = NULL;
+        }
+
+        return pixbuf;
+}
+
+static GdkPixbuf *
+get_stock_person_pixbuf (GdmUserChooserWidget *widget)
+{
+        GdkPixbuf   *pixbuf;
+
+        pixbuf = get_pixbuf_from_icon_names (widget,
+                                             DEFAULT_USER_ICON,
+                                             OLD_DEFAULT_USER_ICON,
+                                             NULL);
 
         return pixbuf;
 }
@@ -817,15 +868,11 @@ static GdkPixbuf *
 get_logged_in_pixbuf (GdmUserChooserWidget *widget)
 {
         GdkPixbuf *pixbuf;
-        int        size;
 
-        size = get_icon_height_for_widget (GTK_WIDGET (widget));
-
-        pixbuf = gtk_icon_theme_load_icon (widget->priv->icon_theme,
-                                           "emblem-default",
-                                           size / 3,
-                                           0,
-                                           NULL);
+        pixbuf = get_pixbuf_from_icon_names (widget,
+                                             DEFAULT_USER_ICON,
+                                             "emblem-default",
+                                             NULL);
 
         return pixbuf;
 }
