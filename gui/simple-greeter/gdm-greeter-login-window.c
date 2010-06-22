@@ -449,8 +449,6 @@ switch_mode (GdmGreeterLoginWindow *login_window,
 
                 show_widget (login_window, "auth-input-box", FALSE);
 
-                sensitize_widget (login_window, "disconnect-button", FALSE);
-
                 /*
                  * Although the cancel button is not shown in the selection
                  * dialog, the show_cancel_button flag manages when the
@@ -462,7 +460,6 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 login_window->priv->show_cancel_button = TRUE;
                 break;
         case MODE_AUTHENTICATION:
-                show_widget (login_window, "disconnect-button", FALSE);
                 default_name = "log-in-button";
                 break;
         default:
