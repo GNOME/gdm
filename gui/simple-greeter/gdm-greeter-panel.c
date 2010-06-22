@@ -1023,8 +1023,8 @@ gdm_greeter_panel_hide_user_options (GdmGreeterPanel *panel)
 void
 gdm_greeter_panel_reset (GdmGreeterPanel *panel)
 {
+        gdm_greeter_panel_set_keyboard_layout (panel, NULL);
         gdm_greeter_panel_set_default_language_name (panel, NULL);
-        gdm_greeter_panel_set_default_layout_name (panel, NULL);
         gdm_greeter_panel_set_default_session_name (panel, NULL);
         gdm_greeter_panel_hide_user_options (panel);
 }
@@ -1057,8 +1057,8 @@ gdm_greeter_panel_set_default_language_name (GdmGreeterPanel *panel,
 }
 
 void
-gdm_greeter_panel_set_default_layout_name (GdmGreeterPanel *panel,
-                                           const char      *layout_name)
+gdm_greeter_panel_set_keyboard_layout (GdmGreeterPanel *panel,
+                                       const char      *layout_name)
 {
 #ifdef HAVE_LIBXKLAVIER
         g_return_if_fail (GDM_IS_GREETER_PANEL (panel));
@@ -1084,6 +1084,8 @@ gdm_greeter_panel_set_default_layout_name (GdmGreeterPanel *panel,
                                                    layout_name);
         }
 
+        gdm_option_widget_set_active_item (GDM_OPTION_WIDGET (panel->priv->layout_option_widget),
+                                           layout_name);
         gdm_option_widget_set_default_item (GDM_OPTION_WIDGET (panel->priv->layout_option_widget),
                                             layout_name);
 
