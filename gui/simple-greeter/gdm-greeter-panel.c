@@ -138,7 +138,7 @@ _gdm_greeter_panel_set_display_is_local (GdmGreeterPanel *panel,
 {
         if (panel->priv->display_is_local != is) {
                 panel->priv->display_is_local = is;
-                g_object_notify (G_OBJECT (panel), "is-local");
+                g_object_notify (G_OBJECT (panel), "display-is-local");
         }
 }
 
