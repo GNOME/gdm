@@ -920,12 +920,24 @@ _grab_focus (GtkWidget *widget)
 }
 
 static void
+queue_update_visible_items (GdmChooserWidget *widget)
+{
+        if (widget->priv->update_items_idle_id != 0) {
+                g_source_remove (widget->priv->update_items_idle_id);
+        }
+
+        widget->priv->update_items_idle_id =
+                g_timeout_add (100, (GSourceFunc) update_visible_items, widget);
+}
+
+static void
 on_grow_animation_complete (GdmScrollableWidget *scrollable_widget,
                             GdmChooserWidget    *widget)
 {
         g_assert (widget->priv->state == GDM_CHOOSER_WIDGET_STATE_GROWING);
         widget->priv->state = GDM_CHOOSER_WIDGET_STATE_GROWN;
         gtk_tree_view_set_enable_search (GTK_TREE_VIEW (widget->priv->items_view), TRUE);
+        queue_update_visible_items (widget);
 
         _grab_focus (GTK_WIDGET (widget));
 }
@@ -1142,6 +1154,8 @@ deactivate (GdmChooserWidget *widget)
 
         if (widget->priv->state != GDM_CHOOSER_WIDGET_STATE_GROWN) {
                 gdm_chooser_widget_grow (widget);
+        } else {
+                queue_update_visible_items (widget);
         }
 
         g_signal_emit (widget, signals[DEACTIVATED], 0);
@@ -1934,17 +1948,6 @@ on_selection_changed (GtkTreeSelection *selection,
         } else {
                 g_debug ("GdmChooserWidget: selection cleared");
         }
-}
-
-static void
-queue_update_visible_items (GdmChooserWidget *widget)
-{
-        if (widget->priv->update_items_idle_id != 0) {
-                g_source_remove (widget->priv->update_items_idle_id);
-        }
-
-        widget->priv->update_items_idle_id =
-                g_timeout_add (100, (GSourceFunc) update_visible_items, widget);
 }
 
 static void
