@@ -529,7 +529,9 @@ can_jump_to_authenticate (GdmGreeterLoginWindow *login_window)
 {
         gboolean res;
 
-        if (login_window->priv->user_list_disabled) {
+        if (!login_window->priv->user_chooser_loaded) {
+                res = FALSE;
+        } else if (login_window->priv->user_list_disabled) {
                 res = (login_window->priv->timed_login_username == NULL);
         } else {
                 res = user_chooser_has_no_user (login_window);
@@ -623,7 +625,7 @@ gdm_greeter_login_window_ready (GdmGreeterLoginWindow *login_window)
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
 
         /* If the user list is disabled, then start the PAM conversation */
-        if (login_window->priv->user_list_disabled || user_chooser_has_no_user (login_window)) {
+        if (can_jump_to_authenticate (login_window)) {
                 g_debug ("Starting PAM conversation since user list disabled or no local users");
                 g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
                                0, GDM_USER_CHOOSER_USER_OTHER);
