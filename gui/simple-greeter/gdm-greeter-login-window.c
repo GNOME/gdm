@@ -999,6 +999,10 @@ on_users_loaded (GdmUserChooserWidget  *user_chooser,
 
         update_banner_message (login_window);
 
+        if (!login_window->priv->user_list_disabled) {
+                gtk_widget_show (login_window->priv->user_chooser);
+        }
+
         if (login_window->priv->timed_login_username != NULL
             && !login_window->priv->timed_login_already_enabled) {
                 request_timed_login (login_window);
@@ -1272,10 +1276,6 @@ load_theme (GdmGreeterLoginWindow *login_window)
                                  "notify::list-visible",
                                  G_CALLBACK (on_user_chooser_visibility_changed),
                                  login_window);
-
-        if (!login_window->priv->user_list_disabled) {
-                gtk_widget_show (login_window->priv->user_chooser);
-        }
 
         login_window->priv->auth_banner_label = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "auth-banner-label"));
         /*make_label_small_italic (login_window->priv->auth_banner_label);*/
