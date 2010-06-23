@@ -1238,7 +1238,8 @@ gdm_greeter_login_window_key_press_event (GtkWidget   *widget,
         login_window = GDM_GREETER_LOGIN_WINDOW (widget);
 
         if (event->keyval == GDK_Escape) {
-                if (login_window->priv->dialog_mode == MODE_AUTHENTICATION) {
+                if (login_window->priv->dialog_mode == MODE_AUTHENTICATION
+                    || login_window->priv->dialog_mode == MODE_TIMED_LOGIN) {
                         do_cancel (GDM_GREETER_LOGIN_WINDOW (widget));
                 }
         }
