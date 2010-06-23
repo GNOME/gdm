@@ -36,6 +36,12 @@
 
 static guint cancel_idle_id = 0;
 
+static gboolean     timed_login   = FALSE;
+static GOptionEntry entries []   = {
+        { "timed-login", 0, 0, G_OPTION_ARG_NONE, &timed_login, "Test timed login", NULL },
+        { NULL }
+};
+
 static gboolean
 do_cancel (GdmGreeterLoginWindow *login_window)
 {
@@ -78,7 +84,12 @@ main (int argc, char *argv[])
 
         setlocale (LC_ALL, "");
 
-        gtk_init (&argc, &argv);
+        gtk_init_with_args (&argc,
+                            &argv,
+                            "",
+                            entries,
+                            NULL,
+                            NULL);
 
         if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
                 g_critical ("Unable to initialize settings client");
@@ -94,6 +105,11 @@ main (int argc, char *argv[])
                           "cancelled",
                           G_CALLBACK (on_cancelled),
                           NULL);
+        if (timed_login) {
+                gdm_greeter_login_window_request_timed_login (GDM_GREETER_LOGIN_WINDOW (login_window),
+                                                              g_get_user_name (),
+                                                              60);
+        }
 
         gtk_widget_show (login_window);
 
