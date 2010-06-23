@@ -520,35 +520,39 @@ delete_entry_text (GtkWidget *entry)
 }
 
 static void
-reset_dialog (GdmGreeterLoginWindow *login_window)
+reset_dialog (GdmGreeterLoginWindow *login_window,
+              guint                  dialog_mode)
 {
         GtkWidget  *entry;
         GtkWidget  *label;
-        guint       mode;
 
-        g_debug ("GdmGreeterLoginWindow: Resetting dialog");
+        g_debug ("GdmGreeterLoginWindow: Resetting dialog to mode %u", dialog_mode);
         set_busy (login_window);
         set_sensitive (login_window, FALSE);
 
         login_window->priv->num_queries = 0;
 
-        if (login_window->priv->timed_login_enabled) {
-                gdm_chooser_widget_set_item_timer (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser),
-                                                   GDM_USER_CHOOSER_USER_AUTO, 0);
-                remove_timed_login_timeout (login_window);
-                login_window->priv->timed_login_enabled = FALSE;
-        }
-        _gdm_greeter_login_window_set_interactive (login_window, FALSE);
+        if (dialog_mode == MODE_SELECTION) {
+                if (login_window->priv->timed_login_enabled) {
+                        gdm_chooser_widget_set_item_timer (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser),
+                                                           GDM_USER_CHOOSER_USER_AUTO, 0);
+                        remove_timed_login_timeout (login_window);
+                        login_window->priv->timed_login_enabled = FALSE;
+                }
+                _gdm_greeter_login_window_set_interactive (login_window, FALSE);
 
-        g_signal_handlers_block_by_func (G_OBJECT (login_window->priv->user_chooser),
-                                         G_CALLBACK (on_user_unchosen), login_window);
-        gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), NULL);
-        g_signal_handlers_unblock_by_func (G_OBJECT (login_window->priv->user_chooser),
-                                           G_CALLBACK (on_user_unchosen), login_window);
+                g_signal_handlers_block_by_func (G_OBJECT (login_window->priv->user_chooser),
+                                                 G_CALLBACK (on_user_unchosen), login_window);
+                gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), NULL);
+                g_signal_handlers_unblock_by_func (G_OBJECT (login_window->priv->user_chooser),
+                                                   G_CALLBACK (on_user_unchosen), login_window);
 
-        if (login_window->priv->start_session_handler_id > 0) {
-                g_signal_handler_disconnect (login_window, login_window->priv->start_session_handler_id);
-                login_window->priv->start_session_handler_id = 0;
+                if (login_window->priv->start_session_handler_id > 0) {
+                        g_signal_handler_disconnect (login_window, login_window->priv->start_session_handler_id);
+                        login_window->priv->start_session_handler_id = 0;
+                }
+
+                set_message (login_window, "");
         }
 
         entry = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-entry"));
@@ -556,17 +560,16 @@ reset_dialog (GdmGreeterLoginWindow *login_window)
         delete_entry_text (entry);
 
         gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
-        set_message (login_window, "");
 
         label = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-label"));
         gtk_label_set_text (GTK_LABEL (label), "");
 
-        mode = MODE_SELECTION;
         if (login_window->priv->user_list_disabled || user_chooser_has_no_user (login_window)) {
                 /* If we don't have a user list jump straight to authenticate */
-                mode = MODE_AUTHENTICATION;
+                switch_mode (login_window, MODE_AUTHENTICATION);
+        } else {
+                switch_mode (login_window, dialog_mode);
         }
-        switch_mode (login_window, mode);
 
         set_sensitive (login_window, TRUE);
         set_ready (login_window);
@@ -593,7 +596,7 @@ gdm_greeter_login_window_ready (GdmGreeterLoginWindow *login_window)
 {
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
-        reset_dialog (login_window);
+        reset_dialog (login_window, MODE_SELECTION);
 
         set_sensitive (GDM_GREETER_LOGIN_WINDOW (login_window), TRUE);
         set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
@@ -615,7 +618,8 @@ gdm_greeter_login_window_reset (GdmGreeterLoginWindow *login_window)
 {
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
-        reset_dialog (GDM_GREETER_LOGIN_WINDOW (login_window));
+        g_debug ("GdmGreeterLoginWindow: got reset");
+        reset_dialog (login_window, MODE_SELECTION);
 
         return TRUE;
 }
@@ -651,7 +655,7 @@ static void
 handle_request_timed_login (GdmGreeterLoginWindow *login_window)
 {
         if (login_window->priv->dialog_mode != MODE_SELECTION) {
-                reset_dialog (login_window);
+                reset_dialog (login_window, MODE_SELECTION);
         }
         gdm_user_chooser_widget_set_show_user_auto (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
 
@@ -896,18 +900,12 @@ on_users_loaded (GdmUserChooserWidget  *user_chooser,
 }
 
 static void
-on_user_chosen (GdmUserChooserWidget  *user_chooser,
-                GdmGreeterLoginWindow *login_window)
+choose_user (GdmGreeterLoginWindow *login_window,
+             const char            *user_name)
 {
-        char *user_name;
         guint mode;
 
-        user_name = gdm_user_chooser_widget_get_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser));
-        g_debug ("GdmGreeterLoginWindow: user chosen '%s'", user_name);
-
-        if (user_name == NULL) {
-                return;
-        }
+        g_assert (user_name != NULL);
 
         g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
                        0, user_name);
@@ -932,7 +930,22 @@ on_user_chosen (GdmUserChooserWidget  *user_chooser,
         }
 
         switch_mode (login_window, mode);
+}
 
+static void
+on_user_chosen (GdmUserChooserWidget  *user_chooser,
+                GdmGreeterLoginWindow *login_window)
+{
+        char *user_name;
+
+        user_name = gdm_user_chooser_widget_get_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser));
+        g_debug ("GdmGreeterLoginWindow: user chosen '%s'", user_name);
+
+        if (user_name == NULL) {
+                return;
+        }
+
+        choose_user (login_window, user_name);
         g_free (user_name);
 }
 
