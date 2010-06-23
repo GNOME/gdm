@@ -435,8 +435,13 @@ set_log_in_button_mode (GdmGreeterLoginWindow *login_window,
 static gboolean
 user_chooser_has_no_user (GdmGreeterLoginWindow *login_window)
 {
-        return (login_window->priv->user_chooser_loaded &&
-                gdm_chooser_widget_get_number_of_items (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser)) == 0);
+        guint num_items;
+
+        num_items = gdm_chooser_widget_get_number_of_items (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser));
+        g_debug ("GdmGreeterLoginWindow: loaded=%d num_items=%d",
+                 login_window->priv->user_chooser_loaded,
+                 num_items);
+        return (login_window->priv->user_chooser_loaded && num_items == 0);
 }
 
 static void
@@ -519,7 +524,7 @@ switch_mode (GdmGreeterLoginWindow *login_window,
          * The rest of this function sets up the user list, so just return if
          * the user list is disabled.
          */
-        if (login_window->priv->user_list_disabled) {
+        if (login_window->priv->user_list_disabled && number != MODE_TIMED_LOGIN) {
                 return;
         }
 
@@ -597,6 +602,20 @@ retry_login (GdmGreeterLoginWindow *login_window)
         g_free (user_name);
 }
 
+static gboolean
+can_jump_to_authenticate (GdmGreeterLoginWindow *login_window)
+{
+        gboolean res;
+
+        if (login_window->priv->user_list_disabled) {
+                res = (login_window->priv->timed_login_username == NULL);
+        } else {
+                res = user_chooser_has_no_user (login_window);
+        }
+
+        return res;
+}
+
 static void
 reset_dialog (GdmGreeterLoginWindow *login_window,
               guint                  dialog_mode)
@@ -643,8 +662,9 @@ reset_dialog (GdmGreeterLoginWindow *login_window,
         label = GTK_WIDGET (gtk_builder_get_object (GDM_GREETER_LOGIN_WINDOW (login_window)->priv->builder, "auth-prompt-label"));
         gtk_label_set_text (GTK_LABEL (label), "");
 
-        if (login_window->priv->user_list_disabled || user_chooser_has_no_user (login_window)) {
+        if (can_jump_to_authenticate (login_window)) {
                 /* If we don't have a user list jump straight to authenticate */
+                g_debug ("GdmGreeterLoginWindow: jumping straight to authenticate");
                 switch_mode (login_window, MODE_AUTHENTICATION);
         } else {
                 switch_mode (login_window, dialog_mode);
@@ -747,25 +767,22 @@ gdm_greeter_login_window_problem (GdmGreeterLoginWindow *login_window,
 }
 
 static void
-handle_request_timed_login (GdmGreeterLoginWindow *login_window)
+request_timed_login (GdmGreeterLoginWindow *login_window)
 {
+        g_debug ("GdmGreeterLoginWindow: requesting timed login");
+
+        gtk_widget_show (login_window->priv->user_chooser);
+
         if (login_window->priv->dialog_mode != MODE_SELECTION) {
                 reset_dialog (login_window, MODE_SELECTION);
         }
-        gdm_user_chooser_widget_set_show_user_auto (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
 
         if (!login_window->priv->timed_login_already_enabled) {
                 gdm_user_chooser_widget_set_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser),
                                                               GDM_USER_CHOOSER_USER_AUTO);
         }
-}
 
-static void
-on_request_timed_login_after_users_loaded (GdmUserChooserWidget  *user_chooser,
-                                           GdmGreeterLoginWindow *login_window)
-{
-        g_debug ("Users now loaded, handling timed login request");
-        handle_request_timed_login (login_window);
+        login_window->priv->timed_login_already_enabled = TRUE;
 }
 
 void
@@ -777,24 +794,20 @@ gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_windo
 
         g_debug ("GdmGreeterLoginWindow: requested automatic login for user '%s' in %d seconds", username, delay);
 
-        if (login_window->priv->timed_login_username != NULL) {
-                login_window->priv->timed_login_already_enabled = TRUE;
-                g_free (login_window->priv->timed_login_username);
-        } else {
-                login_window->priv->timed_login_already_enabled = FALSE;
-        }
+        g_free (login_window->priv->timed_login_username);
         login_window->priv->timed_login_username = g_strdup (username);
         login_window->priv->timed_login_delay = delay;
 
+        /* add the auto user right away so we won't trigger a mode
+           switch to authenticate when the user list is disabled */
+        gdm_user_chooser_widget_set_show_user_auto (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
+
+        /* if the users aren't loaded then we'll handle it in when they are */
         if (login_window->priv->user_chooser_loaded) {
                 g_debug ("Handling timed login request since users are already loaded.");
-                handle_request_timed_login (login_window);
+                request_timed_login (login_window);
         } else {
                 g_debug ("Waiting to handle timed login request until users are loaded.");
-                g_signal_connect (login_window->priv->user_chooser,
-                                  "loaded",
-                                  G_CALLBACK (on_request_timed_login_after_users_loaded),
-                                  login_window);
         }
 }
 
@@ -981,10 +994,16 @@ on_users_loaded (GdmUserChooserWidget  *user_chooser,
 {
         g_debug ("GdmGreeterLoginWindow: users loaded");
         login_window->priv->user_chooser_loaded = TRUE;
+
         update_banner_message (login_window);
 
-        if (user_chooser_has_no_user (login_window)) {
+        if (login_window->priv->timed_login_username != NULL
+            && !login_window->priv->timed_login_already_enabled) {
+                request_timed_login (login_window);
+        } else if (can_jump_to_authenticate (login_window)) {
                 /* jump straight to authenticate */
+                g_debug ("GdmGreeterLoginWindow: jumping straight to authenticate");
+
                 switch_mode (login_window, MODE_AUTHENTICATION);
 
                 g_debug ("Starting PAM conversation since no local users");
@@ -1584,7 +1603,6 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         GConfClient *client;
         GError      *error;
         gboolean     user_list_disable;
-        gboolean     timed_login_enable;
 
         gdm_profile_start (NULL);
 
@@ -1599,22 +1617,14 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
          * timed login is also not being used.
          */
         user_list_disable = gconf_client_get_bool (client,
-                KEY_DISABLE_USER_LIST, &error);
+                                                   KEY_DISABLE_USER_LIST,
+                                                   &error);
         if (error != NULL) {
                 g_debug ("GdmUserChooserWidget: unable to get disable-user-list configuration: %s", error->message);
                 g_error_free (error);
         }
 
-        gdm_settings_client_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE,
-                                         &timed_login_enable);
-
-        login_window->priv->user_list_disabled = FALSE;
-        if (user_list_disable && !timed_login_enable) {
-                g_debug ("Disabling user list");
-                login_window->priv->user_list_disabled = TRUE;
-        } else {
-                g_debug ("Enabling user list");
-        }
+        login_window->priv->user_list_disabled = user_list_disable;
 
         gtk_window_set_title (GTK_WINDOW (login_window), _("Login Window"));
         /*gtk_window_set_opacity (GTK_WINDOW (login_window), 0.85);*/
