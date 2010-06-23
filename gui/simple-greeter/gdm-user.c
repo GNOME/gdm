@@ -40,9 +40,7 @@
 #define GDM_USER_GET_CLASS(object) (G_TYPE_INSTANCE_GET_CLASS ((object), GDM_TYPE_USER, GdmUserClass))
 
 #define GLOBAL_FACEDIR    DATADIR "/faces"
-#define MAX_ICON_SIZE     128
 #define MAX_FILE_SIZE     65536
-#define MINIMAL_UID       100
 
 #define USER_ACCOUNTS_NAME      "org.freedesktop.Accounts"
 #define USER_ACCOUNTS_INTERFACE "org.freedesktop.Accounts.User"
@@ -74,8 +72,7 @@ typedef struct _GdmUserClass
 } GdmUserClass;
 
 static void gdm_user_finalize     (GObject      *object);
-static gboolean check_user_file (const char *filename,
-                                 gssize      max_file_size);
+static gboolean check_user_file (const char *filename);
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
@@ -192,6 +189,7 @@ gdm_user_finalize (GObject *object)
         g_free (user->user_name);
         g_free (user->real_name);
         g_free (user->icon_file);
+        g_free (user->object_path);
 
         if (user->accounts_proxy != NULL) {
                 g_object_unref (user->accounts_proxy);
@@ -234,7 +232,7 @@ _gdm_user_update_from_pwent (GdmUser             *user,
 
                 if (g_utf8_validate (pwent->pw_gecos, -1, NULL)) {
                         valid_utf8_name = pwent->pw_gecos;
-                        first_comma = g_utf8_strchr (valid_utf8_name, -1, ',');
+                        first_comma = strchr (valid_utf8_name, ',');
                 } else {
                         g_warning ("User %s has invalid UTF-8 in GECOS field. "
                                    "It would be a good thing to check /etc/passwd.",
@@ -243,7 +241,7 @@ _gdm_user_update_from_pwent (GdmUser             *user,
 
                 if (first_comma) {
                         real_name = g_strndup (valid_utf8_name,
-                                                  (first_comma - valid_utf8_name));
+                                               (first_comma - valid_utf8_name));
                 } else if (valid_utf8_name) {
                         real_name = g_strdup (valid_utf8_name);
                 } else {
@@ -258,11 +256,7 @@ _gdm_user_update_from_pwent (GdmUser             *user,
                 real_name = NULL;
         }
 
-        if ((real_name && !user->real_name) ||
-            (!real_name && user->real_name) ||
-            (real_name &&
-             user->real_name &&
-             strcmp (real_name, user->real_name) != 0)) {
+        if (g_strcmp0 (real_name, user->real_name) != 0) {
                 g_free (user->real_name);
                 user->real_name = real_name;
                 changed = TRUE;
@@ -277,12 +271,7 @@ _gdm_user_update_from_pwent (GdmUser             *user,
         }
 
         /* Username */
-        if ((pwent->pw_name && !user->user_name) ||
-            (!pwent->pw_name && user->user_name) ||
-            (pwent->pw_name &&
-             user->user_name &&
-             strcmp (user->user_name, pwent->pw_name) != 0)) {
-
+        if (g_strcmp0 (pwent->pw_name, user->user_name) != 0) {
                 g_free (user->icon_file);
                 user->icon_file = NULL;
                 if (pwent->pw_name != NULL) {
@@ -290,9 +279,7 @@ _gdm_user_update_from_pwent (GdmUser             *user,
 
                         user->icon_file = g_build_filename (GDM_CACHE_DIR, pwent->pw_name, "face", NULL);
 
-                        res = check_user_file (user->icon_file,
-                                               MAX_FILE_SIZE);
-
+                        res = check_user_file (user->icon_file);
                         if (!res) {
                                 g_free (user->icon_file);
                                 user->icon_file = g_build_filename (GLOBAL_FACEDIR, pwent->pw_name, NULL);
@@ -362,7 +349,7 @@ gdm_user_get_uid (GdmUser *user)
  *
  * Since: 1.0
  **/
-G_CONST_RETURN gchar *
+const char *
 gdm_user_get_real_name (GdmUser *user)
 {
         g_return_val_if_fail (GDM_IS_USER (user), NULL);
@@ -382,7 +369,7 @@ gdm_user_get_real_name (GdmUser *user)
  * Since: 1.0
  **/
 
-G_CONST_RETURN gchar *
+const char *
 gdm_user_get_user_name (GdmUser *user)
 {
         g_return_val_if_fail (GDM_IS_USER (user), NULL);
@@ -464,14 +451,10 @@ gdm_user_collate (GdmUser *user1,
 }
 
 static gboolean
-check_user_file (const char *filename,
-                 gssize      max_file_size)
+check_user_file (const char *filename)
 {
+        gssize      max_file_size = MAX_FILE_SIZE;
         struct stat fileinfo;
-
-        if (max_file_size < 0) {
-                max_file_size = G_MAXSIZE;
-        }
 
         /* Exists/Readable? */
         if (stat (filename, &fileinfo) < 0) {
@@ -732,8 +715,7 @@ gdm_user_render_icon (GdmUser   *user,
 
         pixbuf = NULL;
         if (user->icon_file) {
-                res = check_user_file (user->icon_file,
-                                       MAX_FILE_SIZE);
+                res = check_user_file (user->icon_file);
                 if (res) {
                         pixbuf = gdk_pixbuf_new_from_file_at_size (user->icon_file,
                                                                    icon_size,
@@ -772,7 +754,7 @@ gdm_user_render_icon (GdmUser   *user,
         return pixbuf;
 }
 
-G_CONST_RETURN gchar *
+const char *
 gdm_user_get_icon_file (GdmUser *user)
 {
         g_return_val_if_fail (GDM_IS_USER (user), NULL);
@@ -780,7 +762,7 @@ gdm_user_get_icon_file (GdmUser *user)
         return user->icon_file;
 }
 
-G_CONST_RETURN gchar *
+const char *
 gdm_user_get_object_path (GdmUser *user)
 {
         g_return_val_if_fail (GDM_IS_USER (user), NULL);
@@ -788,33 +770,17 @@ gdm_user_get_object_path (GdmUser *user)
         return user->object_path;
 }
 
-G_CONST_RETURN char *
+const char *
 gdm_user_get_primary_session_id (GdmUser *user)
 {
-        GList *l;
-        const char *primary_ssid;
-
-        primary_ssid = NULL;
-
         if (!gdm_user_is_logged_in (user)) {
                 g_debug ("User %s is not logged in, so has no primary session",
                          gdm_user_get_user_name (user));
-                goto out;
+                return NULL;
         }
 
-        for (l = user->sessions; l != NULL; l = l->next) {
-                const char *ssid;
-
-                ssid = l->data;
-
-                /* FIXME: better way to choose? */
-                if (ssid != NULL) {
-                        primary_ssid = ssid;
-                        break;
-                }
-        }
-out:
-        return primary_ssid;
+        /* FIXME: better way to choose? */
+        return user->sessions->data;
 }
 
 static void
@@ -843,8 +809,16 @@ collect_props (const gchar    *key,
         } else if (strcmp (key, "LoginFrequency") == 0) {
                 user->login_frequency = g_value_get_uint64 (value);
         } else if (strcmp (key, "IconFile") == 0) {
+                gboolean res;
+
                 g_free (user->icon_file);
                 user->icon_file = g_value_dup_string (value);
+
+                res = check_user_file (user->icon_file);
+                if (!res) {
+                        g_free (user->icon_file);
+                        user->icon_file = g_build_filename (GLOBAL_FACEDIR, user->user_name, NULL);
+                }
         } else if (strcmp (key, "Locked") == 0) {
                 /* ignore */
         } else if (strcmp (key, "AutomaticLogin") == 0) {

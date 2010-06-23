@@ -53,7 +53,7 @@ typedef struct
         void          (* user_is_logged_in_changed) (GdmUserManager *user_manager,
                                                      GdmUser        *user);
         void          (* user_changed)              (GdmUserManager *user_manager,
-                                                        GdmUser        *user);
+                                                     GdmUser        *user);
 } GdmUserManagerClass;
 
 typedef enum

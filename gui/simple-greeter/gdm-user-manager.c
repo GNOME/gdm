@@ -29,8 +29,6 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <signal.h>
-#include <errno.h>
 
 #ifdef HAVE_PATHS_H
 #include <paths.h>
@@ -52,8 +50,6 @@
 #define GDM_USER_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_USER_MANAGER, GdmUserManagerPrivate))
 
 #define CK_NAME      "org.freedesktop.ConsoleKit"
-#define CK_PATH      "/org/freedesktop/ConsoleKit"
-#define CK_INTERFACE "org.freedesktop.ConsoleKit"
 
 #define CK_MANAGER_PATH      "/org/freedesktop/ConsoleKit/Manager"
 #define CK_MANAGER_INTERFACE "org.freedesktop.ConsoleKit.Manager"
@@ -73,12 +69,11 @@
 #endif
 #define PATH_PASSWD     "/etc/passwd"
 
-#define DEFAULT_GLOBAL_FACE_DIR DATADIR "/faces"
-#define DEFAULT_USER_ICON       "avatar-default"
-
 #ifndef GDM_USERNAME
 #define GDM_USERNAME "gdm"
 #endif
+
+#define RELOAD_PASSWD_THROTTLE_SECS 5
 
 /* approximately two months */
 #define LOGIN_FREQUENCY_TIME_WINDOW_SECS (60 * 24 * 60 * 60)
@@ -576,29 +571,25 @@ static gint
 match_name_cmpfunc (gconstpointer a,
                     gconstpointer b)
 {
-        if (a == NULL || b == NULL) {
-                return -1;
-        }
-
         return g_strcmp0 ((char *) a,
                           (char *) b);
 }
 
 static gboolean
-user_in_exclude_list (GdmUserManager *manager,
-                      const char *user)
+username_in_exclude_list (GdmUserManager *manager,
+                          const char     *username)
 {
         GSList   *found;
         gboolean  ret = FALSE;
 
         /* always exclude the "gdm" user. */
-        if (user == NULL || (strcmp (user, GDM_USERNAME) == 0)) {
+        if (username == NULL || (strcmp (username, GDM_USERNAME) == 0)) {
                 return TRUE;
         }
 
         if (manager->priv->exclude_usernames != NULL) {
                 found = g_slist_find_custom (manager->priv->exclude_usernames,
-                                             user,
+                                             username,
                                              match_name_cmpfunc);
                 if (found != NULL) {
                         ret = TRUE;
@@ -619,23 +610,6 @@ add_session_for_user (GdmUserManager *manager,
 
         _gdm_user_add_session (user, ssid);
         g_debug ("GdmUserManager: added session for user: %s", gdm_user_get_user_name (user));
-}
-
-static GdmUser *
-create_user (GdmUserManager *manager)
-{
-        GdmUser *user;
-
-        user = g_object_new (GDM_TYPE_USER, NULL);
-        g_signal_connect (user,
-                          "sessions-changed",
-                          G_CALLBACK (on_user_sessions_changed),
-                          manager);
-        g_signal_connect (user,
-                          "changed",
-                          G_CALLBACK (on_user_changed),
-                          manager);
-        return user;
 }
 
 static void
@@ -665,6 +639,15 @@ add_user (GdmUserManager *manager,
                                      g_object_ref (user));
         }
 
+        g_signal_connect (user,
+                          "sessions-changed",
+                          G_CALLBACK (on_user_sessions_changed),
+                          manager);
+        g_signal_connect (user,
+                          "changed",
+                          G_CALLBACK (on_user_changed),
+                          manager);
+
         if (manager->priv->is_loaded) {
                 g_signal_emit (manager, signals[USER_ADDED], 0, user);
         }
@@ -682,13 +665,12 @@ add_new_user_for_pwent (GdmUserManager *manager,
 
         g_debug ("GdmUserManager: Creating new user from password entry: %s", pwent->pw_name);
 
-        user = create_user (manager);
+        user = g_object_new (GDM_TYPE_USER, NULL);
         _gdm_user_update_from_pwent (user, pwent);
 
+        /* increases ref count */
         add_user (manager, user);
         g_object_unref (user);
-
-        user = g_hash_table_lookup (manager->priv->users_by_name, pwent->pw_name);
 
         return user;
 }
@@ -697,6 +679,8 @@ static void
 remove_user (GdmUserManager *manager,
              GdmUser        *user)
 {
+        g_object_ref (user);
+
         g_signal_handlers_disconnect_by_func (user, on_user_changed, manager);
         g_signal_handlers_disconnect_by_func (user, on_user_sessions_changed, manager);
         if (gdm_user_get_object_path (user) != NULL) {
@@ -704,6 +688,8 @@ remove_user (GdmUserManager *manager,
         }
         g_hash_table_remove (manager->priv->users_by_name, gdm_user_get_user_name (user));
         g_signal_emit (manager, signals[USER_REMOVED], 0, user);
+
+        g_object_unref (user);
 
         if (g_hash_table_size (manager->priv->users_by_name) > 1) {
                 set_has_multiple_users (manager, FALSE);
@@ -727,16 +713,11 @@ add_new_user_for_object_path (const char     *object_path,
         }
 
         username = gdm_user_get_user_name (user);
-        if (user_in_exclude_list (manager, username)) {
+        if (username_in_exclude_list (manager, username)) {
                 g_debug ("GdmUserManager: excluding user '%s'", username);
                 g_object_unref (user);
                 return;
         }
-
-        g_signal_connect (user, "sessions-changed",
-                          G_CALLBACK (on_user_sessions_changed), manager);
-        g_signal_connect (user, "changed",
-                          G_CALLBACK (on_user_changed), manager);
 
         add_user (manager, user);
         g_object_unref (user);
@@ -758,12 +739,10 @@ on_user_removed_in_accounts_service (DBusGProxy *proxy,
                                      gpointer    user_data)
 {
         GdmUserManager *manager = GDM_USER_MANAGER (user_data);
-        GdmUser *user;
+        GdmUser        *user;
 
         user = g_hash_table_lookup (manager->priv->users_by_object_path, object_path);
-        g_object_ref (user);
         remove_user (manager, user);
-        g_object_unref (user);
 }
 
 static char *
@@ -990,7 +969,7 @@ maybe_add_session (GdmUserManager *manager,
         g_free (x11_display);
 
         /* check exclusions up front */
-        if (user_in_exclude_list (manager, pwent->pw_name)) {
+        if (username_in_exclude_list (manager, pwent->pw_name)) {
                 g_debug ("GdmUserManager: excluding user '%s'", pwent->pw_name);
                 return;
         }
@@ -1354,7 +1333,7 @@ process_ck_history_line (GdmUserManager *manager,
                 return;
         }
 
-        if (user_in_exclude_list (manager, username)) {
+        if (username_in_exclude_list (manager, username)) {
                 g_debug ("GdmUserManager: excluding user '%s'", username);
                 g_free (username);
                 return;
@@ -1422,46 +1401,11 @@ ck_history_watch (GIOChannel     *source,
         return TRUE;
 }
 
-static int block_sigchld_handler = 0;
-
-static sigset_t
-block_sigchld (void)
-{
-        sigset_t child_set;
-        sigemptyset (&child_set);
-        sigaddset (&child_set, SIGCHLD);
-        sigaddset (&child_set, SIGPIPE);
-        sigprocmask (SIG_BLOCK, &child_set, 0);
-
-        block_sigchld_handler++;
-
-        return child_set;
-}
-
-static void
-unblock_sigchld (void)
-{
-        sigset_t child_set;
-        sigemptyset (&child_set);
-        sigaddset (&child_set, SIGCHLD);
-        sigaddset (&child_set, SIGPIPE);
-        sigprocmask (SIG_UNBLOCK, &child_set, 0);
-
-        block_sigchld_handler--;
-}
-
 static int
 signal_pid (int pid,
             int signal)
 {
         int status = -1;
-
-        /* This function should not be called from the signal handler. */
-        if (block_sigchld_handler) {
-                abort ();
-        }
-
-        block_sigchld ();
 
         status = kill (pid, signal);
 
@@ -1477,12 +1421,6 @@ signal_pid (int pid,
                                   (unsigned long) pid);
                         perror (buf);
                 }
-        }
-
-        unblock_sigchld ();
-
-        if (block_sigchld_handler < 0) {
-                abort ();
         }
 
         return status;
@@ -1745,6 +1683,11 @@ reload_passwd_file (GHashTable *valid_shells,
 
         fclose (fp);
 
+        g_hash_table_iter_init (&iter, new_users_by_name);
+        while (g_hash_table_iter_next (&iter, (gpointer *) &name, (gpointer *) &user)) {
+                g_object_thaw_notify (G_OBJECT (user));
+        }
+
         g_hash_table_destroy (new_users_by_name);
 }
 
@@ -1766,11 +1709,17 @@ passwd_data_free (PasswdData *data)
                 g_object_unref (data->manager);
         }
 
-        g_slist_foreach (data->added_users, (GFunc) g_object_ref, NULL);
+        g_slist_foreach (data->added_users, (GFunc) g_object_unref, NULL);
         g_slist_free (data->added_users);
 
-        g_slist_foreach (data->removed_users, (GFunc) g_object_ref, NULL);
+        g_slist_foreach (data->removed_users, (GFunc) g_object_unref, NULL);
         g_slist_free (data->removed_users);
+
+        g_slist_foreach (data->exclude_users, (GFunc) g_free, NULL);
+        g_slist_free (data->exclude_users);
+
+        g_slist_foreach (data->include_users, (GFunc) g_free, NULL);
+        g_slist_free (data->include_users);
 
         g_slice_free (PasswdData, data);
 }
@@ -1835,6 +1784,23 @@ do_reload_passwd_job (GIOSchedulerJob *job,
         return FALSE;
 }
 
+static GSList *
+slist_deep_copy (const GSList *list)
+{
+        GSList *retval;
+        GSList *l;
+
+        if (list == NULL)
+                return NULL;
+
+        retval = g_slist_copy ((GSList *) list);
+        for (l = retval; l != NULL; l = l->next) {
+                l->data = g_strdup (l->data);
+        }
+
+        return retval;
+}
+
 static void
 schedule_reload_passwd (GdmUserManager *manager)
 {
@@ -1845,8 +1811,8 @@ schedule_reload_passwd (GdmUserManager *manager)
         passwd_data = g_slice_new0 (PasswdData);
         passwd_data->manager = g_object_ref (manager);
         passwd_data->shells = manager->priv->shells;
-        passwd_data->exclude_users = manager->priv->exclude_usernames;
-        passwd_data->include_users = manager->priv->include_usernames;
+        passwd_data->exclude_users = slist_deep_copy (manager->priv->exclude_usernames);
+        passwd_data->include_users = slist_deep_copy (manager->priv->include_usernames);
         passwd_data->include_all = manager->priv->include_all;
         passwd_data->current_users_by_name = manager->priv->users_by_name;
         passwd_data->added_users = NULL;
@@ -1998,7 +1964,7 @@ queue_reload_passwd (GdmUserManager *manager)
                 g_source_remove (manager->priv->reload_passwd_id);
         }
 
-        manager->priv->reload_passwd_id = g_timeout_add_seconds (5, (GSourceFunc)reload_passwd_idle, manager);
+        manager->priv->reload_passwd_id = g_timeout_add_seconds (RELOAD_PASSWD_THROTTLE_SECS, (GSourceFunc)reload_passwd_idle, manager);
 }
 
 static void
@@ -2062,23 +2028,6 @@ gdm_user_manager_get_property (GObject        *object,
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
         }
-}
-
-static GSList *
-slist_deep_copy (const GSList *list)
-{
-        GSList *retval;
-        GSList *l;
-
-        if (list == NULL)
-                return NULL;
-
-        retval = g_slist_copy ((GSList *) list);
-        for (l = retval; l != NULL; l = l->next) {
-                l->data = g_strdup (l->data);
-        }
-
-        return retval;
 }
 
 static void
@@ -2289,12 +2238,12 @@ gdm_user_manager_init (GdmUserManager *manager)
         manager->priv->users_by_name = g_hash_table_new_full (g_str_hash,
                                                               g_str_equal,
                                                               g_free,
-                                                              (GDestroyNotify) g_object_run_dispose);
+                                                              g_object_unref);
 
         manager->priv->users_by_object_path = g_hash_table_new_full (g_str_hash,
                                                                      g_str_equal,
                                                                      NULL,
-                                                                     (GDestroyNotify) g_object_unref);
+                                                                     g_object_unref);
 
         g_assert (manager->priv->seat_proxy == NULL);
 
@@ -2351,6 +2300,10 @@ gdm_user_manager_finalize (GObject *object)
 
         if (manager->priv->seat_proxy != NULL) {
                 g_object_unref (manager->priv->seat_proxy);
+        }
+
+        if (manager->priv->accounts_proxy != NULL) {
+                g_object_unref (manager->priv->accounts_proxy);
         }
 
         if (manager->priv->ck_history_id != 0) {
