@@ -225,6 +225,10 @@ on_item_load (GdmChooserWidget     *widget,
 
         g_debug ("GdmUserChooserWidget: Loading item for id=%s", id);
 
+        if (user_chooser->priv->manager == NULL) {
+                return;
+        }
+
         user = gdm_user_manager_get_user (user_chooser->priv->manager, id);
         if (user != NULL) {
                 update_item_for_user (user_chooser, user);
@@ -758,6 +762,11 @@ gdm_user_chooser_widget_dispose (GObject *object)
         if (widget->priv->stock_person_pixbuf != NULL) {
                 g_object_unref (widget->priv->stock_person_pixbuf);
                 widget->priv->stock_person_pixbuf = NULL;
+        }
+
+        if (widget->priv->manager != NULL) {
+                g_object_unref (widget->priv->manager);
+                widget->priv->manager = NULL;
         }
 }
 
