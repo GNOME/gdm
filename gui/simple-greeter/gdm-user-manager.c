@@ -2261,7 +2261,6 @@ gdm_user_manager_init (GdmUserManager *manager)
 
         get_seat_proxy (manager);
         get_accounts_proxy (manager);
-        queue_load_users (manager);
 }
 
 static void
