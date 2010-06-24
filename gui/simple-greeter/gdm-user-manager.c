@@ -84,6 +84,14 @@
 #define ACCOUNTS_PATH      "/org/freedesktop/Accounts"
 #define ACCOUNTS_INTERFACE "org.freedesktop.Accounts"
 
+typedef struct
+{
+        char                *id;
+        char                *session_id;
+
+        DBusGProxy          *proxy;
+} GdmUserManagerSeat;
+
 struct GdmUserManagerPrivate
 {
         GHashTable            *users_by_name;
@@ -91,10 +99,10 @@ struct GdmUserManagerPrivate
         GHashTable            *sessions;
         GHashTable            *shells;
         DBusGConnection       *connection;
-        DBusGProxy            *seat_proxy;
         DBusGProxyCall        *get_sessions_call;
         DBusGProxy            *accounts_proxy;
-        char                  *seat_id;
+
+        GdmUserManagerSeat     seat;
 
         GFileMonitor          *passwd_monitor;
         GFileMonitor          *shells_monitor;
@@ -292,7 +300,7 @@ _get_login_window_session_id (GdmUserManager *manager)
         char       *primary_ssid;
         int         i;
 
-        if (manager->priv->seat_id == NULL || manager->priv->seat_id[0] == '\0') {
+        if (manager->priv->seat.id == NULL || manager->priv->seat.id[0] == '\0') {
                 g_debug ("GdmUserManager: display seat ID is not set; can't switch sessions");
                 return NULL;
         }
@@ -308,7 +316,7 @@ _get_login_window_session_id (GdmUserManager *manager)
         }
 
         error = NULL;
-        res = dbus_g_proxy_call (manager->priv->seat_proxy,
+        res = dbus_g_proxy_call (manager->priv->seat.proxy,
                                  "GetSessions",
                                  &error,
                                  G_TYPE_INVALID,
@@ -359,7 +367,7 @@ gdm_user_manager_goto_login_session (GdmUserManager *manager)
 
         ssid = _get_login_window_session_id (manager);
         if (ssid != NULL) {
-                res = activate_session_id (manager, manager->priv->seat_id, ssid);
+                res = activate_session_id (manager, manager->priv->seat.id, ssid);
                 if (res) {
                         ret = TRUE;
                 }
@@ -382,7 +390,7 @@ gdm_user_manager_can_switch (GdmUserManager *manager)
         gboolean    can_activate_sessions;
         GError     *error;
 
-        if (manager->priv->seat_id == NULL || manager->priv->seat_id[0] == '\0') {
+        if (manager->priv->seat.id == NULL || manager->priv->seat.id[0] == '\0') {
                 g_debug ("GdmUserManager: display seat ID is not set; can't switch sessions");
                 return FALSE;
         }
@@ -390,7 +398,7 @@ gdm_user_manager_can_switch (GdmUserManager *manager)
         g_debug ("GdmUserManager: checking if seat can activate sessions");
 
         error = NULL;
-        res = dbus_g_proxy_call (manager->priv->seat_proxy,
+        res = dbus_g_proxy_call (manager->priv->seat.proxy,
                                  "CanActivateSessions",
                                  &error,
                                  G_TYPE_INVALID,
@@ -436,7 +444,7 @@ gdm_user_manager_activate_user_session (GdmUserManager *manager,
                 goto out;
         }
 
-        res = activate_session_id (manager, manager->priv->seat_id, ssid);
+        res = activate_session_id (manager, manager->priv->seat.id, ssid);
         if (! res) {
                 g_debug ("GdmUserManager: unable to activate session: %s", ssid);
                 goto out;
@@ -1035,7 +1043,7 @@ on_seat_proxy_destroy (DBusGProxy     *proxy,
 {
         g_debug ("GdmUserManager: seat proxy destroyed");
 
-        manager->priv->seat_proxy = NULL;
+        manager->priv->seat.proxy = NULL;
 }
 
 static void
@@ -1044,19 +1052,19 @@ get_seat_proxy (GdmUserManager *manager)
         DBusGProxy      *proxy;
         GError          *error;
 
-        g_assert (manager->priv->seat_proxy == NULL);
+        g_assert (manager->priv->seat.proxy == NULL);
 
-        manager->priv->seat_id = get_current_seat_id (manager->priv->connection);
-        if (manager->priv->seat_id == NULL) {
+        manager->priv->seat.id = get_current_seat_id (manager->priv->connection);
+        if (manager->priv->seat.id == NULL) {
                 return;
         }
 
-        g_debug ("GdmUserManager: Found current seat: %s", manager->priv->seat_id);
+        g_debug ("GdmUserManager: Found current seat: %s", manager->priv->seat.id);
 
         error = NULL;
         proxy = dbus_g_proxy_new_for_name_owner (manager->priv->connection,
                                                  CK_NAME,
-                                                 manager->priv->seat_id,
+                                                 manager->priv->seat.id,
                                                  CK_SEAT_INTERFACE,
                                                  &error);
 
@@ -1091,7 +1099,7 @@ get_seat_proxy (GdmUserManager *manager)
                                      G_CALLBACK (seat_session_removed),
                                      manager,
                                      NULL);
-        manager->priv->seat_proxy = proxy;
+        manager->priv->seat.proxy = proxy;
 
 }
 
@@ -1479,10 +1487,10 @@ load_ck_history (GdmUserManager *manager)
         command = NULL;
 
         seat_id = NULL;
-        if (manager->priv->seat_id != NULL
-            && g_str_has_prefix (manager->priv->seat_id, "/org/freedesktop/ConsoleKit/")) {
+        if (manager->priv->seat.id != NULL
+            && g_str_has_prefix (manager->priv->seat.id, "/org/freedesktop/ConsoleKit/")) {
 
-                seat_id = manager->priv->seat_id + strlen ("/org/freedesktop/ConsoleKit/");
+                seat_id = manager->priv->seat.id + strlen ("/org/freedesktop/ConsoleKit/");
         }
 
         if (seat_id == NULL) {
@@ -1906,12 +1914,12 @@ load_sessions (GdmUserManager *manager)
 {
         DBusGProxyCall *call;
 
-        if (manager->priv->seat_proxy == NULL) {
+        if (manager->priv->seat.proxy == NULL) {
                 g_debug ("GdmUserManager: no seat proxy; can't load sessions");
                 return;
         }
 
-        call = dbus_g_proxy_begin_call (manager->priv->seat_proxy,
+        call = dbus_g_proxy_begin_call (manager->priv->seat.proxy,
                                         "GetSessions",
                                         on_get_sessions_finished,
                                         manager,
@@ -2301,7 +2309,7 @@ gdm_user_manager_init (GdmUserManager *manager)
                                                                      NULL,
                                                                      g_object_unref);
 
-        g_assert (manager->priv->seat_proxy == NULL);
+        g_assert (manager->priv->seat.proxy == NULL);
 
         error = NULL;
         manager->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
@@ -2346,8 +2354,8 @@ gdm_user_manager_finalize (GObject *object)
                 g_slist_free (manager->priv->include_usernames);
         }
 
-        if (manager->priv->seat_proxy != NULL) {
-                g_object_unref (manager->priv->seat_proxy);
+        if (manager->priv->seat.proxy != NULL) {
+                g_object_unref (manager->priv->seat.proxy);
         }
 
         if (manager->priv->accounts_proxy != NULL) {
@@ -2388,7 +2396,7 @@ gdm_user_manager_finalize (GObject *object)
         }
         g_hash_table_destroy (manager->priv->shells);
 
-        g_free (manager->priv->seat_id);
+        g_free (manager->priv->seat.id);
 
         G_OBJECT_CLASS (gdm_user_manager_parent_class)->finalize (object);
 }
