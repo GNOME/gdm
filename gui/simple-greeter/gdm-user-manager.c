@@ -56,6 +56,8 @@
 #define CK_SEAT_INTERFACE    "org.freedesktop.ConsoleKit.Seat"
 #define CK_SESSION_INTERFACE "org.freedesktop.ConsoleKit.Session"
 
+#define GDM_DBUS_TYPE_G_OBJECT_PATH_ARRAY (dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH))
+
 /* Prefs Defaults */
 
 #ifdef __sun
@@ -90,6 +92,7 @@ struct GdmUserManagerPrivate
         GHashTable            *shells;
         DBusGConnection       *connection;
         DBusGProxy            *seat_proxy;
+        DBusGProxyCall        *get_sessions_call;
         DBusGProxy            *accounts_proxy;
         char                  *seat_id;
 
@@ -1364,6 +1367,10 @@ maybe_set_is_loaded (GdmUserManager *manager)
                 return;
         }
 
+        if (manager->priv->get_sessions_call != NULL) {
+                return;
+        }
+
         set_is_loaded (manager, TRUE);
 }
 
@@ -1839,26 +1846,40 @@ schedule_reload_passwd (GdmUserManager *manager)
 }
 
 static void
-load_sessions (GdmUserManager *manager)
+load_sessions_from_array (GdmUserManager     *manager,
+                          const char * const *session_ids,
+                          int                 number_of_sessions)
 {
-        gboolean    res;
-        GError     *error;
-        GPtrArray  *sessions;
-        int         i;
+        int i;
 
-        if (manager->priv->seat_proxy == NULL) {
-                g_debug ("GdmUserManager: no seat proxy; can't load sessions");
-                return;
+        for (i = 0; i < number_of_sessions; i++) {
+                maybe_add_session (manager, session_ids[i]);
         }
+}
 
-        sessions = NULL;
+static void
+on_get_sessions_finished (DBusGProxy     *proxy,
+                          DBusGProxyCall *call,
+                          gpointer        data)
+{
+        GdmUserManager *manager;
+        GError         *error;
+        gboolean        res;
+        GPtrArray      *sessions;
+
+        manager = GDM_USER_MANAGER (data);
+
+        g_assert (manager->priv->get_sessions_call == call);
+
         error = NULL;
-        res = dbus_g_proxy_call (manager->priv->seat_proxy,
-                                 "GetSessions",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH), &sessions,
-                                 G_TYPE_INVALID);
+        sessions = NULL;
+        res = dbus_g_proxy_end_call (proxy,
+                                     call,
+                                     &error,
+                                     GDM_DBUS_TYPE_G_OBJECT_PATH_ARRAY,
+                                     &sessions,
+                                     G_TYPE_INVALID);
+
         if (! res) {
                 if (error != NULL) {
                         g_warning ("unable to determine sessions for seat: %s",
@@ -1870,15 +1891,39 @@ load_sessions (GdmUserManager *manager)
                 return;
         }
 
-        for (i = 0; i < sessions->len; i++) {
-                char *ssid;
-
-                ssid = g_ptr_array_index (sessions, i);
-
-                maybe_add_session (manager, ssid);
-        }
-        g_ptr_array_foreach (sessions, (GFunc)g_free, NULL);
+        manager->priv->get_sessions_call = NULL;
+        g_assert (sessions->len <= G_MAXINT);
+        load_sessions_from_array (manager,
+                                  (const char * const *) sessions->pdata,
+                                  (int) sessions->len);
+        g_ptr_array_foreach (sessions, (GFunc) g_free, NULL);
         g_ptr_array_free (sessions, TRUE);
+        maybe_set_is_loaded (manager);
+}
+
+static void
+load_sessions (GdmUserManager *manager)
+{
+        DBusGProxyCall *call;
+
+        if (manager->priv->seat_proxy == NULL) {
+                g_debug ("GdmUserManager: no seat proxy; can't load sessions");
+                return;
+        }
+
+        call = dbus_g_proxy_begin_call (manager->priv->seat_proxy,
+                                        "GetSessions",
+                                        on_get_sessions_finished,
+                                        manager,
+                                        NULL,
+                                        G_TYPE_INVALID);
+
+        if (call == NULL) {
+                g_warning ("GdmUserManager: failed to make GetSessions call");
+                return;
+        }
+
+        manager->priv->get_sessions_call = call;
 }
 
 static void
