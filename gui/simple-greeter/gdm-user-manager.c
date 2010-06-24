@@ -98,6 +98,32 @@ typedef struct
         DBusGProxy                  *proxy;
 } GdmUserManagerSeat;
 
+typedef enum {
+        GDM_USER_MANAGER_NEW_SESSION_STATE_UNLOADED = 0,
+        GDM_USER_MANAGER_NEW_SESSION_STATE_GET_PROXY,
+        GDM_USER_MANAGER_NEW_SESSION_STATE_GET_UID,
+        GDM_USER_MANAGER_NEW_SESSION_STATE_GET_X11_DISPLAY,
+        GDM_USER_MANAGER_NEW_SESSION_STATE_MAYBE_ADD,
+        GDM_USER_MANAGER_NEW_SESSION_STATE_LOADED,
+} GdmUserManagerNewSessionState;
+
+typedef struct
+{
+        GdmUserManager                  *manager;
+        GdmUserManagerNewSessionState    state;
+        char                            *id;
+
+        union {
+                DBusGProxyCall          *get_unix_user_call;
+                DBusGProxyCall          *get_x11_display_call;
+        };
+
+        DBusGProxy                      *proxy;
+
+        uid_t                            uid;
+        char                            *x11_display;
+} GdmUserManagerNewSession;
+
 struct GdmUserManagerPrivate
 {
         GHashTable            *users_by_name;
@@ -107,6 +133,8 @@ struct GdmUserManagerPrivate
         DBusGProxyCall        *get_sessions_call;
 
         GdmUserManagerSeat     seat;
+
+        GSList                *new_sessions;
 
         GFileMonitor          *passwd_monitor;
         GFileMonitor          *shells_monitor;
@@ -156,6 +184,8 @@ static void     unload_seat                 (GdmUserManager *manager);
 static void     load_users                  (GdmUserManager *manager);
 static void     queue_load_seat_and_users   (GdmUserManager *manager);
 static void     monitor_local_users         (GdmUserManager *manager);
+
+static void     load_new_session_incrementally (GdmUserManagerNewSession *new_session);
 
 static gpointer user_manager_object = NULL;
 
@@ -587,50 +617,6 @@ failed:
         unload_seat (manager);
 }
 
-static char *
-get_x11_display_for_session (DBusGConnection *connection,
-                             const char      *session_id)
-{
-        DBusGProxy      *proxy;
-        GError          *error;
-        char            *x11_display;
-        gboolean         res;
-
-        proxy = NULL;
-        x11_display = NULL;
-
-        proxy = dbus_g_proxy_new_for_name (connection,
-                                           CK_NAME,
-                                           session_id,
-                                           CK_SESSION_INTERFACE);
-        if (proxy == NULL) {
-                g_warning ("Failed to connect to the ConsoleKit session object");
-                goto out;
-        }
-
-        error = NULL;
-        res = dbus_g_proxy_call (proxy,
-                                 "GetX11Display",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_STRING, &x11_display,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                if (error != NULL) {
-                        g_debug ("Failed to identify the x11 display: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_debug ("Failed to identify the x11 display");
-                }
-        }
- out:
-        if (proxy != NULL) {
-                g_object_unref (proxy);
-        }
-
-        return x11_display;
-}
-
 static gint
 match_name_cmpfunc (gconstpointer a,
                     gconstpointer b)
@@ -828,88 +814,216 @@ failed:
         unload_seat (manager);
 }
 
-static gboolean
-get_uid_from_session_id (GdmUserManager *manager,
-                         const char     *session_id,
-                         uid_t          *uidp)
+static void
+unload_new_session (GdmUserManagerNewSession *new_session)
 {
-        DBusGProxy      *proxy;
-        GError          *error;
-        guint            uid;
-        gboolean         res;
+        GdmUserManager *manager;
 
-        proxy = dbus_g_proxy_new_for_name (manager->priv->connection,
-                                           CK_NAME,
-                                           session_id,
-                                           CK_SESSION_INTERFACE);
-        if (proxy == NULL) {
-                g_warning ("Failed to connect to the ConsoleKit session object");
-                return FALSE;
+        manager = new_session->manager;
+
+        manager->priv->new_sessions = g_slist_remove (manager->priv->new_sessions,
+                                                      new_session);
+
+        if (new_session->proxy != NULL) {
+                g_object_unref (new_session->proxy);
         }
 
-        error = NULL;
-        res = dbus_g_proxy_call (proxy,
-                                 "GetUnixUser",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_UINT, &uid,
-                                 G_TYPE_INVALID);
-        g_object_unref (proxy);
+        g_free (new_session->x11_display);
+        g_free (new_session->id);
 
-        if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to query the session: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to query the session");
-                }
-                return FALSE;
-        }
-
-        if (uidp != NULL) {
-                *uidp = (uid_t) uid;
-        }
-
-        return TRUE;
+        g_slice_free (GdmUserManagerNewSession, new_session);
 }
 
 static void
-maybe_add_session (GdmUserManager *manager,
-                   const char     *session_id)
+get_proxy_for_new_session (GdmUserManagerNewSession *new_session)
 {
-        uid_t          uid;
-        gboolean       res;
-        struct passwd *pwent;
-        GdmUser       *user;
-        gboolean       is_new;
-        char          *x11_display;
+        GdmUserManager *manager;
+        DBusGProxy     *proxy;
 
-        res = get_uid_from_session_id (manager, session_id, &uid);
-        if (! res) {
-                g_warning ("Unable to lookup user for session");
+        manager = new_session->manager;
+
+        proxy = dbus_g_proxy_new_for_name (manager->priv->connection,
+                                           CK_NAME, new_session->id,
+                                           CK_SESSION_INTERFACE);
+
+        if (proxy == NULL) {
+                g_warning ("Failed to connect to the ConsoleKit '%s' object",
+                           new_session->id);
+                unload_new_session (new_session);
                 return;
         }
+
+        new_session->proxy = proxy;
+        new_session->state++;
+
+        load_new_session_incrementally (new_session);
+}
+
+static void
+on_get_unix_user_finished (DBusGProxy               *proxy,
+                           DBusGProxyCall           *call,
+                           GdmUserManagerNewSession *new_session)
+{
+        GdmUserManager *manager;
+        GError         *error;
+        guint           uid;
+        gboolean        res;
+
+        manager = new_session->manager;
+
+        g_assert (new_session->get_unix_user_call == call);
+
+        error = NULL;
+        uid = (guint) -1;
+        res = dbus_g_proxy_end_call (proxy,
+                                     call,
+                                     &error,
+                                     G_TYPE_UINT, &uid,
+                                     G_TYPE_INVALID);
+        new_session->get_unix_user_call = NULL;
+
+        if (! res) {
+                if (error != NULL) {
+                        g_debug ("Failed to get uid of session '%s': %s",
+                                 new_session->id, error->message);
+                        g_error_free (error);
+                } else {
+                        g_debug ("Failed to get uid of session '%s'",
+                                 new_session->id);
+                }
+                unload_new_session (new_session);
+                return;
+        }
+
+        g_debug ("GdmUserManager: Found uid of session '%s': %u",
+                 new_session->id, uid);
+
+        new_session->uid = (uid_t) uid;
+        new_session->state++;
+
+        load_new_session_incrementally (new_session);
+}
+
+static void
+get_uid_for_new_session (GdmUserManagerNewSession *new_session)
+{
+        GdmUserManager *manager;
+        DBusGProxyCall *call;
+
+        g_assert (new_session->proxy != NULL);
+
+        manager = new_session->manager;
+
+        call = dbus_g_proxy_begin_call (new_session->proxy,
+                                        "GetUnixUser",
+                                        (DBusGProxyCallNotify)
+                                        on_get_unix_user_finished,
+                                        manager,
+                                        NULL,
+                                        G_TYPE_INVALID);
+        if (call == NULL) {
+                g_warning ("GdmUserManager: failed to make GetUnixUser call");
+                goto failed;
+        }
+
+        new_session->get_unix_user_call = call;
+        return;
+
+failed:
+        unload_new_session (new_session);
+}
+
+static void
+on_get_x11_display_finished (DBusGProxy               *proxy,
+                             DBusGProxyCall           *call,
+                             GdmUserManagerNewSession *new_session)
+{
+        GError   *error;
+        char     *x11_display;
+        gboolean  res;
+
+        g_assert (new_session->get_x11_display_call == call);
+
+        error = NULL;
+        x11_display = NULL;
+        res = dbus_g_proxy_end_call (proxy,
+                                     call,
+                                     &error,
+                                     G_TYPE_STRING,
+                                     &x11_display,
+                                     G_TYPE_INVALID);
+        new_session->get_x11_display_call = NULL;
+
+        if (! res) {
+                if (error != NULL) {
+                        g_debug ("Failed to get the x11 display of session '%s': %s",
+                                 new_session->id, error->message);
+                        g_error_free (error);
+                } else {
+                        g_debug ("Failed to get the x11 display of session '%s'",
+                                 new_session->id);
+                }
+                unload_new_session (new_session);
+                return;
+        }
+
+        g_debug ("GdmUserManager: Found x11 display of session '%s': %s",
+                 new_session->id, x11_display);
+
+        new_session->x11_display = x11_display;
+        new_session->state++;
+
+        load_new_session_incrementally (new_session);
+}
+
+static void
+get_x11_display_for_new_session (GdmUserManagerNewSession *new_session)
+{
+        DBusGProxyCall *call;
+
+        g_assert (new_session->proxy != NULL);
+
+        call = dbus_g_proxy_begin_call (new_session->proxy,
+                                        "GetX11Display",
+                                        (DBusGProxyCallNotify)
+                                        on_get_x11_display_finished,
+                                        new_session,
+                                        NULL,
+                                        G_TYPE_INVALID);
+        if (call == NULL) {
+                g_warning ("GdmUserManager: failed to make GetX11Display call");
+                goto failed;
+        }
+
+        new_session->get_x11_display_call = call;
+        return;
+
+failed:
+        unload_new_session (new_session);
+}
+
+static void
+maybe_add_new_session (GdmUserManagerNewSession *new_session)
+{
+        GdmUserManager *manager;
+        struct passwd  *pwent;
+        GdmUser        *user;
+        gboolean        is_new;
+
+        manager = GDM_USER_MANAGER (new_session->manager);
 
         errno = 0;
-        pwent = getpwuid (uid);
+        pwent = getpwuid (new_session->uid);
         if (pwent == NULL) {
-                g_warning ("Unable to lookup user ID %d: %s", (int)uid, g_strerror (errno));
-                return;
+                g_warning ("Unable to lookup user ID %d: %s",
+                           (int) new_session->uid, g_strerror (errno));
+                goto failed;
         }
-
-        /* skip if doesn't have an x11 display */
-        x11_display = get_x11_display_for_session (manager->priv->connection, session_id);
-        if (x11_display == NULL || x11_display[0] == '\0') {
-                g_debug ("GdmUserManager: not adding session without a x11 display: %s", session_id);
-                g_free (x11_display);
-                return;
-        }
-        g_free (x11_display);
 
         /* check exclusions up front */
         if (username_in_exclude_list (manager, pwent->pw_name)) {
                 g_debug ("GdmUserManager: excluding user '%s'", pwent->pw_name);
-                return;
+                goto failed;
         }
 
         user = g_hash_table_lookup (manager->priv->users_by_name, pwent->pw_name);
@@ -924,7 +1038,7 @@ maybe_add_session (GdmUserManager *manager,
                 is_new = FALSE;
         }
 
-        add_session_for_user (manager, user, session_id);
+        add_session_for_user (manager, user, new_session->id);
 
         /* if we haven't yet gotten the login frequency
            then at least add one because the session exists */
@@ -937,6 +1051,53 @@ maybe_add_session (GdmUserManager *manager,
                 add_user (manager, user);
                 g_object_unref (user);
         }
+
+        manager->priv->seat.state = GDM_USER_MANAGER_SEAT_STATE_LOADED;
+        unload_new_session (new_session);
+        return;
+
+failed:
+        unload_new_session (new_session);
+}
+
+static void
+load_new_session_incrementally (GdmUserManagerNewSession *new_session)
+{
+        switch (new_session->state) {
+        case GDM_USER_MANAGER_NEW_SESSION_STATE_GET_PROXY:
+                get_proxy_for_new_session (new_session);
+                break;
+        case GDM_USER_MANAGER_NEW_SESSION_STATE_GET_UID:
+                get_uid_for_new_session (new_session);
+                break;
+        case GDM_USER_MANAGER_NEW_SESSION_STATE_GET_X11_DISPLAY:
+                get_x11_display_for_new_session (new_session);
+                break;
+        case GDM_USER_MANAGER_NEW_SESSION_STATE_MAYBE_ADD:
+                maybe_add_new_session (new_session);
+                break;
+        case GDM_USER_MANAGER_NEW_SESSION_STATE_LOADED:
+                break;
+        default:
+                g_assert_not_reached ();
+        }
+}
+
+static void
+load_new_session (GdmUserManager *manager,
+                  const char     *session_id)
+{
+        GdmUserManagerNewSession *new_session;
+
+        new_session = g_slice_new0 (GdmUserManagerNewSession);
+
+        new_session->manager = manager;
+        new_session->id = g_strdup (session_id);
+        new_session->state = GDM_USER_MANAGER_NEW_SESSION_STATE_UNLOADED;
+
+        manager->priv->new_sessions = g_slist_prepend (manager->priv->new_sessions,
+                                                       new_session);
+        load_new_session_incrementally (new_session);
 }
 
 static void
@@ -946,7 +1107,20 @@ seat_session_added (DBusGProxy     *seat_proxy,
 {
         g_debug ("Session added: %s", session_id);
 
-        maybe_add_session (manager, session_id);
+        load_new_session (manager, session_id);
+}
+
+static gint
+match_new_session_cmpfunc (gconstpointer a,
+                           gconstpointer b)
+{
+        GdmUserManagerNewSession *new_session;
+        const char               *session_id;
+
+        new_session = (GdmUserManagerNewSession *) a;
+        session_id = (const char *) b;
+
+        return strcmp (new_session->id, session_id);
 }
 
 static void
@@ -954,10 +1128,36 @@ seat_session_removed (DBusGProxy     *seat_proxy,
                       const char     *session_id,
                       GdmUserManager *manager)
 {
-        GdmUser *user;
-        char    *username;
+        GdmUser       *user;
+        GSList        *found;
+        char          *username;
 
         g_debug ("Session removed: %s", session_id);
+
+        found = g_slist_find_custom (manager->priv->new_sessions,
+                                     session_id,
+                                     match_new_session_cmpfunc);
+
+        if (found != NULL) {
+                GdmUserManagerNewSession *new_session;
+
+                new_session = (GdmUserManagerNewSession *) found->data;
+
+                if (new_session->state > GDM_USER_MANAGER_NEW_SESSION_STATE_GET_X11_DISPLAY) {
+                        g_debug ("GdmUserManager: New session for uid %d on "
+                                 "x11 display %s removed before fully loading",
+                                 (int) new_session->uid, new_session->x11_display);
+                } else if (new_session->state > GDM_USER_MANAGER_NEW_SESSION_STATE_GET_UID) {
+                        g_debug ("GdmUserManager: New session for uid %d "
+                                 "removed before fully loading",
+                                 (int) new_session->uid);
+                } else {
+                        g_debug ("GdmUserManager: New session removed "
+                                 "before fully loading");
+                }
+                unload_new_session (new_session);
+                return;
+        }
 
         /* since the session object may already be gone
          * we can't query CK directly */
@@ -1764,7 +1964,7 @@ load_sessions_from_array (GdmUserManager     *manager,
         int i;
 
         for (i = 0; i < number_of_sessions; i++) {
-                maybe_add_session (manager, session_ids[i]);
+                load_new_session (manager, session_ids[i]);
         }
 }
 
@@ -2255,6 +2455,10 @@ gdm_user_manager_finalize (GObject *object)
                 g_debug ("Killing ck-history process");
                 signal_pid (manager->priv->ck_history_pid, SIGTERM);
         }
+
+        g_slist_foreach (manager->priv->new_sessions,
+                         (GFunc) unload_new_session, NULL);
+        g_slist_free (manager->priv->new_sessions);
 
         unload_seat (manager);
 
