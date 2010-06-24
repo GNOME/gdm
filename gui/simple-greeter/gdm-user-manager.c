@@ -1349,6 +1349,24 @@ process_ck_history_line (GdmUserManager *manager,
         g_free (username);
 }
 
+static void
+maybe_set_is_loaded (GdmUserManager *manager)
+{
+        if (manager->priv->is_loaded) {
+                return;
+        }
+
+        if (manager->priv->ck_history_pid != 0) {
+                return;
+        }
+
+        if (manager->priv->load_passwd_pending) {
+                return;
+        }
+
+        set_is_loaded (manager, TRUE);
+}
+
 static gboolean
 ck_history_watch (GIOChannel     *source,
                   GIOCondition    condition,
@@ -1390,9 +1408,7 @@ ck_history_watch (GIOChannel     *source,
                 }
                 manager->priv->ck_history_pid = 0;
 
-                if (! manager->priv->load_passwd_pending) {
-                        set_is_loaded (manager, TRUE);
-                }
+                maybe_set_is_loaded (manager);
 
                 return FALSE;
         }
@@ -1741,20 +1757,15 @@ reload_passwd_job_done (PasswdData *data)
                 remove_user (data->manager, l->data);
         }
 
+        data->manager->priv->load_passwd_pending = FALSE;
+
         if (! data->manager->priv->is_loaded) {
-                /* if there is an outstanding history
-                   request then wait to emit loaded */
-                if (data->manager->priv->ck_history_pid == 0) {
-                        set_is_loaded (data->manager, TRUE);
-                }
+                maybe_set_is_loaded (data->manager);
 
                 if (data->manager->priv->include_all == TRUE) {
                         monitor_local_users (data->manager);
                 }
         }
-
-        data->manager->priv->load_passwd_pending = FALSE;
-
 
         passwd_data_free (data);
 
