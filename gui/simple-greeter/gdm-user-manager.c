@@ -2035,8 +2035,6 @@ gdm_user_manager_init (GdmUserManager *manager)
         manager->priv->cancellable = g_cancellable_new ();
 
         get_seat_proxy (manager);
-
-        queue_load_users (manager);
 }
 
 static void
