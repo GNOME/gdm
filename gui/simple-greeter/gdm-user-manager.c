@@ -101,7 +101,6 @@ struct GdmUserManagerPrivate
         gboolean               include_all;
 
         gboolean               load_passwd_pending;
-        GCancellable          *cancellable;
 
         guint                  load_id;
         guint                  reload_passwd_id;
