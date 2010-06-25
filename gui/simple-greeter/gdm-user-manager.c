@@ -906,18 +906,15 @@ on_get_unix_user_finished (DBusGProxy               *proxy,
 static void
 get_uid_for_new_session (GdmUserManagerNewSession *new_session)
 {
-        GdmUserManager *manager;
         DBusGProxyCall *call;
 
         g_assert (new_session->proxy != NULL);
-
-        manager = new_session->manager;
 
         call = dbus_g_proxy_begin_call (new_session->proxy,
                                         "GetUnixUser",
                                         (DBusGProxyCallNotify)
                                         on_get_unix_user_finished,
-                                        manager,
+                                        new_session,
                                         NULL,
                                         G_TYPE_INVALID);
         if (call == NULL) {
