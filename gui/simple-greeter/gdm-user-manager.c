@@ -1823,7 +1823,7 @@ schedule_reload_passwd (GdmUserManager *manager)
                                  passwd_data,
                                  NULL,
                                  G_PRIORITY_DEFAULT,
-                                 manager->priv->cancellable);
+                                 NULL);
 }
 
 static void
@@ -2258,8 +2258,6 @@ gdm_user_manager_init (GdmUserManager *manager)
                 return;
         }
 
-        manager->priv->cancellable = g_cancellable_new ();
-
         get_seat_proxy (manager);
         get_accounts_proxy (manager);
         queue_load_users (manager);
@@ -2280,11 +2278,6 @@ gdm_user_manager_finalize (GObject *object)
         if (manager->priv->ck_history_pid > 0) {
                 g_debug ("Killing ck-history process");
                 signal_pid (manager->priv->ck_history_pid, SIGTERM);
-        }
-
-        if (manager->priv->cancellable != NULL) {
-                g_object_unref (manager->priv->cancellable);
-                manager->priv->cancellable = NULL;
         }
 
         if (manager->priv->exclude_usernames != NULL) {
