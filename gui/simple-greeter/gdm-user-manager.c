@@ -1952,7 +1952,7 @@ schedule_reload_passwd (GdmUserManager *manager)
                                  passwd_data,
                                  NULL,
                                  G_PRIORITY_DEFAULT,
-                                 manager->priv->cancellable);
+                                 NULL);
 }
 
 static void
@@ -2433,8 +2433,6 @@ gdm_user_manager_init (GdmUserManager *manager)
                 return;
         }
 
-        manager->priv->cancellable = g_cancellable_new ();
-
         manager->priv->seat.state = GDM_USER_MANAGER_SEAT_STATE_UNLOADED;
 }
 
@@ -2460,11 +2458,6 @@ gdm_user_manager_finalize (GObject *object)
         g_slist_free (manager->priv->new_sessions);
 
         unload_seat (manager);
-
-        if (manager->priv->cancellable != NULL) {
-                g_object_unref (manager->priv->cancellable);
-                manager->priv->cancellable = NULL;
-        }
 
         if (manager->priv->exclude_usernames != NULL) {
                 g_slist_foreach (manager->priv->exclude_usernames, (GFunc) g_free, NULL);
