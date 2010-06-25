@@ -1089,7 +1089,7 @@ load_new_session (GdmUserManager *manager,
 
         new_session->manager = manager;
         new_session->id = g_strdup (session_id);
-        new_session->state = GDM_USER_MANAGER_NEW_SESSION_STATE_UNLOADED;
+        new_session->state = GDM_USER_MANAGER_NEW_SESSION_STATE_UNLOADED + 1;
 
         manager->priv->new_sessions = g_slist_prepend (manager->priv->new_sessions,
                                                        new_session);
