@@ -595,7 +595,6 @@ on_is_loaded_changed (GdmUserManager       *manager,
                       GdmUserChooserWidget *widget)
 {
         GSList *users;
-        gboolean list_visible;
 
         /* FIXME: handle is-loaded=FALSE */
 
@@ -606,12 +605,6 @@ on_is_loaded_changed (GdmUserManager       *manager,
         widget->priv->users_to_add = g_slist_concat (widget->priv->users_to_add, g_slist_copy (users));
 
         queue_add_users (widget);
-
-        g_object_get (G_OBJECT (widget), "list-visible", &list_visible, NULL);
-
-        if (list_visible) {
-                gtk_widget_grab_focus (GTK_WIDGET (widget));
-        }
 }
 
 static void
@@ -962,6 +955,19 @@ setup_icons (GdmUserChooserWidget *widget)
 }
 
 static void
+on_list_visible_changed (GdmChooserWidget *widget,
+                         GParamSpec       *pspec,
+                         gpointer          data)
+{
+        gboolean is_visible;
+
+        g_object_get (G_OBJECT (widget), "list-visible", &is_visible, NULL);
+        if (is_visible) {
+                gtk_widget_grab_focus (GTK_WIDGET (widget));
+        }
+}
+
+static void
 gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
 {
         widget->priv = GDM_USER_CHOOSER_WIDGET_GET_PRIVATE (widget);
@@ -970,6 +976,11 @@ gdm_user_chooser_widget_init (GdmUserChooserWidget *widget)
                                                    GDM_CHOOSER_WIDGET_POSITION_BOTTOM);
         gdm_chooser_widget_set_in_use_message (GDM_CHOOSER_WIDGET (widget),
                                                _("Currently logged in"));
+
+        g_signal_connect (widget,
+                          "notify::list-visible",
+                          G_CALLBACK (on_list_visible_changed),
+                          NULL);
 
         setup_icons (widget);
 }

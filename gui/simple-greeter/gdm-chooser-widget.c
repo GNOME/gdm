@@ -698,11 +698,11 @@ update_chooser_visibility (GdmChooserWidget *widget)
 
         if (gdm_chooser_widget_get_number_of_items (widget) > 0) {
                 gtk_widget_show (widget->priv->frame);
+                set_chooser_list_visible (widget, TRUE);
         } else {
                 gtk_widget_hide (widget->priv->frame);
+                set_chooser_list_visible (widget, FALSE);
         }
-
-        set_chooser_list_visible (widget, TRUE);
 
         widget->priv->update_visibility_idle_id = 0;
 
@@ -2752,7 +2752,7 @@ gdm_chooser_widget_propagate_pending_key_events (GdmChooserWidget *widget)
 void
 gdm_chooser_widget_loaded (GdmChooserWidget *widget)
 {
-        update_chooser_visibility (widget);
         g_signal_emit (widget, signals[LOADED], 0);
+        update_chooser_visibility (widget);
         queue_move_cursor_to_top (widget);
 }
