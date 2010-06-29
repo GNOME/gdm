@@ -682,6 +682,7 @@ reset_dialog (GdmGreeterLoginWindow *login_window,
                 switch_mode (login_window, dialog_mode);
         }
 
+        gtk_widget_set_sensitive (login_window->priv->conversation_list, TRUE);
         set_sensitive (login_window, TRUE);
         set_ready (login_window);
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
@@ -762,6 +763,7 @@ gdm_greeter_login_window_info (GdmGreeterLoginWindow *login_window,
         g_debug ("GdmGreeterLoginWindow: info: %s", text);
 
         set_message (GDM_GREETER_LOGIN_WINDOW (login_window), text);
+        maybe_show_cancel_button (login_window);
 
         return TRUE;
 }
@@ -773,6 +775,7 @@ gdm_greeter_login_window_problem (GdmGreeterLoginWindow *login_window,
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
         g_debug ("GdmGreeterLoginWindow: problem: %s", text);
+        maybe_show_cancel_button (login_window);
 
         set_message (GDM_GREETER_LOGIN_WINDOW (login_window), text);
         gdk_window_beep (gtk_widget_get_window (GTK_WIDGET (login_window)));
