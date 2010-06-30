@@ -1,4 +1,4 @@
-/* gdm-session-solaris-auditor.c - Object for Solaris auditing of session login/logout
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2004, 2008 Sun Microsystems, Inc.
  * Copyright (C) 2005, 2008 Red Hat, Inc.
@@ -326,7 +326,7 @@ on_username_set (GdmSessionSolarisAuditor *auditor)
 
         g_object_get (G_OBJECT (auditor), "username", &username, NULL);
 
-        passwd_entry = getpwnam (username);
+        gdm_get_pwent_for_name (username, &passwd_entry);
 
         if (passwd_entry != NULL) {
                 auditor->priv->uid = passwd_entry->pw_uid;

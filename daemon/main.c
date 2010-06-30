@@ -408,7 +408,7 @@ gdm_daemon_change_user (uid_t *uidp,
         g_debug ("Changing user:group to %s:%s", username, groupname);
 
         /* Lookup user and groupid for the GDM user */
-        pwent = getpwnam (username);
+        gdm_get_pwent_for_name (username, &pwent);
 
         /* Set uid and gid */
         if G_UNLIKELY (pwent == NULL) {

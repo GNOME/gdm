@@ -26,6 +26,7 @@
 #include <locale.h>
 #include <fcntl.h>
 #include <sys/wait.h>
+#include <pwd.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -71,6 +72,24 @@ gdm_set_fatal_warnings_if_unstable (void)
                 g_setenv ("G_DEBUG", "fatal_criticals", FALSE);
                 g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL);
         }
+}
+
+gboolean
+gdm_get_pwent_for_name (const char     *name,
+                        struct passwd **pwentp)
+{
+        struct passwd *pwent;
+
+        do {
+                errno = 0;
+                pwent = getpwnam (name);
+        } while (errno != EINTR);
+
+        if (pwentp != NULL) {
+                *pwentp = pwent;
+        }
+
+        return (pwent != NULL);
 }
 
 int

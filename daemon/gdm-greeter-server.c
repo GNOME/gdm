@@ -43,6 +43,7 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
+#include "gdm-common.h"
 #include "gdm-greeter-server.h"
 
 #define GDM_GREETER_SERVER_DBUS_PATH      "/org/gnome/DisplayManager/GreeterServer"
@@ -885,7 +886,7 @@ allow_user_function (DBusConnection *connection,
                 return FALSE;
         }
 
-        pwent = getpwnam (greeter_server->priv->user_name);
+        gdm_get_pwent_for_name (greeter_server->priv->user_name, &pwent);
         if (pwent == NULL) {
                 return FALSE;
         }

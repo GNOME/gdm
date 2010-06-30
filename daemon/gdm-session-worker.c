@@ -52,6 +52,7 @@
 
 #include "ck-connector.h"
 
+#include "gdm-common.h"
 #include "gdm-session-worker.h"
 #include "gdm-marshal.h"
 
@@ -210,7 +211,7 @@ open_ck_session (GdmSessionWorker  *worker)
                 is_local = FALSE;
         }
 
-        pwent = getpwnam (worker->priv->username);
+        gdm_get_pwent_for_name (worker->priv->username, &pwent);
         if (pwent == NULL) {
                 goto out;
         }
@@ -1095,7 +1096,7 @@ gdm_session_worker_cache_userfiles (GdmSessionWorker *worker)
         char          *userfile;
         gboolean       res;
 
-        passwd_entry = getpwnam (worker->priv->username);
+        gdm_get_pwent_for_name (worker->priv->username, &passwd_entry);
         if (passwd_entry == NULL)
                 return;
 
@@ -1603,6 +1604,7 @@ _lookup_passwd_info (const char *username,
          * passwd_entry doesn't potentially get stomped on
          * by a PAM module
          */
+ again:
         passwd_entry = NULL;
 #ifdef HAVE_POSIX_GETPWNAM_R
         errno = getpwnam_r (username,
@@ -1617,8 +1619,10 @@ _lookup_passwd_info (const char *username,
                                    (size_t) aux_buffer_size);
         errno = 0;
 #endif /* !HAVE_POSIX_GETPWNAM_R */
-
-        if (errno != 0) {
+        if (errno == EINTR) {
+                g_debug ("%s", g_strerror (errno));
+                goto again;
+        } else if (errno != 0) {
                 g_warning ("%s", g_strerror (errno));
                 goto out;
         }
@@ -1982,7 +1986,7 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
 
         register_ck_session (worker);
 
-        passwd_entry = getpwnam (worker->priv->username);
+        gdm_get_pwent_for_name (worker->priv->username, &passwd_entry);
 
 #ifdef  HAVE_LOGINDEVPERM
         /*

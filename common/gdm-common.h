@@ -22,6 +22,7 @@
 #define _GDM_COMMON_H
 
 #include <glib.h>
+#include <pwd.h>
 
 #include "gdm-common-unknown-origin.h"
 
@@ -33,6 +34,8 @@ void           gdm_set_fatal_warnings_if_unstable (void);
 int            gdm_wait_on_pid           (int pid);
 int            gdm_signal_pid            (int pid,
                                           int signal);
+gboolean       gdm_get_pwent_for_name    (const char     *name,
+                                          struct passwd **pwentp);
 
 const char *   gdm_make_temp_dir         (char    *template);
 

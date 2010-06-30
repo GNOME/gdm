@@ -1,4 +1,4 @@
-/* gdm-session-linux-auditor.c - Object for Linux auditing of session login/logout
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2004, 2008 Sun Microsystems, Inc.
  * Copyright (C) 2005, 2008 Red Hat, Inc.
@@ -35,6 +35,8 @@
 
 #include <glib.h>
 
+#include "gdm-common.h"
+
 struct _GdmSessionLinuxAuditorPrivate
 {
         int audit_fd;
@@ -63,7 +65,7 @@ log_user_message (GdmSessionAuditor *auditor,
         g_object_get (G_OBJECT (auditor), "display-device", &display_device, NULL);
 
         if (username != NULL) {
-                pw = getpwnam (username);
+                gdm_get_pwent_for_name (username, &pw);
         } else {
                 username = g_strdup ("unknown");
                 pw = NULL;

@@ -145,7 +145,7 @@ open_welcome_session (GdmWelcomeSession *welcome_session)
 
         session_type = "LoginWindow";
 
-        pwent = getpwnam (welcome_session->priv->user_name);
+        gdm_get_pwent_for_name (welcome_session->priv->user_name, &pwent);
         if (pwent == NULL) {
                 /* FIXME: */
                 g_warning ("Couldn't look up uid");
@@ -412,7 +412,7 @@ get_welcome_environment (GdmWelcomeSession *welcome_session)
         g_hash_table_insert (hash, g_strdup ("PWD"), g_strdup ("/"));
         g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup ("/bin/sh"));
 
-        pwent = getpwnam (welcome_session->priv->user_name);
+        gdm_get_pwent_for_name (welcome_session->priv->user_name, &pwent);
         if (pwent != NULL) {
                 if (pwent->pw_dir != NULL && pwent->pw_dir[0] != '\0') {
                         g_hash_table_insert (hash, g_strdup ("HOME"), g_strdup (pwent->pw_dir));
@@ -530,7 +530,7 @@ spawn_child_setup (SpawnChildData *data)
                 return;
         }
 
-        pwent = getpwnam (data->user_name);
+        gdm_get_pwent_for_name (data->user_name, &pwent);
         if (pwent == NULL) {
                 g_warning (_("User %s doesn't exist"),
                            data->user_name);

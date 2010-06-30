@@ -998,6 +998,42 @@ failed:
         unload_new_session (new_session);
 }
 
+static gboolean
+get_pwent_for_name (const char     *name,
+                    struct passwd **pwentp)
+{
+        struct passwd *pwent;
+
+        do {
+                errno = 0;
+                pwent = getpwnam (name);
+        } while (errno != EINTR);
+
+        if (pwentp != NULL) {
+                *pwentp = pwent;
+        }
+
+        return (pwent != NULL);
+}
+
+static gboolean
+get_pwent_for_uid (uid_t           uid,
+                   struct passwd **pwentp)
+{
+        struct passwd *pwent;
+
+        do {
+                errno = 0;
+                pwent = getpwuid (uid);
+        } while (errno != EINTR);
+
+        if (pwentp != NULL) {
+                *pwentp = pwent;
+        }
+
+        return (pwent != NULL);
+}
+
 static void
 maybe_add_new_session (GdmUserManagerNewSession *new_session)
 {
@@ -1009,7 +1045,7 @@ maybe_add_new_session (GdmUserManagerNewSession *new_session)
         manager = GDM_USER_MANAGER (new_session->manager);
 
         errno = 0;
-        pwent = getpwuid (new_session->uid);
+        get_pwent_for_uid (new_session->uid, &pwent);
         if (pwent == NULL) {
                 g_warning ("Unable to lookup user ID %d: %s",
                            (int) new_session->uid, g_strerror (errno));
@@ -1274,8 +1310,7 @@ gdm_user_manager_get_user (GdmUserManager *manager,
         if (user == NULL) {
                 struct passwd *pwent;
 
-                pwent = getpwnam (username);
-
+                get_pwent_for_name (username, &pwent);
                 if (pwent != NULL) {
                         user = add_new_user_for_pwent (manager, pwent);
                 }
@@ -1293,7 +1328,7 @@ gdm_user_manager_get_user_by_uid (GdmUserManager *manager,
 
         g_return_val_if_fail (GDM_IS_USER_MANAGER (manager), NULL);
 
-        pwent = getpwuid (uid);
+        get_pwent_for_uid (uid, &pwent);
         if (pwent == NULL) {
                 g_warning ("GdmUserManager: unable to lookup uid %d", (int)uid);
                 return NULL;
@@ -1689,7 +1724,8 @@ reload_passwd_file (GHashTable *valid_shells,
         g_hash_table_iter_init (&iter, current_users_by_name);
         while (g_hash_table_iter_next (&iter, (gpointer *) &name, (gpointer *) &user)) {
                 struct passwd *pwent;
-                pwent = getpwnam (name);
+
+                get_pwent_for_name (name, &pwent);
                 if (pwent == NULL) {
                         continue;
                 }
@@ -1703,7 +1739,8 @@ reload_passwd_file (GHashTable *valid_shells,
                 GSList *l;
                 for (l = include_users; l != NULL; l = l->next) {
                         struct passwd *pwent;
-                        pwent = getpwnam (l->data);
+
+                        get_pwent_for_name (l->data, &pwent);
                         if (pwent == NULL) {
                                 continue;
                         }
