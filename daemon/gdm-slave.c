@@ -201,7 +201,7 @@ get_script_environment (GdmSlave   *slave,
                 g_hash_table_insert (hash, g_strdup ("USERNAME"),
                                      g_strdup (username));
 
-                pwent = getpwnam (username);
+                gdm_get_pwent_for_name (username, &pwent);
                 if (pwent != NULL) {
                         if (pwent->pw_dir != NULL && pwent->pw_dir[0] != '\0') {
                                 g_hash_table_insert (hash, g_strdup ("HOME"),
@@ -1018,7 +1018,7 @@ gdm_slave_get_timed_login_details (GdmSlave   *slave,
         g_free (username);
 
         if (usernamep != NULL && *usernamep != NULL) {
-                pwent = getpwnam (*usernamep);
+                gdm_get_pwent_for_name (*usernamep, &pwent);
                 if (pwent == NULL) {
                         g_debug ("Invalid username %s for auto/timed login",
                                  *usernamep);
@@ -1052,7 +1052,7 @@ _get_uid_and_gid_for_user (const char *username,
         g_assert (username != NULL);
 
         errno = 0;
-        passwd_entry = getpwnam (username);
+        gdm_get_pwent_for_name (username, &passwd_entry);
 
         if (passwd_entry == NULL) {
                 return FALSE;

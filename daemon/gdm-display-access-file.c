@@ -209,7 +209,7 @@ _get_uid_and_gid_for_user (const char *username,
         g_assert (gid != NULL);
 
         errno = 0;
-        passwd_entry = getpwnam (username);
+        gdm_get_pwent_for_name (username, &passwd_entry);
 
         if (passwd_entry == NULL) {
                 return FALSE;

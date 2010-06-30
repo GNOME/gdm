@@ -43,6 +43,7 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
+#include "gdm-common.h"
 #include "gdm-chooser-server.h"
 
 #define GDM_CHOOSER_SERVER_DBUS_PATH      "/org/gnome/DisplayManager/ChooserServer"
@@ -325,7 +326,7 @@ allow_user_function (DBusConnection *connection,
                 return FALSE;
         }
 
-        pwent = getpwnam (chooser_server->priv->user_name);
+        gdm_get_pwent_for_name (chooser_server->priv->user_name, &pwent);
         if (pwent == NULL) {
                 return FALSE;
         }
