@@ -83,7 +83,7 @@ gdm_get_pwent_for_name (const char     *name,
         do {
                 errno = 0;
                 pwent = getpwnam (name);
-        } while (errno != EINTR);
+        } while (pwent == NULL && errno == EINTR);
 
         if (pwentp != NULL) {
                 *pwentp = pwent;

@@ -1007,7 +1007,7 @@ get_pwent_for_name (const char     *name,
         do {
                 errno = 0;
                 pwent = getpwnam (name);
-        } while (errno != EINTR);
+        } while (pwent == NULL && errno == EINTR);
 
         if (pwentp != NULL) {
                 *pwentp = pwent;
@@ -1025,7 +1025,7 @@ get_pwent_for_uid (uid_t           uid,
         do {
                 errno = 0;
                 pwent = getpwuid (uid);
-        } while (errno != EINTR);
+        } while (pwent == NULL && errno == EINTR);
 
         if (pwentp != NULL) {
                 *pwentp = pwent;
