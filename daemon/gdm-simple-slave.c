@@ -104,6 +104,7 @@ static void     gdm_simple_slave_finalize       (GObject             *object);
 G_DEFINE_TYPE (GdmSimpleSlave, gdm_simple_slave, GDM_TYPE_SLAVE)
 
 static void create_new_session (GdmSimpleSlave *slave);
+static void destroy_session    (GdmSimpleSlave *slave);
 static void start_greeter      (GdmSimpleSlave *slave);
 
 static void
@@ -235,16 +236,6 @@ add_user_authorization (GdmSimpleSlave *slave,
         g_free (username);
 
         return ret;
-}
-
-static void
-destroy_session (GdmSimpleSlave *slave)
-{
-        if (slave->priv->session != NULL) {
-                gdm_session_close (GDM_SESSION (slave->priv->session));
-                g_object_unref (slave->priv->session);
-                slave->priv->session = NULL;
-        }
 }
 
 static void
@@ -831,6 +822,95 @@ create_new_session (GdmSimpleSlave *slave)
                           "default-session-name-changed",
                           G_CALLBACK (on_default_session_name_changed),
                           slave);
+}
+
+static void
+destroy_session (GdmSimpleSlave *slave)
+{
+        if (slave->priv->session == NULL) {
+                return;
+        }
+
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_conversation_started),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_setup_complete),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_setup_failed),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_reset_complete),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_reset_failed),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_authenticated),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_authentication_failed),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_authorized),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_authorization_failed),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_accredited),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_accreditation_failed),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_opened),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_open_failed),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_info),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_problem),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_info_query),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_secret_info_query),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_started),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_exited),
+                                              slave);
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_died),
+                                              slave);
+#if 0
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_closed),
+                                              slave);
+#endif
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_session_selected_user_changed),
+                                              slave);
+
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_default_language_name_changed),
+                                              slave);
+
+        g_signal_handlers_disconnect_by_func (slave->priv->session,
+                                              G_CALLBACK (on_default_session_name_changed),
+                                              slave);
+
+        gdm_session_close (GDM_SESSION (slave->priv->session));
+        g_object_unref (slave->priv->session);
+        slave->priv->session = NULL;
 }
 
 static void
