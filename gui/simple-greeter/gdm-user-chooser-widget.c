@@ -460,6 +460,8 @@ add_user (GdmUserChooserWidget *widget,
         GdkPixbuf    *pixbuf;
         char         *tooltip;
         gboolean      is_logged_in;
+        char         *escaped_username;
+        char         *escaped_real_name;
 
         if (!widget->priv->show_normal_users) {
                 return;
@@ -472,16 +474,20 @@ add_user (GdmUserChooserWidget *widget,
 
         is_logged_in = gdm_user_is_logged_in (user);
 
+        escaped_username = g_markup_escape_text (gdm_user_get_user_name (user), -1);
+        escaped_real_name = g_markup_escape_text (gdm_user_get_real_name (user), -1);
         gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
-                                     gdm_user_get_user_name (user),
+                                     escaped_username,
                                      pixbuf,
-                                     gdm_user_get_real_name (user),
+                                     escaped_real_name,
                                      tooltip,
                                      gdm_user_get_login_frequency (user),
                                      is_logged_in,
                                      FALSE,
                                      (GdmChooserWidgetItemLoadFunc) on_item_load,
                                      widget);
+        g_free (escaped_real_name);
+        g_free (escaped_username);
         g_free (tooltip);
 
         if (pixbuf != NULL) {
