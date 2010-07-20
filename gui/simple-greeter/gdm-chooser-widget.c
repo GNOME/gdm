@@ -1649,7 +1649,6 @@ name_cell_data_func (GtkTreeViewColumn  *tree_column,
 {
         gboolean is_in_use;
         char    *name;
-        char    *escaped;
         char    *markup;
 
         name = NULL;
@@ -1658,22 +1657,15 @@ name_cell_data_func (GtkTreeViewColumn  *tree_column,
                             CHOOSER_ITEM_IS_IN_USE_COLUMN, &is_in_use,
                             CHOOSER_NAME_COLUMN, &name,
                             -1);
-        if (name != NULL) {
-                escaped = g_markup_escape_text (name, -1);
-                g_free (name);
-        } else {
-                escaped = NULL;
-        }
 
         if (is_in_use) {
                 markup = g_strdup_printf ("<b>%s</b>\n"
                                           "<i><span size=\"x-small\">%s</span></i>",
-                                          escaped != NULL ? escaped : "(none)",
-                                          widget->priv->in_use_message);
+                                          name ? name : "(null)", widget->priv->in_use_message);
         } else {
-                markup = g_strdup_printf ("%s", escaped != NULL ? escaped : "(none)");
+                markup = g_strdup_printf ("%s", name ? name : "(null)");
         }
-        g_free (escaped);
+        g_free (name);
 
         g_object_set (cell, "markup", markup, NULL);
         g_free (markup);
