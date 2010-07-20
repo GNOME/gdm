@@ -12,10 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm2 2.29.6\n"
+"Project-Id-Version: gdm2 2.31.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-15 19:04+0800\n"
-"PO-Revision-Date: 2010-02-15 19:04+0800\n"
+"POT-Creation-Date: 2010-07-20 15:24+0800\n"
+"PO-Revision-Date: 2010-07-20 15:24+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
 "MIME-Version: 1.0\n"
@@ -28,18 +28,18 @@ msgstr ""
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom 不是字符裝置"
 
-#: ../daemon/factory-slave-main.c:177 ../daemon/product-slave-main.c:181
-#: ../daemon/simple-slave-main.c:183 ../daemon/xdmcp-chooser-slave-main.c:183
+#: ../daemon/factory-slave-main.c:178 ../daemon/product-slave-main.c:182
+#: ../daemon/simple-slave-main.c:182 ../daemon/xdmcp-chooser-slave-main.c:184
 msgid "Display ID"
 msgstr "顯示 ID"
 
-#: ../daemon/factory-slave-main.c:177 ../daemon/product-slave-main.c:181
-#: ../daemon/simple-slave-main.c:183 ../daemon/xdmcp-chooser-slave-main.c:183
+#: ../daemon/factory-slave-main.c:178 ../daemon/product-slave-main.c:182
+#: ../daemon/simple-slave-main.c:182 ../daemon/xdmcp-chooser-slave-main.c:184
 msgid "ID"
 msgstr "ID"
 
-#: ../daemon/factory-slave-main.c:189 ../daemon/product-slave-main.c:193
-#: ../daemon/simple-slave-main.c:195 ../daemon/xdmcp-chooser-slave-main.c:195
+#: ../daemon/factory-slave-main.c:190 ../daemon/product-slave-main.c:194
+#: ../daemon/simple-slave-main.c:194 ../daemon/xdmcp-chooser-slave-main.c:196
 msgid "GNOME Display Manager Slave"
 msgstr "GNOME 從屬顯示管理程式"
 
@@ -48,81 +48,78 @@ msgstr "GNOME 從屬顯示管理程式"
 msgid "could not find user \"%s\" on system"
 msgstr "在系統中找不到使用者「%s」"
 
-#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:225
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:258
 msgid "Unable to initialize login system"
 msgstr "無法初始化登入系統"
 
-#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:261
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:294
 msgid "Unable to authenticate user"
 msgstr "無法驗證使用者"
 
-#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:315
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:351
 msgid "Unable to authorize user"
 msgstr "無法驗證使用者"
 
-#: ../daemon/gdm-factory-slave.c:279 ../daemon/gdm-simple-slave.c:443
+#: ../daemon/gdm-factory-slave.c:279 ../daemon/gdm-simple-slave.c:480
 msgid "Unable to establish credentials"
 msgstr "無法建立證書"
 
-#: ../daemon/gdm-factory-slave.c:302 ../daemon/gdm-simple-slave.c:473
+#: ../daemon/gdm-factory-slave.c:302 ../daemon/gdm-simple-slave.c:510
 msgid "Unable to open session"
 msgstr "無法開啟作業階段"
 
-#: ../daemon/gdm-factory-slave.c:683 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1151
+#: ../daemon/gdm-factory-slave.c:689 ../daemon/gdm-product-slave.c:449
+#: ../daemon/gdm-simple-slave.c:1196
 msgid ""
-"Could not start the X server (your graphical environment) due to some "
-"internal error. Please contact your system administrator or check your "
-"syslog to diagnose. In the meantime this display will be disabled.  Please "
-"restart GDM when the problem is corrected."
-msgstr "因為某些內部錯誤，目前無法啟動 X 伺服器（即圖形介面）。請聯絡系統管理員或是檢查系統紀錄檔。目前會停止使用這個顯示畫面。請在修正問題後重新啟動 GDM。"
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr "因為某些內部錯誤，目前無法啟動 X 伺服器（即圖形介面）。請聯絡系統管理員或是檢查系統紀錄檔來判斷。目前會停止使用這個顯示畫面。請在修正問題後重新啟動 GDM。"
 
-#: ../daemon/gdm-server.c:246
+#: ../daemon/gdm-server.c:250
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s：無法連接主顯示畫面‘%s’"
 
-#: ../daemon/gdm-server.c:361
+#: ../daemon/gdm-server.c:365
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "伺服器應以使用者 %s 的身分衍生，但該使用者不存在"
 
-#: ../daemon/gdm-server.c:372 ../daemon/gdm-welcome-session.c:554
+#: ../daemon/gdm-server.c:376 ../daemon/gdm-server.c:396
+#: ../daemon/gdm-welcome-session.c:598 ../daemon/gdm-welcome-session.c:618
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "無法設定 groupid 為 %d"
 
-#: ../daemon/gdm-server.c:378 ../daemon/gdm-welcome-session.c:560
+#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:604
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s 的 initgroups () 失敗。"
 
-#: ../daemon/gdm-server.c:384 ../daemon/gdm-welcome-session.c:566
+#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:610
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "無法設定 userid 為 %d"
 
-#: ../daemon/gdm-server.c:392 ../daemon/gdm-welcome-session.c:574
-msgid "Couldn't set groupid to 0"
-msgstr "無法設定 groupid 為 0"
-
-#: ../daemon/gdm-server.c:431
+#: ../daemon/gdm-server.c:435
 #, c-format
-msgid "%s: Could not open logfile for display %s!"
-msgstr "%s：無法開啟顯示畫面 %s 的紀錄檔！"
+msgid "%s: Could not open log file for display %s!"
+msgstr "%s：無法開啟顯示 %s 的紀錄檔案！"
 
-#: ../daemon/gdm-server.c:442 ../daemon/gdm-server.c:448
-#: ../daemon/gdm-server.c:454
+#: ../daemon/gdm-server.c:446 ../daemon/gdm-server.c:452
+#: ../daemon/gdm-server.c:458
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s：將 %s 設定為 %s 時發生錯誤"
 
-#: ../daemon/gdm-server.c:469
+#: ../daemon/gdm-server.c:478
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s：伺服器優先等級無法設定為 %d：%s"
 
-#: ../daemon/gdm-server.c:621
+#: ../daemon/gdm-server.c:631
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s：顯示畫面 %s 的伺服器指令是空白的"
@@ -133,7 +130,7 @@ msgstr "使用者名稱"
 
 #: ../daemon/gdm-session-auditor.c:91
 msgid "The username"
-msgstr "使用者名稱"
+msgstr "使用者的名稱"
 
 #: ../daemon/gdm-session-auditor.c:95
 msgid "Hostname"
@@ -141,7 +138,7 @@ msgstr "主機名稱"
 
 #: ../daemon/gdm-session-auditor.c:96
 msgid "The hostname"
-msgstr "主機名稱"
+msgstr "主機的名稱"
 
 #: ../daemon/gdm-session-auditor.c:101
 msgid "Display Device"
@@ -151,216 +148,216 @@ msgstr "顯示裝置"
 msgid "The display device"
 msgstr "顯示裝置"
 
-#: ../daemon/gdm-session-worker.c:1298
+#: ../daemon/gdm-session-worker.c:1309
 #, c-format
-msgid "error initiating conversation with authentication system - %s"
-msgstr "驗證系統初始化交談發生錯誤 - %s"
+msgid "error initiating conversation with authentication system: %s"
+msgstr "驗證系統初始化交談發生錯誤：%s"
 
-#: ../daemon/gdm-session-worker.c:1299
+#: ../daemon/gdm-session-worker.c:1310
 msgid "general failure"
 msgstr "一般性失敗"
 
-#: ../daemon/gdm-session-worker.c:1300
+#: ../daemon/gdm-session-worker.c:1311
 msgid "out of memory"
 msgstr "記憶體耗盡"
 
-#: ../daemon/gdm-session-worker.c:1301
+#: ../daemon/gdm-session-worker.c:1312
 msgid "application programmer error"
 msgstr "應用程式錯誤"
 
-#: ../daemon/gdm-session-worker.c:1302
+#: ../daemon/gdm-session-worker.c:1313
 msgid "unknown error"
 msgstr "不明的錯誤"
 
-#: ../daemon/gdm-session-worker.c:1309
+#: ../daemon/gdm-session-worker.c:1320
 msgid "Username:"
 msgstr "使用者名稱:"
 
-#: ../daemon/gdm-session-worker.c:1315
+#: ../daemon/gdm-session-worker.c:1326
 #, c-format
-msgid "error informing authentication system of preferred username prompt - %s"
-msgstr "以首選的使用者名稱提示通知驗證系統時發生錯誤 - %s"
+msgid "error informing authentication system of preferred username prompt: %s"
+msgstr "以首選的使用者名稱提示通知驗證系統時發生錯誤： %s"
 
-#: ../daemon/gdm-session-worker.c:1329
+#: ../daemon/gdm-session-worker.c:1340
 #, c-format
-msgid "error informing authentication system of user's hostname - %s"
-msgstr "以使用者的主機名稱通知驗證系統時發生錯誤 - %s"
+msgid "error informing authentication system of user's hostname: %s"
+msgstr "以使用者的主機名稱通知驗證系統時發生錯誤：%s"
 
-#: ../daemon/gdm-session-worker.c:1344
+#: ../daemon/gdm-session-worker.c:1355
 #, c-format
-msgid "error informing authentication system of user's console - %s"
-msgstr "以使用者的主控台通知驗證系統時發生錯誤 - %s"
+msgid "error informing authentication system of user's console: %s"
+msgstr "以使用者的主控台通知驗證系統時發生錯誤：%s"
 
-#: ../daemon/gdm-session-worker.c:1357
+#: ../daemon/gdm-session-worker.c:1368
 #, c-format
-msgid "error informing authentication system of display string - %s"
-msgstr "以顯示字串通知驗證系統時發生錯誤 - %s"
+msgid "error informing authentication system of display string: %s"
+msgstr "以顯示字串通知驗證系統時發生錯誤：%s"
 
-#: ../daemon/gdm-session-worker.c:1372
+#: ../daemon/gdm-session-worker.c:1383
 #, c-format
-msgid "error informing authentication system of display xauth credentials - %s"
-msgstr "以顯示 xauth 證書通知驗證系統時發生錯誤 - %s"
+msgid "error informing authentication system of display xauth credentials: %s"
+msgstr "以顯示 xauth 證書通知驗證系統時發生錯誤：%s"
 
-#: ../daemon/gdm-session-worker.c:1661 ../daemon/gdm-session-worker.c:1680
+#: ../daemon/gdm-session-worker.c:1675 ../daemon/gdm-session-worker.c:1692
 #, c-format
 msgid "no user account available"
 msgstr "沒有可用的使用者帳號"
 
-#: ../daemon/gdm-session-worker.c:1707
+#: ../daemon/gdm-session-worker.c:1719
 msgid "Unable to change to user"
 msgstr "無法改變為使用者"
 
-#: ../daemon/gdm-welcome-session.c:532
+#: ../daemon/gdm-welcome-session.c:548
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "使用者 %s 不存在"
 
-#: ../daemon/gdm-welcome-session.c:539
+#: ../daemon/gdm-welcome-session.c:555
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "羣組 %s 不存在"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:596
+#: ../daemon/gdm-xdmcp-display-factory.c:604
 msgid "Could not create socket!"
 msgstr "無法建立 socket！"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:865
+#: ../daemon/gdm-xdmcp-display-factory.c:873
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "拒絕由主機 %s 發出的 XDMCP 查詢"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1023
-#: ../daemon/gdm-xdmcp-display-factory.c:1247
+#: ../daemon/gdm-xdmcp-display-factory.c:1031
+#: ../daemon/gdm-xdmcp-display-factory.c:1255
 msgid "Could not extract authlist from packet"
 msgstr "無法從封包中讀取 authlist"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1036
-#: ../daemon/gdm-xdmcp-display-factory.c:1262
+#: ../daemon/gdm-xdmcp-display-factory.c:1044
+#: ../daemon/gdm-xdmcp-display-factory.c:1270
 msgid "Error in checksum"
 msgstr "檢查碼出現錯誤"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1515
+#: ../daemon/gdm-xdmcp-display-factory.c:1523
 msgid "Bad address"
 msgstr "位址錯誤"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1599
+#: ../daemon/gdm-xdmcp-display-factory.c:1607
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s：無法讀取畫面位址"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1607
+#: ../daemon/gdm-xdmcp-display-factory.c:1615
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s：無法讀取畫面所用的連接埠號碼"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1616
+#: ../daemon/gdm-xdmcp-display-factory.c:1624
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s：無法從封包中讀取 authlist"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1636
+#: ../daemon/gdm-xdmcp-display-factory.c:1644
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s：檢查碼出現錯誤"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2155
+#: ../daemon/gdm-xdmcp-display-factory.c:2200
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s：已被拒絕的主機 %s 發出要求"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2165
-#: ../daemon/gdm-xdmcp-display-factory.c:2521
-#: ../daemon/gdm-xdmcp-display-factory.c:2775
+#: ../daemon/gdm-xdmcp-display-factory.c:2210
+#: ../daemon/gdm-xdmcp-display-factory.c:2568
+#: ../daemon/gdm-xdmcp-display-factory.c:2822
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s：無法讀取顯示畫面編號"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2172
+#: ../daemon/gdm-xdmcp-display-factory.c:2217
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s：無法讀取連線方式"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2179
+#: ../daemon/gdm-xdmcp-display-factory.c:2224
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s：無法讀取客戶端位址"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2187
+#: ../daemon/gdm-xdmcp-display-factory.c:2232
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s：無法讀取認證名稱"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2196
+#: ../daemon/gdm-xdmcp-display-factory.c:2241
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s：無法讀取認證資料"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2206
+#: ../daemon/gdm-xdmcp-display-factory.c:2251
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s：無法讀取授權清單"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2225
+#: ../daemon/gdm-xdmcp-display-factory.c:2270
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s：無法讀取廠商識別碼"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2252
+#: ../daemon/gdm-xdmcp-display-factory.c:2297
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s：從 %s 得到錯誤的檢查碼"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2505
+#: ../daemon/gdm-xdmcp-display-factory.c:2552
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s：已被拒絕的主機 %s 發出管理訊息"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2514
-#: ../daemon/gdm-xdmcp-display-factory.c:2782
+#: ../daemon/gdm-xdmcp-display-factory.c:2561
+#: ../daemon/gdm-xdmcp-display-factory.c:2829
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s：無法讀取作業階段識別碼"
 
 # FIXME: What is display class?
-#: ../daemon/gdm-xdmcp-display-factory.c:2528
+#: ../daemon/gdm-xdmcp-display-factory.c:2575
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s：無法讀取顯示畫面的類別"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2634
-#: ../daemon/gdm-xdmcp-display-factory.c:2684
-#: ../daemon/gdm-xdmcp-display-factory.c:2690
+#: ../daemon/gdm-xdmcp-display-factory.c:2681
+#: ../daemon/gdm-xdmcp-display-factory.c:2731
+#: ../daemon/gdm-xdmcp-display-factory.c:2737
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s：無法讀取位址"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2765
+#: ../daemon/gdm-xdmcp-display-factory.c:2812
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s：已被拒絕的主機 %s 發出 KEEPALIVE 訊息"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2854
+#: ../daemon/gdm-xdmcp-display-factory.c:2902
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory：無法讀取 XDMCP 標頭！"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2860
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
+#: ../daemon/gdm-xdmcp-display-factory.c:2908
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XMDCP：XDMCP 版本不正確！"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2866
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
+#: ../daemon/gdm-xdmcp-display-factory.c:2914
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
 msgid "XMDCP: Unable to parse address"
 msgstr "XMDCP：無法解析位址"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3311
+#: ../daemon/gdm-xdmcp-display-factory.c:3359
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "無法取得伺服器主機名稱：%s！"
 
 #: ../daemon/main.c:237 ../daemon/main.c:250
 #, c-format
-msgid "Cannot write PID file %s: possibly out of diskspace: %s"
+msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "無法寫入 PID 檔 %s：可能是磁碟空間不足：%s"
 
 #: ../daemon/main.c:271
@@ -411,8 +408,8 @@ msgid "Make all warnings fatal"
 msgstr "把所有的警告訊息都當成嚴重錯誤"
 
 #: ../daemon/main.c:534
-msgid "Exit after a time - for debugging"
-msgstr "在一定時間後離開─除錯專用"
+msgid "Exit after a time (for debugging)"
+msgstr "一段時間後離開（除錯用）"
 
 #: ../daemon/main.c:535
 msgid "Print GDM version"
@@ -423,20 +420,22 @@ msgid "GNOME Display Manager"
 msgstr "GNOME 登入管理員"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:611
+#: ../daemon/main.c:616
 msgid "Only the root user can run GDM"
 msgstr "只有 root 使用者可以執行 GDM"
 
-#: ../daemon/session-worker-main.c:156
+#. Translators: worker is a helper process that does the work
+#. of starting up a session
+#: ../daemon/session-worker-main.c:158
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME 登入管理員工作階段的工作程序"
 
 #: ../data/greeter-autostart/at-spi-registryd-wrapper.desktop.in.in.h:1
-msgid "AT SPI Registry Wrapper"
-msgstr "AT SPI 註冊表轉換器"
+msgid "AT-SPI Registry Wrapper"
+msgstr "AT-SPI 註冊表包裹器"
 
 #: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1434
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1632
 msgid "Login Window"
 msgstr "登入畫面"
 
@@ -461,12 +460,12 @@ msgid "Magnify parts of the screen"
 msgstr "螢幕的放大部份"
 
 #: ../data/greeter-autostart/gok.desktop.in.h:1
-msgid "GNOME Onscreen Keyboard"
+msgid "GNOME On-Screen Keyboard"
 msgstr "GNOME 螢幕鍵盤"
 
 #: ../data/greeter-autostart/gok.desktop.in.h:2
-msgid "Use an onscreen keyboard"
-msgstr "使用螢幕鍵盤"
+msgid "Use an on-screen keyboard"
+msgstr "使用顯示在螢幕上的鍵盤"
 
 #: ../data/greeter-autostart/metacity.desktop.in.h:1
 msgid "Metacity"
@@ -488,43 +487,43 @@ msgstr "PolicyKit 驗證代理程式"
 msgid "Select System"
 msgstr "選擇系統"
 
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:213
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
 msgid "XDMCP: Could not create XDMCP buffer!"
 msgstr "XDMCP：無法建立 XDMCP 緩衝！"
 
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:220
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP：無法讀取 XDMCP 標頭！"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:244
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:250
 msgid "Value"
 msgstr "數值"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:245
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:251
 msgid "percentage of time complete"
 msgstr "完成時間百分比"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1281
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1459
 msgid "Inactive Text"
 msgstr "未使用的文字"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1282
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1460
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr "若使用者尚未挑選任何項目，要在標籤中使用的文字"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1290
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1468
 msgid "Active Text"
 msgstr "使用中的文字"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1291
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1469
 msgid "The text to use in the label if the user has picked an item"
 msgstr "若使用者已挑選某個項目，要在標籤中使用的文字"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1300
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1478
 msgid "List Visible"
 msgstr "清單可見性"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1301
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1479
 msgid "Whether the chooser list is visible"
 msgstr "是否顯示選擇程式清單"
 
@@ -549,14 +548,6 @@ msgstr "%b %e %a, %p %l:%M"
 msgid "%a %l:%M:%S %p"
 msgstr "%a %p %l:%M:%S"
 
-#. translators: This is the time format to use for the date
-#.
-#: ../gui/simple-greeter/gdm-clock-widget.c:87
-#: ../gui/simple-greeter/gdm-clock-widget.c:94
-#, c-format
-msgid "%x"
-msgstr "%x"
-
 #. translators: This is the time format to use when there is
 #. * no date, just weekday and time without seconds.
 #.
@@ -564,77 +555,93 @@ msgstr "%x"
 msgid "%a %l:%M %p"
 msgstr "%a %p %l:%M"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:278
-msgid "Automatically logging in..."
-msgstr "正在自動登入..."
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:290
+msgid "Automatically logging in…"
+msgstr "正在自動登入…"
 
-#. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:570
-msgid "Cancelling..."
-msgstr "正在取消..."
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:870
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:576
 msgid "Select language and click Log In"
 msgstr "選擇語言並按下「登入」"
+
+#. need to wait for response from backend
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:689
+msgid "Cancelling…"
+msgstr "正在取消…"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
 msgid "Computer Name"
 msgstr "電腦名稱"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
-msgid "Log In"
+msgid "Login"
 msgstr "登入"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
+msgid "Unlock"
+msgstr "解鎖"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
 msgid "Version"
 msgstr "版本"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:852
+#: ../gui/simple-greeter/gdm-greeter-panel.c:740
 msgid "Panel"
 msgstr "面板"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:923
-msgid "Shutdown Options..."
-msgstr "關機選項..."
+#: ../gui/simple-greeter/gdm-greeter-panel.c:805
+msgid "Shutdown Options…"
+msgstr "關機選項…"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:945
+#: ../gui/simple-greeter/gdm-greeter-panel.c:827
 msgid "Suspend"
 msgstr "暫停"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:950
+#: ../gui/simple-greeter/gdm-greeter-panel.c:832
 msgid "Restart"
 msgstr "重新啟動"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:954
+#: ../gui/simple-greeter/gdm-greeter-panel.c:836
 msgid "Shut Down"
 msgstr "關閉電腦"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1111
+msgctxt "customsession"
+msgid "Custom"
+msgstr "自選"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1112
+msgid "Custom session"
+msgstr "自選作業階段"
 
 #: ../gui/simple-greeter/gdm-language-chooser-dialog.c:201
 msgid "Languages"
 msgstr "語言"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:274
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:276
 msgid "_Languages:"
 msgstr "語言(_L):"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:275
-#: ../gui/simple-greeter/gdm-language-option-widget.c:274
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:277
 msgid "_Language:"
 msgstr "語言(_L):"
 
 #. translators: This brings up a dialog
 #. * with a list of languages to choose from
 #.
-#: ../gui/simple-greeter/gdm-language-option-widget.c:243
+#: ../gui/simple-greeter/gdm-language-option-widget.c:231
 msgctxt "language"
-msgid "Other..."
-msgstr "其他..."
+msgid "Other…"
+msgstr "其他…"
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:244
+#: ../gui/simple-greeter/gdm-language-option-widget.c:232
 msgid "Choose a language from the full list of available languages."
 msgstr "從完整的可用語言清單中選擇語言。"
 
-#: ../gui/simple-greeter/gdm-languages.c:698
+#: ../gui/simple-greeter/gdm-language-option-widget.c:262
+msgid "Language"
+msgstr "語言"
+
+#: ../gui/simple-greeter/gdm-languages.c:699
 msgid "Unspecified"
 msgstr "未指定"
 
@@ -642,45 +649,48 @@ msgstr "未指定"
 msgid "Keyboard layouts"
 msgstr "鍵盤配置"
 
-#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:200
-#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:201
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:266
+#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:202
+#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:203
 msgid "_Keyboard:"
 msgstr "鍵盤(_K):"
 
 #. translators: This brings up a dialog of
 #. * available keyboard layouts
 #.
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:235
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:223
 msgctxt "keyboard"
-msgid "Other..."
-msgstr "其他..."
+msgid "Other…"
+msgstr "其他…"
 
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:236
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:224
 msgid "Choose a keyboard layout from the full list of available layouts."
 msgstr "從完整的可用鍵盤配置清單中選擇鍵盤配置。"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:507
+#: ../gui/simple-greeter/gdm-layout-option-widget.c:254
+msgid "Keyboard"
+msgstr "鍵盤"
+
+#: ../gui/simple-greeter/gdm-option-widget.c:505
 msgid "Label Text"
 msgstr "標籤文字"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:508
+#: ../gui/simple-greeter/gdm-option-widget.c:506
 msgid "The text to use as a label"
 msgstr "要用做標籤的文字"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:515
+#: ../gui/simple-greeter/gdm-option-widget.c:513
 msgid "Icon name"
 msgstr "圖示名稱"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:516
+#: ../gui/simple-greeter/gdm-option-widget.c:514
 msgid "The icon to use with the label"
 msgstr "要與標籤一起使用的圖示"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:524
+#: ../gui/simple-greeter/gdm-option-widget.c:522
 msgid "Default Item"
 msgstr "預設的項目"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:525
+#: ../gui/simple-greeter/gdm-option-widget.c:523
 msgid "The ID of the default item"
 msgstr "預設項目的 ID"
 
@@ -694,8 +704,8 @@ msgstr "在清單中保存項目數量的最大值"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
-msgid "Remote Login (Connecting to %s...)"
-msgstr "遠端登入(連線至 %s...)"
+msgid "Remote Login (Connecting to %s…)"
+msgstr "遠端登入（連線至 %s…）"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:202
 #, c-format
@@ -707,8 +717,8 @@ msgid "Remote Login"
 msgstr "遠端登入"
 
 #: ../gui/simple-greeter/gdm-session-option-widget.c:162
-msgid "_Sessions:"
-msgstr "作業階段(_S):"
+msgid "Session"
+msgstr "作業階段"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
 msgid "Banner message text"
@@ -760,11 +770,11 @@ msgstr "目前選取的語言"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid ""
-"Set to a list of keyboard layouts to be shown by default at the login window."
+"Set to a list of keyboard layouts to be shown by default in the login window."
 msgstr "設定預設在登入視窗中顯示鍵盤配置的清單。"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-msgid "Set to a list of languages to be shown by default at the login window."
+msgid "Set to a list of languages to be shown by default in the login window."
 msgstr "設定預設在登入視窗中顯示語言的清單。"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
@@ -780,38 +790,38 @@ msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr "設為 true 則不在登入視窗中顯示重新啟動按鈕。"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
+msgid "Set to true to enable the XRandR settings manager plugin."
+msgstr "設為 true 則啟用 XRandR 設定管理外掛程式。"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid "Set to true to enable the background settings manager plugin."
 msgstr "設為 true 則啟用背景設定管理外掛程式。"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid "Set to true to enable the media-keys settings manager plugin."
 msgstr "設為 true 則啟用媒體按鍵設定管理外掛程式。"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid "Set to true to enable the on-screen keyboard."
 msgstr "設為 true 則啟用螢幕鍵盤。"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid ""
 "Set to true to enable the plugin to manage the accessibility keyboard "
 "settings."
 msgstr "設為 true 則啟用設定管理鍵盤無障礙功能設定值的外掛程式。"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
 msgid "Set to true to enable the screen magnifier."
 msgstr "設為 true 則啟用螢幕放大鏡。"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to true to enable the screen reader."
 msgstr "設為 true 則啟用螢幕閱讀器。"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid "Set to true to enable the sound settings manager plugin."
 msgstr "設為 true 則啟用音效設定管理外掛程式。"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
-msgid "Set to true to enable the xrandr settings manager plugin."
-msgstr "設為 true 則啟用 xrandr 設定管理外掛程式。"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
 msgid "Set to true to enable the xsettings settings manager plugin."
@@ -822,42 +832,42 @@ msgid "Set to true to show the banner message text."
 msgstr "設為 true 則顯示橫幅訊息文字。"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
-msgid "Set to true to use compiz as the window manager."
-msgstr "設為 true 則使用 compiz 做為視窗管理程式。"
+msgid "Set to true to use Compiz as the window manager."
+msgstr "設為 true 則使用 Compiz 作為視窗管理程式。"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid ""
-"Text banner message to show on the login window when the user chooser is "
+"Text banner message to show in the login window when the user chooser is "
 "empty, instead of banner_message_text."
 msgstr "當選擇程式是空的時要顯示於登入視窗的文字橫幅訊息，用來取代 banner_message_text。"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
-msgid "Text banner message to show on the login window."
+msgid "Text banner message to show in the login window."
 msgstr "要顯示於登入視窗的文字橫幅訊息。"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
+msgid "True if the XRandR settings manager plugin is enabled."
+msgstr "若啟用 XRandR 設定管理外掛程式則為 True。"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "True if the background settings manager plugin is enabled."
 msgstr "若啟用背景設定管理外掛程式則為 True。"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr "若啟用媒體按鍵設定管理外掛程式則為 True。"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "若啟用音效設定管理外掛程式則為 True。"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
-msgid "True if the xrandr settings manager plugin is enabled."
-msgstr "若啟用 xrandr 設定管理外掛程式則為 True。"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "若啟用 xsettings 設定管理外掛程式則為 True。"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
-msgid "Use compiz as the window manager"
-msgstr "使用 compiz 做為視窗管理程式"
+msgid "Use Compiz as the window manager"
+msgstr "使用 Compiz 作為視窗管理程式"
 
 #: ../gui/simple-greeter/gdm-timer.c:149
 msgid "Duration"
@@ -883,54 +893,47 @@ msgstr "它是否正在執行？"
 msgid "Whether the timer is currently ticking"
 msgstr "計時器現在是否在計時"
 
-#: ../gui/simple-greeter/gdm-user.c:245
-msgid "Manager"
-msgstr "管理程式"
-
-#: ../gui/simple-greeter/gdm-user.c:246
-msgid "The user manager object this user is controlled by."
-msgstr "控制這個使用者的使用者管理程式物件。"
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:194
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:470
+#, c-format
+msgid "Log in as %s"
+msgstr "以 %s 身分登入"
 
 #. translators: This option prompts
 #. * the user to type in a username
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:166
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:250
 msgctxt "user"
-msgid "Other..."
-msgstr "其他..."
+msgid "Other…"
+msgstr "其他…"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:167
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:251
 msgid "Choose a different account"
 msgstr "選擇不同的帳號"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:179
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:265
 msgid "Guest"
 msgstr "訪客"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:180
-msgid "Login as a temporary guest"
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:266
+msgid "Log in as a temporary guest"
 msgstr "以臨時訪客的身分登入"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:193
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:281
 msgid "Automatic Login"
 msgstr "自動登入"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:194
-msgid "Automatically login to the system after selecting options"
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:282
+msgid "Automatically log into the system after selecting options"
 msgstr "在選取選項後自動登入系統"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:385
-#, c-format
-msgid "Log in as %s"
-msgstr "以 %s 身分登入"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:738
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:978
 msgid "Currently logged in"
 msgstr "現在已經登入"
 
-#: ../gui/user-switch-applet/applet.c:164
+#: ../gui/user-switch-applet/applet.c:162
 msgid ""
 "The User Switch Applet is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -938,7 +941,7 @@ msgid ""
 "option) any later version."
 msgstr "使用者切換程式是自由軟件，你可以遵照自由軟件基金會 (Free Software Foundation) 出版的 GNU 通用公共許可證條款 (GNU General Public License) 第二版來修改和重新發佈這一程式，或者自由選擇使用任何更新的版本。"
 
-#: ../gui/user-switch-applet/applet.c:168
+#: ../gui/user-switch-applet/applet.c:166
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -946,18 +949,18 @@ msgid ""
 "more details."
 msgstr "發佈這一程式的目的是希望它有用，但沒有任何擔保。甚至沒有適合特定目的而隱含的擔保。更詳細的情況請參閱 GNU 通用公共許可證。"
 
-#: ../gui/user-switch-applet/applet.c:172
+#: ../gui/user-switch-applet/applet.c:170
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "this program; if not, write to the Free Software Foundation, Inc., 51 "
 "Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
 msgstr "你應該已經和程式一起收到一份 GNU 通用公共許可證的副本。如果還沒有，寫信給： the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
 
-#: ../gui/user-switch-applet/applet.c:186
+#: ../gui/user-switch-applet/applet.c:184
 msgid "A menu to quickly switch between users."
 msgstr "用來快速切換使用者的選單。"
 
-#: ../gui/user-switch-applet/applet.c:190
+#: ../gui/user-switch-applet/applet.c:188
 msgid "translator-credits"
 msgstr ""
 "如對翻譯有任何意見，請送一封電子郵件給\n"
@@ -968,70 +971,70 @@ msgstr ""
 "Craig Jeffares <cjeffares@novell.com>, 2004\n"
 "Joe Man <trmetal@yahoo.com.hk>, 2001"
 
-#: ../gui/user-switch-applet/applet.c:649
-#: ../gui/user-switch-applet/applet.c:788
-#: ../gui/user-switch-applet/applet.c:827
+#: ../gui/user-switch-applet/applet.c:658
+#: ../gui/user-switch-applet/applet.c:787
+#: ../gui/user-switch-applet/applet.c:829
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "無法鎖定螢幕：%s"
 
-#: ../gui/user-switch-applet/applet.c:671
+#: ../gui/user-switch-applet/applet.c:680
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr "不能暫時將螢幕保護程式設為空白畫面：%s"
 
-#: ../gui/user-switch-applet/applet.c:886
+#: ../gui/user-switch-applet/applet.c:888
 #, c-format
-msgid "Can't logout: %s"
+msgid "Can't log out: %s"
 msgstr "不能登出：%s"
 
-#: ../gui/user-switch-applet/applet.c:970
+#: ../gui/user-switch-applet/applet.c:972
 msgid "Available"
 msgstr "可使用"
 
-#: ../gui/user-switch-applet/applet.c:971
+#: ../gui/user-switch-applet/applet.c:973
 msgid "Invisible"
 msgstr "隱形"
 
-#: ../gui/user-switch-applet/applet.c:972
+#: ../gui/user-switch-applet/applet.c:974
 msgid "Busy"
 msgstr "忙碌"
 
-#: ../gui/user-switch-applet/applet.c:973
+#: ../gui/user-switch-applet/applet.c:975
 msgid "Away"
 msgstr "離開"
 
-#: ../gui/user-switch-applet/applet.c:1133
+#: ../gui/user-switch-applet/applet.c:1122
 msgid "Account Information"
 msgstr "帳號資訊"
 
-#: ../gui/user-switch-applet/applet.c:1145
+#: ../gui/user-switch-applet/applet.c:1134
 msgid "System Preferences"
 msgstr "系統偏好設定"
 
-#: ../gui/user-switch-applet/applet.c:1161
+#: ../gui/user-switch-applet/applet.c:1148
 msgid "Lock Screen"
 msgstr "鎖定螢幕"
 
 #. Only show if not locked down
-#: ../gui/user-switch-applet/applet.c:1172
+#: ../gui/user-switch-applet/applet.c:1159
 msgid "Switch User"
 msgstr "切換使用者"
 
 #. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1183
-msgid "Quit..."
-msgstr "結束..."
+#: ../gui/user-switch-applet/applet.c:1170
+msgid "Quit…"
+msgstr "結束…"
 
-#: ../gui/user-switch-applet/applet.c:1304
+#: ../gui/user-switch-applet/applet.c:1276
 msgid "Unknown"
 msgstr "不明"
 
-#: ../gui/user-switch-applet/applet.c:1422
+#: ../gui/user-switch-applet/applet.c:1389
 msgid "User Switch Applet"
 msgstr "使用者切換面板程式"
 
-#: ../gui/user-switch-applet/applet.c:1436
+#: ../gui/user-switch-applet/applet.c:1404
 msgid "Change account settings and status"
 msgstr "改變帳號設定值與狀態"
 
@@ -1069,8 +1072,8 @@ msgstr "指令"
 
 #: ../utils/gdmflexiserver.c:62 ../utils/gdmflexiserver.c:63
 #: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
-msgid "Ignored - retained for compatibility"
-msgstr "已忽略 - 只為兼容性而保留"
+msgid "Ignored — retained for compatibility"
+msgstr "已忽略 — 只為兼容性而保留"
 
 #: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
@@ -1099,9 +1102,39 @@ msgid "Screenshot taken"
 msgstr "拍下截圖"
 
 #. Option parsing
-#: ../utils/gdm-screenshot.c:281
+#: ../utils/gdm-screenshot.c:283
 msgid "Take a picture of the screen"
 msgstr "照下螢幕的圖片"
+
+#~ msgid "Couldn't set groupid to 0"
+#~ msgstr "無法設定 groupid 為 0"
+
+#~ msgid "%x"
+#~ msgstr "%x"
+
+#~ msgctxt "language"
+#~ msgid "Other..."
+#~ msgstr "其他..."
+
+#~ msgctxt "keyboard"
+#~ msgid "Other..."
+#~ msgstr "其他..."
+
+#~ msgid "_Sessions:"
+#~ msgstr "作業階段(_S):"
+
+#~ msgid "Manager"
+#~ msgstr "管理程式"
+
+#~ msgid "The user manager object this user is controlled by."
+#~ msgstr "控制這個使用者的使用者管理程式物件。"
+
+#~ msgctxt "user"
+#~ msgid "Other..."
+#~ msgstr "其他..."
+
+#~ msgid "Quit..."
+#~ msgstr "結束..."
 
 #~ msgid "Enable debugging code"
 #~ msgstr "啟用除錯碼"
@@ -1277,9 +1310,6 @@ msgstr "照下螢幕的圖片"
 
 #~ msgid "Users"
 #~ msgstr "使用者"
-
-#~ msgid "Other"
-#~ msgstr "其他"
 
 #~ msgid "<span weight=\"bold\" size=\"larger\">Multiple Logins Found</span>"
 #~ msgstr "<span weight=\"bold\" size=\"larger\">發現多重登入</span>"
@@ -3355,9 +3385,6 @@ msgstr "照下螢幕的圖片"
 #~ msgid "C_ommand:"
 #~ msgstr "指令(_O):"
 
-#~ msgid "C_ustom:"
-#~ msgstr "自訂(_U):"
-
 #~ msgid "Co_lor:"
 #~ msgstr "色彩(_L):"
 
@@ -3685,12 +3712,6 @@ msgstr "照下螢幕的圖片"
 
 #~ msgid "Change _Session"
 #~ msgstr "改變作業階段(_S)"
-
-#~ msgid "Sessions"
-#~ msgstr "作業階段"
-
-#~ msgid "_Last session"
-#~ msgstr "上次的作業階段(_L)"
 
 #~ msgid "Log in using the session that you have used last time you logged in"
 #~ msgstr "沿用上次的作業階段來登入"
