@@ -40,8 +40,8 @@
 #include <gconf/gconf-client.h>
 #include <dbus/dbus-glib.h>
 
-#ifdef HAVE_DEVICEKIT_POWER
-#include <devkit-power-gobject/devicekit-power.h>
+#ifdef HAVE_UPOWER
+#include <upower.h>
 #endif
 
 #include "gdm-languages.h"
@@ -552,15 +552,13 @@ can_suspend (void)
 {
         gboolean ret = FALSE;
 
-#ifdef HAVE_DEVICEKIT_POWER
-        DkpClient *dkp_client;
+#ifdef HAVE_UPOWER
+        UpClient *up_client;
 
-        /* use DeviceKit-power to get data */
-        dkp_client = dkp_client_new ();
-        g_object_get (dkp_client,
-                      "can-suspend", &ret,
-                      NULL);
-        g_object_unref (dkp_client);
+        /* use UPower to get data */
+        up_client = up_client_new ();
+	ret = up_client_get_can_suspend (up_client);
+        g_object_unref (up_client);
 #endif
 
         return ret;
@@ -569,20 +567,20 @@ can_suspend (void)
 static void
 do_system_suspend (void)
 {
-#ifdef HAVE_DEVICEKIT_POWER
+#ifdef HAVE_UPOWER
         gboolean ret;
-        DkpClient *dkp_client;
+        UpClient *up_client;
         GError *error = NULL;
 
-        /* use DeviceKit-power to get data */
-        dkp_client = dkp_client_new ();
-        ret = dkp_client_suspend (dkp_client, &error);
+        /* use UPower to trigger suspend */
+        up_client = up_client_new ();
+        ret = up_client_suspend_sync (up_client, NULL, &error);
         if (!ret) {
                 g_warning ("Couldn't suspend: %s", error->message);
                 g_error_free (error);
                 return;
         }
-        g_object_unref (dkp_client);
+        g_object_unref (up_client);
 #endif
 }
 

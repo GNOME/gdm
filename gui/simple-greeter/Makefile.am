@@ -19,8 +19,7 @@ AM_CPPFLAGS = \
 	-DSBINDIR=\""$(sbindir)"\"		 	\
 	-DGDM_CACHE_DIR=\""$(localstatedir)/cache/gdm"\"	\
 	-DAT_SPI_REGISTRYD_DIR="\"$(AT_SPI_REGISTRYD_DIR)\""	\
-	$(DEVKIT_POWER_CFLAGS)				\
-	-DI_KNOW_THE_DEVICEKIT_POWER_API_IS_SUBJECT_TO_CHANGE	\
+	$(UPOWER_CFLAGS)				\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(GTK_CFLAGS)					\
 	$(SIMPLE_GREETER_CFLAGS)			\
@@ -144,7 +143,7 @@ test_greeter_panel_LDADD =	\
 	$(GTK_LIBS)			\
 	$(GCONF_LIBS)			\
 	$(LIBXKLAVIER_LIBS)		\
-	$(DEVKIT_POWER_LIBS)		\
+	$(UPOWER_LIBS)		\
 	$(NULL)
 
 test_remote_login_window_SOURCES = 	\
@@ -332,7 +331,7 @@ gdm_simple_greeter_LDADD = 		\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(RBAC_LIBS)			\
 	$(LIBXKLAVIER_LIBS)		\
-	$(DEVKIT_POWER_LIBS)		\
+	$(UPOWER_LIBS)		\
 	$(NULL)
 
 uidir = $(pkgdatadir)

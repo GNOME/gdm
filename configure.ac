@@ -50,7 +50,7 @@ LIBXKLAVIER_REQUIRED_VERSION=4.0
 LIBCANBERRA_GTK_REQUIRED_VERSION=0.4
 #FONTCONFIG_REQUIRED_VERSION=2.6.0
 FONTCONFIG_REQUIRED_VERSION=2.5.0
-DEVKIT_POWER_REQUIRED_VERSION=008
+UPOWER_REQUIRED_VERSION=0.9.0
 
 EXTRA_COMPILE_WARNINGS(yes)
 
@@ -106,17 +106,17 @@ AC_SUBST(GCONF_LIBS)
 gconf_defaultpath=`pkg-config gconf-2.0 --variable=gconf_defaultpath`
 AC_DEFINE_UNQUOTED([GCONF_DEFAULTPATH], "$gconf_defaultpath", [GConf Default Path])
 
-PKG_CHECK_MODULES(DEVKIT_POWER,
-        devkit-power-gobject >= $DEVKIT_POWER_REQUIRED_VERSION,
-        have_devicekit_power=yes,
-        have_devicekit_power=no
+PKG_CHECK_MODULES(UPOWER,
+        upower-glib >= $UPOWER_REQUIRED_VERSION,
+        have_upower=yes,
+        have_upower=no
 )
-if test "x$have_devicekit_power" = "xyes" ; then
-  AC_DEFINE(HAVE_DEVICEKIT_POWER, [], [Define if we have DeviceKit-power])
+if test "x$have_upower" = "xyes" ; then
+  AC_DEFINE(HAVE_UPOWER, [], [Define if we have UPower])
 fi
-AC_SUBST(HAVE_DEVICEKIT_POWER)
-AC_SUBST(DEVKIT_POWER_CFLAGS)
-AC_SUBST(DEVKIT_POWER_LIBS)
+AC_SUBST(UPOWER)
+AC_SUBST(UPOWER_CFLAGS)
+AC_SUBST(UPOWER_LIBS)
 
 PKG_CHECK_MODULES(SIMPLE_GREETER,
         dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
@@ -1466,5 +1466,6 @@ echo \
         XDMCP support:            ${XDMCP_SUPPORT}
         SELinux support:          ${with_selinux}
         ConsoleKit support:       ${use_console_kit}
+        UPower support:           ${have_upower}
         Build with RBAC:          ${msg_rbac_shutdown}
 "
