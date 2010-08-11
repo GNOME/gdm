@@ -1387,8 +1387,8 @@ ck_history_watch (GIOChannel     *source,
                 if (manager->priv->ck_history_watchdog_id != 0) {
                         g_source_remove (manager->priv->ck_history_watchdog_id);
                         manager->priv->ck_history_watchdog_id = 0;
-                        manager->priv->ck_history_pid = 0;
                 }
+                manager->priv->ck_history_pid = 0;
 
                 if (! manager->priv->load_passwd_pending) {
                         set_is_loaded (manager, TRUE);
@@ -1431,6 +1431,7 @@ ck_history_watchdog (GdmUserManager *manager)
         if (manager->priv->ck_history_pid > 0) {
                 g_debug ("Killing ck-history process");
                 signal_pid (manager->priv->ck_history_pid, SIGTERM);
+                manager->priv->ck_history_pid = 0;
         }
 
         manager->priv->ck_history_watchdog_id = 0;
