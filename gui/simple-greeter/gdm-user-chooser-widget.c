@@ -182,6 +182,8 @@ update_item_for_user (GdmUserChooserWidget *widget,
         char         *tooltip;
         gboolean      is_logged_in;
         int           size;
+        char         *escaped_username;
+        char         *escaped_real_name;
 
 
         size = get_icon_height_for_widget (GTK_WIDGET (widget));
@@ -201,14 +203,18 @@ update_item_for_user (GdmUserChooserWidget *widget,
                  is_logged_in,
                  pixbuf);
 
+        escaped_username = g_markup_escape_text (gdm_user_get_user_name (user), -1);
+        escaped_real_name = g_markup_escape_text (gdm_user_get_real_name (user), -1);
         gdm_chooser_widget_update_item (GDM_CHOOSER_WIDGET (widget),
-                                        gdm_user_get_user_name (user),
+                                        escaped_username,
                                         pixbuf,
-                                        gdm_user_get_real_name (user),
+                                        escaped_real_name,
                                         tooltip,
                                         gdm_user_get_login_frequency (user),
                                         is_logged_in,
                                         FALSE);
+        g_free (escaped_real_name);
+        g_free (escaped_username);
         g_free (tooltip);
 
         if (pixbuf != NULL) {
