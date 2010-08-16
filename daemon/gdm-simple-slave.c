@@ -888,7 +888,7 @@ on_greeter_cancel (GdmGreeterServer *greeter_server,
                    GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: Greeter cancelled");
-        reset_session (slave);
+        queue_greeter_reset (slave);
 }
 
 static void
