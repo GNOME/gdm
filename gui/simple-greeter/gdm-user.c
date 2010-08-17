@@ -56,6 +56,8 @@ struct _GdmUser {
 
         DBusGConnection *connection;
         DBusGProxy      *accounts_proxy;
+        DBusGProxy      *object_proxy;
+        DBusGProxyCall  *get_all_call;
         char            *object_path;
 
         uid_t           uid;
@@ -193,6 +195,10 @@ gdm_user_finalize (GObject *object)
 
         if (user->accounts_proxy != NULL) {
                 g_object_unref (user->accounts_proxy);
+        }
+
+        if (user->object_proxy != NULL) {
+                g_object_unref (user->object_proxy);
         }
 
         if (user->connection != NULL) {
@@ -840,41 +846,77 @@ collect_props (const gchar    *key,
         }
 }
 
+static void
+on_get_all_finished (DBusGProxy     *proxy,
+                     DBusGProxyCall *call,
+                     GdmUser        *user)
+{
+        GError      *error;
+        GHashTable  *hash_table;
+        gboolean     res;
+
+        g_assert (user->get_all_call == call);
+        g_assert (user->object_proxy == proxy);
+
+        error = NULL;
+        res = dbus_g_proxy_end_call (proxy,
+                                     call,
+                                     &error,
+                                     dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE),
+                                     &hash_table,
+                                     G_TYPE_INVALID);
+        user->get_all_call = NULL;
+        user->object_proxy = NULL;
+
+        if (! res) {
+                g_debug ("Error calling GetAll() when retrieving properties for %s: %s",
+                         user->object_path, error->message);
+                g_error_free (error);
+                goto out;
+        }
+        g_hash_table_foreach (hash_table, (GHFunc) collect_props, user);
+        g_hash_table_unref (hash_table);
+
+out:
+        g_object_unref (proxy);
+}
+
 static gboolean
 update_info (GdmUser *user)
 {
-        GError *error;
-        DBusGProxy *proxy;
-        GHashTable *hash_table;
-        gboolean retval;
+        DBusGProxy     *proxy;
+        DBusGProxyCall *call;
 
         proxy = dbus_g_proxy_new_for_name (user->connection,
                                            USER_ACCOUNTS_NAME,
                                            user->object_path,
                                            DBUS_INTERFACE_PROPERTIES);
 
-        error = NULL;
-        if (!dbus_g_proxy_call (proxy,
-                                "GetAll",
-                                &error,
-                                G_TYPE_STRING,
-                                USER_ACCOUNTS_INTERFACE,
-                                G_TYPE_INVALID,
-                                dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE),
-                                &hash_table,
-                                G_TYPE_INVALID)) {
-                g_debug ("Error calling GetAll() when retrieving properties for %s: %s", user->object_path, error->message);
-                g_error_free (error);
-                retval = FALSE;
-                goto out;
-        }
-        g_hash_table_foreach (hash_table, (GHFunc) collect_props, user);
-        g_hash_table_unref (hash_table);
+        call = dbus_g_proxy_begin_call (proxy,
+                                        "GetAll",
+                                        (DBusGProxyCallNotify)
+                                        on_get_all_finished,
+                                        user,
+                                        NULL,
+                                        G_TYPE_STRING,
+                                        USER_ACCOUNTS_INTERFACE,
+                                        G_TYPE_INVALID);
 
-        retval = TRUE;
- out:
-        g_object_unref (proxy);
-        return retval;
+        if (call == NULL) {
+                g_warning ("GdmUser: failed to make GetAll call");
+                goto failed;
+        }
+
+        user->get_all_call = call;
+        user->object_proxy = proxy;
+        return TRUE;
+
+failed:
+        if (proxy != NULL) {
+                g_object_unref (proxy);
+        }
+
+        return FALSE;
 }
 
 static void

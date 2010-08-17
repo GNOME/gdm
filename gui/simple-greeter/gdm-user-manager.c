@@ -144,6 +144,7 @@ struct GdmUserManagerPrivate
         GdmUserManagerSeat     seat;
 
         GSList                *new_sessions;
+        GSList                *new_users;
 
         GFileMonitor          *passwd_monitor;
         GFileMonitor          *shells_monitor;
@@ -757,11 +758,36 @@ remove_user (GdmUserManager *manager,
 }
 
 static void
+on_new_user_changed (GdmUser        *user,
+                     GdmUserManager *manager)
+{
+        const char *username;
+
+        username = gdm_user_get_user_name (user);
+
+        if (username == NULL) {
+                return;
+        }
+
+        g_signal_handlers_disconnect_by_func (user, on_new_user_changed, manager);
+        manager->priv->new_users = g_slist_remove (manager->priv->new_users,
+                                                   user);
+
+        if (username_in_exclude_list (manager, username)) {
+                g_debug ("GdmUserManager: excluding user '%s'", username);
+                g_object_unref (user);
+                return;
+        }
+
+        add_user (manager, user);
+        g_object_unref (user);
+}
+
+static void
 add_new_user_for_object_path (const char     *object_path,
                               GdmUserManager *manager)
 {
         GdmUser *user;
-        const char *username;
 
         if (g_hash_table_lookup (manager->priv->users_by_object_path, object_path)) {
                 return;
@@ -772,15 +798,9 @@ add_new_user_for_object_path (const char     *object_path,
                 return;
         }
 
-        username = gdm_user_get_user_name (user);
-        if (username_in_exclude_list (manager, username)) {
-                g_debug ("GdmUserManager: excluding user '%s'", username);
-                g_object_unref (user);
-                return;
-        }
+        manager->priv->new_users = g_slist_prepend (manager->priv->new_users, user);
 
-        add_user (manager, user);
-        g_object_unref (user);
+        g_signal_connect (user, "changed", G_CALLBACK (on_new_user_changed), manager);
 }
 
 static void
@@ -2710,6 +2730,7 @@ static void
 gdm_user_manager_finalize (GObject *object)
 {
         GdmUserManager *manager;
+        GSList         *node;
 
         g_return_if_fail (object != NULL);
         g_return_if_fail (GDM_IS_USER_MANAGER (object));
@@ -2726,6 +2747,20 @@ gdm_user_manager_finalize (GObject *object)
         g_slist_foreach (manager->priv->new_sessions,
                          (GFunc) unload_new_session, NULL);
         g_slist_free (manager->priv->new_sessions);
+
+        node = manager->priv->new_users;
+        while (node != NULL) {
+                GdmUser *user;
+                GSList  *next_node;
+
+                user = GDM_USER (node->data);
+                next_node = node->next;
+
+                g_signal_handlers_disconnect_by_func (user, on_new_user_changed, manager);
+                g_object_unref (user);
+                manager->priv->new_users = g_slist_delete_link (manager->priv->new_users, node);
+                node = next_node;
+        }
 
         unload_seat (manager);
 
