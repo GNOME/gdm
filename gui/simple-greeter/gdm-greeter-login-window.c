@@ -702,7 +702,8 @@ gdm_greeter_login_window_ready (GdmGreeterLoginWindow *login_window)
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
 
         /* If we are retrying a previously selected user */
-        if (login_window->priv->dialog_mode != MODE_SELECTION) {
+        if (!login_window->priv->user_list_disabled &&
+            login_window->priv->dialog_mode == MODE_AUTHENTICATION) {
                 retry_login (login_window);
         } else {
                 /* If the user list is disabled, then start the PAM conversation */
