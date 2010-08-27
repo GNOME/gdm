@@ -877,6 +877,8 @@ on_get_all_finished (DBusGProxy     *proxy,
         g_hash_table_foreach (hash_table, (GHFunc) collect_props, user);
         g_hash_table_unref (hash_table);
 
+        g_signal_emit (user, signals[CHANGED], 0);
+
 out:
         g_object_unref (proxy);
 }
@@ -925,9 +927,7 @@ changed_handler (DBusGProxy *proxy,
 {
         GdmUser *user = GDM_USER (data);
 
-        if (update_info (user)) {
-                g_signal_emit (user, signals[CHANGED], 0);
-        }
+        update_info (user);
 }
 
 GdmUser *
