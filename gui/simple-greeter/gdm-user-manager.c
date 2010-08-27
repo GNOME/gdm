@@ -1438,15 +1438,6 @@ unload_seat (GdmUserManager *manager)
 }
 
 static void
-on_accounts_proxy_destroy (DBusGProxy     *proxy,
-                           GdmUserManager *manager)
-{
-        g_debug ("GdmUserManager: accounts proxy destroyed");
-
-        manager->priv->accounts_proxy = NULL;
-}
-
-static void
 get_accounts_proxy (GdmUserManager *manager)
 {
         DBusGProxy      *proxy;
@@ -1455,40 +1446,31 @@ get_accounts_proxy (GdmUserManager *manager)
         g_assert (manager->priv->accounts_proxy == NULL);
 
         error = NULL;
-        proxy = dbus_g_proxy_new_for_name_owner (manager->priv->connection,
-                                                 ACCOUNTS_NAME,
-                                                 ACCOUNTS_PATH,
-                                                 ACCOUNTS_INTERFACE,
-                                                 &error);
+        proxy = dbus_g_proxy_new_for_name (manager->priv->connection,
+                                           ACCOUNTS_NAME,
+                                           ACCOUNTS_PATH,
+                                           ACCOUNTS_INTERFACE);
         manager->priv->accounts_proxy = proxy;
 
-        if (proxy != NULL) {
-                g_signal_connect (proxy, "destroy",
-                                  G_CALLBACK (on_accounts_proxy_destroy),
-                                  manager);
+        dbus_g_proxy_add_signal (proxy,
+                                 "UserAdded",
+                                 DBUS_TYPE_G_OBJECT_PATH,
+                                 G_TYPE_INVALID);
+        dbus_g_proxy_add_signal (proxy,
+                                 "UserDeleted",
+                                 DBUS_TYPE_G_OBJECT_PATH,
+                                 G_TYPE_INVALID);
 
-                dbus_g_proxy_add_signal (proxy,
-                                         "UserAdded",
-                                         DBUS_TYPE_G_OBJECT_PATH,
-                                         G_TYPE_INVALID);
-                dbus_g_proxy_add_signal (proxy,
-                                         "UserDeleted",
-                                         DBUS_TYPE_G_OBJECT_PATH,
-                                         G_TYPE_INVALID);
-
-                dbus_g_proxy_connect_signal (proxy,
-                                             "UserAdded",
-                                             G_CALLBACK (on_new_user_in_accounts_service),
-                                             manager,
-                                             NULL);
-                dbus_g_proxy_connect_signal (proxy,
-                                             "UserDeleted",
-                                             G_CALLBACK (on_user_removed_in_accounts_service),
-                                             manager,
-                                             NULL);
-        } else {
-                g_debug ("GdmUserManager: Unable to connect to accounts service");
-        }
+        dbus_g_proxy_connect_signal (proxy,
+                                     "UserAdded",
+                                     G_CALLBACK (on_new_user_in_accounts_service),
+                                     manager,
+                                     NULL);
+        dbus_g_proxy_connect_signal (proxy,
+                                     "UserDeleted",
+                                     G_CALLBACK (on_user_removed_in_accounts_service),
+                                     manager,
+                                     NULL);
 }
 
 static void
@@ -2343,19 +2325,15 @@ load_users_manually (GdmUserManager *manager)
 static void
 load_users (GdmUserManager *manager)
 {
-        if (manager->priv->accounts_proxy != NULL) {
-                g_debug ("GdmUserManager: calling 'ListCachedUsers'");
+        g_assert (manager->priv->accounts_proxy != NULL);
+        g_debug ("GdmUserManager: calling 'ListCachedUsers'");
 
-                dbus_g_proxy_begin_call (manager->priv->accounts_proxy,
-                                         "ListCachedUsers",
-                                         on_list_cached_users_finished,
-                                         manager,
-                                         NULL,
-                                         G_TYPE_INVALID);
-        } else {
-                g_debug ("GdmUserManager: Getting users manually");
-                load_users_manually (manager);
-        }
+        dbus_g_proxy_begin_call (manager->priv->accounts_proxy,
+                                 "ListCachedUsers",
+                                 on_list_cached_users_finished,
+                                 manager,
+                                 NULL,
+                                 G_TYPE_INVALID);
 }
 
 static void
