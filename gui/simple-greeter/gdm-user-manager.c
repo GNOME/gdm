@@ -2792,7 +2792,10 @@ gdm_user_manager_finalize (GObject *object)
         if (manager->priv->shells_monitor != NULL) {
                 g_file_monitor_cancel (manager->priv->shells_monitor);
         }
-        g_hash_table_destroy (manager->priv->shells);
+
+        if (manager->priv->shells != NULL) {
+                g_hash_table_destroy (manager->priv->shells);
+        }
 
         G_OBJECT_CLASS (gdm_user_manager_parent_class)->finalize (object);
 }
