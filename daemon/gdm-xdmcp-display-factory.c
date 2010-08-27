@@ -2889,7 +2889,7 @@ decode_packet (GIOChannel             *source,
                 return TRUE;
         }
 
-        ss_len = (int)gdm_sockaddr_len (&clnt_ss);
+        ss_len = (int) sizeof (clnt_ss);
 
         res = XdmcpFill (factory->priv->socket_fd, &factory->priv->buf, (XdmcpNetaddr)&clnt_ss, &ss_len);
         if G_UNLIKELY (! res) {
