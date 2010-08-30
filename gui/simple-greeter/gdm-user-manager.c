@@ -163,6 +163,7 @@ struct GdmUserManagerPrivate
 
         gboolean               is_loaded;
         gboolean               has_multiple_users;
+        gboolean               listing_cached_users;
 };
 
 enum {
@@ -854,6 +855,7 @@ on_user_removed_in_accounts_service (DBusGProxy *proxy,
         GdmUser        *user;
 
         user = g_hash_table_lookup (manager->priv->users_by_object_path, object_path);
+
         remove_user (manager, user);
 }
 
@@ -1106,6 +1108,7 @@ on_list_cached_users_finished (DBusGProxy     *proxy,
         GError *error = NULL;
         GPtrArray *paths;
 
+        manager->priv->listing_cached_users = FALSE;
         if (!dbus_g_proxy_end_call (proxy,
                                     call_id,
                                     &error,
@@ -1748,6 +1751,10 @@ maybe_set_is_loaded (GdmUserManager *manager)
                 return;
         }
 
+        if (manager->priv->listing_cached_users) {
+                return;
+        }
+
         /* Don't set is_loaded yet unless the seat is already loaded
          * or failed to load.
          */
@@ -2364,6 +2371,7 @@ load_users (GdmUserManager *manager)
                                  manager,
                                  NULL,
                                  G_TYPE_INVALID);
+        manager->priv->listing_cached_users = TRUE;
 }
 
 static void
