@@ -197,6 +197,7 @@ static void     queue_load_seat_and_users   (GdmUserManager *manager);
 static void     monitor_local_users         (GdmUserManager *manager);
 
 static void     load_new_session_incrementally (GdmUserManagerNewSession *new_session);
+static void     set_is_loaded (GdmUserManager *manager, gboolean is_loaded);
 
 static gpointer user_manager_object = NULL;
 
@@ -763,6 +764,7 @@ on_new_user_loaded (GdmUser        *user,
                     GdmUserManager *manager)
 {
         const char *username;
+        GdmUser *old_user;
 
         if (!gdm_user_is_loaded (user)) {
                 return;
@@ -797,14 +799,20 @@ on_new_user_loaded (GdmUser        *user,
                 return;
         }
 
-        /* User added already through alternative, but less authoratative means.
+        old_user = g_hash_table_lookup (manager->priv->users_by_name, username);
+
+        /* If username got added earlier by a different means, trump it now.
          */
-        if (g_hash_table_lookup (manager->priv->users_by_name, username) != NULL) {
-                g_hash_table_remove (manager->priv->users_by_name, username);
+        if (old_user != NULL) {
+                remove_user (manager, old_user);
         }
 
         add_user (manager, user);
         g_object_unref (user);
+
+        if (manager->priv->new_users == NULL) {
+                set_is_loaded (manager, TRUE);
+        }
 }
 
 static void
@@ -1137,8 +1145,6 @@ on_list_cached_users_finished (DBusGProxy     *proxy,
                         }
                 }
         }
-
-        set_is_loaded (manager, TRUE);
 }
 
 static void
