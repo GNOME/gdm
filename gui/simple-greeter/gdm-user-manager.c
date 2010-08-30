@@ -758,25 +758,49 @@ remove_user (GdmUserManager *manager,
 }
 
 static void
-on_new_user_changed (GdmUser        *user,
-                     GdmUserManager *manager)
+on_new_user_loaded (GdmUser        *user,
+                    GParamSpec     *pspec,
+                    GdmUserManager *manager)
 {
         const char *username;
+
+        if (!gdm_user_is_loaded (user)) {
+                return;
+        }
+
+        g_signal_handlers_disconnect_by_func (user, on_new_user_loaded, manager);
+        manager->priv->new_users = g_slist_remove (manager->priv->new_users,
+                                                   user);
 
         username = gdm_user_get_user_name (user);
 
         if (username == NULL) {
+                const char *object_path;
+
+                object_path = gdm_user_get_object_path (user);
+
+                if (object_path != NULL) {
+                        g_warning ("GdmUserManager: user has no username "
+                                   "(object path: %s, uid: %lu)",
+                                   object_path, gdm_user_get_uid (user));
+                } else {
+                        g_warning ("GdmUserManager: user has no username (uid: %lu)",
+                                   gdm_user_get_uid (user));
+                }
+                g_object_unref (user);
                 return;
         }
-
-        g_signal_handlers_disconnect_by_func (user, on_new_user_changed, manager);
-        manager->priv->new_users = g_slist_remove (manager->priv->new_users,
-                                                   user);
 
         if (username_in_exclude_list (manager, username)) {
                 g_debug ("GdmUserManager: excluding user '%s'", username);
                 g_object_unref (user);
                 return;
+        }
+
+        /* User added already through alternative, but less authoratative means.
+         */
+        if (g_hash_table_lookup (manager->priv->users_by_name, username) != NULL) {
+                g_hash_table_remove (manager->priv->users_by_name, username);
         }
 
         add_user (manager, user);
@@ -800,7 +824,7 @@ add_new_user_for_object_path (const char     *object_path,
 
         manager->priv->new_users = g_slist_prepend (manager->priv->new_users, user);
 
-        g_signal_connect (user, "changed", G_CALLBACK (on_new_user_changed), manager);
+        g_signal_connect (user, "notify::is-loaded", G_CALLBACK (on_new_user_loaded), manager);
 }
 
 static void
@@ -2734,7 +2758,7 @@ gdm_user_manager_finalize (GObject *object)
                 user = GDM_USER (node->data);
                 next_node = node->next;
 
-                g_signal_handlers_disconnect_by_func (user, on_new_user_changed, manager);
+                g_signal_handlers_disconnect_by_func (user, on_new_user_loaded, manager);
                 g_object_unref (user);
                 manager->priv->new_users = g_slist_delete_link (manager->priv->new_users, node);
                 node = next_node;

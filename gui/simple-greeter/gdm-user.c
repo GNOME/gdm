@@ -46,6 +46,11 @@
 #define USER_ACCOUNTS_INTERFACE "org.freedesktop.Accounts.User"
 
 enum {
+        PROP_0,
+        PROP_IS_LOADED
+};
+
+enum {
         CHANGED,
         SESSIONS_CHANGED,
         LAST_SIGNAL
@@ -66,6 +71,8 @@ struct _GdmUser {
         char           *icon_file;
         GList          *sessions;
         gulong          login_frequency;
+
+        guint           is_loaded : 1;
 };
 
 typedef struct _GdmUserClass
@@ -139,6 +146,43 @@ gdm_user_get_num_sessions (GdmUser    *user)
 }
 
 static void
+gdm_user_set_property (GObject        *object,
+                       guint           prop_id,
+                       const GValue   *value,
+                       GParamSpec     *pspec)
+{
+        GdmUser *user;
+
+        user = GDM_USER (object);
+
+        switch (prop_id) {
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+                break;
+        }
+}
+
+static void
+gdm_user_get_property (GObject        *object,
+                       guint           prop_id,
+                       GValue         *value,
+                       GParamSpec     *pspec)
+{
+        GdmUser *user;
+
+        user = GDM_USER (object);
+
+        switch (prop_id) {
+        case PROP_IS_LOADED:
+                g_value_set_boolean (value, user->is_loaded);
+                break;
+        default:
+                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+                break;
+        }
+}
+
+static void
 gdm_user_class_init (GdmUserClass *class)
 {
         GObjectClass *gobject_class;
@@ -146,6 +190,16 @@ gdm_user_class_init (GdmUserClass *class)
         gobject_class = G_OBJECT_CLASS (class);
 
         gobject_class->finalize = gdm_user_finalize;
+        gobject_class->set_property = gdm_user_set_property;
+        gobject_class->get_property = gdm_user_get_property;
+
+        g_object_class_install_property (gobject_class,
+                                         PROP_IS_LOADED,
+                                         g_param_spec_boolean ("is-loaded",
+                                                               NULL,
+                                                               NULL,
+                                                               FALSE,
+                                                               G_PARAM_READABLE));
 
         signals [CHANGED] =
                 g_signal_new ("changed",
@@ -207,6 +261,16 @@ gdm_user_finalize (GObject *object)
 
         if (G_OBJECT_CLASS (gdm_user_parent_class)->finalize)
                 (*G_OBJECT_CLASS (gdm_user_parent_class)->finalize) (object);
+}
+
+static void
+set_is_loaded (GdmUser  *user,
+               gboolean  is_loaded)
+{
+        if (user->is_loaded != is_loaded) {
+                user->is_loaded = is_loaded;
+                g_object_notify (G_OBJECT (user), "is-loaded");
+        }
 }
 
 /**
@@ -295,6 +359,10 @@ _gdm_user_update_from_pwent (GdmUser             *user,
                 g_free (user->user_name);
                 user->user_name = g_strdup (pwent->pw_name);
                 changed = TRUE;
+        }
+
+        if (!user->is_loaded) {
+                set_is_loaded (user, TRUE);
         }
 
         if (changed) {
@@ -877,6 +945,10 @@ on_get_all_finished (DBusGProxy     *proxy,
         g_hash_table_foreach (hash_table, (GHFunc) collect_props, user);
         g_hash_table_unref (hash_table);
 
+        if (!user->is_loaded) {
+                set_is_loaded (user, TRUE);
+        }
+
         g_signal_emit (user, signals[CHANGED], 0);
 
 out:
@@ -957,4 +1029,10 @@ gdm_user_new_from_object_path (const gchar *object_path)
  error:
         g_object_unref (user);
         return NULL;
+}
+
+gboolean
+gdm_user_is_loaded (GdmUser *user)
+{
+        return user->is_loaded;
 }

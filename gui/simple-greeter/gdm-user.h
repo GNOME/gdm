@@ -56,6 +56,7 @@ GdkPixbuf            *gdm_user_render_icon         (GdmUser   *user,
 
 gint                  gdm_user_collate             (GdmUser   *user1,
                                                     GdmUser   *user2);
+gboolean              gdm_user_is_loaded           (GdmUser *user);
 
 G_END_DECLS
 
