@@ -750,7 +750,10 @@ remove_user (GdmUserManager *manager,
                 g_hash_table_remove (manager->priv->users_by_object_path, gdm_user_get_object_path (user));
         }
         g_hash_table_remove (manager->priv->users_by_name, gdm_user_get_user_name (user));
-        g_signal_emit (manager, signals[USER_REMOVED], 0, user);
+
+        if (manager->priv->is_loaded) {
+                g_signal_emit (manager, signals[USER_REMOVED], 0, user);
+        }
 
         g_object_unref (user);
 
