@@ -1362,6 +1362,14 @@ gdm_chooser_widget_show (GtkWidget *widget)
 }
 
 static void
+gdm_chooser_widget_map (GtkWidget *widget)
+{
+        queue_update_visible_items (GDM_CHOOSER_WIDGET (widget));
+
+        GTK_WIDGET_CLASS (gdm_chooser_widget_parent_class)->map (widget);
+}
+
+static void
 gdm_chooser_widget_size_allocate (GtkWidget     *widget,
                                   GtkAllocation *allocation)
 {
@@ -1420,6 +1428,7 @@ gdm_chooser_widget_class_init (GdmChooserWidgetClass *klass)
         widget_class->size_allocate = gdm_chooser_widget_size_allocate;
         widget_class->hide = gdm_chooser_widget_hide;
         widget_class->show = gdm_chooser_widget_show;
+        widget_class->map = gdm_chooser_widget_map;
         widget_class->focus = gdm_chooser_widget_focus;
         widget_class->focus_in_event = gdm_chooser_widget_focus_in_event;
 
