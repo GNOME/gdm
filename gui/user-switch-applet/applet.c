@@ -79,7 +79,8 @@ typedef struct _GdmAppletData
         guint           client_notify_lockdown_id;
 
         guint           current_status;
-        guint           user_notify_id;
+        guint           user_loaded_notify_id;
+        guint           user_changed_notify_id;
         gint8           pixel_size;
         gint            panel_size;
         GtkIconSize     icon_size;
@@ -479,7 +480,13 @@ gdm_applet_data_free (GdmAppletData *adata)
 {
         gconf_client_notify_remove (adata->client, adata->client_notify_lockdown_id);
 
-        g_signal_handler_disconnect (adata->user, adata->user_notify_id);
+        if (adata->user_loaded_notify_id != 0) {
+                g_signal_handler_disconnect (adata->user, adata->user_changed_notify_id);
+        }
+
+        if (adata->user_changed_notify_id != 0) {
+                g_signal_handler_disconnect (adata->user, adata->user_changed_notify_id);
+        }
 
 #ifdef BUILD_PRESENSE_STUFF
         if (adata->presence_proxy != NULL) {
@@ -1263,39 +1270,63 @@ reset_icon (GdmAppletData *adata)
 }
 
 static void
-setup_current_user (GdmAppletData *adata)
+setup_current_user_now (GdmAppletData *adata)
 {
-        const char *name;
-        GtkWidget  *label;
+        g_assert (adata->user != NULL);
 
-        adata->user = gdm_user_manager_get_user_by_uid (adata->manager, getuid ());
-        if (adata->user != NULL) {
-                g_object_ref (adata->user);
-                name = gdm_user_get_real_name (adata->user);
-        } else {
-                name = _("Unknown");
+        g_signal_handler_disconnect (adata->user, adata->user_loaded_notify_id);
+        adata->user_loaded_notify_id = 0;
+
+        update_label (adata);
+        reset_icon (adata);
+        adata->user_changed_notify_id =
+            g_signal_connect (adata->user,
+                              "changed",
+                              G_CALLBACK (on_user_changed),
+                              adata);
+}
+
+static void
+on_current_user_loaded (GdmUser       *user,
+                        GParamSpec    *pspec,
+                        GdmAppletData *adata)
+{
+        if (!gdm_user_is_loaded (user)) {
+                return;
         }
 
-        adata->menuitem = gtk_image_menu_item_new_with_label (name);
+        setup_current_user_now (adata);
+}
+
+static void
+setup_current_user (GdmAppletData *adata)
+{
+        adata->user = gdm_user_manager_get_user_by_uid (adata->manager, getuid ());
+
+        if (adata->user == NULL) {
+                g_warning ("Could not setup current user");
+                return;
+        }
+
+        g_object_ref (adata->user);
+
+        adata->menuitem = gtk_image_menu_item_new_with_label ("");
 #ifndef BUILD_PRESENSE_STUFF
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (adata->menuitem),
                                        gtk_image_new ());
 #endif
-        label = gtk_bin_get_child (GTK_BIN (adata->menuitem));
         gtk_menu_shell_append (GTK_MENU_SHELL (adata->menubar), adata->menuitem);
         gtk_widget_show (adata->menuitem);
 
-        update_label (adata);
-
-        if (adata->user != NULL) {
-                reset_icon (adata);
-
-                adata->user_notify_id =
-                        g_signal_connect (adata->user,
-                                          "changed",
-                                          G_CALLBACK (on_user_changed),
-                                          adata);
+        if (gdm_user_is_loaded (adata->user)) {
+                setup_current_user_now (adata);
+                return;
         }
+
+        adata->user_loaded_notify_id = g_signal_connect (adata->user,
+                                                         "notify::is-loaded",
+                                                         G_CALLBACK (on_current_user_loaded),
+                                                         adata);
 }
 
 #ifdef BUILD_PRESENSE_STUFF
