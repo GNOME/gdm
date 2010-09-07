@@ -819,24 +819,27 @@ on_new_user_loaded (GdmUser        *user,
         }
 }
 
-static void
+static GdmUser *
 add_new_user_for_object_path (const char     *object_path,
                               GdmUserManager *manager)
 {
         GdmUser *user;
 
-        if (g_hash_table_lookup (manager->priv->users_by_object_path, object_path)) {
-                return;
+        user = g_hash_table_lookup (manager->priv->users_by_object_path, object_path); 
+
+        if (user != NULL) {
+                return user;
         }
         user = gdm_user_new_from_object_path (object_path);
 
         if (user == NULL) {
-                return;
+                return NULL;
         }
 
         manager->priv->new_users = g_slist_prepend (manager->priv->new_users, user);
 
         g_signal_connect (user, "notify::is-loaded", G_CALLBACK (on_new_user_loaded), manager);
+        return user;
 }
 
 static void
@@ -1563,9 +1566,8 @@ gdm_user_manager_get_user (GdmUserManager *manager,
                         object_path = get_user_object_path_from_accounts_service (manager, username);
 
                         if (object_path != NULL) {
-                                add_new_user_for_object_path (object_path, manager);
+                                user = add_new_user_for_object_path (object_path, manager);
                                 g_free (object_path);
-                                user = g_hash_table_lookup (manager->priv->users_by_name, username);
                         }
                 } else {
                         struct passwd *pwent;
