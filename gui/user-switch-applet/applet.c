@@ -1062,7 +1062,6 @@ create_sub_menu (GdmAppletData *adata)
                           G_CALLBACK (menu_style_set_cb), adata);
         g_signal_connect (adata->menu, "show",
                           G_CALLBACK (menu_expose_cb), adata);
-        gtk_widget_show (adata->menu);
 
 #ifdef BUILD_PRESENSE_STUFF
         adata->user_item = gdm_entry_menu_item_new ();
@@ -1177,6 +1176,7 @@ create_sub_menu (GdmAppletData *adata)
         g_signal_connect (adata->quit_session_item, "activate",
                           G_CALLBACK (on_quit_session_activate), adata);
         gtk_widget_show (adata->quit_session_item);
+        gtk_widget_show (adata->menu);
 }
 
 static void
