@@ -745,20 +745,6 @@ add_user (GdmUserManager *manager,
         }
 }
 
-static GdmUser *
-add_new_user_for_pwent (GdmUserManager *manager,
-                        struct passwd  *pwent)
-{
-        GdmUser *user;
-
-        g_debug ("GdmUserManager: Creating new user from password entry: %s", pwent->pw_name);
-
-        user = create_new_user (manager);
-        _gdm_user_update_from_pwent (user, pwent);
-
-        return user;
-}
-
 static void
 remove_user (GdmUserManager *manager,
              GdmUser        *user)
@@ -1576,20 +1562,24 @@ gdm_user_manager_get_user (GdmUserManager *manager,
 
         /* if we don't have it loaded try to load it now */
         if (user == NULL) {
+                user = create_new_user (manager);
+
                 if (manager->priv->accounts_proxy != NULL) {
                         char *object_path;
 
                         object_path = get_user_object_path_from_accounts_service (manager, username);
 
                         if (object_path != NULL) {
-                                user = add_new_user_for_object_path (object_path, manager);
+                                _gdm_user_update_from_object_path (user, object_path);
                                 g_free (object_path);
                         }
                 } else {
                         struct passwd *pwent;
+
                         get_pwent_for_name (username, &pwent);
+
                         if (pwent != NULL) {
-                                user = add_new_user_for_pwent (manager, pwent);
+                                _gdm_user_update_from_pwent (user, pwent);
                         }
                 }
         }
