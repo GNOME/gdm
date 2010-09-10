@@ -481,7 +481,7 @@ gdm_applet_data_free (GdmAppletData *adata)
         gconf_client_notify_remove (adata->client, adata->client_notify_lockdown_id);
 
         if (adata->user_loaded_notify_id != 0) {
-                g_signal_handler_disconnect (adata->user, adata->user_changed_notify_id);
+                g_signal_handler_disconnect (adata->user, adata->user_loaded_notify_id);
         }
 
         if (adata->user_changed_notify_id != 0) {
