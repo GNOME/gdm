@@ -1002,12 +1002,22 @@ changed_handler (DBusGProxy *proxy,
         update_info (user);
 }
 
-GdmUser *
-gdm_user_new_from_object_path (const gchar *object_path)
+/**
+ * _gdm_user_update_from_object_path:
+ * @user: the user object to update.
+ * @object_path: the object path of the user to use.
+ *
+ * Updates the properties of @user from the accounts service via
+ * the object path in @object_path.
+ **/
+void
+_gdm_user_update_from_object_path (GdmUser    *user,
+                                   const char *object_path)
 {
-        GdmUser *user;
+        g_return_if_fail (GDM_IS_USER (user));
+        g_return_if_fail (object_path != NULL);
+        g_return_if_fail (user->object_path == NULL);
 
-        user = (GdmUser *)g_object_new (GDM_TYPE_USER, NULL);
         user->object_path = g_strdup (object_path);
 
         user->accounts_proxy = dbus_g_proxy_new_for_name (user->connection,
@@ -1021,14 +1031,10 @@ gdm_user_new_from_object_path (const gchar *object_path)
                                      G_CALLBACK (changed_handler), user, NULL);
 
         if (!update_info (user)) {
-                goto error;
+                g_warning ("Couldn't update info for user with object path %s", object_path);
         }
 
-        return user;
-
- error:
         g_object_unref (user);
-        return NULL;
 }
 
 gboolean

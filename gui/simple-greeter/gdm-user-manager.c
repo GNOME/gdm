@@ -830,11 +830,8 @@ add_new_user_for_object_path (const char     *object_path,
         if (user != NULL) {
                 return user;
         }
-        user = gdm_user_new_from_object_path (object_path);
-
-        if (user == NULL) {
-                return NULL;
-        }
+        user = g_object_new (GDM_TYPE_USER, NULL);
+        _gdm_user_update_from_object_path (user, object_path);
 
         manager->priv->new_users = g_slist_prepend (manager->priv->new_users, user);
 

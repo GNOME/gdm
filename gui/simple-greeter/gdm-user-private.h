@@ -30,6 +30,9 @@
 
 G_BEGIN_DECLS
 
+void _gdm_user_update_from_object_path (GdmUser    *user,
+                                        const char *object_path);
+
 void _gdm_user_update_from_pwent (GdmUser             *user,
                                   const struct passwd *pwent);
 
