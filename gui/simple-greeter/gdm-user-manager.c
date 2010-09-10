@@ -200,6 +200,10 @@ static void     monitor_local_users         (GdmUserManager *manager);
 static void     load_new_session_incrementally (GdmUserManagerNewSession *new_session);
 static void     set_is_loaded (GdmUserManager *manager, gboolean is_loaded);
 
+static void     on_new_user_loaded (GdmUser        *user,
+                                    GParamSpec     *pspec,
+                                    GdmUserManager *manager);
+
 static gpointer user_manager_object = NULL;
 
 G_DEFINE_TYPE (GdmUserManager, gdm_user_manager, G_TYPE_OBJECT)
@@ -684,6 +688,27 @@ set_has_multiple_users (GdmUserManager *manager,
                 g_object_notify (G_OBJECT (manager), "has-multiple-users");
         }
 }
+static void
+on_new_user_destroyed (GdmUserManager *manager,
+                       GdmUser        *user)
+{
+        manager->priv->new_users = g_slist_remove (manager->priv->new_users, user);
+}
+
+static GdmUser *
+create_new_user (GdmUserManager *manager)
+{
+        GdmUser *user;
+
+        user = g_object_new (GDM_TYPE_USER, NULL);
+
+        manager->priv->new_users = g_slist_prepend (manager->priv->new_users, user);
+        g_object_weak_ref (G_OBJECT (user), (GWeakNotify) on_new_user_destroyed, manager);
+
+        g_signal_connect (user, "notify::is-loaded", G_CALLBACK (on_new_user_loaded), manager);
+
+        return user;
+}
 
 static void
 add_user (GdmUserManager *manager,
@@ -728,12 +753,8 @@ add_new_user_for_pwent (GdmUserManager *manager,
 
         g_debug ("GdmUserManager: Creating new user from password entry: %s", pwent->pw_name);
 
-        user = g_object_new (GDM_TYPE_USER, NULL);
+        user = create_new_user (manager);
         _gdm_user_update_from_pwent (user, pwent);
-
-        /* increases ref count */
-        add_user (manager, user);
-        g_object_unref (user);
 
         return user;
 }
@@ -777,6 +798,7 @@ on_new_user_loaded (GdmUser        *user,
         g_signal_handlers_disconnect_by_func (user, on_new_user_loaded, manager);
         manager->priv->new_users = g_slist_remove (manager->priv->new_users,
                                                    user);
+        g_object_weak_unref (G_OBJECT (user), (GWeakNotify) on_new_user_destroyed, manager);
 
         username = gdm_user_get_user_name (user);
 
@@ -830,12 +852,9 @@ add_new_user_for_object_path (const char     *object_path,
         if (user != NULL) {
                 return user;
         }
-        user = g_object_new (GDM_TYPE_USER, NULL);
+        user = create_new_user (manager);
         _gdm_user_update_from_object_path (user, object_path);
 
-        manager->priv->new_users = g_slist_prepend (manager->priv->new_users, user);
-
-        g_signal_connect (user, "notify::is-loaded", G_CALLBACK (on_new_user_loaded), manager);
         return user;
 }
 
