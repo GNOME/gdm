@@ -1274,7 +1274,9 @@ setup_current_user_now (GdmAppletData *adata)
 {
         g_assert (adata->user != NULL);
 
-        g_signal_handler_disconnect (adata->user, adata->user_loaded_notify_id);
+        if (adata->user_loaded_notify_id != 0) {
+                g_signal_handler_disconnect (adata->user, adata->user_loaded_notify_id);
+        }
         adata->user_loaded_notify_id = 0;
 
         update_label (adata);
