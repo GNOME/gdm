@@ -1033,8 +1033,6 @@ _gdm_user_update_from_object_path (GdmUser    *user,
         if (!update_info (user)) {
                 g_warning ("Couldn't update info for user with object path %s", object_path);
         }
-
-        g_object_unref (user);
 }
 
 gboolean
