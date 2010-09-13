@@ -185,6 +185,9 @@ update_item_for_user (GdmUserChooserWidget *widget,
         char         *escaped_username;
         char         *escaped_real_name;
 
+        if (!gdm_user_is_loaded (user)) {
+                return;
+        }
 
         size = get_icon_height_for_widget (GTK_WIDGET (widget));
         pixbuf = gdm_user_render_icon (user, size);
