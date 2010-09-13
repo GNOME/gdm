@@ -235,6 +235,14 @@ on_item_load (GdmChooserWidget     *widget,
                 return;
         }
 
+        if (strcmp (id, GDM_USER_CHOOSER_USER_OTHER) == 0) {
+                return;
+        }
+
+        if (strcmp (id, GDM_USER_CHOOSER_USER_GUEST) == 0) {
+                return;
+        }
+
         user = gdm_user_manager_get_user (user_chooser->priv->manager, id);
         if (user != NULL) {
                 update_item_for_user (user_chooser, user);
