@@ -688,12 +688,6 @@ set_has_multiple_users (GdmUserManager *manager,
                 g_object_notify (G_OBJECT (manager), "has-multiple-users");
         }
 }
-static void
-on_new_user_destroyed (GdmUserManager *manager,
-                       GdmUser        *user)
-{
-        manager->priv->new_users = g_slist_remove (manager->priv->new_users, user);
-}
 
 static GdmUser *
 create_new_user (GdmUserManager *manager)
@@ -703,11 +697,10 @@ create_new_user (GdmUserManager *manager)
         user = g_object_new (GDM_TYPE_USER, NULL);
 
         manager->priv->new_users = g_slist_prepend (manager->priv->new_users, user);
-        g_object_weak_ref (G_OBJECT (user), (GWeakNotify) on_new_user_destroyed, manager);
 
         g_signal_connect (user, "notify::is-loaded", G_CALLBACK (on_new_user_loaded), manager);
 
-        return user;
+        return g_object_ref (user);
 }
 
 static void
@@ -784,7 +777,6 @@ on_new_user_loaded (GdmUser        *user,
         g_signal_handlers_disconnect_by_func (user, on_new_user_loaded, manager);
         manager->priv->new_users = g_slist_remove (manager->priv->new_users,
                                                    user);
-        g_object_weak_unref (G_OBJECT (user), (GWeakNotify) on_new_user_destroyed, manager);
 
         username = gdm_user_get_user_name (user);
 
