@@ -131,6 +131,24 @@ typedef struct
         char                            *x11_display;
 } GdmUserManagerNewSession;
 
+typedef enum {
+        GDM_USER_MANAGER_GET_USER_STATE_UNFETCHED = 0,
+        GDM_USER_MANAGER_GET_USER_STATE_WAIT_FOR_LOADED,
+        GDM_USER_MANAGER_GET_USER_STATE_ASK_ACCOUNTS_SERVICE,
+        GDM_USER_MANAGER_GET_USER_STATE_FETCHED
+} GdmUserManagerGetUserState;
+
+typedef struct
+{
+        GdmUserManager             *manager;
+        GdmUserManagerGetUserState  state;
+        GdmUser                    *user;
+        char                       *username;
+        char                       *object_path;
+
+        DBusGProxyCall             *call;
+} GdmUserManagerFetchUserRequest;
+
 struct GdmUserManagerPrivate
 {
         GHashTable            *users_by_name;
@@ -145,6 +163,7 @@ struct GdmUserManagerPrivate
 
         GSList                *new_sessions;
         GSList                *new_users;
+        GSList                *fetch_user_requests;
 
         GFileMonitor          *passwd_monitor;
         GFileMonitor          *shells_monitor;
@@ -203,6 +222,12 @@ static void     set_is_loaded (GdmUserManager *manager, gboolean is_loaded);
 static void     on_new_user_loaded (GdmUser        *user,
                                     GParamSpec     *pspec,
                                     GdmUserManager *manager);
+static void     give_up_and_fetch_user_locally (GdmUserManager                 *manager,
+                                                GdmUserManagerFetchUserRequest *request);
+static void     fetch_user_locally             (GdmUserManager *manager,
+                                                GdmUser        *user,
+                                                const char     *username);
+static void     fetch_user_incrementally       (GdmUserManagerFetchUserRequest *request);
 
 static gpointer user_manager_object = NULL;
 
@@ -1058,37 +1083,80 @@ failed:
         unload_new_session (new_session);
 }
 
-static char *
-get_user_object_path_from_accounts_service (GdmUserManager *manager,
-                                            const char     *name)
+static void
+on_find_user_by_name_finished (DBusGProxy                     *proxy,
+                               DBusGProxyCall                 *call,
+                               GdmUserManagerFetchUserRequest *request)
 {
+        GdmUserManager  *manager;
         GError          *error;
         char            *object_path;
         gboolean         res;
 
-        g_assert (manager->priv->accounts_proxy != NULL);
+        g_assert (request->call == call);
 
         error = NULL;
         object_path = NULL;
-        res = dbus_g_proxy_call (manager->priv->accounts_proxy,
-                                 "FindUserByName",
-                                 &error,
-                                 G_TYPE_STRING,
-                                 name,
-                                 G_TYPE_INVALID,
-                                 DBUS_TYPE_G_OBJECT_PATH,
-                                 &object_path,
-                                 G_TYPE_INVALID);
+        manager = request->manager;
+        res = dbus_g_proxy_end_call (manager->priv->accounts_proxy,
+                                     call,
+                                     &error,
+                                     DBUS_TYPE_G_OBJECT_PATH,
+                                     &object_path,
+                                     G_TYPE_INVALID);
         if (! res) {
                 if (error != NULL) {
-                        g_debug ("GdmUserManager: Failed to find user %s: %s", name, error->message);
+                        g_debug ("GdmUserManager: Failed to find user %s: %s",
+                                 request->username, error->message);
                         g_error_free (error);
                 } else {
-                        g_debug ("GdmUserManager: Failed to find user %s", name);
+                        g_debug ("GdmUserManager: Failed to find user %s",
+                                 request->username);
                 }
-                return NULL;
+                give_up_and_fetch_user_locally (manager, request);
+                return;
         }
-        return object_path;
+
+        g_debug ("GdmUserManager: Found object path of user '%s': %s",
+                 request->username, object_path);
+        request->object_path = object_path;
+        request->state++;
+
+        fetch_user_incrementally (request);
+}
+
+static void
+find_user_in_accounts_service (GdmUserManager                 *manager,
+                               GdmUserManagerFetchUserRequest *request)
+{
+        DBusGProxyCall  *call;
+
+        g_debug ("GdmUserManager: Looking for user %s in accounts service",
+                 request->username);
+
+        g_assert (manager->priv->accounts_proxy != NULL);
+
+        call = dbus_g_proxy_begin_call (manager->priv->accounts_proxy,
+                                        "FindUserByName",
+                                        (DBusGProxyCallNotify)
+                                        on_find_user_by_name_finished,
+                                        request,
+                                        NULL,
+                                        G_TYPE_STRING,
+                                        request->username,
+                                        G_TYPE_INVALID);
+
+        if (call == NULL) {
+                g_warning ("GdmUserManager: failed to make FindUserByName('%s') call",
+                           request->username);
+                goto failed;
+        }
+
+        request->call = call;
+        return;
+
+failed:
+        give_up_and_fetch_user_locally (manager, request);
 }
 
 static void
@@ -1531,6 +1599,127 @@ load_new_session_incrementally (GdmUserManagerNewSession *new_session)
         }
 }
 
+static void
+free_fetch_user_request (GdmUserManagerFetchUserRequest *request)
+{
+        GdmUserManager *manager;
+
+        manager = request->manager;
+
+        manager->priv->fetch_user_requests = g_slist_remove (manager->priv->fetch_user_requests, request);
+        g_free (request->username);
+        g_free (request->object_path);
+        g_slice_free (GdmUserManagerFetchUserRequest, request);
+}
+
+static void
+give_up_and_fetch_user_locally (GdmUserManager                 *manager,
+                                GdmUserManagerFetchUserRequest *request)
+{
+
+        g_debug ("GdmUserManager: account service unavailable, "
+                 "fetching user %s locally",
+                 request->username);
+        fetch_user_locally (manager, request->user, request->username);
+        request->state = GDM_USER_MANAGER_GET_USER_STATE_UNFETCHED;
+}
+
+static void
+on_user_manager_maybe_ready_for_request (GdmUserManager                 *manager,
+                                         GParamSpec                     *pspec,
+                                         GdmUserManagerFetchUserRequest *request)
+{
+        if (!manager->priv->is_loaded) {
+                return;
+        }
+
+        g_signal_handlers_disconnect_by_func (manager, on_user_manager_maybe_ready_for_request, request);
+
+        request->state++;
+        fetch_user_incrementally (request);
+}
+
+static void
+fetch_user_incrementally (GdmUserManagerFetchUserRequest *request)
+{
+        GdmUserManager *manager;
+
+        g_debug ("GdmUserManager: finding user %s state %d",
+                 request->username, request->state);
+        manager = request->manager;
+        switch (request->state) {
+        case GDM_USER_MANAGER_GET_USER_STATE_WAIT_FOR_LOADED:
+                if (manager->priv->is_loaded) {
+                        request->state++;
+                        fetch_user_incrementally (request);
+                } else {
+                        g_debug ("GdmUserManager: waiting for user manager to load before finding user %s",
+                                 request->username);
+                        g_signal_connect (manager, "notify::is-loaded",
+                                          G_CALLBACK (on_user_manager_maybe_ready_for_request), request);
+
+                }
+                break;
+
+        case GDM_USER_MANAGER_GET_USER_STATE_ASK_ACCOUNTS_SERVICE:
+                if (manager->priv->accounts_proxy == NULL) {
+                        give_up_and_fetch_user_locally (manager, request);
+                } else {
+                        find_user_in_accounts_service (manager, request);
+                }
+                break;
+        case GDM_USER_MANAGER_GET_USER_STATE_FETCHED:
+                g_debug ("GdmUserManager: user %s fetched", request->username);
+                _gdm_user_update_from_object_path (request->user, request->object_path);
+                break;
+        case GDM_USER_MANAGER_GET_USER_STATE_UNFETCHED:
+                g_debug ("GdmUserManager: user %s was not fetched", request->username);
+                break;
+        default:
+                g_assert_not_reached ();
+        }
+
+        if (request->state == GDM_USER_MANAGER_GET_USER_STATE_FETCHED  ||
+            request->state == GDM_USER_MANAGER_GET_USER_STATE_UNFETCHED) {
+                g_debug ("GdmUserManager: finished handling request for user %s",
+                         request->username);
+                free_fetch_user_request (request);
+        }
+}
+
+static void
+fetch_user_from_accounts_service (GdmUserManager *manager,
+                                  GdmUser        *user,
+                                  const char     *username)
+{
+        GdmUserManagerFetchUserRequest *request;
+
+        request = g_slice_new0 (GdmUserManagerFetchUserRequest);
+
+        request->manager = manager;
+        request->username = g_strdup (username);
+        request->user = user;
+        request->state = GDM_USER_MANAGER_GET_USER_STATE_UNFETCHED + 1;
+
+        manager->priv->fetch_user_requests = g_slist_prepend (manager->priv->fetch_user_requests,
+                                                              request);
+        fetch_user_incrementally (request);
+}
+
+static void
+fetch_user_locally (GdmUserManager *manager,
+                    GdmUser        *user,
+                    const char     *username)
+{
+        struct passwd *pwent;
+
+        get_pwent_for_name (username, &pwent);
+
+        if (pwent != NULL) {
+                _gdm_user_update_from_pwent (user, pwent);
+        }
+}
+
 /**
  * gdm_manager_get_user:
  * @manager: the manager to query.
@@ -1557,22 +1746,9 @@ gdm_user_manager_get_user (GdmUserManager *manager,
                 user = create_new_user (manager);
 
                 if (manager->priv->accounts_proxy != NULL) {
-                        char *object_path;
-
-                        object_path = get_user_object_path_from_accounts_service (manager, username);
-
-                        if (object_path != NULL) {
-                                _gdm_user_update_from_object_path (user, object_path);
-                                g_free (object_path);
-                        }
+                        fetch_user_from_accounts_service (manager, user, username);
                 } else {
-                        struct passwd *pwent;
-
-                        get_pwent_for_name (username, &pwent);
-
-                        if (pwent != NULL) {
-                                _gdm_user_update_from_pwent (user, pwent);
-                        }
+                        fetch_user_locally (manager, user, username);
                 }
         }
 
@@ -2768,6 +2944,10 @@ gdm_user_manager_finalize (GObject *object)
         g_slist_foreach (manager->priv->new_sessions,
                          (GFunc) unload_new_session, NULL);
         g_slist_free (manager->priv->new_sessions);
+
+        g_slist_foreach (manager->priv->fetch_user_requests,
+                         (GFunc) free_fetch_user_request, NULL);
+        g_slist_free (manager->priv->fetch_user_requests);
 
         node = manager->priv->new_users;
         while (node != NULL) {
