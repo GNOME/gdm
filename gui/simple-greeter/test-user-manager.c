@@ -118,7 +118,7 @@ main (int argc, char *argv[])
                 g_log_set_always_fatal (fatal_mask);
         }
 
-        if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
+        if (! gdm_settings_client_init (DATADIR "/gdm/gdm.schemas", "/")) {
                 g_critical ("Unable to initialize settings client");
                 exit (1);
         }

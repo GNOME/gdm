@@ -1421,7 +1421,7 @@ fill_applet (PanelApplet *applet)
                 gtk_window_set_default_icon_name ("stock_people");
                 g_set_application_name (_("User Switch Applet"));
 
-                if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
+                if (! gdm_settings_client_init (DATADIR "/gdm/gdm.schemas", "/")) {
                         g_critical ("Unable to initialize settings client");
                         exit (1);
                 }

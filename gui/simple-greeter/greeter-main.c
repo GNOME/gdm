@@ -257,7 +257,7 @@ main (int argc, char *argv[])
         g_type_init ();
 
         gdm_profile_start ("Initializing settings client");
-        if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
+        if (! gdm_settings_client_init (DATADIR "/gdm/gdm.schemas", "/")) {
                 g_critical ("Unable to initialize settings client");
                 exit (1);
         }

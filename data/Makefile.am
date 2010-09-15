@@ -42,7 +42,7 @@ dbusconf_DATA = $(dbusconf_in_files:.conf.in=.conf)
 
 @INTLTOOL_SCHEMAS_RULE@
 
-schemasdir = $(gdmconfdir)
+schemasdir = $(datadir)/gdm
 schemas_in_files = gdm.schemas.in
 schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
 

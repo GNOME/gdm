@@ -597,7 +597,7 @@ main (int    argc,
                 goto out;
         }
 
-        if (! gdm_settings_direct_init (settings, GDMCONFDIR "/gdm.schemas", "/")) {
+        if (! gdm_settings_direct_init (settings, DATADIR "/gdm/gdm.schemas", "/")) {
                 g_warning ("Unable to initialize settings");
                 goto out;
         }

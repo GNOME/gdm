@@ -78,7 +78,7 @@ main (int argc, char **argv)
 
         g_type_init ();
 
-        if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
+        if (! gdm_settings_client_init (DATADIR "/gdm/gdm.schemas", "/")) {
                 exit (1);
         }
 

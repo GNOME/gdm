@@ -214,7 +214,7 @@ main (int    argc,
                 goto out;
         }
 
-        if (! gdm_settings_direct_init (settings, GDMCONFDIR "/gdm.schemas", "/")) {
+        if (! gdm_settings_direct_init (settings, DATADIR "/gdm/gdm.schemas", "/")) {
                 g_warning ("Unable to initialize settings");
                 goto out;
         }
@@ -226,7 +226,7 @@ main (int    argc,
                 exit (1);
         }
 
-        if (! gdm_settings_client_init (GDMCONFDIR "/gdm.schemas", "/")) {
+        if (! gdm_settings_client_init (DATADIR "/gdm/gdm.schemas", "/")) {
                 g_critical ("Unable to initialize settings client");
                 exit (1);
         }
