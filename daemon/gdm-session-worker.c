@@ -1510,6 +1510,8 @@ gdm_session_worker_set_environment_variable (GdmSessionWorker *worker,
         /* FIXME: maybe we should use use pam_putenv instead of our
          * own hash table, so pam can override our choices if it knows
          * better?
+         *
+         * See https://bugzilla.gnome.org/show_bug.cgi?id=627530
          */
         g_hash_table_replace (worker->priv->environment,
                               g_strdup (key),
