@@ -1164,8 +1164,8 @@ else
    # what to do, what to do, this is wrong, but this just sets the
    # defaults, perhaps this user is cross compiling or some such
    X_PATH="/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin"
-   X_SERVER_PATH="/usr/X11R6/bin"
-   X_SERVER="/usr/X11R6/bin/X"
+   X_SERVER_PATH="/usr/bin"
+   X_SERVER="/usr/bin/X"
    X_CONFIG_OPTIONS="-audit 0"
 fi
 
