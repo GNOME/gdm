@@ -150,13 +150,8 @@ update_other_user_visibility (GdmUserChooserWidget *widget)
                 goto out;
         }
 
-        number_of_users = gdm_chooser_widget_get_number_of_items (GDM_CHOOSER_WIDGET (widget));
-
-        /* we hide the Other user if it's the last one, and we show it
-         * if there's another user */
-        if (number_of_users == 1 && widget->priv->has_user_other) {
-                remove_user_other (widget);
-        } if (number_of_users >= 1 && !widget->priv->has_user_other) {
+        /* Always show the Other user if requested */
+        if (!widget->priv->has_user_other) {
                 add_user_other (widget);
         }
 
