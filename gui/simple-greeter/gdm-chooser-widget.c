@@ -30,6 +30,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <syslog.h>
+#include <locale.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -1546,6 +1547,98 @@ path_is_separator (GdmChooserWidget *widget,
 }
 
 static int
+gdm_multilingual_collate (const gchar *text_a, const gchar *text_b)
+{
+        PangoDirection          direction_a;
+        PangoDirection          direction_b;
+        const gchar            *p_a;
+        const gchar            *p_b;
+        gchar                  *org_locale = NULL;
+        gchar                  *sub_a;
+        gchar                  *sub_b;
+        gunichar                ch_a;
+        gunichar                ch_b;
+        GUnicodeScript          script_a;
+        GUnicodeScript          script_b;
+        gboolean                composed_alpha_a;
+        gboolean                composed_alpha_b;
+        gboolean                all_alpha_a;
+        gboolean                all_alpha_b;
+        int                     result;
+
+        direction_a = pango_find_base_dir (text_a, -1);
+        direction_b = pango_find_base_dir (text_b, -1);
+        if ((direction_a == PANGO_DIRECTION_LTR ||
+             direction_a == PANGO_DIRECTION_NEUTRAL) &&
+            direction_b == PANGO_DIRECTION_RTL)
+                return -1;
+        if (direction_a == PANGO_DIRECTION_RTL &&
+            (direction_b == PANGO_DIRECTION_LTR ||
+             direction_b == PANGO_DIRECTION_NEUTRAL))
+                return 1;
+
+        if (!g_get_charset (NULL)) {
+                org_locale = g_strdup (setlocale (LC_ALL, NULL));
+                if (!setlocale (LC_ALL, "en_US.UTF-8")) {
+                        setlocale (LC_ALL, org_locale);
+                        g_free (org_locale);
+                        org_locale = NULL;
+                }
+        }
+
+        result = 0;
+        all_alpha_a = all_alpha_b = TRUE;
+        for (p_a = text_a, p_b = text_b;
+             p_a && *p_a && p_b && *p_b;
+             p_a = g_utf8_next_char (p_a), p_b = g_utf8_next_char (p_b)) {
+                ch_a = g_utf8_get_char (p_a);
+                ch_b = g_utf8_get_char (p_b);
+                script_a = g_unichar_get_script (ch_a);
+                script_b = g_unichar_get_script (ch_b);
+                composed_alpha_a = (script_a == G_UNICODE_SCRIPT_LATIN ||
+                                    script_a == G_UNICODE_SCRIPT_GREEK ||
+                                    script_a == G_UNICODE_SCRIPT_CYRILLIC );
+                composed_alpha_b = (script_b == G_UNICODE_SCRIPT_LATIN ||
+                                    script_b == G_UNICODE_SCRIPT_GREEK ||
+                                    script_b == G_UNICODE_SCRIPT_CYRILLIC );
+                all_alpha_a &= composed_alpha_a;
+                all_alpha_b &= composed_alpha_b;
+                if (all_alpha_a && !composed_alpha_b &&
+                    ch_b >= 0x530) {
+                    result = -1;
+                    break;
+                } else if (!composed_alpha_a && all_alpha_b &&
+                           ch_a >= 0x530) {
+                    result = 1;
+                    break;
+                } else if (ch_a != ch_b) {
+                    sub_a = g_strndup (text_a, g_utf8_next_char (p_a) - text_a);
+                    sub_b = g_strndup (text_b, g_utf8_next_char (p_b) - text_b);
+                    result = g_utf8_collate (sub_a, sub_b);
+                    g_free (sub_a);
+                    g_free (sub_b);
+                    if (result != 0) {
+                            break;
+                    }
+                }
+        }
+        if (result != 0) {
+                if (org_locale) {
+                        setlocale (LC_ALL, org_locale);
+                        g_free (org_locale);
+                        org_locale = NULL;
+                }
+                return result;
+        }
+        if (org_locale) {
+                setlocale (LC_ALL, org_locale);
+                g_free (org_locale);
+                org_locale = NULL;
+        }
+        return g_utf8_collate (text_a, text_b);
+}
+
+static int
 compare_item  (GtkTreeModel *model,
                GtkTreeIter  *a,
                GtkTreeIter  *b,
@@ -1636,9 +1729,9 @@ compare_item  (GtkTreeModel *model,
                                 g_debug ("GdmChooserWidget: unable to parse markup: '%s'", name_b);
                         }
                         if (text_a != NULL && text_b != NULL) {
-                                result = g_utf8_collate (text_a, text_b);
+                                result = gdm_multilingual_collate (text_a, text_b);
                         } else {
-                                result = g_utf8_collate (name_a, name_b);
+                                result = gdm_multilingual_collate (name_a, name_b);
                         }
                         g_free (text_a);
                         g_free (text_b);
