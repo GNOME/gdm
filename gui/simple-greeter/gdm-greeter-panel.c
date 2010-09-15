@@ -793,7 +793,7 @@ setup_panel (GdmGreeterPanel *panel)
                 gtk_widget_show (panel->priv->hostname_label);
         }
 
-        if (panel->priv->display_is_local || get_show_restart_buttons (panel)) {
+        if (!panel->priv->display_is_local || get_show_restart_buttons (panel)) {
                 GtkWidget *menu_item;
                 GtkWidget *image;
 
@@ -820,7 +820,7 @@ setup_panel (GdmGreeterPanel *panel)
                         menu_item = gtk_menu_item_new_with_label ("Disconnect");
                         g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_disconnect), NULL);
                         gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
-                } else {
+                } else if (get_show_restart_buttons (panel)) {
                         if (can_suspend ()) {
                                 menu_item = gtk_menu_item_new_with_label (_("Suspend"));
                                 g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_system_suspend), NULL);
