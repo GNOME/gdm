@@ -668,6 +668,11 @@ reset_dialog (GdmGreeterLoginWindow *login_window,
                 /* If we don't have a user list jump straight to authenticate */
                 g_debug ("GdmGreeterLoginWindow: jumping straight to authenticate");
                 switch_mode (login_window, MODE_AUTHENTICATION);
+
+                g_debug ("Starting PAM conversation since no local users");
+                g_signal_emit (G_OBJECT (login_window), signals[USER_SELECTED],
+                               0, GDM_USER_CHOOSER_USER_OTHER);
+                g_signal_emit (login_window, signals[BEGIN_VERIFICATION], 0);
         } else {
                 switch_mode (login_window, dialog_mode);
         }
