@@ -46,7 +46,7 @@
 
 #include "gdm-welcome-session.h"
 
-#define DBUS_LAUNCH_COMMAND BINDIR "/dbus-launch --exit-with-session"
+#define DBUS_LAUNCH_COMMAND BINDIR "/dbus-launch"
 
 #define MAX_LOGS 5
 
