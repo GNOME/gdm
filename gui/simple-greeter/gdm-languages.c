@@ -378,7 +378,7 @@ add_locale (const char *language_name,
         }
 
         if (!language_name_is_valid (name)) {
-                g_warning ("Your locale '%s' was failed by setlocale()", name);
+                g_debug ("Ignoring '%s' as a locale, since it's invalid", name);
                 g_free (name);
                 return FALSE;
         }
@@ -411,8 +411,7 @@ add_locale (const char *language_name,
             !language_name_has_translations (locale->id) &&
             !language_name_has_translations (locale->language_code) &&
             utf8_only) {
-                g_warning ("Your locale '%s' doesn't have message catalog files",
-                           language_name);
+                g_debug ("Ignoring '%s' as a locale, since it lacks translations", locale->name);
                 gdm_locale_free (locale);
                 return FALSE;
         }
