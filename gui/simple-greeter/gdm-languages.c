@@ -369,7 +369,7 @@ add_locale (const char *language_name,
                 name = g_strdup_printf ("%s.utf8", language_name);
 
                 language_name_get_codeset_details (name, NULL, &is_utf8);
-                if (is_utf8) {
+                if (!is_utf8) {
                         g_free (name);
                         return FALSE;
                 }
