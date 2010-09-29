@@ -1136,6 +1136,14 @@ get_system_version (void)
                         version = g_strdup (output);
                 }
                 version = g_strstrip (version);
+
+                /* lsb_release returns (none) if it doesn't know,
+                 * so return NULL in that case */
+                if (strcmp (version, "(none)") == 0) {
+                        g_free (version);
+                        version = NULL;
+                }
+
                 g_free (output);
 
                 goto out;
