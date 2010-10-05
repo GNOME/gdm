@@ -279,8 +279,6 @@ set_is_loaded (GdmUser  *user,
  * @pwent: the user data to use.
  *
  * Updates the properties of @user using the data in @pwent.
- *
- * Since: 1.0
  **/
 void
 _gdm_user_update_from_pwent (GdmUser             *user,
@@ -373,10 +371,9 @@ _gdm_user_update_from_pwent (GdmUser             *user,
 /**
  * _gdm_user_update_login_frequency:
  * @user: the user object to update
+ * @login_frequency: the number of times the user has logged in
  *
  * Updates the login frequency of @user
- *
- * Since: 1.0
  **/
 void
 _gdm_user_update_login_frequency (GdmUser *user,
@@ -398,10 +395,8 @@ _gdm_user_update_login_frequency (GdmUser *user,
  *
  * Retrieves the ID of @user.
  *
- * Returns: a pointer to an array of characters which must not be modified or
+ * Returns: (transfer none): a pointer to an array of characters which must not be modified or
  *  freed, or %NULL.
- *
- * Since: 1.0
  **/
 
 gulong
@@ -418,10 +413,8 @@ gdm_user_get_uid (GdmUser *user)
  *
  * Retrieves the display name of @user.
  *
- * Returns: a pointer to an array of characters which must not be modified or
+ * Returns: (transfer none): a pointer to an array of characters which must not be modified or
  *  freed, or %NULL.
- *
- * Since: 1.0
  **/
 const char *
 gdm_user_get_real_name (GdmUser *user)
@@ -437,10 +430,8 @@ gdm_user_get_real_name (GdmUser *user)
  *
  * Retrieves the login name of @user.
  *
- * Returns: a pointer to an array of characters which must not be modified or
+ * Returns: (transfer none): a pointer to an array of characters which must not be modified or
  *  freed, or %NULL.
- *
- * Since: 1.0
  **/
 
 const char *
@@ -451,6 +442,14 @@ gdm_user_get_user_name (GdmUser *user)
         return user->user_name;
 }
 
+/**
+ * gdm_user_get_login_frequency:
+ * @user: a #GdmUser
+ *
+ * Returns the number of times @user has logged in.
+ *
+ * Returns: the login frequency
+ */
 gulong
 gdm_user_get_login_frequency (GdmUser *user)
 {
@@ -769,12 +768,30 @@ frame_pixbuf (GdkPixbuf *source)
         return dest;
 }
 
+/**
+ * gdm_user_is_logged_in:
+ * @user: a #GdmUser
+ *
+ * Returns whether or not #GdmUser is currently logged in.
+ *
+ * Returns: %TRUE or %FALSE
+ */
 gboolean
 gdm_user_is_logged_in (GdmUser *user)
 {
         return user->sessions != NULL;
 }
 
+/**
+ * gdm_user_render_icon:
+ * @user: a #GdmUser
+ * @icon_size: the size to render the icon at
+ *
+ * Returns a #GdkPixbuf of the account icon belonging to @user
+ * at the pixel size specified by @icon_size.
+ *
+ * Returns: (transfer full): a #GdkPixbuf
+ */
 GdkPixbuf *
 gdm_user_render_icon (GdmUser   *user,
                       gint       icon_size)
@@ -828,6 +845,14 @@ gdm_user_render_icon (GdmUser   *user,
         return pixbuf;
 }
 
+/**
+ * gdm_user_get_icon_file:
+ * @user: a #GdmUser
+ *
+ * Returns the path to the account icon belonging to @user.
+ *
+ * Returns: (transfer none): a path to an icon
+ */
 const char *
 gdm_user_get_icon_file (GdmUser *user)
 {
@@ -836,6 +861,16 @@ gdm_user_get_icon_file (GdmUser *user)
         return user->icon_file;
 }
 
+/**
+ * gdm_user_get_object_path:
+ * @user: a #GdmUser
+ *
+ * Returns the user accounts service object path of @user,
+ * or %NULL if @user doesn't have an object path associated
+ * with it.
+ *
+ * Returns: (transfer none): the primary ConsoleKit session id of the user
+ */
 const char *
 gdm_user_get_object_path (GdmUser *user)
 {
@@ -844,6 +879,15 @@ gdm_user_get_object_path (GdmUser *user)
         return user->object_path;
 }
 
+/**
+ * gdm_user_get_primary_session_id:
+ * @user: a #GdmUser
+ *
+ * Returns the primary ConsoleKit session id of @user, or %NULL if @user isn't
+ * logged in.
+ *
+ * Returns: (transfer none): the primary ConsoleKit session id of the user
+ */
 const char *
 gdm_user_get_primary_session_id (GdmUser *user)
 {
@@ -1035,6 +1079,16 @@ _gdm_user_update_from_object_path (GdmUser    *user,
         }
 }
 
+/**
+ * gdm_user_is_loaded:
+ * @user: a #GdmUser
+ *
+ * Determines whether or not the user object is loaded and ready to read from.
+ * #GdmUserManager:is-loaded property must be %TRUE before calling
+ * gdm_user_manager_list_users()
+ *
+ * Returns: %TRUE or %FALSE
+ */
 gboolean
 gdm_user_is_loaded (GdmUser *user)
 {

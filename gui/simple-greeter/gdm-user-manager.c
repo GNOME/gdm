@@ -1721,14 +1721,16 @@ fetch_user_locally (GdmUserManager *manager,
 }
 
 /**
- * gdm_manager_get_user:
+ * gdm_user_manager_get_user:
  * @manager: the manager to query.
  * @username: the login name of the user to get.
  *
- * Retrieves a pointer to the #GdmUser object for the login named @username
- * from @manager. This pointer is not a reference, and should not be released.
+ * Retrieves a pointer to the #GdmUser object for the login @username
+ * from @manager. Trying to use this object before its
+ * #GdmUser:is-loaded property is %TRUE will result in undefined
+ * behavior.
  *
- * Returns: a pointer to a #GdmUser object.
+ * Returns: (transfer none): #GdmUser object
  **/
 GdmUser *
 gdm_user_manager_get_user (GdmUserManager *manager,
@@ -1755,6 +1757,18 @@ gdm_user_manager_get_user (GdmUserManager *manager,
         return user;
 }
 
+/**
+ * gdm_user_manager_get_user_by_uid:
+ * @manager: the manager to query.
+ * @uid: the uid of the user to get.
+ *
+ * Retrieves a pointer to the #GdmUser object for the uid @uid
+ * from @manager. Trying to use this object before its
+ * #GdmUser:is-loaded property is %TRUE will result in undefined
+ * behavior.
+ *
+ * Returns: (transfer none): #GdmUser object
+ */
 GdmUser *
 gdm_user_manager_get_user_by_uid (GdmUserManager *manager,
                                   gulong          uid)
@@ -1782,6 +1796,14 @@ listify_hash_values_hfunc (gpointer key,
         *list = g_slist_prepend (*list, value);
 }
 
+/**
+ * gdm_user_manager_list_users:
+ * @manager: a #GdmUserManager
+ *
+ * Get a list of system user accounts
+ *
+ * Returns: (element-type GdmUser) (transfer full): List of #GdmUser objects
+ */
 GSList *
 gdm_user_manager_list_users (GdmUserManager *manager)
 {
@@ -2870,6 +2892,14 @@ gdm_user_manager_class_init (GdmUserManagerClass *klass)
         g_type_class_add_private (klass, sizeof (GdmUserManagerPrivate));
 }
 
+/**
+ * gdm_user_manager_queue_load:
+ * @manager: a #GdmUserManager
+ *
+ * Queue loading users into user manager. This must be called, and the
+ * #GdmUserManager:is-loaded property must be %TRUE before calling
+ * gdm_user_manager_list_users()
+ */
 void
 gdm_user_manager_queue_load (GdmUserManager *manager)
 {
@@ -3023,6 +3053,15 @@ gdm_user_manager_finalize (GObject *object)
         G_OBJECT_CLASS (gdm_user_manager_parent_class)->finalize (object);
 }
 
+/**
+ * gdm_user_manager_ref_default:
+ *
+ * Queue loading users into user manager. This must be called, and the
+ * #GdmUserManager:is-loaded property must be %TRUE before calling
+ * gdm_user_manager_list_users()
+ *
+ * Returns: (transfer full): user manager object
+ */
 GdmUserManager *
 gdm_user_manager_ref_default (void)
 {
