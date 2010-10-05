@@ -22,8 +22,8 @@
  * Facade object for user data, owned by GdmUserManager
  */
 
-#ifndef __GDM_USER__
-#define __GDM_USER__ 1
+#ifndef __GDM_USER_H__
+#define __GDM_USER_H__
 
 #include <sys/types.h>
 #include <gtk/gtk.h>

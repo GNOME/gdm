@@ -21,8 +21,8 @@
  * Private interfaces to the GdmUser object
  */
 
-#ifndef __GDM_USER_PRIVATE__
-#define __GDM_USER_PRIVATE__ 1
+#ifndef __GDM_USER_PRIVATE_H_
+#define __GDM_USER_PRIVATE_H_
 
 #include <pwd.h>
 

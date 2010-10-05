@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef __GDM_USER_MANAGER_H
-#define __GDM_USER_MANAGER_H
+#ifndef __GDM_USER_MANAGER_H__
+#define __GDM_USER_MANAGER_H__
 
 #include <glib-object.h>
 
