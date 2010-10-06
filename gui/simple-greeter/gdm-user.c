@@ -75,10 +75,10 @@ struct _GdmUser {
         guint           is_loaded : 1;
 };
 
-typedef struct _GdmUserClass
+struct _GdmUserClass
 {
         GObjectClass parent_class;
-} GdmUserClass;
+};
 
 static void gdm_user_finalize     (GObject      *object);
 static gboolean check_user_file (const char *filename);

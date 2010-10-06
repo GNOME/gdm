@@ -36,6 +36,7 @@ G_BEGIN_DECLS
 #define GDM_IS_USER(object) (G_TYPE_CHECK_INSTANCE_TYPE ((object), GDM_TYPE_USER))
 
 typedef struct _GdmUser GdmUser;
+typedef struct _GdmUserClass GdmUserClass;
 
 GType                 gdm_user_get_type            (void) G_GNUC_CONST;
 
