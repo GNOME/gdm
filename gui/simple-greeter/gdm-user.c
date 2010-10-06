@@ -42,8 +42,8 @@
 #define GLOBAL_FACEDIR    DATADIR "/faces"
 #define MAX_FILE_SIZE     65536
 
-#define USER_ACCOUNTS_NAME      "org.freedesktop.Accounts"
-#define USER_ACCOUNTS_INTERFACE "org.freedesktop.Accounts.User"
+#define ACCOUNTS_NAME           "org.freedesktop.Accounts"
+#define ACCOUNTS_USER_INTERFACE "org.freedesktop.Accounts.User"
 
 enum {
         PROP_0,
@@ -1006,7 +1006,7 @@ update_info (GdmUser *user)
         DBusGProxyCall *call;
 
         proxy = dbus_g_proxy_new_for_name (user->connection,
-                                           USER_ACCOUNTS_NAME,
+                                           ACCOUNTS_NAME,
                                            user->object_path,
                                            DBUS_INTERFACE_PROPERTIES);
 
@@ -1017,7 +1017,7 @@ update_info (GdmUser *user)
                                         user,
                                         NULL,
                                         G_TYPE_STRING,
-                                        USER_ACCOUNTS_INTERFACE,
+                                        ACCOUNTS_USER_INTERFACE,
                                         G_TYPE_INVALID);
 
         if (call == NULL) {
@@ -1065,9 +1065,9 @@ _gdm_user_update_from_object_path (GdmUser    *user,
         user->object_path = g_strdup (object_path);
 
         user->accounts_proxy = dbus_g_proxy_new_for_name (user->connection,
-                                                          USER_ACCOUNTS_NAME,
+                                                          ACCOUNTS_NAME,
                                                           user->object_path,
-                                                          USER_ACCOUNTS_INTERFACE);
+                                                          ACCOUNTS_USER_INTERFACE);
         dbus_g_proxy_set_default_timeout (user->accounts_proxy, INT_MAX);
         dbus_g_proxy_add_signal (user->accounts_proxy, "Changed", G_TYPE_INVALID);
 
