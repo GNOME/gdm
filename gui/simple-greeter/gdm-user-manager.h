@@ -35,14 +35,17 @@ G_BEGIN_DECLS
 #define GDM_USER_MANAGER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GDM_TYPE_USER_MANAGER, GdmUserManagerClass))
 
 typedef struct GdmUserManagerPrivate GdmUserManagerPrivate;
+typedef struct GdmUserManager GdmUserManager;
+typedef struct GdmUserManagerClass GdmUserManagerClass;
+typedef enum GdmUserManagerError GdmUserManagerError;
 
-typedef struct
+struct GdmUserManager
 {
         GObject                parent;
         GdmUserManagerPrivate *priv;
-} GdmUserManager;
+};
 
-typedef struct
+struct GdmUserManagerClass
 {
         GObjectClass   parent_class;
 
@@ -54,13 +57,13 @@ typedef struct
                                                      GdmUser        *user);
         void          (* user_changed)              (GdmUserManager *user_manager,
                                                      GdmUser        *user);
-} GdmUserManagerClass;
+};
 
-typedef enum
+enum GdmUserManagerError
 {
         GDM_USER_MANAGER_ERROR_GENERAL,
         GDM_USER_MANAGER_ERROR_KEY_NOT_FOUND
-} GdmUserManagerError;
+};
 
 #define GDM_USER_MANAGER_ERROR gdm_user_manager_error_quark ()
 
