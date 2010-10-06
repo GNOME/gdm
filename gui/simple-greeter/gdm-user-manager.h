@@ -75,7 +75,7 @@ GdmUserManager *    gdm_user_manager_ref_default           (void);
 void                gdm_user_manager_queue_load            (GdmUserManager *manager);
 GSList *            gdm_user_manager_list_users            (GdmUserManager *manager);
 GdmUser *           gdm_user_manager_get_user              (GdmUserManager *manager,
-                                                            const char     *user_name);
+                                                            const char     *username);
 GdmUser *           gdm_user_manager_get_user_by_uid       (GdmUserManager *manager,
                                                             gulong          uid);
 
