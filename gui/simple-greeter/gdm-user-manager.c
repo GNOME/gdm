@@ -609,6 +609,7 @@ on_get_seat_id_finished (DBusGProxy     *proxy,
                                  "current session");
                 }
                 unload_seat (manager);
+                maybe_set_is_loaded (manager);
                 return;
         }
 
@@ -918,6 +919,7 @@ on_get_current_session_finished (DBusGProxy     *proxy,
                         g_debug ("Failed to identify the current session");
                 }
                 unload_seat (manager);
+                maybe_set_is_loaded (manager);
                 return;
         }
 
