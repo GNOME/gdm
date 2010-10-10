@@ -229,6 +229,7 @@ static void     fetch_user_locally             (GdmUserManager *manager,
                                                 const char     *username);
 static void     fetch_user_incrementally       (GdmUserManagerFetchUserRequest *request);
 
+static void     maybe_set_is_loaded            (GdmUserManager *manager);
 static gpointer user_manager_object = NULL;
 
 G_DEFINE_TYPE (GdmUserManager, gdm_user_manager, G_TYPE_OBJECT)
