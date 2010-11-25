@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-30 22:32+0200\n"
+"POT-Creation-Date: 2010-11-25 15:43+0100\n"
 "PO-Revision-Date: 2010-08-28 08:18+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
 "Language-Team: Hungarian <gnome at fsf dot hu>\n"
@@ -70,7 +70,7 @@ msgstr "A hitelesítési adatok létrehozása sikertelen"
 
 #: ../daemon/gdm-factory-slave.c:302 ../daemon/gdm-simple-slave.c:510
 msgid "Unable to open session"
-msgstr "Nem nyitható meg munkamenet"
+msgstr "Nem indítható el a környezet"
 
 #: ../daemon/gdm-factory-slave.c:689 ../daemon/gdm-product-slave.c:449
 #: ../daemon/gdm-simple-slave.c:1196
@@ -213,12 +213,12 @@ msgstr ""
 "hiba a hitelesítőrendszer értesítésekor a kijelző xauth hitelesítési "
 "adatairól: %s"
 
-#: ../daemon/gdm-session-worker.c:1679 ../daemon/gdm-session-worker.c:1696
+#: ../daemon/gdm-session-worker.c:1681 ../daemon/gdm-session-worker.c:1698
 #, c-format
 msgid "no user account available"
 msgstr "nem létezik felhasználói fiók"
 
-#: ../daemon/gdm-session-worker.c:1723
+#: ../daemon/gdm-session-worker.c:1725
 msgid "Unable to change to user"
 msgstr "Nem lehet a felhasználóra váltani"
 
@@ -447,14 +447,14 @@ msgstr "Csak a root futtathatja a GDM-et"
 #. of starting up a session
 #: ../daemon/session-worker-main.c:158
 msgid "GNOME Display Manager Session Worker"
-msgstr "GNOME bejelentkezéskezelő munkamenet-dolgozója"
+msgstr "GNOME bejelentkezéskezelő környezet-segédfolyamata"
 
 #: ../data/greeter-autostart/at-spi-registryd-wrapper.desktop.in.in.h:1
 msgid "AT-SPI Registry Wrapper"
 msgstr "AT-SPI nyilvántartás-átalakító"
 
 #: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1633
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1646
 msgid "Login Window"
 msgstr "Bejelentkezési ablak"
 
@@ -523,29 +523,29 @@ msgstr "Érték"
 msgid "percentage of time complete"
 msgstr "eltelt idő százaléka"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1459
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1469
 msgid "Inactive Text"
 msgstr "Inaktív szöveg"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1460
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1470
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr ""
 "A címkében használandó szöveg, ha a felhasználó még nem választott ki elemet"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1468
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1478
 msgid "Active Text"
 msgstr "Aktív szöveg"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1469
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1479
 msgid "The text to use in the label if the user has picked an item"
 msgstr ""
 "A címkében használandó szöveg, ha a felhasználó már kiválasztott egy elemet"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1478
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1488
 msgid "List Visible"
 msgstr "A lista látható"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1479
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1489
 msgid "Whether the chooser list is visible"
 msgstr "A választólista látható-e?"
 
@@ -586,7 +586,7 @@ msgid "Select language and click Log In"
 msgstr "Válasszon nyelvet, és nyomja meg a Bejelentkezés gombot"
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:689
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:694
 msgid "Cancelling…"
 msgstr "Megszakítás…"
 
@@ -633,7 +633,7 @@ msgstr "Egyéni"
 
 #: ../gui/simple-greeter/gdm-greeter-panel.c:1110
 msgid "Custom session"
-msgstr "Egyéni munkamenet"
+msgstr "Egyéni környezet"
 
 #: ../gui/simple-greeter/gdm-language-chooser-dialog.c:201
 msgid "Languages"
@@ -663,7 +663,7 @@ msgstr "Válasszon egy nyelvet az elérhető nyelvek teljes listájából."
 msgid "Language"
 msgstr "Nyelv"
 
-#: ../gui/simple-greeter/gdm-languages.c:699
+#: ../gui/simple-greeter/gdm-languages.c:698
 msgid "Unspecified"
 msgstr "Nem definiált"
 
@@ -741,7 +741,7 @@ msgstr "Távoli bejelentkezés"
 
 #: ../gui/simple-greeter/gdm-session-option-widget.c:162
 msgid "Session"
-msgstr "Munkamenet"
+msgstr "Környezet"
 
 # fixme
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
@@ -931,8 +931,8 @@ msgstr "Fut?"
 msgid "Whether the timer is currently ticking"
 msgstr "Az időzítő visszaszámol-e?"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:196
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:478
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:194
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:484
 #, c-format
 msgid "Log in as %s"
 msgstr "Bejelentkezés mint %s"
@@ -942,36 +942,36 @@ msgstr "Bejelentkezés mint %s"
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:256
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:262
 msgctxt "user"
 msgid "Other…"
 msgstr "Más…"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:257
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:263
 msgid "Choose a different account"
 msgstr "Válasszon másik felhasználói fiókot"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:271
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:277
 msgid "Guest"
 msgstr "Vendég"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:272
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:278
 msgid "Log in as a temporary guest"
 msgstr "Bejelentkezés ideiglenes vendégként"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:287
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:293
 msgid "Automatic Login"
 msgstr "Automatikus bejelentkezés"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:288
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:294
 msgid "Automatically log into the system after selecting options"
 msgstr "Automatikus bejelentkezés a rendszerbe a beállítások kiválasztása után"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:990
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:996
 msgid "Currently logged in"
 msgstr "Be van jelentkezve"
 
-#: ../gui/user-switch-applet/applet.c:162
+#: ../gui/user-switch-applet/applet.c:163
 msgid ""
 "The User Switch Applet is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -982,7 +982,7 @@ msgstr ""
 "módosíthatja a Free Software Foundation által kiadott GNU General Public "
 "License második (vagy bármely későbbi) változatában foglaltak alapján."
 
-#: ../gui/user-switch-applet/applet.c:166
+#: ../gui/user-switch-applet/applet.c:167
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -994,7 +994,7 @@ msgstr ""
 "alkalmas-e a KÖZREADÁSRA vagy EGY BIZONYOS FELADAT ELVÉGZÉSÉRE. További "
 "részletekért tanulmányozza a GNU GPL licencet."
 
-#: ../gui/user-switch-applet/applet.c:170
+#: ../gui/user-switch-applet/applet.c:171
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "this program; if not, write to the Free Software Foundation, Inc., 51 "
@@ -1004,11 +1004,11 @@ msgstr ""
 "meg, írjon a Free Software Foundation Inc.-nek. Levélcímük: 51 Franklin St, "
 "Fifth Floor, Boston, MA 02110-1301, USA."
 
-#: ../gui/user-switch-applet/applet.c:184
+#: ../gui/user-switch-applet/applet.c:185
 msgid "A menu to quickly switch between users."
 msgstr "Menü a felhasználók közti gyors váltáshoz"
 
-#: ../gui/user-switch-applet/applet.c:188
+#: ../gui/user-switch-applet/applet.c:189
 msgid "translator-credits"
 msgstr ""
 "Bán Szabolcs <shooby at gnome dot hu>\n"
@@ -1021,72 +1021,68 @@ msgstr ""
 "Szervác Attila <sas at 321 dot hu>\n"
 "Tímár András <timar at gnome dot hu>"
 
-#: ../gui/user-switch-applet/applet.c:658
-#: ../gui/user-switch-applet/applet.c:787
-#: ../gui/user-switch-applet/applet.c:829
+#: ../gui/user-switch-applet/applet.c:665
+#: ../gui/user-switch-applet/applet.c:794
+#: ../gui/user-switch-applet/applet.c:836
 #, c-format
 msgid "Can't lock screen: %s"
 msgstr "Nem lehet zárolni a képernyőt: %s "
 
-#: ../gui/user-switch-applet/applet.c:680
+#: ../gui/user-switch-applet/applet.c:687
 #, c-format
 msgid "Can't temporarily set screensaver to blank screen: %s"
 msgstr ""
 "Átmenetileg nem lehet beállítani a képernyővédőt a képernyő elsötétítésére: %"
 "s"
 
-#: ../gui/user-switch-applet/applet.c:888
+#: ../gui/user-switch-applet/applet.c:895
 #, c-format
 msgid "Can't log out: %s"
 msgstr "Nem lehet kijelentkezni: %s"
 
-#: ../gui/user-switch-applet/applet.c:972
+#: ../gui/user-switch-applet/applet.c:979
 msgid "Available"
 msgstr "Elérhető"
 
-#: ../gui/user-switch-applet/applet.c:973
+#: ../gui/user-switch-applet/applet.c:980
 msgid "Invisible"
 msgstr "Láthatatlan"
 
-#: ../gui/user-switch-applet/applet.c:974
+#: ../gui/user-switch-applet/applet.c:981
 msgid "Busy"
 msgstr "Elfoglalt"
 
-#: ../gui/user-switch-applet/applet.c:975
+#: ../gui/user-switch-applet/applet.c:982
 msgid "Away"
 msgstr "Távol"
 
-#: ../gui/user-switch-applet/applet.c:1122
+#: ../gui/user-switch-applet/applet.c:1128
 msgid "Account Information"
 msgstr "Fiókinformációk"
 
-#: ../gui/user-switch-applet/applet.c:1134
+#: ../gui/user-switch-applet/applet.c:1140
 msgid "System Preferences"
 msgstr "Rendszerbeállítások"
 
-#: ../gui/user-switch-applet/applet.c:1148
+#: ../gui/user-switch-applet/applet.c:1154
 msgid "Lock Screen"
 msgstr "Képernyő zárolása"
 
 #. Only show if not locked down
-#: ../gui/user-switch-applet/applet.c:1159
+#: ../gui/user-switch-applet/applet.c:1165
 msgid "Switch User"
 msgstr "Felhasználóváltás"
 
 #. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1170
+#: ../gui/user-switch-applet/applet.c:1176
 msgid "Quit…"
 msgstr "Kilépés…"
 
-#: ../gui/user-switch-applet/applet.c:1276
-msgid "Unknown"
-msgstr "Ismeretlen"
-
-#: ../gui/user-switch-applet/applet.c:1389
+#: ../gui/user-switch-applet/applet.c:1422
 msgid "User Switch Applet"
 msgstr "Felhasználóváltás"
 
-#: ../gui/user-switch-applet/applet.c:1404
+#: ../gui/user-switch-applet/applet.c:1437
 msgid "Change account settings and status"
 msgstr "Fiókbeállítások és -állapot módosítása"
 
@@ -1138,7 +1134,7 @@ msgstr "Ezen alkalmazás verziója"
 #: ../utils/gdmflexiserver.c:675
 #, c-format
 msgid "Could not identify the current session."
-msgstr "A jelenlegi munkamenet nem azonosítható."
+msgstr "A jelenlegi környezet nem azonosítható."
 
 #. Option parsing
 #: ../utils/gdmflexiserver.c:711
@@ -1157,3 +1153,6 @@ msgstr "A képernyőkép elkészült"
 #: ../utils/gdm-screenshot.c:283
 msgid "Take a picture of the screen"
 msgstr "Kép készítése a képernyőről"
+
+#~ msgid "Unknown"
+#~ msgstr "Ismeretlen"
