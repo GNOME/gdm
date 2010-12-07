@@ -1096,6 +1096,7 @@ file_read_one_line (const char *filename)
 
         if (fgets (buf, sizeof (buf), f) == NULL) {
                 g_warning ("Unable to read from file %s", filename);
+                goto out;
         }
 
         line = g_strdup (buf);
