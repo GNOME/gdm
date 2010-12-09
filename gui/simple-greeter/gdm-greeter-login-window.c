@@ -1116,6 +1116,7 @@ static const char *known_etc_info_files [] = {
         "debian_version",
         "mandriva-release",
         "slackware-version",
+        "system-release",
         NULL
 };
 
