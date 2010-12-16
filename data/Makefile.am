@@ -94,6 +94,8 @@ EXTRA_DIST =			\
 	PostLogin 		\
 	gconf.path		\
 	session-setup.entries	\
+	make-dconf-override-db.sh \
+	dconf-profile \
 	$(NULL)
 
 CLEANFILES = 				\
@@ -113,6 +115,9 @@ MAINTAINERCLEANFILES =			\
 	*~				\
 	Makefile.in
 
+dist-hook:
+	$(srcdir)/make-dconf-override-db.sh
+	mv dconf-override-db $(distdir)
 
 uninstall-hook:
 	rm -f \
@@ -125,12 +130,19 @@ uninstall-hook:
 	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm \
 	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin \
 	$(DESTDIR)$(workingdir)/.gconf.path \
+	$(DESTDIR)$(sysconfdir)/dconf/db/gdm \
+	$(DESTDIR)$(sysconfdir)/dconf/profile/gdm \
 	-rf \
 	$(DESTDIR)$(workingdir)/.gconf.mandatory \
+	$(DESTDIR)$(workingdir)/.config/dconf \
 	$(DESTDIR)$(screenshotdir) \
 	$(DESTDIR)$(xauthdir)
 
-install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.path
+	-rmdir \
+	$(DESTDIR)$(sysconfdir)/dconf/db \
+	$(DESTDIR)$(sysconfdir)/dconf
+
+install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.path dconf-override-db
 	if test '!' -d $(DESTDIR)$(gdmconfdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(gdmconfdir); \
 		chmod 755 $(DESTDIR)$(gdmconfdir); \
@@ -222,6 +234,24 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 		chown root:gdm $(DESTDIR)$(workingdir) || : ; \
 	fi
 
+	if test '!' -d $(DESTDIR)$(workingdir)/.config/dconf; then \
+		$(mkinstalldirs) $(DESTDIR)$(workingdir)/.config/dconf; \
+		chmod 0755 $(DESTDIR)$(workingdir)/.config/dconf; \
+		chown gdm:gdm $(DESTDIR)$(workingdir)/.config/dconf || : ; \
+	fi
+
+	if test '!' -d $(DESTDIR)$(sysconfdir)/dconf/profile; then \
+		$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/dconf/profile; \
+		chmod 0755 $(DESTDIR)$(sysconfdir)/dconf/profile; \
+		chown root:root $(DESTDIR)$(sysconfdir)/dconf/profile || : ; \
+	fi
+
+	if test '!' -d $(DESTDIR)$(sysconfdir)/dconf/db; then \
+		$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/dconf/db; \
+		chmod 0755 $(DESTDIR)$(sysconfdir)/dconf/db; \
+		chown root:root $(DESTDIR)$(sysconfdir)/dconf/db || : ; \
+	fi
+
 	if test '!' -d $(DESTDIR)$(cachedir); then \
 		$(mkinstalldirs) $(DESTDIR)$(cachedir); \
 		chmod 1755 $(DESTDIR)$(cachedir); \
@@ -235,4 +265,6 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 	chmod 1750 $(DESTDIR)$(workingdir)/.gconf.mandatory
 	chmod 1640 $(DESTDIR)$(workingdir)/.gconf.mandatory/*.xml
 
+	$(INSTALL_DATA) $(srcdir)/dconf-override-db $(DESTDIR)$(sysconfdir)/dconf/db/gdm
+	$(INSTALL_DATA) $(srcdir)/dconf-profile $(DESTDIR)$(sysconfdir)/dconf/profile/gdm
 

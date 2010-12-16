@@ -17,6 +17,8 @@ PKG_NAME="GDM"
     exit 1
 }
 
+(cd data/ ; ./make-dconf-override-db.sh)
+
 which gnome-autogen.sh || {
     echo "You need to install gnome-common from the GNOME SVN"
     exit 1
