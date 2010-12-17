@@ -1318,6 +1318,17 @@ gdm_simple_slave_stop (GdmSlave *slave)
         }
 
         if (GDM_SIMPLE_SLAVE (slave)->priv->session != NULL) {
+                char *username;
+
+                /* Run the PostSession script. gdmslave suspends until script
+                 * has terminated
+                 */
+                username = gdm_session_direct_get_username (GDM_SIMPLE_SLAVE (slave)->priv->session);
+                if (username != NULL) {
+                        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostSession", username);
+                }
+                g_free (username);
+
 #ifdef  HAVE_LOGINDEVPERM
                 gdm_simple_slave_revoke_console_permissions (GDM_SIMPLE_SLAVE (slave));
 #endif
