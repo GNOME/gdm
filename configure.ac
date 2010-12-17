@@ -1,7 +1,7 @@
 
 AC_PREREQ([2.60])
 AC_INIT([gdm],
-        [2.32.0],
+        [2.91.4],
         [http://bugzilla.gnome.org/enter_bug.cgi?product=gdm])
 
 AC_CONFIG_SRCDIR([daemon/gdm-manager.c])
@@ -40,7 +40,7 @@ dnl - Dependencies
 dnl ---------------------------------------------------------------------------
 
 DBUS_GLIB_REQUIRED_VERSION=0.74
-GLIB_REQUIRED_VERSION=2.22.0
+GLIB_REQUIRED_VERSION=2.27.4
 GTK_REQUIRED_VERSION=2.20.0
 PANGO_REQUIRED_VERSION=1.3.0
 SCROLLKEEPER_REQUIRED_VERSION=0.1.4
