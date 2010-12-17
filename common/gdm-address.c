@@ -324,10 +324,18 @@ gdm_address_get_numeric_info (GdmAddress *address,
         }
 
         if (servp != NULL) {
-                *servp = g_strdup (serv);
+                if (g_str_has_prefix (serv, "::ffff:")) {
+                        *servp = g_strdup (serv + 7);
+                } else {
+                        *servp = g_strdup (serv);
+                }
         }
         if (hostp != NULL) {
-                *hostp = g_strdup (host);
+                if (g_str_has_prefix (host, "::ffff:")) {
+                        *hostp = g_strdup (host + 7);
+                } else {
+                        *hostp = g_strdup (host);
+                }
         }
 
         return ret;
