@@ -2223,6 +2223,14 @@ gdm_session_direct_get_username (GdmSessionDirect *session)
         return g_strdup (session->priv->selected_user);
 }
 
+char *
+gdm_session_direct_get_display_device (GdmSessionDirect *session)
+{
+        g_return_val_if_fail (session != NULL, NULL);
+
+        return g_strdup (session->priv->display_device);
+}
+
 gboolean
 gdm_session_direct_bypasses_xsession (GdmSessionDirect *session_direct)
 {
