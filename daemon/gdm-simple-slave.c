@@ -29,6 +29,10 @@
 #include <sys/wait.h>
 #include <errno.h>
 
+#ifdef  HAVE_LOGINDEVPERM
+#include <libdevinfo.h>
+#endif  /* HAVE_LOGINDEVPERM */
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -84,6 +88,9 @@ struct GdmSimpleSlavePrivate
 
         guint              start_session_when_ready : 1;
         guint              waiting_to_start_session : 1;
+#ifdef  HAVE_LOGINDEVPERM
+        gboolean           use_logindevperm;
+#endif
 };
 
 enum {
@@ -122,6 +129,76 @@ on_session_started (GdmSession       *session,
          * gdm_session_direct_bypasses_xsession (session)
          */
 }
+
+#ifdef  HAVE_LOGINDEVPERM
+static void
+gdm_simple_slave_grant_console_permissions (GdmSimpleSlave *slave)
+{
+        char *username;
+        char *display_device;
+        struct passwd *passwd_entry;
+
+        username = gdm_session_direct_get_username (slave->priv->session);
+        display_device = gdm_session_direct_get_display_device (slave->priv->session);
+
+        if (username != NULL) {
+                gdm_get_pwent_for_name (username, &passwd_entry);
+
+                /*
+                 * Only do logindevperm processing if /dev/console or
+                 * a device associated with a VT
+                 */
+                if (display_device != NULL &&
+                   (strncmp (display_device, "/dev/vt/", strlen ("/dev/vt/")) == 0 ||
+                    strcmp  (display_device, "/dev/console") == 0)) {
+                        g_debug ("Logindevperm login for user %s, device %s",
+                                 username, display_device);
+                        (void) di_devperm_login (display_device,
+                                                 passwd_entry->pw_uid,
+                                                 passwd_entry->pw_gid,
+                                                 NULL);
+                        slave->priv->use_logindevperm = TRUE;
+                }
+        }
+
+        if (!slave->priv->use_logindevperm) {
+                g_debug ("Not calling di_devperm_login login for user %s, device %s",
+                         username, display_device);
+        }
+}
+
+static void
+gdm_simple_slave_revoke_console_permissions (GdmSimpleSlave *slave)
+{
+        char *username;
+        char *display_device;
+
+        username = gdm_session_direct_get_username (slave->priv->session);
+        display_device = gdm_session_direct_get_display_device (slave->priv->session);
+
+        /*
+         * Only do logindevperm processing if /dev/console or a device
+         * associated with a VT.  Do this after processing the PostSession
+         * script so that permissions for devices are not returned to root
+         * before running the script.
+         */
+        if (slave->priv->use_logindevperm == TRUE &&
+            display_device != NULL &&
+           (strncmp (display_device, "/dev/vt/", strlen ("/dev/vt/")) == 0 ||
+            strcmp  (display_device, "/dev/console") == 0)) {
+                g_debug ("di_devperm_logout for user %s, device %s",
+                         username, display_device);
+                (void) di_devperm_logout (display_device);
+                slave->priv->use_logindevperm = FALSE;
+        } else {
+                g_debug ("Not calling di_devperm_logout logout for user %s, device %s",
+                         username, display_device);
+        }
+
+        g_free (username);
+        g_free (display_device);
+}
+#endif  /* HAVE_LOGINDEVPERM */
 
 static void
 on_session_exited (GdmSession     *session,
@@ -497,6 +574,10 @@ static void
 on_session_opened (GdmSession     *session,
                    GdmSimpleSlave *slave)
 {
+#ifdef  HAVE_LOGINDEVPERM
+        gdm_simple_slave_grant_console_permissions (slave);
+#endif  /* HAVE_LOGINDEVPERM */
+
         queue_start_session (slave);
 }
 
@@ -1237,6 +1318,10 @@ gdm_simple_slave_stop (GdmSlave *slave)
         }
 
         if (GDM_SIMPLE_SLAVE (slave)->priv->session != NULL) {
+#ifdef  HAVE_LOGINDEVPERM
+                gdm_simple_slave_revoke_console_permissions (GDM_SIMPLE_SLAVE (slave));
+#endif
+
                 gdm_session_close (GDM_SESSION (GDM_SIMPLE_SLAVE (slave)->priv->session));
                 g_object_unref (GDM_SIMPLE_SLAVE (slave)->priv->session);
                 GDM_SIMPLE_SLAVE (slave)->priv->session = NULL;
@@ -1314,6 +1399,9 @@ static void
 gdm_simple_slave_init (GdmSimpleSlave *slave)
 {
         slave->priv = GDM_SIMPLE_SLAVE_GET_PRIVATE (slave);
+#ifdef  HAVE_LOGINDEVPERM
+        slave->priv->use_logindevperm = FALSE;
+#endif
 }
 
 static void
