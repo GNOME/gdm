@@ -705,6 +705,7 @@ gdm_greeter_login_window_ready (GdmGreeterLoginWindow *login_window)
         set_sensitive (GDM_GREETER_LOGIN_WINDOW (login_window), TRUE);
         set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
+        gdk_window_beep (gtk_widget_get_window (GTK_WIDGET (login_window)));
 
         /* If we are retrying a previously selected user */
         if (!login_window->priv->user_list_disabled &&
