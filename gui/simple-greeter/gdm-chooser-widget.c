@@ -910,17 +910,13 @@ _grab_focus (GtkWidget *widget)
 
         foc_widget = GDM_CHOOSER_WIDGET (widget)->priv->items_view;
         g_debug ("GdmChooserWidget: grabbing focus");
-        if (! gtk_widget_get_realized (foc_widget)) {
-                g_debug ("GdmChooserWidget: not grabbing focus - not realized");
-                return;
-        }
 
         if (gtk_widget_has_focus (foc_widget)) {
                 g_debug ("GdmChooserWidget: not grabbing focus - already has it");
                 return;
         }
 
-        gtk_widget_grab_focus (foc_widget);
+        gtk_widget_child_focus (foc_widget, GTK_DIR_TAB_FORWARD);
 }
 
 static void
