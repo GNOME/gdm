@@ -146,7 +146,7 @@ find_role (const char *wmclass)
 }
 
 static int
-find_role_pos (const char *role)
+find_role_position (const char *role)
 {
   int i;
 
@@ -159,6 +159,59 @@ find_role_pos (const char *role)
   return i + 1;
 }
 
+static int
+find_icon_position (NaTray    *tray,
+                    GtkWidget *icon)
+{
+  NaTrayPrivate *priv;
+  int            position;
+  char          *class_a;
+  const char    *role;
+  int            role_position;
+  GList         *l, *children;
+
+  /* We insert the icons with a known roles in a specific order (the one
+   * defined by ordered_roles), and all other icons at the beginning of the box
+   * (left in LTR). */
+
+  priv = tray->priv;
+  position = 0;
+
+  class_a = NULL;
+  na_tray_child_get_wm_class (NA_TRAY_CHILD (icon), NULL, &class_a);
+  if (!class_a)
+    return position;
+
+  role = find_role (class_a);
+  g_free (class_a);
+  if (!role)
+    return position;
+
+  role_position = find_role_position (role);
+  g_object_set_data (G_OBJECT (icon), "role-position", GINT_TO_POINTER (role_position));
+
+  children = gtk_container_get_children (GTK_CONTAINER (priv->box));
+  for (l = g_list_last (children); l; l = l->prev)
+    {
+      GtkWidget *child = l->data;
+      int        rp;
+
+      rp = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (child), "role-position"));
+      if (rp == 0 || rp < role_position)
+        {
+          position = g_list_index (children, child) + 1;
+          break;
+        }
+    }
+  g_list_free (children);
+
+  /* should never happen, but it doesn't hurt to be on the safe side */
+  if (position < 0)
+    position = 0;
+
+  return position;
+}
+
 static void
 tray_added (NaTrayManager *manager,
             GtkWidget     *icon,
@@ -166,11 +219,7 @@ tray_added (NaTrayManager *manager,
 {
   NaTray *tray;
   NaTrayPrivate *priv;
-  GList *l, *children;
   int position;
-  char *class_a;
-  const char *role;
-  int role_position;
 
   tray = get_tray (trays_screen);
   if (tray == NULL)
@@ -182,40 +231,7 @@ tray_added (NaTrayManager *manager,
 
   g_hash_table_insert (trays_screen->icon_table, icon, tray);
 
-  position = 0;
-
-  class_a = NULL;
-  na_tray_child_get_wm_class (NA_TRAY_CHILD (icon), NULL, &class_a);
-  if (!class_a)
-    goto insert;
-
-  role = find_role (class_a);
-  g_free (class_a);
-  if (!role)
-    goto insert;
-
-  role_position = find_role_pos (role);
-  g_object_set_data (G_OBJECT (icon), "role-position", GINT_TO_POINTER (role_position));
-
-  children = gtk_container_get_children (GTK_CONTAINER (priv->box));
-  for (l = g_list_last (children); l; l = l->prev)
-    {
-      GtkWidget *child = l->data;
-      gint rp;
-
-      rp = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (child), "role-position"));
-      if (rp == 0 || rp < role_position)
-        {
-          position = g_list_index (children, child) + 1;
-          break;
-        }
-    }
-  g_list_free (children);
-
-  if (position < 0)
-    position = 0;
-
-insert:
+  position = find_icon_position (tray, icon);
   gtk_box_pack_start (GTK_BOX (priv->box), icon, FALSE, FALSE, 0);
   gtk_box_reorder_child (GTK_BOX (priv->box), icon, position);
 
@@ -507,35 +523,36 @@ update_size_and_orientation (NaTray *tray)
  * gdk_window_set_composited(). We need to paint these children ourselves.
  */
 static void
-na_tray_expose_icon (GtkWidget *widget,
-		     gpointer   data)
+na_tray_draw_icon (GtkWidget *widget,
+                   gpointer   data)
 {
   cairo_t *cr = data;
 
   if (na_tray_child_has_alpha (NA_TRAY_CHILD (widget)))
     {
-      GtkAllocation widget_allocation;
-      gtk_widget_get_allocation (widget, &widget_allocation);
+      GtkAllocation allocation;
 
-      gdk_cairo_set_source_pixmap (cr, gtk_widget_get_window (widget),
-				   widget_allocation.x,
-				   widget_allocation.y);
+      gtk_widget_get_allocation (widget, &allocation);
+
+      cairo_save (cr);
+
+      gdk_cairo_set_source_window (cr,
+                                   gtk_widget_get_window (widget),
+                                   allocation.x,
+                                   allocation.y);
+      cairo_rectangle (cr, allocation.x, allocation.y, allocation.width, allocation.height);
+      cairo_clip (cr);
+
       cairo_paint (cr);
+      cairo_restore (cr);
     }
 }
 
 static void
-na_tray_expose_box (GtkWidget      *box,
-		    GdkEventExpose *event)
+na_tray_draw_box (GtkWidget *box,
+                  cairo_t   *cr)
 {
-  cairo_t *cr = gdk_cairo_create (gtk_widget_get_window (box));
-
-  gdk_cairo_region (cr, event->region);
-  cairo_clip (cr);
-
-  gtk_container_foreach (GTK_CONTAINER (box), na_tray_expose_icon, cr);
-
-  cairo_destroy (cr);
+  gtk_container_foreach (GTK_CONTAINER (box), na_tray_draw_icon, cr);
 }
 
 static void
@@ -553,8 +570,8 @@ na_tray_init (NaTray *tray)
   gtk_widget_show (priv->frame);
 
   priv->box = g_object_new (na_box_get_type (), NULL);
-  g_signal_connect (priv->box, "expose-event",
-		    G_CALLBACK (na_tray_expose_box), tray);
+  g_signal_connect (priv->box, "draw",
+		    G_CALLBACK (na_tray_draw_box), tray);
   gtk_box_set_spacing (GTK_BOX (priv->box), ICON_SPACING);
   gtk_container_add (GTK_CONTAINER (priv->frame), priv->box);
   gtk_widget_show (priv->box);
@@ -710,10 +727,23 @@ na_tray_set_property (GObject      *object,
 }
 
 static void
-na_tray_size_request (GtkWidget        *widget,
-                      GtkRequisition   *requisition)
+na_tray_get_preferred_width (GtkWidget *widget,
+                             gint      *minimum_size,
+                             gint      *natural_size)
 {
-  gtk_widget_size_request (gtk_bin_get_child (GTK_BIN (widget)), requisition);
+  gtk_widget_get_preferred_width (gtk_bin_get_child (GTK_BIN (widget)),
+                                  minimum_size,
+                                  natural_size);
+}
+
+static void
+na_tray_get_preferred_height (GtkWidget *widget,
+                              gint      *minimum_size,
+                              gint      *natural_size)
+{
+  gtk_widget_get_preferred_height (gtk_bin_get_child (GTK_BIN (widget)),
+                                   minimum_size,
+                                   natural_size);
 }
 
 static void
@@ -733,7 +763,8 @@ na_tray_class_init (NaTrayClass *klass)
   gobject_class->set_property = na_tray_set_property;
   gobject_class->dispose = na_tray_dispose;
 
-  widget_class->size_request = na_tray_size_request;
+  widget_class->get_preferred_width = na_tray_get_preferred_width;
+  widget_class->get_preferred_height = na_tray_get_preferred_height;
   widget_class->size_allocate = na_tray_size_allocate;
 
   g_object_class_install_property

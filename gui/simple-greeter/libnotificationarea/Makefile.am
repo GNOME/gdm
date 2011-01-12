@@ -26,8 +26,6 @@ BUILT_SOURCES = 	\
 libnotificationarea_la_SOURCES =		\
 	fixedtip.h				\
 	fixedtip.c				\
-	obox.c					\
-	obox.h					\
 	na-tray.c				\
 	na-tray.h				\
 	na-tray-child.c				\
@@ -57,15 +55,3 @@ na-marshal.h: na-marshal.list $(GLIB_GENMARSHAL)
 na-marshal.c: na-marshal.list $(GLIB_GENMARSHAL)
 	echo "#include \"na-marshal.h\"" > $@ && \
 	$(GLIB_GENMARSHAL) $< --body --prefix=_na_marshal >> $@
-
-noinst_PROGRAMS = testtray
-
-testtray_SOURCES = 		\
-	testtray.c		\
-	$(NULL)
-
-testtray_LDADD = 		\
-	libnotificationarea.la	\
-	$(GREETER_LIBS)		\
-	$(XLIB_LIBS)		\
-	$(NULL)

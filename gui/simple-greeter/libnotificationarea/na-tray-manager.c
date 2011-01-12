@@ -26,8 +26,7 @@
 
 #include "na-tray-manager.h"
 
-#include <gdkconfig.h>
-#include <glib/gi18n.h>
+#include <glib/gi18n-lib.h>
 #if defined (GDK_WINDOWING_X11)
 #include <gdk/gdkx.h>
 #include <X11/Xatom.h>
@@ -299,8 +298,8 @@ na_tray_manager_handle_dock_request (NaTrayManager       *manager,
   if (!gtk_socket_get_plug_window (GTK_SOCKET (child)))
     {
       /* Embedding failed, we won't get a plug-removed signal */
+      /* This signal destroys the socket */
       g_signal_emit (manager, manager_signals[TRAY_ICON_REMOVED], 0, child);
-      gtk_widget_destroy (child);
       return;
     }
 
@@ -539,21 +538,24 @@ na_tray_manager_unmanage (NaTrayManager *manager)
   GdkDisplay *display;
   guint32     timestamp;
   GtkWidget  *invisible;
+  GdkWindow  *window;
 
   if (manager->invisible == NULL)
     return;
 
   invisible = manager->invisible;
+  window = gtk_widget_get_window (invisible);
+
   g_assert (GTK_IS_INVISIBLE (invisible));
   g_assert (gtk_widget_get_realized (invisible));
-  g_assert (GDK_IS_WINDOW (gtk_widget_get_window (invisible)));
+  g_assert (GDK_IS_WINDOW (window));
   
   display = gtk_widget_get_display (invisible);
   
   if (gdk_selection_owner_get_for_display (display, manager->selection_atom) ==
-      gtk_widget_get_window (invisible))
+      window)
     {
-      timestamp = gdk_x11_get_server_time (gtk_widget_get_window (invisible));
+      timestamp = gdk_x11_get_server_time (window);
       gdk_selection_owner_set_for_display (display,
                                            NULL,
                                            manager->selection_atom,
@@ -564,7 +566,7 @@ na_tray_manager_unmanage (NaTrayManager *manager)
   //FIXME: we should also use gdk_remove_client_message_filter when it's
   //available
   // See bug #351254
-  gdk_window_remove_filter (gtk_widget_get_window (invisible),
+  gdk_window_remove_filter (window,
                             na_tray_manager_window_filter, manager);  
 
   manager->invisible = NULL; /* prior to destroy for reentrancy paranoia */
@@ -577,11 +579,15 @@ static void
 na_tray_manager_set_orientation_property (NaTrayManager *manager)
 {
 #ifdef GDK_WINDOWING_X11
+  GdkWindow  *window;
   GdkDisplay *display;
   Atom        orientation_atom;
   gulong      data[1];
 
-  if (!manager->invisible || !gtk_widget_get_window (manager->invisible))
+  if (!manager->invisible)
+    return;
+  window = gtk_widget_get_window (manager->invisible);
+  if (!window)
     return;
 
   display = gtk_widget_get_display (manager->invisible);
@@ -593,7 +599,7 @@ na_tray_manager_set_orientation_property (NaTrayManager *manager)
 		SYSTEM_TRAY_ORIENTATION_VERT;
 
   XChangeProperty (GDK_DISPLAY_XDISPLAY (display),
-		   GDK_WINDOW_XWINDOW (gtk_widget_get_window (manager->invisible)),
+		   gdk_x11_window_get_xid (window),
                    orientation_atom,
 		   XA_CARDINAL, 32,
 		   PropModeReplace,
@@ -605,12 +611,16 @@ static void
 na_tray_manager_set_visual_property (NaTrayManager *manager)
 {
 #ifdef GDK_WINDOWING_X11
+  GdkWindow  *window;
   GdkDisplay *display;
   Visual     *xvisual;
   Atom        visual_atom;
   gulong      data[1];
 
-  if (!manager->invisible || !gtk_widget_get_window (manager->invisible))
+  if (!manager->invisible)
+    return;
+  window = gtk_widget_get_window (manager->invisible);
+  if (!window)
     return;
 
   /* The visual property is a hint to the tray icons as to what visual they
@@ -627,25 +637,14 @@ na_tray_manager_set_visual_property (NaTrayManager *manager)
 
   if (gdk_screen_get_rgba_visual (manager->screen) != NULL &&
       gdk_display_supports_composite (display))
-    {
-      xvisual = GDK_VISUAL_XVISUAL (gdk_screen_get_rgba_visual (manager->screen));
-    }
+    xvisual = GDK_VISUAL_XVISUAL (gdk_screen_get_rgba_visual (manager->screen));
   else
-    {
-      /* We actually want the visual of the tray where the icons will
-       * be embedded. In almost all cases, this will be the same as the visual
-       * of the screen.
-       */
-      GdkColormap *colormap;
-
-      colormap = gdk_screen_get_default_colormap (manager->screen);
-      xvisual = GDK_VISUAL_XVISUAL (gdk_colormap_get_visual (colormap));
-    }
+    xvisual = GDK_VISUAL_XVISUAL (gdk_screen_get_system_visual (manager->screen));
 
   data[0] = XVisualIDFromVisual (xvisual);
 
   XChangeProperty (GDK_DISPLAY_XDISPLAY (display),
-                   GDK_WINDOW_XWINDOW (gtk_widget_get_window (manager->invisible)),
+                   gdk_x11_window_get_xid (window),
                    visual_atom,
                    XA_VISUALID, 32,
                    PropModeReplace,
@@ -671,11 +670,11 @@ na_tray_manager_set_padding_property (NaTrayManager *manager)
   data[0] = manager->padding;
 
   XChangeProperty (GDK_DISPLAY_XDISPLAY (display),
-		   GDK_WINDOW_XWINDOW (gtk_widget_get_window (manager->invisible)),
+                  GDK_WINDOW_XID (gtk_widget_get_window (manager->invisible)),
                    orientation_atom,
-		   XA_CARDINAL, 32,
-		   PropModeReplace,
-		   (guchar *) &data, 1);
+                  XA_CARDINAL, 32,
+                  PropModeReplace,
+                  (guchar *) &data, 1);
 #endif
 }
 
@@ -688,6 +687,7 @@ na_tray_manager_manage_screen_x11 (NaTrayManager *manager,
   GdkDisplay *display;
   Screen     *xscreen;
   GtkWidget  *invisible;
+  GdkWindow  *window;
   char       *selection_atom_name;
   guint32     timestamp;
   
@@ -724,12 +724,14 @@ na_tray_manager_manage_screen_x11 (NaTrayManager *manager,
   na_tray_manager_set_orientation_property (manager);
   na_tray_manager_set_visual_property (manager);
   na_tray_manager_set_padding_property (manager);
-  
-  timestamp = gdk_x11_get_server_time (gtk_widget_get_window(invisible));
+
+  window = gtk_widget_get_window (invisible);
+
+  timestamp = gdk_x11_get_server_time (window);
 
   /* Check if we could set the selection owner successfully */
   if (gdk_selection_owner_set_for_display (display,
-                                           gtk_widget_get_window(invisible),
+                                           window,
                                            manager->selection_atom,
                                            timestamp,
                                            TRUE))
@@ -747,7 +749,7 @@ na_tray_manager_manage_screen_x11 (NaTrayManager *manager,
       xev.data.l[0] = timestamp;
       xev.data.l[1] = gdk_x11_atom_to_xatom_for_display (display,
                                                          manager->selection_atom);
-      xev.data.l[2] = GDK_WINDOW_XWINDOW (gtk_widget_get_window(invisible));
+      xev.data.l[2] = gdk_x11_window_get_xid (window);
       xev.data.l[3] = 0;	/* manager specific data */
       xev.data.l[4] = 0;	/* manager specific data */
 
@@ -770,7 +772,7 @@ na_tray_manager_manage_screen_x11 (NaTrayManager *manager,
                         manager);
 #endif
       /* This is for SYSTEM_TRAY_REQUEST_DOCK and SelectionClear */
-      gdk_window_add_filter (gtk_widget_get_window(invisible),
+      gdk_window_add_filter (window,
                              na_tray_manager_window_filter, manager);
       /* This is for SYSTEM_TRAY_BEGIN_MESSAGE and SYSTEM_TRAY_CANCEL_MESSAGE */
       gdk_display_add_client_message_filter (display, opcode_atom,
