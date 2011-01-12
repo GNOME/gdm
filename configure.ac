@@ -149,13 +149,6 @@ PKG_CHECK_MODULES(SIMPLE_CHOOSER,
 AC_SUBST(SIMPLE_CHOOSER_CFLAGS)
 AC_SUBST(SIMPLE_CHOOSER_LIBS)
 
-PKG_CHECK_MODULES(APPLET,
-        dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
-        gtk+-3.0 >= $GTK_REQUIRED_VERSION
-        libpanelapplet-2.0 >= $GNOME_PANEL_REQUIRED_VERSION)
-AC_SUBST(APPLET_CFLAGS)
-AC_SUBST(APPLET_LIBS)
-
 PLUGIN_LIBTOOL_FLAGS="-export_dynamic -module -avoid-version"
 AC_SUBST(PLUGIN_LIBTOOL_FLAGS)
 
@@ -1402,7 +1395,6 @@ gui/Makefile
 gui/simple-greeter/Makefile
 gui/simple-greeter/libnotificationarea/Makefile
 gui/simple-chooser/Makefile
-gui/user-switch-applet/Makefile
 utils/Makefile
 data/gdm.conf
 data/Makefile
