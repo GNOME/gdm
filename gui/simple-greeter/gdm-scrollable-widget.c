@@ -471,7 +471,7 @@ gdm_scrollable_widget_forall (GtkContainer *container,
 }
 
 static void
-gdm_scrollable_widget_destroy (GtkObject *object)
+gdm_scrollable_widget_destroy (GtkWidget *object)
 {
         GdmScrollableWidget *scrollable_widget;
 
@@ -480,7 +480,7 @@ gdm_scrollable_widget_destroy (GtkObject *object)
         gtk_widget_unparent (scrollable_widget->priv->scrollbar);
         gtk_widget_destroy (scrollable_widget->priv->scrollbar);
 
-        GTK_OBJECT_CLASS (gdm_scrollable_widget_parent_class)->destroy (object);
+        GTK_WIDGET_CLASS (gdm_scrollable_widget_parent_class)->destroy (object);
 }
 
 static void
@@ -616,20 +616,18 @@ static void
 gdm_scrollable_widget_class_init (GdmScrollableWidgetClass *klass)
 {
         GObjectClass             *object_class;
-        GtkObjectClass           *gtk_object_class;
         GtkWidgetClass           *widget_class;
         GtkContainerClass        *container_class;
         GdmScrollableWidgetClass *scrollable_widget_class;
 
         object_class = G_OBJECT_CLASS (klass);
-        gtk_object_class = GTK_OBJECT_CLASS (klass);
         widget_class = GTK_WIDGET_CLASS (klass);
         container_class = GTK_CONTAINER_CLASS (klass);
         scrollable_widget_class = GDM_SCROLLABLE_WIDGET_CLASS (klass);
 
         object_class->finalize = gdm_scrollable_widget_finalize;
 
-        gtk_object_class->destroy = gdm_scrollable_widget_destroy;
+        widget_class->destroy = gdm_scrollable_widget_destroy;
 
         widget_class->size_request = gdm_scrollable_widget_size_request;
         widget_class->size_allocate = gdm_scrollable_widget_size_allocate;
