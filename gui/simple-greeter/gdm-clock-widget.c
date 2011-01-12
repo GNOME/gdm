@@ -115,6 +115,7 @@ update_clock (GtkLabel   *label,
         struct tm *tm;
         char       buf[256];
         char      *utf8;
+        char      *markup;
 
         time (&t);
         tm = localtime (&t);
@@ -127,7 +128,9 @@ update_clock (GtkLabel   *label,
                 strcpy (buf, "???");
         }
         utf8 = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
-        gtk_label_set_text (label, utf8);
+        markup = g_strdup_printf ("<b><span foreground=\"white\">%s</span></b>", utf8);
+        gtk_label_set_markup (label, markup);
+        g_free (markup);
         g_free (utf8);
 
         if (tooltip_format != NULL) {
@@ -221,6 +224,10 @@ gdm_clock_widget_get_preferred_height (GtkWidget *widget,
 
         min_size = 0;
         nat_size = 0;
+
+        if (GTK_WIDGET_CLASS (gdm_clock_widget_parent_class)->get_preferred_height) {
+                GTK_WIDGET_CLASS (gdm_clock_widget_parent_class)->get_preferred_height (widget, &min_size, &nat_size);
+        }
 
         gtk_widget_ensure_style (widget);
         context = gtk_widget_get_pango_context (widget);

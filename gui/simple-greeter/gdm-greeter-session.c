@@ -104,7 +104,6 @@ on_reset (GdmGreeterClient  *client,
 
         session->priv->num_tries = 0;
 
-        gdm_greeter_panel_reset (GDM_GREETER_PANEL (session->priv->panel));
         gdm_greeter_login_window_reset (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
 }
 
@@ -126,7 +125,6 @@ on_authentication_failed (GdmGreeterClient  *client,
                          session->priv->num_tries - 1);
                 session->priv->num_tries = 0;
 
-                gdm_greeter_panel_reset (GDM_GREETER_PANEL (session->priv->panel));
                 gdm_greeter_login_window_reset (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
         }
 }
@@ -136,9 +134,9 @@ show_or_hide_user_options (GdmGreeterSession *session,
                            const char        *username)
 {
     if (username != NULL && strcmp (username, GDM_USER_CHOOSER_USER_OTHER) != 0) {
-            gdm_greeter_panel_show_user_options (GDM_GREETER_PANEL (session->priv->panel));
+            //gdm_greeter_panel_show_user_options (GDM_GREETER_PANEL (session->priv->panel));
     } else {
-            gdm_greeter_panel_hide_user_options (GDM_GREETER_PANEL (session->priv->panel));
+            //gdm_greeter_panel_hide_user_options (GDM_GREETER_PANEL (session->priv->panel));
     }
 }
 
@@ -157,8 +155,6 @@ on_default_language_name_changed (GdmGreeterClient  *client,
                                   GdmGreeterSession *session)
 {
         g_debug ("GdmGreeterSession: default language name changed: %s", text);
-        gdm_greeter_panel_set_default_language_name (GDM_GREETER_PANEL (session->priv->panel),
-                                                     text);
 }
 
 static void
@@ -167,8 +163,6 @@ on_default_layout_name_changed (GdmGreeterClient  *client,
                                 GdmGreeterSession *session)
 {
         g_debug ("GdmGreeterSession: default layout name changed: %s", text);
-        gdm_greeter_panel_set_keyboard_layout (GDM_GREETER_PANEL (session->priv->panel),
-                                               text);
 }
 
 static void
@@ -177,8 +171,6 @@ on_default_session_name_changed (GdmGreeterClient  *client,
                                  GdmGreeterSession *session)
 {
         g_debug ("GdmGreeterSession: default session name changed: %s", text);
-        gdm_greeter_panel_set_default_session_name (GDM_GREETER_PANEL (session->priv->panel),
-                                                    text);
 }
 
 static void
@@ -291,7 +283,6 @@ static void
 on_cancelled (GdmGreeterLoginWindow *login_window,
               GdmGreeterSession     *session)
 {
-        gdm_greeter_panel_hide_user_options (GDM_GREETER_PANEL (session->priv->panel));
         gdm_greeter_client_call_cancel (session->priv->client);
 }
 

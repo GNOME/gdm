@@ -1,6 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
+ * Copyright (C) 2011 Red Hat, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +36,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
+#include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
 #include <gconf/gconf-client.h>
@@ -44,13 +46,8 @@
 #include <upower.h>
 #endif
 
-#include "gdm-languages.h"
-#include "gdm-layouts.h"
 #include "gdm-greeter-panel.h"
 #include "gdm-clock-widget.h"
-#include "gdm-language-option-widget.h"
-#include "gdm-layout-option-widget.h"
-#include "gdm-session-option-widget.h"
 #include "gdm-timer.h"
 #include "gdm-profile.h"
 #include "gdm-common.h"
@@ -75,24 +72,18 @@ struct GdmGreeterPanelPrivate
         int                     monitor;
         GdkRectangle            geometry;
         GtkWidget              *hbox;
+        GtkWidget              *left_hbox;
+        GtkWidget              *right_hbox;
         GtkWidget              *alignment;
-        GtkWidget              *option_hbox;
         GtkWidget              *hostname_label;
         GtkWidget              *clock;
         NaTray                 *tray;
         GtkWidget              *shutdown_button;
         GtkWidget              *shutdown_menu;
-        GtkWidget              *language_option_widget;
-        GtkWidget              *layout_option_widget;
-        GtkWidget              *session_option_widget;
 
         GdmTimer               *animation_timer;
         double                  progress;
 
-        char                   *default_session_name;
-        char                   *default_language_name;
-
-        GConfClient            *client;
         guint                   display_is_local : 1;
 };
 
@@ -101,15 +92,6 @@ enum {
         PROP_MONITOR,
         PROP_DISPLAY_IS_LOCAL
 };
-
-enum {
-        LANGUAGE_SELECTED,
-        LAYOUT_SELECTED,
-        SESSION_SELECTED,
-        NUMBER_OF_SIGNALS
-};
-
-static guint signals [NUMBER_OF_SIGNALS] = { 0, };
 
 static void     gdm_greeter_panel_class_init  (GdmGreeterPanelClass *klass);
 static void     gdm_greeter_panel_init        (GdmGreeterPanel      *greeter_panel);
@@ -269,7 +251,6 @@ set_struts (GdmGreeterPanel *panel,
             int              height)
 {
         gulong        data[12] = { 0, };
-        int           screen_height;
 
         /* _NET_WM_STRUT_PARTIAL: CARDINAL[12]/32
          *
@@ -281,18 +262,15 @@ set_struts (GdmGreeterPanel *panel,
          *       not just the current monitor.
          */
 
-        /* for bottom panel */
-        screen_height = gdk_screen_get_height (gtk_window_get_screen (GTK_WINDOW (panel)));
-
-        /* bottom */
-        data[3] = screen_height - panel->priv->geometry.y - panel->priv->geometry.height + height;
-        /* bottom_start_x */
-        data[10] = x;
-        /* bottom_end_x */
-        data[11] = x + width;
+        /* top */
+        data[2] = panel->priv->geometry.y + height;
+        /* top_start_x */
+        data[8] = x;
+        /* top_end_x */
+        data[9] = x + width;
 
 #if 0
-        g_debug ("Setting strut: bottom=%lu bottom_start_x=%lu bottom_end_x=%lu", data[3], data[10], data[11]);
+        g_debug ("Setting strut: top=%lu top_start_x=%lu top_end_x=%lu", data[2], data[8], data[9]);
 #endif
 
         gdk_error_trap_push ();
@@ -342,7 +320,7 @@ update_geometry (GdmGreeterPanel *panel,
         panel->priv->geometry.height = requisition->height + 2 * gtk_container_get_border_width (GTK_CONTAINER (panel));
 
         panel->priv->geometry.x = geometry.x;
-        panel->priv->geometry.y = geometry.y + geometry.height - panel->priv->geometry.height + (1.0 - panel->priv->progress) * panel->priv->geometry.height;
+        panel->priv->geometry.y = geometry.y - panel->priv->geometry.height + panel->priv->progress * panel->priv->geometry.height;
 
 #if 0
         g_debug ("Setting geometry x:%d y:%d w:%d h:%d",
@@ -476,62 +454,6 @@ gdm_greeter_panel_real_hide (GtkWidget *widget)
         panel->priv->progress = 0.0;
 
         GTK_WIDGET_CLASS (gdm_greeter_panel_parent_class)->hide (widget);
-}
-
-static void
-on_language_activated (GdmLanguageOptionWidget *widget,
-                       GdmGreeterPanel         *panel)
-{
-
-        char *language;
-
-        language = gdm_language_option_widget_get_current_language_name (GDM_LANGUAGE_OPTION_WIDGET (panel->priv->language_option_widget));
-
-        if (language == NULL) {
-                return;
-        }
-
-        g_signal_emit (panel, signals[LANGUAGE_SELECTED], 0, language);
-
-        g_free (language);
-}
-
-static void
-on_layout_activated (GdmLayoutOptionWidget *widget,
-                     GdmGreeterPanel       *panel)
-{
-
-        char *layout;
-
-        layout = gdm_layout_option_widget_get_current_layout_name (GDM_LAYOUT_OPTION_WIDGET (panel->priv->layout_option_widget));
-
-        if (layout == NULL) {
-                return;
-        }
-
-        g_debug ("GdmGreeterPanel: activating selected layout %s", layout);
-        gdm_layout_activate (layout);
-
-        g_signal_emit (panel, signals[LAYOUT_SELECTED], 0, layout);
-
-        g_free (layout);
-}
-static void
-on_session_activated (GdmSessionOptionWidget *widget,
-                      GdmGreeterPanel        *panel)
-{
-
-        char *session;
-
-        session = gdm_session_option_widget_get_current_session (GDM_SESSION_OPTION_WIDGET (panel->priv->session_option_widget));
-
-        if (session == NULL) {
-                return;
-        }
-
-        g_signal_emit (panel, signals[SESSION_SELECTED], 0, session);
-
-        g_free (session);
 }
 
 static void
@@ -687,9 +609,12 @@ get_show_restart_buttons (GdmGreeterPanel *panel)
 {
         gboolean     show;
         GError      *error;
+        GConfClient *client;
+
+        client = gconf_client_get_default ();
 
         error = NULL;
-        show = ! gconf_client_get_bool (panel->priv->client, KEY_DISABLE_RESTART_BUTTONS, &error);
+        show = ! gconf_client_get_bool (client, KEY_DISABLE_RESTART_BUTTONS, &error);
         if (error != NULL) {
                 g_debug ("GdmGreeterPanel: unable to get disable-restart-buttons configuration: %s", error->message);
                 g_error_free (error);
@@ -710,6 +635,8 @@ get_show_restart_buttons (GdmGreeterPanel *panel)
                 }
         }
 #endif
+        g_object_unref (client);
+
         return show;
 }
 
@@ -764,14 +691,35 @@ on_shutdown_menu_deactivate (GdmGreeterPanel *panel)
 }
 
 static void
+update_colors (GtkWidget *widget)
+{
+        GdkRGBA bg;
+        GdkRGBA fg;
+
+        bg.red = 0;
+        bg.green = 0;
+        bg.blue = 0;
+        bg.alpha = 1.0;
+
+        fg.red = 1.0;
+        fg.green = 1.0;
+        fg.blue = 1.0;
+        fg.alpha = 1.0;
+
+        gtk_widget_override_background_color (widget, 0, &bg);
+        gtk_widget_override_color (widget, 0, &fg);
+}
+
+static void
 setup_panel (GdmGreeterPanel *panel)
 {
-        GtkWidget *spacer;
-        int        padding;
+        int           padding;
+        GtkSizeGroup *sg;
 
         gdm_profile_start (NULL);
 
         gtk_widget_set_can_focus (GTK_WIDGET (panel), TRUE);
+        update_colors (GTK_WIDGET (panel));
 
         panel->priv->geometry.x      = -1;
         panel->priv->geometry.y      = -1;
@@ -783,50 +731,34 @@ setup_panel (GdmGreeterPanel *panel)
 
         gtk_window_set_keep_above (GTK_WINDOW (panel), TRUE);
         gtk_window_set_type_hint (GTK_WINDOW (panel), GDK_WINDOW_TYPE_HINT_DOCK);
-        gtk_window_set_opacity (GTK_WINDOW (panel), 0.85);
 
         panel->priv->hbox = gtk_hbox_new (FALSE, 12);
         gtk_container_set_border_width (GTK_CONTAINER (panel->priv->hbox), 0);
         gtk_widget_show (panel->priv->hbox);
         gtk_container_add (GTK_CONTAINER (panel), panel->priv->hbox);
 
+        panel->priv->left_hbox = gtk_hbox_new (FALSE, 12);
+        gtk_container_set_border_width (GTK_CONTAINER (panel->priv->left_hbox), 0);
+        gtk_widget_show (panel->priv->left_hbox);
+        gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->left_hbox, TRUE, TRUE, 0);
+
         panel->priv->alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
-        gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->alignment, TRUE, TRUE, 0);
+        gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->alignment, FALSE, FALSE, 0);
         gtk_widget_show (panel->priv->alignment);
 
-        panel->priv->option_hbox = gtk_hbox_new (FALSE, 12);
-        gtk_widget_show (panel->priv->option_hbox);
-        gtk_container_add (GTK_CONTAINER (panel->priv->alignment), panel->priv->option_hbox);
+        panel->priv->right_hbox = gtk_hbox_new (FALSE, 12);
+        gtk_container_set_border_width (GTK_CONTAINER (panel->priv->right_hbox), 0);
+        gtk_widget_show (panel->priv->right_hbox);
+        gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->right_hbox, TRUE, TRUE, 0);
 
-        spacer = gtk_label_new ("");
-        gtk_box_pack_start (GTK_BOX (panel->priv->option_hbox), spacer, TRUE, TRUE, 6);
-        gtk_widget_show (spacer);
+        panel->priv->clock = gdm_clock_widget_new ();
+        update_colors (panel->priv->clock);
+        gtk_widget_show (panel->priv->clock);
+        gtk_container_add (GTK_CONTAINER (panel->priv->alignment), panel->priv->clock);
 
-        panel->priv->client = gconf_client_get_default ();
-
-        gdm_profile_start ("creating option widget");
-        panel->priv->language_option_widget = gdm_language_option_widget_new ();
-        g_signal_connect (G_OBJECT (panel->priv->language_option_widget),
-                          "language-activated",
-                          G_CALLBACK (on_language_activated), panel);
-        gtk_box_pack_start (GTK_BOX (panel->priv->option_hbox), panel->priv->language_option_widget, FALSE, FALSE, 6);
-        gdm_profile_end ("creating option widget");
-
-        panel->priv->layout_option_widget = gdm_layout_option_widget_new ();
-        g_signal_connect (G_OBJECT (panel->priv->layout_option_widget),
-                          "layout-activated",
-                          G_CALLBACK (on_layout_activated), panel);
-        gtk_box_pack_start (GTK_BOX (panel->priv->option_hbox), panel->priv->layout_option_widget, FALSE, FALSE, 6);
-
-        panel->priv->session_option_widget = gdm_session_option_widget_new ();
-        g_signal_connect (G_OBJECT (panel->priv->session_option_widget),
-                          "session-activated",
-                          G_CALLBACK (on_session_activated), panel);
-        gtk_box_pack_start (GTK_BOX (panel->priv->option_hbox), panel->priv->session_option_widget, FALSE, FALSE, 6);
-
-        spacer = gtk_label_new ("");
-        gtk_box_pack_start (GTK_BOX (panel->priv->option_hbox), spacer, TRUE, TRUE, 6);
-        gtk_widget_show (spacer);
+        sg = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
+        gtk_size_group_add_widget (sg, panel->priv->left_hbox);
+        gtk_size_group_add_widget (sg, panel->priv->right_hbox);
 
         /* FIXME: we should only show hostname on panel when connected
            to a remote host */
@@ -879,24 +811,19 @@ setup_panel (GdmGreeterPanel *panel)
                         gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
                 }
 
-                gtk_box_pack_end (GTK_BOX (panel->priv->hbox), GTK_WIDGET (panel->priv->shutdown_button), FALSE, FALSE, 0);
+                gtk_box_pack_end (GTK_BOX (panel->priv->right_hbox), GTK_WIDGET (panel->priv->shutdown_button), FALSE, FALSE, 0);
                 gtk_widget_show_all (panel->priv->shutdown_menu);
                 gtk_widget_show_all (GTK_WIDGET (panel->priv->shutdown_button));
         }
 
-        panel->priv->clock = gdm_clock_widget_new ();
-        gtk_box_pack_end (GTK_BOX (panel->priv->hbox),
-                            GTK_WIDGET (panel->priv->clock), FALSE, FALSE, 6);
-        gtk_widget_show (panel->priv->clock);
 
         panel->priv->tray = na_tray_new_for_screen (gtk_window_get_screen (GTK_WINDOW (panel)),
                                                     GTK_ORIENTATION_HORIZONTAL);
 
         padding = gconf_client_get_int (panel->priv->client, KEY_NOTIFICATION_AREA_PADDING, NULL);
         na_tray_set_padding (panel->priv->tray, padding);
-        gtk_box_pack_end (GTK_BOX (panel->priv->hbox), GTK_WIDGET (panel->priv->tray), FALSE, FALSE, 6);
+        gtk_box_pack_end (GTK_BOX (panel->priv->right_hbox), GTK_WIDGET (panel->priv->tray), FALSE, FALSE, 6);
         gtk_widget_show (GTK_WIDGET (panel->priv->tray));
-        gdm_greeter_panel_hide_user_options (panel);
 
         panel->priv->progress = 0.0;
         panel->priv->animation_timer = gdm_timer_new ();
@@ -950,11 +877,14 @@ gdm_greeter_panel_finalize (GObject *object)
         g_signal_handlers_disconnect_by_func (object, on_animation_tick, greeter_panel);
         g_object_unref (greeter_panel->priv->animation_timer);
 
-        if (greeter_panel->priv->client != NULL) {
-                g_object_unref (greeter_panel->priv->client);
-        }
-
         G_OBJECT_CLASS (gdm_greeter_panel_parent_class)->finalize (object);
+}
+
+static void
+gdm_greeter_panel_real_style_set (GtkWidget *widget,
+                                  GtkStyle  *prev_style)
+{
+        update_colors (widget);
 }
 
 static void
@@ -975,39 +905,7 @@ gdm_greeter_panel_class_init (GdmGreeterPanelClass *klass)
         widget_class->get_preferred_height = gdm_greeter_panel_real_get_preferred_height;
         widget_class->show = gdm_greeter_panel_real_show;
         widget_class->hide = gdm_greeter_panel_real_hide;
-
-        signals[LANGUAGE_SELECTED] =
-                g_signal_new ("language-selected",
-                              G_TYPE_FROM_CLASS (object_class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmGreeterPanelClass, language_selected),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__STRING,
-                              G_TYPE_NONE,
-                              1, G_TYPE_STRING);
-
-        signals[LAYOUT_SELECTED] =
-                g_signal_new ("layout-selected",
-                              G_TYPE_FROM_CLASS (object_class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmGreeterPanelClass, layout_selected),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__STRING,
-                              G_TYPE_NONE,
-                              1, G_TYPE_STRING);
-
-        signals[SESSION_SELECTED] =
-                g_signal_new ("session-selected",
-                              G_TYPE_FROM_CLASS (object_class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmGreeterPanelClass, session_selected),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__STRING,
-                              G_TYPE_NONE,
-                              1, G_TYPE_STRING);
+        widget_class->style_set = gdm_greeter_panel_real_style_set;
 
         g_object_class_install_property (object_class,
                                          PROP_MONITOR,
@@ -1043,122 +941,4 @@ gdm_greeter_panel_new (GdkScreen *screen,
                                NULL);
 
         return GTK_WIDGET (object);
-}
-
-void
-gdm_greeter_panel_show_user_options (GdmGreeterPanel *panel)
-{
-        gtk_widget_show (panel->priv->session_option_widget);
-        gtk_widget_show (panel->priv->language_option_widget);
-        gtk_widget_show (panel->priv->layout_option_widget);
-}
-
-void
-gdm_greeter_panel_hide_user_options (GdmGreeterPanel *panel)
-{
-        gtk_widget_hide (panel->priv->session_option_widget);
-        gtk_widget_hide (panel->priv->language_option_widget);
-        gtk_widget_hide (panel->priv->layout_option_widget);
-
-        g_debug ("GdmGreeterPanel: activating default layout");
-        gdm_layout_activate (NULL);
-}
-
-void
-gdm_greeter_panel_reset (GdmGreeterPanel *panel)
-{
-        gdm_greeter_panel_set_keyboard_layout (panel, NULL);
-        gdm_greeter_panel_set_default_language_name (panel, NULL);
-        gdm_greeter_panel_set_default_session_name (panel, NULL);
-        gdm_greeter_panel_hide_user_options (panel);
-}
-
-void
-gdm_greeter_panel_set_default_language_name (GdmGreeterPanel *panel,
-                                             const char      *language_name)
-{
-        char *normalized_language_name;
-
-        g_return_if_fail (GDM_IS_GREETER_PANEL (panel));
-
-        if (language_name != NULL) {
-                normalized_language_name = gdm_normalize_language_name (language_name);
-        } else {
-                normalized_language_name = NULL;
-        }
-
-        if (normalized_language_name != NULL &&
-            !gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (panel->priv->language_option_widget),
-                                            normalized_language_name, NULL, NULL, NULL)) {
-                gdm_recent_option_widget_add_item (GDM_RECENT_OPTION_WIDGET (panel->priv->language_option_widget),
-                                                   normalized_language_name);
-        }
-
-        gdm_option_widget_set_default_item (GDM_OPTION_WIDGET (panel->priv->language_option_widget),
-                                            normalized_language_name);
-
-        g_free (normalized_language_name);
-}
-
-void
-gdm_greeter_panel_set_keyboard_layout (GdmGreeterPanel *panel,
-                                       const char      *layout_name)
-{
-#ifdef HAVE_LIBXKLAVIER
-        g_return_if_fail (GDM_IS_GREETER_PANEL (panel));
-
-        if (layout_name != NULL &&
-            !gdm_layout_is_valid (layout_name)) {
-                const char *default_layout;
-
-                default_layout = gdm_layout_get_default_layout ();
-
-                g_debug ("GdmGreeterPanel: default layout %s is invalid, resetting to: %s",
-                         layout_name, default_layout ? default_layout : "null");
-
-                g_signal_emit (panel, signals[LAYOUT_SELECTED], 0, default_layout);
-
-                layout_name = default_layout;
-        }
-
-        if (layout_name != NULL &&
-            !gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (panel->priv->layout_option_widget),
-                                            layout_name, NULL, NULL, NULL)) {
-                gdm_recent_option_widget_add_item (GDM_RECENT_OPTION_WIDGET (panel->priv->layout_option_widget),
-                                                   layout_name);
-        }
-
-        gdm_option_widget_set_active_item (GDM_OPTION_WIDGET (panel->priv->layout_option_widget),
-                                           layout_name);
-        gdm_option_widget_set_default_item (GDM_OPTION_WIDGET (panel->priv->layout_option_widget),
-                                            layout_name);
-
-        g_debug ("GdmGreeterPanel: activating layout: %s", layout_name);
-        gdm_layout_activate (layout_name);
-#endif
-}
-
-void
-gdm_greeter_panel_set_default_session_name (GdmGreeterPanel *panel,
-                                            const char      *session_name)
-{
-        g_return_if_fail (GDM_IS_GREETER_PANEL (panel));
-
-        if (session_name != NULL &&
-            !gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (panel->priv->session_option_widget),
-                                            session_name, NULL, NULL, NULL)) {
-                if (strcmp (session_name, GDM_CUSTOM_SESSION) == 0) {
-                        gdm_option_widget_add_item (GDM_OPTION_WIDGET (panel->priv->session_option_widget),
-                                                    GDM_CUSTOM_SESSION,
-                                                    C_("customsession", "Custom"),
-                                                    _("Custom session"),
-                                                    GDM_OPTION_WIDGET_POSITION_TOP);
-                } else {
-                        g_warning ("Default session is not available");
-                        return;
-                }
-        }
-
-        gdm_option_widget_set_default_item (GDM_OPTION_WIDGET (panel->priv->session_option_widget),
-                                            session_name);
 }

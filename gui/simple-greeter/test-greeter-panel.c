@@ -54,7 +54,6 @@ main (int argc, char *argv[])
         monitor = gdk_screen_get_monitor_at_point (screen, x, y);
 
         panel = gdm_greeter_panel_new (screen, monitor, TRUE);
-        gdm_greeter_panel_show_user_options (GDM_GREETER_PANEL (panel));
 
         gtk_widget_show (panel);
 
