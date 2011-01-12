@@ -116,7 +116,7 @@ maybe_lock_screen (void)
 
         screen = gdk_screen_get_default ();
 
-        if (! gdk_spawn_command_line_on_screen (screen, command, &error)) {
+        if (! g_spawn_command_line_async (command, &error)) {
                 g_warning ("Cannot lock screen: %s", error->message);
                 g_error_free (error);
         }
@@ -125,7 +125,7 @@ maybe_lock_screen (void)
 
         if (! use_gscreensaver) {
                 command = g_strdup ("xscreensaver-command -throttle");
-                if (! gdk_spawn_command_line_on_screen (screen, command, &error)) {
+                if (! g_spawn_command_line_async (command, &error)) {
                         g_warning ("Cannot disable screensaver engines: %s", error->message);
                         g_error_free (error);
                 }

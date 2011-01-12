@@ -144,7 +144,6 @@ gdm_host_chooser_dialog_constructor (GType                  type,
 
         gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);
         gtk_container_set_border_width (GTK_CONTAINER (dialog), 12);
-        gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
         gtk_window_set_title (GTK_WINDOW (dialog), _("Select System"));
         gtk_window_set_icon_name (GTK_WINDOW (dialog), "computer");
 

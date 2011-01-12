@@ -490,7 +490,6 @@ update_size_and_orientation (NaTray *tray)
   if (get_tray (priv->trays_screen) == tray)
     na_tray_manager_set_orientation (priv->trays_screen->tray_manager,
                                      priv->orientation);
-
   /* note, you want this larger if the frame has non-NONE relief by default. */
   switch (priv->orientation)
     {

@@ -84,13 +84,13 @@ gdm_cell_renderer_timer_set_property (GObject *object,
 }
 
 static void
-gdm_cell_renderer_timer_get_size (GtkCellRenderer *cell,
-                                  GtkWidget       *widget,
-                                  GdkRectangle    *cell_area,
-                                  gint            *x_offset,
-                                  gint            *y_offset,
-                                  gint            *width,
-                                  gint            *height)
+gdm_cell_renderer_timer_get_size (GtkCellRenderer    *cell,
+                                  GtkWidget          *widget,
+                                  const GdkRectangle *cell_area,
+                                  gint               *x_offset,
+                                  gint               *y_offset,
+                                  gint               *width,
+                                  gint               *height)
 {
 
         GdmCellRendererTimer *renderer;
@@ -180,16 +180,15 @@ draw_timer (GdmCellRendererTimer *renderer,
 
 static void
 gdm_cell_renderer_timer_render (GtkCellRenderer      *cell,
-                                GdkWindow            *window,
+                                cairo_t              *context,
                                 GtkWidget            *widget,
-                                GdkRectangle         *background_area,
-                                GdkRectangle         *cell_area,
-                                GdkRectangle         *expose_area,
+                                const GdkRectangle   *background_area,
+                                const GdkRectangle   *cell_area,
                                 GtkCellRendererState  renderer_state)
 {
         GdmCellRendererTimer *renderer;
-        cairo_t              *context;
         GtkStateType          widget_state;
+        gfloat                xpad, ypad;
 
         renderer = GDM_CELL_RENDERER_TIMER (cell);
 
@@ -197,15 +196,7 @@ gdm_cell_renderer_timer_render (GtkCellRenderer      *cell,
                 return;
         }
 
-        context = gdk_cairo_create (GDK_DRAWABLE (window));
-
-        if (expose_area != NULL) {
-                gdk_cairo_rectangle (context, expose_area);
-                cairo_clip (context);
-        }
-
-	gfloat xpad, ypad;
-	gtk_cell_renderer_get_alignment (cell, &xpad, &ypad);
+        gtk_cell_renderer_get_alignment (cell, &xpad, &ypad);
 
         cairo_translate (context,
                          cell_area->x + xpad,
@@ -228,8 +219,6 @@ gdm_cell_renderer_timer_render (GtkCellRenderer      *cell,
                     &gtk_widget_get_style (widget)->text_aa[widget_state],
                     &gtk_widget_get_style (widget)->base[widget_state],
                     cell_area->width, cell_area->height);
-
-        cairo_destroy (context);
 }
 
 static void

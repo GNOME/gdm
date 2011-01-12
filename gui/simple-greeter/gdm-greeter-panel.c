@@ -79,6 +79,7 @@ struct GdmGreeterPanelPrivate
         GtkWidget              *option_hbox;
         GtkWidget              *hostname_label;
         GtkWidget              *clock;
+        NaTray                 *tray;
         GtkWidget              *shutdown_button;
         GtkWidget              *shutdown_menu;
         GtkWidget              *language_option_widget;
@@ -238,7 +239,7 @@ gdm_greeter_panel_real_realize (GtkWidget *widget)
                 GTK_WIDGET_CLASS (gdm_greeter_panel_parent_class)->realize (widget);
         }
 
-        gdk_window_set_geometry_hints (widget->window, NULL, GDK_HINT_POS);
+        gdk_window_set_geometry_hints (gtk_widget_get_window (widget), NULL, GDK_HINT_POS);
 
         gdm_greeter_panel_move_resize_window (GDM_GREETER_PANEL (widget), TRUE, TRUE);
 
@@ -295,35 +296,30 @@ set_struts (GdmGreeterPanel *panel,
 #endif
 
         gdk_error_trap_push ();
+        if (gtk_widget_get_window (GTK_WIDGET (panel)) != NULL) {
+                gdk_property_change (gtk_widget_get_window (GTK_WIDGET (panel)),
+                                     gdk_atom_intern ("_NET_WM_STRUT_PARTIAL", FALSE),
+                                     gdk_atom_intern ("CARDINAL", FALSE),
+                                     32,
+                                     GDK_PROP_MODE_REPLACE,
+                                     (guchar *) &data,
+                                     12);
 
-        gdk_property_change (gtk_widget_get_window (GTK_WIDGET (panel)),
-                             gdk_atom_intern ("_NET_WM_STRUT_PARTIAL", FALSE),
-                             gdk_atom_intern ("CARDINAL", FALSE),
-                             32,
-                             GDK_PROP_MODE_REPLACE,
-                             (guchar *) &data,
-                             12);
+                gdk_property_change (gtk_widget_get_window (GTK_WIDGET (panel)),
+                                     gdk_atom_intern ("_NET_WM_STRUT", FALSE),
+                                     gdk_atom_intern ("CARDINAL", FALSE),
+                                     32,
+                                     GDK_PROP_MODE_REPLACE,
+                                     (guchar *) &data,
+                                     4);
+        }
 
-        gdk_property_change (gtk_widget_get_window (GTK_WIDGET (panel)),
-                             gdk_atom_intern ("_NET_WM_STRUT", FALSE),
-                             gdk_atom_intern ("CARDINAL", FALSE),
-                             32,
-                             GDK_PROP_MODE_REPLACE,
-                             (guchar *) &data,
-                             4);
-
-        gdk_error_trap_pop ();
+        gdk_error_trap_pop_ignored ();
 }
 
 static void
 update_struts (GdmGreeterPanel *panel)
 {
-        GdkRectangle geometry;
-
-        gdk_screen_get_monitor_geometry (gtk_window_get_screen (GTK_WINDOW (panel)),
-                                         panel->priv->monitor,
-                                         &geometry);
-
         /* FIXME: assumes only one panel */
         set_struts (panel,
                     panel->priv->geometry.x,
@@ -360,32 +356,50 @@ update_geometry (GdmGreeterPanel *panel,
 }
 
 static void
-gdm_greeter_panel_real_size_request (GtkWidget      *widget,
-                                     GtkRequisition *requisition)
+gdm_greeter_panel_get_preferred_size (GtkWidget      *widget,
+                                      GtkOrientation  orientation,
+                                      gint           *minimum_size,
+                                      gint           *natural_size)
 {
         GdmGreeterPanel *panel;
         GtkBin          *bin;
+        GtkWidget       *child;
         GdkRectangle     old_geometry;
         int              position_changed = FALSE;
         int              size_changed = FALSE;
+        GtkRequisition   minimum_req, natural_req;
 
         panel = GDM_GREETER_PANEL (widget);
         bin = GTK_BIN (widget);
+        child = gtk_bin_get_child (bin);
+
+        minimum_req.width = 0;
+        minimum_req.height = 0;
+        natural_req.width = minimum_req.width;
+        natural_req.height = minimum_req.height;
+
+        if (child != NULL && gtk_widget_get_visible (child)) {
+                int min_child_width, nat_child_width;
+                int min_child_height, nat_child_height;
+
+                gtk_widget_get_preferred_width (gtk_bin_get_child (bin),
+                                                &min_child_width,
+                                                &nat_child_width);
+                gtk_widget_get_preferred_height (gtk_bin_get_child (bin),
+                                                 &min_child_height,
+                                                 &nat_child_height);
+
+                minimum_req.width += min_child_width;
+                natural_req.width += nat_child_width;
+                minimum_req.height += min_child_height;
+                natural_req.height += nat_child_height;
+        }
 
         old_geometry = panel->priv->geometry;
+        update_geometry (panel, &natural_req);
 
-        update_geometry (panel, requisition);
-
-        requisition->width  = panel->priv->geometry.width;
-        requisition->height = panel->priv->geometry.height;
-
-        if (gtk_bin_get_child (bin) && gtk_widget_get_visible (gtk_bin_get_child (bin))) {
-                gtk_widget_size_request (gtk_bin_get_child (bin), requisition);
-        }
-
-        if (! gtk_widget_get_realized (widget)) {
-                return;
-        }
+        if (!gtk_widget_get_realized (widget))
+                goto out;
 
         if (old_geometry.width  != panel->priv->geometry.width ||
             old_geometry.height != panel->priv->geometry.height) {
@@ -398,6 +412,36 @@ gdm_greeter_panel_real_size_request (GtkWidget      *widget,
         }
 
         gdm_greeter_panel_move_resize_window (panel, position_changed, size_changed);
+
+ out:
+
+        if (orientation == GTK_ORIENTATION_HORIZONTAL) {
+                if (minimum_size)
+                        *minimum_size = panel->priv->geometry.width;
+                if (natural_size)
+                        *natural_size = panel->priv->geometry.width;
+        } else {
+                if (minimum_size)
+                        *minimum_size = panel->priv->geometry.height;
+                if (natural_size)
+                        *natural_size = panel->priv->geometry.height;
+        }
+}
+
+static void
+gdm_greeter_panel_real_get_preferred_width (GtkWidget *widget,
+                                            gint      *minimum_size,
+                                            gint      *natural_size)
+{
+        gdm_greeter_panel_get_preferred_size (widget, GTK_ORIENTATION_HORIZONTAL, minimum_size, natural_size);
+}
+
+static void
+gdm_greeter_panel_real_get_preferred_height (GtkWidget *widget,
+                                             gint      *minimum_size,
+                                             gint      *natural_size)
+{
+        gdm_greeter_panel_get_preferred_size (widget, GTK_ORIENTATION_VERTICAL, minimum_size, natural_size);
 }
 
 static void
@@ -722,7 +766,6 @@ on_shutdown_menu_deactivate (GdmGreeterPanel *panel)
 static void
 setup_panel (GdmGreeterPanel *panel)
 {
-        NaTray    *tray;
         GtkWidget *spacer;
         int        padding;
 
@@ -846,13 +889,13 @@ setup_panel (GdmGreeterPanel *panel)
                             GTK_WIDGET (panel->priv->clock), FALSE, FALSE, 6);
         gtk_widget_show (panel->priv->clock);
 
-        tray = na_tray_new_for_screen (gtk_window_get_screen (GTK_WINDOW (panel)),
-                                       GTK_ORIENTATION_HORIZONTAL);
+        panel->priv->tray = na_tray_new_for_screen (gtk_window_get_screen (GTK_WINDOW (panel)),
+                                                    GTK_ORIENTATION_HORIZONTAL);
 
         padding = gconf_client_get_int (panel->priv->client, KEY_NOTIFICATION_AREA_PADDING, NULL);
-        na_tray_set_padding (tray, padding);
-        gtk_box_pack_end (GTK_BOX (panel->priv->hbox), GTK_WIDGET (tray), FALSE, FALSE, 6);
-        gtk_widget_show (GTK_WIDGET (tray));
+        na_tray_set_padding (panel->priv->tray, padding);
+        gtk_box_pack_end (GTK_BOX (panel->priv->hbox), GTK_WIDGET (panel->priv->tray), FALSE, FALSE, 6);
+        gtk_widget_show (GTK_WIDGET (panel->priv->tray));
         gdm_greeter_panel_hide_user_options (panel);
 
         panel->priv->progress = 0.0;
@@ -928,7 +971,8 @@ gdm_greeter_panel_class_init (GdmGreeterPanelClass *klass)
 
         widget_class->realize = gdm_greeter_panel_real_realize;
         widget_class->unrealize = gdm_greeter_panel_real_unrealize;
-        widget_class->size_request = gdm_greeter_panel_real_size_request;
+        widget_class->get_preferred_width = gdm_greeter_panel_real_get_preferred_width;
+        widget_class->get_preferred_height = gdm_greeter_panel_real_get_preferred_height;
         widget_class->show = gdm_greeter_panel_real_show;
         widget_class->hide = gdm_greeter_panel_real_hide;
 

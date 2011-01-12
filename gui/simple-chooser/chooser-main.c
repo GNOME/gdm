@@ -125,7 +125,7 @@ assistive_registry_start (void)
         root = gdk_get_default_root_window ();
 
         if ( ! AT_SPI_IOR) {
-                AT_SPI_IOR = XInternAtom (GDK_DISPLAY (), "AT_SPI_IOR", False);
+                AT_SPI_IOR = XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), "AT_SPI_IOR", False);
         }
 
         gdk_window_set_events (root,  GDK_PROPERTY_CHANGE_MASK);

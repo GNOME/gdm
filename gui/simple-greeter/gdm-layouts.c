@@ -49,7 +49,7 @@ static void
 init_xkl (void)
 {
         if (config_registry == NULL) {
-                engine = xkl_engine_get_instance (GDK_DISPLAY ());
+                engine = xkl_engine_get_instance (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
                 config_registry = xkl_config_registry_get_instance (engine);
                 xkl_config_registry_load (config_registry, FALSE);
 

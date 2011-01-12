@@ -57,8 +57,8 @@ screenshot_grab_lock (void)
         gboolean   result = FALSE;
 
         selection_atom = gdk_x11_get_xatom_by_name (SELECTION_NAME);
-        XGrabServer (GDK_DISPLAY ());
-        if (XGetSelectionOwner (GDK_DISPLAY(), selection_atom) != None) {
+        XGrabServer (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
+        if (XGetSelectionOwner (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), selection_atom) != None) {
                 goto out;
         }
 
@@ -81,7 +81,7 @@ screenshot_grab_lock (void)
         result = TRUE;
 
  out:
-        XUngrabServer (GDK_DISPLAY ());
+        XUngrabServer (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
         gdk_flush ();
 
         return result;
@@ -114,13 +114,13 @@ screenshot_get_pixbuf (Window w)
         int        width;
         int        height;
 
-        window = gdk_window_foreign_new (w);
+        window = gdk_x11_window_foreign_new_for_display (gdk_display_get_default (), w);
         if (window == NULL) {
                 return NULL;
         }
 
-        root = gdk_window_foreign_new (GDK_ROOT_WINDOW ());
-        gdk_drawable_get_size (window, &real_width, &real_height);
+        root = gdk_x11_window_foreign_new_for_display (gdk_display_get_default (), GDK_ROOT_WINDOW ());
+        gdk_window_get_geometry (window, NULL, NULL, &real_width, &real_height);
         gdk_window_get_origin (window, &x_real_orig, &y_real_orig);
 
         x_orig = x_real_orig;
@@ -144,15 +144,11 @@ screenshot_get_pixbuf (Window w)
                 height = gdk_screen_height () - y_orig;
         }
 
-        screenshot = gdk_pixbuf_get_from_drawable (NULL,
-                                                   root,
-                                                   NULL,
-                                                   x_orig,
-                                                   y_orig,
-                                                   0,
-                                                   0,
-                                                   width,
-                                                   height);
+        screenshot = gdk_pixbuf_get_from_window (root,
+                                                 x_orig,
+                                                 y_orig,
+                                                 width,
+                                                 height);
 
         return screenshot;
 }

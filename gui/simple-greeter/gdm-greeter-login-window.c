@@ -624,7 +624,6 @@ reset_dialog (GdmGreeterLoginWindow *login_window,
 {
         GtkWidget  *entry;
         GtkWidget  *label;
-        guint       mode;
 
         g_debug ("GdmGreeterLoginWindow: Resetting dialog to mode %u", dialog_mode);
         set_busy (login_window);
@@ -1031,7 +1030,6 @@ on_user_chosen (GdmUserChooserWidget  *user_chooser,
                 GdmGreeterLoginWindow *login_window)
 {
         char *user_name;
-        guint mode;
 
         user_name = gdm_user_chooser_widget_get_chosen_user_name (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser));
         g_debug ("GdmGreeterLoginWindow: user chosen '%s'", user_name);
@@ -1330,7 +1328,7 @@ gdm_greeter_login_window_key_press_event (GtkWidget   *widget,
 
         login_window = GDM_GREETER_LOGIN_WINDOW (widget);
 
-        if (event->keyval == GDK_Escape) {
+        if (event->keyval == GDK_KEY_Escape) {
                 if (login_window->priv->dialog_mode == MODE_AUTHENTICATION
                     || login_window->priv->dialog_mode == MODE_TIMED_LOGIN) {
                         do_cancel (GDM_GREETER_LOGIN_WINDOW (widget));
@@ -1341,45 +1339,92 @@ gdm_greeter_login_window_key_press_event (GtkWidget   *widget,
 }
 
 static void
-gdm_greeter_login_window_size_request (GtkWidget      *widget,
-                                       GtkRequisition *requisition)
+gdm_greeter_login_window_get_preferred_width (GtkWidget *widget,
+                                              gint      *minimum_size,
+                                              gint      *natural_size)
 {
         int             monitor;
         GdkScreen      *screen;
-        GtkRequisition  child_requisition;
         GdkRectangle    area;
+        GtkAllocation   widget_allocation;
+        int             min_size;
+        int             nat_size;
+        guint           border_width;
 
-        if (GTK_WIDGET_CLASS (gdm_greeter_login_window_parent_class)->size_request) {
-                GTK_WIDGET_CLASS (gdm_greeter_login_window_parent_class)->size_request (widget, requisition);
-        }
+        min_size = 0;
+        nat_size = 0;
 
         if (!gtk_widget_get_realized (widget)) {
-                return;
+                goto out;
         }
 
+        gtk_widget_get_preferred_width (gtk_bin_get_child (GTK_BIN (widget)),
+                                        &min_size,
+                                        &nat_size);
+
+        border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
+        min_size += 2 * border_width;
+        nat_size += 2 * border_width;
+
+        /* Make width be at least 33% screen width */
         screen = gtk_widget_get_screen (widget);
         monitor = gdk_screen_get_monitor_at_window (screen, gtk_widget_get_window (widget));
         gdk_screen_get_monitor_geometry (screen, monitor, &area);
+        min_size = MAX (min_size, .33 * area.width);
+        nat_size = MAX (nat_size, .33 * area.width);
 
-        gtk_widget_get_child_requisition (gtk_bin_get_child (GTK_BIN (widget)), &child_requisition);
-        *requisition = child_requisition;
-
-        guint border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
-        requisition->width += 2 * border_width;
-        requisition->height += 2 * border_width;
-
-        /* Make width be at least 33% screen width
-         * and height be at most 80% of screen height
-         */
-        requisition->width = MAX (requisition->width, .33 * area.width);
-        requisition->height = MIN (requisition->height, .80 * area.height);
-
-       /* Don't ever shrink window width
-        */
-        GtkAllocation widget_allocation;
+       /* Don't ever shrink window width */
         gtk_widget_get_allocation (widget, &widget_allocation);
 
-        requisition->width = MAX (requisition->width, widget_allocation.width);
+        min_size = MAX (min_size, widget_allocation.width);
+        nat_size = MAX (nat_size, widget_allocation.width);
+
+ out:
+        if (minimum_size)
+                *minimum_size = min_size;
+        if (natural_size)
+                *natural_size = nat_size;
+}
+
+static void
+gdm_greeter_login_window_get_preferred_height (GtkWidget *widget,
+                                               gint      *minimum_size,
+                                               gint      *natural_size)
+{
+        int             monitor;
+        GdkScreen      *screen;
+        GdkRectangle    area;
+        int             min_size;
+        int             nat_size;
+        guint           border_width;
+
+        min_size = 0;
+        nat_size = 0;
+
+        if (!gtk_widget_get_realized (widget)) {
+                goto out;
+        }
+
+        gtk_widget_get_preferred_height (gtk_bin_get_child (GTK_BIN (widget)),
+                                        &min_size,
+                                        &nat_size);
+
+        border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
+        min_size += 2 * border_width;
+        nat_size += 2 * border_width;
+
+        /* Make height be at most 80% of screen height */
+        screen = gtk_widget_get_screen (widget);
+        monitor = gdk_screen_get_monitor_at_window (screen, gtk_widget_get_window (widget));
+        gdk_screen_get_monitor_geometry (screen, monitor, &area);
+        min_size = MIN (min_size, .8 * area.height);
+        nat_size = MIN (nat_size, .8 * area.height);
+
+ out:
+        if (minimum_size)
+                *minimum_size = min_size;
+        if (natural_size)
+                *natural_size = nat_size;
 }
 
 static void
@@ -1471,7 +1516,8 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
         object_class->finalize = gdm_greeter_login_window_finalize;
 
         widget_class->key_press_event = gdm_greeter_login_window_key_press_event;
-        widget_class->size_request = gdm_greeter_login_window_size_request;
+        widget_class->get_preferred_width = gdm_greeter_login_window_get_preferred_width;
+        widget_class->get_preferred_height = gdm_greeter_login_window_get_preferred_height;
 
         signals [BEGIN_AUTO_LOGIN] =
                 g_signal_new ("begin-auto-login",

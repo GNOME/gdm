@@ -72,28 +72,79 @@ gdm_language_chooser_dialog_set_current_language_name (GdmLanguageChooserDialog 
 }
 
 static void
-gdm_language_chooser_dialog_size_request (GtkWidget      *widget,
-                                       GtkRequisition *requisition)
+gdm_language_chooser_dialog_get_preferred_width (GtkWidget *widget,
+                                                 gint      *minimum_size,
+                                                 gint      *natural_size)
 {
-        int            screen_w;
-        int            screen_h;
-        GtkRequisition child_requisition;
+        GtkWidget *child;
+        int        min_size, nat_size;
+        int        screen_w;
 
-        if (GTK_WIDGET_CLASS (gdm_language_chooser_dialog_parent_class)->size_request) {
-                GTK_WIDGET_CLASS (gdm_language_chooser_dialog_parent_class)->size_request (widget, requisition);
+        /* FIXME: this should use monitor size */
+        screen_w = gdk_screen_get_width (gtk_widget_get_screen (widget));
+
+        child = gtk_bin_get_child (GTK_BIN (widget));
+
+        min_size = 0;
+        nat_size = 0;
+
+        if (GTK_WIDGET_CLASS (gdm_language_chooser_dialog_parent_class)->get_preferred_width) {
+                GTK_WIDGET_CLASS (gdm_language_chooser_dialog_parent_class)->get_preferred_width (widget, &min_size, &nat_size);
         }
 
-        screen_w = gdk_screen_get_width (gtk_widget_get_screen (widget));
-        screen_h = gdk_screen_get_height (gtk_widget_get_screen (widget));
+        if (child && gtk_widget_get_visible (child)) {
+                gtk_widget_get_preferred_width (child,
+                                                &min_size,
+                                                &nat_size);
+        }
 
-        gtk_widget_get_child_requisition (gtk_bin_get_child (GTK_BIN (widget)), &child_requisition);
-        *requisition = child_requisition;
+        min_size += 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
+        min_size = MIN (min_size, .50 * screen_w);
+        nat_size += 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
+        nat_size = MIN (nat_size, .50 * screen_w);
 
-        requisition->width += 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
-        requisition->height += 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
+        if (minimum_size)
+                *minimum_size = min_size;
+        if (natural_size)
+                *natural_size = nat_size;
+}
 
-        requisition->width = MIN (requisition->width, .50 * screen_w);
-        requisition->height = MIN (requisition->height, .80 * screen_h);
+static void
+gdm_language_chooser_dialog_get_preferred_height (GtkWidget *widget,
+                                                  gint      *minimum_size,
+                                                  gint      *natural_size)
+{
+        GtkWidget *child;
+        int        min_size, nat_size;
+        int        screen_w;
+
+        /* FIXME: this should use monitor size */
+        screen_w = gdk_screen_get_height (gtk_widget_get_screen (widget));
+
+        child = gtk_bin_get_child (GTK_BIN (widget));
+
+        min_size = 0;
+        nat_size = 0;
+
+        if (GTK_WIDGET_CLASS (gdm_language_chooser_dialog_parent_class)->get_preferred_height) {
+                GTK_WIDGET_CLASS (gdm_language_chooser_dialog_parent_class)->get_preferred_height (widget, &min_size, &nat_size);
+        }
+
+        if (child && gtk_widget_get_visible (child)) {
+                gtk_widget_get_preferred_height (child,
+                                                &min_size,
+                                                &nat_size);
+        }
+
+        min_size += 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
+        min_size = MIN (min_size, .50 * screen_w);
+        nat_size += 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
+        nat_size = MIN (nat_size, .50 * screen_w);
+
+        if (minimum_size)
+                *minimum_size = min_size;
+        if (natural_size)
+                *natural_size = nat_size;
 }
 
 static void
@@ -126,7 +177,8 @@ gdm_language_chooser_dialog_class_init (GdmLanguageChooserDialogClass *klass)
         GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
         object_class->finalize = gdm_language_chooser_dialog_finalize;
-        widget_class->size_request = gdm_language_chooser_dialog_size_request;
+        widget_class->get_preferred_width = gdm_language_chooser_dialog_get_preferred_width;
+        widget_class->get_preferred_height = gdm_language_chooser_dialog_get_preferred_height;
         widget_class->realize = gdm_language_chooser_dialog_realize;
 
         g_type_class_add_private (klass, sizeof (GdmLanguageChooserDialogPrivate));
@@ -168,7 +220,6 @@ gdm_language_chooser_dialog_init (GdmLanguageChooserDialog *dialog)
                                 GTK_STOCK_OK, GTK_RESPONSE_OK,
                                 NULL);
 
-        gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
         gtk_container_set_border_width (GTK_CONTAINER (dialog), 12);
         gtk_container_set_border_width (GTK_CONTAINER (dialog->priv->chooser_widget), 5);
         gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ALWAYS);

@@ -314,8 +314,8 @@ get_tallest_monitor_at_point (GdkScreen *screen,
                               int        x,
                               int        y)
 {
-        GdkRectangle area;
-        GdkRegion *region;
+        cairo_rectangle_int_t area;
+        cairo_region_t *region;
         int i;
         int monitor;
         int n_monitors;
@@ -326,15 +326,15 @@ get_tallest_monitor_at_point (GdkScreen *screen,
         monitor = -1;
         for (i = 0; i < n_monitors; i++) {
                 gdk_screen_get_monitor_geometry (screen, i, &area);
-                region = gdk_region_rectangle (&area);
+                region = cairo_region_create_rectangle (&area);
 
-                if (gdk_region_point_in (region, x, y)) {
+                if (cairo_region_contains_point (region, x, y)) {
                         if (area.height > tallest_height) {
                                 monitor = i;
                                 tallest_height = area.height;
                         }
                 }
-                gdk_region_destroy (region);
+                cairo_region_destroy (region);
         }
 
         if (monitor == -1) {

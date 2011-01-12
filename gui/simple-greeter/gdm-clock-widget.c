@@ -196,18 +196,31 @@ remove_timeout (GdmClockWidget *clock)
 }
 
 static void
-gdm_clock_widget_size_request (GtkWidget      *widget,
-                               GtkRequisition *requisition)
+gdm_clock_widget_get_preferred_width (GtkWidget *widget,
+                                      gint      *minimum_size,
+                                      gint      *natural_size)
+{
+        if (GTK_WIDGET_CLASS (gdm_clock_widget_parent_class)->get_preferred_width) {
+                GTK_WIDGET_CLASS (gdm_clock_widget_parent_class)->get_preferred_width (widget, minimum_size, natural_size);
+        }
+
+}
+
+static void
+gdm_clock_widget_get_preferred_height (GtkWidget *widget,
+                                       gint      *minimum_size,
+                                       gint      *natural_size)
 {
         PangoFontMetrics *metrics;
         PangoContext     *context;
         int               ascent;
         int               descent;
         int               padding;
+        int               min_size;
+        int               nat_size;
 
-        if (GTK_WIDGET_CLASS (gdm_clock_widget_parent_class)->size_request) {
-                GTK_WIDGET_CLASS (gdm_clock_widget_parent_class)->size_request (widget, requisition);
-        }
+        min_size = 0;
+        nat_size = 0;
 
         gtk_widget_ensure_style (widget);
         context = gtk_widget_get_pango_context (widget);
@@ -218,7 +231,13 @@ gdm_clock_widget_size_request (GtkWidget      *widget,
         ascent = pango_font_metrics_get_ascent (metrics);
         descent = pango_font_metrics_get_descent (metrics);
         padding = PANGO_PIXELS (ascent + descent) / 2.0;
-        requisition->height += padding;
+        min_size += padding;
+        nat_size += padding;
+
+        if (minimum_size)
+                *minimum_size = min_size;
+        if (natural_size)
+                *natural_size = nat_size;
 
         pango_font_metrics_unref (metrics);
 }
@@ -233,7 +252,8 @@ gdm_clock_widget_class_init (GdmClockWidgetClass *klass)
         widget_class = GTK_WIDGET_CLASS (klass);
 
         object_class->finalize = gdm_clock_widget_finalize;
-        widget_class->size_request = gdm_clock_widget_size_request;
+        widget_class->get_preferred_width = gdm_clock_widget_get_preferred_width;
+        widget_class->get_preferred_height = gdm_clock_widget_get_preferred_height;
 
         g_type_class_add_private (klass, sizeof (GdmClockWidgetPrivate));
 }

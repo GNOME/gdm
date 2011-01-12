@@ -252,6 +252,7 @@ gdm_scrollable_widget_animation_stop (GdmScrollableWidgetAnimation *animation)
 static gboolean
 gdm_scrollable_widget_needs_scrollbar (GdmScrollableWidget *widget)
 {
+        GtkWidget *child;
         gboolean needs_scrollbar;
 
         if (widget->priv->scrollbar == NULL) {
@@ -266,17 +267,14 @@ gdm_scrollable_widget_needs_scrollbar (GdmScrollableWidget *widget)
                 return FALSE;
         }
 
-        if (gtk_bin_get_child (GTK_BIN (widget)) != NULL) {
-                GtkRequisition child_requisition;
-                GtkAllocation widget_allocation;
+        child = gtk_bin_get_child (GTK_BIN (widget));
+        if (child != NULL) {
                 int available_height;
+                int child_scrolled_height;
 
-                gtk_widget_get_allocation (GTK_WIDGET (widget), &widget_allocation);
-
-                gtk_widget_get_child_requisition (gtk_bin_get_child (GTK_BIN (widget)),
-                                                  &child_requisition);
-                available_height = widget_allocation.height;
-                needs_scrollbar = child_requisition.height > available_height;
+                available_height = gtk_widget_get_allocated_height (GTK_WIDGET (widget));
+                gtk_widget_get_preferred_height (child, NULL, &child_scrolled_height);
+                needs_scrollbar = child_scrolled_height > available_height;
         } else {
                 needs_scrollbar = FALSE;
         }
@@ -285,56 +283,89 @@ gdm_scrollable_widget_needs_scrollbar (GdmScrollableWidget *widget)
 }
 
 static void
-gdm_scrollable_widget_size_request (GtkWidget      *widget,
-                                    GtkRequisition *requisition)
+gdm_scrollable_widget_get_preferred_size (GtkWidget      *widget,
+                                          GtkOrientation  orientation,
+                                          gint           *minimum_size,
+                                          gint           *natural_size)
 {
         GdmScrollableWidget *scrollable_widget;
-        GtkRequisition       child_requisition;
-        gboolean             child_adjustments_stale;
+        GtkRequisition scrollbar_requisition;
+        GtkRequisition minimum_req, natural_req;
+        GtkWidget *child;
+        int min_child_size, nat_child_size;
 
+        child = gtk_bin_get_child (GTK_BIN (widget));
         scrollable_widget = GDM_SCROLLABLE_WIDGET (widget);
 
-        requisition->width = 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
-        requisition->height = 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
+        gtk_widget_get_preferred_size (scrollable_widget->priv->scrollbar,
+                                       &scrollbar_requisition,
+                                       NULL);
 
-        requisition->width += 2 * gtk_widget_get_style (widget)->xthickness;
-        requisition->height += 2 * gtk_widget_get_style (widget)->ythickness;
+        minimum_req.width = 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
+        minimum_req.height = 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
 
-        child_adjustments_stale = FALSE;
-        GtkWidget *child = gtk_bin_get_child (GTK_BIN (widget));
+        minimum_req.width += 2 * gtk_widget_get_style (widget)->xthickness;
+        minimum_req.height += 2 * gtk_widget_get_style (widget)->ythickness;
 
-         if (child && gtk_widget_get_visible (child)) {
+        natural_req.width = minimum_req.width;
+        natural_req.height = minimum_req.height;
 
-                int old_child_height;
-                gtk_widget_get_child_requisition (child,
-                                                  &child_requisition);
-                old_child_height = child_requisition.height;
-
-                gtk_widget_size_request (child,
-                                         &child_requisition);
-
-                requisition->width += child_requisition.width;
-                requisition->height += child_requisition.height;
-
-                child_adjustments_stale = old_child_height != child_requisition.height;
+        if (child && gtk_widget_get_visible (child)) {
+                if (orientation == GTK_ORIENTATION_HORIZONTAL) {
+                        gtk_widget_get_preferred_width (child,
+                                                        &min_child_size,
+                                                        &nat_child_size);
+                        minimum_req.width += min_child_size;
+                        natural_req.width += nat_child_size;
+                }
         }
 
         if (gdm_scrollable_widget_needs_scrollbar (scrollable_widget)) {
-                GtkRequisition scrollbar_requisition;
+                /* FIXME: make this a property */
+                minimum_req.height += 48;
+                natural_req.height += 48;
 
-                gtk_widget_show (scrollable_widget->priv->scrollbar);
-
-                gtk_widget_size_request (scrollable_widget->priv->scrollbar,
-                                         &scrollbar_requisition);
-
-                requisition->height = MAX (requisition->height,
-                                           scrollbar_requisition.height);
-                requisition->width += scrollbar_requisition.width;
+                minimum_req.height = MAX (minimum_req.height,
+                                          scrollbar_requisition.height);
+                minimum_req.width += scrollbar_requisition.width;
+                natural_req.height = MAX (natural_req.height,
+                                          scrollbar_requisition.height);
+                natural_req.width += scrollbar_requisition.width;
         } else {
-                gtk_widget_hide (scrollable_widget->priv->scrollbar);
+                gtk_widget_get_preferred_height (child,
+                                                &min_child_size,
+                                                &nat_child_size);
+                minimum_req.height += min_child_size;
+                natural_req.height += nat_child_size;
         }
 
-        scrollable_widget->priv->child_adjustments_stale = child_adjustments_stale;
+        if (orientation == GTK_ORIENTATION_HORIZONTAL) {
+                if (minimum_size)
+                        *minimum_size = minimum_req.width;
+                if (natural_size)
+                        *natural_size = natural_req.width;
+        } else {
+                if (minimum_size)
+                        *minimum_size = minimum_req.height;
+                if (natural_size)
+                        *natural_size = natural_req.height;
+        }
+}
+
+static void
+gdm_scrollable_widget_get_preferred_width (GtkWidget *widget,
+                                           gint      *minimum_size,
+                                           gint      *natural_size)
+{
+        gdm_scrollable_widget_get_preferred_size (widget, GTK_ORIENTATION_HORIZONTAL, minimum_size, natural_size);
+}
+
+static void
+gdm_scrollable_widget_get_preferred_height (GtkWidget *widget,
+                                            gint      *minimum_size,
+                                            gint      *natural_size)
+{
+        gdm_scrollable_widget_get_preferred_size (widget, GTK_ORIENTATION_VERTICAL, minimum_size, natural_size);
 }
 
 static void
@@ -347,24 +378,21 @@ gdm_scrollable_widget_size_allocate (GtkWidget     *widget,
         gboolean             has_child;
         gboolean             needs_scrollbar;
         gboolean             is_flipped;
+        GtkWidget           *child;
 
         scrollable_widget = GDM_SCROLLABLE_WIDGET (widget);
 
         gtk_widget_set_allocation (widget, allocation);
 
-        GtkWidget *child = gtk_bin_get_child (GTK_BIN (widget));
-
+        child = gtk_bin_get_child (GTK_BIN (widget));
         has_child = child && gtk_widget_get_visible (child);
         needs_scrollbar = gdm_scrollable_widget_needs_scrollbar (scrollable_widget);
         is_flipped = gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL;
 
         if (needs_scrollbar) {
-                GtkRequisition scrollbar_requisition;
+                gtk_widget_show (scrollable_widget->priv->scrollbar);
 
-                gtk_widget_get_child_requisition (scrollable_widget->priv->scrollbar,
-                                                  &scrollbar_requisition);
-
-                scrollbar_allocation.width = scrollbar_requisition.width;
+                gtk_widget_get_preferred_width (scrollable_widget->priv->scrollbar, NULL, &scrollbar_allocation.width);
 
                 if (!is_flipped) {
                         scrollbar_allocation.x = allocation->x + allocation->width;
@@ -383,6 +411,8 @@ gdm_scrollable_widget_size_allocate (GtkWidget     *widget,
 
                 gtk_widget_size_allocate (scrollable_widget->priv->scrollbar,
                                           &scrollbar_allocation);
+        } else {
+                gtk_widget_hide (scrollable_widget->priv->scrollbar);
         }
 
         if (has_child) {
@@ -408,7 +438,6 @@ gdm_scrollable_widget_size_allocate (GtkWidget     *widget,
                 child_allocation.height = allocation->height;
                 child_allocation.height -= 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
                 child_allocation.height -= 2 * gtk_widget_get_style (widget)->ythickness;
-
                 child_allocation.y = allocation->y;
                 child_allocation.y += gtk_container_get_border_width (GTK_CONTAINER (widget));
                 child_allocation.y += gtk_widget_get_style (widget)->ythickness;
@@ -433,14 +462,17 @@ gdm_scrollable_widget_add (GtkContainer *container,
                                   G_CALLBACK (gtk_widget_queue_resize),
                                   container);
 
-        gtk_widget_set_scroll_adjustments (child, NULL, adjustment);
+        if (GTK_IS_SCROLLABLE (child))
+                g_object_set (child, "hadjustment", NULL, "vadjustment", adjustment, NULL);
+        else
+                g_warning ("gdm_scrollable_widget_add(): cannot add non scrollable widget");
 }
 
 static void
 gdm_scrollable_widget_remove (GtkContainer *container,
                               GtkWidget    *child)
 {
-        gtk_widget_set_scroll_adjustments (child, NULL, NULL);
+        g_object_set (child, "hadjustment", NULL, "vadjustment", NULL, NULL);
 
         GTK_CONTAINER_CLASS (gdm_scrollable_widget_parent_class)->remove (container, child);
 }
@@ -496,8 +528,8 @@ gdm_scrollable_widget_finalize (GObject *object)
 }
 
 static gboolean
-gdm_scrollable_widget_expose_event (GtkWidget      *widget,
-                                    GdkEventExpose *event)
+gdm_scrollable_widget_draw (GtkWidget *widget,
+                            cairo_t   *cr)
 {
         GdmScrollableWidget *scrollable_widget;
         int                  x;
@@ -505,6 +537,7 @@ gdm_scrollable_widget_expose_event (GtkWidget      *widget,
         int                  width;
         int                  height;
         gboolean             is_flipped;
+        GtkStyleContext     *context;
         GtkAllocation widget_allocation;
 
         gtk_widget_get_allocation (widget, &widget_allocation);
@@ -539,12 +572,15 @@ gdm_scrollable_widget_expose_event (GtkWidget      *widget,
         height = widget_allocation.height;
         height -= 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
 
-        gtk_paint_shadow (gtk_widget_get_style (widget), gtk_widget_get_window (widget),
-                          gtk_widget_get_state (widget), GTK_SHADOW_IN,
-                          &event->area, widget, "scrolled_window",
-                          x, y, width, height);
+        context = gtk_widget_get_style_context (widget);
+        gtk_style_context_save (context);
+        gtk_style_context_add_class (context, GTK_STYLE_CLASS_FRAME);
 
-        return GTK_WIDGET_CLASS (gdm_scrollable_widget_parent_class)->expose_event (widget, event);
+        gtk_render_frame (context, cr,
+                          x, y, width, height);
+        gtk_style_context_restore (context);
+
+        return GTK_WIDGET_CLASS (gdm_scrollable_widget_parent_class)->draw (widget, cr);
 }
 
 static gboolean
@@ -569,7 +605,7 @@ add_scroll_binding (GtkBindingSet  *binding_set,
                     GdkModifierType mask,
                     GtkScrollType   scroll)
 {
-        guint keypad_keyval = keyval - GDK_Left + GDK_KP_Left;
+        guint keypad_keyval = keyval - GDK_KEY_Left + GDK_KEY_KP_Left;
 
         gtk_binding_entry_add_signal (binding_set, keyval, mask,
                                       "scroll-child", 1,
@@ -584,10 +620,10 @@ add_tab_bindings (GtkBindingSet    *binding_set,
                   GdkModifierType   modifiers,
                   GtkDirectionType  direction)
 {
-        gtk_binding_entry_add_signal (binding_set, GDK_Tab, modifiers,
+        gtk_binding_entry_add_signal (binding_set, GDK_KEY_Tab, modifiers,
                                       "move-focus-out", 1,
                                       GTK_TYPE_DIRECTION_TYPE, direction);
-        gtk_binding_entry_add_signal (binding_set, GDK_KP_Tab, modifiers,
+        gtk_binding_entry_add_signal (binding_set, GDK_KEY_KP_Tab, modifiers,
                                       "move-focus-out", 1,
                                       GTK_TYPE_DIRECTION_TYPE, direction);
 }
@@ -599,14 +635,14 @@ gdm_scrollable_widget_class_install_bindings (GdmScrollableWidgetClass *klass)
 
         binding_set = gtk_binding_set_by_class (klass);
 
-        add_scroll_binding (binding_set, GDK_Up, GDK_CONTROL_MASK, GTK_SCROLL_STEP_BACKWARD);
-        add_scroll_binding (binding_set, GDK_Down, GDK_CONTROL_MASK, GTK_SCROLL_STEP_FORWARD);
+        add_scroll_binding (binding_set, GDK_KEY_Up, GDK_CONTROL_MASK, GTK_SCROLL_STEP_BACKWARD);
+        add_scroll_binding (binding_set, GDK_KEY_Down, GDK_CONTROL_MASK, GTK_SCROLL_STEP_FORWARD);
 
-        add_scroll_binding (binding_set, GDK_Page_Up, 0, GTK_SCROLL_PAGE_BACKWARD);
-        add_scroll_binding (binding_set, GDK_Page_Down, 0, GTK_SCROLL_PAGE_FORWARD);
+        add_scroll_binding (binding_set, GDK_KEY_Page_Up, 0, GTK_SCROLL_PAGE_BACKWARD);
+        add_scroll_binding (binding_set, GDK_KEY_Page_Down, 0, GTK_SCROLL_PAGE_FORWARD);
 
-        add_scroll_binding (binding_set, GDK_Home, 0, GTK_SCROLL_START);
-        add_scroll_binding (binding_set, GDK_End, 0, GTK_SCROLL_END);
+        add_scroll_binding (binding_set, GDK_KEY_Home, 0, GTK_SCROLL_START);
+        add_scroll_binding (binding_set, GDK_KEY_End, 0, GTK_SCROLL_END);
 
         add_tab_bindings (binding_set, GDK_CONTROL_MASK, GTK_DIR_TAB_FORWARD);
         add_tab_bindings (binding_set, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_DIR_TAB_BACKWARD);
@@ -629,9 +665,10 @@ gdm_scrollable_widget_class_init (GdmScrollableWidgetClass *klass)
 
         widget_class->destroy = gdm_scrollable_widget_destroy;
 
-        widget_class->size_request = gdm_scrollable_widget_size_request;
+        widget_class->get_preferred_width = gdm_scrollable_widget_get_preferred_width;
+        widget_class->get_preferred_height = gdm_scrollable_widget_get_preferred_height;
         widget_class->size_allocate = gdm_scrollable_widget_size_allocate;
-        widget_class->expose_event = gdm_scrollable_widget_expose_event;
+        widget_class->draw = gdm_scrollable_widget_draw;
         widget_class->scroll_event = gdm_scrollable_widget_scroll_event;
 
         container_class->add = gdm_scrollable_widget_add;
@@ -666,6 +703,7 @@ gdm_scrollable_widget_add_scrollbar (GdmScrollableWidget *widget)
 {
         gtk_widget_push_composite_child ();
         widget->priv->scrollbar = gtk_vscrollbar_new (NULL);
+        g_object_set (widget->priv->scrollbar, "expand", TRUE, NULL);
         gtk_widget_set_composite_name (widget->priv->scrollbar, "scrollbar");
         gtk_widget_pop_composite_child ();
         gtk_widget_set_parent (widget->priv->scrollbar, GTK_WIDGET (widget));
@@ -735,6 +773,7 @@ gdm_scrollable_widget_slide_to_height (GdmScrollableWidget *scrollable_widget,
 {
         GtkWidget *widget;
         gboolean   input_redirected;
+        GtkAllocation widget_allocation;
 
         g_return_if_fail (GDM_IS_SCROLLABLE_WIDGET (scrollable_widget));
         widget = GTK_WIDGET (scrollable_widget);
@@ -762,7 +801,6 @@ gdm_scrollable_widget_slide_to_height (GdmScrollableWidget *scrollable_widget,
         height += gtk_widget_get_style (widget)->ythickness * 2;
         height += gtk_container_get_border_width (GTK_CONTAINER (widget)) * 2;
 
-        GtkAllocation widget_allocation;
         gtk_widget_get_allocation (widget, &widget_allocation);
 
         scrollable_widget->priv->animation =
