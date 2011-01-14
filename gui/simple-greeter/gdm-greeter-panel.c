@@ -36,6 +36,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
+#include <gio/gio.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
@@ -56,9 +57,9 @@
 #define CK_MANAGER_PATH      "/org/freedesktop/ConsoleKit/Manager"
 #define CK_MANAGER_INTERFACE "org.freedesktop.ConsoleKit.Manager"
 
-#define GPM_DBUS_NAME      "org.freedesktop.PowerManagement"
-#define GPM_DBUS_PATH      "/org/freedesktop/PowerManagement"
-#define GPM_DBUS_INTERFACE "org.freedesktop.PowerManagement"
+#define GPM_DBUS_NAME      "org.gnome.PowerManager"
+#define GPM_DBUS_PATH      "/org/gnome/PowerManager"
+#define GPM_DBUS_INTERFACE "org.gnome.PowerManager"
 
 #define KEY_DISABLE_RESTART_BUTTONS "/apps/gdm/simple-greeter/disable_restart_buttons"
 #define KEY_NOTIFICATION_AREA_PADDING "/apps/notification_area_applet/prefs/padding"
@@ -75,11 +76,17 @@ struct GdmGreeterPanelPrivate
         GtkWidget              *alignment;
         GtkWidget              *hostname_label;
         GtkWidget              *clock;
-        GtkWidget              *shutdown_button;
+        GtkWidget              *status_menubar;
         GtkWidget              *shutdown_menu;
 
         GdmTimer               *animation_timer;
         double                  progress;
+
+        GtkWidget              *power_image;
+        GtkWidget              *power_menu_item;
+        GDBusProxy             *power_proxy;
+        gulong                  power_proxy_signal_handler;
+        gulong                  power_proxy_properties_changed_handler;
 
         guint                   display_is_local : 1;
 };
@@ -172,6 +179,18 @@ gdm_greeter_panel_get_property (GObject        *object,
 static void
 gdm_greeter_panel_dispose (GObject *object)
 {
+        GdmGreeterPanel *panel;
+
+        g_return_if_fail (object != NULL);
+        g_return_if_fail (GDM_IS_GREETER_PANEL (object));
+
+        panel = GDM_GREETER_PANEL (object);
+
+        if (panel->priv->power_proxy != NULL) {
+                g_object_unref (panel->priv->power_proxy);
+                panel->priv->power_proxy = NULL;
+        }
+
         G_OBJECT_CLASS (gdm_greeter_panel_parent_class)->dispose (object);
 }
 
@@ -212,8 +231,108 @@ on_screen_size_changed (GdkScreen       *screen,
 }
 
 static void
+update_power_icon (GdmGreeterPanel *panel)
+{
+        GVariant *variant;
+
+        g_assert (panel->priv->power_proxy != NULL);
+
+        variant = g_dbus_proxy_get_cached_property (panel->priv->power_proxy, "Icon");
+        if (variant == NULL) {
+                /* FIXME: use an indeterminant icon */
+                return;
+        }
+
+        if (g_variant_is_of_type (variant, G_VARIANT_TYPE ("s"))) {
+                const char *name;
+
+                name = g_variant_get_string (variant, NULL);
+
+                if (name != NULL) {
+                        GError *error;
+                        GIcon  *icon;
+                        error = NULL;
+                        icon = g_icon_new_for_string (name, &error);
+                        if (icon != NULL) {
+                                g_debug ("setting power icon %s", name);
+                                gtk_image_set_from_gicon (GTK_IMAGE (panel->priv->power_image),
+                                                          icon,
+                                                          GTK_ICON_SIZE_MENU);
+                        }
+                }
+        }
+
+        g_variant_unref (variant);
+}
+
+static void
+update_power_menu (GdmGreeterPanel *panel)
+{
+        GVariant *variant;
+
+        g_assert (panel->priv->power_proxy != NULL);
+
+        variant = g_dbus_proxy_get_cached_property (panel->priv->power_proxy, "Tooltip");
+        if (variant == NULL) {
+                /* FIXME: use an indeterminant message */
+                return;
+        }
+
+        if (g_variant_is_of_type (variant, G_VARIANT_TYPE ("s"))) {
+                const char *txt;
+
+                txt = g_variant_get_string (variant, NULL);
+                if (txt != NULL) {
+                        gtk_menu_item_set_label (GTK_MENU_ITEM (panel->priv->power_menu_item), txt);
+                }
+        }
+
+        g_variant_unref (variant);
+}
+
+static void
+on_power_proxy_g_signal (GDBusProxy      *proxy,
+                         const char      *sender_name,
+                         const char      *signal_name,
+                         GVariant        *parameters,
+                         GdmGreeterPanel *panel)
+{
+        if (g_strcmp0 (signal_name, "Changed") == 0) {
+                //update_power_icon (panel);
+        }
+}
+
+static void
+on_power_proxy_g_properties_changed (GDBusProxy      *proxy,
+                                     GVariant        *changed_properties,
+                                     GStrv           *invalidated_properties,
+                                     GdmGreeterPanel *panel)
+{
+        g_debug ("Got power properties changed");
+        if (g_variant_n_children (changed_properties) > 0) {
+                GVariantIter iter;
+                GVariant    *value;
+                char        *key;
+
+                g_variant_iter_init (&iter, changed_properties);
+
+                while (g_variant_iter_loop (&iter, "{&sv}", &key, &value)) {
+                        if (g_strcmp0 (key, "Icon") == 0) {
+                                g_debug ("Got power Icon changed");
+                                update_power_icon (panel);
+                        } else if (g_strcmp0 (key, "Tooltip") == 0) {
+                                g_debug ("Got power tooltip changed");
+                                update_power_menu (panel);
+                        }
+                }
+        }
+}
+
+static void
 gdm_greeter_panel_real_realize (GtkWidget *widget)
 {
+        GdmGreeterPanel *panel = GDM_GREETER_PANEL (widget);
+
         if (GTK_WIDGET_CLASS (gdm_greeter_panel_parent_class)->realize) {
                 GTK_WIDGET_CLASS (gdm_greeter_panel_parent_class)->realize (widget);
         }
@@ -226,14 +345,36 @@ gdm_greeter_panel_real_realize (GtkWidget *widget)
                           "size_changed",
                           G_CALLBACK (on_screen_size_changed),
                           widget);
+
+        if (panel->priv->power_proxy != NULL) {
+                update_power_icon (panel);
+                update_power_menu (panel);
+                panel->priv->power_proxy_signal_handler = g_signal_connect (panel->priv->power_proxy,
+                                                                            "g-signal",
+                                                                            G_CALLBACK (on_power_proxy_g_signal),
+                                                                            panel);
+        panel->priv->power_proxy_properties_changed_handler = g_signal_connect (panel->priv->power_proxy,
+                                                                                "g-properties-changed",
+                                                                                G_CALLBACK (on_power_proxy_g_properties_changed),
+                                                                                panel);
+        }
+
 }
 
 static void
 gdm_greeter_panel_real_unrealize (GtkWidget *widget)
 {
+        GdmGreeterPanel *panel = GDM_GREETER_PANEL (widget);
+
         g_signal_handlers_disconnect_by_func (gtk_window_get_screen (GTK_WINDOW (widget)),
                                               on_screen_size_changed,
                                               widget);
+
+        if (panel->priv->power_proxy != NULL
+            && panel->priv->power_proxy_signal_handler != 0) {
+                g_signal_handler_disconnect (panel->priv->power_proxy, panel->priv->power_proxy_signal_handler);
+                g_signal_handler_disconnect (panel->priv->power_proxy, panel->priv->power_proxy_properties_changed_handler);
+        }
 
         if (GTK_WIDGET_CLASS (gdm_greeter_panel_parent_class)->unrealize) {
                 GTK_WIDGET_CLASS (gdm_greeter_panel_parent_class)->unrealize (widget);
@@ -638,56 +779,6 @@ get_show_restart_buttons (GdmGreeterPanel *panel)
 }
 
 static void
-position_shutdown_menu (GtkMenu         *menu,
-                        int             *x,
-                        int             *y,
-                        gboolean        *push_in,
-                        GdmGreeterPanel *panel)
-{
-        GtkRequisition menu_requisition;
-        GdkScreen *screen;
-        int monitor;
-        GtkAllocation shutdown_button_allocation;
-        gtk_widget_get_allocation (panel->priv->shutdown_button, &shutdown_button_allocation);
-        *push_in = TRUE;
-
-        screen = gtk_widget_get_screen (GTK_WIDGET (panel));
-        monitor = gdk_screen_get_monitor_at_window (screen, gtk_widget_get_window (GTK_WIDGET (panel)));
-        gtk_menu_set_monitor (menu, monitor);
-
-        gtk_widget_translate_coordinates (GTK_WIDGET (panel->priv->shutdown_button),
-                                          GTK_WIDGET (panel),
-                                          shutdown_button_allocation.x,
-                                          shutdown_button_allocation.y,
-                                          x, y);
-
-        gtk_window_get_position (GTK_WINDOW (panel), NULL, y);
-
-        gtk_widget_size_request (GTK_WIDGET (menu), &menu_requisition);
-
-        *y -= menu_requisition.height;
-}
-
-static void
-on_shutdown_button_toggled (GdmGreeterPanel *panel)
-{
-        if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (panel->priv->shutdown_button))) {
-                gtk_menu_popup (GTK_MENU (panel->priv->shutdown_menu), NULL, NULL,
-                                (GtkMenuPositionFunc) position_shutdown_menu,
-                                panel, 0, 0);
-        } else {
-                gtk_menu_popdown (GTK_MENU (panel->priv->shutdown_menu));
-        }
-}
-
-static void
-on_shutdown_menu_deactivate (GdmGreeterPanel *panel)
-{
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (panel->priv->shutdown_button),
-                                      FALSE);
-}
-
-static void
 update_colors (GtkWidget *widget)
 {
         GdkRGBA bg;
@@ -705,6 +796,108 @@ update_colors (GtkWidget *widget)
 
         gtk_widget_override_background_color (widget, 0, &bg);
         gtk_widget_override_color (widget, 0, &fg);
+        gtk_widget_override_symbolic_color (widget, "fg", &fg);
+}
+
+static void
+add_shutdown_menu (GdmGreeterPanel *panel)
+{
+        GtkWidget *item;
+        GtkWidget *menu_item;
+        GtkWidget *box;
+        GtkWidget *image;
+
+        item = gtk_menu_item_new ();
+        box = gtk_hbox_new (FALSE, 0);
+        gtk_container_add (GTK_CONTAINER (item), box);
+        gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->status_menubar), item);
+        image = gtk_image_new ();
+        g_signal_connect (image, "style-set", G_CALLBACK (update_colors), NULL);
+        update_colors (image);
+        gtk_image_set_from_icon_name (GTK_IMAGE (image), "system-shutdown-symbolic", GTK_ICON_SIZE_MENU);
+        gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 0);
+
+        panel->priv->shutdown_menu = gtk_menu_new ();
+        gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), panel->priv->shutdown_menu);
+
+        if (! panel->priv->display_is_local) {
+                menu_item = gtk_menu_item_new_with_label ("Disconnect");
+                g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_disconnect), NULL);
+                gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
+        } else if (get_show_restart_buttons (panel)) {
+                if (can_suspend ()) {
+                        menu_item = gtk_menu_item_new_with_label (_("Suspend"));
+                        g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_system_suspend), NULL);
+                        gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
+                }
+
+                menu_item = gtk_menu_item_new_with_label (_("Restart"));
+                g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_system_restart), NULL);
+                gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
+
+                menu_item = gtk_menu_item_new_with_label (_("Shut Down"));
+                g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_system_stop), NULL);
+                gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
+        }
+        gtk_widget_show_all (item);
+}
+
+static void
+add_battery_menu (GdmGreeterPanel *panel)
+{
+        GtkWidget *item;
+        GtkWidget *box;
+        GtkWidget *menu;
+        GError    *error;
+
+        item = gtk_menu_item_new ();
+        box = gtk_hbox_new (FALSE, 0);
+        gtk_container_add (GTK_CONTAINER (item), box);
+        gtk_menu_shell_prepend (GTK_MENU_SHELL (panel->priv->status_menubar), item);
+        panel->priv->power_image = gtk_image_new ();
+        g_signal_connect (panel->priv->power_image, "style-set", G_CALLBACK (update_colors), NULL);
+        update_colors (panel->priv->power_image);
+        gtk_image_set_from_icon_name (GTK_IMAGE (panel->priv->power_image), "battery-full-charged-symbolic", GTK_ICON_SIZE_MENU);
+        gtk_box_pack_start (GTK_BOX (box), panel->priv->power_image, FALSE, FALSE, 0);
+
+        menu = gtk_menu_new ();
+        gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), menu);
+
+        panel->priv->power_menu_item = gtk_menu_item_new_with_label (_("Unknown time remaining"));
+        gtk_widget_set_sensitive (panel->priv->power_menu_item, FALSE);
+        gtk_menu_shell_append (GTK_MENU_SHELL (menu), panel->priv->power_menu_item);
+
+        error = NULL;
+        panel->priv->power_proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
+                                                                  G_DBUS_PROXY_FLAGS_NONE,
+                                                                  NULL,
+                                                                  GPM_DBUS_NAME,
+                                                                  GPM_DBUS_PATH,
+                                                                  GPM_DBUS_INTERFACE,
+                                                                  NULL,
+                                                                  &error);
+        if (panel->priv->power_proxy == NULL) {
+                g_warning ("Unable to connect to power manager: %s", error->message);
+                g_error_free (error);
+        }
+
+        gtk_widget_show_all (item);
+}
+
+static inline void
+force_no_shadow (GtkWidget *widget)
+{
+        GtkCssProvider  *provider;
+        GtkStyleContext *context;
+
+        context = gtk_widget_get_style_context (widget);
+
+        provider = gtk_css_provider_new ();
+        gtk_style_context_add_provider (context,
+                                        GTK_STYLE_PROVIDER (provider),
+                                        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+        gtk_css_provider_load_from_data (provider, "GtkMenuBar { shadow-type: none; internal-padding: 0; }", -1, NULL);
+        gtk_style_context_invalidate (context);
 }
 
 static void
@@ -757,60 +950,24 @@ setup_panel (GdmGreeterPanel *panel)
         gtk_size_group_add_widget (sg, panel->priv->left_hbox);
         gtk_size_group_add_widget (sg, panel->priv->right_hbox);
 
+        panel->priv->status_menubar = gtk_menu_bar_new ();
+        force_no_shadow (panel->priv->status_menubar);
+        update_colors (panel->priv->status_menubar);
+        gtk_widget_show (panel->priv->status_menubar);
+        gtk_box_pack_end (GTK_BOX (panel->priv->right_hbox), GTK_WIDGET (panel->priv->status_menubar), FALSE, FALSE, 0);
+
+        if (!panel->priv->display_is_local || get_show_restart_buttons (panel)) {
+                add_shutdown_menu (panel);
+        }
+
+        add_battery_menu (panel);
+
         /* FIXME: we should only show hostname on panel when connected
            to a remote host */
         if (0) {
                 panel->priv->hostname_label = gtk_label_new (g_get_host_name ());
                 gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->hostname_label, FALSE, FALSE, 6);
                 gtk_widget_show (panel->priv->hostname_label);
-        }
-
-        if (!panel->priv->display_is_local || get_show_restart_buttons (panel)) {
-                GtkWidget *menu_item;
-                GtkWidget *image;
-
-                panel->priv->shutdown_button = gtk_toggle_button_new ();
-
-                gtk_widget_set_tooltip_text (panel->priv->shutdown_button,
-                                             _("Shutdown Options…"));
-                gtk_button_set_relief (GTK_BUTTON (panel->priv->shutdown_button),
-                                       GTK_RELIEF_NONE);
-
-                panel->priv->shutdown_menu = gtk_menu_new ();
-                gtk_menu_attach_to_widget (GTK_MENU (panel->priv->shutdown_menu),
-                                           panel->priv->shutdown_button, NULL);
-                g_signal_connect_swapped (panel->priv->shutdown_button, "toggled",
-                                          G_CALLBACK (on_shutdown_button_toggled), panel);
-                g_signal_connect_swapped (panel->priv->shutdown_menu, "deactivate",
-                                          G_CALLBACK (on_shutdown_menu_deactivate), panel);
-
-                image = gtk_image_new_from_icon_name ("system-shutdown", GTK_ICON_SIZE_BUTTON);
-                gtk_widget_show (image);
-                gtk_container_add (GTK_CONTAINER (panel->priv->shutdown_button), image);
-
-                if (! panel->priv->display_is_local) {
-                        menu_item = gtk_menu_item_new_with_label ("Disconnect");
-                        g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_disconnect), NULL);
-                        gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
-                } else if (get_show_restart_buttons (panel)) {
-                        if (can_suspend ()) {
-                                menu_item = gtk_menu_item_new_with_label (_("Suspend"));
-                                g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_system_suspend), NULL);
-                                gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
-                        }
-
-                        menu_item = gtk_menu_item_new_with_label (_("Restart"));
-                        g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_system_restart), NULL);
-                        gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
-
-                        menu_item = gtk_menu_item_new_with_label (_("Shut Down"));
-                        g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (do_system_stop), NULL);
-                        gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->shutdown_menu), menu_item);
-                }
-
-                gtk_box_pack_end (GTK_BOX (panel->priv->right_hbox), GTK_WIDGET (panel->priv->shutdown_button), FALSE, FALSE, 0);
-                gtk_widget_show_all (panel->priv->shutdown_menu);
-                gtk_widget_show_all (GTK_WIDGET (panel->priv->shutdown_button));
         }
 
         panel->priv->progress = 0.0;
