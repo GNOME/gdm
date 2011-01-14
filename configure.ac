@@ -1393,7 +1393,6 @@ daemon/Makefile
 docs/Makefile
 gui/Makefile
 gui/simple-greeter/Makefile
-gui/simple-greeter/libnotificationarea/Makefile
 gui/simple-chooser/Makefile
 utils/Makefile
 data/gdm.conf

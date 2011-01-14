@@ -52,8 +52,6 @@
 #include "gdm-profile.h"
 #include "gdm-common.h"
 
-#include "na-tray.h"
-
 #define CK_NAME              "org.freedesktop.ConsoleKit"
 #define CK_MANAGER_PATH      "/org/freedesktop/ConsoleKit/Manager"
 #define CK_MANAGER_INTERFACE "org.freedesktop.ConsoleKit.Manager"
@@ -77,7 +75,6 @@ struct GdmGreeterPanelPrivate
         GtkWidget              *alignment;
         GtkWidget              *hostname_label;
         GtkWidget              *clock;
-        NaTray                 *tray;
         GtkWidget              *shutdown_button;
         GtkWidget              *shutdown_menu;
 
@@ -713,7 +710,6 @@ update_colors (GtkWidget *widget)
 static void
 setup_panel (GdmGreeterPanel *panel)
 {
-        int           padding;
         GtkSizeGroup *sg;
 
         gdm_profile_start (NULL);
@@ -816,15 +812,6 @@ setup_panel (GdmGreeterPanel *panel)
                 gtk_widget_show_all (panel->priv->shutdown_menu);
                 gtk_widget_show_all (GTK_WIDGET (panel->priv->shutdown_button));
         }
-
-
-        panel->priv->tray = na_tray_new_for_screen (gtk_window_get_screen (GTK_WINDOW (panel)),
-                                                    GTK_ORIENTATION_HORIZONTAL);
-
-        padding = gconf_client_get_int (panel->priv->client, KEY_NOTIFICATION_AREA_PADDING, NULL);
-        na_tray_set_padding (panel->priv->tray, padding);
-        gtk_box_pack_end (GTK_BOX (panel->priv->right_hbox), GTK_WIDGET (panel->priv->tray), FALSE, FALSE, 6);
-        gtk_widget_show (GTK_WIDGET (panel->priv->tray));
 
         panel->priv->progress = 0.0;
         panel->priv->animation_timer = gdm_timer_new ();

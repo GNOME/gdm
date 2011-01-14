@@ -1,13 +1,8 @@
 NULL =
 
-SUBDIRS = 				\
-	libnotificationarea		\
-	$(NULL)
-
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/common				\
 	-I$(top_builddir)/common			\
-	-I$(top_srcdir)/gui/simple-greeter/libnotificationarea	\
 	-DDMCONFDIR=\""$(dmconfdir)"\"			\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"                  \
 	-DDATADIR=\""$(datadir)"\"		 	\
@@ -138,7 +133,6 @@ test_greeter_panel_SOURCES = 	\
 
 test_greeter_panel_LDADD =	\
 	$(top_builddir)/common/libgdmcommon.la	\
-	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(GTK_LIBS)			\
 	$(GCONF_LIBS)			\
@@ -325,7 +319,6 @@ gdm_simple_greeter_SOURCES =  		\
 gdm_simple_greeter_LDADD = 		\
 	$(top_builddir)/common/libgdmcommon.la	\
 	libgdmuser.la			\
-	$(top_builddir)/gui/simple-greeter/libnotificationarea/libnotificationarea.la	\
 	$(COMMON_LIBS)			\
 	$(EXTRA_GREETER_LIBS)   	\
 	$(SIMPLE_GREETER_LIBS)		\
