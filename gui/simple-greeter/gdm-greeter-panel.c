@@ -461,6 +461,9 @@ update_geometry (GdmGreeterPanel *panel,
         panel->priv->geometry.y = geometry.y - panel->priv->geometry.height + panel->priv->progress * panel->priv->geometry.height;
 
 #if 0
+        panel->priv->geometry.y += 50;
+#endif
+#if 0
         g_debug ("Setting geometry x:%d y:%d w:%d h:%d",
                  panel->priv->geometry.x,
                  panel->priv->geometry.y,
@@ -812,7 +815,7 @@ add_shutdown_menu (GdmGreeterPanel *panel)
         gtk_container_add (GTK_CONTAINER (item), box);
         gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->status_menubar), item);
         image = gtk_image_new ();
-        g_signal_connect (image, "style-set", G_CALLBACK (update_colors), NULL);
+        g_signal_connect (image, "style-updated", G_CALLBACK (update_colors), NULL);
         update_colors (image);
         gtk_image_set_from_icon_name (GTK_IMAGE (image), "system-shutdown-symbolic", GTK_ICON_SIZE_MENU);
         gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 0);
@@ -855,7 +858,7 @@ add_battery_menu (GdmGreeterPanel *panel)
         gtk_container_add (GTK_CONTAINER (item), box);
         gtk_menu_shell_prepend (GTK_MENU_SHELL (panel->priv->status_menubar), item);
         panel->priv->power_image = gtk_image_new ();
-        g_signal_connect (panel->priv->power_image, "style-set", G_CALLBACK (update_colors), NULL);
+        g_signal_connect (panel->priv->power_image, "style-updated", G_CALLBACK (update_colors), NULL);
         update_colors (panel->priv->power_image);
         gtk_image_set_from_icon_name (GTK_IMAGE (panel->priv->power_image), "battery-full-charged-symbolic", GTK_ICON_SIZE_MENU);
         gtk_box_pack_start (GTK_BOX (box), panel->priv->power_image, FALSE, FALSE, 0);
@@ -1026,8 +1029,7 @@ gdm_greeter_panel_finalize (GObject *object)
 }
 
 static void
-gdm_greeter_panel_real_style_set (GtkWidget *widget,
-                                  GtkStyle  *prev_style)
+gdm_greeter_panel_real_style_updated (GtkWidget *widget)
 {
         update_colors (widget);
 }
@@ -1050,7 +1052,7 @@ gdm_greeter_panel_class_init (GdmGreeterPanelClass *klass)
         widget_class->get_preferred_height = gdm_greeter_panel_real_get_preferred_height;
         widget_class->show = gdm_greeter_panel_real_show;
         widget_class->hide = gdm_greeter_panel_real_hide;
-        widget_class->style_set = gdm_greeter_panel_real_style_set;
+        widget_class->style_updated = gdm_greeter_panel_real_style_updated;
 
         g_object_class_install_property (object_class,
                                          PROP_MONITOR,
