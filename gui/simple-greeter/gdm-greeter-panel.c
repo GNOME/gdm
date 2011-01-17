@@ -781,25 +781,81 @@ get_show_restart_buttons (GdmGreeterPanel *panel)
         return show;
 }
 
-static void
-update_colors (GtkWidget *widget)
+static inline void
+override_style (GtkWidget *widget)
 {
-        GdkRGBA bg;
-        GdkRGBA fg;
+        GtkCssProvider  *provider;
+        GtkStyleContext *context;
+        GError          *error;
 
-        bg.red = 0;
-        bg.green = 0;
-        bg.blue = 0;
-        bg.alpha = 1.0;
+        g_debug ("updating style");
 
-        fg.red = 1.0;
-        fg.green = 1.0;
-        fg.blue = 1.0;
-        fg.alpha = 1.0;
+        context = gtk_widget_get_style_context (widget);
 
-        gtk_widget_override_background_color (widget, 0, &bg);
-        gtk_widget_override_color (widget, 0, &fg);
-        gtk_widget_override_symbolic_color (widget, "fg", &fg);
+        provider = gtk_css_provider_new ();
+        gtk_style_context_add_provider (context,
+                                        GTK_STYLE_PROVIDER (provider),
+                                        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+        error = NULL;
+        gtk_css_provider_load_from_data (provider,
+                                         "* {\n"
+                                         "  background-color: black;\n"
+                                         "  color: white;\n"
+                                         "  border-width: 0;\n"
+                                         "}\n"
+                                         "*:selected {\n"
+                                         "  background-color: #666666;\n"
+                                         "  color: white;\n"
+                                         "}\n"
+                                         ".menu,\n"
+                                         ".menubar,\n"
+                                         ".menu.check,\n"
+                                         ".menu.radio {\n"
+                                         "  background-color: black;\n"
+                                         "  color: white;\n"
+                                         "  border-style: none;\n"
+                                         "}\n"
+                                         ".menu:hover,\n"
+                                         ".menubar:hover,\n"
+                                         ".menu.check:hover,\n"
+                                         ".menu.radio:hover {\n"
+                                         "  background-color: #666666;\n"
+                                         "  color: white;\n"
+                                         "  border-style: none;\n"
+                                         "}\n"
+                                         "GtkLabel:selected {\n"
+                                         "  background-color: black;\n"
+                                         "  color: white;\n"
+                                         "}\n"
+                                         "\n"
+                                         "GtkLabel:selected:focused {\n"
+                                         "  background-color: black;\n"
+                                         "  color: white;\n"
+                                         "}\n"
+                                         "GtkMenuBar {\n"
+                                         "  background-color: black;\n"
+                                         "  background-image: none;\n"
+                                         "  color: white;\n"
+                                         "  -GtkMenuBar-internal-padding: 0;\n"
+                                         "  -GtkMenuBar-shadow-type: none;\n"
+                                         "  border-width: 0;\n"
+                                         "  border-style: none;\n"
+                                         "}\n"
+                                         "GtkMenuItem {\n"
+                                         "  background-color: black;\n"
+                                         "  color: white;\n"
+                                         "}\n"
+                                         "GtkImage {\n"
+                                         "  background-color: black;\n"
+                                         "  color: white;\n"
+                                         "}\n",
+                                         -1,
+                                         &error);
+        if (error != NULL) {
+                g_warning ("Error loading style data: %s", error->message);
+                g_error_free (error);
+        }
 }
 
 static void
@@ -811,12 +867,12 @@ add_shutdown_menu (GdmGreeterPanel *panel)
         GtkWidget *image;
 
         item = gtk_menu_item_new ();
+        override_style (item);
         box = gtk_hbox_new (FALSE, 0);
         gtk_container_add (GTK_CONTAINER (item), box);
         gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->status_menubar), item);
         image = gtk_image_new ();
-        g_signal_connect (image, "style-updated", G_CALLBACK (update_colors), NULL);
-        update_colors (image);
+        override_style (image);
         gtk_image_set_from_icon_name (GTK_IMAGE (image), "system-shutdown-symbolic", GTK_ICON_SIZE_MENU);
         gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 0);
 
@@ -852,15 +908,20 @@ add_battery_menu (GdmGreeterPanel *panel)
         GtkWidget *box;
         GtkWidget *menu;
         GError    *error;
+        GIcon     *gicon;
 
         item = gtk_menu_item_new ();
+        override_style (item);
         box = gtk_hbox_new (FALSE, 0);
         gtk_container_add (GTK_CONTAINER (item), box);
         gtk_menu_shell_prepend (GTK_MENU_SHELL (panel->priv->status_menubar), item);
         panel->priv->power_image = gtk_image_new ();
-        g_signal_connect (panel->priv->power_image, "style-updated", G_CALLBACK (update_colors), NULL);
-        update_colors (panel->priv->power_image);
-        gtk_image_set_from_icon_name (GTK_IMAGE (panel->priv->power_image), "battery-full-charged-symbolic", GTK_ICON_SIZE_MENU);
+        override_style (panel->priv->power_image);
+
+        gicon = g_themed_icon_new_with_default_fallbacks ("battery-caution-symbolic");
+        gtk_image_set_from_gicon (GTK_IMAGE (panel->priv->power_image), gicon, GTK_ICON_SIZE_MENU);
+        g_object_unref (gicon);
+
         gtk_box_pack_start (GTK_BOX (box), panel->priv->power_image, FALSE, FALSE, 0);
 
         menu = gtk_menu_new ();
@@ -887,22 +948,6 @@ add_battery_menu (GdmGreeterPanel *panel)
         gtk_widget_show_all (item);
 }
 
-static inline void
-force_no_shadow (GtkWidget *widget)
-{
-        GtkCssProvider  *provider;
-        GtkStyleContext *context;
-
-        context = gtk_widget_get_style_context (widget);
-
-        provider = gtk_css_provider_new ();
-        gtk_style_context_add_provider (context,
-                                        GTK_STYLE_PROVIDER (provider),
-                                        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-        gtk_css_provider_load_from_data (provider, "GtkMenuBar { shadow-type: none; internal-padding: 0; }", -1, NULL);
-        gtk_style_context_invalidate (context);
-}
-
 static void
 setup_panel (GdmGreeterPanel *panel)
 {
@@ -911,7 +956,8 @@ setup_panel (GdmGreeterPanel *panel)
         gdm_profile_start (NULL);
 
         gtk_widget_set_can_focus (GTK_WIDGET (panel), TRUE);
-        update_colors (GTK_WIDGET (panel));
+
+        override_style (GTK_WIDGET (panel));
 
         panel->priv->geometry.x      = -1;
         panel->priv->geometry.y      = -1;
@@ -945,7 +991,6 @@ setup_panel (GdmGreeterPanel *panel)
         gtk_box_pack_start (GTK_BOX (panel->priv->hbox), panel->priv->right_hbox, TRUE, TRUE, 0);
 
         panel->priv->clock = gdm_clock_widget_new ();
-        update_colors (panel->priv->clock);
         gtk_widget_show (panel->priv->clock);
         gtk_container_add (GTK_CONTAINER (panel->priv->alignment), panel->priv->clock);
 
@@ -954,8 +999,7 @@ setup_panel (GdmGreeterPanel *panel)
         gtk_size_group_add_widget (sg, panel->priv->right_hbox);
 
         panel->priv->status_menubar = gtk_menu_bar_new ();
-        force_no_shadow (panel->priv->status_menubar);
-        update_colors (panel->priv->status_menubar);
+        override_style (panel->priv->status_menubar);
         gtk_widget_show (panel->priv->status_menubar);
         gtk_box_pack_end (GTK_BOX (panel->priv->right_hbox), GTK_WIDGET (panel->priv->status_menubar), FALSE, FALSE, 0);
 
@@ -1029,12 +1073,6 @@ gdm_greeter_panel_finalize (GObject *object)
 }
 
 static void
-gdm_greeter_panel_real_style_updated (GtkWidget *widget)
-{
-        update_colors (widget);
-}
-
-static void
 gdm_greeter_panel_class_init (GdmGreeterPanelClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
@@ -1052,7 +1090,6 @@ gdm_greeter_panel_class_init (GdmGreeterPanelClass *klass)
         widget_class->get_preferred_height = gdm_greeter_panel_real_get_preferred_height;
         widget_class->show = gdm_greeter_panel_real_show;
         widget_class->hide = gdm_greeter_panel_real_hide;
-        widget_class->style_updated = gdm_greeter_panel_real_style_updated;
 
         g_object_class_install_property (object_class,
                                          PROP_MONITOR,
