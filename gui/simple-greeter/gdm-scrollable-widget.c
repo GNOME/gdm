@@ -58,6 +58,8 @@ struct GdmScrollableWidgetPrivate
         guint      key_press_signal_id;
         guint      key_release_signal_id;
 
+        int        forced_height;
+
         GQueue    *key_event_queue;
 
         guint      child_adjustments_stale : 1;
@@ -120,16 +122,18 @@ static void
 on_animation_tick (GdmScrollableWidgetAnimation *animation,
                    double                        progress)
 {
+        GdmScrollableWidget *scrollable_widget;
         int progress_in_pixels;
-        int width;
         int height;
+
+        scrollable_widget = GDM_SCROLLABLE_WIDGET (animation->widget);
 
         progress_in_pixels = progress * (animation->start_height - animation->desired_height);
 
         height = animation->start_height - progress_in_pixels;
+        scrollable_widget->priv->forced_height = height;
 
-        gtk_widget_get_size_request (animation->widget, &width, NULL);
-        gtk_widget_set_size_request (animation->widget, width, height);
+        gtk_widget_queue_resize (animation->widget);
 
         if (animation->step_func != NULL) {
                 GdmTimer *timer;
@@ -213,7 +217,6 @@ static void
 on_animation_stop (GdmScrollableWidgetAnimation *animation)
 {
         GdmScrollableWidget *widget;
-        int                  width;
 
         widget = GDM_SCROLLABLE_WIDGET (animation->widget);
 
@@ -223,10 +226,6 @@ on_animation_stop (GdmScrollableWidgetAnimation *animation)
 
         gdm_scrollable_widget_animation_free (widget->priv->animation);
         widget->priv->animation = NULL;
-
-        gtk_widget_get_size_request (GTK_WIDGET (widget), &width, NULL);
-        gtk_widget_set_size_request (GTK_WIDGET (widget), width, -1);
-        gtk_widget_queue_resize (GTK_WIDGET (widget));
 
         gdm_scrollable_unredirect_input (widget);
 }
@@ -294,49 +293,53 @@ gdm_scrollable_widget_get_preferred_size (GtkWidget      *widget,
         GtkWidget *child;
         int min_child_size, nat_child_size;
 
-        child = gtk_bin_get_child (GTK_BIN (widget));
         scrollable_widget = GDM_SCROLLABLE_WIDGET (widget);
 
-        gtk_widget_get_preferred_size (scrollable_widget->priv->scrollbar,
-                                       &scrollbar_requisition,
-                                       NULL);
-
-        minimum_req.width = 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
-        minimum_req.height = 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
-
-        minimum_req.width += 2 * gtk_widget_get_style (widget)->xthickness;
-        minimum_req.height += 2 * gtk_widget_get_style (widget)->ythickness;
-
-        natural_req.width = minimum_req.width;
-        natural_req.height = minimum_req.height;
-
-        if (child && gtk_widget_get_visible (child)) {
-                if (orientation == GTK_ORIENTATION_HORIZONTAL) {
-                        gtk_widget_get_preferred_width (child,
-                                                        &min_child_size,
-                                                        &nat_child_size);
-                        minimum_req.width += min_child_size;
-                        natural_req.width += nat_child_size;
-                }
-        }
-
-        if (gdm_scrollable_widget_needs_scrollbar (scrollable_widget)) {
-                /* FIXME: make this a property */
-                minimum_req.height += 48;
-                natural_req.height += 48;
-
-                minimum_req.height = MAX (minimum_req.height,
-                                          scrollbar_requisition.height);
-                minimum_req.width += scrollbar_requisition.width;
-                natural_req.height = MAX (natural_req.height,
-                                          scrollbar_requisition.height);
-                natural_req.width += scrollbar_requisition.width;
+        if (orientation == GTK_ORIENTATION_VERTICAL
+            && scrollable_widget->priv->forced_height >= 0) {
+                minimum_req.height = scrollable_widget->priv->forced_height;
+                natural_req.height = scrollable_widget->priv->forced_height;
         } else {
-                gtk_widget_get_preferred_height (child,
-                                                &min_child_size,
-                                                &nat_child_size);
-                minimum_req.height += min_child_size;
-                natural_req.height += nat_child_size;
+                child = gtk_bin_get_child (GTK_BIN (widget));
+
+                gtk_widget_get_preferred_size (scrollable_widget->priv->scrollbar,
+                                               &scrollbar_requisition,
+                                               NULL);
+
+                minimum_req.width = 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
+                minimum_req.height = 2 * gtk_container_get_border_width (GTK_CONTAINER (widget));
+
+                minimum_req.width += 2 * gtk_widget_get_style (widget)->xthickness;
+                minimum_req.height += 2 * gtk_widget_get_style (widget)->ythickness;
+
+                natural_req.width = minimum_req.width;
+                natural_req.height = minimum_req.height;
+
+                if (child && gtk_widget_get_visible (child)) {
+                        if (orientation == GTK_ORIENTATION_HORIZONTAL) {
+                                gtk_widget_get_preferred_width (child,
+                                                                &min_child_size,
+                                                                &nat_child_size);
+                                minimum_req.width += min_child_size;
+                                natural_req.width += nat_child_size;
+                        } else {
+                                gtk_widget_get_preferred_height (child,
+                                                                 &min_child_size,
+                                                                 &nat_child_size);
+
+                                minimum_req.height += min_child_size;
+                                natural_req.height += nat_child_size;
+                        }
+                }
+
+                if (gdm_scrollable_widget_needs_scrollbar (scrollable_widget)) {
+                        minimum_req.height = MAX (minimum_req.height,
+                                                  scrollbar_requisition.height);
+                        minimum_req.width += scrollbar_requisition.width;
+                        natural_req.height = MAX (natural_req.height,
+                                                  scrollbar_requisition.height);
+                        natural_req.width += scrollbar_requisition.width;
+                }
         }
 
         if (orientation == GTK_ORIENTATION_HORIZONTAL) {
@@ -725,6 +728,8 @@ gdm_scrollable_widget_init (GdmScrollableWidget *widget)
 {
         widget->priv = GDM_SCROLLABLE_WIDGET_GET_PRIVATE (widget);
 
+        widget->priv->forced_height = -1;
+
         gdm_scrollable_widget_add_scrollbar (widget);
         gdm_scrollable_widget_add_invisible_event_sink (widget);
 }
@@ -783,6 +788,8 @@ gdm_scrollable_widget_slide_to_height (GdmScrollableWidget *scrollable_widget,
         input_redirected = gdm_scrollable_redirect_input_to_event_sink (scrollable_widget);
 
         if (!input_redirected || gdm_scrollable_widget_animations_are_disabled (scrollable_widget)) {
+                scrollable_widget->priv->forced_height = height;
+
                 if (step_func != NULL) {
                         step_func (scrollable_widget, 0.0, &height, step_user_data);
                 }
