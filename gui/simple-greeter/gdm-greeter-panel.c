@@ -871,6 +871,7 @@ add_shutdown_menu (GdmGreeterPanel *panel)
         GtkWidget *menu_item;
         GtkWidget *box;
         GtkWidget *image;
+        GIcon     *gicon;
 
         item = gtk_menu_item_new ();
         override_style (item);
@@ -879,7 +880,11 @@ add_shutdown_menu (GdmGreeterPanel *panel)
         gtk_menu_shell_append (GTK_MENU_SHELL (panel->priv->status_menubar), item);
         image = gtk_image_new ();
         override_style (image);
-        gtk_image_set_from_icon_name (GTK_IMAGE (image), "system-shutdown-symbolic", GTK_ICON_SIZE_MENU);
+
+        gicon = g_themed_icon_new_with_default_fallbacks ("system-shutdown-symbolic");
+        gtk_image_set_from_gicon (GTK_IMAGE (image), gicon, GTK_ICON_SIZE_MENU);
+        g_object_unref (gicon);
+
         gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 0);
 
         panel->priv->shutdown_menu = gtk_menu_new ();
