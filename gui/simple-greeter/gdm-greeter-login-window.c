@@ -1349,7 +1349,6 @@ gdm_greeter_login_window_get_preferred_width (GtkWidget *widget,
         GtkAllocation   widget_allocation;
         int             min_size;
         int             nat_size;
-        guint           border_width;
 
         min_size = 0;
         nat_size = 0;
@@ -1361,10 +1360,6 @@ gdm_greeter_login_window_get_preferred_width (GtkWidget *widget,
         gtk_widget_get_preferred_width (gtk_bin_get_child (GTK_BIN (widget)),
                                         &min_size,
                                         &nat_size);
-
-        border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
-        min_size += 2 * border_width;
-        nat_size += 2 * border_width;
 
         /* Make width be at least 33% screen width */
         screen = gtk_widget_get_screen (widget);
@@ -1396,7 +1391,6 @@ gdm_greeter_login_window_get_preferred_height (GtkWidget *widget,
         GdkRectangle    area;
         int             min_size;
         int             nat_size;
-        guint           border_width;
 
         min_size = 0;
         nat_size = 0;
@@ -1408,10 +1402,6 @@ gdm_greeter_login_window_get_preferred_height (GtkWidget *widget,
         gtk_widget_get_preferred_height (gtk_bin_get_child (GTK_BIN (widget)),
                                         &min_size,
                                         &nat_size);
-
-        border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
-        min_size += 2 * border_width;
-        nat_size += 2 * border_width;
 
         /* Make height be at most 80% of screen height */
         screen = gtk_widget_get_screen (widget);
@@ -1509,6 +1499,7 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
         GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+        GtkContainerClass *container_class = GTK_CONTAINER_CLASS (klass);
 
         object_class->get_property = gdm_greeter_login_window_get_property;
         object_class->set_property = gdm_greeter_login_window_set_property;
@@ -1518,6 +1509,8 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
         widget_class->key_press_event = gdm_greeter_login_window_key_press_event;
         widget_class->get_preferred_width = gdm_greeter_login_window_get_preferred_width;
         widget_class->get_preferred_height = gdm_greeter_login_window_get_preferred_height;
+
+        gtk_container_class_handle_border_width (container_class);
 
         signals [BEGIN_AUTO_LOGIN] =
                 g_signal_new ("begin-auto-login",
