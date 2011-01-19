@@ -833,6 +833,9 @@ get_pixbuf_from_icon_names (GdmUserChooserWidget *widget,
         int          size;
         const char  *icon_name;
         va_list      argument_list;
+        gint        *sizes;
+        gint         candidate_size;
+        int          i;
 
         array = g_ptr_array_new ();
 
@@ -849,9 +852,29 @@ get_pixbuf_from_icon_names (GdmUserChooserWidget *widget,
 
         size = get_icon_height_for_widget (GTK_WIDGET (widget));
 
+        sizes = gtk_icon_theme_get_icon_sizes (widget->priv->icon_theme, first_name);
+
+        candidate_size = 0;
+        for (i = 0; sizes[i] != 0; i++) {
+
+                /* scalable */
+                if (sizes[i] == -1) {
+                        candidate_size = sizes[i];
+                        break;
+                }
+
+                if (ABS (size - sizes[i]) < ABS (size - candidate_size)) {
+                        candidate_size = sizes[i];
+                }
+        }
+
+        if (candidate_size == 0) {
+                candidate_size = size;
+        }
+
         icon_info = gtk_icon_theme_choose_icon (widget->priv->icon_theme,
                                                 (const char **) array->pdata,
-                                                size,
+                                                candidate_size,
                                                 GTK_ICON_LOOKUP_GENERIC_FALLBACK);
         g_ptr_array_free (array, FALSE);
 
@@ -868,8 +891,16 @@ get_pixbuf_from_icon_names (GdmUserChooserWidget *widget,
                         g_error_free (error);
                 }
         } else {
+                GdkPixbuf *scaled_pixbuf;
+
+                guchar pixel = 0x00000000;
+
                 g_warning ("Could not find icon '%s' or fallbacks", first_name);
-                pixbuf = NULL;
+                pixbuf = gdk_pixbuf_new_from_data (&pixel, GDK_COLORSPACE_RGB,
+                                                   TRUE, 8, 1, 1, 1, NULL, NULL);
+                scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf, size, size, GDK_INTERP_NEAREST);
+                g_object_unref (pixbuf);
+                scaled_pixbuf = pixbuf;
         }
 
         return pixbuf;
