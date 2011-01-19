@@ -84,6 +84,7 @@ struct GdmGreeterPanelPrivate
 
         GtkWidget              *power_image;
         GtkWidget              *power_menu_item;
+        GtkWidget              *power_menubar_item;
         GDBusProxy             *power_proxy;
         gulong                  power_proxy_signal_handler;
         gulong                  power_proxy_properties_changed_handler;
@@ -248,7 +249,7 @@ update_power_icon (GdmGreeterPanel *panel)
 
                 name = g_variant_get_string (variant, NULL);
 
-                if (name != NULL) {
+                if (name != NULL && *name != '\0') {
                         GError *error;
                         GIcon  *icon;
                         error = NULL;
@@ -258,7 +259,12 @@ update_power_icon (GdmGreeterPanel *panel)
                                 gtk_image_set_from_gicon (GTK_IMAGE (panel->priv->power_image),
                                                           icon,
                                                           GTK_ICON_SIZE_MENU);
+                                gtk_widget_show_all (panel->priv->power_menubar_item);
+                        } else {
+                                gtk_widget_hide (panel->priv->power_menubar_item);
                         }
+                } else {
+                        gtk_widget_hide (panel->priv->power_menubar_item);
                 }
         }
 
@@ -910,7 +916,23 @@ add_battery_menu (GdmGreeterPanel *panel)
         GError    *error;
         GIcon     *gicon;
 
+        error = NULL;
+        panel->priv->power_proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
+                                                                  G_DBUS_PROXY_FLAGS_NONE,
+                                                                  NULL,
+                                                                  GPM_DBUS_NAME,
+                                                                  GPM_DBUS_PATH,
+                                                                  GPM_DBUS_INTERFACE,
+                                                                  NULL,
+                                                                  &error);
+        if (panel->priv->power_proxy == NULL) {
+                g_warning ("Unable to connect to power manager: %s", error->message);
+                g_error_free (error);
+                return;
+        }
+
         item = gtk_menu_item_new ();
+
         override_style (item);
         box = gtk_hbox_new (FALSE, 0);
         gtk_container_add (GTK_CONTAINER (item), box);
@@ -930,22 +952,7 @@ add_battery_menu (GdmGreeterPanel *panel)
         panel->priv->power_menu_item = gtk_menu_item_new_with_label (_("Unknown time remaining"));
         gtk_widget_set_sensitive (panel->priv->power_menu_item, FALSE);
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), panel->priv->power_menu_item);
-
-        error = NULL;
-        panel->priv->power_proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
-                                                                  G_DBUS_PROXY_FLAGS_NONE,
-                                                                  NULL,
-                                                                  GPM_DBUS_NAME,
-                                                                  GPM_DBUS_PATH,
-                                                                  GPM_DBUS_INTERFACE,
-                                                                  NULL,
-                                                                  &error);
-        if (panel->priv->power_proxy == NULL) {
-                g_warning ("Unable to connect to power manager: %s", error->message);
-                g_error_free (error);
-        }
-
-        gtk_widget_show_all (item);
+        panel->priv->power_menubar_item = item;
 }
 
 static void
