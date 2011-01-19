@@ -949,7 +949,14 @@ update_icons (GdmChooserWidget *widget,
               IconUpdateData   *data)
 {
         if (data->old_icon == *image) {
+                if (*image != NULL) {
+                        g_object_unref (*image);
+                }
                 *image = data->new_icon;
+
+                if (*image != NULL) {
+                        g_object_ref (*image);
+                }
                 return TRUE;
         }
 
