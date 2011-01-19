@@ -71,6 +71,8 @@ on_cancelled (GdmGreeterLoginWindow *login_window,
                 g_source_remove (cancel_idle_id);
                 cancel_idle_id = 0;
         }
+
+        gdm_greeter_login_window_reset (login_window);
 }
 
 int
