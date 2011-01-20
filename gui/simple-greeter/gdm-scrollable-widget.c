@@ -40,8 +40,6 @@
 
 #define GDM_SCROLLABLE_WIDGET_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SCROLLABLE_WIDGET, GdmScrollableWidgetPrivate))
 
-#define GDM_STYLE_CLASS_SCROLLABLE_WIDGET "gdm-scrollable-widget"
-
 enum
 {
         SCROLL_CHILD,
@@ -282,6 +280,19 @@ gdm_scrollable_widget_needs_scrollbar (GdmScrollableWidget *widget)
 }
 
 static void
+adopt_style_from_scrolled_window_class (GtkWidget       *widget,
+                                        GtkStyleContext *context)
+{
+        GtkWidgetPath   *path;
+        gtk_style_context_add_class (context, GTK_STYLE_CLASS_FRAME);
+
+        path = gtk_widget_path_new ();
+        gtk_widget_path_append_type (path, GTK_TYPE_SCROLLED_WINDOW);
+        gtk_style_context_set_path (context, path);
+        gtk_widget_path_free (path);
+}
+
+static void
 gdm_scrollable_widget_get_preferred_size (GtkWidget      *widget,
                                           GtkOrientation  orientation,
                                           gint           *minimum_size,
@@ -300,8 +311,8 @@ gdm_scrollable_widget_get_preferred_size (GtkWidget      *widget,
         state = gtk_widget_get_state_flags (widget);
 
         gtk_style_context_save (context);
-        gtk_style_context_add_class (context, GTK_STYLE_CLASS_FRAME);
-        gtk_style_context_add_class (context, GDM_STYLE_CLASS_SCROLLABLE_WIDGET);
+        adopt_style_from_scrolled_window_class (widget, context);
+
         gtk_style_context_get_padding (context, state, &padding);
         gtk_style_context_get_border (context, state, &border);
 
@@ -405,10 +416,10 @@ gdm_scrollable_widget_size_allocate (GtkWidget     *widget,
         state = gtk_widget_get_state_flags (widget);
 
         gtk_style_context_save (context);
-        gtk_style_context_add_class (context, GTK_STYLE_CLASS_FRAME);
-        gtk_style_context_add_class (context, GDM_STYLE_CLASS_SCROLLABLE_WIDGET);
+        adopt_style_from_scrolled_window_class (widget, context);
+
         gtk_style_context_get_padding (context, state, &padding);
-        gtk_style_context_get_padding (context, state, &border);
+        gtk_style_context_get_border (context, state, &border);
 
         gtk_widget_set_allocation (widget, allocation);
 
@@ -577,8 +588,8 @@ gdm_scrollable_widget_draw (GtkWidget *widget,
         is_flipped = gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL;
 
         gtk_style_context_save (context);
-        gtk_style_context_add_class (context, GTK_STYLE_CLASS_FRAME);
-        gtk_style_context_add_class (context, GDM_STYLE_CLASS_SCROLLABLE_WIDGET);
+        adopt_style_from_scrolled_window_class (widget, context);
+
         gtk_style_context_get_padding (context, state, &padding);
         gtk_style_context_get_border (context, state, &border);
 
@@ -760,41 +771,9 @@ gdm_scrollable_widget_add_invisible_event_sink (GdmScrollableWidget *widget)
 static void
 gdm_scrollable_widget_init (GdmScrollableWidget *widget)
 {
-        GtkCssProvider  *provider;
-        GtkStyleContext *context;
-        GError          *error;
-
         widget->priv = GDM_SCROLLABLE_WIDGET_GET_PRIVATE (widget);
 
         widget->priv->forced_height = -1;
-
-        context = gtk_widget_get_style_context (GTK_WIDGET (widget));
-        provider = gtk_css_provider_new ();
-
-        error = NULL;
-        /* FIXME: apparently no easy way to say
-         * "use the same style as scrolled window"
-         */
-        gtk_css_provider_load_from_data (provider,
-
-                                         "." GDM_STYLE_CLASS_SCROLLABLE_WIDGET " {\n"
-                                         "  border-style: solid;\n"
-                                         "  border-color: darker (@bg_color);\n"
-                                         "  border-width: 1; \n"
-                                         "  border-radius: 0;\n"
-                                         "}\n",
-                                         -1,
-                                         &error);
-
-        if (error != NULL) {
-                g_warning ("Error loading style data: %s", error->message);
-                g_error_free (error);
-        } else {
-                gtk_style_context_add_provider (context,
-                                                GTK_STYLE_PROVIDER (provider),
-                                                GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-        }
-        g_object_unref (provider);
 
         gdm_scrollable_widget_add_scrollbar (widget);
         gdm_scrollable_widget_add_invisible_event_sink (widget);
