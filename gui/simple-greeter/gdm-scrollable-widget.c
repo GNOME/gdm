@@ -320,6 +320,8 @@ gdm_scrollable_widget_get_preferred_size (GtkWidget      *widget,
                 minimum_req.width = padding.left + padding.right;
                 minimum_req.width = border.left + border.right;
                 minimum_req.height = padding.top + padding.bottom;
+                minimum_req.height = border.top + border.bottom;
+
                 natural_req.width = padding.left + padding.right;
                 natural_req.width = border.left + border.right;
                 natural_req.height = padding.top + padding.bottom;
