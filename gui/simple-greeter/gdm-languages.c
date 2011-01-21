@@ -115,7 +115,7 @@ normalize_codeset (const char *codeset)
  * locale names are of the form:
  * [language[_territory][.codeset][@modifier]]
  */
-void
+gboolean
 gdm_parse_language_name (const char *name,
                          char      **language_codep,
                          char      **territory_codep,
@@ -128,8 +128,10 @@ gdm_parse_language_name (const char *name,
         GError     *error;
         gchar      *normalized_codeset = NULL;
         gchar      *normalized_name = NULL;
+        gboolean    retval;
 
         match_info = NULL;
+        retval = FALSE;
 
         error = NULL;
         re = g_regex_new ("^(?P<language>[^_.@[:space:]]+)"
@@ -153,6 +155,8 @@ gdm_parse_language_name (const char *name,
                 g_warning ("Unable to parse locale: %s", name);
                 goto out;
         }
+
+        retval = TRUE;
 
         if (language_codep != NULL) {
                 *language_codep = g_match_info_fetch_named (match_info, "language");
@@ -207,6 +211,8 @@ gdm_parse_language_name (const char *name,
  out:
         g_match_info_free (match_info);
         g_regex_unref (re);
+
+        return retval;
 }
 
 static char *
