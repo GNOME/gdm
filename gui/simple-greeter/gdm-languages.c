@@ -47,6 +47,7 @@
 
 #define ALIASES_FILE DATADIR "/gdm/locale.alias"
 #define ARCHIVE_FILE LIBLOCALEDIR "/locale-archive"
+#define SYSTEM_ARCHIVE_FILE "/usr/lib/locale/locale-archive"
 #define ISO_CODES_DATADIR ISO_CODES_PREFIX "/share/xml/iso-codes"
 #define ISO_CODES_LOCALESDIR ISO_CODES_PREFIX "/share/locale"
 
@@ -464,9 +465,13 @@ collect_locales_from_archive (void)
         error = NULL;
         mapped = g_mapped_file_new (ARCHIVE_FILE, FALSE, &error);
         if (mapped == NULL) {
-                g_warning ("Mapping failed for %s: %s", ARCHIVE_FILE, error->message);
+                mapped = g_mapped_file_new (SYSTEM_ARCHIVE_FILE, FALSE, NULL);
+                if (mapped == NULL) {
+                        g_warning ("Mapping failed for %s: %s", ARCHIVE_FILE, error->message);
+                        g_error_free (error);
+                        return FALSE;
+                }
                 g_error_free (error);
-                return FALSE;
         }
 
         locales_collected = FALSE;
