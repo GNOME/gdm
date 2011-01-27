@@ -2071,13 +2071,6 @@ setup_session_environment (GdmSessionDirect *session)
                                                      "GDM_LANG",
                                                      get_language_name (session));
 
-        if (strcmp (get_layout_name (session),
-                    get_default_layout_name (session)) == 0) {
-                gdm_session_direct_set_environment_variable (session,
-                                                             "GDM_KEYBOARD_LAYOUT",
-                                                             get_layout_name (session));
-        }
-
         gdm_session_direct_set_environment_variable (session,
                                                      "DISPLAY",
                                                      session->priv->display_name);
