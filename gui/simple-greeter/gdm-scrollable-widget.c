@@ -280,19 +280,6 @@ gdm_scrollable_widget_needs_scrollbar (GdmScrollableWidget *widget)
 }
 
 static void
-adopt_style_from_scrolled_window_class (GtkWidget       *widget,
-                                        GtkStyleContext *context)
-{
-        GtkWidgetPath   *path;
-        gtk_style_context_add_class (context, GTK_STYLE_CLASS_FRAME);
-
-        path = gtk_widget_path_new ();
-        gtk_widget_path_append_type (path, GTK_TYPE_SCROLLED_WINDOW);
-        gtk_style_context_set_path (context, path);
-        gtk_widget_path_free (path);
-}
-
-static void
 gdm_scrollable_widget_get_preferred_size (GtkWidget      *widget,
                                           GtkOrientation  orientation,
                                           gint           *minimum_size,
@@ -309,9 +296,6 @@ gdm_scrollable_widget_get_preferred_size (GtkWidget      *widget,
 
         context = gtk_widget_get_style_context (widget);
         state = gtk_widget_get_state_flags (widget);
-
-        gtk_style_context_save (context);
-        adopt_style_from_scrolled_window_class (widget, context);
 
         gtk_style_context_get_padding (context, state, &padding);
         gtk_style_context_get_border (context, state, &border);
@@ -376,8 +360,6 @@ gdm_scrollable_widget_get_preferred_size (GtkWidget      *widget,
                 if (natural_size)
                         *natural_size = natural_req.height;
         }
-
-        gtk_style_context_restore (context);
 }
 
 static void
@@ -414,9 +396,6 @@ gdm_scrollable_widget_size_allocate (GtkWidget     *widget,
         scrollable_widget = GDM_SCROLLABLE_WIDGET (widget);
         context = gtk_widget_get_style_context (widget);
         state = gtk_widget_get_state_flags (widget);
-
-        gtk_style_context_save (context);
-        adopt_style_from_scrolled_window_class (widget, context);
 
         gtk_style_context_get_padding (context, state, &padding);
         gtk_style_context_get_border (context, state, &border);
@@ -486,7 +465,6 @@ gdm_scrollable_widget_size_allocate (GtkWidget     *widget,
                                           &child_allocation);
                 scrollable_widget->priv->child_adjustments_stale = FALSE;
         }
-        gtk_style_context_restore (context);
 }
 
 static void
@@ -587,9 +565,6 @@ gdm_scrollable_widget_draw (GtkWidget *widget,
         state = gtk_widget_get_state_flags (widget);
         is_flipped = gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL;
 
-        gtk_style_context_save (context);
-        adopt_style_from_scrolled_window_class (widget, context);
-
         gtk_style_context_get_padding (context, state, &padding);
         gtk_style_context_get_border (context, state, &border);
 
@@ -625,7 +600,6 @@ gdm_scrollable_widget_draw (GtkWidget *widget,
 
         gtk_render_frame (context, cr,
                           x, y, width, height);
-        gtk_style_context_restore (context);
 
         return GTK_WIDGET_CLASS (gdm_scrollable_widget_parent_class)->draw (widget, cr);
 }
@@ -769,6 +743,22 @@ gdm_scrollable_widget_add_invisible_event_sink (GdmScrollableWidget *widget)
 }
 
 static void
+gdm_scrollable_widget_adopt_style_from_scrolled_window_class (GdmScrollableWidget *widget)
+{
+        GtkStyleContext *context;
+        GtkWidgetPath   *path;
+
+        context = gtk_widget_get_style_context (GTK_WIDGET (widget));
+
+        gtk_style_context_add_class (context, GTK_STYLE_CLASS_FRAME);
+
+        path = gtk_widget_path_new ();
+        gtk_widget_path_append_type (path, GTK_TYPE_SCROLLED_WINDOW);
+        gtk_style_context_set_path (context, path);
+        gtk_widget_path_free (path);
+}
+
+static void
 gdm_scrollable_widget_init (GdmScrollableWidget *widget)
 {
         widget->priv = GDM_SCROLLABLE_WIDGET_GET_PRIVATE (widget);
@@ -777,6 +767,12 @@ gdm_scrollable_widget_init (GdmScrollableWidget *widget)
 
         gdm_scrollable_widget_add_scrollbar (widget);
         gdm_scrollable_widget_add_invisible_event_sink (widget);
+
+        gdm_scrollable_widget_adopt_style_from_scrolled_window_class (widget);
+        g_signal_connect (G_OBJECT (widget),
+                          "style-updated",
+                          G_CALLBACK (gdm_scrollable_widget_adopt_style_from_scrolled_window_class),
+                          NULL);
 }
 
 GtkWidget *
