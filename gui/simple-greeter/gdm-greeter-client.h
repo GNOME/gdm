@@ -65,8 +65,6 @@ typedef struct
                                                 const char        *session_name);
         void (* default_language_name_changed) (GdmGreeterClient  *client,
                                                 const char        *language_name);
-        void (* default_layout_name_changed) (GdmGreeterClient  *client,
-                                              const char        *layout_name);
         void (* timed_login_requested)   (GdmGreeterClient  *client,
                                           const char        *username,
                                           int                delay);
@@ -104,8 +102,6 @@ void               gdm_greeter_client_call_select_hostname           (GdmGreeter
 void               gdm_greeter_client_call_select_user               (GdmGreeterClient *client,
                                                                       const char       *text);
 void               gdm_greeter_client_call_select_language           (GdmGreeterClient *client,
-                                                                      const char       *text);
-void               gdm_greeter_client_call_select_layout             (GdmGreeterClient *client,
                                                                       const char       *text);
 void               gdm_greeter_client_call_select_session            (GdmGreeterClient *client,
                                                                       const char       *text);

@@ -48,9 +48,6 @@ typedef struct
         void (* language_selected)           (GdmGreeterPanel *panel,
                                               const char      *text);
 
-        void (* layout_selected)             (GdmGreeterPanel *panel,
-                                              const char      *text);
-
         void (* session_selected)            (GdmGreeterPanel *panel,
                                               const char      *text);
 } GdmGreeterPanelClass;
@@ -64,8 +61,6 @@ GtkWidget            * gdm_greeter_panel_new                            (GdkScre
 void                   gdm_greeter_panel_show_user_options              (GdmGreeterPanel *panel);
 void                   gdm_greeter_panel_hide_user_options              (GdmGreeterPanel *panel);
 void                   gdm_greeter_panel_reset                          (GdmGreeterPanel *panel);
-void                   gdm_greeter_panel_set_keyboard_layout            (GdmGreeterPanel *panel,
-                                                                         const char      *layout_name);
 
 void                   gdm_greeter_panel_set_default_language_name      (GdmGreeterPanel *panel,
                                                                          const char      *language_name);

@@ -59,8 +59,6 @@ void             _gdm_session_closed                       (GdmSession   *sessio
 /* user settings read from ~/.dmrc / system defaults */
 void             _gdm_session_default_language_name_changed     (GdmSession   *session,
                                                                  const char   *language_name);
-void             _gdm_session_default_layout_name_changed       (GdmSession   *session,
-                                                                 const char   *layout_name);
 void             _gdm_session_default_session_name_changed      (GdmSession   *session,
                                                                  const char   *session_name);
 /* user is selected/changed internally */

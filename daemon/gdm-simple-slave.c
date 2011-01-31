@@ -684,18 +684,6 @@ on_default_language_name_changed (GdmSession     *session,
 }
 
 static void
-on_default_layout_name_changed (GdmSession     *session,
-                                const char     *text,
-                                GdmSimpleSlave *slave)
-{
-        g_debug ("GdmSimpleSlave: Default layout name changed: %s", text);
-
-        if (slave->priv->greeter_server != NULL) {
-                gdm_greeter_server_default_layout_name_changed (slave->priv->greeter_server, text);
-        }
-}
-
-static void
 on_default_session_name_changed (GdmSession     *session,
                                  const char     *text,
                                  GdmSimpleSlave *slave)
@@ -840,11 +828,6 @@ create_new_session (GdmSimpleSlave *slave)
                           slave);
 
         g_signal_connect (slave->priv->session,
-                          "default-layout-name-changed",
-                          G_CALLBACK (on_default_layout_name_changed),
-                          slave);
-
-        g_signal_connect (slave->priv->session,
                           "default-session-name-changed",
                           G_CALLBACK (on_default_session_name_changed),
                           slave);
@@ -936,14 +919,6 @@ on_greeter_language_selected (GdmGreeterServer *greeter_server,
                               GdmSimpleSlave   *slave)
 {
         gdm_session_select_language (GDM_SESSION (slave->priv->session), text);
-}
-
-static void
-on_greeter_layout_selected (GdmGreeterServer *greeter_server,
-                            const char       *text,
-                            GdmSimpleSlave   *slave)
-{
-        gdm_session_select_layout (GDM_SESSION (slave->priv->session), text);
 }
 
 static void
@@ -1085,10 +1060,6 @@ start_greeter (GdmSimpleSlave *slave)
         g_signal_connect (slave->priv->greeter_server,
                           "language-selected",
                           G_CALLBACK (on_greeter_language_selected),
-                          slave);
-        g_signal_connect (slave->priv->greeter_server,
-                          "layout-selected",
-                          G_CALLBACK (on_greeter_layout_selected),
                           slave);
         g_signal_connect (slave->priv->greeter_server,
                           "user-selected",

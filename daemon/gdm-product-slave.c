@@ -773,28 +773,6 @@ on_relay_language_selected (GdmProductSlave *slave,
 }
 
 static void
-on_relay_layout_selected (GdmProductSlave *slave,
-                          DBusMessage     *message)
-{
-        DBusError   error;
-        const char *text;
-        dbus_bool_t res;
-
-        dbus_error_init (&error);
-        res = dbus_message_get_args (message,
-                                     &error,
-                                     DBUS_TYPE_STRING, &text,
-                                     DBUS_TYPE_INVALID);
-        if (res) {
-                g_debug ("GdmProductSlave: Layout selected %s", text);
-                gdm_session_select_layout (GDM_SESSION (slave->priv->session), text);
-        } else {
-                g_warning ("Unable to get arguments: %s", error.message);
-                dbus_error_free (&error);
-        }
-}
-
-static void
 on_relay_user_selected (GdmProductSlave *slave,
                         DBusMessage     *message)
 {
@@ -1018,8 +996,6 @@ relay_dbus_handle_message (DBusConnection *connection,
                 on_relay_session_selected (slave, message);
         } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "LanguageSelected")) {
                 on_relay_language_selected (slave, message);
-        } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "LayoutSelected")) {
-                on_relay_layout_selected (slave, message);
         } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "UserSelected")) {
                 on_relay_user_selected (slave, message);
         } else if (dbus_message_is_signal (message, RELAY_SERVER_DBUS_INTERFACE, "OpenSession")) {

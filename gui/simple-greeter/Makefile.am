@@ -54,7 +54,6 @@ noinst_PROGRAMS = 			\
 	test-greeter-login-window	\
 	test-greeter-panel		\
 	test-language-chooser		\
-	test-layout-chooser		\
 	test-languages			\
 	test-sessions			\
 	test-remote-login-window	\
@@ -117,14 +116,6 @@ test_greeter_panel_SOURCES = 	\
 	gdm-language-chooser-dialog.c	\
 	gdm-language-option-widget.h	\
 	gdm-language-option-widget.c	\
-	gdm-layout-chooser-widget.h	\
-	gdm-layout-chooser-widget.c	\
-	gdm-layout-chooser-dialog.h	\
-	gdm-layout-chooser-dialog.c	\
-	gdm-layout-option-widget.h	\
-	gdm-layout-option-widget.c	\
-	gdm-layouts.h			\
-	gdm-layouts.c			\
 	gdm-sessions.h			\
 	gdm-sessions.c			\
 	gdm-session-option-widget.h	\
@@ -181,30 +172,6 @@ test_language_chooser_SOURCES = 	\
 test_language_chooser_LDADD =	\
 	$(GTK_LIBS)		\
 	$(GCONF_LIBS)		\
-	$(NULL)
-
-test_layout_chooser_SOURCES = 	\
-	test-layout-chooser.c		\
-	gdm-cell-renderer-timer.h	\
-	gdm-cell-renderer-timer.c	\
-	gdm-timer.h			\
-	gdm-timer.c			\
-	gdm-scrollable-widget.h		\
-	gdm-scrollable-widget.c		\
-	gdm-chooser-widget.h		\
-	gdm-chooser-widget.c		\
-	gdm-layouts.h			\
-	gdm-layouts.c			\
-	gdm-layout-chooser-widget.h	\
-	gdm-layout-chooser-widget.c	\
-	gdm-layout-chooser-dialog.h	\
-	gdm-layout-chooser-dialog.c	\
-	$(NULL)
-
-test_layout_chooser_LDADD =		\
-	$(GTK_LIBS)			\
-	$(GCONF_LIBS)			\
-	$(LIBXKLAVIER_LIBS)		\
 	$(NULL)
 
 test_languages_SOURCES = 		\
@@ -295,14 +262,6 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-languages.c			\
 	gdm-language-chooser-widget.h	\
 	gdm-language-chooser-widget.c	\
-	gdm-layout-chooser-widget.h	\
-	gdm-layout-chooser-widget.c	\
-	gdm-layout-chooser-dialog.h	\
-	gdm-layout-chooser-dialog.c	\
-	gdm-layout-option-widget.h	\
-	gdm-layout-option-widget.c	\
-	gdm-layouts.h			\
-	gdm-layouts.c			\
 	locarchive.h			\
 	gdm-language-chooser-dialog.h	\
 	gdm-language-chooser-dialog.c	\

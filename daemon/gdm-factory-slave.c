@@ -438,14 +438,6 @@ on_greeter_language_selected (GdmGreeterServer *greeter_server,
 }
 
 static void
-on_greeter_layout_selected (GdmGreeterServer *greeter_server,
-                            const char       *text,
-                            GdmFactorySlave  *slave)
-{
-        gdm_session_select_layout (GDM_SESSION (slave->priv->session), text);
-}
-
-static void
 on_greeter_user_selected (GdmGreeterServer *greeter_server,
                           const char       *text,
                           GdmFactorySlave  *slave)
@@ -536,10 +528,6 @@ run_greeter (GdmFactorySlave *slave)
         g_signal_connect (slave->priv->greeter_server,
                           "language-selected",
                           G_CALLBACK (on_greeter_language_selected),
-                          slave);
-        g_signal_connect (slave->priv->greeter_server,
-                          "layout-selected",
-                          G_CALLBACK (on_greeter_layout_selected),
                           slave);
         g_signal_connect (slave->priv->greeter_server,
                           "user-selected",

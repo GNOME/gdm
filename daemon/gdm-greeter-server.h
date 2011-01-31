@@ -57,8 +57,6 @@ typedef struct
                                              const char        *hostname);
         void (* language_selected)          (GdmGreeterServer  *greeter_server,
                                              const char        *name);
-        void (* layout_selected)            (GdmGreeterServer  *greeter_server,
-                                             const char        *name);
         void (* user_selected)              (GdmGreeterServer  *greeter_server,
                                              const char        *name);
         void (* cancelled)                  (GdmGreeterServer  *greeter_server);
@@ -91,8 +89,6 @@ void                gdm_greeter_server_selected_user_changed (GdmGreeterServer *
                                                               const char       *text);
 void                gdm_greeter_server_default_language_name_changed (GdmGreeterServer *greeter_server,
                                                                       const char       *text);
-void                gdm_greeter_server_default_layout_name_changed (GdmGreeterServer *greeter_server,
-                                                                    const char       *text);
 void                gdm_greeter_server_default_session_name_changed (GdmGreeterServer *greeter_server,
                                                                      const char       *text);
 

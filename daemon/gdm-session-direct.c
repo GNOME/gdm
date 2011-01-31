@@ -74,8 +74,6 @@ struct _GdmSessionDirectPrivate
         char                *saved_session;
         char                *selected_language;
         char                *saved_language;
-        char                *selected_layout;
-        char                *saved_layout;
         char                *selected_user;
         char                *user_x11_authority_file;
 
@@ -613,49 +611,6 @@ get_default_language_name (GdmSessionDirect *session)
     return setlocale (LC_MESSAGES, NULL);
 }
 
-static char *
-get_system_default_layout (GdmSessionDirect *session)
-{
-    char *result = NULL;
-#ifdef HAVE_LIBXKLAVIER
-    static XklEngine *engine = NULL;
-    
-    if (engine == NULL) {
-            Display *display = XOpenDisplay (session->priv->display_name);
-            if (display != NULL) {
-                    engine = xkl_engine_get_instance (display);
-            }
-            /* do NOT call XCloseDisplay (display) here;
-             * xkl_engine_get_instance() is a singleton which saves the display */
-    }
-    
-    if (engine != NULL) {
-            XklConfigRec *config = xkl_config_rec_new ();
-            if (xkl_config_rec_get_from_server (config, engine) && config->layouts && config->layouts[0]) {
-                    if (config->variants && config->variants[0] && config->variants[0][0])
-                            result = g_strdup_printf("%s\t%s", config->layouts[0], config->variants[0]);
-                    else
-                            result = g_strdup (config->layouts[0]);
-            }
-            g_object_unref (config);
-    }
-#endif
-
-    if (!result)
-        result = g_strdup ("us");    
-    return result;
-}
-
-static const char *
-get_default_layout_name (GdmSessionDirect *session)
-{
-    if (!session->priv->saved_layout) {
-        session->priv->saved_layout = get_system_default_layout (session);
-    }
-
-    return session->priv->saved_layout;
-}
-
 static const char *
 get_fallback_session_name (GdmSessionDirect *session_direct)
 {
@@ -754,8 +709,6 @@ gdm_session_direct_defaults_changed (GdmSessionDirect *session)
 {
         _gdm_session_default_language_name_changed (GDM_SESSION (session),
                                                     get_default_language_name (session));
-        _gdm_session_default_layout_name_changed (GDM_SESSION (session),
-                                                  get_default_layout_name (session));
         _gdm_session_default_session_name_changed (GDM_SESSION (session),
                                                    get_default_session_name (session));
 }
@@ -776,9 +729,6 @@ gdm_session_direct_select_user (GdmSession *session,
 
         g_free (impl->priv->saved_language);
         impl->priv->saved_language = NULL;
-
-        g_free (impl->priv->saved_layout);
-        impl->priv->saved_layout = NULL;
 }
 
 static DBusHandlerResult
@@ -1185,39 +1135,6 @@ gdm_session_direct_handle_saved_language_name_read (GdmSessionDirect *session,
 }
 
 static DBusHandlerResult
-gdm_session_direct_handle_saved_layout_name_read (GdmSessionDirect *session,
-                                                  DBusConnection   *connection,
-                                                  DBusMessage      *message)
-{
-        DBusMessage *reply;
-        DBusError    error;
-        const char  *layout_name;
-
-        dbus_error_init (&error);
-        if (! dbus_message_get_args (message, &error,
-                                     DBUS_TYPE_STRING, &layout_name,
-                                     DBUS_TYPE_INVALID)) {
-                g_warning ("ERROR: %s", error.message);
-        }
-
-        reply = dbus_message_new_method_return (message);
-        dbus_connection_send (connection, reply, NULL);
-        dbus_message_unref (reply);
-
-        if (strcmp (layout_name,
-                    get_default_layout_name (session)) != 0) {
-                g_free (session->priv->saved_layout);
-                session->priv->saved_layout = g_strdup (layout_name);
-
-                _gdm_session_default_layout_name_changed (GDM_SESSION (session),
-                                                          layout_name);
-        }
-
-
-        return DBUS_HANDLER_RESULT_HANDLED;
-}
-
-static DBusHandlerResult
 gdm_session_direct_handle_saved_session_name_read (GdmSessionDirect *session,
                                                    DBusConnection   *connection,
                                                    DBusMessage      *message)
@@ -1310,8 +1227,6 @@ session_worker_message (DBusConnection *connection,
                 return gdm_session_direct_handle_session_died (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SavedLanguageNameRead")) {
                 return gdm_session_direct_handle_saved_language_name_read (session, connection, message);
-        } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SavedLayoutNameRead")) {
-                return gdm_session_direct_handle_saved_layout_name_read (session, connection, message);
         } else if (dbus_message_is_method_call (message, GDM_SESSION_DBUS_INTERFACE, "SavedSessionNameRead")) {
                 return gdm_session_direct_handle_saved_session_name_read (session, connection, message);
         }
@@ -1999,16 +1914,6 @@ get_language_name (GdmSessionDirect *session)
 }
 
 static const char *
-get_layout_name (GdmSessionDirect *session)
-{
-        if (session->priv->selected_layout != NULL) {
-                return session->priv->selected_layout;
-        }
-
-        return get_default_layout_name (session);
-}
-
-static const char *
 get_session_name (GdmSessionDirect *session)
 {
         /* FIXME: test the session names before we use them? */
@@ -2172,12 +2077,6 @@ gdm_session_direct_close (GdmSession *session)
         g_free (impl->priv->saved_language);
         impl->priv->saved_language = NULL;
 
-        g_free (impl->priv->selected_layout);
-        impl->priv->selected_layout = NULL;
-
-        g_free (impl->priv->saved_layout);
-        impl->priv->saved_layout = NULL;
-
         g_free (impl->priv->user_x11_authority_file);
         impl->priv->user_x11_authority_file = NULL;
 
@@ -2306,24 +2205,6 @@ gdm_session_direct_select_language (GdmSession *session,
 
         send_dbus_string_signal (impl, "SetLanguageName",
                                  get_language_name (impl));
-}
-
-static void
-gdm_session_direct_select_layout (GdmSession *session,
-                                  const char *text)
-{
-        GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
-
-        g_free (impl->priv->selected_layout);
-
-        if (strcmp (text, "__previous") == 0) {
-                impl->priv->selected_layout = NULL;
-        } else {
-                impl->priv->selected_layout = g_strdup (text);
-        }
-
-        send_dbus_string_signal (impl, "SetLayoutName",
-                                 get_layout_name (impl));
 }
 
 static void
@@ -2518,8 +2399,6 @@ gdm_session_direct_finalize (GObject *object)
         g_free (session->priv->saved_session);
         g_free (session->priv->selected_language);
         g_free (session->priv->saved_language);
-        g_free (session->priv->selected_layout);
-        g_free (session->priv->saved_layout);
 
         g_free (session->priv->fallback_session_name);
 
@@ -2598,7 +2477,6 @@ gdm_session_iface_init (GdmSessionIface *iface)
         iface->answer_query = gdm_session_direct_answer_query;
         iface->select_session = gdm_session_direct_select_session;
         iface->select_language = gdm_session_direct_select_language;
-        iface->select_layout = gdm_session_direct_select_layout;
         iface->select_user = gdm_session_direct_select_user;
 }
 
