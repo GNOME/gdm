@@ -592,8 +592,7 @@ attempt_to_load_user_settings (GdmSessionWorker *worker,
                                const char       *username)
 {
         gdm_session_settings_load (worker->priv->user_settings,
-                                   username,
-                                   NULL);
+                                   username);
 }
 
 static void
@@ -1933,8 +1932,6 @@ static void
 _save_user_settings (GdmSessionWorker *worker,
                      const char       *home_dir)
 {
-        GError *error;
-
         if (!gdm_session_settings_is_loaded (worker->priv->user_settings)) {
                 /*
                  * Even if the user did not change the defaults, there may
@@ -1943,12 +1940,9 @@ _save_user_settings (GdmSessionWorker *worker,
                 goto out;
         }
 
-        error = NULL;
         if (!gdm_session_settings_save (worker->priv->user_settings,
-                                        home_dir, &error)) {
-                g_warning ("could not save session and language settings: %s",
-                           error->message);
-                g_error_free (error);
+                                        home_dir)) {
+                g_warning ("could not save session and language settings");
         }
 
 out:

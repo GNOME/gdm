@@ -32,8 +32,11 @@
 #include <glib-object.h>
 #include <glib/gi18n.h>
 
+#include <act/act-user-manager.h>
+
 struct _GdmSessionSettingsPrivate
 {
+        ActUserManager *user_manager;
         char *session_name;
         char *language_name;
 };
@@ -101,6 +104,8 @@ gdm_session_settings_init (GdmSessionSettings *settings)
         settings->priv = G_TYPE_INSTANCE_GET_PRIVATE (settings,
                                                      GDM_TYPE_SESSION_SETTINGS,
                                                      GdmSessionSettingsPrivate);
+
+        settings->priv->user_manager = act_user_manager_get_default ();
 
 }
 
@@ -230,122 +235,67 @@ gdm_session_settings_is_loaded (GdmSessionSettings  *settings)
 
 gboolean
 gdm_session_settings_load (GdmSessionSettings  *settings,
-                           const char          *username,
-                           GError             **error)
+                           const char          *username)
 {
-        GKeyFile *key_file;
-        GError   *load_error;
-        gboolean  is_loaded;
-        char     *session_name;
-        char     *language_name;
-        char     *filename;
+        ActUser *user;
+        const char *session_name;
+        const char *language_name;
 
         g_return_val_if_fail (settings != NULL, FALSE);
         g_return_val_if_fail (username != NULL, FALSE);
         g_return_val_if_fail (!gdm_session_settings_is_loaded (settings), FALSE);
 
-        filename = g_build_filename (GDM_CACHE_DIR, username, "dmrc", NULL);
+        user = act_user_manager_get_user (settings->priv->user_manager,
+                                          username);
 
-        is_loaded = FALSE;
-        key_file = g_key_file_new ();
-
-        load_error = NULL;
-        if (!g_key_file_load_from_file (key_file, filename,
-                                        G_KEY_FILE_NONE, &load_error)) {
-                g_propagate_error (error, load_error);
-                goto out;
+        if (!act_user_is_loaded (user)) {
+                g_object_unref (user);
+                return FALSE;
         }
 
-        session_name = g_key_file_get_string (key_file, "Desktop", "Session",
-                                              &load_error);
+        session_name = act_user_get_x_session (user);
 
         if (session_name != NULL) {
                 gdm_session_settings_set_session_name (settings, session_name);
-                g_free (session_name);
-        } else if (g_error_matches (load_error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
-                g_error_free (load_error);
-                load_error = NULL;
-        } else {
-                g_propagate_error (error, load_error);
-                goto out;
         }
 
-        language_name = g_key_file_get_string (key_file, "Desktop", "Language",
-                                               &load_error);
+        language_name = act_user_get_language (user);
 
         if (language_name != NULL) {
                 gdm_session_settings_set_language_name (settings, language_name);
-                g_free (language_name);
-        } else if (g_error_matches (load_error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_KEY_NOT_FOUND)) {
-                g_error_free (load_error);
-                load_error = NULL;
-        } else {
-                g_propagate_error (error, load_error);
-                goto out;
         }
+        g_object_unref (user);
 
-        is_loaded = TRUE;
-out:
-        g_key_file_free (key_file);
-        g_free (filename);
-
-        return is_loaded;
+        return TRUE;
 }
 
 gboolean
 gdm_session_settings_save (GdmSessionSettings  *settings,
-                           const char          *home_directory,
-                           GError             **error)
+                           const char          *username)
 {
-        GKeyFile *key_file;
-        GError   *file_error;
-        gboolean  is_saved;
-        char     *filename;
-        gsize     length;
-        gchar    *contents;
+        ActUser  *user;
 
         g_return_val_if_fail (GDM_IS_SESSION_SETTINGS (settings), FALSE);
-        g_return_val_if_fail (home_directory != NULL, FALSE);
+        g_return_val_if_fail (username != NULL, FALSE);
         g_return_val_if_fail (gdm_session_settings_is_loaded (settings), FALSE);
-        filename = g_build_filename (home_directory, ".dmrc", NULL);
 
-        is_saved = FALSE;
-        key_file = g_key_file_new ();
+        user = act_user_manager_get_user (settings->priv->user_manager,
+                                          username);
 
-        file_error = NULL;
-        g_key_file_load_from_file (key_file, filename,
-                                   G_KEY_FILE_KEEP_COMMENTS |
-                                   G_KEY_FILE_KEEP_TRANSLATIONS,
-                                   NULL);
+
+        if (!act_user_is_loaded (user)) {
+                g_object_unref (user);
+                return FALSE;
+        }
 
         if (settings->priv->session_name != NULL) {
-                g_key_file_set_string (key_file, "Desktop", "Session",
-                                       settings->priv->session_name);
+                act_user_set_x_session (user, settings->priv->session_name);
         }
 
         if (settings->priv->language_name != NULL) {
-                g_key_file_set_string (key_file, "Desktop", "Language",
-                                       settings->priv->language_name);
+                act_user_set_language (user, settings->priv->language_name);
         }
+        g_object_unref (user);
 
-        contents = g_key_file_to_data (key_file, &length, &file_error);
-
-        if (contents == NULL) {
-                g_propagate_error (error, file_error);
-                goto out;
-        }
-
-        if (!g_file_set_contents (filename, contents, length, &file_error)) {
-                g_free (contents);
-                g_propagate_error (error, file_error);
-                goto out;
-        }
-        g_free (contents);
-
-        is_saved = TRUE;
-out:
-        g_key_file_free (key_file);
-        g_free (filename);
-
-        return is_saved;
+        return TRUE;
 }
