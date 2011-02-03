@@ -143,7 +143,6 @@ enum {
         QUERY_ANSWER,
         START_SESSION,
         USER_SELECTED,
-        DISCONNECTED,
         CANCELLED,
         LAST_SIGNAL
 };
@@ -1566,16 +1565,6 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
                               G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, cancelled),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__VOID,
-                              G_TYPE_NONE,
-                              0);
-        signals [DISCONNECTED] =
-                g_signal_new ("disconnected",
-                              G_TYPE_FROM_CLASS (object_class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, disconnected),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,

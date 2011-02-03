@@ -56,7 +56,6 @@ typedef struct
         void (* user_selected)               (GdmGreeterLoginWindow *login_window,
                                               const char            *text);
         void (* cancelled)                   (GdmGreeterLoginWindow *login_window);
-        void (* disconnected)                (GdmGreeterLoginWindow *login_window);
         void (* start_session)               (GdmGreeterLoginWindow *login_window);
 
 } GdmGreeterLoginWindowClass;
