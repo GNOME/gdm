@@ -781,15 +781,18 @@ languages_parse_start_tag (GMarkupParseContext      *ctx,
         const char *ccode_longB;
         const char *ccode_longT;
         const char *ccode;
+        const char *ccode_id;
         const char *lang_name;
 
-        if (! g_str_equal (element_name, "iso_639_entry") || attr_names == NULL || attr_values == NULL) {
+        if (! (g_str_equal (element_name, "iso_639_entry") || g_str_equal (element_name, "iso_639_3_entry"))
+            || attr_names == NULL || attr_values == NULL) {
                 return;
         }
 
         ccode = NULL;
         ccode_longB = NULL;
         ccode_longT = NULL;
+        ccode_id = NULL;
         lang_name = NULL;
 
         while (*attr_names && *attr_values) {
@@ -817,6 +820,15 @@ languages_parse_start_tag (GMarkupParseContext      *ctx,
                                 }
                                 ccode_longT = *attr_values;
                         }
+                } else if (g_str_equal (*attr_names, "id")) {
+                        /* skip if empty */
+                        if (**attr_values) {
+                                if (strlen (*attr_values) != 2 &&
+                                    strlen (*attr_values) != 3) {
+                                        return;
+                                }
+                                ccode_id = *attr_values;
+                        }
                 } else if (g_str_equal (*attr_names, "name")) {
                         lang_name = *attr_values;
                 }
@@ -842,6 +854,11 @@ languages_parse_start_tag (GMarkupParseContext      *ctx,
         if (ccode_longT != NULL) {
                 g_hash_table_insert (gdm_languages_map,
                                      g_strdup (ccode_longT),
+                                     g_strdup (lang_name));
+        }
+        if (ccode_id != NULL) {
+                g_hash_table_insert (gdm_languages_map,
+                                     g_strdup (ccode_id),
                                      g_strdup (lang_name));
         }
 }
@@ -934,20 +951,20 @@ territories_parse_start_tag (GMarkupParseContext      *ctx,
 }
 
 static void
-languages_init (void)
+languages_variant_init (const char *variant)
 {
         GError  *error;
         gboolean res;
         char    *buf;
         gsize    buf_len;
+        char    *filename;
 
-        bindtextdomain ("iso_639", ISO_CODES_LOCALESDIR);
-        bind_textdomain_codeset ("iso_639", "UTF-8");
-
-        gdm_languages_map = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+        bindtextdomain (variant, ISO_CODES_LOCALESDIR);
+        bind_textdomain_codeset (variant, "UTF-8");
 
         error = NULL;
-        res = g_file_get_contents (ISO_CODES_DATADIR "/iso_639.xml",
+        filename = g_strdup_printf (ISO_CODES_DATADIR "/%s.xml", variant);
+        res = g_file_get_contents (filename,
                                    &buf,
                                    &buf_len,
                                    &error);
@@ -962,19 +979,29 @@ languages_init (void)
 
                 if (! res) {
                         g_warning ("Failed to parse '%s': %s\n",
-                                   ISO_CODES_DATADIR "/iso_639.xml",
+                                   filename,
                                    error->message);
                         g_error_free (error);
+                        g_free (filename);
                 }
 
                 g_markup_parse_context_free (ctx);
                 g_free (buf);
         } else {
                 g_warning ("Failed to load '%s': %s\n",
-                           ISO_CODES_DATADIR "/iso_639.xml",
+                           filename,
                            error->message);
                 g_error_free (error);
         }
+}
+
+static void
+languages_init (void)
+{
+        gdm_languages_map = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+
+        languages_variant_init ("iso_639");
+        languages_variant_init ("iso_639_3");
 }
 
 static void
