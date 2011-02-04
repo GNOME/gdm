@@ -598,8 +598,10 @@ gdm_scrollable_widget_draw (GtkWidget *widget,
         height = widget_allocation.height;
         height -= padding.top + padding.bottom;
 
-        gtk_render_frame (context, cr,
-                          x, y, width, height);
+        if (width > 0 && height > 0) {
+                gtk_render_frame (context, cr,
+                                  x, y, width, height);
+        }
 
         return GTK_WIDGET_CLASS (gdm_scrollable_widget_parent_class)->draw (widget, cr);
 }
