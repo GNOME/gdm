@@ -340,16 +340,6 @@ toggle_panel (GdmGreeterSession *session,
                 session->priv->panel = gdm_greeter_panel_new (screen, monitor, is_local);
 
                 g_signal_connect_swapped (session->priv->panel,
-                                          "language-selected",
-                                          G_CALLBACK (on_select_language),
-                                          session);
-
-                g_signal_connect_swapped (session->priv->panel,
-                                          "session-selected",
-                                          G_CALLBACK (on_select_session),
-                                          session);
-
-                g_signal_connect_swapped (session->priv->panel,
                                           "disconnected",
                                           G_CALLBACK (on_disconnected),
                                           session);
