@@ -38,7 +38,7 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys search '""'
 gsettings set org.gnome.settings-daemon.plugins.media-keys stop '""'
 gsettings set org.gnome.settings-daemon.plugins.media-keys www '""'
 
-gsettings list-schemas | egrep '^org\.gnome\.gnome-settings-daemon\.plugins\.' | while read schema; do
+gsettings list-schemas | egrep '^org\.gnome\.settings-daemon\.plugins\.' | while read schema; do
     gsettings set $schema active false
 done
 
