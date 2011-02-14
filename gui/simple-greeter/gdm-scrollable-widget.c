@@ -61,8 +61,6 @@ struct GdmScrollableWidgetPrivate
         int        forced_height;
 
         GQueue    *key_event_queue;
-
-        guint      child_adjustments_stale : 1;
 };
 
 struct GdmScrollableWidgetAnimation
@@ -257,10 +255,6 @@ gdm_scrollable_widget_needs_scrollbar (GdmScrollableWidget *widget)
         }
 
         if (widget->priv->animation != NULL) {
-                return FALSE;
-        }
-
-        if (widget->priv->child_adjustments_stale) {
                 return FALSE;
         }
 
@@ -463,7 +457,6 @@ gdm_scrollable_widget_size_allocate (GtkWidget     *widget,
 
                 gtk_widget_size_allocate (child,
                                           &child_allocation);
-                scrollable_widget->priv->child_adjustments_stale = FALSE;
         }
 }
 
