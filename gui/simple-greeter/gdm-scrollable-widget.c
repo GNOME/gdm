@@ -135,10 +135,20 @@ on_animation_tick (GdmScrollableWidgetAnimation *animation,
 
         if (animation->step_func != NULL) {
                 GdmTimer *timer;
+                GtkStyleContext *context;
+                GtkStateFlags state;
+                GtkBorder padding, border;
 
                 height = animation->desired_height;
 
-                height -= gtk_widget_get_style (animation->widget)->ythickness * 2;
+                context = gtk_widget_get_style_context (animation->widget);
+                state = gtk_widget_get_state_flags (animation->widget);
+
+                gtk_style_context_get_padding (context, state, &padding);
+                gtk_style_context_get_border (context, state, &border);
+
+                height -= padding.top + padding.bottom;
+                height -= border.top + border.bottom;
 
                 timer = g_object_ref (animation->timer);
                 animation->step_func (GDM_SCROLLABLE_WIDGET (animation->widget),
@@ -147,7 +157,8 @@ on_animation_tick (GdmScrollableWidgetAnimation *animation,
                                       animation->step_func_user_data);
 
                 if (gdm_timer_is_started (timer)) {
-                        height += gtk_widget_get_style (animation->widget)->ythickness * 2;
+                        height += padding.top + padding.bottom;
+                        height += border.top + border.bottom;
 
                         animation->desired_height = height;
                 }
@@ -259,11 +270,23 @@ gdm_scrollable_widget_needs_scrollbar (GdmScrollableWidget *widget)
         }
 
         child = gtk_bin_get_child (GTK_BIN (widget));
-        if (child != NULL) {
+        if (child != NULL && GTK_IS_SCROLLABLE (child)) {
+                GtkStyleContext *context;
+                GtkStateFlags state;
+                GtkBorder padding, border;
                 int available_height;
                 int child_scrolled_height;
 
+                context = gtk_widget_get_style_context (GTK_WIDGET (widget));
+                state = gtk_widget_get_state_flags (GTK_WIDGET (widget));
+
+                gtk_style_context_get_padding (context, state, &padding);
+                gtk_style_context_get_border (context, state, &border);
+
                 available_height = gtk_widget_get_allocated_height (GTK_WIDGET (widget));
+                available_height -= padding.top + padding.bottom;
+                available_height -= border.top + border.bottom;
+
                 gtk_widget_get_preferred_height (child, NULL, &child_scrolled_height);
                 needs_scrollbar = child_scrolled_height > available_height;
         } else {
@@ -295,26 +318,27 @@ gdm_scrollable_widget_get_preferred_size (GtkWidget      *widget,
         gtk_style_context_get_border (context, state, &border);
 
         scrollable_widget = GDM_SCROLLABLE_WIDGET (widget);
+
+        minimum_req.width = padding.left + padding.right;
+        minimum_req.width += border.left + border.right;
+        minimum_req.height = padding.top + padding.bottom;
+        minimum_req.height += border.top + border.bottom;
+
+        natural_req.width = padding.left + padding.right;
+        natural_req.width += border.left + border.right;
+        natural_req.height = padding.top + padding.bottom;
+        natural_req.height += border.top + border.bottom;
+
         if (orientation == GTK_ORIENTATION_VERTICAL
             && scrollable_widget->priv->forced_height >= 0) {
-                minimum_req.height = scrollable_widget->priv->forced_height;
-                natural_req.height = scrollable_widget->priv->forced_height;
+                minimum_req.height += scrollable_widget->priv->forced_height;
+                natural_req.height += scrollable_widget->priv->forced_height;
         } else {
                 child = gtk_bin_get_child (GTK_BIN (widget));
 
                 gtk_widget_get_preferred_size (scrollable_widget->priv->scrollbar,
                                                &scrollbar_requisition,
                                                NULL);
-
-                minimum_req.width = padding.left + padding.right;
-                minimum_req.width = border.left + border.right;
-                minimum_req.height = padding.top + padding.bottom;
-                minimum_req.height = border.top + border.bottom;
-
-                natural_req.width = padding.left + padding.right;
-                natural_req.width = border.left + border.right;
-                natural_req.height = padding.top + padding.bottom;
-                natural_req.height = border.top + border.bottom;
 
                 if (child && gtk_widget_get_visible (child)) {
                         if (orientation == GTK_ORIENTATION_HORIZONTAL) {
@@ -815,6 +839,9 @@ gdm_scrollable_widget_slide_to_height (GdmScrollableWidget *scrollable_widget,
         GtkWidget *widget;
         gboolean   input_redirected;
         GtkAllocation widget_allocation;
+        GtkStyleContext *context;
+        GtkStateFlags state;
+        GtkBorder padding, border;
 
         g_return_if_fail (GDM_IS_SCROLLABLE_WIDGET (scrollable_widget));
         widget = GTK_WIDGET (scrollable_widget);
@@ -841,7 +868,14 @@ gdm_scrollable_widget_slide_to_height (GdmScrollableWidget *scrollable_widget,
                 return;
         }
 
-        height += gtk_widget_get_style (widget)->ythickness * 2;
+        context = gtk_widget_get_style_context (widget);
+        state = gtk_widget_get_state_flags (widget);
+
+        gtk_style_context_get_padding (context, state, &padding);
+        gtk_style_context_get_border (context, state, &border);
+
+        height += padding.top + padding.bottom;
+        height += border.top + border.bottom;
 
         gtk_widget_get_allocation (widget, &widget_allocation);
 
