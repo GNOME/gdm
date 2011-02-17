@@ -55,6 +55,8 @@ typedef struct
                                               const char            *text);
         void (* user_selected)               (GdmGreeterLoginWindow *login_window,
                                               const char            *text);
+        void (* session_selected)            (GdmGreeterLoginWindow *login_window,
+                                              const char            *text);
         void (* cancelled)                   (GdmGreeterLoginWindow *login_window);
         void (* start_session)               (GdmGreeterLoginWindow *login_window);
 
@@ -75,6 +77,8 @@ gboolean            gdm_greeter_login_window_info               (GdmGreeterLogin
                                                                  const char *text);
 gboolean            gdm_greeter_login_window_problem            (GdmGreeterLoginWindow *login_window,
                                                                  const char *text);
+void                gdm_greeter_login_window_set_default_session_name (GdmGreeterLoginWindow *login_window,
+                                                                       const char *text);
 
 void               gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_window,
                                                                  const char            *username,

@@ -163,6 +163,7 @@ on_default_session_name_changed (GdmGreeterClient  *client,
                                  GdmGreeterSession *session)
 {
         g_debug ("GdmGreeterSession: default session name changed: %s", text);
+        gdm_greeter_login_window_set_default_session_name (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window), text);
 }
 
 static void
@@ -238,8 +239,9 @@ on_query_answer (GdmGreeterLoginWindow *login_window,
 }
 
 static void
-on_select_session (GdmGreeterSession     *session,
-                   const char            *text)
+on_select_session (GdmGreeterLoginWindow *login_window,
+                   const char            *text,
+                   GdmGreeterSession     *session)
 {
         gdm_greeter_client_call_select_session (session->priv->client,
                                                 text);
@@ -385,6 +387,10 @@ toggle_login_window (GdmGreeterSession *session,
                 g_signal_connect (session->priv->login_window,
                                   "user-selected",
                                   G_CALLBACK (on_select_user),
+                                  session);
+                g_signal_connect (session->priv->login_window,
+                                  "session-selected",
+                                  G_CALLBACK (on_select_session),
                                   session);
                 g_signal_connect (session->priv->login_window,
                                   "cancelled",

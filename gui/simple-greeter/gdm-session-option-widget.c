@@ -160,7 +160,6 @@ gdm_session_option_widget_new (void)
 
         object = g_object_new (GDM_TYPE_SESSION_OPTION_WIDGET,
                                "label-text", _("Session"),
-                               "icon-name", "session-properties",
                                NULL);
 
         return GTK_WIDGET (object);

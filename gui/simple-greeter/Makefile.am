@@ -75,6 +75,10 @@ test_greeter_login_window_SOURCES = 	\
 	gdm-sessions.c			\
 	gdm-cell-renderer-timer.h	\
 	gdm-cell-renderer-timer.c	\
+	gdm-option-widget.h		\
+	gdm-option-widget.c		\
+	gdm-session-option-widget.h	\
+	gdm-session-option-widget.c	\
 	gdm-user-chooser-widget.h	\
 	gdm-user-chooser-widget.c	\
 	gdm-user-chooser-dialog.h	\

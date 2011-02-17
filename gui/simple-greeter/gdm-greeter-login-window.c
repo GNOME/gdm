@@ -56,6 +56,7 @@
 
 #include "gdm-greeter-login-window.h"
 #include "gdm-user-chooser-widget.h"
+#include "gdm-session-option-widget.h"
 
 #ifdef HAVE_PAM
 #include <security/pam_appl.h>
@@ -85,6 +86,7 @@
 #define LSB_RELEASE_COMMAND "lsb_release -d"
 
 #define GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_LOGIN_WINDOW, GdmGreeterLoginWindowPrivate))
+#define GDM_CUSTOM_SESSION "custom"
 
 enum {
         MODE_UNDEFINED = 0,
@@ -102,6 +104,7 @@ enum {
 struct GdmGreeterLoginWindowPrivate
 {
         GtkBuilder      *builder;
+        GtkWidget       *session_option_widget;
         GtkWidget       *user_chooser;
         GtkWidget       *auth_banner_label;
         GtkWidget       *current_button;
@@ -143,6 +146,7 @@ enum {
         QUERY_ANSWER,
         START_SESSION,
         USER_SELECTED,
+        SESSION_SELECTED,
         CANCELLED,
         LAST_SIGNAL
 };
@@ -505,12 +509,15 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         switch (number) {
         case MODE_SELECTION:
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_HIDDEN);
+                gtk_widget_hide (login_window->priv->session_option_widget);
                 break;
         case MODE_TIMED_LOGIN:
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_TIMED_LOGIN);
+                gtk_widget_show (login_window->priv->session_option_widget);
                 break;
         case MODE_AUTHENTICATION:
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_ANSWER_QUERY);
+                gtk_widget_show (login_window->priv->session_option_widget);
                 break;
         default:
                 g_assert_not_reached ();
@@ -878,6 +885,7 @@ gdm_greeter_login_window_info_query (GdmGreeterLoginWindow *login_window,
         gtk_label_set_text (GTK_LABEL (label), text);
 
         show_widget (login_window, "auth-input-box", TRUE);
+
         set_sensitive (GDM_GREETER_LOGIN_WINDOW (login_window), TRUE);
         set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
@@ -908,6 +916,7 @@ gdm_greeter_login_window_secret_info_query (GdmGreeterLoginWindow *login_window,
         gtk_label_set_text (GTK_LABEL (label), text);
 
         show_widget (login_window, "auth-input-box", TRUE);
+        gtk_widget_show (login_window->priv->session_option_widget);
         set_sensitive (GDM_GREETER_LOGIN_WINDOW (login_window), TRUE);
         set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
@@ -1046,6 +1055,46 @@ on_user_unchosen (GdmUserChooserWidget  *user_chooser,
                   GdmGreeterLoginWindow *login_window)
 {
         do_cancel (login_window);
+}
+
+static void
+on_session_activated (GdmSessionOptionWidget *session_option_widget,
+                      GdmGreeterLoginWindow  *login_window)
+{
+        char *session;
+
+        session = gdm_session_option_widget_get_current_session (GDM_SESSION_OPTION_WIDGET (login_window->priv->session_option_widget));
+        if (session == NULL) {
+                return;
+        }
+
+        g_signal_emit (login_window, signals[SESSION_SELECTED], 0, session);
+
+        g_free (session);
+}
+
+void
+gdm_greeter_login_window_set_default_session_name (GdmGreeterLoginWindow *login_window,
+                                                   const char            *session_name)
+{
+        g_return_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window));
+
+        if (session_name != NULL && !gdm_option_widget_lookup_item (GDM_OPTION_WIDGET (login_window->priv->session_option_widget),
+                                            session_name, NULL, NULL, NULL)) {
+                if (strcmp (session_name, GDM_CUSTOM_SESSION) == 0) {
+                        gdm_option_widget_add_item (GDM_OPTION_WIDGET (login_window->priv->session_option_widget),
+                                                    GDM_CUSTOM_SESSION,
+                                                    C_("customsession", "Custom"),
+                                                    _("Custom session"),
+                                                    GDM_OPTION_WIDGET_POSITION_TOP);
+                } else {
+                        g_warning ("Default session is not available");
+                        return;
+                }
+        }
+
+        gdm_option_widget_set_default_item (GDM_OPTION_WIDGET (login_window->priv->session_option_widget),
+                                            session_name);
 }
 
 static void
@@ -1264,7 +1313,7 @@ load_theme (GdmGreeterLoginWindow *login_window)
         box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "window-frame"));
         gtk_container_add (GTK_CONTAINER (login_window), box);
 
-        /* FIXME: user chooser should implement GtkBuildable and this should get dropped
+        /* FIXME: user and session chooser should get loaded from ui file instead
          */
         login_window->priv->user_chooser = gdm_user_chooser_widget_new ();
         box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "selection-box"));
@@ -1272,6 +1321,7 @@ load_theme (GdmGreeterLoginWindow *login_window)
         gtk_box_reorder_child (GTK_BOX (box), login_window->priv->user_chooser, 0);
 
         gdm_user_chooser_widget_set_show_only_chosen (GDM_USER_CHOOSER_WIDGET (login_window->priv->user_chooser), TRUE);
+
 
         g_signal_connect (login_window->priv->user_chooser,
                           "loaded",
@@ -1290,6 +1340,22 @@ load_theme (GdmGreeterLoginWindow *login_window)
                                  "notify::list-visible",
                                  G_CALLBACK (on_user_chooser_visibility_changed),
                                  login_window);
+
+        login_window->priv->session_option_widget = gdm_session_option_widget_new ();
+        box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "buttonbox"));
+        g_object_set (G_OBJECT (login_window->priv->session_option_widget),
+                      "xscale", 0.0,
+                      "yscale", 0.0,
+                      "xalign", 0.0,
+                      "yalign", 1.0,
+                      NULL);
+        gtk_container_add (GTK_CONTAINER (box), login_window->priv->session_option_widget);
+        gtk_button_box_set_child_secondary (GTK_BUTTON_BOX (box), login_window->priv->session_option_widget, TRUE);
+
+        g_signal_connect (login_window->priv->session_option_widget,
+                          "activated",
+                          G_CALLBACK (on_session_activated),
+                          login_window);
 
         login_window->priv->auth_banner_label = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "auth-banner-label"));
         /*make_label_small_italic (login_window->priv->auth_banner_label);*/
@@ -1555,6 +1621,16 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
                               G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, user_selected),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__STRING,
+                              G_TYPE_NONE,
+                              1, G_TYPE_STRING);
+        signals [SESSION_SELECTED] =
+                g_signal_new ("session-selected",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, session_selected),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__STRING,
