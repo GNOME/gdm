@@ -743,6 +743,14 @@ add_user (GdmUserChooserWidget *widget,
                 return;
         }
 
+        if (strcmp (act_user_get_user_name (user), GDM_USERNAME) == 0) {
+                return;
+        }
+
+        if (act_user_get_uid (user) == 0) {
+                return;
+        }
+
         if (widget->priv->stock_person_pixbuf != NULL) {
                 pixbuf = g_object_ref (widget->priv->stock_person_pixbuf);
         } else {
