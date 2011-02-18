@@ -900,7 +900,7 @@ get_pixbuf_from_icon_names (GdmUserChooserWidget *widget,
                                                    TRUE, 8, 1, 1, 1, NULL, NULL);
                 scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf, size, size, GDK_INTERP_NEAREST);
                 g_object_unref (pixbuf);
-                scaled_pixbuf = pixbuf;
+                pixbuf = scaled_pixbuf;
         }
 
         return pixbuf;
