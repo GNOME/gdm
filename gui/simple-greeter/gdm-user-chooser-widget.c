@@ -37,7 +37,9 @@
 
 #include <gconf/gconf-client.h>
 
-#include "gdm-user-manager.h"
+#include <act/act-user-manager.h>
+#include <act/act-user.h>
+
 #include "gdm-user-chooser-widget.h"
 #include "gdm-settings-keys.h"
 #include "gdm-settings-client.h"
@@ -59,7 +61,7 @@ enum {
 
 struct GdmUserChooserWidgetPrivate
 {
-        GdmUserManager *manager;
+        ActUserManager *manager;
         GtkIconTheme   *icon_theme;
 
         GSList         *users_to_add;
@@ -170,45 +172,307 @@ queue_update_other_user_visibility (GdmUserChooserWidget *widget)
 }
 
 static void
+rounded_rectangle (cairo_t *cr,
+                   gdouble  aspect,
+                   gdouble  x,
+                   gdouble  y,
+                   gdouble  corner_radius,
+                   gdouble  width,
+                   gdouble  height)
+{
+        gdouble radius;
+        gdouble degrees;
+
+        radius = corner_radius / aspect;
+        degrees = G_PI / 180.0;
+
+        cairo_new_sub_path (cr);
+        cairo_arc (cr,
+                   x + width - radius,
+                   y + radius,
+                   radius,
+                   -90 * degrees,
+                   0 * degrees);
+        cairo_arc (cr,
+                   x + width - radius,
+                   y + height - radius,
+                   radius,
+                   0 * degrees,
+                   90 * degrees);
+        cairo_arc (cr,
+                   x + radius,
+                   y + height - radius,
+                   radius,
+                   90 * degrees,
+                   180 * degrees);
+        cairo_arc (cr,
+                   x + radius,
+                   y + radius,
+                   radius,
+                   180 * degrees,
+                   270 * degrees);
+        cairo_close_path (cr);
+}
+
+static cairo_surface_t *
+surface_from_pixbuf (GdkPixbuf *pixbuf)
+{
+        cairo_surface_t *surface;
+        cairo_t         *cr;
+
+        surface = cairo_image_surface_create (gdk_pixbuf_get_has_alpha (pixbuf) ?
+                                              CAIRO_FORMAT_ARGB32 : CAIRO_FORMAT_RGB24,
+                                              gdk_pixbuf_get_width (pixbuf),
+                                              gdk_pixbuf_get_height (pixbuf));
+        cr = cairo_create (surface);
+        gdk_cairo_set_source_pixbuf (cr, pixbuf, 0, 0);
+        cairo_paint (cr);
+        cairo_destroy (cr);
+
+        return surface;
+}
+
+/**
+ * go_cairo_convert_data_to_pixbuf:
+ * @src: a pointer to pixel data in cairo format
+ * @dst: a pointer to pixel data in pixbuf format
+ * @width: image width
+ * @height: image height
+ * @rowstride: data rowstride
+ *
+ * Converts the pixel data stored in @src in CAIRO_FORMAT_ARGB32 cairo format
+ * to GDK_COLORSPACE_RGB pixbuf format and move them
+ * to @dst. If @src == @dst, pixel are converted in place.
+ **/
+
+static void
+go_cairo_convert_data_to_pixbuf (unsigned char *dst,
+                                 unsigned char const *src,
+                                 int width,
+                                 int height,
+                                 int rowstride)
+{
+        int i,j;
+        unsigned int t;
+        unsigned char a, b, c;
+
+        g_return_if_fail (dst != NULL);
+
+#define MULT(d,c,a,t) G_STMT_START { t = (a)? c * 255 / a: 0; d = t;} G_STMT_END
+
+        if (src == dst || src == NULL) {
+                for (i = 0; i < height; i++) {
+                        for (j = 0; j < width; j++) {
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+                                MULT(a, dst[2], dst[3], t);
+                                MULT(b, dst[1], dst[3], t);
+                                MULT(c, dst[0], dst[3], t);
+                                dst[0] = a;
+                                dst[1] = b;
+                                dst[2] = c;
+#else
+                                MULT(a, dst[1], dst[0], t);
+                                MULT(b, dst[2], dst[0], t);
+                                MULT(c, dst[3], dst[0], t);
+                                dst[3] = dst[0];
+                                dst[0] = a;
+                                dst[1] = b;
+                                dst[2] = c;
+#endif
+                                dst += 4;
+                        }
+                        dst += rowstride - width * 4;
+                }
+        } else {
+                for (i = 0; i < height; i++) {
+                        for (j = 0; j < width; j++) {
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+                                MULT(dst[0], src[2], src[3], t);
+                                MULT(dst[1], src[1], src[3], t);
+                                MULT(dst[2], src[0], src[3], t);
+                                dst[3] = src[3];
+#else
+                                MULT(dst[0], src[1], src[0], t);
+                                MULT(dst[1], src[2], src[0], t);
+                                MULT(dst[2], src[3], src[0], t);
+                                dst[3] = src[0];
+#endif
+                                src += 4;
+                                dst += 4;
+                        }
+                        src += rowstride - width * 4;
+                        dst += rowstride - width * 4;
+                }
+        }
+#undef MULT
+}
+
+static void
+cairo_to_pixbuf (guint8    *src_data,
+                 GdkPixbuf *dst_pixbuf)
+{
+        unsigned char *src;
+        unsigned char *dst;
+        guint          w;
+        guint          h;
+        guint          rowstride;
+
+        w = gdk_pixbuf_get_width (dst_pixbuf);
+        h = gdk_pixbuf_get_height (dst_pixbuf);
+        rowstride = gdk_pixbuf_get_rowstride (dst_pixbuf);
+
+        dst = gdk_pixbuf_get_pixels (dst_pixbuf);
+        src = src_data;
+
+        go_cairo_convert_data_to_pixbuf (dst, src, w, h, rowstride);
+}
+
+static GdkPixbuf *
+frame_pixbuf (GdkPixbuf *source)
+{
+        GdkPixbuf       *dest;
+        cairo_t         *cr;
+        cairo_surface_t *surface;
+        guint            w;
+        guint            h;
+        guint            rowstride;
+        int              frame_width;
+        double           radius;
+        guint8          *data;
+
+        frame_width = 2;
+
+        w = gdk_pixbuf_get_width (source) + frame_width * 2;
+        h = gdk_pixbuf_get_height (source) + frame_width * 2;
+        radius = w / 10;
+
+        dest = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+                               TRUE,
+                               8,
+                               w,
+                               h);
+        rowstride = gdk_pixbuf_get_rowstride (dest);
+
+
+        data = g_new0 (guint8, h * rowstride);
+
+        surface = cairo_image_surface_create_for_data (data,
+                                                       CAIRO_FORMAT_ARGB32,
+                                                       w,
+                                                       h,
+                                                       rowstride);
+        cr = cairo_create (surface);
+        cairo_surface_destroy (surface);
+
+        /* set up image */
+        cairo_rectangle (cr, 0, 0, w, h);
+        cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, 0.0);
+        cairo_fill (cr);
+
+        rounded_rectangle (cr,
+                           1.0,
+                           frame_width + 0.5,
+                           frame_width + 0.5,
+                           radius,
+                           w - frame_width * 2 - 1,
+                           h - frame_width * 2 - 1);
+        cairo_set_source_rgba (cr, 0.5, 0.5, 0.5, 0.3);
+        cairo_fill_preserve (cr);
+
+        surface = surface_from_pixbuf (source);
+        cairo_set_source_surface (cr, surface, frame_width, frame_width);
+        cairo_fill (cr);
+        cairo_surface_destroy (surface);
+
+        cairo_to_pixbuf (data, dest);
+
+        cairo_destroy (cr);
+        g_free (data);
+
+        return dest;
+}
+
+static GdkPixbuf *
+render_user_icon (GdmUserChooserWidget *widget,
+                  ActUser              *user)
+{
+        int size;
+        const char *file;
+        GdkPixbuf *pixbuf;
+        GdkPixbuf *framed;
+
+        pixbuf = NULL;
+
+        size = get_icon_height_for_widget (GTK_WIDGET (widget));
+        file = act_user_get_icon_file (user);
+
+        if (file) {
+                pixbuf = gdk_pixbuf_new_from_file_at_size (file, size, size, NULL);
+        }
+
+        if (pixbuf == NULL) {
+                GError *error;
+
+                error = NULL;
+                pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
+                                                   "avatar-default",
+                                                   size,
+                                                   GTK_ICON_LOOKUP_FORCE_SIZE,
+                                                   &error);
+                if (error != NULL) {
+                        g_warning ("%s", error->message);
+                        g_error_free (error);
+                }
+        }
+
+        if (pixbuf != NULL) {
+                framed = frame_pixbuf (pixbuf);
+                g_object_unref (pixbuf);
+
+                pixbuf = framed;
+        }
+
+        return pixbuf;
+}
+
+static void
 update_item_for_user (GdmUserChooserWidget *widget,
-                      GdmUser              *user)
+                      ActUser              *user)
 {
         GdkPixbuf    *pixbuf;
         char         *tooltip;
         gboolean      is_logged_in;
-        int           size;
         char         *escaped_username;
         char         *escaped_real_name;
 
-        if (!gdm_user_is_loaded (user)) {
+        if (!act_user_is_loaded (user)) {
                 return;
         }
 
-        size = get_icon_height_for_widget (GTK_WIDGET (widget));
-        pixbuf = gdm_user_render_icon (user, size);
+        pixbuf = render_user_icon (widget, user);
 
         if (pixbuf == NULL && widget->priv->stock_person_pixbuf != NULL) {
                 pixbuf = g_object_ref (widget->priv->stock_person_pixbuf);
         }
 
         tooltip = g_strdup_printf (_("Log in as %s"),
-                                   gdm_user_get_user_name (user));
+                                   act_user_get_user_name (user));
 
-        is_logged_in = gdm_user_is_logged_in (user);
+        is_logged_in = act_user_is_logged_in (user);
 
         g_debug ("GdmUserChooserWidget: User added name:%s logged-in:%d pixbuf:%p",
-                 gdm_user_get_user_name (user),
+                 act_user_get_user_name (user),
                  is_logged_in,
                  pixbuf);
 
-        escaped_username = g_markup_escape_text (gdm_user_get_user_name (user), -1);
-        escaped_real_name = g_markup_escape_text (gdm_user_get_real_name (user), -1);
+        escaped_username = g_markup_escape_text (act_user_get_user_name (user), -1);
+        escaped_real_name = g_markup_escape_text (act_user_get_real_name (user), -1);
         gdm_chooser_widget_update_item (GDM_CHOOSER_WIDGET (widget),
                                         escaped_username,
                                         pixbuf,
                                         escaped_real_name,
                                         tooltip,
-                                        gdm_user_get_login_frequency (user),
+                                        act_user_get_login_frequency (user),
                                         is_logged_in,
                                         FALSE);
         g_free (escaped_real_name);
@@ -225,7 +489,7 @@ on_item_load (GdmChooserWidget     *widget,
               const char           *id,
               GdmUserChooserWidget *user_chooser)
 {
-        GdmUser *user;
+        ActUser *user;
 
         g_debug ("GdmUserChooserWidget: Loading item for id=%s", id);
 
@@ -241,7 +505,7 @@ on_item_load (GdmChooserWidget     *widget,
                 return;
         }
 
-        user = gdm_user_manager_get_user (user_chooser->priv->manager, id);
+        user = act_user_manager_get_user (user_chooser->priv->manager, id);
         if (user != NULL) {
                 update_item_for_user (user_chooser, user);
         }
@@ -467,7 +731,7 @@ is_user_list_disabled (GdmUserChooserWidget *widget)
 
 static void
 add_user (GdmUserChooserWidget *widget,
-          GdmUser              *user)
+          ActUser              *user)
 {
         GdkPixbuf    *pixbuf;
         char         *tooltip;
@@ -486,18 +750,18 @@ add_user (GdmUserChooserWidget *widget,
         }
 
         tooltip = g_strdup_printf (_("Log in as %s"),
-                                   gdm_user_get_user_name (user));
+                                   act_user_get_user_name (user));
 
-        is_logged_in = gdm_user_is_logged_in (user);
+        is_logged_in = act_user_is_logged_in (user);
 
-        escaped_username = g_markup_escape_text (gdm_user_get_user_name (user), -1);
-        escaped_real_name = g_markup_escape_text (gdm_user_get_real_name (user), -1);
+        escaped_username = g_markup_escape_text (act_user_get_user_name (user), -1);
+        escaped_real_name = g_markup_escape_text (act_user_get_real_name (user), -1);
         gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                      escaped_username,
                                      pixbuf,
                                      escaped_real_name,
                                      tooltip,
-                                     gdm_user_get_login_frequency (user),
+                                     act_user_get_login_frequency (user),
                                      is_logged_in,
                                      FALSE,
                                      (GdmChooserWidgetItemLoadFunc) on_item_load,
@@ -514,8 +778,8 @@ add_user (GdmUserChooserWidget *widget,
 }
 
 static void
-on_user_added (GdmUserManager       *manager,
-               GdmUser              *user,
+on_user_added (ActUserManager       *manager,
+               ActUser              *user,
                GdmUserChooserWidget *widget)
 {
         /* wait for all users to be loaded */
@@ -526,19 +790,19 @@ on_user_added (GdmUserManager       *manager,
 }
 
 static void
-on_user_removed (GdmUserManager       *manager,
-                 GdmUser              *user,
+on_user_removed (ActUserManager       *manager,
+                 ActUser              *user,
                  GdmUserChooserWidget *widget)
 {
         const char *user_name;
 
-        g_debug ("GdmUserChooserWidget: User removed: %s", gdm_user_get_user_name (user));
+        g_debug ("GdmUserChooserWidget: User removed: %s", act_user_get_user_name (user));
         /* wait for all users to be loaded */
         if (! widget->priv->loaded) {
                 return;
         }
 
-        user_name = gdm_user_get_user_name (user);
+        user_name = act_user_get_user_name (user);
 
         gdm_chooser_widget_remove_item (GDM_CHOOSER_WIDGET (widget),
                                         user_name);
@@ -547,17 +811,17 @@ on_user_removed (GdmUserManager       *manager,
 }
 
 static void
-on_user_is_logged_in_changed (GdmUserManager       *manager,
-                              GdmUser              *user,
+on_user_is_logged_in_changed (ActUserManager       *manager,
+                              ActUser              *user,
                               GdmUserChooserWidget *widget)
 {
         const char *user_name;
         gboolean    is_logged_in;
 
-        g_debug ("GdmUserChooserWidget: User logged in changed: %s", gdm_user_get_user_name (user));
+        g_debug ("GdmUserChooserWidget: User logged in changed: %s", act_user_get_user_name (user));
 
-        user_name = gdm_user_get_user_name (user);
-        is_logged_in = gdm_user_is_logged_in (user);
+        user_name = act_user_get_user_name (user);
+        is_logged_in = act_user_is_logged_in (user);
 
         gdm_chooser_widget_set_item_in_use (GDM_CHOOSER_WIDGET (widget),
                                             user_name,
@@ -565,8 +829,8 @@ on_user_is_logged_in_changed (GdmUserManager       *manager,
 }
 
 static void
-on_user_changed (GdmUserManager       *manager,
-                 GdmUser              *user,
+on_user_changed (ActUserManager       *manager,
+                 ActUser              *user,
                  GdmUserChooserWidget *widget)
 {
         /* wait for all users to be loaded */
@@ -612,7 +876,7 @@ queue_add_users (GdmUserChooserWidget *widget)
 }
 
 static void
-on_is_loaded_changed (GdmUserManager       *manager,
+on_is_loaded_changed (ActUserManager       *manager,
                       GParamSpec           *pspec,
                       GdmUserChooserWidget *widget)
 {
@@ -622,7 +886,7 @@ on_is_loaded_changed (GdmUserManager       *manager,
 
         g_debug ("GdmUserChooserWidget: Users loaded");
 
-        users = gdm_user_manager_list_users (manager);
+        users = act_user_manager_list_users (manager);
         g_slist_foreach (users, (GFunc) g_object_ref, NULL);
         widget->priv->users_to_add = g_slist_concat (widget->priv->users_to_add, g_slist_copy (users));
 
@@ -658,38 +922,7 @@ load_users (GdmUserChooserWidget *widget)
 {
 
         if (widget->priv->show_normal_users) {
-                char          *temp;
-                gboolean       res;
-                gboolean       include_all;
-                GSList        *includes;
-                GSList        *excludes;
-
-                widget->priv->manager = gdm_user_manager_ref_default ();
-
-                /* exclude/include */
-                g_debug ("Setting users to include:");
-                res = gdm_settings_client_get_string (GDM_KEY_INCLUDE,
-                                                      &temp);
-                parse_string_list (temp, &includes);
-
-                g_debug ("Setting users to exclude:");
-                res = gdm_settings_client_get_string  (GDM_KEY_EXCLUDE,
-                                                       &temp);
-                parse_string_list (temp, &excludes);
-
-                include_all = FALSE;
-                res = gdm_settings_client_get_boolean (GDM_KEY_INCLUDE_ALL,
-                                                       &include_all);
-                g_object_set (widget->priv->manager,
-                              "include-all", include_all,
-                              "include-usernames-list", includes,
-                              "exclude-usernames-list", excludes,
-                              NULL);
-
-                g_slist_foreach (includes, (GFunc) g_free, NULL);
-                g_slist_free (includes);
-                g_slist_foreach (excludes, (GFunc) g_free, NULL);
-                g_slist_free (excludes);
+                widget->priv->manager = act_user_manager_get_default ();
 
                 g_signal_connect (widget->priv->manager,
                                   "user-added",
@@ -711,7 +944,6 @@ load_users (GdmUserChooserWidget *widget)
                                   "user-changed",
                                   G_CALLBACK (on_user_changed),
                                   widget);
-                gdm_user_manager_queue_load (widget->priv->manager);
         } else {
                 gdm_chooser_widget_loaded (GDM_CHOOSER_WIDGET (widget));
         }

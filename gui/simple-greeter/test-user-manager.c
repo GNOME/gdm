@@ -30,10 +30,12 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include "gdm-user-manager.h"
+#include <act/act-user-manager.h>
+#include <act/act-user.h>
+
 #include "gdm-settings-client.h"
 
-static GdmUserManager *manager = NULL;
+static ActUserManager *manager = NULL;
 static GMainLoop      *main_loop = NULL;
 
 static gboolean     do_monitor       = FALSE;
@@ -45,7 +47,7 @@ static GOptionEntry entries []   = {
 };
 
 static void
-on_is_loaded_changed (GdmUserManager *manager,
+on_is_loaded_changed (ActUserManager *manager,
                       GParamSpec     *pspec,
                       gpointer        data)
 {
@@ -53,9 +55,9 @@ on_is_loaded_changed (GdmUserManager *manager,
 
         g_debug ("Users loaded");
 
-        users = gdm_user_manager_list_users (manager);
+        users = act_user_manager_list_users (manager);
         while (users != NULL) {
-                g_print ("User: %s\n", gdm_user_get_user_name (users->data));
+                g_print ("User: %s\n", act_user_get_user_name (users->data));
                 users = g_slist_delete_link (users, users);
         }
 
@@ -65,19 +67,19 @@ on_is_loaded_changed (GdmUserManager *manager,
 }
 
 static void
-on_user_added (GdmUserManager *manager,
-               GdmUser        *user,
+on_user_added (ActUserManager *manager,
+               ActUser        *user,
                gpointer        data)
 {
-        g_debug ("User added: %s", gdm_user_get_user_name (user));
+        g_debug ("User added: %s", act_user_get_user_name (user));
 }
 
 static void
-on_user_removed (GdmUserManager *manager,
-                 GdmUser        *user,
+on_user_removed (ActUserManager *manager,
+                 ActUser        *user,
                  gpointer        data)
 {
-        g_debug ("User removed: %s", gdm_user_get_user_name (user));
+        g_debug ("User removed: %s", act_user_get_user_name (user));
 }
 
 int
@@ -123,7 +125,7 @@ main (int argc, char *argv[])
                 exit (1);
         }
 
-        manager = gdm_user_manager_ref_default ();
+        manager = act_user_manager_get_default ();
         g_object_set (manager, "include-all", TRUE, NULL);
         g_signal_connect (manager,
                           "notify::is-loaded",
@@ -137,7 +139,6 @@ main (int argc, char *argv[])
                           "user-removed",
                           G_CALLBACK (on_user_removed),
                           NULL);
-        gdm_user_manager_queue_load (manager);
 
         main_loop = g_main_loop_new (NULL, FALSE);
 

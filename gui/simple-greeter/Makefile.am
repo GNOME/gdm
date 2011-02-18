@@ -26,29 +26,6 @@ schemasdir   = @GCONF_SCHEMA_FILE_DIR@
 schemas_in_files = gdm-simple-greeter.schemas.in
 schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
 
-noinst_LTLIBRARIES = 			\
-	libgdmuser.la			\
-	$(null)
-
-libgdmuser_la_SOURCES =			\
-	gdm-user.c			\
-	gdm-user.h			\
-	gdm-user-private.h		\
-	gdm-user-manager.c		\
-	gdm-user-manager.h		\
-	$(NULL)
-
-libgdmuser_la_CFLAGS =			\
-	$(SIMPLE_GREETER_CFLAGS)	\
-	$(NULL)
-
-libgdmuser_la_LIBADD =			\
-	$(NULL)
-
-libgdmuser_la_LDFLAGS = 	\
-	-export-dynamic 	\
-	$(NULL)
-
 noinst_PROGRAMS = 			\
 	test-filesystem-type		\
 	test-greeter-login-window	\
@@ -87,7 +64,6 @@ test_greeter_login_window_SOURCES = 	\
 
 test_greeter_login_window_LDADD =	\
 	$(top_builddir)/common/libgdmcommon.la	\
-	libgdmuser.la			\
 	$(COMMON_LIBS)			\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(RBAC_LIBS)			\
@@ -216,7 +192,6 @@ test_user_chooser_SOURCES = 		\
 	$(NULL)
 
 test_user_chooser_LDADD =	\
-	libgdmuser.la		\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(COMMON_LIBS)		\
 	$(SIMPLE_GREETER_LIBS)	\
@@ -227,7 +202,6 @@ test_user_manager_SOURCES = 	\
 	$(NULL)
 
 test_user_manager_LDADD =	\
-	libgdmuser.la		\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(COMMON_LIBS)		\
 	$(SIMPLE_GREETER_LIBS)	\
@@ -281,7 +255,6 @@ gdm_simple_greeter_SOURCES =  		\
 
 gdm_simple_greeter_LDADD = 		\
 	$(top_builddir)/common/libgdmcommon.la	\
-	libgdmuser.la			\
 	$(COMMON_LIBS)			\
 	$(EXTRA_GREETER_LIBS)   	\
 	$(SIMPLE_GREETER_LIBS)		\
