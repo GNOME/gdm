@@ -12,7 +12,7 @@ gsettings set org.gnome.power-manager show-actions false
 gsettings set org.gnome.desktop.a11y.keyboard enable true
 gsettings set org.gnome.desktop.background show-desktop-icons false
 gsettings set org.gnome.desktop.default-applications.terminal exec '"/bin/true"'
-gsettings set org.gnome.desktop.interface accessibility true
+gsettings set org.gnome.desktop.interface toolkit-accessibility true
 
 gsettings set org.gnome.desktop.lockdown disable-application-handlers true
 gsettings set org.gnome.desktop.lockdown disable-command-line true
