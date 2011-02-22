@@ -751,6 +751,7 @@ add_user (GdmUserChooserWidget *widget,
                 return;
         }
 
+        g_debug ("GdmUserChooserWidget: User added: %s", act_user_get_user_name (user));
         if (widget->priv->stock_person_pixbuf != NULL) {
                 pixbuf = g_object_ref (widget->priv->stock_person_pixbuf);
         } else {
