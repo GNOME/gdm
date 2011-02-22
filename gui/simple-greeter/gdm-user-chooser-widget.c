@@ -873,7 +873,12 @@ add_users (GdmUserChooserWidget *widget)
                 gdm_chooser_widget_loaded (GDM_CHOOSER_WIDGET (widget));
         }
 
-        return (widget->priv->users_to_add != NULL);
+        if (widget->priv->users_to_add == NULL) {
+            widget->priv->add_users_idle_id = 0;
+            return FALSE;
+        }
+
+        return TRUE;
 }
 
 static void
