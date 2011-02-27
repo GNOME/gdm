@@ -115,8 +115,10 @@ MAINTAINERCLEANFILES =			\
 	*~				\
 	Makefile.in
 
-dist-hook:
+dconf-override-db: $(srcdir)/make-dconf-override-db.sh
 	$(srcdir)/make-dconf-override-db.sh
+
+dist-hook: dconf-override-db
 	mv dconf-override-db $(distdir)
 
 uninstall-hook:
