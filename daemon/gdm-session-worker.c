@@ -945,230 +945,6 @@ gdm_session_worker_stop_auditor (GdmSessionWorker *worker)
         worker->priv->auditor = NULL;
 }
 
-static gboolean
-check_user_copy_file (const char *srcfile,
-                      const char *destfile,
-                      uid_t       user,
-                      gssize      max_file_size)
-{
-        struct stat srcfileinfo;
-        struct stat destfileinfo;
-
-        if (max_file_size < 0) {
-                max_file_size = G_MAXSIZE;
-        }
-
-        /* Exists/Readable? */
-        if (g_stat (srcfile, &srcfileinfo) < 0) {
-                g_debug ("File does not exist");
-                return FALSE;
-        }
-
-        /* Is newer than the file already in the cache? */
-        if (destfile != NULL && g_stat (destfile, &destfileinfo) == 0) {
-                if (srcfileinfo.st_mtime <= destfileinfo.st_mtime) {
-                        g_debug ("Destination file is newer");
-                        return FALSE;
-                }
-        }
-
-        /* Is a regular file */
-        if (G_UNLIKELY (!S_ISREG (srcfileinfo.st_mode))) {
-                g_debug ("File is not a regular file");
-                return FALSE;
-        }
-
-        /* Owned by user? */
-        if (G_UNLIKELY (srcfileinfo.st_uid != user)) {
-                g_debug ("File is not owned by user");
-                return FALSE;
-        }
-
-        /* Size is kosher? */
-        if (G_UNLIKELY (srcfileinfo.st_size > max_file_size)) {
-                g_debug ("File is too large");
-                return FALSE;
-        }
-
-        return TRUE;
-}
-
-static gboolean
-gdm_cache_copy_file (GdmSessionWorker *worker,
-                     const char *userfilename,
-                     const char *cachefilename)
-{
-        gboolean res;
-
-        g_debug ("GdmSessionWorker: Checking if %s should be copied to cache %s",
-                 userfilename, cachefilename);
-
-        res = check_user_copy_file (userfilename,
-                                    cachefilename,
-                                    worker->priv->uid,
-                                    MAX_FILE_SIZE);
-
-        if (res) {
-                 GFile  *src_file;
-                 GFile  *dst_file;
-                 GError *error;
-
-                 src_file = g_file_new_for_path (userfilename);
-                 dst_file = g_file_new_for_path (cachefilename);
-
-                 error = NULL;
-                 res = g_file_copy (src_file,
-                                    dst_file, 
-                                    G_FILE_COPY_OVERWRITE |
-                                    G_FILE_COPY_NOFOLLOW_SYMLINKS,
-                                    NULL,
-                                    NULL,
-                                    NULL,
-                                    &error);
-
-                 if (! res) {
-                        g_warning ("Could not copy file to cache: %s",
-                                   error->message);
-                        g_error_free (error);
-                 } else {
-                         int res;
-
-                         res = chown (cachefilename,
-                                      worker->priv->uid,
-                                      worker->priv->gid);
-                         if (res == -1) {
-                                 g_warning ("GdmSessionWorker: Error setting owner of cache file: %s",
-                                            g_strerror (errno));
-                         }
-
-                        g_chmod (cachefilename, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-                        g_debug ("Copy successful");
-                }
-
-                g_object_unref (src_file);
-                g_object_unref (dst_file);
-        } else {
-                g_debug ("Not copying file %s to cache",
-                         userfilename);
-        }
-        return res;
-}
-
-static char *
-gdm_session_worker_create_cachedir (GdmSessionWorker *worker)
-{
-        struct stat statbuf;
-        char       *cachedir;
-        int         r;
-
-        cachedir = g_build_filename (GDM_CACHE_DIR,
-                                     worker->priv->username,
-                                     NULL);
-
-        /* Verify user cache directory exists, create if needed */
-        r = g_stat (cachedir, &statbuf);
-        if (r < 0) {
-                g_debug ("Making user cache directory %s", cachedir);
-                g_mkdir (cachedir,
-                         S_IRWXU | S_IXGRP | S_IRGRP | S_IXOTH | S_IROTH);
-                g_chmod (cachedir,
-                         S_IRWXU | S_IXGRP | S_IRGRP | S_IXOTH | S_IROTH);
-        }
-        r = chown (cachedir, worker->priv->uid, worker->priv->gid);
-        if (r == -1) {
-                g_warning ("GdmSessionWorker: Error setting owner of cache directory: %s",
-                           g_strerror (errno));
-        }
-
-        return cachedir;
-}
-
-static void
-gdm_session_worker_cache_userfiles (GdmSessionWorker *worker)
-{
-        struct passwd *passwd_entry;
-        char          *cachedir;
-        char          *cachefile;
-        char          *userfile;
-        gboolean       res;
-
-        gdm_get_pwent_for_name (worker->priv->username, &passwd_entry);
-        if (passwd_entry == NULL)
-                return;
-
-        cachedir = gdm_session_worker_create_cachedir (worker);
-
-        g_debug ("Copying user dmrc file to cache");
-        cachefile = g_build_filename (cachedir, "dmrc", NULL);
-        userfile = g_build_filename (passwd_entry->pw_dir, ".dmrc", NULL);
-
-        gdm_cache_copy_file (worker, userfile, cachefile);
-        g_free (cachefile);
-        g_free (userfile);
-
-        g_debug ("Copying user face file to cache");
-        cachefile = g_build_filename (cachedir,
-                                          "face",
-                                          NULL);
-
-        /* First, try "~/.face" */
-        userfile = g_build_filename (passwd_entry->pw_dir, ".face", NULL);
-        res = gdm_cache_copy_file (worker, userfile, cachefile);
-
-        /* Next, try "~/.face.icon" */
-        if (!res) {
-                g_free (userfile);
-                userfile = g_build_filename (passwd_entry->pw_dir,
-                                             ".face.icon",
-                                             NULL);
-                res = gdm_cache_copy_file (worker,
-                                           userfile,
-                                           cachefile);
-        }
-
-        /* Still nothing, try the user's personal GDM config */
-        if (!res) {
-                char *tempfilename;
-
-                tempfilename = g_build_filename (passwd_entry->pw_dir,
-                                                 ".gnome",
-                                                 "gdm",
-                                                 NULL);
-
-                g_debug ("Checking user's ~/.gnome/gdm file");
-                res = check_user_copy_file (tempfilename,
-                                            NULL,
-                                            worker->priv->uid,
-                                            MAX_FILE_SIZE);
-                if (res) {
-                        GKeyFile *keyfile;
-
-                        g_free (userfile);
-
-                        keyfile = g_key_file_new ();
-                        g_key_file_load_from_file (keyfile,
-                                                   userfile,
-                                                   G_KEY_FILE_NONE,
-                                                   NULL);
-
-                        userfile = g_key_file_get_string (keyfile,
-                                                          "face",
-                                                          "picture",
-                                                          NULL);
-                        res = gdm_cache_copy_file (worker,
-                                                   userfile,
-                                                   cachefile);
-
-                        g_key_file_free (keyfile);
-                  }
-                  g_free (tempfilename);
-        }
-
-        g_free (cachedir);
-        g_free (cachefile);
-        g_free (userfile);
-}
-
 static void
 gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
                                      int               status)
@@ -1179,7 +955,6 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
                 return;
 
         if (worker->priv->state >= GDM_SESSION_WORKER_STATE_SESSION_OPENED) {
-                gdm_session_worker_cache_userfiles (worker);
                 pam_close_session (worker->priv->pam_handle, 0);
                 gdm_session_auditor_report_logout (worker->priv->auditor);
         } else {
@@ -1929,27 +1704,6 @@ out:
         return fd;
 }
 
-static void
-_save_user_settings (GdmSessionWorker *worker,
-                     const char       *home_dir)
-{
-        if (!gdm_session_settings_is_loaded (worker->priv->user_settings)) {
-                /*
-                 * Even if the user did not change the defaults, there may
-                 * be files to cache
-                 */
-                goto out;
-        }
-
-        if (!gdm_session_settings_save (worker->priv->user_settings,
-                                        home_dir)) {
-                g_warning ("could not save session and language settings");
-        }
-
-out:
-        gdm_session_worker_cache_userfiles (worker);
-}
-
 static gboolean
 gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
                                        GError           **error)
@@ -1982,13 +1736,8 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
 
         if (session_pid == 0) {
                 char **environment;
-                char  *cachedirname;
                 char  *home_dir;
                 int    fd;
-
-                /* Make sure cachedir gets created before we drop to user */
-                cachedirname = gdm_session_worker_create_cachedir (worker);
-                g_free (cachedirname);
 
                 if (setuid (worker->priv->uid) < 0) {
                         g_debug ("GdmSessionWorker: could not reset uid: %s", g_strerror (errno));
@@ -2021,7 +1770,10 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
                 dup2 (fd, STDERR_FILENO);
                 close (fd);
 
-                _save_user_settings (worker, home_dir);
+                if (!gdm_session_settings_save (worker->priv->user_settings,
+                                                worker->priv->username)) {
+                        g_warning ("could not save session and language settings");
+                }
 
                 /*
                  * Reset SIGPIPE to default so that any process in the user
