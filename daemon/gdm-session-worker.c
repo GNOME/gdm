@@ -92,6 +92,7 @@ enum {
         GDM_SESSION_WORKER_STATE_AUTHENTICATED,
         GDM_SESSION_WORKER_STATE_AUTHORIZED,
         GDM_SESSION_WORKER_STATE_ACCREDITED,
+        GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_FETCHED,
         GDM_SESSION_WORKER_STATE_SESSION_OPENED,
         GDM_SESSION_WORKER_STATE_SESSION_STARTED,
         GDM_SESSION_WORKER_STATE_REAUTHENTICATED,
@@ -2067,7 +2068,7 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
 {
         int error_code;
 
-        g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCREDITED);
+        g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_FETCHED);
         g_assert (geteuid () == 0);
 
         error_code = pam_open_session (worker->priv->pam_handle, 0);
@@ -2379,6 +2380,43 @@ do_accredit (GdmSessionWorker *worker)
 }
 
 static void
+on_settings_is_loaded_changed (GdmSessionWorker *worker)
+{
+        if (!gdm_session_settings_is_loaded (worker->priv->user_settings)) {
+                return;
+        }
+
+        if (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCREDITED) {
+                worker->priv->state = GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_FETCHED;
+                queue_state_change (worker);
+        }
+
+        g_signal_handlers_disconnect_by_func (G_OBJECT (worker->priv->user_settings),
+                                              G_CALLBACK (on_settings_is_loaded_changed),
+                                              worker);
+}
+
+static void
+do_fetch_account_details (GdmSessionWorker *worker)
+{
+        g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCREDITED);
+
+        if (gdm_session_settings_is_loaded (worker->priv->user_settings)) {
+                worker->priv->state = GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_FETCHED;
+                queue_state_change (worker);
+                return;
+        }
+
+        g_signal_connect (G_OBJECT (worker->priv->user_settings),
+                          "notify::is-loaded",
+                          G_CALLBACK (on_settings_is_loaded_changed),
+                          worker);
+
+        gdm_session_settings_load (worker->priv->user_settings,
+                                   worker->priv->username);
+}
+
+static void
 do_open_session (GdmSessionWorker *worker)
 {
         GError  *error;
@@ -2441,6 +2479,9 @@ get_state_name (int state)
         case GDM_SESSION_WORKER_STATE_ACCREDITED:
                 name = "ACCREDITED";
                 break;
+        case GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_FETCHED:
+                name = "ACCOUNT_DETAILS_FETCHED";
+                break;
         case GDM_SESSION_WORKER_STATE_SESSION_OPENED:
                 name = "SESSION_OPENED";
                 break;
@@ -2478,6 +2519,9 @@ state_change_idle (GdmSessionWorker *worker)
                 break;
         case GDM_SESSION_WORKER_STATE_ACCREDITED:
                 do_accredit (worker);
+                break;
+        case GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_FETCHED:
+                do_fetch_account_details (worker);
                 break;
         case GDM_SESSION_WORKER_STATE_SESSION_OPENED:
                 do_open_session (worker);
