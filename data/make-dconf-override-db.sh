@@ -5,7 +5,7 @@ set -e
 export XDG_CONFIG_HOME=$(mktemp -d --tmpdir="$PWD")
 eval `dbus-launch --sh-syntax`
 
-trap 'kill $DBUS_SESSION_BUS_PID' ERR
+trap 'rm -rf $XDG_CONFIG_HOME; kill $DBUS_SESSION_BUS_PID' ERR
 
 gsettings set org.gnome.power-manager show-actions false
 
