@@ -104,15 +104,18 @@ CLEANFILES = 				\
 	Init				\
 	PreSession			\
 	PostSession			\
+	dconf-override-db		\
 	$(NULL)
 
 DISTCLEANFILES =			\
 	$(dbusconf_DATA)			\
 	gdm.schemas			\
+	dconf-override-db		\
 	$(NULL)
 
 MAINTAINERCLEANFILES =			\
 	*~				\
+	dconf-override-db		\
 	Makefile.in
 
 dconf-override-db: $(srcdir)/make-dconf-override-db.sh
