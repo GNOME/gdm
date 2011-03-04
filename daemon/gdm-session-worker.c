@@ -126,7 +126,6 @@ struct GdmSessionWorkerPrivate
         int               cred_flags;
 
         char            **arguments;
-        GHashTable       *environment;
         guint32           cancelled : 1;
         guint32           timed_out : 1;
         guint             state_change_idle_id;
@@ -1262,15 +1261,32 @@ gdm_session_worker_set_environment_variable (GdmSessionWorker *worker,
                                              const char       *key,
                                              const char       *value)
 {
-        /* FIXME: maybe we should use use pam_putenv instead of our
-         * own hash table, so pam can override our choices if it knows
-         * better?
-         *
-         * See https://bugzilla.gnome.org/show_bug.cgi?id=627530
-         */
-        g_hash_table_replace (worker->priv->environment,
-                              g_strdup (key),
-                              g_strdup (value));
+        int error_code;
+        char *environment_entry;
+
+        if (value != NULL) {
+                environment_entry = g_strdup_printf ("%s=%s", key, value);
+        } else {
+                /* empty value means "remove from environment" */
+                environment_entry = g_strdup (key);
+        }
+
+        error_code = pam_putenv (worker->priv->pam_handle,
+                                 environment_entry);
+
+        if (error_code != PAM_SUCCESS) {
+                g_warning ("cannot put %s in pam environment: %s\n",
+                           environment_entry,
+                           pam_strerror (worker->priv->pam_handle, error_code));
+        }
+        g_free (environment_entry);
+}
+
+static char *
+gdm_session_worker_get_environment_variable (GdmSessionWorker *worker,
+                                             const char       *key)
+{
+        return g_strdup (pam_getenv (worker->priv->pam_handle, key));
 }
 
 static void
@@ -1289,9 +1305,9 @@ gdm_session_worker_update_environment_from_passwd_info (GdmSessionWorker *worker
 
 static gboolean
 gdm_session_worker_environment_variable_is_set (GdmSessionWorker *worker,
-                                                const char       *name)
+                                                const char       *key)
 {
-        return g_hash_table_lookup (worker->priv->environment, name) != NULL;
+        return pam_getenv (worker->priv->pam_handle, key) != NULL;
 }
 
 static gboolean
@@ -1509,58 +1525,10 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
         return ret;
 }
 
-static void
-gdm_session_worker_update_environment_from_pam (GdmSessionWorker *worker)
-{
-        char **environment;
-        gsize i;
-
-        environment = pam_getenvlist (worker->priv->pam_handle);
-
-        for (i = 0; environment[i] != NULL; i++) {
-                char **key_and_value;
-
-                key_and_value = g_strsplit (environment[i], "=", 2);
-
-                gdm_session_worker_set_environment_variable (worker, key_and_value[0], key_and_value[1]);
-
-                g_strfreev (key_and_value);
-        }
-
-        for (i = 0; environment[i]; i++) {
-                free (environment[i]);
-        }
-
-        free (environment);
-}
-
-static void
-gdm_session_worker_fill_environment_array (const char *key,
-                                           const char *value,
-                                           GPtrArray  *environment)
-{
-        char *variable;
-
-        if (value == NULL)
-                return;
-
-        variable = g_strdup_printf ("%s=%s", key, value);
-
-        g_ptr_array_add (environment, variable);
-}
-
 static char **
 gdm_session_worker_get_environment (GdmSessionWorker *worker)
 {
-        GPtrArray *environment;
-
-        environment = g_ptr_array_new ();
-        g_hash_table_foreach (worker->priv->environment,
-                              (GHFunc) gdm_session_worker_fill_environment_array,
-                              environment);
-        g_ptr_array_add (environment, NULL);
-
-        return (char **) g_ptr_array_free (environment, FALSE);
+        return pam_getenvlist (worker->priv->pam_handle);
 }
 
 static void
@@ -1712,9 +1680,6 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
         pid_t session_pid;
         int   error_code;
 
-        g_debug ("GdmSessionWorker: querying pam for user environment");
-        gdm_session_worker_update_environment_from_pam (worker);
-
         register_ck_session (worker);
 
         gdm_get_pwent_for_name (worker->priv->username, &passwd_entry);
@@ -1754,12 +1719,11 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
 
                 g_assert (geteuid () == getuid ());
 
-                home_dir = g_hash_table_lookup (worker->priv->environment,
-                                                "HOME");
-
+                home_dir = gdm_session_worker_get_environment_variable (worker, "HOME");
                 if ((home_dir == NULL) || g_chdir (home_dir) < 0) {
                         g_chdir ("/");
                 }
+                g_free (home_dir);
 
                 fd = open ("/dev/null", O_RDWR);
                 dup2 (fd, STDIN_FILENO);
@@ -1790,7 +1754,6 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
                 g_debug ("GdmSessionWorker: child '%s' could not be started: %s",
                          worker->priv->arguments[0],
                          g_strerror (errno));
-                g_strfreev (environment);
 
                 _exit (127);
         }
@@ -2668,10 +2631,6 @@ gdm_session_worker_init (GdmSessionWorker *worker)
 {
 
         worker->priv = GDM_SESSION_WORKER_GET_PRIVATE (worker);
-        worker->priv->environment = g_hash_table_new_full (g_str_hash,
-                                                           g_str_equal,
-                                                           (GDestroyNotify) g_free,
-                                                           (GDestroyNotify) g_free);
 }
 
 static void
@@ -2707,9 +2666,6 @@ gdm_session_worker_finalize (GObject *object)
         g_free (worker->priv->username);
         g_free (worker->priv->server_address);
         g_strfreev (worker->priv->arguments);
-        if (worker->priv->environment != NULL) {
-                g_hash_table_destroy (worker->priv->environment);
-        }
 
         G_OBJECT_CLASS (gdm_session_worker_parent_class)->finalize (object);
 }
