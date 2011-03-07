@@ -826,6 +826,18 @@ on_user_removed (ActUserManager       *manager,
 
         user_name = act_user_get_user_name (user);
 
+        /* Ignore removals we aren't interested in */
+        if (!gdm_chooser_widget_lookup_item (GDM_CHOOSER_WIDGET (widget),
+                                             user_name,
+                                             NULL,
+                                             NULL,
+                                             NULL,
+                                             NULL,
+                                             NULL,
+                                             NULL)) {
+                return;
+        }
+
         gdm_chooser_widget_remove_item (GDM_CHOOSER_WIDGET (widget),
                                         user_name);
 
