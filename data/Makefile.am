@@ -121,8 +121,8 @@ MAINTAINERCLEANFILES =			\
 dconf-override-db: $(srcdir)/make-dconf-override-db.sh
 	$(srcdir)/make-dconf-override-db.sh
 
-dist-hook: dconf-override-db
-	mv dconf-override-db $(distdir)
+dist-hook: $(srcdir)/dconf-override-db
+	cp $(srcdir)/dconf-override-db $(distdir)
 
 uninstall-hook:
 	rm -f \
