@@ -443,6 +443,7 @@ update_item_for_user (GdmUserChooserWidget *widget,
         char         *tooltip;
         gboolean      is_logged_in;
         char         *escaped_username;
+        const char   *real_name;
         char         *escaped_real_name;
 
         if (!act_user_is_loaded (user)) {
@@ -466,7 +467,13 @@ update_item_for_user (GdmUserChooserWidget *widget,
                  pixbuf);
 
         escaped_username = g_markup_escape_text (act_user_get_user_name (user), -1);
-        escaped_real_name = g_markup_escape_text (act_user_get_real_name (user), -1);
+
+        real_name = act_user_get_real_name (user);
+        if (real_name == NULL || real_name == '\0') {
+                real_name = act_user_get_user_name (user);
+        }
+        escaped_real_name = g_markup_escape_text (real_name, -1);
+
         gdm_chooser_widget_update_item (GDM_CHOOSER_WIDGET (widget),
                                         escaped_username,
                                         pixbuf,
@@ -737,6 +744,7 @@ add_user (GdmUserChooserWidget *widget,
         char         *tooltip;
         gboolean      is_logged_in;
         char         *escaped_username;
+        const char   *real_name;
         char         *escaped_real_name;
 
         if (!widget->priv->show_normal_users) {
@@ -764,7 +772,12 @@ add_user (GdmUserChooserWidget *widget,
         is_logged_in = act_user_is_logged_in (user);
 
         escaped_username = g_markup_escape_text (act_user_get_user_name (user), -1);
-        escaped_real_name = g_markup_escape_text (act_user_get_real_name (user), -1);
+        real_name = act_user_get_real_name (user);
+        if (real_name == NULL || real_name == '\0') {
+                real_name = act_user_get_user_name (user);
+        }
+        escaped_real_name = g_markup_escape_text (real_name, -1);
+
         gdm_chooser_widget_add_item (GDM_CHOOSER_WIDGET (widget),
                                      escaped_username,
                                      pixbuf,
