@@ -49,6 +49,7 @@
 #include "ck-connector.h"
 
 #include "gdm-common.h"
+#include "gdm-log.h"
 #include "gdm-session-worker.h"
 #include "gdm-marshal.h"
 
@@ -1742,6 +1743,8 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
                 dup2 (fd, STDERR_FILENO);
                 close (fd);
 
+                gdm_log_shutdown ();
+
                 /*
                  * Reset SIGPIPE to default so that any process in the user
                  * session get the default SIGPIPE behavior instead of ignoring
@@ -1754,6 +1757,7 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
                                      environment,
                                      TRUE);
 
+                gdm_log_init ();
                 g_debug ("GdmSessionWorker: child '%s' could not be started: %s",
                          worker->priv->arguments[0],
                          g_strerror (errno));
