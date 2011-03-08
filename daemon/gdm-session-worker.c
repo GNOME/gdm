@@ -1984,8 +1984,6 @@ do_setup (GdmSessionWorker *worker)
         GError  *error;
         gboolean res;
 
-        worker->priv->user_settings = gdm_session_settings_new ();
-
         g_signal_connect_swapped (worker->priv->user_settings,
                                   "notify::language-name",
                                   G_CALLBACK (on_saved_language_name_read),
@@ -2656,6 +2654,8 @@ gdm_session_worker_init (GdmSessionWorker *worker)
 {
 
         worker->priv = GDM_SESSION_WORKER_GET_PRIVATE (worker);
+
+        worker->priv->user_settings = gdm_session_settings_new ();
 }
 
 static void
