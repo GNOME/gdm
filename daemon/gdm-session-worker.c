@@ -92,7 +92,7 @@ enum {
         GDM_SESSION_WORKER_STATE_AUTHENTICATED,
         GDM_SESSION_WORKER_STATE_AUTHORIZED,
         GDM_SESSION_WORKER_STATE_ACCREDITED,
-        GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_FETCHED,
+        GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED,
         GDM_SESSION_WORKER_STATE_SESSION_OPENED,
         GDM_SESSION_WORKER_STATE_SESSION_STARTED,
         GDM_SESSION_WORKER_STATE_REAUTHENTICATED,
@@ -1742,11 +1742,6 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
                 dup2 (fd, STDERR_FILENO);
                 close (fd);
 
-                if (!gdm_session_settings_save (worker->priv->user_settings,
-                                                worker->priv->username)) {
-                        g_warning ("could not save session and language settings");
-                }
-
                 /*
                  * Reset SIGPIPE to default so that any process in the user
                  * session get the default SIGPIPE behavior instead of ignoring
@@ -1791,7 +1786,7 @@ gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
 {
         int error_code;
 
-        g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_FETCHED);
+        g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED);
         g_assert (geteuid () == 0);
 
         error_code = pam_open_session (worker->priv->pam_handle, 0);
@@ -2103,6 +2098,20 @@ do_accredit (GdmSessionWorker *worker)
 }
 
 static void
+save_account_details_now (GdmSessionWorker *worker)
+{
+        g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCREDITED);
+
+        g_debug ("GdmSessionWorker: saving account details for user %s", worker->priv->username);
+        worker->priv->state = GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED;
+        if (!gdm_session_settings_save (worker->priv->user_settings,
+                                        worker->priv->username)) {
+                g_warning ("could not save session and language settings");
+        }
+        queue_state_change (worker);
+}
+
+static void
 on_settings_is_loaded_changed (GdmSessionWorker *worker)
 {
         if (!gdm_session_settings_is_loaded (worker->priv->user_settings)) {
@@ -2110,8 +2119,7 @@ on_settings_is_loaded_changed (GdmSessionWorker *worker)
         }
 
         if (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCREDITED) {
-                worker->priv->state = GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_FETCHED;
-                queue_state_change (worker);
+                save_account_details_now (worker);
         }
 
         g_signal_handlers_disconnect_by_func (G_OBJECT (worker->priv->user_settings),
@@ -2120,23 +2128,23 @@ on_settings_is_loaded_changed (GdmSessionWorker *worker)
 }
 
 static void
-do_fetch_account_details (GdmSessionWorker *worker)
+do_save_account_details_when_ready (GdmSessionWorker *worker)
 {
         g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCREDITED);
 
-        if (gdm_session_settings_is_loaded (worker->priv->user_settings)) {
-                worker->priv->state = GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_FETCHED;
-                queue_state_change (worker);
+        if (!gdm_session_settings_is_loaded (worker->priv->user_settings)) {
+                g_signal_connect (G_OBJECT (worker->priv->user_settings),
+                                  "notify::is-loaded",
+                                  G_CALLBACK (on_settings_is_loaded_changed),
+                                  worker);
+                g_debug ("GdmSessionWorker: user %s, not fully loaded yet, will save account details later",
+                         worker->priv->username);
+                gdm_session_settings_load (worker->priv->user_settings,
+                                           worker->priv->username);
                 return;
         }
 
-        g_signal_connect (G_OBJECT (worker->priv->user_settings),
-                          "notify::is-loaded",
-                          G_CALLBACK (on_settings_is_loaded_changed),
-                          worker);
-
-        gdm_session_settings_load (worker->priv->user_settings,
-                                   worker->priv->username);
+        save_account_details_now (worker);
 }
 
 static void
@@ -2202,8 +2210,8 @@ get_state_name (int state)
         case GDM_SESSION_WORKER_STATE_ACCREDITED:
                 name = "ACCREDITED";
                 break;
-        case GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_FETCHED:
-                name = "ACCOUNT_DETAILS_FETCHED";
+        case GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED:
+                name = "ACCOUNT_DETAILS_SAVED";
                 break;
         case GDM_SESSION_WORKER_STATE_SESSION_OPENED:
                 name = "SESSION_OPENED";
@@ -2243,8 +2251,8 @@ state_change_idle (GdmSessionWorker *worker)
         case GDM_SESSION_WORKER_STATE_ACCREDITED:
                 do_accredit (worker);
                 break;
-        case GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_FETCHED:
-                do_fetch_account_details (worker);
+        case GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED:
+                do_save_account_details_when_ready (worker);
                 break;
         case GDM_SESSION_WORKER_STATE_SESSION_OPENED:
                 do_open_session (worker);
