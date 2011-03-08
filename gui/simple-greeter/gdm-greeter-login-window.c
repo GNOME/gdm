@@ -509,14 +509,17 @@ switch_mode (GdmGreeterLoginWindow *login_window,
         switch (number) {
         case MODE_SELECTION:
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_HIDDEN);
+                set_sensitive (login_window, TRUE);
                 gtk_widget_hide (login_window->priv->session_option_widget);
                 break;
         case MODE_TIMED_LOGIN:
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_TIMED_LOGIN);
+                set_sensitive (login_window, TRUE);
                 gtk_widget_show (login_window->priv->session_option_widget);
                 break;
         case MODE_AUTHENTICATION:
                 set_log_in_button_mode (login_window, LOGIN_BUTTON_ANSWER_QUERY);
+                set_sensitive (login_window, FALSE);
                 gtk_widget_show (login_window->priv->session_option_widget);
                 break;
         default:
@@ -682,7 +685,6 @@ reset_dialog (GdmGreeterLoginWindow *login_window,
                 switch_mode (login_window, dialog_mode);
         }
 
-        set_sensitive (login_window, TRUE);
         set_ready (login_window);
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
         update_banner_message (login_window);
