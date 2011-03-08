@@ -474,6 +474,18 @@ update_item_for_user (GdmUserChooserWidget *widget,
         }
         escaped_real_name = g_markup_escape_text (real_name, -1);
 
+        /* Ignore updates we aren't interested in */
+        if (!gdm_chooser_widget_lookup_item (GDM_CHOOSER_WIDGET (widget),
+                                             escaped_username,
+                                             NULL,
+                                             NULL,
+                                             NULL,
+                                             NULL,
+                                             NULL,
+                                             NULL)) {
+                return;
+        }
+
         gdm_chooser_widget_update_item (GDM_CHOOSER_WIDGET (widget),
                                         escaped_username,
                                         pixbuf,
