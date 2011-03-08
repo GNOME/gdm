@@ -1984,31 +1984,6 @@ do_setup (GdmSessionWorker *worker)
         GError  *error;
         gboolean res;
 
-        g_signal_connect_swapped (worker->priv->user_settings,
-                                  "notify::language-name",
-                                  G_CALLBACK (on_saved_language_name_read),
-                                  worker);
-
-        g_signal_connect_swapped (worker->priv->user_settings,
-                                  "notify::session-name",
-                                  G_CALLBACK (on_saved_session_name_read),
-                                  worker);
-
-        /* In some setups the user can read ~/.dmrc at this point.
-         * In some other setups the user can only read ~/.dmrc after completing
-         * the pam conversation.
-         *
-         * The user experience is better if we can read .dmrc now since we can
-         * prefill in the language and session combo boxes in the greeter with
-         * the right values.
-         *
-         * We'll try now, and if it doesn't work out, try later.
-         */
-        if (worker->priv->username != NULL) {
-                attempt_to_load_user_settings (worker,
-                                               worker->priv->username);
-        }
-
         error = NULL;
         res = gdm_session_worker_initialize_pam (worker,
                                                  worker->priv->service,
@@ -2125,8 +2100,14 @@ on_settings_is_loaded_changed (GdmSessionWorker *worker)
                 return;
         }
 
-        if (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCREDITED) {
+        if (worker->priv->state == GDM_SESSION_WORKER_STATE_NONE) {
+                g_debug ("GdmSessionWorker: queuing setup for user: %s %s",
+                         worker->priv->username, worker->priv->display_device);
+                queue_state_change (worker);
+        } else if (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCREDITED) {
                 save_account_details_now (worker);
+        } else {
+                return;
         }
 
         g_signal_handlers_disconnect_by_func (G_OBJECT (worker->priv->user_settings),
@@ -2404,8 +2385,27 @@ on_setup_for_user (GdmSessionWorker *worker,
                 worker->priv->hostname = g_strdup (hostname);
                 worker->priv->username = g_strdup (username);
 
-                g_debug ("GdmSessionWorker: queuing setup for user: %s %s", service, console);
-                queue_state_change (worker);
+                g_signal_connect_swapped (worker->priv->user_settings,
+                                          "notify::language-name",
+                                          G_CALLBACK (on_saved_language_name_read),
+                                          worker);
+
+                g_signal_connect_swapped (worker->priv->user_settings,
+                                          "notify::session-name",
+                                          G_CALLBACK (on_saved_session_name_read),
+                                          worker);
+
+                /* Load settings from accounts daemon before continuing
+                 * FIXME: need to handle username not loading
+                 */
+                if (gdm_session_settings_load (worker->priv->user_settings, username)) {
+                        queue_state_change (worker);
+                } else {
+                        g_signal_connect (G_OBJECT (worker->priv->user_settings),
+                                          "notify::is-loaded",
+                                          G_CALLBACK (on_settings_is_loaded_changed),
+                                          worker);
+                }
         } else {
                 g_warning ("Unable to get arguments: %s", error.message);
                 dbus_error_free (&error);
