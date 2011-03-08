@@ -682,7 +682,6 @@ reset_dialog (GdmGreeterLoginWindow *login_window,
                 switch_mode (login_window, dialog_mode);
         }
 
-        gtk_widget_set_sensitive (login_window->priv->conversation_list, TRUE);
         set_sensitive (login_window, TRUE);
         set_ready (login_window);
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
