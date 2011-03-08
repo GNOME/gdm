@@ -262,6 +262,7 @@ load_settings_from_user (GdmSessionSettings *settings)
         }
 
         session_name = act_user_get_x_session (settings->priv->user);
+        g_debug ("GdmSessionSettings: saved session is %s", session_name);
 
         if (session_name != NULL) {
                 gdm_session_settings_set_session_name (settings, session_name);
@@ -269,6 +270,7 @@ load_settings_from_user (GdmSessionSettings *settings)
 
         language_name = act_user_get_language (settings->priv->user);
 
+        g_debug ("GdmSessionSettings: saved language is %s", language_name);
         if (language_name != NULL) {
                 gdm_session_settings_set_language_name (settings, language_name);
         }

@@ -592,6 +592,7 @@ static void
 attempt_to_load_user_settings (GdmSessionWorker *worker,
                                const char       *username)
 {
+        g_debug ("GdmSessionWorker: attempting to load user settings");
         gdm_session_settings_load (worker->priv->user_settings,
                                    username);
 }
@@ -1955,6 +1956,8 @@ on_saved_language_name_read (GdmSessionWorker *worker)
         char *language_name;
 
         language_name = gdm_session_settings_get_language_name (worker->priv->user_settings);
+
+        g_debug ("GdmSessionWorker: Saved language is %s", language_name);
         send_dbus_string_method (worker->priv->connection,
                                  "SavedLanguageNameRead",
                                  language_name);
@@ -1967,6 +1970,8 @@ on_saved_session_name_read (GdmSessionWorker *worker)
         char *session_name;
 
         session_name = gdm_session_settings_get_session_name (worker->priv->user_settings);
+
+        g_debug ("GdmSessionWorker: Saved session is %s", session_name);
         send_dbus_string_method (worker->priv->connection,
                                  "SavedSessionNameRead",
                                  session_name);
