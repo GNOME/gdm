@@ -2683,6 +2683,7 @@ gdm_session_worker_finalize (GObject *object)
 
         gdm_session_worker_unwatch_child (worker);
 
+        g_object_unref (worker->priv->user_settings);
         g_free (worker->priv->service);
         g_free (worker->priv->x11_display_name);
         g_free (worker->priv->x11_authority_file);
