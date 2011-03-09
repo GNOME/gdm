@@ -285,6 +285,9 @@ on_user_is_loaded_changed (ActUser            *user,
 {
         if (act_user_is_loaded (settings->priv->user)) {
                 load_settings_from_user (settings);
+                g_signal_handlers_disconnect_by_func (G_OBJECT (settings->priv->user),
+                                                      G_CALLBACK (on_user_is_loaded_changed),
+                                                      settings);
         }
 }
 
