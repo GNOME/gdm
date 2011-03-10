@@ -469,7 +469,7 @@ update_item_for_user (GdmUserChooserWidget *widget,
         escaped_username = g_markup_escape_text (act_user_get_user_name (user), -1);
 
         real_name = act_user_get_real_name (user);
-        if (real_name == NULL || real_name == '\0') {
+        if (real_name == NULL || real_name[0] == '\0') {
                 real_name = act_user_get_user_name (user);
         }
         escaped_real_name = g_markup_escape_text (real_name, -1);
@@ -785,7 +785,7 @@ add_user (GdmUserChooserWidget *widget,
 
         escaped_username = g_markup_escape_text (act_user_get_user_name (user), -1);
         real_name = act_user_get_real_name (user);
-        if (real_name == NULL || real_name == '\0') {
+        if (real_name == NULL || real_name[0] == '\0') {
                 real_name = act_user_get_user_name (user);
         }
         escaped_real_name = g_markup_escape_text (real_name, -1);
