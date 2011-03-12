@@ -22,6 +22,7 @@ desktop_in_files = 	\
 	metacity.desktop.in			\
 	orca-screen-reader.desktop.in		\
 	polkit-gnome-authentication-agent-1.desktop.in	\
+	gnome-session-check-accelerated.desktop.in	\
 	$(NULL)
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 
@@ -31,6 +32,7 @@ EXTRA_DIST = 			\
 	gnome-power-manager.desktop.in.in	\
 	gnome-settings-daemon.desktop.in.in	\
 	polkit-gnome-authentication-agent-1.desktop.in.in \
+	gnome-session-check-accelerated.desktop.in.in	\
 	$(desktop_in_files)	\
 	$(NULL)
 
@@ -41,6 +43,7 @@ DISTCLEANFILES =			\
 	gnome-power-manager.desktop.in	\
 	gnome-settings-daemon.desktop.in	\
 	polkit-gnome-authentication-agent-1.desktop.in \
+	gnome-session-check-accelerated.desktop.in	\
 	$(NULL)
 
 MAINTAINERCLEANFILES =                  \
