@@ -78,6 +78,9 @@ gdm.schemas.in: $(srcdir)/gdm.schemas.in.in
 localealiasdir = $(datadir)/gdm
 localealias_DATA = locale.alias
 
+sessiondir = $(datadir)/gnome-session/sessions
+dist_session_DATA = gdm.session
+
 EXTRA_DIST =			\
 	$(schemas_in_files)	\
 	$(schemas_DATA)		\
