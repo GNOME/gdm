@@ -6,15 +6,15 @@
 # Maintainer: Горан Ракић <gox@devbase.net>
 # Reviewed on 2005-03-06 by: Данило Шеган <danilo@prevod.org>
 # Reviewed on 2005-09-05 by: Слободан Д. Средојевић <slobo@akrep.be>
-# Милош Поповић <gpopac@gmail.com>, 2010.
+# Милош Поповић <gpopac@gmail.com>, 2010, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&component=general\n"
-"POT-Creation-Date: 2010-08-13 15:26+0000\n"
-"PO-Revision-Date: 2010-08-18 15:44+0200\n"
+"product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-03-17 13:45+0000\n"
+"PO-Revision-Date: 2011-03-19 12:10+0100\n"
 "Last-Translator: Милош Поповић <gpopac@gmail.com>\n"
 "Language-Team: Serbian <gnom@prevod.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Plural-Forms: nplurals=4;    plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 :    n"
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
-#: ../common/gdm-common.c:437
+#: ../common/gdm-common.c:456
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom није означени уређај"
@@ -48,33 +48,28 @@ msgstr "Завистан процес управника приказа Гном
 msgid "could not find user \"%s\" on system"
 msgstr "не могу да нађем корисника „%s“ на систему"
 
-#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:258
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:316
 msgid "Unable to initialize login system"
 msgstr "Не могу да покренем систем пријаве"
 
-#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:294
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:352
 msgid "Unable to authenticate user"
 msgstr "Не могу да пријавим корисника"
 
-#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:351
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:409
 msgid "Unable to authorize user"
 msgstr "Не могу да овластим корисника"
 
-#: ../daemon/gdm-factory-slave.c:279 ../daemon/gdm-simple-slave.c:480
+#: ../daemon/gdm-factory-slave.c:279 ../daemon/gdm-simple-slave.c:538
 msgid "Unable to establish credentials"
 msgstr "Не могу да прибавитим уверења"
 
-#: ../daemon/gdm-factory-slave.c:302 ../daemon/gdm-simple-slave.c:510
+#: ../daemon/gdm-factory-slave.c:302 ../daemon/gdm-simple-slave.c:572
 msgid "Unable to open session"
 msgstr "Не могу да отворим сесију"
 
-#: ../daemon/gdm-factory-slave.c:689 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1196
-#| msgid ""
-#| "Could not start the X server (your graphical environment) due to some "
-#| "internal error. Please contact your system administrator or check your "
-#| "syslog to diagnose. In the meantime this display will be disabled.  "
-#| "Please restart GDM when the problem is corrected."
+#: ../daemon/gdm-factory-slave.c:677 ../daemon/gdm-product-slave.c:449
+#: ../daemon/gdm-simple-slave.c:1366
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -98,24 +93,23 @@ msgstr ""
 "Требало је да се сервер прикаже за корисника %s, али тај корисник не постоји"
 
 #: ../daemon/gdm-server.c:376 ../daemon/gdm-server.c:396
-#: ../daemon/gdm-welcome-session.c:598 ../daemon/gdm-welcome-session.c:618
+#: ../daemon/gdm-welcome-session.c:599 ../daemon/gdm-welcome-session.c:619
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Не могу да поставим groupid на %d"
 
-#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:604
+#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:605
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups() није успео за %s"
 
-#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:610
+#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:611
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Не могу да поставим userid на %d"
 
 #: ../daemon/gdm-server.c:435
 #, c-format
-#| msgid "%s: Could not open logfile for display %s!"
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Не могу да отворим датотеку са дневником екрана %s!"
 
@@ -159,80 +153,73 @@ msgstr "Екран"
 msgid "The display device"
 msgstr "Уређај за приказ"
 
-#: ../daemon/gdm-session-worker.c:1309
+#: ../daemon/gdm-session-worker.c:1066
 #, c-format
-#| msgid "error initiating conversation with authentication system - %s"
-msgid "error initiating conversation with authentication system: %s"
-msgstr "грешка у комуникацији са системом за пријаву: %s"
+#| msgid "error initiating conversation with authentication system: %s"
+msgid "error initiating conversation with authentication system - %s"
+msgstr "грешка при успостављању комуникације са системом за пријаву — %s"
 
-#: ../daemon/gdm-session-worker.c:1310
+#: ../daemon/gdm-session-worker.c:1067
 msgid "general failure"
 msgstr "општа грешка"
 
-#: ../daemon/gdm-session-worker.c:1311
+#: ../daemon/gdm-session-worker.c:1068
 msgid "out of memory"
 msgstr "нестало меморије"
 
-#: ../daemon/gdm-session-worker.c:1312
+#: ../daemon/gdm-session-worker.c:1069
 msgid "application programmer error"
 msgstr "програмерска грешка"
 
-#: ../daemon/gdm-session-worker.c:1313
+#: ../daemon/gdm-session-worker.c:1070
 msgid "unknown error"
 msgstr "непозната грешка"
 
-#: ../daemon/gdm-session-worker.c:1320
+#: ../daemon/gdm-session-worker.c:1077
 msgid "Username:"
 msgstr "Корисничко име:"
 
-#: ../daemon/gdm-session-worker.c:1326
+#: ../daemon/gdm-session-worker.c:1083
 #, c-format
-#| msgid ""
-#| "error informing authentication system of preferred username prompt - %s"
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr ""
 "грешка при извештавању система за пријаву о изабраном одзиву корисника: %s"
 
-#: ../daemon/gdm-session-worker.c:1340
+#: ../daemon/gdm-session-worker.c:1097
 #, c-format
-#| msgid "error informing authentication system of user's hostname - %s"
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "грешка при извештавању система за пријаву о домаћину корисника: %s"
 
-#: ../daemon/gdm-session-worker.c:1355
+#: ../daemon/gdm-session-worker.c:1112
 #, c-format
-#| msgid "error informing authentication system of user's console - %s"
 msgid "error informing authentication system of user's console: %s"
 msgstr "грешка при извештавању система за пријаву о конзоли корисника: %s"
 
-#: ../daemon/gdm-session-worker.c:1368
+#: ../daemon/gdm-session-worker.c:1125
 #, c-format
-#| msgid "error informing authentication system of display string - %s"
 msgid "error informing authentication system of display string: %s"
 msgstr "грешка при извештавању система за пријаву о низу за приказ: %s"
 
-#: ../daemon/gdm-session-worker.c:1383
+#: ../daemon/gdm-session-worker.c:1140
 #, c-format
-#| msgid ""
-#| "error informing authentication system of display xauth credentials - %s"
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "грешка при извештавању система за пријаву о уверењу приказа xauth: %s"
 
-#: ../daemon/gdm-session-worker.c:1675 ../daemon/gdm-session-worker.c:1692
+#: ../daemon/gdm-session-worker.c:1462 ../daemon/gdm-session-worker.c:1479
 #, c-format
 msgid "no user account available"
 msgstr "нема доступног корисничког налога"
 
-#: ../daemon/gdm-session-worker.c:1719
+#: ../daemon/gdm-session-worker.c:1506
 msgid "Unable to change to user"
 msgstr "Не могу да променим корисника"
 
-#: ../daemon/gdm-welcome-session.c:548
+#: ../daemon/gdm-welcome-session.c:549
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Корисник %s не постоји"
 
-#: ../daemon/gdm-welcome-session.c:555
+#: ../daemon/gdm-welcome-session.c:556
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Група %s не постоји"
@@ -377,7 +364,6 @@ msgstr "Не могу да добијем име сервера: %s!"
 # bug: why these two messages need to differ?
 #: ../daemon/main.c:237 ../daemon/main.c:250
 #, c-format
-#| msgid "Cannot write PID file %s: possibly out of diskspace: %s"
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr ""
 "Не могу да пишем у ПИБ датотеку %s: вероватно више нема простора на диску: %s"
@@ -430,7 +416,6 @@ msgid "Make all warnings fatal"
 msgstr "Нека сва упозорења буду погубна"
 
 #: ../daemon/main.c:534
-#| msgid "Exit after a time - for debugging"
 msgid "Exit after a time (for debugging)"
 msgstr "Излаз након неког времена (ради тражења грешака)"
 
@@ -454,13 +439,12 @@ msgid "GNOME Display Manager Session Worker"
 msgstr "Радник сесије за Гномов управник приказа"
 
 #: ../data/greeter-autostart/at-spi-registryd-wrapper.desktop.in.in.h:1
-#| msgid "AT SPI Registry Wrapper"
 msgid "AT-SPI Registry Wrapper"
 msgstr "Омотач AT-SPI регистра"
 
 # bug(slobo): пријавница?
 #: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1632
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1756
 msgid "Login Window"
 msgstr "Прозор за пријаву"
 
@@ -471,6 +455,10 @@ msgstr "Управник потрошњом"
 #: ../data/greeter-autostart/gnome-power-manager.desktop.in.in.h:2
 msgid "Power management daemon"
 msgstr "Демон управљања потрошњом"
+
+#: ../data/greeter-autostart/gnome-session-check-accelerated.desktop.in.in.h:1
+msgid "GNOME Session Acceleration Checker"
+msgstr "Провера графичког система за Гномову сесију"
 
 #: ../data/greeter-autostart/gnome-settings-daemon.desktop.in.in.h:1
 msgid "GNOME Settings Daemon"
@@ -485,12 +473,10 @@ msgid "Magnify parts of the screen"
 msgstr "Увећава делове екрана"
 
 #: ../data/greeter-autostart/gok.desktop.in.h:1
-#| msgid "GNOME Onscreen Keyboard"
 msgid "GNOME On-Screen Keyboard"
 msgstr "Гномова тастатура на екрану"
 
 #: ../data/greeter-autostart/gok.desktop.in.h:2
-#| msgid "Use an onscreen keyboard"
 msgid "Use an on-screen keyboard"
 msgstr "Прикажи тастатуру на екрану"
 
@@ -510,7 +496,7 @@ msgstr "Изговара податке са екрана или користи 
 msgid "PolicyKit Authentication Agent"
 msgstr "PolicyKit агент за пријаве"
 
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:148
+#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Изаберите систем"
 
@@ -522,35 +508,35 @@ msgstr "XDMCP: не могу да направим XDMCP оставу!"
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: не могу да прочитам XDMCP заглавље!"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:250
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
 msgid "Value"
 msgstr "Вредност"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:251
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:240
 msgid "percentage of time complete"
 msgstr "проценат завршеног времена"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1459
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1465
 msgid "Inactive Text"
 msgstr "Неактиван текст"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1460
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1466
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr "Текст за коришћење у ознаци, уколико га корисник још није изабрао"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1468
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1474
 msgid "Active Text"
 msgstr "Активан текст"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1469
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1475
 msgid "The text to use in the label if the user has picked an item"
 msgstr "Текст за коришћење у ознаци, уколико га корисник није изабрао"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1478
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1484
 msgid "List Visible"
 msgstr "Приказ листе"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1479
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1485
 msgid "Whether the chooser list is visible"
 msgstr "Одређује да ли је видљив списак корисника"
 
@@ -582,69 +568,70 @@ msgstr "%A, %k:%M:%S"
 msgid "%a %l:%M %p"
 msgstr "%A, %k:%M"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:290
-#| msgid "Automatically logging in..."
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:293
 msgid "Automatically logging in…"
 msgstr "Аутоматски пријављујем…"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:576
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:585
 msgid "Select language and click Log In"
 msgstr "Изаберите језик и пријавите се"
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:689
-#| msgid "Cancelling..."
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:701
 msgid "Cancelling…"
 msgstr "Отказујем…"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-msgid "Computer Name"
-msgstr "Назив рачунара"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
-#| msgid "Log In"
-msgid "Login"
-msgstr "Пријави ме"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-msgid "Unlock"
-msgstr "Откључај"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
-msgid "Version"
-msgstr "Верзија"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:738
-msgid "Panel"
-msgstr "Панел"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:803
-#| msgid "Shutdown Options..."
-msgid "Shutdown Options…"
-msgstr "Опције за искључивање…"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:825
-msgid "Suspend"
-msgstr "Обустави"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:830
-msgid "Restart"
-msgstr "Поново покрени"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:834
-msgid "Shut Down"
-msgstr "Искључи"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1109
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1091
 msgctxt "customsession"
 msgid "Custom"
 msgstr "Произвољно"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1110
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1092
 msgid "Custom session"
 msgstr "Произвољна сесија"
 
-#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:201
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
+#| msgid "Panel"
+msgid "Cancel"
+msgstr "Откажи"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
+msgid "Computer Name"
+msgstr "Назив рачунара"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
+msgid "Login"
+msgstr "Пријави ме"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
+msgid "Unlock"
+msgstr "Откључај"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
+msgid "Version"
+msgstr "Верзија"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:907
+msgid "Suspend"
+msgstr "Обустави"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:912
+msgid "Restart"
+msgstr "Поново покрени"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:916
+msgid "Shut Down"
+msgstr "Искључи"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:965
+msgid "Unknown time remaining"
+msgstr "Није познато преостало време"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:987
+msgid "Panel"
+msgstr "Панел"
+
+#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:252
 msgid "Languages"
 msgstr "Језици"
 
@@ -660,8 +647,6 @@ msgstr "_Језик:"
 #. * with a list of languages to choose from
 #.
 #: ../gui/simple-greeter/gdm-language-option-widget.c:231
-#| msgctxt "language"
-#| msgid "Other..."
 msgctxt "language"
 msgid "Other…"
 msgstr "Остали…"
@@ -671,41 +656,12 @@ msgid "Choose a language from the full list of available languages."
 msgstr "Изаберите језик са комплетног списка доступних језика."
 
 #: ../gui/simple-greeter/gdm-language-option-widget.c:262
-#| msgid "Languages"
 msgid "Language"
 msgstr "Језик"
 
-#: ../gui/simple-greeter/gdm-languages.c:699
+#: ../gui/simple-greeter/gdm-languages.c:709
 msgid "Unspecified"
 msgstr "Неодређено"
-
-#: ../gui/simple-greeter/gdm-layout-chooser-dialog.c:191
-msgid "Keyboard layouts"
-msgstr "Распореди тастатуре"
-
-#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:202
-#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:203
-msgid "_Keyboard:"
-msgstr "_Тастатура:"
-
-#. translators: This brings up a dialog of
-#. * available keyboard layouts
-#.
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:223
-#| msgctxt "keyboard"
-#| msgid "Other..."
-msgctxt "keyboard"
-msgid "Other…"
-msgstr "Остали…"
-
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:224
-msgid "Choose a keyboard layout from the full list of available layouts."
-msgstr "Изаберитераспоред тастатуре са комплетног списка доступних распореда."
-
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:254
-#| msgid "_Keyboard:"
-msgid "Keyboard"
-msgstr "Тастатура"
 
 #: ../gui/simple-greeter/gdm-option-widget.c:505
 msgid "Label Text"
@@ -741,7 +697,6 @@ msgstr "Највећи број ставки које чине списак"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
-#| msgid "Remote Login (Connecting to %s...)"
 msgid "Remote Login (Connecting to %s…)"
 msgstr "Удаљена пријава (повезујем се на %s…)"
 
@@ -755,7 +710,6 @@ msgid "Remote Login"
 msgstr "Мрежна пријава"
 
 #: ../gui/simple-greeter/gdm-session-option-widget.c:162
-#| msgid "_Sessions:"
 msgid "Session"
 msgstr "Сесија"
 
@@ -800,67 +754,50 @@ msgid "Icon name to use for greeter logo"
 msgstr "Назив иконе за поздравни лого"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
-msgid "Recently selected keyboard layouts"
-msgstr "Недавно коришћени распореди тастатуре"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Recently selected languages"
 msgstr "Недавно коришћени језици"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
-#| msgid ""
-#| "Set to a list of keyboard layouts to be shown by default at the login "
-#| "window."
-msgid ""
-"Set to a list of keyboard layouts to be shown by default in the login window."
-msgstr ""
-"Омогућава да се списак распореда тастатуре подразумевано види на прозору за "
-"пријаву."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-#| msgid ""
-#| "Set to a list of languages to be shown by default at the login window."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Set to a list of languages to be shown by default in the login window."
 msgstr ""
 "Омогућава да се списак језика подразумевано види на прозору за пријаву."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "Поставља да лого за пријаву користи икону теме."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Set to true to disable showing known users in the login window."
 msgstr ""
 "Поставите на „true“ (тачно) како би онемогућили приказ познатих корисника у "
 "поздравном прозору."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Поставите на „true“ (тачно) како би онемогућили приказ дугмића за поновно "
 "покретање рачунара у поздравном прозору."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
-#| msgid "Set to true to enable the xrandr settings manager plugin."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to true to enable the XRandR settings manager plugin."
 msgstr "Поставите на „true“ (тачно) да укључите XRandR додатак за подешавање."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to true to enable the background settings manager plugin."
 msgstr ""
 "Поставите на „true“ (тачно) како би укључили додатак за подешавање позадине."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
 msgid "Set to true to enable the media-keys settings manager plugin."
 msgstr ""
 "Поставите на „true“ (тачно) како би укључили додатак за мултимедијалне "
 "тастере."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid "Set to true to enable the on-screen keyboard."
 msgstr "Поставите на „true“ (тачно) за приказ тастатуре на екрану."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid ""
 "Set to true to enable the plugin to manage the accessibility keyboard "
 "settings."
@@ -868,37 +805,33 @@ msgstr ""
 "Поставите на „true“ (тачно) како би укључили додатак за приступачност "
 "тастатуре."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid "Set to true to enable the screen magnifier."
 msgstr "Поставите на „true“ (тачно) како би укључили увећавање екрана."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "Set to true to enable the screen reader."
 msgstr "Поставите на „true“ (тачно) за укључивање читача екрана."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
 msgid "Set to true to enable the sound settings manager plugin."
 msgstr ""
 "Поставите на „true“ (тачно) како би укључили додатак за подешавање звука."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to true to enable the xsettings settings manager plugin."
 msgstr "Поставите на „true“ како би укључили xsettings додатак за подешавање."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid "Set to true to show the banner message text."
 msgstr "Поставља на „true“ за приказ текста у банеру"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
-#| msgid "Set to true to use compiz as the window manager."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
 msgid "Set to true to use Compiz as the window manager."
 msgstr ""
 "Поставите на „true“ (тачно) како би користили Компиз за управљање прозорима."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
-#| msgid ""
-#| "Text banner message to show on the login window when the user chooser is "
-#| "empty, instead of banner_message_text."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
 msgid ""
 "Text banner message to show in the login window when the user chooser is "
 "empty, instead of banner_message_text."
@@ -906,34 +839,31 @@ msgstr ""
 "Текст поруке за приказ у заглављу поздравног прозора, уколико је списак за "
 "избор корисника празан, уместо banner_message_text."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
-#| msgid "Text banner message to show on the login window."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
 msgid "Text banner message to show in the login window."
 msgstr "Текст поруке у заглављу поздравног прозора."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
-#| msgid "True if the xrandr settings manager plugin is enabled."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "True if the XRandR settings manager plugin is enabled."
 msgstr "Тачно ако је укључен прикључак за подешавање XRandR."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "True if the background settings manager plugin is enabled."
 msgstr "Тачно ако је укључен прикључак за подешавање позадине."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr "Тачно ако је укључен прикључак за мултимедијалне тастере."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "Тачно ако је укључен прикључак за подешавање звука."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "Тачно ако је укључен прикључак за подешавање xsettings."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
-#| msgid "Use compiz as the window manager"
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "Use Compiz as the window manager"
 msgstr "Користи Компиз као управника прозора"
 
@@ -961,8 +891,8 @@ msgstr "Ради ли?"
 msgid "Whether the timer is currently ticking"
 msgstr "Да ли je укључен тајмер"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:196
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:478
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:459
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:781
 #, c-format
 msgid "Log in as %s"
 msgstr "Пријавите се као %s"
@@ -972,170 +902,34 @@ msgstr "Пријавите се као %s"
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:256
-#| msgctxt "user"
-#| msgid "Other..."
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
 msgctxt "user"
 msgid "Other…"
 msgstr "Остали…"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:257
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
 msgid "Choose a different account"
 msgstr "Изаберите други налог"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:271
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
 msgid "Guest"
 msgstr "Гост"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:272
-#| msgid "Login as a temporary guest"
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:561
 msgid "Log in as a temporary guest"
 msgstr "Пријављује вас на систем као привремени гост"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:287
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
 msgid "Automatic Login"
 msgstr "Аутоматска пријава"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:288
-#| msgid "Automatically login to the system after selecting options"
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:577
 msgid "Automatically log into the system after selecting options"
 msgstr "Аутоматски вас пријављује на систем након избора опција"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:990
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1321
 msgid "Currently logged in"
 msgstr "Тренутно сте пријављени"
-
-#: ../gui/user-switch-applet/applet.c:162
-msgid ""
-"The User Switch Applet is free software; you can redistribute it and/or "
-"modify it under the terms of the GNU General Public License as published by "
-"the Free Software Foundation; either version 2 of the License, or (at your "
-"option) any later version."
-msgstr ""
-"Пребацивач корисника је слободан софтвер; можете га ширити и/или мењати га "
-"по условима ГНУ Опште јавне лиценце коју објављује Фондација слободног "
-"софтвера; или верзије 2 лиценце, или (по избору) неке новије."
-
-#: ../gui/user-switch-applet/applet.c:166
-msgid ""
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
-"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details."
-msgstr ""
-"Овај програм је понуђен у нади да ће бити користан, али БЕЗ ИКАКВЕ "
-"ГАРАНЦИЈЕ; чак ни без подразумеване гаранције о УПОТРЕБЉИВОСТИ ЗА НЕКУ "
-"СВРХУ. За више детаља погледајте ГНУ Општу јавну лиценцу."
-
-#: ../gui/user-switch-applet/applet.c:170
-msgid ""
-"You should have received a copy of the GNU General Public License along with "
-"this program; if not, write to the Free Software Foundation, Inc., 51 "
-"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
-msgstr ""
-"Требало би да сте уз програм добили примерак ГНУ Опште јавне лиценце; ако "
-"нисте, пишите на: Free Software Foundation, Inc., 51 Franklin Street, Fifth "
-"Floor, Boston, MA 02110-1301, USA "
-
-#: ../gui/user-switch-applet/applet.c:184
-msgid "A menu to quickly switch between users."
-msgstr "Мени за брзу промену корисника."
-
-#: ../gui/user-switch-applet/applet.c:188
-msgid "translator-credits"
-msgstr "подаци-о-преводиоцима"
-
-#: ../gui/user-switch-applet/applet.c:658
-#: ../gui/user-switch-applet/applet.c:787
-#: ../gui/user-switch-applet/applet.c:829
-#, c-format
-msgid "Can't lock screen: %s"
-msgstr "Не могу да закључам екран: %s"
-
-#: ../gui/user-switch-applet/applet.c:680
-#, c-format
-msgid "Can't temporarily set screensaver to blank screen: %s"
-msgstr "Не могу привремено да поставим чувара да полако затамни екран: %s"
-
-#: ../gui/user-switch-applet/applet.c:888
-#, c-format
-#| msgid "Can't logout: %s"
-msgid "Can't log out: %s"
-msgstr "Не могу да вас одјавим: %s"
-
-#: ../gui/user-switch-applet/applet.c:972
-msgid "Available"
-msgstr "Доступан"
-
-#: ../gui/user-switch-applet/applet.c:973
-msgid "Invisible"
-msgstr "Невидљив"
-
-#: ../gui/user-switch-applet/applet.c:974
-msgid "Busy"
-msgstr "Заузет"
-
-#: ../gui/user-switch-applet/applet.c:975
-msgid "Away"
-msgstr "Отсутан"
-
-#: ../gui/user-switch-applet/applet.c:1122
-msgid "Account Information"
-msgstr "Подаци о налогу"
-
-#: ../gui/user-switch-applet/applet.c:1134
-msgid "System Preferences"
-msgstr "Поставке система"
-
-#: ../gui/user-switch-applet/applet.c:1148
-msgid "Lock Screen"
-msgstr "Закључај екран"
-
-#. Only show if not locked down
-#: ../gui/user-switch-applet/applet.c:1159
-msgid "Switch User"
-msgstr "Промена корисника"
-
-#. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1170
-msgid "Quit…"
-msgstr "Изађи…"
-
-#: ../gui/user-switch-applet/applet.c:1276
-msgid "Unknown"
-msgstr "Непознато"
-
-#: ../gui/user-switch-applet/applet.c:1389
-msgid "User Switch Applet"
-msgstr "Програмче за промену корисника"
-
-#: ../gui/user-switch-applet/applet.c:1404
-msgid "Change account settings and status"
-msgstr "Промени подешавања налога и стање"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:1
-msgid "A menu to quickly switch between users"
-msgstr "Мени за брзу промену корисника"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:2
-msgid "User Switcher"
-msgstr "Промена корисника"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:3
-msgid "User Switcher Applet Factory"
-msgstr "Погон програмчета за промену корисника"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:1
-msgid "Edit Personal _Information"
-msgstr "Уреди личне _податке"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:2
-msgid "_About"
-msgstr "_О програму"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:3
-msgid "_Edit Users and Groups"
-msgstr "_Уреди кориснике и групе"
 
 #: ../utils/gdmflexiserver.c:61
 msgid "Only the VERSION command is supported"
@@ -1147,7 +941,6 @@ msgstr "НАРЕДБА"
 
 #: ../utils/gdmflexiserver.c:62 ../utils/gdmflexiserver.c:63
 #: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
-#| msgid "Ignored - retained for compatibility"
 msgid "Ignored — retained for compatibility"
 msgstr "Занемарено — задржано ради компатибилности"
 
@@ -1173,14 +966,150 @@ msgstr "— Нова ГДМ пријава"
 msgid "Unable to start new display"
 msgstr "Не могу да отворим нови екран"
 
-#: ../utils/gdm-screenshot.c:216
+#: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
 msgstr "Снимак екрана је ухваћен"
 
 #. Option parsing
-#: ../utils/gdm-screenshot.c:283
+#: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Хвата снимак екрана као слику"
+
+#~| msgid "Shutdown Options..."
+#~ msgid "Shutdown Options…"
+#~ msgstr "Опције за искључивање…"
+
+#~ msgid "Keyboard layouts"
+#~ msgstr "Распореди тастатуре"
+
+#~ msgid "_Keyboard:"
+#~ msgstr "_Тастатура:"
+
+#~| msgctxt "keyboard"
+#~| msgid "Other..."
+#~ msgctxt "keyboard"
+#~ msgid "Other…"
+#~ msgstr "Остали…"
+
+#~ msgid "Choose a keyboard layout from the full list of available layouts."
+#~ msgstr ""
+#~ "Изаберитераспоред тастатуре са комплетног списка доступних распореда."
+
+#~| msgid "_Keyboard:"
+#~ msgid "Keyboard"
+#~ msgstr "Тастатура"
+
+#~ msgid "Recently selected keyboard layouts"
+#~ msgstr "Недавно коришћени распореди тастатуре"
+
+#~| msgid ""
+#~| "Set to a list of keyboard layouts to be shown by default at the login "
+#~| "window."
+#~ msgid ""
+#~ "Set to a list of keyboard layouts to be shown by default in the login "
+#~ "window."
+#~ msgstr ""
+#~ "Омогућава да се списак распореда тастатуре подразумевано види на прозору "
+#~ "за пријаву."
+
+#~ msgid ""
+#~ "The User Switch Applet is free software; you can redistribute it and/or "
+#~ "modify it under the terms of the GNU General Public License as published "
+#~ "by the Free Software Foundation; either version 2 of the License, or (at "
+#~ "your option) any later version."
+#~ msgstr ""
+#~ "Пребацивач корисника је слободан софтвер; можете га ширити и/или мењати "
+#~ "га по условима ГНУ Опште јавне лиценце коју објављује Фондација слободног "
+#~ "софтвера; или верзије 2 лиценце, или (по избору) неке новије."
+
+#~ msgid ""
+#~ "This program is distributed in the hope that it will be useful, but "
+#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
+#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
+#~ "Public License for more details."
+#~ msgstr ""
+#~ "Овај програм је понуђен у нади да ће бити користан, али БЕЗ ИКАКВЕ "
+#~ "ГАРАНЦИЈЕ; чак ни без подразумеване гаранције о УПОТРЕБЉИВОСТИ ЗА НЕКУ "
+#~ "СВРХУ. За више детаља погледајте ГНУ Општу јавну лиценцу."
+
+#~ msgid ""
+#~ "You should have received a copy of the GNU General Public License along "
+#~ "with this program; if not, write to the Free Software Foundation, Inc., "
+#~ "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
+#~ msgstr ""
+#~ "Требало би да сте уз програм добили примерак ГНУ Опште јавне лиценце; ако "
+#~ "нисте, пишите на: Free Software Foundation, Inc., 51 Franklin Street, "
+#~ "Fifth Floor, Boston, MA 02110-1301, USA "
+
+#~ msgid "A menu to quickly switch between users."
+#~ msgstr "Мени за брзу промену корисника."
+
+#~ msgid "translator-credits"
+#~ msgstr "подаци-о-преводиоцима"
+
+#~ msgid "Can't lock screen: %s"
+#~ msgstr "Не могу да закључам екран: %s"
+
+#~ msgid "Can't temporarily set screensaver to blank screen: %s"
+#~ msgstr "Не могу привремено да поставим чувара да полако затамни екран: %s"
+
+#~| msgid "Can't logout: %s"
+#~ msgid "Can't log out: %s"
+#~ msgstr "Не могу да вас одјавим: %s"
+
+#~ msgid "Available"
+#~ msgstr "Доступан"
+
+#~ msgid "Invisible"
+#~ msgstr "Невидљив"
+
+#~ msgid "Busy"
+#~ msgstr "Заузет"
+
+#~ msgid "Away"
+#~ msgstr "Отсутан"
+
+#~ msgid "Account Information"
+#~ msgstr "Подаци о налогу"
+
+#~ msgid "System Preferences"
+#~ msgstr "Поставке система"
+
+#~ msgid "Lock Screen"
+#~ msgstr "Закључај екран"
+
+#~ msgid "Switch User"
+#~ msgstr "Промена корисника"
+
+#~ msgid "Quit…"
+#~ msgstr "Изађи…"
+
+#~ msgid "Unknown"
+#~ msgstr "Непознато"
+
+#~ msgid "User Switch Applet"
+#~ msgstr "Програмче за промену корисника"
+
+#~ msgid "Change account settings and status"
+#~ msgstr "Промени подешавања налога и стање"
+
+#~ msgid "A menu to quickly switch between users"
+#~ msgstr "Мени за брзу промену корисника"
+
+#~ msgid "User Switcher"
+#~ msgstr "Промена корисника"
+
+#~ msgid "User Switcher Applet Factory"
+#~ msgstr "Погон програмчета за промену корисника"
+
+#~ msgid "Edit Personal _Information"
+#~ msgstr "Уреди личне _податке"
+
+#~ msgid "_About"
+#~ msgstr "_О програму"
+
+#~ msgid "_Edit Users and Groups"
+#~ msgstr "_Уреди кориснике и групе"
 
 #~ msgid "Couldn't set groupid to 0"
 #~ msgstr "Не могу да поставим groupid на 0"
