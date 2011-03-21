@@ -1,7 +1,6 @@
 NULL =
 
 SUBDIRS =			\
-	faces 			\
 	greeter-autostart	\
 	pixmaps			\
 	$(NULL)

@@ -1400,7 +1400,6 @@ gui/simple-chooser/Makefile
 utils/Makefile
 data/gdm.conf
 data/Makefile
-data/faces/Makefile
 data/greeter-autostart/Makefile
 data/greeter-autostart/at-spi-registryd-wrapper.desktop.in
 data/pixmaps/Makefile
