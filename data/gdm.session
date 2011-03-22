@@ -1,6 +1,5 @@
 [GNOME Session]
 Name=Display Manager
-Required=windowmanager;greeter;
-Required-windowmanager=metacity
-Required-greeter=gdm-simple-greeter
-DefaultApps=gnome-settings-daemon;polkit-gnome-authentication-agent-1;
+RequiredComponents=gdm-simple-greeter;gnome-settings-daemon;polkit-gnome-authentication-agent-1;
+RequiredProviders=windowmanager;
+DefaultProvider-windowmanager=metacity
