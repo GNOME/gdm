@@ -5,44 +5,39 @@
 # Amitakhya Phukan <aphukan@redhat.com>, 2006, 2008.
 # Amitakhya Phukan <amitakhya@svn.gnome.org>, 2008.
 # Amitakhya Phukan <aphukan@fedoraproject.org>, 2009.
+# Nilamdyuti Goswami <ngoswami@redhat.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: as\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=gdm&component=general\n"
-"POT-Creation-Date: 2009-09-12 01:28+0000\n"
-"PO-Revision-Date: 2009-09-21 09:58+0530\n"
-"Last-Translator: \n"
-"Language-Team: American English <>\n"
+"POT-Creation-Date: 2011-02-17 16:55+0000\n"
+"PO-Revision-Date: 2011-03-15 11:29+0000\n"
+"Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
+"Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1)\n"
-"X-Generator: Lokalize 0.2\n"
+"X-Generator: Lokalize 1.0\n"
 
-#: ../common/gdm-common.c:437
+#: ../common/gdm-common.c:456
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom এটা কেৰেক্টাৰ যন্ত্ৰ নহয়"
 
-#: ../daemon/factory-slave-main.c:170 ../daemon/main.c:516
-#: ../daemon/product-slave-main.c:174 ../daemon/session-worker-main.c:137
-#: ../daemon/simple-slave-main.c:179 ../daemon/xdmcp-chooser-slave-main.c:179
-msgid "Enable debugging code"
-msgstr "debugging কোড সক্ৰিয় কৰক"
-
-#: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
-#: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
+#: ../daemon/factory-slave-main.c:178 ../daemon/product-slave-main.c:182
+#: ../daemon/simple-slave-main.c:182 ../daemon/xdmcp-chooser-slave-main.c:184
 msgid "Display ID"
 msgstr "প্ৰদৰ্শনৰ ID"
 
-#: ../daemon/factory-slave-main.c:171 ../daemon/product-slave-main.c:175
-#: ../daemon/simple-slave-main.c:180 ../daemon/xdmcp-chooser-slave-main.c:180
-msgid "id"
-msgstr "id"
+#: ../daemon/factory-slave-main.c:178 ../daemon/product-slave-main.c:182
+#: ../daemon/simple-slave-main.c:182 ../daemon/xdmcp-chooser-slave-main.c:184
+msgid "ID"
+msgstr "ID"
 
-#: ../daemon/factory-slave-main.c:183 ../daemon/product-slave-main.c:187
-#: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:192
+#: ../daemon/factory-slave-main.c:190 ../daemon/product-slave-main.c:194
+#: ../daemon/simple-slave-main.c:194 ../daemon/xdmcp-chooser-slave-main.c:196
 msgid "GNOME Display Manager Slave"
 msgstr "GNOME Display Manager Slave"
 
@@ -51,81 +46,89 @@ msgstr "GNOME Display Manager Slave"
 msgid "could not find user \"%s\" on system"
 msgstr "ব্যৱস্থাপ্ৰণালীত \"%s\" ব্যৱহাৰকৰোঁতাক পোৱা নাযায়"
 
-#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:220
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:325
 msgid "Unable to initialize login system"
 msgstr "প্ৰৱেশ প্ৰণালী আৰম্ভ কৰিব পৰা নাই"
 
-#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:256
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:361
 msgid "Unable to authenticate user"
 msgstr "ব্যৱহাৰকৰোঁতাৰ পৰিচয় পৰীক্ষা কৰা নাযায়"
 
-#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:310
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:418
 msgid "Unable to authorize user"
 msgstr "ব্যৱহাৰকৰোঁতাক প্ৰৱেশাধিকাৰ দিব পৰা নাযায়"
 
-#: ../daemon/gdm-factory-slave.c:281 ../daemon/gdm-simple-slave.c:432
+#: ../daemon/gdm-factory-slave.c:279 ../daemon/gdm-simple-slave.c:547
 msgid "Unable to establish credentials"
 msgstr "বিশ্বাসযোগ্য তথ্য প্ৰতিষ্ঠা কৰিব পৰা ন'গ'ল"
 
-#: ../daemon/gdm-factory-slave.c:662 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1111
+#: ../daemon/gdm-factory-slave.c:302 ../daemon/gdm-simple-slave.c:581
+#| msgid "unable to log session"
+msgid "Unable to open session"
+msgstr "অভিবৰ্তন খুলিবলে অক্ষম"
+
+#: ../daemon/gdm-factory-slave.c:677 ../daemon/gdm-product-slave.c:449
+#: ../daemon/gdm-simple-slave.c:1259
+#| msgid ""
+#| "Could not start the X server (your graphical environment) due to some "
+#| "internal error. Please contact your system administrator or check your "
+#| "syslog to diagnose. In the meantime this display will be disabled.  "
+#| "Please restart GDM when the problem is corrected."
 msgid ""
-"Could not start the X server (your graphical environment) due to some "
-"internal error. Please contact your system administrator or check your "
-"syslog to diagnose. In the meantime this display will be disabled.  Please "
-"restart GDM when the problem is corrected."
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
 msgstr ""
 "ভিতৰুৱা ভুলৰ বাবে X সেৱক (আপোনাৰ চিত্ৰাঙ্কিত পৰিবেশ) আৰম্ভ কৰিব পৰা ন'গ'ল । "
 "আপোনাৰ ব্যৱস্থাপ্ৰণালীৰ প্ৰশাসকক যোগাযোগ কৰক বা আপোনাৰ syslog চাওক ভুল জানিবৰ "
 "বাবে । তেতিয়ালৈকে এই প্ৰদৰ্শন নিষ্ক্ৰীয় কৰা হ'ব । সমস্যা সমাধান কৰাৰ পিছত অনুগ্ৰহ "
 "কৰি GDM পুনৰাৰম্ভ কৰিব ।"
 
-#: ../daemon/gdm-server.c:246
+#: ../daemon/gdm-server.c:250
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: মূল প্ৰদৰ্শন '%s' লৈ সংযোগ কৰাত বিফল"
 
-#: ../daemon/gdm-server.c:361
+#: ../daemon/gdm-server.c:365
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "ব্যৱহাৰকৰোঁতা %s এ সেৱকক আৰম্ভ কৰিব লাগিছিল কিন্তু সেই ব্যৱহাৰকৰোঁতা নাই"
 
-#: ../daemon/gdm-server.c:372 ../daemon/gdm-welcome-session.c:444
+#: ../daemon/gdm-server.c:376 ../daemon/gdm-server.c:396
+#: ../daemon/gdm-welcome-session.c:599 ../daemon/gdm-welcome-session.c:619
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "groupid ক %d লৈ নিৰ্ধাৰিত কৰিব নোৱাৰি"
 
-#: ../daemon/gdm-server.c:378 ../daemon/gdm-welcome-session.c:450
+#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:605
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s ৰ বাবে initgroups () বিফল হ'ল"
 
-#: ../daemon/gdm-server.c:384 ../daemon/gdm-welcome-session.c:456
+#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:611
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "%d লৈ userid নিৰ্ধাৰিত কৰিব নোৱাৰি"
 
-#: ../daemon/gdm-server.c:392 ../daemon/gdm-welcome-session.c:464
-msgid "Couldn't set groupid to 0"
-msgstr "groupid ক ০ লৈ নিৰ্ধাৰিত কৰিব নোৱাৰি"
-
-#: ../daemon/gdm-server.c:431
+#: ../daemon/gdm-server.c:435
 #, c-format
-msgid "%s: Could not open logfile for display %s!"
+#| msgid "%s: Could not open logfile for display %s!"
+msgid "%s: Could not open log file for display %s!"
 msgstr "%s: প্ৰদৰ্শন %s ৰ বাবে logfile খোলা ন'গ'ল !"
 
-#: ../daemon/gdm-server.c:442 ../daemon/gdm-server.c:448
-#: ../daemon/gdm-server.c:454
+#: ../daemon/gdm-server.c:446 ../daemon/gdm-server.c:452
+#: ../daemon/gdm-server.c:458
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s ক %s লৈ নিৰ্ধাৰণ কৰোঁতে ভুল"
 
-#: ../daemon/gdm-server.c:469
+#: ../daemon/gdm-server.c:478
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: সেৱকৰ অগ্ৰাধিকাৰৰ মাত্ৰা %d ৰূপে নিৰ্ধাৰণ কৰোঁতে ব্যৰ্থ: %s"
 
-#: ../daemon/gdm-server.c:621
+#: ../daemon/gdm-server.c:631
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: প্ৰদৰ্শন %s ৰ বাবে ৰিক্ত সেৱক আদেশ"
@@ -154,291 +157,305 @@ msgstr "প্ৰদৰ্শনৰ যন্ত্ৰ"
 msgid "The display device"
 msgstr "প্ৰদৰ্শনৰ যন্ত্ৰ"
 
-#: ../daemon/gdm-session-worker.c:1293
+#: ../daemon/gdm-session-worker.c:1289
 #, c-format
-msgid "error initiating conversation with authentication system - %s"
+#| msgid "error initiating conversation with authentication system - %s"
+msgid "error initiating conversation with authentication system: %s"
 msgstr "প্ৰমাণীকৰণ প্ৰণালীৰ সৈতে যোগাযোগ আৰম্ভ কৰাত ভুল - %s"
 
-#: ../daemon/gdm-session-worker.c:1294
+#: ../daemon/gdm-session-worker.c:1290
 msgid "general failure"
 msgstr "সাধাৰণ বিজুতি"
 
-#: ../daemon/gdm-session-worker.c:1295
+#: ../daemon/gdm-session-worker.c:1291
 msgid "out of memory"
 msgstr "স্মৃতিশক্তিৰ বাহিৰৰ"
 
-#: ../daemon/gdm-session-worker.c:1296
+#: ../daemon/gdm-session-worker.c:1292
 msgid "application programmer error"
 msgstr "অনুপ্ৰয়োগ বনোৱাজনৰ ভুল"
 
-#: ../daemon/gdm-session-worker.c:1297
+#: ../daemon/gdm-session-worker.c:1293
 msgid "unknown error"
 msgstr "অজ্ঞাত ভুল"
 
-#: ../daemon/gdm-session-worker.c:1304
+#: ../daemon/gdm-session-worker.c:1300
 msgid "Username:"
 msgstr "ব্যৱহাৰকৰোঁতাৰ নাম:"
 
-#: ../daemon/gdm-session-worker.c:1310
+#: ../daemon/gdm-session-worker.c:1306
 #, c-format
-msgid "error informing authentication system of preferred username prompt - %s"
+#| msgid ""
+#| "error informing authentication system of preferred username prompt - %s"
+msgid "error informing authentication system of preferred username prompt: %s"
 msgstr "পছন্দৰ ব্যৱহাৰকৰোঁতাৰ প্ৰমপ্টৰ বিষয়ে প্ৰমাণীকৰণ প্ৰণালীক জনোৱাত ভুল - %s"
 
-#: ../daemon/gdm-session-worker.c:1324
+#: ../daemon/gdm-session-worker.c:1320
 #, c-format
-msgid "error informing authentication system of user's hostname - %s"
+#| msgid "error informing authentication system of user's hostname - %s"
+msgid "error informing authentication system of user's hostname: %s"
 msgstr "ব্যৱহাৰকৰোঁতাৰ গৃহস্থৰনামৰ বিষয়ে প্ৰমাণীকৰণ প্ৰণালীক জনোৱাত ভুল - %s"
 
-#: ../daemon/gdm-session-worker.c:1339
+#: ../daemon/gdm-session-worker.c:1335
 #, c-format
-msgid "error informing authentication system of user's console - %s"
+#| msgid "error informing authentication system of user's console - %s"
+msgid "error informing authentication system of user's console: %s"
 msgstr "ব্যৱহাৰকৰোঁতাৰ ক'ন্সোলৰ বিষয়ে প্ৰমাণীকৰণ প্ৰণালীক জনোৱাত ভুল - %s"
 
-#: ../daemon/gdm-session-worker.c:1352
+#: ../daemon/gdm-session-worker.c:1348
 #, c-format
-msgid "error informing authentication system of display string - %s"
+#| msgid "error informing authentication system of display string - %s"
+msgid "error informing authentication system of display string: %s"
 msgstr "প্ৰমাণীকৰণ ব্যৱস্থাপ্ৰণালীক প্ৰদৰ্শনৰ শব্দ তথ্য জনাওঁতে ভুল - %s"
 
-#: ../daemon/gdm-session-worker.c:1367
+#: ../daemon/gdm-session-worker.c:1363
 #, c-format
-msgid "error informing authentication system of display xauth credentials - %s"
+#| msgid ""
+#| "error informing authentication system of display xauth credentials - %s"
+msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "প্ৰমাণীকৰণ ব্যৱস্থাপ্ৰণনালীক display xauth credentials ৰ বিষয়ে জনাওঁতে ভুল - %s"
 
-#: ../daemon/gdm-session-worker.c:1648 ../daemon/gdm-session-worker.c:1666
+#: ../daemon/gdm-session-worker.c:1660 ../daemon/gdm-session-worker.c:1677
 #, c-format
 msgid "no user account available"
 msgstr "কোনো ব্যৱহাৰকৰোঁতাৰ হিচাপ নাই"
 
-#: ../daemon/gdm-session-worker.c:1693
+#: ../daemon/gdm-session-worker.c:1704
 msgid "Unable to change to user"
 msgstr "ব্যৱহাৰকৰোঁতালৈ সলনি কৰিব পৰা নাযায়"
 
-#: ../daemon/gdm-welcome-session.c:426
+#: ../daemon/gdm-welcome-session.c:549
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "%s ব্যৱহাৰকৰোঁতা নাই"
 
-#: ../daemon/gdm-welcome-session.c:433
+#: ../daemon/gdm-welcome-session.c:556
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "%s সমষ্টি নাই"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:595
+#: ../daemon/gdm-xdmcp-display-factory.c:604
 msgid "Could not create socket!"
 msgstr "ছ'কেট সৃষ্টি কৰিব পৰা ন'গ'ল!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:862
+#: ../daemon/gdm-xdmcp-display-factory.c:873
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "গৃহস্থ %s ৰ পৰা XDMCP জিজ্ঞাসা অগ্ৰহিত"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1019
-#: ../daemon/gdm-xdmcp-display-factory.c:1240
+#: ../daemon/gdm-xdmcp-display-factory.c:1031
+#: ../daemon/gdm-xdmcp-display-factory.c:1255
 msgid "Could not extract authlist from packet"
 msgstr "পেকেটৰ পৰা authlist উদ্ধাৰ নহয়"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1032
-#: ../daemon/gdm-xdmcp-display-factory.c:1255
+#: ../daemon/gdm-xdmcp-display-factory.c:1044
+#: ../daemon/gdm-xdmcp-display-factory.c:1270
 msgid "Error in checksum"
 msgstr "checksum ত ভুল"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1506
+#: ../daemon/gdm-xdmcp-display-factory.c:1523
 msgid "Bad address"
 msgstr "বেয়া ঠিকনা"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1587
+#: ../daemon/gdm-xdmcp-display-factory.c:1607
 #, c-format
 msgid "%s: Could not read display address"
 msgstr "%s: প্ৰদৰ্শনৰ ঠিকনা পঢ়া নাযায়"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1595
+#: ../daemon/gdm-xdmcp-display-factory.c:1615
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr "%s: প্ৰদৰ্শনৰ পোৰ্টৰ নম্বৰ পঢ়িব পৰা ন'গ'ল"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1604
+#: ../daemon/gdm-xdmcp-display-factory.c:1624
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr "%s: পেকেটৰ পৰা authlist উদ্ধাৰ কৰিব পৰা নাযায়"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:1624
+#: ../daemon/gdm-xdmcp-display-factory.c:1644
 #, c-format
 msgid "%s: Error in checksum"
 msgstr "%s: checksum ত ভুল"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2133
+#: ../daemon/gdm-xdmcp-display-factory.c:2200
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr "%s: নিষিদ্ধ গৃহস্থ %s ৰ পৰা REQUEST পোৱা গৈছে"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2143
-#: ../daemon/gdm-xdmcp-display-factory.c:2498
-#: ../daemon/gdm-xdmcp-display-factory.c:2750
+#: ../daemon/gdm-xdmcp-display-factory.c:2210
+#: ../daemon/gdm-xdmcp-display-factory.c:2568
+#: ../daemon/gdm-xdmcp-display-factory.c:2822
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr "%s: Display Number পঢ়িব পৰা ন'গ'ল"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2150
+#: ../daemon/gdm-xdmcp-display-factory.c:2217
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr "%s: সংযোগৰ ধৰণ পঢ়িব পৰা ন'গ'ল"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2157
+#: ../daemon/gdm-xdmcp-display-factory.c:2224
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr "%s: গ্ৰাহকৰ ঠিকনা পঢ়া নাযায়"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2165
+#: ../daemon/gdm-xdmcp-display-factory.c:2232
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr "%s: পৰিচয় প্ৰমাণকৰ্তা নাম পঢ়া নাযায়"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2174
+#: ../daemon/gdm-xdmcp-display-factory.c:2241
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr "%s: পৰিচয় প্ৰমাণকৰ্তা তথ্য পঢ়া নাযায়"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2184
+#: ../daemon/gdm-xdmcp-display-factory.c:2251
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr "%s: পৰিচয় প্ৰমাণকৰ্তা তালিকা পঢ়া নাযায়"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2203
+#: ../daemon/gdm-xdmcp-display-factory.c:2270
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr "%s: প্ৰস্তুতকাৰক ID পঢ়া নাযায়"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2230
+#: ../daemon/gdm-xdmcp-display-factory.c:2297
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr "%s: %s ত checksum বিফল"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2482
+#: ../daemon/gdm-xdmcp-display-factory.c:2552
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr "%s: নিষিদ্ধ ঘোষিত গৃহস্থ %sৰ পৰা MANAGE পোৱা গ'ল"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2491
-#: ../daemon/gdm-xdmcp-display-factory.c:2757
+#: ../daemon/gdm-xdmcp-display-factory.c:2561
+#: ../daemon/gdm-xdmcp-display-factory.c:2829
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr "%s: অধিবেশন ID পঢ়া নাযায়"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2505
+#: ../daemon/gdm-xdmcp-display-factory.c:2575
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr "%s: Display Class পঢ়া নাযায়"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2610
-#: ../daemon/gdm-xdmcp-display-factory.c:2660
-#: ../daemon/gdm-xdmcp-display-factory.c:2666
+#: ../daemon/gdm-xdmcp-display-factory.c:2681
+#: ../daemon/gdm-xdmcp-display-factory.c:2731
+#: ../daemon/gdm-xdmcp-display-factory.c:2737
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: ঠিকনা পঢ়া নাযায়"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2740
+#: ../daemon/gdm-xdmcp-display-factory.c:2812
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: নিষিদ্ধ ঘোষিত গৃহস্থ %s ৰ পৰা KEEPALIVE পোৱা গৈছে"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2829
+#: ../daemon/gdm-xdmcp-display-factory.c:2902
 msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
 msgstr "GdmXdmcpDisplayFactory: XDMCP হেডাৰ পঢ়িব পৰা ন'গ'ল!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2835
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:226
+#: ../daemon/gdm-xdmcp-display-factory.c:2908
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
 msgid "XMDCP: Incorrect XDMCP version!"
 msgstr "XMDCP: ভুল XDMCP সংস্কৰণ!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:2841
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:232
+#: ../daemon/gdm-xdmcp-display-factory.c:2914
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
 msgid "XMDCP: Unable to parse address"
 msgstr "XMDCP: ঠিকনা বিশ্লেষণ কৰিব নোৱাৰি"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3286
+#: ../daemon/gdm-xdmcp-display-factory.c:3359
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "সেৱকৰ গৃহস্থৰ নাম পোৱা ন'গ'ল: %s!"
 
 #: ../daemon/main.c:237 ../daemon/main.c:250
 #, c-format
-msgid "Cannot write PID file %s: possibly out of diskspace: %s"
+#| msgid "Cannot write PID file %s: possibly out of diskspace: %s"
+msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "PID নথিপত্ৰ %s লিখা ন'গ'ল: সম্ভৱতঃ ডিস্কত আৰু স্থান নাই: %s"
 
-#: ../daemon/main.c:270
+#: ../daemon/main.c:271
 #, c-format
 msgid "Logdir %s does not exist or isn't a directory."
 msgstr "Logdir %s অনুপস্থিত বা পঞ্জিকা নহয় ।"
 
-#: ../daemon/main.c:283
+#: ../daemon/main.c:287
 #, c-format
 msgid "Authdir %s does not exist. Aborting."
 msgstr "%s নামৰ কোনো Authdir নাই । বাতিল কৰা হৈছে ।"
 
-#: ../daemon/main.c:287
+#: ../daemon/main.c:291
 #, c-format
 msgid "Authdir %s is not a directory. Aborting."
 msgstr "%s Authdir পঞ্জিকা নহয় । চেষ্টা বাতিল কৰা হ'ল ।"
 
-#: ../daemon/main.c:361
+#: ../daemon/main.c:365
 #, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
 msgstr "Authdir %s  ক ব্যৱহাৰকৰোঁতা %d, সমস্তি %d ৰ নহয় । চেষ্টা বাতিল কৰা হৈছে।"
 
-#: ../daemon/main.c:368
+#: ../daemon/main.c:372
 #, c-format
 msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr "Authdir %s ৰ ভুল অনুমতি %o আছে। এইটো %o হ'ব লাগে । চেষ্টা বাতিল কৰা হৈছে ।"
 
-#: ../daemon/main.c:405
+#: ../daemon/main.c:409
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "'%s' GDM ব্যৱহাৰকৰোঁতা নাই । চেষ্টা বাতিল কৰা হৈছে !"
 
-#: ../daemon/main.c:411
+#: ../daemon/main.c:415
 msgid "The GDM user should not be root. Aborting!"
 msgstr "GDM ৰ ব্যৱহাৰকৰোঁতা root হ'ব নোৱাৰে । চেষ্টা বাতিল কৰা হৈছে!"
 
-#: ../daemon/main.c:417
+#: ../daemon/main.c:421
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "'%s' GDM সমস্তি নাই । চেষ্টা বাতিল কৰা হৈছে!"
 
-#: ../daemon/main.c:423
+#: ../daemon/main.c:427
 msgid "The GDM group should not be root. Aborting!"
 msgstr "GDM ৰ সমস্তি root হ'ব নোৱাৰে । চেষ্টা বাতিল কৰা হ'ল!"
 
-#: ../daemon/main.c:517
+#: ../daemon/main.c:533
 msgid "Make all warnings fatal"
 msgstr "সকলো সকিয়নিক ধ্বংসাত্মক ৰূপ দিয়ক"
 
-#: ../daemon/main.c:518
-msgid "Exit after a time - for debugging"
+#: ../daemon/main.c:534
+#| msgid "Exit after a time - for debugging"
+msgid "Exit after a time (for debugging)"
 msgstr "এটা সময়ৰ পিছত বাহিৰ হ'ব - debugging ৰ বাবে"
 
-#: ../daemon/main.c:519
+#: ../daemon/main.c:535
 msgid "Print GDM version"
 msgstr "GDM ৰ সংস্কৰণ মূদ্ৰণ কৰক"
 
-#: ../daemon/main.c:534
+#: ../daemon/main.c:550
 msgid "GNOME Display Manager"
 msgstr "GNOME Display Manager"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:595
-msgid "Only root wants to run GDM"
-msgstr "অকল root এ GDM চলাব খোজে"
+#: ../daemon/main.c:616
+#| msgid "Only root wants to run GDM"
+msgid "Only the root user can run GDM"
+msgstr "অকল root এ GDM চলাব পাৰিব"
 
-#: ../daemon/session-worker-main.c:149
+#. Translators: worker is a helper process that does the work
+#. of starting up a session
+#: ../daemon/session-worker-main.c:158
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Display Manager Session Worker"
 
 #: ../data/greeter-autostart/at-spi-registryd-wrapper.desktop.in.in.h:1
-msgid "AT SPI Registry Wrapper"
-msgstr "AT SPI Registry Wrapper"
+#| msgid "AT SPI Registry Wrapper"
+msgid "AT-SPI Registry Wrapper"
+msgstr "AT SPI ৰেজিস্ট্ৰি ৰেপাৰ"
 
 #: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1767
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1753
 msgid "Login Window"
 msgstr "প্ৰৱেশ পৰ্দ্দা"
 
@@ -463,12 +480,14 @@ msgid "Magnify parts of the screen"
 msgstr "পৰ্দ্দাৰ কিছু অংশ বিবৰ্দ্ধন কৰক"
 
 #: ../data/greeter-autostart/gok.desktop.in.h:1
-msgid "GNOME Onscreen Keyboard"
-msgstr "GNOME Onscreen Keyboard"
+#| msgid "GNOME Onscreen Keyboard"
+msgid "GNOME On-Screen Keyboard"
+msgstr "GNOME অনস্ক্ৰিন কিবৰ্ড"
 
 #: ../data/greeter-autostart/gok.desktop.in.h:2
-msgid "Use an onscreen keyboard"
-msgstr "এটা পৰ্দ্দাত দেখা চাবিৰ ফলক ব্যৱহাৰ কৰক"
+#| msgid "Use an onscreen keyboard"
+msgid "Use an on-screen keyboard"
+msgstr "এটা অনস্ক্ৰিন কিবৰ্ড ব্যৱহাৰ কৰক"
 
 #: ../data/greeter-autostart/metacity.desktop.in.h:1
 msgid "Metacity"
@@ -482,204 +501,215 @@ msgstr "Orca Screen Reader"
 msgid "Present on-screen information as speech or braille"
 msgstr "পৰ্দ্দাৰ তথ্যক বানী বা ব্ৰেইলি আখৰ হিচাপে প্ৰস্তুত কৰক"
 
-#: ../data/greeter-autostart/polkit-gnome-authentication-agent-1.desktop.in.h:1
-#| msgid "Authentication Dialog"
+#: ../data/greeter-autostart/polkit-gnome-authentication-agent-1.desktop.in.in.h:1
 msgid "PolicyKit Authentication Agent"
 msgstr "প্ৰমাণীকৰণৰ সম্বাদ"
 
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:148
+#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "ব্যৱস্থাপ্ৰণালী নিৰ্ব্বাচন কৰক"
 
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:214
-#| msgid "XMCP: Could not create XDMCP buffer!"
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
 msgid "XDMCP: Could not create XDMCP buffer!"
 msgstr "XMCP: XDMCP প্ৰশমক সৃষ্টি কৰিব নোৱাৰি!"
 
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:220
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: XDMCP হেডাৰ পঢ়িব পৰা ন'গ'ল!"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:253
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
 msgid "Value"
 msgstr "মান"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:254
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:240
 msgid "percentage of time complete"
 msgstr "সম্পূৰ্ণ হোৱা সময়ৰ শতাংশ"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1321
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1465
 msgid "Inactive Text"
 msgstr "নিষ্ক্ৰীয় লিপি"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1322
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1466
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr ""
 "ব্যৱহাৰকৰোঁতাই যদি কোনো বস্তু এতিয়াও লোৱা নাই তেনেহ'লে লেবেলত ব্যৱহাৰ কৰিব লগা "
 "লিপি"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1330
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1474
 msgid "Active Text"
 msgstr "সক্ৰিয় লিপি"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1331
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1475
 msgid "The text to use in the label if the user has picked an item"
 msgstr "ব্যৱহাৰকৰোঁতাই যদি কোনো বস্তু লৈছে তেনেহ'লে লেবেলত ব্যৱহাৰ কৰিব লগা লিপি"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1340
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1484
 msgid "List Visible"
 msgstr "দৃশ্যমান তালিকা"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1341
-#| msgid "Whether or not the timer is currently ticking"
-msgid "Whether or not the chooser list is visible"
-msgstr "টাইমাৰ সক্ৰিয় হয় নে নহয়"
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1485
+#| msgid "Whether or not the chooser list is visible"
+msgid "Whether the chooser list is visible"
+msgstr "বাচনি তালিকা দৃশ্যমান হয় নে"
 
-#: ../gui/simple-greeter/gdm-clock-widget.c:66
-msgid "%l:%M:%S %p"
-msgstr "%l:%M:%S %p"
-
-#: ../gui/simple-greeter/gdm-clock-widget.c:66
-msgid "%l:%M %p"
-msgstr "%l:%M %p"
-
-#. translators: replace %e with %d if, when the day of the
-#. *              month as a decimal number is a single digit, it
-#. *              should begin with a 0 in your locale (e.g. "May
-#. *              01" instead of "May  1").
+#. translators: This is the time format to use when both
+#. * the date and time with seconds are being shown together.
 #.
-#: ../gui/simple-greeter/gdm-clock-widget.c:72
-msgid "%a %b %e"
-msgstr "%a %b %e"
+#: ../gui/simple-greeter/gdm-clock-widget.c:70
+#| msgid "%l:%M:%S %p"
+msgid "%a %b %e, %l:%M:%S %p"
+msgstr "%a %b %e, %l:%M:%S %p"
 
-#. translators: reverse the order of these arguments
-#. *              if the time should come before the
-#. *              date on a clock in your locale.
+#. translators: This is the time format to use when both
+#. * the date and time without seconds are being shown together.
 #.
-#: ../gui/simple-greeter/gdm-clock-widget.c:77
-#, c-format
-msgid "%1$s, %2$s"
-msgstr "%1$s, %2$s"
+#: ../gui/simple-greeter/gdm-clock-widget.c:76
+#| msgid "%l:%M %p"
+msgid "%a %b %e, %l:%M %p"
+msgstr "%a %b %e, %l:%M %p"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:291
-msgid "Automatically logging in..."
+#. translators: This is the time format to use when there is
+#. * no date, just weekday and time with seconds.
+#.
+#: ../gui/simple-greeter/gdm-clock-widget.c:83
+#| msgid "%l:%M:%S %p"
+msgid "%a %l:%M:%S %p"
+msgstr "%a %l:%M:%S %p"
+
+#. translators: This is the time format to use when there is
+#. * no date, just weekday and time without seconds.
+#.
+#: ../gui/simple-greeter/gdm-clock-widget.c:92
+#| msgid "%l:%M %p"
+msgid "%a %l:%M %p"
+msgstr "%a %l:%M %p"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:293
+#| msgid "Automatically logging in..."
+msgid "Automatically logging in…"
 msgstr "স্বয়ংক্ৰিয়ভাবে প্ৰৱেশ কৰা হৈছে..."
 
-#. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:758
-msgid "Cancelling..."
-msgstr "বাতিল কৰা হৈছে..."
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1185
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:582
 msgid "Select language and click Log In"
 msgstr "ভাষা নিৰ্ব্বাচন কৰক আৰু প্ৰৱেশ কৰক"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:1
-msgid "Authentication Dialog"
-msgstr "প্ৰমাণীকৰণৰ সম্বাদ"
+#. need to wait for response from backend
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:699
+#| msgid "Cancelling..."
+msgid "Cancelling…"
+msgstr "বাতিল কৰা হৈছে..."
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:2
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1087
+msgctxt "customsession"
+msgid "Custom"
+msgstr "ৰীতি"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1088
+#| msgid "unable to log session"
+msgid "Custom session"
+msgstr "ৰীতি অভিবৰ্তন"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
+#| msgid "Panel"
+msgid "Cancel"
+msgstr "বাতিল"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
 msgid "Computer Name"
 msgstr "কম্পিউটাৰৰ নাম"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:3
-msgid "Log In"
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
+#| msgid "Log In"
+msgid "Login"
 msgstr "প্ৰৱেশ"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:4
-msgid "Restart"
-msgstr "পুনৰায় আৰম্ভ"
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
+msgid "Unlock"
+msgstr "আনলক"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:5
-msgid "Shut Down"
-msgstr "বন্ধ কৰক"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:6
-msgid "Suspend"
-msgstr "স্থগিত"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.glade.h:7
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
 msgid "Version"
 msgstr "সংস্কৰণ"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:583
+#: ../gui/simple-greeter/gdm-greeter-panel.c:907
+msgid "Suspend"
+msgstr "স্থগিত"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:912
+msgid "Restart"
+msgstr "পুনৰায় আৰম্ভ"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:916
+msgid "Shut Down"
+msgstr "বন্ধ কৰক"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:965
+msgid "Unknown time remaining"
+msgstr "অজ্ঞাত অৱশিষ্ট সময়"
+
+#: ../gui/simple-greeter/gdm-greeter-panel.c:987
 msgid "Panel"
 msgstr "পেনেল"
 
-#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:201
+#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:252
 msgid "Languages"
 msgstr "ভাষাসমূহ"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:272
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:276
 msgid "_Languages:"
 msgstr "ভাষাসমূহ (_L):"
 
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:273
-#: ../gui/simple-greeter/gdm-language-option-widget.c:274
+#: ../gui/simple-greeter/gdm-language-chooser-widget.c:277
 msgid "_Language:"
 msgstr "ভাষা (_L):"
 
 #. translators: This brings up a dialog
 #. * with a list of languages to choose from
 #.
-#: ../gui/simple-greeter/gdm-language-option-widget.c:243
+#: ../gui/simple-greeter/gdm-language-option-widget.c:231
+#| msgctxt "language"
+#| msgid "Other..."
 msgctxt "language"
-msgid "Other..."
+msgid "Other…"
 msgstr "অন্য..."
 
-#: ../gui/simple-greeter/gdm-language-option-widget.c:244
+#: ../gui/simple-greeter/gdm-language-option-widget.c:232
 msgid "Choose a language from the full list of available languages."
 msgstr "ভাষাৰ সম্পূৰ্ণ তালিকাৰ পৰা এটা ভাষা নিৰ্ব্বাচন কৰক ।"
 
-#: ../gui/simple-greeter/gdm-languages.c:609
+#: ../gui/simple-greeter/gdm-language-option-widget.c:262
+#| msgid "Languages"
+msgid "Language"
+msgstr "ভাষা"
+
+#: ../gui/simple-greeter/gdm-languages.c:709
 msgid "Unspecified"
 msgstr "নিৰ্ধাৰিত কৰা হোৱা নাই"
 
-#: ../gui/simple-greeter/gdm-layout-chooser-dialog.c:191
-msgid "Keyboard layouts"
-msgstr "চাবি ফলকৰ বিন্যাস"
-
-#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:200
-#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:201
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:266
-msgid "_Keyboard:"
-msgstr "চাবিৰ ফলক (_K):"
-
-#. translators: This brings up a dialog of
-#. * available keyboard layouts
-#.
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:235
-msgctxt "keyboard"
-msgid "Other..."
-msgstr "অন্য..."
-
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:236
-msgid "Choose a keyboard layout from the full list of available layouts."
-msgstr "পৰিকল্পনাৰ সম্পূৰ্ণ তালিকাৰ পৰা চাবি ফলকৰ পৰিকল্পনা নিৰ্ব্বাচন কৰক ।"
-
-#: ../gui/simple-greeter/gdm-option-widget.c:521
+#: ../gui/simple-greeter/gdm-option-widget.c:505
 msgid "Label Text"
 msgstr "লেবেল লিপি"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:522
+#: ../gui/simple-greeter/gdm-option-widget.c:506
 msgid "The text to use as a label"
 msgstr "লেবেল হিচাপে ব্যৱহাৰ কৰিব লগা আখৰ"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:529
+#: ../gui/simple-greeter/gdm-option-widget.c:513
 msgid "Icon name"
 msgstr "আইকণৰ নাম"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:530
+#: ../gui/simple-greeter/gdm-option-widget.c:514
 msgid "The icon to use with the label"
 msgstr "লেবেলৰ সৈতে ব্যৱহাৰ কৰিব লগা আইকণ"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:538
+#: ../gui/simple-greeter/gdm-option-widget.c:522
 msgid "Default Item"
 msgstr "অবিকল্পিত বস্তু"
 
-#: ../gui/simple-greeter/gdm-option-widget.c:539
-msgid "The id of the default item"
-msgstr "অবিকল্পিত বস্তুৰ id"
+#: ../gui/simple-greeter/gdm-option-widget.c:523
+#| msgid "The id of the default item"
+msgid "The ID of the default item"
+msgstr "অবিকল্পিত বস্তুৰ ID"
 
 #: ../gui/simple-greeter/gdm-recent-option-widget.c:310
 msgid "Max Item Count"
@@ -691,7 +721,8 @@ msgstr "তালিকাত ৰাখিব লগা বস্তুৰ স�
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
-msgid "Remote Login (Connecting to %s...)"
+#| msgid "Remote Login (Connecting to %s...)"
+msgid "Remote Login (Connecting to %s…)"
 msgstr "দূৰৰ পৰা প্ৰৱেশ (%s লৈ সংযোগ কৰা হৈছে...)"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:202
@@ -704,15 +735,15 @@ msgid "Remote Login"
 msgstr "দূৰৰ পৰা প্ৰৱেশ"
 
 #: ../gui/simple-greeter/gdm-session-option-widget.c:162
-msgid "_Sessions:"
-msgstr "অধিবেশনসমূহ (_S):"
+#| msgid "_Session:"
+msgid "Session"
+msgstr "অভিবৰ্তন"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
 msgid "Banner message text"
 msgstr "পতাকাৰ সম্বাদৰ লিপি"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
-#| msgid "Banner message text"
 msgid "Banner message text when chooser is empty"
 msgstr "নিৰ্বাচন ব্যৱস্থা ৰিক্ত হ'লে বেনাৰৰ বাৰ্তাৰ টেক্সট"
 
@@ -729,84 +760,66 @@ msgid "Enable accessibility keyboard plugin"
 msgstr "অভিগমৰ চাবি ফলকৰ প্লাগ-ইন্‌ সক্ৰিয় কৰক"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
-msgid "Enable debugging"
-msgstr "debugging সক্ৰিয় কৰক"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
-msgid "Enable debugging mode for the greeter."
-msgstr "অভিবাদন কৰোঁতাৰ বাবে debugging সক্ৰিয় কৰক ।"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Enable on-screen keyboard"
 msgstr "পৰ্দ্দাত দেখা চাবিৰ ফলক সক।ৰিয় কৰক"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
 msgid "Enable screen magnifier"
 msgstr "পৰ্দ্দা বিবৰ্দ্ধক সক্ৰিয় কৰক"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
 msgid "Enable screen reader"
 msgstr "পৰ্দ্দা পঢ়োঁতাক সক্ৰিয় কৰক"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
 msgid "Enable showing the banner message"
 msgstr "পতাকাৰ সম্বাদ দেখুৱা সক্ৰিয় কৰক"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
 msgid "Icon name to use for greeter logo"
 msgstr "অভিবাদন কৰোঁতাৰ বাবে ব্যৱহাৰ কৰিব লগা আইকণৰ নাম"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
-msgid "Recently selected keyboard layouts"
-msgstr "অলপতে নিৰ্ব্বাচন কৰা চাবিৰ ফলকৰ পৰিকল্পনা"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
 msgid "Recently selected languages"
 msgstr "অলপতে নিৰ্ব্বাচিত ভাষা"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
-msgid "Set to a list of keyboard layouts to be shown by default at the login window."
-msgstr "প্ৰৱেশ পৰ্দ্দাত অবিকল্পপিত ভাবে দেখুৱাব লগা চাবিৰ ফলকৰ তালিকা নিৰ্ধাৰণ কৰক ।"
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
+#| msgid ""
+#| "Set to a list of languages to be shown by default at the login window."
+msgid "Set to a list of languages to be shown by default in the login window."
+msgstr "প্ৰৱেশ পৰ্দ্দাত দেখুৱাব লগা ভাষাৰ তালিকা নিৰ্ধাৰণ কৰক।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
-msgid "Set to a list of languages to be shown by default at the login window."
-msgstr "প্ৰৱেশ পৰ্দ্দাত দেখুৱাব লগা ভাষাৰ তালিকা নিৰ্ধাৰণ কৰক ।"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr "অভিনন্দনৰ ল'গ'ৰ বাবে ব্যৱহাৰ কৰিব লগা থিম থকা আইকণৰ নামলৈ নিৰ্ধাৰণ কৰক ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
-#| msgid "Set to TRUE to disable showing known users in the login window."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Set to true to disable showing known users in the login window."
 msgstr ""
 "প্ৰৱেশ পৰ্দ্দাত জ্ঞাত ব্যৱহাৰকৰোঁতাসকলক দেখুৱা নিষ্ক্ৰীয় কৰিবলৈ true লৈ নিৰ্ধাৰণ কৰক ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
-#| msgid ""
-#| "Set to TRUE to disable showing the restart buttons in the login window."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr "প্ৰৱেশ পৰ্দ্দাত পুনৰাৰম্ভৰ বুটাম দেখুৱা নিষ্ক্ৰীয় কৰিবলৈ true লৈ নিৰ্ধাৰণ কৰক ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
-#| msgid "Set to True to enable the background settings manager plugin."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
+#| msgid "Set to true to enable the xrandr settings manager plugin."
+msgid "Set to true to enable the XRandR settings manager plugin."
+msgstr "xrandr পছন্দৰ পৰিচালকৰ প্লাগ-ইন সক্ৰিয় কৰিবলৈ true লৈ নিৰ্ধাৰণ কৰক ।"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to true to enable the background settings manager plugin."
 msgstr "পৃষ্ঠভুমিৰ পছন্দৰ পৰিচালকৰ প্লাগ-ইন সক্ৰিয় কৰিব'লৈ true লৈ নিৰ্ধাৰণ কৰক ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
-#| msgid "Set to True to enable the media-keys settings manager plugin."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
 msgid "Set to true to enable the media-keys settings manager plugin."
 msgstr "media-keys পছন্দৰ পৰিচালকৰ প্লাগ-ইন সক্ৰিয় কৰিব'লৈ true লৈ নিৰ্ধাৰণ কৰক ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
-#| msgid "Set to True to enable the on-screen keyboard."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid "Set to true to enable the on-screen keyboard."
 msgstr "পৰ্দ্দাত দেখা দিয়া চাবিৰ ফলক সক্ৰিয় কৰিব'লৈ true লৈ নিৰ্ধাৰণ কৰক ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
-#| msgid ""
-#| "Set to True to enable the plugin to manage the accessibility keyboard "
-#| "settings."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid ""
 "Set to true to enable the plugin to manage the accessibility keyboard "
 "settings."
@@ -814,74 +827,71 @@ msgstr ""
 "অভিগম কৰিব পৰা চাবিৰ ফলকৰ পছন্দৰ পৰিচালকৰ প্লাগ-ইন সক্ৰিয় কৰিব'লৈ true লৈ "
 "নিৰ্ধাৰণ কৰক ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
-#| msgid "Set to True to enable the screen magnifier."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid "Set to true to enable the screen magnifier."
 msgstr "পৰ্দ্দা বিবৰ্দ্ধকক সক্ৰিয় কৰিব'লৈ true লৈ নিৰ্ধাৰণ কৰক ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
-#| msgid "Set to True to enable the screen reader."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "Set to true to enable the screen reader."
 msgstr "পৰ্দ্দা পঢ়োঁতাক সক্ৰিয় কৰিবলৈ true লৈ নিৰ্ধাৰণ কৰক ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
-#| msgid "Set to True to enable the sound settings manager plugin."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
 msgid "Set to true to enable the sound settings manager plugin."
 msgstr "পৃষ্ঠভুমিৰ পছন্দৰ পৰিচালকৰ প্লাগ-ইন সক্ৰিয় কৰিব'লৈ true লৈ নিৰ্ধাৰণ কৰক ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
-#| msgid "Set to True to enable the xrandr settings manager plugin."
-msgid "Set to true to enable the xrandr settings manager plugin."
-msgstr "xrandr পছন্দৰ পৰিচালকৰ প্লাগ-ইন সক্ৰিয় কৰিবলৈ true লৈ নিৰ্ধাৰণ কৰক ।"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
-#| msgid "Set to True to enable the xsettings settings manager plugin."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to true to enable the xsettings settings manager plugin."
 msgstr "xsettings পছন্দৰ পৰিচালকৰ প্লাগ-ইন সক্ৰিয় কৰিব'লৈ true লৈ নিৰ্ধাৰণ কৰক ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid "Set to true to show the banner message text."
 msgstr "পতাকাৰ সম্বাদৰ লিপি দেখুৱাবলৈ true লৈ নিৰ্ধাৰণ কৰক ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
-msgid "Set to true to use compiz as the window manager."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#| msgid "Set to true to use compiz as the window manager."
+msgid "Set to true to use Compiz as the window manager."
 msgstr "compiz ক পৰ্দ্দাৰ পৰিচালক হিচাপে ব্যৱহাৰ কৰিবলৈ true লৈ নিৰ্ধাৰণ কৰক ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
-#| msgid "Text banner message to show on the login window."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#| msgid ""
+#| "Text banner message to show on the login window when the user chooser is "
+#| "empty, instead of banner_message_text."
 msgid ""
-"Text banner message to show on the login window when the user chooser is "
+"Text banner message to show in the login window when the user chooser is "
 "empty, instead of banner_message_text."
 msgstr ""
 "ব্যৱহাৰকৰ্তা নিৰ্বাচনৰ তালিকা ৰিক্ত হ'লে banner_message_text-ৰ পৰিবৰ্তে প্ৰৱেশ "
 "উইন্ডোত প্ৰদৰ্শনযোগ্য টেক্সট বেনাৰৰ বাৰ্তা ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
-msgid "Text banner message to show on the login window."
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
+#| msgid "Text banner message to show on the login window."
+msgid "Text banner message to show in the login window."
 msgstr "প্ৰৱেশ পৰ্দ্দাত দেখুৱাব লগা লিখিত পতাকাৰ সম্বাদ ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
+#| msgid "True if the xrandr settings manager plugin is enabled."
+msgid "True if the XRandR settings manager plugin is enabled."
+msgstr "true যদি xrandr পছন্দৰ পৰিচালকৰ প্লাগ-ইন সক্ৰিয় কৰা হৈছে।"
+
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "True if the background settings manager plugin is enabled."
 msgstr "true যদি পৃষ্ঠভুমিৰ পছন্দৰ পৰিচালকৰ প্লাগ-ইন সক্ৰিয় কৰা হৈছে ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr "true যদি media-keys পছন্দৰ পৰিচালকৰ প্লাগ-ইন সক্ৰিয় কৰা হৈছে ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "True if the sound settings manager plugin is enabled."
 msgstr "true যদি ধ্বনিৰ পছন্দৰ পৰিচালকৰ প্লাগ-ইন সক্ৰিয় কৰা হৈছে ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
-msgid "True if the xrandr settings manager plugin is enabled."
-msgstr "true যদি xrandr পছন্দৰ পৰিচালকৰ প্লাগ-ইন সক্ৰিয় কৰা হৈছে ।"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:37
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr "true যদি xsettings পছন্দৰ পৰিচালকৰ প্লাগ-ইন সক্ৰিয় কৰা হৈছে ।"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:38
-msgid "Use compiz as the window manager"
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+#| msgid "Use compiz as the window manager"
+msgid "Use Compiz as the window manager"
 msgstr "compiz ক পৰ্দ্দাৰ পৰিচালক হিচাপে ব্যৱহাৰ কৰক"
 
 #: ../gui/simple-greeter/gdm-timer.c:149
@@ -905,197 +915,67 @@ msgid "Is it Running?"
 msgstr "এইটো চলমান হয় নে ?"
 
 #: ../gui/simple-greeter/gdm-timer.c:166
-msgid "Whether or not the timer is currently ticking"
+#| msgid "Whether or not the timer is currently ticking"
+msgid "Whether the timer is currently ticking"
 msgstr "টাইমাৰ সক্ৰিয় হয় নে নহয়"
 
-#: ../gui/simple-greeter/gdm-user.c:245
-msgid "Manager"
-msgstr "পৰিচালক"
-
-#: ../gui/simple-greeter/gdm-user.c:246
-msgid "The user manager object this user is controlled by."
-msgstr "এই ব্যৱহাৰকৰোঁতাক নিয়ন্ত্ৰণ কৰা user manager object ।"
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:194
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:488
+#, c-format
+msgid "Log in as %s"
+msgstr "%s হিচাপে প্ৰৱেশ কৰক"
 
 #. translators: This option prompts
 #. * the user to type in a username
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:164
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:262
+#| msgctxt "user"
+#| msgid "Other..."
 msgctxt "user"
-msgid "Other..."
+msgid "Other…"
 msgstr "অন্য..."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:165
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:263
 msgid "Choose a different account"
 msgstr "অন্য এটা হিচাপ নিৰ্ব্বাচন কৰক"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:177
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:277
 msgid "Guest"
 msgstr "অতিথি"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:178
-msgid "Login as a temporary guest"
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:278
+#| msgid "Login as a temporary guest"
+msgid "Log in as a temporary guest"
 msgstr "অস্থায়ী অতিথি হিচাপে প্ৰৱেশ কৰক"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:191
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:293
 msgid "Automatic Login"
 msgstr "স্বয়ংক্ৰিয়ভাবে প্ৰৱেশ"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:192
-msgid "Automatically login to the system after selecting options"
-msgstr "বিকল্প নিৰ্ব্বাচন কৰাৰ পিছত ব্যৱস্থাপ্ৰণালীত স্বয়ংক্ৰিয় ভাবে প্ৰৱেশ কৰক"
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:294
+#| msgid "Automatically login to the system after selecting options"
+msgid "Automatically log into the system after selecting options"
+msgstr "বিকল্পসমূহ নিৰ্ব্বাচন কৰাৰ পিছত ব্যৱস্থাপ্ৰণালীত স্বয়ংক্ৰিয় ভাবে প্ৰৱেশ কৰক"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:383
-#, c-format
-msgid "Log in as %s"
-msgstr "%s হিচাপে প্ৰৱেশ কৰক"
-
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:737
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1038
 msgid "Currently logged in"
 msgstr "ইতিমধ্যে প্ৰৱেশ কৰা আছে"
 
-#: ../gui/user-switch-applet/applet.c:162
-msgid ""
-"The User Switch Applet is free software; you can redistribute it and/or "
-"modify it under the terms of the GNU General Public License as published by "
-"the Free Software Foundation; either version 2 of the License, or (at your "
-"option) any later version."
-msgstr ""
-"The User Switch Applet is free software; you can redistribute it and/or "
-"modify it under the terms of the GNU General Public License as published by "
-"the Free Software Foundation; either version 2 of the License, or (at your "
-"option) any later version."
-
-#: ../gui/user-switch-applet/applet.c:166
-msgid ""
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
-"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details."
-msgstr ""
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
-"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details."
-
-#: ../gui/user-switch-applet/applet.c:170
-msgid ""
-"You should have received a copy of the GNU General Public License along with "
-"this program; if not, write to the Free Software Foundation, Inc., 51 "
-"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
-msgstr ""
-"You should have received a copy of the GNU General Public License along with "
-"this program; if not, write to the Free Software Foundation, Inc., 51 "
-"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
-
-#: ../gui/user-switch-applet/applet.c:184
-msgid "A menu to quickly switch between users."
-msgstr "ব্যৱহাৰকৰোঁতাৰ মাজত শীঘ্ৰে সলনি কৰিবলৈ তালিকা ।"
-
-#: ../gui/user-switch-applet/applet.c:188
-msgid "translator-credits"
-msgstr "অমিতাক্ষ ফুকন (aphukan@fedoraproject.org)"
-
-#: ../gui/user-switch-applet/applet.c:647
-#: ../gui/user-switch-applet/applet.c:784
-#: ../gui/user-switch-applet/applet.c:823
-#, c-format
-msgid "Can't lock screen: %s"
-msgstr "পৰ্দ্দা বন্ধ কৰিব নোৱাৰি: %s"
-
-#: ../gui/user-switch-applet/applet.c:669
-#, c-format
-msgid "Can't temporarily set screensaver to blank screen: %s"
-msgstr "পৰ্দ্দা বন্ধ কৰিবলৈ অস্থায়ীভাবে স্ক্ৰিন্‌ছেভাৰক নিৰ্ধাৰণ কৰিব নোৱাৰি: %s"
-
-#: ../gui/user-switch-applet/applet.c:882
-#, c-format
-msgid "Can't logout: %s"
-msgstr "প্ৰস্থান কৰিব নোৱাৰি: %s"
-
-#: ../gui/user-switch-applet/applet.c:966
-msgid "Available"
-msgstr "মজুত আছে"
-
-#: ../gui/user-switch-applet/applet.c:967
-msgid "Invisible"
-msgstr "অদৃশ্য"
-
-#: ../gui/user-switch-applet/applet.c:968
-msgid "Busy"
-msgstr "ব্যস্ত"
-
-#: ../gui/user-switch-applet/applet.c:969
-msgid "Away"
-msgstr "ইয়াত নাই"
-
-#: ../gui/user-switch-applet/applet.c:1129
-msgid "Account Information..."
-msgstr "হিচাপ সংক্ৰান্ত তথ্য..."
-
-#: ../gui/user-switch-applet/applet.c:1141
-msgid "System Preferences..."
-msgstr "ব্যৱস্থাপ্ৰণালীৰ পছন্দবোৰ..."
-
-#: ../gui/user-switch-applet/applet.c:1157
-msgid "Lock Screen"
-msgstr "পৰ্দা লক কৰক"
-
-#: ../gui/user-switch-applet/applet.c:1168
-msgid "Switch User"
-msgstr "Switch User"
-
-#. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1179
-msgid "Quit..."
-msgstr "প্ৰস্থান..."
-
-#: ../gui/user-switch-applet/applet.c:1294
-msgid "Unknown"
-msgstr "অজ্ঞাত"
-
-#: ../gui/user-switch-applet/applet.c:1412
-msgid "User Switch Applet"
-msgstr "User Switch Applet"
-
-#: ../gui/user-switch-applet/applet.c:1421
-msgid "Change account settings and status"
-msgstr "হিচাপৰ পছন্দ আৰু অৱস্থা সলনি কৰক"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:1
-msgid "A menu to quickly switch between users"
-msgstr "ব্যৱহাৰকৰোঁতাৰ মাজত শীঘ্ৰে সলনি কৰিবলৈ তালিকা"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:2
-msgid "User Switcher"
-msgstr "User Switcher"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:3
-msgid "User Switcher Applet Factory"
-msgstr "User Switcher Applet Factory"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:1
-msgid "Edit Personal _Information"
-msgstr "ব্যক্তিগত তথ্য সম্পাদন কৰক (_I)"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:2
-msgid "_About"
-msgstr "বিষয়ে (_A)"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:3
-msgid "_Edit Users and Groups"
-msgstr "ব্যৱহাৰকৰোঁতা আৰু গোটক সম্পাদন কৰক (_E)"
-
-#: ../utils/gdmflexiserver.c:61 ../utils/gdmflexiserver.c:62
-#: ../utils/gdmflexiserver.c:63 ../utils/gdmflexiserver.c:65
-#: ../utils/gdmflexiserver.c:66
-msgid "Ignored - retained for compatibility"
-msgstr "আওকাণ কৰা হ'ল - সুসঙ্গতৰ বাবে ৰখা হৈছে"
+#: ../utils/gdmflexiserver.c:61
+msgid "Only the VERSION command is supported"
+msgstr "কেৱল VERSION কমান্ড সমৰ্থিত"
 
 #: ../utils/gdmflexiserver.c:61
 msgid "COMMAND"
 msgstr "COMMAND"
+
+#: ../utils/gdmflexiserver.c:62 ../utils/gdmflexiserver.c:63
+#: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
+#| msgid "Ignored - retained for compatibility"
+msgid "Ignored — retained for compatibility"
+msgstr "আওকাণ কৰা হ'ল - সুসঙ্গতৰ বাবে ৰখা হৈছে"
 
 #: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
@@ -1119,14 +999,169 @@ msgstr "- নতুন GDM প্ৰৱেশ"
 msgid "Unable to start new display"
 msgstr "নতুন প্ৰদৰ্শন আৰম্ভ কৰিব পৰা ন'গ'ল"
 
-#: ../utils/gdm-screenshot.c:219
+#: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
 msgstr "পৰ্দাৰ ছবি গ্ৰহণ কৰা হৈছে"
 
 #. Option parsing
-#: ../utils/gdm-screenshot.c:284
+#: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "পৰ্দ্দাৰ ছবি তোলক"
+
+#~ msgid "Enable debugging code"
+#~ msgstr "debugging কোড সক্ৰিয় কৰক"
+
+#~ msgid "id"
+#~ msgstr "id"
+
+#~ msgid "Couldn't set groupid to 0"
+#~ msgstr "groupid ক ০ লৈ নিৰ্ধাৰিত কৰিব নোৱাৰি"
+
+#~ msgid "%a %b %e"
+#~ msgstr "%a %b %e"
+
+#~ msgid "%1$s, %2$s"
+#~ msgstr "%1$s, %2$s"
+
+#~ msgid "Authentication Dialog"
+#~ msgstr "প্ৰমাণীকৰণৰ সম্বাদ"
+
+#~ msgid "Keyboard layouts"
+#~ msgstr "চাবি ফলকৰ বিন্যাস"
+
+#~ msgid "_Keyboard:"
+#~ msgstr "চাবিৰ ফলক (_K):"
+
+#~ msgctxt "keyboard"
+#~ msgid "Other..."
+#~ msgstr "অন্য..."
+
+#~ msgid "Choose a keyboard layout from the full list of available layouts."
+#~ msgstr "পৰিকল্পনাৰ সম্পূৰ্ণ তালিকাৰ পৰা চাবি ফলকৰ পৰিকল্পনা নিৰ্ব্বাচন কৰক ।"
+
+#~ msgid "_Sessions:"
+#~ msgstr "অধিবেশনসমূহ (_S):"
+
+#~ msgid "Enable debugging"
+#~ msgstr "debugging সক্ৰিয় কৰক"
+
+#~ msgid "Enable debugging mode for the greeter."
+#~ msgstr "অভিবাদন কৰোঁতাৰ বাবে debugging সক্ৰিয় কৰক ।"
+
+#~ msgid "Recently selected keyboard layouts"
+#~ msgstr "অলপতে নিৰ্ব্বাচন কৰা চাবিৰ ফলকৰ পৰিকল্পনা"
+
+#~ msgid ""
+#~ "Set to a list of keyboard layouts to be shown by default at the login "
+#~ "window."
+#~ msgstr ""
+#~ "প্ৰৱেশ পৰ্দ্দাত অবিকল্পপিত ভাবে দেখুৱাব লগা চাবিৰ ফলকৰ তালিকা নিৰ্ধাৰণ কৰক ।"
+
+#~ msgid "Manager"
+#~ msgstr "পৰিচালক"
+
+#~ msgid "The user manager object this user is controlled by."
+#~ msgstr "এই ব্যৱহাৰকৰোঁতাক নিয়ন্ত্ৰণ কৰা user manager object ।"
+
+#~ msgid ""
+#~ "The User Switch Applet is free software; you can redistribute it and/or "
+#~ "modify it under the terms of the GNU General Public License as published "
+#~ "by the Free Software Foundation; either version 2 of the License, or (at "
+#~ "your option) any later version."
+#~ msgstr ""
+#~ "The User Switch Applet is free software; you can redistribute it and/or "
+#~ "modify it under the terms of the GNU General Public License as published "
+#~ "by the Free Software Foundation; either version 2 of the License, or (at "
+#~ "your option) any later version."
+
+#~ msgid ""
+#~ "This program is distributed in the hope that it will be useful, but "
+#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
+#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
+#~ "Public License for more details."
+#~ msgstr ""
+#~ "This program is distributed in the hope that it will be useful, but "
+#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
+#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
+#~ "Public License for more details."
+
+#~ msgid ""
+#~ "You should have received a copy of the GNU General Public License along "
+#~ "with this program; if not, write to the Free Software Foundation, Inc., "
+#~ "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
+#~ msgstr ""
+#~ "You should have received a copy of the GNU General Public License along "
+#~ "with this program; if not, write to the Free Software Foundation, Inc., "
+#~ "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
+
+#~ msgid "A menu to quickly switch between users."
+#~ msgstr "ব্যৱহাৰকৰোঁতাৰ মাজত শীঘ্ৰে সলনি কৰিবলৈ তালিকা ।"
+
+#~ msgid "translator-credits"
+#~ msgstr "অমিতাক্ষ ফুকন (aphukan@fedoraproject.org)"
+
+#~ msgid "Can't lock screen: %s"
+#~ msgstr "পৰ্দ্দা বন্ধ কৰিব নোৱাৰি: %s"
+
+#~ msgid "Can't temporarily set screensaver to blank screen: %s"
+#~ msgstr "পৰ্দ্দা বন্ধ কৰিবলৈ অস্থায়ীভাবে স্ক্ৰিন্‌ছেভাৰক নিৰ্ধাৰণ কৰিব নোৱাৰি: %s"
+
+#~ msgid "Can't logout: %s"
+#~ msgstr "প্ৰস্থান কৰিব নোৱাৰি: %s"
+
+#~ msgid "Available"
+#~ msgstr "মজুত আছে"
+
+#~ msgid "Invisible"
+#~ msgstr "অদৃশ্য"
+
+#~ msgid "Busy"
+#~ msgstr "ব্যস্ত"
+
+#~ msgid "Away"
+#~ msgstr "ইয়াত নাই"
+
+#~ msgid "Account Information..."
+#~ msgstr "হিচাপ সংক্ৰান্ত তথ্য..."
+
+#~ msgid "System Preferences..."
+#~ msgstr "ব্যৱস্থাপ্ৰণালীৰ পছন্দবোৰ..."
+
+#~ msgid "Lock Screen"
+#~ msgstr "পৰ্দা লক কৰক"
+
+#~ msgid "Switch User"
+#~ msgstr "Switch User"
+
+#~ msgid "Quit..."
+#~ msgstr "প্ৰস্থান..."
+
+#~ msgid "Unknown"
+#~ msgstr "অজ্ঞাত"
+
+#~ msgid "User Switch Applet"
+#~ msgstr "User Switch Applet"
+
+#~ msgid "Change account settings and status"
+#~ msgstr "হিচাপৰ পছন্দ আৰু অৱস্থা সলনি কৰক"
+
+#~ msgid "A menu to quickly switch between users"
+#~ msgstr "ব্যৱহাৰকৰোঁতাৰ মাজত শীঘ্ৰে সলনি কৰিবলৈ তালিকা"
+
+#~ msgid "User Switcher"
+#~ msgstr "User Switcher"
+
+#~ msgid "User Switcher Applet Factory"
+#~ msgstr "User Switcher Applet Factory"
+
+#~ msgid "Edit Personal _Information"
+#~ msgstr "ব্যক্তিগত তথ্য সম্পাদন কৰক (_I)"
+
+#~ msgid "_About"
+#~ msgstr "বিষয়ে (_A)"
+
+#~ msgid "_Edit Users and Groups"
+#~ msgstr "ব্যৱহাৰকৰোঁতা আৰু গোটক সম্পাদন কৰক (_E)"
 
 #~ msgid "worker exited with status %d"
 #~ msgstr "%d অৱস্থাৰ সৈতে কৰ্মী বাহিৰ হ'ল"
@@ -1194,9 +1229,6 @@ msgstr "পৰ্দ্দাৰ ছবি তোলক"
 #~ msgstr ""
 #~ "অধিবেশনৰ ল'গ '%s' সাধাৰণ নথিপত্ৰ নহয়, অধিবেশনক '%s' ত প্ৰৱেশ কৰোৱা হৈছে ।\n"
 
-#~ msgid "unable to log session"
-#~ msgstr "অধিবেশনক লগ কৰিব পৰা ন'হ'ব"
-
 #~ msgid "Alternative GDM System Defaults configuration file"
 #~ msgstr "বৈকল্পিক GDM System Defaults বিন্যাস নথিপত্ৰ"
 
@@ -1245,9 +1277,5 @@ msgstr "পৰ্দ্দাৰ ছবি তোলক"
 #~ msgid "Login based on preset legacy configuration"
 #~ msgstr "পূৰ্ব নিৰ্ধাৰিত লিগেচি বিন্যাসৰ মতে কৰা প্ৰৱেশ"
 
-#~ msgid "_Session:"
-#~ msgstr "অধিবেশন (_S):"
-
 #~ msgid "_Users:"
 #~ msgstr "ব্যৱহাৰকৰোঁতাসকল (_U)::"
-
