@@ -1031,17 +1031,6 @@ gdm_cache_copy_file (GdmSessionWorker *worker,
                                    error->message);
                         g_error_free (error);
                  } else {
-                         int res;
-
-                         res = chown (cachefilename,
-                                      worker->priv->uid,
-                                      worker->priv->gid);
-                         if (res == -1) {
-                                 g_warning ("GdmSessionWorker: Error setting owner of cache file: %s",
-                                            g_strerror (errno));
-                         }
-
-                        g_chmod (cachefilename, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
                         g_debug ("Copy successful");
                 }
 
@@ -1179,7 +1168,23 @@ gdm_session_worker_uninitialize_pam (GdmSessionWorker *worker,
                 return;
 
         if (worker->priv->state >= GDM_SESSION_WORKER_STATE_SESSION_OPENED) {
-                gdm_session_worker_cache_userfiles (worker);
+                pid_t pid;
+
+                pid = fork ();
+
+                if (pid == 0) {
+                        if (setuid (worker->priv->uid) < 0) {
+                                g_debug ("GdmSessionWorker: could not reset uid: %s", g_strerror (errno));
+                                _exit (1);
+                        }
+
+                        gdm_session_worker_cache_userfiles (worker);
+                        _exit (0);
+                }
+
+                if (pid > 0) {
+                        gdm_wait_on_pid (pid);
+                }
                 pam_close_session (worker->priv->pam_handle, 0);
                 gdm_session_auditor_report_logout (worker->priv->auditor);
         } else {
