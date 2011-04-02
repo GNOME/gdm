@@ -1549,17 +1549,11 @@ gdm_greeter_login_window_get_preferred_width (GtkWidget *widget,
 {
         int             monitor;
         GdkScreen      *screen;
+        GdkWindow      *window;
         GdkRectangle    area;
         GtkAllocation   widget_allocation;
         int             min_size;
         int             nat_size;
-
-        min_size = 0;
-        nat_size = 0;
-
-        if (!gtk_widget_get_realized (widget)) {
-                goto out;
-        }
 
         gtk_widget_get_preferred_width (gtk_bin_get_child (GTK_BIN (widget)),
                                         &min_size,
@@ -1567,7 +1561,11 @@ gdm_greeter_login_window_get_preferred_width (GtkWidget *widget,
 
         /* Make width be at least 33% screen width */
         screen = gtk_widget_get_screen (widget);
-        monitor = gdk_screen_get_monitor_at_window (screen, gtk_widget_get_window (widget));
+        window = gtk_widget_get_window (widget);
+        if (window == NULL) {
+                window = gdk_screen_get_root_window (screen);
+        }
+        monitor = gdk_screen_get_monitor_at_window (screen, window);
         gdk_screen_get_monitor_geometry (screen, monitor, &area);
         min_size = MAX (min_size, .33 * area.width);
         nat_size = MAX (nat_size, .33 * area.width);
@@ -1578,7 +1576,6 @@ gdm_greeter_login_window_get_preferred_width (GtkWidget *widget,
         min_size = MAX (min_size, widget_allocation.width);
         nat_size = MAX (nat_size, widget_allocation.width);
 
- out:
         if (minimum_size)
                 *minimum_size = min_size;
         if (natural_size)
@@ -1592,16 +1589,10 @@ gdm_greeter_login_window_get_preferred_height (GtkWidget *widget,
 {
         int             monitor;
         GdkScreen      *screen;
+        GdkWindow      *window;
         GdkRectangle    area;
         int             min_size;
         int             nat_size;
-
-        min_size = 0;
-        nat_size = 0;
-
-        if (!gtk_widget_get_realized (widget)) {
-                goto out;
-        }
 
         gtk_widget_get_preferred_height (gtk_bin_get_child (GTK_BIN (widget)),
                                         &min_size,
@@ -1609,12 +1600,15 @@ gdm_greeter_login_window_get_preferred_height (GtkWidget *widget,
 
         /* Make height be at most 80% of screen height */
         screen = gtk_widget_get_screen (widget);
-        monitor = gdk_screen_get_monitor_at_window (screen, gtk_widget_get_window (widget));
+        window = gtk_widget_get_window (widget);
+        if (window == NULL) {
+                window = gdk_screen_get_root_window (screen);
+        }
+        monitor = gdk_screen_get_monitor_at_window (screen, window);
         gdk_screen_get_monitor_geometry (screen, monitor, &area);
         min_size = MIN (min_size, .8 * area.height);
         nat_size = MIN (nat_size, .8 * area.height);
 
- out:
         if (minimum_size)
                 *minimum_size = min_size;
         if (natural_size)
