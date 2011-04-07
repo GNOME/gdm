@@ -2070,6 +2070,13 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
 
                 _save_user_settings (worker, home_dir);
 
+                /*
+                 * Reset SIGPIPE to default so that any process in the user
+                 * session get the default SIGPIPE behavior instead of ignoring
+                 * SIGPIPE.
+                 */
+                signal (SIGPIPE, SIG_DFL);
+
                 gdm_session_execute (worker->priv->arguments[0],
                                      worker->priv->arguments,
                                      environment,
