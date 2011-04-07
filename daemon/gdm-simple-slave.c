@@ -128,17 +128,7 @@ on_session_exited (GdmSession     *session,
                    int             exit_code,
                    GdmSimpleSlave *slave)
 {
-        char *username;
-
         g_debug ("GdmSimpleSlave: session exited with code %d\n", exit_code);
-
-        /* Run the PostSession script. gdmslave suspends until script has terminated */
-        username = gdm_session_direct_get_username (slave->priv->session);
-        if (username != NULL) {
-                gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostSession", username);
-        }
-        g_free (username);
-
         gdm_slave_stopped (GDM_SLAVE (slave));
 }
 
@@ -1202,6 +1192,17 @@ gdm_simple_slave_stop (GdmSlave *slave)
         }
 
         if (GDM_SIMPLE_SLAVE (slave)->priv->session != NULL) {
+                char *username;
+
+                /* Run the PostSession script. gdmslave suspends until script
+                 * has terminated
+                 */
+                username = gdm_session_direct_get_username (GDM_SIMPLE_SLAVE (slave)->priv->session);
+                if (username != NULL) {
+                        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostSession", username);
+                }
+                g_free (username);
+
                 gdm_session_close (GDM_SESSION (GDM_SIMPLE_SLAVE (slave)->priv->session));
                 g_object_unref (GDM_SIMPLE_SLAVE (slave)->priv->session);
                 GDM_SIMPLE_SLAVE (slave)->priv->session = NULL;
