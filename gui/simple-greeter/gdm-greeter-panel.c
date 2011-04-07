@@ -652,21 +652,6 @@ get_show_restart_buttons (GdmGreeterPanel *panel)
                 g_error_free (error);
         }
 
-#ifdef ENABLE_RBAC_SHUTDOWN
-        {
-                char *username;
-
-                username = g_get_user_name ();
-                if (username == NULL || !chkauthattr (RBAC_SHUTDOWN_KEY, username)) {
-                        show = FALSE;
-                        g_debug ("GdmGreeterPanel: Not showing stop/restart buttons for user %s due to RBAC key %s",
-                                 username, RBAC_SHUTDOWN_KEY);
-                } else {
-                        g_debug ("GdmGreeterPanel: Showing stop/restart buttons for user %s due to RBAC key %s",
-                                 username, RBAC_SHUTDOWN_KEY);
-                }
-        }
-#endif
         return show;
 }
 
@@ -725,6 +710,7 @@ setup_panel (GdmGreeterPanel *panel)
         NaTray    *tray;
         GtkWidget *spacer;
         int        padding;
+        gboolean   show_restart_buttons = TRUE;
 
         gdm_profile_start (NULL);
 
@@ -793,7 +779,24 @@ setup_panel (GdmGreeterPanel *panel)
                 gtk_widget_show (panel->priv->hostname_label);
         }
 
-        if (panel->priv->display_is_local || get_show_restart_buttons (panel)) {
+#ifdef ENABLE_RBAC_SHUTDOWN
+        {
+                char      *username;
+
+                username = g_get_user_name ();
+                if (username == NULL || !chkauthattr (RBAC_SHUTDOWN_KEY, username)) {
+                        show_restart_buttons = FALSE;
+                        g_debug ("GdmGreeterPanel: Not showing stop/restart buttons for user %s due to RBAC key %s",
+                                 username ? username : "(null)", RBAC_SHUTDOWN_KEY);
+                } else {
+                        g_debug ("GdmGreeterPanel: Showing stop/restart buttons for user %s due to RBAC key %s",
+                                 username, RBAC_SHUTDOWN_KEY);
+                }
+        }
+#endif
+
+        if (show_restart_buttons &&
+            (panel->priv->display_is_local || get_show_restart_buttons (panel))) {
                 GtkWidget *menu_item;
                 GtkWidget *image;
 
