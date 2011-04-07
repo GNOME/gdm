@@ -208,7 +208,7 @@ decode_packet (GIOChannel           *source,
                 return TRUE;
         }
 
-        ss_len = (int)gdm_sockaddr_len (&clnt_ss);
+        ss_len = (int) sizeof (clnt_ss);
 
         res = XdmcpFill (widget->priv->socket_fd, &buf, (XdmcpNetaddr)&clnt_ss, &ss_len);
         if G_UNLIKELY (! res) {
