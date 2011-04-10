@@ -671,6 +671,7 @@ do_introspect (DBusConnection *connection,
         xml = g_string_append (xml,
                                "  <interface name=\"org.gnome.DisplayManager.GreeterServer\">\n"
                                "    <method name=\"BeginVerification\">\n"
+                               "    </method>\n"
                                "    <method name=\"BeginTimedLogin\">\n"
                                "    </method>\n"
                                "    <method name=\"BeginVerificationForUser\">\n"
