@@ -1063,6 +1063,22 @@ gdm_user_chooser_widget_dispose (GObject *object)
         }
 
         if (widget->priv->manager != NULL) {
+                g_signal_handlers_disconnect_by_func (widget->priv->manager,
+                                                      G_CALLBACK (on_user_added),
+                                                      widget);
+                g_signal_handlers_disconnect_by_func (widget->priv->manager,
+                                                      G_CALLBACK (on_user_removed),
+                                                      widget);
+                g_signal_handlers_disconnect_by_func (widget->priv->manager,
+                                                      G_CALLBACK (on_is_loaded_changed),
+                                                      widget);
+                g_signal_handlers_disconnect_by_func (widget->priv->manager,
+                                                      G_CALLBACK (on_user_is_logged_in_changed),
+                                                      widget);
+                g_signal_handlers_disconnect_by_func (widget->priv->manager,
+                                                      G_CALLBACK (on_user_changed),
+                                                      widget);
+
                 g_object_unref (widget->priv->manager);
                 widget->priv->manager = NULL;
         }
