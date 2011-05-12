@@ -87,13 +87,9 @@ GQuark             gdm_greeter_client_error_quark                    (void);
 
 GdmGreeterClient * gdm_greeter_client_new                            (void);
 
-gboolean           gdm_greeter_client_start                          (GdmGreeterClient *client,
+gboolean           gdm_greeter_client_connect                        (GdmGreeterClient *client,
                                                                       GError          **error);
-void               gdm_greeter_client_stop                           (GdmGreeterClient *client);
-
 gboolean           gdm_greeter_client_get_display_is_local           (GdmGreeterClient *client);
-
-char *             gdm_greeter_client_call_get_display_id            (GdmGreeterClient *client);
 
 void               gdm_greeter_client_call_start_conversation        (GdmGreeterClient *client,
                                                                       const char       *service_name);

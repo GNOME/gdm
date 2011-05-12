@@ -276,6 +276,11 @@ AC_ARG_WITH(at-spi-registryd-directory,
 AT_SPI_REGISTRYD_DIR=$with_at_spi_registryd_directory
 AC_SUBST(AT_SPI_REGISTRYD_DIR)
 
+AC_ARG_WITH(vt-switch-workaround,
+            AS_HELP_STRING([--with-vt-switch-workaround],
+	                   [Try to workaround missing -novtswitch option for X @<:@default=nor@:>@])],,
+            [with_vt_switch_workaround="no"])
+
 # Allow configuration of default PATH
 #
 withval=""
@@ -921,6 +926,14 @@ if test "x$with_console_kit" != "xno" ; then
 fi
 AM_CONDITIONAL(WITH_CONSOLE_KIT, test x$use_console_kit = xyes)
 AC_SUBST(WITH_CONSOLE_KIT)
+
+dnl ---------------------------------------------------------------------------
+dnl - Check for vt switch support
+dnl ---------------------------------------------------------------------------
+
+if test "x$with_vt_switch_workaround" != "xno" ; then
+	AC_DEFINE(WITH_VT_SWITCH_WORKAROUND, 1, [Define to enable workaround for missing -novtswitch feature])
+fi
 
 dnl ---------------------------------------------------------------------------
 dnl - Check for D-Bus

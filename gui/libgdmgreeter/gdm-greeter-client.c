@@ -54,6 +54,7 @@ struct GdmGreeterClientPrivate
 
 enum {
         PROP_0,
+        PROP_DISPLAY_IS_LOCAL
 };
 
 enum {
@@ -95,6 +96,13 @@ gdm_greeter_client_error_quark (void)
         return error_quark;
 }
 
+/**
+ * gdm_greeter_get_display_is_local:
+ *
+ * @client: a #GdmGreeterClient
+ *
+ * Returns: %TRUE if display is local display
+ */
 gboolean
 gdm_greeter_client_get_display_is_local (GdmGreeterClient *client)
 {
@@ -643,7 +651,8 @@ send_get_display_id (GdmGreeterClient *client,
         return ret;
 }
 
-char *
+
+static char *
 gdm_greeter_client_call_get_display_id (GdmGreeterClient *client)
 {
         char *display_id;
@@ -779,9 +788,20 @@ client_dbus_filter_function (DBusConnection *connection,
         return DBUS_HANDLER_RESULT_HANDLED;
 }
 
+/**
+ * gdm_greeter_client_connect:
+ *
+ * @client: a #GdmGreeterClient
+ *
+ * Initiates a connection to GDM daemon "slave" process.
+ *
+ * This function should be called before doing other calls.
+ *
+ * Returns: %TRUE if connected, or %FALSE if unavailable
+ */
 gboolean
-gdm_greeter_client_start (GdmGreeterClient *client,
-                          GError          **error)
+gdm_greeter_client_connect (GdmGreeterClient  *client,
+                            GError           **error)
 {
         gboolean  ret;
         DBusError local_error;
@@ -833,59 +853,33 @@ gdm_greeter_client_start (GdmGreeterClient *client,
         return ret;
 }
 
-void
-gdm_greeter_client_stop (GdmGreeterClient *client)
+static void
+gdm_greeter_client_set_property (GObject      *object,
+                                 guint         prop_id,
+                                 const GValue *value,
+                                 GParamSpec   *pspec)
 {
-        g_return_if_fail (GDM_IS_GREETER_CLIENT (client));
-
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 }
 
 static void
-gdm_greeter_client_set_property (GObject        *object,
-                                 guint           prop_id,
-                                 const GValue   *value,
-                                 GParamSpec     *pspec)
+gdm_greeter_client_get_property (GObject    *object,
+                                 guint       prop_id,
+                                 GValue     *value,
+                                 GParamSpec *pspec)
 {
+        GdmGreeterClient *self;
+
+        self = GDM_GREETER_CLIENT (object);
+
         switch (prop_id) {
+        case PROP_DISPLAY_IS_LOCAL:
+                g_value_set_boolean (value, self->priv->display_is_local);
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
         }
-}
-
-static void
-gdm_greeter_client_get_property (GObject        *object,
-                                 guint           prop_id,
-                                 GValue         *value,
-                                 GParamSpec     *pspec)
-{
-        switch (prop_id) {
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
-        }
-}
-
-static GObject *
-gdm_greeter_client_constructor (GType                  type,
-                                 guint                  n_construct_properties,
-                                 GObjectConstructParam *construct_properties)
-{
-        GdmGreeterClient      *greeter_client;
-
-        greeter_client = GDM_GREETER_CLIENT (G_OBJECT_CLASS (gdm_greeter_client_parent_class)->constructor (type,
-                                                                                                            n_construct_properties,
-                                                                                                            construct_properties));
-
-        return G_OBJECT (greeter_client);
-}
-
-static void
-gdm_greeter_client_dispose (GObject *object)
-{
-        g_debug ("GdmGreeterClient: Disposing greeter_client");
-
-        G_OBJECT_CLASS (gdm_greeter_client_parent_class)->dispose (object);
 }
 
 static void
@@ -895,8 +889,6 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
 
         object_class->get_property = gdm_greeter_client_get_property;
         object_class->set_property = gdm_greeter_client_set_property;
-        object_class->constructor = gdm_greeter_client_constructor;
-        object_class->dispose = gdm_greeter_client_dispose;
         object_class->finalize = gdm_greeter_client_finalize;
 
         g_type_class_add_private (klass, sizeof (GdmGreeterClientPrivate));
@@ -1032,6 +1024,14 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               1, G_TYPE_STRING);
+
+        g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_IS_LOCAL,
+                                         g_param_spec_boolean ("display-is-local",
+                                                               "display is local",
+                                                               "display is local",
+                                                               FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void

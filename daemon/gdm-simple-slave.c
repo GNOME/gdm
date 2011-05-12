@@ -463,12 +463,17 @@ start_session_timeout (GdmSimpleSlave *slave)
         if (migrated) {
                 destroy_session (slave);
 
-                /* We don't stop the slave here because
-                   when Xorg exits it switches to the VT it was
-                   started from.  That interferes with fast
-                   user switching. */
+#ifdef WITH_VT_SWITCH_WORKAROUND
+                /* If the X server doesn't support -novtswitch, then when the
+                 * user logs out from their session later, they're going to get thrown
+                 * back to the VT the greeter is currently running on. We keep the
+                 * greeter alive here, so when that happens the user doesn't see
+                 * a blank VT or some confusing thing.
+                 */
                 queue_greeter_reset (slave);
-
+#else
+                gdm_slave_stopped (GDM_SLAVE (slave));
+#endif
                 goto out;
         }
 
