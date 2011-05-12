@@ -889,7 +889,7 @@ add_shutdown_menu (GdmGreeterPanel *panel)
         image = gtk_image_new ();
         override_style (image);
 
-        gicon = g_themed_icon_new_with_default_fallbacks ("system-shutdown-symbolic");
+        gicon = g_themed_icon_new ("system-shutdown-symbolic");
         gtk_image_set_from_gicon (GTK_IMAGE (image), gicon, GTK_ICON_SIZE_MENU);
         g_object_unref (gicon);
 
@@ -953,7 +953,7 @@ add_battery_menu (GdmGreeterPanel *panel)
         panel->priv->power_image = gtk_image_new ();
         override_style (panel->priv->power_image);
 
-        gicon = g_themed_icon_new_with_default_fallbacks ("battery-caution-symbolic");
+        gicon = g_themed_icon_new ("battery-caution-symbolic");
         gtk_image_set_from_gicon (GTK_IMAGE (panel->priv->power_image), gicon, GTK_ICON_SIZE_MENU);
         g_object_unref (gicon);
 
