@@ -1122,6 +1122,42 @@ gdm_slave_get_timed_login_details (GdmSlave   *slave,
         return res;
 }
 
+gboolean
+gdm_slave_get_initial_setup_details (GdmSlave   *slave,
+                                     gboolean   *enabledp)
+{
+        GError        *error;
+        gboolean       res;
+        gboolean       enabled;
+
+        g_debug ("GdmSlave: Requesting initial setup details");
+
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->display_proxy,
+                                 "GetInitialSetupDetails",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_BOOLEAN, &enabled,
+                                 G_TYPE_INVALID);
+
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get initial setup details: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get initial setup details");
+                }
+        } else {
+                g_debug ("GdmSlave: Got initial setup details: %d", enabled);
+        }
+
+        if (enabledp != NULL) {
+                *enabledp = enabled;
+        }
+
+        return res;
+}
+
 static gboolean
 _get_uid_and_gid_for_user (const char *username,
                            uid_t      *uid,

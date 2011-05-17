@@ -121,6 +121,8 @@ gdm_simple_slave_SOURCES = 		\
 	gdm-welcome-session.h		\
 	gdm-greeter-session.c		\
 	gdm-greeter-session.h		\
+	gdm-setup-session.c		\
+	gdm-setup-session.h		\
 	gdm-server.c			\
 	gdm-server.h			\
 	gdm-session.c			\

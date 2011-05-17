@@ -74,6 +74,8 @@ typedef struct
                                                gboolean   *enabled,
                                                char      **username,
                                                int        *delay);
+        void     (*get_initial_setup_details) (GdmDisplay *display,
+                                               gboolean   *enabled);
 } GdmDisplayClass;
 
 typedef enum
@@ -122,6 +124,8 @@ gboolean            gdm_display_get_timed_login_details        (GdmDisplay *disp
                                                                 char      **username,
                                                                 int        *delay,
                                                                 GError    **error);
+gboolean            gdm_display_get_initial_setup_details      (GdmDisplay *display,
+                                                                gboolean   *enabled);
 
 /* exported but protected */
 gboolean            gdm_display_get_x11_cookie                 (GdmDisplay *display,

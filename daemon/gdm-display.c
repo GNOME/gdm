@@ -385,6 +385,37 @@ gdm_display_get_timed_login_details (GdmDisplay *display,
         return TRUE;
 }
 
+static void
+gdm_display_real_get_initial_setup_details (GdmDisplay *display,
+                                            gboolean   *enabledp)
+{
+        gboolean enabled;
+        gboolean res;
+
+        enabled = FALSE;
+
+        res = gdm_settings_direct_get_boolean (GDM_KEY_INITIAL_SETUP_ENABLE, &enabled);
+
+        if (enabledp != NULL) {
+                *enabledp = enabled;
+        }
+}
+
+gboolean
+gdm_display_get_initial_setup_details (GdmDisplay *display,
+                                       gboolean   *enabled)
+{
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        GDM_DISPLAY_GET_CLASS (display)->get_initial_setup_details (display, enabled);
+
+        g_debug ("GdmSlave: Got initial setup details for display %s: %d",
+                 display->priv->x11_display_name,
+                 *enabled);
+
+        return TRUE;
+}
+
 static gboolean
 gdm_display_real_remove_user_authorization (GdmDisplay *display,
                                             const char *username,
@@ -1020,6 +1051,7 @@ gdm_display_class_init (GdmDisplayClass *klass)
         klass->remove_user_authorization = gdm_display_real_remove_user_authorization;
         klass->set_slave_bus_name = gdm_display_real_set_slave_bus_name;
         klass->get_timed_login_details = gdm_display_real_get_timed_login_details;
+        klass->get_initial_setup_details = gdm_display_real_get_initial_setup_details;
         klass->prepare = gdm_display_real_prepare;
         klass->manage = gdm_display_real_manage;
         klass->finish = gdm_display_real_finish;

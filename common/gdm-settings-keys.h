@@ -32,6 +32,7 @@ G_BEGIN_DECLS
 #define GDM_KEY_TIMED_LOGIN_ENABLE "daemon/TimedLoginEnable"
 #define GDM_KEY_TIMED_LOGIN_USER "daemon/TimedLogin"
 #define GDM_KEY_TIMED_LOGIN_DELAY "daemon/TimedLoginDelay"
+#define GDM_KEY_INITIAL_SETUP_ENABLE "daemon/InitialSetupEnable"
 
 #define GDM_KEY_DEBUG "debug/Enable"
 
