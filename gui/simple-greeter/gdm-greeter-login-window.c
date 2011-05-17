@@ -392,6 +392,10 @@ set_log_in_button_mode (GdmGreeterLoginWindow *login_window,
                                                       NULL, /* priority */
                                                       &in_use,
                                                       NULL); /* is separate */
+
+                if (!res) {
+                        in_use = FALSE;
+                }
         }
 
         if (login_window->priv->current_button != NULL) {
@@ -490,7 +494,6 @@ static void
 switch_mode (GdmGreeterLoginWindow *login_window,
              int                    number)
 {
-        const char *default_name;
         GtkWidget  *box;
 
         /* Should never switch to MODE_UNDEFINED */
@@ -503,8 +506,6 @@ switch_mode (GdmGreeterLoginWindow *login_window,
                 login_window->priv->last_mode = login_window->priv->dialog_mode;
                 login_window->priv->dialog_mode = number;
         }
-
-        default_name = NULL;
 
         switch (number) {
         case MODE_SELECTION:
