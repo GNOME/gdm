@@ -183,6 +183,19 @@ AC_SUBST(PLUGIN_LIBTOOL_FLAGS)
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 AC_PATH_XTRA
 
+NETWORK_MANAGER_REQUIRED_VERSION=0.8.992
+
+PKG_CHECK_MODULES(INITIAL_SETUP,
+                  NetworkManager >= $NETWORK_MANAGER_REQUIRED_VERSION
+                  libnm-glib >= $NETWORK_MANAGER_REQUIRED_VERSION
+                  libnm-util >= $NETWORK_MANAGER_REQUIRED_VERSION
+                  accountsservice
+                  gweather-3.0
+                  gtk+-3.0
+                  glib-2.0
+                  gio-2.0
+                  gio-unix-2.0)
+
 # Unit testing framework
 PKG_CHECK_MODULES(CHECK,
                   [check >= 0.9.4],
@@ -1446,6 +1459,7 @@ gui/simple-greeter/extensions/smartcard/icons/Makefile
 gui/simple-greeter/extensions/smartcard/icons/16x16/Makefile
 gui/simple-greeter/extensions/smartcard/icons/48x48/Makefile
 gui/simple-chooser/Makefile
+gui/initial-setup/Makefile
 utils/Makefile
 data/gdm.conf
 data/Makefile
