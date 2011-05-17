@@ -18,6 +18,10 @@ desktop_in_files = 							\
 	gnome-mag.desktop.in						\
 	gok.desktop.in							\
 	orca-screen-reader.desktop.in					\
+	nm-applet.desktop.in						\
+	gnome-keyring-secrets.desktop.in				\
+	gnome-initial-setup.desktop.in 					\
+	setup-shell.desktop.in						\
 	$(NULL)
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)			\
 	       mime-dummy-handler.desktop				\
@@ -26,6 +30,9 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)			\
 
 EXTRA_DIST =								\
 	gdm-simple-greeter.desktop.in.in				\
+	nm-applet.desktop.in.in						\
+	gnome-keyring-secrets.desktop.in.in				\
+	gnome-initial-setup.desktop.in.in				\
 	$(desktop_in_files)						\
 	$(desktop_DATA)							\
 	$(NULL)
@@ -33,6 +40,9 @@ EXTRA_DIST =								\
 DISTCLEANFILES =							\
 	$(desktop_in_files:.desktop.in=.desktop)			\
 	gdm-simple-greeter.desktop.in					\
+	nm-applet.desktop.in						\
+	gnome-keyring-secrets.desktop.in				\
+	gnome-initial-setup.desktop.in					\
 	$(NULL)
 
 MAINTAINERCLEANFILES =                  				\
