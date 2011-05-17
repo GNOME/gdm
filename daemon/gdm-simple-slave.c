@@ -542,12 +542,7 @@ on_session_accreditation_failed (GdmSession     *session,
                 }
         }
 
-        /* We don't stop the slave here after migrating because
-           when Xorg exits it switches to the VT it was
-           started from.  That interferes with fast
-           user switching. */
         destroy_session (slave);
-
         queue_greeter_reset (slave);
 }
 
