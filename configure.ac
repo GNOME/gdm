@@ -56,8 +56,8 @@ dnl - Dependencies
 dnl ---------------------------------------------------------------------------
 
 DBUS_GLIB_REQUIRED_VERSION=0.74
-GLIB_REQUIRED_VERSION=2.29.3
-GTK_REQUIRED_VERSION=2.91.1
+GLIB_REQUIRED_VERSION=2.29.4
+GTK_REQUIRED_VERSION=3.1.2
 PANGO_REQUIRED_VERSION=1.3.0
 SCROLLKEEPER_REQUIRED_VERSION=0.1.4
 GCONF_REQUIRED_VERSION=2.31.3
@@ -67,7 +67,7 @@ LIBCANBERRA_GTK_REQUIRED_VERSION=0.4
 #FONTCONFIG_REQUIRED_VERSION=2.6.0
 FONTCONFIG_REQUIRED_VERSION=2.5.0
 UPOWER_REQUIRED_VERSION=0.9.0
-ACCOUNTS_SERVICE_REQUIRED_VERSION=0.6.12
+ACCOUNTS_SERVICE_REQUIRED_VERSION=0.6.13
 NSS_REQUIRED_VERSION=3.11.1
 
 EXTRA_COMPILE_WARNINGS(yes)
@@ -191,10 +191,10 @@ PKG_CHECK_MODULES(INITIAL_SETUP,
                   libnm-util >= $NETWORK_MANAGER_REQUIRED_VERSION
                   accountsservice
                   gweather-3.0
-                  gtk+-3.0
-                  glib-2.0
-                  gio-2.0
-                  gio-unix-2.0)
+                  gtk+-3.0 >= $GTK_REQUIRED_VERSION
+                  glib-2.0 >= $GLIB_REQUIRED_VERSION
+                  gio-2.0 >= $GLIB_REQUIRED_VERSION
+                  gio-unix-2.0 >= $GLIB_REQUIRED_VERSION)
 
 # Unit testing framework
 PKG_CHECK_MODULES(CHECK,
