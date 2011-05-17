@@ -57,6 +57,7 @@
 #include "gdm-session-direct.h"
 #include "gdm-greeter-server.h"
 #include "gdm-greeter-session.h"
+#include "gdm-setup-session.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 
@@ -86,7 +87,7 @@ struct GdmSimpleSlavePrivate
         GdmSessionDirect  *session;
 
         GdmGreeterServer  *greeter_server;
-        GdmGreeterSession *greeter;
+        GdmWelcomeSession *greeter;
 
         guint              start_session_when_ready : 1;
         guint              waiting_to_start_session : 1;
@@ -111,6 +112,7 @@ static void start_greeter      (GdmSimpleSlave *slave);
 static void start_session      (GdmSimpleSlave *slave);
 static void queue_start_session (GdmSimpleSlave *slave,
                                  const char     *service_name);
+static void start_initial_setup (GdmSimpleSlave *slave);
 
 static void
 on_session_started (GdmSession       *session,
@@ -1327,11 +1329,155 @@ start_greeter (GdmSimpleSlave *slave)
         gdm_greeter_server_start (slave->priv->greeter_server);
 
         g_debug ("GdmSimpleSlave: Creating greeter on %s %s %s", display_name, display_device, display_hostname);
-        slave->priv->greeter = gdm_greeter_session_new (display_name,
-                                                        seat_id,
-                                                        display_device,
-                                                        display_hostname,
-                                                        display_is_local);
+        slave->priv->greeter = (GdmWelcomeSession*)gdm_greeter_session_new (display_name,
+                                                                            seat_id,
+                                                                            display_device,
+                                                                            display_hostname,
+                                                                            display_is_local);
+        g_signal_connect (slave->priv->greeter,
+                          "started",
+                          G_CALLBACK (on_greeter_session_start),
+                          slave);
+        g_signal_connect (slave->priv->greeter,
+                          "stopped",
+                          G_CALLBACK (on_greeter_session_stop),
+                          slave);
+        g_signal_connect (slave->priv->greeter,
+                          "exited",
+                          G_CALLBACK (on_greeter_session_exited),
+                          slave);
+        g_signal_connect (slave->priv->greeter,
+                          "died",
+                          G_CALLBACK (on_greeter_session_died),
+                          slave);
+        g_object_set (slave->priv->greeter,
+                      "x11-authority-file", auth_file,
+                      NULL);
+
+        address = gdm_greeter_server_get_address (slave->priv->greeter_server);
+        gdm_welcome_session_set_server_address (GDM_WELCOME_SESSION (slave->priv->greeter), address);
+        g_free (address);
+        gdm_welcome_session_start (GDM_WELCOME_SESSION (slave->priv->greeter));
+
+        g_free (display_id);
+        g_free (display_name);
+        g_free (seat_id);
+        g_free (display_device);
+        g_free (display_hostname);
+        g_free (auth_file);
+}
+
+static void
+start_initial_setup (GdmSimpleSlave *slave)
+{
+        gboolean       display_is_local;
+        char          *display_id;
+        char          *display_name;
+        char          *seat_id;
+        char          *display_device;
+        char          *display_hostname;
+        char          *auth_file;
+        char          *address;
+        gboolean       res;
+
+        g_debug ("GdmSimpleSlave: Running initial setup");
+
+        display_is_local = FALSE;
+        display_id = NULL;
+        display_name = NULL;
+        seat_id = NULL;
+        auth_file = NULL;
+        display_device = NULL;
+        display_hostname = NULL;
+
+        g_object_get (slave,
+                      "display-id", &display_id,
+                      "display-is-local", &display_is_local,
+                      "display-name", &display_name,
+                      "display-seat-id", &seat_id,
+                      "display-hostname", &display_hostname,
+                      "display-x11-authority-file", &auth_file,
+                      NULL);
+
+        g_debug ("GdmSimpleSlave: Creating initial setup for %s %s", display_name, display_hostname);
+
+        if (slave->priv->server != NULL) {
+                display_device = gdm_server_get_display_device (slave->priv->server);
+        }
+
+        /* FIXME: send a signal back to the master */
+
+        /* If XDMCP setup pinging */
+        slave->priv->ping_interval = DEFAULT_PING_INTERVAL;
+        res = gdm_settings_direct_get_int (GDM_KEY_PING_INTERVAL,
+                                           &(slave->priv->ping_interval));
+
+        if ( ! display_is_local && slave->priv->ping_interval > 0) {
+                alarm (slave->priv->ping_interval);
+        }
+
+        /* Run the init script. gdmslave suspends until script has terminated */
+        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
+
+        slave->priv->greeter_server = gdm_greeter_server_new (display_id);
+        g_signal_connect (slave->priv->greeter_server,
+                          "begin-auto-login",
+                          G_CALLBACK (on_greeter_begin_auto_login),
+                          slave);
+        g_signal_connect (slave->priv->greeter_server,
+                          "begin-verification",
+                          G_CALLBACK (on_greeter_begin_verification),
+                          slave);
+        g_signal_connect (slave->priv->greeter_server,
+                          "begin-verification-for-user",
+                          G_CALLBACK (on_greeter_begin_verification_for_user),
+                          slave);
+        g_signal_connect (slave->priv->greeter_server,
+                          "query-answer",
+                          G_CALLBACK (on_greeter_answer),
+                          slave);
+        g_signal_connect (slave->priv->greeter_server,
+                          "session-selected",
+                          G_CALLBACK (on_greeter_session_selected),
+                          slave);
+        g_signal_connect (slave->priv->greeter_server,
+                          "language-selected",
+                          G_CALLBACK (on_greeter_language_selected),
+                          slave);
+        g_signal_connect (slave->priv->greeter_server,
+                          "user-selected",
+                          G_CALLBACK (on_greeter_user_selected),
+                          slave);
+        g_signal_connect (slave->priv->greeter_server,
+                          "connected",
+                          G_CALLBACK (on_greeter_connected),
+                          slave);
+        g_signal_connect (slave->priv->greeter_server,
+                          "disconnected",
+                          G_CALLBACK (on_greeter_disconnected),
+                          slave);
+        g_signal_connect (slave->priv->greeter_server,
+                          "cancelled",
+                          G_CALLBACK (on_greeter_cancel),
+                          slave);
+        g_signal_connect (slave->priv->greeter_server,
+                          "start-session-when-ready",
+                          G_CALLBACK (on_start_session_when_ready),
+                          slave);
+
+        g_signal_connect (slave->priv->greeter_server,
+                          "start-session-later",
+                          G_CALLBACK (on_start_session_later),
+                          slave);
+
+        gdm_greeter_server_start (slave->priv->greeter_server);
+
+        g_debug ("GdmSimpleSlave: Creating initial setup on %s %s %s", display_name, display_device, display_hostname);
+        slave->priv->greeter = (GdmWelcomeSession *)gdm_setup_session_new (display_name,
+                                                      seat_id,
+                                                      display_device,
+                                                      display_hostname,
+                                                      display_is_local);
         g_signal_connect (slave->priv->greeter,
                           "started",
                           G_CALLBACK (on_greeter_session_start),
@@ -1376,15 +1522,22 @@ idle_connect_to_display (GdmSimpleSlave *slave)
         if (res) {
                 gboolean enabled;
                 int      delay;
+                gboolean initial_setup_enabled;
 
                 /* FIXME: handle wait-for-go */
 
                 setup_server (slave);
 
+                initial_setup_enabled = FALSE;
+                gdm_slave_get_initial_setup_details (GDM_SLAVE (slave), &initial_setup_enabled);
+
                 delay = 0;
                 enabled = FALSE;
                 gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &enabled, NULL, &delay);
-                if (! enabled || delay > 0) {
+                if (initial_setup_enabled) {
+                        start_initial_setup (slave);
+                        create_new_session (slave);
+                } else if (! enabled || delay > 0) {
                         start_greeter (slave);
                         create_new_session (slave);
                 } else {

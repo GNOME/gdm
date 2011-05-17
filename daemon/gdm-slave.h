@@ -65,6 +65,9 @@ gboolean            gdm_slave_get_timed_login_details (GdmSlave  *slave,
                                                        char     **username,
                                                        int       *delay);
 
+gboolean            gdm_slave_get_initial_setup_details (GdmSlave  *slave,
+                                                         gboolean  *enabled);
+
 gboolean            gdm_slave_add_user_authorization (GdmSlave   *slave,
                                                       const char *username,
                                                       char      **filename);
