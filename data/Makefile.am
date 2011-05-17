@@ -86,7 +86,7 @@ localealiasdir = $(datadir)/gdm
 localealias_DATA = locale.alias
 
 sessiondir = $(datadir)/gnome-session/sessions
-session_DATA = gdm-fallback.session gdm-shell.session
+session_DATA = gdm-fallback.session gdm-shell.session gdm-setup.session
 
 gdm-fingerprint: gdm-fingerprint.pam
 	cp $(srcdir)/gdm-fingerprint.pam $(builddir)/gdm-fingerprint
