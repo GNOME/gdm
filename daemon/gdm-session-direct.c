@@ -1406,6 +1406,7 @@ do_introspect (DBusConnection *connection,
                                "    </signal>\n"
                                "    <signal name=\"SetupForProgram\">\n"
                                "      <arg name=\"service_name\" type=\"s\"/>\n"
+                               "      <arg name=\"username\" type=\"s\"/>\n"
                                "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
                                "      <arg name=\"display_device\" type=\"s\"/>\n"
                                "      <arg name=\"display_seat\" type=\"s\"/>\n"
@@ -2108,6 +2109,7 @@ send_setup_for_user (GdmSessionDirect *session,
 static void
 send_setup_for_program (GdmSessionDirect *session,
                         const char       *service_name,
+                        const char       *username,
                         const char       *log_file)
 {
         DBusMessage    *message;
@@ -2155,6 +2157,7 @@ send_setup_for_program (GdmSessionDirect *session,
 
         dbus_message_iter_init_append (message, &iter);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &service_name);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &username);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_name);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_device);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_seat_id);
@@ -2201,13 +2204,14 @@ gdm_session_direct_setup_for_user (GdmSession *session,
 static void
 gdm_session_direct_setup_for_program (GdmSession *session,
                                       const char *service_name,
+                                      const char *username,
                                       const char *log_file)
 {
         GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
 
         g_return_if_fail (session != NULL);
 
-        send_setup_for_program (impl, service_name, log_file);
+        send_setup_for_program (impl, service_name, username, log_file);
 }
 
 static void

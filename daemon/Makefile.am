@@ -12,6 +12,7 @@ AM_CPPFLAGS = \
 	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
 	-DLIBDIR=\"$(libdir)\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
+	-DLOCALSTATEDIR=\"$(localstatedir)\"		\
 	-DLOGDIR=\"$(logdir)\"				\
 	-DSBINDIR=\"$(sbindir)\"			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
@@ -120,6 +121,8 @@ gdm_simple_slave_SOURCES = 		\
 	gdm-welcome-session.h		\
 	gdm-greeter-session.c		\
 	gdm-greeter-session.h		\
+	gdm-setup-session.c		\
+	gdm-setup-session.h		\
 	gdm-server.c			\
 	gdm-server.h			\
 	gdm-session.c			\

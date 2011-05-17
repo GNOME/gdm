@@ -2643,6 +2643,7 @@ on_setup_for_program (GdmSessionWorker *worker,
 {
         DBusError   error;
         char *service;
+        char *username;
         char *x11_display_name;
         char *console;
         char *seat_id;
@@ -2660,6 +2661,7 @@ on_setup_for_program (GdmSessionWorker *worker,
         res = dbus_message_get_args (message,
                                      &error,
                                      DBUS_TYPE_STRING, &service,
+                                     DBUS_TYPE_STRING, &username,
                                      DBUS_TYPE_STRING, &x11_display_name,
                                      DBUS_TYPE_STRING, &console,
                                      DBUS_TYPE_STRING, &seat_id,
@@ -2672,7 +2674,7 @@ on_setup_for_program (GdmSessionWorker *worker,
 
                 queue_state_change (worker);
                 worker->priv->service = g_strdup (service);
-                worker->priv->username = g_strdup (GDM_USERNAME);
+                worker->priv->username = g_strdup (username);
                 worker->priv->x11_display_name = g_strdup (x11_display_name);
                 worker->priv->hostname = g_strdup (hostname);
                 worker->priv->display_device = g_strdup (console);
