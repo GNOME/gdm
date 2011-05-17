@@ -82,7 +82,7 @@ localealiasdir = $(datadir)/gdm
 localealias_DATA = locale.alias
 
 sessiondir = $(datadir)/gnome-session/sessions
-session_DATA = gdm-fallback.session gdm-shell.session
+session_DATA = gdm-fallback.session gdm-shell.session gdm-setup.session
 
 EXTRA_DIST =			\
 	$(schemas_in_files)	\
