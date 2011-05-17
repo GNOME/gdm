@@ -88,6 +88,9 @@
 #define GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_LOGIN_WINDOW, GdmGreeterLoginWindowPrivate))
 #define GDM_CUSTOM_SESSION "custom"
 
+#define INFO_MESSAGE_DURATION 2
+#define PROBLEM_MESSAGE_DURATION 3
+
 enum {
         MODE_UNDEFINED = 0,
         MODE_TIMED_LOGIN,
@@ -112,6 +115,7 @@ struct GdmGreeterLoginWindowPrivate
         guint            display_is_local : 1;
         guint            is_interactive : 1;
         guint            user_chooser_loaded : 1;
+        gboolean         session_ready_to_start : 1;
         GConfClient     *client;
 
         gboolean         banner_message_enabled;
@@ -131,7 +135,21 @@ struct GdmGreeterLoginWindowPrivate
 
         guint            login_button_handler_id;
         guint            start_session_handler_id;
+
+        GQueue          *message_queue;
+        guint            message_timeout_id;
+        guint            message_queue_empty_reset_dialog_mode;
 };
+
+typedef enum {
+        QUEUE_MESSAGE_TYPE_INFO,
+        QUEUE_MESSAGE_TYPE_PROBLEM
+} QueuedMessageType;
+
+typedef struct {
+        char              *text;
+        QueuedMessageType  type;
+} QueuedMessage;
 
 enum {
         PROP_0,
@@ -164,6 +182,8 @@ static void     on_user_unchosen            (GdmUserChooserWidget *user_chooser,
 static void     switch_mode                 (GdmGreeterLoginWindow *login_window,
                                              int                    number);
 static void     update_banner_message       (GdmGreeterLoginWindow *login_window);
+static void     reset_dialog                (GdmGreeterLoginWindow *login_window,
+                                             guint                  dialog_mode);
 
 G_DEFINE_TYPE (GdmGreeterLoginWindow, gdm_greeter_login_window, GTK_TYPE_WINDOW)
 
@@ -222,6 +242,96 @@ set_message (GdmGreeterLoginWindow *login_window,
 
         label = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "auth-message-label"));
         gtk_label_set_text (GTK_LABEL (label), text);
+}
+
+static void
+free_queued_message (QueuedMessage *message)
+{
+        g_free (message->text);
+        g_slice_free (QueuedMessage, message);
+}
+
+static void
+purge_message_queue (GdmGreeterLoginWindow *login_window)
+{
+        if (login_window->priv->message_timeout_id) {
+                g_source_remove (login_window->priv->message_timeout_id);
+                login_window->priv->message_timeout_id = 0;
+        }
+
+        g_queue_foreach (login_window->priv->message_queue,
+                         (GFunc) free_queued_message,
+                         NULL);
+        g_queue_clear (login_window->priv->message_queue);
+
+        login_window->priv->message_queue_empty_reset_dialog_mode = MODE_UNDEFINED;
+}
+
+static gboolean
+set_next_message_or_continue (GdmGreeterLoginWindow *login_window)
+{
+        if (!g_queue_is_empty (login_window->priv->message_queue)) {
+                int duration;
+                gboolean needs_beep;
+
+                QueuedMessage *message;
+                message = (QueuedMessage *) g_queue_pop_head (login_window->priv->message_queue);
+
+                switch (message->type) {
+                        case QUEUE_MESSAGE_TYPE_INFO:
+                                duration = INFO_MESSAGE_DURATION;
+                                needs_beep = FALSE;
+                                break;
+                        case QUEUE_MESSAGE_TYPE_PROBLEM:
+                                duration = PROBLEM_MESSAGE_DURATION;
+                                needs_beep = TRUE;
+                                break;
+                        default:
+                                g_assert_not_reached ();
+                }
+                set_message (login_window, message->text);
+                login_window->priv->message_timeout_id = g_timeout_add_seconds (duration,
+                                                                                (GSourceFunc) set_next_message_or_continue,
+                                                                                login_window);
+                if (needs_beep) {
+                        gdk_window_beep (gtk_widget_get_window (GTK_WIDGET (login_window)));
+                }
+
+                free_queued_message (message);
+        } else {
+                set_message (login_window, "");
+                login_window->priv->message_timeout_id = 0;
+
+                if (login_window->priv->message_queue_empty_reset_dialog_mode != MODE_UNDEFINED) {
+                        /* All messages have been shown, reset */
+                        g_debug ("GdmGreeterLoginWindow: finally resetting dialog");
+                        reset_dialog (login_window,
+                                      login_window->priv->message_queue_empty_reset_dialog_mode);
+
+                } else if (login_window->priv->session_ready_to_start) {
+                        /* All messages have been shown, proceed */
+                        g_debug ("GdmGreeterLoginWindow: finally starting session");
+                        g_signal_emit (login_window, signals[START_SESSION], 0);
+                }
+        }
+        return FALSE;
+}
+
+static void
+queue_message (GdmGreeterLoginWindow *login_window,
+               QueuedMessageType      message_type,
+               const char            *text)
+{
+        QueuedMessage *message = g_slice_new (QueuedMessage);
+
+        message->text = g_strdup (text);
+        message->type = message_type;
+
+        g_queue_push_tail (login_window->priv->message_queue, message);
+
+        if (login_window->priv->message_timeout_id == 0) {
+                set_next_message_or_continue (login_window);
+        }
 }
 
 static void
@@ -641,6 +751,9 @@ reset_dialog (GdmGreeterLoginWindow *login_window,
 
         login_window->priv->num_queries = 0;
 
+        purge_message_queue (login_window);
+        login_window->priv->session_ready_to_start = FALSE;
+
         if (dialog_mode == MODE_SELECTION) {
                 if (login_window->priv->timed_login_enabled) {
                         gdm_chooser_widget_set_item_timer (GDM_CHOOSER_WIDGET (login_window->priv->user_chooser),
@@ -710,6 +823,11 @@ gdm_greeter_login_window_ready (GdmGreeterLoginWindow *login_window)
 {
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
+        if (login_window->priv->message_queue_empty_reset_dialog_mode != MODE_UNDEFINED) {
+                g_debug ("GdmGreeterLoginWindow: Ignoring daemon Ready event since still showing messages");
+                return TRUE;
+        }
+
         set_sensitive (GDM_GREETER_LOGIN_WINDOW (login_window), TRUE);
         set_ready (GDM_GREETER_LOGIN_WINDOW (login_window));
         set_focus (GDM_GREETER_LOGIN_WINDOW (login_window));
@@ -732,16 +850,27 @@ gdm_greeter_login_window_ready (GdmGreeterLoginWindow *login_window)
         return TRUE;
 }
 
+static void
+reset_dialog_after_messages (GdmGreeterLoginWindow *login_window,
+                             guint                  dialog_mode)
+{
+        if (!g_queue_is_empty (login_window->priv->message_queue)) {
+                g_debug ("GdmGreeterLoginWindow: will reset dialog after pending messages");
+                login_window->priv->message_queue_empty_reset_dialog_mode = dialog_mode;
+        } else {
+                g_debug ("GdmGreeterLoginWindow: resetting dialog");
+                reset_dialog (login_window, dialog_mode);
+        }
+
+}
+
 gboolean
 gdm_greeter_login_window_authentication_failed (GdmGreeterLoginWindow *login_window)
 {
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
         g_debug ("GdmGreeterLoginWindow: got authentication failed");
-
-        /* FIXME: shake? */
-        reset_dialog (login_window, MODE_AUTHENTICATION);
-
+        reset_dialog_after_messages (login_window, MODE_AUTHENTICATION);
         return TRUE;
 }
 
@@ -751,7 +880,7 @@ gdm_greeter_login_window_reset (GdmGreeterLoginWindow *login_window)
         g_return_val_if_fail (GDM_IS_GREETER_LOGIN_WINDOW (login_window), FALSE);
 
         g_debug ("GdmGreeterLoginWindow: got reset");
-        reset_dialog (login_window, MODE_SELECTION);
+        reset_dialog_after_messages (login_window, MODE_SELECTION);
 
         return TRUE;
 }
@@ -764,7 +893,9 @@ gdm_greeter_login_window_info (GdmGreeterLoginWindow *login_window,
 
         g_debug ("GdmGreeterLoginWindow: info: %s", text);
 
-        set_message (GDM_GREETER_LOGIN_WINDOW (login_window), text);
+        queue_message (GDM_GREETER_LOGIN_WINDOW (login_window),
+                       QUEUE_MESSAGE_TYPE_INFO,
+                       text);
         maybe_show_cancel_button (login_window);
 
         return TRUE;
@@ -779,8 +910,9 @@ gdm_greeter_login_window_problem (GdmGreeterLoginWindow *login_window,
         g_debug ("GdmGreeterLoginWindow: problem: %s", text);
         maybe_show_cancel_button (login_window);
 
-        set_message (GDM_GREETER_LOGIN_WINDOW (login_window), text);
-        gdk_window_beep (gtk_widget_get_window (GTK_WIDGET (login_window)));
+        queue_message (GDM_GREETER_LOGIN_WINDOW (login_window),
+                       QUEUE_MESSAGE_TYPE_PROBLEM,
+                       text);
 
         return TRUE;
 }
@@ -834,8 +966,11 @@ static void
 gdm_greeter_login_window_start_session_when_ready (GdmGreeterLoginWindow *login_window)
 {
         if (login_window->priv->is_interactive) {
-                g_debug ("GdmGreeterLoginWindow: starting session");
-                g_signal_emit (login_window, signals[START_SESSION], 0);
+                login_window->priv->session_ready_to_start = TRUE;
+
+                if (login_window->priv->message_timeout_id == 0) {
+                        set_next_message_or_continue (login_window);
+                }
         } else {
                 g_debug ("GdmGreeterLoginWindow: not starting session since "
                          "user hasn't had an opportunity to pick language "
@@ -1737,6 +1872,8 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         login_window->priv = GDM_GREETER_LOGIN_WINDOW_GET_PRIVATE (login_window);
         login_window->priv->timed_login_enabled = FALSE;
         login_window->priv->dialog_mode = MODE_UNDEFINED;
+        login_window->priv->message_queue = g_queue_new ();
+        login_window->priv->message_queue_empty_reset_dialog_mode = MODE_UNDEFINED;
 
         client = gconf_client_get_default ();
         error = NULL;
@@ -1799,6 +1936,9 @@ gdm_greeter_login_window_finalize (GObject *object)
         if (login_window->priv->client != NULL) {
                 g_object_unref (login_window->priv->client);
         }
+
+        purge_message_queue (login_window);
+        g_queue_free (login_window->priv->message_queue);
 
         G_OBJECT_CLASS (gdm_greeter_login_window_parent_class)->finalize (object);
 }
