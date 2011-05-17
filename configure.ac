@@ -1112,32 +1112,26 @@ if test -x /usr/X11/bin/Xserver; then
    X_PATH="/usr/X11/bin"
    X_SERVER_PATH="/usr/X11/bin"
    X_SERVER="/usr/X11/bin/Xserver"
-   X_CONFIG_OPTIONS="-audit 0"
 elif test ! -h /usr/X11R6 -a -x /usr/X11R6/bin/X; then
    X_PATH="/usr/X11R6/bin"
    X_SERVER_PATH="/usr/X11R6/bin"
    X_SERVER="/usr/X11R6/bin/X"
-   X_CONFIG_OPTIONS="-audit 0"
 elif test ! -h /usr/X11 -a -x /usr/X11/bin/X; then
    X_PATH="/usr/X11/bin"
    X_SERVER_PATH="/usr/X11/bin"
    X_SERVER="/usr/X11/bin/X"
-   X_CONFIG_OPTIONS="-audit 0"
 elif test -x /usr/X11R6/bin/X; then
    X_PATH="/usr/X11R6/bin"
    X_SERVER_PATH="/usr/X11R6/bin"
    X_SERVER="/usr/X11R6/bin/X"
-   X_CONFIG_OPTIONS="-audit 0"
 elif test -x /usr/bin/Xorg; then
    X_PATH="/usr/bin"
    X_SERVER_PATH="/usr/bin"
    X_SERVER="/usr/bin/Xorg"
-   X_CONFIG_OPTIONS="-audit 0"
 elif test -x /usr/X11/bin/X; then
    X_PATH="/usr/X11/bin"
    X_SERVER_PATH="/usr/X11/bin"
    X_SERVER="/usr/X11/bin/X"
-   X_CONFIG_OPTIONS="-audit 0"
 elif test -x /usr/openwin/bin/Xsun; then
    # Do not add /usr/openwin/bin here because on Solaris you need
    # /usr/openwin/bin in your PATH even if you are using the Xorg
@@ -1145,24 +1139,20 @@ elif test -x /usr/openwin/bin/Xsun; then
    X_PATH="/usr/openwin/bin"
    X_SERVER_PATH="/usr/openwin/bin"
    X_SERVER="/usr/openwin/bin/Xsun"
-   X_CONFIG_OPTIONS="-audit 0 -nobanner"
 elif test -x /opt/X11R6/bin/X; then
    X_PATH="/opt/X11R6/bin"
    X_SERVER_PATH="/opt/X11R6/bin"
    X_SERVER="/opt/X11R6/bin/X"
-   X_CONFIG_OPTIONS="-audit 0"
 elif test -x /usr/bin/X; then
    X_PATH="/usr/bin"
    X_SERVER_PATH="/usr/bin"
    X_SERVER="/usr/bin/X"
-   X_CONFIG_OPTIONS="-audit 0"
 else
    # what to do, what to do, this is wrong, but this just sets the
    # defaults, perhaps this user is cross compiling or some such
    X_PATH="/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin"
    X_SERVER_PATH="/usr/bin"
    X_SERVER="/usr/bin/X"
-   X_CONFIG_OPTIONS="-audit 0"
 fi
 
 dnl ---------------------------------------------------------------------------
@@ -1366,10 +1356,8 @@ AC_DEFINE_UNQUOTED(SOUND_PROGRAM,"$SOUND_PROGRAM",[])
 AC_SUBST(X_PATH)
 AC_SUBST(X_SERVER)
 AC_SUBST(X_SERVER_PATH)
-AC_SUBST(X_CONFIG_OPTIONS)
 AC_DEFINE_UNQUOTED(X_SERVER,"$X_SERVER",[])
 AC_DEFINE_UNQUOTED(X_SERVER_PATH,"$X_SERVER_PATH",[])
-AC_DEFINE_UNQUOTED(X_CONFIG_OPTIONS,"$X_CONFIG_OPTIONS", [Options used when launching xserver])
 
 AC_SUBST(X_XNEST_CMD)
 AC_SUBST(X_XNEST_CONFIG_OPTIONS)
