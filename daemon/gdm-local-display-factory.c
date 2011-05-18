@@ -342,10 +342,6 @@ create_display (GdmLocalDisplayFactory *factory)
 #else
         display = gdm_static_display_new (num);
 #endif
-        if (display == NULL) {
-                g_warning ("Unable to create display: %d", num);
-                return NULL;
-        }
 
         /* FIXME: don't hardcode seat1? */
         g_object_set (display, "seat-id", CK_SEAT1_PATH, NULL);
