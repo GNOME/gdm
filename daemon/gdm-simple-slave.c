@@ -106,6 +106,7 @@ G_DEFINE_TYPE (GdmSimpleSlave, gdm_simple_slave, GDM_TYPE_SLAVE)
 static void create_new_session (GdmSimpleSlave *slave);
 static void destroy_session    (GdmSimpleSlave *slave);
 static void start_greeter      (GdmSimpleSlave *slave);
+static void queue_start_session (GdmSimpleSlave *slave);
 
 static void
 on_session_started (GdmSession       *session,
@@ -359,28 +360,11 @@ on_session_authentication_failed (GdmSession     *session,
 }
 
 static void
-gdm_simple_slave_accredit_when_ready (GdmSimpleSlave *slave)
+gdm_simple_slave_start_session_when_ready (GdmSimpleSlave *slave)
 {
         if (slave->priv->start_session_when_ready) {
-                char *ssid;
-                char *username;
-                int   cred_flag;
-
                 slave->priv->waiting_to_start_session = FALSE;
-
-                username = gdm_session_direct_get_username (slave->priv->session);
-
-                ssid = gdm_slave_get_primary_session_id_for_user (GDM_SLAVE (slave), username);
-                if (ssid != NULL && ssid [0] != '\0') {
-                        /* FIXME: we don't yet support refresh */
-                        cred_flag = GDM_SESSION_CRED_ESTABLISH;
-                } else {
-                        cred_flag = GDM_SESSION_CRED_ESTABLISH;
-                }
-                g_free (ssid);
-                g_free (username);
-
-                gdm_session_accredit (GDM_SESSION (slave->priv->session), cred_flag);
+                queue_start_session (slave);
         } else {
                 slave->priv->waiting_to_start_session = TRUE;
         }
@@ -390,13 +374,23 @@ static void
 on_session_authorized (GdmSession     *session,
                        GdmSimpleSlave *slave)
 {
-        if (slave->priv->greeter_server != NULL) {
-                gdm_greeter_server_user_authorized (slave->priv->greeter_server);
-                gdm_simple_slave_accredit_when_ready (slave);
+        char *ssid;
+        char *username;
+        int   cred_flag;
+
+        username = gdm_session_direct_get_username (slave->priv->session);
+
+        ssid = gdm_slave_get_primary_session_id_for_user (GDM_SLAVE (slave), username);
+        if (ssid != NULL && ssid [0] != '\0') {
+                /* FIXME: we don't yet support refresh */
+                cred_flag = GDM_SESSION_CRED_ESTABLISH;
         } else {
-                slave->priv->start_session_when_ready = TRUE;
-                gdm_simple_slave_accredit_when_ready (slave);
+                cred_flag = GDM_SESSION_CRED_ESTABLISH;
         }
+        g_free (ssid);
+        g_free (username);
+
+        gdm_session_accredit (GDM_SESSION (slave->priv->session), cred_flag);
 }
 
 static void
@@ -554,7 +548,13 @@ on_session_opened (GdmSession     *session,
         gdm_simple_slave_grant_console_permissions (slave);
 #endif  /* HAVE_LOGINDEVPERM */
 
-        queue_start_session (slave);
+        if (slave->priv->greeter_server != NULL) {
+                gdm_greeter_server_session_opened (slave->priv->greeter_server);
+                gdm_simple_slave_start_session_when_ready (slave);
+        } else {
+                slave->priv->start_session_when_ready = TRUE;
+                gdm_simple_slave_start_session_when_ready (slave);
+        }
 }
 
 static void
@@ -1078,7 +1078,7 @@ on_start_session_when_ready (GdmGreeterServer *session,
         slave->priv->start_session_when_ready = TRUE;
 
         if (slave->priv->waiting_to_start_session) {
-                gdm_simple_slave_accredit_when_ready (slave);
+                gdm_simple_slave_start_session_when_ready (slave);
         }
 }
 

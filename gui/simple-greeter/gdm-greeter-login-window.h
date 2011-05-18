@@ -83,7 +83,7 @@ void                gdm_greeter_login_window_set_default_session_name (GdmGreete
 void               gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_window,
                                                                  const char            *username,
                                                                  int                    delay);
-void               gdm_greeter_login_window_user_authorized     (GdmGreeterLoginWindow *login_window);
+void               gdm_greeter_login_window_session_opened      (GdmGreeterLoginWindow *login_window);
 
 G_END_DECLS
 

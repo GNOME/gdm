@@ -177,11 +177,11 @@ on_timed_login_requested (GdmGreeterClient  *client,
 }
 
 static void
-on_user_authorized (GdmGreeterClient  *client,
-                    GdmGreeterSession *session)
+on_session_opened (GdmGreeterClient  *client,
+                   GdmGreeterSession *session)
 {
-        g_debug ("GdmGreeterSession: user authorized");
-        gdm_greeter_login_window_user_authorized (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
+        g_debug ("GdmGreeterSession: session opened");
+        gdm_greeter_login_window_session_opened (GDM_GREETER_LOGIN_WINDOW (session->priv->login_window));
 }
 
 static void
@@ -584,8 +584,8 @@ gdm_greeter_session_init (GdmGreeterSession *session)
                           G_CALLBACK (on_timed_login_requested),
                           session);
         g_signal_connect (session->priv->client,
-                          "user-authorized",
-                          G_CALLBACK (on_user_authorized),
+                          "session-opened",
+                          G_CALLBACK (on_session_opened),
                           session);
 
         /* We want to listen for panel mnemonics even if the
