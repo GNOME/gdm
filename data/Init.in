@@ -48,7 +48,7 @@ if [ "x$XMODMAP" != "x" ] ; then
   UNAME=`gdmwhich uname`
   PROCESSOR=`$UNAME -p`
   if [ "x$PROCESSOR" = "xsparc" ]; then
-    if $XMODMAP | /usr/bin/grep mod4 | /usr/bin/grep Alt > /dev/null 2>/dev/null
+    if $XMODMAP | grep mod4 | grep Alt > /dev/null 2>/dev/null
     then
       $XMODMAP -e "clear Mod1" \
                -e "clear Mod4" \
