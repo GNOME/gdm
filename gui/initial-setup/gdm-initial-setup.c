@@ -28,6 +28,8 @@ typedef struct {
         GtkBuilder *builder;
         GtkAssistant *assistant;
 
+        GDBusConnection *slave_connection;
+
         /* network data */
         NMClient *nm_client;
         NMRemoteSettings *nm_settings;
@@ -58,6 +60,8 @@ typedef struct {
 
 #define OBJ(type,name) ((type)gtk_builder_get_object(setup->builder,(name)))
 #define WID(name) OBJ(GtkWidget*,name)
+
+static void connect_to_slave (SetupData *setup);
 
 /* --- Welcome page --- */
 
@@ -1383,6 +1387,7 @@ prepare_assistant (SetupData *setup)
         g_signal_connect (G_OBJECT (setup->assistant), "close",
                           G_CALLBACK (close_cb), NULL);
 
+        connect_to_slave (setup);
         prepare_welcome_page (setup);
         prepare_network_page (setup);
         prepare_account_page (setup);
@@ -1401,41 +1406,21 @@ copy_account_data (SetupData *setup)
 static void
 begin_autologin (SetupData *setup)
 {
-        const gchar *address;
-        GDBusConnection *connection;
         GError *error;
         const gchar *username;
         GVariant *ret;
 
-        address = g_getenv ("GDM_GREETER_DBUS_ADDRESS");
-        if (address == NULL) {
-                g_warning ("GDM_GREETER_DBUS_ADDRESS not set; not initiating autologin");
-                return;
-        }
-
-        error = NULL;
-        connection = g_dbus_connection_new_for_address_sync (address,
-                                                             G_DBUS_CONNECTION_FLAGS_NONE,
-                                                             NULL,
-                                                             NULL,
-                                                             &error);
-        if (connection == NULL) {
-                g_warning ("Failed to create D-Bus connection for address '%s' (%s); not initiating autologin", address, error->message);
-                g_error_free (error);
-                return;
-        }
-
         username = act_user_get_user_name (setup->act_user);
 
-        ret = g_dbus_connection_call_sync (connection,
+        ret = g_dbus_connection_call_sync (setup->slave_connection,
+                                           NULL,
                                            "/org/gnome/DisplayManager/GreeterServer",
-                                           "/",
                                            "org.gnome.DisplayManager.GreeterServer",
                                            "BeginAutoLogin",
                                            g_variant_new ("(s)", username),
                                            NULL, /* no reply checking */
                                            G_DBUS_CALL_FLAGS_NONE,
-                                           -1,
+                                           G_MAXINT,
                                            NULL,
                                            &error);
         if (ret == NULL) {
@@ -1445,6 +1430,37 @@ begin_autologin (SetupData *setup)
         }
 
         g_variant_unref (ret);
+}
+
+static void
+connect_to_slave (SetupData *setup)
+{
+        GDBusConnection *connection;
+        const gchar *address;
+        GError *error;
+
+        address = g_getenv ("GDM_GREETER_DBUS_ADDRESS");
+
+        if (address == NULL) {
+                g_warning ("GDM_GREETER_DBUS_ADDRESS not set; not initiating autologin");
+                return;
+        }
+
+        error = NULL;
+        connection = g_dbus_connection_new_for_address_sync (address,
+                                                             G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
+                                                             NULL,
+                                                             NULL,
+                                                             &error);
+        if (connection == NULL) {
+                g_warning ("Failed to create D-Bus connection for address '%s' (%s); not initiating autologin", address, error->message);
+                g_error_free (error);
+                return;
+        }
+
+        g_dbus_connection_set_exit_on_close (connection, TRUE);
+
+        setup->slave_connection = connection;
 }
 
 int
