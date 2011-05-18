@@ -65,7 +65,8 @@ static void     gdm_local_display_factory_class_init    (GdmLocalDisplayFactoryC
 static void     gdm_local_display_factory_init          (GdmLocalDisplayFactory      *factory);
 static void     gdm_local_display_factory_finalize      (GObject                     *object);
 
-static GdmDisplay *create_display                       (GdmLocalDisplayFactory      *factory);
+static GdmDisplay *create_display                       (GdmLocalDisplayFactory      *factory,
+                                                         GType                        type);
 
 static gpointer local_display_factory_object = NULL;
 
@@ -276,9 +277,9 @@ gdm_local_display_factory_create_product_display (GdmLocalDisplayFactory *factor
 }
 
 static void
-on_static_display_status_changed (GdmDisplay             *display,
-                                  GParamSpec             *arg1,
-                                  GdmLocalDisplayFactory *factory)
+on_display_status_changed (GdmDisplay             *display,
+                           GParamSpec             *arg1,
+                           GdmLocalDisplayFactory *factory)
 {
         int              status;
         GdmDisplayStore *store;
@@ -301,7 +302,7 @@ on_static_display_status_changed (GdmDisplay             *display,
                 gdm_display_store_remove (store, display);
                 /* reset num failures */
                 factory->priv->num_failures = 0;
-                create_display (factory);
+                create_display (factory, GDM_TYPE_STATIC_DISPLAY);
                 break;
         case GDM_DISPLAY_FAILED:
                 /* leave the display number in factory->priv->displays
@@ -314,7 +315,7 @@ on_static_display_status_changed (GdmDisplay             *display,
                         /* FIXME: should monitor hardware changes to
                            try again when seats change */
                 } else {
-                        create_display (factory);
+                        create_display (factory, GDM_TYPE_STATIC_DISPLAY);
                 }
                 break;
         case GDM_DISPLAY_UNMANAGED:
@@ -330,25 +331,26 @@ on_static_display_status_changed (GdmDisplay             *display,
 }
 
 static GdmDisplay *
-create_display (GdmLocalDisplayFactory *factory)
+create_display (GdmLocalDisplayFactory *factory,
+                GType                   type)
 {
         GdmDisplay *display;
         guint32     num;
 
         num = take_next_display_number (factory);
 
-#if 0
-        display = gdm_static_factory_display_new (num);
-#else
-        display = gdm_static_display_new (num);
-#endif
+        if (type == GDM_TYPE_STATIC_DISPLAY) {
+                display = gdm_static_display_new (num);
+        } else {
+                g_assert_not_reached ();
+        }
 
         /* FIXME: don't hardcode seat1? */
         g_object_set (display, "seat-id", CK_SEAT1_PATH, NULL);
 
         g_signal_connect (display,
                           "notify::status",
-                          G_CALLBACK (on_static_display_status_changed),
+                          G_CALLBACK (on_display_status_changed),
                           factory);
 
         store_display (factory, num, display);
@@ -375,7 +377,7 @@ gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
         ret = TRUE;
 
         /* FIXME: use seat configuration */
-        display = create_display (factory);
+        display = create_display (factory, GDM_TYPE_STATIC_DISPLAY);
         if (display == NULL) {
                 ret = FALSE;
         }
