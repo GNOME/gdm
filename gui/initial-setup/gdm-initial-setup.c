@@ -1458,12 +1458,17 @@ main (int argc, char *argv[])
 
         gtk_init (&argc, &argv);
 
+        error = NULL;
+        if (g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error) == NULL) {
+                g_error ("Couldn't get on session bus: %s", error->message);
+                exit (1);
+        };
+
         filename = UIDIR "/setup.ui";
         if (!g_file_test (filename, G_FILE_TEST_EXISTS))
                 filename = "setup.ui";
 
         setup->builder = gtk_builder_new ();
-        error = NULL;
         if (!gtk_builder_add_from_file (setup->builder, filename, &error)) {
                 g_error ("%s", error->message);
                 g_error_free (error);
