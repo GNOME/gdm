@@ -61,6 +61,8 @@ typedef struct {
 #define OBJ(type,name) ((type)gtk_builder_get_object(setup->builder,(name)))
 #define WID(name) OBJ(GtkWidget*,name)
 
+static void copy_account_data (SetupData *setup);
+static void begin_autologin (SetupData *setup);
 static void connect_to_slave (SetupData *setup);
 
 /* --- Welcome page --- */
@@ -1363,7 +1365,13 @@ prepare_location_page (SetupData *setup)
 static void
 close_cb (GtkAssistant *assi, gpointer data)
 {
-        gtk_main_quit ();
+        SetupData *setup = data;
+
+        g_settings_sync ();
+
+        copy_account_data (setup);
+
+        begin_autologin (setup);
 }
 
 static void
@@ -1385,7 +1393,7 @@ prepare_assistant (SetupData *setup)
         g_signal_connect (G_OBJECT (setup->assistant), "prepare",
                           G_CALLBACK (prepare_cb), setup);
         g_signal_connect (G_OBJECT (setup->assistant), "close",
-                          G_CALLBACK (close_cb), NULL);
+                          G_CALLBACK (close_cb), setup);
 
         connect_to_slave (setup);
         prepare_welcome_page (setup);
@@ -1496,12 +1504,6 @@ main (int argc, char *argv[])
         gtk_window_present (GTK_WINDOW (setup->assistant));
 
         gtk_main ();
-
-        g_settings_sync ();
-
-        copy_account_data (setup);
-
-        begin_autologin (setup);
 
         return 0;
 }
