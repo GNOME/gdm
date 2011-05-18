@@ -200,21 +200,7 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
 
         ret = FALSE;
 
-        num = take_next_display_number (factory);
-
-        g_debug ("GdmLocalDisplayFactory: Creating transient display %d", num);
-
-        display = gdm_transient_display_new (num);
-
-        /* FIXME: don't hardcode seat1? */
-        g_object_set (display, "seat-id", CK_SEAT1_PATH, NULL);
-
-        store_display (factory, num, display);
-
-        if (! gdm_display_manage (display)) {
-                display = NULL;
-                goto out;
-        }
+        display = create_display (factory, GDM_TYPE_TRANSIENT_DISPLAY);
 
         if (! gdm_display_get_id (display, id, NULL)) {
                 display = NULL;
@@ -223,9 +209,6 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
 
         ret = TRUE;
  out:
-        /* ref either held by store or not at all */
-        g_object_unref (display);
-
         return ret;
 }
 
@@ -277,13 +260,22 @@ gdm_local_display_factory_create_product_display (GdmLocalDisplayFactory *factor
 }
 
 static void
+switch_to_login_session (GdmLocalDisplayFactory *factory)
+{
+        /* FIXME: look for existing login session before starting a new one */
+        create_display (factory, GDM_TYPE_TRANSIENT_DISPLAY);
+}
+
+static void
 on_display_status_changed (GdmDisplay             *display,
                            GParamSpec             *arg1,
                            GdmLocalDisplayFactory *factory)
 {
         int              status;
+        gboolean         switch_on_finish;
         GdmDisplayStore *store;
         int              num;
+        GType            type;
 
         num = -1;
         gdm_display_get_x11_display_number (display, &num, NULL);
@@ -292,6 +284,8 @@ on_display_status_changed (GdmDisplay             *display,
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
         status = gdm_display_get_status (display);
+        switch_on_finish = gdm_display_get_switch_on_finish (display);
+        type = G_OBJECT_TYPE (display);
 
         g_debug ("GdmLocalDisplayFactory: static display status changed: %d", status);
         switch (status) {
@@ -302,7 +296,12 @@ on_display_status_changed (GdmDisplay             *display,
                 gdm_display_store_remove (store, display);
                 /* reset num failures */
                 factory->priv->num_failures = 0;
-                create_display (factory, GDM_TYPE_STATIC_DISPLAY);
+
+                if (switch_on_finish) {
+                        switch_to_login_session (factory);
+                } else if (type == GDM_TYPE_STATIC_DISPLAY) {
+                        create_display (factory, type);
+                }
                 break;
         case GDM_DISPLAY_FAILED:
                 /* leave the display number in factory->priv->displays
@@ -315,7 +314,7 @@ on_display_status_changed (GdmDisplay             *display,
                         /* FIXME: should monitor hardware changes to
                            try again when seats change */
                 } else {
-                        create_display (factory, GDM_TYPE_STATIC_DISPLAY);
+                        create_display (factory, type);
                 }
                 break;
         case GDM_DISPLAY_UNMANAGED:
@@ -341,8 +340,8 @@ create_display (GdmLocalDisplayFactory *factory,
 
         if (type == GDM_TYPE_STATIC_DISPLAY) {
                 display = gdm_static_display_new (num);
-        } else {
-                g_assert_not_reached ();
+        } else if (type == GDM_TYPE_TRANSIENT_DISPLAY) {
+                display = gdm_transient_display_new (num);
         }
 
         /* FIXME: don't hardcode seat1? */
