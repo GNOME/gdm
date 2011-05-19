@@ -88,6 +88,7 @@ GQuark              gdm_display_error_quark                    (void);
 GType               gdm_display_get_type                       (void);
 
 int                 gdm_display_get_status                     (GdmDisplay *display);
+gboolean            gdm_display_get_switch_on_finish           (GdmDisplay *display);
 time_t              gdm_display_get_creation_time              (GdmDisplay *display);
 char *              gdm_display_get_user_auth                  (GdmDisplay *display);
 
@@ -139,6 +140,9 @@ gboolean            gdm_display_remove_user_authorization      (GdmDisplay *disp
                                                                 GError    **error);
 gboolean            gdm_display_set_slave_bus_name             (GdmDisplay *display,
                                                                 const char *name,
+                                                                GError    **error);
+gboolean            gdm_display_set_switch_on_finish           (GdmDisplay *display,
+                                                                gboolean    switch_display,
                                                                 GError    **error);
 
 

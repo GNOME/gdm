@@ -1438,6 +1438,31 @@ session_unlock (GdmSlave   *slave,
         return TRUE;
 }
 
+static void
+set_switch_display_on_finish (GdmSlave *slave,
+                              gboolean  switch_display)
+{
+        gboolean    res;
+        GError     *error;
+
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->display_proxy,
+                                 "SetSwitchOnFinish",
+                                 &error,
+                                 G_TYPE_BOOLEAN, switch_display,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_INVALID);
+
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to set respawn on parent display: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to set respawn on parent display");
+                }
+        }
+}
+
 gboolean
 gdm_slave_switch_to_user_session (GdmSlave   *slave,
                                   const char *username)
@@ -1467,6 +1492,11 @@ gdm_slave_switch_to_user_session (GdmSlave   *slave,
                 /* this isn't fatal */
                 g_debug ("GdmSlave: unable to unlock session: %s", ssid_to_activate);
         }
+
+        /* Since we're switching to a new display, make sure we don't switch again when
+         * this display finishes.
+         */
+        set_switch_display_on_finish (slave, FALSE);
 
         ret = TRUE;
 
