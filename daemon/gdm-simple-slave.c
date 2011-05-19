@@ -437,7 +437,10 @@ stop_greeter (GdmSimpleSlave *slave)
         }
 
         /* Run the PostLogin script. gdmslave suspends until script has terminated */
-        username = gdm_session_direct_get_username (slave->priv->session);
+        username = NULL;
+        if (slave->priv->session != NULL) {
+                username = gdm_session_direct_get_username (slave->priv->session);
+        }
 
         if (username != NULL) {
                 gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostLogin", username);
