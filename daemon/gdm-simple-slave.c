@@ -109,10 +109,12 @@ G_DEFINE_TYPE (GdmSimpleSlave, gdm_simple_slave, GDM_TYPE_SLAVE)
 static void create_new_session (GdmSimpleSlave *slave);
 static void destroy_session    (GdmSimpleSlave *slave);
 static void start_greeter      (GdmSimpleSlave *slave);
-static void start_session      (GdmSimpleSlave *slave);
 static void queue_start_session (GdmSimpleSlave *slave,
                                  const char     *service_name);
-static void start_initial_setup (GdmSimpleSlave *slave);
+static void run_initial_setup   (GdmSimpleSlave *slave);
+
+static gboolean check_initial_setup_request (GdmSimpleSlave *slave);
+static void     clear_initial_setup_request (GdmSimpleSlave *slave);
 
 static void
 on_session_started (GdmSession       *session,
@@ -1368,7 +1370,15 @@ start_greeter (GdmSimpleSlave *slave)
 }
 
 static void
-start_initial_setup (GdmSimpleSlave *slave)
+on_setup_session_stop (GdmGreeterSession *greeter,
+                       GdmSimpleSlave    *slave)
+{
+        g_debug ("GdmSimpleSlave: Setup stopped");
+        clear_initial_setup_request (slave);
+        gdm_slave_stopped (GDM_SLAVE (slave));
+}
+static void
+run_initial_setup (GdmSimpleSlave *slave)
 {
         gboolean       display_is_local;
         char          *display_id;
@@ -1484,7 +1494,7 @@ start_initial_setup (GdmSimpleSlave *slave)
                           slave);
         g_signal_connect (slave->priv->greeter,
                           "stopped",
-                          G_CALLBACK (on_greeter_session_stop),
+                          G_CALLBACK (on_setup_session_stop),
                           slave);
         g_signal_connect (slave->priv->greeter,
                           "exited",
@@ -1512,6 +1522,30 @@ start_initial_setup (GdmSimpleSlave *slave)
 }
 
 static gboolean
+check_initial_setup_request (GdmSimpleSlave *slave)
+{
+        const gchar *filename;
+
+        filename = GDMCONFDIR "/run-initial-setup";
+        if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
+                return TRUE;
+        }
+
+        return FALSE;
+}
+
+static void
+clear_initial_setup_request (GdmSimpleSlave *slave)
+{
+        const gchar *filename;
+
+        filename = GDMCONFDIR "/run-initial-setup";
+        if (g_remove (filename) < 0) {
+                g_warning ("Failed to remove %s", filename);
+        }
+}
+
+static gboolean
 idle_connect_to_display (GdmSimpleSlave *slave)
 {
         gboolean res;
@@ -1520,24 +1554,28 @@ idle_connect_to_display (GdmSimpleSlave *slave)
 
         res = gdm_slave_connect_to_x11_display (GDM_SLAVE (slave));
         if (res) {
-                gboolean enabled;
-                int      delay;
+                gboolean timed_login_enabled;
+                int      timed_login_delay;
                 gboolean initial_setup_enabled;
+                gboolean initial_setup_requested;
+                const gchar *filename;
 
                 /* FIXME: handle wait-for-go */
 
                 setup_server (slave);
 
                 initial_setup_enabled = FALSE;
+                initial_setup_requested = FALSE;
                 gdm_slave_get_initial_setup_details (GDM_SLAVE (slave), &initial_setup_enabled);
+                initial_setup_requested = check_initial_setup_request (slave);
 
-                delay = 0;
-                enabled = FALSE;
-                gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &enabled, NULL, &delay);
-                if (initial_setup_enabled) {
-                        start_initial_setup (slave);
+                timed_login_delay = 0;
+                timed_login_enabled = FALSE;
+                gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &timed_login_enabled, NULL, &timed_login_delay);
+                if (initial_setup_enabled && initial_setup_requested) {
+                        run_initial_setup (slave);
                         create_new_session (slave);
-                } else if (! enabled || delay > 0) {
+                } else if (! timed_login_enabled || timed_login_delay > 0) {
                         start_greeter (slave);
                         create_new_session (slave);
                 } else {
