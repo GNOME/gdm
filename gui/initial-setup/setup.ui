@@ -14,6 +14,11 @@
       <column type="guint"/>      <!-- column-name pulse -->
     </columns>
   </object>
+  <object class="GtkListStore" id="account-username-model">
+    <columns>
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkAssistant" id="gnome-setup-assistant">
     <!-- interface-naming-policy toplevel-contextual -->
     <property name="border-width">12</property>
@@ -142,7 +147,7 @@
             <property name="visible">True</property>
             <property name="label" translatable="yes">_Username</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">account-username-entry</property>
+            <property name="mnemonic_widget">account-username-combo</property>
             <property name="halign">end</property>
             <style>
               <class name="dim-label"/>
@@ -156,9 +161,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEntry" id="account-username-entry">
+          <object class="GtkComboBoxText" id="account-username-combo">
             <property name="visible">True</property>
             <property name="halign">start</property>
+            <property name="has_entry">True</property>
+            <property name="entry_text_column">0</property>
+            <property name="model">account-username-model</property>
           </object>
           <packing>
             <property name="left-attach">1</property>

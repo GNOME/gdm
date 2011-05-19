@@ -18,6 +18,7 @@
 
 #include "cc-timezone-map.h"
 #include "dtm.h"
+#include "um-utils.h"
 
 #define GWEATHER_I_KNOW_THIS_IS_UNSTABLE
 #include <libgweather/location-entry.h>
@@ -790,17 +791,55 @@ update_account_page_status (SetupData *setup)
 static void
 fullname_changed (GtkWidget *w, GParamSpec *pspec, SetupData *setup)
 {
-        setup->valid_name = strlen (gtk_entry_get_text (GTK_ENTRY (w))) > 0;
+        GtkWidget *combo;
+        GtkWidget *entry;
+        GtkTreeModel *model;
+        const char *name;
+
+        name = gtk_entry_get_text (GTK_ENTRY (w));
+
+        combo = WID("account-username-combo");
+        entry = gtk_bin_get_child (GTK_BIN (combo));
+        model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
+
+        gtk_list_store_clear (GTK_LIST_STORE (model));
+
+        setup->valid_name = is_valid_name (name);
         setup->user_data_unsaved = TRUE;
+
+        if (!setup->valid_name) {
+                gtk_entry_set_text (GTK_ENTRY (entry), "");
+                return;
+        }
+
+        generate_username_choices (name, GTK_LIST_STORE (model));
+
+        gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 
         update_account_page_status (setup);
 }
 
 static void
-username_changed (GtkWidget *w, GParamSpec *pspec, SetupData *setup)
+username_changed (GtkComboBoxText *combo, SetupData *setup)
 {
-        setup->valid_username = strlen (gtk_entry_get_text (GTK_ENTRY (w))) > 0;
+        const gchar *username;
+        gchar *tip;
+        GtkWidget *entry;
+
+        username = gtk_combo_box_text_get_active_text (combo);
+
+        setup->valid_username = is_valid_username (username, &tip);
         setup->user_data_unsaved = TRUE;
+
+        entry = gtk_bin_get_child (GTK_BIN (combo));
+
+        if (tip) {
+                set_entry_validation_error (GTK_ENTRY (entry), tip);
+                g_free (tip);
+        }
+        else {
+                clear_entry_validation_error (GTK_ENTRY (entry));
+        }
 
         update_account_page_status (setup);
 }
@@ -847,84 +886,6 @@ admin_check_changed (GtkWidget *w, GParamSpec *pspec, SetupData *setup)
 
         setup->user_data_unsaved = TRUE;
         update_account_page_status (setup);
-}
-
-static gboolean
-query_tooltip (GtkWidget  *widget,
-               gint        x,
-               gint        y,
-               gboolean    keyboard_mode,
-               GtkTooltip *tooltip,
-               gpointer    user_data)
-{
-        gchar *tip;
-
-        if (GTK_ENTRY_ICON_SECONDARY == gtk_entry_get_icon_at_pos (GTK_ENTRY (widget), x, y)) {
-                tip = gtk_entry_get_icon_tooltip_text (GTK_ENTRY (widget),
-                                                       GTK_ENTRY_ICON_SECONDARY);
-                gtk_tooltip_set_text (tooltip, tip);
-                g_free (tip);
-
-                return TRUE;
-        }
-        else {
-                return FALSE;
-        }
-}
-
-static void
-icon_released (GtkEntry             *entry,
-              GtkEntryIconPosition  pos,
-              GdkEvent             *event,
-              gpointer              user_data)
-{
-        GtkSettings *settings;
-        gint timeout;
-
-        settings = gtk_widget_get_settings (GTK_WIDGET (entry));
-
-        g_object_get (settings, "gtk-tooltip-timeout", &timeout, NULL);
-        g_object_set (settings, "gtk-tooltip-timeout", 1, NULL);
-        gtk_tooltip_trigger_tooltip_query (gtk_widget_get_display (GTK_WIDGET (entry)));
-        g_object_set (settings, "gtk-tooltip-timeout", timeout, NULL);
-}
-
-static void
-set_entry_validation_error (GtkEntry    *entry,
-                            const gchar *text)
-{
-        g_object_set (entry, "caps-lock-warning", FALSE, NULL);
-        gtk_entry_set_icon_from_stock (entry,
-                                       GTK_ENTRY_ICON_SECONDARY,
-                                       GTK_STOCK_DIALOG_ERROR);
-        gtk_entry_set_icon_activatable (entry,
-                                        GTK_ENTRY_ICON_SECONDARY,
-                                        TRUE);
-        g_signal_connect (entry, "icon-release",
-                          G_CALLBACK (icon_released), FALSE);
-        g_signal_connect (entry, "query-tooltip",
-                          G_CALLBACK (query_tooltip), NULL);
-        g_object_set (entry, "has-tooltip", TRUE, NULL);
-        gtk_entry_set_icon_tooltip_text (entry,
-                                         GTK_ENTRY_ICON_SECONDARY,
-                                         text);
-}
-
-static void
-clear_entry_validation_error (GtkEntry *entry)
-{
-        gboolean warning;
-
-        g_object_get (entry, "caps-lock-warning", &warning, NULL);
-
-        if (warning)
-                return;
-
-        g_object_set (entry, "has-tooltip", FALSE, NULL);
-        gtk_entry_set_icon_from_pixbuf (entry,
-                                        GTK_ENTRY_ICON_SECONDARY,
-                                        NULL);
-        g_object_set (entry, "caps-lock-warning", TRUE, NULL);
 }
 
 #define MIN_PASSWORD_LEN 6
@@ -1015,7 +976,7 @@ create_user (SetupData *setup)
         const gchar *fullname;
         GError *error;
 
-        username = gtk_entry_get_text (OBJ(GtkEntry*, "account-username-entry"));
+        username = gtk_combo_box_text_get_active_text (OBJ(GtkComboBoxText*, "account-username-combo"));
         fullname = gtk_entry_get_text (OBJ(GtkEntry*, "account-fullname-entry"));
         connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, NULL);
 
@@ -1109,7 +1070,7 @@ static void
 prepare_account_page (SetupData *setup)
 {
         GtkWidget *fullname_entry;
-        GtkWidget *username_entry;
+        GtkWidget *username_combo;
         GtkWidget *password_check;
         GtkWidget *admin_check;
         GtkWidget *password_entry;
@@ -1117,7 +1078,7 @@ prepare_account_page (SetupData *setup)
         gboolean need_password;
 
         fullname_entry = WID("account-fullname-entry");
-        username_entry = WID("account-username-entry");
+        username_combo = WID("account-username-combo");
         password_check = WID("account-password-check");
         admin_check = WID("account-admin-check");
         password_entry = WID("account-password-entry");
@@ -1141,7 +1102,7 @@ prepare_account_page (SetupData *setup)
 
         g_signal_connect (fullname_entry, "notify::text",
                           G_CALLBACK (fullname_changed), setup);
-        g_signal_connect (username_entry, "notify::text",
+        g_signal_connect (username_combo, "changed",
                           G_CALLBACK (username_changed), setup);
         g_signal_connect (password_check, "notify::active",
                            G_CALLBACK (password_check_changed), setup);
