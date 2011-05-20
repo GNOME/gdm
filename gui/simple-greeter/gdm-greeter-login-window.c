@@ -113,7 +113,6 @@ struct GdmGreeterLoginWindowPrivate
         GtkWidget       *current_button;
 
         guint            display_is_local : 1;
-        guint            is_interactive : 1;
         guint            user_chooser_loaded : 1;
         gboolean         session_ready_to_start : 1;
         GConfClient     *client;
@@ -154,7 +153,6 @@ typedef struct {
 enum {
         PROP_0,
         PROP_DISPLAY_IS_LOCAL,
-        PROP_IS_INTERACTIVE,
 };
 
 enum {
@@ -386,16 +384,6 @@ remove_timed_login_timeout (GdmGreeterLoginWindow *login_window)
         stop_watching_for_user_interaction (login_window);
 }
 
-static void
-_gdm_greeter_login_window_set_interactive (GdmGreeterLoginWindow *login_window,
-                                           gboolean               is_interactive)
-{
-        if (login_window->priv->is_interactive != is_interactive) {
-                login_window->priv->is_interactive = is_interactive;
-                g_object_notify (G_OBJECT (login_window), "is-interactive");
-        }
-}
-
 static gboolean
 timed_login_timer (GdmGreeterLoginWindow *login_window)
 {
@@ -403,7 +391,6 @@ timed_login_timer (GdmGreeterLoginWindow *login_window)
         set_message (login_window, _("Automatically logging in…"));
 
         g_debug ("GdmGreeterLoginWindow: timer expired");
-        _gdm_greeter_login_window_set_interactive (login_window, TRUE);
         login_window->priv->timed_login_timeout_id = 0;
 
         return FALSE;
@@ -465,7 +452,6 @@ on_login_button_clicked_answer_query (GtkButton             *button,
         entry = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "auth-prompt-entry"));
         text = gtk_entry_get_text (GTK_ENTRY (entry));
 
-        _gdm_greeter_login_window_set_interactive (login_window, TRUE);
         g_signal_emit (login_window, signals[QUERY_ANSWER], 0, text);
 }
 
@@ -475,8 +461,6 @@ on_login_button_clicked_timed_login (GtkButton             *button,
 {
         set_busy (login_window);
         set_sensitive (login_window, FALSE);
-
-        _gdm_greeter_login_window_set_interactive (login_window, TRUE);
 }
 
 static void
@@ -761,7 +745,6 @@ reset_dialog (GdmGreeterLoginWindow *login_window,
                         remove_timed_login_timeout (login_window);
                         login_window->priv->timed_login_enabled = FALSE;
                 }
-                _gdm_greeter_login_window_set_interactive (login_window, FALSE);
 
                 g_signal_handlers_block_by_func (G_OBJECT (login_window->priv->user_chooser),
                                                  G_CALLBACK (on_user_unchosen), login_window);
@@ -965,40 +948,10 @@ gdm_greeter_login_window_request_timed_login (GdmGreeterLoginWindow *login_windo
 static void
 gdm_greeter_login_window_start_session_when_ready (GdmGreeterLoginWindow *login_window)
 {
-        if (login_window->priv->is_interactive) {
-                login_window->priv->session_ready_to_start = TRUE;
+        login_window->priv->session_ready_to_start = TRUE;
 
-                if (login_window->priv->message_timeout_id == 0) {
-                        set_next_message_or_continue (login_window);
-                }
-        } else {
-                g_debug ("GdmGreeterLoginWindow: not starting session since "
-                         "user hasn't had an opportunity to pick language "
-                         "and session yet.");
-
-                /* Call back when we're ready to go
-                 */
-                login_window->priv->start_session_handler_id =
-                    g_signal_connect (login_window, "notify::is-interactive",
-                                      G_CALLBACK (gdm_greeter_login_window_start_session_when_ready),
-                                      NULL);
-
-                /* FIXME: If the user wasn't asked any questions by pam but
-                 * pam still authorized them (passwd -d, or the questions got
-                 * asked on an external device) then we need to let them log in.
-                 * Right now we just log them in right away, but we really should
-                 * set a timer up like timed login (but shorter, say ~5 seconds),
-                 * so they can pick language/session.  Will need to refactor things
-                 * a bit so we can share code with timed login.
-                 */
-                if (!login_window->priv->timed_login_enabled) {
-
-                        g_debug ("GdmGreeterLoginWindow: Okay, we'll start the session anyway,"
-                                 "because the user isn't ever going to get an opportunity to"
-                                 "interact with session");
-                        _gdm_greeter_login_window_set_interactive (login_window, TRUE);
-                }
-
+        if (login_window->priv->message_timeout_id == 0) {
+                set_next_message_or_continue (login_window);
         }
 }
 
@@ -1097,9 +1050,6 @@ gdm_greeter_login_window_set_property (GObject      *object,
         case PROP_DISPLAY_IS_LOCAL:
                 _gdm_greeter_login_window_set_display_is_local (self, g_value_get_boolean (value));
                 break;
-        case PROP_IS_INTERACTIVE:
-                _gdm_greeter_login_window_set_interactive (self, g_value_get_boolean (value));
-                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -1120,10 +1070,6 @@ gdm_greeter_login_window_get_property (GObject    *object,
         case PROP_DISPLAY_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->display_is_local);
                 break;
-        case PROP_IS_INTERACTIVE:
-                g_value_set_boolean (value, self->priv->is_interactive);
-                break;
-
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -1797,14 +1743,6 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                                                                "display is local",
                                                                FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-        g_object_class_install_property (object_class,
-                                         PROP_IS_INTERACTIVE,
-                                         g_param_spec_boolean ("is-interactive",
-                                                               "Is Interactive",
-                                                               "Use has had an oppurtunity to interact with window",
-                                                               FALSE,
-                                                               G_PARAM_READABLE));
-
         g_type_class_add_private (klass, sizeof (GdmGreeterLoginWindowPrivate));
 }
 
