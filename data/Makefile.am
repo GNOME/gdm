@@ -84,11 +84,15 @@ localealias_DATA = locale.alias
 sessiondir = $(datadir)/gnome-session/sessions
 session_DATA = gdm-fallback.session gdm-shell.session gdm-setup.session
 
+policydir = $(datadir)/gdm
+policy_DATA = 20-gdm-initial-setup.pkla
+
 EXTRA_DIST =			\
 	$(schemas_in_files)	\
 	$(schemas_DATA)		\
 	$(dbusconf_in_files)	\
 	$(localealias_DATA)	\
+	$(policy_DATA)		\
 	gdm.schemas.in.in	\
 	gdm.conf-custom.in 	\
 	Xsession.in 		\
