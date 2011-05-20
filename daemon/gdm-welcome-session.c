@@ -354,7 +354,7 @@ get_welcome_environment (GdmWelcomeSession *welcome_session,
                 "LANG", "LANGUAGE", "LC_CTYPE", "LC_NUMERIC", "LC_TIME",
                 "LC_COLLATE", "LC_MONETARY", "LC_MESSAGES", "LC_PAPER",
                 "LC_NAME", "LC_ADDRESS", "LC_TELEPHONE", "LC_MEASUREMENT",
-                "LC_IDENTIFICATION", "LC_ALL",
+                "LC_IDENTIFICATION", "LC_ALL", "WINDOWPATH",
                 NULL
         };
         int i;
@@ -437,12 +437,6 @@ get_welcome_environment (GdmWelcomeSession *welcome_session,
         }
 
         g_hash_table_insert (hash, g_strdup ("PATH"), g_strdup (g_getenv ("PATH")));
-
-        windowpath = g_getenv ("WINDOWPATH");
-        if (windowpath != NULL)
-        {
-                g_hash_table_insert (hash, g_strdup ("WINDOWPATH"), g_strdup (windowpath));
-        }
 
         g_hash_table_insert (hash, g_strdup ("RUNNING_UNDER_GDM"), g_strdup ("true"));
         g_hash_table_insert (hash, g_strdup ("GVFS_DISABLE_FUSE"), g_strdup ("1"));
