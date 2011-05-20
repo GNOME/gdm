@@ -12,6 +12,7 @@ AM_CPPFLAGS = \
 	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
 	-DLIBDIR=\"$(libdir)\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
+	-DLOCALSTATEDIR=\"$(localstatedir)\"		\
 	-DLOGDIR=\"$(logdir)\"				\
 	-DSBINDIR=\"$(sbindir)\"			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
