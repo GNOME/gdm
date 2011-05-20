@@ -2462,6 +2462,7 @@ gdm_chooser_widget_lookup_item (GdmChooserWidget *widget,
 
         if (active_item_id == NULL || strcmp (active_item_id, id) != 0) {
                 g_free (active_item_id);
+                active_item_id = NULL;
 
                 if (!find_item (widget, id, &iter)) {
                         return FALSE;
