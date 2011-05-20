@@ -456,11 +456,15 @@ gdm_slave_setup_xhost_auth (XHostAddress *host_entries, XServerInterpretedAddres
         si_entries[0].typelength  = strlen ("localuser");
         si_entries[1].type        = "localuser";
         si_entries[1].typelength  = strlen ("localuser");
+        si_entries[2].type        = "localuser";
+        si_entries[2].typelength  = strlen ("localuser");
 
         si_entries[0].value       = "root";
         si_entries[0].valuelength = strlen ("root");
         si_entries[1].value       = GDM_USERNAME;
         si_entries[1].valuelength = strlen (GDM_USERNAME);
+        si_entries[2].value       = "gdm-initial-setup";
+        si_entries[2].valuelength = strlen ("gdm-initial-setup");
 
         host_entries[0].family    = FamilyServerInterpreted;
         host_entries[0].address   = (char *) &si_entries[0];
@@ -468,6 +472,9 @@ gdm_slave_setup_xhost_auth (XHostAddress *host_entries, XServerInterpretedAddres
         host_entries[1].family    = FamilyServerInterpreted;
         host_entries[1].address   = (char *) &si_entries[1];
         host_entries[1].length    = sizeof (XServerInterpretedAddress);
+        host_entries[2].family    = FamilyServerInterpreted;
+        host_entries[2].address   = (char *) &si_entries[2];
+        host_entries[2].length    = sizeof (XServerInterpretedAddress);
 }
 
 static void
@@ -583,8 +590,8 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
                 g_warning ("Unable to connect to display %s", slave->priv->display_name);
                 ret = FALSE;
         } else if (slave->priv->display_is_local) {
-                XServerInterpretedAddress si_entries[2];
-                XHostAddress              host_entries[2];
+                XServerInterpretedAddress si_entries[3];
+                XHostAddress              host_entries[3];
 
                 g_debug ("GdmSlave: Connected to display %s", slave->priv->display_name);
                 ret = TRUE;
@@ -898,8 +905,8 @@ gdm_slave_add_user_authorization (GdmSlave   *slave,
                                   const char *username,
                                   char      **filenamep)
 {
-        XServerInterpretedAddress si_entries[2];
-        XHostAddress              host_entries[2];
+        XServerInterpretedAddress si_entries[3];
+        XHostAddress              host_entries[3];
         gboolean                  res;
         GError                   *error;
         char                     *filename;

@@ -38,6 +38,8 @@
 #include <glib/gstdio.h>
 #include <glib-object.h>
 
+#include <act/act-user-manager.h>
+
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
@@ -1201,7 +1203,7 @@ start_greeter (GdmSimpleSlave *slave)
         char          *display_hostname;
         char          *auth_file;
         char          *address;
-        gboolean       res;
+        gboolean       res G_GNUC_UNUSED;
 
         g_debug ("GdmSimpleSlave: Running greeter");
 
@@ -1338,12 +1340,115 @@ start_greeter (GdmSimpleSlave *slave)
         g_free (auth_file);
 }
 
+static const gboolean
+create_initial_setup_user (GdmSimpleSlave *slave)
+{
+        ActUserManager *act;
+        ActUser *user;
+        GError *error;
+        const gchar *username;
+        gboolean preexisting_user;
+        const gchar *src_filename;
+        const gchar *dest_filename;
+
+        username = "gdm-initial-setup";
+        src_filename = DATADIR "/gdm/" "20-gdm-initial-setup.pkla";
+        dest_filename = LOCALSTATEDIR "/lib/polkit-1/localauthority/10-vendor.d/" "20-gdm-initial-setup.pkla";
+
+        preexisting_user = FALSE;
+
+        /* First, create the user */
+        act = act_user_manager_get_default ();
+
+        error = NULL;
+        user = act_user_manager_create_user (act, username, "", 0, &error);
+        if (user == NULL) {
+                const gchar *e;
+                if (error->domain == DBUS_GERROR &&
+                    error->code == DBUS_GERROR_REMOTE_EXCEPTION)
+                        e = dbus_g_error_get_name (error);
+                else
+                        e = NULL;
+
+                g_warning ("Creating user '%s' failed: %s / %s", username, e, error->message);
+
+                if (g_strcmp0 (e, "org.freedesktop.Accounts.Error.UserExists") == 0) {
+                        preexisting_user = TRUE;
+                }
+                else {
+                        return FALSE;
+                }
+        }
+        else {
+                g_object_unref (user);
+        }
+
+        /* Now, make sure the PolicyKit policy is in place */
+        if (preexisting_user) {
+                if (!g_file_test (dest_filename, G_FILE_TEST_EXISTS)) {
+                        g_warning ("User '%s' exists, but file '%s' doesn't", username, dest_filename);
+                        return FALSE;
+                }
+        }
+        else {
+                gchar *contents;
+                gsize length;
+                GError *error;
+
+                contents = NULL;
+                error = NULL;
+                if (!g_file_get_contents (src_filename, &contents, &length, &error)) {
+                        g_warning ("Failed to read '%s': %s", src_filename, error->message);
+                        g_error_free (error);
+                        return FALSE;
+                }
+                if (!g_file_set_contents (dest_filename, contents, length, &error)) {
+                        g_warning ("Failed to write '%s': %s", dest_filename, error->message);
+                        g_error_free (error);
+                        g_free (contents);
+                        return FALSE;
+                }
+                g_free (contents);
+        }
+
+        return TRUE;
+}
+
+static void
+remove_initial_setup_user (GdmSimpleSlave *slave)
+{
+        ActUserManager *act;
+        ActUser *user;
+        const gchar *username;
+        const gchar *filename;
+        GError *error;
+
+        username = "gdm-initial-setup";
+        filename = LOCALSTATEDIR "/lib/polkit-1/localauthority/10-vendor.d/" "20-gdm-initial-setup.pkla";
+
+        if (g_remove (filename) < 0) {
+                g_warning ("Failed to remove '%s': %s", filename, g_strerror (errno));
+        }
+
+        act = act_user_manager_get_default ();
+
+        error = NULL;
+        user = act_user_manager_get_user (act, username);
+        if (!act_user_manager_delete_user (act, user, TRUE, &error)) {
+                g_warning ("Failed to create user '%s': %s", username, error->message);
+                g_error_free (error);
+        }
+
+        g_object_unref (user);
+}
+
 static void
 on_setup_session_stop (GdmGreeterSession *greeter,
                        GdmSimpleSlave    *slave)
 {
         g_debug ("GdmSimpleSlave: Setup stopped");
         clear_initial_setup_request (slave);
+        remove_initial_setup_user (slave);
         gdm_slave_stopped (GDM_SLAVE (slave));
 }
 static void
@@ -1357,7 +1462,7 @@ run_initial_setup (GdmSimpleSlave *slave)
         char          *display_hostname;
         char          *auth_file;
         char          *address;
-        gboolean       res;
+        gboolean       res G_GNUC_UNUSED;
 
         g_debug ("GdmSimpleSlave: Running initial setup");
 
@@ -1399,6 +1504,13 @@ run_initial_setup (GdmSimpleSlave *slave)
         gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
 
         slave->priv->greeter_server = gdm_greeter_server_new (display_id);
+
+        /* tell the greeter_server which user to expect a call from */
+        g_object_set (slave->priv->greeter_server,
+                      "user-name", "gdm-initial-setup",
+                      "group-name", "gdm-initial-setup",
+                      NULL);
+
         g_signal_connect (slave->priv->greeter_server,
                           "begin-auto-login",
                           G_CALLBACK (on_greeter_begin_auto_login),
@@ -1457,6 +1569,7 @@ run_initial_setup (GdmSimpleSlave *slave)
                                                       display_device,
                                                       display_hostname,
                                                       display_is_local);
+
         g_signal_connect (slave->priv->greeter,
                           "started",
                           G_CALLBACK (on_greeter_session_start),
@@ -1473,7 +1586,10 @@ run_initial_setup (GdmSimpleSlave *slave)
                           "died",
                           G_CALLBACK (on_greeter_session_died),
                           slave);
+
+        /* tell the greeter which user to run as */
         g_object_set (slave->priv->greeter,
+                      "user-name", "gdm-initial-setup",
                       "x11-authority-file", auth_file,
                       NULL);
 
@@ -1510,7 +1626,7 @@ clear_initial_setup_request (GdmSimpleSlave *slave)
 
         filename = GDMCONFDIR "/run-initial-setup";
         if (g_remove (filename) < 0) {
-                g_warning ("Failed to remove %s", filename);
+                g_warning ("Failed to remove %s: %s", filename, strerror (errno));
         }
 }
 
@@ -1527,7 +1643,6 @@ idle_connect_to_display (GdmSimpleSlave *slave)
                 int      timed_login_delay;
                 gboolean initial_setup_enabled;
                 gboolean initial_setup_requested;
-                const gchar *filename;
 
                 /* FIXME: handle wait-for-go */
 
@@ -1542,6 +1657,7 @@ idle_connect_to_display (GdmSimpleSlave *slave)
                 timed_login_enabled = FALSE;
                 gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &timed_login_enabled, NULL, &timed_login_delay);
                 if (initial_setup_enabled && initial_setup_requested) {
+                        create_initial_setup_user (slave);
                         run_initial_setup (slave);
                         create_new_session (slave);
                 } else if (! timed_login_enabled || timed_login_delay > 0) {
