@@ -97,11 +97,19 @@ gdm-smartcard: gdm-smartcard.pam
 pamdir = $(PAM_PREFIX)/pam.d
 pam_DATA = gdm-fingerprint gdm-smartcard
 
+policydir = $(datadir)/gdm
+policy_DATA = 20-gnome-initial-setup.pkla
+
+polkitdir = $(datadir)/polkit-1/actions
+polkit_DATA = org.gnome.initial-setup.policy
+
 EXTRA_DIST =			\
 	$(schemas_in_files)	\
 	$(schemas_DATA)		\
 	$(dbusconf_in_files)	\
 	$(localealias_DATA)	\
+	$(policy_DATA)		\
+	$(polkit_DATA)		\
 	gdm.schemas.in.in	\
 	gdm.conf-custom.in 	\
 	Xsession.in 		\
