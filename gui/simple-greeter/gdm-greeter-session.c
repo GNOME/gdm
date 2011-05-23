@@ -248,14 +248,6 @@ on_select_session (GdmGreeterLoginWindow *login_window,
 }
 
 static void
-on_select_language (GdmGreeterSession     *session,
-                    const char            *text)
-{
-        gdm_greeter_client_call_select_language (session->priv->client,
-                                                 text);
-}
-
-static void
 on_select_user (GdmGreeterLoginWindow *login_window,
                 const char            *text,
                 GdmGreeterSession     *session)

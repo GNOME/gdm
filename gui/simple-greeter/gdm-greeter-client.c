@@ -455,15 +455,6 @@ gdm_greeter_client_call_select_session (GdmGreeterClient *client,
 }
 
 void
-gdm_greeter_client_call_select_language (GdmGreeterClient *client,
-                                         const char       *text)
-{
-        send_dbus_string_method (client->priv->connection,
-                                 "SelectLanguage",
-                                 text);
-}
-
-void
 gdm_greeter_client_call_select_user (GdmGreeterClient *client,
                                      const char       *text)
 {
