@@ -608,13 +608,13 @@ seat_get_sessions (DBusConnection *connection,
         return sessions;
 }
 
-static char *
-get_login_window_session_id (DBusConnection *connection,
-                             const char     *seat_id)
+static gboolean
+get_login_window_session_id (DBusConnection  *connection,
+                             const char      *seat_id,
+                             char           **session_id)
 {
         gboolean    can_activate_sessions;
         char      **sessions;
-        char       *session_id;
         int         i;
 
         session_id = NULL;
@@ -625,7 +625,7 @@ get_login_window_session_id (DBusConnection *connection,
         can_activate_sessions = seat_can_activate_sessions (connection, seat_id);
         if (! can_activate_sessions) {
                 g_debug ("seat is unable to activate sessions");
-                goto out;
+                return FALSE;
         }
 
         sessions = seat_get_sessions (connection, seat_id);
@@ -635,14 +635,13 @@ get_login_window_session_id (DBusConnection *connection,
                 ssid = sessions [i];
 
                 if (session_is_login_window (connection, ssid)) {
-                        session_id = g_strdup (ssid);
+                        *session_id = g_strdup (ssid);
                         break;
                 }
         }
         g_strfreev (sessions);
 
- out:
-        return session_id;
+        return TRUE;
 }
 
 static gboolean
@@ -677,7 +676,13 @@ goto_login_session (GError **error)
                 return FALSE;
         }
 
-        session_id = get_login_window_session_id (connection, seat_id);
+        ret = get_login_window_session_id (connection, seat_id, &session_id);
+
+        if (! ret) {
+                g_set_error (error, GDM_FLEXISERVER_ERROR, 1, _("User unable to switch sessions."));
+                return FALSE;
+        }
+
         if (session_id != NULL) {
                 res = activate_session_id (connection, seat_id, session_id);
                 if (res) {
