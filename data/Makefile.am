@@ -98,6 +98,8 @@ EXTRA_DIST =			\
 	session-setup.entries	\
 	make-dconf-override-db.sh \
 	dconf-profile \
+	mime-dummy-handler.desktop	\
+	mimeapps.list			\
 	$(NULL)
 
 CLEANFILES = 				\
@@ -247,6 +249,12 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 		chown gdm:gdm $(DESTDIR)$(workingdir)/.config/dconf || : ; \
 	fi
 
+	if test '!' -d $(DESTDIR)$(workingdir)/.local/share/applications; then \
+		$(mkinstalldirs) $(DESTDIR)$(workingdir)/.local/share/applications; \
+		chmod 0755 $(DESTDIR)$(workingdir)/.local/share/applications; \
+		chown gdm:gdm $(DESTDIR)$(workingdir)/.local/share/applications || : ; \
+	fi
+
 	if test '!' -d $(DESTDIR)$(sysconfdir)/dconf/profile; then \
 		$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/dconf/profile; \
 		chmod 0755 $(DESTDIR)$(sysconfdir)/dconf/profile; \
@@ -275,3 +283,5 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 	$(INSTALL_DATA) $(srcdir)/dconf-override-db $(DESTDIR)$(sysconfdir)/dconf/db/gdm
 	$(INSTALL_DATA) $(srcdir)/dconf-profile $(DESTDIR)$(sysconfdir)/dconf/profile/gdm
 
+	$(INSTALL_DATA) $(srcdir)/mime-dummy-handler.desktop $(DESTDIR)$(workingdir)/.local/share/applications/mime-dummy-handler.desktop
+	$(INSTALL_DATA) $(srcdir)/mimeapps.list $(DESTDIR)$(workingdir)/.local/share/applications/mimeapps.list
