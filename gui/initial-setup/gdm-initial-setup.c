@@ -1403,6 +1403,25 @@ begin_autologin (SetupData *setup)
         }
 
         g_variant_unref (ret);
+
+        ret = g_dbus_connection_call_sync (setup->slave_connection,
+                                           NULL,
+                                           "/org/gnome/DisplayManager/GreeterServer",
+                                           "org.gnome.DisplayManager.GreeterServer",
+                                           "StartSessionWhenReady",
+                                           g_variant_new ("(b)", TRUE),
+                                           NULL, /* no reply checking */
+                                           G_DBUS_CALL_FLAGS_NONE,
+                                           G_MAXINT,
+                                           NULL,
+                                           &error);
+        if (ret == NULL) {
+                g_warning ("Calling org.gnome.DisplayManager.GreeterServer.StartSessionWhenReady failed: %s", error->message);
+                g_error_free (error);
+                return;
+        }
+
+        g_variant_unref (ret);
 }
 
 static void
