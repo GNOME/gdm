@@ -352,7 +352,6 @@ gdm_scrollable_widget_get_preferred_size (GtkWidget      *widget,
                                                                  &min_child_size,
                                                                  &nat_child_size);
 
-                                minimum_req.height += min_child_size;
                                 natural_req.height += nat_child_size;
                         }
                 }
