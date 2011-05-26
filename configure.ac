@@ -194,6 +194,14 @@ AC_PATH_PROG(GCONFTOOL, gconftool-2)
 
 AM_GCONF_SOURCE_2
 
+LIBGDMGREETER_LIBS="$SIMPLE_GREETER_LIBS"
+AC_SUBST(LIBGDMGREETER_LIBS)
+LIBGDMGREETER_CFLAGS="$SIMPLE_GREETER_CFLAGS"
+AC_SUBST(LIBGDMGREETER_CFLAGS)
+GOBJECT_INTROSPECTION_CHECK([0.9.12])
+LIBGDMGREETER_GIR_INCLUDES="GLib-2.0 GObject-2.0 DBusGLib-1.0"
+AC_SUBST(LIBGDMGREETER_GIR_INCLUDES)
+
 dnl ---------------------------------------------------------------------------
 dnl - Configuration file stuff
 dnl ---------------------------------------------------------------------------
@@ -1421,6 +1429,8 @@ Makefile
 daemon/Makefile
 docs/Makefile
 gui/Makefile
+gui/libgdmgreeter/Makefile
+gui/libgdmgreeter/gdmgreeter.pc
 gui/simple-greeter/Makefile
 gui/simple-greeter/libgdmsimplegreeter/Makefile
 gui/simple-greeter/libgdmsimplegreeter/gdmsimplegreeter.pc
