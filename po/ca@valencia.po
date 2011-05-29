@@ -3,14 +3,14 @@
 # Softcatalà <info@softcatala.org>, 2000, 2001, 2002.
 # Jordi Mallach <jordi@sindominio.net>, 2002, 2003, 2004, 2005, 2006.
 # Xavier Conde Rueda <xavi.conde@gmail.com>, 2006, 2007
-# David Planella Molas <david.planella@gmail.com>, 2008
+# David Planella Molas <david.planella@gmail.com>, 2008, 2009, 2010, 2011
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-26 11:15+0200\n"
-"PO-Revision-Date: 2010-03-06 10:41+0100\n"
+"POT-Creation-Date: 2011-05-29 18:06+0200\n"
+"PO-Revision-Date: 2011-03-30 21:47+0200\n"
 "Last-Translator: David Planella <david.planella@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -45,29 +45,28 @@ msgstr "Esclau del gestor de pantalla del GNOME"
 msgid "could not find user \"%s\" on system"
 msgstr "no s'ha trobat l'usuari «%s» al sistema"
 
-#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:258
+#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:316
 msgid "Unable to initialize login system"
 msgstr "No s'ha pogut inicialitzar el sistema d'entrada"
 
-#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:294
+#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:352
 msgid "Unable to authenticate user"
 msgstr "No s'ha pogut autenticar l'usuari"
 
-#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:351
+#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:409
 msgid "Unable to authorize user"
 msgstr "No s'ha pogut autoritzar l'usuari"
 
-#: ../daemon/gdm-factory-slave.c:279 ../daemon/gdm-simple-slave.c:480
+#: ../daemon/gdm-factory-slave.c:279 ../daemon/gdm-simple-slave.c:538
 msgid "Unable to establish credentials"
 msgstr "No s'han pogut establir les credencials"
 
-#: ../daemon/gdm-factory-slave.c:302 ../daemon/gdm-simple-slave.c:510
+#: ../daemon/gdm-factory-slave.c:302 ../daemon/gdm-simple-slave.c:572
 msgid "Unable to open session"
 msgstr "No s'ha pogut obrir la sessió"
 
-#: ../daemon/gdm-factory-slave.c:689 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1196
-#, fuzzy
+#: ../daemon/gdm-factory-slave.c:677 ../daemon/gdm-product-slave.c:449
+#: ../daemon/gdm-simple-slave.c:1366
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -91,23 +90,23 @@ msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "L'usuari %s havia d'engendrar el servidor però este usuari no existeix"
 
 #: ../daemon/gdm-server.c:376 ../daemon/gdm-server.c:396
-#: ../daemon/gdm-welcome-session.c:598 ../daemon/gdm-welcome-session.c:618
+#: ../daemon/gdm-welcome-session.c:599 ../daemon/gdm-welcome-session.c:619
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "No s'ha pogut definir el groupid com a %d"
 
-#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:604
+#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:605
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "ha fallat l'initgroups () per a %s"
 
-#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:610
+#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:611
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "No s'ha pogut definir l'userid com a %d"
 
 #: ../daemon/gdm-server.c:435
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: no s'ha pogut obrir el fitxer de registre per a la pantalla %s."
 
@@ -151,83 +150,83 @@ msgstr "Dispositiu de pantalla"
 msgid "The display device"
 msgstr "El dispositiu de pantalla"
 
-#: ../daemon/gdm-session-worker.c:1310
-#, fuzzy, c-format
-msgid "error initiating conversation with authentication system: %s"
+#: ../daemon/gdm-session-worker.c:1066
+#, c-format
+msgid "error initiating conversation with authentication system - %s"
 msgstr ""
 "s'ha produït un error en iniciar la conversa amb el sistema d'autenticació - "
 "%s"
 
-#: ../daemon/gdm-session-worker.c:1311
+#: ../daemon/gdm-session-worker.c:1067
 msgid "general failure"
 msgstr "s'ha produït una fallada general"
 
-#: ../daemon/gdm-session-worker.c:1312
+#: ../daemon/gdm-session-worker.c:1068
 msgid "out of memory"
 msgstr "s'ha exhaurit la memòria"
 
-#: ../daemon/gdm-session-worker.c:1313
+#: ../daemon/gdm-session-worker.c:1069
 msgid "application programmer error"
 msgstr "s'ha produït un error de programació de l'aplicació"
 
-#: ../daemon/gdm-session-worker.c:1314
+#: ../daemon/gdm-session-worker.c:1070
 msgid "unknown error"
 msgstr "error desconegut"
 
-#: ../daemon/gdm-session-worker.c:1321
+#: ../daemon/gdm-session-worker.c:1077
 msgid "Username:"
 msgstr "Nom d'usuari:"
 
-#: ../daemon/gdm-session-worker.c:1327
-#, fuzzy, c-format
+#: ../daemon/gdm-session-worker.c:1083
+#, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr ""
 "s'ha produït un error en informar el sistema d'autenticació de l'indicador "
-"de nom d'usuari preferit - %s"
+"de nom d'usuari preferit: %s"
 
-#: ../daemon/gdm-session-worker.c:1341
-#, fuzzy, c-format
+#: ../daemon/gdm-session-worker.c:1097
+#, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr ""
 "s'ha produït un error en informar el sistema d'autenticació del nom de "
-"l'ordinador de l'usuari - %s"
+"l'ordinador de l'usuari: %s"
 
-#: ../daemon/gdm-session-worker.c:1356
-#, fuzzy, c-format
+#: ../daemon/gdm-session-worker.c:1112
+#, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr ""
 "s'ha produït un error en informar el sistema d'autenticació de la consola de "
-"l'usuari - %s"
+"l'usuari: %s"
 
-#: ../daemon/gdm-session-worker.c:1369
-#, fuzzy, c-format
+#: ../daemon/gdm-session-worker.c:1125
+#, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr ""
 "s'ha produït un error en informar el sistema d'autenticació de la cadena de "
-"la pantalla - %s"
+"la pantalla: %s"
 
-#: ../daemon/gdm-session-worker.c:1384
-#, fuzzy, c-format
+#: ../daemon/gdm-session-worker.c:1140
+#, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr ""
 "s'ha produït un error en informar el sistema d'autenticació de les "
-"credencials xauth de la pantalla - %s"
+"credencials xauth de la pantalla: %s"
 
-#: ../daemon/gdm-session-worker.c:1681 ../daemon/gdm-session-worker.c:1698
+#: ../daemon/gdm-session-worker.c:1462 ../daemon/gdm-session-worker.c:1479
 #, c-format
 msgid "no user account available"
 msgstr "no hi ha tal compte d'usuari disponible"
 
-#: ../daemon/gdm-session-worker.c:1725
+#: ../daemon/gdm-session-worker.c:1506
 msgid "Unable to change to user"
 msgstr "No s'ha pogut commutar a este usuari"
 
-#: ../daemon/gdm-welcome-session.c:548
+#: ../daemon/gdm-welcome-session.c:549
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "No existeix l'usuari %s"
 
-#: ../daemon/gdm-welcome-session.c:555
+#: ../daemon/gdm-welcome-session.c:556
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "No existeix el grup %s"
@@ -244,7 +243,7 @@ msgstr "L'ordinador central %s ha denegat la consulta XDMCP"
 #: ../daemon/gdm-xdmcp-display-factory.c:1031
 #: ../daemon/gdm-xdmcp-display-factory.c:1255
 msgid "Could not extract authlist from packet"
-msgstr "No s'ha pogut extreure la llista d'autenticació del paquet"
+msgstr "No s'ha pogut extraure la llista d'autenticació del paquet"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:1044
 #: ../daemon/gdm-xdmcp-display-factory.c:1270
@@ -268,7 +267,7 @@ msgstr "%s: no s'ha pogut llegir el número de port de la visualització"
 #: ../daemon/gdm-xdmcp-display-factory.c:1624
 #, c-format
 msgid "%s: Could not extract authlist from packet"
-msgstr "%s: no s'ha pogut extreure la llista d'autenticació del paquet"
+msgstr "%s: no s'ha pogut extraure la llista d'autenticació del paquet"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:1644
 #, c-format
@@ -370,7 +369,7 @@ msgid "Could not get server hostname: %s!"
 msgstr "No s'ha pogut obtindre el nom d'ordinador del servidor: %s"
 
 #: ../daemon/main.c:237 ../daemon/main.c:250
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr ""
 "No es pot escriure el fitxer de PID %s: pot ser que no quede espai al disc: "
@@ -429,9 +428,8 @@ msgid "Make all warnings fatal"
 msgstr "Fes que tots els avisos siguen fatals"
 
 #: ../daemon/main.c:534
-#, fuzzy
 msgid "Exit after a time (for debugging)"
-msgstr "Ix al cap d'un temps - utilitzeu-ho per a la depuració"
+msgstr "Ix al cap d'un temps (utilitzeu-ho per a la depuració)"
 
 #: ../daemon/main.c:535
 msgid "Print GDM version"
@@ -456,12 +454,11 @@ msgstr "Fil de treball de sessió del gestor de pantalla del GNOME"
 # Ho he escurçat una mica -> Accessibility Technologies Service Provider
 # Interface (dpm)
 #: ../data/greeter-autostart/at-spi-registryd-wrapper.desktop.in.in.h:1
-#, fuzzy
 msgid "AT-SPI Registry Wrapper"
-msgstr "Embolcall del servei de registre de l'accessibilitat (AT SPI)"
+msgstr "Embolcall del servei de registre de l'accessibilitat (AT-SPI)"
 
 #: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1646
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1756
 msgid "Login Window"
 msgstr "Finestra d'entrada"
 
@@ -472,6 +469,10 @@ msgstr "Gestor de l'energia"
 #: ../data/greeter-autostart/gnome-power-manager.desktop.in.in.h:2
 msgid "Power management daemon"
 msgstr "Dimoni de la gestió de l'energia"
+
+#: ../data/greeter-autostart/gnome-session-check-accelerated.desktop.in.in.h:1
+msgid "GNOME Session Acceleration Checker"
+msgstr "Comprovador de l'acceleració de la sessió del GNOME"
 
 #: ../data/greeter-autostart/gnome-settings-daemon.desktop.in.in.h:1
 msgid "GNOME Settings Daemon"
@@ -486,14 +487,12 @@ msgid "Magnify parts of the screen"
 msgstr "Amplia parts de la pantalla"
 
 #: ../data/greeter-autostart/gok.desktop.in.h:1
-#, fuzzy
 msgid "GNOME On-Screen Keyboard"
 msgstr "Teclat en pantalla del GNOME"
 
 #: ../data/greeter-autostart/gok.desktop.in.h:2
-#, fuzzy
 msgid "Use an on-screen keyboard"
-msgstr "Utilitza un teclat en pantalla"
+msgstr "Utilitzeu un teclat en pantalla"
 
 #: ../data/greeter-autostart/metacity.desktop.in.h:1
 msgid "Metacity"
@@ -512,7 +511,7 @@ msgstr ""
 msgid "PolicyKit Authentication Agent"
 msgstr "Agent d'autenticació del PolicyKit"
 
-#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:148
+#: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Seleccioneu el sistema"
 
@@ -524,37 +523,37 @@ msgstr "XDMCP: No s'ha pogut crear la memòria intermèdia de l'XDMCP"
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: no s'ha pogut llegir la capçalera de l'XDMCP"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:250
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
 msgid "Value"
 msgstr "Valor"
 
-#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:251
+#: ../gui/simple-greeter/gdm-cell-renderer-timer.c:240
 msgid "percentage of time complete"
 msgstr "percentatge de temps completat"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1469
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1465
 msgid "Inactive Text"
 msgstr "Text inactiu"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1470
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1466
 msgid "The text to use in the label if the user hasn't picked an item yet"
 msgstr ""
 "El text a utilitzar a l'etiqueta si l'usuari encara no ha seleccionat cap "
 "element"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1478
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1474
 msgid "Active Text"
 msgstr "Text actiu"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1479
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1475
 msgid "The text to use in the label if the user has picked an item"
 msgstr "El text a utilitzar a l'etiqueta si l'usuari ha seleccionat un element"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1488
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1484
 msgid "List Visible"
 msgstr "La llista és visible"
 
-#: ../gui/simple-greeter/gdm-chooser-widget.c:1489
+#: ../gui/simple-greeter/gdm-chooser-widget.c:1485
 msgid "Whether the chooser list is visible"
 msgstr "Si la llista per triar l'usuari és visible"
 
@@ -590,72 +589,69 @@ msgstr "%a %H:%M:%S"
 msgid "%a %l:%M %p"
 msgstr "%a %H:%M"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:290
-#, fuzzy
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:293
 msgid "Automatically logging in…"
-msgstr "S'està entrant de manera automàtica..."
+msgstr "S'està entrant de manera automàtica…"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:576
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:585
 msgid "Select language and click Log In"
 msgstr "Seleccioneu la llengua i feu clic a «Entra»"
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:694
-#, fuzzy
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:701
 msgid "Cancelling…"
-msgstr "S'està cancel·lant..."
+msgstr "S'està cancel·lant…"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1091
+msgctxt "customsession"
+msgid "Custom"
+msgstr "Personalitzat"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1092
+msgid "Custom session"
+msgstr "Sessió personalitzada"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
+msgid "Cancel"
+msgstr "Cancel·la"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
 msgid "Computer Name"
 msgstr "Nom de l'ordinador"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
-#, fuzzy
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
 msgid "Login"
 msgstr "Entra"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-#, fuzzy
-msgid "Unlock"
-msgstr "_Desbloca"
-
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
+msgid "Unlock"
+msgstr "Desbloca"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
 msgid "Version"
 msgstr "Versió"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:738
-msgid "Panel"
-msgstr "Quadre"
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:803
-#, fuzzy
-msgid "Shutdown Options…"
-msgstr "Opcions d'aturada..."
-
-#: ../gui/simple-greeter/gdm-greeter-panel.c:825
+#: ../gui/simple-greeter/gdm-greeter-panel.c:907
 msgid "Suspend"
-msgstr "Atura temporalment"
+msgstr "Para temporalment"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:830
+#: ../gui/simple-greeter/gdm-greeter-panel.c:912
 msgid "Restart"
 msgstr "Reinicia"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:834
+#: ../gui/simple-greeter/gdm-greeter-panel.c:916
 msgid "Shut Down"
-msgstr "Atura"
+msgstr "Para"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1109
-#, fuzzy
-msgctxt "customsession"
-msgid "Custom"
-msgstr "_Personalitzat:"
+#: ../gui/simple-greeter/gdm-greeter-panel.c:965
+msgid "Unknown time remaining"
+msgstr "Es desconeix el temps restant"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1110
-#, fuzzy
-msgid "Custom session"
-msgstr "Darrera sessió"
+#: ../gui/simple-greeter/gdm-greeter-panel.c:987
+msgid "Panel"
+msgstr "Quadre"
 
-#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:201
+#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:252
 msgid "Languages"
 msgstr "Llengües"
 
@@ -671,51 +667,21 @@ msgstr "_Llengua:"
 #. * with a list of languages to choose from
 #.
 #: ../gui/simple-greeter/gdm-language-option-widget.c:231
-#, fuzzy
 msgctxt "language"
 msgid "Other…"
-msgstr "_Altres"
+msgstr "Altres…"
 
 #: ../gui/simple-greeter/gdm-language-option-widget.c:232
 msgid "Choose a language from the full list of available languages."
 msgstr "Trieu una llengua de les que hi ha disponibles a la llista."
 
 #: ../gui/simple-greeter/gdm-language-option-widget.c:262
-#, fuzzy
 msgid "Language"
-msgstr "Llengües"
+msgstr "Llengua"
 
-#: ../gui/simple-greeter/gdm-languages.c:698
+#: ../gui/simple-greeter/gdm-languages.c:709
 msgid "Unspecified"
 msgstr "No especificat"
-
-#: ../gui/simple-greeter/gdm-layout-chooser-dialog.c:191
-msgid "Keyboard layouts"
-msgstr "Disposicions de teclat"
-
-#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:202
-#: ../gui/simple-greeter/gdm-layout-chooser-widget.c:203
-msgid "_Keyboard:"
-msgstr "_Teclat:"
-
-#. translators: This brings up a dialog of
-#. * available keyboard layouts
-#.
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:223
-#, fuzzy
-msgctxt "keyboard"
-msgid "Other…"
-msgstr "_Altres"
-
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:224
-msgid "Choose a keyboard layout from the full list of available layouts."
-msgstr ""
-"Trieu una disposició de teclat de les que hi ha disponibles a la llista."
-
-#: ../gui/simple-greeter/gdm-layout-option-widget.c:254
-#, fuzzy
-msgid "Keyboard"
-msgstr "_Teclat:"
 
 #: ../gui/simple-greeter/gdm-option-widget.c:505
 msgid "Label Text"
@@ -750,9 +716,9 @@ msgid "The maximum number of items to keep around in the list"
 msgstr "El nombre màxim d'elements a mantindre per a la llista"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:188
-#, fuzzy, c-format
+#, c-format
 msgid "Remote Login (Connecting to %s…)"
-msgstr "Entrada remota (s'està connectant a %s...)"
+msgstr "Entrada remota (s'està connectant a %s…)"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:202
 #, c-format
@@ -764,9 +730,8 @@ msgid "Remote Login"
 msgstr "Entrada remota"
 
 #: ../gui/simple-greeter/gdm-session-option-widget.c:162
-#, fuzzy
 msgid "Session"
-msgstr "Sessions"
+msgstr "Sessió"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
 msgid "Banner message text"
@@ -810,70 +775,56 @@ msgid "Icon name to use for greeter logo"
 msgstr "El nom de la icona a utilitzar com a logotip del rebedor"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
-msgid "Recently selected keyboard layouts"
-msgstr "Disposicions de teclat seleccionades recentment"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Recently selected languages"
 msgstr "Llengües seleccionades recentment"
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
-#, fuzzy
-msgid ""
-"Set to a list of keyboard layouts to be shown by default in the login window."
-msgstr ""
-"Establiu-ho a una llista de disposicions de teclat a mostrar de manera "
-"predeterminada a la finestra d'entrada."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-#, fuzzy
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
 msgid "Set to a list of languages to be shown by default in the login window."
 msgstr ""
 "Establiu-ho a una llista de llengües a mostrar de manera predeterminada a la "
 "finestra d'entrada."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
 msgid "Set to the themed icon name to use for the greeter logo."
 msgstr ""
 "Establiu-ho al nom de la icona de tema a utilitzar per al logotip del "
 "rebedor."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Set to true to disable showing known users in the login window."
 msgstr ""
 "Establiu-ho a «true» (cert) per evitar que es mostren els usuaris coneguts a "
 "la pantalla d'entrada."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Establiu-ho a «true» (cert) per evitar que es mostren els botons de reinici "
 "a la pantalla d'entrada."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
-#, fuzzy
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to true to enable the XRandR settings manager plugin."
 msgstr ""
-"Establiu-ho a «true» (cert) per habilitar el connector de gestió dels "
-"paràmetres de l'xrandr."
+"Establiu-ho a «true» (cert) per habilitar el connector del gestor de "
+"paràmetres XRandR."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to true to enable the background settings manager plugin."
 msgstr ""
 "Establiu-ho a «true» (cert) per habilitar el connector de gestió dels "
 "paràmetres del fons de pantalla."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
 msgid "Set to true to enable the media-keys settings manager plugin."
 msgstr ""
 "Establiu-ho a «true» (cert) per habilitar el connector de gestió dels "
 "paràmetres de les tecles multimèdia."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid "Set to true to enable the on-screen keyboard."
 msgstr "Establiu-ho a «true» (cert) per habilitar el teclat en pantalla."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid ""
 "Set to true to enable the plugin to manage the accessibility keyboard "
 "settings."
@@ -881,40 +832,38 @@ msgstr ""
 "Establiu-ho a «true» (cert) per habilitar el connector de gestió dels "
 "paràmetres del teclat accessible."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid "Set to true to enable the screen magnifier."
 msgstr "Establiu-ho a «true» (cert) per habilitar l'ampliador de pantalla."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "Set to true to enable the screen reader."
 msgstr "Establiu-ho a «true» (cert) per habilitar el lector de pantalla."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
 msgid "Set to true to enable the sound settings manager plugin."
 msgstr ""
 "Establiu-ho a «true» (cert) per habilitar el connector de gestió dels "
 "paràmetres del so."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to true to enable the xsettings settings manager plugin."
 msgstr ""
 "Establiu-ho a «true» (cert) per habilitar el connector de gestió dels "
 "paràmetres de l'xsettings."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid "Set to true to show the banner message text."
 msgstr ""
 "Establiu-ho a «true» (cert) per mostrar el text del missatge del bàner."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
-#, fuzzy
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
 msgid "Set to true to use Compiz as the window manager."
 msgstr ""
 "Establiu-ho a «true» (cert) per utilitzar el Compiz com a gestor de "
 "finestres."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
-#, fuzzy
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
 msgid ""
 "Text banner message to show in the login window when the user chooser is "
 "empty, instead of banner_message_text."
@@ -922,42 +871,39 @@ msgstr ""
 "Missatge de text del bàner a mostrar a la finestra d'entrada quan el "
 "selector d'usuari siga buit, en lloc del paràmetre «banner_message_text»."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
-#, fuzzy
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
 msgid "Text banner message to show in the login window."
 msgstr "Missatge de text del bàner a mostrar a la finestra d'entrada."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
-#, fuzzy
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "True if the XRandR settings manager plugin is enabled."
 msgstr ""
-"És cert si el connector del gestor de paràmetres de l'xrandr està habilitat."
+"És cert si el connector del gestor de paràmetres XRrandR està habilitat."
 
 # FIXME: a quin «background» es refereix? (dpm)
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "True if the background settings manager plugin is enabled."
 msgstr ""
 "És cert si el connector del gestor de paràmetres de fons està habilitat."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr ""
 "És cert si el connector del gestor de paràmetres de les tecles multimèdia "
 "està habilitat."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "True if the sound settings manager plugin is enabled."
 msgstr ""
 "És cert si el connector del gestor de paràmetres del so està habilitat."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:35
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the xsettings settings manager plugin is enabled."
 msgstr ""
 "És cert si el connector del gestor de paràmetres de l'xsettings està "
 "habilitat."
 
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:36
-#, fuzzy
+#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "Use Compiz as the window manager"
 msgstr "Utilitza el Compiz com a gestor de finestres"
 
@@ -967,7 +913,7 @@ msgstr "Durada"
 
 #: ../gui/simple-greeter/gdm-timer.c:150
 msgid "Number of seconds until timer stops"
-msgstr "Nombre de segons abans d'aturar el temporitzador"
+msgstr "Nombre de segons abans d'parar el temporitzador"
 
 #: ../gui/simple-greeter/gdm-timer.c:157
 msgid "Start time"
@@ -985,8 +931,8 @@ msgstr "S'està executant?"
 msgid "Whether the timer is currently ticking"
 msgstr "Si el temporitzador està activat"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:194
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:484
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:459
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:781
 #, c-format
 msgid "Log in as %s"
 msgstr "Entra com a %s"
@@ -996,174 +942,34 @@ msgstr "Entra com a %s"
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:262
-#, fuzzy
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
 msgctxt "user"
 msgid "Other…"
-msgstr "_Altres"
+msgstr "Altres…"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:263
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
 msgid "Choose a different account"
 msgstr "Seleccioneu un compte diferent"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:277
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
 msgid "Guest"
 msgstr "Convidat"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:278
-#, fuzzy
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:561
 msgid "Log in as a temporary guest"
 msgstr "Entra com a convidat temporal"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:293
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
 msgid "Automatic Login"
 msgstr "Entrada automàtica"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:294
-#, fuzzy
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:577
 msgid "Automatically log into the system after selecting options"
 msgstr "Entra automàticament a la sessió després de seleccionar les opcions"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:996
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1337
 msgid "Currently logged in"
 msgstr "Actualment connectat"
-
-#: ../gui/user-switch-applet/applet.c:163
-msgid ""
-"The User Switch Applet is free software; you can redistribute it and/or "
-"modify it under the terms of the GNU General Public License as published by "
-"the Free Software Foundation; either version 2 of the License, or (at your "
-"option) any later version."
-msgstr ""
-"La miniaplicació del commutador d'usuaris és programari lliure; podeu "
-"redistribuir-la i/o modificar-la d'acord amb els termes de la llicència "
-"pública general de GNU tal com la publica la Free Software Foundation, ja "
-"siga la versió 2 de la llicència, o bé, si així ho voleu, qualsevol altra "
-"versió posterior."
-
-#: ../gui/user-switch-applet/applet.c:167
-msgid ""
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
-"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details."
-msgstr ""
-"Este programa es distribueix amb l'esperança que siga útil, però SENSE CAP "
-"TIPUS DE GARANTIA, NI EXPLÍCITA NI IMPLÍCITA; AIXÒ INCLOU, SENSE LIMITAR-"
-"S'HI, LES GARANTIES IMPLÍCITES DE COMERCIALITZACIÓ I ADEQUACIÓ A UN ÚS "
-"CONCRET. Vegeu la llicència pública general de GNU per obtindre'n més "
-"detalls."
-
-#: ../gui/user-switch-applet/applet.c:171
-msgid ""
-"You should have received a copy of the GNU General Public License along with "
-"this program; if not, write to the Free Software Foundation, Inc., 51 "
-"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
-msgstr ""
-"Hauríeu d'haver rebut una còpia de la llicència pública general de GNU "
-"juntament amb este programa. Si este no és el cas, escriviu a la Free "
-"Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA "
-"02110-1301, USA."
-
-#: ../gui/user-switch-applet/applet.c:185
-msgid "A menu to quickly switch between users."
-msgstr "Un menú per commutar ràpidament d'usuari."
-
-#: ../gui/user-switch-applet/applet.c:189
-msgid "translator-credits"
-msgstr ""
-"Jordi Mallach <jordi@sindominio.net>\n"
-"Xavier Conde Rueda <xavi.conde@gmail.com>\n"
-"David Planella Molas <david.planella@gmail.com>"
-
-#: ../gui/user-switch-applet/applet.c:665
-#: ../gui/user-switch-applet/applet.c:794
-#: ../gui/user-switch-applet/applet.c:836
-#, c-format
-msgid "Can't lock screen: %s"
-msgstr "No es pot blocar la pantalla: %s"
-
-#: ../gui/user-switch-applet/applet.c:687
-#, c-format
-msgid "Can't temporarily set screensaver to blank screen: %s"
-msgstr ""
-"No es pot fer que l'estalvi de pantalla enfosquïsca la pantalla de manera "
-"transitòria: %s"
-
-#: ../gui/user-switch-applet/applet.c:895
-#, fuzzy, c-format
-msgid "Can't log out: %s"
-msgstr "No es pot eixir: %s"
-
-#: ../gui/user-switch-applet/applet.c:979
-msgid "Available"
-msgstr "Disponible"
-
-#: ../gui/user-switch-applet/applet.c:980
-msgid "Invisible"
-msgstr "Invisible"
-
-#: ../gui/user-switch-applet/applet.c:981
-msgid "Busy"
-msgstr "Ocupat"
-
-#: ../gui/user-switch-applet/applet.c:982
-msgid "Away"
-msgstr "Absent"
-
-#: ../gui/user-switch-applet/applet.c:1128
-msgid "Account Information"
-msgstr "Informació del compte"
-
-#: ../gui/user-switch-applet/applet.c:1140
-msgid "System Preferences"
-msgstr "Preferències del sistema"
-
-#: ../gui/user-switch-applet/applet.c:1154
-msgid "Lock Screen"
-msgstr "Bloca la pantalla"
-
-#. Only show if not locked down
-#: ../gui/user-switch-applet/applet.c:1165
-msgid "Switch User"
-msgstr "Commuta d'usuari"
-
-#. Only show switch user if there are other users
-#: ../gui/user-switch-applet/applet.c:1176
-msgid "Quit…"
-msgstr ""
-
-#: ../gui/user-switch-applet/applet.c:1422
-msgid "User Switch Applet"
-msgstr "Miniaplicació del commutador d'usuari"
-
-#: ../gui/user-switch-applet/applet.c:1437
-msgid "Change account settings and status"
-msgstr "Canvia els paràmetres del compte i l'estat"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:1
-msgid "A menu to quickly switch between users"
-msgstr "Un menú per commutar ràpidament d'usuari"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:2
-msgid "User Switcher"
-msgstr "Commutador d'usuari"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.server.in.in.h:3
-msgid "User Switcher Applet Factory"
-msgstr "Fàbrica de la miniaplicació del commutador d'usuari"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:1
-msgid "Edit Personal _Information"
-msgstr "Edita la _informació personal"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:2
-msgid "_About"
-msgstr "_Quant a"
-
-#: ../gui/user-switch-applet/GNOME_FastUserSwitchApplet.xml.h:3
-msgid "_Edit Users and Groups"
-msgstr "_Edita els usuaris i els grups"
 
 #: ../utils/gdmflexiserver.c:61
 msgid "Only the VERSION command is supported"
@@ -1175,9 +981,8 @@ msgstr "ORDRE"
 
 #: ../utils/gdmflexiserver.c:62 ../utils/gdmflexiserver.c:63
 #: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
-#, fuzzy
 msgid "Ignored — retained for compatibility"
-msgstr "Ignorat - existeix només per compatibilitat"
+msgstr "Ignorat — existeix només per compatibilitat"
 
 #: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
@@ -1201,14 +1006,152 @@ msgstr "- Entrada GDM nova"
 msgid "Unable to start new display"
 msgstr "No es pot iniciar la pantalla nova"
 
-#: ../utils/gdm-screenshot.c:216
+#: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
 msgstr "S'ha fet una captura de pantalla"
 
 #. Option parsing
-#: ../utils/gdm-screenshot.c:283
+#: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Fes una foto de la pantalla"
+
+#~ msgid "Keyboard layouts"
+#~ msgstr "Disposicions de teclat"
+
+#~ msgid "_Keyboard:"
+#~ msgstr "_Teclat:"
+
+#~ msgctxt "keyboard"
+#~ msgid "Other…"
+#~ msgstr "Altres…"
+
+#~ msgid "Choose a keyboard layout from the full list of available layouts."
+#~ msgstr ""
+#~ "Trieu una disposició de teclat de les que hi ha disponibles a la llista."
+
+#~ msgid "Keyboard"
+#~ msgstr "Teclat"
+
+#~ msgid "Recently selected keyboard layouts"
+#~ msgstr "Disposicions de teclat seleccionades recentment"
+
+#~ msgid ""
+#~ "Set to a list of keyboard layouts to be shown by default in the login "
+#~ "window."
+#~ msgstr ""
+#~ "Establiu-ho a una llista de disposicions de teclat a mostrar de manera "
+#~ "predeterminada a la finestra d'entrada."
+
+#~ msgid "Shutdown Options…"
+#~ msgstr "Opcions d'aturada…"
+
+#~ msgid ""
+#~ "The User Switch Applet is free software; you can redistribute it and/or "
+#~ "modify it under the terms of the GNU General Public License as published "
+#~ "by the Free Software Foundation; either version 2 of the License, or (at "
+#~ "your option) any later version."
+#~ msgstr ""
+#~ "La miniaplicació del commutador d'usuaris és programari lliure; podeu "
+#~ "redistribuir-la i/o modificar-la d'acord amb els termes de la llicència "
+#~ "pública general de GNU tal com la publica la Free Software Foundation, ja "
+#~ "sigui la versió 2 de la llicència, o bé, si així ho voleu, qualsevol "
+#~ "altra versió posterior."
+
+#~ msgid ""
+#~ "This program is distributed in the hope that it will be useful, but "
+#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
+#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
+#~ "Public License for more details."
+#~ msgstr ""
+#~ "Aquest programa es distribueix amb l'esperança que sigui útil, però SENSE "
+#~ "CAP TIPUS DE GARANTIA, NI EXPLÍCITA NI IMPLÍCITA; AIXÒ INCLOU, SENSE "
+#~ "LIMITAR-S'HI, LES GARANTIES IMPLÍCITES DE COMERCIALITZACIÓ I ADEQUACIÓ A "
+#~ "UN ÚS CONCRET. Vegeu la llicència pública general de GNU per obtenir-ne "
+#~ "més detalls."
+
+#~ msgid ""
+#~ "You should have received a copy of the GNU General Public License along "
+#~ "with this program; if not, write to the Free Software Foundation, Inc., "
+#~ "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA "
+#~ msgstr ""
+#~ "Hauríeu d'haver rebut una còpia de la llicència pública general de GNU "
+#~ "juntament amb aquest programa. Si aquest no és el cas, escriviu a la Free "
+#~ "Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA "
+#~ "02110-1301, USA."
+
+#~ msgid "A menu to quickly switch between users."
+#~ msgstr "Un menú per commutar ràpidament d'usuari."
+
+#~ msgid "translator-credits"
+#~ msgstr ""
+#~ "Jordi Mallach <jordi@sindominio.net>\n"
+#~ "Xavier Conde Rueda <xavi.conde@gmail.com>\n"
+#~ "David Planella Molas <david.planella@gmail.com>"
+
+#~ msgid "Can't lock screen: %s"
+#~ msgstr "No es pot blocar la pantalla: %s"
+
+#~ msgid "Can't temporarily set screensaver to blank screen: %s"
+#~ msgstr ""
+#~ "No es pot fer que l'estalvi de pantalla enfosqueixi la pantalla de manera "
+#~ "transitòria: %s"
+
+#~ msgid "Can't log out: %s"
+#~ msgstr "No es pot sortir: %s"
+
+#~ msgid "Available"
+#~ msgstr "Disponible"
+
+#~ msgid "Invisible"
+#~ msgstr "Invisible"
+
+#~ msgid "Busy"
+#~ msgstr "Ocupat"
+
+#~ msgid "Away"
+#~ msgstr "Absent"
+
+#~ msgid "Account Information"
+#~ msgstr "Informació del compte"
+
+#~ msgid "System Preferences"
+#~ msgstr "Preferències del sistema"
+
+#~ msgid "Lock Screen"
+#~ msgstr "Bloca la pantalla"
+
+#~ msgid "Switch User"
+#~ msgstr "Commuta d'usuari"
+
+#~ msgid "Quit…"
+#~ msgstr "Surt…"
+
+#~ msgid "User Switch Applet"
+#~ msgstr "Miniaplicació del commutador d'usuari"
+
+#~ msgid "Change account settings and status"
+#~ msgstr "Canvia els paràmetres del compte i l'estat"
+
+#~ msgid "A menu to quickly switch between users"
+#~ msgstr "Un menú per commutar ràpidament d'usuari"
+
+#~ msgid "User Switcher"
+#~ msgstr "Commutador d'usuari"
+
+#~ msgid "User Switcher Applet Factory"
+#~ msgstr "Fàbrica de la miniaplicació del commutador d'usuari"
+
+#~ msgid "Edit Personal _Information"
+#~ msgstr "Edita la _informació personal"
+
+#~ msgid "_About"
+#~ msgstr "_Quant a"
+
+#~ msgid "_Edit Users and Groups"
+#~ msgstr "_Edita els usuaris i els grups"
+
+#~ msgid "Unknown"
+#~ msgstr "Desconegut"
 
 #~ msgid "Couldn't set groupid to 0"
 #~ msgstr "No s'ha pogut definir el groupid com a 0"
@@ -1239,9 +1182,6 @@ msgstr "Fes una foto de la pantalla"
 
 #~ msgid "Quit..."
 #~ msgstr "Surt..."
-
-#~ msgid "Unknown"
-#~ msgstr "Desconegut"
 
 #~ msgid "Enable debugging code"
 #~ msgstr "Habilita el codi de depuració"
