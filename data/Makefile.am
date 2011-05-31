@@ -94,6 +94,8 @@ EXTRA_DIST =			\
 	PostLogin 		\
 	gconf.path		\
 	session-setup.entries	\
+	mime-dummy-handler.desktop	\
+	mimeapps.list			\
 	$(NULL)
 
 CLEANFILES = 				\
@@ -222,6 +224,12 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 		chown root:gdm $(DESTDIR)$(workingdir) || : ; \
 	fi
 
+	if test '!' -d $(DESTDIR)$(workingdir)/.local/share/applications; then \
+		$(mkinstalldirs) $(DESTDIR)$(workingdir)/.local/share/applications; \
+		chmod 0755 $(DESTDIR)$(workingdir)/.local/share/applications; \
+		chown gdm:gdm $(DESTDIR)$(workingdir)/.local/share/applications || : ; \
+	fi
+
 	if test '!' -d $(DESTDIR)$(cachedir); then \
 		$(mkinstalldirs) $(DESTDIR)$(cachedir); \
 		chmod 1755 $(DESTDIR)$(cachedir); \
@@ -235,4 +243,5 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 	chmod 1750 $(DESTDIR)$(workingdir)/.gconf.mandatory
 	chmod 1640 $(DESTDIR)$(workingdir)/.gconf.mandatory/*.xml
 
-
+	$(INSTALL_DATA) $(srcdir)/mime-dummy-handler.desktop $(DESTDIR)$(workingdir)/.local/share/applications/mime-dummy-handler.desktop
+	$(INSTALL_DATA) $(srcdir)/mimeapps.list $(DESTDIR)$(workingdir)/.local/share/applications/mimeapps.list
