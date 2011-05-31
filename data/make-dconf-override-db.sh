@@ -3,6 +3,7 @@
 set -e
 
 export XDG_CONFIG_HOME=$(mktemp -d --tmpdir="$PWD")
+export XDG_CACHE_HOME="$XDG_CONFIG_HOME"
 eval `dbus-launch --sh-syntax`
 
 trap 'rm -rf $XDG_CONFIG_HOME; kill $DBUS_SESSION_BUS_PID' ERR
