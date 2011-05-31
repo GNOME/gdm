@@ -127,6 +127,8 @@ uninstall-hook:
 	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm \
 	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin \
 	$(DESTDIR)$(workingdir)/.gconf.path \
+	$(DESTDIR)$(workingdir)/.local/share/applications/mime-dummy-handler.desktop \
+	$(DESTDIR)$(workingdir)/.local/share/applications/mimeapps.list \
 	-rf \
 	$(DESTDIR)$(workingdir)/.gconf.mandatory \
 	$(DESTDIR)$(screenshotdir) \
