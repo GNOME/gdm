@@ -2,10 +2,14 @@
 
 set -e
 
-export XDG_CONFIG_HOME=$(mktemp -d --tmpdir="$PWD")
+export TMPDIR=$(mktemp -d --tmpdir="$PWD")
+export XDG_CONFIG_HOME="$TMPDIR/config"
+export XDG_CACHE_HOME="$TMPDIR/cache"
+mkdir -p $XDG_CONFIG_HOME $XDG_CACHE_HOME
+
 eval `dbus-launch --sh-syntax`
 
-trap 'rm -rf $XDG_CONFIG_HOME; kill $DBUS_SESSION_BUS_PID' ERR
+trap 'rm -rf $TMPDIR; kill $DBUS_SESSION_BUS_PID' ERR
 
 gsettings set org.gnome.power-manager show-actions false
 
@@ -51,6 +55,6 @@ gsettings set org.gnome.settings-daemon.plugins.xrandr active true
 gsettings set org.gnome.settings-daemon.plugins.xsettings active true
 
 mv $XDG_CONFIG_HOME/dconf/user dconf-override-db
-rm -rf $XDG_CONFIG_HOME
+rm -rf $TMPDIR
 
 kill $DBUS_SESSION_BUS_PID
