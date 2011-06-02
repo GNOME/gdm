@@ -1,8 +1,16 @@
 ===============
+Version 2.30.7
+===============
+- Register /bin/true as URI scheme handler for several schemes (CVE-2011-1709)
+- Fix double free issue in chooser.
+- Only set WINDOWPATH in the user session if it not NULL.
+
+===============
 Version 2.30.6
 ===============
 - CVE-2011-0727 - change to user before copying user files
-- Fix PostSession script so it is called when GDM shuts down or the main GDM daemon is killed.
+- Fix PostSession script so it is called when GDM shuts down or the main GDM
+  daemon is killed.
 - XDMCP fixes.
 - Set SIGPIPE handler to default before starting Xsession.
 - Fix Solaris RBAC integration.
