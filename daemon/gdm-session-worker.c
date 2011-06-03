@@ -2018,6 +2018,18 @@ do_setup (GdmSessionWorker *worker)
                 return;
         }
 
+        /* These singal handlers should be disconnected after the loading,
+         * so that gdm_session_settings_set_* APIs don't cause the emitting
+         * of Saved*NameRead D-Bus signals any more.
+         */
+        g_signal_handlers_disconnect_by_func (worker->priv->user_settings,
+                                              G_CALLBACK (on_saved_session_name_read),
+                                              worker);
+
+        g_signal_handlers_disconnect_by_func (worker->priv->user_settings,
+                                              G_CALLBACK (on_saved_language_name_read),
+                                              worker);
+
         send_dbus_void_method (worker->priv->connection, "SetupComplete");
 }
 
