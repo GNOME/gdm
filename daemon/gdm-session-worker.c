@@ -1618,15 +1618,15 @@ gdm_session_worker_watch_child (GdmSessionWorker *worker)
 }
 
 static gboolean
-_fd_is_normal_file (int fd)
+_is_loggable_file (const char* filename)
 {
         struct stat file_info;
 
-        if (fstat (fd, &file_info) < 0) {
+        if (g_lstat (filename, &file_info) < 0) {
                 return FALSE;
         }
 
-        return S_ISREG (file_info.st_mode);
+        return S_ISREG (file_info.st_mode) && g_access (filename, R_OK | W_OK) == 0;
 }
 
 static int
@@ -1637,7 +1637,7 @@ _open_session_log (const char *dir)
 
         filename = g_build_filename (dir, GDM_SESSION_LOG_FILENAME, NULL);
 
-        if (g_access (dir, R_OK | W_OK | X_OK) == 0 && g_access (filename, R_OK | W_OK) == 0) {
+        if (g_access (dir, R_OK | W_OK | X_OK) == 0 && _is_loggable_file (filename)) {
                 char *filename_old;
 
                 filename_old = g_strdup_printf ("%s.old", filename);
@@ -1647,7 +1647,7 @@ _open_session_log (const char *dir)
 
         fd = g_open (filename, O_RDWR | O_APPEND | O_CREAT, 0600);
 
-        if (fd < 0 || !_fd_is_normal_file (fd)) {
+        if (fd < 0) {
                 char *temp_name;
 
                 close (fd);
@@ -1661,7 +1661,7 @@ _open_session_log (const char *dir)
                         goto out;
                 }
 
-                g_warning ("session log '%s' is not a normal file, logging session to '%s' instead.\n", filename,
+                g_warning ("session log '%s' is not appendable, logging session to '%s' instead.\n", filename,
                            temp_name);
                 g_free (filename);
                 filename = temp_name;
