@@ -48,7 +48,9 @@ done
 
 gsettings set org.gnome.settings-daemon.plugins.a11y-keyboard active true
 gsettings set org.gnome.settings-daemon.plugins.background active true
+gsettings set org.gnome.settings-daemon.plugins.cursor active true
 gsettings set org.gnome.settings-daemon.plugins.media-keys active true
+gsettings set org.gnome.settings-daemon.plugins.orientation active true
 gsettings set org.gnome.settings-daemon.plugins.power active true
 gsettings set org.gnome.settings-daemon.plugins.sound active true
 gsettings set org.gnome.settings-daemon.plugins.xrandr active true
