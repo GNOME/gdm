@@ -265,17 +265,39 @@
       <para>
         The greeter program is run as the unprivileged "gdm"
         user/group.  This user and group are described in the
-        "Security" section of this document.  The main function of
-        the greeter program is to authenticate the user.  The authentication
+        "Security" section of this document.  The main functions of
+        the greeter program are to provide a mechanism for selecting
+        an account for log in and to drive the dialogue between
+        the user and system when authenticating that account. The authentication
         process is driven by Pluggable Authentication Modules (PAM).  The PAM
         modules determine what prompts (if any) are shown to the user to
         authenticate.  On the average system, the greeter program will request
         a username and password for authentication.  However some systems may
-        be configured to use alternative mechanisms such as a fingerprint or
-        SmartCard reader.  GDM and PAM can be configured to not require any
+        be configured to use supplemental mechanisms such as a fingerprint or
+        SmartCard readers. GDM can be configured to support these
+        alternatives in parallel with greeter login extensions and the
+        <command>--enable-split-authentication</command>
+        <filename>./configure</filename> option, or one at a
+        time via system PAM configuration.
+      </para>
+
+      <para>
+         The smartcard extension can enabled or disabled via the
+         <filename>org.gnome.display-manager.extensions.smartcard.active</filename>
+         gsettings key.
+      </para>
+
+      <para>
+         Likewise, the fingerprint extension can enabled or disabled via the
+         <filename>org.gnome.display-manager.extensions.fingerprint.active</filename>
+         gsettings key.
+      </para>
+
+      <para>
+        GDM and PAM can be configured to not require any
         input, which will cause GDM to automatically log in and simply
         start a session, which can be useful for some environments, such as
-        for kiosks.
+        single user systems or kiosks.
       </para>
 
       <para>
