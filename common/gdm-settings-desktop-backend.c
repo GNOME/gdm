@@ -36,8 +36,6 @@
 
 #include "gdm-settings-desktop-backend.h"
 
-#include "gdm-marshal.h"
-
 #define GDM_SETTINGS_DESKTOP_BACKEND_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SETTINGS_DESKTOP_BACKEND, GdmSettingsDesktopBackendPrivate))
 
 struct GdmSettingsDesktopBackendPrivate

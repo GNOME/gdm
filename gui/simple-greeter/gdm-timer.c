@@ -34,8 +34,6 @@
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
 
-#include "gdm-marshal.h"
-
 #define GDM_TIMER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_TIMER, GdmTimerPrivate))
 
 #ifndef GDM_TIMER_TICKS_PER_SECOND
@@ -131,7 +129,7 @@ gdm_timer_class_init (GdmTimerClass *klass)
                                       G_STRUCT_OFFSET (GdmTimerClass, tick),
                                       NULL,
                                       NULL,
-                                      gdm_marshal_VOID__DOUBLE,
+                                      g_cclosure_marshal_generic,
                                       G_TYPE_NONE,
                                       1, G_TYPE_DOUBLE);
         signals[STOP] = g_signal_new ("stop",

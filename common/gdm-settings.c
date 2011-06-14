@@ -42,8 +42,6 @@
 
 #include "gdm-settings-desktop-backend.h"
 
-#include "gdm-marshal.h"
-
 #define GDM_DBUS_PATH         "/org/gnome/DisplayManager"
 #define GDM_SETTINGS_DBUS_PATH GDM_DBUS_PATH "/Settings"
 #define GDM_SETTINGS_DBUS_NAME "org.gnome.DisplayManager.Settings"
@@ -178,7 +176,7 @@ gdm_settings_class_init (GdmSettingsClass *klass)
                               G_STRUCT_OFFSET (GdmSettingsClass, value_changed),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               3,
                               G_TYPE_STRING,

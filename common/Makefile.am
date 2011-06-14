@@ -30,8 +30,6 @@ noinst_LTLIBRARIES = 		\
 
 BUILT_SOURCES =			\
 	gdm-settings-glue.h	\
-	gdm-marshal.c		\
-	gdm-marshal.h		\
 	$(NULL)
 
 gdmdir = $(datadir)/gdm
@@ -53,13 +51,6 @@ gdm_crash_logger_LDADD = $(GTHREAD_LIBS)
 
 gdm-settings-glue.h: gdm-settings.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_settings --mode=glib-server --output=gdm-settings-glue.h $(srcdir)/gdm-settings.xml
-
-gdm-marshal.c: gdm-marshal.list
-	echo "#include \"gdm-marshal.h\"" > $@ && \
-	@GLIB_GENMARSHAL@ $< --prefix=gdm_marshal --body >> $@
-
-gdm-marshal.h: gdm-marshal.list
-	@GLIB_GENMARSHAL@ $< --prefix=gdm_marshal --header > $@
 
 if MKDTEMP_MISSING
 MKDTEMP_FILES = mkdtemp.c mkdtemp.h
@@ -97,10 +88,6 @@ libgdmcommon_la_SOURCES =	\
 	gdm-signal-handler.c	\
 	$(MKDTEMP_FILES) 	\
 	$(NULL)
-
-nodist_libgdmcommon_la_SOURCES =	\
-	gdm-marshal.c		\
-	gdm-marshal.h
 
 libgdmcommon_la_CPPFLAGS = 		\
 	$(AM_CPPFLAGS)			\

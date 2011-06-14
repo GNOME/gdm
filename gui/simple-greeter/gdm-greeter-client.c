@@ -34,7 +34,6 @@
 #include <dbus/dbus-glib-lowlevel.h>
 
 #include "gdm-greeter-client.h"
-#include "gdm-marshal.h"
 #include "gdm-profile.h"
 
 #define GDM_GREETER_CLIENT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_CLIENT, GdmGreeterClientPrivate))
@@ -940,7 +939,7 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterClientClass, info_query),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
@@ -952,7 +951,7 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterClientClass, secret_info_query),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
@@ -964,7 +963,7 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterClientClass, info),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
@@ -976,7 +975,7 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterClientClass, problem),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
@@ -1071,7 +1070,7 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterClientClass, timed_login_requested),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_INT,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2, G_TYPE_STRING, G_TYPE_INT);
 

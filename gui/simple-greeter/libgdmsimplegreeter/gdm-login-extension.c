@@ -23,7 +23,6 @@
 #include <glib-object.h>
 
 #include "gdm-login-extension.h"
-#include "gdm-marshal.h"
 
 enum {
         ENABLED,
@@ -99,7 +98,7 @@ gdm_login_extension_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmLoginExtensionIface, user_chosen),
                               NULL,
                               NULL,
-                              gdm_marshal_BOOLEAN__STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_BOOLEAN,
                               1, G_TYPE_STRING);
         signals [CANCEL] =

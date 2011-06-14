@@ -51,7 +51,6 @@
 #include "gdm-common.h"
 #include "gdm-log.h"
 #include "gdm-session-worker.h"
-#include "gdm-marshal.h"
 
 #if defined (HAVE_ADT)
 #include "gdm-session-solaris-auditor.h"

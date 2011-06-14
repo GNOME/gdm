@@ -53,8 +53,6 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
-#include "gdm-marshal.h"
-
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 #include "gdm-profile.h"
@@ -2170,7 +2168,7 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, begin_verification_for_user),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2, G_TYPE_STRING, G_TYPE_STRING);
         signals [QUERY_ANSWER] =
@@ -2180,7 +2178,7 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterLoginWindowClass, query_answer),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2, G_TYPE_STRING, G_TYPE_STRING);
         signals [USER_SELECTED] =

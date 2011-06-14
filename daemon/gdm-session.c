@@ -24,7 +24,6 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 
-#include "gdm-marshal.h"
 #include "gdm-session.h"
 #include "gdm-session-private.h"
 
@@ -271,7 +270,7 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, setup_failed),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
@@ -313,7 +312,7 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, authentication_failed),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
@@ -334,7 +333,7 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, authorization_failed),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
@@ -355,7 +354,7 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, accreditation_failed),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
@@ -367,7 +366,7 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, info_query),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
@@ -378,7 +377,7 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, secret_info_query),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
@@ -389,7 +388,7 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, info),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
@@ -400,7 +399,7 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, problem),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
@@ -422,7 +421,7 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, session_open_failed),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
@@ -433,7 +432,7 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, session_started),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_INT,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_INT);
@@ -444,7 +443,7 @@ gdm_session_class_init (gpointer g_iface)
                               G_STRUCT_OFFSET (GdmSessionIface, session_start_failed),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);

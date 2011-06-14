@@ -44,7 +44,6 @@
 #include <dbus/dbus-glib-lowlevel.h>
 
 #include "gdm-common.h"
-#include "gdm-marshal.h"
 #include "gdm-greeter-server.h"
 
 #define GDM_GREETER_SERVER_DBUS_PATH      "/org/gnome/DisplayManager/GreeterServer"
@@ -1261,7 +1260,7 @@ gdm_greeter_server_class_init (GdmGreeterServerClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterServerClass, begin_verification_for_user),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);
@@ -1272,7 +1271,7 @@ gdm_greeter_server_class_init (GdmGreeterServerClass *klass)
                               G_STRUCT_OFFSET (GdmGreeterServerClass, query_answer),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING, G_TYPE_STRING);

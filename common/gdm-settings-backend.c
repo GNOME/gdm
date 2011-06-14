@@ -35,8 +35,6 @@
 
 #include "gdm-settings-backend.h"
 
-#include "gdm-marshal.h"
-
 #define GDM_SETTINGS_BACKEND_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SETTINGS_BACKEND, GdmSettingsBackendPrivate))
 
 struct GdmSettingsBackendPrivate
@@ -152,7 +150,7 @@ gdm_settings_backend_class_init (GdmSettingsBackendClass *klass)
                               G_STRUCT_OFFSET (GdmSettingsBackendClass, value_changed),
                               NULL,
                               NULL,
-                              gdm_marshal_VOID__STRING_STRING_STRING,
+                              g_cclosure_marshal_generic,
                               G_TYPE_NONE,
                               3,
                               G_TYPE_STRING,
