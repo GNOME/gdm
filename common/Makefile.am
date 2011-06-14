@@ -144,7 +144,6 @@ CLEANFILES =			\
 
 EXTRA_DIST = 			\
 	gdm-settings.xml	\
-	gdm-marshal.list	\
 	mkdtemp.c 		\
 	mkdtemp.h		\
 	$(gdm_DATA)		\
