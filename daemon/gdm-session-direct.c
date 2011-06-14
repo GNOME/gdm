@@ -2211,6 +2211,8 @@ gdm_session_direct_set_environment_variable (GdmSessionDirect *session,
 static void
 setup_session_environment (GdmSessionDirect *session)
 {
+        const char *locale;
+
         gdm_session_direct_set_environment_variable (session,
                                                      "GDMSESSION",
                                                      get_session_name (session));
@@ -2218,12 +2220,16 @@ setup_session_environment (GdmSessionDirect *session)
                                                      "DESKTOP_SESSION",
                                                      get_session_name (session));
 
-        gdm_session_direct_set_environment_variable (session,
-                                                     "LANG",
-                                                     get_language_name (session));
-        gdm_session_direct_set_environment_variable (session,
-                                                     "GDM_LANG",
-                                                     get_language_name (session));
+        locale = get_language_name (session);
+
+        if (locale != NULL && locale[0] != '\0') {
+                gdm_session_direct_set_environment_variable (session,
+                                                             "LANG",
+                                                             locale);
+                gdm_session_direct_set_environment_variable (session,
+                                                             "GDM_LANG",
+                                                             locale);
+        }
 
         gdm_session_direct_set_environment_variable (session,
                                                      "DISPLAY",
