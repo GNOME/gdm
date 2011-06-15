@@ -34,7 +34,6 @@
 #include "gdm-display-store.h"
 #include "gdm-static-display.h"
 #include "gdm-transient-display.h"
-#include "gdm-static-factory-display.h"
 #include "gdm-product-display.h"
 
 #define GDM_LOCAL_DISPLAY_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_LOCAL_DISPLAY_FACTORY, GdmLocalDisplayFactoryPrivate))
