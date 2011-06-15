@@ -36,8 +36,6 @@ noinst_PROGRAMS = 			\
 	test-filesystem-type		\
 	test-greeter-login-window	\
 	test-greeter-panel		\
-	test-language-chooser		\
-	test-languages			\
 	test-sessions			\
 	test-remote-login-window	\
 	test-user-chooser		\
@@ -89,8 +87,6 @@ test_greeter_panel_SOURCES = 	\
 	gdm-option-widget.c     \
 	gdm-recent-option-widget.h	\
 	gdm-recent-option-widget.c	\
-	gdm-languages.h			\
-	gdm-languages.c			\
 	gdm-cell-renderer-timer.h	\
 	gdm-cell-renderer-timer.c	\
 	gdm-timer.h			\
@@ -99,13 +95,6 @@ test_greeter_panel_SOURCES = 	\
 	gdm-scrollable-widget.c		\
 	gdm-chooser-widget.h		\
 	gdm-chooser-widget.c		\
-	gdm-language-chooser-widget.h	\
-	gdm-language-chooser-widget.c	\
-	locarchive.h			\
-	gdm-language-chooser-dialog.h	\
-	gdm-language-chooser-dialog.c	\
-	gdm-language-option-widget.h	\
-	gdm-language-option-widget.c	\
 	gdm-sessions.h			\
 	gdm-sessions.c			\
 	gdm-session-option-widget.h	\
@@ -139,41 +128,6 @@ test_filesystem_type_SOURCES = 	\
 
 test_filesystem_type_LDADD =	\
 	$(COMMON_LIBS)			\
-	$(NULL)
-
-test_language_chooser_SOURCES = 	\
-	test-language-chooser.c		\
-	gdm-cell-renderer-timer.h	\
-	gdm-cell-renderer-timer.c	\
-	gdm-timer.h			\
-	gdm-timer.c			\
-	gdm-scrollable-widget.h		\
-	gdm-scrollable-widget.c		\
-	gdm-chooser-widget.h		\
-	gdm-chooser-widget.c		\
-	gdm-languages.h			\
-	gdm-languages.c			\
-	gdm-language-chooser-widget.h	\
-	gdm-language-chooser-widget.c	\
-	locarchive.h			\
-	gdm-language-chooser-dialog.h	\
-	gdm-language-chooser-dialog.c	\
-	$(NULL)
-
-test_language_chooser_LDADD =	\
-	$(GTK_LIBS)		\
-	$(GCONF_LIBS)		\
-	$(NULL)
-
-test_languages_SOURCES = 		\
-	test-languages.c		\
-	gdm-languages.h			\
-	gdm-languages.c			\
-	locarchive.h			\
-	$(NULL)
-
-test_languages_LDADD =		\
-	$(GTK_LIBS)		\
 	$(NULL)
 
 test_sessions_SOURCES = 		\
@@ -247,15 +201,6 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-option-widget.c		\
 	gdm-recent-option-widget.h	\
 	gdm-recent-option-widget.c	\
-	gdm-languages.h			\
-	gdm-languages.c			\
-	gdm-language-chooser-widget.h	\
-	gdm-language-chooser-widget.c	\
-	locarchive.h			\
-	gdm-language-chooser-dialog.h	\
-	gdm-language-chooser-dialog.c	\
-	gdm-language-option-widget.h	\
-	gdm-language-option-widget.c	\
 	gdm-sessions.h			\
 	gdm-sessions.c			\
 	gdm-session-option-widget.h	\
