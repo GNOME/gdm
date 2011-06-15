@@ -328,11 +328,11 @@ gdm_display_real_get_timed_login_details (GdmDisplay *display,
         delay = 0;
 
         res = gdm_settings_direct_get_boolean (GDM_KEY_AUTO_LOGIN_ENABLE, &enabled);
-        if (enabled) {
+        if (res && enabled) {
             res = gdm_settings_direct_get_string (GDM_KEY_AUTO_LOGIN_USER, &username);
         }
 
-        if (enabled && username != NULL && username[0] != '\0') {
+        if (enabled && res && username != NULL && username[0] != '\0') {
                 goto out;
         }
 
@@ -341,12 +341,12 @@ gdm_display_real_get_timed_login_details (GdmDisplay *display,
         enabled = FALSE;
 
         res = gdm_settings_direct_get_boolean (GDM_KEY_TIMED_LOGIN_ENABLE, &enabled);
-        if (! enabled) {
+        if (res && ! enabled) {
                 goto out;
         }
 
         res = gdm_settings_direct_get_string (GDM_KEY_TIMED_LOGIN_USER, &username);
-        if (username == NULL || username[0] == '\0') {
+        if (res && (username == NULL || username[0] == '\0')) {
                 enabled = FALSE;
                 g_free (username);
                 username = NULL;
@@ -356,7 +356,7 @@ gdm_display_real_get_timed_login_details (GdmDisplay *display,
         delay = 0;
         res = gdm_settings_direct_get_int (GDM_KEY_TIMED_LOGIN_DELAY, &delay);
 
-        if (delay <= 0) {
+        if (res && delay <= 0) {
                 /* we don't allow the timed login to have a zero delay */
                 delay = 10;
         }

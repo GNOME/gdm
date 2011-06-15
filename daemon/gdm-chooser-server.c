@@ -80,7 +80,6 @@ static guint signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_chooser_server_class_init   (GdmChooserServerClass *klass);
 static void     gdm_chooser_server_init         (GdmChooserServer      *chooser_server);
-static void     gdm_chooser_server_finalize     (GObject               *object);
 
 G_DEFINE_TYPE (GdmChooserServer, gdm_chooser_server, G_TYPE_OBJECT)
 
@@ -515,20 +514,6 @@ gdm_chooser_server_get_property (GObject    *object,
         }
 }
 
-static GObject *
-gdm_chooser_server_constructor (GType                  type,
-                               guint                  n_construct_properties,
-                               GObjectConstructParam *construct_properties)
-{
-        GdmChooserServer      *chooser_server;
-
-        chooser_server = GDM_CHOOSER_SERVER (G_OBJECT_CLASS (gdm_chooser_server_parent_class)->constructor (type,
-                                                                                       n_construct_properties,
-                                                                                       construct_properties));
-
-        return G_OBJECT (chooser_server);
-}
-
 static void
 gdm_chooser_server_class_init (GdmChooserServerClass *klass)
 {
@@ -536,8 +521,6 @@ gdm_chooser_server_class_init (GdmChooserServerClass *klass)
 
         object_class->get_property = gdm_chooser_server_get_property;
         object_class->set_property = gdm_chooser_server_set_property;
-        object_class->constructor = gdm_chooser_server_constructor;
-        object_class->finalize = gdm_chooser_server_finalize;
 
         g_type_class_add_private (klass, sizeof (GdmChooserServerPrivate));
 
@@ -600,23 +583,6 @@ gdm_chooser_server_init (GdmChooserServer *chooser_server)
 {
 
         chooser_server->priv = GDM_CHOOSER_SERVER_GET_PRIVATE (chooser_server);
-}
-
-static void
-gdm_chooser_server_finalize (GObject *object)
-{
-        GdmChooserServer *chooser_server;
-
-        g_return_if_fail (object != NULL);
-        g_return_if_fail (GDM_IS_CHOOSER_SERVER (object));
-
-        chooser_server = GDM_CHOOSER_SERVER (object);
-
-        g_return_if_fail (chooser_server->priv != NULL);
-
-        gdm_chooser_server_stop (chooser_server);
-
-        G_OBJECT_CLASS (gdm_chooser_server_parent_class)->finalize (object);
 }
 
 GdmChooserServer *

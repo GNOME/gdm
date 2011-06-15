@@ -72,7 +72,6 @@ static guint signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_session_relay_class_init    (GdmSessionRelayClass *klass);
 static void     gdm_session_relay_init          (GdmSessionRelay      *session_relay);
-static void     gdm_session_relay_finalize      (GObject              *object);
 static void     gdm_session_iface_init          (GdmSessionIface      *iface);
 
 G_DEFINE_TYPE_WITH_CODE (GdmSessionRelay,
@@ -1233,46 +1232,6 @@ gdm_session_relay_get_address (GdmSessionRelay *session_relay)
 }
 
 static void
-gdm_session_relay_set_property (GObject      *object,
-                                guint         prop_id,
-                                const GValue *value,
-                                GParamSpec   *pspec)
-{
-        switch (prop_id) {
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
-        }
-}
-
-static void
-gdm_session_relay_get_property (GObject    *object,
-                                guint       prop_id,
-                                GValue     *value,
-                                GParamSpec *pspec)
-{
-        switch (prop_id) {
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
-        }
-}
-
-static GObject *
-gdm_session_relay_constructor (GType                  type,
-                               guint                  n_construct_properties,
-                               GObjectConstructParam *construct_properties)
-{
-        GdmSessionRelay      *session_relay;
-
-        session_relay = GDM_SESSION_RELAY (G_OBJECT_CLASS (gdm_session_relay_parent_class)->constructor (type,
-                                                                                                            n_construct_properties,
-                                                                                                            construct_properties));
-
-        return G_OBJECT (session_relay);
-}
-
-static void
 gdm_session_iface_init (GdmSessionIface *iface)
 {
 
@@ -1297,12 +1256,6 @@ static void
 gdm_session_relay_class_init (GdmSessionRelayClass *klass)
 {
         GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-        object_class->get_property = gdm_session_relay_get_property;
-        object_class->set_property = gdm_session_relay_set_property;
-        object_class->constructor = gdm_session_relay_constructor;
-        object_class->finalize = gdm_session_relay_finalize;
-
         g_type_class_add_private (klass, sizeof (GdmSessionRelayPrivate));
 
         signals [CONNECTED] =
@@ -1332,23 +1285,6 @@ gdm_session_relay_init (GdmSessionRelay *session_relay)
 {
 
         session_relay->priv = GDM_SESSION_RELAY_GET_PRIVATE (session_relay);
-}
-
-static void
-gdm_session_relay_finalize (GObject *object)
-{
-        GdmSessionRelay *session_relay;
-
-        g_return_if_fail (object != NULL);
-        g_return_if_fail (GDM_IS_SESSION_RELAY (object));
-
-        session_relay = GDM_SESSION_RELAY (object);
-
-        g_return_if_fail (session_relay->priv != NULL);
-
-        gdm_session_relay_stop (session_relay);
-
-        G_OBJECT_CLASS (gdm_session_relay_parent_class)->finalize (object);
 }
 
 GdmSessionRelay *

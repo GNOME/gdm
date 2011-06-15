@@ -48,13 +48,8 @@ struct GdmStaticDisplayPrivate
         gboolean first_login;
 };
 
-enum {
-        PROP_0,
-};
-
 static void     gdm_static_display_class_init   (GdmStaticDisplayClass *klass);
 static void     gdm_static_display_init         (GdmStaticDisplay      *static_display);
-static void     gdm_static_display_finalize     (GObject              *object);
 
 G_DEFINE_TYPE (GdmStaticDisplay, gdm_static_display, GDM_TYPE_DISPLAY)
 
@@ -129,32 +124,6 @@ gdm_static_display_unmanage (GdmDisplay *display)
 }
 
 static void
-gdm_static_display_set_property (GObject      *object,
-                                 guint         prop_id,
-                                 const GValue *value,
-                                 GParamSpec   *pspec)
-{
-        switch (prop_id) {
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
-        }
-}
-
-static void
-gdm_static_display_get_property (GObject    *object,
-                                 guint       prop_id,
-                                 GValue     *value,
-                                 GParamSpec *pspec)
-{
-        switch (prop_id) {
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
-        }
-}
-
-static void
 gdm_static_display_get_timed_login_details (GdmDisplay *display,
                                             gboolean   *enabledp,
                                             char      **usernamep,
@@ -174,12 +143,7 @@ gdm_static_display_get_timed_login_details (GdmDisplay *display,
 static void
 gdm_static_display_class_init (GdmStaticDisplayClass *klass)
 {
-        GObjectClass    *object_class = G_OBJECT_CLASS (klass);
         GdmDisplayClass *display_class = GDM_DISPLAY_CLASS (klass);
-
-        object_class->get_property = gdm_static_display_get_property;
-        object_class->set_property = gdm_static_display_set_property;
-        object_class->finalize = gdm_static_display_finalize;
 
         display_class->create_authority = gdm_static_display_create_authority;
         display_class->add_user_authorization = gdm_static_display_add_user_authorization;
@@ -201,21 +165,6 @@ gdm_static_display_init (GdmStaticDisplay *static_display)
         static_display->priv = GDM_STATIC_DISPLAY_GET_PRIVATE (static_display);
 
         static_display->priv->first_login = TRUE;
-}
-
-static void
-gdm_static_display_finalize (GObject *object)
-{
-        GdmStaticDisplay *static_display;
-
-        g_return_if_fail (object != NULL);
-        g_return_if_fail (GDM_IS_STATIC_DISPLAY (object));
-
-        static_display = GDM_STATIC_DISPLAY (object);
-
-        g_return_if_fail (static_display->priv != NULL);
-
-        G_OBJECT_CLASS (gdm_static_display_parent_class)->finalize (object);
 }
 
 GdmDisplay *

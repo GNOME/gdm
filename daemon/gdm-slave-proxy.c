@@ -233,7 +233,6 @@ spawn_slave (GdmSlaveProxy *slave)
 static void
 kill_slave (GdmSlaveProxy *slave)
 {
-        int exit_status;
         int res;
 
         if (slave->priv->pid <= 1) {
@@ -244,7 +243,12 @@ kill_slave (GdmSlaveProxy *slave)
         if (res < 0) {
                 g_warning ("Unable to kill slave process");
         } else {
+                int exit_status;
+
                 exit_status = gdm_wait_on_pid (slave->priv->pid);
+
+                g_debug ("GdmSlaveProxy: slave died with exit status %d", exit_status);
+
                 g_spawn_close_pid (slave->priv->pid);
                 slave->priv->pid = 0;
         }

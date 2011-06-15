@@ -2991,26 +2991,30 @@ gdm_xdmcp_display_factory_start (GdmDisplayFactory *base_factory)
         g_return_val_if_fail (factory->priv->socket_fd == -1, FALSE);
 
         /* read configuration */
-        res = gdm_settings_direct_get_uint    (GDM_KEY_UDP_PORT,
-                                               &(factory->priv->port));
-        res = gdm_settings_direct_get_boolean (GDM_KEY_MULTICAST,
-                                               &(factory->priv->use_multicast));
-        res = gdm_settings_direct_get_string  (GDM_KEY_MULTICAST_ADDR,
-                                               &(factory->priv->multicast_address));
-        res = gdm_settings_direct_get_boolean (GDM_KEY_INDIRECT,
-                                               &(factory->priv->honor_indirect));
-        res = gdm_settings_direct_get_uint    (GDM_KEY_DISPLAYS_PER_HOST,
-                                               &(factory->priv->max_displays_per_host));
-        res = gdm_settings_direct_get_uint    (GDM_KEY_MAX_SESSIONS,
-                                               &(factory->priv->max_displays));
-        res = gdm_settings_direct_get_uint    (GDM_KEY_MAX_PENDING,
-                                               &(factory->priv->max_pending_displays));
-        res = gdm_settings_direct_get_uint    (GDM_KEY_MAX_WAIT,
-                                               &(factory->priv->max_wait));
-        res = gdm_settings_direct_get_uint    (GDM_KEY_MAX_WAIT_INDIRECT,
-                                               &(factory->priv->max_wait_indirect));
-        res = gdm_settings_direct_get_string  (GDM_KEY_WILLING,
-                                               &(factory->priv->willing_script));
+        res = gdm_settings_direct_get_uint           (GDM_KEY_UDP_PORT,
+                                                      &(factory->priv->port));
+        res = res && gdm_settings_direct_get_boolean (GDM_KEY_MULTICAST,
+                                                      &(factory->priv->use_multicast));
+        res = res && gdm_settings_direct_get_string  (GDM_KEY_MULTICAST_ADDR,
+                                                      &(factory->priv->multicast_address));
+        res = res && gdm_settings_direct_get_boolean (GDM_KEY_INDIRECT,
+                                                      &(factory->priv->honor_indirect));
+        res = res && gdm_settings_direct_get_uint    (GDM_KEY_DISPLAYS_PER_HOST,
+                                                      &(factory->priv->max_displays_per_host));
+        res = res && gdm_settings_direct_get_uint    (GDM_KEY_MAX_SESSIONS,
+                                                      &(factory->priv->max_displays));
+        res = res && gdm_settings_direct_get_uint    (GDM_KEY_MAX_PENDING,
+                                                      &(factory->priv->max_pending_displays));
+        res = res && gdm_settings_direct_get_uint    (GDM_KEY_MAX_WAIT,
+                                                      &(factory->priv->max_wait));
+        res = res && gdm_settings_direct_get_uint    (GDM_KEY_MAX_WAIT_INDIRECT,
+                                                      &(factory->priv->max_wait_indirect));
+        res = res && gdm_settings_direct_get_string  (GDM_KEY_WILLING,
+                                                      &(factory->priv->willing_script));
+
+        if (! res) {
+                return res;
+        }
 
         ret = open_port (factory);
         if (! ret) {

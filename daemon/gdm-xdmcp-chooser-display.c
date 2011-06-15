@@ -55,10 +55,6 @@ struct GdmXdmcpChooserDisplayPrivate
 };
 
 enum {
-        PROP_0,
-};
-
-enum {
         HOSTNAME_SELECTED,
         LAST_SIGNAL
 };

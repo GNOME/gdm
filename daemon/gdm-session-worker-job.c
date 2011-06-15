@@ -261,8 +261,6 @@ gdm_session_worker_job_spawn (GdmSessionWorkerJob *session_worker_job,
                                                                       (GChildWatchFunc)session_worker_job_child_watch,
                                                                       session_worker_job);
 
- out:
-
         return ret;
 }
 
@@ -281,11 +279,6 @@ gdm_session_worker_job_start (GdmSessionWorkerJob *session_worker_job,
         g_debug ("GdmSessionWorkerJob: Starting worker...");
 
         res = gdm_session_worker_job_spawn (session_worker_job, name);
-
-        if (res) {
-
-        }
-
 
         return res;
 }

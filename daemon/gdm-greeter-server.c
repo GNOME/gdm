@@ -1175,20 +1175,6 @@ gdm_greeter_server_get_property (GObject    *object,
         }
 }
 
-static GObject *
-gdm_greeter_server_constructor (GType                  type,
-                               guint                  n_construct_properties,
-                               GObjectConstructParam *construct_properties)
-{
-        GdmGreeterServer      *greeter_server;
-
-        greeter_server = GDM_GREETER_SERVER (G_OBJECT_CLASS (gdm_greeter_server_parent_class)->constructor (type,
-                                                                                       n_construct_properties,
-                                                                                       construct_properties));
-
-        return G_OBJECT (greeter_server);
-}
-
 static void
 gdm_greeter_server_class_init (GdmGreeterServerClass *klass)
 {
@@ -1196,7 +1182,6 @@ gdm_greeter_server_class_init (GdmGreeterServerClass *klass)
 
         object_class->get_property = gdm_greeter_server_get_property;
         object_class->set_property = gdm_greeter_server_set_property;
-        object_class->constructor = gdm_greeter_server_constructor;
         object_class->finalize = gdm_greeter_server_finalize;
 
         g_type_class_add_private (klass, sizeof (GdmGreeterServerPrivate));

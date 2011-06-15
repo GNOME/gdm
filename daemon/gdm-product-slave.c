@@ -83,11 +83,6 @@ struct GdmProductSlavePrivate
         char             *start_session_service_name;
 };
 
-enum {
-        PROP_0,
-        PROP_DISPLAY_ID,
-};
-
 static void     gdm_product_slave_class_init    (GdmProductSlaveClass *klass);
 static void     gdm_product_slave_init          (GdmProductSlave      *product_slave);
 static void     gdm_product_slave_finalize      (GObject             *object);
@@ -1354,53 +1349,11 @@ gdm_product_slave_stop (GdmSlave *slave)
 }
 
 static void
-gdm_product_slave_set_property (GObject      *object,
-                                guint         prop_id,
-                                const GValue *value,
-                                GParamSpec   *pspec)
-{
-        switch (prop_id) {
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
-        }
-}
-
-static void
-gdm_product_slave_get_property (GObject    *object,
-                                guint       prop_id,
-                                GValue     *value,
-                                GParamSpec *pspec)
-{
-        switch (prop_id) {
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
-        }
-}
-
-static GObject *
-gdm_product_slave_constructor (GType                  type,
-                               guint                  n_construct_properties,
-                               GObjectConstructParam *construct_properties)
-{
-        GdmProductSlave      *product_slave;
-
-        product_slave = GDM_PRODUCT_SLAVE (G_OBJECT_CLASS (gdm_product_slave_parent_class)->constructor (type,
-                                                                                                         n_construct_properties,
-                                                                                                         construct_properties));
-        return G_OBJECT (product_slave);
-}
-
-static void
 gdm_product_slave_class_init (GdmProductSlaveClass *klass)
 {
         GObjectClass  *object_class = G_OBJECT_CLASS (klass);
         GdmSlaveClass *slave_class = GDM_SLAVE_CLASS (klass);
 
-        object_class->get_property = gdm_product_slave_get_property;
-        object_class->set_property = gdm_product_slave_set_property;
-        object_class->constructor = gdm_product_slave_constructor;
         object_class->finalize = gdm_product_slave_finalize;
 
         slave_class->start = gdm_product_slave_start;

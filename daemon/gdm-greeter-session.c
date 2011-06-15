@@ -50,69 +50,14 @@ struct GdmGreeterSessionPrivate
         gpointer dummy;
 };
 
-enum {
-        PROP_0,
-};
-
 static void     gdm_greeter_session_class_init    (GdmGreeterSessionClass *klass);
 static void     gdm_greeter_session_init  (GdmGreeterSession      *greeter_session);
-static void     gdm_greeter_session_finalize      (GObject         *object);
 
 G_DEFINE_TYPE (GdmGreeterSession, gdm_greeter_session, GDM_TYPE_WELCOME_SESSION)
 
 static void
-gdm_greeter_session_set_property (GObject      *object,
-                                  guint         prop_id,
-                                  const GValue *value,
-                                  GParamSpec   *pspec)
-{
-        switch (prop_id) {
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
-        }
-}
-
-static void
-gdm_greeter_session_get_property (GObject    *object,
-                                  guint       prop_id,
-                                  GValue     *value,
-                                  GParamSpec *pspec)
-{
-        switch (prop_id) {
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
-        }
-}
-
-static GObject *
-gdm_greeter_session_constructor (GType                  type,
-                                 guint                  n_construct_properties,
-                                 GObjectConstructParam *construct_properties)
-{
-        GdmGreeterSession      *greeter_session;
-        GdmGreeterSessionClass *klass;
-
-        klass = GDM_GREETER_SESSION_CLASS (g_type_class_peek (GDM_TYPE_GREETER_SESSION));
-
-        greeter_session = GDM_GREETER_SESSION (G_OBJECT_CLASS (gdm_greeter_session_parent_class)->constructor (type,
-                                                                                                               n_construct_properties,
-                                                                                                               construct_properties));
-
-        return G_OBJECT (greeter_session);
-}
-
-static void
 gdm_greeter_session_class_init (GdmGreeterSessionClass *klass)
 {
-        GObjectClass    *object_class = G_OBJECT_CLASS (klass);
-
-        object_class->get_property = gdm_greeter_session_get_property;
-        object_class->set_property = gdm_greeter_session_set_property;
-        object_class->constructor = gdm_greeter_session_constructor;
-        object_class->finalize = gdm_greeter_session_finalize;
-
         g_type_class_add_private (klass, sizeof (GdmGreeterSessionPrivate));
 }
 
@@ -121,21 +66,6 @@ gdm_greeter_session_init (GdmGreeterSession *greeter_session)
 {
 
         greeter_session->priv = GDM_GREETER_SESSION_GET_PRIVATE (greeter_session);
-}
-
-static void
-gdm_greeter_session_finalize (GObject *object)
-{
-        GdmGreeterSession *greeter_session;
-
-        g_return_if_fail (object != NULL);
-        g_return_if_fail (GDM_IS_GREETER_SESSION (object));
-
-        greeter_session = GDM_GREETER_SESSION (object);
-
-        g_return_if_fail (greeter_session->priv != NULL);
-
-        G_OBJECT_CLASS (gdm_greeter_session_parent_class)->finalize (object);
 }
 
 GdmGreeterSession *

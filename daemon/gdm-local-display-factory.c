@@ -193,7 +193,6 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
 {
         gboolean         ret;
         GdmDisplay      *display;
-        guint32          num;
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 

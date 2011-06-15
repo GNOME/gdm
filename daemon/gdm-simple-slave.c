@@ -1235,7 +1235,7 @@ start_greeter (GdmSimpleSlave *slave)
         res = gdm_settings_direct_get_int (GDM_KEY_PING_INTERVAL,
                                            &(slave->priv->ping_interval));
 
-        if ( ! display_is_local && slave->priv->ping_interval > 0) {
+        if ( ! display_is_local && res && slave->priv->ping_interval > 0) {
                 alarm (slave->priv->ping_interval);
         }
 

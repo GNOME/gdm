@@ -52,89 +52,21 @@ struct GdmChooserSessionPrivate
         gpointer dummy;
 };
 
-enum {
-        PROP_0,
-};
-
 static void     gdm_chooser_session_class_init    (GdmChooserSessionClass *klass);
 static void     gdm_chooser_session_init          (GdmChooserSession      *chooser_session);
-static void     gdm_chooser_session_finalize      (GObject                *object);
 
 G_DEFINE_TYPE (GdmChooserSession, gdm_chooser_session, GDM_TYPE_WELCOME_SESSION)
 
 static void
-gdm_chooser_session_set_property (GObject      *object,
-                                  guint         prop_id,
-                                  const GValue *value,
-                                  GParamSpec   *pspec)
-{
-        switch (prop_id) {
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
-        }
-}
-
-static void
-gdm_chooser_session_get_property (GObject    *object,
-                                  guint       prop_id,
-                                  GValue     *value,
-                                  GParamSpec *pspec)
-{
-        switch (prop_id) {
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
-        }
-}
-
-static GObject *
-gdm_chooser_session_constructor (GType                  type,
-                                 guint                  n_construct_properties,
-                                 GObjectConstructParam *construct_properties)
-{
-        GdmChooserSession      *chooser_session;
-
-        chooser_session = GDM_CHOOSER_SESSION (G_OBJECT_CLASS (gdm_chooser_session_parent_class)->constructor (type,
-                                                                                                               n_construct_properties,
-                                                                                                               construct_properties));
-
-        return G_OBJECT (chooser_session);
-}
-
-static void
 gdm_chooser_session_class_init (GdmChooserSessionClass *klass)
 {
-        GObjectClass    *object_class = G_OBJECT_CLASS (klass);
-
-        object_class->get_property = gdm_chooser_session_get_property;
-        object_class->set_property = gdm_chooser_session_set_property;
-        object_class->constructor = gdm_chooser_session_constructor;
-        object_class->finalize = gdm_chooser_session_finalize;
-
         g_type_class_add_private (klass, sizeof (GdmChooserSessionPrivate));
 }
 
 static void
 gdm_chooser_session_init (GdmChooserSession *chooser_session)
 {
-
         chooser_session->priv = GDM_CHOOSER_SESSION_GET_PRIVATE (chooser_session);
-}
-
-static void
-gdm_chooser_session_finalize (GObject *object)
-{
-        GdmChooserSession *chooser_session;
-
-        g_return_if_fail (object != NULL);
-        g_return_if_fail (GDM_IS_CHOOSER_SESSION (object));
-
-        chooser_session = GDM_CHOOSER_SESSION (object);
-
-        g_return_if_fail (chooser_session->priv != NULL);
-
-        G_OBJECT_CLASS (gdm_chooser_session_parent_class)->finalize (object);
 }
 
 GdmChooserSession *

@@ -843,19 +843,6 @@ gdm_server_get_property (GObject    *object,
         }
 }
 
-static GObject *
-gdm_server_constructor (GType                  type,
-                        guint                  n_construct_properties,
-                        GObjectConstructParam *construct_properties)
-{
-        GdmServer      *server;
-
-        server = GDM_SERVER (G_OBJECT_CLASS (gdm_server_parent_class)->constructor (type,
-                                                                                    n_construct_properties,
-                                                                                    construct_properties));
-        return G_OBJECT (server);
-}
-
 static void
 gdm_server_class_init (GdmServerClass *klass)
 {
@@ -863,7 +850,6 @@ gdm_server_class_init (GdmServerClass *klass)
 
         object_class->get_property = gdm_server_get_property;
         object_class->set_property = gdm_server_set_property;
-        object_class->constructor = gdm_server_constructor;
         object_class->finalize = gdm_server_finalize;
 
         g_type_class_add_private (klass, sizeof (GdmServerPrivate));

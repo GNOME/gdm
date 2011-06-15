@@ -358,7 +358,6 @@ get_welcome_environment (GdmWelcomeSession *welcome_session,
                 NULL
         };
         int i;
-        char *windowpath;
 
         load_lang_config_file (LANG_CONFIG_FILE,
                                (const char **) optional_environment);
@@ -1278,20 +1277,6 @@ gdm_welcome_session_get_property (GObject    *object,
         }
 }
 
-static GObject *
-gdm_welcome_session_constructor (GType                  type,
-                                 guint                  n_construct_properties,
-                                 GObjectConstructParam *construct_properties)
-{
-        GdmWelcomeSession      *welcome_session;
-
-        welcome_session = GDM_WELCOME_SESSION (G_OBJECT_CLASS (gdm_welcome_session_parent_class)->constructor (type,
-                                                                                                               n_construct_properties,
-                                                                                                               construct_properties));
-
-        return G_OBJECT (welcome_session);
-}
-
 static void
 gdm_welcome_session_class_init (GdmWelcomeSessionClass *klass)
 {
@@ -1299,7 +1284,6 @@ gdm_welcome_session_class_init (GdmWelcomeSessionClass *klass)
 
         object_class->get_property = gdm_welcome_session_get_property;
         object_class->set_property = gdm_welcome_session_set_property;
-        object_class->constructor = gdm_welcome_session_constructor;
         object_class->finalize = gdm_welcome_session_finalize;
 
         g_type_class_add_private (klass, sizeof (GdmWelcomeSessionPrivate));
