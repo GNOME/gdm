@@ -11,7 +11,7 @@ eval `dbus-launch --sh-syntax`
 
 trap 'rm -rf $TMPDIR; kill $DBUS_SESSION_BUS_PID' ERR
 
-gsettings set org.gnome.power-manager show-actions false
+gsettings set org.gnome.power-manager show-actions false || :
 
 gsettings set org.gnome.desktop.a11y.keyboard enable true
 gsettings set org.gnome.desktop.background show-desktop-icons false
