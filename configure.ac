@@ -194,14 +194,6 @@ AC_PATH_PROG(GCONFTOOL, gconftool-2)
 
 AM_GCONF_SOURCE_2
 
-LIBGDMGREETER_LIBS="$SIMPLE_GREETER_LIBS"
-AC_SUBST(LIBGDMGREETER_LIBS)
-LIBGDMGREETER_CFLAGS="$SIMPLE_GREETER_CFLAGS"
-AC_SUBST(LIBGDMGREETER_CFLAGS)
-GOBJECT_INTROSPECTION_CHECK([0.9.12])
-LIBGDMGREETER_GIR_INCLUDES="GLib-2.0 GObject-2.0 DBusGLib-1.0"
-AC_SUBST(LIBGDMGREETER_GIR_INCLUDES)
-
 dnl ---------------------------------------------------------------------------
 dnl - Configuration file stuff
 dnl ---------------------------------------------------------------------------
@@ -275,11 +267,6 @@ AC_ARG_WITH(at-spi-registryd-directory,
 
 AT_SPI_REGISTRYD_DIR=$with_at_spi_registryd_directory
 AC_SUBST(AT_SPI_REGISTRYD_DIR)
-
-AC_ARG_WITH(vt-switch-workaround,
-            AS_HELP_STRING([--with-vt-switch-workaround],
-	                   [Try to workaround missing -novtswitch option for X @<:@default=nor@:>@])],,
-            [with_vt_switch_workaround="no"])
 
 # Allow configuration of default PATH
 #
@@ -928,14 +915,6 @@ AM_CONDITIONAL(WITH_CONSOLE_KIT, test x$use_console_kit = xyes)
 AC_SUBST(WITH_CONSOLE_KIT)
 
 dnl ---------------------------------------------------------------------------
-dnl - Check for vt switch support
-dnl ---------------------------------------------------------------------------
-
-if test "x$with_vt_switch_workaround" != "xno" ; then
-	AC_DEFINE(WITH_VT_SWITCH_WORKAROUND, 1, [Define to enable workaround for missing -novtswitch feature])
-fi
-
-dnl ---------------------------------------------------------------------------
 dnl - Check for D-Bus
 dnl ---------------------------------------------------------------------------
 
@@ -1442,8 +1421,6 @@ Makefile
 daemon/Makefile
 docs/Makefile
 gui/Makefile
-gui/libgdmgreeter/Makefile
-gui/libgdmgreeter/gdmgreeter.pc
 gui/simple-greeter/Makefile
 gui/simple-greeter/libgdmsimplegreeter/Makefile
 gui/simple-greeter/libgdmsimplegreeter/gdmsimplegreeter.pc

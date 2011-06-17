@@ -66,7 +66,6 @@ struct GdmDisplayPrivate
         GdmDisplayAccessFile *access_file;
 
         gboolean              is_local;
-        gboolean              switch_on_finish;
         guint                 finish_idle_id;
 
         GdmSlaveProxy        *slave_proxy;
@@ -85,7 +84,6 @@ enum {
         PROP_X11_COOKIE,
         PROP_X11_AUTHORITY_FILE,
         PROP_IS_LOCAL,
-        PROP_SWITCH_ON_FINISH,
         PROP_SLAVE_COMMAND,
 };
 
@@ -134,14 +132,6 @@ gdm_display_get_status (GdmDisplay *display)
         g_return_val_if_fail (GDM_IS_DISPLAY (display), 0);
 
         return display->priv->status;
-}
-
-gboolean
-gdm_display_get_switch_on_finish (GdmDisplay *display)
-{
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), 0);
-
-        return display->priv->switch_on_finish;
 }
 
 static GdmDisplayAccessFile *
@@ -834,30 +824,6 @@ _gdm_display_set_is_local (GdmDisplay     *display,
 }
 
 static void
-_gdm_display_set_switch_on_finish (GdmDisplay     *display,
-                                   gboolean        switch_on_finish)
-{
-        display->priv->switch_on_finish = switch_on_finish;
-}
-
-gboolean
-gdm_display_set_switch_on_finish (GdmDisplay *display,
-                                  gboolean    switch_display,
-                                  GError    **error)
-{
-        gboolean ret = TRUE;
-
-        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
-
-        g_debug ("GdmDisplay: Setting display to %sswitch to login screen on finish",
-                 switch_display? "" : "not ");
-
-        _gdm_display_set_switch_on_finish (display, switch_display);
-
-        return ret;
-}
-
-static void
 _gdm_display_set_slave_command (GdmDisplay     *display,
                                 const char     *command)
 {
@@ -899,9 +865,6 @@ gdm_display_set_property (GObject        *object,
                 break;
         case PROP_IS_LOCAL:
                 _gdm_display_set_is_local (self, g_value_get_boolean (value));
-                break;
-        case PROP_SWITCH_ON_FINISH:
-                _gdm_display_set_switch_on_finish (self, g_value_get_boolean (value));
                 break;
         case PROP_SLAVE_COMMAND:
                 _gdm_display_set_slave_command (self, g_value_get_string (value));
@@ -950,9 +913,6 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->is_local);
-                break;
-        case PROP_SWITCH_ON_FINISH:
-                g_value_set_boolean (value, self->priv->switch_on_finish);
                 break;
         case PROP_SLAVE_COMMAND:
                 g_value_set_string (value, self->priv->slave_command);
@@ -1120,14 +1080,6 @@ gdm_display_class_init (GdmDisplayClass *klass)
         g_object_class_install_property (object_class,
                                          PROP_IS_LOCAL,
                                          g_param_spec_boolean ("is-local",
-                                                               NULL,
-                                                               NULL,
-                                                               TRUE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-
-        g_object_class_install_property (object_class,
-                                         PROP_SWITCH_ON_FINISH,
-                                         g_param_spec_boolean ("switch-on-finish",
                                                                NULL,
                                                                NULL,
                                                                TRUE,

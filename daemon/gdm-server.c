@@ -52,12 +52,6 @@
 
 extern char **environ;
 
-#ifdef WITH_VT_SWITCH_WORKAROUND
-#define X_SERVER_COMMAND_LINE X_SERVER " -br -verbose -logverbose 7"
-#else
-#define X_SERVER_COMMAND_LINE X_SERVER " -br -verbose -logverbose 7 -novtswitch"
-#endif
-
 #define GDM_SERVER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_SERVER, GdmServerPrivate))
 
 /* These are the servstat values, also used as server
@@ -933,7 +927,7 @@ gdm_server_init (GdmServer *server)
         server->priv = GDM_SERVER_GET_PRIVATE (server);
 
         server->priv->pid = -1;
-        server->priv->command = g_strdup (X_SERVER_COMMAND_LINE);
+        server->priv->command = g_strdup (X_SERVER " -br -verbose -logverbose 7");
         server->priv->log_dir = g_strdup (LOGDIR);
 
         add_ready_handler (server);

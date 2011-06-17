@@ -1,7 +1,6 @@
 NULL =
 
 SUBDIRS =			\
-	libgdmgreeter		\
 	simple-greeter		\
 	$(NULL)
 
