@@ -357,6 +357,7 @@ get_welcome_environment (GdmWelcomeSession *welcome_session,
                 "LC_IDENTIFICATION", "LC_ALL", "WINDOWPATH",
                 NULL
         };
+        char *system_data_dirs;
         int i;
 
         load_lang_config_file (LANG_CONFIG_FILE,
@@ -376,6 +377,15 @@ get_welcome_environment (GdmWelcomeSession *welcome_session,
                                      g_strdup (g_getenv (optional_environment[i])));
         }
 
+        system_data_dirs = g_strjoinv (":", (char **) g_get_system_data_dirs ());
+
+        g_hash_table_insert (hash,
+                             g_strdup ("XDG_DATA_DIRS"),
+                             g_strdup_printf ("%s:%s",
+                                              DATADIR "/gdm/greeter",
+                                              system_data_dirs));
+        g_free (system_data_dirs);
+
         if (welcome_session->priv->dbus_bus_address != NULL) {
                 g_hash_table_insert (hash,
                                      g_strdup ("DBUS_SESSION_BUS_ADDRESS"),
@@ -383,8 +393,7 @@ get_welcome_environment (GdmWelcomeSession *welcome_session,
         }
         if (welcome_session->priv->server_address != NULL) {
                 g_assert (welcome_session->priv->server_env_var_name != NULL);
-                g_hash_table_insert (hash,
-                                     g_strdup (welcome_session->priv->server_env_var_name),
+                g_hash_table_insert (hash, g_strdup (welcome_session->priv->server_env_var_name),
                                      g_strdup (welcome_session->priv->server_address));
         }
 

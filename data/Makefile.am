@@ -1,7 +1,7 @@
 NULL =
 
 SUBDIRS =			\
-	greeter-autostart	\
+	applications		\
 	pixmaps			\
 	$(NULL)
 
@@ -98,8 +98,6 @@ EXTRA_DIST =			\
 	session-setup.entries	\
 	make-dconf-override-db.sh \
 	dconf-profile \
-	mime-dummy-handler.desktop	\
-	mimeapps.list			\
 	$(NULL)
 
 CLEANFILES = 				\
@@ -139,8 +137,6 @@ uninstall-hook:
 	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm \
 	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin \
 	$(DESTDIR)$(workingdir)/.gconf.path \
-	$(DESTDIR)$(workingdir)/.local/share/applications/mime-dummy-handler.desktop \
-	$(DESTDIR)$(workingdir)/.local/share/applications/mimeapps.list \
 	$(DESTDIR)$(sysconfdir)/dconf/db/gdm \
 	$(DESTDIR)$(sysconfdir)/dconf/profile/gdm \
 	-rf \
@@ -284,6 +280,3 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 
 	$(INSTALL_DATA) $(srcdir)/dconf-override-db $(DESTDIR)$(sysconfdir)/dconf/db/gdm
 	$(INSTALL_DATA) $(srcdir)/dconf-profile $(DESTDIR)$(sysconfdir)/dconf/profile/gdm
-
-	$(INSTALL_DATA) $(srcdir)/mime-dummy-handler.desktop $(DESTDIR)$(workingdir)/.local/share/applications/mime-dummy-handler.desktop
-	$(INSTALL_DATA) $(srcdir)/mimeapps.list $(DESTDIR)$(workingdir)/.local/share/applications/mimeapps.list
