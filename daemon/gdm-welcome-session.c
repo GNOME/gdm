@@ -391,11 +391,6 @@ get_welcome_environment (GdmWelcomeSession *welcome_session,
         g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (welcome_session->priv->x11_authority_file));
         g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (welcome_session->priv->x11_display_name));
 
-#if 0
-        /* hackish ain't it */
-        set_xnest_parent_stuff ();
-#endif
-
         if (welcome_session->priv->ckc != NULL) {
                 const char *cookie;
                 cookie = ck_connector_get_cookie (welcome_session->priv->ckc);
