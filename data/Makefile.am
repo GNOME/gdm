@@ -74,11 +74,15 @@ gdm.schemas.in: $(srcdir)/gdm.schemas.in.in
 		-e 's,[@]sbindir[@],$(sbindir),g' \
 		<$(srcdir)/gdm.schemas.in.in >gdm.schemas.in
 
+gdm-shell.session: $(srcdir)/gdm-shell.session.in
+	sed	-e 's,[@]libexecdir[@],$(libexecdir),g' \
+		< $(srcdir)/gdm-shell.session.in > gdm-shell.session
+
 localealiasdir = $(datadir)/gdm
 localealias_DATA = locale.alias
 
 sessiondir = $(datadir)/gnome-session/sessions
-dist_session_DATA = gdm.session
+dist_session_DATA = gdm-fallback.session gdm-shell.session
 
 EXTRA_DIST =			\
 	$(schemas_in_files)	\

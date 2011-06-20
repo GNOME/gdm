@@ -14,6 +14,7 @@ edit = sed \
 desktopdir = $(pkgdatadir)/greeter/applications
 desktop_in_files = 							\
 	gdm-simple-greeter.desktop.in					\
+	gnome-shell.desktop.in						\
 	gnome-mag.desktop.in						\
 	gok.desktop.in							\
 	orca-screen-reader.desktop.in					\
