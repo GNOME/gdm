@@ -543,8 +543,6 @@ main (int    argc,
 
         ret = 1;
 
-        gdm_set_fatal_warnings_if_unstable ();
-
         g_type_init ();
 
         context = g_option_context_new (_("GNOME Display Manager"));

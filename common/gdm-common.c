@@ -65,15 +65,6 @@ gdm_is_version_unstable (void)
         return unstable;
 }
 
-void
-gdm_set_fatal_warnings_if_unstable (void)
-{
-        if (gdm_is_version_unstable ()) {
-                g_setenv ("G_DEBUG", "fatal_criticals", FALSE);
-                g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL);
-        }
-}
-
 gboolean
 gdm_get_pwent_for_name (const char     *name,
                         struct passwd **pwentp)

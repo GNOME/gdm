@@ -252,8 +252,6 @@ main (int argc, char *argv[])
 
         setlocale (LC_ALL, "");
 
-        gdm_set_fatal_warnings_if_unstable ();
-
         g_type_init ();
 
         gdm_profile_start ("Initializing settings client");
