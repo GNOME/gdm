@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.91.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-19 17:40+0200\n"
-"PO-Revision-Date: 2011-06-19 17:44+0200\n"
+"POT-Creation-Date: 2011-07-03 09:29+0200\n"
+"PO-Revision-Date: 2011-07-03 09:29+0200\n"
 "Last-Translator: Torstein Adolf Winterseth <kvikende@fsfe.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: \n"
@@ -20,7 +20,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 1.1\n"
 
-#: ../common/gdm-common.c:498
+#: ../common/gdm-common.c:489
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom er ikke en tegnenhet"
@@ -35,8 +35,8 @@ msgstr "Skjerm-ID"
 msgid "ID"
 msgstr "ID"
 
-#: ../daemon/factory-slave-main.c:190 ../daemon/product-slave-main.c:194
-#: ../daemon/simple-slave-main.c:194 ../daemon/xdmcp-chooser-slave-main.c:196
+#: ../daemon/factory-slave-main.c:188 ../daemon/product-slave-main.c:192
+#: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:194
 msgid "GNOME Display Manager Slave"
 msgstr "Slave for GNOME skjermhåndterer"
 
@@ -90,17 +90,17 @@ msgstr ""
 "Tjeneren skulle startes av bruker %s, men denne brukeren eksisterer ikke"
 
 #: ../daemon/gdm-server.c:376 ../daemon/gdm-server.c:396
-#: ../daemon/gdm-welcome-session.c:599 ../daemon/gdm-welcome-session.c:619
+#: ../daemon/gdm-welcome-session.c:603 ../daemon/gdm-welcome-session.c:623
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Kunne ikke sette gruppe-ID til %d"
 
-#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:605
+#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:609
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () feilet for %s"
 
-#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:611
+#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:615
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Kunne ikke sette bruker-id til %d"
@@ -214,12 +214,12 @@ msgstr "ingen brukerkonto tilgjengelig"
 msgid "Unable to change to user"
 msgstr "Kan ikke bytte til denne brukeren"
 
-#: ../daemon/gdm-welcome-session.c:549
+#: ../daemon/gdm-welcome-session.c:553
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Bruker %s eksisterer ikke"
 
-#: ../daemon/gdm-welcome-session.c:556
+#: ../daemon/gdm-welcome-session.c:560
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Gruppe %s eksisterer ikke"
@@ -423,77 +423,20 @@ msgstr "Avslutt etter en tid (for feilsøking)"
 msgid "Print GDM version"
 msgstr "Skriv ut GDM-versjon"
 
-#: ../daemon/main.c:550
+#: ../daemon/main.c:548
 msgid "GNOME Display Manager"
 msgstr "GNOME skjermhåndterer"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:616
+#: ../daemon/main.c:614
 msgid "Only the root user can run GDM"
 msgstr "Bare root-bruker kan kjøre GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:158
+#: ../daemon/session-worker-main.c:156
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME skjermhåndterer øktarbeider"
-
-#: ../data/greeter-autostart/at-spi-registryd-wrapper.desktop.in.in.h:1
-msgid "AT-SPI Registry Wrapper"
-msgstr "AT SPI register wrapper"
-
-#: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2598
-msgid "Login Window"
-msgstr "Påloggingsvindu"
-
-#: ../data/greeter-autostart/gnome-power-manager.desktop.in.in.h:1
-msgid "Power Manager"
-msgstr "Strømstyring"
-
-#: ../data/greeter-autostart/gnome-power-manager.desktop.in.in.h:2
-msgid "Power management daemon"
-msgstr "Tjeneste for strømstyring"
-
-#: ../data/greeter-autostart/gnome-session-check-accelerated.desktop.in.in.h:1
-msgid "GNOME Session Acceleration Checker"
-msgstr "Sjekk om GNOME økt kan kjøres aksellerert"
-
-#: ../data/greeter-autostart/gnome-settings-daemon.desktop.in.in.h:1
-msgid "GNOME Settings Daemon"
-msgstr "Tjeneste for innstillinger"
-
-#: ../data/greeter-autostart/gnome-mag.desktop.in.h:1
-msgid "GNOME Screen Magnifier"
-msgstr "Forstørrelsesglass for skjerm"
-
-#: ../data/greeter-autostart/gnome-mag.desktop.in.h:2
-msgid "Magnify parts of the screen"
-msgstr "Gjør deler av skjermen større"
-
-#: ../data/greeter-autostart/gok.desktop.in.h:1
-msgid "GNOME On-Screen Keyboard"
-msgstr "GNOME tastatur på skjermen"
-
-#: ../data/greeter-autostart/gok.desktop.in.h:2
-msgid "Use an on-screen keyboard"
-msgstr "Bruk tastatur på skjermen"
-
-#: ../data/greeter-autostart/metacity.desktop.in.h:1
-msgid "Metacity"
-msgstr "Metacity"
-
-#: ../data/greeter-autostart/orca-screen-reader.desktop.in.h:1
-msgid "Orca Screen Reader"
-msgstr "Orca skjermleser"
-
-#: ../data/greeter-autostart/orca-screen-reader.desktop.in.h:2
-msgid "Present on-screen information as speech or braille"
-msgstr "Vis informasjon på skjermen som tale eller blindeskrift"
-
-#: ../data/greeter-autostart/polkit-gnome-authentication-agent-1.desktop.in.in.h:1
-msgid "PolicyKit Authentication Agent"
-msgstr "PolicyKit autentiseringsagent"
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -591,6 +534,10 @@ msgstr "Egendefinert"
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
 msgid "Custom session"
 msgstr "Egendefinert sesjon"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2598
+msgid "Login Window"
+msgstr "Påloggingsvindu"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
 msgid "Cancel"
@@ -930,6 +877,16 @@ msgstr "Autentisering med fingeravtrykk"
 msgid "Log into session with fingerprint"
 msgstr "Logg inn med fingeravtrykk"
 
+#: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:1
+#: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:1
+msgid "Activation of this plugin"
+msgstr "Aktivering av dette tillegget"
+
+#: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:2
+#: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:2
+msgid "Whether this plugin would be activated or not"
+msgstr ""
+
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
 msgid "Smartcard Authentication"
 msgstr "Autentisering med smartkort"
@@ -948,7 +905,7 @@ msgstr "sti til driver for smartkort PKCS #11"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
 msgid "received error or hang up from event source"
-msgstr ""
+msgstr "mottok feil eller hendelseskilden la på"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
 #, c-format
@@ -973,7 +930,7 @@ msgstr "kunne ikke se etter innkommende hendelser for kort - %s"
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
 #, c-format
 msgid "encountered unexpected error while waiting for smartcard events"
-msgstr ""
+msgstr "mottok uventet feil under venting på smartkorthendelser"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
 msgid "Slot ID"
