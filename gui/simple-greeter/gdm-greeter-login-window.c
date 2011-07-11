@@ -2526,7 +2526,7 @@ on_window_state_event (GtkWidget           *widget,
         return FALSE;
 }
 
-static void
+static gboolean
 load_login_extensions (GdmGreeterLoginWindow *login_window)
 {
         GList *extensions, *node;
@@ -2563,6 +2563,8 @@ load_login_extensions (GdmGreeterLoginWindow *login_window)
         }
 
         g_debug ("GdmGreeterLoginWindow: done loading extensions");
+
+        return FALSE;
 }
 
 static void
