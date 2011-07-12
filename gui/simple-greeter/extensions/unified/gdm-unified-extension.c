@@ -284,13 +284,13 @@ gdm_unified_extension_get_icon (GdmLoginExtension *login_extension)
 static char *
 gdm_unified_extension_get_name (GdmLoginExtension *login_extension)
 {
-        return g_strdup (_("Unified Authentication"));
+        return g_strdup (_("Authentication"));
 }
 
 static char *
 gdm_unified_extension_get_description (GdmLoginExtension *login_extension)
 {
-        return g_strdup (_("Log into session with username and unified"));
+        return g_strdup (_("Log into session"));
 }
 
 static gboolean
