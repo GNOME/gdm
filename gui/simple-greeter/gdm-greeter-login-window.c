@@ -752,10 +752,14 @@ static void
 begin_other_verification (GdmGreeterLoginWindow *login_window)
 {
         /* FIXME: we should drop this code and do all OTHER handling
-         * entirely from within the password plugin
+         * entirely from within the extension
          * (ala how smart card manages its "Smartcard Authentication" item)
          */
-        begin_single_service_verification (login_window, "gdm-password");
+        if (find_extension_with_service_name (login_window, "gdm-password") != NULL) {
+                begin_single_service_verification (login_window, "gdm-password");
+        } else {
+                begin_single_service_verification (login_window, "gdm");
+        }
 }
 
 static void
@@ -985,7 +989,8 @@ handle_stopped_conversation (GdmGreeterLoginWindow *login_window,
          *
          * FIXME: we need to get this policy out of the source code
          */
-        if (strcmp (service_name, "gdm-password") == 0) {
+        if (strcmp (service_name, "gdm-password") == 0 ||
+            strcmp (service_name, "gdm") == 0) {
                 g_debug ("GdmGreeterLoginWindow: main conversation failed, starting over");
                 restart_conversations (login_window);
                 reset_dialog_after_messages (login_window, MODE_SELECTION);
