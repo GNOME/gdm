@@ -190,7 +190,7 @@ gdm_settings_direct_get_string (const char        *key,
 
         assert_signature (entry, "s");
 
-        ret = FALSE;
+        ret = TRUE;
 
         res = get_value (key, &str);
 
