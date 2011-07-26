@@ -1376,8 +1376,6 @@ activate_session_id (GdmSlave   *slave,
                 goto out;
         }
 
-
-        dbus_error_init (&local_error);
         reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (slave->priv->connection),
                                                            message,
                                                            -1,
