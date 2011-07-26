@@ -27,6 +27,13 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 
+#include <dbus/dbus.h>
+#include <dbus/dbus-glib-lowlevel.h>
+
+#ifdef WITH_SYSTEMD
+#include <systemd/sd-daemon.h>
+#endif
+
 #include "gdm-display-factory.h"
 #include "gdm-local-display-factory.h"
 #include "gdm-local-display-factory-glue.h"
@@ -64,7 +71,8 @@ static void     gdm_local_display_factory_class_init    (GdmLocalDisplayFactoryC
 static void     gdm_local_display_factory_init          (GdmLocalDisplayFactory      *factory);
 static void     gdm_local_display_factory_finalize      (GObject                     *object);
 
-static GdmDisplay *create_display                       (GdmLocalDisplayFactory      *factory);
+static GdmDisplay *create_display                       (GdmLocalDisplayFactory      *factory,
+                                                         const char                  *seat_id);
 
 static gpointer local_display_factory_object = NULL;
 
@@ -282,12 +290,15 @@ on_static_display_status_changed (GdmDisplay             *display,
         int              status;
         GdmDisplayStore *store;
         int              num;
+        char            *seat_id = NULL;
 
         num = -1;
         gdm_display_get_x11_display_number (display, &num, NULL);
         g_assert (num != -1);
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+
+        g_object_get (display, "seat-id", &seat_id, NULL);
 
         status = gdm_display_get_status (display);
 
@@ -300,7 +311,7 @@ on_static_display_status_changed (GdmDisplay             *display,
                 gdm_display_store_remove (store, display);
                 /* reset num failures */
                 factory->priv->num_failures = 0;
-                create_display (factory);
+                create_display (factory, seat_id);
                 break;
         case GDM_DISPLAY_FAILED:
                 /* leave the display number in factory->priv->displays
@@ -313,7 +324,7 @@ on_static_display_status_changed (GdmDisplay             *display,
                         /* FIXME: should monitor hardware changes to
                            try again when seats change */
                 } else {
-                        create_display (factory);
+                        create_display (factory, seat_id);
                 }
                 break;
         case GDM_DISPLAY_UNMANAGED:
@@ -326,13 +337,44 @@ on_static_display_status_changed (GdmDisplay             *display,
                 g_assert_not_reached ();
                 break;
         }
+
+        g_free (seat_id);
+}
+
+static gboolean
+lookup_by_seat_id (const char *id,
+                   GdmDisplay *display,
+                   gpointer    user_data)
+{
+        const char *looking_for = user_data;
+        char *current;
+        gboolean res;
+
+        g_object_get (G_OBJECT (display), "seat-id", &current, NULL);
+
+        res = g_strcmp0 (current, looking_for) == 0;
+
+        g_free(current);
+
+        return res;
 }
 
 static GdmDisplay *
-create_display (GdmLocalDisplayFactory *factory)
+create_display (GdmLocalDisplayFactory *factory,
+                const char             *seat_id)
 {
-        GdmDisplay *display;
-        guint32     num;
+        GdmDisplayStore *store;
+        GdmDisplay      *display;
+        guint32          num;
+
+        /* Ensure we don't create the same display more than once */
+        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+        display = gdm_display_store_find (store, lookup_by_seat_id, (gpointer) seat_id);
+        if (display != NULL) {
+                return NULL;
+        }
+
+        g_debug ("GdmLocalDisplayFactory: Adding display on seat %s", seat_id);
 
         num = take_next_display_number (factory);
 
@@ -342,8 +384,7 @@ create_display (GdmLocalDisplayFactory *factory)
         display = gdm_static_display_new (num);
 #endif
 
-        /* FIXME: don't hardcode seat1? */
-        g_object_set (display, "seat-id", CK_SEAT1_PATH, NULL);
+        g_object_set (display, "seat-id", seat_id, NULL);
 
         g_signal_connect (display,
                           "notify::status",
@@ -362,24 +403,182 @@ create_display (GdmLocalDisplayFactory *factory)
         return display;
 }
 
+#ifdef WITH_SYSTEMD
+
+static void
+delete_display (GdmLocalDisplayFactory *factory,
+                const char             *seat_id) {
+
+        GdmDisplayStore *store;
+
+        g_debug ("GdmLocalDisplayFactory: Removing displays on seat %s", seat_id);
+
+        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+        gdm_display_store_foreach_remove (store, lookup_by_seat_id, (gpointer) seat_id);
+}
+
+static gboolean gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
+{
+        DBusError error;
+        DBusMessage *message, *reply;
+        DBusMessageIter iter, sub, sub2;
+
+        dbus_error_init (&error);
+
+        message = dbus_message_new_method_call (
+                        "org.freedesktop.login1",
+                        "/org/freedesktop/login1",
+                        "org.freedesktop.login1.Manager",
+                        "ListSeats");
+        if (message == NULL) {
+                g_warning ("GdmLocalDisplayFactory: Failed to allocate message");
+                return FALSE;
+        }
+
+        reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (factory->priv->connection), message, -1, &error);
+        dbus_message_unref (message);
+
+        if (reply == NULL) {
+                g_warning ("GdmLocalDisplayFactory: Failed to issue method call: %s", error.message);
+                dbus_error_free (&error);
+                return FALSE;
+        }
+
+        if (!dbus_message_iter_init (reply, &iter) ||
+            dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_ARRAY ||
+            dbus_message_iter_get_element_type (&iter) != DBUS_TYPE_STRUCT)  {
+                g_warning ("GdmLocalDisplayFactory: Failed to parse reply.");
+                dbus_message_unref (reply);
+                return FALSE;
+        }
+
+        dbus_message_iter_recurse (&iter, &sub);
+
+        while (dbus_message_iter_get_arg_type (&sub) != DBUS_TYPE_INVALID) {
+                const char *seat;
+
+                if (dbus_message_iter_get_arg_type (&sub) != DBUS_TYPE_STRUCT) {
+                        g_warning ("GdmLocalDisplayFactory: Failed to parse reply.");
+                        dbus_message_unref (reply);
+                        return FALSE;
+                }
+
+                dbus_message_iter_recurse (&sub, &sub2);
+
+                if (dbus_message_iter_get_arg_type (&sub2) != DBUS_TYPE_STRING) {
+                        g_warning ("GdmLocalDisplayFactory: Failed to parse reply.");
+                        dbus_message_unref (reply);
+                        return FALSE;
+                }
+
+                dbus_message_iter_get_basic (&sub2, &seat);
+                create_display (factory, seat);
+
+                dbus_message_iter_next (&sub);
+        }
+
+        dbus_message_unref (reply);
+        return TRUE;
+}
+
+static DBusHandlerResult
+on_seat_signal (DBusConnection *connection,
+                DBusMessage    *message,
+                void           *user_data)
+{
+        GdmLocalDisplayFactory *factory = user_data;
+        DBusError error;
+
+        dbus_error_init (&error);
+
+        if (dbus_message_is_signal (message, "org.freedesktop.login1.Manager", "SeatNew") ||
+            dbus_message_is_signal (message, "org.freedesktop.login1.Manager", "SeatRemoved")) {
+                const char *seat;
+
+                dbus_message_get_args (message,
+                                       &error,
+                                       DBUS_TYPE_STRING, &seat,
+                                       DBUS_TYPE_INVALID);
+
+                if (dbus_error_is_set (&error)) {
+                        g_warning ("GdmLocalDisplayFactory: Failed to decode seat message: %s", error.message);
+                        dbus_error_free (&error);
+                } else {
+
+                        if (strcmp (dbus_message_get_member (message), "SeatNew") == 0) {
+                                create_display (factory, seat);
+                        } else {
+                                delete_display (factory, seat);
+                        }
+                }
+        }
+
+        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+}
+
+static void
+gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory)
+{
+        DBusError error;
+
+        dbus_error_init (&error);
+
+        dbus_bus_add_match (dbus_g_connection_get_connection (factory->priv->connection),
+                            "type='signal',"
+                            "sender='org.freedesktop.login1',"
+                            "path='/org/freedesktop/login1',"
+                            "interface='org.freedesktop.login1.Manager',"
+                            "member='SeatNew'",
+                            &error);
+
+        if (dbus_error_is_set (&error)) {
+                g_warning ("GdmLocalDisplayFactory: Failed to add match for SeatNew: %s", error.message);
+                dbus_error_free (&error);
+        }
+
+        dbus_bus_add_match (dbus_g_connection_get_connection (factory->priv->connection),
+                            "type='signal',"
+                            "sender='org.freedesktop.login1',"
+                            "path='/org/freedesktop/login1',"
+                            "interface='org.freedesktop.login1.Manager',"
+                            "member='SeatRemoved'",
+                            &error);
+
+        if (dbus_error_is_set (&error)) {
+                g_warning ("GdmLocalDisplayFactory: Failed to add match for SeatNew: %s", error.message);
+                dbus_error_free (&error);
+        }
+
+        dbus_connection_add_filter (dbus_g_connection_get_connection (factory->priv->connection), on_seat_signal, factory, NULL);
+}
+
+static void
+gdm_local_display_factory_stop_monitor (GdmLocalDisplayFactory *factory)
+{
+        dbus_connection_remove_filter (dbus_g_connection_get_connection (factory->priv->connection), on_seat_signal, factory);
+}
+
+#endif
+
 static gboolean
 gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
 {
-        gboolean                ret;
         GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (base_factory);
         GdmDisplay             *display;
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 
-        ret = TRUE;
-
-        /* FIXME: use seat configuration */
-        display = create_display (factory);
-        if (display == NULL) {
-                ret = FALSE;
+#ifdef WITH_SYSTEMD
+        if (sd_booted () > 0) {
+                gdm_local_display_factory_start_monitor (factory);
+                return gdm_local_display_factory_sync_seats (factory);
         }
+#endif
 
-        return ret;
+        /* On ConsoleKit just create Seat1, and that's it. */
+        display = create_display (factory, CK_SEAT1_PATH);
+
+        return display != NULL;
 }
 
 static gboolean
@@ -388,6 +587,10 @@ gdm_local_display_factory_stop (GdmDisplayFactory *base_factory)
         GdmLocalDisplayFactory *factory = GDM_LOCAL_DISPLAY_FACTORY (base_factory);
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
+
+#ifdef WITH_SYSTEMD
+        gdm_local_display_factory_stop_monitor (factory);
+#endif
 
         return TRUE;
 }
@@ -498,6 +701,10 @@ gdm_local_display_factory_finalize (GObject *object)
         g_return_if_fail (factory->priv != NULL);
 
         g_hash_table_destroy (factory->priv->displays);
+
+#ifdef WITH_SYSTEMD
+        gdm_local_display_factory_stop_monitor (factory);
+#endif
 
         G_OBJECT_CLASS (gdm_local_display_factory_parent_class)->finalize (object);
 }

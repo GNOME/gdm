@@ -363,6 +363,7 @@ gdm_binary_LDADD = \
 	$(DAEMON_LIBS)				\
 	$(XDMCP_LIBS)                           \
 	$(LIBWRAP_LIBS)                         \
+	$(SYSTEMD_LIBS)				\
 	$(NULL)
 
 if WITH_CONSOLE_KIT
