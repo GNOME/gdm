@@ -272,6 +272,11 @@ AC_ARG_WITH(console-kit,
                            [Add ConsoleKit support @<:@default=auto@:>@]),,
             with_console_kit=auto)
 
+AC_ARG_WITH(systemd,
+            AS_HELP_STRING([--with-systemd],
+                           [Add systemd support @<:@default=auto@:>@]),,
+            with_systemd=auto)
+
 AC_ARG_WITH(at-spi-registryd-directory,
             AS_HELP_STRING([--with-at-spi-registryd-directory],
 	                   [Specify the directory of at-spi-registryd @<:@default=libexecdir@:>@])],,
@@ -927,6 +932,25 @@ AM_CONDITIONAL(WITH_CONSOLE_KIT, test x$use_console_kit = xyes)
 AC_SUBST(WITH_CONSOLE_KIT)
 
 dnl ---------------------------------------------------------------------------
+dnl - Check for systemd support
+dnl ---------------------------------------------------------------------------
+
+use_systemd=no
+if test "x$with_systemd" != "xno" ; then
+        PKG_CHECK_MODULES(SYSTEMD,
+                libsystemd-daemon
+                libsystemd-login
+        )
+        AC_SUBST(SYSTEMD_CFLAGS)
+        AC_SUBST(SYSTEMD_LIBS)
+
+	use_systemd=yes
+	AC_DEFINE(WITH_SYSTEMD, 1, [Define to enable systemd support])
+fi
+AM_CONDITIONAL(WITH_SYSTEMD, test x$use_systemd = xyes)
+AC_SUBST(WITH_SYSTEMD)
+
+dnl ---------------------------------------------------------------------------
 dnl - Check for D-Bus
 dnl ---------------------------------------------------------------------------
 
@@ -1511,6 +1535,7 @@ echo \
         XDMCP support:            ${XDMCP_SUPPORT}
         SELinux support:          ${with_selinux}
         ConsoleKit support:       ${use_console_kit}
+        systemd support:          ${use_systemd}
         UPower support:           ${have_upower}
         Build with RBAC:          ${msg_rbac_shutdown}
 "
