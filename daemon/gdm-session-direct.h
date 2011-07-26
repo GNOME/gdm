@@ -52,11 +52,13 @@ GdmSessionDirect * gdm_session_direct_new                      (const char *disp
                                                                 const char *display_name,
                                                                 const char *display_hostname,
                                                                 const char *display_device,
+                                                                const char *display_seat_id,
                                                                 const char *display_x11_authority_file,
                                                                 gboolean    display_is_local) G_GNUC_MALLOC;
 
 char             * gdm_session_direct_get_username             (GdmSessionDirect     *session_direct);
 char             * gdm_session_direct_get_display_device       (GdmSessionDirect     *session_direct);
+char             * gdm_session_direct_get_display_seat_id      (GdmSessionDirect     *session_direct);
 gboolean           gdm_session_direct_bypasses_xsession        (GdmSessionDirect     *session_direct);
 
 /* Exported methods */

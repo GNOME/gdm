@@ -849,6 +849,7 @@ gdm_welcome_session_start (GdmWelcomeSession *welcome_session)
                                                                               welcome_session->priv->x11_display_name,
                                                                               welcome_session->priv->x11_display_hostname,
                                                                               welcome_session->priv->x11_display_device,
+                                                                              welcome_session->priv->x11_display_seat_id,
                                                                               welcome_session->priv->x11_authority_file,
                                                                               welcome_session->priv->x11_display_is_local));
 

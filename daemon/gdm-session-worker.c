@@ -118,6 +118,7 @@ struct GdmSessionWorkerPrivate
         char             *x11_display_name;
         char             *x11_authority_file;
         char             *display_device;
+        char             *display_seat_id;
         char             *hostname;
         char             *username;
         char             *log_file;
@@ -2494,6 +2495,7 @@ on_setup (GdmSessionWorker *worker,
         const char *x11_display_name;
         const char *x11_authority_file;
         const char *console;
+        const char *seat_id;
         const char *hostname;
         dbus_bool_t res;
 
@@ -2508,6 +2510,7 @@ on_setup (GdmSessionWorker *worker,
                                      DBUS_TYPE_STRING, &service,
                                      DBUS_TYPE_STRING, &x11_display_name,
                                      DBUS_TYPE_STRING, &console,
+                                     DBUS_TYPE_STRING, &seat_id,
                                      DBUS_TYPE_STRING, &hostname,
                                      DBUS_TYPE_STRING, &x11_authority_file,
                                      DBUS_TYPE_INVALID);
@@ -2516,6 +2519,7 @@ on_setup (GdmSessionWorker *worker,
                 worker->priv->x11_display_name = g_strdup (x11_display_name);
                 worker->priv->x11_authority_file = g_strdup (x11_authority_file);
                 worker->priv->display_device = g_strdup (console);
+                worker->priv->display_seat_id = g_strdup (seat_id);
                 worker->priv->hostname = g_strdup (hostname);
                 worker->priv->username = NULL;
 
@@ -2536,6 +2540,7 @@ on_setup_for_user (GdmSessionWorker *worker,
         const char *x11_display_name;
         const char *x11_authority_file;
         const char *console;
+        const char *seat_id;
         const char *hostname;
         const char *username;
         dbus_bool_t res;
@@ -2551,6 +2556,7 @@ on_setup_for_user (GdmSessionWorker *worker,
                                      DBUS_TYPE_STRING, &service,
                                      DBUS_TYPE_STRING, &x11_display_name,
                                      DBUS_TYPE_STRING, &console,
+                                     DBUS_TYPE_STRING, &seat_id,
                                      DBUS_TYPE_STRING, &hostname,
                                      DBUS_TYPE_STRING, &x11_authority_file,
                                      DBUS_TYPE_STRING, &username,
@@ -2560,6 +2566,7 @@ on_setup_for_user (GdmSessionWorker *worker,
                 worker->priv->x11_display_name = g_strdup (x11_display_name);
                 worker->priv->x11_authority_file = g_strdup (x11_authority_file);
                 worker->priv->display_device = g_strdup (console);
+                worker->priv->display_seat_id = g_strdup (seat_id);
                 worker->priv->hostname = g_strdup (hostname);
                 worker->priv->username = g_strdup (username);
 
@@ -2598,6 +2605,7 @@ on_setup_for_program (GdmSessionWorker *worker,
         char *service;
         char *x11_display_name;
         char *console;
+        char *seat_id;
         char *hostname;
         char *x11_authority_file;
         char *log_file;
@@ -2614,6 +2622,7 @@ on_setup_for_program (GdmSessionWorker *worker,
                                      DBUS_TYPE_STRING, &service,
                                      DBUS_TYPE_STRING, &x11_display_name,
                                      DBUS_TYPE_STRING, &console,
+                                     DBUS_TYPE_STRING, &seat_id,
                                      DBUS_TYPE_STRING, &hostname,
                                      DBUS_TYPE_STRING, &x11_authority_file,
                                      DBUS_TYPE_STRING, &log_file,
@@ -2627,6 +2636,7 @@ on_setup_for_program (GdmSessionWorker *worker,
                 worker->priv->x11_display_name = g_strdup (x11_display_name);
                 worker->priv->hostname = g_strdup (hostname);
                 worker->priv->display_device = g_strdup (console);
+                worker->priv->display_seat_id = g_strdup (seat_id);
                 worker->priv->x11_authority_file = g_strdup (x11_authority_file);
                 worker->priv->log_file = g_strdup (log_file);
                 worker->priv->is_program_session = TRUE;
@@ -2945,6 +2955,7 @@ gdm_session_worker_finalize (GObject *object)
         g_free (worker->priv->x11_display_name);
         g_free (worker->priv->x11_authority_file);
         g_free (worker->priv->display_device);
+        g_free (worker->priv->display_seat_id);
         g_free (worker->priv->hostname);
         g_free (worker->priv->username);
         g_free (worker->priv->server_address);
@@ -2964,4 +2975,3 @@ gdm_session_worker_new (const char *address)
 
         return GDM_SESSION_WORKER (object);
 }
-
