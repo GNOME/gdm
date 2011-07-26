@@ -296,6 +296,7 @@ gdm_session_worker_LDFLAGS =			\
 gdm_session_worker_LDADD = 			\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(DAEMON_LIBS)				\
+	$(SYSTEMD_LIBS) 			\
 	$(NULL)
 
 sbin_PROGRAMS = 			\

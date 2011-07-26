@@ -46,7 +46,13 @@
 
 #include <X11/Xauth.h>
 
+#ifdef WITH_SYSTEMD
+#include <systemd/sd-daemon.h>
+#endif
+
+#ifdef WITH_CONSOLE_KIT
 #include "ck-connector.h"
+#endif
 
 #include "gdm-common.h"
 #include "gdm-log.h"
@@ -107,7 +113,9 @@ struct GdmSessionWorkerPrivate
 
         int               exit_code;
 
+#ifdef WITH_CONSOLE_KIT
         CkConnector      *ckc;
+#endif
         pam_handle_t     *pam_handle;
 
         GPid              child_pid;
@@ -151,7 +159,12 @@ static void     gdm_session_worker_class_init   (GdmSessionWorkerClass *klass);
 static void     gdm_session_worker_init         (GdmSessionWorker      *session_worker);
 static void     gdm_session_worker_finalize     (GObject               *object);
 
+static void     gdm_session_worker_set_environment_variable (GdmSessionWorker *worker,
+                                                             const char       *key,
+                                                             const char       *value);
+
 static void     queue_state_change              (GdmSessionWorker      *worker);
+
 
 typedef int (* GdmSessionWorkerPamNewMessagesFunc) (int,
                                                     const struct pam_message **,
@@ -171,6 +184,7 @@ gdm_session_worker_error_quark (void)
         return error_quark;
 }
 
+#ifdef WITH_CONSOLE_KIT
 static gboolean
 open_ck_session (GdmSessionWorker  *worker)
 {
@@ -257,6 +271,7 @@ open_ck_session (GdmSessionWorker  *worker)
  out:
         return ret;
 }
+#endif
 
 /* adapted from glib script_execute */
 static void
@@ -1057,6 +1072,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                                    const char       *x11_display_name,
                                    const char       *x11_authority_file,
                                    const char       *display_device,
+                                   const char       *seat_id,
                                    GError          **error)
 {
         struct pam_conv        pam_conversation;
@@ -1137,6 +1153,13 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                              pam_strerror (worker->priv->pam_handle, error_code));
                 goto out;
         }
+
+#ifdef WITH_SYSTEMD
+        /* set seat ID */
+        if (seat_id != NULL && seat_id[0] != '\0' && sd_booted() > 0) {
+                gdm_session_worker_set_environment_variable (worker, "XDG_SEAT", seat_id);
+        }
+#endif
 
 #ifdef PAM_XDISPLAY
         /* set XDISPLAY */
@@ -1571,6 +1594,13 @@ register_ck_session (GdmSessionWorker *worker)
         const char *session_cookie;
         gboolean    res;
 
+#ifdef WITH_SYSTEMD
+        if (sd_booted() > 0) {
+                return;
+        }
+#endif
+
+#ifdef WITH_CONSOLE_KIT
         session_cookie = NULL;
         res = open_ck_session (worker);
         if (res) {
@@ -1581,6 +1611,7 @@ register_ck_session (GdmSessionWorker *worker)
                                                              "XDG_SESSION_COOKIE",
                                                              session_cookie);
         }
+#endif
 }
 
 static void
@@ -1611,11 +1642,13 @@ session_worker_child_watch (GPid              pid,
                                       num);
         }
 
+#ifdef WITH_CONSOLE_KIT
         if (worker->priv->ckc != NULL) {
                 ck_connector_close_session (worker->priv->ckc, NULL);
                 ck_connector_unref (worker->priv->ckc);
                 worker->priv->ckc = NULL;
         }
+#endif
 
         gdm_session_worker_uninitialize_pam (worker, PAM_SUCCESS);
 
@@ -2140,6 +2173,7 @@ do_setup (GdmSessionWorker *worker)
                                                  worker->priv->x11_display_name,
                                                  worker->priv->x11_authority_file,
                                                  worker->priv->display_device,
+                                                 worker->priv->display_seat_id,
                                                  &error);
         if (! res) {
                 if (g_error_matches (error,
