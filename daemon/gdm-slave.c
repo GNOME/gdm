@@ -1432,6 +1432,7 @@ session_unlock (GdmSlave   *slave,
 
         if (dbus_error_is_set (&error)) {
                 g_debug ("GdmSlave: ConsoleKit %s raised:\n %s\n\n", error.name, error.message);
+                dbus_error_free (&error);
                 return FALSE;
         }
 
