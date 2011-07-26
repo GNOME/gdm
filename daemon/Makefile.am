@@ -264,8 +264,6 @@ gdm_xdmcp_chooser_slave_LDADD = 		\
 
 gdm_session_worker_SOURCES = 			\
 	session-worker-main.c 			\
-	ck-connector.h				\
-	ck-connector.c				\
 	gdm-session-settings.h			\
 	gdm-session-settings.c			\
 	gdm-session-auditor.h			\
@@ -273,6 +271,12 @@ gdm_session_worker_SOURCES = 			\
 	gdm-session-worker.h			\
 	gdm-session-worker.c			\
 	$(NULL)
+
+if WITH_CONSOLE_KIT
+gdm_session_worker_SOURCES += 			\
+	ck-connector.h				\
+	ck-connector.c
+endif
 
 if HAVE_LIBAUDIT
 gdm_session_worker_SOURCES += gdm-session-linux-auditor.h       \
