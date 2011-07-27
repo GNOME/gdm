@@ -57,9 +57,9 @@
 #define CK_MANAGER_PATH      "/org/freedesktop/ConsoleKit/Manager"
 #define CK_MANAGER_INTERFACE "org.freedesktop.ConsoleKit.Manager"
 
-#define GPM_DBUS_NAME      "org.gnome.PowerManager"
-#define GPM_DBUS_PATH      "/org/gnome/PowerManager"
-#define GPM_DBUS_INTERFACE "org.gnome.PowerManager"
+#define GPM_DBUS_NAME      "org.gnome.SettingsDaemon"
+#define GPM_DBUS_PATH      "/org/gnome/SettingsDaemon/Power"
+#define GPM_DBUS_INTERFACE "org.gnome.SettingsDaemon.Power"
 
 #define KEY_DISABLE_RESTART_BUTTONS "/apps/gdm/simple-greeter/disable_restart_buttons"
 #define KEY_NOTIFICATION_AREA_PADDING "/apps/notification_area_applet/prefs/padding"
