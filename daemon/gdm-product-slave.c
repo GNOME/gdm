@@ -479,11 +479,13 @@ gdm_product_slave_create_server (GdmProductSlave *slave)
 {
         char    *display_name;
         char    *auth_file;
+        char    *seat_id;
         gboolean display_is_local;
 
         g_object_get (slave,
                       "display-is-local", &display_is_local,
                       "display-name", &display_name,
+                      "display-seat-id", &seat_id,
                       "display-x11-authority-file", &auth_file,
                       NULL);
 
@@ -492,7 +494,7 @@ gdm_product_slave_create_server (GdmProductSlave *slave)
         if (display_is_local) {
                 gboolean res;
 
-                slave->priv->server = gdm_server_new (display_name, auth_file);
+                slave->priv->server = gdm_server_new (display_name, seat_id, auth_file);
                 g_signal_connect (slave->priv->server,
                                   "exited",
                                   G_CALLBACK (on_server_exited),

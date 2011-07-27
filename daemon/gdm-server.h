@@ -54,6 +54,7 @@ typedef struct
 
 GType               gdm_server_get_type  (void);
 GdmServer *         gdm_server_new       (const char *display_id,
+                                          const char *seat_id,
                                           const char *auth_file);
 gboolean            gdm_server_start     (GdmServer   *server);
 gboolean            gdm_server_stop      (GdmServer   *server);

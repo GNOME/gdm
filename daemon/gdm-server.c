@@ -38,6 +38,10 @@
 #include <sys/prctl.h>
 #endif
 
+#ifdef WITH_SYSTEMD
+#include <systemd/sd-daemon.h>
+#endif
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -77,6 +81,7 @@ struct GdmServerPrivate
         char    *log_dir;
         char    *display_name;
         char    *display_device;
+        char    *display_seat_id;
         char    *auth_file;
 
         gboolean is_parented;
@@ -90,6 +95,7 @@ struct GdmServerPrivate
 enum {
         PROP_0,
         PROP_DISPLAY_NAME,
+        PROP_DISPLAY_SEAT_ID,
         PROP_DISPLAY_DEVICE,
         PROP_AUTH_FILE,
         PROP_IS_PARENTED,
@@ -284,7 +290,7 @@ gdm_server_resolve_command_line (GdmServer  *server,
                         query_in_arglist = TRUE;
         }
 
-        argv = g_renew (char *, argv, len + 10);
+        argv = g_renew (char *, argv, len + 12);
         /* shift args down one */
         for (i = len - 1; i >= 1; i--) {
                 argv[i+1] = argv[i];
@@ -297,6 +303,11 @@ gdm_server_resolve_command_line (GdmServer  *server,
         if (server->priv->auth_file != NULL) {
                 argv[len++] = g_strdup ("-auth");
                 argv[len++] = g_strdup (server->priv->auth_file);
+        }
+
+        if (sd_booted () > 0 && server->priv->display_seat_id != NULL) {
+                argv[len++] = g_strdup ("-seat");
+                argv[len++] = g_strdup (server->priv->display_seat_id);
         }
 
         if (server->priv->chosen_hostname) {
@@ -753,6 +764,14 @@ _gdm_server_set_display_name (GdmServer  *server,
 }
 
 static void
+_gdm_server_set_display_seat_id (GdmServer  *server,
+                                 const char *name)
+{
+        g_free (server->priv->display_seat_id);
+        server->priv->display_seat_id = g_strdup (name);
+}
+
+static void
 _gdm_server_set_auth_file (GdmServer  *server,
                            const char *auth_file)
 {
@@ -789,6 +808,9 @@ gdm_server_set_property (GObject      *object,
         case PROP_DISPLAY_NAME:
                 _gdm_server_set_display_name (self, g_value_get_string (value));
                 break;
+        case PROP_DISPLAY_SEAT_ID:
+                _gdm_server_set_display_seat_id (self, g_value_get_string (value));
+                break;
         case PROP_AUTH_FILE:
                 _gdm_server_set_auth_file (self, g_value_get_string (value));
                 break;
@@ -817,6 +839,9 @@ gdm_server_get_property (GObject    *object,
         switch (prop_id) {
         case PROP_DISPLAY_NAME:
                 g_value_set_string (value, self->priv->display_name);
+                break;
+        case PROP_DISPLAY_SEAT_ID:
+                g_value_set_string (value, self->priv->display_seat_id);
                 break;
         case PROP_DISPLAY_DEVICE:
                 g_value_take_string (value,
@@ -889,6 +914,13 @@ gdm_server_class_init (GdmServerClass *klass)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_SEAT_ID,
+                                         g_param_spec_string ("display-seat-id",
+                                                              "Seat ID",
+                                                              "ID of the seat this display is running on",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
                                          PROP_DISPLAY_DEVICE,
                                          g_param_spec_string ("display-device",
                                                               "Display Device",
@@ -954,6 +986,7 @@ gdm_server_finalize (GObject *object)
         g_free (server->priv->session_args);
         g_free (server->priv->log_dir);
         g_free (server->priv->display_name);
+        g_free (server->priv->display_seat_id);
         g_free (server->priv->display_device);
         g_free (server->priv->auth_file);
         g_free (server->priv->parent_display_name);
@@ -965,12 +998,14 @@ gdm_server_finalize (GObject *object)
 
 GdmServer *
 gdm_server_new (const char *display_name,
+                const char *seat_id,
                 const char *auth_file)
 {
         GObject *object;
 
         object = g_object_new (GDM_TYPE_SERVER,
                                "display-name", display_name,
+                               "display-seat-id", seat_id,
                                "auth-file", auth_file,
                                NULL);
 
