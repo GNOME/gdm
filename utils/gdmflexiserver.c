@@ -676,9 +676,9 @@ goto_login_session (GError **error)
                 return FALSE;
         }
 
-        ret = get_login_window_session_id (connection, seat_id, &session_id);
+        res = get_login_window_session_id (connection, seat_id, &session_id);
 
-        if (! ret) {
+        if (! res) {
                 g_set_error (error, GDM_FLEXISERVER_ERROR, 1, _("User unable to switch sessions."));
                 return FALSE;
         }
