@@ -617,7 +617,7 @@ get_login_window_session_id (DBusConnection  *connection,
         char      **sessions;
         int         i;
 
-        session_id = NULL;
+        *session_id = NULL;
         sessions = NULL;
 
         g_debug ("checking if seat can activate sessions");
