@@ -4,7 +4,7 @@
 # Funda Wang <fundawang@linux.net.cn>, 2003, 2004
 # 甘露(Gan Lu) <rhythm.gan@gmail.com>, 2008, 2009
 # Tao Wei <weitao1979@gmail.com>, 2009.
-# Aron Xu <happyaron.xu@gmail.com>, 2010.
+# Aron Xu <happyaron.xu@gmail.com>, 2010, 2011.
 # Fan Qijiang <fqj1994@linux.com>, 2010.
 # Wei Li <lw124124@gmail.com>, 2011.
 # Lele Long <schemacs@gmail.com>, 2011.
@@ -15,9 +15,9 @@ msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-06-20 18:37+0000\n"
-"PO-Revision-Date: 2011-07-01 22:17+0800\n"
-"Last-Translator: YunQiang Su <wzssyqa@gmail.com>\n"
+"POT-Creation-Date: 2011-07-21 12:24+0000\n"
+"PO-Revision-Date: 2011-08-25 18:30+0800\n"
+"Last-Translator: Aron Xu <happyaron.xu@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,7 +25,7 @@ msgstr ""
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../common/gdm-common.c:498
+#: ../common/gdm-common.c:489
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom 不是字符设备"
@@ -40,8 +40,8 @@ msgstr "显示 ID"
 msgid "ID"
 msgstr "ID"
 
-#: ../daemon/factory-slave-main.c:190 ../daemon/product-slave-main.c:194
-#: ../daemon/simple-slave-main.c:194 ../daemon/xdmcp-chooser-slave-main.c:196
+#: ../daemon/factory-slave-main.c:188 ../daemon/product-slave-main.c:192
+#: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:194
 msgid "GNOME Display Manager Slave"
 msgstr "GNOME 从属显示管理器"
 
@@ -92,17 +92,17 @@ msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "服务器是以用户 %s 身份创建的，但此用户不存在"
 
 #: ../daemon/gdm-server.c:376 ../daemon/gdm-server.c:396
-#: ../daemon/gdm-welcome-session.c:599 ../daemon/gdm-welcome-session.c:619
+#: ../daemon/gdm-welcome-session.c:603 ../daemon/gdm-welcome-session.c:623
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "无法将组 ID 设置为 %d"
 
-#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:605
+#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:609
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups() 执行 %s 失败"
 
-#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:611
+#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:615
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "无法将用户 ID 设置为 %d"
@@ -211,12 +211,12 @@ msgstr "无可用用户帐户"
 msgid "Unable to change to user"
 msgstr "无法切换到用户"
 
-#: ../daemon/gdm-welcome-session.c:549
+#: ../daemon/gdm-welcome-session.c:553
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "用户 %s 不存在。"
 
-#: ../daemon/gdm-welcome-session.c:556
+#: ../daemon/gdm-welcome-session.c:560
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "组 %s 不存在。"
@@ -418,77 +418,20 @@ msgstr "一段时间后退出 - 调试时使用"
 msgid "Print GDM version"
 msgstr "打印 GDM 版本"
 
-#: ../daemon/main.c:550
+#: ../daemon/main.c:548
 msgid "GNOME Display Manager"
 msgstr "GNOME 显示管理器"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:616
+#: ../daemon/main.c:614
 msgid "Only the root user can run GDM"
 msgstr "只有 root 用户才能运行 GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:158
+#: ../daemon/session-worker-main.c:156
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME 显示管理器会话工人进程"
-
-#: ../data/greeter-autostart/at-spi-registryd-wrapper.desktop.in.in.h:1
-msgid "AT-SPI Registry Wrapper"
-msgstr "AT-SPI 注册表包装器"
-
-#: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2598
-msgid "Login Window"
-msgstr "登录窗口"
-
-#: ../data/greeter-autostart/gnome-power-manager.desktop.in.in.h:1
-msgid "Power Manager"
-msgstr "电源管理器"
-
-#: ../data/greeter-autostart/gnome-power-manager.desktop.in.in.h:2
-msgid "Power management daemon"
-msgstr "电源管理守护程序"
-
-#: ../data/greeter-autostart/gnome-session-check-accelerated.desktop.in.in.h:1
-msgid "GNOME Session Acceleration Checker"
-msgstr "GNOME 会话加速检查器"
-
-#: ../data/greeter-autostart/gnome-settings-daemon.desktop.in.in.h:1
-msgid "GNOME Settings Daemon"
-msgstr "GNOME 设置守护程序"
-
-#: ../data/greeter-autostart/gnome-mag.desktop.in.h:1
-msgid "GNOME Screen Magnifier"
-msgstr "GNOME 屏幕放大镜"
-
-#: ../data/greeter-autostart/gnome-mag.desktop.in.h:2
-msgid "Magnify parts of the screen"
-msgstr "放大屏幕的某一部分"
-
-#: ../data/greeter-autostart/gok.desktop.in.h:1
-msgid "GNOME On-Screen Keyboard"
-msgstr "GNOME 屏幕键盘"
-
-#: ../data/greeter-autostart/gok.desktop.in.h:2
-msgid "Use an on-screen keyboard"
-msgstr "使用屏幕键盘"
-
-#: ../data/greeter-autostart/metacity.desktop.in.h:1
-msgid "Metacity"
-msgstr "Metacity"
-
-#: ../data/greeter-autostart/orca-screen-reader.desktop.in.h:1
-msgid "Orca Screen Reader"
-msgstr "Orca 屏幕读取器"
-
-#: ../data/greeter-autostart/orca-screen-reader.desktop.in.h:2
-msgid "Present on-screen information as speech or braille"
-msgstr "将屏幕上的信息展示为语音或盲文"
-
-#: ../data/greeter-autostart/polkit-gnome-authentication-agent-1.desktop.in.in.h:1
-msgid "PolicyKit Authentication Agent"
-msgstr "PolicyKit 的认证代理"
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -567,23 +510,27 @@ msgid "Automatically logging in…"
 msgstr "正在自动登录..."
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:931
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:935
 msgid "Cancelling…"
 msgstr "正在取消..."
 
 #. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1491
 msgid "Select language and click Log In"
 msgstr "选择语言，单击“登录”"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1627
 msgctxt "customsession"
 msgid "Custom"
 msgstr "自定义"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1628
 msgid "Custom session"
 msgstr "自定义会话"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
+msgid "Login Window"
+msgstr "登录窗口"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
 msgid "Cancel"
@@ -902,6 +849,16 @@ msgstr "指纹认证"
 msgid "Log into session with fingerprint"
 msgstr "通过指纹登录会话"
 
+#: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:1
+#: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:1
+msgid "Activation of this plugin"
+msgstr "激活此插件"
+
+#: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:2
+#: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:2
+msgid "Whether this plugin would be activated or not"
+msgstr "是否激活此插件"
+
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
 msgid "Smartcard Authentication"
 msgstr "智能卡认证"
@@ -977,13 +934,12 @@ msgid "smartcard driver"
 msgstr "智能卡驱动"
 
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-#| msgid "PolicyKit Authentication Agent"
-msgid "Unified Authentication"
-msgstr "统一认证"
+msgid "Authentication"
+msgstr "认证"
 
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session with username and unified"
-msgstr "通过用户名和统一认证登录会话"
+msgid "Log into session"
+msgstr "登录会话"
 
 #: ../utils/gdmflexiserver.c:61
 msgid "Only the VERSION command is supported"
@@ -1033,6 +989,48 @@ msgstr "已经截屏"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "抓取屏幕的一张截图"
+
+#~ msgid "AT-SPI Registry Wrapper"
+#~ msgstr "AT-SPI 注册表包装器"
+
+#~ msgid "Power Manager"
+#~ msgstr "电源管理器"
+
+#~ msgid "Power management daemon"
+#~ msgstr "电源管理守护程序"
+
+#~ msgid "GNOME Session Acceleration Checker"
+#~ msgstr "GNOME 会话加速检查器"
+
+#~ msgid "GNOME Settings Daemon"
+#~ msgstr "GNOME 设置守护程序"
+
+#~ msgid "GNOME Screen Magnifier"
+#~ msgstr "GNOME 屏幕放大镜"
+
+#~ msgid "Magnify parts of the screen"
+#~ msgstr "放大屏幕的某一部分"
+
+#~ msgid "GNOME On-Screen Keyboard"
+#~ msgstr "GNOME 屏幕键盘"
+
+#~ msgid "Use an on-screen keyboard"
+#~ msgstr "使用屏幕键盘"
+
+#~ msgid "Metacity"
+#~ msgstr "Metacity"
+
+#~ msgid "Orca Screen Reader"
+#~ msgstr "Orca 屏幕读取器"
+
+#~ msgid "Present on-screen information as speech or braille"
+#~ msgstr "将屏幕上的信息展示为语音或盲文"
+
+#~ msgid "PolicyKit Authentication Agent"
+#~ msgstr "PolicyKit 的认证代理"
+
+#~ msgid "Log into session with username and unified"
+#~ msgstr "通过用户名和统一认证登录会话"
 
 #~ msgid "Languages"
 #~ msgstr "语言"
