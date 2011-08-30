@@ -27,6 +27,6 @@ DISTCLEANFILES = \
 	gnome-doc-utils.make	\
 	$(NULL)
 
-DISTCHECK_CONFIGURE_FLAGS = --disable-scrollkeeper
+DISTCHECK_CONFIGURE_FLAGS = --disable-scrollkeeper --enable-split-authentication --enable-introspection
 
 distuninstallcheck_listfiles = find . -type f -print | grep -v '^\./var/scrollkeeper'
