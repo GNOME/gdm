@@ -231,7 +231,7 @@ dnl ---------------------------------------------------------------------------
 AC_ARG_ENABLE(split-authentication,
 	      AS_HELP_STRING([--enable-split-authentication],
                              [Enable multiple simultaneous PAM conversations during login @<:@default=yes@:>@]),,
-              enable_split_authentication=no)
+              enable_split_authentication=yes)
 AM_CONDITIONAL(ENABLE_SPLIT_AUTHENTICATION, test x$enable_split_authentication = xyes)
 
 AC_ARG_ENABLE(console-helper,
