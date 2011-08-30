@@ -80,6 +80,7 @@ typedef struct
 struct _GdmSessionDirectPrivate
 {
         /* per open scope */
+        char                *selected_program;
         char                *selected_session;
         char                *saved_session;
         char                *selected_language;
@@ -1397,6 +1398,12 @@ do_introspect (DBusConnection *connection,
                                "      <arg name=\"x11_authority_file\" type=\"s\"/>\n"
                                "      <arg name=\"username\" type=\"s\"/>\n"
                                "    </signal>\n"
+                               "    <signal name=\"SetupForProgram\">\n"
+                               "      <arg name=\"service_name\" type=\"s\"/>\n"
+                               "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
+                               "      <arg name=\"x11_authority_file\" type=\"s\"/>\n"
+                               "      <arg name=\"log_file\" type=\"s\"/>\n"
+                               "    </signal>\n"
                                "    <signal name=\"Authenticate\">\n"
                                "    </signal>\n"
                                "    <signal name=\"Authorize\">\n"
@@ -1414,6 +1421,9 @@ do_introspect (DBusConnection *connection,
                                "    </signal>\n"
                                "    <signal name=\"SetSessionName\">\n"
                                "      <arg name=\"session_name\" type=\"s\"/>\n"
+                               "    </signal>\n"
+                               "    <signal name=\"SetSessionType\">\n"
+                               "      <arg name=\"session_type\" type=\"s\"/>\n"
                                "    </signal>\n"
                                "    <signal name=\"StartProgram\">\n"
                                "      <arg name=\"command\" type=\"s\"/>\n"
@@ -2035,6 +2045,50 @@ send_setup_for_user (GdmSessionDirect *session,
 }
 
 static void
+send_setup_for_program (GdmSessionDirect *session,
+                        const char       *service_name,
+                        const char       *log_file)
+{
+        DBusMessage    *message;
+        DBusMessageIter iter;
+        const char     *display_name;
+        const char     *display_x11_authority_file;
+        GdmSessionConversation *conversation;
+
+        g_assert (service_name != NULL);
+
+        if (session->priv->display_name != NULL) {
+                display_name = session->priv->display_name;
+        } else {
+                display_name = "";
+        }
+        if (session->priv->display_x11_authority_file != NULL) {
+                display_x11_authority_file = session->priv->display_x11_authority_file;
+        } else {
+                display_x11_authority_file = "";
+        }
+
+        g_debug ("GdmSessionDirect: Beginning setup for session for program with log '%s'", log_file);
+
+        message = dbus_message_new_signal (GDM_SESSION_DBUS_PATH,
+                                           GDM_SESSION_DBUS_INTERFACE,
+                                           "SetupForProgram");
+
+        dbus_message_iter_init_append (message, &iter);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &service_name);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_name);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_x11_authority_file);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &log_file);
+
+        conversation = find_conversation_by_name (session, service_name);
+        if (conversation != NULL && ! send_dbus_message (conversation, message)) {
+                g_debug ("GdmSessionDirect: Could not send %s signal", "SetupForProgram");
+        }
+
+        dbus_message_unref (message);
+}
+
+static void
 gdm_session_direct_setup (GdmSession *session,
                           const char *service_name)
 {
@@ -2060,6 +2114,18 @@ gdm_session_direct_setup_for_user (GdmSession *session,
 
         send_setup_for_user (impl, service_name);
         gdm_session_direct_defaults_changed (impl);
+}
+
+static void
+gdm_session_direct_setup_for_program (GdmSession *session,
+                                      const char *service_name,
+                                      const char *log_file)
+{
+        GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+
+        g_return_if_fail (session != NULL);
+
+        send_setup_for_program (impl, service_name, log_file);
 }
 
 static void
@@ -2194,33 +2260,34 @@ get_session_command (GdmSessionDirect *session)
 }
 
 static void
-gdm_session_direct_set_environment_variable (GdmSessionDirect *session,
-                                             const char       *key,
-                                             const char       *value)
+gdm_session_direct_set_environment_variable (GdmSession *session,
+                                             const char *key,
+                                             const char *value)
 {
-        g_return_if_fail (session != NULL);
-        g_return_if_fail (session != NULL);
+        GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+
         g_return_if_fail (key != NULL);
         g_return_if_fail (value != NULL);
 
-        g_hash_table_replace (session->priv->environment,
+        g_hash_table_replace (impl->priv->environment,
                               g_strdup (key),
                               g_strdup (value));
 }
 
 static void
-setup_session_environment (GdmSessionDirect *session)
+setup_session_environment (GdmSessionDirect *session_direct)
 {
+        GdmSession *session = GDM_SESSION (session_direct);
         const char *locale;
 
         gdm_session_direct_set_environment_variable (session,
                                                      "GDMSESSION",
-                                                     get_session_name (session));
+                                                     get_session_name (session_direct));
         gdm_session_direct_set_environment_variable (session,
                                                      "DESKTOP_SESSION",
-                                                     get_session_name (session));
+                                                     get_session_name (session_direct));
 
-        locale = get_language_name (session);
+        locale = get_language_name (session_direct);
 
         if (locale != NULL && locale[0] != '\0') {
                 gdm_session_direct_set_environment_variable (session,
@@ -2233,12 +2300,12 @@ setup_session_environment (GdmSessionDirect *session)
 
         gdm_session_direct_set_environment_variable (session,
                                                      "DISPLAY",
-                                                     session->priv->display_name);
+                                                     session_direct->priv->display_name);
 
-        if (session->priv->user_x11_authority_file != NULL) {
+        if (session_direct->priv->user_x11_authority_file != NULL) {
                 gdm_session_direct_set_environment_variable (session,
                                                              "XAUTHORITY",
-                                                             session->priv->user_x11_authority_file);
+                                                             session_direct->priv->user_x11_authority_file);
         }
 
         if (g_getenv ("WINDOWPATH") != NULL) {
@@ -2336,15 +2403,19 @@ gdm_session_direct_start_session (GdmSession *session,
 
         stop_all_other_conversations (impl, conversation);
 
-        command = get_session_command (impl);
+        if (impl->priv->selected_program == NULL) {
+                command = get_session_command (impl);
 
-        if (gdm_session_direct_bypasses_xsession (impl)) {
-                program = g_strdup (command);
+                if (gdm_session_direct_bypasses_xsession (impl)) {
+                        program = g_strdup (command);
+                } else {
+                        program = g_strdup_printf (GDMCONFDIR "/Xsession \"%s\"", command);
+                }
+
+                g_free (command);
         } else {
-                program = g_strdup_printf (GDMCONFDIR "/Xsession \"%s\"", command);
+                program = g_strdup (impl->priv->selected_program);
         }
-
-        g_free (command);
 
         setup_session_environment (impl);
         send_environment (impl, conversation);
@@ -2494,6 +2565,35 @@ out:
         return bypasses_xsession;
 }
 
+static void
+gdm_session_direct_select_program (GdmSession *session,
+                                   const char *text)
+{
+        GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+
+        g_free (impl->priv->selected_program);
+
+        impl->priv->selected_program = g_strdup (text);
+}
+
+static void
+gdm_session_direct_select_session_type (GdmSession *session,
+                                        const char *text)
+{
+        GdmSessionDirect *impl = GDM_SESSION_DIRECT (session);
+        GHashTableIter iter;
+        gpointer key, value;
+
+        g_hash_table_iter_init (&iter, impl->priv->conversations);
+        while (g_hash_table_iter_next (&iter, &key, &value)) {
+                GdmSessionConversation *conversation;
+
+                conversation = (GdmSessionConversation *) value;
+
+                send_dbus_string_signal (conversation, "SetSessionType",
+                                         text);
+        }
+}
 static void
 gdm_session_direct_select_session (GdmSession *session,
                                    const char *text)
@@ -2781,21 +2881,22 @@ gdm_session_direct_constructor (GType                  type,
         session = GDM_SESSION_DIRECT (G_OBJECT_CLASS (gdm_session_direct_parent_class)->constructor (type,
                                                                                           n_construct_properties,
                                                                                           construct_properties));
+        if (session->priv->display_id != NULL) {
+                /* Always match the session id with the master */
+                id = NULL;
+                if (g_str_has_prefix (session->priv->display_id, "/org/gnome/DisplayManager/Display")) {
+                        id = session->priv->display_id + strlen ("/org/gnome/DisplayManager/Display");
+                }
 
-        /* Always match the session id with the master */
-        id = NULL;
-        if (g_str_has_prefix (session->priv->display_id, "/org/gnome/DisplayManager/Display")) {
-                id = session->priv->display_id + strlen ("/org/gnome/DisplayManager/Display");
-        }
+                g_assert (id != NULL);
 
-        g_assert (id != NULL);
+                session->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Session%s", id);
+                g_debug ("GdmSessionDirect: Registering %s", session->priv->id);
 
-        session->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Session%s", id);
-        g_debug ("GdmSessionDirect: Registering %s", session->priv->id);
-
-        res = register_session (session);
-        if (! res) {
-                g_warning ("Unable to register session with system bus");
+                res = register_session (session);
+                if (! res) {
+                        g_warning ("Unable to register session with system bus");
+                }
         }
 
         return G_OBJECT (session);
@@ -2808,6 +2909,8 @@ gdm_session_iface_init (GdmSessionIface *iface)
         iface->stop_conversation = gdm_session_direct_stop_conversation;
         iface->setup = gdm_session_direct_setup;
         iface->setup_for_user = gdm_session_direct_setup_for_user;
+        iface->setup_for_program = gdm_session_direct_setup_for_program;
+        iface->set_environment_variable = gdm_session_direct_set_environment_variable;
         iface->authenticate = gdm_session_direct_authenticate;
         iface->authorize = gdm_session_direct_authorize;
         iface->accredit = gdm_session_direct_accredit;
@@ -2817,6 +2920,8 @@ gdm_session_iface_init (GdmSessionIface *iface)
         iface->cancel = gdm_session_direct_cancel;
         iface->start_session = gdm_session_direct_start_session;
         iface->answer_query = gdm_session_direct_answer_query;
+        iface->select_program = gdm_session_direct_select_program;
+        iface->select_session_type = gdm_session_direct_select_session_type;
         iface->select_session = gdm_session_direct_select_session;
         iface->select_language = gdm_session_direct_select_language;
         iface->select_user = gdm_session_direct_select_user;

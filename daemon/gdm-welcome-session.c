@@ -44,6 +44,8 @@
 #include "gdm-common.h"
 #include "ck-connector.h"
 
+#include "gdm-session.h"
+#include "gdm-session-direct.h"
 #include "gdm-welcome-session.h"
 
 #define DBUS_LAUNCH_COMMAND BINDIR "/dbus-launch"
@@ -56,10 +58,8 @@ extern char **environ;
 
 struct GdmWelcomeSessionPrivate
 {
+        GdmSession     *session;
         char           *command;
-        GPid            pid;
-
-        CkConnector    *ckc;
 
         char           *user_name;
         char           *group_name;
@@ -71,8 +71,6 @@ struct GdmWelcomeSessionPrivate
         char           *x11_display_hostname;
         char           *x11_authority_file;
         gboolean        x11_display_is_local;
-
-        guint           child_watch_id;
 
         GPid            dbus_pid;
         char           *dbus_bus_address;
@@ -128,116 +126,6 @@ listify_hash (const char *key,
         str = g_strdup_printf ("%s=%s", key, value);
         g_debug ("GdmWelcomeSession: welcome environment: %s", str);
         g_ptr_array_add (env, str);
-}
-
-static gboolean
-open_welcome_session (GdmWelcomeSession *welcome_session)
-{
-        struct passwd *pwent;
-        const char    *session_type;
-        const char    *hostname;
-        const char    *x11_display_device;
-        int            res;
-        gboolean       ret;
-        DBusError      error;
-
-        ret = FALSE;
-
-        g_debug ("GdmWelcomeSession: Registering session with ConsoleKit");
-
-        session_type = "LoginWindow";
-
-        gdm_get_pwent_for_name (welcome_session->priv->user_name, &pwent);
-        if (pwent == NULL) {
-                /* FIXME: */
-                g_warning ("Couldn't look up uid");
-                goto out;
-        }
-
-        welcome_session->priv->ckc = ck_connector_new ();
-        if (welcome_session->priv->ckc == NULL) {
-                g_warning ("Couldn't create new ConsoleKit connector");
-                goto out;
-        }
-
-        if (welcome_session->priv->x11_display_hostname != NULL) {
-                hostname = welcome_session->priv->x11_display_hostname;
-        } else {
-                hostname = "";
-        }
-
-        if (welcome_session->priv->x11_display_device != NULL) {
-                x11_display_device = welcome_session->priv->x11_display_device;
-        } else {
-                x11_display_device = "";
-        }
-
-        g_debug ("GdmWelcomeSession: Opening ConsoleKit session for user:%d x11-display:'%s' x11-display-device:'%s' remote-host-name:'%s' is-local:%d",
-                 pwent->pw_uid,
-                 welcome_session->priv->x11_display_name,
-                 x11_display_device,
-                 hostname,
-                 welcome_session->priv->x11_display_is_local);
-
-        dbus_error_init (&error);
-        res = ck_connector_open_session_with_parameters (welcome_session->priv->ckc,
-                                                         &error,
-                                                         "unix-user", &pwent->pw_uid,
-                                                         "session-type", &session_type,
-                                                         "x11-display", &welcome_session->priv->x11_display_name,
-                                                         "x11-display-device", &x11_display_device,
-                                                         "remote-host-name", &hostname,
-                                                         "is-local", &welcome_session->priv->x11_display_is_local,
-                                                         NULL);
-        if (! res) {
-                if (dbus_error_is_set (&error)) {
-                        g_warning ("%s\n", error.message);
-                        dbus_error_free (&error);
-                } else {
-                        g_warning ("cannot open CK session: OOM, D-Bus system bus not available,\n"
-                                   "ConsoleKit not available or insufficient privileges.\n");
-                }
-                goto out;
-        }
-
-        ret = TRUE;
-
- out:
-        return ret;
-}
-
-static gboolean
-close_welcome_session (GdmWelcomeSession *welcome_session)
-{
-        int       res;
-        gboolean  ret;
-        DBusError error;
-
-        ret = FALSE;
-
-        if (welcome_session->priv->ckc == NULL) {
-                return FALSE;
-        }
-
-        g_debug ("GdmWelcomeSession: De-registering session from ConsoleKit");
-
-        dbus_error_init (&error);
-        res = ck_connector_close_session (welcome_session->priv->ckc, &error);
-        if (! res) {
-                if (dbus_error_is_set (&error)) {
-                        g_warning ("%s\n", error.message);
-                        dbus_error_free (&error);
-                } else {
-                        g_warning ("cannot open CK session: OOM, D-Bus system bus not available,\n"
-                                   "ConsoleKit not available or insufficient privileges.\n");
-                }
-                goto out;
-        }
-
-        ret = TRUE;
- out:
-
-        return ret;
 }
 
 static void
@@ -343,11 +231,10 @@ next_line:
         g_free (contents);
 }
 
-static GPtrArray *
-get_welcome_environment (GdmWelcomeSession *welcome_session,
-                         gboolean           start_session)
+static GHashTable *
+build_welcome_environment (GdmWelcomeSession *welcome_session,
+                           gboolean           start_session)
 {
-        GPtrArray     *env;
         GHashTable    *hash;
         struct passwd *pwent;
         static const char * const optional_environment[] = {
@@ -362,7 +249,6 @@ get_welcome_environment (GdmWelcomeSession *welcome_session,
 
         load_lang_config_file (LANG_CONFIG_FILE,
                                (const char **) optional_environment);
-        env = g_ptr_array_new ();
 
         /* create a hash table of current environment, then update keys has necessary */
         hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
@@ -399,14 +285,6 @@ get_welcome_environment (GdmWelcomeSession *welcome_session,
 
         g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (welcome_session->priv->x11_authority_file));
         g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (welcome_session->priv->x11_display_name));
-
-        if (welcome_session->priv->ckc != NULL) {
-                const char *cookie;
-                cookie = ck_connector_get_cookie (welcome_session->priv->ckc);
-                if (cookie != NULL) {
-                        g_hash_table_insert (hash, g_strdup ("XDG_SESSION_COOKIE"), g_strdup (cookie));
-                }
-        }
 
         g_hash_table_insert (hash, g_strdup ("LOGNAME"), g_strdup (welcome_session->priv->user_name));
         g_hash_table_insert (hash, g_strdup ("USER"), g_strdup (welcome_session->priv->user_name));
@@ -445,6 +323,19 @@ get_welcome_environment (GdmWelcomeSession *welcome_session,
         g_hash_table_insert (hash, g_strdup ("GVFS_DISABLE_FUSE"), g_strdup ("1"));
         g_hash_table_insert (hash, g_strdup ("DCONF_PROFILE"), g_strdup ("gdm"));
 
+        return hash;
+}
+
+static GPtrArray *
+get_welcome_environment (GdmWelcomeSession *welcome_session,
+                         gboolean           start_session)
+{
+        GHashTable    *hash;
+        GPtrArray     *env;
+
+        hash = build_welcome_environment (welcome_session, start_session);
+
+        env = g_ptr_array_new ();
         g_hash_table_foreach (hash, (GHFunc)listify_hash, env);
         g_hash_table_destroy (hash);
 
@@ -452,7 +343,6 @@ get_welcome_environment (GdmWelcomeSession *welcome_session,
 
         return env;
 }
-
 
 static gboolean
 stop_dbus_daemon (GdmWelcomeSession *welcome_session)
@@ -469,37 +359,6 @@ stop_dbus_daemon (GdmWelcomeSession *welcome_session)
                 }
         }
         return TRUE;
-}
-
-static void
-welcome_session_child_watch (GPid               pid,
-                             int                status,
-                             GdmWelcomeSession *session)
-{
-        g_debug ("GdmWelcomeSession: child (pid:%d) done (%s:%d)",
-                 (int) pid,
-                 WIFEXITED (status) ? "status"
-                 : WIFSIGNALED (status) ? "signal"
-                 : "unknown",
-                 WIFEXITED (status) ? WEXITSTATUS (status)
-                 : WIFSIGNALED (status) ? WTERMSIG (status)
-                 : -1);
-
-        if (WIFEXITED (status)) {
-                int code = WEXITSTATUS (status);
-                g_signal_emit (session, signals [EXITED], 0, code);
-        } else if (WIFSIGNALED (status)) {
-                int num = WTERMSIG (status);
-                g_signal_emit (session, signals [DIED], 0, num);
-        }
-
-        g_spawn_close_pid (session->priv->pid);
-        session->priv->pid = -1;
-
-        if (session->priv->ckc != NULL) {
-                close_welcome_session (session);
-        }
-        stop_dbus_daemon (session);
 }
 
 static void
@@ -712,62 +571,6 @@ spawn_command_line_sync_as_user (const char *command_line,
 }
 
 static gboolean
-spawn_command_line_async_as_user (const char *command_line,
-                                  const char *user_name,
-                                  const char *group_name,
-                                  const char *seat_id,
-                                  const char *runtime_dir,
-                                  const char *log_file,
-                                  char      **env,
-                                  GPid       *child_pid,
-                                  GError    **error)
-{
-        char           **argv;
-        GError          *local_error;
-        gboolean         ret;
-        gboolean         res;
-        SpawnChildData   data;
-
-        ret = FALSE;
-
-        argv = NULL;
-        local_error = NULL;
-        if (! g_shell_parse_argv (command_line, NULL, &argv, &local_error)) {
-                g_warning ("Could not parse command: %s", local_error->message);
-                g_propagate_error (error, local_error);
-                goto out;
-        }
-
-        data.user_name = user_name;
-        data.group_name = group_name;
-        data.runtime_dir = runtime_dir;
-        data.log_file = log_file;
-        data.seat_id = seat_id;
-
-        local_error = NULL;
-        res = g_spawn_async (NULL,
-                             argv,
-                             env,
-                             G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD,
-                             (GSpawnChildSetupFunc)spawn_child_setup,
-                             &data,
-                             child_pid,
-                             &local_error);
-
-        if (! res) {
-                g_warning ("Could not spawn command: %s", local_error->message);
-                g_propagate_error (error, local_error);
-                goto out;
-        }
-
-        ret = TRUE;
- out:
-        g_strfreev (argv);
-
-        return ret;
-}
-
-static gboolean
 parse_value_as_integer (const char *value,
                         int        *intval)
 {
@@ -895,69 +698,105 @@ start_dbus_daemon (GdmWelcomeSession *welcome_session)
         return res;
 }
 
-static gboolean
-gdm_welcome_session_spawn (GdmWelcomeSession *welcome_session)
+static void
+on_session_setup_complete (GdmSession        *session,
+                           const char        *service_name,
+                           GdmWelcomeSession *welcome_session)
 {
-        GError          *error;
-        GPtrArray       *env;
-        gboolean         ret;
-        gboolean         res;
-        char            *log_path;
-        char            *log_file;
+        GHashTable       *hash;
+        GHashTableIter    iter;
+        gpointer          key, value;
 
-        ret = FALSE;
+        hash = build_welcome_environment (welcome_session, TRUE);
 
-        g_debug ("GdmWelcomeSession: Running welcome_session process: %s", welcome_session->priv->command);
-
-        if (welcome_session->priv->register_ck_session) {
-                open_welcome_session (welcome_session);
+        g_hash_table_iter_init (&iter, hash);
+        while (g_hash_table_iter_next (&iter, &key, &value)) {
+                gdm_session_set_environment_variable (GDM_SESSION (welcome_session->priv->session), key, value);
         }
+        g_hash_table_destroy (hash);
 
-        res = start_dbus_daemon (welcome_session);
-        if (! res) {
-                /* FIXME: */
-        }
+        gdm_session_select_session_type (GDM_SESSION (welcome_session->priv->session), "LoginWindow");
 
-        env = get_welcome_environment (welcome_session, TRUE);
+        gdm_session_authenticate (GDM_SESSION (welcome_session->priv->session), service_name);
+}
 
-        error = NULL;
+static void
+on_session_authenticated (GdmSession        *session,
+                          const char        *service_name,
+                          GdmWelcomeSession *welcome_session)
+{
+        gdm_session_authorize (GDM_SESSION (welcome_session->priv->session),
+                               service_name);
+}
+
+static void
+on_session_authorized (GdmSession        *session,
+                       const char        *service_name,
+                       GdmWelcomeSession *welcome_session)
+{
+        gdm_session_accredit (GDM_SESSION (welcome_session->priv->session),
+                              service_name,
+                              GDM_SESSION_CRED_ESTABLISH);
+}
+
+static void
+on_session_accredited (GdmSession        *session,
+                       const char        *service_name,
+                       GdmWelcomeSession *welcome_session)
+{
+        gdm_session_open_session (GDM_SESSION (welcome_session->priv->session), service_name);
+}
+
+static void
+on_session_opened (GdmSession        *session,
+                   const char        *service_name,
+                   GdmWelcomeSession *welcome_session)
+{
+        gdm_session_start_session (GDM_SESSION (welcome_session->priv->session),
+                                   service_name);
+}
+
+static void
+on_session_started (GdmSession        *session,
+                    const char        *service_name,
+                    int                pid,
+                    GdmWelcomeSession *welcome_session)
+{
+        g_signal_emit (G_OBJECT (welcome_session), signals [STARTED], 0);
+}
+
+static void
+on_session_exited (GdmSession        *session,
+                   int                exit_code,
+                   GdmWelcomeSession *welcome_session)
+{
+        g_signal_emit (G_OBJECT (welcome_session), signals [EXITED], 0, exit_code);
+}
+
+static void
+on_session_died (GdmSession        *session,
+                 int                signal_number,
+                 GdmWelcomeSession *welcome_session)
+{
+        g_signal_emit (G_OBJECT (welcome_session), signals [DIED], 0, signal_number);
+}
+
+static void
+on_conversation_started (GdmSession        *session,
+                         const char        *service_name,
+                         GdmWelcomeSession *welcome_session)
+{
+        char             *log_path;
+        char             *log_file;
 
         log_file = g_strdup_printf ("%s-greeter.log", welcome_session->priv->x11_display_name);
         log_path = g_build_filename (LOGDIR, log_file, NULL);
         g_free (log_file);
 
-        ret = spawn_command_line_async_as_user (welcome_session->priv->command,
-                                                welcome_session->priv->user_name,
-                                                welcome_session->priv->group_name,
-                                                welcome_session->priv->x11_display_seat_id,
-                                                welcome_session->priv->runtime_dir,
-                                                log_path,
-                                                (char **)env->pdata,
-                                                &welcome_session->priv->pid,
-                                                &error);
-
-        g_ptr_array_foreach (env, (GFunc)g_free, NULL);
-        g_ptr_array_free (env, TRUE);
-
+        gdm_session_setup_for_program (GDM_SESSION (welcome_session->priv->session),
+                                       "gdm-welcome",
+                                       log_path);
         g_free (log_path);
-
-        if (! ret) {
-                g_warning ("Could not start command '%s': %s",
-                           welcome_session->priv->command,
-                           error->message);
-                g_error_free (error);
-                goto out;
-        } else {
-                g_debug ("GdmWelcomeSession: WelcomeSession on pid %d", (int)welcome_session->priv->pid);
-        }
-
-        welcome_session->priv->child_watch_id = g_child_watch_add (welcome_session->priv->pid,
-                                                                   (GChildWatchFunc)welcome_session_child_watch,
-                                                                   welcome_session);
-
- out:
-
-        return ret;
 }
 
 /**
@@ -969,66 +808,76 @@ gdm_welcome_session_spawn (GdmWelcomeSession *welcome_session)
 gboolean
 gdm_welcome_session_start (GdmWelcomeSession *welcome_session)
 {
-        gboolean    res;
+        gboolean          res;
 
         g_debug ("GdmWelcomeSession: Starting welcome...");
+        res = start_dbus_daemon (welcome_session);
 
-        res = gdm_welcome_session_spawn (welcome_session);
-
-        if (res) {
-
+        if (!res) {
+                return FALSE;
         }
 
+        welcome_session->priv->session = GDM_SESSION (gdm_session_direct_new (NULL,
+                                                                              welcome_session->priv->x11_display_name,
+                                                                              welcome_session->priv->x11_display_hostname,
+                                                                              welcome_session->priv->x11_display_device,
+                                                                              welcome_session->priv->x11_authority_file,
+                                                                              welcome_session->priv->x11_display_is_local));
 
-        return res;
-}
+        g_signal_connect (GDM_SESSION (welcome_session->priv->session),
+                          "conversation-started",
+                          G_CALLBACK (on_conversation_started),
+                          welcome_session);
+        g_signal_connect (welcome_session->priv->session,
+                          "setup-complete",
+                          G_CALLBACK (on_session_setup_complete),
+                          welcome_session);
+        g_signal_connect (welcome_session->priv->session,
+                          "authenticated",
+                          G_CALLBACK (on_session_authenticated),
+                          welcome_session);
+        g_signal_connect (welcome_session->priv->session,
+                          "authorized",
+                          G_CALLBACK (on_session_authorized),
+                          welcome_session);
+        g_signal_connect (welcome_session->priv->session,
+                          "accredited",
+                          G_CALLBACK (on_session_accredited),
+                          welcome_session);
+        g_signal_connect (welcome_session->priv->session,
+                          "session-opened",
+                          G_CALLBACK (on_session_opened),
+                          welcome_session);
+        g_signal_connect (GDM_SESSION (welcome_session->priv->session),
+                          "session-started",
+                          G_CALLBACK (on_session_started),
+                          welcome_session);
+        g_signal_connect (GDM_SESSION (welcome_session->priv->session),
+                          "session-exited",
+                          G_CALLBACK (on_session_exited),
+                          welcome_session);
+        g_signal_connect (GDM_SESSION (welcome_session->priv->session),
+                          "session-died",
+                          G_CALLBACK (on_session_died),
+                          welcome_session);
 
-static void
-welcome_session_died (GdmWelcomeSession *welcome_session)
-{
-        int exit_status;
-
-        g_debug ("GdmWelcomeSession: Waiting on process %d", welcome_session->priv->pid);
-        exit_status = gdm_wait_on_pid (welcome_session->priv->pid);
-
-        if (WIFEXITED (exit_status) && (WEXITSTATUS (exit_status) != 0)) {
-                g_debug ("GdmWelcomeSession: Wait on child process failed");
-        } else {
-                /* exited normally */
-        }
-
-        g_spawn_close_pid (welcome_session->priv->pid);
-        welcome_session->priv->pid = -1;
-
-        g_debug ("GdmWelcomeSession: WelcomeSession died");
+        gdm_session_start_conversation (GDM_SESSION (welcome_session->priv->session),
+                                        "gdm-welcome");
+        gdm_session_select_program (GDM_SESSION (welcome_session->priv->session),
+                                    welcome_session->priv->command);
+        return TRUE;
 }
 
 gboolean
 gdm_welcome_session_stop (GdmWelcomeSession *welcome_session)
 {
-        int res;
+        if (welcome_session->priv->session != NULL) {
+                gdm_session_stop_conversation (GDM_SESSION (welcome_session->priv->session),
+                                               "gdm-welcome");
+                gdm_session_close (GDM_SESSION (welcome_session->priv->session));
 
-        if (welcome_session->priv->pid <= 1) {
-                return TRUE;
-        }
-
-        /* remove watch source before we can wait on child */
-        if (welcome_session->priv->child_watch_id > 0) {
-                g_source_remove (welcome_session->priv->child_watch_id);
-                welcome_session->priv->child_watch_id = 0;
-        }
-
-        g_debug ("GdmWelcomeSession: Stopping welcome_session");
-
-        res = gdm_signal_pid (welcome_session->priv->pid, SIGTERM);
-        if (res < 0) {
-                g_warning ("Unable to kill welcome session process");
-        } else {
-                welcome_session_died (welcome_session);
-        }
-
-        if (welcome_session->priv->ckc != NULL) {
-                close_welcome_session (welcome_session);
+                g_object_unref (welcome_session->priv->session);
+                welcome_session->priv->session = NULL;
         }
 
         stop_dbus_daemon (welcome_session);
@@ -1084,7 +933,6 @@ _gdm_welcome_session_set_x11_display_is_local (GdmWelcomeSession *welcome_sessio
 {
         welcome_session->priv->x11_display_is_local = is_local;
 }
-
 
 static void
 _gdm_welcome_session_set_x11_authority_file (GdmWelcomeSession *welcome_session,
@@ -1447,9 +1295,8 @@ gdm_welcome_session_init (GdmWelcomeSession *welcome_session)
 
         welcome_session->priv = GDM_WELCOME_SESSION_GET_PRIVATE (welcome_session);
 
-        welcome_session->priv->pid = -1;
-
         welcome_session->priv->command = NULL;
+        welcome_session->priv->session = NULL;
 }
 
 static void
@@ -1466,8 +1313,8 @@ gdm_welcome_session_finalize (GObject *object)
 
         gdm_welcome_session_stop (welcome_session);
 
-        if (welcome_session->priv->ckc != NULL) {
-                ck_connector_unref (welcome_session->priv->ckc);
+        if (welcome_session->priv->session) {
+                g_object_unref (welcome_session->priv->session);
         }
 
         g_free (welcome_session->priv->command);

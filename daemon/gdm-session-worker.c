@@ -85,6 +85,7 @@
 #endif
 
 #define MAX_FILE_SIZE     65536
+#define MAX_LOGS          5
 
 enum {
         GDM_SESSION_WORKER_STATE_NONE = 0,
@@ -119,6 +120,8 @@ struct GdmSessionWorkerPrivate
         char             *display_device;
         char             *hostname;
         char             *username;
+        char             *log_file;
+        char             *session_type;
         uid_t             uid;
         gid_t             gid;
         gboolean          password_is_required;
@@ -128,6 +131,7 @@ struct GdmSessionWorkerPrivate
         char            **arguments;
         guint32           cancelled : 1;
         guint32           timed_out : 1;
+        guint32           is_program_session : 1;
         guint             state_change_idle_id;
 
         char             *server_address;
@@ -176,6 +180,7 @@ open_ck_session (GdmSessionWorker  *worker)
         const char     *display_name;
         const char     *display_device;
         const char     *display_hostname;
+        const char     *session_type;
         gboolean        is_local;
 
         ret = FALSE;
@@ -194,6 +199,12 @@ open_ck_session (GdmSessionWorker  *worker)
                 display_device = worker->priv->display_device;
         } else {
                 display_device = "";
+        }
+
+        if (worker->priv->session_type != NULL) {
+                session_type = worker->priv->session_type;
+        } else {
+                session_type = "";
         }
 
         g_assert (worker->priv->username != NULL);
@@ -226,6 +237,7 @@ open_ck_session (GdmSessionWorker  *worker)
                                                          "x11-display-device", &display_device,
                                                          "remote-host-name", &display_hostname,
                                                          "is-local", &is_local,
+                                                         "session-type", &session_type,
                                                          NULL);
 
         if (! res) {
@@ -931,6 +943,13 @@ gdm_session_worker_pam_new_messages_handler (int                        number_o
 static void
 gdm_session_worker_start_auditor (GdmSessionWorker *worker)
 {
+    /* Use dummy auditor so program session doesn't pollute user audit logs
+     */
+    if (worker->priv->is_program_session) {
+            worker->priv->auditor = gdm_session_auditor_new (worker->priv->hostname,
+                                                             worker->priv->display_device);
+            return;
+    }
 
 /* FIXME: it may make sense at some point to keep a list of
  * auditors, instead of assuming they are mutually exclusive
@@ -1238,7 +1257,7 @@ gdm_session_worker_authorize_user (GdmSessionWorker *worker,
 
         /* it's possible that the user needs to change their password or pin code
          */
-        if (error_code == PAM_NEW_AUTHTOK_REQD) {
+        if (error_code == PAM_NEW_AUTHTOK_REQD && !worker->priv->is_program_session) {
                 error_code = pam_chauthtok (worker->priv->pam_handle, PAM_CHANGE_EXPIRED_AUTHTOK);
 
                 gdm_session_worker_get_username (worker, NULL);
@@ -1624,8 +1643,85 @@ _is_loggable_file (const char* filename)
         return S_ISREG (file_info.st_mode) && g_access (filename, R_OK | W_OK) == 0;
 }
 
+static void
+rotate_logs (const char *path,
+             guint       n_copies)
+{
+        int i;
+
+        for (i = n_copies - 1; i > 0; i--) {
+                char *name_n;
+                char *name_n1;
+
+                name_n = g_strdup_printf ("%s.%d", path, i);
+                if (i > 1) {
+                        name_n1 = g_strdup_printf ("%s.%d", path, i - 1);
+                } else {
+                        name_n1 = g_strdup (path);
+                }
+
+                g_unlink (name_n);
+                g_rename (name_n1, name_n);
+
+                g_free (name_n1);
+                g_free (name_n);
+        }
+
+        g_unlink (path);
+}
+
 static int
-_open_session_log (const char *dir)
+_open_program_session_log (const char *filename)
+{
+        int   fd;
+
+        rotate_logs (filename, MAX_LOGS);
+
+        fd = g_open (filename, O_RDWR | O_APPEND | O_CREAT, 0600);
+
+        if (fd < 0) {
+                char *temp_name;
+
+                close (fd);
+
+                temp_name = g_strdup_printf ("%s.XXXXXXXX", filename);
+
+                fd = g_mkstemp (temp_name);
+
+                if (fd < 0) {
+                        g_free (temp_name);
+                        goto out;
+                }
+
+                g_warning ("session log '%s' is not appendable, logging session to '%s' instead.\n", filename,
+                           temp_name);
+                g_free (temp_name);
+        } else {
+                if (ftruncate (fd, 0) < 0) {
+                        close (fd);
+                        fd = -1;
+                        goto out;
+                }
+        }
+
+        if (fchmod (fd, 0644) < 0) {
+                close (fd);
+                fd = -1;
+                goto out;
+        }
+
+
+out:
+        if (fd < 0) {
+                g_warning ("unable to log program session");
+                fd = g_open ("/dev/null", O_RDWR);
+        }
+
+        return fd;
+}
+
+static int
+_open_user_session_log (const char *dir)
 {
         int   fd;
         char *filename;
@@ -1687,8 +1783,8 @@ out:
 }
 
 static gboolean
-gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
-                                       GError           **error)
+gdm_session_worker_start_session (GdmSessionWorker  *worker,
+                                  GError           **error)
 {
         struct passwd *passwd_entry;
         pid_t session_pid;
@@ -1697,8 +1793,13 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
         register_ck_session (worker);
 
         gdm_get_pwent_for_name (worker->priv->username, &passwd_entry);
-        g_debug ("GdmSessionWorker: opening user session with program '%s'",
-                 worker->priv->arguments[0]);
+        if (worker->priv->is_program_session) {
+                g_debug ("GdmSessionWorker: opening session for program '%s'",
+                         worker->priv->arguments[0]);
+        } else {
+                g_debug ("GdmSessionWorker: opening user session with program '%s'",
+                         worker->priv->arguments[0]);
+        }
 
         error_code = PAM_SUCCESS;
 
@@ -1743,7 +1844,11 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
                 dup2 (fd, STDIN_FILENO);
                 close (fd);
 
-                fd = _open_session_log (home_dir);
+                if (worker->priv->is_program_session) {
+                        fd = _open_program_session_log (worker->priv->log_file);
+                } else {
+                        fd = _open_user_session_log (home_dir);
+                }
                 dup2 (fd, STDOUT_FILENO);
                 dup2 (fd, STDERR_FILENO);
                 close (fd);
@@ -1790,15 +1895,22 @@ gdm_session_worker_start_user_session (GdmSessionWorker  *worker,
 }
 
 static gboolean
-gdm_session_worker_open_user_session (GdmSessionWorker  *worker,
-                                      GError           **error)
+gdm_session_worker_open_session (GdmSessionWorker  *worker,
+                                 GError           **error)
 {
         int error_code;
+        int flags;
 
         g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED);
         g_assert (geteuid () == 0);
 
-        error_code = pam_open_session (worker->priv->pam_handle, 0);
+        flags = 0;
+
+        if (worker->priv->is_program_session) {
+                flags |= PAM_SILENT;
+        }
+
+        error_code = pam_open_session (worker->priv->pam_handle, flags);
 
         if (error_code != PAM_SUCCESS) {
                 g_set_error (error,
@@ -1919,6 +2031,36 @@ on_set_session_name (GdmSessionWorker *worker,
         if (res) {
                 g_debug ("GdmSessionWorker: session name set to %s", session_name);
                 gdm_session_worker_set_session_name (worker, session_name);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
+}
+
+static void
+gdm_session_worker_set_session_type (GdmSessionWorker *worker,
+                                     const char       *session_type)
+{
+        g_free (worker->priv->session_type);
+        worker->priv->session_type = g_strdup (session_type);
+}
+
+static void
+on_set_session_type (GdmSessionWorker *worker,
+                     DBusMessage      *message)
+{
+        DBusError   error;
+        const char *session_type;
+        dbus_bool_t res;
+
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &session_type,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("GdmSessionWorker: session type set to %s", session_type);
+                gdm_session_worker_set_session_type (worker, session_type);
         } else {
                 g_warning ("Unable to get arguments: %s", error.message);
                 dbus_error_free (&error);
@@ -2060,8 +2202,10 @@ do_authenticate (GdmSessionWorker *worker)
         /* we're authenticated.  Let's make sure we've been given
          * a valid username for the system
          */
-        g_debug ("GdmSessionWorker: trying to get updated username");
-        gdm_session_worker_update_username (worker);
+        if (!worker->priv->is_program_session) {
+                g_debug ("GdmSessionWorker: trying to get updated username");
+                gdm_session_worker_update_username (worker);
+        }
 
         send_dbus_void_method (worker->priv->connection, "Authenticated");
 }
@@ -2176,7 +2320,7 @@ do_open_session (GdmSessionWorker *worker)
         gboolean res;
 
         error = NULL;
-        res = gdm_session_worker_open_user_session (worker, &error);
+        res = gdm_session_worker_open_session (worker, &error);
         if (! res) {
                 send_dbus_string_method (worker->priv->connection,
                                          "OpenFailed",
@@ -2195,7 +2339,7 @@ do_start_session (GdmSessionWorker *worker)
         gboolean res;
 
         error = NULL;
-        res = gdm_session_worker_start_user_session (worker, &error);
+        res = gdm_session_worker_start_session (worker, &error);
         if (! res) {
                 send_dbus_string_method (worker->priv->connection,
                                          "StartFailed",
@@ -2447,6 +2591,48 @@ on_setup_for_user (GdmSessionWorker *worker,
 }
 
 static void
+on_setup_for_program (GdmSessionWorker *worker,
+                      DBusMessage      *message)
+{
+        DBusError   error;
+        char *service;
+        char *x11_display_name;
+        char *x11_authority_file;
+        char *log_file;
+        dbus_bool_t res;
+
+        if (worker->priv->state != GDM_SESSION_WORKER_STATE_NONE) {
+                g_debug ("GdmSessionWorker: ignoring spurious setup for program while in state %s", get_state_name (worker->priv->state));
+                return;
+        }
+
+        dbus_error_init (&error);
+        res = dbus_message_get_args (message,
+                                     &error,
+                                     DBUS_TYPE_STRING, &service,
+                                     DBUS_TYPE_STRING, &x11_display_name,
+                                     DBUS_TYPE_STRING, &x11_authority_file,
+                                     DBUS_TYPE_STRING, &log_file,
+                                     DBUS_TYPE_INVALID);
+        if (res) {
+                g_debug ("GdmSessionWorker: program with log file '%s'", log_file);
+
+                queue_state_change (worker);
+                worker->priv->service = g_strdup (service);
+                worker->priv->username = g_strdup (GDM_USERNAME);
+                worker->priv->x11_display_name = g_strdup (x11_display_name);
+                worker->priv->x11_authority_file = g_strdup (x11_authority_file);
+                worker->priv->log_file = g_strdup (log_file);
+                worker->priv->is_program_session = TRUE;
+
+                queue_state_change (worker);
+        } else {
+                g_warning ("Unable to get arguments: %s", error.message);
+                dbus_error_free (&error);
+        }
+}
+
+static void
 on_authenticate (GdmSessionWorker *worker,
                  DBusMessage      *message)
 {
@@ -2562,6 +2748,8 @@ worker_dbus_handle_message (DBusConnection *connection,
                 on_setup (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetupForUser")) {
                 on_setup_for_user (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetupForProgram")) {
+                on_setup_for_program (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "Authenticate")) {
                 on_authenticate (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "Authorize")) {
@@ -2584,6 +2772,8 @@ worker_dbus_handle_message (DBusConnection *connection,
                 on_set_language_name (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetSessionName")) {
                 on_set_session_name (worker, message);
+        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetSessionType")) {
+                on_set_session_type (worker, message);
         } else {
                 return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
         }

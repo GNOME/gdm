@@ -94,6 +94,7 @@ EXTRA_DIST =			\
 	Xsession.in 		\
 	gdm 			\
 	gdm-autologin 		\
+	gdm-welcome 		\
 	Init.in 		\
 	PreSession.in 		\
 	PostSession.in 		\
@@ -140,6 +141,7 @@ uninstall-hook:
 	$(DESTDIR)$(postdir)/Default \
 	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm \
 	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin \
+	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-welcome \
 	$(DESTDIR)$(workingdir)/.gconf.path \
 	$(DESTDIR)$(sysconfdir)/dconf/db/gdm \
 	$(DESTDIR)$(sysconfdir)/dconf/profile/gdm \
@@ -222,8 +224,11 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 	   if test $$system = Linux && test '!' -f $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin; then \
 		$(INSTALL_DATA) $(srcdir)/gdm-autologin $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin; \
 	   fi; \
+	   if test $$system = Linux && test '!' -f $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-welcome; then \
+		$(INSTALL_DATA) $(srcdir)/gdm-welcome $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-welcome; \
+	   fi; \
 	   if test $$system = SunOS; then \
-		echo "Please add PAM authentication for gdm and gdm-autologin in $(PAM_PREFIX)/pam.conf!"; \
+		echo "Please add PAM authentication for gdm, gdm-autologin and gdm-welcome in $(PAM_PREFIX)/pam.conf!"; \
 	   fi; \
 	fi
 

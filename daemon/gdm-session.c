@@ -126,6 +126,26 @@ gdm_session_setup_for_user (GdmSession *session,
 }
 
 void
+gdm_session_setup_for_program (GdmSession *session,
+                               const char *service_name,
+                               const char *log_file)
+{
+        g_return_if_fail (GDM_IS_SESSION (session));
+
+        GDM_SESSION_GET_IFACE (session)->setup_for_program (session, service_name, log_file);
+}
+
+void
+gdm_session_set_environment_variable (GdmSession *session,
+                                      const char *key,
+                                      const char *value)
+{
+        g_return_if_fail (GDM_IS_SESSION (session));
+
+        GDM_SESSION_GET_IFACE (session)->set_environment_variable (session, key, value);
+}
+
+void
 gdm_session_authenticate (GdmSession *session,
                           const char *service_name)
 {
@@ -163,6 +183,23 @@ gdm_session_answer_query (GdmSession *session,
         GDM_SESSION_GET_IFACE (session)->answer_query (session, service_name, text);
 }
 
+void
+gdm_session_select_program (GdmSession *session,
+                            const char *text)
+{
+        g_return_if_fail (GDM_IS_SESSION (session));
+
+        GDM_SESSION_GET_IFACE (session)->select_program (session, text);
+}
+
+void
+gdm_session_select_session_type (GdmSession *session,
+                                 const char *text)
+{
+        g_return_if_fail (GDM_IS_SESSION (session));
+
+        GDM_SESSION_GET_IFACE (session)->select_session_type (session, text);
+}
 void
 gdm_session_select_session (GdmSession *session,
                             const char *text)

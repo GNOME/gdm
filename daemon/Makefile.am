@@ -166,9 +166,15 @@ gdm_factory_slave_SOURCES = 		\
 	gdm-server.h			\
 	gdm-session.c			\
 	gdm-session.h			\
+	gdm-session-direct.c		\
+	gdm-session-direct.h		\
 	gdm-session-private.h		\
+	gdm-session-record.c		\
+	gdm-session-record.h		\
 	gdm-session-relay.c		\
 	gdm-session-relay.h		\
+	gdm-session-worker-job.c	\
+	gdm-session-worker-job.h	\
 	gdm-xerrors.h			\
 	gdm-xerrors.c			\
 	gdm-slave.c			\
@@ -226,6 +232,15 @@ gdm_xdmcp_chooser_slave_SOURCES = 		\
 	gdm-chooser-server.h			\
 	ck-connector.h				\
 	ck-connector.c				\
+	gdm-session.c				\
+	gdm-session.h				\
+	gdm-session-direct.c			\
+	gdm-session-direct.h			\
+	gdm-session-private.h			\
+	gdm-session-record.c			\
+	gdm-session-record.h			\
+	gdm-session-worker-job.c		\
+	gdm-session-worker-job.h		\
 	gdm-welcome-session.c			\
 	gdm-welcome-session.h			\
 	gdm-chooser-session.c			\

@@ -56,6 +56,12 @@ struct _GdmSessionIface
         void (* setup_for_user)              (GdmSession   *session,
                                               const char   *service_name,
                                               const char   *username);
+        void (* setup_for_program)           (GdmSession   *session,
+                                              const char   *service_name,
+                                              const char   *log_file);
+        void (* set_environment_variable)    (GdmSession   *session,
+                                              const char   *key,
+                                              const char   *value);
         void (* reset)                       (GdmSession   *session);
         void (* authenticate)                (GdmSession   *session,
                                               const char   *service_name);
@@ -71,6 +77,10 @@ struct _GdmSessionIface
                                               const char   *text);
         void (* select_language)             (GdmSession   *session,
                                               const char   *text);
+        void (* select_program)              (GdmSession   *session,
+                                              const char   *text);
+        void (* select_session_type)         (GdmSession   *session,
+                                              const char   *session_type);
         void (* select_session)              (GdmSession   *session,
                                               const char   *text);
         void (* select_user)                 (GdmSession   *session,
@@ -157,6 +167,12 @@ void     gdm_session_setup                       (GdmSession *session,
 void     gdm_session_setup_for_user              (GdmSession *session,
                                                   const char *service_name,
                                                   const char *username);
+void     gdm_session_setup_for_program           (GdmSession *session,
+                                                  const char *service_name,
+                                                  const char *log_file);
+void     gdm_session_set_environment_variable    (GdmSession *session,
+                                                  const char *key,
+                                                  const char *value);
 void     gdm_session_reset                       (GdmSession *session);
 void     gdm_session_authenticate                (GdmSession *session,
                                                   const char *service_name);
@@ -174,6 +190,10 @@ void     gdm_session_close                       (GdmSession *session);
 void     gdm_session_answer_query                (GdmSession *session,
                                                   const char *service_name,
                                                   const char *text);
+void     gdm_session_select_program              (GdmSession *session,
+                                                  const char *command_line);
+void     gdm_session_select_session_type         (GdmSession *session,
+                                                  const char *session_type);
 void     gdm_session_select_session              (GdmSession *session,
                                                   const char *session_name);
 void     gdm_session_select_language             (GdmSession *session,
