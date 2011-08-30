@@ -27,10 +27,11 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)			\
 EXTRA_DIST =								\
 	gdm-simple-greeter.desktop.in.in				\
 	$(desktop_in_files)						\
+	$(desktop_DATA)							\
 	$(NULL)
 
 DISTCLEANFILES =							\
-	$(desktop_DATA)							\
+	$(desktop_in_files:.desktop.in=.desktop)			\
 	gdm-simple-greeter.desktop.in					\
 	$(NULL)
 
