@@ -101,6 +101,7 @@ EXTRA_DIST =			\
 	PostLogin 		\
 	gconf.path		\
 	session-setup.entries	\
+	gdm-shell.session.in    \
 	make-dconf-override-db.sh \
 	dconf-profile \
 	$(NULL)
