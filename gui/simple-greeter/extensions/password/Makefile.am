@@ -37,7 +37,7 @@ libpassword_la_SOURCES =				\
 			gdm-password-extension.c
 
 $(PAM_SERVICE_NAME): $(PAM_SERVICE_NAME).pam
-	cp $(PAM_SERVICE_NAME).pam $(PAM_SERVICE_NAME)
+	cp $(srcdir)/$(PAM_SERVICE_NAME).pam $(builddir)/$(PAM_SERVICE_NAME)
 
 pamdir = $(PAM_PREFIX)/pam.d
 pam_DATA = $(PAM_SERVICE_NAME)

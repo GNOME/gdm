@@ -44,12 +44,12 @@ libfingerprint_la_SOURCES =				\
 			gdm-fingerprint-extension.c
 
 $(PAM_SERVICE_NAME): $(PAM_SERVICE_NAME).pam
-	cp $(PAM_SERVICE_NAME).pam $(PAM_SERVICE_NAME)
+	cp $(srcdir)/$(PAM_SERVICE_NAME).pam $(builddir)/$(PAM_SERVICE_NAME)
 
 pamdir = $(PAM_PREFIX)/pam.d
 pam_DATA = $(PAM_SERVICE_NAME)
 
-EXTRA_DIST = $(extension_DATA) $(gsettings_SCHEMAS) $(PAM_SERVICE_NAME).pam
+EXTRA_DIST = $(extension_DATA) $(gsettings_SCHEMAS).in $(gsettings_SCHEMAS) $(PAM_SERVICE_NAME).pam
 CLEANFILES = $(PAM_SERVICE_NAME) $(gsettings_SCHEMAS)
 
 MAINTAINERCLEANFILES =                  \
