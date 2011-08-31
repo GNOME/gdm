@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 3.1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-18 13:31+0200\n"
-"PO-Revision-Date: 2011-07-18 13:31+0200\n"
+"POT-Creation-Date: 2011-08-31 21:27+0200\n"
+"PO-Revision-Date: 2011-08-31 21:28+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: \n"
@@ -90,17 +90,17 @@ msgstr ""
 "Tjeneren skulle startes av bruker %s, men denne brukeren eksisterer ikke"
 
 #: ../daemon/gdm-server.c:376 ../daemon/gdm-server.c:396
-#: ../daemon/gdm-welcome-session.c:603 ../daemon/gdm-welcome-session.c:623
+#: ../daemon/gdm-welcome-session.c:462 ../daemon/gdm-welcome-session.c:482
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Kunne ikke sette gruppe-ID til %d"
 
-#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:609
+#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:468
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () feilet for %s"
 
-#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:615
+#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:474
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Kunne ikke sette bruker-id til %d"
@@ -150,76 +150,76 @@ msgstr "Skjerm-enhet"
 msgid "The display device"
 msgstr "Skjermenheten"
 
-#: ../daemon/gdm-session-worker.c:1070
+#: ../daemon/gdm-session-worker.c:1089
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "feil i initiering av kommunikasjon med autentiseringssystemet - %s"
 
-#: ../daemon/gdm-session-worker.c:1071
+#: ../daemon/gdm-session-worker.c:1090
 msgid "general failure"
 msgstr "generell feil"
 
-#: ../daemon/gdm-session-worker.c:1072
+#: ../daemon/gdm-session-worker.c:1091
 msgid "out of memory"
 msgstr "ikke mer minne"
 
-#: ../daemon/gdm-session-worker.c:1073
+#: ../daemon/gdm-session-worker.c:1092
 msgid "application programmer error"
 msgstr "feil i programkoden"
 
-#: ../daemon/gdm-session-worker.c:1074
+#: ../daemon/gdm-session-worker.c:1093
 msgid "unknown error"
 msgstr "ukjent feil"
 
-#: ../daemon/gdm-session-worker.c:1081
+#: ../daemon/gdm-session-worker.c:1100
 msgid "Username:"
 msgstr "Brukernavn:"
 
-#: ../daemon/gdm-session-worker.c:1087
+#: ../daemon/gdm-session-worker.c:1106
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om spørring etter "
 "foretrukket brukernavn: %s"
 
-#: ../daemon/gdm-session-worker.c:1101
+#: ../daemon/gdm-session-worker.c:1120
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om brukers vertsnavn: %s"
 
-#: ../daemon/gdm-session-worker.c:1116
+#: ../daemon/gdm-session-worker.c:1135
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "feil ved informasjon til autentiseringssystemet om brukers konsoll: %s"
 
-#: ../daemon/gdm-session-worker.c:1129
+#: ../daemon/gdm-session-worker.c:1148
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "feil ved informasjon til autentiseringssystemet om skjermstrengen: %s"
 
-#: ../daemon/gdm-session-worker.c:1144
+#: ../daemon/gdm-session-worker.c:1163
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om xauth-"
 "påloggingsinformasjon for skjermen: %s"
 
-#: ../daemon/gdm-session-worker.c:1464 ../daemon/gdm-session-worker.c:1481
+#: ../daemon/gdm-session-worker.c:1483 ../daemon/gdm-session-worker.c:1500
 #, c-format
 msgid "no user account available"
 msgstr "ingen brukerkonto tilgjengelig"
 
-#: ../daemon/gdm-session-worker.c:1508
+#: ../daemon/gdm-session-worker.c:1527
 msgid "Unable to change to user"
 msgstr "Kan ikke bytte til denne brukeren"
 
-#: ../daemon/gdm-welcome-session.c:553
+#: ../daemon/gdm-welcome-session.c:412
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Bruker %s eksisterer ikke"
 
-#: ../daemon/gdm-welcome-session.c:560
+#: ../daemon/gdm-welcome-session.c:419
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Gruppe %s eksisterer ikke"
@@ -438,6 +438,43 @@ msgstr "Bare root-bruker kan kjøre GDM"
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME skjermhåndterer øktarbeider"
 
+#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
+msgid "Login Window"
+msgstr "Påloggingsvindu"
+
+#: ../data/applications/gnome-mag.desktop.in.h:1
+msgid "GNOME Screen Magnifier"
+msgstr "GNOME skjermforstørrelsesglass"
+
+#: ../data/applications/gnome-mag.desktop.in.h:2
+msgid "Magnify parts of the screen"
+msgstr "Forstørr deler av skjermen"
+
+#: ../data/applications/gnome-shell.desktop.in.h:1
+msgid "GNOME Shell"
+msgstr "GNOME skall"
+
+#: ../data/applications/gnome-shell.desktop.in.h:2
+msgid "Window management and compositing"
+msgstr "Vinduhåndtering og komposisjon"
+
+#: ../data/applications/gok.desktop.in.h:1
+msgid "GNOME On-Screen Keyboard"
+msgstr "Tastatur på skjermen for GNOME"
+
+#: ../data/applications/gok.desktop.in.h:2
+msgid "Use an on-screen keyboard"
+msgstr "Bruk tastatur på skjermen"
+
+#: ../data/applications/orca-screen-reader.desktop.in.h:1
+msgid "Orca Screen Reader"
+msgstr "Orca skjermleser"
+
+#: ../data/applications/orca-screen-reader.desktop.in.h:2
+msgid "Present on-screen information as speech or braille"
+msgstr "Presenter informasjon på skjermen som tale eller blindeskrift"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Velg system"
@@ -534,10 +571,6 @@ msgstr "Egendefinert"
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1628
 msgid "Custom session"
 msgstr "Egendefinert sesjon"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
-msgid "Login Window"
-msgstr "Påloggingsvindu"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
 msgid "Cancel"
