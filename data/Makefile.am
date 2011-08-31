@@ -82,7 +82,7 @@ localealiasdir = $(datadir)/gdm
 localealias_DATA = locale.alias
 
 sessiondir = $(datadir)/gnome-session/sessions
-dist_session_DATA = gdm-fallback.session gdm-shell.session
+session_DATA = gdm-fallback.session gdm-shell.session
 
 EXTRA_DIST =			\
 	$(schemas_in_files)	\
@@ -95,6 +95,7 @@ EXTRA_DIST =			\
 	gdm 			\
 	gdm-autologin 		\
 	gdm-welcome 		\
+	gdm-fallback.session	\
 	Init.in 		\
 	PreSession.in 		\
 	PostSession.in 		\
@@ -116,7 +117,8 @@ CLEANFILES = 				\
 	$(NULL)
 
 DISTCLEANFILES =			\
-	$(dbusconf_DATA)			\
+	$(dbusconf_DATA)		\
+	gdm-shell.session		\
 	gdm.schemas			\
 	dconf-override-db		\
 	$(NULL)
