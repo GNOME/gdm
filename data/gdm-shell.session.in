@@ -1,5 +1,5 @@
 [GNOME Session]
 Name=Display Manager
 RequiredComponents=gnome-shell;gnome-settings-daemon;
-IsRunnableHelper=bash -c 'gnome-shell --help | grep -q gdm-mode && @libexecdir@/gnome-session-check-accelerated'
+IsRunnableHelper=bash -c "gnome-shell --help | grep -q gdm-mode && (gnome-shell --version | grep -q '3.1.90$' && false || true) && (mutter --version | grep -q '3.1.90$' && false || true) && @libexecdir@/gnome-session-check-accelerated"
 FallbackSession=gdm-fallback
