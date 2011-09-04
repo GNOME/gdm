@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lt\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-07-12 14:28+0000\n"
-"PO-Revision-Date: 2011-08-13 21:31+0300\n"
+"POT-Creation-Date: 2011-08-31 15:15+0000\n"
+"PO-Revision-Date: 2011-09-04 19:01+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
 "MIME-Version: 1.0\n"
@@ -98,20 +98,20 @@ msgstr "Serveris turėjo būti sukurtas naudotojo %s, bet toks naudotojas neegzi
 
 #: ../daemon/gdm-server.c:376
 #: ../daemon/gdm-server.c:396
-#: ../daemon/gdm-welcome-session.c:603
-#: ../daemon/gdm-welcome-session.c:623
+#: ../daemon/gdm-welcome-session.c:462
+#: ../daemon/gdm-welcome-session.c:482
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Nepavyko pakeisti groupid į %d"
 
 #: ../daemon/gdm-server.c:382
-#: ../daemon/gdm-welcome-session.c:609
+#: ../daemon/gdm-welcome-session.c:468
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups() %s nepavyko"
 
 #: ../daemon/gdm-server.c:388
-#: ../daemon/gdm-welcome-session.c:615
+#: ../daemon/gdm-welcome-session.c:474
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Nepavyko pakeisti userid į %d"
@@ -162,73 +162,72 @@ msgstr "Vaizdavimo įrenginys"
 msgid "The display device"
 msgstr "Vaizdavimo įrenginys"
 
-#: ../daemon/gdm-session-worker.c:1070
+#: ../daemon/gdm-session-worker.c:1089
 #, c-format
-#| msgid "error initiating conversation with authentication system: %s"
 msgid "error initiating conversation with authentication system - %s"
 msgstr "klaida užmezgant kontaktą su tapatybės patvirtinimo sistema - %s"
 
-#: ../daemon/gdm-session-worker.c:1071
+#: ../daemon/gdm-session-worker.c:1090
 msgid "general failure"
 msgstr "bendroji klaida"
 
-#: ../daemon/gdm-session-worker.c:1072
+#: ../daemon/gdm-session-worker.c:1091
 msgid "out of memory"
 msgstr "baigėsi atmintis"
 
-#: ../daemon/gdm-session-worker.c:1073
+#: ../daemon/gdm-session-worker.c:1092
 msgid "application programmer error"
 msgstr "programuotojo klaida"
 
-#: ../daemon/gdm-session-worker.c:1074
+#: ../daemon/gdm-session-worker.c:1093
 msgid "unknown error"
 msgstr "nežinoma klaida"
 
-#: ../daemon/gdm-session-worker.c:1081
+#: ../daemon/gdm-session-worker.c:1100
 msgid "Username:"
 msgstr "Naudotojo vardas:"
 
-#: ../daemon/gdm-session-worker.c:1087
+#: ../daemon/gdm-session-worker.c:1106
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr "klaida pranešant autentikacijos sistemai apie pageidaujamą naudotojo vardo užklausimą: %s"
 
-#: ../daemon/gdm-session-worker.c:1101
+#: ../daemon/gdm-session-worker.c:1120
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "klaida pranešant tapatybės nustatymo sistemai naudotojo kompiuterio vardą: %s"
 
-#: ../daemon/gdm-session-worker.c:1116
+#: ../daemon/gdm-session-worker.c:1135
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "klaida pranešant tapatybės nustatymo sistemai naudotojo konsolę: %s"
 
-#: ../daemon/gdm-session-worker.c:1129
+#: ../daemon/gdm-session-worker.c:1148
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "klaida pranešant tapatybės nustatymo sistemai ekrano eilutę: %s"
 
-#: ../daemon/gdm-session-worker.c:1144
+#: ../daemon/gdm-session-worker.c:1163
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "klaida pranešant tapatybės nustatymo sistemai ekrano xauth kredencialus: %s"
 
-#: ../daemon/gdm-session-worker.c:1464
-#: ../daemon/gdm-session-worker.c:1481
+#: ../daemon/gdm-session-worker.c:1483
+#: ../daemon/gdm-session-worker.c:1500
 #, c-format
 msgid "no user account available"
 msgstr "naudotojų paskyrų nėra"
 
-#: ../daemon/gdm-session-worker.c:1508
+#: ../daemon/gdm-session-worker.c:1527
 msgid "Unable to change to user"
 msgstr "Nepavyko pakeisti naudotojo"
 
-#: ../daemon/gdm-welcome-session.c:553
+#: ../daemon/gdm-welcome-session.c:412
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Naudotojas %s neegzistuoja"
 
-#: ../daemon/gdm-welcome-session.c:560
+#: ../daemon/gdm-welcome-session.c:419
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Grupė %s neegzistuoja"
@@ -446,6 +445,44 @@ msgstr "Tik root naudotojas gali paleisti GDM"
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME ekrano valdyklės seanso darbininkas"
 
+#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
+msgid "Login Window"
+msgstr "Prisijungimo langas"
+
+#: ../data/applications/gnome-mag.desktop.in.h:1
+msgid "GNOME Screen Magnifier"
+msgstr "GNOME ekrano lupa"
+
+#: ../data/applications/gnome-mag.desktop.in.h:2
+msgid "Magnify parts of the screen"
+msgstr "Didinti ekrano dalis"
+
+#: ../data/applications/gnome-shell.desktop.in.h:1
+msgid "GNOME Shell"
+msgstr "GNOME apvalkalas"
+
+#: ../data/applications/gnome-shell.desktop.in.h:2
+#| msgid "Power management daemon"
+msgid "Window management and compositing"
+msgstr "Langų valdymas ir komponavimas"
+
+#: ../data/applications/gok.desktop.in.h:1
+msgid "GNOME On-Screen Keyboard"
+msgstr "GNOME klaviatūra ekrane"
+
+#: ../data/applications/gok.desktop.in.h:2
+msgid "Use an on-screen keyboard"
+msgstr "Naudoti klaviatūrą ekrane"
+
+#: ../data/applications/orca-screen-reader.desktop.in.h:1
+msgid "Orca Screen Reader"
+msgstr "Orca ekrano skaitytuvas"
+
+#: ../data/applications/orca-screen-reader.desktop.in.h:2
+msgid "Present on-screen information as speech or braille"
+msgstr "Pateikti informaciją ekrane kaip kalbą arba Brailio raštą"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Pasirinkite sistemą"
@@ -541,12 +578,7 @@ msgstr "Pasirinktinis"
 msgid "Custom session"
 msgstr "Pasirinktinis seansas"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
-msgid "Login Window"
-msgstr "Prisijungimo langas"
-
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-#| msgid "Panel"
 msgid "Cancel"
 msgstr "Atšaukti"
 
@@ -837,7 +869,6 @@ msgid "Currently logged in"
 msgstr "Jau prisijungė"
 
 #: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-#| msgid "PolicyKit Authentication Agent"
 msgid "Password Authentication"
 msgstr "Tapatybės patvirtinimas slaptažodžiu"
 
@@ -848,12 +879,10 @@ msgstr "Prisijungti prie seanso naudotojo vardu ir slaptažodžiu"
 #: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-#| msgid "Login"
 msgid "Log In"
 msgstr "Prisijungti"
 
 #: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-#| msgid "PolicyKit Authentication Agent"
 msgid "Fingerprint Authentication"
 msgstr "Tapatybės patvirtinimas piršto atspaudu"
 
@@ -863,7 +892,6 @@ msgstr "Prisijungti prie seanso piršto atspaudu"
 
 #: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:1
 #: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:1
-#| msgid "Version of this application"
 msgid "Activation of this plugin"
 msgstr "Šio įskiepio aktyvavimas"
 
@@ -873,7 +901,6 @@ msgid "Whether this plugin would be activated or not"
 msgstr "Ar šis įskiepis turi būti aktyvuotas, ar ne"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-#| msgid "Authentication Dialog"
 msgid "Smartcard Authentication"
 msgstr "Tapatybės nustatymas lustine kortele"
 
@@ -936,7 +963,6 @@ msgstr "kortelės identifikatorius pagal lizdą"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-#| msgid "Username"
 msgid "name"
 msgstr "vardas"
 
@@ -949,12 +975,10 @@ msgid "smartcard driver"
 msgstr "lustinės kortelės tvarkyklė"
 
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-#| msgid "Authentication Dialog"
 msgid "Authentication"
 msgstr "Tapatybės nustatymas"
 
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-#| msgid "Custom session"
 msgid "Log into session"
 msgstr "Prisijungti prie seanso"
 
@@ -989,7 +1013,6 @@ msgstr "Nepavyko identifikuoti esamo seanso."
 
 #: ../utils/gdmflexiserver.c:682
 #, c-format
-#| msgid "Unable to open session"
 msgid "User unable to switch sessions."
 msgstr "Naudotojas negali keisti seansų."
 
@@ -1017,32 +1040,11 @@ msgstr "Įrašyti ekrano paveikslėlį"
 #~ msgid "Power Manager"
 #~ msgstr "Energijos valdymas"
 
-#~ msgid "Power management daemon"
-#~ msgstr "Energijos valdymo tarnyba"
-
 #~ msgid "GNOME Settings Daemon"
 #~ msgstr "GNOME nustatymų tarnyba"
 
-#~ msgid "GNOME Screen Magnifier"
-#~ msgstr "GNOME ekrano lupa"
-
-#~ msgid "Magnify parts of the screen"
-#~ msgstr "Didinti ekrano dalis"
-
-#~ msgid "GNOME On-Screen Keyboard"
-#~ msgstr "GNOME klaviatūra ekrane"
-
-#~ msgid "Use an on-screen keyboard"
-#~ msgstr "Naudoti klaviatūrą ekrane"
-
 #~ msgid "Metacity"
 #~ msgstr "Metacity"
-
-#~ msgid "Orca Screen Reader"
-#~ msgstr "Orca ekrano skaitytuvas"
-
-#~ msgid "Present on-screen information as speech or braille"
-#~ msgstr "Pateikti informaciją ekrane kaip kalbą arba Brailio raštą"
 
 #~ msgid "Shutdown Options…"
 #~ msgstr "Išjungimo parinktys…"
