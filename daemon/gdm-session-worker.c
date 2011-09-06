@@ -2597,6 +2597,8 @@ on_setup_for_program (GdmSessionWorker *worker,
         DBusError   error;
         char *service;
         char *x11_display_name;
+        char *console;
+        char *hostname;
         char *x11_authority_file;
         char *log_file;
         dbus_bool_t res;
@@ -2611,6 +2613,8 @@ on_setup_for_program (GdmSessionWorker *worker,
                                      &error,
                                      DBUS_TYPE_STRING, &service,
                                      DBUS_TYPE_STRING, &x11_display_name,
+                                     DBUS_TYPE_STRING, &console,
+                                     DBUS_TYPE_STRING, &hostname,
                                      DBUS_TYPE_STRING, &x11_authority_file,
                                      DBUS_TYPE_STRING, &log_file,
                                      DBUS_TYPE_INVALID);
@@ -2621,6 +2625,8 @@ on_setup_for_program (GdmSessionWorker *worker,
                 worker->priv->service = g_strdup (service);
                 worker->priv->username = g_strdup (GDM_USERNAME);
                 worker->priv->x11_display_name = g_strdup (x11_display_name);
+                worker->priv->hostname = g_strdup (hostname);
+                worker->priv->display_device = g_strdup (console);
                 worker->priv->x11_authority_file = g_strdup (x11_authority_file);
                 worker->priv->log_file = g_strdup (log_file);
                 worker->priv->is_program_session = TRUE;

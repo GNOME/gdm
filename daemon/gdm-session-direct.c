@@ -1401,6 +1401,8 @@ do_introspect (DBusConnection *connection,
                                "    <signal name=\"SetupForProgram\">\n"
                                "      <arg name=\"service_name\" type=\"s\"/>\n"
                                "      <arg name=\"x11_display_name\" type=\"s\"/>\n"
+                               "      <arg name=\"display_device\" type=\"s\"/>\n"
+                               "      <arg name=\"hostname\" type=\"s\"/>\n"
                                "      <arg name=\"x11_authority_file\" type=\"s\"/>\n"
                                "      <arg name=\"log_file\" type=\"s\"/>\n"
                                "    </signal>\n"
@@ -2052,6 +2054,8 @@ send_setup_for_program (GdmSessionDirect *session,
         DBusMessage    *message;
         DBusMessageIter iter;
         const char     *display_name;
+        const char     *display_device;
+        const char     *display_hostname;
         const char     *display_x11_authority_file;
         GdmSessionConversation *conversation;
 
@@ -2061,6 +2065,16 @@ send_setup_for_program (GdmSessionDirect *session,
                 display_name = session->priv->display_name;
         } else {
                 display_name = "";
+        }
+        if (session->priv->display_hostname != NULL) {
+                display_hostname = session->priv->display_hostname;
+        } else {
+                display_hostname = "";
+        }
+        if (session->priv->display_device != NULL) {
+                display_device = session->priv->display_device;
+        } else {
+                display_device = "";
         }
         if (session->priv->display_x11_authority_file != NULL) {
                 display_x11_authority_file = session->priv->display_x11_authority_file;
@@ -2077,6 +2091,8 @@ send_setup_for_program (GdmSessionDirect *session,
         dbus_message_iter_init_append (message, &iter);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &service_name);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_name);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_device);
+        dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_hostname);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &display_x11_authority_file);
         dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &log_file);
 
