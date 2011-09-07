@@ -11,14 +11,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-07-13 16:52+0000\n"
-"PO-Revision-Date: 2011-07-14 08:00+0100\n"
+"POT-Creation-Date: 2011-09-07 06:40+0000\n"
+"PO-Revision-Date: 2011-09-07 20:48+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);\n"
 "X-Poedit-Country: SLOVENIA\n"
 "X-Poedit-SourceCharset: utf-8\n"
@@ -98,20 +98,20 @@ msgstr "Strežnik bi moral biti oživljen preko uporabnika %s, vendar ta uporabn
 
 #: ../daemon/gdm-server.c:376
 #: ../daemon/gdm-server.c:396
-#: ../daemon/gdm-welcome-session.c:603
-#: ../daemon/gdm-welcome-session.c:623
+#: ../daemon/gdm-welcome-session.c:462
+#: ../daemon/gdm-welcome-session.c:482
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Ni mogoče nastaviti groupid na %d"
 
 #: ../daemon/gdm-server.c:382
-#: ../daemon/gdm-welcome-session.c:609
+#: ../daemon/gdm-welcome-session.c:468
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgrougs() ni uspel za %s"
 
 #: ../daemon/gdm-server.c:388
-#: ../daemon/gdm-welcome-session.c:615
+#: ../daemon/gdm-welcome-session.c:474
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Ni mogoče nastaviti userid na %d"
@@ -162,72 +162,72 @@ msgstr "Naprava zaslona"
 msgid "The display device"
 msgstr "Naprava za prikazovanje"
 
-#: ../daemon/gdm-session-worker.c:1070
+#: ../daemon/gdm-session-worker.c:1089
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "napaka začenjanja povezave s sistemom pooblastitve - %s"
 
-#: ../daemon/gdm-session-worker.c:1071
+#: ../daemon/gdm-session-worker.c:1090
 msgid "general failure"
 msgstr "splošna napaka"
 
-#: ../daemon/gdm-session-worker.c:1072
+#: ../daemon/gdm-session-worker.c:1091
 msgid "out of memory"
 msgstr "primanjkuje pomnilnika"
 
-#: ../daemon/gdm-session-worker.c:1073
+#: ../daemon/gdm-session-worker.c:1092
 msgid "application programmer error"
 msgstr "programerska napaka programa"
 
-#: ../daemon/gdm-session-worker.c:1074
+#: ../daemon/gdm-session-worker.c:1093
 msgid "unknown error"
 msgstr "neznana napaka"
 
-#: ../daemon/gdm-session-worker.c:1081
+#: ../daemon/gdm-session-worker.c:1100
 msgid "Username:"
 msgstr "Uporabniško ime:"
 
-#: ../daemon/gdm-session-worker.c:1087
+#: ../daemon/gdm-session-worker.c:1106
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr "napaka obveščanja sistema pooblastitve o pozivniku uporabniškega imena: %s"
 
-#: ../daemon/gdm-session-worker.c:1101
+#: ../daemon/gdm-session-worker.c:1120
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "napaka obveščanja sistema pooblastitve o imenu gostitelja: %s"
 
-#: ../daemon/gdm-session-worker.c:1116
+#: ../daemon/gdm-session-worker.c:1135
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "napaka obveščanja sistema pooblastitve o konzoli: %s"
 
-#: ../daemon/gdm-session-worker.c:1129
+#: ../daemon/gdm-session-worker.c:1148
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "napaka obveščanja sistema pooblastitve zaslonskih niti: %s"
 
-#: ../daemon/gdm-session-worker.c:1144
+#: ../daemon/gdm-session-worker.c:1163
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "napaka obveščanja sistema pooblastitve xauth varoval: %s"
 
-#: ../daemon/gdm-session-worker.c:1464
-#: ../daemon/gdm-session-worker.c:1481
+#: ../daemon/gdm-session-worker.c:1483
+#: ../daemon/gdm-session-worker.c:1500
 #, c-format
 msgid "no user account available"
 msgstr "na voljo ni nobenega uporabniškega računa"
 
-#: ../daemon/gdm-session-worker.c:1508
+#: ../daemon/gdm-session-worker.c:1527
 msgid "Unable to change to user"
 msgstr "Ni mogoče zamenjati uporabnika"
 
-#: ../daemon/gdm-welcome-session.c:553
+#: ../daemon/gdm-welcome-session.c:412
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Uporabnik %s ne obstaja"
 
-#: ../daemon/gdm-welcome-session.c:560
+#: ../daemon/gdm-welcome-session.c:419
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Skupina %s ne obstaja"
@@ -445,6 +445,43 @@ msgstr "Samo skrbnik ima dovoljenje zagnati GDM"
 msgid "GNOME Display Manager Session Worker"
 msgstr "Seja upravljalnika zaslona GNOME."
 
+#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
+msgid "Login Window"
+msgstr "Prijavno okno"
+
+#: ../data/applications/gnome-mag.desktop.in.h:1
+msgid "GNOME Screen Magnifier"
+msgstr "GNOME zaslonsko povečevalo"
+
+#: ../data/applications/gnome-mag.desktop.in.h:2
+msgid "Magnify parts of the screen"
+msgstr "Povečaj dele zaslona"
+
+#: ../data/applications/gnome-shell.desktop.in.h:1
+msgid "GNOME Shell"
+msgstr "Gnome lupina"
+
+#: ../data/applications/gnome-shell.desktop.in.h:2
+msgid "Window management and compositing"
+msgstr "Upravljanje oken in zaganjanje programov"
+
+#: ../data/applications/gok.desktop.in.h:1
+msgid "GNOME On-Screen Keyboard"
+msgstr "Zaslonska tipkovnica GNOME"
+
+#: ../data/applications/gok.desktop.in.h:2
+msgid "Use an on-screen keyboard"
+msgstr "Uporabi zaslonsko _tipkovnico"
+
+#: ../data/applications/orca-screen-reader.desktop.in.h:1
+msgid "Orca Screen Reader"
+msgstr "Orka zaslonski bralnik"
+
+#: ../data/applications/orca-screen-reader.desktop.in.h:2
+msgid "Present on-screen information as speech or braille"
+msgstr "Predstavi zaslonske podrobnosti kot govor ali braille"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Izbrani sistem"
@@ -539,10 +576,6 @@ msgstr "Po meri"
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1628
 msgid "Custom session"
 msgstr "Seja po meri"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
-msgid "Login Window"
-msgstr "Prijavno okno"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
 msgid "Cancel"
@@ -1006,35 +1039,14 @@ msgstr "Zajemanje zaslonske slike"
 #~ msgid "Power Manager"
 #~ msgstr "Upravljalnik porabe"
 
-#~ msgid "Power management daemon"
-#~ msgstr "Ozadnji program upravljalnika porabe"
-
 #~ msgid "GNOME Session Acceleration Checker"
 #~ msgstr "Preverjalnik pospeševanja GNOME seje"
 
 #~ msgid "GNOME Settings Daemon"
 #~ msgstr "Ozadnji program GNOME nastavitev"
 
-#~ msgid "GNOME Screen Magnifier"
-#~ msgstr "GNOME zaslonsko povečevalo"
-
-#~ msgid "Magnify parts of the screen"
-#~ msgstr "Povečaj dele zaslona"
-
-#~ msgid "GNOME On-Screen Keyboard"
-#~ msgstr "Zaslonska tipkovnica GNOME"
-
-#~ msgid "Use an on-screen keyboard"
-#~ msgstr "Uporabi zaslonsko _tipkovnico"
-
 #~ msgid "Metacity"
 #~ msgstr "Metacity"
-
-#~ msgid "Orca Screen Reader"
-#~ msgstr "Orka zaslonski bralnik"
-
-#~ msgid "Present on-screen information as speech or braille"
-#~ msgstr "Predstavi zaslonske podrobnosti kot govor ali braille"
 
 #~ msgid "PolicyKit Authentication Agent"
 #~ msgstr "Pogovorno okno pooblastitve"
