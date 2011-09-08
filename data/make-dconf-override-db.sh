@@ -21,6 +21,7 @@ gsettings set org.gnome.desktop.interface toolkit-accessibility true
 gsettings set org.gnome.desktop.lockdown disable-application-handlers true
 gsettings set org.gnome.desktop.lockdown disable-command-line true
 gsettings set org.gnome.desktop.lockdown disable-lock-screen true
+gsettings set org.gnome.desktop.lockdown disable-log-out true
 gsettings set org.gnome.desktop.lockdown disable-print-setup true
 gsettings set org.gnome.desktop.lockdown disable-printing true
 gsettings set org.gnome.desktop.lockdown disable-save-to-disk true
