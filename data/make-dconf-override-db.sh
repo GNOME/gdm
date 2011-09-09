@@ -25,6 +25,8 @@ gsettings set org.gnome.desktop.lockdown disable-print-setup true
 gsettings set org.gnome.desktop.lockdown disable-printing true
 gsettings set org.gnome.desktop.lockdown disable-save-to-disk true
 
+gsettings set org.gnome.desktop.session session-name '"gdm-shell"'
+
 gsettings set org.gnome.desktop.sound event-sounds true
 
 gsettings set org.gnome.settings-daemon.plugins.media-keys eject '""'
