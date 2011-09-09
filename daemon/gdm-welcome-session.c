@@ -799,6 +799,15 @@ on_conversation_started (GdmSession        *session,
         g_free (log_path);
 }
 
+static void
+on_conversation_stopped (GdmSession        *session,
+                         const char        *service_name,
+                         GdmWelcomeSession *welcome_session)
+{
+        g_debug ("GdmWelcomeSession: conversation stopped");
+        stop_dbus_daemon (welcome_session);
+}
+
 /**
  * gdm_welcome_session_start:
  * @disp: Pointer to a GdmDisplay structure
@@ -827,6 +836,10 @@ gdm_welcome_session_start (GdmWelcomeSession *welcome_session)
         g_signal_connect (GDM_SESSION (welcome_session->priv->session),
                           "conversation-started",
                           G_CALLBACK (on_conversation_started),
+                          welcome_session);
+        g_signal_connect (GDM_SESSION (welcome_session->priv->session),
+                          "conversation-stopped",
+                          G_CALLBACK (on_conversation_stopped),
                           welcome_session);
         g_signal_connect (welcome_session->priv->session,
                           "setup-complete",
@@ -878,9 +891,9 @@ gdm_welcome_session_stop (GdmWelcomeSession *welcome_session)
 
                 g_object_unref (welcome_session->priv->session);
                 welcome_session->priv->session = NULL;
+        } else {
+                stop_dbus_daemon (welcome_session);
         }
-
-        stop_dbus_daemon (welcome_session);
 
         return TRUE;
 }

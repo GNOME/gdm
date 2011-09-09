@@ -75,6 +75,7 @@ typedef struct
         char                *service_name;
         DBusConnection      *worker_connection;
         DBusMessage         *message_pending_reply;
+        guint32              is_stopping : 1;
 } GdmSessionConversation;
 
 struct _GdmSessionDirectPrivate
@@ -1784,6 +1785,8 @@ worker_exited (GdmSessionWorkerJob *job,
                int                  code,
                GdmSessionConversation *conversation)
 {
+        GdmSessionDirect *impl = GDM_SESSION_DIRECT (conversation->session);
+
         g_debug ("GdmSessionDirect: Worker job exited: %d", code);
 
         g_object_ref (conversation->job);
@@ -1791,10 +1794,19 @@ worker_exited (GdmSessionWorkerJob *job,
                 _gdm_session_session_exited (GDM_SESSION (conversation->session), code);
         }
 
+        g_hash_table_steal (impl->priv->conversations, conversation->service_name);
+
         g_debug ("GdmSessionDirect: Emitting conversation-stopped signal");
         _gdm_session_conversation_stopped (GDM_SESSION (conversation->session),
                                            conversation->service_name);
         g_object_unref (conversation->job);
+
+        if (conversation->is_stopping) {
+                g_object_unref (conversation->job);
+                conversation->job = NULL;
+        }
+
+        free_conversation (conversation);
 }
 
 static void
@@ -1802,6 +1814,8 @@ worker_died (GdmSessionWorkerJob *job,
              int                  signum,
              GdmSessionConversation *conversation)
 {
+        GdmSessionDirect *impl = GDM_SESSION_DIRECT (conversation->session);
+
         g_debug ("GdmSessionDirect: Worker job died: %d", signum);
 
         g_object_ref (conversation->job);
@@ -1809,10 +1823,19 @@ worker_died (GdmSessionWorkerJob *job,
                 _gdm_session_session_died (GDM_SESSION (conversation->session), signum);
         }
 
+        g_hash_table_steal (impl->priv->conversations, conversation->service_name);
+
         g_debug ("GdmSessionDirect: Emitting conversation-stopped signal");
         _gdm_session_conversation_stopped (GDM_SESSION (conversation->session),
                                            conversation->service_name);
         g_object_unref (conversation->job);
+
+        if (conversation->is_stopping) {
+                g_object_unref (conversation->job);
+                conversation->job = NULL;
+        }
+
+        free_conversation (conversation);
 }
 
 static GdmSessionConversation *
@@ -1842,14 +1865,14 @@ start_conversation (GdmSessionDirect *session,
                           conversation);
 
         job_name = g_strdup_printf ("gdm-session-worker [pam/%s]", service_name);
-        if (!gdm_session_worker_job_start (conversation->job,
-                                           job_name)) {
+        if (!gdm_session_worker_job_start (conversation->job, job_name)) {
                 g_object_unref (conversation->job);
                 g_free (conversation->service_name);
                 g_free (conversation);
                 g_free (job_name);
                 return NULL;
         }
+
         g_free (job_name);
 
         conversation->worker_pid = gdm_session_worker_job_get_pid (conversation->job);
@@ -1864,15 +1887,23 @@ stop_conversation (GdmSessionConversation *conversation)
 
         session = conversation->session;
 
-        g_signal_handlers_disconnect_by_func (conversation->job,
-                                              G_CALLBACK (worker_started),
-                                              conversation);
-        g_signal_handlers_disconnect_by_func (conversation->job,
-                                              G_CALLBACK (worker_exited),
-                                              conversation);
-        g_signal_handlers_disconnect_by_func (conversation->job,
-                                              G_CALLBACK (worker_died),
-                                              conversation);
+        if (conversation->worker_connection != NULL) {
+                dbus_connection_remove_filter (conversation->worker_connection, on_message, session);
+
+                dbus_connection_close (conversation->worker_connection);
+                conversation->worker_connection = NULL;
+        }
+
+        conversation->is_stopping = TRUE;
+        gdm_session_worker_job_stop (conversation->job);
+}
+
+static void
+stop_conversation_now (GdmSessionConversation *conversation)
+{
+        GdmSessionDirect *session;
+
+        session = conversation->session;
 
         if (conversation->worker_connection != NULL) {
                 dbus_connection_remove_filter (conversation->worker_connection, on_message, session);
@@ -1881,14 +1912,9 @@ stop_conversation (GdmSessionConversation *conversation)
                 conversation->worker_connection = NULL;
         }
 
-        gdm_session_worker_job_stop (conversation->job);
-
+        gdm_session_worker_job_stop_now (conversation->job);
         g_object_unref (conversation->job);
         conversation->job = NULL;
-
-        g_debug ("GdmSessionDirect: Emitting conversation-stopped signal");
-        _gdm_session_conversation_stopped (GDM_SESSION (session),
-                                           conversation->service_name);
 }
 
 static void
@@ -1899,6 +1925,20 @@ gdm_session_direct_start_conversation (GdmSession *session,
         GdmSessionConversation *conversation;
 
         g_return_if_fail (session != NULL);
+
+        conversation = g_hash_table_lookup (impl->priv->conversations,
+                                            service_name);
+
+        if (conversation != NULL) {
+                if (!conversation->is_stopping) {
+                        g_warning ("GdmSessionDirect: conversation %s started more than once", service_name);
+                        return;
+                }
+                g_debug ("GdmSessionDirect: stopping old conversation %s", service_name);
+                gdm_session_worker_job_stop_now (conversation->job);
+                g_object_unref (conversation->job);
+                conversation->job = NULL;
+        }
 
         g_debug ("GdmSessionDirect: starting conversation %s", service_name);
 
@@ -1923,7 +1963,6 @@ gdm_session_direct_stop_conversation (GdmSession *session,
 
         if (conversation != NULL) {
                 stop_conversation (conversation);
-                g_hash_table_remove (impl->priv->conversations, service_name);
         }
 }
 
@@ -2358,7 +2397,8 @@ gdm_session_direct_open_session (GdmSession *session,
 
 static void
 stop_all_other_conversations (GdmSessionDirect        *session,
-                              GdmSessionConversation  *conversation_to_keep)
+                              GdmSessionConversation  *conversation_to_keep,
+                              gboolean                 now)
 {
         GHashTableIter iter;
         gpointer key, value;
@@ -2381,20 +2421,29 @@ stop_all_other_conversations (GdmSessionDirect        *session,
                 conversation = (GdmSessionConversation *) value;
 
                 if (conversation == conversation_to_keep) {
-                        g_hash_table_iter_steal (&iter);
-                        g_free (key);
+                        if (now) {
+                                g_hash_table_iter_steal (&iter);
+                                g_free (key);
+                        }
                 } else {
-                        stop_conversation (conversation);
+                        if (now) {
+                                stop_conversation_now (conversation);
+                        } else {
+                                stop_conversation (conversation);
+                        }
                 }
         }
 
-        g_hash_table_remove_all (session->priv->conversations);
+        if (now) {
+                g_hash_table_remove_all (session->priv->conversations);
 
-        if (conversation_to_keep != NULL) {
-                g_hash_table_insert (session->priv->conversations,
-                                     g_strdup (conversation_to_keep->service_name),
-                                     conversation_to_keep);
+                if (conversation_to_keep != NULL) {
+                        g_hash_table_insert (session->priv->conversations,
+                                             g_strdup (conversation_to_keep->service_name),
+                                             conversation_to_keep);
+                }
         }
+
 }
 
 static void
@@ -2417,7 +2466,7 @@ gdm_session_direct_start_session (GdmSession *session,
                 return;
         }
 
-        stop_all_other_conversations (impl, conversation);
+        stop_all_other_conversations (impl, conversation, FALSE);
 
         if (impl->priv->selected_program == NULL) {
                 command = get_session_command (impl);
@@ -2443,7 +2492,7 @@ gdm_session_direct_start_session (GdmSession *session,
 static void
 stop_all_conversations (GdmSessionDirect *session)
 {
-        stop_all_other_conversations (session, NULL);
+        stop_all_other_conversations (session, NULL, TRUE);
 }
 
 static void
