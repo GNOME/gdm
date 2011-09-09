@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-15 10:51+0300\n"
-"PO-Revision-Date: 2011-07-15 10:52+0200\n"
+"POT-Creation-Date: 2011-09-09 12:54+0300\n"
+"PO-Revision-Date: 2011-09-09 12:54+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "Language: he\n"
@@ -87,17 +87,17 @@ msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Server was to be spawned by user %s but that user doesn't exist"
 
 #: ../daemon/gdm-server.c:376 ../daemon/gdm-server.c:396
-#: ../daemon/gdm-welcome-session.c:603 ../daemon/gdm-welcome-session.c:623
+#: ../daemon/gdm-welcome-session.c:462 ../daemon/gdm-welcome-session.c:482
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Couldn't set groupid to %d"
 
-#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:609
+#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:468
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () failed for %s"
 
-#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:615
+#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:474
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Couldn't set userid to %d"
@@ -147,71 +147,71 @@ msgstr "התקן תצוגה"
 msgid "The display device"
 msgstr "התקן התצוגה"
 
-#: ../daemon/gdm-session-worker.c:1070
+#: ../daemon/gdm-session-worker.c:1089
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "error initiating conversation with authentication system - %s"
 
-#: ../daemon/gdm-session-worker.c:1071
+#: ../daemon/gdm-session-worker.c:1090
 msgid "general failure"
 msgstr "general failure"
 
-#: ../daemon/gdm-session-worker.c:1072
+#: ../daemon/gdm-session-worker.c:1091
 msgid "out of memory"
 msgstr "out of memory"
 
-#: ../daemon/gdm-session-worker.c:1073
+#: ../daemon/gdm-session-worker.c:1092
 msgid "application programmer error"
 msgstr "application programmer error"
 
-#: ../daemon/gdm-session-worker.c:1074
+#: ../daemon/gdm-session-worker.c:1093
 msgid "unknown error"
 msgstr "שגיאה לא ידועה"
 
-#: ../daemon/gdm-session-worker.c:1081
+#: ../daemon/gdm-session-worker.c:1100
 msgid "Username:"
 msgstr "שם משתמש:"
 
-#: ../daemon/gdm-session-worker.c:1087
+#: ../daemon/gdm-session-worker.c:1106
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr "error informing authentication system of preferred username prompt: %s"
 
-#: ../daemon/gdm-session-worker.c:1101
+#: ../daemon/gdm-session-worker.c:1120
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "error informing authentication system of user's hostname: %s"
 
-#: ../daemon/gdm-session-worker.c:1116
+#: ../daemon/gdm-session-worker.c:1135
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "error informing authentication system of user's console: %s"
 
-#: ../daemon/gdm-session-worker.c:1129
+#: ../daemon/gdm-session-worker.c:1148
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "error informing authentication system of display string: %s"
 
-#: ../daemon/gdm-session-worker.c:1144
+#: ../daemon/gdm-session-worker.c:1163
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "error informing authentication system of display xauth credentials: %s"
 
-#: ../daemon/gdm-session-worker.c:1464 ../daemon/gdm-session-worker.c:1481
+#: ../daemon/gdm-session-worker.c:1483 ../daemon/gdm-session-worker.c:1500
 #, c-format
 msgid "no user account available"
 msgstr "אין חשבון משתמש זמין"
 
-#: ../daemon/gdm-session-worker.c:1508
+#: ../daemon/gdm-session-worker.c:1527
 msgid "Unable to change to user"
 msgstr "לא ניתן להחליף משתמש"
 
-#: ../daemon/gdm-welcome-session.c:553
+#: ../daemon/gdm-welcome-session.c:412
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "User %s doesn't exist"
 
-#: ../daemon/gdm-welcome-session.c:560
+#: ../daemon/gdm-welcome-session.c:419
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Group %s doesn't exist"
@@ -428,6 +428,43 @@ msgstr "Only the root user can run GDM"
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Display Manager Session Worker"
 
+#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
+msgid "Login Window"
+msgstr "חלון התחברות"
+
+#: ../data/applications/gnome-mag.desktop.in.h:1
+msgid "GNOME Screen Magnifier"
+msgstr "מגדיל המסך של GNOME"
+
+#: ../data/applications/gnome-mag.desktop.in.h:2
+msgid "Magnify parts of the screen"
+msgstr "מגדיל חלקים מהמסך"
+
+#: ../data/applications/gnome-shell.desktop.in.h:1
+msgid "GNOME Shell"
+msgstr "GNOME Shell"
+
+#: ../data/applications/gnome-shell.desktop.in.h:2
+msgid "Window management and compositing"
+msgstr "ניהול ועיצוב חלונות"
+
+#: ../data/applications/gok.desktop.in.h:1
+msgid "GNOME On-Screen Keyboard"
+msgstr "מקלדת על המסך של GNOME"
+
+#: ../data/applications/gok.desktop.in.h:2
+msgid "Use an on-screen keyboard"
+msgstr "שימוש במקלדת על המסך"
+
+#: ../data/applications/orca-screen-reader.desktop.in.h:1
+msgid "Orca Screen Reader"
+msgstr "קורא המסך Orca"
+
+#: ../data/applications/orca-screen-reader.desktop.in.h:2
+msgid "Present on-screen information as speech or braille"
+msgstr "מציג מידע על גבי המסך כגון דיבור או כתב ברייל"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "בחירת מערכת"
@@ -522,10 +559,6 @@ msgstr "התאמה אישית"
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1628
 msgid "Custom session"
 msgstr "הפעלה מותאמת אישית"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
-msgid "Login Window"
-msgstr "חלון התחברות"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
 msgid "Cancel"
@@ -998,35 +1031,14 @@ msgstr "צילום המסך"
 #~ msgid "Power Manager"
 #~ msgstr "מנהל צריכת החשמל"
 
-#~ msgid "Power management daemon"
-#~ msgstr "מנוע ניהול צריכת החשמל"
-
 #~ msgid "GNOME Session Acceleration Checker"
 #~ msgstr "בודק האצת ההפעלה של GNOME"
 
 #~ msgid "GNOME Settings Daemon"
 #~ msgstr "מנוע ההגדרות של GNOME"
 
-#~ msgid "GNOME Screen Magnifier"
-#~ msgstr "מגדיל המסך של GNOME"
-
-#~ msgid "Magnify parts of the screen"
-#~ msgstr "מגדיל חלקים מהמסך"
-
-#~ msgid "GNOME On-Screen Keyboard"
-#~ msgstr "מקלדת על המסך של GNOME"
-
-#~ msgid "Use an on-screen keyboard"
-#~ msgstr "שימוש במקלדת על המסך"
-
 #~ msgid "Metacity"
 #~ msgstr "Metacity"
-
-#~ msgid "Orca Screen Reader"
-#~ msgstr "קורא המסך Orca"
-
-#~ msgid "Present on-screen information as speech or braille"
-#~ msgstr "מציג מידע על גבי המסך כגון דיבור או כתב ברייל"
 
 #~ msgid "Languages"
 #~ msgstr "שפות"
