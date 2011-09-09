@@ -8,7 +8,7 @@ AC_CONFIG_SRCDIR([daemon/gdm-manager.c])
 
 AM_INIT_AUTOMAKE([1.10 no-dist-gzip dist-xz tar-ustar -Wall])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
-AM_MAINTAINER_MODE
+AM_MAINTAINER_MODE([enable])
 
 # for utmpx stuff
 AC_GNU_SOURCE
