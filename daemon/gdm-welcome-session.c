@@ -60,6 +60,7 @@ struct GdmWelcomeSessionPrivate
 {
         GdmSession     *session;
         char           *command;
+        GPid            pid;
 
         char           *user_name;
         char           *group_name;
@@ -762,6 +763,7 @@ on_session_started (GdmSession        *session,
                     int                pid,
                     GdmWelcomeSession *welcome_session)
 {
+        welcome_session->priv->pid = pid;
         g_signal_emit (G_OBJECT (welcome_session), signals [STARTED], 0);
 }
 
@@ -770,6 +772,9 @@ on_session_exited (GdmSession        *session,
                    int                exit_code,
                    GdmWelcomeSession *welcome_session)
 {
+        gdm_session_stop_conversation (GDM_SESSION (welcome_session->priv->session),
+                                       "gdm-welcome");
+
         g_signal_emit (G_OBJECT (welcome_session), signals [EXITED], 0, exit_code);
 }
 
@@ -778,6 +783,9 @@ on_session_died (GdmSession        *session,
                  int                signal_number,
                  GdmWelcomeSession *welcome_session)
 {
+        gdm_session_stop_conversation (GDM_SESSION (welcome_session->priv->session),
+                                       "gdm-welcome");
+
         g_signal_emit (G_OBJECT (welcome_session), signals [DIED], 0, signal_number);
 }
 
@@ -804,8 +812,22 @@ on_conversation_stopped (GdmSession        *session,
                          const char        *service_name,
                          GdmWelcomeSession *welcome_session)
 {
+        GdmSession *conversation_session;
+
+        conversation_session = welcome_session->priv->session;
+        welcome_session->priv->session = NULL;
+
         g_debug ("GdmWelcomeSession: conversation stopped");
         stop_dbus_daemon (welcome_session);
+
+        if (welcome_session->priv->pid > 1) {
+                g_signal_emit (G_OBJECT (welcome_session), signals [STOPPED], 0);
+        }
+
+        if (conversation_session != NULL) {
+                gdm_session_close (GDM_SESSION (conversation_session));
+                g_object_unref (conversation_session);
+        }
 }
 
 /**
@@ -884,15 +906,21 @@ gdm_welcome_session_start (GdmWelcomeSession *welcome_session)
 gboolean
 gdm_welcome_session_stop (GdmWelcomeSession *welcome_session)
 {
-        if (welcome_session->priv->session != NULL) {
-                gdm_session_stop_conversation (GDM_SESSION (welcome_session->priv->session),
-                                               "gdm-welcome");
-                gdm_session_close (GDM_SESSION (welcome_session->priv->session));
-
-                g_object_unref (welcome_session->priv->session);
-                welcome_session->priv->session = NULL;
+        if (welcome_session->priv->pid > 1) {
+                gdm_signal_pid (welcome_session->priv->pid, SIGTERM);
         } else {
-                stop_dbus_daemon (welcome_session);
+                if (welcome_session->priv->session != NULL) {
+                        gdm_session_stop_conversation (GDM_SESSION (welcome_session->priv->session),
+                                                       "gdm-welcome");
+                        gdm_session_close (GDM_SESSION (welcome_session->priv->session));
+
+                        g_object_unref (welcome_session->priv->session);
+                        welcome_session->priv->session = NULL;
+                } else {
+                        stop_dbus_daemon (welcome_session);
+                }
+
+                g_signal_emit (G_OBJECT (welcome_session), signals [STOPPED], 0);
         }
 
         return TRUE;

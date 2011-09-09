@@ -99,6 +99,9 @@ on_chooser_session_stop (GdmChooserSession    *chooser,
 {
         g_debug ("GdmXdmcpChooserSlave: Chooser stopped");
         gdm_slave_stopped (GDM_SLAVE (slave));
+
+        g_object_unref (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser);
+        GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser = NULL;
 }
 
 static void
@@ -308,8 +311,6 @@ gdm_xdmcp_chooser_slave_stop (GdmSlave *slave)
 
         if (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser != NULL) {
                 gdm_welcome_session_stop (GDM_WELCOME_SESSION (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser));
-                g_object_unref (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser);
-                GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser = NULL;
         }
 
         return TRUE;

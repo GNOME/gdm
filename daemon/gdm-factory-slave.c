@@ -117,6 +117,9 @@ on_greeter_session_stop (GdmGreeterSession *greeter,
                          GdmFactorySlave   *slave)
 {
         g_debug ("GdmFactorySlave: Greeter stopped");
+
+        g_object_unref (GDM_FACTORY_SLAVE (slave)->priv->greeter);
+        GDM_FACTORY_SLAVE (slave)->priv->greeter = NULL;
 }
 
 static void
@@ -847,8 +850,6 @@ gdm_factory_slave_stop (GdmSlave *slave)
 
         if (GDM_FACTORY_SLAVE (slave)->priv->greeter != NULL) {
                 gdm_welcome_session_stop (GDM_WELCOME_SESSION (GDM_FACTORY_SLAVE (slave)->priv->greeter));
-                g_object_unref (GDM_FACTORY_SLAVE (slave)->priv->greeter);
-                GDM_FACTORY_SLAVE (slave)->priv->greeter = NULL;
         }
 
         if (GDM_FACTORY_SLAVE (slave)->priv->server != NULL) {

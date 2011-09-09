@@ -212,7 +212,9 @@ on_session_exited (GdmSession     *session,
                    GdmSimpleSlave *slave)
 {
         g_debug ("GdmSimpleSlave: session exited with code %d\n", exit_code);
-        gdm_slave_stopped (GDM_SLAVE (slave));
+        if (slave->priv->start_session_service_name == NULL) {
+                gdm_slave_stopped (GDM_SLAVE (slave));
+        }
 }
 
 static void
@@ -224,7 +226,9 @@ on_session_died (GdmSession     *session,
                  signal_number,
                  g_strsignal (signal_number));
 
-        gdm_slave_stopped (GDM_SLAVE (slave));
+        if (slave->priv->start_session_service_name == NULL) {
+                gdm_slave_stopped (GDM_SLAVE (slave));
+        }
 }
 
 static gboolean
@@ -443,17 +447,12 @@ stop_greeter (GdmSimpleSlave *slave)
         g_free (username);
 
         gdm_welcome_session_stop (GDM_WELCOME_SESSION (slave->priv->greeter));
-        gdm_greeter_server_stop (slave->priv->greeter_server);
-
-        g_object_unref (slave->priv->greeter);
-        slave->priv->greeter = NULL;
 }
 
 static gboolean
 start_session_timeout (GdmSimpleSlave *slave)
 {
 
-        char    *auth_file;
         gboolean migrated;
 
         g_debug ("GdmSimpleSlave: accredited");
@@ -469,28 +468,14 @@ start_session_timeout (GdmSimpleSlave *slave)
                    user switching. */
                 queue_greeter_reset (slave);
 
-                goto out;
+                slave->priv->start_session_id = 0;
+                g_free (slave->priv->start_session_service_name);
+                slave->priv->start_session_service_name = NULL;
+        } else {
+                /* Session actually gets started from on_greeter_session_stopped */
+                stop_greeter (slave);
         }
 
-        stop_greeter (slave);
-
-        auth_file = NULL;
-        add_user_authorization (slave, &auth_file);
-
-        g_assert (auth_file != NULL);
-
-        g_object_set (slave->priv->session,
-                      "user-x11-authority-file", auth_file,
-                      NULL);
-
-        g_free (auth_file);
-
-        gdm_session_start_session (GDM_SESSION (slave->priv->session),
-                                   slave->priv->start_session_service_name);
- out:
-        slave->priv->start_session_id = 0;
-        g_free (slave->priv->start_session_service_name);
-        slave->priv->start_session_service_name = NULL;
         return FALSE;
 }
 
@@ -983,7 +968,34 @@ on_greeter_session_stop (GdmGreeterSession *greeter,
                          GdmSimpleSlave    *slave)
 {
         g_debug ("GdmSimpleSlave: Greeter stopped");
-        gdm_slave_stopped (GDM_SLAVE (slave));
+        if (slave->priv->start_session_service_name == NULL) {
+                gdm_slave_stopped (GDM_SLAVE (slave));
+        } else {
+                gdm_greeter_server_stop (slave->priv->greeter_server);
+
+                char    *auth_file;
+                auth_file = NULL;
+                add_user_authorization (slave, &auth_file);
+
+                g_assert (auth_file != NULL);
+
+                g_object_set (slave->priv->session,
+                              "user-x11-authority-file", auth_file,
+                              NULL);
+
+                g_free (auth_file);
+
+                gdm_session_start_session (GDM_SESSION (slave->priv->session),
+                                           slave->priv->start_session_service_name);
+
+                slave->priv->start_session_id = 0;
+                g_free (slave->priv->start_session_service_name);
+                slave->priv->start_session_service_name = NULL;
+        }
+
+        g_object_unref (slave->priv->greeter);
+        slave->priv->greeter = NULL;
+
 }
 
 static void
@@ -992,7 +1004,9 @@ on_greeter_session_exited (GdmGreeterSession    *greeter,
                            GdmSimpleSlave       *slave)
 {
         g_debug ("GdmSimpleSlave: Greeter exited: %d", code);
-        gdm_slave_stopped (GDM_SLAVE (slave));
+        if (slave->priv->start_session_service_name == NULL) {
+                gdm_slave_stopped (GDM_SLAVE (slave));
+        }
 }
 
 static void
