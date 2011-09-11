@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: lv\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-07-03 07:29+0000\n"
-"PO-Revision-Date: 2011-07-10 19:32+0300\n"
+"POT-Creation-Date: 2011-08-31 15:15+0000\n"
+"PO-Revision-Date: 2011-09-07 02:46+0300\n"
 "Last-Translator: Rūdofls Mazurs <rudolfs.mazurs@gmail.com>\n"
 "Language-Team: Latvian <lata-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -93,17 +93,17 @@ msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Serveri vajadzēja palaist lietotājam %s, bet šāds lietotājs neeksistē"
 
 #: ../daemon/gdm-server.c:376 ../daemon/gdm-server.c:396
-#: ../daemon/gdm-welcome-session.c:603 ../daemon/gdm-welcome-session.c:623
+#: ../daemon/gdm-welcome-session.c:462 ../daemon/gdm-welcome-session.c:482
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Neizdevās iestatīt grupas id uz %d"
 
-#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:609
+#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:468
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups() neizdevās %s"
 
-#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:615
+#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:474
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Neizdevās iestatīt lietotāja id uz %d"
@@ -153,78 +153,78 @@ msgstr "Displeja ierīce"
 msgid "The display device"
 msgstr "Displeja ierīce"
 
-#: ../daemon/gdm-session-worker.c:1070
+#: ../daemon/gdm-session-worker.c:1089
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr ""
 "kļūda, inicializējot informācijas apmaiņu ar autentifikācijas sistēmu - %s"
 
-#: ../daemon/gdm-session-worker.c:1071
+#: ../daemon/gdm-session-worker.c:1090
 msgid "general failure"
 msgstr "vispārēja kļūda"
 
-#: ../daemon/gdm-session-worker.c:1072
+#: ../daemon/gdm-session-worker.c:1091
 msgid "out of memory"
 msgstr "beigusies atmiņa"
 
-#: ../daemon/gdm-session-worker.c:1073
+#: ../daemon/gdm-session-worker.c:1092
 msgid "application programmer error"
 msgstr "lietotnes programmētāja kļūda"
 
-#: ../daemon/gdm-session-worker.c:1074
+#: ../daemon/gdm-session-worker.c:1093
 msgid "unknown error"
 msgstr "nezināma kļūda"
 
-#: ../daemon/gdm-session-worker.c:1081
+#: ../daemon/gdm-session-worker.c:1100
 msgid "Username:"
 msgstr "Lietotājvārds:"
 
-#: ../daemon/gdm-session-worker.c:1087
+#: ../daemon/gdm-session-worker.c:1106
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr ""
 "kļūda, autentifikācijas sistēmas informēšanā par vēlamo lietotājvārda "
 "ievades veidu: %s"
 
-#: ../daemon/gdm-session-worker.c:1101
+#: ../daemon/gdm-session-worker.c:1120
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr ""
 "kļūda, autentifikācijas sistēmas informēšanā par lietotāja saimniekdatora "
 "vārdu: %s"
 
-#: ../daemon/gdm-session-worker.c:1116
+#: ../daemon/gdm-session-worker.c:1135
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "kļūda, autentifikācijas sistēmas informēšanā par lietotāja konsoli: %s"
 
-#: ../daemon/gdm-session-worker.c:1129
+#: ../daemon/gdm-session-worker.c:1148
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "kļūda, autentifikācijas sistēmas informēšanā par displeja virkni: %s"
 
-#: ../daemon/gdm-session-worker.c:1144
+#: ../daemon/gdm-session-worker.c:1163
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr ""
 "kļūda, autentifikācijas sistēmas informēšanā par displeja xauth "
 "akreditācijas datiem: %s"
 
-#: ../daemon/gdm-session-worker.c:1464 ../daemon/gdm-session-worker.c:1481
+#: ../daemon/gdm-session-worker.c:1483 ../daemon/gdm-session-worker.c:1500
 #, c-format
 msgid "no user account available"
 msgstr "nav pieejams lietotāja konts"
 
-#: ../daemon/gdm-session-worker.c:1508
+#: ../daemon/gdm-session-worker.c:1527
 msgid "Unable to change to user"
 msgstr "Neizdevās nomainīties uz lietotāju"
 
-#: ../daemon/gdm-welcome-session.c:553
+#: ../daemon/gdm-welcome-session.c:412
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Lietotājs %s neeksistē"
 
-#: ../daemon/gdm-welcome-session.c:560
+#: ../daemon/gdm-welcome-session.c:419
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Grupa %s neeksistē"
@@ -446,6 +446,44 @@ msgstr "Tikai root var palaist GDM"
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME displeja pārvaldnieka sesijas darbinieks"
 
+#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
+msgid "Login Window"
+msgstr "Pieteikšanās logs"
+
+#: ../data/applications/gnome-mag.desktop.in.h:1
+msgid "GNOME Screen Magnifier"
+msgstr "GNOME ekrāna lupa"
+
+#: ../data/applications/gnome-mag.desktop.in.h:2
+msgid "Magnify parts of the screen"
+msgstr "Palielina ekrāna daļas"
+
+#: ../data/applications/gnome-shell.desktop.in.h:1
+msgid "GNOME Shell"
+msgstr "GNOME Shell"
+
+#: ../data/applications/gnome-shell.desktop.in.h:2
+#| msgid "Power management daemon"
+msgid "Window management and compositing"
+msgstr "Logu pārvaldība un komponēšana"
+
+#: ../data/applications/gok.desktop.in.h:1
+msgid "GNOME On-Screen Keyboard"
+msgstr "GNOME ekrāna tastatūra"
+
+#: ../data/applications/gok.desktop.in.h:2
+msgid "Use an on-screen keyboard"
+msgstr "Izmantot ekrāna tastatūru"
+
+#: ../data/applications/orca-screen-reader.desktop.in.h:1
+msgid "Orca Screen Reader"
+msgstr "Orca ekrāna lasītājs"
+
+#: ../data/applications/orca-screen-reader.desktop.in.h:2
+msgid "Present on-screen information as speech or braille"
+msgstr "Nodrošināt uz ekrāna redzamo informāciju kā izrunātu vai Braila rakstā"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Izvēlieties sistēmu"
@@ -523,27 +561,23 @@ msgid "Automatically logging in…"
 msgstr "Automātiski piesakās…"
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:931
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:935
 msgid "Cancelling…"
 msgstr "Atceļ…"
 
 #. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1491
 msgid "Select language and click Log In"
 msgstr "Izvēlieties valodu un klikšķiniet 'Pieteikties'"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1627
 msgctxt "customsession"
 msgid "Custom"
 msgstr "Pielāgota"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1628
 msgid "Custom session"
 msgstr "Pielāgota sesija"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2598
-msgid "Login Window"
-msgstr "Pieteikšanās logs"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
 msgid "Cancel"
@@ -866,7 +900,6 @@ msgid "Currently logged in"
 msgstr "Šobrīd pieteicies"
 
 #: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-#| msgid "PolicyKit Authentication Agent"
 msgid "Password Authentication"
 msgstr "Paroles autentifikācija"
 
@@ -877,12 +910,10 @@ msgstr "Pieteikties sesijā ar lietotājvārdu un paroli"
 #: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-#| msgid "Login"
 msgid "Log In"
 msgstr "Pieteikties"
 
 #: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-#| msgid "PolicyKit Authentication Agent"
 msgid "Fingerprint Authentication"
 msgstr "Pirkstu nospiedumu autentifikācija"
 
@@ -892,7 +923,6 @@ msgstr "Pieteikties sesijā ar pirkstu nospiedumu"
 
 #: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:1
 #: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:1
-#| msgid "Version of this application"
 msgid "Activation of this plugin"
 msgstr "Šī spraudņa aktivizēšana"
 
@@ -964,7 +994,6 @@ msgstr "karšu identifikators katram slotam"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-#| msgid "Username"
 msgid "name"
 msgstr "nosaukums"
 
@@ -977,13 +1006,14 @@ msgid "smartcard driver"
 msgstr "viedkartes draiveris"
 
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-#| msgid "PolicyKit Authentication Agent"
-msgid "Unified Authentication"
-msgstr "Neidentificēta autentifikācija"
+#| msgid "Unified Authentication"
+msgid "Authentication"
+msgstr "Autentifikācija"
 
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session with username and unified"
-msgstr "Pieteikties sesijā ar lietotājvārdu un apvienots"
+#| msgid "Log into session with smartcard"
+msgid "Log into session"
+msgstr "Pieteikties sesijā"
 
 #: ../utils/gdmflexiserver.c:61
 msgid "Only the VERSION command is supported"
@@ -1013,7 +1043,6 @@ msgstr "Neizdevās identificēt pašreizējo sesiju."
 
 #: ../utils/gdmflexiserver.c:682
 #, c-format
-#| msgid "Unable to open session"
 msgid "User unable to switch sessions."
 msgstr "Lietotājs nevar pārslēgt sesijas."
 
@@ -1035,14 +1064,14 @@ msgstr "Ekrānattēls uzņemts"
 msgid "Take a picture of the screen"
 msgstr "Uzņemt ekrāna attēlu"
 
+#~ msgid "Log into session with username and unified"
+#~ msgstr "Pieteikties sesijā ar lietotājvārdu un apvienots"
+
 #~ msgid "AT-SPI Registry Wrapper"
 #~ msgstr "AT-SPI reģistra ietinums"
 
 #~ msgid "Power Manager"
 #~ msgstr "Barošanas pārvaldnieks"
-
-#~ msgid "Power management daemon"
-#~ msgstr "Barošanas pārvaldības dēmons"
 
 #~ msgid "GNOME Session Acceleration Checker"
 #~ msgstr "GNOME sesijas paātrināšanas pārbaudītājs"
@@ -1050,27 +1079,8 @@ msgstr "Uzņemt ekrāna attēlu"
 #~ msgid "GNOME Settings Daemon"
 #~ msgstr "GNOME iestatījumu dēmons"
 
-#~ msgid "GNOME Screen Magnifier"
-#~ msgstr "GNOME ekrāna lupa"
-
-#~ msgid "Magnify parts of the screen"
-#~ msgstr "Palielina ekrāna daļas"
-
-#~ msgid "GNOME On-Screen Keyboard"
-#~ msgstr "GNOME ekrāna tastatūra"
-
-#~ msgid "Use an on-screen keyboard"
-#~ msgstr "Izmantot ekrāna tastatūru"
-
 #~ msgid "Metacity"
 #~ msgstr "Metacity"
-
-#~ msgid "Orca Screen Reader"
-#~ msgstr "Orca ekrāna lasītājs"
-
-#~ msgid "Present on-screen information as speech or braille"
-#~ msgstr ""
-#~ "Nodrošināt uz ekrāna redzamo informāciju kā izrunātu vai Braila rakstā"
 
 #~ msgid "Languages"
 #~ msgstr "Valodas"
