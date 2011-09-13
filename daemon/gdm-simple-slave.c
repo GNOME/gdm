@@ -108,6 +108,7 @@ G_DEFINE_TYPE (GdmSimpleSlave, gdm_simple_slave, GDM_TYPE_SLAVE)
 static void create_new_session (GdmSimpleSlave *slave);
 static void destroy_session    (GdmSimpleSlave *slave);
 static void start_greeter      (GdmSimpleSlave *slave);
+static void start_session      (GdmSimpleSlave *slave);
 static void queue_start_session (GdmSimpleSlave *slave,
                                  const char     *service_name);
 
@@ -449,6 +450,29 @@ stop_greeter (GdmSimpleSlave *slave)
         gdm_welcome_session_stop (GDM_WELCOME_SESSION (slave->priv->greeter));
 }
 
+static void
+start_session (GdmSimpleSlave *slave)
+{
+        char    *auth_file;
+        auth_file = NULL;
+        add_user_authorization (slave, &auth_file);
+
+        g_assert (auth_file != NULL);
+
+        g_object_set (slave->priv->session,
+                      "user-x11-authority-file", auth_file,
+                      NULL);
+
+        g_free (auth_file);
+
+        gdm_session_start_session (GDM_SESSION (slave->priv->session),
+                                   slave->priv->start_session_service_name);
+
+        slave->priv->start_session_id = 0;
+        g_free (slave->priv->start_session_service_name);
+        slave->priv->start_session_service_name = NULL;
+}
+
 static gboolean
 start_session_timeout (GdmSimpleSlave *slave)
 {
@@ -472,8 +496,13 @@ start_session_timeout (GdmSimpleSlave *slave)
                 g_free (slave->priv->start_session_service_name);
                 slave->priv->start_session_service_name = NULL;
         } else {
-                /* Session actually gets started from on_greeter_session_stopped */
-                stop_greeter (slave);
+                if (slave->priv->greeter == NULL) {
+                        /* auto login */
+                        start_session (slave);
+                } else {
+                        /* Session actually gets started from on_greeter_session_stop */
+                        stop_greeter (slave);
+                }
         }
 
         return FALSE;
@@ -972,25 +1001,7 @@ on_greeter_session_stop (GdmGreeterSession *greeter,
                 gdm_slave_stopped (GDM_SLAVE (slave));
         } else {
                 gdm_greeter_server_stop (slave->priv->greeter_server);
-
-                char    *auth_file;
-                auth_file = NULL;
-                add_user_authorization (slave, &auth_file);
-
-                g_assert (auth_file != NULL);
-
-                g_object_set (slave->priv->session,
-                              "user-x11-authority-file", auth_file,
-                              NULL);
-
-                g_free (auth_file);
-
-                gdm_session_start_session (GDM_SESSION (slave->priv->session),
-                                           slave->priv->start_session_service_name);
-
-                slave->priv->start_session_id = 0;
-                g_free (slave->priv->start_session_service_name);
-                slave->priv->start_session_service_name = NULL;
+                start_session (slave);
         }
 
         g_object_unref (slave->priv->greeter);
