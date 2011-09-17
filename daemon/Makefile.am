@@ -185,6 +185,7 @@ gdm_factory_slave_SOURCES = 		\
 
 gdm_factory_slave_LDFLAGS =		\
 	$(PAM_LIBS)			\
+	$(LIBXKLAVIER_LIBS)		\
 	$(NULL)
 
 gdm_factory_slave_LDADD = 			\
@@ -216,6 +217,7 @@ gdm_product_slave_SOURCES = 		\
 
 gdm_product_slave_LDFLAGS =		\
 	$(PAM_LIBS)			\
+	$(LIBXKLAVIER_LIBS)		\
 	$(NULL)
 
 gdm_product_slave_LDADD = 			\
@@ -257,6 +259,7 @@ gdm_xdmcp_chooser_slave_LDADD = 		\
 	$(XLIB_LIBS)				\
 	$(DAEMON_LIBS)				\
 	$(EXTRA_DAEMON_LIBS)                    \
+	$(LIBXKLAVIER_LIBS)			\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 

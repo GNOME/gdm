@@ -1208,6 +1208,9 @@ setup_server (GdmSimpleSlave *slave)
 
         /* Set the busy cursor */
         gdm_slave_set_busy_cursor (GDM_SLAVE (slave));
+
+        /* Set the initial keyboard layout to something reasonable */
+        gdm_slave_set_initial_keyboard_layout (GDM_SLAVE (slave));
 }
 
 static void
