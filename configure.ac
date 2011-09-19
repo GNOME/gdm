@@ -234,6 +234,10 @@ AC_ARG_ENABLE(split-authentication,
               enable_split_authentication=yes)
 AM_CONDITIONAL(ENABLE_SPLIT_AUTHENTICATION, test x$enable_split_authentication = xyes)
 
+if test x$enable_split_authentication = xyes; then
+  AC_DEFINE(ENABLE_SPLIT_AUTHENTICATION, 1, [Define if split authentication is enabled])
+fi
+
 AC_ARG_ENABLE(console-helper,
 	      AS_HELP_STRING([--enable-console-helper],
                              [Enable PAM console helper @<:@default=auto@:>@]),,

@@ -60,6 +60,8 @@ struct GdmGreeterServerPrivate
         DBusServer     *server;
         char           *server_address;
         DBusConnection *greeter_connection;
+
+        guint           using_legacy_service_name : 1;
 };
 
 enum {
@@ -246,11 +248,42 @@ send_dbus_void_signal (GdmGreeterServer *greeter_server,
         dbus_message_unref (message);
 }
 
+static const char *
+translate_outgoing_service_name (GdmGreeterServer *greeter_server,
+                                 const char       *service_name)
+{
+#ifndef ENABLE_SPLIT_AUTHENTICATION
+        if (strcmp (service_name, "gdm") == 0 && greeter_server->priv->using_legacy_service_name) {
+                return "gdm-password";
+        }
+#endif
+
+        return service_name;
+}
+
+static const char *
+translate_incoming_service_name (GdmGreeterServer *greeter_server,
+                                 const char       *service_name)
+{
+#ifndef ENABLE_SPLIT_AUTHENTICATION
+        if (strcmp (service_name, "gdm-password") == 0) {
+                g_debug ("GdmGreeterServer: Adjusting pam service from '%s' to 'gdm' for legacy compatibility", service_name);
+                service_name = "gdm";
+                greeter_server->priv->using_legacy_service_name = TRUE;
+        } else if (g_str_has_prefix (service_name, "gdm-") == 0 && strcmp (service_name, "gdm-autologin") != 0) {
+                g_debug ("GdmGreeterServer: Rejecting pam service '%s' for legacy compatibility", service_name);
+                return NULL;
+        }
+#endif
+        return service_name;
+}
+
 gboolean
 gdm_greeter_server_info_query (GdmGreeterServer *greeter_server,
                                const char       *service_name,
                                const char       *text)
 {
+        service_name = translate_outgoing_service_name (greeter_server, service_name);
         send_dbus_string_string_signal (greeter_server, "InfoQuery", service_name, text);
 
         return TRUE;
@@ -261,6 +294,7 @@ gdm_greeter_server_secret_info_query (GdmGreeterServer *greeter_server,
                                       const char       *service_name,
                                       const char       *text)
 {
+        service_name = translate_outgoing_service_name (greeter_server, service_name);
         send_dbus_string_string_signal (greeter_server, "SecretInfoQuery", service_name, text);
         return TRUE;
 }
@@ -270,6 +304,7 @@ gdm_greeter_server_info (GdmGreeterServer *greeter_server,
                          const char       *service_name,
                          const char       *text)
 {
+        service_name = translate_outgoing_service_name (greeter_server, service_name);
         send_dbus_string_string_signal (greeter_server, "Info", service_name, text);
         return TRUE;
 }
@@ -279,6 +314,7 @@ gdm_greeter_server_problem (GdmGreeterServer *greeter_server,
                             const char       *service_name,
                             const char       *text)
 {
+        service_name = translate_outgoing_service_name (greeter_server, service_name);
         send_dbus_string_string_signal (greeter_server, "Problem", service_name, text);
         return TRUE;
 }
@@ -287,6 +323,7 @@ gboolean
 gdm_greeter_server_authentication_failed (GdmGreeterServer *greeter_server,
                                           const char       *service_name)
 {
+        service_name = translate_outgoing_service_name (greeter_server, service_name);
         send_dbus_string_signal (greeter_server, "AuthenticationFailed", service_name);
         return TRUE;
 }
@@ -295,6 +332,7 @@ gboolean
 gdm_greeter_server_service_unavailable (GdmGreeterServer *greeter_server,
                                         const char       *service_name)
 {
+        service_name = translate_outgoing_service_name (greeter_server, service_name);
         send_dbus_string_signal (greeter_server, "ServiceUnavailable", service_name);
         return TRUE;
 }
@@ -310,6 +348,7 @@ gboolean
 gdm_greeter_server_ready (GdmGreeterServer *greeter_server,
                           const char       *service_name)
 {
+        service_name = translate_outgoing_service_name (greeter_server, service_name);
         send_dbus_string_signal (greeter_server, "Ready", service_name);
         return TRUE;
 }
@@ -318,6 +357,7 @@ gboolean
 gdm_greeter_server_conversation_stopped (GdmGreeterServer *greeter_server,
                                          const char       *service_name)
 {
+        service_name = translate_outgoing_service_name (greeter_server, service_name);
         send_dbus_string_signal (greeter_server, "ConversationStopped", service_name);
         return TRUE;
 }
@@ -355,6 +395,7 @@ void
 gdm_greeter_server_session_opened (GdmGreeterServer *greeter_server,
                                    const char       *service_name)
 {
+        service_name = translate_outgoing_service_name (greeter_server, service_name);
         send_dbus_string_signal (greeter_server, "SessionOpened", service_name);
 }
 
@@ -394,6 +435,7 @@ handle_start_conversation (GdmGreeterServer *greeter_server,
         DBusMessage *reply;
         DBusError    error;
         const char  *service_name;
+        const char  *translated_service_name;
 
         dbus_error_init (&error);
         if (! dbus_message_get_args (message, &error,
@@ -409,7 +451,14 @@ handle_start_conversation (GdmGreeterServer *greeter_server,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        g_signal_emit (greeter_server, signals [START_CONVERSATION], 0, service_name);
+        translated_service_name = translate_incoming_service_name (greeter_server, service_name);
+
+        if (translated_service_name == NULL) {
+                gdm_greeter_server_service_unavailable (greeter_server, service_name);
+                return DBUS_HANDLER_RESULT_HANDLED;
+        }
+
+        g_signal_emit (greeter_server, signals [START_CONVERSATION], 0, translated_service_name);
 
         return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -437,6 +486,7 @@ handle_begin_verification (GdmGreeterServer *greeter_server,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
+        service_name = translate_outgoing_service_name (greeter_server, service_name);
         g_signal_emit (greeter_server, signals [BEGIN_VERIFICATION], 0, service_name);
 
         return DBUS_HANDLER_RESULT_HANDLED;
@@ -494,6 +544,7 @@ handle_begin_verification_for_user (GdmGreeterServer *greeter_server,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
+        service_name = translate_outgoing_service_name (greeter_server, service_name);
         g_signal_emit (greeter_server, signals [BEGIN_VERIFICATION_FOR_USER], 0, service_name, text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
@@ -524,6 +575,7 @@ handle_answer_query (GdmGreeterServer *greeter_server,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
+        service_name = translate_outgoing_service_name (greeter_server, service_name);
         g_signal_emit (greeter_server, signals [QUERY_ANSWER], 0, service_name, text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
@@ -711,6 +763,7 @@ handle_start_session_when_ready (GdmGreeterServer *greeter_server,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
+        service_name = (char *) translate_outgoing_service_name (greeter_server, service_name);
         if (should_start_session) {
                 g_signal_emit (greeter_server, signals [START_SESSION_WHEN_READY], 0, service_name);
         } else {

@@ -1034,10 +1034,11 @@ on_greeter_start_conversation (GdmGreeterServer *greeter_server,
                                const char       *service_name,
                                GdmSimpleSlave   *slave)
 {
-        g_debug ("GdmSimpleSlave: starting conversation with '%s' pam service'", service_name);
         if (slave->priv->greeter_reset_id > 0) {
                 return;
         }
+
+        g_debug ("GdmSimpleSlave: starting conversation with '%s' pam service'", service_name);
         gdm_session_start_conversation (GDM_SESSION (slave->priv->session),
                                         service_name);
 }
