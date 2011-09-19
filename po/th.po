@@ -1,6 +1,6 @@
-# Thai translation of gdm2.
+# Thai translation of gdm.
 # Copyright (C) 2002-2011 Free Software Foundation, Inc.
-# This file is distributed under the same license as the gdm2 package.
+# This file is distributed under the same license as the gdm package.
 # Ross Golder <ross@golder.org>, 2002.
 # Surichat Sumrit <nook@opentle.org>, 2003, 2004.
 # Supranee Thirawatthanasuk <supranee@opentle.org>, 2004.
@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-08-31 15:15+0000\n"
-"PO-Revision-Date: 2011-09-17 14:32+0700\n"
+"POT-Creation-Date: 2011-09-19 14:43+0000\n"
+"PO-Revision-Date: 2011-09-19 22:41+0700\n"
 "Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -47,28 +47,28 @@ msgstr "หน่วยลูกของโปรแกรมจัดการ
 msgid "could not find user \"%s\" on system"
 msgstr "ไม่พบผู้ใช้ \"%s\" ในระบบ"
 
-#: ../daemon/gdm-factory-slave.c:207 ../daemon/gdm-simple-slave.c:309
+#: ../daemon/gdm-factory-slave.c:210 ../daemon/gdm-simple-slave.c:314
 msgid "Unable to initialize login system"
 msgstr "ไม่สามารถตั้งต้นกระบวนการเข้าระบบได้"
 
-#: ../daemon/gdm-factory-slave.c:241 ../daemon/gdm-simple-slave.c:347
+#: ../daemon/gdm-factory-slave.c:244 ../daemon/gdm-simple-slave.c:352
 msgid "Unable to authenticate user"
 msgstr "ไม่สามารถยืนยันตัวบุคคลผู้ใช้ได้"
 
-#: ../daemon/gdm-factory-slave.c:265 ../daemon/gdm-simple-slave.c:399
+#: ../daemon/gdm-factory-slave.c:268 ../daemon/gdm-simple-slave.c:404
 msgid "Unable to authorize user"
 msgstr "ไม่สามารถอนุญาตสิทธิ์ผู้ใช้ได้"
 
-#: ../daemon/gdm-factory-slave.c:289 ../daemon/gdm-simple-slave.c:537
+#: ../daemon/gdm-factory-slave.c:292 ../daemon/gdm-simple-slave.c:551
 msgid "Unable to establish credentials"
 msgstr "ไม่สามารถจัดตั้งรหัสลับได้"
 
-#: ../daemon/gdm-factory-slave.c:314 ../daemon/gdm-simple-slave.c:575
+#: ../daemon/gdm-factory-slave.c:317 ../daemon/gdm-simple-slave.c:589
 msgid "Unable to open session"
 msgstr "ไม่สามารถเปิดวาระได้"
 
-#: ../daemon/gdm-factory-slave.c:704 ../daemon/gdm-product-slave.c:511
-#: ../daemon/gdm-simple-slave.c:1447
+#: ../daemon/gdm-factory-slave.c:707 ../daemon/gdm-product-slave.c:511
+#: ../daemon/gdm-simple-slave.c:1475
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -91,17 +91,17 @@ msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "จะสร้างโพรเซสเซิร์ฟเวอร์ในนามผู้ใช้ %s แต่ผู้ใช้นั้นไม่มีอยู่จริง"
 
 #: ../daemon/gdm-server.c:376 ../daemon/gdm-server.c:396
-#: ../daemon/gdm-welcome-session.c:462 ../daemon/gdm-welcome-session.c:482
+#: ../daemon/gdm-welcome-session.c:463 ../daemon/gdm-welcome-session.c:483
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "ไม่สามารถกำหนด groupid เป็น %d"
 
-#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:468
+#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:469
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () ล้มเหลวสำหรับ %s"
 
-#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:474
+#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:475
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "ไม่สามารถกำหนด ID ของผู้ใช้เป็น %d"
@@ -210,12 +210,12 @@ msgstr "ไม่มีบัญชีผู้ใช้"
 msgid "Unable to change to user"
 msgstr "ไม่สามารถเปลี่ยนไปเป็นผู้ใช้ได้"
 
-#: ../daemon/gdm-welcome-session.c:412
+#: ../daemon/gdm-welcome-session.c:413
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "ไม่มีผู้ใช้ %s"
 
-#: ../daemon/gdm-welcome-session.c:419
+#: ../daemon/gdm-welcome-session.c:420
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "ไม่มีกลุ่ม %s"
@@ -469,6 +469,39 @@ msgstr "Orca: โปรแกรมอ่านหน้าจอ"
 msgid "Present on-screen information as speech or braille"
 msgstr "นำเสนอข้อมูลหน้าจอเป็นเสียงพูดหรืออักษรเบรลล์"
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:1
+msgid "Path to small image at top of user list"
+msgstr "พาธของภาพขนาดเล็กที่ด้านบนของรายชื่อผู้ใช้"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:2
+msgid ""
+"The login screen can optionally allow users who have enrolled their "
+"fingerprints to log in using those prints."
+msgstr "หน้าจอเข้าระบบสามารถเปิดให้ผู้ใช้ที่ได้เก็บลายนิ้วมือไว้สามารถใช้ลายนิ้วมือเข้าระบบได้"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
+msgid ""
+"The login screen can optionally allow users who have smartcards to log in "
+"using those smartcards."
+msgstr "หน้าจอเข้าระบบสามารถเปิดให้ผู้ใช้ที่มีสมาร์ตการ์ดสามารถใช้สมาร์ตการ์ดเข้าระบบได้"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
+msgid ""
+"The login screen can optionally show a small image at the top of its user "
+"list to provide site administrators and distributions a way to provide "
+"branding."
+msgstr ""
+"หน้าจอเข้าระบบสามารถแสดงภาพเล็กๆ ที่ด้านบนของรายชื่อผู้ใช้ "
+"เพื่อให้ผู้ดูแลระบบและชุดจัดแจกสามารถใช้ติดยี่ห้อได้"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Whether or not to allow fingerprint readers for login"
+msgstr "จะอนุญาตให้เข้าระบบโดยใช้เครื่องอ่านลายนิ้วมือหรือไม่"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid "Whether or not to allow smartcard readers for login"
+msgstr "จะอนุญาตให้เข้าระบบโดยใช้สมาร์ตการ์ดหรือไม่"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "เลือกระบบ"
@@ -480,6 +513,110 @@ msgstr "XDMCP: ไม่สามารถสร้างบัฟเฟอร�
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: ไม่สามารถอ่านข้อมูลส่วนหัวของ XDMCP ได้"
+
+#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
+msgid "Fingerprint Authentication"
+msgstr "การยืนยันตัวบุคคลโดยใช้ลายนิ้วมือ"
+
+#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
+msgid "Log into session with fingerprint"
+msgstr "เข้าระบบโดยใช้ลายนิ้วมือ"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
+msgid "Password Authentication"
+msgstr "การยืนยันตัวบุคคลด้วยรหัสผ่าน"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
+msgid "Log into session with username and password"
+msgstr "เข้าระบบโดยใช้ชื่อผู้ใช้และรหัสผ่าน"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
+msgid "Log In"
+msgstr "เข้าระบบ"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
+msgid "Slot ID"
+msgstr "ID ของช่องเสียบ"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
+msgid "The slot the card is in"
+msgstr "ช่องที่บัตรเสียบอยู่"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
+msgid "Slot Series"
+msgstr "อันดับในช่องเสียบ"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
+msgid "per-slot card identifier"
+msgstr "หมายเลขอันดับของบัตรในช่องเสียบ"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
+msgid "name"
+msgstr "ชื่อ"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
+msgid "Module"
+msgstr "มอดูล"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
+msgid "smartcard driver"
+msgstr "ไดรเวอร์สำหรับสมาร์ตการ์ด"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
+msgid "Smartcard Authentication"
+msgstr "การยืนยันตัวบุคคลโดยใช้สมาร์ตการ์ด"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
+msgid "Log into session with smartcard"
+msgstr "เข้าระบบโดยใช้สมาร์ตการ์ด"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
+msgid "Module Path"
+msgstr "พาธของมอดูล"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
+msgid "path to smartcard PKCS #11 driver"
+msgstr "พาธเต็มของไดรเวอร์ PKCS #11 สำหรับสมาร์ตการ์ด"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
+msgid "received error or hang up from event source"
+msgstr "ได้รับข้อผิดพลาดหรือถูกตัดการเชื่อมต่อจากแหล่งเหตุการณ์"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
+#, c-format
+msgid "NSS security system could not be initialized"
+msgstr "ไม่สามารถตั้งต้นระบบรักษาความปลอดภัย NSS ได้"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
+#, c-format
+msgid "no suitable smartcard driver could be found"
+msgstr "ไม่พบไดรเวอร์สมาร์ตการ์ดที่เหมาะสม"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
+#, c-format
+msgid "smartcard driver '%s' could not be loaded"
+msgstr "ไม่สามารถโหลดไดรเวอร์ '%s' สำหรับสมาร์ตการ์ด"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
+#, c-format
+msgid "could not watch for incoming card events - %s"
+msgstr "ไม่สามารถเฝ้าดูเหตุการณ์ขาเข้าของการ์ดได้ - %s"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
+#, c-format
+msgid "encountered unexpected error while waiting for smartcard events"
+msgstr "พบข้อผิดพลาดที่ไม่คาดหมายขณะคอยเหตุการณ์จากสมาร์ตการ์ด"
+
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
+msgid "Authentication"
+msgstr "การยืนยันตัวบุคคล"
+
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
+msgid "Log into session"
+msgstr "เข้าวาระ"
 
 #: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
 msgid "Value"
@@ -860,120 +997,6 @@ msgstr "เข้าระบบโดยอัตโนมัติหลัง
 msgid "Currently logged in"
 msgstr "เข้าระบบอยู่"
 
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-msgid "Password Authentication"
-msgstr "การยืนยันตัวบุคคลด้วยรหัสผ่าน"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr "เข้าระบบโดยใช้ชื่อผู้ใช้และรหัสผ่าน"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-msgid "Log In"
-msgstr "เข้าระบบ"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-msgid "Fingerprint Authentication"
-msgstr "การยืนยันตัวบุคคลโดยใช้ลายนิ้วมือ"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr "เข้าระบบโดยใช้ลายนิ้วมือ"
-
-#: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:1
-#: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:1
-msgid "Activation of this plugin"
-msgstr "การเปิดใช้ของปลั๊กอินนี้"
-
-#: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:2
-#: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:2
-msgid "Whether this plugin would be activated or not"
-msgstr "ปลั๊กอินนี้เปิดใช้อยู่หรือไม่"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-msgid "Smartcard Authentication"
-msgstr "การยืนยันตัวบุคคลโดยใช้สมาร์ตการ์ด"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr "เข้าระบบโดยใช้สมาร์ตการ์ด"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr "พาธของมอดูล"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "พาธเต็มของไดรเวอร์ PKCS #11 สำหรับสมาร์ตการ์ด"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
-msgid "received error or hang up from event source"
-msgstr "ได้รับข้อผิดพลาดหรือถูกตัดการเชื่อมต่อจากแหล่งเหตุการณ์"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr "ไม่สามารถตั้งต้นระบบรักษาความปลอดภัย NSS ได้"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr "ไม่พบไดรเวอร์สมาร์ตการ์ดที่เหมาะสม"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "ไม่สามารถโหลดไดรเวอร์ '%s' สำหรับสมาร์ตการ์ด"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr "ไม่สามารถเฝ้าดูเหตุการณ์ขาเข้าของการ์ดได้ - %s"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr "พบข้อผิดพลาดที่ไม่คาดหมายขณะคอยเหตุการณ์จากสมาร์ตการ์ด"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr "ID ของช่องเสียบ"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr "ช่องที่บัตรเสียบอยู่"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr "อันดับในช่องเสียบ"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr "หมายเลขอันดับของบัตรในช่องเสียบ"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-msgid "name"
-msgstr "ชื่อ"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "มอดูล"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "ไดรเวอร์สำหรับสมาร์ตการ์ด"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-msgid "Authentication"
-msgstr "การยืนยันตัวบุคคล"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session"
-msgstr "เข้าวาระ"
-
 #: ../utils/gdmflexiserver.c:61
 msgid "Only the VERSION command is supported"
 msgstr "รองรับคำสั่ง VERSION เท่านั้น"
@@ -1022,6 +1045,12 @@ msgstr "ภาพหน้าจอถูกจับ"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "จับภาพหน้าจอ"
+
+#~ msgid "Activation of this plugin"
+#~ msgstr "การเปิดใช้ของปลั๊กอินนี้"
+
+#~ msgid "Whether this plugin would be activated or not"
+#~ msgstr "ปลั๊กอินนี้เปิดใช้อยู่หรือไม่"
 
 #~ msgid "AT-SPI Registry Wrapper"
 #~ msgstr "โปรแกรมครอบเรจิสตรี AT-SPI"
