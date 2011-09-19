@@ -40,6 +40,10 @@ dbusconf_in_files = gdm.conf.in
 dbusconf_DATA = $(dbusconf_in_files:.conf.in=.conf)
 
 @INTLTOOL_SCHEMAS_RULE@
+@INTLTOOL_XML_NOMERGE_RULE@
+
+gsettings_SCHEMAS = org.gnome.login-screen.gschema.xml
+@GSETTINGS_RULES@
 
 schemasdir = $(pkgdatadir)
 schemas_in_files = gdm.schemas.in
@@ -105,6 +109,7 @@ EXTRA_DIST =			\
 	gdm-shell.session.in    \
 	make-dconf-override-db.sh \
 	dconf-profile \
+	org.gnome.login-screen.gschema.xml.in \
 	$(NULL)
 
 CLEANFILES = 				\
@@ -114,6 +119,7 @@ CLEANFILES = 				\
 	PreSession			\
 	PostSession			\
 	dconf-override-db		\
+	$(gsettings_SCHEMAS)		\
 	$(NULL)
 
 DISTCLEANFILES =			\

@@ -430,7 +430,7 @@ gdm_smartcard_extension_is_visible (GdmLoginExtension *login_extension)
         guint i;
         pid_t pid;
 
-        if (!g_settings_get_boolean (extension->priv->settings, "active")) {
+        if (!g_settings_get_boolean (extension->priv->settings, "enable-smartcard-authentication")) {
                 return FALSE;
         }
 
@@ -586,7 +586,7 @@ gdm_smartcard_extension_init (GdmSmartcardExtension *extension)
 
         extension->priv->message_queue = g_queue_new ();
 
-        extension->priv->settings = g_settings_new ("org.gnome.display-manager.extensions.smartcard");
+        extension->priv->settings = g_settings_new ("org.gnome.login-screen");
 
         gdm_smartcard_extension_reset (GDM_LOGIN_EXTENSION (extension));
 }

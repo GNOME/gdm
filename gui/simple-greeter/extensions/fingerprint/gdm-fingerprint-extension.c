@@ -307,7 +307,7 @@ gdm_fingerprint_extension_is_visible (GdmLoginExtension *login_extension)
         char *contents, **lines;
         int i;
 
-        if (!g_settings_get_boolean (extension->priv->settings, "active")) {
+        if (!g_settings_get_boolean (extension->priv->settings, "enable-fingerprint-authentication")) {
                 return FALSE;
         }
 
@@ -443,7 +443,7 @@ gdm_fingerprint_extension_init (GdmFingerprintExtension *extension)
 
         extension->priv->message_queue = g_queue_new ();
 
-        extension->priv->settings = g_settings_new ("org.gnome.display-manager.extensions.fingerprint");
+        extension->priv->settings = g_settings_new ("org.gnome.login-screen");
         extension->priv->bus_connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, NULL);
 
         gdm_fingerprint_extension_reset (GDM_LOGIN_EXTENSION (extension));

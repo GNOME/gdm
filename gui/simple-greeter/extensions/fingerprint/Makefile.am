@@ -3,10 +3,6 @@ SUBDIRS = icons
 NULL =
 PAM_SERVICE_NAME = gdm-fingerprint
 
-gsettings_SCHEMAS =org.gnome.display-manager.extensions.fingerprint.gschema.xml
-@INTLTOOL_XML_NOMERGE_RULE@
-@GSETTINGS_RULES@
-
 extensiondir = $(GDM_SIMPLE_GREETER_EXTENSIONS_DATA_DIR)/fingerprint
 extension_DATA = page.ui
 
@@ -49,11 +45,10 @@ $(PAM_SERVICE_NAME): $(PAM_SERVICE_NAME).pam
 pamdir = $(PAM_PREFIX)/pam.d
 pam_DATA = $(PAM_SERVICE_NAME)
 
-EXTRA_DIST = $(extension_DATA) $(gsettings_SCHEMAS).in $(gsettings_SCHEMAS) $(PAM_SERVICE_NAME).pam
-CLEANFILES = $(PAM_SERVICE_NAME) $(gsettings_SCHEMAS)
+EXTRA_DIST = $(extension_DATA) $(gsettings_SCHEMAS) $(PAM_SERVICE_NAME).pam
+CLEANFILES = $(PAM_SERVICE_NAME)
 
 MAINTAINERCLEANFILES =                  \
         *~                              \
         $(PAM_SERVICE_NAME)             \
-        $(gsettings_SCHEMAS)            \
         Makefile.in
