@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm trunk\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-01 10:17+0000\n"
-"PO-Revision-Date: 2011-09-03 10:43+0300\n"
+"POT-Creation-Date: 2011-09-19 14:43+0000\n"
+"PO-Revision-Date: 2011-09-20 11:39+0300\n"
 "Last-Translator: Yuri Myasoedov <omerta13@yandex.ru>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -58,34 +58,34 @@ msgstr "GNOME Display Manager (ведомый)"
 msgid "could not find user \"%s\" on system"
 msgstr "не удалось найти в системе пользователя «%s»"
 
-#: ../daemon/gdm-factory-slave.c:207
-#: ../daemon/gdm-simple-slave.c:309
+#: ../daemon/gdm-factory-slave.c:210
+#: ../daemon/gdm-simple-slave.c:314
 msgid "Unable to initialize login system"
 msgstr "Не удалось инициализировать систему входа"
 
-#: ../daemon/gdm-factory-slave.c:241
-#: ../daemon/gdm-simple-slave.c:347
+#: ../daemon/gdm-factory-slave.c:244
+#: ../daemon/gdm-simple-slave.c:352
 msgid "Unable to authenticate user"
 msgstr "Не удалось аутентифицировать пользователя"
 
-#: ../daemon/gdm-factory-slave.c:265
-#: ../daemon/gdm-simple-slave.c:399
+#: ../daemon/gdm-factory-slave.c:268
+#: ../daemon/gdm-simple-slave.c:404
 msgid "Unable to authorize user"
 msgstr "Не удалось авторизовать пользователя"
 
-#: ../daemon/gdm-factory-slave.c:289
-#: ../daemon/gdm-simple-slave.c:537
+#: ../daemon/gdm-factory-slave.c:292
+#: ../daemon/gdm-simple-slave.c:551
 msgid "Unable to establish credentials"
 msgstr "Не удалось установить мандаты"
 
-#: ../daemon/gdm-factory-slave.c:314
-#: ../daemon/gdm-simple-slave.c:575
+#: ../daemon/gdm-factory-slave.c:317
+#: ../daemon/gdm-simple-slave.c:589
 msgid "Unable to open session"
 msgstr "Не удалось открыть сеанс"
 
-#: ../daemon/gdm-factory-slave.c:704
+#: ../daemon/gdm-factory-slave.c:707
 #: ../daemon/gdm-product-slave.c:511
-#: ../daemon/gdm-simple-slave.c:1447
+#: ../daemon/gdm-simple-slave.c:1475
 msgid "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 msgstr "Не удалось запустить X-сервер (графическое окружение) из-за внутренней ошибки. Свяжитесь со своим системным администратором или проверьте системный журнал. В настоящее время этот дисплей будет отключен. Перезапустите GDM, когда проблема будет устранена."
 
@@ -101,20 +101,20 @@ msgstr "Сервер был запущен с идентификатором (ui
 
 #: ../daemon/gdm-server.c:376
 #: ../daemon/gdm-server.c:396
-#: ../daemon/gdm-welcome-session.c:462
-#: ../daemon/gdm-welcome-session.c:482
+#: ../daemon/gdm-welcome-session.c:463
+#: ../daemon/gdm-welcome-session.c:483
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Не удалось установить идентификатор группы в %d"
 
 #: ../daemon/gdm-server.c:382
-#: ../daemon/gdm-welcome-session.c:468
+#: ../daemon/gdm-welcome-session.c:469
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "сбой функции initgroups () для %s"
 
 #: ../daemon/gdm-server.c:388
-#: ../daemon/gdm-welcome-session.c:474
+#: ../daemon/gdm-welcome-session.c:475
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Не удалось установить идентификатор пользователя в %d"
@@ -225,12 +225,12 @@ msgstr "учётная запись пользователя недоступн�
 msgid "Unable to change to user"
 msgstr "Не удалось сменить пользователя"
 
-#: ../daemon/gdm-welcome-session.c:412
+#: ../daemon/gdm-welcome-session.c:413
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Пользователь %s не существует"
 
-#: ../daemon/gdm-welcome-session.c:419
+#: ../daemon/gdm-welcome-session.c:420
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Группа %s не существует"
@@ -485,6 +485,30 @@ msgstr "Программа чтения экрана Orca"
 msgid "Present on-screen information as speech or braille"
 msgstr "Озвучивает информацию, имеющуюся на экране, или выводит её на экран Брайля"
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:1
+msgid "Path to small image at top of user list"
+msgstr "Путь к небольшому изображению вверху списка пользователей"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:2
+msgid "The login screen can optionally allow users who have enrolled their fingerprints to log in using those prints."
+msgstr "Экран входа в систему может предоставить пользователям возможность входить в систему с помощью устройства считывания отпечатков пальцев."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
+msgid "The login screen can optionally allow users who have smartcards to log in using those smartcards."
+msgstr "Экран входа в систему может предоставить пользователям возможность входить в систему с помощью смарт-карт."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
+msgid "The login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
+msgstr "На экран входа в систему можно вывести небольшое изображение вверху списка пользователей, изображение, как правило, указывает на фирменное оформление, используемое дистрибутивами и администраторами."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Whether or not to allow fingerprint readers for login"
+msgstr "Разрешить использование устройств считывания отпечатков пальцев для входа в систему"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid "Whether or not to allow smartcard readers for login"
+msgstr "Разрешить использование устройств чтения смарт-карт для входа в систему"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Выберите систему"
@@ -496,6 +520,110 @@ msgstr "XDMCP: не удалось создать буфер XDMCP!"
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: не удалось прочитать заголовок XDMCP!"
+
+#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
+msgid "Fingerprint Authentication"
+msgstr "Аутентификация по отпечатку пальца"
+
+#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
+msgid "Log into session with fingerprint"
+msgstr "Вход в систему после проверки отпечатка пальца"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
+msgid "Password Authentication"
+msgstr "Аутентификация по паролю"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
+msgid "Log into session with username and password"
+msgstr "Вход в систему после указания имени и пароля"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
+msgid "Log In"
+msgstr "Войти в систему"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
+msgid "Slot ID"
+msgstr "Идентификатор слота"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
+msgid "The slot the card is in"
+msgstr "Карта в слоте"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
+msgid "Slot Series"
+msgstr "Группа слотов"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
+msgid "per-slot card identifier"
+msgstr "идентификатор карты относительно слота"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
+msgid "name"
+msgstr "имя"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
+msgid "Module"
+msgstr "Модуль"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
+msgid "smartcard driver"
+msgstr "драйвер смарт-карты"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
+msgid "Smartcard Authentication"
+msgstr "Аутентификация по смарт-карте"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
+msgid "Log into session with smartcard"
+msgstr "Вход в систему после проверки смарт-карты"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
+msgid "Module Path"
+msgstr "Путь к модулю"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
+msgid "path to smartcard PKCS #11 driver"
+msgstr "путь к драйверу PKCS #11 для смарт-карты"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
+msgid "received error or hang up from event source"
+msgstr "получена ошибка или сброс из источника событий"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
+#, c-format
+msgid "NSS security system could not be initialized"
+msgstr "невозможно инициализировать систему безопасности NSS"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
+#, c-format
+msgid "no suitable smartcard driver could be found"
+msgstr "не найден подходящий драйвер смарт-карты"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
+#, c-format
+msgid "smartcard driver '%s' could not be loaded"
+msgstr "невозможно загрузить драйвер смарт-карты «%s»"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
+#, c-format
+msgid "could not watch for incoming card events - %s"
+msgstr "невозможно отслеживать поступающие от карты события — %s"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
+#, c-format
+msgid "encountered unexpected error while waiting for smartcard events"
+msgstr "при ожидании событий от смарт-карты произошла неожиданная ошибка"
+
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
+msgid "Authentication"
+msgstr "Аутентификация"
+
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
+msgid "Log into session"
+msgstr "Войти в сеанс"
 
 #: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
 msgid "Value"
@@ -844,7 +972,7 @@ msgstr "Войти в систему как %s"
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
 msgctxt "user"
 msgid "Other…"
-msgstr "Другой…"
+msgstr "Другой пользователь…"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
 msgid "Choose a different account"
@@ -869,120 +997,6 @@ msgstr "Автоматически входить в систему после �
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:1358
 msgid "Currently logged in"
 msgstr "Уже зарегистрирован в системе"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-msgid "Password Authentication"
-msgstr "Аутентификация по паролю"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr "Вход в систему после указания имени и пароля"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-msgid "Log In"
-msgstr "Войти в систему"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-msgid "Fingerprint Authentication"
-msgstr "Аутентификация по отпечатку пальца"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr "Вход в систему после проверки отпечатка пальца"
-
-#: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:1
-#: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:1
-msgid "Activation of this plugin"
-msgstr "Включение этого модуля"
-
-#: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:2
-#: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:2
-msgid "Whether this plugin would be activated or not"
-msgstr "Нужно ли активировать этот модуль"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-msgid "Smartcard Authentication"
-msgstr "Аутентификация по смарт-карте"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr "Вход в систему после проверки смарт-карты"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr "Путь к модулю"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "путь к драйверу PKCS #11 для смарт-карты"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
-msgid "received error or hang up from event source"
-msgstr "получена ошибка или сброс из источника событий"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr "невозможно инициализировать систему безопасности NSS"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr "не найден подходящий драйвер смарт-карты"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "невозможно загрузить драйвер смарт-карты «%s»"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr "невозможно отслеживать поступающие от карты события — %s"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr "при ожидании событий от смарт-карты произошла неожиданная ошибка"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr "Идентификатор слота"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr "Карта в слоте"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr "Группа слотов"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr "идентификатор карты относительно слота"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-msgid "name"
-msgstr "имя"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "Модуль"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "драйвер смарт-карты"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-msgid "Authentication"
-msgstr "Аутентификация"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session"
-msgstr "Войти в сеанс"
 
 #: ../utils/gdmflexiserver.c:61
 msgid "Only the VERSION command is supported"
