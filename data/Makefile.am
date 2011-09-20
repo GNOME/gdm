@@ -161,6 +161,8 @@ uninstall-hook:
 	$(DESTDIR)$(xauthdir)
 
 	-rmdir \
+	$(DESTDIR)$(sysconfdir)/dconf/db/gdm.d/locks \
+	$(DESTDIR)$(sysconfdir)/dconf/db/gdm.d \
 	$(DESTDIR)$(sysconfdir)/dconf/db \
 	$(DESTDIR)$(sysconfdir)/dconf
 
@@ -281,6 +283,18 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 		$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/dconf/db; \
 		chmod 0755 $(DESTDIR)$(sysconfdir)/dconf/db; \
 		chown root:root $(DESTDIR)$(sysconfdir)/dconf/db || : ; \
+	fi
+
+	if test '!' -d $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d; then \
+		$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d; \
+		chmod 0755 $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d; \
+		chown root:root $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d || : ; \
+	fi
+
+	if test '!' -d $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d/locks; then \
+		$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d/locks; \
+		chmod 0755 $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d/locks; \
+		chown root:root $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d/locks || : ; \
 	fi
 
 	if test '!' -d $(DESTDIR)$(cachedir); then \
