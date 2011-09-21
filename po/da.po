@@ -10,7 +10,7 @@
 # Lasse Bang Mikkelsen <lbm@fatalerror.dk>, 2006.
 # Ask Hjorth Larsen <asklarsen@gmail.com>, 2008, 09.
 # Kenneth Nielsen <k.nielsen81@gmail.com>, 2009, 2010, 2011.
-#
+# flemming christensen <fc@stromata.dk>, 2011
 # Konventioner:
 #
 #   X server -> X-server
@@ -28,10 +28,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-16 12:57+0200\n"
-"PO-Revision-Date: 2011-09-16 12:51+0200\n"
-"Last-Translator: Kenneth Nielsen <k.nielsen81@gmail.com>\n"
-"Language-Team: Dansk <dansk@dansk-gruppen.dk>\n"
+"POT-Creation-Date: 2011-09-21 09:33+0200\n"
+"PO-Revision-Date: 2011-09-20 17:12+0200\n"
+"Last-Translator: flemming christensen <fc@stromata.dk>\n"
+"Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -86,7 +86,7 @@ msgid "Unable to open session"
 msgstr "Kunne ikke åbne session"
 
 #: ../daemon/gdm-factory-slave.c:707 ../daemon/gdm-product-slave.c:511
-#: ../daemon/gdm-simple-slave.c:1472
+#: ../daemon/gdm-simple-slave.c:1476
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -495,6 +495,44 @@ msgstr "Orca-skærmlæseren"
 msgid "Present on-screen information as speech or braille"
 msgstr "Presenter information på skærmen som tale eller blindeskrift"
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:1
+msgid "Path to small image at top of user list"
+msgstr "Sti til lille billede øverst på brugerlisten"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:2
+msgid ""
+"The login screen can optionally allow users who have enrolled their "
+"fingerprints to log in using those prints."
+msgstr ""
+"Logindskærmen kan give mulighed for at brugere, der har registreret deres "
+"fingeraftryk, kan logge ind ved hjælp af disse."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
+msgid ""
+"The login screen can optionally allow users who have smartcards to log in "
+"using those smartcards."
+msgstr ""
+"Logindskærmen kan give mulighed for, at brugere som har smartcards, kan "
+"logge ind ved hjælp af disse."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
+msgid ""
+"The login screen can optionally show a small image at the top of its user "
+"list to provide site administrators and distributions a way to provide "
+"branding."
+msgstr ""
+"Logindskærmen kan give mulighed for at vise et lille billede øverst på "
+"brugerlisten for at give administratorer og distributioner mulighed for "
+"branding."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Whether or not to allow fingerprint readers for login"
+msgstr "Om fingeraftrykslæsere skal tillades til logind"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid "Whether or not to allow smartcard readers for login"
+msgstr "Om smartcard-læsere skal tillades til logind"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Vælg system"
@@ -506,6 +544,110 @@ msgstr "XDMCP: Kunne ikke oprette XDMCP-buffer!"
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Kunne ikke læse XDMCP-hoved!"
+
+#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
+msgid "Fingerprint Authentication"
+msgstr "Autentificering af fingeraftryk"
+
+#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
+msgid "Log into session with fingerprint"
+msgstr "Log ind i session med fingeraftryk"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
+msgid "Password Authentication"
+msgstr "Autentificering af adgangskode"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
+msgid "Log into session with username and password"
+msgstr "Log ind i session med brugernavn og adgangskode"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
+msgid "Log In"
+msgstr "Log ind"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
+msgid "Slot ID"
+msgstr "Plads-id"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
+msgid "The slot the card is in"
+msgstr "Pladsen hvor kortet er indsat"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
+msgid "Slot Series"
+msgstr "Pladsrække"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
+msgid "per-slot card identifier"
+msgstr "pladsvis identifikation til kort"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
+msgid "name"
+msgstr "navn"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
+msgid "Module"
+msgstr "Modul"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
+msgid "smartcard driver"
+msgstr "smartcard-driver"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
+msgid "Smartcard Authentication"
+msgstr "Smartcardautentificering"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
+msgid "Log into session with smartcard"
+msgstr "Log ind i session med smartcard"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
+msgid "Module Path"
+msgstr "Modulsti"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
+msgid "path to smartcard PKCS #11 driver"
+msgstr "sti til smartcard PKCS #11-driver"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
+msgid "received error or hang up from event source"
+msgstr "modtog fejl eller \"hangup\"-signal fra begivenhedskilde"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
+#, c-format
+msgid "NSS security system could not be initialized"
+msgstr "NSS-sikkerhedssystem kunne ikke klargøres"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
+#, c-format
+msgid "no suitable smartcard driver could be found"
+msgstr "ingen passende smartcard-driver blev fundet"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
+#, c-format
+msgid "smartcard driver '%s' could not be loaded"
+msgstr "smartcard-driver %s kunne ikke blive indlæst"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
+#, c-format
+msgid "could not watch for incoming card events - %s"
+msgstr "kunne ikke holde øje med indkommende kortbegivenheder - %s"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
+#, c-format
+msgid "encountered unexpected error while waiting for smartcard events"
+msgstr "stødte på en uventet fejl ved afventning af smartcard-begivenheder"
+
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
+msgid "Authentication"
+msgstr "Autentificering"
+
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
+msgid "Log into session"
+msgstr "Log ind i session"
 
 #: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
 msgid "Value"
@@ -904,120 +1046,6 @@ msgstr "Log automatisk ind på systemet efter indstillingsvalg"
 msgid "Currently logged in"
 msgstr "Logget ind lige nu"
 
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-msgid "Password Authentication"
-msgstr "Autentificering af adgangskode"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr "Log ind i session med brugernavn og adgangskode"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-msgid "Log In"
-msgstr "Log ind"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-msgid "Fingerprint Authentication"
-msgstr "Autentificering af fingeraftryk"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr "Log ind i session med fingeraftryk"
-
-#: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:1
-#: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:1
-msgid "Activation of this plugin"
-msgstr "Aktivering af dette udvidelsesmodul"
-
-#: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:2
-#: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:2
-msgid "Whether this plugin would be activated or not"
-msgstr "Om dette udvidelsesmodul vil bliver aktiveret eller ej"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-msgid "Smartcard Authentication"
-msgstr "Smartcardautentificering"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr "Log ind i session med smartcard"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr "Modulsti"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "sti til smartcard PKCS #11-driver"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
-msgid "received error or hang up from event source"
-msgstr "modtog fejl eller \"hangup\"-signal fra begivenhedskilde"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr "NSS-sikkerhedssystem kunne ikke klargøres"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr "ingen passende smartcard-driver blev fundet"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "smartcard-driver %s kunne ikke blive indlæst"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr "kunne ikke holde øje med indkommende kortbegivenheder - %s"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr "stødte på en uventet fejl ved afventning af smartcard-begivenheder"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr "Plads-id"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr "Pladsen hvor kortet er indsat"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr "Pladsrække"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr "pladsvis identifikation til kort"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-msgid "name"
-msgstr "navn"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "Modul"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "smartcard-driver"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-msgid "Authentication"
-msgstr "Autentificering"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session"
-msgstr "Log ind i session"
-
 #: ../utils/gdmflexiserver.c:61
 msgid "Only the VERSION command is supported"
 msgstr "Kun VERSION-kommandoen er understøttet"
@@ -1066,6 +1094,12 @@ msgstr "Skærmbillede taget"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Tag et billede af skærmen"
+
+#~ msgid "Activation of this plugin"
+#~ msgstr "Aktivering af dette udvidelsesmodul"
+
+#~ msgid "Whether this plugin would be activated or not"
+#~ msgstr "Om dette udvidelsesmodul vil bliver aktiveret eller ej"
 
 #~ msgid "AT-SPI Registry Wrapper"
 #~ msgstr "AT-SPI-registeromslag"
