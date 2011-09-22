@@ -22,8 +22,8 @@ msgstr ""
 "Project-Id-Version: gdm HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-09 19:00+0000\n"
-"PO-Revision-Date: 2011-09-07 11:59+0100\n"
+"POT-Creation-Date: 2011-09-21 07:33+0000\n"
+"PO-Revision-Date: 2011-09-22 13:51+0200\n"
 "Last-Translator: Bruno Brouard <annoa.b@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -56,28 +56,28 @@ msgstr "Esclave du gestionnaire de connexions GNOME"
 msgid "could not find user \"%s\" on system"
 msgstr "impossible de trouver l'utilisateur « %s » sur le système"
 
-#: ../daemon/gdm-factory-slave.c:210 ../daemon/gdm-simple-slave.c:313
+#: ../daemon/gdm-factory-slave.c:210 ../daemon/gdm-simple-slave.c:314
 msgid "Unable to initialize login system"
 msgstr "Impossible d'initialiser le système de connexion"
 
-#: ../daemon/gdm-factory-slave.c:244 ../daemon/gdm-simple-slave.c:351
+#: ../daemon/gdm-factory-slave.c:244 ../daemon/gdm-simple-slave.c:352
 msgid "Unable to authenticate user"
 msgstr "Impossible d'authentifier l'utilisateur"
 
-#: ../daemon/gdm-factory-slave.c:268 ../daemon/gdm-simple-slave.c:403
+#: ../daemon/gdm-factory-slave.c:268 ../daemon/gdm-simple-slave.c:404
 msgid "Unable to authorize user"
 msgstr "Impossible d'autoriser l'utilisateur"
 
-#: ../daemon/gdm-factory-slave.c:292 ../daemon/gdm-simple-slave.c:522
+#: ../daemon/gdm-factory-slave.c:292 ../daemon/gdm-simple-slave.c:551
 msgid "Unable to establish credentials"
 msgstr "Impossible d'établir les informations d'identification"
 
-#: ../daemon/gdm-factory-slave.c:317 ../daemon/gdm-simple-slave.c:560
+#: ../daemon/gdm-factory-slave.c:317 ../daemon/gdm-simple-slave.c:589
 msgid "Unable to open session"
 msgstr "Impossible d'ouvrir une session"
 
 #: ../daemon/gdm-factory-slave.c:707 ../daemon/gdm-product-slave.c:511
-#: ../daemon/gdm-simple-slave.c:1461
+#: ../daemon/gdm-simple-slave.c:1476
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -499,6 +499,48 @@ msgstr "Lecteur d'écran Orca"
 msgid "Present on-screen information as speech or braille"
 msgstr "Présente les informations de l'écran sous forme vocale ou en braille"
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:1
+msgid "Path to small image at top of user list"
+msgstr "Chemin vers la petite image en haut de la liste d'utilisateurs"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:2
+msgid ""
+"The login screen can optionally allow users who have enrolled their "
+"fingerprints to log in using those prints."
+msgstr ""
+"L'écran de connexion peut, en option, permettre aux utilisateurs qui ont "
+"enregistré leurs empreintes digitales de se connecter en utilisant celles-ci."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
+msgid ""
+"The login screen can optionally allow users who have smartcards to log in "
+"using those smartcards."
+msgstr ""
+"L'écran de connexion peut, en option, permettre aux utilisateurs qui "
+"possèdent des cartes à puce de se connecter en utilisant celles-ci."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
+msgid ""
+"The login screen can optionally show a small image at the top of its user "
+"list to provide site administrators and distributions a way to provide "
+"branding."
+msgstr ""
+"L'écran de connexion peut, en option, afficher une petite image en haut de "
+"la liste d'utilisateurs pour fournir aux administrateurs de site et aux "
+"distributions une manière d'afficher leur marque."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Whether or not to allow fingerprint readers for login"
+msgstr ""
+"Indique s'il faut autoriser ou pas les lecteurs d'empreintes digitales pour "
+"la connexion"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid "Whether or not to allow smartcard readers for login"
+msgstr ""
+"Indique s'il faut autoriser ou pas les lecteurs de cartes à puce pour la "
+"connexion"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Sélectionnez un système"
@@ -510,6 +552,112 @@ msgstr "XDMCP : impossible de créer le tampon XDMCP."
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP : impossible de lire l'en-tête XDMCP."
+
+#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
+msgid "Fingerprint Authentication"
+msgstr "Authentification par empreinte digitale"
+
+#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
+msgid "Log into session with fingerprint"
+msgstr "Se connecter à la session avec une empreinte digitale"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
+msgid "Password Authentication"
+msgstr "Authentification par mot de passe"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
+msgid "Log into session with username and password"
+msgstr "Se connecter à la session avec un nom d'utilisateur et un mot de passe"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
+msgid "Log In"
+msgstr "Se connecter"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
+msgid "Slot ID"
+msgstr "Identificateur de l'emplacement"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
+msgid "The slot the card is in"
+msgstr "L'emplacement dans lequel se trouve la carte"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
+msgid "Slot Series"
+msgstr "Séries d'emplacements"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
+msgid "per-slot card identifier"
+msgstr "identifiant de carte par slot"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
+msgid "name"
+msgstr "nom"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
+msgid "Module"
+msgstr "Module"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
+msgid "smartcard driver"
+msgstr "pilote pour carte à puce"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
+msgid "Smartcard Authentication"
+msgstr "Authentification par carte à puce"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
+msgid "Log into session with smartcard"
+msgstr "Se connecter à la session avec une carte à puce"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
+msgid "Module Path"
+msgstr "Chemin du module"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
+msgid "path to smartcard PKCS #11 driver"
+msgstr "chemin vers le pilote pour carte à puce PKCS #11"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
+msgid "received error or hang up from event source"
+msgstr "erreur ou blocage reçu de la source d'évènements"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
+#, c-format
+msgid "NSS security system could not be initialized"
+msgstr "le système de sécurité NSS n'a pas pu être initialisé"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
+#, c-format
+msgid "no suitable smartcard driver could be found"
+msgstr "aucun pilote pour carte à puce approprié n'a été trouvé"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
+#, c-format
+msgid "smartcard driver '%s' could not be loaded"
+msgstr "le pilote de carte à puce « %s » n'a pas pu être chargé"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
+#, c-format
+msgid "could not watch for incoming card events - %s"
+msgstr "impossible de surveiller les évènements de carte entrants - %s"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
+#, c-format
+msgid "encountered unexpected error while waiting for smartcard events"
+msgstr ""
+"une erreur inattendue est survenue lors de l'attente d'évènements de carte à "
+"puce"
+
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
+msgid "Authentication"
+msgstr "Authentification"
+
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
+msgid "Log into session"
+msgstr "Se connecter à la session"
 
 #: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
 msgid "Value"
@@ -907,122 +1055,6 @@ msgstr "Se connecter automatiquement au système après avoir choisi des options
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:1358
 msgid "Currently logged in"
 msgstr "Déjà connecté"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-msgid "Password Authentication"
-msgstr "Authentification par mot de passe"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr "Se connecter à la session avec un nom d'utilisateur et un mot de passe"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-msgid "Log In"
-msgstr "Se connecter"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-msgid "Fingerprint Authentication"
-msgstr "Authentification par empreinte digitale"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr "Se connecter à la session avec une empreinte digitale"
-
-#: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:1
-#: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:1
-msgid "Activation of this plugin"
-msgstr "Activation de ce greffon"
-
-#: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:2
-#: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:2
-msgid "Whether this plugin would be activated or not"
-msgstr "Indique si ce greffon est activé ou non"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-msgid "Smartcard Authentication"
-msgstr "Authentification par carte à puce"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr "Se connecter à la session avec une carte à puce"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr "Chemin du module"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "chemin vers le pilote pour carte à puce PKCS #11"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
-msgid "received error or hang up from event source"
-msgstr "erreur ou blocage reçu de la source d'évènements"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr "le système de sécurité NSS n'a pas pu être initialisé"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr "aucun pilote pour carte à puce approprié n'a été trouvé"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "le pilote de carte à puce « %s » n'a pas pu être chargé"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr "impossible de surveiller les évènements de carte entrants - %s"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr ""
-"une erreur inattendue est survenue lors de l'attente d'évènements de carte à "
-"puce"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr "Identificateur de l'emplacement"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr "L'emplacement dans lequel se trouve la carte"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr "Séries d'emplacements"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr "identifiant de carte par slot"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-msgid "name"
-msgstr "nom"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "Module"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "pilote pour carte à puce"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-msgid "Authentication"
-msgstr "Authentification"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session"
-msgstr "Se connecter à la session"
 
 #: ../utils/gdmflexiserver.c:61
 msgid "Only the VERSION command is supported"
