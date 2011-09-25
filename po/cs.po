@@ -4,7 +4,6 @@
 # Copyright (C) 2006 Lukas Novotny <lukasnov@cvs.gnome.org>.
 # Copyright (C) 2006 Petr Tomeš <ptomes@gmail.com>.
 # This file is distributed under the same license as the gdm package.
-#
 # George Lebl <jirka@5z.com>, 2000.
 # Michal Bukovjan <bukm@centrum.cz>, 2002, 2003.
 # Miloslav Trmac <mitr@volny.cz>, 2003, 2004, 2005, 2006.
@@ -12,22 +11,20 @@
 # Petr Tomeš <ptomes@gmail.com>, 2006.
 # Jakub Friedl <jfriedl@suse.cz>, 2007.
 # Petr Kovar <pknbe@volny.cz>, 2008, 2009, 2010, 2011.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-07-12 14:28+0000\n"
-"PO-Revision-Date: 2011-07-16 07:35+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-09-26 00:22+0200\n"
+"PO-Revision-Date: 2011-09-26 00:21+0200\n"
 "Last-Translator: Petr Kovar <pknbe@volny.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
+"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 1.1\n"
+"X-Generator: Lokalize 1.2\n"
 
 #: ../common/gdm-common.c:489
 #, c-format
@@ -52,30 +49,30 @@ msgstr "Pomocný správce displeje GNOME"
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
-msgstr "v systému nelze najít uživatele „%s“"
+msgstr "v systému nelze najít uživatele \"%s\""
 
-#: ../daemon/gdm-factory-slave.c:207 ../daemon/gdm-simple-slave.c:309
+#: ../daemon/gdm-factory-slave.c:210 ../daemon/gdm-simple-slave.c:314
 msgid "Unable to initialize login system"
 msgstr "Nelze spustit systém přihlášení"
 
-#: ../daemon/gdm-factory-slave.c:241 ../daemon/gdm-simple-slave.c:347
+#: ../daemon/gdm-factory-slave.c:244 ../daemon/gdm-simple-slave.c:352
 msgid "Unable to authenticate user"
 msgstr "Nelze ověřit uživatele"
 
-#: ../daemon/gdm-factory-slave.c:265 ../daemon/gdm-simple-slave.c:399
+#: ../daemon/gdm-factory-slave.c:268 ../daemon/gdm-simple-slave.c:404
 msgid "Unable to authorize user"
 msgstr "Nelze potvrdit uživatele"
 
-#: ../daemon/gdm-factory-slave.c:289 ../daemon/gdm-simple-slave.c:537
+#: ../daemon/gdm-factory-slave.c:292 ../daemon/gdm-simple-slave.c:551
 msgid "Unable to establish credentials"
 msgstr "Nelze vytvořit pověření"
 
-#: ../daemon/gdm-factory-slave.c:314 ../daemon/gdm-simple-slave.c:575
+#: ../daemon/gdm-factory-slave.c:317 ../daemon/gdm-simple-slave.c:589
 msgid "Unable to open session"
 msgstr "Nelze otevřít sezení"
 
-#: ../daemon/gdm-factory-slave.c:704 ../daemon/gdm-product-slave.c:511
-#: ../daemon/gdm-simple-slave.c:1447
+#: ../daemon/gdm-factory-slave.c:707 ../daemon/gdm-product-slave.c:511
+#: ../daemon/gdm-simple-slave.c:1476
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -90,7 +87,7 @@ msgstr ""
 #: ../daemon/gdm-server.c:250
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: nelze se připojit k rodičovskému displeji „%s“"
+msgstr "%s: nelze se připojit k rodičovskému displeji \"%s\""
 
 #: ../daemon/gdm-server.c:365
 #, c-format
@@ -98,17 +95,17 @@ msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Server měl být spuštěný uživatelem %s, ale takový uživatel neexistuje"
 
 #: ../daemon/gdm-server.c:376 ../daemon/gdm-server.c:396
-#: ../daemon/gdm-welcome-session.c:603 ../daemon/gdm-welcome-session.c:623
+#: ../daemon/gdm-welcome-session.c:463 ../daemon/gdm-welcome-session.c:483
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Nelze nastavit groupid na %d"
 
-#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:609
+#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:469
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () selhalo u %s"
 
-#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:615
+#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:475
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Nelze nastavit userid na %d"
@@ -158,75 +155,75 @@ msgstr "Zařízení displeje"
 msgid "The display device"
 msgstr "Zařízení displeje"
 
-#: ../daemon/gdm-session-worker.c:1070
+#: ../daemon/gdm-session-worker.c:1089
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
-msgstr "chyba při spouštění komunikace s ověřovacím systémem – %s"
+msgstr "chyba při spouštění komunikace s ověřovacím systémem - %s"
 
-#: ../daemon/gdm-session-worker.c:1071
+#: ../daemon/gdm-session-worker.c:1090
 msgid "general failure"
 msgstr "obecné selhání"
 
-#: ../daemon/gdm-session-worker.c:1072
+#: ../daemon/gdm-session-worker.c:1091
 msgid "out of memory"
 msgstr "nedostatek paměti"
 
-#: ../daemon/gdm-session-worker.c:1073
+#: ../daemon/gdm-session-worker.c:1092
 msgid "application programmer error"
 msgstr "aplikační chyba programátora"
 
-#: ../daemon/gdm-session-worker.c:1074
+#: ../daemon/gdm-session-worker.c:1093
 msgid "unknown error"
 msgstr "neznámá chyba"
 
-#: ../daemon/gdm-session-worker.c:1081
+#: ../daemon/gdm-session-worker.c:1100
 msgid "Username:"
 msgstr "Uživatel:"
 
-#: ../daemon/gdm-session-worker.c:1087
+#: ../daemon/gdm-session-worker.c:1106
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr ""
 "chyba při informování ověřovacího systému o preferovaném dotazu na "
 "uživatelské jméno: %s"
 
-#: ../daemon/gdm-session-worker.c:1101
+#: ../daemon/gdm-session-worker.c:1120
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr ""
 "chyba při informování ověřovacího systému o názvu počítače uživatele: %s"
 
-#: ../daemon/gdm-session-worker.c:1116
+#: ../daemon/gdm-session-worker.c:1135
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "chyba při informování ověřovacího systému o uživatelově konzole: %s"
 
-#: ../daemon/gdm-session-worker.c:1129
+#: ../daemon/gdm-session-worker.c:1148
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "chyba při informování ověřovacího systému o řetězci displeje: %s"
 
-#: ../daemon/gdm-session-worker.c:1144
+#: ../daemon/gdm-session-worker.c:1163
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr ""
 "chyba při informování ověřovacího systému o pověření xauth displeje: %s"
 
-#: ../daemon/gdm-session-worker.c:1464 ../daemon/gdm-session-worker.c:1481
+#: ../daemon/gdm-session-worker.c:1483 ../daemon/gdm-session-worker.c:1500
 #, c-format
 msgid "no user account available"
 msgstr "není dostupný žádný uživatelský účet"
 
-#: ../daemon/gdm-session-worker.c:1508
+#: ../daemon/gdm-session-worker.c:1527
 msgid "Unable to change to user"
 msgstr "Nelze změnit uživatele"
 
-#: ../daemon/gdm-welcome-session.c:553
+#: ../daemon/gdm-welcome-session.c:413
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Uživatel %s neexistuje"
 
-#: ../daemon/gdm-welcome-session.c:560
+#: ../daemon/gdm-welcome-session.c:420
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Skupina %s neexistuje"
@@ -401,7 +398,7 @@ msgstr "AuthDir %s má chybně nastavená práva %o. Měly by být %o. Ukončov�
 #: ../daemon/main.c:409
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
-msgstr "Nelze najít uživatele GDM „%s“. Ukončování!"
+msgstr "Nelze najít uživatele GDM \"%s\". Ukončování!"
 
 #: ../daemon/main.c:415
 msgid "The GDM user should not be root. Aborting!"
@@ -410,7 +407,7 @@ msgstr "Uživatel GDM nesmí být superuživatelem. Ukončování!"
 #: ../daemon/main.c:421
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "Nelze najít skupinu GDM „%s“. Ukončování!"
+msgstr "Nelze najít skupinu GDM \"%s\". Ukončování!"
 
 #: ../daemon/main.c:427
 msgid "The GDM group should not be root. Aborting!"
@@ -443,6 +440,81 @@ msgstr "Spustit GDM může pouze superuživatel"
 msgid "GNOME Display Manager Session Worker"
 msgstr "Sezení správce displeje GNOME (worker)"
 
+#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
+msgid "Login Window"
+msgstr "Přihlašovací okno"
+
+#: ../data/applications/gnome-mag.desktop.in.h:1
+msgid "GNOME Screen Magnifier"
+msgstr "Lupa obrazovky GNOME"
+
+#: ../data/applications/gnome-mag.desktop.in.h:2
+msgid "Magnify parts of the screen"
+msgstr "Zvětšuje dané oblasti na obrazovce"
+
+#: ../data/applications/gnome-shell.desktop.in.h:1
+msgid "GNOME Shell"
+msgstr "GNOME Shell"
+
+#: ../data/applications/gnome-shell.desktop.in.h:2
+msgid "Window management and compositing"
+msgstr "Správce oken a kompozitor"
+
+#: ../data/applications/gok.desktop.in.h:1
+msgid "GNOME On-Screen Keyboard"
+msgstr "Klávesnice na obrazovce GNOME"
+
+#: ../data/applications/gok.desktop.in.h:2
+msgid "Use an on-screen keyboard"
+msgstr "Použije klávesnici na obrazovce"
+
+#: ../data/applications/orca-screen-reader.desktop.in.h:1
+msgid "Orca Screen Reader"
+msgstr "Čtení obrazovky Orca"
+
+#: ../data/applications/orca-screen-reader.desktop.in.h:2
+msgid "Present on-screen information as speech or braille"
+msgstr "Zprostředkovat informace na obrazovce řečí nebo Braillovým písmem"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:1
+msgid "Path to small image at top of user list"
+msgstr "Cesta k malému obrázku na horní straně seznamu uživatelů"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:2
+msgid ""
+"The login screen can optionally allow users who have enrolled their "
+"fingerprints to log in using those prints."
+msgstr ""
+"Obrazovka přihlášení může uživatelům s dostupnými otisky prstů volitelně "
+"nabídnout přihlášení s těmito otisky."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
+msgid ""
+"The login screen can optionally allow users who have smartcards to log in "
+"using those smartcards."
+msgstr ""
+"Obrazovka přihlášení může uživatelům s dostupnými čipovými kartami volitelně "
+"nabídnout přihlášení s těmito kartami."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
+msgid ""
+"The login screen can optionally show a small image at the top of its user "
+"list to provide site administrators and distributions a way to provide "
+"branding."
+msgstr ""
+"Obrazovka přihlášení může volitelně zobrazit malý obrázek na horní straně "
+"seznamu uživatelů, který nabízí správcům systému a distributorům možnost "
+"přidat ikonu značky."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Whether or not to allow fingerprint readers for login"
+msgstr "Zda povolit čtečkám otisků prstů přihlášení"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid "Whether or not to allow smartcard readers for login"
+msgstr "Zda povolit čtečkám čipových karet přihlášení"
+
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
 msgstr "Vybrat systém"
@@ -454,6 +526,110 @@ msgstr "XDMCP: Nelze vytvořit vyrovnávací paměť XDMCP!"
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Nelze přečíst záhlaví XDMCP!"
+
+#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
+msgid "Fingerprint Authentication"
+msgstr "Ověření otiskem prstů"
+
+#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
+msgid "Log into session with fingerprint"
+msgstr "Přihlásit se k sezení otiskem prstů"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
+msgid "Password Authentication"
+msgstr "Ověření heslem"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
+msgid "Log into session with username and password"
+msgstr "Přihlásit se k sezení uživatelským jménem a heslem"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
+msgid "Log In"
+msgstr "Přihlásit se"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
+msgid "Slot ID"
+msgstr "ID slotu"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
+msgid "The slot the card is in"
+msgstr "Slot, ve kterém je karta"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
+msgid "Slot Series"
+msgstr "Série slotu"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
+msgid "per-slot card identifier"
+msgstr "identifikátor karty vázaný na slot"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
+msgid "name"
+msgstr "název"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
+msgid "Module"
+msgstr "modul"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
+msgid "smartcard driver"
+msgstr "ovladač čipové karty"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
+msgid "Smartcard Authentication"
+msgstr "Ověření čipovou kartou"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
+msgid "Log into session with smartcard"
+msgstr "Přihlásit se k sezení čipovou kartou"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
+msgid "Module Path"
+msgstr "Cesta k modulu"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
+msgid "path to smartcard PKCS #11 driver"
+msgstr "cesta k ovladači PKCS #11 čipové karty"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
+msgid "received error or hang up from event source"
+msgstr "obdržena chyba nebo zablokování od zdroje události"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
+#, c-format
+msgid "NSS security system could not be initialized"
+msgstr "Bezpečností systém NSS nemohl být spuštěn"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
+#, c-format
+msgid "no suitable smartcard driver could be found"
+msgstr "nenalezen žádný použitelný ovladač čipové karty"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
+#, c-format
+msgid "smartcard driver '%s' could not be loaded"
+msgstr "ovladač čipové karty „%s“ nelze načíst"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
+#, c-format
+msgid "could not watch for incoming card events - %s"
+msgstr "nelze sledovat příchozí události karty – %s"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
+#, c-format
+msgid "encountered unexpected error while waiting for smartcard events"
+msgstr "při čekání na události čipové karty došlo k neočekávané chybě"
+
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
+msgid "Authentication"
+msgstr "Ověření"
+
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
+msgid "Log into session"
+msgstr "Přihlásit se k sezení"
 
 #: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
 msgid "Value"
@@ -518,12 +694,12 @@ msgstr "%a, %H:%M"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:319
 msgid "Automatically logging in…"
-msgstr "Automatické přihlašování…"
+msgstr "Automatické přihlašování..."
 
 #. need to wait for response from backend
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:935
 msgid "Cancelling…"
-msgstr "Probíhá rušení…"
+msgstr "Probíhá rušení..."
 
 #. just wait for the user to select language and stuff
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1491
@@ -538,10 +714,6 @@ msgstr "Vlastní"
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1628
 msgid "Custom session"
 msgstr "Vlastní sezení"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
-msgid "Login Window"
-msgstr "Přihlašovací okno"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
 msgid "Cancel"
@@ -618,7 +790,7 @@ msgstr "Maximum položek, které se má ponechat v seznamu"
 #: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
 msgid "Remote Login (Connecting to %s…)"
-msgstr "Vzdálené přihlášení (připojování k %s…)"
+msgstr "Vzdálené přihlášení (připojování k %s...)"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:202
 #, c-format
@@ -692,69 +864,71 @@ msgstr ""
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Set to true to disable showing known users in the login window."
 msgstr ""
-"Nastavte na zapnuto, chcete-li vypnout zobrazování známých uživatelů v okně "
+"Nastavte na \"true\", chcete-li vypnout zobrazování známých uživatelů v okně "
 "přihlášení."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
-"Nastavte na zapnuto, má-li být vypnuto zobrazování tlačítek restartu v okně "
+"Nastavte na \"true\", má-li být vypnuto zobrazování tlačítek restartu v okně "
 "přihlášení."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to true to enable the XRandR settings manager plugin."
 msgstr ""
-"Nastavte na zapnuto, má-li být zapnut zásuvný modul správce nastavení XRandR."
+"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení "
+"XRandR."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to true to enable the background settings manager plugin."
 msgstr ""
-"Nastavte na zapnuto, má-li být zapnut zásuvný modul správce nastavení pozadí."
+"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení "
+"pozadí."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
 msgid "Set to true to enable the media-keys settings manager plugin."
 msgstr ""
-"Nastavte na zapnuto, má-li být zapnut zásuvný modul správce nastavení "
+"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení "
 "mediálních kláves."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid "Set to true to enable the on-screen keyboard."
-msgstr "Nastavte na zapnuto, má-li být zapnuta klávesnice na obrazovce."
+msgstr "Nastavte na \"true\", má-li být zapnuta klávesnice na obrazovce."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid ""
 "Set to true to enable the plugin to manage the accessibility keyboard "
 "settings."
 msgstr ""
-"Nastavte na zapnuto, má-li být zapnut zásuvný modul na správu nastavení "
+"Nastavte na \"true\", má-li být zapnut zásuvný modul na správu nastavení "
 "zpřístupnění klávesnice."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid "Set to true to enable the screen magnifier."
-msgstr "Nastavte na zapnuto, má-li být zapnuta lupa obrazovky."
+msgstr "Nastavte na \"true\", má-li být zapnuta lupa obrazovky."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "Set to true to enable the screen reader."
-msgstr "Nastavte na zapnuto, má-li být zapnuto čtení obrazovky."
+msgstr "Nastavte na \"true\", má-li být zapnuto čtení obrazovky."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
 msgid "Set to true to enable the sound settings manager plugin."
 msgstr ""
-"Nastavte na zapnuto, má-li být zapnut zásuvný modul správce nastavení zvuku."
+"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení zvuku."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to true to enable the xsettings settings manager plugin."
 msgstr ""
-"Nastavte na zapnuto, má-li být zapnut zásuvný modul správce nastavení "
+"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení "
 "xsettings."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid "Set to true to show the banner message text."
-msgstr "Nastavte na zapnuto, má-li být zobrazen text nápisu."
+msgstr "Nastavte na \"true\", má-li být zobrazen text nápisu."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
 msgid "Set to true to use Compiz as the window manager."
-msgstr "Nastavte na zapnuto, má-li být použit Compiz jako správce oken."
+msgstr "Nastavte na \"true\", má-li být použit Compiz jako správce oken."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
 msgid ""
@@ -770,25 +944,25 @@ msgstr "Text nápisu, který se má zobrazovat v okně přihlášení."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "True if the XRandR settings manager plugin is enabled."
-msgstr "Zapnuto, je-li zásuvný modul správce nastavení XRandR povolen."
+msgstr "\"True\", je-li zásuvný modul správce nastavení XRandR povolen."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "True if the background settings manager plugin is enabled."
-msgstr "Zapnuto, je-li zásuvný modul správce nastavení pozadí povolen."
+msgstr "\"True\", je-li zásuvný modul správce nastavení pozadí povolen."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr ""
-"Zapnuto, je-li zásuvný modul správce nastavení multimediálních kláves "
+"\"True\", je-li zásuvný modul správce nastavení multimediálních kláves "
 "povolen."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "True if the sound settings manager plugin is enabled."
-msgstr "Zapnuto, je-li zásuvný modul správce nastavení zvuku povolen."
+msgstr "\"True\", je-li zásuvný modul správce nastavení zvuku povolen."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the xsettings settings manager plugin is enabled."
-msgstr "Zapnuto, je-li zásuvný modul správce nastavení xsettings povolen."
+msgstr "\"True\", je-li zásuvný modul správce nastavení xsettings povolen."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "Use Compiz as the window manager"
@@ -832,7 +1006,7 @@ msgstr "Přihlásit se jako %s"
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
 msgctxt "user"
 msgid "Other…"
-msgstr "Ostatní…"
+msgstr "Ostatní..."
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
 msgid "Choose a different account"
@@ -857,132 +1031,6 @@ msgstr "Automaticky přihlásit k systému po výběru možností"
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:1358
 msgid "Currently logged in"
 msgstr "Aktuálně přihlášen"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-#| msgid "PolicyKit Authentication Agent"
-msgid "Password Authentication"
-msgstr "Ověřování heslem"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr ""
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-#, fuzzy
-#| msgid "Login"
-msgid "Log In"
-msgstr "Přihlásit"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-#| msgid "PolicyKit Authentication Agent"
-msgid "Fingerprint Authentication"
-msgstr "Ověřování otiskem prstu"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr ""
-
-#: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:1
-#: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:1
-#, fuzzy
-#| msgid "Version of this application"
-msgid "Activation of this plugin"
-msgstr "Verze této aplikace"
-
-#: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:2
-#: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:2
-msgid "Whether this plugin would be activated or not"
-msgstr ""
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-msgid "Smartcard Authentication"
-msgstr "Ověřování čipovou kartou"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr ""
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr ""
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "cesta k ovladači čipových karet PKCS #11"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
-msgid "received error or hang up from event source"
-msgstr ""
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr ""
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr ""
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "nelze načíst ovladač čipových karet „%s“"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr "nelze sledovat příchozí události čipové karty – %s"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr ""
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr ""
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr ""
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr ""
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr ""
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-#, fuzzy
-#| msgid "Username"
-msgid "name"
-msgstr "Uživatel"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "Modul"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "ovladač čipové karty"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-#, fuzzy
-#| msgid "PolicyKit Authentication Agent"
-msgid "Authentication"
-msgstr "Ověřovací agent PolicyKit"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-#, fuzzy
-#| msgid "Custom session"
-msgid "Log into session"
-msgstr "Vlastní sezení"
 
 #: ../utils/gdmflexiserver.c:61
 msgid "Only the VERSION command is supported"
@@ -1011,15 +1059,14 @@ msgid "Could not identify the current session."
 msgstr "Nezdařilo se určit aktuální sezení."
 
 #: ../utils/gdmflexiserver.c:682
-#, fuzzy, c-format
-#| msgid "Unable to open session"
+#, c-format
 msgid "User unable to switch sessions."
-msgstr "Nelze otevřít sezení"
+msgstr "Uživatel není schopen přepnout sezení."
 
 #. Option parsing
 #: ../utils/gdmflexiserver.c:716
 msgid "- New GDM login"
-msgstr "– nové přihlášení GDM"
+msgstr "- nové přihlášení GDM"
 
 #: ../utils/gdmflexiserver.c:772
 msgid "Unable to start new display"
@@ -1034,3 +1081,39 @@ msgstr "Vytvořen snímek obrazovky"
 msgid "Take a picture of the screen"
 msgstr "Pořídit snímek obrazovky"
 
+#~ msgid "AT-SPI Registry Wrapper"
+#~ msgstr "Objekt registru AT-SPI"
+
+#~ msgid "Power Manager"
+#~ msgstr "Správce napájení"
+
+#~ msgid "GNOME Session Acceleration Checker"
+#~ msgstr "Kontrola akcelerace sezení GNOME"
+
+#~ msgid "GNOME Settings Daemon"
+#~ msgstr "Démon nastavení GNOME"
+
+#~ msgid "Metacity"
+#~ msgstr "Metacity"
+
+#~ msgid "Languages"
+#~ msgstr "Jazyky"
+
+#~ msgid "_Languages:"
+#~ msgstr "_Jazyky:"
+
+#~ msgid "_Language:"
+#~ msgstr "_Jazyk:"
+
+#~ msgctxt "language"
+#~ msgid "Other…"
+#~ msgstr "Ostatní..."
+
+#~ msgid "Choose a language from the full list of available languages."
+#~ msgstr "Vyberte jazyk z úplného seznamu dostupných jazyků."
+
+#~ msgid "Language"
+#~ msgstr "Jazyk"
+
+#~ msgid "Unspecified"
+#~ msgstr "Neurčeno"
