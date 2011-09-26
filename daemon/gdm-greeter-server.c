@@ -486,7 +486,7 @@ handle_begin_verification (GdmGreeterServer *greeter_server,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        service_name = translate_outgoing_service_name (greeter_server, service_name);
+        service_name = translate_incoming_service_name (greeter_server, service_name);
         g_signal_emit (greeter_server, signals [BEGIN_VERIFICATION], 0, service_name);
 
         return DBUS_HANDLER_RESULT_HANDLED;
@@ -544,7 +544,7 @@ handle_begin_verification_for_user (GdmGreeterServer *greeter_server,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        service_name = translate_outgoing_service_name (greeter_server, service_name);
+        service_name = translate_incoming_service_name (greeter_server, service_name);
         g_signal_emit (greeter_server, signals [BEGIN_VERIFICATION_FOR_USER], 0, service_name, text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
@@ -575,7 +575,7 @@ handle_answer_query (GdmGreeterServer *greeter_server,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        service_name = translate_outgoing_service_name (greeter_server, service_name);
+        service_name = translate_incoming_service_name (greeter_server, service_name);
         g_signal_emit (greeter_server, signals [QUERY_ANSWER], 0, service_name, text);
 
         return DBUS_HANDLER_RESULT_HANDLED;
@@ -763,7 +763,7 @@ handle_start_session_when_ready (GdmGreeterServer *greeter_server,
         dbus_connection_send (connection, reply, NULL);
         dbus_message_unref (reply);
 
-        service_name = (char *) translate_outgoing_service_name (greeter_server, service_name);
+        service_name = (char *) translate_incoming_service_name (greeter_server, service_name);
         if (should_start_session) {
                 g_signal_emit (greeter_server, signals [START_SESSION_WHEN_READY], 0, service_name);
         } else {
