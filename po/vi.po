@@ -7,9 +7,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 GNOME TRUNK\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-03-17 13:45+0000\n"
-"PO-Revision-Date: 2011-03-26 17:02+0700\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-09-19 14:43+0000\n"
+"PO-Revision-Date: 2011-10-01 20:11+1000\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: LocFactoryEditor 1.8\n"
 
-#: ../common/gdm-common.c:456
+#: ../common/gdm-common.c:489
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "« /dev/urandom » không phải là một thiết bị ký tự"
@@ -33,8 +34,8 @@ msgstr "Mã số bộ trình bày"
 msgid "ID"
 msgstr "Mã số"
 
-#: ../daemon/factory-slave-main.c:190 ../daemon/product-slave-main.c:194
-#: ../daemon/simple-slave-main.c:194 ../daemon/xdmcp-chooser-slave-main.c:196
+#: ../daemon/factory-slave-main.c:188 ../daemon/product-slave-main.c:192
+#: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:194
 msgid "GNOME Display Manager Slave"
 msgstr "Trình quản lý bộ trình bày GNOME phụ"
 
@@ -43,33 +44,28 @@ msgstr "Trình quản lý bộ trình bày GNOME phụ"
 msgid "could not find user \"%s\" on system"
 msgstr "không tìm thấy người dùng « %s » trên hệ thống"
 
-#: ../daemon/gdm-factory-slave.c:203 ../daemon/gdm-simple-slave.c:316
+#: ../daemon/gdm-factory-slave.c:210 ../daemon/gdm-simple-slave.c:314
 msgid "Unable to initialize login system"
 msgstr "Không thể sơ khởi hệ thống đăng nhập"
 
-#: ../daemon/gdm-factory-slave.c:235 ../daemon/gdm-simple-slave.c:352
+#: ../daemon/gdm-factory-slave.c:244 ../daemon/gdm-simple-slave.c:352
 msgid "Unable to authenticate user"
 msgstr "Không thể xác thực người dùng"
 
-#: ../daemon/gdm-factory-slave.c:257 ../daemon/gdm-simple-slave.c:409
+#: ../daemon/gdm-factory-slave.c:268 ../daemon/gdm-simple-slave.c:404
 msgid "Unable to authorize user"
 msgstr "Không thể cho phép người dùng"
 
-#: ../daemon/gdm-factory-slave.c:279 ../daemon/gdm-simple-slave.c:538
+#: ../daemon/gdm-factory-slave.c:292 ../daemon/gdm-simple-slave.c:551
 msgid "Unable to establish credentials"
 msgstr "Không thể thiết lập thông tin xác thực"
 
-#: ../daemon/gdm-factory-slave.c:302 ../daemon/gdm-simple-slave.c:572
+#: ../daemon/gdm-factory-slave.c:317 ../daemon/gdm-simple-slave.c:589
 msgid "Unable to open session"
 msgstr "Không thể mở buổi hợp"
 
-#: ../daemon/gdm-factory-slave.c:677 ../daemon/gdm-product-slave.c:449
-#: ../daemon/gdm-simple-slave.c:1366
-#| msgid ""
-#| "Could not start the X server (your graphical environment) due to some "
-#| "internal error. Please contact your system administrator or check your "
-#| "syslog to diagnose. In the meantime this display will be disabled.  "
-#| "Please restart GDM when the problem is corrected."
+#: ../daemon/gdm-factory-slave.c:707 ../daemon/gdm-product-slave.c:511
+#: ../daemon/gdm-simple-slave.c:1475
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -94,24 +90,23 @@ msgstr ""
 "tại"
 
 #: ../daemon/gdm-server.c:376 ../daemon/gdm-server.c:396
-#: ../daemon/gdm-welcome-session.c:599 ../daemon/gdm-welcome-session.c:619
+#: ../daemon/gdm-welcome-session.c:463 ../daemon/gdm-welcome-session.c:483
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Không thể đặt mã số nhóm thành %d"
 
-#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:605
+#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:469
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () bị lỗi đối với %s"
 
-#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:611
+#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:475
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Không thể đặt mã số người dùng thành %d"
 
 #: ../daemon/gdm-server.c:435
 #, c-format
-#| msgid "%s: Could not open logfile for display %s!"
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Không thể mở tập tin ghi lưu cho bộ trình bày %s!"
 
@@ -155,78 +150,72 @@ msgstr "Thiết bị trình bày"
 msgid "The display device"
 msgstr "Thiết bị trình bày, v.d. màn hình"
 
-#: ../daemon/gdm-session-worker.c:1066
+#: ../daemon/gdm-session-worker.c:1089
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "gặp lỗi khi bắt đầu cuộc thoại với hệ thống xác thực — %s"
 
-#: ../daemon/gdm-session-worker.c:1067
+#: ../daemon/gdm-session-worker.c:1090
 msgid "general failure"
 msgstr "lỗi chung"
 
-#: ../daemon/gdm-session-worker.c:1068
+#: ../daemon/gdm-session-worker.c:1091
 msgid "out of memory"
 msgstr "tràn bộ nhớ"
 
-#: ../daemon/gdm-session-worker.c:1069
+#: ../daemon/gdm-session-worker.c:1092
 msgid "application programmer error"
 msgstr "lỗi lập trình viên ứng dụng"
 
-#: ../daemon/gdm-session-worker.c:1070
+#: ../daemon/gdm-session-worker.c:1093
 msgid "unknown error"
 msgstr "lỗi không rõ"
 
-#: ../daemon/gdm-session-worker.c:1077
+#: ../daemon/gdm-session-worker.c:1100
 msgid "Username:"
 msgstr "Tên người dùng:"
 
-#: ../daemon/gdm-session-worker.c:1083
+#: ../daemon/gdm-session-worker.c:1106
 #, c-format
-#| msgid ""
-#| "error informing authentication system of preferred username prompt - %s"
 msgid "error informing authentication system of preferred username prompt: %s"
-msgstr "gặp lỗi khi báo hệ thống xác thực về dấu nhắc tên người dùng đã muốn: %s"
+msgstr ""
+"gặp lỗi khi báo hệ thống xác thực về dấu nhắc tên người dùng đã muốn: %s"
 
-#: ../daemon/gdm-session-worker.c:1097
+#: ../daemon/gdm-session-worker.c:1120
 #, c-format
-#| msgid "error informing authentication system of user's hostname - %s"
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "gặp lỗi khi báo hệ thống xác thực về tên máy của người dùng: %s"
 
-#: ../daemon/gdm-session-worker.c:1112
+#: ../daemon/gdm-session-worker.c:1135
 #, c-format
-#| msgid "error informing authentication system of user's console - %s"
 msgid "error informing authentication system of user's console: %s"
 msgstr "gặp lỗi khi báo hệ thống xác thực về bàn giao tiếp của người dùng: %s"
 
-#: ../daemon/gdm-session-worker.c:1125
+#: ../daemon/gdm-session-worker.c:1148
 #, c-format
-#| msgid "error informing authentication system of display string - %s"
 msgid "error informing authentication system of display string: %s"
 msgstr "gặp lỗi khi báo hệ thống xác thực về chuỗi display: %s"
 
-#: ../daemon/gdm-session-worker.c:1140
+#: ../daemon/gdm-session-worker.c:1163
 #, c-format
-#| msgid ""
-#| "error informing authentication system of display xauth credentials - %s"
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "gặp lỗi khi báo hệ thống xác thực về thông tin xác thực xauth: %s"
 
-#: ../daemon/gdm-session-worker.c:1462 ../daemon/gdm-session-worker.c:1479
+#: ../daemon/gdm-session-worker.c:1483 ../daemon/gdm-session-worker.c:1500
 #, c-format
 msgid "no user account available"
 msgstr "không có sẵn tài khoản người dùng"
 
-#: ../daemon/gdm-session-worker.c:1506
+#: ../daemon/gdm-session-worker.c:1527
 msgid "Unable to change to user"
 msgstr "Không thể chuyển đổi sang người dùng"
 
-#: ../daemon/gdm-welcome-session.c:549
+#: ../daemon/gdm-welcome-session.c:413
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Người dùng %s không tồn tại"
 
-#: ../daemon/gdm-welcome-session.c:556
+#: ../daemon/gdm-welcome-session.c:420
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Nhóm %s không tồn tại"
@@ -363,14 +352,13 @@ msgstr "XMDCP: phiên bản XDMCP không đúng !"
 msgid "XMDCP: Unable to parse address"
 msgstr "XMDCP: không thể phân tích địa chỉ"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:3359
+#: ../daemon/gdm-xdmcp-display-factory.c:3363
 #, c-format
 msgid "Could not get server hostname: %s!"
 msgstr "Không thể lấy tên máy của máy phục vụ : %s !"
 
 #: ../daemon/main.c:237 ../daemon/main.c:250
 #, c-format
-#| msgid "Cannot write PID file %s: possibly out of diskspace: %s"
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "Không thể ghi tập tin PID %s, có thể do hết đĩa: %s"
 
@@ -429,7 +417,6 @@ msgid "Make all warnings fatal"
 msgstr "Xem mọi cảnh báo là nghiêm trọng"
 
 #: ../daemon/main.c:534
-#| msgid "Exit after a time - for debugging"
 msgid "Exit after a time (for debugging)"
 msgstr "Thoát sau một khoảng thời gian (để gỡ lỗi)"
 
@@ -437,80 +424,90 @@ msgstr "Thoát sau một khoảng thời gian (để gỡ lỗi)"
 msgid "Print GDM version"
 msgstr "In ra phiên bản GDM"
 
-#: ../daemon/main.c:550
+#: ../daemon/main.c:548
 msgid "GNOME Display Manager"
 msgstr "Trình quản lý bộ trình bày GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:616
+#: ../daemon/main.c:614
 msgid "Only the root user can run GDM"
 msgstr "Chỉ người chủ (root) có quyền chạy GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:158
+#: ../daemon/session-worker-main.c:156
 msgid "GNOME Display Manager Session Worker"
 msgstr "Hàm làm việc từng phiên chạy của trình quản lý bộ trình bày GNOME"
 
-#: ../data/greeter-autostart/at-spi-registryd-wrapper.desktop.in.in.h:1
-#| msgid "AT SPI Registry Wrapper"
-msgid "AT-SPI Registry Wrapper"
-msgstr "Đại diện Thanh ghi AT-SPI"
-
-#: ../data/greeter-autostart/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1756
+#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
 msgid "Login Window"
 msgstr "Cửa sổ Đăng nhập"
 
-#: ../data/greeter-autostart/gnome-power-manager.desktop.in.in.h:1
-msgid "Power Manager"
-msgstr "Quản lý Năng lượng"
-
-#: ../data/greeter-autostart/gnome-power-manager.desktop.in.in.h:2
-msgid "Power management daemon"
-msgstr "Trình Quản lý Năng lượng"
-
-#: ../data/greeter-autostart/gnome-session-check-accelerated.desktop.in.in.h:1
-msgid "GNOME Session Acceleration Checker"
-msgstr "Bộ kiểm tra tăng tốt GNOME Session"
-
-#: ../data/greeter-autostart/gnome-settings-daemon.desktop.in.in.h:1
-msgid "GNOME Settings Daemon"
-msgstr "Trình Thiết lập GNOME"
-
-#: ../data/greeter-autostart/gnome-mag.desktop.in.h:1
+#: ../data/applications/gnome-mag.desktop.in.h:1
 msgid "GNOME Screen Magnifier"
 msgstr "Kính lúp Màn hình GNOME"
 
-#: ../data/greeter-autostart/gnome-mag.desktop.in.h:2
+#: ../data/applications/gnome-mag.desktop.in.h:2
 msgid "Magnify parts of the screen"
 msgstr "Phóng to từng phần màn hình"
 
-#: ../data/greeter-autostart/gok.desktop.in.h:1
-#| msgid "GNOME Onscreen Keyboard"
+#: ../data/applications/gnome-shell.desktop.in.h:1
+msgid "GNOME Shell"
+msgstr ""
+
+#: ../data/applications/gnome-shell.desktop.in.h:2
+#, fuzzy
+#| msgid "Power management daemon"
+msgid "Window management and compositing"
+msgstr "Trình Quản lý Năng lượng"
+
+#: ../data/applications/gok.desktop.in.h:1
 msgid "GNOME On-Screen Keyboard"
 msgstr "Bàn phím Màn hình GNOME"
 
-#: ../data/greeter-autostart/gok.desktop.in.h:2
-#| msgid "Use an onscreen keyboard"
+#: ../data/applications/gok.desktop.in.h:2
 msgid "Use an on-screen keyboard"
 msgstr "Dùng bàn phím trên màn hình"
 
-#: ../data/greeter-autostart/metacity.desktop.in.h:1
-msgid "Metacity"
-msgstr "Metacity"
-
-#: ../data/greeter-autostart/orca-screen-reader.desktop.in.h:1
+#: ../data/applications/orca-screen-reader.desktop.in.h:1
 msgid "Orca Screen Reader"
 msgstr "Bộ đọc màn hình Orca"
 
-#: ../data/greeter-autostart/orca-screen-reader.desktop.in.h:2
+#: ../data/applications/orca-screen-reader.desktop.in.h:2
 msgid "Present on-screen information as speech or braille"
 msgstr "Trình bày thông tin trên màn hình dạng tiếng nói hoặc chữ nổi"
 
-#: ../data/greeter-autostart/polkit-gnome-authentication-agent-1.desktop.in.in.h:1
-msgid "PolicyKit Authentication Agent"
-msgstr "Tác nhân Xác thực PolicyKit"
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:1
+msgid "Path to small image at top of user list"
+msgstr ""
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:2
+msgid ""
+"The login screen can optionally allow users who have enrolled their "
+"fingerprints to log in using those prints."
+msgstr ""
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
+msgid ""
+"The login screen can optionally allow users who have smartcards to log in "
+"using those smartcards."
+msgstr ""
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
+msgid ""
+"The login screen can optionally show a small image at the top of its user "
+"list to provide site administrators and distributions a way to provide "
+"branding."
+msgstr ""
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Whether or not to allow fingerprint readers for login"
+msgstr ""
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid "Whether or not to allow smartcard readers for login"
+msgstr ""
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -523,6 +520,122 @@ msgstr "XDMCP: không thể tạo vùng đệm XDMCP !"
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "Không thể đọc phần đầu XDMCP."
+
+#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
+#, fuzzy
+#| msgid "PolicyKit Authentication Agent"
+msgid "Fingerprint Authentication"
+msgstr "Tác nhân Xác thực PolicyKit"
+
+#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
+msgid "Log into session with fingerprint"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
+#, fuzzy
+#| msgid "PolicyKit Authentication Agent"
+msgid "Password Authentication"
+msgstr "Tác nhân Xác thực PolicyKit"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
+msgid "Log into session with username and password"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
+#, fuzzy
+#| msgid "Login"
+msgid "Log In"
+msgstr "Đăng nhập"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
+msgid "Slot ID"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
+msgid "The slot the card is in"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
+msgid "Slot Series"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
+msgid "per-slot card identifier"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
+#, fuzzy
+#| msgid "Username"
+msgid "name"
+msgstr "Tên người dùng"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
+msgid "Module"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
+msgid "smartcard driver"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
+msgid "Smartcard Authentication"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
+msgid "Log into session with smartcard"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
+msgid "Module Path"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
+msgid "path to smartcard PKCS #11 driver"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
+msgid "received error or hang up from event source"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
+#, c-format
+msgid "NSS security system could not be initialized"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
+#, c-format
+msgid "no suitable smartcard driver could be found"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
+#, c-format
+msgid "smartcard driver '%s' could not be loaded"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
+#, c-format
+msgid "could not watch for incoming card events - %s"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
+#, c-format
+msgid "encountered unexpected error while waiting for smartcard events"
+msgstr ""
+
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
+#, fuzzy
+#| msgid "PolicyKit Authentication Agent"
+msgid "Authentication"
+msgstr "Tác nhân Xác thực PolicyKit"
+
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
+#, fuzzy
+#| msgid "Custom session"
+msgid "Log into session"
+msgstr "Phiên làm việc tự chọn"
 
 #: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
 msgid "Value"
@@ -584,32 +697,30 @@ msgstr "%a %l:%M:%S %p"
 msgid "%a %l:%M %p"
 msgstr "%a %l:%M %p"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:293
-#| msgid "Automatically logging in..."
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:319
 msgid "Automatically logging in…"
 msgstr "Đang tự động đăng nhập…"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:585
-msgid "Select language and click Log In"
-msgstr "Chọn ngôn ngữ, rồi bấm nút Đăng nhập"
-
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:701
-#| msgid "Cancelling..."
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:935
 msgid "Cancelling…"
 msgstr "Đang thôi…"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1091
+#. just wait for the user to select language and stuff
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1491
+msgid "Select language and click Log In"
+msgstr "Chọn ngôn ngữ, rồi bấm nút Đăng nhập"
+
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1627
 msgctxt "customsession"
 msgid "Custom"
 msgstr "Tự chọn"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1092
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1628
 msgid "Custom session"
 msgstr "Phiên làm việc tự chọn"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-#| msgid "Panel"
 msgid "Cancel"
 msgstr "Thôi"
 
@@ -618,7 +729,6 @@ msgid "Computer Name"
 msgstr "Tên máy tính"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-#| msgid "Log In"
 msgid "Login"
 msgstr "Đăng nhập"
 
@@ -649,41 +759,6 @@ msgstr "Không rõ thời gian còn lại"
 #: ../gui/simple-greeter/gdm-greeter-panel.c:987
 msgid "Panel"
 msgstr "Bảng"
-
-#: ../gui/simple-greeter/gdm-language-chooser-dialog.c:252
-msgid "Languages"
-msgstr "Ngôn ngữ"
-
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:276
-msgid "_Languages:"
-msgstr "_Ngôn ngữ :"
-
-#: ../gui/simple-greeter/gdm-language-chooser-widget.c:277
-msgid "_Language:"
-msgstr "_Ngôn ngữ :"
-
-#. translators: This brings up a dialog
-#. * with a list of languages to choose from
-#.
-#: ../gui/simple-greeter/gdm-language-option-widget.c:231
-#| msgctxt "language"
-#| msgid "Other..."
-msgctxt "language"
-msgid "Other…"
-msgstr "Khác…"
-
-#: ../gui/simple-greeter/gdm-language-option-widget.c:232
-msgid "Choose a language from the full list of available languages."
-msgstr "Hãy chọn một ngôn ngữ trong danh sách các ngôn ngữ sẵn sàng."
-
-#: ../gui/simple-greeter/gdm-language-option-widget.c:262
-#| msgid "Languages"
-msgid "Language"
-msgstr "Ngôn ngữ"
-
-#: ../gui/simple-greeter/gdm-languages.c:709
-msgid "Unspecified"
-msgstr "Chưa ghi rõ"
 
 #: ../gui/simple-greeter/gdm-option-widget.c:505
 msgid "Label Text"
@@ -719,7 +794,6 @@ msgstr "Số tối đa các mục cần giữ trong danh sách"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
-#| msgid "Remote Login (Connecting to %s...)"
 msgid "Remote Login (Connecting to %s…)"
 msgstr "Đăng nhập từ xa (Đang kết nối tới %s…)"
 
@@ -733,7 +807,6 @@ msgid "Remote Login"
 msgstr "Đăng nhập từ xa"
 
 #: ../gui/simple-greeter/gdm-session-option-widget.c:162
-#| msgid "_Sessions:"
 msgid "Session"
 msgstr "Phiên làm việc"
 
@@ -782,8 +855,6 @@ msgid "Recently selected languages"
 msgstr "Ngôn ngữ được chọn gần đây"
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
-#| msgid ""
-#| "Set to a list of languages to be shown by default at the login window."
 msgid "Set to a list of languages to be shown by default in the login window."
 msgstr "Đặt danh sách ngôn ngữ hiển thị mặc định tại cửa sổ đăng nhập."
 
@@ -805,7 +876,6 @@ msgstr ""
 "nhập."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
-#| msgid "Set to true to enable the xrandr settings manager plugin."
 msgid "Set to true to enable the XRandR settings manager plugin."
 msgstr "Lập thành đúng để hiệu lực phần bổ sung quản lý thiết lập XRandR."
 
@@ -851,14 +921,10 @@ msgid "Set to true to show the banner message text."
 msgstr "Đặt thành Đúng (True) để hiển thị chuỗi thông điệp trên băng cờ."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
-#| msgid "Set to true to use compiz as the window manager."
 msgid "Set to true to use Compiz as the window manager."
 msgstr "Đặt thành Đúng (True) để dùng phần mềm Compiz làm bộ quản lý cửa sổ."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
-#| msgid ""
-#| "Text banner message to show on the login window when the user chooser is "
-#| "empty, instead of banner_message_text."
 msgid ""
 "Text banner message to show in the login window when the user chooser is "
 "empty, instead of banner_message_text."
@@ -867,14 +933,13 @@ msgstr ""
 "người dùng vẫn trống, thay cho banner_message_text."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
-#| msgid "Text banner message to show on the login window."
 msgid "Text banner message to show in the login window."
 msgstr "Thông điệp băng cờ cần hiển thị trên cửa sổ đăng nhập."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
-#| msgid "True if the xrandr settings manager plugin is enabled."
 msgid "True if the XRandR settings manager plugin is enabled."
-msgstr "Đúng (True) nếu phần bổ sung quản lý thiết lập XRandR đã được hiệu lực."
+msgstr ""
+"Đúng (True) nếu phần bổ sung quản lý thiết lập XRandR đã được hiệu lực."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "True if the background settings manager plugin is enabled."
@@ -897,36 +962,35 @@ msgstr ""
 "Đúng (True) nếu phần bổ sung quản lý thiết lập xsettings đã được hiệu lực."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
-#| msgid "Use compiz as the window manager"
 msgid "Use Compiz as the window manager"
 msgstr "Dùng Compiz làm bộ quản lý cửa sổ"
 
-#: ../gui/simple-greeter/gdm-timer.c:149
+#: ../gui/simple-greeter/gdm-timer.c:147
 msgid "Duration"
 msgstr "Thời lượng"
 
-#: ../gui/simple-greeter/gdm-timer.c:150
+#: ../gui/simple-greeter/gdm-timer.c:148
 msgid "Number of seconds until timer stops"
 msgstr "Số các giây đến khi bộ đếm thời gian dừng"
 
-#: ../gui/simple-greeter/gdm-timer.c:157
+#: ../gui/simple-greeter/gdm-timer.c:155
 msgid "Start time"
 msgstr "Giờ đầu"
 
-#: ../gui/simple-greeter/gdm-timer.c:158
+#: ../gui/simple-greeter/gdm-timer.c:156
 msgid "Time the timer was started"
 msgstr "Giờ bắt đầu bộ đếm thời gian"
 
-#: ../gui/simple-greeter/gdm-timer.c:165
+#: ../gui/simple-greeter/gdm-timer.c:163
 msgid "Is it Running?"
 msgstr "Nó đang chạy chưa?"
 
-#: ../gui/simple-greeter/gdm-timer.c:166
+#: ../gui/simple-greeter/gdm-timer.c:164
 msgid "Whether the timer is currently ticking"
 msgstr "Bộ đếm thời gian đang chạy hay không"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:459
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:781
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:802
 #, c-format
 msgid "Log in as %s"
 msgstr "Đăng nhập dưới %s"
@@ -937,8 +1001,6 @@ msgstr "Đăng nhập dưới %s"
 #. * a list.
 #.
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
-#| msgctxt "user"
-#| msgid "Other..."
 msgctxt "user"
 msgid "Other…"
 msgstr "Khác…"
@@ -952,7 +1014,6 @@ msgid "Guest"
 msgstr "Khách"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:561
-#| msgid "Login as a temporary guest"
 msgid "Log in as a temporary guest"
 msgstr "Đăng nhập như khách tạm"
 
@@ -961,11 +1022,10 @@ msgid "Automatic Login"
 msgstr "Tự động Đăng nhập"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:577
-#| msgid "Automatically login to the system after selecting options"
 msgid "Automatically log into the system after selecting options"
 msgstr "Tự động đăng nhập vào hệ thống sau khi bật các tùy chọn thích hợp"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1321
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1358
 msgid "Currently logged in"
 msgstr "Đã đăng nhập"
 
@@ -979,7 +1039,6 @@ msgstr "CÂU_LỆNH"
 
 #: ../utils/gdmflexiserver.c:62 ../utils/gdmflexiserver.c:63
 #: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
-#| msgid "Ignored - retained for compatibility"
 msgid "Ignored — retained for compatibility"
 msgstr "Bỏ qua - tồn tại vì mục đích tương thích"
 
@@ -991,17 +1050,23 @@ msgstr "Kết xuất gỡ lỗi"
 msgid "Version of this application"
 msgstr "Phiên bản của ứng dụng này"
 
-#: ../utils/gdmflexiserver.c:675
+#: ../utils/gdmflexiserver.c:674
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Không thể nhận ra phiên bản đang chạy."
 
+#: ../utils/gdmflexiserver.c:682
+#, fuzzy, c-format
+#| msgid "Unable to open session"
+msgid "User unable to switch sessions."
+msgstr "Không thể mở buổi hợp"
+
 #. Option parsing
-#: ../utils/gdmflexiserver.c:711
+#: ../utils/gdmflexiserver.c:716
 msgid "- New GDM login"
 msgstr "— Đăng nhập GDM mới"
 
-#: ../utils/gdmflexiserver.c:767
+#: ../utils/gdmflexiserver.c:772
 msgid "Unable to start new display"
 msgstr "Không thể bắt đầu bộ trình bày mới."
 
@@ -1013,6 +1078,47 @@ msgstr "Đã chụp ảnh màn hình"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Chụp ảnh màn hình"
+
+#~| msgid "AT SPI Registry Wrapper"
+#~ msgid "AT-SPI Registry Wrapper"
+#~ msgstr "Đại diện Thanh ghi AT-SPI"
+
+#~ msgid "Power Manager"
+#~ msgstr "Quản lý Năng lượng"
+
+#~ msgid "GNOME Session Acceleration Checker"
+#~ msgstr "Bộ kiểm tra tăng tốt GNOME Session"
+
+#~ msgid "GNOME Settings Daemon"
+#~ msgstr "Trình Thiết lập GNOME"
+
+#~ msgid "Metacity"
+#~ msgstr "Metacity"
+
+#~ msgid "Languages"
+#~ msgstr "Ngôn ngữ"
+
+#~ msgid "_Languages:"
+#~ msgstr "_Ngôn ngữ :"
+
+#~ msgid "_Language:"
+#~ msgstr "_Ngôn ngữ :"
+
+#~| msgctxt "language"
+#~| msgid "Other..."
+#~ msgctxt "language"
+#~ msgid "Other…"
+#~ msgstr "Khác…"
+
+#~ msgid "Choose a language from the full list of available languages."
+#~ msgstr "Hãy chọn một ngôn ngữ trong danh sách các ngôn ngữ sẵn sàng."
+
+#~| msgid "Languages"
+#~ msgid "Language"
+#~ msgstr "Ngôn ngữ"
+
+#~ msgid "Unspecified"
+#~ msgstr "Chưa ghi rõ"
 
 #~ msgid "Couldn't set groupid to 0"
 #~ msgstr "Không thể đặt mã số nhóm thành 0"
