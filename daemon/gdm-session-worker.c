@@ -1872,7 +1872,6 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 if ((home_dir == NULL) || g_chdir (home_dir) < 0) {
                         g_chdir ("/");
                 }
-                g_free (home_dir);
 
                 fd = open ("/dev/null", O_RDWR);
                 dup2 (fd, STDIN_FILENO);
@@ -1883,6 +1882,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 } else {
                         fd = _open_user_session_log (home_dir);
                 }
+                g_free (home_dir);
                 dup2 (fd, STDOUT_FILENO);
                 dup2 (fd, STDERR_FILENO);
                 close (fd);
