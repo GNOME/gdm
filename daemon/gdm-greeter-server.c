@@ -270,7 +270,7 @@ translate_incoming_service_name (GdmGreeterServer *greeter_server,
                 g_debug ("GdmGreeterServer: Adjusting pam service from '%s' to 'gdm' for legacy compatibility", service_name);
                 service_name = "gdm";
                 greeter_server->priv->using_legacy_service_name = TRUE;
-        } else if (g_str_has_prefix (service_name, "gdm-") == 0 && strcmp (service_name, "gdm-autologin") != 0) {
+        } else if (g_str_has_prefix (service_name, "gdm-") && strcmp (service_name, "gdm-autologin") != 0) {
                 g_debug ("GdmGreeterServer: Rejecting pam service '%s' for legacy compatibility", service_name);
                 return NULL;
         }
