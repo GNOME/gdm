@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-19 14:43+0000\n"
-"PO-Revision-Date: 2011-09-30 00:22+0300\n"
+"POT-Creation-Date: 2011-10-10 11:25+0000\n"
+"PO-Revision-Date: 2011-10-18 21:24+0300\n"
 "Last-Translator: Muhammet Kara <muhammet.k@gmail.com>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -71,7 +71,7 @@ msgid "Unable to open session"
 msgstr "Oturum açılamıyor"
 
 #: ../daemon/gdm-factory-slave.c:707 ../daemon/gdm-product-slave.c:511
-#: ../daemon/gdm-simple-slave.c:1475
+#: ../daemon/gdm-simple-slave.c:1476
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -463,7 +463,6 @@ msgid "GNOME Shell"
 msgstr "GNOME Kabuğu"
 
 #: ../data/applications/gnome-shell.desktop.in.h:2
-#| msgid "Power management daemon"
 msgid "Window management and compositing"
 msgstr "Pencere yönetimi ve kompozisyon"
 
@@ -500,6 +499,9 @@ msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
 msgstr ""
+"Oturum açma ekranı, isteğe bağlı olarak, akıllı kartı olan kullanıcıların "
+"akıllı kartlarıyla "
+"giriş yapmalarına izin verebilir."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:4
 msgid ""
@@ -507,6 +509,9 @@ msgid ""
 "list to provide site administrators and distributions a way to provide "
 "branding."
 msgstr ""
+"Oturum açma ekranı, isteğe bağlı olarak, kullanıcı listesinin tepesinde küçük "
+"bir resim gösterebilir. Böylece, site yöneticileri ve dağıtımlara markalaşma "
+"olanağı sağlanmış olur."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
 msgid "Whether or not to allow fingerprint readers for login"
@@ -529,7 +534,6 @@ msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: XDMCP başlığı okunamadı!"
 
 #: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-#| msgid "PolicyKit Authentication Agent"
 msgid "Fingerprint Authentication"
 msgstr "Parmak İziyle Kimlik Doğrulama"
 
@@ -538,7 +542,6 @@ msgid "Log into session with fingerprint"
 msgstr "Parmak iziyle oturum aç"
 
 #: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-#| msgid "PolicyKit Authentication Agent"
 msgid "Password Authentication"
 msgstr "Parolayla Kimlik Doğrulama"
 
@@ -549,7 +552,6 @@ msgstr "Kullanıcı adı ve parolayla oturum aç"
 #: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-#| msgid "Login"
 msgid "Log In"
 msgstr "Oturum Aç"
 
@@ -571,7 +573,6 @@ msgstr "yuva başına kart tanımlayıcısı"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-#| msgid "Username"
 msgid "name"
 msgstr "isim"
 
@@ -584,7 +585,6 @@ msgid "smartcard driver"
 msgstr "akıllı kart sürücüsü"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-#| msgid "Authentication Dialog"
 msgid "Smartcard Authentication"
 msgstr "Akıllı Kartla Kimlik Doğrulama"
 
@@ -598,7 +598,7 @@ msgstr "Modül Yolu"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
 msgid "path to smartcard PKCS #11 driver"
-msgstr ""
+msgstr "PKCS #11 akıllı kart sürücüsünün yolu"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
 msgid "received error or hang up from event source"
@@ -628,14 +628,13 @@ msgstr "gelen kart olayları izlenemedi - %s"
 #, c-format
 msgid "encountered unexpected error while waiting for smartcard events"
 msgstr ""
+"akıllı kart olayları beklenirken, beklenmeyen bir hata ile karşılaşıldı"
 
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-#| msgid "Authentication Dialog"
 msgid "Authentication"
 msgstr "Kimlik Doğrulama"
 
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-#| msgid "Custom session"
 msgid "Log into session"
 msgstr "Oturum aç"
 
@@ -1067,9 +1066,8 @@ msgstr "Geçerli oturum tespit edilemedi."
 
 #: ../utils/gdmflexiserver.c:682
 #, c-format
-#| msgid "Unable to open session"
 msgid "User unable to switch sessions."
-msgstr ""
+msgstr "Kullanıcı oturum değiştiremedi."
 
 #. Option parsing
 #: ../utils/gdmflexiserver.c:716
