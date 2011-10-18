@@ -17,11 +17,6 @@ PKG_NAME="GDM"
     exit 1
 }
 
-(cd $srcdir/data/ ; ./make-dconf-override-db.sh) || {
-    echo "**Error**: Script "\`$srcdir/data/make-dconf-override-db.sh\'" failed"
-    exit 1
-}
-
 which gnome-autogen.sh || {
     echo "You need to install gnome-common from the GNOME SVN"
     exit 1

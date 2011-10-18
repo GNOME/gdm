@@ -1,0 +1,40 @@
+# Accessibility
+org.gnome.desktop.a11y.keyboard enable=true
+org.gnome.desktop.interface toolkit-accessibility=true
+org.gnome.desktop.sound event-sounds=true
+
+# Session (needs to be gdm-shell or gdm-fallback)
+org.gnome.desktop.session session-name='gdm-shell'
+
+# Lockdown
+org.gnome.desktop.default-applications.terminal exec='/bin/true'
+org.gnome.desktop.lockdown .*=true
+org.gnome.desktop.lockdown disable-log-out=false
+org.gnome.settings-daemon.plugins.media-keys eject=''
+org.gnome.settings-daemon.plugins.media-keys calculator=''
+org.gnome.settings-daemon.plugins.media-keys email=''
+org.gnome.settings-daemon.plugins.media-keys help=''
+org.gnome.settings-daemon.plugins.media-keys home=''
+org.gnome.settings-daemon.plugins.media-keys media=''
+org.gnome.settings-daemon.plugins.media-keys next=''
+org.gnome.settings-daemon.plugins.media-keys pause=''
+org.gnome.settings-daemon.plugins.media-keys play=''
+org.gnome.settings-daemon.plugins.media-keys previous=''
+org.gnome.settings-daemon.plugins.media-keys screensaver=''
+org.gnome.settings-daemon.plugins.media-keys search=''
+org.gnome.settings-daemon.plugins.media-keys stop=''
+org.gnome.settings-daemon.plugins.media-keys www=''
+org.gnome.settings-daemon.plugins..* active=false
+org.gnome.settings-daemon.plugins.a11y-keyboard active=true
+org.gnome.settings-daemon.plugins.background active=true
+org.gnome.settings-daemon.plugins.cursor active=true
+org.gnome.settings-daemon.plugins.media-keys active=true
+org.gnome.settings-daemon.plugins.orientation active=true
+org.gnome.settings-daemon.plugins.power active=true
+org.gnome.settings-daemon.plugins.sound active=true
+org.gnome.settings-daemon.plugins.xrandr active=true
+org.gnome.settings-daemon.plugins.xsettings active=true
+
+# Legacy
+org.gnome.desktop.background show-desktop-icons=false
+org.gnome.power-manager show-actions=false

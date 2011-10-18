@@ -88,6 +88,12 @@ localealias_DATA = locale.alias
 sessiondir = $(datadir)/gnome-session/sessions
 session_DATA = gdm-fallback.session gdm-shell.session
 
+settingsdir = $(datadir)/gdm
+settings_DATA = $(srcdir)/upstream-settings
+
+dconfthingdir = $(libexecdir)
+dconfthing_SCRIPTS = $(srcdir)/gdm-update-dconf-db
+
 EXTRA_DIST =			\
 	$(schemas_in_files)	\
 	$(schemas_DATA)		\
@@ -107,8 +113,9 @@ EXTRA_DIST =			\
 	gconf.path		\
 	session-setup.entries	\
 	gdm-shell.session.in    \
-	make-dconf-override-db.sh \
+	gdm-update-dconf-db \
 	dconf-profile \
+	upstream-settings \
 	org.gnome.login-screen.gschema.xml.in \
 	$(NULL)
 
@@ -118,7 +125,6 @@ CLEANFILES = 				\
 	Init				\
 	PreSession			\
 	PostSession			\
-	dconf-override-db		\
 	$(gsettings_SCHEMAS)		\
 	$(NULL)
 
@@ -126,19 +132,18 @@ DISTCLEANFILES =			\
 	$(dbusconf_DATA)		\
 	gdm-shell.session		\
 	gdm.schemas			\
-	dconf-override-db		\
 	$(NULL)
 
 MAINTAINERCLEANFILES =			\
 	*~				\
-	dconf-override-db		\
 	Makefile.in
 
-dconf-override-db: $(srcdir)/make-dconf-override-db.sh
-	$(srcdir)/make-dconf-override-db.sh
+00-upstream-settings 00-upstream-settings-locks: $(srcdir)/gdm-update-dconf-db
+	$(srcdir)/gdm-update-dconf-db $(srcdir)/upstream-settings 00-upstream-settings
 
-dist-hook: $(srcdir)/dconf-override-db
-	cp $(srcdir)/dconf-override-db $(distdir)
+dist-hook:
+	cp $(srcdir)/00-upstream-settings $(distdir)
+	cp $(srcdir)/00-upstream-settings-locks $(distdir)
 
 uninstall-hook:
 	rm -f \
@@ -155,6 +160,7 @@ uninstall-hook:
 	$(DESTDIR)$(sysconfdir)/dconf/db/gdm \
 	$(DESTDIR)$(sysconfdir)/dconf/profile/gdm \
 	-rf \
+	$(DESTDIR)$(sysconfdir)/dconf/db/gdm.d \
 	$(DESTDIR)$(workingdir)/.gconf.mandatory \
 	$(DESTDIR)$(workingdir)/.config/dconf \
 	$(DESTDIR)$(screenshotdir) \
@@ -166,7 +172,7 @@ uninstall-hook:
 	$(DESTDIR)$(sysconfdir)/dconf/db \
 	$(DESTDIR)$(sysconfdir)/dconf
 
-install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.path dconf-override-db
+install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.path 00-upstream-settings 00-upstream-settings-locks
 	if test '!' -d $(DESTDIR)$(gdmconfdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(gdmconfdir); \
 		chmod 755 $(DESTDIR)$(gdmconfdir); \
@@ -310,5 +316,7 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 	chmod 1750 $(DESTDIR)$(workingdir)/.gconf.mandatory
 	chmod 1640 $(DESTDIR)$(workingdir)/.gconf.mandatory/*.xml
 
-	$(INSTALL_DATA) $(srcdir)/dconf-override-db $(DESTDIR)$(sysconfdir)/dconf/db/gdm
 	$(INSTALL_DATA) $(srcdir)/dconf-profile $(DESTDIR)$(sysconfdir)/dconf/profile/gdm
+	$(INSTALL_DATA) $(srcdir)/00-upstream-settings $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d
+	$(INSTALL_DATA) $(srcdir)/00-upstream-settings-locks $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d/locks
+	dconf update || :
