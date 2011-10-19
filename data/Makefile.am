@@ -88,12 +88,6 @@ localealias_DATA = locale.alias
 sessiondir = $(datadir)/gnome-session/sessions
 session_DATA = gdm-fallback.session gdm-shell.session
 
-settingsdir = $(datadir)/gdm
-settings_DATA = $(srcdir)/upstream-settings
-
-dconfthingdir = $(libexecdir)
-dconfthing_SCRIPTS = $(srcdir)/gdm-update-dconf-db
-
 gdm-fingerprint: gdm-fingerprint.pam
 	cp $(srcdir)/gdm-fingerprint.pam $(builddir)/gdm-fingerprint
 
@@ -124,9 +118,9 @@ EXTRA_DIST =			\
 	gconf.path		\
 	session-setup.entries	\
 	gdm-shell.session.in    \
-	gdm-update-dconf-db \
 	dconf-profile \
-	upstream-settings \
+	00-upstream-settings \
+	00-upstream-settings-locks \
 	org.gnome.login-screen.gschema.xml.in \
 	$(NULL)
 
@@ -152,15 +146,6 @@ MAINTAINERCLEANFILES =			\
 	gdm-fingerprint			\
 	gdm-smartcard			\
 	Makefile.in
-
-00-upstream-settings: $(srcdir)/gdm-update-dconf-db
-	$(srcdir)/gdm-update-dconf-db $(srcdir)/upstream-settings 00-upstream-settings
-
-00-upstream-settings-locks: 00-upstream-settings
-
-dist-hook: 00-upstream-settings 00-upstream-settings-locks
-	cp $(srcdir)/00-upstream-settings $(distdir)
-	cp $(srcdir)/00-upstream-settings-locks $(distdir)
 
 uninstall-hook:
 	rm -f \
