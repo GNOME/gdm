@@ -94,6 +94,15 @@ settings_DATA = $(srcdir)/upstream-settings
 dconfthingdir = $(libexecdir)
 dconfthing_SCRIPTS = $(srcdir)/gdm-update-dconf-db
 
+gdm-fingerprint: gdm-fingerprint.pam
+	cp $(srcdir)/gdm-fingerprint.pam $(builddir)/gdm-fingerprint
+
+gdm-smartcard: gdm-smartcard.pam
+	cp $(srcdir)/gdm-smartcard.pam $(builddir)/gdm-smartcard
+
+pamdir = $(PAM_PREFIX)/pam.d
+pam_DATA = gdm-fingerprint gdm-smartcard
+
 EXTRA_DIST =			\
 	$(schemas_in_files)	\
 	$(schemas_DATA)		\
@@ -105,6 +114,8 @@ EXTRA_DIST =			\
 	gdm 			\
 	gdm-autologin 		\
 	gdm-welcome 		\
+	gdm-fingerprint.pam	\
+	gdm-smartcard.pam	\
 	gdm-fallback.session	\
 	Init.in 		\
 	PreSession.in 		\
@@ -126,6 +137,8 @@ CLEANFILES = 				\
 	PreSession			\
 	PostSession			\
 	$(gsettings_SCHEMAS)		\
+	gdm-fingerprint			\
+	gdm-smartcard			\
 	$(NULL)
 
 DISTCLEANFILES =			\
@@ -136,6 +149,8 @@ DISTCLEANFILES =			\
 
 MAINTAINERCLEANFILES =			\
 	*~				\
+	gdm-fingerprint			\
+	gdm-smartcard			\
 	Makefile.in
 
 00-upstream-settings 00-upstream-settings-locks: $(srcdir)/gdm-update-dconf-db
