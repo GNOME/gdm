@@ -336,4 +336,4 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 	$(INSTALL_DATA) $(srcdir)/dconf-profile $(DESTDIR)$(sysconfdir)/dconf/profile/gdm
 	$(INSTALL_DATA) $(srcdir)/00-upstream-settings $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d
 	$(INSTALL_DATA) $(srcdir)/00-upstream-settings-locks $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d/locks
-	dconf update || :
+	test -z "$(DESTDIR)" && dconf update || :
