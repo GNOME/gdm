@@ -153,10 +153,12 @@ MAINTAINERCLEANFILES =			\
 	gdm-smartcard			\
 	Makefile.in
 
-00-upstream-settings 00-upstream-settings-locks: $(srcdir)/gdm-update-dconf-db
+00-upstream-settings: $(srcdir)/gdm-update-dconf-db
 	$(srcdir)/gdm-update-dconf-db $(srcdir)/upstream-settings 00-upstream-settings
 
-dist-hook:
+00-upstream-settings-locks: 00-upstream-settings
+
+dist-hook: 00-upstream-settings 00-upstream-settings-locks
 	cp $(srcdir)/00-upstream-settings $(distdir)
 	cp $(srcdir)/00-upstream-settings-locks $(distdir)
 
