@@ -62,10 +62,6 @@ typedef struct {
 #define OBJ(type,name) ((type)gtk_builder_get_object(setup->builder,(name)))
 #define WID(name) OBJ(GtkWidget*,name)
 
-static void copy_account_data (SetupData *setup);
-static void begin_autologin (SetupData *setup);
-static void connect_to_slave (SetupData *setup);
-
 /* --- Welcome page --- */
 
 static void
@@ -1052,7 +1048,7 @@ save_account_data (SetupData *setup)
         act_user_set_real_name (setup->act_user,
                                 gtk_entry_get_text (OBJ (GtkEntry*, "account-fullname-entry")));
         act_user_set_user_name (setup->act_user,
-                                gtk_entry_get_text (OBJ (GtkEntry*, "account-username-entry")));
+                                gtk_combo_box_text_get_active_text (OBJ (GtkComboBoxText*, "account-username-combo")));
         act_user_set_account_type (setup->act_user, setup->account_type);
         if (setup->password_mode == ACT_USER_PASSWORD_MODE_REGULAR) {
                 act_user_set_password (setup->act_user,
@@ -1324,81 +1320,14 @@ prepare_location_page (SetupData *setup)
 /* --- Other setup --- */
 
 static void
-close_cb (GtkAssistant *assi, gpointer data)
-{
-        SetupData *setup = data;
-
-        g_settings_sync ();
-
-        copy_account_data (setup);
-
-        begin_autologin (setup);
-}
-
-static void
-prepare_cb (GtkAssistant *assi, GtkWidget *page, SetupData *setup)
-{
-        if (page != WID("account-page"))
-                gtk_assistant_set_page_complete (assi, page, TRUE);
-        save_account_data (setup);
-}
-
-static void
-prepare_assistant (SetupData *setup)
-{
-        setup->assistant = OBJ(GtkAssistant*, "gnome-setup-assistant");
-
-        /* small hack to get rid of cancel button */
-        gtk_assistant_commit (setup->assistant);
-
-        g_signal_connect (G_OBJECT (setup->assistant), "prepare",
-                          G_CALLBACK (prepare_cb), setup);
-        g_signal_connect (G_OBJECT (setup->assistant), "close",
-                          G_CALLBACK (close_cb), setup);
-
-        connect_to_slave (setup);
-        prepare_welcome_page (setup);
-        prepare_network_page (setup);
-        prepare_account_page (setup);
-        prepare_location_page (setup);
-}
-
-static void
 copy_account_data (SetupData *setup)
 {
         /* FIXME: here is where we copy all the things we just
          * configured, from the current users home dir to the
          * account that was created in the first step
          */
-}
-
-static void
-begin_autologin (SetupData *setup)
-{
-        GError *error;
-        const gchar *username;
-        GVariant *ret;
-
-        username = act_user_get_user_name (setup->act_user);
-
-        ret = g_dbus_connection_call_sync (setup->slave_connection,
-                                           NULL,
-                                           "/org/gnome/DisplayManager/GreeterServer",
-                                           "org.gnome.DisplayManager.GreeterServer",
-                                           "BeginAutoLogin",
-                                           g_variant_new ("(s)", username),
-                                           NULL, /* no reply checking */
-                                           G_DBUS_CALL_FLAGS_NONE,
-                                           G_MAXINT,
-                                           NULL,
-                                           &error);
-        if (ret == NULL) {
-                g_warning ("Calling org.gnome.DisplayManager.GreeterServer.BeginAutoLogin failed: %s", error->message);
-                g_error_free (error);
-                return;
-        }
-
-        g_variant_unref (ret);
+        g_debug ("Copying account data");
+        g_settings_sync ();
 }
 
 static void
@@ -1430,6 +1359,79 @@ connect_to_slave (SetupData *setup)
         g_dbus_connection_set_exit_on_close (connection, TRUE);
 
         setup->slave_connection = connection;
+}
+
+static void
+begin_autologin (SetupData *setup)
+{
+        GError *error;
+        const gchar *username;
+        GVariant *ret;
+
+        username = act_user_get_user_name (setup->act_user);
+
+        g_debug ("Initiating autologin for %s", username);
+
+        ret = g_dbus_connection_call_sync (setup->slave_connection,
+                                           NULL,
+                                           "/org/gnome/DisplayManager/GreeterServer",
+                                           "org.gnome.DisplayManager.GreeterServer",
+                                           "BeginAutoLogin",
+                                           g_variant_new ("(s)", username),
+                                           NULL, /* no reply checking */
+                                           G_DBUS_CALL_FLAGS_NONE,
+                                           G_MAXINT,
+                                           NULL,
+                                           &error);
+        if (ret == NULL) {
+                g_warning ("Calling org.gnome.DisplayManager.GreeterServer.BeginAutoLogin failed: %s", error->message);
+                g_error_free (error);
+                return;
+        }
+
+        g_variant_unref (ret);
+}
+
+static void
+close_cb (GtkAssistant *assi, SetupData *setup)
+{
+        begin_autologin (setup);
+}
+
+static void
+prepare_cb (GtkAssistant *assi, GtkWidget *page, SetupData *setup)
+{
+        g_debug ("Preparing page %s", gtk_widget_get_name (page));
+
+        if (page != WID("account-page"))
+                gtk_assistant_set_page_complete (assi, page, TRUE);
+
+        save_account_data (setup);
+
+        if (page == WID("summary_page"))
+                copy_account_data (setup);
+}
+
+static void
+prepare_assistant (SetupData *setup)
+{
+        setup->assistant = OBJ(GtkAssistant*, "gnome-setup-assistant");
+
+        /* small hack to get rid of cancel button */
+        gtk_assistant_commit (setup->assistant);
+
+        g_signal_connect (G_OBJECT (setup->assistant), "prepare",
+                          G_CALLBACK (prepare_cb), setup);
+        g_signal_connect (G_OBJECT (setup->assistant), "close",
+                          G_CALLBACK (close_cb), setup);
+
+        /* connect to gdm slave */
+        connect_to_slave (setup);
+
+        prepare_welcome_page (setup);
+        prepare_network_page (setup);
+        prepare_account_page (setup);
+        prepare_location_page (setup);
 }
 
 int
