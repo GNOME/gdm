@@ -962,47 +962,22 @@ confirm_entry_focus_out (GtkWidget     *entry,
         return FALSE;
 }
 
-/* FIXME: ActUserManager should have this */
 static void
 create_user (SetupData *setup)
 {
-        GDBusConnection *connection;
-        GVariant *result;
         const gchar *username;
         const gchar *fullname;
         GError *error;
 
         username = gtk_combo_box_text_get_active_text (OBJ(GtkComboBoxText*, "account-username-combo"));
         fullname = gtk_entry_get_text (OBJ(GtkEntry*, "account-fullname-entry"));
-        connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, NULL);
 
         error = NULL;
-        result = g_dbus_connection_call_sync (connection,
-                                              "org.freedesktop.Accounts",
-                                              "/org/freedesktop/Accounts",
-                                              "org.freedesktop.Accounts",
-                                              "CreateUser",
-                                              g_variant_new ("(ssi)",
-                                                             username,
-                                                             fullname,
-                                                             setup->account_type),
-                                              NULL,
-                                              G_DBUS_CALL_FLAGS_NONE,
-                                              -1,
-                                              NULL,
-                                              &error);
-        if (result == NULL) {
+        setup->act_user = act_user_manager_create_user (setup->act_client, username, fullname, setup->account_type, &error);
+        if (error != NULL) {
                 g_warning ("Failed to create user: %s", error->message);
                 g_error_free (error);
-                goto out;
         }
-
-        g_variant_unref (result);
-
-        setup->act_user = act_user_manager_get_user (setup->act_client, username);
-
-out:
-        g_object_unref (connection);
 }
 
 static void save_account_data (SetupData *setup);
@@ -1016,6 +991,44 @@ save_when_loaded (ActUser *user, GParamSpec *pspec, SetupData *setup)
         when_loaded = 0;
 
         save_account_data (setup);
+}
+
+static void
+clear_account_page (SetupData *setup)
+{
+        GtkWidget *fullname_entry;
+        GtkWidget *username_combo;
+        GtkWidget *password_check;
+        GtkWidget *admin_check;
+        GtkWidget *password_entry;
+        GtkWidget *confirm_entry;
+        gboolean need_password;
+
+        fullname_entry = WID("account-fullname-entry");
+        username_combo = WID("account-username-combo");
+        password_check = WID("account-password-check");
+        admin_check = WID("account-admin-check");
+        password_entry = WID("account-password-entry");
+        confirm_entry = WID("account-confirm-entry");
+
+        setup->valid_name = FALSE;
+        setup->valid_username = FALSE;
+        setup->valid_password = TRUE;
+        setup->password_mode = ACT_USER_PASSWORD_MODE_NONE;
+        setup->account_type = ACT_USER_ACCOUNT_TYPE_ADMINISTRATOR;
+        setup->user_data_unsaved = FALSE;
+
+        need_password = setup->password_mode != ACT_USER_PASSWORD_MODE_NONE;
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (password_check), need_password);
+        gtk_widget_set_sensitive (password_entry, need_password);
+        gtk_widget_set_sensitive (confirm_entry, need_password);
+
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (admin_check), setup->account_type == ACT_USER_ACCOUNT_TYPE_ADMINISTRATOR);
+
+        gtk_entry_set_text (GTK_ENTRY (fullname_entry), "");
+        gtk_list_store_clear (GTK_LIST_STORE (gtk_combo_box_get_model (GTK_COMBO_BOX (username_combo))));
+        gtk_entry_set_text (GTK_ENTRY (password_entry), "");
+        gtk_entry_set_text (GTK_ENTRY (confirm_entry), "");
 }
 
 static void
@@ -1036,7 +1049,11 @@ save_account_data (SetupData *setup)
                 create_user (setup);
         }
 
-        g_assert (setup->act_user);
+        if (setup->act_user == NULL) {
+                g_warning ("User creation failed");
+                clear_account_page (setup);
+                return;
+        }
 
         if (!act_user_is_loaded (setup->act_user)) {
                 if (when_loaded == 0)
@@ -1071,7 +1088,6 @@ prepare_account_page (SetupData *setup)
         GtkWidget *admin_check;
         GtkWidget *password_entry;
         GtkWidget *confirm_entry;
-        gboolean need_password;
 
         fullname_entry = WID("account-fullname-entry");
         username_combo = WID("account-username-combo");
@@ -1079,22 +1095,6 @@ prepare_account_page (SetupData *setup)
         admin_check = WID("account-admin-check");
         password_entry = WID("account-password-entry");
         confirm_entry = WID("account-confirm-entry");
-
-        setup->act_client = act_user_manager_get_default ();
-
-        setup->valid_name = FALSE;
-        setup->valid_username = FALSE;
-        setup->valid_password = TRUE;
-        setup->password_mode = ACT_USER_PASSWORD_MODE_NONE;
-        setup->account_type = ACT_USER_ACCOUNT_TYPE_ADMINISTRATOR;
-        setup->user_data_unsaved = FALSE;
-
-        need_password = setup->password_mode != ACT_USER_PASSWORD_MODE_NONE;
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (password_check), need_password);
-        gtk_widget_set_sensitive (password_entry, need_password);
-        gtk_widget_set_sensitive (confirm_entry, need_password);
-
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (admin_check), setup->account_type == ACT_USER_ACCOUNT_TYPE_ADMINISTRATOR);
 
         g_signal_connect (fullname_entry, "notify::text",
                           G_CALLBACK (fullname_changed), setup);
@@ -1111,6 +1111,9 @@ prepare_account_page (SetupData *setup)
         g_signal_connect_after (confirm_entry, "focus-out-event",
                                 G_CALLBACK (confirm_entry_focus_out), setup);
 
+        setup->act_client = act_user_manager_get_default ();
+
+        clear_account_page (setup);
         update_account_page_status (setup);
 }
 
@@ -1367,6 +1370,16 @@ begin_autologin (SetupData *setup)
         GError *error;
         const gchar *username;
         GVariant *ret;
+
+        if (setup->slave_connection == NULL) {
+                g_warning ("No slave connection; not initiating autologin");
+                return;
+        }
+
+        if (setup->act_user == NULL) {
+                g_warning ("No username; not initiating autologin");
+                return;
+        }
 
         username = act_user_get_user_name (setup->act_user);
 
