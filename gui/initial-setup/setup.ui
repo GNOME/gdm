@@ -19,6 +19,17 @@
       <column type="gchararray"/>
     </columns>
   </object>
+  <object class="GtkDialog" id="online-accounts-dialog">
+    <property name="title"></property>
+    <property name="transient-for">gnome-setup-assistant</property>
+    <property name="modal">True</property>
+    <property name="resizable">False</property>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="online-accounts-dialog-content-area">
+        <property name="margin">12</property>
+      </object>
+    </child>
+  </object>
   <object class="GtkAssistant" id="gnome-setup-assistant">
     <!-- interface-naming-policy toplevel-contextual -->
     <property name="border-width">12</property>
@@ -572,6 +583,18 @@
           </packing>
         </child>
         <child>
+          <object class="GtkBox" id="online-accounts-list">
+            <property name="orientation">vertical</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">2</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkButton" id="online-add-button">
             <property name="visible">True</property>
             <property name="label">_Add Account</property>
@@ -582,7 +605,7 @@
           </object>
           <packing>
             <property name="left_attach">0</property>
-            <property name="top_attach">2</property>
+            <property name="top_attach">3</property>
             <property name="width">1</property>
             <property name="height">1</property>
           </packing>
