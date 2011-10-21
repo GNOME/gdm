@@ -978,7 +978,6 @@ create_user (SetupData *setup)
         const gchar *fullname;
         GError *error;
 
-#if 0
         username = gtk_combo_box_text_get_active_text (OBJ(GtkComboBoxText*, "account-username-combo"));
         fullname = gtk_entry_get_text (OBJ(GtkEntry*, "account-fullname-entry"));
 
@@ -988,7 +987,6 @@ create_user (SetupData *setup)
                 g_warning ("Failed to create user: %s", error->message);
                 g_error_free (error);
         }
-#endif
 }
 
 static void save_account_data (SetupData *setup);
