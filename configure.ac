@@ -179,6 +179,8 @@ PKG_CHECK_MODULES(INITIAL_SETUP,
                   libnm-util >= $NETWORK_MANAGER_REQUIRED_VERSION
                   accountsservice
                   gweather-3.0
+                  goa-1.0
+                  goa-backend-1.0
                   gtk+-3.0 >= $GTK_REQUIRED_VERSION
                   glib-2.0 >= $GLIB_REQUIRED_VERSION
                   gio-2.0 >= $GLIB_REQUIRED_VERSION
