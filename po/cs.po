@@ -4,6 +4,7 @@
 # Copyright (C) 2006 Lukas Novotny <lukasnov@cvs.gnome.org>.
 # Copyright (C) 2006 Petr Tomeš <ptomes@gmail.com>.
 # This file is distributed under the same license as the gdm package.
+#
 # George Lebl <jirka@5z.com>, 2000.
 # Michal Bukovjan <bukm@centrum.cz>, 2002, 2003.
 # Miloslav Trmac <mitr@volny.cz>, 2003, 2004, 2005, 2006.
@@ -11,18 +12,20 @@
 # Petr Tomeš <ptomes@gmail.com>, 2006.
 # Jakub Friedl <jfriedl@suse.cz>, 2007.
 # Petr Kovar <pknbe@volny.cz>, 2008, 2009, 2010, 2011.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-26 00:22+0200\n"
-"PO-Revision-Date: 2011-09-26 00:21+0200\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-10-19 01:27+0000\n"
+"PO-Revision-Date: 2011-10-30 13:27+0100\n"
 "Last-Translator: Petr Kovar <pknbe@volny.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
-"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Lokalize 1.2\n"
 
@@ -49,7 +52,7 @@ msgstr "Pomocný správce displeje GNOME"
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
-msgstr "v systému nelze najít uživatele \"%s\""
+msgstr "v systému nelze najít uživatele „%s“"
 
 #: ../daemon/gdm-factory-slave.c:210 ../daemon/gdm-simple-slave.c:314
 msgid "Unable to initialize login system"
@@ -87,7 +90,7 @@ msgstr ""
 #: ../daemon/gdm-server.c:250
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: nelze se připojit k rodičovskému displeji \"%s\""
+msgstr "%s: nelze se připojit k rodičovskému displeji „%s“"
 
 #: ../daemon/gdm-server.c:365
 #, c-format
@@ -158,7 +161,7 @@ msgstr "Zařízení displeje"
 #: ../daemon/gdm-session-worker.c:1089
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
-msgstr "chyba při spouštění komunikace s ověřovacím systémem - %s"
+msgstr "chyba při spouštění komunikace s ověřovacím systémem – %s"
 
 #: ../daemon/gdm-session-worker.c:1090
 msgid "general failure"
@@ -398,7 +401,7 @@ msgstr "AuthDir %s má chybně nastavená práva %o. Měly by být %o. Ukončov�
 #: ../daemon/main.c:409
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
-msgstr "Nelze najít uživatele GDM \"%s\". Ukončování!"
+msgstr "Nelze najít uživatele GDM „%s“. Ukončování!"
 
 #: ../daemon/main.c:415
 msgid "The GDM user should not be root. Aborting!"
@@ -407,7 +410,7 @@ msgstr "Uživatel GDM nesmí být superuživatelem. Ukončování!"
 #: ../daemon/main.c:421
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "Nelze najít skupinu GDM \"%s\". Ukončování!"
+msgstr "Nelze najít skupinu GDM „%s“. Ukončování!"
 
 #: ../daemon/main.c:427
 msgid "The GDM group should not be root. Aborting!"
@@ -478,40 +481,52 @@ msgid "Present on-screen information as speech or braille"
 msgstr "Zprostředkovat informace na obrazovce řečí nebo Braillovým písmem"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
+msgid "Avoid showing user list"
+msgstr "Zamezit zobrazení seznamu uživatelů"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:2
 msgid "Path to small image at top of user list"
 msgstr "Cesta k malému obrázku na horní straně seznamu uživatelů"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:2
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
 msgstr ""
-"Obrazovka přihlášení může uživatelům s dostupnými otisky prstů volitelně "
+"Přihlašovací obrazovka může uživatelům s dostupnými otisky prstů volitelně "
 "nabídnout přihlášení s těmito otisky."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
 msgstr ""
-"Obrazovka přihlášení může uživatelům s dostupnými čipovými kartami volitelně "
-"nabídnout přihlášení s těmito kartami."
+"Přihlašovací obrazovka může uživatelům s dostupnými čipovými kartami "
+"volitelně nabídnout přihlášení s těmito kartami."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
 msgid ""
 "The login screen can optionally show a small image at the top of its user "
 "list to provide site administrators and distributions a way to provide "
 "branding."
 msgstr ""
-"Obrazovka přihlášení může volitelně zobrazit malý obrázek na horní straně "
+"Přihlašovací obrazovka může volitelně zobrazit malý obrázek na horní straně "
 "seznamu uživatelů, který nabízí správcům systému a distributorům možnost "
-"přidat ikonu značky."
+"přidat ikonu s logem."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid ""
+"The login screen normally shows a list of available users to log in as. This "
+"setting can be toggled to disable showing the user list."
+msgstr ""
+"Přihlašovací obrazovka normálně zobrazuje seznam dostupných uživatelů, kteří "
+"se mohou přihlásit. Tímto nastavením lze zobrazení seznamu uživatelů zakázat."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Whether or not to allow fingerprint readers for login"
 msgstr "Zda povolit čtečkám otisků prstů přihlášení"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid "Whether or not to allow smartcard readers for login"
 msgstr "Zda povolit čtečkám čipových karet přihlášení"
 
@@ -694,12 +709,12 @@ msgstr "%a, %H:%M"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:319
 msgid "Automatically logging in…"
-msgstr "Automatické přihlašování..."
+msgstr "Automatické přihlašování…"
 
 #. need to wait for response from backend
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:935
 msgid "Cancelling…"
-msgstr "Probíhá rušení..."
+msgstr "Probíhá rušení…"
 
 #. just wait for the user to select language and stuff
 #: ../gui/simple-greeter/gdm-greeter-login-window.c:1491
@@ -790,7 +805,7 @@ msgstr "Maximum položek, které se má ponechat v seznamu"
 #: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
 msgid "Remote Login (Connecting to %s…)"
-msgstr "Vzdálené přihlášení (připojování k %s...)"
+msgstr "Vzdálené přihlášení (připojování k %s…)"
 
 #: ../gui/simple-greeter/gdm-remote-login-window.c:202
 #, c-format
@@ -864,71 +879,69 @@ msgstr ""
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
 msgid "Set to true to disable showing known users in the login window."
 msgstr ""
-"Nastavte na \"true\", chcete-li vypnout zobrazování známých uživatelů v okně "
+"Nastavte na zapnuto, chcete-li vypnout zobrazování známých uživatelů v okně "
 "přihlášení."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
-"Nastavte na \"true\", má-li být vypnuto zobrazování tlačítek restartu v okně "
+"Nastavte na zapnuto, má-li být vypnuto zobrazování tlačítek restartu v okně "
 "přihlášení."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
 msgid "Set to true to enable the XRandR settings manager plugin."
 msgstr ""
-"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení "
-"XRandR."
+"Nastavte na zapnuto, má-li být zapnut zásuvný modul správce nastavení XRandR."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
 msgid "Set to true to enable the background settings manager plugin."
 msgstr ""
-"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení "
-"pozadí."
+"Nastavte na zapnuto, má-li být zapnut zásuvný modul správce nastavení pozadí."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
 msgid "Set to true to enable the media-keys settings manager plugin."
 msgstr ""
-"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení "
+"Nastavte na zapnuto, má-li být zapnut zásuvný modul správce nastavení "
 "mediálních kláves."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
 msgid "Set to true to enable the on-screen keyboard."
-msgstr "Nastavte na \"true\", má-li být zapnuta klávesnice na obrazovce."
+msgstr "Nastavte na zapnuto, má-li být zapnuta klávesnice na obrazovce."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
 msgid ""
 "Set to true to enable the plugin to manage the accessibility keyboard "
 "settings."
 msgstr ""
-"Nastavte na \"true\", má-li být zapnut zásuvný modul na správu nastavení "
+"Nastavte na zapnuto, má-li být zapnut zásuvný modul na správu nastavení "
 "zpřístupnění klávesnice."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
 msgid "Set to true to enable the screen magnifier."
-msgstr "Nastavte na \"true\", má-li být zapnuta lupa obrazovky."
+msgstr "Nastavte na zapnuto, má-li být zapnuta lupa obrazovky."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
 msgid "Set to true to enable the screen reader."
-msgstr "Nastavte na \"true\", má-li být zapnuto čtení obrazovky."
+msgstr "Nastavte na zapnuto, má-li být zapnuto čtení obrazovky."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
 msgid "Set to true to enable the sound settings manager plugin."
 msgstr ""
-"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení zvuku."
+"Nastavte na zapnuto, má-li být zapnut zásuvný modul správce nastavení zvuku."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
 msgid "Set to true to enable the xsettings settings manager plugin."
 msgstr ""
-"Nastavte na \"true\", má-li být zapnut zásuvný modul správce nastavení "
+"Nastavte na zapnuto, má-li být zapnut zásuvný modul správce nastavení "
 "xsettings."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
 msgid "Set to true to show the banner message text."
-msgstr "Nastavte na \"true\", má-li být zobrazen text nápisu."
+msgstr "Nastavte na zapnuto, má-li být zobrazen text nápisu."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
 msgid "Set to true to use Compiz as the window manager."
-msgstr "Nastavte na \"true\", má-li být použit Compiz jako správce oken."
+msgstr "Nastavte na zapnuto, má-li být použit Compiz jako správce oken."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
 msgid ""
@@ -944,25 +957,25 @@ msgstr "Text nápisu, který se má zobrazovat v okně přihlášení."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
 msgid "True if the XRandR settings manager plugin is enabled."
-msgstr "\"True\", je-li zásuvný modul správce nastavení XRandR povolen."
+msgstr "Zapnuto, je-li zásuvný modul správce nastavení XRandR povolen."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
 msgid "True if the background settings manager plugin is enabled."
-msgstr "\"True\", je-li zásuvný modul správce nastavení pozadí povolen."
+msgstr "Zapnuto, je-li zásuvný modul správce nastavení pozadí povolen."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
 msgid "True if the media-keys settings manager plugin is enabled."
 msgstr ""
-"\"True\", je-li zásuvný modul správce nastavení multimediálních kláves "
+"Zapnuto, je-li zásuvný modul správce nastavení multimediálních kláves "
 "povolen."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
 msgid "True if the sound settings manager plugin is enabled."
-msgstr "\"True\", je-li zásuvný modul správce nastavení zvuku povolen."
+msgstr "Zapnuto, je-li zásuvný modul správce nastavení zvuku povolen."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
 msgid "True if the xsettings settings manager plugin is enabled."
-msgstr "\"True\", je-li zásuvný modul správce nastavení xsettings povolen."
+msgstr "Zapnuto, je-li zásuvný modul správce nastavení xsettings povolen."
 
 #: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
 msgid "Use Compiz as the window manager"
@@ -1006,7 +1019,7 @@ msgstr "Přihlásit se jako %s"
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
 msgctxt "user"
 msgid "Other…"
-msgstr "Ostatní..."
+msgstr "Ostatní…"
 
 #: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
 msgid "Choose a different account"
@@ -1066,7 +1079,7 @@ msgstr "Uživatel není schopen přepnout sezení."
 #. Option parsing
 #: ../utils/gdmflexiserver.c:716
 msgid "- New GDM login"
-msgstr "- nové přihlášení GDM"
+msgstr "– nové přihlášení GDM"
 
 #: ../utils/gdmflexiserver.c:772
 msgid "Unable to start new display"
@@ -1080,40 +1093,3 @@ msgstr "Vytvořen snímek obrazovky"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Pořídit snímek obrazovky"
-
-#~ msgid "AT-SPI Registry Wrapper"
-#~ msgstr "Objekt registru AT-SPI"
-
-#~ msgid "Power Manager"
-#~ msgstr "Správce napájení"
-
-#~ msgid "GNOME Session Acceleration Checker"
-#~ msgstr "Kontrola akcelerace sezení GNOME"
-
-#~ msgid "GNOME Settings Daemon"
-#~ msgstr "Démon nastavení GNOME"
-
-#~ msgid "Metacity"
-#~ msgstr "Metacity"
-
-#~ msgid "Languages"
-#~ msgstr "Jazyky"
-
-#~ msgid "_Languages:"
-#~ msgstr "_Jazyky:"
-
-#~ msgid "_Language:"
-#~ msgstr "_Jazyk:"
-
-#~ msgctxt "language"
-#~ msgid "Other…"
-#~ msgstr "Ostatní..."
-
-#~ msgid "Choose a language from the full list of available languages."
-#~ msgstr "Vyberte jazyk z úplného seznamu dostupných jazyků."
-
-#~ msgid "Language"
-#~ msgstr "Jazyk"
-
-#~ msgid "Unspecified"
-#~ msgstr "Neurčeno"
