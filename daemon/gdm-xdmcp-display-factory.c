@@ -870,7 +870,7 @@ gdm_xdmcp_send_unwilling (GdmXdmcpDisplayFactory *factory,
         gdm_address_get_numeric_info (address, &host, NULL);
         g_debug ("GdmXdmcpDisplayFactory: Sending UNWILLING to %s",
                  host ? host : "(null)");
-        g_warning (_("Denied XDMCP query from host %s"),
+        g_warning ("Denied XDMCP query from host %s",
                  host ? host : "(null)");
         g_free (host);
 
@@ -1028,7 +1028,7 @@ handle_direct_query (GdmXdmcpDisplayFactory  *factory,
 
         res = XdmcpReadARRAYofARRAY8 (&factory->priv->buf, &clnt_authlist);
         if G_UNLIKELY (! res) {
-                g_warning (_("Could not extract authlist from packet"));
+                g_warning ("Could not extract authlist from packet");
                 return;
         }
 
@@ -1041,7 +1041,7 @@ handle_direct_query (GdmXdmcpDisplayFactory  *factory,
         if (len == expected_len) {
                 handle_any_query (factory, address, &clnt_authlist, type);
         } else {
-                g_warning (_("Error in checksum"));
+                g_warning ("Error in checksum");
         }
 
         XdmcpDisposeARRAYofARRAY8 (&clnt_authlist);
@@ -1252,7 +1252,7 @@ gdm_xdmcp_handle_indirect_query (GdmXdmcpDisplayFactory *factory,
 
         res = XdmcpReadARRAYofARRAY8 (&factory->priv->buf, &clnt_authlist);
         if G_UNLIKELY (! res) {
-                g_warning (_("Could not extract authlist from packet"));
+                g_warning ("Could not extract authlist from packet");
                 return;
         }
 
@@ -1267,7 +1267,7 @@ gdm_xdmcp_handle_indirect_query (GdmXdmcpDisplayFactory *factory,
          * chosen manager. Otherwise alloc a new indirect display. */
 
         if (len != expected_len) {
-                g_warning (_("Error in checksum"));
+                g_warning ("Error in checksum");
                 goto out;
         }
 
@@ -1520,7 +1520,7 @@ create_address_from_request (ARRAY8      *req_addr,
         }
 
         if (host == NULL) {
-                g_warning (_("Bad address"));
+                g_warning ("Bad address");
                 return FALSE;
         }
 
@@ -1604,7 +1604,7 @@ gdm_xdmcp_handle_forward_query (GdmXdmcpDisplayFactory *factory,
 
         /* Read display address */
         if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->priv->buf, &clnt_addr)) {
-                g_warning (_("%s: Could not read display address"),
+                g_warning ("%s: Could not read display address",
                            "gdm_xdmcp_handle_forward_query");
                 return;
         }
@@ -1612,7 +1612,7 @@ gdm_xdmcp_handle_forward_query (GdmXdmcpDisplayFactory *factory,
         /* Read display port */
         if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->priv->buf, &clnt_port)) {
                 XdmcpDisposeARRAY8 (&clnt_addr);
-                g_warning (_("%s: Could not read display port number"),
+                g_warning ("%s: Could not read display port number",
                            "gdm_xdmcp_handle_forward_query");
                 return;
         }
@@ -1621,7 +1621,7 @@ gdm_xdmcp_handle_forward_query (GdmXdmcpDisplayFactory *factory,
         if G_UNLIKELY (! XdmcpReadARRAYofARRAY8 (&factory->priv->buf, &clnt_authlist)) {
                 XdmcpDisposeARRAY8 (&clnt_addr);
                 XdmcpDisposeARRAY8 (&clnt_port);
-                g_warning (_("%s: Could not extract authlist from packet"),
+                g_warning ("%s: Could not extract authlist from packet",
                            "gdm_xdmcp_handle_forward_query");
                 return;
         }
@@ -1641,8 +1641,8 @@ gdm_xdmcp_handle_forward_query (GdmXdmcpDisplayFactory *factory,
         }
 
         if G_UNLIKELY (len != explen) {
-                g_warning (_("%s: Error in checksum"),
-                           "gdm_xdmcp_handle_forward_query");
+                g_warning ("%s: Error in checksum"),
+                           "gdm_xdmcp_handle_forward_query";
                 goto out;
         }
 
@@ -2197,7 +2197,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
 
         /* Check with tcp_wrappers if client is allowed to access */
         if (! gdm_xdmcp_host_allow (address)) {
-                g_warning (_("%s: Got REQUEST from banned host %s"),
+                g_warning ("%s: Got REQUEST from banned host %s",
                            "gdm_xdmcp_handle_request",
                            hostname ? hostname : "(null)");
                 goto out;
@@ -2207,21 +2207,21 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
 
         /* Remote display number */
         if G_UNLIKELY (! XdmcpReadCARD16 (&factory->priv->buf, &clnt_dspnum)) {
-                g_warning (_("%s: Could not read Display Number"),
+                g_warning ("%s: Could not read Display Number",
                            "gdm_xdmcp_handle_request");
                 goto out;
         }
 
         /* We don't care about connection type. Address says it all */
         if G_UNLIKELY (! XdmcpReadARRAY16 (&factory->priv->buf, &clnt_conntyp)) {
-                g_warning (_("%s: Could not read Connection Type"),
+                g_warning ("%s: Could not read Connection Type",
                            "gdm_xdmcp_handle_request");
                 goto out;
         }
 
         /* This is TCP/IP - we don't care */
         if G_UNLIKELY (! XdmcpReadARRAYofARRAY8 (&factory->priv->buf, &clnt_addr)) {
-                g_warning (_("%s: Could not read Client Address"),
+                g_warning ("%s: Could not read Client Address",
                            "gdm_xdmcp_handle_request");
                 XdmcpDisposeARRAY16 (&clnt_conntyp);
                 goto out;
@@ -2229,7 +2229,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
 
         /* Read authentication type */
         if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->priv->buf, &clnt_authname)) {
-                g_warning (_("%s: Could not read Authentication Names"),
+                g_warning ("%s: Could not read Authentication Names",
                            "gdm_xdmcp_handle_request");
                 XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
                 XdmcpDisposeARRAY16 (&clnt_conntyp);
@@ -2238,7 +2238,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
 
         /* Read authentication data */
         if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->priv->buf, &clnt_authdata)) {
-                g_warning (_("%s: Could not read Authentication Data"),
+                g_warning ("%s: Could not read Authentication Data",
                            "gdm_xdmcp_handle_request");
                 XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
                 XdmcpDisposeARRAY16 (&clnt_conntyp);
@@ -2248,7 +2248,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
 
         /* Read and select from supported authorization list */
         if G_UNLIKELY (! XdmcpReadARRAYofARRAY8 (&factory->priv->buf, &clnt_authorization_names)) {
-                g_warning (_("%s: Could not read Authorization List"),
+                g_warning ("%s: Could not read Authorization List",
                            "gdm_xdmcp_handle_request");
                 XdmcpDisposeARRAY8 (&clnt_authdata);
                 XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
@@ -2267,7 +2267,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
 
         /* Manufacturer ID */
         if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->priv->buf, &clnt_manufacturer)) {
-                g_warning (_("%s: Could not read Manufacturer ID"),
+                g_warning ("%s: Could not read Manufacturer ID",
                            "gdm_xdmcp_handle_request");
                 XdmcpDisposeARRAY8 (&clnt_authname);
                 XdmcpDisposeARRAY8 (&clnt_authdata);
@@ -2294,7 +2294,7 @@ gdm_xdmcp_handle_request (GdmXdmcpDisplayFactory *factory,
         explen += 2 + clnt_manufacturer.length;
 
         if G_UNLIKELY (explen != len) {
-                g_warning (_("%s: Failed checksum from %s"),
+                g_warning ("%s: Failed checksum from %s",
                            "gdm_xdmcp_handle_request",
                            hostname ? hostname : "(null)");
 
@@ -2549,7 +2549,7 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
 
         /* Check with tcp_wrappers if client is allowed to access */
         if (! gdm_xdmcp_host_allow (address)) {
-                g_warning (_("%s: Got Manage from banned host %s"),
+                g_warning ("%s: Got Manage from banned host %s",
                            "gdm_xdmcp_handle_manage",
                            host ? host : "(null)");
                 g_free (host);
@@ -2558,21 +2558,21 @@ gdm_xdmcp_handle_manage (GdmXdmcpDisplayFactory *factory,
 
         /* SessionID */
         if G_UNLIKELY (! XdmcpReadCARD32 (&factory->priv->buf, &clnt_sessid)) {
-                g_warning (_("%s: Could not read Session ID"),
+                g_warning ("%s: Could not read Session ID",
                            "gdm_xdmcp_handle_manage");
                 goto out;
         }
 
         /* Remote display number */
         if G_UNLIKELY (! XdmcpReadCARD16 (&factory->priv->buf, &clnt_dspnum)) {
-                g_warning (_("%s: Could not read Display Number"),
+                g_warning ("%s: Could not read Display Number",
                            "gdm_xdmcp_handle_manage");
                 goto out;
         }
 
         /* Display Class */
         if G_UNLIKELY (! XdmcpReadARRAY8 (&factory->priv->buf, &clnt_dspclass)) {
-                g_warning (_("%s: Could not read Display Class"),
+                g_warning ("%s: Could not read Display Class",
                            "gdm_xdmcp_handle_manage");
                 goto out;
         }
@@ -2678,7 +2678,7 @@ gdm_xdmcp_handle_managed_forward (GdmXdmcpDisplayFactory *factory,
 
         /* Hostname */
         if G_UNLIKELY ( ! XdmcpReadARRAY8 (&factory->priv->buf, &clnt_address)) {
-                g_warning (_("%s: Could not read address"),
+                g_warning ("%s: Could not read address",
                            "gdm_xdmcp_handle_managed_forward");
                 return;
         }
@@ -2728,13 +2728,13 @@ gdm_xdmcp_handle_got_managed_forward (GdmXdmcpDisplayFactory *factory,
 
         /* Hostname */
         if G_UNLIKELY ( ! XdmcpReadARRAY8 (&factory->priv->buf, &clnt_address)) {
-                g_warning (_("%s: Could not read address"),
+                g_warning ("%s: Could not read address",
                            "gdm_xdmcp_handle_got_managed_forward");
                 return;
         }
 
         if (! create_address_from_request (&clnt_address, NULL, gdm_address_get_family_type (address), &disp_address)) {
-                g_warning (_("%s: Could not read address"),
+                g_warning ("%s: Could not read address",
                            "gdm_xdmcp_handle_got_managed_forward");
                 XdmcpDisposeARRAY8 (&clnt_address);
                 return;
@@ -2809,7 +2809,7 @@ gdm_xdmcp_handle_keepalive (GdmXdmcpDisplayFactory *factory,
 
         /* Check with tcp_wrappers if client is allowed to access */
         if (! gdm_xdmcp_host_allow (address)) {
-                g_warning (_("%s: Got KEEPALIVE from banned host %s"),
+                g_warning ("%s: Got KEEPALIVE from banned host %s",
                            "gdm_xdmcp_handle_keepalive",
                            host ? host : "(null)");
                 g_free (host);
@@ -2819,14 +2819,14 @@ gdm_xdmcp_handle_keepalive (GdmXdmcpDisplayFactory *factory,
 
         /* Remote display number */
         if G_UNLIKELY (! XdmcpReadCARD16 (&factory->priv->buf, &clnt_dspnum)) {
-                g_warning (_("%s: Could not read Display Number"),
+                g_warning ("%s: Could not read Display Number",
                            "gdm_xdmcp_handle_keepalive");
                 return;
         }
 
         /* SessionID */
         if G_UNLIKELY (! XdmcpReadCARD32 (&factory->priv->buf, &clnt_sessid)) {
-                g_warning (_("%s: Could not read Session ID"),
+                g_warning ("%s: Could not read Session ID",
                            "gdm_xdmcp_handle_keepalive");
                 return;
         }
@@ -2899,19 +2899,19 @@ decode_packet (GIOChannel             *source,
 
         res = XdmcpReadHeader (&factory->priv->buf, &header);
         if G_UNLIKELY (! res) {
-                g_warning (_("GdmXdmcpDisplayFactory: Could not read XDMCP header!"));
+                g_warning ("GdmXdmcpDisplayFactory: Could not read XDMCP header!");
                 return TRUE;
         }
 
         if G_UNLIKELY (header.version != XDM_PROTOCOL_VERSION &&
                        header.version != GDM_XDMCP_PROTOCOL_VERSION) {
-                g_warning (_("XMDCP: Incorrect XDMCP version!"));
+                g_warning ("XMDCP: Incorrect XDMCP version!");
                 return TRUE;
         }
 
         address = gdm_address_new_from_sockaddr ((struct sockaddr *) &clnt_ss, ss_len);
         if (address == NULL) {
-                g_warning (_("XMDCP: Unable to parse address"));
+                g_warning ("XMDCP: Unable to parse address");
                 return TRUE;
         }
 
@@ -3360,7 +3360,7 @@ gdm_xdmcp_display_factory_init (GdmXdmcpDisplayFactory *factory)
         /* Fetch and store local hostname in XDMCP friendly format */
         hostbuf[1023] = '\0';
         if G_UNLIKELY (gethostname (hostbuf, 1023) != 0) {
-                g_warning (_("Could not get server hostname: %s!"), g_strerror (errno));
+                g_warning ("Could not get server hostname: %s!", g_strerror (errno));
                 strcpy (hostbuf, "localhost.localdomain");
         }
 
