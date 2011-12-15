@@ -21,17 +21,6 @@ Xsession: $(srcdir)/Xsession.in
 		-e 's,[@]libexecdir[@],$(libexecdir),g' \
 		<$(srcdir)/Xsession.in >Xsession
 
-Init: $(srcdir)/Init.in
-	sed	-e 's,[@]X_PATH[@],$(X_PATH),g' \
-		<$(srcdir)/Init.in >Init
-
-PreSession: $(srcdir)/PreSession.in
-	sed	-e 's,[@]X_PATH[@],$(X_PATH),g' \
-		<$(srcdir)/PreSession.in >PreSession
-PostSession: $(srcdir)/PostSession.in
-	sed	-e 's,[@]X_PATH[@],$(X_PATH),g' \
-		<$(srcdir)/PostSession.in >PostSession
-
 gdm.conf-custom: $(srcdir)/gdm.conf-custom.in
 	sed	-e 's,[@]GDM_DEFAULTS_CONF[@],$(GDM_DEFAULTS_CONF),g' \
 		<$(srcdir)/gdm.conf-custom.in >gdm.conf-custom

@@ -385,6 +385,10 @@ start_session_timeout (GdmSimpleSlave *slave)
                 goto out;
         }
 
+        /* Defer requests to use this display from ConsoleKit
+         * for the time being
+         */
+        gdm_slave_block_console_session_requests_on_display (GDM_SLAVE (slave));
         stop_greeter (slave);
 
         auth_file = NULL;
@@ -399,6 +403,7 @@ start_session_timeout (GdmSimpleSlave *slave)
         g_free (auth_file);
 
         gdm_session_start_session (GDM_SESSION (slave->priv->session));
+        gdm_slave_unblock_console_session_requests_on_display (GDM_SLAVE (slave));
  out:
         slave->priv->start_session_id = 0;
         return FALSE;
@@ -600,6 +605,16 @@ on_default_session_name_changed (GdmSession     *session,
 }
 
 static void
+on_console_session_changed (GdmSession     *session,
+                            const char     *text,
+                            GdmSimpleSlave *slave)
+{
+        g_debug ("GdmSimpleSlave: Default session name changed: %s", text);
+
+        gdm_slave_set_console_session_id (GDM_SLAVE (slave), text);
+}
+
+static void
 create_new_session (GdmSimpleSlave *slave)
 {
         gboolean       display_is_local;
@@ -634,6 +649,7 @@ create_new_session (GdmSimpleSlave *slave)
         g_free (display_name);
         g_free (display_device);
         g_free (display_hostname);
+        g_free (display_x11_authority_file);
 
         g_signal_connect (slave->priv->session,
                           "conversation-started",
@@ -740,6 +756,11 @@ create_new_session (GdmSimpleSlave *slave)
                           "default-session-name-changed",
                           G_CALLBACK (on_default_session_name_changed),
                           slave);
+
+        g_signal_connect (slave->priv->session,
+                          "notify::display-console-session",
+                          G_CALLBACK (on_console_session_changed),
+                          slave);
 }
 
 static void
@@ -763,7 +784,7 @@ on_greeter_session_exited (GdmGreeterSession    *greeter,
                            GdmSimpleSlave       *slave)
 {
         g_debug ("GdmSimpleSlave: Greeter exited: %d", code);
-        gdm_slave_stopped (GDM_SLAVE (slave));
+        gdm_slave_failed (GDM_SLAVE (slave));
 }
 
 static void
@@ -907,6 +928,8 @@ start_greeter (GdmSimpleSlave *slave)
         gboolean       display_is_local;
         char          *display_id;
         char          *display_name;
+        char          *seat_id;
+        char          *session_id;
         char          *display_device;
         char          *display_hostname;
         char          *auth_file;
@@ -918,6 +941,8 @@ start_greeter (GdmSimpleSlave *slave)
         display_is_local = FALSE;
         display_id = NULL;
         display_name = NULL;
+        seat_id = NULL;
+        session_id = NULL;
         auth_file = NULL;
         display_device = NULL;
         display_hostname = NULL;
@@ -926,6 +951,8 @@ start_greeter (GdmSimpleSlave *slave)
                       "display-id", &display_id,
                       "display-is-local", &display_is_local,
                       "display-name", &display_name,
+                      "display-seat-id", &seat_id,
+                      "display-session-id", &session_id,
                       "display-hostname", &display_hostname,
                       "display-x11-authority-file", &auth_file,
                       NULL);
@@ -1005,6 +1032,8 @@ start_greeter (GdmSimpleSlave *slave)
 
         g_debug ("GdmSimpleSlave: Creating greeter on %s %s %s", display_name, display_device, display_hostname);
         slave->priv->greeter = gdm_greeter_session_new (display_name,
+                                                        seat_id,
+                                                        session_id,
                                                         display_device,
                                                         display_hostname,
                                                         display_is_local);
@@ -1035,6 +1064,7 @@ start_greeter (GdmSimpleSlave *slave)
 
         g_free (display_id);
         g_free (display_name);
+        g_free (seat_id);
         g_free (display_device);
         g_free (display_hostname);
         g_free (auth_file);
@@ -1092,7 +1122,11 @@ on_server_exited (GdmServer      *server,
 {
         g_debug ("GdmSimpleSlave: server exited with code %d\n", exit_code);
 
-        gdm_slave_stopped (GDM_SLAVE (slave));
+        if (exit_code != 0) {
+                gdm_slave_failed (GDM_SLAVE (slave));
+        } else {
+                gdm_slave_stopped (GDM_SLAVE (slave));
+        }
 }
 
 static void
@@ -1110,31 +1144,20 @@ on_server_died (GdmServer      *server,
 static gboolean
 gdm_simple_slave_run (GdmSimpleSlave *slave)
 {
-        char    *display_name;
-        char    *auth_file;
+        char    *display_id;
         gboolean display_is_local;
 
         g_object_get (slave,
+                      "display-id", &display_id,
                       "display-is-local", &display_is_local,
-                      "display-name", &display_name,
-                      "display-x11-authority-file", &auth_file,
                       NULL);
 
         /* if this is local display start a server if one doesn't
          * exist */
         if (display_is_local) {
                 gboolean res;
-                gboolean disable_tcp;
 
-                slave->priv->server = gdm_server_new (display_name, auth_file);
-
-                disable_tcp = TRUE;
-                if (gdm_settings_client_get_boolean (GDM_KEY_DISALLOW_TCP,
-                                                     &disable_tcp)) {
-                        g_object_set (slave->priv->server,
-                                      "disable-tcp", disable_tcp,
-                                      NULL);
-                }
+                slave->priv->server = gdm_server_new (display_id);
 
                 g_signal_connect (slave->priv->server,
                                   "exited",
@@ -1167,8 +1190,7 @@ gdm_simple_slave_run (GdmSimpleSlave *slave)
                 g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
         }
 
-        g_free (display_name);
-        g_free (auth_file);
+        g_free (display_id);
 
         return TRUE;
 }

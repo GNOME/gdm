@@ -82,11 +82,13 @@ struct GdmSlavePrivate
         /* cached display values */
         char            *display_id;
         char            *display_name;
+        char            *display_type;
         int              display_number;
         char            *display_hostname;
         gboolean         display_is_local;
         gboolean         display_is_parented;
         char            *display_seat_id;
+        char            *display_session_id;
         char            *display_x11_authority_file;
         char            *parent_display_name;
         char            *parent_display_x11_authority_file;
@@ -102,15 +104,18 @@ enum {
         PROP_0,
         PROP_DISPLAY_ID,
         PROP_DISPLAY_NAME,
+        PROP_DISPLAY_TYPE,
         PROP_DISPLAY_NUMBER,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
         PROP_DISPLAY_SEAT_ID,
+        PROP_DISPLAY_SESSION_ID,
         PROP_DISPLAY_X11_AUTHORITY_FILE
 };
 
 enum {
         STOPPED,
+        FAILED,
         LAST_SIGNAL
 };
 
@@ -669,6 +674,24 @@ gdm_slave_real_start (GdmSlave *slave)
 
         error = NULL;
         res = dbus_g_proxy_call (slave->priv->display_proxy,
+                                 "GetX11DisplayType",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &slave->priv->display_type,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get value: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get value");
+                }
+
+                return FALSE;
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->display_proxy,
                                  "GetX11DisplayNumber",
                                  &error,
                                  G_TYPE_INVALID,
@@ -758,6 +781,24 @@ gdm_slave_real_start (GdmSlave *slave)
                 return FALSE;
         }
 
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->display_proxy,
+                                 "GetSessionId",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, &slave->priv->display_session_id,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get value: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get value");
+                }
+
+                return FALSE;
+        }
+
         return TRUE;
 }
 
@@ -811,6 +852,42 @@ gdm_slave_stopped (GdmSlave *slave)
         g_return_if_fail (GDM_IS_SLAVE (slave));
 
         g_signal_emit (slave, signals [STOPPED], 0);
+}
+
+void
+gdm_slave_failed (GdmSlave *slave)
+{
+        g_return_if_fail (GDM_IS_SLAVE (slave));
+
+        g_signal_emit (slave, signals [FAILED], 0);
+}
+
+void
+gdm_slave_set_console_session_id (GdmSlave   *slave,
+                                  const char *session_id)
+{
+        gboolean res;
+        GError  *error;
+
+        g_debug ("GdmSlave: Informing display of new session id");
+
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->display_proxy,
+                                 "SetConsoleSessionId",
+                                 &error,
+                                 G_TYPE_STRING, session_id,
+                                 G_TYPE_INVALID, G_TYPE_INVALID);
+
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to set console session id: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to set console session id");
+                }
+        } else {
+                g_debug ("GdmSlave: Set console session id");
+        }
 }
 
 gboolean
@@ -1396,6 +1473,59 @@ gdm_slave_switch_to_user_session (GdmSlave   *slave,
         return ret;
 }
 
+void
+gdm_slave_block_console_session_requests_on_display (GdmSlave *slave)
+{
+        gboolean res;
+        GError  *error;
+
+        g_debug ("GdmSlave: Asking display to ignore ConsoleKit");
+
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->display_proxy,
+                                 "BlockConsoleSessionRequests",
+                                 &error,
+                                 G_TYPE_INVALID, G_TYPE_INVALID);
+
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get display to ignore ConsoleKit: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get display to ignore ConsoleKit");
+                }
+        } else {
+                g_debug ("GdmSlave: Display is now ignoring ConsoleKit");
+        }
+}
+
+void
+gdm_slave_unblock_console_session_requests_on_display (GdmSlave *slave)
+{
+        gboolean res;
+        GError  *error;
+
+        g_debug ("GdmSlave: Informing display to stop ignoring ConsoleKit");
+
+        error = NULL;
+        res = dbus_g_proxy_call (slave->priv->display_proxy,
+                                 "UnblockConsoleSessionRequests",
+                                 &error,
+                                 G_TYPE_INVALID, G_TYPE_INVALID);
+
+        if (! res) {
+                if (error != NULL) {
+                        g_warning ("Failed to get display to stop ignoring ConsoleKit: %s", error->message);
+                        g_error_free (error);
+                } else {
+                        g_warning ("Failed to get display to stop ignoring ConsoleKit");
+                }
+        } else {
+                g_debug ("GdmSlave: Display is no longer ignoring ConsoleKit");
+        }
+}
+
+
 static void
 _gdm_slave_set_display_id (GdmSlave   *slave,
                            const char *id)
@@ -1410,6 +1540,15 @@ _gdm_slave_set_display_name (GdmSlave   *slave,
 {
         g_free (slave->priv->display_name);
         slave->priv->display_name = g_strdup (name);
+}
+
+
+static void
+_gdm_slave_set_display_type (GdmSlave   *slave,
+                             const char *type)
+{
+        g_free (slave->priv->display_type);
+        slave->priv->display_type = g_strdup (type);
 }
 
 static void
@@ -1444,6 +1583,14 @@ _gdm_slave_set_display_seat_id (GdmSlave   *slave,
 }
 
 static void
+_gdm_slave_set_display_session_id (GdmSlave   *slave,
+                                   const char *id)
+{
+        g_free (slave->priv->display_session_id);
+        slave->priv->display_session_id = g_strdup (id);
+}
+
+static void
 _gdm_slave_set_display_is_local (GdmSlave   *slave,
                                  gboolean    is)
 {
@@ -1467,6 +1614,9 @@ gdm_slave_set_property (GObject      *object,
         case PROP_DISPLAY_NAME:
                 _gdm_slave_set_display_name (self, g_value_get_string (value));
                 break;
+        case PROP_DISPLAY_TYPE:
+                _gdm_slave_set_display_type (self, g_value_get_string (value));
+                break;
         case PROP_DISPLAY_NUMBER:
                 _gdm_slave_set_display_number (self, g_value_get_int (value));
                 break;
@@ -1475,6 +1625,9 @@ gdm_slave_set_property (GObject      *object,
                 break;
         case PROP_DISPLAY_SEAT_ID:
                 _gdm_slave_set_display_seat_id (self, g_value_get_string (value));
+                break;
+        case PROP_DISPLAY_SESSION_ID:
+                _gdm_slave_set_display_session_id (self, g_value_get_string (value));
                 break;
         case PROP_DISPLAY_X11_AUTHORITY_FILE:
                 _gdm_slave_set_display_x11_authority_file (self, g_value_get_string (value));
@@ -1505,6 +1658,9 @@ gdm_slave_get_property (GObject    *object,
         case PROP_DISPLAY_NAME:
                 g_value_set_string (value, self->priv->display_name);
                 break;
+        case PROP_DISPLAY_TYPE:
+                g_value_set_string (value, self->priv->display_type);
+                break;
         case PROP_DISPLAY_NUMBER:
                 g_value_set_int (value, self->priv->display_number);
                 break;
@@ -1513,6 +1669,9 @@ gdm_slave_get_property (GObject    *object,
                 break;
         case PROP_DISPLAY_SEAT_ID:
                 g_value_set_string (value, self->priv->display_seat_id);
+                break;
+        case PROP_DISPLAY_SESSION_ID:
+                g_value_set_string (value, self->priv->display_session_id);
                 break;
         case PROP_DISPLAY_X11_AUTHORITY_FILE:
                 g_value_set_string (value, self->priv->display_x11_authority_file);
@@ -1608,6 +1767,13 @@ gdm_slave_class_init (GdmSlaveClass *klass)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_TYPE,
+                                         g_param_spec_string ("display-type",
+                                                              "display type",
+                                                              "display type",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
                                          PROP_DISPLAY_NUMBER,
                                          g_param_spec_int ("display-number",
                                                            "display number",
@@ -1626,6 +1792,13 @@ gdm_slave_class_init (GdmSlaveClass *klass)
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_SEAT_ID,
                                          g_param_spec_string ("display-seat-id",
+                                                              "",
+                                                              "",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_SESSION_ID,
+                                         g_param_spec_string ("display-session-id",
                                                               "",
                                                               "",
                                                               NULL,
@@ -1650,6 +1823,17 @@ gdm_slave_class_init (GdmSlaveClass *klass)
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
                               G_STRUCT_OFFSET (GdmSlaveClass, stopped),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE,
+                              0);
+
+        signals [FAILED] =
+                g_signal_new ("failed",
+                              G_TYPE_FROM_CLASS (object_class),
+                              G_SIGNAL_RUN_LAST,
+                              G_STRUCT_OFFSET (GdmSlaveClass, failed),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,
@@ -1685,6 +1869,7 @@ gdm_slave_finalize (GObject *object)
         g_free (slave->priv->id);
         g_free (slave->priv->display_id);
         g_free (slave->priv->display_name);
+        g_free (slave->priv->display_type);
         g_free (slave->priv->display_hostname);
         g_free (slave->priv->display_seat_id);
         g_free (slave->priv->display_x11_authority_file);

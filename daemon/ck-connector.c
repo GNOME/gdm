@@ -65,6 +65,7 @@ struct _CkConnector
 {
         int             refcount;
         char           *cookie;
+        char           *session_id;
         dbus_bool_t     session_created;
         DBusConnection *connection;
 };
@@ -76,8 +77,11 @@ static struct {
         { "display-device",     DBUS_TYPE_STRING },
         { "x11-display-device", DBUS_TYPE_STRING },
         { "x11-display",        DBUS_TYPE_STRING },
+        { "seat-id",            DBUS_TYPE_STRING },
+        { "session",            DBUS_TYPE_STRING },
         { "remote-host-name",   DBUS_TYPE_STRING },
         { "session-type",       DBUS_TYPE_STRING },
+        { "display-type",       DBUS_TYPE_STRING },
         { "is-local",           DBUS_TYPE_BOOLEAN },
         { "unix-user",          DBUS_TYPE_INT32 },
 };
@@ -181,6 +185,10 @@ _ck_connector_free (CkConnector *connector)
                 free (connector->cookie);
         }
 
+        if (connector->session_id != NULL) {
+                free (connector->session_id);
+        }
+
         free (connector);
 }
 
@@ -241,6 +249,7 @@ ck_connector_new (void)
         connector->refcount = 1;
         connector->connection = NULL;
         connector->cookie = NULL;
+        connector->session_id = NULL;
         connector->session_created = FALSE;
 oom:
         return connector;
@@ -266,6 +275,7 @@ ck_connector_open_session (CkConnector *connector,
         DBusMessage *reply;
         dbus_bool_t  ret;
         char        *cookie;
+        char        *session_id;
 
         _ck_return_val_if_fail (connector != NULL, FALSE);
         _ck_return_val_if_fail ((error) == NULL || !dbus_error_is_set ((error)), FALSE);
@@ -334,10 +344,68 @@ ck_connector_open_session (CkConnector *connector,
                 goto out;
         }
 
+        dbus_message_unref (message);
+        dbus_message_unref (reply);
+
+        message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
+                                                "/org/freedesktop/ConsoleKit/Manager",
+                                                "org.freedesktop.ConsoleKit.Manager",
+                                                "GetSessionForCookie");
+        if (message == NULL) {
+                goto out;
+        }
+
+        dbus_message_append_args (message, DBUS_TYPE_STRING, &connector->cookie,
+                                  DBUS_TYPE_INVALID);
+
+        dbus_error_init (&local_error);
+
+        reply = dbus_connection_send_with_reply_and_block (connector->connection,
+                                                           message,
+                                                           -1,
+                                                           &local_error);
+        if (reply == NULL) {
+                if (dbus_error_is_set (&local_error)) {
+                        dbus_set_error (error,
+                                        CK_CONNECTOR_ERROR,
+                                        "Unable to open session: %s",
+                                        local_error.message);
+                        dbus_error_free (&local_error);
+                        goto out;
+                }
+        }
+
+        dbus_error_init (&local_error);
+        if (! dbus_message_get_args (reply,
+                                     &local_error,
+                                     DBUS_TYPE_OBJECT_PATH, &session_id,
+                                     DBUS_TYPE_INVALID)) {
+                if (dbus_error_is_set (&local_error)) {
+                        dbus_set_error (error,
+                                        CK_CONNECTOR_ERROR,
+                                        "Unable to open session: %s",
+                                        local_error.message);
+                        dbus_error_free (&local_error);
+                        goto out;
+                }
+        }
+
+        connector->session_id = strdup (session_id);
+        if (connector->session_id == NULL) {
+                goto out;
+        }
+
         connector->session_created = TRUE;
         ret = TRUE;
 
 out:
+        if (!ret) {
+                free (connector->cookie);
+                connector->cookie = NULL;
+                free (connector->session_id);
+                connector->session_id = NULL;
+        }
+
         if (reply != NULL) {
                 dbus_message_unref (reply);
         }
@@ -362,6 +430,7 @@ ck_connector_open_session_with_parameters_valist (CkConnector *connector,
         DBusMessageIter iter_array;
         dbus_bool_t     ret;
         char           *cookie;
+        char           *session_id;
         const char     *name;
 
         _ck_return_val_if_fail (connector != NULL, FALSE);
@@ -467,6 +536,57 @@ ck_connector_open_session_with_parameters_valist (CkConnector *connector,
 
         connector->cookie = strdup (cookie);
         if (connector->cookie == NULL) {
+                goto out;
+        }
+
+        dbus_message_unref (message);
+        dbus_message_unref (reply);
+
+        message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
+                                                "/org/freedesktop/ConsoleKit/Manager",
+                                                "org.freedesktop.ConsoleKit.Manager",
+                                                "GetSessionForCookie");
+        if (message == NULL) {
+                goto out;
+        }
+
+        dbus_message_append_args (message, DBUS_TYPE_STRING, &connector->cookie,
+                                  DBUS_TYPE_INVALID);
+
+        dbus_error_init (&local_error);
+
+        reply = dbus_connection_send_with_reply_and_block (connector->connection,
+                                                           message,
+                                                           -1,
+                                                           &local_error);
+        if (reply == NULL) {
+                if (dbus_error_is_set (&local_error)) {
+                        dbus_set_error (error,
+                                        CK_CONNECTOR_ERROR,
+                                        "Unable to open session: %s",
+                                        local_error.message);
+                        dbus_error_free (&local_error);
+                        goto out;
+                }
+        }
+
+        dbus_error_init (&local_error);
+        if (! dbus_message_get_args (reply,
+                                     &local_error,
+                                     DBUS_TYPE_OBJECT_PATH, &session_id,
+                                     DBUS_TYPE_INVALID)) {
+                if (dbus_error_is_set (&local_error)) {
+                        dbus_set_error (error,
+                                        CK_CONNECTOR_ERROR,
+                                        "Unable to open session: %s",
+                                        local_error.message);
+                        dbus_error_free (&local_error);
+                        goto out;
+                }
+        }
+
+        connector->session_id = strdup (session_id);
+        if (connector->session_id == NULL) {
                 goto out;
         }
 
@@ -587,6 +707,73 @@ ck_connector_get_cookie (CkConnector *connector)
         } else {
                 return connector->cookie;
         }
+}
+
+/**
+ * Gets the id for the current open session.
+ * Returns #NULL if no session is open.
+ *
+ * @returns a constant string with the session id.
+ */
+const char *
+ck_connector_get_session_id (CkConnector *connector)
+{
+        _ck_return_val_if_fail (connector != NULL, NULL);
+
+        if (! connector->session_created) {
+                return NULL;
+        } else {
+                return connector->session_id;
+        }
+}
+
+dbus_bool_t
+ck_connector_set_remove_on_close (CkConnector *connector,
+                                  gboolean     remove_on_close,
+                                  DBusError   *error)
+{
+        DBusMessage *message;
+        dbus_bool_t  ret;
+        const char  *ssid = ck_connector_get_session_id (connector);
+
+        _ck_return_val_if_fail (connector != NULL, FALSE);
+        _ck_return_val_if_fail ((error) == NULL || !dbus_error_is_set ((error)), FALSE);
+        _ck_return_val_if_fail (ssid != NULL, FALSE);
+
+        message = NULL;
+        ret = FALSE;
+
+        if (!connector->session_created || connector->cookie == NULL) {
+                dbus_set_error (error,
+                                CK_CONNECTOR_ERROR,
+                                "Unable to close session: %s",
+                                "no session open");
+                goto out;
+        }
+
+        message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
+                                                ssid,
+                                                "org.freedesktop.ConsoleKit.Session",
+                                                "SetRemoveOnClose");
+        if (message == NULL) {
+                goto out;
+        }
+
+        if (! dbus_message_append_args (message,
+                                        DBUS_TYPE_BOOLEAN, &remove_on_close,
+                                        DBUS_TYPE_INVALID)) {
+                goto out;
+        }
+
+        ret = dbus_connection_send (connector->connection,
+                                      message,
+                                      NULL);
+out:
+        if (message != NULL) {
+                dbus_message_unref (message);
+        }
+
+        return ret;
 }
 
 /**

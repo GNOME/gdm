@@ -224,7 +224,7 @@ gdm_xdmcp_chooser_display_new (const char              *hostname,
                                "remote-hostname", hostname,
                                "x11-display-number", number,
                                "x11-display-name", x11_display,
-                               "is-local", FALSE,
+                               "is-local", TRUE,
                                "remote-address", address,
                                "session-number", session_number,
                                NULL);

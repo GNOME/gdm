@@ -1095,105 +1095,6 @@ AC_CHECK_LIB(devinfo, di_devperm_login, [
                             PAM_LIBS="$PAM_LIBS -ldevinfo" ])
 
 dnl ---------------------------------------------------------------------------
-dnl - Check for X Server location
-dnl ---------------------------------------------------------------------------
-
-# First check with "! -h" for /usr/X11R6 and /usr/X11 since they often
-# symlink to each other, and configure should use the more stable
-# location (the real directory) if possible.
-#
-# On Solaris, the /usr/bin/Xserver script is used to decide whether to
-# use Xsun or Xorg, so this is used on Solaris.
-#
-# When testing for /usr/X11R6, first check with "! -h" for /usr/X11R6
-# and /usr/X11 since they often symlink to each other, and configure
-# should use the more stable location (the real directory) if possible.
-#
-if test -x /usr/X11/bin/Xserver; then
-   X_PATH="/usr/X11/bin"
-   X_SERVER_PATH="/usr/X11/bin"
-   X_SERVER="/usr/X11/bin/Xserver"
-   X_CONFIG_OPTIONS="-audit 0"
-elif test ! -h /usr/X11R6 -a -x /usr/X11R6/bin/X; then
-   X_PATH="/usr/X11R6/bin"
-   X_SERVER_PATH="/usr/X11R6/bin"
-   X_SERVER="/usr/X11R6/bin/X"
-   X_CONFIG_OPTIONS="-audit 0"
-elif test ! -h /usr/X11 -a -x /usr/X11/bin/X; then
-   X_PATH="/usr/X11/bin"
-   X_SERVER_PATH="/usr/X11/bin"
-   X_SERVER="/usr/X11/bin/X"
-   X_CONFIG_OPTIONS="-audit 0"
-elif test -x /usr/X11R6/bin/X; then
-   X_PATH="/usr/X11R6/bin"
-   X_SERVER_PATH="/usr/X11R6/bin"
-   X_SERVER="/usr/X11R6/bin/X"
-   X_CONFIG_OPTIONS="-audit 0"
-elif test -x /usr/bin/Xorg; then
-   X_PATH="/usr/bin"
-   X_SERVER_PATH="/usr/bin"
-   X_SERVER="/usr/bin/Xorg"
-   X_CONFIG_OPTIONS="-audit 0"
-elif test -x /usr/X11/bin/X; then
-   X_PATH="/usr/X11/bin"
-   X_SERVER_PATH="/usr/X11/bin"
-   X_SERVER="/usr/X11/bin/X"
-   X_CONFIG_OPTIONS="-audit 0"
-elif test -x /usr/openwin/bin/Xsun; then
-   # Do not add /usr/openwin/bin here because on Solaris you need
-   # /usr/openwin/bin in your PATH even if you are using the Xorg
-   # Xserver.  We add this to the path below.
-   X_PATH="/usr/openwin/bin"
-   X_SERVER_PATH="/usr/openwin/bin"
-   X_SERVER="/usr/openwin/bin/Xsun"
-   X_CONFIG_OPTIONS="-audit 0 -nobanner"
-elif test -x /opt/X11R6/bin/X; then
-   X_PATH="/opt/X11R6/bin"
-   X_SERVER_PATH="/opt/X11R6/bin"
-   X_SERVER="/opt/X11R6/bin/X"
-   X_CONFIG_OPTIONS="-audit 0"
-elif test -x /usr/bin/X; then
-   X_PATH="/usr/bin"
-   X_SERVER_PATH="/usr/bin"
-   X_SERVER="/usr/bin/X"
-   X_CONFIG_OPTIONS="-audit 0"
-else
-   # what to do, what to do, this is wrong, but this just sets the
-   # defaults, perhaps this user is cross compiling or some such
-   X_PATH="/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin"
-   X_SERVER_PATH="/usr/X11R6/bin"
-   X_SERVER="/usr/X11R6/bin/X"
-   X_CONFIG_OPTIONS="-audit 0"
-fi
-
-dnl ---------------------------------------------------------------------------
-dnl - Check for Xnest / Xephyr support
-dnl ---------------------------------------------------------------------------
-
-# Use Xephyr if it is available.  It works better than Xnest since Xephyr
-# supports the Xserver extensions, even if on a remote machine.
-#
-X_XNEST_UNSCALED_FONTPATH="true"
-if test -x $X_SERVER_PATH/Xephyr; then
-    X_XNEST_CMD="$X_SERVER_PATH/Xephyr"
-    X_XNEST_CONFIG_OPTIONS="-audit 0"
-else
-    if test -x /usr/openwin/bin/Xnest; then
-        # If on Solaris, Xnest is only shipped with the Xsun Xserver, so
-        # use this version.
-        #
-        X_XNEST_CMD="/usr/openwin/bin/Xnest"
-        X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest -pn"
-        X_XNEST_UNSCALED_FONTPATH="false"
-    else
-        if test -x $X_SERVER_PATH/Xnest; then
-            X_XNEST_CMD="$X_SERVER_PATH/Xnest"
-            X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest"
-        fi
-    fi
-fi
-
-dnl ---------------------------------------------------------------------------
 dnl - Expand vars
 dnl ---------------------------------------------------------------------------
 
@@ -1357,27 +1258,27 @@ else
    XSESSION_SHELL=/bin/sh
 fi
 
+dnl ---------------------------------------------------------------------------
+dnl - PATH in scripts
+dnl ---------------------------------------------------------------------------
+AC_ARG_WITH(script-path,
+            AS_HELP_STRING([--with-script-path=<dir>],
+                           [script path]))
+
+if ! test -z "$with_script_path"; then
+   SCRIPT_PATH=$with_script_path
+else
+   SCRIPT_PATH=/usr/bin
+fi
+
+AC_SUBST(SCRIPT_PATH)
+
 # Set configuration choices.
 #
 AC_SUBST(XSESSION_SHELL)
 AC_DEFINE_UNQUOTED(XSESSION_SHELL,"$XSESSION_SHELL",[xsession shell])
 AC_SUBST(SOUND_PROGRAM)
 AC_DEFINE_UNQUOTED(SOUND_PROGRAM,"$SOUND_PROGRAM",[])
-
-AC_SUBST(X_PATH)
-AC_SUBST(X_SERVER)
-AC_SUBST(X_SERVER_PATH)
-AC_SUBST(X_CONFIG_OPTIONS)
-AC_DEFINE_UNQUOTED(X_SERVER,"$X_SERVER",[])
-AC_DEFINE_UNQUOTED(X_SERVER_PATH,"$X_SERVER_PATH",[])
-AC_DEFINE_UNQUOTED(X_CONFIG_OPTIONS,"$X_CONFIG_OPTIONS", [Options used when launching xserver])
-
-AC_SUBST(X_XNEST_CMD)
-AC_SUBST(X_XNEST_CONFIG_OPTIONS)
-AC_SUBST(X_XNEST_UNSCALED_FONTPATH)
-AC_DEFINE_UNQUOTED(X_XNEST_CMD,"$X_XNEST_CMD",[])
-AC_DEFINE_UNQUOTED(X_XNEST_CONFIG_OPTIONS,"$X_XNEST_CONFIG_OPTIONS",[])
-AC_DEFINE_UNQUOTED(X_XNEST_UNSCALED_FONTPATH,"$X_XNEST_UNSCALED_FONTPATH",[])
 
 ## Stuff for debian/changelog.in
 #if test -e "debian/changelog"; then
@@ -1403,6 +1304,9 @@ gui/user-switch-applet/Makefile
 utils/Makefile
 data/gdm.conf
 data/Makefile
+data/Init
+data/PostSession
+data/PreSession
 data/faces/Makefile
 data/greeter-autostart/Makefile
 data/greeter-autostart/at-spi-registryd-wrapper.desktop.in
@@ -1446,7 +1350,7 @@ echo "
 
         dbus-1 system.d dir:      ${DBUS_SYS_DIR}
         PAM prefix:               ${PAM_PREFIX}
-        X server:                 ${X_SERVER}
+        script path:              ${SCRIPT_PATH}
 "
 
 dnl TCP Wrappers support?

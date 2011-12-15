@@ -39,8 +39,6 @@ G_BEGIN_DECLS
 #define GDM_KEY_EXCLUDE "greeter/Exclude"
 #define GDM_KEY_INCLUDE_ALL "greeter/IncludeAll"
 
-#define GDM_KEY_DISALLOW_TCP "security/DisallowTCP"
-
 #define GDM_KEY_XDMCP_ENABLE "xdmcp/Enable"
 #define GDM_KEY_MAX_PENDING "xdmcp/MaxPending"
 #define GDM_KEY_MAX_SESSIONS "xdmcp/MaxSessions"
