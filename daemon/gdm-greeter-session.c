@@ -141,6 +141,7 @@ gdm_greeter_session_finalize (GObject *object)
 GdmGreeterSession *
 gdm_greeter_session_new (const char *display_name,
                          const char *seat_id,
+                         const char *session_id,
                          const char *display_device,
                          const char *display_hostname,
                          gboolean    display_is_local)
@@ -155,6 +156,7 @@ gdm_greeter_session_new (const char *display_name,
                                "register-ck-session", TRUE,
                                "x11-display-name", display_name,
                                "x11-display-seat-id", seat_id,
+                               "x11-display-session-id", session_id,
                                "x11-display-device", display_device,
                                "x11-display-hostname", display_hostname,
                                "x11-display-is-local", display_is_local,

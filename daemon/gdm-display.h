@@ -102,6 +102,9 @@ gboolean            gdm_display_unmanage                       (GdmDisplay *disp
 gboolean            gdm_display_get_id                         (GdmDisplay *display,
                                                                 char      **id,
                                                                 GError    **error);
+gboolean            gdm_display_get_x11_command                (GdmDisplay *display,
+                                                                char      **command,
+                                                                GError    **error);
 gboolean            gdm_display_get_remote_hostname            (GdmDisplay *display,
                                                                 char      **hostname,
                                                                 GError    **error);
@@ -111,11 +114,20 @@ gboolean            gdm_display_get_x11_display_number         (GdmDisplay *disp
 gboolean            gdm_display_get_x11_display_name           (GdmDisplay *display,
                                                                 char      **x11_display,
                                                                 GError    **error);
+gboolean            gdm_display_get_x11_display_type           (GdmDisplay *display,
+                                                                char      **type,
+                                                                GError    **error);
 gboolean            gdm_display_get_seat_id                    (GdmDisplay *display,
                                                                 char      **seat_id,
                                                                 GError    **error);
+gboolean            gdm_display_get_session_id                 (GdmDisplay *display,
+                                                                char      **session_id,
+                                                                GError    **error);
 gboolean            gdm_display_is_local                       (GdmDisplay *display,
                                                                 gboolean   *local,
+                                                                GError    **error);
+gboolean            gdm_display_use_auth                       (GdmDisplay *display,
+                                                                gboolean   *use_auth,
                                                                 GError    **error);
 gboolean            gdm_display_get_timed_login_details        (GdmDisplay *display,
                                                                 gboolean   *enabled,
@@ -130,6 +142,9 @@ gboolean            gdm_display_get_x11_cookie                 (GdmDisplay *disp
 gboolean            gdm_display_get_x11_authority_file         (GdmDisplay *display,
                                                                 char      **filename,
                                                                 GError    **error);
+gboolean            gdm_display_set_session_id                 (GdmDisplay *display,
+                                                                const char *text,
+                                                                GError    **error);
 gboolean            gdm_display_add_user_authorization         (GdmDisplay *display,
                                                                 const char *username,
                                                                 char      **filename,
@@ -140,6 +155,11 @@ gboolean            gdm_display_remove_user_authorization      (GdmDisplay *disp
 gboolean            gdm_display_set_slave_bus_name             (GdmDisplay *display,
                                                                 const char *name,
                                                                 GError    **error);
+gboolean            gdm_display_block_console_session_requests (GdmDisplay *display,
+                                                                GError    **error);
+
+gboolean            gdm_display_unblock_console_session_requests (GdmDisplay *display,
+                                                                  GError    **error);
 
 
 G_END_DECLS

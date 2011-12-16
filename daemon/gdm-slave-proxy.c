@@ -245,6 +245,7 @@ kill_slave (GdmSlaveProxy *slave)
                 g_warning ("Unable to kill slave process");
         } else {
                 exit_status = gdm_wait_on_pid (slave->priv->pid);
+                g_debug ("GdmSlaveProxy: Slave exit status %d", exit_status);
                 g_spawn_close_pid (slave->priv->pid);
                 slave->priv->pid = 0;
         }

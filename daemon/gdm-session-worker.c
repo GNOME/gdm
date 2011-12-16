@@ -115,6 +115,8 @@ struct GdmSessionWorkerPrivate
         /* from Setup */
         char             *service;
         char             *x11_display_name;
+        char             *x11_display_type;
+        char             *seat_id;
         char             *x11_authority_file;
         char             *display_device;
         char             *hostname;
@@ -174,6 +176,8 @@ open_ck_session (GdmSessionWorker  *worker)
         int            res;
         DBusError      error;
         const char     *display_name;
+        const char     *display_type;
+        const char     *seat_id;
         const char     *display_device;
         const char     *display_hostname;
         gboolean        is_local;
@@ -184,6 +188,16 @@ open_ck_session (GdmSessionWorker  *worker)
                 display_name = worker->priv->x11_display_name;
         } else {
                 display_name = "";
+        }
+        if (worker->priv->x11_display_type != NULL) {
+                display_type = worker->priv->x11_display_type;
+        } else {
+                display_type = "";
+        }
+        if (worker->priv->seat_id != NULL) {
+                seat_id = worker->priv->seat_id;
+        } else {
+                seat_id = "";
         }
         if (worker->priv->hostname != NULL) {
                 display_hostname = worker->priv->hostname;
@@ -221,6 +235,8 @@ open_ck_session (GdmSessionWorker  *worker)
         dbus_error_init (&error);
         res = ck_connector_open_session_with_parameters (worker->priv->ckc,
                                                          &error,
+                                                         "display-type", &display_type,
+                                                         "seat-id", &seat_id,
                                                          "unix-user", &pwent->pw_uid,
                                                          "x11-display", &display_name,
                                                          "x11-display-device", &display_device,
@@ -1553,6 +1569,7 @@ static void
 register_ck_session (GdmSessionWorker *worker)
 {
         const char *session_cookie;
+        const char *session_id;
         gboolean    res;
 
         session_cookie = NULL;
@@ -1565,6 +1582,11 @@ register_ck_session (GdmSessionWorker *worker)
                                                              "XDG_SESSION_COOKIE",
                                                              session_cookie);
         }
+        session_id = ck_connector_get_session_id (worker->priv->ckc);
+
+        send_dbus_string_method (worker->priv->connection,
+                                 "DisplayConsoleSessionUpdated",
+                                 session_id);
 }
 
 static void
@@ -1584,11 +1606,19 @@ session_worker_child_watch (GPid              pid,
         if (WIFEXITED (status)) {
                 int code = WEXITSTATUS (status);
 
+                ck_connector_set_remove_on_close (worker->priv->ckc,
+                                                  TRUE,
+                                                  NULL);
+
                 send_dbus_int_method (worker->priv->connection,
                                       "SessionExited",
                                       code);
         } else if (WIFSIGNALED (status)) {
                 int num = WTERMSIG (status);
+
+                ck_connector_set_remove_on_close (worker->priv->ckc,
+                                                  TRUE,
+                                                  NULL);
 
                 send_dbus_int_method (worker->priv->connection,
                                       "SessionDied",
@@ -1596,7 +1626,6 @@ session_worker_child_watch (GPid              pid,
         }
 
         if (worker->priv->ckc != NULL) {
-                ck_connector_close_session (worker->priv->ckc, NULL);
                 ck_connector_unref (worker->priv->ckc);
                 worker->priv->ckc = NULL;
         }
@@ -2352,6 +2381,8 @@ on_setup (GdmSessionWorker *worker,
         DBusError   error;
         const char *service;
         const char *x11_display_name;
+        const char *x11_display_type;
+        const char *seat_id;
         const char *x11_authority_file;
         const char *console;
         const char *hostname;
@@ -2367,6 +2398,8 @@ on_setup (GdmSessionWorker *worker,
                                      &error,
                                      DBUS_TYPE_STRING, &service,
                                      DBUS_TYPE_STRING, &x11_display_name,
+                                     DBUS_TYPE_STRING, &x11_display_type,
+                                     DBUS_TYPE_STRING, &seat_id,
                                      DBUS_TYPE_STRING, &console,
                                      DBUS_TYPE_STRING, &hostname,
                                      DBUS_TYPE_STRING, &x11_authority_file,
@@ -2374,6 +2407,8 @@ on_setup (GdmSessionWorker *worker,
         if (res) {
                 worker->priv->service = g_strdup (service);
                 worker->priv->x11_display_name = g_strdup (x11_display_name);
+                worker->priv->x11_display_type = g_strdup (x11_display_type);
+                worker->priv->seat_id = g_strdup (seat_id);
                 worker->priv->x11_authority_file = g_strdup (x11_authority_file);
                 worker->priv->display_device = g_strdup (console);
                 worker->priv->hostname = g_strdup (hostname);
@@ -2394,6 +2429,8 @@ on_setup_for_user (GdmSessionWorker *worker,
         DBusError   error;
         const char *service;
         const char *x11_display_name;
+        const char *x11_display_type;
+        const char *seat_id;
         const char *x11_authority_file;
         const char *console;
         const char *hostname;
@@ -2410,6 +2447,8 @@ on_setup_for_user (GdmSessionWorker *worker,
                                      &error,
                                      DBUS_TYPE_STRING, &service,
                                      DBUS_TYPE_STRING, &x11_display_name,
+                                     DBUS_TYPE_STRING, &x11_display_type,
+                                     DBUS_TYPE_STRING, &seat_id,
                                      DBUS_TYPE_STRING, &console,
                                      DBUS_TYPE_STRING, &hostname,
                                      DBUS_TYPE_STRING, &x11_authority_file,
@@ -2418,6 +2457,8 @@ on_setup_for_user (GdmSessionWorker *worker,
         if (res) {
                 worker->priv->service = g_strdup (service);
                 worker->priv->x11_display_name = g_strdup (x11_display_name);
+                worker->priv->x11_display_type = g_strdup (x11_display_type);
+                worker->priv->seat_id = g_strdup (seat_id);
                 worker->priv->x11_authority_file = g_strdup (x11_authority_file);
                 worker->priv->display_device = g_strdup (console);
                 worker->priv->hostname = g_strdup (hostname);
@@ -2614,6 +2655,10 @@ worker_dbus_filter_function (DBusConnection *connection,
             && strcmp (path, DBUS_PATH_LOCAL) == 0) {
 
                 g_debug ("GdmSessionWorker: Got disconnected from the server");
+
+                ck_connector_set_remove_on_close (worker->priv->ckc,
+                                                  TRUE,
+                                                  NULL);
 
                 dbus_connection_unref (connection);
                 worker->priv->connection = NULL;

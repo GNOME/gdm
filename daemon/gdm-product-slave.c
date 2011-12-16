@@ -482,14 +482,12 @@ on_server_died (GdmServer       *server,
 static gboolean
 gdm_product_slave_create_server (GdmProductSlave *slave)
 {
-        char    *display_name;
-        char    *auth_file;
+        char    *display_id;
         gboolean display_is_local;
 
         g_object_get (slave,
+                      "display-id", &display_id,
                       "display-is-local", &display_is_local,
-                      "display-name", &display_name,
-                      "display-x11-authority-file", &auth_file,
                       NULL);
 
         /* if this is local display start a server if one doesn't
@@ -497,7 +495,7 @@ gdm_product_slave_create_server (GdmProductSlave *slave)
         if (display_is_local) {
                 gboolean res;
 
-                slave->priv->server = gdm_server_new (display_name, auth_file);
+                slave->priv->server = gdm_server_new (display_id);
                 g_signal_connect (slave->priv->server,
                                   "exited",
                                   G_CALLBACK (on_server_exited),
@@ -529,8 +527,7 @@ gdm_product_slave_create_server (GdmProductSlave *slave)
                 g_timeout_add (500, (GSourceFunc)idle_connect_to_display, slave);
         }
 
-        g_free (display_name);
-        g_free (auth_file);
+        g_free (display_id);
 
         return TRUE;
 }

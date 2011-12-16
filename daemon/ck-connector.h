@@ -32,6 +32,7 @@
 
 #include <sys/types.h>
 #include <dbus/dbus.h>
+#include <glib.h>
 
 DBUS_BEGIN_DECLS
 
@@ -56,6 +57,10 @@ dbus_bool_t   ck_connector_open_session                 (CkConnector *ckc,
                                                          DBusError   *error);
 
 const char   *ck_connector_get_cookie                   (CkConnector *ckc);
+const char   *ck_connector_get_session_id               (CkConnector *ckc);
+dbus_bool_t   ck_connector_set_remove_on_close          (CkConnector *ckc,
+                                                         gboolean     remove_on_close,
+                                                         DBusError   *error);
 dbus_bool_t   ck_connector_close_session                (CkConnector *ckc,
                                                          DBusError   *error);
 

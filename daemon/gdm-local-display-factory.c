@@ -27,17 +27,29 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 
+#include <dbus/dbus-glib-lowlevel.h>
+
 #include "gdm-display-factory.h"
 #include "gdm-local-display-factory.h"
 #include "gdm-local-display-factory-glue.h"
 
+#include "gdm-marshal.h"
 #include "gdm-display-store.h"
 #include "gdm-static-display.h"
+#include "gdm-dynamic-display.h"
 #include "gdm-transient-display.h"
 #include "gdm-static-factory-display.h"
 #include "gdm-product-display.h"
 
 #define GDM_LOCAL_DISPLAY_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_LOCAL_DISPLAY_FACTORY, GdmLocalDisplayFactoryPrivate))
+
+#define CK_NAME              "org.freedesktop.ConsoleKit"
+#define CK_PATH              "/org/freedesktop/ConsoleKit"
+#define CK_INTERFACE         "org.freedesktop.ConsoleKit"
+#define CK_MANAGER_PATH      "/org/freedesktop/ConsoleKit/Manager"
+#define CK_MANAGER_INTERFACE "org.freedesktop.ConsoleKit.Manager"
+#define CK_SEAT_INTERFACE    "org.freedesktop.ConsoleKit.Seat"
+#define CK_SESSION_INTERFACE "org.freedesktop.ConsoleKit.Session"
 
 #define CK_SEAT1_PATH                       "/org/freedesktop/ConsoleKit/Seat1"
 
@@ -47,11 +59,17 @@
 
 #define MAX_DISPLAY_FAILURES 5
 
+#define IS_STR_SET(x) (x != NULL && x[0] != '\0')
+
+#define GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE (dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_STRING))
+
 struct GdmLocalDisplayFactoryPrivate
 {
         DBusGConnection *connection;
         DBusGProxy      *proxy;
+        DBusGProxy      *proxy_ck;
         GHashTable      *displays;
+        GHashTable      *managed_seat_proxies;
 
         /* FIXME: this needs to be per seat? */
         guint            num_failures;
@@ -65,7 +83,14 @@ static void     gdm_local_display_factory_class_init    (GdmLocalDisplayFactoryC
 static void     gdm_local_display_factory_init          (GdmLocalDisplayFactory      *factory);
 static void     gdm_local_display_factory_finalize      (GObject                     *object);
 
-static GdmDisplay *create_display                       (GdmLocalDisplayFactory      *factory);
+static gboolean create_static_displays                  (GdmLocalDisplayFactory      *factory);
+static void     on_display_status_changed               (GdmDisplay                  *display,
+                                                         GParamSpec                  *arg1,
+                                                         GdmLocalDisplayFactory      *factory);
+static void     on_block_console_session_requests_changed (GdmDisplay                  *display,
+                                                         GParamSpec                  *arg1,
+                                                         GdmLocalDisplayFactory      *factory);
+static gboolean connect_to_ck                           (GdmLocalDisplayFactory *factory);
 
 static gpointer local_display_factory_object = NULL;
 
@@ -179,6 +204,100 @@ store_display (GdmLocalDisplayFactory *factory,
         g_hash_table_insert (factory->priv->displays, GUINT_TO_POINTER (num), NULL);
 }
 
+static void
+store_remove_display (GdmLocalDisplayFactory *factory,
+                      guint32                 num,
+                      GdmDisplay             *display)
+{
+        GdmDisplayStore *store;
+
+        store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+        gdm_display_store_remove (store, display);
+
+        g_debug ("GdmLocalDisplayFactory: Remove display %d from store", num);
+
+        /* remove from our reserved spot */
+        g_hash_table_remove (factory->priv->displays, GUINT_TO_POINTER (num));
+}
+
+static gboolean
+lookup_by_session (const char     *id,
+                   GdmDisplay     *display,
+                   gpointer        user_data)
+{
+        char *key1 = user_data;
+        char *key2;
+
+        if (!GDM_IS_DISPLAY (display)) {
+                return FALSE;
+        }
+
+        gdm_display_get_session_id (display, &key2, NULL);
+
+        if (strcmp (key1, key2) == 0) {
+                g_free (key2);
+                return TRUE;
+        }
+        g_free (key2);
+
+        return FALSE;
+}
+
+static gboolean
+lookup_by_x11_display (const char     *id,
+                       GdmDisplay     *display,
+                       gpointer        user_data)
+{
+        char *key1 = user_data;
+        char *key2;
+
+        if (! GDM_IS_DISPLAY (display)) {
+                return FALSE;
+        }
+
+        gdm_display_get_x11_display_name (display, &key2, NULL);
+
+        if (strcmp (key1, key2) == 0) {
+                g_free (key2);
+                return TRUE;
+        }
+        g_free (key2);
+
+        return FALSE;
+}
+
+static gboolean
+lookup_by_x11_display_num (const char     *id,
+                           GdmDisplay     *display,
+                           gpointer        user_data)
+{
+        guint32 key1 = GPOINTER_TO_UINT (user_data);
+        int key2;
+
+        if (! GDM_IS_DISPLAY (display)) {
+                return FALSE;
+        }
+
+        gdm_display_get_x11_display_number (display, &key2, NULL);
+
+        if (key1 == key2) {
+                return TRUE;
+        }
+
+        return FALSE;
+}
+
+static GdmDisplay *
+factory_find_display (GdmLocalDisplayFactory *factory,
+                      GdmDisplayStoreFunc     predicate,
+                      gpointer                user_data)
+{
+       GdmDisplayStore *store;
+
+       store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
+       return gdm_display_store_find (store, predicate, user_data);
+}
+
 /*
   Example:
   dbus-send --system --dest=org.gnome.DisplayManager \
@@ -275,14 +394,113 @@ gdm_local_display_factory_create_product_display (GdmLocalDisplayFactory *factor
         return ret;
 }
 
+static gboolean
+display_has_pending_sessions (GdmLocalDisplayFactory *factory,
+                              GdmDisplay             *display)
+{
+        return g_object_get_data (G_OBJECT (display),
+                                  "gdm-local-display-factory-console-session-requests") != NULL;
+}
+
 static void
-on_static_display_status_changed (GdmDisplay             *display,
-                                  GParamSpec             *arg1,
-                                  GdmLocalDisplayFactory *factory)
+manage_next_pending_session_on_display (GdmLocalDisplayFactory *factory,
+                                        GdmDisplay             *display)
+{
+        GList    *pending_sessions;
+        GList    *next_session;
+        char     *ssid;
+
+        g_debug ("GdmLocalDisplayFactory: Manage next pending session on display");
+
+        pending_sessions = g_object_get_data (G_OBJECT (display),
+                                              "gdm-local-display-factory-console-session-requests");
+        next_session = g_list_last (pending_sessions);
+
+        if (next_session == NULL) {
+                return;
+        }
+
+        ssid = next_session->data;
+        pending_sessions = g_list_delete_link (pending_sessions, next_session);
+        g_object_set_data (G_OBJECT (display),
+                           "gdm-local-display-factory-console-session-requests",
+                           pending_sessions);
+
+        g_object_set (display, "session-id", ssid, NULL);
+        g_free (ssid);
+
+        gdm_display_manage (display);
+}
+
+static void
+discard_pending_session_on_display (GdmLocalDisplayFactory *factory,
+                                    GdmDisplay             *display,
+                                    const char             *ssid)
+{
+        GList    *pending_sessions;
+        GList    *node;
+
+        pending_sessions = g_object_get_data (G_OBJECT (display),
+                                              "gdm-local-display-factory-console-session-requests");
+        node = g_list_last (pending_sessions);
+
+        while (node != NULL) {
+                GList  *prev_node;
+                char   *node_ssid;
+
+                prev_node = node->prev;
+                node_ssid = node->data;
+
+                if (strcmp (node_ssid, ssid) == 0) {
+                        pending_sessions = g_list_delete_link (pending_sessions, node);
+                        break;
+                }
+
+                node = prev_node;
+        }
+
+        g_object_set_data (G_OBJECT (display),
+                           "gdm-local-display-factory-console-session-requests",
+                           pending_sessions);
+}
+
+static void
+on_block_console_session_requests_changed (GdmDisplay                  *display,
+                                           GParamSpec                  *arg1,
+                                           GdmLocalDisplayFactory      *factory)
+{
+        gboolean  display_is_blocked;
+        int       status;
+
+        g_object_get (G_OBJECT (display),
+                      "status", &status,
+                      "block-console-session-requests",
+                      &display_is_blocked, NULL);
+
+        if (display_is_blocked) {
+                int number;
+
+                gdm_display_get_x11_display_number (display, &number, NULL);
+                g_debug ("GdmLocalDisplayFactory: display :%d is blocked", number);
+                return;
+        }
+
+        if (status == GDM_DISPLAY_UNMANAGED) {
+                manage_next_pending_session_on_display (factory, display);
+        }
+}
+
+static void
+on_display_status_changed (GdmDisplay             *display,
+                           GParamSpec             *arg1,
+                           GdmLocalDisplayFactory *factory)
 {
         int              status;
         GdmDisplayStore *store;
         int              num;
+        gboolean         display_is_blocked;
+
+        g_debug ("GdmLocalDisplayFactory: Display Status Changed");
 
         num = -1;
         gdm_display_get_x11_display_number (display, &num, NULL);
@@ -292,16 +510,17 @@ on_static_display_status_changed (GdmDisplay             *display,
 
         status = gdm_display_get_status (display);
 
+        g_object_get (G_OBJECT (display),
+                      "block-console-session-requests",
+                      &display_is_blocked, NULL);
+
         g_debug ("GdmLocalDisplayFactory: static display status changed: %d", status);
         switch (status) {
         case GDM_DISPLAY_FINISHED:
-                /* remove the display number from factory->priv->displays
-                   so that it may be reused */
-                g_hash_table_remove (factory->priv->displays, GUINT_TO_POINTER (num));
-                gdm_display_store_remove (store, display);
-                /* reset num failures */
+                /* Do not remove the display number from factory->priv->displays
+                   here because it should be remove under signal "SessionRemoved"
+                 */
                 factory->priv->num_failures = 0;
-                create_display (factory);
                 break;
         case GDM_DISPLAY_FAILED:
                 /* leave the display number in factory->priv->displays
@@ -313,11 +532,13 @@ on_static_display_status_changed (GdmDisplay             *display,
                         g_warning ("GdmLocalDisplayFactory: maximum number of X display failures reached: check X server log for errors");
                         /* FIXME: should monitor hardware changes to
                            try again when seats change */
-                } else {
-                        create_display (factory);
                 }
                 break;
         case GDM_DISPLAY_UNMANAGED:
+                if (display_has_pending_sessions (factory, display) && !display_is_blocked) {   
+                        store_display (factory, num, display);
+                        manage_next_pending_session_on_display (factory, display);
+                }
                 break;
         case GDM_DISPLAY_PREPARED:
                 break;
@@ -329,38 +550,535 @@ on_static_display_status_changed (GdmDisplay             *display,
         }
 }
 
-static GdmDisplay *
-create_display (GdmLocalDisplayFactory *factory)
+static void
+seat_open_session_request (DBusGProxy             *seat_proxy,
+                           const char             *ssid,
+                           const char             *session_type,
+                           const char             *display_template_name,
+                           GHashTable             *display_variables,
+                           const char             *display_type,
+                           GHashTable             *parameters,
+                           GdmLocalDisplayFactory *factory)
 {
         GdmDisplay *display;
-        guint32     num;
+        gint        argc;
+        gchar     **argv;
+        GError     *error;
+        char       *comm = NULL;
+        const char *sid = NULL;
+        gint32      display_number;
+        gboolean    is_chooser = FALSE;
+        gboolean    use_auth = FALSE;
+        int         i;
+        char       *xserver_command;
+        gboolean    display_is_blocked;
+        GList      *pending_sessions;
 
-        num = take_next_display_number (factory);
+        g_return_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory));
 
-#if 0
-        display = gdm_static_factory_display_new (num);
-#else
-        display = gdm_static_display_new (num);
-#endif
+        g_debug ("GdmLocalDisplayFactory: Open Session Request");
 
-        /* FIXME: don't hardcode seat1? */
-        g_object_set (display, "seat-id", CK_SEAT1_PATH, NULL);
+        display_is_blocked = FALSE;
 
-        g_signal_connect (display,
-                          "notify::status",
-                          G_CALLBACK (on_static_display_status_changed),
-                          factory);
+        display = factory_find_display (factory, lookup_by_session, (gpointer)ssid);
 
-        store_display (factory, num, display);
-
-        /* let store own the ref */
-        g_object_unref (display);
-
-        if (! gdm_display_manage (display)) {
-                gdm_display_unmanage (display);
+        if (display != NULL) {
+                g_object_get (G_OBJECT (display),
+                              "block-console-session-requests",
+                              &display_is_blocked, NULL);
         }
 
-        return display;
+        if (strcmp (display_type, "X11") != 0) {
+                g_warning ("Unknown display type '%s' requested", display_type);
+                return;
+        }
+
+        xserver_command = g_hash_table_lookup (parameters, "Exec");
+
+        if (! g_shell_parse_argv (xserver_command, &argc, &argv, &error)) {
+                g_warning ("Could not parse command %s: %s", xserver_command, error->message);
+                g_error_free (error);
+                return;
+        }
+
+        g_debug("GdmLocalDisplayFactory: X11 server cmd pre-mangle: %s",
+                xserver_command);
+        for (i = 0; i < argc; i++) {
+                /* replase $display in case of not specified */
+                if (g_str_equal (argv[i], "$display")) {
+                        display_number = take_next_display_number (factory);
+                        argv[i][0] = '\0';
+                        continue;
+                }
+
+                /* get display_number in case of specified */
+                if (g_str_has_prefix (argv[i], ":")) {
+                        display_number = atoi (argv[i]+1);
+                        argv[i][0] = '\0';
+                        continue;
+                }
+
+                if (! g_strcmp0 (argv[i], "-indirect")) {
+                        is_chooser = TRUE;
+                        continue;
+                }
+
+                /*
+                 * -auth is added by gdm_server_resolve_command_line()
+                 * in gdm-server.c
+                 */
+                if (! g_strcmp0 (argv[i], "-auth") &&
+                    ! g_strcmp0 (argv[i+1], "$auth")) {
+                        use_auth = TRUE;
+                        argv[i][0] = '\0';
+                        argv[++i][0] = '\0';
+                        continue;
+                }
+
+                if (!g_strcmp0 (argv[i], "$vt")) {
+                        argv[i][0] = '\0';
+                        continue;
+                }
+        }
+        comm = g_strjoinv (" ", argv);
+        g_debug ("GdmLocalDisplayFactory: X11 server cmd post-mangle: %s",
+                 comm);
+        g_strfreev (argv);
+
+        if (display == NULL) {
+                if (is_chooser) {
+                        /* TODO: Start a xdmcp chooser as request */
+
+                        /* display = gdm_xdmcp_chooser_display_new (display_number); */
+                } else {
+                        display = gdm_dynamic_display_new (display_number);
+                }
+
+                if (display == NULL) {
+                        g_warning ("Unable to create display: %d", display_number);
+                        g_free (comm);
+                        return;
+                }
+
+                g_object_set (display, "session-id", ssid, NULL);
+
+                sid = dbus_g_proxy_get_path (seat_proxy);
+                if (IS_STR_SET (sid))
+                        g_object_set (display, "seat-id", sid, NULL);
+                if (IS_STR_SET (comm))
+                        g_object_set (display, "x11-command", comm, NULL);
+                g_free (comm);
+                if (IS_STR_SET (display_template_name))
+                        g_object_set (display, "x11-display-type", display_template_name, NULL);
+                g_object_set (display, "use-auth", use_auth, NULL);
+
+                g_signal_connect (display,
+                                  "notify::status",
+                                  G_CALLBACK (on_display_status_changed),
+                                  factory);
+
+                g_signal_connect (display,
+                                  "notify::block-console-session-requests",
+                                  G_CALLBACK (on_block_console_session_requests_changed),
+                                  factory);
+
+                store_display (factory, display_number, display);
+
+                g_object_unref (display);
+
+                if (! gdm_display_manage (display)) {
+                    gdm_display_unmanage (display);
+                }
+
+                return;
+        }
+
+        /* FIXME: Make sure the display returned is compatible
+         */
+
+        if (!display_is_blocked) {
+                /* FIXME: What do we do here?
+                 */
+                g_debug ("Got console request to add display for session that "
+                         "already has a display, and display is already in "
+                         "use");
+                return;
+        }
+
+        pending_sessions = g_object_get_data (G_OBJECT (display),
+                                              "gdm-local-display-factory-console-session-requests");
+        pending_sessions = g_list_prepend (pending_sessions, g_strdup (ssid));
+
+        g_object_set_data (G_OBJECT (display),
+                           "gdm-local-display-factory-console-session-requests",
+                           pending_sessions);
+}
+
+static void
+seat_close_session_request (DBusGProxy             *seat_proxy,
+                            const char             *ssid,
+                            GdmLocalDisplayFactory *factory)
+{
+        GdmDisplay      *display;
+        int              display_number;
+        char            *display_ssid;
+
+        g_debug ("GdmLocalDisplayFactory: Close session request");
+
+        g_return_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory));
+
+        display = factory_find_display (factory, lookup_by_session, (gpointer)ssid);
+
+        if (display == NULL) {
+                g_debug ("GdmLocalDisplayFactory: display for session '%s' doesn't exists", ssid);
+                return;
+        }
+
+        g_object_get (G_OBJECT (display), "session-id", &display_ssid, NULL);
+
+        if (display_ssid == NULL || strcmp (ssid, display_ssid) != 0) {
+                g_free (display_ssid);
+                discard_pending_session_on_display (factory, display, ssid);
+                return;
+        }
+        g_free (display_ssid);
+
+        if (! gdm_display_unmanage (display)) {
+                display = NULL;
+                return;
+        }
+
+        gdm_display_get_x11_display_number (display, &display_number, NULL);
+        store_remove_display (factory, display_number, display);
+}
+
+static void
+seat_session_no_respawn (DBusGProxy             *seat_proxy,
+                         const char             *ssid,
+                         GdmLocalDisplayFactory *factory)
+{
+        GdmDisplay      *display;
+        int              display_number;
+        char            *display_ssid;
+
+        g_debug ("GdmLocalDisplayFactory: No Respawn");
+
+        g_return_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory));
+
+        display = factory_find_display (factory, lookup_by_session, (gpointer)ssid);
+
+        if (display == NULL) {
+                g_debug ("GdmLocalDisplayFactory: display for session '%s' doesn't exists", ssid);
+                return;
+        }
+
+        if (GDM_IS_DYNAMIC_DISPLAY (display)) {
+                gdm_dynamic_display_removed (GDM_DYNAMIC_DISPLAY (display));
+        }
+}
+
+static gboolean
+get_session_x11_display (GdmLocalDisplayFactory *factory,
+                         const char             *ssid,
+                         char                   **x11_display)
+{
+        DBusGProxy      *proxy;
+        gboolean        res;
+
+        if (!x11_display)
+                return FALSE;
+
+        proxy = dbus_g_proxy_new_for_name (factory->priv->connection,
+                                           CK_NAME,
+                                           ssid,
+                                           CK_SESSION_INTERFACE);
+        if (proxy == NULL) {
+                return FALSE;
+        }
+
+        res = dbus_g_proxy_call (proxy,
+                                 "GetX11Display",
+                                 NULL,
+                                 G_TYPE_INVALID,
+                                 G_TYPE_STRING, x11_display,
+                                 G_TYPE_INVALID);
+        if (!res) {
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
+static void
+seat_session_added (DBusGProxy             *seat_proxy,
+                    const char             *ssid,
+                    GdmLocalDisplayFactory *factory)
+{
+         GdmDisplay      *display;
+         char            *x11_display;
+         gboolean         res;
+
+         g_debug ("GdmLocalDisplayFactory: Adding Seat Session");
+
+         res = get_session_x11_display (factory, ssid, &x11_display);
+         if (!res) {
+                 g_warning ("Failed to get X11 display number for %s", ssid);
+                 return;
+         }
+
+         display = factory_find_display (factory, lookup_by_x11_display, 
+x11_display);
+         if (display) {
+                 gdm_display_set_session_id (display, ssid, NULL);
+                 g_debug ("Update session id for display %s to %s",
+                                 x11_display, ssid);
+         }
+         g_free (x11_display);
+}
+
+
+static void
+seat_session_removed (DBusGProxy             *seat_proxy,
+                      const char             *ssid,
+                      GdmLocalDisplayFactory *factory)
+{
+         GdmDisplay      *display = NULL;
+         gboolean         res;
+         int              status;
+         int              num;
+
+         g_debug ("GdmLocalDisplayFactory: Removed Seat Session");
+
+         display = factory_find_display (factory, lookup_by_session, 
+(gpointer)ssid);
+         if (display) {
+                 num = -1;
+                 gdm_display_get_x11_display_number (display, &num, NULL);
+                 g_assert (num != -1);
+                 store_remove_display (factory, num, display);
+         }
+}
+
+static void
+seat_remove_request (DBusGProxy             *seat_proxy,
+                     GdmLocalDisplayFactory *factory)
+{
+        GHashTableIter iter;
+        gpointer key, value;
+        const char *sid_to_remove;
+        GQueue      ssids_to_remove;
+
+        g_debug ("GdmLocalDisplayFactory: Seat Remove Request");
+
+        sid_to_remove = dbus_g_proxy_get_path (seat_proxy);
+
+        g_queue_init (&ssids_to_remove);
+        g_hash_table_iter_init (&iter, factory->priv->displays);
+        while (g_hash_table_iter_next (&iter, &key, &value)) {
+                GdmDisplay *display;
+                char       *sid;
+                guint32     x11_display_num;
+
+                x11_display_num = GPOINTER_TO_UINT (key);
+                display = factory_find_display (factory,
+                                                lookup_by_x11_display_num,
+                                                GUINT_TO_POINTER (x11_display_num));
+
+                gdm_display_get_seat_id (display, &sid, NULL);
+
+                if (strcmp (sid, sid_to_remove) == 0) {
+                        char       *ssid;
+
+                        gdm_display_get_session_id (display, &ssid, NULL);
+
+                        g_queue_push_tail (&ssids_to_remove, ssid);
+                }
+
+                g_free (sid);
+        }
+
+        while (!g_queue_is_empty (&ssids_to_remove)) {
+                char       *ssid;
+
+                ssid = g_queue_pop_head (&ssids_to_remove);
+
+                seat_close_session_request (seat_proxy, ssid, factory);
+
+                g_free (ssid);
+        }
+
+        g_hash_table_remove (factory->priv->managed_seat_proxies, sid_to_remove);
+
+        dbus_g_proxy_call_no_reply (seat_proxy,
+                                    "Unmanage",
+                                    G_TYPE_INVALID,
+                                    G_TYPE_INVALID);
+
+        if (factory->priv->proxy_ck == NULL) {
+                connect_to_ck (factory);
+        }
+
+        dbus_g_proxy_call_no_reply (factory->priv->proxy_ck,
+                                    "RemoveSeat",
+                                    DBUS_TYPE_G_OBJECT_PATH, sid_to_remove,
+                                    G_TYPE_INVALID,
+                                    G_TYPE_INVALID);
+}
+
+static void
+manage_static_sessions_per_seat (GdmLocalDisplayFactory *factory,
+                                 const char             *sid)
+{
+        DBusGProxy *proxy;
+
+        g_debug ("GdmLocalDisplayFactory: Manage Static Sessions Per Seat");
+
+        proxy = dbus_g_proxy_new_for_name (factory->priv->connection,
+                                           CK_NAME,
+                                           sid,
+                                           CK_SEAT_INTERFACE);
+
+        if (proxy == NULL) {
+                g_warning ("Failed to connect to the ConsoleKit seat object");
+                return;
+        }
+
+        dbus_g_object_register_marshaller (gdm_marshal_VOID__STRING_STRING_STRING_POINTER_STRING_POINTER,
+                                           G_TYPE_NONE,
+                                           DBUS_TYPE_G_OBJECT_PATH,
+                                           G_TYPE_STRING,
+                                           G_TYPE_STRING,
+                                           GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
+                                           G_TYPE_STRING,
+                                           GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
+                                           G_TYPE_INVALID);
+
+        dbus_g_proxy_add_signal (proxy,
+                                 "OpenSessionRequest",
+                                 DBUS_TYPE_G_OBJECT_PATH,
+                                 G_TYPE_STRING,
+                                 G_TYPE_STRING,
+                                 GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
+                                 G_TYPE_STRING,
+                                 GDM_DBUS_TYPE_G_STRING_STRING_HASHTABLE,
+                                 G_TYPE_INVALID);
+        dbus_g_proxy_add_signal (proxy,
+                                 "CloseSessionRequest",
+                                 DBUS_TYPE_G_OBJECT_PATH,
+                                 G_TYPE_INVALID);
+        dbus_g_proxy_add_signal (proxy,
+                                 "NoRespawn",
+                                 DBUS_TYPE_G_OBJECT_PATH,
+                                 G_TYPE_INVALID);
+        dbus_g_proxy_add_signal (proxy,
+                                 "SessionAdded",
+                                 DBUS_TYPE_G_OBJECT_PATH,
+                                 G_TYPE_INVALID);
+        dbus_g_proxy_add_signal (proxy,
+                                 "SessionRemoved",
+                                 DBUS_TYPE_G_OBJECT_PATH,
+                                 G_TYPE_INVALID);
+        dbus_g_proxy_add_signal (proxy,
+                                 "RemoveRequest",
+                                 G_TYPE_INVALID);
+        dbus_g_proxy_connect_signal (proxy,
+                                     "OpenSessionRequest",
+                                     G_CALLBACK (seat_open_session_request),
+                                     factory,
+                                     NULL);
+        dbus_g_proxy_connect_signal (proxy,
+                                     "CloseSessionRequest",
+                                     G_CALLBACK (seat_close_session_request),
+                                     factory,
+                                     NULL);
+        dbus_g_proxy_connect_signal (proxy,
+                                     "NoRespawn",
+                                     G_CALLBACK (seat_session_no_respawn),
+                                     factory,
+                                     NULL);
+        dbus_g_proxy_connect_signal (proxy,
+                                     "SessionAdded",
+                                     G_CALLBACK (seat_session_added),
+                                     factory,
+                                     NULL);
+        dbus_g_proxy_connect_signal (proxy,
+                                     "SessionRemoved",
+                                     G_CALLBACK (seat_session_removed),
+                                     factory,
+                                     NULL);
+        dbus_g_proxy_connect_signal (proxy,
+                                     "RemoveRequest",
+                                     G_CALLBACK (seat_remove_request),
+                                     factory,
+                                     NULL);
+
+        dbus_g_proxy_call_no_reply (proxy,
+                                    "Manage",
+                                    G_TYPE_INVALID,
+                                    G_TYPE_INVALID);
+
+        g_hash_table_insert (factory->priv->managed_seat_proxies,
+                             g_strdup (dbus_g_proxy_get_path (proxy)),
+                             proxy);
+}
+
+static void
+seat_added (DBusGProxy             *mgr_proxy,
+            const char             *sid,
+            const char             *type,
+            GdmLocalDisplayFactory *factory)
+{
+        g_debug ("GdmLocalDisplayFactory: Seat Added");
+
+        if (strcmp (type, "Default") == 0) {
+                manage_static_sessions_per_seat (factory, sid);
+        }
+}
+
+static gboolean
+create_static_displays (GdmLocalDisplayFactory *factory)
+{
+        GError     *error;
+        gboolean    res;
+        GPtrArray  *seats;
+        int         i;
+
+        g_debug ("GdmLocalDisplayFactory: Create Static Display");
+
+        seats = NULL;
+
+        if (factory->priv->proxy_ck == NULL) {
+                connect_to_ck (factory);
+        }
+
+        error = NULL;
+        res = dbus_g_proxy_call (factory->priv->proxy_ck,
+                                 "GetUnmanagedSeats",
+                                 &error,
+                                 G_TYPE_INVALID,
+                                 dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH),
+                                 &seats,
+                                 G_TYPE_INVALID);
+        if (! res) {
+                if (error != NULL) {
+                g_warning ("Failed to get list of unmanaged seats: %s", error->message);
+                g_error_free (error);
+                }
+                return FALSE;
+        }
+
+        for (i = 0; i < seats->len; i++) {
+                char *sid;
+
+                sid = g_ptr_array_index (seats, i);
+
+                manage_static_sessions_per_seat (factory, sid);
+
+                g_free (sid);
+        }
+
+        return TRUE;
+
 }
 
 static gboolean
@@ -375,7 +1093,7 @@ gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
         ret = TRUE;
 
         /* FIXME: use seat configuration */
-        display = create_display (factory);
+        display = create_static_displays (factory);
         if (display == NULL) {
                 ret = FALSE;
         }
@@ -439,6 +1157,68 @@ register_factory (GdmLocalDisplayFactory *factory)
         return TRUE;
 }
 
+static void
+bus_proxy_destroyed_cb (DBusGProxy  *bus_proxy,
+                        GdmLocalDisplayFactoryPrivate *priv)
+{
+        g_debug ("Local Display Factory - Disconnected from D-Bus");
+
+        if (priv == NULL) {
+                /* probably shutting down or something */
+                return;
+        }
+
+        priv->proxy_ck = NULL;
+}
+
+static gboolean
+connect_to_ck (GdmLocalDisplayFactory *factory)
+{
+        GdmLocalDisplayFactoryPrivate *priv;
+
+        g_debug ("GdmLocalDisplayFactory: Connect To ConsoleKit");
+
+        priv = factory->priv;
+
+        priv->proxy_ck = dbus_g_proxy_new_for_name (priv->connection,
+                                                    CK_NAME,
+                                                    CK_MANAGER_PATH,
+                                                    CK_MANAGER_INTERFACE);
+
+        if (priv->proxy_ck == NULL) {
+                g_warning ("Couldn't create proxy for ConsoleKit Manager");
+                return FALSE;
+        }
+
+        dbus_g_object_register_marshaller (gdm_marshal_VOID__STRING_STRING,
+                                           G_TYPE_NONE,
+                                           G_TYPE_STRING, G_TYPE_STRING,
+                                           G_TYPE_INVALID);
+
+        dbus_g_proxy_add_signal (priv->proxy_ck,
+                                 "SeatAdded",
+                                 G_TYPE_STRING,
+                                 G_TYPE_STRING,
+                                 G_TYPE_INVALID);
+        dbus_g_proxy_connect_signal (priv->proxy_ck,
+                                     "SeatAdded",
+                                     G_CALLBACK (seat_added),
+                                     factory,
+                                     NULL);
+        g_signal_connect (priv->proxy_ck,
+                          "destroy",
+                          G_CALLBACK (bus_proxy_destroyed_cb),
+                          priv);
+}
+
+static void
+disconnect_from_ck (GdmLocalDisplayFactory *factory)
+{
+        if (factory->priv->proxy_ck == NULL) {
+                g_object_unref (factory->priv->proxy_ck);
+        }
+}
+
 static GObject *
 gdm_local_display_factory_constructor (GType                  type,
                                        guint                  n_construct_properties,
@@ -455,6 +1235,8 @@ gdm_local_display_factory_constructor (GType                  type,
         if (! res) {
                 g_warning ("Unable to register local display factory with system bus");
         }
+
+        connect_to_ck (factory);
 
         return G_OBJECT (factory);
 }
@@ -484,6 +1266,11 @@ gdm_local_display_factory_init (GdmLocalDisplayFactory *factory)
         factory->priv = GDM_LOCAL_DISPLAY_FACTORY_GET_PRIVATE (factory);
 
         factory->priv->displays = g_hash_table_new (NULL, NULL);
+        factory->priv->proxy_ck = NULL;
+
+        factory->priv->managed_seat_proxies = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                                    (GDestroyNotify) g_free,
+                                                                    (GDestroyNotify) g_object_unref);
 }
 
 static void
@@ -499,6 +1286,9 @@ gdm_local_display_factory_finalize (GObject *object)
         g_return_if_fail (factory->priv != NULL);
 
         g_hash_table_destroy (factory->priv->displays);
+        g_hash_table_destroy (factory->priv->managed_seat_proxies);
+
+        disconnect_from_ck (factory);
 
         G_OBJECT_CLASS (gdm_local_display_factory_parent_class)->finalize (object);
 }

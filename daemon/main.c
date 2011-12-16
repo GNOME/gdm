@@ -215,7 +215,19 @@ bus_proxy_destroyed_cb (DBusGProxy  *bus_proxy,
         g_object_unref (*managerp);
         *managerp = NULL;
 
+#if __sun
+        /*
+         * This function is only called when the D-Bus Service exits.  Calling
+         * this timeout function causes all GDM sessions to exit anyway.  The
+         * timeout function just cauess GDM to act like it is starting again.
+         * Since SMF already takes care of restarting GDM on Solaris, and since
+         * using the timeout confuses SMF, just exit and let SMF take care of
+         * this.
+         */
+        exit (-1);
+#else
         g_timeout_add_seconds (3, (GSourceFunc)bus_reconnect, managerp);
+#endif
 }
 
 static void

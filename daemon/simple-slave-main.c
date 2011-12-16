@@ -154,6 +154,15 @@ on_slave_stopped (GdmSlave   *slave,
         g_main_loop_quit (main_loop);
 }
 
+static void
+on_slave_failed (GdmSlave   *slave,
+                 GMainLoop  *main_loop)
+{
+        g_debug ("slave failed");
+        gdm_return_code = 1;
+        g_main_loop_quit (main_loop);
+}
+
 static gboolean
 is_debug_set (void)
 {
@@ -255,6 +264,10 @@ main (int    argc,
         g_signal_connect (slave,
                           "stopped",
                           G_CALLBACK (on_slave_stopped),
+                          main_loop);
+        g_signal_connect (slave,
+                          "failed",
+                          G_CALLBACK (on_slave_failed),
                           main_loop);
         gdm_slave_start (slave);
 
