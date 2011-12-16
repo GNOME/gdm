@@ -990,6 +990,13 @@ gdm_greeter_server_stop (GdmGreeterServer *greeter_server)
 
         g_debug ("GreeterServer: Stopping greeter server...");
 
+        dbus_server_disconnect (greeter_server->priv->server);
+        dbus_server_unref (greeter_server->priv->server);
+        greeter_server->priv->server = NULL;
+
+        g_free (greeter_server->priv->server_address);
+        greeter_server->priv->server_address = NULL;
+
         return ret;
 }
 
