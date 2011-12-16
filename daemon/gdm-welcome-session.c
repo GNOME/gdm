@@ -362,7 +362,7 @@ next_line:
 }
 
 static GPtrArray *
-get_welcome_environment (GdmWelcomeSession *welcome_session)
+get_welcome_environment (GdmWelcomeSession *welcome_session, gboolean start_session)
 {
         GPtrArray     *env;
         GHashTable    *hash;
@@ -442,6 +442,15 @@ get_welcome_environment (GdmWelcomeSession *welcome_session)
                 g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup (pwent->pw_shell));
         }
 
+        if (start_session && welcome_session->priv->x11_display_seat_id != NULL) {
+                char *seat_id;
+
+                seat_id = welcome_session->priv->x11_display_seat_id +
+                        strlen ("/org/freedesktop/ConsoleKit/");
+
+                g_hash_table_insert (hash, g_strdup ("GCONF_DEFAULT_SOURCE_PATH"), g_strdup (GCONF_DEFAULTPATH));
+                g_hash_table_insert (hash, g_strdup ("GDM_SEAT_ID"), g_strdup (seat_id));
+        }
 
         g_hash_table_insert (hash, g_strdup ("PATH"), g_strdup (g_getenv ("PATH")));
         g_hash_table_insert (hash, g_strdup ("WINDOWPATH"), g_strdup (g_getenv ("WINDOWPATH")));
@@ -537,6 +546,7 @@ typedef struct {
         const char *group_name;
         const char *runtime_dir;
         const char *log_file;
+        const char *seat_id;
 } SpawnChildData;
 
 static void
@@ -562,6 +572,26 @@ spawn_child_setup (SpawnChildData *data)
                 g_warning (_("Group %s doesn't exist"),
                            data->group_name);
                 _exit (1);
+        }
+
+        if (pwent->pw_dir != NULL) {
+                struct stat statbuf;
+                const char *seat_id;
+                char       *gconf_dir;
+                int         r;
+
+                seat_id = data->seat_id + strlen ("/org/freedesktop/ConsoleKit/");
+                gconf_dir = g_strdup_printf ("%s/%s", pwent->pw_dir, seat_id);
+
+                /* Verify per-seat gconf directory exists, create if needed */
+                r = g_stat (gconf_dir, &statbuf);
+                if (r < 0) {
+                        g_debug ("Making per-seat gconf directory %s", gconf_dir);
+                        g_mkdir (gconf_dir, S_IRWXU | S_IXGRP | S_IRGRP);
+                        g_chmod (gconf_dir, S_IRWXU | S_IXGRP | S_IRGRP);
+                        chown (gconf_dir, pwent->pw_uid, grent->gr_gid);
+                }
+                g_free (gconf_dir);
         }
 
         g_debug ("GdmWelcomeSession: Setting up run time dir %s", data->runtime_dir);
@@ -633,6 +663,7 @@ static gboolean
 spawn_command_line_sync_as_user (const char *command_line,
                                  const char *user_name,
                                  const char *group_name,
+                                 const char *seat_id,
                                  const char *runtime_dir,
                                  const char *log_file,
                                  char       **env,
@@ -661,6 +692,7 @@ spawn_command_line_sync_as_user (const char *command_line,
         data.group_name = group_name;
         data.runtime_dir = runtime_dir;
         data.log_file = log_file;
+        data.seat_id = seat_id;
 
         local_error = NULL;
         res = g_spawn_sync (NULL,
@@ -691,6 +723,7 @@ static gboolean
 spawn_command_line_async_as_user (const char *command_line,
                                   const char *user_name,
                                   const char *group_name,
+                                  const char *seat_id,
                                   const char *runtime_dir,
                                   const char *log_file,
                                   char      **env,
@@ -717,6 +750,7 @@ spawn_command_line_async_as_user (const char *command_line,
         data.group_name = group_name;
         data.runtime_dir = runtime_dir;
         data.log_file = log_file;
+        data.seat_id = seat_id;
 
         local_error = NULL;
         res = g_spawn_async (NULL,
@@ -829,7 +863,7 @@ start_dbus_daemon (GdmWelcomeSession *welcome_session)
 
         g_debug ("GdmWelcomeSession: Starting D-Bus daemon");
 
-        env = get_welcome_environment (welcome_session);
+        env = get_welcome_environment (welcome_session, FALSE);
 
         std_out = NULL;
         std_err = NULL;
@@ -837,6 +871,7 @@ start_dbus_daemon (GdmWelcomeSession *welcome_session)
         res = spawn_command_line_sync_as_user (DBUS_LAUNCH_COMMAND,
                                                welcome_session->priv->user_name,
                                                welcome_session->priv->group_name,
+                                               welcome_session->priv->x11_display_seat_id,
                                                welcome_session->priv->runtime_dir,
                                                NULL, /* log file */
                                                (char **)env->pdata,
@@ -891,7 +926,7 @@ gdm_welcome_session_spawn (GdmWelcomeSession *welcome_session)
                 /* FIXME: */
         }
 
-        env = get_welcome_environment (welcome_session);
+        env = get_welcome_environment (welcome_session, TRUE);
 
         error = NULL;
 
@@ -902,6 +937,7 @@ gdm_welcome_session_spawn (GdmWelcomeSession *welcome_session)
         ret = spawn_command_line_async_as_user (welcome_session->priv->command,
                                                 welcome_session->priv->user_name,
                                                 welcome_session->priv->group_name,
+                                                welcome_session->priv->x11_display_seat_id,
                                                 welcome_session->priv->runtime_dir,
                                                 log_path,
                                                 (char **)env->pdata,
