@@ -1641,8 +1641,8 @@ gdm_xdmcp_handle_forward_query (GdmXdmcpDisplayFactory *factory,
         }
 
         if G_UNLIKELY (len != explen) {
-                g_warning ("%s: Error in checksum"),
-                           "gdm_xdmcp_handle_forward_query";
+                g_warning ("%s: Error in checksum",
+                           "gdm_xdmcp_handle_forward_query");
                 goto out;
         }
 
