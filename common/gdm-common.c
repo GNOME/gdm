@@ -84,8 +84,8 @@ gdm_get_pwent_for_name (const char     *name,
 }
 
 int
-gdm_wait_on_and_kill_pid (int pid,
-                          int timeout)
+gdm_wait_on_and_disown_pid (int pid,
+                            int timeout)
 {
         int status;
         int ret;
@@ -121,17 +121,16 @@ gdm_wait_on_and_kill_pid (int pid,
 
                         path = g_strdup_printf ("/proc/%ld/cmdline", (long) pid);
                         if (g_file_get_contents (path, &command, NULL, NULL)) {;
-                                g_debug ("GdmCommon: process (pid:%d, command '%s') isn't dying, now killing it.",
-                                         (int) pid, command);
+                                g_warning ("GdmCommon: process (pid:%d, command '%s') isn't dying after %d seconds, now ignoring it.",
+                                         (int) pid, command, timeout);
                                 g_free (command);
                         } else {
-                                g_debug ("GdmCommon: process (pid:%d) isn't dying, now killing it.",
-                                         (int) pid);
+                                g_warning ("GdmCommon: process (pid:%d) isn't dying after %d seconds, now ignoring it.",
+                                         (int) pid, timeout);
                         }
                         g_free (path);
 
-                        kill (pid, SIGKILL);
-                        flags = 0;
+                        return 0;
                 }
                 goto wait_again;
         }
@@ -151,7 +150,7 @@ gdm_wait_on_and_kill_pid (int pid,
 int
 gdm_wait_on_pid (int pid)
 {
-    return gdm_wait_on_and_kill_pid (pid, 0);
+    return gdm_wait_on_and_disown_pid (pid, 0);
 }
 
 int

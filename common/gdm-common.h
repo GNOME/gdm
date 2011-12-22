@@ -33,8 +33,8 @@ G_BEGIN_DECLS
 gboolean       gdm_is_version_unstable            (void);
 
 int            gdm_wait_on_pid           (int pid);
-int            gdm_wait_on_and_kill_pid  (int pid,
-                                          int timeout);
+int            gdm_wait_on_and_disown_pid (int pid,
+                                           int timeout);
 int            gdm_signal_pid            (int pid,
                                           int signal);
 gboolean       gdm_get_pwent_for_name    (const char     *name,
