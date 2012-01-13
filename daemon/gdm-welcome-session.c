@@ -42,7 +42,6 @@
 #include <dbus/dbus-glib-lowlevel.h>
 
 #include "gdm-common.h"
-#include "ck-connector.h"
 
 #include "gdm-session.h"
 #include "gdm-session-direct.h"
@@ -78,7 +77,6 @@ struct GdmWelcomeSessionPrivate
         char           *server_dbus_path;
         char           *server_dbus_interface;
         char           *server_env_var_name;
-        gboolean        register_ck_session;
 
         char           *server_address;
 };
@@ -98,8 +96,7 @@ enum {
         PROP_COMMAND,
         PROP_SERVER_DBUS_PATH,
         PROP_SERVER_DBUS_INTERFACE,
-        PROP_SERVER_ENV_VAR_NAME,
-        PROP_REGISTER_CK_SESSION,
+        PROP_SERVER_ENV_VAR_NAME
 };
 
 enum {
@@ -1040,13 +1037,6 @@ _gdm_welcome_session_set_server_env_var_name (GdmWelcomeSession *welcome_session
 }
 
 static void
-_gdm_welcome_session_set_register_ck_session (GdmWelcomeSession *welcome_session,
-                                              gboolean           val)
-{
-        welcome_session->priv->register_ck_session = val;
-}
-
-static void
 gdm_welcome_session_set_property (GObject      *object,
                                   guint         prop_id,
                                   const GValue *value,
@@ -1092,9 +1082,6 @@ gdm_welcome_session_set_property (GObject      *object,
                 break;
         case PROP_SERVER_DBUS_INTERFACE:
                 _gdm_welcome_session_set_server_dbus_interface (self, g_value_get_string (value));
-                break;
-        case PROP_REGISTER_CK_SESSION:
-                _gdm_welcome_session_set_register_ck_session (self, g_value_get_boolean (value));
                 break;
         case PROP_SERVER_ENV_VAR_NAME:
                 _gdm_welcome_session_set_server_env_var_name (self, g_value_get_string (value));
@@ -1154,9 +1141,6 @@ gdm_welcome_session_get_property (GObject    *object,
                 break;
         case PROP_SERVER_DBUS_INTERFACE:
                 g_value_set_string (value, self->priv->server_dbus_interface);
-                break;
-        case PROP_REGISTER_CK_SESSION:
-                g_value_set_boolean (value, self->priv->register_ck_session);
                 break;
         case PROP_SERVER_ENV_VAR_NAME:
                 g_value_set_string (value, self->priv->server_env_var_name);
@@ -1279,13 +1263,6 @@ gdm_welcome_session_class_init (GdmWelcomeSessionClass *klass)
                                                               "command",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-        g_object_class_install_property (object_class,
-                                         PROP_REGISTER_CK_SESSION,
-                                         g_param_spec_boolean ("register-ck-session",
-                                                               NULL,
-                                                               NULL,
-                                                               FALSE,
-                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         signals [STARTED] =
                 g_signal_new ("started",
                               G_OBJECT_CLASS_TYPE (object_class),
