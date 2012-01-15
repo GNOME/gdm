@@ -44,6 +44,10 @@ AC_CONFIG_MACRO_DIR([m4])
 IT_PROG_INTLTOOL([0.40.0])
 
 GNOME_DOC_INIT
+AC_ARG_ENABLE([documentation],
+	AS_HELP_STRING([--enable-documentation], [enable man pages and HTML documentation]),
+	[], [enable_documentation=yes])
+AM_CONDITIONAL(ENABLE_DOCUMENTATION, test x$enable_documentation = xyes)
 
 GETTEXT_PACKAGE=gdm
 AC_SUBST(GETTEXT_PACKAGE)

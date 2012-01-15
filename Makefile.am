@@ -4,12 +4,14 @@ SUBDIRS = 			\
 	data			\
 	common 			\
 	daemon 			\
-	docs			\
 	gui 			\
 	utils 			\
 	po 			\
 	tests 			\
 	$(NULL)
+if ENABLE_DOCUMENTATION
+SUBDIRS += docs
+endif
 
 # add these when help gets added back
 # omf-install
@@ -27,6 +29,6 @@ DISTCLEANFILES = \
 	gnome-doc-utils.make	\
 	$(NULL)
 
-DISTCHECK_CONFIGURE_FLAGS = --disable-scrollkeeper --enable-split-authentication --enable-introspection
+DISTCHECK_CONFIGURE_FLAGS = --disable-scrollkeeper --enable-split-authentication --enable-introspection --enable-documentation
 
 distuninstallcheck_listfiles = find . -type f -print | grep -v '^\./var/scrollkeeper'
