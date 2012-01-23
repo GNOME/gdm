@@ -260,6 +260,52 @@ connect_to_parent (GdmServer *server)
 }
 #endif
 
+static void
+gdm_server_init_command (GdmServer *server)
+{
+
+        if (server->priv->command != NULL) {
+                return;
+        }
+
+#ifdef WITH_SYSTEMD
+
+        /* This is a temporary hack to work around the fact that XOrg
+         * currently lacks support for multi-seat hotplugging for
+         * display devices. This bit should be removed as soon as XOrg
+         * gains native support for automatically enumerating usb
+         * based graphics adapters at start-up via udev. */
+
+        /* systemd ships an X server wrapper tool which simply invokes
+         * the usual X but ensures it only uses the display devices of
+         * the seat. */
+
+        /* We do not rely on this wrapper server if, a) the machine
+         * wasn't booted using systemd, or b) the wrapper tool is
+         * missing, or c) we are running for the main seat 'seat0'. */
+
+        if (sd_booted () <= 0) {
+                goto fallback;
+        }
+
+        if (g_access (SYSTEMD_X_SERVER, X_OK) < 0) {
+                goto fallback;
+        }
+
+        if (server->priv->display_seat_id == NULL ||
+            strcmp (server->priv->display_seat_id, "seat0") == 0) {
+                goto fallback;
+        }
+
+        server->priv->command = g_strdup (SYSTEMD_X_SERVER " -br -verbose -logverbose 7");
+        return;
+
+fallback:
+#endif
+
+        server->priv->command = g_strdup (X_SERVER " -br -verbose -logverbose 7");
+}
+
 static gboolean
 gdm_server_resolve_command_line (GdmServer  *server,
                                  const char *vtarg,
@@ -272,6 +318,8 @@ gdm_server_resolve_command_line (GdmServer  *server,
         int      i;
         gboolean gotvtarg = FALSE;
         gboolean query_in_arglist = FALSE;
+
+        gdm_server_init_command (server);
 
         g_shell_parse_argv (server->priv->command, &argc, &argv, NULL);
 
@@ -959,7 +1007,7 @@ gdm_server_init (GdmServer *server)
         server->priv = GDM_SERVER_GET_PRIVATE (server);
 
         server->priv->pid = -1;
-        server->priv->command = g_strdup (X_SERVER " -br -verbose -logverbose 7");
+
         server->priv->log_dir = g_strdup (LOGDIR);
 
         add_ready_handler (server);

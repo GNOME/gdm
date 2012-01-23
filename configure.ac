@@ -939,7 +939,7 @@ use_systemd=no
 if test "x$with_systemd" != "xno" ; then
         PKG_CHECK_MODULES(SYSTEMD,
                 libsystemd-daemon
-                libsystemd-login
+                libsystemd-login >= 39
         )
         AC_SUBST(SYSTEMD_CFLAGS)
         AC_SUBST(SYSTEMD_LIBS)
@@ -949,6 +949,10 @@ if test "x$with_systemd" != "xno" ; then
 fi
 AM_CONDITIONAL(WITH_SYSTEMD, test x$use_systemd = xyes)
 AC_SUBST(WITH_SYSTEMD)
+
+AC_PATH_PROG(SYSTEMD_X_SERVER, systemd-multi-seat-x, [/lib/systemd/systemd-multi-seat-x], [/lib/systemd:/usr/lib/systemd:$PATH])
+AC_SUBST(SYSTEMD_X_SERVER)
+AC_DEFINE_UNQUOTED(SYSTEMD_X_SERVER,"$SYSTEMD_X_SERVER",[Path to systemd X server wrapper])
 
 dnl ---------------------------------------------------------------------------
 dnl - Check for D-Bus
