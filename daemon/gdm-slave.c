@@ -51,6 +51,11 @@
 #include <libxklavier/xklavier.h>
 #endif
 
+#ifdef WITH_SYSTEMD
+#include <systemd/sd-login.h>
+#include <systemd/sd-daemon.h>
+#endif
+
 #include "gdm-common.h"
 #include "gdm-xerrors.h"
 
@@ -1198,6 +1203,8 @@ _get_uid_and_gid_for_user (const char *username,
         return TRUE;
 }
 
+#ifdef WITH_CONSOLE_KIT
+
 static gboolean
 x11_session_is_on_seat (GdmSlave        *slave,
                         const char      *session_id,
@@ -1295,9 +1302,63 @@ x11_session_is_on_seat (GdmSlave        *slave,
         return ret;
 }
 
-char *
-gdm_slave_get_primary_session_id_for_user (GdmSlave   *slave,
-                                           const char *username)
+#endif
+
+#ifdef WITH_SYSTEMD
+static char*
+gdm_slave_get_primary_session_id_for_user_from_systemd (GdmSlave   *slave,
+                                                        const char *username)
+{
+        int     res, i;
+        char  **sessions;
+        uid_t   uid;
+        char   *primary_ssid;
+
+        primary_ssid = NULL;
+
+        res = sd_seat_can_multi_session (slave->priv->display_seat_id);
+        if (res < 0) {
+                g_warning ("GdmSlave: Failed to determine whether seat is multi-session capable: %s", strerror (-res));
+                return NULL;
+        } else if (res == 0) {
+                g_debug ("GdmSlave: seat is unable to activate sessions");
+                return NULL;
+        }
+
+        if (! _get_uid_and_gid_for_user (username, &uid, NULL)) {
+                g_debug ("GdmSlave: unable to determine uid for user: %s", username);
+                return NULL;
+        }
+
+        res = sd_seat_get_sessions (slave->priv->display_seat_id, &sessions, NULL, NULL);
+        if (res < 0) {
+                g_warning ("GdmSlave: Failed to get sessions on seat: %s", strerror (-res));
+                return NULL;
+        }
+
+        for (i = 0; sessions[i] != NULL; i++) {
+
+                if (primary_ssid == NULL) {
+                        uid_t other;
+
+                        res = sd_session_get_uid (sessions[i], &other);
+                        if (res > 0 && other == uid) {
+                                primary_ssid = g_strdup (sessions[i]);
+                        }
+                }
+
+                free (sessions[i]);
+        }
+
+        free (sessions);
+        return primary_ssid;
+}
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+static char *
+gdm_slave_get_primary_session_id_for_user_from_ck (GdmSlave   *slave,
+                                                   const char *username)
 {
         gboolean    res;
         gboolean    can_activate_sessions;
@@ -1308,11 +1369,6 @@ gdm_slave_get_primary_session_id_for_user (GdmSlave   *slave,
         char       *primary_ssid;
         int         i;
         uid_t       uid;
-
-        if (slave->priv->display_seat_id == NULL || slave->priv->display_seat_id[0] == '\0') {
-                g_debug ("GdmSlave: display seat ID is not set; can't switch sessions");
-                return NULL;
-        }
 
         manager_proxy = NULL;
         primary_ssid = NULL;
@@ -1396,11 +1452,91 @@ gdm_slave_get_primary_session_id_for_user (GdmSlave   *slave,
 
         return primary_ssid;
 }
+#endif
 
+char *
+gdm_slave_get_primary_session_id_for_user (GdmSlave   *slave,
+                                           const char *username)
+{
+
+        if (slave->priv->display_seat_id == NULL || slave->priv->display_seat_id[0] == '\0') {
+                g_debug ("GdmSlave: display seat ID is not set; can't switch sessions");
+                return NULL;
+        }
+
+#ifdef WITH_SYSTEMD
+        if (sd_booted () > 0) {
+                return gdm_slave_get_primary_session_id_for_user_from_systemd (slave, username);
+        }
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+        return gdm_slave_get_primary_session_id_for_user_from_ck (slave, username);
+#else
+        return NULL;
+#endif
+}
+
+#ifdef WITH_SYSTEMD
 static gboolean
-activate_session_id (GdmSlave   *slave,
-                     const char *seat_id,
-                     const char *session_id)
+activate_session_id_for_systemd (GdmSlave   *slave,
+                                 const char *seat_id,
+                                 const char *session_id)
+{
+        DBusError    local_error;
+        DBusMessage *message;
+        DBusMessage *reply;
+        gboolean     ret;
+
+        ret = FALSE;
+        reply = NULL;
+
+        dbus_error_init (&local_error);
+
+        message = dbus_message_new_method_call ("org.freedesktop.login1",
+                                                "/org/freedesktop/login1",
+                                                "org.freedesktop.login1.Manager",
+                                                "ActivateSessionOnSeat");
+        if (message == NULL) {
+                goto out;
+        }
+
+        if (! dbus_message_append_args (message,
+                                        DBUS_TYPE_STRING, &session_id,
+                                        DBUS_TYPE_STRING, &seat_id,
+                                        DBUS_TYPE_INVALID)) {
+                goto out;
+        }
+
+        reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (slave->priv->connection),
+                                                           message,
+                                                           -1,
+                                                           &local_error);
+        if (dbus_error_is_set (&local_error)) {
+                g_warning ("GdmSlave: Unable to activate session: %s", local_error.message);
+                dbus_error_free (&local_error);
+                goto out;
+        }
+
+        ret = TRUE;
+
+ out:
+        if (message != NULL) {
+                dbus_message_unref (message);
+        }
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
+
+        return ret;
+}
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+static gboolean
+activate_session_id_for_ck (GdmSlave   *slave,
+                            const char *seat_id,
+                            const char *session_id)
 {
         DBusError    local_error;
         DBusMessage *message;
@@ -1448,16 +1584,82 @@ activate_session_id (GdmSlave   *slave,
 
         return ret;
 }
+#endif
 
 static gboolean
-session_unlock (GdmSlave   *slave,
-                const char *ssid)
+activate_session_id (GdmSlave   *slave,
+                     const char *seat_id,
+                     const char *session_id)
+{
+
+#ifdef WITH_SYSTEMD
+        if (sd_booted () > 0) {
+                return activate_session_id_for_systemd (slave, seat_id, session_id);
+        }
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+        return activate_session_id_for_ck (slave, seat_id, session_id);
+#else
+        return FALSE;
+#endif
+}
+
+#ifdef WITH_SYSTEMD
+static gboolean
+session_unlock_for_systemd (GdmSlave   *slave,
+                            const char *ssid)
 {
         DBusError       error;
         DBusMessage    *message;
         DBusMessage    *reply;
 
-        g_debug ("ConsoleKit: Unlocking session %s", ssid);
+        dbus_error_init (&error);
+
+        message = dbus_message_new_method_call ("org.freedesktop.login",
+                                                "/org/freedesktop/login1",
+                                                "org.freedesktop.login1.Manager",
+                                                "UnlockSession");
+
+        if (message == NULL) {
+                g_debug ("GdmSlave: couldn't allocate the D-Bus message");
+                return FALSE;
+        }
+
+        if (! dbus_message_append_args (message,
+                                        DBUS_TYPE_STRING, &ssid,
+                                        DBUS_TYPE_INVALID)) {
+                g_debug ("GdmSlave: couldn't attach the D-Bus message data");
+                return FALSE;
+        }
+
+        reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (slave->priv->connection),
+                                                           message,
+                                                           -1, &error);
+        dbus_message_unref(message);
+        if (reply != NULL) {
+                dbus_message_unref(reply);
+        }
+
+        if (dbus_error_is_set (&error)) {
+                g_warning ("GdmSlave: Unable to unlock session: %s", error.message);
+                dbus_error_free (&error);
+                return FALSE;
+        }
+
+        return TRUE;
+}
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+static gboolean
+session_unlock_for_ck (GdmSlave   *slave,
+                       const char *ssid)
+{
+        DBusError       error;
+        DBusMessage    *message;
+        DBusMessage    *reply;
+
         message = dbus_message_new_method_call (CK_NAME,
                                                 ssid,
                                                 CK_SESSION_INTERFACE,
@@ -1484,6 +1686,27 @@ session_unlock (GdmSlave   *slave,
         }
 
         return TRUE;
+}
+#endif
+
+static gboolean
+session_unlock (GdmSlave   *slave,
+                const char *ssid)
+{
+
+        g_debug ("ConsoleKit: Unlocking session %s", ssid);
+
+#ifdef WITH_SYSTEMD
+        if (sd_booted () > 0) {
+                return session_unlock_for_systemd (slave, ssid);
+        }
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+        return session_unlock_for_ck (slave, ssid);
+#else
+        return TRUE;
+#endif
 }
 
 gboolean

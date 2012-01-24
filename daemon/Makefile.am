@@ -24,6 +24,7 @@ AM_CPPFLAGS = \
 	$(XLIB_CFLAGS)					\
 	$(WARN_CFLAGS)					\
 	$(DEBUG_CFLAGS)					\
+	$(SYSTEMD_CFLAGS)				\
 	-DLANG_CONFIG_FILE=\"$(LANG_CONFIG_FILE)\"	\
 	$(NULL)
 
@@ -148,6 +149,7 @@ gdm_simple_slave_LDADD = 			\
 	$(DAEMON_LIBS)				\
 	$(EXTRA_DAEMON_LIBS)                    \
 	$(LIBXKLAVIER_LIBS)			\
+	$(SYSTEMD_LIBS) 			\
 	$(NULL)
 
 gdm_factory_slave_SOURCES = 		\
@@ -188,6 +190,7 @@ gdm_factory_slave_LDADD = 			\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(XLIB_LIBS)				\
 	$(DAEMON_LIBS)				\
+	$(SYSTEMD_LIBS) 			\
 	$(NULL)
 
 gdm_product_slave_SOURCES = 		\
@@ -222,6 +225,7 @@ gdm_product_slave_LDADD = 			\
 	$(DAEMON_LIBS)				\
 	$(EXTRA_DAEMON_LIBS)                    \
 	$(LIBXKLAVIER_LIBS)			\
+	$(SYSTEMD_LIBS) 			\
 	$(NULL)
 
 gdm_xdmcp_chooser_slave_SOURCES = 		\
@@ -254,6 +258,7 @@ gdm_xdmcp_chooser_slave_LDADD = 		\
 	$(DAEMON_LIBS)				\
 	$(EXTRA_DAEMON_LIBS)                    \
 	$(LIBXKLAVIER_LIBS)			\
+	$(SYSTEMD_LIBS) 			\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
