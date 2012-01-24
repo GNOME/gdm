@@ -541,8 +541,8 @@ gdm_slave_set_windowpath (GdmSlave *slave)
                 return;
         }
         if (XGetWindowProperty (slave->priv->server_display,
-                DefaultRootWindow (slave->priv->server_display), prop, 0, 1, 
-                False, AnyPropertyType, &actualtype, &actualformat, 
+                DefaultRootWindow (slave->priv->server_display), prop, 0, 1,
+                False, AnyPropertyType, &actualtype, &actualformat,
                 &nitems, &bytes_after, &buf)) {
                 g_debug ("no XFree86_VT property\n");
                 return;
