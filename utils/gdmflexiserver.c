@@ -29,6 +29,11 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
+#ifdef WITH_SYSTEMD
+#include <systemd/sd-daemon.h>
+#include <systemd/sd-login.h>
+#endif
+
 #define DBUS_API_SUBJECT_TO_CHANGE
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
@@ -37,6 +42,7 @@
 #define GDM_DBUS_LOCAL_DISPLAY_FACTORY_PATH      "/org/gnome/DisplayManager/LocalDisplayFactory"
 #define GDM_DBUS_LOCAL_DISPLAY_FACTORY_INTERFACE "org.gnome.DisplayManager.LocalDisplayFactory"
 
+#ifdef WITH_CONSOLE_KIT
 #define CK_NAME      "org.freedesktop.ConsoleKit"
 #define CK_PATH      "/org/freedesktop/ConsoleKit"
 #define CK_INTERFACE "org.freedesktop.ConsoleKit"
@@ -45,6 +51,7 @@
 #define CK_MANAGER_INTERFACE "org.freedesktop.ConsoleKit.Manager"
 #define CK_SEAT_INTERFACE    "org.freedesktop.ConsoleKit.Seat"
 #define CK_SESSION_INTERFACE "org.freedesktop.ConsoleKit.Session"
+#endif
 
 static const char *send_command     = NULL;
 static gboolean    use_xnest        = FALSE;
@@ -206,6 +213,8 @@ create_transient_display (DBusConnection *connection,
         return ret;
 }
 
+#ifdef WITH_CONSOLE_KIT
+
 static gboolean
 get_current_session_id (DBusConnection *connection,
                         char          **session_id)
@@ -335,9 +344,9 @@ get_current_seat_id (DBusConnection *connection)
 }
 
 static gboolean
-activate_session_id (DBusConnection *connection,
-                     const char     *seat_id,
-                     const char     *session_id)
+activate_session_id_for_ck (DBusConnection *connection,
+                            const char     *seat_id,
+                            const char     *session_id)
 {
         DBusError    local_error;
         DBusMessage *message;
@@ -609,9 +618,9 @@ seat_get_sessions (DBusConnection *connection,
 }
 
 static gboolean
-get_login_window_session_id (DBusConnection  *connection,
-                             const char      *seat_id,
-                             char           **session_id)
+get_login_window_session_id_for_ck (DBusConnection  *connection,
+                                    const char      *seat_id,
+                                    char           **session_id)
 {
         gboolean    can_activate_sessions;
         char      **sessions;
@@ -645,25 +654,15 @@ get_login_window_session_id (DBusConnection  *connection,
 }
 
 static gboolean
-goto_login_session (GError **error)
+goto_login_session_for_ck (DBusConnection  *connection,
+                           GError         **error)
 {
         gboolean        ret;
         gboolean        res;
         char           *session_id;
         char           *seat_id;
-        DBusError       local_error;
-        DBusConnection *connection;
 
         ret = FALSE;
-
-        dbus_error_init (&local_error);
-        connection = dbus_bus_get (DBUS_BUS_SYSTEM, &local_error);
-        if (connection == NULL) {
-                g_debug ("Failed to connect to the D-Bus daemon: %s", local_error.message);
-                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, "%s", local_error.message);
-                dbus_error_free (&local_error);
-                return FALSE;
-        }
 
         /* First look for any existing LoginWindow sessions on the seat.
            If none are found, create a new one. */
@@ -676,15 +675,14 @@ goto_login_session (GError **error)
                 return FALSE;
         }
 
-        res = get_login_window_session_id (connection, seat_id, &session_id);
-
+        res = get_login_window_session_id_for_ck (connection, seat_id, &session_id);
         if (! res) {
                 g_set_error (error, GDM_FLEXISERVER_ERROR, 1, _("User unable to switch sessions."));
                 return FALSE;
         }
 
         if (session_id != NULL) {
-                res = activate_session_id (connection, seat_id, session_id);
+                res = activate_session_id_for_ck (connection, seat_id, session_id);
                 if (res) {
                         ret = TRUE;
                 }
@@ -698,6 +696,226 @@ goto_login_session (GError **error)
         }
 
         return ret;
+}
+#endif
+
+#ifdef WITH_SYSTEMD
+
+static gboolean
+activate_session_id_for_systemd (DBusConnection *connection,
+                                 const char     *seat_id,
+                                 const char     *session_id)
+{
+        DBusError    local_error;
+        DBusMessage *message;
+        DBusMessage *reply;
+        gboolean     ret;
+
+        ret = FALSE;
+        reply = NULL;
+
+        g_debug ("Switching to session %s", session_id);
+
+        message = dbus_message_new_method_call ("org.freedesktop.login1",
+                                                "/org/freedesktop/login1",
+                                                "org.freedesktop.login1.Manager",
+                                                "ActivateSessionOnSeat");
+        if (message == NULL) {
+                goto out;
+        }
+
+        if (! dbus_message_append_args (message,
+                                        DBUS_TYPE_STRING, &session_id,
+                                        DBUS_TYPE_STRING, &seat_id,
+                                        DBUS_TYPE_INVALID)) {
+                goto out;
+        }
+
+        dbus_error_init (&local_error);
+        reply = dbus_connection_send_with_reply_and_block (connection,
+                                                           message,
+                                                           -1,
+                                                           &local_error);
+        if (dbus_error_is_set (&local_error)) {
+                g_warning ("Unable to activate session: %s", local_error.message);
+                dbus_error_free (&local_error);
+                goto out;
+        }
+
+        ret = TRUE;
+out:
+        if (message != NULL) {
+                dbus_message_unref (message);
+        }
+        if (reply != NULL) {
+                dbus_message_unref (reply);
+        }
+
+        return ret;
+}
+
+static gboolean
+get_login_window_session_id_for_systemd (const char  *seat_id,
+                                         char       **session_id)
+{
+        gboolean   ret;
+        int        res, i;
+        char     **sessions;
+        char      *service_id;
+
+        res = sd_seat_get_sessions (seat_id, &sessions, NULL, NULL);
+        if (res < 0) {
+                g_debug ("Failed to determine sessions: %s", strerror (-res));
+                return FALSE;
+        }
+
+        if (sessions == NULL || sessions[0] == NULL) {
+                *session_id = NULL;
+                ret = TRUE;
+                goto out;
+        }
+
+        for (i = 0; sessions[i]; i ++) {
+
+                res = sd_session_get_service (sessions[i], &service_id);
+                if (res < 0) {
+                        g_debug ("failed to determine service of session %s: %s", sessions[i], strerror (-res));
+                        ret = FALSE;
+                        goto out;
+                }
+
+                if (strcmp (service_id, "gdm-welcome") == 0) {
+                        *session_id = g_strdup (sessions[i]);
+                        ret = TRUE;
+
+                        free (service_id);
+                        goto out;
+                }
+
+                free (service_id);
+        }
+
+        *session_id = NULL;
+        ret = TRUE;
+
+out:
+        for (i = 0; sessions[i]; i ++) {
+                free (sessions[i]);
+        }
+
+        free (sessions);
+
+        return ret;
+}
+
+static gboolean
+goto_login_session_for_systemd (DBusConnection  *connection,
+                                GError         **error)
+{
+        gboolean        ret;
+        int             res;
+        char           *our_session;
+        char           *session_id;
+        char           *seat_id;
+
+        ret = FALSE;
+
+        /* First look for any existing LoginWindow sessions on the seat.
+           If none are found, create a new one. */
+
+        /* Note that we mostly use free () here, instead of g_free ()
+         * since the data allocated is from libsystemd-logind, which
+         * does not use GLib's g_malloc (). */
+
+        res = sd_pid_get_session (0, &our_session);
+        if (res < 0) {
+                g_debug ("failed to determine own session: %s", strerror (-res));
+                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, _("Could not identify the current session."));
+
+                return FALSE;
+        }
+
+        res = sd_session_get_seat (our_session, &seat_id);
+        free (our_session);
+        if (res < 0) {
+                g_debug ("failed to determine own seat: %s", strerror (-res));
+                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, _("Could not identify the current seat."));
+
+                return FALSE;
+        }
+
+        res = sd_seat_can_multi_session (seat_id);
+        if (res < 0) {
+                free (seat_id);
+
+                g_debug ("failed to determine whether seat can do multi session: %s", strerror (-res));
+                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, _("Could not identify multi session property."));
+
+                return FALSE;
+        }
+
+        if (res == 0) {
+                free (seat_id);
+
+                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, _("Seat can't do multi session"));
+
+                return FALSE;
+        }
+
+        res = get_login_window_session_id_for_systemd (seat_id, &session_id);
+        if (! res) {
+                free (seat_id);
+
+                g_set_error (error, GDM_FLEXISERVER_ERROR, 1, _("User unable to determine login session."));
+                return FALSE;
+        }
+
+        if (session_id != NULL) {
+                res = activate_session_id_for_systemd (connection, seat_id, session_id);
+
+                if (res) {
+                        ret = TRUE;
+                }
+        }
+
+        if (! ret) {
+                res = create_transient_display (connection, error);
+                if (res) {
+                        ret = TRUE;
+                }
+        }
+
+        free (seat_id);
+        g_free (session_id);
+
+        return ret;
+}
+#endif
+
+static gboolean
+goto_login_session (GError **error)
+{
+        DBusError       local_error;
+        DBusConnection *connection;
+
+        dbus_error_init (&local_error);
+        connection = dbus_bus_get (DBUS_BUS_SYSTEM, &local_error);
+        if (connection == NULL) {
+                g_debug ("Failed to connect to the D-Bus daemon: %s", local_error.message);
+                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, "%s", local_error.message);
+                dbus_error_free (&local_error);
+                return FALSE;
+        }
+
+#ifdef WITH_SYSTEMD
+        if (sd_booted () > 0) {
+                return goto_login_session_for_systemd (connection, error);
+        }
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+        return goto_login_session_for_ck (connection, error);
+#endif
 }
 
 int

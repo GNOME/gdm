@@ -10,6 +10,7 @@ AM_CPPFLAGS = \
 	$(CANBERRA_GTK_CFLAGS)				\
 	$(GTK_CFLAGS)					\
 	$(XLIB_CFLAGS)					\
+	$(SYSTEMD_CFLAGS)				\
 	$(COMMON_CFLAGS)				\
 	$(NULL)
 
@@ -31,6 +32,7 @@ gdmflexiserver_SOURCES =	\
 gdmflexiserver_LDADD =		\
 	$(GTK_LIBS)		\
 	$(COMMON_LIBS)		\
+	$(SYSTEMD_LIBS)         \
 	$(NULL)
 
 gdm_screenshot_SOURCES =	\
@@ -49,4 +51,3 @@ CLEANFILES = 			\
 
 DISTCLEANFILES = 		\
 	$(NULL)
-
