@@ -1336,6 +1336,11 @@ gdm_slave_get_primary_session_id_for_user_from_systemd (GdmSlave   *slave,
                 return NULL;
         }
 
+        if (sessions == NULL) {
+                g_debug ("GdmSlave: seat has no active sessions");
+                return NULL;
+        }
+
         for (i = 0; sessions[i] != NULL; i++) {
 
                 if (primary_ssid == NULL) {
