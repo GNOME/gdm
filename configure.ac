@@ -274,8 +274,8 @@ AC_ARG_WITH(console-kit,
 
 AC_ARG_WITH(systemd,
             AS_HELP_STRING([--with-systemd],
-                           [Add systemd support @<:@default=auto@:>@]),,
-            with_systemd=auto)
+                           [Add systemd support @<:@default=auto@:>@]),
+            [with_systemd=$withval], [with_systemd=auto])
 
 AC_ARG_WITH(at-spi-registryd-directory,
             AS_HELP_STRING([--with-at-spi-registryd-directory],
@@ -935,20 +935,29 @@ dnl ---------------------------------------------------------------------------
 dnl - Check for systemd support
 dnl ---------------------------------------------------------------------------
 
-use_systemd=no
-if test "x$with_systemd" != "xno" ; then
-        PKG_CHECK_MODULES(SYSTEMD,
-                libsystemd-daemon
-                libsystemd-login >= 39
-        )
-        AC_SUBST(SYSTEMD_CFLAGS)
-        AC_SUBST(SYSTEMD_LIBS)
+PKG_CHECK_MODULES(SYSTEMD,
+                  [libsystemd-login libsystemd-daemon],
+                  [have_systemd=yes], [have_systemd=no])
 
-	use_systemd=yes
-	AC_DEFINE(WITH_SYSTEMD, 1, [Define to enable systemd support])
+if test "x$with_systemd" = "xauto" ; then
+        if test x$have_systemd = xno ; then
+                use_systemd=no
+        else
+                use_systemd=yes
+        fi
+else
+        use_systemd="$with_systemd"
 fi
-AM_CONDITIONAL(WITH_SYSTEMD, test x$use_systemd = xyes)
-AC_SUBST(WITH_SYSTEMD)
+
+if test "x$use_systemd" != "xno" ; then
+        if test "x$have_systemd" = "xno"; then
+                AC_MSG_ERROR([Systemd support explicitly required, but systemd not found])
+        fi
+
+        AC_DEFINE(WITH_SYSTEMD, 1, [Define to enable systemd support])
+fi
+AC_SUBST(SYSTEMD_CFLAGS)
+AC_SUBST(SYSTEMD_LIBS)
 
 AC_PATH_PROG(SYSTEMD_X_SERVER, systemd-multi-seat-x, [/lib/systemd/systemd-multi-seat-x], [/lib/systemd:/usr/lib/systemd:$PATH])
 AC_SUBST(SYSTEMD_X_SERVER)
