@@ -849,7 +849,7 @@ goto_login_session_for_systemd (DBusConnection  *connection,
                 free (seat_id);
 
                 g_debug ("failed to determine whether seat can do multi session: %s", strerror (-res));
-                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, _("The system is unable to determine whether to switch to an existing login screen or or start up a new login screen."));
+                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, _("The system is unable to determine whether to switch to an existing login screen or start up a new login screen."));
 
                 return FALSE;
         }
