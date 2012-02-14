@@ -1161,6 +1161,10 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
         }
 #endif
 
+        if (strcmp (service, "gdm-welcome") == 0) {
+                gdm_session_worker_set_environment_variable (worker, "XDG_SESSION_CLASS", "greeter");
+        }
+
 #ifdef PAM_XDISPLAY
         /* set XDISPLAY */
         error_code = pam_set_item (worker->priv->pam_handle, PAM_XDISPLAY, x11_display_name);
