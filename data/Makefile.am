@@ -115,8 +115,6 @@ EXTRA_DIST =			\
 	PreSession.in 		\
 	PostSession.in 		\
 	PostLogin 		\
-	gconf.path		\
-	session-setup.entries	\
 	gdm-shell.session.in    \
 	dconf-profile \
 	00-upstream-settings \
@@ -158,12 +156,10 @@ uninstall-hook:
 	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm \
 	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin \
 	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-welcome \
-	$(DESTDIR)$(workingdir)/.gconf.path \
 	$(DESTDIR)$(sysconfdir)/dconf/db/gdm \
 	$(DESTDIR)$(sysconfdir)/dconf/profile/gdm \
 	-rf \
 	$(DESTDIR)$(sysconfdir)/dconf/db/gdm.d \
-	$(DESTDIR)$(workingdir)/.gconf.mandatory \
 	$(DESTDIR)$(workingdir)/.config/dconf \
 	$(DESTDIR)$(screenshotdir) \
 	$(DESTDIR)$(xauthdir)
@@ -174,7 +170,7 @@ uninstall-hook:
 	$(DESTDIR)$(sysconfdir)/dconf/db \
 	$(DESTDIR)$(sysconfdir)/dconf
 
-install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.path 00-upstream-settings 00-upstream-settings-locks
+install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession 00-upstream-settings 00-upstream-settings-locks
 	if test '!' -d $(DESTDIR)$(gdmconfdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(gdmconfdir); \
 		chmod 755 $(DESTDIR)$(gdmconfdir); \
@@ -310,13 +306,6 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession gconf.pa
 		chmod 1755 $(DESTDIR)$(cachedir); \
 		chown root:gdm $(DESTDIR)$(cachedir) || : ; \
 	fi
-
-	$(INSTALL_DATA) $(srcdir)/gconf.path $(DESTDIR)$(workingdir)/.gconf.path
-	gconftool-2 --direct --config-source=xml:merged:$(DESTDIR)$(workingdir)/.gconf.mandatory --recursive-unset /
-	gconftool-2 --direct --config-source=xml:merged:$(DESTDIR)$(workingdir)/.gconf.mandatory --load $(srcdir)/session-setup.entries
-	chown -R root:gdm $(DESTDIR)$(workingdir)/.gconf.mandatory || :
-	chmod 1750 $(DESTDIR)$(workingdir)/.gconf.mandatory
-	chmod 1640 $(DESTDIR)$(workingdir)/.gconf.mandatory/*.xml
 
 	$(INSTALL_DATA) $(srcdir)/dconf-profile $(DESTDIR)$(sysconfdir)/dconf/profile/gdm
 	$(INSTALL_DATA) $(srcdir)/00-upstream-settings $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d

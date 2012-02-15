@@ -31,7 +31,6 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
-#include <gconf/gconf-client.h>
 
 #include "gdm-greeter-session.h"
 #include "gdm-greeter-client.h"

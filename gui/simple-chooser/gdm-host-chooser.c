@@ -30,7 +30,6 @@
 #include <glib/gi18n.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
-#include <gconf/gconf-client.h>
 
 #include "gdm-common.h"
 #include "gdm-log.h"
@@ -200,25 +199,8 @@ at_set_gtk_modules (void)
 static void
 load_a11y (void)
 {
-        const char        *env_a_t_support;
-        gboolean           a_t_support;
-        GConfClient       *gconf_client;
-
-        gconf_client = gconf_client_get_default ();
-
-        env_a_t_support = g_getenv ("GNOME_ACCESSIBILITY");
-        if (env_a_t_support) {
-                a_t_support = atoi (env_a_t_support);
-        } else {
-                a_t_support = gconf_client_get_bool (gconf_client, ACCESSIBILITY_KEY, NULL);
-        }
-
-        if (a_t_support) {
-                assistive_registry_start ();
-                at_set_gtk_modules ();
-        }
-
-        g_object_unref (gconf_client);
+        assistive_registry_start ();
+        at_set_gtk_modules ();
 }
 
 int

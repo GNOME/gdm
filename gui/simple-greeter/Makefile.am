@@ -26,12 +26,6 @@ AM_CPPFLAGS = \
 	$(SIMPLE_GREETER_CFLAGS)			\
 	$(NULL)
 
-@INTLTOOL_SCHEMAS_RULE@
-
-schemasdir   = @GCONF_SCHEMA_FILE_DIR@
-schemas_in_files = gdm-simple-greeter.schemas.in
-schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
-
 noinst_PROGRAMS = 			\
 	test-filesystem-type		\
 	test-greeter-login-window	\
@@ -85,8 +79,6 @@ test_greeter_panel_SOURCES = 	\
 	gdm-clock-widget.c      \
 	gdm-option-widget.h     \
 	gdm-option-widget.c     \
-	gdm-recent-option-widget.h	\
-	gdm-recent-option-widget.c	\
 	gdm-cell-renderer-timer.h	\
 	gdm-cell-renderer-timer.c	\
 	gdm-timer.h			\
@@ -106,7 +98,6 @@ test_greeter_panel_LDADD =	\
 	$(top_builddir)/gui/simple-greeter/libgdmsimplegreeter/libgdmsimplegreeter.la	\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(GTK_LIBS)			\
-	$(GCONF_LIBS)			\
 	$(LIBXKLAVIER_LIBS)		\
 	$(UPOWER_LIBS)		\
 	$(NULL)
@@ -199,8 +190,6 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-clock-widget.c		\
 	gdm-option-widget.h		\
 	gdm-option-widget.c		\
-	gdm-recent-option-widget.h	\
-	gdm-recent-option-widget.c	\
 	gdm-sessions.h			\
 	gdm-sessions.c			\
 	gdm-session-option-widget.h	\
@@ -228,27 +217,10 @@ ui_DATA = 					\
 	gdm-greeter-login-window.ui		\
 	$(NULL)
 
-EXTRA_DIST = 			\
-	$(schemas_in_files)	\
-	$(ui_DATA)		\
+EXTRA_DIST = 						\
+	$(ui_DATA)					\
 	$(NULL)
-
-DISTCLEANFILES =                        \
-        $(schemas_DATA)                 \
-        $(NULL)
 
 MAINTAINERCLEANFILES =                  \
         *~                              \
         Makefile.in
-
-if GCONF_SCHEMAS_INSTALL
-# don't do this if we are building in eg. rpm
-install-data-local: $(schemas_DATA)
-	if test -z "$(DESTDIR)" ; then \
-		for p in $(schemas_DATA) ; do \
-			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(top_builddir)/gui/simple-greeter/$$p ; \
-		done \
-	fi
-else
-install-data-local:
-endif

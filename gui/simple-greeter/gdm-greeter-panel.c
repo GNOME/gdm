@@ -40,7 +40,6 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
-#include <gconf/gconf-client.h>
 #include <dbus/dbus-glib.h>
 
 #ifdef HAVE_UPOWER
@@ -61,7 +60,10 @@
 #define GPM_DBUS_PATH      "/org/gnome/SettingsDaemon/Power"
 #define GPM_DBUS_INTERFACE "org.gnome.SettingsDaemon.Power"
 
-#define KEY_DISABLE_RESTART_BUTTONS "/apps/gdm/simple-greeter/disable_restart_buttons"
+#define LOGIN_SCREEN_SCHEMA           "org.gnome.login-screen"
+
+#define KEY_DISABLE_RESTART_BUTTONS   "disable-restart-buttons"
+
 #define KEY_NOTIFICATION_AREA_PADDING "/apps/notification_area_applet/prefs/padding"
 
 #define GDM_GREETER_PANEL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_PANEL, GdmGreeterPanelPrivate))
@@ -762,18 +764,12 @@ do_disconnect (GtkWidget       *widget,
 static gboolean
 get_show_restart_buttons (GdmGreeterPanel *panel)
 {
-        gboolean     show;
-        GError      *error;
-        GConfClient *client;
+        gboolean   show;
+        GSettings *settings;
 
-        client = gconf_client_get_default ();
+        settings = g_settings_new (LOGIN_SCREEN_SCHEMA);
 
-        error = NULL;
-        show = ! gconf_client_get_bool (client, KEY_DISABLE_RESTART_BUTTONS, &error);
-        if (error != NULL) {
-                g_debug ("GdmGreeterPanel: unable to get disable-restart-buttons configuration: %s", error->message);
-                g_error_free (error);
-        }
+        show = ! g_settings_get_boolean (settings, KEY_DISABLE_RESTART_BUTTONS);
 
 #ifdef ENABLE_RBAC_SHUTDOWN
         {
@@ -790,7 +786,7 @@ get_show_restart_buttons (GdmGreeterPanel *panel)
                 }
         }
 #endif
-        g_object_unref (client);
+        g_object_unref (settings);
 
         return show;
 }

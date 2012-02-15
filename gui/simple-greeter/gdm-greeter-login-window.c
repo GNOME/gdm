@@ -41,14 +41,13 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <glib-object.h>
+#include <gio/gio.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkx.h>
 #include <X11/XKBlib.h>
 
 #include <gtk/gtk.h>
-
-#include <gconf/gconf-client.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
@@ -83,11 +82,11 @@
 
 #define UI_XML_FILE       "gdm-greeter-login-window.ui"
 
-#define KEY_GREETER_DIR             "/apps/gdm/simple-greeter"
-#define KEY_BANNER_MESSAGE_ENABLED  KEY_GREETER_DIR "/banner_message_enable"
-#define KEY_BANNER_MESSAGE_TEXT     KEY_GREETER_DIR "/banner_message_text"
-#define KEY_LOGO                    KEY_GREETER_DIR "/logo_icon_name"
-#define KEY_DISABLE_USER_LIST       "/apps/gdm/simple-greeter/disable_user_list"
+#define LOGIN_SCREEN_SCHEMA         "org.gnome.login-screen"
+#define KEY_BANNER_MESSAGE_ENABLED  "banner-message-enable"
+#define KEY_BANNER_MESSAGE_TEXT     "banner-message-text"
+#define KEY_LOGO                    "fallback-logo"
+#define KEY_DISABLE_USER_LIST       "disable-user-list"
 
 #define LSB_RELEASE_COMMAND "lsb_release -d"
 
@@ -122,14 +121,14 @@ struct GdmGreeterLoginWindowPrivate
         GtkWidget       *auth_page_box;
         guint            display_is_local : 1;
         guint            user_chooser_loaded : 1;
-        GConfClient     *client;
+        GSettings       *settings;
         GList           *extensions;
         GdmLoginExtension *active_extension;
         GList           *extensions_to_enable;
         GList           *extensions_to_stop;
 
         gboolean         banner_message_enabled;
-        guint            gconf_cnxn;
+        gulong           gsettings_cnxn;
 
         guint            last_mode;
         guint            dialog_mode;
@@ -1870,23 +1869,18 @@ load_theme (GdmGreeterLoginWindow *login_window)
 
         image = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "logo-image"));
         if (image != NULL) {
-                char        *icon_name;
-                GError      *error;
+                GdkPixbuf *pixbuf;
+                char *path;
 
-                error = NULL;
-                icon_name = gconf_client_get_string (login_window->priv->client, KEY_LOGO, &error);
-                if (error != NULL) {
-                        g_debug ("GdmGreeterLoginWindow: unable to get logo icon name: %s", error->message);
-                        g_error_free (error);
-                }
+                path = g_settings_get_string (login_window->priv->settings, KEY_LOGO);
+                g_debug ("GdmGreeterLoginWindow: Got greeter logo '%s'", path);
 
-                g_debug ("GdmGreeterLoginWindow: Got greeter logo '%s'",
-                          icon_name ? icon_name : "(null)");
-                if (icon_name != NULL) {
-                        gtk_image_set_from_icon_name (GTK_IMAGE (image),
-                                                      icon_name,
-                                                      GTK_ICON_SIZE_DIALOG);
-                        g_free (icon_name);
+                pixbuf = gdk_pixbuf_new_from_file_at_scale (path, -1, 48, TRUE, NULL);
+                g_free (path);
+
+                if (pixbuf != NULL) {
+                        gtk_image_set_from_pixbuf (GTK_IMAGE (image), pixbuf);
+                        g_object_unref (pixbuf);
                 }
         }
 
@@ -2045,7 +2039,6 @@ gdm_greeter_login_window_get_preferred_height (GtkWidget *widget,
 static void
 update_banner_message (GdmGreeterLoginWindow *login_window)
 {
-        GError      *error;
         gboolean     enabled;
 
         if (login_window->priv->auth_banner_label == NULL) {
@@ -2054,12 +2047,7 @@ update_banner_message (GdmGreeterLoginWindow *login_window)
                 return;
         }
 
-        error = NULL;
-        enabled = gconf_client_get_bool (login_window->priv->client, KEY_BANNER_MESSAGE_ENABLED, &error);
-        if (error != NULL) {
-                g_debug ("GdmGreeterLoginWindow: unable to get configuration: %s", error->message);
-                g_error_free (error);
-        }
+        enabled = g_settings_get_boolean (login_window->priv->settings, KEY_BANNER_MESSAGE_ENABLED);
 
         login_window->priv->banner_message_enabled = enabled;
 
@@ -2067,15 +2055,11 @@ update_banner_message (GdmGreeterLoginWindow *login_window)
                 g_debug ("GdmGreeterLoginWindow: banner message disabled");
                 gtk_widget_hide (login_window->priv->auth_banner_label);
         } else {
-                char *message = NULL;
-                error = NULL;
-                if (message == NULL) {
-                        message = gconf_client_get_string (login_window->priv->client, KEY_BANNER_MESSAGE_TEXT, &error);
-                        if (error != NULL) {
-                                g_debug("GdmGreeterLoginWindow: unable to get banner text: %s", error->message);
-                                g_error_free(error);
-                        }
-                }
+                char *message;
+
+                message = g_settings_get_string (login_window->priv->settings,
+                                                 KEY_BANNER_MESSAGE_TEXT);
+
                 if (message != NULL) {
                         char *markup;
                         markup = g_markup_printf_escaped ("<small><i>%s</i></small>", message);
@@ -2229,29 +2213,24 @@ gdm_greeter_login_window_class_init (GdmGreeterLoginWindowClass *klass)
 }
 
 static void
-on_gconf_key_changed (GConfClient           *client,
-                      guint                  cnxn_id,
-                      GConfEntry            *entry,
-                      GdmGreeterLoginWindow *login_window)
+on_gsettings_key_changed (GSettings             *settings,
+                          gchar                 *key,
+                          gpointer               user_data)
 {
-        const char *key;
-        GConfValue *value;
+        GdmGreeterLoginWindow *login_window;
 
-        key = gconf_entry_get_key (entry);
-        value = gconf_entry_get_value (entry);
+        login_window = GDM_GREETER_LOGIN_WINDOW (user_data);
 
         if (strcmp (key, KEY_BANNER_MESSAGE_ENABLED) == 0) {
-                if (value->type == GCONF_VALUE_BOOL) {
-                        gboolean enabled;
+                gboolean enabled;
 
-                        enabled = gconf_value_get_bool (value);
-                        g_debug ("setting key %s = %d", key, enabled);
-                        login_window->priv->banner_message_enabled = enabled;
-                        update_banner_message (login_window);
-                } else {
-                        g_warning ("Error retrieving configuration key '%s': Invalid type",
-                                   key);
-                }
+                enabled = g_settings_get_boolean (settings, key);
+
+                g_debug ("setting key %s = %d", key, enabled);
+
+                login_window->priv->banner_message_enabled = enabled;
+                update_banner_message (login_window);
+
         } else if (strcmp (key, KEY_BANNER_MESSAGE_TEXT) == 0) {
                 if (login_window->priv->banner_message_enabled) {
                         update_banner_message (login_window);
@@ -2566,9 +2545,8 @@ load_login_extensions (GdmGreeterLoginWindow *login_window)
 static void
 gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
 {
-        GConfClient *client;
-        GError      *error;
-        gboolean     user_list_disable;
+        GSettings *settings;
+        gboolean   user_list_disable;
 
         gdm_profile_start (NULL);
 
@@ -2577,19 +2555,12 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
         login_window->priv->dialog_mode = MODE_UNDEFINED;
         login_window->priv->next_mode = MODE_UNDEFINED;
 
-        client = gconf_client_get_default ();
-        error = NULL;
+        settings = g_settings_new (LOGIN_SCREEN_SCHEMA);
 
         /* The user list is not shown only if the user list is disabled and
          * timed login is also not being used.
          */
-        user_list_disable = gconf_client_get_bool (client,
-                                                   KEY_DISABLE_USER_LIST,
-                                                   &error);
-        if (error != NULL) {
-                g_debug ("GdmUserChooserWidget: unable to get disable-user-list configuration: %s", error->message);
-                g_error_free (error);
-        }
+        user_list_disable = g_settings_get_boolean (settings, KEY_DISABLE_USER_LIST);
 
         login_window->priv->user_list_disabled = user_list_disable;
 
@@ -2609,17 +2580,13 @@ gdm_greeter_login_window_init (GdmGreeterLoginWindow *login_window)
                           G_CALLBACK (on_window_state_event),
                           NULL);
 
-        login_window->priv->client = gconf_client_get_default ();
-        gconf_client_add_dir (login_window->priv->client,
-                              KEY_GREETER_DIR,
-                              GCONF_CLIENT_PRELOAD_ONELEVEL,
-                              NULL);
-        login_window->priv->gconf_cnxn = gconf_client_notify_add (login_window->priv->client,
-                                                                  KEY_GREETER_DIR,
-                                                                  (GConfClientNotifyFunc)on_gconf_key_changed,
-                                                                  login_window,
-                                                                  NULL,
-                                                                  NULL);
+        login_window->priv->settings = g_settings_new (LOGIN_SCREEN_SCHEMA);
+
+        login_window->priv->gsettings_cnxn = g_signal_connect (login_window->priv->settings,
+                                                               "changed",
+                                                               G_CALLBACK (on_gsettings_key_changed),
+                                                               login_window);
+
         g_idle_add ((GSourceFunc) load_login_extensions, login_window);
         gdm_profile_end (NULL);
 }
@@ -2636,8 +2603,8 @@ gdm_greeter_login_window_finalize (GObject *object)
 
         g_return_if_fail (login_window->priv != NULL);
 
-        if (login_window->priv->client != NULL) {
-                g_object_unref (login_window->priv->client);
+        if (login_window->priv->settings != NULL) {
+                g_object_unref (login_window->priv->settings);
         }
 
         G_OBJECT_CLASS (gdm_greeter_login_window_parent_class)->finalize (object);

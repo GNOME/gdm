@@ -33,9 +33,8 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
+#include <gio/gio.h>
 #include <gtk/gtk.h>
-
-#include <gconf/gconf-client.h>
 
 #include <act/act-user-manager.h>
 #include <act/act-user.h>
@@ -44,7 +43,9 @@
 #include "gdm-settings-keys.h"
 #include "gdm-settings-client.h"
 
-#define KEY_DISABLE_USER_LIST "/apps/gdm/simple-greeter/disable_user_list"
+#define LOGIN_SCREEN_SCHEMA   "org.gnome.login-screen"
+
+#define KEY_DISABLE_USER_LIST "disable-user-list"
 
 enum {
         USER_NO_DISPLAY              = 1 << 0,
@@ -753,18 +754,12 @@ gdm_user_chooser_widget_get_property (GObject        *object,
 static gboolean
 is_user_list_disabled (GdmUserChooserWidget *widget)
 {
-        GConfClient *client;
-        GError      *error;
-        gboolean     result;
+        GSettings *settings;
+        gboolean   result;
 
-        client = gconf_client_get_default ();
-        error = NULL;
-        result = gconf_client_get_bool (client, KEY_DISABLE_USER_LIST, &error);
-        if (error != NULL) {
-                g_debug ("GdmUserChooserWidget: unable to get disable-user-list configuration: %s", error->message);
-                g_error_free (error);
-        }
-        g_object_unref (client);
+        settings = g_settings_new (LOGIN_SCREEN_SCHEMA);
+        result = g_settings_get_boolean (settings, KEY_DISABLE_USER_LIST);
+        g_object_unref (settings);
 
         return result;
 }

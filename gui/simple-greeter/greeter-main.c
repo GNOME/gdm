@@ -29,7 +29,6 @@
 #include <glib/gi18n.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
-#include <gconf/gconf-client.h>
 
 #include <dbus/dbus-glib.h>
 

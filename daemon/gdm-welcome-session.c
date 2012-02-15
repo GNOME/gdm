@@ -315,7 +315,6 @@ build_welcome_environment (GdmWelcomeSession *welcome_session,
                 seat_id = welcome_session->priv->x11_display_seat_id +
                         strlen ("/org/freedesktop/ConsoleKit/");
 
-                g_hash_table_insert (hash, g_strdup ("GCONF_DEFAULT_SOURCE_PATH"), g_strdup (GCONF_DEFAULTPATH));
                 g_hash_table_insert (hash, g_strdup ("GDM_SEAT_ID"), g_strdup (seat_id));
         }
 
@@ -421,30 +420,6 @@ spawn_child_setup (SpawnChildData *data)
                 g_warning (_("Group %s doesn't exist"),
                            data->group_name);
                 _exit (1);
-        }
-
-        if (pwent->pw_dir != NULL) {
-                struct stat statbuf;
-                const char *seat_id;
-                char       *gconf_dir;
-                int         r;
-
-                seat_id = data->seat_id + strlen ("/org/freedesktop/ConsoleKit/");
-                gconf_dir = g_strdup_printf ("%s/%s", pwent->pw_dir, seat_id);
-
-                /* Verify per-seat gconf directory exists, create if needed */
-                r = g_stat (gconf_dir, &statbuf);
-                if (r < 0) {
-                        g_debug ("Making per-seat gconf directory %s", gconf_dir);
-                        g_mkdir (gconf_dir, S_IRWXU | S_IXGRP | S_IRGRP);
-                        g_chmod (gconf_dir, S_IRWXU | S_IXGRP | S_IRGRP);
-                        res = chown (gconf_dir, pwent->pw_uid, grent->gr_gid);
-                        if (res == -1) {
-                                g_warning ("GdmWelcomeSession: Error setting owner of per-seat gconf directory: %s",
-                                           g_strerror (errno));
-                        }
-                }
-                g_free (gconf_dir);
         }
 
         g_debug ("GdmWelcomeSession: Setting up run time dir %s", data->runtime_dir);
