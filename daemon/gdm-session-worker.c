@@ -1711,7 +1711,7 @@ _open_program_session_log (const char *filename)
 
         rotate_logs (filename, MAX_LOGS);
 
-        fd = g_open (filename, O_RDWR | O_APPEND | O_CREAT, 0600);
+        fd = g_open (filename, O_WRONLY | O_APPEND | O_CREAT, 0600);
 
         if (fd < 0) {
                 char *temp_name;
