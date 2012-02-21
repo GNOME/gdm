@@ -270,6 +270,10 @@ build_welcome_environment (GdmWelcomeSession *welcome_session,
                                               system_data_dirs));
         g_free (system_data_dirs);
 
+        g_hash_table_insert (hash,
+                             g_strdup ("XDG_SESSION_CLASS"),
+                             g_strdup ("greeter"));
+
         if (welcome_session->priv->dbus_bus_address != NULL) {
                 g_hash_table_insert (hash,
                                      g_strdup ("DBUS_SESSION_BUS_ADDRESS"),
