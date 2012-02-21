@@ -317,6 +317,16 @@ gdm_display_real_get_timed_login_details (GdmDisplay *display,
         username = NULL;
         delay = 0;
 
+#ifdef WITH_SYSTEMD
+        /* FIXME: More careful thought needs to happen before we
+         * can support auto/timed login on auxilliary seats in the
+         * systemd path.
+         */
+        if (g_strcmp0 (display->priv->seat_id, "seat0") == 0) {
+                goto out;
+        }
+#endif
+
         res = gdm_settings_direct_get_boolean (GDM_KEY_AUTO_LOGIN_ENABLE, &enabled);
         if (res && enabled) {
             res = gdm_settings_direct_get_string (GDM_KEY_AUTO_LOGIN_USER, &username);
