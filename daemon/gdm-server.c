@@ -353,10 +353,12 @@ gdm_server_resolve_command_line (GdmServer  *server,
                 argv[len++] = g_strdup (server->priv->auth_file);
         }
 
+#ifdef WITH_SYSTEMD
         if (sd_booted () > 0 && server->priv->display_seat_id != NULL) {
                 argv[len++] = g_strdup ("-seat");
                 argv[len++] = g_strdup (server->priv->display_seat_id);
         }
+#endif
 
         if (server->priv->chosen_hostname) {
                 /* run just one session */
