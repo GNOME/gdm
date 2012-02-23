@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 3.3.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-19 15:52+0100\n"
-"PO-Revision-Date: 2012-02-19 15:53+0100\n"
+"POT-Creation-Date: 2012-02-23 19:38+0100\n"
+"PO-Revision-Date: 2012-02-23 19:41+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: \n"
@@ -82,45 +82,45 @@ msgstr ""
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: kunne ikke koble til opphavsskjerm «%s»"
 
-#: ../daemon/gdm-server.c:424
+#: ../daemon/gdm-server.c:426
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Tjeneren skulle startes av bruker %s, men denne brukeren eksisterer ikke"
 
-#: ../daemon/gdm-server.c:435 ../daemon/gdm-server.c:455
-#: ../daemon/gdm-welcome-session.c:460 ../daemon/gdm-welcome-session.c:480
+#: ../daemon/gdm-server.c:437 ../daemon/gdm-server.c:457
+#: ../daemon/gdm-welcome-session.c:464 ../daemon/gdm-welcome-session.c:484
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Kunne ikke sette gruppe-ID til %d"
 
-#: ../daemon/gdm-server.c:441 ../daemon/gdm-welcome-session.c:466
+#: ../daemon/gdm-server.c:443 ../daemon/gdm-welcome-session.c:470
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups () feilet for %s"
 
-#: ../daemon/gdm-server.c:447 ../daemon/gdm-welcome-session.c:472
+#: ../daemon/gdm-server.c:449 ../daemon/gdm-welcome-session.c:476
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Kunne ikke sette bruker-id til %d"
 
-#: ../daemon/gdm-server.c:494
+#: ../daemon/gdm-server.c:496
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Kunne ikke åpne loggfil for skjerm %s!"
 
-#: ../daemon/gdm-server.c:505 ../daemon/gdm-server.c:511
-#: ../daemon/gdm-server.c:517
+#: ../daemon/gdm-server.c:507 ../daemon/gdm-server.c:513
+#: ../daemon/gdm-server.c:519
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Feil under setting  av %s til %s"
 
-#: ../daemon/gdm-server.c:537
+#: ../daemon/gdm-server.c:539
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Prioritet for tjener kunne ikke settes til %d: %s"
 
-#: ../daemon/gdm-server.c:690
+#: ../daemon/gdm-server.c:692
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tjenerkommandoen for skjerm %s er tom"
@@ -213,12 +213,12 @@ msgstr "ingen brukerkonto tilgjengelig"
 msgid "Unable to change to user"
 msgstr "Kan ikke bytte til denne brukeren"
 
-#: ../daemon/gdm-welcome-session.c:410
+#: ../daemon/gdm-welcome-session.c:414
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Bruker %s eksisterer ikke"
 
-#: ../daemon/gdm-welcome-session.c:417
+#: ../daemon/gdm-welcome-session.c:421
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Gruppe %s eksisterer ikke"
@@ -349,7 +349,7 @@ msgstr "Om fingeravtrykkleser skal tillates for innlogging"
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
-msgstr ""
+msgstr "Pålogginsskjermen kan alternativt la brukere som har registrert sine fingeravtrykk bruke disse til å logge inn med."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
 msgid "Whether or not to allow smartcard readers for login"
@@ -359,7 +359,7 @@ msgstr "Om smartkortleser skal tillates for innlogging"
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
-msgstr ""
+msgstr "Påloggingsskjermen kan alternativt la brukere som har smartkort logge inn med disse."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
 msgid "Path to small image at top of user list"
@@ -370,7 +370,7 @@ msgid ""
 "The login screen can optionally show a small image at the top of its user "
 "list to provide site administrators and distributions a way to provide "
 "branding."
-msgstr ""
+msgstr "Påloggingsskjermen kan alternativt vise et lite bilde øverst i brukerlisten for å la administratorer og distributører bruke denne til å legge inn merkevare."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Avoid showing user list"
@@ -380,7 +380,7 @@ msgstr "Ikke vis brukerliste"
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
-msgstr ""
+msgstr "Påloggingsskjermen viser normalt en liste med brukere du kan logge inn som. Denne innstillingen kan brukes to å slå av visning av denne listen."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -948,7 +948,9 @@ msgstr "Kunne ikke identifisere aktiv sete."
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
 "screen or start up a new login screen."
-msgstr "Systemet kan ikke bestemme om det skal bytte til en eksisterende påloggingsskjerm eller starte en ny."
+msgstr ""
+"Systemet kan ikke bestemme om det skal bytte til en eksisterende "
+"påloggingsskjerm eller starte en ny."
 
 #: ../utils/gdmflexiserver.c:860
 #, c-format
