@@ -51,6 +51,8 @@
 
 #include "gdm-common.h"
 #include "gdm-signal-handler.h"
+#include "gdm-settings-direct.h"
+#include "gdm-settings-keys.h"
 
 #include "gdm-server.h"
 
@@ -263,10 +265,18 @@ connect_to_parent (GdmServer *server)
 static void
 gdm_server_init_command (GdmServer *server)
 {
+        gboolean debug = FALSE;
+        const char *logverbose;
 
         if (server->priv->command != NULL) {
                 return;
         }
+
+        gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);
+        if (debug)
+                logverbose = " -logverbose 7";
+        else
+                logverbose = "";
 
 #ifdef WITH_SYSTEMD
 
@@ -297,13 +307,13 @@ gdm_server_init_command (GdmServer *server)
                 goto fallback;
         }
 
-        server->priv->command = g_strdup (SYSTEMD_X_SERVER " -br -verbose -logverbose 7");
+        server->priv->command = g_strdup_printf (SYSTEMD_X_SERVER " -br -verbose%s", logverbose);
         return;
 
 fallback:
 #endif
 
-        server->priv->command = g_strdup (X_SERVER " -br -verbose -logverbose 7");
+        server->priv->command = g_strdup_printf (X_SERVER " -br -verbose%s", logverbose);
 }
 
 static gboolean
