@@ -1886,6 +1886,8 @@ load_theme (GdmGreeterLoginWindow *login_window)
 
         box = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "window-frame"));
         gtk_container_add (GTK_CONTAINER (login_window), box);
+        gtk_widget_grab_default(GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder,
+                                                                    "log-in-button")));
 
         login_window->priv->user_chooser = GTK_WIDGET (gtk_builder_get_object (login_window->priv->builder, "user-chooser"));
 
