@@ -24,7 +24,7 @@
 
 #include <glib-object.h>
 
-#include "gdm-recent-option-widget.h"
+#include "gdm-option-widget.h"
 
 G_BEGIN_DECLS
 
