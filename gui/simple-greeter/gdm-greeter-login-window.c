@@ -86,7 +86,6 @@
 #define KEY_GREETER_DIR             "/apps/gdm/simple-greeter"
 #define KEY_BANNER_MESSAGE_ENABLED  KEY_GREETER_DIR "/banner_message_enable"
 #define KEY_BANNER_MESSAGE_TEXT     KEY_GREETER_DIR "/banner_message_text"
-#define KEY_BANNER_MESSAGE_TEXT_NOCHOOSER     KEY_GREETER_DIR "/banner_message_text_nochooser"
 #define KEY_LOGO                    KEY_GREETER_DIR "/logo_icon_name"
 #define KEY_DISABLE_USER_LIST       "/apps/gdm/simple-greeter/disable_user_list"
 
@@ -2070,14 +2069,6 @@ update_banner_message (GdmGreeterLoginWindow *login_window)
         } else {
                 char *message = NULL;
                 error = NULL;
-                if (user_chooser_has_no_user (login_window)) {
-                        message = gconf_client_get_string (login_window->priv->client, KEY_BANNER_MESSAGE_TEXT_NOCHOOSER, &error);
-                        if (error != NULL) {
-                                g_debug("GdmGreeterLoginWindow: unable to get nochooser banner text: %s", error->message);
-                                g_error_free(error);
-                        }
-                }
-                error = NULL;
                 if (message == NULL) {
                         message = gconf_client_get_string (login_window->priv->client, KEY_BANNER_MESSAGE_TEXT, &error);
                         if (error != NULL) {
@@ -2261,7 +2252,7 @@ on_gconf_key_changed (GConfClient           *client,
                         g_warning ("Error retrieving configuration key '%s': Invalid type",
                                    key);
                 }
-        } else if (strcmp (key, KEY_BANNER_MESSAGE_TEXT) == 0 || strcmp (key, KEY_BANNER_MESSAGE_TEXT_NOCHOOSER) == 0) {
+        } else if (strcmp (key, KEY_BANNER_MESSAGE_TEXT) == 0) {
                 if (login_window->priv->banner_message_enabled) {
                         update_banner_message (login_window);
                 }
