@@ -10,15 +10,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-10 19:49+0100\n"
-"PO-Revision-Date: 2012-03-08 13:56+0100\n"
+"POT-Creation-Date: 2012-03-17 00:22+0100\n"
+"PO-Revision-Date: 2012-03-17 00:22+0100\n"
 "Last-Translator: Pau Iranzo <paugnu@gmail.com>\n"
-"Language-Team: català; valencià <web@softcatala.org>\n"
+"Language-Team: català; valencià <tradgnome@softcatala.org>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Content-Transfer-Encoding: 8bits\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: ../common/gdm-common.c:488
 #, c-format
@@ -92,17 +92,17 @@ msgstr ""
 "L'usuari %s havia d'engendrar el servidor però aquest usuari no existeix"
 
 #: ../daemon/gdm-server.c:447 ../daemon/gdm-server.c:467
-#: ../daemon/gdm-welcome-session.c:464 ../daemon/gdm-welcome-session.c:484
+#: ../daemon/gdm-welcome-session.c:439 ../daemon/gdm-welcome-session.c:459
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "No s'ha pogut definir el groupid com a %d"
 
-#: ../daemon/gdm-server.c:453 ../daemon/gdm-welcome-session.c:470
+#: ../daemon/gdm-server.c:453 ../daemon/gdm-welcome-session.c:445
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "ha fallat l'initgroups () per a %s"
 
-#: ../daemon/gdm-server.c:459 ../daemon/gdm-welcome-session.c:476
+#: ../daemon/gdm-server.c:459 ../daemon/gdm-welcome-session.c:451
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "No s'ha pogut definir l'userid com a %d"
@@ -223,12 +223,12 @@ msgstr "no hi ha tal compte d'usuari disponible"
 msgid "Unable to change to user"
 msgstr "No s'ha pogut commutar a aquest usuari"
 
-#: ../daemon/gdm-welcome-session.c:414
+#: ../daemon/gdm-welcome-session.c:413
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "No existeix l'usuari %s"
 
-#: ../daemon/gdm-welcome-session.c:421
+#: ../daemon/gdm-welcome-session.c:420
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "No existeix el grup %s"
@@ -321,7 +321,7 @@ msgid "GNOME Display Manager Session Worker"
 msgstr "Fil de treball de sessió del gestor de pantalla del GNOME"
 
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2569
 msgid "Login Window"
 msgstr "Finestra d'entrada"
 
@@ -397,10 +397,20 @@ msgstr ""
 "distribuïdors del lloc una manera de proporcionar una marca."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+msgid ""
+"The fallback login screen can optionally show a small image at the top of "
+"its user list to provide site administrators and distributions a way to "
+"provide branding."
+msgstr ""
+"La pantalla d'entrada auxiliar pot mostrar de forma opcional una imatge "
+"petita a la part superior de la llista d'usuaris per proporcionar als "
+"administradors i distribuïdors del lloc una manera de proporcionar una marca."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid "Avoid showing user list"
 msgstr "Evita mostra la llista d'usuaris"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -408,6 +418,33 @@ msgstr ""
 "La pantalla d'entrada normalment mostra una llista dels usuaris disponibles "
 "per entrar. Aquest paràmetre es pot commutar per no mostrar la llista "
 "d'usuaris."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+msgid "Enable showing the banner message"
+msgstr "Habilita la visualització del missatge del bàner"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+msgid "Set to true to show the banner message text."
+msgstr ""
+"Establiu-ho a «true» (cert) per mostrar el text del missatge del bàner."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+msgid "Banner message text"
+msgstr "Text del missatge del bàner"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+msgid "Text banner message to show in the login window."
+msgstr "Missatge de text del bàner a mostrar a la finestra d'entrada."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+msgid "Disable showing the restart buttons"
+msgstr "Inhabilita la visualització dels botons de reinici"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+msgid "Set to true to disable showing the restart buttons in the login window."
+msgstr ""
+"Establiu-ho a «true» (cert) per evitar que es mostrin els botons de reinici "
+"a la pantalla d'entrada."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -601,26 +638,26 @@ msgstr "%a %H:%M:%S"
 msgid "%a %l:%M %p"
 msgstr "%a %H:%M"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:319
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:317
 msgid "Automatically logging in…"
 msgstr "S'està entrant de manera automàtica…"
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:935
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:933
 msgid "Cancelling…"
 msgstr "S'està cancel·lant…"
 
 #. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1491
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1489
 msgid "Select language and click Log In"
 msgstr "Seleccioneu la llengua i feu clic a «Entra»"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1627
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1625
 msgctxt "customsession"
 msgid "Custom"
 msgstr "Personalitzat"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1628
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1626
 msgid "Custom session"
 msgstr "Sessió personalitzada"
 
@@ -644,23 +681,23 @@ msgstr "Desbloca"
 msgid "Login"
 msgstr "Entra"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:907
+#: ../gui/simple-greeter/gdm-greeter-panel.c:903
 msgid "Suspend"
 msgstr "Atura temporalment"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:912
+#: ../gui/simple-greeter/gdm-greeter-panel.c:908
 msgid "Restart"
 msgstr "Reinicia"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:916
+#: ../gui/simple-greeter/gdm-greeter-panel.c:912
 msgid "Shut Down"
 msgstr "Atura"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:965
+#: ../gui/simple-greeter/gdm-greeter-panel.c:961
 msgid "Unknown time remaining"
 msgstr "Es desconeix el temps restant"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:987
+#: ../gui/simple-greeter/gdm-greeter-panel.c:983
 msgid "Panel"
 msgstr "Quadre"
 
@@ -688,14 +725,6 @@ msgstr "Element predeterminat"
 msgid "The ID of the default item"
 msgstr "L'identificador de l'element predeterminat"
 
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:310
-msgid "Max Item Count"
-msgstr "Nombre màxim d'elements"
-
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:311
-msgid "The maximum number of items to keep around in the list"
-msgstr "El nombre màxim d'elements a mantenir per a la llista"
-
 #: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
 msgid "Remote Login (Connecting to %s…)"
@@ -713,180 +742,6 @@ msgstr "Entrada remota"
 #: ../gui/simple-greeter/gdm-session-option-widget.c:162
 msgid "Session"
 msgstr "Sessió"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
-msgid "Enable showing the banner message"
-msgstr "Habilita la visualització del missatge del bàner"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
-msgid "Set to true to show the banner message text."
-msgstr ""
-"Establiu-ho a «true» (cert) per mostrar el text del missatge del bàner."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
-msgid "Banner message text"
-msgstr "Text del missatge del bàner"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
-msgid "Text banner message to show in the login window."
-msgstr "Missatge de text del bàner a mostrar a la finestra d'entrada."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
-msgid "Banner message text when chooser is empty"
-msgstr ""
-"Text del missatge del bàner que es mostrarà quan el seleccionador sigui buit"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
-msgid ""
-"Text banner message to show in the login window when the user chooser is "
-"empty, instead of banner_message_text."
-msgstr ""
-"Missatge de text del bàner a mostrar a la finestra d'entrada quan el "
-"selector d'usuari sigui buit, en lloc del paràmetre «banner_message_text»."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
-msgid "Icon name to use for greeter logo"
-msgstr "El nom de la icona a utilitzar com a logotip del rebedor"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
-msgid "Set to the themed icon name to use for the greeter logo."
-msgstr ""
-"Establiu-ho al nom de la icona de tema a utilitzar per al logotip del "
-"rebedor."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
-msgid "Disable showing the restart buttons"
-msgstr "Inhabilita la visualització dels botons de reinici"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
-msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr ""
-"Establiu-ho a «true» (cert) per evitar que es mostrin els botons de reinici "
-"a la pantalla d'entrada."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
-msgid "Do not show known users in the login window"
-msgstr "No mostris els usuaris coneguts a la finestra d'entrada"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
-msgid "Set to true to disable showing known users in the login window."
-msgstr ""
-"Establiu-ho a «true» (cert) per evitar que es mostrin els usuaris coneguts a "
-"la pantalla d'entrada."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
-msgid "Recently selected languages"
-msgstr "Llengües seleccionades recentment"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-msgid "Set to a list of languages to be shown by default in the login window."
-msgstr ""
-"Establiu-ho a una llista de llengües a mostrar de manera predeterminada a la "
-"finestra d'entrada."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
-msgid "Use Compiz as the window manager"
-msgstr "Utilitza el Compiz com a gestor de finestres"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
-msgid "Set to true to use Compiz as the window manager."
-msgstr ""
-"Establiu-ho a «true» (cert) per utilitzar el Compiz com a gestor de "
-"finestres."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
-msgid "Enable on-screen keyboard"
-msgstr "Habilita el teclat en pantalla"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
-msgid "Set to true to enable the on-screen keyboard."
-msgstr "Establiu-ho a «true» (cert) per habilitar el teclat en pantalla."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
-msgid "Enable screen reader"
-msgstr "Habilita el lector de pantalla"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
-msgid "Set to true to enable the screen reader."
-msgstr "Establiu-ho a «true» (cert) per habilitar el lector de pantalla."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
-msgid "Enable screen magnifier"
-msgstr "Habilita l'ampliador de pantalla"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
-msgid "Set to true to enable the screen magnifier."
-msgstr "Establiu-ho a «true» (cert) per habilitar l'ampliador de pantalla."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
-msgid "Enable accessibility keyboard plugin"
-msgstr "Habilita el connector d'accessibilitat del teclat"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
-msgid ""
-"Set to true to enable the plugin to manage the accessibility keyboard "
-"settings."
-msgstr ""
-"Establiu-ho a «true» (cert) per habilitar el connector de gestió dels "
-"paràmetres del teclat accessible."
-
-# FIXME: a quin «background» es refereix? (dpm)
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
-msgid "True if the background settings manager plugin is enabled."
-msgstr ""
-"És cert si el connector del gestor de paràmetres de fons està habilitat."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
-msgid "Set to true to enable the background settings manager plugin."
-msgstr ""
-"Establiu-ho a «true» (cert) per habilitar el connector de gestió dels "
-"paràmetres del fons de pantalla."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
-msgid "True if the media-keys settings manager plugin is enabled."
-msgstr ""
-"És cert si el connector del gestor de paràmetres de les tecles multimèdia "
-"està habilitat."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
-msgid "Set to true to enable the media-keys settings manager plugin."
-msgstr ""
-"Establiu-ho a «true» (cert) per habilitar el connector de gestió dels "
-"paràmetres de les tecles multimèdia."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
-msgid "True if the sound settings manager plugin is enabled."
-msgstr ""
-"És cert si el connector del gestor de paràmetres del so està habilitat."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
-msgid "Set to true to enable the sound settings manager plugin."
-msgstr ""
-"Establiu-ho a «true» (cert) per habilitar el connector de gestió dels "
-"paràmetres del so."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
-msgid "True if the XRandR settings manager plugin is enabled."
-msgstr ""
-"És cert si el connector del gestor de paràmetres XRrandR està habilitat."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
-msgid "Set to true to enable the XRandR settings manager plugin."
-msgstr ""
-"Establiu-ho a «true» (cert) per habilitar el connector del gestor de "
-"paràmetres XRandR."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
-msgid "True if the xsettings settings manager plugin is enabled."
-msgstr ""
-"És cert si el connector del gestor de paràmetres de l'xsettings està "
-"habilitat."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
-msgid "Set to true to enable the xsettings settings manager plugin."
-msgstr ""
-"Establiu-ho a «true» (cert) per habilitar el connector de gestió dels "
-"paràmetres de l'xsettings."
 
 #: ../gui/simple-greeter/gdm-timer.c:147
 msgid "Duration"
@@ -912,8 +767,8 @@ msgstr "S'està executant?"
 msgid "Whether the timer is currently ticking"
 msgstr "Si el temporitzador està activat"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:459
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:802
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:460
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:797
 #, c-format
 msgid "Log in as %s"
 msgstr "Entra com a %s"
@@ -923,32 +778,32 @@ msgstr "Entra com a %s"
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
 msgctxt "user"
 msgid "Other…"
 msgstr "Altres…"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:547
 msgid "Choose a different account"
 msgstr "Seleccioneu un compte diferent"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:561
 msgid "Guest"
 msgstr "Convidat"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:561
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:562
 msgid "Log in as a temporary guest"
 msgstr "Entra com a convidat temporal"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:577
 msgid "Automatic Login"
 msgstr "Entrada automàtica"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:577
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:578
 msgid "Automatically log into the system after selecting options"
 msgstr "Entra automàticament a la sessió després de seleccionar les opcions"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1358
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1353
 msgid "Currently logged in"
 msgstr "Actualment connectat"
 
@@ -1024,6 +879,133 @@ msgstr "S'ha fet una captura de pantalla"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Fes una foto de la pantalla"
+
+#~ msgid "Max Item Count"
+#~ msgstr "Nombre màxim d'elements"
+
+#~ msgid "The maximum number of items to keep around in the list"
+#~ msgstr "El nombre màxim d'elements a mantenir per a la llista"
+
+#~ msgid "Banner message text when chooser is empty"
+#~ msgstr ""
+#~ "Text del missatge del bàner que es mostrarà quan el seleccionador sigui "
+#~ "buit"
+
+#~ msgid ""
+#~ "Text banner message to show in the login window when the user chooser is "
+#~ "empty, instead of banner_message_text."
+#~ msgstr ""
+#~ "Missatge de text del bàner a mostrar a la finestra d'entrada quan el "
+#~ "selector d'usuari sigui buit, en lloc del paràmetre «banner_message_text»."
+
+#~ msgid "Icon name to use for greeter logo"
+#~ msgstr "El nom de la icona a utilitzar com a logotip del rebedor"
+
+#~ msgid "Set to the themed icon name to use for the greeter logo."
+#~ msgstr ""
+#~ "Establiu-ho al nom de la icona de tema a utilitzar per al logotip del "
+#~ "rebedor."
+
+#~ msgid "Do not show known users in the login window"
+#~ msgstr "No mostris els usuaris coneguts a la finestra d'entrada"
+
+#~ msgid "Set to true to disable showing known users in the login window."
+#~ msgstr ""
+#~ "Establiu-ho a «true» (cert) per evitar que es mostrin els usuaris "
+#~ "coneguts a la pantalla d'entrada."
+
+#~ msgid "Recently selected languages"
+#~ msgstr "Llengües seleccionades recentment"
+
+#~ msgid ""
+#~ "Set to a list of languages to be shown by default in the login window."
+#~ msgstr ""
+#~ "Establiu-ho a una llista de llengües a mostrar de manera predeterminada a "
+#~ "la finestra d'entrada."
+
+#~ msgid "Use Compiz as the window manager"
+#~ msgstr "Utilitza el Compiz com a gestor de finestres"
+
+#~ msgid "Set to true to use Compiz as the window manager."
+#~ msgstr ""
+#~ "Establiu-ho a «true» (cert) per utilitzar el Compiz com a gestor de "
+#~ "finestres."
+
+#~ msgid "Enable on-screen keyboard"
+#~ msgstr "Habilita el teclat en pantalla"
+
+#~ msgid "Set to true to enable the on-screen keyboard."
+#~ msgstr "Establiu-ho a «true» (cert) per habilitar el teclat en pantalla."
+
+#~ msgid "Enable screen reader"
+#~ msgstr "Habilita el lector de pantalla"
+
+#~ msgid "Set to true to enable the screen reader."
+#~ msgstr "Establiu-ho a «true» (cert) per habilitar el lector de pantalla."
+
+#~ msgid "Enable screen magnifier"
+#~ msgstr "Habilita l'ampliador de pantalla"
+
+#~ msgid "Set to true to enable the screen magnifier."
+#~ msgstr "Establiu-ho a «true» (cert) per habilitar l'ampliador de pantalla."
+
+#~ msgid "Enable accessibility keyboard plugin"
+#~ msgstr "Habilita el connector d'accessibilitat del teclat"
+
+#~ msgid ""
+#~ "Set to true to enable the plugin to manage the accessibility keyboard "
+#~ "settings."
+#~ msgstr ""
+#~ "Establiu-ho a «true» (cert) per habilitar el connector de gestió dels "
+#~ "paràmetres del teclat accessible."
+
+# FIXME: a quin «background» es refereix? (dpm)
+#~ msgid "True if the background settings manager plugin is enabled."
+#~ msgstr ""
+#~ "És cert si el connector del gestor de paràmetres de fons està habilitat."
+
+#~ msgid "Set to true to enable the background settings manager plugin."
+#~ msgstr ""
+#~ "Establiu-ho a «true» (cert) per habilitar el connector de gestió dels "
+#~ "paràmetres del fons de pantalla."
+
+#~ msgid "True if the media-keys settings manager plugin is enabled."
+#~ msgstr ""
+#~ "És cert si el connector del gestor de paràmetres de les tecles multimèdia "
+#~ "està habilitat."
+
+#~ msgid "Set to true to enable the media-keys settings manager plugin."
+#~ msgstr ""
+#~ "Establiu-ho a «true» (cert) per habilitar el connector de gestió dels "
+#~ "paràmetres de les tecles multimèdia."
+
+#~ msgid "True if the sound settings manager plugin is enabled."
+#~ msgstr ""
+#~ "És cert si el connector del gestor de paràmetres del so està habilitat."
+
+#~ msgid "Set to true to enable the sound settings manager plugin."
+#~ msgstr ""
+#~ "Establiu-ho a «true» (cert) per habilitar el connector de gestió dels "
+#~ "paràmetres del so."
+
+#~ msgid "True if the XRandR settings manager plugin is enabled."
+#~ msgstr ""
+#~ "És cert si el connector del gestor de paràmetres XRrandR està habilitat."
+
+#~ msgid "Set to true to enable the XRandR settings manager plugin."
+#~ msgstr ""
+#~ "Establiu-ho a «true» (cert) per habilitar el connector del gestor de "
+#~ "paràmetres XRandR."
+
+#~ msgid "True if the xsettings settings manager plugin is enabled."
+#~ msgstr ""
+#~ "És cert si el connector del gestor de paràmetres de l'xsettings està "
+#~ "habilitat."
+
+#~ msgid "Set to true to enable the xsettings settings manager plugin."
+#~ msgstr ""
+#~ "Establiu-ho a «true» (cert) per habilitar el connector de gestió dels "
+#~ "paràmetres de l'xsettings."
 
 #~ msgid "Denied XDMCP query from host %s"
 #~ msgstr "L'ordinador central %s ha denegat la consulta XDMCP"
