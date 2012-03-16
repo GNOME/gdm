@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-04 00:19+0100\n"
-"PO-Revision-Date: 2012-03-04 00:20+0100\n"
+"POT-Creation-Date: 2012-03-16 20:01+0100\n"
+"PO-Revision-Date: 2012-03-16 20:02+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -93,17 +93,17 @@ msgstr ""
 "nie istnieje"
 
 #: ../daemon/gdm-server.c:447 ../daemon/gdm-server.c:467
-#: ../daemon/gdm-welcome-session.c:464 ../daemon/gdm-welcome-session.c:484
+#: ../daemon/gdm-welcome-session.c:439 ../daemon/gdm-welcome-session.c:459
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Nie można ustawić identyfikatora grupy na %d"
 
-#: ../daemon/gdm-server.c:453 ../daemon/gdm-welcome-session.c:470
+#: ../daemon/gdm-server.c:453 ../daemon/gdm-welcome-session.c:445
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "Funkcja initgroups () się nie powiodła dla %s"
 
-#: ../daemon/gdm-server.c:459 ../daemon/gdm-welcome-session.c:476
+#: ../daemon/gdm-server.c:459 ../daemon/gdm-welcome-session.c:451
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Nie można ustawić identyfikatora użytkownika na %d"
@@ -218,12 +218,12 @@ msgstr "brak konta użytkownika"
 msgid "Unable to change to user"
 msgstr "Nie można zmienić użytkownika"
 
-#: ../daemon/gdm-welcome-session.c:414
+#: ../daemon/gdm-welcome-session.c:413
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "Użytkownik %s nie istnieje"
 
-#: ../daemon/gdm-welcome-session.c:421
+#: ../daemon/gdm-welcome-session.c:420
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "Grupa %s nie istnieje."
@@ -313,7 +313,7 @@ msgid "GNOME Display Manager Session Worker"
 msgstr "Proces roboczy menedżera wyświetlania GNOME"
 
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2569
 msgid "Login Window"
 msgstr "Okno logowania"
 
@@ -352,20 +352,20 @@ msgstr ""
 "alfabetu Braille'a"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
-msgid "Avoid showing user list"
-msgstr "Bez wyświetlania listy użytkowników"
+msgid "Whether or not to allow fingerprint readers for login"
+msgstr "Określa, czy umożliwiać logowanie za pomocą czytników odcisków palców"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:2
-msgid "Path to small image at top of user list"
-msgstr "Ścieżka do małego obrazu na górze listy użytkowników"
-
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
 msgstr ""
 "Ekran logowania może opcjonalnie umożliwiać użytkownikom, którzy "
 "zarejestrowali swoje odciski palców logowanie za ich pomocą."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
+msgid "Whether or not to allow smartcard readers for login"
+msgstr "Określa, czy umożliwiać logowanie za pomocą czytników kart smartcard"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:4
 msgid ""
@@ -376,6 +376,10 @@ msgstr ""
 "smartcard logowanie za ich pomocą."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Path to small image at top of user list"
+msgstr "Ścieżka do małego obrazu na górze listy użytkowników"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
 msgid ""
 "The login screen can optionally show a small image at the top of its user "
 "list to provide site administrators and distributions a way to provide "
@@ -384,7 +388,21 @@ msgstr ""
 "Ekran logowania może opcjonalnie wyświetlać mały obraz na górze listy "
 "użytkowników, aby administratorzy i dystrybucje mogły użyć swoich marek."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+msgid ""
+"The fallback login screen can optionally show a small image at the top of "
+"its user list to provide site administrators and distributions a way to "
+"provide branding."
+msgstr ""
+"Zastępczy ekran logowania może opcjonalnie wyświetlać mały obraz na górze "
+"listy użytkowników, aby administratorzy i dystrybucje mogły użyć swoich "
+"marek."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+msgid "Avoid showing user list"
+msgstr "Bez wyświetlania listy użytkowników"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -392,13 +410,31 @@ msgstr ""
 "Ekran logowania zwykle wyświetla listę dostępnych użytkowników. To "
 "ustawienie może być używane, aby wyłączyć jej wyświetlanie."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
-msgid "Whether or not to allow fingerprint readers for login"
-msgstr "Określa, czy umożliwiać logowanie za pomocą czytników odcisków palców"
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+msgid "Enable showing the banner message"
+msgstr "Włączenie wyświetlania komunikatu banner"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
-msgid "Whether or not to allow smartcard readers for login"
-msgstr "Określa, czy umożliwiać logowanie za pomocą czytników kart smartcard"
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+msgid "Set to true to show the banner message text."
+msgstr "Wartość \"true\" włącza wyświetlanie komunikatu bannera."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+msgid "Banner message text"
+msgstr "Tekst komunikatu banner"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+msgid "Text banner message to show in the login window."
+msgstr "Treść komunikatu bannera do wyświetlenia na ekranie logowania."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+msgid "Disable showing the restart buttons"
+msgstr "Wyłączenie wyświetlania przycisków ponownego uruchomienia"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+msgid "Set to true to disable showing the restart buttons in the login window."
+msgstr ""
+"Wartość \"true\" wyłącza wyświetlanie przycisków ponownego uruchamiania na "
+"ekranie logowania."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -587,66 +623,66 @@ msgstr "%a, %H:%M:%S"
 msgid "%a %l:%M %p"
 msgstr "%a, %H:%M"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:319
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:317
 msgid "Automatically logging in…"
 msgstr "Logowanie automatyczne…"
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:935
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:933
 msgid "Cancelling…"
 msgstr "Anulowanie…"
 
 #. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1491
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1489
 msgid "Select language and click Log In"
 msgstr "Proszę wybrać język i nacisnąć przycisk Zaloguj"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1627
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1625
 msgctxt "customsession"
 msgid "Custom"
 msgstr "Własna"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1628
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1626
 msgid "Custom session"
 msgstr "Własna sesja"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-msgid "Cancel"
-msgstr "Anuluj"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
 msgid "Computer Name"
 msgstr "Nazwa komputera"
 
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
+msgid "Version"
+msgstr "Wersja"
+
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-msgid "Login"
-msgstr "Zaloguj"
+msgid "Cancel"
+msgstr "Anuluj"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
 msgid "Unlock"
 msgstr "Odblokuj"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
-msgid "Version"
-msgstr "Wersja"
+msgid "Login"
+msgstr "Zaloguj"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:907
+#: ../gui/simple-greeter/gdm-greeter-panel.c:903
 msgid "Suspend"
 msgstr "Uśpij"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:912
+#: ../gui/simple-greeter/gdm-greeter-panel.c:908
 msgid "Restart"
 msgstr "Uruchom ponownie"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:916
+#: ../gui/simple-greeter/gdm-greeter-panel.c:912
 msgid "Shut Down"
 msgstr "Wyłącz"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:965
+#: ../gui/simple-greeter/gdm-greeter-panel.c:961
 msgid "Unknown time remaining"
 msgstr "Nieznany pozostały czas"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:987
+#: ../gui/simple-greeter/gdm-greeter-panel.c:983
 msgid "Panel"
 msgstr "Panel"
 
@@ -674,14 +710,6 @@ msgstr "Element domyślny"
 msgid "The ID of the default item"
 msgstr "Identyfikator domyślnego elementu"
 
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:310
-msgid "Max Item Count"
-msgstr "Maksymalna liczba elementów"
-
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:311
-msgid "The maximum number of items to keep around in the list"
-msgstr "Maksymalna liczba elementów w liście"
-
 #: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
 msgid "Remote Login (Connecting to %s…)"
@@ -699,159 +727,6 @@ msgstr "Logowanie zdalne"
 #: ../gui/simple-greeter/gdm-session-option-widget.c:162
 msgid "Session"
 msgstr "Sesja"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
-msgid "Banner message text"
-msgstr "Tekst komunikatu banner"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
-msgid "Banner message text when chooser is empty"
-msgstr "Tekst komunikatu banner, kiedy ekran wyboru jest pusty"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
-msgid "Disable showing the restart buttons"
-msgstr "Wyłączenie wyświetlania przycisków ponownego uruchomienia"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
-msgid "Do not show known users in the login window"
-msgstr "Bez wyświetlania znanych użytkowników na ekranie logowania"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
-msgid "Enable accessibility keyboard plugin"
-msgstr "Włączenie wtyczki dostępności klawiatury"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
-msgid "Enable on-screen keyboard"
-msgstr "Włączenie klawiatury ekranowej"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
-msgid "Enable screen magnifier"
-msgstr "Włączenie lupy"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
-msgid "Enable screen reader"
-msgstr "Włączenie czytnika ekranowego"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
-msgid "Enable showing the banner message"
-msgstr "Włączenie wyświetlania komunikatu banner"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
-msgid "Icon name to use for greeter logo"
-msgstr "Nazwa ikony do użycia dla loga powitalnego"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
-msgid "Recently selected languages"
-msgstr "Ostatnio wybrane języki"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
-msgid "Set to a list of languages to be shown by default in the login window."
-msgstr ""
-"Proszę ustawić na listę języków do domyślnego wyświetlenia na ekranie "
-"logowania."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
-msgid "Set to the themed icon name to use for the greeter logo."
-msgstr "Ustawienie na nazwę ikony motywu do użycia jako logo powitalne."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-msgid "Set to true to disable showing known users in the login window."
-msgstr ""
-"Wartość \"true\" wyłącza wyświetlanie znanych użytkowników na ekranie "
-"logowania."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
-msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr ""
-"Wartość \"true\" wyłącza wyświetlanie przycisków ponownego uruchamiania na "
-"ekranie logowania."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
-msgid "Set to true to enable the XRandR settings manager plugin."
-msgstr "Wartość \"true\" włącza wtyczkę menedżera ustawień XRandR."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
-msgid "Set to true to enable the background settings manager plugin."
-msgstr "Wartość \"true\" włącza wtyczkę menedżera ustawień tła."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
-msgid "Set to true to enable the media-keys settings manager plugin."
-msgstr ""
-"Wartość \"true\" włącza wtyczkę menedżera ustawień klawiszy multimedialnych."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
-msgid "Set to true to enable the on-screen keyboard."
-msgstr "Wartość \"true\" włącza klawiaturę ekranową."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
-msgid ""
-"Set to true to enable the plugin to manage the accessibility keyboard "
-"settings."
-msgstr "Wartość \"true\" włącza wtyczkę ustawień dostępności klawiatury."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
-msgid "Set to true to enable the screen magnifier."
-msgstr "Wartość \"true\" włącza lupę ekranową."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
-msgid "Set to true to enable the screen reader."
-msgstr "Wartość \"true\" włącza czytnik ekranowy."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
-msgid "Set to true to enable the sound settings manager plugin."
-msgstr "Wartość \"true\" włącza wtyczkę menedżera ustawień dźwięku."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
-msgid "Set to true to enable the xsettings settings manager plugin."
-msgstr "Wartość \"true\" włącza wtyczkę menedżera ustawień XSettings."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
-msgid "Set to true to show the banner message text."
-msgstr "Wartość \"true\" włącza wyświetlanie komunikatu bannera."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
-msgid "Set to true to use Compiz as the window manager."
-msgstr "Wartość \"true\" włącza Compiz jako menedżera okien."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
-msgid ""
-"Text banner message to show in the login window when the user chooser is "
-"empty, instead of banner_message_text."
-msgstr ""
-"Treść komunikatu bannera do wyświetlenia na ekranie logowania, kiedy lista "
-"wyboru użytkowników jest pusta, zamiast zmiennej banner_message_text."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
-msgid "Text banner message to show in the login window."
-msgstr "Treść komunikatu bannera do wyświetlenia na ekranie logowania."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
-msgid "True if the XRandR settings manager plugin is enabled."
-msgstr "Wartość \"true\", gdy wtyczka menedżera ustawień XRandR jest włączona."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
-msgid "True if the background settings manager plugin is enabled."
-msgstr "Wartość \"true\", gdy wtyczka menedżera ustawień tła jest włączona."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
-msgid "True if the media-keys settings manager plugin is enabled."
-msgstr ""
-"Wartość \"true\", gdy wtyczka menedżera ustawień przycisków multimedialnych "
-"jest włączona."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
-msgid "True if the sound settings manager plugin is enabled."
-msgstr ""
-"Wartość \"true\", gdy wtyczka menedżera ustawień dźwięku jest włączona."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
-msgid "True if the xsettings settings manager plugin is enabled."
-msgstr ""
-"Wartość \"true\", gdy wtyczka menedżera ustawień XSettings jest włączona."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
-msgid "Use Compiz as the window manager"
-msgstr "Użycie Compiz jako menedżera okien"
 
 #: ../gui/simple-greeter/gdm-timer.c:147
 msgid "Duration"
@@ -878,8 +753,8 @@ msgid "Whether the timer is currently ticking"
 msgstr "Określa, czy odbywa się odliczanie"
 
 # tooltip
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:459
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:802
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:460
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:797
 #, c-format
 msgid "Log in as %s"
 msgstr "Loguje jako %s"
@@ -889,35 +764,35 @@ msgstr "Loguje jako %s"
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
 msgctxt "user"
 msgid "Other…"
 msgstr "Inny…"
 
 # tooltip
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:547
 msgid "Choose a different account"
 msgstr "Wybiera inne konto"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:561
 msgid "Guest"
 msgstr "Gość"
 
 # tooltip
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:561
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:562
 msgid "Log in as a temporary guest"
 msgstr "Loguje jako tymczasowego gościa"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:577
 msgid "Automatic Login"
 msgstr "Logowanie automatyczne"
 
 # tooltip
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:577
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:578
 msgid "Automatically log into the system after selecting options"
 msgstr "Automatyczne loguje do systemu po wybraniu opcji"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1358
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1353
 msgid "Currently logged in"
 msgstr "Obecnie zalogowany"
 
