@@ -23,8 +23,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm-master-po-gl-41637\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-21 11:21+0100\n"
-"PO-Revision-Date: 2012-02-21 11:22+0100\n"
+"POT-Creation-Date: 2012-03-17 15:16+0100\n"
+"PO-Revision-Date: 2012-03-17 15:17+0100\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -92,50 +92,50 @@ msgstr ""
 "diagnosticar o problema. Mentres tanto esta pantalla ficará desactivada. "
 "Reinicie o GDM cando o problema estea corrixido."
 
-#: ../daemon/gdm-server.c:256
+#: ../daemon/gdm-server.c:258
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: produciuse un fallo ao conectar coa pantalla pai '%s'"
 
-#: ../daemon/gdm-server.c:424
+#: ../daemon/gdm-server.c:436
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "O servidor íase iniciar co usuario %s, mais ese usuario non existe"
 
-#: ../daemon/gdm-server.c:435 ../daemon/gdm-server.c:455
-#: ../daemon/gdm-welcome-session.c:460 ../daemon/gdm-welcome-session.c:480
+#: ../daemon/gdm-server.c:447 ../daemon/gdm-server.c:467
+#: ../daemon/gdm-welcome-session.c:439 ../daemon/gdm-welcome-session.c:459
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Non foi posíbel definir o identificador de grupo como %d"
 
-#: ../daemon/gdm-server.c:441 ../daemon/gdm-welcome-session.c:466
+#: ../daemon/gdm-server.c:453 ../daemon/gdm-welcome-session.c:445
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "fallou o initgroups () para %s"
 
-#: ../daemon/gdm-server.c:447 ../daemon/gdm-welcome-session.c:472
+#: ../daemon/gdm-server.c:459 ../daemon/gdm-welcome-session.c:451
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Non foi posíbel definir o identificador de usuario como %d"
 
-#: ../daemon/gdm-server.c:494
+#: ../daemon/gdm-server.c:506
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: non foi posíbel abrir o ficheiro de rexistro para a pantalla %s!"
 
-#: ../daemon/gdm-server.c:505 ../daemon/gdm-server.c:511
-#: ../daemon/gdm-server.c:517
+#: ../daemon/gdm-server.c:517 ../daemon/gdm-server.c:523
+#: ../daemon/gdm-server.c:529
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: hai un erro ao configurar %s a %s"
 
 # Poño "Xserver" porque seica é o nome do executable
-#: ../daemon/gdm-server.c:537
+#: ../daemon/gdm-server.c:549
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: non foi posíbel definir a prioridade do servidor como %d: %s"
 
-#: ../daemon/gdm-server.c:690
+#: ../daemon/gdm-server.c:702
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: a orde do servidor está baleira para a pantalla %s"
@@ -234,12 +234,12 @@ msgstr "non hai ningunha conta de usuario dispoñíbel"
 msgid "Unable to change to user"
 msgstr "Non é posíbel cambiar a ese usuario"
 
-#: ../daemon/gdm-welcome-session.c:410
+#: ../daemon/gdm-welcome-session.c:413
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "O usuario %s non existe"
 
-#: ../daemon/gdm-welcome-session.c:417
+#: ../daemon/gdm-welcome-session.c:420
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "O grupo %s non existe"
@@ -330,7 +330,7 @@ msgid "GNOME Display Manager Session Worker"
 msgstr "Traballador do xestor de sesión de pantalla de GNOME"
 
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2569
 msgid "Login Window"
 msgstr "Xanela de inicio de sesión"
 
@@ -406,10 +406,20 @@ msgstr ""
 "distribucións como unha forma de crear marca."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+msgid ""
+"The fallback login screen can optionally show a small image at the top of "
+"its user list to provide site administrators and distributions a way to "
+"provide branding."
+msgstr ""
+"A pantalla de inicio de sesión alternativo permite mostrar unha pequena "
+"imaxe na lista superior de usuarios para fornecerlle aos administradores e "
+"distribucións un lugar para marca."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid "Avoid showing user list"
 msgstr "Evitar que se mostre a lista de usuarios"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -417,6 +427,33 @@ msgstr ""
 "Normalmente, a pantalla de inicio muestra unha lista dos usuarios "
 "dispoñíbeis para iniciar sesión. Esta configuración pódese cambiar para "
 "evitar que se mostre a lista de usuarios."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+msgid "Enable showing the banner message"
+msgstr "Activar a visualización da mensaxe de banner"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+msgid "Set to true to show the banner message text."
+msgstr "Definir como verdadeiro para mostrar o texto de mensaxe do báner."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+msgid "Banner message text"
+msgstr "Texto de mensaxe do báner"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+msgid "Text banner message to show in the login window."
+msgstr ""
+"A mensaxe de texto do banner que se mostrará na xanela de inicio de sesión."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+msgid "Disable showing the restart buttons"
+msgstr "Desactivar a visualización dos botóns de reinicio"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+msgid "Set to true to disable showing the restart buttons in the login window."
+msgstr ""
+"Definir como verdadeiro para desactivar os botóns de reinicio na xanela de "
+"inicio de sesión."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -604,26 +641,26 @@ msgstr "%a de %l:%M:%S %p"
 msgid "%a %l:%M %p"
 msgstr "%a %l:%M %p"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:319
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:317
 msgid "Automatically logging in…"
 msgstr "Iniciar sesión automaticamente…"
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:935
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:933
 msgid "Cancelling…"
 msgstr "Interrompendo…"
 
 #. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1491
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1489
 msgid "Select language and click Log In"
 msgstr "Seleccione o idioma e prema en Iniciar sesión"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1627
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1625
 msgctxt "customsession"
 msgid "Custom"
 msgstr "Personalizada"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1628
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1626
 msgid "Custom session"
 msgstr "Sesión personalizada"
 
@@ -647,23 +684,23 @@ msgstr "Desbloquear"
 msgid "Login"
 msgstr "Iniciar a sesión"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:907
+#: ../gui/simple-greeter/gdm-greeter-panel.c:903
 msgid "Suspend"
 msgstr "Suspender"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:912
+#: ../gui/simple-greeter/gdm-greeter-panel.c:908
 msgid "Restart"
 msgstr "Reiniciar"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:916
+#: ../gui/simple-greeter/gdm-greeter-panel.c:912
 msgid "Shut Down"
 msgstr "Apagar"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:965
+#: ../gui/simple-greeter/gdm-greeter-panel.c:961
 msgid "Unknown time remaining"
 msgstr "Tempo restante descoñecido"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:987
+#: ../gui/simple-greeter/gdm-greeter-panel.c:983
 msgid "Panel"
 msgstr "Panel"
 
@@ -691,14 +728,6 @@ msgstr "Elemento predeterminado"
 msgid "The ID of the default item"
 msgstr "O ID do elemento predeterminado"
 
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:310
-msgid "Max Item Count"
-msgstr "Número máximo de elementos"
-
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:311
-msgid "The maximum number of items to keep around in the list"
-msgstr "O número máximo de elementos que se manterán na lista"
-
 #: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
 msgid "Remote Login (Connecting to %s…)"
@@ -716,171 +745,6 @@ msgstr "Inicio de sesión remoto"
 #: ../gui/simple-greeter/gdm-session-option-widget.c:162
 msgid "Session"
 msgstr "Sesión"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
-msgid "Enable showing the banner message"
-msgstr "Activar a visualización da mensaxe de banner"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
-msgid "Set to true to show the banner message text."
-msgstr "Definir como verdadeiro para mostrar o texto de mensaxe do báner."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
-msgid "Banner message text"
-msgstr "Texto de mensaxe do báner"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
-msgid "Text banner message to show in the login window."
-msgstr ""
-"A mensaxe de texto do banner que se mostrará na xanela de inicio de sesión."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
-msgid "Banner message text when chooser is empty"
-msgstr "Texto da mensaxe do báner cando o selector está baleiro"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
-msgid ""
-"Text banner message to show in the login window when the user chooser is "
-"empty, instead of banner_message_text."
-msgstr ""
-"A mensaxe de texto do báner que se mostrará na xanela de inicio de sesión "
-"cando o selector de usuario está baleiro, no canto do banner_message_text."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
-msgid "Icon name to use for greeter logo"
-msgstr "Nome da icona que se usará para o logotipo da xanela de benvida"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
-msgid "Set to the themed icon name to use for the greeter logo."
-msgstr ""
-"Definir como nome da icona do tema que se usará como logotipo da xanela de "
-"benvida."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
-msgid "Disable showing the restart buttons"
-msgstr "Desactivar a visualización dos botóns de reinicio"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
-msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr ""
-"Definir como verdadeiro para desactivar os botóns de reinicio na xanela de "
-"inicio de sesión."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
-msgid "Do not show known users in the login window"
-msgstr "Non mostrar os usuarios coñecidos na xanela de inicio"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
-msgid "Set to true to disable showing known users in the login window."
-msgstr ""
-"Definir como verdadeiro para desactivar a visualización de usuarios "
-"coñecidos na xanela de inicio de sesión."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
-msgid "Recently selected languages"
-msgstr "Idiomas seleccionados recentemente"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-msgid "Set to a list of languages to be shown by default in the login window."
-msgstr ""
-"Definir como unha lista de idiomas que se mostrarán de modo predeterminado "
-"na xanela de inicio de sesión."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
-msgid "Use Compiz as the window manager"
-msgstr "Usar Compiz como xestor de xanelas"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
-msgid "Set to true to use Compiz as the window manager."
-msgstr "Definir como verdadeiro para usar o Compiz como xestor de xanela."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
-msgid "Enable on-screen keyboard"
-msgstr "Activar o teclado en pantalla"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
-msgid "Set to true to enable the on-screen keyboard."
-msgstr "Definir como verdadeiro para activar o teclado en pantalla."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
-msgid "Enable screen reader"
-msgstr "Activar o lector de pantalla"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
-msgid "Set to true to enable the screen reader."
-msgstr "Definir como verdadeiro para activar o lector de pantalla."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
-msgid "Enable screen magnifier"
-msgstr "Activar a lupa da pantalla"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
-msgid "Set to true to enable the screen magnifier."
-msgstr "Definir como verdadeiro para activar a lupa da pantalla."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
-msgid "Enable accessibility keyboard plugin"
-msgstr "Activar o engadido de accesibilidade do teclado"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
-msgid ""
-"Set to true to enable the plugin to manage the accessibility keyboard "
-"settings."
-msgstr ""
-"Definir como verdadeiro para activar o engadido para xestionar a "
-"configuración do teclado de accesibilidade."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
-msgid "True if the background settings manager plugin is enabled."
-msgstr "True se o engadido xestor de configuracións de fondo está activado."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
-msgid "Set to true to enable the background settings manager plugin."
-msgstr ""
-"Definir como verdadeiro para activar o engadido de xestión da configuración "
-"de fondo."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
-msgid "True if the media-keys settings manager plugin is enabled."
-msgstr ""
-"True se o engadido xestor de configuración das teclas multimedia está "
-"activado."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
-msgid "Set to true to enable the media-keys settings manager plugin."
-msgstr ""
-"Definir como verdadeiro para activar o engadido de xestión da configuración "
-"das teclas multimedia."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
-msgid "True if the sound settings manager plugin is enabled."
-msgstr "True se o engadido xestor de configuracións de son está activado."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
-msgid "Set to true to enable the sound settings manager plugin."
-msgstr ""
-"Definir como verdadeiro para activar o engadido de xestión de configuracións "
-"de son."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
-msgid "True if the XRandR settings manager plugin is enabled."
-msgstr "True se o engadido xestor de configuracións xrandr está activado."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
-msgid "Set to true to enable the XRandR settings manager plugin."
-msgstr ""
-"Definir como verdadeiro para activar o engadido do xestor de configuracións "
-"xrandr."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
-msgid "True if the xsettings settings manager plugin is enabled."
-msgstr "True se o engadido xestor de configuracións xsettings está activado."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
-msgid "Set to true to enable the xsettings settings manager plugin."
-msgstr ""
-"Definir como verdadeiro para activar o engadido do xestor de configuración "
-"xsettings."
 
 #: ../gui/simple-greeter/gdm-timer.c:147
 msgid "Duration"
@@ -906,8 +770,8 @@ msgstr "Está executándose?"
 msgid "Whether the timer is currently ticking"
 msgstr "Indica se o temporizador está actualmente activo ou non"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:459
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:802
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:460
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:797
 #, c-format
 msgid "Log in as %s"
 msgstr "Iniciar sesión como %s"
@@ -917,33 +781,33 @@ msgstr "Iniciar sesión como %s"
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
 msgctxt "user"
 msgid "Other…"
 msgstr "Outro…"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:547
 msgid "Choose a different account"
 msgstr "Elixa unha conta diferente"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:561
 msgid "Guest"
 msgstr "Convidado"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:561
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:562
 msgid "Log in as a temporary guest"
 msgstr "Iniciar a sesión como convidado temporal"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:577
 msgid "Automatic Login"
 msgstr "Inicio de sesión automático"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:577
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:578
 msgid "Automatically log into the system after selecting options"
 msgstr ""
 "Iniciar a sesión automaticamente no sistema despois de seleccionar as opcións"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1358
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1353
 msgid "Currently logged in"
 msgstr "Sesión iniciada"
 
@@ -1020,6 +884,124 @@ msgstr "Captura de pantalla tomada"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Capturar unha imaxe da pantalla"
+
+#~ msgid "Max Item Count"
+#~ msgstr "Número máximo de elementos"
+
+#~ msgid "The maximum number of items to keep around in the list"
+#~ msgstr "O número máximo de elementos que se manterán na lista"
+
+#~ msgid "Banner message text when chooser is empty"
+#~ msgstr "Texto da mensaxe do báner cando o selector está baleiro"
+
+#~ msgid ""
+#~ "Text banner message to show in the login window when the user chooser is "
+#~ "empty, instead of banner_message_text."
+#~ msgstr ""
+#~ "A mensaxe de texto do báner que se mostrará na xanela de inicio de sesión "
+#~ "cando o selector de usuario está baleiro, no canto do banner_message_text."
+
+#~ msgid "Icon name to use for greeter logo"
+#~ msgstr "Nome da icona que se usará para o logotipo da xanela de benvida"
+
+#~ msgid "Set to the themed icon name to use for the greeter logo."
+#~ msgstr ""
+#~ "Definir como nome da icona do tema que se usará como logotipo da xanela "
+#~ "de benvida."
+
+#~ msgid "Do not show known users in the login window"
+#~ msgstr "Non mostrar os usuarios coñecidos na xanela de inicio"
+
+#~ msgid "Set to true to disable showing known users in the login window."
+#~ msgstr ""
+#~ "Definir como verdadeiro para desactivar a visualización de usuarios "
+#~ "coñecidos na xanela de inicio de sesión."
+
+#~ msgid "Recently selected languages"
+#~ msgstr "Idiomas seleccionados recentemente"
+
+#~ msgid ""
+#~ "Set to a list of languages to be shown by default in the login window."
+#~ msgstr ""
+#~ "Definir como unha lista de idiomas que se mostrarán de modo "
+#~ "predeterminado na xanela de inicio de sesión."
+
+#~ msgid "Use Compiz as the window manager"
+#~ msgstr "Usar Compiz como xestor de xanelas"
+
+#~ msgid "Set to true to use Compiz as the window manager."
+#~ msgstr "Definir como verdadeiro para usar o Compiz como xestor de xanela."
+
+#~ msgid "Enable on-screen keyboard"
+#~ msgstr "Activar o teclado en pantalla"
+
+#~ msgid "Set to true to enable the on-screen keyboard."
+#~ msgstr "Definir como verdadeiro para activar o teclado en pantalla."
+
+#~ msgid "Enable screen reader"
+#~ msgstr "Activar o lector de pantalla"
+
+#~ msgid "Set to true to enable the screen reader."
+#~ msgstr "Definir como verdadeiro para activar o lector de pantalla."
+
+#~ msgid "Enable screen magnifier"
+#~ msgstr "Activar a lupa da pantalla"
+
+#~ msgid "Set to true to enable the screen magnifier."
+#~ msgstr "Definir como verdadeiro para activar a lupa da pantalla."
+
+#~ msgid "Enable accessibility keyboard plugin"
+#~ msgstr "Activar o engadido de accesibilidade do teclado"
+
+#~ msgid ""
+#~ "Set to true to enable the plugin to manage the accessibility keyboard "
+#~ "settings."
+#~ msgstr ""
+#~ "Definir como verdadeiro para activar o engadido para xestionar a "
+#~ "configuración do teclado de accesibilidade."
+
+#~ msgid "True if the background settings manager plugin is enabled."
+#~ msgstr "True se o engadido xestor de configuracións de fondo está activado."
+
+#~ msgid "Set to true to enable the background settings manager plugin."
+#~ msgstr ""
+#~ "Definir como verdadeiro para activar o engadido de xestión da "
+#~ "configuración de fondo."
+
+#~ msgid "True if the media-keys settings manager plugin is enabled."
+#~ msgstr ""
+#~ "True se o engadido xestor de configuración das teclas multimedia está "
+#~ "activado."
+
+#~ msgid "Set to true to enable the media-keys settings manager plugin."
+#~ msgstr ""
+#~ "Definir como verdadeiro para activar o engadido de xestión da "
+#~ "configuración das teclas multimedia."
+
+#~ msgid "True if the sound settings manager plugin is enabled."
+#~ msgstr "True se o engadido xestor de configuracións de son está activado."
+
+#~ msgid "Set to true to enable the sound settings manager plugin."
+#~ msgstr ""
+#~ "Definir como verdadeiro para activar o engadido de xestión de "
+#~ "configuracións de son."
+
+#~ msgid "True if the XRandR settings manager plugin is enabled."
+#~ msgstr "True se o engadido xestor de configuracións xrandr está activado."
+
+#~ msgid "Set to true to enable the XRandR settings manager plugin."
+#~ msgstr ""
+#~ "Definir como verdadeiro para activar o engadido do xestor de "
+#~ "configuracións xrandr."
+
+#~ msgid "True if the xsettings settings manager plugin is enabled."
+#~ msgstr ""
+#~ "True se o engadido xestor de configuracións xsettings está activado."
+
+#~ msgid "Set to true to enable the xsettings settings manager plugin."
+#~ msgstr ""
+#~ "Definir como verdadeiro para activar o engadido do xestor de "
+#~ "configuración xsettings."
 
 #~ msgid "Denied XDMCP query from host %s"
 #~ msgstr "O host %s denegou a petición XDMCP"
