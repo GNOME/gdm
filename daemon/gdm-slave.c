@@ -1313,8 +1313,10 @@ gdm_slave_get_primary_session_id_for_user_from_systemd (GdmSlave   *slave,
         char  **sessions;
         uid_t   uid;
         char   *primary_ssid;
+        gboolean got_primary_ssid;
 
         primary_ssid = NULL;
+        got_primary_ssid = FALSE;
 
         res = sd_seat_can_multi_session (slave->priv->display_seat_id);
         if (res < 0) {
@@ -1342,16 +1344,23 @@ gdm_slave_get_primary_session_id_for_user_from_systemd (GdmSlave   *slave,
         }
 
         for (i = 0; sessions[i] != NULL; i++) {
+                gboolean is_active;
+                uid_t other;
 
-                if (primary_ssid == NULL) {
-                        uid_t other;
+                /* Always give preference to non-active sessions,
+                 * so we migrate when we can and don't when we can't
+                 */
+                is_active = sd_session_is_active (sessions[i]) > 0;
 
-                        res = sd_session_get_uid (sessions[i], &other);
-                        if (res == 0 && other == uid) {
-                                primary_ssid = g_strdup (sessions[i]);
+                res = sd_session_get_uid (sessions[i], &other);
+                if (res == 0 && other == uid && !got_primary_ssid) {
+                        g_free (primary_ssid);
+                        primary_ssid = g_strdup (sessions[i]);
+
+                        if (!is_active) {
+                                got_primary_ssid = TRUE;
                         }
                 }
-
                 free (sessions[i]);
         }
 
@@ -1495,6 +1504,15 @@ activate_session_id_for_systemd (GdmSlave   *slave,
 
         ret = FALSE;
         reply = NULL;
+
+        /* Can't activate what's already active. We want this
+         * to fail, because we don't want migration to succeed
+         * if the only active session is the one just created
+         * at the login screen.
+         */
+        if (sd_session_is_active (session_id) > 0) {
+                return FALSE;
+        }
 
         dbus_error_init (&local_error);
 
