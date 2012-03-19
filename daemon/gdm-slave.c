@@ -1347,7 +1347,7 @@ gdm_slave_get_primary_session_id_for_user_from_systemd (GdmSlave   *slave,
                         uid_t other;
 
                         res = sd_session_get_uid (sessions[i], &other);
-                        if (res > 0 && other == uid) {
+                        if (res == 0 && other == uid) {
                                 primary_ssid = g_strdup (sessions[i]);
                         }
                 }
