@@ -166,8 +166,10 @@ char *
 gdm_server_get_display_device (GdmServer *server)
 {
 #ifdef WITH_SYSTEMD
-        /* systemd finds the display device out on its own based on the display */
-        return NULL;
+        if (sd_booted () > 0) {
+                /* systemd finds the display device out on its own based on the display */
+                return NULL;
+        }
 #endif
 
 #ifndef WITH_CONSOLE_KIT
