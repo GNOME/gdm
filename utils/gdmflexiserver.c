@@ -819,6 +819,8 @@ goto_login_session_for_systemd (DBusConnection  *connection,
         char           *seat_id;
 
         ret = FALSE;
+        session_id = NULL;
+        seat_id = NULL;
 
         /* First look for any existing LoginWindow sessions on the seat.
            If none are found, create a new one. */
@@ -863,14 +865,7 @@ goto_login_session_for_systemd (DBusConnection  *connection,
         }
 
         res = get_login_window_session_id_for_systemd (seat_id, &session_id);
-        if (! res) {
-                free (seat_id);
-
-                g_set_error (error, GDM_FLEXISERVER_ERROR, 1, _("The system is unable to find a login screen to switch to."));
-                return FALSE;
-        }
-
-        if (session_id != NULL) {
+        if (res && session_id != NULL) {
                 res = activate_session_id_for_systemd (connection, seat_id, session_id);
 
                 if (res) {
