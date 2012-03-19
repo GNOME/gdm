@@ -1142,7 +1142,9 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
 
         /* set TTY */
         pam_tty = _get_tty_for_pam (x11_display_name, display_device);
-        error_code = pam_set_item (worker->priv->pam_handle, PAM_TTY, pam_tty);
+        if (pam_tty != NULL && pam_tty[0] != '\0') {
+                error_code = pam_set_item (worker->priv->pam_handle, PAM_TTY, pam_tty);
+        }
         g_free (pam_tty);
 
         if (error_code != PAM_SUCCESS) {
