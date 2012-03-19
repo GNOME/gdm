@@ -172,9 +172,6 @@ gdm_server_get_display_device (GdmServer *server)
         }
 #endif
 
-#ifndef WITH_CONSOLE_KIT
-        return NULL;
-#endif
         if (server->priv->display_device == NULL) {
                 server->priv->display_device =
                     _gdm_server_query_ck_for_display_device (server);
