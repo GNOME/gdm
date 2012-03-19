@@ -688,7 +688,7 @@ goto_login_session_for_ck (DBusConnection  *connection,
                 }
         }
 
-        if (! ret) {
+        if (! ret && g_strcmp0 (seat_id, "/org/freedesktop/ConsoleKit/Seat1") == 0) {
                 res = create_transient_display (connection, error);
                 if (res) {
                         ret = TRUE;
@@ -878,7 +878,7 @@ goto_login_session_for_systemd (DBusConnection  *connection,
                 }
         }
 
-        if (! ret) {
+        if (! ret && g_strcmp0 (seat_id, "seat0") == 0) {
                 res = create_transient_display (connection, error);
                 if (res) {
                         ret = TRUE;

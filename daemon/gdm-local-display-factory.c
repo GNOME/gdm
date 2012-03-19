@@ -46,6 +46,7 @@
 #define GDM_LOCAL_DISPLAY_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_LOCAL_DISPLAY_FACTORY, GdmLocalDisplayFactoryPrivate))
 
 #define CK_SEAT1_PATH                       "/org/freedesktop/ConsoleKit/Seat1"
+#define SYSTEMD_SEAT0_PATH                  "seat0"
 
 #define GDM_DBUS_PATH                       "/org/gnome/DisplayManager"
 #define GDM_LOCAL_DISPLAY_FACTORY_DBUS_PATH GDM_DBUS_PATH "/LocalDisplayFactory"
@@ -186,6 +187,21 @@ store_display (GdmLocalDisplayFactory *factory,
         g_hash_table_insert (factory->priv->displays, GUINT_TO_POINTER (num), NULL);
 }
 
+static const char *
+get_seat_of_transient_display (GdmLocalDisplayFactory *factory)
+{
+        const char *seat_id;
+
+        /* FIXME: don't hardcode seat */
+#ifdef WITH_SYSTEMD
+        seat_id = SYSTEMD_SEAT0_PATH;
+#else
+        seat_id = CK_SEAT1_PATH;
+#endif
+
+        return seat_id;
+}
+
 /*
   Example:
   dbus-send --system --dest=org.gnome.DisplayManager \
@@ -201,6 +217,7 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
         gboolean         ret;
         GdmDisplay      *display;
         guint32          num;
+        const char      *seat_id;
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 
@@ -212,8 +229,8 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
 
         display = gdm_transient_display_new (num);
 
-        /* FIXME: don't hardcode seat1? */
-        g_object_set (display, "seat-id", CK_SEAT1_PATH, NULL);
+        seat_id = get_seat_of_transient_display (factory);
+        g_object_set (display, "seat-id", seat_id, NULL);
 
         store_display (factory, num, display);
 
@@ -245,6 +262,7 @@ gdm_local_display_factory_create_product_display (GdmLocalDisplayFactory *factor
         gboolean    ret;
         GdmDisplay *display;
         guint32     num;
+        const char *seat_id;
 
         g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
 
@@ -259,8 +277,8 @@ gdm_local_display_factory_create_product_display (GdmLocalDisplayFactory *factor
 
         display = gdm_product_display_new (num, relay_address);
 
-        /* FIXME: don't hardcode seat1? */
-        g_object_set (display, "seat-id", CK_SEAT1_PATH, NULL);
+        seat_id = get_seat_of_transient_display (factory);
+        g_object_set (display, "seat-id", seat_id, NULL);
 
         store_display (factory, num, display);
 
