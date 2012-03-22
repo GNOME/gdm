@@ -1344,8 +1344,27 @@ gdm_slave_get_primary_session_id_for_user_from_systemd (GdmSlave   *slave,
         }
 
         for (i = 0; sessions[i] != NULL; i++) {
+                char *type;
                 gboolean is_active;
+                gboolean is_x11;
                 uid_t other;
+
+                res = sd_session_get_type (sessions[i], &type);
+
+                if (res < 0) {
+                        g_warning ("GdmSlave: could not fetch type of session '%s': %s",
+                                   sessions[i], strerror (-res));
+                        continue;
+                }
+
+                is_x11 = g_strcmp0 (type, "x11") == 0;
+                g_free (type);
+
+                /* Only migrate to graphical sessions
+                 */
+                if (!is_x11) {
+                        continue;
+                }
 
                 /* Always give preference to non-active sessions,
                  * so we migrate when we can and don't when we can't
