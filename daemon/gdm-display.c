@@ -322,7 +322,7 @@ gdm_display_real_get_timed_login_details (GdmDisplay *display,
          * can support auto/timed login on auxilliary seats in the
          * systemd path.
          */
-        if (g_strcmp0 (display->priv->seat_id, "seat0") == 0) {
+        if (g_strcmp0 (display->priv->seat_id, "seat0") != 0) {
                 goto out;
         }
 #endif
