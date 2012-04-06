@@ -1658,7 +1658,7 @@ session_unlock_for_systemd (GdmSlave   *slave,
 
         dbus_error_init (&error);
 
-        message = dbus_message_new_method_call ("org.freedesktop.login",
+        message = dbus_message_new_method_call ("org.freedesktop.login1",
                                                 "/org/freedesktop/login1",
                                                 "org.freedesktop.login1.Manager",
                                                 "UnlockSession");
