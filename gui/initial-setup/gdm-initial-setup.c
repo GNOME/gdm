@@ -1327,7 +1327,7 @@ create_provider_button (const gchar *type, const gchar *name, GIcon *icon)
   button = gtk_button_new ();
 
   box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-  gtk_widget_set_halign (box, GTK_ALIGN_CENTER);
+  gtk_widget_set_halign (box, GTK_ALIGN_START);
   gtk_widget_set_valign (box, GTK_ALIGN_CENTER);
   gtk_container_add (GTK_CONTAINER (button), box);
 
