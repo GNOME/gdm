@@ -14,6 +14,14 @@ LIBS = $(INITIAL_SETUP_LIBS) -lm
 
 libexec_PROGRAMS = gdm-initial-setup
 
+dbus_built_sources = timedated.c timedated.h
+timedated.c: timedated.h
+timedated.h: Makefile.am timedated1-interface.xml
+	gdbus-codegen \
+		--interface-prefix org.freedesktop. \
+		--generate-c-code timedated \
+		$(srcdir)/timedated1-interface.xml
+
 gdm_initial_setup_SOURCES =	\
 	gdm-initial-setup.c \
 	panel-cell-renderer-signal.c panel-cell-renderer-signal.h \
@@ -22,14 +30,17 @@ gdm_initial_setup_SOURCES =	\
 	cc-timezone-map.c cc-timezone-map.h \
 	um-utils.c um-utils.h \
 	tz.c tz.h \
-	dtm.c dtm.h
+	$(dbus_built_sources)
 
 ui_DATA = \
 	setup.ui \
 	welcome-image.jpg
 
 EXTRA_DIST = \
+	timedated1-interface.xml \
 	$(ui_DATA) \
 	$(sys_DATA)
+
+BUILT_SOURCES = $(dbus_built_sources)
 
 -include $(top_srcdir)/git.mk
