@@ -17,7 +17,7 @@
 #include <act/act-user-manager.h>
 
 #include "cc-timezone-map.h"
-#include "dtm.h"
+#include "timedated.h"
 #include "um-utils.h"
 
 #define GWEATHER_I_KNOW_THIS_IS_UNSTABLE
@@ -62,7 +62,7 @@ typedef struct {
         /* location data */
         CcTimezoneMap *map;
         TzLocation *current_location;
-        DateTimeMechanism *dtm;
+        Timedate1 *dtm;
 
         /* online data */
         GoaClient *goa_client;
@@ -1128,7 +1128,6 @@ prepare_account_page (SetupData *setup)
 
 /* Location page {{{1 */
 
-
 static void
 set_timezone_cb (GObject      *source,
                  GAsyncResult *res,
@@ -1138,25 +1137,27 @@ set_timezone_cb (GObject      *source,
         GError *error;
 
         error = NULL;
-        if (!date_time_mechanism_call_set_timezone_finish (setup->dtm,
-                                                           res,
-                                                           &error)) {
+        if (!timedate1_call_set_timezone_finish (setup->dtm,
+                                                 res,
+                                                 &error)) {
                 /* TODO: display any error in a user friendly way */
                 g_warning ("Could not set system timezone: %s", error->message);
                 g_error_free (error);
         }
 }
 
+
 static void
 queue_set_timezone (SetupData *setup)
 {
         /* for now just do it */
         if (setup->current_location) {
-                date_time_mechanism_call_set_timezone (setup->dtm,
-                                                       setup->current_location->zone,
-                                                       NULL,
-                                                       set_timezone_cb,
-                                                       setup);
+                timedate1_call_set_timezone (setup->dtm,
+                                             setup->current_location->zone,
+                                             TRUE,
+                                             NULL,
+                                             set_timezone_cb,
+                                             setup);
         }
 }
 
@@ -1210,37 +1211,6 @@ location_changed_cb (CcTimezoneMap *map,
 }
 
 static void
-get_timezone_cb (GObject      *source,
-                 GAsyncResult *res,
-                 gpointer      user_data)
-{
-        SetupData *setup = user_data;
-        gchar *timezone;
-        GError *error;
-
-        error = NULL;
-        if (!date_time_mechanism_call_get_timezone_finish (setup->dtm, &timezone, res, &error)) {
-                g_warning ("Could not get current timezone: %s", error->message);
-                g_error_free (error);
-        }
-        else {
-                if (!cc_timezone_map_set_timezone (setup->map, timezone)) {
-                        g_warning ("Timezone '%s' is unhandled, setting %s as default", timezone, DEFAULT_TZ);
-                        cc_timezone_map_set_timezone (setup->map, DEFAULT_TZ);
-                }
-                else {
-                        g_debug ("System timezone is '%s'", timezone);
-                }
-
-                setup->current_location = cc_timezone_map_get_location (setup->map);
-                update_timezone (setup);
-        }
-
-        g_signal_connect (setup->map, "location-changed",
-                          G_CALLBACK (location_changed_cb), setup);
-}
-
-static void
 location_changed (GObject *object, GParamSpec *param, SetupData *setup)
 {
         GWeatherLocationEntry *entry = GWEATHER_LOCATION_ENTRY (object);
@@ -1289,18 +1259,19 @@ prepare_location_page (SetupData *setup)
         GtkWidget *frame, *map, *entry;
         GWeatherLocation *world;
         GError *error;
+        const gchar *timezone;
 
         frame = WID("location-map-frame");
 
         error = NULL;
-        setup->dtm = date_time_mechanism_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-                                                                 G_DBUS_PROXY_FLAGS_NONE,
-                                                                 "org.gnome.SettingsDaemon.DateTimeMechanism",
-                                                                 "/",
-                                                                 NULL,
-                                                                 &error);
+        setup->dtm = timedate1_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+                                                       G_DBUS_PROXY_FLAGS_NONE,
+                                                       "org.freedesktop.timedate1",
+                                                       "/org/freedesktop/timedate1",
+                                                       NULL,
+                                                       &error);
         if (setup->dtm == NULL) {
-                g_error ("Failed to create proxy for datetime mechanism: %s", error->message);
+                g_error ("Failed to create proxy for timedated: %s", error->message);
                 exit (1);
         }
 
@@ -1314,8 +1285,6 @@ prepare_location_page (SetupData *setup)
 
         gtk_container_add (GTK_CONTAINER (frame), map);
 
-        date_time_mechanism_call_get_timezone (setup->dtm, NULL, get_timezone_cb, setup);
-
         world = gweather_location_new_world (FALSE);
         entry = gweather_location_entry_new (world);
         gtk_entry_set_placeholder_text (GTK_ENTRY (entry), _("Search for a location"));
@@ -1325,8 +1294,24 @@ prepare_location_page (SetupData *setup)
         frame = WID("location-page");
         gtk_grid_attach (GTK_GRID (frame), entry, 1, 1, 1, 1);
 
+        timezone = timedate1_get_timezone (setup->dtm);
+
+        if (!cc_timezone_map_set_timezone (setup->map, timezone)) {
+                g_warning ("Timezone '%s' is unhandled, setting %s as default", timezone, DEFAULT_TZ);
+                cc_timezone_map_set_timezone (setup->map, DEFAULT_TZ);
+        }
+        else {
+                g_debug ("System timezone is '%s'", timezone);
+        }
+
+        setup->current_location = cc_timezone_map_get_location (setup->map);
+        update_timezone (setup);
+
         g_signal_connect (G_OBJECT (entry), "notify::location",
                           G_CALLBACK (location_changed), setup);
+
+        g_signal_connect (setup->map, "location-changed",
+                          G_CALLBACK (location_changed_cb), setup);
 }
 
 /* Online accounts {{{1 */
@@ -1821,6 +1806,8 @@ prepare_assistant (SetupData *setup)
         prepare_location_page (setup);
         prepare_online_page (setup);
 }
+
+/* main {{{1 */
 
 int
 main (int argc, char *argv[])
