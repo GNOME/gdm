@@ -308,8 +308,9 @@ build_welcome_environment (GdmWelcomeSession *welcome_session,
         if (start_session && welcome_session->priv->x11_display_seat_id != NULL) {
                 char *seat_id;
 
-                seat_id = welcome_session->priv->x11_display_seat_id +
-                        strlen ("/org/freedesktop/ConsoleKit/");
+                if (g_str_has_prefix (welcome_session->priv->x11_display_seat_id, "/org/freedesktop/ConsoleKit/")) {
+                        seat_id = welcome_session->priv->x11_display_seat_id + strlen ("/org/freedesktop/ConsoleKit/");
+                }
 
                 g_hash_table_insert (hash, g_strdup ("GDM_SEAT_ID"), g_strdup (seat_id));
         }
