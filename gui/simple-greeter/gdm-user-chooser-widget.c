@@ -787,6 +787,11 @@ add_user (GdmUserChooserWidget *widget,
                 return;
         }
 
+        if (act_user_get_locked (user)) {
+                g_debug ("GdmUserChooserWidget: Skipping locked user: %s", act_user_get_user_name (user));
+                return;
+        }
+
         g_debug ("GdmUserChooserWidget: User added: %s", act_user_get_user_name (user));
         if (widget->priv->stock_person_pixbuf != NULL) {
                 pixbuf = g_object_ref (widget->priv->stock_person_pixbuf);
