@@ -1736,7 +1736,7 @@ session_unlock (GdmSlave   *slave,
                 const char *ssid)
 {
 
-        g_debug ("ConsoleKit: Unlocking session %s", ssid);
+        g_debug ("Unlocking session %s", ssid);
 
 #ifdef WITH_SYSTEMD
         if (sd_booted () > 0) {
