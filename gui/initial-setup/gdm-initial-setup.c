@@ -19,6 +19,7 @@
 #include "cc-timezone-map.h"
 #include "timedated.h"
 #include "um-utils.h"
+#include "gdm-greeter-client.h"
 
 #define GWEATHER_I_KNOW_THIS_IS_UNSTABLE
 #include <libgweather/location-entry.h>
@@ -35,7 +36,7 @@ typedef struct {
         GtkBuilder *builder;
         GtkAssistant *assistant;
 
-        GDBusConnection *slave_connection;
+        GdmGreeterClient *greeter_client;
 
         /* network data */
         NMClient *nm_client;
@@ -1676,42 +1677,41 @@ copy_account_data (SetupData *setup)
 static void
 connect_to_slave (SetupData *setup)
 {
-        GDBusConnection *connection;
-        const gchar *address;
-        GError *error;
+        GError *error = NULL;
+        gboolean res;
 
-        address = g_getenv ("GDM_GREETER_DBUS_ADDRESS");
+        setup->greeter_client = gdm_greeter_client_new ();
 
-        if (address == NULL) {
-                g_warning ("GDM_GREETER_DBUS_ADDRESS not set; not initiating autologin");
-                return;
-        }
+        res = gdm_greeter_client_open_connection (setup->greeter_client, &error);
 
-        error = NULL;
-        connection = g_dbus_connection_new_for_address_sync (address,
-                                                             G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
-                                                             NULL,
-                                                             NULL,
-                                                             &error);
-        if (connection == NULL) {
-                g_warning ("Failed to create D-Bus connection for address '%s' (%s); not initiating autologin", address, error->message);
+        if (!res) {
+                g_warning ("Failed to open connection to slave: %s", error->message);
                 g_error_free (error);
+                g_clear_object (&setup->greeter_client);
                 return;
         }
+}
 
-        g_dbus_connection_set_exit_on_close (connection, TRUE);
+static void
+on_ready_for_auto_login (GdmGreeterClient *client,
+                         const char       *service_name,
+                         SetupData        *setup)
+{
+        const gchar *username;
 
-        setup->slave_connection = connection;
+        username = act_user_get_user_name (setup->act_user);
+
+        g_debug ("Initiating autologin for %s", username);
+        gdm_greeter_client_call_begin_auto_login (client, username);
+        gdm_greeter_client_call_start_session_when_ready (client,
+                                                          service_name,
+                                                          TRUE);
 }
 
 static void
 begin_autologin (SetupData *setup)
 {
-        GError *error;
-        const gchar *username;
-        GVariant *ret;
-
-        if (setup->slave_connection == NULL) {
+        if (setup->greeter_client == NULL) {
                 g_warning ("No slave connection; not initiating autologin");
                 return;
         }
@@ -1721,47 +1721,13 @@ begin_autologin (SetupData *setup)
                 return;
         }
 
-        username = act_user_get_user_name (setup->act_user);
+        g_debug ("Preparing to autologin");
 
-        g_debug ("Initiating autologin for %s", username);
-
-        ret = g_dbus_connection_call_sync (setup->slave_connection,
-                                           NULL,
-                                           "/org/gnome/DisplayManager/GreeterServer",
-                                           "org.gnome.DisplayManager.GreeterServer",
-                                           "BeginAutoLogin",
-                                           g_variant_new ("(s)", username),
-                                           NULL, /* no reply checking */
-                                           G_DBUS_CALL_FLAGS_NONE,
-                                           G_MAXINT,
-                                           NULL,
-                                           &error);
-        if (ret == NULL) {
-                g_warning ("Calling org.gnome.DisplayManager.GreeterServer.BeginAutoLogin failed: %s", error->message);
-                g_error_free (error);
-                return;
-        }
-
-        g_variant_unref (ret);
-
-        ret = g_dbus_connection_call_sync (setup->slave_connection,
-                                           NULL,
-                                           "/org/gnome/DisplayManager/GreeterServer",
-                                           "org.gnome.DisplayManager.GreeterServer",
-                                           "StartSessionWhenReady",
-                                           g_variant_new ("(b)", TRUE),
-                                           NULL, /* no reply checking */
-                                           G_DBUS_CALL_FLAGS_NONE,
-                                           G_MAXINT,
-                                           NULL,
-                                           &error);
-        if (ret == NULL) {
-                g_warning ("Calling org.gnome.DisplayManager.GreeterServer.StartSessionWhenReady failed: %s", error->message);
-                g_error_free (error);
-                return;
-        }
-
-        g_variant_unref (ret);
+        g_signal_connect (setup->greeter_client,
+                          "ready",
+                          G_CALLBACK (on_ready_for_auto_login),
+                          setup);
+        gdm_greeter_client_call_start_conversation (setup->greeter_client, "gdm-autologin");
 }
 
 static void
