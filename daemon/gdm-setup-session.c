@@ -145,7 +145,7 @@ gdm_setup_session_new (const char *display_name,
         GObject *object;
 
         object = g_object_new (GDM_TYPE_SETUP_SESSION,
-                               "command", BINDIR "/gnome-session --session gdm-setup",
+                               "command", BINDIR "/gnome-session --debug --session gdm-setup",
                                "server-dbus-path", GDM_GREETER_SERVER_DBUS_PATH,
                                "server-dbus-interface", GDM_GREETER_SERVER_DBUS_INTERFACE,
                                "server-env-var-name", "GDM_GREETER_DBUS_ADDRESS",
