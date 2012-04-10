@@ -58,6 +58,7 @@ struct _GdmSessionIface
                                               const char   *username);
         void (* setup_for_program)           (GdmSession   *session,
                                               const char   *service_name,
+                                              const char   *username,
                                               const char   *log_file);
         void (* set_environment_variable)    (GdmSession   *session,
                                               const char   *key,
@@ -169,6 +170,7 @@ void     gdm_session_setup_for_user              (GdmSession *session,
                                                   const char *username);
 void     gdm_session_setup_for_program           (GdmSession *session,
                                                   const char *service_name,
+                                                  const char *username,
                                                   const char *log_file);
 void     gdm_session_set_environment_variable    (GdmSession *session,
                                                   const char *key,

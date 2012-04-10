@@ -128,11 +128,12 @@ gdm_session_setup_for_user (GdmSession *session,
 void
 gdm_session_setup_for_program (GdmSession *session,
                                const char *service_name,
+                               const char *username,
                                const char *log_file)
 {
         g_return_if_fail (GDM_IS_SESSION (session));
 
-        GDM_SESSION_GET_IFACE (session)->setup_for_program (session, service_name, log_file);
+        GDM_SESSION_GET_IFACE (session)->setup_for_program (session, service_name, username, log_file);
 }
 
 void
