@@ -20,6 +20,7 @@ desktop_in_files = 							\
 	orca-screen-reader.desktop.in					\
 	nm-applet.desktop.in						\
 	gnome-keyring-secrets.desktop.in				\
+	gdm-initial-setup.desktop.in \
 	$(NULL)
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)			\
 	       mime-dummy-handler.desktop				\
