@@ -1543,6 +1543,10 @@ run_initial_setup (GdmSimpleSlave *slave)
                       NULL);
 
         g_signal_connect (slave->priv->greeter_server,
+                          "start-conversation",
+                          G_CALLBACK (on_greeter_start_conversation),
+                          slave);
+        g_signal_connect (slave->priv->greeter_server,
                           "begin-auto-login",
                           G_CALLBACK (on_greeter_begin_auto_login),
                           slave);
