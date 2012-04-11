@@ -59,6 +59,7 @@ struct GdmWelcomeSessionPrivate
 {
         GdmSession     *session;
         char           *command;
+        char           *log_file;
         GPid            pid;
 
         char           *user_name;
@@ -94,6 +95,7 @@ enum {
         PROP_RUNTIME_DIR,
         PROP_SERVER_ADDRESS,
         PROP_COMMAND,
+        PROP_LOG_FILE,
         PROP_SERVER_DBUS_PATH,
         PROP_SERVER_DBUS_INTERFACE,
         PROP_SERVER_ENV_VAR_NAME
@@ -771,9 +773,13 @@ on_conversation_started (GdmSession        *session,
         char             *log_path;
         char             *log_file;
 
-        log_file = g_strdup_printf ("%s-greeter.log", welcome_session->priv->x11_display_name);
-        log_path = g_build_filename (LOGDIR, log_file, NULL);
-        g_free (log_file);
+        if (welcome_session->priv->log_file == NULL) {
+                log_file = g_strdup_printf ("%s-greeter.log", welcome_session->priv->x11_display_name);
+                log_path = g_build_filename (LOGDIR, log_file, NULL);
+                g_free (log_file);
+        } else {
+                log_path = g_strdup (welcome_session->priv->log_file);
+        }
 
         gdm_session_setup_for_program (GDM_SESSION (welcome_session->priv->session),
                                        "gdm-welcome",
@@ -1008,6 +1014,14 @@ _gdm_welcome_session_set_command (GdmWelcomeSession *welcome_session,
 }
 
 static void
+_gdm_welcome_session_set_log_file (GdmWelcomeSession *welcome_session,
+                                   const char        *log_file)
+{
+        g_free (welcome_session->priv->log_file);
+        welcome_session->priv->log_file = g_strdup (log_file);
+}
+
+static void
 _gdm_welcome_session_set_server_env_var_name (GdmWelcomeSession *welcome_session,
                                               const char        *name)
 {
@@ -1068,6 +1082,9 @@ gdm_welcome_session_set_property (GObject      *object,
         case PROP_COMMAND:
                 _gdm_welcome_session_set_command (self, g_value_get_string (value));
                 break;
+        case PROP_LOG_FILE:
+                _gdm_welcome_session_set_log_file (self, g_value_get_string (value));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -1126,6 +1143,9 @@ gdm_welcome_session_get_property (GObject    *object,
                 break;
         case PROP_COMMAND:
                 g_value_set_string (value, self->priv->command);
+                break;
+        case PROP_LOG_FILE:
+                g_value_set_string (value, self->priv->log_file);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1240,6 +1260,13 @@ gdm_welcome_session_class_init (GdmWelcomeSessionClass *klass)
                                          g_param_spec_string ("command",
                                                               "command",
                                                               "command",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_LOG_FILE,
+                                         g_param_spec_string ("log-file",
+                                                              "log file",
+                                                              "log file",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         signals [STARTED] =
