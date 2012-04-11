@@ -36,6 +36,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
+#include <gio/gio.h>
 #include <glib-object.h>
 
 #include <act/act-user-manager.h>
@@ -1395,11 +1396,11 @@ create_initial_setup_user (GdmSimpleSlave *slave)
         user = act_user_manager_create_user (act, username, "", 0, &error);
         if (user == NULL) {
                 const gchar *e;
-                if (error->domain == DBUS_GERROR &&
-                    error->code == DBUS_GERROR_REMOTE_EXCEPTION)
-                        e = dbus_g_error_get_name (error);
-                else
+                if (g_dbus_error_is_remote_error (error)) {
+                        e = g_dbus_error_get_remote_error (error);
+                } else {
                         e = NULL;
+		}
 
                 g_warning ("Creating user '%s' failed: %s / %s", username, e, error->message);
 
