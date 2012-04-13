@@ -1522,7 +1522,6 @@ run_initial_setup (GdmSimpleSlave *slave)
                       "display-name", &display_name,
                       "display-seat-id", &seat_id,
                       "display-hostname", &display_hostname,
-                      "display-x11-authority-file", &auth_file,
                       NULL);
 
         g_debug ("GdmSimpleSlave: Creating initial setup for %s %s", display_name, display_hostname);
@@ -1552,6 +1551,10 @@ run_initial_setup (GdmSimpleSlave *slave)
                       "user-name", "gdm-initial-setup",
                       "group-name", "gdm-initial-setup",
                       NULL);
+
+        gdm_slave_add_user_authorization (GDM_SLAVE (slave),
+                                          "gdm-initial-setup",
+                                          &auth_file);
 
         g_signal_connect (slave->priv->greeter_server,
                           "start-conversation",
