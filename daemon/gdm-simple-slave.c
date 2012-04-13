@@ -1480,8 +1480,18 @@ on_setup_session_stop (GdmGreeterSession *greeter,
         g_debug ("GdmSimpleSlave: Setup stopped");
         clear_initial_setup_request (slave);
         remove_initial_setup_user (slave);
-        gdm_slave_stopped (GDM_SLAVE (slave));
+
+        if (slave->priv->start_session_service_name == NULL) {
+                gdm_slave_stopped (GDM_SLAVE (slave));
+        } else {
+                gdm_greeter_server_stop (slave->priv->greeter_server);
+                start_session (slave);
+        }
+
+        g_object_unref (slave->priv->greeter);
+        slave->priv->greeter = NULL;
 }
+
 static void
 run_initial_setup (GdmSimpleSlave *slave)
 {
