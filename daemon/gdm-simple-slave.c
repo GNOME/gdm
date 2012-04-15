@@ -1467,7 +1467,7 @@ remove_initial_setup_user (GdmSimpleSlave *slave)
         error = NULL;
         user = act_user_manager_get_user (act, username);
         if (!act_user_manager_delete_user (act, user, TRUE, &error)) {
-                g_warning ("Failed to create user '%s': %s", username, error->message);
+                g_warning ("Failed to delete user '%s': %s", username, error->message);
                 g_error_free (error);
         }
 
