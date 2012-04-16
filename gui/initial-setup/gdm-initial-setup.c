@@ -1835,7 +1835,6 @@ main (int argc, char *argv[])
 {
         SetupData *setup;
         GError *error;
-        const gchar *filename;
 
         setup = g_new0 (SetupData, 1);
 
@@ -1847,12 +1846,8 @@ main (int argc, char *argv[])
                 exit (1);
         };
 
-        filename = UIDIR "/setup.ui";
-        if (!g_file_test (filename, G_FILE_TEST_EXISTS))
-                filename = "setup.ui";
-
         setup->builder = gtk_builder_new ();
-        if (!gtk_builder_add_from_file (setup->builder, filename, &error)) {
+        if (!gtk_builder_add_from_resource (setup->builder, "/ui/setup.ui", &error)) {
                 g_error ("%s", error->message);
                 g_error_free (error);
                 exit (1);

@@ -23,6 +23,9 @@ timedated.h: Makefile.am timedated1-interface.xml
 		--generate-c-code timedated \
 		$(srcdir)/timedated1-interface.xml
 
+setup_resources.c: setup.gresource.xml setup.ui welcome-image.jpg
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-source $(srcdir)/setup.gresource.xml
+
 gdm_initial_setup_SOURCES =	\
 	gdm-initial-setup.c \
 	panel-cell-renderer-signal.c panel-cell-renderer-signal.h \
@@ -32,17 +35,17 @@ gdm_initial_setup_SOURCES =	\
 	um-utils.c um-utils.h \
 	tz.c tz.h \
 	../libgdmgreeter/gdm-greeter-client.c ../libgdmgreeter/gdm-greeter-client.h \
-	$(dbus_built_sources)
+	$(dbus_built_sources) \
+	setup_resources.c
 
-ui_DATA = \
-	setup.ui \
-	welcome-image.jpg
 
 EXTRA_DIST = \
+	$(sys_DATA) \
 	timedated1-interface.xml \
-	$(ui_DATA) \
-	$(sys_DATA)
+	setup.ui \
+	welcome-image.jpg \
+	application.gresource.xml
 
-BUILT_SOURCES = $(dbus_built_sources)
+BUILT_SOURCES = $(dbus_built_sources) setup_resources.c
 
 -include $(top_srcdir)/git.mk
