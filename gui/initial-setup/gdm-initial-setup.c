@@ -1666,7 +1666,8 @@ prepare_online_page (SetupData *setup)
 static void
 copy_account_data (SetupData *setup)
 {
-        const gchar *username, *to, *from;
+        const gchar *username;
+        gchar *to1, *to2, *to, *from;
         gchar *argv[12];
         GError *error = NULL;
 
@@ -1680,25 +1681,52 @@ copy_account_data (SetupData *setup)
         username = act_user_get_user_name (setup->act_user);
 
         from = g_build_filename (g_get_home_dir (), ".config", "dconf", "user", NULL);
-        to = g_build_filename (act_user_get_home_dir (setup->act_user), ".config", "dconf", "user", NULL);
+        to1 = g_build_filename (act_user_get_home_dir (setup->act_user), ".config", NULL);
+        to2 = g_build_filename (to1, "dconf", NULL);
+        to = g_build_filename (to2, "user", NULL);
 
         argv[0] = "/usr/bin/pkexec";
         argv[1] = "install";
-        argv[2] = "-D";
-        argv[3] = "--owner";
-        argv[4] = (gchar *)username;
-        argv[5] = "--group";
-        argv[6] = (gchar *)username;
-        argv[7] = "--mode";
-        argv[8] = "644";
-        argv[9] = (gchar *)from;
-        argv[10] = (gchar *)to;
+        argv[2] = "--owner";
+        argv[3] = (gchar *)username;
+        argv[4] = "--group";
+        argv[5] = (gchar *)username;
+        argv[6] = "--mode";
+        argv[7] = "755";
+        argv[8] = "--directory";
+        argv[9] = to1;
+        argv[10] = to2;
         argv[11] = NULL;
 
         if (!g_spawn_sync (NULL, argv, NULL, 0, NULL, NULL, NULL, NULL, NULL, &error)) {
                 g_warning ("Failed to copy account data: %s", error->message);
                 g_error_free (error);
+                goto out;
         }
+
+        argv[0] = "/usr/bin/pkexec";
+        argv[1] = "install";
+        argv[2] = "--owner";
+        argv[3] = (gchar *)username;
+        argv[4] = "--group";
+        argv[5] = (gchar *)username;
+        argv[6] = "--mode";
+        argv[7] = "644";
+        argv[8] = from;
+        argv[9] = to;
+        argv[10] = NULL;
+
+        if (!g_spawn_sync (NULL, argv, NULL, 0, NULL, NULL, NULL, NULL, NULL, &error)) {
+                g_warning ("Failed to copy account data: %s", error->message);
+                g_error_free (error);
+                goto out;
+        }
+
+out:
+        g_free (from);
+        g_free (to1);
+        g_free (to2);
+        g_free (to);
 }
 
 static void
