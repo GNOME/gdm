@@ -1666,12 +1666,39 @@ prepare_online_page (SetupData *setup)
 static void
 copy_account_data (SetupData *setup)
 {
+        const gchar *username, *to, *from;
+        gchar *argv[12];
+        GError *error = NULL;
+
         /* FIXME: here is where we copy all the things we just
          * configured, from the current users home dir to the
          * account that was created in the first step
          */
         g_debug ("Copying account data");
         g_settings_sync ();
+
+        username = act_user_get_user_name (setup->act_user);
+
+        from = g_build_filename (g_get_home_dir (), ".config", "dconf", "user", NULL);
+        to = g_build_filename (act_user_get_home_dir (setup->act_user), ".config", "dconf", "user", NULL);
+
+        argv[0] = "/usr/bin/pkexec";
+        argv[1] = "install";
+        argv[2] = "-D";
+        argv[3] = "--owner";
+        argv[4] = (gchar *)username;
+        argv[5] = "--group";
+        argv[6] = (gchar *)username;
+        argv[7] = "--mode";
+        argv[8] = "644";
+        argv[9] = (gchar *)from;
+        argv[10] = (gchar *)to;
+        argv[11] = NULL;
+
+        if (!g_spawn_sync (NULL, argv, NULL, 0, NULL, NULL, NULL, NULL, NULL, &error)) {
+                g_warning ("Failed to copy account data: %s", error->message);
+                g_error_free (error);
+        }
 }
 
 static void
@@ -1746,7 +1773,7 @@ prepare_cb (GtkAssistant *assi, GtkWidget *page, SetupData *setup)
 
         save_account_data (setup);
 
-        if (page == WID("summary_page"))
+        if (page == WID("summary-page"))
                 copy_account_data (setup);
 }
 
