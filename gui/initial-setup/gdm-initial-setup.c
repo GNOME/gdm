@@ -29,6 +29,8 @@
 #define GOA_BACKEND_API_IS_SUBJECT_TO_CHANGE
 #include <goabackend/goabackend.h>
 
+#include <gnome-keyring.h>
+
 #define DEFAULT_TZ "Europe/London"
 
 /* Setup data {{{1 */
@@ -1044,6 +1046,10 @@ clear_account_page (SetupData *setup)
 static void
 save_account_data (SetupData *setup)
 {
+        const gchar *realname;
+        const gchar *username;
+        const gchar *password;
+
         if (!setup->user_data_unsaved) {
                 return;
         }
@@ -1072,19 +1078,22 @@ save_account_data (SetupData *setup)
                 return;
         }
 
-        act_user_set_real_name (setup->act_user,
-                                gtk_entry_get_text (OBJ (GtkEntry*, "account-fullname-entry")));
-        act_user_set_user_name (setup->act_user,
-                                gtk_combo_box_text_get_active_text (OBJ (GtkComboBoxText*, "account-username-combo")));
+        realname = gtk_entry_get_text (OBJ (GtkEntry*, "account-fullname-entry"));
+        username = gtk_combo_box_text_get_active_text (OBJ (GtkComboBoxText*, "account-username-combo"));
+        password = gtk_entry_get_text (OBJ (GtkEntry*, "account-password-entry"));
+
+        act_user_set_real_name (setup->act_user, realname);
+        act_user_set_user_name (setup->act_user, username);
         act_user_set_account_type (setup->act_user, setup->account_type);
         if (setup->password_mode == ACT_USER_PASSWORD_MODE_REGULAR) {
-                act_user_set_password (setup->act_user,
-                                       gtk_entry_get_text (OBJ (GtkEntry*, "account-password-entry")),
-                                       NULL);
+                act_user_set_password (setup->act_user, password, NULL);
         }
         else {
                 act_user_set_password_mode (setup->act_user, setup->password_mode);
         }
+
+        gnome_keyring_create_sync ("Default", password ? password : "");
+        gnome_keyring_set_default_keyring_sync ("Default");
 
         setup->user_data_unsaved = FALSE;
 }
@@ -1664,39 +1673,51 @@ prepare_online_page (SetupData *setup)
 /* Other setup {{{1 */
 
 static void
-copy_account_data (SetupData *setup)
+copy_account_file (SetupData   *setup,
+                   const gchar *relative_path)
 {
         const gchar *username;
-        gchar *to1, *to2, *to, *from;
-        gchar *argv[12];
+        const gchar *homedir;
+        GSList *dirs = NULL, *l;
+        gchar *p, *tmp;
+        gchar *argv[20];
+        gint i;
+        gchar *from;
+        gchar *to;
         GError *error = NULL;
 
-        /* FIXME: here is where we copy all the things we just
-         * configured, from the current users home dir to the
-         * account that was created in the first step
-         */
-        g_debug ("Copying account data");
-        g_settings_sync ();
-
         username = act_user_get_user_name (setup->act_user);
+        homedir = act_user_get_home_dir (setup->act_user);
 
-        from = g_build_filename (g_get_home_dir (), ".config", "dconf", "user", NULL);
-        to1 = g_build_filename (act_user_get_home_dir (setup->act_user), ".config", NULL);
-        to2 = g_build_filename (to1, "dconf", NULL);
-        to = g_build_filename (to2, "user", NULL);
+        from = g_build_filename (g_get_home_dir (), relative_path, NULL);
+        to = g_build_filename (homedir, relative_path, NULL);
 
-        argv[0] = "/usr/bin/pkexec";
-        argv[1] = "install";
-        argv[2] = "--owner";
-        argv[3] = (gchar *)username;
-        argv[4] = "--group";
-        argv[5] = (gchar *)username;
-        argv[6] = "--mode";
-        argv[7] = "755";
-        argv[8] = "--directory";
-        argv[9] = to1;
-        argv[10] = to2;
-        argv[11] = NULL;
+        p = g_path_get_dirname (relative_path);
+        while (strcmp (p, ".") != 0) {
+                dirs = g_slist_prepend (dirs, g_build_filename (homedir, p, NULL));
+                tmp = g_path_get_dirname (p);
+                g_free (p);
+                p = tmp;
+        }
+
+        i = 0;
+        argv[i++] = "/usr/bin/pkexec";
+        argv[i++] = "install";
+        argv[i++] = "--owner";
+        argv[i++] = (gchar *)username;
+        argv[i++] = "--group";
+        argv[i++] = (gchar *)username;
+        argv[i++] = "--mode";
+        argv[i++] = "755";
+        argv[i++] = "--directory";
+        for (l = dirs; l; l = l->next) {
+                argv[i++] = l->data;
+                if (i == 20) {
+                        g_warning ("Too many subdirectories");
+                        goto out;
+                }
+        }
+        argv[i++] = NULL;
 
         if (!g_spawn_sync (NULL, argv, NULL, 0, NULL, NULL, NULL, NULL, NULL, &error)) {
                 g_warning ("Failed to copy account data: %s", error->message);
@@ -1704,17 +1725,18 @@ copy_account_data (SetupData *setup)
                 goto out;
         }
 
-        argv[0] = "/usr/bin/pkexec";
-        argv[1] = "install";
-        argv[2] = "--owner";
-        argv[3] = (gchar *)username;
-        argv[4] = "--group";
-        argv[5] = (gchar *)username;
-        argv[6] = "--mode";
-        argv[7] = "644";
-        argv[8] = from;
-        argv[9] = to;
-        argv[10] = NULL;
+        i = 0;
+        argv[i++] = "/usr/bin/pkexec";
+        argv[i++] = "install";
+        argv[i++] = "--owner";
+        argv[i++] = (gchar *)username;
+        argv[i++] = "--group";
+        argv[i++] = (gchar *)username;
+        argv[i++] = "--mode";
+        argv[i++] = "755";
+        argv[i++] = from;
+        argv[i++] = to;
+        argv[i++] = NULL;
 
         if (!g_spawn_sync (NULL, argv, NULL, 0, NULL, NULL, NULL, NULL, NULL, &error)) {
                 g_warning ("Failed to copy account data: %s", error->message);
@@ -1723,10 +1745,24 @@ copy_account_data (SetupData *setup)
         }
 
 out:
-        g_free (from);
-        g_free (to1);
-        g_free (to2);
+        g_slist_free_full (dirs, g_free);
         g_free (to);
+        g_free (from);
+}
+
+static void
+copy_account_data (SetupData *setup)
+{
+        /* here is where we copy all the things we just
+         * configured, from the current users home dir to the
+         * account that was created in the first step
+         */
+        g_debug ("Copying account data");
+        g_settings_sync ();
+
+        copy_account_file (setup, ".config/dconf/user");
+        copy_account_file (setup, ".config/goa-1.0/accounts.conf");
+        copy_account_file (setup, ".gnome2/keyrings/Default.keyring");
 }
 
 static void

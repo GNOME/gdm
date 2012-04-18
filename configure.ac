@@ -179,6 +179,7 @@ PKG_CHECK_MODULES(INITIAL_SETUP,
                   libnm-glib >= $NETWORK_MANAGER_REQUIRED_VERSION
                   libnm-util >= $NETWORK_MANAGER_REQUIRED_VERSION
                   accountsservice
+                  gnome-keyring-1
                   gweather-3.0
                   goa-1.0
                   goa-backend-1.0
