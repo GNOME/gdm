@@ -10,8 +10,8 @@ When in initial-setup mode, gdm does not bring up the regular greeter
 for the login screen, but instead starts the gdm-initial-setup application
 in a special session. gdm-initial-setup offers a series of steps to
 
-1. Create a new user account
-2. Connect to the network
+1. Connect to the network
+2. Create a new user account
 3. Set the right location/timezone
 4. Set up online accounts
 
@@ -68,5 +68,10 @@ TODO
 
 - The summary screen should offer a 'tour' of the desktop.
 
-- Figure out what to do about secrets when copying account data
-  (both NM and goa tend to store things in the keyring)
+- Figure out how to unlock the copied keyring after the autologin
+  into the newly created session.
+
+- Split the setup/teardown for the temporary account into a
+  helper binary, to make selinux happy.
+
+- Use /var/lib/gdm/run-initial-setup instead of /etc/gdm/run-initial-setup.
