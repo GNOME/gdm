@@ -21,6 +21,7 @@ desktop_in_files = 							\
 	nm-applet.desktop.in						\
 	gnome-keyring-secrets.desktop.in				\
 	gdm-initial-setup.desktop.in \
+	setup-shell.desktop.in \
 	$(NULL)
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)			\
 	       mime-dummy-handler.desktop				\
