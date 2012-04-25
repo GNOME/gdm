@@ -56,6 +56,10 @@
 #define CK_MANAGER_PATH      "/org/freedesktop/ConsoleKit/Manager"
 #define CK_MANAGER_INTERFACE "org.freedesktop.ConsoleKit.Manager"
 
+#define LOGIN1_NAME      "org.freedesktop.login1"
+#define LOGIN1_PATH      "/org/freedesktop/login1"
+#define LOGIN1_INTERFACE "org.freedesktop.login1.Manager"
+
 #define GPM_DBUS_NAME      "org.gnome.SettingsDaemon"
 #define GPM_DBUS_PATH      "/org/gnome/SettingsDaemon/Power"
 #define GPM_DBUS_INTERFACE "org.gnome.SettingsDaemon.Power"
@@ -630,18 +634,38 @@ try_system_stop (DBusGConnection *connection,
 
         g_debug ("GdmGreeterPanel: trying to stop system");
 
-        proxy = dbus_g_proxy_new_for_name (connection,
-                                           CK_NAME,
-                                           CK_MANAGER_PATH,
-                                           CK_MANAGER_INTERFACE);
-        res = dbus_g_proxy_call_with_timeout (proxy,
-                                              "Stop",
-                                              INT_MAX,
-                                              error,
-                                              /* parameters: */
-                                              G_TYPE_INVALID,
-                                              /* return values: */
-                                              G_TYPE_INVALID);
+        /* try systemd first */
+        proxy = dbus_g_proxy_new_for_name_owner (connection,
+                                                 LOGIN1_NAME,
+                                                 LOGIN1_PATH,
+                                                 LOGIN1_INTERFACE,
+                                                 error);
+        if (proxy) {
+                res = dbus_g_proxy_call_with_timeout (proxy,
+                                                      "PowerOff",
+                                                      INT_MAX,
+                                                      error,
+                                                      /* parameters: */
+                                                      G_TYPE_BOOLEAN,
+                                                      TRUE,
+                                                      G_TYPE_INVALID,
+                                                      /* return values: */
+                                                      G_TYPE_INVALID);
+        } else {
+                proxy = dbus_g_proxy_new_for_name (connection,
+                                                   CK_NAME,
+                                                   CK_MANAGER_PATH,
+                                                   CK_MANAGER_INTERFACE);
+                res = dbus_g_proxy_call_with_timeout (proxy,
+                                                      "Stop",
+                                                      INT_MAX,
+                                                      error,
+                                                      /* parameters: */
+                                                      G_TYPE_INVALID,
+                                                      /* return values: */
+                                                      G_TYPE_INVALID);
+        }
+
         return res;
 }
 
@@ -654,18 +678,37 @@ try_system_restart (DBusGConnection *connection,
 
         g_debug ("GdmGreeterPanel: trying to restart system");
 
-        proxy = dbus_g_proxy_new_for_name (connection,
-                                           CK_NAME,
-                                           CK_MANAGER_PATH,
-                                           CK_MANAGER_INTERFACE);
-        res = dbus_g_proxy_call_with_timeout (proxy,
-                                              "Restart",
-                                              INT_MAX,
-                                              error,
-                                              /* parameters: */
-                                              G_TYPE_INVALID,
-                                              /* return values: */
-                                              G_TYPE_INVALID);
+        /* try systemd first */
+        proxy = dbus_g_proxy_new_for_name_owner (connection,
+                                                 LOGIN1_NAME,
+                                                 LOGIN1_PATH,
+                                                 LOGIN1_INTERFACE,
+                                                 error);
+        if (proxy) {
+                res = dbus_g_proxy_call_with_timeout (proxy,
+                                                      "Reboot",
+                                                      INT_MAX,
+                                                      error,
+                                                      /* parameters: */
+                                                      G_TYPE_BOOLEAN,
+                                                      TRUE,
+                                                      G_TYPE_INVALID,
+                                                      /* return values: */
+                                                      G_TYPE_INVALID);
+        } else {
+                proxy = dbus_g_proxy_new_for_name (connection,
+                                                   CK_NAME,
+                                                   CK_MANAGER_PATH,
+                                                   CK_MANAGER_INTERFACE);
+                res = dbus_g_proxy_call_with_timeout (proxy,
+                                                      "Restart",
+                                                      INT_MAX,
+                                                      error,
+                                                      /* parameters: */
+                                                      G_TYPE_INVALID,
+                                                      /* return values: */
+                                                      G_TYPE_INVALID);
+        }
         return res;
 }
 
