@@ -87,7 +87,7 @@
 #endif
 
 #ifndef GDM_SESSION_LOG_FILENAME
-#define GDM_SESSION_LOG_FILENAME ".xsession-errors"
+#define GDM_SESSION_LOG_FILENAME "session.log"
 #endif
 
 #define MAX_FILE_SIZE     65536
@@ -1886,9 +1886,30 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 if (worker->priv->is_program_session) {
                         fd = _open_program_session_log (worker->priv->log_file);
                 } else {
-                        fd = _open_user_session_log (home_dir);
+                        if (home_dir != NULL && home_dir[0] != '\0') {
+                                char *cache_dir;
+                                char *log_dir;
+
+                                cache_dir = gdm_session_worker_get_environment_variable (worker, "XDG_CACHE_HOME");
+                                if (cache_dir == NULL || cache_dir[0] == '\0') {
+                                        cache_dir = g_build_filename (home_dir, ".cache", NULL);
+                                }
+
+                                log_dir = g_build_filename (cache_dir, "gdm", NULL);
+                                g_free (cache_dir);
+
+                                if (g_mkdir_with_parents (log_dir, S_IRWXU) == 0) {
+                                        fd = _open_user_session_log (log_dir);
+                                } else {
+                                        fd = open ("/dev/null", O_RDWR);
+                                }
+                                g_free (log_dir);
+                        } else {
+                                fd = open ("/dev/null", O_RDWR);
+                        }
                 }
                 g_free (home_dir);
+
                 dup2 (fd, STDOUT_FILENO);
                 dup2 (fd, STDERR_FILENO);
                 close (fd);
