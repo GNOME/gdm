@@ -32,6 +32,9 @@
 #include <pwd.h>
 #include <grp.h>
 #include <signal.h>
+#ifdef HAVE_SYS_PRCTL_H
+#include <sys/prctl.h>
+#endif
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -468,6 +471,11 @@ spawn_child_setup (SpawnChildData *data)
                          (guint) getpid (), g_strerror (errno));
                 _exit (2);
         }
+
+        /* Terminate the process when the parent dies */
+#ifdef HAVE_SYS_PRCTL_H
+        prctl (PR_SET_PDEATHSIG, SIGTERM);
+#endif
 
         if (data->log_file != NULL) {
                 int logfd;
