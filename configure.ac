@@ -226,6 +226,27 @@ if test x$enable_split_authentication = xyes; then
   AC_DEFINE(ENABLE_SPLIT_AUTHENTICATION, 1, [Define if split authentication is enabled])
 fi
 
+AC_ARG_WITH(default-pam-config,
+	    AS_HELP_STRING([--with-default-pam-config: One of redhat, openembedded, none @<:@default=auto@:>@]))
+dnl If not given, try autodetecting from release files (see NetworkManager source) 
+if test x$with_default_pam_config = x; then
+	AC_CHECK_FILE(/etc/redhat-release,with_default_pam_config="redhat")
+	AC_CHECK_FILE(/etc/fedora-release,with_default_pam_config="redhat")
+	dnl If not autodetected, default to none
+	if test x$with_default_pam_config = x; then
+	  with_default_pam_config=none
+	fi
+fi
+case x$with_default_pam_config in
+     xredhat|xopenembedded|xnone) ;;
+     *)
+       AC_MSG_ERROR([Invalid --with-default-pam-config ${with_default_pam_config}])
+       exit 1
+       ;;
+esac
+AM_CONDITIONAL(ENABLE_REDHAT_PAM_CONFIG, test x$with_default_pam_config = xredhat)
+AM_CONDITIONAL(ENABLE_OPENEMBEDDED_PAM_CONFIG, test x$with_default_pam_config = xopenembedded)
+
 AC_ARG_ENABLE(console-helper,
 	      AS_HELP_STRING([--enable-console-helper],
                              [Enable PAM console helper @<:@default=auto@:>@]),,
@@ -1550,6 +1571,7 @@ echo "
 
         dbus-1 system.d dir:      ${DBUS_SYS_DIR}
         PAM prefix:               ${PAM_PREFIX}
+        PAM config:               ${with_default_pam_config}
         X server:                 ${X_SERVER}
 "
 

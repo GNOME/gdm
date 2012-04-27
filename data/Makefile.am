@@ -98,6 +98,19 @@ pam_redhat_files = pam-redhat/gdm.pam		\
 	$(NULL)
 EXTRA_DIST += $(pam_redhat_files)
 
+pam_openembedded_files = pam-openembedded/gdm.pam	\
+	pam-openembedded/gdm-autologin.pam		\
+	pam-openembedded/gdm-welcome.pam		\
+	$(NULL)
+EXTRA_DIST += $(pam_openembedded_files)
+
+if ENABLE_REDHAT_PAM_CONFIG
+pam_files = $(pam_redhat_files)
+endif
+if ENABLE_OPENEMBEDDED_PAM_CONFIG
+pam_files = $(pam_openembedded_files)
+endif
+
 EXTRA_DIST +=			\
 	$(schemas_in_files)	\
 	$(schemas_DATA)		\
@@ -223,7 +236,7 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession 00-upstr
 		chmod 755 $(DESTDIR)$(PAM_PREFIX)/pam.d; \
 	   fi; \
 	   if test $$system = Linux; then \
-	     for pamfile in $(pam_redhat_files); do \
+	     for pamfile in $(pam_files); do \
 	       bn=$$(basename $$pamfile .pam); \
 	       $(INSTALL_DATA) $(srcdir)/$$pamfile $(DESTDIR)$(PAM_PREFIX)/pam.d/$$bn; \
 	     done; \
