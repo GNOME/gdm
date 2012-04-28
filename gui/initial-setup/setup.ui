@@ -30,253 +30,62 @@
       </object>
     </child>
   </object>
-  <object class="GtkAssistant" id="gnome-setup-assistant">
-    <!-- interface-naming-policy toplevel-contextual -->
-    <property name="border-width">12</property>
+  <object class="GtkDialog" id="local-account-dialog">
     <property name="title"></property>
-    <property name="icon_name">preferences-system</property>
-    <property name="visible">False</property>
-    <property name="deletable">False</property>
+    <property name="transient-for">gnome-setup-assistant</property>
+    <property name="modal">True</property>
     <property name="resizable">False</property>
-    <property name="window-position">center</property>
-    <child>
-      <object class="GtkGrid" id="welcome-page">
-        <property name="name">welcome-page</property>
-        <property name="visible">True</property>
+    <child internal-child="action_area">
+      <object class="GtkBox" id="local-account-action-area">
         <child>
-          <object class="GtkLabel" id="welcome-title">
+          <object class="GtkButton" id="local-account-cancel-button">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">Welcome to GNOME</property>
-            <property name="halign">start</property>
-            <property name="valign">start</property>
-            <property name="margin-bottom">18</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-              <attribute name="scale" value="1.2"/>
-            </attributes>
+            <property name="label" translatable="True">_Cancel</property>
+            <property name="use-underline">True</property>
           </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
-          </packing>
         </child>
         <child>
-          <object class="GtkImage" id="welcome-image">
+          <object class="GtkButton" id="local-account-done-button">
             <property name="visible">True</property>
-            <property name="halign">start</property>
-            <property name="valign">start</property>
-            <property name="file">resource:///image/welcome-image.jpg</property>
+            <property name="sensitive">False</property>
+            <property name="label" translatable="True">_Done</property>
+            <property name="use-underline">True</property>
           </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="welcome-subtitle">
-            <property name="visible">True</property>
-            <property name="label" translatable="yes">Now let's set up some essentials for your account.</property>
-            <property name="halign">start</property>
-            <property name="xalign">0.0</property>
-            <property name="margin-top">18</property>
-            <property name="margin-bottom">18</property>
-            <property name="wrap">True</property>
-            <property name="width-chars">50</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">2</property>
-          </packing>
         </child>
       </object>
-      <packing>
-        <property name="title" translatable="yes">Introduction</property>
-        <property name="page-type">intro</property>
-      </packing>
     </child>
-    <child>
-      <object class="GtkGrid" id="network-page">
-        <property name="name">network-page</property>
-        <property name="visible">True</property>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="local-account-content-area">
+        <property name="margin">12</property>
         <child>
-          <object class="GtkLabel" id="network-title">
+          <object class="GtkGrid" id="local-account-grid">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">Connect to the Network</property>
-            <property name="halign">start</property>
-            <property name="valign">start</property>
+            <property name="row-spacing">6</property>
+            <property name="column-spacing">12</property>
             <property name="margin-bottom">18</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-              <attribute name="scale" value="1.2"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="network-subtitle">
-            <property name="visible">True</property>
-            <property name="label" translatable="yes">Select a wireless network</property>
-            <property name="margin-bottom">12</property>
-            <property name="halign">start</property>
-            <property name="valign">start</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkScrolledWindow" id="network-scrolledwindow">
-            <property name="visible">True</property>
-            <property name="halign">fill</property>
-            <property name="valign">fill</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
-            <property name="margin-top">0</property>
-            <property name="margin-bottom">32</property>
-            <property name="margin-right">64</property>
-            <property name="hscrollbar-policy">never</property>
-            <property name="vscrollbar-policy">automatic</property>
-            <property name="shadow-type">in</property>
             <child>
-              <object class="GtkTreeView" id="network-list">
+              <object class="GtkLabel" id="account-fullname-label">
                 <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="hexpand">True</property>
-                <property name="vexpand">True</property>
-                <property name="halign">fill</property>
-                <property name="valign">fill</property>
-                <property name="model">liststore-wireless</property>
-                <property name="headers-visible">False</property>
-                <property name="search-column">2</property>
-                <property name="show-expanders">False</property>
-                <child internal-child="selection">
-                  <object class="GtkTreeSelection" id="network-list-selection">
-                    <property name="mode">single</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkTreeViewColumn" id="network-list-column"/>
-                </child>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">2</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkGrid" id="no-network-grid">
-            <property name="visible">True</property>
-            <property name="halign">start</property>
-            <property name="valign">start</property>
-            <child>
-              <object class="GtkSpinner" id="no-network-spinner">
-                <property name="visible">True</property>
-                <property name="active">True</property>
-                <property name="halign">start</property>
-                <property name="valign">center</property>
-                <property name="margin-left">6</property>
-                <property name="margin-right">6</property>
+                <property name="label" translatable="yes">_Fullname</property>
+                <property name="use_underline">True</property>
+                <property name="mnemonic_widget">account-fullname-entry</property>
+                <property name="halign">end</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
               <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
+                <property name="left-attach">0</property>
+                <property name="top-attach">1</property>
                 <property name="width">1</property>
                 <property name="height">1</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="no-network-label">
+              <object class="GtkEntry" id="account-fullname-entry">
                 <property name="visible">True</property>
-                <property name="label">No text</property>
                 <property name="halign">start</property>
-                <property name="valign">center</property>
               </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">3</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="title" translatable="yes">Network</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkGrid" id="account-page">
-        <property name="name">account-page</property>
-        <property name="visible">True</property>
-        <property name="row-spacing">6</property>
-        <property name="column-spacing">12</property>
-        <child>
-          <object class="GtkLabel" id="account-title">
-            <property name="visible">True</property>
-            <property name="label" translatable="yes">Create an Account</property>
-            <property name="halign">start</property>
-            <property name="valign">start</property>
-            <property name="margin-bottom">12</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-              <attribute name="scale" value="1.2"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
-            <property name="width">2</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="account-fullname-label">
-            <property name="visible">True</property>
-            <property name="label" translatable="yes">_Fullname</property>
-            <property name="use_underline">True</property>
-            <property name="mnemonic_widget">account-fullname-entry</property>
-            <property name="halign">end</property>
-            <style>
-              <class name="dim-label"/>
-            </style>
-          </object>
-          <packing>
-            <property name="left-attach">0</property>
-            <property name="top-attach">1</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="account-fullname-entry">
-            <property name="visible">True</property>
-            <property name="halign">start</property>
-          </object>
           <packing>
             <property name="left-attach">1</property>
             <property name="top-attach">1</property>
@@ -411,6 +220,250 @@
           </packing>
         </child>
       </object>
+    </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-6">local-account-cancel-button</action-widget>
+      <action-widget response="-5">local-account-done-button</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkSizeGroup" id="byebye-sizegroup">
+    <widgets>
+      <widget name="byebye"/>
+      <widget name="byebye-tour"/>
+    </widgets>
+  </object>
+  <object class="GtkAssistant" id="gnome-setup-assistant">
+    <!-- interface-naming-policy toplevel-contextual -->
+    <property name="border-width">12</property>
+    <property name="title"></property>
+    <property name="icon_name">preferences-system</property>
+    <property name="visible">False</property>
+    <property name="deletable">False</property>
+    <property name="resizable">False</property>
+    <property name="window-position">center</property>
+    <child>
+      <object class="GtkGrid" id="welcome-page">
+        <property name="name">welcome-page</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkLabel" id="welcome-title">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Welcome to GNOME 3</property>
+            <property name="halign">center</property>
+            <property name="valign">start</property>
+            <property name="margin-bottom">18</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+              <attribute name="scale" value="1.2"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage" id="welcome-image">
+            <property name="visible">True</property>
+            <property name="halign">center</property>
+            <property name="valign">start</property>
+            <property name="file">resource:///image/welcome-image.jpg</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="welcome-subtitle">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Let's set up some essentials.</property>
+            <property name="halign">center</property>
+            <property name="margin-top">18</property>
+            <property name="margin-bottom">18</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">2</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="title" translatable="yes">Introduction</property>
+        <property name="page-type">intro</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkGrid" id="network-page">
+        <property name="name">network-page</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkLabel" id="network-title">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Wireless Networks</property>
+            <property name="center">start</property>
+            <property name="valign">start</property>
+            <property name="margin-bottom">18</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+              <attribute name="scale" value="1.2"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="network-scrolledwindow">
+            <property name="visible">True</property>
+            <property name="halign">fill</property>
+            <property name="valign">fill</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
+            <property name="margin-top">0</property>
+            <property name="margin-bottom">32</property>
+            <property name="hscrollbar-policy">never</property>
+            <property name="vscrollbar-policy">automatic</property>
+            <property name="shadow-type">in</property>
+            <child>
+              <object class="GtkTreeView" id="network-list">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <property name="halign">fill</property>
+                <property name="valign">fill</property>
+                <property name="model">liststore-wireless</property>
+                <property name="headers-visible">False</property>
+                <property name="search-column">2</property>
+                <property name="show-expanders">False</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection" id="network-list-selection">
+                    <property name="mode">single</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="network-list-column"/>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkGrid" id="no-network-grid">
+            <property name="visible">True</property>
+            <property name="halign">start</property>
+            <property name="valign">start</property>
+            <child>
+              <object class="GtkSpinner" id="no-network-spinner">
+                <property name="visible">True</property>
+                <property name="active">True</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="margin-left">6</property>
+                <property name="margin-right">6</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+                <property name="width">1</property>
+                <property name="height">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="no-network-label">
+                <property name="visible">True</property>
+                <property name="label">No text</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+                <property name="width">1</property>
+                <property name="height">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">3</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="title" translatable="yes">Network</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkGrid" id="account-page">
+        <property name="name">account-page</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkLabel" id="account-title">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Choose How to Login</property>
+            <property name="hexpand">True</property>
+            <property name="halign">center</property>
+            <property name="valign">start</property>
+            <property name="margin-bottom">18</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+              <attribute name="scale" value="1.2"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="local-account-button">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Create a _Local Account</property>
+            <property name="use_underline">True</property>
+            <property name="halign">center</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="remote-account-button">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Use an _Enterprise Login</property>
+            <property name="halign">center</property>
+            <property name="use_underline">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">2</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+      </object>
       <packing>
         <property name="title" translatable="yes">Account</property>
       </packing>
@@ -422,8 +475,8 @@
         <child>
           <object class="GtkLabel" id="location-title">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">Select your Location</property>
-            <property name="halign">start</property>
+            <property name="label" translatable="yes">Choose your Location</property>
+            <property name="halign">center</property>
             <property name="valign">start</property>
             <property name="margin-bottom">18</property>
             <attributes>
@@ -545,8 +598,8 @@
         <child>
           <object class="GtkLabel" id="online-title">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">Web Accounts</property>
-            <property name="halign">start</property>
+            <property name="label" translatable="yes">Online Accounts</property>
+            <property name="halign">center</property>
             <property name="valign">start</property>
             <property name="margin-bottom">18</property>
             <attributes>
@@ -564,7 +617,7 @@
         <child>
           <object class="GtkLabel" id="online-subtitle">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">Associate your new account with your existing online accounts</property>
+            <property name="label" translatable="yes">Associate your new account with your existing online accounts.</property>
             <property name="halign">start</property>
             <property name="valign">start</property>
             <property name="margin-bottom">18</property>
@@ -612,7 +665,7 @@
         </child>
       </object>
       <packing>
-        <property name="title" translatable="yes">Web Accounts</property>
+        <property name="title" translatable="yes">Online Accounts</property>
       </packing>
     </child>
     <child>
@@ -623,7 +676,7 @@
           <object class="GtkLabel" id="summary-title">
             <property name="visible">True</property>
             <property name="label" translatable="yes">Enjoy GNOME !</property>
-            <property name="halign">start</property>
+            <property name="halign">center</property>
             <property name="valign">start</property>
             <property name="margin-bottom">18</property>
             <attributes>
@@ -641,14 +694,9 @@
         <child>
           <object class="GtkLabel" id="summary-details">
             <property name="visible">True</property>
-            <property name="xalign">0.0</property>
-            <property name="label" translatable="yes">Your new account is ready to use. You may change any of these options at any time in the System Settings.</property>
-            <property name="wrap">True</property>
-            <property name="halign">start</property>
+            <property name="label" translatable="yes">Your new account is ready to use.</property>
+            <property name="halign">center</property>
             <property name="valign">start</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-            </attributes>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -657,10 +705,71 @@
             <property name="height">1</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkLabel" id="summary-details2">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">You may change any of these options at any time in the System Settings.</property>
+            <property name="halign">center</property>
+            <property name="valign">start</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">2</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="byebye">
+            <property name="visible">True</property>
+            <property name="use-underline">True</property>
+            <property name="label" translatable="yes">_Start using GNOME 3</property>
+            <property name="halign">center</property>
+            <property name="valign">start</property>
+            <property name="vexpand">True</property>
+            <property name="margin">18</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">3</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="tour-details">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">New to GNOME 3 and need help finding your way around ?</property>
+            <property name="halign">center</property>
+            <property name="valign">start</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">4</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="byebye-tour">
+            <property name="visible">True</property>
+            <property name="use-underline">True</property>
+            <property name="label" translatable="yes">_Take a tour</property>
+            <property name="halign">center</property>
+            <property name="valign">start</property>
+            <property name="margin">18</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">5</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
       </object>
       <packing>
         <property name="title" translatable="yes">Summary</property>
-        <property name="page-type">summary</property>
+        <property name="page-type">custom</property>
       </packing>
     </child>
   </object>

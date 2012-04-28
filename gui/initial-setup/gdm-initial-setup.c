@@ -789,11 +789,14 @@ out: ;
 static void
 update_account_page_status (SetupData *setup)
 {
-        gtk_assistant_set_page_complete (setup->assistant, WID("account-page"),
-                                         setup->valid_name &&
-                                         setup->valid_username &&
-                                         (setup->valid_password ||
-                                          setup->password_mode == ACT_USER_PASSWORD_MODE_NONE));
+        gboolean complete;
+
+        complete = setup->valid_name && setup->valid_username &&
+                   (setup->valid_password ||
+                    setup->password_mode == ACT_USER_PASSWORD_MODE_NONE);
+
+        gtk_assistant_set_page_complete (setup->assistant, WID("account-page"), complete);
+        gtk_widget_set_sensitive (WID("local-account-done-button"), complete);
 }
 
 static void
@@ -1099,6 +1102,39 @@ save_account_data (SetupData *setup)
 }
 
 static void
+show_local_account_dialog (GtkButton *button, gpointer data)
+{
+        SetupData *setup = data;
+        GtkWidget *dialog;
+
+        dialog = WID("local-account-dialog");
+
+        gtk_window_present (GTK_WINDOW (dialog));
+}
+
+static void
+hide_local_account_dialog (GtkButton *button, gpointer data)
+{
+        SetupData *setup = data;
+        GtkWidget *dialog;
+
+        dialog = WID("local-account-dialog");
+
+        gtk_widget_hide (dialog);
+        clear_account_page (setup);
+}
+
+static void
+create_local_account (GtkButton *button, gpointer data)
+{
+        SetupData *setup = data;
+        GtkWidget *dialog;
+
+        dialog = WID("local-account-dialog");
+        gtk_widget_hide (dialog);
+}
+
+static void
 prepare_account_page (SetupData *setup)
 {
         GtkWidget *fullname_entry;
@@ -1107,6 +1143,9 @@ prepare_account_page (SetupData *setup)
         GtkWidget *admin_check;
         GtkWidget *password_entry;
         GtkWidget *confirm_entry;
+        GtkWidget *local_account_create_button;
+        GtkWidget *local_account_cancel_button;
+        GtkWidget *local_account_done_button;
 
         fullname_entry = WID("account-fullname-entry");
         username_combo = WID("account-username-combo");
@@ -1114,6 +1153,9 @@ prepare_account_page (SetupData *setup)
         admin_check = WID("account-admin-check");
         password_entry = WID("account-password-entry");
         confirm_entry = WID("account-confirm-entry");
+        local_account_create_button = WID("local-account-button");
+        local_account_cancel_button = WID("local-account-cancel-button");
+        local_account_done_button = WID("local-account-done-button");
 
         g_signal_connect (fullname_entry, "notify::text",
                           G_CALLBACK (fullname_changed), setup);
@@ -1129,6 +1171,12 @@ prepare_account_page (SetupData *setup)
                           G_CALLBACK (confirm_changed), setup);
         g_signal_connect_after (confirm_entry, "focus-out-event",
                                 G_CALLBACK (confirm_entry_focus_out), setup);
+        g_signal_connect (local_account_create_button, "clicked",
+                          G_CALLBACK (show_local_account_dialog), setup);
+        g_signal_connect (local_account_cancel_button, "clicked",
+                          G_CALLBACK (hide_local_account_dialog), setup);
+        g_signal_connect (local_account_done_button, "clicked",
+                          G_CALLBACK (create_local_account), setup);
 
         setup->act_client = act_user_manager_get_default ();
 
@@ -1324,7 +1372,7 @@ prepare_location_page (SetupData *setup)
                           G_CALLBACK (location_changed_cb), setup);
 }
 
-/* Online accounts {{{1 */
+/* Online accounts page {{{1 */
 
 static GtkWidget *
 create_provider_button (const gchar *type, const gchar *name, GIcon *icon)
@@ -1822,9 +1870,29 @@ begin_autologin (SetupData *setup)
 }
 
 static void
-close_cb (GtkAssistant *assi, SetupData *setup)
+byebye_cb (GtkButton *button, SetupData *setup)
 {
         begin_autologin (setup);
+}
+
+static void
+tour_cb (GtkButton *button, SetupData *setup)
+{
+        /* TODO: arrange for tour to begin */
+        begin_autologin (setup);
+}
+
+static void
+prepare_summary_page (SetupData *setup)
+{
+        GtkWidget *button;
+
+        button = WID("byebye");
+        g_signal_connect (button, "clicked",
+                          G_CALLBACK (byebye_cb), setup);
+        button = WID("byebye-tour");
+        g_signal_connect (button, "clicked",
+                          G_CALLBACK (tour_cb), setup);
 }
 
 static void
@@ -1851,8 +1919,6 @@ prepare_assistant (SetupData *setup)
 
         g_signal_connect (G_OBJECT (setup->assistant), "prepare",
                           G_CALLBACK (prepare_cb), setup);
-        g_signal_connect (G_OBJECT (setup->assistant), "close",
-                          G_CALLBACK (close_cb), setup);
 
         /* connect to gdm slave */
         connect_to_slave (setup);
@@ -1862,6 +1928,7 @@ prepare_assistant (SetupData *setup)
         prepare_account_page (setup);
         prepare_location_page (setup);
         prepare_online_page (setup);
+        prepare_summary_page (setup);
 }
 
 /* main {{{1 */
