@@ -1084,7 +1084,10 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
 
         g_assert (worker->priv->pam_handle == NULL);
 
-        g_debug ("GdmSessionWorker: initializing PAM");
+        g_debug ("GdmSessionWorker: initializing PAM; service=%s username=%s seat=%s",
+                 service ? service : "(null)",
+                 username ? username : "(null)",
+                 seat_id ? seat_id : "(null)");
 
         pam_conversation.conv = (GdmSessionWorkerPamNewMessagesFunc) gdm_session_worker_pam_new_messages_handler;
         pam_conversation.appdata_ptr = worker;
@@ -1273,7 +1276,8 @@ gdm_session_worker_authorize_user (GdmSessionWorker *worker,
         int error_code;
         int authentication_flags;
 
-        g_debug ("GdmSessionWorker: determining if authenticated user is authorized to session");
+        g_debug ("GdmSessionWorker: determining if authenticated user (password required:%d) is authorized to session",
+                 password_is_required);
 
         authentication_flags = 0;
 
@@ -1288,6 +1292,7 @@ gdm_session_worker_authorize_user (GdmSessionWorker *worker,
         /* it's possible that the user needs to change their password or pin code
          */
         if (error_code == PAM_NEW_AUTHTOK_REQD && !worker->priv->is_program_session) {
+                g_debug ("GdmSessionWorker: authenticated user requires new auth token");
                 error_code = pam_chauthtok (worker->priv->pam_handle, PAM_CHANGE_EXPIRED_AUTHTOK);
 
                 gdm_session_worker_get_username (worker, NULL);
@@ -1664,7 +1669,7 @@ session_worker_child_watch (GPid              pid,
 static void
 gdm_session_worker_watch_child (GdmSessionWorker *worker)
 {
-
+        g_debug ("GdmSession worker: watching pid %d", worker->priv->child_pid);
         worker->priv->child_watch_id = g_child_watch_add (worker->priv->child_pid,
                                                           (GChildWatchFunc)session_worker_child_watch,
                                                           worker);
