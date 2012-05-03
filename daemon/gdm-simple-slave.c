@@ -38,10 +38,6 @@
 #include <glib/gstdio.h>
 #include <glib-object.h>
 
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
-
 #include <X11/Xlib.h> /* for Display */
 
 #include "gdm-common.h"
@@ -50,7 +46,6 @@
 #include "gdm-settings-keys.h"
 
 #include "gdm-simple-slave.h"
-#include "gdm-simple-slave-glue.h"
 
 #include "gdm-server.h"
 #include "gdm-session.h"
@@ -1720,8 +1715,6 @@ gdm_simple_slave_class_init (GdmSimpleSlaveClass *klass)
         slave_class->stop = gdm_simple_slave_stop;
 
         g_type_class_add_private (klass, sizeof (GdmSimpleSlavePrivate));
-
-        dbus_g_object_type_install_info (GDM_TYPE_SIMPLE_SLAVE, &dbus_glib_gdm_simple_slave_object_info);
 }
 
 static void
