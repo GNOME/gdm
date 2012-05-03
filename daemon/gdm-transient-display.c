@@ -35,6 +35,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
+#include <gio/gio.h>
 
 #include "gdm-common.h"
 #include "gdm-display.h"
@@ -45,7 +46,7 @@
 
 struct GdmTransientDisplayPrivate
 {
-        gpointer dummy;
+        GdmDBusTransientDisplay *skeleton;
 };
 
 static void     gdm_transient_display_class_init   (GdmTransientDisplayClass *klass);
@@ -124,10 +125,43 @@ gdm_transient_display_get_timed_login_details (GdmDisplay *display,
         *delayp = 0;
 }
 
+static GObject *
+gdm_transient_display_constructor (GType                  type,
+                                   guint                  n_construct_properties,
+                                   GObjectConstructParam *construct_properties)
+{
+        GdmTransientDisplay      *display;
+
+        display = GDM_TRANSIENT_DISPLAY (G_OBJECT_CLASS (gdm_transient_display_parent_class)->constructor (type,
+                                                                                                           n_construct_properties,
+                                                                                                           construct_properties));
+
+        display->priv->skeleton = GDM_DBUS_TRANSIENT_DISPLAY (gdm_dbus_transient_display_skeleton_new ());
+
+        g_dbus_object_skeleton_add_interface (gdm_display_get_object_skeleton (GDM_DISPLAY (display)),
+                                              G_DBUS_INTERFACE_SKELETON (display->priv->skeleton));
+
+        return G_OBJECT (display);
+}
+
+static void
+gdm_transient_display_finalize (GObject *object)
+{
+        GdmTransientDisplay *display = GDM_TRANSIENT_DISPLAY (object);
+
+        g_clear_object (&display->priv->skeleton);
+
+        G_OBJECT_CLASS (gdm_transient_display_parent_class)->finalize (object);
+}
+
 static void
 gdm_transient_display_class_init (GdmTransientDisplayClass *klass)
 {
+        GObjectClass *object_class = G_OBJECT_CLASS (klass);
         GdmDisplayClass *display_class = GDM_DISPLAY_CLASS (klass);
+
+        object_class->constructor = gdm_transient_display_constructor;
+        object_class->finalize = gdm_transient_display_finalize;
 
         display_class->create_authority = gdm_transient_display_create_authority;
         display_class->add_user_authorization = gdm_transient_display_add_user_authorization;
@@ -138,8 +172,6 @@ gdm_transient_display_class_init (GdmTransientDisplayClass *klass)
         display_class->get_timed_login_details = gdm_transient_display_get_timed_login_details;
 
         g_type_class_add_private (klass, sizeof (GdmTransientDisplayPrivate));
-
-        dbus_g_object_type_install_info (GDM_TYPE_TRANSIENT_DISPLAY, &dbus_glib_gdm_transient_display_object_info);
 }
 
 static void

@@ -23,7 +23,6 @@
 #define __GDM_STATIC_DISPLAY_H
 
 #include <glib-object.h>
-#include <dbus/dbus-glib.h>
 #include "gdm-display.h"
 
 G_BEGIN_DECLS

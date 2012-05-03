@@ -23,7 +23,7 @@
 #define __GDM_DISPLAY_H
 
 #include <glib-object.h>
-#include <dbus/dbus-glib.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
@@ -97,6 +97,8 @@ gboolean            gdm_display_manage                         (GdmDisplay *disp
 gboolean            gdm_display_finish                         (GdmDisplay *display);
 gboolean            gdm_display_unmanage                       (GdmDisplay *display);
 
+GDBusConnection    *gdm_display_get_bus_connection             (GdmDisplay *display);
+GDBusObjectSkeleton *gdm_display_get_object_skeleton           (GdmDisplay *display);
 
 /* exported to bus */
 gboolean            gdm_display_get_id                         (GdmDisplay *display,
