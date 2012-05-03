@@ -35,23 +35,21 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <glib-object.h>
-
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
+#include <gio/gio.h>
 
 #include <X11/Xlib.h> /* for Display */
 
 #include "gdm-common.h"
 
 #include "gdm-factory-slave.h"
-#include "gdm-factory-slave-glue.h"
 
 #include "gdm-server.h"
 #include "gdm-greeter-session.h"
 #include "gdm-greeter-server.h"
 
 #include "gdm-session-relay.h"
+
+#include "gdm-local-display-factory-glue.h"
 
 extern char **environ;
 
@@ -77,8 +75,8 @@ struct GdmFactorySlavePrivate
         GdmSessionRelay   *session;
         GdmGreeterServer  *greeter_server;
         GdmGreeterSession *greeter;
-        DBusGProxy        *factory_proxy;
-        DBusGConnection   *connection;
+        GdmDBusLocalDisplayFactory *factory_proxy;
+        GDBusConnection            *connection;
 };
 
 static void     gdm_factory_slave_class_init    (GdmFactorySlaveClass *klass);
@@ -335,7 +333,7 @@ create_product_display (GdmFactorySlave *slave)
         char    *parent_display_id;
         char    *server_address;
         char    *product_id;
-        GError  *error;
+        GError  *error = NULL;
         gboolean res;
         gboolean ret;
 
@@ -344,12 +342,15 @@ create_product_display (GdmFactorySlave *slave)
         g_debug ("GdmFactorySlave: Create product display");
 
         g_debug ("GdmFactorySlave: Connecting to local display factory");
-        slave->priv->factory_proxy = dbus_g_proxy_new_for_name (slave->priv->connection,
-                                                                GDM_DBUS_NAME,
-                                                                GDM_DBUS_LOCAL_DISPLAY_FACTORY_PATH,
-                                                                GDM_DBUS_LOCAL_DISPLAY_FACTORY_INTERFACE);
+        slave->priv->factory_proxy = GDM_DBUS_LOCAL_DISPLAY_FACTORY (
+                gdm_dbus_local_display_factory_proxy_new_sync (slave->priv->connection,
+                                                            G_DBUS_PROXY_FLAGS_NONE,
+                                                            GDM_DBUS_NAME,
+                                                            GDM_DBUS_LOCAL_DISPLAY_FACTORY_PATH,
+                                                            NULL, &error));
         if (slave->priv->factory_proxy == NULL) {
-                g_warning ("Failed to create local display factory proxy");
+                g_warning ("Failed to create local display factory proxy: %s", error->message);
+                g_error_free (error);
                 goto out;
         }
 
@@ -359,15 +360,11 @@ create_product_display (GdmFactorySlave *slave)
                       "display-id", &parent_display_id,
                       NULL);
 
-        error = NULL;
-        res = dbus_g_proxy_call (slave->priv->factory_proxy,
-                                 "CreateProductDisplay",
-                                 &error,
-                                 DBUS_TYPE_G_OBJECT_PATH, parent_display_id,
-                                 G_TYPE_STRING, server_address,
-                                 G_TYPE_INVALID,
-                                 DBUS_TYPE_G_OBJECT_PATH, &product_id,
-                                 G_TYPE_INVALID);
+        res = gdm_dbus_local_display_factory_call_create_product_display_sync (slave->priv->factory_proxy,
+                                                                               parent_display_id,
+                                                                               server_address,
+                                                                               &product_id,
+                                                                               NULL, &error);
         g_free (server_address);
         g_free (parent_display_id);
 
@@ -879,8 +876,6 @@ gdm_factory_slave_class_init (GdmFactorySlaveClass *klass)
         slave_class->stop = gdm_factory_slave_stop;
 
         g_type_class_add_private (klass, sizeof (GdmFactorySlavePrivate));
-
-        dbus_g_object_type_install_info (GDM_TYPE_FACTORY_SLAVE, &dbus_glib_gdm_factory_slave_object_info);
 }
 
 static void
@@ -893,7 +888,7 @@ gdm_factory_slave_init (GdmFactorySlave *slave)
         slave->priv->pid = -1;
 
         error = NULL;
-        slave->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        slave->priv->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (slave->priv->connection == NULL) {
                 if (error != NULL) {
                         g_critical ("error getting system bus: %s", error->message);
