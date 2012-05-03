@@ -33,9 +33,7 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <glib-object.h>
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
+#include <gio/gio.h>
 
 #include "gdm-settings.h"
 #include "gdm-settings-glue.h"
@@ -50,7 +48,8 @@
 
 struct GdmSettingsPrivate
 {
-        DBusGConnection    *connection;
+        GDBusConnection    *connection;
+        GdmDBusSettings    *skeleton;
         GdmSettingsBackend *backend;
 };
 
@@ -139,12 +138,58 @@ gdm_settings_set_value (GdmSettings *settings,
 }
 
 static gboolean
+handle_get_value (GdmDBusSettings       *settings,
+                  GDBusMethodInvocation *invocation,
+                  const char            *key,
+                  gpointer               user_data)
+{
+        GdmSettings *self = GDM_SETTINGS (user_data);
+        GError *error = NULL;
+        char *value = NULL;
+
+        gdm_settings_get_value (self, key, &value, &error);
+        if (error) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+                return TRUE;
+        }
+
+        gdm_dbus_settings_complete_get_value (settings, invocation,
+                                              value);
+        g_free (value);
+
+        return TRUE;
+}
+
+static gboolean
+handle_set_value (GdmDBusSettings       *settings,
+                  GDBusMethodInvocation *invocation,
+                  const char            *key,
+                  const char            *value,
+                  gpointer               user_data)
+{
+        GdmSettings *self = GDM_SETTINGS (user_data);
+        GError *error = NULL;
+
+        gdm_settings_set_value (self, key, value, &error);
+        if (error) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+                return TRUE;
+        }
+
+        gdm_dbus_settings_complete_set_value (settings, invocation);
+
+        return TRUE;
+}
+
+static gboolean
 register_settings (GdmSettings *settings)
 {
         GError *error = NULL;
 
         error = NULL;
-        settings->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        settings->priv->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (settings->priv->connection == NULL) {
                 if (error != NULL) {
                         g_critical ("error getting system bus: %s", error->message);
@@ -153,7 +198,16 @@ register_settings (GdmSettings *settings)
                 exit (1);
         }
 
-        dbus_g_connection_register_g_object (settings->priv->connection, GDM_SETTINGS_DBUS_PATH, G_OBJECT (settings));
+        settings->priv->skeleton = GDM_DBUS_SETTINGS (gdm_dbus_settings_skeleton_new ());
+        g_signal_connect_object (settings->priv->skeleton, "handle-get-value",
+                                 G_CALLBACK (handle_get_value), settings, 0);
+        g_signal_connect_object (settings->priv->skeleton, "handle-set-value",
+                                 G_CALLBACK (handle_set_value), settings, 0);
+
+        g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (settings->priv->skeleton),
+                                          settings->priv->connection,
+                                          GDM_SETTINGS_DBUS_PATH,
+                                          NULL);
 
         return TRUE;
 }
@@ -184,8 +238,6 @@ gdm_settings_class_init (GdmSettingsClass *klass)
                               G_TYPE_STRING);
 
         g_type_class_add_private (klass, sizeof (GdmSettingsPrivate));
-
-        dbus_g_object_type_install_info (GDM_TYPE_SETTINGS, &dbus_glib_gdm_settings_object_info);
 }
 
 static void
@@ -196,13 +248,12 @@ backend_value_changed (GdmSettingsBackend *backend,
                        GdmSettings        *settings)
 {
         g_debug ("Emitting value-changed %s %s %s", key, old_value, new_value);
-        /* just proxy it */
-        g_signal_emit (settings,
-                       signals [VALUE_CHANGED],
-                       0,
-                       key,
-                       old_value,
-                       new_value);
+
+        /* proxy it to internal listeners */
+        g_signal_emit (settings, signals [VALUE_CHANGED], 0, key, old_value, new_value);
+
+        /* and to dbus */
+        gdm_dbus_settings_emit_value_changed (settings->priv->skeleton, key, old_value, new_value);
 }
 
 static void

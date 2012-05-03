@@ -29,17 +29,15 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
-
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <glib-object.h>
+#include <gio/gio.h>
 
 #include "gdm-settings-client.h"
 #include "gdm-settings-utils.h"
+#include "gdm-settings-glue.h"
 
 #define SETTINGS_DBUS_NAME      "org.gnome.DisplayManager"
 #define SETTINGS_DBUS_PATH      "/org/gnome/DisplayManager/Settings"
@@ -47,8 +45,7 @@
 
 static GHashTable      *notifiers      = NULL;
 static GHashTable      *schemas        = NULL;
-static DBusGProxy      *settings_proxy = NULL;
-static DBusGConnection *connection     = NULL;
+static GdmDBusSettings *settings_proxy = NULL;
 static guint32          id_serial      = 0;
 
 typedef struct {
@@ -94,27 +91,17 @@ set_value (const char *key,
 
         /* FIXME: check cache */
 
-        g_debug ("Setting %s=%s", key, value);
         error = NULL;
-        res = dbus_g_proxy_call (settings_proxy,
-                                 "SetValue",
-                                 &error,
-                                 G_TYPE_STRING, key,
-                                 G_TYPE_STRING, value,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                if (error != NULL) {
-                        /*g_debug ("Failed to get value for %s: %s", key, error->message);*/
-                        g_error_free (error);
-                } else {
-                        /*g_debug ("Failed to get value for %s", key);*/
-                }
 
-                return FALSE;
+        res = gdm_dbus_settings_call_set_value_sync (settings_proxy,
+                                                     key, value,
+                                                     NULL, &error);
+        if (! res) {
+                g_debug ("Failed to set value for %s: %s", key, error->message);
+                g_error_free (error);
         }
 
-        return TRUE;
+        return res;
 }
 
 static gboolean
@@ -122,37 +109,21 @@ get_value (const char *key,
            char      **value)
 {
         GError  *error;
-        char    *str;
         gboolean res;
 
         /* FIXME: check cache */
 
         error = NULL;
-        res = dbus_g_proxy_call (settings_proxy,
-                                 "GetValue",
-                                 &error,
-                                 G_TYPE_STRING, key,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_STRING, &str,
-                                 G_TYPE_INVALID);
+
+        res = gdm_dbus_settings_call_get_value_sync (settings_proxy,
+                                                     key, value,
+                                                     NULL, &error);
         if (! res) {
-                if (error != NULL) {
-                        /*g_debug ("Failed to get value for %s: %s", key, error->message);*/
-                        g_error_free (error);
-                } else {
-                        /*g_debug ("Failed to get value for %s", key);*/
-                }
-
-                return FALSE;
+                g_debug ("Failed to get value for %s: %s", key, error->message);
+                g_error_free (error);
         }
 
-        if (value != NULL) {
-                *value = g_strdup (str);
-        }
-
-        g_free (str);
-
-        return TRUE;
+        return res;
 }
 
 static void
@@ -467,11 +438,11 @@ send_notification (gpointer                 key,
 }
 
 static void
-on_value_changed (DBusGProxy *proxy,
-                  const char *key,
-                  const char *old_value,
-                  const char *new_value,
-                  gpointer    data)
+on_value_changed (GdmDBusSettings *proxy,
+                  const char      *key,
+                  const char      *old_value,
+                  const char      *new_value,
+                  gpointer         data)
 {
         GdmSettingsEntry *entry;
 
@@ -502,27 +473,22 @@ gdm_settings_client_init (const char *file,
         g_assert (schemas == NULL);
 
         error = NULL;
-        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-        if (connection == NULL) {
-                if (error != NULL) {
-                        g_warning ("error getting system bus: %s", error->message);
-                        g_error_free (error);
-                }
-                return FALSE;
-        }
 
-        settings_proxy = dbus_g_proxy_new_for_name (connection,
-                                                    SETTINGS_DBUS_NAME,
-                                                    SETTINGS_DBUS_PATH,
-                                                    SETTINGS_DBUS_INTERFACE);
+        settings_proxy = GDM_DBUS_SETTINGS (gdm_dbus_settings_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+                                                                                      G_DBUS_PROXY_FLAGS_NONE,
+                                                                                      SETTINGS_DBUS_NAME,
+                                                                                      SETTINGS_DBUS_PATH,
+                                                                                      NULL, &error));
         if (settings_proxy == NULL) {
-                g_warning ("Unable to connect to settings server");
+                g_warning ("Unable to connect to settings server: %s", error->message);
+                g_error_free (error);
                 return FALSE;
         }
 
         list = NULL;
         if (! gdm_settings_parse_schemas (file, root, &list)) {
                 g_warning ("Unable to parse schemas");
+                g_clear_object (&settings_proxy);
                 return FALSE;
         }
 
@@ -531,14 +497,7 @@ gdm_settings_client_init (const char *file,
         schemas = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify)gdm_settings_entry_free);
         g_slist_foreach (list, (GFunc)hashify_list, NULL);
 
-        dbus_g_proxy_add_signal (settings_proxy, "ValueChanged", G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
-        dbus_g_proxy_connect_signal (settings_proxy,
-                                     "ValueChanged",
-                                     G_CALLBACK (on_value_changed),
-                                     NULL,
-                                     NULL);
-
-
+        g_signal_connect (settings_proxy, "value-changed", G_CALLBACK (on_value_changed), NULL);
         return TRUE;
 }
 
