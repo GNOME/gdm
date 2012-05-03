@@ -25,7 +25,6 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <glib-object.h>
-#include <dbus/dbus-glib.h>
 
 #include "gdm-display.h"
 #include "gdm-address.h"

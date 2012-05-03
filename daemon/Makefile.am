@@ -33,8 +33,7 @@ BUILT_SOURCES =					\
 	gdm-xdmcp-chooser-slave-glue.h		\
 	gdm-manager-glue.h			\
 	gdm-display-glue.h			\
-	gdm-xdmcp-greeter-display-glue.h	\
-	gdm-xdmcp-chooser-display-glue.h	\
+	gdm-xdmcp-display-glue.h		\
 	gdm-static-display-glue.h		\
 	gdm-transient-display-glue.h		\
 	gdm-local-display-factory-glue.h	\
@@ -43,22 +42,41 @@ BUILT_SOURCES =					\
 
 gdm-manager-glue.h: gdm-manager.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_manager --mode=glib-server --output=gdm-manager-glue.h $(srcdir)/gdm-manager.xml
-gdm-slave-glue.h: gdm-slave.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_slave --mode=glib-server --output=gdm-slave-glue.h $(srcdir)/gdm-slave.xml
-gdm-xdmcp-chooser-slave-glue.h: gdm-xdmcp-chooser-slave.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_xdmcp_chooser_slave --mode=glib-server --output=gdm-xdmcp-chooser-slave-glue.h $(srcdir)/gdm-xdmcp-chooser-slave.xml
-gdm-display-glue.h: gdm-display.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_display --mode=glib-server --output=gdm-display-glue.h $(srcdir)/gdm-display.xml
-gdm-xdmcp-greeter-display-glue.h: gdm-xdmcp-greeter-display.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_xdmcp_greeter_display --mode=glib-server --output=gdm-xdmcp-greeter-display-glue.h $(srcdir)/gdm-xdmcp-greeter-display.xml
-gdm-xdmcp-chooser-display-glue.h: gdm-xdmcp-chooser-display.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_xdmcp_chooser_display --mode=glib-server --output=gdm-xdmcp-chooser-display-glue.h $(srcdir)/gdm-xdmcp-chooser-display.xml
-gdm-static-display-glue.h: gdm-static-display.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_static_display --mode=glib-server --output=gdm-static-display-glue.h $(srcdir)/gdm-static-display.xml
-gdm-transient-display-glue.h: gdm-transient-display.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_transient_display --mode=glib-server --output=gdm-transient-display-glue.h $(srcdir)/gdm-transient-display.xml
-gdm-local-display-factory-glue.h: gdm-local-display-factory.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_local_display_factory --mode=glib-server --output=gdm-local-display-factory-glue.h $(srcdir)/gdm-local-display-factory.xml
+
+gdm-display-glue.c gdm-display-glue.h: gdm-display.xml Makefile.am
+	$(AM_V_GEN)gdbus-codegen 					\
+		--c-namespace=GdmDBus					\
+		--interface-prefix=org.gnome.DisplayManager		\
+		--generate-c-code=gdm-display-glue			\
+		$(srcdir)/gdm-display.xml
+
+gdm-xdmcp-display-glue.c gdm-xdmcp-display-glue.h: gdm-xdmcp-display.xml Makefile.am
+	$(AM_V_GEN)gdbus-codegen 					\
+		--c-namespace=GdmDBus					\
+		--interface-prefix=org.gnome.DisplayManager		\
+		--generate-c-code=gdm-xdmcp-display-glue		\
+		$(srcdir)/gdm-xdmcp-display.xml
+
+gdm-transient-display-glue.c gdm-transient-display-glue.h: gdm-transient-display.xml Makefile.am
+	$(AM_V_GEN)gdbus-codegen 					\
+		--c-namespace=GdmDBus					\
+		--interface-prefix=org.gnome.DisplayManager		\
+		--generate-c-code=gdm-transient-display-glue		\
+		$(srcdir)/gdm-transient-display.xml
+
+gdm-static-display-glue.c gdm-static-display-glue.h: gdm-static-display.xml Makefile.am
+	$(AM_V_GEN)gdbus-codegen 					\
+		--c-namespace=GdmDBus					\
+		--interface-prefix=org.gnome.DisplayManager		\
+		--generate-c-code=gdm-static-display-glue		\
+		$(srcdir)/gdm-static-display.xml
+
+gdm-local-display-factory-glue.c gdm-local-display-factory-glue.h : gdm-local-display-factory.xml Makefile.am
+	$(AM_V_GEN)gdbus-codegen 					\
+		--c-namespace=GdmDBus					\
+		--interface-prefix=org.gnome.DisplayManager		\
+		--generate-c-code=gdm-local-display-factory-glue	\
+		$(srcdir)/gdm-local-display-factory.xml
 
 gdm-greeter-glue.c gdm-greeter-glue.h : gdm-greeter-server.xml Makefile.am
 	$(AM_V_GEN)gdbus-codegen 					\
@@ -66,6 +84,20 @@ gdm-greeter-glue.c gdm-greeter-glue.h : gdm-greeter-server.xml Makefile.am
 		--interface-prefix=org.gnome.DisplayManager		\
 		--generate-c-code=gdm-greeter-glue			\
 		$(srcdir)/gdm-greeter-server.xml
+
+gdm-slave-glue.c gdm-slave-glue.h: gdm-slave.xml Makefile.am
+	$(AM_V_GEN)gdbus-codegen 					\
+		--c-namespace=GdmDBus					\
+		--interface-prefix=org.gnome.DisplayManager		\
+		--generate-c-code=gdm-slave-glue			\
+		$(srcdir)/gdm-slave.xml
+
+gdm-xdmcp-chooser-slave-glue.c gdm-xdmcp-chooser-slave-glue.h: gdm-xdmcp-chooser-slave.xml Makefile.am
+	$(AM_V_GEN)gdbus-codegen 					\
+		--c-namespace=GdmDBus					\
+		--interface-prefix=org.gnome.DisplayManager		\
+		--generate-c-code=gdm-xdmcp-chooser-slave-glue		\
+		$(srcdir)/gdm-xdmcp-chooser-slave.xml
 
 noinst_PROGRAMS = 		\
 	test-session		\
@@ -129,6 +161,10 @@ gdm_simple_slave_SOURCES = 		\
 nodist_gdm_simple_slave_SOURCES = 	\
 	gdm-greeter-glue.c		\
 	gdm-greeter-glue.h		\
+	gdm-display-glue.c		\
+	gdm-display-glue.h		\
+	gdm-slave-glue.c		\
+	gdm-slave-glue.h		\
 	$(NULL)
 
 gdm_simple_slave_LDFLAGS =		\
@@ -166,6 +202,15 @@ gdm_xdmcp_chooser_slave_SOURCES = 		\
 	gdm-xdmcp-chooser-slave.h		\
 	gdm-dbus-util.c				\
 	gdm-dbus-util.h				\
+	$(NULL)
+
+nodist_gdm_xdmcp_chooser_slave_SOURCES = 	\
+	gdm-greeter-glue.c		\
+	gdm-greeter-glue.h		\
+	gdm-display-glue.c		\
+	gdm-display-glue.h		\
+	gdm-slave-glue.c		\
+	gdm-slave-glue.h		\
 	$(NULL)
 
 gdm_xdmcp_chooser_slave_LDADD = 		\
@@ -234,6 +279,17 @@ gdm_binary_SOURCES = 			\
 	gdm-slave-proxy.h		\
 	$(NULL)
 
+nodist_gdm_binary_SOURCES = 			\
+	gdm-display-glue.h			\
+	gdm-display-glue.c			\
+	gdm-local-display-factory-glue.h	\
+	gdm-local-display-factory-glue.c	\
+	gdm-transient-display-glue.h		\
+	gdm-transient-display-glue.c		\
+	gdm-static-display-glue.h		\
+	gdm-static-display-glue.c		\
+	$(NULL)
+
 XDMCP_SOURCES =				\
 	gdm-xdmcp-display-factory.c	\
 	gdm-xdmcp-display-factory.h	\
@@ -245,8 +301,16 @@ XDMCP_SOURCES =				\
 	gdm-xdmcp-chooser-display.h	\
 	$(NULL)
 
+XDMCP_nodist_SOURCES = 			\
+	gdm-xdmcp-display-glue.c	\
+	gdm-xdmcp-display-glue.h	\
+	gdm-xdmcp-chooser-slave-glue.c	\
+	gdm-xdmcp-chooser-slave-glue.h	\
+	$(NULL)
+
 if XDMCP_SUPPORT
 gdm_binary_SOURCES += $(XDMCP_SOURCES)
+nodist_gdm_binary_SOURCES += $(XDMCP_nodist_SOURCES)
 endif
 
 EXTRA_gdm_binary_SOURCES = 	\
@@ -284,9 +348,17 @@ sbin_SCRIPTS =		\
 gdm: $(srcdir)/gdm.in
 	sed -e 's,[@]sbindir[@],$(sbindir),g' <$(srcdir)/gdm.in >gdm
 
-CLEANFILES =			\
-	gdm			\
-	$(BUILT_SOURCES)	\
+CLEANFILES =					\
+	gdm					\
+	gdm-display-glue.c			\
+	gdm-greeter-glue.c			\
+	gdm-local-display-factory-glue.c	\
+	gdm-slave-glue.c			\
+	gdm-static-display-glue.c		\
+	gdm-transient-display-glue.c		\
+	gdm-xdmcp-chooser-slave-glue.c		\
+	gdm-xdmcp-display-glue.c		\
+	$(BUILT_SOURCES)			\
 	$(NULL)
 
 EXTRA_DIST = 				\
@@ -298,8 +370,7 @@ EXTRA_DIST = 				\
 	gdm-session.xml			\
 	gdm-manager.xml			\
 	gdm-display.xml			\
-	gdm-xdmcp-greeter-display.xml	\
-	gdm-xdmcp-chooser-display.xml	\
+	gdm-xdmcp-display.xml		\
 	gdm-static-display.xml		\
 	gdm-transient-display.xml	\
 	gdm-local-display-factory.xml	\

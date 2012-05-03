@@ -340,8 +340,6 @@ gdm_xdmcp_chooser_slave_class_init (GdmXdmcpChooserSlaveClass *klass)
                               G_TYPE_STRING);
 
         g_type_class_add_private (klass, sizeof (GdmXdmcpChooserSlavePrivate));
-
-        dbus_g_object_type_install_info (GDM_TYPE_XDMCP_CHOOSER_SLAVE, &dbus_glib_gdm_xdmcp_chooser_slave_object_info);
 }
 
 static void
