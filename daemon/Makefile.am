@@ -38,6 +38,7 @@ BUILT_SOURCES =					\
 	gdm-static-display-glue.h		\
 	gdm-transient-display-glue.h		\
 	gdm-local-display-factory-glue.h	\
+	gdm-greeter-glue.h			\
 	$(NULL)
 
 gdm-manager-glue.h: gdm-manager.xml Makefile.am
@@ -58,6 +59,13 @@ gdm-transient-display-glue.h: gdm-transient-display.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_transient_display --mode=glib-server --output=gdm-transient-display-glue.h $(srcdir)/gdm-transient-display.xml
 gdm-local-display-factory-glue.h: gdm-local-display-factory.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_local_display_factory --mode=glib-server --output=gdm-local-display-factory-glue.h $(srcdir)/gdm-local-display-factory.xml
+
+gdm-greeter-glue.c gdm-greeter-glue.h : gdm-greeter-server.xml Makefile.am
+	$(AM_V_GEN)gdbus-codegen 					\
+		--c-namespace=GdmDBus					\
+		--interface-prefix=org.gnome.DisplayManager		\
+		--generate-c-code=gdm-greeter-glue			\
+		$(srcdir)/gdm-greeter-server.xml
 
 noinst_PROGRAMS = 		\
 	test-session		\
@@ -114,6 +122,13 @@ gdm_simple_slave_SOURCES = 		\
 	gdm-slave.h			\
 	gdm-simple-slave.c		\
 	gdm-simple-slave.h		\
+	gdm-dbus-util.c			\
+	gdm-dbus-util.h			\
+	$(NULL)
+
+nodist_gdm_simple_slave_SOURCES = 	\
+	gdm-greeter-glue.c		\
+	gdm-greeter-glue.h		\
 	$(NULL)
 
 gdm_simple_slave_LDFLAGS =		\
@@ -149,6 +164,8 @@ gdm_xdmcp_chooser_slave_SOURCES = 		\
 	gdm-slave.h				\
 	gdm-xdmcp-chooser-slave.c		\
 	gdm-xdmcp-chooser-slave.h		\
+	gdm-dbus-util.c				\
+	gdm-dbus-util.h				\
 	$(NULL)
 
 gdm_xdmcp_chooser_slave_LDADD = 		\
@@ -274,6 +291,7 @@ CLEANFILES =			\
 
 EXTRA_DIST = 				\
 	gdm.in				\
+	gdm-greeter-server.xml		\
 	gdm-slave.xml			\
 	gdm-simple-slave.xml		\
 	gdm-xdmcp-chooser-slave.xml	\
