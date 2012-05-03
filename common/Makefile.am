@@ -49,8 +49,12 @@ gdm_crash_logger_CPPFLAGS = \
 	$(NULL)
 gdm_crash_logger_LDADD = $(GTHREAD_LIBS)
 
-gdm-settings-glue.h: gdm-settings.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_settings --mode=glib-server --output=gdm-settings-glue.h $(srcdir)/gdm-settings.xml
+gdm-settings-glue.c gdm-settings-glue.h : gdm-settings.xml Makefile.am
+	$(AM_V_GEN)gdbus-codegen 				\
+		--c-namespace=GdmDBus				\
+		--interface-prefix=org.gnome.DisplayManager	\
+		--generate-c-code=gdm-settings-glue		\
+		$(srcdir)/gdm-settings.xml
 
 if MKDTEMP_MISSING
 MKDTEMP_FILES = mkdtemp.c mkdtemp.h
@@ -87,6 +91,11 @@ libgdmcommon_la_SOURCES =	\
 	gdm-signal-handler.h	\
 	gdm-signal-handler.c	\
 	$(MKDTEMP_FILES) 	\
+	$(NULL)
+
+nodist_libgdmcommon_la_SOURCES = 	\
+	gdm-settings-glue.h		\
+	gdm-settings-glue.c		\
 	$(NULL)
 
 libgdmcommon_la_CPPFLAGS = 		\
@@ -139,6 +148,7 @@ test_settings_client_LDADD =		\
 	$(NULL)
 
 CLEANFILES =			\
+	gdm-settings-glue.c	\
 	$(BUILT_SOURCES)	\
 	$(NULL)
 
