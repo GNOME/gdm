@@ -1,0 +1,92 @@
+<node name="/org/gnome/DisplayManager/GreeterServer">
+  <interface name="org.gnome.DisplayManager.GreeterServer">
+    <method name="StartConversation">
+      <arg name="service_name" direction="in" type="s"/>
+    </method>
+    <method name="StopConversation">
+      <arg name="service_name" direction="in" type="s"/>
+    </method>
+    <method name="BeginVerification">
+      <arg name="service_name" direction="in" type="s"/>
+    </method>
+    <method name="BeginAutoLogin">
+    </method>
+    <method name="BeginVerificationForUser">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="username" direction="in" type="s"/>
+    </method>
+    <method name="AnswerQuery">
+      <arg name="service_name" direction="in" type="s"/>n"
+      <arg name="text" direction="in" type="s"/>
+    </method>
+    <method name="SelectSession">
+      <arg name="text" direction="in" type="s"/>
+    </method>
+    <method name="SelectLanguage">
+      <arg name="text" direction="in" type="s"/>
+    </method>
+    <method name="SelectUser">
+      <arg name="text" direction="in" type="s"/>
+    </method>
+    <method name="SelectHostname">
+      <arg name="text" direction="in" type="s"/>
+    </method>
+    <method name="Cancel">
+    </method>
+    <method name="Disconnect">
+    </method>
+    <method name="GetDisplayId">
+      <arg name="id" direction="out" type="o"/>
+    </method>
+    <method name="StartSessionWhenReady">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="should_start_session" direction="in" type="b"/>
+    </method>
+    <signal name="Info">
+      <arg name="service_name" type="s"/>
+      <arg name="text" type="s"/>
+    </signal>
+    <signal name="Problem">
+      <arg name="service_name" type="s"/>
+      <arg name="text" type="s"/>
+    </signal>
+    <signal name="InfoQuery">
+      <arg name="service_name" type="s"/>
+      <arg name="text" type="s"/>
+    </signal>
+    <signal name="SecretInfoQuery">
+      <arg name="service_name" type="s"/>
+      <arg name="text" type="s"/>
+    </signal>
+    <signal name="SelectedUserChanged">
+      <arg name="username" type="s"/>
+    </signal>
+    <signal name="DefaultLanguageNameChanged">
+      <arg name="language_name" type="s"/>
+    </signal>
+    <signal name="DefaultSessionNameChanged">
+      <arg name="session_name" type="s"/>
+    </signal>
+    <signal name="TimedLoginRequested">
+      <arg name="username" type="s"/>
+      <arg name="delay" type="i"/>
+    </signal>
+    <signal name="Ready">
+      <arg name="service_name" type="s"/>
+    </signal>
+    <signal name="ConversationStopped">
+      <arg name="service_name" type="s"/>
+    </signal>
+    <signal name="Reset">
+    </signal>
+    <signal name="AuthenticationFailed">
+      <arg name="service_name" type="s"/>
+    </signal>
+    <signal name="SessionOpened">
+      <arg name="service_name" type="s"/>
+    </signal>
+    <signal name="ServiceUnavailable">
+      <arg name="service_name" type="s"/>
+    </signal>
+  </interface>
+</node>
