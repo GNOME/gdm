@@ -30,10 +30,7 @@
 #include <locale.h>
 
 #include <glib.h>
-
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
+#include <gio/gio.h>
 
 #include "gdm-settings.h"
 
@@ -41,76 +38,14 @@
 
 static GdmSettings     *settings      = NULL;
 
-static gboolean
-acquire_name_on_proxy (DBusGProxy *bus_proxy)
-{
-        GError     *error;
-        guint       result;
-        gboolean    res;
-        gboolean    ret;
-
-        ret = FALSE;
-
-        if (bus_proxy == NULL) {
-                goto out;
-        }
-
-        error = NULL;
-        res = dbus_g_proxy_call (bus_proxy,
-                                 "RequestName",
-                                 &error,
-                                 G_TYPE_STRING, GDM_DBUS_NAME,
-                                 G_TYPE_UINT, 0,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_UINT, &result,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to acquire %s: %s", GDM_DBUS_NAME, error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to acquire %s", GDM_DBUS_NAME);
-                }
-                goto out;
-        }
-
-        if (result != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
-                if (error != NULL) {
-                        g_warning ("Failed to acquire %s: %s", GDM_DBUS_NAME, error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to acquire %s", GDM_DBUS_NAME);
-                }
-                goto out;
-        }
-
-        ret = TRUE;
-
- out:
-        return ret;
-}
-
-static DBusGProxy *
-get_bus_proxy (DBusGConnection *connection)
-{
-        DBusGProxy *bus_proxy;
-
-        bus_proxy = dbus_g_proxy_new_for_name (connection,
-                                               DBUS_SERVICE_DBUS,
-                                               DBUS_PATH_DBUS,
-                                               DBUS_INTERFACE_DBUS);
-        return bus_proxy;
-}
-
-static DBusGConnection *
+static GDBusConnection *
 get_system_bus (void)
 {
         GError          *error;
-        DBusGConnection *bus;
-        DBusConnection  *connection;
+        GDBusConnection *bus;
 
         error = NULL;
-        bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (bus == NULL) {
                 g_warning ("Couldn't connect to system bus: %s",
                            error->message);
@@ -118,19 +53,29 @@ get_system_bus (void)
                 goto out;
         }
 
-        connection = dbus_g_connection_get_connection (bus);
-        dbus_connection_set_exit_on_disconnect (connection, FALSE);
+        g_dbus_connection_set_exit_on_close (bus, FALSE);
 
  out:
         return bus;
+}
+
+static void
+on_name_acquired (GDBusConnection *connection,
+                  const char      *name,
+                  gpointer         user_data)
+{
+        settings = gdm_settings_new ();
+        if (settings == NULL) {
+                g_warning ("Unable to initialize settings");
+                exit (1);
+        }
 }
 
 int
 main (int argc, char **argv)
 {
         GMainLoop          *main_loop;
-        DBusGConnection    *connection;
-        DBusGProxy         *bus_proxy;
+        GDBusConnection    *connection;
 
         g_type_init ();
 
@@ -139,22 +84,13 @@ main (int argc, char **argv)
                 goto out;
         }
 
-        bus_proxy = get_bus_proxy (connection);
-        if (bus_proxy == NULL) {
-                g_warning ("Could not construct bus_proxy object; bailing out");
-                goto out;
-        }
-
-        if (! acquire_name_on_proxy (bus_proxy) ) {
-                g_warning ("Could not acquire name; bailing out");
-                goto out;
-        }
-
-        settings = gdm_settings_new ();
-        if (settings == NULL) {
-                g_warning ("Unable to initialize settings");
-                exit (1);
-        }
+        g_bus_own_name (G_BUS_TYPE_SYSTEM,
+                        GDM_DBUS_NAME,
+                        G_BUS_NAME_OWNER_FLAGS_NONE,
+                        NULL, /* bus acquired */
+                        on_name_acquired,
+                        NULL, /* name lost */
+                        NULL, NULL);
 
         main_loop = g_main_loop_new (NULL, FALSE);
         g_main_loop_run (main_loop);
