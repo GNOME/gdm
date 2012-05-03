@@ -786,6 +786,19 @@ out: ;
 
 /* Account page {{{1 */
 
+enum {
+        PANEL_ACCOUNT_COLUMN_ACTIVE,
+        PANEL_ACCOUNT_COLUMN_TITLE,
+        PANEL_ACCOUNT_COLUMN_NAME
+};
+
+enum {
+        PANEL_ACCOUNT_ROW_LOCAL,
+        PANEL_ACCOUNT_ROW_REMOTE
+};
+
+static gboolean skip_account = FALSE;
+
 static void
 update_account_page_status (SetupData *setup)
 {
@@ -1009,6 +1022,32 @@ save_when_loaded (ActUser *user, GParamSpec *pspec, SetupData *setup)
 }
 
 static void
+set_account_model_row (SetupData *setup, gint row, gboolean active, const gchar *name)
+{
+        GtkTreeModel *model;
+        GtkTreeIter iter;
+        gchar *n = NULL;
+
+        model = gtk_tree_view_get_model (GTK_TREE_VIEW (WID("account-list")));
+
+        gtk_tree_model_get_iter_first (model, &iter);
+        if (row == PANEL_ACCOUNT_ROW_REMOTE)
+                gtk_tree_model_iter_next (model, &iter);
+
+        if (name == NULL) {
+                gtk_tree_model_get (model, &iter, PANEL_ACCOUNT_COLUMN_NAME, &n, -1);
+                name = (const gchar *)n;
+        }
+
+        gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+                            PANEL_ACCOUNT_COLUMN_ACTIVE, active,
+                            PANEL_ACCOUNT_COLUMN_NAME, name,
+                            -1);
+
+        g_free (n);
+}
+
+static void
 clear_account_page (SetupData *setup)
 {
         GtkWidget *fullname_entry;
@@ -1044,6 +1083,8 @@ clear_account_page (SetupData *setup)
         gtk_list_store_clear (GTK_LIST_STORE (gtk_combo_box_get_model (GTK_COMBO_BOX (username_combo))));
         gtk_entry_set_text (GTK_ENTRY (password_entry), "");
         gtk_entry_set_text (GTK_ENTRY (confirm_entry), "");
+
+        set_account_model_row (setup, PANEL_ACCOUNT_ROW_LOCAL, FALSE, "");
 }
 
 static void
@@ -1102,9 +1143,8 @@ save_account_data (SetupData *setup)
 }
 
 static void
-show_local_account_dialog (GtkButton *button, gpointer data)
+show_local_account_dialog (SetupData *setup)
 {
-        SetupData *setup = data;
         GtkWidget *dialog;
 
         dialog = WID("local-account-dialog");
@@ -1129,9 +1169,53 @@ create_local_account (GtkButton *button, gpointer data)
 {
         SetupData *setup = data;
         GtkWidget *dialog;
+        const gchar *realname;
 
         dialog = WID("local-account-dialog");
+
+        realname = gtk_entry_get_text (OBJ (GtkEntry*, "account-fullname-entry"));
+        set_account_model_row (setup, PANEL_ACCOUNT_ROW_LOCAL, TRUE, realname);
+
         gtk_widget_hide (dialog);
+}
+
+static void
+account_set_active_data (GtkCellLayout   *layout,
+                         GtkCellRenderer *cell,
+                         GtkTreeModel    *model,
+                         GtkTreeIter     *iter,
+                         gpointer         data)
+{
+        gboolean active;
+
+        gtk_tree_model_get (model, iter,
+                            PANEL_ACCOUNT_COLUMN_ACTIVE, &active,
+                            -1);
+
+        g_object_set (cell, "text", active ? "\342\254\251" : " ", NULL);
+}
+
+static void
+account_row_activated (GtkTreeView       *tv,
+                       GtkTreePath       *path,
+                       GtkTreeViewColumn *column,
+                       gpointer           data)
+{
+        SetupData *setup = data;
+        gint type;
+
+        type = gtk_tree_path_get_indices (path)[0];
+
+        if (type == PANEL_ACCOUNT_ROW_LOCAL) {
+                set_account_model_row (setup, PANEL_ACCOUNT_ROW_LOCAL, TRUE, NULL);
+                set_account_model_row (setup, PANEL_ACCOUNT_ROW_REMOTE, FALSE, "");
+                show_local_account_dialog (setup);
+        }
+        else {
+                set_account_model_row (setup, PANEL_ACCOUNT_ROW_LOCAL, FALSE, "");
+                set_account_model_row (setup, PANEL_ACCOUNT_ROW_REMOTE, TRUE, NULL);
+                clear_account_page (setup);
+        }
 }
 
 static void
@@ -1143,9 +1227,29 @@ prepare_account_page (SetupData *setup)
         GtkWidget *admin_check;
         GtkWidget *password_entry;
         GtkWidget *confirm_entry;
-        GtkWidget *local_account_create_button;
         GtkWidget *local_account_cancel_button;
         GtkWidget *local_account_done_button;
+        GtkTreeViewColumn *col;
+        GtkCellRenderer *cell;
+
+        if (!skip_account)
+                gtk_widget_show (WID("account-page"));
+
+        col = OBJ(GtkTreeViewColumn*, "account-list-column");
+        cell = gtk_cell_renderer_text_new ();
+        gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (col), cell, FALSE);
+        gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (col), cell,
+                                            account_set_active_data, NULL, NULL);
+        cell = gtk_cell_renderer_text_new ();
+        gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (col), cell, TRUE);
+        gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (col), cell, "text", PANEL_ACCOUNT_COLUMN_TITLE);
+
+        cell = gtk_cell_renderer_text_new ();
+        gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (col), cell, FALSE);
+        gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (col), cell, "text", PANEL_ACCOUNT_COLUMN_NAME);
+
+        g_signal_connect (WID("account-list"), "row-activated",
+                          G_CALLBACK (account_row_activated), setup);
 
         fullname_entry = WID("account-fullname-entry");
         username_combo = WID("account-username-combo");
@@ -1153,7 +1257,6 @@ prepare_account_page (SetupData *setup)
         admin_check = WID("account-admin-check");
         password_entry = WID("account-password-entry");
         confirm_entry = WID("account-confirm-entry");
-        local_account_create_button = WID("local-account-button");
         local_account_cancel_button = WID("local-account-cancel-button");
         local_account_done_button = WID("local-account-done-button");
 
@@ -1171,8 +1274,6 @@ prepare_account_page (SetupData *setup)
                           G_CALLBACK (confirm_changed), setup);
         g_signal_connect_after (confirm_entry, "focus-out-event",
                                 G_CALLBACK (confirm_entry_focus_out), setup);
-        g_signal_connect (local_account_create_button, "clicked",
-                          G_CALLBACK (show_local_account_dialog), setup);
         g_signal_connect (local_account_cancel_button, "clicked",
                           G_CALLBACK (hide_local_account_dialog), setup);
         g_signal_connect (local_account_done_button, "clicked",
@@ -1938,10 +2039,14 @@ main (int argc, char *argv[])
 {
         SetupData *setup;
         GError *error;
+        GOptionEntry entries[] = {
+                { "skip-account", 0, 0, G_OPTION_ARG_NONE, &skip_account, "Skip account creation", NULL },
+                { NULL, 0 }
+        };
 
         setup = g_new0 (SetupData, 1);
 
-        gtk_init (&argc, &argv);
+        gtk_init_with_args (&argc, &argv, "", entries, GETTEXT_PACKAGE, NULL);
 
         error = NULL;
         if (g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error) == NULL) {

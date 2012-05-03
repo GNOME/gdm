@@ -14,6 +14,23 @@
       <column type="guint"/>      <!-- column-name pulse -->
     </columns>
   </object>
+  <object class="GtkListStore" id="liststore-account">
+    <columns>
+      <column type="gboolean"/>   <!-- column-name active -->
+      <column type="gchararray"/> <!-- column-name title -->
+      <column type="gchararray"/> <!-- column-name name -->
+    </columns>
+    <data>
+      <row>
+        <col id="0">False</col>
+        <col id="1">Create a Local Account</col>
+      </row>
+      <row>
+        <col id="0">False</col>
+        <col id="1">Use an Enterprise Login</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkListStore" id="account-username-model">
     <columns>
       <column type="gchararray"/>
@@ -344,6 +361,7 @@
                 <property name="model">liststore-wireless</property>
                 <property name="headers-visible">False</property>
                 <property name="search-column">2</property>
+                <property name="enable-grid-lines">horizontal</property>
                 <property name="show-expanders">False</property>
                 <child internal-child="selection">
                   <object class="GtkTreeSelection" id="network-list-selection">
@@ -414,7 +432,7 @@
     <child>
       <object class="GtkGrid" id="account-page">
         <property name="name">account-page</property>
-        <property name="visible">True</property>
+        <property name="visible">False</property>
         <child>
           <object class="GtkLabel" id="account-title">
             <property name="visible">True</property>
@@ -436,29 +454,41 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="local-account-button">
+          <object class="GtkScrolledWindow" id="account-scrolledwindow">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">Create a _Local Account</property>
-            <property name="use_underline">True</property>
-            <property name="halign">center</property>
+            <property name="halign">fill</property>
+            <property name="valign">fill</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">False</property>
+            <property name="hscrollbar-policy">never</property>
+            <property name="vscrollbar-policy">never</property>
+            <property name="shadow-type">in</property>
+            <child>
+              <object class="GtkTreeView" id="account-list">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <property name="halign">fill</property>
+                <property name="valign">fill</property>
+                <property name="model">liststore-account</property>
+                <property name="headers-visible">False</property>
+                <property name="enable-grid-lines">horizontal</property>
+                <property name="show-expanders">False</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection" id="account-list-selection">
+                    <property name="mode">none</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="account-list-column"/>
+                </child>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="left_attach">0</property>
             <property name="top_attach">1</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="remote-account-button">
-            <property name="visible">True</property>
-            <property name="label" translatable="yes">Use an _Enterprise Login</property>
-            <property name="halign">center</property>
-            <property name="use_underline">True</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">2</property>
             <property name="width">1</property>
             <property name="height">1</property>
           </packing>
