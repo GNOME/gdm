@@ -1032,7 +1032,9 @@ on_greeter_session_died (GdmGreeterSession    *greeter,
                          GdmSimpleSlave       *slave)
 {
         g_debug ("GdmSimpleSlave: Greeter died: %d", signal);
-        gdm_slave_stopped (GDM_SLAVE (slave));
+        if (slave->priv->start_session_service_name == NULL) {
+                gdm_slave_stopped (GDM_SLAVE (slave));
+        }
 }
 
 static void
