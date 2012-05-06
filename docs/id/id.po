@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
-"POT-Creation-Date: 2011-09-09 09:54+0000\n"
-"PO-Revision-Date: 2012-04-23 16:56+0700\n"
+"POT-Creation-Date: 2012-05-06 05:58+0000\n"
+"PO-Revision-Date: 2012-05-06 13:53+0700\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: GNOME Indonesian Translation Team <gnome@i15norg>\n"
 "MIME-Version: 1.0\n"
@@ -287,18 +287,10 @@ msgid "The greeter program is run as the unprivileged \"gdm\" user/group. This u
 msgstr "Program penyapa (greeter) dijalankan sebagai pengguna/grup biasa \"gdm\". Pengguna dan grup ini dijelaskan dalam bagian \"Keamanan\" dari dokumen ini. Fungsi utama program penyapa adalah untuk menyediakan mekanisme memilih akun untuk log masuk dan untuk mendorong dialog antara pengguna dan sistem ketika mengotentikasi akun tersebut. Proses otentikasi ini didorong oleh Pluggable Authentication Modules (PAM). Modul PAM menentukan sapaan apa (bila ada) yang ditampilkan ke pengguna untuk mengotentikasi. Pada sistem umum, program penyapa akan meminta nama pengguna dan sandi untuk otentikasi. Namun beberapa sistem mungkin ditata untuk memakai mekanisme pelengkap seperti sidik jari atau pembaca SmartCard. GDM dapat ditata untuk mendukung alternatif tersebut secara paralel dengan ekstensi log masuk penyapa dan opsi <filename>./configure</filename><command>--enable-split-authentication</command>, atau satu setiap saat melalui konfigurasi PAM sistem."
 
 #: C/gdm.xml:284(para)
-#| msgid ""
-#| "The smartcard extension can enabled or disabled via the <filename>org."
-#| "gnome.display-manager.extensions.smartcard.active</filename> gsettings "
-#| "key."
 msgid "The smartcard extension can be enabled or disabled via the <filename>org.gnome.display-manager.extensions.smartcard.active</filename> gsettings key."
 msgstr "Ekstensi smartcard dapat diaktifkan atau dimatikan melalui kunci gsettings <filename>org.gnome.display-manager.extensions.smartcard.active</filename>."
 
 #: C/gdm.xml:290(para)
-#| msgid ""
-#| "Likewise, the fingerprint extension can enabled or disabled via the "
-#| "<filename>org.gnome.display-manager.extensions.fingerprint.active</"
-#| "filename> gsettings key."
 msgid "Likewise, the fingerprint extension can be enabled or disabled via the <filename>org.gnome.display-manager.extensions.fingerprint.active</filename> gsettings key."
 msgstr "Serupa dengan itu, ekstensi sidik jari dapat diaktifkan atau dimatikan melalui kunci gsettings <filename>org.gnome.display-manager.extensions.fingerprint.active</filename>."
 
@@ -325,7 +317,7 @@ msgstr "Program penyapa GDM menampilkan suatu panel yang dilabuhkan di dasar lay
 
 #: C/gdm.xml:354(para)
 msgid "Note that keyboard layout features are only available on systems that support libxklavier."
-msgstr ""
+msgstr "Perhatikan bahwa fitur tata letak papan tik hanya tersedia pada sistem yang mendukung libxklavier."
 
 #: C/gdm.xml:361(title)
 msgid "Accessibility"
@@ -333,7 +325,7 @@ msgstr "Aksesibilitas"
 
 #: C/gdm.xml:363(para)
 msgid "GDM supports \"Accessible Login\", allowing users to log into their desktop session even if they cannot easily use the screen, mouse, or keyboard in the usual way. Accessible Technology (AT) features such as an on-screen keyboard, screen reader, screen magnifier, and Xserver AccessX keyboard accessibility are available. It is also possible to enable large text or high contrast icons and controls, if needed. Refer to the \"Accessibility Configuration\" section of the document for more information how various accessibility features can be configured."
-msgstr ""
+msgstr "GDM mendukung \"Log Masuk Aksesibel\", yang memungkinkan pengguna log masuk ke sesi desktop mereka walaupun mereka tak dapat dengan mudah menggunakan layar, tetikus, atau papan tik secara biasa. Tersedia fitur-fitur Teknologi Aksesibilitas seperti papan tik pada layar, pembaca layar, pembesar layar, dan aksesibilitas papan tik Xserver AccessX. Juga dimungkinkan untuk mengaktifkan teks besar atau ikon dan kendali-kendali kontras tinggi, bila diperlukan. Lihat bagian \"Konfigurasi Aksesibilitas\" dari dokumen untuk informasi lebih lanjut tentang bagaimana berbagai fitur aksesibilitas dapat ditata."
 
 #: C/gdm.xml:375(para)
 msgid "On some Operating Systems, it is necessary to make sure that the GDM user is a member of the \"audio\" group for AT programs that require audio output (such as text-to-speech) to be functional."
@@ -345,19 +337,19 @@ msgstr "Peramban Wajah GDM"
 
 #: C/gdm.xml:385(para)
 msgid "The Face Browser is the interface which allows users to select their username by clicking on an image. This feature can be enabled or disabled via the /apps/gdm/simple-greeter/disable_user_list GConf key and is on by default. When disabled, users must type their complete username by hand. When enabled, it displays all local users which are available for login on the system (all user accounts defined in the /etc/passwd file that have a valid shell and sufficiently high UID) and remote users that have recently logged in. The face browser in GDM 2.20 and earlier would attempt to display all remote users, which caused performance problems in large, enterprise deployments."
-msgstr ""
+msgstr "Peramban Wajah adalah antar muka yang memungkinkan pengguna memilih nama dengan mengklik gambar. Fitur ini dapat diaktifkan atau dimatikan melalui kunci GConf /apps/gdm/simple-greeter/disable_user_list dan bawaannya aktif. Ketika dimatikan, pengguna mesti mengetikkan nama penggunanya secara lengkap. Ketika diaktifkan, ini menampilkan semua pengguna lokal yang dapat log masuk pada sistem (semua akun pengguna yang didefinisikan di dalam berkas /etc/passwd yang memiliki shell yang valid dan UID cukup tinggi) dan pengguna jauh yang baru-baru ini log masuk. Peramban wajah dalam GDM 2.20 dan sebelumnya akan mencoba menampilkan semua pengguna jauh, yang akan menyebabkan masalah kinerja pada pemasangan di enterprise yang besar."
 
 #: C/gdm.xml:399(para)
 msgid "The Face Browser is configured to display the users who log in most frequently at the top of the list. This helps to ensure that users who log in frequently can quickly find their login image."
-msgstr ""
+msgstr "Peramban Wajah ditata untuk menampilkan pengguna yang paling sering log masuk di puncak daftar. Ini membantu memastikan bahwa pengguna yang sering log masuk dapat menemukan gambar log masuk mereka secara cepat."
 
 #: C/gdm.xml:405(para)
 msgid "The Face Browser supports \"type-ahead search\" which dynamically moves the face selection as the user types to the corresponding username in the list. This means that a user with a long username will only have to type the first few characters of the username before the correct item in the list gets selected."
-msgstr ""
+msgstr "Peramban Wajah mendukung \"pencarian type-ahead\" yang secara dinamis memindah pemilihan wajah ketika pengguna mengetikkan ke nama pengguna yang berkaitan dalam daftar. Ini berarti bahwa pengguna dengan nama pengguna yang panjang hanya perlu mengetikkan beberapa karakter pertama dari nama pengguna sebelum butir yang benar dalam daftar menjadi terpilih."
 
 #: C/gdm.xml:413(para)
 msgid "The icons used by GDM can be installed globally by the sysadmin or can be located in the user's home directories. If installed globally they should be in the <filename>&lt;share&gt;/pixmaps/faces/</filename> directory and the filename should be the name of the user. Face image files should be a standard image that GTK+ can read, such as PNG or JPEG. Face icons placed in the global face directory must be readable to the GDM user."
-msgstr ""
+msgstr "Ikon yang dipakai oleh GDM dapat dipasang secara global oleh sysadmin atau dapat ditempatkan pada direktori rumah pengguna. Bila dipasang secara global mereka mesti ada di direktori <filename>&lt;share&gt;/pixmaps/faces/</filename> dan nama berkas mesti merupakan nama pengguna. Berkas gambar wajah mesti merupakan gambar standar yang dapat dibaca oleh GTK+, seperti misalnya PNG atau JPEG. Ikon wajah yang ditempatkan di direktori wajah global mesti dapat dibaca oleh pengguna GDM."
 
 #. <para>
 #. TODO - In the old GDM the ~/gnome2/gdm file is used, but the new code
@@ -365,19 +357,19 @@ msgstr ""
 #. </para>
 #: C/gdm.xml:429(para)
 msgid "If there is no global icon for the user, GDM will look in the user's $HOME directory for the image file. GDM will first look for the user's face image in <filename>~/.face</filename>. If not found, it will try <filename>~/.face.icon</filename>. If still not found, it will use the value defined for \"face/picture=\" in the <filename>~/.gnome2/gdm</filename> file."
-msgstr ""
+msgstr "Bila tak ada ikon global bagi pengguna, GDM akan mencari berkas gambar dalam direktori $HOME pengguna. Pertama kali GDM akan mencari gambar wajah pengguna dalam <filename>~/.face</filename>. Bila tak ditemukan, akan dicoba <filename>~/.face.icon</filename>. Bila masih tak ditemukan, akan dipakai nilai yang didefinisikan bagi \"face/picture=\" dalam berkas <filename>~/.gnome2/gdm</filename>."
 
 #: C/gdm.xml:438(para)
 msgid "If a user has no defined face image, GDM will use the \"stock_person\" icon defined in the current GTK+ theme. If no such image is defined, it will fallback to a generic face image."
-msgstr ""
+msgstr "Bila seorang pengguna tak memiliki gambar wajah, GDM akan memakai ikon \"stock_person\" yang didefinisikan dalam tema GTK+ kini. Bila gambar itu tak didefinisikan, maka akan kembali ke gambar wajah generik."
 
 #: C/gdm.xml:444(para)
 msgid "Please note that loading and scaling face icons located in remote user home directories can be a very time-consuming task. Since it not practical to load images over NIS or NFS, GDM does not attempt to load face images from remote home directories."
-msgstr ""
+msgstr "Perhatikan bahwa memuat dan menskalakan ikon wajah yang terletak di direktori rumah pengguna jauh bisa merupakan tugas yang sangat menghabiskan waktu. Karena tak praktis untuk memuat gambar lewat NIS atau NFS, GDM tak mencoba memuat gambar wajah dari direktori rumah jauh."
 
 #: C/gdm.xml:451(para)
 msgid "When the browser is turned on, valid usernames on the computer are exposed for everyone to see. If XDMCP is enabled, then the usernames are exposed to remote users. This, of course, limits security somewhat since a malicious user does not need to guess valid usernames. In some very restrictive environments the face browser may not be appropriate."
-msgstr ""
+msgstr "Ketika peramban dinyalakan, nama pengguna yang valid pada komputer dipaparkan untuk dilihat oleh semua orang. Bila XDMCP diaktifkan, maka nama pengguna dipaparkan ke pengguna jauh. Ini tentu saja membatasi keamanan karena pengguna yang berniat jahat tak perlu lagi menebak nama pengguna yang valid. Dalam beberapa lingkungan yang sangat terbatas, peramban wajah mungkin tidak pada tempatnya."
 
 #: C/gdm.xml:463(title)
 msgid "XDMCP"
@@ -389,7 +381,7 @@ msgstr "XDMCP"
 #. </para>
 #: C/gdm.xml:472(para)
 msgid "The GDM daemon can be configured to listen for and manage X Display Manage Protocol (XDMCP) requests from remote displays. By default XDMCP support is turned off, but can be enabled if desired. If GDM is built with TCP Wrapper support, then the daemon will only grant access to hosts specified in the GDM service section in the TCP Wrappers configuration file."
-msgstr ""
+msgstr "Daemon GDM dapat ditata untuk mendengarkan dan mengelola permintaan X Display Manager Protocol (XDMCP) dari tampilan jauh. Secara baku dukungan XDMCP dimatikan, tapi dapat dinyalakan bila dikehendaki. Bila GDM dibangun dengan dukungan TCP Wrapper, maka daemon hanya akan memberikan akses ke host yang dinyatakan pada bagian layanan GDM dalam berkas konfigurasi TCP Wrapper."
 
 #: C/gdm.xml:481(para)
 msgid "GDM includes several measures making it more resistant to denial of service attacks on the XDMCP service. A lot of the protocol parameters, handshaking timeouts, etc. can be fine tuned. The default configuration should work reasonably on most systems."
@@ -397,19 +389,19 @@ msgstr "GDM menyertakan beberapa penangkal yang membuatnya lebih kebal terhadap 
 
 #: C/gdm.xml:488(para)
 msgid "GDM by default listens for XDMCP requests on the normal UDP port used for XDMCP, port 177, and will respond to QUERY and BROADCAST_QUERY requests by sending a WILLING packet to the originator."
-msgstr ""
+msgstr "Secara baku GDM mendengarkan permintaan XDMCP pada port UDP normal yang dipakai oleh XDMCP, port 177, dan akan menjawab permintaan QUERY dan BROADCAST_QUERY dengan mengirim paket WILLING ke peminta."
 
 #: C/gdm.xml:494(para)
 msgid "GDM can also be configured to honor INDIRECT queries and present a host chooser to the remote display. GDM will remember the user's choice and forward subsequent requests to the chosen manager. GDM also supports an extension to the protocol which will make it forget the redirection once the user's connection succeeds. This extension is only supported if both daemons are GDM. It is transparent and will be ignored by XDM or other daemons that implement XDMCP."
-msgstr ""
+msgstr "GDM juga dapat ditata untuk menjawab permintaan INDIRECT dan menyajikan suatu pemilih host ke tampilan jauh. GDM akan mengingat pilihan pengguna dan meneruskan permintaan seterusnya ke pengelola yang dipilih. GDM juga mendukung ekstensi ke protokol yang membuatnya melupakan pengalihan sekali koneksi pengguna sukses. Ekstensi ini hanya didukung bila kedua daemon adalah GDM. Ini transparan dan akan diabaikan oleh XDM atau daemon lain yang mengimplementasikan XDMCP."
 
 #: C/gdm.xml:504(para)
 msgid "If XDMCP seems to not be working, make sure that all machines are specified in <filename>/etc/hosts</filename>."
-msgstr ""
+msgstr "Bila XDMCP sepertinya tak bekerja, pastikan bahwa semua mesin dinyatakan dalam <filename>/etc/hosts</filename>."
 
 #: C/gdm.xml:509(para)
 msgid "Refer to the \"Security\" section for information about security concerns when using XDMCP."
-msgstr ""
+msgstr "Lihat ke bagian \"Keamanan\" untuk informasi tentang aspek-aspek keamanan ketika memakai XDMCP."
 
 #: C/gdm.xml:516(title)
 msgid "Logging"
@@ -417,19 +409,19 @@ msgstr "Log"
 
 #: C/gdm.xml:518(para)
 msgid "GDM uses syslog to log errors and status. It can also log debugging information, which can be useful for tracking down problems if GDM is not working properly. Debug output can be enabled by setting the debug/Enable key to \"true\" in the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file."
-msgstr ""
+msgstr "GDM memakai syslog untuk mencatat galat dan status. Itu juga dapat mencatat informasi pengawakutuan, yang dapat berguna untuk menelusuri masalah bila GDM tak bekerja dengan baik. Keluaran awakutu dapat diaktifkan dengan menata kunci debug/Enable ke \"true\" dalam berkas <filename>&lt;etc&gt;/gdm/custom.conf</filename>."
 
 #: C/gdm.xml:526(para)
 msgid "Output from the various Xservers is stored in the GDM log directory, which is normally <filename>&lt;var&gt;/log/gdm/</filename>. Any Xserver messages are saved to a file associated with the display value, <filename>&lt;display&gt;.log</filename>."
-msgstr ""
+msgstr "Keluaran dari berbagai Xserver disimpan di dalam direktori log GDM, yang biasanya <filename>&lt;var&gt;/log/gdm/</filename>. Sebarang pesan Xserver disimpan ke berkas yang dikaitkan dengan nilai tampilan, <filename>&lt;display&gt;.log</filename>."
 
 #: C/gdm.xml:533(para)
 msgid "The session output is piped through the GDM daemon to the <filename>~/.xsession-errors</filename> file. The file is overwritten on each login, so logging out and logging back into the same user via GDM will cause any messages from the previous session to be lost."
-msgstr ""
+msgstr "Keluaran sesi disalurkan melalui daemon GDM ke berkas <filename>~/.xsession-errors</filename>. Berkas ditimpa setiap kali log masuk, sehingga log keluar dan masuk lagi ke pengguna yang sama melalui GDM akan menyebabkan sebarang pesan dari sesi sebelumnya hilang."
 
 #: C/gdm.xml:540(para)
 msgid "Note that if GDM can not create this file for some reason, then a fallback file will be created named <filename>~/.xsession-errors.XXXXXXXX</filename> where the <filename>XXXXXXXX</filename> are some random characters."
-msgstr ""
+msgstr "Catat bahwa bila GDM tak bisa membuat berkas ini karena beberapa alasan, maka berkas cadangan akan dibuat dengan nama <filename>~/.xsession-errors.XXXXXXXX</filename> dimana <filename>XXXXXXXX</filename> adalah beberapa karakter acak."
 
 #: C/gdm.xml:548(title)
 msgid "Fast User Switching"
@@ -437,11 +429,11 @@ msgstr "Pindah Pengguna Dengan Cepat"
 
 #: C/gdm.xml:550(para)
 msgid "GDM allows multiple users to be logged in at the same time. After one user is logged in, additional users can log in via the User Switcher on the GNOME Panel, or from the \"Switch User\" button in Lock Screen dialog of GNOME Screensaver. The active session can be changed back and forth using the same mechanism. Note that some distributions may not add the User Switcher to the default panel configuration. It can be added using the panel context menu."
-msgstr ""
+msgstr "GDM mengijinkan beberapa pengguna log masuk bersamaan. Setelah salah satu pengguna log masuk, pengguna lain dapat log masuk melalui Penukar Pengguna pada Panel GNOME, atau dari tombol \"Ganti Pengguna\" pada dialog Kunci Layar dari Screensaver GNOME. Sesi aktif dapat ditukar bolak balik memakai mekanisme yang sama. Perhatikan bahwa beberapa distribusi mungkin tidak menambahkan Penukar Pengguna ke konfigurasi panel bawaan. Itu dapat ditambahkan memakai menu konteks panel."
 
 #: C/gdm.xml:559(para)
 msgid "Note this feature is available on systems that support Virtual Terminals. This feature will not function if Virtual Terminals is not available."
-msgstr ""
+msgstr "Catat bahwa fitur ini tersedia pada sistem yang mendukung Terminal Virtual. Fitur ini tak akan berfungsi bila Terminal Virtual tak tersedia."
 
 #: C/gdm.xml:570(title)
 msgid "Security"
@@ -453,11 +445,11 @@ msgstr "Grup dan Pengguna GDM"
 
 #: C/gdm.xml:575(para)
 msgid "For security reasons a dedicated user and group id are recommended for proper operation. This user and group are normally \"gdm\" on most systems, but can be configured to any user or group. All GDM GUI programs are run as this user, so that the programs which interact with the user are run in a sandbox. This user and group should have limited privilege."
-msgstr ""
+msgstr "Untuk alasan keamanan, id pengguna dan grup yang terdedikasi disarankan untuk operasi yang benar. Pengguna dan grup ini biasanya \"gdm\" pada kebanyakan sistem, tapi dapat ditata ke sebarang pengguna atau grup. Semua program GUI GDM dijalankan sebagai pengguna ini, sehingga program yang berinteraksi dengan pengguna dijalankan dalam suatu kotak pasir. Pengguna dan grup ini mesti memiliki hak terbatas."
 
 #: C/gdm.xml:584(para)
 msgid "The only special privilege the \"gdm\" user requires is the ability to read and write Xauth files to the <filename>&lt;var&gt;/run/gdm</filename> directory. The <filename>&lt;var&gt;/run/gdm</filename> directory should have root:gdm ownership and 1777 permissions."
-msgstr ""
+msgstr "Satu-satunya hak khusus yang diperlukan oleh pengguna \"gdm\" adalah kemampuan membaca dan menulis berkas Xauth ke direktori <filename>&lt;var&gt;/run/gdm</filename> directory. Direktori <filename>&lt;var&gt;/run/gdm</filename> mesti dimiliki oleh root:gdm dan hak 1777."
 
 #: C/gdm.xml:592(para)
 msgid "You should not, under any circumstances, configure the GDM user/group to a user which a user could easily gain access to, such as the user <filename>nobody</filename>. Any user who gains access to an Xauth key can snoop on and control running GUI programs running in the associated session or perform a denial-of-service attack on it. It is important to ensure that the system is configured properly so that only the \"gdm\" user has access to these files and that it is not easy to login to this account. For example, the account should be setup to not have a password or allow non-root users to login to the account."
@@ -465,7 +457,7 @@ msgstr ""
 
 #: C/gdm.xml:605(para)
 msgid "The GDM greeter configuration is stored in GConf. To allow the GDM user to be able to write configuration, it is necessary for the \"gdm\" user to have a writable $HOME directory. Users may configure the default GConf configuration as desired to avoid the need to provide the \"gdm\" user with a writable $HOME directory. However, some features of GDM may be disabled if it is unable to write state information to GConf configuration."
-msgstr ""
+msgstr "Konfigurasi penyapa GDM disimpan di dalam GConf. Untuk mengijinkan pengguna GDM menulis konfigurasi, pengguna \"gdm\" perlu memiliki direktori $HOME yang dapat ditulisi. Pengguna dapat menata konfigurasi bawaan GConf sesuai keinginan untuk menghindari perlunya menyediakan pengguna \"gdm\" dengan direktori $HOME yang dapat ditulisi. Namun beberapa fitur GDM mungkin mati bila tak bisa menulis informasi keadaan ke konfigurasi GConf."
 
 #: C/gdm.xml:617(title)
 msgid "PAM"
@@ -476,8 +468,9 @@ msgid "GDM uses PAM for login authentication. PAM stands for Pluggable Authentic
 msgstr "GDM memakai PAM untuk otentikasi log masuk. PAM kependekan dari Pluggable Authentication Module (modul otentikasi yang dapat ditempelkan), dan dipakai oleh kebanyakan program yang meminta otentikasi pada komputer Anda. Itu mengijinkan administrator untuk menata perilaku otentikasi spesifik bagi program log masuk yang berbeda (seperti misalnya ssh, log masuk GUI, screensaver, dsb.)"
 
 #: C/gdm.xml:627(para)
+#, fuzzy
 msgid "PAM is complicated and highly configurable, and this documentation does not intend to explain this in detail. Instead, it is intended to give an overview of how PAM configuration relates with GDM, how PAM is commonly configured with GDM, and known issues. It is expected that a person needing to do PAM configuration would need to do further reading of PAM documentation to understand how to configure PAM and to understand terms used in this section."
-msgstr ""
+msgstr "PAM itu rumit dan sangat ..."
 
 #: C/gdm.xml:637(para)
 msgid "PAM configuration has different, but similar, interfaces on different Operating Systems, so check the <ulink type=\"help\" url=\"man:pam.d\">pam.d</ulink> or <ulink type=\"help\" url=\"man:pam.conf\">pam.conf</ulink> man page for details. Be sure you read the PAM documentation and are comfortable with the security implications of any changes you intend to make to your configuration."
@@ -1071,11 +1064,11 @@ msgstr ""
 
 #: C/gdm.xml:1435(para)
 msgid "<filename>gdm</filename> listens for requests on UDP port 177. See the Port option for more information."
-msgstr ""
+msgstr "<filename>gdm</filename> mendengarkan permintaan pada UDP port 177. Lihat opsi Port untuk informasi lebih jauh."
 
 #: C/gdm.xml:1440(para)
 msgid "If GDM is compiled to support it, access from remote displays can be controlled using the TCP Wrappers library. The service name is <filename>gdm</filename>"
-msgstr ""
+msgstr "Bila GDM dikompail untuk mendukungnya, akses dari tampilan jauh dapat dikendalikan memakai pustaka TCP Wrapper. Nama layanan adalah <filename>gdm</filename>"
 
 #: C/gdm.xml:1446(para)
 msgid ""
@@ -1112,7 +1105,7 @@ msgstr "MaxPending=4"
 
 #: C/gdm.xml:1481(para)
 msgid "To avoid denial of service attacks, GDM has fixed size queue of pending connections. Only MaxPending displays can start at the same time."
-msgstr ""
+msgstr "Untuk menghindari serangan penyangkalan layanan, GDM memiliki antrian sambungan yang tertunda berukuran tetap. Hanya MaxPending tampilan yang dapat dimulai pada saat yang sama."
 
 #: C/gdm.xml:1487(para)
 msgid "Please note that this parameter does not limit the number of remote displays which can be managed. It only limits the number of displays initiating a connection simultaneously."
@@ -1142,15 +1135,15 @@ msgstr "MaxWait=30"
 
 #: C/gdm.xml:1511(para)
 msgid "When GDM is ready to manage a display an ACCEPT packet is sent to it containing a unique session id which will be used in future XDMCP conversations."
-msgstr ""
+msgstr "Ketika GDM siap untuk mengelola suatu tampilan, suatu paket ACCEPT dikirim kepadanya, yang memuat id sesi unik yang akan dipakai dalam percakapan XDMCP di masa mendatang."
 
 #: C/gdm.xml:1517(para)
 msgid "GDM will then place the session id in the pending queue waiting for the display to respond with a MANAGE request."
-msgstr ""
+msgstr "GDM lalu akan menempatkan id sesi ke dalam antrian tertunda yang menunggu tampilan merespon dengan permintaan MANAGE."
 
 #: C/gdm.xml:1522(para)
 msgid "If no response is received within MaxWait seconds, GDM will declare the display dead and erase it from the pending queue freeing up the slot for other displays."
-msgstr ""
+msgstr "Bila tak ada respon yang diterima dalam MaxWait detik, GDM akan menyatakan bahwa tampilan mati dan menghapusnya dari antrian tertunda, membebaskan slot bagi tampilan lain."
 
 #: C/gdm.xml:1531(term)
 msgid "MaxWaitIndirect"
