@@ -1639,6 +1639,16 @@ session_worker_child_watch (GPid              pid,
                  : WIFSIGNALED (status) ? WTERMSIG (status)
                  : -1);
 
+#ifdef WITH_CONSOLE_KIT
+        if (worker->priv->ckc != NULL) {
+                ck_connector_close_session (worker->priv->ckc, NULL);
+                ck_connector_unref (worker->priv->ckc);
+                worker->priv->ckc = NULL;
+        }
+#endif
+
+        gdm_session_worker_uninitialize_pam (worker, PAM_SUCCESS);
+
         if (WIFEXITED (status)) {
                 int code = WEXITSTATUS (status);
 
@@ -1652,16 +1662,6 @@ session_worker_child_watch (GPid              pid,
                                       "SessionDied",
                                       num);
         }
-
-#ifdef WITH_CONSOLE_KIT
-        if (worker->priv->ckc != NULL) {
-                ck_connector_close_session (worker->priv->ckc, NULL);
-                ck_connector_unref (worker->priv->ckc);
-                worker->priv->ckc = NULL;
-        }
-#endif
-
-        gdm_session_worker_uninitialize_pam (worker, PAM_SUCCESS);
 
         worker->priv->child_pid = -1;
 }
