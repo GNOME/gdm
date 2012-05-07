@@ -205,9 +205,9 @@ gdm_simple_slave_revoke_console_permissions (GdmSimpleSlave *slave)
 #endif  /* HAVE_LOGINDEVPERM */
 
 static void
-on_session_exited (GdmSession     *session,
-                   int             exit_code,
-                   GdmSimpleSlave *slave)
+on_session_exited (GdmSession       *session,
+                   int               exit_code,
+                   GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: session exited with code %d\n", exit_code);
         if (slave->priv->start_session_service_name == NULL) {
@@ -216,9 +216,9 @@ on_session_exited (GdmSession     *session,
 }
 
 static void
-on_session_died (GdmSession     *session,
-                 int             signal_number,
-                 GdmSimpleSlave *slave)
+on_session_died (GdmSession       *session,
+                 int               signal_number,
+                 GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: session died with signal %d, (%s)",
                  signal_number,
@@ -279,9 +279,9 @@ queue_greeter_reset (GdmSimpleSlave *slave)
 }
 
 static void
-on_session_service_unavailable (GdmSession     *session,
-                                const char     *service_name,
-                                GdmSimpleSlave *slave)
+on_session_service_unavailable (GdmSession       *session,
+                                const char       *service_name,
+                                GdmSimpleSlave   *slave)
 {
         if (slave->priv->greeter_server != NULL) {
                 gdm_greeter_server_service_unavailable (slave->priv->greeter_server,
@@ -292,18 +292,18 @@ on_session_service_unavailable (GdmSession     *session,
 }
 
 static void
-on_session_setup_complete (GdmSession     *session,
-                           const char     *service_name,
-                           GdmSimpleSlave *slave)
+on_session_setup_complete (GdmSession       *session,
+                           const char       *service_name,
+                           GdmSimpleSlave   *slave)
 {
         gdm_session_authenticate (session, service_name);
 }
 
 static void
-on_session_setup_failed (GdmSession     *session,
-                         const char     *service_name,
-                         const char     *message,
-                         GdmSimpleSlave *slave)
+on_session_setup_failed (GdmSession       *session,
+                         const char       *service_name,
+                         const char       *message,
+                         GdmSimpleSlave   *slave)
 {
         if (slave->priv->greeter_server != NULL) {
                 gdm_greeter_server_problem (slave->priv->greeter_server,
@@ -315,33 +315,18 @@ on_session_setup_failed (GdmSession     *session,
 }
 
 static void
-on_session_reset_complete (GdmSession     *session,
-                           GdmSimpleSlave *slave)
-{
-        g_debug ("GdmSimpleSlave: PAM reset");
-}
-
-static void
-on_session_reset_failed (GdmSession     *session,
-                         const char     *message,
-                         GdmSimpleSlave *slave)
-{
-        g_critical ("Unable to reset PAM");
-}
-
-static void
-on_session_authenticated (GdmSession     *session,
-                          const char     *service_name,
-                          GdmSimpleSlave *slave)
+on_session_authenticated (GdmSession       *session,
+                          const char       *service_name,
+                          GdmSimpleSlave   *slave)
 {
         gdm_session_authorize (session, service_name);
 }
 
 static void
-on_session_authentication_failed (GdmSession     *session,
-                                  const char     *service_name,
-                                  const char     *message,
-                                  GdmSimpleSlave *slave)
+on_session_authentication_failed (GdmSession       *session,
+                                  const char       *service_name,
+                                  const char       *message,
+                                  GdmSimpleSlave   *slave)
 {
         if (slave->priv->greeter_server != NULL) {
                 gdm_greeter_server_problem (slave->priv->greeter_server,
@@ -366,34 +351,19 @@ gdm_simple_slave_start_session_when_ready (GdmSimpleSlave *slave,
 }
 
 static void
-on_session_authorized (GdmSession     *session,
-                       const char     *service_name,
-                       GdmSimpleSlave *slave)
+on_session_authorized (GdmSession       *session,
+                       const char       *service_name,
+                       GdmSimpleSlave   *slave)
 {
-        char *ssid;
-        char *username;
-        int   cred_flag;
-
-        username = gdm_session_get_username (slave->priv->session);
-
-        ssid = gdm_slave_get_primary_session_id_for_user (GDM_SLAVE (slave), username);
-        if (ssid != NULL && ssid [0] != '\0') {
-                /* FIXME: we don't yet support refresh */
-                cred_flag = GDM_SESSION_CRED_ESTABLISH;
-        } else {
-                cred_flag = GDM_SESSION_CRED_ESTABLISH;
-        }
-        g_free (ssid);
-        g_free (username);
-
-        gdm_session_accredit (GDM_SESSION (slave->priv->session), service_name, cred_flag);
+        /* FIXME: we don't yet support refresh */
+        gdm_session_accredit (slave->priv->session, service_name, FALSE);
 }
 
 static void
-on_session_authorization_failed (GdmSession     *session,
-                                 const char     *service_name,
-                                 const char     *message,
-                                 GdmSimpleSlave *slave)
+on_session_authorization_failed (GdmSession       *session,
+                                 const char       *service_name,
+                                 const char       *message,
+                                 GdmSimpleSlave   *slave)
 {
         if (slave->priv->greeter_server != NULL) {
                 gdm_greeter_server_problem (slave->priv->greeter_server,
@@ -462,8 +432,8 @@ start_session (GdmSimpleSlave *slave)
 
         g_free (auth_file);
 
-        gdm_session_start_session (GDM_SESSION (slave->priv->session),
-                                   slave->priv->start_session_service_name);
+        gdm_session_start_session (slave->priv->session,
+                                          slave->priv->start_session_service_name);
 
         slave->priv->start_session_id = 0;
         g_free (slave->priv->start_session_service_name);
@@ -518,18 +488,18 @@ queue_start_session (GdmSimpleSlave *slave,
 }
 
 static void
-on_session_accredited (GdmSession     *session,
-                       const char     *service_name,
-                       GdmSimpleSlave *slave)
+on_session_accredited (GdmSession       *session,
+                       const char       *service_name,
+                       GdmSimpleSlave   *slave)
 {
         gdm_session_open_session (session, service_name);
 }
 
 static void
-on_session_accreditation_failed (GdmSession     *session,
-                                 const char     *service_name,
-                                 const char     *message,
-                                 GdmSimpleSlave *slave)
+on_session_accreditation_failed (GdmSession       *session,
+                                 const char       *service_name,
+                                 const char       *message,
+                                 GdmSimpleSlave   *slave)
 {
         gboolean migrated;
 
@@ -557,9 +527,9 @@ on_session_accreditation_failed (GdmSession     *session,
 }
 
 static void
-on_session_opened (GdmSession     *session,
-                   const char     *service_name,
-                   GdmSimpleSlave *slave)
+on_session_opened (GdmSession       *session,
+                   const char       *service_name,
+                   GdmSimpleSlave   *slave)
 {
 #ifdef  HAVE_LOGINDEVPERM
         gdm_simple_slave_grant_console_permissions (slave);
@@ -575,10 +545,10 @@ on_session_opened (GdmSession     *session,
 }
 
 static void
-on_session_open_failed (GdmSession     *session,
-                        const char     *service_name,
-                        const char     *message,
-                        GdmSimpleSlave *slave)
+on_session_open_failed (GdmSession       *session,
+                        const char       *service_name,
+                        const char       *message,
+                        GdmSimpleSlave   *slave)
 {
         if (slave->priv->greeter_server != NULL) {
                 gdm_greeter_server_problem (slave->priv->greeter_server,
@@ -590,10 +560,10 @@ on_session_open_failed (GdmSession     *session,
 }
 
 static void
-on_session_info (GdmSession     *session,
-                 const char     *service_name,
-                 const char     *text,
-                 GdmSimpleSlave *slave)
+on_session_info (GdmSession       *session,
+                 const char       *service_name,
+                 const char       *text,
+                 GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: Info: %s", text);
         if (slave->priv->greeter_server != NULL) {
@@ -602,20 +572,20 @@ on_session_info (GdmSession     *session,
 }
 
 static void
-on_session_problem (GdmSession     *session,
-                    const char     *service_name,
-                    const char     *text,
-                    GdmSimpleSlave *slave)
+on_session_problem (GdmSession       *session,
+                    const char       *service_name,
+                    const char       *text,
+                    GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: Problem: %s", text);
         gdm_greeter_server_problem (slave->priv->greeter_server, service_name, text);
 }
 
 static void
-on_session_info_query (GdmSession     *session,
-                       const char     *service_name,
-                       const char     *text,
-                       GdmSimpleSlave *slave)
+on_session_info_query (GdmSession       *session,
+                       const char       *service_name,
+                       const char       *text,
+                       GdmSimpleSlave   *slave)
 {
 
         g_debug ("GdmSimpleSlave: Info query: %s", text);
@@ -623,19 +593,19 @@ on_session_info_query (GdmSession     *session,
 }
 
 static void
-on_session_secret_info_query (GdmSession     *session,
-                              const char     *service_name,
-                              const char     *text,
-                              GdmSimpleSlave *slave)
+on_session_secret_info_query (GdmSession       *session,
+                              const char       *service_name,
+                              const char       *text,
+                              GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: Secret info query: %s", text);
         gdm_greeter_server_secret_info_query (slave->priv->greeter_server, service_name, text);
 }
 
 static void
-on_session_conversation_started (GdmSession     *session,
-                                 const char     *service_name,
-                                 GdmSimpleSlave *slave)
+on_session_conversation_started (GdmSession       *session,
+                                 const char       *service_name,
+                                 GdmSimpleSlave   *slave)
 {
         gboolean res;
         gboolean enabled;
@@ -663,18 +633,16 @@ on_session_conversation_started (GdmSession     *session,
                 g_debug ("GdmSimpleSlave: begin auto login for user '%s'", username);
                 /* service_name will be "gdm-autologin"
                  */
-                gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
-                                            service_name,
-                                            username);
+                gdm_session_setup_for_user (slave->priv->session, service_name, username);
         }
 
         g_free (username);
 }
 
 static void
-on_session_conversation_stopped (GdmSession     *session,
-                                 const char     *service_name,
-                                 GdmSimpleSlave *slave)
+on_session_conversation_stopped (GdmSession       *session,
+                                 const char       *service_name,
+                                 GdmSimpleSlave   *slave)
 {
         gboolean res;
         g_debug ("GdmSimpleSlave: conversation stopped");
@@ -689,9 +657,9 @@ on_session_conversation_stopped (GdmSession     *session,
 }
 
 static void
-on_session_selected_user_changed (GdmSession     *session,
-                                  const char     *text,
-                                  GdmSimpleSlave *slave)
+on_session_selected_user_changed (GdmSession       *session,
+                                  const char       *text,
+                                  GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: Selected user changed: %s", text);
 
@@ -701,9 +669,9 @@ on_session_selected_user_changed (GdmSession     *session,
 }
 
 static void
-on_default_language_name_changed (GdmSession     *session,
-                                  const char     *text,
-                                  GdmSimpleSlave *slave)
+on_default_language_name_changed (GdmSession       *session,
+                                  const char       *text,
+                                  GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: Default language name changed: %s", text);
 
@@ -713,9 +681,9 @@ on_default_language_name_changed (GdmSession     *session,
 }
 
 static void
-on_default_session_name_changed (GdmSession     *session,
-                                 const char     *text,
-                                 GdmSimpleSlave *slave)
+on_default_session_name_changed (GdmSession       *session,
+                                 const char       *text,
+                                 GdmSimpleSlave   *slave)
 {
         g_debug ("GdmSimpleSlave: Default session name changed: %s", text);
 
@@ -735,8 +703,7 @@ start_autologin_conversation_if_necessary (GdmSimpleSlave *slave)
         }
 
         g_debug ("GdmSimpleSlave: Starting automatic login conversation");
-        gdm_session_start_conversation (GDM_SESSION (slave->priv->session),
-                                        "gdm-autologin");
+        gdm_session_start_conversation (slave->priv->session, "gdm-autologin");
 }
 
 static void
@@ -796,14 +763,6 @@ create_new_session (GdmSimpleSlave *slave)
         g_signal_connect (slave->priv->session,
                           "setup-failed",
                           G_CALLBACK (on_session_setup_failed),
-                          slave);
-        g_signal_connect (slave->priv->session,
-                          "reset-complete",
-                          G_CALLBACK (on_session_reset_complete),
-                          slave);
-        g_signal_connect (slave->priv->session,
-                          "reset-failed",
-                          G_CALLBACK (on_session_reset_failed),
                           slave);
         g_signal_connect (slave->priv->session,
                           "authenticated",
@@ -906,12 +865,6 @@ destroy_session (GdmSimpleSlave *slave)
                                               G_CALLBACK (on_session_setup_failed),
                                               slave);
         g_signal_handlers_disconnect_by_func (slave->priv->session,
-                                              G_CALLBACK (on_session_reset_complete),
-                                              slave);
-        g_signal_handlers_disconnect_by_func (slave->priv->session,
-                                              G_CALLBACK (on_session_reset_failed),
-                                              slave);
-        g_signal_handlers_disconnect_by_func (slave->priv->session,
                                               G_CALLBACK (on_session_authenticated),
                                               slave);
         g_signal_handlers_disconnect_by_func (slave->priv->session,
@@ -968,9 +921,8 @@ destroy_session (GdmSimpleSlave *slave)
                                               G_CALLBACK (on_default_session_name_changed),
                                               slave);
 
-        gdm_session_close (GDM_SESSION (slave->priv->session));
-        g_object_unref (slave->priv->session);
-        slave->priv->session = NULL;
+        gdm_session_close (slave->priv->session);
+        g_clear_object (&slave->priv->session);
 }
 
 static void
@@ -1029,8 +981,7 @@ on_greeter_start_conversation (GdmGreeterServer *greeter_server,
         }
 
         g_debug ("GdmSimpleSlave: starting conversation with '%s' pam service'", service_name);
-        gdm_session_start_conversation (GDM_SESSION (slave->priv->session),
-                                        service_name);
+        gdm_session_start_conversation (slave->priv->session, service_name);
 }
 
 static void
@@ -1042,8 +993,7 @@ on_greeter_begin_verification (GdmGreeterServer *greeter_server,
         if (slave->priv->greeter_reset_id > 0) {
                 return;
         }
-        gdm_session_setup (GDM_SESSION (slave->priv->session),
-                           service_name);
+        gdm_session_setup (slave->priv->session, service_name);
 }
 
 static void
@@ -1055,9 +1005,7 @@ on_greeter_begin_auto_login (GdmGreeterServer *greeter_server,
         if (slave->priv->greeter_reset_id > 0) {
                 return;
         }
-        gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
-                                    "gdm-autologin",
-                                    username);
+        gdm_session_setup_for_user (slave->priv->session, "gdm-autologin", username);
 }
 
 static void
@@ -1070,9 +1018,7 @@ on_greeter_begin_verification_for_user (GdmGreeterServer *greeter_server,
         if (slave->priv->greeter_reset_id > 0) {
                 return;
         }
-        gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
-                                    service_name,
-                                    username);
+        gdm_session_setup_for_user (slave->priv->session, service_name, username);
 }
 
 static void
@@ -1084,7 +1030,7 @@ on_greeter_answer (GdmGreeterServer *greeter_server,
         if (slave->priv->greeter_reset_id > 0) {
                 return;
         }
-        gdm_session_answer_query (GDM_SESSION (slave->priv->session), service_name, text);
+        gdm_session_answer_query (slave->priv->session, service_name, text);
 }
 
 static void
@@ -1095,7 +1041,7 @@ on_greeter_session_selected (GdmGreeterServer *greeter_server,
         if (slave->priv->greeter_reset_id > 0) {
                 return;
         }
-        gdm_session_select_session (GDM_SESSION (slave->priv->session), text);
+        gdm_session_select_session (slave->priv->session, text);
 }
 
 static void
@@ -1106,7 +1052,7 @@ on_greeter_language_selected (GdmGreeterServer *greeter_server,
         if (slave->priv->greeter_reset_id > 0) {
                 return;
         }
-        gdm_session_select_language (GDM_SESSION (slave->priv->session), text);
+        gdm_session_select_language (slave->priv->session, text);
 }
 
 static void
@@ -1609,39 +1555,39 @@ gdm_simple_slave_start (GdmSlave *slave)
 static gboolean
 gdm_simple_slave_stop (GdmSlave *slave)
 {
+        GdmSimpleSlave *self = GDM_SIMPLE_SLAVE (slave);
+
         g_debug ("GdmSimpleSlave: Stopping simple_slave");
 
         GDM_SLAVE_CLASS (gdm_simple_slave_parent_class)->stop (slave);
 
-        if (GDM_SIMPLE_SLAVE (slave)->priv->greeter != NULL) {
-                stop_greeter (GDM_SIMPLE_SLAVE (slave));
+        if (self->priv->greeter != NULL) {
+                stop_greeter (self);
         }
 
-        if (GDM_SIMPLE_SLAVE (slave)->priv->session != NULL) {
+        if (self->priv->session != NULL) {
                 char *username;
 
                 /* Run the PostSession script. gdmslave suspends until script
                  * has terminated
                  */
-                username = gdm_session_get_username (GDM_SIMPLE_SLAVE (slave)->priv->session);
+                username = gdm_session_get_username (self->priv->session);
                 if (username != NULL) {
-                        gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostSession", username);
+                        gdm_slave_run_script (slave, GDMCONFDIR "/PostSession", username);
                 }
                 g_free (username);
 
 #ifdef  HAVE_LOGINDEVPERM
-                gdm_simple_slave_revoke_console_permissions (GDM_SIMPLE_SLAVE (slave));
+                gdm_simple_slave_revoke_console_permissions (self);
 #endif
 
-                gdm_session_close (GDM_SESSION (GDM_SIMPLE_SLAVE (slave)->priv->session));
-                g_object_unref (GDM_SIMPLE_SLAVE (slave)->priv->session);
-                GDM_SIMPLE_SLAVE (slave)->priv->session = NULL;
+                gdm_session_close (self->priv->session);
+                g_clear_object (&self->priv->session);
         }
 
-        if (GDM_SIMPLE_SLAVE (slave)->priv->server != NULL) {
-                gdm_server_stop (GDM_SIMPLE_SLAVE (slave)->priv->server);
-                g_object_unref (GDM_SIMPLE_SLAVE (slave)->priv->server);
-                GDM_SIMPLE_SLAVE (slave)->priv->server = NULL;
+        if (self->priv->server != NULL) {
+                gdm_server_stop (self->priv->server);
+                g_clear_object (&self->priv->server);
         }
 
         return TRUE;

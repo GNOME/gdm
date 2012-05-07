@@ -34,11 +34,6 @@ G_BEGIN_DECLS
 
 typedef struct _GdmSessionPrivate GdmSessionPrivate;
 
-enum {
-        GDM_SESSION_CRED_ESTABLISH = 0,
-        GDM_SESSION_CRED_REFRESH,
-};
-
 typedef struct
 {
         GObject            parent;
@@ -173,14 +168,6 @@ void              gdm_session_select_language             (GdmSession *session,
 void              gdm_session_select_user                 (GdmSession *session,
                                                            const char *username);
 void              gdm_session_cancel                      (GdmSession *session);
-
-/* Exported methods */
-gboolean          gdm_session_restart                  (GdmSession   *session,
-                                                        GError      **error);
-gboolean          gdm_session_stop                     (GdmSession   *session,
-                                                        GError      **error);
-gboolean          gdm_session_detach                   (GdmSession   *session,
-                                                        GError      **error);
 
 G_END_DECLS
 

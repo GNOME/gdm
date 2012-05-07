@@ -37,6 +37,7 @@ BUILT_SOURCES =					\
 	gdm-transient-display-glue.h		\
 	gdm-local-display-factory-glue.h	\
 	gdm-greeter-glue.h			\
+	gdm-session-glue.h			\
 	$(NULL)
 
 gdm-display-glue.c gdm-display-glue.h: gdm-display.xml Makefile.am
@@ -74,6 +75,13 @@ gdm-local-display-factory-glue.c gdm-local-display-factory-glue.h : gdm-local-di
 		--generate-c-code=gdm-local-display-factory-glue	\
 		$(srcdir)/gdm-local-display-factory.xml
 
+gdm-session-glue.c gdm-session-glue.h : gdm-session.xml Makefile.am
+	$(AM_V_GEN)gdbus-codegen 					\
+		--c-namespace=GdmDBus					\
+		--interface-prefix=org.gnome.DisplayManager		\
+		--generate-c-code=gdm-session-glue			\
+		$(srcdir)/gdm-session.xml
+
 gdm-greeter-glue.c gdm-greeter-glue.h : gdm-greeter-server.xml Makefile.am
 	$(AM_V_GEN)gdbus-codegen 					\
 		--c-namespace=GdmDBus					\
@@ -106,6 +114,13 @@ test_session_SOURCES = 		\
 	gdm-session-record.c	\
 	gdm-session-record.h	\
 	gdm-session-worker-job.c\
+	gdm-dbus-util.c		\
+	gdm-dbus-util.h		\
+	$(NULL)
+
+nodist_test_session_SOURCES = 	\
+	gdm-session-glue.c	\
+	gdm-session-glue.h	\
 	$(NULL)
 
 test_session_LDADD =		\
@@ -159,6 +174,8 @@ nodist_gdm_simple_slave_SOURCES = 	\
 	gdm-greeter-glue.h		\
 	gdm-display-glue.c		\
 	gdm-display-glue.h		\
+	gdm-session-glue.c		\
+	gdm-session-glue.h		\
 	gdm-slave-glue.c		\
 	gdm-slave-glue.h		\
 	$(NULL)
@@ -351,6 +368,7 @@ CLEANFILES =					\
 	gdm-display-glue.c			\
 	gdm-greeter-glue.c			\
 	gdm-local-display-factory-glue.c	\
+	gdm-session-glue.c			\
 	gdm-slave-glue.c			\
 	gdm-static-display-glue.c		\
 	gdm-transient-display-glue.c		\

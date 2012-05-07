@@ -62,23 +62,6 @@ on_session_setup_failed (GdmSession *session,
 }
 
 static void
-on_session_reset_complete (GdmSession *session,
-                           gpointer    data)
-{
-        g_debug ("Session reset complete");
-}
-
-static void
-on_session_reset_failed (GdmSession *session,
-                         const char *message,
-                         gpointer    data)
-{
-        g_print ("Unable to reset PAM: %s\n", message);
-
-        exit (1);
-}
-
-static void
 on_session_authenticated (GdmSession *session,
                           const char *service_name,
                           gpointer    data)
@@ -103,7 +86,7 @@ on_session_authorized (GdmSession *session,
                        gpointer    data)
 {
         g_debug ("Session authorized");
-        gdm_session_accredit (session, service_name, GDM_SESSION_CRED_ESTABLISH);
+        gdm_session_accredit (session, service_name, FALSE);
 }
 
 static void
@@ -124,7 +107,7 @@ on_session_accredited (GdmSession *session,
 {
         char *username;
 
-        username = gdm_session_get_username (GDM_SESSION (session));
+        username = gdm_session_get_username (session);
 
         g_print ("%s%ssuccessfully accredited\n",
                  username ? username : "", username ? " " : "");
@@ -278,7 +261,7 @@ main (int   argc,
                         username = argv[1];
                 }
 
-                gdm_session_start_conversation (GDM_SESSION (session), "gdm");
+                gdm_session_start_conversation (session, "gdm");
 
                 g_signal_connect (session,
                                   "conversation-started",
@@ -291,14 +274,6 @@ main (int   argc,
                 g_signal_connect (session,
                                   "setup-failed",
                                   G_CALLBACK (on_session_setup_failed),
-                                  NULL);
-                g_signal_connect (session,
-                                  "reset-complete",
-                                  G_CALLBACK (on_session_reset_complete),
-                                  NULL);
-                g_signal_connect (session,
-                                  "reset-failed",
-                                  G_CALLBACK (on_session_reset_failed),
                                   NULL);
                 g_signal_connect (session,
                                   "authenticated",
