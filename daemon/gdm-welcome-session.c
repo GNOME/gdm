@@ -40,9 +40,6 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <glib-object.h>
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
 
 #include "gdm-common.h"
 
@@ -59,7 +56,7 @@ extern char **environ;
 
 struct GdmWelcomeSessionPrivate
 {
-        GdmSession     *session;
+        GdmSession       *session;
         char           *command;
         GPid            pid;
 
@@ -693,13 +690,13 @@ on_session_setup_complete (GdmSession        *session,
 
         g_hash_table_iter_init (&iter, hash);
         while (g_hash_table_iter_next (&iter, &key, &value)) {
-                gdm_session_set_environment_variable (GDM_SESSION (welcome_session->priv->session), key, value);
+                gdm_session_set_environment_variable (welcome_session->priv->session, key, value);
         }
         g_hash_table_destroy (hash);
 
-        gdm_session_select_session_type (GDM_SESSION (welcome_session->priv->session), "LoginWindow");
+        gdm_session_select_session_type (welcome_session->priv->session, "LoginWindow");
 
-        gdm_session_authenticate (GDM_SESSION (welcome_session->priv->session), service_name);
+        gdm_session_authenticate (welcome_session->priv->session, service_name);
 }
 
 static void
@@ -707,8 +704,7 @@ on_session_authenticated (GdmSession        *session,
                           const char        *service_name,
                           GdmWelcomeSession *welcome_session)
 {
-        gdm_session_authorize (GDM_SESSION (welcome_session->priv->session),
-                               service_name);
+        gdm_session_authorize (welcome_session->priv->session, service_name);
 }
 
 static void
@@ -716,9 +712,7 @@ on_session_authorized (GdmSession        *session,
                        const char        *service_name,
                        GdmWelcomeSession *welcome_session)
 {
-        gdm_session_accredit (GDM_SESSION (welcome_session->priv->session),
-                              service_name,
-                              GDM_SESSION_CRED_ESTABLISH);
+        gdm_session_accredit (welcome_session->priv->session, service_name, FALSE);
 }
 
 static void
@@ -726,7 +720,7 @@ on_session_accredited (GdmSession        *session,
                        const char        *service_name,
                        GdmWelcomeSession *welcome_session)
 {
-        gdm_session_open_session (GDM_SESSION (welcome_session->priv->session), service_name);
+        gdm_session_open_session (welcome_session->priv->session, service_name);
 }
 
 static void
@@ -734,8 +728,7 @@ on_session_opened (GdmSession        *session,
                    const char        *service_name,
                    GdmWelcomeSession *welcome_session)
 {
-        gdm_session_start_session (GDM_SESSION (welcome_session->priv->session),
-                                   service_name);
+        gdm_session_start_session (welcome_session->priv->session, service_name);
 }
 
 static void
@@ -753,8 +746,7 @@ on_session_exited (GdmSession        *session,
                    int                exit_code,
                    GdmWelcomeSession *welcome_session)
 {
-        gdm_session_stop_conversation (GDM_SESSION (welcome_session->priv->session),
-                                       "gdm-welcome");
+        gdm_session_stop_conversation (welcome_session->priv->session, "gdm-welcome");
 
         g_signal_emit (G_OBJECT (welcome_session), signals [EXITED], 0, exit_code);
 }
@@ -764,8 +756,7 @@ on_session_died (GdmSession        *session,
                  int                signal_number,
                  GdmWelcomeSession *welcome_session)
 {
-        gdm_session_stop_conversation (GDM_SESSION (welcome_session->priv->session),
-                                       "gdm-welcome");
+        gdm_session_stop_conversation (welcome_session->priv->session, "gdm-welcome");
 
         g_signal_emit (G_OBJECT (welcome_session), signals [DIED], 0, signal_number);
 }
@@ -782,9 +773,7 @@ on_conversation_started (GdmSession        *session,
         log_path = g_build_filename (LOGDIR, log_file, NULL);
         g_free (log_file);
 
-        gdm_session_setup_for_program (GDM_SESSION (welcome_session->priv->session),
-                                       "gdm-welcome",
-                                       log_path);
+        gdm_session_setup_for_program (welcome_session->priv->session, "gdm-welcome", log_path);
         g_free (log_path);
 }
 
@@ -806,7 +795,7 @@ on_conversation_stopped (GdmSession        *session,
         }
 
         if (conversation_session != NULL) {
-                gdm_session_close (GDM_SESSION (conversation_session));
+                gdm_session_close (conversation_session);
                 g_object_unref (conversation_session);
         }
 }
@@ -836,11 +825,11 @@ gdm_welcome_session_start (GdmWelcomeSession *welcome_session)
                                                           welcome_session->priv->x11_authority_file,
                                                           welcome_session->priv->x11_display_is_local);
 
-        g_signal_connect (GDM_SESSION (welcome_session->priv->session),
+        g_signal_connect (welcome_session->priv->session,
                           "conversation-started",
                           G_CALLBACK (on_conversation_started),
                           welcome_session);
-        g_signal_connect (GDM_SESSION (welcome_session->priv->session),
+        g_signal_connect (welcome_session->priv->session,
                           "conversation-stopped",
                           G_CALLBACK (on_conversation_stopped),
                           welcome_session);
@@ -864,23 +853,21 @@ gdm_welcome_session_start (GdmWelcomeSession *welcome_session)
                           "session-opened",
                           G_CALLBACK (on_session_opened),
                           welcome_session);
-        g_signal_connect (GDM_SESSION (welcome_session->priv->session),
+        g_signal_connect (welcome_session->priv->session,
                           "session-started",
                           G_CALLBACK (on_session_started),
                           welcome_session);
-        g_signal_connect (GDM_SESSION (welcome_session->priv->session),
+        g_signal_connect (welcome_session->priv->session,
                           "session-exited",
                           G_CALLBACK (on_session_exited),
                           welcome_session);
-        g_signal_connect (GDM_SESSION (welcome_session->priv->session),
+        g_signal_connect (welcome_session->priv->session,
                           "session-died",
                           G_CALLBACK (on_session_died),
                           welcome_session);
 
-        gdm_session_start_conversation (GDM_SESSION (welcome_session->priv->session),
-                                        "gdm-welcome");
-        gdm_session_select_program (GDM_SESSION (welcome_session->priv->session),
-                                    welcome_session->priv->command);
+        gdm_session_start_conversation (welcome_session->priv->session, "gdm-welcome");
+        gdm_session_select_program (welcome_session->priv->session, welcome_session->priv->command);
         return TRUE;
 }
 
@@ -891,12 +878,10 @@ gdm_welcome_session_stop (GdmWelcomeSession *welcome_session)
                 gdm_signal_pid (welcome_session->priv->pid, SIGTERM);
         } else {
                 if (welcome_session->priv->session != NULL) {
-                        gdm_session_stop_conversation (GDM_SESSION (welcome_session->priv->session),
-                                                       "gdm-welcome");
-                        gdm_session_close (GDM_SESSION (welcome_session->priv->session));
+                        gdm_session_stop_conversation (welcome_session->priv->session, "gdm-welcome");
+                        gdm_session_close (welcome_session->priv->session);
 
-                        g_object_unref (welcome_session->priv->session);
-                        welcome_session->priv->session = NULL;
+                        g_clear_object (&welcome_session->priv->session);
                 } else {
                         stop_dbus_daemon (welcome_session);
                 }
