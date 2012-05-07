@@ -47,9 +47,9 @@
 #include "gdm-greeter-session.h"
 #include "gdm-greeter-server.h"
 
-#include "gdm-session-relay.h"
-
+#include "gdm-session-glue.h"
 #include "gdm-local-display-factory-glue.h"
+#include "gdm-dbus-util.h"
 
 extern char **environ;
 
@@ -71,8 +71,12 @@ struct GdmFactorySlavePrivate
         Display           *server_display;
         guint              connection_attempts;
 
+        GHashTable        *pending_queries;
+
+        GdmDBusSession    *session;
+        GDBusServer       *session_server;
+
         GdmServer         *server;
-        GdmSessionRelay   *session;
         GdmGreeterServer  *greeter_server;
         GdmGreeterSession *greeter;
         GdmDBusLocalDisplayFactory *factory_proxy;
@@ -139,150 +143,197 @@ on_greeter_session_died (GdmGreeterSession    *greeter,
 }
 
 
-static void
-on_session_info (GdmSession      *session,
-                 const char      *service_name,
-                 const char      *text,
-                 GdmFactorySlave *slave)
+static gboolean
+on_session_handle_info (GdmDBusSession        *session,
+                        GDBusMethodInvocation *invocation,
+                        const char            *service_name,
+                        const char            *text,
+                        GdmFactorySlave       *slave)
 {
         g_debug ("GdmFactorySlave: Info: %s", text);
         gdm_greeter_server_info (slave->priv->greeter_server, service_name, text);
+
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return TRUE;
 }
 
-static void
-on_session_problem (GdmSession      *session,
-                    const char      *service_name,
-                    const char      *text,
-                    GdmFactorySlave *slave)
+static gboolean
+on_session_handle_problem (GdmDBusSession        *session,
+                           GDBusMethodInvocation *invocation,
+                           const char            *service_name,
+                           const char            *text,
+                           GdmFactorySlave       *slave)
 {
         g_debug ("GdmFactorySlave: Problem: %s", text);
         gdm_greeter_server_problem (slave->priv->greeter_server, service_name, text);
+
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return TRUE;
 }
 
-static void
-on_session_info_query (GdmSession      *session,
-                       const char      *service_name,
-                       const char      *text,
-                       GdmFactorySlave *slave)
+static gboolean
+on_session_handle_info_query (GdmDBusSession        *session,
+                              GDBusMethodInvocation *invocation,
+                              const char            *service_name,
+                              const char            *text,
+                              GdmFactorySlave       *slave)
 {
+        GDBusMethodInvocation *previous;
 
         g_debug ("GdmFactorySlave: Info query: %s", text);
+
+        if ((previous = g_hash_table_lookup (slave->priv->pending_queries, service_name))) {
+                g_dbus_method_invocation_return_dbus_error (invocation,
+                                                            "org.gnome.DisplayManager.SessionRelayCancelled",
+                                                            "Cancelled by another request for the same service");
+        }
+
+        g_hash_table_replace (slave->priv->pending_queries, g_strdup (service_name), g_object_ref (invocation));
         gdm_greeter_server_info_query (slave->priv->greeter_server, service_name, text);
+
+        return TRUE;
 }
 
-static void
-on_session_secret_info_query (GdmSession      *session,
-                              const char      *service_name,
-                              const char      *text,
-                              GdmFactorySlave *slave)
+static gboolean
+on_session_handle_secret_info_query (GdmDBusSession        *session,
+                                     GDBusMethodInvocation *invocation,
+                                     const char            *service_name,
+                                     const char            *text,
+                                     GdmFactorySlave       *slave)
 {
+        GDBusMethodInvocation *previous;
+
         g_debug ("GdmFactorySlave: Secret info query: %s", text);
+
+        if ((previous = g_hash_table_lookup (slave->priv->pending_queries, service_name))) {
+                g_dbus_method_invocation_return_dbus_error (invocation,
+                                                            "org.gnome.DisplayManager.SessionRelayCancelled",
+                                                            "Cancelled by another request for the same service");
+        }
+
+        g_hash_table_replace (slave->priv->pending_queries, g_strdup (service_name), g_object_ref (invocation));
         gdm_greeter_server_secret_info_query (slave->priv->greeter_server, service_name, text);
+
+        return TRUE;
 }
 
-static void
-on_session_conversation_started (GdmSession      *session,
-                                 const char      *service_name,
-                                 GdmFactorySlave *slave)
+static gboolean
+on_session_handle_conversation_started (GdmDBusSession        *session,
+                                        GDBusMethodInvocation *invocation,
+                                        const char            *service_name,
+                                        GdmFactorySlave       *slave)
 {
         g_debug ("GdmFactorySlave: session conversation started");
 
         gdm_greeter_server_ready (slave->priv->greeter_server,
                                   service_name);
+
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return TRUE;
 }
 
-static void
-on_session_setup_complete (GdmSession      *session,
-                           const char      *service_name,
-                           GdmFactorySlave *slave)
+static gboolean
+on_session_handle_setup_complete (GdmDBusSession        *session,
+                                  GDBusMethodInvocation *invocation,
+                                  const char            *service_name,
+                                  GdmFactorySlave       *slave)
 {
-        gdm_session_authenticate (session, service_name);
+        gdm_dbus_session_emit_authenticate (session, service_name);
+
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return TRUE;
 }
 
-static void
-on_session_setup_failed (GdmSession      *session,
-                         const char      *service_name,
-                         const char      *message,
-                         GdmFactorySlave *slave)
+static gboolean
+on_session_handle_setup_failed (GdmDBusSession        *session,
+                                GDBusMethodInvocation *invocation,
+                                const char            *service_name,
+                                const char            *message,
+                                GdmFactorySlave       *slave)
 {
         gdm_greeter_server_problem (slave->priv->greeter_server, service_name, _("Unable to initialize login system"));
 
         queue_greeter_reset (slave);
+
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return TRUE;
 }
 
-static void
-on_session_reset_complete (GdmSession      *session,
-                           GdmFactorySlave *slave)
+static gboolean
+on_session_handle_authenticated (GdmDBusSession        *session,
+                                 GDBusMethodInvocation *invocation,
+                                 const char            *service_name,
+                                 GdmFactorySlave       *slave)
 {
-        g_debug ("GdmFactorySlave: PAM reset");
+        gdm_dbus_session_emit_authorize (session, service_name);
+
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return TRUE;
 }
 
-static void
-on_session_reset_failed (GdmSession      *session,
-                         const char      *message,
-                         GdmFactorySlave *slave)
-{
-        g_critical ("Unable to reset PAM");
-}
-
-static void
-on_session_authenticated (GdmSession      *session,
-                          const char      *service_name,
-                          GdmFactorySlave *slave)
-{
-        gdm_session_authorize (session, service_name);
-}
-
-static void
-on_session_authentication_failed (GdmSession      *session,
-                                  const char      *service_name,
-                                  const char      *message,
-                                  GdmFactorySlave *slave)
+static gboolean
+on_session_handle_authentication_failed (GdmDBusSession        *session,
+                                         GDBusMethodInvocation *invocation,
+                                         const char            *service_name,
+                                         const char            *message,
+                                         GdmFactorySlave       *slave)
 {
         gdm_greeter_server_problem (slave->priv->greeter_server, service_name, _("Unable to authenticate user"));
 
         queue_greeter_reset (slave);
+
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return TRUE;
 }
 
-static void
-on_session_authorized (GdmSession      *session,
-                       const char      *service_name,
-                       GdmFactorySlave *slave)
+static gboolean
+on_session_handle_authorized (GdmDBusSession        *session,
+                              GDBusMethodInvocation *invocation,
+                              const char            *service_name,
+                              GdmFactorySlave       *slave)
 {
-        int flag;
-
         /* FIXME: check for migration? */
-        flag = GDM_SESSION_CRED_ESTABLISH;
+        gdm_dbus_session_emit_establish_credentials (session, service_name);
 
-        gdm_session_accredit (session, service_name, flag);
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return TRUE;
 }
 
-static void
-on_session_authorization_failed (GdmSession      *session,
-                                 const char      *service_name,
-                                 const char      *message,
-                                 GdmFactorySlave *slave)
+static gboolean
+on_session_handle_authorization_failed (GdmDBusSession        *session,
+                                        GDBusMethodInvocation *invocation,
+                                        const char            *service_name,
+                                        const char            *message,
+                                        GdmFactorySlave       *slave)
 {
         gdm_greeter_server_problem (slave->priv->greeter_server, service_name, _("Unable to authorize user"));
 
         queue_greeter_reset (slave);
+
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return TRUE;
 }
 
-static void
-on_session_accredited (GdmSession      *session,
-                       const char      *service_name,
-                       GdmFactorySlave *slave)
+static gboolean
+on_session_handle_accredited (GdmDBusSession        *session,
+                              GDBusMethodInvocation *invocation,
+                              const char            *service_name,
+                              GdmFactorySlave       *slave)
 {
         g_debug ("GdmFactorySlave:  session user verified");
 
-        gdm_session_open_session (session, service_name);
+        gdm_dbus_session_emit_open_session (session, service_name);
+
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return TRUE;
 }
 
-static void
-on_session_accreditation_failed (GdmSession      *session,
-                                 const char      *service_name,
-                                 const char      *message,
-                                 GdmFactorySlave *slave)
+static gboolean
+on_session_handle_accreditation_failed (GdmDBusSession        *session,
+                                        GDBusMethodInvocation *invocation,
+                                        const char            *service_name,
+                                        const char            *message,
+                                        GdmFactorySlave       *slave)
 {
         g_debug ("GdmFactorySlave: could not successfully authenticate user: %s",
                  message);
@@ -290,48 +341,65 @@ on_session_accreditation_failed (GdmSession      *session,
         gdm_greeter_server_problem (slave->priv->greeter_server, service_name, _("Unable to establish credentials"));
 
         queue_greeter_reset (slave);
+
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return TRUE;
 }
 
-static void
-on_session_opened (GdmSession      *session,
-                   const char      *service_name,
-                   GdmFactorySlave *slave)
+static gboolean
+on_session_handle_opened (GdmDBusSession        *session,
+                          GDBusMethodInvocation *invocation,
+                          const char            *service_name,
+                          GdmFactorySlave       *slave)
 {
         g_debug ("GdmFactorySlave: session opened");
 
-        gdm_session_start_session (session, service_name);
+        gdm_dbus_session_emit_start_session (session, service_name);
 
         gdm_greeter_server_reset (slave->priv->greeter_server);
+
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return TRUE;
 }
 
-static void
-on_session_open_failed (GdmSession      *session,
-                        const char      *service_name,
-                        const char      *message,
-                        GdmFactorySlave *slave)
+static gboolean
+on_session_handle_open_failed (GdmDBusSession        *session,
+                               GDBusMethodInvocation *invocation,
+                               const char            *service_name,
+                               const char            *message,
+                               GdmFactorySlave       *slave)
 {
         g_debug ("GdmFactorySlave: could not open session: %s", message);
 
         gdm_greeter_server_problem (slave->priv->greeter_server, service_name, _("Unable to open session"));
 
         queue_greeter_reset (slave);
+
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return TRUE;
 }
 
-static void
-on_session_session_started (GdmSession      *session,
-                            int              pid,
-                            GdmFactorySlave *slave)
+static gboolean
+on_session_handle_session_started (GdmDBusSession        *session,
+                                   GDBusMethodInvocation *invocation,
+                                   const char            *service_name,
+                                   int                    pid,
+                                   const char           **environment,
+                                   GdmFactorySlave       *slave)
 {
         g_debug ("GdmFactorySlave: Relay session started");
 
         gdm_greeter_server_reset (slave->priv->greeter_server);
+
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return TRUE;
 }
 
 static gboolean
 create_product_display (GdmFactorySlave *slave)
 {
         char    *parent_display_id;
-        char    *server_address;
+        const char *server_address;
         char    *product_id;
         GError  *error = NULL;
         gboolean res;
@@ -354,7 +422,7 @@ create_product_display (GdmFactorySlave *slave)
                 goto out;
         }
 
-        server_address = gdm_session_relay_get_address (slave->priv->session);
+        server_address = g_dbus_server_get_client_address (slave->priv->session_server);
 
         g_object_get (slave,
                       "display-id", &parent_display_id,
@@ -365,7 +433,6 @@ create_product_display (GdmFactorySlave *slave)
                                                                                server_address,
                                                                                &product_id,
                                                                                NULL, &error);
-        g_free (server_address);
         g_free (parent_display_id);
 
         if (! res) {
@@ -385,21 +452,18 @@ create_product_display (GdmFactorySlave *slave)
 }
 
 static void
-on_session_relay_disconnected (GdmSessionRelay *session,
-                               GdmFactorySlave *slave)
+on_session_connection_closed (GDBusConnection *connection,
+                              gboolean         remote_peer_vanished,
+                              GdmFactorySlave *slave)
 {
         g_debug ("GdmFactorySlave: Relay disconnected");
 
         /* FIXME: do some kind of loop detection */
         gdm_greeter_server_reset (slave->priv->greeter_server);
         create_product_display (slave);
-}
 
-static void
-on_session_relay_connected (GdmSessionRelay *session,
-                            GdmFactorySlave *slave)
-{
-        g_debug ("GdmFactorySlave: Relay Connected");
+        /* pair the reference added in handle_new_connection */
+        g_object_unref (connection);
 }
 
 static void
@@ -409,7 +473,7 @@ on_greeter_start_conversation (GdmGreeterServer *greeter_server,
 {
         g_debug ("GdmFactorySlave: start conversation");
 
-        gdm_session_start_conversation (GDM_SESSION (slave->priv->session), service_name);
+        gdm_dbus_session_emit_start_conversation (slave->priv->session, service_name);
 }
 
 static void
@@ -418,8 +482,8 @@ on_greeter_begin_verification (GdmGreeterServer *greeter_server,
                                GdmFactorySlave  *slave)
 {
         g_debug ("GdmFactorySlave: begin verification");
-        gdm_session_setup (GDM_SESSION (slave->priv->session),
-                           service_name);
+        gdm_dbus_session_emit_setup (slave->priv->session,
+                                     service_name, "", "", "", "", "");
 }
 
 static void
@@ -429,9 +493,9 @@ on_greeter_begin_verification_for_user (GdmGreeterServer *greeter_server,
                                         GdmFactorySlave  *slave)
 {
         g_debug ("GdmFactorySlave: begin verification for user");
-        gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
-                                    service_name,
-                                    username);
+        gdm_dbus_session_emit_setup_for_user (slave->priv->session,
+                                              service_name, username,
+                                              "", "", "", "", "");
 }
 
 static void
@@ -440,8 +504,15 @@ on_greeter_answer (GdmGreeterServer *greeter_server,
                    const char       *text,
                    GdmFactorySlave  *slave)
 {
+        GDBusMethodInvocation *invocation;
+
         g_debug ("GdmFactorySlave: Greeter answer");
-        gdm_session_answer_query (GDM_SESSION (slave->priv->session), service_name, text);
+
+        invocation = g_hash_table_lookup (slave->priv->pending_queries, service_name);
+        g_dbus_method_invocation_return_value (invocation,
+                                               g_variant_new ("(s)", text));
+
+        g_hash_table_remove (slave->priv->pending_queries, service_name);
 }
 
 static void
@@ -449,7 +520,7 @@ on_greeter_session_selected (GdmGreeterServer *greeter_server,
                              const char       *text,
                              GdmFactorySlave  *slave)
 {
-        gdm_session_select_session (GDM_SESSION (slave->priv->session), text);
+        gdm_dbus_session_emit_set_session_name (slave->priv->session, text);
 }
 
 static void
@@ -457,7 +528,7 @@ on_greeter_language_selected (GdmGreeterServer *greeter_server,
                               const char       *text,
                               GdmFactorySlave  *slave)
 {
-        gdm_session_select_language (GDM_SESSION (slave->priv->session), text);
+        gdm_dbus_session_emit_set_language_name (slave->priv->session, text);
 }
 
 static void
@@ -465,14 +536,14 @@ on_greeter_user_selected (GdmGreeterServer *greeter_server,
                           const char       *text,
                           GdmFactorySlave  *slave)
 {
-        gdm_session_select_user (GDM_SESSION (slave->priv->session), text);
+        gdm_dbus_session_emit_set_user_name (slave->priv->session, text);
 }
 
 static void
 on_greeter_cancel (GdmGreeterServer *greeter_server,
                    GdmFactorySlave  *slave)
 {
-        gdm_session_cancel (GDM_SESSION (slave->priv->session));
+        gdm_dbus_session_emit_cancelled (slave->priv->session);
 }
 
 static void
@@ -726,102 +797,121 @@ gdm_factory_slave_run (GdmFactorySlave *slave)
 }
 
 static gboolean
+handle_new_connection (GDBusServer     *server,
+                       GDBusConnection *connection,
+                       GdmFactorySlave *slave)
+{
+        g_object_ref (connection);
+
+        slave->priv->session = GDM_DBUS_SESSION (gdm_dbus_session_skeleton_new ());
+
+        g_signal_connect_object (slave->priv->session,
+                                 "handle-conversation-started",
+                                 G_CALLBACK (on_session_handle_conversation_started),
+                                 slave, 0);
+        g_signal_connect_object (slave->priv->session,
+                                 "handle-setup-complete",
+                                 G_CALLBACK (on_session_handle_setup_complete),
+                                 slave, 0);
+        g_signal_connect_object (slave->priv->session,
+                                 "handle-setup-failed",
+                                 G_CALLBACK (on_session_handle_setup_failed),
+                                 slave, 0);
+        g_signal_connect_object (slave->priv->session,
+                                 "handle-authenticated",
+                                 G_CALLBACK (on_session_handle_authenticated),
+                                 slave, 0);
+        g_signal_connect_object (slave->priv->session,
+                                 "handle-authentication-failed",
+                                 G_CALLBACK (on_session_handle_authentication_failed),
+                                 slave, 0);
+        g_signal_connect_object (slave->priv->session,
+                                 "handle-authorized",
+                                 G_CALLBACK (on_session_handle_authorized),
+                                 slave, 0);
+        g_signal_connect_object (slave->priv->session,
+                                 "handle-authorization-failed",
+                                 G_CALLBACK (on_session_handle_authorization_failed),
+                                 slave, 0);
+        g_signal_connect_object (slave->priv->session,
+                                 "handle-accredited",
+                                 G_CALLBACK (on_session_handle_accredited),
+                                 slave, 0);
+        g_signal_connect_object (slave->priv->session,
+                                 "handle-accreditation-failed",
+                                 G_CALLBACK (on_session_handle_accreditation_failed),
+                                 slave, 0);
+        g_signal_connect_object (slave->priv->session,
+                                 "handle-session-opened",
+                                 G_CALLBACK (on_session_handle_opened),
+                                 slave, 0);
+        g_signal_connect_object (slave->priv->session,
+                                 "handle-session-open-failed",
+                                 G_CALLBACK (on_session_handle_open_failed),
+                                 slave, 0);
+        g_signal_connect_object (slave->priv->session,
+                                 "handle-info",
+                                 G_CALLBACK (on_session_handle_info),
+                                 slave, 0);
+        g_signal_connect_object (slave->priv->session,
+                                 "handle-problem",
+                                 G_CALLBACK (on_session_handle_problem),
+                                 slave, 0);
+        g_signal_connect_object (slave->priv->session,
+                                 "handle-info-query",
+                                 G_CALLBACK (on_session_handle_info_query),
+                                 slave, 0);
+        g_signal_connect_object (slave->priv->session,
+                                 "handle-secret-info-query",
+                                 G_CALLBACK (on_session_handle_secret_info_query),
+                                 slave, 0);
+        g_signal_connect_object (slave->priv->session,
+                                 "handle-session-started",
+                                 G_CALLBACK (on_session_handle_session_started),
+                                 slave, 0);
+
+        g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (slave->priv->session),
+                                          connection,
+                                          "/org/gnome/DisplayManager/Session",
+                                          NULL);
+
+        g_signal_connect_object (connection, "closed",
+                                 G_CALLBACK (on_session_connection_closed), slave, 0);
+
+        return TRUE;
+}
+
+static gboolean
 gdm_factory_slave_start (GdmSlave *slave)
 {
+        GdmFactorySlave *self;
+        GError *error = NULL;
         gboolean ret;
 
         ret = FALSE;
+
+        self = GDM_FACTORY_SLAVE (slave);
 
         g_debug ("GdmFactorySlave: Starting factory slave");
 
         GDM_SLAVE_CLASS (gdm_factory_slave_parent_class)->start (slave);
 
-        GDM_FACTORY_SLAVE (slave)->priv->session = gdm_session_relay_new ();
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "conversation-started",
-                          G_CALLBACK (on_session_conversation_started),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "setup-complete",
-                          G_CALLBACK (on_session_setup_complete),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "setup-failed",
-                          G_CALLBACK (on_session_setup_failed),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "reset-complete",
-                          G_CALLBACK (on_session_reset_complete),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "reset-failed",
-                          G_CALLBACK (on_session_reset_failed),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "authenticated",
-                          G_CALLBACK (on_session_authenticated),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "authentication-failed",
-                          G_CALLBACK (on_session_authentication_failed),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "authorized",
-                          G_CALLBACK (on_session_authorized),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "authorization-failed",
-                          G_CALLBACK (on_session_authorization_failed),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "accredited",
-                          G_CALLBACK (on_session_accredited),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "accreditation-failed",
-                          G_CALLBACK (on_session_accreditation_failed),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "session-opened",
-                          G_CALLBACK (on_session_opened),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "session-open-failed",
-                          G_CALLBACK (on_session_open_failed),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "info",
-                          G_CALLBACK (on_session_info),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "problem",
-                          G_CALLBACK (on_session_problem),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "info-query",
-                          G_CALLBACK (on_session_info_query),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "secret-info-query",
-                          G_CALLBACK (on_session_secret_info_query),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "session-started",
-                          G_CALLBACK (on_session_session_started),
-                          slave);
+        self->priv->pending_queries = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                              g_free, g_object_unref);
 
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "connected",
-                          G_CALLBACK (on_session_relay_connected),
-                          slave);
-        g_signal_connect (GDM_FACTORY_SLAVE (slave)->priv->session,
-                          "disconnected",
-                          G_CALLBACK (on_session_relay_disconnected),
-                          slave);
+        self->priv->session_server = gdm_dbus_setup_private_server (NULL,
+                                                                      &error);
 
-        gdm_session_relay_start (GDM_FACTORY_SLAVE (slave)->priv->session);
+        if (self->priv->session_server == NULL) {
+                g_critical ("Failed to setup private DBus server: %s", error->message);
+                return FALSE;
+        }
+        g_signal_connect_object (self->priv->session_server, "new-connection",
+                                 G_CALLBACK (handle_new_connection), slave, 0);
 
-        gdm_factory_slave_run (GDM_FACTORY_SLAVE (slave));
+        g_dbus_server_start (self->priv->session_server);
+
+        gdm_factory_slave_run (self);
 
         ret = TRUE;
 
@@ -831,34 +921,41 @@ gdm_factory_slave_start (GdmSlave *slave)
 static gboolean
 gdm_factory_slave_stop (GdmSlave *slave)
 {
+        GdmFactorySlave *self = GDM_FACTORY_SLAVE (slave);
+
         g_debug ("GdmFactorySlave: Stopping factory_slave");
 
         GDM_SLAVE_CLASS (gdm_factory_slave_parent_class)->stop (slave);
 
-        if (GDM_FACTORY_SLAVE (slave)->priv->session != NULL) {
-                gdm_session_relay_stop (GDM_FACTORY_SLAVE (slave)->priv->session);
-                g_object_unref (GDM_FACTORY_SLAVE (slave)->priv->session);
-                GDM_FACTORY_SLAVE (slave)->priv->session = NULL;
+        if (self->priv->session != NULL) {
+                g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (self->priv->session));
+                g_clear_object (&self->priv->session);
         }
 
-        if (GDM_FACTORY_SLAVE (slave)->priv->greeter_server != NULL) {
-                gdm_greeter_server_stop (GDM_FACTORY_SLAVE (slave)->priv->greeter_server);
-                g_object_unref (GDM_FACTORY_SLAVE (slave)->priv->greeter_server);
-                GDM_FACTORY_SLAVE (slave)->priv->greeter_server = NULL;
+        if (self->priv->session_server != NULL) {
+                g_dbus_server_stop (self->priv->session_server);
+                g_clear_object (&self->priv->session_server);
         }
 
-        if (GDM_FACTORY_SLAVE (slave)->priv->greeter != NULL) {
-                gdm_welcome_session_stop (GDM_WELCOME_SESSION (GDM_FACTORY_SLAVE (slave)->priv->greeter));
+        if (self->priv->greeter_server != NULL) {
+                gdm_greeter_server_stop (self->priv->greeter_server);
+                g_clear_object (&self->priv->greeter_server);
         }
 
-        if (GDM_FACTORY_SLAVE (slave)->priv->server != NULL) {
-                gdm_server_stop (GDM_FACTORY_SLAVE (slave)->priv->server);
-                g_object_unref (GDM_FACTORY_SLAVE (slave)->priv->server);
-                GDM_FACTORY_SLAVE (slave)->priv->server = NULL;
+        if (self->priv->greeter != NULL) {
+                gdm_welcome_session_stop (GDM_WELCOME_SESSION (self->priv->greeter));
         }
 
-        if (GDM_FACTORY_SLAVE (slave)->priv->factory_proxy != NULL) {
-                g_object_unref (GDM_FACTORY_SLAVE (slave)->priv->factory_proxy);
+        if (self->priv->server != NULL) {
+                gdm_server_stop (self->priv->server);
+                g_clear_object (&self->priv->server);
+        }
+
+        g_clear_object (&self->priv->factory_proxy);
+
+        if (self->priv->pending_queries) {
+                g_hash_table_unref (self->priv->pending_queries);
+                self->priv->pending_queries = NULL;
         }
 
         return TRUE;

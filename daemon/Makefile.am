@@ -42,10 +42,10 @@ BUILT_SOURCES =					\
 	gdm-static-display-glue.h		\
 	gdm-transient-display-glue.h		\
 	gdm-local-display-factory-glue.h	\
-	gdm-local-display-factory-glue.c	\
 	gdm-product-display-glue.h		\
 	gdm-slave-resources.h			\
 	gdm-greeter-glue.h			\
+	gdm-session-glue.h			\
 	$(NULL)
 
 gdm-manager-glue.h: gdm-manager.xml Makefile.am
@@ -73,8 +73,12 @@ gdm-static-display-glue.h: gdm-static-display.xml Makefile.am
 gdm-transient-display-glue.h: gdm-transient-display.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_transient_display --mode=glib-server --output=gdm-transient-display-glue.h $(srcdir)/gdm-transient-display.xml
 
-gdm-product-display-glue.h: gdm-product-display.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_product_display --mode=glib-server --output=gdm-product-display-glue.h $(srcdir)/gdm-product-display.xml
+gdm-product-display-glue.c gdm-product-display-glue.h: gdm-product-display.xml Makefile.am
+	gdbus-codegen 							\
+		--c-namespace=GdmDBus					\
+		--interface-prefix=org.gnome.DisplayManager		\
+		--generate-c-code=gdm-product-display-glue		\
+		$(srcdir)/gdm-product-display.xml
 
 gdm-local-display-factory-glue.c gdm-local-display-factory-glue.h : gdm-local-display-factory.xml Makefile.am
 	gdbus-codegen 							\
@@ -82,6 +86,13 @@ gdm-local-display-factory-glue.c gdm-local-display-factory-glue.h : gdm-local-di
 		--interface-prefix=org.gnome.DisplayManager		\
 		--generate-c-code=gdm-local-display-factory-glue	\
 		$(srcdir)/gdm-local-display-factory.xml
+
+gdm-session-glue.c gdm-session-glue.h : gdm-session.xml Makefile.am
+	gdbus-codegen 							\
+		--c-namespace=GdmDBus					\
+		--interface-prefix=org.gnome.DisplayManager		\
+		--generate-c-code=gdm-session-glue			\
+		$(srcdir)/gdm-session.xml
 
 gdm-greeter-glue.c gdm-greeter-glue.h : gdm-greeter-server.xml Makefile.am
 	gdbus-codegen 							\
@@ -192,8 +203,6 @@ gdm_factory_slave_SOURCES = 		\
 	gdm-session-private.h		\
 	gdm-session-record.c		\
 	gdm-session-record.h		\
-	gdm-session-relay.c		\
-	gdm-session-relay.h		\
 	gdm-session-worker-job.c	\
 	gdm-session-worker-job.h	\
 	gdm-xerrors.h			\
@@ -211,6 +220,8 @@ nodist_gdm_factory_slave_SOURCES =		\
 	gdm-greeter-glue.h			\
 	gdm-local-display-factory-glue.h	\
 	gdm-local-display-factory-glue.c	\
+	gdm-session-glue.c			\
+	gdm-session-glue.h			\
 	$(NULL)
 
 gdm_factory_slave_LDFLAGS =		\
@@ -244,6 +255,13 @@ gdm_product_slave_SOURCES = 		\
 	gdm-slave.h			\
 	gdm-product-slave.c		\
 	gdm-product-slave.h		\
+	$(NULL)
+
+nodist_gdm_product_slave_SOURCES = 	\
+	gdm-product-display-glue.c	\
+	gdm-product-display-glue.h	\
+	gdm-session-glue.c		\
+	gdm-session-glue.h		\
 	$(NULL)
 
 gdm_product_slave_LDFLAGS =		\

@@ -1,0 +1,160 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/org/gnome/DisplayManager/Session">
+  <!-- methods are called by the child (product slave or session worker),
+       signals are emitted by the parent (factory slave or simple slave) -->
+  <interface name="org.gnome.DisplayManager.Session">
+    <!-- only used by SessionRelay (factory slave to product slave) -->
+    <method name="ConversationStarted">
+      <arg name="service_name" direction="in" type="s"/>
+    </method>
+    <method name="ServiceUnavailable">
+      <arg name="message" direction="in" type="s"/>
+    </method>
+    <signal name="StartConversation">
+      <!-- XXX fold in Setup? -->
+      <arg name="service_name" type="s"/>
+    </signal>
+    <signal name="Close"/>
+    <signal name="Cancelled"/> <!-- XXX: fold in Reset? -->
+
+    <!-- only used by SessionDirect (simple slave to session worker) -->
+    <method name="CancelPendingQuery">
+      <!-- XXX why isn't this used by SessionRelay? -->
+    </method>
+    <signal name="StartProgram">
+      <arg name="command" type="s"/>
+    </signal>
+
+    <!-- used by both of them -->
+    <method name="SetupComplete">
+      <arg name="service_name" direction="in" type="s"/>
+    </method>
+    <method name="SetupFailed">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="message" direction="in" type="s"/>
+    </method>
+    <method name="Authenticated">
+      <arg name="service_name" direction="in" type="s"/>
+    </method>
+    <method name="AuthenticationFailed">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="message" direction="in" type="s"/>
+    </method>
+    <method name="Authorized">
+      <arg name="service_name" direction="in" type="s"/>
+    </method>
+    <method name="AuthorizationFailed">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="message" direction="in" type="s"/>
+    </method>
+    <method name="Accredited">
+      <arg name="service_name" direction="in" type="s"/>
+    </method>
+    <method name="AccreditationFailed">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="message" direction="in" type="s"/>
+    </method>
+    <method name="InfoQuery">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="text" direction="in" type="s"/>
+      <arg name="answer" direction="out" type="s"/>
+    </method>
+    <method name="SecretInfoQuery">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="text" direction="in" type="s"/>
+      <arg name="answer" direction="out" type="s"/>
+    </method>
+    <method name="Info">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="text" direction="in" type="s"/>
+    </method>
+    <method name="Problem">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="text" direction="in" type="s"/>
+    </method>
+    <method name="Opened">
+      <arg name="service_name" direction="in" type="s"/>
+    </method>
+    <method name="OpenFailed">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="message" direction="in" type="s"/>
+    </method>
+    <method name="SessionStarted">
+      <arg name="pid" direction="in" type="i"/>
+    </method>
+    <method name="SessionExited">
+      <arg name="service_name" direction="in" type="s"/>
+      <!-- This is a combination of exit code and exit
+           signal. Use macros in sys/wait.h to handle it. -->
+      <arg name="status" direction="in" type="i"/>
+    </method>
+
+    <signal name="Reset" />
+    <signal name="Setup">
+      <!-- Only service_name is used by SessionRelay -->
+      <arg name="service_name" type="s"/>
+      <arg name="x11_display_name" type="s"/>
+      <arg name="x11_authority_file" type="s"/>
+      <arg name="display_device" type="s"/>
+      <arg name="display_seat" type="s"/>
+      <arg name="hostname" type="s"/>
+    </signal>
+    <signal name="SetupForUser">
+      <!-- Only service_name and username are used by SessionRelay -->
+      <arg name="service_name" type="s"/>
+      <arg name="user_name" type="s"/>
+      <arg name="x11_display_name" type="s"/>
+      <arg name="x11_authority_file" type="s"/>
+      <arg name="display_device" type="s"/>
+      <arg name="display_seat" type="s"/>
+      <arg name="hostname" type="s"/>
+    </signal>
+    <signal name="SetupForProgram">
+      <!-- not used by SessionRelay (but kept here because it's near
+	   the other Setup* signals -->
+      <arg name="service_name" type="s"/>
+      <arg name="x11_display_name" type="s"/>
+      <arg name="x11_authority_file" type="s"/>
+      <arg name="display_device" type="s"/>
+      <arg name="display_seat" type="s"/>
+      <arg name="hostname" type="s"/>
+      <arg name="log_file" type="s"/>
+    </signal>
+    <signal name="Authenticate">
+      <arg name="service_name" type="s"/>
+    </signal>
+    <signal name="Authorize">
+      <arg name="service_name" type="s"/>
+    </signal>
+    <signal name="EstablishCredentials">
+      <arg name="service_name" type="s"/>
+    </signal>
+    <signal name="RefreshCredentials">
+      <arg name="service_name" type="s"/>
+    </signal>
+    <signal name="OpenSession">
+      <arg name="service_name" type="s"/>
+    </signal>
+    <signal name="StartSession">
+      <arg name="service_name" type="s"/>
+    </signal>
+    <signal name="SetEnvironmentVariable">
+      <arg name="name" type="s" />
+      <arg name="value" type="s" />
+    </signal>
+    <signal name="SetLanguageName">
+      <arg name="language" type="s" />
+    </signal>
+    <signal name="SetSessionName">
+      <arg name="session_name" type="s" />
+    </signal>
+    <signal name="SetSessionType">
+      <!-- XXX session type? -->
+      <arg name="session_type" type="s" />
+    </signal>
+    <signal name="SetUserName">
+      <!-- XXX why isn't this used by SessionDirect? -->
+      <arg name="user_name" type="s" />
+    </signal>
+  </interface>
+</node>
