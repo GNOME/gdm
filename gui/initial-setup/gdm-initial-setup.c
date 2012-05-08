@@ -1,5 +1,7 @@
 #include <config.h>
 #include <glib/gi18n.h>
+#include <gio/gio.h>
+#include <gio/gunixoutputstream.h>
 
 #include <stdlib.h>
 #include <gtk/gtk.h>
@@ -19,6 +21,7 @@
 #include "cc-timezone-map.h"
 #include "timedated.h"
 #include "um-utils.h"
+#include "um-photo-dialog.h"
 #include "gdm-greeter-client.h"
 
 #define GWEATHER_I_KNOW_THIS_IS_UNSTABLE
@@ -28,6 +31,10 @@
 #include <goa/goa.h>
 #define GOA_BACKEND_API_IS_SUBJECT_TO_CHANGE
 #include <goabackend/goabackend.h>
+
+#ifdef HAVE_CHEESE
+#include <cheese-gtk.h>
+#endif
 
 #include <gnome-keyring.h>
 
@@ -61,6 +68,10 @@ typedef struct {
         ActUserAccountType account_type;
 
         gboolean user_data_unsaved;
+
+        GtkWidget *photo_dialog;
+        GdkPixbuf *avatar_pixbuf;
+        gchar *avatar_filename;
 
         /* location data */
         CcTimezoneMap *map;
@@ -991,6 +1002,46 @@ confirm_entry_focus_out (GtkWidget     *entry,
 }
 
 static void
+set_user_avatar (SetupData *setup)
+{
+        gchar *path;
+        gint fd;
+        GOutputStream *stream;
+        GError *error;
+
+        if (setup->avatar_filename != NULL) {
+                act_user_set_icon_file (setup->act_user, setup->avatar_filename);
+                return;
+        }
+
+        if (setup->avatar_pixbuf == NULL) {
+                return;
+        }
+
+        path = g_build_filename (g_get_tmp_dir (), "usericonXXXXXX", NULL);
+        fd = g_mkstemp (path);
+        if (fd == -1) {
+                g_warning ("failed to create temporary file for image data");
+                g_free (path);
+                return;
+        }
+
+        stream = g_unix_output_stream_new (fd, TRUE);
+
+        error = NULL;
+        if (!gdk_pixbuf_save_to_stream (setup->avatar_pixbuf, stream, "png", NULL, &error, NULL)) {
+                g_warning ("failed to save image: %s", error->message);
+                g_error_free (error);
+                g_object_unref (stream);
+                return;
+        }
+
+        g_object_unref (stream);
+
+        act_user_set_icon_file (setup->act_user, path); 
+}
+
+static void
 create_user (SetupData *setup)
 {
         const gchar *username;
@@ -1006,6 +1057,8 @@ create_user (SetupData *setup)
                 g_warning ("Failed to create user: %s", error->message);
                 g_error_free (error);
         }
+
+        set_user_avatar (setup);
 }
 
 static void save_account_data (SetupData *setup);
@@ -1219,6 +1272,39 @@ account_row_activated (GtkTreeView       *tv,
 }
 
 static void
+avatar_callback (GdkPixbuf   *pixbuf,
+                 const gchar *filename,
+                 gpointer     data)
+{
+        SetupData *setup = data;
+        GtkWidget *image;
+        GdkPixbuf *tmp;
+
+        g_clear_object (&setup->avatar_pixbuf);
+        g_free (setup->avatar_filename);
+        setup->avatar_filename = NULL;
+
+        image = WID("local-account-avatar-image");
+
+        if (pixbuf) {
+                setup->avatar_pixbuf = g_object_ref (pixbuf);
+                tmp = gdk_pixbuf_scale_simple (pixbuf, 64, 64, GDK_INTERP_BILINEAR);
+                gtk_image_set_from_pixbuf (GTK_IMAGE (image), tmp);
+                g_object_unref (tmp);
+        }
+        else if (filename) {
+                setup->avatar_filename = g_strdup (filename);
+                tmp = gdk_pixbuf_new_from_file_at_size (filename, 64, 64, NULL);
+                gtk_image_set_from_pixbuf (GTK_IMAGE (image), tmp);
+                g_object_unref (tmp);
+        }
+        else {
+                gtk_image_set_from_icon_name (GTK_IMAGE (image), "avatar-default",
+                                                                GTK_ICON_SIZE_DIALOG);
+        }
+}
+
+static void
 prepare_account_page (SetupData *setup)
 {
         GtkWidget *fullname_entry;
@@ -1229,6 +1315,7 @@ prepare_account_page (SetupData *setup)
         GtkWidget *confirm_entry;
         GtkWidget *local_account_cancel_button;
         GtkWidget *local_account_done_button;
+        GtkWidget *local_account_avatar_button;
         GtkTreeViewColumn *col;
         GtkCellRenderer *cell;
 
@@ -1259,6 +1346,10 @@ prepare_account_page (SetupData *setup)
         confirm_entry = WID("account-confirm-entry");
         local_account_cancel_button = WID("local-account-cancel-button");
         local_account_done_button = WID("local-account-done-button");
+        local_account_avatar_button = WID("local-account-avatar-button");
+        setup->photo_dialog = (GtkWidget *)um_photo_dialog_new (local_account_avatar_button,
+                                                                avatar_callback,
+                                                                setup);
 
         g_signal_connect (fullname_entry, "notify::text",
                           G_CALLBACK (fullname_changed), setup);
@@ -2043,6 +2134,13 @@ main (int argc, char *argv[])
                 { "skip-account", 0, 0, G_OPTION_ARG_NONE, &skip_account, "Skip account creation", NULL },
                 { NULL, 0 }
         };
+
+        bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+        bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+
+#ifdef HAVE_CHEESE
+        cheese_gtk_init (NULL, NULL);
+#endif
 
         setup = g_new0 (SetupData, 1);
 

@@ -180,6 +180,10 @@ PKG_CHECK_MODULES(INITIAL_SETUP,
                   libnm-util >= $NETWORK_MANAGER_REQUIRED_VERSION
                   accountsservice
                   gnome-keyring-1
+                  gnome-desktop-3.0
+                  gstreamer-0.10
+                  cheese
+                  cheese-gtk >= 3.3.5
                   gweather-3.0
                   goa-1.0
                   goa-backend-1.0
@@ -187,6 +191,8 @@ PKG_CHECK_MODULES(INITIAL_SETUP,
                   glib-2.0 >= $GLIB_REQUIRED_VERSION
                   gio-2.0 >= $GLIB_REQUIRED_VERSION
                   gio-unix-2.0 >= $GLIB_REQUIRED_VERSION)
+
+AC_DEFINE(HAVE_CHEESE, 1, [Define to 1 to enable cheese webcam support])
 
 # Unit testing framework
 PKG_CHECK_MODULES(CHECK,

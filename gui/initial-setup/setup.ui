@@ -81,6 +81,24 @@
             <property name="column-spacing">12</property>
             <property name="margin-bottom">18</property>
             <child>
+              <object class="GtkToggleButton" id="local-account-avatar-button">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkImage" id="local-account-avatar-image">
+                    <property name="visible">True</property>
+                    <property name="icon-name">avatar-default</property>
+                    <property name="pixel-size">64</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="left-attach">2</property>
+                <property name="top-attach">1</property>
+                <property name="width">1</property>
+                <property name="height">2</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkLabel" id="account-fullname-label">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">_Fullname</property>

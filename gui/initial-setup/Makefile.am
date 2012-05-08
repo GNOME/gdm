@@ -8,6 +8,7 @@ AM_CPPFLAGS = \
 	$(INITIAL_SETUP_CFLAGS) \
 	-DUIDIR="\"$(uidir)\"" \
 	-DGNOMECC_DATA_DIR="\"$(datadir)/gnome-control-center\"" \
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DDATADIR="\"$(datadir)/gnome-control-center/ui/datetime\"" \
 	-I../libgdmgreeter
 
@@ -33,6 +34,8 @@ gdm_initial_setup_SOURCES =	\
 	panel-cell-renderer-security.c panel-cell-renderer-security.h \
 	cc-timezone-map.c cc-timezone-map.h \
 	um-utils.c um-utils.h \
+	um-crop-area.c um-crop-area.h \
+	um-photo-dialog.c um-photo-dialog.h \
 	tz.c tz.h \
 	../libgdmgreeter/gdm-greeter-client.c ../libgdmgreeter/gdm-greeter-client.h \
 	$(dbus_built_sources) \
