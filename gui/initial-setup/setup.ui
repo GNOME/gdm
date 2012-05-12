@@ -337,6 +337,10 @@
       <object class="GtkGrid" id="network-page">
         <property name="name">network-page</property>
         <property name="visible">True</property>
+        <property name="margin-left">48</property>
+        <property name="margin-right">48</property>
+        <property name="margin-bottom">48</property>
+        <property name="halign">center</property>
         <child>
           <object class="GtkLabel" id="network-title">
             <property name="visible">True</property>
@@ -359,10 +363,6 @@
         <child>
           <object class="GtkScrolledWindow" id="network-scrolledwindow">
             <property name="visible">True</property>
-            <property name="halign">fill</property>
-            <property name="valign">fill</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
             <property name="margin-top">0</property>
             <property name="margin-bottom">32</property>
             <property name="hscrollbar-policy">never</property>
@@ -372,11 +372,10 @@
               <object class="GtkTreeView" id="network-list">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="hexpand">True</property>
                 <property name="vexpand">True</property>
                 <property name="halign">fill</property>
                 <property name="valign">fill</property>
-                <property name="model">liststore-wireless</property>
+               <property name="model">liststore-wireless</property>
                 <property name="headers-visible">False</property>
                 <property name="search-column">2</property>
                 <property name="enable-grid-lines">horizontal</property>
@@ -451,11 +450,11 @@
       <object class="GtkGrid" id="account-page">
         <property name="name">account-page</property>
         <property name="visible">False</property>
+            <property name="halign">center</property>
         <child>
           <object class="GtkLabel" id="account-title">
             <property name="visible">True</property>
             <property name="label" translatable="yes">Choose How to Login</property>
-            <property name="hexpand">True</property>
             <property name="halign">center</property>
             <property name="valign">start</property>
             <property name="margin-bottom">18</property>
@@ -476,7 +475,6 @@
             <property name="visible">True</property>
             <property name="halign">fill</property>
             <property name="valign">fill</property>
-            <property name="hexpand">True</property>
             <property name="vexpand">False</property>
             <property name="hscrollbar-policy">never</property>
             <property name="vscrollbar-policy">never</property>
@@ -485,8 +483,6 @@
               <object class="GtkTreeView" id="account-list">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="hexpand">True</property>
-                <property name="vexpand">True</property>
                 <property name="halign">fill</property>
                 <property name="valign">fill</property>
                 <property name="model">liststore-account</property>
@@ -520,11 +516,15 @@
       <object class="GtkGrid" id="location-page">
         <property name="name">location-page</property>
         <property name="visible">True</property>
+        <property name="halign">center</property>
+        <property name="valign">start</property>
+        <property name="hexpand">True</property>
         <child>
           <object class="GtkLabel" id="location-title">
             <property name="visible">True</property>
             <property name="label" translatable="yes">Choose your Location</property>
             <property name="halign">center</property>
+            <property name="hexpand">False</property>
             <property name="valign">start</property>
             <property name="margin-bottom">18</property>
             <attributes>
@@ -555,7 +555,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkAspectFrame" id="location-map-frame">
+          <object class="GtkFrame" id="location-map-frame">
             <property name="visible">True</property>
             <property name="halign">fill</property>
             <property name="valign">fill</property>
@@ -643,6 +643,7 @@
       <object class="GtkGrid" id="online-page">
         <property name="name">online-page</property>
         <property name="visible">True</property>
+        <property name="halign">center</property>
         <child>
           <object class="GtkLabel" id="online-title">
             <property name="visible">True</property>
@@ -720,6 +721,7 @@
       <object class="GtkGrid" id="summary-page">
         <property name="name">summary-page</property>
         <property name="visible">True</property>
+        <property name="halign">center</property>
         <child>
           <object class="GtkLabel" id="summary-title">
             <property name="visible">True</property>
@@ -768,7 +770,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="byebye">
+          <object class="GtkButton" id="summary-start-button">
             <property name="visible">True</property>
             <property name="use-underline">True</property>
             <property name="label" translatable="yes">_Start using GNOME 3</property>
@@ -785,7 +787,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="tour-details">
+          <object class="GtkLabel" id="summary-tour-details">
             <property name="visible">True</property>
             <property name="label" translatable="yes">New to GNOME 3 and need help finding your way around ?</property>
             <property name="halign">center</property>
@@ -799,7 +801,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="byebye-tour">
+          <object class="GtkButton" id="summary-tour-button">
             <property name="visible">True</property>
             <property name="use-underline">True</property>
             <property name="label" translatable="yes">_Take a tour</property>

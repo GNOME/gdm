@@ -43,8 +43,8 @@
 /* Setup data {{{1 */
 typedef struct {
         GtkBuilder *builder;
+        GKeyFile *overrides;
         GtkAssistant *assistant;
-
         GdmGreeterClient *greeter_client;
 
         /* network data */
@@ -90,16 +90,32 @@ typedef struct {
 static void
 prepare_welcome_page (SetupData *setup)
 {
-        GtkWidget *widget;
-        const gchar *filename;
+        gchar *s;
 
-        widget = WID("welcome-image");
-        filename = UIDIR "/welcome-image.png";
-        if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
-                gtk_image_set_from_file (GTK_IMAGE (widget), filename);
-        }
+        s = g_key_file_get_locale_string (setup->overrides,
+                                          "Welcome", "welcome-image",
+                                          NULL, NULL);
+
+        if (s && g_file_test (s, G_FILE_TEST_EXISTS))
+                gtk_image_set_from_file (GTK_IMAGE (WID ("welcome-image")), s);
+
+        g_free (s);
+
+        s = g_key_file_get_locale_string (setup->overrides,
+                                          "Welcome", "welcome-title",
+                                          NULL, NULL);
+        if (s)
+                gtk_label_set_text (GTK_LABEL (WID ("welcome-title")), s);
+        g_free (s);
+
+        s = g_key_file_get_locale_string (setup->overrides,
+                                          "Welcome", "welcome-subtitle",
+                                          NULL, NULL);
+        if (s)
+                gtk_label_set_text (GTK_LABEL (WID ("welcome-subtitle")), s);
+        g_free (s);
 }
-
+ 
 /* Network page {{{1 */
 
 enum {
@@ -696,7 +712,7 @@ prepare_network_page (SetupData *setup)
         g_timeout_add (80, bump_pulse, setup);
 
         cell = gtk_cell_renderer_text_new ();
-        g_object_set (cell, "width-chars", 45, "ellipsize", PANGO_ELLIPSIZE_END, NULL);
+        g_object_set (cell, "width", 400, "width-chars", 45, "ellipsize", PANGO_ELLIPSIZE_END, NULL);
         gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (col), cell, TRUE);
         gtk_cell_area_cell_set (gtk_cell_layout_get_area (GTK_CELL_LAYOUT (col)), cell, "align", TRUE, NULL);
         gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (col), cell,
@@ -1330,6 +1346,7 @@ prepare_account_page (SetupData *setup)
         cell = gtk_cell_renderer_text_new ();
         gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (col), cell, TRUE);
         gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (col), cell, "text", PANEL_ACCOUNT_COLUMN_TITLE);
+        g_object_set (cell, "width", 400, NULL);
 
         cell = gtk_cell_renderer_text_new ();
         gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (col), cell, FALSE);
@@ -2070,7 +2087,14 @@ byebye_cb (GtkButton *button, SetupData *setup)
 static void
 tour_cb (GtkButton *button, SetupData *setup)
 {
-        /* TODO: arrange for tour to begin */
+        gchar *filename;
+
+        /* the tour is triggered by ~/.config/run-welcome-tour */
+        filename = g_build_filename (g_get_home_dir (), ".config", "run-welcome-tour", NULL);
+        g_file_set_contents (filename, "yes", -1, NULL);
+        copy_account_file (setup, ".config/run-welcome-tour");
+        g_free (filename);
+
         begin_autologin (setup);
 }
 
@@ -2078,11 +2102,56 @@ static void
 prepare_summary_page (SetupData *setup)
 {
         GtkWidget *button;
+        gchar *s;
 
-        button = WID("byebye");
+        s = g_key_file_get_locale_string (setup->overrides,
+                                          "Summary", "summary-title",
+                                          NULL, NULL);
+        if (s)
+                gtk_label_set_text (GTK_LABEL (WID ("summary-title")), s);
+        g_free (s);
+
+        s = g_key_file_get_locale_string (setup->overrides,
+                                          "Summary", "summary-details",
+                                          NULL, NULL);
+        if (s) {
+                g_print ("replacing summary details\n");
+                gtk_label_set_text (GTK_LABEL (WID ("summary-details")), s);
+        }
+        g_free (s);
+
+        s = g_key_file_get_locale_string (setup->overrides,
+                                          "Summary", "summary-details2",
+                                          NULL, NULL);
+        if (s)
+                gtk_label_set_text (GTK_LABEL (WID ("summary-details2")), s);
+        g_free (s);
+
+        s = g_key_file_get_locale_string (setup->overrides,
+                                          "Summary", "summary-start-button",
+                                          NULL, NULL);
+        if (s)
+                gtk_button_set_label (GTK_BUTTON (WID ("summary-start-button")), s);
+        g_free (s);
+
+        s = g_key_file_get_locale_string (setup->overrides,
+                                          "Summary", "summary-tour-details",
+                                          NULL, NULL);
+        if (s)
+                gtk_label_set_text (GTK_LABEL (WID ("summary-tour-details")), s);
+        g_free (s);
+
+        s = g_key_file_get_locale_string (setup->overrides,
+                                          "Summary", "summary-tour-button",
+                                          NULL, NULL);
+        if (s)
+                gtk_button_set_label (GTK_BUTTON (WID ("summary-tour-button")), s);
+        g_free (s);
+
+        button = WID("summary-start-button");
         g_signal_connect (button, "clicked",
                           G_CALLBACK (byebye_cb), setup);
-        button = WID("byebye-tour");
+        button = WID("summary-tour-button");
         g_signal_connect (button, "clicked",
                           G_CALLBACK (tour_cb), setup);
 }
@@ -2104,10 +2173,17 @@ prepare_cb (GtkAssistant *assi, GtkWidget *page, SetupData *setup)
 static void
 prepare_assistant (SetupData *setup)
 {
+        GList *list;
+
         setup->assistant = OBJ(GtkAssistant*, "gnome-setup-assistant");
 
         /* small hack to get rid of cancel button */
         gtk_assistant_commit (setup->assistant);
+
+        /* another small hack to hide the sidebar */
+        list = gtk_container_get_children (GTK_CONTAINER (gtk_bin_get_child (GTK_BIN (setup->assistant))));
+        gtk_widget_hide (GTK_WIDGET (list->data));
+        g_list_free (list);
 
         g_signal_connect (G_OBJECT (setup->assistant), "prepare",
                           G_CALLBACK (prepare_cb), setup);
@@ -2153,10 +2229,23 @@ main (int argc, char *argv[])
         };
 
         setup->builder = gtk_builder_new ();
-        if (!gtk_builder_add_from_resource (setup->builder, "/ui/setup.ui", &error)) {
+        if (g_file_test ("setup.ui", G_FILE_TEST_EXISTS)) {
+                gtk_builder_add_from_file (setup->builder, "setup.ui", &error);
+        }
+        else if (!gtk_builder_add_from_resource (setup->builder, "/ui/setup.ui", &error)) {
                 g_error ("%s", error->message);
-                g_error_free (error);
                 exit (1);
+        }
+
+        setup->overrides = g_key_file_new ();
+        if (!g_key_file_load_from_file (setup->overrides,
+                                        "overrides.ini",
+                                        0, &error)) {
+                if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
+                        g_error ("%s", error->message);
+                        exit (1);
+                }
+                g_error_free (error);
         }
 
         prepare_assistant (setup);

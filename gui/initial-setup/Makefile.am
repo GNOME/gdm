@@ -41,13 +41,16 @@ gdm_initial_setup_SOURCES =	\
 	$(dbus_built_sources) \
 	setup_resources.c
 
+autostartdir = $(sysconfdir)/xdg/autostart
+autostart_DATA = welcome-tour.desktop
 
 EXTRA_DIST = \
 	$(sys_DATA) \
 	timedated1-interface.xml \
 	setup.ui \
 	welcome-image.png \
-	application.gresource.xml
+	application.gresource.xml \
+	welcome-tour.desktop
 
 BUILT_SOURCES = $(dbus_built_sources) setup_resources.c
 
