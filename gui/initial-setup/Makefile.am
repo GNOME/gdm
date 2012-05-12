@@ -24,7 +24,7 @@ timedated.h: Makefile.am timedated1-interface.xml
 		--generate-c-code timedated \
 		$(srcdir)/timedated1-interface.xml
 
-setup_resources.c: setup.gresource.xml setup.ui welcome-image.jpg
+setup_resources.c: setup.gresource.xml setup.ui welcome-image.png
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-source $(srcdir)/setup.gresource.xml
 
 gdm_initial_setup_SOURCES =	\
@@ -46,7 +46,7 @@ EXTRA_DIST = \
 	$(sys_DATA) \
 	timedated1-interface.xml \
 	setup.ui \
-	welcome-image.jpg \
+	welcome-image.png \
 	application.gresource.xml
 
 BUILT_SOURCES = $(dbus_built_sources) setup_resources.c

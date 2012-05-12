@@ -94,10 +94,10 @@ prepare_welcome_page (SetupData *setup)
         const gchar *filename;
 
         widget = WID("welcome-image");
-        filename = UIDIR "/welcome-image.jpg";
-        if (!g_file_test (filename, G_FILE_TEST_EXISTS))
-                filename = "welcome-image.jpg";
-        gtk_image_set_from_file (GTK_IMAGE (widget), filename);
+        filename = UIDIR "/welcome-image.png";
+        if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
+                gtk_image_set_from_file (GTK_IMAGE (widget), filename);
+        }
 }
 
 /* Network page {{{1 */
