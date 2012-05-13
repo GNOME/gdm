@@ -107,14 +107,21 @@ noinst_PROGRAMS = 		\
 
 test_session_SOURCES = 		\
 	test-session.c	 	\
-	gdm-session.c		\
-	gdm-session.h		\
 	gdm-session-private.h	\
 	gdm-session-direct.c	\
 	gdm-session-direct.h	\
 	gdm-session-record.c	\
 	gdm-session-record.h	\
 	gdm-session-worker-job.c\
+	gdm-dbus-util.c		\
+	gdm-dbus-util.h		\
+	$(NULL)
+
+nodist_test_session_SOURCES = 	\
+	gdm-session-glue.c	\
+	gdm-session-glue.h	\
+	gdm-slave-resources.c	\
+	gdm-slave-resources.h	\
 	$(NULL)
 
 test_session_LDADD =		\
@@ -149,8 +156,6 @@ gdm_simple_slave_SOURCES = 		\
 	gdm-greeter-session.h		\
 	gdm-server.c			\
 	gdm-server.h			\
-	gdm-session.c			\
-	gdm-session.h			\
 	gdm-session-private.h		\
 	gdm-session-direct.c		\
 	gdm-session-direct.h		\
@@ -171,6 +176,8 @@ gdm_simple_slave_SOURCES = 		\
 nodist_gdm_simple_slave_SOURCES = 	\
 	gdm-greeter-glue.c		\
 	gdm-greeter-glue.h		\
+	gdm-session-glue.c		\
+	gdm-session-glue.h		\
 	$(NULL)
 
 gdm_simple_slave_LDFLAGS =		\
@@ -196,8 +203,6 @@ gdm_factory_slave_SOURCES = 		\
 	gdm-greeter-session.h		\
 	gdm-server.c			\
 	gdm-server.h			\
-	gdm-session.c			\
-	gdm-session.h			\
 	gdm-session-direct.c		\
 	gdm-session-direct.h		\
 	gdm-session-private.h		\
@@ -240,8 +245,6 @@ gdm_product_slave_SOURCES = 		\
 	product-slave-main.c 		\
 	gdm-server.c			\
 	gdm-server.h			\
-	gdm-session.c			\
-	gdm-session.h			\
 	gdm-session-private.h		\
 	gdm-session-direct.c		\
 	gdm-session-direct.h		\
@@ -255,6 +258,8 @@ gdm_product_slave_SOURCES = 		\
 	gdm-slave.h			\
 	gdm-product-slave.c		\
 	gdm-product-slave.h		\
+	gdm-dbus-util.c			\
+	gdm-dbus-util.h			\
 	$(NULL)
 
 nodist_gdm_product_slave_SOURCES = 	\
@@ -262,6 +267,8 @@ nodist_gdm_product_slave_SOURCES = 	\
 	gdm-product-display-glue.h	\
 	gdm-session-glue.c		\
 	gdm-session-glue.h		\
+	gdm-slave-resources.c		\
+	gdm-slave-resources.h		\
 	$(NULL)
 
 gdm_product_slave_LDFLAGS =		\
@@ -282,8 +289,6 @@ gdm_xdmcp_chooser_slave_SOURCES = 		\
 	xdmcp-chooser-slave-main.c 		\
 	gdm-chooser-server.c			\
 	gdm-chooser-server.h			\
-	gdm-session.c				\
-	gdm-session.h				\
 	gdm-session-direct.c			\
 	gdm-session-direct.h			\
 	gdm-session-private.h			\

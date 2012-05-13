@@ -7,25 +7,36 @@
     <method name="ConversationStarted">
       <arg name="service_name" direction="in" type="s"/>
     </method>
-    <method name="ServiceUnavailable">
-      <arg name="message" direction="in" type="s"/>
-    </method>
     <signal name="StartConversation">
-      <!-- XXX fold in Setup? -->
       <arg name="service_name" type="s"/>
     </signal>
     <signal name="Close"/>
     <signal name="Cancelled"/> <!-- XXX: fold in Reset? -->
 
     <!-- only used by SessionDirect (simple slave to session worker) -->
+    <method name="Hello" />
     <method name="CancelPendingQuery">
-      <!-- XXX why isn't this used by SessionRelay? -->
+      <arg name="service_name" type="s" direction="in"/>
+    </method>
+    <method name="UsernameChanged">
+      <arg name="service_name" type="s" direction="in"/>
+      <arg name="new_username" type="s" direction="in"/>
+    </method>
+    <method name="SavedLanguageNameRead">
+      <arg name="language_name" type="s" direction="in"/>
+    </method>
+    <method name="SavedSessionNameRead">
+      <arg name="session_name" type="s" direction="in"/>
     </method>
     <signal name="StartProgram">
       <arg name="command" type="s"/>
     </signal>
 
     <!-- used by both of them -->
+    <method name="ServiceUnavailable">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="message" direction="in" type="s"/>
+    </method>
     <method name="SetupComplete">
       <arg name="service_name" direction="in" type="s"/>
     </method>
@@ -80,6 +91,7 @@
       <arg name="message" direction="in" type="s"/>
     </method>
     <method name="SessionStarted">
+      <arg name="service_name" direction="in" type="s"/>
       <arg name="pid" direction="in" type="i"/>
     </method>
     <method name="SessionExited">

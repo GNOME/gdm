@@ -90,9 +90,11 @@ G_DEFINE_TYPE (GdmProductSlave, gdm_product_slave, GDM_TYPE_SLAVE)
 
 static void
 relay_session_started (GdmProductSlave *slave,
+                       const char      *service_name,
                        int              pid)
 {
         gdm_dbus_session_call_session_started_sync (slave->priv->session_relay,
+                                                    service_name,
                                                     pid,
                                                     NULL, NULL);
 }
@@ -107,9 +109,9 @@ relay_session_conversation_started (GdmProductSlave *slave,
 }
 
 static void
-on_session_conversation_started (GdmSession      *session,
-                                 const char      *service_name,
-                                 GdmProductSlave *slave)
+on_session_conversation_started (GdmSessionDirect *session,
+                                 const char       *service_name,
+                                 GdmProductSlave  *slave)
 {
         g_debug ("GdmProductSlave: session conversation started");
 
@@ -126,21 +128,22 @@ disconnect_relay (GdmProductSlave *slave)
 }
 
 static void
-on_session_started (GdmSession      *session,
-                    int              pid,
-                    GdmProductSlave *slave)
+on_session_started (GdmSessionDirect *session,
+                    const char       *service_name,
+                    int               pid,
+                    GdmProductSlave  *slave)
 {
         g_debug ("GdmProductSlave: session started");
 
-        relay_session_started (slave, pid);
+        relay_session_started (slave, service_name, pid);
 
         disconnect_relay (slave);
 }
 
 static void
-on_session_exited (GdmSession      *session,
-                   int              exit_code,
-                   GdmProductSlave *slave)
+on_session_exited (GdmSessionDirect *session,
+                   int               exit_code,
+                   GdmProductSlave  *slave)
 {
         g_debug ("GdmProductSlave: session exited with code %d", exit_code);
 
@@ -148,9 +151,9 @@ on_session_exited (GdmSession      *session,
 }
 
 static void
-on_session_died (GdmSession      *session,
-                 int              signal_number,
-                 GdmProductSlave *slave)
+on_session_died (GdmSessionDirect *session,
+                 int               signal_number,
+                 GdmProductSlave  *slave)
 {
         g_debug ("GdmProductSlave: session died with signal %d, (%s)",
                  signal_number,
@@ -209,8 +212,8 @@ setup_session (GdmProductSlave *slave)
         g_free (display_device);
         g_free (auth_file);
 
-        gdm_session_start_session (GDM_SESSION (slave->priv->session),
-                                   slave->priv->start_session_service_name);
+        gdm_session_direct_start_session (slave->priv->session,
+                                          slave->priv->start_session_service_name);
 
         return TRUE;
 }
@@ -327,9 +330,9 @@ gdm_product_slave_create_server (GdmProductSlave *slave)
 }
 
 static void
-on_session_setup_complete (GdmSession      *session,
-                           const char      *service_name,
-                           GdmProductSlave *slave)
+on_session_setup_complete (GdmSessionDirect *session,
+                           const char       *service_name,
+                           GdmProductSlave  *slave)
 {
         gdm_dbus_session_call_setup_complete_sync (slave->priv->session_relay,
                                                    service_name,
@@ -337,10 +340,10 @@ on_session_setup_complete (GdmSession      *session,
 }
 
 static void
-on_session_setup_failed (GdmSession      *session,
-                         const char      *service_name,
-                         const char      *message,
-                         GdmProductSlave *slave)
+on_session_setup_failed (GdmSessionDirect *session,
+                         const char       *service_name,
+                         const char       *message,
+                         GdmProductSlave  *slave)
 {
         gdm_dbus_session_call_setup_failed_sync (slave->priv->session_relay,
                                                  service_name,
@@ -349,24 +352,9 @@ on_session_setup_failed (GdmSession      *session,
 }
 
 static void
-on_session_reset_complete (GdmSession      *session,
-                           GdmProductSlave *slave)
-{
-        g_debug ("Session reset complete");
-}
-
-static void
-on_session_reset_failed (GdmSession      *session,
-                         const char      *message,
-                         GdmProductSlave *slave)
-{
-        g_debug ("Session reset failed: %s", message);
-}
-
-static void
-on_session_authenticated (GdmSession      *session,
-                          const char      *service_name,
-                          GdmProductSlave *slave)
+on_session_authenticated (GdmSessionDirect *session,
+                          const char       *service_name,
+                          GdmProductSlave  *slave)
 {
         gdm_dbus_session_call_authenticated_sync (slave->priv->session_relay,
                                                   service_name,
@@ -374,10 +362,10 @@ on_session_authenticated (GdmSession      *session,
 }
 
 static void
-on_session_authentication_failed (GdmSession      *session,
-                                  const char      *service_name,
-                                  const char      *message,
-                                  GdmProductSlave *slave)
+on_session_authentication_failed (GdmSessionDirect *session,
+                                  const char       *service_name,
+                                  const char       *message,
+                                  GdmProductSlave  *slave)
 {
         gdm_dbus_session_call_authentication_failed_sync (slave->priv->session_relay,
                                                           service_name,
@@ -386,9 +374,9 @@ on_session_authentication_failed (GdmSession      *session,
 }
 
 static void
-on_session_authorized (GdmSession      *session,
-                       const char      *service_name,
-                       GdmProductSlave *slave)
+on_session_authorized (GdmSessionDirect *session,
+                       const char       *service_name,
+                       GdmProductSlave  *slave)
 {
         gdm_dbus_session_call_authorized_sync (slave->priv->session_relay,
                                                service_name,
@@ -396,10 +384,10 @@ on_session_authorized (GdmSession      *session,
 }
 
 static void
-on_session_authorization_failed (GdmSession      *session,
-                                 const char      *service_name,
-                                 const char      *message,
-                                 GdmProductSlave *slave)
+on_session_authorization_failed (GdmSessionDirect *session,
+                                 const char       *service_name,
+                                 const char       *message,
+                                 GdmProductSlave  *slave)
 {
         gdm_dbus_session_call_authorization_failed_sync (slave->priv->session_relay,
                                                          service_name,
@@ -408,9 +396,9 @@ on_session_authorization_failed (GdmSession      *session,
 }
 
 static void
-on_session_accredited (GdmSession      *session,
-                       const char      *service_name,
-                       GdmProductSlave *slave)
+on_session_accredited (GdmSessionDirect *session,
+                       const char       *service_name,
+                       GdmProductSlave  *slave)
 {
         gdm_dbus_session_call_accredited_sync (slave->priv->session_relay,
                                                service_name,
@@ -418,10 +406,10 @@ on_session_accredited (GdmSession      *session,
 }
 
 static void
-on_session_accreditation_failed (GdmSession      *session,
-                                 const char      *service_name,
-                                 const char      *message,
-                                 GdmProductSlave *slave)
+on_session_accreditation_failed (GdmSessionDirect *session,
+                                 const char       *service_name,
+                                 const char       *message,
+                                 GdmProductSlave  *slave)
 {
         gdm_dbus_session_call_accreditation_failed_sync (slave->priv->session_relay,
                                                          service_name,
@@ -430,9 +418,9 @@ on_session_accreditation_failed (GdmSession      *session,
 }
 
 static void
-on_session_opened (GdmSession      *session,
-                   const char      *service_name,
-                   GdmProductSlave *slave)
+on_session_opened (GdmSessionDirect *session,
+                   const char       *service_name,
+                   GdmProductSlave  *slave)
 {
         gdm_dbus_session_call_opened_sync (slave->priv->session_relay,
                                            service_name,
@@ -440,10 +428,10 @@ on_session_opened (GdmSession      *session,
 }
 
 static void
-on_session_open_failed (GdmSession      *session,
-                        const char      *service_name,
-                        const char      *message,
-                        GdmProductSlave *slave)
+on_session_open_failed (GdmSessionDirect *session,
+                        const char       *service_name,
+                        const char       *message,
+                        GdmProductSlave  *slave)
 {
         gdm_dbus_session_call_open_failed_sync (slave->priv->session_relay,
                                                 service_name,
@@ -452,10 +440,10 @@ on_session_open_failed (GdmSession      *session,
 }
 
 static void
-on_session_info (GdmSession      *session,
-                 const char      *service_name,
-                 const char      *text,
-                 GdmProductSlave *slave)
+on_session_info (GdmSessionDirect *session,
+                 const char       *service_name,
+                 const char       *text,
+                 GdmProductSlave  *slave)
 {
         gdm_dbus_session_call_info_sync (slave->priv->session_relay,
                                          service_name,
@@ -464,10 +452,10 @@ on_session_info (GdmSession      *session,
 }
 
 static void
-on_session_problem (GdmSession      *session,
-                    const char      *service_name,
-                    const char      *text,
-                    GdmProductSlave *slave)
+on_session_problem (GdmSessionDirect *session,
+                    const char       *service_name,
+                    const char       *text,
+                    GdmProductSlave  *slave)
 {
         gdm_dbus_session_call_problem_sync (slave->priv->session_relay,
                                             service_name,
@@ -498,8 +486,8 @@ on_session_query_finish (GObject      *object,
 
         g_variant_get (res, "(&s)", &text);
 
-        gdm_session_answer_query (GDM_SESSION (closure->slave->priv->session),
-                                  closure->service_name, text);
+        gdm_session_direct_answer_query (closure->slave->priv->session,
+                                         closure->service_name, text);
 
         g_object_unref (closure->slave);
         g_free (closure->service_name);
@@ -507,10 +495,10 @@ on_session_query_finish (GObject      *object,
 }
 
 static void
-on_session_info_query (GdmSession      *session,
-                       const char      *service_name,
-                       const char      *text,
-                       GdmProductSlave *slave)
+on_session_info_query (GdmSessionDirect *session,
+                       const char       *service_name,
+                       const char       *text,
+                       GdmProductSlave  *slave)
 {
         QueryClosure *closure;
 
@@ -526,10 +514,10 @@ on_session_info_query (GdmSession      *session,
 }
 
 static void
-on_session_secret_info_query (GdmSession      *session,
-                              const char      *service_name,
-                              const char      *text,
-                              GdmProductSlave *slave)
+on_session_secret_info_query (GdmSessionDirect *session,
+                              const char       *service_name,
+                              const char       *text,
+                              GdmProductSlave  *slave)
 {
         QueryClosure *closure;
 
@@ -555,7 +543,7 @@ on_relay_setup (GdmDBusSession  *session_relay,
                 GdmProductSlave *slave)
 {
         g_debug ("GdmProductSlave: Relay Setup");
-        gdm_session_setup (GDM_SESSION (slave->priv->session), service_name);
+        gdm_session_direct_setup (slave->priv->session, service_name);
 }
 
 static void
@@ -570,8 +558,8 @@ on_relay_setup_for_user (GdmDBusSession  *session_relay,
                          GdmProductSlave *slave)
 {
         g_debug ("GdmProductSlave: Relay SetupForUser");
-        gdm_session_setup_for_user (GDM_SESSION (slave->priv->session),
-                                    service_name, user_name);
+        gdm_session_direct_setup_for_user (slave->priv->session,
+                                           service_name, user_name);
 }
 
 static void
@@ -580,7 +568,7 @@ on_relay_authenticate (GdmDBusSession  *session_relay,
                        GdmProductSlave *slave)
 {
         g_debug ("GdmProductSlave: Relay Authenticate");
-        gdm_session_authenticate (GDM_SESSION (slave->priv->session), service_name);
+        gdm_session_direct_authenticate (slave->priv->session, service_name);
 }
 
 static void
@@ -589,7 +577,7 @@ on_relay_authorize (GdmDBusSession  *session_relay,
                     GdmProductSlave *slave)
 {
         g_debug ("GdmProductSlave: Relay Authorize");
-        gdm_session_authorize (GDM_SESSION (slave->priv->session), service_name);
+        gdm_session_direct_authorize (slave->priv->session, service_name);
 }
 
 static void
@@ -598,7 +586,7 @@ on_relay_establish_credentials (GdmDBusSession  *session_relay,
                                 GdmProductSlave *slave)
 {
         g_debug ("GdmProductSlave: Relay Establish Credentials");
-        gdm_session_accredit (GDM_SESSION (slave->priv->session), service_name, GDM_SESSION_CRED_ESTABLISH);
+        gdm_session_direct_accredit (slave->priv->session, service_name, FALSE);
 }
 
 static void
@@ -607,7 +595,7 @@ on_relay_refresh_credentials (GdmDBusSession  *session_relay,
                               GdmProductSlave *slave)
 {
         g_debug ("GdmProductSlave: Relay Refresh Credentials");
-        gdm_session_accredit (GDM_SESSION (slave->priv->session), service_name, GDM_SESSION_CRED_REFRESH);
+        gdm_session_direct_accredit (slave->priv->session, service_name, TRUE);
 }
 
 static void
@@ -616,7 +604,7 @@ on_relay_set_session_name (GdmDBusSession  *session_relay,
                            GdmProductSlave *slave)
 {
         g_debug ("GdmProductSlave: Relay Set Session Name");
-        gdm_session_select_session (GDM_SESSION (slave->priv->session), session_name);
+        gdm_session_direct_select_session (slave->priv->session, session_name);
 }
 
 static void
@@ -625,7 +613,7 @@ on_relay_set_language_name (GdmDBusSession  *session_relay,
                             GdmProductSlave *slave)
 {
         g_debug ("GdmProductSlave: Relay Set Language Name");
-        gdm_session_select_language (GDM_SESSION (slave->priv->session), language_name);
+        gdm_session_direct_select_language (slave->priv->session, language_name);
 }
 
 static void
@@ -634,8 +622,7 @@ on_relay_set_user_name (GdmDBusSession  *session_relay,
                         GdmProductSlave *slave)
 {
         g_debug ("GdmProductSlave: Relay Set User Name");
-
-        /* FIXME: and then? */
+        gdm_session_direct_select_user (slave->priv->session, user_name);
 }
 
 static void
@@ -644,7 +631,7 @@ on_relay_start_conversation (GdmDBusSession  *session_relay,
                              GdmProductSlave *slave)
 {
         g_debug ("GdmProductSlave: Started Conversation with %s", service_name);
-        gdm_session_start_conversation (GDM_SESSION (slave->priv->session), service_name);
+        gdm_session_direct_start_conversation (slave->priv->session, service_name);
 }
 
 static void
@@ -653,7 +640,7 @@ on_relay_open_session (GdmDBusSession  *session_relay,
                        GdmProductSlave *slave)
 {
         g_debug ("GdmProductSlave: open session for %s", service_name);
-        gdm_session_open_session (GDM_SESSION (slave->priv->session), service_name);
+        gdm_session_direct_open_session (slave->priv->session, service_name);
 }
 
 static void
@@ -717,14 +704,6 @@ create_new_session (GdmProductSlave *slave)
         g_signal_connect (slave->priv->session,
                           "setup-failed",
                           G_CALLBACK (on_session_setup_failed),
-                          slave);
-        g_signal_connect (slave->priv->session,
-                          "reset-complete",
-                          G_CALLBACK (on_session_reset_complete),
-                          slave);
-        g_signal_connect (slave->priv->session,
-                          "reset-failed",
-                          G_CALLBACK (on_session_reset_failed),
                           slave);
         g_signal_connect (slave->priv->session,
                           "authenticated",
@@ -796,7 +775,7 @@ on_relay_cancelled (GdmDBusSession  *session_relay,
         g_debug ("GdmProductSlave: Relay cancelled");
 
         if (slave->priv->session != NULL) {
-                gdm_session_close (GDM_SESSION (slave->priv->session));
+                gdm_session_direct_close (slave->priv->session);
                 g_object_unref (slave->priv->session);
         }
 
@@ -953,7 +932,7 @@ gdm_product_slave_stop (GdmSlave *slave)
         GDM_SLAVE_CLASS (gdm_product_slave_parent_class)->stop (slave);
 
         if (self->priv->session != NULL) {
-                gdm_session_close (GDM_SESSION (self->priv->session));
+                gdm_session_direct_close (self->priv->session);
                 g_clear_object (&self->priv->session);
         }
 

@@ -22,7 +22,6 @@
 #define __GDM_SESSION_DIRECT_H
 
 #include <glib-object.h>
-#include "gdm-session.h"
 
 G_BEGIN_DECLS
 
@@ -37,7 +36,7 @@ typedef struct _GdmSessionDirectPrivate GdmSessionDirectPrivate;
 
 typedef struct
 {
-        GObject                  parent;
+        GObject parent;
         GdmSessionDirectPrivate *priv;
 } GdmSessionDirect;
 
@@ -69,6 +68,51 @@ gboolean           gdm_session_direct_stop                     (GdmSessionDirect
 gboolean           gdm_session_direct_detach                   (GdmSessionDirect     *session_direct,
                                                                 GError              **error);
 
+void     gdm_session_direct_start_conversation          (GdmSessionDirect *session_direct,
+                                                         const char *service_name);
+void     gdm_session_direct_stop_conversation           (GdmSessionDirect *session_direct,
+                                                         const char *service_name);
+void     gdm_session_direct_setup                       (GdmSessionDirect *session_direct,
+                                                         const char *service_name);
+void     gdm_session_direct_setup_for_user              (GdmSessionDirect *session_direct,
+                                                         const char *service_name,
+                                                         const char *username);
+void     gdm_session_direct_setup_for_program           (GdmSessionDirect *session_direct,
+                                                         const char *service_name,
+                                                         const char *log_file);
+void     gdm_session_direct_set_environment_variable    (GdmSessionDirect *session_direct,
+                                                         const char *key,
+                                                         const char *value);
+void     gdm_session_direct_reset                       (GdmSessionDirect *session_direct);
+void     gdm_session_direct_authenticate                (GdmSessionDirect *session_direct,
+                                                         const char *service_name);
+void     gdm_session_direct_authorize                   (GdmSessionDirect *session_direct,
+                                                         const char *service_name);
+void     gdm_session_direct_accredit                    (GdmSessionDirect *session_direct,
+                                                         const char *service_name,
+                                                         gboolean    refresh);
+void     gdm_session_direct_open_session                (GdmSessionDirect *session_direct,
+                                                                const char *service_name);
+void     gdm_session_direct_start_session               (GdmSessionDirect *session_direct,
+                                                                const char *service_name);
+void     gdm_session_direct_close                       (GdmSessionDirect *session_direct);
+
+void     gdm_session_direct_answer_query                (GdmSessionDirect *session_direct,
+                                                         const char *service_name,
+                                                         const char *text);
+void     gdm_session_direct_select_program              (GdmSessionDirect *session_direct,
+                                                         const char *command_line);
+void     gdm_session_direct_select_session_type         (GdmSessionDirect *session_direct,
+                                                         const char *session_direct_type);
+void     gdm_session_direct_select_session              (GdmSessionDirect *session_direct,
+                                                         const char *session_direct_name);
+void     gdm_session_direct_select_language             (GdmSessionDirect *session_direct,
+                                                         const char *language);
+void     gdm_session_direct_select_user                 (GdmSessionDirect *session_direct,
+                                                         const char *username);
+void     gdm_session_direct_cancel                      (GdmSessionDirect *session_direct);
+
+
 G_END_DECLS
 
-#endif /* GDM_SESSION_DIRECT_H */
+#endif /* GDM_SESSION_DIRECT_DIRECT_H */

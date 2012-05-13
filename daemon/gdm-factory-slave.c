@@ -384,7 +384,6 @@ on_session_handle_session_started (GdmDBusSession        *session,
                                    GDBusMethodInvocation *invocation,
                                    const char            *service_name,
                                    int                    pid,
-                                   const char           **environment,
                                    GdmFactorySlave       *slave)
 {
         g_debug ("GdmFactorySlave: Relay session started");
