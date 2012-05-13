@@ -272,12 +272,6 @@ gdm_session_worker_SOURCES = 			\
 	gdm-session-worker.c			\
 	$(NULL)
 
-if WITH_CONSOLE_KIT
-gdm_session_worker_SOURCES += 			\
-	ck-connector.h				\
-	ck-connector.c
-endif
-
 if HAVE_LIBAUDIT
 gdm_session_worker_SOURCES += gdm-session-linux-auditor.h       \
 	                      gdm-session-linux-auditor.c

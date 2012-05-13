@@ -50,10 +50,6 @@
 #include <systemd/sd-daemon.h>
 #endif
 
-#ifdef WITH_CONSOLE_KIT
-#include "ck-connector.h"
-#endif
-
 #include "gdm-common.h"
 #include "gdm-log.h"
 #include "gdm-session-worker.h"
@@ -114,8 +110,9 @@ struct GdmSessionWorkerPrivate
         int               exit_code;
 
 #ifdef WITH_CONSOLE_KIT
-        CkConnector      *ckc;
+        char             *session_cookie;
 #endif
+
         pam_handle_t     *pam_handle;
 
         GPid              child_pid;
@@ -188,17 +185,21 @@ gdm_session_worker_error_quark (void)
 static gboolean
 open_ck_session (GdmSessionWorker  *worker)
 {
-        struct passwd *pwent;
-        gboolean       ret;
-        int            res;
-        DBusError      error;
-        const char     *display_name;
-        const char     *display_device;
-        const char     *display_hostname;
-        const char     *session_type;
-        gboolean        is_local;
+        GDBusConnection  *system_bus;
+        GVariantBuilder   builder;
+        GVariant         *parameters;
+        GVariant         *in_args;
+        struct passwd    *pwent;
+        GVariant         *reply;
+        GError           *error = NULL;
+        const char       *display_name;
+        const char       *display_device;
+        const char       *display_hostname;
+        const char       *session_type;
+        gint32            uid;
+        gboolean          is_local;
 
-        ret = FALSE;
+        g_assert (worker->priv->session_cookie == NULL);
 
         if (worker->priv->x11_display_name != NULL) {
                 display_name = worker->priv->x11_display_name;
@@ -238,38 +239,108 @@ open_ck_session (GdmSessionWorker  *worker)
                 goto out;
         }
 
-        worker->priv->ckc = ck_connector_new ();
-        if (worker->priv->ckc == NULL) {
-                g_warning ("Couldn't create new ConsoleKit connector");
+        uid = (gint32) pwent->pw_uid;
+
+        error = NULL;
+        system_bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
+
+        if (system_bus == NULL) {
+                g_warning ("Couldn't create connection to system bus: %s",
+                           error->message);
+
+                g_error_free (error);
                 goto out;
         }
 
-        dbus_error_init (&error);
-        res = ck_connector_open_session_with_parameters (worker->priv->ckc,
-                                                         &error,
-                                                         "unix-user", &pwent->pw_uid,
-                                                         "x11-display", &display_name,
-                                                         "x11-display-device", &display_device,
-                                                         "remote-host-name", &display_hostname,
-                                                         "is-local", &is_local,
-                                                         "session-type", &session_type,
-                                                         NULL);
+        g_variant_builder_init (&builder, G_VARIANT_TYPE ("a(sv)"));
+        g_variant_builder_add_parsed (&builder, "('unix-user', <%i>)", uid);
+        g_variant_builder_add_parsed (&builder, "('display-device', <%s>)", display_device);
+        g_variant_builder_add_parsed (&builder, "('x11-display', <%s>)", display_name);
+        g_variant_builder_add_parsed (&builder, "('remote-host-name', <%s>)", display_hostname);
+        g_variant_builder_add_parsed (&builder, "('is-local', <%b>)", is_local);
+        g_variant_builder_add_parsed (&builder, "('session-type', <%s>)", session_type);
 
-        if (! res) {
-                if (dbus_error_is_set (&error)) {
-                        g_warning ("%s\n", error.message);
-                        dbus_error_free (&error);
-                } else {
-                        g_warning ("cannot open CK session: OOM, D-Bus system bus not available,\n"
-                                   "ConsoleKit not available or insufficient privileges.\n");
-                }
+        parameters = g_variant_builder_end (&builder);
+        in_args = g_variant_new_tuple (&parameters, 1);
+
+        reply = g_dbus_connection_call_sync (system_bus,
+                                             "org.freedesktop.ConsoleKit",
+                                             "/org/freedesktop/ConsoleKit/Manager",
+                                             "org.freedesktop.ConsoleKit.Manager",
+                                             "OpenSessionWithParameters",
+                                             in_args,
+                                             G_VARIANT_TYPE ("(s)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL,
+                                             &error);
+
+        if (! reply) {
+                g_warning ("%s\n", error->message);
+                g_clear_error (&error);
                 goto out;
         }
 
-        ret = TRUE;
+        worker->priv->session_cookie = g_variant_dup_string (reply, NULL);
 
- out:
-        return ret;
+        g_variant_unref (reply);
+
+out:
+        return worker->priv->session_cookie != NULL;
+}
+
+static void
+close_ck_session (GdmSessionWorker *worker)
+{
+        GDBusConnection  *system_bus;
+        GVariant         *reply;
+        GError           *error = NULL;
+        gboolean          was_closed;
+
+        if (worker->priv->session_cookie == NULL) {
+                return;
+        }
+
+        error = NULL;
+        system_bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
+
+        if (system_bus == NULL) {
+                g_warning ("Couldn't create connection to system bus: %s",
+                           error->message);
+
+                g_error_free (error);
+                goto out;
+        }
+
+        reply = g_dbus_connection_call_sync (system_bus,
+                                             "org.freedesktop.ConsoleKit",
+                                             "/org/freedesktop/ConsoleKit/Manager",
+                                             "org.freedesktop.ConsoleKit.Manager",
+                                             "OpenSessionWithParameters",
+                                             g_variant_new ("(s)", worker->priv->session_cookie),
+                                             G_VARIANT_TYPE ("(b)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL,
+                                             &error);
+
+        if (! reply) {
+                g_warning ("%s", error->message);
+                g_clear_error (&error);
+                goto out;
+        }
+
+        g_variant_get (reply, "(b)", &was_closed);
+
+        if (!was_closed) {
+                g_warning ("Unable to close ConsoleKit session");
+        }
+
+        g_variant_unref (reply);
+
+out:
+        g_clear_pointer (&worker->priv->session_cookie,
+                         (GDestroyNotify) g_free);
 }
 #endif
 
@@ -1600,9 +1671,6 @@ gdm_session_worker_get_environment (GdmSessionWorker *worker)
 static void
 register_ck_session (GdmSessionWorker *worker)
 {
-        const char *session_cookie;
-        gboolean    res;
-
 #ifdef WITH_SYSTEMD
         if (sd_booted() > 0) {
                 return;
@@ -1610,15 +1678,12 @@ register_ck_session (GdmSessionWorker *worker)
 #endif
 
 #ifdef WITH_CONSOLE_KIT
-        session_cookie = NULL;
-        res = open_ck_session (worker);
-        if (res) {
-                session_cookie = ck_connector_get_cookie (worker->priv->ckc);
-        }
-        if (session_cookie != NULL) {
+        open_ck_session (worker);
+
+        if (worker->priv->session_cookie != NULL) {
                 gdm_session_worker_set_environment_variable (worker,
                                                              "XDG_SESSION_COOKIE",
-                                                             session_cookie);
+                                                             worker->priv->session_cookie);
         }
 #endif
 }
@@ -1638,11 +1703,7 @@ session_worker_child_watch (GPid              pid,
                  : -1);
 
 #ifdef WITH_CONSOLE_KIT
-        if (worker->priv->ckc != NULL) {
-                ck_connector_close_session (worker->priv->ckc, NULL);
-                ck_connector_unref (worker->priv->ckc);
-                worker->priv->ckc = NULL;
-        }
+        close_ck_session (worker);
 #endif
 
         gdm_session_worker_uninitialize_pam (worker, PAM_SUCCESS);
