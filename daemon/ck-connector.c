@@ -32,138 +32,47 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <dbus/dbus.h>
+#include <gio/gio.h>
+#include <gobject/gvaluecollector.h>
 
 #include "ck-connector.h"
 
-#define N_ELEMENTS(arr)             (sizeof (arr) / sizeof ((arr)[0]))
-
-#if defined (__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
-#define _CK_FUNCTION_NAME __func__
-#elif defined(__GNUC__) || defined(_MSC_VER)
-#define _CK_FUNCTION_NAME __FUNCTION__
-#else
-#define _CK_FUNCTION_NAME "unknown function"
-#endif
-
-#define CK_CONNECTOR_ERROR "org.freedesktop.CkConnector.Error"
-
-#define _CK_WARNING_FORMAT "arguments to %s() were incorrect, assertion \"%s\" failed in file %s line %d.\n"
-#define _ck_return_if_fail(condition) do {                                         \
-  if (!(condition)) {                                                              \
-          fprintf (stderr, _CK_WARNING_FORMAT, _CK_FUNCTION_NAME, #condition, __FILE__, __LINE__); \
-    return;                                                                        \
-  } } while (0)
-
-#define _ck_return_val_if_fail(condition, val) do {                                     \
-  if (!(condition)) {                                                              \
-          fprintf (stderr, _CK_WARNING_FORMAT, _CK_FUNCTION_NAME, #condition, __FILE__, __LINE__); \
-    return val;                                                                        \
-  } } while (0)
-
 struct _CkConnector
 {
-        int             refcount;
-        char           *cookie;
-        dbus_bool_t     session_created;
-        DBusConnection *connection;
+        int              refcount;
+        char            *cookie;
+        gboolean         session_created;
+        GDBusConnection *connection;
 };
 
 static struct {
-        char *name;
-        int   type;
+        const char *name;
+        const char *variant_type;
+        GType       gtype;
 } parameter_lookup[] = {
-        { "display-device",     DBUS_TYPE_STRING },
-        { "x11-display-device", DBUS_TYPE_STRING },
-        { "x11-display",        DBUS_TYPE_STRING },
-        { "remote-host-name",   DBUS_TYPE_STRING },
-        { "session-type",       DBUS_TYPE_STRING },
-        { "is-local",           DBUS_TYPE_BOOLEAN },
-        { "unix-user",          DBUS_TYPE_INT32 },
+        { "display-device",     "s", G_TYPE_STRING },
+        { "x11-display-device", "s", G_TYPE_STRING },
+        { "x11-display",        "s", G_TYPE_STRING },
+        { "remote-host-name",   "s", G_TYPE_STRING },
+        { "session-type",       "s", G_TYPE_STRING },
+        { "is-local",           "b", G_TYPE_BOOLEAN },
+        { "unix-user",          "i", G_TYPE_INT },
 };
 
-static int
-lookup_parameter_type (const char *name)
+static void
+lookup_parameter_type (const char *name, const char **variant_type, GType *gtype)
 {
         int i;
-        int type;
 
-        type = DBUS_TYPE_INVALID;
+        *gtype = G_TYPE_INVALID;
 
-        for (i = 0; i < N_ELEMENTS (parameter_lookup); i++) {
+        for (i = 0; i < G_N_ELEMENTS (parameter_lookup); i++) {
                 if (strcmp (name, parameter_lookup[i].name) == 0) {
-                        type = parameter_lookup[i].type;
+                        *variant_type = parameter_lookup[i].variant_type;
+                        *gtype = parameter_lookup[i].gtype;
                         break;
                 }
         }
-
-        return type;
-}
-
-static dbus_bool_t
-add_param_basic (DBusMessageIter *iter_array,
-                 const char      *name,
-                 int              type,
-                 const void      *value)
-{
-        DBusMessageIter iter_struct;
-        DBusMessageIter iter_variant;
-        const char     *container_type;
-
-        switch (type) {
-        case DBUS_TYPE_STRING:
-                container_type = DBUS_TYPE_STRING_AS_STRING;
-                break;
-        case DBUS_TYPE_BOOLEAN:
-                container_type = DBUS_TYPE_BOOLEAN_AS_STRING;
-                break;
-        case DBUS_TYPE_INT32:
-                container_type = DBUS_TYPE_INT32_AS_STRING;
-                break;
-        default:
-                goto oom;
-                break;
-        }
-
-        if (! dbus_message_iter_open_container (iter_array,
-                                                DBUS_TYPE_STRUCT,
-                                                NULL,
-                                                &iter_struct)) {
-                goto oom;
-        }
-
-        if (! dbus_message_iter_append_basic (&iter_struct,
-                                              DBUS_TYPE_STRING,
-                                              &name)) {
-                goto oom;
-        }
-
-        if (! dbus_message_iter_open_container (&iter_struct,
-                                                DBUS_TYPE_VARIANT,
-                                                container_type,
-                                                &iter_variant)) {
-                goto oom;
-        }
-
-        if (! dbus_message_iter_append_basic (&iter_variant,
-                                              type,
-                                              value)) {
-                goto oom;
-        }
-
-        if (! dbus_message_iter_close_container (&iter_struct,
-                                                 &iter_variant)) {
-                goto oom;
-        }
-
-        if (! dbus_message_iter_close_container (iter_array,
-                                                 &iter_struct)) {
-                goto oom;
-        }
-
-        return TRUE;
-oom:
-        return FALSE;
 }
 
 /* Frees all resources allocated and disconnects from the system
@@ -172,16 +81,13 @@ oom:
 static void
 _ck_connector_free (CkConnector *connector)
 {
-        if (connector->connection != NULL) {
-                /* it's a private connection so it's all good */
-                dbus_connection_close (connector->connection);
-        }
+        g_clear_object (&connector->connection);
 
         if (connector->cookie != NULL) {
-                free (connector->cookie);
+                g_free (connector->cookie);
         }
 
-        free (connector);
+        g_slice_free (CkConnector, connector);
 }
 
 /**
@@ -194,7 +100,7 @@ _ck_connector_free (CkConnector *connector)
 void
 ck_connector_unref (CkConnector *connector)
 {
-        _ck_return_if_fail (connector != NULL);
+        g_return_if_fail (connector != NULL);
 
         /* Probably should use some kind of atomic op here */
         connector->refcount -= 1;
@@ -213,7 +119,7 @@ ck_connector_unref (CkConnector *connector)
 CkConnector *
 ck_connector_ref (CkConnector *connector)
 {
-        _ck_return_val_if_fail (connector != NULL, NULL);
+        g_return_val_if_fail (connector != NULL, NULL);
 
         /* Probably should use some kind of atomic op here */
         connector->refcount += 1;
@@ -233,23 +139,67 @@ ck_connector_new (void)
 {
         CkConnector *connector;
 
-        connector = calloc (1, sizeof (CkConnector));
-        if (connector == NULL) {
-                goto oom;
-        }
+        connector = g_slice_new (CkConnector);
 
         connector->refcount = 1;
         connector->connection = NULL;
         connector->cookie = NULL;
         connector->session_created = FALSE;
-oom:
+
         return connector;
+}
+
+static gboolean
+open_session_helper (CkConnector   *connector,
+                     const char    *method,
+                     GVariant      *parameters,
+                     GError       **error)
+{
+        GError    *local_error = NULL;
+        gboolean   ret;
+        GVariant  *result;
+
+        g_return_val_if_fail (connector != NULL, FALSE);
+        g_return_val_if_fail (error == NULL || !*error, FALSE);
+
+        ret = FALSE;
+
+        connector->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &local_error);
+        if (connector->connection == NULL) {
+                g_propagate_prefixed_error (error, local_error, "Unable to open session: ");
+                goto out;
+        }
+
+        result = g_dbus_connection_call_sync (connector->connection,
+                                              "org.freedesktop.ConsoleKit",
+                                              "/org/freedesktop/ConsoleKit/Manager",
+                                              "org.freedesktop.ConsoleKit.Manager",
+                                              "OpenSession",
+                                              NULL,
+                                              (const GVariantType*) "(s)",
+                                              G_DBUS_CALL_FLAGS_NO_AUTO_START,
+                                              -1,
+                                              NULL,
+                                              &local_error);
+
+        if (result == NULL) {
+                g_propagate_prefixed_error (error, local_error, "Unable to open session: ");
+                goto out;
+        }
+
+        g_variant_get (result, "(s)", &connector->cookie);
+        g_variant_unref (result);
+
+        connector->session_created = TRUE;
+        ret = TRUE;
+
+out:
+        return ret;
 }
 
 /**
  * Connects to the D-Bus system bus daemon and issues the method call
- * OpenSession on the ConsoleKit manager interface. The
- * connection to the bus is private.
+ * OpenSession on the ConsoleKit manager interface.
  *
  * Returns FALSE on OOM, if the system bus daemon is not running, if
  * the ConsoleKit daemon is not running or if the caller doesn't have
@@ -257,232 +207,61 @@ oom:
  *
  * @returns #TRUE if the operation succeeds
  */
-dbus_bool_t
-ck_connector_open_session (CkConnector *connector,
-                           DBusError   *error)
+gboolean
+ck_connector_open_session (CkConnector  *connector,
+                           GError      **error)
 {
-        DBusError    local_error;
-        DBusMessage *message;
-        DBusMessage *reply;
-        dbus_bool_t  ret;
-        char        *cookie;
-
-        _ck_return_val_if_fail (connector != NULL, FALSE);
-        _ck_return_val_if_fail ((error) == NULL || !dbus_error_is_set ((error)), FALSE);
-
-        reply = NULL;
-        message = NULL;
-        ret = FALSE;
-
-        dbus_error_init (&local_error);
-        connector->connection = dbus_bus_get_private (DBUS_BUS_SYSTEM, &local_error);
-        if (connector->connection == NULL) {
-                if (dbus_error_is_set (&local_error)) {
-                        dbus_set_error (error,
-                                        CK_CONNECTOR_ERROR,
-                                        "Unable to open session: %s",
-                                        local_error.message);
-                        dbus_error_free (&local_error);
-                }
-
-                goto out;
-        }
-
-        dbus_connection_set_exit_on_disconnect (connector->connection, FALSE);
-
-        message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
-                                                "/org/freedesktop/ConsoleKit/Manager",
-                                                "org.freedesktop.ConsoleKit.Manager",
-                                                "OpenSession");
-        if (message == NULL) {
-                goto out;
-        }
-
-        dbus_error_init (&local_error);
-        reply = dbus_connection_send_with_reply_and_block (connector->connection,
-                                                           message,
-                                                           -1,
-                                                           &local_error);
-        if (reply == NULL) {
-                if (dbus_error_is_set (&local_error)) {
-                        dbus_set_error (error,
-                                        CK_CONNECTOR_ERROR,
-                                        "Unable to open session: %s",
-                                        local_error.message);
-                        dbus_error_free (&local_error);
-                        goto out;
-                }
-        }
-
-        dbus_error_init (&local_error);
-        if (! dbus_message_get_args (reply,
-                                     &local_error,
-                                     DBUS_TYPE_STRING, &cookie,
-                                     DBUS_TYPE_INVALID)) {
-                if (dbus_error_is_set (&local_error)) {
-                        dbus_set_error (error,
-                                        CK_CONNECTOR_ERROR,
-                                        "Unable to open session: %s",
-                                        local_error.message);
-                        dbus_error_free (&local_error);
-                        goto out;
-                }
-        }
-
-        connector->cookie = strdup (cookie);
-        if (connector->cookie == NULL) {
-                goto out;
-        }
-
-        connector->session_created = TRUE;
-        ret = TRUE;
-
-out:
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-
-        if (message != NULL) {
-                dbus_message_unref (message);
-        }
-
-        return ret;
+        return open_session_helper (connector,
+                                    "OpenSession",
+                                    NULL,
+                                    error);
 }
 
-static dbus_bool_t
-ck_connector_open_session_with_parameters_valist (CkConnector *connector,
-                                                  DBusError   *error,
-                                                  const char  *first_parameter_name,
-                                                  va_list      var_args)
+static GVariant *
+make_parameters (const char *first_parameter_name,
+                 va_list     var_args)
 {
-        DBusError       local_error;
-        DBusMessage    *message;
-        DBusMessage    *reply;
-        DBusMessageIter iter;
-        DBusMessageIter iter_array;
-        dbus_bool_t     ret;
-        char           *cookie;
-        const char     *name;
+        GVariantBuilder builder;
+        const char *p = first_parameter_name;
 
-        _ck_return_val_if_fail (connector != NULL, FALSE);
+        g_variant_builder_init (&builder, (const GVariantType*) "a{sv}");
 
-        reply = NULL;
-        message = NULL;
-        ret = FALSE;
+        while (p) {
+                const char *variant_type;
+                GType gtype;
+                GValue value = G_VALUE_INIT;
+                GVariant *element;
+                char **error = NULL;
 
-        dbus_error_init (&local_error);
-        connector->connection = dbus_bus_get_private (DBUS_BUS_SYSTEM, &local_error);
-        if (connector->connection == NULL) {
-                if (dbus_error_is_set (&local_error)) {
-                        dbus_set_error (error,
-                                        CK_CONNECTOR_ERROR,
-                                        "Unable to open session: %s",
-                                        local_error.message);
-                        dbus_error_free (&local_error);
-                }
-                goto out;
+                lookup_parameter_type (p, &variant_type, &gtype);
+                g_assert (gtype != G_TYPE_INVALID);
+
+                G_VALUE_COLLECT_INIT (&value, gtype, var_args, 0, error);
+
+                if (error)
+                        g_free (*error);
+
+                element = g_dbus_gvalue_to_gvariant (&value, (const GVariantType*) variant_type);
+                g_value_unset (&value);
+
+                g_variant_builder_add (&builder, p, element);
+
+                p = va_arg (var_args, char*);
         }
 
-        dbus_connection_set_exit_on_disconnect (connector->connection, FALSE);
+        return g_variant_builder_end (&builder);
+}
 
-        message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
-                                                "/org/freedesktop/ConsoleKit/Manager",
-                                                "org.freedesktop.ConsoleKit.Manager",
-                                                "OpenSessionWithParameters");
-        if (message == NULL) {
-                goto out;
-        }
-
-        dbus_message_iter_init_append (message, &iter);
-        if (! dbus_message_iter_open_container (&iter,
-                                                DBUS_TYPE_ARRAY,
-                                                "(sv)",
-                                                &iter_array)) {
-                goto out;
-        }
-
-        name = first_parameter_name;
-        while (name != NULL) {
-                int         type;
-                const void *value;
-                dbus_bool_t res;
-
-                type = lookup_parameter_type (name);
-                value = va_arg (var_args, const void *);
-
-                if (type == DBUS_TYPE_INVALID) {
-                        dbus_set_error (error,
-                                        CK_CONNECTOR_ERROR,
-                                        "Unknown parameter: %s",
-                                        name);
-                        goto out;
-                }
-
-                res = add_param_basic (&iter_array, name, type, value);
-                if (! res) {
-                        dbus_set_error (error,
-                                        CK_CONNECTOR_ERROR,
-                                        "Error adding parameter: %s",
-                                        name);
-                        goto out;
-                }
-
-                name = va_arg (var_args, char *);
-        }
-
-        if (! dbus_message_iter_close_container (&iter, &iter_array)) {
-                goto out;
-        }
-
-        dbus_error_init (&local_error);
-        reply = dbus_connection_send_with_reply_and_block (connector->connection,
-                                                           message,
-                                                           -1,
-                                                           &local_error);
-        if (reply == NULL) {
-                if (dbus_error_is_set (&local_error)) {
-                        dbus_set_error (error,
-                                        CK_CONNECTOR_ERROR,
-                                        "Unable to open session: %s",
-                                        local_error.message);
-                        dbus_error_free (&local_error);
-                        goto out;
-                }
-        }
-
-        dbus_error_init (&local_error);
-        if (! dbus_message_get_args (reply,
-                                     &local_error,
-                                     DBUS_TYPE_STRING, &cookie,
-                                     DBUS_TYPE_INVALID)) {
-                if (dbus_error_is_set (&local_error)) {
-                        dbus_set_error (error,
-                                        CK_CONNECTOR_ERROR,
-                                        "Unable to open session: %s",
-                                        local_error.message);
-                        dbus_error_free (&local_error);
-                        goto out;
-                }
-        }
-
-        connector->cookie = strdup (cookie);
-        if (connector->cookie == NULL) {
-                goto out;
-        }
-
-        connector->session_created = TRUE;
-        ret = TRUE;
-
-out:
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-
-        if (message != NULL) {
-                dbus_message_unref (message);
-        }
-
-        return ret;
+static gboolean
+ck_connector_open_session_with_parameters_valist (CkConnector  *connector,
+                                                  GError      **error,
+                                                  const char   *first_parameter_name,
+                                                  va_list       var_args)
+{
+        return open_session_helper (connector,
+                                    "OpenSessionWithParameters",
+                                    make_parameters (first_parameter_name, var_args),
+                                    error);
 }
 
 /**
@@ -510,17 +289,17 @@ out:
  * @param ... value of first parameter, list of additional name-value pairs
  * @returns #TRUE on success
  */
-dbus_bool_t
-ck_connector_open_session_with_parameters (CkConnector *connector,
-                                           DBusError   *error,
-                                           const char  *first_parameter_name,
+gboolean
+ck_connector_open_session_with_parameters (CkConnector  *connector,
+                                           GError      **error,
+                                           const char   *first_parameter_name,
                                            ...)
 {
         va_list     var_args;
-        dbus_bool_t ret;
+        gboolean ret;
 
-        _ck_return_val_if_fail (connector != NULL, FALSE);
-        _ck_return_val_if_fail ((error) == NULL || !dbus_error_is_set ((error)), FALSE);
+        g_return_val_if_fail (connector != NULL, FALSE);
+        g_return_val_if_fail (error == NULL || !*error, FALSE);
 
         va_start (var_args, first_parameter_name);
         ret = ck_connector_open_session_with_parameters_valist (connector,
@@ -549,26 +328,22 @@ ck_connector_open_session_with_parameters (CkConnector *connector,
  * @param x11_display the value of the X11 DISPLAY for the session
  * @returns #TRUE if the operation succeeds
  */
-dbus_bool_t
-ck_connector_open_session_for_user (CkConnector *connector,
-                                    uid_t        user,
-                                    const char  *display_device,
-                                    const char  *x11_display,
-                                    DBusError   *error)
+gboolean
+ck_connector_open_session_for_user (CkConnector  *connector,
+                                    uid_t         user,
+                                    const char   *display_device,
+                                    const char   *x11_display,
+                                    GError      **error)
 {
-        dbus_bool_t ret;
+        g_return_val_if_fail (connector != NULL, FALSE);
+        g_return_val_if_fail (display_device != NULL, FALSE);
 
-        _ck_return_val_if_fail (connector != NULL, FALSE);
-        _ck_return_val_if_fail (display_device != NULL, FALSE);
-        _ck_return_val_if_fail ((error) == NULL || !dbus_error_is_set ((error)), FALSE);
-
-        ret = ck_connector_open_session_with_parameters (connector,
-                                                         error,
-                                                         "display-device", &display_device,
-                                                         "x11-display", &x11_display,
-                                                         "unix-user", &user,
-                                                         NULL);
-        return ret;
+        return ck_connector_open_session_with_parameters (connector,
+                                                          error,
+                                                          "display-device", display_device,
+                                                          "x11-display", x11_display,
+                                                          "unix-user", user,
+                                                          NULL);
 }
 
 /**
@@ -580,7 +355,7 @@ ck_connector_open_session_for_user (CkConnector *connector,
 const char *
 ck_connector_get_cookie (CkConnector *connector)
 {
-        _ck_return_val_if_fail (connector != NULL, NULL);
+        g_return_val_if_fail (connector != NULL, NULL);
 
         if (! connector->session_created) {
                 return NULL;
@@ -599,78 +374,45 @@ ck_connector_get_cookie (CkConnector *connector)
  *
  * @returns #TRUE if the operation succeeds
  */
-dbus_bool_t
-ck_connector_close_session (CkConnector *connector,
-                            DBusError   *error)
+gboolean
+ck_connector_close_session (CkConnector  *connector,
+                            GError      **error)
 {
-        DBusError    local_error;
-        DBusMessage *message;
-        DBusMessage *reply;
-        dbus_bool_t  ret;
-        dbus_bool_t  session_closed;
+        GError   *local_error = NULL;
+        gboolean  ret, closed;
+        GVariant *result;
 
-        _ck_return_val_if_fail (connector != NULL, FALSE);
-        _ck_return_val_if_fail ((error) == NULL || !dbus_error_is_set ((error)), FALSE);
+        g_return_val_if_fail (connector != NULL, FALSE);
+        g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-        reply = NULL;
-        message = NULL;
         ret = FALSE;
 
         if (!connector->session_created || connector->cookie == NULL) {
-                dbus_set_error (error,
-                                CK_CONNECTOR_ERROR,
-                                "Unable to close session: %s",
-                                "no session open");
+                g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED, "Unable to close session: no session open");
                 goto out;
         }
 
-        dbus_error_init (&local_error);
-        message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
-                                                "/org/freedesktop/ConsoleKit/Manager",
-                                                "org.freedesktop.ConsoleKit.Manager",
-                                                "CloseSession");
-        if (message == NULL) {
+        result = g_dbus_connection_call_sync (connector->connection,
+                                              "org.freedesktop.ConsoleKit",
+                                              "/org/freedesktop/ConsoleKit/Manager",
+                                              "org.freedesktop.ConsoleKit.Manager",
+                                              "CloseSession",
+                                              g_variant_new ("(s)", connector->cookie),
+                                              (const GVariantType*) "(b)",
+                                              G_DBUS_CALL_FLAGS_NO_AUTO_START,
+                                              -1,
+                                              NULL,
+                                              &local_error);
+
+        if (result == NULL) {
+                g_propagate_prefixed_error (error, local_error, "Unable to close session: ");
                 goto out;
         }
 
-        if (! dbus_message_append_args (message,
-                                        DBUS_TYPE_STRING, &(connector->cookie),
-                                        DBUS_TYPE_INVALID)) {
-                goto out;
-        }
+        g_variant_get (result, "(b)", &closed);
+        g_variant_unref (result);
 
-        dbus_error_init (&local_error);
-        reply = dbus_connection_send_with_reply_and_block (connector->connection,
-                                                           message,
-                                                           -1,
-                                                           &local_error);
-        if (reply == NULL) {
-                if (dbus_error_is_set (&local_error)) {
-                        dbus_set_error (error,
-                                        CK_CONNECTOR_ERROR,
-                                        "Unable to close session: %s",
-                                        local_error.message);
-                        dbus_error_free (&local_error);
-                        goto out;
-                }
-        }
-
-        dbus_error_init (&local_error);
-        if (! dbus_message_get_args (reply,
-                                     &local_error,
-                                     DBUS_TYPE_BOOLEAN, &session_closed,
-                                     DBUS_TYPE_INVALID)) {
-                if (dbus_error_is_set (&local_error)) {
-                        dbus_set_error (error,
-                                        CK_CONNECTOR_ERROR,
-                                        "Unable to close session: %s",
-                                        local_error.message);
-                        dbus_error_free (&local_error);
-                        goto out;
-                }
-        }
-
-        if (! session_closed) {
+        if (! closed) {
                 goto out;
         }
 
@@ -678,14 +420,5 @@ ck_connector_close_session (CkConnector *connector,
         ret = TRUE;
 
 out:
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-
-        if (message != NULL) {
-                dbus_message_unref (message);
-        }
-
         return ret;
-
 }

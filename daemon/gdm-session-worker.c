@@ -191,7 +191,7 @@ open_ck_session (GdmSessionWorker  *worker)
         struct passwd *pwent;
         gboolean       ret;
         int            res;
-        DBusError      error;
+        GError        *error = NULL;
         const char     *display_name;
         const char     *display_device;
         const char     *display_hostname;
@@ -244,25 +244,19 @@ open_ck_session (GdmSessionWorker  *worker)
                 goto out;
         }
 
-        dbus_error_init (&error);
         res = ck_connector_open_session_with_parameters (worker->priv->ckc,
                                                          &error,
-                                                         "unix-user", &pwent->pw_uid,
-                                                         "x11-display", &display_name,
-                                                         "x11-display-device", &display_device,
-                                                         "remote-host-name", &display_hostname,
-                                                         "is-local", &is_local,
-                                                         "session-type", &session_type,
+                                                         "unix-user", pwent->pw_uid,
+                                                         "x11-display", display_name,
+                                                         "x11-display-device", display_device,
+                                                         "remote-host-name", display_hostname,
+                                                         "is-local", is_local,
+                                                         "session-type", session_type,
                                                          NULL);
 
         if (! res) {
-                if (dbus_error_is_set (&error)) {
-                        g_warning ("%s\n", error.message);
-                        dbus_error_free (&error);
-                } else {
-                        g_warning ("cannot open CK session: OOM, D-Bus system bus not available,\n"
-                                   "ConsoleKit not available or insufficient privileges.\n");
-                }
+                g_warning ("%s\n", error->message);
+                g_clear_error (&error);
                 goto out;
         }
 
