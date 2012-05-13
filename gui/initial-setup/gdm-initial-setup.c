@@ -2205,6 +2205,7 @@ int
 main (int argc, char *argv[])
 {
         SetupData *setup;
+        gchar *filename;
         GError *error;
         GOptionEntry entries[] = {
                 { "skip-account", 0, 0, G_OPTION_ARG_NONE, &skip_account, "Skip account creation", NULL },
@@ -2238,15 +2239,15 @@ main (int argc, char *argv[])
         }
 
         setup->overrides = g_key_file_new ();
-        if (!g_key_file_load_from_file (setup->overrides,
-                                        "overrides.ini",
-                                        0, &error)) {
+        filename = g_build_filename (UIDIR, "overrides.ini", NULL);
+        if (!g_key_file_load_from_file (setup->overrides, filename, 0, &error)) {
                 if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
                         g_error ("%s", error->message);
                         exit (1);
                 }
                 g_error_free (error);
         }
+        g_free (filename);
 
         prepare_assistant (setup);
 
