@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
 Name=Welcome
-Exec=sh -c 'rm -f $HOME/.config/run-welcome-tour; epiphany http://www.gnome3.org'
+Exec=bash -c 'epiphany --private-instance http://www.gnome3.org ; rm -f $HOME/.config/run-welcome-tour'
 AutostartCondition=if-exists run-welcome-tour
 OnlyShowIn=GNOME;
