@@ -329,6 +329,11 @@ gdm_session_worker_SOURCES = 			\
 	gdm-session-worker.c			\
 	$(NULL)
 
+nodist_gdm_session_worker_SOURCES =		\
+	gdm-session-glue.h			\
+	gdm-session-glue.c			\
+	$(NULL)
+
 if WITH_CONSOLE_KIT
 gdm_session_worker_SOURCES += 			\
 	ck-connector.h				\

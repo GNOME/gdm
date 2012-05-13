@@ -94,6 +94,10 @@
       <arg name="service_name" direction="in" type="s"/>
       <arg name="pid" direction="in" type="i"/>
     </method>
+    <method name="SessionStartFailed">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="message" direction="in" type="s"/>
+    </method>
     <method name="SessionExited">
       <arg name="service_name" direction="in" type="s"/>
       <!-- This is a combination of exit code and exit
