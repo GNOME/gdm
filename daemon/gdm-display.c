@@ -1211,7 +1211,7 @@ register_display (GdmDisplay *display)
 }
 
 /*
-  dbus-send --system --print-reply --dest=org.gnome.DisplayManager /org/gnome/DisplayManager/Display1 org.freedesktop.DBus.Introspectable.Introspect
+  dbus-send --system --print-reply --dest=org.gnome.DisplayManager /org/gnome/DisplayManager/Displays/1 org.freedesktop.DBus.Introspectable.Introspect
 */
 
 static GObject *
@@ -1227,7 +1227,7 @@ gdm_display_constructor (GType                  type,
                                                                                        construct_properties));
 
         g_free (display->priv->id);
-        display->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Display%u", get_next_display_serial ());
+        display->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Displays/%u", get_next_display_serial ());
 
         res = register_display (display);
         if (! res) {

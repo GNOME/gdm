@@ -31,7 +31,6 @@ AM_CPPFLAGS = \
 BUILT_SOURCES =					\
 	gdm-slave-glue.h			\
 	gdm-xdmcp-chooser-slave-glue.h		\
-	gdm-manager-glue.h			\
 	gdm-display-glue.h			\
 	gdm-xdmcp-display-glue.h		\
 	gdm-static-display-glue.h		\
@@ -39,9 +38,6 @@ BUILT_SOURCES =					\
 	gdm-local-display-factory-glue.h	\
 	gdm-greeter-glue.h			\
 	$(NULL)
-
-gdm-manager-glue.h: gdm-manager.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_manager --mode=glib-server --output=gdm-manager-glue.h $(srcdir)/gdm-manager.xml
 
 gdm-display-glue.c gdm-display-glue.h: gdm-display.xml Makefile.am
 	$(AM_V_GEN)gdbus-codegen 					\
@@ -367,8 +363,6 @@ EXTRA_DIST = 				\
 	gdm-slave.xml			\
 	gdm-simple-slave.xml		\
 	gdm-xdmcp-chooser-slave.xml	\
-	gdm-session.xml			\
-	gdm-manager.xml			\
 	gdm-display.xml			\
 	gdm-xdmcp-display.xml		\
 	gdm-static-display.xml		\
