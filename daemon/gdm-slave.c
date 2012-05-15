@@ -38,10 +38,6 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
-
 #include <X11/Xlib.h> /* for Display */
 #include <X11/Xatom.h> /* for XA_PIXMAP */
 #include <X11/cursorfont.h> /* for watch cursor */
@@ -62,6 +58,7 @@
 
 #include "gdm-slave.h"
 #include "gdm-slave-glue.h"
+#include "gdm-display-glue.h"
 
 #include "gdm-server.h"
 
@@ -102,11 +99,12 @@ struct GdmSlavePrivate
         char            *parent_display_name;
         char            *parent_display_x11_authority_file;
         char            *windowpath;
+        char            *display_x11_cookie;
 
-        GArray          *display_x11_cookie;
-
-        DBusGProxy      *display_proxy;
-        DBusGConnection *connection;
+        GdmDBusDisplay  *display_proxy;
+        GDBusConnection *connection;
+        GDBusObjectSkeleton *object_skeleton;
+        GdmDBusSlave    *skeleton;
 };
 
 enum {
@@ -697,8 +695,8 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
         /* Give slave access to the display independent of current hostname */
         XSetAuthorization ("MIT-MAGIC-COOKIE-1",
                            strlen ("MIT-MAGIC-COOKIE-1"),
-                           slave->priv->display_x11_cookie->data,
-                           slave->priv->display_x11_cookie->len);
+                           slave->priv->display_x11_cookie,
+                           strlen (slave->priv->display_x11_cookie));
 
         slave->priv->server_display = XOpenDisplay (slave->priv->display_name);
 
@@ -737,15 +735,6 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
         return ret;
 }
 
-static void
-display_proxy_destroyed_cb (DBusGProxy *display_proxy,
-                            GdmSlave   *slave)
-{
-        g_debug ("GdmSlave: Disconnected from display");
-
-        slave->priv->display_proxy = NULL;
-}
-
 static gboolean
 gdm_slave_set_slave_bus_name (GdmSlave *slave)
 {
@@ -753,23 +742,15 @@ gdm_slave_set_slave_bus_name (GdmSlave *slave)
         GError     *error;
         const char *name;
 
-        name = dbus_bus_get_unique_name (dbus_g_connection_get_connection (slave->priv->connection));
+        name = g_dbus_connection_get_unique_name (slave->priv->connection);
 
         error = NULL;
-        res = dbus_g_proxy_call (slave->priv->display_proxy,
-                                 "SetSlaveBusName",
-                                 &error,
-                                 G_TYPE_STRING, name,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
-
+        res = gdm_dbus_display_call_set_slave_bus_name_sync (slave->priv->display_proxy,
+                                                             name,
+                                                             NULL, &error);
         if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to set slave bus name on parent: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to set slave bus name on parent");
-                }
+                g_warning ("Failed to set slave bus name on parent: %s", error->message);
+                g_error_free (error);
         }
 
         return res;
@@ -788,42 +769,25 @@ gdm_slave_real_start (GdmSlave *slave)
 
         g_debug ("GdmSlave: Creating proxy for %s", slave->priv->display_id);
         error = NULL;
-        slave->priv->display_proxy = dbus_g_proxy_new_for_name_owner (slave->priv->connection,
-                                                                      GDM_DBUS_NAME,
-                                                                      slave->priv->display_id,
-                                                                      GDM_DBUS_DISPLAY_INTERFACE,
-                                                                      &error);
-        g_signal_connect (slave->priv->display_proxy,
-                          "destroy",
-                          G_CALLBACK (display_proxy_destroyed_cb),
-                          slave);
+        slave->priv->display_proxy = GDM_DBUS_DISPLAY (gdm_dbus_display_proxy_new_sync (slave->priv->connection,
+                                                                                        G_DBUS_PROXY_FLAGS_NONE,
+                                                                                        GDM_DBUS_NAME,
+                                                                                        slave->priv->display_id,
+                                                                                        NULL, &error));
 
         if (slave->priv->display_proxy == NULL) {
-                if (error != NULL) {
-                        g_warning ("Failed to create display proxy %s: %s", slave->priv->display_id, error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Unable to create display proxy");
-                }
+                g_warning ("Failed to create display proxy %s: %s", slave->priv->display_id, error->message);
+                g_error_free (error);
                 return FALSE;
         }
 
-        /* Make sure display ID works */
         error = NULL;
-        res = dbus_g_proxy_call (slave->priv->display_proxy,
-                                 "GetId",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 DBUS_TYPE_G_OBJECT_PATH, &id,
-                                 G_TYPE_INVALID);
+        res = gdm_dbus_display_call_get_id_sync (slave->priv->display_proxy,
+                                                 &id,
+                                                 NULL, &error);
         if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to get display ID %s: %s", slave->priv->display_id, error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to get display ID %s", slave->priv->display_id);
-                }
-
+                g_warning ("Failed to get display ID %s: %s", slave->priv->display_id, error->message);
+                g_error_free (error);
                 return FALSE;
         }
 
@@ -838,129 +802,72 @@ gdm_slave_real_start (GdmSlave *slave)
 
         /* cache some values up front */
         error = NULL;
-        res = dbus_g_proxy_call (slave->priv->display_proxy,
-                                 "IsLocal",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_BOOLEAN, &slave->priv->display_is_local,
-                                 G_TYPE_INVALID);
+        res = gdm_dbus_display_call_is_local_sync (slave->priv->display_proxy,
+                                                   &slave->priv->display_is_local,
+                                                   NULL, &error);
         if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to get value: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to get value");
-                }
-
+                g_warning ("Failed to get value: %s", error->message);
+                g_error_free (error);
                 return FALSE;
         }
 
         error = NULL;
-        res = dbus_g_proxy_call (slave->priv->display_proxy,
-                                 "GetX11DisplayName",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_STRING, &slave->priv->display_name,
-                                 G_TYPE_INVALID);
+        res = gdm_dbus_display_call_get_x11_display_name_sync (slave->priv->display_proxy,
+                                                               &slave->priv->display_name,
+                                                               NULL, &error);
         if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to get value: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to get value");
-                }
-
+                g_warning ("Failed to get value: %s", error->message);
+                g_error_free (error);
                 return FALSE;
         }
 
         error = NULL;
-        res = dbus_g_proxy_call (slave->priv->display_proxy,
-                                 "GetX11DisplayNumber",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INT, &slave->priv->display_number,
-                                 G_TYPE_INVALID);
+        res = gdm_dbus_display_call_get_x11_display_number_sync (slave->priv->display_proxy,
+                                                                 &slave->priv->display_number,
+                                                                 NULL, &error);
         if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to get value: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to get value");
-                }
-
+                g_warning ("Failed to get value: %s", error->message);
+                g_error_free (error);
                 return FALSE;
         }
 
         error = NULL;
-        res = dbus_g_proxy_call (slave->priv->display_proxy,
-                                 "GetRemoteHostname",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_STRING, &slave->priv->display_hostname,
-                                 G_TYPE_INVALID);
+        res = gdm_dbus_display_call_get_remote_hostname_sync (slave->priv->display_proxy,
+                                                              &slave->priv->display_hostname,
+                                                              NULL, &error);
         if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to get value: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to get value");
-                }
-
+                g_warning ("Failed to get value: %s", error->message);
+                g_error_free (error);
                 return FALSE;
         }
 
         error = NULL;
-        res = dbus_g_proxy_call (slave->priv->display_proxy,
-                                 "GetX11Cookie",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 dbus_g_type_get_collection ("GArray", G_TYPE_CHAR),
-                                 &slave->priv->display_x11_cookie,
-                                 G_TYPE_INVALID);
+        res = gdm_dbus_display_call_get_x11_cookie_sync (slave->priv->display_proxy,
+                                                         &slave->priv->display_x11_cookie,
+                                                         NULL, &error);
         if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to get value: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to get value");
-                }
-
+                g_warning ("Failed to get value: %s", error->message);
+                g_error_free (error);
                 return FALSE;
         }
 
         error = NULL;
-        res = dbus_g_proxy_call (slave->priv->display_proxy,
-                                 "GetX11AuthorityFile",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_STRING, &slave->priv->display_x11_authority_file,
-                                 G_TYPE_INVALID);
+        res = gdm_dbus_display_call_get_x11_authority_file_sync (slave->priv->display_proxy,
+                                                                 &slave->priv->display_x11_authority_file,
+                                                                 NULL, &error);
         if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to get value: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to get value");
-                }
-
+                g_warning ("Failed to get value: %s", error->message);
+                g_error_free (error);
                 return FALSE;
         }
 
         error = NULL;
-        res = dbus_g_proxy_call (slave->priv->display_proxy,
-                                 "GetSeatId",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_STRING, &slave->priv->display_seat_id,
-                                 G_TYPE_INVALID);
+        res = gdm_dbus_display_call_get_seat_id_sync (slave->priv->display_proxy,
+                                                      &slave->priv->display_seat_id,
+                                                      NULL, &error);
         if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to get value: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to get value");
-                }
-
+                g_warning ("Failed to get value: %s", error->message);
+                g_error_free (error);
                 return FALSE;
         }
 
@@ -1039,21 +946,14 @@ gdm_slave_add_user_authorization (GdmSlave   *slave,
         g_debug ("GdmSlave: Requesting user authorization");
 
         error = NULL;
-        res = dbus_g_proxy_call (slave->priv->display_proxy,
-                                 "AddUserAuthorization",
-                                 &error,
-                                 G_TYPE_STRING, username,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_STRING, &filename,
-                                 G_TYPE_INVALID);
+        res = gdm_dbus_display_call_add_user_authorization_sync (slave->priv->display_proxy,
+                                                                 username,
+                                                                 &filename,
+                                                                 NULL, &error);
 
         if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to add user authorization: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to add user authorization");
-                }
+                g_warning ("Failed to add user authorization: %s", error->message);
+                g_error_free (error);
         } else {
                 g_debug ("GdmSlave: Got user authorization: %s", filename);
         }
@@ -1186,22 +1086,14 @@ gdm_slave_get_timed_login_details (GdmSlave   *slave,
         g_debug ("GdmSlave: Requesting timed login details");
 
         error = NULL;
-        res = dbus_g_proxy_call (slave->priv->display_proxy,
-                                 "GetTimedLoginDetails",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_BOOLEAN, &enabled,
-                                 G_TYPE_STRING, &username,
-                                 G_TYPE_INT, &delay,
-                                 G_TYPE_INVALID);
-
+        res = gdm_dbus_display_call_get_timed_login_details_sync (slave->priv->display_proxy,
+                                                                  &enabled,
+                                                                  &username,
+                                                                  &delay,
+                                                                  NULL, &error);
         if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to get timed login details: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to get timed login details");
-                }
+                g_warning ("Failed to get timed login details: %s", error->message);
+                g_error_free (error);
         } else {
                 g_debug ("GdmSlave: Got timed login details: %d %s %d", enabled, username, delay);
         }
@@ -1282,60 +1174,63 @@ x11_session_is_on_seat (GdmSlave        *slave,
                         const char      *session_id,
                         const char      *seat_id)
 {
-        DBusGProxy      *proxy;
         GError          *error;
+        GVariant        *reply;
         char            *sid;
-        gboolean         res;
         gboolean         ret;
         char            *x11_display_device;
         char            *x11_display;
 
         ret = FALSE;
+        sid = NULL;
+        x11_display = NULL;
+        x11_display_device = NULL;
 
         if (seat_id == NULL || seat_id[0] == '\0' || session_id == NULL || session_id[0] == '\0') {
                 return FALSE;
         }
 
-        proxy = dbus_g_proxy_new_for_name (slave->priv->connection,
-                                           CK_NAME,
-                                           session_id,
-                                           CK_SESSION_INTERFACE);
-        if (proxy == NULL) {
-                g_warning ("Failed to connect to the ConsoleKit seat object");
-                goto out;
-        }
-
-        sid = NULL;
-        error = NULL;
-        res = dbus_g_proxy_call (proxy,
-                                 "GetSeatId",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 DBUS_TYPE_G_OBJECT_PATH, &sid,
-                                 G_TYPE_INVALID);
-        if (! res) {
+        reply = g_dbus_connection_call_sync (slave->priv->connection,
+                                             CK_NAME,
+                                             session_id,
+                                             CK_SESSION_INTERFACE,
+                                             "GetSeatId",
+                                             NULL, /* parameters */
+                                             (const GVariantType*) "(o)",
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &error);
+        if (reply == NULL) {
                 g_debug ("Failed to identify the current seat: %s", error->message);
                 g_error_free (error);
-                goto out;
+                return FALSE;
         }
+
+        g_variant_get (reply, "(o)", &sid);
+        g_variant_unref (reply);
 
         if (sid == NULL || sid[0] == '\0' || strcmp (sid, seat_id) != 0) {
                 g_debug ("GdmSlave: session not on current seat: %s", seat_id);
                 goto out;
         }
 
-        x11_display = NULL;
-        error = NULL;
-        res = dbus_g_proxy_call (proxy,
-                                 "GetX11Display",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_STRING, &x11_display,
-                                 G_TYPE_INVALID);
-        if (! res) {
+        reply = g_dbus_connection_call_sync (slave->priv->connection,
+                                             CK_NAME,
+                                             session_id,
+                                             CK_SESSION_INTERFACE,
+                                             "GetX11Display",
+                                             NULL, /* parameters */
+                                             (const GVariantType*) "(s)",
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &error);
+        if (! reply) {
                 g_error_free (error);
                 goto out;
         }
+
+        g_variant_get (reply, "(s)", &x11_display);
+        g_variant_unref (reply);
 
         /* don't try to switch to our own session */
         if (x11_display == NULL || x11_display[0] == '\0'
@@ -1345,31 +1240,34 @@ x11_session_is_on_seat (GdmSlave        *slave,
         }
         g_free (x11_display);
 
-        x11_display_device = NULL;
-        error = NULL;
-        res = dbus_g_proxy_call (proxy,
-                                 "GetX11DisplayDevice",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_STRING, &x11_display_device,
-                                 G_TYPE_INVALID);
-        if (! res) {
+        reply = g_dbus_connection_call_sync (slave->priv->connection,
+                                             CK_NAME,
+                                             session_id,
+                                             CK_SESSION_INTERFACE,
+                                             "GetX11DisplayDevice",
+                                             NULL, /* parameters */
+                                             (const GVariantType*) "(s)",
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &error);
+        if (! reply) {
                 g_error_free (error);
                 goto out;
         }
+
+        g_variant_get (reply, "(s)", &x11_display_device);
+        g_variant_unref (reply);
 
         if (x11_display_device == NULL || x11_display_device[0] == '\0') {
                 g_free (x11_display_device);
                 goto out;
         }
-        g_free (x11_display_device);
 
         ret = TRUE;
-
  out:
-        if (proxy != NULL) {
-                g_object_unref (proxy);
-        }
+        g_free (x11_display_device);
+        g_free (x11_display);
+        g_free (sid);
 
         return ret;
 }
@@ -1465,96 +1363,74 @@ static char *
 gdm_slave_get_primary_session_id_for_user_from_ck (GdmSlave   *slave,
                                                    const char *username)
 {
-        gboolean    res;
         gboolean    can_activate_sessions;
         GError     *error;
-        DBusGProxy *manager_proxy;
-        DBusGProxy *seat_proxy;
-        GPtrArray  *sessions;
         char       *primary_ssid;
-        int         i;
         uid_t       uid;
+        GVariant   *reply;
+        GVariantIter iter;
+        char       *ssid;
 
-        manager_proxy = NULL;
         primary_ssid = NULL;
-        sessions = NULL;
 
         g_debug ("GdmSlave: getting proxy for seat: %s", slave->priv->display_seat_id);
-
-        seat_proxy = dbus_g_proxy_new_for_name (slave->priv->connection,
-                                                CK_NAME,
-                                                slave->priv->display_seat_id,
-                                                CK_SEAT_INTERFACE);
-
         g_debug ("GdmSlave: checking if seat can activate sessions");
 
-        error = NULL;
-        res = dbus_g_proxy_call (seat_proxy,
-                                 "CanActivateSessions",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_BOOLEAN, &can_activate_sessions,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("unable to determine if seat can activate sessions: %s",
-                           error->message);
+        reply = g_dbus_connection_call_sync (slave->priv->connection,
+                                             CK_NAME,
+                                             slave->priv->display_seat_id,
+                                             CK_SEAT_INTERFACE,
+                                             "CanActivateSessions",
+                                             NULL, /* parameters */
+                                             (const GVariantType*) "(b)",
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &error);
+        if (reply == NULL) {
+                g_warning ("unable to determine if seat can activate sessions: %s", error->message);
                 g_error_free (error);
-                goto out;
+                return NULL;
         }
+
+        g_variant_get (reply, "(b)", &can_activate_sessions);
+        g_variant_unref (reply);
 
         if (! can_activate_sessions) {
                 g_debug ("GdmSlave: seat is unable to activate sessions");
-                goto out;
+                return NULL;
         }
-
-        manager_proxy = dbus_g_proxy_new_for_name (slave->priv->connection,
-                                                   CK_NAME,
-                                                   CK_MANAGER_PATH,
-                                                   CK_MANAGER_INTERFACE);
 
         if (! _get_uid_and_gid_for_user (username, &uid, NULL)) {
                 g_debug ("GdmSlave: unable to determine uid for user: %s", username);
-                goto out;
+                return NULL;
         }
 
-        error = NULL;
-        res = dbus_g_proxy_call (manager_proxy,
-                                 "GetSessionsForUnixUser",
-                                 &error,
-                                 G_TYPE_UINT, uid,
-                                 G_TYPE_INVALID,
-                                 dbus_g_type_get_collection ("GPtrArray", DBUS_TYPE_G_OBJECT_PATH), &sessions,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                g_warning ("unable to determine sessions for user: %s",
-                           error->message);
+        reply = g_dbus_connection_call_sync (slave->priv->connection,
+                                             CK_NAME,
+                                             CK_MANAGER_PATH,
+                                             CK_MANAGER_INTERFACE,
+                                             "CanSessionsForUnixUser",
+                                             g_variant_new ("(u)", uid),
+                                             (const GVariantType*) "(ao)",
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &error);
+
+        if (! reply) {
+                g_warning ("unable to determine sessions for user: %s", error->message);
                 g_error_free (error);
-                goto out;
+                return NULL;
         }
 
-        for (i = 0; i < sessions->len; i++) {
-                char *ssid;
-
-                ssid = g_ptr_array_index (sessions, i);
-
+        g_variant_iter_init (&iter, reply);
+        while (g_variant_iter_loop (&iter, "(&s)", &ssid)) {
                 if (x11_session_is_on_seat (slave, ssid, slave->priv->display_seat_id)) {
                         primary_ssid = g_strdup (ssid);
                         break;
                 }
         }
 
-        g_ptr_array_foreach (sessions, (GFunc)g_free, NULL);
-        g_ptr_array_free (sessions, TRUE);
-
- out:
-
-        if (seat_proxy != NULL) {
-                g_object_unref (seat_proxy);
-        }
-        if (manager_proxy != NULL) {
-                g_object_unref (manager_proxy);
-        }
-
+        g_variant_unref (reply);
         return primary_ssid;
 }
 #endif
@@ -1588,13 +1464,8 @@ activate_session_id_for_systemd (GdmSlave   *slave,
                                  const char *seat_id,
                                  const char *session_id)
 {
-        DBusError    local_error;
-        DBusMessage *message;
-        DBusMessage *reply;
-        gboolean     ret;
-
-        ret = FALSE;
-        reply = NULL;
+        GError *error = NULL;
+        GVariant *reply;
 
         /* Can't activate what's already active. We want this
          * to fail, because we don't want migration to succeed
@@ -1605,44 +1476,26 @@ activate_session_id_for_systemd (GdmSlave   *slave,
                 return FALSE;
         }
 
-        dbus_error_init (&local_error);
-
-        message = dbus_message_new_method_call ("org.freedesktop.login1",
-                                                "/org/freedesktop/login1",
-                                                "org.freedesktop.login1.Manager",
-                                                "ActivateSessionOnSeat");
-        if (message == NULL) {
-                goto out;
+        reply = g_dbus_connection_call_sync (slave->priv->connection,
+                                             "org.freedesktop.login1",
+                                             "/org/freedesktop/login1",
+                                             "org.freedesktop.login1.Manager",
+                                             "ActivateSessionOnSeat",
+                                             g_variant_new ("(ss)", session_id, seat_id),
+                                             NULL, /* expected reply */
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &error);
+        if (reply == NULL) {
+                g_debug ("GdmSlave: logind %s raised:\n %s\n\n",
+                         g_dbus_error_get_remote_error (error), error->message);
+                g_error_free (error);
+                return FALSE;
         }
 
-        if (! dbus_message_append_args (message,
-                                        DBUS_TYPE_STRING, &session_id,
-                                        DBUS_TYPE_STRING, &seat_id,
-                                        DBUS_TYPE_INVALID)) {
-                goto out;
-        }
+        g_variant_unref (reply);
 
-        reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (slave->priv->connection),
-                                                           message,
-                                                           -1,
-                                                           &local_error);
-        if (dbus_error_is_set (&local_error)) {
-                g_warning ("GdmSlave: Unable to activate session: %s", local_error.message);
-                dbus_error_free (&local_error);
-                goto out;
-        }
-
-        ret = TRUE;
-
- out:
-        if (message != NULL) {
-                dbus_message_unref (message);
-        }
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-
-        return ret;
+        return TRUE;
 }
 #endif
 
@@ -1652,51 +1505,29 @@ activate_session_id_for_ck (GdmSlave   *slave,
                             const char *seat_id,
                             const char *session_id)
 {
-        DBusError    local_error;
-        DBusMessage *message;
-        DBusMessage *reply;
-        gboolean     ret;
+        GError *error = NULL;
+        GVariant *reply;
 
-        ret = FALSE;
-        reply = NULL;
-
-        dbus_error_init (&local_error);
-        message = dbus_message_new_method_call ("org.freedesktop.ConsoleKit",
-                                                seat_id,
-                                                "org.freedesktop.ConsoleKit.Seat",
-                                                "ActivateSession");
-        if (message == NULL) {
-                goto out;
-        }
-
-        if (! dbus_message_append_args (message,
-                                        DBUS_TYPE_OBJECT_PATH, &session_id,
-                                        DBUS_TYPE_INVALID)) {
-                goto out;
-        }
-
-        reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (slave->priv->connection),
-                                                           message,
-                                                           -1,
-                                                           &local_error);
+        reply = g_dbus_connection_call_sync (slave->priv->connection,
+                                             CK_NAME,
+                                             seat_id,
+                                             "org.freedesktop.ConsoleKit.Seat",
+                                             "ActivateSession",
+                                             g_variant_new ("(o)", session_id),
+                                             NULL, /* expected reply */
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &error);
         if (reply == NULL) {
-                if (dbus_error_is_set (&local_error)) {
-                        g_warning ("Unable to activate session: %s", local_error.message);
-                        dbus_error_free (&local_error);
-                        goto out;
-                }
+                g_debug ("GdmSlave: ConsoleKit %s raised:\n %s\n\n",
+                         g_dbus_error_get_remote_error (error), error->message);
+                g_error_free (error);
+                return FALSE;
         }
 
-        ret = TRUE;
- out:
-        if (message != NULL) {
-                dbus_message_unref (message);
-        }
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
+        g_variant_unref (reply);
 
-        return ret;
+        return TRUE;
 }
 #endif
 
@@ -1724,42 +1555,27 @@ static gboolean
 session_unlock_for_systemd (GdmSlave   *slave,
                             const char *ssid)
 {
-        DBusError       error;
-        DBusMessage    *message;
-        DBusMessage    *reply;
+        GError *error = NULL;
+        GVariant *reply;
 
-        dbus_error_init (&error);
-
-        message = dbus_message_new_method_call ("org.freedesktop.login1",
-                                                "/org/freedesktop/login1",
-                                                "org.freedesktop.login1.Manager",
-                                                "UnlockSession");
-
-        if (message == NULL) {
-                g_debug ("GdmSlave: couldn't allocate the D-Bus message");
+        reply = g_dbus_connection_call_sync (slave->priv->connection,
+                                             "org.freedesktop.login1",
+                                             "/org/freedesktop/login1",
+                                             "org.freedesktop.login1.Manager",
+                                             "UnlockSession",
+                                             g_variant_new ("(s)", ssid),
+                                             NULL, /* expected reply */
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &error);
+        if (reply == NULL) {
+                g_debug ("GdmSlave: logind %s raised:\n %s\n\n",
+                         g_dbus_error_get_remote_error (error), error->message);
+                g_error_free (error);
                 return FALSE;
         }
 
-        if (! dbus_message_append_args (message,
-                                        DBUS_TYPE_STRING, &ssid,
-                                        DBUS_TYPE_INVALID)) {
-                g_debug ("GdmSlave: couldn't attach the D-Bus message data");
-                return FALSE;
-        }
-
-        reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (slave->priv->connection),
-                                                           message,
-                                                           -1, &error);
-        dbus_message_unref(message);
-        if (reply != NULL) {
-                dbus_message_unref(reply);
-        }
-
-        if (dbus_error_is_set (&error)) {
-                g_warning ("GdmSlave: Unable to unlock session: %s", error.message);
-                dbus_error_free (&error);
-                return FALSE;
-        }
+        g_variant_unref (reply);
 
         return TRUE;
 }
@@ -1770,34 +1586,27 @@ static gboolean
 session_unlock_for_ck (GdmSlave   *slave,
                        const char *ssid)
 {
-        DBusError       error;
-        DBusMessage    *message;
-        DBusMessage    *reply;
+        GError *error = NULL;
+        GVariant *reply;
 
-        message = dbus_message_new_method_call (CK_NAME,
-                                                ssid,
-                                                CK_SESSION_INTERFACE,
-                                                "Unlock");
-        if (message == NULL) {
-                g_debug ("GdmSlave: ConsoleKit couldn't allocate the D-Bus message");
+        reply = g_dbus_connection_call_sync (slave->priv->connection,
+                                             CK_NAME,
+                                             ssid,
+                                             CK_SESSION_INTERFACE,
+                                             "Unlock",
+                                             NULL, /* parameters */
+                                             NULL, /* expected reply */
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &error);
+        if (reply == NULL) {
+                g_debug ("GdmSlave: ConsoleKit %s raised:\n %s\n\n",
+                         g_dbus_error_get_remote_error (error), error->message);
+                g_error_free (error);
                 return FALSE;
         }
 
-        dbus_error_init (&error);
-        reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (slave->priv->connection),
-                                                           message,
-                                                           -1, &error);
-        dbus_message_unref (message);
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-        dbus_connection_flush (dbus_g_connection_get_connection (slave->priv->connection));
-
-        if (dbus_error_is_set (&error)) {
-                g_debug ("GdmSlave: ConsoleKit %s raised:\n %s\n\n", error.name, error.message);
-                dbus_error_free (&error);
-                return FALSE;
-        }
+        g_variant_unref (reply);
 
         return TRUE;
 }
@@ -1997,16 +1806,18 @@ register_slave (GdmSlave *slave)
         GError *error;
 
         error = NULL;
-        slave->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        slave->priv->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (slave->priv->connection == NULL) {
-                if (error != NULL) {
-                        g_critical ("error getting system bus: %s", error->message);
-                        g_error_free (error);
-                }
+                g_critical ("error getting system bus: %s", error->message);
+                g_error_free (error);
                 exit (1);
         }
 
-        dbus_g_connection_register_g_object (slave->priv->connection, slave->priv->id, G_OBJECT (slave));
+        slave->priv->object_skeleton = g_dbus_object_skeleton_new (slave->priv->id);
+        slave->priv->skeleton = GDM_DBUS_SLAVE (gdm_dbus_slave_skeleton_new ());
+
+        g_dbus_object_skeleton_add_interface (slave->priv->object_skeleton,
+                                              G_DBUS_INTERFACE_SKELETON (slave->priv->skeleton));
 
         return TRUE;
 }
@@ -2120,8 +1931,6 @@ gdm_slave_class_init (GdmSlaveClass *klass)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
-
-        dbus_g_object_type_install_info (GDM_TYPE_SLAVE, &dbus_glib_gdm_slave_object_info);
 }
 
 static void
@@ -2156,9 +1965,7 @@ gdm_slave_finalize (GObject *object)
         g_free (slave->priv->parent_display_name);
         g_free (slave->priv->parent_display_x11_authority_file);
         g_free (slave->priv->windowpath);
-        if (slave->priv->display_x11_cookie != NULL) {
-                g_array_free (slave->priv->display_x11_cookie, TRUE);
-        }
+        g_free (slave->priv->display_x11_cookie);
 
         G_OBJECT_CLASS (gdm_slave_parent_class)->finalize (object);
 }

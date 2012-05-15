@@ -45,6 +45,7 @@
 
 struct GdmStaticDisplayPrivate
 {
+        GdmDBusStaticDisplay *skeleton;
         gboolean first_login;
 };
 
@@ -140,10 +141,43 @@ gdm_static_display_get_timed_login_details (GdmDisplay *display,
         }
 }
 
+static GObject *
+gdm_static_display_constructor (GType                  type,
+                                   guint                  n_construct_properties,
+                                   GObjectConstructParam *construct_properties)
+{
+        GdmStaticDisplay      *display;
+
+        display = GDM_STATIC_DISPLAY (G_OBJECT_CLASS (gdm_static_display_parent_class)->constructor (type,
+                                                                                                           n_construct_properties,
+                                                                                                           construct_properties));
+
+        display->priv->skeleton = GDM_DBUS_STATIC_DISPLAY (gdm_dbus_static_display_skeleton_new ());
+
+        g_dbus_object_skeleton_add_interface (gdm_display_get_object_skeleton (GDM_DISPLAY (display)),
+                                              G_DBUS_INTERFACE_SKELETON (display->priv->skeleton));
+
+        return G_OBJECT (display);
+}
+
+static void
+gdm_static_display_finalize (GObject *object)
+{
+        GdmStaticDisplay *display = GDM_STATIC_DISPLAY (object);
+
+        g_clear_object (&display->priv->skeleton);
+
+        G_OBJECT_CLASS (gdm_static_display_parent_class)->finalize (object);
+}
+
 static void
 gdm_static_display_class_init (GdmStaticDisplayClass *klass)
 {
+        GObjectClass *object_class = G_OBJECT_CLASS (klass);
         GdmDisplayClass *display_class = GDM_DISPLAY_CLASS (klass);
+
+        object_class->constructor = gdm_static_display_constructor;
+        object_class->finalize = gdm_static_display_finalize;
 
         display_class->create_authority = gdm_static_display_create_authority;
         display_class->add_user_authorization = gdm_static_display_add_user_authorization;
@@ -154,8 +188,6 @@ gdm_static_display_class_init (GdmStaticDisplayClass *klass)
         display_class->get_timed_login_details = gdm_static_display_get_timed_login_details;
 
         g_type_class_add_private (klass, sizeof (GdmStaticDisplayPrivate));
-
-        dbus_g_object_type_install_info (GDM_TYPE_STATIC_DISPLAY, &dbus_glib_gdm_static_display_object_info);
 }
 
 static void

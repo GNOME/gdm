@@ -44,6 +44,8 @@
 
 struct GdmProductDisplayPrivate
 {
+        GdmDBusProductDisplay *skeleton;
+
         char *relay_address;
 };
 
@@ -181,6 +183,23 @@ gdm_product_display_get_property (GObject    *object,
         }
 }
 
+static gboolean
+handle_get_relay_address (GdmDBusProductDisplay *skeleton,
+                          GDBusMethodInvocation *invocation,
+                          GdmProductDisplay     *display)
+{
+        char *address;
+
+        gdm_product_display_get_relay_address (display, &address, NULL);
+
+        gdm_dbus_product_display_complete_get_relay_address (skeleton,
+                                                             invocation,
+                                                             address);
+
+        g_free (address);
+        return TRUE;
+}
+
 static GObject *
 gdm_product_display_constructor (GType                  type,
                                  guint                  n_construct_properties,
@@ -191,6 +210,15 @@ gdm_product_display_constructor (GType                  type,
         display = GDM_PRODUCT_DISPLAY (G_OBJECT_CLASS (gdm_product_display_parent_class)->constructor (type,
                                                                                                        n_construct_properties,
                                                                                                        construct_properties));
+
+        display->priv->skeleton = GDM_DBUS_PRODUCT_DISPLAY (gdm_dbus_product_display_skeleton_new ());
+
+        g_signal_connect (display->priv->skeleton, "handle-get-relay-address",
+                          G_CALLBACK (handle_get_relay_address), display);
+
+        g_dbus_object_skeleton_add_interface (gdm_display_get_object_skeleton (GDM_DISPLAY (display)),
+                                              G_DBUS_INTERFACE_SKELETON (display->priv->skeleton));
+
         return G_OBJECT (display);
 }
 
@@ -221,8 +249,6 @@ gdm_product_display_class_init (GdmProductDisplayClass *klass)
                                                               "relay address",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-
-        dbus_g_object_type_install_info (GDM_TYPE_PRODUCT_DISPLAY, &dbus_glib_gdm_product_display_object_info);
 }
 
 static void
@@ -243,6 +269,8 @@ gdm_product_display_finalize (GObject *object)
         product_display = GDM_PRODUCT_DISPLAY (object);
 
         g_return_if_fail (product_display->priv != NULL);
+
+        g_clear_object (&product_display->priv->skeleton);
 
         g_free (product_display->priv->relay_address);
 

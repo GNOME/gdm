@@ -26,9 +26,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
-
-#include <dbus/dbus.h>
-#include <dbus/dbus-glib-lowlevel.h>
+#include <gio/gio.h>
 
 #ifdef WITH_SYSTEMD
 #include <systemd/sd-daemon.h>
@@ -56,12 +54,17 @@
 
 struct GdmLocalDisplayFactoryPrivate
 {
-        DBusGConnection *connection;
-        DBusGProxy      *proxy;
+        GdmDBusLocalDisplayFactory *skeleton;
+        GDBusConnection *connection;
         GHashTable      *displays;
 
         /* FIXME: this needs to be per seat? */
         guint            num_failures;
+
+#ifdef WITH_SYSTEMD
+        guint            seat_new_id;
+        guint            seat_removed_id;
+#endif
 };
 
 enum {
@@ -437,143 +440,108 @@ delete_display (GdmLocalDisplayFactory *factory,
 
 static gboolean gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *factory)
 {
-        DBusError error;
-        DBusMessage *message, *reply;
-        DBusMessageIter iter, sub, sub2;
+        GError *error = NULL;
+        GVariant *result;
+        GVariant *array;
+        GVariantIter iter;
+        const char *seat;
 
-        dbus_error_init (&error);
+        result = g_dbus_connection_call_sync (factory->priv->connection,
+                                              "org.freedesktop.login1",
+                                              "/org/freedesktop/login1",
+                                              "org.freedesktop.login1.Manager",
+                                              "ListSeats",
+                                              NULL,
+                                              (const GVariantType*) "(a(so))",
+                                              G_DBUS_CALL_FLAGS_NONE,
+                                              -1,
+                                              NULL, &error);
 
-        message = dbus_message_new_method_call (
-                        "org.freedesktop.login1",
-                        "/org/freedesktop/login1",
-                        "org.freedesktop.login1.Manager",
-                        "ListSeats");
-        if (message == NULL) {
-                g_warning ("GdmLocalDisplayFactory: Failed to allocate message");
+        if (!result) {
+                g_warning ("GdmLocalDisplayFactory: Failed to issue method call: %s", error->message);
+                g_clear_error (&error);
                 return FALSE;
         }
 
-        reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (factory->priv->connection), message, -1, &error);
-        dbus_message_unref (message);
+        array = g_variant_get_child_value (result, 0);
+        g_variant_iter_init (&iter, array);
 
-        if (reply == NULL) {
-                g_warning ("GdmLocalDisplayFactory: Failed to issue method call: %s", error.message);
-                dbus_error_free (&error);
-                return FALSE;
-        }
-
-        if (!dbus_message_iter_init (reply, &iter) ||
-            dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_ARRAY ||
-            dbus_message_iter_get_element_type (&iter) != DBUS_TYPE_STRUCT)  {
-                g_warning ("GdmLocalDisplayFactory: Failed to parse reply.");
-                dbus_message_unref (reply);
-                return FALSE;
-        }
-
-        dbus_message_iter_recurse (&iter, &sub);
-
-        while (dbus_message_iter_get_arg_type (&sub) != DBUS_TYPE_INVALID) {
-                const char *seat;
-
-                if (dbus_message_iter_get_arg_type (&sub) != DBUS_TYPE_STRUCT) {
-                        g_warning ("GdmLocalDisplayFactory: Failed to parse reply.");
-                        dbus_message_unref (reply);
-                        return FALSE;
-                }
-
-                dbus_message_iter_recurse (&sub, &sub2);
-
-                if (dbus_message_iter_get_arg_type (&sub2) != DBUS_TYPE_STRING) {
-                        g_warning ("GdmLocalDisplayFactory: Failed to parse reply.");
-                        dbus_message_unref (reply);
-                        return FALSE;
-                }
-
-                dbus_message_iter_get_basic (&sub2, &seat);
+        while (g_variant_iter_loop (&iter, "(&so)", &seat, NULL))
                 create_display (factory, seat);
 
-                dbus_message_iter_next (&sub);
-        }
-
-        dbus_message_unref (reply);
+        g_variant_unref (result);
+        g_variant_unref (array);
         return TRUE;
 }
 
-static DBusHandlerResult
-on_seat_signal (DBusConnection *connection,
-                DBusMessage    *message,
-                void           *user_data)
+static void
+on_seat_new (GDBusConnection *connection,
+             const gchar     *sender_name,
+             const gchar     *object_path,
+             const gchar     *interface_name,
+             const gchar     *signal_name,
+             GVariant        *parameters,
+             gpointer         user_data)
 {
-        GdmLocalDisplayFactory *factory = user_data;
-        DBusError error;
+        const char *seat;
 
-        dbus_error_init (&error);
+        g_variant_get (parameters, "(&s)", &seat);
+        create_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat);
+}
 
-        if (dbus_message_is_signal (message, "org.freedesktop.login1.Manager", "SeatNew") ||
-            dbus_message_is_signal (message, "org.freedesktop.login1.Manager", "SeatRemoved")) {
-                const char *seat;
+static void
+on_seat_removed (GDBusConnection *connection,
+                 const gchar     *sender_name,
+                 const gchar     *object_path,
+                 const gchar     *interface_name,
+                 const gchar     *signal_name,
+                 GVariant        *parameters,
+                 gpointer         user_data)
+{
+        const char *seat;
 
-                dbus_message_get_args (message,
-                                       &error,
-                                       DBUS_TYPE_STRING, &seat,
-                                       DBUS_TYPE_INVALID);
-
-                if (dbus_error_is_set (&error)) {
-                        g_warning ("GdmLocalDisplayFactory: Failed to decode seat message: %s", error.message);
-                        dbus_error_free (&error);
-                } else {
-
-                        if (strcmp (dbus_message_get_member (message), "SeatNew") == 0) {
-                                create_display (factory, seat);
-                        } else {
-                                delete_display (factory, seat);
-                        }
-                }
-        }
-
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+        g_variant_get (parameters, "(&s)", &seat);
+        delete_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat);
 }
 
 static void
 gdm_local_display_factory_start_monitor (GdmLocalDisplayFactory *factory)
 {
-        DBusError error;
-
-        dbus_error_init (&error);
-
-        dbus_bus_add_match (dbus_g_connection_get_connection (factory->priv->connection),
-                            "type='signal',"
-                            "sender='org.freedesktop.login1',"
-                            "path='/org/freedesktop/login1',"
-                            "interface='org.freedesktop.login1.Manager',"
-                            "member='SeatNew'",
-                            &error);
-
-        if (dbus_error_is_set (&error)) {
-                g_warning ("GdmLocalDisplayFactory: Failed to add match for SeatNew: %s", error.message);
-                dbus_error_free (&error);
-        }
-
-        dbus_bus_add_match (dbus_g_connection_get_connection (factory->priv->connection),
-                            "type='signal',"
-                            "sender='org.freedesktop.login1',"
-                            "path='/org/freedesktop/login1',"
-                            "interface='org.freedesktop.login1.Manager',"
-                            "member='SeatRemoved'",
-                            &error);
-
-        if (dbus_error_is_set (&error)) {
-                g_warning ("GdmLocalDisplayFactory: Failed to add match for SeatNew: %s", error.message);
-                dbus_error_free (&error);
-        }
-
-        dbus_connection_add_filter (dbus_g_connection_get_connection (factory->priv->connection), on_seat_signal, factory, NULL);
+        factory->priv->seat_new_id = g_dbus_connection_signal_subscribe (factory->priv->connection,
+                                                                         "org.freedesktop.login1",
+                                                                         "org.freedesktop.login1.Manager",
+                                                                         "SeatNew",
+                                                                         "/org/freedesktop/login1",
+                                                                         NULL,
+                                                                         G_DBUS_SIGNAL_FLAGS_NONE,
+                                                                         on_seat_new,
+                                                                         g_object_ref (factory),
+                                                                         g_object_unref);
+        factory->priv->seat_removed_id = g_dbus_connection_signal_subscribe (factory->priv->connection,
+                                                                             "org.freedesktop.login1",
+                                                                             "org.freedesktop.login1.Manager",
+                                                                             "SeatRemoved",
+                                                                             "/org/freedesktop/login1",
+                                                                             NULL,
+                                                                             G_DBUS_SIGNAL_FLAGS_NONE,
+                                                                             on_seat_removed,
+                                                                             g_object_ref (factory),
+                                                                             g_object_unref);
 }
 
 static void
 gdm_local_display_factory_stop_monitor (GdmLocalDisplayFactory *factory)
 {
-        dbus_connection_remove_filter (dbus_g_connection_get_connection (factory->priv->connection), on_seat_signal, factory);
+        if (factory->priv->seat_new_id) {
+                g_dbus_connection_signal_unsubscribe (factory->priv->connection,
+                                                      factory->priv->seat_new_id);
+                factory->priv->seat_new_id = 0;
+        }
+        if (factory->priv->seat_removed_id) {
+                g_dbus_connection_signal_unsubscribe (factory->priv->connection,
+                                                      factory->priv->seat_removed_id);
+                factory->priv->seat_removed_id = 0;
+        }
 }
 
 #endif
@@ -640,21 +608,83 @@ gdm_local_display_factory_get_property (GObject    *object,
 }
 
 static gboolean
+handle_create_product_display (GdmDBusLocalDisplayFactory *skeleton,
+                               GDBusMethodInvocation      *invocation,
+                               const gchar                *parent_display_id,
+                               const gchar                *relay_address,
+                               GdmLocalDisplayFactory     *factory)
+{
+        GError *error = NULL;
+        gboolean created;
+        char *id = NULL;
+
+        created = gdm_local_display_factory_create_product_display (factory,
+                                                                    parent_display_id,
+                                                                    relay_address,
+                                                                    &id,
+                                                                    &error);
+        if (!created) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+        } else {
+                g_dbus_method_invocation_return_value (invocation,
+                                                       g_variant_new ("(s)", id));
+        }
+
+        g_free (id);
+        return TRUE;
+}
+
+static gboolean
+handle_create_transient_display (GdmDBusLocalDisplayFactory *skeleton,
+                                 GDBusMethodInvocation      *invocation,
+                                 GdmLocalDisplayFactory     *factory)
+{
+        GError *error = NULL;
+        gboolean created;
+        char *id = NULL;
+
+        created = gdm_local_display_factory_create_transient_display (factory,
+                                                                      &id,
+                                                                      &error);
+        if (!created) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+        } else {
+                g_dbus_method_invocation_return_value (invocation,
+                                                       g_variant_new ("(s)", id));
+        }
+
+        g_free (id);
+        return TRUE;
+}
+
+static gboolean
 register_factory (GdmLocalDisplayFactory *factory)
 {
         GError *error = NULL;
 
         error = NULL;
-        factory->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        factory->priv->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (factory->priv->connection == NULL) {
-                if (error != NULL) {
-                        g_critical ("error getting system bus: %s", error->message);
-                        g_error_free (error);
-                }
+                g_critical ("error getting system bus: %s", error->message);
+                g_error_free (error);
                 exit (1);
         }
 
-        dbus_g_connection_register_g_object (factory->priv->connection, GDM_LOCAL_DISPLAY_FACTORY_DBUS_PATH, G_OBJECT (factory));
+        factory->priv->skeleton = GDM_DBUS_LOCAL_DISPLAY_FACTORY (gdm_dbus_local_display_factory_skeleton_new ());
+
+        g_signal_connect (factory->priv->skeleton, "handle-create-product-display",
+                          G_CALLBACK (handle_create_product_display), factory);
+        g_signal_connect (factory->priv->skeleton, "handle-create-transient-display",
+                          G_CALLBACK (handle_create_transient_display), factory);
+
+        if (!g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (factory->priv->skeleton),
+                                               factory->priv->connection,
+                                               GDM_LOCAL_DISPLAY_FACTORY_DBUS_PATH,
+                                               &error)) {
+                g_critical ("error exporting LocalDisplayFactory object: %s", error->message);
+                g_error_free (error);
+                exit (1);
+        }
 
         return TRUE;
 }
@@ -694,8 +724,6 @@ gdm_local_display_factory_class_init (GdmLocalDisplayFactoryClass *klass)
         factory_class->stop = gdm_local_display_factory_stop;
 
         g_type_class_add_private (klass, sizeof (GdmLocalDisplayFactoryPrivate));
-
-        dbus_g_object_type_install_info (GDM_TYPE_LOCAL_DISPLAY_FACTORY, &dbus_glib_gdm_local_display_factory_object_info);
 }
 
 static void
@@ -717,6 +745,9 @@ gdm_local_display_factory_finalize (GObject *object)
         factory = GDM_LOCAL_DISPLAY_FACTORY (object);
 
         g_return_if_fail (factory->priv != NULL);
+
+        g_clear_object (&factory->priv->connection);
+        g_clear_object (&factory->priv->skeleton);
 
         g_hash_table_destroy (factory->priv->displays);
 

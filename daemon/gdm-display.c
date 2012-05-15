@@ -69,8 +69,12 @@ struct GdmDisplayPrivate
         guint                 finish_idle_id;
 
         GdmSlaveProxy        *slave_proxy;
-        DBusGConnection      *connection;
+        char                 *slave_bus_name;
+        GDBusConnection      *connection;
         GdmDisplayAccessFile *user_access_file;
+
+        GdmDBusDisplay       *display_skeleton;
+        GDBusObjectSkeleton  *object_skeleton;
 };
 
 enum {
@@ -280,6 +284,8 @@ gdm_display_real_set_slave_bus_name (GdmDisplay *display,
                                      const char *name,
                                      GError    **error)
 {
+        g_free (display->priv->slave_bus_name);
+        display->priv->slave_bus_name = g_strdup (name);
 
         return TRUE;
 }
@@ -431,7 +437,7 @@ gdm_display_get_x11_cookie (GdmDisplay *display,
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
         if (x11_cookie != NULL) {
-                *x11_cookie = g_array_new (FALSE, FALSE, sizeof (char));
+                *x11_cookie = g_array_new (TRUE, FALSE, sizeof (char));
                 g_array_append_vals (*x11_cookie,
                                      display->priv->x11_cookie,
                                      display->priv->x11_cookie_size);
@@ -934,21 +940,268 @@ gdm_display_get_property (GObject        *object,
 }
 
 static gboolean
+handle_get_id (GdmDBusDisplay        *skeleton,
+               GDBusMethodInvocation *invocation,
+               GdmDisplay            *display)
+{
+        char *id;
+
+        gdm_display_get_id (display, &id, NULL);
+
+        gdm_dbus_display_complete_get_id (skeleton, invocation, id);
+
+        g_free (id);
+        return TRUE;
+}
+
+static gboolean
+handle_get_remote_hostname (GdmDBusDisplay        *skeleton,
+                            GDBusMethodInvocation *invocation,
+                            GdmDisplay            *display)
+{
+        char *hostname;
+
+        gdm_display_get_remote_hostname (display, &hostname, NULL);
+
+        gdm_dbus_display_complete_get_remote_hostname (skeleton,
+                                                       invocation,
+                                                       hostname ? hostname : "");
+
+        g_free (hostname);
+        return TRUE;
+}
+
+static gboolean
+handle_get_seat_id (GdmDBusDisplay        *skeleton,
+                    GDBusMethodInvocation *invocation,
+                    GdmDisplay            *display)
+{
+        char *seat_id;
+
+        gdm_display_get_seat_id (display, &seat_id, NULL);
+
+        gdm_dbus_display_complete_get_seat_id (skeleton, invocation, seat_id);
+
+        g_free (seat_id);
+        return TRUE;
+}
+
+static gboolean
+handle_get_timed_login_details (GdmDBusDisplay        *skeleton,
+                                GDBusMethodInvocation *invocation,
+                                GdmDisplay            *display)
+{
+        gboolean enabled;
+        char *username;
+        int delay;
+
+        gdm_display_get_timed_login_details (display, &enabled, &username, &delay, NULL);
+
+        gdm_dbus_display_complete_get_timed_login_details (skeleton,
+                                                           invocation,
+                                                           enabled,
+                                                           username ? username : "",
+                                                           delay);
+
+        g_free (username);
+        return TRUE;
+}
+
+static gboolean
+handle_get_x11_authority_file (GdmDBusDisplay        *skeleton,
+                               GDBusMethodInvocation *invocation,
+                               GdmDisplay            *display)
+{
+        char *file;
+
+        gdm_display_get_x11_authority_file (display, &file, NULL);
+
+        gdm_dbus_display_complete_get_x11_authority_file (skeleton, invocation, file);
+
+        g_free (file);
+        return TRUE;
+}
+
+static gboolean
+handle_get_x11_cookie (GdmDBusDisplay        *skeleton,
+                               GDBusMethodInvocation *invocation,
+                               GdmDisplay            *display)
+{
+        GArray *cookie = NULL;
+
+        gdm_display_get_x11_cookie (display, &cookie, NULL);
+
+        gdm_dbus_display_complete_get_x11_cookie (skeleton, invocation, cookie->data);
+
+        g_array_unref (cookie);
+        return TRUE;
+}
+
+static gboolean
+handle_get_x11_display_name (GdmDBusDisplay        *skeleton,
+                             GDBusMethodInvocation *invocation,
+                             GdmDisplay            *display)
+{
+        char *name;
+
+        gdm_display_get_x11_display_name (display, &name, NULL);
+
+        gdm_dbus_display_complete_get_x11_display_name (skeleton, invocation, name);
+
+        g_free (name);
+        return TRUE;
+}
+
+static gboolean
+handle_get_x11_display_number (GdmDBusDisplay        *skeleton,
+                               GDBusMethodInvocation *invocation,
+                               GdmDisplay            *display)
+{
+        int name;
+
+        gdm_display_get_x11_display_number (display, &name, NULL);
+
+        gdm_dbus_display_complete_get_x11_display_number (skeleton, invocation, name);
+
+        return TRUE;
+}
+
+static gboolean
+handle_is_local (GdmDBusDisplay        *skeleton,
+                 GDBusMethodInvocation *invocation,
+                 GdmDisplay            *display)
+{
+        gboolean is_local;
+
+        gdm_display_is_local (display, &is_local, NULL);
+
+        gdm_dbus_display_complete_is_local (skeleton, invocation, is_local);
+
+        return TRUE;
+}
+
+static gboolean
+handle_get_slave_bus_name (GdmDBusDisplay        *skeleton,
+                           GDBusMethodInvocation *invocation,
+                           GdmDisplay            *display)
+{
+        if (display->priv->slave_bus_name != NULL) {
+                gdm_dbus_display_complete_get_slave_bus_name (skeleton, invocation,
+                                                              display->priv->slave_bus_name);
+        } else {
+                g_dbus_method_invocation_return_dbus_error (invocation,
+                                                            "org.gnome.DisplayManager.NotReady",
+                                                            "Slave is not yet registered");
+        }
+
+        return TRUE;
+}
+
+static gboolean
+handle_set_slave_bus_name (GdmDBusDisplay        *skeleton,
+                           GDBusMethodInvocation *invocation,
+                           const char            *bus_name,
+                           GdmDisplay            *display)
+{
+        GError *error;
+
+        if (gdm_display_set_slave_bus_name (display, bus_name, &error)) {
+                gdm_dbus_display_complete_set_slave_bus_name (skeleton, invocation);
+        } else {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+        }
+
+        return TRUE;
+}
+
+static gboolean
+handle_add_user_authorization (GdmDBusDisplay        *skeleton,
+                               GDBusMethodInvocation *invocation,
+                               const char            *username,
+                               GdmDisplay            *display)
+{
+        char *filename;
+        GError *error;
+
+        if (gdm_display_add_user_authorization (display, username, &filename, &error)) {
+                gdm_dbus_display_complete_add_user_authorization (skeleton,
+                                                                  invocation,
+                                                                  filename);
+                g_free (filename);
+        } else {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+        }
+
+        return TRUE;
+}
+
+static gboolean
+handle_remove_user_authorization (GdmDBusDisplay        *skeleton,
+                                  GDBusMethodInvocation *invocation,
+                                  const char            *username,
+                                  GdmDisplay            *display)
+{
+        GError *error;
+
+        if (gdm_display_remove_user_authorization (display, username, &error)) {
+                gdm_dbus_display_complete_remove_user_authorization (skeleton, invocation);
+        } else {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+        }
+
+        return TRUE;
+}
+
+
+
+static gboolean
 register_display (GdmDisplay *display)
 {
         GError *error = NULL;
 
         error = NULL;
-        display->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        display->priv->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (display->priv->connection == NULL) {
-                if (error != NULL) {
-                        g_critical ("error getting system bus: %s", error->message);
-                        g_error_free (error);
-                }
+                g_critical ("error getting system bus: %s", error->message);
+                g_error_free (error);
                 exit (1);
         }
 
-        dbus_g_connection_register_g_object (display->priv->connection, display->priv->id, G_OBJECT (display));
+        display->priv->object_skeleton = g_dbus_object_skeleton_new (display->priv->id);
+        display->priv->display_skeleton = GDM_DBUS_DISPLAY (gdm_dbus_display_skeleton_new ());
+
+        g_signal_connect (display->priv->display_skeleton, "handle-get-id",
+                          G_CALLBACK (handle_get_id), display);
+        g_signal_connect (display->priv->display_skeleton, "handle-get-remote-hostname",
+                          G_CALLBACK (handle_get_remote_hostname), display);
+        g_signal_connect (display->priv->display_skeleton, "handle-get-seat-id",
+                          G_CALLBACK (handle_get_seat_id), display);
+        g_signal_connect (display->priv->display_skeleton, "handle-get-timed-login-details",
+                          G_CALLBACK (handle_get_timed_login_details), display);
+        g_signal_connect (display->priv->display_skeleton, "handle-get-x11-authority-file",
+                          G_CALLBACK (handle_get_x11_authority_file), display);
+        g_signal_connect (display->priv->display_skeleton, "handle-get-x11-cookie",
+                          G_CALLBACK (handle_get_x11_cookie), display);
+        g_signal_connect (display->priv->display_skeleton, "handle-get-x11-display-name",
+                          G_CALLBACK (handle_get_x11_display_name), display);
+        g_signal_connect (display->priv->display_skeleton, "handle-get-x11-display-number",
+                          G_CALLBACK (handle_get_x11_display_number), display);
+        g_signal_connect (display->priv->display_skeleton, "handle-is-local",
+                          G_CALLBACK (handle_is_local), display);
+        g_signal_connect (display->priv->display_skeleton, "handle-get-slave-bus-name",
+                          G_CALLBACK (handle_get_slave_bus_name), display);
+        g_signal_connect (display->priv->display_skeleton, "handle-set-slave-bus-name",
+                          G_CALLBACK (handle_set_slave_bus_name), display);
+        g_signal_connect (display->priv->display_skeleton, "handle-add-user-authorization",
+                          G_CALLBACK (handle_add_user_authorization), display);
+        g_signal_connect (display->priv->display_skeleton, "handle-remove-user-authorization",
+                          G_CALLBACK (handle_remove_user_authorization), display);
+
+        g_dbus_object_skeleton_add_interface (display->priv->object_skeleton,
+                                              G_DBUS_INTERFACE_SKELETON (display->priv->display_skeleton));
 
         return TRUE;
 }
@@ -1113,8 +1366,6 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
         g_type_class_add_private (klass, sizeof (GdmDisplayPrivate));
-
-        dbus_g_object_type_install_info (GDM_TYPE_DISPLAY, &dbus_glib_gdm_display_object_info);
 }
 
 static void
@@ -1147,6 +1398,10 @@ gdm_display_finalize (GObject *object)
         g_free (display->priv->x11_cookie);
         g_free (display->priv->slave_command);
 
+        g_clear_object (&display->priv->display_skeleton);
+        g_clear_object (&display->priv->object_skeleton);
+        g_clear_object (&display->priv->connection);
+
         if (display->priv->access_file != NULL) {
                 g_object_unref (display->priv->access_file);
         }
@@ -1160,4 +1415,16 @@ gdm_display_finalize (GObject *object)
         }
 
         G_OBJECT_CLASS (gdm_display_parent_class)->finalize (object);
+}
+
+GDBusConnection *
+gdm_display_get_bus_connection (GdmDisplay *display)
+{
+        return display->priv->connection;
+}
+
+GDBusObjectSkeleton *
+gdm_display_get_object_skeleton (GdmDisplay *display)
+{
+        return display->priv->object_skeleton;
 }

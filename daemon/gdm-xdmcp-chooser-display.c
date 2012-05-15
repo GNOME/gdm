@@ -37,7 +37,8 @@
 
 #include "gdm-display.h"
 #include "gdm-xdmcp-chooser-display.h"
-#include "gdm-xdmcp-chooser-display-glue.h"
+#include "gdm-xdmcp-display-glue.h"
+#include "gdm-xdmcp-chooser-slave-glue.h"
 
 #include "gdm-common.h"
 #include "gdm-address.h"
@@ -51,7 +52,8 @@
 
 struct GdmXdmcpChooserDisplayPrivate
 {
-        DBusGProxy      *slave_proxy;
+        GdmDBusXdmcpDisplay      *skeleton;
+        GdmDBusXdmcpChooserSlave *slave_proxy;
 };
 
 enum {
@@ -69,9 +71,9 @@ static gboolean gdm_xdmcp_chooser_display_finish (GdmDisplay *display);
 G_DEFINE_TYPE (GdmXdmcpChooserDisplay, gdm_xdmcp_chooser_display, GDM_TYPE_XDMCP_DISPLAY)
 
 static void
-on_hostname_selected (DBusGProxy             *proxy,
-                      const char             *hostname,
-                      GdmXdmcpChooserDisplay *display)
+on_hostname_selected (GdmDBusXdmcpChooserSlave *proxy,
+                      const char               *hostname,
+                      GdmXdmcpChooserDisplay   *display)
 {
         g_debug ("GdmXdmcpChooserDisplay: hostname selected: %s", hostname);
         g_signal_emit (display, signals [HOSTNAME_SELECTED], 0, hostname);
@@ -85,7 +87,7 @@ gdm_xdmcp_chooser_display_set_slave_bus_name (GdmDisplay *display,
         char            *display_id;
         const char      *slave_num;
         char            *slave_id;
-        DBusGConnection *connection;
+        GDBusConnection *connection;
         GError          *local_error;
         GdmXdmcpChooserDisplay *chooser_display;
 
@@ -107,33 +109,29 @@ gdm_xdmcp_chooser_display_set_slave_bus_name (GdmDisplay *display,
         slave_id = g_strdup_printf ("/org/gnome/DisplayManager/Slave%s", slave_num);
 
         local_error = NULL;
-        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &local_error);
+        connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &local_error);
         if (connection == NULL) {
-                if (local_error != NULL) {
-                        g_critical ("error getting system bus: %s", local_error->message);
-                        g_error_free (local_error);
-                }
+                g_critical ("error getting system bus: %s", local_error->message);
+                g_error_free (local_error);
         }
 
         g_debug ("GdmXdmcpChooserDisplay: creating proxy for %s on %s", slave_id, name);
 
-        chooser_display->priv->slave_proxy = dbus_g_proxy_new_for_name (connection,
-                                                                         name,
-                                                                         slave_id,
-                                                                         GDM_XDMCP_CHOOSER_SLAVE_DBUS_INTERFACE);
+        chooser_display->priv->slave_proxy = GDM_DBUS_XDMCP_CHOOSER_SLAVE (
+                gdm_dbus_xdmcp_chooser_slave_proxy_new_sync (connection,
+                                                             G_DBUS_PROXY_FLAGS_NONE,
+                                                             name,
+                                                             slave_id,
+                                                             NULL,
+                                                             &local_error));
         if (chooser_display->priv->slave_proxy == NULL) {
-                g_warning ("Failed to connect to the slave object");
+                g_warning ("Failed to connect to the slave object: %s", local_error->message);
+                g_error_free (local_error);
                 goto out;
         }
-        dbus_g_proxy_add_signal (chooser_display->priv->slave_proxy,
-                                 "HostnameSelected",
-                                 G_TYPE_STRING,
-                                 G_TYPE_INVALID);
-        dbus_g_proxy_connect_signal (chooser_display->priv->slave_proxy,
-                                     "HostnameSelected",
-                                     G_CALLBACK (on_hostname_selected),
-                                     display,
-                                     NULL);
+
+        g_signal_connect (chooser_display->priv->slave_proxy, "hostname-selected",
+                          G_CALLBACK (on_hostname_selected), display);
  out:
 
         g_free (display_id);
@@ -152,12 +150,32 @@ gdm_xdmcp_chooser_display_manage (GdmDisplay *display)
         return TRUE;
 }
 
+static GObject *
+gdm_xdmcp_chooser_display_constructor (GType                  type,
+                                       guint                  n_construct_properties,
+                                       GObjectConstructParam *construct_properties)
+{
+        GdmXdmcpChooserDisplay      *display;
+
+        display = GDM_XDMCP_CHOOSER_DISPLAY (G_OBJECT_CLASS (gdm_xdmcp_chooser_display_parent_class)->constructor (type,
+                                                                                                           n_construct_properties,
+                                                                                                           construct_properties));
+
+        display->priv->skeleton = GDM_DBUS_XDMCP_DISPLAY (gdm_dbus_xdmcp_display_skeleton_new ());
+
+        g_dbus_object_skeleton_add_interface (gdm_display_get_object_skeleton (GDM_DISPLAY (display)),
+                                              G_DBUS_INTERFACE_SKELETON (display->priv->skeleton));
+
+        return G_OBJECT (display);
+}
+
 static void
 gdm_xdmcp_chooser_display_class_init (GdmXdmcpChooserDisplayClass *klass)
 {
         GObjectClass    *object_class = G_OBJECT_CLASS (klass);
         GdmDisplayClass *display_class = GDM_DISPLAY_CLASS (klass);
 
+        object_class->constructor = gdm_xdmcp_chooser_display_constructor;
         object_class->finalize = gdm_xdmcp_chooser_display_finalize;
 
         display_class->manage = gdm_xdmcp_chooser_display_manage;
@@ -177,8 +195,6 @@ gdm_xdmcp_chooser_display_class_init (GdmXdmcpChooserDisplayClass *klass)
                               G_TYPE_STRING);
 
         g_type_class_add_private (klass, sizeof (GdmXdmcpChooserDisplayPrivate));
-
-        dbus_g_object_type_install_info (GDM_TYPE_XDMCP_CHOOSER_DISPLAY, &dbus_glib_gdm_xdmcp_chooser_display_object_info);
 }
 
 static void
@@ -200,9 +216,8 @@ gdm_xdmcp_chooser_display_finalize (GObject *object)
 
         g_return_if_fail (chooser_display->priv != NULL);
 
-        if (chooser_display->priv->slave_proxy != NULL) {
-                g_object_unref (chooser_display->priv->slave_proxy);
-        }
+        g_clear_object (&chooser_display->priv->slave_proxy);
+        g_clear_object (&chooser_display->priv->skeleton);
 
         G_OBJECT_CLASS (gdm_xdmcp_chooser_display_parent_class)->finalize (object);
 }
