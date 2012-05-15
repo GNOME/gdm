@@ -2251,13 +2251,13 @@ gdm_session_direct_constructor (GType                  type,
         if (session->priv->display_id != NULL) {
                 /* Always match the session id with the master */
                 id = NULL;
-                if (g_str_has_prefix (session->priv->display_id, "/org/gnome/DisplayManager/Display")) {
-                        id = session->priv->display_id + strlen ("/org/gnome/DisplayManager/Display");
+                if (g_str_has_prefix (session->priv->display_id, "/org/gnome/DisplayManager/Displays/")) {
+                        id = session->priv->display_id + strlen ("/org/gnome/DisplayManager/Displays/");
                 }
 
                 g_assert (id != NULL);
 
-                session->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Session%s", id);
+                session->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Sessions/%s", id);
                 g_debug ("GdmSessionDirect: Registering %s", session->priv->id);
 
 #if 0

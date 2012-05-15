@@ -102,11 +102,11 @@ gdm_xdmcp_chooser_display_set_slave_bus_name (GdmDisplay *display,
 
         g_object_get (display, "id", &display_id, NULL);
 
-        if (g_str_has_prefix (display_id, "/org/gnome/DisplayManager/Display")) {
-                slave_num = display_id + strlen ("/org/gnome/DisplayManager/Display");
+        if (g_str_has_prefix (display_id, "/org/gnome/DisplayManager/Displays/")) {
+                slave_num = display_id + strlen ("/org/gnome/DisplayManager/Displays/");
         }
 
-        slave_id = g_strdup_printf ("/org/gnome/DisplayManager/Slave%s", slave_num);
+        slave_id = g_strdup_printf ("/org/gnome/DisplayManager/Slaves/%s", slave_num);
 
         local_error = NULL;
         connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &local_error);

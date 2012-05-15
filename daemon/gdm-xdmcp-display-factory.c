@@ -52,6 +52,7 @@
 #include <X11/Xdmcp.h>
 
 #include "gdm-common.h"
+#include "gdm-manager.h"
 #include "gdm-xdmcp-greeter-display.h"
 #include "gdm-xdmcp-chooser-display.h"
 #include "gdm-display-factory.h"
@@ -2049,9 +2050,11 @@ on_display_status_changed (GdmDisplay             *display,
         switch (status) {
         case GDM_DISPLAY_FINISHED:
                 gdm_display_store_remove (store, display);
+                gdm_manager_display_removed (gdm_manager_new (), display);
                 break;
         case GDM_DISPLAY_FAILED:
                 gdm_display_store_remove (store, display);
+                gdm_manager_display_removed (gdm_manager_new (), display);
                 break;
         case GDM_DISPLAY_UNMANAGED:
                 break;
@@ -2122,6 +2125,8 @@ gdm_xdmcp_display_create (GdmXdmcpDisplayFactory *factory,
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
         gdm_display_store_add (store, display);
+
+        gdm_manager_display_added (gdm_manager_new (), display);
 
         factory->priv->num_pending_sessions++;
  out:

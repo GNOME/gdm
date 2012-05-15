@@ -40,14 +40,6 @@ struct GdmDisplayStorePrivate
         GHashTable *displays;
 };
 
-enum {
-        DISPLAY_ADDED,
-        DISPLAY_REMOVED,
-        LAST_SIGNAL
-};
-
-static guint signals [LAST_SIGNAL] = { 0, };
-
 static void     gdm_display_store_class_init    (GdmDisplayStoreClass *klass);
 static void     gdm_display_store_init          (GdmDisplayStore      *display_store);
 static void     gdm_display_store_finalize      (GObject              *object);
@@ -166,27 +158,6 @@ gdm_display_store_class_init (GdmDisplayStoreClass *klass)
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
         object_class->finalize = gdm_display_store_finalize;
-
-        signals [DISPLAY_ADDED] =
-                g_signal_new ("display-added",
-                              G_TYPE_FROM_CLASS (object_class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmDisplayStoreClass, display_added),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__STRING,
-                              G_TYPE_NONE,
-                              1, G_TYPE_STRING);
-        signals [DISPLAY_REMOVED] =
-                g_signal_new ("display-removed",
-                              G_TYPE_FROM_CLASS (object_class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmDisplayStoreClass, display_removed),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__STRING,
-                              G_TYPE_NONE,
-                              1, G_TYPE_STRING);
 
         g_type_class_add_private (klass, sizeof (GdmDisplayStorePrivate));
 }

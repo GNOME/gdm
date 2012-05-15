@@ -32,6 +32,7 @@
 #include <systemd/sd-daemon.h>
 #endif
 
+#include "gdm-manager.h"
 #include "gdm-display-factory.h"
 #include "gdm-local-display-factory.h"
 #include "gdm-local-display-factory-glue.h"
@@ -77,6 +78,10 @@ static void     gdm_local_display_factory_finalize      (GObject                
 
 static GdmDisplay *create_display                       (GdmLocalDisplayFactory      *factory,
                                                          const char                  *seat_id);
+
+static void     on_display_status_changed               (GdmDisplay                  *display,
+                                                         GParamSpec                  *arg1,
+                                                         GdmLocalDisplayFactory      *factory);
 
 static gpointer local_display_factory_object = NULL;
 
@@ -172,6 +177,8 @@ on_display_disposed (GdmLocalDisplayFactory *factory,
                      GdmDisplay             *display)
 {
         g_debug ("GdmLocalDisplayFactory: Display %p disposed", display);
+
+        gdm_manager_display_removed (gdm_manager_new (), display);
 }
 
 static void
@@ -181,6 +188,9 @@ store_display (GdmLocalDisplayFactory *factory,
 {
         GdmDisplayStore *store;
 
+        g_signal_connect (display, "notify::status",
+                          G_CALLBACK (on_display_status_changed), factory);
+
         g_object_weak_ref (G_OBJECT (display), (GWeakNotify)on_display_disposed, factory);
 
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
@@ -188,6 +198,9 @@ store_display (GdmLocalDisplayFactory *factory,
 
         /* now fill our reserved spot */
         g_hash_table_insert (factory->priv->displays, GUINT_TO_POINTER (num), NULL);
+
+        /* finally, signal dbus */
+        gdm_manager_display_added (gdm_manager_new (), display);
 }
 
 static const char *
@@ -304,9 +317,9 @@ gdm_local_display_factory_create_product_display (GdmLocalDisplayFactory *factor
 }
 
 static void
-on_static_display_status_changed (GdmDisplay             *display,
-                                  GParamSpec             *arg1,
-                                  GdmLocalDisplayFactory *factory)
+on_display_status_changed (GdmDisplay             *display,
+                           GParamSpec             *arg1,
+                           GdmLocalDisplayFactory *factory)
 {
         int              status;
         GdmDisplayStore *store;
@@ -323,7 +336,7 @@ on_static_display_status_changed (GdmDisplay             *display,
 
         status = gdm_display_get_status (display);
 
-        g_debug ("GdmLocalDisplayFactory: static display status changed: %d", status);
+        g_debug ("GdmLocalDisplayFactory: display status changed: %d", status);
         switch (status) {
         case GDM_DISPLAY_FINISHED:
                 /* remove the display number from factory->priv->displays
@@ -332,20 +345,27 @@ on_static_display_status_changed (GdmDisplay             *display,
                 gdm_display_store_remove (store, display);
                 /* reset num failures */
                 factory->priv->num_failures = 0;
-                create_display (factory, seat_id);
+
+                /* Create a new equivalent display if it was static */
+                if (GDM_IS_STATIC_DISPLAY (display))
+                        create_display (factory, seat_id);
                 break;
         case GDM_DISPLAY_FAILED:
                 /* leave the display number in factory->priv->displays
                    so that it doesn't get reused */
                 gdm_display_store_remove (store, display);
                 factory->priv->num_failures++;
-                if (factory->priv->num_failures > MAX_DISPLAY_FAILURES) {
-                        /* oh shit */
-                        g_warning ("GdmLocalDisplayFactory: maximum number of X display failures reached: check X server log for errors");
-                        /* FIXME: should monitor hardware changes to
-                           try again when seats change */
-                } else {
-                        create_display (factory, seat_id);
+
+                /* Create a new equivalent display if it was static */
+                if (GDM_IS_STATIC_DISPLAY (display)) {
+                        if (factory->priv->num_failures > MAX_DISPLAY_FAILURES) {
+                                /* oh shit */
+                                g_warning ("GdmLocalDisplayFactory: maximum number of X display failures reached: check X server log for errors");
+                                /* FIXME: should monitor hardware changes to
+                                   try again when seats change */
+                        } else {
+                                create_display (factory, seat_id);
+                        }
                 }
                 break;
         case GDM_DISPLAY_UNMANAGED:
@@ -406,11 +426,6 @@ create_display (GdmLocalDisplayFactory *factory,
 #endif
 
         g_object_set (display, "seat-id", seat_id, NULL);
-
-        g_signal_connect (display,
-                          "notify::status",
-                          G_CALLBACK (on_static_display_status_changed),
-                          factory);
 
         store_display (factory, num, display);
 

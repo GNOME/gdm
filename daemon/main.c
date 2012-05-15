@@ -38,10 +38,7 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <glib-object.h>
-
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
+#include <gio/gio.h>
 
 #include "gdm-manager.h"
 #include "gdm-log.h"
@@ -54,12 +51,13 @@
 
 #define GDM_DBUS_NAME "org.gnome.DisplayManager"
 
-static void bus_proxy_destroyed_cb (DBusGProxy  *bus_proxy,
-                                    GdmManager **managerp);
+static GDBusConnection *get_system_bus (void);
+static gboolean         bus_reconnect (void);
 
 extern char **environ;
 
 static GdmManager      *manager       = NULL;
+static int              name_id       = -1;
 static GdmSettings     *settings      = NULL;
 static uid_t            gdm_uid       = -1;
 static gid_t            gdm_gid       = -1;
@@ -71,76 +69,29 @@ timed_exit_cb (GMainLoop *loop)
         return FALSE;
 }
 
-static DBusGProxy *
-get_bus_proxy (DBusGConnection *connection)
+static void
+bus_connection_closed (void)
 {
-        DBusGProxy *bus_proxy;
+        g_debug ("Disconnected from D-Bus");
 
-        bus_proxy = dbus_g_proxy_new_for_name (connection,
-                                               DBUS_SERVICE_DBUS,
-                                               DBUS_PATH_DBUS,
-                                               DBUS_INTERFACE_DBUS);
-        return bus_proxy;
+        if (manager == NULL) {
+                /* probably shutting down or something */
+                return;
+        }
+
+        g_clear_object (&manager);
+
+        g_timeout_add_seconds (3, (GSourceFunc)bus_reconnect, NULL);
 }
 
-static gboolean
-acquire_name_on_proxy (DBusGProxy *bus_proxy)
-{
-        GError     *error;
-        guint       result;
-        gboolean    res;
-        gboolean    ret;
-
-        ret = FALSE;
-
-        if (bus_proxy == NULL) {
-                goto out;
-        }
-
-        error = NULL;
-        res = dbus_g_proxy_call (bus_proxy,
-                                 "RequestName",
-                                 &error,
-                                 G_TYPE_STRING, GDM_DBUS_NAME,
-                                 G_TYPE_UINT, 0,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_UINT, &result,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to acquire %s: %s", GDM_DBUS_NAME, error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to acquire %s", GDM_DBUS_NAME);
-                }
-                goto out;
-        }
-
-        if (result != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
-                if (error != NULL) {
-                        g_warning ("Failed to acquire %s: %s", GDM_DBUS_NAME, error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to acquire %s", GDM_DBUS_NAME);
-                }
-                goto out;
-        }
-
-        ret = TRUE;
-
- out:
-        return ret;
-}
-
-static DBusGConnection *
+static GDBusConnection *
 get_system_bus (void)
 {
         GError          *error;
-        DBusGConnection *bus;
-        DBusConnection  *connection;
+        GDBusConnection *bus;
 
         error = NULL;
-        bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (bus == NULL) {
                 g_warning ("Couldn't connect to system bus: %s",
                            error->message);
@@ -148,74 +99,12 @@ get_system_bus (void)
                 goto out;
         }
 
-        connection = dbus_g_connection_get_connection (bus);
-        dbus_connection_set_exit_on_disconnect (connection, FALSE);
+        g_signal_connect (bus, "closed",
+                          G_CALLBACK (bus_connection_closed), NULL);
+        g_dbus_connection_set_exit_on_close (bus, FALSE);
 
  out:
         return bus;
-}
-
-static gboolean
-bus_reconnect (GdmManager *manager)
-{
-        DBusGConnection *bus;
-        DBusGProxy      *bus_proxy;
-        gboolean         ret;
-
-        ret = TRUE;
-
-        bus = get_system_bus ();
-        if (bus == NULL) {
-                goto out;
-        }
-
-        bus_proxy = get_bus_proxy (bus);
-        if (bus_proxy == NULL) {
-                g_warning ("Could not construct bus_proxy object; will retry");
-                goto out;
-        }
-
-        if (! acquire_name_on_proxy (bus_proxy) ) {
-                g_warning ("Could not acquire name; will retry");
-                goto out;
-        }
-
-        manager = gdm_manager_new ();
-        if (manager == NULL) {
-                g_warning ("Could not construct manager object");
-                exit (1);
-        }
-
-        g_signal_connect (bus_proxy,
-                          "destroy",
-                          G_CALLBACK (bus_proxy_destroyed_cb),
-                          &manager);
-
-        g_debug ("Successfully reconnected to D-Bus");
-
-        gdm_manager_start (manager);
-
-        ret = FALSE;
-
- out:
-        return ret;
-}
-
-static void
-bus_proxy_destroyed_cb (DBusGProxy  *bus_proxy,
-                        GdmManager **managerp)
-{
-        g_debug ("Disconnected from D-Bus");
-
-        if (managerp == NULL || *managerp == NULL) {
-                /* probably shutting down or something */
-                return;
-        }
-
-        g_object_unref (*managerp);
-        *managerp = NULL;
-
-        g_timeout_add_seconds (3, (GSourceFunc)bus_reconnect, managerp);
 }
 
 static void
@@ -253,7 +142,7 @@ write_pid (void)
                 return;
         }
 
-        g_atexit (delete_pid);
+        atexit (delete_pid);
 }
 
 static void
@@ -519,12 +408,9 @@ main (int    argc,
 {
         GMainLoop          *main_loop;
         GOptionContext     *context;
-        DBusGProxy         *bus_proxy;
-        DBusGConnection    *connection;
         GError             *error;
         int                 ret;
         gboolean            res;
-        gboolean            xdmcp_enabled;
         GdmSignalHandler   *signal_handler;
         static gboolean     do_timed_exit    = FALSE;
         static gboolean     print_version    = FALSE;
@@ -571,22 +457,6 @@ main (int    argc,
                 g_log_set_always_fatal (fatal_mask);
         }
 
-        connection = get_system_bus ();
-        if (connection == NULL) {
-                goto out;
-        }
-
-        bus_proxy = get_bus_proxy (connection);
-        if (bus_proxy == NULL) {
-                g_warning ("Could not construct bus_proxy object; bailing out");
-                goto out;
-        }
-
-        if (! acquire_name_on_proxy (bus_proxy) ) {
-                g_warning ("Could not acquire name; bailing out");
-                goto out;
-        }
-
         gdm_log_init ();
 
         settings = gdm_settings_new ();
@@ -615,26 +485,14 @@ main (int    argc,
                 exit (-1);
         }
 
+        /* Connect to the bus, own the name and start the manager */
+        bus_reconnect ();
+
         /* pid file */
         delete_pid ();
         write_pid ();
 
         g_chdir (AUTHDIR);
-
-        manager = gdm_manager_new ();
-
-        if (manager == NULL) {
-                goto out;
-        }
-
-        xdmcp_enabled = FALSE;
-        gdm_settings_direct_get_boolean (GDM_KEY_XDMCP_ENABLE, &xdmcp_enabled);
-        gdm_manager_set_xdmcp_enabled (manager, xdmcp_enabled);
-
-        g_signal_connect (bus_proxy,
-                          "destroy",
-                          G_CALLBACK (bus_proxy_destroyed_cb),
-                          &manager);
 
         main_loop = g_main_loop_new (NULL, FALSE);
 
@@ -653,23 +511,13 @@ main (int    argc,
                 g_timeout_add_seconds (30, (GSourceFunc) timed_exit_cb, main_loop);
         }
 
-        gdm_manager_start (manager);
-
         g_main_loop_run (main_loop);
 
         g_debug ("GDM finished, cleaning up...");
 
-        if (manager != NULL) {
-                g_object_unref (manager);
-        }
-
-        if (settings != NULL) {
-                g_object_unref (settings);
-        }
-
-        if (signal_handler != NULL) {
-                g_object_unref (signal_handler);
-        }
+        g_clear_object (&manager);
+        g_clear_object (&settings);
+        g_clear_object (&signal_handler);
 
         gdm_settings_direct_shutdown ();
         gdm_log_shutdown ();
@@ -680,5 +528,63 @@ main (int    argc,
 
  out:
 
+        return ret;
+}
+
+static void
+on_name_acquired (GDBusConnection *bus,
+                  const char      *name,
+                  gpointer         user_data)
+{
+        gboolean xdmcp_enabled;
+
+        manager = gdm_manager_new ();
+        if (manager == NULL) {
+                g_warning ("Could not construct manager object");
+                exit (1);
+        }
+
+        g_debug ("Successfully connected to D-Bus");
+
+        gdm_manager_start (manager);
+
+        xdmcp_enabled = FALSE;
+        gdm_settings_direct_get_boolean (GDM_KEY_XDMCP_ENABLE, &xdmcp_enabled);
+        gdm_manager_set_xdmcp_enabled (manager, xdmcp_enabled);
+}
+
+static void
+on_name_lost (GDBusConnection *bus,
+              const char      *name,
+              gpointer         user_data)
+{
+        g_debug ("Lost GDM name on bus");
+
+        bus_connection_closed ();
+}
+
+static gboolean
+bus_reconnect ()
+{
+        GDBusConnection *bus;
+        gboolean         ret;
+
+        ret = TRUE;
+
+        bus = get_system_bus ();
+        if (bus == NULL) {
+                goto out;
+        }
+
+        name_id = g_bus_own_name_on_connection (bus,
+                                                GDM_DBUS_NAME,
+                                                G_BUS_NAME_OWNER_FLAGS_NONE,
+                                                on_name_acquired,
+                                                on_name_lost,
+                                                NULL,
+                                                NULL);
+
+        ret = FALSE;
+ out:
         return ret;
 }

@@ -1837,13 +1837,13 @@ gdm_slave_constructor (GType                  type,
         /* Always match the slave id with the master */
 
         id = NULL;
-        if (g_str_has_prefix (slave->priv->display_id, "/org/gnome/DisplayManager/Display")) {
-                id = slave->priv->display_id + strlen ("/org/gnome/DisplayManager/Display");
+        if (g_str_has_prefix (slave->priv->display_id, "/org/gnome/DisplayManager/Displays/")) {
+                id = slave->priv->display_id + strlen ("/org/gnome/DisplayManager/Displays/");
         }
 
         g_assert (id != NULL);
 
-        slave->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Slave%s", id);
+        slave->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Slaves/%s", id);
         g_debug ("GdmSlave: Registering %s", slave->priv->id);
 
         res = register_slave (slave);

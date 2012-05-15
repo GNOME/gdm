@@ -33,14 +33,10 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <glib-object.h>
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
 
 #include "gdm-common.h"
 
 #include "gdm-manager.h"
-#include "gdm-manager-glue.h"
 #include "gdm-display-store.h"
 #include "gdm-display-factory.h"
 #include "gdm-local-display-factory.h"
@@ -49,7 +45,7 @@
 #define GDM_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_MANAGER, GdmManagerPrivate))
 
 #define GDM_DBUS_PATH         "/org/gnome/DisplayManager"
-#define GDM_MANAGER_DBUS_PATH GDM_DBUS_PATH "/Manager"
+#define GDM_MANAGER_DBUS_PATH GDM_DBUS_PATH "/Displays"
 #define GDM_MANAGER_DBUS_NAME "org.gnome.DisplayManager.Manager"
 
 struct GdmManagerPrivate
@@ -65,8 +61,9 @@ struct GdmManagerPrivate
         gboolean                wait_for_go;
         gboolean                no_console;
 
-        DBusGProxy             *bus_proxy;
-        DBusGConnection        *connection;
+        GDBusProxy             *bus_proxy;
+        GDBusConnection        *connection;
+        GDBusObjectManagerServer *object_manager;
 };
 
 enum {
@@ -116,8 +113,8 @@ listify_display_ids (const char *id,
   Example:
   dbus-send --system --dest=org.gnome.DisplayManager \
   --type=method_call --print-reply --reply-timeout=2000 \
-  /org/gnome/DisplayManager/Manager \
-  org.gnome.DisplayManager.Manager.GetDisplays
+  /org/gnome/DisplayManager/Displays \
+  org.freedesktop.ObjectManager.GetAll
 */
 gboolean
 gdm_manager_get_displays (GdmManager *manager,
@@ -199,89 +196,23 @@ gdm_manager_set_wait_for_go (GdmManager *manager,
         }
 }
 
-typedef struct {
-        const char *service_name;
-        GdmManager *manager;
-} RemoveDisplayData;
-
-static gboolean
-remove_display_for_connection (char              *id,
-                               GdmDisplay        *display,
-                               RemoveDisplayData *data)
-{
-        g_assert (display != NULL);
-        g_assert (data->service_name != NULL);
-
-        /* FIXME: compare service name to that of display */
-#if 0
-        if (strcmp (info->service_name, data->service_name) == 0) {
-                remove_session_for_cookie (data->manager, cookie, NULL);
-                leader_info_cancel (info);
-                return TRUE;
-        }
-#endif
-
-        return FALSE;
-}
-
-static void
-remove_displays_for_connection (GdmManager *manager,
-                                const char *service_name)
-{
-        RemoveDisplayData data;
-
-        data.service_name = service_name;
-        data.manager = manager;
-
-        gdm_display_store_foreach_remove (manager->priv->display_store,
-                                          (GdmDisplayStoreFunc)remove_display_for_connection,
-                                          &data);
-}
-
-static void
-bus_name_owner_changed (DBusGProxy  *bus_proxy,
-                        const char  *service_name,
-                        const char  *old_service_name,
-                        const char  *new_service_name,
-                        GdmManager  *manager)
-{
-        if (strlen (new_service_name) == 0) {
-                remove_displays_for_connection (manager, old_service_name);
-        }
-}
-
 static gboolean
 register_manager (GdmManager *manager)
 {
         GError *error = NULL;
+        GDBusObjectManagerServer *object_server;
 
         error = NULL;
-        manager->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        manager->priv->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (manager->priv->connection == NULL) {
-                if (error != NULL) {
-                        g_critical ("error getting system bus: %s", error->message);
-                        g_error_free (error);
-                }
+                g_critical ("error getting system bus: %s", error->message);
+                g_error_free (error);
                 exit (1);
         }
 
-        manager->priv->bus_proxy = dbus_g_proxy_new_for_name (manager->priv->connection,
-                                                              DBUS_SERVICE_DBUS,
-                                                              DBUS_PATH_DBUS,
-                                                              DBUS_INTERFACE_DBUS);
-        dbus_g_proxy_add_signal (manager->priv->bus_proxy,
-                                 "NameOwnerChanged",
-                                 G_TYPE_STRING,
-                                 G_TYPE_STRING,
-                                 G_TYPE_STRING,
-                                 G_TYPE_INVALID);
-        dbus_g_proxy_connect_signal (manager->priv->bus_proxy,
-                                     "NameOwnerChanged",
-                                     G_CALLBACK (bus_name_owner_changed),
-                                     manager,
-                                     NULL);
-
-        dbus_g_connection_register_g_object (manager->priv->connection, GDM_MANAGER_DBUS_PATH, G_OBJECT (manager));
+        object_server = g_dbus_object_manager_server_new (GDM_MANAGER_DBUS_PATH);
+        g_dbus_object_manager_server_set_connection (object_server, manager->priv->connection);
+        manager->priv->object_manager = object_server;
 
         return TRUE;
 }
@@ -415,8 +346,6 @@ gdm_manager_class_init (GdmManagerClass *klass)
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
         g_type_class_add_private (klass, sizeof (GdmManagerPrivate));
-
-        dbus_g_object_type_install_info (GDM_TYPE_MANAGER, &dbus_glib_gdm_manager_object_info);
 }
 
 static void
@@ -441,15 +370,48 @@ gdm_manager_finalize (GObject *object)
         g_return_if_fail (manager->priv != NULL);
 
 #ifdef HAVE_LIBXDMCP
-        if (manager->priv->xdmcp_factory != NULL) {
-                g_object_unref (manager->priv->xdmcp_factory);
-        }
+        g_clear_object (&manager->priv->xdmcp_factory);
 #endif
+        g_clear_object (&manager->priv->local_factory);
+
+        g_clear_object (&manager->priv->connection);
+        g_clear_object (&manager->priv->object_manager);
 
         gdm_display_store_clear (manager->priv->display_store);
         g_object_unref (manager->priv->display_store);
 
         G_OBJECT_CLASS (gdm_manager_parent_class)->finalize (object);
+}
+
+void
+gdm_manager_display_removed (GdmManager *manager,
+                             GdmDisplay *display)
+{
+        char *id;
+
+        g_object_get (display, "id", &id, NULL);
+
+        g_dbus_object_manager_server_unexport (manager->priv->object_manager, id);
+
+        g_signal_emit (manager, signals[DISPLAY_REMOVED], 0, id);
+
+        g_free (id);
+}
+
+void
+gdm_manager_display_added (GdmManager *manager,
+                           GdmDisplay *display)
+{
+        char *id;
+
+        g_object_get (display, "id", &id, NULL);
+
+        g_dbus_object_manager_server_export (manager->priv->object_manager,
+                                             gdm_display_get_object_skeleton (display));
+
+        g_signal_emit (manager, signals[DISPLAY_ADDED], 0, id);
+
+        g_free (id);
 }
 
 GdmManager *

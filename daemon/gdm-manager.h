@@ -23,6 +23,7 @@
 #define __GDM_MANAGER_H
 
 #include <glib-object.h>
+#include "gdm-display.h"
 
 G_BEGIN_DECLS
 
@@ -72,6 +73,11 @@ void                gdm_manager_set_xdmcp_enabled              (GdmManager *mana
 gboolean            gdm_manager_get_displays                   (GdmManager *manager,
                                                                 GPtrArray **displays,
                                                                 GError    **error);
+
+void                gdm_manager_display_added                  (GdmManager *manager,
+                                                                GdmDisplay *display);
+void                gdm_manager_display_removed                (GdmManager *manager,
+                                                                GdmDisplay *display);
 
 
 G_END_DECLS
