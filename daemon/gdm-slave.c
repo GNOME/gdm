@@ -103,7 +103,6 @@ struct GdmSlavePrivate
 
         GdmDBusDisplay  *display_proxy;
         GDBusConnection *connection;
-        GDBusObjectSkeleton *object_skeleton;
         GdmDBusSlave    *skeleton;
 };
 
@@ -879,9 +878,7 @@ gdm_slave_real_stop (GdmSlave *slave)
 {
         g_debug ("GdmSlave: Stopping slave");
 
-        if (slave->priv->display_proxy != NULL) {
-                g_object_unref (slave->priv->display_proxy);
-        }
+        g_clear_object (&slave->priv->display_proxy);
 
         return TRUE;
 }
@@ -1368,6 +1365,7 @@ gdm_slave_get_primary_session_id_for_user_from_ck (GdmSlave   *slave,
         char       *primary_ssid;
         uid_t       uid;
         GVariant   *reply;
+        GVariant   *array;
         GVariantIter iter;
         char       *ssid;
 
@@ -1422,7 +1420,8 @@ gdm_slave_get_primary_session_id_for_user_from_ck (GdmSlave   *slave,
                 return NULL;
         }
 
-        g_variant_iter_init (&iter, reply);
+        array = g_variant_get_child_value (reply, 0);
+        g_variant_iter_init (&iter, array);
         while (g_variant_iter_loop (&iter, "(&s)", &ssid)) {
                 if (x11_session_is_on_seat (slave, ssid, slave->priv->display_seat_id)) {
                         primary_ssid = g_strdup (ssid);
@@ -1431,6 +1430,7 @@ gdm_slave_get_primary_session_id_for_user_from_ck (GdmSlave   *slave,
         }
 
         g_variant_unref (reply);
+        g_variant_unref (array);
         return primary_ssid;
 }
 #endif
@@ -1813,11 +1813,9 @@ register_slave (GdmSlave *slave)
                 exit (1);
         }
 
-        slave->priv->object_skeleton = g_dbus_object_skeleton_new (slave->priv->id);
         slave->priv->skeleton = GDM_DBUS_SLAVE (gdm_dbus_slave_skeleton_new ());
-
-        g_dbus_object_skeleton_add_interface (slave->priv->object_skeleton,
-                                              G_DBUS_INTERFACE_SKELETON (slave->priv->skeleton));
+        gdm_slave_export_interface (slave,
+                                    G_DBUS_INTERFACE_SKELETON (slave->priv->skeleton));
 
         return TRUE;
 }
@@ -1968,4 +1966,14 @@ gdm_slave_finalize (GObject *object)
         g_free (slave->priv->display_x11_cookie);
 
         G_OBJECT_CLASS (gdm_slave_parent_class)->finalize (object);
+}
+
+void
+gdm_slave_export_interface (GdmSlave               *slave,
+                            GDBusInterfaceSkeleton *interface)
+{
+        g_dbus_interface_skeleton_export (interface,
+                                          slave->priv->connection,
+                                          slave->priv->id,
+                                          NULL);
 }

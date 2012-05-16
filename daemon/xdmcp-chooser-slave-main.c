@@ -34,10 +34,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
-
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
+#include <gio/gio.h>
 
 #include "gdm-xerrors.h"
 #include "gdm-signal-handler.h"
@@ -52,24 +49,21 @@
 static GdmSettings     *settings        = NULL;
 static int              gdm_return_code = 0;
 
-static DBusGConnection *
+static GDBusConnection *
 get_system_bus (void)
 {
         GError          *error;
-        DBusGConnection *bus;
-        DBusConnection  *connection;
+        GDBusConnection *bus;
 
         error = NULL;
-        bus = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (bus == NULL) {
-                g_warning ("Couldn't connect to system bus: %s",
-                           error->message);
+                g_warning ("Couldn't connect to system bus: %s", error->message);
                 g_error_free (error);
                 goto out;
         }
 
-        connection = dbus_g_connection_get_connection (bus);
-        dbus_connection_set_exit_on_disconnect (connection, FALSE);
+        g_dbus_connection_set_exit_on_close (bus, FALSE);
 
  out:
         return bus;
@@ -176,7 +170,7 @@ main (int    argc,
 {
         GMainLoop        *main_loop;
         GOptionContext   *context;
-        DBusGConnection  *connection;
+        GDBusConnection  *connection;
         GdmSlave         *slave;
         static char      *display_id = NULL;
         GdmSignalHandler *signal_handler;

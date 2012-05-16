@@ -39,17 +39,27 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
+#include <gio/gio.h>
 
 #include "gdm-common.h"
 #include "gdm-chooser-server.h"
+#include "gdm-dbus-util.h"
 
 #define GDM_CHOOSER_SERVER_DBUS_PATH      "/org/gnome/DisplayManager/ChooserServer"
 #define GDM_CHOOSER_SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.ChooserServer"
 
 #define GDM_CHOOSER_SERVER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_CHOOSER_SERVER, GdmChooserServerPrivate))
+
+static const char* chooser_server_introspection =
+        "<node>"
+        "  <interface name=\"org.gnome.DisplayManager.ChooserServer\">"
+        "    <method name=\"SelectHostname\">"
+        "      <arg name=\"text\" direction=\"in\" type=\"s\"/>"
+        "    </method>"
+        "    <method name=\"Disconnect\">"
+        "    </method>"
+        "  </interface>"
+        "</node>";
 
 struct GdmChooserServerPrivate
 {
@@ -57,9 +67,8 @@ struct GdmChooserServerPrivate
         char           *group_name;
         char           *display_id;
 
-        DBusServer     *server;
-        char           *server_address;
-        DBusConnection *chooser_connection;
+        GDBusServer    *server;
+        GDBusConnection *chooser_connection;
 };
 
 enum {
@@ -83,240 +92,64 @@ static void     gdm_chooser_server_init         (GdmChooserServer      *chooser_
 
 G_DEFINE_TYPE (GdmChooserServer, gdm_chooser_server, G_TYPE_OBJECT)
 
-/* Note: Use abstract sockets like dbus does by default on Linux. Abstract
- * sockets are only available on Linux.
- */
-static char *
-generate_address (void)
+static void
+handle_select_hostname (GdmChooserServer      *chooser_server,
+                        GDBusMethodInvocation *invocation,
+                        GVariant              *parameters)
 {
-        char *path;
-#if defined (__linux__)
-        int   i;
-        char  tmp[9];
-
-        for (i = 0; i < 8; i++) {
-                if (g_random_int_range (0, 2) == 0) {
-                        tmp[i] = g_random_int_range ('a', 'z' + 1);
-                } else {
-                        tmp[i] = g_random_int_range ('A', 'Z' + 1);
-                }
-        }
-        tmp[8] = '\0';
-
-        path = g_strdup_printf ("unix:abstract=/tmp/gdm-chooser-%s", tmp);
-#else
-        path = g_strdup ("unix:tmpdir=/tmp");
-#endif
-
-        return path;
-}
-
-static DBusHandlerResult
-handle_select_hostname (GdmChooserServer *chooser_server,
-                        DBusConnection   *connection,
-                        DBusMessage      *message)
-{
-        DBusMessage *reply;
-        DBusError    error;
         const char  *text;
 
-        dbus_error_init (&error);
-        if (! dbus_message_get_args (message, &error,
-                                     DBUS_TYPE_STRING, &text,
-                                     DBUS_TYPE_INVALID)) {
-                g_warning ("ERROR: %s", error.message);
-        }
+        g_variant_get (parameters, "(&s)", &text);
 
         g_debug ("ChooserServer: SelectHostname: %s", text);
 
-        reply = dbus_message_new_method_return (message);
-        dbus_connection_send (connection, reply, NULL);
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
+        g_dbus_method_invocation_return_value (invocation, NULL);
 
         g_signal_emit (chooser_server, signals [HOSTNAME_SELECTED], 0, text);
-
-        return DBUS_HANDLER_RESULT_HANDLED;
-}
-
-static DBusHandlerResult
-handle_disconnect (GdmChooserServer *chooser_server,
-                   DBusConnection   *connection,
-                   DBusMessage      *message)
-{
-        DBusMessage *reply;
-
-        reply = dbus_message_new_method_return (message);
-        dbus_connection_send (connection, reply, NULL);
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-
-        g_signal_emit (chooser_server, signals [DISCONNECTED], 0);
-
-        return DBUS_HANDLER_RESULT_HANDLED;
-}
-
-static DBusHandlerResult
-chooser_handle_child_message (DBusConnection *connection,
-                              DBusMessage    *message,
-                              void           *user_data)
-{
-        GdmChooserServer *chooser_server = GDM_CHOOSER_SERVER (user_data);
-
-        if (dbus_message_is_method_call (message, GDM_CHOOSER_SERVER_DBUS_INTERFACE, "SelectHostname")) {
-                return handle_select_hostname (chooser_server, connection, message);
-        } else if (dbus_message_is_method_call (message, GDM_CHOOSER_SERVER_DBUS_INTERFACE, "Disconnect")) {
-                return handle_disconnect (chooser_server, connection, message);
-        }
-
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-}
-
-static DBusHandlerResult
-do_introspect (DBusConnection *connection,
-               DBusMessage    *message)
-{
-        DBusMessage *reply;
-        GString     *xml;
-        char        *xml_string;
-
-        g_debug ("ChooserServer: Do introspect");
-
-        /* standard header */
-        xml = g_string_new ("<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\"\n"
-                            "\"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n"
-                            "<node>\n"
-                            "  <interface name=\"org.freedesktop.DBus.Introspectable\">\n"
-                            "    <method name=\"Introspect\">\n"
-                            "      <arg name=\"data\" direction=\"out\" type=\"s\"/>\n"
-                            "    </method>\n"
-                            "  </interface>\n");
-
-        /* interface */
-        xml = g_string_append (xml,
-                               "  <interface name=\"org.gnome.DisplayManager.ChooserServer\">\n"
-                               "    <method name=\"SelectHostname\">\n"
-                               "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
-                               "    </method>\n"
-                               "    <method name=\"Disconnect\">\n"
-                               "    </method>\n"
-                               "  </interface>\n");
-
-        reply = dbus_message_new_method_return (message);
-
-        xml = g_string_append (xml, "</node>\n");
-        xml_string = g_string_free (xml, FALSE);
-
-        dbus_message_append_args (reply,
-                                  DBUS_TYPE_STRING, &xml_string,
-                                  DBUS_TYPE_INVALID);
-
-        g_free (xml_string);
-
-        if (reply == NULL) {
-                g_error ("No memory");
-        }
-
-        if (! dbus_connection_send (connection, reply, NULL)) {
-                g_error ("No memory");
-        }
-
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-
-        return DBUS_HANDLER_RESULT_HANDLED;
-}
-
-static DBusHandlerResult
-chooser_server_message_handler (DBusConnection  *connection,
-                                DBusMessage     *message,
-                                void            *user_data)
-{
-        const char *dbus_destination = dbus_message_get_destination (message);
-        const char *dbus_path        = dbus_message_get_path (message);
-        const char *dbus_interface   = dbus_message_get_interface (message);
-        const char *dbus_member      = dbus_message_get_member (message);
-
-        g_debug ("chooser_server_message_handler: destination=%s obj_path=%s interface=%s method=%s",
-                 dbus_destination ? dbus_destination : "(null)",
-                 dbus_path        ? dbus_path        : "(null)",
-                 dbus_interface   ? dbus_interface   : "(null)",
-                 dbus_member      ? dbus_member      : "(null)");
-
-        if (dbus_message_is_method_call (message, "org.freedesktop.DBus", "AddMatch")) {
-                DBusMessage *reply;
-
-                reply = dbus_message_new_method_return (message);
-
-                if (reply == NULL) {
-                        g_error ("No memory");
-                }
-
-                if (! dbus_connection_send (connection, reply, NULL)) {
-                        g_error ("No memory");
-                }
-
-                dbus_message_unref (reply);
-
-                return DBUS_HANDLER_RESULT_HANDLED;
-        } else if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected") &&
-                   strcmp (dbus_message_get_path (message), DBUS_PATH_LOCAL) == 0) {
-
-                /*dbus_connection_unref (connection);*/
-
-                return DBUS_HANDLER_RESULT_HANDLED;
-        } else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Introspectable", "Introspect")) {
-                return do_introspect (connection, message);
-        } else {
-                return chooser_handle_child_message (connection, message, user_data);
-        }
-
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 static void
-chooser_server_unregister_handler (DBusConnection  *connection,
-                                   void            *user_data)
+handle_disconnect (GdmChooserServer      *chooser_server,
+                   GDBusMethodInvocation *invocation,
+                   GVariant              *parameters)
 {
-        g_debug ("chooser_server_unregister_handler");
+        g_debug ("ChooserServer: Disconnect");
+
+        g_dbus_method_invocation_return_value (invocation, NULL);
+
+        g_signal_emit (chooser_server, signals [DISCONNECTED], 0);
 }
 
-static DBusHandlerResult
-connection_filter_function (DBusConnection *connection,
-                            DBusMessage    *message,
-                            void           *user_data)
+static void
+chooser_handle_child_method (GDBusConnection       *connection,
+                             const char            *sender,
+                             const char            *object_path,
+                             const char            *interface_name,
+                             const char            *method_name,
+                             GVariant              *parameters,
+                             GDBusMethodInvocation *invocation,
+                             void                  *user_data)
 {
         GdmChooserServer *chooser_server = GDM_CHOOSER_SERVER (user_data);
-        const char       *dbus_path      = dbus_message_get_path (message);
-        const char       *dbus_interface = dbus_message_get_interface (message);
-        const char       *dbus_message   = dbus_message_get_member (message);
 
-        g_debug ("ChooserServer: obj_path=%s interface=%s method=%s",
-                 dbus_path      ? dbus_path      : "(null)",
-                 dbus_interface ? dbus_interface : "(null)",
-                 dbus_message   ? dbus_message   : "(null)");
-
-        if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")
-            && strcmp (dbus_path, DBUS_PATH_LOCAL) == 0) {
-
-                g_debug ("ChooserServer: Disconnected");
-
-                dbus_connection_unref (connection);
-                chooser_server->priv->chooser_connection = NULL;
-
-                return DBUS_HANDLER_RESULT_HANDLED;
-        }
-
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+        if (strcmp (method_name, "SelectHostname") == 0)
+                return handle_select_hostname (chooser_server, invocation, parameters);
+        else if (strcmp (method_name, "Disconnect") == 0)
+                return handle_disconnect (chooser_server, invocation, parameters);
 }
 
-static dbus_bool_t
-allow_user_function (DBusConnection *connection,
-                     unsigned long   uid,
-                     void           *data)
+static void
+connection_closed (GDBusConnection  *connection,
+                   GdmChooserServer *chooser_server)
+{
+        g_clear_object (&chooser_server->priv->chooser_connection);
+}
+
+static gboolean
+allow_user_function (GDBusAuthObserver *observer,
+                     GIOStream         *stream,
+                     GCredentials      *credentials,
+                     void              *data)
 {
         GdmChooserServer *chooser_server = GDM_CHOOSER_SERVER (data);
         struct passwd    *pwent;
@@ -330,93 +163,77 @@ allow_user_function (DBusConnection *connection,
                 return FALSE;
         }
 
-        if (pwent->pw_uid == uid) {
-                return TRUE;
-        }
-
-        return FALSE;
+        return g_credentials_get_unix_user (credentials, NULL) == pwent->pw_uid;
 }
 
 static void
-handle_connection (DBusServer      *server,
-                   DBusConnection  *new_connection,
-                   void            *user_data)
+handle_connection (GDBusServer      *server,
+                   GDBusConnection  *new_connection,
+                   void             *user_data)
 {
         GdmChooserServer *chooser_server = GDM_CHOOSER_SERVER (user_data);
 
         g_debug ("ChooserServer: Handing new connection");
 
         if (chooser_server->priv->chooser_connection == NULL) {
-                DBusObjectPathVTable vtable = { &chooser_server_unregister_handler,
-                                                &chooser_server_message_handler,
-                                                NULL, NULL, NULL, NULL
-                };
+                GDBusInterfaceVTable vtable = { chooser_handle_child_method };
+                GDBusNodeInfo *info;
 
-                chooser_server->priv->chooser_connection = new_connection;
-                dbus_connection_ref (new_connection);
-                dbus_connection_setup_with_g_main (new_connection, NULL);
+                chooser_server->priv->chooser_connection = g_object_ref (new_connection);
 
-                g_debug ("ChooserServer: chooser connection is %p", new_connection);
+                info = g_dbus_node_info_new_for_xml (chooser_server_introspection, NULL);
 
-                dbus_connection_add_filter (new_connection,
-                                            connection_filter_function,
-                                            chooser_server,
-                                            NULL);
+                g_debug ("GdmChooserServer: new connection %p", new_connection);
 
-                dbus_connection_set_unix_user_function (new_connection,
-                                                        allow_user_function,
-                                                        chooser_server,
-                                                        NULL);
+                g_dbus_connection_register_object (new_connection,
+                                                   "/org/gnome/DisplayManager/ChooserServer",
+                                                   info->interfaces[0],
+                                                   &vtable,
+                                                   NULL, NULL, NULL);
 
-                dbus_connection_register_object_path (new_connection,
-                                                      GDM_CHOOSER_SERVER_DBUS_PATH,
-                                                      &vtable,
-                                                      chooser_server);
+                g_signal_connect (new_connection, "closed",
+                                  G_CALLBACK (connection_closed), chooser_server);
 
                 g_signal_emit (chooser_server, signals[CONNECTED], 0);
-
         }
 }
 
 gboolean
 gdm_chooser_server_start (GdmChooserServer *chooser_server)
 {
-        DBusError   error;
-        gboolean    ret;
-        char       *address;
-        const char *auth_mechanisms[] = {"EXTERNAL", NULL};
+        GDBusAuthObserver *observer;
+        GError *error = NULL;
+        gboolean ret;
 
         ret = FALSE;
 
         g_debug ("ChooserServer: Creating D-Bus server for chooser");
 
-        address = generate_address ();
+        observer = g_dbus_auth_observer_new ();
+        g_signal_connect (observer, "authorize-authenticated-peer",
+                          G_CALLBACK (allow_user_function), chooser_server);
 
-        dbus_error_init (&error);
-        chooser_server->priv->server = dbus_server_listen (address, &error);
-        g_free (address);
+        chooser_server->priv->server = gdm_dbus_setup_private_server (observer,
+                                                                      &error);
+        g_object_unref (observer);
 
         if (chooser_server->priv->server == NULL) {
-                g_warning ("Cannot create D-BUS server for the chooser: %s", error.message);
+                g_warning ("Cannot create D-BUS server for the chooser: %s", error->message);
                 /* FIXME: should probably fail if we can't create the socket */
                 goto out;
         }
 
-        dbus_server_setup_with_g_main (chooser_server->priv->server, NULL);
-        dbus_server_set_auth_mechanisms (chooser_server->priv->server, auth_mechanisms);
-        dbus_server_set_new_connection_function (chooser_server->priv->server,
-                                                 handle_connection,
-                                                 chooser_server,
-                                                 NULL);
+        g_signal_connect (chooser_server->priv->server, "new-connection",
+                          G_CALLBACK (handle_connection), chooser_server);
+
         ret = TRUE;
 
-        g_free (chooser_server->priv->server_address);
-        chooser_server->priv->server_address = dbus_server_get_address (chooser_server->priv->server);
+        g_debug ("ChooserServer: D-Bus server listening on %s",
+                 g_dbus_server_get_client_address (chooser_server->priv->server));
 
-        g_debug ("ChooserServer: D-Bus server listening on %s", chooser_server->priv->server_address);
+        g_dbus_server_start (chooser_server->priv->server);
 
  out:
-
         return ret;
 }
 
@@ -429,13 +246,16 @@ gdm_chooser_server_stop (GdmChooserServer *chooser_server)
 
         g_debug ("ChooserServer: Stopping chooser server...");
 
+        g_clear_object (&chooser_server->priv->server);
+        g_clear_object (&chooser_server->priv->chooser_connection);
+
         return ret;
 }
 
 char *
 gdm_chooser_server_get_address (GdmChooserServer *chooser_server)
 {
-        return g_strdup (chooser_server->priv->server_address);
+        return g_strdup (g_dbus_server_get_client_address (chooser_server->priv->server));
 }
 
 static void

@@ -345,6 +345,8 @@ nodist_gdm_xdmcp_chooser_slave_SOURCES = 	\
 	gdm-display-glue.h			\
 	gdm-slave-glue.c			\
 	gdm-slave-glue.h			\
+	gdm-xdmcp-chooser-slave-glue.c		\
+	gdm-xdmcp-chooser-slave-glue.h		\
 	$(NULL)
 
 gdm_xdmcp_chooser_slave_LDADD = 		\

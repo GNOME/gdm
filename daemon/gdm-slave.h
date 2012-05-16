@@ -23,6 +23,7 @@
 #define __GDM_SLAVE_H
 
 #include <glib-object.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
@@ -83,6 +84,9 @@ gboolean            gdm_slave_run_script             (GdmSlave   *slave,
                                                       const char *dir,
                                                       const char *username);
 void                gdm_slave_stopped                (GdmSlave   *slave);
+
+void                gdm_slave_export_interface       (GdmSlave   *slave,
+                                                      GDBusInterfaceSkeleton *interface);
 
 G_END_DECLS
 
