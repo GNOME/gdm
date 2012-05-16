@@ -34,10 +34,6 @@
 #include <systemd/sd-login.h>
 #endif
 
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
-
 #define GDM_DBUS_NAME                            "org.gnome.DisplayManager"
 #define GDM_DBUS_LOCAL_DISPLAY_FACTORY_PATH      "/org/gnome/DisplayManager/LocalDisplayFactory"
 #define GDM_DBUS_LOCAL_DISPLAY_FACTORY_INTERFACE "org.gnome.DisplayManager.LocalDisplayFactory"
@@ -107,7 +103,6 @@ maybe_lock_screen (void)
         gboolean   use_gscreensaver = FALSE;
         GError    *error            = NULL;
         char      *command;
-        GdkScreen *screen;
 
         if (is_program_in_path ("gnome-screensaver-command")) {
                 use_gscreensaver = TRUE;
@@ -120,8 +115,6 @@ maybe_lock_screen (void)
         } else {
                 command = g_strdup ("xscreensaver-command -lock");
         }
-
-        screen = gdk_screen_get_default ();
 
         if (! g_spawn_command_line_async (command, &error)) {
                 g_warning ("Cannot lock screen: %s", error->message);
@@ -160,172 +153,99 @@ calc_pi (void)
 }
 
 static gboolean
-create_transient_display (DBusConnection *connection,
-                          GError        **error)
+create_transient_display (GDBusConnection *connection,
+                          GError         **error)
 {
-        DBusError       local_error;
-        DBusMessage    *message;
-        DBusMessage    *reply;
-        gboolean        ret;
-        DBusMessageIter iter;
+        GError *local_error = NULL;
+        GVariant *reply;
         const char     *value;
 
-        ret = FALSE;
-        reply = NULL;
-
-        dbus_error_init (&local_error);
-        message = dbus_message_new_method_call (GDM_DBUS_NAME,
-                                                GDM_DBUS_LOCAL_DISPLAY_FACTORY_PATH,
-                                                GDM_DBUS_LOCAL_DISPLAY_FACTORY_INTERFACE,
-                                                "CreateTransientDisplay");
-        if (message == NULL) {
-                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, "Out of memory.");
-                goto out;
-        }
-
-        dbus_error_init (&local_error);
-        reply = dbus_connection_send_with_reply_and_block (connection,
-                                                           message,
-                                                           -1,
-                                                           &local_error);
+        reply = g_dbus_connection_call_sync (connection,
+                                             GDM_DBUS_NAME,
+                                             GDM_DBUS_LOCAL_DISPLAY_FACTORY_PATH,
+                                             GDM_DBUS_LOCAL_DISPLAY_FACTORY_INTERFACE,
+                                             "CreateTransientDisplay",
+                                             NULL, /* parameters */
+                                             (const GVariantType *) "(o)",
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &local_error);
         if (reply == NULL) {
-                if (dbus_error_is_set (&local_error)) {
-                        g_warning ("Unable to create transient display: %s", local_error.message);
-                        g_set_error (error, GDM_FLEXISERVER_ERROR, 0, "%s", local_error.message);
-                        dbus_error_free (&local_error);
-                        goto out;
-                }
+                g_warning ("Unable to create transient display: %s", local_error->message);
+                g_propagate_error (error, local_error);
+                return FALSE;
         }
 
-        dbus_message_iter_init (reply, &iter);
-        dbus_message_iter_get_basic (&iter, &value);
+        g_variant_get (reply, "(&o)", &value);
         g_debug ("Started %s", value);
 
-        ret = TRUE;
- out:
-        if (message != NULL) {
-                dbus_message_unref (message);
-        }
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-
-        return ret;
+        g_variant_unref (reply);
+        return TRUE;
 }
 
 #ifdef WITH_CONSOLE_KIT
 
 static gboolean
-get_current_session_id (DBusConnection *connection,
-                        char          **session_id)
+get_current_session_id (GDBusConnection  *connection,
+                        char            **session_id)
 {
-        DBusError       local_error;
-        DBusMessage    *message;
-        DBusMessage    *reply;
-        gboolean        ret;
-        DBusMessageIter iter;
-        const char     *value;
+        GError *local_error = NULL;
+        GVariant *reply;
 
-        ret = FALSE;
-        reply = NULL;
-
-        dbus_error_init (&local_error);
-        message = dbus_message_new_method_call (CK_NAME,
-                                                CK_MANAGER_PATH,
-                                                CK_MANAGER_INTERFACE,
-                                                "GetCurrentSession");
-        if (message == NULL) {
-                goto out;
-        }
-
-        dbus_error_init (&local_error);
-        reply = dbus_connection_send_with_reply_and_block (connection,
-                                                           message,
-                                                           -1,
-                                                           &local_error);
+        reply = g_dbus_connection_call_sync (connection,
+                                             CK_NAME,
+                                             CK_MANAGER_PATH,
+                                             CK_MANAGER_INTERFACE,
+                                             "GetCurrentSession",
+                                             NULL, /* parameters */
+                                             (const GVariantType *) "(o)",
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &local_error);
         if (reply == NULL) {
-                if (dbus_error_is_set (&local_error)) {
-                        g_warning ("Unable to determine session: %s", local_error.message);
-                        dbus_error_free (&local_error);
-                        goto out;
-                }
+                g_warning ("Unable to determine session: %s", local_error->message);
+                g_error_free (local_error);
+                return FALSE;
         }
 
-        dbus_message_iter_init (reply, &iter);
-        dbus_message_iter_get_basic (&iter, &value);
-        if (session_id != NULL) {
-                *session_id = g_strdup (value);
-        }
+        g_variant_get (reply, "(o)", session_id);
+        g_variant_unref (reply);
 
-        ret = TRUE;
- out:
-        if (message != NULL) {
-                dbus_message_unref (message);
-        }
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-
-        return ret;
+        return TRUE;
 }
 
 static gboolean
-get_seat_id_for_session (DBusConnection *connection,
-                         const char     *session_id,
-                         char          **seat_id)
+get_seat_id_for_session (GDBusConnection  *connection,
+                         const char       *session_id,
+                         char            **seat_id)
 {
-        DBusError       local_error;
-        DBusMessage    *message;
-        DBusMessage    *reply;
-        gboolean        ret;
-        DBusMessageIter iter;
-        const char     *value;
+        GError *local_error = NULL;
+        GVariant *reply;
 
-        ret = FALSE;
-        reply = NULL;
-
-        dbus_error_init (&local_error);
-        message = dbus_message_new_method_call (CK_NAME,
-                                                session_id,
-                                                CK_SESSION_INTERFACE,
-                                                "GetSeatId");
-        if (message == NULL) {
-                goto out;
-        }
-
-        dbus_error_init (&local_error);
-        reply = dbus_connection_send_with_reply_and_block (connection,
-                                                           message,
-                                                           -1,
-                                                           &local_error);
+        reply = g_dbus_connection_call_sync (connection,
+                                             CK_NAME,
+                                             session_id,
+                                             CK_SESSION_INTERFACE,
+                                             "GetSeatId",
+                                             NULL, /* parameters */
+                                             (const GVariantType *) "(o)",
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &local_error);
         if (reply == NULL) {
-                if (dbus_error_is_set (&local_error)) {
-                        g_warning ("Unable to determine seat: %s", local_error.message);
-                        dbus_error_free (&local_error);
-                        goto out;
-                }
+                g_warning ("Unable to determine seat: %s", local_error->message);
+                g_error_free (local_error);
+                return FALSE;
         }
 
-        dbus_message_iter_init (reply, &iter);
-        dbus_message_iter_get_basic (&iter, &value);
-        if (seat_id != NULL) {
-                *seat_id = g_strdup (value);
-        }
+        g_variant_get (reply, "(o)", seat_id);
+        g_variant_unref (reply);
 
-        ret = TRUE;
- out:
-        if (message != NULL) {
-                dbus_message_unref (message);
-        }
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-
-        return ret;
+        return TRUE;
 }
 
 static char *
-get_current_seat_id (DBusConnection *connection)
+get_current_seat_id (GDBusConnection *connection)
 {
         gboolean res;
         char    *session_id;
@@ -344,287 +264,140 @@ get_current_seat_id (DBusConnection *connection)
 }
 
 static gboolean
-activate_session_id_for_ck (DBusConnection *connection,
-                            const char     *seat_id,
-                            const char     *session_id)
+activate_session_id_for_ck (GDBusConnection *connection,
+                            const char      *seat_id,
+                            const char      *session_id)
 {
-        DBusError    local_error;
-        DBusMessage *message;
-        DBusMessage *reply;
-        gboolean     ret;
+        GError *local_error = NULL;
+        GVariant *reply;
 
-        ret = FALSE;
-        reply = NULL;
-
-        g_debug ("Switching to session %s", session_id);
-
-        dbus_error_init (&local_error);
-        message = dbus_message_new_method_call (CK_NAME,
-                                                seat_id,
-                                                CK_SEAT_INTERFACE,
-                                                "ActivateSession");
-        if (message == NULL) {
-                goto out;
-        }
-
-        if (! dbus_message_append_args (message,
-                                        DBUS_TYPE_OBJECT_PATH, &session_id,
-                                        DBUS_TYPE_INVALID)) {
-                goto out;
-        }
-
-
-        dbus_error_init (&local_error);
-        reply = dbus_connection_send_with_reply_and_block (connection,
-                                                           message,
-                                                           -1,
-                                                           &local_error);
+        reply = g_dbus_connection_call_sync (connection,
+                                             CK_NAME,
+                                             seat_id,
+                                             CK_SEAT_INTERFACE,
+                                             "ActivateSession",
+                                             g_variant_new ("(o)", session_id),
+                                             NULL,
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &local_error);
         if (reply == NULL) {
-                if (dbus_error_is_set (&local_error)) {
-                        g_warning ("Unable to activate session: %s", local_error.message);
-                        dbus_error_free (&local_error);
-                        goto out;
-                }
+                g_warning ("Unable to activate session: %s", local_error->message);
+                g_error_free (local_error);
+                return FALSE;
         }
 
-        ret = TRUE;
- out:
-        if (message != NULL) {
-                dbus_message_unref (message);
-        }
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
+        g_variant_unref (reply);
 
-        return ret;
+        return TRUE;
 }
 
 static gboolean
-session_is_login_window (DBusConnection *connection,
-                         const char     *session_id)
+session_is_login_window (GDBusConnection *connection,
+                         const char      *session_id)
 {
-        DBusError       local_error;
-        DBusMessage    *message;
-        DBusMessage    *reply;
-        gboolean        ret;
-        DBusMessageIter iter;
-        const char     *value;
+        GError *local_error = NULL;
+        GVariant *reply;
+        const char *value;
+        gboolean ret;
 
-        ret = FALSE;
-        reply = NULL;
-
-        dbus_error_init (&local_error);
-        message = dbus_message_new_method_call (CK_NAME,
-                                                session_id,
-                                                CK_SESSION_INTERFACE,
-                                                "GetSessionType");
-        if (message == NULL) {
-                goto out;
-        }
-
-        dbus_error_init (&local_error);
-        reply = dbus_connection_send_with_reply_and_block (connection,
-                                                           message,
-                                                           -1,
-                                                           &local_error);
+        reply = g_dbus_connection_call_sync (connection,
+                                             CK_NAME,
+                                             session_id,
+                                             CK_SESSION_INTERFACE,
+                                             "GetSessionType",
+                                             NULL,
+                                             (const GVariantType*) "(s)",
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &local_error);
         if (reply == NULL) {
-                if (dbus_error_is_set (&local_error)) {
-                        g_warning ("Unable to determine seat: %s", local_error.message);
-                        dbus_error_free (&local_error);
-                        goto out;
-                }
+                g_warning ("Unable to determine session type: %s", local_error->message);
+                g_error_free (local_error);
+                return FALSE;
         }
 
-        dbus_message_iter_init (reply, &iter);
-        dbus_message_iter_get_basic (&iter, &value);
+        g_variant_get (reply, "(&s)", &value);
 
         if (value == NULL || value[0] == '\0' || strcmp (value, "LoginWindow") != 0) {
-                goto out;
+                ret = FALSE;
+        } else {
+                ret = TRUE;
         }
 
-        ret = TRUE;
- out:
-        if (message != NULL) {
-                dbus_message_unref (message);
-        }
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
+        g_variant_unref (reply);
 
         return ret;
 }
 
 static gboolean
-seat_can_activate_sessions (DBusConnection *connection,
-                            const char     *seat_id)
+seat_can_activate_sessions (GDBusConnection *connection,
+                            const char      *seat_id)
 {
-        DBusError       local_error;
-        DBusMessage    *message;
-        DBusMessage    *reply;
-        DBusMessageIter iter;
-        gboolean        can_activate;
+        GError *local_error = NULL;
+        GVariant *reply;
+        gboolean ret;
 
-        can_activate = FALSE;
-        reply = NULL;
-
-        dbus_error_init (&local_error);
-        message = dbus_message_new_method_call (CK_NAME,
-                                                seat_id,
-                                                CK_SEAT_INTERFACE,
-                                                "CanActivateSessions");
-        if (message == NULL) {
-                goto out;
-        }
-
-        dbus_error_init (&local_error);
-        reply = dbus_connection_send_with_reply_and_block (connection,
-                                                           message,
-                                                           -1,
-                                                           &local_error);
+        reply = g_dbus_connection_call_sync (connection,
+                                             CK_NAME,
+                                             seat_id,
+                                             CK_SEAT_INTERFACE,
+                                             "CanActivateSessions",
+                                             NULL,
+                                             (const GVariantType*) "(b)",
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &local_error);
         if (reply == NULL) {
-                if (dbus_error_is_set (&local_error)) {
-                        g_warning ("Unable to activate session: %s", local_error.message);
-                        dbus_error_free (&local_error);
-                        goto out;
-                }
+                g_warning ("Unable to determine if can activate sessions: %s", local_error->message);
+                g_error_free (local_error);
+                return FALSE;
         }
 
-        dbus_message_iter_init (reply, &iter);
-        dbus_message_iter_get_basic (&iter, &can_activate);
+        g_variant_get (reply, "(&b)", &ret);
+        g_variant_unref (reply);
 
- out:
-        if (message != NULL) {
-                dbus_message_unref (message);
-        }
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-
-        return can_activate;
+        return ret;
 }
 
-/* from libhal */
-static char **
-get_path_array_from_iter (DBusMessageIter *iter,
-                          int             *num_elements)
+static const char **
+seat_get_sessions (GDBusConnection *connection,
+                   const char      *seat_id)
 {
-        int count;
-        char **buffer;
+        GError *local_error = NULL;
+        GVariant *reply;
+        const char **value;
 
-        count = 0;
-        buffer = (char **)malloc (sizeof (char *) * 8);
-
-        if (buffer == NULL)
-                goto oom;
-
-        buffer[0] = NULL;
-        while (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_OBJECT_PATH) {
-                const char *value;
-                char *str;
-
-                if ((count % 8) == 0 && count != 0) {
-                        buffer = realloc (buffer, sizeof (char *) * (count + 8));
-                        if (buffer == NULL)
-                                goto oom;
-                }
-
-                dbus_message_iter_get_basic (iter, &value);
-                str = strdup (value);
-                if (str == NULL)
-                        goto oom;
-
-                buffer[count] = str;
-
-                dbus_message_iter_next (iter);
-                count++;
-        }
-
-        if ((count % 8) == 0) {
-                buffer = realloc (buffer, sizeof (char *) * (count + 1));
-                if (buffer == NULL)
-                        goto oom;
-        }
-
-        buffer[count] = NULL;
-        if (num_elements != NULL)
-                *num_elements = count;
-        return buffer;
-
-oom:
-        g_debug ("%s %d : error allocating memory\n", __FILE__, __LINE__);
-        return NULL;
-
-}
-
-static char **
-seat_get_sessions (DBusConnection *connection,
-                   const char     *seat_id)
-{
-        DBusError       error;
-        DBusMessage    *message;
-        DBusMessage    *reply;
-        DBusMessageIter iter_reply;
-        DBusMessageIter iter_array;
-        char           **sessions;
-
-        sessions = NULL;
-        message = NULL;
-        reply = NULL;
-
-        dbus_error_init (&error);
-        message = dbus_message_new_method_call (CK_NAME,
-                                                seat_id,
-                                                CK_SEAT_INTERFACE,
-                                                "GetSessions");
-        if (message == NULL) {
-                g_debug ("Couldn't allocate the D-Bus message");
-                goto out;
-        }
-
-        dbus_error_init (&error);
-        reply = dbus_connection_send_with_reply_and_block (connection,
-                                                           message,
-                                                           -1, &error);
-        dbus_connection_flush (connection);
-
-        if (dbus_error_is_set (&error)) {
-                g_debug ("ConsoleKit %s raised:\n %s\n\n", error.name, error.message);
-                goto out;
-        }
-
+        reply = g_dbus_connection_call_sync (connection,
+                                             CK_NAME,
+                                             seat_id,
+                                             CK_SEAT_INTERFACE,
+                                             "GetSessions",
+                                             NULL,
+                                             (const GVariantType*) "(ao)",
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &local_error);
         if (reply == NULL) {
-                g_debug ("ConsoleKit: No reply for GetSessionsForUser");
-                goto out;
+                g_warning ("Unable to list sessions: %s", local_error->message);
+                g_error_free (local_error);
+                return FALSE;
         }
 
-        dbus_message_iter_init (reply, &iter_reply);
-        if (dbus_message_iter_get_arg_type (&iter_reply) != DBUS_TYPE_ARRAY) {
-                g_debug ("ConsoleKit Wrong reply for GetSessionsForUser - expecting an array.");
-                goto out;
-        }
+        g_variant_get (reply, "(^ao)", &value);
+        g_variant_unref (reply);
 
-        dbus_message_iter_recurse (&iter_reply, &iter_array);
-        sessions = get_path_array_from_iter (&iter_array, NULL);
-
- out:
-        if (message != NULL) {
-                dbus_message_unref (message);
-        }
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-
-        return sessions;
+        return value;
 }
 
 static gboolean
-get_login_window_session_id_for_ck (DBusConnection  *connection,
-                                    const char      *seat_id,
-                                    char           **session_id)
+get_login_window_session_id_for_ck (GDBusConnection  *connection,
+                                    const char       *seat_id,
+                                    char            **session_id)
 {
-        gboolean    can_activate_sessions;
-        char      **sessions;
-        int         i;
+        gboolean     can_activate_sessions;
+        const char **sessions;
+        int          i;
 
         *session_id = NULL;
         sessions = NULL;
@@ -639,7 +412,7 @@ get_login_window_session_id_for_ck (DBusConnection  *connection,
 
         sessions = seat_get_sessions (connection, seat_id);
         for (i = 0; sessions [i] != NULL; i++) {
-                char *ssid;
+                const char *ssid;
 
                 ssid = sessions [i];
 
@@ -648,14 +421,14 @@ get_login_window_session_id_for_ck (DBusConnection  *connection,
                         break;
                 }
         }
-        g_strfreev (sessions);
+        g_free (sessions);
 
         return TRUE;
 }
 
 static gboolean
-goto_login_session_for_ck (DBusConnection  *connection,
-                           GError         **error)
+goto_login_session_for_ck (GDBusConnection  *connection,
+                           GError          **error)
 {
         gboolean        ret;
         gboolean        res;
@@ -702,56 +475,32 @@ goto_login_session_for_ck (DBusConnection  *connection,
 #ifdef WITH_SYSTEMD
 
 static gboolean
-activate_session_id_for_systemd (DBusConnection *connection,
-                                 const char     *seat_id,
-                                 const char     *session_id)
+activate_session_id_for_systemd (GDBusConnection *connection,
+                                 const char      *seat_id,
+                                 const char      *session_id)
 {
-        DBusError    local_error;
-        DBusMessage *message;
-        DBusMessage *reply;
-        gboolean     ret;
+        GError *local_error = NULL;
+        GVariant *reply;
 
-        ret = FALSE;
-        reply = NULL;
-
-        g_debug ("Switching to session %s", session_id);
-
-        message = dbus_message_new_method_call ("org.freedesktop.login1",
-                                                "/org/freedesktop/login1",
-                                                "org.freedesktop.login1.Manager",
-                                                "ActivateSessionOnSeat");
-        if (message == NULL) {
-                goto out;
+        reply = g_dbus_connection_call_sync (connection,
+                                             "org.freedesktop.login1",
+                                             "/org/freedesktop/login1",
+                                             "org.freedesktop.login1.Manager",
+                                             "ActivateSessionOnSeat",
+                                             g_variant_new ("(ss)", session_id, seat_id),
+                                             NULL,
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, &local_error);
+        if (reply == NULL) {
+                g_warning ("Unable to activate session: %s", local_error->message);
+                g_error_free (local_error);
+                return FALSE;
         }
 
-        if (! dbus_message_append_args (message,
-                                        DBUS_TYPE_STRING, &session_id,
-                                        DBUS_TYPE_STRING, &seat_id,
-                                        DBUS_TYPE_INVALID)) {
-                goto out;
-        }
+        g_variant_unref (reply);
 
-        dbus_error_init (&local_error);
-        reply = dbus_connection_send_with_reply_and_block (connection,
-                                                           message,
-                                                           -1,
-                                                           &local_error);
-        if (dbus_error_is_set (&local_error)) {
-                g_warning ("Unable to activate session: %s", local_error.message);
-                dbus_error_free (&local_error);
-                goto out;
-        }
-
-        ret = TRUE;
-out:
-        if (message != NULL) {
-                dbus_message_unref (message);
-        }
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-
-        return ret;
+        return TRUE;
 }
 
 static gboolean
@@ -809,8 +558,8 @@ out:
 }
 
 static gboolean
-goto_login_session_for_systemd (DBusConnection  *connection,
-                                GError         **error)
+goto_login_session_for_systemd (GDBusConnection  *connection,
+                                GError          **error)
 {
         gboolean        ret;
         int             res;
@@ -890,15 +639,14 @@ goto_login_session_for_systemd (DBusConnection  *connection,
 static gboolean
 goto_login_session (GError **error)
 {
-        DBusError       local_error;
-        DBusConnection *connection;
+        GError *local_error;
+        GDBusConnection *connection;
 
-        dbus_error_init (&local_error);
-        connection = dbus_bus_get (DBUS_BUS_SYSTEM, &local_error);
+        local_error = NULL;
+        connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &local_error);
         if (connection == NULL) {
-                g_debug ("Failed to connect to the D-Bus daemon: %s", local_error.message);
-                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, "%s", local_error.message);
-                dbus_error_free (&local_error);
+                g_debug ("Failed to connect to the D-Bus daemon: %s", local_error->message);
+                g_propagate_error (error, local_error);
                 return FALSE;
         }
 
