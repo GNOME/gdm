@@ -30,9 +30,6 @@ AM_CPPFLAGS = \
 
 BUILT_SOURCES =					\
 	gdm-slave-glue.h			\
-	gdm-simple-slave-glue.h			\
-	gdm-factory-slave-glue.h		\
-	gdm-product-slave-glue.h		\
 	gdm-xdmcp-chooser-slave-glue.h		\
 	gdm-display-glue.h			\
 	gdm-xdmcp-display-glue.h		\
@@ -136,8 +133,6 @@ test_session_SOURCES = 		\
 nodist_test_session_SOURCES = 	\
 	gdm-session-glue.c	\
 	gdm-session-glue.h	\
-	gdm-slave-resources.c	\
-	gdm-slave-resources.h	\
 	$(NULL)
 
 test_session_LDADD =		\
@@ -291,8 +286,6 @@ nodist_gdm_product_slave_SOURCES = 	\
 	gdm-product-display-glue.h	\
 	gdm-session-glue.c		\
 	gdm-session-glue.h		\
-	gdm-slave-resources.c		\
-	gdm-slave-resources.h		\
 	gdm-display-glue.c		\
 	gdm-display-glue.h		\
 	gdm-slave-glue.c		\
@@ -499,24 +492,31 @@ sbin_SCRIPTS =		\
 gdm: $(srcdir)/gdm.in
 	sed -e 's,[@]sbindir[@],$(sbindir),g' <$(srcdir)/gdm.in >gdm
 
-CLEANFILES =			\
-	gdm			\
-	$(BUILT_SOURCES)	\
+CLEANFILES =				\
+	gdm				\
+	$(BUILT_SOURCES)		\
+	gdm-slave-glue.c		\
+	gdm-xdmcp-chooser-slave-glue.c	\
+	gdm-session-glue.c		\
+	gdm-display-glue.c		\
+	gdm-xdmcp-display-glue.c	\
+	gdm-static-display-glue.c	\
+	gdm-transient-display-glue.c	\
+	gdm-local-display-factory-glue.c	\
+	gdm-product-display-glue.c	\
+	gdm-greeter-glue.c		\
 	$(NULL)
 
 EXTRA_DIST = 				\
 	gdm.in				\
 	gdm-slave.xml			\
-	gdm-simple-slave.xml		\
-	gdm-factory-slave.xml		\
-	gdm-product-slave.xml		\
 	gdm-xdmcp-chooser-slave.xml	\
-	gdm-session-direct.xml		\
-	gdm-manager.xml			\
 	gdm-display.xml			\
 	gdm-xdmcp-display.xml		\
 	gdm-static-display.xml		\
 	gdm-transient-display.xml	\
 	gdm-local-display-factory.xml	\
 	gdm-product-display.xml		\
+	gdm-greeter-server.xml		\
+	gdm-session.xml			\
 	$(NULL)

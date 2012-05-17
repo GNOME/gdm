@@ -149,6 +149,7 @@ test_settings_client_LDADD =		\
 
 CLEANFILES =			\
 	$(BUILT_SOURCES)	\
+	gdm-settings-glue.c	\
 	$(NULL)
 
 EXTRA_DIST = 			\
