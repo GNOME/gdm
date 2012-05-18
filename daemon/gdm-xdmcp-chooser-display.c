@@ -102,7 +102,7 @@ gdm_xdmcp_chooser_display_set_slave_bus_name (GdmDisplay *display,
 
         chooser_display->priv->slave_proxy = GDM_DBUS_XDMCP_CHOOSER_SLAVE (
                 gdm_dbus_xdmcp_chooser_slave_proxy_new_sync (connection,
-                                                             G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
+                                                             G_DBUS_PROXY_FLAGS_NONE,
                                                              name,
                                                              GDM_SLAVE_PATH,
                                                              NULL,

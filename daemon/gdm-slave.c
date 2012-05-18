@@ -88,6 +88,8 @@ struct GdmSlavePrivate
 
         Display         *server_display;
 
+        char            *session_id;
+
         /* cached display values */
         char            *display_id;
         char            *display_name;
@@ -104,10 +106,12 @@ struct GdmSlavePrivate
 
         GdmDBusDisplay  *display_proxy;
         GDBusConnection *connection;
+        GdmDBusSlave    *skeleton;
 };
 
 enum {
         PROP_0,
+        PROP_SESSION_ID,
         PROP_DISPLAY_ID,
         PROP_DISPLAY_NAME,
         PROP_DISPLAY_NUMBER,
@@ -131,6 +135,17 @@ static void     gdm_slave_finalize      (GObject       *object);
 G_DEFINE_ABSTRACT_TYPE (GdmSlave, gdm_slave, G_TYPE_OBJECT)
 
 #define CURSOR_WATCH XC_watch
+
+GQuark
+gdm_slave_error_quark (void)
+{
+        static GQuark ret = 0;
+        if (ret == 0) {
+                ret = g_quark_from_static_string ("gdm-slave-error-quark");
+        }
+
+        return ret;
+}
 
 static void
 gdm_slave_whack_temp_auth_file (GdmSlave *slave)
@@ -1709,6 +1724,14 @@ gdm_slave_switch_to_user_session (GdmSlave   *slave,
 }
 
 static void
+_gdm_slave_set_session_id (GdmSlave   *slave,
+                           const char *id)
+{
+        g_free (slave->priv->session_id);
+        slave->priv->session_id = g_strdup (id);
+}
+
+static void
 _gdm_slave_set_display_id (GdmSlave   *slave,
                            const char *id)
 {
@@ -1773,6 +1796,9 @@ gdm_slave_set_property (GObject      *object,
         self = GDM_SLAVE (object);
 
         switch (prop_id) {
+        case PROP_SESSION_ID:
+                _gdm_slave_set_session_id (self, g_value_get_string (value));
+                break;
         case PROP_DISPLAY_ID:
                 _gdm_slave_set_display_id (self, g_value_get_string (value));
                 break;
@@ -1811,6 +1837,9 @@ gdm_slave_get_property (GObject    *object,
         self = GDM_SLAVE (object);
 
         switch (prop_id) {
+        case PROP_SESSION_ID:
+                g_value_set_string (value, self->priv->session_id);
+                break;
         case PROP_DISPLAY_ID:
                 g_value_set_string (value, self->priv->display_id);
                 break;
@@ -1839,6 +1868,40 @@ gdm_slave_get_property (GObject    *object,
 }
 
 static gboolean
+handle_open_session (GdmDBusSlave          *skeleton,
+                     GDBusMethodInvocation *invocation,
+                     GdmSlave              *slave)
+{
+        GError        *error;
+        GdmSlaveClass *slave_class;
+        char          *address;
+
+        slave_class = GDM_SLAVE_GET_CLASS (slave);
+        if (slave_class->open_session == NULL) {
+                g_dbus_method_invocation_return_dbus_error (invocation,
+                                                            "org.gnome.DisplayManager.Slave.Unsupported",
+                                                            "Connections to the slave are not supported by this slave");
+                return TRUE;
+        }
+
+        error = NULL;
+        address = NULL;
+        if (!slave_class->open_session (slave,
+                                        &address,
+                                        &error)) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+                return TRUE;
+        }
+
+        gdm_dbus_slave_complete_open_session (skeleton, invocation, address);
+
+        g_free (address);
+
+        return TRUE;
+}
+
+static gboolean
 register_slave (GdmSlave *slave)
 {
         GError *error;
@@ -1852,6 +1915,22 @@ register_slave (GdmSlave *slave)
                 g_error_free (error);
                 exit (1);
         }
+
+        slave->priv->skeleton = GDM_DBUS_SLAVE (gdm_dbus_slave_skeleton_new ());
+
+        g_signal_connect (slave->priv->skeleton,
+                          "handle-open-session",
+                          G_CALLBACK (handle_open_session),
+                          slave);
+
+        g_object_bind_property (G_OBJECT (slave),
+                                "session-id",
+                                G_OBJECT (slave->priv->skeleton),
+                                "session-id",
+                                G_BINDING_DEFAULT);
+
+        gdm_slave_export_interface (slave,
+                                    G_DBUS_INTERFACE_SKELETON (slave->priv->skeleton));
 
         return TRUE;
 }
@@ -1892,6 +1971,13 @@ gdm_slave_class_init (GdmSlaveClass *klass)
 
         g_type_class_add_private (klass, sizeof (GdmSlavePrivate));
 
+        g_object_class_install_property (object_class,
+                                         PROP_SESSION_ID,
+                                         g_param_spec_string ("session-id",
+                                                              "Session id",
+                                                              "ID of session",
+                                                              NULL,
+                                                              G_PARAM_READWRITE));
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_ID,
                                          g_param_spec_string ("display-id",

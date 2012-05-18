@@ -39,6 +39,7 @@
 
 #include "gdm-common.h"
 
+#include "gdm-session.h"
 #include "gdm-welcome-session.h"
 #include "gdm-chooser-session.h"
 
@@ -78,9 +79,7 @@ gdm_chooser_session_new (const char *display_name,
 
         object = g_object_new (GDM_TYPE_CHOOSER_SESSION,
                                "command", LIBEXECDIR "/gdm-simple-chooser",
-                               "server-dbus-path", GDM_CHOOSER_SERVER_DBUS_PATH,
-                               "server-dbus-interface", GDM_CHOOSER_SERVER_DBUS_INTERFACE,
-                               "server-env-var-name", "GDM_CHOOSER_DBUS_ADDRESS",
+                               "verification-mode", GDM_SESSION_VERIFICATION_MODE_CHOOSER,
                                "x11-display-name", display_name,
                                "x11-display-device", display_device,
                                "x11-display-hostname", display_hostname,

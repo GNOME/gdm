@@ -23,6 +23,7 @@
 #define __GDM_WELCOME_SESSION_H
 
 #include <glib-object.h>
+#include "gdm-session.h"
 
 G_BEGIN_DECLS
 
@@ -51,6 +52,7 @@ typedef struct
 
 
         /* signals */
+        void (* opened)            (GdmWelcomeSession  *welcome_session);
         void (* started)           (GdmWelcomeSession  *welcome_session);
         void (* stopped)           (GdmWelcomeSession  *welcome_session);
         void (* exited)            (GdmWelcomeSession  *welcome_session,
@@ -61,10 +63,10 @@ typedef struct
 
 GType                 gdm_welcome_session_get_type           (void);
 
-void                  gdm_welcome_session_set_server_address (GdmWelcomeSession *welcome_session,
-                                                              const char        *server_address);
 gboolean              gdm_welcome_session_start              (GdmWelcomeSession *welcome_session);
 gboolean              gdm_welcome_session_stop               (GdmWelcomeSession *welcome_session);
+GdmSession *          gdm_welcome_session_get_session        (GdmWelcomeSession *welcome_session);
+char *                gdm_welcome_session_get_session_id     (GdmWelcomeSession *welcome_session);
 
 G_END_DECLS
 

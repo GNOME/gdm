@@ -33,12 +33,19 @@ BUILT_SOURCES =					\
 	gdm-xdmcp-chooser-slave-glue.h		\
 	gdm-display-glue.h			\
 	gdm-xdmcp-display-glue.h		\
+	gdm-manager-glue.h			\
 	gdm-static-display-glue.h		\
 	gdm-transient-display-glue.h		\
 	gdm-local-display-factory-glue.h	\
-	gdm-greeter-glue.h			\
 	gdm-session-glue.h			\
+	gdm-session-enum-types.h		\
 	$(NULL)
+
+gdm-session-enum-types.h: gdm-session-enum-types.h.in gdm-session.h
+	$(AM_V_GEN) glib-mkenums --template $^ > $@
+
+gdm-session-enum-types.c: gdm-session-enum-types.c.in gdm-session.h
+	$(AM_V_GEN) glib-mkenums --template $^ > $@
 
 gdm-display-glue.c gdm-display-glue.h: gdm-display.xml Makefile.am
 	$(AM_V_GEN)gdbus-codegen 					\
@@ -75,19 +82,19 @@ gdm-local-display-factory-glue.c gdm-local-display-factory-glue.h : gdm-local-di
 		--generate-c-code=gdm-local-display-factory-glue	\
 		$(srcdir)/gdm-local-display-factory.xml
 
+gdm-manager-glue.c gdm-manager-glue.h : gdm-manager.xml Makefile.am
+	$(AM_V_GEN)gdbus-codegen 					\
+		--c-namespace=GdmDBus					\
+		--interface-prefix=org.gnome.DisplayManager		\
+		--generate-c-code=gdm-manager-glue			\
+		$(srcdir)/gdm-manager.xml
+
 gdm-session-glue.c gdm-session-glue.h : gdm-session.xml Makefile.am
 	$(AM_V_GEN)gdbus-codegen 					\
 		--c-namespace=GdmDBus					\
 		--interface-prefix=org.gnome.DisplayManager		\
 		--generate-c-code=gdm-session-glue			\
 		$(srcdir)/gdm-session.xml
-
-gdm-greeter-glue.c gdm-greeter-glue.h : gdm-greeter-server.xml Makefile.am
-	$(AM_V_GEN)gdbus-codegen 					\
-		--c-namespace=GdmDBus					\
-		--interface-prefix=org.gnome.DisplayManager		\
-		--generate-c-code=gdm-greeter-glue			\
-		$(srcdir)/gdm-greeter-server.xml
 
 gdm-slave-glue.c gdm-slave-glue.h: gdm-slave.xml Makefile.am
 	$(AM_V_GEN)gdbus-codegen 					\
@@ -104,32 +111,6 @@ gdm-xdmcp-chooser-slave-glue.c gdm-xdmcp-chooser-slave-glue.h: gdm-xdmcp-chooser
 		$(srcdir)/gdm-xdmcp-chooser-slave.xml
 
 noinst_PROGRAMS = 		\
-	test-session		\
-	$(NULL)
-
-test_session_SOURCES = 		\
-	test-session.c	 	\
-	gdm-session.c		\
-	gdm-session.h		\
-	gdm-session-record.c	\
-	gdm-session-record.h	\
-	gdm-session-worker-job.c\
-	gdm-dbus-util.c		\
-	gdm-dbus-util.h		\
-	$(NULL)
-
-nodist_test_session_SOURCES = 	\
-	gdm-session-glue.c	\
-	gdm-session-glue.h	\
-	$(NULL)
-
-test_session_LDADD =		\
-	$(top_builddir)/common/libgdmcommon.la	\
-	$(XLIB_LIBS)		\
-	$(EXTRA_DAEMON_LIBS)	\
-	$(DAEMON_LIBS)		\
-	$(PAM_LIBS)		\
-	$(LIBXKLAVIER_LIBS)	\
 	$(NULL)
 
 libexec_PROGRAMS = 			\
@@ -145,8 +126,6 @@ endif
 
 gdm_simple_slave_SOURCES = 		\
 	simple-slave-main.c 		\
-	gdm-greeter-server.c		\
-	gdm-greeter-server.h		\
 	gdm-welcome-session.c		\
 	gdm-welcome-session.h		\
 	gdm-greeter-session.c		\
@@ -174,6 +153,8 @@ nodist_gdm_simple_slave_SOURCES = 	\
 	gdm-greeter-glue.h		\
 	gdm-display-glue.c		\
 	gdm-display-glue.h		\
+	gdm-session-enum-types.c	\
+	gdm-session-enum-types.h	\
 	gdm-session-glue.c		\
 	gdm-session-glue.h		\
 	gdm-slave-glue.c		\
@@ -195,8 +176,6 @@ gdm_simple_slave_LDADD = 			\
 
 gdm_xdmcp_chooser_slave_SOURCES = 		\
 	xdmcp-chooser-slave-main.c 		\
-	gdm-chooser-server.c			\
-	gdm-chooser-server.h			\
 	gdm-session.c				\
 	gdm-session.h				\
 	gdm-session-record.c			\
@@ -220,6 +199,8 @@ gdm_xdmcp_chooser_slave_SOURCES = 		\
 nodist_gdm_xdmcp_chooser_slave_SOURCES = 	\
 	gdm-session-glue.c			\
 	gdm-session-glue.h			\
+	gdm-session-enum-types.c		\
+	gdm-session-enum-types.h		\
 	gdm-display-glue.c			\
 	gdm-display-glue.h			\
 	gdm-slave-glue.c			\
@@ -250,6 +231,8 @@ gdm_session_worker_SOURCES = 			\
 nodist_gdm_session_worker_SOURCES =		\
 	gdm-session-glue.h			\
 	gdm-session-glue.c			\
+	gdm-session-enum-types.c		\
+	gdm-session-enum-types.h		\
 	$(NULL)
 
 if HAVE_LIBAUDIT
@@ -297,6 +280,8 @@ gdm_binary_SOURCES = 			\
 	gdm-manager.h			\
 	gdm-slave-proxy.c		\
 	gdm-slave-proxy.h		\
+	gdm-dbus-util.c			\
+	gdm-dbus-util.h			\
 	$(NULL)
 
 nodist_gdm_binary_SOURCES = 			\
@@ -304,10 +289,14 @@ nodist_gdm_binary_SOURCES = 			\
 	gdm-display-glue.c			\
 	gdm-local-display-factory-glue.h	\
 	gdm-local-display-factory-glue.c	\
+	gdm-manager-glue.h			\
+	gdm-manager-glue.c			\
 	gdm-transient-display-glue.h		\
 	gdm-transient-display-glue.c		\
 	gdm-static-display-glue.h		\
 	gdm-static-display-glue.c		\
+	gdm-slave-glue.h			\
+	gdm-slave-glue.c			\
 	$(NULL)
 
 XDMCP_SOURCES =				\
@@ -371,8 +360,8 @@ gdm: $(srcdir)/gdm.in
 CLEANFILES =					\
 	gdm					\
 	gdm-display-glue.c			\
-	gdm-greeter-glue.c			\
 	gdm-local-display-factory-glue.c	\
+	gdm-manager-glue.c			\
 	gdm-session-glue.c			\
 	gdm-slave-glue.c			\
 	gdm-static-display-glue.c		\
@@ -384,7 +373,6 @@ CLEANFILES =					\
 
 EXTRA_DIST = 				\
 	gdm.in				\
-	gdm-greeter-server.xml		\
 	gdm-slave.xml			\
 	gdm-simple-slave.xml		\
 	gdm-xdmcp-chooser-slave.xml	\

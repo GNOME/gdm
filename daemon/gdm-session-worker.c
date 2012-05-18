@@ -122,6 +122,7 @@ struct GdmSessionWorkerPrivate
         char             *username;
         char             *log_file;
         char             *session_type;
+        char             *session_id;
         uid_t             uid;
         gid_t             gid;
         gboolean          password_is_required;
@@ -134,9 +135,9 @@ struct GdmSessionWorkerPrivate
         guint32           is_program_session : 1;
         guint             state_change_idle_id;
 
-        char             *server_address;
-        GDBusConnection  *connection;
-        GdmDBusSession   *session_proxy;
+        char                 *server_address;
+        GDBusConnection      *connection;
+        GdmDBusWorkerManager *manager;
 
         GdmSessionAuditor  *auditor;
         GdmSessionSettings *user_settings;
@@ -336,6 +337,51 @@ close_ck_session (GdmSessionWorker *worker)
 out:
         g_clear_pointer (&worker->priv->session_cookie,
                          (GDestroyNotify) g_free);
+}
+
+static char *
+get_ck_session_id (GdmSessionWorker *worker)
+{
+        GDBusConnection  *system_bus;
+        GVariant         *reply;
+        GError           *error = NULL;
+        char             *session_id = NULL;
+
+        error = NULL;
+        system_bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
+
+        if (system_bus == NULL) {
+                g_warning ("Couldn't create connection to system bus: %s",
+                           error->message);
+
+                g_error_free (error);
+                goto out;
+        }
+
+        reply = g_dbus_connection_call_sync (system_bus,
+                                             "org.freedesktop.ConsoleKit",
+                                             "/org/freedesktop/ConsoleKit/Manager",
+                                             "org.freedesktop.ConsoleKit.Manager",
+                                             "GetCurrentSession",
+                                             NULL,
+                                             G_VARIANT_TYPE ("(o)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL,
+                                             &error);
+
+        if (reply == NULL) {
+                g_warning ("%s", error->message);
+                g_clear_error (&error);
+                goto out;
+        }
+
+        g_variant_get (reply, "(o)", &session_id);
+
+        g_variant_unref (reply);
+
+out:
+        return session_id;
 }
 #endif
 
@@ -584,10 +630,11 @@ gdm_session_worker_update_username (GdmSessionWorker *worker)
                 worker->priv->username = username;
                 username = NULL;
 
-                gdm_dbus_session_call_username_changed_sync (worker->priv->session_proxy,
-                                                             worker->priv->service,
-                                                             worker->priv->username,
-                                                             NULL, NULL);
+                gdm_dbus_worker_manager_call_username_changed_sync (worker->priv->manager,
+                                                                    worker->priv->service,
+                                                                    worker->priv->username,
+                                                                    NULL,
+                                                                    NULL);
 
                 /* We have a new username to try. If we haven't been able to
                  * read user settings up until now, then give it a go now
@@ -609,11 +656,12 @@ gdm_session_worker_ask_question (GdmSessionWorker *worker,
                                  const char       *question,
                                  char            **answerp)
 {
-        return gdm_dbus_session_call_info_query_sync (worker->priv->session_proxy,
-                                                      worker->priv->service,
-                                                      question,
-                                                      answerp,
-                                                      NULL, NULL);
+        return gdm_dbus_worker_manager_call_info_query_sync (worker->priv->manager,
+                                                             worker->priv->service,
+                                                             question,
+                                                             answerp,
+                                                             NULL,
+                                                             NULL);
 }
 
 static gboolean
@@ -621,31 +669,34 @@ gdm_session_worker_ask_for_secret (GdmSessionWorker *worker,
                                    const char       *question,
                                    char            **answerp)
 {
-        return gdm_dbus_session_call_secret_info_query_sync (worker->priv->session_proxy,
-                                                             worker->priv->service,
-                                                             question,
-                                                             answerp,
-                                                             NULL, NULL);
+        return gdm_dbus_worker_manager_call_secret_info_query_sync (worker->priv->manager,
+                                                                    worker->priv->service,
+                                                                    question,
+                                                                    answerp,
+                                                                    NULL,
+                                                                    NULL);
 }
 
 static gboolean
 gdm_session_worker_report_info (GdmSessionWorker *worker,
                                 const char       *info)
 {
-        return gdm_dbus_session_call_info_sync (worker->priv->session_proxy,
-                                                worker->priv->service,
-                                                info,
-                                                NULL, NULL);
+        return gdm_dbus_worker_manager_call_info_sync (worker->priv->manager,
+                                                       worker->priv->service,
+                                                       info,
+                                                       NULL,
+                                                       NULL);
 }
 
 static gboolean
 gdm_session_worker_report_problem (GdmSessionWorker *worker,
                                    const char       *problem)
 {
-        return gdm_dbus_session_call_problem_sync (worker->priv->session_proxy,
-                                                   worker->priv->service,
-                                                   problem,
-                                                   NULL, NULL);
+        return gdm_dbus_worker_manager_call_problem_sync (worker->priv->manager,
+                                                          worker->priv->service,
+                                                          problem,
+                                                          NULL,
+                                                          NULL);
 }
 
 static char *
@@ -720,9 +771,10 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
         }
 
         if (worker->priv->timed_out) {
-                gdm_dbus_session_call_cancel_pending_query_sync (worker->priv->session_proxy,
-                                                                 worker->priv->service,
-                                                                 NULL, NULL);
+                gdm_dbus_worker_manager_call_cancel_pending_query_sync (worker->priv->manager,
+                                                                        worker->priv->service,
+                                                                        NULL,
+                                                                        NULL);
                 worker->priv->timed_out = FALSE;
         }
 
@@ -1504,10 +1556,11 @@ session_worker_child_watch (GPid              pid,
 
         gdm_session_worker_uninitialize_pam (worker, PAM_SUCCESS);
 
-        gdm_dbus_session_call_session_exited_sync (worker->priv->session_proxy,
-                                                   worker->priv->service,
-                                                   status,
-                                                   NULL, NULL);
+        gdm_dbus_worker_manager_call_session_exited_sync (worker->priv->manager,
+                                                          worker->priv->service,
+                                                          status,
+                                                          NULL,
+                                                          NULL);
 
         worker->priv->child_pid = -1;
 }
@@ -1812,6 +1865,7 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
 {
         int error_code;
         int flags;
+        char *session_id;
 
         g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED);
         g_assert (geteuid () == 0);
@@ -1834,6 +1888,21 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
 
         g_debug ("GdmSessionWorker: state SESSION_OPENED");
         worker->priv->state = GDM_SESSION_WORKER_STATE_SESSION_OPENED;
+
+#ifdef WITH_SYSTEMD
+        session_id = gdm_session_worker_get_environment_variable (worker, "XDG_SESSION_ID");
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+        if (session_id == NULL) {
+                session_id = get_ck_session_id (worker);
+        }
+#endif
+
+        if (session_id != NULL) {
+                g_free (worker->priv->session_id);
+                worker->priv->session_id = session_id;
+        }
 
  out:
         if (error_code != PAM_SUCCESS) {
@@ -1896,19 +1965,19 @@ gdm_session_worker_get_property (GObject    *object,
 }
 
 static void
-on_set_environment_variable (GdmDBusSession   *proxy,
-                             const char       *key,
-                             const char       *value,
-                             GdmSessionWorker *worker)
+on_set_environment_variable (GdmDBusWorkerManager *proxy,
+                             const char           *key,
+                             const char           *value,
+                             GdmSessionWorker     *worker)
 {
         g_debug ("GdmSessionWorker: set env: %s = %s", key, value);
         gdm_session_worker_set_environment_variable (worker, key, value);
 }
 
 static void
-on_set_session_name (GdmDBusSession   *proxy,
-                     const char       *session_name,
-                     GdmSessionWorker *worker)
+on_set_session_name (GdmDBusWorkerManager *proxy,
+                     const char           *session_name,
+                     GdmSessionWorker     *worker)
 {
         g_debug ("GdmSessionWorker: session name set to %s", session_name);
         gdm_session_settings_set_session_name (worker->priv->user_settings,
@@ -1916,9 +1985,9 @@ on_set_session_name (GdmDBusSession   *proxy,
 }
 
 static void
-on_set_session_type (GdmDBusSession   *proxy,
-                     const char       *session_type,
-                     GdmSessionWorker *worker)
+on_set_session_type (GdmDBusWorkerManager *proxy,
+                     const char           *session_type,
+                     GdmSessionWorker     *worker)
 {
         g_debug ("GdmSessionWorker: session type set to %s", session_type);
         g_free (worker->priv->session_type);
@@ -1926,9 +1995,9 @@ on_set_session_type (GdmDBusSession   *proxy,
 }
 
 static void
-on_set_language_name (GdmDBusSession   *proxy,
-                      const char       *language_name,
-                      GdmSessionWorker *worker)
+on_set_language_name (GdmDBusWorkerManager *proxy,
+                      const char           *language_name,
+                      GdmSessionWorker     *worker)
 {
         g_debug ("GdmSessionWorker: language name set to %s", language_name);
         gdm_session_settings_set_language_name (worker->priv->user_settings,
@@ -1943,9 +2012,10 @@ on_saved_language_name_read (GdmSessionWorker *worker)
         language_name = gdm_session_settings_get_language_name (worker->priv->user_settings);
 
         g_debug ("GdmSessionWorker: Saved language is %s", language_name);
-        gdm_dbus_session_call_saved_language_name_read_sync (worker->priv->session_proxy,
-                                                             language_name,
-                                                             NULL, NULL);
+        gdm_dbus_worker_manager_call_saved_language_name_read_sync (worker->priv->manager,
+                                                                    language_name,
+                                                                    NULL,
+                                                                    NULL);
         g_free (language_name);
 }
 
@@ -1957,9 +2027,10 @@ on_saved_session_name_read (GdmSessionWorker *worker)
         session_name = gdm_session_settings_get_session_name (worker->priv->user_settings);
 
         g_debug ("GdmSessionWorker: Saved session is %s", session_name);
-        gdm_dbus_session_call_saved_session_name_read_sync (worker->priv->session_proxy,
-                                                            session_name,
-                                                            NULL, NULL);
+        gdm_dbus_worker_manager_call_saved_session_name_read_sync (worker->priv->manager,
+                                                                   session_name,
+                                                                   NULL,
+                                                                   NULL);
         g_free (session_name);
 }
 
@@ -1983,15 +2054,17 @@ do_setup (GdmSessionWorker *worker)
                 if (g_error_matches (error,
                                      GDM_SESSION_WORKER_ERROR,
                                      GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE)) {
-                        gdm_dbus_session_call_service_unavailable_sync (worker->priv->session_proxy,
+                        gdm_dbus_worker_manager_call_service_unavailable_sync (worker->priv->manager,
+                                                                               worker->priv->service,
+                                                                               error->message,
+                                                                               NULL,
+                                                                               NULL);
+                } else {
+                        gdm_dbus_worker_manager_call_setup_failed_sync (worker->priv->manager,
                                                                         worker->priv->service,
                                                                         error->message,
-                                                                        NULL, NULL);
-                } else {
-                        gdm_dbus_session_call_setup_failed_sync (worker->priv->session_proxy,
-                                                                 worker->priv->service,
-                                                                 error->message,
-                                                                 NULL, NULL);
+                                                                        NULL,
+                                                                        NULL);
                 }
                 g_error_free (error);
                 return;
@@ -2009,9 +2082,10 @@ do_setup (GdmSessionWorker *worker)
                                               G_CALLBACK (on_saved_language_name_read),
                                               worker);
 
-        gdm_dbus_session_call_setup_complete_sync (worker->priv->session_proxy,
-                                                   worker->priv->service,
-                                                   NULL, NULL);
+        gdm_dbus_worker_manager_call_setup_complete_sync (worker->priv->manager,
+                                                          worker->priv->service,
+                                                          NULL,
+                                                          NULL);
 }
 
 static void
@@ -2031,16 +2105,18 @@ do_authenticate (GdmSessionWorker *worker)
                                      GDM_SESSION_WORKER_ERROR,
                                      GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE)) {
                         g_debug ("GdmSessionWorker: Unable to use authentication service");
-                        gdm_dbus_session_call_service_unavailable_sync (worker->priv->session_proxy,
-                                                                        worker->priv->service,
-                                                                        error->message,
-                                                                        NULL, NULL);
+                        gdm_dbus_worker_manager_call_service_unavailable_sync (worker->priv->manager,
+                                                                               worker->priv->service,
+                                                                               error->message,
+                                                                               NULL,
+                                                                               NULL);
                 } else {
                         g_debug ("GdmSessionWorker: Unable to verify user");
-                        gdm_dbus_session_call_authentication_failed_sync (worker->priv->session_proxy,
-                                                                          worker->priv->service,
-                                                                          error->message,
-                                                                          NULL, NULL);
+                        gdm_dbus_worker_manager_call_authentication_failed_sync (worker->priv->manager,
+                                                                                 worker->priv->service,
+                                                                                 error->message,
+                                                                                 NULL,
+                                                                                 NULL);
                 }
                 g_error_free (error);
                 return;
@@ -2054,9 +2130,10 @@ do_authenticate (GdmSessionWorker *worker)
                 gdm_session_worker_update_username (worker);
         }
 
-        gdm_dbus_session_call_authenticated_sync (worker->priv->session_proxy,
-                                                  worker->priv->service,
-                                                  NULL, NULL);
+        gdm_dbus_worker_manager_call_authenticated_sync (worker->priv->manager,
+                                                         worker->priv->service,
+                                                         NULL,
+                                                         NULL);
 }
 
 static void
@@ -2072,17 +2149,19 @@ do_authorize (GdmSessionWorker *worker)
                                                  worker->priv->password_is_required,
                                                  &error);
         if (! res) {
-                gdm_dbus_session_call_authorization_failed_sync (worker->priv->session_proxy,
-                                                                 worker->priv->service,
-                                                                 error->message,
-                                                                 NULL, NULL);
+                gdm_dbus_worker_manager_call_authorization_failed_sync (worker->priv->manager,
+                                                                        worker->priv->service,
+                                                                        error->message,
+                                                                        NULL,
+                                                                        NULL);
                 g_error_free (error);
                 return;
         }
 
-        gdm_dbus_session_call_authorized_sync (worker->priv->session_proxy,
-                                               worker->priv->service,
-                                               NULL, NULL);
+        gdm_dbus_worker_manager_call_authorized_sync (worker->priv->manager,
+                                                      worker->priv->service,
+                                                      NULL,
+                                                      NULL);
 }
 
 static void
@@ -2097,17 +2176,19 @@ do_accredit (GdmSessionWorker *worker)
         res = gdm_session_worker_accredit_user (worker, &error);
 
         if (! res) {
-                gdm_dbus_session_call_accreditation_failed_sync (worker->priv->session_proxy,
-                                                                 worker->priv->service,
-                                                                 error->message,
-                                                                 NULL, NULL);
+                gdm_dbus_worker_manager_call_accreditation_failed_sync (worker->priv->manager,
+                                                                        worker->priv->service,
+                                                                        error->message,
+                                                                        NULL,
+                                                                        NULL);
                 g_error_free (error);
                 return;
         }
 
-        gdm_dbus_session_call_accredited_sync (worker->priv->session_proxy,
-                                               worker->priv->service,
-                                               NULL, NULL);
+        gdm_dbus_worker_manager_call_accredited_sync (worker->priv->manager,
+                                                      worker->priv->service,
+                                                      NULL,
+                                                      NULL);
 }
 
 static void
@@ -2177,17 +2258,21 @@ do_open_session (GdmSessionWorker *worker)
         error = NULL;
         res = gdm_session_worker_open_session (worker, &error);
         if (! res) {
-                gdm_dbus_session_call_open_failed_sync (worker->priv->session_proxy,
-                                                        worker->priv->service,
-                                                        error->message,
-                                                        NULL, NULL);
+                gdm_dbus_worker_manager_call_open_failed_sync (worker->priv->manager,
+                                                               worker->priv->service,
+                                                               error->message,
+                                                               NULL,
+                                                               NULL);
                 g_error_free (error);
                 return;
         }
 
-        gdm_dbus_session_call_opened_sync (worker->priv->session_proxy,
-                                           worker->priv->service,
-                                           NULL, NULL);
+        gdm_dbus_worker_manager_call_opened_sync (worker->priv->manager,
+                                                  worker->priv->service,
+                                                  worker->priv->session_id ?
+                                                  worker->priv->session_id : "",
+                                                  NULL,
+                                                  NULL);
 }
 
 static void
@@ -2199,18 +2284,20 @@ do_start_session (GdmSessionWorker *worker)
         error = NULL;
         res = gdm_session_worker_start_session (worker, &error);
         if (! res) {
-                gdm_dbus_session_call_session_start_failed_sync (worker->priv->session_proxy,
-                                                                 worker->priv->service,
-                                                                 error->message,
-                                                                 NULL, NULL);
+                gdm_dbus_worker_manager_call_session_start_failed_sync (worker->priv->manager,
+                                                                        worker->priv->service,
+                                                                        error->message,
+                                                                        NULL,
+                                                                        NULL);
                 g_error_free (error);
                 return;
         }
 
-        gdm_dbus_session_call_session_started_sync (worker->priv->session_proxy,
-                                                    worker->priv->service,
-                                                    worker->priv->child_pid,
-                                                    NULL, NULL);
+        gdm_dbus_worker_manager_call_session_started_sync (worker->priv->manager,
+                                                           worker->priv->service,
+                                                           worker->priv->child_pid,
+                                                           NULL,
+                                                           NULL);
 }
 
 static const char *
@@ -2304,9 +2391,9 @@ queue_state_change (GdmSessionWorker *worker)
 }
 
 static void
-on_start_program (GdmDBusSession   *proxy,
-                  const char       *text,
-                  GdmSessionWorker *worker)
+on_start_program (GdmDBusWorkerManager *proxy,
+                  const char           *text,
+                  GdmSessionWorker     *worker)
 {
         GError *parse_error = NULL;
 
@@ -2328,14 +2415,14 @@ on_start_program (GdmDBusSession   *proxy,
 }
 
 static void
-on_setup (GdmDBusSession   *proxy,
-          const char       *service,
-          const char       *x11_display_name,
-          const char       *x11_authority_file,
-          const char       *console,
-          const char       *seat_id,
-          const char       *hostname,
-          GdmSessionWorker *worker)
+on_setup (GdmDBusWorkerManager *proxy,
+          const char           *service,
+          const char           *x11_display_name,
+          const char           *x11_authority_file,
+          const char           *console,
+          const char           *seat_id,
+          const char           *hostname,
+          GdmSessionWorker     *worker)
 {
         if (worker->priv->state != GDM_SESSION_WORKER_STATE_NONE) {
                 g_debug ("GdmSessionWorker: ignoring spurious setup while in state %s", get_state_name (worker->priv->state));
@@ -2355,15 +2442,15 @@ on_setup (GdmDBusSession   *proxy,
 }
 
 static void
-on_setup_for_user (GdmDBusSession   *proxy,
-                   const char       *service,
-                   const char       *username,
-                   const char       *x11_display_name,
-                   const char       *x11_authority_file,
-                   const char       *console,
-                   const char       *seat_id,
-                   const char       *hostname,
-                   GdmSessionWorker *worker)
+on_setup_for_user (GdmDBusWorkerManager *proxy,
+                   const char           *service,
+                   const char           *username,
+                   const char           *x11_display_name,
+                   const char           *x11_authority_file,
+                   const char           *console,
+                   const char           *seat_id,
+                   const char           *hostname,
+                   GdmSessionWorker     *worker)
 {
         if (worker->priv->state != GDM_SESSION_WORKER_STATE_NONE) {
                 g_debug ("GdmSessionWorker: ignoring spurious setup while in state %s", get_state_name (worker->priv->state));
@@ -2402,15 +2489,15 @@ on_setup_for_user (GdmDBusSession   *proxy,
 }
 
 static void
-on_setup_for_program (GdmDBusSession   *proxy,
-                      const char       *service,
-                      const char       *x11_display_name,
-                      const char       *x11_authority_file,
-                      const char       *console,
-                      const char       *seat_id,
-                      const char       *hostname,
-                      const char       *log_file,
-                      GdmSessionWorker *worker)
+on_setup_for_program (GdmDBusWorkerManager *proxy,
+                      const char           *service,
+                      const char           *x11_display_name,
+                      const char           *x11_authority_file,
+                      const char           *console,
+                      const char           *seat_id,
+                      const char           *hostname,
+                      const char           *log_file,
+                      GdmSessionWorker     *worker)
 {
         if (worker->priv->state != GDM_SESSION_WORKER_STATE_NONE) {
                 g_debug ("GdmSessionWorker: ignoring spurious setup while in state %s", get_state_name (worker->priv->state));
@@ -2431,9 +2518,9 @@ on_setup_for_program (GdmDBusSession   *proxy,
 }
 
 static void
-on_authenticate (GdmDBusSession   *session,
-                 const char       *service_name,
-                 GdmSessionWorker *worker)
+on_authenticate (GdmDBusWorkerManager *manager,
+                 const char           *service_name,
+                 GdmSessionWorker     *worker)
 {
         if (worker->priv->state != GDM_SESSION_WORKER_STATE_SETUP_COMPLETE) {
                 g_debug ("GdmSessionWorker: ignoring spurious authenticate for user while in state %s", get_state_name (worker->priv->state));
@@ -2444,9 +2531,9 @@ on_authenticate (GdmDBusSession   *session,
 }
 
 static void
-on_authorize (GdmDBusSession   *session,
-              const char       *service_name,
-              GdmSessionWorker *worker)
+on_authorize (GdmDBusWorkerManager *manager,
+              const char           *service_name,
+              GdmSessionWorker     *worker)
 {
         if (worker->priv->state != GDM_SESSION_WORKER_STATE_AUTHENTICATED) {
                 g_debug ("GdmSessionWorker: ignoring spurious authorize for user while in state %s", get_state_name (worker->priv->state));
@@ -2457,9 +2544,9 @@ on_authorize (GdmDBusSession   *session,
 }
 
 static void
-on_establish_credentials (GdmDBusSession   *session,
-                          const char       *service_name,
-                          GdmSessionWorker *worker)
+on_establish_credentials (GdmDBusWorkerManager *manager,
+                          const char           *service_name,
+                          GdmSessionWorker     *worker)
 {
         if (worker->priv->state != GDM_SESSION_WORKER_STATE_AUTHORIZED) {
                 g_debug ("GdmSessionWorker: ignoring spurious establish credentials for user while in state %s", get_state_name (worker->priv->state));
@@ -2472,9 +2559,9 @@ on_establish_credentials (GdmDBusSession   *session,
 }
 
 static void
-on_open_session (GdmDBusSession   *session,
-                 const char       *service_name,
-                 GdmSessionWorker *worker)
+on_open_session (GdmDBusWorkerManager *manager,
+                 const char           *service_name,
+                 GdmSessionWorker     *worker)
 {
         if (worker->priv->state != GDM_SESSION_WORKER_STATE_ACCREDITED) {
                 g_debug ("GdmSessionWorker: ignoring spurious open session for user while in state %s", get_state_name (worker->priv->state));
@@ -2511,66 +2598,66 @@ gdm_session_worker_constructor (GType                  type,
                 exit (1);
         }
 
-        worker->priv->session_proxy = GDM_DBUS_SESSION (gdm_dbus_session_proxy_new_sync (worker->priv->connection,
-                                                                                         G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
-                                                                                         NULL, /* dbus name */
-                                                                                         GDM_SESSION_DBUS_PATH,
-                                                                                         NULL,
-                                                                                         &error));
-        if (worker->priv->session_proxy == NULL) {
+        worker->priv->manager = GDM_DBUS_WORKER_MANAGER (gdm_dbus_worker_manager_proxy_new_sync (worker->priv->connection,
+                                                                                                 G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
+                                                                                                 NULL, /* dbus name */
+                                                                                                 GDM_SESSION_DBUS_PATH,
+                                                                                                 NULL,
+                                                                                                 &error));
+        if (worker->priv->manager == NULL) {
                 g_warning ("error creating session proxy: %s", error->message);
                 g_clear_error (&error);
 
                 exit (1);
         }
 
-        g_dbus_proxy_set_default_timeout (G_DBUS_PROXY (worker->priv->session_proxy), -1);
+        g_dbus_proxy_set_default_timeout (G_DBUS_PROXY (worker->priv->manager), -1);
 
-        g_signal_connect (worker->priv->session_proxy,
+        g_signal_connect (worker->priv->manager,
                           "authenticate",
                           G_CALLBACK (on_authenticate),
                           worker);
-        g_signal_connect (worker->priv->session_proxy,
+        g_signal_connect (worker->priv->manager,
                           "authorize",
                           G_CALLBACK (on_authorize),
                           worker);
-        g_signal_connect (worker->priv->session_proxy,
+        g_signal_connect (worker->priv->manager,
                           "establish-credentials",
                           G_CALLBACK (on_establish_credentials),
                           worker);
-        g_signal_connect (worker->priv->session_proxy,
+        g_signal_connect (worker->priv->manager,
                           "open-session",
                           G_CALLBACK (on_open_session),
                           worker);
-        g_signal_connect (worker->priv->session_proxy,
+        g_signal_connect (worker->priv->manager,
                           "set-environment-variable",
                           G_CALLBACK (on_set_environment_variable),
                           worker);
-        g_signal_connect (worker->priv->session_proxy,
+        g_signal_connect (worker->priv->manager,
                           "set-session-name",
                           G_CALLBACK (on_set_session_name),
                           worker);
-        g_signal_connect (worker->priv->session_proxy,
+        g_signal_connect (worker->priv->manager,
                           "set-language-name",
                           G_CALLBACK (on_set_language_name),
                           worker);
-        g_signal_connect (worker->priv->session_proxy,
+        g_signal_connect (worker->priv->manager,
                           "set-session-type",
                           G_CALLBACK (on_set_session_type),
                           worker);
-        g_signal_connect (worker->priv->session_proxy,
+        g_signal_connect (worker->priv->manager,
                           "setup",
                           G_CALLBACK (on_setup),
                           worker);
-        g_signal_connect (worker->priv->session_proxy,
+        g_signal_connect (worker->priv->manager,
                           "setup-for-user",
                           G_CALLBACK (on_setup_for_user),
                           worker);
-        g_signal_connect (worker->priv->session_proxy,
+        g_signal_connect (worker->priv->manager,
                           "setup-for-program",
                           G_CALLBACK (on_setup_for_program),
                           worker);
-        g_signal_connect (worker->priv->session_proxy,
+        g_signal_connect (worker->priv->manager,
                           "start-program",
                           G_CALLBACK (on_start_program),
                           worker);
@@ -2578,8 +2665,9 @@ gdm_session_worker_constructor (GType                  type,
         /* Send an initial Hello message so that the session can associate
          * the conversation we manage with our pid.
          */
-        gdm_dbus_session_call_hello_sync (worker->priv->session_proxy,
-                                          NULL, NULL);
+        gdm_dbus_worker_manager_call_hello_sync (worker->priv->manager,
+                                                 NULL,
+                                                 NULL);
 
         return G_OBJECT (worker);
 }

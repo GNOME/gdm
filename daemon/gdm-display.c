@@ -41,17 +41,19 @@
 #include "gdm-settings-keys.h"
 
 #include "gdm-slave-proxy.h"
-
-static guint32 display_serial = 1;
+#include "gdm-slave-glue.h"
+#include "gdm-dbus-util.h"
 
 #define GDM_DISPLAY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_DISPLAY, GdmDisplayPrivate))
 
+#define GDM_SLAVE_PATH "/org/gnome/DisplayManager/Slave"
 #define DEFAULT_SLAVE_COMMAND LIBEXECDIR "/gdm-simple-slave"
 
 struct GdmDisplayPrivate
 {
         char                 *id;
         char                 *seat_id;
+        char                 *session_id;
 
         char                 *remote_hostname;
         int                   x11_display_number;
@@ -70,6 +72,7 @@ struct GdmDisplayPrivate
 
         GdmSlaveProxy        *slave_proxy;
         char                 *slave_bus_name;
+        GdmDBusSlave         *slave_bus_proxy;
         int                   slave_name_id;
         GDBusConnection      *connection;
         GdmDisplayAccessFile *user_access_file;
@@ -83,6 +86,7 @@ enum {
         PROP_ID,
         PROP_STATUS,
         PROP_SEAT_ID,
+        PROP_SESSION_ID,
         PROP_REMOTE_HOSTNAME,
         PROP_X11_DISPLAY_NUMBER,
         PROP_X11_DISPLAY_NAME,
@@ -110,20 +114,6 @@ gdm_display_error_quark (void)
         return ret;
 }
 
-static guint32
-get_next_display_serial (void)
-{
-        guint32 serial;
-
-        serial = display_serial++;
-
-        if ((gint32)display_serial < 0) {
-                display_serial = 1;
-        }
-
-        return serial;
-}
-
 time_t
 gdm_display_get_creation_time (GdmDisplay *display)
 {
@@ -138,6 +128,12 @@ gdm_display_get_status (GdmDisplay *display)
         g_return_val_if_fail (GDM_IS_DISPLAY (display), 0);
 
         return display->priv->status;
+}
+
+char *
+gdm_display_get_session_id (GdmDisplay *display)
+{
+        return g_strdup (display->priv->session_id);
 }
 
 static GdmDisplayAccessFile *
@@ -308,6 +304,19 @@ gdm_display_real_set_slave_bus_name (GdmDisplay *display,
                                         on_name_vanished,
                                         g_object_ref (display),
                                         NULL);
+
+        g_clear_object (&display->priv->slave_bus_proxy);
+        display->priv->slave_bus_proxy = GDM_DBUS_SLAVE (gdm_dbus_slave_proxy_new_sync (display->priv->connection,
+                                                                                        G_DBUS_PROXY_FLAGS_NONE,
+                                                                                        name,
+                                                                                        GDM_SLAVE_PATH,
+                                                                                        NULL, NULL));
+        g_object_bind_property (G_OBJECT (display->priv->slave_bus_proxy),
+                                "session-id",
+                                G_OBJECT (display),
+                                "session-id",
+                                G_BINDING_DEFAULT);
+
         return TRUE;
 }
 
@@ -823,6 +832,14 @@ _gdm_display_set_seat_id (GdmDisplay     *display,
 }
 
 static void
+_gdm_display_set_session_id (GdmDisplay     *display,
+                             const char     *session_id)
+{
+        g_free (display->priv->session_id);
+        display->priv->session_id = g_strdup (session_id);
+}
+
+static void
 _gdm_display_set_remote_hostname (GdmDisplay     *display,
                                   const char     *hostname)
 {
@@ -888,6 +905,9 @@ gdm_display_set_property (GObject        *object,
         case PROP_SEAT_ID:
                 _gdm_display_set_seat_id (self, g_value_get_string (value));
                 break;
+        case PROP_SESSION_ID:
+                _gdm_display_set_session_id (self, g_value_get_string (value));
+                break;
         case PROP_REMOTE_HOSTNAME:
                 _gdm_display_set_remote_hostname (self, g_value_get_string (value));
                 break;
@@ -931,6 +951,9 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_SEAT_ID:
                 g_value_set_string (value, self->priv->seat_id);
+                break;
+        case PROP_SESSION_ID:
+                g_value_set_string (value, self->priv->session_id);
                 break;
         case PROP_REMOTE_HOSTNAME:
                 g_value_set_string (value, self->priv->remote_hostname);
@@ -1180,8 +1203,6 @@ handle_remove_user_authorization (GdmDBusDisplay        *skeleton,
         return TRUE;
 }
 
-
-
 static gboolean
 register_display (GdmDisplay *display)
 {
@@ -1231,6 +1252,35 @@ register_display (GdmDisplay *display)
         return TRUE;
 }
 
+char *
+gdm_display_open_session_sync (GdmDisplay    *display,
+                               GCancellable  *cancellable,
+                               GError       **error)
+{
+        char *address;
+        int ret;
+
+        if (display->priv->slave_bus_proxy == NULL) {
+                g_set_error (error,
+                             G_DBUS_ERROR,
+                             G_DBUS_ERROR_ACCESS_DENIED,
+                             _("No session available yet"));
+                return NULL;
+        }
+
+        address = NULL;
+        ret = gdm_dbus_slave_call_open_session_sync (display->priv->slave_bus_proxy,
+                                                     &address,
+                                                     cancellable,
+                                                     error);
+
+        if (!ret) {
+                return NULL;
+        }
+
+        return address;
+}
+
 /*
   dbus-send --system --print-reply --dest=org.gnome.DisplayManager /org/gnome/DisplayManager/Displays/1 org.freedesktop.DBus.Introspectable.Introspect
 */
@@ -1241,14 +1291,21 @@ gdm_display_constructor (GType                  type,
                          GObjectConstructParam *construct_properties)
 {
         GdmDisplay      *display;
+        char            *canonical_display_name;
         gboolean         res;
 
         display = GDM_DISPLAY (G_OBJECT_CLASS (gdm_display_parent_class)->constructor (type,
                                                                                        n_construct_properties,
                                                                                        construct_properties));
 
+        canonical_display_name = g_strdelimit (g_strdup (display->priv->x11_display_name),
+                                               ":" G_STR_DELIMITERS, '_');
+
         g_free (display->priv->id);
-        display->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Displays/%u", get_next_display_serial ());
+        display->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Displays/%s",
+                                             canonical_display_name);
+
+        g_free (canonical_display_name);
 
         res = register_display (display);
         if (! res) {
@@ -1357,6 +1414,13 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               "seat id",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_SESSION_ID,
+                                         g_param_spec_string ("session-id",
+                                                              "session id",
+                                                              "session id",
+                                                              NULL,
+                                                              G_PARAM_READWRITE));
         g_object_class_install_property (object_class,
                                          PROP_X11_COOKIE,
                                          g_param_spec_string ("x11-cookie",

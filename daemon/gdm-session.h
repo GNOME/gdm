@@ -34,6 +34,12 @@ G_BEGIN_DECLS
 
 typedef struct _GdmSessionPrivate GdmSessionPrivate;
 
+typedef enum
+{
+        GDM_SESSION_VERIFICATION_MODE_LOGIN,
+        GDM_SESSION_VERIFICATION_MODE_CHOOSER
+} GdmSessionVerificationMode;
+
 typedef struct
 {
         GObject            parent;
@@ -45,49 +51,20 @@ typedef struct
         GObjectClass parent_class;
 
         /* Signals */
-        void (* setup_complete)              (GdmSession   *session,
-                                              const char   *service_name);
-        void (* setup_failed)                (GdmSession   *session,
-                                              const char   *service_name,
-                                              const char   *message);
-        void (* reset_complete)              (GdmSession   *session);
-        void (* reset_failed)                (GdmSession   *session,
-                                              const char   *message);
-        void (* authenticated)               (GdmSession   *session,
-                                              const char   *service_name);
-        void (* authentication_failed)       (GdmSession   *session,
-                                              const char   *service_name,
-                                              const char   *message);
-        void (* authorized)                  (GdmSession   *session,
-                                              const char   *service_name);
-        void (* authorization_failed)        (GdmSession   *session,
-                                              const char   *service_name,
-                                              const char   *message);
-        void (* accredited)                  (GdmSession   *session,
-                                              const char   *service_name);
-        void (* accreditation_failed)        (GdmSession   *session,
-                                              const char   *service_name,
-                                              const char   *message);
+        void (* client_ready_for_session_to_start) (GdmSession   *session,
+                                                    const char   *service_name,
+                                                    gboolean      client_is_ready);
 
-        void (* info_query)                  (GdmSession   *session,
-                                              const char   *service_name,
-                                              const char   *query_text);
-        void (* secret_info_query)           (GdmSession   *session,
-                                              const char   *service_name,
-                                              const char   *query_text);
-        void (* info)                        (GdmSession   *session,
-                                              const char   *service_name,
-                                              const char   *info);
-        void (* problem)                     (GdmSession   *session,
-                                              const char   *service_name,
-                                              const char   *problem);
+        void (* cancelled)                   (GdmSession   *session);
+        void (* client_connected)            (GdmSession   *session);
+        void (* client_disconnected)         (GdmSession   *session);
+        void (* disconnected)                (GdmSession   *session);
         void (* session_opened)              (GdmSession   *session,
-                                              const char   *service_name);
-        void (* session_open_failed)         (GdmSession   *session,
                                               const char   *service_name,
-                                              const char   *message);
+                                              const char   *session_id);
         void (* session_started)             (GdmSession   *session,
                                               const char   *service_name,
+                                              const char   *session_id,
                                               int           pid);
         void (* session_start_failed)        (GdmSession   *session,
                                               const char   *service_name,
@@ -100,29 +77,25 @@ typedef struct
                                               const char   *service_name);
         void (* conversation_stopped)        (GdmSession   *session,
                                               const char   *service_name);
-        void (* service_unavailable)         (GdmSession   *session,
+        void (* setup_complete)              (GdmSession   *session,
                                               const char   *service_name);
-        void (* selected_user_changed)       (GdmSession   *session,
-                                              const char   *text);
-
-        void (* default_language_name_changed)    (GdmSession   *session,
-                                                   const char   *text);
-        void (* default_session_name_changed)     (GdmSession   *session,
-                                                   const char   *text);
 } GdmSessionClass;
 
 GType            gdm_session_get_type                 (void);
 
-GdmSession      *gdm_session_new                      (const char *display_name,
+GdmSession      *gdm_session_new                      (GdmSessionVerificationMode verification_mode,
+                                                       const char *display_name,
                                                        const char *display_hostname,
                                                        const char *display_device,
                                                        const char *display_seat_id,
                                                        const char *display_x11_authority_file,
                                                        gboolean    display_is_local);
 
+char             *gdm_session_get_server_address          (GdmSession     *session);
 char             *gdm_session_get_username                (GdmSession     *session);
 char             *gdm_session_get_display_device          (GdmSession     *session);
 char             *gdm_session_get_display_seat_id         (GdmSession     *session);
+char             *gdm_session_get_session_id              (GdmSession     *session);
 gboolean          gdm_session_bypasses_xsession           (GdmSession     *session);
 
 void              gdm_session_start_conversation          (GdmSession *session,
@@ -146,8 +119,7 @@ void              gdm_session_authenticate                (GdmSession *session,
 void              gdm_session_authorize                   (GdmSession *session,
                                                            const char *service_name);
 void              gdm_session_accredit                    (GdmSession *session,
-                                                           const char *service_name,
-                                                           int         cred_flag);
+                                                           const char *service_name);
 void              gdm_session_open_session                (GdmSession *session,
                                                            const char *service_name);
 void              gdm_session_start_session               (GdmSession *session,
@@ -168,6 +140,11 @@ void              gdm_session_select_language             (GdmSession *session,
 void              gdm_session_select_user                 (GdmSession *session,
                                                            const char *username);
 void              gdm_session_cancel                      (GdmSession *session);
+void              gdm_session_reset                       (GdmSession *session);
+void              gdm_session_request_timed_login         (GdmSession *session,
+                                                           const char *username,
+                                                           int         delay);
+gboolean          gdm_session_client_is_connected         (GdmSession *session);
 
 G_END_DECLS
 

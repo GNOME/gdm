@@ -46,8 +46,6 @@ typedef struct
 {
         GdmSlaveClass   parent_class;
 
-        void (* hostname_selected)          (GdmXdmcpChooserSlave  *slave,
-                                             const char            *hostname);
 } GdmXdmcpChooserSlaveClass;
 
 GType               gdm_xdmcp_chooser_slave_get_type   (void);

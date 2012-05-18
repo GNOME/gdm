@@ -43,7 +43,7 @@
 
 #include "gdm-common.h"
 
-#include "gdm-session.h"
+#include "gdm-session-enum-types.h"
 #include "gdm-welcome-session.h"
 
 #define DBUS_LAUNCH_COMMAND BINDIR "/dbus-launch"
@@ -56,14 +56,17 @@ extern char **environ;
 
 struct GdmWelcomeSessionPrivate
 {
-        GdmSession       *session;
+        GdmSession     *session;
         char           *command;
         GPid            pid;
+
+        GdmSessionVerificationMode verification_mode;
 
         char           *user_name;
         char           *group_name;
         char           *runtime_dir;
 
+        char           *session_id;
         char           *x11_display_name;
         char           *x11_display_seat_id;
         char           *x11_display_device;
@@ -75,13 +78,13 @@ struct GdmWelcomeSessionPrivate
         char           *dbus_bus_address;
         char           *server_dbus_path;
         char           *server_dbus_interface;
-        char           *server_env_var_name;
 
         char           *server_address;
 };
 
 enum {
         PROP_0,
+        PROP_VERIFICATION_MODE,
         PROP_X11_DISPLAY_NAME,
         PROP_X11_DISPLAY_SEAT_ID,
         PROP_X11_DISPLAY_DEVICE,
@@ -91,14 +94,13 @@ enum {
         PROP_USER_NAME,
         PROP_GROUP_NAME,
         PROP_RUNTIME_DIR,
-        PROP_SERVER_ADDRESS,
         PROP_COMMAND,
         PROP_SERVER_DBUS_PATH,
         PROP_SERVER_DBUS_INTERFACE,
-        PROP_SERVER_ENV_VAR_NAME
 };
 
 enum {
+        OPENED,
         STARTED,
         STOPPED,
         EXITED,
@@ -273,11 +275,6 @@ build_welcome_environment (GdmWelcomeSession *welcome_session,
                 g_hash_table_insert (hash,
                                      g_strdup ("DBUS_SESSION_BUS_ADDRESS"),
                                      g_strdup (welcome_session->priv->dbus_bus_address));
-        }
-        if (welcome_session->priv->server_address != NULL) {
-                g_assert (welcome_session->priv->server_env_var_name != NULL);
-                g_hash_table_insert (hash, g_strdup (welcome_session->priv->server_env_var_name),
-                                     g_strdup (welcome_session->priv->server_address));
         }
 
         g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (welcome_session->priv->x11_authority_file));
@@ -695,39 +692,17 @@ on_session_setup_complete (GdmSession        *session,
         g_hash_table_destroy (hash);
 
         gdm_session_select_session_type (welcome_session->priv->session, "LoginWindow");
-
-        gdm_session_authenticate (welcome_session->priv->session, service_name);
-}
-
-static void
-on_session_authenticated (GdmSession        *session,
-                          const char        *service_name,
-                          GdmWelcomeSession *welcome_session)
-{
-        gdm_session_authorize (welcome_session->priv->session, service_name);
-}
-
-static void
-on_session_authorized (GdmSession        *session,
-                       const char        *service_name,
-                       GdmWelcomeSession *welcome_session)
-{
-        gdm_session_accredit (welcome_session->priv->session, service_name, FALSE);
-}
-
-static void
-on_session_accredited (GdmSession        *session,
-                       const char        *service_name,
-                       GdmWelcomeSession *welcome_session)
-{
-        gdm_session_open_session (welcome_session->priv->session, service_name);
 }
 
 static void
 on_session_opened (GdmSession        *session,
                    const char        *service_name,
+                   const char        *session_id,
                    GdmWelcomeSession *welcome_session)
 {
+        welcome_session->priv->session_id = g_strdup (session_id);
+
+        g_signal_emit (G_OBJECT (welcome_session), signals [OPENED], 0);
         gdm_session_start_session (welcome_session->priv->session, service_name);
 }
 
@@ -818,7 +793,8 @@ gdm_welcome_session_start (GdmWelcomeSession *welcome_session)
                 return FALSE;
         }
 
-        welcome_session->priv->session = gdm_session_new (welcome_session->priv->x11_display_name,
+        welcome_session->priv->session = gdm_session_new (welcome_session->priv->verification_mode,
+                                                          welcome_session->priv->x11_display_name,
                                                           welcome_session->priv->x11_display_hostname,
                                                           welcome_session->priv->x11_display_device,
                                                           welcome_session->priv->x11_display_seat_id,
@@ -836,18 +812,6 @@ gdm_welcome_session_start (GdmWelcomeSession *welcome_session)
         g_signal_connect (welcome_session->priv->session,
                           "setup-complete",
                           G_CALLBACK (on_session_setup_complete),
-                          welcome_session);
-        g_signal_connect (welcome_session->priv->session,
-                          "authenticated",
-                          G_CALLBACK (on_session_authenticated),
-                          welcome_session);
-        g_signal_connect (welcome_session->priv->session,
-                          "authorized",
-                          G_CALLBACK (on_session_authorized),
-                          welcome_session);
-        g_signal_connect (welcome_session->priv->session,
-                          "accredited",
-                          G_CALLBACK (on_session_accredited),
                           welcome_session);
         g_signal_connect (welcome_session->priv->session,
                           "session-opened",
@@ -892,14 +856,23 @@ gdm_welcome_session_stop (GdmWelcomeSession *welcome_session)
         return TRUE;
 }
 
-void
-gdm_welcome_session_set_server_address (GdmWelcomeSession *welcome_session,
-                                        const char        *address)
+GdmSession *
+gdm_welcome_session_get_session (GdmWelcomeSession *welcome_session)
 {
-        g_return_if_fail (GDM_IS_WELCOME_SESSION (welcome_session));
+        return welcome_session->priv->session;
+}
 
-        g_free (welcome_session->priv->server_address);
-        welcome_session->priv->server_address = g_strdup (address);
+char *
+gdm_welcome_session_get_session_id (GdmWelcomeSession *welcome_session)
+{
+        return g_strdup (welcome_session->priv->session_id);
+}
+
+static void
+_gdm_welcome_session_set_verification_mode (GdmWelcomeSession           *welcome_session,
+                                            GdmSessionVerificationMode   verification_mode)
+{
+        welcome_session->priv->verification_mode = verification_mode;
 }
 
 static void
@@ -998,14 +971,6 @@ _gdm_welcome_session_set_command (GdmWelcomeSession *welcome_session,
 }
 
 static void
-_gdm_welcome_session_set_server_env_var_name (GdmWelcomeSession *welcome_session,
-                                              const char        *name)
-{
-        g_free (welcome_session->priv->server_env_var_name);
-        welcome_session->priv->server_env_var_name = g_strdup (name);
-}
-
-static void
 gdm_welcome_session_set_property (GObject      *object,
                                   guint         prop_id,
                                   const GValue *value,
@@ -1016,6 +981,9 @@ gdm_welcome_session_set_property (GObject      *object,
         self = GDM_WELCOME_SESSION (object);
 
         switch (prop_id) {
+        case PROP_VERIFICATION_MODE:
+                _gdm_welcome_session_set_verification_mode (self, g_value_get_enum (value));
+                break;
         case PROP_X11_DISPLAY_NAME:
                 _gdm_welcome_session_set_x11_display_name (self, g_value_get_string (value));
                 break;
@@ -1043,17 +1011,11 @@ gdm_welcome_session_set_property (GObject      *object,
         case PROP_RUNTIME_DIR:
                 _gdm_welcome_session_set_runtime_dir (self, g_value_get_string (value));
                 break;
-        case PROP_SERVER_ADDRESS:
-                gdm_welcome_session_set_server_address (self, g_value_get_string (value));
-                break;
         case PROP_SERVER_DBUS_PATH:
                 _gdm_welcome_session_set_server_dbus_path (self, g_value_get_string (value));
                 break;
         case PROP_SERVER_DBUS_INTERFACE:
                 _gdm_welcome_session_set_server_dbus_interface (self, g_value_get_string (value));
-                break;
-        case PROP_SERVER_ENV_VAR_NAME:
-                _gdm_welcome_session_set_server_env_var_name (self, g_value_get_string (value));
                 break;
         case PROP_COMMAND:
                 _gdm_welcome_session_set_command (self, g_value_get_string (value));
@@ -1075,6 +1037,9 @@ gdm_welcome_session_get_property (GObject    *object,
         self = GDM_WELCOME_SESSION (object);
 
         switch (prop_id) {
+        case PROP_VERIFICATION_MODE:
+                g_value_set_enum (value, self->priv->verification_mode);
+                break;
         case PROP_X11_DISPLAY_NAME:
                 g_value_set_string (value, self->priv->x11_display_name);
                 break;
@@ -1102,17 +1067,11 @@ gdm_welcome_session_get_property (GObject    *object,
         case PROP_RUNTIME_DIR:
                 g_value_set_string (value, self->priv->runtime_dir);
                 break;
-        case PROP_SERVER_ADDRESS:
-                g_value_set_string (value, self->priv->server_address);
-                break;
         case PROP_SERVER_DBUS_PATH:
                 g_value_set_string (value, self->priv->server_dbus_path);
                 break;
         case PROP_SERVER_DBUS_INTERFACE:
                 g_value_set_string (value, self->priv->server_dbus_interface);
-                break;
-        case PROP_SERVER_ENV_VAR_NAME:
-                g_value_set_string (value, self->priv->server_env_var_name);
                 break;
         case PROP_COMMAND:
                 g_value_set_string (value, self->priv->command);
@@ -1134,6 +1093,14 @@ gdm_welcome_session_class_init (GdmWelcomeSessionClass *klass)
 
         g_type_class_add_private (klass, sizeof (GdmWelcomeSessionPrivate));
 
+        g_object_class_install_property (object_class,
+                                         PROP_VERIFICATION_MODE,
+                                         g_param_spec_enum ("verification-mode",
+                                                            "verification mode",
+                                                            "verification mode",
+                                                            GDM_TYPE_SESSION_VERIFICATION_MODE,
+                                                            GDM_SESSION_VERIFICATION_MODE_LOGIN,
+                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
                                          PROP_X11_DISPLAY_NAME,
                                          g_param_spec_string ("x11-display-name",
@@ -1198,13 +1165,6 @@ gdm_welcome_session_class_init (GdmWelcomeSessionClass *klass)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
-                                         PROP_SERVER_ADDRESS,
-                                         g_param_spec_string ("server-address",
-                                                              "server address",
-                                                              "server address",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-        g_object_class_install_property (object_class,
                                          PROP_SERVER_DBUS_PATH,
                                          g_param_spec_string ("server-dbus-path",
                                                               "server dbus path",
@@ -1219,19 +1179,22 @@ gdm_welcome_session_class_init (GdmWelcomeSessionClass *klass)
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
-                                         PROP_SERVER_ENV_VAR_NAME,
-                                         g_param_spec_string ("server-env-var-name",
-                                                              "server env var name",
-                                                              "server env var name",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-        g_object_class_install_property (object_class,
                                          PROP_COMMAND,
                                          g_param_spec_string ("command",
                                                               "command",
                                                               "command",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        signals [OPENED] =
+                g_signal_new ("opened",
+                              G_OBJECT_CLASS_TYPE (object_class),
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmWelcomeSessionClass, opened),
+                              NULL,
+                              NULL,
+                              g_cclosure_marshal_VOID__VOID,
+                              G_TYPE_NONE,
+                              0);
         signals [STARTED] =
                 g_signal_new ("started",
                               G_OBJECT_CLASS_TYPE (object_class),
@@ -1316,8 +1279,8 @@ gdm_welcome_session_finalize (GObject *object)
         g_free (welcome_session->priv->server_address);
         g_free (welcome_session->priv->server_dbus_path);
         g_free (welcome_session->priv->server_dbus_interface);
-        g_free (welcome_session->priv->server_env_var_name);
         g_free (welcome_session->priv->dbus_bus_address);
+        g_free (welcome_session->priv->session_id);
 
         G_OBJECT_CLASS (gdm_welcome_session_parent_class)->finalize (object);
 }

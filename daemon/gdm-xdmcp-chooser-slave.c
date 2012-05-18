@@ -42,10 +42,10 @@
 #include "gdm-xdmcp-chooser-slave-glue.h"
 
 #include "gdm-server.h"
-#include "gdm-chooser-server.h"
 #include "gdm-chooser-session.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
+#include "gdm-session.h"
 
 #define GDM_XDMCP_CHOOSER_SLAVE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_XDMCP_CHOOSER_SLAVE, GdmXdmcpChooserSlavePrivate))
 
@@ -64,18 +64,10 @@ struct GdmXdmcpChooserSlavePrivate
 
         guint              connection_attempts;
 
-        GdmChooserServer  *chooser_server;
         GdmChooserSession *chooser;
 
         GdmDBusXdmcpChooserSlave *skeleton;
 };
-
-enum {
-        HOSTNAME_SELECTED,
-        LAST_SIGNAL
-};
-
-static guint signals [LAST_SIGNAL] = { 0, };
 
 static void     gdm_xdmcp_chooser_slave_class_init     (GdmXdmcpChooserSlaveClass *klass);
 static void     gdm_xdmcp_chooser_slave_init           (GdmXdmcpChooserSlave      *xdmcp_chooser_slave);
@@ -83,6 +75,19 @@ static void     gdm_xdmcp_chooser_slave_finalize       (GObject                 
 
 G_DEFINE_TYPE (GdmXdmcpChooserSlave, gdm_xdmcp_chooser_slave, GDM_TYPE_SLAVE)
 
+
+static void
+on_chooser_session_opened (GdmChooserSession    *chooser,
+                           GdmXdmcpChooserSlave *slave)
+{
+        char       *session_id;
+
+        g_debug ("GdmSimpleSlave: Chooser session opened");
+        session_id = gdm_welcome_session_get_session_id (GDM_WELCOME_SESSION (chooser));
+
+        g_object_set (GDM_SLAVE (slave), "session-id", session_id, NULL);
+        g_free (session_id);
+}
 
 static void
 on_chooser_session_start (GdmChooserSession    *chooser,
@@ -108,6 +113,9 @@ on_chooser_session_exited (GdmChooserSession    *chooser,
                            GdmXdmcpChooserSlave *slave)
 {
         g_debug ("GdmXdmcpChooserSlave: Chooser exited: %d", code);
+
+        g_object_set (GDM_SLAVE (slave), "session-id", NULL, NULL);
+
         gdm_slave_stopped (GDM_SLAVE (slave));
 }
 
@@ -117,23 +125,24 @@ on_chooser_session_died (GdmChooserSession    *chooser,
                          GdmXdmcpChooserSlave *slave)
 {
         g_debug ("GdmXdmcpChooserSlave: Chooser died: %d", signal);
+
+        g_object_set (GDM_SLAVE (slave), "session-id", NULL, NULL);
+
         gdm_slave_stopped (GDM_SLAVE (slave));
 }
 
 static void
-on_chooser_hostname_selected (GdmChooserServer     *chooser_server,
+on_chooser_hostname_selected (GdmSession           *session,
                               const char           *name,
                               GdmXdmcpChooserSlave *slave)
 {
-        g_debug ("GdmXdmcpChooserSlave: emitting hostname selected: %s", name);
-        g_signal_emit (slave, signals [HOSTNAME_SELECTED], 0, name);
-
+        g_debug ("GdmXdmcpChooserSlave: connecting to host %s", name);
         gdm_dbus_xdmcp_chooser_slave_emit_hostname_selected (slave->priv->skeleton,
                                                              name);
 }
 
 static void
-on_chooser_disconnected (GdmChooserServer     *chooser_server,
+on_chooser_disconnected (GdmSession           *session,
                          GdmXdmcpChooserSlave *slave)
 {
         g_debug ("GdmXdmcpChooserSlave: Chooser disconnected");
@@ -145,7 +154,7 @@ on_chooser_disconnected (GdmChooserServer     *chooser_server,
 }
 
 static void
-on_chooser_connected (GdmChooserServer     *chooser_server,
+on_chooser_connected (GdmSession           *session,
                       GdmXdmcpChooserSlave *slave)
 {
         g_debug ("GdmXdmcpChooserSlave: Chooser connected");
@@ -166,8 +175,8 @@ run_chooser (GdmXdmcpChooserSlave *slave)
         char          *display_device;
         char          *display_hostname;
         char          *auth_file;
-        char          *address;
         gboolean       res;
+        GdmSession    *session;
 
         g_debug ("GdmXdmcpChooserSlave: Running chooser");
 
@@ -200,27 +209,14 @@ run_chooser (GdmXdmcpChooserSlave *slave)
         /* Run the init script. gdmslave suspends until script has terminated */
         gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
 
-        slave->priv->chooser_server = gdm_chooser_server_new (display_id);
-        g_signal_connect (slave->priv->chooser_server,
-                          "hostname-selected",
-                          G_CALLBACK (on_chooser_hostname_selected),
-                          slave);
-        g_signal_connect (slave->priv->chooser_server,
-                          "disconnected",
-                          G_CALLBACK (on_chooser_disconnected),
-                          slave);
-        g_signal_connect (slave->priv->chooser_server,
-                          "connected",
-                          G_CALLBACK (on_chooser_connected),
-                          slave);
-        gdm_chooser_server_start (slave->priv->chooser_server);
-
-        address = gdm_chooser_server_get_address (slave->priv->chooser_server);
-
         g_debug ("GdmXdmcpChooserSlave: Creating chooser on %s %s %s", display_name, display_device, display_hostname);
         slave->priv->chooser = gdm_chooser_session_new (display_name,
                                                         display_device,
                                                         display_hostname);
+        g_signal_connect (slave->priv->chooser,
+                          "opened",
+                          G_CALLBACK (on_chooser_session_opened),
+                          slave);
         g_signal_connect (slave->priv->chooser,
                           "started",
                           G_CALLBACK (on_chooser_session_start),
@@ -240,9 +236,27 @@ run_chooser (GdmXdmcpChooserSlave *slave)
         g_object_set (slave->priv->chooser,
                       "x11-authority-file", auth_file,
                       NULL);
-        gdm_welcome_session_set_server_address (GDM_WELCOME_SESSION (slave->priv->chooser), address);
+
         gdm_welcome_session_start (GDM_WELCOME_SESSION (slave->priv->chooser));
 
+        session = gdm_welcome_session_get_session (GDM_WELCOME_SESSION (slave->priv->chooser));
+
+        g_signal_connect (session,
+                          "hostname-selected",
+                          G_CALLBACK (on_chooser_hostname_selected),
+                          slave);
+        g_signal_connect (session,
+                          "client-disconnected",
+                          G_CALLBACK (on_chooser_disconnected),
+                          slave);
+        g_signal_connect (session,
+                          "disconnected",
+                          G_CALLBACK (on_chooser_disconnected),
+                          slave);
+        g_signal_connect (session,
+                          "client-connected",
+                          G_CALLBACK (on_chooser_connected),
+                          slave);
         g_free (display_id);
         g_free (display_name);
         g_free (display_device);
@@ -317,6 +331,29 @@ gdm_xdmcp_chooser_slave_stop (GdmSlave *slave)
         return TRUE;
 }
 
+static gboolean
+gdm_xdmcp_chooser_slave_open_session (GdmSlave   *slave,
+                                      char      **address,
+                                      GError    **error)
+{
+        GdmXdmcpChooserSlave *self = GDM_XDMCP_CHOOSER_SLAVE (slave);
+        GdmSession      *session;
+
+        session = gdm_welcome_session_get_session (GDM_WELCOME_SESSION (self->priv->chooser));
+
+        if (gdm_session_client_is_connected (session)) {
+                g_set_error (error,
+                             G_DBUS_ERROR,
+                             G_DBUS_ERROR_ACCESS_DENIED,
+                             _("Currently, only one client can be connected at once"));
+                return FALSE;
+        }
+
+        *address = gdm_session_get_server_address (session);
+
+        return TRUE;
+}
+
 static GObject *
 gdm_xdmcp_chooser_slave_constructor (GType                  type,
                                      guint                  n_construct_properties,
@@ -335,7 +372,6 @@ gdm_xdmcp_chooser_slave_constructor (GType                  type,
         return G_OBJECT (slave);
 }
 
-
 static void
 gdm_xdmcp_chooser_slave_class_init (GdmXdmcpChooserSlaveClass *klass)
 {
@@ -347,18 +383,7 @@ gdm_xdmcp_chooser_slave_class_init (GdmXdmcpChooserSlaveClass *klass)
 
         slave_class->start = gdm_xdmcp_chooser_slave_start;
         slave_class->stop = gdm_xdmcp_chooser_slave_stop;
-
-        signals [HOSTNAME_SELECTED] =
-                g_signal_new ("hostname-selected",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmXdmcpChooserSlaveClass, hostname_selected),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__STRING,
-                              G_TYPE_NONE,
-                              1,
-                              G_TYPE_STRING);
+        slave_class->open_session = gdm_xdmcp_chooser_slave_open_session;
 
         g_type_class_add_private (klass, sizeof (GdmXdmcpChooserSlavePrivate));
 }
@@ -378,6 +403,10 @@ gdm_xdmcp_chooser_slave_finalize (GObject *object)
         g_return_if_fail (GDM_IS_XDMCP_CHOOSER_SLAVE (object));
 
         xdmcp_chooser_slave = GDM_XDMCP_CHOOSER_SLAVE (object);
+
+        g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (xdmcp_chooser_slave->priv->skeleton));
+
+        g_clear_object (&xdmcp_chooser_slave->priv->skeleton);
 
         g_return_if_fail (xdmcp_chooser_slave->priv != NULL);
 
