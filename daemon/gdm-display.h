@@ -79,7 +79,8 @@ typedef struct
 typedef enum
 {
          GDM_DISPLAY_ERROR_GENERAL,
-         GDM_DISPLAY_ERROR_GETTING_USER_INFO
+         GDM_DISPLAY_ERROR_GETTING_USER_INFO,
+         GDM_DISPLAY_ERROR_GETTING_SESSION_INFO,
 } GdmDisplayError;
 
 #define GDM_DISPLAY_ERROR gdm_display_error_quark ()
@@ -89,8 +90,10 @@ GType               gdm_display_get_type                       (void);
 
 int                 gdm_display_get_status                     (GdmDisplay *display);
 time_t              gdm_display_get_creation_time              (GdmDisplay *display);
-char *              gdm_display_get_user_auth                  (GdmDisplay *display);
-
+char *              gdm_display_open_session_sync              (GdmDisplay    *display,
+                                                                GCancellable  *cancellable,
+                                                                GError       **error);
+char *              gdm_display_get_session_id                 (GdmDisplay *display);
 gboolean            gdm_display_create_authority               (GdmDisplay *display);
 gboolean            gdm_display_prepare                        (GdmDisplay *display);
 gboolean            gdm_display_manage                         (GdmDisplay *display);

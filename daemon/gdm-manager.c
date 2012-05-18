@@ -34,9 +34,16 @@
 #include <glib/gstdio.h>
 #include <glib-object.h>
 
+#ifdef WITH_SYSTEMD
+#include <systemd/sd-daemon.h>
+#include <systemd/sd-login.h>
+#endif
+
 #include "gdm-common.h"
 
+#include "gdm-dbus-util.h"
 #include "gdm-manager.h"
+#include "gdm-manager-glue.h"
 #include "gdm-display-store.h"
 #include "gdm-display-factory.h"
 #include "gdm-local-display-factory.h"
@@ -44,9 +51,9 @@
 
 #define GDM_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_MANAGER, GdmManagerPrivate))
 
-#define GDM_DBUS_PATH         "/org/gnome/DisplayManager"
-#define GDM_MANAGER_DBUS_PATH GDM_DBUS_PATH "/Displays"
-#define GDM_MANAGER_DBUS_NAME "org.gnome.DisplayManager.Manager"
+#define GDM_DBUS_PATH             "/org/gnome/DisplayManager"
+#define GDM_MANAGER_PATH          GDM_DBUS_PATH "/Manager"
+#define GDM_MANAGER_DISPLAYS_PATH GDM_DBUS_PATH "/Displays"
 
 struct GdmManagerPrivate
 {
@@ -85,7 +92,180 @@ static void     gdm_manager_finalize    (GObject         *object);
 
 static gpointer manager_object = NULL;
 
-G_DEFINE_TYPE (GdmManager, gdm_manager, G_TYPE_OBJECT)
+static void manager_interface_init (GdmDBusManagerIface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (GdmManager,
+                         gdm_manager,
+                         GDM_DBUS_TYPE_MANAGER_SKELETON,
+                         G_IMPLEMENT_INTERFACE (GDM_DBUS_TYPE_MANAGER,
+                                                manager_interface_init));
+
+#ifdef WITH_SYSTEMD
+static char *
+get_session_id_for_pid_systemd (pid_t    pid,
+                                GError **error)
+{
+        char *session, *gsession;
+        int ret;
+
+        session = NULL;
+        ret = sd_pid_get_session (pid, &session);
+        if (ret < 0) {
+                g_set_error (error,
+                             GDM_DISPLAY_ERROR,
+                             GDM_DISPLAY_ERROR_GETTING_SESSION_INFO,
+                             "Error getting session id from systemd: %s",
+                             g_strerror (-ret));
+                return NULL;
+        }
+
+        if (session != NULL) {
+                gsession = g_strdup (session);
+                free (session);
+
+                return gsession;
+        } else {
+                return NULL;
+        }
+}
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+static char *
+get_session_id_for_pid_consolekit (GDBusConnection  *connection,
+                                   pid_t             pid,
+                                   GError          **error)
+{
+        GVariant *reply;
+        char *retval;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             "org.freedesktop.ConsoleKit",
+                                             "/org/freedesktop/ConsoleKit/Manager",
+                                             "org.freedesktop.ConsoleKit.Manager",
+                                             "GetSessionForUnixProcess",
+                                             g_variant_new ("(u)", pid),
+                                             G_VARIANT_TYPE ("(o)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, error);
+        if (reply == NULL) {
+                return NULL;
+        }
+
+        g_variant_get (reply, "(o)", &retval);
+        g_variant_unref (reply);
+
+        return retval;
+}
+#endif
+
+static char *
+get_session_id_for_pid (GDBusConnection  *connection,
+                        pid_t             pid,
+                        GError          **error)
+{
+#ifdef WITH_SYSTEMD
+        if (sd_booted () > 0) {
+                return get_session_id_for_pid_systemd (pid, error);
+        }
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+        return get_session_id_for_pid_consolekit (connection, pid, error);
+#endif
+
+        return NULL;
+}
+
+static gboolean
+lookup_by_session_id (const char *id,
+                      GdmDisplay *display,
+                      gpointer    user_data)
+{
+        const char *looking_for = user_data;
+        char *current;
+        gboolean res;
+
+        current = gdm_display_get_session_id (display);
+
+        res = g_strcmp0 (current, looking_for) == 0;
+
+        g_free (current);
+
+        return res;
+}
+
+static gboolean
+gdm_manager_handle_open_session (GdmDBusManager        *manager,
+                                 GDBusMethodInvocation *invocation)
+{
+        GdmManager       *self = GDM_MANAGER (manager);
+        GDBusConnection  *connection;
+        GdmDisplay       *display;
+        const char       *sender;
+        char             *session_id;
+        GError           *error;
+        char             *address;
+        int               ret;
+        GPid              pid;
+
+        sender = g_dbus_method_invocation_get_sender (invocation);
+        error = NULL;
+        ret = gdm_dbus_get_pid_for_name (sender, &pid, &error);
+
+        if (!ret) {
+                g_prefix_error (&error, "Error while retrieving caller session id: ");
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+                return TRUE;
+
+        }
+
+        connection = g_dbus_method_invocation_get_connection (invocation);
+        session_id = get_session_id_for_pid (connection, pid, &error);
+
+        if (session_id == NULL) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+                return TRUE;
+        }
+
+        display = gdm_display_store_find (self->priv->display_store,
+                                          lookup_by_session_id,
+                                          (gpointer) session_id);
+        g_free (session_id);
+
+        if (display == NULL) {
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               _("No session available"));
+
+                return TRUE;
+        }
+
+        address = gdm_display_open_session_sync (display, NULL, &error);
+
+        if (address == NULL) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+                return TRUE;
+        }
+
+        gdm_dbus_manager_complete_open_session (GDM_DBUS_MANAGER (manager),
+                                                invocation,
+                                                address);
+        g_free (address);
+
+        return TRUE;
+}
+
+static void
+manager_interface_init (GdmDBusManagerIface *interface)
+{
+        interface->handle_open_session = gdm_manager_handle_open_session;
+}
 
 static void
 on_display_removed (GdmDisplayStore *display_store,
@@ -235,16 +415,29 @@ register_manager (GdmManager *manager)
         GDBusObjectManagerServer *object_server;
 
         error = NULL;
-        manager->priv->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
+        manager->priv->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM,
+                                                    NULL,
+                                                    &error);
         if (manager->priv->connection == NULL) {
                 g_critical ("error getting system bus: %s", error->message);
                 g_error_free (error);
                 exit (1);
         }
 
-        object_server = g_dbus_object_manager_server_new (GDM_MANAGER_DBUS_PATH);
+        object_server = g_dbus_object_manager_server_new (GDM_MANAGER_DISPLAYS_PATH);
         g_dbus_object_manager_server_set_connection (object_server, manager->priv->connection);
         manager->priv->object_manager = object_server;
+
+        if (!g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (manager),
+                                               manager->priv->connection,
+                                               GDM_MANAGER_PATH,
+                                               &error)) {
+                g_critical ("error exporting interface to %s: %s",
+                            GDM_MANAGER_PATH,
+                            error->message);
+                g_error_free (error);
+                exit (1);
+        }
 
         return TRUE;
 }
@@ -400,6 +593,14 @@ gdm_manager_init (GdmManager *manager)
 }
 
 static void
+unexport_display (const char *id,
+                  GdmDisplay *display,
+                  GdmManager *manager)
+{
+    g_dbus_object_manager_server_unexport (manager->priv->object_manager, id);
+}
+
+static void
 gdm_manager_finalize (GObject *object)
 {
         GdmManager *manager;
@@ -415,10 +616,6 @@ gdm_manager_finalize (GObject *object)
         g_clear_object (&manager->priv->xdmcp_factory);
 #endif
         g_clear_object (&manager->priv->local_factory);
-        g_clear_object (&manager->priv->connection);
-        g_clear_object (&manager->priv->object_manager);
-
-        gdm_display_store_clear (manager->priv->display_store);
 
         g_signal_handlers_disconnect_by_func (G_OBJECT (manager->priv->display_store),
                                               G_CALLBACK (on_display_added),
@@ -426,6 +623,17 @@ gdm_manager_finalize (GObject *object)
         g_signal_handlers_disconnect_by_func (G_OBJECT (manager->priv->display_store),
                                               G_CALLBACK (on_display_removed),
                                               manager);
+
+        gdm_display_store_foreach (manager->priv->display_store,
+                                   (GdmDisplayStoreFunc)unexport_display,
+                                   manager);
+        gdm_display_store_clear (manager->priv->display_store);
+
+        g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (manager));
+
+        g_clear_object (&manager->priv->connection);
+        g_clear_object (&manager->priv->object_manager);
+
         g_object_unref (manager->priv->display_store);
 
         G_OBJECT_CLASS (gdm_manager_parent_class)->finalize (object);

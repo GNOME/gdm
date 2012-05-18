@@ -50,10 +50,25 @@ typedef struct
         gboolean (*start) (GdmSlave *slave);
         gboolean (*stop)  (GdmSlave *slave);
 
+        gboolean (*open_session) (GdmSlave    *slave,
+                                  char       **address,
+                                  GError     **error);
+
         /* signals */
         void (*stopped) (GdmSlave *slave);
 } GdmSlaveClass;
 
+typedef enum
+{
+        GDM_SLAVE_ERROR_GENERIC,
+        GDM_SLAVE_ERROR_UNSUPPORTED,
+        GDM_SLAVE_ERROR_NOT_OPENED,
+        GDM_SLAVE_ERROR_WRONG_SESSION,
+} GdmSlaveError;
+
+#define GDM_SLAVE_ERROR (gdm_slave_error_quark ())
+
+GQuark              gdm_slave_error_quark            (void);
 GType               gdm_slave_get_type               (void);
 gboolean            gdm_slave_start                  (GdmSlave   *slave);
 gboolean            gdm_slave_stop                   (GdmSlave   *slave);
@@ -84,10 +99,8 @@ gboolean            gdm_slave_run_script             (GdmSlave   *slave,
                                                       const char *dir,
                                                       const char *username);
 void                gdm_slave_stopped                (GdmSlave   *slave);
-
 void                gdm_slave_export_interface       (GdmSlave               *slave,
                                                       GDBusInterfaceSkeleton *interface);
-
 G_END_DECLS
 
 #endif /* __GDM_SLAVE_H */

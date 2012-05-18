@@ -24,6 +24,8 @@
 
 #include <glib-object.h>
 
+#include "gdm-manager-glue.h"
+
 G_BEGIN_DECLS
 
 #define GDM_TYPE_MANAGER         (gdm_manager_get_type ())
@@ -37,13 +39,13 @@ typedef struct GdmManagerPrivate GdmManagerPrivate;
 
 typedef struct
 {
-        GObject           parent;
-        GdmManagerPrivate *priv;
+        GDBusInterfaceSkeleton  parent;
+        GdmManagerPrivate      *priv;
 } GdmManager;
 
 typedef struct
 {
-        GObjectClass   parent_class;
+        GDBusInterfaceSkeletonClass parent_class;
 
         void          (* display_added)    (GdmManager      *manager,
                                             const char      *id);

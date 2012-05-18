@@ -22,8 +22,14 @@
 #define __GDM_DBUS_UTIL_H
 
 #include <gio/gio.h>
+#include <unistd.h>
+#include <sys/types.h>
 
 GDBusServer *gdm_dbus_setup_private_server (GDBusAuthObserver  *observer,
                                             GError            **error);
+
+gboolean gdm_dbus_get_pid_for_name (const char  *system_bus_name,
+                                    pid_t       *out_pid,
+                                    GError     **error);
 
 #endif
