@@ -1,6 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
+ * Copyright (C) 2012 Red Hat, Inc.
+ * Copyright (C) 2012 Giovanni Campagna <scampa.giovanni@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,61 +29,33 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus.h>
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
 
 #include "gdm-greeter-client.h"
+#include "gdm-client-glue.h"
+#include "gdm-manager-glue.h"
 
 #define GDM_GREETER_CLIENT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_CLIENT, GdmGreeterClientPrivate))
 
-#define GREETER_SERVER_DBUS_PATH      "/org/gnome/DisplayManager/GreeterServer"
-#define GREETER_SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.GreeterServer"
-
-#define GDM_DBUS_NAME              "org.gnome.DisplayManager"
-#define GDM_DBUS_DISPLAY_INTERFACE "org.gnome.DisplayManager.Display"
+#define SESSION_DBUS_PATH      "/org/gnome/DisplayManager/Session"
 
 struct GdmGreeterClientPrivate
 {
-        DBusConnection   *connection;
-        char             *address;
+        GdmManager         *manager;
+        GdmUserVerifier    *user_verifier;
+        GdmGreeter         *greeter;
+        GdmRemoteGreeter   *remote_greeter;
+        GdmChooser         *chooser;
+        GDBusConnection    *connection;
+        char               *address;
 
-        char             *display_id;
-        gboolean          display_is_local;
-
-        guint32           is_connected : 1;
+        GList              *pending_opens;
 };
-
-enum {
-        PROP_0,
-        PROP_DISPLAY_IS_LOCAL
-};
-
-enum {
-        INFO,
-        PROBLEM,
-        INFO_QUERY,
-        SECRET_INFO_QUERY,
-        SERVICE_UNAVAILABLE,
-        READY,
-        CONVERSATION_STOPPED,
-        RESET,
-        AUTHENTICATION_FAILED,
-        SELECTED_USER_CHANGED,
-        DEFAULT_SESSION_CHANGED,
-        TIMED_LOGIN_REQUESTED,
-        SESSION_OPENED,
-        LAST_SIGNAL
-};
-
-static guint gdm_greeter_client_signals [LAST_SIGNAL];
 
 static void     gdm_greeter_client_class_init  (GdmGreeterClientClass *klass);
-static void     gdm_greeter_client_init        (GdmGreeterClient      *greeter_client);
-static void     gdm_greeter_client_finalize    (GObject              *object);
+static void     gdm_greeter_client_init        (GdmGreeterClient *client);
+static void     gdm_greeter_client_finalize    (GObject        *object);
 
-G_DEFINE_TYPE (GdmGreeterClient, gdm_greeter_client, G_TYPE_OBJECT)
+G_DEFINE_TYPE (GdmGreeterClient, gdm_greeter_client, G_TYPE_OBJECT);
 
 static gpointer client_object = NULL;
 
@@ -97,947 +70,1298 @@ gdm_greeter_client_error_quark (void)
         return error_quark;
 }
 
-/**
- * gdm_greeter_client_get_display_is_local:
- *
- * @client: a #GdmGreeterClient
- *
- * Returns: %TRUE if display is local display
- */
-gboolean
-gdm_greeter_client_get_display_is_local (GdmGreeterClient *client)
+static void
+on_got_manager (GdmManager          *manager,
+                GAsyncResult        *result,
+                GSimpleAsyncResult  *operation_result)
 {
+        GdmGreeterClient *client;
+        GdmManager       *new_manager;
+        GError           *error;
+
+        client = GDM_GREETER_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (operation_result)));
+
+        error = NULL;
+        new_manager = gdm_manager_proxy_new_finish (result, &error);
+
+        if (client->priv->manager == NULL) {
+                client->priv->manager = new_manager;
+
+        } else {
+                g_object_ref (client->priv->manager);
+                g_object_unref (new_manager);
+
+                g_clear_error (&error);
+        }
+
+        if (error != NULL) {
+                g_simple_async_result_take_error (operation_result, error);
+        } else {
+                g_simple_async_result_set_op_res_gpointer (operation_result,
+                                                           g_object_ref (client->priv->manager),
+                                                           (GDestroyNotify)
+                                                           g_object_unref);
+        }
+
+        g_simple_async_result_complete_in_idle (operation_result);
+}
+
+static void
+get_manager (GdmGreeterClient    *client,
+             GCancellable        *cancellable,
+             GAsyncReadyCallback  callback,
+             gpointer             user_data)
+{
+        GSimpleAsyncResult *result;
+
+        result = g_simple_async_result_new (G_OBJECT (client),
+                                            callback,
+                                            user_data,
+                                            get_manager);
+        g_simple_async_result_set_check_cancellable (result, cancellable);
+
+        if (client->priv->manager != NULL) {
+                g_simple_async_result_set_op_res_gpointer (result,
+                                                           g_object_ref (client->priv->manager),
+                                                           (GDestroyNotify)
+                                                           g_object_unref);
+                g_simple_async_result_complete_in_idle (result);
+                return;
+        }
+
+        gdm_manager_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
+                                       G_DBUS_PROXY_FLAGS_NONE,
+                                       "org.gnome.DisplayManager",
+                                       "/org/gnome/DisplayManager/Manager",
+                                       cancellable,
+                                       (GAsyncReadyCallback)
+                                       on_got_manager,
+                                       result);
+}
+
+static void
+on_user_verifier_proxy_created (GdmUserVerifier    *user_verifier,
+                                GAsyncResult       *result,
+                                GSimpleAsyncResult *operation_result)
+{
+
+        GError       *error;
+
+        if (!gdm_user_verifier_proxy_new_finish (result, &error)) {
+                g_simple_async_result_take_error (operation_result, error);
+                g_simple_async_result_complete_in_idle (operation_result);
+                return;
+        }
+
+        g_debug ("UserVerifier %p created", user_verifier);
+
+        g_simple_async_result_set_op_res_gpointer (operation_result,
+                                                   g_object_ref (user_verifier),
+                                                   (GDestroyNotify)
+                                                   g_object_unref);
+        g_simple_async_result_complete_in_idle (operation_result);
+}
+
+static void
+on_reauthentication_channel_connected (GDBusConnection    *connection,
+                                       GAsyncResult       *result,
+                                       GSimpleAsyncResult *operation_result)
+{
+        GCancellable *cancellable;
+        GError       *error;
+
+        error = NULL;
+        if (!g_dbus_connection_new_for_address_finish (result, &error)) {
+                g_simple_async_result_take_error (operation_result, error);
+                g_simple_async_result_complete_in_idle (operation_result);
+                return;
+        }
+
+        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        gdm_user_verifier_proxy_new (connection,
+                                     G_DBUS_PROXY_FLAGS_NONE,
+                                     NULL,
+                                     SESSION_DBUS_PATH,
+                                     cancellable,
+                                     (GAsyncReadyCallback)
+                                     on_user_verifier_proxy_created,
+                                     operation_result);
+}
+
+static void
+on_reauthentication_channel_opened (GdmManager         *manager,
+                                    GAsyncResult       *result,
+                                    GSimpleAsyncResult *operation_result)
+{
+        GCancellable *cancellable;
+        char         *address;
+        GError       *error;
+
+        error = NULL;
+        if (!gdm_manager_call_open_reauthentication_channel_finish (manager,
+                                                                    &address,
+                                                                    result,
+                                                                    &error)) {
+                g_simple_async_result_take_error (operation_result, error);
+                g_simple_async_result_complete_in_idle (operation_result);
+                return;
+        }
+
+        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        g_dbus_connection_new_for_address (address,
+                                           G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
+                                           NULL,
+                                           cancellable,
+                                           (GAsyncReadyCallback)
+                                           on_reauthentication_channel_connected,
+                                           operation_result);
+}
+
+static void
+on_got_manager_for_reauthentication (GdmGreeterClient    *client,
+                                     GAsyncResult        *result,
+                                     GSimpleAsyncResult  *operation_result)
+{
+        GCancellable *cancellable;
+        char         *username;
+        GError       *error;
+
+        error = NULL;
+        if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
+                                                   &error)) {
+                g_simple_async_result_take_error (operation_result, error);
+                g_simple_async_result_complete_in_idle (operation_result);
+                return;
+        }
+
+        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        username = g_object_get_data (G_OBJECT (operation_result), "username");
+        gdm_manager_call_open_reauthentication_channel (client->priv->manager,
+                                                        username,
+                                                        cancellable,
+                                                        (GAsyncReadyCallback)
+                                                        on_reauthentication_channel_opened,
+                                                        operation_result);
+
+}
+
+static gboolean
+gdm_greeter_client_open_connection_sync (GdmGreeterClient *client,
+                                 GCancellable   *cancellable,
+                                 GError        **error)
+{
+        gboolean ret;
+
         g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
 
-        return client->priv->display_is_local;
-}
+        if (client->priv->manager == NULL) {
+                client->priv->manager = gdm_manager_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+                                                                            G_DBUS_PROXY_FLAGS_NONE,
+                                                                            "org.gnome.DisplayManager",
+                                                                            "/org/gnome/DisplayManager/Manager",
+                                                                            cancellable,
+                                                                            error);
 
-static void
-emit_string_and_int_signal_for_message (GdmGreeterClient *client,
-                                        const char       *name,
-                                        DBusMessage      *message,
-                                        int               signal)
-{
-        DBusError   error;
-        const char *text;
-        int         number;
-        dbus_bool_t res;
-
-        dbus_error_init (&error);
-        res = dbus_message_get_args (message,
-                                     &error,
-                                     DBUS_TYPE_STRING, &text,
-                                     DBUS_TYPE_INT32, &number,
-                                     DBUS_TYPE_INVALID);
-        if (res) {
-
-                g_debug ("GdmGreeterClient: Received %s (%s %d)", name, text, number);
-
-                g_signal_emit (client,
-                               gdm_greeter_client_signals[signal],
-                               0, text, number);
+                if (client->priv->manager == NULL) {
+                        goto out;
+                }
         } else {
-                g_warning ("Unable to get arguments: %s", error.message);
-                dbus_error_free (&error);
+                client->priv->manager = g_object_ref (client->priv->manager);
         }
-}
 
-static void
-emit_string_and_string_signal_for_message (GdmGreeterClient *client,
-                                           const char       *name,
-                                           DBusMessage      *message,
-                                           int               signal)
-{
-        DBusError   error;
-        char *text1;
-        char *text2;
-        dbus_bool_t res;
+        if (client->priv->connection == NULL) {
+                ret = gdm_manager_call_open_session_sync (client->priv->manager,
+                                                          &client->priv->address,
+                                                          cancellable,
+                                                          error);
 
-        dbus_error_init (&error);
-        res = dbus_message_get_args (message,
-                                     &error,
-                                     DBUS_TYPE_STRING, &text1,
-                                     DBUS_TYPE_STRING, &text2,
-                                     DBUS_TYPE_INVALID);
-        if (res) {
+                if (!ret) {
+                        g_clear_object (&client->priv->manager);
+                        goto out;
+                }
 
-                g_debug ("GdmGreeterClient: Received %s (%s, %s)", name, text1, text2);
+                g_debug ("GdmGreeterClient: connecting to address: %s", client->priv->address);
 
-                g_signal_emit (client,
-                               gdm_greeter_client_signals[signal],
-                               0, text1, text2);
+                client->priv->connection = g_dbus_connection_new_for_address_sync (client->priv->address,
+                                                                                   G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
+                                                                                   NULL,
+                                                                                   cancellable,
+                                                                                   error);
+
+                if (client->priv->connection == NULL) {
+                        g_clear_object (&client->priv->manager);
+                        g_clear_pointer (&client->priv->address, g_free);
+                        goto out;
+                }
         } else {
-                g_warning ("Unable to get arguments: %s", error.message);
-                dbus_error_free (&error);
+                client->priv->connection = g_object_ref (client->priv->connection);
         }
-        dbus_error_free (&error);
-}
-
-static void
-emit_string_signal_for_message (GdmGreeterClient *client,
-                                const char       *name,
-                                DBusMessage      *message,
-                                int               signal)
-{
-        DBusError   error;
-        const char *text;
-        dbus_bool_t res;
-
-        dbus_error_init (&error);
-        res = dbus_message_get_args (message,
-                                     &error,
-                                     DBUS_TYPE_STRING, &text,
-                                     DBUS_TYPE_INVALID);
-        if (res) {
-
-                g_debug ("GdmGreeterClient: Received %s (%s)", name, text);
-
-                g_signal_emit (client,
-                               gdm_greeter_client_signals[signal],
-                               0, text);
-        } else {
-                g_warning ("Unable to get arguments: %s", error.message);
-                dbus_error_free (&error);
-        }
-}
-
-static void
-on_selected_user_changed (GdmGreeterClient *client,
-                          DBusMessage      *message)
-{
-        emit_string_signal_for_message (client, "SelectedUserChanged", message, SELECTED_USER_CHANGED);
-}
-
-static void
-on_default_session_changed (GdmGreeterClient *client,
-                            DBusMessage      *message)
-{
-        emit_string_signal_for_message (client, "DefaultSessionNameChanged", message, DEFAULT_SESSION_CHANGED);
-}
-
-static void
-on_timed_login_requested (GdmGreeterClient *client,
-                          DBusMessage      *message)
-{
-        emit_string_and_int_signal_for_message (client, "TimedLoginRequested", message, TIMED_LOGIN_REQUESTED);
-}
-
-static void
-on_session_opened (GdmGreeterClient *client,
-                   DBusMessage      *message)
-{
-        emit_string_signal_for_message (client, "SessionOpened", message, SESSION_OPENED);
-}
-
-static void
-on_info_query (GdmGreeterClient *client,
-               DBusMessage      *message)
-{
-        emit_string_and_string_signal_for_message (client, "InfoQuery", message, INFO_QUERY);
-}
-
-static void
-on_secret_info_query (GdmGreeterClient *client,
-                      DBusMessage      *message)
-{
-        emit_string_and_string_signal_for_message (client, "SecretInfoQuery", message, SECRET_INFO_QUERY);
-}
-
-static void
-on_info (GdmGreeterClient *client,
-         DBusMessage      *message)
-{
-        emit_string_and_string_signal_for_message (client, "Info", message, INFO);
-}
-
-static void
-on_problem (GdmGreeterClient *client,
-            DBusMessage      *message)
-{
-        emit_string_and_string_signal_for_message (client, "Problem", message, PROBLEM);
-}
-
-static void
-on_service_unavailable (GdmGreeterClient *client,
-                        DBusMessage      *message)
-{
-        emit_string_signal_for_message (client, "ServiceUnavailable", message, SERVICE_UNAVAILABLE);
-}
-
-static void
-on_ready (GdmGreeterClient *client,
-          DBusMessage      *message)
-{
-        emit_string_signal_for_message (client, "Ready", message, READY);
-}
-
-static void
-on_conversation_stopped (GdmGreeterClient *client,
-                         DBusMessage      *message)
-{
-        emit_string_signal_for_message (client, "ConversationStopped", message, CONVERSATION_STOPPED);
-}
-
-static void
-on_reset (GdmGreeterClient *client,
-          DBusMessage      *message)
-{
-        g_debug ("GdmGreeterClient: Reset");
-
-        g_signal_emit (client,
-                       gdm_greeter_client_signals[RESET],
-                       0);
-}
-
-static void
-on_authentication_failed (GdmGreeterClient *client,
-                          DBusMessage      *message)
-{
-        g_debug ("GdmGreeterClient: Authentication failed");
-
-        g_signal_emit (client,
-                       gdm_greeter_client_signals[AUTHENTICATION_FAILED],
-                       0);
-}
-
-static gboolean
-send_dbus_string_method (DBusConnection *connection,
-                         const char     *method,
-                         const char     *payload)
-{
-        DBusError       error;
-        DBusMessage    *message;
-        DBusMessage    *reply;
-        DBusMessageIter iter;
-        const char     *str;
-
-        if (payload != NULL) {
-                str = payload;
-        } else {
-                str = "";
-        }
-
-        g_debug ("GdmGreeterClient: Calling %s", method);
-        message = dbus_message_new_method_call (NULL,
-                                                GREETER_SERVER_DBUS_PATH,
-                                                GREETER_SERVER_DBUS_INTERFACE,
-                                                method);
-        if (message == NULL) {
-                g_warning ("Couldn't allocate the D-Bus message");
-                return FALSE;
-        }
-
-        dbus_message_iter_init_append (message, &iter);
-        dbus_message_iter_append_basic (&iter,
-                                        DBUS_TYPE_STRING,
-                                        &str);
-
-        dbus_error_init (&error);
-        reply = dbus_connection_send_with_reply_and_block (connection,
-                                                           message,
-                                                           -1,
-                                                           &error);
-
-        dbus_message_unref (message);
-
-        if (dbus_error_is_set (&error)) {
-                g_warning ("%s %s raised: %s\n",
-                           method,
-                           error.name,
-                           error.message);
-                return FALSE;
-        }
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-        dbus_connection_flush (connection);
-
-        return TRUE;
-}
-
-static gboolean
-send_dbus_string_and_bool_method (DBusConnection *connection,
-                                  const char     *method,
-                                  const char     *string_payload,
-                                  gboolean        bool_payload)
-{
-        DBusMessage    *message;
-        DBusMessageIter iter;
-        const char     *str;
-
-        if (string_payload != NULL) {
-                str = string_payload;
-        } else {
-                str = "";
-        }
-
-        g_debug ("GdmGreeterClient: Calling %s", method);
-        message = dbus_message_new_method_call (NULL,
-                                                GREETER_SERVER_DBUS_PATH,
-                                                GREETER_SERVER_DBUS_INTERFACE,
-                                                method);
-        if (message == NULL) {
-                g_warning ("Couldn't allocate the D-Bus message");
-                return FALSE;
-        }
-
-        dbus_message_iter_init_append (message, &iter);
-        dbus_message_iter_append_basic (&iter,
-                                        DBUS_TYPE_STRING,
-                                        &str);
-
-        dbus_message_iter_append_basic (&iter,
-                                        DBUS_TYPE_BOOLEAN,
-                                        &bool_payload);
-        dbus_message_set_no_reply (message, TRUE);
-
-        dbus_connection_send (connection, message, NULL);
-
-        dbus_message_unref (message);
-
-        dbus_connection_flush (connection);
-
-        return TRUE;
-}
-
-static gboolean
-send_dbus_string_and_string_method (DBusConnection *connection,
-                                    const char     *method,
-                                    const char     *payload1,
-                                    const char     *payload2)
-{
-        DBusError       error;
-        DBusMessage    *message;
-        DBusMessage    *reply;
-        DBusMessageIter iter;
-        const char     *str;
-
-        g_debug ("GdmGreeterClient: Calling %s", method);
-        message = dbus_message_new_method_call (NULL,
-                                                GREETER_SERVER_DBUS_PATH,
-                                                GREETER_SERVER_DBUS_INTERFACE,
-                                                method);
-        if (message == NULL) {
-                g_warning ("Couldn't allocate the D-Bus message");
-                return FALSE;
-        }
-
-        dbus_message_iter_init_append (message, &iter);
-
-        if (payload1 != NULL) {
-                str = payload1;
-        } else {
-                str = "";
-        }
-        dbus_message_iter_append_basic (&iter,
-                                        DBUS_TYPE_STRING,
-                                        &str);
-
-        if (payload2 != NULL) {
-                str = payload2;
-        } else {
-                str = "";
-        }
-        dbus_message_iter_append_basic (&iter,
-                                        DBUS_TYPE_STRING,
-                                        &str);
-
-        dbus_error_init (&error);
-        reply = dbus_connection_send_with_reply_and_block (connection,
-                                                           message,
-                                                           -1,
-                                                           &error);
-
-        dbus_message_unref (message);
-
-        if (dbus_error_is_set (&error)) {
-                g_warning ("%s %s raised: %s\n",
-                           method,
-                           error.name,
-                           error.message);
-                return FALSE;
-        }
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-        dbus_connection_flush (connection);
-
-        return TRUE;
-}
-
-static gboolean
-send_dbus_void_method (DBusConnection *connection,
-                       const char     *method)
-{
-        DBusError       error;
-        DBusMessage    *message;
-        DBusMessage    *reply;
-
-        g_debug ("GdmGreeterClient: Calling %s", method);
-        message = dbus_message_new_method_call (NULL,
-                                                GREETER_SERVER_DBUS_PATH,
-                                                GREETER_SERVER_DBUS_INTERFACE,
-                                                method);
-        if (message == NULL) {
-                g_warning ("Couldn't allocate the D-Bus message");
-                return FALSE;
-        }
-
-        dbus_error_init (&error);
-        reply = dbus_connection_send_with_reply_and_block (connection,
-                                                           message,
-                                                           -1,
-                                                           &error);
-
-        dbus_message_unref (message);
-
-        if (dbus_error_is_set (&error)) {
-                g_warning ("%s %s raised: %s\n",
-                           method,
-                           error.name,
-                           error.message);
-                return FALSE;
-        }
-        if (reply != NULL) {
-                dbus_message_unref (reply);
-        }
-        dbus_connection_flush (connection);
-
-        return TRUE;
-}
-
-/**
- * gdm_greeter_call_start_conversation:
- *
- * @client: a #GdmGreeterClient
- * @service_name: PAM service name
- *
- * Tells GDM to prepare to start a PAM conversation with
- * the specified PAM service.
- *
- * Normally, this would get called when the greeter first
- * starts up, either one call to the "gdm" service or one
- * for each auth method (say "gdm-password", "gdm-fingerprint",
- * "gdm-smartcard")
- *
- * After the conversation has been started, the ready signal
- * will be emitted.
- */
-void
-gdm_greeter_client_call_start_conversation (GdmGreeterClient *client,
-                                            const char       *service_name)
-{
-        send_dbus_string_method (client->priv->connection,
-                                 "StartConversation", service_name);
-}
-
-/**
- * gdm_greeter_call_begin_auto_login:
- *
- * @client: a #GdmGreeterClient
- * @username: user to auto login or %NULL to use the configured default
- *
- * Tells GDM to log the user in without first authenticating.
- *
- * Normally, this would get called after a timed-login-requested
- * signal once the time out has been reached.
- */
-void
-gdm_greeter_client_call_begin_auto_login (GdmGreeterClient *client,
-                                          const char       *username)
-{
-        if (username == NULL) {
-                username = "__auto";
-        }
-
-        send_dbus_string_method (client->priv->connection,
-                                 "BeginAutoLogin", username);
-}
-
-/**
- * gdm_greeter_call_begin_verification:
- *
- * @client: a #GdmGreeterClient
- * @service_name: PAM service name
- *
- * Tells GDM to start the PAM authentication process with no specified
- * user name.
- *
- * This should only be called after the ready signal is emitted for
- * @service_name.
- *
- * Normally, this would get called if the greeter has no user list, or
- * if the user clicks "Other" or "Not Listed?" in the user list.
- */
-void
-gdm_greeter_client_call_begin_verification (GdmGreeterClient *client,
-                                            const char       *service_name)
-{
-        send_dbus_string_method (client->priv->connection,
-                                 "BeginVerification", service_name);
-}
-
-/**
- * gdm_greeter_call_begin_verification_for_user:
- *
- * @client: a #GdmGreeterClient
- * @service_name: PAM service name
- * @username: user to start verification process for
- *
- * Tells GDM to start the PAM authentication process with the @username
- * user name.
- *
- * This should only be called after the ready signal is emitted for
- * @service_name.
- *
- * Normally, this would get called in reponse to a user getting selected
- * from the user list.  If the greeter doesn't have a user list, it's
- * better to call gdm_greeter_client_call_begin_verification() and let
- * the PAM service handle asking for a username, than using this function.
- */
-void
-gdm_greeter_client_call_begin_verification_for_user (GdmGreeterClient *client,
-                                                     const char       *service_name,
-                                                     const char       *username)
-{
-        send_dbus_string_and_string_method (client->priv->connection,
-                                            "BeginVerificationForUser",
-                                            service_name,
-                                            username);
-}
-
-/**
- * gdm_greeter_call_answer_query:
- *
- * @client: a #GdmGreeterClient
- * @service_name: PAM service name
- * @answer: The answer to the currently pending PAM question.
- *
- * Responds to GDM's pending request for information.
- *
- * This should only be called after the info-query or secret-info-query signal is
- * emitted for * @service_name.
- *
- * Normally, this would get called after the user types in an answer.
- */
-void
-gdm_greeter_client_call_answer_query (GdmGreeterClient *client,
-                                      const char       *service_name,
-                                      const char       *answer)
-{
-        send_dbus_string_and_string_method (client->priv->connection,
-                                            "AnswerQuery",
-                                            service_name,
-                                            answer);
-}
-
-/**
- * gdm_greeter_call_start_session_when_ready:
- *
- * @client: a #GdmGreeterClient
- * @service_name: PAM service name
- * @should_start_session: whether to block the login process
- *
- * After the user has successfully interacted with PAM, GDM waits
- * for a final go ahead before finishing the login process and starting the
- * users session.
- *
- * This call gives that go ahead.
- *
- * Normally, you would call this after the user has had a chance to interact
- * with any important, non-login related information on the login screen
- * (like a session selector).
- */
-void
-gdm_greeter_client_call_start_session_when_ready  (GdmGreeterClient *client,
-                                                   const char       *service_name,
-                                                   gboolean          should_start_session)
-{
-        send_dbus_string_and_bool_method (client->priv->connection,
-                                          "StartSessionWhenReady",
-                                          service_name,
-                                          should_start_session);
-}
-
-/**
- * gdm_greeter_call_select_session:
- *
- * @client: a #GdmGreeterClient
- * @session: session from /usr/share/xsessions to start
- *
- * Select a session for the user to login with.
- *
- * Normally, you would call this if the user selects a specific session in
- * a list on screen somewhere.
- */
-void
-gdm_greeter_client_call_select_session (GdmGreeterClient *client,
-                                        const char       *session)
-{
-        send_dbus_string_method (client->priv->connection,
-                                 "SelectSession",
-                                 session);
-}
-
-/**
- * gdm_greeter_call_select_user:
- *
- * @client: a #GdmGreeterClient
- * @user:  a user name
- *
- * Select a user to login with.
- *
- * Normally, you would call this if the user selects a specific session in
- * a list on screen somewhere.
- */
-void
-gdm_greeter_client_call_select_user (GdmGreeterClient *client,
-                                     const char       *user)
-{
-        send_dbus_string_method (client->priv->connection,
-                                 "SelectUser",
-                                 user);
-}
-
-/**
- * gdm_greeter_call_select_hostname:
- *
- * @client: a #GdmGreeterClient
- * @hostname:  a hostname
- *
- * Select a user to login with.
- *
- * Normally, you would call this from a chooser to select a specific host.
- */
-void
-gdm_greeter_client_call_select_hostname (GdmGreeterClient *client,
-                                         const char       *hostname)
-{
-        send_dbus_string_method (client->priv->connection,
-                                 "SelectHostname",
-                                 hostname);
-}
-
-/**
- * gdm_greeter_call_canel:
- *
- * @client: a #GdmGreeterClient
- *
- * Cancel all pending PAM conversations.
- *
- * Normally you would call this if the user hits a Cancel button when
- * asked a question they don't want to answer.
- */
-void
-gdm_greeter_client_call_cancel (GdmGreeterClient *client)
-{
-        send_dbus_void_method (client->priv->connection,
-                               "Cancel");
-}
-
-/**
- * gdm_greeter_call_disconnect:
- *
- * @client: a #GdmGreeterClient
- *
- * Disconnect from gdm slave.
- *
- * You shouldn't call this unless the connection
- * is remote.
- */
-void
-gdm_greeter_client_call_disconnect (GdmGreeterClient *client)
-{
-        g_return_if_fail (gdm_greeter_client_get_display_is_local (client) == FALSE);
-
-        send_dbus_void_method (client->priv->connection,
-                               "Disconnect");
-}
-
-static gboolean
-send_get_display_id (GdmGreeterClient *client,
-                     const char       *method,
-                     char            **answerp)
-{
-        DBusError       error;
-        DBusMessage    *message;
-        DBusMessage    *reply;
-        DBusMessageIter iter;
-        gboolean        ret;
-        const char     *answer;
-
-        ret = FALSE;
-
-        g_debug ("GdmGreeterClient: Calling %s", method);
-        message = dbus_message_new_method_call (NULL,
-                                                GREETER_SERVER_DBUS_PATH,
-                                                GREETER_SERVER_DBUS_INTERFACE,
-                                                method);
-        if (message == NULL) {
-                g_warning ("Couldn't allocate the D-Bus message");
-                return FALSE;
-        }
-
-        dbus_error_init (&error);
-        reply = dbus_connection_send_with_reply_and_block (client->priv->connection,
-                                                           message,
-                                                           -1,
-                                                           &error);
-        dbus_message_unref (message);
-
-        if (dbus_error_is_set (&error)) {
-                g_warning ("%s %s raised: %s\n",
-                           method,
-                           error.name,
-                           error.message);
-                goto out;
-        }
-
-        dbus_message_iter_init (reply, &iter);
-        dbus_message_iter_get_basic (&iter, &answer);
-        if (answerp != NULL) {
-                *answerp = g_strdup (answer);
-        }
-        ret = TRUE;
-
-        dbus_message_unref (reply);
-        dbus_connection_flush (client->priv->connection);
 
  out:
-
-        return ret;
-}
-
-
-static char *
-gdm_greeter_client_call_get_display_id (GdmGreeterClient *client)
-{
-        char *display_id;
-
-        display_id = NULL;
-        send_get_display_id (client,
-                             "GetDisplayId",
-                             &display_id);
-
-        return display_id;
+        return client->priv->connection != NULL;
 }
 
 static void
-cache_display_values (GdmGreeterClient *client)
+on_connected (GDBusConnection    *connection,
+              GAsyncResult       *result,
+              GSimpleAsyncResult *operation_result)
 {
-        DBusGProxy      *display_proxy;
-        DBusGConnection *connection;
-        GError          *error;
-        gboolean         res;
+        GError *error;
 
-        g_free (client->priv->display_id);
-        client->priv->display_id = gdm_greeter_client_call_get_display_id (client);
-        if (client->priv->display_id == NULL) {
+        error = NULL;
+        if (!g_dbus_connection_new_for_address_finish (result,
+                                                       &error)) {
+                g_simple_async_result_take_error (operation_result, error);
+                g_simple_async_result_complete_in_idle (operation_result);
                 return;
         }
 
+        g_simple_async_result_set_op_res_gpointer (operation_result,
+                                                   g_object_ref (connection),
+                                                   (GDestroyNotify)
+                                                   g_object_unref);
+        g_simple_async_result_complete_in_idle (operation_result);
+}
+
+static void
+on_session_opened (GdmManager         *manager,
+                   GAsyncResult       *result,
+                   GSimpleAsyncResult *operation_result)
+{
+        GdmGreeterClient *client;
+        GCancellable     *cancellable;
+        GError           *error;
+
+        client = GDM_GREETER_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (operation_result)));
+
         error = NULL;
-        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-        if (connection == NULL) {
-                if (error != NULL) {
-                        g_critical ("error getting system bus: %s", error->message);
-                        g_error_free (error);
-                }
+        if (!gdm_manager_call_open_session_finish (manager,
+                                                   &client->priv->address,
+                                                   result,
+                                                   &error)) {
+                g_simple_async_result_take_error (operation_result, error);
+                g_simple_async_result_complete_in_idle (operation_result);
                 return;
         }
 
-        g_debug ("GdmGreeterClient: Creating proxy for %s", client->priv->display_id);
-        display_proxy = dbus_g_proxy_new_for_name (connection,
-                                                   GDM_DBUS_NAME,
-                                                   client->priv->display_id,
-                                                   GDM_DBUS_DISPLAY_INTERFACE);
-        /* cache some values up front */
+        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        g_dbus_connection_new_for_address (client->priv->address,
+                                           G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
+                                           NULL,
+                                           cancellable,
+                                           (GAsyncReadyCallback)
+                                           on_connected,
+                                           operation_result);
+}
+
+static void
+on_got_manager_for_opening_connection (GdmGreeterClient    *client,
+                                       GAsyncResult        *result,
+                                       GSimpleAsyncResult  *operation_result)
+{
+        GCancellable *cancellable;
+        GError       *error;
+
         error = NULL;
-        res = dbus_g_proxy_call (display_proxy,
-                                 "IsLocal",
-                                 &error,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_BOOLEAN, &client->priv->display_is_local,
-                                 G_TYPE_INVALID);
-        if (! res) {
-                if (error != NULL) {
-                        g_warning ("Failed to get value: %s", error->message);
-                        g_error_free (error);
-                } else {
-                        g_warning ("Failed to get value");
-                }
+        if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
+                                                   &error)) {
+                g_simple_async_result_take_error (operation_result, error);
+                g_simple_async_result_complete_in_idle (operation_result);
+                return;
         }
+
+        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        gdm_manager_call_open_session (client->priv->manager,
+                                       cancellable,
+                                       (GAsyncReadyCallback)
+                                       on_session_opened,
+                                       operation_result);
 }
 
-static DBusHandlerResult
-client_dbus_handle_message (DBusConnection *connection,
-                            DBusMessage    *message,
-                            void           *user_data,
-                            dbus_bool_t     local_interface)
+static void
+finish_pending_opens (GdmGreeterClient *client,
+                      GError    *error)
 {
-        GdmGreeterClient *client = GDM_GREETER_CLIENT (user_data);
+    GList *node;
 
-        g_return_val_if_fail (connection != NULL, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
-        g_return_val_if_fail (message != NULL, DBUS_HANDLER_RESULT_NOT_YET_HANDLED);
+    for (node = client->priv->pending_opens;
+         node != NULL;
+         node = node->next) {
 
-        if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "InfoQuery")) {
-                on_info_query (client, message);
-        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "SecretInfoQuery")) {
-                on_secret_info_query (client, message);
-        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "Info")) {
-                on_info (client, message);
-        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "Problem")) {
-                on_problem (client, message);
-        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "ServiceUnavailable")) {
-                on_service_unavailable (client, message);
-        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "Ready")) {
-                on_ready (client, message);
-        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "ConversationStopped")) {
-                on_conversation_stopped (client, message);
-        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "Reset")) {
-                on_reset (client, message);
-        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "AuthenticationFailed")) {
-                on_authentication_failed (client, message);
-        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "SelectedUserChanged")) {
-                on_selected_user_changed (client, message);
-        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "DefaultSessionNameChanged")) {
-                on_default_session_changed (client, message);
-        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "TimedLoginRequested")) {
-                on_timed_login_requested (client, message);
-        } else if (dbus_message_is_signal (message, GREETER_SERVER_DBUS_INTERFACE, "SessionOpened")) {
-                on_session_opened (client, message);
-        } else {
-                return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-        }
+        GSimpleAsyncResult *pending_result = node->data;
 
-        return DBUS_HANDLER_RESULT_HANDLED;
+        g_simple_async_result_set_from_error (pending_result, error);
+        g_simple_async_result_complete_in_idle (pending_result);
+        g_object_unref (pending_result);
+    }
+    g_clear_pointer (&client->priv->pending_opens,
+                     (GDestroyNotify) g_list_free);
 }
 
-static DBusHandlerResult
-client_dbus_filter_function (DBusConnection *connection,
-                             DBusMessage    *message,
-                             void           *user_data)
+static gboolean
+gdm_greeter_client_open_connection_finish (GdmGreeterClient *client,
+                                   GAsyncResult   *result,
+                                   GError        **error)
 {
-        GdmGreeterClient *client = GDM_GREETER_CLIENT (user_data);
-        const char       *path;
+        g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
 
-        path = dbus_message_get_path (message);
-
-        g_debug ("GdmGreeterClient: obj_path=%s interface=%s method=%s",
-                 dbus_message_get_path (message),
-                 dbus_message_get_interface (message),
-                 dbus_message_get_member (message));
-
-        if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")
-            && strcmp (path, DBUS_PATH_LOCAL) == 0) {
-
-                g_message ("Got disconnected from the session message bus");
-
-                dbus_connection_unref (connection);
-                client->priv->connection = NULL;
-
-        } else if (dbus_message_is_signal (message,
-                                           DBUS_INTERFACE_DBUS,
-                                           "NameOwnerChanged")) {
-                g_debug ("GdmGreeterClient: Name owner changed?");
-        } else {
-                return client_dbus_handle_message (connection, message, user_data, FALSE);
+        if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
+                                                   error)) {
+            finish_pending_opens (client, *error);
+            return FALSE;
         }
 
-        return DBUS_HANDLER_RESULT_HANDLED;
+        if (client->priv->connection == NULL) {
+                client->priv->connection = g_object_ref (g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result)));
+        }
+
+        finish_pending_opens (client, NULL);
+        return TRUE;
+}
+
+static void
+gdm_greeter_client_open_connection (GdmGreeterClient    *client,
+                                    GCancellable        *cancellable,
+                                    GAsyncReadyCallback  callback,
+                                    gpointer             user_data)
+{
+        GSimpleAsyncResult *operation_result;
+
+        g_return_if_fail (GDM_IS_GREETER_CLIENT (client));
+
+        operation_result = g_simple_async_result_new (G_OBJECT (client),
+                                                      callback,
+                                                      user_data,
+                                                      gdm_greeter_client_open_connection);
+        g_simple_async_result_set_check_cancellable (operation_result, cancellable);
+
+        g_object_set_data (G_OBJECT (operation_result),
+                           "cancellable",
+                           cancellable);
+
+        if (client->priv->connection != NULL) {
+            g_simple_async_result_set_op_res_gpointer (operation_result,
+                                                       g_object_ref (client->priv->connection),
+                                                       (GDestroyNotify)
+                                                       g_object_unref);
+            g_simple_async_result_complete_in_idle (operation_result);
+            return;
+        }
+
+        if (client->priv->pending_opens == NULL) {
+            get_manager (client,
+                         cancellable,
+                         (GAsyncReadyCallback)
+                         on_got_manager_for_opening_connection,
+                         operation_result);
+        } else {
+                client->priv->pending_opens = g_list_prepend (client->priv->pending_opens,
+                                                              operation_result);
+        }
+
 }
 
 /**
- * gdm_greeter_client_open_connection:
- *
+ * gdm_greeter_client_open_reauthentication_channel_sync:
  * @client: a #GdmGreeterClient
+ * @username: user to reauthenticate
+ * @cancellable: a #GCancellable
+ * @error: a #GError
  *
- * Initiates a connection to GDM daemon "slave" process.
+ * Gets a #GdmUserVerifier object that can be used to
+ * reauthenticate an already logged in user. Free with
+ * g_object_unref to close reauthentication channel.
  *
- * This function should be called before doing other calls.
- *
- * Returns: %TRUE if connected, or %FALSE if unavailable
+ * Returns: (transfer full): #GdmUserVerifier or %NULL if @username is not
+ * already logged in.
  */
-gboolean
-gdm_greeter_client_open_connection (GdmGreeterClient  *client,
-                                    GError           **error)
+GdmUserVerifier *
+gdm_greeter_client_open_reauthentication_channel_sync (GdmGreeterClient     *client,
+                                               const char    *username,
+                                               GCancellable  *cancellable,
+                                               GError       **error)
 {
-        DBusError local_error;
+        GDBusConnection *connection;
+        GdmUserVerifier *user_verifier = NULL;
+        gboolean         ret;
+        char            *address;
 
         g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
-        g_return_val_if_fail (!client->priv->is_connected, TRUE);
 
-        if (client->priv->address == NULL) {
-                g_warning ("GDM_GREETER_DBUS_ADDRESS not set");
-                g_set_error (error,
-                             GDM_GREETER_CLIENT_ERROR,
-                             GDM_GREETER_CLIENT_ERROR_GENERIC,
-                             "GDM_GREETER_DBUS_ADDRESS not set");
+        if (client->priv->manager == NULL) {
+                client->priv->manager = gdm_manager_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+                                                                            G_DBUS_PROXY_FLAGS_NONE,
+                                                                            "org.gnome.DisplayManager",
+                                                                            "/org/gnome/DisplayManager/Manager",
+                                                                            cancellable,
+                                                                            error);
+
+                if (client->priv->manager == NULL) {
+                        goto out;
+                }
+        } else {
+                client->priv->manager = g_object_ref (client->priv->manager);
+        }
+
+        ret = gdm_manager_call_open_reauthentication_channel_sync (client->priv->manager,
+                                                                   username,
+                                                                   &address,
+                                                                   cancellable,
+                                                                   error);
+
+        if (!ret) {
                 goto out;
         }
 
         g_debug ("GdmGreeterClient: connecting to address: %s", client->priv->address);
 
-        dbus_error_init (&local_error);
-        client->priv->connection = dbus_connection_open (client->priv->address, &local_error);
-        if (client->priv->connection == NULL) {
-                if (dbus_error_is_set (&local_error)) {
-                        g_warning ("error opening connection: %s", local_error.message);
-                        g_set_error (error,
-                                     GDM_GREETER_CLIENT_ERROR,
-                                     GDM_GREETER_CLIENT_ERROR_GENERIC,
-                                     "%s", local_error.message);
-                        dbus_error_free (&local_error);
-                } else {
-                        g_warning ("Unable to open connection");
-                }
+        connection = g_dbus_connection_new_for_address_sync (address,
+                                                             G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
+                                                             NULL,
+                                                             cancellable,
+                                                             error);
+
+        if (connection == NULL) {
+                g_free (address);
                 goto out;
         }
+        g_free (address);
 
-        dbus_connection_setup_with_g_main (client->priv->connection, NULL);
-        dbus_connection_set_exit_on_disconnect (client->priv->connection, TRUE);
+        user_verifier = gdm_user_verifier_proxy_new_sync (connection,
+                                                          G_DBUS_PROXY_FLAGS_NONE,
+                                                          NULL,
+                                                          SESSION_DBUS_PATH,
+                                                          cancellable,
+                                                          error);
 
-        dbus_connection_add_filter (client->priv->connection,
-                                    client_dbus_filter_function,
-                                    client,
-                                    NULL);
+        if (user_verifier != NULL) {
+                g_object_weak_ref (G_OBJECT (user_verifier),
+                                   (GWeakNotify)
+                                   g_object_unref,
+                                   connection);
 
-        cache_display_values (client);
-
-
-        client->priv->is_connected = TRUE;
+                g_object_weak_ref (G_OBJECT (user_verifier),
+                                   (GWeakNotify)
+                                   g_clear_object,
+                                   &client->priv->manager);
+        }
 
  out:
-        return client->priv->is_connected;
+        return user_verifier;
 }
 
-static void
-gdm_greeter_client_set_property (GObject      *object,
-                                 guint         prop_id,
-                                 const GValue *value,
-                                 GParamSpec   *pspec)
+/**
+ * gdm_greeter_client_open_reauthentication_channel:
+ * @client: a #GdmGreeterClient
+ * @username: user to reauthenticate
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: The data to pass to @callback
+ * @cancellable: a #GCancellable
+ *
+ * Gets a #GdmUserVerifier object that can be used to
+ * reauthenticate an already logged in user.
+ */
+void
+gdm_greeter_client_open_reauthentication_channel (GdmGreeterClient    *client,
+                                                  const char          *username,
+                                                  GCancellable        *cancellable,
+                                                  GAsyncReadyCallback  callback,
+                                                  gpointer             user_data)
 {
-        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        GSimpleAsyncResult *operation_result;
+
+        g_return_if_fail (GDM_IS_GREETER_CLIENT (client));
+
+        operation_result = g_simple_async_result_new (G_OBJECT (client),
+                                                      callback,
+                                                      user_data,
+                                                      gdm_greeter_client_open_reauthentication_channel);
+        g_simple_async_result_set_check_cancellable (operation_result, cancellable);
+        g_object_set_data (G_OBJECT (operation_result),
+                           "cancellable",
+                           cancellable);
+
+        g_object_set_data_full (G_OBJECT (operation_result),
+                                "username",
+                                g_strdup (username),
+                                (GDestroyNotify)
+                                g_free);
+
+        get_manager (client,
+                     cancellable,
+                     (GAsyncReadyCallback)
+                     on_got_manager_for_reauthentication,
+                     operation_result);
 }
 
-static void
-gdm_greeter_client_get_property (GObject    *object,
-                                 guint       prop_id,
-                                 GValue     *value,
-                                 GParamSpec *pspec)
+/**
+ * gdm_greeter_client_open_reauthentication_channel_finish:
+ * @client: a #GdmGreeterClient
+ * @result: The #GAsyncResult from the callback
+ * @error: a #GError
+ *
+ * Finishes an operation started with
+ * gdm_greeter_client_open_reauthentication_channel().
+ *
+ * Returns: (transfer full):  a #GdmUserVerifier
+ */
+GdmUserVerifier *
+gdm_greeter_client_open_reauthentication_channel_finish (GdmGreeterClient  *client,
+                                                 GAsyncResult    *result,
+                                                 GError         **error)
 {
-        GdmGreeterClient *self;
+        GdmUserVerifier *user_verifier;
 
-        self = GDM_GREETER_CLIENT (object);
+        g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
 
-        switch (prop_id) {
-        case PROP_DISPLAY_IS_LOCAL:
-                g_value_set_boolean (value, self->priv->display_is_local);
-                break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-                break;
+        if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
+                                                   error)) {
+                return NULL;
         }
+
+        user_verifier = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+
+        return g_object_ref (user_verifier);
+}
+
+/**
+ * gdm_greeter_client_get_user_verifier_sync:
+ * @client: a #GdmGreeterClient
+ * @cancellable: a #GCancellable
+ * @error: a #GError
+ *
+ * Gets a #GdmUserVerifier object that can be used to
+ * verify a user's local account.
+ *
+ * Returns: (transfer full): #GdmUserVerifier or %NULL if not connected
+ */
+GdmUserVerifier *
+gdm_greeter_client_get_user_verifier_sync (GdmGreeterClient     *client,
+                                   GCancellable  *cancellable,
+                                   GError       **error)
+{
+        if (client->priv->user_verifier != NULL) {
+                return g_object_ref (client->priv->user_verifier);
+        }
+
+        if (!gdm_greeter_client_open_connection_sync (client, cancellable, error)) {
+                return NULL;
+        }
+
+        client->priv->user_verifier = gdm_user_verifier_proxy_new_sync (client->priv->connection,
+                                                                        G_DBUS_PROXY_FLAGS_NONE,
+                                                                        NULL,
+                                                                        SESSION_DBUS_PATH,
+                                                                        cancellable,
+                                                                        error);
+
+        if (client->priv->user_verifier != NULL) {
+                g_object_add_weak_pointer (G_OBJECT (client->priv->user_verifier),
+                                           (gpointer *)
+                                           &client->priv->user_verifier);
+                g_object_weak_ref (G_OBJECT (client->priv->user_verifier),
+                                   (GWeakNotify)
+                                   g_clear_object,
+                                   &client->priv->manager);
+                g_object_weak_ref (G_OBJECT (client->priv->user_verifier),
+                                   (GWeakNotify)
+                                   g_clear_object,
+                                   &client->priv->connection);
+        }
+
+        return client->priv->user_verifier;
+}
+
+static void
+on_connection_opened_for_user_verifier (GdmGreeterClient     *client,
+                                        GAsyncResult       *result,
+                                        GSimpleAsyncResult *operation_result)
+{
+        GCancellable *cancellable;
+        GError       *error;
+
+        error = NULL;
+        if (!gdm_greeter_client_open_connection_finish (client, result, &error)) {
+                g_simple_async_result_take_error (operation_result, error);
+                g_simple_async_result_complete_in_idle (operation_result);
+                return;
+        }
+
+        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        gdm_user_verifier_proxy_new (client->priv->connection,
+                                     G_DBUS_PROXY_FLAGS_NONE,
+                                     NULL,
+                                     SESSION_DBUS_PATH,
+                                     cancellable,
+                                     (GAsyncReadyCallback)
+                                     on_user_verifier_proxy_created,
+                                     operation_result);
+}
+
+/**
+ * gdm_greeter_client_get_user_verifier:
+ * @client: a #GdmGreeterClient
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: The data to pass to @callback
+ * @cancellable: a #GCancellable
+ *
+ * Gets a #GdmUserVerifier object that can be used to
+ * verify a user's local account.
+ */
+void
+gdm_greeter_client_get_user_verifier (GdmGreeterClient    *client,
+                                      GCancellable        *cancellable,
+                                      GAsyncReadyCallback  callback,
+                                      gpointer             user_data)
+{
+        GSimpleAsyncResult *operation_result;
+
+        g_return_if_fail (GDM_IS_GREETER_CLIENT (client));
+
+        operation_result = g_simple_async_result_new (G_OBJECT (client),
+                                                      callback,
+                                                      user_data,
+                                                      gdm_greeter_client_get_user_verifier);
+        g_simple_async_result_set_check_cancellable (operation_result, cancellable);
+
+        g_object_set_data (G_OBJECT (operation_result),
+                           "cancellable",
+                           cancellable);
+
+        if (client->priv->user_verifier != NULL) {
+                g_simple_async_result_set_op_res_gpointer (operation_result,
+                                                           g_object_ref (client->priv->user_verifier),
+                                                           (GDestroyNotify)
+                                                           g_object_unref);
+                g_simple_async_result_complete_in_idle (operation_result);
+                return;
+        }
+
+        gdm_greeter_client_open_connection (client,
+                                    cancellable,
+                                    (GAsyncReadyCallback)
+                                    on_connection_opened_for_user_verifier,
+                                    operation_result);
+}
+
+/**
+ * gdm_greeter_client_get_user_verifier_finish:
+ * @client: a #GdmGreeterClient
+ * @result: The #GAsyncResult from the callback
+ * @error: a #GError
+ *
+ * Finishes an operation started with
+ * gdm_greeter_client_get_user_verifier().
+ *
+ * Returns: (transfer full): a #GdmUserVerifier
+ */
+GdmUserVerifier *
+gdm_greeter_client_get_user_verifier_finish (GdmGreeterClient  *client,
+                                     GAsyncResult    *result,
+                                     GError         **error)
+{
+        GdmUserVerifier *user_verifier;
+
+        g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
+
+        if (client->priv->user_verifier != NULL) {
+                return g_object_ref (client->priv->user_verifier);
+        } else if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
+                                                          error)) {
+                return NULL;
+        }
+
+        user_verifier = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+
+        client->priv->user_verifier = user_verifier;
+
+        g_object_add_weak_pointer (G_OBJECT (client->priv->user_verifier),
+                                   (gpointer *)
+                                   &client->priv->user_verifier);
+
+        g_object_weak_ref (G_OBJECT (client->priv->user_verifier),
+                           (GWeakNotify)
+                           g_object_unref,
+                           client->priv->connection);
+
+        g_object_weak_ref (G_OBJECT (client->priv->user_verifier),
+                           (GWeakNotify)
+                           g_clear_object,
+                           &client->priv->manager);
+
+        return g_object_ref (user_verifier);
+}
+
+static void
+on_greeter_proxy_created (GdmGreeter         *greeter,
+                          GAsyncResult       *result,
+                          GSimpleAsyncResult *operation_result)
+{
+
+        GError       *error;
+
+        if (!gdm_greeter_proxy_new_finish (result, &error)) {
+                g_simple_async_result_take_error (operation_result, error);
+                g_simple_async_result_complete_in_idle (operation_result);
+                return;
+        }
+
+        g_simple_async_result_set_op_res_gpointer (operation_result,
+                                                   g_object_ref (greeter),
+                                                   (GDestroyNotify)
+                                                   g_object_unref);
+        g_simple_async_result_complete_in_idle (operation_result);
+}
+
+static void
+on_connection_opened_for_greeter (GdmGreeterClient     *client,
+                                  GAsyncResult       *result,
+                                  GSimpleAsyncResult *operation_result)
+{
+        GCancellable *cancellable;
+        GError       *error;
+
+        error = NULL;
+        if (!gdm_greeter_client_open_connection_finish (client, result, &error)) {
+                g_simple_async_result_take_error (operation_result, error);
+                g_simple_async_result_complete_in_idle (operation_result);
+                return;
+        }
+
+        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        gdm_greeter_proxy_new (client->priv->connection,
+                               G_DBUS_PROXY_FLAGS_NONE,
+                               NULL,
+                               SESSION_DBUS_PATH,
+                               cancellable,
+                               (GAsyncReadyCallback)
+                               on_greeter_proxy_created,
+                               operation_result);
+}
+
+/**
+ * gdm_greeter_client_get_greeter:
+ * @client: a #GdmGreeterClient
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: The data to pass to @callback
+ * @cancellable: a #GCancellable
+ *
+ * Gets a #GdmGreeter object that can be used to
+ * verify a user's local account.
+ */
+void
+gdm_greeter_client_get_greeter (GdmGreeterClient    *client,
+                                GCancellable        *cancellable,
+                                GAsyncReadyCallback  callback,
+                                gpointer             user_data)
+{
+        GSimpleAsyncResult *operation_result;
+
+        g_return_if_fail (GDM_IS_GREETER_CLIENT (client));
+
+        operation_result = g_simple_async_result_new (G_OBJECT (client),
+                                                      callback,
+                                                      user_data,
+                                                      gdm_greeter_client_get_greeter);
+        g_simple_async_result_set_check_cancellable (operation_result, cancellable);
+
+        g_object_set_data (G_OBJECT (operation_result),
+                           "cancellable",
+                           cancellable);
+
+        if (client->priv->greeter != NULL) {
+                g_simple_async_result_set_op_res_gpointer (operation_result,
+                                                           g_object_ref (client->priv->greeter),
+                                                           (GDestroyNotify)
+                                                           g_object_unref);
+                g_simple_async_result_complete_in_idle (operation_result);
+                return;
+        }
+
+        gdm_greeter_client_open_connection (client,
+                                    cancellable,
+                                    (GAsyncReadyCallback)
+                                    on_connection_opened_for_greeter,
+                                    operation_result);
+}
+
+/**
+ * gdm_greeter_client_get_greeter_finish:
+ * @client: a #GdmGreeterClient
+ * @result: The #GAsyncResult from the callback
+ * @error: a #GError
+ *
+ * Finishes an operation started with
+ * gdm_greeter_client_get_greeter().
+ *
+ * Returns: (transfer full): a #GdmGreeter
+ */
+GdmGreeter *
+gdm_greeter_client_get_greeter_finish (GdmGreeterClient  *client,
+                               GAsyncResult    *result,
+                               GError         **error)
+{
+        GdmGreeter *greeter;
+
+        g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
+
+        if (client->priv->greeter != NULL) {
+                return g_object_ref (client->priv->greeter);
+        } else if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
+                                                          error)) {
+                return NULL;
+        }
+
+        greeter = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+
+        client->priv->greeter = greeter;
+
+        g_object_add_weak_pointer (G_OBJECT (client->priv->greeter),
+                                   (gpointer *)
+                                   &client->priv->greeter);
+
+        g_object_weak_ref (G_OBJECT (client->priv->greeter),
+                           (GWeakNotify)
+                           g_object_unref,
+                           client->priv->connection);
+
+        g_object_weak_ref (G_OBJECT (client->priv->greeter),
+                           (GWeakNotify)
+                           g_clear_object,
+                           &client->priv->manager);
+
+        return g_object_ref (greeter);
+}
+
+/**
+ * gdm_greeter_client_get_greeter_sync:
+ * @client: a #GdmGreeterClient
+ * @cancellable: a #GCancellable
+ * @error: a #GError
+ *
+ * Gets a #GdmGreeter object that can be used
+ * to do do various login screen related tasks, such
+ * as selecting a users session, and starting that
+ * session.
+ *
+ * Returns: (transfer full): #GdmGreeter or %NULL if caller is not a greeter
+ */
+GdmGreeter *
+gdm_greeter_client_get_greeter_sync (GdmGreeterClient     *client,
+                             GCancellable  *cancellable,
+                             GError       **error)
+{
+        if (client->priv->greeter != NULL) {
+                return g_object_ref (client->priv->greeter);
+        }
+
+        if (!gdm_greeter_client_open_connection_sync (client, cancellable, error)) {
+                return NULL;
+        }
+
+        client->priv->greeter = gdm_greeter_proxy_new_sync (client->priv->connection,
+                                                            G_DBUS_PROXY_FLAGS_NONE,
+                                                            NULL,
+                                                            SESSION_DBUS_PATH,
+                                                            cancellable,
+                                                            error);
+
+        if (client->priv->greeter != NULL) {
+                g_object_add_weak_pointer (G_OBJECT (client->priv->greeter),
+                                           (gpointer *)
+                                           &client->priv->greeter);
+                g_object_weak_ref (G_OBJECT (client->priv->greeter),
+                                   (GWeakNotify)
+                                   g_clear_object,
+                                   &client->priv->manager);
+                g_object_weak_ref (G_OBJECT (client->priv->greeter),
+                                   (GWeakNotify)
+                                   g_clear_object,
+                                   &client->priv->connection);
+        }
+
+        return client->priv->greeter;
+}
+
+static void
+on_remote_greeter_proxy_created (GdmRemoteGreeter   *remote_greeter,
+                                 GAsyncResult       *result,
+                                 GSimpleAsyncResult *operation_result)
+{
+
+        GError       *error;
+
+        if (!gdm_remote_greeter_proxy_new_finish (result, &error)) {
+                g_simple_async_result_take_error (operation_result, error);
+                g_simple_async_result_complete_in_idle (operation_result);
+                return;
+        }
+
+        g_simple_async_result_set_op_res_gpointer (operation_result,
+                                                   g_object_ref (remote_greeter),
+                                                   (GDestroyNotify)
+                                                   g_object_unref);
+        g_simple_async_result_complete_in_idle (operation_result);
+}
+
+static void
+on_connection_opened_for_remote_greeter (GdmGreeterClient     *client,
+                                         GAsyncResult       *result,
+                                         GSimpleAsyncResult *operation_result)
+{
+        GCancellable *cancellable;
+        GError       *error;
+
+        error = NULL;
+        if (!gdm_greeter_client_open_connection_finish (client, result, &error)) {
+                g_simple_async_result_take_error (operation_result, error);
+                g_simple_async_result_complete_in_idle (operation_result);
+                return;
+        }
+
+        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        gdm_remote_greeter_proxy_new (client->priv->connection,
+                                      G_DBUS_PROXY_FLAGS_NONE,
+                                      NULL,
+                                      SESSION_DBUS_PATH,
+                                      cancellable,
+                                      (GAsyncReadyCallback)
+                                      on_remote_greeter_proxy_created,
+                                      operation_result);
+}
+
+/**
+ * gdm_greeter_client_get_remote_greeter:
+ * @client: a #GdmGreeterClient
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: The data to pass to @callback
+ * @cancellable: a #GCancellable
+ *
+ * Gets a #GdmRemoteGreeter object that can be used to
+ * verify a user's local account.
+ */
+void
+gdm_greeter_client_get_remote_greeter (GdmGreeterClient    *client,
+                                       GCancellable        *cancellable,
+                                       GAsyncReadyCallback  callback,
+                                       gpointer             user_data)
+{
+        GSimpleAsyncResult *operation_result;
+
+        g_return_if_fail (GDM_IS_GREETER_CLIENT (client));
+
+        operation_result = g_simple_async_result_new (G_OBJECT (client),
+                                                      callback,
+                                                      user_data,
+                                                      gdm_greeter_client_get_remote_greeter);
+        g_simple_async_result_set_check_cancellable (operation_result, cancellable);
+
+        g_object_set_data (G_OBJECT (operation_result),
+                           "cancellable",
+                           cancellable);
+
+        if (client->priv->remote_greeter != NULL) {
+                g_simple_async_result_set_op_res_gpointer (operation_result,
+                                                           g_object_ref (client->priv->remote_greeter),
+                                                           (GDestroyNotify)
+                                                           g_object_unref);
+                g_simple_async_result_complete_in_idle (operation_result);
+                return;
+        }
+
+        gdm_greeter_client_open_connection (client,
+                                    cancellable,
+                                    (GAsyncReadyCallback)
+                                    on_connection_opened_for_remote_greeter,
+                                    operation_result);
+}
+
+/**
+ * gdm_greeter_client_get_remote_greeter_finish:
+ * @client: a #GdmGreeterClient
+ * @result: The #GAsyncResult from the callback
+ * @error: a #GError
+ *
+ * Finishes an operation started with
+ * gdm_greeter_client_get_remote_greeter().
+ *
+ * Returns: (transfer full): a #GdmRemoteGreeter
+ */
+GdmRemoteGreeter *
+gdm_greeter_client_get_remote_greeter_finish (GdmGreeterClient     *client,
+                                      GAsyncResult  *result,
+                                      GError       **error)
+{
+        GdmRemoteGreeter *remote_greeter;
+
+        g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
+
+        if (client->priv->remote_greeter != NULL) {
+                return g_object_ref (client->priv->remote_greeter);
+        } else if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
+                                                          error)) {
+                return NULL;
+        }
+
+        remote_greeter = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+
+        client->priv->remote_greeter = remote_greeter;
+
+        g_object_add_weak_pointer (G_OBJECT (client->priv->remote_greeter),
+                                   (gpointer *)
+                                   &client->priv->remote_greeter);
+
+        g_object_weak_ref (G_OBJECT (client->priv->remote_greeter),
+                           (GWeakNotify)
+                           g_object_unref,
+                           client->priv->connection);
+
+        g_object_weak_ref (G_OBJECT (client->priv->remote_greeter),
+                           (GWeakNotify)
+                           g_clear_object,
+                           &client->priv->manager);
+
+        return g_object_ref (remote_greeter);
+}
+
+/**
+ * gdm_greeter_client_get_remote_greeter_sync:
+ * @client: a #GdmGreeterClient
+ * @cancellable: a #GCancellable
+ * @error: a #GError
+ *
+ * Gets a #GdmRemoteGreeter object that can be used
+ * to do do various remote login screen related tasks,
+ * such as disconnecting.
+ *
+ * Returns: (transfer full): #GdmRemoteGreeter or %NULL if caller is not remote
+ */
+GdmRemoteGreeter *
+gdm_greeter_client_get_remote_greeter_sync (GdmGreeterClient     *client,
+                                    GCancellable  *cancellable,
+                                    GError       **error)
+{
+        if (client->priv->remote_greeter != NULL) {
+                return g_object_ref (client->priv->remote_greeter);
+        }
+
+        if (!gdm_greeter_client_open_connection_sync (client, cancellable, error)) {
+                return NULL;
+        }
+
+        client->priv->remote_greeter = gdm_remote_greeter_proxy_new_sync (client->priv->connection,
+                                                                          G_DBUS_PROXY_FLAGS_NONE,
+                                                                          NULL,
+                                                                          SESSION_DBUS_PATH,
+                                                                          cancellable,
+                                                                          error);
+
+        if (client->priv->remote_greeter != NULL) {
+                g_object_add_weak_pointer (G_OBJECT (client->priv->remote_greeter),
+                                           (gpointer *)
+                                           &client->priv->remote_greeter);
+                g_object_weak_ref (G_OBJECT (client->priv->remote_greeter),
+                                   (GWeakNotify)
+                                   g_clear_object,
+                                   &client->priv->manager);
+                g_object_weak_ref (G_OBJECT (client->priv->remote_greeter),
+                                   (GWeakNotify)
+                                   g_clear_object,
+                                   &client->priv->connection);
+        }
+
+        return client->priv->remote_greeter;
+}
+
+static void
+on_chooser_proxy_created (GdmChooser         *chooser,
+                          GAsyncResult       *result,
+                          GSimpleAsyncResult *operation_result)
+{
+
+        GError       *error;
+
+        if (!gdm_chooser_proxy_new_finish (result, &error)) {
+                g_simple_async_result_take_error (operation_result, error);
+                g_simple_async_result_complete_in_idle (operation_result);
+                return;
+        }
+
+        g_simple_async_result_set_op_res_gpointer (operation_result,
+                                                   g_object_ref (chooser),
+                                                   (GDestroyNotify)
+                                                   g_object_unref);
+        g_simple_async_result_complete_in_idle (operation_result);
+}
+
+static void
+on_connection_opened_for_chooser (GdmGreeterClient     *client,
+                                  GAsyncResult       *result,
+                                  GSimpleAsyncResult *operation_result)
+{
+        GCancellable *cancellable;
+        GError       *error;
+
+        error = NULL;
+        if (!gdm_greeter_client_open_connection_finish (client, result, &error)) {
+                g_simple_async_result_take_error (operation_result, error);
+                g_simple_async_result_complete_in_idle (operation_result);
+                return;
+        }
+
+        cancellable = g_object_get_data (G_OBJECT (operation_result), "cancellable");
+        gdm_chooser_proxy_new (client->priv->connection,
+                               G_DBUS_PROXY_FLAGS_NONE,
+                               NULL,
+                               SESSION_DBUS_PATH,
+                               cancellable,
+                               (GAsyncReadyCallback)
+                               on_chooser_proxy_created,
+                               operation_result);
+}
+
+/**
+ * gdm_greeter_client_get_chooser:
+ * @client: a #GdmGreeterClient
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: The data to pass to @callback
+ * @cancellable: a #GCancellable
+ *
+ * Gets a #GdmChooser object that can be used to
+ * verify a user's local account.
+ */
+void
+gdm_greeter_client_get_chooser (GdmGreeterClient    *client,
+                                GCancellable        *cancellable,
+                                GAsyncReadyCallback  callback,
+                                gpointer             user_data)
+{
+        GSimpleAsyncResult *operation_result;
+
+        g_return_if_fail (GDM_IS_GREETER_CLIENT (client));
+
+        operation_result = g_simple_async_result_new (G_OBJECT (client),
+                                                      callback,
+                                                      user_data,
+                                                      gdm_greeter_client_get_chooser);
+        g_simple_async_result_set_check_cancellable (operation_result, cancellable);
+
+        g_object_set_data (G_OBJECT (operation_result),
+                           "cancellable",
+                           cancellable);
+
+        if (client->priv->chooser != NULL) {
+                g_simple_async_result_set_op_res_gpointer (operation_result,
+                                                           g_object_ref (client->priv->chooser),
+                                                           (GDestroyNotify)
+                                                           g_object_unref);
+                g_simple_async_result_complete_in_idle (operation_result);
+                return;
+        }
+
+        gdm_greeter_client_open_connection (client,
+                                    cancellable,
+                                    (GAsyncReadyCallback)
+                                    on_connection_opened_for_chooser,
+                                    operation_result);
+}
+
+/**
+ * gdm_greeter_client_get_chooser_finish:
+ * @client: a #GdmGreeterClient
+ * @result: The #GAsyncResult from the callback
+ * @error: a #GError
+ *
+ * Finishes an operation started with
+ * gdm_greeter_client_get_chooser().
+ *
+ * Returns: (transfer full): a #GdmChooser
+ */
+GdmChooser *
+gdm_greeter_client_get_chooser_finish (GdmGreeterClient  *client,
+                                       GAsyncResult      *result,
+                                       GError           **error)
+{
+        GdmChooser *chooser;
+
+        g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
+
+        if (client->priv->chooser != NULL) {
+                return g_object_ref (client->priv->chooser);
+        } else if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
+                                                          error)) {
+                return NULL;
+        }
+
+        chooser = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+
+        client->priv->chooser = chooser;
+
+        g_object_add_weak_pointer (G_OBJECT (client->priv->chooser),
+                                   (gpointer *)
+                                   &client->priv->chooser);
+
+        g_object_weak_ref (G_OBJECT (client->priv->chooser),
+                           (GWeakNotify)
+                           g_object_unref,
+                           client->priv->connection);
+
+        g_object_weak_ref (G_OBJECT (client->priv->chooser),
+                           (GWeakNotify)
+                           g_clear_object,
+                           &client->priv->manager);
+
+        return g_object_ref (chooser);
+}
+
+/**
+ * gdm_greeter_client_get_chooser_sync:
+ * @client: a #GdmGreeterClient
+ * @cancellable: a #GCancellable
+ * @error: a #GError
+ *
+ * Gets a #GdmChooser object that can be used
+ * to do do various XDMCP chooser related tasks, such
+ * as selecting a host or disconnecting.
+ *
+ * Returns: (transfer full): #GdmChooser or %NULL if caller is not a chooser
+ */
+GdmChooser *
+gdm_greeter_client_get_chooser_sync (GdmGreeterClient     *client,
+                             GCancellable  *cancellable,
+                             GError       **error)
+{
+
+        if (client->priv->chooser != NULL) {
+                return g_object_ref (client->priv->chooser);
+        }
+
+        if (!gdm_greeter_client_open_connection_sync (client, cancellable, error)) {
+                return NULL;
+        }
+
+        client->priv->chooser = gdm_chooser_proxy_new_sync (client->priv->connection,
+                                                            G_DBUS_PROXY_FLAGS_NONE,
+                                                            NULL,
+                                                            SESSION_DBUS_PATH,
+                                                            cancellable,
+                                                            error);
+
+        if (client->priv->chooser != NULL) {
+                g_object_add_weak_pointer (G_OBJECT (client->priv->chooser),
+                                           (gpointer *)
+                                           &client->priv->chooser);
+                g_object_weak_ref (G_OBJECT (client->priv->chooser),
+                                   (GWeakNotify)
+                                   g_clear_object,
+                                   &client->priv->manager);
+                g_object_weak_ref (G_OBJECT (client->priv->chooser),
+                                   (GWeakNotify)
+                                   g_clear_object,
+                                   &client->priv->connection);
+        }
+
+        return client->priv->chooser;
 }
 
 static void
@@ -1045,161 +1369,10 @@ gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->get_property = gdm_greeter_client_get_property;
-        object_class->set_property = gdm_greeter_client_set_property;
         object_class->finalize = gdm_greeter_client_finalize;
 
         g_type_class_add_private (klass, sizeof (GdmGreeterClientPrivate));
 
-        gdm_greeter_client_signals[INFO_QUERY] =
-                g_signal_new ("info-query",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmGreeterClientClass, info_query),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_generic,
-                              G_TYPE_NONE,
-                              2,
-                              G_TYPE_STRING, G_TYPE_STRING);
-
-        gdm_greeter_client_signals[SECRET_INFO_QUERY] =
-                g_signal_new ("secret-info-query",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (GdmGreeterClientClass, secret_info_query),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_generic,
-                              G_TYPE_NONE,
-                              2,
-                              G_TYPE_STRING, G_TYPE_STRING);
-
-        gdm_greeter_client_signals[INFO] =
-                g_signal_new ("info",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterClientClass, info),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_generic,
-                              G_TYPE_NONE,
-                              2,
-                              G_TYPE_STRING, G_TYPE_STRING);
-
-        gdm_greeter_client_signals[PROBLEM] =
-                g_signal_new ("problem",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterClientClass, problem),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_generic,
-                              G_TYPE_NONE,
-                              2,
-                              G_TYPE_STRING, G_TYPE_STRING);
-
-        gdm_greeter_client_signals[SERVICE_UNAVAILABLE] =
-                g_signal_new ("service-unavailable",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterClientClass, service_unavailable),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_generic,
-                              G_TYPE_NONE, 1, G_TYPE_STRING);
-
-        gdm_greeter_client_signals[READY] =
-                g_signal_new ("ready",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterClientClass, ready),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_generic,
-                              G_TYPE_NONE,
-                              1, G_TYPE_STRING);
-
-        gdm_greeter_client_signals[CONVERSATION_STOPPED] =
-                g_signal_new ("conversation-stopped",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterClientClass, conversation_stopped),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_generic,
-                              G_TYPE_NONE,
-                              1, G_TYPE_STRING);
-
-        gdm_greeter_client_signals[RESET] =
-                g_signal_new ("reset",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterClientClass, reset),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_generic,
-                              G_TYPE_NONE,
-                              0);
-        gdm_greeter_client_signals[AUTHENTICATION_FAILED] =
-                g_signal_new ("authentication-failed",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterClientClass, authentication_failed),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_generic,
-                              G_TYPE_NONE,
-                              0);
-        gdm_greeter_client_signals[SELECTED_USER_CHANGED] =
-                g_signal_new ("selected-user-changed",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterClientClass, selected_user_changed),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_generic,
-                              G_TYPE_NONE,
-                              1, G_TYPE_STRING);
-        gdm_greeter_client_signals[DEFAULT_SESSION_CHANGED] =
-                g_signal_new ("default-session-changed",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterClientClass, default_session_changed),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_generic,
-                              G_TYPE_NONE,
-                              1, G_TYPE_STRING);
-        gdm_greeter_client_signals[TIMED_LOGIN_REQUESTED] =
-                g_signal_new ("timed-login-requested",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterClientClass, timed_login_requested),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_generic,
-                              G_TYPE_NONE,
-                              2, G_TYPE_STRING, G_TYPE_INT);
-
-        gdm_greeter_client_signals[SESSION_OPENED] =
-                g_signal_new ("session-opened",
-                              G_OBJECT_CLASS_TYPE (object_class),
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmGreeterClientClass, session_opened),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_generic,
-                              G_TYPE_NONE,
-                              1, G_TYPE_STRING);
-
-        g_object_class_install_property (object_class,
-                                         PROP_DISPLAY_IS_LOCAL,
-                                         g_param_spec_boolean ("display-is-local",
-                                                               "display is local",
-                                                               "display is local",
-                                                               FALSE,
-                                                               G_PARAM_READABLE));
 }
 
 static void
@@ -1207,8 +1380,6 @@ gdm_greeter_client_init (GdmGreeterClient *client)
 {
 
         client->priv = GDM_GREETER_CLIENT_GET_PRIVATE (client);
-
-        client->priv->address = g_strdup (g_getenv ("GDM_GREETER_DBUS_ADDRESS"));
 }
 
 static void
@@ -1222,6 +1393,33 @@ gdm_greeter_client_finalize (GObject *object)
         client = GDM_GREETER_CLIENT (object);
 
         g_return_if_fail (client->priv != NULL);
+
+        if (client->priv->user_verifier != NULL) {
+                g_object_remove_weak_pointer (G_OBJECT (client->priv->user_verifier),
+                                              (gpointer *)
+                                              &client->priv->user_verifier);
+        }
+
+        if (client->priv->greeter != NULL) {
+                g_object_remove_weak_pointer (G_OBJECT (client->priv->greeter),
+                                              (gpointer *)
+                                              &client->priv->greeter);
+        }
+
+        if (client->priv->remote_greeter != NULL) {
+                g_object_remove_weak_pointer (G_OBJECT (client->priv->remote_greeter),
+                                              (gpointer *)
+                                              &client->priv->remote_greeter);
+        }
+
+        if (client->priv->chooser != NULL) {
+                g_object_remove_weak_pointer (G_OBJECT (client->priv->chooser),
+                                              (gpointer *)
+                                              &client->priv->chooser);
+        }
+
+        g_clear_object (&client->priv->manager);
+        g_clear_object (&client->priv->connection);
 
         g_free (client->priv->address);
 
