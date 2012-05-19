@@ -41,35 +41,35 @@ AM_CPPFLAGS = \
         $(END_OF_LIST)
 
 lib_LTLIBRARIES =                                                             \
-        libgdmgreeter.la                                                      \
+        libgdm.la                                                      \
         $(END_OF_LIST)
 
-libgdmgreeterdir = $(includedir)/gdm
-libgdmgreeter_HEADERS =                                                       \
-        gdm-greeter-client.h                                                   \
-        gdm-greeter-sessions.h                                                 \
+libgdmdir = $(includedir)/gdm
+libgdm_HEADERS =                                                       \
+        gdm-client.h                                                   \
+        gdm-sessions.h                                                 \
         $(END_OF_LIST)
 
-libgdmgreeter_la_CFLAGS =                                                     \
-        $(LIBGDMGREETER_CFLAGS)                                               \
+libgdm_la_CFLAGS =                                                     \
+        $(LIBGDM_CFLAGS)                                               \
         $(END_OF_LIST)
-libgdmgreeter_la_LDFLAGS =                                                    \
+libgdm_la_LDFLAGS =                                                    \
         -export-symbols-regex '^[^_].*'                                       \
         -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)                  \
         -no-undefined                                                         \
         $(END_OF_LIST)
 
-libgdmgreeter_la_LIBADD =                                                     \
-        $(LIBGDMGREETER_LIBS)                                                 \
+libgdm_la_LIBADD =                                                     \
+        $(LIBGDM_LIBS)                                                 \
         $(END_OF_LIST)
 
-libgdmgreeter_la_SOURCES =                                                    \
-        $(libgdmgreeter_HEADERS)                                              \
-        gdm-greeter-client.c                                                  \
-        gdm-greeter-sessions.c                                                \
+libgdm_la_SOURCES =                                                    \
+        $(libgdm_HEADERS)                                              \
+        gdm-client.c                                                   \
+        gdm-sessions.c                                                 \
         $(END_OF_LIST)
 
-nodist_libgdmgreeter_la_SOURCES = 	\
+nodist_libgdm_la_SOURCES = 	\
 	gdm-client-glue.c		\
 	gdm-client-glue.h		\
 	gdm-manager-glue.c		\
@@ -77,36 +77,36 @@ nodist_libgdmgreeter_la_SOURCES = 	\
 	$(END_OF_LIST)
 
 pkgconfigdir = $(libdir)/pkgconfig
-dist_pkgconfig_DATA = gdmgreeter.pc
+dist_pkgconfig_DATA = gdm.pc
 
 -include $(INTROSPECTION_MAKEFILE)
 
 if HAVE_INTROSPECTION
 girdir = $(datadir)/gir-1.0
-gir_DATA = GdmGreeter-1.0.gir
+gir_DATA = Gdm-1.0.gir
 typelibsdir = $(libdir)/girepository-1.0
 typelibs_DATA = $(gir_DATA:.gir=.typelib)
 INTROSPECTION_GIRS = $(gir_DATA)
 
-GdmGreeter-1.0.gir:                                                           \
+Gdm-1.0.gir:                                                                  \
         $(INTROSPECTION_SCANNER)                                              \
-        libgdmgreeter.la                                                      \
+        libgdm.la                                                             \
         Makefile                                                              \
         $(END_OF_LIST)
 
-GdmGreeter_1_0_gir_SCANNERFLAGS =                                             \
+Gdm_1_0_gir_SCANNERFLAGS =                                                    \
         --warn-all                                                            \
-        --namespace=GdmGreeter                                                \
+        --namespace=Gdm                                                       \
         --identifier-prefix Gdm                                               \
         $(AM_CPPFLAGS)                                                        \
-        $(libgdmgreeter_la_CFLAGS)                                            \
+        $(libgdm_la_CFLAGS)                                                   \
         $(END_OF_LIST)
 
-GdmGreeter_1_0_gir_INCLUDES = $(LIBGDMGREETER_GIR_INCLUDES)
-GdmGreeter_1_0_gir_LIBS = libgdmgreeter.la
-GdmGreeter_1_0_gir_FILES =                                                    \
-        $(filter-out %-private.h, $(libgdmgreeter_la_SOURCES))                \
-        $(filter-out %-private.h, $(nodist_libgdmgreeter_la_SOURCES))         \
+Gdm_1_0_gir_INCLUDES = $(LIBGDM_GIR_INCLUDES)
+Gdm_1_0_gir_LIBS = libgdm.la
+Gdm_1_0_gir_FILES =                                                    \
+        $(filter-out %-private.h, $(libgdm_la_SOURCES))                \
+        $(filter-out %-private.h, $(nodist_libgdm_la_SOURCES))         \
         $(END_OF_LIST)
 
 CLEANFILES += $(gir_DATA) $(typelibs_DATA)

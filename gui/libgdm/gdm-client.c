@@ -30,15 +30,15 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 
-#include "gdm-greeter-client.h"
+#include "gdm-client.h"
 #include "gdm-client-glue.h"
 #include "gdm-manager-glue.h"
 
-#define GDM_GREETER_CLIENT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_GREETER_CLIENT, GdmGreeterClientPrivate))
+#define GDM_CLIENT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_CLIENT, GdmClientPrivate))
 
 #define SESSION_DBUS_PATH      "/org/gnome/DisplayManager/Session"
 
-struct GdmGreeterClientPrivate
+struct GdmClientPrivate
 {
         GdmManager         *manager;
         GdmUserVerifier    *user_verifier;
@@ -51,21 +51,21 @@ struct GdmGreeterClientPrivate
         GList              *pending_opens;
 };
 
-static void     gdm_greeter_client_class_init  (GdmGreeterClientClass *klass);
-static void     gdm_greeter_client_init        (GdmGreeterClient *client);
-static void     gdm_greeter_client_finalize    (GObject        *object);
+static void     gdm_client_class_init  (GdmClientClass *klass);
+static void     gdm_client_init        (GdmClient      *client);
+static void     gdm_client_finalize    (GObject        *object);
 
-G_DEFINE_TYPE (GdmGreeterClient, gdm_greeter_client, G_TYPE_OBJECT);
+G_DEFINE_TYPE (GdmClient, gdm_client, G_TYPE_OBJECT);
 
 static gpointer client_object = NULL;
 
 GQuark
-gdm_greeter_client_error_quark (void)
+gdm_client_error_quark (void)
 {
         static GQuark error_quark = 0;
 
         if (error_quark == 0)
-                error_quark = g_quark_from_static_string ("gdm-greeter-client");
+                error_quark = g_quark_from_static_string ("gdm-client");
 
         return error_quark;
 }
@@ -75,11 +75,11 @@ on_got_manager (GdmManager          *manager,
                 GAsyncResult        *result,
                 GSimpleAsyncResult  *operation_result)
 {
-        GdmGreeterClient *client;
+        GdmClient *client;
         GdmManager       *new_manager;
         GError           *error;
 
-        client = GDM_GREETER_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (operation_result)));
+        client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (operation_result)));
 
         error = NULL;
         new_manager = gdm_manager_proxy_new_finish (result, &error);
@@ -107,7 +107,7 @@ on_got_manager (GdmManager          *manager,
 }
 
 static void
-get_manager (GdmGreeterClient    *client,
+get_manager (GdmClient           *client,
              GCancellable        *cancellable,
              GAsyncReadyCallback  callback,
              gpointer             user_data)
@@ -218,7 +218,7 @@ on_reauthentication_channel_opened (GdmManager         *manager,
 }
 
 static void
-on_got_manager_for_reauthentication (GdmGreeterClient    *client,
+on_got_manager_for_reauthentication (GdmClient           *client,
                                      GAsyncResult        *result,
                                      GSimpleAsyncResult  *operation_result)
 {
@@ -246,13 +246,13 @@ on_got_manager_for_reauthentication (GdmGreeterClient    *client,
 }
 
 static gboolean
-gdm_greeter_client_open_connection_sync (GdmGreeterClient *client,
+gdm_client_open_connection_sync (GdmClient      *client,
                                  GCancellable   *cancellable,
                                  GError        **error)
 {
         gboolean ret;
 
-        g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
+        g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
         if (client->priv->manager == NULL) {
                 client->priv->manager = gdm_manager_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
@@ -280,7 +280,7 @@ gdm_greeter_client_open_connection_sync (GdmGreeterClient *client,
                         goto out;
                 }
 
-                g_debug ("GdmGreeterClient: connecting to address: %s", client->priv->address);
+                g_debug ("GdmClient: connecting to address: %s", client->priv->address);
 
                 client->priv->connection = g_dbus_connection_new_for_address_sync (client->priv->address,
                                                                                    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
@@ -328,11 +328,11 @@ on_session_opened (GdmManager         *manager,
                    GAsyncResult       *result,
                    GSimpleAsyncResult *operation_result)
 {
-        GdmGreeterClient *client;
+        GdmClient *client;
         GCancellable     *cancellable;
         GError           *error;
 
-        client = GDM_GREETER_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (operation_result)));
+        client = GDM_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (operation_result)));
 
         error = NULL;
         if (!gdm_manager_call_open_session_finish (manager,
@@ -355,7 +355,7 @@ on_session_opened (GdmManager         *manager,
 }
 
 static void
-on_got_manager_for_opening_connection (GdmGreeterClient    *client,
+on_got_manager_for_opening_connection (GdmClient           *client,
                                        GAsyncResult        *result,
                                        GSimpleAsyncResult  *operation_result)
 {
@@ -379,7 +379,7 @@ on_got_manager_for_opening_connection (GdmGreeterClient    *client,
 }
 
 static void
-finish_pending_opens (GdmGreeterClient *client,
+finish_pending_opens (GdmClient *client,
                       GError    *error)
 {
     GList *node;
@@ -399,11 +399,11 @@ finish_pending_opens (GdmGreeterClient *client,
 }
 
 static gboolean
-gdm_greeter_client_open_connection_finish (GdmGreeterClient *client,
+gdm_client_open_connection_finish (GdmClient      *client,
                                    GAsyncResult   *result,
                                    GError        **error)
 {
-        g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
+        g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
         if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
                                                    error)) {
@@ -420,19 +420,19 @@ gdm_greeter_client_open_connection_finish (GdmGreeterClient *client,
 }
 
 static void
-gdm_greeter_client_open_connection (GdmGreeterClient    *client,
-                                    GCancellable        *cancellable,
-                                    GAsyncReadyCallback  callback,
-                                    gpointer             user_data)
+gdm_client_open_connection (GdmClient           *client,
+                            GCancellable        *cancellable,
+                            GAsyncReadyCallback  callback,
+                            gpointer             user_data)
 {
         GSimpleAsyncResult *operation_result;
 
-        g_return_if_fail (GDM_IS_GREETER_CLIENT (client));
+        g_return_if_fail (GDM_IS_CLIENT (client));
 
         operation_result = g_simple_async_result_new (G_OBJECT (client),
                                                       callback,
                                                       user_data,
-                                                      gdm_greeter_client_open_connection);
+                                                      gdm_client_open_connection);
         g_simple_async_result_set_check_cancellable (operation_result, cancellable);
 
         g_object_set_data (G_OBJECT (operation_result),
@@ -462,8 +462,8 @@ gdm_greeter_client_open_connection (GdmGreeterClient    *client,
 }
 
 /**
- * gdm_greeter_client_open_reauthentication_channel_sync:
- * @client: a #GdmGreeterClient
+ * gdm_client_open_reauthentication_channel_sync:
+ * @client: a #GdmClient
  * @username: user to reauthenticate
  * @cancellable: a #GCancellable
  * @error: a #GError
@@ -476,7 +476,7 @@ gdm_greeter_client_open_connection (GdmGreeterClient    *client,
  * already logged in.
  */
 GdmUserVerifier *
-gdm_greeter_client_open_reauthentication_channel_sync (GdmGreeterClient     *client,
+gdm_client_open_reauthentication_channel_sync (GdmClient     *client,
                                                const char    *username,
                                                GCancellable  *cancellable,
                                                GError       **error)
@@ -486,7 +486,7 @@ gdm_greeter_client_open_reauthentication_channel_sync (GdmGreeterClient     *cli
         gboolean         ret;
         char            *address;
 
-        g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
+        g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
         if (client->priv->manager == NULL) {
                 client->priv->manager = gdm_manager_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
@@ -513,7 +513,7 @@ gdm_greeter_client_open_reauthentication_channel_sync (GdmGreeterClient     *cli
                 goto out;
         }
 
-        g_debug ("GdmGreeterClient: connecting to address: %s", client->priv->address);
+        g_debug ("GdmClient: connecting to address: %s", client->priv->address);
 
         connection = g_dbus_connection_new_for_address_sync (address,
                                                              G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
@@ -551,8 +551,8 @@ gdm_greeter_client_open_reauthentication_channel_sync (GdmGreeterClient     *cli
 }
 
 /**
- * gdm_greeter_client_open_reauthentication_channel:
- * @client: a #GdmGreeterClient
+ * gdm_client_open_reauthentication_channel:
+ * @client: a #GdmClient
  * @username: user to reauthenticate
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: The data to pass to @callback
@@ -562,20 +562,20 @@ gdm_greeter_client_open_reauthentication_channel_sync (GdmGreeterClient     *cli
  * reauthenticate an already logged in user.
  */
 void
-gdm_greeter_client_open_reauthentication_channel (GdmGreeterClient    *client,
-                                                  const char          *username,
-                                                  GCancellable        *cancellable,
-                                                  GAsyncReadyCallback  callback,
-                                                  gpointer             user_data)
+gdm_client_open_reauthentication_channel (GdmClient           *client,
+                                          const char          *username,
+                                          GCancellable        *cancellable,
+                                          GAsyncReadyCallback  callback,
+                                          gpointer             user_data)
 {
         GSimpleAsyncResult *operation_result;
 
-        g_return_if_fail (GDM_IS_GREETER_CLIENT (client));
+        g_return_if_fail (GDM_IS_CLIENT (client));
 
         operation_result = g_simple_async_result_new (G_OBJECT (client),
                                                       callback,
                                                       user_data,
-                                                      gdm_greeter_client_open_reauthentication_channel);
+                                                      gdm_client_open_reauthentication_channel);
         g_simple_async_result_set_check_cancellable (operation_result, cancellable);
         g_object_set_data (G_OBJECT (operation_result),
                            "cancellable",
@@ -595,24 +595,24 @@ gdm_greeter_client_open_reauthentication_channel (GdmGreeterClient    *client,
 }
 
 /**
- * gdm_greeter_client_open_reauthentication_channel_finish:
- * @client: a #GdmGreeterClient
+ * gdm_client_open_reauthentication_channel_finish:
+ * @client: a #GdmClient
  * @result: The #GAsyncResult from the callback
  * @error: a #GError
  *
  * Finishes an operation started with
- * gdm_greeter_client_open_reauthentication_channel().
+ * gdm_client_open_reauthentication_channel().
  *
  * Returns: (transfer full):  a #GdmUserVerifier
  */
 GdmUserVerifier *
-gdm_greeter_client_open_reauthentication_channel_finish (GdmGreeterClient  *client,
+gdm_client_open_reauthentication_channel_finish (GdmClient       *client,
                                                  GAsyncResult    *result,
                                                  GError         **error)
 {
         GdmUserVerifier *user_verifier;
 
-        g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
+        g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
         if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
                                                    error)) {
@@ -625,8 +625,8 @@ gdm_greeter_client_open_reauthentication_channel_finish (GdmGreeterClient  *clie
 }
 
 /**
- * gdm_greeter_client_get_user_verifier_sync:
- * @client: a #GdmGreeterClient
+ * gdm_client_get_user_verifier_sync:
+ * @client: a #GdmClient
  * @cancellable: a #GCancellable
  * @error: a #GError
  *
@@ -636,7 +636,7 @@ gdm_greeter_client_open_reauthentication_channel_finish (GdmGreeterClient  *clie
  * Returns: (transfer full): #GdmUserVerifier or %NULL if not connected
  */
 GdmUserVerifier *
-gdm_greeter_client_get_user_verifier_sync (GdmGreeterClient     *client,
+gdm_client_get_user_verifier_sync (GdmClient     *client,
                                    GCancellable  *cancellable,
                                    GError       **error)
 {
@@ -644,7 +644,7 @@ gdm_greeter_client_get_user_verifier_sync (GdmGreeterClient     *client,
                 return g_object_ref (client->priv->user_verifier);
         }
 
-        if (!gdm_greeter_client_open_connection_sync (client, cancellable, error)) {
+        if (!gdm_client_open_connection_sync (client, cancellable, error)) {
                 return NULL;
         }
 
@@ -673,7 +673,7 @@ gdm_greeter_client_get_user_verifier_sync (GdmGreeterClient     *client,
 }
 
 static void
-on_connection_opened_for_user_verifier (GdmGreeterClient     *client,
+on_connection_opened_for_user_verifier (GdmClient          *client,
                                         GAsyncResult       *result,
                                         GSimpleAsyncResult *operation_result)
 {
@@ -681,7 +681,7 @@ on_connection_opened_for_user_verifier (GdmGreeterClient     *client,
         GError       *error;
 
         error = NULL;
-        if (!gdm_greeter_client_open_connection_finish (client, result, &error)) {
+        if (!gdm_client_open_connection_finish (client, result, &error)) {
                 g_simple_async_result_take_error (operation_result, error);
                 g_simple_async_result_complete_in_idle (operation_result);
                 return;
@@ -699,8 +699,8 @@ on_connection_opened_for_user_verifier (GdmGreeterClient     *client,
 }
 
 /**
- * gdm_greeter_client_get_user_verifier:
- * @client: a #GdmGreeterClient
+ * gdm_client_get_user_verifier:
+ * @client: a #GdmClient
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: The data to pass to @callback
  * @cancellable: a #GCancellable
@@ -709,19 +709,19 @@ on_connection_opened_for_user_verifier (GdmGreeterClient     *client,
  * verify a user's local account.
  */
 void
-gdm_greeter_client_get_user_verifier (GdmGreeterClient    *client,
-                                      GCancellable        *cancellable,
-                                      GAsyncReadyCallback  callback,
-                                      gpointer             user_data)
+gdm_client_get_user_verifier (GdmClient           *client,
+                              GCancellable        *cancellable,
+                              GAsyncReadyCallback  callback,
+                              gpointer             user_data)
 {
         GSimpleAsyncResult *operation_result;
 
-        g_return_if_fail (GDM_IS_GREETER_CLIENT (client));
+        g_return_if_fail (GDM_IS_CLIENT (client));
 
         operation_result = g_simple_async_result_new (G_OBJECT (client),
                                                       callback,
                                                       user_data,
-                                                      gdm_greeter_client_get_user_verifier);
+                                                      gdm_client_get_user_verifier);
         g_simple_async_result_set_check_cancellable (operation_result, cancellable);
 
         g_object_set_data (G_OBJECT (operation_result),
@@ -737,7 +737,7 @@ gdm_greeter_client_get_user_verifier (GdmGreeterClient    *client,
                 return;
         }
 
-        gdm_greeter_client_open_connection (client,
+        gdm_client_open_connection (client,
                                     cancellable,
                                     (GAsyncReadyCallback)
                                     on_connection_opened_for_user_verifier,
@@ -745,24 +745,24 @@ gdm_greeter_client_get_user_verifier (GdmGreeterClient    *client,
 }
 
 /**
- * gdm_greeter_client_get_user_verifier_finish:
- * @client: a #GdmGreeterClient
+ * gdm_client_get_user_verifier_finish:
+ * @client: a #GdmClient
  * @result: The #GAsyncResult from the callback
  * @error: a #GError
  *
  * Finishes an operation started with
- * gdm_greeter_client_get_user_verifier().
+ * gdm_client_get_user_verifier().
  *
  * Returns: (transfer full): a #GdmUserVerifier
  */
 GdmUserVerifier *
-gdm_greeter_client_get_user_verifier_finish (GdmGreeterClient  *client,
+gdm_client_get_user_verifier_finish (GdmClient       *client,
                                      GAsyncResult    *result,
                                      GError         **error)
 {
         GdmUserVerifier *user_verifier;
 
-        g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
+        g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
         if (client->priv->user_verifier != NULL) {
                 return g_object_ref (client->priv->user_verifier);
@@ -814,7 +814,7 @@ on_greeter_proxy_created (GdmGreeter         *greeter,
 }
 
 static void
-on_connection_opened_for_greeter (GdmGreeterClient     *client,
+on_connection_opened_for_greeter (GdmClient          *client,
                                   GAsyncResult       *result,
                                   GSimpleAsyncResult *operation_result)
 {
@@ -822,7 +822,7 @@ on_connection_opened_for_greeter (GdmGreeterClient     *client,
         GError       *error;
 
         error = NULL;
-        if (!gdm_greeter_client_open_connection_finish (client, result, &error)) {
+        if (!gdm_client_open_connection_finish (client, result, &error)) {
                 g_simple_async_result_take_error (operation_result, error);
                 g_simple_async_result_complete_in_idle (operation_result);
                 return;
@@ -840,8 +840,8 @@ on_connection_opened_for_greeter (GdmGreeterClient     *client,
 }
 
 /**
- * gdm_greeter_client_get_greeter:
- * @client: a #GdmGreeterClient
+ * gdm_client_get_greeter:
+ * @client: a #GdmClient
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: The data to pass to @callback
  * @cancellable: a #GCancellable
@@ -850,19 +850,19 @@ on_connection_opened_for_greeter (GdmGreeterClient     *client,
  * verify a user's local account.
  */
 void
-gdm_greeter_client_get_greeter (GdmGreeterClient    *client,
-                                GCancellable        *cancellable,
-                                GAsyncReadyCallback  callback,
-                                gpointer             user_data)
+gdm_client_get_greeter (GdmClient           *client,
+                        GCancellable        *cancellable,
+                        GAsyncReadyCallback  callback,
+                        gpointer             user_data)
 {
         GSimpleAsyncResult *operation_result;
 
-        g_return_if_fail (GDM_IS_GREETER_CLIENT (client));
+        g_return_if_fail (GDM_IS_CLIENT (client));
 
         operation_result = g_simple_async_result_new (G_OBJECT (client),
                                                       callback,
                                                       user_data,
-                                                      gdm_greeter_client_get_greeter);
+                                                      gdm_client_get_greeter);
         g_simple_async_result_set_check_cancellable (operation_result, cancellable);
 
         g_object_set_data (G_OBJECT (operation_result),
@@ -878,7 +878,7 @@ gdm_greeter_client_get_greeter (GdmGreeterClient    *client,
                 return;
         }
 
-        gdm_greeter_client_open_connection (client,
+        gdm_client_open_connection (client,
                                     cancellable,
                                     (GAsyncReadyCallback)
                                     on_connection_opened_for_greeter,
@@ -886,24 +886,24 @@ gdm_greeter_client_get_greeter (GdmGreeterClient    *client,
 }
 
 /**
- * gdm_greeter_client_get_greeter_finish:
- * @client: a #GdmGreeterClient
+ * gdm_client_get_greeter_finish:
+ * @client: a #GdmClient
  * @result: The #GAsyncResult from the callback
  * @error: a #GError
  *
  * Finishes an operation started with
- * gdm_greeter_client_get_greeter().
+ * gdm_client_get_greeter().
  *
  * Returns: (transfer full): a #GdmGreeter
  */
 GdmGreeter *
-gdm_greeter_client_get_greeter_finish (GdmGreeterClient  *client,
+gdm_client_get_greeter_finish (GdmClient       *client,
                                GAsyncResult    *result,
                                GError         **error)
 {
         GdmGreeter *greeter;
 
-        g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
+        g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
         if (client->priv->greeter != NULL) {
                 return g_object_ref (client->priv->greeter);
@@ -934,8 +934,8 @@ gdm_greeter_client_get_greeter_finish (GdmGreeterClient  *client,
 }
 
 /**
- * gdm_greeter_client_get_greeter_sync:
- * @client: a #GdmGreeterClient
+ * gdm_client_get_greeter_sync:
+ * @client: a #GdmClient
  * @cancellable: a #GCancellable
  * @error: a #GError
  *
@@ -947,7 +947,7 @@ gdm_greeter_client_get_greeter_finish (GdmGreeterClient  *client,
  * Returns: (transfer full): #GdmGreeter or %NULL if caller is not a greeter
  */
 GdmGreeter *
-gdm_greeter_client_get_greeter_sync (GdmGreeterClient     *client,
+gdm_client_get_greeter_sync (GdmClient     *client,
                              GCancellable  *cancellable,
                              GError       **error)
 {
@@ -955,7 +955,7 @@ gdm_greeter_client_get_greeter_sync (GdmGreeterClient     *client,
                 return g_object_ref (client->priv->greeter);
         }
 
-        if (!gdm_greeter_client_open_connection_sync (client, cancellable, error)) {
+        if (!gdm_client_open_connection_sync (client, cancellable, error)) {
                 return NULL;
         }
 
@@ -1005,7 +1005,7 @@ on_remote_greeter_proxy_created (GdmRemoteGreeter   *remote_greeter,
 }
 
 static void
-on_connection_opened_for_remote_greeter (GdmGreeterClient     *client,
+on_connection_opened_for_remote_greeter (GdmClient          *client,
                                          GAsyncResult       *result,
                                          GSimpleAsyncResult *operation_result)
 {
@@ -1013,7 +1013,7 @@ on_connection_opened_for_remote_greeter (GdmGreeterClient     *client,
         GError       *error;
 
         error = NULL;
-        if (!gdm_greeter_client_open_connection_finish (client, result, &error)) {
+        if (!gdm_client_open_connection_finish (client, result, &error)) {
                 g_simple_async_result_take_error (operation_result, error);
                 g_simple_async_result_complete_in_idle (operation_result);
                 return;
@@ -1031,8 +1031,8 @@ on_connection_opened_for_remote_greeter (GdmGreeterClient     *client,
 }
 
 /**
- * gdm_greeter_client_get_remote_greeter:
- * @client: a #GdmGreeterClient
+ * gdm_client_get_remote_greeter:
+ * @client: a #GdmClient
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: The data to pass to @callback
  * @cancellable: a #GCancellable
@@ -1041,19 +1041,19 @@ on_connection_opened_for_remote_greeter (GdmGreeterClient     *client,
  * verify a user's local account.
  */
 void
-gdm_greeter_client_get_remote_greeter (GdmGreeterClient    *client,
-                                       GCancellable        *cancellable,
-                                       GAsyncReadyCallback  callback,
-                                       gpointer             user_data)
+gdm_client_get_remote_greeter (GdmClient           *client,
+                               GCancellable        *cancellable,
+                               GAsyncReadyCallback  callback,
+                               gpointer             user_data)
 {
         GSimpleAsyncResult *operation_result;
 
-        g_return_if_fail (GDM_IS_GREETER_CLIENT (client));
+        g_return_if_fail (GDM_IS_CLIENT (client));
 
         operation_result = g_simple_async_result_new (G_OBJECT (client),
                                                       callback,
                                                       user_data,
-                                                      gdm_greeter_client_get_remote_greeter);
+                                                      gdm_client_get_remote_greeter);
         g_simple_async_result_set_check_cancellable (operation_result, cancellable);
 
         g_object_set_data (G_OBJECT (operation_result),
@@ -1069,7 +1069,7 @@ gdm_greeter_client_get_remote_greeter (GdmGreeterClient    *client,
                 return;
         }
 
-        gdm_greeter_client_open_connection (client,
+        gdm_client_open_connection (client,
                                     cancellable,
                                     (GAsyncReadyCallback)
                                     on_connection_opened_for_remote_greeter,
@@ -1077,24 +1077,24 @@ gdm_greeter_client_get_remote_greeter (GdmGreeterClient    *client,
 }
 
 /**
- * gdm_greeter_client_get_remote_greeter_finish:
- * @client: a #GdmGreeterClient
+ * gdm_client_get_remote_greeter_finish:
+ * @client: a #GdmClient
  * @result: The #GAsyncResult from the callback
  * @error: a #GError
  *
  * Finishes an operation started with
- * gdm_greeter_client_get_remote_greeter().
+ * gdm_client_get_remote_greeter().
  *
  * Returns: (transfer full): a #GdmRemoteGreeter
  */
 GdmRemoteGreeter *
-gdm_greeter_client_get_remote_greeter_finish (GdmGreeterClient     *client,
+gdm_client_get_remote_greeter_finish (GdmClient     *client,
                                       GAsyncResult  *result,
                                       GError       **error)
 {
         GdmRemoteGreeter *remote_greeter;
 
-        g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
+        g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
         if (client->priv->remote_greeter != NULL) {
                 return g_object_ref (client->priv->remote_greeter);
@@ -1125,8 +1125,8 @@ gdm_greeter_client_get_remote_greeter_finish (GdmGreeterClient     *client,
 }
 
 /**
- * gdm_greeter_client_get_remote_greeter_sync:
- * @client: a #GdmGreeterClient
+ * gdm_client_get_remote_greeter_sync:
+ * @client: a #GdmClient
  * @cancellable: a #GCancellable
  * @error: a #GError
  *
@@ -1137,7 +1137,7 @@ gdm_greeter_client_get_remote_greeter_finish (GdmGreeterClient     *client,
  * Returns: (transfer full): #GdmRemoteGreeter or %NULL if caller is not remote
  */
 GdmRemoteGreeter *
-gdm_greeter_client_get_remote_greeter_sync (GdmGreeterClient     *client,
+gdm_client_get_remote_greeter_sync (GdmClient     *client,
                                     GCancellable  *cancellable,
                                     GError       **error)
 {
@@ -1145,7 +1145,7 @@ gdm_greeter_client_get_remote_greeter_sync (GdmGreeterClient     *client,
                 return g_object_ref (client->priv->remote_greeter);
         }
 
-        if (!gdm_greeter_client_open_connection_sync (client, cancellable, error)) {
+        if (!gdm_client_open_connection_sync (client, cancellable, error)) {
                 return NULL;
         }
 
@@ -1195,7 +1195,7 @@ on_chooser_proxy_created (GdmChooser         *chooser,
 }
 
 static void
-on_connection_opened_for_chooser (GdmGreeterClient     *client,
+on_connection_opened_for_chooser (GdmClient          *client,
                                   GAsyncResult       *result,
                                   GSimpleAsyncResult *operation_result)
 {
@@ -1203,7 +1203,7 @@ on_connection_opened_for_chooser (GdmGreeterClient     *client,
         GError       *error;
 
         error = NULL;
-        if (!gdm_greeter_client_open_connection_finish (client, result, &error)) {
+        if (!gdm_client_open_connection_finish (client, result, &error)) {
                 g_simple_async_result_take_error (operation_result, error);
                 g_simple_async_result_complete_in_idle (operation_result);
                 return;
@@ -1221,8 +1221,8 @@ on_connection_opened_for_chooser (GdmGreeterClient     *client,
 }
 
 /**
- * gdm_greeter_client_get_chooser:
- * @client: a #GdmGreeterClient
+ * gdm_client_get_chooser:
+ * @client: a #GdmClient
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: The data to pass to @callback
  * @cancellable: a #GCancellable
@@ -1231,19 +1231,19 @@ on_connection_opened_for_chooser (GdmGreeterClient     *client,
  * verify a user's local account.
  */
 void
-gdm_greeter_client_get_chooser (GdmGreeterClient    *client,
-                                GCancellable        *cancellable,
-                                GAsyncReadyCallback  callback,
-                                gpointer             user_data)
+gdm_client_get_chooser (GdmClient           *client,
+                        GCancellable        *cancellable,
+                        GAsyncReadyCallback  callback,
+                        gpointer             user_data)
 {
         GSimpleAsyncResult *operation_result;
 
-        g_return_if_fail (GDM_IS_GREETER_CLIENT (client));
+        g_return_if_fail (GDM_IS_CLIENT (client));
 
         operation_result = g_simple_async_result_new (G_OBJECT (client),
                                                       callback,
                                                       user_data,
-                                                      gdm_greeter_client_get_chooser);
+                                                      gdm_client_get_chooser);
         g_simple_async_result_set_check_cancellable (operation_result, cancellable);
 
         g_object_set_data (G_OBJECT (operation_result),
@@ -1259,7 +1259,7 @@ gdm_greeter_client_get_chooser (GdmGreeterClient    *client,
                 return;
         }
 
-        gdm_greeter_client_open_connection (client,
+        gdm_client_open_connection (client,
                                     cancellable,
                                     (GAsyncReadyCallback)
                                     on_connection_opened_for_chooser,
@@ -1267,24 +1267,24 @@ gdm_greeter_client_get_chooser (GdmGreeterClient    *client,
 }
 
 /**
- * gdm_greeter_client_get_chooser_finish:
- * @client: a #GdmGreeterClient
+ * gdm_client_get_chooser_finish:
+ * @client: a #GdmClient
  * @result: The #GAsyncResult from the callback
  * @error: a #GError
  *
  * Finishes an operation started with
- * gdm_greeter_client_get_chooser().
+ * gdm_client_get_chooser().
  *
  * Returns: (transfer full): a #GdmChooser
  */
 GdmChooser *
-gdm_greeter_client_get_chooser_finish (GdmGreeterClient  *client,
-                                       GAsyncResult      *result,
-                                       GError           **error)
+gdm_client_get_chooser_finish (GdmClient       *client,
+                               GAsyncResult    *result,
+                               GError         **error)
 {
         GdmChooser *chooser;
 
-        g_return_val_if_fail (GDM_IS_GREETER_CLIENT (client), FALSE);
+        g_return_val_if_fail (GDM_IS_CLIENT (client), FALSE);
 
         if (client->priv->chooser != NULL) {
                 return g_object_ref (client->priv->chooser);
@@ -1315,8 +1315,8 @@ gdm_greeter_client_get_chooser_finish (GdmGreeterClient  *client,
 }
 
 /**
- * gdm_greeter_client_get_chooser_sync:
- * @client: a #GdmGreeterClient
+ * gdm_client_get_chooser_sync:
+ * @client: a #GdmClient
  * @cancellable: a #GCancellable
  * @error: a #GError
  *
@@ -1327,7 +1327,7 @@ gdm_greeter_client_get_chooser_finish (GdmGreeterClient  *client,
  * Returns: (transfer full): #GdmChooser or %NULL if caller is not a chooser
  */
 GdmChooser *
-gdm_greeter_client_get_chooser_sync (GdmGreeterClient     *client,
+gdm_client_get_chooser_sync (GdmClient     *client,
                              GCancellable  *cancellable,
                              GError       **error)
 {
@@ -1336,7 +1336,7 @@ gdm_greeter_client_get_chooser_sync (GdmGreeterClient     *client,
                 return g_object_ref (client->priv->chooser);
         }
 
-        if (!gdm_greeter_client_open_connection_sync (client, cancellable, error)) {
+        if (!gdm_client_open_connection_sync (client, cancellable, error)) {
                 return NULL;
         }
 
@@ -1365,32 +1365,32 @@ gdm_greeter_client_get_chooser_sync (GdmGreeterClient     *client,
 }
 
 static void
-gdm_greeter_client_class_init (GdmGreeterClientClass *klass)
+gdm_client_class_init (GdmClientClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->finalize = gdm_greeter_client_finalize;
+        object_class->finalize = gdm_client_finalize;
 
-        g_type_class_add_private (klass, sizeof (GdmGreeterClientPrivate));
+        g_type_class_add_private (klass, sizeof (GdmClientPrivate));
 
 }
 
 static void
-gdm_greeter_client_init (GdmGreeterClient *client)
+gdm_client_init (GdmClient *client)
 {
 
-        client->priv = GDM_GREETER_CLIENT_GET_PRIVATE (client);
+        client->priv = GDM_CLIENT_GET_PRIVATE (client);
 }
 
 static void
-gdm_greeter_client_finalize (GObject *object)
+gdm_client_finalize (GObject *object)
 {
-        GdmGreeterClient *client;
+        GdmClient *client;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (GDM_IS_GREETER_CLIENT (object));
+        g_return_if_fail (GDM_IS_CLIENT (object));
 
-        client = GDM_GREETER_CLIENT (object);
+        client = GDM_CLIENT (object);
 
         g_return_if_fail (client->priv != NULL);
 
@@ -1423,19 +1423,19 @@ gdm_greeter_client_finalize (GObject *object)
 
         g_free (client->priv->address);
 
-        G_OBJECT_CLASS (gdm_greeter_client_parent_class)->finalize (object);
+        G_OBJECT_CLASS (gdm_client_parent_class)->finalize (object);
 }
 
-GdmGreeterClient *
-gdm_greeter_client_new (void)
+GdmClient *
+gdm_client_new (void)
 {
         if (client_object != NULL) {
                 g_object_ref (client_object);
         } else {
-                client_object = g_object_new (GDM_TYPE_GREETER_CLIENT, NULL);
+                client_object = g_object_new (GDM_TYPE_CLIENT, NULL);
                 g_object_add_weak_pointer (client_object,
                                            (gpointer *) &client_object);
         }
 
-        return GDM_GREETER_CLIENT (client_object);
+        return GDM_CLIENT (client_object);
 }

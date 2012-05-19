@@ -182,10 +182,10 @@ PKG_CHECK_MODULES(CHECK,
                   have_check=no)
 AM_CONDITIONAL([HAVE_CHECK],[test "x$CHECK_CFLAGS" != "x"])
 
-PKG_CHECK_MODULES(LIBGDMGREETER, glib-2.0 gio-2.0 gio-unix-2.0);
+PKG_CHECK_MODULES(LIBGDM, glib-2.0 gio-2.0 gio-unix-2.0);
 GOBJECT_INTROSPECTION_CHECK([0.9.12])
-LIBGDMGREETER_GIR_INCLUDES="GLib-2.0 GObject-2.0 Gio-2.0"
-AC_SUBST(LIBGDMGREETER_GIR_INCLUDES)
+LIBGDM_GIR_INCLUDES="GLib-2.0 GObject-2.0 Gio-2.0"
+AC_SUBST(LIBGDM_GIR_INCLUDES)
 
 dnl ---------------------------------------------------------------------------
 dnl - Configuration file stuff
@@ -1507,8 +1507,8 @@ Makefile
 daemon/Makefile
 docs/Makefile
 gui/Makefile
-gui/libgdmgreeter/Makefile
-gui/libgdmgreeter/gdmgreeter.pc
+gui/libgdm/Makefile
+gui/libgdm/gdm.pc
 gui/simple-greeter/Makefile
 gui/simple-greeter/libgdmsimplegreeter/Makefile
 gui/simple-greeter/libgdmsimplegreeter/gdmsimplegreeter.pc
