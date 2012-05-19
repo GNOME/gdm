@@ -35,7 +35,7 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 
-#include "gdm-greeter-sessions.h"
+#include "gdm-sessions.h"
 
 typedef struct _GdmSessionFile {
         char    *id;
@@ -207,7 +207,7 @@ collect_sessions (void)
 }
 
 /**
- * gdm_greeter_get_session_ids:
+ * gdm_get_session_ids:
  *
  * Reads /usr/share/xsessions and other relevant places for possible sessions
  * to log into and returns the complete list.
@@ -215,7 +215,7 @@ collect_sessions (void)
  * Returns: (transfer full): a %NULL terminated list of session ids
  */
 char **
-gdm_greeter_get_session_ids (void)
+gdm_get_session_ids (void)
 {
         GHashTableIter iter;
         gpointer key, value;
@@ -242,8 +242,8 @@ gdm_greeter_get_session_ids (void)
 }
 
 /**
- * gdm_greeter_get_session_name_and_description:
- * @id: an id from gdm_greeter_get_session_ids()
+ * gdm_get_session_name_and_description:
+ * @id: an id from gdm_get_session_ids()
  * @description: (out): optional returned session description
  *
  * Takes an xsession id and returns the name and comment about it.
@@ -251,8 +251,8 @@ gdm_greeter_get_session_ids (void)
  * Returns: The session name if found, or %NULL otherwise
  */
 char *
-gdm_greeter_get_session_name_and_description (const char  *id,
-                                              char       **description)
+gdm_get_session_name_and_description (const char  *id,
+                                      char       **description)
 {
         GdmSessionFile *session;
         char *name;

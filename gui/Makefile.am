@@ -1,7 +1,7 @@
 NULL =
 
 SUBDIRS =			\
-	libgdmgreeter		\
+	libgdm			\
 	simple-greeter		\
 	$(NULL)
 
@@ -10,7 +10,7 @@ SUBDIRS += simple-chooser
 endif
 
 DIST_SUBDIRS =			\
-	libgdmgreeter		\
+	libgdm			\
 	simple-chooser		\
 	simple-greeter		\
 	$(NULL)
