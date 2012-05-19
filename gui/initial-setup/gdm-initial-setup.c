@@ -22,6 +22,7 @@
 #include "timedated.h"
 #include "um-utils.h"
 #include "um-photo-dialog.h"
+#include "pw-utils.h"
 #include "gdm-greeter-client.h"
 
 #define GWEATHER_I_KNOW_THIS_IS_UNSTABLE
@@ -946,16 +947,25 @@ update_password_entries (SetupData *setup)
 {
         const gchar *password;
         const gchar *verify;
+        const gchar *username;
         GtkWidget *password_entry;
         GtkWidget *confirm_entry;
+        GtkWidget *username_combo;
+        gdouble strength;
+        const gchar *hint;
+        const gchar *long_hint;
 
         password_entry = WID("account-password-entry");
         confirm_entry = WID("account-confirm-entry");
+        username_combo = WID("account-username-combo");
+
         password = gtk_entry_get_text (GTK_ENTRY (password_entry));
         verify = gtk_entry_get_text (GTK_ENTRY (confirm_entry));
+        username = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT (username_combo));
 
-        /* TODO: configurable policies for acceptable passwords */
-        if (strlen (password) < MIN_PASSWORD_LEN) {
+        strength = pw_strength (password, NULL, username, &hint, &long_hint);
+
+        if (strength == 0.0) {
                 setup->valid_password = FALSE;
         }
         else if (strcmp (password, verify) != 0) {
