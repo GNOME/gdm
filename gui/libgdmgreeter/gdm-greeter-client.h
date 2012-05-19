@@ -1,6 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2007 William Jon McCann <mccann@jhu.edu>
+ * Copyright (C) 2012 Red Hat, Inc.
+ * Copyright (C) 2012 Giovanni Campagna <scampa.giovanni@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +23,7 @@
 #define __GDM_GREETER_CLIENT_H
 
 #include <glib-object.h>
+#include "gdm-client-glue.h"
 
 G_BEGIN_DECLS
 
@@ -44,38 +46,6 @@ typedef struct
 {
         GObjectClass   parent_class;
 
-        void (* info_query)              (GdmGreeterClient  *client,
-                                          const char        *service_name,
-                                          const char        *query_text);
-
-        void (* secret_info_query)       (GdmGreeterClient  *client,
-                                          const char        *service_name,
-                                          const char        *query_text);
-
-        void (* info)                    (GdmGreeterClient  *client,
-                                          const char        *service_name,
-                                          const char        *info);
-
-        void (* problem)                 (GdmGreeterClient  *client,
-                                          const char        *service_name,
-                                          const char        *problem);
-        void (* service_unavailable)     (GdmGreeterClient  *client,
-                                          const char        *service_name);
-        void (* ready)                   (GdmGreeterClient  *client,
-                                          const char        *service_name);
-        void (* conversation_stopped)    (GdmGreeterClient  *client,
-                                          const char        *service_name);
-        void (* reset)                   (GdmGreeterClient  *client);
-        void (* authentication_failed)   (GdmGreeterClient  *client);
-        void (* selected_user_changed)   (GdmGreeterClient  *client,
-                                          const char        *username);
-        void (* default_session_changed) (GdmGreeterClient  *client,
-                                          const char        *session_id);
-        void (* timed_login_requested)   (GdmGreeterClient  *client,
-                                          const char        *username,
-                                          int                delay);
-        void (* session_opened)          (GdmGreeterClient  *client,
-                                          const char        *service_name);
 } GdmGreeterClientClass;
 
 #define GDM_GREETER_CLIENT_ERROR (gdm_greeter_client_error_quark ())
@@ -84,41 +54,69 @@ typedef enum _GdmGreeterClientError {
         GDM_GREETER_CLIENT_ERROR_GENERIC = 0,
 } GdmGreeterClientError;
 
-GType              gdm_greeter_client_get_type                       (void);
-GQuark             gdm_greeter_client_error_quark                    (void);
+GType              gdm_greeter_client_get_type                 (void);
+GQuark             gdm_greeter_client_error_quark              (void);
 
-GdmGreeterClient * gdm_greeter_client_new                            (void);
+GdmGreeterClient  *gdm_greeter_client_new                      (void);
 
-gboolean           gdm_greeter_client_open_connection                (GdmGreeterClient *client,
-                                                                      GError          **error);
-gboolean           gdm_greeter_client_get_display_is_local           (GdmGreeterClient *client);
+void               gdm_greeter_client_open_reauthentication_channel (GdmGreeterClient     *client,
+                                                                     const char           *username,
+                                                                     GCancellable         *cancellable,
+                                                                     GAsyncReadyCallback   callback,
+                                                                     gpointer              user_data);
 
-void               gdm_greeter_client_call_start_conversation        (GdmGreeterClient *client,
-                                                                      const char       *service_name);
-void               gdm_greeter_client_call_begin_auto_login          (GdmGreeterClient *client,
-                                                                      const char       *username);
-void               gdm_greeter_client_call_begin_verification        (GdmGreeterClient *client,
-                                                                      const char       *service_name);
-void               gdm_greeter_client_call_begin_verification_for_user (GdmGreeterClient *client,
-                                                                        const char       *service_name,
-                                                                        const char       *username);
-void               gdm_greeter_client_call_cancel                    (GdmGreeterClient *client);
-void               gdm_greeter_client_call_disconnect                (GdmGreeterClient *client);
-void               gdm_greeter_client_call_select_hostname           (GdmGreeterClient *client,
-                                                                      const char       *text);
-void               gdm_greeter_client_call_select_user               (GdmGreeterClient *client,
-                                                                      const char       *text);
-void               gdm_greeter_client_call_select_language           (GdmGreeterClient *client,
-                                                                      const char       *text);
-void               gdm_greeter_client_call_select_session            (GdmGreeterClient *client,
-                                                                      const char       *text);
-void               gdm_greeter_client_call_answer_query              (GdmGreeterClient *client,
-                                                                      const char       *service_name,
-                                                                      const char       *text);
+GdmUserVerifier   *gdm_greeter_client_open_reauthentication_channel_finish (GdmGreeterClient  *client,
+                                                                            GAsyncResult      *result,
+                                                                            GError           **error);
 
-void               gdm_greeter_client_call_start_session_when_ready  (GdmGreeterClient *client,
-                                                                      const char       *service_name,
-                                                                      gboolean          should_start_session);
+GdmUserVerifier   *gdm_greeter_client_open_reauthentication_channel_sync (GdmGreeterClient *client,
+                                                                          const char       *username,
+                                                                          GCancellable     *cancellable,
+                                                                          GError          **error);
+
+void               gdm_greeter_client_get_user_verifier         (GdmGreeterClient     *client,
+                                                                 GCancellable         *cancellable,
+                                                                 GAsyncReadyCallback   callback,
+                                                                 gpointer              user_data);
+GdmUserVerifier   *gdm_greeter_client_get_user_verifier_finish  (GdmGreeterClient     *client,
+                                                                 GAsyncResult         *result,
+                                                                 GError              **error);
+GdmUserVerifier   *gdm_greeter_client_get_user_verifier_sync    (GdmGreeterClient *client,
+                                                                 GCancellable     *cancellable,
+                                                                 GError          **error);
+
+void               gdm_greeter_client_get_greeter               (GdmGreeterClient     *client,
+                                                                 GCancellable         *cancellable,
+                                                                 GAsyncReadyCallback   callback,
+                                                                 gpointer              user_data);
+GdmGreeter        *gdm_greeter_client_get_greeter_finish        (GdmGreeterClient *client,
+                                                                 GAsyncResult     *result,
+                                                                 GError          **error);
+GdmGreeter        *gdm_greeter_client_get_greeter_sync          (GdmGreeterClient *client,
+                                                                 GCancellable     *cancellable,
+                                                                 GError          **error);
+
+void               gdm_greeter_client_get_remote_greeter        (GdmGreeterClient     *client,
+                                                                 GCancellable         *cancellable,
+                                                                 GAsyncReadyCallback   callback,
+                                                                 gpointer              user_data);
+GdmRemoteGreeter  *gdm_greeter_client_get_remote_greeter_finish (GdmGreeterClient *client,
+                                                                 GAsyncResult     *result,
+                                                                 GError          **error);
+GdmRemoteGreeter  *gdm_greeter_client_get_remote_greeter_sync   (GdmGreeterClient *client,
+                                                                 GCancellable     *cancellable,
+                                                                 GError          **error);
+
+void               gdm_greeter_client_get_chooser               (GdmGreeterClient     *client,
+                                                                 GCancellable         *cancellable,
+                                                                 GAsyncReadyCallback   callback,
+                                                                 gpointer              user_data);
+GdmChooser        *gdm_greeter_client_get_chooser_finish        (GdmGreeterClient *client,
+                                                                 GAsyncResult     *result,
+                                                                 GError          **error);
+GdmChooser        *gdm_greeter_client_get_chooser_sync          (GdmGreeterClient *client,
+                                                                 GCancellable     *cancellable,
+                                                                 GError          **error);
 
 
 G_END_DECLS
