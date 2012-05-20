@@ -65,6 +65,7 @@ typedef struct {
         gboolean valid_name;
         gboolean valid_username;
         gboolean valid_password;
+        const gchar *password_reason;
         ActUserPasswordMode password_mode;
         ActUserAccountType account_type;
 
@@ -953,7 +954,7 @@ update_password_entries (SetupData *setup)
         GtkWidget *username_combo;
         gdouble strength;
         const gchar *hint;
-        const gchar *long_hint;
+        const gchar *long_hint = NULL;
 
         password_entry = WID("account-password-entry");
         confirm_entry = WID("account-confirm-entry");
@@ -967,9 +968,11 @@ update_password_entries (SetupData *setup)
 
         if (strength == 0.0) {
                 setup->valid_password = FALSE;
+                setup->password_reason = long_hint ? long_hint : hint;
         }
         else if (strcmp (password, verify) != 0) {
                 setup->valid_password = FALSE;
+                setup->password_reason = _("Passwords do not match");
         }
         else {
                 setup->valid_password = TRUE;
@@ -1011,13 +1014,9 @@ confirm_entry_focus_out (GtkWidget     *entry,
         verify = gtk_entry_get_text (confirm_entry);
 
         if (strlen (password) > 0 && strlen (verify) > 0) {
-                if (strlen (password) < MIN_PASSWORD_LEN) {
+                if (!setup->valid_password) {
                         set_entry_validation_error (confirm_entry,
-                                                    _("The new password is too short"));
-                }
-                else if (strcmp (password, verify) != 0) {
-                        set_entry_validation_error (confirm_entry,
-                                                    _("Passwords do not match"));
+                                                    setup->password_reason);
                 }
                 else {
                         clear_entry_validation_error (confirm_entry);
@@ -2125,7 +2124,6 @@ prepare_summary_page (SetupData *setup)
                                           "Summary", "summary-details",
                                           NULL, NULL);
         if (s) {
-                g_print ("replacing summary details\n");
                 gtk_label_set_text (GTK_LABEL (WID ("summary-details")), s);
         }
         g_free (s);

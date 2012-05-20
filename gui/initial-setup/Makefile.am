@@ -27,12 +27,19 @@ timedated.h: Makefile.am timedated1-interface.xml
 setup_resources.c: setup.gresource.xml setup.ui welcome-image.png
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate-source $(srcdir)/setup.gresource.xml
 
+if HAVE_PWQUALITY
+pw_utils_sources = pw-utils-pwquality.c pw-utils.h
+else
+pw_utils_sources = pw-utils.c pw-utils.h
+endif
+
 gdm_initial_setup_SOURCES =	\
 	gdm-initial-setup.c \
 	panel-cell-renderer-signal.c panel-cell-renderer-signal.h \
 	panel-cell-renderer-mode.c panel-cell-renderer-mode.h \
 	panel-cell-renderer-security.c panel-cell-renderer-security.h \
 	cc-timezone-map.c cc-timezone-map.h \
+	$(pw_utils_sources) \
 	um-utils.c um-utils.h \
 	um-crop-area.c um-crop-area.h \
 	um-photo-dialog.c um-photo-dialog.h \

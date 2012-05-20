@@ -194,6 +194,12 @@ PKG_CHECK_MODULES(INITIAL_SETUP,
 
 AC_DEFINE(HAVE_CHEESE, 1, [Define to 1 to enable cheese webcam support])
 
+AC_CHECK_HEADER([pwquality.h], [have_pwquality=yes], [have_pwquality=no])
+AM_CONDITIONAL(HAVE_PWQUALITY, [test x$have_pwquality = xyes])
+if test x$have_pwquality = xyes ; then
+  INITIAL_SETUP_LIBS="$INITIAL_SETUP_LIBS -lpwquality"
+fi
+
 # Unit testing framework
 PKG_CHECK_MODULES(CHECK,
                   [check >= 0.9.4],
