@@ -39,6 +39,8 @@
 
 #include "gdm-welcome-session.h"
 #include "gdm-greeter-session.h"
+#include "gdm-settings-direct.h"
+#include "gdm-settings-keys.h"
 
 #define GDM_GREETER_SERVER_DBUS_PATH      "/org/gnome/DisplayManager/GreeterServer"
 #define GDM_GREETER_SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.GreeterServer"
@@ -76,9 +78,17 @@ gdm_greeter_session_new (const char *display_name,
                          gboolean    display_is_local)
 {
         GObject *object;
+        gboolean debug = FALSE;
+        char *command = BINDIR "/gnome-session -f";
+
+        gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);
+
+        if (debug) {
+                command = BINDIR "/gnome-session -f --debug";
+        }
 
         object = g_object_new (GDM_TYPE_GREETER_SESSION,
-                               "command", BINDIR "/gnome-session -f --debug",
+                               "command", command,
                                "server-dbus-path", GDM_GREETER_SERVER_DBUS_PATH,
                                "server-dbus-interface", GDM_GREETER_SERVER_DBUS_INTERFACE,
                                "server-env-var-name", "GDM_GREETER_DBUS_ADDRESS",
