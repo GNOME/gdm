@@ -1,15 +1,15 @@
 # Indonesian translation of gdm manual
 # Copyright (C) 2010 THE gdm manual'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the gdm package.
-# Andika Triwidada <andika@gmail.com>, 2010, 2011.
+# Andika Triwidada <andika@gmail.com>, 2010, 2011, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
-"POT-Creation-Date: 2012-05-06 05:58+0000\n"
-"PO-Revision-Date: 2012-05-06 13:53+0700\n"
+"POT-Creation-Date: 2012-06-04 22:01+0000\n"
+"PO-Revision-Date: 2012-06-12 01:25+0700\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
-"Language-Team: GNOME Indonesian Translation Team <gnome@i15norg>\n"
+"Language-Team: GNOME Indonesian Translation Team <gnome@i15n.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: C/gdm.xml:13(title)
 msgid "GNOME Display Manager Reference Manual"
-msgstr "Panduan Acuan Manajer Tampilan GNOME"
+msgstr "Manual Rujukan Manajer Tampilan GNOME"
 
 #: C/gdm.xml:17(revnumber)
 msgid "0.0"
@@ -182,7 +182,7 @@ msgstr "Istilah dan Konvensi yang Dipakai di Manual Ini"
 
 #: C/gdm.xml:102(para)
 msgid "Chooser - A program used to select a remote host for managing a display remotely on the attached display (<command>gdm-host-chooser</command>)."
-msgstr "Chooser - Suatu program yang dipakai untuk memilih suatu host jauh untuk mengelola tampilan dari jauh pada tampilan yang tersambung (<command>gdm-host-chooser</command>)."
+msgstr "Chooser/Pemilih - Suatu program yang dipakai untuk memilih suatu host jauh untuk mengelola tampilan dari jauh pada tampilan yang tersambung (<command>gdm-host-chooser</command>)."
 
 #: C/gdm.xml:107(para)
 msgid "FreeDesktop - The organization providing desktop standards, such as the Desktop Entry Specification used by GDM. <ulink type=\"http\" url=\"http://www.freedesktop.org/\"> http://www.freedesktop.org</ulink>."
@@ -194,7 +194,7 @@ msgstr "GDM - Manajer Tampilan GNOME. Dipakai untuk menjelaskan paket perangkat 
 
 #: C/gdm.xml:118(para)
 msgid "Greeter - The graphical login window (<command>gdm-simple-greeter</command>)."
-msgstr "Greeter - Jendela log masuk grafis (<command>gdm-simple-greeter</command>)."
+msgstr "Greeter/Penyapa - Jendela log masuk grafis (<command>gdm-simple-greeter</command>)."
 
 #: C/gdm.xml:122(para)
 msgid "PAM - Pluggable Authentication Mechanism"
@@ -303,13 +303,12 @@ msgid "In addition to authentication, the greeter program allows the user to sel
 msgstr "Selain otentikasi, program penyapa mengijinkan pengguna memilih sesi mana yang dimulai dan bahasa mana yang dipakai. Sesi didefinisikan oleh berkas yang memiliki akhiran .desktop dan informasi lebih lanjut tentang berkas ini dapat ditemukan dalam bagian \"Konfigurasi Bahasa dan Sesi Pengguna GDM\" dari dokumen ini. Secara bawaan, GDM ditata untuk menampilkan peramban wajah sehingga pengguna dapat memilih akunnya dengan mengklik pada suatu gambar daripada mesti mengetikkan nama penggunanya. GDM mencatat sesi dan bahasa baku pengguna dalam <filename>~/.dmrc</filename> milik pengguna dan akan memakai baku ini bila pengguna tak memilih sesi atau bahasa dalam GUI log masuk."
 
 #: C/gdm.xml:316(para)
-#, fuzzy
 msgid "After authenticating a user, the daemon runs the <filename>PostLogin</filename> script as root, then runs the <filename>PreSession</filename> script as root. After running these scripts, the user session is started. When the user exits their session, the <filename>PostSession</filename> script is run as root. These scripts are provided as hooks for distributions and end-users to customize how sessions are managed. For example, using these hooks you could set up a machine which creates the user's $HOME directory on the fly, and erases it on logout. The difference between the <filename>PostLogin</filename> and <filename>PreSession</filename> scripts is that <filename>PostLogin</filename> is run before the pam_open_session call so is the right place to do anything which should be run before the user session is initialized. The <filename>PreSession</filename> script is called after session initialization."
-msgstr "Setelah mengotentikasi pengguna, daemon menjalankan skrip <filename>PostLogin</filename> sebagai root, lalu menjalankan skrip <filename>PreSession</filename> sebagai root. Setelah menjalankan skrip tersebut, sesi pengguna dimulai. Ketika pengguna keluar dari sesinya, skrip <filename>PostSession</filename> dijalankan sebagai root. Skrip-skrip tersebut disediakan sebagai kaitan bagi distribusi dan pengguna akhir untuk menggubah bagaimana sesi dikelola. Sebagai contoh, memakai kait tersebut Anda dapat menyiapkan suatu mesin yang membuat direktori $HOME milik pengguna sambil jalan, dan menghapusnya saat log keluar. Perbedaan antara ....."
+msgstr "Setelah mengotentikasi pengguna, daemon menjalankan skrip <filename>PostLogin</filename> sebagai root, lalu menjalankan skrip <filename>PreSession</filename> sebagai root. Setelah menjalankan skrip tersebut, sesi pengguna dimulai. Ketika pengguna keluar dari sesinya, skrip <filename>PostSession</filename> dijalankan sebagai root. Skrip-skrip tersebut disediakan sebagai kaitan bagi distribusi dan pengguna akhir untuk menggubah bagaimana sesi dikelola. Sebagai contoh, memakai kait tersebut Anda dapat menyiapkan suatu mesin yang membuat direktori $HOME milik pengguna sambil jalan, dan menghapusnya saat log keluar. Perbedaan antara skrip <filename>PostLogin</filename> dan <filename>PreSession</filename> adalah bahwa <filename>PostLogin</filename> dijalankan sebelum pemanggilan pam_open_session sehingga merupakan tempat yang tepat untuk melakukan apapun yang mesti dijalankan  sebelum sesi pengguna diinisialisasi. Skrip <filename>PreSession</filename> dipanggil setelah inisialisasi sesi."
 
 #: C/gdm.xml:336(title)
 msgid "Greeter Panel"
-msgstr "Panel Greeter"
+msgstr "Panel Penyapa"
 
 #: C/gdm.xml:337(para)
 msgid "The GDM greeter program displays a panel docked at the bottom of the screen which provides additional functionality. When a user is selected, the panel allows the user to select which session, language, and keyboard layout to use after logging in. The keyboard layout selector also changes the keyboard layout used when typing your password. The panel also contains an area for login services to leave status icons. Some example status icons include a battery icon for current battery usage, and an icon for enabling accessibility features. The greeter program also provides buttons which allow the user to shutdown or restart the system. It is possible to configure GDM to not provide the shutdown and restart buttons, if desired. GDM can also be configured via PolicyKit (or via RBAC on Oracle Solaris) to require the user have appropriate authorization before accepting the shutdown or restart request."
@@ -453,7 +452,7 @@ msgstr "Satu-satunya hak khusus yang diperlukan oleh pengguna \"gdm\" adalah kem
 
 #: C/gdm.xml:592(para)
 msgid "You should not, under any circumstances, configure the GDM user/group to a user which a user could easily gain access to, such as the user <filename>nobody</filename>. Any user who gains access to an Xauth key can snoop on and control running GUI programs running in the associated session or perform a denial-of-service attack on it. It is important to ensure that the system is configured properly so that only the \"gdm\" user has access to these files and that it is not easy to login to this account. For example, the account should be setup to not have a password or allow non-root users to login to the account."
-msgstr ""
+msgstr "Anda jangan, dalam keadaan apapun, menata pengguna/grup GDM ke sesuatu yang dapat diakses dengan mudah oleh pengguna lain, seperti misalnya pengguna <filename>nobody</filename>. Sebarang pengguna yang mendapat akses ke kunci Xauth dapat menyadap dan mengendalikan program GUI yang berjalan pada sesi terkait atau melakukan serangan denial-of-service padanya. Penting untuk memastikan bahwa sistem ditata secara benar sehingga hanya pengguna \"gdm\" punya akses ke berkas tersebut dan tak mudah untuk log masuk ke akun ini. Sebagai contoh, akun mesti disiapkan untuk tak memiliki sandi atau mengijinkan pengguna bukan root untuk log masuk ke akun."
 
 #: C/gdm.xml:605(para)
 msgid "The GDM greeter configuration is stored in GConf. To allow the GDM user to be able to write configuration, it is necessary for the \"gdm\" user to have a writable $HOME directory. Users may configure the default GConf configuration as desired to avoid the need to provide the \"gdm\" user with a writable $HOME directory. However, some features of GDM may be disabled if it is unable to write state information to GConf configuration."
@@ -468,33 +467,32 @@ msgid "GDM uses PAM for login authentication. PAM stands for Pluggable Authentic
 msgstr "GDM memakai PAM untuk otentikasi log masuk. PAM kependekan dari Pluggable Authentication Module (modul otentikasi yang dapat ditempelkan), dan dipakai oleh kebanyakan program yang meminta otentikasi pada komputer Anda. Itu mengijinkan administrator untuk menata perilaku otentikasi spesifik bagi program log masuk yang berbeda (seperti misalnya ssh, log masuk GUI, screensaver, dsb.)"
 
 #: C/gdm.xml:627(para)
-#, fuzzy
 msgid "PAM is complicated and highly configurable, and this documentation does not intend to explain this in detail. Instead, it is intended to give an overview of how PAM configuration relates with GDM, how PAM is commonly configured with GDM, and known issues. It is expected that a person needing to do PAM configuration would need to do further reading of PAM documentation to understand how to configure PAM and to understand terms used in this section."
-msgstr "PAM itu rumit dan sangat ..."
+msgstr "PAM itu rumit dan dapat ditata dalam sangat banyak cara, dan dokumentasi ini bukan bertujuan untuk menjelaskan hal ini secara rinci. Alih-alih, ini ditujukan untuk memberi ringkasan tentang bagaimana konfigurasi PAM berhubungan dengan GDM, bagaimana PAM umumnya ditata dengan GDM, dan masalah-masalah yang telah diketahui. Diharapkan bahwa orang yang perlu melakukan konfigurasi PAM akan membaca lebih jauh dokumentasi PAM untuk memahami bagaimana menata PAM dan memahami istilah-istilah yang dipakai pada bagian ini."
 
 #: C/gdm.xml:637(para)
 msgid "PAM configuration has different, but similar, interfaces on different Operating Systems, so check the <ulink type=\"help\" url=\"man:pam.d\">pam.d</ulink> or <ulink type=\"help\" url=\"man:pam.conf\">pam.conf</ulink> man page for details. Be sure you read the PAM documentation and are comfortable with the security implications of any changes you intend to make to your configuration."
-msgstr ""
+msgstr "Konfigurasi PAM memiliki antar muka yang berbeda namun mirip pada Sistem Operasi yang berbeda, sehingga periksalah halaman man <ulink type=\"help\" url=\"man:pam.d\">pam.d</ulink> atau <ulink type=\"help\" url=\"man:pam.conf\">pam.conf</ulink> untuk rinciannya. Pastikan bahwa Anda membaca dokumentasi PAM dan merasa nyaman dengan implikasi keamanan dari perubahan apapun yang hendak Anda lakukan pada konfigurasi Anda."
 
 #: C/gdm.xml:647(para)
 msgid "Note that, by default, GDM uses the \"gdm\" PAM service name for normal login and the \"gdm-autologin\" PAM service name for automatic login. These services may not be defined in your pam.d or pam.conf configured file. If there is no entry, then GDM will use the default PAM behavior. On most systems this should work fine. However, the automatic login feature may not work if the gdm-autologin service is not defined."
-msgstr ""
+msgstr "Perhatikan bahwa, secara baku, GDM memakai nama layanan PAM \"gdm\" untuk log masuk normal dan nama layanan PAM \"gdm-autologin\" untuk log masuk otomatis. Layanan-layanan ini mungkin tak didefinisikan dalam berkas konfigurasi pam.d atau pam.conf Anda. Bila tak ada entri, maka GDM akan memakai perilaku PAM bawaan. Pada kebanyakan sistem ini mestinya berjalan baik. Namun, fitur log masuk otomatis mungkin tak bekerja bila layanan gdm-autologin tak terdefinisi."
 
 #: C/gdm.xml:657(para)
 msgid "The <filename>PostLogin</filename> script is run before pam_open_session is called, and the <filename>PreSession</filename> script is called after. This allows the system administrator to add any scripting to the login process either before or after PAM initializes the session."
-msgstr ""
+msgstr "Skrip <filename>PostLogin</filename> dijalankan sebelum pam_open_session dipanggil, dan skrip <filename>PreSession</filename> dipanggil setelahnya. Ini memungkinkan administrator sistem untuk menambahkan sebarang penskripan ke proses log masuk sebelum atau setelah PAM menginisialisasi sesi."
 
 #: C/gdm.xml:665(para)
 msgid "If you wish to make GDM work with other types of authentication mechanisms (such as a fingerprint or SmartCard reader), then you should implement this by using a PAM service module for the desired authentication type rather than by trying to modify the GDM code directly. Refer to the PAM documentation on your system. How to do this is frequently discussed on the <address><email>gdm-list@gnome.org</email></address> mail list, so you can refer to the list archives for more information."
-msgstr ""
+msgstr "Bila Anda hendak membuat GDM bekerja dengan mekanisme otentikasi jenis lain (seperti misalnya sidik jari atau pembaca SmartCard), maka Anda mesti mengimplementasikan ini memakai modul layanan PAM bagi jenis otentikasi yang diinginkan daripada mencoba mengubah kode GDM secara langsung. Lihatlah dokumentasi PAM pada sistem Anda. Bagaimana melakukan hal ini sering didiskusikan di milis <address><email>gdm-list@gnome.org</email></address>, sehingga Anda dapat mengacu ke arsip milis untuk informasi lebih lanjut."
 
 #: C/gdm.xml:676(para)
 msgid "PAM does have some limitations regarding being able to work with multiple types of authentication at the same time, like supporting the ability to accept either SmartCard and the ability to type the username and password into the login program. There are techniques that are used to make this work, and it is best to research how this problem is commonly solved when setting up such a configuration."
-msgstr ""
+msgstr "PAM memiliki beberapa keterbatasan dalam kemampuan bekerja dengan banyak tipe otentikasi pada saat yang sama, seperti mendukung kemampuan menerima SmartCard dan kemampuan mengetikkan nama pengguna serta sandi ke dalam program log masuk. Ada teknik-teknik yang dipakai untuk membuat ini bekerja, dan yang terbaik adalah meneliti bagaimana masalah ini secara umum dipecahkan ketika menyiapkan konfigurasi seperti itu."
 
 #: C/gdm.xml:685(para)
 msgid "If automatic login does not work on a system, check to see if the \"gdm-autologin\" PAM stack is defined in the PAM configuration. For this to work, it is necessary to use a PAM module that simply does no authentication, or which simply returns PAM_SUCCESS from all of its public interfaces. Assuming your system has a pam_allow.so PAM module which does this, a PAM configuration to enable \"gdm-autologin\" would look like this:"
-msgstr ""
+msgstr "Bila log masuk otomatis tak bekerja pada suatu sistem, periksa apakah stack PAM \"gdm-autologin\" didefinisikan di dalam konfigurasi PAM. Agar ini bekerja, perlu memakai modul PAM yang tak melakukan otentikasi, atau yang sekedar mengembalikan PAM_SUCCESS dari semua antar muka publiknya. Dengan asumsi bahwa sistem Anda memiliki modul PAM pam_allow.so yang melakukan hal ini, konfigurasi PAM yang mengaktifkan \"gdm-autologin\" akan terlihat seperti ini:"
 
 #: C/gdm.xml:695(screen)
 #, no-wrap
@@ -515,7 +513,7 @@ msgstr ""
 
 #: C/gdm.xml:703(para)
 msgid "The above setup will cause no lastlog entry to be generated. If a lastlog entry is desired, then use the following for the session:"
-msgstr ""
+msgstr "Penataan di atas akan menyebabkan tiadanya entri lastlog. Bila suatu entri lastlog dikehendaki, maka gunakan yang berikut bagi sesi:"
 
 #: C/gdm.xml:708(screen)
 #, no-wrap
@@ -528,7 +526,7 @@ msgstr ""
 
 #: C/gdm.xml:712(para)
 msgid "If the computer is used by several people, which makes automatic login unsuitable, you may want to allow some users to log in without entering their password. This feature can be enabled as a per-user option in the users-admin tool from the gnome-system-tools; it is achieved by checking that the user is member a Unix group called \"nopasswdlogin\" before asking for a password. For this to work, the PAM configuration file for the \"gdm\" service must include a line such as:"
-msgstr ""
+msgstr "Bila komputer dipakai oleh beberapa orang, yang membuat log masuk otomatis tidak cocok, Anda mungkin hendak mengijinkan beberapa pengguna untuk log masuk tanpa mengetikkan sandi. Fitur ini dapat diaktifkan sebagai opsi per pengguna dalam perkakas users-admin dari gnome-system-tools; ini dicapai dengan memeriksa apakah pengguna tersebut anggota dari grup Unix bernama \"nopasswdlogin\" sebelum menanyakan sandi. Agar ini bekerja, berkas konfigurasi PAM bagi layanan \"gdm\" mesti memuat suatu baris seperti:"
 
 #: C/gdm.xml:723(screen)
 #, no-wrap
@@ -545,7 +543,7 @@ msgstr "utmp dan wtmp"
 
 #: C/gdm.xml:732(para)
 msgid "GDM generates utmp and wtmp User Accounting Database entries upon session login and logout. The utmp database contains user access and accounting information that is accessed by commands such as <command>finger</command>, <command>last</command>, <command>login</command>, and <command>who</command>. The wtmp database contains the history of user access and accounting information for the utmp database. Refer to the <ulink type=\"help\" url=\"man:utmp\">utmp</ulink> and <ulink type=\"help\" url=\"man:wtmp\">wtmp</ulink> man pages on your system for more information."
-msgstr ""
+msgstr "GDM menjangkitkan entri Basis Data Akunting Pengguna utmp dan wtmp saat log masuk dan log keluar sesi. Basis data utmp memuat informasi akunting dan akses pengguna yang diakses oleh perintah seperti <command>finger</command>, <command>last</command>, <command>login</command>, dan <command>who</command>. Basis data wtmp memuat riwayat informasi akunting dan akses pengguna bagi basis data utmp. Lihatlah halaman man <ulink type=\"help\" url=\"man:utmp\">utmp</ulink> dan <ulink type=\"help\" url=\"man:wtmp\">wtmp</ulink> pada sistem Anda untuk informasi lebih jauh."
 
 #: C/gdm.xml:747(title)
 msgid "Xserver Authentication Scheme"
@@ -553,11 +551,11 @@ msgstr "Skema Otentikasi Xserver"
 
 #: C/gdm.xml:749(para)
 msgid "Xserver authorization files are stored in a newly created subdirectory of <filename>&lt;var&gt;/run/gdm</filename> at start up. These files are used to store and share a \"password\" between X clients and the Xserver. This \"password\" is unique for each session logged in, so users from one session can't snoop on users from another."
-msgstr ""
+msgstr "Berkas otorisasi Xserver disimpan dalam subdirektori <filename>&lt;var&gt;/run/gdm</filename> yang baru dibuat saat awal mula. Berkas-berkas ini dipakai untuk menyimpan dan berbagi \"sandi\" antara klien X dan Xserver. \"Sandi\" ini unik bagi setiap sesi log masuk, sehingga pengguna dari sesi satu tak bisa menyadap pengguna sesi lain."
 
 #: C/gdm.xml:757(para)
 msgid "GDM only supports the MIT-MAGIC-COOKIE-1 Xserver authentication scheme. Normally little is gained from the other schemes, and no effort has been made to implement them so far. Be especially careful about using XDMCP because the Xserver authentication cookie goes over the wire as clear text. If snooping is possible, then an attacker could simply snoop your authentication password as you log in, regardless of the authentication scheme being used. If snooping is possible and undesirable, then you should use ssh for tunneling an X connection rather then using XDMCP. You could think of XDMCP as a sort of graphical telnet, having the same security issues. In most cases, ssh -Y should be preferred over GDM's XDMCP features."
-msgstr ""
+msgstr "GDM hanya mendukung skema otentikasi Xserver MIT-MAGIC-COOKIE-1. Secara normal hanya sedikit keuntungan yang didapat dari skema lain, dan tak ada upaya untuk mengimplementasi mereka sejauh ini. Sangat berhati-hatilah untuk memakai XDMCP karena cookie otentikasi Xserver disalurkan lewat jaringan sebagai teks polos. Bila penyadapan mungkin, maka penyerang cukup sekedar menyadap sandi otentikasi saat Anda log masuk, tak peduli skema otentikasi yang dipakai. Bila penyadapan dimungkinkan dan tak diharapkan, maka Anda mesti memakai ssh untuk membungkus koneksi X daripada memakai XDMCP. Anda dapat menganggap XDMCP sebagai telnet mode grafis, yang memiliki masalah keamanan sama. Dalam kebanyakan kasus, ssh -Y mesti lebih disukai daripada fitur XDMCP GDM."
 
 #: C/gdm.xml:774(title)
 msgid "XDMCP Security"
@@ -565,11 +563,11 @@ msgstr "Keamanan XDMCP"
 
 #: C/gdm.xml:776(para)
 msgid "Even though your display is protected by cookies, XEvents and thus keystrokes typed when entering passwords will still go over the wire in clear text. It is trivial to capture these."
-msgstr ""
+msgstr "Walaupun tampilan Anda dilindungi oleh cookies, XEvents dan juga ketikan saat memasukkan sandi masih akan dilewatkan jaringan dalam bentuk teks polos. Sangat mudah untuk menangkap itu."
 
 #: C/gdm.xml:782(para)
 msgid "XDMCP is primarily useful for running thin clients such as in terminal labs. Those thin clients will only ever need the network to access the server, and so it seems like the best security policy to have those thin clients on a separate network that cannot be accessed by the outside world, and can only connect to the server. The only point from which you need to access outside is the server. This type of set up should never use an unmanaged hub or other sniffable network."
-msgstr ""
+msgstr "XDMCP terutama berguna untuk menjalankan thin client seperti di lab terminal. Thin client itu hanya akan perlu jaringan untuk mengakses server, sehingga kebijakan keamanan terbaik adalah untuk menempatkan thin client tersebut pada jaringan terpisah yang tak dapat diakses oleh dunia luar, dan hanya dapat menyambung ke server. Satu-satunya titik yang perlu akses keluar adalah server. Jenis penyiapan ini tak boleh memakai unmanaged hub atau jaringa lain yang dapat disadap."
 
 #: C/gdm.xml:795(title)
 msgid "XDMCP Access Control"
@@ -577,11 +575,11 @@ msgstr "Kendali Akses XDMCP"
 
 #: C/gdm.xml:797(para)
 msgid "XDMCP access control is done using TCP wrappers. It is possible to compile GDM without TCP wrapper support, so this feature may not be supported on some Operating Systems."
-msgstr ""
+msgstr "Kendali akses XDMCP dilakukan memakai TCP wrappers. Memang mungkin untuk mengompail GDM tanpa dukungan TCP wrappers, sehingga fitur ini mungkin tak didukung pada beberapa Sistem Operasi."
 
 #: C/gdm.xml:803(para)
 msgid "You should use the daemon name <command>gdm</command> in the <filename>&lt;etc&gt;/hosts.allow</filename> and <filename>&lt;etc&gt;/hosts.deny</filename> files. For example to deny computers from <filename>.evil.domain</filename> from logging in, then add"
-msgstr ""
+msgstr "Anda mesti memakai nama deamon <command>gdm</command> dalam berkas <filename>&lt;etc&gt;/hosts.allow</filename> dan <filename>&lt;etc&gt;/hosts.deny</filename>. Sebagai contoh untuk menolak komputer dari <filename>.evil.domain</filename> yang berusaha log masuk, maka tambahkan"
 
 #: C/gdm.xml:810(screen)
 #, no-wrap
@@ -594,7 +592,7 @@ msgstr ""
 
 #: C/gdm.xml:813(para)
 msgid "to <filename>&lt;etc&gt;/hosts.deny</filename>. You may also need to add"
-msgstr ""
+msgstr "ke <filename>&lt;etc&gt;/hosts.deny</filename>. Anda mungkin juga perlu menambah"
 
 #: C/gdm.xml:817(screen)
 #, no-wrap
@@ -607,7 +605,7 @@ msgstr ""
 
 #: C/gdm.xml:820(para)
 msgid "to your <filename>&lt;etc&gt;/hosts.allow</filename> if you normally disallow all services from all hosts. See the <ulink type=\"help\" url=\"man:hosts.allow\">hosts.allow(5)</ulink> man page for details."
-msgstr ""
+msgstr "ke <filename>&lt;etc&gt;/hosts.allow</filename> bila biasanya Anda menolak semua layanan dari semua host. Lihat halaman man <ulink type=\"help\" url=\"man:hosts.allow\">hosts.allow(5)</ulink> untuk rinciannya."
 
 #: C/gdm.xml:829(title)
 msgid "Firewall Security"
@@ -615,7 +613,7 @@ msgstr "Keamanan Firewall"
 
 #: C/gdm.xml:831(para)
 msgid "Even though GDM tries to outsmart potential attackers trying to take advantage of XDMCP, it is still advised that you block the XDMCP port (normally UDP port 177) on your firewall unless really needed. GDM guards against denial of service attacks, but the X protocol is still inherently insecure and should only be used in controlled environments. Also each remote connection takes up lots of resources, so it is much easier to do a denial of service attack via XDMCP than attacking a webserver."
-msgstr ""
+msgstr "Walaupun GDM mencoba untuk mengakali penyerang potensial yang mencoba mengambil keuntungan dari XDMCP, masih disarankan bagi Anda untuk memblokir port XDMCP (biasanya UDP port 177) pada firewall Anda kecuali bila memang diperlukan. GDM menjaga dari serangan denial of service, tapi protokol X masih tak aman secara inheren dan mestinya hanya dipakai dalam suatu lingkungan yang terkendali. Setiap koneksi remote juga menghabiskan banyak sumber daya, sehingga jauh lebih mudah melakukan serangan denial of service melalui XDMCP daripada menyerang suatu server web."
 
 #: C/gdm.xml:842(para)
 msgid "It is also wise to block all of the Xserver ports. These are TCP ports 6000+ (one for each display number) on your firewall. Note that GDM will use display numbers 20 and higher for flexible on-demand servers."
@@ -623,7 +621,7 @@ msgstr "Juga bijaksana untuk memblokir semua port Xserver. Ini adalah port TCP 6
 
 #: C/gdm.xml:849(para)
 msgid "X is not a very safe protocol when using it over the Internet, and XDMCP is even less safe."
-msgstr ""
+msgstr "X bukan protokol yang aman ketika dipakai di Internet, dan XDMCP bahkan lebih tidak aman lagi."
 
 #: C/gdm.xml:856(title)
 msgid "PolicyKit"
@@ -634,11 +632,11 @@ msgstr "PolicyKit"
 #. </para>
 #: C/gdm.xml:864(para)
 msgid "GDM may be configured to use PolicyKit to allow the system administrator to control whether the login screen should provide the shutdown and restart buttons on the greeter screen."
-msgstr ""
+msgstr "GDM dapat ditata untuk memakai PolicyKit yang mengijinkan administrator sistem mengendalikan apakah layar log masuk mesti menyediakan tombol matikan dan mulai ulang pada layar penyapa."
 
 #: C/gdm.xml:870(para)
 msgid "These buttons are controlled by the <filename>org.freedesktop.consolekit.system.stop-multiple-users</filename> and <filename>org.freedesktop.consolekit.system.restart-multiple-users</filename> actions respectively. Policy for these actions can be set up using the polkit-gnome-authorization tool, or the polkit-auth command line program."
-msgstr ""
+msgstr "Tombol-tombol ini masing-masing dikendalikan oleh aksi filename>org.freedesktop.consolekit.system.stop-multiple-users</filename> dan <filename>org.freedesktop.consolekit.system.restart-multiple-users</filename>. Kebijakan bagi aksi-aksi ini dapat disiapkan memakai perkakas polkit-gnome-authorization, atau program baris perintah polkit-auth."
 
 #: C/gdm.xml:882(title)
 msgid "RBAC (Role Based Access Control)"
@@ -646,11 +644,11 @@ msgstr "RBAC (Role Based Access Control)"
 
 #: C/gdm.xml:884(para)
 msgid "GDM may be configured to use RBAC instead of PolicyKit. In this case the RBAC configuration is used to control whether the login screen should provide the shutdown and restart buttons on the greeter screen."
-msgstr ""
+msgstr "GDM dapat ditata untuk memakai RBAC sebagai pengganti PolicyKit. Dalam hal ini konfigurasi RBAC dipakai untuk mengendalikan apakah layar log masuk mesti menyediakan tombol matikan dan mulai ulang pada layar penyapa."
 
 #: C/gdm.xml:890(para)
 msgid "For example, on Oracle Solaris, the \"solaris.system.shutdown\" authorization is used to control this. Simply modify the <filename>/etc/user_attr</filename> file so that the \"gdm\" user has this authorization."
-msgstr ""
+msgstr "Sebagai contoh, pada Oracle Solaris, otorisasi \"solaris.system.shutdown\" dipakai untuk mengendalikan ini. Cukup ubah berkas <filename>/etc/user_attr</filename> sehingga pengguna \"gdm\" memiliki otorisasi ini."
 
 #: C/gdm.xml:903(title)
 msgid "Support for ConsoleKit"
@@ -664,19 +662,19 @@ msgstr "Dukungan untuk ConsoleKit"
 #. </para>
 #: C/gdm.xml:914(para)
 msgid "GDM includes support for publishing user login information with the user and login session accounting framework known as ConsoleKit. ConsoleKit is able to keep track of all the users currently logged in. In this respect, it can be used as a replacement for the utmp or utmpx files that are available on most Unix-like Operating Systems."
-msgstr ""
+msgstr "GDM menyertakan dukungan bagi pengumuman informasi log masuk pengguna dengan framework akunting sesi log masuk dan pengguna yang dikenal sebagai ConsoleKit. ConsoleKit dapat mencatat semua pengguna yang kini log masuk, sehingga dapat dipakai sebagai pengganti berkas utmp atau utmpx yang tersedia pada kebanyakan Sistem Operasi mirip Unix."
 
 #: C/gdm.xml:922(para)
 msgid "When GDM is about to create a new login process for a user it will call a privileged method of ConsoleKit in order to open a new session for this user. At this time GDM also provides ConsoleKit with information about this user session such as: the user ID, the X11 Display name that will be associated with the session, the host-name from which the session originates (useful in the case of an XDMCP session), whether or not this session is attached, etc. As the entity that initiates the user process, GDM is in a unique position to know about the user session and to be trusted to provide these bits of information. The use of this privileged method is restricted by the use of the D-Bus system message bus security policy."
-msgstr ""
+msgstr "Ketika GDM akan membuat proses log masuk baru bagi seorang pengguna, ia akan memanggil metoda dengan hak khusus dari ConsoleKit untuk membuka sesi baru bagi pengguna ini. Pada saat ini GDM juga menyediakan informasi untuk ConsoleKit tentang sesi pengguna ini seperti: ID pengguna, Nama tampilan X11 yang akan dikaitkan dengan sesi ini, nama host tempat sesi berasal (berguna pada kasus sesi XDMCP), apakah sesi ini dicantol atau tidak, dsb. Sebagai entitas yang mengawali proses pengguna, GDM berada pada posisi yang unik untuk mengetahui tentang sesi pengguna dan untuk dipercaya menyediakan kepingan informasi ini. Penggunaan metode dengan hak khusus ini dibatasi oleh pemakaian kebijakan keamanan bus pesan sistem D-BUS."
 
 #: C/gdm.xml:936(para)
 msgid "In case a user with an existing session has authenticated at GDM and requests to resume that existing session, GDM calls a privileged method of ConsoleKit to unlock that session. The exact details of what happens when the session receives this unlock signal are undefined and session-specific. However, most sessions will unlock a screensaver in response."
-msgstr ""
+msgstr "Bila penguna dengan sesi yang telah ada telah diotentikasi pada GDM dan meminta melanjutkan sesi tersebut, GDM memanggil suatu metoda dengan hak khusus dari ConsoleKit untuk membuka kunci sesi tersebut. Rincian tepatnya dari apa yang terjadi ketika sesi menerima sinyal buka kunci ini tak terdefinisi dan spesifik sesi. Namun kebanyakan sesi akan membuka kunci screensaver sebagai respon."
 
 #: C/gdm.xml:945(para)
 msgid "When the user chooses to log out, or if GDM or the session quit unexpectedly the user session will be unregistered from ConsoleKit."
-msgstr ""
+msgstr "Ketika pengguna memilih untuk log keluar, atau bila GDM atau sesi keluar tak disangka-sangka, sesi pengguna akan dikeluarkan dari daftar ConsoleKit."
 
 #: C/gdm.xml:954(title)
 msgid "Configuration"
@@ -684,15 +682,15 @@ msgstr "Konfigurasi"
 
 #: C/gdm.xml:956(para)
 msgid "GDM has a number of configuration interfaces. These include scripting integration points, daemon configuration, greeter configuration, general session settings, integration with gnome-settings-daemon configuration, and session configuration. These types of integration are described in detail below."
-msgstr ""
+msgstr "GDM memiliki sejumlah antar muka konfigurasi. Ini termasuk titik integrasi skrip, konfigurasi daemon, konfigurasi penyapa, pengaturan sesi umum, integrasi dengan konfigurasi gnome-settings-daemon, dan konfigurasi sesi. Integrasi tipe ini diuraikan secara rinci di bawah."
 
 #: C/gdm.xml:965(title)
 msgid "Scripting Integration Points"
-msgstr "Titik Integrasi Scripting"
+msgstr "Titik Integrasi Skrip"
 
 #: C/gdm.xml:967(para)
 msgid "The GDM script integration points can be found in the <filename>&lt;etc&gt;/gdm/</filename> directory:"
-msgstr ""
+msgstr "Titik integrasi skrip GDM dapat ditemukan dalam direktori <filename>&lt;etc&gt;/gdm/</filename>:"
 
 #: C/gdm.xml:972(screen)
 #, no-wrap
@@ -713,39 +711,39 @@ msgstr ""
 
 #: C/gdm.xml:980(para)
 msgid "The <filename>Init</filename>, <filename>PostLogin</filename>, <filename>PreSession</filename>, and <filename>PostSession</filename> scripts all work as described below."
-msgstr ""
+msgstr "Skrip <filename>Init</filename>, <filename>PostLogin</filename>, <filename>PreSession</filename>, dan <filename>PostSession</filename> semua bekerja seperti dijelaskan di bawah."
 
 #: C/gdm.xml:986(para)
 msgid "For each type of script, the default one which will be executed is called \"Default\" and is stored in a directory associated with the script type. So the default <filename>Init</filename> script is <filename>&lt;etc&gt;/gdm/Init/Default</filename>. A per-display script can be provided, and if it exists it will be run instead of the default script. Such scripts are stored in the same directory as the default script and have the same name as the Xserver DISPLAY value for that display. For example, if the <filename>&lt;Init&gt;/:0</filename> script exists, it will be run for DISPLAY \":0\"."
-msgstr ""
+msgstr "Untuk setiap jenis skirp, secara baku yang akan dieksekusi dinamai \"Default\" dan disimpan dalam suatu direktori yang berkaitan dengan tipe skrip. Maka skrip <filename>Init</filename> baku adalah <filename>&lt;etc&gt;/gdm/Init/Default</filename>. Suatu skrip per tampilan dapat disediakan, dan bila ada akan dijalankan sebagai pengganti skrip bawaan. Skrip demikian disimpan di dalam direktori yang sama dengan skrip bawaan dan memiliki nama yang sama dengan nilai DISPLAY Xserver bagi tampilan tersebut. Sebagai contoh, bila skrip <filename>&lt;Init&gt;/:0</filename> ada, itu akan dijalankan bagi DISPLAY \":0\"."
 
 #: C/gdm.xml:998(para)
 msgid "All of these scripts are run with root privilege and return 0 if run successfully, and a non-zero return code if there was any failure that should cause the login session to be aborted. Also note that GDM will block until the scripts finish, so if any of these scripts hang, this will cause the login process to also hang."
-msgstr ""
+msgstr "Semua skrip ini dijalankan dengan privilese root dan mengembalikan 0 bila dijalankan dengan sukses, dan kode kembalian bukan nol bila ada kegagalan yang mesti menyebabkan sesi login digugurkan. Perhatikan juga bahwa GDM akan memblok sampai skrip selesai, sehingga bila salah satu skrip ini hang, ini akan menyebabkan proses log masuk juga hang."
 
 #: C/gdm.xml:1006(para)
 msgid "When the Xserver for the login GUI has been successfully started, but before the login GUI is actually displayed, GDM will run the <filename>Init</filename> script. This script is useful for starting programs that should be run while the login screen is showing, or for doing any special initialization if required."
-msgstr ""
+msgstr "Ketika Xserver sebagai GUI log masuk telah sukses dimulai, tapi sebelum GUI log masuk benar-benar ditampilkan, GDM akan menjalankan skrip <filename>Init</filename>. Skrip ini berguna untuk memulai program yang mesti dijalankan ketika layar log masuk tampil, atau untuk melakukan inisialisasi khusus apapun bila diperlukan."
 
 #: C/gdm.xml:1014(para)
 msgid "After the user has been successfully authenticated GDM will run the <filename>PostLogin</filename> script. This is done before any session setup has been done, including before the pam_open_session call. This script is useful for doing any session initialization that needs to happen before the session starts. For example, you might setup the user's $HOME directory if needed."
-msgstr ""
+msgstr "Setelah pengguna sukses terotentikasi GDM akan menjalankan skrip <filename>PostLogin</filename>. Ini dilakukan sebelum penyiapan sesi manapun dilakukan, termasuk sebelum pemanggilan pam_open_session. Skrip ini berguna untuk melakukan inisialisasi sesi apapun yang perlu terjadi sebelum sesi mulai. Sebagai contoh, Anda mungkin perlu menyiapkan direktori $HOME pengguna bila diperlukan."
 
 #: C/gdm.xml:1023(para)
 msgid "After the user session has been initialized, GDM will run the <filename>PreSession</filename> script. This script is useful for doing any session initialization that needs to happen after the session has been initialized. It can be used for session management or accounting, for example."
-msgstr ""
+msgstr "Setelah sesi pengguna diinisialisasi, GDM akan menjalankan skrip <filename>PreSession</filename>. Skrip ini berguna untuk melakukan sebarang inisialisasi sesi yang perlu terjadi setelah sesi diinisialisasi. Ini dapat dipakai untuk manajemen sesi atau akunting, misalnya."
 
 #: C/gdm.xml:1031(para)
 msgid "When a user terminates their session, GDM will run the <filename>PostSession</filename> script. Note that the Xserver will have been stopped by the time this script is run, so it should not be accessed."
-msgstr ""
+msgstr "Ketika seorang pengguna mengakhiri sesinya, GDM akan menjalankan skrip <filename>PostSession</filename>. Perhatikan bahwa Xserver bakal telah berhenti saat skrip ini dijalankan, sehingga itu tak boleh diakses."
 
 #: C/gdm.xml:1038(para)
 msgid "Note that the <filename>PostSession</filename> script will be run even when the display fails to respond due to an I/O error or similar. Thus, there is no guarantee that X applications will work during script execution."
-msgstr ""
+msgstr "Perhatikan bahwa skrip <filename>PostSession</filename> akan dijalankan bahkan ketika tampilan gagal merespon karena galat I/O atau yang serupa. Jadi tak ada jaminan bahwa aplikasi X akan bekerja selama eksekusi skrip."
 
 #: C/gdm.xml:1045(para)
 msgid "All of the above scripts will set the <filename>$RUNNING_UNDER_GDM</filename> environment variable to <filename>yes</filename>. If the scripts are also shared with other display managers, this allows you to identify when GDM is calling these scripts, so you can run specific code when GDM is used."
-msgstr ""
+msgstr "Semua skrip di atas akan menata variabel lingkungan <filename>$RUNNING_UNDER_GDM</filename> ke <filename>yes</filename>. Bila skrip juga dipakai bersama dengan manajer tampilan lain, ini memungkinkan Anda mengidentifikasi ketika GDM sedang memanggil skrip ini, sehingga Anda dapat menjalankan kode khusus ketika GDM sedang dipakai."
 
 #: C/gdm.xml:1055(title)
 msgid "Autostart Configuration"
@@ -753,11 +751,11 @@ msgstr "Konfigurasi Autostart"
 
 #: C/gdm.xml:1057(para)
 msgid "The <filename>&lt;share&gt;/gdm/autostart/LoginWindow</filename> directory contains files in the format specified by the \"FreeDesktop.org Desktop Application Autostart Specification\". Standard features in the specification may be used to specify programs that should auto-restart or only be launched if a GConf configuration value is set, etc."
-msgstr ""
+msgstr "Direktori <filename>&lt;share&gt;/gdm/autostart/LoginWindow</filename> memuat berkas dalam format yang dinyatakan oleh \"FreeDesktop.org Desktop Application Autostart Specification\". Fitur standar dalam spesifikasi itu boleh dipakai untuk menyatakan program yang mesti dijalankan ulang secara otomatis atau hanya diluncurkan bila suatu nilai konfigurasi GConf ditata, dsb."
 
 #: C/gdm.xml:1066(para)
 msgid "Any <filename>.desktop</filename> files in this directory will cause the associated program to automatically start with the login GUI greeter. By default, GDM is shipped with files which will autostart the gdm-simple-greeter login GUI greeter itself, the gnome-power-manager application, the gnome-settings-daemon, and the metacity window manager. These programs are needed for the greeter program to work. In addition, desktop files are provided for starting various AT programs if the configuration values specified in the Accessibility Configuration section below are set."
-msgstr ""
+msgstr "Berkas <filename>.desktop</filename> apapun dalam direktori ini akan menyebabkan program yang terkait dijalankan secara otomatis dengan penyapa GUI log masuk. Secara baku, GDM dilengkapi dengan berkas yang akan otomatis menjalankan penyapa GUI log masuk gdm-simple-greeter, aplikasi gnome-power-manager, gnome-settings-daemon, dan manajer jendela metacity. Program-program ini diperlukan agar program penyapa dapat bekerja. Sebagai tambahan, berkas desktop disediakan untuk menjalankan berbagai program AT bila nilai konfigurasi yang dinyatakan dalam bagian Konfigurasi Aksesabilitas di bawah ditata."
 
 #: C/gdm.xml:1080(title)
 msgid "Xsession Script"
@@ -765,7 +763,7 @@ msgstr "Skrip Xsession"
 
 #: C/gdm.xml:1082(para)
 msgid "There is also an <filename>Xsession</filename> script located at <filename>&lt;etc&gt;/gdm/Xsession</filename> which is called between the <filename>PreSession</filename> and the <filename>PostSession</filename> scripts. This script does not support per-display like the other scripts. This script is used for actually starting the user session. This script is run as the user, and it will run whatever session was specified by the Desktop session file the user selected to start."
-msgstr ""
+msgstr "Ada juga skrip <filename>Xsession</filename> yang terletak di <filename>&lt;etc&gt;/gdm/Xsession</filename> yang dipanggil antara skrip <filename>PreSession</filename> dan <filename>PostSession</filename>. Skrip ini tak mendukung per-tampilan seperti skrip lain. Skrip ini dipakai untuk benar-benar memulai sesi pengguna. Skrip ini dijalankan sebagai pengguna, dan akan menjalankan sesi apapun yang dinyatakan oleh berkas sesi Desktop yang dipilih pengguna untuk dimulai."
 
 #: C/gdm.xml:1095(title)
 msgid "Daemon Configuration"
@@ -773,19 +771,19 @@ msgstr "Konfigurasi Daemon"
 
 #: C/gdm.xml:1097(para)
 msgid "The GDM daemon is configured using the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file. Default values are stored in GConf in the <filename>gdm.schemas</filename> file. It is recommended that end-users modify the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file because the schemas file may be overwritten when the user updates their system to have a newer version of GDM."
-msgstr ""
+msgstr "Daemon GDM dikonfigurasi memakai berkas <filename>&lt;etc&gt;/gdm/custom.conf</filename>. Nilai baku disimpan di GConf dalam berkas <filename>gdm.schemas</filename>. Disarankan bahwa pengguna akhir mengubah berkas <filename>&lt;etc&gt;/gdm/custom.conf</filename> karena berkas skema mungkin tertimpa ketika pengguna memutakhirkan sistem mereka untuk mendapatkan versi GDM yang lebih baru."
 
 #: C/gdm.xml:1107(para)
 msgid "Note that older versions of GDM supported additional configuration options which are no longer supported in the latest versions of GDM."
-msgstr ""
+msgstr "Perhatikan bahwa GDM versi lebih lama mendukung opsi konfigurasi tambahan yang tak didukung lagi pada versi GDM terakhir."
 
 #: C/gdm.xml:1112(para)
 msgid "The <filename>&lt;etc&gt;/gdm/custom.conf</filename> file is in the <filename>keyfile</filename> format. Keywords in brackets define group sections, strings before an equal sign (=) are keys and the data after equal sign represents their value. Empty lines or lines starting with the hash mark (#) are ignored."
-msgstr ""
+msgstr "Berkas <filename>&lt;etc&gt;/gdm/custom.conf</filename> berformat <filename>keyfile</filename>. Kata kunci dalam kurung siku mendefinisikan bagian grup, string sebelum tanda sama dengan adalah kunci dan data setelah tanda sama dengan mewakili nilai mereka. Baris kosong atau baris yang diawali dengan tanda pagar (#) diabaikan."
 
 #: C/gdm.xml:1120(para)
 msgid "The file <filename>&lt;etc&gt;/gdm/custom.conf</filename> supports the \"[daemon]\", \"[security]\", and \"[xdmcp]\" group sections. Within each group, there are particular key/value pairs that can be specified to modify how GDM behaves. For example, to enable timed login and specify the timed login user to be a user named \"you\", you would modify the file so it contains the following lines:"
-msgstr ""
+msgstr "Berkas <filename>&lt;etc&gt;/gdm/custom.conf</filename> mendukung bagian grup \"[daemon]\", \"[security]\", dan \"[xdmcp]\". Dalam setiap grup, ada pasangan kunci/nilai tertentu yang dapat dinyatakan untuk mengubah bagaimana GDM bertingkahlaku. Sebagai contoh, untuk mengaktifkan log masuk dengan tenggang waktu dan menyatakan bahwa pengguna yang log masuknya diberi tenggang waktu adalah pengguna bernama \"you\", Anda perlu mengubah berkas sehingga memuat baris-baris berikut:"
 
 #: C/gdm.xml:1130(screen)
 #, no-wrap
@@ -1335,7 +1333,7 @@ msgstr ""
 
 #: C/gdm.xml:1764(para)
 msgid "The other checkboxes in the GDM Accessibility Dialog do not have corresponding GConf keys because no additional program is launched to provide the accessibility features that they offer. These other options correspond to accessibility features that are provided by the Xserver, which is always running during the GDM session."
-msgstr ""
+msgstr "Kotak contreng lain dalam Dialog Aksesibilitas GDM tak memiliki kunci GConf yang berkaitan karena tak ada program tambahan yang diluncurkan untuk menyediakan fitur aksesibilitas yang mereka tawarkan. Ops lain ini berkaitan dengan fitur aksesibilitas yang disediakan oleh Xserver, yang selalu berjalan selama sesi GDM."
 
 #: C/gdm.xml:1774(title)
 msgid "Accessibility GConf Keys"
@@ -1343,7 +1341,7 @@ msgstr "Kunci GConf Aksesibilitas"
 
 #: C/gdm.xml:1776(para)
 msgid "GDM offers the following GConf keys to control its accessibility features:"
-msgstr ""
+msgstr "GDM menawarkan kunci GConf berikut untuk mengendalikan fitur aksesibilitasnya:"
 
 #: C/gdm.xml:1782(title)
 msgid "GDM Configuration Keys"
@@ -1387,7 +1385,7 @@ msgstr "Mengaitkan Kunci GConf ke Alat Aksesibilitas"
 
 #: C/gdm.xml:1834(para)
 msgid "For the screen_magnifier_enabled, the screen_keyboard_enabled, and the screen_reader_enabled GConf keys, the assistive tool which gets launched depends on the desktop files located in the GDM autostart directory as described in the \"Autostart Configuration\" section of this manual. Any desktop file in the GDM autostart directory can be linked to these GConf key via specifying that GConf key in the AutostartCondition value in the desktop file. So the exact AutostartCondition line in the desktop file could be one of the following:"
-msgstr ""
+msgstr "Untuk kunci GConf screen_magnifier_enabled, screen_keyboard_enabled, dan screen_reader_enabled, perkakas asistif yang diluncurkan bergantung kepada berkas desktop yang terletak di direktori autostart GDM sebagaimana diuraikan dalam bagian \"Konfigurasi Mulai Otomatis\" dari manual ini. Sebarang berkas desktop dalam direktori autostart GDM dapat ditautkan ke kunci GConf ini dengan menyatakan kunci GConf itu dalam nilai AutostartCondition pada berkas desktop. Maka baris AutostartCondition dalam berkas desktop secara persis bisa salah satu dari berikut:"
 
 #: C/gdm.xml:1846(screen)
 #, no-wrap
@@ -1404,7 +1402,7 @@ msgstr ""
 
 #: C/gdm.xml:1852(para)
 msgid "When an accessibility key is true, then any program which is linked to that key in a GDM autostart desktop file will be launched (unless the Hidden key is set to true in that desktop file). A single GConf key can even start multiple assistive tools if there are multiple desktop files with this AutostartCondition in the GDM autostart directory."
-msgstr ""
+msgstr "Ketika suatu kunci aksesibilitas berisi true, maka sebarang program yang ditautkan ke kunci tersebut dalam suatu berkas desktop autostart GDM akan diluncurkan (kecuali kunci Tersembunyi diisi true dalam berkas desktop tersebut). Suatu kunci GConf tunggal bahkan dapat memulai beberapa perkakas asistif bila ada beberapa berkas desktop dengan AutostartCondition ini dalam direktori autostart GDM."
 
 #: C/gdm.xml:1862(title)
 msgid "Example Of Modifying Accessibility Tool Configuration"
@@ -1412,11 +1410,11 @@ msgstr "Contoh Pengubahan Konfigurasi Alat Aksesibilitas"
 
 #: C/gdm.xml:1864(para)
 msgid "For example, if GNOME is distributed with GOK as the default on-screen keyboard, then this could be replaced with a different program if desired. To replace GOK with the on-screen keyboard application \"onboard\" and additionally activate the assistive tool \"mousetweaks\" for dwelling support, then the following configuration is needed."
-msgstr ""
+msgstr "Sebagai contoh, bila GNOME didistribusikan dengan GOK sebagai papan tik pada layar bawaan, maka ini dapat digantikan dengan program lain bila dikehendaki. Untuk mengganti GOK dengan aplikasi papan tik pada layar \"onboard\" dan sebagai tambah mengaktifkan perkakas asistif \"mousetweaks\" untuk dukungan dwelling, maka konfigurasi berikut diperlukan."
 
 #: C/gdm.xml:1872(para)
 msgid "Create a desktop file for onboard and a second one for mousetweaks; for example, onboard.desktop and mousetweaks.desktop. These files must be placed in the GDM autostart directory and be in the format as explained in the \"Autostart Configuration\" section of this document."
-msgstr ""
+msgstr "Buatlah suatu berkas desktop bagi onboard dan yang kedua bagi mousetweaks; sebagai contoh, onboard.desktop dan mousetweaks.desktop. Berkas-berkas ini mesti ditempatkan dalam direktori autostart GDM dan dalam format yang diterangkan dalam bagian \"Konfigurasi Mulai Otomatis\" dari dokumen ini."
 
 #: C/gdm.xml:1880(para)
 msgid "The following is an example <filename>onboard.desktop</filename> file:"
@@ -1486,7 +1484,7 @@ msgstr ""
 
 #: C/gdm.xml:1917(para)
 msgid "Note the line with the AutostartCondition that links both desktop files to the GConf key for the on-screen keyboard."
-msgstr ""
+msgstr "Perhatikan baris dengan AutostartCondition yang menautkan kedua berkas desktop ke kunci GConf bagi papan tik pada layar."
 
 #: C/gdm.xml:1922(para)
 msgid "To disable GOK from starting, the desktop file for the GOK on-screen keyboard must be removed or deactivated. Otherwise onboard and GOK would simultaneously be started. This can be done by removing the gok.desktop file from the GDM autostart directory, or by adding the \"Hidden=true\" key setting to the gok.desktop file."
@@ -1508,7 +1506,7 @@ msgstr "Tatanan Sesi Umum"
 #. </para>
 #: C/gdm.xml:1948(para)
 msgid "The GDM Greeter uses some of the same framework that your desktop session will use. And so, it is influenced by a number of the same GConf settings. For each of these settings the Greeter will use the default value unless it is specifically overridden by a) GDM's installed mandatory policy b) system mandatory policy. GDM installs its own mandatory policy to lock down some settings for security."
-msgstr ""
+msgstr "Penyapa GDM memakai beberapa dari framework yang sama dengan yang akan dipakai oleh sesi desktop Anda. Maka itu dipengaruhi oleh sejumlah pengaturan GConf yang sama. Bagi setiap pengaturan ini Penyapa akan memakai nilai bawaan kecuali ditimpa secara spesifik oleh a) kebijakan wajib terpasang GDM b) kebijakan wajib sistem. GDM memasang kebijakan wajibnya sendiri untuk mengunci beberapa pengaturan demi keamanan."
 
 #: C/gdm.xml:1959(title)
 msgid "GNOME Settings Daemon"
@@ -1525,15 +1523,15 @@ msgstr "Daemon Penataan GNOME"
 #. </para>
 #: C/gdm.xml:1972(para)
 msgid "GDM enables the following gnome-settings-daemon plugins: a11y-keyboard, background, sound, xsettings."
-msgstr ""
+msgstr "GDM mengaktifkan plugin gnome-settings-daemon berikut: a11y-keyboard, background, sound, xsettings."
 
 #: C/gdm.xml:1977(para)
 msgid "These are responsible for things like the background image, font and theme settings, sound events, etc."
-msgstr ""
+msgstr "Ini bertanggungjawab bagi hal-hal seperti gambar latar, pengaturan fonta dan tema, kejadian-kejadian bersuara, dsb."
 
 #: C/gdm.xml:1982(para)
 msgid "Plugins can also be disabled using GConf. For example, if you want to disable the sound plugin then unset the following key: <filename>/apps/gdm/simple-greeter/settings-manager-plugins/sound/active</filename>."
-msgstr ""
+msgstr "Plugin juga dapat dinonaktifkan memakai GConf. Sebagai contoh, bila Anda ingin mematikan plugin suara maka hapuskan tatanan kunci berikut: <filename>/apps/gdm/simple-greeter/settings-manager-plugins/sound/active</filename>."
 
 #: C/gdm.xml:1990(title)
 msgid "GDM Session Configuration"
@@ -1545,7 +1543,7 @@ msgstr "Sesi GDM dinyatakan memakai Spesifikasi Entri Desktop FreeDesktop.org, y
 
 #: C/gdm.xml:1999(para)
 msgid "By default, GDM will install desktop files in the <filename>&lt;share&gt;/xsessions</filename> directory. GDM will search the following directories in this order to find desktop files: <filename>&lt;etc&gt;/X11/sessions/</filename>, <filename>&lt;dmconfdir&gt;/Sessions</filename>, <filename>&lt;share&gt;/xsessions</filename>, and <filename>&lt;share&gt;/gdm/BuiltInSessions</filename>. By default the <filename>&lt;dmconfdir&gt;</filename> is set to <filename>&lt;etc&gt;/dm/</filename> unless GDM is configured to use a different directory via the \"--with-dmconfdir\" option."
-msgstr ""
+msgstr "Secara baku, GDM akan memasang berkas desktop dalam direktori <filename>&lt;share&gt;/xsessions</filename>. GDM akan mencari dalam direktori berikut, sesuai urutan, untuk mencari berkas desktop: <filename>&lt;etc&gt;/X11/sessions/</filename>, <filename>&lt;dmconfdir&gt;/Sessions</filename>, <filename>&lt;share&gt;/xsessions</filename>, dan <filename>&lt;share&gt;/gdm/BuiltInSessions</filename>. Secara baku <filename>&lt;dmconfdir&gt;</filename> ditata ke <filename>&lt;etc&gt;/dm/</filename> kecuali GDM ditata untuk memakai direktori lain melalui opsi \"--with-dmconfdir\"."
 
 #: C/gdm.xml:2012(para)
 msgid "A session can be disabled by editing the desktop file and adding a line as follows: <filename>Hidden=true</filename>."
@@ -1553,7 +1551,7 @@ msgstr "Suatu sesi dapat dimatikan dengan menyunting berkas desktop dan menambah
 
 #: C/gdm.xml:2017(para)
 msgid "GDM desktop files support a GDM-specific extension, a key named \"X-GDM-BypassXsession\". If the key is not specified in a desktop file, the value defaults to \"false\". If this key is specified to be \"true\" in a desktop file, then GDM will launch the program specified by the desktop file \"Exec\" key directly when starting the user session. It will not run the program via the <filename>&lt;etc&gt;/gdm/Xsession</filename> script, which is the normal behavior. Since bypassing the <filename>&lt;etc&gt;/gdm/Xsession</filename> script avoids setting up the user session with the normal system and user settings, sessions started this way can be useful for debugging problems in the system or user scripts that might be preventing a user from being able to start a session."
-msgstr ""
+msgstr "Berkas desktop GDM mendukung ekstensi spesifik GDM, suatu kunci bernama \"X-GDM-BypassXsession\". Bila kunci itu tak dinyatakan dalam suatu berkas desktop, nilai bawaannya adalah \"false\". Bila kunci ini dinyatakan dengan nilai \"true\" dalam suatu berkas desktop, maka GDM akan meluncurkan program yang dinyatakan oleh kunci \"Exec\" berkas desktop secara langsung ketika mengawali sesi pengguna. Itu tidak akan menjalankan program melalui skrip <filename>&lt;etc&gt;/gdm/Xsession</filename>, yang merupakan perilaku normal. Karena mem-bypass skrip <filename>&lt;etc&gt;/gdm/Xsession</filename> menghindari menyiapkan sesi pengguna dengan pengaturan pengguna dan sistem normal, sesi yang dimulai dengan cara ini dapat berguna untuk mengawakutu masalah dalam skrip pengguna atau sistem yang mungkin mencegah seorang pengguna untuk mengawali suatu sesi."
 
 #: C/gdm.xml:2036(title)
 msgid "GDM User Session and Language Configuration"
