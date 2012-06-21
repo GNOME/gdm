@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "POT-Creation-Date: 2012-06-04 22:01+0000\n"
-"PO-Revision-Date: 2012-06-12 01:25+0700\n"
+"PO-Revision-Date: 2012-06-21 16:00+0700\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: GNOME Indonesian Translation Team <gnome@i15n.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,8 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-Language: Indonesian\n"
 "X-Poedit-Country: Indonesia\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: /S/gnome/gdm/docs\n"
 
 #: C/gdm.xml:13(title)
 msgid "GNOME Display Manager Reference Manual"
@@ -847,7 +849,7 @@ msgstr "TimedLoginEnable=false"
 
 #: C/gdm.xml:1175(para)
 msgid "If the user given in <filename>TimedLogin</filename> should be logged in after a number of seconds (set with <filename>TimedLoginDelay</filename>) of inactivity on the login screen. This is useful for public access terminals or perhaps even home use. If the user uses the keyboard or browses the menus, the timeout will be reset to <filename>TimedLoginDelay</filename> or 30 seconds, whichever is higher. If the user does not enter a username but just hits the ENTER key while the login program is requesting the username, then GDM will assume the user wants to login immediately as the timed user. Note that no password will be asked for this user so you should be careful, although if using PAM it can be configured to require password entry before allowing login. Refer to the \"Security-&gt;PAM\" section of the manual for more information, or for help if this feature does not seem to work."
-msgstr ""
+msgstr "Bila pengguna yang diberikan dalam <filename>TimedLogin</filename> mesti log masuk setelah sekian detik (diatur dengan <filename>TimedLoginDelay</filename> tanpa aktivitas pada layar log masuk. Ini berguna bagi terminal akses publik atau bahkan penggunaan di rumah. Bila pengguna memakai papan tik atau meramban menu, tenggang waktu akan direset ke <filename>TimedLoginDelay</filename> atau 30 detik, manapun yang lebih tinggi. Bila pengguna tak memasukkan nama tapi hanya menekan tombol ENTER ketika program log masuk meminta nama pengguna, maka GDM akan menganggap bahwa pengguna ingin log masuk seketika sebagai pengguna yang dikenai tenggang waktu. Perhatikan bahwa sandi tak akan diminta bagi pengguna ini sehingga Anda mesti berhati-hati, walaupun bilan menggunakan PAM ini dapat diatur untuk meminta masukan sandi sebelum mengijinkan log masuk. Lihatlah bagian \"Keamanan-&gt;PAM\" dari manual untuk informasi lebih jauh, atau untuk bantuan bila fitur ini sepertinya tak bekerja."
 
 #: C/gdm.xml:1197(term)
 msgid "TimedLogin"
@@ -860,12 +862,12 @@ msgstr "TimedLogin="
 
 #: C/gdm.xml:1200(para)
 msgid "This is the user that should be logged in after a specified number of seconds of inactivity."
-msgstr ""
+msgstr "Ini adalah pengguna yang mesti dilogmasukkan setelah sekian detik tanpa aktivitas seperti yang dinyatakan."
 
 #: C/gdm.xml:1204(para)
 #: C/gdm.xml:1248(para)
 msgid "If the value ends with a vertical bar | (the pipe symbol), then GDM will execute the program specified and use whatever value is returned on standard out from the program as the user. The program is run with the DISPLAY environment variable set so that it is possible to specify the user in a per-display fashion. For example if the value is \"/usr/bin/getloginuser|\", then the program \"/usr/bin/getloginuser\" will be run to get the user value."
-msgstr ""
+msgstr "Bila nilai diakhiri dengan batang vertikal (simbol pipa), maka GDM akan menjalankan program yang dinyatakan dan memakai nilai apapun yang dikembalikan pada standard out dari program sebagai pengguna. Program dijalankan dengan variabel lingkungan DISPLAY ditata sehingga mungkin untuk menyatakan pengguna dengan cara  per-tampilan. Sebagai contoh bila nilainya adalah \"/usr/bin/getloginuser|\", maka program \"/usr/bin/getloginuser\" akan dijalankan untuk mendapat nilai pengguna."
 
 #: C/gdm.xml:1218(term)
 msgid "TimedLoginDelay"
@@ -878,7 +880,7 @@ msgstr "TimedLoginDelay=30"
 
 #: C/gdm.xml:1221(para)
 msgid "Delay in seconds before the <filename>TimedLogin</filename> user will be logged in."
-msgstr ""
+msgstr "Tundaan dalam detik sebelum pengguna <filename>TimedLogin</filename> akan dilogmasukkan."
 
 #: C/gdm.xml:1229(term)
 msgid "AutomaticLoginEnable"
@@ -891,7 +893,7 @@ msgstr "AutomaticLoginEnable=false"
 
 #: C/gdm.xml:1232(para)
 msgid "If true, the user given in <filename>AutomaticLogin</filename> should be logged in immediately. This feature is like timed login with a delay of 0 seconds."
-msgstr ""
+msgstr "Bila berisi true, pengguna yang diberikan dalam <filename>AutomaticLogin</filename> mesti dilogmasukkan seketika. Fitur ini seperti log masuk dengan tenggang waktu 0 detik."
 
 #: C/gdm.xml:1241(term)
 msgid "AutomaticLogin"
@@ -904,7 +906,7 @@ msgstr "AutomaticLogin="
 
 #: C/gdm.xml:1244(para)
 msgid "This is the user that should be logged in immediately if <filename>AutomaticLoginEnable</filename> is true."
-msgstr ""
+msgstr "Ini adalah pengguna yang mesti seketika log masuk bila <filename>AutomaticLoginEnable</filename> berisi true."
 
 #: C/gdm.xml:1262(term)
 msgid "User"
@@ -917,7 +919,7 @@ msgstr "User=gdm"
 
 #: C/gdm.xml:1265(para)
 msgid "The username under which the greeter and other GUI programs are run. Refer to the <filename>Group</filename> configuration key and to the \"Security-&gt;GDM User And Group\" section of this document for more information."
-msgstr ""
+msgstr "Nama pengguna yang menjalankan penyapa dan program GUI lainnya. Lihat kunci konfigurasi <filename>Group</filename> dan bagian \"Keamanan-&gt;Pengguna Dan Grup GDM\" dari dokumentasi ini untuk informasi lebih lanjut."
 
 #: C/gdm.xml:1275(term)
 msgid "Group"
@@ -930,7 +932,7 @@ msgstr "Group=gdm"
 
 #: C/gdm.xml:1278(para)
 msgid "The group name under which the greeter and other GUI programs are run. Refer to the <filename>User</filename> configuration key and to the \"Security-&gt;GDM User And Group\" section of this document for more information."
-msgstr ""
+msgstr "Nama grup yang menjalankan penyapa dan program GUI lainnya. Lihat kunci konfigurasi <filename>Group</filename> dan bagian \"Keamanan-&gt;Pengguna Dan Grup GDM\" dari dokumentasi ini untuk informasi lebih lanjut."
 
 #: C/gdm.xml:1290(title)
 msgid "Debug Options"
@@ -953,7 +955,7 @@ msgstr "Enable=false"
 
 #: C/gdm.xml:1299(para)
 msgid "To enable debugging, set the debug/Enable key to \"true\" in the <filename>&lt;etc&gt;/gdm/custom.conf</filename> file and restart GDM. Then debug output will be sent to the system log file (<filename>&lt;var&gt;/log/messages</filename> or <filename>&lt;var&gt;/adm/messages</filename> depending on your Operating System)."
-msgstr ""
+msgstr "Untuk memungkinkan pengawakutuan, atur kunci debug/Enable ke \"true\" dalam berkas <filename>&lt;etc&gt;/gdm/custom.conf</filename> dan mulai ulang GDM. Maka keluaran pengawakutuan akan kemudian dikirim ke  berkas log sistem (<filename>&lt;var&gt;/log/messages</filename> atau <filename>&lt;var&gt;/adm/messages</filename> bergantung kepada Sistem Operasi Anda)."
 
 #: C/gdm.xml:1314(title)
 msgid "Greeter Options"
@@ -974,15 +976,15 @@ msgstr "IncludeAll=true"
 
 #: C/gdm.xml:1323(para)
 msgid "If true, then the face browser will show all users on the local machine. If false, the face browser will only show users who have recently logged in."
-msgstr ""
+msgstr "Bila berisi true, maka peramban wajah akan menampilkan semua pengguna pada mesin lokal. Bila berisi false, maka peramban wajah hanya akan menampilkan pengguna yang baru-baru ini log masuk."
 
 #: C/gdm.xml:1329(para)
 msgid "When this key is true, GDM will call fgetpwent() to get a list of local users on the system. Any users with a user id less than 500 (or 100 if running on Oracle Solaris) are filtered out. The Face Browser also will display any users that have previously logged in on the system (for example NIS/LDAP users). It gets this list via calling the <command>ck-history</command> ConsoleKit interface. It will also filter out any users which do not have a valid shell (valid shells are any shell that getusershell() returns - /sbin/nologin or /bin/false are considered invalid shells even if getusershell() returns them)."
-msgstr ""
+msgstr "Bila kunci ini berisi true, GDM akan memanggil fgetpwent() untuk memperoleh daftar pengguna lokal pada sistem. Sebarang pengguna dengan id pengguna kurang dari 500 (atau 100 bila menjalankan Oracle Solaris) tak akan lolos saringan. Peramban Wajah juga akan menampilkan sebarang pengguna yang sebelumnya log masuk ke sistem (sebagai contoh pengguna NIS/LDAP). Daftar ini didapat dari pemanggilan antar muka ConsoleKit <command>ck-history</command>. Ini juga akan menyingkirkan pengguna yang tak memiliki shell yang valid (shell valid adalah sebarang shell yang dikembalikan oleh getusershell() - /sbin/nologin atau /bin/false dianggap sebagai shell yang tak valid walaupun getusershell() mengembalikan mereka)."
 
 #: C/gdm.xml:1343(para)
 msgid "If false, then GDM more simply only displays users that have previously logged in on the system (local or NIS/LDAP users) by calling the <command>ck-history</command> ConsoleKit interface."
-msgstr ""
+msgstr "Bila berisi false, maka GDM hanya sekedar menampilkan pengguna yang sebelumnya pernah log masuk ke sistem (pengguna lokal atau NIS/LDAP) dengan memanggil antar muka ConsoleKit <command>ck-history</command>."
 
 #: C/gdm.xml:1352(term)
 msgid "Include"
@@ -995,7 +997,7 @@ msgstr "Include="
 
 #: C/gdm.xml:1355(para)
 msgid "Set to a list of users to always include in the Face Browser. This value is set to a list of users separated by commas. By default, the value is empty."
-msgstr ""
+msgstr "Diisi dengan daftar pengguna yang selalu disertakan dalam Peramban Wajah. Nilai ini diisi dengan daftar pengguna yang dipisah dengan koma. Nilai bawaan adalah kosong."
 
 #: C/gdm.xml:1364(term)
 msgid "Exclude"
@@ -1008,7 +1010,7 @@ msgstr "Exclude=bin,root,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operato
 
 #: C/gdm.xml:1367(para)
 msgid "Set to a list of users to always exclude in the Face Browser. This value is set to a list of users separated by commas. Note that the setting in the <filename>custom.conf</filename> overrides the default value, so if you wish to add additional users to the list, then you need to set the value to the default value with additional users appended to the list."
-msgstr ""
+msgstr "Diisi dengan daftar pengguna yang selalu tidak disertakan dalam Peramban Wajah. Nilai ini diisi dengan daftar pengguna yang dipisah dengan koma. Perhatikan bahwa pengaturan dalam <filename>custom.conf</filename> menimpa nilai bawaan, sehingga ketika Anda hendak menambahkan pengguna ke daftar, maka Anda perlu menata nilai ke nilai bawaan dengan pengguna tambahan ditambahkan ke daftar."
 
 #: C/gdm.xml:1381(title)
 msgid "Security Options"
@@ -1029,7 +1031,7 @@ msgstr "DisallowTCP=true"
 
 #: C/gdm.xml:1390(para)
 msgid "If true, then always append <filename>-nolisten tcp</filename> to the command line when starting attached Xservers, thus disallowing TCP connection. This is a more secure configuration if you are not using remote connections."
-msgstr ""
+msgstr "Bila berisi true, maka selalu menambahkan <filename>-nolisten tcp</filename> ke baris perintah ketika memulai Xserver yang dicantol, sehingga melarang koneksi TCP. Ini konfigurasi yang lebih aman bila Anda tak memakai koneksi jauh."
 
 #: C/gdm.xml:1402(title)
 msgid "XDCMP Support"
@@ -1050,15 +1052,15 @@ msgstr "DisplaysPerHost=1"
 
 #: C/gdm.xml:1411(para)
 msgid "To prevent attackers from filling up the pending queue, GDM will only allow one connection for each remote computer. If you want to provide display services to computers with more than one screen, you should increase this value."
-msgstr ""
+msgstr "Untuk mencegah penyerang memenuhi antrian yang tertunda, GDM hanya akanmengijinkan satu koneksi bagi setiap komputer jauh. Bila Anda ingin menyediakanlayanan tampilan ke komputer yang memiliki lebih dari satu layar, Anda mesti menaikkan nilai ini."
 
 #: C/gdm.xml:1418(para)
 msgid "Note that the number of attached DISPLAYS allowed is not limited. Only remote connections via XDMCP are limited by this configuration option."
-msgstr ""
+msgstr "Perhatikan bahwa cacah DISPLAY tercantol yang diijinkan tak dibatasi. Hanya koneksi jauh melalui XDMCP yang dibatasi oleh opsi konfigurasi ini."
 
 #: C/gdm.xml:1430(para)
 msgid "Setting this to true enables XDMCP support allowing remote displays/X terminals to be managed by GDM."
-msgstr ""
+msgstr "Menata ini ke true memungkinkan dukungan XDMCP yang mengijinkan tampilan jauh/terminal X dikelola oleh GDM."
 
 #: C/gdm.xml:1435(para)
 msgid "<filename>gdm</filename> listens for requests on UDP port 177. See the Port option for more information."
@@ -1074,10 +1076,13 @@ msgid ""
 "gdm:.my.domain\n"
 "</screen> to your <filename>&lt;etc&gt;/hosts.allow</filename>, depending on your TCP Wrappers configuration. See the <ulink type=\"help\" url=\"man:hosts.allow\">hosts.allow</ulink> man page for details."
 msgstr ""
+"Ada mesti menambah <screen>\n"
+"gdm:.my.domain\n"
+"</screen> ke <filename>&lt;etc&gt;/hosts.allow</filename> Anda, bergantung kepada konfigurasi TCP Wrapper Anda. Lihat halaman man <ulink type=\"help\" url=\"man:hosts.allow\">hosts.allow</ulink> untuk rinciannya."
 
 #: C/gdm.xml:1457(para)
 msgid "Please note that XDMCP is not a particularly secure protocol and that it is a good idea to block UDP port 177 on your firewall unless you really need it."
-msgstr ""
+msgstr "Mohon diperhatikan bahwa XDMCP bukan protokol yang aman dan ide yang bagus untuk memblokir UDP port 177 pada firewall Anda kecuali Anda memang memerlukannya."
 
 #: C/gdm.xml:1466(term)
 msgid "HonorIndirect"
@@ -1090,7 +1095,7 @@ msgstr "HonorIndirect=true"
 
 #: C/gdm.xml:1469(para)
 msgid "Enables XDMCP INDIRECT choosing (i.e. remote execution of <filename>gdmchooser</filename>) for X-terminals which do not supply their own display browser."
-msgstr ""
+msgstr "Fungsikan pemilihan XDMCP INDIRECT (yaitu eksekusi jauh dari <filename>gdmchooser</filename>) bagi X-terminal yang tak menyediakan peramban tampilannya sendiri."
 
 #: C/gdm.xml:1478(term)
 msgid "MaxPending"
@@ -1107,7 +1112,7 @@ msgstr "Untuk menghindari serangan penyangkalan layanan, GDM memiliki antrian sa
 
 #: C/gdm.xml:1487(para)
 msgid "Please note that this parameter does not limit the number of remote displays which can be managed. It only limits the number of displays initiating a connection simultaneously."
-msgstr ""
+msgstr "Mohon dicatat bahwa parameter ini tak membatasi cacah tampilan jauh yang dapat dikelola. Ini hanya membatasi cacah tampilan yang mengawali koneksi secara simultan."
 
 #: C/gdm.xml:1496(term)
 msgid "MaxSessions"
@@ -1120,7 +1125,7 @@ msgstr "MaxSessions=16"
 
 #: C/gdm.xml:1499(para)
 msgid "Determines the maximum number of remote display connections which will be managed simultaneously. I.e. the total number of remote displays that can use your host."
-msgstr ""
+msgstr "Menentukan cacah maksimum dari koneksi tampilan jauh yang akan dikelola secara simultan. Yaitu cacah total tampilan jauh yang dapat memakai host Anda."
 
 #: C/gdm.xml:1508(term)
 msgid "MaxWait"
@@ -1154,7 +1159,7 @@ msgstr "MaxWaitIndirect=30"
 
 #: C/gdm.xml:1534(para)
 msgid "The MaxWaitIndirect parameter determines the maximum number of seconds between the time where a user chooses a host and the subsequent indirect query where the user is connected to the host. When the timeout is exceeded, the information about the chosen host is forgotten and the indirect slot freed up for other displays. The information may be forgotten earlier if there are more hosts trying to send indirect queries then <filename>MaxPendingIndirect</filename>."
-msgstr ""
+msgstr "Parameter MaxWaitIndirect menentukan berapa detik maksimum antara waktu ketika pengguna memilih suatu host dan query tak langsung kelanjutannya dimana pengguna tersambung ke host. Ketika tenggang waktu dilampaui, informasi tentang host yang dipilih dilupakan dan slot tak langsung dibebaskan bagi tampilan lain. Informasi mungkin dilupakan lebih awal bila ada lebih banyak host mencoba mengirim query tak langsung daripada <filename>MaxPendingIndirect</filename>."
 
 #: C/gdm.xml:1548(term)
 msgid "PingIntervalSeconds"
@@ -1167,11 +1172,11 @@ msgstr "PingIntervalSeconds=60"
 
 #: C/gdm.xml:1551(para)
 msgid "If the Xserver does not respond in the specified number of seconds, then the connection is stopped and the session ended. When this happens the slave daemon dies with an ALARM signal. Note that GDM 2.20 and earlier multiplied this setting by 2, so it may be necessary to increase the timeout if upgrading from GDM 2.20 and earlier to a newer version."
-msgstr ""
+msgstr "Bila Xserver tak merespon dalam sekian detik yang dinyatakan, maka koneksi dihentikan dan sesi diakhiri. Ketika ini terjadi daemon slave mati dengan sinyal ALARM. Perhatikan bahwa GDM 2.20 dan sebelumnya mengalikan 2 pengaturan ini, sehingga mungkin perlu menaikkan tenggang waktu bila meningkatkan dari GDM 2.20 dan sebelumnya ke versi yang lebih baru."
 
 #: C/gdm.xml:1560(para)
 msgid "Note that GDM in the past used to have a <filename>PingInterval</filename> configuration key which was also in minutes. For most purposes you'd want this setting to be lower than one minute. However since in most cases where XDMCP would be used (such as terminal labs), a lag of more than 15 or so seconds would really mean that the terminal was turned off or restarted and you would want to end the session."
-msgstr ""
+msgstr "Perhatikan bahwa GDM di masa lalu biasa memiliki kunci konfigurasi <filename>PingInterval</filename> dalam satuan menit. Untuk kebanyakan tujuan Anda akan menginginkan pengaturan ini agar kurang dari satu meni. Namun karena dalam kebanyakan kasus dimana XDMCP akan dipakai (seperti pada lab terminal), lag lebih dari sekitar 15 detik sesungguhnya berarti bahwa terminal dimatikan atau dimulai ulang dan Anda ingin mengakhiri sesi tersebut."
 
 #: C/gdm.xml:1573(term)
 msgid "Port"
@@ -1197,7 +1202,7 @@ msgstr "Willing=&lt;etc&gt;/gdm/Xwilling"
 
 #: C/gdm.xml:1588(para)
 msgid "When the machine sends a WILLING packet back after a QUERY it sends a string that gives the current status of this server. The default message is the system ID, but it is possible to create a script that displays customized message. If this script does not exist or this key is empty the default message is sent. If this script succeeds and produces some output, the first line of it's output is sent (and only the first line). It runs at most once every 3 seconds to prevent possible denial of service by flooding the machine with QUERY packets."
-msgstr ""
+msgstr "Ketika mesin mengirim balik paket WILLING setelah QUERY, dia mengirim string yang memberikan status terkini dari server ini. Pesan baku adalah ID sistem, tapi mungkin untuk membuat skrip yang menampilkan pesan ubahan. Bila skrip ini tak ada atau kunci ini kosong maka pesan baku yang dikirim. Bila skrip ini sukses dan menghasilkan suatu keluaran, baris pertama keluaran yang akan dikirim (dan hanya baris pertama). Itu dijalankan paling sering sekali dalam 3 detik untuk mencegah kemungkinan denial of service dengan membanjiri mesin dengan paket QUERY."
 
 #: C/gdm.xml:1607(title)
 msgid "Simple Greeter Configuration"
@@ -1205,7 +1210,7 @@ msgstr "Konfigurasi Penyapa Sederhana"
 
 #: C/gdm.xml:1609(para)
 msgid "The GDM default greeter is called the simple Greeter and is configured via GConf. Default values are stored in GConf in the <filename>gdm-simple-greeter.schemas</filename> file. These defaults can be overridden if the \"gdm\" user has a writable $HOME directory to store GConf settings. These values can be edited using the <command>gconftool-2</command> or <command>gconf-editor</command> programs. The following configuration options are supported:"
-msgstr ""
+msgstr "Penyapa bawaan GDM dinamai Simple Greeter dan ditata melalui GConf. Nilai bawaan disimpan dalam GConf pada berkas <filename>gdm-simple-greeter.schemas</filename>. Nilai bawaan ini dapat ditimpa bila pengguna \"gdm\" memiliki direktori $HOME yang dapat ditulisi untuk menyimpan tatanan GConf. Nilai-nilai ini dapat disunting memakai program <command>gconftool-2</command> atau <command>gconf-editor</command>. Opsi konfigurasi berikut didukung:"
 
 #: C/gdm.xml:1620(title)
 msgid "Greeter Configuration Keys"
@@ -1289,7 +1294,7 @@ msgstr "Tata ke daftar bahasa yang akan ditampilkan secara baku dalam jendela lo
 
 #: C/gdm.xml:1687(para)
 msgid "Users are not intended to change this setting by hand. Instead GDM keeps track of any languages selected in this configuration key, and will show them in the language combo box along with the \"Other...\" choice. This way, commonly selected languages are easier to select."
-msgstr ""
+msgstr "Pengguna tak diharapkan mengubah pengaturan ini secara manual. Sebagai gantinya, GDM melacak sebarang bahasa yang dipilih dalam kunci konfigurasi ini, dan akan menampilkan mereka dalam kotak kombo bahasa bersama dengan pilihan \"Lainnya...\". Dengan cara ini, bahasa yang umum dipilih akan lebih mudah dipilih."
 
 #: C/gdm.xml:1698(term)
 msgid "/apps/gdm/simple-greeter/recent-layouts"
@@ -1297,11 +1302,11 @@ msgstr "/apps/gdm/simple-greeter/recent-layouts"
 
 #: C/gdm.xml:1701(para)
 msgid "Set to a list of keyboard layouts to be shown by default in the login panel. Default value is \"[]\". With the default setting only the system default keyboard layout is shown and the option \"Other...\" which pops-up a dialog box showing a full list of available keyboard layouts which the user can select."
-msgstr ""
+msgstr "Ditata ke daftar tata letak papan tik yang secara baku akan ditampilkan pada panel log masuk. Nilai bawaan adalah \"[]\". Dengan pengaturan baku hanya tata letak papan tik bawaan sistem yang ditampilkan dan opsi \"Lainnya...\" yang memunculkan kotak dialog yang menunjukkan daftar lengkap tata letak papan tik yang tersedia yang dapat dipilih oleh pengguna."
 
 #: C/gdm.xml:1709(para)
 msgid "Users are not intended to change this setting by hand. Instead GDM keeps track of any keyboard layouts selected in this configuration key, and will show them in the keyboard layout combo box along with the \"Other...\" choice. This way, commonly selected keyboard layouts are easier to select."
-msgstr ""
+msgstr "Pengguna tak diharapkan mengubah pengaturan ini secara manual. Sebagai gantinya, GDM melacak sebarang tata letak papan tik yang dipilih dalam kunci konfigurasi ini, dan akan menampilkan mereka dalam kotak kombo tata letak papan tik bersama dengan pilihan \"Lainnya...\". Dengan cara ini, tata letak papan tik yang umum dipilih akan lebih mudah dipilih."
 
 #: C/gdm.xml:1720(term)
 msgid "/apps/gdm/simple-greeter/wm_use_compiz"
@@ -1309,7 +1314,7 @@ msgstr "/apps/gdm/simple-greeter/wm_use_compiz"
 
 #: C/gdm.xml:1723(para)
 msgid "Controls whether compiz is used as the window manager instead of metacity."
-msgstr ""
+msgstr "Mengendalikan apakah compiz dipakai sebagai manajer jendela menggantikan metacity."
 
 #: C/gdm.xml:1733(title)
 msgid "Accessibility Configuration"
@@ -1317,7 +1322,7 @@ msgstr "Konfigurasi Aksesibilitas"
 
 #: C/gdm.xml:1735(para)
 msgid "This section describes the accessibility configuration options available in GDM."
-msgstr ""
+msgstr "Seksi ini menjelaskan opsi konfigurasi aksesibilitas yang tersedia dalam GDM."
 
 #: C/gdm.xml:1741(title)
 msgid "GDM Accessibility Dialog And GConf Keys"
@@ -1325,11 +1330,11 @@ msgstr "Dialog Aksesibilitas GDM Dan Kunci GConf"
 
 #: C/gdm.xml:1743(para)
 msgid "The GDM greeter panel at the login screen displays an accessibility icon. Clicking on that icon opens the GDM Accessibility Dialog. In the GDM Accessibility Dialog, there is a list of checkboxes, so the user can enable or disable the associated assistive tools."
-msgstr ""
+msgstr "Panel penyapa GDM pada layar log masuk menampilkan ikon aksesibilitas. Bila ikon tersebut diklik akan membuka Dialog Aksesibilitas GDM. Dalam Dialog Aksesibilitas GDM, ada daftar kotak contreng, sehingga pengguna dapat mengaktifkan atau menonaktifkan perkakas bantu yang terkait."
 
 #: C/gdm.xml:1750(para)
 msgid "The checkboxes that correspond to the on-screen keyboard, screen magnifier and screen reader assistive tools act on the three GConf keys that are described in the next section of this document. By enabling or disabling these checkboxes, the associated GConf key is set to \"true\" or \"false\". When the GConf key is set to true, the assistive tools linked to this GConf key are launched. When the GConf key is set to \"false\", any running assistive tool linked to this GConf key are terminated. These GConf keys are not automatically reset to a default state after the user has logged in. Consequently, the assistive tools that were running during the last GDM login session will automatically be launched at the next GDM login session."
-msgstr ""
+msgstr "Kotak contreng yang terkait dengan perkakas bantu papan tik pada layar, pembesar layar, dan pembaca layar beraksi pada tiga kunci GConf yang diuraikan pada seksi selanjutnya dari dokumen ini. Dengan mengaktifkan atau mematikan kotak-kotak contreng ini, kunci GConf yang terkait akan ditata ke \"true\" atau \"false\". Ketika kunci GConf diisi dengan true, perkakas bantu yang terkait ke kunci GConf ini diluncurkan. Ketika kunci GConf diisi dengan \"false\", perkakas bantu terkait kunci GConf ini diakhiri bila berjalan. Kunci-kunci GConf ini tak direset ke keadaan bawaan secara otomatis setelah pengguna log masuk. Konsekuensinya, perkakas bantu yang berjalan selama sesi log masuk terakhir akan otomatis diluncurkan pada sesi log masuk selanjutnya."
 
 #: C/gdm.xml:1764(para)
 msgid "The other checkboxes in the GDM Accessibility Dialog do not have corresponding GConf keys because no additional program is launched to provide the accessibility features that they offer. These other options correspond to accessibility features that are provided by the Xserver, which is always running during the GDM session."
