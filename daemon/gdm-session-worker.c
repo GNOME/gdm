@@ -860,11 +860,13 @@ gdm_session_worker_process_pam_message (GdmSessionWorker          *worker,
         }
 
         if (user_answer != NULL) {
-                /* we strdup and g_free to make sure we return malloc'd
-                 * instead of g_malloc'd memory
+                /* we strndup and g_free to make sure we return malloc'd
+                 * instead of g_malloc'd memory.  PAM_MAX_RESP_SIZE includes
+                 * the '\0' terminating character, thus the "- 1".
                  */
                 if (res && response_text != NULL) {
-                        *response_text = strdup (user_answer);
+                        *response_text = strndup (user_answer, PAM_MAX_RESP_SIZE - 1);
+                        (*response_text)[PAM_MAX_RESP_SIZE - 1] = '\0';
                 }
 
                 memset (user_answer, '\0', strlen (user_answer));
