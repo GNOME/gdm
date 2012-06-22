@@ -68,6 +68,7 @@ static guint signals [LAST_SIGNAL] = { 0, };
 static void     gdm_xdmcp_chooser_display_class_init    (GdmXdmcpChooserDisplayClass *klass);
 static void     gdm_xdmcp_chooser_display_init          (GdmXdmcpChooserDisplay      *xdmcp_chooser_display);
 static void     gdm_xdmcp_chooser_display_finalize      (GObject                     *object);
+static gboolean gdm_xdmcp_chooser_display_finish (GdmDisplay *display);
 
 G_DEFINE_TYPE (GdmXdmcpChooserDisplay, gdm_xdmcp_chooser_display, GDM_TYPE_XDMCP_DISPLAY)
 
@@ -165,6 +166,7 @@ gdm_xdmcp_chooser_display_class_init (GdmXdmcpChooserDisplayClass *klass)
 
         display_class->manage = gdm_xdmcp_chooser_display_manage;
         display_class->set_slave_bus_name = gdm_xdmcp_chooser_display_set_slave_bus_name;
+        display_class->finish = gdm_xdmcp_chooser_display_finish;
 
         signals [HOSTNAME_SELECTED] =
                 g_signal_new ("hostname-selected",
@@ -207,6 +209,18 @@ gdm_xdmcp_chooser_display_finalize (GObject *object)
         }
 
         G_OBJECT_CLASS (gdm_xdmcp_chooser_display_parent_class)->finalize (object);
+}
+
+static gboolean
+gdm_xdmcp_chooser_display_finish (GdmDisplay *display)
+{
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        GDM_DISPLAY_CLASS (gdm_xdmcp_chooser_display_parent_class)->finish (display);
+
+        gdm_display_unmanage (display);
+
+        return TRUE;
 }
 
 GdmDisplay *
