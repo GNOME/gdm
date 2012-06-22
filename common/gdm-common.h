@@ -26,6 +26,8 @@
 
 #include "gdm-common-unknown-origin.h"
 
+#define GDM_CUSTOM_SESSION  "custom"
+
 G_BEGIN_DECLS
 
 gboolean       gdm_is_version_unstable            (void);
