@@ -259,3 +259,10 @@ gdm_settings_new (void)
 
         return GDM_SETTINGS (settings_object);
 }
+
+void
+gdm_settings_clear (void)
+{
+        g_object_unref (settings_object);
+        settings_object = NULL;
+}
