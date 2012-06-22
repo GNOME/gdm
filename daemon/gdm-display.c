@@ -62,7 +62,8 @@ struct GdmDisplayPrivate
         char                 *x11_display_type;
         int                   status;
         time_t                creation_time;
-        GTimer               *slave_timer;
+        int                   num_failures;
+        gint64                time_last_start;
         char                 *slave_command;
 
         char                 *x11_cookie;
@@ -654,8 +655,6 @@ gdm_display_real_manage (GdmDisplay *display)
 
         g_assert (display->priv->slave_proxy != NULL);
 
-        g_timer_start (display->priv->slave_timer);
-
         gdm_slave_proxy_start (display->priv->slave_proxy);
 
         return TRUE;
@@ -669,6 +668,10 @@ gdm_display_manage (GdmDisplay *display)
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
         g_debug ("GdmDisplay: Managing display: %s", display->priv->id);
+
+        if (display->priv->time_last_start == 0) {
+                display->priv->time_last_start = g_get_monotonic_time();
+        }
 
         g_object_ref (display);
         ret = GDM_DISPLAY_GET_CLASS (display)->manage (display);
@@ -714,8 +717,6 @@ gdm_display_real_unmanage (GdmDisplay *display)
 
         g_debug ("GdmDisplay: unmanage display");
 
-        g_timer_stop (display->priv->slave_timer);
-
         if (display->priv->slave_proxy != NULL) {
                 gdm_slave_proxy_stop (display->priv->slave_proxy);
 
@@ -735,9 +736,18 @@ gdm_display_real_unmanage (GdmDisplay *display)
                 display->priv->access_file = NULL;
         }
 
-        elapsed = g_timer_elapsed (display->priv->slave_timer, NULL);
-        if (elapsed < 3) {
-                g_warning ("GdmDisplay: display lasted %lf seconds", elapsed);
+        elapsed = (g_get_monotonic_time() - display->priv->time_last_start) / 1000000;
+        g_debug ("GdmDisplay: Elapsed time since last start: %lf", elapsed);
+        if (elapsed > 60) {
+                display->priv->num_failures = 0;
+                display->priv->time_last_start = g_get_monotonic_time();
+        } else {
+                display->priv->num_failures++;
+                g_debug ("GdmDisplay: Number of failures=%d", display->priv->num_failures);
+        }
+            
+        if (display->priv->num_failures >= 5) {
+                g_warning ("GdmDisplay: Display %s failed 5 times in %lf seconds, no longer managing display", display->priv->id, elapsed);
                 _gdm_display_set_status (display, GDM_DISPLAY_FAILED);
         } else {
                 _gdm_display_set_status (display, GDM_DISPLAY_UNMANAGED);
@@ -1302,7 +1312,8 @@ gdm_display_init (GdmDisplay *display)
         display->priv = GDM_DISPLAY_GET_PRIVATE (display);
 
         display->priv->creation_time = time (NULL);
-        display->priv->slave_timer = g_timer_new ();
+        display->priv->time_last_start = 0;
+        display->priv->num_failures = 0;
 }
 
 static void
@@ -1334,10 +1345,6 @@ gdm_display_finalize (GObject *object)
 
         if (display->priv->user_access_file != NULL) {
                 g_object_unref (display->priv->user_access_file);
-        }
-
-        if (display->priv->slave_timer != NULL) {
-                g_timer_destroy (display->priv->slave_timer);
         }
 
         G_OBJECT_CLASS (gdm_display_parent_class)->finalize (object);
