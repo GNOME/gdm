@@ -278,17 +278,18 @@ static void
 gdm_server_init_command (GdmServer *server)
 {
         gboolean debug = FALSE;
-        const char *logverbose;
+        const char *debug_options;
 
         if (server->priv->command != NULL) {
                 return;
         }
 
         gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);
-        if (debug)
-                logverbose = " -logverbose 7";
-        else
-                logverbose = "";
+        if (debug) {
+                debug_options = " -logverbose 7 -core ";
+        } else {
+                debug_options = "";
+        }
 
 #ifdef WITH_SYSTEMD
 
@@ -319,13 +320,13 @@ gdm_server_init_command (GdmServer *server)
                 goto fallback;
         }
 
-        server->priv->command = g_strdup_printf (SYSTEMD_X_SERVER " -br -verbose%s", logverbose);
+        server->priv->command = g_strdup_printf (SYSTEMD_X_SERVER " -br -verbose%s", debug_options);
         return;
 
 fallback:
 #endif
 
-        server->priv->command = g_strdup_printf (X_SERVER " -br -verbose%s", logverbose);
+        server->priv->command = g_strdup_printf (X_SERVER " -br -verbose%s", debug_options);
 }
 
 static gboolean
