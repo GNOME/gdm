@@ -1991,7 +1991,8 @@ on_hostname_selected (GdmXdmcpChooserDisplay *display,
         int              gaierr;
         GdmAddress      *address;
         IndirectClient  *ic;
-
+        gchar           *xdmcp_port;
+        
         g_debug ("GdmXdmcpDisplayFactory: hostname selected: %s",
                 hostname ? hostname : "(null)");
 
@@ -2011,10 +2012,13 @@ on_hostname_selected (GdmXdmcpChooserDisplay *display,
         /* this should convert IPv4 address to IPv6 if needed */
         hints.ai_flags = AI_V4MAPPED;
 
-        if ((gaierr = getaddrinfo (hostname, NULL, &hints, &ai_list)) != 0) {
+        xdmcp_port = g_strdup_printf ("%d", XDM_UDP_PORT);
+        if ((gaierr = getaddrinfo (hostname, xdmcp_port, &hints, &ai_list)) != 0) {
                 g_warning ("Unable to get address: %s", gai_strerror (gaierr));
+                g_free (xdmcp_port);
                 return;
         }
+        g_free (xdmcp_port);
 
         /* just take the first one */
         ai = ai_list;
