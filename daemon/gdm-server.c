@@ -800,10 +800,19 @@ gboolean
 gdm_server_start_on_active_vt (GdmServer *server)
 {
         gboolean res;
+        gboolean debug;
         char *vt;
+        const char *debug_options;
+
+        gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);
+        if (debug) {
+                debug_options = " -logverbose 7 -core ";
+        } else {
+                debug_options = "";
+        }
 
         g_free (server->priv->command);
-        server->priv->command = g_strdup (X_SERVER " -background none -logverbose 7");
+        server->priv->command = g_strdup_printf (X_SERVER " -background none -verbose%s", debug_options);
         vt = get_active_vt_as_string ();
         res = gdm_server_spawn (server, vt);
         g_free (vt);
