@@ -233,9 +233,10 @@ gdm_settings_direct_init (GdmSettings *settings,
         g_return_val_if_fail (root != NULL, FALSE);
 
         g_debug ("Settings Direct Init");
-        if (schemas != NULL)
+        if (schemas != NULL) {
                 g_hash_table_destroy (schemas);
-        schemas = NULL;
+                schemas = NULL;
+        }
 
         if (! gdm_settings_parse_schemas (file, root, &list)) {
                 g_warning ("Unable to parse schemas");

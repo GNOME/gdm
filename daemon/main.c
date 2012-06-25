@@ -492,7 +492,7 @@ signal_cb (int      signo,
                 /* Reread config stuff like system config files, VPN service
                  * files, etc
                  */
-                gdm_settings_clear ();
+                g_object_unref (settings);
                 settings = gdm_settings_new ();
                 if (settings != NULL) {
                         if (! gdm_settings_direct_init (settings, GDMCONFDIR "/gdm.schemas", "/")) {

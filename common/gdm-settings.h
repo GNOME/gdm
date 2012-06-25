@@ -74,7 +74,6 @@ gboolean            gdm_settings_set_value                      (GdmSettings *se
                                                                  const char  *key,
                                                                  const char  *value,
                                                                  GError     **error);
-void                gdm_settings_clear                          (void);
 
 G_END_DECLS
 
