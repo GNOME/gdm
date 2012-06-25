@@ -471,9 +471,17 @@ signal_cb (int      signo,
 
         case SIGHUP:
                 g_debug ("Got HUP signal");
-                /* FIXME:
-                 * Reread config stuff like system config files, VPN service files, etc
+                /* Reread config stuff like system config files, VPN service
+                 * files, etc
                  */
+                g_object_unref (settings);
+                settings = gdm_settings_new ();
+                if (settings != NULL) {
+                        if (! gdm_settings_direct_init (settings, GDMCONFDIR "/gdm.schemas", "/")) {
+                                g_warning ("Unable to initialize settings");
+                        }
+                }
+
                 ret = TRUE;
 
                 break;

@@ -232,7 +232,11 @@ gdm_settings_direct_init (GdmSettings *settings,
         g_return_val_if_fail (file != NULL, FALSE);
         g_return_val_if_fail (root != NULL, FALSE);
 
-        g_assert (schemas == NULL);
+        g_debug ("Settings Direct Init");
+        if (schemas != NULL) {
+                g_hash_table_unref (schemas);
+                schemas = NULL;
+        }
 
         if (! gdm_settings_parse_schemas (file, root, &list)) {
                 g_warning ("Unable to parse schemas");
