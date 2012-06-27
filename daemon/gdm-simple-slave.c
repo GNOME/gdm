@@ -1080,6 +1080,7 @@ idle_connect_to_display (GdmSimpleSlave *slave)
         res = gdm_slave_connect_to_x11_display (GDM_SLAVE (slave));
         if (res) {
                 gboolean enabled;
+                char     *username;
                 int      delay;
 
                 /* FIXME: handle wait-for-go */
@@ -1088,7 +1089,8 @@ idle_connect_to_display (GdmSimpleSlave *slave)
 
                 delay = 0;
                 enabled = FALSE;
-                gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &enabled, NULL, &delay);
+                username = NULL;
+                gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &enabled, &username, &delay);
                 if (! enabled || delay > 0) {
                         start_greeter (slave);
                         create_new_session (slave);
@@ -1097,6 +1099,7 @@ idle_connect_to_display (GdmSimpleSlave *slave)
                         gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
                         reset_session (slave);
                 }
+                g_free (username);
         } else {
                 if (slave->priv->connection_attempts >= MAX_CONNECT_ATTEMPTS) {
                         g_warning ("Unable to connect to display after %d tries - bailing out", slave->priv->connection_attempts);
