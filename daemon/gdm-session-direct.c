@@ -2099,7 +2099,7 @@ get_session_command (GdmSessionDirect *session)
         command = NULL;
         res = get_session_command_for_name (get_session_name (session), &command);
         if (! res) {
-                g_critical ("Cannot read specified session file: %s.desktop", session);
+                g_critical ("Cannot read specified session file: %s.desktop", get_session_name (session));
                 exit (1);
         }
 
