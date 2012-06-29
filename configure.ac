@@ -74,12 +74,12 @@ PKG_CHECK_MODULES(DAEMON,
 AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
 
-PKG_CHECK_MODULES(XLIB, x11 xau, ,
+PKG_CHECK_MODULES(XLIB, x11 xau xrandr, ,
   [AC_PATH_XTRA
     if test "x$no_x" = xyes; then
       AC_MSG_ERROR("no (requires X development libraries)")
     else
-      XLIB_LIBS="$X_PRE_LIBS $X_LIBS -lXau -lX11 -lXext $X_EXTRA_LIBS"
+      XLIB_LIBS="$X_PRE_LIBS $X_LIBS -lXau -lX11 -lXext -lXrandr $X_EXTRA_LIBS"
       XLIB_CFLAGS=$X_CFLAGS
     fi])
 AC_SUBST(XLIB_CFLAGS)

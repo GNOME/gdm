@@ -44,6 +44,7 @@
 
 #include <X11/Xlib.h> /* for Display */
 #include <X11/cursorfont.h> /* for watch cursor */
+#include <X11/extensions/Xrandr.h>
 #include <X11/Xatom.h>
 
 #include "gdm-common.h"
@@ -357,6 +358,85 @@ gdm_slave_run_script (GdmSlave   *slave,
         g_free (script);
 
         return ret;
+}
+
+static void
+determine_initial_cursor_position (GdmSlave *slave,
+                                   int      *x,
+                                   int      *y)
+{
+        XRRScreenResources *resources;
+        RROutput primary_output;
+        int i;
+
+        /* If this function fails for whatever reason,
+         * put the pointer in the upper left corner of the
+         * first monitor
+         */
+        *x = 100;
+        *y = 75;
+
+        gdm_error_trap_push ();
+        resources = XRRGetScreenResources (slave->priv->server_display,
+                                           DefaultRootWindow (slave->priv->server_display));
+        primary_output = XRRGetOutputPrimary (slave->priv->server_display,
+                                              DefaultRootWindow (slave->priv->server_display));
+        gdm_error_trap_pop ();
+
+        if (resources == NULL) {
+                return;
+        }
+
+        for (i = 0; i < resources->noutput; i++) {
+                XRROutputInfo *output_info;
+
+                if (primary_output == None) {
+                        primary_output = resources->outputs[0];
+                }
+
+                if (resources->outputs[i] != primary_output) {
+                        continue;
+                }
+
+                output_info = XRRGetOutputInfo (slave->priv->server_display,
+                                                resources,
+                                                resources->outputs[i]);
+
+                if (output_info->connection != RR_Disconnected &&
+                    output_info->crtc != 0) {
+                        XRRCrtcInfo *crtc_info;
+
+                        crtc_info = XRRGetCrtcInfo (slave->priv->server_display,
+                                                    resources,
+                                                    output_info->crtc);
+                        /* position it sort of in the lower right
+                         */
+                        *x = crtc_info->x + 100;
+                        *y = crtc_info->y + 75;
+                        XRRFreeCrtcInfo (crtc_info);
+                }
+
+                XRRFreeOutputInfo (output_info);
+                break;
+        }
+
+        XRRFreeScreenResources (resources);
+}
+
+void
+gdm_slave_set_initial_cursor_position (GdmSlave *slave)
+{
+        if (slave->priv->server_display != NULL) {
+                int x, y;
+
+                determine_initial_cursor_position (slave, &x, &y);
+                XWarpPointer(slave->priv->server_display,
+                             None,
+                             DefaultRootWindow (slave->priv->server_display),
+                             0, 0,
+                             0, 0,
+                             x, y);
+        }
 }
 
 void
