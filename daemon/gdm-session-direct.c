@@ -57,6 +57,7 @@
 
 #include "gdm-session-record.h"
 #include "gdm-session-worker-job.h"
+#include "gdm-common.h"
 
 #define GDM_DBUS_NAME                 "org.gnome.DisplayManager"
 #define GDM_DBUS_DISPLAY_INTERFACE    "org.gnome.DisplayManager.Display"
