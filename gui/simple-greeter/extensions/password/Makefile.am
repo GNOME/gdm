@@ -36,9 +36,6 @@ libpassword_la_SOURCES =				\
 			gdm-password-extension.h	\
 			gdm-password-extension.c
 
-pamdir = $(PAM_PREFIX)/pam.d
-pam_DATA = $(PAM_SERVICE_NAME)
-
 EXTRA_DIST = $(extension_DATA)
 
 MAINTAINERCLEANFILES =                  \
