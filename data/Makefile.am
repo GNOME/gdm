@@ -88,6 +88,9 @@ localealias_DATA = locale.alias
 sessiondir = $(datadir)/gnome-session/sessions
 session_DATA = gdm-fallback.session gdm-shell.session
 
+gdm-password: gdm-password.pam
+	cp $(srcdir)/gdm-password.pam $(builddir)/gdm-password
+
 gdm-fingerprint: gdm-fingerprint.pam
 	cp $(srcdir)/gdm-fingerprint.pam $(builddir)/gdm-fingerprint
 
@@ -95,7 +98,7 @@ gdm-smartcard: gdm-smartcard.pam
 	cp $(srcdir)/gdm-smartcard.pam $(builddir)/gdm-smartcard
 
 pamdir = $(PAM_PREFIX)/pam.d
-pam_DATA = gdm-fingerprint gdm-smartcard
+pam_DATA = gdm-fingerprint gdm-smartcard gdm-password
 
 EXTRA_DIST =			\
 	$(schemas_in_files)	\
@@ -108,6 +111,7 @@ EXTRA_DIST =			\
 	gdm 			\
 	gdm-autologin 		\
 	gdm-welcome 		\
+	gdm-password.pam	\
 	gdm-fingerprint.pam	\
 	gdm-smartcard.pam	\
 	gdm-fallback.session	\
@@ -129,6 +133,7 @@ CLEANFILES = 				\
 	PreSession			\
 	PostSession			\
 	$(gsettings_SCHEMAS)		\
+	gdm-password			\
 	gdm-fingerprint			\
 	gdm-smartcard			\
 	$(NULL)
@@ -141,6 +146,7 @@ DISTCLEANFILES =			\
 
 MAINTAINERCLEANFILES =			\
 	*~				\
+	gdm-password			\
 	gdm-fingerprint			\
 	gdm-smartcard			\
 	Makefile.in
