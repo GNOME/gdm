@@ -35,12 +35,6 @@ Server diplay.
 
 A subclass of GdmDisplay that represents a local display.
 
-*** GdmProductDisplay
-
-A subclass of GdmDisplay that only runs a user session.  It does not
-run a login greeter interface.  It will also be destroyed when
-the user session ends.
-
 *** GdmXdmcpDisplay
 
 A subclass of GdmDisplay that represents a remote XDMCP display.
@@ -56,15 +50,6 @@ slave communicates with the parent display using the D-Bus protocol.
 
 A subclass of GdmSlave that runs both a login greeter and a user
 session.
-
-*** GdmFactorySlave
-
-A subclass of GdmSlave that only runs a login greeter.
-
-*** GdmProductSlave
-
-A subclass of GdmSlave that only runs a user session.
-
 
 ** GdmServer
 
@@ -92,13 +77,6 @@ required information.
 A class of object that implements the GdmSession interface.  It is
 used to start and directly control a GdmSessionWorker subprocess by
 creating a D-Bus server on a private connection.
-
-*** GdmSessionRelay
-
-A class of object that implements the GdmSession interface.  It is
-used to relay session controls to a remote listener.  In particular,
-it is used to relay messages between the GreeterServer in a
-GdmFactorySlave and the GdmSessionDirect in a GdmProductSlave.
 
 ** GdmSessionWorkerJob
 

@@ -64,13 +64,6 @@ GdmLocalDisplayFactory *   gdm_local_display_factory_new                      (G
 gboolean                   gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *factory,
                                                                                char                  **id,
                                                                                GError                **error);
-
-gboolean                   gdm_local_display_factory_create_product_display   (GdmLocalDisplayFactory *factory,
-                                                                               const char             *parent_display_id,
-                                                                               const char             *relay_address,
-                                                                               char                  **id,
-                                                                               GError                **error);
-
 G_END_DECLS
 
 #endif /* __GDM_LOCAL_DISPLAY_FACTORY_H */

@@ -41,7 +41,6 @@
 #include "gdm-display-store.h"
 #include "gdm-static-display.h"
 #include "gdm-transient-display.h"
-#include "gdm-product-display.h"
 
 #define GDM_LOCAL_DISPLAY_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_LOCAL_DISPLAY_FACTORY, GdmLocalDisplayFactoryPrivate))
 
@@ -228,54 +227,6 @@ gdm_local_display_factory_create_transient_display (GdmLocalDisplayFactory *fact
         g_debug ("GdmLocalDisplayFactory: Creating transient display %d", num);
 
         display = gdm_transient_display_new (num);
-
-        seat_id = get_seat_of_transient_display (factory);
-        g_object_set (display, "seat-id", seat_id, NULL);
-
-        store_display (factory, num, display);
-
-        if (! gdm_display_manage (display)) {
-                display = NULL;
-                goto out;
-        }
-
-        if (! gdm_display_get_id (display, id, NULL)) {
-                display = NULL;
-                goto out;
-        }
-
-        ret = TRUE;
- out:
-        /* ref either held by store or not at all */
-        g_object_unref (display);
-
-        return ret;
-}
-
-gboolean
-gdm_local_display_factory_create_product_display (GdmLocalDisplayFactory *factory,
-                                                  const char             *parent_display_id,
-                                                  const char             *relay_address,
-                                                  char                  **id,
-                                                  GError                **error)
-{
-        gboolean    ret;
-        GdmDisplay *display;
-        guint32     num;
-        const char *seat_id;
-
-        g_return_val_if_fail (GDM_IS_LOCAL_DISPLAY_FACTORY (factory), FALSE);
-
-        ret = FALSE;
-
-        g_debug ("GdmLocalDisplayFactory: Creating product display parent %s address:%s",
-                 parent_display_id, relay_address);
-
-        num = take_next_display_number (factory);
-
-        g_debug ("GdmLocalDisplayFactory: got display num %u", num);
-
-        display = gdm_product_display_new (num, relay_address);
 
         seat_id = get_seat_of_transient_display (factory);
         g_object_set (display, "seat-id", seat_id, NULL);

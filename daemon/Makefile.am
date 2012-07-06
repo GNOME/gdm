@@ -31,8 +31,6 @@ AM_CPPFLAGS = \
 BUILT_SOURCES =					\
 	gdm-slave-glue.h			\
 	gdm-simple-slave-glue.h			\
-	gdm-factory-slave-glue.h		\
-	gdm-product-slave-glue.h		\
 	gdm-xdmcp-chooser-slave-glue.h		\
 	gdm-session-direct-glue.h		\
 	gdm-manager-glue.h			\
@@ -42,7 +40,6 @@ BUILT_SOURCES =					\
 	gdm-static-display-glue.h		\
 	gdm-transient-display-glue.h		\
 	gdm-local-display-factory-glue.h	\
-	gdm-product-display-glue.h		\
 	$(NULL)
 
 gdm-manager-glue.h: gdm-manager.xml Makefile.am
@@ -51,10 +48,6 @@ gdm-slave-glue.h: gdm-slave.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_slave --mode=glib-server --output=gdm-slave-glue.h $(srcdir)/gdm-slave.xml
 gdm-simple-slave-glue.h: gdm-simple-slave.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_simple_slave --mode=glib-server --output=gdm-simple-slave-glue.h $(srcdir)/gdm-simple-slave.xml
-gdm-factory-slave-glue.h: gdm-factory-slave.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_factory_slave --mode=glib-server --output=gdm-factory-slave-glue.h $(srcdir)/gdm-factory-slave.xml
-gdm-product-slave-glue.h: gdm-product-slave.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_product_slave --mode=glib-server --output=gdm-product-slave-glue.h $(srcdir)/gdm-product-slave.xml
 gdm-xdmcp-chooser-slave-glue.h: gdm-xdmcp-chooser-slave.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_xdmcp_chooser_slave --mode=glib-server --output=gdm-xdmcp-chooser-slave-glue.h $(srcdir)/gdm-xdmcp-chooser-slave.xml
 gdm-session-direct-glue.h: gdm-session-direct.xml Makefile.am
@@ -71,8 +64,6 @@ gdm-transient-display-glue.h: gdm-transient-display.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_transient_display --mode=glib-server --output=gdm-transient-display-glue.h $(srcdir)/gdm-transient-display.xml
 gdm-local-display-factory-glue.h: gdm-local-display-factory.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_local_display_factory --mode=glib-server --output=gdm-local-display-factory-glue.h $(srcdir)/gdm-local-display-factory.xml
-gdm-product-display-glue.h: gdm-product-display.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_product_display --mode=glib-server --output=gdm-product-display-glue.h $(srcdir)/gdm-product-display.xml
 
 noinst_PROGRAMS = 		\
 	test-session		\
@@ -101,8 +92,6 @@ test_session_LDADD =		\
 
 libexec_PROGRAMS = 			\
 	gdm-simple-slave		\
-	gdm-factory-slave		\
-	gdm-product-slave		\
 	gdm-session-worker		\
 	$(NULL)
 
@@ -144,82 +133,6 @@ gdm_simple_slave_LDFLAGS =		\
 	$(NULL)
 
 gdm_simple_slave_LDADD = 			\
-	$(top_builddir)/common/libgdmcommon.la	\
-	$(XLIB_LIBS)				\
-	$(DAEMON_LIBS)				\
-	$(EXTRA_DAEMON_LIBS)                    \
-	$(LIBXKLAVIER_LIBS)			\
-	$(SYSTEMD_LIBS) 			\
-	$(NULL)
-
-gdm_factory_slave_SOURCES = 		\
-	factory-slave-main.c 		\
-	gdm-greeter-server.c		\
-	gdm-greeter-server.h		\
-	gdm-welcome-session.c		\
-	gdm-welcome-session.h		\
-	gdm-greeter-session.c		\
-	gdm-greeter-session.h		\
-	gdm-server.c			\
-	gdm-server.h			\
-	gdm-session.c			\
-	gdm-session.h			\
-	gdm-session-direct.c		\
-	gdm-session-direct.h		\
-	gdm-session-private.h		\
-	gdm-session-record.c		\
-	gdm-session-record.h		\
-	gdm-session-relay.c		\
-	gdm-session-relay.h		\
-	gdm-session-worker-job.c	\
-	gdm-session-worker-job.h	\
-	gdm-xerrors.h			\
-	gdm-xerrors.c			\
-	gdm-slave.c			\
-	gdm-slave.h			\
-	gdm-factory-slave.c		\
-	gdm-factory-slave.h		\
-	$(NULL)
-
-gdm_factory_slave_LDFLAGS =		\
-	$(PAM_LIBS)			\
-	$(LIBXKLAVIER_LIBS)		\
-	$(NULL)
-
-gdm_factory_slave_LDADD = 			\
-	$(top_builddir)/common/libgdmcommon.la	\
-	$(XLIB_LIBS)				\
-	$(DAEMON_LIBS)				\
-	$(SYSTEMD_LIBS) 			\
-	$(NULL)
-
-gdm_product_slave_SOURCES = 		\
-	product-slave-main.c 		\
-	gdm-server.c			\
-	gdm-server.h			\
-	gdm-session.c			\
-	gdm-session.h			\
-	gdm-session-private.h		\
-	gdm-session-direct.c		\
-	gdm-session-direct.h		\
-	gdm-session-record.c		\
-	gdm-session-record.h		\
-	gdm-session-worker-job.c	\
-	gdm-session-worker-job.h	\
-	gdm-xerrors.h			\
-	gdm-xerrors.c			\
-	gdm-slave.c			\
-	gdm-slave.h			\
-	gdm-product-slave.c		\
-	gdm-product-slave.h		\
-	$(NULL)
-
-gdm_product_slave_LDFLAGS =		\
-	$(PAM_LIBS)			\
-	$(LIBXKLAVIER_LIBS)		\
-	$(NULL)
-
-gdm_product_slave_LDADD = 			\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(XLIB_LIBS)				\
 	$(DAEMON_LIBS)				\
@@ -313,8 +226,6 @@ gdm_binary_SOURCES = 			\
 	gdm-static-display.h		\
 	gdm-transient-display.c		\
 	gdm-transient-display.h		\
-	gdm-product-display.c		\
-	gdm-product-display.h		\
 	gdm-manager.c			\
 	gdm-manager.h			\
 	gdm-slave-proxy.c		\
@@ -380,7 +291,6 @@ EXTRA_DIST = 				\
 	gdm.in				\
 	gdm-slave.xml			\
 	gdm-simple-slave.xml		\
-	gdm-factory-slave.xml		\
 	gdm-product-slave.xml		\
 	gdm-xdmcp-chooser-slave.xml	\
 	gdm-session-direct.xml		\
@@ -391,5 +301,4 @@ EXTRA_DIST = 				\
 	gdm-static-display.xml		\
 	gdm-transient-display.xml	\
 	gdm-local-display-factory.xml	\
-	gdm-product-display.xml		\
 	$(NULL)
