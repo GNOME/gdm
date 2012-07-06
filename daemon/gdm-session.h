@@ -146,7 +146,6 @@ struct _GdmSessionIface
                                               const char   *service_name);
         void (* conversation_stopped)        (GdmSession   *session,
                                               const char   *service_name);
-        void (* closed)                      (GdmSession   *session);
         void (* selected_user_changed)       (GdmSession   *session,
                                               const char   *text);
 

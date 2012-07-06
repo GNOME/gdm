@@ -41,7 +41,6 @@ enum {
         AUTHORIZATION_FAILED,
         ACCREDITED,
         ACCREDITATION_FAILED,
-        CLOSED,
         INFO,
         PROBLEM,
         INFO_QUERY,
@@ -506,16 +505,6 @@ gdm_session_class_init (gpointer g_iface)
                               G_TYPE_NONE,
                               1,
                               G_TYPE_INT);
-        signals [CLOSED] =
-                g_signal_new ("closed",
-                              iface_type,
-                              G_SIGNAL_RUN_FIRST,
-                              G_STRUCT_OFFSET (GdmSessionIface, closed),
-                              NULL,
-                              NULL,
-                              g_cclosure_marshal_VOID__VOID,
-                              G_TYPE_NONE,
-                              0);
         signals [SELECTED_USER_CHANGED] =
                 g_signal_new ("selected-user-changed",
                               iface_type,
@@ -749,13 +738,6 @@ _gdm_session_conversation_stopped (GdmSession   *session,
 {
         g_return_if_fail (GDM_IS_SESSION (session));
         g_signal_emit (session, signals [CONVERSATION_STOPPED], 0, service_name);
-}
-
-void
-_gdm_session_closed (GdmSession   *session)
-{
-        g_return_if_fail (GDM_IS_SESSION (session));
-        g_signal_emit (session, signals [CLOSED], 0);
 }
 
 void

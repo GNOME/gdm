@@ -872,12 +872,6 @@ create_new_session (GdmSimpleSlave *slave)
                           "session-died",
                           G_CALLBACK (on_session_died),
                           slave);
-#if 0
-        g_signal_connect (slave->priv->session,
-                          "closed",
-                          G_CALLBACK (on_session_closed),
-                          slave);
-#endif
         g_signal_connect (slave->priv->session,
                           "selected-user-changed",
                           G_CALLBACK (on_session_selected_user_changed),
@@ -969,11 +963,6 @@ destroy_session (GdmSimpleSlave *slave)
         g_signal_handlers_disconnect_by_func (slave->priv->session,
                                               G_CALLBACK (on_session_died),
                                               slave);
-#if 0
-        g_signal_handlers_disconnect_by_func (slave->priv->session,
-                                              G_CALLBACK (on_session_closed),
-                                              slave);
-#endif
         g_signal_handlers_disconnect_by_func (slave->priv->session,
                                               G_CALLBACK (on_session_selected_user_changed),
                                               slave);

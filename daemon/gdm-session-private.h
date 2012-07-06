@@ -71,7 +71,6 @@ void             _gdm_session_session_exited               (GdmSession   *sessio
                                                             int           exit_code);
 void             _gdm_session_session_died                 (GdmSession   *session,
                                                             int           signal_number);
-void             _gdm_session_closed                       (GdmSession   *session);
 
 /* user settings read from ~/.dmrc / system defaults */
 void             _gdm_session_default_language_name_changed     (GdmSession   *session,
