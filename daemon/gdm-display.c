@@ -431,7 +431,7 @@ gdm_display_get_x11_cookie (GdmDisplay *display,
         g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
 
         if (x11_cookie != NULL) {
-                *x11_cookie = g_array_new (FALSE, FALSE, sizeof (char));
+                *x11_cookie = g_array_new (TRUE, FALSE, sizeof (char));
                 g_array_append_vals (*x11_cookie,
                                      display->priv->x11_cookie,
                                      display->priv->x11_cookie_size);
