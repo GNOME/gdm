@@ -34,10 +34,6 @@
 #include <glib/gstdio.h>
 #include <glib-object.h>
 
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
-
 #include <X11/Xlib.h> /* for Display */
 
 #include "gdm-common.h"
@@ -70,6 +66,8 @@ struct GdmXdmcpChooserSlavePrivate
 
         GdmChooserServer  *chooser_server;
         GdmChooserSession *chooser;
+
+        GdmDBusXdmcpChooserSlave *skeleton;
 };
 
 enum {
@@ -129,6 +127,9 @@ on_chooser_hostname_selected (GdmChooserServer     *chooser_server,
 {
         g_debug ("GdmXdmcpChooserSlave: emitting hostname selected: %s", name);
         g_signal_emit (slave, signals [HOSTNAME_SELECTED], 0, name);
+
+        gdm_dbus_xdmcp_chooser_slave_emit_hostname_selected (slave->priv->skeleton,
+                                                             name);
 }
 
 static void
@@ -316,12 +317,32 @@ gdm_xdmcp_chooser_slave_stop (GdmSlave *slave)
         return TRUE;
 }
 
+static GObject *
+gdm_xdmcp_chooser_slave_constructor (GType                  type,
+                                     guint                  n_construct_properties,
+                                     GObjectConstructParam *construct_properties)
+{
+        GdmXdmcpChooserSlave *slave;
+
+        slave = GDM_XDMCP_CHOOSER_SLAVE (G_OBJECT_CLASS (gdm_xdmcp_chooser_slave_parent_class)->constructor (type,
+                                                                                 n_construct_properties,
+                                                                                 construct_properties));
+
+        slave->priv->skeleton = GDM_DBUS_XDMCP_CHOOSER_SLAVE (gdm_dbus_xdmcp_chooser_slave_skeleton_new ());
+        gdm_slave_export_interface (GDM_SLAVE (slave),
+                                    G_DBUS_INTERFACE_SKELETON (slave->priv->skeleton));
+
+        return G_OBJECT (slave);
+}
+
+
 static void
 gdm_xdmcp_chooser_slave_class_init (GdmXdmcpChooserSlaveClass *klass)
 {
         GObjectClass  *object_class = G_OBJECT_CLASS (klass);
         GdmSlaveClass *slave_class = GDM_SLAVE_CLASS (klass);
 
+        object_class->constructor = gdm_xdmcp_chooser_slave_constructor;
         object_class->finalize = gdm_xdmcp_chooser_slave_finalize;
 
         slave_class->start = gdm_xdmcp_chooser_slave_start;
