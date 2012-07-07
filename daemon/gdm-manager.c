@@ -441,10 +441,10 @@ gdm_manager_finalize (GObject *object)
         g_return_if_fail (manager->priv != NULL);
 
 #ifdef HAVE_LIBXDMCP
-        if (manager->priv->xdmcp_factory != NULL) {
-                g_object_unref (manager->priv->xdmcp_factory);
-        }
+        g_clear_object (&manager->priv->xdmcp_factory);
 #endif
+        g_clear_object (&manager->priv->local_factory);
+        g_clear_object (&manager->priv->connection);
 
         gdm_display_store_clear (manager->priv->display_store);
         g_object_unref (manager->priv->display_store);
