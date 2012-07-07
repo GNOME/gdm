@@ -253,7 +253,7 @@ write_pid (void)
                 return;
         }
 
-        g_atexit (delete_pid);
+        atexit (delete_pid);
 }
 
 static void
