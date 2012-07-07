@@ -65,7 +65,6 @@ struct GdmManagerPrivate
         gboolean                wait_for_go;
         gboolean                no_console;
 
-        DBusGProxy             *bus_proxy;
         DBusGConnection        *connection;
 };
 
@@ -199,57 +198,6 @@ gdm_manager_set_wait_for_go (GdmManager *manager,
         }
 }
 
-typedef struct {
-        const char *service_name;
-        GdmManager *manager;
-} RemoveDisplayData;
-
-static gboolean
-remove_display_for_connection (char              *id,
-                               GdmDisplay        *display,
-                               RemoveDisplayData *data)
-{
-        g_assert (display != NULL);
-        g_assert (data->service_name != NULL);
-
-        /* FIXME: compare service name to that of display */
-#if 0
-        if (strcmp (info->service_name, data->service_name) == 0) {
-                remove_session_for_cookie (data->manager, cookie, NULL);
-                leader_info_cancel (info);
-                return TRUE;
-        }
-#endif
-
-        return FALSE;
-}
-
-static void
-remove_displays_for_connection (GdmManager *manager,
-                                const char *service_name)
-{
-        RemoveDisplayData data;
-
-        data.service_name = service_name;
-        data.manager = manager;
-
-        gdm_display_store_foreach_remove (manager->priv->display_store,
-                                          (GdmDisplayStoreFunc)remove_display_for_connection,
-                                          &data);
-}
-
-static void
-bus_name_owner_changed (DBusGProxy  *bus_proxy,
-                        const char  *service_name,
-                        const char  *old_service_name,
-                        const char  *new_service_name,
-                        GdmManager  *manager)
-{
-        if (strlen (new_service_name) == 0) {
-                remove_displays_for_connection (manager, old_service_name);
-        }
-}
-
 static gboolean
 register_manager (GdmManager *manager)
 {
@@ -264,22 +212,6 @@ register_manager (GdmManager *manager)
                 }
                 exit (1);
         }
-
-        manager->priv->bus_proxy = dbus_g_proxy_new_for_name (manager->priv->connection,
-                                                              DBUS_SERVICE_DBUS,
-                                                              DBUS_PATH_DBUS,
-                                                              DBUS_INTERFACE_DBUS);
-        dbus_g_proxy_add_signal (manager->priv->bus_proxy,
-                                 "NameOwnerChanged",
-                                 G_TYPE_STRING,
-                                 G_TYPE_STRING,
-                                 G_TYPE_STRING,
-                                 G_TYPE_INVALID);
-        dbus_g_proxy_connect_signal (manager->priv->bus_proxy,
-                                     "NameOwnerChanged",
-                                     G_CALLBACK (bus_name_owner_changed),
-                                     manager,
-                                     NULL);
 
         dbus_g_connection_register_g_object (manager->priv->connection, GDM_MANAGER_DBUS_PATH, G_OBJECT (manager));
 
