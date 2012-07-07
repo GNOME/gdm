@@ -40,6 +40,12 @@ struct GdmDisplayStorePrivate
         GHashTable *displays;
 };
 
+typedef struct
+{
+        GdmDisplayStore *store;
+        GdmDisplay      *display;
+} StoredDisplay;
+
 enum {
         DISPLAY_ADDED,
         DISPLAY_REMOVED,
@@ -53,6 +59,39 @@ static void     gdm_display_store_init          (GdmDisplayStore      *display_s
 static void     gdm_display_store_finalize      (GObject              *object);
 
 G_DEFINE_TYPE (GdmDisplayStore, gdm_display_store, G_TYPE_OBJECT)
+
+static StoredDisplay *
+stored_display_new (GdmDisplayStore *store,
+                    GdmDisplay      *display)
+{
+        StoredDisplay *stored_display;
+
+        stored_display = g_slice_new (StoredDisplay);
+        stored_display->store = store;
+        stored_display->display = g_object_ref (display);
+
+        return stored_display;
+}
+
+static void
+stored_display_free (StoredDisplay *stored_display)
+{
+        char *id;
+
+        gdm_display_get_id (stored_display->display, &id, NULL);
+
+        g_signal_emit (G_OBJECT (stored_display->store),
+                       signals[DISPLAY_REMOVED],
+                       0,
+                       id);
+        g_free (id);
+
+        g_debug ("GdmDisplayStore: Unreffing display: %p",
+                 stored_display->display);
+        g_object_unref (stored_display->display);
+
+        g_slice_free (StoredDisplay, stored_display);
+}
 
 GQuark
 gdm_display_store_error_quark (void)
@@ -96,17 +135,56 @@ gdm_display_store_remove (GdmDisplayStore    *store,
         return FALSE;
 }
 
+typedef struct
+{
+        GdmDisplayStoreFunc predicate;
+        gpointer            user_data;
+} FindClosure;
+
+static gboolean
+find_func (const char    *id,
+           StoredDisplay *stored_display,
+           FindClosure   *closure)
+{
+        return closure->predicate (id,
+                                   stored_display->display,
+                                   closure->user_data);
+}
+
 void
 gdm_display_store_foreach (GdmDisplayStore    *store,
                            GdmDisplayStoreFunc func,
                            gpointer            user_data)
 {
+        FindClosure  closure;
+
         g_return_if_fail (store != NULL);
         g_return_if_fail (func != NULL);
 
+        closure.predicate = func;
+        closure.user_data = user_data;
+
         g_hash_table_find (store->priv->displays,
-                           (GHRFunc)func,
-                           user_data);
+                           (GHRFunc) find_func,
+                           &closure);
+}
+
+GdmDisplay *
+gdm_display_store_lookup (GdmDisplayStore *store,
+                          const char      *id)
+{
+        StoredDisplay *stored_display;
+
+        g_return_val_if_fail (store != NULL, NULL);
+        g_return_val_if_fail (id != NULL, NULL);
+
+        stored_display = g_hash_table_lookup (store->priv->displays,
+                                              id);
+        if (stored_display == NULL) {
+                return NULL;
+        }
+
+        return stored_display->display;
 }
 
 GdmDisplay *
@@ -114,15 +192,24 @@ gdm_display_store_find (GdmDisplayStore    *store,
                         GdmDisplayStoreFunc predicate,
                         gpointer            user_data)
 {
-        GdmDisplay *display;
+        StoredDisplay *stored_display;
+        FindClosure    closure;
 
         g_return_val_if_fail (store != NULL, NULL);
         g_return_val_if_fail (predicate != NULL, NULL);
 
-        display = g_hash_table_find (store->priv->displays,
-                                     (GHRFunc)predicate,
-                                     user_data);
-        return display;
+        closure.predicate = predicate;
+        closure.user_data = user_data;
+
+        stored_display = g_hash_table_find (store->priv->displays,
+                                            (GHRFunc) find_func,
+                                            &closure);
+
+        if (stored_display == NULL) {
+                return NULL;
+        }
+
+        return stored_display->display;
 }
 
 guint
@@ -130,15 +217,18 @@ gdm_display_store_foreach_remove (GdmDisplayStore    *store,
                                   GdmDisplayStoreFunc func,
                                   gpointer            user_data)
 {
-        guint ret;
+        FindClosure closure;
+        guint       ret;
 
         g_return_val_if_fail (store != NULL, 0);
         g_return_val_if_fail (func != NULL, 0);
 
-        ret = g_hash_table_foreach_remove (store->priv->displays,
-                                           (GHRFunc)func,
-                                           user_data);
+        closure.predicate = func;
+        closure.user_data = user_data;
 
+        ret = g_hash_table_foreach_remove (store->priv->displays,
+                                           (GHRFunc) find_func,
+                                           &closure);
         return ret;
 }
 
@@ -146,7 +236,8 @@ void
 gdm_display_store_add (GdmDisplayStore *store,
                        GdmDisplay      *display)
 {
-        char *id;
+        char          *id;
+        StoredDisplay *stored_display;
 
         g_return_if_fail (store != NULL);
         g_return_if_fail (display != NULL);
@@ -155,9 +246,15 @@ gdm_display_store_add (GdmDisplayStore *store,
 
         g_debug ("GdmDisplayStore: Adding display %s to store", id);
 
+        stored_display = stored_display_new (store, display);
         g_hash_table_insert (store->priv->displays,
                              id,
-                             g_object_ref (display));
+                             stored_display);
+
+        g_signal_emit (G_OBJECT (store),
+                       signals[DISPLAY_ADDED],
+                       0,
+                       id);
 }
 
 static void
@@ -192,13 +289,6 @@ gdm_display_store_class_init (GdmDisplayStoreClass *klass)
 }
 
 static void
-display_unref (GdmDisplay *display)
-{
-        g_debug ("GdmDisplayStore: Unreffing display: %p", display);
-        g_object_unref (display);
-}
-
-static void
 gdm_display_store_init (GdmDisplayStore *store)
 {
 
@@ -207,7 +297,8 @@ gdm_display_store_init (GdmDisplayStore *store)
         store->priv->displays = g_hash_table_new_full (g_str_hash,
                                                        g_str_equal,
                                                        g_free,
-                                                       (GDestroyNotify) display_unref);
+                                                       (GDestroyNotify)
+                                                       stored_display_free);
 }
 
 static void
