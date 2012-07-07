@@ -39,16 +39,10 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
 
 #include "gdm-common.h"
 
 #include "gdm-session-worker-job.h"
-
-#define GDM_SESSION_SERVER_DBUS_PATH      "/org/gnome/DisplayManager/SessionServer"
-#define GDM_SESSION_SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.SessionServer"
 
 extern char **environ;
 

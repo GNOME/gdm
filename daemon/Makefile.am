@@ -247,6 +247,11 @@ gdm_session_worker_SOURCES = 			\
 	gdm-session-worker.c			\
 	$(NULL)
 
+nodist_gdm_session_worker_SOURCES =		\
+	gdm-session-glue.h			\
+	gdm-session-glue.c			\
+	$(NULL)
+
 if HAVE_LIBAUDIT
 gdm_session_worker_SOURCES += gdm-session-linux-auditor.h       \
 	                      gdm-session-linux-auditor.c
