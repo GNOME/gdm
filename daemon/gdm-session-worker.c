@@ -97,10 +97,7 @@ enum {
         GDM_SESSION_WORKER_STATE_ACCREDITED,
         GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED,
         GDM_SESSION_WORKER_STATE_SESSION_OPENED,
-        GDM_SESSION_WORKER_STATE_SESSION_STARTED,
-        GDM_SESSION_WORKER_STATE_REAUTHENTICATED,
-        GDM_SESSION_WORKER_STATE_REAUTHORIZED,
-        GDM_SESSION_WORKER_STATE_REACCREDITED,
+        GDM_SESSION_WORKER_STATE_SESSION_STARTED
 };
 
 struct GdmSessionWorkerPrivate
@@ -2823,49 +2820,6 @@ on_open_session (GdmSessionWorker *worker,
         queue_state_change (worker);
 }
 
-static void
-on_reauthenticate (GdmSessionWorker *worker,
-                   DBusMessage      *message)
-{
-        if (worker->priv->state != GDM_SESSION_WORKER_STATE_SESSION_STARTED) {
-                g_debug ("GdmSessionWorker: ignoring spurious reauthenticate for user while in state %s", get_state_name (worker->priv->state));
-                return;
-        }
-
-        queue_state_change (worker);
-}
-
-static void
-on_reauthorize (GdmSessionWorker *worker,
-                DBusMessage      *message)
-{
-        if (worker->priv->state != GDM_SESSION_WORKER_STATE_REAUTHENTICATED) {
-                g_debug ("GdmSessionWorker: ignoring spurious reauthorize for user while in state %s", get_state_name (worker->priv->state));
-                return;
-        }
-
-        queue_state_change (worker);
-}
-
-static void
-on_refresh_credentials (GdmSessionWorker *worker,
-                        DBusMessage      *message)
-{
-        int error_code;
-
-        if (worker->priv->state != GDM_SESSION_WORKER_STATE_REAUTHORIZED) {
-                g_debug ("GdmSessionWorker: ignoring spurious refreshing credentials for user while in state %s", get_state_name (worker->priv->state));
-                return;
-        }
-
-        g_debug ("GdmSessionWorker: refreshing credentials");
-
-        error_code = pam_setcred (worker->priv->pam_handle, PAM_REFRESH_CRED);
-        if (error_code != PAM_SUCCESS) {
-                g_debug ("GdmSessionWorker: %s", pam_strerror (worker->priv->pam_handle, error_code));
-        }
-}
-
 static DBusHandlerResult
 worker_dbus_handle_message (DBusConnection *connection,
                             DBusMessage    *message,
@@ -2901,12 +2855,6 @@ worker_dbus_handle_message (DBusConnection *connection,
                 on_open_session (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "StartProgram")) {
                 on_start_program (worker, message);
-        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "Reauthenticate")) {
-                on_reauthenticate (worker, message);
-        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "Reauthorize")) {
-                on_reauthorize (worker, message);
-        } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "RefreshCredentials")) {
-                on_refresh_credentials (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetEnvironmentVariable")) {
                 on_set_environment_variable (worker, message);
         } else if (dbus_message_is_signal (message, GDM_SESSION_DBUS_INTERFACE, "SetLanguageName")) {
