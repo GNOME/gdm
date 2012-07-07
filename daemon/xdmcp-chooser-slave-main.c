@@ -58,8 +58,7 @@ get_system_bus (void)
         error = NULL;
         bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (bus == NULL) {
-                g_warning ("Couldn't connect to system bus: %s",
-                           error->message);
+                g_warning ("Couldn't connect to system bus: %s", error->message);
                 g_error_free (error);
                 goto out;
         }

@@ -37,7 +37,7 @@
 
 #include "gdm-xdmcp-display.h"
 #include "gdm-xdmcp-greeter-display.h"
-#include "gdm-xdmcp-greeter-display-glue.h"
+#include "gdm-xdmcp-display-glue.h"
 
 #include "gdm-common.h"
 #include "gdm-address.h"
@@ -46,6 +46,7 @@
 
 struct GdmXdmcpGreeterDisplayPrivate
 {
+        GdmDBusXdmcpDisplay    *skeleton;
         GdmAddress             *remote_address;
         gint32                  session_number;
 };
@@ -63,18 +64,36 @@ static gboolean gdm_xdmcp_greeter_display_finish (GdmDisplay *display);
 
 G_DEFINE_TYPE (GdmXdmcpGreeterDisplay, gdm_xdmcp_greeter_display, GDM_TYPE_XDMCP_DISPLAY)
 
+static GObject *
+gdm_xdmcp_greeter_display_constructor (GType                  type,
+                                       guint                  n_construct_properties,
+                                       GObjectConstructParam *construct_properties)
+{
+        GdmXdmcpGreeterDisplay      *display;
+
+        display = GDM_XDMCP_GREETER_DISPLAY (G_OBJECT_CLASS (gdm_xdmcp_greeter_display_parent_class)->constructor (type,
+                                                                                                           n_construct_properties,
+                                                                                                           construct_properties));
+
+        display->priv->skeleton = GDM_DBUS_XDMCP_DISPLAY (gdm_dbus_xdmcp_display_skeleton_new ());
+
+        g_dbus_object_skeleton_add_interface (gdm_display_get_object_skeleton (GDM_DISPLAY (display)),
+                                              G_DBUS_INTERFACE_SKELETON (display->priv->skeleton));
+
+        return G_OBJECT (display);
+}
+
 static void
 gdm_xdmcp_greeter_display_class_init (GdmXdmcpGreeterDisplayClass *klass)
 {
         GObjectClass    *object_class = G_OBJECT_CLASS (klass);
         GdmDisplayClass *display_class = GDM_DISPLAY_CLASS (klass);
 
+        object_class->constructor = gdm_xdmcp_greeter_display_constructor;
         object_class->finalize = gdm_xdmcp_greeter_display_finalize;
         display_class->finish = gdm_xdmcp_greeter_display_finish;
 
         g_type_class_add_private (klass, sizeof (GdmXdmcpGreeterDisplayPrivate));
-
-        dbus_g_object_type_install_info (GDM_TYPE_XDMCP_GREETER_DISPLAY, &dbus_glib_gdm_xdmcp_greeter_display_object_info);
 }
 
 static void
@@ -95,6 +114,8 @@ gdm_xdmcp_greeter_display_finalize (GObject *object)
         xdmcp_greeter_display = GDM_XDMCP_GREETER_DISPLAY (object);
 
         g_return_if_fail (xdmcp_greeter_display->priv != NULL);
+
+        g_clear_object (&xdmcp_greeter_display->priv->skeleton);
 
         G_OBJECT_CLASS (gdm_xdmcp_greeter_display_parent_class)->finalize (object);
 }

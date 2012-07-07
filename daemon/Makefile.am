@@ -201,12 +201,14 @@ gdm_xdmcp_chooser_slave_SOURCES = 		\
 	$(NULL)
 
 nodist_gdm_xdmcp_chooser_slave_SOURCES = 	\
-	gdm-greeter-glue.c		\
-	gdm-greeter-glue.h		\
-	gdm-display-glue.c		\
-	gdm-display-glue.h		\
-	gdm-slave-glue.c		\
-	gdm-slave-glue.h		\
+	gdm-session-glue.c			\
+	gdm-session-glue.h			\
+	gdm-display-glue.c			\
+	gdm-display-glue.h			\
+	gdm-slave-glue.c			\
+	gdm-slave-glue.h			\
+	gdm-xdmcp-chooser-slave-glue.c		\
+	gdm-xdmcp-chooser-slave-glue.h		\
 	$(NULL)
 
 gdm_xdmcp_chooser_slave_LDADD = 		\
