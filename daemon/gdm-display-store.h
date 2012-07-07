@@ -79,6 +79,9 @@ void                gdm_display_store_foreach                  (GdmDisplayStore 
 guint               gdm_display_store_foreach_remove           (GdmDisplayStore    *store,
                                                                 GdmDisplayStoreFunc func,
                                                                 gpointer            user_data);
+GdmDisplay *        gdm_display_store_lookup                   (GdmDisplayStore    *store,
+                                                                const char         *id);
+
 GdmDisplay *        gdm_display_store_find                     (GdmDisplayStore    *store,
                                                                 GdmDisplayStoreFunc predicate,
                                                                 gpointer            user_data);

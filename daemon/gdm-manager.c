@@ -89,6 +89,34 @@ static gpointer manager_object = NULL;
 
 G_DEFINE_TYPE (GdmManager, gdm_manager, G_TYPE_OBJECT)
 
+static void
+on_display_removed (GdmDisplayStore *display_store,
+                    const char      *id,
+                    GdmManager      *manager)
+{
+        GdmDisplay *display;
+
+        display = gdm_display_store_lookup (display_store, id);
+
+        if (display != NULL) {
+                g_signal_emit (manager, signals[DISPLAY_REMOVED], 0, id);
+        }
+}
+
+static void
+on_display_added (GdmDisplayStore *display_store,
+                  const char      *id,
+                  GdmManager      *manager)
+{
+        GdmDisplay *display;
+
+        display = gdm_display_store_lookup (display_store, id);
+
+        if (display != NULL) {
+                g_signal_emit (manager, signals[DISPLAY_ADDED], 0, id);
+        }
+}
+
 GQuark
 gdm_manager_error_quark (void)
 {
@@ -358,6 +386,16 @@ gdm_manager_init (GdmManager *manager)
         manager->priv = GDM_MANAGER_GET_PRIVATE (manager);
 
         manager->priv->display_store = gdm_display_store_new ();
+
+        g_signal_connect (G_OBJECT (manager->priv->display_store),
+                          "display-added",
+                          G_CALLBACK (on_display_added),
+                          manager);
+
+        g_signal_connect (G_OBJECT (manager->priv->display_store),
+                          "display-removed",
+                          G_CALLBACK (on_display_removed),
+                          manager);
 }
 
 static void
@@ -379,6 +417,13 @@ gdm_manager_finalize (GObject *object)
         g_clear_object (&manager->priv->connection);
 
         gdm_display_store_clear (manager->priv->display_store);
+
+        g_signal_handlers_disconnect_by_func (G_OBJECT (manager->priv->display_store),
+                                              G_CALLBACK (on_display_added),
+                                              manager);
+        g_signal_handlers_disconnect_by_func (G_OBJECT (manager->priv->display_store),
+                                              G_CALLBACK (on_display_removed),
+                                              manager);
         g_object_unref (manager->priv->display_store);
 
         G_OBJECT_CLASS (gdm_manager_parent_class)->finalize (object);
