@@ -347,11 +347,7 @@ create_display (GdmLocalDisplayFactory *factory,
 
         num = take_next_display_number (factory);
 
-#if 0
-        display = gdm_static_factory_display_new (num);
-#else
         display = gdm_static_display_new (num);
-#endif
 
         g_object_set (display, "seat-id", seat_id, NULL);
 
