@@ -291,7 +291,6 @@ EXTRA_DIST = 				\
 	gdm.in				\
 	gdm-slave.xml			\
 	gdm-simple-slave.xml		\
-	gdm-product-slave.xml		\
 	gdm-xdmcp-chooser-slave.xml	\
 	gdm-session-direct.xml		\
 	gdm-manager.xml			\
