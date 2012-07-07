@@ -70,6 +70,7 @@ struct GdmDisplayPrivate
 
         GdmSlaveProxy        *slave_proxy;
         char                 *slave_bus_name;
+        int                   slave_name_id;
         GDBusConnection      *connection;
         GdmDisplayAccessFile *user_access_file;
 
@@ -94,6 +95,7 @@ enum {
 static void     gdm_display_class_init  (GdmDisplayClass *klass);
 static void     gdm_display_init        (GdmDisplay      *display);
 static void     gdm_display_finalize    (GObject         *object);
+static void     queue_finish            (GdmDisplay      *display);
 
 G_DEFINE_ABSTRACT_TYPE (GdmDisplay, gdm_display, G_TYPE_OBJECT)
 
@@ -279,6 +281,14 @@ gdm_display_add_user_authorization (GdmDisplay *display,
         return ret;
 }
 
+static void
+on_name_vanished (GDBusConnection *connection,
+                  const char      *name,
+                  gpointer         user_data)
+{
+        queue_finish (GDM_DISPLAY (user_data));
+}
+
 static gboolean
 gdm_display_real_set_slave_bus_name (GdmDisplay *display,
                                      const char *name,
@@ -287,6 +297,17 @@ gdm_display_real_set_slave_bus_name (GdmDisplay *display,
         g_free (display->priv->slave_bus_name);
         display->priv->slave_bus_name = g_strdup (name);
 
+        if (display->priv->slave_name_id > 0) {
+                g_bus_unwatch_name (display->priv->slave_name_id);
+        }
+
+        g_bus_watch_name_on_connection (display->priv->connection,
+                                        name,
+                                        G_BUS_NAME_WATCHER_FLAGS_NONE,
+                                        NULL, /* name appeared */
+                                        on_name_vanished,
+                                        g_object_ref (display),
+                                        NULL);
         return TRUE;
 }
 
@@ -1270,6 +1291,11 @@ gdm_display_dispose (GObject *object)
                 display->priv->access_file = NULL;
         }
 
+        if (display->priv->slave_name_id > 0) {
+                g_bus_unwatch_name (display->priv->slave_name_id);
+                display->priv->slave_name_id = 0;
+        }
+
         G_OBJECT_CLASS (gdm_display_parent_class)->dispose (object);
 }
 
@@ -1403,6 +1429,7 @@ gdm_display_finalize (GObject *object)
         g_free (display->priv->x11_display_name);
         g_free (display->priv->x11_cookie);
         g_free (display->priv->slave_command);
+        g_free (display->priv->slave_bus_name);
 
         g_clear_object (&display->priv->display_skeleton);
         g_clear_object (&display->priv->object_skeleton);
