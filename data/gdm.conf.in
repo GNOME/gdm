@@ -20,7 +20,6 @@
     <allow send_interface="org.gnome.DisplayManager.Slave"/>
     <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.freedesktop.DBus.Introspectable"/>
-
   </policy>
 
   <policy context="default">
@@ -38,6 +37,8 @@
           send_interface="org.gnome.DisplayManager.Session"/>
     <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.freedesktop.DBus.Introspectable"/>
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.freedesktop.DBus.ObjectManager"/>
     <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.gnome.DisplayManager.Display"
            send_member="GetId"/>
@@ -60,11 +61,6 @@
     <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.gnome.DisplayManager.LocalDisplayFactory"
            send_member="CreateTransientDisplay"/>
-
-    <allow send_destination="org.gnome.DisplayManager"
-           send_interface="org.gnome.DisplayManager.Manager"
-           send_member="GetDisplays"/>
-
   </policy>
 
   <policy user="@GDM_USERNAME@">

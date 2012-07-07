@@ -33,14 +33,10 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <glib-object.h>
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
 
 #include "gdm-common.h"
 
 #include "gdm-manager.h"
-#include "gdm-manager-glue.h"
 #include "gdm-display-store.h"
 #include "gdm-display-factory.h"
 #include "gdm-local-display-factory.h"
@@ -49,7 +45,7 @@
 #define GDM_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GDM_TYPE_MANAGER, GdmManagerPrivate))
 
 #define GDM_DBUS_PATH         "/org/gnome/DisplayManager"
-#define GDM_MANAGER_DBUS_PATH GDM_DBUS_PATH "/Manager"
+#define GDM_MANAGER_DBUS_PATH GDM_DBUS_PATH "/Displays"
 #define GDM_MANAGER_DBUS_NAME "org.gnome.DisplayManager.Manager"
 
 struct GdmManagerPrivate
@@ -65,7 +61,9 @@ struct GdmManagerPrivate
         gboolean                wait_for_go;
         gboolean                no_console;
 
-        DBusGConnection        *connection;
+        GDBusProxy               *bus_proxy;
+        GDBusConnection          *connection;
+        GDBusObjectManagerServer *object_manager;
 };
 
 enum {
@@ -99,6 +97,8 @@ on_display_removed (GdmDisplayStore *display_store,
         display = gdm_display_store_lookup (display_store, id);
 
         if (display != NULL) {
+                g_dbus_object_manager_server_unexport (manager->priv->object_manager, id);
+
                 g_signal_emit (manager, signals[DISPLAY_REMOVED], 0, id);
         }
 }
@@ -113,6 +113,8 @@ on_display_added (GdmDisplayStore *display_store,
         display = gdm_display_store_lookup (display_store, id);
 
         if (display != NULL) {
+                g_dbus_object_manager_server_export (manager->priv->object_manager,
+                                                     gdm_display_get_object_skeleton (display));
                 g_signal_emit (manager, signals[DISPLAY_ADDED], 0, id);
         }
 }
@@ -143,8 +145,8 @@ listify_display_ids (const char *id,
   Example:
   dbus-send --system --dest=org.gnome.DisplayManager \
   --type=method_call --print-reply --reply-timeout=2000 \
-  /org/gnome/DisplayManager/Manager \
-  org.gnome.DisplayManager.Manager.GetDisplays
+  /org/gnome/DisplayManager/Displays \
+  org.freedesktop.ObjectManager.GetAll
 */
 gboolean
 gdm_manager_get_displays (GdmManager *manager,
@@ -230,18 +232,19 @@ static gboolean
 register_manager (GdmManager *manager)
 {
         GError *error = NULL;
+        GDBusObjectManagerServer *object_server;
 
         error = NULL;
-        manager->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        manager->priv->connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (manager->priv->connection == NULL) {
-                if (error != NULL) {
-                        g_critical ("error getting system bus: %s", error->message);
-                        g_error_free (error);
-                }
+                g_critical ("error getting system bus: %s", error->message);
+                g_error_free (error);
                 exit (1);
         }
 
-        dbus_g_connection_register_g_object (manager->priv->connection, GDM_MANAGER_DBUS_PATH, G_OBJECT (manager));
+        object_server = g_dbus_object_manager_server_new (GDM_MANAGER_DBUS_PATH);
+        g_dbus_object_manager_server_set_connection (object_server, manager->priv->connection);
+        manager->priv->object_manager = object_server;
 
         return TRUE;
 }
@@ -375,8 +378,6 @@ gdm_manager_class_init (GdmManagerClass *klass)
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
         g_type_class_add_private (klass, sizeof (GdmManagerPrivate));
-
-        dbus_g_object_type_install_info (GDM_TYPE_MANAGER, &dbus_glib_gdm_manager_object_info);
 }
 
 static void
@@ -415,6 +416,7 @@ gdm_manager_finalize (GObject *object)
 #endif
         g_clear_object (&manager->priv->local_factory);
         g_clear_object (&manager->priv->connection);
+        g_clear_object (&manager->priv->object_manager);
 
         gdm_display_store_clear (manager->priv->display_store);
 
