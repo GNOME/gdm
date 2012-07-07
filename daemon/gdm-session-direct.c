@@ -53,7 +53,6 @@
 #include "gdm-session-direct.h"
 #include "gdm-session.h"
 #include "gdm-session-private.h"
-#include "gdm-session-direct-glue.h"
 
 #include "gdm-session-record.h"
 #include "gdm-session-worker-job.h"
@@ -98,7 +97,6 @@ struct _GdmSessionDirectPrivate
         GPid                 session_pid;
 
         /* object lifetime scope */
-        char                *id;
         char                *display_id;
         char                *display_name;
         char                *display_hostname;
@@ -2954,8 +2952,6 @@ gdm_session_direct_finalize (GObject *object)
 
         session = GDM_SESSION_DIRECT (object);
 
-        g_free (session->priv->id);
-
         g_free (session->priv->selected_user);
         g_free (session->priv->selected_session);
         g_free (session->priv->saved_session);
@@ -2970,55 +2966,16 @@ gdm_session_direct_finalize (GObject *object)
                 parent_class->finalize (object);
 }
 
-static gboolean
-register_session (GdmSessionDirect *session)
-{
-        GError *error;
-
-        error = NULL;
-        session->priv->connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
-        if (session->priv->connection == NULL) {
-                if (error != NULL) {
-                        g_critical ("error getting system bus: %s", error->message);
-                        g_error_free (error);
-                }
-                exit (1);
-        }
-
-        dbus_g_connection_register_g_object (session->priv->connection, session->priv->id, G_OBJECT (session));
-
-        return TRUE;
-}
-
 static GObject *
 gdm_session_direct_constructor (GType                  type,
                                 guint                  n_construct_properties,
                                 GObjectConstructParam *construct_properties)
 {
         GdmSessionDirect *session;
-        gboolean          res;
-        const char       *id;
 
         session = GDM_SESSION_DIRECT (G_OBJECT_CLASS (gdm_session_direct_parent_class)->constructor (type,
                                                                                           n_construct_properties,
                                                                                           construct_properties));
-        if (session->priv->display_id != NULL) {
-                /* Always match the session id with the master */
-                id = NULL;
-                if (g_str_has_prefix (session->priv->display_id, "/org/gnome/DisplayManager/Display")) {
-                        id = session->priv->display_id + strlen ("/org/gnome/DisplayManager/Display");
-                }
-
-                g_assert (id != NULL);
-
-                session->priv->id = g_strdup_printf ("/org/gnome/DisplayManager/Session%s", id);
-                g_debug ("GdmSessionDirect: Registering %s", session->priv->id);
-
-                res = register_session (session);
-                if (! res) {
-                        g_warning ("Unable to register session with system bus");
-                }
-        }
 
         return G_OBJECT (session);
 }
@@ -3121,8 +3078,6 @@ gdm_session_direct_class_init (GdmSessionDirectClass *session_class)
                                                               "display seat id",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-
-        dbus_g_object_type_install_info (GDM_TYPE_SESSION_DIRECT, &dbus_glib_gdm_session_direct_object_info);
 }
 
 GdmSessionDirect *
@@ -3147,42 +3102,4 @@ gdm_session_direct_new (const char *display_id,
                                 NULL);
 
         return session;
-}
-
-gboolean
-gdm_session_direct_restart (GdmSessionDirect *session,
-                            GError          **error)
-{
-        gboolean ret;
-
-        ret = TRUE;
-        g_debug ("GdmSessionDirect: Request to restart session");
-
-        return ret;
-}
-
-gboolean
-gdm_session_direct_stop (GdmSessionDirect *session,
-                         GError          **error)
-{
-        gboolean ret;
-
-        ret = TRUE;
-
-        g_debug ("GdmSessionDirect: Request to stop session");
-
-        return ret;
-}
-
-gboolean
-gdm_session_direct_detach (GdmSessionDirect *session,
-                           GError          **error)
-{
-        gboolean ret;
-
-        ret = TRUE;
-
-        g_debug ("GdmSessionDirect: Request to detach session");
-
-        return ret;
 }

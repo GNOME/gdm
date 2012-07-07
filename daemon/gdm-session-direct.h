@@ -61,14 +61,6 @@ char             * gdm_session_direct_get_display_device       (GdmSessionDirect
 char             * gdm_session_direct_get_display_seat_id      (GdmSessionDirect     *session_direct);
 gboolean           gdm_session_direct_bypasses_xsession        (GdmSessionDirect     *session_direct);
 
-/* Exported methods */
-gboolean           gdm_session_direct_restart                  (GdmSessionDirect     *session_direct,
-                                                                GError              **error);
-gboolean           gdm_session_direct_stop                     (GdmSessionDirect     *session_direct,
-                                                                GError              **error);
-gboolean           gdm_session_direct_detach                   (GdmSessionDirect     *session_direct,
-                                                                GError              **error);
-
 G_END_DECLS
 
 #endif /* GDM_SESSION_DIRECT_H */
