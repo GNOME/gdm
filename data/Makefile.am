@@ -1,4 +1,5 @@
 NULL =
+EXTRA_DIST =
 
 SUBDIRS =			\
 	applications		\
@@ -88,19 +89,16 @@ localealias_DATA = locale.alias
 sessiondir = $(datadir)/gnome-session/sessions
 session_DATA = gdm-fallback.session gdm-shell.session
 
-gdm-password: gdm-password.pam
-	cp $(srcdir)/gdm-password.pam $(builddir)/gdm-password
+pam_redhat_files = pam-redhat/gdm.pam		\
+	pam-redhat/gdm-autologin.pam		\
+	pam-redhat/gdm-welcome.pam		\
+	pam-redhat/gdm-fingerprint.pam		\
+	pam-redhat/gdm-smartcard.pam		\
+	pam-redhat/gdm-password.pam		\
+	$(NULL)
+EXTRA_DIST += $(pam_redhat_files)
 
-gdm-fingerprint: gdm-fingerprint.pam
-	cp $(srcdir)/gdm-fingerprint.pam $(builddir)/gdm-fingerprint
-
-gdm-smartcard: gdm-smartcard.pam
-	cp $(srcdir)/gdm-smartcard.pam $(builddir)/gdm-smartcard
-
-pamdir = $(PAM_PREFIX)/pam.d
-pam_DATA = gdm-fingerprint gdm-smartcard gdm-password
-
-EXTRA_DIST =			\
+EXTRA_DIST +=			\
 	$(schemas_in_files)	\
 	$(schemas_DATA)		\
 	$(dbusconf_in_files)	\
@@ -108,12 +106,6 @@ EXTRA_DIST =			\
 	gdm.schemas.in.in	\
 	gdm.conf-custom.in 	\
 	Xsession.in 		\
-	gdm 			\
-	gdm-autologin 		\
-	gdm-welcome 		\
-	gdm-password.pam	\
-	gdm-fingerprint.pam	\
-	gdm-smartcard.pam	\
 	gdm-fallback.session	\
 	Init.in 		\
 	PreSession.in 		\
@@ -133,9 +125,6 @@ CLEANFILES = 				\
 	PreSession			\
 	PostSession			\
 	$(gsettings_SCHEMAS)		\
-	gdm-password			\
-	gdm-fingerprint			\
-	gdm-smartcard			\
 	$(NULL)
 
 DISTCLEANFILES =			\
@@ -146,9 +135,6 @@ DISTCLEANFILES =			\
 
 MAINTAINERCLEANFILES =			\
 	*~				\
-	gdm-password			\
-	gdm-fingerprint			\
-	gdm-smartcard			\
 	Makefile.in
 
 uninstall-hook:
@@ -159,9 +145,6 @@ uninstall-hook:
 	$(DESTDIR)$(postlogindir)/Default.sample \
 	$(DESTDIR)$(predir)/Default \
 	$(DESTDIR)$(postdir)/Default \
-	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm \
-	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin \
-	$(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-welcome \
 	$(DESTDIR)$(sysconfdir)/dconf/db/gdm \
 	$(DESTDIR)$(sysconfdir)/dconf/profile/gdm \
 	-rf \
@@ -239,14 +222,11 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession 00-upstr
 		$(mkinstalldirs) $(DESTDIR)$(PAM_PREFIX)/pam.d; \
 		chmod 755 $(DESTDIR)$(PAM_PREFIX)/pam.d; \
 	   fi; \
-	   if test $$system = Linux && test '!' -f $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm; then \
-		$(INSTALL_DATA) $(srcdir)/gdm $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm; \
-	   fi; \
-	   if test $$system = Linux && test '!' -f $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin; then \
-		$(INSTALL_DATA) $(srcdir)/gdm-autologin $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin; \
-	   fi; \
-	   if test $$system = Linux && test '!' -f $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-welcome; then \
-		$(INSTALL_DATA) $(srcdir)/gdm-welcome $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-welcome; \
+	   if test $$system = Linux; then \
+	     for pamfile in $(pam_redhat_files); do \
+	       bn=$$(basename $$pamfile .pam); \
+	       $(INSTALL_DATA) $(srcdir)/$$pamfile $(DESTDIR)$(PAM_PREFIX)/pam.d/$$bn; \
+	     done; \
 	   fi; \
 	   if test $$system = SunOS; then \
 		echo "Please add PAM authentication for gdm, gdm-autologin and gdm-welcome in $(PAM_PREFIX)/pam.conf!"; \
