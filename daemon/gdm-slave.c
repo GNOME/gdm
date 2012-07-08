@@ -1417,6 +1417,8 @@ gdm_slave_get_primary_session_id_for_user_from_systemd (GdmSlave   *slave,
 
         for (i = 0; sessions[i] != NULL; i++) {
                 char *type;
+                char *state;
+                gboolean is_closing;
                 gboolean is_active;
                 gboolean is_x11;
                 uid_t other;
@@ -1441,7 +1443,22 @@ gdm_slave_get_primary_session_id_for_user_from_systemd (GdmSlave   *slave,
                 /* Always give preference to non-active sessions,
                  * so we migrate when we can and don't when we can't
                  */
-                is_active = sd_session_is_active (sessions[i]) > 0;
+                res = sd_session_get_state (sessions[i], &state);
+                if (res < 0) {
+                        g_warning ("GdmSlave: could not fetch state of session '%s': %s",
+                                   sessions[i], strerror (-res));
+                        continue;
+                }
+
+                is_closing = g_strcmp0 (state, "closing") == 0;
+                is_active = g_strcmp0 (state, "active") == 0;
+                free (state);
+
+                /* Ignore closing sessions
+                 */
+                if (is_closing) {
+                        continue;
+                }
 
                 res = sd_session_get_uid (sessions[i], &other);
                 if (res == 0 && other == uid && !got_primary_ssid) {
