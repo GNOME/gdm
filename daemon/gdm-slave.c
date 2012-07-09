@@ -1432,7 +1432,7 @@ gdm_slave_get_primary_session_id_for_user_from_systemd (GdmSlave   *slave,
                 }
 
                 is_x11 = g_strcmp0 (type, "x11") == 0;
-                g_free (type);
+                free (type);
 
                 /* Only migrate to graphical sessions
                  */
