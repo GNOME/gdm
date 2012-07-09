@@ -111,6 +111,22 @@ gdm-xdmcp-chooser-slave-glue.c gdm-xdmcp-chooser-slave-glue.h: gdm-xdmcp-chooser
 		$(srcdir)/gdm-xdmcp-chooser-slave.xml
 
 noinst_PROGRAMS = 		\
+	test-session-client	\
+	$(NULL)
+
+test_session_client_SOURCES = \
+	test-session-client.c	\
+	$(NULL)
+
+nodist_test_session_client_SOURCES =	\
+	gdm-session-glue.h		\
+	gdm-session-glue.c		\
+	gdm-manager-glue.h		\
+	gdm-manager-glue.c		\
+	$(NULL)
+
+test_session_client_LDADD =	\
+	$(DAEMON_LIBS)		\
 	$(NULL)
 
 libexec_PROGRAMS = 			\
