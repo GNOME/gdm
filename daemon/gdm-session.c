@@ -1988,7 +1988,8 @@ send_setup (GdmSession *self,
                                                     display_x11_authority_file,
                                                     display_device,
                                                     display_seat_id,
-                                                    display_hostname);
+                                                    display_hostname,
+                                                    self->priv->display_is_local);
         }
 }
 
@@ -2049,7 +2050,8 @@ send_setup_for_user (GdmSession *self,
                                                              display_x11_authority_file,
                                                              display_device,
                                                              display_seat_id,
-                                                             display_hostname);
+                                                             display_hostname,
+                                                             self->priv->display_is_local);
         }
 }
 
@@ -2104,6 +2106,7 @@ send_setup_for_program (GdmSession *self,
                                                                 display_device,
                                                                 display_seat_id,
                                                                 display_hostname,
+                                                                self->priv->display_is_local,
                                                                 log_file);
         }
 }
