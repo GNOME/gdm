@@ -67,9 +67,6 @@ test_session_SOURCES = 		\
 	test-session.c	 	\
 	gdm-session.c		\
 	gdm-session.h		\
-	gdm-session-private.h	\
-	gdm-session-direct.c	\
-	gdm-session-direct.h	\
 	gdm-session-record.c	\
 	gdm-session-record.h	\
 	gdm-session-worker-job.c\
@@ -107,9 +104,6 @@ gdm_simple_slave_SOURCES = 		\
 	gdm-server.h			\
 	gdm-session.c			\
 	gdm-session.h			\
-	gdm-session-private.h		\
-	gdm-session-direct.c		\
-	gdm-session-direct.h		\
 	gdm-session-record.c		\
 	gdm-session-record.h		\
 	gdm-session-worker-job.c	\
@@ -141,9 +135,6 @@ gdm_xdmcp_chooser_slave_SOURCES = 		\
 	gdm-chooser-server.h			\
 	gdm-session.c				\
 	gdm-session.h				\
-	gdm-session-direct.c			\
-	gdm-session-direct.h			\
-	gdm-session-private.h			\
 	gdm-session-record.c			\
 	gdm-session-record.h			\
 	gdm-session-worker-job.c		\
@@ -286,7 +277,7 @@ EXTRA_DIST = 				\
 	gdm-slave.xml			\
 	gdm-simple-slave.xml		\
 	gdm-xdmcp-chooser-slave.xml	\
-	gdm-session-direct.xml		\
+	gdm-session.xml			\
 	gdm-manager.xml			\
 	gdm-display.xml			\
 	gdm-xdmcp-greeter-display.xml	\

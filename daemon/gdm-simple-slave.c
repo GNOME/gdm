@@ -50,7 +50,6 @@
 
 #include "gdm-server.h"
 #include "gdm-session.h"
-#include "gdm-session-direct.h"
 #include "gdm-greeter-server.h"
 #include "gdm-greeter-session.h"
 #include "gdm-settings-direct.h"
@@ -79,7 +78,7 @@ struct GdmSimpleSlavePrivate
         guint              connection_attempts;
 
         GdmServer         *server;
-        GdmSessionDirect  *session;
+        GdmSession        *session;
 
         GdmGreeterServer  *greeter_server;
         GdmGreeterSession *greeter;
@@ -122,7 +121,7 @@ on_session_started (GdmSession       *session,
         g_debug ("GdmSimpleSlave: session started %d", pid);
 
         /* Run the PreSession script. gdmslave suspends until script has terminated */
-        username = gdm_session_direct_get_username (slave->priv->session);
+        username = gdm_session_get_username (slave->priv->session);
         if (username != NULL) {
                 gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PreSession", username);
         }
@@ -132,7 +131,7 @@ on_session_started (GdmSession       *session,
          * Note that error return status from PreSession script should
          * be ignored in the case of a X-GDM-BypassXsession session, which can
          * be checked by calling:
-         * gdm_session_direct_bypasses_xsession (session)
+         * gdm_session_bypasses_xsession (session)
          */
 }
 
@@ -144,8 +143,8 @@ gdm_simple_slave_grant_console_permissions (GdmSimpleSlave *slave)
         char *display_device;
         struct passwd *passwd_entry;
 
-        username = gdm_session_direct_get_username (slave->priv->session);
-        display_device = gdm_session_direct_get_display_device (slave->priv->session);
+        username = gdm_session_get_username (slave->priv->session);
+        display_device = gdm_session_get_display_device (slave->priv->session);
 
         if (username != NULL) {
                 gdm_get_pwent_for_name (username, &passwd_entry);
@@ -179,8 +178,8 @@ gdm_simple_slave_revoke_console_permissions (GdmSimpleSlave *slave)
         char *username;
         char *display_device;
 
-        username = gdm_session_direct_get_username (slave->priv->session);
-        display_device = gdm_session_direct_get_display_device (slave->priv->session);
+        username = gdm_session_get_username (slave->priv->session);
+        display_device = gdm_session_get_display_device (slave->priv->session);
 
         /*
          * Only do logindevperm processing if /dev/console or a device
@@ -238,7 +237,7 @@ add_user_authorization (GdmSimpleSlave *slave,
         char    *username;
         gboolean ret;
 
-        username = gdm_session_direct_get_username (slave->priv->session);
+        username = gdm_session_get_username (slave->priv->session);
         ret = gdm_slave_add_user_authorization (GDM_SLAVE (slave),
                                                 username,
                                                 filename);
@@ -376,7 +375,7 @@ on_session_authorized (GdmSession     *session,
         char *username;
         int   cred_flag;
 
-        username = gdm_session_direct_get_username (slave->priv->session);
+        username = gdm_session_get_username (slave->priv->session);
 
         ssid = gdm_slave_get_primary_session_id_for_user (GDM_SLAVE (slave), username);
         if (ssid != NULL && ssid [0] != '\0') {
@@ -414,7 +413,7 @@ try_migrate_session (GdmSimpleSlave *slave)
 
         g_debug ("GdmSimpleSlave: trying to migrate session");
 
-        username = gdm_session_direct_get_username (slave->priv->session);
+        username = gdm_session_get_username (slave->priv->session);
 
         /* try to switch to an existing session */
         res = gdm_slave_switch_to_user_session (GDM_SLAVE (slave), username);
@@ -438,7 +437,7 @@ stop_greeter (GdmSimpleSlave *slave)
         /* Run the PostLogin script. gdmslave suspends until script has terminated */
         username = NULL;
         if (slave->priv->session != NULL) {
-                username = gdm_session_direct_get_username (slave->priv->session);
+                username = gdm_session_get_username (slave->priv->session);
         }
 
         if (username != NULL) {
@@ -768,13 +767,12 @@ create_new_session (GdmSimpleSlave *slave)
                 display_device = gdm_server_get_display_device (slave->priv->server);
         }
 
-        slave->priv->session = gdm_session_direct_new (display_id,
-                                                       display_name,
-                                                       display_hostname,
-                                                       display_device,
-                                                       display_seat_id,
-                                                       display_x11_authority_file,
-                                                       display_is_local);
+        slave->priv->session = gdm_session_new (display_name,
+                                                display_hostname,
+                                                display_device,
+                                                display_seat_id,
+                                                display_x11_authority_file,
+                                                display_is_local);
         g_free (display_id);
         g_free (display_name);
         g_free (display_device);
@@ -1626,7 +1624,7 @@ gdm_simple_slave_stop (GdmSlave *slave)
                 /* Run the PostSession script. gdmslave suspends until script
                  * has terminated
                  */
-                username = gdm_session_direct_get_username (GDM_SIMPLE_SLAVE (slave)->priv->session);
+                username = gdm_session_get_username (GDM_SIMPLE_SLAVE (slave)->priv->session);
                 if (username != NULL) {
                         gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostSession", username);
                 }

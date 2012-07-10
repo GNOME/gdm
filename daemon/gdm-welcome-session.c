@@ -47,7 +47,6 @@
 #include "gdm-common.h"
 
 #include "gdm-session.h"
-#include "gdm-session-direct.h"
 #include "gdm-welcome-session.h"
 
 #define DBUS_LAUNCH_COMMAND BINDIR "/dbus-launch"
@@ -830,13 +829,12 @@ gdm_welcome_session_start (GdmWelcomeSession *welcome_session)
                 return FALSE;
         }
 
-        welcome_session->priv->session = GDM_SESSION (gdm_session_direct_new (NULL,
-                                                                              welcome_session->priv->x11_display_name,
-                                                                              welcome_session->priv->x11_display_hostname,
-                                                                              welcome_session->priv->x11_display_device,
-                                                                              welcome_session->priv->x11_display_seat_id,
-                                                                              welcome_session->priv->x11_authority_file,
-                                                                              welcome_session->priv->x11_display_is_local));
+        welcome_session->priv->session = gdm_session_new (welcome_session->priv->x11_display_name,
+                                                          welcome_session->priv->x11_display_hostname,
+                                                          welcome_session->priv->x11_display_device,
+                                                          welcome_session->priv->x11_display_seat_id,
+                                                          welcome_session->priv->x11_authority_file,
+                                                          welcome_session->priv->x11_display_is_local);
 
         g_signal_connect (GDM_SESSION (welcome_session->priv->session),
                           "conversation-started",

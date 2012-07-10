@@ -28,7 +28,7 @@
 
 #include <glib.h>
 
-#include "gdm-session-direct.h"
+#include "gdm-session.h"
 
 static GMainLoop *loop;
 
@@ -124,7 +124,7 @@ on_session_accredited (GdmSession *session,
 {
         char *username;
 
-        username = gdm_session_direct_get_username (GDM_SESSION_DIRECT (session));
+        username = gdm_session_get_username (GDM_SESSION (session));
 
         g_print ("%s%ssuccessfully accredited\n",
                  username ? username : "", username ? " " : "");
@@ -247,7 +247,7 @@ on_secret_info_query (GdmSession *session,
 }
 
 static void
-import_environment (GdmSessionDirect *session)
+import_environment (GdmSession *session)
 {
 }
 
@@ -255,23 +255,22 @@ int
 main (int   argc,
       char *argv[])
 {
-        GdmSessionDirect *session;
-        char             *username;
+        GdmSession *session;
+        char       *username;
 
         g_log_set_always_fatal (G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING);
 
         g_type_init ();
 
         do {
-                g_debug ("creating instance of GdmSessionDirect object...");
-                session = gdm_session_direct_new ("/org/gnome/DisplayManager/Display1",
-                                                  ":0",
-                                                  g_get_host_name (),
-                                                  ttyname (STDIN_FILENO),
-                                                  "",
-                                                  getenv("XAUTHORITY"),
-                                                  TRUE);
-                g_debug ("GdmSessionDirect object created successfully");
+                g_debug ("creating instance of GdmSession object...");
+                session = gdm_session_new (":0",
+                                           g_get_host_name (),
+                                           ttyname (STDIN_FILENO),
+                                           "",
+                                           getenv("XAUTHORITY"),
+                                           TRUE);
+                g_debug ("GdmSession object created successfully");
 
                 if (argc <= 1) {
                         username = NULL;
@@ -362,8 +361,8 @@ main (int   argc,
                 g_main_loop_run (loop);
                 g_main_loop_unref (loop);
 
-                g_message ("destroying previously created GdmSessionDirect object...");
+                g_message ("destroying previously created GdmSession object...");
                 g_object_unref (session);
-                g_message ("GdmSessionDirect object destroyed successfully");
+                g_message ("GdmSession object destroyed successfully");
         } while (1);
 }
