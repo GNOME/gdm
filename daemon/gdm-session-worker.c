@@ -133,6 +133,7 @@ struct GdmSessionWorkerPrivate
         guint32           cancelled : 1;
         guint32           timed_out : 1;
         guint32           is_program_session : 1;
+        guint32           display_is_local : 1;
         guint             state_change_idle_id;
 
         char                 *server_address;
@@ -193,7 +194,6 @@ open_ck_session (GdmSessionWorker  *worker)
         const char       *display_hostname;
         const char       *session_type;
         gint32            uid;
-        gboolean          is_local;
 
         g_assert (worker->priv->session_cookie == NULL);
 
@@ -221,15 +221,6 @@ open_ck_session (GdmSessionWorker  *worker)
 
         g_assert (worker->priv->username != NULL);
 
-        /* FIXME: this isn't very good */
-        if (display_hostname == NULL
-            || display_hostname[0] == '\0'
-            || strcmp (display_hostname, "localhost") == 0) {
-                is_local = TRUE;
-        } else {
-                is_local = FALSE;
-        }
-
         gdm_get_pwent_for_name (worker->priv->username, &pwent);
         if (pwent == NULL) {
                 goto out;
@@ -253,7 +244,7 @@ open_ck_session (GdmSessionWorker  *worker)
         g_variant_builder_add_parsed (&builder, "('display-device', <%s>)", display_device);
         g_variant_builder_add_parsed (&builder, "('x11-display', <%s>)", display_name);
         g_variant_builder_add_parsed (&builder, "('remote-host-name', <%s>)", display_hostname);
-        g_variant_builder_add_parsed (&builder, "('is-local', <%b>)", is_local);
+        g_variant_builder_add_parsed (&builder, "('is-local', <%b>)", worker->priv->display_is_local);
         g_variant_builder_add_parsed (&builder, "('session-type', <%s>)", session_type);
 
         parameters = g_variant_builder_end (&builder);
@@ -986,6 +977,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
                                    const char       *service,
                                    const char       *username,
                                    const char       *hostname,
+                                   gboolean          display_is_local,
                                    const char       *x11_display_name,
                                    const char       *x11_authority_file,
                                    const char       *display_device,
@@ -2045,6 +2037,7 @@ do_setup (GdmSessionWorker *worker)
                                                  worker->priv->service,
                                                  worker->priv->username,
                                                  worker->priv->hostname,
+                                                 worker->priv->display_is_local,
                                                  worker->priv->x11_display_name,
                                                  worker->priv->x11_authority_file,
                                                  worker->priv->display_device,
@@ -2422,6 +2415,7 @@ on_setup (GdmDBusWorkerManager *proxy,
           const char           *console,
           const char           *seat_id,
           const char           *hostname,
+          gboolean              display_is_local,
           GdmSessionWorker     *worker)
 {
         if (worker->priv->state != GDM_SESSION_WORKER_STATE_NONE) {
@@ -2435,6 +2429,7 @@ on_setup (GdmDBusWorkerManager *proxy,
         worker->priv->display_device = g_strdup (console);
         worker->priv->display_seat_id = g_strdup (seat_id);
         worker->priv->hostname = g_strdup (hostname);
+        worker->priv->display_is_local = display_is_local;
         worker->priv->username = NULL;
 
         g_debug ("GdmSessionWorker: queuing setup: %s %s", service, console);
@@ -2450,6 +2445,7 @@ on_setup_for_user (GdmDBusWorkerManager *proxy,
                    const char           *console,
                    const char           *seat_id,
                    const char           *hostname,
+                   gboolean              display_is_local,
                    GdmSessionWorker     *worker)
 {
         if (worker->priv->state != GDM_SESSION_WORKER_STATE_NONE) {
@@ -2463,6 +2459,7 @@ on_setup_for_user (GdmDBusWorkerManager *proxy,
         worker->priv->display_device = g_strdup (console);
         worker->priv->display_seat_id = g_strdup (seat_id);
         worker->priv->hostname = g_strdup (hostname);
+        worker->priv->display_is_local = display_is_local;
         worker->priv->username = g_strdup (username);
 
         g_signal_connect_swapped (worker->priv->user_settings,
@@ -2496,6 +2493,7 @@ on_setup_for_program (GdmDBusWorkerManager *proxy,
                       const char           *console,
                       const char           *seat_id,
                       const char           *hostname,
+                      gboolean              display_is_local,
                       const char           *log_file,
                       GdmSessionWorker     *worker)
 {
@@ -2510,6 +2508,7 @@ on_setup_for_program (GdmDBusWorkerManager *proxy,
         worker->priv->display_device = g_strdup (console);
         worker->priv->display_seat_id = g_strdup (seat_id);
         worker->priv->hostname = g_strdup (hostname);
+        worker->priv->display_is_local = display_is_local;
         worker->priv->username = g_strdup (GDM_USERNAME);
         worker->priv->log_file = g_strdup (log_file);
         worker->priv->is_program_session = TRUE;
