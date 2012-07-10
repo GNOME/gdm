@@ -24,8 +24,6 @@
 
   <policy context="default">
     <deny send_destination="org.gnome.DisplayManager"
-          send_interface="org.gnome.DisplayManager.Manager"/>
-    <deny send_destination="org.gnome.DisplayManager"
           send_interface="org.gnome.DisplayManager.Display"/>
     <deny send_destination="org.gnome.DisplayManager"
           send_interface="org.gnome.DisplayManager.LocalDisplayFactory"/>
@@ -39,6 +37,8 @@
            send_interface="org.freedesktop.DBus.Introspectable"/>
     <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.freedesktop.DBus.ObjectManager"/>
+    <allow send_destination="org.gnome.DisplayManager"
+           send_interface="org.gnome.DisplayManager.Manager"/>
     <allow send_destination="org.gnome.DisplayManager"
            send_interface="org.gnome.DisplayManager.Display"
            send_member="GetId"/>

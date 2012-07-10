@@ -67,6 +67,13 @@
       <arg name="service_name" direction="in" type="s"/>
       <arg name="problem" direction="in" type="s"/>
     </method>
+    <method name="ReauthenticationStarted">
+      <arg name="pid_of_caller" direction="in" type="i"/>
+      <arg name="address" direction="in" type="s"/>
+    </method>
+    <method name="Reauthenticated">
+      <arg name="service_name" direction="in" type="s"/>
+    </method>
     <method name="Opened">
       <arg name="service_name" direction="in" type="s"/>
       <arg name="session_id" direction="in" type="s"/>
@@ -143,6 +150,10 @@
     <signal name="StartSession">
       <arg name="service_name" type="s"/>
     </signal>
+    <signal name="StartReauthentication">
+      <arg name="pid_of_caller" type="i"/>
+      <arg name="uid_of_caller" type="i"/>
+    </signal>
     <signal name="SetEnvironmentVariable">
       <arg name="name" type="s" />
       <arg name="value" type="s" />
@@ -171,6 +182,15 @@
     </method>
     <method name="Cancel">
     </method>
+    <signal name="ConversationStarted">
+      <arg name="service_name" type="s"/>
+    </signal>
+    <signal name="ConversationStopped">
+      <arg name="service_name" type="s"/>
+    </signal>
+    <signal name="ReauthenticationStarted">
+      <arg name="pid_of_caller" type="i"/>
+    </signal>
     <signal name="Info">
       <arg name="service_name" type="s"/>
       <arg name="info" type="s"/>
@@ -192,6 +212,9 @@
     <signal name="ServiceUnavailable">
       <arg name="service_name" type="s"/>
       <arg name="message" type="s"/>
+    </signal>
+    <signal name="VerificationFailed">
+      <arg name="service_name" type="s"/>
     </signal>
     <signal name="VerificationComplete">
       <arg name="service_name" type="s"/>
@@ -228,6 +251,9 @@
       <arg name="delay" type="i"/>
     </signal>
     <signal name="SessionOpened">
+      <arg name="service_name" type="s"/>
+    </signal>
+    <signal name="Reauthenticated">
       <arg name="service_name" type="s"/>
     </signal>
   </interface>

@@ -37,7 +37,8 @@ typedef struct _GdmSessionPrivate GdmSessionPrivate;
 typedef enum
 {
         GDM_SESSION_VERIFICATION_MODE_LOGIN,
-        GDM_SESSION_VERIFICATION_MODE_CHOOSER
+        GDM_SESSION_VERIFICATION_MODE_CHOOSER,
+        GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE
 } GdmSessionVerificationMode;
 
 typedef struct
@@ -59,6 +60,8 @@ typedef struct
         void (* client_connected)            (GdmSession   *session);
         void (* client_disconnected)         (GdmSession   *session);
         void (* disconnected)                (GdmSession   *session);
+        void (* verification_complete)       (GdmSession   *session,
+                                              const char   *service_name);
         void (* session_opened)              (GdmSession   *session,
                                               const char   *service_name,
                                               const char   *session_id);
@@ -73,6 +76,10 @@ typedef struct
                                               int           exit_code);
         void (* session_died)                (GdmSession   *session,
                                               int           signal_number);
+        void (* reauthentication_started)    (GdmSession   *session,
+                                              GPid          pid_of_caller);
+        void (* reauthenticated)             (GdmSession   *session,
+                                              const char   *service_name);
         void (* conversation_started)        (GdmSession   *session,
                                               const char   *service_name);
         void (* conversation_stopped)        (GdmSession   *session,
@@ -84,12 +91,17 @@ typedef struct
 GType            gdm_session_get_type                 (void);
 
 GdmSession      *gdm_session_new                      (GdmSessionVerificationMode verification_mode,
+                                                       uid_t       allowed_user,
                                                        const char *display_name,
                                                        const char *display_hostname,
                                                        const char *display_device,
                                                        const char *display_seat_id,
                                                        const char *display_x11_authority_file,
                                                        gboolean    display_is_local);
+uid_t             gdm_session_get_allowed_user       (GdmSession     *session);
+void              gdm_session_start_reauthentication (GdmSession *session,
+                                                      GPid        pid_of_caller,
+                                                      uid_t       uid_of_caller);
 
 char             *gdm_session_get_server_address          (GdmSession     *session);
 char             *gdm_session_get_username                (GdmSession     *session);

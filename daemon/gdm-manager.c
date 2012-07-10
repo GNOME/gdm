@@ -178,6 +178,319 @@ get_session_id_for_pid (GDBusConnection  *connection,
         return NULL;
 }
 
+#ifdef WITH_SYSTEMD
+static gboolean
+get_uid_for_systemd_session_id (const char  *session_id,
+                                uid_t       *uid,
+                                GError     **error)
+{
+        int ret;
+
+        ret = sd_session_get_uid (session_id, uid);
+        if (ret < 0) {
+                g_set_error (error,
+                             GDM_DISPLAY_ERROR,
+                             GDM_DISPLAY_ERROR_GETTING_SESSION_INFO,
+                             "Error getting uid for session id %s from systemd: %s",
+                             session_id,
+                             g_strerror (-ret));
+                return FALSE;
+        }
+
+        return TRUE;
+}
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+static gboolean
+get_uid_for_consolekit_session_id (GDBusConnection  *connection,
+                                   const char       *session_id,
+                                   uid_t            *out_uid,
+                                   GError          **error)
+{
+        GVariant *reply;
+        guint32 uid;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             "org.freedesktop.ConsoleKit",
+                                             session_id,
+                                             "org.freedesktop.ConsoleKit.Session",
+                                             "GetUnixUser",
+                                             NULL,
+                                             G_VARIANT_TYPE ("(u)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL,
+                                             error);
+        if (reply == NULL) {
+                return FALSE;
+        }
+
+        g_variant_get (reply, "(u)", &uid);
+        g_variant_unref (reply);
+
+        *out_uid = (uid_t) uid;
+
+        return TRUE;
+}
+#endif
+
+static gboolean
+get_uid_for_session_id (GDBusConnection  *connection,
+                        const char       *session_id,
+                        uid_t            *uid,
+                        GError          **error)
+{
+#ifdef WITH_SYSTEMD
+        if (sd_booted () > 0) {
+                return get_uid_for_systemd_session_id (session_id, uid, error);
+        }
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+        return get_uid_for_consolekit_session_id (connection, session_id, uid, error);
+#endif
+
+        return FALSE;
+}
+
+#ifdef WITH_SYSTEMD
+static char *
+get_session_id_for_user_on_seat_systemd (const char  *username,
+                                         const char  *seat,
+                                         GError     **error)
+{
+        struct passwd  *pwent;
+        uid_t           uid;
+        int             i;
+        char          **sessions;
+        char           *session = NULL;
+        int             ret;
+
+        pwent = NULL;
+        gdm_get_pwent_for_name (username, &pwent);
+
+        if (pwent == NULL) {
+                g_set_error (error,
+                             G_DBUS_ERROR,
+                             G_DBUS_ERROR_ACCESS_DENIED,
+                             _("Unable to look up UID of user %s"),
+                             username);
+                return NULL;
+        }
+
+        uid = pwent->pw_uid;
+
+        session = NULL;
+        ret = sd_seat_get_sessions (seat, &sessions, NULL, NULL);
+        if (ret < 0 || sessions == NULL) {
+                g_set_error (error,
+                             G_DBUS_ERROR,
+                             G_DBUS_ERROR_ACCESS_DENIED,
+                             "Error getting session ids from systemd: %s",
+                             ret < 0? g_strerror (-ret) : _("no sessions available"));
+                return NULL;
+        }
+
+        for (i = 0; sessions[i] != NULL; i++) {
+                char     *type;
+                char     *state;
+                gboolean  is_closing;
+                gboolean  is_x11;
+                uid_t     session_uid;
+
+                ret = sd_session_get_uid (sessions[i], &session_uid);
+
+                if (ret < 0) {
+                        g_warning ("GdmManager: could not fetch uid of session '%s': %s",
+                                   sessions[i], strerror (-ret));
+                        continue;
+                }
+
+                if (uid != session_uid) {
+                        continue;
+                }
+
+                ret = sd_session_get_type (sessions[i], &type);
+
+                if (ret < 0) {
+                        g_warning ("GdmManager: could not fetch type of session '%s': %s",
+                                   sessions[i], strerror (-ret));
+                        continue;
+                }
+
+                is_x11 = g_strcmp0 (type, "x11") == 0;
+                free (type);
+
+                if (!is_x11) {
+                        continue;
+                }
+
+                ret = sd_session_get_state (sessions[i], &state);
+                if (ret < 0) {
+                        g_warning ("GdmManager: could not fetch state of session '%s': %s",
+                                   sessions[i], strerror (-ret));
+                        continue;
+                }
+
+                is_closing = g_strcmp0 (state, "closing") == 0;
+
+                if (is_closing) {
+                        continue;
+                }
+
+                session = g_strdup (sessions[i]);
+                break;
+
+        }
+
+        if (session == NULL) {
+                g_debug ("GdmManager: There are no applicable sessions (%d looked at)", i);
+                g_set_error (error,
+                             G_DBUS_ERROR,
+                             G_DBUS_ERROR_ACCESS_DENIED,
+                             _("No sessions for %s available for reauthentication"),
+                             username);
+                return NULL;
+        }
+
+        g_debug ("GdmManager: session %s is available for reauthentication", session);
+
+        return session;
+}
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+static char *
+get_session_id_for_user_on_seat_consolekit (GDBusConnection  *connection,
+                                            const char       *username,
+                                            const char       *seat,
+                                            GError          **error)
+{
+        GVariant       *reply;
+        GVariant       *array;
+        const gchar   **sessions;
+        char           *session = NULL;
+        struct passwd  *pwent;
+        uid_t           uid;
+        int             i;
+
+        pwent = NULL;
+        gdm_get_pwent_for_name (username, &pwent);
+
+        if (pwent == NULL) {
+                g_set_error (error,
+                             G_DBUS_ERROR,
+                             G_DBUS_ERROR_ACCESS_DENIED,
+                             _("Unable to look up UID of user %s"),
+                             username);
+                return NULL;
+        }
+
+        uid = pwent->pw_uid;
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             "org.freedesktop.ConsoleKit",
+                                             "/org/freedesktop/ConsoleKit/Manager",
+                                             "org.freedesktop.ConsoleKit.Manager",
+                                             "GetSessionsForUnixUser",
+                                             g_variant_new ("(u)", (guint32) uid),
+                                             G_VARIANT_TYPE ("(ao)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL,
+                                             error);
+        if (reply == NULL) {
+                return NULL;
+        }
+
+        g_variant_get (reply, "(ao)", &array);
+
+        sessions = g_variant_get_objv (array, NULL);
+
+        for (i = 0; sessions[i] != NULL; i++) {
+                GVariant *reply2;
+                GError   *error2 = NULL;
+                gchar    *display;
+                gchar    *session_seat_id;
+
+                reply2 = g_dbus_connection_call_sync (connection,
+                                                     "org.freedesktop.ConsoleKit",
+                                                     sessions[i],
+                                                     "org.freedesktop.ConsoleKit.Session",
+                                                     "GetSeatId",
+                                                     NULL,
+                                                     G_VARIANT_TYPE ("(o)"),
+                                                     G_DBUS_CALL_FLAGS_NONE,
+                                                     -1,
+                                                     NULL,
+                                                     &error2);
+                if (reply2 == NULL) {
+                        continue;
+                }
+
+                g_variant_get (reply, "(o)", &session_seat_id);
+                g_variant_unref (reply2);
+
+                if (g_strcmp0 (seat, session_seat_id) != 0) {
+                        g_free (session_seat_id);
+                        continue;
+                }
+                g_free (session_seat_id);
+
+                reply2 = g_dbus_connection_call_sync (connection,
+                                                     "org.freedesktop.ConsoleKit",
+                                                     sessions[i],
+                                                     "org.freedesktop.ConsoleKit.Session",
+                                                     "GetX11DisplayDevice",
+                                                     NULL,
+                                                     G_VARIANT_TYPE ("(s)"),
+                                                     G_DBUS_CALL_FLAGS_NONE,
+                                                     -1,
+                                                     NULL,
+                                                     &error2);
+                if (reply2 == NULL) {
+                        continue;
+                }
+
+                g_variant_get (reply2, "(s)", &display);
+                g_variant_unref (reply2);
+
+                if (display[0] == '\0') {
+                        g_free (display);
+                        continue;
+                }
+
+                session = g_strdup (sessions[i]);
+                break;
+
+        }
+        g_free (sessions);
+        g_variant_unref (reply);
+
+        return session;
+}
+#endif
+
+static char *
+get_session_id_for_user_on_seat (GDBusConnection  *connection,
+                                 const char       *username,
+                                 const char       *seat,
+                                 GError          **error)
+{
+#ifdef WITH_SYSTEMD
+        if (sd_booted () > 0) {
+                return get_session_id_for_user_on_seat_systemd (username, seat, error);
+        }
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+        return get_session_id_for_user_on_seat_consolekit (connection, username, seat, error);
+#endif
+
+        return NULL;
+}
+
 static gboolean
 lookup_by_session_id (const char *id,
                       GdmDisplay *display,
@@ -196,6 +509,102 @@ lookup_by_session_id (const char *id,
         return res;
 }
 
+#ifdef WITH_SYSTEMD
+static char *
+get_seat_id_for_pid_systemd (pid_t    pid,
+                             GError **error)
+{
+        char *session;
+        char *seat, *gseat;
+        int ret;
+
+        session = get_session_id_for_pid_systemd (pid, error);
+
+        if (session == NULL) {
+                return NULL;
+        }
+
+        seat = NULL;
+        ret = sd_session_get_seat (session, &seat);
+        free (session);
+
+        if (ret < 0) {
+                g_set_error (error,
+                             GDM_DISPLAY_ERROR,
+                             GDM_DISPLAY_ERROR_GETTING_SESSION_INFO,
+                             "Error getting seat id from systemd: %s",
+                             g_strerror (-ret));
+                return NULL;
+        }
+
+        if (seat != NULL) {
+                gseat = g_strdup (seat);
+                free (seat);
+
+                return gseat;
+        } else {
+                return NULL;
+        }
+}
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+static char *
+get_seat_id_for_pid_consolekit (GDBusConnection  *connection,
+                                pid_t             pid,
+                                GError          **error)
+{
+        char *session;
+        GVariant *reply;
+        char *retval;
+
+        session = get_session_id_for_pid_consolekit (connection, pid, error);
+
+        if (session == NULL) {
+                return NULL;
+        }
+
+        reply = g_dbus_connection_call_sync (connection,
+                                             "org.freedesktop.ConsoleKit",
+                                             session,
+                                             "org.freedesktop.ConsoleKit.Session",
+                                             "GetSeatId",
+                                             NULL,
+                                             G_VARIANT_TYPE ("(o)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL, error);
+        g_free (session);
+
+        if (reply == NULL) {
+                return NULL;
+        }
+
+        g_variant_get (reply, "(o)", &retval);
+        g_variant_unref (reply);
+
+        return retval;
+}
+#endif
+
+static char *
+get_seat_id_for_pid (GDBusConnection  *connection,
+                     pid_t             pid,
+                     GError          **error)
+{
+#ifdef WITH_SYSTEMD
+        if (sd_booted () > 0) {
+                return get_seat_id_for_pid_systemd (pid, error);
+        }
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+        return get_seat_id_for_pid_consolekit (connection, pid, error);
+#endif
+
+        return NULL;
+}
+
 static gboolean
 gdm_manager_handle_open_session (GdmDBusManager        *manager,
                                  GDBusMethodInvocation *invocation)
@@ -209,6 +618,103 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
         char             *address;
         int               ret;
         GPid              pid;
+        uid_t             caller_uid, session_uid;
+
+        sender = g_dbus_method_invocation_get_sender (invocation);
+        error = NULL;
+        ret = gdm_dbus_get_pid_for_name (sender, &pid, &error);
+
+        if (!ret) {
+                g_prefix_error (&error, "Error while retrieving caller session id: ");
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+                return TRUE;
+        }
+
+        ret = gdm_dbus_get_uid_for_name (sender, &caller_uid, &error);
+
+        if (!ret) {
+                g_prefix_error (&error, "Error while retrieving caller session id: ");
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+                return TRUE;
+        }
+
+        connection = g_dbus_method_invocation_get_connection (invocation);
+        session_id = get_session_id_for_pid (connection, pid, &error);
+
+        if (session_id == NULL) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+                return TRUE;
+        }
+
+        if (!get_uid_for_session_id (connection, session_id, &session_uid, &error)) {
+                g_prefix_error (&error, "Error while retrieving caller session id: ");
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+                return TRUE;
+        }
+
+        if (caller_uid != session_uid) {
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               _("User doesn't own session"));
+                g_prefix_error (&error, "Error while retrieving caller session id: ");
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+                return TRUE;
+        }
+
+        display = gdm_display_store_find (self->priv->display_store,
+                                          lookup_by_session_id,
+                                          (gpointer) session_id);
+        g_free (session_id);
+
+        if (display == NULL) {
+                g_dbus_method_invocation_return_error_literal (invocation,
+                                                               G_DBUS_ERROR,
+                                                               G_DBUS_ERROR_ACCESS_DENIED,
+                                                               _("No session available"));
+
+                return TRUE;
+        }
+
+        address = gdm_display_open_session_sync (display, pid, session_uid, NULL, &error);
+
+        if (address == NULL) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+                return TRUE;
+        }
+
+        gdm_dbus_manager_complete_open_session (GDM_DBUS_MANAGER (manager),
+                                                invocation,
+                                                address);
+        g_free (address);
+
+        return TRUE;
+}
+
+static gboolean
+gdm_manager_handle_open_reauthentication_channel (GdmDBusManager        *manager,
+                                                  GDBusMethodInvocation *invocation,
+                                                  const char            *username)
+{
+        GdmManager       *self = GDM_MANAGER (manager);
+        GDBusConnection  *connection;
+        GdmDisplay       *display;
+        const char       *sender;
+        char             *seat_id;
+        char             *session_id = NULL;
+        GError           *error;
+        char             *address;
+        int               ret;
+        GPid              pid;
+        uid_t             caller_uid;
+
+        g_debug ("GdmManager: trying to open reauthentication channel for user %s", username);
 
         sender = g_dbus_method_invocation_get_sender (invocation);
         error = NULL;
@@ -222,9 +728,20 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
 
         }
 
-        connection = g_dbus_method_invocation_get_connection (invocation);
-        session_id = get_session_id_for_pid (connection, pid, &error);
+        ret = gdm_dbus_get_uid_for_name (sender, &caller_uid, &error);
 
+        if (!ret) {
+                g_prefix_error (&error, "Error while retrieving caller session id: ");
+                g_dbus_method_invocation_return_gerror (invocation, error);
+                g_error_free (error);
+                return TRUE;
+        }
+
+        connection = g_dbus_method_invocation_get_connection (invocation);
+
+        seat_id = get_seat_id_for_pid (connection, pid, &error);
+
+        session_id = get_session_id_for_user_on_seat (connection, username, seat_id, &error);
         if (session_id == NULL) {
                 g_dbus_method_invocation_return_gerror (invocation, error);
                 g_error_free (error);
@@ -245,7 +762,12 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
                 return TRUE;
         }
 
-        address = gdm_display_open_session_sync (display, NULL, &error);
+        address = gdm_display_open_reauthentication_channel_sync (display,
+                                                                  username,
+                                                                  pid,
+                                                                  caller_uid,
+                                                                  NULL,
+                                                                  &error);
 
         if (address == NULL) {
                 g_dbus_method_invocation_return_gerror (invocation, error);
@@ -253,9 +775,9 @@ gdm_manager_handle_open_session (GdmDBusManager        *manager,
                 return TRUE;
         }
 
-        gdm_dbus_manager_complete_open_session (GDM_DBUS_MANAGER (manager),
-                                                invocation,
-                                                address);
+        gdm_dbus_manager_complete_open_reauthentication_channel (GDM_DBUS_MANAGER (manager),
+                                                                 invocation,
+                                                                 address);
         g_free (address);
 
         return TRUE;
@@ -265,6 +787,7 @@ static void
 manager_interface_init (GdmDBusManagerIface *interface)
 {
         interface->handle_open_session = gdm_manager_handle_open_session;
+        interface->handle_open_reauthentication_channel = gdm_manager_handle_open_reauthentication_channel;
 }
 
 static void

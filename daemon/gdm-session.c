@@ -73,6 +73,7 @@ typedef struct
         char                  *service_name;
         GDBusConnection       *worker_connection;
         GDBusMethodInvocation *starting_invocation;
+        char                  *starting_username;
         GDBusMethodInvocation *pending_invocation;
         GdmDBusWorkerManager  *worker_manager_interface;
         char                  *session_id;
@@ -114,6 +115,8 @@ struct _GdmSessionPrivate
 
         GdmSessionVerificationMode verification_mode;
 
+        uid_t                allowed_user;
+
         char                *fallback_session_name;
 
         GDBusServer         *worker_server;
@@ -124,6 +127,7 @@ struct _GdmSessionPrivate
 enum {
         PROP_0,
         PROP_VERIFICATION_MODE,
+        PROP_ALLOWED_USER,
         PROP_DISPLAY_NAME,
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
@@ -143,11 +147,14 @@ enum {
         CLIENT_DISCONNECTED,
         CLIENT_READY_FOR_SESSION_TO_START,
         DISCONNECTED,
+        VERIFICATION_COMPLETE,
         SESSION_OPENED,
         SESSION_STARTED,
         SESSION_START_FAILED,
         SESSION_EXITED,
         SESSION_DIED,
+        REAUTHENTICATION_STARTED,
+        REAUTHENTICATED,
         LAST_SIGNAL
 };
 
@@ -226,6 +233,8 @@ report_problem_and_stop_conversation (GdmSession *self,
                 gdm_dbus_user_verifier_emit_problem (self->priv->user_verifier_interface,
                                                      service_name,
                                                      message);
+                gdm_dbus_user_verifier_emit_verification_failed (self->priv->user_verifier_interface,
+                                                                 service_name);
         }
 
         gdm_session_stop_conversation (self, service_name);
@@ -245,6 +254,8 @@ gdm_session_handle_service_unavailable (GdmDBusWorkerManager  *worker_manager_in
                 gdm_dbus_user_verifier_emit_service_unavailable (self->priv->user_verifier_interface,
                                                                  service_name,
                                                                  message);
+                gdm_dbus_user_verifier_emit_verification_failed (self->priv->user_verifier_interface,
+                                                                 service_name);
         }
 
         gdm_session_stop_conversation (self, service_name);
@@ -258,6 +269,16 @@ gdm_session_handle_setup_complete (GdmDBusWorkerManager  *worker_manager_interfa
                                    const char            *service_name,
                                    GdmSession            *self)
 {
+        GdmSessionConversation *conversation;
+
+        conversation = find_conversation_by_name (self, service_name);
+        if (conversation != NULL) {
+                if (conversation->starting_invocation != NULL) {
+                        g_dbus_method_invocation_return_value (conversation->starting_invocation,
+                                                               NULL);
+                        g_clear_object (&conversation->starting_invocation);
+                }
+        }
         gdm_dbus_worker_manager_complete_setup_complete (worker_manager_interface,
                                                          invocation);
 
@@ -278,6 +299,19 @@ gdm_session_handle_setup_failed (GdmDBusWorkerManager  *worker_manager_interface
                                  const char            *message,
                                  GdmSession            *self)
 {
+        GdmSessionConversation *conversation;
+
+        conversation = find_conversation_by_name (self, service_name);
+        if (conversation != NULL) {
+                if (conversation->starting_invocation != NULL) {
+                        g_dbus_method_invocation_return_dbus_error (conversation->starting_invocation,
+                                                                    "org.gnome.DisplayManager.Session.Error.SetupFailed",
+                                                                    message);
+
+                        g_clear_object (&conversation->starting_invocation);
+                }
+        }
+
         gdm_dbus_worker_manager_complete_setup_failed (worker_manager_interface,
                                                        invocation);
 
@@ -361,7 +395,23 @@ gdm_session_handle_accredited (GdmDBusWorkerManager  *worker_manager_interface,
         gdm_dbus_worker_manager_complete_accredited (worker_manager_interface,
                                                      invocation);
 
-        gdm_session_open_session (self, service_name);
+
+        switch (self->priv->verification_mode) {
+            case GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE:
+                if (self->priv->user_verifier_interface != NULL) {
+                        g_signal_emit (self, signals[VERIFICATION_COMPLETE], 0, service_name);
+                        gdm_dbus_user_verifier_emit_verification_complete (self->priv->user_verifier_interface,
+                                                                           service_name);
+                }
+                break;
+
+            case GDM_SESSION_VERIFICATION_MODE_LOGIN:
+            case GDM_SESSION_VERIFICATION_MODE_CHOOSER:
+                gdm_session_open_session (self, service_name);
+                break;
+            default:
+                break;
+        }
 
         return TRUE;
 }
@@ -375,8 +425,6 @@ gdm_session_handle_accreditation_failed (GdmDBusWorkerManager  *worker_manager_i
 {
         gdm_dbus_worker_manager_complete_accreditation_failed (worker_manager_interface,
                                                                invocation);
-
-#warning emit TRY_TO_MIGRATE or something like that.  The idea is, we don't care if accreditation fails if the user is already logged in.  though maybe we should rethink how user switching is done so that its done in the same way unlock will be done, then we won't even try to accredit in the first place.
 
         report_problem_and_stop_conversation (self, service_name, message);
         return TRUE;
@@ -831,13 +879,14 @@ gdm_session_handle_opened (GdmDBusWorkerManager  *worker_manager_interface,
                                                       service_name);
         }
 
-        g_debug ("GdmSession: Emitting 'session-opened' signal");
-        g_signal_emit (self, signals[SESSION_OPENED], 0, service_name, session_id);
-
         if (self->priv->user_verifier_interface != NULL) {
+                g_signal_emit (self, signals[VERIFICATION_COMPLETE], 0, service_name);
                 gdm_dbus_user_verifier_emit_verification_complete (self->priv->user_verifier_interface,
                                                                    service_name);
         }
+
+        g_debug ("GdmSession: Emitting 'session-opened' signal");
+        g_signal_emit (self, signals[SESSION_OPENED], 0, service_name, session_id);
 
         return TRUE;
 }
@@ -923,6 +972,35 @@ gdm_session_handle_session_exited_or_died (GdmDBusWorkerManager  *worker_manager
 }
 
 static gboolean
+gdm_session_handle_reauthentication_started (GdmDBusWorkerManager  *worker_manager_interface,
+                                             GDBusMethodInvocation *invocation,
+                                             int                    pid_of_caller,
+                                             const char            *address,
+                                             GdmSession            *self)
+{
+        gdm_dbus_worker_manager_complete_reauthentication_started (worker_manager_interface,
+                                                                   invocation);
+
+        g_debug ("GdmSession: Emitting 'reauthentication-started' signal for caller pid '%d'", pid_of_caller);
+        g_signal_emit (self, signals[REAUTHENTICATION_STARTED], 0, pid_of_caller, address);
+        return TRUE;
+}
+
+static gboolean
+gdm_session_handle_reauthenticated (GdmDBusWorkerManager  *worker_manager_interface,
+                                    GDBusMethodInvocation *invocation,
+                                    const char            *service_name,
+                                    GdmSession            *self)
+{
+        gdm_dbus_worker_manager_complete_reauthentication_started (worker_manager_interface,
+                                                                   invocation);
+
+        g_debug ("GdmSession: Emitting 'reauthenticated' signal ");
+        g_signal_emit (self, signals[REAUTHENTICATED], 0, service_name);
+        return TRUE;
+}
+
+static gboolean
 gdm_session_handle_saved_language_name_read (GdmDBusWorkerManager  *worker_manager_interface,
                                              GDBusMethodInvocation *invocation,
                                              const char            *language_name,
@@ -1000,9 +1078,18 @@ find_conversation_by_pid (GdmSession *self,
 static gboolean
 allow_worker_function (GDBusAuthObserver *observer,
                        GIOStream         *stream,
-                       GCredentials      *credentials)
+                       GCredentials      *credentials,
+                       GdmSession        *self)
 {
-        if (g_credentials_get_unix_user (credentials, NULL) == 0) {
+        uid_t connecting_user;
+
+        connecting_user = g_credentials_get_unix_user (credentials, NULL);
+
+        if (connecting_user == 0) {
+                return TRUE;
+        }
+
+        if (connecting_user == self->priv->allowed_user) {
                 return TRUE;
         }
 
@@ -1084,6 +1171,23 @@ register_worker (GdmDBusWorkerManager  *worker_manager_interface,
 
         g_debug ("GdmSession: Emitting conversation-started signal");
         g_signal_emit (self, signals[CONVERSATION_STARTED], 0, conversation->service_name);
+
+        if (self->priv->user_verifier_interface != NULL) {
+                gdm_dbus_user_verifier_emit_conversation_started (self->priv->user_verifier_interface,
+                                                                  conversation->service_name);
+        }
+
+        if (conversation->starting_invocation != NULL) {
+                if (conversation->starting_username != NULL) {
+                        gdm_session_setup_for_user (self, conversation->service_name, conversation->starting_username);
+
+                        g_clear_pointer (&conversation->starting_username,
+                                         (GDestroyNotify)
+                                         g_free);
+                } else {
+                        gdm_session_setup (self, conversation->service_name);
+                }
+        }
 
         g_debug ("GdmSession: Conversation started");
 
@@ -1189,6 +1293,14 @@ export_worker_manager_interface (GdmSession      *self,
                           "handle-session-exited",
                           G_CALLBACK (gdm_session_handle_session_exited_or_died),
                           self);
+        g_signal_connect (worker_manager_interface,
+                          "handle-reauthentication-started",
+                          G_CALLBACK (gdm_session_handle_reauthentication_started),
+                          self);
+        g_signal_connect (worker_manager_interface,
+                          "handle-reauthenticated",
+                          G_CALLBACK (gdm_session_handle_reauthenticated),
+                          self);
 
         g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (worker_manager_interface),
                                           connection,
@@ -1249,8 +1361,7 @@ gdm_session_handle_client_begin_verification (GdmDBusUserVerifier    *user_verif
 
         if (conversation != NULL) {
                 conversation->starting_invocation = g_object_ref (invocation);
-
-                gdm_session_setup (self, service_name);
+                conversation->starting_username = NULL;
         } else {
                 g_dbus_method_invocation_return_error (conversation->starting_invocation,
                                                        G_DBUS_ERROR,
@@ -1276,8 +1387,7 @@ gdm_session_handle_client_begin_verification_for_user (GdmDBusUserVerifier    *u
 
         if (conversation != NULL) {
                 conversation->starting_invocation = g_object_ref (invocation);
-
-                gdm_session_setup_for_user (self, service_name, username);
+                conversation->starting_username = g_strdup (username);
         } else {
                 g_dbus_method_invocation_return_error (conversation->starting_invocation,
                                                        G_DBUS_ERROR,
@@ -1534,16 +1644,26 @@ on_outside_connection_closed (GDBusConnection *connection,
                               GError          *error,
                               GdmSession      *self)
 {
+        GCredentials *credentials;
+        GPid          pid_of_client;
+
         g_debug ("GdmSession: external connection closed");
 
         self->priv->outside_connections =
             g_list_remove (self->priv->outside_connections,
                             connection);
-        g_object_unref (connection);
+
+        credentials = g_dbus_connection_get_peer_credentials (connection);
+        pid_of_client = credentials_get_unix_pid (credentials);
 
         g_signal_emit (G_OBJECT (self),
                        signals [CLIENT_DISCONNECTED],
-                       0);
+                       0,
+                       credentials,
+                       (guint)
+                       pid_of_client);
+
+        g_object_unref (connection);
 }
 
 static gboolean
@@ -1551,6 +1671,9 @@ handle_connection_from_outside (GDBusServer      *server,
                                 GDBusConnection  *connection,
                                 GdmSession       *self)
 {
+        GCredentials *credentials;
+        GPid          pid_of_client;
+
         g_debug ("GdmSession: Handling new connection from outside");
 
         self->priv->outside_connections =
@@ -1573,15 +1696,24 @@ handle_connection_from_outside (GDBusServer      *server,
                 case GDM_SESSION_VERIFICATION_MODE_CHOOSER:
                         export_chooser_interface (self, connection);
                 break;
+
+                default:
+                break;
         }
 
         if (!self->priv->display_is_local) {
                 export_remote_greeter_interface (self, connection);
         }
 
+        credentials = g_dbus_connection_get_peer_credentials (connection);
+        pid_of_client = credentials_get_unix_pid (credentials);
+
         g_signal_emit (G_OBJECT (self),
                        signals [CLIENT_CONNECTED],
-                       0);
+                       0,
+                       credentials,
+                       (guint)
+                       pid_of_client);
 
         return TRUE;
 }
@@ -1599,7 +1731,7 @@ setup_worker_server (GdmSession *self)
         g_signal_connect (observer,
                           "authorize-authenticated-peer",
                           G_CALLBACK (allow_worker_function),
-                          NULL);
+                          self);
 
         server = gdm_dbus_setup_private_server (observer, &error);
         g_object_unref (observer);
@@ -1623,48 +1755,15 @@ setup_worker_server (GdmSession *self)
 }
 
 static gboolean
-_get_uid_and_gid_for_user (const char *username,
-                           uid_t      *uid,
-                           gid_t      *gid)
-{
-        struct passwd *passwd_entry;
-
-        g_assert (username != NULL);
-
-        errno = 0;
-        gdm_get_pwent_for_name (username, &passwd_entry);
-
-        if (passwd_entry == NULL) {
-                return FALSE;
-        }
-
-        if (uid != NULL) {
-                *uid = passwd_entry->pw_uid;
-        }
-
-        if (gid != NULL) {
-                *gid = passwd_entry->pw_gid;
-        }
-
-        return TRUE;
-}
-
-static gboolean
 allow_user_function (GDBusAuthObserver *observer,
                      GIOStream         *stream,
-                     GCredentials      *credentials)
+                     GCredentials      *credentials,
+                     GdmSession        *self)
 {
-        uid_t uid;
-        gid_t gid;
         uid_t client_uid;
 
-        if (!_get_uid_and_gid_for_user (GDM_USERNAME, &uid, &gid)) {
-                g_debug ("GdmSession: Unable to determine uid for gdm user");
-                return FALSE;
-        }
-
         client_uid = g_credentials_get_unix_user (credentials, NULL);
-        if (uid == client_uid) {
+        if (client_uid == self->priv->allowed_user) {
                 return TRUE;
         }
 
@@ -1686,7 +1785,7 @@ setup_outside_server (GdmSession *self)
         g_signal_connect (observer,
                           "authorize-authenticated-peer",
                           G_CALLBACK (allow_user_function),
-                          NULL);
+                          self);
 
         server = gdm_dbus_setup_private_server (observer, &error);
         g_object_unref (observer);
@@ -1717,6 +1816,7 @@ free_conversation (GdmSessionConversation *conversation)
         }
 
         g_free (conversation->service_name);
+        g_clear_object (&conversation->session);
         g_free (conversation);
 }
 
@@ -1760,11 +1860,6 @@ worker_started (GdmSessionWorkerJob    *job,
 {
         g_debug ("GdmSession: Worker job started");
 
-        if (conversation->starting_invocation != NULL) {
-                g_dbus_method_invocation_return_value (conversation->starting_invocation,
-                                                       NULL);
-                g_clear_object (&conversation->starting_invocation);
-        }
 }
 
 static void
@@ -1785,6 +1880,10 @@ worker_exited (GdmSessionWorkerJob    *job,
 
         g_debug ("GdmSession: Emitting conversation-stopped signal");
         g_signal_emit (self, signals[CONVERSATION_STOPPED], 0, conversation->service_name);
+        if (self->priv->user_verifier_interface != NULL) {
+                gdm_dbus_user_verifier_emit_conversation_stopped (self->priv->user_verifier_interface,
+                                                                  conversation->service_name);
+        }
         g_object_unref (conversation->job);
 
         if (conversation->is_stopping) {
@@ -1813,6 +1912,10 @@ worker_died (GdmSessionWorkerJob    *job,
 
         g_debug ("GdmSession: Emitting conversation-stopped signal");
         g_signal_emit (self, signals[CONVERSATION_STOPPED], 0, conversation->service_name);
+        if (self->priv->user_verifier_interface != NULL) {
+                gdm_dbus_user_verifier_emit_conversation_stopped (self->priv->user_verifier_interface,
+                                                                  conversation->service_name);
+        }
         g_object_unref (conversation->job);
 
         if (conversation->is_stopping) {
@@ -1831,7 +1934,7 @@ start_conversation (GdmSession *self,
         char                   *job_name;
 
         conversation = g_new0 (GdmSessionConversation, 1);
-        conversation->session = self;
+        conversation->session = g_object_ref (self);
         conversation->service_name = g_strdup (service_name);
         conversation->worker_pid = -1;
         conversation->job = gdm_session_worker_job_new ();
@@ -2463,10 +2566,6 @@ gdm_session_close (GdmSession *self)
         g_list_free_full (self->priv->pending_worker_connections, g_object_unref);
         self->priv->pending_worker_connections = NULL;
 
-        g_clear_object (&self->priv->user_verifier_interface);
-        g_clear_object (&self->priv->greeter_interface);
-        g_clear_object (&self->priv->chooser_interface);
-
         g_free (self->priv->selected_user);
         self->priv->selected_user = NULL;
 
@@ -2541,6 +2640,24 @@ gdm_session_client_is_connected (GdmSession *self)
         g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
 
         return self->priv->outside_connections != NULL;
+}
+
+uid_t
+gdm_session_get_allowed_user (GdmSession *self)
+{
+        return self->priv->allowed_user;
+}
+
+void
+gdm_session_start_reauthentication (GdmSession *session,
+                                    GPid        pid_of_caller,
+                                    uid_t       uid_of_caller)
+{
+        g_return_if_fail (session->priv->session_conversation != NULL);
+
+        gdm_dbus_worker_manager_emit_start_reauthentication (session->priv->session_conversation->worker_manager_interface,
+                                                             (int) pid_of_caller,
+                                                             (int) uid_of_caller);
 }
 
 char *
@@ -2777,11 +2894,18 @@ set_display_is_local (GdmSession *self,
         self->priv->display_is_local = is_local;
 }
 
- static void
+static void
 set_verification_mode (GdmSession                 *self,
                        GdmSessionVerificationMode  verification_mode)
 {
         self->priv->verification_mode = verification_mode;
+}
+
+static void
+set_allowed_user (GdmSession *self,
+                  uid_t       allowed_user)
+{
+        self->priv->allowed_user = allowed_user;
 }
 
 static void
@@ -2818,6 +2942,9 @@ gdm_session_set_property (GObject      *object,
                 break;
         case PROP_VERIFICATION_MODE:
                 set_verification_mode (self, g_value_get_enum (value));
+                break;
+        case PROP_ALLOWED_USER:
+                set_allowed_user (self, g_value_get_uint (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2860,6 +2987,9 @@ gdm_session_get_property (GObject    *object,
         case PROP_VERIFICATION_MODE:
                 g_value_set_enum (value, self->priv->verification_mode);
                 break;
+        case PROP_ALLOWED_USER:
+                g_value_set_uint (value, self->priv->allowed_user);
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -2876,6 +3006,10 @@ gdm_session_dispose (GObject *object)
         g_debug ("GdmSession: Disposing session");
 
         gdm_session_close (self);
+
+        g_clear_object (&self->priv->user_verifier_interface);
+        g_clear_object (&self->priv->greeter_interface);
+        g_clear_object (&self->priv->chooser_interface);
 
         g_free (self->priv->display_name);
         self->priv->display_name = NULL;
@@ -2986,6 +3120,17 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               G_TYPE_NONE,
                               1,
                               G_TYPE_STRING);
+        signals [VERIFICATION_COMPLETE] =
+                g_signal_new ("verification-complete",
+                              GDM_TYPE_SESSION,
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmSessionClass, verification_complete),
+                              NULL,
+                              NULL,
+                              NULL,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_STRING);
         signals [SESSION_OPENED] =
                 g_signal_new ("session-opened",
                               GDM_TYPE_SESSION,
@@ -3043,6 +3188,30 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               G_TYPE_NONE,
                               1,
                               G_TYPE_INT);
+
+        signals [REAUTHENTICATION_STARTED] =
+                g_signal_new ("reauthentication-started",
+                              GDM_TYPE_SESSION,
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmSessionClass, reauthentication_started),
+                              NULL,
+                              NULL,
+                              NULL,
+                              G_TYPE_NONE,
+                              2,
+                              G_TYPE_INT,
+                              G_TYPE_STRING);
+        signals [REAUTHENTICATED] =
+                g_signal_new ("reauthenticated",
+                              GDM_TYPE_SESSION,
+                              G_SIGNAL_RUN_FIRST,
+                              G_STRUCT_OFFSET (GdmSessionClass, reauthenticated),
+                              NULL,
+                              NULL,
+                              NULL,
+                              G_TYPE_NONE,
+                              1,
+                              G_TYPE_STRING);
         signals [CANCELLED] =
                 g_signal_new ("cancelled",
                               GDM_TYPE_SESSION,
@@ -3061,9 +3230,11 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               G_STRUCT_OFFSET (GdmSessionClass, client_connected),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__VOID,
+                              NULL,
                               G_TYPE_NONE,
-                              0);
+                              2,
+                              G_TYPE_CREDENTIALS,
+                              G_TYPE_UINT);
 
         signals [CLIENT_DISCONNECTED] =
                 g_signal_new ("client-disconnected",
@@ -3072,9 +3243,11 @@ gdm_session_class_init (GdmSessionClass *session_class)
                               G_STRUCT_OFFSET (GdmSessionClass, client_disconnected),
                               NULL,
                               NULL,
-                              g_cclosure_marshal_VOID__VOID,
+                              NULL,
                               G_TYPE_NONE,
-                              0);
+                              2,
+                              G_TYPE_CREDENTIALS,
+                              G_TYPE_UINT);
         signals [CLIENT_READY_FOR_SESSION_TO_START] =
                 g_signal_new ("client-ready-for-session-to-start",
                               GDM_TYPE_SESSION,
@@ -3118,6 +3291,16 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                             GDM_TYPE_SESSION_VERIFICATION_MODE,
                                                             GDM_SESSION_VERIFICATION_MODE_LOGIN,
                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_ALLOWED_USER,
+                                         g_param_spec_uint ("allowed-user",
+                                                            "allowed user",
+                                                            "allowed user ",
+                                                            0,
+                                                            G_MAXUINT,
+                                                            0,
+                                                            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_NAME,
                                          g_param_spec_string ("display-name",
@@ -3173,6 +3356,7 @@ gdm_session_class_init (GdmSessionClass *session_class)
 
 GdmSession *
 gdm_session_new (GdmSessionVerificationMode  verification_mode,
+                 uid_t                       allowed_user,
                  const char                 *display_name,
                  const char                 *display_hostname,
                  const char                 *display_device,
@@ -3184,6 +3368,7 @@ gdm_session_new (GdmSessionVerificationMode  verification_mode,
 
         self = g_object_new (GDM_TYPE_SESSION,
                              "verification-mode", verification_mode,
+                             "allowed-user", (guint) allowed_user,
                              "display-name", display_name,
                              "display-hostname", display_hostname,
                              "display-device", display_device,

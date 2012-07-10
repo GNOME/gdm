@@ -50,6 +50,7 @@
 #include "gdm-log.h"
 #include "gdm-session-worker.h"
 #include "gdm-session-glue.h"
+#include "gdm-session.h"
 
 #if defined (HAVE_ADT)
 #include "gdm-session-solaris-auditor.h"
@@ -97,6 +98,15 @@ enum {
         GDM_SESSION_WORKER_STATE_SESSION_STARTED
 };
 
+typedef struct
+{
+        GdmSessionWorker *worker;
+        GdmSession       *session;
+        GPid              pid_of_caller;
+        uid_t             uid_of_caller;
+
+} ReauthenticationRequest;
+
 struct GdmSessionWorkerPrivate
 {
         int               state;
@@ -133,12 +143,15 @@ struct GdmSessionWorkerPrivate
         guint32           cancelled : 1;
         guint32           timed_out : 1;
         guint32           is_program_session : 1;
+        guint32           is_reauth_session : 1;
         guint32           display_is_local : 1;
         guint             state_change_idle_id;
 
         char                 *server_address;
         GDBusConnection      *connection;
         GdmDBusWorkerManager *manager;
+
+        GHashTable         *reauthentication_requests;
 
         GdmSessionAuditor  *auditor;
         GdmSessionSettings *user_settings;
@@ -147,6 +160,7 @@ struct GdmSessionWorkerPrivate
 enum {
         PROP_0,
         PROP_SERVER_ADDRESS,
+        PROP_IS_REAUTH_SESSION,
 };
 
 static void     gdm_session_worker_class_init   (GdmSessionWorkerClass *klass);
@@ -1213,6 +1227,13 @@ gdm_session_worker_authorize_user (GdmSessionWorker *worker,
                 }
         }
 
+        /* If the user is reauthenticating, then authorization isn't required to
+         * proceed, the user is already logged in after all.
+         */
+        if (worker->priv->is_reauth_session) {
+                error_code = PAM_SUCCESS;
+        }
+
         if (error_code != PAM_SUCCESS) {
                 g_debug ("GdmSessionWorker: user is not authorized to log in: %s",
                          pam_strerror (worker->priv->pam_handle, error_code));
@@ -1473,6 +1494,15 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
         }
 
         error_code = pam_setcred (worker->priv->pam_handle, worker->priv->cred_flags);
+
+        /* If the user is reauthenticating and they've made it this far, then there
+         * is no reason we should lock them out of their session.  They've already
+         * proved they are they same person who logged in, and that's all we care
+         * about.
+         */
+        if (worker->priv->is_reauth_session) {
+                error_code = PAM_SUCCESS;
+        }
 
         if (error_code != PAM_SUCCESS) {
                 g_set_error (error,
@@ -1917,6 +1947,13 @@ gdm_session_worker_set_server_address (GdmSessionWorker *worker,
 }
 
 static void
+gdm_session_worker_set_is_reauth_session (GdmSessionWorker *worker,
+                                          gboolean          is_reauth_session)
+{
+        worker->priv->is_reauth_session = is_reauth_session;
+}
+
+static void
 gdm_session_worker_set_property (GObject      *object,
                                 guint         prop_id,
                                 const GValue *value,
@@ -1929,6 +1966,9 @@ gdm_session_worker_set_property (GObject      *object,
         switch (prop_id) {
         case PROP_SERVER_ADDRESS:
                 gdm_session_worker_set_server_address (self, g_value_get_string (value));
+                break;
+        case PROP_IS_REAUTH_SESSION:
+                gdm_session_worker_set_is_reauth_session (self, g_value_get_boolean (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1949,6 +1989,9 @@ gdm_session_worker_get_property (GObject    *object,
         switch (prop_id) {
         case PROP_SERVER_ADDRESS:
                 g_value_set_string (value, self->priv->server_address);
+                break;
+        case PROP_IS_REAUTH_SESSION:
+                g_value_set_boolean (value, self->priv->is_reauth_session);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2395,6 +2438,11 @@ on_start_program (GdmDBusWorkerManager *proxy,
                 return;
         }
 
+        if (worker->priv->is_reauth_session) {
+                g_debug ("GdmSessionWorker: ignoring start program request in reauthentication session");
+                return;
+        }
+
         g_debug ("GdmSessionWorker: start program: %s", text);
 
         g_clear_pointer (&worker->priv->arguments, (GDestroyNotify) g_strfreev);
@@ -2405,6 +2453,156 @@ on_start_program (GdmDBusWorkerManager *proxy,
         }
 
         queue_state_change (worker);
+}
+
+static void
+on_reauthentication_client_connected (GdmSession              *session,
+                                      GCredentials            *credentials,
+                                      GPid                     pid_of_client,
+                                      ReauthenticationRequest *request)
+{
+        g_debug ("GdmSessionWorker: client connected to reauthentication server");
+}
+
+static void
+on_reauthentication_client_disconnected (GdmSession              *session,
+                                         GCredentials            *credentials,
+                                         GPid                     pid_of_client,
+                                         ReauthenticationRequest *request)
+{
+        GdmSessionWorker *worker;
+
+        g_debug ("GdmSessionWorker: client disconnected from reauthentication server");
+
+        worker = request->worker;
+        g_hash_table_remove (worker->priv->reauthentication_requests,
+                             GINT_TO_POINTER (pid_of_client));
+}
+
+static void
+on_reauthentication_cancelled (GdmSession              *session,
+                               ReauthenticationRequest *request)
+{
+        g_debug ("GdmSessionWorker: client cancelled reauthentication request");
+        gdm_session_reset (session);
+}
+
+static void
+on_reauthentication_conversation_started (GdmSession              *session,
+                                          const char              *service_name,
+                                          ReauthenticationRequest *request)
+{
+        g_debug ("GdmSessionWorker: reauthentication service '%s' stopped",
+                 service_name);
+}
+
+static void
+on_reauthentication_conversation_stopped (GdmSession              *session,
+                                          const char              *service_name,
+                                          ReauthenticationRequest *request)
+{
+        g_debug ("GdmSessionWorker: reauthentication service '%s' started",
+                 service_name);
+}
+
+static void
+on_verification_complete (GdmSession              *session,
+                          const char              *service_name,
+                          ReauthenticationRequest *request)
+{
+        GdmSessionWorker *worker;
+
+        worker = request->worker;
+
+        g_debug ("GdmSessionWorker: pid %d reauthenticated user %d with service '%s'",
+                 (int) request->pid_of_caller,
+                 (int) request->uid_of_caller,
+                 service_name);
+        gdm_session_reset (session);
+
+        gdm_dbus_worker_manager_call_reauthenticated_sync (worker->priv->manager,
+                                                           service_name,
+                                                           NULL,
+                                                           NULL);
+}
+
+static ReauthenticationRequest *
+reauthentication_request_new (GdmSessionWorker *worker,
+                              GPid              pid_of_caller,
+                              uid_t             uid_of_caller)
+{
+        ReauthenticationRequest *request;
+        char *address;
+
+        request = g_slice_new (ReauthenticationRequest);
+
+        request->worker = worker;
+        request->pid_of_caller = pid_of_caller;
+        request->uid_of_caller = uid_of_caller;
+        request->session = gdm_session_new (GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE,
+                                            uid_of_caller,
+                                            worker->priv->x11_display_name,
+                                            worker->priv->hostname,
+                                            worker->priv->display_device,
+                                            worker->priv->display_seat_id,
+                                            worker->priv->x11_authority_file,
+                                            worker->priv->display_is_local);
+
+        g_signal_connect (request->session,
+                          "client-connected",
+                          G_CALLBACK (on_reauthentication_client_connected),
+                          request);
+        g_signal_connect (request->session,
+                          "client-disconnected",
+                          G_CALLBACK (on_reauthentication_client_disconnected),
+                          request);
+        g_signal_connect (request->session,
+                          "cancelled",
+                          G_CALLBACK (on_reauthentication_cancelled),
+                          request);
+        g_signal_connect (request->session,
+                          "conversation-started",
+                          G_CALLBACK (on_reauthentication_conversation_started),
+                          request);
+        g_signal_connect (request->session,
+                          "conversation-stopped",
+                          G_CALLBACK (on_reauthentication_conversation_stopped),
+                          request);
+        g_signal_connect (request->session,
+                          "verification-complete",
+                          G_CALLBACK (on_verification_complete),
+                          request);
+
+        address = gdm_session_get_server_address (request->session);
+        gdm_dbus_worker_manager_call_reauthentication_started_sync (worker->priv->manager,
+                                                                    pid_of_caller,
+                                                                    address,
+                                                                    NULL,
+                                                                    NULL);
+        g_free (address);
+
+        return request;
+}
+
+static void
+on_start_reauthentication (GdmDBusWorkerManager *proxy,
+                           int                   pid_of_caller,
+                           int                   uid_of_caller,
+                           GdmSessionWorker     *worker)
+{
+        ReauthenticationRequest *request;
+
+        if (worker->priv->state != GDM_SESSION_WORKER_STATE_SESSION_STARTED) {
+                g_debug ("GdmSessionWorker: ignoring spurious start reauthentication while in state %s", get_state_name (worker->priv->state));
+                return;
+        }
+
+        g_debug ("GdmSessionWorker: start reauthentication");
+
+        request = reauthentication_request_new (worker, pid_of_caller, uid_of_caller);
+        g_hash_table_replace (worker->priv->reauthentication_requests,
+                              GINT_TO_POINTER (pid_of_caller),
+                              request);
 }
 
 static void
@@ -2552,7 +2750,11 @@ on_establish_credentials (GdmDBusWorkerManager *manager,
                 return;
         }
 
-        worker->priv->cred_flags = PAM_ESTABLISH_CRED;
+        if (!worker->priv->is_reauth_session) {
+                worker->priv->cred_flags = PAM_ESTABLISH_CRED;
+        } else {
+                worker->priv->cred_flags = PAM_REINITIALIZE_CRED;
+        }
 
         queue_state_change (worker);
 }
@@ -2564,6 +2766,11 @@ on_open_session (GdmDBusWorkerManager *manager,
 {
         if (worker->priv->state != GDM_SESSION_WORKER_STATE_ACCREDITED) {
                 g_debug ("GdmSessionWorker: ignoring spurious open session for user while in state %s", get_state_name (worker->priv->state));
+                return;
+        }
+
+        if (worker->priv->is_reauth_session) {
+                g_debug ("GdmSessionWorker: ignoring open session request in reauthentication session");
                 return;
         }
 
@@ -2660,6 +2867,10 @@ gdm_session_worker_constructor (GType                  type,
                           "start-program",
                           G_CALLBACK (on_start_program),
                           worker);
+        g_signal_connect (worker->priv->manager,
+                          "start-reauthentication",
+                          G_CALLBACK (on_start_reauthentication),
+                          worker);
 
         /* Send an initial Hello message so that the session can associate
          * the conversation we manage with our pid.
@@ -2690,6 +2901,21 @@ gdm_session_worker_class_init (GdmSessionWorkerClass *klass)
                                                               "server address",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+
+        g_object_class_install_property (object_class,
+                                         PROP_IS_REAUTH_SESSION,
+                                         g_param_spec_boolean ("is-reauth-session",
+                                                               "is reauth session",
+                                                               "is reauth session",
+                                                              FALSE,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+}
+
+static void
+reauthentication_request_free (ReauthenticationRequest *request)
+{
+        g_clear_object (&request->session);
+        g_slice_free (ReauthenticationRequest, request);
 }
 
 static void
@@ -2699,6 +2925,11 @@ gdm_session_worker_init (GdmSessionWorker *worker)
         worker->priv = GDM_SESSION_WORKER_GET_PRIVATE (worker);
 
         worker->priv->user_settings = gdm_session_settings_new ();
+        worker->priv->reauthentication_requests = g_hash_table_new_full (NULL,
+                                                                         NULL,
+                                                                         NULL,
+                                                                         (GDestroyNotify)
+                                                                         reauthentication_request_free);
 }
 
 static void
@@ -2737,16 +2968,20 @@ gdm_session_worker_finalize (GObject *object)
         g_free (worker->priv->server_address);
         g_strfreev (worker->priv->arguments);
 
+        g_hash_table_unref (worker->priv->reauthentication_requests);
+
         G_OBJECT_CLASS (gdm_session_worker_parent_class)->finalize (object);
 }
 
 GdmSessionWorker *
-gdm_session_worker_new (const char *address)
+gdm_session_worker_new (const char *address,
+                        gboolean    is_reauth_session)
 {
         GObject *object;
 
         object = g_object_new (GDM_TYPE_SESSION_WORKER,
                                "server-address", address,
+                               "is-reauth-session", is_reauth_session,
                                NULL);
 
         return GDM_SESSION_WORKER (object);
