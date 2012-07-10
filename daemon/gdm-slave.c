@@ -1870,6 +1870,8 @@ gdm_slave_get_property (GObject    *object,
 static gboolean
 handle_open_session (GdmDBusSlave          *skeleton,
                      GDBusMethodInvocation *invocation,
+                     int                    pid_of_caller,
+                     int                    uid_of_caller,
                      GdmSlave              *slave)
 {
         GError        *error;
@@ -1887,6 +1889,8 @@ handle_open_session (GdmDBusSlave          *skeleton,
         error = NULL;
         address = NULL;
         if (!slave_class->open_session (slave,
+                                        (GPid) pid_of_caller,
+                                        (uid_t) uid_of_caller,
                                         &address,
                                         &error)) {
                 g_dbus_method_invocation_return_gerror (invocation, error);
@@ -1897,6 +1901,62 @@ handle_open_session (GdmDBusSlave          *skeleton,
         gdm_dbus_slave_complete_open_session (skeleton, invocation, address);
 
         g_free (address);
+        return TRUE;
+}
+
+static void
+on_reauthentication_channel_opened (GdmSlave              *slave,
+                                    GAsyncResult          *result,
+                                    GDBusMethodInvocation *invocation)
+{
+        GdmSlaveClass      *slave_class;
+        GError             *error;
+        char               *address;
+
+        slave_class = GDM_SLAVE_GET_CLASS (slave);
+
+        g_assert (slave_class->open_reauthentication_channel_finish != NULL);
+
+        error = NULL;
+        address = slave_class->open_reauthentication_channel_finish (slave, result, &error);
+
+        if (address == NULL) {
+                g_dbus_method_invocation_return_gerror (invocation, error);
+        } else {
+                gdm_dbus_slave_complete_open_reauthentication_channel (slave->priv->skeleton,
+                                                                       invocation,
+                                                                       address);
+        }
+
+        g_object_unref (invocation);
+}
+
+static gboolean
+handle_open_reauthentication_channel (GdmDBusSlave          *skeleton,
+                                      GDBusMethodInvocation *invocation,
+                                      const char            *username,
+                                      GPid                   pid_of_caller,
+                                      uid_t                  uid_of_caller,
+                                      GdmSlave              *slave)
+{
+        GdmSlaveClass *slave_class;
+
+        slave_class = GDM_SLAVE_GET_CLASS (slave);
+        if (slave_class->open_reauthentication_channel == NULL) {
+                g_dbus_method_invocation_return_dbus_error (invocation,
+                                                            "org.gnome.DisplayManager.Slave.Unsupported",
+                                                            "Connections to the slave are not supported by this slave");
+                return TRUE;
+        }
+
+        slave_class->open_reauthentication_channel (slave,
+                                                    username,
+                                                    pid_of_caller,
+                                                    uid_of_caller,
+                                                    (GAsyncReadyCallback)
+                                                    on_reauthentication_channel_opened,
+                                                    g_object_ref (invocation),
+                                                    NULL);
 
         return TRUE;
 }
@@ -1921,6 +1981,10 @@ register_slave (GdmSlave *slave)
         g_signal_connect (slave->priv->skeleton,
                           "handle-open-session",
                           G_CALLBACK (handle_open_session),
+                          slave);
+        g_signal_connect (slave->priv->skeleton,
+                          "handle-open-reauthentication-channel",
+                          G_CALLBACK (handle_open_reauthentication_channel),
                           slave);
 
         g_object_bind_property (G_OBJECT (slave),

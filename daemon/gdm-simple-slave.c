@@ -79,6 +79,8 @@ struct GdmSimpleSlavePrivate
         GdmSession        *session;
         GdmGreeterSession *greeter;
 
+        GHashTable        *open_reauthentication_requests;
+
         guint              start_session_when_ready : 1;
         guint              waiting_to_start_session : 1;
         guint              session_is_running : 1;
@@ -411,6 +413,14 @@ queue_start_session (GdmSimpleSlave *slave,
 }
 
 static void
+on_session_reauthenticated (GdmSession       *session,
+                            const char       *service_name,
+                            GdmSimpleSlave   *slave)
+{
+        try_migrate_session (slave);
+}
+
+static void
 on_session_opened (GdmSession       *session,
                    const char       *service_name,
                    const char       *session_id,
@@ -484,12 +494,36 @@ start_autologin_conversation_if_necessary (GdmSimpleSlave  *slave)
 }
 
 static void
+on_session_reauthentication_started (GdmSession      *session,
+                                     int              pid_of_caller,
+                                     const char      *address,
+                                     GdmSimpleSlave  *slave)
+{
+        GSimpleAsyncResult *result;
+        gpointer            source_tag;
+
+        g_debug ("GdmSimpleSlave: reauthentication started");
+
+        source_tag = GINT_TO_POINTER (pid_of_caller);
+
+        result = g_hash_table_lookup (slave->priv->open_reauthentication_requests,
+                                      source_tag);
+
+        if (result != NULL) {
+                g_simple_async_result_set_op_res_gpointer (result,
+                                                           g_strdup (address),
+                                                           (GDestroyNotify)
+                                                           g_free);
+                g_simple_async_result_complete_in_idle (result);
+        }
+}
+
+static void
 on_session_client_ready_for_session_to_start (GdmSession      *session,
                                               const char      *service_name,
                                               gboolean         client_is_ready,
                                               GdmSimpleSlave  *slave)
 {
-
         if (client_is_ready) {
                 g_debug ("GdmSimpleSlave: Will start session when ready");
         } else {
@@ -508,6 +542,8 @@ on_session_client_ready_for_session_to_start (GdmSession      *session,
 }
 static void
 on_session_client_connected (GdmSession          *session,
+                             GCredentials        *credentials,
+                             GPid                 pid_of_client,
                              GdmSimpleSlave      *slave)
 {
         gboolean display_is_local;
@@ -526,6 +562,8 @@ on_session_client_connected (GdmSession          *session,
 
 static void
 on_session_client_disconnected (GdmSession          *session,
+                                GCredentials        *credentials,
+                                GPid                 pid_of_client,
                                 GdmSimpleSlave      *slave)
 {
         gboolean display_is_local;
@@ -559,8 +597,13 @@ create_new_session (GdmSimpleSlave  *slave)
         char          *display_device;
         char          *display_seat_id;
         char          *display_x11_authority_file;
+        GdmSession    *greeter_session;
+        uid_t          greeter_uid;
 
         g_debug ("GdmSimpleSlave: Creating new session");
+
+        greeter_session = gdm_welcome_session_get_session (GDM_WELCOME_SESSION (slave->priv->greeter));
+        greeter_uid = gdm_session_get_allowed_user (greeter_session);
 
         g_object_get (slave,
                       "display-id", &display_id,
@@ -577,6 +620,7 @@ create_new_session (GdmSimpleSlave  *slave)
         }
 
         slave->priv->session = gdm_session_new (GDM_SESSION_VERIFICATION_MODE_LOGIN,
+                                                greeter_uid,
                                                 display_name,
                                                 display_hostname,
                                                 display_device,
@@ -589,6 +633,14 @@ create_new_session (GdmSimpleSlave  *slave)
         g_free (display_device);
         g_free (display_hostname);
 
+        g_signal_connect (slave->priv->session,
+                          "reauthentication-started",
+                          G_CALLBACK (on_session_reauthentication_started),
+                          slave);
+        g_signal_connect (slave->priv->session,
+                          "reauthenticated",
+                          G_CALLBACK (on_session_reauthenticated),
+                          slave);
         g_signal_connect (slave->priv->session,
                           "client-ready-for-session-to-start",
                           G_CALLBACK (on_session_client_ready_for_session_to_start),
@@ -1040,34 +1092,96 @@ gdm_simple_slave_run (GdmSimpleSlave *slave)
 }
 
 static gboolean
-gdm_simple_slave_open_session (GdmSlave   *slave,
-                               char      **address,
-                               GError    **error)
+gdm_simple_slave_open_session (GdmSlave  *slave,
+                               GPid       pid_of_caller,
+                               uid_t      uid_of_caller,
+                               char     **address,
+                               GError   **error)
 {
-        GdmSimpleSlave  *self = GDM_SIMPLE_SLAVE (slave);
-        GdmSession      *session;
+        GdmSimpleSlave     *self = GDM_SIMPLE_SLAVE (slave);
+        uid_t               allowed_user;
 
         if (self->priv->session_is_running) {
                 g_set_error (error,
                              G_DBUS_ERROR,
                              G_DBUS_ERROR_ACCESS_DENIED,
-                             _("Greeter access only currently supported"));
+                             _("Can only be called before user is logged in"));
                 return FALSE;
         }
 
-        session = self->priv->session;
+        allowed_user = gdm_session_get_allowed_user (self->priv->session);
 
-        if (gdm_session_client_is_connected (session)) {
+        if (uid_of_caller != allowed_user) {
                 g_set_error (error,
                              G_DBUS_ERROR,
                              G_DBUS_ERROR_ACCESS_DENIED,
-                             _("Currently, only one client can be connected at once"));
+                             _("Caller not GDM"));
                 return FALSE;
         }
 
-        *address = gdm_session_get_server_address (session);
+        *address = gdm_session_get_server_address (self->priv->session);
 
         return TRUE;
+}
+
+static char *
+gdm_simple_slave_open_reauthentication_channel_finish (GdmSlave      *slave,
+                                                       GAsyncResult  *result,
+                                                       GError       **error)
+{
+        GdmSimpleSlave  *self = GDM_SIMPLE_SLAVE (slave);
+        const char      *address;
+        GPid             pid_of_caller;
+
+        pid_of_caller = GPOINTER_TO_INT (g_simple_async_result_get_source_tag (G_SIMPLE_ASYNC_RESULT (result)));
+
+        g_hash_table_remove (self->priv->open_reauthentication_requests,
+                             GINT_TO_POINTER (pid_of_caller));
+
+        address = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+
+        if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error)) {
+                return NULL;
+        }
+
+        return g_strdup (address);
+}
+
+static void
+gdm_simple_slave_open_reauthentication_channel (GdmSlave             *slave,
+                                                const char           *username,
+                                                GPid                  pid_of_caller,
+                                                uid_t                 uid_of_caller,
+                                                GAsyncReadyCallback   callback,
+                                                gpointer              user_data,
+                                                GCancellable         *cancellable)
+{
+        GdmSimpleSlave     *self = GDM_SIMPLE_SLAVE (slave);
+        GSimpleAsyncResult *result;
+
+        result = g_simple_async_result_new (G_OBJECT (slave),
+                                            callback,
+                                            user_data,
+                                            GINT_TO_POINTER (pid_of_caller));
+
+        g_simple_async_result_set_check_cancellable (result, cancellable);
+
+        g_hash_table_insert (self->priv->open_reauthentication_requests,
+                             GINT_TO_POINTER (pid_of_caller),
+                             g_object_ref (result));
+
+        if (!self->priv->session_is_running) {
+                g_simple_async_result_set_error (result,
+                                                 G_DBUS_ERROR,
+                                                 G_DBUS_ERROR_ACCESS_DENIED,
+                                                 _("User not logged in"));
+                g_simple_async_result_complete_in_idle (result);
+
+        } else {
+                gdm_session_start_reauthentication (self->priv->session,
+                                                    pid_of_caller,
+                                                    uid_of_caller);
+        }
 }
 
 static gboolean
@@ -1175,6 +1289,8 @@ gdm_simple_slave_class_init (GdmSimpleSlaveClass *klass)
         slave_class->start = gdm_simple_slave_start;
         slave_class->stop = gdm_simple_slave_stop;
         slave_class->open_session = gdm_simple_slave_open_session;
+        slave_class->open_reauthentication_channel = gdm_simple_slave_open_reauthentication_channel;
+        slave_class->open_reauthentication_channel_finish = gdm_simple_slave_open_reauthentication_channel_finish;
 
         g_type_class_add_private (klass, sizeof (GdmSimpleSlavePrivate));
 }
@@ -1186,6 +1302,13 @@ gdm_simple_slave_init (GdmSimpleSlave *slave)
 #ifdef  HAVE_LOGINDEVPERM
         slave->priv->use_logindevperm = FALSE;
 #endif
+
+        slave->priv->open_reauthentication_requests = g_hash_table_new_full (NULL,
+                                                                             NULL,
+                                                                             (GDestroyNotify)
+                                                                             NULL,
+                                                                             (GDestroyNotify)
+                                                                             g_object_unref);
 }
 
 static void
@@ -1201,6 +1324,8 @@ gdm_simple_slave_finalize (GObject *object)
         g_return_if_fail (slave->priv != NULL);
 
         gdm_simple_slave_stop (GDM_SLAVE (slave));
+
+        g_hash_table_unref (slave->priv->open_reauthentication_requests);
 
         if (slave->priv->greeter_reset_id > 0) {
                 g_source_remove (slave->priv->greeter_reset_id);

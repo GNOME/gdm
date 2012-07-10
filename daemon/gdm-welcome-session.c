@@ -785,6 +785,8 @@ gboolean
 gdm_welcome_session_start (GdmWelcomeSession *welcome_session)
 {
         gboolean          res;
+        struct passwd *passwd_entry;
+        uid_t uid;
 
         g_debug ("GdmWelcomeSession: Starting welcome...");
         res = start_dbus_daemon (welcome_session);
@@ -793,7 +795,16 @@ gdm_welcome_session_start (GdmWelcomeSession *welcome_session)
                 return FALSE;
         }
 
+        res = gdm_get_pwent_for_name (welcome_session->priv->user_name,
+                                      &passwd_entry);
+
+        if (!res) {
+                return FALSE;
+        }
+
+        uid = passwd_entry->pw_uid;
         welcome_session->priv->session = gdm_session_new (welcome_session->priv->verification_mode,
+                                                          uid,
                                                           welcome_session->priv->x11_display_name,
                                                           welcome_session->priv->x11_display_hostname,
                                                           welcome_session->priv->x11_display_device,

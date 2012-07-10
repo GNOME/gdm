@@ -2,6 +2,15 @@
 <node>
   <interface name="org.gnome.DisplayManager.Slave">
     <method name="OpenSession">
+      <arg name="pid_of_caller" type="i" direction="in" />
+      <arg name="uid_of_caller" type="i" direction="in" />
+      <arg name="address" type="s" direction="out" />
+    </method>
+
+    <method name="OpenReauthenticationChannel">
+      <arg name="username" type="s" direction="in" />
+      <arg name="pid_of_caller" type="i" direction="in" />
+      <arg name="uid_of_caller" type="i" direction="in" />
       <arg name="address" type="s" direction="out" />
     </method>
 

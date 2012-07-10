@@ -52,6 +52,7 @@ struct GdmSessionWorkerJobPrivate
 {
         char           *command;
         GPid            pid;
+        gboolean        for_reauth;
 
         guint           child_watch_id;
 
@@ -61,6 +62,7 @@ struct GdmSessionWorkerJobPrivate
 enum {
         PROP_0,
         PROP_SERVER_ADDRESS,
+        PROP_FOR_REAUTH,
 };
 
 enum {
@@ -193,6 +195,10 @@ get_job_environment (GdmSessionWorkerJob *job)
         copy_environment_to_hash (hash);
 
         g_hash_table_insert (hash, g_strdup ("GDM_SESSION_DBUS_ADDRESS"), g_strdup (job->priv->server_address));
+
+        if (job->priv->for_reauth) {
+                g_hash_table_insert (hash, g_strdup ("GDM_SESSION_FOR_REAUTH"), g_strdup ("1"));
+        }
 
         g_hash_table_foreach (hash, (GHFunc)listify_hash, env);
         g_hash_table_destroy (hash);
@@ -349,6 +355,15 @@ gdm_session_worker_job_set_server_address (GdmSessionWorkerJob *session_worker_j
         session_worker_job->priv->server_address = g_strdup (address);
 }
 
+void
+gdm_session_worker_job_set_for_reauth (GdmSessionWorkerJob *session_worker_job,
+                                       gboolean             for_reauth)
+{
+        g_return_if_fail (GDM_IS_SESSION_WORKER_JOB (session_worker_job));
+
+        session_worker_job->priv->for_reauth = for_reauth;
+}
+
 static void
 gdm_session_worker_job_set_property (GObject      *object,
                                      guint         prop_id,
@@ -362,6 +377,9 @@ gdm_session_worker_job_set_property (GObject      *object,
         switch (prop_id) {
         case PROP_SERVER_ADDRESS:
                 gdm_session_worker_job_set_server_address (self, g_value_get_string (value));
+                break;
+        case PROP_FOR_REAUTH:
+                gdm_session_worker_job_set_for_reauth (self, g_value_get_boolean (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -382,6 +400,9 @@ gdm_session_worker_job_get_property (GObject    *object,
         switch (prop_id) {
         case PROP_SERVER_ADDRESS:
                 g_value_set_string (value, self->priv->server_address);
+                break;
+        case PROP_FOR_REAUTH:
+                g_value_set_boolean (value, self->priv->for_reauth);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -422,6 +443,13 @@ gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
                                                               "server address",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_FOR_REAUTH,
+                                         g_param_spec_boolean ("for-reauth",
+                                                               "for reauth",
+                                                               "for reauth",
+                                                               FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         signals [STARTED] =
                 g_signal_new ("started",
                               G_OBJECT_CLASS_TYPE (object_class),

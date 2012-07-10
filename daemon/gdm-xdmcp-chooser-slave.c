@@ -155,6 +155,8 @@ on_chooser_disconnected (GdmSession           *session,
 
 static void
 on_chooser_connected (GdmSession           *session,
+                      GCredentials         *credentials,
+                      GPid                  pid_of_client,
                       GdmXdmcpChooserSlave *slave)
 {
         g_debug ("GdmXdmcpChooserSlave: Chooser connected");
@@ -332,12 +334,14 @@ gdm_xdmcp_chooser_slave_stop (GdmSlave *slave)
 }
 
 static gboolean
-gdm_xdmcp_chooser_slave_open_session (GdmSlave   *slave,
-                                      char      **address,
-                                      GError    **error)
+gdm_xdmcp_chooser_slave_open_session (GdmSlave  *slave,
+                                      GPid       pid_of_caller,
+                                      uid_t      uid_of_caller,
+                                      char     **address,
+                                      GError   **error)
 {
         GdmXdmcpChooserSlave *self = GDM_XDMCP_CHOOSER_SLAVE (slave);
-        GdmSession      *session;
+        GdmSession           *session;
 
         session = gdm_welcome_session_get_session (GDM_WELCOME_SESSION (self->priv->chooser));
 
@@ -346,11 +350,11 @@ gdm_xdmcp_chooser_slave_open_session (GdmSlave   *slave,
                              G_DBUS_ERROR,
                              G_DBUS_ERROR_ACCESS_DENIED,
                              _("Currently, only one client can be connected at once"));
+
                 return FALSE;
         }
 
         *address = gdm_session_get_server_address (session);
-
         return TRUE;
 }
 

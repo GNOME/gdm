@@ -65,7 +65,8 @@ typedef struct
 GType              gdm_session_worker_get_type                 (void);
 GQuark             gdm_session_worker_error_quark              (void);
 
-GdmSessionWorker * gdm_session_worker_new                      (const char *server_address) G_GNUC_MALLOC;
+GdmSessionWorker * gdm_session_worker_new                      (const char *server_address,
+                                                                gboolean    is_for_reauth) G_GNUC_MALLOC;
 
 G_END_DECLS
 

@@ -137,6 +137,7 @@ main (int    argc,
         GdmSessionWorker *worker;
         GdmSignalHandler *signal_handler;
         const char       *address;
+        gboolean          is_for_reauth;
         static GOptionEntry entries []   = {
                 { NULL }
         };
@@ -176,7 +177,9 @@ main (int    argc,
                 exit (1);
         }
 
-        worker = gdm_session_worker_new (address);
+        is_for_reauth = g_getenv ("GDM_SESSION_FOR_REAUTH") != NULL;
+
+        worker = gdm_session_worker_new (address, is_for_reauth);
 
         main_loop = g_main_loop_new (NULL, FALSE);
 

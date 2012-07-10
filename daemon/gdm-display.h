@@ -91,8 +91,17 @@ GType               gdm_display_get_type                       (void);
 int                 gdm_display_get_status                     (GdmDisplay *display);
 time_t              gdm_display_get_creation_time              (GdmDisplay *display);
 char *              gdm_display_open_session_sync              (GdmDisplay    *display,
+                                                                GPid           pid_of_caller,
+                                                                uid_t          uid_of_caller,
                                                                 GCancellable  *cancellable,
                                                                 GError       **error);
+
+char *              gdm_display_open_reauthentication_channel_sync        (GdmDisplay    *display,
+                                                                           const char    *username,
+                                                                           GPid           pid_of_caller,
+                                                                           uid_t          uid_of_caller,
+                                                                           GCancellable  *cancellable,
+                                                                           GError       **error);
 char *              gdm_display_get_session_id                 (GdmDisplay *display);
 gboolean            gdm_display_create_authority               (GdmDisplay *display);
 gboolean            gdm_display_prepare                        (GdmDisplay *display);
