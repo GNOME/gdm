@@ -30,8 +30,6 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
-#include <dbus/dbus-glib.h>
-
 #include "gdm-log.h"
 #include "gdm-common.h"
 #include "gdm-signal-handler.h"
@@ -41,16 +39,19 @@
 
 #include "gdm-greeter-session.h"
 
+#include "gsm-client-glue.h"
+#include "gsm-manager-glue.h"
+
 #define SM_DBUS_NAME      "org.gnome.SessionManager"
 #define SM_DBUS_PATH      "/org/gnome/SessionManager"
 #define SM_DBUS_INTERFACE "org.gnome.SessionManager"
 
 #define SM_CLIENT_DBUS_INTERFACE "org.gnome.SessionManager.ClientPrivate"
 
-static DBusGConnection *bus_connection = NULL;
-static DBusGProxy      *sm_proxy = NULL;
-static char            *client_id = NULL;
-static DBusGProxy      *client_proxy = NULL;
+static GDBusConnection  *bus_connection = NULL;
+static GsmManager       *sm_proxy = NULL;
+static char             *client_id = NULL;
+static GsmClientPrivate *client_proxy = NULL;
 
 static gboolean
 is_debug_set (void)
@@ -127,12 +128,12 @@ signal_cb (int      signo,
 static gboolean
 session_manager_connect (void)
 {
+        GError *error;
+
+        error = NULL;
 
         if (bus_connection == NULL) {
-                GError *error;
-
-                error = NULL;
-                bus_connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+                bus_connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
                 if (bus_connection == NULL) {
                         g_message ("Failed to connect to the session bus: %s",
                                    error->message);
@@ -141,15 +142,25 @@ session_manager_connect (void)
                 }
         }
 
-        sm_proxy = dbus_g_proxy_new_for_name (bus_connection,
-                                              SM_DBUS_NAME,
-                                              SM_DBUS_PATH,
-                                              SM_DBUS_INTERFACE);
+        sm_proxy = gsm_manager_proxy_new_sync (bus_connection,
+                                               G_DBUS_PROXY_FLAGS_NONE,
+                                               SM_DBUS_NAME,
+                                               SM_DBUS_PATH,
+                                               NULL,
+                                               &error);
+
+        if (sm_proxy == NULL) {
+                g_message ("Failed to connect to the session manager: %s",
+                           error->message);
+                g_error_free (error);
+        }
+
         return (sm_proxy != NULL);
 }
 
 static void
-stop_cb (gpointer data)
+stop_cb (GsmClientPrivate *client_private,
+         gpointer          data)
 {
         gtk_main_quit ();
 }
@@ -160,12 +171,11 @@ end_session_response (gboolean is_okay, const gchar *reason)
         gboolean ret;
         GError *error = NULL;
 
-        ret = dbus_g_proxy_call (client_proxy, "EndSessionResponse",
-                                 &error,
-                                 G_TYPE_BOOLEAN, is_okay,
-                                 G_TYPE_STRING, reason,
-                                 G_TYPE_INVALID,
-                                 G_TYPE_INVALID);
+        if (reason == NULL) {
+                reason = "";
+        }
+
+        ret = gsm_client_private_call_end_session_response_sync (client_proxy, is_okay, reason, NULL, &error);
 
         if (!ret) {
                 g_warning ("Failed to send session response %s", error->message);
@@ -176,7 +186,9 @@ end_session_response (gboolean is_okay, const gchar *reason)
 }
 
 static void
-query_end_session_cb (guint flags, gpointer data)
+query_end_session_cb (GsmClientPrivate *client_private,
+                      guint             flags,
+                      gpointer          data)
 {
         end_session_response (TRUE, NULL);
 }
@@ -200,14 +212,7 @@ register_client (void)
         app_id = "gdm-simple-greeter.desktop";
 
         error = NULL;
-        res = dbus_g_proxy_call (sm_proxy,
-                                 "RegisterClient",
-                                 &error,
-                                 G_TYPE_STRING, app_id,
-                                 G_TYPE_STRING, startup_id,
-                                 G_TYPE_INVALID,
-                                 DBUS_TYPE_G_OBJECT_PATH, &client_id,
-                                 G_TYPE_INVALID);
+        res = gsm_manager_call_register_client_sync (sm_proxy, app_id, startup_id, &client_id, NULL, &error);
         if (! res) {
                 g_warning ("Failed to register client: %s", error->message);
                 g_error_free (error);
@@ -215,22 +220,34 @@ register_client (void)
         }
 
         g_debug ("Client registered with session manager: %s", client_id);
-        client_proxy = dbus_g_proxy_new_for_name (bus_connection,
-                                                  SM_DBUS_NAME,
-                                                  client_id,
-                                                  SM_CLIENT_DBUS_INTERFACE);
+        client_proxy = gsm_client_private_proxy_new_sync (bus_connection,
+                                                          G_DBUS_PROXY_FLAGS_NONE,
+                                                          SM_DBUS_NAME,
+                                                          client_id,
+                                                          NULL,
+                                                          &error);
 
-        dbus_g_proxy_add_signal (client_proxy, "Stop", G_TYPE_INVALID);
-        dbus_g_proxy_connect_signal (client_proxy, "Stop",
-                                     G_CALLBACK (stop_cb), NULL, NULL);
+        if (client_proxy == NULL) {
+                g_warning ("Failed to track client: %s", error->message);
+                g_error_free (error);
 
-        dbus_g_proxy_add_signal (client_proxy, "QueryEndSession", G_TYPE_UINT, G_TYPE_INVALID);
-        dbus_g_proxy_connect_signal (client_proxy, "QueryEndSession",
-                                     G_CALLBACK (query_end_session_cb), NULL, NULL);
+                return FALSE;
+        }
 
-        dbus_g_proxy_add_signal (client_proxy, "EndSession", G_TYPE_UINT, G_TYPE_INVALID);
-        dbus_g_proxy_connect_signal (client_proxy, "EndSession",
-                                     G_CALLBACK (end_session_cb), NULL, NULL);
+        g_signal_connect (client_proxy,
+                          "stop",
+                          G_CALLBACK (stop_cb),
+                          NULL);
+
+        g_signal_connect (client_proxy,
+                          "query-end-session",
+                          G_CALLBACK (query_end_session_cb),
+                          NULL);
+
+        g_signal_connect (client_proxy,
+                          "end-session",
+                          G_CALLBACK (end_session_cb),
+                          NULL);
 
         g_unsetenv ("DESKTOP_AUTOSTART_ID");
 
@@ -292,8 +309,10 @@ main (int argc, char *argv[])
         error = NULL;
         res = gdm_greeter_session_start (session, &error);
         if (! res) {
-                g_warning ("Unable to start greeter session: %s", error->message);
-                g_error_free (error);
+                if (error != NULL) {
+                        g_warning ("Unable to start greeter session: %s", error->message);
+                        g_error_free (error);
+                }
                 exit (1);
         }
 

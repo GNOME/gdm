@@ -49,14 +49,11 @@
 
 #include <gtk/gtk.h>
 
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
-
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 #include "gdm-profile.h"
 
-#include "gdm-greeter-client.h"
+#include "gdm-client.h"
 #include "gdm-greeter-login-window.h"
 #include "gdm-user-chooser-widget.h"
 #include "gdm-session-option-widget.h"
