@@ -7,6 +7,7 @@ SUBDIRS = 				\
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/common				\
 	-I$(top_builddir)/common			\
+	-I$(top_srcdir)/gui/libgdm			\
 	-I$(top_srcdir)/gui/simple-greeter/libgdmsimplegreeter	\
 	-DDMCONFDIR=\""$(dmconfdir)"\"			\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"                  \
@@ -36,6 +37,22 @@ noinst_PROGRAMS = 			\
 	test-user-manager		\
 	$(NULL)
 
+gsm-client-glue.c gsm-client-glue.h : org.gnome.SessionManager.ClientPrivate.xml Makefile.am
+	$(AM_V_GEN)gdbus-codegen 					\
+		--c-namespace Gsm				\
+		--interface-prefix=org.gnome.SessionManager		\
+		--generate-c-code=gsm-client-glue			\
+		org.gnome.SessionManager.ClientPrivate.xml
+
+gsm-manager-glue.c gsm-manager-glue.h : org.gnome.SessionManager.xml Makefile.am
+	$(AM_V_GEN)gdbus-codegen 					\
+		--c-namespace Gsm				\
+		--interface-prefix=org.gnome.SessionManager		\
+		--generate-c-code=gsm-manager-glue			\
+		--annotate "org.gnome.SessionManager"			\
+		           "org.gtk.GDBus.C.Name" Manager		\
+		org.gnome.SessionManager.xml
+
 test_greeter_login_window_SOURCES = 	\
 	test-greeter-login-window.c	\
 	gdm-timer.h			\
@@ -64,6 +81,7 @@ test_greeter_login_window_SOURCES = 	\
 
 test_greeter_login_window_LDADD =	\
 	$(top_builddir)/common/libgdmcommon.la	\
+	$(top_builddir)/gui/libgdm/libgdm.la	\
 	$(top_builddir)/gui/simple-greeter/libgdmsimplegreeter/libgdmsimplegreeter.la	\
 	$(top_builddir)/gui/simple-greeter/extensions/unified/libunified.la	\
 	$(COMMON_LIBS)			\
@@ -176,8 +194,6 @@ gdm_simple_greeter_SOURCES =  		\
 	gdm-scrollable-widget.c		\
 	gdm-chooser-widget.h		\
 	gdm-chooser-widget.c		\
-	gdm-greeter-client.h		\
-	gdm-greeter-client.c		\
 	gdm-greeter-session.h		\
 	gdm-greeter-session.c		\
 	gdm-greeter-login-window.c	\
@@ -202,6 +218,7 @@ gdm_simple_greeter_SOURCES =  		\
 
 gdm_simple_greeter_LDADD = 		\
 	$(top_builddir)/common/libgdmcommon.la	\
+	$(top_builddir)/gui/libgdm/libgdm.la	\
 	$(top_builddir)/gui/simple-greeter/libgdmsimplegreeter/libgdmsimplegreeter.la	\
 	$(top_builddir)/gui/simple-greeter/extensions/unified/libunified.la	\
 	$(COMMON_LIBS)			\
@@ -211,6 +228,14 @@ gdm_simple_greeter_LDADD = 		\
 	$(LIBXKLAVIER_LIBS)		\
 	$(UPOWER_LIBS)		\
 	$(NULL)
+
+nodist_gdm_simple_greeter_SOURCES =     \
+	gsm-manager-glue.c		\
+	gsm-manager-glue.h		\
+	gsm-client-glue.c		\
+	gsm-client-glue.h
+
+BUILT_SOURCES = gsm-client-glue.h gsm-manager-glue.h
 
 uidir = $(pkgdatadir)
 ui_DATA = 					\

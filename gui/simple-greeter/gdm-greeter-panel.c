@@ -40,8 +40,6 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
-#include <dbus/dbus-glib.h>
-
 #ifdef HAVE_UPOWER
 #include <upower.h>
 #endif
@@ -626,89 +624,100 @@ on_animation_tick (GdmGreeterPanel *panel,
 }
 
 static gboolean
-try_system_stop (DBusGConnection *connection,
+try_system_stop (GDBusConnection *connection,
                  GError         **error)
 {
-        DBusGProxy      *proxy;
-        gboolean         res;
+        GVariant  *reply;
+        gboolean   res;
+        GError    *call_error;
 
         g_debug ("GdmGreeterPanel: trying to stop system");
 
-        /* try systemd first */
-        proxy = dbus_g_proxy_new_for_name_owner (connection,
-                                                 LOGIN1_NAME,
-                                                 LOGIN1_PATH,
-                                                 LOGIN1_INTERFACE,
-                                                 error);
-        if (proxy) {
-                res = dbus_g_proxy_call_with_timeout (proxy,
-                                                      "PowerOff",
-                                                      INT_MAX,
-                                                      error,
-                                                      /* parameters: */
-                                                      G_TYPE_BOOLEAN,
-                                                      TRUE,
-                                                      G_TYPE_INVALID,
-                                                      /* return values: */
-                                                      G_TYPE_INVALID);
+        call_error = NULL;
+        reply = g_dbus_connection_call_sync (connection,
+                                             LOGIN1_NAME,
+                                             LOGIN1_PATH,
+                                             LOGIN1_INTERFACE,
+                                             "PowerOff",
+                                             g_variant_new ("(b)", TRUE),
+                                             NULL,
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             INT_MAX,
+                                             NULL,
+                                             &call_error);
+
+        if (reply == NULL && g_error_matches (call_error, G_DBUS_ERROR, G_DBUS_ERROR_NAME_HAS_NO_OWNER)) {
+                g_clear_error (&call_error);
+                reply = g_dbus_connection_call_sync (connection,
+                                                     CK_NAME,
+                                                     CK_MANAGER_PATH,
+                                                     CK_MANAGER_INTERFACE,
+                                                     "Stop",
+                                                     NULL,
+                                                     NULL,
+                                                     G_DBUS_CALL_FLAGS_NONE,
+                                                     INT_MAX,
+                                                     NULL,
+                                                     &call_error);
+        }
+
+        if (reply != NULL) {
+                res = TRUE;
+                g_variant_unref (reply);
         } else {
-                proxy = dbus_g_proxy_new_for_name (connection,
-                                                   CK_NAME,
-                                                   CK_MANAGER_PATH,
-                                                   CK_MANAGER_INTERFACE);
-                res = dbus_g_proxy_call_with_timeout (proxy,
-                                                      "Stop",
-                                                      INT_MAX,
-                                                      error,
-                                                      /* parameters: */
-                                                      G_TYPE_INVALID,
-                                                      /* return values: */
-                                                      G_TYPE_INVALID);
+                g_propagate_error (error, call_error);
+                res = FALSE;
         }
 
         return res;
 }
 
 static gboolean
-try_system_restart (DBusGConnection *connection,
+try_system_restart (GDBusConnection *connection,
                     GError         **error)
 {
-        DBusGProxy      *proxy;
-        gboolean         res;
+        GVariant  *reply;
+        gboolean   res;
+        GError    *call_error;
 
         g_debug ("GdmGreeterPanel: trying to restart system");
 
-        /* try systemd first */
-        proxy = dbus_g_proxy_new_for_name_owner (connection,
-                                                 LOGIN1_NAME,
-                                                 LOGIN1_PATH,
-                                                 LOGIN1_INTERFACE,
-                                                 error);
-        if (proxy) {
-                res = dbus_g_proxy_call_with_timeout (proxy,
-                                                      "Reboot",
-                                                      INT_MAX,
-                                                      error,
-                                                      /* parameters: */
-                                                      G_TYPE_BOOLEAN,
-                                                      TRUE,
-                                                      G_TYPE_INVALID,
-                                                      /* return values: */
-                                                      G_TYPE_INVALID);
-        } else {
-                proxy = dbus_g_proxy_new_for_name (connection,
-                                                   CK_NAME,
-                                                   CK_MANAGER_PATH,
-                                                   CK_MANAGER_INTERFACE);
-                res = dbus_g_proxy_call_with_timeout (proxy,
-                                                      "Restart",
-                                                      INT_MAX,
-                                                      error,
-                                                      /* parameters: */
-                                                      G_TYPE_INVALID,
-                                                      /* return values: */
-                                                      G_TYPE_INVALID);
+        call_error = NULL;
+        reply = g_dbus_connection_call_sync (connection,
+                                             LOGIN1_NAME,
+                                             LOGIN1_PATH,
+                                             LOGIN1_INTERFACE,
+                                             "Reboot",
+                                             g_variant_new ("(b)", TRUE),
+                                             NULL,
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             INT_MAX,
+                                             NULL,
+                                             &call_error);
+
+        if (reply == NULL && g_error_matches (call_error, G_DBUS_ERROR, G_DBUS_ERROR_NAME_HAS_NO_OWNER)) {
+                g_clear_error (&call_error);
+                reply = g_dbus_connection_call_sync (connection,
+                                                     CK_NAME,
+                                                     CK_MANAGER_PATH,
+                                                     CK_MANAGER_INTERFACE,
+                                                     "Restart",
+                                                     NULL,
+                                                     NULL,
+                                                     G_DBUS_CALL_FLAGS_NONE,
+                                                     INT_MAX,
+                                                     NULL,
+                                                     &call_error);
         }
+
+        if (reply != NULL) {
+                res = TRUE;
+                g_variant_unref (reply);
+        } else {
+                g_propagate_error (error, call_error);
+                res = FALSE;
+        }
+
         return res;
 }
 
@@ -754,10 +763,10 @@ do_system_restart (void)
 {
         gboolean         res;
         GError          *error;
-        DBusGConnection *connection;
+        GDBusConnection *connection;
 
         error = NULL;
-        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (connection == NULL) {
                 g_warning ("Unable to get system bus connection: %s", error->message);
                 g_error_free (error);
@@ -766,8 +775,7 @@ do_system_restart (void)
 
         res = try_system_restart (connection, &error);
         if (!res) {
-                g_debug ("GdmGreeterPanel: unable to restart system: %s: %s",
-                         dbus_g_error_get_name (error),
+                g_debug ("GdmGreeterPanel: unable to restart system: %s",
                          error->message);
                 g_error_free (error);
         }
@@ -778,10 +786,10 @@ do_system_stop (void)
 {
         gboolean         res;
         GError          *error;
-        DBusGConnection *connection;
+        GDBusConnection *connection;
 
         error = NULL;
-        connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
+        connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
         if (connection == NULL) {
                 g_warning ("Unable to get system bus connection: %s", error->message);
                 g_error_free (error);
@@ -790,8 +798,7 @@ do_system_stop (void)
 
         res = try_system_stop (connection, &error);
         if (!res) {
-                g_debug ("GdmGreeterPanel: unable to stop system: %s: %s",
-                         dbus_g_error_get_name (error),
+                g_debug ("GdmGreeterPanel: unable to stop system: %s",
                          error->message);
                 g_error_free (error);
         }
