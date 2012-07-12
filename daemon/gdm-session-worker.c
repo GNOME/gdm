@@ -281,7 +281,7 @@ open_ck_session (GdmSessionWorker  *worker)
                 goto out;
         }
 
-        worker->priv->session_cookie = g_variant_dup_string (reply, NULL);
+        g_variant_get (reply, "(s)", &worker->priv->session_cookie);
 
         g_variant_unref (reply);
 
