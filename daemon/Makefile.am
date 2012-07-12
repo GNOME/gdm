@@ -30,7 +30,6 @@ AM_CPPFLAGS = \
 
 BUILT_SOURCES =					\
 	gdm-slave-glue.h			\
-	gdm-simple-slave-glue.h			\
 	gdm-xdmcp-chooser-slave-glue.h		\
 	gdm-manager-glue.h			\
 	gdm-display-glue.h			\
@@ -45,8 +44,6 @@ gdm-manager-glue.h: gdm-manager.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_manager --mode=glib-server --output=gdm-manager-glue.h $(srcdir)/gdm-manager.xml
 gdm-slave-glue.h: gdm-slave.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_slave --mode=glib-server --output=gdm-slave-glue.h $(srcdir)/gdm-slave.xml
-gdm-simple-slave-glue.h: gdm-simple-slave.xml Makefile.am
-	dbus-binding-tool --prefix=gdm_simple_slave --mode=glib-server --output=gdm-simple-slave-glue.h $(srcdir)/gdm-simple-slave.xml
 gdm-xdmcp-chooser-slave-glue.h: gdm-xdmcp-chooser-slave.xml Makefile.am
 	dbus-binding-tool --prefix=gdm_xdmcp_chooser_slave --mode=glib-server --output=gdm-xdmcp-chooser-slave-glue.h $(srcdir)/gdm-xdmcp-chooser-slave.xml
 gdm-display-glue.h: gdm-display.xml Makefile.am
