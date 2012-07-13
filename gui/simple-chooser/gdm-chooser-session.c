@@ -30,7 +30,7 @@
 #include <glib-object.h>
 
 #include "gdm-chooser-session.h"
-#include "gdm-chooser-client.h"
+#include "gdm-client.h"
 
 #include "gdm-host-chooser-dialog.h"
 
@@ -38,7 +38,9 @@
 
 struct GdmChooserSessionPrivate
 {
-        GdmChooserClient      *client;
+        GdmClient             *client;
+        GdmRemoteGreeter      *remote_greeter;
+        GdmChooser            *chooser;
         GtkWidget             *chooser_dialog;
 };
 
@@ -150,6 +152,7 @@ on_dialog_response (GtkDialog         *dialog,
                     GdmChooserSession *session)
 {
         GdmChooserHost *host;
+        GError *error = NULL;
 
         host = NULL;
         switch (response_id) {
@@ -172,38 +175,59 @@ on_dialog_response (GtkDialog         *dialog,
                 /* FIXME: fall back to numerical address? */
                 if (hostname != NULL) {
                         g_debug ("GdmChooserSession: Selected hostname '%s'", hostname);
-                        gdm_chooser_client_call_select_hostname (session->priv->client, hostname);
+                        gdm_chooser_call_select_hostname_sync (session->priv->chooser,
+                                                               hostname,
+                                                               NULL,
+                                                               &error);
+
+                        if (error != NULL) {
+                                g_debug ("GdmChooserSession: %s", error->message);
+                                g_clear_error (&error);
+                        }
                         g_free (hostname);
                 }
         }
 
-        gdm_chooser_client_call_disconnect (session->priv->client);
+        gdm_remote_greeter_call_disconnect_sync (session->priv->remote_greeter,
+                                                 NULL,
+                                                 &error);
+        if (error != NULL) {
+                g_debug ("GdmChooserSession: disconnect failed: %s", error->message);
+        }
 }
 
 gboolean
 gdm_chooser_session_start (GdmChooserSession *session,
                            GError           **error)
 {
-        gboolean res;
-
         g_return_val_if_fail (GDM_IS_CHOOSER_SESSION (session), FALSE);
 
-        res = gdm_chooser_client_start (session->priv->client, error);
-
-        if (res) {
-                start_settings_daemon (session);
-                start_window_manager (session);
-
-                /* Only support XDMCP on remote choosers */
-                session->priv->chooser_dialog = gdm_host_chooser_dialog_new (GDM_CHOOSER_HOST_KIND_XDMCP);
-                g_signal_connect (session->priv->chooser_dialog,
-                                  "response",
-                                  G_CALLBACK (on_dialog_response),
-                                  session);
-                gtk_widget_show (session->priv->chooser_dialog);
+        session->priv->remote_greeter = gdm_client_get_remote_greeter_sync (session->priv->client,
+                                                                            NULL,
+                                                                            error);
+        if (session->priv->remote_greeter == NULL) {
+                return FALSE;
         }
 
-        return res;
+        session->priv->chooser = gdm_client_get_chooser_sync (session->priv->client,
+                                                              NULL,
+                                                              error);
+        if (session->priv->chooser == NULL) {
+                return FALSE;
+        }
+
+        start_settings_daemon (session);
+        start_window_manager (session);
+
+        /* Only support XDMCP on remote choosers */
+        session->priv->chooser_dialog = gdm_host_chooser_dialog_new (GDM_CHOOSER_HOST_KIND_XDMCP);
+        g_signal_connect (session->priv->chooser_dialog,
+                          "response",
+                          G_CALLBACK (on_dialog_response),
+                          session);
+        gtk_widget_show (session->priv->chooser_dialog);
+
+        return TRUE;
 }
 
 void
@@ -281,7 +305,7 @@ gdm_chooser_session_init (GdmChooserSession *session)
 
         session->priv = GDM_CHOOSER_SESSION_GET_PRIVATE (session);
 
-        session->priv->client = gdm_chooser_client_new ();
+        session->priv->client = gdm_client_new ();
 }
 
 static void
@@ -295,6 +319,10 @@ gdm_chooser_session_finalize (GObject *object)
         chooser_session = GDM_CHOOSER_SESSION (object);
 
         g_return_if_fail (chooser_session->priv != NULL);
+
+        g_clear_object (&chooser_session->priv->chooser);
+        g_clear_object (&chooser_session->priv->remote_greeter);
+        g_clear_object (&chooser_session->priv->client);
 
         G_OBJECT_CLASS (gdm_chooser_session_parent_class)->finalize (object);
 }

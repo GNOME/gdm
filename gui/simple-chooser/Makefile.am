@@ -2,6 +2,7 @@ NULL =
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/common				\
+	-I$(top_srcdir)/gui/libgdm			\
 	-DAUTHDIR=\""$(authdir)"\"		 	\
 	-DDATADIR=\""$(datadir)"\"		 	\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"			\
@@ -32,14 +33,13 @@ gdm_simple_chooser_SOURCES =  		\
 	gdm-host-chooser-widget.h	\
 	gdm-host-chooser-dialog.c	\
 	gdm-host-chooser-dialog.h	\
-	gdm-chooser-client.c		\
-	gdm-chooser-client.h		\
 	gdm-chooser-session.c		\
 	gdm-chooser-session.h		\
 	$(NULL)
 
 gdm_simple_chooser_LDADD = 		\
 	$(top_builddir)/common/libgdmcommon.la	\
+	$(top_builddir)/gui/libgdm/libgdm.la	\
 	$(GTK_LIBS)			\
 	$(EXTRA_CHOOSER_LIBS)   	\
 	$(SIMPLE_CHOOSER_LIBS)		\
