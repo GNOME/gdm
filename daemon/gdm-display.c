@@ -995,6 +995,8 @@ gdm_display_dispose (GObject *object)
         }
 
         if (display->priv->slave_proxy != NULL) {
+                gdm_slave_proxy_stop (display->priv->slave_proxy);
+
                 g_object_unref (display->priv->slave_proxy);
                 display->priv->slave_proxy = NULL;
         }

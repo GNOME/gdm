@@ -197,6 +197,13 @@ spawn_command_line_async (const char *command_line,
         return ret;
 }
 
+static void
+clear_child_watch (GdmSlaveProxy *slave)
+{
+        slave->priv->child_watch_id = 0;
+        g_object_unref (slave);
+}
+
 static gboolean
 spawn_slave (GdmSlaveProxy *slave)
 {
@@ -219,9 +226,12 @@ spawn_slave (GdmSlaveProxy *slave)
 
         g_debug ("GdmSlaveProxy: Started slave with pid %d", slave->priv->pid);
 
-        slave->priv->child_watch_id = g_child_watch_add (slave->priv->pid,
-                                                         (GChildWatchFunc)child_watch,
-                                                         slave);
+        slave->priv->child_watch_id = g_child_watch_add_full (G_PRIORITY_DEFAULT,
+                                                              slave->priv->pid,
+                                                              (GChildWatchFunc)child_watch,
+                                                              g_object_ref (slave),
+                                                              (GDestroyNotify)
+                                                              clear_child_watch);
 
         result = TRUE;
 
@@ -257,6 +267,8 @@ kill_slave (GdmSlaveProxy *slave)
 gboolean
 gdm_slave_proxy_start (GdmSlaveProxy *slave)
 {
+        gdm_slave_proxy_stop (slave);
+
         spawn_slave (slave);
 
         return TRUE;
