@@ -91,6 +91,7 @@ gdm_wait_on_and_disown_pid (int pid,
         int ret;
         int num_tries;
         int flags;
+        gboolean already_reaped;
 
         if (timeout > 0) {
                 flags = WNOHANG;
@@ -101,12 +102,13 @@ gdm_wait_on_and_disown_pid (int pid,
         }
  wait_again:
         errno = 0;
+        already_reaped = FALSE;
         ret = waitpid (pid, &status, flags);
         if (ret < 0) {
                 if (errno == EINTR) {
                         goto wait_again;
                 } else if (errno == ECHILD) {
-                        ; /* do nothing, child already reaped */
+                        already_reaped = TRUE;
                 } else {
                         g_debug ("GdmCommon: waitpid () should not fail");
                 }
@@ -137,9 +139,11 @@ gdm_wait_on_and_disown_pid (int pid,
 
         g_debug ("GdmCommon: process (pid:%d) done (%s:%d)",
                  (int) pid,
+                 already_reaped? "reaped earlier" :
                  WIFEXITED (status) ? "status"
                  : WIFSIGNALED (status) ? "signal"
                  : "unknown",
+                 already_reaped? 1 :
                  WIFEXITED (status) ? WEXITSTATUS (status)
                  : WIFSIGNALED (status) ? WTERMSIG (status)
                  : -1);
