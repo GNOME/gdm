@@ -46,7 +46,6 @@
 #include "gdm-settings-keys.h"
 
 #include "gdm-simple-slave.h"
-#include "gdm-simple-slave-glue.h"
 
 #include "gdm-server.h"
 #include "gdm-session.h"
