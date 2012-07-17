@@ -523,6 +523,7 @@ gdm_settings_client_init (const char *file,
         list = NULL;
         if (! gdm_settings_parse_schemas (file, root, &list)) {
                 g_warning ("Unable to parse schemas");
+                g_clear_object (&settings_proxy);
                 return FALSE;
         }
 
