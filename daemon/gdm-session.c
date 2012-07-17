@@ -399,9 +399,9 @@ gdm_session_handle_accredited (GdmDBusWorkerManager  *worker_manager_interface,
         switch (self->priv->verification_mode) {
             case GDM_SESSION_VERIFICATION_MODE_REAUTHENTICATE:
                 if (self->priv->user_verifier_interface != NULL) {
-                        g_signal_emit (self, signals[VERIFICATION_COMPLETE], 0, service_name);
                         gdm_dbus_user_verifier_emit_verification_complete (self->priv->user_verifier_interface,
                                                                            service_name);
+                        g_signal_emit (self, signals[VERIFICATION_COMPLETE], 0, service_name);
                 }
                 break;
 
@@ -880,9 +880,9 @@ gdm_session_handle_opened (GdmDBusWorkerManager  *worker_manager_interface,
         }
 
         if (self->priv->user_verifier_interface != NULL) {
-                g_signal_emit (self, signals[VERIFICATION_COMPLETE], 0, service_name);
                 gdm_dbus_user_verifier_emit_verification_complete (self->priv->user_verifier_interface,
                                                                    service_name);
+                g_signal_emit (self, signals[VERIFICATION_COMPLETE], 0, service_name);
         }
 
         g_debug ("GdmSession: Emitting 'session-opened' signal");
