@@ -76,10 +76,6 @@ struct GdmWelcomeSessionPrivate
 
         GPid            dbus_pid;
         char           *dbus_bus_address;
-        char           *server_dbus_path;
-        char           *server_dbus_interface;
-
-        char           *server_address;
 };
 
 enum {
@@ -95,8 +91,6 @@ enum {
         PROP_GROUP_NAME,
         PROP_RUNTIME_DIR,
         PROP_COMMAND,
-        PROP_SERVER_DBUS_PATH,
-        PROP_SERVER_DBUS_INTERFACE,
 };
 
 enum {
@@ -961,22 +955,6 @@ _gdm_welcome_session_set_runtime_dir (GdmWelcomeSession *welcome_session,
 }
 
 static void
-_gdm_welcome_session_set_server_dbus_path (GdmWelcomeSession *welcome_session,
-                                           const char        *name)
-{
-        g_free (welcome_session->priv->server_dbus_path);
-        welcome_session->priv->server_dbus_path = g_strdup (name);
-}
-
-static void
-_gdm_welcome_session_set_server_dbus_interface (GdmWelcomeSession *welcome_session,
-                                                const char        *name)
-{
-        g_free (welcome_session->priv->server_dbus_interface);
-        welcome_session->priv->server_dbus_interface = g_strdup (name);
-}
-
-static void
 _gdm_welcome_session_set_command (GdmWelcomeSession *welcome_session,
                                   const char        *name)
 {
@@ -1024,12 +1002,6 @@ gdm_welcome_session_set_property (GObject      *object,
                 break;
         case PROP_RUNTIME_DIR:
                 _gdm_welcome_session_set_runtime_dir (self, g_value_get_string (value));
-                break;
-        case PROP_SERVER_DBUS_PATH:
-                _gdm_welcome_session_set_server_dbus_path (self, g_value_get_string (value));
-                break;
-        case PROP_SERVER_DBUS_INTERFACE:
-                _gdm_welcome_session_set_server_dbus_interface (self, g_value_get_string (value));
                 break;
         case PROP_COMMAND:
                 _gdm_welcome_session_set_command (self, g_value_get_string (value));
@@ -1080,12 +1052,6 @@ gdm_welcome_session_get_property (GObject    *object,
                 break;
         case PROP_RUNTIME_DIR:
                 g_value_set_string (value, self->priv->runtime_dir);
-                break;
-        case PROP_SERVER_DBUS_PATH:
-                g_value_set_string (value, self->priv->server_dbus_path);
-                break;
-        case PROP_SERVER_DBUS_INTERFACE:
-                g_value_set_string (value, self->priv->server_dbus_interface);
                 break;
         case PROP_COMMAND:
                 g_value_set_string (value, self->priv->command);
@@ -1178,20 +1144,6 @@ gdm_welcome_session_class_init (GdmWelcomeSessionClass *klass)
                                                               "runtime dir",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-        g_object_class_install_property (object_class,
-                                         PROP_SERVER_DBUS_PATH,
-                                         g_param_spec_string ("server-dbus-path",
-                                                              "server dbus path",
-                                                              "server dbus path",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-        g_object_class_install_property (object_class,
-                                         PROP_SERVER_DBUS_INTERFACE,
-                                         g_param_spec_string ("server-dbus-interface",
-                                                              "server dbus interface",
-                                                              "server dbus interface",
-                                                              NULL,
-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
         g_object_class_install_property (object_class,
                                          PROP_COMMAND,
                                          g_param_spec_string ("command",
@@ -1290,9 +1242,6 @@ gdm_welcome_session_finalize (GObject *object)
         g_free (welcome_session->priv->x11_display_device);
         g_free (welcome_session->priv->x11_display_hostname);
         g_free (welcome_session->priv->x11_authority_file);
-        g_free (welcome_session->priv->server_address);
-        g_free (welcome_session->priv->server_dbus_path);
-        g_free (welcome_session->priv->server_dbus_interface);
         g_free (welcome_session->priv->dbus_bus_address);
         g_free (welcome_session->priv->session_id);
 
