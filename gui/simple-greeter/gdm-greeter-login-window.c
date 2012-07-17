@@ -1433,9 +1433,7 @@ on_users_loaded (GdmUserChooserWidget  *user_chooser,
 
         update_banner_message (login_window);
 
-        if (!login_window->priv->user_list_disabled) {
-                gtk_widget_show (login_window->priv->user_chooser);
-        }
+        gtk_widget_show (login_window->priv->user_chooser);
 
         enable_waiting_extensions (login_window);
 
@@ -1443,6 +1441,8 @@ on_users_loaded (GdmUserChooserWidget  *user_chooser,
             && !login_window->priv->timed_login_already_enabled) {
                 request_timed_login (login_window);
         } else if (can_jump_to_authenticate (login_window)) {
+
+                gtk_widget_hide (login_window->priv->user_chooser);
 
                 /* jump straight to authenticate */
                 g_debug ("GdmGreeterLoginWindow: jumping straight to authenticate");
