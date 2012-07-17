@@ -50,7 +50,7 @@
 #include "gdm-server.h"
 #include "gdm-session.h"
 #include "gdm-session-glue.h"
-#include "gdm-welcome-session.h"
+#include "gdm-launch-environment.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 
@@ -76,8 +76,12 @@ struct GdmSimpleSlavePrivate
         guint              connection_attempts;
 
         GdmServer         *server;
+
+        /* we control the user session */
         GdmSession        *session;
-        GdmWelcomeSession *greeter;
+
+        /* this spawns and controls the greeter session */
+        GdmLaunchEnvironment *greeter_environment;
 
         GHashTable        *open_reauthentication_requests;
 
@@ -324,7 +328,7 @@ stop_greeter (GdmSimpleSlave *slave)
 
         g_debug ("GdmSimpleSlave: Stopping greeter");
 
-        if (slave->priv->greeter == NULL) {
+        if (slave->priv->greeter_environment == NULL) {
                 g_debug ("GdmSimpleSlave: No greeter running");
                 return;
         }
@@ -340,7 +344,7 @@ stop_greeter (GdmSimpleSlave *slave)
         }
         g_free (username);
 
-        gdm_welcome_session_stop (GDM_WELCOME_SESSION (slave->priv->greeter));
+        gdm_launch_environment_stop (GDM_LAUNCH_ENVIRONMENT (slave->priv->greeter_environment));
 }
 
 static void
@@ -388,11 +392,11 @@ start_session_timeout (GdmSimpleSlave  *slave)
                 g_free (slave->priv->start_session_service_name);
                 slave->priv->start_session_service_name = NULL;
         } else {
-                if (slave->priv->greeter == NULL) {
+                if (slave->priv->greeter_environment == NULL) {
                         /* auto login */
                         start_session (slave);
                 } else {
-                        /* Session actually gets started from on_greeter_session_stop */
+                        /* Session actually gets started from on_greeter_environment_session_stop */
                         stop_greeter (slave);
                 }
         }
@@ -705,8 +709,8 @@ create_new_session (GdmSimpleSlave  *slave)
 
         g_debug ("GdmSimpleSlave: Creating new session");
 
-        if (slave->priv->greeter != NULL) {
-                greeter_session = gdm_welcome_session_get_session (GDM_WELCOME_SESSION (slave->priv->greeter));
+        if (slave->priv->greeter_environment != NULL) {
+                greeter_session = gdm_launch_environment_get_session (GDM_LAUNCH_ENVIRONMENT (slave->priv->greeter_environment));
                 greeter_uid = gdm_session_get_allowed_user (greeter_session);
         } else {
                 greeter_uid = 0;
@@ -793,28 +797,28 @@ create_new_session (GdmSimpleSlave  *slave)
 }
 
 static void
-on_greeter_session_opened (GdmWelcomeSession *greeter,
-                           GdmSimpleSlave    *slave)
+on_greeter_environment_session_opened (GdmLaunchEnvironment *greeter_environment,
+                                       GdmSimpleSlave       *slave)
 {
         char       *session_id;
 
         g_debug ("GdmSimpleSlave: Greeter session opened");
-        session_id = gdm_welcome_session_get_session_id (GDM_WELCOME_SESSION (greeter));
+        session_id = gdm_launch_environment_get_session_id (GDM_LAUNCH_ENVIRONMENT (greeter_environment));
 
         g_object_set (GDM_SLAVE (slave), "session-id", session_id, NULL);
         g_free (session_id);
 }
 
 static void
-on_greeter_session_started (GdmWelcomeSession *greeter,
-                            GdmSimpleSlave    *slave)
+on_greeter_environment_session_started (GdmLaunchEnvironment *greeter_environment,
+                                        GdmSimpleSlave       *slave)
 {
         g_debug ("GdmSimpleSlave: Greeter started");
 }
 
 static void
-on_greeter_session_stopped (GdmWelcomeSession *greeter,
-                            GdmSimpleSlave    *slave)
+on_greeter_environment_session_stopped (GdmLaunchEnvironment *greeter_environment,
+                                        GdmSimpleSlave       *slave)
 {
         g_debug ("GdmSimpleSlave: Greeter stopped");
         if (slave->priv->start_session_service_name == NULL) {
@@ -823,15 +827,14 @@ on_greeter_session_stopped (GdmWelcomeSession *greeter,
                 start_session (slave);
         }
 
-        g_object_unref (slave->priv->greeter);
-        slave->priv->greeter = NULL;
-
+        g_object_unref (slave->priv->greeter_environment);
+        slave->priv->greeter_environment = NULL;
 }
 
 static void
-on_greeter_session_exited (GdmWelcomeSession    *greeter,
-                           int                   code,
-                           GdmSimpleSlave       *slave)
+on_greeter_environment_session_exited (GdmLaunchEnvironment    *greeter_environment,
+                                       int                      code,
+                                       GdmSimpleSlave          *slave)
 {
         g_debug ("GdmSimpleSlave: Greeter exited: %d", code);
         if (slave->priv->start_session_service_name == NULL) {
@@ -840,9 +843,9 @@ on_greeter_session_exited (GdmWelcomeSession    *greeter,
 }
 
 static void
-on_greeter_session_died (GdmWelcomeSession    *greeter,
-                         int                   signal,
-                         GdmSimpleSlave       *slave)
+on_greeter_environment_session_died (GdmLaunchEnvironment    *greeter_environment,
+                                     int                      signal,
+                                     GdmSimpleSlave          *slave)
 {
         g_debug ("GdmSimpleSlave: Greeter died: %d", signal);
         if (slave->priv->start_session_service_name == NULL) {
@@ -945,12 +948,12 @@ setup_server (GdmSimpleSlave *slave)
 #endif
 }
 
-static GdmWelcomeSession *
-create_greeter_session (const char *display_name,
-                        const char *seat_id,
-                        const char *display_device,
-                        const char *display_hostname,
-                        gboolean    display_is_local)
+static GdmLaunchEnvironment *
+create_greeter_environment (const char *display_name,
+                            const char *seat_id,
+                            const char *display_device,
+                            const char *display_hostname,
+                            gboolean    display_is_local)
 {
         gboolean debug = FALSE;
         char *command = BINDIR "/gnome-session -f";
@@ -961,7 +964,7 @@ create_greeter_session (const char *display_name,
                 command = BINDIR "/gnome-session -f --debug";
         }
 
-        return g_object_new (GDM_TYPE_WELCOME_SESSION,
+        return g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
                              "command", command,
                              "x11-display-name", display_name,
                              "x11-display-seat-id", seat_id,
@@ -1024,36 +1027,36 @@ start_greeter (GdmSimpleSlave *slave)
         gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
 
         g_debug ("GdmSimpleSlave: Creating greeter on %s %s %s", display_name, display_device, display_hostname);
-        slave->priv->greeter = create_greeter_session (display_name,
-                                                       seat_id,
-                                                       display_device,
-                                                       display_hostname,
-                                                       display_is_local);
-        g_signal_connect (slave->priv->greeter,
+        slave->priv->greeter_environment = create_greeter_environment (display_name,
+                                                                       seat_id,
+                                                                       display_device,
+                                                                       display_hostname,
+                                                                       display_is_local);
+        g_signal_connect (slave->priv->greeter_environment,
                           "opened",
-                          G_CALLBACK (on_greeter_session_opened),
+                          G_CALLBACK (on_greeter_environment_session_opened),
                           slave);
-        g_signal_connect (slave->priv->greeter,
+        g_signal_connect (slave->priv->greeter_environment,
                           "started",
-                          G_CALLBACK (on_greeter_session_started),
+                          G_CALLBACK (on_greeter_environment_session_started),
                           slave);
-        g_signal_connect (slave->priv->greeter,
+        g_signal_connect (slave->priv->greeter_environment,
                           "stopped",
-                          G_CALLBACK (on_greeter_session_stopped),
+                          G_CALLBACK (on_greeter_environment_session_stopped),
                           slave);
-        g_signal_connect (slave->priv->greeter,
+        g_signal_connect (slave->priv->greeter_environment,
                           "exited",
-                          G_CALLBACK (on_greeter_session_exited),
+                          G_CALLBACK (on_greeter_environment_session_exited),
                           slave);
-        g_signal_connect (slave->priv->greeter,
+        g_signal_connect (slave->priv->greeter_environment,
                           "died",
-                          G_CALLBACK (on_greeter_session_died),
+                          G_CALLBACK (on_greeter_environment_session_died),
                           slave);
-        g_object_set (slave->priv->greeter,
+        g_object_set (slave->priv->greeter_environment,
                       "x11-authority-file", auth_file,
                       NULL);
 
-        gdm_welcome_session_start (GDM_WELCOME_SESSION (slave->priv->greeter));
+        gdm_launch_environment_start (GDM_LAUNCH_ENVIRONMENT (slave->priv->greeter_environment));
 
         g_free (display_id);
         g_free (display_name);
@@ -1337,7 +1340,7 @@ gdm_simple_slave_stop (GdmSlave *slave)
 
         GDM_SLAVE_CLASS (gdm_simple_slave_parent_class)->stop (slave);
 
-        if (self->priv->greeter != NULL) {
+        if (self->priv->greeter_environment != NULL) {
                 stop_greeter (self);
         }
 

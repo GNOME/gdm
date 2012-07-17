@@ -42,7 +42,7 @@
 #include "gdm-xdmcp-chooser-slave-glue.h"
 
 #include "gdm-server.h"
-#include "gdm-welcome-session.h"
+#include "gdm-launch-environment.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 #include "gdm-session.h"
@@ -64,7 +64,7 @@ struct GdmXdmcpChooserSlavePrivate
 
         guint              connection_attempts;
 
-        GdmWelcomeSession *chooser;
+        GdmLaunchEnvironment *chooser_environment;
 
         GdmDBusXdmcpChooserSlave *skeleton;
 };
@@ -77,38 +77,38 @@ G_DEFINE_TYPE (GdmXdmcpChooserSlave, gdm_xdmcp_chooser_slave, GDM_TYPE_SLAVE)
 
 
 static void
-on_chooser_session_opened (GdmWelcomeSession    *chooser,
+on_chooser_session_opened (GdmLaunchEnvironment    *chooser,
                            GdmXdmcpChooserSlave *slave)
 {
         char       *session_id;
 
         g_debug ("GdmSimpleSlave: Chooser session opened");
-        session_id = gdm_welcome_session_get_session_id (GDM_WELCOME_SESSION (chooser));
+        session_id = gdm_launch_environment_get_session_id (GDM_LAUNCH_ENVIRONMENT (chooser));
 
         g_object_set (GDM_SLAVE (slave), "session-id", session_id, NULL);
         g_free (session_id);
 }
 
 static void
-on_chooser_session_start (GdmWelcomeSession    *chooser,
+on_chooser_session_start (GdmLaunchEnvironment    *chooser,
                           GdmXdmcpChooserSlave *slave)
 {
         g_debug ("GdmXdmcpChooserSlave: Chooser started");
 }
 
 static void
-on_chooser_session_stop (GdmWelcomeSession    *chooser,
+on_chooser_session_stop (GdmLaunchEnvironment    *chooser,
                          GdmXdmcpChooserSlave *slave)
 {
         g_debug ("GdmXdmcpChooserSlave: Chooser stopped");
         gdm_slave_stopped (GDM_SLAVE (slave));
 
-        g_object_unref (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser);
-        GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser = NULL;
+        g_object_unref (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser_environment);
+        GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser_environment = NULL;
 }
 
 static void
-on_chooser_session_exited (GdmWelcomeSession    *chooser,
+on_chooser_session_exited (GdmLaunchEnvironment    *chooser,
                            int                   code,
                            GdmXdmcpChooserSlave *slave)
 {
@@ -120,7 +120,7 @@ on_chooser_session_exited (GdmWelcomeSession    *chooser,
 }
 
 static void
-on_chooser_session_died (GdmWelcomeSession    *chooser,
+on_chooser_session_died (GdmLaunchEnvironment    *chooser,
                          int                   signal,
                          GdmXdmcpChooserSlave *slave)
 {
@@ -169,12 +169,12 @@ setup_server (GdmXdmcpChooserSlave *slave)
         gdm_slave_set_busy_cursor (GDM_SLAVE (slave));
 }
 
-static GdmWelcomeSession *
+static GdmLaunchEnvironment *
 create_chooser_session (const char *display_name,
                         const char *display_device,
                         const char *display_hostname)
 {
-        return g_object_new (GDM_TYPE_WELCOME_SESSION,
+        return g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
                              "command", LIBEXECDIR "/gdm-simple-chooser",
                              "verification-mode", GDM_SESSION_VERIFICATION_MODE_CHOOSER,
                              "x11-display-name", display_name,
@@ -226,36 +226,36 @@ run_chooser (GdmXdmcpChooserSlave *slave)
         gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
 
         g_debug ("GdmXdmcpChooserSlave: Creating chooser on %s %s %s", display_name, display_device, display_hostname);
-        slave->priv->chooser = create_chooser_session (display_name,
+        slave->priv->chooser_environment = create_chooser_session (display_name,
                                                        display_device,
                                                        display_hostname);
-        g_signal_connect (slave->priv->chooser,
+        g_signal_connect (slave->priv->chooser_environment,
                           "opened",
                           G_CALLBACK (on_chooser_session_opened),
                           slave);
-        g_signal_connect (slave->priv->chooser,
+        g_signal_connect (slave->priv->chooser_environment,
                           "started",
                           G_CALLBACK (on_chooser_session_start),
                           slave);
-        g_signal_connect (slave->priv->chooser,
+        g_signal_connect (slave->priv->chooser_environment,
                           "stopped",
                           G_CALLBACK (on_chooser_session_stop),
                           slave);
-        g_signal_connect (slave->priv->chooser,
+        g_signal_connect (slave->priv->chooser_environment,
                           "exited",
                           G_CALLBACK (on_chooser_session_exited),
                           slave);
-        g_signal_connect (slave->priv->chooser,
+        g_signal_connect (slave->priv->chooser_environment,
                           "died",
                           G_CALLBACK (on_chooser_session_died),
                           slave);
-        g_object_set (slave->priv->chooser,
+        g_object_set (slave->priv->chooser_environment,
                       "x11-authority-file", auth_file,
                       NULL);
 
-        gdm_welcome_session_start (GDM_WELCOME_SESSION (slave->priv->chooser));
+        gdm_launch_environment_start (GDM_LAUNCH_ENVIRONMENT (slave->priv->chooser_environment));
 
-        session = gdm_welcome_session_get_session (GDM_WELCOME_SESSION (slave->priv->chooser));
+        session = gdm_launch_environment_get_session (GDM_LAUNCH_ENVIRONMENT (slave->priv->chooser_environment));
 
         g_signal_connect (session,
                           "hostname-selected",
@@ -340,8 +340,8 @@ gdm_xdmcp_chooser_slave_stop (GdmSlave *slave)
 
         GDM_SLAVE_CLASS (gdm_xdmcp_chooser_slave_parent_class)->stop (slave);
 
-        if (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser != NULL) {
-                gdm_welcome_session_stop (GDM_WELCOME_SESSION (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser));
+        if (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser_environment != NULL) {
+                gdm_launch_environment_stop (GDM_LAUNCH_ENVIRONMENT (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser_environment));
         }
 
         return TRUE;
@@ -357,7 +357,7 @@ gdm_xdmcp_chooser_slave_open_session (GdmSlave  *slave,
         GdmXdmcpChooserSlave *self = GDM_XDMCP_CHOOSER_SLAVE (slave);
         GdmSession           *session;
 
-        session = gdm_welcome_session_get_session (GDM_WELCOME_SESSION (self->priv->chooser));
+        session = gdm_launch_environment_get_session (GDM_LAUNCH_ENVIRONMENT (self->priv->chooser_environment));
 
         if (gdm_session_client_is_connected (session)) {
                 g_set_error (error,

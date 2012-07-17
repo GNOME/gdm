@@ -91,7 +91,7 @@ session_DATA = gdm-fallback.session gdm-shell.session
 
 pam_redhat_files = pam-redhat/gdm.pam		\
 	pam-redhat/gdm-autologin.pam		\
-	pam-redhat/gdm-welcome.pam		\
+	pam-redhat/gdm-launch-environment.pam	\
 	pam-redhat/gdm-fingerprint.pam		\
 	pam-redhat/gdm-smartcard.pam		\
 	pam-redhat/gdm-password.pam		\
@@ -100,7 +100,7 @@ EXTRA_DIST += $(pam_redhat_files)
 
 pam_openembedded_files = pam-openembedded/gdm.pam	\
 	pam-openembedded/gdm-autologin.pam		\
-	pam-openembedded/gdm-welcome.pam		\
+	pam-openembedded/gdm-launch-environment.pam	\
 	$(NULL)
 EXTRA_DIST += $(pam_openembedded_files)
 

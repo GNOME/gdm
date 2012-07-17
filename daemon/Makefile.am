@@ -150,8 +150,8 @@ endif
 
 gdm_simple_slave_SOURCES = 		\
 	simple-slave-main.c 		\
-	gdm-welcome-session.c		\
-	gdm-welcome-session.h		\
+	gdm-launch-environment.c	\
+	gdm-launch-environment.h	\
 	gdm-server.c			\
 	gdm-server.h			\
 	gdm-session.c			\
@@ -208,8 +208,8 @@ gdm_xdmcp_chooser_slave_SOURCES = 		\
 	gdm-session-worker-common.h		\
 	gdm-session-worker-job.c		\
 	gdm-session-worker-job.h		\
-	gdm-welcome-session.c			\
-	gdm-welcome-session.h			\
+	gdm-launch-environment.c		\
+	gdm-launch-environment.h		\
 	gdm-xerrors.h				\
 	gdm-xerrors.c				\
 	gdm-slave.c				\
