@@ -42,7 +42,7 @@
 #include "gdm-xdmcp-chooser-slave-glue.h"
 
 #include "gdm-server.h"
-#include "gdm-chooser-session.h"
+#include "gdm-welcome-session.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 #include "gdm-session.h"
@@ -64,7 +64,7 @@ struct GdmXdmcpChooserSlavePrivate
 
         guint              connection_attempts;
 
-        GdmChooserSession *chooser;
+        GdmWelcomeSession *chooser;
 
         GdmDBusXdmcpChooserSlave *skeleton;
 };
@@ -77,7 +77,7 @@ G_DEFINE_TYPE (GdmXdmcpChooserSlave, gdm_xdmcp_chooser_slave, GDM_TYPE_SLAVE)
 
 
 static void
-on_chooser_session_opened (GdmChooserSession    *chooser,
+on_chooser_session_opened (GdmWelcomeSession    *chooser,
                            GdmXdmcpChooserSlave *slave)
 {
         char       *session_id;
@@ -90,14 +90,14 @@ on_chooser_session_opened (GdmChooserSession    *chooser,
 }
 
 static void
-on_chooser_session_start (GdmChooserSession    *chooser,
+on_chooser_session_start (GdmWelcomeSession    *chooser,
                           GdmXdmcpChooserSlave *slave)
 {
         g_debug ("GdmXdmcpChooserSlave: Chooser started");
 }
 
 static void
-on_chooser_session_stop (GdmChooserSession    *chooser,
+on_chooser_session_stop (GdmWelcomeSession    *chooser,
                          GdmXdmcpChooserSlave *slave)
 {
         g_debug ("GdmXdmcpChooserSlave: Chooser stopped");
@@ -108,7 +108,7 @@ on_chooser_session_stop (GdmChooserSession    *chooser,
 }
 
 static void
-on_chooser_session_exited (GdmChooserSession    *chooser,
+on_chooser_session_exited (GdmWelcomeSession    *chooser,
                            int                   code,
                            GdmXdmcpChooserSlave *slave)
 {
@@ -120,7 +120,7 @@ on_chooser_session_exited (GdmChooserSession    *chooser,
 }
 
 static void
-on_chooser_session_died (GdmChooserSession    *chooser,
+on_chooser_session_died (GdmWelcomeSession    *chooser,
                          int                   signal,
                          GdmXdmcpChooserSlave *slave)
 {
@@ -167,6 +167,20 @@ setup_server (GdmXdmcpChooserSlave *slave)
 {
         /* Set the busy cursor */
         gdm_slave_set_busy_cursor (GDM_SLAVE (slave));
+}
+
+static GdmWelcomeSession *
+create_chooser_session (const char *display_name,
+                        const char *display_device,
+                        const char *display_hostname)
+{
+        return g_object_new (GDM_TYPE_WELCOME_SESSION,
+                             "command", LIBEXECDIR "/gdm-simple-chooser",
+                             "verification-mode", GDM_SESSION_VERIFICATION_MODE_CHOOSER,
+                             "x11-display-name", display_name,
+                             "x11-display-device", display_device,
+                             "x11-display-hostname", display_hostname,
+                             NULL);
 }
 
 static void

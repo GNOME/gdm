@@ -144,8 +144,6 @@ gdm_simple_slave_SOURCES = 		\
 	simple-slave-main.c 		\
 	gdm-welcome-session.c		\
 	gdm-welcome-session.h		\
-	gdm-greeter-session.c		\
-	gdm-greeter-session.h		\
 	gdm-server.c			\
 	gdm-server.h			\
 	gdm-session.c			\
@@ -198,8 +196,6 @@ gdm_xdmcp_chooser_slave_SOURCES = 		\
 	gdm-session-worker-job.h		\
 	gdm-welcome-session.c			\
 	gdm-welcome-session.h			\
-	gdm-chooser-session.c			\
-	gdm-chooser-session.h			\
 	gdm-xerrors.h				\
 	gdm-xerrors.c				\
 	gdm-slave.c				\

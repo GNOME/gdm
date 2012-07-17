@@ -50,7 +50,7 @@
 #include "gdm-server.h"
 #include "gdm-session.h"
 #include "gdm-session-glue.h"
-#include "gdm-greeter-session.h"
+#include "gdm-welcome-session.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 
@@ -77,7 +77,7 @@ struct GdmSimpleSlavePrivate
 
         GdmServer         *server;
         GdmSession        *session;
-        GdmGreeterSession *greeter;
+        GdmWelcomeSession *greeter;
 
         GHashTable        *open_reauthentication_requests;
 
@@ -690,7 +690,7 @@ create_new_session (GdmSimpleSlave  *slave)
 }
 
 static void
-on_greeter_session_opened (GdmGreeterSession *greeter,
+on_greeter_session_opened (GdmWelcomeSession *greeter,
                            GdmSimpleSlave    *slave)
 {
         char       *session_id;
@@ -703,14 +703,14 @@ on_greeter_session_opened (GdmGreeterSession *greeter,
 }
 
 static void
-on_greeter_session_started (GdmGreeterSession *greeter,
+on_greeter_session_started (GdmWelcomeSession *greeter,
                             GdmSimpleSlave    *slave)
 {
         g_debug ("GdmSimpleSlave: Greeter started");
 }
 
 static void
-on_greeter_session_stopped (GdmGreeterSession *greeter,
+on_greeter_session_stopped (GdmWelcomeSession *greeter,
                             GdmSimpleSlave    *slave)
 {
         g_debug ("GdmSimpleSlave: Greeter stopped");
@@ -726,7 +726,7 @@ on_greeter_session_stopped (GdmGreeterSession *greeter,
 }
 
 static void
-on_greeter_session_exited (GdmGreeterSession    *greeter,
+on_greeter_session_exited (GdmWelcomeSession    *greeter,
                            int                   code,
                            GdmSimpleSlave       *slave)
 {
@@ -737,7 +737,7 @@ on_greeter_session_exited (GdmGreeterSession    *greeter,
 }
 
 static void
-on_greeter_session_died (GdmGreeterSession    *greeter,
+on_greeter_session_died (GdmWelcomeSession    *greeter,
                          int                   signal,
                          GdmSimpleSlave       *slave)
 {
@@ -842,6 +842,33 @@ setup_server (GdmSimpleSlave *slave)
 #endif
 }
 
+static GdmWelcomeSession *
+create_greeter_session (const char *display_name,
+                        const char *seat_id,
+                        const char *display_device,
+                        const char *display_hostname,
+                        gboolean    display_is_local)
+{
+        gboolean debug = FALSE;
+        char *command = BINDIR "/gnome-session -f";
+
+        gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);
+
+        if (debug) {
+                command = BINDIR "/gnome-session -f --debug";
+        }
+
+        return g_object_new (GDM_TYPE_WELCOME_SESSION,
+                             "command", command,
+                             "x11-display-name", display_name,
+                             "x11-display-seat-id", seat_id,
+                             "x11-display-device", display_device,
+                             "x11-display-hostname", display_hostname,
+                             "x11-display-is-local", display_is_local,
+                             "runtime-dir", GDM_SCREENSHOT_DIR,
+                             NULL);
+}
+
 static void
 start_greeter (GdmSimpleSlave *slave)
 {
@@ -894,11 +921,11 @@ start_greeter (GdmSimpleSlave *slave)
         gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
 
         g_debug ("GdmSimpleSlave: Creating greeter on %s %s %s", display_name, display_device, display_hostname);
-        slave->priv->greeter = gdm_greeter_session_new (display_name,
-                                                        seat_id,
-                                                        display_device,
-                                                        display_hostname,
-                                                        display_is_local);
+        slave->priv->greeter = create_greeter_session (display_name,
+                                                       seat_id,
+                                                       display_device,
+                                                       display_hostname,
+                                                       display_is_local);
         g_signal_connect (slave->priv->greeter,
                           "opened",
                           G_CALLBACK (on_greeter_session_opened),
