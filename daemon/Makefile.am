@@ -165,8 +165,6 @@ gdm_simple_slave_SOURCES = 		\
 	$(NULL)
 
 nodist_gdm_simple_slave_SOURCES = 	\
-	gdm-greeter-glue.c		\
-	gdm-greeter-glue.h		\
 	gdm-display-glue.c		\
 	gdm-display-glue.h		\
 	gdm-session-enum-types.c	\
@@ -386,6 +384,7 @@ CLEANFILES =					\
 	gdm-local-display-factory-glue.c	\
 	gdm-manager-glue.c			\
 	gdm-session-glue.c			\
+	gdm-session-enum-types.c		\
 	gdm-slave-glue.c			\
 	gdm-static-display-glue.c		\
 	gdm-transient-display-glue.c		\
@@ -396,12 +395,15 @@ CLEANFILES =					\
 
 EXTRA_DIST = 				\
 	gdm.in				\
+	gdm-manager.xml			\
+	gdm-session.xml			\
 	gdm-slave.xml			\
-	gdm-simple-slave.xml		\
 	gdm-xdmcp-chooser-slave.xml	\
 	gdm-display.xml			\
 	gdm-xdmcp-display.xml		\
 	gdm-static-display.xml		\
 	gdm-transient-display.xml	\
 	gdm-local-display-factory.xml	\
+	gdm-session-enum-types.c.in	\
+	gdm-session-enum-types.h.in	\
 	$(NULL)

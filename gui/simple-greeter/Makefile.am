@@ -8,6 +8,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/common				\
 	-I$(top_builddir)/common			\
 	-I$(top_srcdir)/gui/libgdm			\
+	-I$(top_builddir)/gui/libgdm			\
 	-I$(top_srcdir)/gui/simple-greeter/libgdmsimplegreeter	\
 	-DDMCONFDIR=\""$(dmconfdir)"\"			\
 	-DGDMCONFDIR=\"$(gdmconfdir)\"                  \
@@ -42,7 +43,7 @@ gsm-client-glue.c gsm-client-glue.h : org.gnome.SessionManager.ClientPrivate.xml
 		--c-namespace Gsm				\
 		--interface-prefix=org.gnome.SessionManager		\
 		--generate-c-code=gsm-client-glue			\
-		org.gnome.SessionManager.ClientPrivate.xml
+		$(srcdir)/org.gnome.SessionManager.ClientPrivate.xml
 
 gsm-manager-glue.c gsm-manager-glue.h : org.gnome.SessionManager.xml Makefile.am
 	$(AM_V_GEN)gdbus-codegen 					\
@@ -51,7 +52,7 @@ gsm-manager-glue.c gsm-manager-glue.h : org.gnome.SessionManager.xml Makefile.am
 		--generate-c-code=gsm-manager-glue			\
 		--annotate "org.gnome.SessionManager"			\
 		           "org.gtk.GDBus.C.Name" Manager		\
-		org.gnome.SessionManager.xml
+		$(srcdir)/org.gnome.SessionManager.xml
 
 test_greeter_login_window_SOURCES = 	\
 	test-greeter-login-window.c	\
@@ -235,6 +236,12 @@ nodist_gdm_simple_greeter_SOURCES =     \
 	gsm-client-glue.c		\
 	gsm-client-glue.h
 
+CLEANFILES = \
+	gsm-manager-glue.c		\
+	gsm-manager-glue.h		\
+	gsm-client-glue.c		\
+	gsm-client-glue.h
+
 BUILT_SOURCES = gsm-client-glue.h gsm-manager-glue.h
 
 uidir = $(pkgdatadir)
@@ -243,6 +250,8 @@ ui_DATA = 					\
 	$(NULL)
 
 EXTRA_DIST = 						\
+	org.gnome.SessionManager.ClientPrivate.xml      \
+	org.gnome.SessionManager.xml                    \
 	$(ui_DATA)					\
 	$(NULL)
 

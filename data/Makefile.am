@@ -164,7 +164,8 @@ uninstall-hook:
 	$(DESTDIR)$(sysconfdir)/dconf/db/gdm.d \
 	$(DESTDIR)$(workingdir)/.config/dconf \
 	$(DESTDIR)$(screenshotdir) \
-	$(DESTDIR)$(xauthdir)
+	$(DESTDIR)$(xauthdir) \
+	$(DESTDIR)$(PAM_PREFIX)/pam.d
 
 	-rmdir \
 	$(DESTDIR)$(sysconfdir)/dconf/db/gdm.d/locks \
