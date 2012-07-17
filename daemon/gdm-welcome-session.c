@@ -748,7 +748,10 @@ on_conversation_started (GdmSession        *session,
         log_path = g_build_filename (LOGDIR, log_file, NULL);
         g_free (log_file);
 
-        gdm_session_setup_for_program (welcome_session->priv->session, "gdm-welcome", log_path);
+        gdm_session_setup_for_program (welcome_session->priv->session,
+                                       "gdm-welcome",
+                                       welcome_session->priv->user_name,
+                                       log_path);
         g_free (log_path);
 }
 

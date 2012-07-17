@@ -2686,6 +2686,7 @@ on_setup_for_user (GdmDBusWorkerManager *proxy,
 static void
 on_setup_for_program (GdmDBusWorkerManager *proxy,
                       const char           *service,
+                      const char           *username,
                       const char           *x11_display_name,
                       const char           *x11_authority_file,
                       const char           *console,
@@ -2707,7 +2708,7 @@ on_setup_for_program (GdmDBusWorkerManager *proxy,
         worker->priv->display_seat_id = g_strdup (seat_id);
         worker->priv->hostname = g_strdup (hostname);
         worker->priv->display_is_local = display_is_local;
-        worker->priv->username = g_strdup (GDM_USERNAME);
+        worker->priv->username = g_strdup (username);
         worker->priv->log_file = g_strdup (log_file);
         worker->priv->is_program_session = TRUE;
 

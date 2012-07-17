@@ -2161,6 +2161,7 @@ send_setup_for_user (GdmSession *self,
 static void
 send_setup_for_program (GdmSession *self,
                         const char *service_name,
+                        const char *username,
                         const char *log_file)
 {
         const char     *display_name;
@@ -2204,6 +2205,7 @@ send_setup_for_program (GdmSession *self,
         if (conversation != NULL) {
                 gdm_dbus_worker_manager_emit_setup_for_program (conversation->worker_manager_interface,
                                                                 service_name,
+                                                                username,
                                                                 display_name,
                                                                 display_x11_authority_file,
                                                                 display_device,
@@ -2244,12 +2246,13 @@ gdm_session_setup_for_user (GdmSession *self,
 void
 gdm_session_setup_for_program (GdmSession *self,
                                const char *service_name,
+                               const char *username,
                                const char *log_file)
 {
 
         g_return_if_fail (GDM_IS_SESSION (self));
 
-        send_setup_for_program (self, service_name, log_file);
+        send_setup_for_program (self, service_name, username, log_file);
 }
 
 void
