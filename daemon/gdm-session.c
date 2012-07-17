@@ -992,8 +992,8 @@ gdm_session_handle_reauthenticated (GdmDBusWorkerManager  *worker_manager_interf
                                     const char            *service_name,
                                     GdmSession            *self)
 {
-        gdm_dbus_worker_manager_complete_reauthentication_started (worker_manager_interface,
-                                                                   invocation);
+        gdm_dbus_worker_manager_complete_reauthenticated (worker_manager_interface,
+                                                          invocation);
 
         g_debug ("GdmSession: Emitting 'reauthenticated' signal ");
         g_signal_emit (self, signals[REAUTHENTICATED], 0, service_name);
