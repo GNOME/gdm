@@ -40,6 +40,8 @@
 
 #include <X11/Xlib.h> /* for Display */
 
+#include <act/act-user-manager.h>
+
 #include "gdm-common.h"
 
 #include "gdm-settings-client.h"
@@ -61,6 +63,8 @@
 
 #define MAX_CONNECT_ATTEMPTS  10
 #define DEFAULT_PING_INTERVAL 15
+
+#define INITIAL_SETUP_USERNAME "gdm-initial-setup"
 
 struct GdmSimpleSlavePrivate
 {
@@ -107,7 +111,6 @@ static void     gdm_simple_slave_finalize       (GObject             *object);
 G_DEFINE_TYPE (GdmSimpleSlave, gdm_simple_slave, GDM_TYPE_SLAVE)
 
 static void create_new_session (GdmSimpleSlave  *slave);
-static void start_greeter      (GdmSimpleSlave *slave);
 static void start_session      (GdmSimpleSlave  *slave);
 static void queue_start_session (GdmSimpleSlave *slave,
                                  const char     *service_name);
@@ -949,34 +952,59 @@ setup_server (GdmSimpleSlave *slave)
 }
 
 static GdmLaunchEnvironment *
-create_greeter_environment (const char *display_name,
-                            const char *seat_id,
-                            const char *display_device,
-                            const char *display_hostname,
-                            gboolean    display_is_local)
+create_environment (const char *session_id,
+                    const char *user_name,
+                    const char *display_name,
+                    const char *seat_id,
+                    const char *display_device,
+                    const char *display_hostname,
+                    gboolean    display_is_local)
 {
         gboolean debug = FALSE;
-        char *command = BINDIR "/gnome-session -f";
+        char *command;
+        GdmLaunchEnvironment *launch_environment;
+        char **argv;
+        GPtrArray *args;
 
         gdm_settings_direct_get_boolean (GDM_KEY_DEBUG, &debug);
 
+        args = g_ptr_array_new ();
+        g_ptr_array_add (args, BINDIR "/gnome-session -f");
+
         if (debug) {
-                command = BINDIR "/gnome-session -f --debug";
+                g_ptr_array_add (args, "--debug");
         }
 
-        return g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
-                             "command", command,
-                             "x11-display-name", display_name,
-                             "x11-display-seat-id", seat_id,
-                             "x11-display-device", display_device,
-                             "x11-display-hostname", display_hostname,
-                             "x11-display-is-local", display_is_local,
-                             "runtime-dir", GDM_SCREENSHOT_DIR,
-                             NULL);
+        if (session_id != NULL) {
+                g_ptr_array_add (args, " --session=");
+                g_ptr_array_add (args, (char *) session_id);
+        }
+
+        g_ptr_array_add (args, NULL);
+
+        argv = (char **) g_ptr_array_free (args, FALSE);
+        command = g_strjoinv (" ", argv);
+        g_free (argv);
+
+        launch_environment = g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
+                                           "command", command,
+                                           "user-name", user_name,
+                                           "x11-display-name", display_name,
+                                           "x11-display-seat-id", seat_id,
+                                           "x11-display-device", display_device,
+                                           "x11-display-hostname", display_hostname,
+                                           "x11-display-is-local", display_is_local,
+                                           "runtime-dir", GDM_SCREENSHOT_DIR,
+                                           NULL);
+
+        g_free (command);
+        return launch_environment;
 }
 
 static void
-start_greeter (GdmSimpleSlave *slave)
+start_launch_environment (GdmSimpleSlave *slave,
+                          char           *username,
+                          char           *session_id)
 {
         gboolean       display_is_local;
         char          *display_id;
@@ -1027,11 +1055,13 @@ start_greeter (GdmSimpleSlave *slave)
         gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
 
         g_debug ("GdmSimpleSlave: Creating greeter on %s %s %s", display_name, display_device, display_hostname);
-        slave->priv->greeter_environment = create_greeter_environment (display_name,
-                                                                       seat_id,
-                                                                       display_device,
-                                                                       display_hostname,
-                                                                       display_is_local);
+        slave->priv->greeter_environment = create_environment (session_id,
+                                                               GDM_USERNAME,
+                                                               display_name,
+                                                               seat_id,
+                                                               display_device,
+                                                               display_hostname,
+                                                               display_is_local);
         g_signal_connect (slave->priv->greeter_environment,
                           "opened",
                           G_CALLBACK (on_greeter_environment_session_opened),
@@ -1066,6 +1096,142 @@ start_greeter (GdmSimpleSlave *slave)
         g_free (auth_file);
 }
 
+static void
+start_greeter (GdmSimpleSlave *slave)
+{
+        start_launch_environment (slave, GDM_USERNAME, NULL);
+}
+
+#define RULES_DIR LOCALSTATEDIR "/lib/polkit-1/localauthority/10-vendor.d/"
+#define RULES_FILE "20-gnome-initial-setup.rules"
+
+static const gboolean
+create_initial_setup_user (GdmSimpleSlave *slave)
+{
+        gboolean ret = TRUE;
+        ActUserManager *act;
+        ActUser *user;
+        const char *username;
+        GFile *src_file, *dest_file;
+        GError *error = NULL;
+        const char *e = NULL;
+
+        username = "gnome-initial-setup";
+
+        /* First, create the user */
+        act = act_user_manager_get_default ();
+
+        user = act_user_manager_create_user (act, username, "", 0, &error);
+        if (user == NULL) {
+                if (g_dbus_error_is_remote_error (error)) {
+                        e = g_dbus_error_get_remote_error (error);
+		}
+
+                g_warning ("Creating user '%s' failed: %s / %s", username, e, error->message);
+
+                if (g_strcmp0 (e, "org.freedesktop.Accounts.Error.UserExists") != 0) {
+                        ret = FALSE;
+                        goto out;
+                }
+        } else {
+                g_object_unref (user);
+        }
+
+        /* Now, make sure the PolicyKit policy is in place */
+        src_file = g_file_new_for_path (DATADIR "/gnome-initial-setup" RULES_FILE);
+        dest_file = g_file_new_for_path (RULES_DIR RULES_FILE);
+
+        if (!g_file_copy (src_file,
+                          dest_file,
+                          G_FILE_COPY_OVERWRITE,
+                          NULL, NULL, NULL, &error)) {
+                g_warning ("Failed to copy '%s' to '%s': %s",
+                           g_file_get_path (src_file),
+                           g_file_get_path (dest_file),
+                           error->message);
+                ret = FALSE;
+                goto out_clear_files;
+        }
+
+ out_clear_files:
+        g_object_unref (src_file);
+        g_object_unref (dest_file);
+
+ out:
+        g_clear_pointer (&e, g_free);
+        g_clear_error (&error);
+        return ret;
+}
+
+static void
+destroy_initial_setup_user (GdmSimpleSlave *slave)
+{
+        ActUserManager *act;
+        ActUser *user;
+        const char *username;
+        const char *filename;
+        GError *error;
+
+        username = "gnome-initial-setup";
+        filename = RULES_DIR RULES_FILE;
+
+        if (g_remove (filename) < 0) {
+                g_warning ("Failed to remove '%s': %s", filename, g_strerror (errno));
+        }
+
+        act = act_user_manager_get_default ();
+
+        error = NULL;
+        user = act_user_manager_get_user (act, username);
+        if (!act_user_manager_delete_user (act, user, TRUE, &error)) {
+                g_warning ("Failed to create user '%s': %s", username, error->message);
+                g_error_free (error);
+        }
+
+        g_object_unref (user);
+}
+
+static void
+start_initial_setup (GdmSimpleSlave *slave)
+{
+        create_initial_setup_user (slave);
+        start_launch_environment (slave, INITIAL_SETUP_USERNAME, "gnome-initial-setup");
+        destroy_initial_setup_user (slave);
+}
+
+static gboolean
+wants_autologin (GdmSimpleSlave *slave)
+{
+        gboolean enabled = FALSE;
+        int delay = 0;
+        /* FIXME: handle wait-for-go */
+
+        gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &enabled, NULL, &delay);
+        return enabled && delay > 0;
+}
+
+#define INITIAL_SETUP_TRIGGER_FILE LOCALSTATEDIR "lib/gdm/run-initial-setup"
+
+static gboolean
+wants_initial_setup (GdmSimpleSlave *slave)
+{
+        gboolean enabled;
+
+        if (!g_file_test (INITIAL_SETUP_TRIGGER_FILE, G_FILE_TEST_EXISTS)) {
+                return FALSE;
+        }
+
+        if (!gdm_settings_direct_get_boolean (GDM_KEY_INITIAL_SETUP_ENABLE, &enabled)) {
+                return FALSE;
+        }
+
+        if (!enabled) {
+                return FALSE;
+        }
+
+        return TRUE;
+}
+
 static gboolean
 idle_connect_to_display (GdmSimpleSlave *slave)
 {
@@ -1075,23 +1241,16 @@ idle_connect_to_display (GdmSimpleSlave *slave)
 
         res = gdm_slave_connect_to_x11_display (GDM_SLAVE (slave));
         if (res) {
-                gboolean enabled;
-                int      delay;
-
-                /* FIXME: handle wait-for-go */
-
                 setup_server (slave);
 
-                delay = 0;
-                enabled = FALSE;
-                gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &enabled, NULL, &delay);
-                if (! enabled || delay > 0) {
-                        start_greeter (slave);
-                } else {
+                if (wants_initial_setup (slave)) {
+                        start_initial_setup (slave);
+                } else if (wants_autologin (slave)) {
                         /* Run the init script. gdmslave suspends until script has terminated */
                         gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
+                } else {
+                        start_greeter (slave);
                 }
-
                 create_new_session (slave);
         } else {
                 if (slave->priv->connection_attempts >= MAX_CONNECT_ATTEMPTS) {
