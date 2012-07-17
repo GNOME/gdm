@@ -78,6 +78,7 @@ typedef struct
         GDBusConnection       *worker_connection;
         GDBusMethodInvocation *starting_invocation;
         char                  *starting_username;
+        char                  *starting_secret;
         GDBusMethodInvocation *pending_invocation;
         GdmDBusWorkerManager  *worker_manager_interface;
         GdmDBusWorker         *worker_proxy;
@@ -1051,6 +1052,13 @@ register_worker (GdmDBusWorkerManager  *worker_manager_interface,
         }
 
         if (conversation->starting_invocation != NULL) {
+                if (conversation->starting_secret != NULL) {
+                        gdm_dbus_worker_call_set_initial_secret (conversation->worker_proxy,
+                                                                 conversation->starting_secret,
+                                                                 NULL, NULL, NULL);
+                        g_clear_pointer (&conversation->starting_secret, (GDestroyNotify) g_free);
+                }
+
                 if (conversation->starting_username != NULL) {
                         gdm_session_setup_for_user (self, conversation->service_name, conversation->starting_username);
 
@@ -1199,6 +1207,27 @@ gdm_session_handle_client_begin_verification_for_user (GdmDBusUserVerifier    *u
 }
 
 static gboolean
+gdm_session_handle_client_begin_verification_for_user_with_secret (GdmDBusUserVerifier   *user_verifier_interface,
+                                                                   GDBusMethodInvocation *invocation,
+                                                                   const char            *service_name,
+                                                                   const char            *username,
+                                                                   const char            *secret,
+                                                                   GdmSession            *self)
+{
+        GdmSessionConversation *conversation;
+
+        conversation = begin_verification_conversation (self, invocation, service_name);
+
+        if (conversation != NULL) {
+                conversation->starting_invocation = g_object_ref (invocation);
+                conversation->starting_username = g_strdup (username);
+                conversation->starting_secret = g_strdup (secret);
+        }
+
+        return TRUE;
+}
+
+static gboolean
 gdm_session_handle_client_answer_query (GdmDBusUserVerifier    *user_verifier_interface,
                                         GDBusMethodInvocation  *invocation,
                                         const char             *service_name,
@@ -1315,6 +1344,10 @@ export_user_verifier_interface (GdmSession      *self,
         g_signal_connect (user_verifier_interface,
                           "handle-begin-verification-for-user",
                           G_CALLBACK (gdm_session_handle_client_begin_verification_for_user),
+                          self);
+        g_signal_connect (user_verifier_interface,
+                          "handle-begin-verification-for-user-with-secret",
+                          G_CALLBACK (gdm_session_handle_client_begin_verification_for_user_with_secret),
                           self);
         g_signal_connect (user_verifier_interface,
                           "handle-answer-query",
@@ -1618,6 +1651,7 @@ free_conversation (GdmSessionConversation *conversation)
         g_free (conversation->service_name);
         g_free (conversation->starting_username);
         g_free (conversation->session_id);
+        g_free (conversation->starting_secret);
         g_clear_object (&conversation->session);
         g_free (conversation);
 }
