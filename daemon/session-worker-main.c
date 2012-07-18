@@ -44,9 +44,6 @@
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 
-#define SERVER_DBUS_PATH      "/org/gnome/DisplayManager/SessionServer"
-#define SERVER_DBUS_INTERFACE "org.gnome.DisplayManager.SessionServer"
-
 static GdmSettings *settings = NULL;
 
 static gboolean

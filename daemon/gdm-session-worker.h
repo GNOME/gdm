@@ -23,6 +23,9 @@
 
 #include <glib-object.h>
 
+#include "gdm-session-worker-glue.h"
+#include "gdm-session-worker-common.h"
+
 G_BEGIN_DECLS
 
 #define GDM_TYPE_SESSION_WORKER            (gdm_session_worker_get_type ())
@@ -32,38 +35,20 @@ G_BEGIN_DECLS
 #define GDM_IS_SESSION_WORKER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GDM_TYPE_SESSION_WORKER))
 #define GDM_SESSION_WORKER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), GDM_TYPE_SESSION_WORKER, GdmSessionWorkerClass))
 
-#define GDM_SESSION_WORKER_ERROR           (gdm_session_worker_error_quark ())
-
-typedef enum _GdmSessionWorkerError {
-        GDM_SESSION_WORKER_ERROR_GENERIC = 0,
-        GDM_SESSION_WORKER_ERROR_WITH_SESSION_COMMAND,
-        GDM_SESSION_WORKER_ERROR_FORKING,
-        GDM_SESSION_WORKER_ERROR_OPENING_MESSAGE_PIPE,
-        GDM_SESSION_WORKER_ERROR_COMMUNICATING,
-        GDM_SESSION_WORKER_ERROR_WORKER_DIED,
-        GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE,
-        GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-        GDM_SESSION_WORKER_ERROR_AUTHORIZING,
-        GDM_SESSION_WORKER_ERROR_OPENING_LOG_FILE,
-        GDM_SESSION_WORKER_ERROR_OPENING_SESSION,
-        GDM_SESSION_WORKER_ERROR_GIVING_CREDENTIALS
-} GdmSessionWorkerError;
-
 typedef struct GdmSessionWorkerPrivate GdmSessionWorkerPrivate;
 
 typedef struct
 {
-        GObject                  parent;
+        GdmDBusWorkerSkeleton parent;
         GdmSessionWorkerPrivate *priv;
 } GdmSessionWorker;
 
 typedef struct
 {
-        GObjectClass parent_class;
+        GdmDBusWorkerSkeletonClass parent_class;
 } GdmSessionWorkerClass;
 
 GType              gdm_session_worker_get_type                 (void);
-GQuark             gdm_session_worker_error_quark              (void);
 
 GdmSessionWorker * gdm_session_worker_new                      (const char *server_address,
                                                                 gboolean    is_for_reauth) G_GNUC_MALLOC;

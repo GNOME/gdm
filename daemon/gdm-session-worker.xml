@@ -1,0 +1,86 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/org/gnome/DisplayManager/Worker">
+  <interface name="org.gnome.DisplayManager.Worker">
+    <method name="Authenticate" />
+    <method name="Authorize" />
+    <method name="EstablishCredentials" />
+    <method name="Open">
+      <arg name="session_id" direction="out" type="s"/>
+    </method>
+    <method name="SetLanguageName">
+      <arg name="language" direction="in" type="s"/>
+    </method>
+    <method name="SetSessionName">
+      <arg name="session_name" direction="in" type="s" />
+    </method>
+    <method name="SetSessionType">
+      <arg name="session_type" direction="in" type="s"/>
+    </method>
+    <method name="SetEnvironmentVariable">
+      <arg name="name" direction="in" type="s"/>
+      <arg name="value" direction="in" type="s"/>
+    </method>
+    <method name="StartProgram">
+      <arg name="command" direction="in" type="s"/>
+      <arg name="child_pid" direction="out" type="i"/>
+    </method>
+    <method name="Setup">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="x11_display_name" direction="in" type="s"/>
+      <arg name="x11_authority_file" direction="in" type="s"/>
+      <arg name="display_device" direction="in" type="s"/>
+      <arg name="display_seat" direction="in" type="s"/>
+      <arg name="hostname" direction="in" type="s"/>
+      <arg name="display_is_local" direction="in" type="b"/>
+    </method>
+    <method name="SetupForUser">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="user_name" direction="in" type="s"/>
+      <arg name="x11_display_name" direction="in" type="s"/>
+      <arg name="x11_authority_file" direction="in" type="s"/>
+      <arg name="display_device" direction="in" type="s"/>
+      <arg name="display_seat" direction="in" type="s"/>
+      <arg name="hostname" direction="in" type="s"/>
+      <arg name="display_is_local" direction="in" type="b"/>
+    </method>
+    <method name="SetupForProgram">
+      <arg name="service_name" direction="in" type="s"/>
+      <arg name="user_name" direction="in" type="s"/>
+      <arg name="x11_display_name" direction="in" type="s"/>
+      <arg name="x11_authority_file" direction="in" type="s"/>
+      <arg name="display_device" direction="in" type="s"/>
+      <arg name="display_seat" direction="in" type="s"/>
+      <arg name="hostname" direction="in" type="s"/>
+      <arg name="display_is_local" direction="in" type="b"/>
+      <arg name="log_file" direction="in" type="s"/>
+    </method>
+    <method name="StartReauthentication">
+      <arg name="pid_of_caller" direction="in" type="i"/>
+      <arg name="uid_of_caller" direction="in" type="i"/>
+      <arg name="address" direction="out" type="s"/>
+    </method>
+
+    <signal name="SessionExited">
+      <arg name="service_name" type="s" />
+      <!-- This is a combination of exit code and exit
+           signal. Use macros in sys/wait.h to handle it. -->
+      <arg name="status" type="i" />
+    </signal>
+    <signal name="SavedLanguageNameRead">
+      <arg name="language_name" type="s"/>
+    </signal>
+    <signal name="SavedSessionNameRead">
+      <arg name="session_name" type="s"/>
+    </signal>
+    <signal name="UsernameChanged">
+      <arg name="new_username" type="s"/>
+    </signal>
+    <signal name="ServiceUnavailable">
+      <arg name="message" type="s"/>
+    </signal>
+    <signal name="Reauthenticated">
+    </signal>
+    <signal name="CancelPendingQuery">
+    </signal>
+  </interface>
+</node>
