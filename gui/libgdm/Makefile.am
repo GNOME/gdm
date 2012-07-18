@@ -46,6 +46,7 @@ lib_LTLIBRARIES =                                                             \
 
 libgdmdir = $(includedir)/gdm
 libgdm_HEADERS =                                                       \
+	gdm-client-glue.h                                              \
         gdm-client.h                                                   \
         gdm-sessions.h                                                 \
         $(END_OF_LIST)
