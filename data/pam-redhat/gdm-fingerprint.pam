@@ -1,17 +1,18 @@
-# Sample PAM file for doing fingerprint authentication.
-# Distros should replace this with what makes sense for them.
-auth        required      pam_env.so
-auth        required      pam_fprintd.so
-auth        sufficient    pam_succeed_if.so uid >= 500 quiet
-auth        required      pam_deny.so
+auth        substack      fingerprint-auth
+auth        required      pam_succeed_if.so user != root quiet
+auth        include       postlogin
 
-account     required      pam_unix.so
-account     sufficient    pam_localuser.so
-account     sufficient    pam_succeed_if.so uid < 500 quiet
-account     required      pam_permit.so
+account     required      pam_nologin.so
+account     include       fingerprint-auth
 
-password    required      pam_deny.so
+password    include       fingerprint-auth
 
-session     optional      pam_keyinit.so revoke
-session     required      pam_limits.so
-session     required      pam_unix.so
+session     required      pam_selinux.so close
+session     required      pam_loginuid.so
+session     optional      pam_console.so
+-session    optional    pam_ck_connector.so
+session     required      pam_selinux.so open
+session     optional      pam_keyinit.so force revoke
+session     required      pam_namespace.so
+session     include       fingerprint-auth
+session     include       postlogin
