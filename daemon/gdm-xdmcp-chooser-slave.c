@@ -226,9 +226,9 @@ run_chooser (GdmXdmcpChooserSlave *slave)
         gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
 
         g_debug ("GdmXdmcpChooserSlave: Creating chooser on %s %s %s", display_name, display_device, display_hostname);
-        slave->priv->chooser = gdm_chooser_session_new (display_name,
-                                                        display_device,
-                                                        display_hostname);
+        slave->priv->chooser = create_chooser_session (display_name,
+                                                       display_device,
+                                                       display_hostname);
         g_signal_connect (slave->priv->chooser,
                           "opened",
                           G_CALLBACK (on_chooser_session_opened),
