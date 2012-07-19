@@ -108,7 +108,7 @@ static void     gdm_welcome_session_class_init    (GdmWelcomeSessionClass *klass
 static void     gdm_welcome_session_init          (GdmWelcomeSession      *welcome_session);
 static void     gdm_welcome_session_finalize      (GObject                *object);
 
-G_DEFINE_ABSTRACT_TYPE (GdmWelcomeSession, gdm_welcome_session, G_TYPE_OBJECT)
+G_DEFINE_TYPE (GdmWelcomeSession, gdm_welcome_session, G_TYPE_OBJECT)
 
 static void
 listify_hash (const char *key,
