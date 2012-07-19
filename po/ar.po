@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-21 23:29+0200\n"
-"PO-Revision-Date: 2012-03-21 23:29+0200\n"
+"POT-Creation-Date: 2012-07-20 00:41+0200\n"
+"PO-Revision-Date: 2012-07-20 00:41+0200\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "Language: ar\n"
@@ -23,106 +23,86 @@ msgstr ""
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
 "X-Generator: Virtaal 0.7.0\n"
 
-#: ../common/gdm-common.c:488
+#: ../common/gdm-common.c:492
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "‏‪/dev/urandom‬ ليس جهازا مِحرفيا"
-
-#: ../daemon/factory-slave-main.c:178 ../daemon/product-slave-main.c:182
-#: ../daemon/simple-slave-main.c:182 ../daemon/xdmcp-chooser-slave-main.c:184
-msgid "Display ID"
-msgstr "رقم معرّف العرض"
-
-#: ../daemon/factory-slave-main.c:178 ../daemon/product-slave-main.c:182
-#: ../daemon/simple-slave-main.c:182 ../daemon/xdmcp-chooser-slave-main.c:184
-msgid "ID"
-msgstr "المعرّف"
-
-#: ../daemon/factory-slave-main.c:188 ../daemon/product-slave-main.c:192
-#: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:194
-msgid "GNOME Display Manager Slave"
-msgstr "مدير عرض جنوم التابع"
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "تعذّر إيجاد المستخدم \"%s\" على هذا النّظام"
 
-#: ../daemon/gdm-factory-slave.c:210 ../daemon/gdm-simple-slave.c:314
-msgid "Unable to initialize login system"
-msgstr "تعذّر بدأ نظام الولوج"
+#: ../daemon/gdm-display.c:1269 ../daemon/gdm-display.c:1303
+#, c-format
+msgid "No session available yet"
+msgstr "لا توجد أي جلسات للآن"
 
-#: ../daemon/gdm-factory-slave.c:244 ../daemon/gdm-simple-slave.c:352
-msgid "Unable to authenticate user"
-msgstr "تعذّر التحقق من المستخدم"
+#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:385
+#, c-format
+msgid "Unable to look up UID of user %s"
+msgstr "تعذّر إيصاد UID المستخدم %s"
 
-#: ../daemon/gdm-factory-slave.c:268 ../daemon/gdm-simple-slave.c:404
-msgid "Unable to authorize user"
-msgstr "تعذّر الترخيص للمستخدم"
+#: ../daemon/gdm-manager.c:291
+msgid "no sessions available"
+msgstr "لا توجد أي جلسات"
 
-#: ../daemon/gdm-factory-slave.c:292 ../daemon/gdm-simple-slave.c:551
-msgid "Unable to establish credentials"
-msgstr "تعذّر تنصيب الاعتمادات"
+#: ../daemon/gdm-manager.c:352
+#, c-format
+msgid "No sessions for %s available for reauthentication"
+msgstr "لا توجد أي جلسات %s لإعادة الاستيثاق"
 
-#: ../daemon/gdm-factory-slave.c:317 ../daemon/gdm-simple-slave.c:589
-msgid "Unable to open session"
-msgstr "تعذّر فتح الجلسة"
+#: ../daemon/gdm-manager.c:663
+msgid "User doesn't own session"
+msgstr "لا يمتلك المستخدم الجلسة"
 
-#: ../daemon/gdm-factory-slave.c:709 ../daemon/gdm-product-slave.c:513
-#: ../daemon/gdm-simple-slave.c:1481
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"تعذّر تشغيل الخادوم س (بيئتك الرسومية) بسبب خطأ داخلي. الرجاء الاتصال بمدير "
-"النظام أو مراجعة سجل النظام للتشخيص. سيغلق العرض في هذه الأثناء. الرجاء "
-"إعادة تشغيل م‌ع‌ج عند تصحيح الخطأ."
+#: ../daemon/gdm-manager.c:679 ../daemon/gdm-manager.c:760
+msgid "No session available"
+msgstr "لا توجد أي جلسات"
 
-#: ../daemon/gdm-server.c:265
+#: ../daemon/gdm-server.c:270
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: فشل الاتصال بالعرض الأب '%s'"
 
-#: ../daemon/gdm-server.c:443
+#: ../daemon/gdm-server.c:449
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "كان الخادوم سيُوّلد من قبل المستخدم %s لكن ذلك المستخدم غير موجود"
 
-#: ../daemon/gdm-server.c:454 ../daemon/gdm-server.c:474
-#: ../daemon/gdm-welcome-session.c:435 ../daemon/gdm-welcome-session.c:455
+#: ../daemon/gdm-server.c:460 ../daemon/gdm-server.c:480
+#: ../daemon/gdm-welcome-session.c:427 ../daemon/gdm-welcome-session.c:447
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "تعذّر ضبط معرّف المجموعة لـ %Id"
 
-#: ../daemon/gdm-server.c:460 ../daemon/gdm-welcome-session.c:441
+#: ../daemon/gdm-server.c:466 ../daemon/gdm-welcome-session.c:433
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "فشل initgroups () لِـ %s"
 
-#: ../daemon/gdm-server.c:466 ../daemon/gdm-welcome-session.c:447
+#: ../daemon/gdm-server.c:472 ../daemon/gdm-welcome-session.c:439
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "تعذّر ضبط معرّف المستخدم لِـ %Id"
 
-#: ../daemon/gdm-server.c:513
+#: ../daemon/gdm-server.c:519
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "‏%s: تعذّر فتح ملف السجل للعرض %s!"
 
-#: ../daemon/gdm-server.c:524 ../daemon/gdm-server.c:530
-#: ../daemon/gdm-server.c:536
+#: ../daemon/gdm-server.c:530 ../daemon/gdm-server.c:536
+#: ../daemon/gdm-server.c:542
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "‏%s: خطأ ضبط %s كـ %s"
 
-#: ../daemon/gdm-server.c:556
+#: ../daemon/gdm-server.c:562
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "‏%s:تعذّر ضبط أولوية الخادوم لتكون %Id: %s"
 
-#: ../daemon/gdm-server.c:709
+#: ../daemon/gdm-server.c:715
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "‏%s: أمر خادوم فارغ للعرض %s"
@@ -151,156 +131,202 @@ msgstr "جهاز العرض"
 msgid "The display device"
 msgstr "جهاز العرض"
 
-#: ../daemon/gdm-session-worker.c:1106
+#: ../daemon/gdm-session.c:1369 ../daemon/gdm-session.c:1395
+msgid "Could not create authentication helper process"
+msgstr "تعذّر إنشاء عملية مساعد الاستيثاق"
+
+#: ../daemon/gdm-session-worker.c:1032
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "خطأ أثناء بدء الحوار مع نظام التوثيق - %s"
 
-#: ../daemon/gdm-session-worker.c:1107
+#: ../daemon/gdm-session-worker.c:1033
 msgid "general failure"
 msgstr "فشل عام"
 
-#: ../daemon/gdm-session-worker.c:1108
+#: ../daemon/gdm-session-worker.c:1034
 msgid "out of memory"
 msgstr "نفذت الذّاكرة"
 
-#: ../daemon/gdm-session-worker.c:1109
+#: ../daemon/gdm-session-worker.c:1035
 msgid "application programmer error"
 msgstr "خطأ مُبرمج التّطبيق"
 
-#: ../daemon/gdm-session-worker.c:1110
+#: ../daemon/gdm-session-worker.c:1036
 msgid "unknown error"
 msgstr "خطأ مجهول"
 
-#: ../daemon/gdm-session-worker.c:1117
+#: ../daemon/gdm-session-worker.c:1043
 msgid "Username:"
 msgstr "اسم المستخدم:"
 
-#: ../daemon/gdm-session-worker.c:1123
+#: ../daemon/gdm-session-worker.c:1049
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr "خطأ في إخبار نظام التوثيق عن مُحِث اسم المستخدم المفضل: %s"
 
-#: ../daemon/gdm-session-worker.c:1137
+#: ../daemon/gdm-session-worker.c:1063
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "خطأ في إخبار نظام التوثيق عن اسم مستضيف المستخدم: %s"
 
-#: ../daemon/gdm-session-worker.c:1154
+#: ../daemon/gdm-session-worker.c:1080
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "خطأ في إخبار نظام التوثيق عن معراض المستخدم: %s"
 
-#: ../daemon/gdm-session-worker.c:1178
+#: ../daemon/gdm-session-worker.c:1104
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "خطأ في إعلام نظام الاستيثاق بمقطع العرض: %s"
 
-#: ../daemon/gdm-session-worker.c:1193
+#: ../daemon/gdm-session-worker.c:1119
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "خطأ في إعلام نظام الاستيثاق باعتمادات xauth للعرض: %s"
 
-#: ../daemon/gdm-session-worker.c:1513 ../daemon/gdm-session-worker.c:1530
+#: ../daemon/gdm-session-worker.c:1448 ../daemon/gdm-session-worker.c:1465
 #, c-format
 msgid "no user account available"
 msgstr "لا يُوجد حساب مستخدِم "
 
-#: ../daemon/gdm-session-worker.c:1557
+#: ../daemon/gdm-session-worker.c:1492
 msgid "Unable to change to user"
 msgstr "تعذّر الانتقال للمستخدم"
 
-#: ../daemon/gdm-welcome-session.c:409
+#: ../daemon/gdm-simple-slave.c:1098
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"تعذّر تشغيل الخادوم س (بيئتك الرسومية) بسبب خطأ داخلي. الرجاء الاتصال بمدير "
+"النظام أو مراجعة سجل النظام للتشخيص. سيغلق العرض في هذه الأثناء. الرجاء "
+"إعادة تشغيل م‌ع‌ج عند تصحيح الخطأ."
+
+#: ../daemon/gdm-simple-slave.c:1139
+#, c-format
+msgid "Can only be called before user is logged in"
+msgstr "لا يمكن استدعائه إلا قبل الولوج"
+
+#: ../daemon/gdm-simple-slave.c:1149
+#, c-format
+msgid "Caller not GDM"
+msgstr "المُستدعي ليس م‌ع‌ج"
+
+#: ../daemon/gdm-simple-slave.c:1208
+msgid "User not logged in"
+msgstr "المستخدم ليس والِجا"
+
+#: ../daemon/gdm-welcome-session.c:401
 #, c-format
 msgid "User %s doesn't exist"
 msgstr "المستخدم %s غير موجود"
 
-#: ../daemon/gdm-welcome-session.c:416
+#: ../daemon/gdm-welcome-session.c:408
 #, c-format
 msgid "Group %s doesn't exist"
 msgstr "المجموعة %s غير موجودة"
 
+#: ../daemon/gdm-xdmcp-chooser-slave.c:366
+#, c-format
+msgid "Currently, only one client can be connected at once"
+msgstr "لا يمكن حاليا أي يتصّل أكثر من عميل في نفس الوقت"
+
 #: ../daemon/gdm-xdmcp-display-factory.c:604
 msgid "Could not create socket!"
-msgstr "تعذّر انشاء مقبس !"
+msgstr "تعذّر إنشاء المقبس!"
 
-#: ../daemon/main.c:237 ../daemon/main.c:250
+#: ../daemon/main.c:126 ../daemon/main.c:139
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "تعذّر كتابة ملف الـ PID‏ %s: ربما لعدم وجود حيز على القرص: %s"
 
-#: ../daemon/main.c:271
+#: ../daemon/main.c:160
 #, c-format
 msgid "Logdir %s does not exist or isn't a directory."
 msgstr " دليل السجل %s غير موجود أو ليس دليلا. "
 
-#: ../daemon/main.c:287
+#: ../daemon/main.c:176
 #, c-format
 msgid "Authdir %s does not exist. Aborting."
 msgstr " Authdir %s غير موجود. إجهاض."
 
-#: ../daemon/main.c:291
+#: ../daemon/main.c:180
 #, c-format
 msgid "Authdir %s is not a directory. Aborting."
 msgstr "Authdir %s ليس بالدليل. إجهاض."
 
-#: ../daemon/main.c:365
+#: ../daemon/main.c:254
 #, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
 msgstr "Authdir·%s ليس ملكا للمستخدم %Id، المجموعة %Id. إجهاض."
 
-#: ../daemon/main.c:372
+#: ../daemon/main.c:261
 #, c-format
 msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr "Authdir·%s له تصاريح خاطئة %o. يجب أن تكون %o. إجهاض."
 
-#: ../daemon/main.c:409
+#: ../daemon/main.c:298
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "لم أجد مستخدم م‌ع‌ج '%s'.إجهاض!"
 
-#: ../daemon/main.c:415
+#: ../daemon/main.c:304
 msgid "The GDM user should not be root. Aborting!"
 msgstr "يجب أن لا يكون مستخدم م‌ع‌ج جذرا. إجهاض! "
 
-#: ../daemon/main.c:421
+#: ../daemon/main.c:310
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "لم أجد مجموعة م‌ع‌ج '%s'. إجهاض!"
 
-#: ../daemon/main.c:427
+#: ../daemon/main.c:316
 msgid "The GDM group should not be root. Aborting!"
 msgstr "يجب أن لا تكون مجموعة م‌ع‌ج جذرا. إجهاض!"
 
-#: ../daemon/main.c:533
+#: ../daemon/main.c:427
 msgid "Make all warnings fatal"
 msgstr "اجعل جميع التحذيرات قاتلة"
 
-#: ../daemon/main.c:534
+#: ../daemon/main.c:428
 msgid "Exit after a time (for debugging)"
 msgstr "اخرج بعد تأخير قليل (للتنقيح)"
 
-#: ../daemon/main.c:535
+#: ../daemon/main.c:429
 msgid "Print GDM version"
 msgstr "اطبع إصدارة م‌ع‌ج"
 
-#: ../daemon/main.c:548
+#: ../daemon/main.c:442
 msgid "GNOME Display Manager"
 msgstr "مدير عرض جنوم."
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:614
+#: ../daemon/main.c:492
 msgid "Only the root user can run GDM"
 msgstr "لا يستطيع تشغيل م‌ع‌ج إلا الجذر"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:156
+#: ../daemon/session-worker-main.c:153
 msgid "GNOME Display Manager Session Worker"
 msgstr "عامل جلسة مدير العرض جنوم"
 
+#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+msgid "Display ID"
+msgstr "رقم معرّف العرض"
+
+#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+msgid "ID"
+msgstr "المعرّف"
+
+#: ../daemon/simple-slave-main.c:187 ../daemon/xdmcp-chooser-slave-main.c:188
+msgid "GNOME Display Manager Slave"
+msgstr "مدير عرض جنوم التابع"
+
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2569
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
 msgid "Login Window"
 msgstr "نافذة الولوج"
 
@@ -460,11 +486,11 @@ msgstr "الفتحة التي بها البطاقة"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
 msgid "Slot Series"
-msgstr ""
+msgstr "سلسلة الفتحة"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
 msgid "per-slot card identifier"
-msgstr ""
+msgstr "معرف البطاقة الخاص بكل فتحة"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
@@ -592,26 +618,26 @@ msgstr "%A %l:%M:%S %p"
 msgid "%a %l:%M %p"
 msgstr "%A %Ol:%OM %p"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:317
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
 msgid "Automatically logging in…"
 msgstr "يلج تلقائيا…"
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:933
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
 msgid "Cancelling…"
 msgstr "يلغي…"
 
 #. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1489
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
 msgid "Select language and click Log In"
 msgstr "اختر اللغة ثم انقر \"لِج\""
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1625
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
 msgctxt "customsession"
 msgid "Custom"
 msgstr "مخصصة"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1626
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
 msgid "Custom session"
 msgstr "جلسة مخصّصة"
 
@@ -635,23 +661,23 @@ msgstr "فك القفل"
 msgid "Login"
 msgstr "لِج"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:903
+#: ../gui/simple-greeter/gdm-greeter-panel.c:953
 msgid "Suspend"
 msgstr "علّق"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:908
+#: ../gui/simple-greeter/gdm-greeter-panel.c:958
 msgid "Restart"
 msgstr "أعِد التشغيل"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:912
+#: ../gui/simple-greeter/gdm-greeter-panel.c:962
 msgid "Shut Down"
 msgstr "أطفئ"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:961
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1011
 msgid "Unknown time remaining"
 msgstr "لا يُعرف كم بقي"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:983
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1033
 msgid "Panel"
 msgstr "اللوحة"
 
@@ -721,8 +747,8 @@ msgstr "هل يغمل؟"
 msgid "Whether the timer is currently ticking"
 msgstr "ما إذا كان المُؤقِّت يعمل أم لا"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:460
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:797
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
 #, c-format
 msgid "Log in as %s"
 msgstr "لِج باسم %s"
@@ -732,72 +758,72 @@ msgstr "لِج باسم %s"
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
 msgctxt "user"
 msgid "Other…"
 msgstr "أخرى…"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:547
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
 msgid "Choose a different account"
 msgstr "اختر حسابا مختلفا"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:561
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
 msgid "Guest"
 msgstr "ضيف"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:562
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
 msgid "Log in as a temporary guest"
 msgstr "لِج كضيف مؤقت"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:577
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
 msgid "Automatic Login"
 msgstr "ولوج تلقائي"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:578
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
 msgid "Automatically log into the system after selecting options"
 msgstr "لِج تلقائيا إلى النظام بعد اختيار الخيارات"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1353
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
 msgid "Currently logged in"
 msgstr "والِج حاليا"
 
-#: ../utils/gdmflexiserver.c:68
+#: ../utils/gdmflexiserver.c:64
 msgid "Only the VERSION command is supported"
 msgstr "لا يدعم إلا أمر VERSION"
 
-#: ../utils/gdmflexiserver.c:68
+#: ../utils/gdmflexiserver.c:64
 msgid "COMMAND"
 msgstr "أمر"
 
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
-#: ../utils/gdmflexiserver.c:72 ../utils/gdmflexiserver.c:73
+#: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
+#: ../utils/gdmflexiserver.c:68 ../utils/gdmflexiserver.c:69
 msgid "Ignored — retained for compatibility"
 msgstr "متجاهل — مبقى للتوافقية"
 
-#: ../utils/gdmflexiserver.c:71 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:67 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "خرْج التنقيح"
 
-#: ../utils/gdmflexiserver.c:75
+#: ../utils/gdmflexiserver.c:71
 msgid "Version of this application"
 msgstr "إصدارة هذا التطبيق"
 
-#: ../utils/gdmflexiserver.c:673 ../utils/gdmflexiserver.c:835
+#: ../utils/gdmflexiserver.c:446 ../utils/gdmflexiserver.c:584
 #, c-format
 msgid "Could not identify the current session."
 msgstr "تعذّر التعرف على الجلسة الحالية"
 
-#: ../utils/gdmflexiserver.c:680
+#: ../utils/gdmflexiserver.c:453
 #, c-format
 msgid "User unable to switch sessions."
 msgstr "تعذّر تبديل الجلسة."
 
-#: ../utils/gdmflexiserver.c:844
+#: ../utils/gdmflexiserver.c:593
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "تعذّر التعرف على المقعد الحالي."
 
-#: ../utils/gdmflexiserver.c:854
+#: ../utils/gdmflexiserver.c:603
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -806,17 +832,17 @@ msgstr ""
 "تعذر على النظام تحديد ما إذا كان عليه الانتقال إلى شاشة ولوج موجودة أو بدء "
 "واحدة جديدة."
 
-#: ../utils/gdmflexiserver.c:862
+#: ../utils/gdmflexiserver.c:611
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "تعذر على النظام بدء شاشة ولوج جديدة."
 
 #. Option parsing
-#: ../utils/gdmflexiserver.c:929
+#: ../utils/gdmflexiserver.c:677
 msgid "- New GDM login"
 msgstr "- ولوج م‌ع‌ج جديد"
 
-#: ../utils/gdmflexiserver.c:985
+#: ../utils/gdmflexiserver.c:733
 msgid "Unable to start new display"
 msgstr "تعذّر بدأ تشغيل العرض الجديد"
 
@@ -828,6 +854,18 @@ msgstr "أُخِذت لقطة الشاشة"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "خذ صورة للشاشة"
+
+#~ msgid "Unable to initialize login system"
+#~ msgstr "تعذّر بدأ نظام الولوج"
+
+#~ msgid "Unable to authenticate user"
+#~ msgstr "تعذّر التحقق من المستخدم"
+
+#~ msgid "Unable to establish credentials"
+#~ msgstr "تعذّر تنصيب الاعتمادات"
+
+#~ msgid "Unable to open session"
+#~ msgstr "تعذّر فتح الجلسة"
 
 #~ msgid "Denied XDMCP query from host %s"
 #~ msgstr "مُنِع طلب XDMCP من المستضيف %s"
@@ -864,9 +902,6 @@ msgstr "خذ صورة للشاشة"
 
 #~ msgid "%s: Could not read Client Address"
 #~ msgstr "‏%s: تعذّر قراءة عنوان العميل"
-
-#~ msgid "%s: Could not read Authentication Names"
-#~ msgstr "‏%s: تعذّر قراءة أسماء الاستيثاق"
 
 #~ msgid "%s: Could not read Authentication Data"
 #~ msgstr "‏%s: تعذّر قراءة بيانات التوثّق"
