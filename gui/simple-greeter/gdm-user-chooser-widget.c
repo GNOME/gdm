@@ -141,8 +141,6 @@ get_icon_height_for_widget (GtkWidget *widget)
 static gboolean
 update_other_user_visibility (GdmUserChooserWidget *widget)
 {
-        int number_of_users;
-
         g_debug ("GdmUserChooserWidget: updating other user visibility");
 
         if (!widget->priv->show_user_other) {
@@ -963,30 +961,6 @@ on_is_loaded_changed (ActUserManager       *manager,
         widget->priv->users_to_add = g_slist_concat (widget->priv->users_to_add, g_slist_copy (users));
 
         queue_add_users (widget);
-}
-
-static void
-parse_string_list (char *value, GSList **retval)
-{
-        char **temp_array;
-        int    i;
-
-        *retval = NULL;
-
-        if (value == NULL || *value == '\0') {
-                g_debug ("Not adding NULL user");
-                *retval = NULL;
-                return;
-        }
-
-        temp_array = g_strsplit (value, ",", 0);
-        for (i = 0; temp_array[i] != NULL; i++) {
-                g_debug ("Adding value %s", temp_array[i]);
-                g_strstrip (temp_array[i]);
-                *retval = g_slist_prepend (*retval, g_strdup (temp_array[i]));
-        }
-
-        g_strfreev (temp_array);
 }
 
 static gboolean
