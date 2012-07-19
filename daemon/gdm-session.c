@@ -1363,7 +1363,7 @@ gdm_session_handle_client_begin_verification (GdmDBusUserVerifier    *user_verif
                 conversation->starting_invocation = g_object_ref (invocation);
                 conversation->starting_username = NULL;
         } else {
-                g_dbus_method_invocation_return_error (conversation->starting_invocation,
+                g_dbus_method_invocation_return_error (invocation,
                                                        G_DBUS_ERROR,
                                                        G_DBUS_ERROR_SPAWN_FAILED,
                                                        _("Could not create authentication helper process"));
@@ -1389,7 +1389,7 @@ gdm_session_handle_client_begin_verification_for_user (GdmDBusUserVerifier    *u
                 conversation->starting_invocation = g_object_ref (invocation);
                 conversation->starting_username = g_strdup (username);
         } else {
-                g_dbus_method_invocation_return_error (conversation->starting_invocation,
+                g_dbus_method_invocation_return_error (invocation,
                                                        G_DBUS_ERROR,
                                                        G_DBUS_ERROR_SPAWN_FAILED,
                                                        _("Could not create authentication helper process"));
