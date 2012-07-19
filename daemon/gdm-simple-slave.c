@@ -602,8 +602,12 @@ create_new_session (GdmSimpleSlave  *slave)
 
         g_debug ("GdmSimpleSlave: Creating new session");
 
-        greeter_session = gdm_welcome_session_get_session (GDM_WELCOME_SESSION (slave->priv->greeter));
-        greeter_uid = gdm_session_get_allowed_user (greeter_session);
+        if (slave->priv->greeter != NULL) {
+                greeter_session = gdm_welcome_session_get_session (GDM_WELCOME_SESSION (slave->priv->greeter));
+                greeter_uid = gdm_session_get_allowed_user (greeter_session);
+        } else {
+                greeter_uid = 0;
+        }
 
         g_object_get (slave,
                       "display-id", &display_id,
@@ -950,12 +954,12 @@ idle_connect_to_display (GdmSimpleSlave *slave)
                 gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &enabled, NULL, &delay);
                 if (! enabled || delay > 0) {
                         start_greeter (slave);
-                        create_new_session (slave);
                 } else {
                         /* Run the init script. gdmslave suspends until script has terminated */
                         gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/Init", GDM_USERNAME);
-                        reset_session (slave);
                 }
+
+                create_new_session (slave);
         } else {
                 if (slave->priv->connection_attempts >= MAX_CONNECT_ATTEMPTS) {
                         g_warning ("Unable to connect to display after %d tries - bailing out", slave->priv->connection_attempts);
