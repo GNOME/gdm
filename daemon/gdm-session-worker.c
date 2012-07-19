@@ -1142,7 +1142,7 @@ gdm_session_worker_authenticate_user (GdmSessionWorker *worker,
         int error_code;
         int authentication_flags;
 
-        g_debug ("GdmSessionWorker: authenticating user");
+        g_debug ("GdmSessionWorker: authenticating user %s", worker->priv->username);
 
         authentication_flags = 0;
 
