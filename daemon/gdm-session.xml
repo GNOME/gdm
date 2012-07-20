@@ -97,15 +97,9 @@
       <arg name="status" direction="in" type="i"/>
     </method>
 
-    <signal name="StartConversation">
-      <arg name="service_name" type="s"/>
-    </signal>
     <signal name="StartProgram">
       <arg name="command" type="s"/>
     </signal>
-    <signal name="Close"/>
-    <signal name="Cancelled"/>
-    <signal name="Reset" />
     <signal name="Setup">
       <arg name="service_name" type="s"/>
       <arg name="x11_display_name" type="s"/>
@@ -146,9 +140,6 @@
       <arg name="service_name" type="s"/>
     </signal>
     <signal name="OpenSession">
-      <arg name="service_name" type="s"/>
-    </signal>
-    <signal name="StartSession">
       <arg name="service_name" type="s"/>
     </signal>
     <signal name="StartReauthentication">
