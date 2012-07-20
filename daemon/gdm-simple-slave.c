@@ -574,7 +574,7 @@ on_session_client_disconnected (GdmSession          *session,
                       "display-is-local", &display_is_local,
                       NULL);
 
-        if ( ! display_is_local) {
+        if ( ! display_is_local && !slave->priv->session_is_running) {
                 gdm_slave_stopped (GDM_SLAVE (slave));
         }
 }
@@ -1254,6 +1254,9 @@ gdm_simple_slave_stop (GdmSlave *slave)
                 gdm_simple_slave_revoke_console_permissions (self);
 #endif
 
+        }
+
+        if (self->priv->session != NULL) {
                 gdm_session_close (self->priv->session);
                 g_clear_object (&self->priv->session);
         }
