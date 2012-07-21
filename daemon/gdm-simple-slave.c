@@ -457,9 +457,7 @@ on_session_conversation_started (GdmSession       *session,
                 return;
         }
 
-        if (delay > 0) {
-                gdm_session_request_timed_login (session, username, delay);
-        } else {
+        if (delay == 0) {
                 g_debug ("GdmSimpleSlave: begin auto login for user '%s'", username);
                 /* service_name will be "gdm-autologin"
                  */
@@ -540,12 +538,59 @@ on_session_client_ready_for_session_to_start (GdmSession      *session,
                 gdm_simple_slave_start_session_when_ready (slave, service_name);
         }
 }
+
+static void
+on_ready_to_request_timed_login (GdmSession         *session,
+                                 GSimpleAsyncResult *result,
+                                 gpointer           *user_data)
+{
+        int delay = GPOINTER_TO_INT (user_data);
+        GCancellable *cancellable;
+        char         *username;
+
+        cancellable = g_object_get_data (G_OBJECT (result),
+                                         "cancellable");
+        if (g_cancellable_is_cancelled (cancellable)) {
+                return;
+        }
+
+        username = g_simple_async_result_get_source_tag (result);
+
+        gdm_session_request_timed_login (session, username, delay);
+
+        g_object_weak_unref (G_OBJECT (session),
+                             (GWeakNotify)
+                             g_cancellable_cancel,
+                             cancellable);
+        g_object_weak_unref (G_OBJECT (session),
+                             (GWeakNotify)
+                             g_object_unref,
+                             cancellable);
+        g_object_weak_unref (G_OBJECT (session),
+                             (GWeakNotify)
+                             g_free,
+                             username);
+
+        g_free (username);
+}
+
+static gboolean
+on_wait_for_greeter_timeout (GSimpleAsyncResult *result)
+{
+        g_simple_async_result_complete (result);
+
+        return FALSE;
+}
+
 static void
 on_session_client_connected (GdmSession          *session,
                              GCredentials        *credentials,
                              GPid                 pid_of_client,
                              GdmSimpleSlave      *slave)
 {
+        gboolean timed_login_enabled;
+        char    *username;
+        int      delay;
         gboolean display_is_local;
 
         g_debug ("GdmSimpleSlave: client connected");
@@ -558,6 +603,64 @@ on_session_client_connected (GdmSession          *session,
         if ( ! display_is_local) {
                 alarm (0);
         }
+
+        timed_login_enabled = FALSE;
+        gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &timed_login_enabled, &username, &delay);
+
+        if (! timed_login_enabled) {
+                return;
+        }
+
+        /* temporary hack to fix timed login
+         * http://bugzilla.gnome.org/680348
+         */
+        if (delay > 0) {
+                GSimpleAsyncResult *result;
+                GCancellable       *cancellable;
+                guint               timeout_id;
+                gpointer            source_tag;
+
+                delay = MAX (delay, 4);
+
+                cancellable = g_cancellable_new ();
+                source_tag = g_strdup (username);
+                result = g_simple_async_result_new (G_OBJECT (session),
+                                                    (GAsyncReadyCallback)
+                                                    on_ready_to_request_timed_login,
+                                                    GINT_TO_POINTER (delay),
+                                                    source_tag);
+                g_simple_async_result_set_check_cancellable (result, cancellable);
+                g_object_set_data (G_OBJECT (result),
+                                   "cancellable",
+                                   cancellable);
+
+                timeout_id = g_timeout_add_seconds_full (delay - 2,
+                                                         G_PRIORITY_DEFAULT,
+                                                         (GSourceFunc)
+                                                         on_wait_for_greeter_timeout,
+                                                         g_object_ref (result),
+                                                         (GDestroyNotify)
+                                                         g_object_unref);
+                g_cancellable_connect (cancellable,
+                                       G_CALLBACK (g_source_remove),
+                                       GINT_TO_POINTER (timeout_id),
+                                       NULL);
+
+                g_object_weak_ref (G_OBJECT (session),
+                                   (GWeakNotify)
+                                   g_cancellable_cancel,
+                                   cancellable);
+                g_object_weak_ref (G_OBJECT (session),
+                                   (GWeakNotify)
+                                   g_object_unref,
+                                   cancellable);
+                g_object_weak_ref (G_OBJECT (session),
+                                   (GWeakNotify)
+                                   g_free,
+                                   source_tag);
+        }
+
+        g_free (username);
 }
 
 static void
