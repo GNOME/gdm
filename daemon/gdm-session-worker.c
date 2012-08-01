@@ -1747,8 +1747,6 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
         pid_t session_pid;
         int   error_code;
 
-        register_ck_session (worker);
-
         gdm_get_pwent_for_name (worker->priv->username, &passwd_entry);
         if (worker->priv->is_program_session) {
                 g_debug ("GdmSessionWorker: opening session for program '%s'",
@@ -1907,6 +1905,8 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
 #endif
 
 #ifdef WITH_CONSOLE_KIT
+        register_ck_session (worker);
+
         if (session_id == NULL) {
                 session_id = get_ck_session_id (worker);
         }
