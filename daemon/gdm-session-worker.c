@@ -1876,7 +1876,7 @@ gdm_session_worker_open_session (GdmSessionWorker  *worker,
 {
         int error_code;
         int flags;
-        char *session_id;
+        char *session_id = NULL;
 
         g_assert (worker->priv->state == GDM_SESSION_WORKER_STATE_ACCOUNT_DETAILS_SAVED);
         g_assert (geteuid () == 0);
