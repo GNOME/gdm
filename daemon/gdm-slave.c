@@ -1416,6 +1416,7 @@ gdm_slave_get_primary_session_id_for_user_from_ck (GdmSlave   *slave,
         GVariantIter  iter;
         char         *ssid;
 
+        error = NULL;
         primary_ssid = NULL;
 
         g_debug ("GdmSlave: getting proxy for seat: %s", slave->priv->display_seat_id);
