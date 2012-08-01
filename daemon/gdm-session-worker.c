@@ -316,7 +316,7 @@ close_ck_session (GdmSessionWorker *worker)
                                              "org.freedesktop.ConsoleKit",
                                              "/org/freedesktop/ConsoleKit/Manager",
                                              "org.freedesktop.ConsoleKit.Manager",
-                                             "OpenSessionWithParameters",
+                                             "CloseSession",
                                              g_variant_new ("(s)", worker->priv->session_cookie),
                                              G_VARIANT_TYPE ("(b)"),
                                              G_DBUS_CALL_FLAGS_NONE,
