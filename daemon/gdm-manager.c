@@ -400,6 +400,11 @@ get_session_id_for_user_on_seat_consolekit (GDBusConnection  *connection,
                                              NULL,
                                              error);
         if (reply == NULL) {
+                g_set_error (error,
+                             G_DBUS_ERROR,
+                             G_DBUS_ERROR_ACCESS_DENIED,
+                             _("Unable to find session for user %s"),
+                             username);
                 return NULL;
         }
 
@@ -464,6 +469,13 @@ get_session_id_for_user_on_seat_consolekit (GDBusConnection  *connection,
         g_free (sessions);
         g_variant_unref (reply);
 
+        if (session == NULL) {
+                g_set_error (error,
+                             G_DBUS_ERROR,
+                             G_DBUS_ERROR_ACCESS_DENIED,
+                             _("Unable to find appropriate session for user %s"),
+                             username);
+        }
         return session;
 }
 #endif
