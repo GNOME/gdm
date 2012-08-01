@@ -368,7 +368,6 @@ get_session_id_for_user_on_seat_consolekit (GDBusConnection  *connection,
                                             GError          **error)
 {
         GVariant       *reply;
-        GVariant       *array;
         const gchar   **sessions;
         char           *session = NULL;
         struct passwd  *pwent;
@@ -404,10 +403,7 @@ get_session_id_for_user_on_seat_consolekit (GDBusConnection  *connection,
                 return NULL;
         }
 
-        g_variant_get (reply, "(ao)", &array);
-
-        sessions = g_variant_get_objv (array, NULL);
-
+        g_variant_get_child (reply, 0, "^a&o", &sessions);
         for (i = 0; sessions[i] != NULL; i++) {
                 GVariant *reply2;
                 GError   *error2 = NULL;
@@ -429,7 +425,7 @@ get_session_id_for_user_on_seat_consolekit (GDBusConnection  *connection,
                         continue;
                 }
 
-                g_variant_get (reply, "(o)", &session_seat_id);
+                g_variant_get (reply2, "(o)", &session_seat_id);
                 g_variant_unref (reply2);
 
                 if (g_strcmp0 (seat, session_seat_id) != 0) {
