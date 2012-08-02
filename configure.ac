@@ -267,10 +267,6 @@ AC_ARG_WITH(tcp-wrappers,
                            [Use TCP Wrappers @<:@default=auto@:>@]),,
             with_tcp_wrappers=auto)
 
-AC_ARG_WITH(selinux,
-	    AS_HELP_STRING([--with-selinux],
-	                   [Add SELinux support]))
-
 AC_ARG_WITH(console-kit,
             AS_HELP_STRING([--with-console-kit],
                            [Add ConsoleKit support @<:@default=auto@:>@]),,
@@ -901,31 +897,6 @@ fi
 
 AC_SUBST(XINERAMA_LIBS)
 CPPFLAGS="$xinerama_save_cppflags"
-
-dnl ---------------------------------------------------------------------------
-dnl - Check for SELinux
-dnl ---------------------------------------------------------------------------
-
-if test "x$with_selinux" = "xyes" ; then
-	echo "SELinux support requested (--with-selinux was given), checking prerequisites"
-	if test -d /usr/local/selinux/include ; then
-		echo "Found /usr/local/selinux/include, will look there for SELinux stuff as well"
-		CFLAGS="$CFLAGS -I/usr/local/selinux/include"
-		LDFLAGS="$LDFLAGS -L/usr/local/selinux/lib"
-	fi
-	AC_CHECK_HEADER(selinux/selinux.h)
-	AC_CHECK_HEADER(selinux/get_context_list.h)
-	AC_CHECK_LIB(attr,attr_get,/bin/true)
-	# I'm anal and I don't know which versions have which symbols,
-	# so I check for all the ones we use
-	AC_CHECK_LIB(selinux,get_ordered_context_list,/bin/true)
-	AC_CHECK_LIB(selinux,freecon,/bin/true)
-	AC_CHECK_LIB(selinux,freeconary,/bin/true)
-	AC_CHECK_LIB(selinux,setexeccon,/bin/true)
-	AC_CHECK_LIB(selinux,is_selinux_enabled,/bin/true)
-	AC_DEFINE(HAVE_SELINUX, 1, [Define if have selinux])
-	EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lselinux -lattr"
-fi
 
 dnl ---------------------------------------------------------------------------
 dnl - Check for ConsoleKit support
@@ -1582,7 +1553,6 @@ fi
 echo \
 "        Xinerama support:         ${XINERAMA_SUPPORT}
         XDMCP support:            ${XDMCP_SUPPORT}
-        SELinux support:          ${with_selinux}
         ConsoleKit support:       ${use_console_kit}
         systemd support:          ${use_systemd}
         plymouth support:         ${use_plymouth}
