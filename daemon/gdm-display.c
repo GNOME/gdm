@@ -79,6 +79,8 @@ struct GdmDisplayPrivate
 
         GdmDBusDisplay       *display_skeleton;
         GDBusObjectSkeleton  *object_skeleton;
+
+        gboolean              is_initial;
 };
 
 enum {
@@ -94,6 +96,7 @@ enum {
         PROP_X11_AUTHORITY_FILE,
         PROP_IS_LOCAL,
         PROP_SLAVE_COMMAND,
+        PROP_IS_INITIAL
 };
 
 static void     gdm_display_class_init  (GdmDisplayClass *klass);
@@ -535,6 +538,20 @@ gdm_display_get_seat_id (GdmDisplay *display,
        return TRUE;
 }
 
+gboolean
+gdm_display_is_initial (GdmDisplay  *display,
+                        gboolean    *is_initial,
+                        GError     **error)
+{
+        g_return_val_if_fail (GDM_IS_DISPLAY (display), FALSE);
+
+        if (is_initial != NULL) {
+                *is_initial = display->priv->is_initial;
+        }
+
+        return TRUE;
+}
+
 static gboolean
 finish_idle (GdmDisplay *display)
 {
@@ -886,6 +903,13 @@ _gdm_display_set_slave_command (GdmDisplay     *display,
 }
 
 static void
+_gdm_display_set_is_initial (GdmDisplay     *display,
+                             gboolean        initial)
+{
+        display->priv->is_initial = initial;
+}
+
+static void
 gdm_display_set_property (GObject        *object,
                           guint           prop_id,
                           const GValue   *value,
@@ -925,6 +949,9 @@ gdm_display_set_property (GObject        *object,
                 break;
         case PROP_SLAVE_COMMAND:
                 _gdm_display_set_slave_command (self, g_value_get_string (value));
+                break;
+        case PROP_IS_INITIAL:
+                _gdm_display_set_is_initial (self, g_value_get_boolean (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -976,6 +1003,9 @@ gdm_display_get_property (GObject        *object,
                 break;
         case PROP_SLAVE_COMMAND:
                 g_value_set_string (value, self->priv->slave_command);
+                break;
+        case PROP_IS_INITIAL:
+                g_value_set_boolean (value, self->priv->is_initial);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1129,6 +1159,20 @@ handle_is_local (GdmDBusDisplay        *skeleton,
 }
 
 static gboolean
+handle_is_initial (GdmDBusDisplay        *skeleton,
+                   GDBusMethodInvocation *invocation,
+                   GdmDisplay            *display)
+{
+        gboolean is_initial = FALSE;
+
+        gdm_display_is_initial (display, &is_initial, NULL);
+
+        gdm_dbus_display_complete_is_initial (skeleton, invocation, is_initial);
+
+        return TRUE;
+}
+
+static gboolean
 handle_get_slave_bus_name (GdmDBusDisplay        *skeleton,
                            GDBusMethodInvocation *invocation,
                            GdmDisplay            *display)
@@ -1237,6 +1281,8 @@ register_display (GdmDisplay *display)
                           G_CALLBACK (handle_get_x11_display_number), display);
         g_signal_connect (display->priv->display_skeleton, "handle-is-local",
                           G_CALLBACK (handle_is_local), display);
+        g_signal_connect (display->priv->display_skeleton, "handle-is-initial",
+                          G_CALLBACK (handle_is_initial), display);
         g_signal_connect (display->priv->display_skeleton, "handle-get-slave-bus-name",
                           G_CALLBACK (handle_get_slave_bus_name), display);
         g_signal_connect (display->priv->display_skeleton, "handle-set-slave-bus-name",
@@ -1460,6 +1506,13 @@ gdm_display_class_init (GdmDisplayClass *klass)
                                                               "session id",
                                                               NULL,
                                                               G_PARAM_READWRITE));
+        g_object_class_install_property (object_class,
+                                         PROP_IS_INITIAL,
+                                         g_param_spec_boolean ("is-initial",
+                                                               NULL,
+                                                               NULL,
+                                                               FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         g_object_class_install_property (object_class,
                                          PROP_X11_COOKIE,
                                          g_param_spec_string ("x11-cookie",

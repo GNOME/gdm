@@ -76,7 +76,8 @@ static void     gdm_local_display_factory_init          (GdmLocalDisplayFactory 
 static void     gdm_local_display_factory_finalize      (GObject                     *object);
 
 static GdmDisplay *create_display                       (GdmLocalDisplayFactory      *factory,
-                                                         const char                  *seat_id);
+                                                         const char                  *seat_id,
+                                                         gboolean                    initial_display);
 
 static void     on_display_status_changed               (GdmDisplay                  *display,
                                                          GParamSpec                  *arg1,
@@ -271,6 +272,7 @@ on_display_status_changed (GdmDisplay             *display,
         GdmDisplayStore *store;
         int              num;
         char            *seat_id = NULL;
+        gboolean         is_initial = TRUE;
 
         num = -1;
         gdm_display_get_x11_display_number (display, &num, NULL);
@@ -279,6 +281,7 @@ on_display_status_changed (GdmDisplay             *display,
         store = gdm_display_factory_get_display_store (GDM_DISPLAY_FACTORY (factory));
 
         g_object_get (display, "seat-id", &seat_id, NULL);
+        g_object_get (display, "is-initial", &is_initial, NULL);
 
         status = gdm_display_get_status (display);
 
@@ -295,7 +298,7 @@ on_display_status_changed (GdmDisplay             *display,
                         /* reset num failures */
                         factory->priv->num_failures = 0;
 
-                        create_display (factory, seat_id);
+                        create_display (factory, seat_id, is_initial);
                 }
                 break;
         case GDM_DISPLAY_FAILED:
@@ -314,7 +317,7 @@ on_display_status_changed (GdmDisplay             *display,
                                 /* FIXME: should monitor hardware changes to
                                    try again when seats change */
                         } else {
-                                create_display (factory, seat_id);
+                                create_display (factory, seat_id, is_initial);
                         }
                 }
                 break;
@@ -352,7 +355,8 @@ lookup_by_seat_id (const char *id,
 
 static GdmDisplay *
 create_display (GdmLocalDisplayFactory *factory,
-                const char             *seat_id)
+                const char             *seat_id,
+                gboolean                initial)
 {
         GdmDisplayStore *store;
         GdmDisplay      *display;
@@ -372,6 +376,7 @@ create_display (GdmLocalDisplayFactory *factory,
         display = gdm_static_display_new (num);
 
         g_object_set (display, "seat-id", seat_id, NULL);
+        g_object_set (display, "is-initial", initial, NULL);
 
         store_display (factory, num, display);
 
@@ -428,7 +433,7 @@ static gboolean gdm_local_display_factory_sync_seats (GdmLocalDisplayFactory *fa
         g_variant_iter_init (&iter, array);
 
         while (g_variant_iter_loop (&iter, "(&so)", &seat, NULL))
-                create_display (factory, seat);
+                create_display (factory, seat, TRUE);
 
         g_variant_unref (result);
         g_variant_unref (array);
@@ -447,7 +452,7 @@ on_seat_new (GDBusConnection *connection,
         const char *seat;
 
         g_variant_get (parameters, "(&s)", &seat);
-        create_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat);
+        create_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat, FALSE);
 }
 
 static void
@@ -523,7 +528,7 @@ gdm_local_display_factory_start (GdmDisplayFactory *base_factory)
 #endif
 
         /* On ConsoleKit just create Seat1, and that's it. */
-        display = create_display (factory, CK_SEAT1_PATH);
+        display = create_display (factory, CK_SEAT1_PATH, TRUE);
 
         return display != NULL;
 }

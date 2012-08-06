@@ -103,6 +103,7 @@ struct GdmSlavePrivate
         char            *parent_display_x11_authority_file;
         char            *windowpath;
         char            *display_x11_cookie;
+        gboolean         display_is_initial;
 
         GdmDBusDisplay  *display_proxy;
         GDBusConnection *connection;
@@ -118,7 +119,8 @@ enum {
         PROP_DISPLAY_HOSTNAME,
         PROP_DISPLAY_IS_LOCAL,
         PROP_DISPLAY_SEAT_ID,
-        PROP_DISPLAY_X11_AUTHORITY_FILE
+        PROP_DISPLAY_X11_AUTHORITY_FILE,
+        PROP_DISPLAY_IS_INITIAL,
 };
 
 enum {
@@ -889,6 +891,17 @@ gdm_slave_real_start (GdmSlave *slave)
                                                       &slave->priv->display_seat_id,
                                                       NULL,
                                                       &error);
+        if (! res) {
+                g_warning ("Failed to get value: %s", error->message);
+                g_error_free (error);
+                return FALSE;
+        }
+
+        error = NULL;
+        res = gdm_dbus_display_call_is_initial_sync (slave->priv->display_proxy,
+                                                     &slave->priv->display_is_initial,
+                                                     NULL,
+                                                     &error);
         if (! res) {
                 g_warning ("Failed to get value: %s", error->message);
                 g_error_free (error);
@@ -1787,6 +1800,13 @@ _gdm_slave_set_display_is_local (GdmSlave   *slave,
 }
 
 static void
+_gdm_slave_set_display_is_initial (GdmSlave   *slave,
+                                   gboolean    is)
+{
+        slave->priv->display_is_initial = is;
+}
+
+static void
 gdm_slave_set_property (GObject      *object,
                         guint         prop_id,
                         const GValue *value,
@@ -1820,6 +1840,9 @@ gdm_slave_set_property (GObject      *object,
                 break;
         case PROP_DISPLAY_IS_LOCAL:
                 _gdm_slave_set_display_is_local (self, g_value_get_boolean (value));
+                break;
+        case PROP_DISPLAY_IS_INITIAL:
+                _gdm_slave_set_display_is_initial (self, g_value_get_boolean (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1861,6 +1884,9 @@ gdm_slave_get_property (GObject    *object,
                 break;
         case PROP_DISPLAY_IS_LOCAL:
                 g_value_set_boolean (value, self->priv->display_is_local);
+                break;
+        case PROP_DISPLAY_IS_INITIAL:
+                g_value_set_boolean (value, self->priv->display_is_initial);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2093,6 +2119,13 @@ gdm_slave_class_init (GdmSlaveClass *klass)
                                                                "display is local",
                                                                "display is local",
                                                                TRUE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_DISPLAY_IS_INITIAL,
+                                         g_param_spec_boolean ("display-is-initial",
+                                                               NULL,
+                                                               NULL,
+                                                               FALSE,
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
         signals [STOPPED] =

@@ -136,6 +136,9 @@ gboolean            gdm_display_get_timed_login_details        (GdmDisplay *disp
                                                                 char      **username,
                                                                 int        *delay,
                                                                 GError    **error);
+gboolean            gdm_display_is_initial                     (GdmDisplay  *display,
+                                                                gboolean    *initial,
+                                                                GError     **error);
 
 /* exported but protected */
 gboolean            gdm_display_get_x11_cookie                 (GdmDisplay *display,
@@ -154,7 +157,6 @@ gboolean            gdm_display_remove_user_authorization      (GdmDisplay *disp
 gboolean            gdm_display_set_slave_bus_name             (GdmDisplay *display,
                                                                 const char *name,
                                                                 GError    **error);
-
 
 G_END_DECLS
 

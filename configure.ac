@@ -1439,6 +1439,20 @@ else
    XSESSION_SHELL=/bin/sh
 fi
 
+#
+# Set VT to use for initial server
+#
+AC_ARG_WITH(initial-vt,
+        AS_HELP_STRING([--with-initial-vt=<nr>],
+                [Initial virtual terminal to use]))
+if ! test -z "$with_initial_vt"; then
+        GDM_INITIAL_VT="$with_initial_vt"
+else
+        GDM_INITIAL_VT="1"
+fi
+AC_SUBST(GDM_INITIAL_VT)
+AC_DEFINE_UNQUOTED(GDM_INITIAL_VT, "$GDM_INITIAL_VT", [Initial Virtual Terminal])
+
 # Set configuration choices.
 #
 AC_SUBST(XSESSION_SHELL)
@@ -1558,4 +1572,5 @@ echo \
         plymouth support:         ${use_plymouth}
         UPower support:           ${have_upower}
         Build with RBAC:          ${msg_rbac_shutdown}
+        Initial VT:               ${GDM_INITIAL_VT}
 "

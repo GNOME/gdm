@@ -1311,12 +1311,14 @@ gdm_simple_slave_run (GdmSimpleSlave *slave)
         char    *auth_file;
         char    *seat_id;
         gboolean display_is_local;
+        gboolean display_is_initial;
 
         g_object_get (slave,
                       "display-is-local", &display_is_local,
                       "display-name", &display_name,
                       "display-seat-id", &seat_id,
                       "display-x11-authority-file", &auth_file,
+                      "display-is-initial", &display_is_initial,
                       NULL);
 
         /* if this is local display start a server if one doesn't
@@ -1325,7 +1327,7 @@ gdm_simple_slave_run (GdmSimpleSlave *slave)
                 gboolean res;
                 gboolean disable_tcp;
 
-                slave->priv->server = gdm_server_new (display_name, seat_id, auth_file);
+                slave->priv->server = gdm_server_new (display_name, seat_id, auth_file, display_is_initial);
 
                 disable_tcp = TRUE;
                 if (gdm_settings_client_get_boolean (GDM_KEY_DISALLOW_TCP,
@@ -1353,12 +1355,9 @@ gdm_simple_slave_run (GdmSimpleSlave *slave)
 
                 if (slave->priv->plymouth_is_running) {
                         plymouth_prepare_for_transition (slave);
-                        res = gdm_server_start_on_active_vt (slave->priv->server);
-                } else
-#endif
-                {
-                        res = gdm_server_start (slave->priv->server);
                 }
+#endif
+                res = gdm_server_start (slave->priv->server);
                 if (! res) {
                         g_warning (_("Could not start the X "
                                      "server (your graphical environment) "
