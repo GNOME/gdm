@@ -150,6 +150,22 @@ MAINTAINERCLEANFILES =			\
 	*~				\
 	Makefile.in
 
+systemdsystemunit =
+
+if HAVE_SYSTEMD
+
+gdm.service: $(srcdir)/gdm.service.in
+	$(AM_V_GEN)sed \
+		-e 's,[@]sbindir[@],$(sbindir),g' \
+		-e 's,[@]GDM_INITIAL_VT[@],$(GDM_INITIAL_VT),g' \
+		< $< > $@
+systemdsystemunit += gdm.service
+CLEANFILES += gdm.service
+
+endif
+
+EXTRA_DIST += gdm.service.in
+
 uninstall-hook:
 	rm -f \
 	$(DESTDIR)$(GDM_CUSTOM_CONF) \
@@ -173,7 +189,13 @@ uninstall-hook:
 	$(DESTDIR)$(sysconfdir)/dconf/db \
 	$(DESTDIR)$(sysconfdir)/dconf
 
-install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession 00-upstream-settings 00-upstream-settings-locks
+	if test -n "$(systemdsystemunit)"; then \
+		rm -f $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR)/$(systemdsystemunit); \
+		rmdir $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR) || : ; \
+	fi
+
+
+install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession 00-upstream-settings 00-upstream-settings-locks $(systemdsystemunit)
 	if test '!' -d $(DESTDIR)$(gdmconfdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(gdmconfdir); \
 		chmod 755 $(DESTDIR)$(gdmconfdir); \
@@ -253,6 +275,13 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession 00-upstr
 		chown root:gdm $(DESTDIR)$(xauthdir) || : ; \
 	fi
 
+	if test -n "$(systemdsystemunit)" -a '!' -d $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR); then \
+		$(mkinstalldirs) $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR); \
+		chmod 0755 $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR); \
+		chown root:root $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR) || : ; \
+		$(INSTALL_DATA) $(builddir)/$(systemdsystemunit) $(DESTDIR)$(SYSTEMD_SYSTEM_UNIT_DIR)/$(systemdsystemunit); \
+	fi
+
 	if test '!' -d $(DESTDIR)$(screenshotdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(screenshotdir); \
 		chmod 0755 $(DESTDIR)$(screenshotdir); \
@@ -311,3 +340,4 @@ install-data-hook: gdm.conf-custom Xsession Init PostSession PreSession 00-upstr
 	$(INSTALL_DATA) $(srcdir)/00-upstream-settings $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d
 	$(INSTALL_DATA) $(srcdir)/00-upstream-settings-locks $(DESTDIR)$(sysconfdir)/dconf/db/gdm.d/locks
 	test -z "$(DESTDIR)" && dconf update || :
+

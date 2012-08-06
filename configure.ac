@@ -276,6 +276,10 @@ AC_ARG_WITH(systemd,
             AS_HELP_STRING([--with-systemd],
                            [Add systemd support @<:@default=auto@:>@]),
             [with_systemd=$withval], [with_systemd=auto])
+AC_ARG_WITH([systemdsystemunitdir],
+            AS_HELP_STRING([--with-systemdsystemunitdir=DIR],
+                           [Directory for systemd service files]),
+                [with_systemdsystemunitdir=$withval], [with_systemdsystemunitdir=$($PKG_CONFIG --variable=systemdsystemunitdir systemd)])
 AC_ARG_WITH(plymouth,
             AS_HELP_STRING([--with-plymouth],
                            [Add plymouth support @<:@default=auto@:>@]),
@@ -942,6 +946,11 @@ AC_PATH_PROG(SYSTEMD_X_SERVER, systemd-multi-seat-x, [/lib/systemd/systemd-multi
 AC_SUBST(SYSTEMD_X_SERVER)
 AC_DEFINE_UNQUOTED(SYSTEMD_X_SERVER,"$SYSTEMD_X_SERVER",[Path to systemd X server wrapper])
 
+if test "x$with_systemdsystemunitdir" != xno; then
+        AC_SUBST(SYSTEMD_SYSTEM_UNIT_DIR, [$with_systemdsystemunitdir])
+fi
+AM_CONDITIONAL(HAVE_SYSTEMD, [test -n "$with_systemdsystemunitdir" -a "x$with_systemdsystemunitdir" != xno -a "x$use_systemd" = "xyes" ])
+
 dnl ---------------------------------------------------------------------------
 dnl - Check for plymouth support
 dnl ---------------------------------------------------------------------------
@@ -1569,6 +1578,7 @@ echo \
         XDMCP support:            ${XDMCP_SUPPORT}
         ConsoleKit support:       ${use_console_kit}
         systemd support:          ${use_systemd}
+        systemd unit dir:         ${with_systemdsystemunitdir}
         plymouth support:         ${use_plymouth}
         UPower support:           ${have_upower}
         Build with RBAC:          ${msg_rbac_shutdown}
