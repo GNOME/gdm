@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: gu\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-07-17 09:31+0000\n"
-"PO-Revision-Date: 2012-07-26 16:41+0530\n"
+"POT-Creation-Date: 2012-08-01 21:10+0000\n"
+"PO-Revision-Date: 2012-08-06 11:49+0530\n"
 "Last-Translator: \n"
 "Language-Team: gu_IN <kde-i18n-doc@kde.org>\n"
 "Language: \n"
@@ -52,18 +52,42 @@ msgstr "સિસ્ટમ પર વપરાશકર્તા \"%s\" શો�
 
 #: ../daemon/gdm-display.c:1269 ../daemon/gdm-display.c:1303
 #, c-format
-#| msgid "no user account available"
 msgid "No session available yet"
 msgstr "હજુ સત્ર ઉપલબ્ધ નથી"
 
-#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:385
+#: ../daemon/gdm-launch-environment.c:401
 #, c-format
-#| msgid "Unable to authorize user"
+msgid "User %s doesn't exist"
+msgstr "વપરાશકર્તા %s અસ્તિત્વ ધરાવતુ નથી"
+
+#: ../daemon/gdm-launch-environment.c:408
+#, c-format
+msgid "Group %s doesn't exist"
+msgstr "જૂથ %s અસ્તિત્વ ધરાવતુ નથી"
+
+#: ../daemon/gdm-launch-environment.c:427
+#: ../daemon/gdm-launch-environment.c:447 ../daemon/gdm-server.c:460
+#: ../daemon/gdm-server.c:480
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "જૂથના ઓળખક્રમાંકને %d પર સુયોજિત કરી શકાયુ નહિં"
+
+#: ../daemon/gdm-launch-environment.c:433 ../daemon/gdm-server.c:466
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "%s માટે initgroups () નિષ્ફળ"
+
+#: ../daemon/gdm-launch-environment.c:439 ../daemon/gdm-server.c:472
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "વપરાશકર્તાના ઓળખક્રમાંકને %d પર સુયોજિત કરી શકાયુ નથી"
+
+#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
+#, c-format
 msgid "Unable to look up UID of user %s"
 msgstr "વપરાશકર્તા %s ની UID ને જોવામાં અસમર્થ"
 
 #: ../daemon/gdm-manager.c:291
-#| msgid "no user account available"
 msgid "no sessions available"
 msgstr "સત્રો ઉપલબ્ધ નથી"
 
@@ -72,13 +96,23 @@ msgstr "સત્રો ઉપલબ્ધ નથી"
 msgid "No sessions for %s available for reauthentication"
 msgstr "પુન:સત્તાધિકરણ માટે %s ઉપલબ્ધ માટે સત્રો નથી"
 
-#: ../daemon/gdm-manager.c:663
-#| msgid "User %s doesn't exist"
+#: ../daemon/gdm-manager.c:406
+#, c-format
+#| msgid "Unable to open session"
+msgid "Unable to find session for user %s"
+msgstr "વપરાશકર્તા  %s માટે સત્રને શોધવામાં અસમર્થ"
+
+#: ../daemon/gdm-manager.c:476
+#, c-format
+#| msgid "Unable to open session"
+msgid "Unable to find appropriate session for user %s"
+msgstr "વપરાશકર્તા %s માટે અનુકુળ સત્રને શોધવામાં અસમર્થ"
+
+#: ../daemon/gdm-manager.c:671
 msgid "User doesn't own session"
 msgstr "વપરાશકર્તા પોતાનું સત્ર હોતુ નથી"
 
-#: ../daemon/gdm-manager.c:679 ../daemon/gdm-manager.c:760
-#| msgid "no user account available"
+#: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
 msgid "No session available"
 msgstr "સત્ર ઉપલબ્ધ નથી"
 
@@ -91,22 +125,6 @@ msgstr "%s: પિતૃ ડિસ્પ્લે '%s' સાથે જોડા
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "સર્વર વપરાશકર્તા %s દ્વારા ઉત્પન્ન કરવાનું હતું પરંતુ તે વપરાશકર્તા અસ્તિત્વ ધરાવતો નથી"
-
-#: ../daemon/gdm-server.c:460 ../daemon/gdm-server.c:480
-#: ../daemon/gdm-welcome-session.c:433 ../daemon/gdm-welcome-session.c:453
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "જૂથના ઓળખક્રમાંકને %d પર સુયોજિત કરી શકાયુ નહિં"
-
-#: ../daemon/gdm-server.c:466 ../daemon/gdm-welcome-session.c:439
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "%s માટે initgroups () નિષ્ફળ"
-
-#: ../daemon/gdm-server.c:472 ../daemon/gdm-welcome-session.c:445
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "વપરાશકર્તાના ઓળખક્રમાંકને %d પર સુયોજિત કરી શકાયુ નથી"
 
 #: ../daemon/gdm-server.c:519
 #, c-format
@@ -153,71 +171,70 @@ msgstr "ડિસ્પ્લે ઉપકરણ"
 msgid "The display device"
 msgstr "ડિસ્પ્લે ઉપકરણ"
 
-#: ../daemon/gdm-session.c:1369 ../daemon/gdm-session.c:1395
-#| msgid "%s: Could not read Authentication Names"
+#: ../daemon/gdm-session.c:1166
 msgid "Could not create authentication helper process"
 msgstr "સત્તાધિકરણ મદદકર્તા પ્રક્રિયા બનાવી શક્યા નહિં"
 
-#: ../daemon/gdm-session-worker.c:1032
+#: ../daemon/gdm-session-worker.c:1025
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "સત્તાધિકરણ સિસ્ટમ સાથે શરૂઆતમાં વાર્તાલાપ કરવા દરમ્યાન ભૂલ - %s"
 
-#: ../daemon/gdm-session-worker.c:1033
+#: ../daemon/gdm-session-worker.c:1026
 msgid "general failure"
 msgstr "સામાન્ય નિષ્ફળતા"
 
-#: ../daemon/gdm-session-worker.c:1034
+#: ../daemon/gdm-session-worker.c:1027
 msgid "out of memory"
 msgstr "મેમરીની બહાર"
 
-#: ../daemon/gdm-session-worker.c:1035
+#: ../daemon/gdm-session-worker.c:1028
 msgid "application programmer error"
 msgstr "કાર્યક્રમ પ્રોગ્રામર ભૂલ"
 
-#: ../daemon/gdm-session-worker.c:1036
+#: ../daemon/gdm-session-worker.c:1029
 msgid "unknown error"
 msgstr "અજ્ઞાત ભૂલ"
 
-#: ../daemon/gdm-session-worker.c:1043
+#: ../daemon/gdm-session-worker.c:1036
 msgid "Username:"
 msgstr "વપરાશકર્તાનું નામ:"
 
-#: ../daemon/gdm-session-worker.c:1049
+#: ../daemon/gdm-session-worker.c:1042
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr "અધિમાન્ય વપરાશકર્તાનામ પ્રોમ્પ્ટનાં સિસ્ટમ સત્તાધિકરણને જાણકારી દરમિયાન ભૂલ: %s"
 
-#: ../daemon/gdm-session-worker.c:1063
+#: ../daemon/gdm-session-worker.c:1056
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "વપરાશકર્તાનાં યજમાનનામની સિસ્ટમ સત્તાધિકરણની જાણકારી દરમિયાન ભૂલ: %s"
 
-#: ../daemon/gdm-session-worker.c:1080
+#: ../daemon/gdm-session-worker.c:1073
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "વપરાશકર્તાનાં કન્સોલની સિસ્ટમ સત્તાધિકરણને જાણકારી દરમિયાન ભૂલ: %s"
 
-#: ../daemon/gdm-session-worker.c:1104
+#: ../daemon/gdm-session-worker.c:1097
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "શબ્દમાળાને દર્શાવવા સિસ્ટમ સત્તાધિકરણને જાણકારી દરમિયાન ભૂલ: %s"
 
-#: ../daemon/gdm-session-worker.c:1119
+#: ../daemon/gdm-session-worker.c:1112
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "xauth શ્રેય દર્શાવવા નું સત્તાધિકરણ સિસ્ટમને જાણકારી દરમિયાન ભૂલ: %s"
 
-#: ../daemon/gdm-session-worker.c:1448 ../daemon/gdm-session-worker.c:1465
+#: ../daemon/gdm-session-worker.c:1441 ../daemon/gdm-session-worker.c:1458
 #, c-format
 msgid "no user account available"
 msgstr "વપરાશકર્તાનું ખાતુ ઉપલબ્ધ નથી"
 
-#: ../daemon/gdm-session-worker.c:1492
+#: ../daemon/gdm-session-worker.c:1485
 msgid "Unable to change to user"
 msgstr "વપરાશકર્તાને બદલવામાં અસમર્થ"
 
-#: ../daemon/gdm-simple-slave.c:1067
+#: ../daemon/gdm-simple-slave.c:1363
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -229,32 +246,21 @@ msgstr ""
 "દરમ્યાન આ ડિસ્પ્લે નિષ્ક્રિય થઇ જશે.  મહેરબાની કરીને જ્યારે સમસ્યાનો હલ આવી જાય ત્યારે GDM "
 "ફરીથી શરુ કરો."
 
-#: ../daemon/gdm-simple-slave.c:1108
+#: ../daemon/gdm-simple-slave.c:1404
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "વપરાશકર્તા પ્રવેશે તે પહેલાં ફક્ત કોલ કરી શકાય છે"
 
-#: ../daemon/gdm-simple-slave.c:1118
+#: ../daemon/gdm-simple-slave.c:1414
 #, c-format
 msgid "Caller not GDM"
 msgstr "કોલર GDM નથી"
 
-#: ../daemon/gdm-simple-slave.c:1177
-#| msgid "Currently logged in"
+#: ../daemon/gdm-simple-slave.c:1473
 msgid "User not logged in"
 msgstr "વપરાશકર્તા પ્રવેશેલ નથી"
 
-#: ../daemon/gdm-welcome-session.c:407
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "વપરાશકર્તા %s અસ્તિત્વ ધરાવતુ નથી"
-
-#: ../daemon/gdm-welcome-session.c:414
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "જૂથ %s અસ્તિત્વ ધરાવતુ નથી"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:352
+#: ../daemon/gdm-xdmcp-chooser-slave.c:366
 #, c-format
 msgid "Currently, only one client can be connected at once"
 msgstr "હાલમાં, ફક્ત એક ક્લાયન્ટ ફક્ત એકવાર જોડાઇ શકે છે"
@@ -334,7 +340,7 @@ msgstr "માત્ર રુટ વપરાશકર્તા GDM ને ચ�
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:153
+#: ../daemon/session-worker-main.c:150
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME ડિસ્પ્લે વ્યવસ્થાપક સત્ર કામ કરનાર ચાલી"
 
@@ -784,8 +790,8 @@ msgstr "શું તે ચાલી રહ્યુ છે?"
 msgid "Whether the timer is currently ticking"
 msgstr "ક્યાંતો ટાઇમર હાલમાં શરૂ થઇ રહ્યુ છે કે નહિં"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:460
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:802
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
 #, c-format
 msgid "Log in as %s"
 msgstr "%s તરીકે પ્રવેશ કરો"
@@ -795,32 +801,32 @@ msgstr "%s તરીકે પ્રવેશ કરો"
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
 msgctxt "user"
 msgid "Other…"
 msgstr "બીજું..."
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:547
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
 msgid "Choose a different account"
 msgstr "વિવિધ ખાતા પસંદ કરો"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:561
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
 msgid "Guest"
 msgstr "મહેમાન"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:562
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
 msgid "Log in as a temporary guest"
 msgstr "કામચલાઉ મહેમાન તરીકે પ્રવેશ"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:577
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
 msgid "Automatic Login"
 msgstr "આપોઆપ પ્રવેશ"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:578
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
 msgid "Automatically log into the system after selecting options"
 msgstr "વિકલ્પો પસંદ કરવા દરમિયાન પછી આપોઆપ સિસ્ટમ દાખલ થાય છે"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1358
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
 msgid "Currently logged in"
 msgstr "વર્તમાનમાં જ પ્રવેશેલ છે"
 
@@ -900,9 +906,6 @@ msgstr "સ્ક્રીનનું ચિત્ર ને લો"
 
 #~ msgid "Unable to establish credentials"
 #~ msgstr "ઓળખાણપત્ર સ્થાપવામાં અસમર્થ"
-
-#~ msgid "Unable to open session"
-#~ msgstr "સત્રને ખોલવાનું અસમર્થ"
 
 #~ msgid "The system is unable to find a login screen to switch to."
 #~ msgstr "ખસેડવા માટે સિસ્ટમ પ્રવેશ સ્ક્રીનને શોધવા માટે અસમર્થ છે."
