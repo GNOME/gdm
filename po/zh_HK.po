@@ -13,9 +13,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 3.2.0\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-18 09:31+0800\n"
-"PO-Revision-Date: 2012-07-18 09:31+0800\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-08-01 21:10+0000\n"
+"PO-Revision-Date: 2012-08-07 15:07+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
 "Language: \n"
@@ -34,12 +34,44 @@ msgstr "/dev/urandom 不是字符裝置"
 msgid "could not find user \"%s\" on system"
 msgstr "在系統中找不到使用者「%s」"
 
-#: ../daemon/gdm-display.c:1269 ../daemon/gdm-display.c:1303
+#: ../daemon/gdm-display.c:1269
+#: ../daemon/gdm-display.c:1303
 #, c-format
 msgid "No session available yet"
 msgstr "沒有可用的作業階段"
 
-#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:385
+#: ../daemon/gdm-launch-environment.c:401
+#, c-format
+msgid "User %s doesn't exist"
+msgstr "使用者 %s 不存在"
+
+#: ../daemon/gdm-launch-environment.c:408
+#, c-format
+msgid "Group %s doesn't exist"
+msgstr "羣組 %s 不存在"
+
+#: ../daemon/gdm-launch-environment.c:427
+#: ../daemon/gdm-launch-environment.c:447
+#: ../daemon/gdm-server.c:460
+#: ../daemon/gdm-server.c:480
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "無法設定 groupid 為 %d"
+
+#: ../daemon/gdm-launch-environment.c:433
+#: ../daemon/gdm-server.c:466
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "%s 的 initgroups () 失敗。"
+
+#: ../daemon/gdm-launch-environment.c:439
+#: ../daemon/gdm-server.c:472
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "無法設定 userid 為 %d"
+
+#: ../daemon/gdm-manager.c:277
+#: ../daemon/gdm-manager.c:384
 #, c-format
 msgid "Unable to look up UID of user %s"
 msgstr "無法查詢使用者 %s 的 UID"
@@ -53,11 +85,24 @@ msgstr "沒有可用的作業階段"
 msgid "No sessions for %s available for reauthentication"
 msgstr "%s 沒有作業階段可用於重新驗證"
 
-#: ../daemon/gdm-manager.c:663
+#: ../daemon/gdm-manager.c:406
+#, c-format
+#| msgid "Unable to open session"
+msgid "Unable to find session for user %s"
+msgstr "找不到使用者 %s 的作業階段"
+
+#: ../daemon/gdm-manager.c:476
+#, c-format
+#| msgid "Unable to open session"
+msgid "Unable to find appropriate session for user %s"
+msgstr "找不到適合使用者 %s 的作業階段"
+
+#: ../daemon/gdm-manager.c:671
 msgid "User doesn't own session"
 msgstr "使用者未擁有作業階段"
 
-#: ../daemon/gdm-manager.c:679 ../daemon/gdm-manager.c:760
+#: ../daemon/gdm-manager.c:687
+#: ../daemon/gdm-manager.c:768
 msgid "No session available"
 msgstr "沒有可用的作業階段"
 
@@ -71,28 +116,13 @@ msgstr "%s：無法連接主顯示畫面‘%s’"
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "伺服器應以使用者 %s 的身分衍生，但該使用者不存在"
 
-#: ../daemon/gdm-server.c:460 ../daemon/gdm-server.c:480
-#: ../daemon/gdm-welcome-session.c:433 ../daemon/gdm-welcome-session.c:453
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "無法設定 groupid 為 %d"
-
-#: ../daemon/gdm-server.c:466 ../daemon/gdm-welcome-session.c:439
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "%s 的 initgroups () 失敗。"
-
-#: ../daemon/gdm-server.c:472 ../daemon/gdm-welcome-session.c:445
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "無法設定 userid 為 %d"
-
 #: ../daemon/gdm-server.c:519
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s：無法開啟顯示 %s 的紀錄檔案！"
 
-#: ../daemon/gdm-server.c:530 ../daemon/gdm-server.c:536
+#: ../daemon/gdm-server.c:530
+#: ../daemon/gdm-server.c:536
 #: ../daemon/gdm-server.c:542
 #, c-format
 msgid "%s: Error setting %s to %s"
@@ -132,102 +162,89 @@ msgstr "顯示裝置"
 msgid "The display device"
 msgstr "顯示裝置"
 
-#: ../daemon/gdm-session.c:1369 ../daemon/gdm-session.c:1395
+#: ../daemon/gdm-session.c:1166
 msgid "Could not create authentication helper process"
 msgstr "無法建立驗證協助程序"
 
-#: ../daemon/gdm-session-worker.c:1032
+#: ../daemon/gdm-session-worker.c:1025
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "驗證系統初始化交談發生錯誤 - %s"
 
-#: ../daemon/gdm-session-worker.c:1033
+#: ../daemon/gdm-session-worker.c:1026
 msgid "general failure"
 msgstr "一般性失敗"
 
-#: ../daemon/gdm-session-worker.c:1034
+#: ../daemon/gdm-session-worker.c:1027
 msgid "out of memory"
 msgstr "記憶體耗盡"
 
-#: ../daemon/gdm-session-worker.c:1035
+#: ../daemon/gdm-session-worker.c:1028
 msgid "application programmer error"
 msgstr "應用程式錯誤"
 
-#: ../daemon/gdm-session-worker.c:1036
+#: ../daemon/gdm-session-worker.c:1029
 msgid "unknown error"
 msgstr "不明的錯誤"
 
-#: ../daemon/gdm-session-worker.c:1043
+#: ../daemon/gdm-session-worker.c:1036
 msgid "Username:"
 msgstr "使用者名稱:"
 
-#: ../daemon/gdm-session-worker.c:1049
+#: ../daemon/gdm-session-worker.c:1042
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr "以首選的使用者名稱提示通知驗證系統時發生錯誤： %s"
 
-#: ../daemon/gdm-session-worker.c:1063
+#: ../daemon/gdm-session-worker.c:1056
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "以使用者的主機名稱通知驗證系統時發生錯誤：%s"
 
-#: ../daemon/gdm-session-worker.c:1080
+#: ../daemon/gdm-session-worker.c:1073
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "以使用者的主控臺通知驗證系統時發生錯誤：%s"
 
-#: ../daemon/gdm-session-worker.c:1104
+#: ../daemon/gdm-session-worker.c:1097
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "以顯示字串通知驗證系統時發生錯誤：%s"
 
-#: ../daemon/gdm-session-worker.c:1119
+#: ../daemon/gdm-session-worker.c:1112
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "以顯示 xauth 證書通知驗證系統時發生錯誤：%s"
 
-#: ../daemon/gdm-session-worker.c:1448 ../daemon/gdm-session-worker.c:1465
+#: ../daemon/gdm-session-worker.c:1441
+#: ../daemon/gdm-session-worker.c:1458
 #, c-format
 msgid "no user account available"
 msgstr "沒有可用的使用者帳號"
 
-#: ../daemon/gdm-session-worker.c:1492
+#: ../daemon/gdm-session-worker.c:1485
 msgid "Unable to change to user"
 msgstr "無法改變為使用者"
 
-#: ../daemon/gdm-simple-slave.c:1067
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
+#: ../daemon/gdm-simple-slave.c:1363
+msgid "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 msgstr "因為某些內部錯誤，目前無法啟動 X 伺服器（即圖形介面）。請聯絡系統管理員或是檢查系統紀錄檔來判斷。目前會停止使用這個顯示畫面。請在修正問題後重新啟動 GDM。"
 
-#: ../daemon/gdm-simple-slave.c:1108
+#: ../daemon/gdm-simple-slave.c:1404
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "只能在使用者登入前呼叫"
 
-#: ../daemon/gdm-simple-slave.c:1118
+#: ../daemon/gdm-simple-slave.c:1414
 #, c-format
 msgid "Caller not GDM"
 msgstr "呼叫者不是 GDM"
 
-#: ../daemon/gdm-simple-slave.c:1177
+#: ../daemon/gdm-simple-slave.c:1473
 msgid "User not logged in"
 msgstr "使用者尚未登入"
 
-#: ../daemon/gdm-welcome-session.c:407
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "使用者 %s 不存在"
-
-#: ../daemon/gdm-welcome-session.c:414
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "羣組 %s 不存在"
-
-#: ../daemon/gdm-xdmcp-chooser-slave.c:352
+#: ../daemon/gdm-xdmcp-chooser-slave.c:366
 #, c-format
 msgid "Currently, only one client can be connected at once"
 msgstr "目前，一次只能連線一個客戶端"
@@ -236,7 +253,8 @@ msgstr "目前，一次只能連線一個客戶端"
 msgid "Could not create socket!"
 msgstr "無法建立 socket！"
 
-#: ../daemon/main.c:126 ../daemon/main.c:139
+#: ../daemon/main.c:126
+#: ../daemon/main.c:139
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "無法寫入 PID 檔 %s：可能是磁碟空間不足：%s"
@@ -307,19 +325,22 @@ msgstr "只有 root 使用者可以執行 GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:153
+#: ../daemon/session-worker-main.c:150
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME 登入管理員工作階段的工作程序"
 
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+#: ../daemon/simple-slave-main.c:177
+#: ../daemon/xdmcp-chooser-slave-main.c:178
 msgid "Display ID"
 msgstr "顯示 ID"
 
-#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+#: ../daemon/simple-slave-main.c:177
+#: ../daemon/xdmcp-chooser-slave-main.c:178
 msgid "ID"
 msgstr "ID"
 
-#: ../daemon/simple-slave-main.c:187 ../daemon/xdmcp-chooser-slave-main.c:188
+#: ../daemon/simple-slave-main.c:187
+#: ../daemon/xdmcp-chooser-slave-main.c:188
 msgid "GNOME Display Manager Slave"
 msgstr "GNOME 從屬顯示管理程式"
 
@@ -365,9 +386,7 @@ msgid "Whether or not to allow fingerprint readers for login"
 msgstr "是否允許使用指紋讀取機登入"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:2
-msgid ""
-"The login screen can optionally allow users who have enrolled their "
-"fingerprints to log in using those prints."
+msgid "The login screen can optionally allow users who have enrolled their fingerprints to log in using those prints."
 msgstr "登入畫面可以選擇性的允許使用者使用指紋登入。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
@@ -375,9 +394,7 @@ msgid "Whether or not to allow smartcard readers for login"
 msgstr "是否允許使用智慧卡讀取機登入"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:4
-msgid ""
-"The login screen can optionally allow users who have smartcards to log in "
-"using those smartcards."
+msgid "The login screen can optionally allow users who have smartcards to log in using those smartcards."
 msgstr "登入畫面可以選擇性的允許有智慧卡的使用者使用智慧卡登入。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
@@ -385,17 +402,11 @@ msgid "Path to small image at top of user list"
 msgstr "使用者清單頂端小圖片的路徑"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:6
-msgid ""
-"The login screen can optionally show a small image at the top of its user "
-"list to provide site administrators and distributions a way to provide "
-"branding."
+msgid "The login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
 msgstr "登入畫面可以選擇性的在使用者清單頂端顯示一張小圖片讓網站管理者和發行版本能展示他們的品牌。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
-msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
+msgid "The fallback login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
 msgstr "後備登入畫面可以選擇性的在使用者清單頂端顯示一張小圖片讓網站管理者和發行版本能展示他們的品牌。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
@@ -403,9 +414,7 @@ msgid "Avoid showing user list"
 msgstr "避免顯示使用者清單"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
-msgid ""
-"The login screen normally shows a list of available users to log in as. This "
-"setting can be toggled to disable showing the user list."
+msgid "The login screen normally shows a list of available users to log in as. This setting can be toggled to disable showing the user list."
 msgstr "登入畫面通常會顯示可登入使用者的清單。這個設定值可以切換以停用這個清單的顯示。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
@@ -745,8 +754,8 @@ msgstr "它是否正在執行？"
 msgid "Whether the timer is currently ticking"
 msgstr "計時器現在是否在計時"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:460
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:802
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
 #, c-format
 msgid "Log in as %s"
 msgstr "以 %s 身分登入"
@@ -756,32 +765,32 @@ msgstr "以 %s 身分登入"
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
 msgctxt "user"
 msgid "Other…"
 msgstr "其他…"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:547
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
 msgid "Choose a different account"
 msgstr "選擇不同的帳號"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:561
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
 msgid "Guest"
 msgstr "訪客"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:562
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
 msgid "Log in as a temporary guest"
 msgstr "以臨時訪客的身分登入"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:577
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
 msgid "Automatic Login"
 msgstr "自動登入"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:578
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
 msgid "Automatically log into the system after selecting options"
 msgstr "在選取選項後自動登入系統"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1358
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
 msgid "Currently logged in"
 msgstr "現在已經登入"
 
@@ -793,12 +802,15 @@ msgstr "只支援 VERSION 指令"
 msgid "COMMAND"
 msgstr "指令"
 
-#: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
-#: ../utils/gdmflexiserver.c:68 ../utils/gdmflexiserver.c:69
+#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:66
+#: ../utils/gdmflexiserver.c:68
+#: ../utils/gdmflexiserver.c:69
 msgid "Ignored — retained for compatibility"
 msgstr "已忽略 — 只為兼容性而保留"
 
-#: ../utils/gdmflexiserver.c:67 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:67
+#: ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "偵錯輸出"
 
@@ -806,7 +818,8 @@ msgstr "偵錯輸出"
 msgid "Version of this application"
 msgstr "這個程式的版本"
 
-#: ../utils/gdmflexiserver.c:446 ../utils/gdmflexiserver.c:584
+#: ../utils/gdmflexiserver.c:446
+#: ../utils/gdmflexiserver.c:584
 #, c-format
 msgid "Could not identify the current session."
 msgstr "無法識別目前的作業階段。"
@@ -823,9 +836,7 @@ msgstr "無法識別目前的 seat。"
 
 #: ../utils/gdmflexiserver.c:603
 #, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
+msgid "The system is unable to determine whether to switch to an existing login screen or start up a new login screen."
 msgstr "系統無法決定要切換到現有的登入畫面或是啟動一個新的登入畫面。"
 
 #: ../utils/gdmflexiserver.c:611
@@ -862,6 +873,3 @@ msgstr "照下螢幕的圖片"
 
 #~ msgid "Unable to establish credentials"
 #~ msgstr "無法建立證書"
-
-#~ msgid "Unable to open session"
-#~ msgstr "無法開啟作業階段"
