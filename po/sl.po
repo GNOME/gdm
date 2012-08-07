@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-07-26 11:11+0000\n"
-"PO-Revision-Date: 2012-07-29 14:20+0100\n"
+"POT-Creation-Date: 2012-08-07 07:08+0000\n"
+"PO-Revision-Date: 2012-08-07 09:23+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
@@ -34,84 +34,104 @@ msgstr "/dev/urandom ni znakovna naprava"
 msgid "could not find user \"%s\" on system"
 msgstr "v sistemu ni mogoče najti uporabnika \"%s\""
 
-#: ../daemon/gdm-display.c:1269
-#: ../daemon/gdm-display.c:1303
+#: ../daemon/gdm-display.c:1315
+#: ../daemon/gdm-display.c:1349
 #, c-format
 msgid "No session available yet"
 msgstr "Seja še ni na voljo"
 
+#: ../daemon/gdm-launch-environment.c:401
+#, c-format
+msgid "User %s doesn't exist"
+msgstr "Uporabnik %s ne obstaja"
+
+#: ../daemon/gdm-launch-environment.c:408
+#, c-format
+msgid "Group %s doesn't exist"
+msgstr "Skupina %s ne obstaja"
+
+#: ../daemon/gdm-launch-environment.c:427
+#: ../daemon/gdm-launch-environment.c:447
+#: ../daemon/gdm-server.c:463
+#: ../daemon/gdm-server.c:483
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "Ni mogoče nastaviti groupid na %d"
+
+#: ../daemon/gdm-launch-environment.c:433
+#: ../daemon/gdm-server.c:469
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "initgrougs() ni uspel za %s"
+
+#: ../daemon/gdm-launch-environment.c:439
+#: ../daemon/gdm-server.c:475
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "Ni mogoče nastaviti userid na %d"
+
 #: ../daemon/gdm-manager.c:277
-#: ../daemon/gdm-manager.c:385
-#, fuzzy, c-format
+#: ../daemon/gdm-manager.c:384
+#, c-format
 msgid "Unable to look up UID of user %s"
-msgstr "Ni mogoče pooblastiti uporabnika"
+msgstr "Ni mogoče določiti UID uporabnika %s"
 
 #: ../daemon/gdm-manager.c:291
 msgid "no sessions available"
 msgstr "na voljo ni nobene seje"
 
 #: ../daemon/gdm-manager.c:352
-#, fuzzy, c-format
+#, c-format
 msgid "No sessions for %s available for reauthentication"
-msgstr "Nove skladbe za {0} niso na voljo."
+msgstr "Ni mogoče najti seje uporabnika %s za overitev prijave"
 
-#: ../daemon/gdm-manager.c:663
+#: ../daemon/gdm-manager.c:406
+#, c-format
+msgid "Unable to find session for user %s"
+msgstr "Ni mogoče najti seje uporabnika %s"
+
+#: ../daemon/gdm-manager.c:476
+#, c-format
+msgid "Unable to find appropriate session for user %s"
+msgstr "Ni mogoče najti ustrezne seje za uporabnika %s"
+
+#: ../daemon/gdm-manager.c:671
 msgid "User doesn't own session"
 msgstr "Uporabnik ni lastnik seje"
 
-#: ../daemon/gdm-manager.c:679
-#: ../daemon/gdm-manager.c:760
+#: ../daemon/gdm-manager.c:687
+#: ../daemon/gdm-manager.c:768
 msgid "No session available"
 msgstr "Na voljo ni nobene seje"
 
-#: ../daemon/gdm-server.c:270
+#: ../daemon/gdm-server.c:273
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: povezava z zaslonom '%s' ni uspela"
 
-#: ../daemon/gdm-server.c:449
+#: ../daemon/gdm-server.c:452
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Strežnik bi moral biti oživljen preko uporabnika %s, vendar ta uporabnik ne obstaja"
 
-#: ../daemon/gdm-server.c:460
-#: ../daemon/gdm-server.c:480
-#: ../daemon/gdm-welcome-session.c:427
-#: ../daemon/gdm-welcome-session.c:447
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "Ni mogoče nastaviti groupid na %d"
-
-#: ../daemon/gdm-server.c:466
-#: ../daemon/gdm-welcome-session.c:433
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "initgrougs() ni uspel za %s"
-
-#: ../daemon/gdm-server.c:472
-#: ../daemon/gdm-welcome-session.c:439
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "Ni mogoče nastaviti userid na %d"
-
-#: ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:522
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Ni mogoče odpreti dnevniške datoteke za prikaz %s!"
 
-#: ../daemon/gdm-server.c:530
-#: ../daemon/gdm-server.c:536
-#: ../daemon/gdm-server.c:542
+#: ../daemon/gdm-server.c:533
+#: ../daemon/gdm-server.c:539
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: napaka med nastavljanjem %s na %s"
 
-#: ../daemon/gdm-server.c:562
+#: ../daemon/gdm-server.c:565
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: prednosti strežnika ni mogoče nastaviti na %d: %s"
 
-#: ../daemon/gdm-server.c:715
+#: ../daemon/gdm-server.c:718
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: prazen ukaz strežnika za zaslon %s"
@@ -140,98 +160,87 @@ msgstr "Naprava zaslona"
 msgid "The display device"
 msgstr "Naprava za prikazovanje"
 
-#: ../daemon/gdm-session.c:1365
-#, fuzzy
+#: ../daemon/gdm-session.c:1166
 msgid "Could not create authentication helper process"
-msgstr "%s: ni mogoče prebrati imen pooblastil"
+msgstr "Ni mogoče ustvariti opravila pomočnika overitve prijave"
 
-#: ../daemon/gdm-session-worker.c:1032
+#: ../daemon/gdm-session-worker.c:1025
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "napaka začenjanja povezave s sistemom pooblastitve - %s"
 
-#: ../daemon/gdm-session-worker.c:1033
+#: ../daemon/gdm-session-worker.c:1026
 msgid "general failure"
 msgstr "splošna napaka"
 
-#: ../daemon/gdm-session-worker.c:1034
+#: ../daemon/gdm-session-worker.c:1027
 msgid "out of memory"
 msgstr "primanjkuje pomnilnika"
 
-#: ../daemon/gdm-session-worker.c:1035
+#: ../daemon/gdm-session-worker.c:1028
 msgid "application programmer error"
 msgstr "programerska napaka programa"
 
-#: ../daemon/gdm-session-worker.c:1036
+#: ../daemon/gdm-session-worker.c:1029
 msgid "unknown error"
 msgstr "neznana napaka"
 
-#: ../daemon/gdm-session-worker.c:1043
+#: ../daemon/gdm-session-worker.c:1036
 msgid "Username:"
 msgstr "Uporabniško ime:"
 
-#: ../daemon/gdm-session-worker.c:1049
+#: ../daemon/gdm-session-worker.c:1042
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr "napaka obveščanja sistema pooblastitve o pozivniku uporabniškega imena: %s"
 
-#: ../daemon/gdm-session-worker.c:1063
+#: ../daemon/gdm-session-worker.c:1056
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "napaka obveščanja sistema pooblastitve o imenu gostitelja: %s"
 
-#: ../daemon/gdm-session-worker.c:1080
+#: ../daemon/gdm-session-worker.c:1073
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "napaka obveščanja sistema pooblastitve o konzoli: %s"
 
-#: ../daemon/gdm-session-worker.c:1104
+#: ../daemon/gdm-session-worker.c:1097
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "napaka obveščanja sistema pooblastitve zaslonskih niti: %s"
 
-#: ../daemon/gdm-session-worker.c:1119
+#: ../daemon/gdm-session-worker.c:1112
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "napaka obveščanja sistema pooblastitve xauth varoval: %s"
 
-#: ../daemon/gdm-session-worker.c:1448
-#: ../daemon/gdm-session-worker.c:1465
+#: ../daemon/gdm-session-worker.c:1441
+#: ../daemon/gdm-session-worker.c:1458
 #, c-format
 msgid "no user account available"
 msgstr "na voljo ni nobenega uporabniškega računa"
 
-#: ../daemon/gdm-session-worker.c:1492
+#: ../daemon/gdm-session-worker.c:1485
 msgid "Unable to change to user"
 msgstr "Ni mogoče zamenjati uporabnika"
 
-#: ../daemon/gdm-simple-slave.c:1201
+#: ../daemon/gdm-simple-slave.c:1362
 msgid "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 msgstr "Ni mogoče zagnati strežnika X (vašega grafičnega okolja) zaradi notranje napake. Obrnite se na vašega skrbnika sistema ali preverite vaš sistemski dnevnik. V vmesnem času bo ta zaslon izključen. Poskusite s ponovnim zagonom GDM, ko bo problem odpravljen."
 
-#: ../daemon/gdm-simple-slave.c:1242
-#, fuzzy, c-format
+#: ../daemon/gdm-simple-slave.c:1403
+#, c-format
 msgid "Can only be called before user is logged in"
-msgstr "Lahko je klican po prijavi uporabnika"
+msgstr "Program je lahko klical le pred prijavo uporabnika"
 
-#: ../daemon/gdm-simple-slave.c:1252
-#, fuzzy, c-format
+#: ../daemon/gdm-simple-slave.c:1413
+#, c-format
 msgid "Caller not GDM"
-msgstr "Izpiši različico GDM"
+msgstr "Klicalnik ni GDM"
 
-#: ../daemon/gdm-simple-slave.c:1311
+#: ../daemon/gdm-simple-slave.c:1472
 msgid "User not logged in"
 msgstr "Uporabnik ni prijavljen"
-
-#: ../daemon/gdm-welcome-session.c:401
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "Uporabnik %s ne obstaja"
-
-#: ../daemon/gdm-welcome-session.c:408
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "Skupina %s ne obstaja"
 
 #: ../daemon/gdm-xdmcp-chooser-slave.c:366
 #, c-format
@@ -314,7 +323,7 @@ msgstr "Samo skrbnik ima dovoljenje zagnati GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:153
+#: ../daemon/session-worker-main.c:150
 msgid "GNOME Display Manager Session Worker"
 msgstr "Seja upravljalnika zaslona GNOME."
 
@@ -859,9 +868,6 @@ msgstr "Zajemanje zaslonske slike"
 
 #~ msgid "Unable to establish credentials"
 #~ msgstr "Ni mogoče vzpostaviti pooblastila"
-
-#~ msgid "Unable to open session"
-#~ msgstr "Ni mogoče odpreti seje"
 
 #~ msgid "The system is unable to find a login screen to switch to."
 #~ msgstr "Ni mogoče določiti prijavnega zaslona za preklop."
