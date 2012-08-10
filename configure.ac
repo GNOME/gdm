@@ -41,10 +41,12 @@ AC_SUBST(VERSION)
 AM_CONFIG_HEADER(config.h)
 AC_CONFIG_MACRO_DIR([m4])
 
-GNOME_DOC_INIT
-AC_ARG_ENABLE([documentation],
-	AS_HELP_STRING([--enable-documentation], [enable man pages and HTML documentation]),
-	[], [enable_documentation=yes])
+# Documentation
+enable_documentation=no
+m4_ifdef([YELP_HELP_INIT],[
+YELP_HELP_INIT
+enable_documentation=yes
+])
 AM_CONDITIONAL(ENABLE_DOCUMENTATION, test x$enable_documentation = xyes)
 
 # i18n stuff
@@ -1598,4 +1600,5 @@ echo \
         UPower support:           ${have_upower}
         Build with RBAC:          ${msg_rbac_shutdown}
         Initial VT:               ${GDM_INITIAL_VT}
+        Enable documentation:     ${enable_documentation}
 "
