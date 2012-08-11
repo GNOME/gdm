@@ -1551,7 +1551,7 @@ activate_session_id_for_systemd (GdmSlave   *slave,
                                              NULL,
                                              &error);
         if (reply == NULL) {
-                g_debug ("GdmSlave: logind %s raised:\n %s\n\n",
+                g_debug ("GdmSlave: logind 'ActivateSessionOnSeat' %s raised:\n %s\n\n",
                          g_dbus_error_get_remote_error (error), error->message);
                 g_error_free (error);
                 return FALSE;
@@ -1635,7 +1635,7 @@ session_unlock_for_systemd (GdmSlave   *slave,
                                              NULL,
                                              &error);
         if (reply == NULL) {
-                g_debug ("GdmSlave: logind %s raised:\n %s\n\n",
+                g_debug ("GdmSlave: logind 'UnlockSession' %s raised:\n %s\n\n",
                          g_dbus_error_get_remote_error (error), error->message);
                 g_error_free (error);
                 return FALSE;
