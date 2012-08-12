@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-20 00:41+0200\n"
-"PO-Revision-Date: 2012-07-20 00:41+0200\n"
+"POT-Creation-Date: 2012-08-12 13:41+0200\n"
+"PO-Revision-Date: 2012-08-12 13:41+0200\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "Language: ar\n"
@@ -33,12 +33,39 @@ msgstr "‏‪/dev/urandom‬ ليس جهازا مِحرفيا"
 msgid "could not find user \"%s\" on system"
 msgstr "تعذّر إيجاد المستخدم \"%s\" على هذا النّظام"
 
-#: ../daemon/gdm-display.c:1269 ../daemon/gdm-display.c:1303
+#: ../daemon/gdm-display.c:1315 ../daemon/gdm-display.c:1349
 #, c-format
 msgid "No session available yet"
 msgstr "لا توجد أي جلسات للآن"
 
-#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:385
+#: ../daemon/gdm-launch-environment.c:401
+#, c-format
+msgid "User %s doesn't exist"
+msgstr "المستخدم %s غير موجود"
+
+#: ../daemon/gdm-launch-environment.c:408
+#, c-format
+msgid "Group %s doesn't exist"
+msgstr "المجموعة %s غير موجودة"
+
+#: ../daemon/gdm-launch-environment.c:427
+#: ../daemon/gdm-launch-environment.c:447 ../daemon/gdm-server.c:463
+#: ../daemon/gdm-server.c:483
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "تعذّر ضبط معرّف المجموعة لـ %Id"
+
+#: ../daemon/gdm-launch-environment.c:433 ../daemon/gdm-server.c:469
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "فشل initgroups () لِـ %s"
+
+#: ../daemon/gdm-launch-environment.c:439 ../daemon/gdm-server.c:475
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "تعذّر ضبط معرّف المستخدم لِـ %Id"
+
+#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
 #, c-format
 msgid "Unable to look up UID of user %s"
 msgstr "تعذّر إيصاد UID المستخدم %s"
@@ -52,57 +79,51 @@ msgstr "لا توجد أي جلسات"
 msgid "No sessions for %s available for reauthentication"
 msgstr "لا توجد أي جلسات %s لإعادة الاستيثاق"
 
-#: ../daemon/gdm-manager.c:663
+#: ../daemon/gdm-manager.c:406
+#, c-format
+msgid "Unable to find session for user %s"
+msgstr "تعذر إيجاد جلسة للمستخدم %s"
+
+#: ../daemon/gdm-manager.c:476
+#, c-format
+msgid "Unable to find appropriate session for user %s"
+msgstr "تعذر إيجاد جلسة مناسبة للمستخدم %s"
+
+#: ../daemon/gdm-manager.c:671
 msgid "User doesn't own session"
 msgstr "لا يمتلك المستخدم الجلسة"
 
-#: ../daemon/gdm-manager.c:679 ../daemon/gdm-manager.c:760
+#: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
 msgid "No session available"
 msgstr "لا توجد أي جلسات"
 
-#: ../daemon/gdm-server.c:270
+#: ../daemon/gdm-server.c:273
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: فشل الاتصال بالعرض الأب '%s'"
 
-#: ../daemon/gdm-server.c:449
+#: ../daemon/gdm-server.c:452
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "كان الخادوم سيُوّلد من قبل المستخدم %s لكن ذلك المستخدم غير موجود"
 
-#: ../daemon/gdm-server.c:460 ../daemon/gdm-server.c:480
-#: ../daemon/gdm-welcome-session.c:427 ../daemon/gdm-welcome-session.c:447
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "تعذّر ضبط معرّف المجموعة لـ %Id"
-
-#: ../daemon/gdm-server.c:466 ../daemon/gdm-welcome-session.c:433
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "فشل initgroups () لِـ %s"
-
-#: ../daemon/gdm-server.c:472 ../daemon/gdm-welcome-session.c:439
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "تعذّر ضبط معرّف المستخدم لِـ %Id"
-
-#: ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:522
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "‏%s: تعذّر فتح ملف السجل للعرض %s!"
 
-#: ../daemon/gdm-server.c:530 ../daemon/gdm-server.c:536
-#: ../daemon/gdm-server.c:542
+#: ../daemon/gdm-server.c:533 ../daemon/gdm-server.c:539
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "‏%s: خطأ ضبط %s كـ %s"
 
-#: ../daemon/gdm-server.c:562
+#: ../daemon/gdm-server.c:565
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "‏%s:تعذّر ضبط أولوية الخادوم لتكون %Id: %s"
 
-#: ../daemon/gdm-server.c:715
+#: ../daemon/gdm-server.c:718
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "‏%s: أمر خادوم فارغ للعرض %s"
@@ -131,70 +152,70 @@ msgstr "جهاز العرض"
 msgid "The display device"
 msgstr "جهاز العرض"
 
-#: ../daemon/gdm-session.c:1369 ../daemon/gdm-session.c:1395
+#: ../daemon/gdm-session.c:1166
 msgid "Could not create authentication helper process"
 msgstr "تعذّر إنشاء عملية مساعد الاستيثاق"
 
-#: ../daemon/gdm-session-worker.c:1032
+#: ../daemon/gdm-session-worker.c:1025
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "خطأ أثناء بدء الحوار مع نظام التوثيق - %s"
 
-#: ../daemon/gdm-session-worker.c:1033
+#: ../daemon/gdm-session-worker.c:1026
 msgid "general failure"
 msgstr "فشل عام"
 
-#: ../daemon/gdm-session-worker.c:1034
+#: ../daemon/gdm-session-worker.c:1027
 msgid "out of memory"
 msgstr "نفذت الذّاكرة"
 
-#: ../daemon/gdm-session-worker.c:1035
+#: ../daemon/gdm-session-worker.c:1028
 msgid "application programmer error"
 msgstr "خطأ مُبرمج التّطبيق"
 
-#: ../daemon/gdm-session-worker.c:1036
+#: ../daemon/gdm-session-worker.c:1029
 msgid "unknown error"
 msgstr "خطأ مجهول"
 
-#: ../daemon/gdm-session-worker.c:1043
+#: ../daemon/gdm-session-worker.c:1036
 msgid "Username:"
 msgstr "اسم المستخدم:"
 
-#: ../daemon/gdm-session-worker.c:1049
+#: ../daemon/gdm-session-worker.c:1042
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr "خطأ في إخبار نظام التوثيق عن مُحِث اسم المستخدم المفضل: %s"
 
-#: ../daemon/gdm-session-worker.c:1063
+#: ../daemon/gdm-session-worker.c:1056
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "خطأ في إخبار نظام التوثيق عن اسم مستضيف المستخدم: %s"
 
-#: ../daemon/gdm-session-worker.c:1080
+#: ../daemon/gdm-session-worker.c:1073
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "خطأ في إخبار نظام التوثيق عن معراض المستخدم: %s"
 
-#: ../daemon/gdm-session-worker.c:1104
+#: ../daemon/gdm-session-worker.c:1097
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "خطأ في إعلام نظام الاستيثاق بمقطع العرض: %s"
 
-#: ../daemon/gdm-session-worker.c:1119
+#: ../daemon/gdm-session-worker.c:1112
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "خطأ في إعلام نظام الاستيثاق باعتمادات xauth للعرض: %s"
 
-#: ../daemon/gdm-session-worker.c:1448 ../daemon/gdm-session-worker.c:1465
+#: ../daemon/gdm-session-worker.c:1441 ../daemon/gdm-session-worker.c:1458
 #, c-format
 msgid "no user account available"
 msgstr "لا يُوجد حساب مستخدِم "
 
-#: ../daemon/gdm-session-worker.c:1492
+#: ../daemon/gdm-session-worker.c:1485
 msgid "Unable to change to user"
 msgstr "تعذّر الانتقال للمستخدم"
 
-#: ../daemon/gdm-simple-slave.c:1098
+#: ../daemon/gdm-simple-slave.c:1362
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -205,29 +226,19 @@ msgstr ""
 "النظام أو مراجعة سجل النظام للتشخيص. سيغلق العرض في هذه الأثناء. الرجاء "
 "إعادة تشغيل م‌ع‌ج عند تصحيح الخطأ."
 
-#: ../daemon/gdm-simple-slave.c:1139
+#: ../daemon/gdm-simple-slave.c:1403
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "لا يمكن استدعائه إلا قبل الولوج"
 
-#: ../daemon/gdm-simple-slave.c:1149
+#: ../daemon/gdm-simple-slave.c:1413
 #, c-format
 msgid "Caller not GDM"
 msgstr "المُستدعي ليس م‌ع‌ج"
 
-#: ../daemon/gdm-simple-slave.c:1208
+#: ../daemon/gdm-simple-slave.c:1472
 msgid "User not logged in"
 msgstr "المستخدم ليس والِجا"
-
-#: ../daemon/gdm-welcome-session.c:401
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "المستخدم %s غير موجود"
-
-#: ../daemon/gdm-welcome-session.c:408
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "المجموعة %s غير موجودة"
 
 #: ../daemon/gdm-xdmcp-chooser-slave.c:366
 #, c-format
@@ -309,7 +320,7 @@ msgstr "لا يستطيع تشغيل م‌ع‌ج إلا الجذر"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:153
+#: ../daemon/session-worker-main.c:150
 msgid "GNOME Display Manager Session Worker"
 msgstr "عامل جلسة مدير العرض جنوم"
 
@@ -863,9 +874,6 @@ msgstr "خذ صورة للشاشة"
 
 #~ msgid "Unable to establish credentials"
 #~ msgstr "تعذّر تنصيب الاعتمادات"
-
-#~ msgid "Unable to open session"
-#~ msgstr "تعذّر فتح الجلسة"
 
 #~ msgid "Denied XDMCP query from host %s"
 #~ msgstr "مُنِع طلب XDMCP من المستضيف %s"
