@@ -2647,7 +2647,7 @@ on_reauthentication_verification_complete (GdmSession              *session,
                  service_name);
         gdm_session_reset (session);
 
-        gdm_dbus_worker_emit_reauthenticated (GDM_DBUS_WORKER (worker));
+        gdm_dbus_worker_emit_reauthenticated (GDM_DBUS_WORKER (worker), service_name);
 }
 
 static ReauthenticationRequest *
