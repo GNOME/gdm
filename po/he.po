@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-24 22:58+0300\n"
-"PO-Revision-Date: 2012-07-24 23:03+0200\n"
+"POT-Creation-Date: 2012-08-13 23:02+0300\n"
+"PO-Revision-Date: 2012-08-13 23:03+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "Language: he\n"
@@ -28,14 +28,44 @@ msgstr "/dev/urandom is not a character device"
 msgid "could not find user \"%s\" on system"
 msgstr "לא ניתן לאתר את המשתמש „%s“ במערכת"
 
-#: ../daemon/gdm-display.c:1269
-#: ../daemon/gdm-display.c:1303
+#: ../daemon/gdm-display.c:1315
+#: ../daemon/gdm-display.c:1349
 #, c-format
 msgid "No session available yet"
 msgstr "אין עדיין הפעלות זמינות"
 
+#: ../daemon/gdm-launch-environment.c:401
+#, c-format
+msgid "User %s doesn't exist"
+msgstr "User %s doesn't exist"
+
+#: ../daemon/gdm-launch-environment.c:408
+#, c-format
+msgid "Group %s doesn't exist"
+msgstr "Group %s doesn't exist"
+
+#: ../daemon/gdm-launch-environment.c:427
+#: ../daemon/gdm-launch-environment.c:447
+#: ../daemon/gdm-server.c:463
+#: ../daemon/gdm-server.c:483
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "Couldn't set groupid to %d"
+
+#: ../daemon/gdm-launch-environment.c:433
+#: ../daemon/gdm-server.c:469
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "initgroups () failed for %s"
+
+#: ../daemon/gdm-launch-environment.c:439
+#: ../daemon/gdm-server.c:475
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "Couldn't set userid to %d"
+
 #: ../daemon/gdm-manager.c:277
-#: ../daemon/gdm-manager.c:385
+#: ../daemon/gdm-manager.c:384
 #, c-format
 msgid "Unable to look up UID of user %s"
 msgstr "לא ניתן לחפש את מזהה המשתמש %s"
@@ -49,63 +79,53 @@ msgstr "אין הפעלות זמינות"
 msgid "No sessions for %s available for reauthentication"
 msgstr "אין הפעלות עבור %s הזמינות לאימות מחדש"
 
-#: ../daemon/gdm-manager.c:663
+#: ../daemon/gdm-manager.c:406
+#, c-format
+msgid "Unable to find session for user %s"
+msgstr "לא ניתן למצוא את ההפעלה של המשתמש %s"
+
+#: ../daemon/gdm-manager.c:476
+#, c-format
+msgid "Unable to find appropriate session for user %s"
+msgstr "לא ניתן למצוא את ההפעלה המתאימה עבור המשתמש %s"
+
+#: ../daemon/gdm-manager.c:671
 msgid "User doesn't own session"
 msgstr "למשתמש אין בעלות על הפעלה"
 
-#: ../daemon/gdm-manager.c:679
-#: ../daemon/gdm-manager.c:760
+#: ../daemon/gdm-manager.c:687
+#: ../daemon/gdm-manager.c:768
 msgid "No session available"
 msgstr "אין הפעלה זמינה"
 
-#: ../daemon/gdm-server.c:270
+#: ../daemon/gdm-server.c:273
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: failed to connect to parent display '%s'"
 
-#: ../daemon/gdm-server.c:449
+#: ../daemon/gdm-server.c:452
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Server was to be spawned by user %s but that user doesn't exist"
 
-#: ../daemon/gdm-server.c:460
-#: ../daemon/gdm-server.c:480
-#: ../daemon/gdm-welcome-session.c:427
-#: ../daemon/gdm-welcome-session.c:447
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "Couldn't set groupid to %d"
-
-#: ../daemon/gdm-server.c:466
-#: ../daemon/gdm-welcome-session.c:433
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "initgroups () failed for %s"
-
-#: ../daemon/gdm-server.c:472
-#: ../daemon/gdm-welcome-session.c:439
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "Couldn't set userid to %d"
-
-#: ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:522
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Could not open log file for display %s!"
 
-#: ../daemon/gdm-server.c:530
-#: ../daemon/gdm-server.c:536
-#: ../daemon/gdm-server.c:542
+#: ../daemon/gdm-server.c:533
+#: ../daemon/gdm-server.c:539
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Error setting %s to %s"
 
-#: ../daemon/gdm-server.c:562
+#: ../daemon/gdm-server.c:565
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Server priority couldn't be set to %d: %s"
 
-#: ../daemon/gdm-server.c:715
+#: ../daemon/gdm-server.c:718
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Empty server command for display %s"
@@ -134,97 +154,87 @@ msgstr "התקן תצוגה"
 msgid "The display device"
 msgstr "התקן התצוגה"
 
-#: ../daemon/gdm-session.c:1365
+#: ../daemon/gdm-session.c:1193
 msgid "Could not create authentication helper process"
 msgstr "לא ניתן ליצור תהליך מסייע אימות"
 
-#: ../daemon/gdm-session-worker.c:1032
+#: ../daemon/gdm-session-worker.c:1025
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "error initiating conversation with authentication system - %s"
 
-#: ../daemon/gdm-session-worker.c:1033
+#: ../daemon/gdm-session-worker.c:1026
 msgid "general failure"
 msgstr "general failure"
 
-#: ../daemon/gdm-session-worker.c:1034
+#: ../daemon/gdm-session-worker.c:1027
 msgid "out of memory"
 msgstr "out of memory"
 
-#: ../daemon/gdm-session-worker.c:1035
+#: ../daemon/gdm-session-worker.c:1028
 msgid "application programmer error"
 msgstr "application programmer error"
 
-#: ../daemon/gdm-session-worker.c:1036
+#: ../daemon/gdm-session-worker.c:1029
 msgid "unknown error"
 msgstr "שגיאה לא ידועה"
 
-#: ../daemon/gdm-session-worker.c:1043
+#: ../daemon/gdm-session-worker.c:1036
 msgid "Username:"
 msgstr "שם משתמש:"
 
-#: ../daemon/gdm-session-worker.c:1049
+#: ../daemon/gdm-session-worker.c:1042
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr "error informing authentication system of preferred username prompt: %s"
 
-#: ../daemon/gdm-session-worker.c:1063
+#: ../daemon/gdm-session-worker.c:1056
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "error informing authentication system of user's hostname: %s"
 
-#: ../daemon/gdm-session-worker.c:1080
+#: ../daemon/gdm-session-worker.c:1073
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "error informing authentication system of user's console: %s"
 
-#: ../daemon/gdm-session-worker.c:1104
+#: ../daemon/gdm-session-worker.c:1097
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "error informing authentication system of display string: %s"
 
-#: ../daemon/gdm-session-worker.c:1119
+#: ../daemon/gdm-session-worker.c:1112
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "error informing authentication system of display xauth credentials: %s"
 
-#: ../daemon/gdm-session-worker.c:1448
-#: ../daemon/gdm-session-worker.c:1465
+#: ../daemon/gdm-session-worker.c:1441
+#: ../daemon/gdm-session-worker.c:1458
 #, c-format
 msgid "no user account available"
 msgstr "אין חשבון משתמש זמין"
 
-#: ../daemon/gdm-session-worker.c:1492
+#: ../daemon/gdm-session-worker.c:1485
 msgid "Unable to change to user"
 msgstr "לא ניתן להחליף משתמש"
 
-#: ../daemon/gdm-simple-slave.c:1201
+#: ../daemon/gdm-simple-slave.c:1362
 msgid "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 msgstr "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 
-#: ../daemon/gdm-simple-slave.c:1242
+#: ../daemon/gdm-simple-slave.c:1403
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "ניתן לקרוא לזה רק לפני שהמשתמש נכנס"
 
-#: ../daemon/gdm-simple-slave.c:1252
+#: ../daemon/gdm-simple-slave.c:1413
 #, c-format
 msgid "Caller not GDM"
 msgstr "הקורא אינו GDM"
 
-#: ../daemon/gdm-simple-slave.c:1311
+#: ../daemon/gdm-simple-slave.c:1472
 msgid "User not logged in"
 msgstr "המשתמש לא נכנס"
-
-#: ../daemon/gdm-welcome-session.c:401
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "User %s doesn't exist"
-
-#: ../daemon/gdm-welcome-session.c:408
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "Group %s doesn't exist"
 
 #: ../daemon/gdm-xdmcp-chooser-slave.c:366
 #, c-format
@@ -307,7 +317,7 @@ msgstr "Only the root user can run GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:153
+#: ../daemon/session-worker-main.c:150
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Display Manager Session Worker"
 
@@ -852,9 +862,6 @@ msgstr "צילום המסך"
 
 #~ msgid "Unable to establish credentials"
 #~ msgstr "לא ניתן להקים את פרטי הזיהוי"
-
-#~ msgid "Unable to open session"
-#~ msgstr "לא ניתן לפתוח את ההפעלה"
 
 #~ msgid "Max Item Count"
 #~ msgstr "מספר פריטים מרבי"
