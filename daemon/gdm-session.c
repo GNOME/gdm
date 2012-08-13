@@ -235,18 +235,21 @@ on_session_exited (GdmSession *self,
 static void
 report_and_stop_conversation (GdmSession *self,
                               const char *service_name,
-                              const char *message,
-                              gboolean    service_unavailable)
+                              GError     *error)
 {
+        g_dbus_error_strip_remote_error (error);
+
         if (self->priv->user_verifier_interface != NULL) {
-                if (service_unavailable) {
+                if (g_error_matches (error,
+                                     GDM_SESSION_WORKER_ERROR,
+                                     GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE)) {
                         gdm_dbus_user_verifier_emit_service_unavailable (self->priv->user_verifier_interface,
                                                                          service_name,
-                                                                         message);
+                                                                         error->message);
                 } else {
                         gdm_dbus_user_verifier_emit_problem (self->priv->user_verifier_interface,
                                                              service_name,
-                                                             message);
+                                                             error->message);
                 }
                 gdm_dbus_user_verifier_emit_verification_failed (self->priv->user_verifier_interface,
                                                                  service_name);
@@ -256,26 +259,25 @@ report_and_stop_conversation (GdmSession *self,
 }
 
 static void
-report_problem_and_stop_conversation (GdmSession *self,
-                                      const char *service_name,
-                                      const char *message)
-{
-        return report_and_stop_conversation (self, service_name, message, FALSE);
-}
-
-static void
 on_authenticate_cb (GdmDBusWorker *proxy,
                     GAsyncResult  *res,
                     gpointer       user_data)
 {
         GdmSessionConversation *conversation = user_data;
-        GdmSession *self = conversation->session;
-        char *service_name = conversation->service_name;
+        GdmSession *self;
+        char *service_name;
 
         GError *error = NULL;
         gboolean worked;
 
         worked = gdm_dbus_worker_call_authenticate_finish (proxy, res, &error);
+
+        if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CLOSED) ||
+            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+                return;
+
+        self = conversation->session;
+        service_name = conversation->service_name;
 
         if (worked) {
                 gdm_session_authorize (self, service_name);
@@ -286,10 +288,7 @@ on_authenticate_cb (GdmDBusWorker *proxy,
                                            self->priv->display_name,
                                            self->priv->display_device);
 
-                report_and_stop_conversation (self, service_name, error->message,
-                                              g_error_matches (error,
-                                                               GDM_SESSION_WORKER_ERROR,
-                                                               GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE));
+                report_and_stop_conversation (self, service_name, error);
         }
 }
 
@@ -299,18 +298,25 @@ on_authorize_cb (GdmDBusWorker *proxy,
                  gpointer       user_data)
 {
         GdmSessionConversation *conversation = user_data;
-        GdmSession *self = conversation->session;
-        char *service_name = conversation->service_name;
+        GdmSession *self;
+        char *service_name;
 
         GError *error = NULL;
         gboolean worked;
 
         worked = gdm_dbus_worker_call_authorize_finish (proxy, res, &error);
 
+        if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CLOSED) ||
+            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+                return;
+
+        self = conversation->session;
+        service_name = conversation->service_name;
+
         if (worked) {
                 gdm_session_accredit (self, service_name);
         } else {
-                report_problem_and_stop_conversation (self, service_name, error->message);
+                report_and_stop_conversation (self, service_name, error);
         }
 }
 
@@ -320,13 +326,20 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
                              gpointer       user_data)
 {
         GdmSessionConversation *conversation = user_data;
-        GdmSession *self = conversation->session;
-        char *service_name = conversation->service_name;
+        GdmSession *self;
+        char *service_name;
 
         GError *error = NULL;
         gboolean worked;
 
         worked = gdm_dbus_worker_call_establish_credentials_finish (proxy, res, &error);
+
+        if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CLOSED) ||
+            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+                return;
+
+        self = conversation->session;
+        service_name = conversation->service_name;
 
         if (worked) {
                 switch (self->priv->verification_mode) {
@@ -346,7 +359,7 @@ on_establish_credentials_cb (GdmDBusWorker *proxy,
                         break;
                 }
         } else {
-                report_problem_and_stop_conversation (self, service_name, error->message);
+                report_and_stop_conversation (self, service_name, error);
         }
 }
 
@@ -747,8 +760,8 @@ on_opened (GdmDBusWorker *worker,
            gpointer       user_data)
 {
         GdmSessionConversation *conversation = user_data;
-        GdmSession *self = conversation->session;
-        char *service_name = conversation->service_name;
+        GdmSession *self;
+        char *service_name;
 
         GError *error = NULL;
         gboolean worked;
@@ -758,6 +771,14 @@ on_opened (GdmDBusWorker *worker,
                                                    &session_id,
                                                    res,
                                                    &error);
+
+        if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CLOSED) ||
+            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+                return;
+
+        self = conversation->session;
+        service_name = conversation->service_name;
+
         if (worked) {
                 g_clear_pointer (&conversation->session_id,
                                  (GDestroyNotify) g_free);
@@ -778,7 +799,7 @@ on_opened (GdmDBusWorker *worker,
                 g_debug ("GdmSession: Emitting 'session-opened' signal");
                 g_signal_emit (self, signals[SESSION_OPENED], 0, service_name, session_id);
         } else {
-                report_problem_and_stop_conversation (self, service_name, error->message);
+                report_and_stop_conversation (self, service_name, error);
 
                 g_debug ("GdmSession: Emitting 'session-start-failed' signal");
                 g_signal_emit (self, signals[SESSION_START_FAILED], 0, service_name, error->message);
@@ -821,13 +842,13 @@ worker_on_session_exited (GdmDBusWorker          *worker,
         }
 }
 
-static gboolean
+static void
 on_reauthentication_started_cb (GdmDBusWorker *worker,
                                 GAsyncResult  *res,
                                 gpointer       user_data)
 {
         GdmSessionConversation *conversation = user_data;
-        GdmSession *self = conversation->session;
+        GdmSession *self;
 
         GError *error = NULL;
         gboolean worked;
@@ -837,6 +858,13 @@ on_reauthentication_started_cb (GdmDBusWorker *worker,
                                                                      &address,
                                                                      res,
                                                                      &error);
+
+        if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CLOSED) ||
+            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+                return;
+
+        self = conversation->session;
+
         if (worked) {
                 GPid pid_of_caller = conversation->reauth_pid_of_caller;
                 g_debug ("GdmSession: Emitting 'reauthentication-started' signal for caller pid '%d'", pid_of_caller);
@@ -844,8 +872,6 @@ on_reauthentication_started_cb (GdmDBusWorker *worker,
         }
 
         conversation->reauth_pid_of_caller = 0;
-
-        return TRUE;
 }
 
 static void
@@ -1884,13 +1910,20 @@ on_setup_complete_cb (GdmDBusWorker *proxy,
                       gpointer       user_data)
 {
         GdmSessionConversation *conversation = user_data;
-        GdmSession *self = conversation->session;
-        char *service_name = conversation->service_name;
+        GdmSession *self;
+        char *service_name;
 
         GError *error = NULL;
         GVariant *ret;
 
         ret = g_dbus_proxy_call_finish (G_DBUS_PROXY (proxy), res, &error);
+
+        if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CLOSED) ||
+            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+                return;
+
+        self = conversation->session;
+        service_name = conversation->service_name;
 
         if (ret != NULL) {
                 if (conversation->starting_invocation) {
@@ -1907,10 +1940,7 @@ on_setup_complete_cb (GdmDBusWorker *proxy,
 
         } else {
                 g_dbus_method_invocation_take_error (conversation->starting_invocation, error);
-                report_and_stop_conversation (self, service_name, error->message,
-                                              g_error_matches (error,
-                                                               GDM_SESSION_WORKER_ERROR,
-                                                               GDM_SESSION_WORKER_ERROR_SERVICE_UNAVAILABLE));
+                report_and_stop_conversation (self, service_name, error);
         }
 
         g_variant_unref (ret);
@@ -2392,8 +2422,8 @@ on_start_program_cb (GdmDBusWorker *worker,
                      gpointer       user_data)
 {
         GdmSessionConversation *conversation = user_data;
-        GdmSession *self = conversation->session;
-        char *service_name = conversation->service_name;
+        GdmSession *self;
+        char *service_name;
 
         GError *error = NULL;
         gboolean worked;
@@ -2403,6 +2433,14 @@ on_start_program_cb (GdmDBusWorker *worker,
                                                             &pid,
                                                             res,
                                                             &error);
+
+        if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CLOSED) ||
+            g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+                return;
+
+        self = conversation->session;
+        service_name = conversation->service_name;
+
         if (worked) {
                 self->priv->session_pid = pid;
                 self->priv->session_conversation = conversation;
