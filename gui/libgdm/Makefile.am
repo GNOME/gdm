@@ -49,10 +49,12 @@ libgdm_HEADERS =                                                       \
 	gdm-client-glue.h                                              \
         gdm-client.h                                                   \
         gdm-sessions.h                                                 \
+        gdm-user-switching.h                                           \
         $(END_OF_LIST)
 
 libgdm_la_CFLAGS =                                                     \
         $(LIBGDM_CFLAGS)                                               \
+	$(SYSTEMD_CFLAGS)                                              \
         $(END_OF_LIST)
 libgdm_la_LDFLAGS =                                                    \
         -export-symbols-regex '^[^_].*'                                       \
@@ -62,12 +64,14 @@ libgdm_la_LDFLAGS =                                                    \
 
 libgdm_la_LIBADD =                                                     \
         $(LIBGDM_LIBS)                                                 \
+        $(SYSTEMD_LIBS)                                                \
         $(END_OF_LIST)
 
 libgdm_la_SOURCES =                                                    \
         $(libgdm_HEADERS)                                              \
         gdm-client.c                                                   \
         gdm-sessions.c                                                 \
+        gdm-user-switching.c                                           \
         $(END_OF_LIST)
 
 nodist_libgdm_la_SOURCES = 	\

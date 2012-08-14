@@ -1,6 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2008 William Jon McCann <jmccann@redhat.com>
+ * Copyright (C) 2012 Red Hat, Inc.
+ * Copyright (C) 2012 Giovanni Campagna <scampa.giovanni@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,19 +25,19 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
-#include <locale.h>
 
+#include <glib.h>
 #include <glib/gi18n.h>
-#include <gtk/gtk.h>
+#include <glib-object.h>
+#include <gio/gio.h>
 
 #ifdef WITH_SYSTEMD
 #include <systemd/sd-daemon.h>
 #include <systemd/sd-login.h>
 #endif
 
-#define GDM_DBUS_NAME                            "org.gnome.DisplayManager"
-#define GDM_DBUS_LOCAL_DISPLAY_FACTORY_PATH      "/org/gnome/DisplayManager/LocalDisplayFactory"
-#define GDM_DBUS_LOCAL_DISPLAY_FACTORY_INTERFACE "org.gnome.DisplayManager.LocalDisplayFactory"
+#include "gdm-user-switching.h"
+#include "gdm-client.h"
 
 #ifdef WITH_CONSOLE_KIT
 #define CK_NAME      "org.freedesktop.ConsoleKit"
@@ -49,130 +50,26 @@
 #define CK_SESSION_INTERFACE "org.freedesktop.ConsoleKit.Session"
 #endif
 
-static const char *send_command     = NULL;
-static gboolean    use_xnest        = FALSE;
-static gboolean    no_lock          = FALSE;
-static gboolean    debug_in         = FALSE;
-static gboolean    authenticate     = FALSE;
-static gboolean    startnew         = FALSE;
-static gboolean    monte_carlo_pi   = FALSE;
-static gboolean    show_version     = FALSE;
-static char      **args_remaining   = NULL;
-
-/* Keep all config options for compatibility even if they are noops */
-GOptionEntry options [] = {
-        { "command", 'c', 0, G_OPTION_ARG_STRING, &send_command, N_("Only the VERSION command is supported"), N_("COMMAND") },
-        { "xnest", 'n', 0, G_OPTION_ARG_NONE, &use_xnest, N_("Ignored — retained for compatibility"), NULL },
-        { "no-lock", 'l', 0, G_OPTION_ARG_NONE, &no_lock, N_("Ignored — retained for compatibility"), NULL },
-        { "debug", 'd', 0, G_OPTION_ARG_NONE, &debug_in, N_("Debugging output"), NULL },
-        { "authenticate", 'a', 0, G_OPTION_ARG_NONE, &authenticate, N_("Ignored — retained for compatibility"), NULL },
-        { "startnew", 's', 0, G_OPTION_ARG_NONE, &startnew, N_("Ignored — retained for compatibility"), NULL },
-        { "monte-carlo-pi", 0, 0, G_OPTION_ARG_NONE, &monte_carlo_pi, NULL, NULL },
-        { "version", 0, 0, G_OPTION_ARG_NONE, &show_version, N_("Version of this application"), NULL },
-        { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, &args_remaining, NULL, NULL },
-        { NULL }
-};
-
-#define GDM_FLEXISERVER_ERROR gdm_flexiserver_error_quark ()
-static GQuark
-gdm_flexiserver_error_quark (void)
-{
-        static GQuark ret = 0;
-        if (ret == 0) {
-                ret = g_quark_from_static_string ("gdm_flexiserver_error");
-        }
-
-        return ret;
-}
-
-static gboolean
-is_program_in_path (const char *program)
-{
-        char *tmp = g_find_program_in_path (program);
-        if (tmp != NULL) {
-                g_free (tmp);
-                return TRUE;
-        } else {
-                return FALSE;
-        }
-}
-
-static void
-maybe_lock_screen (void)
-{
-        gboolean   use_gscreensaver = FALSE;
-        GError    *error            = NULL;
-        char      *command;
-
-        if (is_program_in_path ("gnome-screensaver-command")) {
-                use_gscreensaver = TRUE;
-        } else if (! is_program_in_path ("xscreensaver-command")) {
-                return;
-        }
-
-        if (use_gscreensaver) {
-                command = g_strdup ("gnome-screensaver-command --lock");
-        } else {
-                command = g_strdup ("xscreensaver-command -lock");
-        }
-
-        if (! g_spawn_command_line_async (command, &error)) {
-                g_warning ("Cannot lock screen: %s", error->message);
-                g_error_free (error);
-        }
-
-        g_free (command);
-
-        if (! use_gscreensaver) {
-                command = g_strdup ("xscreensaver-command -throttle");
-                if (! g_spawn_command_line_async (command, &error)) {
-                        g_warning ("Cannot disable screensaver engines: %s", error->message);
-                        g_error_free (error);
-                }
-
-                g_free (command);
-        }
-}
-
-static void
-calc_pi (void)
-{
-        unsigned long n = 0, h = 0;
-        double x, y;
-        printf ("\n");
-        for (;;) {
-                x = g_random_double ();
-                y = g_random_double ();
-                if (x*x + y*y <= 1)
-                        h++;
-                n++;
-                if ( ! (n & 0xfff))
-                        printf ("pi ~~ %1.10f\t(%lu/%lu * 4) iteration: %lu \r",
-                                ((double)h)/(double)n * 4.0, h, n, n);
-        }
-}
-
 static gboolean
 create_transient_display (GDBusConnection *connection,
+                          GCancellable    *cancellable,
                           GError         **error)
 {
-        GError *local_error = NULL;
         GVariant *reply;
         const char     *value;
 
         reply = g_dbus_connection_call_sync (connection,
-                                             GDM_DBUS_NAME,
-                                             GDM_DBUS_LOCAL_DISPLAY_FACTORY_PATH,
-                                             GDM_DBUS_LOCAL_DISPLAY_FACTORY_INTERFACE,
+                                             "org.gnome.DisplayManager",
+                                             "/org/gnome/DisplayManager/LocalDisplayFactory",
+                                             "org.gnome.DisplayManager.LocalDisplayFactory",
                                              "CreateTransientDisplay",
                                              NULL, /* parameters */
                                              G_VARIANT_TYPE ("(o)"),
                                              G_DBUS_CALL_FLAGS_NONE,
                                              -1,
-                                             NULL, &local_error);
+                                             cancellable, error);
         if (reply == NULL) {
-                g_warning ("Unable to create transient display: %s", local_error->message);
-                g_propagate_error (error, local_error);
+                g_prefix_error (error, _("Unable to create transient display: "));
                 return FALSE;
         }
 
@@ -265,10 +162,11 @@ get_current_seat_id (GDBusConnection *connection)
 
 static gboolean
 activate_session_id_for_ck (GDBusConnection *connection,
+                            GCancellable    *cancellable,
                             const char      *seat_id,
-                            const char      *session_id)
+                            const char      *session_id,
+                            GError         **error)
 {
-        GError *local_error = NULL;
         GVariant *reply;
 
         reply = g_dbus_connection_call_sync (connection,
@@ -280,10 +178,9 @@ activate_session_id_for_ck (GDBusConnection *connection,
                                              NULL,
                                              G_DBUS_CALL_FLAGS_NONE,
                                              -1,
-                                             NULL, &local_error);
+                                             NULL, error);
         if (reply == NULL) {
-                g_warning ("Unable to activate session: %s", local_error->message);
-                g_error_free (local_error);
+                g_prefix_error (error, _("Unable to activate session: "));
                 return FALSE;
         }
 
@@ -428,6 +325,7 @@ get_login_window_session_id_for_ck (GDBusConnection  *connection,
 
 static gboolean
 goto_login_session_for_ck (GDBusConnection  *connection,
+                           GCancellable     *cancellable,
                            GError          **error)
 {
         gboolean        ret;
@@ -443,26 +341,26 @@ goto_login_session_for_ck (GDBusConnection  *connection,
         seat_id = get_current_seat_id (connection);
         if (seat_id == NULL || seat_id[0] == '\0') {
                 g_debug ("seat id is not set; can't switch sessions");
-                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, _("Could not identify the current session."));
+                g_set_error (error, GDM_CLIENT_ERROR, 0, _("Could not identify the current session."));
 
                 return FALSE;
         }
 
         res = get_login_window_session_id_for_ck (connection, seat_id, &session_id);
         if (! res) {
-                g_set_error (error, GDM_FLEXISERVER_ERROR, 1, _("User unable to switch sessions."));
+                g_set_error (error, GDM_CLIENT_ERROR, 0, _("User unable to switch sessions."));
                 return FALSE;
         }
 
         if (session_id != NULL) {
-                res = activate_session_id_for_ck (connection, seat_id, session_id);
+                res = activate_session_id_for_ck (connection, cancellable, seat_id, session_id, error);
                 if (res) {
                         ret = TRUE;
                 }
         }
 
         if (! ret && g_strcmp0 (seat_id, "/org/freedesktop/ConsoleKit/Seat1") == 0) {
-                res = create_transient_display (connection, error);
+                res = create_transient_display (connection, cancellable, error);
                 if (res) {
                         ret = TRUE;
                 }
@@ -475,11 +373,12 @@ goto_login_session_for_ck (GDBusConnection  *connection,
 #ifdef WITH_SYSTEMD
 
 static gboolean
-activate_session_id_for_systemd (GDBusConnection *connection,
-                                 const char      *seat_id,
-                                 const char      *session_id)
+activate_session_id_for_systemd (GDBusConnection  *connection,
+                                 GCancellable     *cancellable,
+                                 const char       *seat_id,
+                                 const char       *session_id,
+                                 GError          **error)
 {
-        GError *local_error = NULL;
         GVariant *reply;
 
         reply = g_dbus_connection_call_sync (connection,
@@ -491,10 +390,9 @@ activate_session_id_for_systemd (GDBusConnection *connection,
                                              NULL,
                                              G_DBUS_CALL_FLAGS_NONE,
                                              -1,
-                                             NULL, &local_error);
+                                             cancellable, error);
         if (reply == NULL) {
-                g_warning ("Unable to activate session: %s", local_error->message);
-                g_error_free (local_error);
+                g_prefix_error (error, _("Unable to activate session: "));
                 return FALSE;
         }
 
@@ -533,7 +431,7 @@ get_login_window_session_id_for_systemd (const char  *seat_id,
                         goto out;
                 }
 
-                if (strcmp (service_id, "gdm-welcome") == 0) {
+                if (strcmp (service_id, "gdm-launch-environment") == 0) {
                         *session_id = g_strdup (sessions[i]);
                         ret = TRUE;
 
@@ -559,6 +457,7 @@ out:
 
 static gboolean
 goto_login_session_for_systemd (GDBusConnection  *connection,
+                                GCancellable     *cancellable,
                                 GError          **error)
 {
         gboolean        ret;
@@ -581,7 +480,7 @@ goto_login_session_for_systemd (GDBusConnection  *connection,
         res = sd_pid_get_session (0, &our_session);
         if (res < 0) {
                 g_debug ("failed to determine own session: %s", strerror (-res));
-                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, _("Could not identify the current session."));
+                g_set_error (error, GDM_CLIENT_ERROR, 0, _("Could not identify the current session."));
 
                 return FALSE;
         }
@@ -590,7 +489,7 @@ goto_login_session_for_systemd (GDBusConnection  *connection,
         free (our_session);
         if (res < 0) {
                 g_debug ("failed to determine own seat: %s", strerror (-res));
-                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, _("Could not identify the current seat."));
+                g_set_error (error, GDM_CLIENT_ERROR, 0, _("Could not identify the current seat."));
 
                 return FALSE;
         }
@@ -600,7 +499,7 @@ goto_login_session_for_systemd (GDBusConnection  *connection,
                 free (seat_id);
 
                 g_debug ("failed to determine whether seat can do multi session: %s", strerror (-res));
-                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, _("The system is unable to determine whether to switch to an existing login screen or start up a new login screen."));
+                g_set_error (error, GDM_CLIENT_ERROR, 0, _("The system is unable to determine whether to switch to an existing login screen or start up a new login screen."));
 
                 return FALSE;
         }
@@ -608,14 +507,14 @@ goto_login_session_for_systemd (GDBusConnection  *connection,
         if (res == 0) {
                 free (seat_id);
 
-                g_set_error (error, GDM_FLEXISERVER_ERROR, 0, _("The system is unable to start up a new login screen."));
+                g_set_error (error, GDM_CLIENT_ERROR, 0, _("The system is unable to start up a new login screen."));
 
                 return FALSE;
         }
 
         res = get_login_window_session_id_for_systemd (seat_id, &session_id);
         if (res && session_id != NULL) {
-                res = activate_session_id_for_systemd (connection, seat_id, session_id);
+                res = activate_session_id_for_systemd (connection, cancellable, seat_id, session_id, error);
 
                 if (res) {
                         ret = TRUE;
@@ -623,7 +522,7 @@ goto_login_session_for_systemd (GDBusConnection  *connection,
         }
 
         if (! ret && g_strcmp0 (seat_id, "seat0") == 0) {
-                res = create_transient_display (connection, error);
+                res = create_transient_display (connection, cancellable, error);
                 if (res) {
                         ret = TRUE;
                 }
@@ -636,116 +535,32 @@ goto_login_session_for_systemd (GDBusConnection  *connection,
 }
 #endif
 
-static gboolean
-goto_login_session (GError **error)
+gboolean
+gdm_goto_login_session_sync (GCancellable  *cancellable,
+			     GError       **error)
 {
-        GError *local_error;
         GDBusConnection *connection;
+        gboolean retval;
 
-        local_error = NULL;
-        connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &local_error);
-        if (connection == NULL) {
-                g_debug ("Failed to connect to the D-Bus daemon: %s", local_error->message);
-                g_propagate_error (error, local_error);
+        connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, cancellable, error);
+        if (!connection)
                 return FALSE;
-        }
 
 #ifdef WITH_SYSTEMD
         if (sd_booted () > 0) {
-                return goto_login_session_for_systemd (connection, error);
+                retval = goto_login_session_for_systemd (connection,
+                                                         cancellable,
+                                                         error);
+
+                g_object_unref (connection);
+                return retval;
         }
 #endif
 
 #ifdef WITH_CONSOLE_KIT
-        return goto_login_session_for_ck (connection, error);
+        retval = goto_login_session_for_ck (connection, cancellable, error);
+
+        g_object_unref (connection);
+        return retval;
 #endif
-}
-
-int
-main (int argc, char *argv[])
-{
-        GOptionContext *ctx;
-        gboolean        res;
-        GError         *error;
-
-        bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
-        bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-        textdomain (GETTEXT_PACKAGE);
-        setlocale (LC_ALL, "");
-
-        /* Option parsing */
-        ctx = g_option_context_new (_("- New GDM login"));
-        g_option_context_set_translation_domain (ctx, GETTEXT_PACKAGE);
-        g_option_context_add_main_entries (ctx, options, NULL);
-        g_option_context_parse (ctx, &argc, &argv, NULL);
-        g_option_context_free (ctx);
-
-
-        if (show_version) {
-                g_print ("%s %s\n", argv [0], VERSION);
-                exit (1);
-        }
-
-        /* don't support commands other than VERSION */
-        if (send_command != NULL) {
-                if (strcmp (send_command, "VERSION") == 0) {
-                        g_print ("GDM  %s \n", VERSION);
-                        return 0;
-                } else {
-                        g_warning ("No longer supported");
-                }
-                return 1;
-        }
-
-        gtk_init (&argc, &argv);
-
-        if (monte_carlo_pi) {
-                calc_pi ();
-                return 0;
-        }
-
-        if (args_remaining != NULL && args_remaining[0] != NULL) {
-
-        }
-
-        if (use_xnest) {
-                g_warning ("Not yet implemented");
-                return 1;
-        }
-
-        error = NULL;
-        res = goto_login_session (&error);
-        if (! res) {
-                GtkWidget *dialog;
-                char      *message;
-
-                if (error != NULL) {
-                        message = g_strdup_printf ("%s", error->message);
-                        g_error_free (error);
-                } else {
-                        message = g_strdup ("");
-                }
-
-                dialog = gtk_message_dialog_new (NULL,
-                                                 GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                 GTK_MESSAGE_ERROR,
-                                                 GTK_BUTTONS_CLOSE,
-                                                 "%s", _("Unable to start new display"));
-
-                gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-                                                          "%s", message);
-                g_free (message);
-
-                gtk_window_set_title (GTK_WINDOW (dialog), "");
-                gtk_window_set_icon_name (GTK_WINDOW (dialog), "session-properties");
-                gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
-                gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 14);
-
-                gtk_dialog_run (GTK_DIALOG (dialog));
-                gtk_widget_destroy (dialog);
-        } else {
-                maybe_lock_screen ();
-        }
-
-        return 1;
 }
