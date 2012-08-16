@@ -1211,7 +1211,7 @@ x11_session_is_on_seat (GdmSlave        *slave,
                         const char      *session_id,
                         const char      *seat_id)
 {
-        GError          *error;
+        GError          *error = NULL;
         GVariant        *reply;
         char            *sid;
         gboolean         ret;

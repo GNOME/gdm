@@ -145,7 +145,7 @@ on_user_verifier_proxy_created (GdmUserVerifier    *user_verifier,
                                 GSimpleAsyncResult *operation_result)
 {
 
-        GError       *error;
+        GError       *error = NULL;
 
         if (!gdm_user_verifier_proxy_new_finish (result, &error)) {
                 g_simple_async_result_take_error (operation_result, error);
@@ -798,7 +798,7 @@ on_greeter_proxy_created (GdmGreeter         *greeter,
                           GSimpleAsyncResult *operation_result)
 {
 
-        GError       *error;
+        GError       *error = NULL;
 
         if (!gdm_greeter_proxy_new_finish (result, &error)) {
                 g_simple_async_result_take_error (operation_result, error);
@@ -989,7 +989,7 @@ on_remote_greeter_proxy_created (GdmRemoteGreeter   *remote_greeter,
                                  GSimpleAsyncResult *operation_result)
 {
 
-        GError       *error;
+        GError       *error = NULL;
 
         if (!gdm_remote_greeter_proxy_new_finish (result, &error)) {
                 g_simple_async_result_take_error (operation_result, error);
@@ -1179,7 +1179,7 @@ on_chooser_proxy_created (GdmChooser         *chooser,
                           GSimpleAsyncResult *operation_result)
 {
 
-        GError       *error;
+        GError       *error = NULL;
 
         if (!gdm_chooser_proxy_new_finish (result, &error)) {
                 g_simple_async_result_take_error (operation_result, error);

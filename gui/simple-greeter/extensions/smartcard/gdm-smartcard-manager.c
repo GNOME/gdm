@@ -1399,7 +1399,7 @@ static gboolean should_exit_on_next_remove = FALSE;
 static gboolean
 on_timeout (GdmSmartcardManager *manager)
 {
-        GError *error;
+        GError *error = NULL;
         g_print ("Re-enabling manager.\n");
 
         if (!gdm_smartcard_manager_start (manager, &error)) {

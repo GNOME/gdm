@@ -1195,7 +1195,7 @@ handle_set_slave_bus_name (GdmDBusDisplay        *skeleton,
                            const char            *bus_name,
                            GdmDisplay            *display)
 {
-        GError *error;
+        GError *error = NULL;
 
         if (gdm_display_set_slave_bus_name (display, bus_name, &error)) {
                 gdm_dbus_display_complete_set_slave_bus_name (skeleton, invocation);
@@ -1214,7 +1214,7 @@ handle_add_user_authorization (GdmDBusDisplay        *skeleton,
                                GdmDisplay            *display)
 {
         char *filename;
-        GError *error;
+        GError *error = NULL;
 
         if (gdm_display_add_user_authorization (display, username, &filename, &error)) {
                 gdm_dbus_display_complete_add_user_authorization (skeleton,
@@ -1235,7 +1235,7 @@ handle_remove_user_authorization (GdmDBusDisplay        *skeleton,
                                   const char            *username,
                                   GdmDisplay            *display)
 {
-        GError *error;
+        GError *error = NULL;
 
         if (gdm_display_remove_user_authorization (display, username, &error)) {
                 gdm_dbus_display_complete_remove_user_authorization (skeleton, invocation);
