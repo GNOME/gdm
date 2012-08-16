@@ -2814,7 +2814,7 @@ gdm_session_worker_constructor (GType                  type,
                 exit (1);
         }
 
-        g_dbus_proxy_set_default_timeout (G_DBUS_PROXY (worker->priv->manager), -1);
+        g_dbus_proxy_set_default_timeout (G_DBUS_PROXY (worker->priv->manager), G_MAXINT);
 
         /* Send an initial Hello message so that the session can associate
          * the conversation we manage with our pid.
