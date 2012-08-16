@@ -140,14 +140,15 @@ get_manager (GdmClient           *client,
 }
 
 static void
-on_user_verifier_proxy_created (GdmUserVerifier    *user_verifier,
+on_user_verifier_proxy_created (GObject            *source,
                                 GAsyncResult       *result,
                                 GSimpleAsyncResult *operation_result)
 {
+        GdmUserVerifier *user_verifier;
+        GError          *error = NULL;
 
-        GError       *error = NULL;
-
-        if (!gdm_user_verifier_proxy_new_finish (result, &error)) {
+        user_verifier = gdm_user_verifier_proxy_new_finish (result, &error);
+        if (user_verifier == NULL) {
                 g_simple_async_result_take_error (operation_result, error);
                 g_simple_async_result_complete_in_idle (operation_result);
                 return;
@@ -156,7 +157,7 @@ on_user_verifier_proxy_created (GdmUserVerifier    *user_verifier,
         g_debug ("UserVerifier %p created", user_verifier);
 
         g_simple_async_result_set_op_res_gpointer (operation_result,
-                                                   g_object_ref (user_verifier),
+                                                   user_verifier,
                                                    (GDestroyNotify)
                                                    g_object_unref);
         g_simple_async_result_complete_in_idle (operation_result);
@@ -793,21 +794,22 @@ gdm_client_get_user_verifier_finish (GdmClient       *client,
 }
 
 static void
-on_greeter_proxy_created (GdmGreeter         *greeter,
+on_greeter_proxy_created (GObject            *source,
                           GAsyncResult       *result,
                           GSimpleAsyncResult *operation_result)
 {
-
+        GdmGreeter   *greeter;
         GError       *error = NULL;
 
-        if (!gdm_greeter_proxy_new_finish (result, &error)) {
+        greeter = gdm_greeter_proxy_new_finish (result, &error);
+        if (greeter == NULL) {
                 g_simple_async_result_take_error (operation_result, error);
                 g_simple_async_result_complete_in_idle (operation_result);
                 return;
         }
 
         g_simple_async_result_set_op_res_gpointer (operation_result,
-                                                   g_object_ref (greeter),
+                                                   greeter,
                                                    (GDestroyNotify)
                                                    g_object_unref);
         g_simple_async_result_complete_in_idle (operation_result);
@@ -984,21 +986,22 @@ gdm_client_get_greeter_sync (GdmClient     *client,
 }
 
 static void
-on_remote_greeter_proxy_created (GdmRemoteGreeter   *remote_greeter,
+on_remote_greeter_proxy_created (GObject            *object,
                                  GAsyncResult       *result,
                                  GSimpleAsyncResult *operation_result)
 {
+        GdmRemoteGreeter *remote_greeter;
+        GError           *error = NULL;
 
-        GError       *error = NULL;
-
-        if (!gdm_remote_greeter_proxy_new_finish (result, &error)) {
+        remote_greeter = gdm_remote_greeter_proxy_new_finish (result, &error);
+        if (remote_greeter == NULL) {
                 g_simple_async_result_take_error (operation_result, error);
                 g_simple_async_result_complete_in_idle (operation_result);
                 return;
         }
 
         g_simple_async_result_set_op_res_gpointer (operation_result,
-                                                   g_object_ref (remote_greeter),
+                                                   remote_greeter,
                                                    (GDestroyNotify)
                                                    g_object_unref);
         g_simple_async_result_complete_in_idle (operation_result);
@@ -1174,21 +1177,22 @@ gdm_client_get_remote_greeter_sync (GdmClient     *client,
 }
 
 static void
-on_chooser_proxy_created (GdmChooser         *chooser,
+on_chooser_proxy_created (GObject            *source,
                           GAsyncResult       *result,
                           GSimpleAsyncResult *operation_result)
 {
-
+        GdmChooser   *chooser;
         GError       *error = NULL;
 
-        if (!gdm_chooser_proxy_new_finish (result, &error)) {
+        chooser = gdm_chooser_proxy_new_finish (result, &error);
+        if (chooser == NULL) {
                 g_simple_async_result_take_error (operation_result, error);
                 g_simple_async_result_complete_in_idle (operation_result);
                 return;
         }
 
         g_simple_async_result_set_op_res_gpointer (operation_result,
-                                                   g_object_ref (chooser),
+                                                   chooser,
                                                    (GDestroyNotify)
                                                    g_object_unref);
         g_simple_async_result_complete_in_idle (operation_result);
