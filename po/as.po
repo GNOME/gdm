@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: as\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-08-01 21:10+0000\n"
-"PO-Revision-Date: 2012-08-03 14:47+0530\n"
+"POT-Creation-Date: 2012-08-16 19:38+0000\n"
+"PO-Revision-Date: 2012-08-17 14:28+0530\n"
 "Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
 "Language-Team: as_IN <kde-i18n-doc@kde.org>\n"
 "Language: \n"
@@ -32,9 +32,8 @@ msgstr "/dev/urandom এটা আখৰ ডিভাইচ নহয়"
 msgid "could not find user \"%s\" on system"
 msgstr "চিস্টেমত \"%s\" ব্যৱহাৰকাৰীক পোৱা নাযায়"
 
-#: ../daemon/gdm-display.c:1269 ../daemon/gdm-display.c:1303
+#: ../daemon/gdm-display.c:1315 ../daemon/gdm-display.c:1349
 #, c-format
-#| msgid "no user account available"
 msgid "No session available yet"
 msgstr "কোনো অধিবেশন উপলব্ধ নাই"
 
@@ -49,30 +48,28 @@ msgid "Group %s doesn't exist"
 msgstr "%s দল নাই"
 
 #: ../daemon/gdm-launch-environment.c:427
-#: ../daemon/gdm-launch-environment.c:447 ../daemon/gdm-server.c:460
-#: ../daemon/gdm-server.c:480
+#: ../daemon/gdm-launch-environment.c:447 ../daemon/gdm-server.c:463
+#: ../daemon/gdm-server.c:483
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "groupid ক %d লৈ নিৰ্ধাৰিত কৰিব নোৱাৰি"
 
-#: ../daemon/gdm-launch-environment.c:433 ../daemon/gdm-server.c:466
+#: ../daemon/gdm-launch-environment.c:433 ../daemon/gdm-server.c:469
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s ৰ বাবে initgroups () ব্যৰ্থ হ'ল"
 
-#: ../daemon/gdm-launch-environment.c:439 ../daemon/gdm-server.c:472
+#: ../daemon/gdm-launch-environment.c:439 ../daemon/gdm-server.c:475
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "%d লৈ userid নিৰ্ধাৰিত কৰিব নোৱাৰি"
 
 #: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
 #, c-format
-#| msgid "Unable to change to user"
 msgid "Unable to look up UID of user %s"
 msgstr "ব্যৱহাৰকাৰী %s ৰ UID চাবলে অক্ষম"
 
 #: ../daemon/gdm-manager.c:291
-#| msgid "no user account available"
 msgid "no sessions available"
 msgstr "কোনো অধিবেশন উপলব্ধ নাই"
 
@@ -83,53 +80,49 @@ msgstr "পুনৰপ্ৰমাণীকৰণৰ কাৰণে %s ৰ ব
 
 #: ../daemon/gdm-manager.c:406
 #, c-format
-#| msgid "Unable to open session"
 msgid "Unable to find session for user %s"
 msgstr "ব্যৱহাৰকাৰী %s ৰ বাবে অধিবেশন সন্ধান কৰিবলে অক্ষম"
 
 #: ../daemon/gdm-manager.c:476
 #, c-format
-#| msgid "Unable to open session"
 msgid "Unable to find appropriate session for user %s"
 msgstr "ব্যৱহাৰকাৰী %s ৰ বাবে সঠিক অধিবেশন সন্ধান কৰিবলে অক্ষম"
 
 #: ../daemon/gdm-manager.c:671
-#| msgid "User %s doesn't exist"
 msgid "User doesn't own session"
 msgstr "ব্যৱহাৰকাৰীজনৰ অধিবেশনৰ ওপৰত গ্ৰাহকত্ব নাই"
 
 #: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
-#| msgid "no user account available"
 msgid "No session available"
 msgstr "কোনো অধিবেশন উপলব্ধ নাই"
 
-#: ../daemon/gdm-server.c:270
+#: ../daemon/gdm-server.c:273
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: মূল প্ৰদৰ্শন '%s' লৈ সংযোগ কৰাত ব্যৰ্থ"
 
-#: ../daemon/gdm-server.c:449
+#: ../daemon/gdm-server.c:452
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "ব্যৱহাৰকাৰী %s এ চাৰ্ভাৰক আৰম্ভ কৰিব লাগিছিল কিন্তু সেই ব্যৱহাৰকাৰীজন নাই"
 
-#: ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:522
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: প্ৰদৰ্শন %s ৰ বাবে logfile খোলা নগল!"
 
-#: ../daemon/gdm-server.c:530 ../daemon/gdm-server.c:536
-#: ../daemon/gdm-server.c:542
+#: ../daemon/gdm-server.c:533 ../daemon/gdm-server.c:539
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s ক %s লৈ নিৰ্ধাৰণ কৰোঁতে ত্ৰুটি"
 
-#: ../daemon/gdm-server.c:562
+#: ../daemon/gdm-server.c:565
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: চাৰ্ভাৰৰ প্ৰাথমিকতাৰ মাত্ৰা %d ৰূপে নিৰ্ধাৰণ কৰোঁতে ব্যৰ্থ: %s"
 
-#: ../daemon/gdm-server.c:715
+#: ../daemon/gdm-server.c:718
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: প্ৰদৰ্শন %s ৰ বাবে ৰিক্ত চাৰ্ভাৰ কমান্ড"
@@ -158,8 +151,7 @@ msgstr "প্ৰদৰ্শনৰ ডিভাইচ"
 msgid "The display device"
 msgstr "প্ৰদৰ্শনৰ ডিভাইচ"
 
-#: ../daemon/gdm-session.c:1166
-#| msgid "%s: Could not read Authentication Names"
+#: ../daemon/gdm-session.c:1195
 msgid "Could not create authentication helper process"
 msgstr "প্ৰমাণীকৰণ সহায়ক প্ৰক্ৰিয়া সৃষ্টি কৰিব পৰা নগল"
 
@@ -222,7 +214,7 @@ msgstr "কোনো ব্যৱহাৰকাৰীৰ একাওন্ট 
 msgid "Unable to change to user"
 msgstr "ব্যৱহাৰকাৰীলৈ সলনি কৰিব পৰা নাযায়"
 
-#: ../daemon/gdm-simple-slave.c:1363
+#: ../daemon/gdm-simple-slave.c:1362
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -234,18 +226,17 @@ msgstr ""
 "তেতিয়ালৈকে এই প্ৰদৰ্শন অসামৰ্থবান কৰা হ'ব। সমস্যা সমাধান কৰাৰ পিছত অনুগ্ৰহ কৰি GDM "
 "পুনৰাম্ভ কৰিব।"
 
-#: ../daemon/gdm-simple-slave.c:1404
+#: ../daemon/gdm-simple-slave.c:1403
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "কেৱল ব্যৱহাৰকাৰী কগিন হোৱাৰ আগত কল কৰিব পাৰি"
 
-#: ../daemon/gdm-simple-slave.c:1414
+#: ../daemon/gdm-simple-slave.c:1413
 #, c-format
 msgid "Caller not GDM"
 msgstr "কলাৰ GDM নহয়"
 
-#: ../daemon/gdm-simple-slave.c:1473
-#| msgid "Currently logged in"
+#: ../daemon/gdm-simple-slave.c:1472
 msgid "User not logged in"
 msgstr "ব্যৱহাৰকাৰী লগ্ড ইন নহয়"
 
@@ -463,6 +454,47 @@ msgstr "পুনৰাম্ভৰ বুটাম দেখুৱা অসা
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr "লগিন উইন্ডোত পুনৰাম্ভৰ বুটাম দেখুৱা অসামৰ্থবান কৰিবলৈ true লৈ নিৰ্ধাৰণ কৰক।"
+
+#: ../gui/libgdm/gdm-user-switching.c:72
+#| msgid "Unable to start new display"
+msgid "Unable to create transient display: "
+msgstr "ক্ষনস্থায়ী প্ৰদৰ্শন সৃষ্টি কৰিবলে অক্ষম: "
+
+#: ../gui/libgdm/gdm-user-switching.c:183
+#: ../gui/libgdm/gdm-user-switching.c:395
+#| msgid "Unable to authenticate user"
+msgid "Unable to activate session: "
+msgstr "অধিবেশন সক্ৰিয় কৰিবলে অক্ষম: "
+
+#: ../gui/libgdm/gdm-user-switching.c:344
+#: ../gui/libgdm/gdm-user-switching.c:483
+#, c-format
+msgid "Could not identify the current session."
+msgstr "বৰ্ত্তমানৰ অধিবেশন চিনাক্ত কৰিব পৰা নগল।"
+
+#: ../gui/libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "ব্যৱহাৰকাৰী অধিবেশন পৰিৱৰ্তন কৰিবলে অক্ষম।"
+
+#: ../gui/libgdm/gdm-user-switching.c:492
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "বৰ্তমান স্থান চিনাক্ত কৰিব নোৱাৰি।"
+
+#: ../gui/libgdm/gdm-user-switching.c:502
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"চিস্টেম এটা স্থায়ী লগিন পৰ্দালে যোৱা হব নে এটা নতুন লগিন পৰ্দা আৰম্ভ কৰা হব "
+"নিৰ্ধাৰণ কৰিবলে অক্ষম।"
+
+#: ../gui/libgdm/gdm-user-switching.c:510
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "চিস্টেম এটা নতুন লগিন পৰ্দা আৰম্ভ কৰিবলে অক্ষম।"
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -819,64 +851,9 @@ msgstr "বিকল্পসমূহ নিৰ্বাচন কৰাৰ প
 msgid "Currently logged in"
 msgstr "ইতিমধ্যে লগিন কৰা আছে"
 
-#: ../utils/gdmflexiserver.c:64
-msgid "Only the VERSION command is supported"
-msgstr "কেৱল VERSION কমান্ড সমৰ্থিত"
-
-#: ../utils/gdmflexiserver.c:64
-msgid "COMMAND"
-msgstr "COMMAND"
-
-#: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
-#: ../utils/gdmflexiserver.c:68 ../utils/gdmflexiserver.c:69
-msgid "Ignored — retained for compatibility"
-msgstr "আওকাণ কৰা হ'ল - খাপ খোৱাৰ বাবে ৰখা হৈছে"
-
-#: ../utils/gdmflexiserver.c:67 ../utils/gdm-screenshot.c:43
+#: ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "ডিবাগৰ আউটপুট"
-
-#: ../utils/gdmflexiserver.c:71
-msgid "Version of this application"
-msgstr "এই অনুপ্ৰয়োগৰ সংস্কৰণ"
-
-#: ../utils/gdmflexiserver.c:446 ../utils/gdmflexiserver.c:584
-#, c-format
-msgid "Could not identify the current session."
-msgstr "বৰ্ত্তমানৰ অধিবেশন চিনাক্ত কৰিব পৰা নগল।"
-
-#: ../utils/gdmflexiserver.c:453
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "ব্যৱহাৰকাৰী অধিবেশন পৰিৱৰ্তন কৰিবলে অক্ষম।"
-
-#: ../utils/gdmflexiserver.c:593
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "বৰ্তমান স্থান চিনাক্ত কৰিব নোৱাৰি।"
-
-#: ../utils/gdmflexiserver.c:603
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"চিস্টেম এটা স্থায়ী লগিন পৰ্দালে যোৱা হব নে এটা নতুন লগিন পৰ্দা আৰম্ভ কৰা হব "
-"নিৰ্ধাৰণ কৰিবলে অক্ষম।"
-
-#: ../utils/gdmflexiserver.c:611
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "চিস্টেম এটা নতুন লগিন পৰ্দা আৰম্ভ কৰিবলে অক্ষম।"
-
-#. Option parsing
-#: ../utils/gdmflexiserver.c:677
-msgid "- New GDM login"
-msgstr "- নতুন GDM লগিন"
-
-#: ../utils/gdmflexiserver.c:733
-msgid "Unable to start new display"
-msgstr "নতুন প্ৰদৰ্শন আৰম্ভ কৰিব পৰা নগল"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -887,11 +864,23 @@ msgstr "পৰ্দাৰ ছবি গ্ৰহণ কৰা হৈছে"
 msgid "Take a picture of the screen"
 msgstr "পৰ্দাৰ এটা ছবি তোলক"
 
+#~ msgid "Only the VERSION command is supported"
+#~ msgstr "কেৱল VERSION কমান্ড সমৰ্থিত"
+
+#~ msgid "COMMAND"
+#~ msgstr "COMMAND"
+
+#~ msgid "Ignored — retained for compatibility"
+#~ msgstr "আওকাণ কৰা হ'ল - খাপ খোৱাৰ বাবে ৰখা হৈছে"
+
+#~ msgid "Version of this application"
+#~ msgstr "এই অনুপ্ৰয়োগৰ সংস্কৰণ"
+
+#~ msgid "- New GDM login"
+#~ msgstr "- নতুন GDM লগিন"
+
 #~ msgid "Unable to initialize login system"
 #~ msgstr "লগিন প্ৰণালী আৰম্ভ কৰিবলে অক্ষম"
-
-#~ msgid "Unable to authenticate user"
-#~ msgstr "ব্যৱহাৰকাৰীক প্ৰমাণীত কৰিবলে অক্ষম"
 
 #~ msgid "Unable to authorize user"
 #~ msgstr "ব্যৱহাৰকাৰীক অনুমোদন দিবলে অক্ষম"
