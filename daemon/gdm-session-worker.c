@@ -2708,38 +2708,6 @@ reauthentication_request_new (GdmSessionWorker      *worker,
 }
 
 static gboolean
-gdm_session_worker_handle_set_initial_secret (GdmDBusWorker         *object,
-                                              GDBusMethodInvocation *invocation,
-                                              const char            *initial_secret)
-{
-        GdmSessionWorker *worker = GDM_SESSION_WORKER (object);
-        int error_code;
-
-        if (worker->priv->state != GDM_SESSION_WORKER_STATE_SETUP_COMPLETE) {
-                g_dbus_method_invocation_return_error (invocation,
-                                                       GDM_SESSION_WORKER_ERROR,
-                                                       GDM_SESSION_WORKER_ERROR_WRONG_STATE,
-                                                       "Cannot set iniital secret while in state %s",
-                                                       get_state_name (worker->priv->state));
-                goto out;
-        }
-
-        error_code = pam_set_item (worker->priv->pam_handle, PAM_AUTHTOK, initial_secret);
-
-        if (error_code != PAM_SUCCESS) {
-                g_dbus_method_invocation_return_error (invocation,
-                                                       GDM_SESSION_WORKER_ERROR,
-                                                       GDM_SESSION_WORKER_ERROR_AUTHENTICATING,
-                                                       "Error informing authentication system of user's authtok: %s",
-                                                       pam_strerror (worker->priv->pam_handle, error_code));
-                goto out;
-        }
-
- out:
-        return TRUE;
-}
-
-static gboolean
 gdm_session_worker_handle_start_reauthentication (GdmDBusWorker         *object,
                                                   GDBusMethodInvocation *invocation,
                                                   int                    pid_of_caller,
@@ -2842,7 +2810,6 @@ worker_interface_init (GdmDBusWorkerIface *interface)
         interface->handle_set_environment_variable = gdm_session_worker_handle_set_environment_variable;
         interface->handle_start_program = gdm_session_worker_handle_start_program;
         interface->handle_start_reauthentication = gdm_session_worker_handle_start_reauthentication;
-        interface->handle_set_initial_secret = gdm_session_worker_handle_set_initial_secret;
 }
 
 static void
