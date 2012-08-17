@@ -976,7 +976,7 @@ create_environment (const char *session_id,
         }
 
         if (session_id != NULL) {
-                g_ptr_array_add (args, " --session=");
+                g_ptr_array_add (args, " --session");
                 g_ptr_array_add (args, (char *) session_id);
         }
 
