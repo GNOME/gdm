@@ -876,11 +876,10 @@ on_reauthentication_started_cb (GdmDBusWorker *worker,
 
 static void
 worker_on_reauthenticated (GdmDBusWorker          *worker,
+                           const char             *service_name,
                            GdmSessionConversation *conversation)
 {
         GdmSession *self = conversation->session;
-        const char *service_name = conversation->service_name;
-
         g_debug ("GdmSession: Emitting 'reauthenticated' signal ");
         g_signal_emit (self, signals[REAUTHENTICATED], 0, service_name);
 }
