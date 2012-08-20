@@ -226,9 +226,7 @@ on_session_exited (GdmSession       *session,
         g_object_set (GDM_SLAVE (slave), "session-id", NULL, NULL);
 
         g_debug ("GdmSimpleSlave: session exited with code %d\n", exit_code);
-        if (slave->priv->start_session_service_name == NULL) {
-                gdm_slave_stopped (GDM_SLAVE (slave));
-        }
+        gdm_slave_stop (GDM_SLAVE (slave));
 }
 
 static void
@@ -242,10 +240,7 @@ on_session_died (GdmSession       *session,
         g_debug ("GdmSimpleSlave: session died with signal %d, (%s)",
                  signal_number,
                  g_strsignal (signal_number));
-
-        if (slave->priv->start_session_service_name == NULL) {
-                gdm_slave_stopped (GDM_SLAVE (slave));
-        }
+        gdm_slave_stop (GDM_SLAVE (slave));
 }
 
 static gboolean
@@ -685,7 +680,7 @@ on_session_client_disconnected (GdmSession          *session,
                       NULL);
 
         if ( ! display_is_local && !slave->priv->session_is_running) {
-                gdm_slave_stopped (GDM_SLAVE (slave));
+                gdm_slave_stop (GDM_SLAVE (slave));
         }
 }
 
@@ -825,7 +820,7 @@ on_greeter_environment_session_stopped (GdmLaunchEnvironment *greeter_environmen
 {
         g_debug ("GdmSimpleSlave: Greeter stopped");
         if (slave->priv->start_session_service_name == NULL) {
-                gdm_slave_stopped (GDM_SLAVE (slave));
+                gdm_slave_stop (GDM_SLAVE (slave));
         } else {
                 start_session (slave);
         }
@@ -841,7 +836,7 @@ on_greeter_environment_session_exited (GdmLaunchEnvironment    *greeter_environm
 {
         g_debug ("GdmSimpleSlave: Greeter exited: %d", code);
         if (slave->priv->start_session_service_name == NULL) {
-                gdm_slave_stopped (GDM_SLAVE (slave));
+                gdm_slave_stop (GDM_SLAVE (slave));
         }
 }
 
@@ -852,7 +847,7 @@ on_greeter_environment_session_died (GdmLaunchEnvironment    *greeter_environmen
 {
         g_debug ("GdmSimpleSlave: Greeter died: %d", signal);
         if (slave->priv->start_session_service_name == NULL) {
-                gdm_slave_stopped (GDM_SLAVE (slave));
+                gdm_slave_stop (GDM_SLAVE (slave));
         }
 }
 
@@ -1271,7 +1266,7 @@ on_server_exited (GdmServer      *server,
 {
         g_debug ("GdmSimpleSlave: server exited with code %d\n", exit_code);
 
-        gdm_slave_stopped (GDM_SLAVE (slave));
+        gdm_slave_stop (GDM_SLAVE (slave));
 
 #ifdef WITH_PLYMOUTH
         if (slave->priv->plymouth_is_running) {
@@ -1289,7 +1284,7 @@ on_server_died (GdmServer      *server,
                  signal_number,
                  g_strsignal (signal_number));
 
-        gdm_slave_stopped (GDM_SLAVE (slave));
+        gdm_slave_stop (GDM_SLAVE (slave));
 
 #ifdef WITH_PLYMOUTH
         if (slave->priv->plymouth_is_running) {
@@ -1494,6 +1489,7 @@ gdm_simple_slave_stop (GdmSlave *slave)
 
         if (self->priv->greeter_environment != NULL) {
                 stop_greeter (self);
+                self->priv->greeter_environment = NULL;
         }
 
         if (self->priv->session_is_running) {
@@ -1512,6 +1508,7 @@ gdm_simple_slave_stop (GdmSlave *slave)
                 gdm_simple_slave_revoke_console_permissions (self);
 #endif
 
+                self->priv->session_is_running = FALSE;
         }
 
         if (self->priv->session != NULL) {
@@ -1572,7 +1569,7 @@ gdm_simple_slave_finalize (GObject *object)
 
         g_return_if_fail (slave->priv != NULL);
 
-        gdm_simple_slave_stop (GDM_SLAVE (slave));
+        gdm_slave_stop (GDM_SLAVE (slave));
 
         g_hash_table_unref (slave->priv->open_reauthentication_requests);
 

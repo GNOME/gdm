@@ -110,7 +110,6 @@ void                gdm_slave_save_root_windows      (GdmSlave   *slave);
 gboolean            gdm_slave_run_script             (GdmSlave   *slave,
                                                       const char *dir,
                                                       const char *username);
-void                gdm_slave_stopped                (GdmSlave   *slave);
 void                gdm_slave_export_interface       (GdmSlave               *slave,
                                                       GDBusInterfaceSkeleton *interface);
 G_END_DECLS

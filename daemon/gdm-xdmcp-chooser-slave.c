@@ -101,7 +101,7 @@ on_chooser_session_stop (GdmLaunchEnvironment    *chooser,
                          GdmXdmcpChooserSlave *slave)
 {
         g_debug ("GdmXdmcpChooserSlave: Chooser stopped");
-        gdm_slave_stopped (GDM_SLAVE (slave));
+        gdm_slave_stop (GDM_SLAVE (slave));
 
         g_object_unref (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser_environment);
         GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser_environment = NULL;
@@ -116,7 +116,7 @@ on_chooser_session_exited (GdmLaunchEnvironment    *chooser,
 
         g_object_set (GDM_SLAVE (slave), "session-id", NULL, NULL);
 
-        gdm_slave_stopped (GDM_SLAVE (slave));
+        gdm_slave_stop (GDM_SLAVE (slave));
 }
 
 static void
@@ -128,7 +128,7 @@ on_chooser_session_died (GdmLaunchEnvironment    *chooser,
 
         g_object_set (GDM_SLAVE (slave), "session-id", NULL, NULL);
 
-        gdm_slave_stopped (GDM_SLAVE (slave));
+        gdm_slave_stop (GDM_SLAVE (slave));
 }
 
 static void
@@ -150,7 +150,7 @@ on_chooser_disconnected (GdmSession           *session,
         /* stop pinging */
         alarm (0);
 
-        gdm_slave_stopped (GDM_SLAVE (slave));
+        gdm_slave_stop (GDM_SLAVE (slave));
 }
 
 static void
@@ -336,12 +336,16 @@ gdm_xdmcp_chooser_slave_start (GdmSlave *slave)
 static gboolean
 gdm_xdmcp_chooser_slave_stop (GdmSlave *slave)
 {
+        GdmXdmcpChooserSlave *self = GDM_XDMCP_CHOOSER_SLAVE (slave);
+
         g_debug ("GdmXdmcpChooserSlave: Stopping xdmcp_chooser_slave");
 
         GDM_SLAVE_CLASS (gdm_xdmcp_chooser_slave_parent_class)->stop (slave);
 
-        if (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser_environment != NULL) {
-                gdm_launch_environment_stop (GDM_LAUNCH_ENVIRONMENT (GDM_XDMCP_CHOOSER_SLAVE (slave)->priv->chooser_environment));
+        if (self->priv->chooser_environment != NULL) {
+                gdm_launch_environment_stop (GDM_LAUNCH_ENVIRONMENT (self->priv->chooser_environment));
+                g_object_unref (self->priv->chooser_environment);
+                self->priv->chooser_environment = NULL;
         }
 
         return TRUE;
@@ -428,7 +432,7 @@ gdm_xdmcp_chooser_slave_finalize (GObject *object)
 
         g_return_if_fail (xdmcp_chooser_slave->priv != NULL);
 
-        gdm_xdmcp_chooser_slave_stop (GDM_SLAVE (xdmcp_chooser_slave));
+        gdm_slave_stop (GDM_SLAVE (xdmcp_chooser_slave));
 
         G_OBJECT_CLASS (gdm_xdmcp_chooser_slave_parent_class)->finalize (object);
 }

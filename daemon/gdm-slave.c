@@ -898,18 +898,12 @@ gdm_slave_stop (GdmSlave *slave)
         g_debug ("GdmSlave: stopping slave");
 
         g_object_ref (slave);
+
         ret = GDM_SLAVE_GET_CLASS (slave)->stop (slave);
-        g_object_unref (slave);
-
-        return ret;
-}
-
-void
-gdm_slave_stopped (GdmSlave *slave)
-{
-        g_return_if_fail (GDM_IS_SLAVE (slave));
-
         g_signal_emit (slave, signals [STOPPED], 0);
+
+        g_object_unref (slave);
+        return ret;
 }
 
 gboolean
