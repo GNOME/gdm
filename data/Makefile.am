@@ -104,7 +104,7 @@ pam_openembedded_files = pam-openembedded/gdm.pam	\
 	$(NULL)
 EXTRA_DIST += $(pam_openembedded_files)
 
-pam_exherbo_files = pam-redhat/gdm-autologin.pam \
+pam_exherbo_files = pam-exherbo/gdm-autologin.pam \
 	pam-exherbo/gdm-launch-environment.pam	 \
 	pam-exherbo/gdm-fingerprint.pam	         \
 	pam-exherbo/gdm-smartcard.pam            \
