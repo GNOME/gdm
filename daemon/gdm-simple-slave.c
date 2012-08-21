@@ -1056,7 +1056,7 @@ start_launch_environment (GdmSimpleSlave *slave,
 
         g_debug ("GdmSimpleSlave: Creating greeter on %s %s %s", display_name, display_device, display_hostname);
         slave->priv->greeter_environment = create_environment (session_id,
-                                                               GDM_USERNAME,
+                                                               username,
                                                                display_name,
                                                                seat_id,
                                                                display_device,
