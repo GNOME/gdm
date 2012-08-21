@@ -2868,6 +2868,25 @@ gdm_session_worker_class_init (GdmSessionWorkerClass *klass)
 static void
 reauthentication_request_free (ReauthenticationRequest *request)
 {
+
+        g_signal_handlers_disconnect_by_func (request->session,
+                                              G_CALLBACK (on_reauthentication_client_connected),
+                                              request);
+        g_signal_handlers_disconnect_by_func (request->session,
+                                              G_CALLBACK (on_reauthentication_client_disconnected),
+                                              request);
+        g_signal_handlers_disconnect_by_func (request->session,
+                                              G_CALLBACK (on_reauthentication_cancelled),
+                                              request);
+        g_signal_handlers_disconnect_by_func (request->session,
+                                              G_CALLBACK (on_reauthentication_conversation_started),
+                                              request);
+        g_signal_handlers_disconnect_by_func (request->session,
+                                              G_CALLBACK (on_reauthentication_conversation_stopped),
+                                              request);
+        g_signal_handlers_disconnect_by_func (request->session,
+                                              G_CALLBACK (on_reauthentication_verification_complete),
+                                              request);
         g_clear_object (&request->session);
         g_slice_free (ReauthenticationRequest, request);
 }
