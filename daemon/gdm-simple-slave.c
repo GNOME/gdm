@@ -64,7 +64,7 @@
 #define MAX_CONNECT_ATTEMPTS  10
 #define DEFAULT_PING_INTERVAL 15
 
-#define INITIAL_SETUP_USERNAME "gdm-initial-setup"
+#define INITIAL_SETUP_USERNAME "gnome-initial-setup"
 
 struct GdmSimpleSlavePrivate
 {
@@ -1111,23 +1111,21 @@ create_initial_setup_user (GdmSimpleSlave *slave)
         gboolean ret = TRUE;
         ActUserManager *act;
         ActUser *user;
-        const char *username;
         GFile *src_file, *dest_file;
         GError *error = NULL;
         const char *e = NULL;
 
-        username = "gnome-initial-setup";
-
         /* First, create the user */
         act = act_user_manager_get_default ();
 
-        user = act_user_manager_create_user (act, username, "", 0, &error);
+        user = act_user_manager_create_user (act, INITIAL_SETUP_USERNAME, "", 0, &error);
         if (user == NULL) {
                 if (g_dbus_error_is_remote_error (error)) {
                         e = g_dbus_error_get_remote_error (error);
 		}
 
-                g_warning ("Creating user '%s' failed: %s / %s", username, e, error->message);
+                g_warning ("Creating user '%s' failed: %s / %s",
+                           INITIAL_SETUP_USERNAME, e, error->message);
 
                 if (g_strcmp0 (e, "org.freedesktop.Accounts.Error.UserExists") != 0) {
                         ret = FALSE;
@@ -1168,11 +1166,9 @@ destroy_initial_setup_user (GdmSimpleSlave *slave)
 {
         ActUserManager *act;
         ActUser *user;
-        const char *username;
         const char *filename;
         GError *error;
 
-        username = "gnome-initial-setup";
         filename = RULES_DIR RULES_FILE;
 
         if (g_remove (filename) < 0) {
@@ -1182,9 +1178,9 @@ destroy_initial_setup_user (GdmSimpleSlave *slave)
         act = act_user_manager_get_default ();
 
         error = NULL;
-        user = act_user_manager_get_user (act, username);
+        user = act_user_manager_get_user (act, INITIAL_SETUP_USERNAME);
         if (!act_user_manager_delete_user (act, user, TRUE, &error)) {
-                g_warning ("Failed to create user '%s': %s", username, error->message);
+                g_warning ("Failed to delete user '%s': %s", INITIAL_SETUP_USERNAME, error->message);
                 g_error_free (error);
         }
 
