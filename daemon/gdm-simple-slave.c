@@ -1210,7 +1210,7 @@ wants_autologin (GdmSimpleSlave *slave)
         return enabled && delay > 0;
 }
 
-#define INITIAL_SETUP_TRIGGER_FILE LOCALSTATEDIR "lib/gdm/run-initial-setup"
+#define INITIAL_SETUP_TRIGGER_FILE LOCALSTATEDIR "/lib/gdm/run-initial-setup"
 
 static gboolean
 wants_initial_setup (GdmSimpleSlave *slave)
