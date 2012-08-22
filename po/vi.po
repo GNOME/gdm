@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2012-08-16 19:38+0000\n"
-"PO-Revision-Date: 2012-08-22 14:20+0700\n"
+"PO-Revision-Date: 2012-08-22 14:24+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "Language: vi\n"
@@ -23,18 +23,18 @@ msgstr ""
 #: ../common/gdm-common.c:492
 #, c-format
 msgid "/dev/urandom is not a character device"
-msgstr "« /dev/urandom » không phải là một thiết bị ký tự"
+msgstr "/dev/urandom không phải là một thiết bị ký tự"
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
-msgstr "không tìm thấy người dùng « %s » trên hệ thống"
+msgstr "không tìm thấy người dùng \"%s\" trên hệ thống"
 
 #: ../daemon/gdm-display.c:1315 ../daemon/gdm-display.c:1349
-#, fuzzy, c-format
+#, c-format
 #| msgid "no user account available"
 msgid "No session available yet"
-msgstr "không có sẵn tài khoản người dùng"
+msgstr "Không có phiên làm việc sẵn sàng"
 
 #: ../daemon/gdm-launch-environment.c:401
 #, c-format
@@ -64,50 +64,47 @@ msgid "Couldn't set userid to %d"
 msgstr "Không thể đặt mã số người dùng thành %d"
 
 #: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unable to authorize user"
 msgid "Unable to look up UID of user %s"
-msgstr "Không thể cho phép người dùng"
+msgstr "Không thể tra UID của người dùng %s"
 
 #: ../daemon/gdm-manager.c:291
-#, fuzzy
 #| msgid "no user account available"
 msgid "no sessions available"
-msgstr "không có sẵn tài khoản người dùng"
+msgstr "không có phiên làm việc sẵn sàng"
 
 #: ../daemon/gdm-manager.c:352
 #, c-format
 msgid "No sessions for %s available for reauthentication"
-msgstr ""
+msgstr "Không có phiên làm việc sẵn sàng cho %s để xác thực lại"
 
 #: ../daemon/gdm-manager.c:406
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unable to open session"
 msgid "Unable to find session for user %s"
-msgstr "Không thể mở buổi hợp"
+msgstr "Không thể tìm phiên làm việc cho người dùng %s"
 
 #: ../daemon/gdm-manager.c:476
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unable to open session"
 msgid "Unable to find appropriate session for user %s"
-msgstr "Không thể mở buổi hợp"
+msgstr "Không thể tìm phiên làm việc phù hợp cho người dùng %s"
 
 #: ../daemon/gdm-manager.c:671
-#, fuzzy
 #| msgid "User %s doesn't exist"
 msgid "User doesn't own session"
-msgstr "Người dùng %s không tồn tại"
+msgstr "Người dùng không sở hữu phiên làm việc"
 
 #: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
-#, fuzzy
 #| msgid "no user account available"
 msgid "No session available"
-msgstr "không có sẵn tài khoản người dùng"
+msgstr "Không có phiên làm việc sẵn sàng"
 
 #: ../daemon/gdm-server.c:273
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
-msgstr "%s: lỗi kết nối đến bộ trình bày mẹ « %s »."
+msgstr "%s: lỗi kết nối đến bộ trình bày mẹ \"%s\"."
 
 #: ../daemon/gdm-server.c:452
 #, c-format
@@ -162,10 +159,9 @@ msgid "The display device"
 msgstr "Thiết bị trình bày, v.d. màn hình"
 
 #: ../daemon/gdm-session.c:1195
-#, fuzzy
 #| msgid "%s: Could not read Authentication Names"
 msgid "Could not create authentication helper process"
-msgstr "%s: không thể đọc các tên xác thực (Authentication Names)"
+msgstr "Không thể tạo tiến trình trợ giúp xác thực"
 
 #: ../daemon/gdm-session-worker.c:1025
 #, c-format
@@ -242,23 +238,22 @@ msgstr ""
 #: ../daemon/gdm-simple-slave.c:1403
 #, c-format
 msgid "Can only be called before user is logged in"
-msgstr ""
+msgstr "Chỉ có thể được gọi trước khi đăng nhập"
 
 #: ../daemon/gdm-simple-slave.c:1413
 #, c-format
 msgid "Caller not GDM"
-msgstr ""
+msgstr "Bên gọi không phải GDM"
 
 #: ../daemon/gdm-simple-slave.c:1472
-#, fuzzy
 #| msgid "Currently logged in"
 msgid "User not logged in"
-msgstr "Đã đăng nhập"
+msgstr "Người dùng chưa đăng nhập"
 
 #: ../daemon/gdm-xdmcp-chooser-slave.c:366
 #, c-format
 msgid "Currently, only one client can be connected at once"
-msgstr ""
+msgstr "Hiện thời chỉ một trình khác có thể kết nối"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:604
 msgid "Could not create socket!"
@@ -304,7 +299,7 @@ msgstr ""
 #: ../daemon/main.c:298
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
-msgstr "Không thể tìm thấy người dùng GDM « %s ». Hủy bỏ."
+msgstr "Không thể tìm thấy người dùng GDM \"%s\". Hủy bỏ."
 
 #: ../daemon/main.c:304
 msgid "The GDM user should not be root. Aborting!"
@@ -313,7 +308,7 @@ msgstr "Người dùng GDM không nên là root. Hủy bỏ."
 #: ../daemon/main.c:310
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "Không thể tìm thấy nhóm GDM « %s ». Hủy bỏ."
+msgstr "Không thể tìm thấy nhóm GDM \"%s\". Hủy bỏ."
 
 #: ../daemon/main.c:316
 msgid "The GDM group should not be root. Aborting!"
@@ -477,17 +472,15 @@ msgstr ""
 "nhập."
 
 #: ../gui/libgdm/gdm-user-switching.c:72
-#, fuzzy
 #| msgid "Unable to start new display"
 msgid "Unable to create transient display: "
-msgstr "Không thể bắt đầu bộ trình bày mới."
+msgstr "Không thể tạo trình bày chuyển tiếp: "
 
 #: ../gui/libgdm/gdm-user-switching.c:183
 #: ../gui/libgdm/gdm-user-switching.c:395
-#, fuzzy
 #| msgid "Unable to open session"
 msgid "Unable to activate session: "
-msgstr "Không thể mở buổi hợp"
+msgstr "Không thể kích hoạt phiên làm việc: "
 
 #: ../gui/libgdm/gdm-user-switching.c:344
 #: ../gui/libgdm/gdm-user-switching.c:483
