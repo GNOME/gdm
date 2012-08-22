@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 3.4.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-23 12:29+0200\n"
-"PO-Revision-Date: 2012-07-23 12:31+0200\n"
+"POT-Creation-Date: 2012-08-22 19:00+0200\n"
+"PO-Revision-Date: 2012-08-22 19:01+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: \n"
@@ -29,12 +29,39 @@ msgstr "/dev/urandom er ikke en tegnenhet"
 msgid "could not find user \"%s\" on system"
 msgstr "kunne ikke finne bruker «%s» på systemet"
 
-#: ../daemon/gdm-display.c:1269 ../daemon/gdm-display.c:1303
+#: ../daemon/gdm-display.c:1315 ../daemon/gdm-display.c:1349
 #, c-format
 msgid "No session available yet"
 msgstr "Ingen økt tilgjengelig ennå"
 
-#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:385
+#: ../daemon/gdm-launch-environment.c:401
+#, c-format
+msgid "User %s doesn't exist"
+msgstr "Bruker %s eksisterer ikke"
+
+#: ../daemon/gdm-launch-environment.c:408
+#, c-format
+msgid "Group %s doesn't exist"
+msgstr "Gruppe %s eksisterer ikke"
+
+#: ../daemon/gdm-launch-environment.c:427
+#: ../daemon/gdm-launch-environment.c:447 ../daemon/gdm-server.c:463
+#: ../daemon/gdm-server.c:483
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "Kunne ikke sette gruppe-ID til %d"
+
+#: ../daemon/gdm-launch-environment.c:433 ../daemon/gdm-server.c:469
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "initgroups () feilet for %s"
+
+#: ../daemon/gdm-launch-environment.c:439 ../daemon/gdm-server.c:475
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "Kunne ikke sette bruker-id til %d"
+
+#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
 #, c-format
 msgid "Unable to look up UID of user %s"
 msgstr "Kan ikke slå opp UID for bruker %s"
@@ -48,58 +75,52 @@ msgstr "ingen økter tilgjengelig"
 msgid "No sessions for %s available for reauthentication"
 msgstr "Ingen økter for %s er tilgjengelig for ny autentisering"
 
-#: ../daemon/gdm-manager.c:663
+#: ../daemon/gdm-manager.c:406
+#, c-format
+msgid "Unable to find session for user %s"
+msgstr "Kan ikke finne økt for bruker %s"
+
+#: ../daemon/gdm-manager.c:476
+#, c-format
+msgid "Unable to find appropriate session for user %s"
+msgstr "Kan ikke finne passende økt for bruker %s"
+
+#: ../daemon/gdm-manager.c:671
 msgid "User doesn't own session"
 msgstr "Bruker eier ikke økten"
 
-#: ../daemon/gdm-manager.c:679 ../daemon/gdm-manager.c:760
+#: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
 msgid "No session available"
 msgstr "Ingen økt tilgjengelig"
 
-#: ../daemon/gdm-server.c:270
+#: ../daemon/gdm-server.c:273
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: kunne ikke koble til opphavsskjerm «%s»"
 
-#: ../daemon/gdm-server.c:449
+#: ../daemon/gdm-server.c:452
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Tjeneren skulle startes av bruker %s, men denne brukeren eksisterer ikke"
 
-#: ../daemon/gdm-server.c:460 ../daemon/gdm-server.c:480
-#: ../daemon/gdm-welcome-session.c:427 ../daemon/gdm-welcome-session.c:447
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "Kunne ikke sette gruppe-ID til %d"
-
-#: ../daemon/gdm-server.c:466 ../daemon/gdm-welcome-session.c:433
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "initgroups () feilet for %s"
-
-#: ../daemon/gdm-server.c:472 ../daemon/gdm-welcome-session.c:439
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "Kunne ikke sette bruker-id til %d"
-
-#: ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:522
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Kunne ikke åpne loggfil for skjerm %s!"
 
-#: ../daemon/gdm-server.c:530 ../daemon/gdm-server.c:536
-#: ../daemon/gdm-server.c:542
+#: ../daemon/gdm-server.c:533 ../daemon/gdm-server.c:539
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Feil under setting  av %s til %s"
 
-#: ../daemon/gdm-server.c:562
+#: ../daemon/gdm-server.c:565
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Prioritet for tjener kunne ikke settes til %d: %s"
 
-#: ../daemon/gdm-server.c:715
+#: ../daemon/gdm-server.c:718
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tjenerkommandoen for skjerm %s er tom"
@@ -128,75 +149,75 @@ msgstr "Skjerm-enhet"
 msgid "The display device"
 msgstr "Skjermenheten"
 
-#: ../daemon/gdm-session.c:1365
+#: ../daemon/gdm-session.c:1186
 msgid "Could not create authentication helper process"
 msgstr "Kunne ikke lage hjelpeprosess for autentisering"
 
-#: ../daemon/gdm-session-worker.c:1032
+#: ../daemon/gdm-session-worker.c:1025
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "feil i initiering av kommunikasjon med autentiseringssystemet - %s"
 
-#: ../daemon/gdm-session-worker.c:1033
+#: ../daemon/gdm-session-worker.c:1026
 msgid "general failure"
 msgstr "generell feil"
 
-#: ../daemon/gdm-session-worker.c:1034
+#: ../daemon/gdm-session-worker.c:1027
 msgid "out of memory"
 msgstr "ikke mer minne"
 
-#: ../daemon/gdm-session-worker.c:1035
+#: ../daemon/gdm-session-worker.c:1028
 msgid "application programmer error"
 msgstr "feil i programkoden"
 
-#: ../daemon/gdm-session-worker.c:1036
+#: ../daemon/gdm-session-worker.c:1029
 msgid "unknown error"
 msgstr "ukjent feil"
 
-#: ../daemon/gdm-session-worker.c:1043
+#: ../daemon/gdm-session-worker.c:1036
 msgid "Username:"
 msgstr "Brukernavn:"
 
-#: ../daemon/gdm-session-worker.c:1049
+#: ../daemon/gdm-session-worker.c:1042
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om spørring etter "
 "foretrukket brukernavn: %s"
 
-#: ../daemon/gdm-session-worker.c:1063
+#: ../daemon/gdm-session-worker.c:1056
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om brukers vertsnavn: %s"
 
-#: ../daemon/gdm-session-worker.c:1080
+#: ../daemon/gdm-session-worker.c:1073
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "feil ved informasjon til autentiseringssystemet om brukers konsoll: %s"
 
-#: ../daemon/gdm-session-worker.c:1104
+#: ../daemon/gdm-session-worker.c:1097
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "feil ved informasjon til autentiseringssystemet om skjermstrengen: %s"
 
-#: ../daemon/gdm-session-worker.c:1119
+#: ../daemon/gdm-session-worker.c:1112
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om xauth-"
 "påloggingsinformasjon for skjermen: %s"
 
-#: ../daemon/gdm-session-worker.c:1448 ../daemon/gdm-session-worker.c:1465
+#: ../daemon/gdm-session-worker.c:1441 ../daemon/gdm-session-worker.c:1458
 #, c-format
 msgid "no user account available"
 msgstr "ingen brukerkonto tilgjengelig"
 
-#: ../daemon/gdm-session-worker.c:1492
+#: ../daemon/gdm-session-worker.c:1485
 msgid "Unable to change to user"
 msgstr "Kan ikke bytte til denne brukeren"
 
-#: ../daemon/gdm-simple-slave.c:1201
+#: ../daemon/gdm-simple-slave.c:1362
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -208,29 +229,19 @@ msgstr ""
 "å finne ut hva som er feil. I mellomtiden vil denne skjermen deaktiveres. "
 "Vennligst start GDM på nytt når problemet er rettet."
 
-#: ../daemon/gdm-simple-slave.c:1242
+#: ../daemon/gdm-simple-slave.c:1403
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Kan kun kalles før bruker er logget inn"
 
-#: ../daemon/gdm-simple-slave.c:1252
+#: ../daemon/gdm-simple-slave.c:1413
 #, c-format
 msgid "Caller not GDM"
 msgstr "Kaller er ikke GDM"
 
-#: ../daemon/gdm-simple-slave.c:1311
+#: ../daemon/gdm-simple-slave.c:1472
 msgid "User not logged in"
 msgstr "Bruker er ikke logget inn"
-
-#: ../daemon/gdm-welcome-session.c:401
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "Bruker %s eksisterer ikke"
-
-#: ../daemon/gdm-welcome-session.c:408
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "Gruppe %s eksisterer ikke"
 
 #: ../daemon/gdm-xdmcp-chooser-slave.c:366
 #, c-format
@@ -314,7 +325,7 @@ msgstr "Bare root-bruker kan kjøre GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:153
+#: ../daemon/session-worker-main.c:150
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME skjermhåndterer øktarbeider"
 
@@ -452,6 +463,45 @@ msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Sett til true for å slå av visning av knapper for omstart i "
 "påloggingsvinduet."
+
+#: ../gui/libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "Kan ikke lage midlertidig skjerm: "
+
+#: ../gui/libgdm/gdm-user-switching.c:183
+#: ../gui/libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "Kan ikke aktivere økt: "
+
+#: ../gui/libgdm/gdm-user-switching.c:344
+#: ../gui/libgdm/gdm-user-switching.c:483
+#, c-format
+msgid "Could not identify the current session."
+msgstr "Kunne ikke identifisere aktiv økt."
+
+#: ../gui/libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "Bruker kan ikke bytte økter."
+
+#: ../gui/libgdm/gdm-user-switching.c:492
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "Kunne ikke identifisere aktiv sete."
+
+#: ../gui/libgdm/gdm-user-switching.c:502
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"Systemet kan ikke bestemme om det skal bytte til en eksisterende "
+"påloggingsskjerm eller starte en ny."
+
+#: ../gui/libgdm/gdm-user-switching.c:510
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "Systemet kan ikke starte en ny påloggingsskjerm."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -808,64 +858,9 @@ msgstr "Logg inn automatisk etter å ha valgt alternativer"
 msgid "Currently logged in"
 msgstr "Allerede logget inn"
 
-#: ../utils/gdmflexiserver.c:64
-msgid "Only the VERSION command is supported"
-msgstr "Kun kommandoen VERSION er støttet"
-
-#: ../utils/gdmflexiserver.c:64
-msgid "COMMAND"
-msgstr "KOMMANDO"
-
-#: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
-#: ../utils/gdmflexiserver.c:68 ../utils/gdmflexiserver.c:69
-msgid "Ignored — retained for compatibility"
-msgstr "Ignorert – beholdt for kompatibilitet"
-
-#: ../utils/gdmflexiserver.c:67 ../utils/gdm-screenshot.c:43
+#: ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Feilsøkingsinformasjon"
-
-#: ../utils/gdmflexiserver.c:71
-msgid "Version of this application"
-msgstr "Versjon av dette programmet"
-
-#: ../utils/gdmflexiserver.c:446 ../utils/gdmflexiserver.c:584
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Kunne ikke identifisere aktiv økt."
-
-#: ../utils/gdmflexiserver.c:453
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Bruker kan ikke bytte økter."
-
-#: ../utils/gdmflexiserver.c:593
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "Kunne ikke identifisere aktiv sete."
-
-#: ../utils/gdmflexiserver.c:603
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"Systemet kan ikke bestemme om det skal bytte til en eksisterende "
-"påloggingsskjerm eller starte en ny."
-
-#: ../utils/gdmflexiserver.c:611
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "Systemet kan ikke starte en ny påloggingsskjerm."
-
-#. Option parsing
-#: ../utils/gdmflexiserver.c:677
-msgid "- New GDM login"
-msgstr "- Ny GDM innlogging"
-
-#: ../utils/gdmflexiserver.c:733
-msgid "Unable to start new display"
-msgstr "Kan ikke starte ny skjerm"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
