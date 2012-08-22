@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-12 13:41+0200\n"
-"PO-Revision-Date: 2012-08-12 13:41+0200\n"
+"POT-Creation-Date: 2012-08-22 16:14+0200\n"
+"PO-Revision-Date: 2012-08-22 16:13+0200\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "Language: ar\n"
@@ -152,7 +152,7 @@ msgstr "جهاز العرض"
 msgid "The display device"
 msgstr "جهاز العرض"
 
-#: ../daemon/gdm-session.c:1166
+#: ../daemon/gdm-session.c:1186
 msgid "Could not create authentication helper process"
 msgstr "تعذّر إنشاء عملية مساعد الاستيثاق"
 
@@ -291,7 +291,7 @@ msgstr "يجب أن لا يكون مستخدم م‌ع‌ج جذرا. إجهاض
 #: ../daemon/main.c:310
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "لم أجد مجموعة م‌ع‌ج '%s'. إجهاض!"
+msgstr "لم أجد مجموعة GDM ‏'%s'. إجهاض!"
 
 #: ../daemon/main.c:316
 msgid "The GDM group should not be root. Aborting!"
@@ -444,6 +444,45 @@ msgstr "عطّل عرض أزرار إعادة التشغيل"
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr "اجعله صحيح لتعطيل عرض أزرار إعادة التشغيل في نافذة الولوج."
+
+#: ../gui/libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "تعذّر إنشاء عرض عابر:"
+
+#: ../gui/libgdm/gdm-user-switching.c:183
+#: ../gui/libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "تعذّر تنشيط الجلسة: "
+
+#: ../gui/libgdm/gdm-user-switching.c:344
+#: ../gui/libgdm/gdm-user-switching.c:483
+#, c-format
+msgid "Could not identify the current session."
+msgstr "تعذّر التعرف على الجلسة الحالية"
+
+#: ../gui/libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "تعذّر تبديل الجلسة."
+
+#: ../gui/libgdm/gdm-user-switching.c:492
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "تعذّر التعرف على المقعد الحالي."
+
+#: ../gui/libgdm/gdm-user-switching.c:502
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"تعذر على النظام تحديد ما إذا كان عليه الانتقال إلى شاشة ولوج موجودة أو بدء "
+"واحدة جديدة."
+
+#: ../gui/libgdm/gdm-user-switching.c:510
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "تعذر على النظام بدء شاشة ولوج جديدة."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -798,64 +837,9 @@ msgstr "لِج تلقائيا إلى النظام بعد اختيار الخيا
 msgid "Currently logged in"
 msgstr "والِج حاليا"
 
-#: ../utils/gdmflexiserver.c:64
-msgid "Only the VERSION command is supported"
-msgstr "لا يدعم إلا أمر VERSION"
-
-#: ../utils/gdmflexiserver.c:64
-msgid "COMMAND"
-msgstr "أمر"
-
-#: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
-#: ../utils/gdmflexiserver.c:68 ../utils/gdmflexiserver.c:69
-msgid "Ignored — retained for compatibility"
-msgstr "متجاهل — مبقى للتوافقية"
-
-#: ../utils/gdmflexiserver.c:67 ../utils/gdm-screenshot.c:43
+#: ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "خرْج التنقيح"
-
-#: ../utils/gdmflexiserver.c:71
-msgid "Version of this application"
-msgstr "إصدارة هذا التطبيق"
-
-#: ../utils/gdmflexiserver.c:446 ../utils/gdmflexiserver.c:584
-#, c-format
-msgid "Could not identify the current session."
-msgstr "تعذّر التعرف على الجلسة الحالية"
-
-#: ../utils/gdmflexiserver.c:453
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "تعذّر تبديل الجلسة."
-
-#: ../utils/gdmflexiserver.c:593
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "تعذّر التعرف على المقعد الحالي."
-
-#: ../utils/gdmflexiserver.c:603
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"تعذر على النظام تحديد ما إذا كان عليه الانتقال إلى شاشة ولوج موجودة أو بدء "
-"واحدة جديدة."
-
-#: ../utils/gdmflexiserver.c:611
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "تعذر على النظام بدء شاشة ولوج جديدة."
-
-#. Option parsing
-#: ../utils/gdmflexiserver.c:677
-msgid "- New GDM login"
-msgstr "- ولوج م‌ع‌ج جديد"
-
-#: ../utils/gdmflexiserver.c:733
-msgid "Unable to start new display"
-msgstr "تعذّر بدأ تشغيل العرض الجديد"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -866,11 +850,23 @@ msgstr "أُخِذت لقطة الشاشة"
 msgid "Take a picture of the screen"
 msgstr "خذ صورة للشاشة"
 
+#~ msgid "Only the VERSION command is supported"
+#~ msgstr "لا يدعم إلا أمر VERSION"
+
+#~ msgid "COMMAND"
+#~ msgstr "أمر"
+
+#~ msgid "Ignored — retained for compatibility"
+#~ msgstr "متجاهل — مبقى للتوافقية"
+
+#~ msgid "Version of this application"
+#~ msgstr "إصدارة هذا التطبيق"
+
+#~ msgid "- New GDM login"
+#~ msgstr "- ولوج م‌ع‌ج جديد"
+
 #~ msgid "Unable to initialize login system"
 #~ msgstr "تعذّر بدأ نظام الولوج"
-
-#~ msgid "Unable to authenticate user"
-#~ msgstr "تعذّر التحقق من المستخدم"
 
 #~ msgid "Unable to establish credentials"
 #~ msgstr "تعذّر تنصيب الاعتمادات"
