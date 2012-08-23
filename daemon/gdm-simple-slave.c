@@ -107,6 +107,13 @@ enum {
 static void     gdm_simple_slave_class_init     (GdmSimpleSlaveClass *klass);
 static void     gdm_simple_slave_init           (GdmSimpleSlave      *simple_slave);
 static void     gdm_simple_slave_finalize       (GObject             *object);
+static void     gdm_simple_slave_open_reauthentication_channel (GdmSlave             *slave,
+                                                                const char           *username,
+                                                                GPid                  pid_of_caller,
+                                                                uid_t                 uid_of_caller,
+                                                                GAsyncReadyCallback   callback,
+                                                                gpointer              user_data,
+                                                                GCancellable         *cancellable);
 
 G_DEFINE_TYPE (GdmSimpleSlave, gdm_simple_slave, GDM_TYPE_SLAVE)
 
@@ -516,6 +523,9 @@ on_session_reauthentication_started (GdmSession      *session,
                                                            g_free);
                 g_simple_async_result_complete_in_idle (result);
         }
+
+        g_hash_table_remove (slave->priv->open_reauthentication_requests,
+                             source_tag);
 }
 
 static void
@@ -1415,12 +1425,10 @@ gdm_simple_slave_open_reauthentication_channel_finish (GdmSlave      *slave,
 {
         GdmSimpleSlave  *self = GDM_SIMPLE_SLAVE (slave);
         const char      *address;
-        GPid             pid_of_caller;
 
-        pid_of_caller = GPOINTER_TO_INT (g_simple_async_result_get_source_tag (G_SIMPLE_ASYNC_RESULT (result)));
-
-        g_hash_table_remove (self->priv->open_reauthentication_requests,
-                             GINT_TO_POINTER (pid_of_caller));
+        g_return_val_if_fail (g_simple_async_result_is_valid (result,
+                                                              G_OBJECT (self),
+                                                              gdm_simple_slave_open_reauthentication_channel), NULL);
 
         address = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
 
@@ -1446,13 +1454,9 @@ gdm_simple_slave_open_reauthentication_channel (GdmSlave             *slave,
         result = g_simple_async_result_new (G_OBJECT (slave),
                                             callback,
                                             user_data,
-                                            GINT_TO_POINTER (pid_of_caller));
+                                            gdm_simple_slave_open_reauthentication_channel);
 
         g_simple_async_result_set_check_cancellable (result, cancellable);
-
-        g_hash_table_insert (self->priv->open_reauthentication_requests,
-                             GINT_TO_POINTER (pid_of_caller),
-                             g_object_ref (result));
 
         if (!self->priv->session_is_running) {
                 g_simple_async_result_set_error (result,
@@ -1462,10 +1466,16 @@ gdm_simple_slave_open_reauthentication_channel (GdmSlave             *slave,
                 g_simple_async_result_complete_in_idle (result);
 
         } else {
+                g_hash_table_insert (self->priv->open_reauthentication_requests,
+                                     GINT_TO_POINTER (pid_of_caller),
+                                     g_object_ref (result));
+
                 gdm_session_start_reauthentication (self->priv->session,
                                                     pid_of_caller,
                                                     uid_of_caller);
         }
+
+        g_object_unref (result);
 }
 
 static gboolean
