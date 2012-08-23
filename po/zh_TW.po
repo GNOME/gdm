@@ -13,9 +13,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 3.2.0\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-08-01 21:10+0000\n"
-"PO-Revision-Date: 2012-08-07 14:08+0800\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-08-23 15:32+0800\n"
+"PO-Revision-Date: 2012-08-22 19:59+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Taiwan) <zh-l10n@lists.linux.org.tw>\n"
 "Language: \n"
@@ -34,8 +34,7 @@ msgstr "/dev/urandom 不是字元裝置"
 msgid "could not find user \"%s\" on system"
 msgstr "在系統中找不到使用者「%s」"
 
-#: ../daemon/gdm-display.c:1269
-#: ../daemon/gdm-display.c:1303
+#: ../daemon/gdm-display.c:1315 ../daemon/gdm-display.c:1349
 #, c-format
 msgid "No session available yet"
 msgstr "沒有可用的作業階段"
@@ -51,27 +50,23 @@ msgid "Group %s doesn't exist"
 msgstr "群組 %s 不存在"
 
 #: ../daemon/gdm-launch-environment.c:427
-#: ../daemon/gdm-launch-environment.c:447
-#: ../daemon/gdm-server.c:460
-#: ../daemon/gdm-server.c:480
+#: ../daemon/gdm-launch-environment.c:447 ../daemon/gdm-server.c:463
+#: ../daemon/gdm-server.c:483
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "無法設定 groupid 為 %d"
 
-#: ../daemon/gdm-launch-environment.c:433
-#: ../daemon/gdm-server.c:466
+#: ../daemon/gdm-launch-environment.c:433 ../daemon/gdm-server.c:469
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "%s 的 initgroups () 失敗。"
 
-#: ../daemon/gdm-launch-environment.c:439
-#: ../daemon/gdm-server.c:472
+#: ../daemon/gdm-launch-environment.c:439 ../daemon/gdm-server.c:475
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "無法設定 userid 為 %d"
 
-#: ../daemon/gdm-manager.c:277
-#: ../daemon/gdm-manager.c:384
+#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
 #, c-format
 msgid "Unable to look up UID of user %s"
 msgstr "無法查詢使用者 %s 的 UID"
@@ -87,13 +82,11 @@ msgstr "%s 沒有作業階段可用於重新驗證"
 
 #: ../daemon/gdm-manager.c:406
 #, c-format
-#| msgid "Unable to open session"
 msgid "Unable to find session for user %s"
 msgstr "找不到使用者 %s 的作業階段"
 
 #: ../daemon/gdm-manager.c:476
 #, c-format
-#| msgid "Unable to open session"
 msgid "Unable to find appropriate session for user %s"
 msgstr "找不到適合使用者 %s 的作業階段"
 
@@ -101,39 +94,37 @@ msgstr "找不到適合使用者 %s 的作業階段"
 msgid "User doesn't own session"
 msgstr "使用者未擁有作業階段"
 
-#: ../daemon/gdm-manager.c:687
-#: ../daemon/gdm-manager.c:768
+#: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
 msgid "No session available"
 msgstr "沒有可用的作業階段"
 
-#: ../daemon/gdm-server.c:270
+#: ../daemon/gdm-server.c:273
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s：無法連接主顯示畫面‘%s’"
 
-#: ../daemon/gdm-server.c:449
+#: ../daemon/gdm-server.c:452
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "伺服器應以使用者 %s 的身分衍生，但該使用者不存在"
 
-#: ../daemon/gdm-server.c:519
+#: ../daemon/gdm-server.c:522
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s：無法開啟顯示 %s 的紀錄檔案！"
 
-#: ../daemon/gdm-server.c:530
-#: ../daemon/gdm-server.c:536
-#: ../daemon/gdm-server.c:542
+#: ../daemon/gdm-server.c:533 ../daemon/gdm-server.c:539
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s：將 %s 設定為 %s 時發生錯誤"
 
-#: ../daemon/gdm-server.c:562
+#: ../daemon/gdm-server.c:565
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s：伺服器優先等級無法設定為 %d：%s"
 
-#: ../daemon/gdm-server.c:715
+#: ../daemon/gdm-server.c:718
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s：顯示畫面 %s 的伺服器指令是空白的"
@@ -162,7 +153,7 @@ msgstr "顯示裝置"
 msgid "The display device"
 msgstr "顯示裝置"
 
-#: ../daemon/gdm-session.c:1166
+#: ../daemon/gdm-session.c:1186
 msgid "Could not create authentication helper process"
 msgstr "無法建立驗證協助程序"
 
@@ -216,8 +207,7 @@ msgstr "以顯示字串通知驗證系統時發生錯誤：%s"
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "以顯示 xauth 證書通知驗證系統時發生錯誤：%s"
 
-#: ../daemon/gdm-session-worker.c:1441
-#: ../daemon/gdm-session-worker.c:1458
+#: ../daemon/gdm-session-worker.c:1441 ../daemon/gdm-session-worker.c:1458
 #, c-format
 msgid "no user account available"
 msgstr "沒有可用的使用者帳號"
@@ -226,21 +216,27 @@ msgstr "沒有可用的使用者帳號"
 msgid "Unable to change to user"
 msgstr "無法改變為使用者"
 
-#: ../daemon/gdm-simple-slave.c:1363
-msgid "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
-msgstr "因為某些內部錯誤，目前無法啟動 X 伺服器（即圖形介面）。請連絡系統管理員或是檢查系統紀錄檔來判斷。目前會停止使用這個顯示畫面。請在修正問題後重新啟動 GDM。"
+#: ../daemon/gdm-simple-slave.c:1362
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"因為某些內部錯誤，目前無法啟動 X 伺服器（即圖形介面）。請連絡系統管理員或是檢"
+"查系統紀錄檔來判斷。目前會停止使用這個顯示畫面。請在修正問題後重新啟動 GDM。"
 
-#: ../daemon/gdm-simple-slave.c:1404
+#: ../daemon/gdm-simple-slave.c:1403
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "只能在使用者登入前呼叫"
 
-#: ../daemon/gdm-simple-slave.c:1414
+#: ../daemon/gdm-simple-slave.c:1413
 #, c-format
 msgid "Caller not GDM"
 msgstr "呼叫者不是 GDM"
 
-#: ../daemon/gdm-simple-slave.c:1473
+#: ../daemon/gdm-simple-slave.c:1472
 msgid "User not logged in"
 msgstr "使用者尚未登入"
 
@@ -253,8 +249,7 @@ msgstr "目前，一次只能連線一個客戶端"
 msgid "Could not create socket!"
 msgstr "無法建構 socket！"
 
-#: ../daemon/main.c:126
-#: ../daemon/main.c:139
+#: ../daemon/main.c:126 ../daemon/main.c:139
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "無法寫入 PID 檔 %s：可能是磁碟空間不足：%s"
@@ -329,18 +324,15 @@ msgstr "只有 root 使用者可以執行 GDM"
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME 登入管理員工作階段的工作程序"
 
-#: ../daemon/simple-slave-main.c:177
-#: ../daemon/xdmcp-chooser-slave-main.c:178
+#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
 msgid "Display ID"
 msgstr "顯示 ID"
 
-#: ../daemon/simple-slave-main.c:177
-#: ../daemon/xdmcp-chooser-slave-main.c:178
+#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
 msgid "ID"
 msgstr "ID"
 
-#: ../daemon/simple-slave-main.c:187
-#: ../daemon/xdmcp-chooser-slave-main.c:188
+#: ../daemon/simple-slave-main.c:187 ../daemon/xdmcp-chooser-slave-main.c:188
 msgid "GNOME Display Manager Slave"
 msgstr "GNOME 從屬顯示管理程式"
 
@@ -386,7 +378,9 @@ msgid "Whether or not to allow fingerprint readers for login"
 msgstr "是否允許使用指紋讀取機登入"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:2
-msgid "The login screen can optionally allow users who have enrolled their fingerprints to log in using those prints."
+msgid ""
+"The login screen can optionally allow users who have enrolled their "
+"fingerprints to log in using those prints."
 msgstr "登入畫面可以選擇性的允許使用者使用指紋登入。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
@@ -394,7 +388,9 @@ msgid "Whether or not to allow smartcard readers for login"
 msgstr "是否允許使用智慧卡讀取機登入"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:4
-msgid "The login screen can optionally allow users who have smartcards to log in using those smartcards."
+msgid ""
+"The login screen can optionally allow users who have smartcards to log in "
+"using those smartcards."
 msgstr "登入畫面可以選擇性的允許有智慧卡的使用者使用智慧卡登入。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
@@ -402,20 +398,34 @@ msgid "Path to small image at top of user list"
 msgstr "使用者清單頂端小圖片的路徑"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:6
-msgid "The login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
-msgstr "登入畫面可以選擇性的在使用者清單頂端顯示一張小圖片讓網站管理者和發行版本能展示他們的品牌。"
+msgid ""
+"The login screen can optionally show a small image at the top of its user "
+"list to provide site administrators and distributions a way to provide "
+"branding."
+msgstr ""
+"登入畫面可以選擇性的在使用者清單頂端顯示一張小圖片讓網站管理者和發行版本能展"
+"示他們的品牌。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
-msgid "The fallback login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
-msgstr "後備登入畫面可以選擇性的在使用者清單頂端顯示一張小圖片讓網站管理者和發行版本能展示他們的品牌。"
+msgid ""
+"The fallback login screen can optionally show a small image at the top of "
+"its user list to provide site administrators and distributions a way to "
+"provide branding."
+msgstr ""
+"後備登入畫面可以選擇性的在使用者清單頂端顯示一張小圖片讓網站管理者和發行版本"
+"能展示他們的品牌。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid "Avoid showing user list"
 msgstr "避免顯示使用者清單"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
-msgid "The login screen normally shows a list of available users to log in as. This setting can be toggled to disable showing the user list."
-msgstr "登入畫面通常會顯示可登入使用者的清單。這個設定值可以切換以停用這個清單的顯示。"
+msgid ""
+"The login screen normally shows a list of available users to log in as. This "
+"setting can be toggled to disable showing the user list."
+msgstr ""
+"登入畫面通常會顯示可登入使用者的清單。這個設定值可以切換以停用這個清單的顯"
+"示。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Enable showing the banner message"
@@ -440,6 +450,43 @@ msgstr "停用重新啟動按鈕"
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr "設為 true 則不在登入視窗中顯示重新啟動按鈕。"
+
+#: ../gui/libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "無法建立瞬時顯示："
+
+#: ../gui/libgdm/gdm-user-switching.c:183
+#: ../gui/libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "無法讓作業階段生效："
+
+#: ../gui/libgdm/gdm-user-switching.c:344
+#: ../gui/libgdm/gdm-user-switching.c:483
+#, c-format
+msgid "Could not identify the current session."
+msgstr "無法識別目前的作業階段。"
+
+#: ../gui/libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "無法切換作業階段。"
+
+#: ../gui/libgdm/gdm-user-switching.c:492
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "無法識別目前的 seat。"
+
+#: ../gui/libgdm/gdm-user-switching.c:502
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr "系統無法決定要切換到現有的登入畫面或是啟動一個新的登入畫面。"
+
+#: ../gui/libgdm/gdm-user-switching.c:510
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "系統無法啟動一個新的登入畫面。"
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -794,64 +841,9 @@ msgstr "在選取選項後自動登入系統"
 msgid "Currently logged in"
 msgstr "現在已經登入"
 
-#: ../utils/gdmflexiserver.c:64
-msgid "Only the VERSION command is supported"
-msgstr "只支援 VERSION 指令"
-
-#: ../utils/gdmflexiserver.c:64
-msgid "COMMAND"
-msgstr "指令"
-
-#: ../utils/gdmflexiserver.c:65
-#: ../utils/gdmflexiserver.c:66
-#: ../utils/gdmflexiserver.c:68
-#: ../utils/gdmflexiserver.c:69
-msgid "Ignored — retained for compatibility"
-msgstr "已忽略 — 只為相容性而保留"
-
-#: ../utils/gdmflexiserver.c:67
 #: ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "偵錯輸出"
-
-#: ../utils/gdmflexiserver.c:71
-msgid "Version of this application"
-msgstr "這個程式的版本"
-
-#: ../utils/gdmflexiserver.c:446
-#: ../utils/gdmflexiserver.c:584
-#, c-format
-msgid "Could not identify the current session."
-msgstr "無法識別目前的作業階段。"
-
-#: ../utils/gdmflexiserver.c:453
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "無法切換作業階段。"
-
-#: ../utils/gdmflexiserver.c:593
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "無法識別目前的 seat。"
-
-#: ../utils/gdmflexiserver.c:603
-#, c-format
-msgid "The system is unable to determine whether to switch to an existing login screen or start up a new login screen."
-msgstr "系統無法決定要切換到現有的登入畫面或是啟動一個新的登入畫面。"
-
-#: ../utils/gdmflexiserver.c:611
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "系統無法啟動一個新的登入畫面。"
-
-#. Option parsing
-#: ../utils/gdmflexiserver.c:677
-msgid "- New GDM login"
-msgstr "- 新的 GDM 登入"
-
-#: ../utils/gdmflexiserver.c:733
-msgid "Unable to start new display"
-msgstr "無法啟動新的顯示畫面"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -862,11 +854,23 @@ msgstr "拍下截圖"
 msgid "Take a picture of the screen"
 msgstr "照下螢幕的圖片"
 
+#~ msgid "Only the VERSION command is supported"
+#~ msgstr "只支援 VERSION 指令"
+
+#~ msgid "COMMAND"
+#~ msgstr "指令"
+
+#~ msgid "Ignored — retained for compatibility"
+#~ msgstr "已忽略 — 只為相容性而保留"
+
+#~ msgid "Version of this application"
+#~ msgstr "這個程式的版本"
+
+#~ msgid "- New GDM login"
+#~ msgstr "- 新的 GDM 登入"
+
 #~ msgid "Unable to initialize login system"
 #~ msgstr "無法初始化登入系統"
-
-#~ msgid "Unable to authenticate user"
-#~ msgstr "無法驗證使用者"
 
 #~ msgid "Unable to authorize user"
 #~ msgstr "無法驗證使用者"
