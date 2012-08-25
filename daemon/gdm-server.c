@@ -677,6 +677,8 @@ server_child_watch (GPid       pid,
                  : WIFSIGNALED (status) ? WTERMSIG (status)
                  : -1);
 
+        g_object_ref (server);
+
         if (WIFEXITED (status)) {
                 int code = WEXITSTATUS (status);
                 g_signal_emit (server, signals [EXITED], 0, code);
@@ -687,6 +689,8 @@ server_child_watch (GPid       pid,
 
         g_spawn_close_pid (server->priv->pid);
         server->priv->pid = -1;
+
+        g_object_unref (server);
 }
 
 static gboolean
