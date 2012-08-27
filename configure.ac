@@ -1101,6 +1101,22 @@ fi
 AC_SUBST(GDM_CUSTOM_CONF)
 AC_SUBST(GDM_OLD_CONF, '${gdmconfdir}/gdm.conf')
 
+AC_ARG_WITH(consolekit-directory,
+              [AC_HELP_STRING([--with-consolekit-directory],
+                              [Specify the directory of ck-get-x11-display-device @<:@default=libexecdir@:>@])],,
+                              [with_consolekit_directory="\${libexecdir}"])
+
+CONSOLEKIT_DIR=$with_consolekit_directory
+AC_SUBST(CONSOLEKIT_DIR)
+
+AC_ARG_WITH(check-accelerated-directory,
+              [AC_HELP_STRING([--with-check-accelerated-directory],
+                              [Specify the directory of gnome-session-check-accelerated @<:@default=libexecdir@:>@])],,
+                              [with_check_accelerated_directory="\${libexecdir}"])
+
+CHECK_ACCELERATED_DIR=$with_check_accelerated_directory
+AC_SUBST(CHECK_ACCELERATED_DIR)
+
 dnl ---------------------------------------------------------------------------
 dnl - Check for XEvIE extension support
 dnl ---------------------------------------------------------------------------
@@ -1549,6 +1565,8 @@ echo "
         dmconfdir:                ${dmconfdir}
         localstatedir:            ${localstatedir}
         datadir:                  ${datadir}
+	consolekit location:      ${with_consolekit_directory}
+	gnome-session-check-accel location: ${with_check_accelerated_directory}
 	source code location:	  ${srcdir}
 	compiler:		  ${CC}
 	cflags:		          ${CFLAGS}

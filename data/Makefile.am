@@ -81,6 +81,7 @@ gdm.schemas.in: $(srcdir)/gdm.schemas.in.in
 
 gdm-shell.session: $(srcdir)/gdm-shell.session.in
 	sed	-e 's,[@]libexecdir[@],$(libexecdir),g' \
+		-e 's,[@]CHECK_ACCELERATED_DIR[@],$(CHECK_ACCELERATED_DIR),g' \
 		< $(srcdir)/gdm-shell.session.in > gdm-shell.session
 
 localealiasdir = $(datadir)/gdm

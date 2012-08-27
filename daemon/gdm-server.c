@@ -147,7 +147,7 @@ _gdm_server_query_ck_for_display_device (GdmServer *server)
         g_return_val_if_fail (GDM_IS_SERVER (server), NULL);
 
         error = NULL;
-        command = g_strdup_printf (LIBEXECDIR "/ck-get-x11-display-device --display %s",
+        command = g_strdup_printf (CONSOLEKIT_DIR "/ck-get-x11-display-device --display %s",
                                    server->priv->display_name);
 
         g_debug ("GdmServer: Running helper %s", command);
