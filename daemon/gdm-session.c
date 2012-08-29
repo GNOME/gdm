@@ -63,10 +63,6 @@
 #define GDM_SESSION_DBUS_ERROR_CANCEL "org.gnome.DisplayManager.Session.Error.Cancel"
 #define GDM_SESSION_DBUS_OBJECT_PATH "/org/gnome/DisplayManager/Session"
 
-#ifndef GDM_SESSION_DEFAULT_PATH
-#define GDM_SESSION_DEFAULT_PATH "/usr/local/bin:/usr/bin:/bin"
-#endif
-
 #define GDM_WORKER_DBUS_PATH "/org/gnome/DisplayManager/Worker"
 
 typedef struct
@@ -2301,17 +2297,6 @@ setup_session_environment (GdmSession *self)
                                                       "WINDOWPATH",
                                                       g_getenv ("WINDOWPATH"));
         }
-
-
-        /* FIXME: We do this here and in the session worker.  We should consolidate
-         * somehow.
-         */
-        gdm_session_set_environment_variable (self,
-                                              "PATH",
-                                              strcmp (BINDIR, "/usr/bin") == 0?
-                                              GDM_SESSION_DEFAULT_PATH :
-                                              BINDIR ":" GDM_SESSION_DEFAULT_PATH);
-
 }
 
 void
