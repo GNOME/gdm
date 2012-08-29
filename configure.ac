@@ -60,7 +60,7 @@ dnl - Dependencies
 dnl ---------------------------------------------------------------------------
 
 DBUS_GLIB_REQUIRED_VERSION=0.74
-GLIB_REQUIRED_VERSION=2.29.3
+GLIB_REQUIRED_VERSION=2.33.2
 GTK_REQUIRED_VERSION=2.91.1
 PANGO_REQUIRED_VERSION=1.3.0
 SCROLLKEEPER_REQUIRED_VERSION=0.1.4
