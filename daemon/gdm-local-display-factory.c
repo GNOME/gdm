@@ -451,7 +451,7 @@ on_seat_new (GDBusConnection *connection,
 {
         const char *seat;
 
-        g_variant_get (parameters, "(&s)", &seat);
+        g_variant_get (parameters, "(&s&o)", &seat, NULL);
         create_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat, FALSE);
 }
 
@@ -466,7 +466,7 @@ on_seat_removed (GDBusConnection *connection,
 {
         const char *seat;
 
-        g_variant_get (parameters, "(&s)", &seat);
+        g_variant_get (parameters, "(&s&o)", &seat, NULL);
         delete_display (GDM_LOCAL_DISPLAY_FACTORY (user_data), seat);
 }
 
