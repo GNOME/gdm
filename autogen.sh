@@ -1,25 +1,26 @@
 #!/bin/sh
 # Run this to generate all the initial makefiles, etc.
 
-REQUIRED_AUTOMAKE_VERSION=1.5
-USE_GNOME2_MACROS=1
+test -n "$srcdir" || srcdir=`dirname "$0"`
+test -n "$srcdir" || srcdir=.
 
-srcdir=`dirname $0`
-test -z "$srcdir" && srcdir=.
+olddir=`pwd`
+cd $srcdir
 
-PKG_NAME="GDM"
+AUTORECONF=`which autoreconf`
+if test -z $AUTORECONF; then
+        echo "*** No autoreconf found, please intall it ***"
+        exit 1
+fi
 
-(test -f $srcdir/configure.ac \
-  && test -d $srcdir/daemon \
-  && test -f $srcdir/daemon/gdm-display.h) || {
-    echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
-    echo " top-level gdm directory"
-    exit 1
-}
+INTLTOOLIZE=`which intltoolize`
+if test -z $INTLTOOLIZE; then
+        echo "*** No intltoolize found, please install the intltool package ***"
+        exit 1
+fi
 
-which gnome-autogen.sh || {
-    echo "You need to install gnome-common from the GNOME SVN"
-    exit 1
-}
-#USE_GNOME2_MACROS=1 . gnome-autogen.sh
-. gnome-autogen.sh
+autopoint --force
+AUTOPOINT='intltoolize --automake --copy' autoreconf --force --install --verbose
+
+cd $olddir
+test -n "$NOCONFIGURE" || "$srcdir/configure" "$@"
