@@ -2083,23 +2083,15 @@ Language=cs_CZ.UTF-8
       </para>
 
       <sect3 id="gdmcommandline">
-        <title><command>gdm</command> and <command>gdm-binary</command>
-               Command Line Options</title>
+        <title><command>gdm</command> Command Line Options</title>
 
         <para>
-          The <command>gdm</command> command is really just a script which
-          runs the <command>gdm-binary</command>, passing along any options.
-          Before launching <command>gdm-binary</command>, the gdm wrapper
-          script will source the <filename>&lt;etc&gt;/profile</filename> file
-          to set the standard system environment variables.  In order to better
-          support internationalization, it will also set the LC_MESSAGES
-          environment variable to LANG if neither LC_MESSAGES or LC_ALL are
-          set.  The <command>gdm-binary</command> is the actual GDM daemon.
-        </para>
+          <command>gdm</command> is the main daemon which sets up
+          graphical login environment and starts necesary helpers.
+       </para>
 
         <variablelist>
-          <title><command>gdm</command> and <command>gdm-binary</command>
-                 Command Line Options</title>
+          <title><command>gdm</command> Command Line Options</title>
 
           <varlistentry>
             <term>-?, --help</term>

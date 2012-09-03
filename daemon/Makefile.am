@@ -300,10 +300,10 @@ gdm_session_worker_LDADD = 			\
 	$(NULL)
 
 sbin_PROGRAMS = 			\
-	gdm-binary			\
+	gdm				\
 	$(NULL)
 
-gdm_binary_SOURCES = 			\
+gdm_SOURCES = 			\
 	main.c				\
 	gdm-display-access-file.c	\
 	gdm-display-access-file.h	\
@@ -327,7 +327,7 @@ gdm_binary_SOURCES = 			\
 	gdm-dbus-util.h			\
 	$(NULL)
 
-nodist_gdm_binary_SOURCES = 			\
+nodist_gdm_SOURCES = 			\
 	gdm-display-glue.h			\
 	gdm-display-glue.c			\
 	gdm-local-display-factory-glue.h	\
@@ -361,26 +361,26 @@ XDMCP_nodist_SOURCES = 			\
 	$(NULL)
 
 if XDMCP_SUPPORT
-gdm_binary_SOURCES += $(XDMCP_SOURCES)
-nodist_gdm_binary_SOURCES += $(XDMCP_nodist_SOURCES)
+gdm_SOURCES += $(XDMCP_SOURCES)
+nodist_gdm_SOURCES += $(XDMCP_nodist_SOURCES)
 endif
 
-EXTRA_gdm_binary_SOURCES = 	\
+EXTRA_gdm_SOURCES = 	\
 	$(XDMCP_SOURCES)	\
 	$(NULL)
 
 CONSOLE_KIT_SOURCES = 		\
 	$(NULL)
 
-EXTRA_gdm_binary_SOURCES += $(CONSOLE_KIT_SOURCES)
+EXTRA_gdm_SOURCES += $(CONSOLE_KIT_SOURCES)
 
 # Note that these libs are in LDFLAGS because they should come before
 # everything else on the link line as they may override stuff
-gdm_binary_LDFLAGS =				\
+gdm_LDFLAGS =				\
 	$(EXTRA_DAEMON_LIBS)			\
 	$(NULL)
 
-gdm_binary_LDADD = \
+gdm_LDADD = \
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(XLIB_LIBS)				\
 	$(DAEMON_LIBS)				\
@@ -391,18 +391,10 @@ gdm_binary_LDADD = \
 	$(NULL)
 
 if WITH_CONSOLE_KIT
-gdm_binary_SOURCES += $(CONSOLE_KIT_SOURCES)
+gdm_SOURCES += $(CONSOLE_KIT_SOURCES)
 endif
 
-sbin_SCRIPTS =		\
-	gdm		\
-	$(NULL)
-
-gdm: $(srcdir)/gdm.in
-	sed -e 's,[@]sbindir[@],$(sbindir),g' <$(srcdir)/gdm.in >gdm
-
 CLEANFILES =					\
-	gdm					\
 	gdm-display-glue.c			\
 	gdm-local-display-factory-glue.c	\
 	gdm-manager-glue.c			\
@@ -418,7 +410,6 @@ CLEANFILES =					\
 	$(NULL)
 
 EXTRA_DIST = 				\
-	gdm.in				\
 	gdm-manager.xml			\
 	gdm-session-worker.xml		\
 	gdm-session.xml			\
