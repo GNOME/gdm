@@ -1,0 +1,18 @@
+# Begin /etc/pam.d/gdm-fingerprint
+
+auth     requisite      pam_nologin.so
+auth     required       pam_env.so
+
+auth     requisite      pam_fprintd.so
+auth     required       pam_succeed_if.so uid >= 1000 quiet
+auth     required       pam_deny.so
+
+account  include        system-account
+
+password required       pam_deny.so
+
+session  optional       pam_keyinit.so revoke
+session  required       pam_limits.so
+session  include        system-session
+
+# End /etc/pam.d/gdm-fingerprint

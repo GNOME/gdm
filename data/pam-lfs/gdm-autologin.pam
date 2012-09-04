@@ -1,0 +1,17 @@
+# Begin /etc/pam.d/gdm-autologin
+
+auth     requisite      pam_nologin.so
+auth     required       pam_env.so
+
+auth     required       pam_succeed_if.so uid >= 1000 quiet
+auth     required       pam_permit.so
+
+account  include        system-account
+
+password include        system-password
+
+session  optional       pam_keyinit.so revoke
+session  required       pam_limits.so
+session  include        system-session
+
+# End /etc/pam.d/gdm-autologin
