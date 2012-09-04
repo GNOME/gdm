@@ -1117,6 +1117,14 @@ AC_ARG_WITH(check-accelerated-directory,
 CHECK_ACCELERATED_DIR=$with_check_accelerated_directory
 AC_SUBST(CHECK_ACCELERATED_DIR)
 
+AC_ARG_WITH(authentication-agent-directory,
+              [AC_HELP_STRING([--with-authentication-agent-directory],
+                              [Specify the directory of polkit-gnome-authentication-agent-1 @<:@default=libexecdir@:>@])],,
+                              [with_authentication_agent_directory="\${libexecdir}"])
+
+AUTHENTICATION_AGENT_DIR=$with_authentication_agent_directory
+AC_SUBST(AUTHENTICATION_AGENT_DIR)
+
 dnl ---------------------------------------------------------------------------
 dnl - Check for XEvIE extension support
 dnl ---------------------------------------------------------------------------
@@ -1567,6 +1575,7 @@ echo "
         datadir:                  ${datadir}
 	consolekit location:      ${with_consolekit_directory}
 	gnome-session-check-accel location: ${with_check_accelerated_directory}
+	polkit-gnome location:    ${with_authentication_agent_directory}
 	source code location:	  ${srcdir}
 	compiler:		  ${CC}
 	cflags:		          ${CFLAGS}

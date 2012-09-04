@@ -5,7 +5,8 @@ edit = sed \
 	-e 's|@SYSCONFDIR[@]|$(sysconfdir)|g' \
 	-e 's|@LIBDIR[@]|$(libdir)|g' \
 	-e 's|@LIBEXECDIR[@]|$(libexecdir)|g' \
-	-e 's|@LOCALSTATEDIR[@]|$(localstatedir)|g'
+	-e 's|@LOCALSTATEDIR[@]|$(localstatedir)|g' \
+	-e 's,[@]AUTHENTICATION_AGENT_DIR[@],$(AUTHENTICATION_AGENT_DIR),g'
 
 %.desktop.in: %.desktop.in.in Makefile
 	$(edit) $< >$@
