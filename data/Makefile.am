@@ -113,6 +113,15 @@ pam_exherbo_files = pam-exherbo/gdm-autologin.pam \
 	$(NULL)
 EXTRA_DIST += $(pam_exherbo_files)
 
+pam_lfs_files = pam-lfs/gdm.pam			\
+	pam-lfs/gdm-autologin.pam		\
+	pam-lfs/gdm-launch-environment.pam	\
+	pam-lfs/gdm-fingerprint.pam		\
+	pam-lfs/gdm-smartcard.pam		\
+	pam-lfs/gdm-password.pam		\
+	$(NULL)
+EXTRA_DIST += $(pam_lfs_files)
+
 if ENABLE_REDHAT_PAM_CONFIG
 pam_files = $(pam_redhat_files)
 endif
@@ -121,6 +130,9 @@ pam_files = $(pam_openembedded_files)
 endif
 if ENABLE_EXHERBO_PAM_CONFIG
 pam_files = $(pam_exherbo_files)
+endif
+if ENABLE_LFS_PAM_CONFIG
+pam_files = $(pam_lfs_files)
 endif
 
 EXTRA_DIST +=			\
