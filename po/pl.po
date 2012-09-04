@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-03 00:42+0200\n"
-"PO-Revision-Date: 2012-09-03 00:43+0200\n"
+"POT-Creation-Date: 2012-09-04 22:25+0200\n"
+"PO-Revision-Date: 2012-09-04 22:28+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -159,7 +159,7 @@ msgstr "Urządzenie wyświetlające"
 msgid "The display device"
 msgstr "Nazwa urządzenia wyświetlającego"
 
-#: ../daemon/gdm-session.c:1182
+#: ../daemon/gdm-session.c:1177
 msgid "Could not create authentication helper process"
 msgstr "Nie można utworzyć pomocniczego procesu uwierzytelniania"
 
@@ -219,16 +219,16 @@ msgstr ""
 "błąd podczas informowania systemu uwierzytelniania o wyświetlaniu uprawnień "
 "xauth: %s"
 
-#: ../daemon/gdm-session-worker.c:1441 ../daemon/gdm-session-worker.c:1458
+#: ../daemon/gdm-session-worker.c:1442 ../daemon/gdm-session-worker.c:1459
 #, c-format
 msgid "no user account available"
 msgstr "brak konta użytkownika"
 
-#: ../daemon/gdm-session-worker.c:1485
+#: ../daemon/gdm-session-worker.c:1486
 msgid "Unable to change to user"
 msgstr "Nie można zmienić użytkownika"
 
-#: ../daemon/gdm-simple-slave.c:1358
+#: ../daemon/gdm-simple-slave.c:1356
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -241,17 +241,17 @@ msgstr ""
 "zostanie tymczasowo wyłączony. Po naprawieniu problemu proszę ponownie "
 "uruchomić GDM."
 
-#: ../daemon/gdm-simple-slave.c:1399
+#: ../daemon/gdm-simple-slave.c:1397
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Może być wywoływane tylko przed zalogowaniem użytkownika"
 
-#: ../daemon/gdm-simple-slave.c:1409
+#: ../daemon/gdm-simple-slave.c:1407
 #, c-format
 msgid "Caller not GDM"
 msgstr "Program wywołujący to nie GDM"
 
-#: ../daemon/gdm-simple-slave.c:1468
+#: ../daemon/gdm-simple-slave.c:1466
 msgid "User not logged in"
 msgstr "Użytkownik nie jest zalogowany"
 
@@ -456,7 +456,7 @@ msgstr ""
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Enable showing the banner message"
-msgstr "Włączenie wyświetlania komunikatu banner"
+msgstr "Włączenie wyświetlania komunikatu bannera"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:11
 msgid "Set to true to show the banner message text."
@@ -464,7 +464,7 @@ msgstr "Wartość \"true\" włącza wyświetlanie komunikatu bannera."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid "Banner message text"
-msgstr "Tekst komunikatu banner"
+msgstr "Tekst komunikatu bannera"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:13
 msgid "Text banner message to show in the login window."
@@ -479,6 +479,18 @@ msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Wartość \"true\" wyłącza wyświetlanie przycisków ponownego uruchamiania na "
 "ekranie logowania."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+msgid "Number of allowed authentication failures"
+msgstr "Liczba dozwolonych niepowodzeń uwierzytelnienia"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+msgid ""
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
+msgstr ""
+"Określa, ile razy użytkownik może próbować się uwierzytelnić przed powrotem "
+"do ekranu wyboru użytkownika."
 
 #: ../gui/libgdm/gdm-user-switching.c:72
 msgid "Unable to create transient display: "
