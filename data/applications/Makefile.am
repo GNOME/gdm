@@ -28,7 +28,7 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)			\
 
 EXTRA_DIST =								\
 	gdm-simple-greeter.desktop.in.in				\
-	polkit-gnome-authentication-agent-1.desktop.in			\
+	polkit-gnome-authentication-agent-1.desktop.in.in		\
 	$(desktop_in_files)						\
 	$(desktop_DATA)							\
 	$(NULL)
