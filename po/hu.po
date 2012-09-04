@@ -14,122 +14,131 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-16 20:08+0100\n"
-"PO-Revision-Date: 2012-03-16 20:09+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-08-16 19:38+0000\n"
+"PO-Revision-Date: 2012-09-04 10:58+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
 "Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
-"Language: \n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.4\n"
 "X-Poedit-Language: Hungarian\n"
 "X-Poedit-Country: HUNGARY\n"
 
-#: ../common/gdm-common.c:488
+#: ../common/gdm-common.c:492
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "a /dev/urandom nem karakteres eszköz"
-
-#: ../daemon/factory-slave-main.c:178 ../daemon/product-slave-main.c:182
-#: ../daemon/simple-slave-main.c:182 ../daemon/xdmcp-chooser-slave-main.c:184
-msgid "Display ID"
-msgstr "Képernyő-azonosító"
-
-#: ../daemon/factory-slave-main.c:178 ../daemon/product-slave-main.c:182
-#: ../daemon/simple-slave-main.c:182 ../daemon/xdmcp-chooser-slave-main.c:184
-msgid "ID"
-msgstr "Azonosító"
-
-#: ../daemon/factory-slave-main.c:188 ../daemon/product-slave-main.c:192
-#: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:194
-msgid "GNOME Display Manager Slave"
-msgstr "GNOME bejelentkezéskezelő szolga"
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "„%s” nevű felhasználó nem található a rendszeren"
 
-#: ../daemon/gdm-factory-slave.c:210 ../daemon/gdm-simple-slave.c:314
-msgid "Unable to initialize login system"
-msgstr "A bejelentkező képernyő előkészítése sikertelen"
+#: ../daemon/gdm-display.c:1315 ../daemon/gdm-display.c:1349
+#, c-format
+#| msgid "no user account available"
+msgid "No session available yet"
+msgstr "Még nem érhető el munkamenet"
 
-#: ../daemon/gdm-factory-slave.c:244 ../daemon/gdm-simple-slave.c:352
-msgid "Unable to authenticate user"
-msgstr "A felhasználó nem hitelesíthető"
+#: ../daemon/gdm-launch-environment.c:401
+#, c-format
+msgid "User %s doesn't exist"
+msgstr "A(z) %s felhasználó nem létezik"
 
-#: ../daemon/gdm-factory-slave.c:268 ../daemon/gdm-simple-slave.c:404
-msgid "Unable to authorize user"
-msgstr "A felhasználó nem hitelesíthető"
+#: ../daemon/gdm-launch-environment.c:408
+#, c-format
+msgid "Group %s doesn't exist"
+msgstr "A(z) %s csoport nem létezik"
 
-#: ../daemon/gdm-factory-slave.c:292 ../daemon/gdm-simple-slave.c:551
-msgid "Unable to establish credentials"
-msgstr "A hitelesítési adatok létrehozása sikertelen"
+#: ../daemon/gdm-launch-environment.c:427
+#: ../daemon/gdm-launch-environment.c:447 ../daemon/gdm-server.c:463
+#: ../daemon/gdm-server.c:483
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "Nem sikerült a csoportazonosítót %d értékre beállítani"
 
-#: ../daemon/gdm-factory-slave.c:317 ../daemon/gdm-simple-slave.c:589
-msgid "Unable to open session"
-msgstr "Nem indítható el a környezet"
+#: ../daemon/gdm-launch-environment.c:433 ../daemon/gdm-server.c:469
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "az initgroups () meghiúsult a következőhöz: %s"
 
-#: ../daemon/gdm-factory-slave.c:709 ../daemon/gdm-product-slave.c:513
-#: ../daemon/gdm-simple-slave.c:1481
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"Belső hiba miatt nem indítható el az X kiszolgáló (a grafikus felület). "
-"Értesítse a rendszergazdát, vagy ellenőrizze a rendszernaplót. Addig ez a "
-"képernyő ki lesz kapcsolva. Indítsa újra a GDM-et, ha a probléma megoldódott."
+#: ../daemon/gdm-launch-environment.c:439 ../daemon/gdm-server.c:475
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "Nem sikerült a felhasználói azonosítót %d értékre beállítani"
 
-#: ../daemon/gdm-server.c:258
+#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
+#, c-format
+#| msgid "Unable to authorize user"
+msgid "Unable to look up UID of user %s"
+msgstr "%s felhasználó azonosítója nem kereshető ki"
+
+#: ../daemon/gdm-manager.c:291
+#| msgid "no user account available"
+msgid "no sessions available"
+msgstr "nem érhetők el munkamenetek"
+
+#: ../daemon/gdm-manager.c:352
+#, c-format
+msgid "No sessions for %s available for reauthentication"
+msgstr "Nem érhetők el munkamenetek %s újrahitelesítéséhez"
+
+#: ../daemon/gdm-manager.c:406
+#, c-format
+#| msgid "Unable to open session"
+msgid "Unable to find session for user %s"
+msgstr "Nem található munkamenet %s felhasználóhoz"
+
+#: ../daemon/gdm-manager.c:476
+#, c-format
+#| msgid "Unable to open session"
+msgid "Unable to find appropriate session for user %s"
+msgstr "Nem található megfelelő munkamenet %s felhasználóhoz"
+
+#: ../daemon/gdm-manager.c:671
+#| msgid "User %s doesn't exist"
+msgid "User doesn't own session"
+msgstr "A felhasználó nem birtokol munkamenetet"
+
+#: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
+#| msgid "no user account available"
+msgid "No session available"
+msgstr "Nem érhető el munkamenet"
+
+#: ../daemon/gdm-server.c:273
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: nem sikerült csatlakozni a(z) „%s” szülőképernyőhöz"
 
-#: ../daemon/gdm-server.c:436
+#: ../daemon/gdm-server.c:452
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "A kiszolgálót a(z) %s felhasználónak kellene indítania, de ez a felhasználó "
 "nem létezik"
 
-#: ../daemon/gdm-server.c:447 ../daemon/gdm-server.c:467
-#: ../daemon/gdm-welcome-session.c:439 ../daemon/gdm-welcome-session.c:459
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "Nem sikerült a csoportazonosítót %d értékre beállítani"
-
-#: ../daemon/gdm-server.c:453 ../daemon/gdm-welcome-session.c:445
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "az initgroups () meghiúsult a következőhöz: %s"
-
-#: ../daemon/gdm-server.c:459 ../daemon/gdm-welcome-session.c:451
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "Nem sikerült a felhasználói azonosítót %d értékre beállítani"
-
-#: ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:522
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Nem nyitható meg a(z) %s képernyőhöz tartozó naplófájl!"
 
-#: ../daemon/gdm-server.c:517 ../daemon/gdm-server.c:523
-#: ../daemon/gdm-server.c:529
+#: ../daemon/gdm-server.c:533 ../daemon/gdm-server.c:539
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Hiba a(z) %s beállítása közben a következőre: %s"
 
-#: ../daemon/gdm-server.c:549
+#: ../daemon/gdm-server.c:565
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: A kiszolgáló prioritása nem állítható be %d értékre: %s"
 
-#: ../daemon/gdm-server.c:702
+#: ../daemon/gdm-server.c:718
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Üres kiszolgáló parancs a(z) %s képernyőre"
@@ -158,164 +167,205 @@ msgstr "Képernyő"
 msgid "The display device"
 msgstr "A képernyő"
 
-#: ../daemon/gdm-session-worker.c:1106
+#: ../daemon/gdm-session.c:1195
+#| msgid "%s: Could not read Authentication Names"
+msgid "Could not create authentication helper process"
+msgstr "Nem hozható létre a hitelesítési segédfolyamat"
+
+#: ../daemon/gdm-session-worker.c:1025
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "hiba a hitelesítő rendszerrel való kommunikáció indítása közben – %s"
 
-#: ../daemon/gdm-session-worker.c:1107
+#: ../daemon/gdm-session-worker.c:1026
 msgid "general failure"
 msgstr "általános hiba"
 
-#: ../daemon/gdm-session-worker.c:1108
+#: ../daemon/gdm-session-worker.c:1027
 msgid "out of memory"
 msgstr "elfogyott a memória"
 
-#: ../daemon/gdm-session-worker.c:1109
+#: ../daemon/gdm-session-worker.c:1028
 msgid "application programmer error"
 msgstr "alkalmazásprogramozási hiba"
 
-#: ../daemon/gdm-session-worker.c:1110
+#: ../daemon/gdm-session-worker.c:1029
 msgid "unknown error"
 msgstr "Ismeretlen hiba"
 
-#: ../daemon/gdm-session-worker.c:1117
+#: ../daemon/gdm-session-worker.c:1036
 msgid "Username:"
 msgstr "Felhasználónév:"
 
-#: ../daemon/gdm-session-worker.c:1123
+#: ../daemon/gdm-session-worker.c:1042
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr ""
 "hiba a hitelesítő rendszer értesítésekor a felhasználó által választott "
 "parancsorról: %s"
 
-#: ../daemon/gdm-session-worker.c:1137
+#: ../daemon/gdm-session-worker.c:1056
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "hiba a hitelesítő rendszer értesítésekor a felhasználó gépnevéről: %s"
 
-#: ../daemon/gdm-session-worker.c:1152
+#: ../daemon/gdm-session-worker.c:1073
 #, c-format
 msgid "error informing authentication system of user's console: %s"
-msgstr "hiba a hitelesítő rendszer értesítésekor a felhasználó termináljáról: %s"
+msgstr ""
+"hiba a hitelesítő rendszer értesítésekor a felhasználó termináljáról: %s"
 
-#: ../daemon/gdm-session-worker.c:1172
+#: ../daemon/gdm-session-worker.c:1097
 #, c-format
 msgid "error informing authentication system of display string: %s"
-msgstr "hiba a hitelesítő rendszer értesítésekor a megjelenítő-karakterláncról: %s"
+msgstr ""
+"hiba a hitelesítő rendszer értesítésekor a megjelenítő-karakterláncról: %s"
 
-#: ../daemon/gdm-session-worker.c:1187
+#: ../daemon/gdm-session-worker.c:1112
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr ""
 "hiba a hitelesítő rendszer értesítésekor a kijelző xauth hitelesítési "
 "adatairól: %s"
 
-#: ../daemon/gdm-session-worker.c:1507 ../daemon/gdm-session-worker.c:1524
+#: ../daemon/gdm-session-worker.c:1441 ../daemon/gdm-session-worker.c:1458
 #, c-format
 msgid "no user account available"
 msgstr "nem létezik felhasználói fiók"
 
-#: ../daemon/gdm-session-worker.c:1551
+#: ../daemon/gdm-session-worker.c:1485
 msgid "Unable to change to user"
 msgstr "Nem lehet a felhasználóra váltani"
 
-#: ../daemon/gdm-welcome-session.c:413
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "A(z) %s felhasználó nem létezik"
+#: ../daemon/gdm-simple-slave.c:1362
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"Belső hiba miatt nem indítható el az X kiszolgáló (a grafikus felület). "
+"Értesítse a rendszergazdát, vagy ellenőrizze a rendszernaplót. Addig ez a "
+"képernyő ki lesz kapcsolva. Indítsa újra a GDM-et, ha a probléma megoldódott."
 
-#: ../daemon/gdm-welcome-session.c:420
+#: ../daemon/gdm-simple-slave.c:1403
 #, c-format
-msgid "Group %s doesn't exist"
-msgstr "A(z) %s csoport nem létezik"
+msgid "Can only be called before user is logged in"
+msgstr "Csak a felhasználó bejelentkezése előtt hívható"
+
+#: ../daemon/gdm-simple-slave.c:1413
+#, c-format
+msgid "Caller not GDM"
+msgstr "A hívó nem a GDM"
+
+#: ../daemon/gdm-simple-slave.c:1472
+#| msgid "Currently logged in"
+msgid "User not logged in"
+msgstr "A felhasználó nincs bejelentkezve"
+
+#: ../daemon/gdm-xdmcp-chooser-slave.c:366
+#, c-format
+msgid "Currently, only one client can be connected at once"
+msgstr "Jelenleg egyszerre csak egy kliens kapcsolódhat"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:604
 msgid "Could not create socket!"
 msgstr "Nem hozható létre a foglalat!"
 
-#: ../daemon/main.c:237 ../daemon/main.c:250
+#: ../daemon/main.c:126 ../daemon/main.c:139
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
-msgstr "Nem írható a(z) %s PID fájl: lehetséges, hogy elfogyott a lemezterület: %s"
+msgstr ""
+"Nem írható a(z) %s PID fájl: lehetséges, hogy elfogyott a lemezterület: %s"
 
-#: ../daemon/main.c:271
+#: ../daemon/main.c:160
 #, c-format
 msgid "Logdir %s does not exist or isn't a directory."
 msgstr "A(z) %s Logdir nem létezik, vagy nem könyvtár. "
 
-#: ../daemon/main.c:287
+#: ../daemon/main.c:176
 #, c-format
 msgid "Authdir %s does not exist. Aborting."
 msgstr "A(z) %s authdir nem létezik. A művelet megszakítva."
 
-#: ../daemon/main.c:291
+#: ../daemon/main.c:180
 #, c-format
 msgid "Authdir %s is not a directory. Aborting."
 msgstr "A(z) %s authdir nem könyvtár. A művelet megszakítva."
 
-#: ../daemon/main.c:365
+#: ../daemon/main.c:254
 #, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
 msgstr ""
 "A(z) %s authdir nem a(z) %d felhasználó és %d csoport tulajdonában van. A "
 "művelet megszakítva."
 
-#: ../daemon/main.c:372
+#: ../daemon/main.c:261
 #, c-format
 msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
 "A(z) %s Authdir jogosultságai rosszak (%o). %o kellene legyen. A művelet "
 "megszakítva."
 
-#: ../daemon/main.c:409
+#: ../daemon/main.c:298
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Nem található a(z) „%s” GDM felhasználó. A művelet megszakítva."
 
-#: ../daemon/main.c:415
+#: ../daemon/main.c:304
 msgid "The GDM user should not be root. Aborting!"
 msgstr "A GDM felhasználó nem lehet a root. A művelet megszakítva."
 
-#: ../daemon/main.c:421
+#: ../daemon/main.c:310
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Nem található a(z) „%s” GDM csoport. A művelet megszakítva."
 
-#: ../daemon/main.c:427
+#: ../daemon/main.c:316
 msgid "The GDM group should not be root. Aborting!"
 msgstr "A GDM csoportja nem lehet a root. A művelet megszakítva."
 
-#: ../daemon/main.c:533
+#: ../daemon/main.c:427
 msgid "Make all warnings fatal"
 msgstr "Minden figyelmeztetés végzetessé tétele"
 
-#: ../daemon/main.c:534
+#: ../daemon/main.c:428
 msgid "Exit after a time (for debugging)"
 msgstr "Kilépés egy idő után (hibakeresési céllal)"
 
-#: ../daemon/main.c:535
+#: ../daemon/main.c:429
 msgid "Print GDM version"
 msgstr "GDM verzió kiírása"
 
-#: ../daemon/main.c:548
+#: ../daemon/main.c:442
 msgid "GNOME Display Manager"
 msgstr "GNOME bejelentkezéskezelő"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:614
+#: ../daemon/main.c:492
 msgid "Only the root user can run GDM"
 msgstr "Csak a root futtathatja a GDM-et"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:156
+#: ../daemon/session-worker-main.c:150
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME bejelentkezéskezelő környezet-segédfolyamata"
 
+#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+msgid "Display ID"
+msgstr "Képernyő-azonosító"
+
+#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+msgid "ID"
+msgstr "Azonosító"
+
+#: ../daemon/simple-slave-main.c:187 ../daemon/xdmcp-chooser-slave-main.c:188
+msgid "GNOME Display Manager Slave"
+msgstr "GNOME bejelentkezéskezelő szolga"
+
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2569
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
 msgid "Login Window"
 msgstr "Bejelentkezési ablak"
 
@@ -352,50 +402,10 @@ msgid "Present on-screen information as speech or braille"
 msgstr "A megjelenő információk átalakítása beszéddé vagy braille-kimenetté"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
-msgid "Avoid showing user list"
-msgstr "Felhasználólista megjelenítésének tiltása"
+msgid "Whether or not to allow fingerprint readers for login"
+msgstr "Ujjlenyomat-olvasók használatának engedélyezése bejelentkezéshez"
 
-# fixme
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:2
-msgid "Banner message text"
-msgstr "Fejlécüzenet szövege"
-
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
-msgid "Disable showing the restart buttons"
-msgstr "Az újraindítása gombok megjelenítésének letiltása"
-
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
-msgid "Enable showing the banner message"
-msgstr "Hiba a fejlécüzenet megjelenítésekor"
-
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
-msgid "Path to small image at top of user list"
-msgstr "Útvonal a kis képhez a felhasználólista tetején"
-
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
-msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr ""
-"Állítsa igazra az újraindítás gombok megjelenítésének letiltásához a "
-"bejelentkezési ablakban."
-
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
-msgid "Set to true to show the banner message text."
-msgstr "Állítsa igazra a fejléc szövegének megjelenítéséhez."
-
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
-msgid "Text banner message to show in the login window."
-msgstr "A bejelentkezési ablakban megjelenítendő fejlécszöveg."
-
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
-msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
-msgstr ""
-"A tartalék bejelentkezési képernyő megjeleníthet egy kis képet a felhasználólista "
-"tetején, ezzel a rendszergazdák és disztribúciók márkajelzést tehetnek oda."
-
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
@@ -403,7 +413,11 @@ msgstr ""
 "A bejelentkezési képernyő lehetővé teheti az ujjlenyomatukat regisztrált "
 "felhasználóknak a bejelentkezést ujjlenyomattal."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
+msgid "Whether or not to allow smartcard readers for login"
+msgstr "Intelligenskártya-olvasók használatának engedélyezése bejelentkezéshez"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
@@ -411,7 +425,11 @@ msgstr ""
 "A bejelentkezési képernyő lehetővé teheti az intelligenskártyát birtokló "
 "felhasználóknak a bejelentkezést a kártyával."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Path to small image at top of user list"
+msgstr "Útvonal a kis képhez a felhasználólista tetején"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
 msgid ""
 "The login screen can optionally show a small image at the top of its user "
 "list to provide site administrators and distributions a way to provide "
@@ -420,7 +438,21 @@ msgstr ""
 "A bejelentkezési képernyő megjeleníthet egy kis képet a felhasználólista "
 "tetején, ezzel a rendszergazdák és disztribúciók márkajelzést tehetnek oda."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+msgid ""
+"The fallback login screen can optionally show a small image at the top of "
+"its user list to provide site administrators and distributions a way to "
+"provide branding."
+msgstr ""
+"A tartalék bejelentkezési képernyő megjeleníthet egy kis képet a "
+"felhasználólista tetején, ezzel a rendszergazdák és disztribúciók "
+"márkajelzést tehetnek oda."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+msgid "Avoid showing user list"
+msgstr "Felhasználólista megjelenítésének tiltása"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -429,13 +461,73 @@ msgstr ""
 "akik nevében be lehet jelentkezni. Ezzel a beállítással letiltható a "
 "felhasználólista megjelenítése."
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+msgid "Enable showing the banner message"
+msgstr "Hiba a fejlécüzenet megjelenítésekor"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+msgid "Set to true to show the banner message text."
+msgstr "Állítsa igazra a fejléc szövegének megjelenítéséhez."
+
+# fixme
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+msgid "Banner message text"
+msgstr "Fejlécüzenet szövege"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+msgid "Text banner message to show in the login window."
+msgstr "A bejelentkezési ablakban megjelenítendő fejlécszöveg."
+
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:14
-msgid "Whether or not to allow fingerprint readers for login"
-msgstr "Ujjlenyomat-olvasók használatának engedélyezése bejelentkezéshez"
+msgid "Disable showing the restart buttons"
+msgstr "Az újraindítása gombok megjelenítésének letiltása"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:15
-msgid "Whether or not to allow smartcard readers for login"
-msgstr "Intelligenskártya-olvasók használatának engedélyezése bejelentkezéshez"
+msgid "Set to true to disable showing the restart buttons in the login window."
+msgstr ""
+"Állítsa igazra az újraindítás gombok megjelenítésének letiltásához a "
+"bejelentkezési ablakban."
+
+#: ../gui/libgdm/gdm-user-switching.c:72
+#| msgid "Unable to start new display"
+msgid "Unable to create transient display: "
+msgstr "Nem hozható létre átmeneti kijelző:"
+
+#: ../gui/libgdm/gdm-user-switching.c:183
+#: ../gui/libgdm/gdm-user-switching.c:395
+#| msgid "Unable to open session"
+msgid "Unable to activate session: "
+msgstr "Nem aktiválható a munkamenet: "
+
+#: ../gui/libgdm/gdm-user-switching.c:344
+#: ../gui/libgdm/gdm-user-switching.c:483
+#, c-format
+msgid "Could not identify the current session."
+msgstr "A jelenlegi környezet nem azonosítható."
+
+#: ../gui/libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "A felhasználó nem válthat munkamenetet."
+
+#: ../gui/libgdm/gdm-user-switching.c:492
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "A jelenlegi hely nem azonosítható."
+
+#: ../gui/libgdm/gdm-user-switching.c:502
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"A rendszer nem képes megállapítani, hogy át kell-e váltani egy meglévő "
+"bejelentkezési képernyőre, vagy újat kell-e indítani."
+
+#: ../gui/libgdm/gdm-user-switching.c:510
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "A rendszer nem képes új bejelentkezési képernyőt indítani."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -551,7 +643,8 @@ msgstr "Nem figyelhetők a bejövő kártyaesemények - %s"
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
 #, c-format
 msgid "encountered unexpected error while waiting for smartcard events"
-msgstr "Váratlan hiba történt az intelligenskártya-eseményekre várakozás közben"
+msgstr ""
+"Váratlan hiba történt az intelligenskártya-eseményekre várakozás közben"
 
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
 msgid "Authentication"
@@ -576,7 +669,8 @@ msgstr "Inaktív szöveg"
 
 #: ../gui/simple-greeter/gdm-chooser-widget.c:1466
 msgid "The text to use in the label if the user hasn't picked an item yet"
-msgstr "A címkében használandó szöveg, ha a felhasználó még nem választott ki elemet"
+msgstr ""
+"A címkében használandó szöveg, ha a felhasználó még nem választott ki elemet"
 
 #: ../gui/simple-greeter/gdm-chooser-widget.c:1474
 msgid "Active Text"
@@ -584,7 +678,8 @@ msgstr "Aktív szöveg"
 
 #: ../gui/simple-greeter/gdm-chooser-widget.c:1475
 msgid "The text to use in the label if the user has picked an item"
-msgstr "A címkében használandó szöveg, ha a felhasználó már kiválasztott egy elemet"
+msgstr ""
+"A címkében használandó szöveg, ha a felhasználó már kiválasztott egy elemet"
 
 #: ../gui/simple-greeter/gdm-chooser-widget.c:1484
 msgid "List Visible"
@@ -622,66 +717,66 @@ msgstr "%a %k.%M.%S"
 msgid "%a %l:%M %p"
 msgstr "%a %k.%M"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:317
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
 msgid "Automatically logging in…"
 msgstr "Automatikus bejelentkezés…"
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:933
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
 msgid "Cancelling…"
 msgstr "Megszakítás…"
 
 #. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1489
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
 msgid "Select language and click Log In"
 msgstr "Válasszon nyelvet, és nyomja meg a Bejelentkezés gombot"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1625
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
 msgctxt "customsession"
 msgid "Custom"
 msgstr "Egyéni"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1626
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
 msgid "Custom session"
 msgstr "Egyéni környezet"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-msgid "Cancel"
-msgstr "Mégse"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
 msgid "Computer Name"
 msgstr "Számítógép neve"
 
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
+msgid "Version"
+msgstr "Verzió"
+
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-msgid "Login"
-msgstr "Bejelentkezés"
+msgid "Cancel"
+msgstr "Mégse"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
 msgid "Unlock"
 msgstr "Feloldás"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
-msgid "Version"
-msgstr "Verzió"
+msgid "Login"
+msgstr "Bejelentkezés"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:903
+#: ../gui/simple-greeter/gdm-greeter-panel.c:953
 msgid "Suspend"
 msgstr "Felfüggesztés"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:908
+#: ../gui/simple-greeter/gdm-greeter-panel.c:958
 msgid "Restart"
 msgstr "Újraindítás"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:912
+#: ../gui/simple-greeter/gdm-greeter-panel.c:962
 msgid "Shut Down"
 msgstr "Leállítás"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:961
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1011
 msgid "Unknown time remaining"
 msgstr "Ismeretlen idő van hátra"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:983
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1033
 msgid "Panel"
 msgstr "Panel"
 
@@ -751,8 +846,8 @@ msgstr "Fut?"
 msgid "Whether the timer is currently ticking"
 msgstr "Az időzítő visszaszámol-e?"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:460
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:797
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
 #, c-format
 msgid "Log in as %s"
 msgstr "Bejelentkezés mint %s"
@@ -762,98 +857,38 @@ msgstr "Bejelentkezés mint %s"
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
 msgctxt "user"
 msgid "Other…"
 msgstr "Más…"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:547
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
 msgid "Choose a different account"
 msgstr "Válasszon másik felhasználói fiókot"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:561
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
 msgid "Guest"
 msgstr "Vendég"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:562
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
 msgid "Log in as a temporary guest"
 msgstr "Bejelentkezés ideiglenes vendégként"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:577
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
 msgid "Automatic Login"
 msgstr "Automatikus bejelentkezés"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:578
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
 msgid "Automatically log into the system after selecting options"
 msgstr "Automatikus bejelentkezés a rendszerbe a beállítások kiválasztása után"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1353
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
 msgid "Currently logged in"
 msgstr "Be van jelentkezve"
 
-#: ../utils/gdmflexiserver.c:68
-msgid "Only the VERSION command is supported"
-msgstr "Csak a VERZIÓ parancs támogatott"
-
-#: ../utils/gdmflexiserver.c:68
-msgid "COMMAND"
-msgstr "PARANCS"
-
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
-#: ../utils/gdmflexiserver.c:72 ../utils/gdmflexiserver.c:73
-msgid "Ignored — retained for compatibility"
-msgstr "Mellőzve – csak a kompatibilitás miatt"
-
-#: ../utils/gdmflexiserver.c:71 ../utils/gdm-screenshot.c:43
+#: ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Hibakereső-kimenet bekapcsolása"
-
-#: ../utils/gdmflexiserver.c:75
-msgid "Version of this application"
-msgstr "Ezen alkalmazás verziója"
-
-#: ../utils/gdmflexiserver.c:673 ../utils/gdmflexiserver.c:833
-#, c-format
-msgid "Could not identify the current session."
-msgstr "A jelenlegi környezet nem azonosítható."
-
-#: ../utils/gdmflexiserver.c:680
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "A felhasználó nem válthat munkamenetet."
-
-#: ../utils/gdmflexiserver.c:842
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "A jelenlegi hely nem azonosítható."
-
-#: ../utils/gdmflexiserver.c:852
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"A rendszer nem képes megállapítani, hogy át kell-e váltani egy meglévő "
-"bejelentkezési képernyőre, vagy újat kell-e indítani."
-
-#: ../utils/gdmflexiserver.c:860
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "A rendszer nem képes új bejelentkezési képernyőt indítani."
-
-#: ../utils/gdmflexiserver.c:869
-#, c-format
-msgid "The system is unable to find a login screen to switch to."
-msgstr "A rendszer talál bejelentkezési képernyőt, amelyre átválthatna."
-
-#. Option parsing
-#: ../utils/gdmflexiserver.c:934
-msgid "- New GDM login"
-msgstr "- Új GDM bejelentkezés"
-
-#: ../utils/gdmflexiserver.c:990
-msgid "Unable to start new display"
-msgstr "Nem indítható új képernyő"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -863,6 +898,33 @@ msgstr "A képernyőkép elkészült"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Kép készítése a képernyőről"
+
+#~ msgid "Unable to initialize login system"
+#~ msgstr "A bejelentkező képernyő előkészítése sikertelen"
+
+#~ msgid "Unable to authenticate user"
+#~ msgstr "A felhasználó nem hitelesíthető"
+
+#~ msgid "Unable to establish credentials"
+#~ msgstr "A hitelesítési adatok létrehozása sikertelen"
+
+#~ msgid "Only the VERSION command is supported"
+#~ msgstr "Csak a VERZIÓ parancs támogatott"
+
+#~ msgid "COMMAND"
+#~ msgstr "PARANCS"
+
+#~ msgid "Ignored — retained for compatibility"
+#~ msgstr "Mellőzve – csak a kompatibilitás miatt"
+
+#~ msgid "Version of this application"
+#~ msgstr "Ezen alkalmazás verziója"
+
+#~ msgid "The system is unable to find a login screen to switch to."
+#~ msgstr "A rendszer talál bejelentkezési képernyőt, amelyre átválthatna."
+
+#~ msgid "- New GDM login"
+#~ msgstr "- Új GDM bejelentkezés"
 
 #~ msgid "Max Item Count"
 #~ msgstr "Az elemek maximális száma"
@@ -1010,9 +1072,6 @@ msgstr "Kép készítése a képernyőről"
 #~ msgid "%s: Could not read Client Address"
 #~ msgstr "%s: Nem olvasható a kliens címe"
 
-#~ msgid "%s: Could not read Authentication Names"
-#~ msgstr "%s: Nem olvashatók a hitelesítési nevek"
-
 #~ msgid "%s: Could not read Authentication Data"
 #~ msgstr "%s: Nem olvashatók a hitelesítési adatok"
 
@@ -1045,4 +1104,3 @@ msgstr "Kép készítése a képernyőről"
 
 #~ msgid "Could not get server hostname: %s!"
 #~ msgstr "Nem határozható meg a(z) %s kiszolgáló gépneve!"
-
