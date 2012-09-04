@@ -117,7 +117,6 @@ test_greeter_panel_LDADD =	\
 	$(top_builddir)/gui/simple-greeter/libgdmsimplegreeter/libgdmsimplegreeter.la	\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(GTK_LIBS)			\
-	$(LIBXKLAVIER_LIBS)		\
 	$(UPOWER_LIBS)		\
 	$(NULL)
 
@@ -226,7 +225,6 @@ gdm_simple_greeter_LDADD = 		\
 	$(EXTRA_GREETER_LIBS)   	\
 	$(SIMPLE_GREETER_LIBS)		\
 	$(RBAC_LIBS)			\
-	$(LIBXKLAVIER_LIBS)		\
 	$(UPOWER_LIBS)		\
 	$(NULL)
 

@@ -196,7 +196,6 @@ gdm_simple_slave_LDADD = 			\
 	$(XLIB_LIBS)				\
 	$(DAEMON_LIBS)				\
 	$(EXTRA_DAEMON_LIBS)                    \
-	$(LIBXKLAVIER_LIBS)			\
 	$(SYSTEMD_LIBS) 			\
 	$(NULL)
 
@@ -241,7 +240,6 @@ gdm_xdmcp_chooser_slave_LDADD = 		\
 	$(XLIB_LIBS)				\
 	$(DAEMON_LIBS)				\
 	$(EXTRA_DAEMON_LIBS)                    \
-	$(LIBXKLAVIER_LIBS)			\
 	$(SYSTEMD_LIBS) 			\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)

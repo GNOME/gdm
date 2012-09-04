@@ -103,7 +103,6 @@ gboolean            gdm_slave_switch_to_user_session (GdmSlave   *slave,
 
 gboolean            gdm_slave_connect_to_x11_display (GdmSlave   *slave);
 
-void                gdm_slave_set_initial_keyboard_layout (GdmSlave *slave);
 void                gdm_slave_set_initial_cursor_position (GdmSlave *slave);
 
 void                gdm_slave_set_busy_cursor        (GdmSlave   *slave);

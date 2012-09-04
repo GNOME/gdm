@@ -43,11 +43,6 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#ifdef HAVE_LIBXKLAVIER
-#include <libxklavier/xklavier.h>
-#include <X11/Xlib.h> /* for Display */
-#endif
-
 #include "gdm-session.h"
 #include "gdm-session-glue.h"
 #include "gdm-dbus-util.h"

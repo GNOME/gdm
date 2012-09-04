@@ -44,10 +44,6 @@
 #include <X11/extensions/Xrandr.h>
 #include <X11/Xatom.h>
 
-#ifdef HAVE_LIBXKLAVIER
-#include <libxklavier/xklavier.h>
-#endif
-
 #ifdef WITH_SYSTEMD
 #include <systemd/sd-login.h>
 #include <systemd/sd-daemon.h>
@@ -448,51 +444,6 @@ gdm_slave_save_root_windows (GdmSlave *slave)
         }
 
         XSync (slave->priv->server_display, False);
-}
-
-void
-gdm_slave_set_initial_keyboard_layout (GdmSlave *slave)
-{
-#ifdef HAVE_LIBXKLAVIER
-        XklEngine    *engine;
-        XklConfigRec *config;
-
-        engine = xkl_engine_get_instance (slave->priv->server_display);
-        config = xkl_config_rec_new ();
-
-        if (xkl_config_rec_get_from_server (config, engine)) {
-                int i;
-
-                for (i = 1; config->layouts[i] != NULL; i++) {
-                        /* put us at the front of the list, since usernames and
-                         * passwords are usually ascii
-                         */
-                        if (strcmp (config->layouts[i], "us") == 0) {
-                                char *temp_layout;
-                                char *temp_variant = NULL;
-                                char *temp_options = NULL;
-
-                                temp_layout = config->layouts[0];
-                                config->layouts[0] = config->layouts[i];
-                                config->layouts[i] = temp_layout;
-
-                                if (config->variants != NULL) {
-                                        temp_variant = config->variants[0];
-                                        config->variants[0] = config->variants[i];
-                                        config->variants[i] = temp_variant;
-                                }
-
-                                if (config->options != NULL) {
-                                        temp_options = config->options[0];
-                                        config->options[0] = config->options[i];
-                                        config->options[i] = temp_options;
-                                }
-                                break;
-                        }
-                }
-                xkl_config_rec_activate (config, engine);
-        }
-#endif
 }
 
 static void
