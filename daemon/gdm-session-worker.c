@@ -1082,7 +1082,7 @@ gdm_session_worker_initialize_pam (GdmSessionWorker *worker,
         }
 #endif
 
-        if (strcmp (service, "gdm-welcome") == 0) {
+        if (strcmp (service, "gdm-launch-environment") == 0) {
                 gdm_session_worker_set_environment_variable (worker, "XDG_SESSION_CLASS", "greeter");
         }
 
