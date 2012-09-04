@@ -1272,6 +1272,7 @@ gdm_session_worker_set_environment_variable (GdmSessionWorker *worker,
                            environment_entry,
                            pam_strerror (worker->priv->pam_handle, error_code));
         }
+        g_debug ("GdmSessionWorker: Set PAM environment variable: '%s'", environment_entry);
         g_free (environment_entry);
 }
 
