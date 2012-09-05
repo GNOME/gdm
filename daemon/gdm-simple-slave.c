@@ -330,6 +330,7 @@ static void
 stop_greeter (GdmSimpleSlave *slave)
 {
         char *username;
+        gboolean script_successful;
 
         g_debug ("GdmSimpleSlave: Stopping greeter");
 
@@ -345,9 +346,19 @@ stop_greeter (GdmSimpleSlave *slave)
         }
 
         if (username != NULL) {
-                gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostLogin", username);
+                script_successful = gdm_slave_run_script (GDM_SLAVE (slave), GDMCONFDIR "/PostLogin", username);
+        } else {
+                script_successful = TRUE;
         }
         g_free (username);
+
+        if (!script_successful) {
+                g_debug ("GdmSimpleSlave: PostLogin script unsuccessful");
+
+                slave->priv->start_session_id = 0;
+                queue_greeter_reset (slave);
+                return;
+        }
 
         gdm_launch_environment_stop (GDM_LAUNCH_ENVIRONMENT (slave->priv->greeter_environment));
 }
