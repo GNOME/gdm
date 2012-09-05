@@ -140,6 +140,11 @@ session_manager_connect (void)
                         g_error_free (error);
                         exit (1);
                 }
+
+                g_signal_connect (G_OBJECT (bus_connection),
+                                  "closed",
+                                  G_CALLBACK (gtk_main_quit),
+                                  NULL);
         }
 
         sm_proxy = gsm_manager_proxy_new_sync (bus_connection,
