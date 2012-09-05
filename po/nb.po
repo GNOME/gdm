@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 3.4.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-22 19:00+0200\n"
-"PO-Revision-Date: 2012-08-22 19:01+0200\n"
+"POT-Creation-Date: 2012-09-05 12:57+0200\n"
+"PO-Revision-Date: 2012-09-05 12:57+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: \n"
@@ -120,7 +120,7 @@ msgstr "%s: Feil under setting  av %s til %s"
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Prioritet for tjener kunne ikke settes til %d: %s"
 
-#: ../daemon/gdm-server.c:718
+#: ../daemon/gdm-server.c:722
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tjenerkommandoen for skjerm %s er tom"
@@ -149,7 +149,7 @@ msgstr "Skjerm-enhet"
 msgid "The display device"
 msgstr "Skjermenheten"
 
-#: ../daemon/gdm-session.c:1186
+#: ../daemon/gdm-session.c:1177
 msgid "Could not create authentication helper process"
 msgstr "Kunne ikke lage hjelpeprosess for autentisering"
 
@@ -208,16 +208,16 @@ msgstr ""
 "feil ved informasjon til autentiseringssystemet om xauth-"
 "påloggingsinformasjon for skjermen: %s"
 
-#: ../daemon/gdm-session-worker.c:1441 ../daemon/gdm-session-worker.c:1458
+#: ../daemon/gdm-session-worker.c:1442 ../daemon/gdm-session-worker.c:1459
 #, c-format
 msgid "no user account available"
 msgstr "ingen brukerkonto tilgjengelig"
 
-#: ../daemon/gdm-session-worker.c:1485
+#: ../daemon/gdm-session-worker.c:1486
 msgid "Unable to change to user"
 msgstr "Kan ikke bytte til denne brukeren"
 
-#: ../daemon/gdm-simple-slave.c:1362
+#: ../daemon/gdm-simple-slave.c:1372
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -229,21 +229,21 @@ msgstr ""
 "å finne ut hva som er feil. I mellomtiden vil denne skjermen deaktiveres. "
 "Vennligst start GDM på nytt når problemet er rettet."
 
-#: ../daemon/gdm-simple-slave.c:1403
+#: ../daemon/gdm-simple-slave.c:1413
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Kan kun kalles før bruker er logget inn"
 
-#: ../daemon/gdm-simple-slave.c:1413
+#: ../daemon/gdm-simple-slave.c:1423
 #, c-format
 msgid "Caller not GDM"
 msgstr "Kaller er ikke GDM"
 
-#: ../daemon/gdm-simple-slave.c:1472
+#: ../daemon/gdm-simple-slave.c:1476
 msgid "User not logged in"
 msgstr "Bruker er ikke logget inn"
 
-#: ../daemon/gdm-xdmcp-chooser-slave.c:366
+#: ../daemon/gdm-xdmcp-chooser-slave.c:370
 #, c-format
 msgid "Currently, only one client can be connected at once"
 msgstr "Kun en klient kan være tilkoblet samtidig"
@@ -463,6 +463,16 @@ msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Sett til true for å slå av visning av knapper for omstart i "
 "påloggingsvinduet."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+msgid "Number of allowed authentication failures"
+msgstr "Antall tillatte autentiseringsfeil"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+msgid ""
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
+msgstr "Antall ganger en bruker tillates å forsøke autentisering før man gir opp og går tilbake til valg av bruker."
 
 #: ../gui/libgdm/gdm-user-switching.c:72
 msgid "Unable to create transient display: "
