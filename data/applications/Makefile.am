@@ -35,6 +35,7 @@ EXTRA_DIST =								\
 
 DISTCLEANFILES =							\
 	$(desktop_in_files:.desktop.in=.desktop)			\
+	polkit-gnome-authentication-agent-1.desktop.in			\
 	gdm-simple-greeter.desktop.in					\
 	$(NULL)
 
