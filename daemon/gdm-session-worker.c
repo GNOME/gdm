@@ -46,6 +46,10 @@
 #include <systemd/sd-daemon.h>
 #endif
 
+#ifdef HAVE_SELINUX
+#include <selinux/selinux.h>
+#endif /* HAVE_SELINUX */
+
 #include "gdm-common.h"
 #include "gdm-log.h"
 #include "gdm-session-worker.h"
@@ -1875,6 +1879,13 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 
                 _exit (127);
         }
+
+        /* If we end up execing again, make sure we don't use the executable context set up
+         * by pam_selinux durin pam_open_session
+         */
+#ifdef HAVE_SELINUX
+        setexeccon (NULL);
+#endif
 
         worker->priv->child_pid = session_pid;
 

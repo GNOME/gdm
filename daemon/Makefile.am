@@ -27,6 +27,7 @@ AM_CPPFLAGS = \
 	$(WARN_CFLAGS)					\
 	$(DEBUG_CFLAGS)					\
 	$(SYSTEMD_CFLAGS)				\
+	$(LIBSELINUX_CFLAGS)	 			\
 	-DLANG_CONFIG_FILE=\"$(LANG_CONFIG_FILE)\"	\
 	$(NULL)
 
@@ -291,6 +292,7 @@ gdm_session_worker_LDADD = 			\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(DAEMON_LIBS)				\
 	$(SYSTEMD_LIBS) 			\
+	$(LIBSELINUX_LIBS) 			\
 	$(NULL)
 
 sbin_PROGRAMS = 			\
