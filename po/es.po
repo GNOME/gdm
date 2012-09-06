@@ -18,8 +18,8 @@ msgstr ""
 "Project-Id-Version: gdm.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-08-16 19:38+0000\n"
-"PO-Revision-Date: 2012-08-20 13:22+0200\n"
+"POT-Creation-Date: 2012-09-04 19:23+0000\n"
+"PO-Revision-Date: 2012-09-06 18:19+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "Language: \n"
@@ -28,7 +28,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Group-Coordinator: Francisco Javier F. Serrador <serrador@openshine.com>\n"
 "Translation-Asignee: Lucas Vieites <lucas@asixinformatica.com> \n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: Gtranslator 2.91.5\n"
 
 #: ../common/gdm-common.c:492
@@ -161,7 +161,7 @@ msgstr "Pantalla"
 msgid "The display device"
 msgstr "La pantalla"
 
-#: ../daemon/gdm-session.c:1195
+#: ../daemon/gdm-session.c:1177
 msgid "Could not create authentication helper process"
 msgstr "No se pudo crear el proceso de ayuda de autenticación"
 
@@ -224,16 +224,16 @@ msgstr ""
 "error al informar al sistema de autenticación de las credenciales xauth de "
 "la pantalla: %s"
 
-#: ../daemon/gdm-session-worker.c:1441 ../daemon/gdm-session-worker.c:1458
+#: ../daemon/gdm-session-worker.c:1442 ../daemon/gdm-session-worker.c:1459
 #, c-format
 msgid "no user account available"
 msgstr "no hay cuentas de usuario disponibles"
 
-#: ../daemon/gdm-session-worker.c:1485
+#: ../daemon/gdm-session-worker.c:1486
 msgid "Unable to change to user"
 msgstr "No se pudo cambiar el usuario"
 
-#: ../daemon/gdm-simple-slave.c:1362
+#: ../daemon/gdm-simple-slave.c:1356
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -245,17 +245,17 @@ msgstr ""
 "del sistema para obtener un diagnóstico. Mientras tanto esta pantalla se "
 "desactivará. Reinicie GDM cuando se haya solucionado el problema."
 
-#: ../daemon/gdm-simple-slave.c:1403
+#: ../daemon/gdm-simple-slave.c:1397
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Sólo se puede llamar antes de que el usuario inicie sesión"
 
-#: ../daemon/gdm-simple-slave.c:1413
+#: ../daemon/gdm-simple-slave.c:1407
 #, c-format
 msgid "Caller not GDM"
 msgstr "El solicitante no es GDM"
 
-#: ../daemon/gdm-simple-slave.c:1472
+#: ../daemon/gdm-simple-slave.c:1466
 msgid "User not logged in"
 msgstr "El usuario no ha iniciado sesión"
 
@@ -486,14 +486,24 @@ msgstr ""
 "Establecer a verdadero para desactivar el mostrado de los botones de "
 "reinicio en la ventana de inicio de sesión."
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+msgid "Number of allowed authentication failures"
+msgstr "Número de fallos de autenticación permitidos"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+msgid ""
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
+msgstr ""
+"El número de veces que se permite a un usuario intentar la autenticación, "
+"antes de abandonar y volver a la selección de usuarios."
+
 #: ../gui/libgdm/gdm-user-switching.c:72
-#| msgid "Unable to start new display"
 msgid "Unable to create transient display: "
 msgstr "No se pudo crear la pantalla de transición: "
 
 #: ../gui/libgdm/gdm-user-switching.c:183
 #: ../gui/libgdm/gdm-user-switching.c:395
-#| msgid "Unable to authenticate user"
 msgid "Unable to activate session: "
 msgstr "No se pudo activar la sesión: "
 
@@ -1415,5 +1425,5 @@ msgstr "Tomar una captura de la pantalla"
 #~ "Set to TRUE to disable showing the accessibility button in the login "
 #~ "window."
 #~ msgstr ""
-#~ "Establecer a «TRUE» para desactivar el mostrado del botón de "
-#~ "accesibilidad en la ventana de inicio de sesión."
+#~ "Establecer a «TRUE» para desactivar el mostrado del botón de accesibilidad "
+#~ "en la ventana de inicio de sesión."
