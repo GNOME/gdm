@@ -1215,7 +1215,7 @@ wants_autologin (GdmSimpleSlave *slave)
         /* FIXME: handle wait-for-go */
 
         gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &enabled, NULL, &delay);
-        return enabled && delay > 0;
+        return enabled && delay == 0;
 }
 
 #define INITIAL_SETUP_TRIGGER_FILE LOCALSTATEDIR "/lib/gdm/run-initial-setup"
