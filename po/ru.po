@@ -19,8 +19,8 @@ msgstr ""
 "Project-Id-Version: gdm trunk\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-08-16 19:38+0000\n"
-"PO-Revision-Date: 2012-08-25 12:17+0400\n"
+"POT-Creation-Date: 2012-09-04 19:23+0000\n"
+"PO-Revision-Date: 2012-09-06 20:45+0400\n"
 "Last-Translator: Yuri Myasoedov <omerta13@yandex.ru>\n"
 "Language-Team: русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -43,7 +43,6 @@ msgstr "не удалось найти в системе пользовател�
 
 #: ../daemon/gdm-display.c:1315 ../daemon/gdm-display.c:1349
 #, c-format
-#| msgid "no user account available"
 msgid "No session available yet"
 msgstr "Сеанс пока что недоступен"
 
@@ -76,12 +75,10 @@ msgstr "Не удалось установить идентификатор по
 
 #: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
 #, c-format
-#| msgid "Unable to authorize user"
 msgid "Unable to look up UID of user %s"
 msgstr "Не удалось найти UID пользователя %s"
 
 #: ../daemon/gdm-manager.c:291
-#| msgid "no user account available"
 msgid "no sessions available"
 msgstr "нет доступных сеансов"
 
@@ -92,23 +89,19 @@ msgstr "Для пользователя %s нет доступных сеанс�
 
 #: ../daemon/gdm-manager.c:406
 #, c-format
-#| msgid "Unable to open session"
 msgid "Unable to find session for user %s"
 msgstr "Не удалось найти сеанс пользователя %s"
 
 #: ../daemon/gdm-manager.c:476
 #, c-format
-#| msgid "Unable to open session"
 msgid "Unable to find appropriate session for user %s"
 msgstr "Не удалось найти соответствующий сеанс для пользователя %s"
 
 #: ../daemon/gdm-manager.c:671
-#| msgid "User %s doesn't exist"
 msgid "User doesn't own session"
 msgstr "Пользователь не владеет сеансом"
 
 #: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
-#| msgid "no user account available"
 msgid "No session available"
 msgstr "Сеанс недоступен"
 
@@ -169,7 +162,7 @@ msgstr "Устройство дисплея"
 msgid "The display device"
 msgstr "Устройство дисплея"
 
-#: ../daemon/gdm-session.c:1195
+#: ../daemon/gdm-session.c:1177
 msgid "Could not create authentication helper process"
 msgstr "Не удалось создать вспомогательный процесс аутентификации"
 
@@ -226,16 +219,16 @@ msgid "error informing authentication system of display xauth credentials: %s"
 msgstr ""
 "ошибка извещения системы аутентификации о мандате xauth для дисплея: %s"
 
-#: ../daemon/gdm-session-worker.c:1441 ../daemon/gdm-session-worker.c:1458
+#: ../daemon/gdm-session-worker.c:1442 ../daemon/gdm-session-worker.c:1459
 #, c-format
 msgid "no user account available"
 msgstr "учётная запись пользователя недоступна"
 
-#: ../daemon/gdm-session-worker.c:1485
+#: ../daemon/gdm-session-worker.c:1486
 msgid "Unable to change to user"
 msgstr "Не удалось сменить пользователя"
 
-#: ../daemon/gdm-simple-slave.c:1362
+#: ../daemon/gdm-simple-slave.c:1356
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -247,18 +240,17 @@ msgstr ""
 "журнал. В настоящее время этот дисплей будет отключен. Перезапустите GDM, "
 "когда проблема будет устранена."
 
-#: ../daemon/gdm-simple-slave.c:1403
+#: ../daemon/gdm-simple-slave.c:1397
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Может быть вызван до того, как пользователь вошёл в систему"
 
-#: ../daemon/gdm-simple-slave.c:1413
+#: ../daemon/gdm-simple-slave.c:1407
 #, c-format
 msgid "Caller not GDM"
 msgstr "Другой вызывающий компонент (не GDM)"
 
-#: ../daemon/gdm-simple-slave.c:1472
-#| msgid "Currently logged in"
+#: ../daemon/gdm-simple-slave.c:1466
 msgid "User not logged in"
 msgstr "Пользователь не вошёл в систему"
 
@@ -497,14 +489,25 @@ msgstr ""
 "Установите, чтобы запретить отображение кнопок перезапуска в окне входа в "
 "систему."
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+msgid "Number of allowed authentication failures"
+msgstr "Количество разрешённых ошибок аутентификации"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+msgid ""
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
+msgstr ""
+"Количество попыток, предоставленных пользователю для подтверждения проверки "
+"подлинности после которых будет выполнен возврат к экрану выбора "
+"пользователя."
+
 #: ../gui/libgdm/gdm-user-switching.c:72
-#| msgid "Unable to start new display"
 msgid "Unable to create transient display: "
 msgstr "Не удалось создать переходный экран: "
 
 #: ../gui/libgdm/gdm-user-switching.c:183
 #: ../gui/libgdm/gdm-user-switching.c:395
-#| msgid "Unable to open session"
 msgid "Unable to activate session: "
 msgstr "Не удалось активировать сеанс:"
 
