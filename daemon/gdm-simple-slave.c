@@ -229,7 +229,6 @@ on_session_exited (GdmSession       *session,
                    int               exit_code,
                    GdmSimpleSlave   *slave)
 {
-        slave->priv->session_is_running = FALSE;
         g_object_set (GDM_SLAVE (slave), "session-id", NULL, NULL);
 
         g_debug ("GdmSimpleSlave: session exited with code %d\n", exit_code);
@@ -241,7 +240,6 @@ on_session_died (GdmSession       *session,
                  int               signal_number,
                  GdmSimpleSlave   *slave)
 {
-        slave->priv->session_is_running = FALSE;
         g_object_set (GDM_SLAVE (slave), "session-id", NULL, NULL);
 
         g_debug ("GdmSimpleSlave: session died with signal %d, (%s)",
