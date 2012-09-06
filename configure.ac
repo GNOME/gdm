@@ -142,6 +142,14 @@ AC_SUBST(UPOWER)
 AC_SUBST(UPOWER_CFLAGS)
 AC_SUBST(UPOWER_LIBS)
 
+PKG_CHECK_MODULES(LIBSELINUX, libselinux, have_selinux=yes, have_selinux=no)
+
+if test "x$have_selinux" = "xyes" ; then
+        AC_DEFINE(HAVE_SELINUX, 1, [Define if have selinux])
+fi
+AC_SUBST(LIBSELINUX_CFLAGS)
+AC_SUBST(LIBSELINUX_LIBS)
+
 PKG_CHECK_MODULES(SIMPLE_GREETER,
         gtk+-3.0 >= $GTK_REQUIRED_VERSION
 	fontconfig >= $FONTCONFIG_REQUIRED_VERSION
@@ -1595,6 +1603,7 @@ fi
 echo \
 "        Xinerama support:         ${XINERAMA_SUPPORT}
         XDMCP support:            ${XDMCP_SUPPORT}
+        SELinux support:          ${have_selinux}
         ConsoleKit support:       ${use_console_kit}
         systemd support:          ${use_systemd}
         systemd unit dir:         ${with_systemdsystemunitdir}
