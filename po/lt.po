@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lt\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-08-16 19:38+0000\n"
-"PO-Revision-Date: 2012-08-28 23:30+0300\n"
+"POT-Creation-Date: 2012-09-04 19:23+0000\n"
+"PO-Revision-Date: 2012-09-07 20:26+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <>\n"
 "Language: lt\n"
@@ -39,7 +39,6 @@ msgstr "nepavyko sistemoje rasti naudotojo „%s“"
 #: ../daemon/gdm-display.c:1315
 #: ../daemon/gdm-display.c:1349
 #, c-format
-#| msgid "no user account available"
 msgid "No session available yet"
 msgstr "Nar nėra prieinamų seansų"
 
@@ -76,12 +75,10 @@ msgstr "Nepavyko pakeisti userid į %d"
 #: ../daemon/gdm-manager.c:277
 #: ../daemon/gdm-manager.c:384
 #, c-format
-#| msgid "Unable to authorize user"
 msgid "Unable to look up UID of user %s"
 msgstr "Nepavyko ieškoti naudotojo %s UID"
 
 #: ../daemon/gdm-manager.c:291
-#| msgid "no user account available"
 msgid "no sessions available"
 msgstr "nėra prieinamų seansų"
 
@@ -92,24 +89,20 @@ msgstr "Nėra %s prieinamų seansų pakartotiniam tapatybės patvirtinimui"
 
 #: ../daemon/gdm-manager.c:406
 #, c-format
-#| msgid "Unable to open session"
 msgid "Unable to find session for user %s"
 msgstr "Nepavyko rasti naudotojo %s seanso"
 
 #: ../daemon/gdm-manager.c:476
 #, c-format
-#| msgid "Unable to open session"
 msgid "Unable to find appropriate session for user %s"
 msgstr "Nepavyko rasti naudotojui %s tinkamo seanso"
 
 #: ../daemon/gdm-manager.c:671
-#| msgid "User %s doesn't exist"
 msgid "User doesn't own session"
 msgstr "Seansas nepriklauso naudotojui "
 
 #: ../daemon/gdm-manager.c:687
 #: ../daemon/gdm-manager.c:768
-#| msgid "no user account available"
 msgid "No session available"
 msgstr "Nėra prieinamų seansų"
 
@@ -169,8 +162,7 @@ msgstr "Vaizdavimo įrenginys"
 msgid "The display device"
 msgstr "Vaizdavimo įrenginys"
 
-#: ../daemon/gdm-session.c:1195
-#| msgid "%s: Could not read Authentication Names"
+#: ../daemon/gdm-session.c:1177
 msgid "Could not create authentication helper process"
 msgstr "Nepavyko sukurti tapatybės patvirtinimo pagalbinio proceso"
 
@@ -224,32 +216,31 @@ msgstr "klaida pranešant tapatybės nustatymo sistemai ekrano eilutę: %s"
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "klaida pranešant tapatybės nustatymo sistemai ekrano xauth kredencialus: %s"
 
-#: ../daemon/gdm-session-worker.c:1441
-#: ../daemon/gdm-session-worker.c:1458
+#: ../daemon/gdm-session-worker.c:1442
+#: ../daemon/gdm-session-worker.c:1459
 #, c-format
 msgid "no user account available"
 msgstr "naudotojų paskyrų nėra"
 
-#: ../daemon/gdm-session-worker.c:1485
+#: ../daemon/gdm-session-worker.c:1486
 msgid "Unable to change to user"
 msgstr "Nepavyko pakeisti naudotojo"
 
-#: ../daemon/gdm-simple-slave.c:1362
+#: ../daemon/gdm-simple-slave.c:1356
 msgid "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 msgstr "Nepavyko paleisti X serverio (Jūsų grafinės aplinkos) dėl vidinės klaidos. Susisiekite su sistemos administratoriumi arba patikrinkite syslog, jei norite diagnozuoti problemą. Kol kas šis ekranas bus išjungtas.  Kai išspręsite problemą, paleiskite GDM iš naujo."
 
-#: ../daemon/gdm-simple-slave.c:1403
+#: ../daemon/gdm-simple-slave.c:1397
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Gali būti kviečiamas tik prieš naudotojui prisijungiant"
 
-#: ../daemon/gdm-simple-slave.c:1413
+#: ../daemon/gdm-simple-slave.c:1407
 #, c-format
 msgid "Caller not GDM"
 msgstr "Kvietėjas ne GDM"
 
-#: ../daemon/gdm-simple-slave.c:1472
-#| msgid "Currently logged in"
+#: ../daemon/gdm-simple-slave.c:1466
 msgid "User not logged in"
 msgstr "Naudotojas neprisijungė"
 
@@ -450,14 +441,20 @@ msgstr "Nerodyti kompiuterio paleidimo iš naujo mygtukų"
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr "Nustatykite į teigiamą, jei norite paslėpti kompiuterio paleidimo iš naujo mygtukus prisijungimo lange."
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+msgid "Number of allowed authentication failures"
+msgstr "Tapatybės patvirtinimo nesėkmių skaičius"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+msgid "The number of times a user is allowed to attempt authentication, before giving up and going back to user selection."
+msgstr "Skaičius kartų, kiek naudotojui leidžiama mėginti patvirtinti tapatybę prieš grįžtant į naudotojų pasirinkimą."
+
 #: ../gui/libgdm/gdm-user-switching.c:72
-#| msgid "Unable to start new display"
 msgid "Unable to create transient display: "
 msgstr "Nepavyko sukurti pereinamojo ekrano:"
 
 #: ../gui/libgdm/gdm-user-switching.c:183
 #: ../gui/libgdm/gdm-user-switching.c:395
-#| msgid "Unable to open session"
 msgid "Unable to activate session: "
 msgstr "Nepavyko aktyvuoti seanso:"
 
