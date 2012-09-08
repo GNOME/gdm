@@ -32,8 +32,8 @@ msgstr ""
 "Project-Id-Version: gdm.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-08-30 19:33+0000\n"
-"PO-Revision-Date: 2012-08-31 14:28+0200\n"
+"POT-Creation-Date: 2012-09-04 19:23+0000\n"
+"PO-Revision-Date: 2012-09-08 12:30+0200\n"
 "Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
 "Language-Team: Greek <team@gnome.gr>\n"
 "Language: el\n"
@@ -100,9 +100,9 @@ msgid "no sessions available"
 msgstr "καθόλου διαθέσιμες συνεδρίες"
 
 #: ../daemon/gdm-manager.c:352
-#, fuzzy, c-format
+#, c-format
 msgid "No sessions for %s available for reauthentication"
-msgstr "Καθόλου διαθέσιμες συνεδρίες για %s επαναπιστοποίηση "
+msgstr "Καθόλου διαθέσιμες συνεδρίες %s για επαναπιστοποίηση "
 
 #: ../daemon/gdm-manager.c:406
 #, c-format
@@ -183,7 +183,7 @@ msgid "The display device"
 msgstr "Η συσκευή απεικόνισης"
 
 #
-#: ../daemon/gdm-session.c:1182
+#: ../daemon/gdm-session.c:1177
 msgid "Could not create authentication helper process"
 msgstr "Αδυναμία δημιουργίας διεργασίας βοηθού πιστοποίησης"
 
@@ -245,16 +245,16 @@ msgstr ""
 "σφάλμα πληροφόρησης του συστήματος πιστοποίησης για την εμφάνιση "
 "πιστοποίησης xauth: %s"
 
-#: ../daemon/gdm-session-worker.c:1441 ../daemon/gdm-session-worker.c:1458
+#: ../daemon/gdm-session-worker.c:1442 ../daemon/gdm-session-worker.c:1459
 #, c-format
 msgid "no user account available"
 msgstr "δεν υπάρχει διαθέσιμος λογαριασμός χρήστη"
 
-#: ../daemon/gdm-session-worker.c:1485
+#: ../daemon/gdm-session-worker.c:1486
 msgid "Unable to change to user"
 msgstr "Αδυναμία αλλαγής σε χρήστη"
 
-#: ../daemon/gdm-simple-slave.c:1358
+#: ../daemon/gdm-simple-slave.c:1356
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -266,17 +266,17 @@ msgstr ""
 "ή ελέγξτε το syslog για διάγνωση. Στο μεταξύ αυτή η οθόνη θα "
 "απενεργοποιηθεί. Επανεκκινήστε το GDM όταν διορθωθεί το πρόβλημα."
 
-#: ../daemon/gdm-simple-slave.c:1399
+#: ../daemon/gdm-simple-slave.c:1397
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Μπορεί μόνο να κληθεί πριν συνδεθεί ο χρήστης"
 
-#: ../daemon/gdm-simple-slave.c:1409
+#: ../daemon/gdm-simple-slave.c:1407
 #, c-format
 msgid "Caller not GDM"
 msgstr "Caller όχι GDM"
 
-#: ../daemon/gdm-simple-slave.c:1468
+#: ../daemon/gdm-simple-slave.c:1466
 msgid "User not logged in"
 msgstr "Ο χρήστης δεν είναι συνδεδεμένος"
 
@@ -422,7 +422,7 @@ msgstr "Ενεργοποίηση εφαρμογής ανάγνωσης οθόν�
 
 #: ../data/applications/orca-screen-reader.desktop.in.h:2
 msgid "Present on-screen information as speech or braille"
-msgstr "Παρούσα πληροφορία στην οθόνη με μορφή ομιλίας ή braille"
+msgstr "Παρούσα πληροφορία στην οθόνη με μορφή ομιλίας ή μπράιγ"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -512,6 +512,18 @@ msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Ορισμός σε αληθές για απενεργοποίηση της προβολής των κουμπιών επανεκκίνησης "
 "στο παράθυρο εισόδου."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+msgid "Number of allowed authentication failures"
+msgstr "Αριθμός των επιτρεπόμενων ανεπιτυχών πιστοποιήσεων"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+msgid ""
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
+msgstr ""
+"Πόσες φορές ένας χρήστης επιτρέπεται να πιστοποιηθεί, προτού τα παρατήσει "
+"και επιστρέψει στην επιλογή του χρήστη.  "
 
 #: ../gui/libgdm/gdm-user-switching.c:72
 msgid "Unable to create transient display: "
