@@ -1051,6 +1051,8 @@ gdm_manager_constructor (GType                  type,
                                                                                        n_construct_properties,
                                                                                        construct_properties));
 
+        gdm_dbus_manager_set_version (GDM_DBUS_MANAGER (manager), PACKAGE_VERSION);
+
         manager->priv->local_factory = gdm_local_display_factory_new (manager->priv->display_store);
 
 #ifdef HAVE_LIBXDMCP
