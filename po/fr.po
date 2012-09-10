@@ -13,128 +13,129 @@
 # Vincent Fretin <vincent.fretin@gmail.com>, 2006.
 # Jonathan Ernst <jonathan@ernstfamily.ch>, 2006-2007.
 # Robert-André Mauchin <zebob.m@pengzone.org>, 2006-2008.
-# Claude Paroz <claude@2xlibre.net>, 2007-2010.
+# Claude Paroz <claude@2xlibre.net>, 2007-2012.
 # Bruno Brouard <annoa.b@gmail.com>, 2008-2012.
-# Alexandre Franke <alexandre.franke@gmail.com>, 2011.
+# Alexandre Franke <alexandre.franke@gmail.com>, 2011-2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-03-16 19:13+0000\n"
-"PO-Revision-Date: 2012-03-17 13:29+0100\n"
-"Last-Translator: Bruno Brouard <annoa.b@gmail.com>\n"
+"POT-Creation-Date: 2012-09-09 14:12+0000\n"
+"PO-Revision-Date: 2012-09-10 10:01+0200\n"
+"Last-Translator: Alexandre Franke <alexandre.franke@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: ../common/gdm-common.c:488
+#: ../common/gdm-common.c:492
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom n'est pas un périphérique de caractères"
-
-#: ../daemon/factory-slave-main.c:178 ../daemon/product-slave-main.c:182
-#: ../daemon/simple-slave-main.c:182 ../daemon/xdmcp-chooser-slave-main.c:184
-msgid "Display ID"
-msgstr "Identificateur de l'affichage"
-
-#: ../daemon/factory-slave-main.c:178 ../daemon/product-slave-main.c:182
-#: ../daemon/simple-slave-main.c:182 ../daemon/xdmcp-chooser-slave-main.c:184
-msgid "ID"
-msgstr "ID"
-
-#: ../daemon/factory-slave-main.c:188 ../daemon/product-slave-main.c:192
-#: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:194
-msgid "GNOME Display Manager Slave"
-msgstr "Esclave du gestionnaire de connexions GNOME"
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "impossible de trouver l'utilisateur « %s » sur le système"
 
-#: ../daemon/gdm-factory-slave.c:210 ../daemon/gdm-simple-slave.c:314
-msgid "Unable to initialize login system"
-msgstr "Impossible d'initialiser le système de connexion"
+#: ../daemon/gdm-display.c:1315 ../daemon/gdm-display.c:1349
+#, c-format
+msgid "No session available yet"
+msgstr "Aucune session disponible pour l'instant"
 
-#: ../daemon/gdm-factory-slave.c:244 ../daemon/gdm-simple-slave.c:352
-msgid "Unable to authenticate user"
-msgstr "Impossible d'authentifier l'utilisateur"
+#: ../daemon/gdm-launch-environment.c:401
+#, c-format
+msgid "User %s doesn't exist"
+msgstr "L'utilisateur %s n'existe pas"
 
-#: ../daemon/gdm-factory-slave.c:268 ../daemon/gdm-simple-slave.c:404
-msgid "Unable to authorize user"
-msgstr "Impossible d'autoriser l'utilisateur"
+#: ../daemon/gdm-launch-environment.c:408
+#, c-format
+msgid "Group %s doesn't exist"
+msgstr "Le groupe %s n'existe pas"
 
-#: ../daemon/gdm-factory-slave.c:292 ../daemon/gdm-simple-slave.c:551
-msgid "Unable to establish credentials"
-msgstr "Impossible d'établir les informations d'identification"
+#: ../daemon/gdm-launch-environment.c:427
+#: ../daemon/gdm-launch-environment.c:447 ../daemon/gdm-server.c:463
+#: ../daemon/gdm-server.c:483
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "Impossible de définir l'identificateur du groupe à %d"
 
-#: ../daemon/gdm-factory-slave.c:317 ../daemon/gdm-simple-slave.c:589
-msgid "Unable to open session"
-msgstr "Impossible d'ouvrir une session"
+#: ../daemon/gdm-launch-environment.c:433 ../daemon/gdm-server.c:469
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "initgroups () a échoué pour %s"
 
-#: ../daemon/gdm-factory-slave.c:709 ../daemon/gdm-product-slave.c:513
-#: ../daemon/gdm-simple-slave.c:1481
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"Impossible de démarrer le serveur X (l'interface graphique) à cause d'une "
-"erreur interne. Contactez votre administrateur système ou vérifiez les "
-"journaux système pour diagnostiquer le problème. En attendant, cet affichage "
-"sera désactivé. Veuillez redémarrer GDM lorsque le problème sera résolu."
+#: ../daemon/gdm-launch-environment.c:439 ../daemon/gdm-server.c:475
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "Impossible de définir l'identificateur de l'utilisateur à %d"
 
-#: ../daemon/gdm-server.c:258
+#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
+#, c-format
+msgid "Unable to look up UID of user %s"
+msgstr "Impossible de trouver l'UID de l'utilisateur %s"
+
+#: ../daemon/gdm-manager.c:291
+msgid "no sessions available"
+msgstr "aucune session disponible"
+
+#: ../daemon/gdm-manager.c:352
+#, c-format
+msgid "No sessions for %s available for reauthentication"
+msgstr "Aucune session disponible pour la réauthentification de %s"
+
+#: ../daemon/gdm-manager.c:406
+#, c-format
+msgid "Unable to find session for user %s"
+msgstr "Impossible de trouver une session pour l'utilisateur %s"
+
+#: ../daemon/gdm-manager.c:476
+#, c-format
+msgid "Unable to find appropriate session for user %s"
+msgstr "Impossible de trouver une session appropriée pour l'utilisateur %s"
+
+#: ../daemon/gdm-manager.c:671
+msgid "User doesn't own session"
+msgstr "L'utilisateur ne possède pas cette session"
+
+#: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
+msgid "No session available"
+msgstr "Aucune session disponible"
+
+#: ../daemon/gdm-server.c:273
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s : la connexion à l'affichage parent « %s » a échoué"
 
-#: ../daemon/gdm-server.c:436
+#: ../daemon/gdm-server.c:452
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Le serveur devait être lancé par l'utilisateur %s mais cet utilisateur "
 "n'existe pas"
 
-#: ../daemon/gdm-server.c:447 ../daemon/gdm-server.c:467
-#: ../daemon/gdm-welcome-session.c:439 ../daemon/gdm-welcome-session.c:459
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "Impossible de définir l'identificateur du groupe à %d"
-
-#: ../daemon/gdm-server.c:453 ../daemon/gdm-welcome-session.c:445
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "initgroups () a échoué pour %s"
-
-#: ../daemon/gdm-server.c:459 ../daemon/gdm-welcome-session.c:451
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "Impossible de définir l'identificateur de l'utilisateur à %d"
-
-#: ../daemon/gdm-server.c:506
+#: ../daemon/gdm-server.c:522
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr ""
 "%s : impossible d'ouvrir le fichier de journalisation pour l'affichage %s !"
 
-#: ../daemon/gdm-server.c:517 ../daemon/gdm-server.c:523
-#: ../daemon/gdm-server.c:529
+#: ../daemon/gdm-server.c:533 ../daemon/gdm-server.c:539
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s : erreur lors de la définition de %s à %s"
 
-#: ../daemon/gdm-server.c:549
+#: ../daemon/gdm-server.c:565
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s : la priorité du serveur ne peut pas être fixée à %d : %s"
 
-#: ../daemon/gdm-server.c:702
+#: ../daemon/gdm-server.c:722
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s : commande de serveur vide pour l'affichage %s"
@@ -163,174 +164,211 @@ msgstr "Périphérique d'affichage"
 msgid "The display device"
 msgstr "Le périphérique d'affichage"
 
-#: ../daemon/gdm-session-worker.c:1106
+#: ../daemon/gdm-session.c:1177
+msgid "Could not create authentication helper process"
+msgstr "Impossible de créer un processus assistant d'authentification"
+
+#: ../daemon/gdm-session-worker.c:1029
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr ""
 "erreur lors de l'initialisation de la conversation avec le système "
 "d'authentification - %s"
 
-#: ../daemon/gdm-session-worker.c:1107
+#: ../daemon/gdm-session-worker.c:1030
 msgid "general failure"
 msgstr "échec global"
 
-#: ../daemon/gdm-session-worker.c:1108
+#: ../daemon/gdm-session-worker.c:1031
 msgid "out of memory"
 msgstr "mémoire insuffisante"
 
-#: ../daemon/gdm-session-worker.c:1109
+#: ../daemon/gdm-session-worker.c:1032
 msgid "application programmer error"
 msgstr "erreur de programmation de l'application"
 
-#: ../daemon/gdm-session-worker.c:1110
+#: ../daemon/gdm-session-worker.c:1033
 msgid "unknown error"
 msgstr "erreur inconnue"
 
-#: ../daemon/gdm-session-worker.c:1117
+#: ../daemon/gdm-session-worker.c:1040
 msgid "Username:"
 msgstr "Identifiant :"
 
-#: ../daemon/gdm-session-worker.c:1123
+#: ../daemon/gdm-session-worker.c:1046
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr ""
 "erreur lors de la notification au système d'authentification de l'invite "
 "favorite de l'utilisateur :%s"
 
-#: ../daemon/gdm-session-worker.c:1137
+#: ../daemon/gdm-session-worker.c:1060
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr ""
 "erreur lors de la notification au système d'authentification du nom d'hôte "
 "de l'utilisateur : %s"
 
-#: ../daemon/gdm-session-worker.c:1152
+#: ../daemon/gdm-session-worker.c:1077
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr ""
 "erreur lors de la notification au système d'authentification de la console "
 "de l'utilisateur : %s"
 
-#: ../daemon/gdm-session-worker.c:1172
+#: ../daemon/gdm-session-worker.c:1101
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr ""
 "erreur lors de la notification au système d'authentification de la chaîne "
 "d'affichage : %s"
 
-#: ../daemon/gdm-session-worker.c:1187
+#: ../daemon/gdm-session-worker.c:1116
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr ""
 "erreur lors de la notification au système d'authentification des "
 "informations d'identification xauth de l'affichage : %s"
 
-#: ../daemon/gdm-session-worker.c:1507 ../daemon/gdm-session-worker.c:1524
+#: ../daemon/gdm-session-worker.c:1446 ../daemon/gdm-session-worker.c:1463
 #, c-format
 msgid "no user account available"
 msgstr "aucun compte utilisateur disponible"
 
-#: ../daemon/gdm-session-worker.c:1551
+#: ../daemon/gdm-session-worker.c:1490
 msgid "Unable to change to user"
 msgstr "Impossible de changer vers cet utilisateur"
 
-#: ../daemon/gdm-welcome-session.c:413
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "L'utilisateur %s n'existe pas"
+#: ../daemon/gdm-simple-slave.c:1370
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"Impossible de démarrer le serveur X (l'interface graphique) à cause d'une "
+"erreur interne. Contactez votre administrateur système ou vérifiez les "
+"journaux système pour diagnostiquer le problème. En attendant, cet affichage "
+"sera désactivé. Veuillez redémarrer GDM lorsque le problème sera résolu."
 
-#: ../daemon/gdm-welcome-session.c:420
+#: ../daemon/gdm-simple-slave.c:1411
 #, c-format
-msgid "Group %s doesn't exist"
-msgstr "Le groupe %s n'existe pas"
+msgid "Can only be called before user is logged in"
+msgstr "Peut seulement être appelé avant que l'utilisateur soit connecté"
+
+#: ../daemon/gdm-simple-slave.c:1421
+#, c-format
+msgid "Caller not GDM"
+msgstr "L'appelant n'est pas GDM"
+
+#: ../daemon/gdm-simple-slave.c:1474
+msgid "User not logged in"
+msgstr "L'utilisateur n'est pas connecté"
+
+#: ../daemon/gdm-xdmcp-chooser-slave.c:370
+#, c-format
+msgid "Currently, only one client can be connected at once"
+msgstr "Actuellement, un seul client peut être connecté à la fois"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:604
 msgid "Could not create socket!"
 msgstr "Impossible de créer le connecteur."
 
-#: ../daemon/main.c:237 ../daemon/main.c:250
+#: ../daemon/main.c:126 ../daemon/main.c:139
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr ""
 "Impossible d'écrire le fichier PID %s : probablement par manque d'espace "
 "disque : %s"
 
-#: ../daemon/main.c:271
+#: ../daemon/main.c:160
 #, c-format
 msgid "Logdir %s does not exist or isn't a directory."
 msgstr "Logdir %s n'existe pas ou n'est pas un répertoire."
 
-#: ../daemon/main.c:287
+#: ../daemon/main.c:176
 #, c-format
 msgid "Authdir %s does not exist. Aborting."
 msgstr "Le répertoire Authdir %s n'existe pas. Abandon."
 
-#: ../daemon/main.c:291
+#: ../daemon/main.c:180
 #, c-format
 msgid "Authdir %s is not a directory. Aborting."
 msgstr "Authdir %s n'est pas un répertoire. Abandon."
 
-#: ../daemon/main.c:365
+#: ../daemon/main.c:254
 #, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
 msgstr ""
 "Le répertoire Authdir %s n'appartient pas à l'utilisateur %d du groupe %d. "
 "Abandon."
 
-#: ../daemon/main.c:372
+#: ../daemon/main.c:261
 #, c-format
 msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
 "Le répertoire Authdir %s possède des droits d'accès incorrects %o. Les "
 "permissions devraient être définies à %o. Abandon."
 
-#: ../daemon/main.c:409
+#: ../daemon/main.c:298
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Impossible de trouver l'utilisateur GDM « %s ». Abandon !"
 
-#: ../daemon/main.c:415
+#: ../daemon/main.c:304
 msgid "The GDM user should not be root. Aborting!"
 msgstr "L'utilisateur GDM ne doit pas être root. Abandon !"
 
-#: ../daemon/main.c:421
+#: ../daemon/main.c:310
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Impossible de trouver le groupe GDM « %s ». Abandon !"
 
-#: ../daemon/main.c:427
+#: ../daemon/main.c:316
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Le groupe GDM ne doit pas être root. Abandon !"
 
-#: ../daemon/main.c:533
+#: ../daemon/main.c:427
 msgid "Make all warnings fatal"
 msgstr "Rend tous les avertissements fatals"
 
-#: ../daemon/main.c:534
+#: ../daemon/main.c:428
 msgid "Exit after a time (for debugging)"
 msgstr "Quitte après un délai (pour débogage)"
 
-#: ../daemon/main.c:535
+#: ../daemon/main.c:429
 msgid "Print GDM version"
 msgstr "Affiche la version de GDM"
 
-#: ../daemon/main.c:548
+#: ../daemon/main.c:442
 msgid "GNOME Display Manager"
 msgstr "Gestionnaire de connexions GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:614
+#: ../daemon/main.c:492
 msgid "Only the root user can run GDM"
 msgstr "Seul l'utilisateur root peut lancer GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:156
+#: ../daemon/session-worker-main.c:150
 msgid "GNOME Display Manager Session Worker"
 msgstr "Assistant de session du gestionnaire de connexions GNOME"
 
+#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+msgid "Display ID"
+msgstr "Identificateur de l'affichage"
+
+#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+msgid "ID"
+msgstr "ID"
+
+#: ../daemon/simple-slave-main.c:187 ../daemon/xdmcp-chooser-slave-main.c:188
+msgid "GNOME Display Manager Slave"
+msgstr "Esclave du gestionnaire de connexions GNOME"
+
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2569
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
 msgid "Login Window"
 msgstr "Fenêtre de connexion"
 
@@ -404,9 +442,9 @@ msgid ""
 "list to provide site administrators and distributions a way to provide "
 "branding."
 msgstr ""
-"L'écran de connexion peut éventuellement afficher une petite image en haut de "
-"la liste d'utilisateurs afin de fournir aux administrateurs du site et aux "
-"distributions une manière d'afficher leur logo."
+"L'écran de connexion peut éventuellement afficher une petite image en haut "
+"de la liste d'utilisateurs afin de fournir aux administrateurs du site et "
+"aux distributions une manière d'afficher leur logo."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid ""
@@ -415,8 +453,8 @@ msgid ""
 "provide branding."
 msgstr ""
 "L'écran de connexion restreint peut éventuellement afficher une petite image "
-"en haut de la liste d'utilisateurs afin de fournir aux administrateurs du site "
-"et aux distributions une manière d'afficher leur logo."
+"en haut de la liste d'utilisateurs afin de fournir aux administrateurs du "
+"site et aux distributions une manière d'afficher leur logo."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid "Avoid showing user list"
@@ -457,6 +495,57 @@ msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Si vrai, désactive l'affichage des boutons de redémarrage dans la fenêtre de "
 "connexion."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+msgid "Number of allowed authentication failures"
+msgstr "Nombre d'échecs d'authentification autorisés"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+msgid ""
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
+msgstr ""
+"Le nombre de fois qu'un utilisateur est autorisé à essayer de s'authentifier "
+"avant l'abandon et le retour à la sélection de l'utilisateur."
+
+#: ../gui/libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "Impossible de créer un affichage provisoire : "
+
+#: ../gui/libgdm/gdm-user-switching.c:183
+#: ../gui/libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "Impossible d'activer la session : "
+
+#: ../gui/libgdm/gdm-user-switching.c:344
+#: ../gui/libgdm/gdm-user-switching.c:483
+#, c-format
+msgid "Could not identify the current session."
+msgstr "Impossible d'identifier la session actuelle."
+
+#: ../gui/libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "Impossible pour l'utilisateur de changer de session."
+
+#: ../gui/libgdm/gdm-user-switching.c:492
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "Impossible d'identifier le poste actuel."
+
+#: ../gui/libgdm/gdm-user-switching.c:502
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"Le système est incapable de déterminer s'il doit basculer vers un écran de "
+"connexion existant ou démarrer un nouvel écran de connexion."
+
+#: ../gui/libgdm/gdm-user-switching.c:510
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "Le système est incapable de démarrer un nouvel écran de connexion."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -647,26 +736,26 @@ msgstr "%a %H:%M:%S"
 msgid "%a %l:%M %p"
 msgstr "%a %H:%M"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:317
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
 msgid "Automatically logging in…"
 msgstr "Connexion automatique en cours…"
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:933
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
 msgid "Cancelling…"
 msgstr "Annulation…"
 
 #. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1489
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
 msgid "Select language and click Log In"
 msgstr "Choisissez la langue et cliquez sur Se connecter"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1625
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
 msgctxt "customsession"
 msgid "Custom"
 msgstr "Personnalisée"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1626
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
 msgid "Custom session"
 msgstr "Session personnalisée"
 
@@ -690,23 +779,23 @@ msgstr "Déverrouiller"
 msgid "Login"
 msgstr "Se connecter"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:903
+#: ../gui/simple-greeter/gdm-greeter-panel.c:953
 msgid "Suspend"
 msgstr "Suspendre"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:908
+#: ../gui/simple-greeter/gdm-greeter-panel.c:958
 msgid "Restart"
 msgstr "Redémarrer"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:912
+#: ../gui/simple-greeter/gdm-greeter-panel.c:962
 msgid "Shut Down"
 msgstr "Éteindre"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:961
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1011
 msgid "Unknown time remaining"
 msgstr "Durée restante inconnue"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:983
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1033
 msgid "Panel"
 msgstr "Tableau"
 
@@ -776,8 +865,8 @@ msgstr "Est-il lancé ?"
 msgid "Whether the timer is currently ticking"
 msgstr "Indique si le compte à rebours est actif"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:460
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:797
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
 #, c-format
 msgid "Log in as %s"
 msgstr "Se connecter en tant que %s"
@@ -787,100 +876,38 @@ msgstr "Se connecter en tant que %s"
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
 msgctxt "user"
 msgid "Other…"
 msgstr "Autre…"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:547
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
 msgid "Choose a different account"
 msgstr "Choisissez un compte différent"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:561
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
 msgid "Guest"
 msgstr "Invité"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:562
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
 msgid "Log in as a temporary guest"
 msgstr "Se connecter en tant qu'invité temporaire"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:577
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
 msgid "Automatic Login"
 msgstr "Connexion automatique"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:578
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
 msgid "Automatically log into the system after selecting options"
 msgstr "Se connecter automatiquement au système après avoir choisi des options"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1353
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
 msgid "Currently logged in"
 msgstr "Déjà connecté"
 
-#: ../utils/gdmflexiserver.c:68
-msgid "Only the VERSION command is supported"
-msgstr "Seule la commande VERSION est prise en charge"
-
-#: ../utils/gdmflexiserver.c:68
-msgid "COMMAND"
-msgstr "COMMANDE"
-
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
-#: ../utils/gdmflexiserver.c:72 ../utils/gdmflexiserver.c:73
-msgid "Ignored — retained for compatibility"
-msgstr "Ignoré — maintenu pour compatibilité"
-
-#: ../utils/gdmflexiserver.c:71 ../utils/gdm-screenshot.c:43
+#: ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Sortie de débogage"
-
-#: ../utils/gdmflexiserver.c:75
-msgid "Version of this application"
-msgstr "Version de cette application"
-
-#: ../utils/gdmflexiserver.c:673 ../utils/gdmflexiserver.c:833
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Impossible d'identifier la session actuelle."
-
-#: ../utils/gdmflexiserver.c:680
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Impossible pour l'utilisateur de changer de session."
-
-#: ../utils/gdmflexiserver.c:842
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "Impossible d'identifier le poste actuel."
-
-#: ../utils/gdmflexiserver.c:852
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"Le système est incapable de déterminer s'il doit basculer vers un écran de "
-"connexion existant ou démarrer un nouvel écran de connexion."
-
-#: ../utils/gdmflexiserver.c:860
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "Le système est incapable de démarrer un nouvel écran de connexion."
-
-#: ../utils/gdmflexiserver.c:869
-#, c-format
-msgid "The system is unable to find a login screen to switch to."
-msgstr ""
-"Le système est incapable de trouver un écran de connexion vers lequel "
-"basculer."
-
-#. Option parsing
-#: ../utils/gdmflexiserver.c:934
-msgid "- New GDM login"
-msgstr "- Nouvelle connexion par GDM"
-
-#: ../utils/gdmflexiserver.c:990
-msgid "Unable to start new display"
-msgstr "Impossible de démarrer un nouvel affichage"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -890,117 +917,3 @@ msgstr "Capture d'écran effectuée"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Effectue une capture de l'écran"
-
-#~ msgid "Max Item Count"
-#~ msgstr "Nombre maximum d'éléments"
-
-#~ msgid "The maximum number of items to keep around in the list"
-#~ msgstr "Le nombre maximum d'éléments à conserver dans la liste"
-
-#~ msgid "Banner message text when chooser is empty"
-#~ msgstr "Texte du message de la bannière quand le sélecteur est vide"
-
-#~ msgid ""
-#~ "Text banner message to show in the login window when the user chooser is "
-#~ "empty, instead of banner_message_text."
-#~ msgstr ""
-#~ "Message texte de la bannière à afficher dans la fenêtre de connexion "
-#~ "quand le sélecteur d'utilisateur est vide, à la place de "
-#~ "banner_message_text."
-
-#~ msgid "Icon name to use for greeter logo"
-#~ msgstr "Nom d'icône à utiliser pour le logo de la bannière d'accueil"
-
-#~ msgid "Set to the themed icon name to use for the greeter logo."
-#~ msgstr ""
-#~ "Définit le nom d'icône (dans un thème) à utiliser pour le logo de la "
-#~ "bannière d'accueil."
-
-#~ msgid "Do not show known users in the login window"
-#~ msgstr ""
-#~ "Ne pas afficher les utilisateurs connus dans la fenêtre de connexion"
-
-#~ msgid "Set to true to disable showing known users in the login window."
-#~ msgstr ""
-#~ "Si vrai, désactive l'affichage des utilisateurs connus dans la fenêtre de "
-#~ "connexion."
-
-#~ msgid "Recently selected languages"
-#~ msgstr "Langues récemment sélectionnées"
-
-#~ msgid ""
-#~ "Set to a list of languages to be shown by default in the login window."
-#~ msgstr ""
-#~ "Définit une liste des langues à afficher par défaut dans la fenêtre de "
-#~ "connexion."
-
-#~ msgid "Use Compiz as the window manager"
-#~ msgstr "Utiliser Compiz comme gestionnaire de fenêtres"
-
-#~ msgid "Set to true to use Compiz as the window manager."
-#~ msgstr "Si vrai, active Compiz comme gestionnaire de fenêtres."
-
-#~ msgid "Enable on-screen keyboard"
-#~ msgstr "Activer le clavier à l'écran"
-
-#~ msgid "Set to true to enable the on-screen keyboard."
-#~ msgstr "Si vrai, active le clavier à l'écran."
-
-#~ msgid "Enable screen reader"
-#~ msgstr "Activer le lecteur d'écran"
-
-#~ msgid "Set to true to enable the screen reader."
-#~ msgstr "Si vrai, active le lecteur d'écran."
-
-#~ msgid "Enable screen magnifier"
-#~ msgstr "Activer la loupe d'écran"
-
-#~ msgid "Set to true to enable the screen magnifier."
-#~ msgstr "Si vrai, active la loupe d'écran."
-
-#~ msgid "Enable accessibility keyboard plugin"
-#~ msgstr "Activer le greffon d'accessibilité du clavier"
-
-#~ msgid ""
-#~ "Set to true to enable the plugin to manage the accessibility keyboard "
-#~ "settings."
-#~ msgstr ""
-#~ "Si vrai, active le greffon de gestion des paramètres d'accessibilité du "
-#~ "clavier."
-
-#~ msgid "True if the background settings manager plugin is enabled."
-#~ msgstr ""
-#~ "Vrai si le greffon de gestion des paramètres d'arrière-plan est activé."
-
-#~ msgid "Set to true to enable the background settings manager plugin."
-#~ msgstr ""
-#~ "Si vrai, active le greffon de gestion des paramètres d'arrière-plan."
-
-#~ msgid "True if the media-keys settings manager plugin is enabled."
-#~ msgstr ""
-#~ "Vrai si le greffon de gestion des paramètres des touches multimédia est "
-#~ "activé."
-
-#~ msgid "Set to true to enable the media-keys settings manager plugin."
-#~ msgstr ""
-#~ "Si vrai, active le greffon de gestion des paramètres des touches "
-#~ "multimédias."
-
-#~ msgid "True if the sound settings manager plugin is enabled."
-#~ msgstr "Vrai si le greffon de gestion des paramètres de son est activé."
-
-#~ msgid "Set to true to enable the sound settings manager plugin."
-#~ msgstr "Si vrai, active le greffon de gestion des paramètres de son."
-
-#~ msgid "True if the XRandR settings manager plugin is enabled."
-#~ msgstr "Vrai si le greffon de gestion des paramètres de XRandR est activé."
-
-#~ msgid "Set to true to enable the XRandR settings manager plugin."
-#~ msgstr "Si vrai, active le greffon de gestion des paramètres de XRandR."
-
-#~ msgid "True if the xsettings settings manager plugin is enabled."
-#~ msgstr ""
-#~ "Vrai si le greffon de gestion des paramètres de xsettings est activé."
-
-#~ msgid "Set to true to enable the xsettings settings manager plugin."
-#~ msgstr "Si vrai, active le greffon de gestion des paramètres xsettings."
