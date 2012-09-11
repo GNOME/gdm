@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: as\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-08-16 19:38+0000\n"
-"PO-Revision-Date: 2012-08-17 14:28+0530\n"
+"POT-Creation-Date: 2012-09-04 19:23+0000\n"
+"PO-Revision-Date: 2012-09-11 20:26+0530\n"
 "Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
 "Language-Team: as_IN <kde-i18n-doc@kde.org>\n"
 "Language: \n"
@@ -151,7 +151,7 @@ msgstr "প্ৰদৰ্শনৰ ডিভাইচ"
 msgid "The display device"
 msgstr "প্ৰদৰ্শনৰ ডিভাইচ"
 
-#: ../daemon/gdm-session.c:1195
+#: ../daemon/gdm-session.c:1177
 msgid "Could not create authentication helper process"
 msgstr "প্ৰমাণীকৰণ সহায়ক প্ৰক্ৰিয়া সৃষ্টি কৰিব পৰা নগল"
 
@@ -205,16 +205,16 @@ msgstr "প্ৰদৰ্শন স্ট্ৰিংৰ বিষয়ে প্
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "প্ৰদৰ্শন xauth তথ্যসমূহৰ  বিষয়ে প্ৰমাণীকৰণ প্ৰণালীক জনোৱাত ত্ৰুটি- %s"
 
-#: ../daemon/gdm-session-worker.c:1441 ../daemon/gdm-session-worker.c:1458
+#: ../daemon/gdm-session-worker.c:1442 ../daemon/gdm-session-worker.c:1459
 #, c-format
 msgid "no user account available"
 msgstr "কোনো ব্যৱহাৰকাৰীৰ একাওন্ট নাই"
 
-#: ../daemon/gdm-session-worker.c:1485
+#: ../daemon/gdm-session-worker.c:1486
 msgid "Unable to change to user"
 msgstr "ব্যৱহাৰকাৰীলৈ সলনি কৰিব পৰা নাযায়"
 
-#: ../daemon/gdm-simple-slave.c:1362
+#: ../daemon/gdm-simple-slave.c:1356
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -226,17 +226,17 @@ msgstr ""
 "তেতিয়ালৈকে এই প্ৰদৰ্শন অসামৰ্থবান কৰা হ'ব। সমস্যা সমাধান কৰাৰ পিছত অনুগ্ৰহ কৰি GDM "
 "পুনৰাম্ভ কৰিব।"
 
-#: ../daemon/gdm-simple-slave.c:1403
+#: ../daemon/gdm-simple-slave.c:1397
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "কেৱল ব্যৱহাৰকাৰী কগিন হোৱাৰ আগত কল কৰিব পাৰি"
 
-#: ../daemon/gdm-simple-slave.c:1413
+#: ../daemon/gdm-simple-slave.c:1407
 #, c-format
 msgid "Caller not GDM"
 msgstr "কলাৰ GDM নহয়"
 
-#: ../daemon/gdm-simple-slave.c:1472
+#: ../daemon/gdm-simple-slave.c:1466
 msgid "User not logged in"
 msgstr "ব্যৱহাৰকাৰী লগ্ড ইন নহয়"
 
@@ -455,14 +455,25 @@ msgstr "পুনৰাম্ভৰ বুটাম দেখুৱা অসা
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr "লগিন উইন্ডোত পুনৰাম্ভৰ বুটাম দেখুৱা অসামৰ্থবান কৰিবলৈ true লৈ নিৰ্ধাৰণ কৰক।"
 
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+msgid "Number of allowed authentication failures"
+msgstr "অনুমোদিত প্ৰমাণীকৰণ ব্যৰ্থতাৰ সংখ্যা"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+msgid ""
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
+msgstr ""
+"এজন ব্যৱহাৰকাৰীক প্ৰমাণীকৰণৰ চেষ্টা কৰিবলে অনুমতি প্ৰদান কৰাৰ সংখ্যা, বাদ দি "
+"ব্যৱহাৰকাৰী "
+"নিৰ্বাচনত যোৱাৰ আগত।"
+
 #: ../gui/libgdm/gdm-user-switching.c:72
-#| msgid "Unable to start new display"
 msgid "Unable to create transient display: "
 msgstr "ক্ষনস্থায়ী প্ৰদৰ্শন সৃষ্টি কৰিবলে অক্ষম: "
 
 #: ../gui/libgdm/gdm-user-switching.c:183
 #: ../gui/libgdm/gdm-user-switching.c:395
-#| msgid "Unable to authenticate user"
 msgid "Unable to activate session: "
 msgstr "অধিবেশন সক্ৰিয় কৰিবলে অক্ষম: "
 
