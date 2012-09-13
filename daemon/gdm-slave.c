@@ -1365,12 +1365,11 @@ gdm_slave_get_primary_session_id_for_user_from_ck (GdmSlave   *slave,
 {
         gboolean      can_activate_sessions;
         GError       *error;
+        const char  **sessions;
+        int           i;
         char         *primary_ssid;
         uid_t         uid;
         GVariant     *reply;
-        GVariant     *array;
-        GVariantIter  iter;
-        char         *ssid;
 
         error = NULL;
         primary_ssid = NULL;
@@ -1426,17 +1425,16 @@ gdm_slave_get_primary_session_id_for_user_from_ck (GdmSlave   *slave,
                 return NULL;
         }
 
-        array = g_variant_get_child_value (reply, 0);
-        g_variant_iter_init (&iter, array);
-        while (g_variant_iter_loop (&iter, "(&s)", &ssid)) {
-                if (x11_session_is_on_seat (slave, ssid, slave->priv->display_seat_id)) {
-                        primary_ssid = g_strdup (ssid);
+        g_variant_get_child (reply, 0, "^a&o", &sessions);
+        for (i = 0; sessions[i] != NULL; i++) {
+                if (x11_session_is_on_seat (slave, sessions[i], slave->priv->display_seat_id)) {
+                        primary_ssid = g_strdup (sessions[i]);
                         break;
                 }
         }
 
+        g_free (sessions);
         g_variant_unref (reply);
-        g_variant_unref (array);
         return primary_ssid;
 }
 #endif
