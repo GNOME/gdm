@@ -774,6 +774,10 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
                 goto out;
         }
 
+        /* Create the home directory too */
+        if (!ensure_directory_with_uid_gid (passwd_entry->pw_dir, uid, gid, error))
+                goto out;
+
         if (!start_dbus_daemon (launch_environment, uid, gid, error)) {
                 goto out;
         }
