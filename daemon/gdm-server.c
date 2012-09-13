@@ -323,13 +323,13 @@ gdm_server_init_command (GdmServer *server)
                 goto fallback;
         }
 
-        server->priv->command = g_strdup_printf (SYSTEMD_X_SERVER " -br -verbose%s", debug_options);
+        server->priv->command = g_strdup_printf (SYSTEMD_X_SERVER " -background none -verbose%s", debug_options);
         return;
 
 fallback:
 #endif
 
-        server->priv->command = g_strdup_printf (X_SERVER " -br -verbose%s", debug_options);
+        server->priv->command = g_strdup_printf (X_SERVER " -background none -verbose%s", debug_options);
 }
 
 static gboolean
