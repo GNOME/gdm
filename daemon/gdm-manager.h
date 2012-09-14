@@ -39,13 +39,13 @@ typedef struct GdmManagerPrivate GdmManagerPrivate;
 
 typedef struct
 {
-        GDBusInterfaceSkeleton  parent;
+        GdmDBusManagerSkeleton  parent;
         GdmManagerPrivate      *priv;
 } GdmManager;
 
 typedef struct
 {
-        GDBusInterfaceSkeletonClass parent_class;
+        GdmDBusManagerSkeletonClass parent_class;
 
         void          (* display_added)    (GdmManager      *manager,
                                             const char      *id);
