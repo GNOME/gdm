@@ -2,7 +2,7 @@
 auth       required    pam_env.so
 auth       required    pam_permit.so
 account    required    pam_nologin.so
-account    include     common-auth
+account    include     common-account
 password   include     common-auth
 session    optional    pam_keyinit.so force revoke
 session    include     common-session
