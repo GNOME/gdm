@@ -754,7 +754,8 @@ create_new_session (GdmSimpleSlave  *slave)
                                                 display_device,
                                                 display_seat_id,
                                                 display_x11_authority_file,
-                                                display_is_local);
+                                                display_is_local,
+                                                NULL);
 
         g_free (display_id);
         g_free (display_name);

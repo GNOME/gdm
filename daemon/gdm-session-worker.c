@@ -2693,7 +2693,10 @@ reauthentication_request_new (GdmSessionWorker      *worker,
                               GDBusMethodInvocation *invocation)
 {
         ReauthenticationRequest *request;
+        char **environment;
         char *address;
+
+        environment = gdm_session_worker_get_environment (worker);
 
         request = g_slice_new (ReauthenticationRequest);
 
@@ -2707,7 +2710,8 @@ reauthentication_request_new (GdmSessionWorker      *worker,
                                             worker->priv->display_device,
                                             worker->priv->display_seat_id,
                                             worker->priv->x11_authority_file,
-                                            worker->priv->display_is_local);
+                                            worker->priv->display_is_local,
+                                            environment);
 
         g_signal_connect (request->session,
                           "client-connected",
@@ -2735,6 +2739,7 @@ reauthentication_request_new (GdmSessionWorker      *worker,
                           request);
 
         address = gdm_session_get_server_address (request->session);
+
         gdm_dbus_worker_complete_start_reauthentication (GDM_DBUS_WORKER (worker),
                                                          invocation,
                                                          address);

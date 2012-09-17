@@ -57,11 +57,13 @@ struct GdmSessionWorkerJobPrivate
         guint           child_watch_id;
 
         char           *server_address;
+        char          **environment;
 };
 
 enum {
         PROP_0,
         PROP_SERVER_ADDRESS,
+        PROP_ENVIRONMENT,
         PROP_FOR_REAUTH,
 };
 
@@ -130,25 +132,30 @@ listify_hash (const char *key,
 }
 
 static void
-copy_environment_to_hash (GHashTable *hash)
+copy_environment_to_hash (GdmSessionWorkerJob *job,
+                          GHashTable          *hash)
 {
-        gchar **env_strv;
-        gint    i;
+        char **environment;
+        gint   i;
 
-        env_strv = g_listenv ();
+        if (job->priv->environment != NULL) {
+                environment = g_strdupv (job->priv->environment);
+        } else {
+                environment = g_get_environ ();
+        }
+        for (i = 0; environment[i]; i++) {
+                char **parts;
 
-        for (i = 0; env_strv [i]; i++) {
-                gchar *key = env_strv [i];
-                const gchar *value;
+                parts = g_strsplit (environment[i], "=", 2);
 
-                value = g_getenv (key);
-                if (!value)
-                        continue;
+                if (parts[0] != NULL && parts[1] != NULL) {
+                        g_hash_table_insert (hash, g_strdup (parts[0]), g_strdup (parts[1]));
+                }
 
-                g_hash_table_insert (hash, g_strdup (key), g_strdup (value));
+                g_strfreev (parts);
         }
 
-        g_strfreev (env_strv);
+        g_strfreev (environment);
 }
 
 static GPtrArray *
@@ -192,7 +199,7 @@ get_job_environment (GdmSessionWorkerJob *job)
 
         /* create a hash table of current environment, then update keys has necessary */
         hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-        copy_environment_to_hash (hash);
+        copy_environment_to_hash (job, hash);
 
         g_hash_table_insert (hash, g_strdup ("GDM_SESSION_DBUS_ADDRESS"), g_strdup (job->priv->server_address));
 
@@ -364,6 +371,15 @@ gdm_session_worker_job_set_for_reauth (GdmSessionWorkerJob *session_worker_job,
         session_worker_job->priv->for_reauth = for_reauth;
 }
 
+void
+gdm_session_worker_job_set_environment (GdmSessionWorkerJob *session_worker_job,
+                                        const char * const  *environment)
+{
+        g_return_if_fail (GDM_IS_SESSION_WORKER_JOB (session_worker_job));
+
+        session_worker_job->priv->environment = g_strdupv ((char **) environment);
+}
+
 static void
 gdm_session_worker_job_set_property (GObject      *object,
                                      guint         prop_id,
@@ -380,6 +396,9 @@ gdm_session_worker_job_set_property (GObject      *object,
                 break;
         case PROP_FOR_REAUTH:
                 gdm_session_worker_job_set_for_reauth (self, g_value_get_boolean (value));
+                break;
+        case PROP_ENVIRONMENT:
+                gdm_session_worker_job_set_environment (self, g_value_get_pointer (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -403,6 +422,9 @@ gdm_session_worker_job_get_property (GObject    *object,
                 break;
         case PROP_FOR_REAUTH:
                 g_value_set_boolean (value, self->priv->for_reauth);
+                break;
+        case PROP_ENVIRONMENT:
+                g_value_set_pointer (value, self->priv->environment);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -449,6 +471,12 @@ gdm_session_worker_job_class_init (GdmSessionWorkerJobClass *klass)
                                                                "for reauth",
                                                                "for reauth",
                                                                FALSE,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+        g_object_class_install_property (object_class,
+                                         PROP_ENVIRONMENT,
+                                         g_param_spec_pointer ("environment",
+                                                               "environment",
+                                                               "environment",
                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         signals [STARTED] =
                 g_signal_new ("started",

@@ -91,13 +91,14 @@ typedef struct
 GType            gdm_session_get_type                 (void);
 
 GdmSession      *gdm_session_new                      (GdmSessionVerificationMode verification_mode,
-                                                       uid_t       allowed_user,
-                                                       const char *display_name,
-                                                       const char *display_hostname,
-                                                       const char *display_device,
-                                                       const char *display_seat_id,
-                                                       const char *display_x11_authority_file,
-                                                       gboolean    display_is_local);
+                                                       uid_t         allowed_user,
+                                                       const char   *display_name,
+                                                       const char   *display_hostname,
+                                                       const char   *display_device,
+                                                       const char   *display_seat_id,
+                                                       const char   *display_x11_authority_file,
+                                                       gboolean      display_is_local,
+                                                       const char * const *environment);
 uid_t             gdm_session_get_allowed_user       (GdmSession     *session);
 void              gdm_session_start_reauthentication (GdmSession *session,
                                                       GPid        pid_of_caller,
@@ -126,6 +127,8 @@ void              gdm_session_setup_for_program           (GdmSession *session,
 void              gdm_session_set_environment_variable    (GdmSession *session,
                                                            const char *key,
                                                            const char *value);
+void              gdm_session_send_environment            (GdmSession *self,
+                                                           const char *service_name);
 void              gdm_session_reset                       (GdmSession *session);
 void              gdm_session_authenticate                (GdmSession *session,
                                                            const char *service_name);

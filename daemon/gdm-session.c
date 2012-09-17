@@ -93,6 +93,8 @@ struct _GdmSessionPrivate
 
         GdmSessionConversation *session_conversation;
 
+        char                 **conversation_environment;
+
         GdmDBusUserVerifier   *user_verifier_interface;
         GdmDBusGreeter        *greeter_interface;
         GdmDBusRemoteGreeter  *remote_greeter_interface;
@@ -133,6 +135,7 @@ enum {
         PROP_DISPLAY_SEAT_ID,
         PROP_DISPLAY_X11_AUTHORITY_FILE,
         PROP_USER_X11_AUTHORITY_FILE,
+        PROP_CONVERSATION_ENVIRONMENT,
 };
 
 enum {
@@ -1761,6 +1764,13 @@ start_conversation (GdmSession *self,
         conversation->job = gdm_session_worker_job_new ();
         gdm_session_worker_job_set_server_address (conversation->job,
                                                    g_dbus_server_get_client_address (self->priv->worker_server));
+
+        if (self->priv->conversation_environment != NULL) {
+                gdm_session_worker_job_set_environment (conversation->job,
+                                                        (const char * const *)
+                                                        self->priv->conversation_environment);
+
+        }
         g_signal_connect (conversation->job,
                           "started",
                           G_CALLBACK (worker_started),
@@ -2198,6 +2208,20 @@ send_environment (GdmSession             *self,
         g_hash_table_foreach (self->priv->environment,
                               (GHFunc) send_environment_variable,
                               conversation);
+}
+
+void
+gdm_session_send_environment (GdmSession *self,
+                              const char *service_name)
+{
+        GdmSessionConversation *conversation;
+
+        g_return_if_fail (GDM_IS_SESSION (self));
+
+        conversation = find_conversation_by_name (self, service_name);
+        if (conversation != NULL) {
+                send_environment (self, conversation);
+        }
 }
 
 static const char *
@@ -2832,6 +2856,14 @@ set_allowed_user (GdmSession *self,
 }
 
 static void
+set_conversation_environment (GdmSession  *self,
+                              char       **environment)
+{
+        g_strfreev (self->priv->conversation_environment);
+        self->priv->conversation_environment = g_strdupv (environment);
+}
+
+static void
 gdm_session_set_property (GObject      *object,
                           guint         prop_id,
                           const GValue *value,
@@ -2868,6 +2900,9 @@ gdm_session_set_property (GObject      *object,
                 break;
         case PROP_ALLOWED_USER:
                 set_allowed_user (self, g_value_get_uint (value));
+                break;
+        case PROP_CONVERSATION_ENVIRONMENT:
+                set_conversation_environment (self, g_value_get_pointer (value));
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2913,6 +2948,9 @@ gdm_session_get_property (GObject    *object,
         case PROP_ALLOWED_USER:
                 g_value_set_uint (value, self->priv->allowed_user);
                 break;
+        case PROP_CONVERSATION_ENVIRONMENT:
+                g_value_set_pointer (value, self->priv->environment);
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -2948,6 +2986,9 @@ gdm_session_dispose (GObject *object)
 
         g_free (self->priv->display_x11_authority_file);
         self->priv->display_x11_authority_file = NULL;
+
+        g_strfreev (self->priv->conversation_environment);
+        self->priv->conversation_environment = NULL;
 
         if (self->priv->worker_server != NULL) {
                 g_dbus_server_stop (self->priv->worker_server);
@@ -3223,6 +3264,12 @@ gdm_session_class_init (GdmSessionClass *session_class)
                                                             G_MAXUINT,
                                                             0,
                                                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_CONVERSATION_ENVIRONMENT,
+                                         g_param_spec_pointer ("conversation-environment",
+                                                               "conversation environment",
+                                                               "conversation environment",
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
         g_object_class_install_property (object_class,
                                          PROP_DISPLAY_NAME,
@@ -3285,7 +3332,8 @@ gdm_session_new (GdmSessionVerificationMode  verification_mode,
                  const char                 *display_device,
                  const char                 *display_seat_id,
                  const char                 *display_x11_authority_file,
-                 gboolean                    display_is_local)
+                 gboolean                    display_is_local,
+                 const char * const         *environment)
 {
         GdmSession *self;
 
@@ -3298,6 +3346,7 @@ gdm_session_new (GdmSessionVerificationMode  verification_mode,
                              "display-seat-id", display_seat_id,
                              "display-x11-authority-file", display_x11_authority_file,
                              "display-is-local", display_is_local,
+                             "conversation-environment", environment,
                              NULL);
 
         return self;

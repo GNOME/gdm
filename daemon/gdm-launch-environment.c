@@ -789,7 +789,8 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
                                                              launch_environment->priv->x11_display_device,
                                                              launch_environment->priv->x11_display_seat_id,
                                                              launch_environment->priv->x11_authority_file,
-                                                             launch_environment->priv->x11_display_is_local);
+                                                             launch_environment->priv->x11_display_is_local,
+                                                             NULL);
 
         g_signal_connect (launch_environment->priv->session,
                           "conversation-started",
