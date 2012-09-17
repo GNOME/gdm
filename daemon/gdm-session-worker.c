@@ -2655,7 +2655,7 @@ on_reauthentication_conversation_started (GdmSession              *session,
                                           const char              *service_name,
                                           ReauthenticationRequest *request)
 {
-        g_debug ("GdmSessionWorker: reauthentication service '%s' stopped",
+        g_debug ("GdmSessionWorker: reauthentication service '%s' started",
                  service_name);
 }
 
@@ -2664,7 +2664,7 @@ on_reauthentication_conversation_stopped (GdmSession              *session,
                                           const char              *service_name,
                                           ReauthenticationRequest *request)
 {
-        g_debug ("GdmSessionWorker: reauthentication service '%s' started",
+        g_debug ("GdmSessionWorker: reauthentication service '%s' stopped",
                  service_name);
 }
 
