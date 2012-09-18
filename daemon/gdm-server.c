@@ -722,7 +722,7 @@ gdm_server_spawn (GdmServer  *server,
                 g_warning (_("%s: Empty server command for display %s"),
                            "gdm_server_spawn",
                            server->priv->display_name);
-                _exit (SERVER_ABORT);
+                goto out;
         }
 
         env = get_server_environment (server);
@@ -755,12 +755,15 @@ gdm_server_spawn (GdmServer  *server,
         g_ptr_array_foreach (env, (GFunc)g_free, NULL);
         g_ptr_array_free (env, TRUE);
 
-        g_debug ("GdmServer: Started X server process %d - waiting for READY", (int)server->priv->pid);
+        if (ret) {
+                g_debug ("GdmServer: Started X server process %d - waiting for READY", (int)server->priv->pid);
 
-        server->priv->child_watch_id = g_child_watch_add (server->priv->pid,
-                                                          (GChildWatchFunc)server_child_watch,
-                                                          server);
+                server->priv->child_watch_id = g_child_watch_add (server->priv->pid,
+                                                                  (GChildWatchFunc)server_child_watch,
+                                                                  server);
+        }
 
+out:
         return ret;
 }
 
