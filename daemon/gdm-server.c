@@ -47,10 +47,9 @@
 #include <linux/vt.h>
 #endif
 
-#include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
-#include <glib-object.h>
+#include <gio/gio.h>
 
 #include <X11/Xlib.h> /* for Display */
 
@@ -694,17 +693,15 @@ server_child_watch (GPid       pid,
 }
 
 static gboolean
-gdm_server_spawn (GdmServer  *server,
-                  const char *vtarg)
+gdm_server_spawn (GdmServer    *server,
+                  const char   *vtarg,
+                  GError      **error)
 {
         int              argc;
         gchar          **argv = NULL;
-        GError          *error;
-        GPtrArray       *env;
-        gboolean         ret;
+        GPtrArray       *env = NULL;
+        gboolean         ret = FALSE;
         char            *freeme;
-
-        ret = FALSE;
 
         /* Figure out the server command */
         argv = NULL;
@@ -719,9 +716,10 @@ gdm_server_spawn (GdmServer  *server,
         }
 
         if (argv[0] == NULL) {
-                g_warning (_("%s: Empty server command for display %s"),
-                           "gdm_server_spawn",
-                           server->priv->display_name);
+                g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
+                             _("%s: Empty server command for display %s"),
+                             "gdm_server_spawn",
+                             server->priv->display_name);
                 goto out;
         }
 
@@ -731,39 +729,32 @@ gdm_server_spawn (GdmServer  *server,
         g_debug ("GdmServer: Starting X server process: %s", freeme);
         g_free (freeme);
 
-        error = NULL;
-        ret = g_spawn_async_with_pipes (NULL,
-                                        argv,
-                                        (char **)env->pdata,
-                                        G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD,
-                                        (GSpawnChildSetupFunc)server_child_setup,
-                                        server,
-                                        &server->priv->pid,
-                                        NULL,
-                                        NULL,
-                                        NULL,
-                                        &error);
+        if (!g_spawn_async_with_pipes (NULL,
+                                       argv,
+                                       (char **)env->pdata,
+                                       G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD,
+                                       (GSpawnChildSetupFunc)server_child_setup,
+                                       server,
+                                       &server->priv->pid,
+                                       NULL,
+                                       NULL,
+                                       NULL,
+                                       error))
+                goto out;
 
-        if (! ret) {
-                g_warning ("Could not start command '%s': %s",
-                           server->priv->command,
-                           error->message);
-                g_error_free (error);
-        }
+        g_debug ("GdmServer: Started X server process %d - waiting for READY", (int)server->priv->pid);
+        
+        server->priv->child_watch_id = g_child_watch_add (server->priv->pid,
+                                                          (GChildWatchFunc)server_child_watch,
+                                                          server);
 
+        ret = TRUE;
+ out:
         g_strfreev (argv);
-        g_ptr_array_foreach (env, (GFunc)g_free, NULL);
-        g_ptr_array_free (env, TRUE);
-
-        if (ret) {
-                g_debug ("GdmServer: Started X server process %d - waiting for READY", (int)server->priv->pid);
-
-                server->priv->child_watch_id = g_child_watch_add (server->priv->pid,
-                                                                  (GChildWatchFunc)server_child_watch,
-                                                                  server);
+        if (env) {
+                g_ptr_array_foreach (env, (GFunc)g_free, NULL);
+                g_ptr_array_free (env, TRUE);
         }
-
-out:
         return ret;
 }
 
@@ -777,8 +768,10 @@ out:
 gboolean
 gdm_server_start (GdmServer *server)
 {
-        gboolean res;
+        gboolean res = FALSE;
         const char *vtarg = NULL;
+        GError *local_error = NULL;
+        GError **error = &local_error;
 
         /* Hardcode the VT for the initial X server, but nothing else */
         if (server->priv->is_initial) {
@@ -795,8 +788,15 @@ gdm_server_start (GdmServer *server)
         }
 
         /* fork X server process */
-        res = gdm_server_spawn (server, vtarg);
+        if (!gdm_server_spawn (server, vtarg, error))
+                goto out;
 
+        res = TRUE;
+ out:
+        if (local_error) {
+                g_printerr ("%s\n", local_error->message);
+                g_clear_error (&local_error);
+        }
         return res;
 }
 
