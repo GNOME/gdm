@@ -672,11 +672,13 @@ gdm_session_handle_info_query (GdmDBusWorkerManager  *worker_manager_interface,
         g_return_val_if_fail (self->priv->user_verifier_interface != NULL, FALSE);
 
         conversation = find_conversation_by_name (self, service_name);
-        set_pending_query (conversation, invocation);
+        if (conversation != NULL) {
+                set_pending_query (conversation, invocation);
 
-        gdm_dbus_user_verifier_emit_info_query (self->priv->user_verifier_interface,
-                                                service_name,
-                                                query);
+                gdm_dbus_user_verifier_emit_info_query (self->priv->user_verifier_interface,
+                                                        service_name,
+                                                        query);
+        }
 
         return TRUE;
 }
@@ -693,11 +695,13 @@ gdm_session_handle_secret_info_query (GdmDBusWorkerManager  *worker_manager_inte
         g_return_val_if_fail (self->priv->user_verifier_interface != NULL, FALSE);
 
         conversation = find_conversation_by_name (self, service_name);
-        set_pending_query (conversation, invocation);
+        if (conversation != NULL) {
+                set_pending_query (conversation, invocation);
 
-        gdm_dbus_user_verifier_emit_secret_info_query (self->priv->user_verifier_interface,
-                                                       service_name,
-                                                       query);
+                gdm_dbus_user_verifier_emit_secret_info_query (self->priv->user_verifier_interface,
+                                                               service_name,
+                                                               query);
+        }
 
         return TRUE;
 }
@@ -2328,9 +2332,11 @@ gdm_session_open_session (GdmSession *self,
 
         conversation = find_conversation_by_name (self, service_name);
 
-        gdm_dbus_worker_call_open (conversation->worker_proxy,
-                                   NULL,
-                                   (GAsyncReadyCallback) on_opened, conversation);
+        if (conversation != NULL) {
+                gdm_dbus_worker_call_open (conversation->worker_proxy,
+                                           NULL,
+                                           (GAsyncReadyCallback) on_opened, conversation);
+        }
 }
 
 static void
@@ -2538,7 +2544,9 @@ gdm_session_answer_query (GdmSession *self,
 
         conversation = find_conversation_by_name (self, service_name);
 
-        answer_pending_query (conversation, text);
+        if (conversation != NULL) {
+                answer_pending_query (conversation, text);
+        }
 }
 
 void
