@@ -1217,10 +1217,8 @@ x11_session_is_on_seat (GdmSlave        *slave,
         /* don't try to switch to our own session */
         if (x11_display == NULL || x11_display[0] == '\0'
             || strcmp (slave->priv->display_name, x11_display) == 0) {
-                g_free (x11_display);
                 goto out;
         }
-        g_free (x11_display);
 
         reply = g_dbus_connection_call_sync (slave->priv->connection,
                                              CK_NAME,
@@ -1242,7 +1240,6 @@ x11_session_is_on_seat (GdmSlave        *slave,
         g_variant_unref (reply);
 
         if (x11_display_device == NULL || x11_display_device[0] == '\0') {
-                g_free (x11_display_device);
                 goto out;
         }
 
