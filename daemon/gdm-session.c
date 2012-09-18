@@ -1699,13 +1699,13 @@ worker_exited (GdmSessionWorkerJob    *job,
 
         g_debug ("GdmSession: Worker job exited: %d", code);
 
+        g_hash_table_steal (self->priv->conversations, conversation->service_name);
+
         g_object_ref (conversation->job);
         if (self->priv->session_conversation == conversation) {
                 g_signal_emit (self, signals[SESSION_EXITED], 0, code);
                 self->priv->session_conversation = NULL;
         }
-
-        g_hash_table_steal (self->priv->conversations, conversation->service_name);
 
         g_debug ("GdmSession: Emitting conversation-stopped signal");
         g_signal_emit (self, signals[CONVERSATION_STOPPED], 0, conversation->service_name);
@@ -1732,13 +1732,13 @@ worker_died (GdmSessionWorkerJob    *job,
 
         g_debug ("GdmSession: Worker job died: %d", signum);
 
+        g_hash_table_steal (self->priv->conversations, conversation->service_name);
+
         g_object_ref (conversation->job);
         if (self->priv->session_conversation == conversation) {
                 g_signal_emit (self, signals[SESSION_DIED], 0, signum);
                 self->priv->session_conversation = NULL;
         }
-
-        g_hash_table_steal (self->priv->conversations, conversation->service_name);
 
         g_debug ("GdmSession: Emitting conversation-stopped signal");
         g_signal_emit (self, signals[CONVERSATION_STOPPED], 0, conversation->service_name);
