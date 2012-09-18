@@ -145,128 +145,54 @@ write_pid (void)
         atexit (delete_pid);
 }
 
-static void
-check_logdir (void)
+static gboolean
+ensure_dir_with_perms (const char *path,
+                       uid_t       uid,
+                       gid_t       gid,
+                       mode_t      mode,
+                       GError    **error)
 {
-        struct stat     statbuf;
-        int             r;
-        const char     *log_path;
+        gboolean ret = FALSE;
 
-        log_path = LOGDIR;
+        if (g_mkdir_with_parents (path, 0755) == -1) {
+                g_set_error_literal (error, G_IO_ERROR, g_io_error_from_errno (errno), g_strerror (errno));
+                goto out;
+        }
+        if (g_chmod (path, mode) == -1) {
+                g_set_error_literal (error, G_IO_ERROR, g_io_error_from_errno (errno), g_strerror (errno));
+                goto out;
+        }
+        if (chown (path, uid, gid) == -1) {
+                g_set_error_literal (error, G_IO_ERROR, g_io_error_from_errno (errno), g_strerror (errno));
+                goto out;
+        }
 
-        r = g_stat (log_path, &statbuf);
-        if (r < 0 || ! S_ISDIR (statbuf.st_mode))  {
-                if (g_mkdir (log_path, 0755) < 0) {
-                        gdm_fail (_("Logdir %s does not exist or isn't a directory."),
-                                  log_path);
-                }
-                g_chmod (log_path, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+        ret = TRUE;
+ out:
+        return ret;
+}
+
+static void
+gdm_daemon_ensure_dirs (uid_t uid,
+                        gid_t gid)
+{
+        GError *error = NULL;
+
+        /* Set up /var/gdm */
+        if (!ensure_dir_with_perms (AUTHDIR, uid, gid, (S_IRWXU | S_IRWXG | S_ISVTX), &error)) {
+                gdm_fail (_("Failed to create AuthDir %s: %s"),
+                          AUTHDIR, error->message);
+        }
+
+        /* Set up /var/log/gdm */
+        if (!ensure_dir_with_perms (LOGDIR, 0, gid, (S_IRWXU | S_IRWXG | S_ISVTX), &error)) {
+                gdm_fail (_("Failed to create LogDir %s: %s"),
+                          LOGDIR, error->message);
         }
 }
 
 static void
-check_servauthdir (const char  *auth_path,
-                   struct stat *statbuf)
-{
-        int r;
-
-        /* Enter paranoia mode */
-        r = g_stat (auth_path, statbuf);
-        if (r < 0) {
-                gdm_fail (_("Authdir %s does not exist. Aborting."), auth_path);
-        }
-
-        if (! S_ISDIR (statbuf->st_mode)) {
-                gdm_fail (_("Authdir %s is not a directory. Aborting."), auth_path);
-        }
-}
-
-static void
-set_effective_user (uid_t uid)
-{
-        int res;
-
-        res = 0;
-
-        if (geteuid () != uid) {
-                res = seteuid (uid);
-        }
-
-        if (res != 0) {
-                g_error ("Cannot set uid to %d: %s",
-                         (int)uid,
-                         g_strerror (errno));
-        }
-}
-
-static void
-set_effective_group (gid_t gid)
-{
-        int res;
-
-        res = 0;
-        if (getegid () != gid) {
-                res = setegid (gid);
-        }
-
-        if (res != 0) {
-                g_error ("Cannot set gid to %d: %s",
-                         (int)gid,
-                         g_strerror (errno));
-        }
-}
-
-static void
-set_effective_user_group (uid_t uid,
-                          gid_t gid)
-{
-        set_effective_user (0);
-        set_effective_group (gid);
-        if (uid != 0) {
-                set_effective_user (0);
-        }
-}
-
-static void
-gdm_daemon_check_permissions (uid_t uid,
-                              gid_t gid)
-{
-        struct stat statbuf;
-        const char *auth_path;
-
-        auth_path = LOGDIR;
-
-        /* Enter paranoia mode */
-        check_servauthdir (auth_path, &statbuf);
-
-        set_effective_user_group (0, 0);
-
-        /* Now set things up for us as  */
-        chown (auth_path, 0, gid);
-        g_chmod (auth_path, (S_IRWXU|S_IRWXG|S_ISVTX));
-
-        set_effective_user_group (uid, gid);
-
-        /* Again paranoid */
-        check_servauthdir (auth_path, &statbuf);
-
-        if G_UNLIKELY (statbuf.st_uid != 0 || statbuf.st_gid != gid)  {
-                gdm_fail (_("Authdir %s is not owned by user %d, group %d. Aborting."),
-                          auth_path,
-                          (int)uid,
-                          (int)gid);
-        }
-
-        if G_UNLIKELY (statbuf.st_mode != (S_IFDIR|S_IRWXU|S_IRWXG|S_ISVTX))  {
-                gdm_fail (_("Authdir %s has wrong permissions %o. Should be %o. Aborting."),
-                          auth_path,
-                          statbuf.st_mode,
-                          (S_IRWXU|S_IRWXG|S_ISVTX));
-        }
-}
-
-static void
-gdm_daemon_change_user (uid_t *uidp,
+gdm_daemon_lookup_user (uid_t *uidp,
                         gid_t *gidp)
 {
         char          *username;
@@ -315,9 +241,6 @@ gdm_daemon_change_user (uid_t *uidp,
         if G_UNLIKELY (gid == 0) {
                 gdm_fail (_("The GDM group should not be root. Aborting!"));
         }
-
-        /* gid remains 'gdm' */
-        set_effective_user_group (uid, gid);
 
         if (uidp != NULL) {
                 *uidp = uid;
@@ -416,7 +339,7 @@ main (int    argc,
 {
         GMainLoop          *main_loop;
         GOptionContext     *context;
-        GError             *error;
+        GError             *error = NULL;
         int                 ret;
         gboolean            res;
         GdmSignalHandler   *signal_handler;
@@ -480,11 +403,9 @@ main (int    argc,
 
         gdm_log_set_debug (is_debug_set ());
 
-        gdm_daemon_change_user (&gdm_uid, &gdm_gid);
-        gdm_daemon_check_permissions (gdm_uid, gdm_gid);
+        gdm_daemon_lookup_user (&gdm_uid, &gdm_gid);
 
-        set_effective_user_group (0, 0);
-        check_logdir ();
+        gdm_daemon_ensure_dirs (gdm_uid, gdm_gid);
 
         /* XDM compliant error message */
         if (getuid () != 0) {
@@ -535,7 +456,10 @@ main (int    argc,
         ret = 0;
 
  out:
-
+        if (error) {
+                g_printerr ("%s\n", error->message);
+                g_clear_error (&error);
+        }
         return ret;
 }
 
