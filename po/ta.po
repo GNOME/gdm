@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm.master.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-04 21:15+0530\n"
-"PO-Revision-Date: 2012-09-04 21:23+0530\n"
+"POT-Creation-Date: 2012-09-19 17:04+0530\n"
+"PO-Revision-Date: 2012-09-19 17:05+0530\n"
 "Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "Language: \n"
@@ -49,33 +49,6 @@ msgstr "கணினியில் பயனர் \"%s\" ஐ காண மு�
 #, c-format
 msgid "No session available yet"
 msgstr "அமர்வு ஏதும் இன்னும் கிடைக்கவில்லை"
-
-#: ../daemon/gdm-launch-environment.c:401
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "%s பயனர் வெளியேறவில்லை"
-
-#: ../daemon/gdm-launch-environment.c:408
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "%s குழு வெளியேறவில்லை"
-
-#: ../daemon/gdm-launch-environment.c:427
-#: ../daemon/gdm-launch-environment.c:447 ../daemon/gdm-server.c:463
-#: ../daemon/gdm-server.c:483
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "%d க்கு குழுக்குறியீடு அமைக்க முடியவில்லை"
-
-#: ../daemon/gdm-launch-environment.c:433 ../daemon/gdm-server.c:469
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "initgroups() %sக்கு செயலிழக்கப்பட்டது"
-
-#: ../daemon/gdm-launch-environment.c:439 ../daemon/gdm-server.c:475
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "%dக்கு பயனர் அடையாளத்தை அமைக்க முடியவில்லை"
 
 #: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
 #, c-format
@@ -119,6 +92,21 @@ msgstr "%s:பெற்றோர் காட்சியை திறப்ப�
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "இந்த பயனர் %s சேவையகம் உருவாக்கப்பட்டது ஆனால் அந்த பயனர் இப்போது இல்லை"
 
+#: ../daemon/gdm-server.c:463 ../daemon/gdm-server.c:483
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "%d க்கு குழுக்குறியீடு அமைக்க முடியவில்லை"
+
+#: ../daemon/gdm-server.c:469
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "initgroups() %sக்கு செயலிழக்கப்பட்டது"
+
+#: ../daemon/gdm-server.c:475
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "%dக்கு பயனர் அடையாளத்தை அமைக்க முடியவில்லை"
+
 #: ../daemon/gdm-server.c:522
 #, c-format
 msgid "%s: Could not open log file for display %s!"
@@ -135,7 +123,7 @@ msgstr "%s: பிழை %s ஐ %s க்கு அமைக்க"
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: X சேவையகத்தின் முன்னுரிமை %dக்கு அமைக்க முடியவில்லை: %s"
 
-#: ../daemon/gdm-server.c:718
+#: ../daemon/gdm-server.c:722
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: காட்சிக்கான வெற்றுசேவையகம் கட்டளை %s"
@@ -164,70 +152,70 @@ msgstr "காட்சி சாதனம்"
 msgid "The display device"
 msgstr "காட்சி சாதனம்"
 
-#: ../daemon/gdm-session.c:1182
+#: ../daemon/gdm-session.c:1184
 msgid "Could not create authentication helper process"
 msgstr " அங்கீகார உதவி  செயலை உருவாக்க முடியவில்லை"
 
-#: ../daemon/gdm-session-worker.c:1025
+#: ../daemon/gdm-session-worker.c:1029
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "அங்கீகரித்தல் அமைப்புடன் உரையாடலை துவக்குவதில் பிழை: %s"
 
-#: ../daemon/gdm-session-worker.c:1026
+#: ../daemon/gdm-session-worker.c:1030
 msgid "general failure"
 msgstr "பொது தோல்வி"
 
-#: ../daemon/gdm-session-worker.c:1027
+#: ../daemon/gdm-session-worker.c:1031
 msgid "out of memory"
 msgstr "நினைவகம் இல்லை"
 
-#: ../daemon/gdm-session-worker.c:1028
+#: ../daemon/gdm-session-worker.c:1032
 msgid "application programmer error"
 msgstr "பயன்பாடு நிரலாளர் பிழை"
 
-#: ../daemon/gdm-session-worker.c:1029
+#: ../daemon/gdm-session-worker.c:1033
 msgid "unknown error"
 msgstr "தெரியாத பிழை "
 
-#: ../daemon/gdm-session-worker.c:1036
+#: ../daemon/gdm-session-worker.c:1040
 msgid "Username:"
 msgstr "பயனர் பெயர்:"
 
-#: ../daemon/gdm-session-worker.c:1042
+#: ../daemon/gdm-session-worker.c:1046
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr "விருப்பட்ட பயனர்பெயரை காட்டும் போது அங்கீரிக்கும் கணினியை தெரிவிப்பதில் பிழை: %s"
 
-#: ../daemon/gdm-session-worker.c:1056
+#: ../daemon/gdm-session-worker.c:1060
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "பயனர் புரவலன் பெயரை அங்கீரிக்கும் கணினியை தெரிவிப்பதில் பிழை: %s"
 
-#: ../daemon/gdm-session-worker.c:1073
+#: ../daemon/gdm-session-worker.c:1077
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "பயனர் பணியகத்தை அங்கீரிக்கும் கணினியை தெரிவிப்பதில் பிழை: %s"
 
-#: ../daemon/gdm-session-worker.c:1097
+#: ../daemon/gdm-session-worker.c:1101
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "காட்சி சரத்தை அங்கீரிக்கும் கணினியை தெரிவிப்பதில் பிழை: %s"
 
-#: ../daemon/gdm-session-worker.c:1112
+#: ../daemon/gdm-session-worker.c:1116
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "xauth காட்சியை அங்கீரிக்கும் கணினியை தெரிவிப்பதில் பிழை: %s"
 
-#: ../daemon/gdm-session-worker.c:1442 ../daemon/gdm-session-worker.c:1459
+#: ../daemon/gdm-session-worker.c:1446 ../daemon/gdm-session-worker.c:1463
 #, c-format
 msgid "no user account available"
 msgstr "பயனர் கணக்கு இல்லை"
 
-#: ../daemon/gdm-session-worker.c:1486
+#: ../daemon/gdm-session-worker.c:1490
 msgid "Unable to change to user"
 msgstr "பயனருக்கு மாற்ற இயவில்லை"
 
-#: ../daemon/gdm-simple-slave.c:1358
+#: ../daemon/gdm-simple-slave.c:1371
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -239,21 +227,21 @@ msgstr ""
 "பரிசோதிக்கவும். நடுவில் இந்த காட்சி செயல் இழக்கப்படும். பிரச்சினை சரியான உடன் GDM ஐ "
 "துவக்குக."
 
-#: ../daemon/gdm-simple-slave.c:1399
+#: ../daemon/gdm-simple-slave.c:1412
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "பயனர் உள்நுழையும் முன் மட்டுமே அழைக்க முடியும்"
 
-#: ../daemon/gdm-simple-slave.c:1409
+#: ../daemon/gdm-simple-slave.c:1422
 #, c-format
 msgid "Caller not GDM"
 msgstr "அழைப்பாளர் ஜிடிஎம் இல்லை"
 
-#: ../daemon/gdm-simple-slave.c:1468
+#: ../daemon/gdm-simple-slave.c:1475
 msgid "User not logged in"
 msgstr "பயனர் உள்நுழையவில்லை"
 
-#: ../daemon/gdm-xdmcp-chooser-slave.c:366
+#: ../daemon/gdm-xdmcp-chooser-slave.c:370
 #, c-format
 msgid "Currently, only one client can be connected at once"
 msgstr "தற்போது ஒரே ஒரு சார்ந்தோன் மட்டுமே இணைக்கப்பட முடியும்."
@@ -403,33 +391,37 @@ msgid "Enable showing the banner message"
 msgstr "பேனர் செய்தியை காட்டுவதை செயல்படுத்து"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Number of allowed authentication failures"
+msgstr "அனுமதிக்கப்பட்ட உறுதிபடுத்துதல் தோல்விகள்"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
 msgid "Path to small image at top of user list"
 msgstr "பயனர் பட்டியலில் மேலே இருக்கும் சிறு பிம்பத்துக்கு பாதை"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
 msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "புகுபதிவு சாளரத்தில் மறுதுவக்க பொத்தான்களை காட்டுவதை செயல்நீக்க உண்மையென என அமைக்கவும்."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid "Set to true to show the banner message text."
 msgstr "உண்மையென அமைத்து பேனர் செய்தி உரையை காட்டு."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
 msgid "Text banner message to show in the login window."
 msgstr "உள்நுழை சாளரத்தின் உரை பேனர் செய்தி காட்டப்படுகிறது."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid ""
 "The fallback login screen can optionally show a small image at the top of "
 "its user list to provide site administrators and distributions a way to "
 "provide branding."
 msgstr ""
 "பாதுகாப்பு உள்நுழை திரை இப்போது தேர்வால் பயனர்கள் பட்டியலின் மேல் ஒரு சிறு பிம்பத்தை "
-"காட்டுவதன் மூலம் "
-"ஒரு சந்தை குறியை கொடுக்க மேலாளர்களையும் வினியோகங்களையும் அனுமதிக்கிறது."
+"காட்டுவதன் மூலம் ஒரு சந்தை குறியை கொடுக்க மேலாளர்களையும் வினியோகங்களையும் "
+"அனுமதிக்கிறது."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
 msgid ""
 "The login screen can optionally allow users who have enrolled their "
 "fingerprints to log in using those prints."
@@ -437,7 +429,7 @@ msgstr ""
 "உள்நுழை திரை இப்போது தேர்வால் பயனர்களை அவர்களது கைவிரல் ரேகையை பதிவு செய்வதன் மூலம் "
 "அவற்றை பயன்படுத்தி உள்நுழைய அனுமதிக்கிறது."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
 msgid ""
 "The login screen can optionally allow users who have smartcards to log in "
 "using those smartcards."
@@ -445,7 +437,7 @@ msgstr ""
 "உள்நுழை திரை இப்போது தேர்வால் பயனர்கள் அவர்களது ஸ்மார்ட் அட்டையை பயன்படுத்தி உள்நுழைய "
 "அனுமதிக்கிறது."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
 msgid ""
 "The login screen can optionally show a small image at the top of its user "
 "list to provide site administrators and distributions a way to provide "
@@ -454,7 +446,7 @@ msgstr ""
 "உள்நுழை திரை இப்போது தேர்வால் பயனர்கள் பட்டியலின் மேல் ஒரு சிறு பிம்பத்தை காட்டுவதன் மூலம் "
 "ஒரு சந்தை குறியை கொடுக்க மேலாளர்களையும் வினியோகங்களையும் அனுமதிக்கிறது."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
 msgid ""
 "The login screen normally shows a list of available users to log in as. This "
 "setting can be toggled to disable showing the user list."
@@ -462,11 +454,19 @@ msgstr ""
 "உள்நுழைவுத்திரை சாதாரணமாக நுள்நுழையக்கூடிய பயனர்களின் பட்டியலை காட்டும். இந்த அமைப்பை "
 "நிலை மாற்றி பட்டியலை காட்டுவதை செயலிழக்க வைக்க முடியும்."
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+msgid ""
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
+msgstr ""
+"பயன்ர் தேர்வுக்கு பின்னே போகு முன் எத்தனை முறை ஒரு பயனர் உறுதிப்படுத்துதலை முயற்சிக்க "
+"அனுமதிக்கலாம்."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
 msgid "Whether or not to allow fingerprint readers for login"
 msgstr "கை இரேகை படிப்பியை உள்நுழைவதற்கு பயனாக அனுமதிக்கலாமா இல்லையா"
 
-#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
 msgid "Whether or not to allow smartcard readers for login"
 msgstr "ஸ்மார்ட் அட்டை படிப்பியை உள்நுழைவதற்கு பயனாக அனுமதிக்கலாமா இல்லையா"
 
@@ -874,6 +874,12 @@ msgstr "திரைப்பிடிப்பு எடுக்கப்ப�
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "திரையை ஒரு படமெடுக்கவும்"
+
+#~ msgid "User %s doesn't exist"
+#~ msgstr "%s பயனர் வெளியேறவில்லை"
+
+#~ msgid "Group %s doesn't exist"
+#~ msgstr "%s குழு வெளியேறவில்லை"
 
 #~ msgid "Unable to initialize login system"
 #~ msgstr "புகுபதிவு முறைமையை துவக்க முடியவில்லை"
