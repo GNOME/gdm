@@ -1214,9 +1214,8 @@ x11_session_is_on_seat (GdmSlave        *slave,
         g_variant_get (reply, "(s)", &x11_display);
         g_variant_unref (reply);
 
-        /* don't try to switch to our own session */
-        if (x11_display == NULL || x11_display[0] == '\0'
-            || strcmp (slave->priv->display_name, x11_display) == 0) {
+        /* ignore tty sessions */
+        if (x11_display == NULL || x11_display[0] == '\0') {
                 goto out;
         }
 
