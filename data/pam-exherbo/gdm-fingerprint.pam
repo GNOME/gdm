@@ -1,17 +1,10 @@
-# mirrors system-auth / system(-local)-login
-# except for the authentication method, which is:
-# fingerprint login
+account  include  system-login
 
-auth        required    pam_env.so
-auth        required    pam_tally.so file=/var/log/faillog onerr=succeed
-auth        required    pam_shells.so
-auth        required    pam_nologin.so
-auth        required    pam_fprintd.so
--auth       optional    pam_gnome_keyring.so
+auth     substack fingerprint-auth
+auth     optional pam_gnome_keyring.so
 
-account     include     system-local-login
+password required pam_deny.so
 
-password    include     system-local-login
+session  substack system-login
+session  optional pam_gnome_keyring.so auto_start
 
-session     include     system-local-login
--session    optional    pam_gnome_keyring.so auto_start
