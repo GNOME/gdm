@@ -1544,6 +1544,7 @@ utils/Makefile
 data/gdm.conf
 data/Makefile
 data/applications/Makefile
+data/autostart/Makefile
 data/pixmaps/Makefile
 data/pixmaps/16x16/Makefile
 data/pixmaps/32x32/Makefile

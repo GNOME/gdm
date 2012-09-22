@@ -3,6 +3,7 @@ EXTRA_DIST =
 
 SUBDIRS =			\
 	applications		\
+	autostart		\
 	pixmaps			\
 	$(NULL)
 

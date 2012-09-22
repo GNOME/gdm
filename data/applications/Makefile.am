@@ -18,7 +18,6 @@ desktop_in_files = 							\
 	gnome-shell.desktop.in						\
 	gnome-mag.desktop.in						\
 	gok.desktop.in							\
-	orca-screen-reader.desktop.in					\
 	polkit-gnome-authentication-agent-1.desktop.in			\
 	$(NULL)
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)			\
