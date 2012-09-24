@@ -12,125 +12,111 @@
 # Ryoichi INAGAKI <ryo1@bc.wakwak.com>, 2004.
 # Hideki Yamane (Debian-JP) <henrich@debian.or.jp>, 2009.
 # Hideki Yamane <henrich@debian.org>, 2011.
+# Noriko Mizumoto <noriko@fedoraproject.org>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-03-25 00:15+0000\n"
-"PO-Revision-Date: 2012-03-25 15:20+0900\n"
-"Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gdm&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-09-18 21:19+0000\n"
+"PO-Revision-Date: 2012-09-11 11:48+0000\n"
+"Last-Translator: Noriko Mizumoto <noriko@fedoraproject.org>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../common/gdm-common.c:488
+#: ../common/gdm-common.c:492
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom はキャラクターデバイスではありません"
 
-#: ../daemon/factory-slave-main.c:178 ../daemon/product-slave-main.c:182
-#: ../daemon/simple-slave-main.c:182 ../daemon/xdmcp-chooser-slave-main.c:184
-msgid "Display ID"
-msgstr "ディスプレイ ID"
-
-#: ../daemon/factory-slave-main.c:178 ../daemon/product-slave-main.c:182
-#: ../daemon/simple-slave-main.c:182 ../daemon/xdmcp-chooser-slave-main.c:184
-msgid "ID"
-msgstr "ID"
-
-#: ../daemon/factory-slave-main.c:188 ../daemon/product-slave-main.c:192
-#: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:194
-msgid "GNOME Display Manager Slave"
-msgstr "GNOME ディスプレイマネージャー (スレーブ側)"
-
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
-msgstr "\"%s\" というユーザーは見つかりませんでした"
+msgstr "システムに \"%s\" というユーザーは見つかりませんでした"
 
-#: ../daemon/gdm-factory-slave.c:210 ../daemon/gdm-simple-slave.c:314
-msgid "Unable to initialize login system"
-msgstr "ログインシステムを初期化できません"
+#: ../daemon/gdm-display.c:1315 ../daemon/gdm-display.c:1349
+#, c-format
+msgid "No session available yet"
+msgstr "まだ利用できるセッションがありません"
 
-#: ../daemon/gdm-factory-slave.c:244 ../daemon/gdm-simple-slave.c:352
-msgid "Unable to authenticate user"
-msgstr "ユーザーを認証できません"
+#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
+#, c-format
+msgid "Unable to look up UID of user %s"
+msgstr "%s というユーザーの UID を検索できません"
 
-#: ../daemon/gdm-factory-slave.c:268 ../daemon/gdm-simple-slave.c:404
-msgid "Unable to authorize user"
-msgstr "妥当なユーザーと認めることができません"
+#: ../daemon/gdm-manager.c:291
+msgid "no sessions available"
+msgstr "利用できるセッションがありません"
 
-#: ../daemon/gdm-factory-slave.c:292 ../daemon/gdm-simple-slave.c:551
-msgid "Unable to establish credentials"
-msgstr "信頼できるユーザーと認めることができません"
+#: ../daemon/gdm-manager.c:352
+#, c-format
+msgid "No sessions for %s available for reauthentication"
+msgstr "再認証用に利用可能な %s のセッションがありません"
 
-#: ../daemon/gdm-factory-slave.c:317 ../daemon/gdm-simple-slave.c:589
-msgid "Unable to open session"
-msgstr "セッションを開始することができません"
+#: ../daemon/gdm-manager.c:406
+#, c-format
+msgid "Unable to find session for user %s"
+msgstr "%s というユーザーのセッションが見つかりません"
 
-#: ../daemon/gdm-factory-slave.c:709 ../daemon/gdm-product-slave.c:513
-#: ../daemon/gdm-simple-slave.c:1481
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"何らかの内部エラーが原因で、X サーバー(グラフィカル環境)を起動できませんでし"
-"た。システム管理者に問い合わせるか、syslog の内容をチェックして調査してみてく"
-"ださい。とりあえず、このディスプレイを無効にします。問題が解決したら GDM を再"
-"起動してください。"
+#: ../daemon/gdm-manager.c:476
+#, c-format
+msgid "Unable to find appropriate session for user %s"
+msgstr "%s というユーザーに適切なセッションが見つかりません"
 
-#: ../daemon/gdm-server.c:265
+#: ../daemon/gdm-manager.c:671
+msgid "User doesn't own session"
+msgstr "ユーザーは独自のセッションを所有していません"
+
+#: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
+msgid "No session available"
+msgstr "利用できるセッションがありません"
+
+#: ../daemon/gdm-server.c:273
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: 親ディスプレイの '%s' に接続できませんでした"
 
-#: ../daemon/gdm-server.c:443
+#: ../daemon/gdm-server.c:452
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
-msgstr ""
-"ユーザー %s としてサーバーを起動しようとしましたが、そのようなユーザーは存在"
-"しません"
+msgstr "ユーザー %s としてサーバーを起動しようとしましたが、そのようなユーザーは存在しません"
 
-#: ../daemon/gdm-server.c:454 ../daemon/gdm-server.c:474
-#: ../daemon/gdm-welcome-session.c:435 ../daemon/gdm-welcome-session.c:455
+#: ../daemon/gdm-server.c:463 ../daemon/gdm-server.c:483
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "グループ ID を %d に設定できませんでした"
 
-#: ../daemon/gdm-server.c:460 ../daemon/gdm-welcome-session.c:441
+#: ../daemon/gdm-server.c:469
 #, c-format
 msgid "initgroups () failed for %s"
-msgstr "%s に対する initgroups(3) の呼び出しに失敗しました"
+msgstr "%s に対する initgroups () の呼び出しに失敗しました"
 
-#: ../daemon/gdm-server.c:466 ../daemon/gdm-welcome-session.c:447
+#: ../daemon/gdm-server.c:475
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "ユーザー ID を %d に設定できませんでした"
 
-#: ../daemon/gdm-server.c:513
+#: ../daemon/gdm-server.c:522
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: ディスプレイ (%s) のログファイルを開けません!"
 
-#: ../daemon/gdm-server.c:524 ../daemon/gdm-server.c:530
-#: ../daemon/gdm-server.c:536
+#: ../daemon/gdm-server.c:533 ../daemon/gdm-server.c:539
+#: ../daemon/gdm-server.c:545
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: %s を %s に設定する際にエラー"
 
-#: ../daemon/gdm-server.c:556
+#: ../daemon/gdm-server.c:565
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: サーバーの優先度を %d にセットできませんでした: %s"
 
-#: ../daemon/gdm-server.c:709
+#: ../daemon/gdm-server.c:722
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: ディスプレイ (%s) のサーバーコマンドが空です"
@@ -159,165 +145,185 @@ msgstr "ディスプレイのデバイス"
 msgid "The display device"
 msgstr "ディスプレイのデバイスです"
 
-#: ../daemon/gdm-session-worker.c:1106
+#: ../daemon/gdm-session.c:1184
+msgid "Could not create authentication helper process"
+msgstr "認証ヘルパーのプロセスを作成できませんでした"
+
+#: ../daemon/gdm-session-worker.c:1029
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "認証システムとの接続を開始しようとしてエラーが発生しました - %s"
 
-#: ../daemon/gdm-session-worker.c:1107
+#: ../daemon/gdm-session-worker.c:1030
 msgid "general failure"
 msgstr "一般的なエラー"
 
-#: ../daemon/gdm-session-worker.c:1108
+#: ../daemon/gdm-session-worker.c:1031
 msgid "out of memory"
 msgstr "メモリ不足"
 
-#: ../daemon/gdm-session-worker.c:1109
+#: ../daemon/gdm-session-worker.c:1032
 msgid "application programmer error"
 msgstr "アプリケーションのバグ"
 
-#: ../daemon/gdm-session-worker.c:1110
+#: ../daemon/gdm-session-worker.c:1033
 msgid "unknown error"
 msgstr "原因不明のエラー"
 
-#: ../daemon/gdm-session-worker.c:1117
+#: ../daemon/gdm-session-worker.c:1040
 msgid "Username:"
 msgstr "ユーザー名:"
 
-#: ../daemon/gdm-session-worker.c:1123
+#: ../daemon/gdm-session-worker.c:1046
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
-msgstr ""
-"認証システムにユーザー名を入力させるプロンプトを設定しようとしてエラーが発"
-"生: %s"
+msgstr "認証システムにユーザー名を入力させるプロンプトを設定しようとしてエラーが発生: %s"
 
-#: ../daemon/gdm-session-worker.c:1137
+#: ../daemon/gdm-session-worker.c:1060
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "認証システムにホスト名を設定しようとしてエラーが発生: %s"
 
-#: ../daemon/gdm-session-worker.c:1154
+#: ../daemon/gdm-session-worker.c:1077
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "認証システムにユーザーが使用している端末名を設定しようとしてエラー: %s"
 
-#: ../daemon/gdm-session-worker.c:1178
+#: ../daemon/gdm-session-worker.c:1101
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "認証システムに X のディスプレイ名を設定しようとしてエラーが発生: %s"
 
-#: ../daemon/gdm-session-worker.c:1193
+#: ../daemon/gdm-session-worker.c:1116
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
-msgstr ""
-"認証システムでディスプレイの xauth の信用情報を設定しようとしてエラーが発生: "
-"%s"
+msgstr "認証システムでディスプレイの xauth の信用情報を設定しようとしてエラーが発生: %s"
 
-#: ../daemon/gdm-session-worker.c:1513 ../daemon/gdm-session-worker.c:1530
+#: ../daemon/gdm-session-worker.c:1446 ../daemon/gdm-session-worker.c:1463
 #, c-format
 msgid "no user account available"
 msgstr "利用できるアカウントがありません"
 
-#: ../daemon/gdm-session-worker.c:1557
+#: ../daemon/gdm-session-worker.c:1490
 msgid "Unable to change to user"
 msgstr "ユーザーを変更できません"
 
-#: ../daemon/gdm-welcome-session.c:409
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "%s というユーザーは存在しません"
+#: ../daemon/gdm-simple-slave.c:1371
+msgid "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
+msgstr "何らかの内部エラーが原因で、X サーバー(グラフィカル環境)を起動できませんでした。システム管理者に問い合わせるか、syslog の内容をチェックして調査してみてください。とりあえず、このディスプレイを無効にします。問題が解決したら GDM を再起動してください。"
 
-#: ../daemon/gdm-welcome-session.c:416
+#: ../daemon/gdm-simple-slave.c:1412
 #, c-format
-msgid "Group %s doesn't exist"
-msgstr "%s というグループは存在しません"
+msgid "Can only be called before user is logged in"
+msgstr "ユーザーがログインする前にしか呼び出しできません"
+
+#: ../daemon/gdm-simple-slave.c:1422
+#, c-format
+msgid "Caller not GDM"
+msgstr "呼び出し側が GDM ではありません"
+
+#: ../daemon/gdm-simple-slave.c:1475
+msgid "User not logged in"
+msgstr "ユーザーはログインしていません"
+
+#: ../daemon/gdm-xdmcp-chooser-slave.c:370
+#, c-format
+msgid "Currently, only one client can be connected at once"
+msgstr "現在、一度に接続できるのは 1 クライアントのみです"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:604
 msgid "Could not create socket!"
 msgstr "ソケットを生成できませんでした"
 
-#: ../daemon/main.c:237 ../daemon/main.c:250
+#: ../daemon/main.c:126 ../daemon/main.c:139
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
-msgstr ""
-"PID ファイル %s に書き込めません; ディスクの空き容量が足りないようです: %s"
+msgstr "PID ファイル %s に書き込めません; ディスクの空き容量が足りないようです: %s"
 
-#: ../daemon/main.c:271
+#: ../daemon/main.c:160
 #, c-format
 msgid "Logdir %s does not exist or isn't a directory."
 msgstr "Logdir の %s は存在しないかディレクトリではありません。"
 
-#: ../daemon/main.c:287
+#: ../daemon/main.c:176
 #, c-format
 msgid "Authdir %s does not exist. Aborting."
 msgstr "Authdir の %s が存在しないので処理を中止します。"
 
-#: ../daemon/main.c:291
+#: ../daemon/main.c:180
 #, c-format
 msgid "Authdir %s is not a directory. Aborting."
 msgstr "Authdir の %s はディレクトリではないので処理を中止します。"
 
-#: ../daemon/main.c:365
+#: ../daemon/main.c:254
 #, c-format
 msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-msgstr ""
-"Authdir の %s はユーザー ID が %d、グループ ID が %d の所有ではないので処理を"
-"中止します。"
+msgstr "Authdir の %s はユーザー ID が %d、グループ ID が %d の所有ではないので処理を中止します。"
 
-#: ../daemon/main.c:372
+#: ../daemon/main.c:261
 #, c-format
 msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-msgstr ""
-"Authdir である %s のアクセス権限が間違っている (%o ではなく %o) ので処理を中"
-"止します。"
+msgstr "Authdir である %s のアクセス権限が間違っている (%o ではなく %o) ので処理を中止します。"
 
-#: ../daemon/main.c:409
+#: ../daemon/main.c:298
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "GDM ユーザー '%s' が見つからないので処理を中止します!"
 
-#: ../daemon/main.c:415
+#: ../daemon/main.c:304
 msgid "The GDM user should not be root. Aborting!"
 msgstr "root を GDM ユーザーにしないでください; 処理を中止します!"
 
-#: ../daemon/main.c:421
+#: ../daemon/main.c:310
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "GDM グループ '%s' が見つからないので処理を中止します!"
 
-#: ../daemon/main.c:427
+#: ../daemon/main.c:316
 msgid "The GDM group should not be root. Aborting!"
 msgstr "root を GDM グループにしないでください; 処理を中止します!"
 
-#: ../daemon/main.c:533
+#: ../daemon/main.c:427
 msgid "Make all warnings fatal"
 msgstr "警告をすべて致命的にする"
 
-#: ../daemon/main.c:534
+#: ../daemon/main.c:428
 msgid "Exit after a time (for debugging)"
 msgstr "時間が経過したら終了する (デバッグ用)"
 
-#: ../daemon/main.c:535
+#: ../daemon/main.c:429
 msgid "Print GDM version"
 msgstr "GDM のバージョンを表示する"
 
-#: ../daemon/main.c:548
+#: ../daemon/main.c:442
 msgid "GNOME Display Manager"
 msgstr "GNOME ディスプレイマネージャー"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:614
+#: ../daemon/main.c:492
 msgid "Only the root user can run GDM"
 msgstr "root ユーザーのみが GDM を起動できます"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:156
+#: ../daemon/session-worker-main.c:150
 msgid "GNOME Display Manager Session Worker"
 msgstr "GDM セッションワーカー"
 
+#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+msgid "Display ID"
+msgstr "ディスプレイ ID"
+
+#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+msgid "ID"
+msgstr "ID"
+
+#: ../daemon/simple-slave-main.c:187 ../daemon/xdmcp-chooser-slave-main.c:188
+msgid "GNOME Display Manager Slave"
+msgstr "GNOME ディスプレイマネージャー (スレーブ側)"
+
 #: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2569
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
 msgid "Login Window"
 msgstr "ログイン画面"
 
@@ -358,59 +364,36 @@ msgid "Whether or not to allow fingerprint readers for login"
 msgstr "ログインに指紋リーダーを許可するかどうか"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:2
-msgid ""
-"The login screen can optionally allow users who have enrolled their "
-"fingerprints to log in using those prints."
-msgstr ""
-"ログイン画面では、指紋を登録したユーザーがそれを使ってログインするのを任意に"
-"許可することができます。"
+msgid "The login screen can optionally allow users who have enrolled their fingerprints to log in using those prints."
+msgstr "ログイン画面では、指紋を登録したユーザーがそれを使ってログインするのを任意に許可することができます。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:3
 msgid "Whether or not to allow smartcard readers for login"
 msgstr "ログインにスマートカードリーダーを許可するかどうか"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:4
-msgid ""
-"The login screen can optionally allow users who have smartcards to log in "
-"using those smartcards."
-msgstr ""
-"ログイン画面では、スマートカードを持つユーザーがスマートカードを使ってログイ"
-"ンするのを任意に許可することができます。"
+msgid "The login screen can optionally allow users who have smartcards to log in using those smartcards."
+msgstr "ログイン画面では、スマートカードを持つユーザーがスマートカードを使ってログインするのを任意に許可することができます。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:5
 msgid "Path to small image at top of user list"
 msgstr "ユーザーリストの一番上にある小さな画像へのパス"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:6
-msgid ""
-"The login screen can optionally show a small image at the top of its user "
-"list to provide site administrators and distributions a way to provide "
-"branding."
-msgstr ""
-"ログイン画面では、サイトの管理者やディストリビューションがブランドを示す方法"
-"として、ユーザーリストの一番上に小さな画像を任意に表示できます。"
+msgid "The login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
+msgstr "ログイン画面では、サイトの管理者やディストリビューションがブランドを示す方法として、ユーザーリストの一番上に小さな画像を任意に表示できます。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
-msgid ""
-"The fallback login screen can optionally show a small image at the top of "
-"its user list to provide site administrators and distributions a way to "
-"provide branding."
-msgstr ""
-"フォールバックログイン画面では、サイトの管理者やディストリビューションがブラ"
-"ンドを示す方法として、ユーザーリストの一番上に小さな画像を表示することもでき"
-"ます。"
+msgid "The fallback login screen can optionally show a small image at the top of its user list to provide site administrators and distributions a way to provide branding."
+msgstr "フォールバックログイン画面では、サイトの管理者やディストリビューションがブランドを示す方法として、ユーザーリストの一番上に小さな画像を表示することもできます。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
 msgid "Avoid showing user list"
 msgstr "ユーザー一覧を表示しない"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:9
-msgid ""
-"The login screen normally shows a list of available users to log in as. This "
-"setting can be toggled to disable showing the user list."
-msgstr ""
-"ログインスクリーンでは、利用可能なユーザーが通常表示されています。この設定で"
-"はユーザー一覧表示を無効に設定可能です。"
+msgid "The login screen normally shows a list of available users to log in as. This setting can be toggled to disable showing the user list."
+msgstr "ログインスクリーンでは、利用可能なユーザーが通常表示されています。この設定ではユーザー一覧表示を無効に設定可能です。"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:10
 msgid "Enable showing the banner message"
@@ -434,8 +417,50 @@ msgstr "再起動のボタンを表示しないかどうか"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:15
 msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr ""
-"true にすると、ログインウィンドウに再起動のボタンが表示されなくなります。"
+msgstr "true にすると、ログインウィンドウに再起動のボタンが表示されなくなります。"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+msgid "Number of allowed authentication failures"
+msgstr "許容できる認証失敗の回数です"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+msgid "The number of times a user is allowed to attempt authentication, before giving up and going back to user selection."
+msgstr "ユーザーが認証を試行できる回数です。この回数を失敗すると、ユーザー選択に戻ることになります。"
+
+#: ../gui/libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "一時的なディスプレイを作成できません:"
+
+#: ../gui/libgdm/gdm-user-switching.c:183
+#: ../gui/libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "セッションを開始することができません:"
+
+#: ../gui/libgdm/gdm-user-switching.c:344
+#: ../gui/libgdm/gdm-user-switching.c:483
+#, c-format
+msgid "Could not identify the current session."
+msgstr "現在のセッションを取得できませんでした。"
+
+#: ../gui/libgdm/gdm-user-switching.c:351
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "セッションを切り替えできません。"
+
+#: ../gui/libgdm/gdm-user-switching.c:492
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "現在のシートを識別できませんでした。"
+
+#: ../gui/libgdm/gdm-user-switching.c:502
+#, c-format
+msgid "The system is unable to determine whether to switch to an existing login screen or start up a new login screen."
+msgstr "既存のログイン画面に切り替えるか、新しいログイン画面を起動するのかを、システムが決定することができませんでした。"
+
+#: ../gui/libgdm/gdm-user-switching.c:510
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "新しいログイン画面を起動できません。"
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
@@ -624,26 +649,26 @@ msgstr "(%a) %p%l:%M:%S"
 msgid "%a %l:%M %p"
 msgstr "(%a) %p%l:%M"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:317
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
 msgid "Automatically logging in…"
 msgstr "自動ログイン中…"
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:933
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
 msgid "Cancelling…"
 msgstr "キャンセル中…"
 
 #. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1489
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
 msgid "Select language and click Log In"
 msgstr "言語を選択してログインをクリックしてください"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1625
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
 msgctxt "customsession"
 msgid "Custom"
 msgstr "カスタム"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1626
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
 msgid "Custom session"
 msgstr "カスタムセッション"
 
@@ -667,23 +692,23 @@ msgstr "アンロック"
 msgid "Login"
 msgstr "ログイン"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:903
+#: ../gui/simple-greeter/gdm-greeter-panel.c:953
 msgid "Suspend"
 msgstr "サスペンド"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:908
+#: ../gui/simple-greeter/gdm-greeter-panel.c:958
 msgid "Restart"
 msgstr "再起動"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:912
+#: ../gui/simple-greeter/gdm-greeter-panel.c:962
 msgid "Shut Down"
 msgstr "シャットダウン"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:961
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1011
 msgid "Unknown time remaining"
 msgstr "残り時間不明"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:983
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1033
 msgid "Panel"
 msgstr "パネル"
 
@@ -753,8 +778,8 @@ msgstr "起動中かどうか"
 msgid "Whether the timer is currently ticking"
 msgstr "現在タイマーが起動しているかどうか"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:460
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:797
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
 #, c-format
 msgid "Log in as %s"
 msgstr "%s というユーザーでログインします"
@@ -764,93 +789,38 @@ msgstr "%s というユーザーでログインします"
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
 msgctxt "user"
 msgid "Other…"
 msgstr "その他…"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:547
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
 msgid "Choose a different account"
 msgstr "他のアカウントを選択します"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:561
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
 msgid "Guest"
 msgstr "ゲスト"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:562
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
 msgid "Log in as a temporary guest"
 msgstr "ゲストとして一時的にログインします"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:577
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
 msgid "Automatic Login"
 msgstr "自動ログイン"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:578
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
 msgid "Automatically log into the system after selecting options"
 msgstr "オプションを選択した後に自動的にログインします"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1353
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
 msgid "Currently logged in"
 msgstr "既にログインしています"
 
-#: ../utils/gdmflexiserver.c:68
-msgid "Only the VERSION command is supported"
-msgstr "VERSION コマンドのみがサポートされています"
-
-#: ../utils/gdmflexiserver.c:68
-msgid "COMMAND"
-msgstr "COMMAND"
-
-#: ../utils/gdmflexiserver.c:69 ../utils/gdmflexiserver.c:70
-#: ../utils/gdmflexiserver.c:72 ../utils/gdmflexiserver.c:73
-msgid "Ignored — retained for compatibility"
-msgstr "無視しました - 下位互換のために残してあるだけです"
-
-#: ../utils/gdmflexiserver.c:71 ../utils/gdm-screenshot.c:43
+#: ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "デバッグ情報を出力する"
-
-#: ../utils/gdmflexiserver.c:75
-msgid "Version of this application"
-msgstr "バージョンを表示する"
-
-#: ../utils/gdmflexiserver.c:673 ../utils/gdmflexiserver.c:835
-#, c-format
-msgid "Could not identify the current session."
-msgstr "現在のセッションを取得できませんでした。"
-
-#: ../utils/gdmflexiserver.c:680
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "セッションを切り替えできません。"
-
-#: ../utils/gdmflexiserver.c:844
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "現在のシートを識別できませんでした。"
-
-#: ../utils/gdmflexiserver.c:854
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"既存のログイン画面に切り替えるか、新しいログイン画面を起動するのかを、システ"
-"ムが決定することができませんでした。"
-
-#: ../utils/gdmflexiserver.c:862
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "新しいログイン画面を起動できません。"
-
-#. Option parsing
-#: ../utils/gdmflexiserver.c:929
-msgid "- New GDM login"
-msgstr "- 新しい GDM のログイン"
-
-#: ../utils/gdmflexiserver.c:985
-msgid "Unable to start new display"
-msgstr "新しいディスプレイを起動できません"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -860,6 +830,36 @@ msgstr "スクリーンショットの撮影"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "画面のスクリーンショットを撮る"
+
+#~ msgid "User %s doesn't exist"
+#~ msgstr "%s というユーザーは存在しません"
+
+#~ msgid "Group %s doesn't exist"
+#~ msgstr "%s というグループは存在しません"
+
+#~ msgid "Unable to initialize login system"
+#~ msgstr "ログインシステムを初期化できません"
+
+#~ msgid "Unable to authenticate user"
+#~ msgstr "ユーザーを認証できません"
+
+#~ msgid "Unable to establish credentials"
+#~ msgstr "信頼できるユーザーと認めることができません"
+
+#~ msgid "Only the VERSION command is supported"
+#~ msgstr "VERSION コマンドのみがサポートされています"
+
+#~ msgid "COMMAND"
+#~ msgstr "COMMAND"
+
+#~ msgid "Ignored — retained for compatibility"
+#~ msgstr "無視しました - 下位互換のために残してあるだけです"
+
+#~ msgid "Version of this application"
+#~ msgstr "バージョンを表示する"
+
+#~ msgid "- New GDM login"
+#~ msgstr "- 新しい GDM のログイン"
 
 #~ msgid "Max Item Count"
 #~ msgstr "アイテムの最大個数"
@@ -892,20 +892,15 @@ msgstr "画面のスクリーンショットを撮る"
 #~ msgid "Recently selected languages"
 #~ msgstr "選択可能な言語"
 
-#~ msgid ""
-#~ "Set to a list of languages to be shown by default in the login window."
+#~ msgid "Set to a list of languages to be shown by default in the login window."
 #~ msgstr "ログインウィンドウで言語のリストをデフォルトで表示します。"
 
 #~ msgid "Set to the themed icon name to use for the greeter logo."
-#~ msgstr ""
-#~ "Greeter のロゴとして使用するテーマ付きのアイコン名 ($datadir/icons/*/ 以下"
-#~ "にあるファイル名) です。"
+#~ msgstr "Greeter のロゴとして使用するテーマ付きのアイコン名 ($datadir/icons/*/ 以下にあるファイル名) です。"
 
 # FIXME: TRUE/true はどのように表示される?
 #~ msgid "Set to true to disable showing known users in the login window."
-#~ msgstr ""
-#~ "true にすると、既知のユーザーがログインウィンドウには表示されなくなりま"
-#~ "す。"
+#~ msgstr "true にすると、既知のユーザーがログインウィンドウには表示されなくなります。"
 
 #~ msgid "Set to true to enable the XRandR settings manager plugin."
 #~ msgstr "true にすると、XRandR の設定プラグインを起動します。"
@@ -921,11 +916,8 @@ msgstr "画面のスクリーンショットを撮る"
 #~ msgid "Set to true to enable the on-screen keyboard."
 #~ msgstr "true にすると、オンスクリーンキーボードを起動します。"
 
-#~ msgid ""
-#~ "Set to true to enable the plugin to manage the accessibility keyboard "
-#~ "settings."
-#~ msgstr ""
-#~ "true にすると、アクセシビリティのキーボード設定プラグインを起動します。"
+#~ msgid "Set to true to enable the plugin to manage the accessibility keyboard settings."
+#~ msgstr "true にすると、アクセシビリティのキーボード設定プラグインを起動します。"
 
 #~ msgid "Set to true to enable the screen magnifier."
 #~ msgstr "true にすると、拡大鏡を起動します。"
@@ -942,12 +934,8 @@ msgstr "画面のスクリーンショットを撮る"
 #~ msgid "Set to true to use Compiz as the window manager."
 #~ msgstr "true にすると、ウィンドウマネージャーとして Compiz を起動します。"
 
-#~ msgid ""
-#~ "Text banner message to show in the login window when the user chooser is "
-#~ "empty, instead of banner_message_text."
-#~ msgstr ""
-#~ "ユーザー選択が空の場合、banner_message_text の代わりにログインウィンドウに"
-#~ "表示するバナーメッセージの文字列。"
+#~ msgid "Text banner message to show in the login window when the user chooser is empty, instead of banner_message_text."
+#~ msgstr "ユーザー選択が空の場合、banner_message_text の代わりにログインウィンドウに表示するバナーメッセージの文字列。"
 
 #~ msgid "True if the XRandR settings manager plugin is enabled."
 #~ msgstr "XRandR の設定プラグインを有効にするかどうか。"
@@ -1002,9 +990,6 @@ msgstr "画面のスクリーンショットを撮る"
 
 #~ msgid "%s: Could not read Client Address"
 #~ msgstr "%s: クライアントのアドレスを取得できませんでした"
-
-#~ msgid "%s: Could not read Authentication Names"
-#~ msgstr "%s: 認証名を取得できませんでした"
 
 #~ msgid "%s: Could not read Authentication Data"
 #~ msgstr "%s: 認証データを取得できませんでした"
