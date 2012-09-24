@@ -48,9 +48,7 @@
 #include "gdm-session-enum-types.h"
 #include "gdm-launch-environment.h"
 
-#define DBUS_LAUNCH_COMMAND BINDIR "/dbus-launch"
-
-#define MAX_LOGS 5
+#define DBUS_LAUNCH_COMMAND BINDIR "/dbus-launch --exit-with-session"
 
 extern char **environ;
 
@@ -74,9 +72,6 @@ struct GdmLaunchEnvironmentPrivate
         char           *x11_display_hostname;
         char           *x11_authority_file;
         gboolean        x11_display_is_local;
-
-        GPid            dbus_pid;
-        char           *dbus_bus_address;
 };
 
 enum {
@@ -109,17 +104,6 @@ static void     gdm_launch_environment_init          (GdmLaunchEnvironment      
 static void     gdm_launch_environment_finalize      (GObject                   *object);
 
 G_DEFINE_TYPE (GdmLaunchEnvironment, gdm_launch_environment, G_TYPE_OBJECT)
-
-static void
-listify_hash (const char *key,
-              const char *value,
-              GPtrArray  *env)
-{
-        char *str;
-        str = g_strdup_printf ("%s=%s", key, value);
-        g_debug ("GdmLaunchEnvironment: launch environment: %s", str);
-        g_ptr_array_add (env, str);
-}
 
 static void
 load_lang_config_file (const char  *config_file,
@@ -265,12 +249,6 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                                               system_data_dirs));
         g_free (system_data_dirs);
 
-        if (launch_environment->priv->dbus_bus_address != NULL) {
-                g_hash_table_insert (hash,
-                                     g_strdup ("DBUS_SESSION_BUS_ADDRESS"),
-                                     g_strdup (launch_environment->priv->dbus_bus_address));
-        }
-
         g_hash_table_insert (hash, g_strdup ("XAUTHORITY"), g_strdup (launch_environment->priv->x11_authority_file));
         g_hash_table_insert (hash, g_strdup ("DISPLAY"), g_strdup (launch_environment->priv->x11_display_name));
 
@@ -313,306 +291,6 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
         g_hash_table_insert (hash, g_strdup ("DCONF_PROFILE"), g_strdup ("gdm"));
 
         return hash;
-}
-
-static GPtrArray *
-get_launch_environment (GdmLaunchEnvironment *launch_environment,
-                        gboolean              start_session)
-{
-        GHashTable    *hash;
-        GPtrArray     *env;
-
-        hash = build_launch_environment (launch_environment, start_session);
-
-        env = g_ptr_array_new ();
-        g_hash_table_foreach (hash, (GHFunc)listify_hash, env);
-        g_hash_table_destroy (hash);
-
-        g_ptr_array_add (env, NULL);
-
-        return env;
-}
-
-static gboolean
-stop_dbus_daemon (GdmLaunchEnvironment *launch_environment)
-{
-        int res;
-
-        if (launch_environment->priv->dbus_pid > 0) {
-                g_debug ("GdmLaunchEnvironment: Stopping D-Bus daemon");
-                res = gdm_signal_pid (-1 * launch_environment->priv->dbus_pid, SIGTERM);
-                if (res < 0) {
-                        g_warning ("Unable to kill D-Bus daemon");
-                } else {
-                        launch_environment->priv->dbus_pid = 0;
-                }
-        }
-        return TRUE;
-}
-
-static void
-rotate_logs (const char *path,
-             guint       n_copies)
-{
-        int i;
-
-        for (i = n_copies - 1; i > 0; i--) {
-                char *name_n;
-                char *name_n1;
-
-                name_n = g_strdup_printf ("%s.%d", path, i);
-                if (i > 1) {
-                        name_n1 = g_strdup_printf ("%s.%d", path, i - 1);
-                } else {
-                        name_n1 = g_strdup (path);
-                }
-
-                VE_IGNORE_EINTR (g_unlink (name_n));
-                VE_IGNORE_EINTR (g_rename (name_n1, name_n));
-
-                g_free (name_n1);
-                g_free (name_n);
-        }
-
-        VE_IGNORE_EINTR (g_unlink (path));
-}
-
-typedef struct {
-        const char      *username;
-        uid_t            uid;
-        gid_t            gid;
-        const char      *log_file;
-} SpawnChildData;
-
-static void
-spawn_child_setup (gpointer user_data)
-{
-        SpawnChildData *data = user_data;
-
-        if (data->uid != 0) {
-                if (setgid (data->gid) < 0)  {
-                        _exit (1);
-                }
-
-                if (initgroups (data->username, data->gid) < 0) {
-                        _exit (1);
-                }
-
-                if (setuid (data->uid) < 0)  {
-                        _exit (1);
-                }
-        } else {
-                gid_t groups[1] = { 0 };
-
-                if (setgid (0) < 0)  {
-                        /* Don't error out, it's not fatal, if it fails we'll
-                         * just still be */
-                }
-
-                /* this will get rid of any suplementary groups etc... */
-                setgroups (1, groups);
-        }
-
-        if (setsid () < 0) {
-                _exit (2);
-        }
-
-        /* Terminate the process when the parent dies */
-#ifdef HAVE_SYS_PRCTL_H
-        prctl (PR_SET_PDEATHSIG, SIGTERM);
-#endif
-
-        if (data->log_file != NULL) {
-                int logfd;
-
-                rotate_logs (data->log_file, MAX_LOGS);
-
-                VE_IGNORE_EINTR (g_unlink (data->log_file));
-                VE_IGNORE_EINTR (logfd = open (data->log_file, O_CREAT|O_APPEND|O_TRUNC|O_WRONLY|O_EXCL, 0644));
-
-                if (logfd != -1) {
-                        VE_IGNORE_EINTR (dup2 (logfd, 1));
-                        VE_IGNORE_EINTR (dup2 (logfd, 2));
-                        close (logfd);
-                }
-        }
-}
-
-static gboolean
-spawn_command_line_sync_as_user (const char      *command_line,
-                                 uid_t            uid,
-                                 gid_t            gid,
-                                 const char      *username,
-                                 const char      *seat_id,
-                                 const char      *runtime_dir,
-                                 const char      *log_file,
-                                 char            **env,
-                                 char            **std_output,
-                                 char            **std_error,
-                                 int              *exit_status,
-                                 GError          **error)
-{
-        char           **argv;
-        GError          *local_error = NULL;
-        gboolean         ret = FALSE;
-        SpawnChildData   data;
-
-        memset (&data, 0, sizeof (data));
-        data.uid = uid;
-        data.gid = gid;
-        data.username = username;
-        data.log_file = log_file;
-
-        g_debug ("GdmLaunchEnvironment: Changing (uid:gid) for child process to (%d:%d)",
-                 uid,
-                 gid);
-
-        argv = NULL;
-        local_error = NULL;
-        if (! g_shell_parse_argv (command_line, NULL, &argv, &local_error)) {
-                g_warning ("Could not parse command: %s", local_error->message);
-                g_propagate_error (error, local_error);
-                goto out;
-        }
-
-        local_error = NULL;
-        if (!g_spawn_sync (NULL,
-                            argv,
-                            env,
-                            G_SPAWN_SEARCH_PATH,
-                            spawn_child_setup,
-                            &data,
-                            std_output,
-                            std_error,
-                            exit_status,
-                           &local_error)) {
-                g_warning ("Could not spawn command: %s", local_error->message);
-                g_propagate_error (error, local_error);
-                goto out;
-        }
-
-        ret = TRUE;
- out:
-        g_strfreev (argv);
-
-        return ret;
-}
-
-static gboolean
-parse_value_as_integer (const char *value,
-                        int        *intval)
-{
-        char *end_of_valid_int;
-        glong long_value;
-        gint  int_value;
-
-        errno = 0;
-        long_value = strtol (value, &end_of_valid_int, 10);
-
-        if (*value == '\0' || *end_of_valid_int != '\0') {
-                return FALSE;
-        }
-
-        int_value = long_value;
-        if (int_value != long_value || errno == ERANGE) {
-                return FALSE;
-        }
-
-        *intval = int_value;
-
-        return TRUE;
-}
-
-static gboolean
-parse_dbus_launch_output (const char   *output,
-                          char        **addressp,
-                          GPid         *pidp,
-                          GError      **error)
-{
-        gboolean    ret = FALSE;
-        GRegex     *re = NULL;
-        GMatchInfo *match_info = NULL;
-
-        re = g_regex_new ("DBUS_SESSION_BUS_ADDRESS=(.+)\nDBUS_SESSION_BUS_PID=([0-9]+)", 0, 0, NULL);
-        g_assert (re != NULL);
-
-        g_regex_match (re, output, 0, &match_info);
-        if (!g_match_info_matches (match_info)) {
-                g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
-                             "Unable to parse dbus-launch output: %s", output);
-                goto out;
-        }
-
-        if (addressp != NULL) {
-                *addressp = g_match_info_fetch (match_info, 1);
-        }
-
-        if (pidp != NULL) {
-                int      pid;
-                gboolean result;
-                result = parse_value_as_integer (g_match_info_fetch (match_info, 2), &pid);
-                if (result) {
-                        *pidp = pid;
-                } else {
-                        *pidp = 0;
-                }
-        }
-
-        ret = TRUE;
- out:
-        if (match_info != NULL)
-                g_match_info_free (match_info);
-        if (re != NULL)
-                g_regex_unref (re);
-
-        return ret;
-}
-
-static gboolean
-start_dbus_daemon (GdmLaunchEnvironment *launch_environment,
-                   uid_t                 uid,
-                   gid_t                 gid,
-                   GError              **error)
-{
-        gboolean   ret = FALSE;
-        int        exit_status;
-        char      *std_out = NULL;
-        char      *std_err = NULL;
-        GPtrArray *env = NULL;
-
-        g_debug ("GdmLaunchEnvironment: Starting D-Bus daemon");
-
-        env = get_launch_environment (launch_environment, FALSE);
-
-        if (!spawn_command_line_sync_as_user (DBUS_LAUNCH_COMMAND,
-                                              uid, gid, launch_environment->priv->user_name,
-                                              launch_environment->priv->x11_display_seat_id,
-                                              launch_environment->priv->runtime_dir,
-                                              NULL, /* log file */
-                                              (char **)env->pdata,
-                                              &std_out,
-                                              &std_err,
-                                              &exit_status,
-                                              error))
-                goto out;
-
-        /* pull the address and pid from the output */
-        if (!parse_dbus_launch_output (std_out,
-                                       &launch_environment->priv->dbus_bus_address,
-                                       &launch_environment->priv->dbus_pid,
-                                       error))
-                goto out;
-
-        g_debug ("GdmLaunchEnvironment: Started D-Bus daemon on pid %d", launch_environment->priv->dbus_pid);
-        ret = TRUE;
- out:
-        if (env) {
-                g_ptr_array_foreach (env, (GFunc)g_free, NULL);
-                g_ptr_array_free (env, TRUE);
-        }
-        g_free (std_out);
-        g_free (std_err);
-        return ret;
 }
 
 static void
@@ -707,9 +385,9 @@ on_conversation_stopped (GdmSession           *session,
         launch_environment->priv->session = NULL;
 
         g_debug ("GdmLaunchEnvironment: conversation stopped");
-        stop_dbus_daemon (launch_environment);
 
         if (launch_environment->priv->pid > 1) {
+                gdm_signal_pid (-launch_environment->priv->pid, SIGTERM);
                 g_signal_emit (G_OBJECT (launch_environment), signals [STOPPED], 0);
         }
 
@@ -778,10 +456,6 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
         if (!ensure_directory_with_uid_gid (passwd_entry->pw_dir, uid, gid, error))
                 goto out;
 
-        if (!start_dbus_daemon (launch_environment, uid, gid, error)) {
-                goto out;
-        }
-
         launch_environment->priv->session = gdm_session_new (launch_environment->priv->verification_mode,
                                                              uid,
                                                              launch_environment->priv->x11_display_name,
@@ -836,15 +510,13 @@ gboolean
 gdm_launch_environment_stop (GdmLaunchEnvironment *launch_environment)
 {
         if (launch_environment->priv->pid > 1) {
-                gdm_signal_pid (launch_environment->priv->pid, SIGTERM);
+                gdm_signal_pid (-launch_environment->priv->pid, SIGTERM);
         } else {
                 if (launch_environment->priv->session != NULL) {
                         gdm_session_stop_conversation (launch_environment->priv->session, "gdm-launch-environment");
                         gdm_session_close (launch_environment->priv->session);
 
                         g_clear_object (&launch_environment->priv->session);
-                } else {
-                        stop_dbus_daemon (launch_environment);
                 }
 
                 g_signal_emit (G_OBJECT (launch_environment), signals [STOPPED], 0);
@@ -940,7 +612,7 @@ _gdm_launch_environment_set_command (GdmLaunchEnvironment *launch_environment,
                                      const char           *name)
 {
         g_free (launch_environment->priv->command);
-        launch_environment->priv->command = g_strdup (name);
+        launch_environment->priv->command = g_strdup_printf ("%s %s", DBUS_LAUNCH_COMMAND, name);
 }
 
 static void
@@ -1209,7 +881,6 @@ gdm_launch_environment_finalize (GObject *object)
         g_free (launch_environment->priv->x11_display_device);
         g_free (launch_environment->priv->x11_display_hostname);
         g_free (launch_environment->priv->x11_authority_file);
-        g_free (launch_environment->priv->dbus_bus_address);
         g_free (launch_environment->priv->session_id);
 
         G_OBJECT_CLASS (gdm_launch_environment_parent_class)->finalize (object);
