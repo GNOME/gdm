@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: GDM MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-03-17 14:18+0000\n"
-"PO-Revision-Date: 2012-03-17 16:35+0200\n"
+"POT-Creation-Date: 2012-09-22 22:55+0000\n"
+"PO-Revision-Date: 2012-09-23 09:34+0300\n"
 "Last-Translator: Mattias Põldaru <mahfiaz@gmail.com>\n"
 "Language-Team: Estonian <>\n"
 "Language: et\n"
@@ -32,44 +32,38 @@ msgstr ""
 msgid "/dev/urandom is not a character device"
 msgstr "/dev/urandom pole märkseade"
 
-msgid "Display ID"
-msgstr "Kuva ID"
-
-msgid "ID"
-msgstr "ID"
-
-msgid "GNOME Display Manager Slave"
-msgstr "GNOME'i kuvahalduri ori"
-
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "kasutajat \"%s\" pole võimalik süsteemist leida"
 
-msgid "Unable to initialize login system"
-msgstr "Sisselogimissüsteemi pole võimalik lähtestada"
+#, c-format
+msgid "No session available yet"
+msgstr "Ühtegi seannsi pole veel saadaval"
 
-msgid "Unable to authenticate user"
-msgstr "Kasutajat pole võimalik autentida"
+#, c-format
+msgid "Unable to look up UID of user %s"
+msgstr "Kasutaja %s UID-d ei leitud"
 
-msgid "Unable to authorize user"
-msgstr "Kasutajat pole võimalik autoriseerida"
+msgid "no sessions available"
+msgstr "seansse pole saadaval"
 
-msgid "Unable to establish credentials"
-msgstr "Autentimistunnuseid pole võimalik tuvastada"
+#, c-format
+msgid "No sessions for %s available for reauthentication"
+msgstr "Uuesti autentimiseks pole %s jaoks saadaval ühtegi seanssi"
 
-msgid "Unable to open session"
-msgstr "Seanssi pole võimalik avada"
+#, c-format
+msgid "Unable to find session for user %s"
+msgstr "Kasutaja %s jaoks ei leitud seanssi"
 
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"X-serverit (graafilist kasutajakeskkonda) pole võimalik mingi vea tõttu "
-"käivitada. Palun võta ühendust oma süsteemihalduriga või uuri veale "
-"jälilejõudmiseks süsteemi logisid.  Vahepeal on see kuva blokitud.  "
-"Probleemide kõrvaldamise järel taaskäivita palun GDM."
+#, c-format
+msgid "Unable to find appropriate session for user %s"
+msgstr "Kasutaja %s jaoks ei leitud sobivat seanssi"
+
+msgid "User doesn't own session"
+msgstr "Kasutajal pole seanssi"
+
+msgid "No session available"
+msgstr "Seanss pole saadaval"
 
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
@@ -127,6 +121,9 @@ msgstr "Kuvaseade"
 msgid "The display device"
 msgstr "Kuvaseade"
 
+msgid "Could not create authentication helper process"
+msgstr "Autentimise abiprotsessi ei suudetud luua"
+
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "viga autentimissüsteemiga suhtluse alustamisel - %s"
@@ -178,13 +175,31 @@ msgstr "kasutajakonto pole saadaval"
 msgid "Unable to change to user"
 msgstr "Kasutajat pole võimalik vahetada"
 
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "Kasutajat %s pole olemas"
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"X-serverit (graafilist kasutajakeskkonda) pole võimalik mingi vea tõttu "
+"käivitada. Palun võta ühendust oma süsteemihalduriga või uuri veale "
+"jälilejõudmiseks süsteemi logisid.  Vahepeal on see kuva blokitud.  "
+"Probleemide kõrvaldamise järel palun taaskäivita GDM."
 
 #, c-format
-msgid "Group %s doesn't exist"
-msgstr "Gruppi %s pole olemas"
+msgid "Can only be called before user is logged in"
+msgstr "Seda saab kutsuda ainult enne kasutaja sisselogimist"
+
+#, c-format
+msgid "Caller not GDM"
+msgstr "Väljakutsuja pole GDM"
+
+msgid "User not logged in"
+msgstr "Kasutaja pole sisselogitud"
+
+#, c-format
+msgid "Currently, only one client can be connected at once"
+msgstr "Praegu saab ainult üks klient korraga ühenduda"
 
 msgid "Could not create socket!"
 msgstr "Soklit pole võimalik luua!"
@@ -252,6 +267,15 @@ msgstr "Ainult juurkasutaja tohib GDM-i käivitada"
 #. of starting up a session
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME'i kuvahalduri sessioonitööline"
+
+msgid "Display ID"
+msgstr "Kuva ID"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "GNOME Display Manager Slave"
+msgstr "GNOME'i kuvahalduri ori"
 
 msgid "Login Window"
 msgstr "Sisselogimisaken"
@@ -348,6 +372,46 @@ msgid "Set to true to disable showing the restart buttons in the login window."
 msgstr ""
 "Kui märgitud, siis on taaskäivitamise nuppude näitamine sisselogimisaknas "
 "keelatud."
+
+msgid "Number of allowed authentication failures"
+msgstr "Mitu korda tohib autentimine nurjuda"
+
+msgid ""
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
+msgstr ""
+"Mitu korda tohib kasutaja autentimine nurjuda, enne kui loobutakse ning "
+"naasetakse kasutaja valiku juurde."
+
+msgid "Unable to create transient display: "
+msgstr "Lühiajalist kuva pole võimalik luua:"
+
+msgid "Unable to activate session: "
+msgstr "Seanssi pole võimalik aktiveerida:"
+
+#, c-format
+msgid "Could not identify the current session."
+msgstr "Praegust seanssi pole võimalik tuvastada."
+
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "Kasutajal pole võimalik seansse vahetada"
+
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "Praegust olekut pole võimalik tuvastada."
+
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"Süsteem ei suuda otsustada, kas hüpata olemasolevale sisselogimiskuvale või "
+"käivitada uus."
+
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "Süsteem ei suuda käivitada uut sisselogimiskuva."
 
 msgid "Select System"
 msgstr "Süsteemi valimine"
@@ -619,55 +683,8 @@ msgstr "Automaatne sisselogimine pärast valikute märkimist"
 msgid "Currently logged in"
 msgstr "Hetkel sisselogitud"
 
-msgid "Only the VERSION command is supported"
-msgstr "Ainult käsk VERSION on toetatud"
-
-msgid "COMMAND"
-msgstr "KÄSK"
-
-msgid "Ignored — retained for compatibility"
-msgstr "Eiratakse - see on lubatud ühilduvuse eesmärkidel"
-
 msgid "Debugging output"
 msgstr "Väljastab silumisteavet"
-
-msgid "Version of this application"
-msgstr "Selle rakenduse versioon"
-
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Praegust seanssi pole võimalik tuvastada."
-
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Kasutajal pole võimalik seansse vahetada"
-
-#, c-format
-msgid "Could not identify the current seat."
-msgstr "Praegust olekut pole võimalik tuvastada."
-
-#, c-format
-msgid ""
-"The system is unable to determine whether to switch to an existing login "
-"screen or start up a new login screen."
-msgstr ""
-"Süsteem ei suuda otsustada, kas hüpata olemasolevale sisselogimiskuvale või "
-"käivitada uus."
-
-#, c-format
-msgid "The system is unable to start up a new login screen."
-msgstr "Süsteem ei suuda käivitada uut sisselogimiskuva."
-
-#, c-format
-msgid "The system is unable to find a login screen to switch to."
-msgstr "Süsteem ei suuda leida sisselogimiskuva, millele hüpata."
-
-#. Option parsing
-msgid "- New GDM login"
-msgstr "- Uus GDM sisselogimine"
-
-msgid "Unable to start new display"
-msgstr "Uut kuva pole võimalik käivitada"
 
 msgid "Screenshot taken"
 msgstr "Ekraanipilt on tehtud"
@@ -675,103 +692,3 @@ msgstr "Ekraanipilt on tehtud"
 #. Option parsing
 msgid "Take a picture of the screen"
 msgstr "Ekraani pildistamine"
-
-#~ msgid "Max Item Count"
-#~ msgstr "Suurim kirjete arv"
-
-#~ msgid "The maximum number of items to keep around in the list"
-#~ msgstr "Suurim nimekirjas hoitavate kirjete arv"
-
-#~ msgid "Banner message text when chooser is empty"
-#~ msgstr "Bännersõnumi tekst tühja kasutajate valimise nimekirja korral"
-
-#~ msgid ""
-#~ "Text banner message to show in the login window when the user chooser is "
-#~ "empty, instead of banner_message_text."
-#~ msgstr ""
-#~ "Tühja kasutajate nimekirja korral sisselogimisaknas banner_message_text "
-#~ "väärtuse asemel kuvatav bännertekst."
-
-#~ msgid "Icon name to use for greeter logo"
-#~ msgstr "Tervitaja logona kasutatava ikooni nimi"
-
-#~ msgid "Set to the themed icon name to use for the greeter logo."
-#~ msgstr "Tervitaja logona kasutatava teemaikooni nimi."
-
-#~ msgid "Do not show known users in the login window"
-#~ msgstr "Sisselogimisaknas ei näidata teadaolevaid kasutajaid"
-
-#~ msgid "Set to true to disable showing known users in the login window."
-#~ msgstr ""
-#~ "Kui märgitud, siis on teadaolevate kasutajate näitamine sisselogimisaknas "
-#~ "keelatud."
-
-#~ msgid "Recently selected languages"
-#~ msgstr "Viimati valitud keeled"
-
-#~ msgid ""
-#~ "Set to a list of languages to be shown by default in the login window."
-#~ msgstr "Sisselogimisaknas näidatavate keelte nimekirja määramine."
-
-#~ msgid "Use Compiz as the window manager"
-#~ msgstr "Compiz'i kasutamine aknahaldurina"
-
-#~ msgid "Set to true to use Compiz as the window manager."
-#~ msgstr "Kui märgitud, siis kasutatakse aknahaldurina Compiz'it."
-
-#~ msgid "Enable on-screen keyboard"
-#~ msgstr "Ekraaniklaviatuuri lubamine"
-
-#~ msgid "Set to true to enable the on-screen keyboard."
-#~ msgstr "Kui märgitud, siis on ekraaniklaviatuur lubatud."
-
-#~ msgid "Enable screen reader"
-#~ msgstr "Ekraanilugeja lubamine"
-
-#~ msgid "Set to true to enable the screen reader."
-#~ msgstr "Kui märgitud, siis on ekraanilugeja lubatud."
-
-#~ msgid "Enable screen magnifier"
-#~ msgstr "Ekraaniluubi lubamine"
-
-#~ msgid "Set to true to enable the screen magnifier."
-#~ msgstr "Kui märgitud, siis on ekraani luup lubatud."
-
-#~ msgid "Enable accessibility keyboard plugin"
-#~ msgstr "Hõlbustustega klaviatuuri plugina lubamine"
-
-#~ msgid ""
-#~ "Set to true to enable the plugin to manage the accessibility keyboard "
-#~ "settings."
-#~ msgstr ""
-#~ "Kui märgitud, siis on klaviatuurihõlbustuste sätete haldamine lubatud."
-
-#~ msgid "True if the background settings manager plugin is enabled."
-#~ msgstr "Kui märgitud, siis on taustasätete halduri plugin lubatud."
-
-#~ msgid "Set to true to enable the background settings manager plugin."
-#~ msgstr "Kui märgitud, siis on taustasätete halduri plugin lubatud."
-
-#~ msgid "True if the media-keys settings manager plugin is enabled."
-#~ msgstr "Kui märgitud, siis on meediaklahvide sätete halduri plugin lubatud."
-
-#~ msgid "Set to true to enable the media-keys settings manager plugin."
-#~ msgstr "Kui märgitud, siis on meediaklahvide sätete halduri plugin lubatud."
-
-#~ msgid "True if the sound settings manager plugin is enabled."
-#~ msgstr "Kui märgitud, siis on helisätete halduri plugin lubatud."
-
-#~ msgid "Set to true to enable the sound settings manager plugin."
-#~ msgstr "Kui märgitud, siis on helisätete halduri plugin lubatud."
-
-#~ msgid "True if the XRandR settings manager plugin is enabled."
-#~ msgstr "Kui märgitud, siis on XRandR-sätete halduri plugin lubatud."
-
-#~ msgid "Set to true to enable the XRandR settings manager plugin."
-#~ msgstr "Kui märgitud, siis on XRandR sätetehalduri plugin lubatud."
-
-#~ msgid "True if the xsettings settings manager plugin is enabled."
-#~ msgstr "Kui märgitud, siis on xsettings sätetehalduri plugin lubatud."
-
-#~ msgid "Set to true to enable the xsettings settings manager plugin."
-#~ msgstr "Kui märgitud, siis on xsettings sätetehalduri plugin lubatud."
