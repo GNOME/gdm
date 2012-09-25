@@ -1044,7 +1044,7 @@ register_worker (GdmDBusWorkerManager  *worker_manager_interface,
                                                                      NULL,
                                                                      GDM_WORKER_DBUS_PATH,
                                                                      NULL, NULL);
-        g_dbus_proxy_set_default_timeout (conversation->worker_proxy, G_MAXINT);
+        g_dbus_proxy_set_default_timeout (G_DBUS_PROXY (conversation->worker_proxy), G_MAXINT);
 
         g_signal_connect (conversation->worker_proxy,
                           "username-changed",
