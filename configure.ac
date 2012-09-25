@@ -116,10 +116,17 @@ PKG_CHECK_MODULES(CANBERRA_GTK,
 AC_SUBST(CANBERRA_GTK_CFLAGS)
 AC_SUBST(CANBERRA_GTK_LIBS)
 
+AC_ARG_WITH(selinux,
+            AS_HELP_STRING([--with-selinux],
+                           [Add SELinux support]),,
+            with_selinux=auto)
+
 PKG_CHECK_MODULES(LIBSELINUX, libselinux, have_selinux=yes, have_selinux=no)
 
-if test "x$have_selinux" = "xyes" ; then
+use_selinux=no
+if test "x$have_selinux" = "xyes" && test "x$with_selinux" != "xno" ; then
         AC_DEFINE(HAVE_SELINUX, 1, [Define if have selinux])
+        use_selinux=yes
 fi
 AC_SUBST(LIBSELINUX_CFLAGS)
 AC_SUBST(LIBSELINUX_LIBS)
@@ -1613,7 +1620,7 @@ fi
 echo \
 "        Xinerama support:         ${XINERAMA_SUPPORT}
         XDMCP support:            ${XDMCP_SUPPORT}
-        SELinux support:          ${have_selinux}
+        SELinux support:          ${use_selinux}
         ConsoleKit support:       ${use_console_kit}
         systemd support:          ${use_systemd}
         systemd unit dir:         ${with_systemdsystemunitdir}
