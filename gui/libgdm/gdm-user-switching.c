@@ -409,6 +409,8 @@ get_login_window_session_id_for_systemd (const char  *seat_id,
         int        res, i;
         char     **sessions;
         char      *service_id;
+        char      *service_class;
+        char      *state;
 
         res = sd_seat_get_sessions (seat_id, &sessions, NULL, NULL);
         if (res < 0) {
@@ -423,6 +425,33 @@ get_login_window_session_id_for_systemd (const char  *seat_id,
         }
 
         for (i = 0; sessions[i]; i ++) {
+
+                res = sd_session_get_class (sessions[i], &service_class);
+                if (res < 0) {
+                        g_debug ("failed to determine class of session %s: %s", sessions[i], strerror (-res));
+                        ret = FALSE;
+                        goto out;
+                }
+
+                if (strcmp (service_class, "greeter") != 0) {
+                        free (service_class);
+                        continue;
+                }
+
+                free (service_class);
+
+                ret = sd_session_get_state (sessions[i], &state);
+                if (ret < 0) {
+                        g_debug ("failed to determine state of session %s: %s", sessions[i], strerror (-res));
+                        ret = FALSE;
+                        goto out;
+                }
+
+                if (g_strcmp0 (state, "closing") == 0) {
+                        free (state);
+                        continue;
+                }
+                free (state);
 
                 res = sd_session_get_service (sessions[i], &service_id);
                 if (res < 0) {
