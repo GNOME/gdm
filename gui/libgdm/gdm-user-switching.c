@@ -251,7 +251,7 @@ seat_can_activate_sessions (GDBusConnection *connection,
                 return FALSE;
         }
 
-        g_variant_get (reply, "(&b)", &ret);
+        g_variant_get (reply, "(b)", &ret);
         g_variant_unref (reply);
 
         return ret;
