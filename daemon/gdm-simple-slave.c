@@ -1147,12 +1147,14 @@ create_initial_setup_user (GdmSimpleSlave *slave)
                         ret = FALSE;
                         goto out;
                 }
+
+                g_clear_error (&error);
         } else {
                 g_object_unref (user);
         }
 
         /* Now, make sure the PolicyKit policy is in place */
-        src_file = g_file_new_for_path (DATADIR "/gnome-initial-setup" RULES_FILE);
+        src_file = g_file_new_for_path (DATADIR "/gnome-initial-setup/" RULES_FILE);
         dest_file = g_file_new_for_path (RULES_DIR RULES_FILE);
 
         if (!g_file_copy (src_file,
