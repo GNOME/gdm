@@ -1118,7 +1118,7 @@ start_greeter (GdmSimpleSlave *slave)
         start_launch_environment (slave, GDM_USERNAME, NULL);
 }
 
-#define RULES_DIR LOCALSTATEDIR "/lib/polkit-1/localauthority/10-vendor.d/"
+#define RULES_DIR DATADIR "/polkit-1/rules.d/"
 #define RULES_FILE "20-gnome-initial-setup.rules"
 
 static const gboolean
