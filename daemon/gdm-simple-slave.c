@@ -1197,12 +1197,13 @@ destroy_initial_setup_user (GdmSimpleSlave *slave)
 
         error = NULL;
         user = act_user_manager_get_user (act, INITIAL_SETUP_USERNAME);
-        if (!act_user_manager_delete_user (act, user, TRUE, &error)) {
-                g_warning ("Failed to delete user '%s': %s", INITIAL_SETUP_USERNAME, error->message);
-                g_error_free (error);
+        if (user != NULL) {
+                if (!act_user_manager_delete_user (act, user, TRUE, &error)) {
+                        g_warning ("Failed to delete user '%s': %s", INITIAL_SETUP_USERNAME, error->message);
+                        g_error_free (error);
+                }
+                g_object_unref (user);
         }
-
-        g_object_unref (user);
 }
 
 static void
