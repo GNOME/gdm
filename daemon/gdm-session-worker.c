@@ -1780,6 +1780,14 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 char  *home_dir;
                 int    fd;
 
+                fd = open ("/dev/null", O_RDWR);
+                dup2 (fd, STDIN_FILENO);
+                close (fd);
+
+                if (worker->priv->is_program_session) {
+                        fd = _open_program_session_log (worker->priv->log_file);
+                }
+
                 if (setuid (worker->priv->uid) < 0) {
                         g_debug ("GdmSessionWorker: could not reset uid: %s", g_strerror (errno));
                         _exit (1);
@@ -1790,7 +1798,6 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                                  (guint) getpid (), g_strerror (errno));
                         _exit (2);
                 }
-
 
                 kerberos_cache = gdm_session_worker_get_environment_variable (worker, "KRB5CCNAME");
 
@@ -1823,13 +1830,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                         g_chdir ("/");
                 }
 
-                fd = open ("/dev/null", O_RDWR);
-                dup2 (fd, STDIN_FILENO);
-                close (fd);
-
-                if (worker->priv->is_program_session) {
-                        fd = _open_program_session_log (worker->priv->log_file);
-                } else {
+                if (!worker->priv->is_program_session) {
                         if (home_dir != NULL && home_dir[0] != '\0') {
                                 char *cache_dir;
                                 char *log_dir;
