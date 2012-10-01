@@ -115,6 +115,8 @@ static void     gdm_simple_slave_open_reauthentication_channel (GdmSlave        
                                                                 gpointer              user_data,
                                                                 GCancellable         *cancellable);
 
+static gboolean wants_initial_setup (GdmSimpleSlave *slave);
+static void destroy_initial_setup_user (GdmSimpleSlave *slave);
 G_DEFINE_TYPE (GdmSimpleSlave, gdm_simple_slave, GDM_TYPE_SLAVE)
 
 static void create_new_session (GdmSimpleSlave  *slave);
@@ -842,6 +844,9 @@ on_greeter_environment_session_stopped (GdmLaunchEnvironment *greeter_environmen
         if (slave->priv->start_session_service_name == NULL) {
                 gdm_slave_stop (GDM_SLAVE (slave));
         } else {
+                if (wants_initial_setup (slave)) {
+                        destroy_initial_setup_user (slave);
+                }
                 start_session (slave);
         }
 
@@ -1211,7 +1216,6 @@ start_initial_setup (GdmSimpleSlave *slave)
 {
         create_initial_setup_user (slave);
         start_launch_environment (slave, INITIAL_SETUP_USERNAME, "gnome-initial-setup");
-        destroy_initial_setup_user (slave);
 }
 
 static gboolean
