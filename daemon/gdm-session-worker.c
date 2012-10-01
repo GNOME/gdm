@@ -1530,10 +1530,10 @@ gdm_session_worker_accredit_user (GdmSessionWorker  *worker,
         return ret;
 }
 
-static char **
+static const char * const *
 gdm_session_worker_get_environment (GdmSessionWorker *worker)
 {
-        return pam_getenvlist (worker->priv->pam_handle);
+        return (const char * const *) pam_getenvlist (worker->priv->pam_handle);
 }
 
 static void
@@ -1775,7 +1775,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
         }
 
         if (session_pid == 0) {
-                char **environment;
+                const char * const * environment;
                 char  *kerberos_cache;
                 char  *home_dir;
                 int    fd;
@@ -1869,6 +1869,7 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
 
                 gdm_session_execute (worker->priv->arguments[0],
                                      worker->priv->arguments,
+                                     (char **)
                                      environment,
                                      TRUE);
 
@@ -2693,7 +2694,7 @@ reauthentication_request_new (GdmSessionWorker      *worker,
                               GDBusMethodInvocation *invocation)
 {
         ReauthenticationRequest *request;
-        char **environment;
+        const char * const * environment;
         char *address;
 
         environment = gdm_session_worker_get_environment (worker);
