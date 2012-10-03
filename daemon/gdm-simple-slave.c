@@ -65,6 +65,7 @@
 #define DEFAULT_PING_INTERVAL 15
 
 #define INITIAL_SETUP_USERNAME "gnome-initial-setup"
+#define INITIAL_SETUP_TRIGGER_FILE LOCALSTATEDIR "/lib/gdm/run-initial-setup"
 
 struct GdmSimpleSlavePrivate
 {
@@ -1209,6 +1210,10 @@ destroy_initial_setup_user (GdmSimpleSlave *slave)
                 }
                 g_object_unref (user);
         }
+
+        if (g_remove (INITIAL_SETUP_TRIGGER_FILE) < 0) {
+                g_warning ("Failed to remove '%s': %s", INITIAL_SETUP_TRIGGER_FILE, g_strerror (errno));
+        }
 }
 
 static void
@@ -1228,8 +1233,6 @@ wants_autologin (GdmSimpleSlave *slave)
         gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &enabled, NULL, &delay);
         return enabled && delay == 0;
 }
-
-#define INITIAL_SETUP_TRIGGER_FILE LOCALSTATEDIR "/lib/gdm/run-initial-setup"
 
 static gboolean
 wants_initial_setup (GdmSimpleSlave *slave)
