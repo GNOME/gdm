@@ -485,8 +485,12 @@ on_session_conversation_started (GdmSession       *session,
         char    *username;
         int      delay;
 
+        g_debug ("GdmSimpleSlave: session conversation started for service %s", service_name);
 
-        g_debug ("GdmSimpleSlave: session conversation started");
+        if (g_strcmp0 (service_name, "gdm-autologin") != 0) {
+                return;
+        }
+
         enabled = FALSE;
         gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &enabled, &username, &delay);
         if (! enabled) {
