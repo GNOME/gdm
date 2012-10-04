@@ -146,6 +146,12 @@ write_pid (void)
 }
 
 static void
+delete_first_run_marker (void)
+{
+        g_unlink (GDM_RAN_ONCE_MARKER_FILE);
+}
+
+static void
 check_logdir (void)
 {
         struct stat     statbuf;
@@ -162,6 +168,7 @@ check_logdir (void)
                 }
                 g_chmod (log_path, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
         }
+
 }
 
 static void
@@ -486,6 +493,10 @@ main (int    argc,
         set_effective_user_group (0, 0);
         check_logdir ();
 
+        /* Set up /var/run/gdm */
+        g_mkdir_with_parents (GDM_RAN_ONCE_MARKER_DIR, 0755);
+        g_chmod (GDM_RAN_ONCE_MARKER_DIR, S_IRWXU | S_IRWXG);
+
         /* XDM compliant error message */
         if (getuid () != 0) {
                 /* make sure the pid file doesn't get wiped */
@@ -499,6 +510,9 @@ main (int    argc,
         /* pid file */
         delete_pid ();
         write_pid ();
+
+        /* clean up any stale ran once marker file that may be lingering */
+        delete_first_run_marker ();
 
         g_chdir (AUTHDIR);
 

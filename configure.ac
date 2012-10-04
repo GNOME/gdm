@@ -1333,6 +1333,26 @@ AC_SUBST(GDM_PID_FILE)
 AC_DEFINE_UNQUOTED(GDM_PID_FILE, "$GDM_PID_FILE", [pid file])
 
 dnl ---------------------------------------------------------------------------
+dnl - ran once marker
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_WITH(ran-once-marker-directory,
+            AS_HELP_STRING([--with-ran-once-marker-directory=<dir>],
+                           [ran once marker directory]))
+
+if ! test -z "$with_ran_once_marker_directory"; then
+   GDM_RAN_ONCE_MARKER_DIR=$with_ran_once_marker_directory
+else
+   GDM_RAN_ONCE_MARKER_DIR=${localstatedir}/run/gdm
+fi
+AC_SUBST(GDM_RAN_ONCE_MARKER_DIR)
+AC_DEFINE_UNQUOTED(GDM_RAN_ONCE_MARKER_DIR, "$GDM_RAN_ONCE_MARKER_DIR", [ran once marker dir])
+
+GDM_RAN_ONCE_MARKER_FILE="$GDM_RAN_ONCE_MARKER_DIR/ran-once-marker"
+AC_SUBST(GDM_RAN_ONCE_MARKER_FILE)
+AC_DEFINE_UNQUOTED(GDM_RAN_ONCE_MARKER_FILE, "$GDM_RAN_ONCE_MARKER_FILE", [ran once marker file])
+
+dnl ---------------------------------------------------------------------------
 dnl - GREETER WORKING DIRECTORY
 dnl ---------------------------------------------------------------------------
 
