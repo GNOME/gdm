@@ -521,6 +521,10 @@ start_autologin_conversation_if_necessary (GdmSimpleSlave  *slave)
 {
         gboolean enabled;
 
+        if (g_file_test (GDM_RAN_ONCE_MARKER_FILE, G_FILE_TEST_EXISTS)) {
+                return;
+        }
+
         gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &enabled, NULL, NULL);
 
         if (!enabled) {
@@ -734,6 +738,23 @@ on_session_cancelled (GdmSession      *session,
 }
 
 static void
+touch_marker_file (GdmSimpleSlave *slave)
+{
+        int fd;
+
+        fd = g_creat (GDM_RAN_ONCE_MARKER_FILE, 0644);
+
+        if (fd < 0 && errno != EEXIST) {
+                g_warning ("could not create %s to mark run, this may cause auto login "
+                           "to repeat: %m", GDM_RAN_ONCE_MARKER_FILE);
+                return;
+        }
+
+        fsync (fd);
+        close (fd);
+}
+
+static void
 create_new_session (GdmSimpleSlave  *slave)
 {
         gboolean       display_is_local;
@@ -834,6 +855,8 @@ create_new_session (GdmSimpleSlave  *slave)
                           slave);
 
         start_autologin_conversation_if_necessary (slave);
+
+        touch_marker_file (slave);
 }
 
 static void
@@ -1248,6 +1271,10 @@ wants_autologin (GdmSimpleSlave *slave)
         gboolean enabled = FALSE;
         int delay = 0;
         /* FIXME: handle wait-for-go */
+
+        if (g_file_test (GDM_RAN_ONCE_MARKER_FILE, G_FILE_TEST_EXISTS)) {
+                return FALSE;
+        }
 
         gdm_slave_get_timed_login_details (GDM_SLAVE (slave), &enabled, NULL, &delay);
         return enabled && delay == 0;

@@ -145,6 +145,12 @@ write_pid (void)
         atexit (delete_pid);
 }
 
+static void
+delete_first_run_marker (void)
+{
+        g_unlink (GDM_RAN_ONCE_MARKER_FILE);
+}
+
 static gboolean
 ensure_dir_with_perms (const char *path,
                        uid_t       uid,
@@ -177,6 +183,12 @@ gdm_daemon_ensure_dirs (uid_t uid,
                         gid_t gid)
 {
         GError *error = NULL;
+
+        /* Set up /var/run/gdm */
+        if (!ensure_dir_with_perms (GDM_RAN_ONCE_MARKER_DIR, 0, gid, (S_IRWXU | S_IRWXG), &error)) {
+                gdm_fail (_("Failed to create ran once marker dir %s: %s"),
+                          GDM_RAN_ONCE_MARKER_DIR, error->message);
+        }
 
         /* Set up /var/gdm */
         if (!ensure_dir_with_perms (AUTHDIR, uid, gid, (S_IRWXU | S_IRWXG | S_ISVTX), &error)) {
@@ -420,6 +432,9 @@ main (int    argc,
         /* pid file */
         delete_pid ();
         write_pid ();
+
+        /* clean up any stale ran once marker file that may be lingering */
+        delete_first_run_marker ();
 
         g_chdir (AUTHDIR);
 
