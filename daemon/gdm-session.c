@@ -713,15 +713,14 @@ gdm_session_handle_info (GdmDBusWorkerManager  *worker_manager_interface,
                          const char            *info,
                          GdmSession            *self)
 {
-
-        g_return_val_if_fail (self->priv->user_verifier_interface != NULL, FALSE);
-
         gdm_dbus_worker_manager_complete_info (worker_manager_interface,
                                                invocation);
 
-        gdm_dbus_user_verifier_emit_info (self->priv->user_verifier_interface,
-                                          service_name,
-                                          info);
+        if (self->priv->user_verifier_interface != NULL) {
+                gdm_dbus_user_verifier_emit_info (self->priv->user_verifier_interface,
+                                                  service_name,
+                                                  info);
+        }
 
         return TRUE;
 }
