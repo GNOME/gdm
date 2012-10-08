@@ -21,7 +21,18 @@ edit = sed \
 	-e 's|@GDM_PID_FILE[@]|$(GDM_PID_FILE)|g'
 
 bin_PROGRAMS = \
+	gdmflexiserver		\
 	gdm-screenshot		\
+	$(NULL)
+
+gdmflexiserver_SOURCES =	\
+	gdmflexiserver.c	\
+	$(NULL)
+
+gdmflexiserver_LDADD =		\
+	$(GTK_LIBS)		\
+	$(COMMON_LIBS)		\
+	$(SYSTEMD_LIBS)         \
 	$(NULL)
 
 gdm_screenshot_SOURCES =	\
