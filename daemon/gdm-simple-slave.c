@@ -311,17 +311,18 @@ gdm_simple_slave_start_session_when_ready (GdmSimpleSlave *slave,
 }
 
 static gboolean
-try_migrate_session (GdmSimpleSlave  *slave)
+switch_to_and_unlock_session (GdmSimpleSlave  *slave,
+                              gboolean         fail_if_already_switched)
 {
         char    *username;
         gboolean res;
 
-        g_debug ("GdmSimpleSlave: trying to migrate session");
-
         username = gdm_session_get_username (slave->priv->session);
 
+        g_debug ("GdmSimpleSlave: trying to switch to session for user %s", username);
+
         /* try to switch to an existing session */
-        res = gdm_slave_switch_to_user_session (GDM_SLAVE (slave), username);
+        res = gdm_slave_switch_to_user_session (GDM_SLAVE (slave), username, fail_if_already_switched);
         g_free (username);
 
         return res;
@@ -392,11 +393,18 @@ static gboolean
 start_session_timeout (GdmSimpleSlave  *slave)
 {
         gboolean migrated;
-
+        gboolean fail_if_already_switched = TRUE;
 
         g_debug ("GdmSimpleSlave: accredited");
 
-        migrated = try_migrate_session (slave);
+        /* If there's already a session running, jump to it.
+         * If the only session running is the one we just opened,
+         * start a session on it.
+         *
+         * We assume we're in the former case if we need to switch
+         * VTs, and we assume we're in the latter case if we don't.
+         */
+        migrated = switch_to_and_unlock_session (slave, fail_if_already_switched);
         g_debug ("GdmSimpleSlave: migrated: %d", migrated);
         if (migrated) {
                 /* We don't stop the slave here because
@@ -438,7 +446,14 @@ on_session_reauthenticated (GdmSession       *session,
                             const char       *service_name,
                             GdmSimpleSlave   *slave)
 {
-        try_migrate_session (slave);
+        gboolean fail_if_already_switched = FALSE;
+
+        /* There should already be a session running, so jump to it's
+         * VT. In the event we're already on the right VT, (i.e. user
+         * used an unlock screen instead of a user switched login screen),
+         * then silently succeed and unlock the session.
+         */
+        switch_to_and_unlock_session (slave, fail_if_already_switched);
 }
 
 static void
