@@ -1474,15 +1474,6 @@ activate_session_id_for_systemd (GdmSlave   *slave,
         GError *error = NULL;
         GVariant *reply;
 
-        /* Can't activate what's already active. We want this
-         * to fail, because we don't want migration to succeed
-         * if the only active session is the one just created
-         * at the login screen.
-         */
-        if (sd_session_is_active (session_id) > 0) {
-                return FALSE;
-        }
-
         reply = g_dbus_connection_call_sync (slave->priv->connection,
                                              "org.freedesktop.login1",
                                              "/org/freedesktop/login1",
@@ -1554,6 +1545,59 @@ activate_session_id (GdmSlave   *slave,
 
 #ifdef WITH_CONSOLE_KIT
         return activate_session_id_for_ck (slave, seat_id, session_id);
+#else
+        return FALSE;
+#endif
+}
+
+#ifdef WITH_CONSOLE_KIT
+static gboolean
+ck_session_is_active (GdmSlave   *slave,
+                      const char *seat_id,
+                      const char *session_id)
+{
+        GError *error = NULL;
+        GVariant *reply;
+        gboolean is_active;
+
+        reply = g_dbus_connection_call_sync (slave->priv->connection,
+                                             CK_NAME,
+                                             session_id,
+                                             "org.freedesktop.ConsoleKit.Session",
+                                             "IsActive",
+                                             NULL,
+                                             G_VARIANT_TYPE ("(b)"),
+                                             G_DBUS_CALL_FLAGS_NONE,
+                                             -1,
+                                             NULL,
+                                             &error);
+        if (reply == NULL) {
+                g_debug ("GdmSlave: ConsoleKit IsActive %s raised:\n %s\n\n",
+                         g_dbus_error_get_remote_error (error), error->message);
+                g_error_free (error);
+                return FALSE;
+        }
+
+        g_variant_get (reply, "(b)", &is_active);
+        g_variant_unref (reply);
+
+        return is_active;
+}
+#endif
+
+static gboolean
+session_is_active (GdmSlave   *slave,
+                   const char *seat_id,
+                   const char *session_id)
+{
+#ifdef WITH_SYSTEMD
+        if (sd_booted () > 0) {
+                return sd_session_is_active (session_id) > 0;
+        }
+#endif
+
+#ifdef WITH_CONSOLE_KIT
+        return ck_session_is_active (slave, seat_id, session_id);
 #else
         return FALSE;
 #endif
@@ -1645,10 +1689,12 @@ session_unlock (GdmSlave   *slave,
 
 gboolean
 gdm_slave_switch_to_user_session (GdmSlave   *slave,
-                                  const char *username)
+                                  const char *username,
+                                  gboolean    fail_if_already_switched)
 {
         gboolean    res;
         gboolean    ret;
+        gboolean    session_already_switched;
         char       *ssid_to_activate;
 
         ret = FALSE;
@@ -1659,12 +1705,21 @@ gdm_slave_switch_to_user_session (GdmSlave   *slave,
                 goto out;
         }
 
+        session_already_switched = session_is_active (slave, slave->priv->display_seat_id, ssid_to_activate);
+
         g_debug ("GdmSlave: Activating session: '%s'", ssid_to_activate);
 
-        res = activate_session_id (slave, slave->priv->display_seat_id, ssid_to_activate);
-        if (! res) {
-                g_debug ("GdmSlave: unable to activate session: %s", ssid_to_activate);
+        if (session_already_switched && fail_if_already_switched) {
+                g_debug ("GdmSlave: unable to activate session since it's already active: %s", ssid_to_activate);
                 goto out;
+        }
+
+        if (!session_already_switched) {
+                res = activate_session_id (slave, slave->priv->display_seat_id, ssid_to_activate);
+                if (! res) {
+                        g_debug ("GdmSlave: unable to activate session: %s", ssid_to_activate);
+                        goto out;
+                }
         }
 
         res = session_unlock (slave, ssid_to_activate);
