@@ -1644,8 +1644,6 @@ _open_program_session_log (const char *filename)
         if (fd < 0) {
                 char *temp_name;
 
-                close (fd);
-
                 temp_name = g_strdup_printf ("%s.XXXXXXXX", filename);
 
                 fd = g_mkstemp (temp_name);
@@ -1702,8 +1700,6 @@ _open_user_session_log (const char *dir)
 
         if (fd < 0) {
                 char *temp_name;
-
-                close (fd);
 
                 temp_name = g_strdup_printf ("%s.XXXXXXXX", filename);
 
