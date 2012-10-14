@@ -646,7 +646,8 @@ try_system_stop (GDBusConnection *connection,
                                              NULL,
                                              &call_error);
 
-        if (reply == NULL && g_error_matches (call_error, G_DBUS_ERROR, G_DBUS_ERROR_NAME_HAS_NO_OWNER)) {
+        if (reply == NULL && (g_error_matches (call_error, G_DBUS_ERROR, G_DBUS_ERROR_NAME_HAS_NO_OWNER) ||
+                              g_error_matches (call_error, G_DBUS_ERROR, G_DBUS_ERROR_SERVICE_UNKNOWN))) {
                 g_clear_error (&call_error);
                 reply = g_dbus_connection_call_sync (connection,
                                                      CK_NAME,
@@ -695,7 +696,8 @@ try_system_restart (GDBusConnection *connection,
                                              NULL,
                                              &call_error);
 
-        if (reply == NULL && g_error_matches (call_error, G_DBUS_ERROR, G_DBUS_ERROR_NAME_HAS_NO_OWNER)) {
+        if (reply == NULL && (g_error_matches (call_error, G_DBUS_ERROR, G_DBUS_ERROR_NAME_HAS_NO_OWNER)||
+                              g_error_matches (call_error, G_DBUS_ERROR, G_DBUS_ERROR_SERVICE_UNKNOWN))) {
                 g_clear_error (&call_error);
                 reply = g_dbus_connection_call_sync (connection,
                                                      CK_NAME,
