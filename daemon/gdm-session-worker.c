@@ -1405,10 +1405,18 @@ _lookup_passwd_info (const char *username,
                 *gidp = passwd_entry->pw_gid;
         }
         if (homep != NULL) {
-                *homep = g_strdup (passwd_entry->pw_dir);
+                if (passwd_entry->pw_dir != NULL && passwd_entry->pw_dir[0] != '\0') {
+                        *homep = g_strdup (passwd_entry->pw_dir);
+                } else {
+                        *homep = g_strdup ("/");
+                }
         }
         if (shellp != NULL) {
-                *shellp = g_strdup (passwd_entry->pw_shell);
+                if (passwd_entry->pw_shell != NULL && passwd_entry->pw_shell[0] != '\0') {
+                        *shellp = g_strdup (passwd_entry->pw_shell);
+                } else {
+                        *shellp = g_strdup ("/bin/bash");
+                }
         }
         ret = TRUE;
  out:
