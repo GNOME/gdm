@@ -681,6 +681,7 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
         } else if (slave->priv->display_is_local) {
                 XServerInterpretedAddress si_entries[3];
                 XHostAddress              host_entries[3];
+                int                       i;
 
                 g_debug ("GdmSlave: Connected to display %s", slave->priv->display_name);
                 ret = TRUE;
@@ -691,8 +692,11 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
                 gdm_slave_setup_xhost_auth (host_entries, si_entries);
 
                 gdm_error_trap_push ();
-                XAddHosts (slave->priv->server_display, host_entries,
-                           G_N_ELEMENTS (host_entries));
+
+                for (i = 0; i < G_N_ELEMENTS (host_entries); i++) {
+                        XAddHost (slave->priv->server_display, &host_entries[i]);
+                }
+
                 XSync (slave->priv->server_display, False);
                 if (gdm_error_trap_pop ()) {
                         g_warning ("Failed to give slave programs access to the display. Trying to proceed.");
@@ -918,6 +922,7 @@ gdm_slave_add_user_authorization (GdmSlave   *slave,
 {
         XServerInterpretedAddress si_entries[3];
         XHostAddress              host_entries[3];
+        int                       i;
         gboolean                  res;
         GError                   *error;
         char                     *filename;
@@ -954,13 +959,13 @@ gdm_slave_add_user_authorization (GdmSlave   *slave,
          */
         gdm_slave_setup_xhost_auth (host_entries, si_entries);
         gdm_error_trap_push ();
-        XRemoveHosts (slave->priv->server_display, host_entries,
-                      G_N_ELEMENTS (host_entries));
+        for (i = 0; i < G_N_ELEMENTS (host_entries); i++) {
+                XRemoveHost (slave->priv->server_display, &host_entries[i]);
+        }
         XSync (slave->priv->server_display, False);
         if (gdm_error_trap_pop ()) {
                 g_warning ("Failed to remove slave program access to the display. Trying to proceed.");
         }
-
 
         return res;
 }
