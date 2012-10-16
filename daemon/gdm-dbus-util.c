@@ -19,6 +19,9 @@
  */
 
 #include "gdm-dbus-util.h"
+#include <string.h>
+
+#include <glib/gstdio.h>
 #include <gio/gunixsocketaddress.h>
 
 /* a subset of org.freedesktop.DBus interface, to be used by internal servers */
@@ -102,6 +105,7 @@ gdm_dbus_setup_private_server (GDBusAuthObserver  *observer,
                                GError            **error)
 {
         char *address, *guid;
+        const char *client_address;
         GDBusServer *server;
 
         address = generate_address ();
@@ -113,12 +117,19 @@ gdm_dbus_setup_private_server (GDBusAuthObserver  *observer,
                                          observer,
                                          NULL,
                                          error);
+        g_free (address);
+
+        client_address = g_dbus_server_get_client_address (server);
+
+        if (g_str_has_prefix (client_address, "unix:path=")) {
+                client_address += strlen("unix:path=");
+                g_chmod (client_address, 0666);
+        }
 
         g_signal_connect (server, "new-connection",
                           G_CALLBACK (handle_connection),
                           NULL);
 
-        g_free (address);
         g_free (guid);
 
         return server;
