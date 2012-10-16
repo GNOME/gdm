@@ -71,53 +71,22 @@ handle_connection (GDBusServer      *server,
         return FALSE;
 }
 
-/* Note: Use abstract sockets like dbus does by default on Linux. Abstract
- * sockets are only available on Linux.
- */
-static char *
-generate_address (void)
-{
-        char *path;
-
-        if (g_unix_socket_address_abstract_names_supported ()) {
-                int   i;
-                char  tmp[9];
-
-                for (i = 0; i < 8; i++) {
-                        if (g_random_int_range (0, 2) == 0) {
-                                tmp[i] = g_random_int_range ('a', 'z' + 1);
-                        } else {
-                                tmp[i] = g_random_int_range ('A', 'Z' + 1);
-                        }
-                }
-                tmp[8] = '\0';
-
-                path = g_strdup_printf ("unix:abstract=/tmp/gdm-greeter-%s", tmp);
-        } else {
-                path = g_strdup ("unix:tmpdir=/tmp");
-        }
-
-        return path;
-}
-
 GDBusServer *
 gdm_dbus_setup_private_server (GDBusAuthObserver  *observer,
                                GError            **error)
 {
-        char *address, *guid;
+        char *guid;
         const char *client_address;
         GDBusServer *server;
 
-        address = generate_address ();
         guid = g_dbus_generate_guid ();
 
-        server = g_dbus_server_new_sync (address,
+        server = g_dbus_server_new_sync ("unix:tmpdir=/tmp",
                                          G_DBUS_SERVER_FLAGS_NONE,
                                          guid,
                                          observer,
                                          NULL,
                                          error);
-        g_free (address);
 
         client_address = g_dbus_server_get_client_address (server);
 
