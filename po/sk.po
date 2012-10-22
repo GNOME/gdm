@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-10-11 21:35+0000\n"
-"PO-Revision-Date: 2012-10-12 16:54+0100\n"
+"POT-Creation-Date: 2012-10-16 15:45+0000\n"
+"PO-Revision-Date: 2012-10-21 19:59+0100\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -83,6 +83,7 @@ msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Server mal byť spustený používateľom %s, taký ale neexistuje"
 
 # PK: prekladat alebo neprekladat? identifikator skupiny
+# DK: kludne moze byt prelozeny-neni obmedzenie na pocet znakov ako napr. v tabulke kde je lepsie nechat ID
 #: ../daemon/gdm-server.c:462 ../daemon/gdm-server.c:482
 #, c-format
 msgid "Couldn't set groupid to %d"
@@ -136,17 +137,13 @@ msgstr "Názov hostiteľa"
 msgid "The hostname"
 msgstr "Názov hostiteľského systému"
 
-# PM: tu by som dal zobrazovacie zariadenie, teda ak sa tým nemyslí displej systému X
 #: ../daemon/gdm-session-auditor.c:101
-#, fuzzy
 msgid "Display Device"
 msgstr "Zariadenie displeja"
 
-# PM: tu by som dal zariadenie pre zobrazovanie, v prípade že ide o displej systému x tak to treba preložiť inak
 #: ../daemon/gdm-session-auditor.c:102
-#, fuzzy
 msgid "The display device"
-msgstr "Zobrazovacie zariadenie"
+msgstr "Zariadenie pre displej"
 
 #: ../daemon/gdm-session.c:1183
 msgid "Could not create authentication helper process"
@@ -177,21 +174,19 @@ msgstr "neznáma chyba"
 msgid "Username:"
 msgstr "Používateľské meno:"
 
-# PM: o výzve pre zadanie používateľského mena
 #: ../daemon/gdm-session-worker.c:1046
-#, fuzzy, c-format
+#, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr ""
-"chyba pri informovaní systému overovania totožnosti o preferovanej výzve na "
-"meno používateľa: %s"
+"chyba pri informovaní systému overovania totožnosti o výzve pre zadanie "
+"používateľského mena: %s"
 
-# PM: dal by som používateľovom názve hostiteľského systému
 #: ../daemon/gdm-session-worker.c:1060
-#, fuzzy, c-format
+#, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr ""
-"chyba pri informovaní systému overovania totožnosti o názve hostiteľa "
-"používateľa: %s"
+"chyba pri informovaní systému overovania totožnosti o používateľovom názve "
+"hostiteľského systému: %s"
 
 #: ../daemon/gdm-session-worker.c:1077
 #, c-format
@@ -206,48 +201,45 @@ msgid "error informing authentication system of display string: %s"
 msgstr ""
 "chyba pri informovaní systému overovania totožnosti o reťazci displeja: %s"
 
-# PM: credentials sú tuším poverenia pozri do iných modulov
 #: ../daemon/gdm-session-worker.c:1116
-#, fuzzy, c-format
+#, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr ""
-"chyba pri informovaní systému overovania totožnosti o xauth oprávneniach "
+"chyba pri informovaní systému overovania totožnosti o xauth povereniach "
 "displeja: %s"
 
-#: ../daemon/gdm-session-worker.c:1446 ../daemon/gdm-session-worker.c:1463
+#: ../daemon/gdm-session-worker.c:1454 ../daemon/gdm-session-worker.c:1471
 #, c-format
 msgid "no user account available"
 msgstr "nie je k dispozícií žiaden používateľský účet"
 
-#: ../daemon/gdm-session-worker.c:1490
+#: ../daemon/gdm-session-worker.c:1498
 msgid "Unable to change to user"
 msgstr "Nepodarilo sa zmeniť na používateľa"
 
-# PM: preklad druhej vety sa mi zdá ako strojový
-#: ../daemon/gdm-simple-slave.c:1399
-#, fuzzy
+#: ../daemon/gdm-simple-slave.c:1430
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
 "diagnose. In the meantime this display will be disabled.  Please restart GDM "
 "when the problem is corrected."
 msgstr ""
-"Nepodarilo sa spustiť X server (vaše grafické prostredie) kvôli vnútornej "
-"chybe. Na určenie príčiny kontaktujte, prosím, vášho správcu systému, alebo "
-"skontrolujte súbor so systémovým záznamom. Zatiaľ bude tento displej "
-"vypnutý. Po oprave problému, prosím, reštartujte GDM."
+"Kvôli vnútornej chybe sa nepodarilo spustiť X server (vaše grafické "
+"prostredie). Prosím, kontaktujte správcu vášho systému, alebo skontrolujte "
+"súbor so systémovým záznamom. Zatiaľ bude tento displej zakázaný. Po oprave "
+"problému reštartujte GDM."
 
-#: ../daemon/gdm-simple-slave.c:1440
+#: ../daemon/gdm-simple-slave.c:1471
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Môže byť volaný iba pred prihlásením používateľa"
 
-#: ../daemon/gdm-simple-slave.c:1450
+#: ../daemon/gdm-simple-slave.c:1481
 #, c-format
 msgid "Caller not GDM"
 msgstr ""
 
-#: ../daemon/gdm-simple-slave.c:1503
+#: ../daemon/gdm-simple-slave.c:1534
 msgid "User not logged in"
 msgstr "Používateľ nie je prihlásený"
 
@@ -264,62 +256,61 @@ msgstr "Nepodarilo sa vytvoriť soket!"
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr ""
-"Nie je možné zapísať súbor PID %s: možno nedostatok miesta na disku: %s"
-
-#: ../daemon/main.c:183
-#, c-format
-msgid "Failed to create AuthDir %s: %s"
-msgstr "Nepodarilo sa vytvoriť AuthDir %s: %s"
+"Nedá sa zapísať súbor PID %s: možno nie je dostatok miesta na disku: %s"
 
 #: ../daemon/main.c:189
 #, c-format
+msgid "Failed to create ran once marker dir %s: %s"
+msgstr "Zlyhalo vytváranie priečinku jedného spustenia %s: %s"
+
+#: ../daemon/main.c:195
+#, c-format
+msgid "Failed to create AuthDir %s: %s"
+msgstr "Zlyhalo vytváranie AuthDir %s: %s"
+
+#: ../daemon/main.c:201
+#, c-format
 msgid "Failed to create LogDir %s: %s"
-msgstr "Nepodarilo sa vytvoriť LogDir %s: %s"
+msgstr "Zlyhalo vytváranie LogDir %s: %s"
 
-# PM: myslí sa tým používateľ pod ktorým sa GDM spúšťa. dal by som používateľa procesu GDM, 
-# PM: na preklad aborting sa ešte opýtaj v ML.
-#: ../daemon/main.c:224
-#, fuzzy, c-format
-msgid "Can't find the GDM user '%s'. Aborting!"
-msgstr "Nie je možné nájsť GDM používateľa „%s“. Koniec!"
-
-#: ../daemon/main.c:230
-msgid "The GDM user should not be root. Aborting!"
-msgstr "Používateľ GDM by nemal byť root. Koniec!"
-
-# PM: asi tiež skupinu procesu GDM
 #: ../daemon/main.c:236
-#, fuzzy, c-format
-msgid "Can't find the GDM group '%s'. Aborting!"
-msgstr "Nie je možné nájsť GDM skupinu „%s“. Koniec!"
+#, c-format
+msgid "Can't find the GDM user '%s'. Aborting!"
+msgstr "Nie je možné nájsť používateľa procesu GDM „%s“. Prerušuje sa!"
 
 #: ../daemon/main.c:242
+msgid "The GDM user should not be root. Aborting!"
+msgstr "Používateľ GDM by nemal byť root. Prerušuje sa!"
+
+# PK: inde prerusuje sa
+#: ../daemon/main.c:248
+#, c-format
+msgid "Can't find the GDM group '%s'. Aborting!"
+msgstr "Nie je možné nájsť skupinu procesu GDM „%s“. Prerušuje sa!"
+
+#: ../daemon/main.c:254
 msgid "The GDM group should not be root. Aborting!"
-msgstr "Skupina pre GDM by nemala byť root. Koniec!"
+msgstr "Skupina pre GDM by nemala byť root. Prerušuje sa!"
 
-# PM: je to zrejme popis volby príkazového riadka, treba asi preložiť popisne
-#: ../daemon/main.c:350
-#, fuzzy
+#: ../daemon/main.c:362
 msgid "Make all warnings fatal"
-msgstr "Považovať všetky upozornenia za kritické"
+msgstr "Označí všetky upozornenia ako kritické"
 
-#: ../daemon/main.c:351
-#, fuzzy
+#: ../daemon/main.c:363
 msgid "Exit after a time (for debugging)"
-msgstr "Skončiť po nejakom čase (pre ladenie)"
+msgstr "Skončí po nejakom čase (pre ladenie)"
 
-#: ../daemon/main.c:352
-#, fuzzy
+#: ../daemon/main.c:364
 msgid "Print GDM version"
-msgstr "Vypísať verziu GDM"
+msgstr "Vypíše verziu GDM"
 
 # PŠ: je to názov toho programu - Správca prihlásenia. Vždy sa tak volal...
-#: ../daemon/main.c:365
+#: ../daemon/main.c:377
 msgid "GNOME Display Manager"
 msgstr "Správca prihlásenia GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:413
+#: ../daemon/main.c:425
 msgid "Only the root user can run GDM"
 msgstr "Len používateľ root môže spúšťať GDM"
 
@@ -327,9 +318,8 @@ msgstr "Len používateľ root môže spúšťať GDM"
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
 #: ../daemon/session-worker-main.c:150
-#, fuzzy
 msgid "GNOME Display Manager Session Worker"
-msgstr "Správcovač relácie Správcu prihlásenia GNOME"
+msgstr "Správca relácií pre Správcu prihlásenia GNOME"
 
 #: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
 msgid "Display ID"
@@ -405,26 +395,23 @@ msgstr ""
 msgid "Path to small image at top of user list"
 msgstr "Cesta k malému obrázku navrchu zoznamu používateľov"
 
-# PM: propagácia sa mi nezdá byť vhodné slovo, skôr prezentácie
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:6
-#, fuzzy
 msgid ""
 "The login screen can optionally show a small image at the top of its user "
 "list to provide site administrators and distributions a way to provide "
 "branding."
 msgstr ""
 "Prihlasovacia obrazovka môže voliteľne zobraziť obrázok navrchu zoznamu "
-"používateľov a poskytnúť tak miesto pre propagáciu správcov a distribúcií."
+"používateľov a poskytnúť tak miesto pre prezentáciu správcov a distribúcií."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:7
-#, fuzzy
 msgid ""
 "The fallback login screen can optionally show a small image at the top of "
 "its user list to provide site administrators and distributions a way to "
 "provide branding."
 msgstr ""
 "Núdzová prihlasovacia obrazovka môže voliteľne zobraziť malý obrázok navrchu "
-"zoznamu používateľov a poskytnúť tak miesto pre propagáciu správcov a "
+"zoznamu používateľov a poskytnúť tak miesto pre prezentáciu správcov a "
 "distribúcií."
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:8
@@ -522,14 +509,12 @@ msgstr "Systém nie je schopný spustiť novú prihlasovaciu obrazovku."
 
 #: ../gui/simple-chooser/gdm-host-chooser-dialog.c:147
 msgid "Select System"
-msgstr "Zvoľte systém"
+msgstr "Vyberte systém"
 
-# PM: ja by som buffer preložil ako komunikačnú schránku
-# PM: teraz to vyznieva akoby XDMCP bol názov toho bufferu. dal by som tam nejaké slovo napr "pre XDMCP"
+# PK: komunikacnu schranku??? buffer je vyrovnavacia pamet, zasobnik alebo to neprekladat
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:215
-#, fuzzy
 msgid "XDMCP: Could not create XDMCP buffer!"
-msgstr "XDMCP: Nepodarilo sa vytvoriť medzipamäť XDMCP!"
+msgstr "XDMCP: Nepodarilo sa vytvoriť komunikačnú schránku pre XDMCP!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
 msgid "XDMCP: Could not read XDMCP header!"
@@ -566,21 +551,19 @@ msgstr "Prihlásiť do relácie pomocou používateľského mena a hesla"
 msgid "Log In"
 msgstr "Prihlásenie"
 
-# PM: Identifikátor slotu
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-#, fuzzy
 msgid "Slot ID"
-msgstr "Slot identifikátora"
+msgstr "Identifikátor slotu"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
 msgid "The slot the card is in"
 msgstr "Slot, v ktorom je vložená karta"
 
-# PM: séria? to je čo?
+# PM: mne sa vidí ze je to cislo slotu, pre prípad ze má niekto dve cítacky a v oboch srcene karty, ale istý si tým nie som, vyrieši to bug report
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
 #, fuzzy
 msgid "Slot Series"
-msgstr "Séria slotu"
+msgstr "Séria v slote"
 
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
 msgid "per-slot card identifier"
@@ -681,17 +664,13 @@ msgstr "Aktívny text"
 msgid "The text to use in the label if the user has picked an item"
 msgstr "Text použitý v popise, ak si už používateľ zvolil nejakú položku"
 
-# PM: asi viditeľný zozmam/ viditeľnosť zoznamu
 #: ../gui/simple-greeter/gdm-chooser-widget.c:1484
-#, fuzzy
 msgid "List Visible"
-msgstr "Zoznam viditeľný"
+msgstr "Viditeľný zoznam"
 
-# zoznam pre výber
 #: ../gui/simple-greeter/gdm-chooser-widget.c:1485
-#, fuzzy
 msgid "Whether the chooser list is visible"
-msgstr "Či je viditeľný vyberací zoznam"
+msgstr "Či je viditeľný zoznam pre výber"
 
 #. translators: This is the time format to use when both
 #. * the date and time with seconds are being shown together.
@@ -766,23 +745,23 @@ msgstr "Odomknúť"
 msgid "Login"
 msgstr "Prihlásiť"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:953
+#: ../gui/simple-greeter/gdm-greeter-panel.c:955
 msgid "Suspend"
 msgstr "Uspať"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:958
+#: ../gui/simple-greeter/gdm-greeter-panel.c:960
 msgid "Restart"
 msgstr "Reštartovať"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:962
+#: ../gui/simple-greeter/gdm-greeter-panel.c:964
 msgid "Shut Down"
 msgstr "Vypnúť"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1011
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
 msgid "Unknown time remaining"
 msgstr "Zostávajúci čas je neznámy"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1033
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
 msgid "Panel"
 msgstr "Panel"
 
@@ -901,18 +880,14 @@ msgstr "Podporovaný je len príkaz VERSION"
 msgid "COMMAND"
 msgstr "PRÍKAZ"
 
-# PM: asi kvôli kompatibilite
 #: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
 #: ../utils/gdmflexiserver.c:68 ../utils/gdmflexiserver.c:69
-#, fuzzy
 msgid "Ignored — retained for compatibility"
-msgstr "Ignorované — ponechané pre kompatibilitu"
+msgstr "Ignorované — ponechané kvôli kompatibilite"
 
-# PM: výstup pre ladenie
 #: ../utils/gdmflexiserver.c:67 ../utils/gdm-screenshot.c:43
-#, fuzzy
 msgid "Debugging output"
-msgstr "Ladiaci výstup"
+msgstr "Výstup pre ladenie"
 
 #: ../utils/gdmflexiserver.c:71
 msgid "Version of this application"
@@ -931,9 +906,8 @@ msgstr "Nepodarilo sa spustiť nový displej"
 msgid "Screenshot taken"
 msgstr "Obrazovka zosnímaná"
 
-# PM: je to asi nejaký popis volby, asi Vytvorí snímok obrazovky - prever to
+# desc
 #. Option parsing
 #: ../utils/gdm-screenshot.c:279
-#, fuzzy
 msgid "Take a picture of the screen"
-msgstr "Odfotiť obrazovku"
+msgstr "Vytvorí snímku obrazovky"
