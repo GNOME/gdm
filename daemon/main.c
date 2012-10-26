@@ -412,7 +412,7 @@ main (int    argc,
                 g_warning ("Unable to initialize settings");
                 goto out;
         }
-MCLASEN WANTS TO SEE #gnome-os TELL US ABOUT BUILD FAILURES
+
         gdm_log_set_debug (is_debug_set ());
 
         gdm_daemon_lookup_user (&gdm_uid, &gdm_gid);
