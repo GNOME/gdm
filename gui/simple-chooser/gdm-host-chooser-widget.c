@@ -224,13 +224,13 @@ decode_packet (GIOChannel           *source,
 
         if G_UNLIKELY (header.version != XDM_PROTOCOL_VERSION &&
                        header.version != GDM_XDMCP_PROTOCOL_VERSION) {
-                g_warning (_("XMDCP: Incorrect XDMCP version!"));
+                g_warning (_("XDMCP: Incorrect XDMCP version!"));
                 return TRUE;
         }
 
         address = gdm_address_new_from_sockaddr ((struct sockaddr *) &clnt_ss, ss_len);
         if (address == NULL) {
-                g_warning (_("XMDCP: Unable to parse address"));
+                g_warning (_("XDMCP: Unable to parse address"));
                 return TRUE;
         }
 
