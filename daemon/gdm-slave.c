@@ -98,7 +98,7 @@ struct GdmSlavePrivate
         char            *parent_display_name;
         char            *parent_display_x11_authority_file;
         char            *windowpath;
-        char            *display_x11_cookie;
+        GBytes          *display_x11_cookie;
         gboolean         display_is_initial;
 
         GdmDBusDisplay  *display_proxy;
@@ -665,10 +665,13 @@ gdm_slave_connect_to_x11_display (GdmSlave *slave)
         sigprocmask (SIG_BLOCK, &mask, &omask);
 
         /* Give slave access to the display independent of current hostname */
-        XSetAuthorization ("MIT-MAGIC-COOKIE-1",
-                           strlen ("MIT-MAGIC-COOKIE-1"),
-                           slave->priv->display_x11_cookie,
-                           strlen (slave->priv->display_x11_cookie));
+        if (slave->priv->display_x11_cookie != NULL) {
+                XSetAuthorization ("MIT-MAGIC-COOKIE-1",
+                                   strlen ("MIT-MAGIC-COOKIE-1"),
+                                   (gpointer)
+                                   g_bytes_get_data (slave->priv->display_x11_cookie, NULL),
+                                   g_bytes_get_size (slave->priv->display_x11_cookie));
+        }
 
         slave->priv->server_display = XOpenDisplay (slave->priv->display_name);
 
@@ -736,9 +739,12 @@ gdm_slave_set_slave_bus_name (GdmSlave *slave)
 static gboolean
 gdm_slave_real_start (GdmSlave *slave)
 {
-        gboolean res;
-        char    *id;
-        GError  *error;
+        gboolean    res;
+        char       *id;
+        GError     *error;
+        GVariant   *x11_cookie;
+        const char *x11_cookie_bytes;
+        gsize       x11_cookie_size;
 
         g_debug ("GdmSlave: Starting slave");
 
@@ -826,7 +832,7 @@ gdm_slave_real_start (GdmSlave *slave)
 
         error = NULL;
         res = gdm_dbus_display_call_get_x11_cookie_sync (slave->priv->display_proxy,
-                                                         &slave->priv->display_x11_cookie,
+                                                         &x11_cookie,
                                                          NULL,
                                                          &error);
         if (! res) {
@@ -834,6 +840,18 @@ gdm_slave_real_start (GdmSlave *slave)
                 g_error_free (error);
                 return FALSE;
         }
+
+        x11_cookie_bytes = g_variant_get_fixed_array (x11_cookie,
+                                                      &x11_cookie_size,
+                                                      sizeof (char));
+
+        if (x11_cookie_bytes != NULL && x11_cookie_size > 0) {
+                g_bytes_unref (slave->priv->display_x11_cookie);
+                slave->priv->display_x11_cookie = g_bytes_new (x11_cookie_bytes,
+                                                               x11_cookie_size);
+        }
+
+        g_variant_unref (x11_cookie);
 
         error = NULL;
         res = gdm_dbus_display_call_get_x11_authority_file_sync (slave->priv->display_proxy,
@@ -2175,7 +2193,7 @@ gdm_slave_finalize (GObject *object)
         g_free (slave->priv->parent_display_name);
         g_free (slave->priv->parent_display_x11_authority_file);
         g_free (slave->priv->windowpath);
-        g_free (slave->priv->display_x11_cookie);
+        g_bytes_unref (slave->priv->display_x11_cookie);
 
         G_OBJECT_CLASS (gdm_slave_parent_class)->finalize (object);
 }
