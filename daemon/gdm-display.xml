@@ -11,7 +11,9 @@
       <arg name="name" direction="out" type="i"/>
     </method>
     <method name="GetX11Cookie">
-      <arg name="x11_cookie" direction="out" type="ay"/>
+      <arg name="x11_cookie" direction="out" type="ay">
+        <annotation name="org.gtk.GDBus.C.ForceGVariant" value="true"/>
+      </arg>
     </method>
     <method name="GetX11AuthorityFile">
       <arg name="filename" direction="out" type="s"/>

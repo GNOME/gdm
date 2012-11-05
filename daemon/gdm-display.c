@@ -1106,10 +1106,15 @@ handle_get_x11_cookie (GdmDBusDisplay        *skeleton,
                        GdmDisplay            *display)
 {
         GArray *cookie = NULL;
+        GVariant *variant;
 
         gdm_display_get_x11_cookie (display, &cookie, NULL);
 
-        gdm_dbus_display_complete_get_x11_cookie (skeleton, invocation, cookie->data);
+        variant = g_variant_new_fixed_array (G_VARIANT_TYPE_BYTE,
+                                             cookie->data,
+                                             cookie->len,
+                                             sizeof (char));
+        gdm_dbus_display_complete_get_x11_cookie (skeleton, invocation, variant);
 
         g_array_unref (cookie);
         return TRUE;
