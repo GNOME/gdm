@@ -117,7 +117,6 @@ static void     gdm_simple_slave_open_reauthentication_channel (GdmSlave        
                                                                 GCancellable         *cancellable);
 
 static gboolean wants_initial_setup (GdmSimpleSlave *slave);
-static void destroy_initial_setup_user (GdmSimpleSlave *slave);
 G_DEFINE_TYPE (GdmSimpleSlave, gdm_simple_slave, GDM_TYPE_SLAVE)
 
 static void create_new_session (GdmSimpleSlave  *slave);
@@ -887,9 +886,6 @@ on_greeter_environment_session_stopped (GdmLaunchEnvironment *greeter_environmen
         if (slave->priv->start_session_service_name == NULL) {
                 gdm_slave_stop (GDM_SLAVE (slave));
         } else {
-                if (wants_initial_setup (slave)) {
-                        destroy_initial_setup_user (slave);
-                }
                 start_session (slave);
         }
 
@@ -1163,102 +1159,9 @@ start_greeter (GdmSimpleSlave *slave)
         start_launch_environment (slave, GDM_USERNAME, NULL);
 }
 
-#define RULES_DIR DATADIR "/polkit-1/rules.d/"
-#define RULES_FILE "20-gnome-initial-setup.rules"
-
-static const gboolean
-create_initial_setup_user (GdmSimpleSlave *slave)
-{
-        gboolean ret = TRUE;
-        ActUserManager *act;
-        ActUser *user;
-        GFile *src_file, *dest_file;
-        GError *error = NULL;
-        const char *e = NULL;
-
-        /* First, create the user */
-        act = act_user_manager_get_default ();
-
-        user = act_user_manager_create_user (act, INITIAL_SETUP_USERNAME, "", 0, &error);
-        if (user == NULL) {
-                if (g_dbus_error_is_remote_error (error)) {
-                        e = g_dbus_error_get_remote_error (error);
-		}
-
-                g_warning ("Creating user '%s' failed: %s / %s",
-                           INITIAL_SETUP_USERNAME, e, error->message);
-
-                if (g_strcmp0 (e, "org.freedesktop.Accounts.Error.UserExists") != 0) {
-                        ret = FALSE;
-                        goto out;
-                }
-
-                g_clear_error (&error);
-        } else {
-                g_object_unref (user);
-        }
-
-        /* Now, make sure the PolicyKit policy is in place */
-        src_file = g_file_new_for_path (DATADIR "/gnome-initial-setup/" RULES_FILE);
-        dest_file = g_file_new_for_path (RULES_DIR RULES_FILE);
-
-        if (!g_file_copy (src_file,
-                          dest_file,
-                          G_FILE_COPY_OVERWRITE,
-                          NULL, NULL, NULL, &error)) {
-                g_warning ("Failed to copy '%s' to '%s': %s",
-                           g_file_get_path (src_file),
-                           g_file_get_path (dest_file),
-                           error->message);
-                ret = FALSE;
-                goto out_clear_files;
-        }
-
- out_clear_files:
-        g_object_unref (src_file);
-        g_object_unref (dest_file);
-
- out:
-        g_clear_pointer (&e, g_free);
-        g_clear_error (&error);
-        return ret;
-}
-
-static void
-destroy_initial_setup_user (GdmSimpleSlave *slave)
-{
-        ActUserManager *act;
-        ActUser *user;
-        const char *filename;
-        GError *error;
-
-        filename = RULES_DIR RULES_FILE;
-
-        if (g_remove (filename) < 0) {
-                g_warning ("Failed to remove '%s': %s", filename, g_strerror (errno));
-        }
-
-        act = act_user_manager_get_default ();
-
-        error = NULL;
-        user = act_user_manager_get_user (act, INITIAL_SETUP_USERNAME);
-        if (user != NULL) {
-                if (!act_user_manager_delete_user (act, user, TRUE, &error)) {
-                        g_warning ("Failed to delete user '%s': %s", INITIAL_SETUP_USERNAME, error->message);
-                        g_error_free (error);
-                }
-                g_object_unref (user);
-        }
-
-        if (g_remove (INITIAL_SETUP_TRIGGER_FILE) < 0) {
-                g_warning ("Failed to remove '%s': %s", INITIAL_SETUP_TRIGGER_FILE, g_strerror (errno));
-        }
-}
-
 static void
 start_initial_setup (GdmSimpleSlave *slave)
 {
-        create_initial_setup_user (slave);
         start_launch_environment (slave, INITIAL_SETUP_USERNAME, "gnome-initial-setup");
 }
 
