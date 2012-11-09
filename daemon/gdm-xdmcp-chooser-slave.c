@@ -165,8 +165,6 @@ on_chooser_connected (GdmSession           *session,
 static void
 setup_server (GdmXdmcpChooserSlave *slave)
 {
-        /* Set the busy cursor */
-        gdm_slave_set_busy_cursor (GDM_SLAVE (slave));
 }
 
 static GdmLaunchEnvironment *

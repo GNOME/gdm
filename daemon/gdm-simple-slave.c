@@ -993,9 +993,6 @@ setup_server (GdmSimpleSlave *slave)
         /* Put cursor out of the way on first head */
         gdm_slave_set_initial_cursor_position (GDM_SLAVE (slave));
 
-        /* Set the busy cursor */
-        gdm_slave_set_busy_cursor (GDM_SLAVE (slave));
-
         /* The root window has a background that may be useful
          * to cross fade or transition from when setting the
          * login screen background.  We read it here, and stuff

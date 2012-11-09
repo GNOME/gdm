@@ -523,21 +523,6 @@ gdm_slave_set_initial_cursor_position (GdmSlave *slave)
         }
 }
 
-void
-gdm_slave_set_busy_cursor (GdmSlave *slave)
-{
-        if (slave->priv->server_display != NULL) {
-                Cursor xcursor;
-
-                xcursor = XCreateFontCursor (slave->priv->server_display, CURSOR_WATCH);
-                XDefineCursor (slave->priv->server_display,
-                               DefaultRootWindow (slave->priv->server_display),
-                               xcursor);
-                XFreeCursor (slave->priv->server_display, xcursor);
-                XSync (slave->priv->server_display, False);
-        }
-}
-
 static void
 gdm_slave_setup_xhost_auth (XHostAddress *host_entries, XServerInterpretedAddress *si_entries)
 {
