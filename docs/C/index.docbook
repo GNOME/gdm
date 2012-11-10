@@ -532,14 +532,16 @@
 
       <para>
         The session output is piped through the GDM daemon to the
-        <filename>~/.xsession-errors</filename> file.  The file is overwritten
-        on each login, so logging out and logging back into the same user via
-        GDM will cause any messages from the previous session to be lost.
+        <filename>~/<replaceable>$XDG_CACHE_HOME</replaceable>/gdm/session.log</filename>
+        file which usually expands to <filename>~/.cache/gdm/session.log</filename>.
+        The file is overwritten on each login, so logging out and logging back
+        into the same user via GDM will cause any messages from the previous
+        session to be lost.
       </para>
 
       <para>
         Note that if GDM can not create this file for some reason, then a
-        fallback file will be created named <filename>~/.xsession-errors.XXXXXXXX</filename>
+        fallback file will be created named <filename>~/<replaceable>$XDG_CACHE_HOME</replaceable>/gdm/session.log.XXXXXXXX</filename>
         where the <filename>XXXXXXXX</filename> are some random characters.
       </para>
     </sect2>
