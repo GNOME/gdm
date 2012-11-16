@@ -16,8 +16,6 @@ desktopdir = $(pkgdatadir)/greeter/applications
 desktop_in_files = 							\
 	gdm-simple-greeter.desktop.in					\
 	gnome-shell.desktop.in						\
-	gnome-mag.desktop.in						\
-	gok.desktop.in							\
 	polkit-gnome-authentication-agent-1.desktop.in			\
 	$(NULL)
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)			\
