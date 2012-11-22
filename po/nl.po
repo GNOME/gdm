@@ -16,15 +16,15 @@
 # Tino Meinen <a.t.meinen@chello.nl>, 2004–2006, 2008.
 # Vincent van Adrighem <adrighem@gnome.org>, 2004, 2006.
 # Michiel Sikkes <michiel.sikkes@gmail.com>, 2006.
-# Wouter Bolsterlee <wbolster@gnome.org>, 2006–2011.
+# Wouter Bolsterlee <wbolster@gnome.org>, 2006–2012.
 # Hannie Dumoleyn <hannie@ubuntu-nl.org>, 2010–2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-18 21:36+0200\n"
+"POT-Creation-Date: 2012-11-22 12:25+0100\n"
 "PO-Revision-Date: 2011-08-18 17:27+0200\n"
-"Last-Translator: Hannie Dumoleyn <hannie@ubuntu-nl.org>\n"
+"Last-Translator: Wouter Bolsterlee <wbolster@gnome.org>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -33,109 +33,96 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 1.2\n"
 
-#: ../common/gdm-common.c:489
+#: ../common/gdm-common.c:492
 #, c-format
 msgid "/dev/urandom is not a character device"
 msgstr "Het bestand /dev/urandom is geen tekenbestand"
-
-# Beeldscherm?
-#: ../daemon/factory-slave-main.c:178 ../daemon/product-slave-main.c:182
-#: ../daemon/simple-slave-main.c:182 ../daemon/xdmcp-chooser-slave-main.c:184
-msgid "Display ID"
-msgstr "Scherm-ID"
-
-#: ../daemon/factory-slave-main.c:178 ../daemon/product-slave-main.c:182
-#: ../daemon/simple-slave-main.c:182 ../daemon/xdmcp-chooser-slave-main.c:184
-msgid "ID"
-msgstr "ID"
-
-#: ../daemon/factory-slave-main.c:188 ../daemon/product-slave-main.c:192
-#: ../daemon/simple-slave-main.c:192 ../daemon/xdmcp-chooser-slave-main.c:194
-msgid "GNOME Display Manager Slave"
-msgstr "GDM (Gnome aanmeldbeheer) Slave"
 
 #: ../daemon/gdm-display-access-file.c:300
 #, c-format
 msgid "could not find user \"%s\" on system"
 msgstr "kan de gebruiker '%s' niet vinden op het systeem"
 
-#: ../daemon/gdm-factory-slave.c:207 ../daemon/gdm-simple-slave.c:309
-msgid "Unable to initialize login system"
-msgstr "kan aanmeldsysteem niet initialiseren"
+#: ../daemon/gdm-display.c:1320 ../daemon/gdm-display.c:1354
+#, c-format
+msgid "No session available yet"
+msgstr "Nog geen sessie beschikbaar"
 
-#: ../daemon/gdm-factory-slave.c:241 ../daemon/gdm-simple-slave.c:347
-msgid "Unable to authenticate user"
-msgstr "Kan gebruiker niet authenticeren"
+#: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
+#, c-format
+msgid "Unable to look up UID of user %s"
+msgstr "Opzoeken UID van gebruiker ‘%s’ mislukt"
 
-#: ../daemon/gdm-factory-slave.c:265 ../daemon/gdm-simple-slave.c:399
-msgid "Unable to authorize user"
-msgstr "Kan gebruiker niet autoriseren"
+#: ../daemon/gdm-manager.c:291
+msgid "no sessions available"
+msgstr "geen sessies beschikbaar"
 
-#: ../daemon/gdm-factory-slave.c:289 ../daemon/gdm-simple-slave.c:537
-msgid "Unable to establish credentials"
-msgstr "Kan aanmeldgegevens niet vaststellen"
+#: ../daemon/gdm-manager.c:352
+#, c-format
+msgid "No sessions for %s available for reauthentication"
+msgstr "Er zijn geen sessies voor ‘%s’ beschikbaar voor opnieuw aanmelden"
 
-#: ../daemon/gdm-factory-slave.c:314 ../daemon/gdm-simple-slave.c:575
-msgid "Unable to open session"
-msgstr "Kan sessie niet openen"
+#: ../daemon/gdm-manager.c:406
+#, c-format
+msgid "Unable to find session for user %s"
+msgstr "Kan geen sessie vinden voor gebruiker ‘%s’"
 
-#: ../daemon/gdm-factory-slave.c:704 ../daemon/gdm-product-slave.c:511
-#: ../daemon/gdm-simple-slave.c:1447
-msgid ""
-"Could not start the X server (your graphical environment) due to an internal "
-"error. Please contact your system administrator or check your syslog to "
-"diagnose. In the meantime this display will be disabled.  Please restart GDM "
-"when the problem is corrected."
-msgstr ""
-"Kan de X-server (grafische omgeving) niet starten vanwege een interne fout. "
-"Neem contact op met de systeembeheerder of bekijk het systeemlogboek om een "
-"diagnose te maken. Dit scherm wordt in de tussentijd uitgeschakeld. Herstart "
-"GDM wanneer het probleem is opgelost."
+#: ../daemon/gdm-manager.c:476
+#, c-format
+msgid "Unable to find appropriate session for user %s"
+msgstr "Kan juiste sessie voor gebruiker ‘%s’ niet vinden"
 
-#: ../daemon/gdm-server.c:250
+#: ../daemon/gdm-manager.c:671
+msgid "User doesn't own session"
+msgstr "Gebruiker is geen eigenaar van sessie"
+
+#: ../daemon/gdm-manager.c:687 ../daemon/gdm-manager.c:768
+msgid "No session available"
+msgstr "Geen sessie beschikbaar"
+
+#: ../daemon/gdm-server.c:272
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: kan geen verbinding maken met moederscherm '%s'"
 
-#: ../daemon/gdm-server.c:365
+#: ../daemon/gdm-server.c:451
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Server moest gestart worden als %s, maar die gebruiker bestaat helemaal niet"
 
-#: ../daemon/gdm-server.c:376 ../daemon/gdm-server.c:396
-#: ../daemon/gdm-welcome-session.c:603 ../daemon/gdm-welcome-session.c:623
+#: ../daemon/gdm-server.c:462 ../daemon/gdm-server.c:482
 #, c-format
 msgid "Couldn't set groupid to %d"
 msgstr "Kan groeps-ID niet instellen op %d"
 
-#: ../daemon/gdm-server.c:382 ../daemon/gdm-welcome-session.c:609
+#: ../daemon/gdm-server.c:468
 #, c-format
 msgid "initgroups () failed for %s"
 msgstr "initgroups() mislukt voor %s"
 
-#: ../daemon/gdm-server.c:388 ../daemon/gdm-welcome-session.c:615
+#: ../daemon/gdm-server.c:474
 #, c-format
 msgid "Couldn't set userid to %d"
 msgstr "Kan gebruikers-ID niet instellen op %d"
 
-#: ../daemon/gdm-server.c:435
+#: ../daemon/gdm-server.c:521
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Kan het logboek voor scherm %s niet openen!"
 
-#: ../daemon/gdm-server.c:446 ../daemon/gdm-server.c:452
-#: ../daemon/gdm-server.c:458
+#: ../daemon/gdm-server.c:532 ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:544
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Fout bij instellen van %s naar %s"
 
-#: ../daemon/gdm-server.c:478
+#: ../daemon/gdm-server.c:564
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Serverprioriteit kon niet worden ingesteld op %d: %s"
 
-#: ../daemon/gdm-server.c:631
+#: ../daemon/gdm-server.c:720
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Lege serveropdracht voor scherm %s"
@@ -168,291 +155,339 @@ msgstr "Beeldscherm"
 msgid "The display device"
 msgstr "Het beeldscherm"
 
-#: ../daemon/gdm-session-worker.c:1070
+#: ../daemon/gdm-session.c:1183
+msgid "Could not create authentication helper process"
+msgstr "Aanmaken hulpproces voor authenticatie mislukt"
+
+#: ../daemon/gdm-session-worker.c:1029
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "fout bij initialisatie van communicatie met authenticatiesysteem: %s"
 
-#: ../daemon/gdm-session-worker.c:1071
+#: ../daemon/gdm-session-worker.c:1030
 msgid "general failure"
 msgstr "algemene fout"
 
-#: ../daemon/gdm-session-worker.c:1072
+#: ../daemon/gdm-session-worker.c:1031
 msgid "out of memory"
 msgstr "onvoldoende geheugen beschikbaar"
 
-#: ../daemon/gdm-session-worker.c:1073
+#: ../daemon/gdm-session-worker.c:1032
 msgid "application programmer error"
 msgstr "programmafout"
 
-#: ../daemon/gdm-session-worker.c:1074
+#: ../daemon/gdm-session-worker.c:1033
 msgid "unknown error"
 msgstr "onbekende fout"
 
-#: ../daemon/gdm-session-worker.c:1081
+#: ../daemon/gdm-session-worker.c:1040
 msgid "Username:"
 msgstr "Gebruikersnaam:"
 
-#: ../daemon/gdm-session-worker.c:1087
+#: ../daemon/gdm-session-worker.c:1046
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr ""
 "fout bij doorgeven gewenste tekst bij het naamveld aan authenticatiesysteem: "
 "%s"
 
-#: ../daemon/gdm-session-worker.c:1101
+#: ../daemon/gdm-session-worker.c:1060
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr "fout bij doorgeven computernaam aan authenticatiesysteem: %s"
 
-#: ../daemon/gdm-session-worker.c:1116
+#: ../daemon/gdm-session-worker.c:1077
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "fout bij doorgeven van gebruikersconsole aan authenticatiesysteem: %s"
 
-#: ../daemon/gdm-session-worker.c:1129
+#: ../daemon/gdm-session-worker.c:1101
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "fout bij doorgeven schermnaam aan authenticatiesysteem: %s"
 
-#: ../daemon/gdm-session-worker.c:1144
+#: ../daemon/gdm-session-worker.c:1116
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "fout bij doorgeven van xauth-gegevens aan authenticatiesysteem: %s"
 
-#: ../daemon/gdm-session-worker.c:1464 ../daemon/gdm-session-worker.c:1481
+#: ../daemon/gdm-session-worker.c:1454 ../daemon/gdm-session-worker.c:1471
 #, c-format
 msgid "no user account available"
 msgstr "geen gebruikersaccount beschikbaar"
 
-#: ../daemon/gdm-session-worker.c:1508
+#: ../daemon/gdm-session-worker.c:1498
 msgid "Unable to change to user"
 msgstr "Kan gebruiker niet wisselen"
 
-#: ../daemon/gdm-welcome-session.c:553
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "Gebruiker %s bestaat niet"
+#: ../daemon/gdm-simple-slave.c:1330
+msgid ""
+"Could not start the X server (your graphical environment) due to an internal "
+"error. Please contact your system administrator or check your syslog to "
+"diagnose. In the meantime this display will be disabled.  Please restart GDM "
+"when the problem is corrected."
+msgstr ""
+"Kan de X-server (grafische omgeving) niet starten vanwege een interne fout. "
+"Neem contact op met de systeembeheerder of bekijk het systeemlogboek om een "
+"diagnose te maken. Dit scherm wordt in de tussentijd uitgeschakeld. Herstart "
+"GDM wanneer het probleem is opgelost."
 
-#: ../daemon/gdm-welcome-session.c:560
+#: ../daemon/gdm-simple-slave.c:1371
 #, c-format
-msgid "Group %s doesn't exist"
-msgstr "Groep %s bestaat niet"
+msgid "Can only be called before user is logged in"
+msgstr "Kan alleen aangeroepen worden voordat de gebruiker aangemeld is"
+
+#: ../daemon/gdm-simple-slave.c:1381
+#, c-format
+msgid "Caller not GDM"
+msgstr "Aanroep niet door GDM"
+
+#: ../daemon/gdm-simple-slave.c:1434
+msgid "User not logged in"
+msgstr "Gebruiker niet aangemeld"
+
+#: ../daemon/gdm-xdmcp-chooser-slave.c:368
+#, c-format
+msgid "Currently, only one client can be connected at once"
+msgstr "Momenteel kan slechts een gebruiker tegelijkertijd verbonden zijn"
 
 #: ../daemon/gdm-xdmcp-display-factory.c:604
 msgid "Could not create socket!"
 msgstr "Kan geen socket aanmaken!"
 
-#: ../daemon/gdm-xdmcp-display-factory.c:873
-#, c-format
-msgid "Denied XDMCP query from host %s"
-msgstr "XDMCP verzoek van host %s geweigerd"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:1031
-#: ../daemon/gdm-xdmcp-display-factory.c:1255
-msgid "Could not extract authlist from packet"
-msgstr "Kan authlijst niet uit pakket halen"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:1044
-#: ../daemon/gdm-xdmcp-display-factory.c:1270
-msgid "Error in checksum"
-msgstr "Fout in checksum"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:1523
-msgid "Bad address"
-msgstr "Foutief adres"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:1607
-#, c-format
-msgid "%s: Could not read display address"
-msgstr "%s: Kan schermadres niet lezen"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:1615
-#, c-format
-msgid "%s: Could not read display port number"
-msgstr "%s: Kan poortnummer van scherm niet lezen"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:1624
-#, c-format
-msgid "%s: Could not extract authlist from packet"
-msgstr "%s: Kan geen authlijst uit pakket halen"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:1644
-#, c-format
-msgid "%s: Error in checksum"
-msgstr "%s: Fout in checksum"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2200
-#, c-format
-msgid "%s: Got REQUEST from banned host %s"
-msgstr "%s: REQUEST ontvangen van verboden host %s"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2210
-#: ../daemon/gdm-xdmcp-display-factory.c:2568
-#: ../daemon/gdm-xdmcp-display-factory.c:2822
-#, c-format
-msgid "%s: Could not read Display Number"
-msgstr "%s: Kan het schermnummer niet lezen"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2217
-#, c-format
-msgid "%s: Could not read Connection Type"
-msgstr "%s: Kan het verbindingstype niet lezen"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2224
-#, c-format
-msgid "%s: Could not read Client Address"
-msgstr "%s: Kan clientadres niet lezen"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2232
-#, c-format
-msgid "%s: Could not read Authentication Names"
-msgstr "%s: Kan de identificatienamen niet lezen"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2241
-#, c-format
-msgid "%s: Could not read Authentication Data"
-msgstr "%s: Kan de identificatiedata niet lezen"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2251
-#, c-format
-msgid "%s: Could not read Authorization List"
-msgstr "%s: Kan de identificatielijst niet lezen"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2270
-#, c-format
-msgid "%s: Could not read Manufacturer ID"
-msgstr "%s: Kan Producent-ID niet lezen"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2297
-#, c-format
-msgid "%s: Failed checksum from %s"
-msgstr "%s: Fout in checksum van %s"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2552
-#, c-format
-msgid "%s: Got Manage from banned host %s"
-msgstr "%s: 'Manage' ontvangen van verboden host %s"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2561
-#: ../daemon/gdm-xdmcp-display-factory.c:2829
-#, c-format
-msgid "%s: Could not read Session ID"
-msgstr "%s: Kan sessie-ID niet lezen"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2575
-#, c-format
-msgid "%s: Could not read Display Class"
-msgstr "%s: Kan schermklasse niet lezen"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2681
-#: ../daemon/gdm-xdmcp-display-factory.c:2731
-#: ../daemon/gdm-xdmcp-display-factory.c:2737
-#, c-format
-msgid "%s: Could not read address"
-msgstr "%s: Kan adres niet lezen"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2812
-#, c-format
-msgid "%s: Got KEEPALIVE from banned host %s"
-msgstr "%s: KEEPALIVE ontvangen van verboden host %s"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2902
-msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
-msgstr "GdmXdmcpDisplayFactory: Kan XDMCP-header niet lezen!"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2908
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XMDCP: Incorrect XDMCP version!"
-msgstr "XDMCP: Versie van XDMCP niet goed!"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:2914
-#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XMDCP: Unable to parse address"
-msgstr "XDMCP: Kan adres niet analyseren"
-
-#: ../daemon/gdm-xdmcp-display-factory.c:3363
-#, c-format
-msgid "Could not get server hostname: %s!"
-msgstr "Kan de naam van de server niet vinden: %s!"
-
-#: ../daemon/main.c:237 ../daemon/main.c:250
+#: ../daemon/main.c:126 ../daemon/main.c:139
 #, c-format
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr ""
 "Kan PID-bestand %s niet beschrijven. Mogelijkerwijs is er geen vrije "
 "schijfruimte meer: %s"
 
-#: ../daemon/main.c:271
+#: ../daemon/main.c:189
 #, c-format
-msgid "Logdir %s does not exist or isn't a directory."
-msgstr "Logmap %s bestaat niet of is geen map."
+msgid "Failed to create ran once marker dir %s: %s"
+msgstr "Aanmaken map ‘%s’ (voor ‘ran once’-markering) mislukt: %s"
 
-#: ../daemon/main.c:287
+#: ../daemon/main.c:195
 #, c-format
-msgid "Authdir %s does not exist. Aborting."
-msgstr "Authdir %s bestaat niet. Gestopt."
+msgid "Failed to create AuthDir %s: %s"
+msgstr "Aanmaken AuthDir ‘%s’ mislukt: %s"
 
-#: ../daemon/main.c:291
+#: ../daemon/main.c:201
 #, c-format
-msgid "Authdir %s is not a directory. Aborting."
-msgstr "Authdir %s niet herkend. Gestopt."
+msgid "Failed to create LogDir %s: %s"
+msgstr "Aanmaken LogDir ‘%s’ mislukt: %s"
 
-#: ../daemon/main.c:365
-#, c-format
-msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-msgstr "Authdir %s is geen eigendom van gebruiker %d, groep %d. Gestopt."
-
-#: ../daemon/main.c:372
-#, c-format
-msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-msgstr "Authdir %s heeft verkeerde rechten %o. Moet %o zijn. Gestopt."
-
-#: ../daemon/main.c:409
+#: ../daemon/main.c:236
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Kan de GDM-gebruiker ‘%s’ niet vinden. Gestopt!"
 
-#: ../daemon/main.c:415
+#: ../daemon/main.c:242
 msgid "The GDM user should not be root. Aborting!"
 msgstr "De GDM-gebruiker mag geen root zijn. Gestopt!"
 
-#: ../daemon/main.c:421
+#: ../daemon/main.c:248
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Kan GDM-groep ‘%s’ niet vinden. Gestopt!"
 
-#: ../daemon/main.c:427
+#: ../daemon/main.c:254
 msgid "The GDM group should not be root. Aborting!"
 msgstr "De GDM-groep mag geen root zijn. Gestopt!"
 
-#: ../daemon/main.c:533
+#: ../daemon/main.c:362
 msgid "Make all warnings fatal"
 msgstr "Ook stoppen bij waarschuwingen"
 
-#: ../daemon/main.c:534
+#: ../daemon/main.c:363
 msgid "Exit after a time (for debugging)"
 msgstr "Afsluiten na een tijdje (voor debuggen)"
 
-#: ../daemon/main.c:535
+#: ../daemon/main.c:364
 msgid "Print GDM version"
 msgstr "GDM-versie weergeven"
 
-#: ../daemon/main.c:548
+#: ../daemon/main.c:377
 msgid "GNOME Display Manager"
 msgstr "Gnome Aanmeldbeheer"
 
 # wil -> mag
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:614
+#: ../daemon/main.c:425
 msgid "Only the root user can run GDM"
 msgstr "Alleen root mag GDM starten"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:156
+#: ../daemon/session-worker-main.c:150
 msgid "GNOME Display Manager Session Worker"
 msgstr "GDM (Gnome aanmeldbeheer) Session worker"
+
+# Beeldscherm?
+#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+msgid "Display ID"
+msgstr "Scherm-ID"
+
+#: ../daemon/simple-slave-main.c:177 ../daemon/xdmcp-chooser-slave-main.c:178
+msgid "ID"
+msgstr "ID"
+
+#: ../daemon/simple-slave-main.c:187 ../daemon/xdmcp-chooser-slave-main.c:188
+msgid "GNOME Display Manager Slave"
+msgstr "GDM (Gnome aanmeldbeheer) Slave"
+
+#: ../data/applications/gdm-simple-greeter.desktop.in.in.h:1
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:2566
+msgid "Login Window"
+msgstr "Aanmeldvenster"
+
+#: ../data/applications/gnome-shell.desktop.in.h:1
+msgid "GNOME Shell"
+msgstr "Gnome Shell"
+
+#: ../data/applications/gnome-shell.desktop.in.h:2
+msgid "Window management and compositing"
+msgstr "Vensterbeheer en compositing"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:1
+msgid "Whether or not to allow fingerprint readers for login"
+msgstr "Al dan niet vingerafdruklezers toestaan voor inloggen"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:2
+msgid ""
+"The login screen can optionally allow users who have enrolled their "
+"fingerprints to log in using those prints."
+msgstr ""
+"Het aanmeldvenster kan optioneel gebruikers laten inloggen middels "
+"vingerafdrukken."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:3
+msgid "Whether or not to allow smartcard readers for login"
+msgstr "Al dan niet smartcard-lezers toestaan voor inloggen"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:4
+msgid ""
+"The login screen can optionally allow users who have smartcards to log in "
+"using those smartcards."
+msgstr ""
+"Het aanmeldvenster kan optioneel gebruikers laten inloggen middels "
+"smartcards."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:5
+msgid "Path to small image at top of user list"
+msgstr "Pad naar een kleine afbeelding boven de lijst met gebruikers"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:6
+msgid ""
+"The login screen can optionally show a small image at the top of its user "
+"list to provide site administrators and distributions a way to provide "
+"branding."
+msgstr ""
+"Het aanmeldscherm kan optioneel een kleine afbeelding tonen boven de lijst "
+"met gebruikers. Dit maakt het voor beheerders en distributies mogelijk om "
+"‘branding’ toe te voegen."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:7
+msgid ""
+"The fallback login screen can optionally show a small image at the top of "
+"its user list to provide site administrators and distributions a way to "
+"provide branding."
+msgstr ""
+"Het aanmeldscherm in terugvalmodus kan optioneel een kleine afbeelding tonen "
+"boven de lijst met gebruikers. Dit maakt het voor beheerders en distributies "
+"mogelijk om ‘branding’ toe te voegen."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:8
+msgid "Avoid showing user list"
+msgstr "Tonen van lijst met gebruikers vermijden"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:9
+msgid ""
+"The login screen normally shows a list of available users to log in as. This "
+"setting can be toggled to disable showing the user list."
+msgstr ""
+"Het aanmeldscherm toont normaal gesproken een lijst met beschikbare "
+"gebruikers. Deze instelling maakt het mogelijk deze lijst niet te tonen."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:10
+msgid "Enable showing the banner message"
+msgstr "Het welkomstbericht tonen"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:11
+msgid "Set to true to show the banner message text."
+msgstr "Inschakelen om het welkomstbericht te tonen."
+
+# flyer/banner/tijdelijk mededeling/welkomstbericht/begroetingstekst
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:12
+msgid "Banner message text"
+msgstr "Welkomstbericht"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:13
+msgid "Text banner message to show in the login window."
+msgstr "Tekst van het welkomstbericht in het aanmeldvenster."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:14
+msgid "Disable showing the restart buttons"
+msgstr "De herstartknoppen niet tonen"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:15
+msgid "Set to true to disable showing the restart buttons in the login window."
+msgstr ""
+"Inschakelen om de herstartknoppen van het aanmeldvenster niet te tonen."
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:16
+msgid "Number of allowed authentication failures"
+msgstr "Aantal toegestane mislukte inlogpogingen"
+
+#: ../data/org.gnome.login-screen.gschema.xml.in.h:17
+msgid ""
+"The number of times a user is allowed to attempt authentication, before "
+"giving up and going back to user selection."
+msgstr ""
+"Aantal keer dat een gebruiker kan proberen in te loggen voordat teruggegaan "
+"wordt naar het kiezen van een gebruiker."
+
+#: ../gui/libgdm/gdm-user-switching.c:72
+msgid "Unable to create transient display: "
+msgstr "Aanmaken nieuw ‘transient display’ mislukt: "
+
+#: ../gui/libgdm/gdm-user-switching.c:183
+#: ../gui/libgdm/gdm-user-switching.c:395
+msgid "Unable to activate session: "
+msgstr "Activeren sessie mislukt: "
+
+# huh?
+#: ../gui/libgdm/gdm-user-switching.c:344
+#: ../gui/libgdm/gdm-user-switching.c:512 ../utils/gdmflexiserver.c:446
+#: ../utils/gdmflexiserver.c:613
+#, c-format
+msgid "Could not identify the current session."
+msgstr "Kon de huidige sessie niet identificeren."
+
+#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:453
+#, c-format
+msgid "User unable to switch sessions."
+msgstr "Gebruiker kan niet van sessie wisselen."
+
+# huh?
+#: ../gui/libgdm/gdm-user-switching.c:521 ../utils/gdmflexiserver.c:622
+#, c-format
+msgid "Could not identify the current seat."
+msgstr "Kon de huidige zitplaats niet identificeren."
+
+#: ../gui/libgdm/gdm-user-switching.c:531 ../utils/gdmflexiserver.c:632
+#, c-format
+msgid ""
+"The system is unable to determine whether to switch to an existing login "
+"screen or start up a new login screen."
+msgstr ""
+"Het systeem kon niet bepalen of naar een bestaand aanmeldscherm geschakeld "
+"moest worden of dat er een nieuw aanmeldscherm gestart moet worden."
+
+#: ../gui/libgdm/gdm-user-switching.c:539 ../utils/gdmflexiserver.c:640
+#, c-format
+msgid "The system is unable to start up a new login screen."
+msgstr "Het systeem kan geen nieuw aanmeldscherm tonen."
 
 # hostsysteem/hostcomputer/computer/systeem
 # het/een/.
@@ -468,6 +503,121 @@ msgstr "XDMCP: Kan geen XDMCP-buffer aanmaken!"
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:221
 msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Kan XDMCP-header niet lezen!"
+
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XDMCP: Onjuiste XDMCP-versie!"
+
+#: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
+msgid "XDMCP: Unable to parse address"
+msgstr "XDMCP: Kan adres niet verwerken"
+
+# aanmeldingscontrole
+#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
+msgid "Fingerprint Authentication"
+msgstr "Vingerafdruk-authenticatie"
+
+#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
+msgid "Log into session with fingerprint"
+msgstr "Bij sessie aanmelden met vingerafdruk"
+
+# aanmeldingscontrole
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
+msgid "Password Authentication"
+msgstr "Wachtwoordauthenticatie"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
+msgid "Log into session with username and password"
+msgstr "Bij sessie aanmelden met gebruikersnaam en wachtwoord"
+
+#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
+msgid "Log In"
+msgstr "Aanmelden"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
+msgid "Slot ID"
+msgstr "Slot-ID"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
+msgid "The slot the card is in"
+msgstr "Het slot waar de kaart in zit"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
+msgid "Slot Series"
+msgstr "Slot Series"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
+msgid "per-slot card identifier"
+msgstr "per-slot kaartidentifier"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
+msgid "name"
+msgstr "naam"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
+msgid "Module"
+msgstr "Module"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
+msgid "smartcard driver"
+msgstr "smartcard-stuurprogramma"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
+msgid "Smartcard Authentication"
+msgstr "Smartcard-authenticatie"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
+msgid "Log into session with smartcard"
+msgstr "Bij sessie aanmelden met smartcard"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
+msgid "Module Path"
+msgstr "Modulepad"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
+msgid "path to smartcard PKCS #11 driver"
+msgstr "pad naar stuurprogramma smartcard PKCS #11"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
+msgid "received error or hang up from event source"
+msgstr "fout ontvangen van, of opgehangen door activiteitenbron"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
+#, c-format
+msgid "NSS security system could not be initialized"
+msgstr "NSS-beveiligingssysteem kon niet worden geïnitialiseerd"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
+#, c-format
+msgid "no suitable smartcard driver could be found"
+msgstr "er is geen geschikt smartcard-stuurprogramma aangetroffen"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
+#, c-format
+msgid "smartcard driver '%s' could not be loaded"
+msgstr "smartcard-stuurprogramma ‘%s’ kon niet worden geladen"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
+#, c-format
+msgid "could not watch for incoming card events - %s"
+msgstr "kon inkomende kaartactiviteit niet nagaan - %s"
+
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
+#, c-format
+msgid "encountered unexpected error while waiting for smartcard events"
+msgstr "onverwachte fout tegengekomen bij het wachten op smartcardactiviteiten"
+
+# aanmeldingscontrole
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
+msgid "Authentication"
+msgstr "Authenticatie"
+
+#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
+msgid "Log into session"
+msgstr "Bij sessie aanmelden"
 
 #: ../gui/simple-greeter/gdm-cell-renderer-timer.c:239
 msgid "Value"
@@ -564,71 +714,67 @@ msgstr "%a %H:%M%S"
 msgid "%a %l:%M %p"
 msgstr "%a %H:%M"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:319
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:314
 msgid "Automatically logging in…"
 msgstr "Automatische aanmelding…"
 
 #. need to wait for response from backend
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:935
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:930
 msgid "Cancelling…"
 msgstr "Afbreken…"
 
 #. just wait for the user to select language and stuff
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1491
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1486
 msgid "Select language and click Log In"
 msgstr "Selecteer de taal en klik op ‘Aanmelden’"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1627
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1622
 msgctxt "customsession"
 msgid "Custom"
 msgstr "Aangepast"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:1628
+#: ../gui/simple-greeter/gdm-greeter-login-window.c:1623
 msgid "Custom session"
 msgstr "Aangepaste sessie"
 
-#: ../gui/simple-greeter/gdm-greeter-login-window.c:2605
-msgid "Login Window"
-msgstr "Aanmeldvenster"
-
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:1
-msgid "Cancel"
-msgstr "Afbreken"
-
-#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
 msgid "Computer Name"
 msgstr "Computernaam"
 
+#: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:2
+msgid "Version"
+msgstr "Versie"
+
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:3
-msgid "Login"
-msgstr "Aanmelden"
+msgid "Cancel"
+msgstr "Afbreken"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:4
 msgid "Unlock"
 msgstr "Ontgrendelen"
 
 #: ../gui/simple-greeter/gdm-greeter-login-window.ui.h:5
-msgid "Version"
-msgstr "Versie"
+msgid "Login"
+msgstr "Aanmelden"
 
 # pauzestand/pauzeren
-#: ../gui/simple-greeter/gdm-greeter-panel.c:907
+#: ../gui/simple-greeter/gdm-greeter-panel.c:955
 msgid "Suspend"
 msgstr "Pauzeren"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:912
+#: ../gui/simple-greeter/gdm-greeter-panel.c:960
 msgid "Restart"
 msgstr "Herstarten"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:916
+#: ../gui/simple-greeter/gdm-greeter-panel.c:964
 msgid "Shut Down"
 msgstr "Uitschakelen"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:965
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
 msgid "Unknown time remaining"
 msgstr "Resterende tijd onbekend"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:987
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
 msgid "Panel"
 msgstr "Paneel"
 
@@ -656,14 +802,6 @@ msgstr "Standaard-item"
 msgid "The ID of the default item"
 msgstr "Het ID van het standaard-item"
 
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:310
-msgid "Max Item Count"
-msgstr "Maximum aantal items"
-
-#: ../gui/simple-greeter/gdm-recent-option-widget.c:311
-msgid "The maximum number of items to keep around in the list"
-msgstr "Het maximum aantal items in de lijst"
-
 #: ../gui/simple-greeter/gdm-remote-login-window.c:188
 #, c-format
 msgid "Remote Login (Connecting to %s…)"
@@ -681,170 +819,6 @@ msgstr "Aanmelding op afstand"
 #: ../gui/simple-greeter/gdm-session-option-widget.c:162
 msgid "Session"
 msgstr "Sessies"
-
-# flyer/banner/tijdelijk mededeling/welkomstbericht/begroetingstekst
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:1
-msgid "Banner message text"
-msgstr "Welkomstbericht"
-
-# flyer/banner/tijdelijk mededeling/welkomstbericht/begroetingstekst
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:2
-msgid "Banner message text when chooser is empty"
-msgstr "Welkomstbericht bij lege kieslijst"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:3
-msgid "Disable showing the restart buttons"
-msgstr "De herstartknoppen niet tonen"
-
-# bekende/legale
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:4
-msgid "Do not show known users in the login window"
-msgstr "Legale gebruikers niet tonen in het aanmeldvenster"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:5
-msgid "Enable accessibility keyboard plugin"
-msgstr "Toetsenbordtoegankelijkheidsplug-in activeren"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:6
-msgid "Enable on-screen keyboard"
-msgstr "Schermtoetsenbord inschakelen"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:7
-msgid "Enable screen magnifier"
-msgstr "Vergrootglad inschakelen"
-
-# klaar voor gebruik/gereed
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:8
-msgid "Enable screen reader"
-msgstr "Schermlezer inschakelen"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:9
-msgid "Enable showing the banner message"
-msgstr "Het welkomstbericht tonen"
-
-# welkomstlogo/aanmeldlogo
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:10
-msgid "Icon name to use for greeter logo"
-msgstr "Pictogramnaam voor het aanmeldlogo"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:11
-msgid "Recently selected languages"
-msgstr "Recent gebruikte talen"
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:12
-msgid "Set to a list of languages to be shown by default in the login window."
-msgstr "Instellen op een lijst van standaard weer te geven talen."
-
-# thema van pictogramnaam/naam van het themapictogram
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:13
-msgid "Set to the themed icon name to use for the greeter logo."
-msgstr ""
-"Ingesteld op de naam van het themapictogram dat gebruikt wordt voor het "
-"aanmeldlogo."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:14
-msgid "Set to true to disable showing known users in the login window."
-msgstr ""
-"Inschakelen om de gebruikers van het systeem niet te tonen in het "
-"aanmeldvenster."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:15
-msgid "Set to true to disable showing the restart buttons in the login window."
-msgstr ""
-"Inschakelen om de herstartknoppen van het aanmeldvenster niet te tonen."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:16
-msgid "Set to true to enable the XRandR settings manager plugin."
-msgstr "Inschakelen om de plug-in voor xrandr te gebruiken."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:17
-msgid "Set to true to enable the background settings manager plugin."
-msgstr "Inschakelen om achtergrondinstellingenbeheer te gebruiken."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:18
-msgid "Set to true to enable the media-keys settings manager plugin."
-msgstr ""
-"Inschakelen om de plug-in voor het beheer van de media-toetsen te gebruiken."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:19
-msgid "Set to true to enable the on-screen keyboard."
-msgstr "Inschakelen om het schermtoetsenbord te gebruiken."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:20
-msgid ""
-"Set to true to enable the plugin to manage the accessibility keyboard "
-"settings."
-msgstr "Inschakelen om de toetsenbordtoegankelijkheidsplug-in te gebruiken."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:21
-msgid "Set to true to enable the screen magnifier."
-msgstr "Inschakelen om het vergrootglas te gebruiken."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:22
-msgid "Set to true to enable the screen reader."
-msgstr "Inschakelen om de schermlezer te gebruiken."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:23
-msgid "Set to true to enable the sound settings manager plugin."
-msgstr ""
-"Inschakelen om de plug-in voor het beheer van de geluidsinstellingen te "
-"gebruiken."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:24
-msgid "Set to true to enable the xsettings settings manager plugin."
-msgstr ""
-"Inschakelen om de plug-in voor het beheer van de xsettings-instellingen te "
-"gebruiken."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:25
-msgid "Set to true to show the banner message text."
-msgstr "Inschakelen om het welkomstbericht te tonen."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:26
-msgid "Set to true to use Compiz as the window manager."
-msgstr "Inschakelen om compiz voor het vensterbeheer te gebruiken."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:27
-msgid ""
-"Text banner message to show in the login window when the user chooser is "
-"empty, instead of banner_message_text."
-msgstr ""
-"Tekst van het welkomstbericht in het aanmeldvenster wanneer de kieslijst "
-"leeg is, in plaats van banner_message_text."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:28
-msgid "Text banner message to show in the login window."
-msgstr "Tekst van het welkomstbericht in het aanmeldvenster."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:29
-msgid "True if the XRandR settings manager plugin is enabled."
-msgstr "Ingeschakeld als de xrandr-plug-in gebruikt wordt."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:30
-msgid "True if the background settings manager plugin is enabled."
-msgstr ""
-"Ingeschakeld als de plug-in voor achtergrondinstellingen gebruikt wordt."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:31
-msgid "True if the media-keys settings manager plugin is enabled."
-msgstr ""
-"Ingeschakeld als de plug-in voor het beheer van de media-toetsen gebruikt "
-"wordt."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:32
-msgid "True if the sound settings manager plugin is enabled."
-msgstr ""
-"Ingeschakeld als de plug-in voor het beheer van de geluidsinstellingen "
-"gebruikt wordt."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:33
-msgid "True if the xsettings settings manager plugin is enabled."
-msgstr ""
-"Ingeschakeld als de plug-in voor xsettings-instellingen gebruikt wordt."
-
-#: ../gui/simple-greeter/gdm-simple-greeter.schemas.in.h:34
-msgid "Use Compiz as the window manager"
-msgstr "Compiz gebruiken voor het vensterbeheer"
 
 #: ../gui/simple-greeter/gdm-timer.c:147
 msgid "Duration"
@@ -873,8 +847,8 @@ msgstr "Is het actief?"
 msgid "Whether the timer is currently ticking"
 msgstr "Of de teller momenteel aan het aftellen is"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:459
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:802
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:458
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:800
 #, c-format
 msgid "Log in as %s"
 msgstr "Aanmelden als %s"
@@ -884,190 +858,62 @@ msgstr "Aanmelden als %s"
 #. * manually instead of choosing from
 #. * a list.
 #.
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:544
 msgctxt "user"
 msgid "Other…"
 msgstr "Anderen…"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:546
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:545
 msgid "Choose a different account"
 msgstr "Kies een ander account"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:559
 msgid "Guest"
 msgstr "Gast"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:561
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:560
 msgid "Log in as a temporary guest"
 msgstr "Aanmelden als tijdelijke gast"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:575
 msgid "Automatic Login"
 msgstr "Automatische aanmelding"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:577
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:576
 msgid "Automatically log into the system after selecting options"
 msgstr "Automatisch aanmelden na het selecteren van de opties"
 
-#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1358
+#: ../gui/simple-greeter/gdm-user-chooser-widget.c:1332
 msgid "Currently logged in"
 msgstr "Al aangemeld"
 
-# aanmeldingscontrole
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:287
-msgid "Password Authentication"
-msgstr "Wachtwoordauthenticatie"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:293
-msgid "Log into session with username and password"
-msgstr "Bij sessie aanmelden met gebruikersnaam en wachtwoord"
-
-#: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
-msgid "Log In"
-msgstr "Aanmelden"
-
-# aanmeldingscontrole
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
-msgid "Fingerprint Authentication"
-msgstr "Vingerafdruk-authenticatie"
-
-#: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:293
-msgid "Log into session with fingerprint"
-msgstr "Bij sessie aanmelden met vingerafdruk"
-
-#: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:1
-#: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:1
-msgid "Activation of this plugin"
-msgstr "Activering van deze plug-in"
-
-#: ../gui/simple-greeter/extensions/fingerprint/org.gnome.display-manager.extensions.fingerprint.gschema.xml.in.h:2
-#: ../gui/simple-greeter/extensions/smartcard/org.gnome.display-manager.extensions.smartcard.gschema.xml.in.h:2
-msgid "Whether this plugin would be activated or not"
-msgstr "Of deze plug-in wel of niet geactiveerd moet zijn"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:408
-msgid "Smartcard Authentication"
-msgstr "Smartcard-authenticatie"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:414
-msgid "Log into session with smartcard"
-msgstr "Bij sessie aanmelden met smartcard"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:186
-msgid "Module Path"
-msgstr "Modulepad"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:187
-msgid "path to smartcard PKCS #11 driver"
-msgstr "pad naar stuurprogramma smartcard PKCS #11"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
-msgid "received error or hang up from event source"
-msgstr "fout ontvangen van, of opgehangen door activiteitenbron"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
-#, c-format
-msgid "NSS security system could not be initialized"
-msgstr "NSS-beveiligingssysteem kon niet worden geïnitialiseerd"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
-#, c-format
-msgid "no suitable smartcard driver could be found"
-msgstr "er is geen geschikt smartcard-stuurprogramma aangetroffen"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
-#, c-format
-msgid "smartcard driver '%s' could not be loaded"
-msgstr "smartcard-stuurprogramma ‘%s’ kon niet worden geladen"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
-#, c-format
-msgid "could not watch for incoming card events - %s"
-msgstr "kon inkomende kaartactiviteit niet nagaan - %s"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
-#, c-format
-msgid "encountered unexpected error while waiting for smartcard events"
-msgstr "onverwachte fout tegengekomen bij het wachten op smartcardactiviteiten"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:155
-msgid "Slot ID"
-msgstr "Slot-ID"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:156
-msgid "The slot the card is in"
-msgstr "Het slot waar de kaart in zit"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:162
-msgid "Slot Series"
-msgstr "Slot Series"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:163
-msgid "per-slot card identifier"
-msgstr "per-slot kaartidentifier"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
-msgid "name"
-msgstr "naam"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:174
-msgid "Module"
-msgstr "Module"
-
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:175
-msgid "smartcard driver"
-msgstr "smartcard-stuurprogramma"
-
-# aanmeldingscontrole
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:287
-msgid "Authentication"
-msgstr "Authenticatie"
-
-#: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:293
-msgid "Log into session"
-msgstr "Bij sessie aanmelden"
-
-#: ../utils/gdmflexiserver.c:61
+#: ../utils/gdmflexiserver.c:64
 msgid "Only the VERSION command is supported"
 msgstr "Alleen VERSION wordt ondersteund"
 
-#: ../utils/gdmflexiserver.c:61
+#: ../utils/gdmflexiserver.c:64
 msgid "COMMAND"
 msgstr "OPDRACHT"
 
-#: ../utils/gdmflexiserver.c:62 ../utils/gdmflexiserver.c:63
 #: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
+#: ../utils/gdmflexiserver.c:68 ../utils/gdmflexiserver.c:69
 msgid "Ignored — retained for compatibility"
 msgstr "Genegeerd - aanwezig om compatibiliteitsredenen"
 
-#: ../utils/gdmflexiserver.c:64 ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:67 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Debug-uitvoer"
 
-#: ../utils/gdmflexiserver.c:68
+#: ../utils/gdmflexiserver.c:71
 msgid "Version of this application"
 msgstr "De versie van deze toepassing"
 
-# huh?
-#: ../utils/gdmflexiserver.c:674
-#, c-format
-msgid "Could not identify the current session."
-msgstr "Kon de huidige sessie niet identificeren."
-
-#: ../utils/gdmflexiserver.c:682
-#, c-format
-msgid "User unable to switch sessions."
-msgstr "Gebruiker kan niet van sessie wisselen."
-
 #. Option parsing
-#: ../utils/gdmflexiserver.c:716
+#: ../utils/gdmflexiserver.c:706
 msgid "- New GDM login"
 msgstr "— Nieuwe GDM-login"
 
-#: ../utils/gdmflexiserver.c:772
+#: ../utils/gdmflexiserver.c:762
 msgid "Unable to start new display"
 msgstr "Kan geen nieuw scherm starten"
 
@@ -1080,14 +926,231 @@ msgstr "Schermafdruk gemaakt"
 msgid "Take a picture of the screen"
 msgstr "Een schermafdruk maken"
 
+#~ msgid "Unable to initialize login system"
+#~ msgstr "kan aanmeldsysteem niet initialiseren"
+
+#~ msgid "Unable to authenticate user"
+#~ msgstr "Kan gebruiker niet authenticeren"
+
+#~ msgid "Unable to establish credentials"
+#~ msgstr "Kan aanmeldgegevens niet vaststellen"
+
+#~ msgid "Group %s doesn't exist"
+#~ msgstr "Groep %s bestaat niet"
+
+#~ msgid "Denied XDMCP query from host %s"
+#~ msgstr "XDMCP verzoek van host %s geweigerd"
+
+#~ msgid "Could not extract authlist from packet"
+#~ msgstr "Kan authlijst niet uit pakket halen"
+
+#~ msgid "Error in checksum"
+#~ msgstr "Fout in checksum"
+
+#~ msgid "Bad address"
+#~ msgstr "Foutief adres"
+
+#~ msgid "%s: Could not read display address"
+#~ msgstr "%s: Kan schermadres niet lezen"
+
+#~ msgid "%s: Could not read display port number"
+#~ msgstr "%s: Kan poortnummer van scherm niet lezen"
+
+#~ msgid "%s: Could not extract authlist from packet"
+#~ msgstr "%s: Kan geen authlijst uit pakket halen"
+
+#~ msgid "%s: Error in checksum"
+#~ msgstr "%s: Fout in checksum"
+
+#~ msgid "%s: Got REQUEST from banned host %s"
+#~ msgstr "%s: REQUEST ontvangen van verboden host %s"
+
+#~ msgid "%s: Could not read Display Number"
+#~ msgstr "%s: Kan het schermnummer niet lezen"
+
+#~ msgid "%s: Could not read Connection Type"
+#~ msgstr "%s: Kan het verbindingstype niet lezen"
+
+#~ msgid "%s: Could not read Client Address"
+#~ msgstr "%s: Kan clientadres niet lezen"
+
+#~ msgid "%s: Could not read Authentication Data"
+#~ msgstr "%s: Kan de identificatiedata niet lezen"
+
+#~ msgid "%s: Could not read Authorization List"
+#~ msgstr "%s: Kan de identificatielijst niet lezen"
+
+#~ msgid "%s: Could not read Manufacturer ID"
+#~ msgstr "%s: Kan Producent-ID niet lezen"
+
+#~ msgid "%s: Failed checksum from %s"
+#~ msgstr "%s: Fout in checksum van %s"
+
+#~ msgid "%s: Got Manage from banned host %s"
+#~ msgstr "%s: 'Manage' ontvangen van verboden host %s"
+
+#~ msgid "%s: Could not read Session ID"
+#~ msgstr "%s: Kan sessie-ID niet lezen"
+
+#~ msgid "%s: Could not read Display Class"
+#~ msgstr "%s: Kan schermklasse niet lezen"
+
+#~ msgid "%s: Could not read address"
+#~ msgstr "%s: Kan adres niet lezen"
+
+#~ msgid "%s: Got KEEPALIVE from banned host %s"
+#~ msgstr "%s: KEEPALIVE ontvangen van verboden host %s"
+
+#~ msgid "GdmXdmcpDisplayFactory: Could not read XDMCP header!"
+#~ msgstr "GdmXdmcpDisplayFactory: Kan XDMCP-header niet lezen!"
+
+#~ msgid "Could not get server hostname: %s!"
+#~ msgstr "Kan de naam van de server niet vinden: %s!"
+
+#~ msgid "Logdir %s does not exist or isn't a directory."
+#~ msgstr "Logmap %s bestaat niet of is geen map."
+
+#~ msgid "Authdir %s does not exist. Aborting."
+#~ msgstr "Authdir %s bestaat niet. Gestopt."
+
+#~ msgid "Authdir %s is not a directory. Aborting."
+#~ msgstr "Authdir %s niet herkend. Gestopt."
+
+#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
+#~ msgstr "Authdir %s is geen eigendom van gebruiker %d, groep %d. Gestopt."
+
+#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
+#~ msgstr "Authdir %s heeft verkeerde rechten %o. Moet %o zijn. Gestopt."
+
+#~ msgid "Max Item Count"
+#~ msgstr "Maximum aantal items"
+
+#~ msgid "The maximum number of items to keep around in the list"
+#~ msgstr "Het maximum aantal items in de lijst"
+
+# flyer/banner/tijdelijk mededeling/welkomstbericht/begroetingstekst
+#~ msgid "Banner message text when chooser is empty"
+#~ msgstr "Welkomstbericht bij lege kieslijst"
+
+# bekende/legale
+#~ msgid "Do not show known users in the login window"
+#~ msgstr "Legale gebruikers niet tonen in het aanmeldvenster"
+
+#~ msgid "Enable accessibility keyboard plugin"
+#~ msgstr "Toetsenbordtoegankelijkheidsplug-in activeren"
+
+#~ msgid "Enable on-screen keyboard"
+#~ msgstr "Schermtoetsenbord inschakelen"
+
+#~ msgid "Enable screen magnifier"
+#~ msgstr "Vergrootglad inschakelen"
+
+# klaar voor gebruik/gereed
+#~ msgid "Enable screen reader"
+#~ msgstr "Schermlezer inschakelen"
+
+# welkomstlogo/aanmeldlogo
+#~ msgid "Icon name to use for greeter logo"
+#~ msgstr "Pictogramnaam voor het aanmeldlogo"
+
+#~ msgid "Recently selected languages"
+#~ msgstr "Recent gebruikte talen"
+
+#~ msgid ""
+#~ "Set to a list of languages to be shown by default in the login window."
+#~ msgstr "Instellen op een lijst van standaard weer te geven talen."
+
+# thema van pictogramnaam/naam van het themapictogram
+#~ msgid "Set to the themed icon name to use for the greeter logo."
+#~ msgstr ""
+#~ "Ingesteld op de naam van het themapictogram dat gebruikt wordt voor het "
+#~ "aanmeldlogo."
+
+#~ msgid "Set to true to disable showing known users in the login window."
+#~ msgstr ""
+#~ "Inschakelen om de gebruikers van het systeem niet te tonen in het "
+#~ "aanmeldvenster."
+
+#~ msgid "Set to true to enable the XRandR settings manager plugin."
+#~ msgstr "Inschakelen om de plug-in voor xrandr te gebruiken."
+
+#~ msgid "Set to true to enable the background settings manager plugin."
+#~ msgstr "Inschakelen om achtergrondinstellingenbeheer te gebruiken."
+
+#~ msgid "Set to true to enable the media-keys settings manager plugin."
+#~ msgstr ""
+#~ "Inschakelen om de plug-in voor het beheer van de media-toetsen te "
+#~ "gebruiken."
+
+#~ msgid "Set to true to enable the on-screen keyboard."
+#~ msgstr "Inschakelen om het schermtoetsenbord te gebruiken."
+
+#~ msgid ""
+#~ "Set to true to enable the plugin to manage the accessibility keyboard "
+#~ "settings."
+#~ msgstr "Inschakelen om de toetsenbordtoegankelijkheidsplug-in te gebruiken."
+
+#~ msgid "Set to true to enable the screen magnifier."
+#~ msgstr "Inschakelen om het vergrootglas te gebruiken."
+
+#~ msgid "Set to true to enable the screen reader."
+#~ msgstr "Inschakelen om de schermlezer te gebruiken."
+
+#~ msgid "Set to true to enable the sound settings manager plugin."
+#~ msgstr ""
+#~ "Inschakelen om de plug-in voor het beheer van de geluidsinstellingen te "
+#~ "gebruiken."
+
+#~ msgid "Set to true to enable the xsettings settings manager plugin."
+#~ msgstr ""
+#~ "Inschakelen om de plug-in voor het beheer van de xsettings-instellingen "
+#~ "te gebruiken."
+
+#~ msgid "Set to true to use Compiz as the window manager."
+#~ msgstr "Inschakelen om compiz voor het vensterbeheer te gebruiken."
+
+#~ msgid ""
+#~ "Text banner message to show in the login window when the user chooser is "
+#~ "empty, instead of banner_message_text."
+#~ msgstr ""
+#~ "Tekst van het welkomstbericht in het aanmeldvenster wanneer de kieslijst "
+#~ "leeg is, in plaats van banner_message_text."
+
+#~ msgid "True if the XRandR settings manager plugin is enabled."
+#~ msgstr "Ingeschakeld als de xrandr-plug-in gebruikt wordt."
+
+#~ msgid "True if the background settings manager plugin is enabled."
+#~ msgstr ""
+#~ "Ingeschakeld als de plug-in voor achtergrondinstellingen gebruikt wordt."
+
+#~ msgid "True if the media-keys settings manager plugin is enabled."
+#~ msgstr ""
+#~ "Ingeschakeld als de plug-in voor het beheer van de media-toetsen gebruikt "
+#~ "wordt."
+
+#~ msgid "True if the sound settings manager plugin is enabled."
+#~ msgstr ""
+#~ "Ingeschakeld als de plug-in voor het beheer van de geluidsinstellingen "
+#~ "gebruikt wordt."
+
+#~ msgid "True if the xsettings settings manager plugin is enabled."
+#~ msgstr ""
+#~ "Ingeschakeld als de plug-in voor xsettings-instellingen gebruikt wordt."
+
+#~ msgid "Use Compiz as the window manager"
+#~ msgstr "Compiz gebruiken voor het vensterbeheer"
+
+#~ msgid "Activation of this plugin"
+#~ msgstr "Activering van deze plug-in"
+
+#~ msgid "Whether this plugin would be activated or not"
+#~ msgstr "Of deze plug-in wel of niet geactiveerd moet zijn"
+
 #~ msgid "AT-SPI Registry Wrapper"
 #~ msgstr "AT SPI Registry Wrapper"
 
 #~ msgid "Power Manager"
 #~ msgstr "Energiebeheer"
-
-#~ msgid "Power management daemon"
-#~ msgstr "Energiebeheer-service"
 
 #~ msgid "GNOME Session Acceleration Checker"
 #~ msgstr "Controle van hardwareversnelling voor de Gnome-sessie"
