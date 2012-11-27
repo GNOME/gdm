@@ -34,6 +34,10 @@
 
 #include <security/pam_appl.h>
 
+#ifdef HAVE_LOGINCAP
+#include <login_cap.h>
+#endif
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -1792,10 +1796,18 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                         fd = _open_program_session_log (worker->priv->log_file);
                 }
 
+#ifdef HAVE_LOGINCAP
+                if (setusercontext (NULL, passwd_entry, passwd_entry->pw_uid, LOGIN_SETALL) < 0) {
+                        g_debug ("GdmSessionWorker: setusercontext() failed for user %s: %s",
+                                 passwd_entry->pw_name, g_strerror (errno));
+                        _exit (1);
+                }	
+#else
                 if (setuid (worker->priv->uid) < 0) {
                         g_debug ("GdmSessionWorker: could not reset uid: %s", g_strerror (errno));
                         _exit (1);
                 }
+#endif
 
                 if (setsid () < 0) {
                         g_debug ("GdmSessionWorker: could not set pid '%u' as leader of new session and process group: %s",
