@@ -475,11 +475,13 @@ get_login_window_session_id_for_systemd (const char  *seat_id,
         ret = TRUE;
 
 out:
-        for (i = 0; sessions[i]; i ++) {
-                free (sessions[i]);
-        }
+        if (sessions) {
+                for (i = 0; sessions[i]; i ++) {
+                        free (sessions[i]);
+                }
 
-        free (sessions);
+                free (sessions);
+        }
 
         return ret;
 }
