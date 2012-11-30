@@ -1567,6 +1567,14 @@ gdm_simple_slave_stop (GdmSlave *slave)
                 self->priv->greeter_environment = NULL;
         }
 
+        if (self->priv->start_session_id > 0) {
+                g_source_remove (self->priv->start_session_id);
+                self->priv->start_session_id = 0;
+        }
+
+        g_clear_pointer (&self->priv->start_session_service_name,
+                         (GDestroyNotify) g_free);
+
         if (self->priv->session_is_running) {
                 char *username;
 
