@@ -1373,9 +1373,9 @@ gdm_smartcard_manager_create_worker (GdmSmartcardManager  *manager,
                                                    read_fd,
                                                    module);
 
-        worker->thread = g_thread_create ((GThreadFunc)
-                                          gdm_smartcard_manager_worker_run,
-                                          worker, FALSE, NULL);
+        worker->thread = g_thread_new ("smartcrad",
+				       (GThreadFunc) gdm_smartcard_manager_worker_run,
+				       worker);
 
         if (worker->thread == NULL) {
                 gdm_smartcard_manager_worker_free (worker);
