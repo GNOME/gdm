@@ -24,7 +24,11 @@
 #include <glib-unix.h>
 #include <pwd.h>
 
-#include "gdm-common-unknown-origin.h"
+#define        VE_IGNORE_EINTR(expr) \
+        do {                         \
+                errno = 0;           \
+                expr;                \
+        } while G_UNLIKELY (errno == EINTR);
 
 #define GDM_CUSTOM_SESSION  "custom"
 

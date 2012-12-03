@@ -53,8 +53,6 @@ libgdmcommon_la_SOURCES =	\
 	gdm-address.c		\
 	gdm-common.h		\
 	gdm-common.c		\
-	gdm-common-unknown-origin.h	\
-	gdm-common-unknown-origin.c	\
 	gdm-profile.c		\
 	gdm-profile.h		\
 	gdm-settings.c 		\
