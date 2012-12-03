@@ -215,8 +215,6 @@ main (int argc, char *argv[])
 
         setlocale (LC_ALL, "");
 
-        g_type_init ();
-
         gdm_log_init ();
         gdm_log_set_debug (TRUE);
 

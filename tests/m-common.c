@@ -45,8 +45,6 @@ main (int argc, char **argv)
 
         failed = 0;
 
-        g_type_init ();
-
         context = g_option_context_new ("");
         g_option_context_add_main_entries (context, entries, NULL);
         error = NULL;

@@ -77,8 +77,6 @@ main (int argc, char **argv)
         GMainLoop          *main_loop;
         GDBusConnection    *connection;
 
-        g_type_init ();
-
         connection = get_system_bus ();
         if (connection == NULL) {
                 goto out;

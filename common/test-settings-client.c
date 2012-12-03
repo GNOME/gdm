@@ -76,8 +76,6 @@ main (int argc, char **argv)
 {
         GMainLoop *loop;
 
-        g_type_init ();
-
         if (! gdm_settings_client_init (DATADIR "/gdm/gdm.schemas", "/")) {
                 exit (1);
         }

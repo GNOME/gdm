@@ -182,8 +182,6 @@ main (int    argc,
         textdomain (GETTEXT_PACKAGE);
         setlocale (LC_ALL, "");
 
-        g_type_init ();
-
         context = g_option_context_new (_("GNOME Display Manager Slave"));
         g_option_context_add_main_entries (context, entries, NULL);
 
