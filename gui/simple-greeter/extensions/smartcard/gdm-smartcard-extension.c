@@ -425,9 +425,7 @@ gdm_smartcard_extension_is_visible (GdmLoginExtension *login_extension)
 {
         GdmSmartcardExtension *extension = GDM_SMARTCARD_EXTENSION (login_extension);
 
-        char *contents, **lines, *pid_dir;
-        gboolean ret;
-        guint i;
+        char *contents, *pid_dir;
         pid_t pid;
 
         if (!g_settings_get_boolean (extension->priv->settings, "enable-smartcard-authentication")) {
