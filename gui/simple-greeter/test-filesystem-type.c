@@ -91,8 +91,6 @@ main (int argc, char *argv[])
 
         setlocale (LC_ALL, "");
 
-        g_type_init ();
-
         /* Option parsing */
         ctx = g_option_context_new ("- Test filesystem type");
         g_option_context_add_main_entries (ctx, options, GETTEXT_PACKAGE);

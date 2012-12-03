@@ -149,8 +149,6 @@ main (int    argc,
 
         setlocale (LC_ALL, "");
 
-        g_type_init ();
-
         g_log_set_handler (NULL, G_LOG_LEVEL_DEBUG, on_debug_message, NULL);
 
         event_loop = g_main_loop_new (NULL, FALSE);

@@ -96,8 +96,6 @@ main (int    argc,
         textdomain (GETTEXT_PACKAGE);
         setlocale (LC_ALL, "");
 
-        g_type_init ();
-
         /* Translators: worker is a helper process that does the work
            of starting up a session */
         context = g_option_context_new (_("GNOME Display Manager Session Worker"));

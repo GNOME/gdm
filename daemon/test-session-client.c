@@ -158,8 +158,6 @@ main (int   argc,
         char *address;
         gboolean ok;
 
-        g_type_init ();
-
         g_debug ("creating instance of GdmDBusDisplay object...");
 
         error = NULL;
