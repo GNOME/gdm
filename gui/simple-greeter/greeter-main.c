@@ -79,14 +79,6 @@ signal_cb (int      signo,
         ret = TRUE;
 
         switch (signo) {
-        case SIGFPE:
-        case SIGPIPE:
-                /* let the fatal signals interrupt us */
-                g_debug ("Caught signal %d, shutting down abnormally.", signo);
-                ret = FALSE;
-
-                break;
-
         case SIGINT:
         case SIGTERM:
                 /* let the fatal signals interrupt us */
@@ -299,7 +291,6 @@ main (int argc, char *argv[])
         gdm_signal_handler_add_fatal (signal_handler);
         gdm_signal_handler_add (signal_handler, SIGTERM, signal_cb, NULL);
         gdm_signal_handler_add (signal_handler, SIGINT, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGFPE, signal_cb, NULL);
         gdm_signal_handler_add (signal_handler, SIGHUP, signal_cb, NULL);
         gdm_signal_handler_add (signal_handler, SIGUSR1, signal_cb, NULL);
 
