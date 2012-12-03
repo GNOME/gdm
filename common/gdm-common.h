@@ -21,7 +21,7 @@
 #ifndef _GDM_COMMON_H
 #define _GDM_COMMON_H
 
-#include <glib.h>
+#include <glib-unix.h>
 #include <pwd.h>
 #include <errno.h>
 

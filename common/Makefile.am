@@ -35,20 +35,6 @@ BUILT_SOURCES =			\
 gdmdir = $(datadir)/gdm
 gdm_DATA = gdb-cmd
 
-libexec_PROGRAMS = gdm-crash-logger
-gdm_crash_logger_SOURCES = gdm-crash-logger.c
-gdm_crash_logger_CPPFLAGS = \
-	$(AM_CPPFLAGS)				\
-	$(GTHREAD_CFLAGS)			\
-	-DG_DISABLE_DEPRECATED			\
-	-DBINDIR=\"$(bindir)\"			\
-	-DSBINDIR=\"$(sbindir)\"		\
-	-DDATADIR=\"$(datadir)\"		\
-	-DSYSCONFDIR=\"$(sysconfdir)\"		\
-	-DLOCALSTATEDIR=\"$(localstatedir)\"	\
-	$(NULL)
-gdm_crash_logger_LDADD = $(GTHREAD_LIBS)
-
 gdm-settings-glue.c gdm-settings-glue.h : gdm-settings.xml Makefile.am
 	$(AM_V_GEN)gdbus-codegen 				\
 		--c-namespace=GdmDBus				\
@@ -84,8 +70,6 @@ libgdmcommon_la_SOURCES =	\
 	gdm-settings-client.c	\
 	gdm-log.h		\
 	gdm-log.c		\
-	gdm-signal-handler.h	\
-	gdm-signal-handler.c	\
 	$(MKDTEMP_FILES) 	\
 	$(NULL)
 

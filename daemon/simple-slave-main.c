@@ -37,7 +37,6 @@
 #include <gio/gio.h>
 
 #include "gdm-xerrors.h"
-#include "gdm-signal-handler.h"
 #include "gdm-log.h"
 #include "gdm-common.h"
 #include "gdm-simple-slave.h"
@@ -71,56 +70,23 @@ get_system_bus (void)
 }
 
 static gboolean
-signal_cb (int      signo,
-           gpointer data)
+on_shutdown_signal_cb (gpointer user_data)
 {
-        int ret;
+        GMainLoop *mainloop = user_data;
 
-        g_debug ("Got callback for signal %d", signo);
+        g_main_loop_quit (mainloop);
 
-        ret = TRUE;
+        return FALSE;
+}
 
-        switch (signo) {
-        case SIGINT:
-        case SIGTERM:
-                /* let the fatal signals interrupt us */
-                g_debug ("Caught signal %d, shutting down normally.", signo);
-                ret = FALSE;
+static gboolean
+on_sigusr2_cb (gpointer user_data)
+{
+        g_debug ("Got USR2 signal");
 
-                break;
+        gdm_log_toggle_debug ();
 
-        case SIGHUP:
-                g_debug ("Got HUP signal");
-                /* FIXME:
-                 * Reread config stuff like system config files, VPN service files, etc
-                 */
-                ret = TRUE;
-
-                break;
-
-        case SIGUSR1:
-                g_debug ("Got USR1 signal");
-                /* we get this from xorg - can't use for anything else */
-                ret = TRUE;
-
-                break;
-
-        case SIGUSR2:
-                g_debug ("Got USR2 signal");
-                ret = TRUE;
-
-                gdm_log_toggle_debug ();
-
-                break;
-
-        default:
-                g_debug ("Caught unhandled signal %d", signo);
-                ret = TRUE;
-
-                break;
-        }
-
-        return ret;
+        return TRUE;
 }
 
 static void
@@ -155,7 +121,6 @@ main (int    argc,
         GDBusConnection  *connection;
         GdmSlave         *slave;
         static char      *display_id = NULL;
-        GdmSignalHandler *signal_handler;
         static GOptionEntry entries []   = {
                 { "display-id", 0, 0, G_OPTION_ARG_STRING, &display_id, N_("Display ID"), N_("ID") },
                 { NULL }
@@ -207,15 +172,9 @@ main (int    argc,
 
         main_loop = g_main_loop_new (NULL, FALSE);
 
-        signal_handler = gdm_signal_handler_new ();
-        gdm_signal_handler_set_fatal_func (signal_handler,
-                                           (GDestroyNotify)g_main_loop_quit,
-                                           main_loop);
-        gdm_signal_handler_add (signal_handler, SIGTERM, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGINT, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGHUP, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGUSR1, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGUSR2, signal_cb, NULL);
+        g_unix_signal_add (SIGTERM, on_shutdown_signal_cb, main_loop);
+        g_unix_signal_add (SIGINT, on_shutdown_signal_cb, main_loop);
+        g_unix_signal_add (SIGUSR2, on_sigusr2_cb, NULL);
 
         slave = gdm_simple_slave_new (display_id);
         if (slave == NULL) {
@@ -231,10 +190,6 @@ main (int    argc,
 
         if (slave != NULL) {
                 g_object_unref (slave);
-        }
-
-        if (signal_handler != NULL) {
-                g_object_unref (signal_handler);
         }
 
         g_main_loop_unref (main_loop);

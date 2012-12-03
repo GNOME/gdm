@@ -54,7 +54,6 @@
 #include <X11/Xlib.h> /* for Display */
 
 #include "gdm-common.h"
-#include "gdm-signal-handler.h"
 #include "gdm-settings-direct.h"
 #include "gdm-settings-keys.h"
 
@@ -96,6 +95,7 @@ struct GdmServerPrivate
         char    *chosen_hostname;
 
         guint    child_watch_id;
+        guint    sigusr1_id;
 
         gboolean is_initial;
 };
@@ -190,49 +190,15 @@ gdm_server_get_display_device (GdmServer *server)
 }
 
 static gboolean
-emit_ready_idle (GdmServer *server)
+on_sigusr1 (gpointer user_data)
+
 {
+        GdmServer *server = user_data;
+
         g_debug ("GdmServer: Got USR1 from X server - emitting READY");
 
         g_signal_emit (server, signals[READY], 0);
         return FALSE;
-}
-
-
-static gboolean
-signal_cb (int        signo,
-           GdmServer *server)
-
-{
-        g_idle_add ((GSourceFunc)emit_ready_idle, server);
-
-        return TRUE;
-}
-
-static void
-add_ready_handler (GdmServer *server)
-{
-        GdmSignalHandler *signal_handler;
-
-        signal_handler = gdm_signal_handler_new ();
-        gdm_signal_handler_add (signal_handler,
-                                SIGUSR1,
-                                (GdmSignalHandlerFunc)signal_cb,
-                                server);
-        g_object_unref (signal_handler);
-}
-
-static void
-remove_ready_handler (GdmServer *server)
-{
-        GdmSignalHandler *signal_handler;
-
-        signal_handler = gdm_signal_handler_new ();
-        gdm_signal_handler_remove_func (signal_handler,
-                                        SIGUSR1,
-                                        (GdmSignalHandlerFunc)signal_cb,
-                                        server);
-        g_object_unref (signal_handler);
 }
 
 /* We keep a connection (parent_dsp) open with the parent X server
@@ -1080,7 +1046,9 @@ gdm_server_init (GdmServer *server)
 
         server->priv->log_dir = g_strdup (LOGDIR);
 
-        add_ready_handler (server);
+        server->priv->sigusr1_id = g_unix_signal_add (SIGUSR1,
+                                                      on_sigusr1,
+                                                      server);
 }
 
 static void
@@ -1095,7 +1063,8 @@ gdm_server_finalize (GObject *object)
 
         g_return_if_fail (server->priv != NULL);
 
-        remove_ready_handler (server);
+        if (server->priv->sigusr1_id > 0)
+                g_source_remove (server->priv->sigusr1_id);
 
         gdm_server_stop (server);
 
