@@ -35,7 +35,6 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 
-#include "gdm-signal-handler.h"
 #include "gdm-common.h"
 #include "gdm-log.h"
 #include "gdm-session-worker.h"
@@ -47,51 +46,23 @@
 static GdmSettings *settings = NULL;
 
 static gboolean
-signal_cb (int      signo,
-           gpointer data)
+on_shutdown_signal_cb (gpointer user_data)
 {
-        int ret;
+        GMainLoop *mainloop = user_data;
 
-        g_debug ("Got callback for signal %d", signo);
+        g_main_loop_quit (mainloop);
 
-        ret = TRUE;
+        return FALSE;
+}
 
-        switch (signo) {
-        case SIGINT:
-        case SIGTERM:
-                /* let the fatal signals interrupt us */
-                g_debug ("Caught signal %d, shutting down normally.", signo);
-                ret = FALSE;
-                break;
-
-        case SIGHUP:
-                g_debug ("Got HUP signal");
-                /* FIXME:
-                 * Reread config stuff like system config files, VPN service files, etc
-                 */
-                ret = TRUE;
-
-                break;
-
-        case SIGUSR1:
-                g_debug ("Got USR1 signal");
-                /* FIXME:
-                 * Play with log levels or something
-                 */
-                ret = TRUE;
-
-                gdm_log_toggle_debug ();
-
-                break;
-
-        default:
-                g_debug ("Caught unhandled signal %d", signo);
-                ret = TRUE;
-
-                break;
-        }
-
-        return ret;
+static gboolean
+on_sigusr1_cb (gpointer user_data)
+{
+        g_debug ("Got USR1 signal");
+        
+        gdm_log_toggle_debug ();
+        
+        return TRUE;
 }
 
 static gboolean
@@ -115,7 +86,6 @@ main (int    argc,
         GMainLoop        *main_loop;
         GOptionContext   *context;
         GdmSessionWorker *worker;
-        GdmSignalHandler *signal_handler;
         const char       *address;
         gboolean          is_for_reauth;
         static GOptionEntry entries []   = {
@@ -163,13 +133,9 @@ main (int    argc,
 
         main_loop = g_main_loop_new (NULL, FALSE);
 
-        signal_handler = gdm_signal_handler_new ();
-        gdm_signal_handler_set_fatal_func (signal_handler,
-                                           (GDestroyNotify)g_main_loop_quit,
-                                           main_loop);
-        gdm_signal_handler_add (signal_handler, SIGINT, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGHUP, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGUSR1, signal_cb, NULL);
+        g_unix_signal_add (SIGTERM, on_shutdown_signal_cb, main_loop);
+        g_unix_signal_add (SIGINT, on_shutdown_signal_cb, main_loop);
+        g_unix_signal_add (SIGUSR1, on_sigusr1_cb, NULL);
 
         g_main_loop_run (main_loop);
 
@@ -177,12 +143,7 @@ main (int    argc,
                 g_object_unref (worker);
         }
 
-        if (signal_handler != NULL) {
-                g_object_unref (signal_handler);
-        }
-
         g_main_loop_unref (main_loop);
-
 
         g_debug ("Worker finished");
 

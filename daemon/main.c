@@ -43,7 +43,6 @@
 #include "gdm-manager.h"
 #include "gdm-log.h"
 #include "gdm-common.h"
-#include "gdm-signal-handler.h"
 
 #include "gdm-settings.h"
 #include "gdm-settings-direct.h"
@@ -267,60 +266,41 @@ gdm_daemon_lookup_user (uid_t *uidp,
 }
 
 static gboolean
-signal_cb (int      signo,
-           gpointer data)
+on_shutdown_signal_cb (gpointer user_data)
 {
-        int ret;
+        GMainLoop *mainloop = user_data;
 
-        g_debug ("Got callback for signal %d", signo);
+        g_main_loop_quit (mainloop);
 
-        ret = TRUE;
+        return FALSE;
+}
 
-        switch (signo) {
-        case SIGINT:
-        case SIGTERM:
-                /* let the fatal signals interrupt us */
-                g_debug ("Caught signal %d, shutting down normally.", signo);
-                ret = FALSE;
-
-                break;
-
-        case SIGHUP:
-                g_debug ("Got HUP signal");
-                /* Reread config stuff like system config files, VPN service
-                 * files, etc
-                 */
-                g_object_unref (settings);
-                settings = gdm_settings_new ();
-                if (settings != NULL) {
-                        if (! gdm_settings_direct_init (settings, DATADIR "/gdm/gdm.schemas", "/")) {
-                                g_warning ("Unable to initialize settings");
-                        }
+static gboolean
+on_sighup_cb (gpointer user_data)
+{
+        g_debug ("Got HUP signal");
+        /* Reread config stuff like system config files, VPN service
+         * files, etc
+         */
+        g_object_unref (settings);
+        settings = gdm_settings_new ();
+        if (settings != NULL) {
+                if (! gdm_settings_direct_init (settings, DATADIR "/gdm/gdm.schemas", "/")) {
+                        g_warning ("Unable to initialize settings");
                 }
-
-                ret = TRUE;
-
-                break;
-
-        case SIGUSR1:
-                g_debug ("Got USR1 signal");
-                /* FIXME:
-                 * Play with log levels or something
-                 */
-                ret = TRUE;
-
-                gdm_log_toggle_debug ();
-
-                break;
-
-        default:
-                g_debug ("Caught unhandled signal %d", signo);
-                ret = TRUE;
-
-                break;
         }
 
-        return ret;
+        return TRUE;
+}
+
+static gboolean
+on_sigusr1_cb (gpointer user_data)
+{
+        g_debug ("Got USR1 signal");
+        
+        gdm_log_toggle_debug ();
+        
+        return TRUE;
 }
 
 static gboolean
@@ -346,7 +326,6 @@ main (int    argc,
         GError             *error = NULL;
         int                 ret;
         gboolean            res;
-        GdmSignalHandler   *signal_handler;
         static gboolean     do_timed_exit    = FALSE;
         static gboolean     print_version    = FALSE;
         static gboolean     fatal_warnings   = FALSE;
@@ -432,15 +411,10 @@ main (int    argc,
 
         main_loop = g_main_loop_new (NULL, FALSE);
 
-        signal_handler = gdm_signal_handler_new ();
-        gdm_signal_handler_set_fatal_func (signal_handler,
-                                           (GDestroyNotify)g_main_loop_quit,
-                                           main_loop);
-        gdm_signal_handler_add_fatal (signal_handler);
-        gdm_signal_handler_add (signal_handler, SIGTERM, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGINT, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGHUP, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGUSR1, signal_cb, NULL);
+        g_unix_signal_add (SIGTERM, on_shutdown_signal_cb, main_loop);
+        g_unix_signal_add (SIGINT, on_shutdown_signal_cb, main_loop);
+        g_unix_signal_add (SIGHUP, on_sighup_cb, NULL);
+        g_unix_signal_add (SIGUSR1, on_sigusr1_cb, NULL);
 
         if (do_timed_exit) {
                 g_timeout_add_seconds (30, (GSourceFunc) timed_exit_cb, main_loop);
@@ -452,7 +426,6 @@ main (int    argc,
 
         g_clear_object (&manager);
         g_clear_object (&settings);
-        g_clear_object (&signal_handler);
 
         gdm_settings_direct_shutdown ();
         gdm_log_shutdown ();

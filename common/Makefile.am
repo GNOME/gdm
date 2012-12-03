@@ -74,8 +74,6 @@ libgdmcommon_la_SOURCES =	\
 	gdm-log.c		\
 	gdm-md5.h		\
 	gdm-md5.c		\
-	gdm-signal-handler.h	\
-	gdm-signal-handler.c	\
 	$(MKDTEMP_FILES) 	\
 	$(NULL)
 

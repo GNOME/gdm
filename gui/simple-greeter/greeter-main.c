@@ -32,7 +32,6 @@
 
 #include "gdm-log.h"
 #include "gdm-common.h"
-#include "gdm-signal-handler.h"
 #include "gdm-settings-client.h"
 #include "gdm-settings-keys.h"
 #include "gdm-profile.h"
@@ -67,54 +66,14 @@ is_debug_set (void)
         return debug;
 }
 
-
 static gboolean
-signal_cb (int      signo,
-           gpointer data)
+on_sigusr1_cb (gpointer user_data)
 {
-        int ret;
-
-        g_debug ("Got callback for signal %d", signo);
-
-        ret = TRUE;
-
-        switch (signo) {
-        case SIGINT:
-        case SIGTERM:
-                /* let the fatal signals interrupt us */
-                g_debug ("Caught signal %d, shutting down normally.", signo);
-                ret = FALSE;
-
-                break;
-
-        case SIGHUP:
-                g_debug ("Got HUP signal");
-                /* FIXME:
-                 * Reread config stuff like system config files, VPN service files, etc
-                 */
-                ret = TRUE;
-
-                break;
-
-        case SIGUSR1:
-                g_debug ("Got USR1 signal");
-                /* FIXME:
-                 * Play with log levels or something
-                 */
-                ret = TRUE;
-
-                gdm_log_toggle_debug ();
-
-                break;
-
-        default:
-                g_debug ("Caught unhandled signal %d", signo);
-                ret = TRUE;
-
-                break;
-        }
-
-        return ret;
+        g_debug ("Got USR1 signal");
+        
+        gdm_log_toggle_debug ();
+        
+        return TRUE;
 }
 
 static gboolean
@@ -257,7 +216,6 @@ main (int argc, char *argv[])
         GError            *error;
         GdmGreeterSession *session;
         gboolean           res;
-        GdmSignalHandler  *signal_handler;
 
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -287,12 +245,7 @@ main (int argc, char *argv[])
 
         gtk_init (&argc, &argv);
 
-        signal_handler = gdm_signal_handler_new ();
-        gdm_signal_handler_add_fatal (signal_handler);
-        gdm_signal_handler_add (signal_handler, SIGTERM, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGINT, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGHUP, signal_cb, NULL);
-        gdm_signal_handler_add (signal_handler, SIGUSR1, signal_cb, NULL);
+        g_unix_signal_add (SIGUSR1, on_sigusr1_cb, NULL);
 
         gdm_profile_start ("Creating new greeter session");
         session = gdm_greeter_session_new ();
