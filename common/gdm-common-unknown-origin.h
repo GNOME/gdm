@@ -29,15 +29,6 @@
 
 G_BEGIN_DECLS
 
-#define        VE_IGNORE_EINTR(expr) \
-        do {                         \
-                errno = 0;           \
-                expr;                \
-        } while G_UNLIKELY (errno == EINTR);
-
-/* like fopen with "w" but unlinks and uses O_EXCL */
-FILE *         gdm_safe_fopen_w  (const char *file,
-                                  mode_t      perm);
 
 G_END_DECLS
 
