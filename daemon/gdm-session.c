@@ -1911,13 +1911,14 @@ on_setup_complete_cb (GdmDBusWorker *proxy,
                                service_name);
 
                 gdm_session_authenticate (self, service_name);
+                g_variant_unref (ret);
 
         } else {
-                g_dbus_method_invocation_take_error (conversation->starting_invocation, error);
+                g_dbus_method_invocation_return_gerror (conversation->starting_invocation, error);
                 report_and_stop_conversation (self, service_name, error);
+                g_error_free (error);
         }
 
-        g_variant_unref (ret);
         g_clear_object (&conversation->starting_invocation);
 }
 
