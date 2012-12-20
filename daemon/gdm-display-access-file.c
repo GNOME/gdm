@@ -438,8 +438,18 @@ _get_auth_info_for_display (GdmDisplayAccessFile *file,
         gdm_display_is_local (display, &is_local, NULL);
 
         if (is_local) {
-                *family = FamilyWild;
-                *address = g_strdup ("localhost");
+                /* We could just use FamilyWild here except xauth
+                 * (and by extension su and ssh) doesn't support it yet
+                 *
+                 * https://bugs.freedesktop.org/show_bug.cgi?id=43425
+                 */
+                char localhost[HOST_NAME_MAX + 1] = "";
+                *family = FamilyLocal;
+                if (gethostname (localhost, HOST_NAME_MAX) == 0) {
+                        *address = g_strdup (localhost);
+                } else {
+                        *address = g_strdup ("localhost");
+                }
         } else {
                 *family = FamilyWild;
                 gdm_display_get_remote_hostname (display, address, NULL);
@@ -533,6 +543,18 @@ gdm_display_access_file_add_display_with_cookie (GdmDisplayAccessFile  *file,
                 display_added = TRUE;
         }
 
+        /* If we wrote a FamilyLocal entry, we still want a FamilyWild
+         * entry, because it's more resiliant against hostname changes
+         *
+         */
+        if (auth_entry.family == FamilyLocal) {
+                auth_entry.family = FamilyWild;
+
+                if (XauWriteAuth (file->priv->fp, &auth_entry)
+                    && fflush (file->priv->fp) != EOF) {
+                        display_added = TRUE;
+                }
+        }
 
         g_free (auth_entry.address);
         g_free (auth_entry.number);
@@ -555,6 +577,7 @@ gdm_display_access_file_remove_display (GdmDisplayAccessFile  *file,
         unsigned short  name_length;
         char           *name;
 
+        gboolean        result = FALSE;
 
         g_return_val_if_fail (file != NULL, FALSE);
         g_return_val_if_fail (file->priv->path != NULL, FALSE);
@@ -579,25 +602,44 @@ gdm_display_access_file_remove_display (GdmDisplayAccessFile  *file,
         g_free (number);
         g_free (name);
 
-        if (auth_entry == NULL) {
+        if (auth_entry != NULL) {
+                XauDisposeAuth (auth_entry);
+                result = TRUE;
+        }
+
+        /* If FamilyLocal, we also added a FamilyWild entry,
+         * so we need to clean that up too
+         */
+        if (family == FamilyLocal) {
+                auth_entry = XauGetAuthByAddr (FamilyWild,
+                                               address_length,
+                                               address,
+                                               number_length,
+                                               number,
+                                               name_length,
+                                               name);
+
+                if (auth_entry != NULL) {
+                        XauDisposeAuth (auth_entry);
+                        result = TRUE;
+                }
+        }
+
+
+        if (result == FALSE) {
                 g_set_error (error,
                              GDM_DISPLAY_ACCESS_FILE_ERROR,
                              GDM_DISPLAY_ACCESS_FILE_ERROR_FINDING_AUTH_ENTRY,
                              "could not find authorization entry");
-                return FALSE;
-        }
-
-        XauDisposeAuth (auth_entry);
-
-        if (fflush (file->priv->fp) == EOF) {
+        } else if (fflush (file->priv->fp) == EOF) {
                 g_set_error (error,
                              G_FILE_ERROR,
                              g_file_error_from_errno (errno),
                              "%s", g_strerror (errno));
-                return FALSE;
+                result = FALSE;
         }
 
-        return TRUE;
+        return result;
 }
 
 void
