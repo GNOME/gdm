@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-07 16:20+0300\n"
-"PO-Revision-Date: 2012-09-07 16:20+0200\n"
+"POT-Creation-Date: 2012-12-20 14:51+0200\n"
+"PO-Revision-Date: 2012-12-20 14:54+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "Language: he\n"
@@ -28,41 +28,11 @@ msgstr "/dev/urandom is not a character device"
 msgid "could not find user \"%s\" on system"
 msgstr "לא ניתן לאתר את המשתמש „%s“ במערכת"
 
-#: ../daemon/gdm-display.c:1315
-#: ../daemon/gdm-display.c:1349
+#: ../daemon/gdm-display.c:1320
+#: ../daemon/gdm-display.c:1354
 #, c-format
 msgid "No session available yet"
 msgstr "אין עדיין הפעלות זמינות"
-
-#: ../daemon/gdm-launch-environment.c:401
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "User %s doesn't exist"
-
-#: ../daemon/gdm-launch-environment.c:408
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "Group %s doesn't exist"
-
-#: ../daemon/gdm-launch-environment.c:427
-#: ../daemon/gdm-launch-environment.c:447
-#: ../daemon/gdm-server.c:463
-#: ../daemon/gdm-server.c:483
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "Couldn't set groupid to %d"
-
-#: ../daemon/gdm-launch-environment.c:433
-#: ../daemon/gdm-server.c:469
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "initgroups () failed for %s"
-
-#: ../daemon/gdm-launch-environment.c:439
-#: ../daemon/gdm-server.c:475
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "Couldn't set userid to %d"
 
 #: ../daemon/gdm-manager.c:277
 #: ../daemon/gdm-manager.c:384
@@ -98,34 +68,50 @@ msgstr "למשתמש אין בעלות על הפעלה"
 msgid "No session available"
 msgstr "אין הפעלה זמינה"
 
-#: ../daemon/gdm-server.c:273
+#: ../daemon/gdm-server.c:272
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: failed to connect to parent display '%s'"
 
-#: ../daemon/gdm-server.c:452
+#: ../daemon/gdm-server.c:451
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr "Server was to be spawned by user %s but that user doesn't exist"
 
-#: ../daemon/gdm-server.c:522
+#: ../daemon/gdm-server.c:462
+#: ../daemon/gdm-server.c:482
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "Couldn't set groupid to %d"
+
+#: ../daemon/gdm-server.c:468
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "initgroups () failed for %s"
+
+#: ../daemon/gdm-server.c:474
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "Couldn't set userid to %d"
+
+#: ../daemon/gdm-server.c:521
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: Could not open log file for display %s!"
 
-#: ../daemon/gdm-server.c:533
-#: ../daemon/gdm-server.c:539
-#: ../daemon/gdm-server.c:545
+#: ../daemon/gdm-server.c:532
+#: ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:544
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Error setting %s to %s"
 
-#: ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:564
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: Server priority couldn't be set to %d: %s"
 
-#: ../daemon/gdm-server.c:722
+#: ../daemon/gdm-server.c:720
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Empty server command for display %s"
@@ -154,7 +140,7 @@ msgstr "התקן תצוגה"
 msgid "The display device"
 msgstr "התקן התצוגה"
 
-#: ../daemon/gdm-session.c:1177
+#: ../daemon/gdm-session.c:1183
 msgid "Could not create authentication helper process"
 msgstr "לא ניתן ליצור תהליך מסייע אימות"
 
@@ -208,35 +194,35 @@ msgstr "error informing authentication system of display string: %s"
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "error informing authentication system of display xauth credentials: %s"
 
-#: ../daemon/gdm-session-worker.c:1446
-#: ../daemon/gdm-session-worker.c:1463
+#: ../daemon/gdm-session-worker.c:1454
+#: ../daemon/gdm-session-worker.c:1471
 #, c-format
 msgid "no user account available"
 msgstr "אין חשבון משתמש זמין"
 
-#: ../daemon/gdm-session-worker.c:1490
+#: ../daemon/gdm-session-worker.c:1498
 msgid "Unable to change to user"
 msgstr "לא ניתן להחליף משתמש"
 
-#: ../daemon/gdm-simple-slave.c:1370
+#: ../daemon/gdm-simple-slave.c:1330
 msgid "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 msgstr "Could not start the X server (your graphical environment) due to an internal error. Please contact your system administrator or check your syslog to diagnose. In the meantime this display will be disabled.  Please restart GDM when the problem is corrected."
 
-#: ../daemon/gdm-simple-slave.c:1411
+#: ../daemon/gdm-simple-slave.c:1371
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "ניתן לקרוא לזה רק לפני שהמשתמש נכנס"
 
-#: ../daemon/gdm-simple-slave.c:1421
+#: ../daemon/gdm-simple-slave.c:1381
 #, c-format
 msgid "Caller not GDM"
 msgstr "הקורא אינו GDM"
 
-#: ../daemon/gdm-simple-slave.c:1474
+#: ../daemon/gdm-simple-slave.c:1434
 msgid "User not logged in"
 msgstr "המשתמש לא נכנס"
 
-#: ../daemon/gdm-xdmcp-chooser-slave.c:370
+#: ../daemon/gdm-xdmcp-chooser-slave.c:368
 #, c-format
 msgid "Currently, only one client can be connected at once"
 msgstr "נכון לעכשיו, ניתן לחבר לקוח אחד בלבד בכל פעם"
@@ -251,73 +237,63 @@ msgstr "Could not create socket!"
 msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr "Cannot write PID file %s: possibly out of disk space: %s"
 
-#: ../daemon/main.c:160
+#: ../daemon/main.c:189
 #, c-format
-msgid "Logdir %s does not exist or isn't a directory."
-msgstr "Logdir %s does not exist or isn't a directory."
+msgid "Failed to create ran once marker dir %s: %s"
+msgstr "לא ניתן ליצור ספריית סימון להרצה חד־פעמית %s:‏ %s"
 
-#: ../daemon/main.c:176
+#: ../daemon/main.c:195
 #, c-format
-msgid "Authdir %s does not exist. Aborting."
-msgstr "Authdir %s does not exist. Aborting."
+msgid "Failed to create AuthDir %s: %s"
+msgstr "יצירת ה־AuthDir %s נכשלה: %s"
 
-#: ../daemon/main.c:180
+#: ../daemon/main.c:201
 #, c-format
-msgid "Authdir %s is not a directory. Aborting."
-msgstr "Authdir %s is not a directory. Aborting."
+msgid "Failed to create LogDir %s: %s"
+msgstr "יצירת ה־LogDir %s נכשלה: %s"
 
-#: ../daemon/main.c:254
-#, c-format
-msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-msgstr "Authdir %s is not owned by user %d, group %d. Aborting."
-
-#: ../daemon/main.c:261
-#, c-format
-msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-msgstr "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-
-#: ../daemon/main.c:298
+#: ../daemon/main.c:236
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr "Can't find the GDM user '%s'. Aborting!"
 
-#: ../daemon/main.c:304
+#: ../daemon/main.c:242
 msgid "The GDM user should not be root. Aborting!"
 msgstr "The GDM user should not be root. Aborting!"
 
-#: ../daemon/main.c:310
+#: ../daemon/main.c:248
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Can't find the GDM group '%s'. Aborting!"
 
-#: ../daemon/main.c:316
+#: ../daemon/main.c:254
 msgid "The GDM group should not be root. Aborting!"
 msgstr "The GDM group should not be root. Aborting!"
 
-#: ../daemon/main.c:427
+#: ../daemon/main.c:362
 msgid "Make all warnings fatal"
 msgstr "Make all warnings fatal"
 
-#: ../daemon/main.c:428
+#: ../daemon/main.c:363
 msgid "Exit after a time (for debugging)"
 msgstr "Exit after a time (for debugging)"
 
-#: ../daemon/main.c:429
+#: ../daemon/main.c:364
 msgid "Print GDM version"
 msgstr "Print GDM version"
 
-#: ../daemon/main.c:442
+#: ../daemon/main.c:375
 msgid "GNOME Display Manager"
 msgstr "GNOME Display Manager"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:492
+#: ../daemon/main.c:423
 msgid "Only the root user can run GDM"
 msgstr "Only the root user can run GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:150
+#: ../daemon/session-worker-main.c:148
 msgid "GNOME Display Manager Session Worker"
 msgstr "GNOME Display Manager Session Worker"
 
@@ -331,8 +307,8 @@ msgstr "Display ID"
 msgid "ID"
 msgstr "ID"
 
-#: ../daemon/simple-slave-main.c:187
-#: ../daemon/xdmcp-chooser-slave-main.c:188
+#: ../daemon/simple-slave-main.c:185
+#: ../daemon/xdmcp-chooser-slave-main.c:186
 msgid "GNOME Display Manager Slave"
 msgstr "GNOME Display Manager Slave"
 
@@ -341,14 +317,6 @@ msgstr "GNOME Display Manager Slave"
 msgid "Login Window"
 msgstr "חלון התחברות"
 
-#: ../data/applications/gnome-mag.desktop.in.h:1
-msgid "GNOME Screen Magnifier"
-msgstr "מגדיל המסך של GNOME"
-
-#: ../data/applications/gnome-mag.desktop.in.h:2
-msgid "Magnify parts of the screen"
-msgstr "מגדיל חלקים מהמסך"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME Shell"
@@ -356,22 +324,6 @@ msgstr "GNOME Shell"
 #: ../data/applications/gnome-shell.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "ניהול ועיצוב חלונות"
-
-#: ../data/applications/gok.desktop.in.h:1
-msgid "GNOME On-Screen Keyboard"
-msgstr "מקלדת על המסך של GNOME"
-
-#: ../data/applications/gok.desktop.in.h:2
-msgid "Use an on-screen keyboard"
-msgstr "שימוש במקלדת על המסך"
-
-#: ../data/applications/orca-screen-reader.desktop.in.h:1
-msgid "Orca Screen Reader"
-msgstr "קורא המסך Orca"
-
-#: ../data/applications/orca-screen-reader.desktop.in.h:2
-msgid "Present on-screen information as speech or braille"
-msgstr "מציג מידע על גבי המסך כגון דיבור או כתב ברייל"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -451,27 +403,33 @@ msgid "Unable to activate session: "
 msgstr "לא ניתן לגשת את ההפעלה:"
 
 #: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:483
+#: ../gui/libgdm/gdm-user-switching.c:514
+#: ../utils/gdmflexiserver.c:446
+#: ../utils/gdmflexiserver.c:613
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Could not identify the current session."
 
 #: ../gui/libgdm/gdm-user-switching.c:351
+#: ../utils/gdmflexiserver.c:453
 #, c-format
 msgid "User unable to switch sessions."
 msgstr "User unable to switch sessions."
 
-#: ../gui/libgdm/gdm-user-switching.c:492
+#: ../gui/libgdm/gdm-user-switching.c:523
+#: ../utils/gdmflexiserver.c:622
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "לא ניתן לזהות את המושב הנוכחי."
 
-#: ../gui/libgdm/gdm-user-switching.c:502
+#: ../gui/libgdm/gdm-user-switching.c:533
+#: ../utils/gdmflexiserver.c:632
 #, c-format
 msgid "The system is unable to determine whether to switch to an existing login screen or start up a new login screen."
 msgstr "המערכת לא הצליחה לוודא האם לעבור למסך כניסה קיים או להפעיל מסך כניסה חדש."
 
-#: ../gui/libgdm/gdm-user-switching.c:510
+#: ../gui/libgdm/gdm-user-switching.c:541
+#: ../utils/gdmflexiserver.c:640
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "המערכת לא הצליחה לפעיל מסך כניסה חדש."
@@ -489,12 +447,12 @@ msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Could not read XDMCP header!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XMDCP: Incorrect XDMCP version!"
-msgstr "XMDCP: Incorrect XDMCP version!"
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XDMCP: גרסת XDMCP שגויה!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XMDCP: Unable to parse address"
-msgstr "XMDCP: Unable to parse address"
+msgid "XDMCP: Unable to parse address"
+msgstr "XDMCP: לא ניתן לנתח את הכתובת"
 
 #: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
 msgid "Fingerprint Authentication"
@@ -513,7 +471,7 @@ msgid "Log into session with username and password"
 msgstr "כניסה להפעלה עם שם משתמש וססמה"
 
 #: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
 msgid "Log In"
 msgstr "כניסה"
@@ -563,31 +521,31 @@ msgstr "נתיב המודול"
 msgid "path to smartcard PKCS #11 driver"
 msgstr "נתיב אל מנהל התקן הכרטיס החכם מסוג PKCS #11"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
 msgid "received error or hang up from event source"
 msgstr "התקבלה שגיאה או ניתוק ממקור אירוע"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:656
 #, c-format
 msgid "NSS security system could not be initialized"
 msgstr "לא ניתן להפעיל את מערכת האבטחה NSS"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:784
 #, c-format
 msgid "no suitable smartcard driver could be found"
 msgstr "לא נמצאו מנהלי התקנים הולמים לכרטיס החכם"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:798
 #, c-format
 msgid "smartcard driver '%s' could not be loaded"
 msgstr "לא ניתן לטעון את מנהל ההתקן '%s' של הכרטיס החכם"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:870
 #, c-format
 msgid "could not watch for incoming card events - %s"
 msgstr "לא ניתן לעקוב אחר אירועי כרטיסים נכנסים – %s"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1237
 #, c-format
 msgid "encountered unexpected error while waiting for smartcard events"
 msgstr "אירעה שגיאה בלתי צפויה בעת ההמתנה לשירותי כרטיס חכם"
@@ -703,23 +661,23 @@ msgstr "שחרור"
 msgid "Login"
 msgstr "כניסה"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:953
+#: ../gui/simple-greeter/gdm-greeter-panel.c:955
 msgid "Suspend"
 msgstr "השהה"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:958
+#: ../gui/simple-greeter/gdm-greeter-panel.c:960
 msgid "Restart"
 msgstr "הפעל מחדש"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:962
+#: ../gui/simple-greeter/gdm-greeter-panel.c:964
 msgid "Shut Down"
 msgstr "כיבוי"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1011
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
 msgid "Unknown time remaining"
 msgstr "הזמן שנותר בלתי ידוע"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1033
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
 msgid "Panel"
 msgstr "לוח"
 
@@ -829,9 +787,38 @@ msgstr "התחברות אוטומטית למערכת לאחר בחירת אפש�
 msgid "Currently logged in"
 msgstr "כבר מחובר"
 
+#: ../utils/gdmflexiserver.c:64
+msgid "Only the VERSION command is supported"
+msgstr "Only the VERSION command is supported"
+
+#: ../utils/gdmflexiserver.c:64
+msgid "COMMAND"
+msgstr "COMMAND"
+
+#: ../utils/gdmflexiserver.c:65
+#: ../utils/gdmflexiserver.c:66
+#: ../utils/gdmflexiserver.c:68
+#: ../utils/gdmflexiserver.c:69
+msgid "Ignored — retained for compatibility"
+msgstr "Ignored — retained for compatibility"
+
+#: ../utils/gdmflexiserver.c:67
 #: ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Debugging output"
+
+#: ../utils/gdmflexiserver.c:71
+msgid "Version of this application"
+msgstr "Version of this application"
+
+#. Option parsing
+#: ../utils/gdmflexiserver.c:706
+msgid "- New GDM login"
+msgstr "- New GDM login"
+
+#: ../utils/gdmflexiserver.c:762
+msgid "Unable to start new display"
+msgstr "לא ניתן להתחיל תצוגה חדשה"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -842,20 +829,44 @@ msgstr "המסך צולם"
 msgid "Take a picture of the screen"
 msgstr "צילום המסך"
 
-#~ msgid "Only the VERSION command is supported"
-#~ msgstr "Only the VERSION command is supported"
+#~ msgid "User %s doesn't exist"
+#~ msgstr "User %s doesn't exist"
 
-#~ msgid "COMMAND"
-#~ msgstr "COMMAND"
+#~ msgid "Group %s doesn't exist"
+#~ msgstr "Group %s doesn't exist"
 
-#~ msgid "Ignored — retained for compatibility"
-#~ msgstr "Ignored — retained for compatibility"
+#~ msgid "Logdir %s does not exist or isn't a directory."
+#~ msgstr "Logdir %s does not exist or isn't a directory."
 
-#~ msgid "Version of this application"
-#~ msgstr "Version of this application"
+#~ msgid "Authdir %s does not exist. Aborting."
+#~ msgstr "Authdir %s does not exist. Aborting."
 
-#~ msgid "- New GDM login"
-#~ msgstr "- New GDM login"
+#~ msgid "Authdir %s is not a directory. Aborting."
+#~ msgstr "Authdir %s is not a directory. Aborting."
+
+#~ msgid "Authdir %s is not owned by user %d, group %d. Aborting."
+#~ msgstr "Authdir %s is not owned by user %d, group %d. Aborting."
+
+#~ msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
+#~ msgstr "Authdir %s has wrong permissions %o. Should be %o. Aborting."
+
+#~ msgid "GNOME Screen Magnifier"
+#~ msgstr "מגדיל המסך של GNOME"
+
+#~ msgid "Magnify parts of the screen"
+#~ msgstr "מגדיל חלקים מהמסך"
+
+#~ msgid "GNOME On-Screen Keyboard"
+#~ msgstr "מקלדת על המסך של GNOME"
+
+#~ msgid "Use an on-screen keyboard"
+#~ msgstr "שימוש במקלדת על המסך"
+
+#~ msgid "Orca Screen Reader"
+#~ msgstr "קורא המסך Orca"
+
+#~ msgid "Present on-screen information as speech or braille"
+#~ msgstr "מציג מידע על גבי המסך כגון דיבור או כתב ברייל"
 
 #~ msgid "Unable to initialize login system"
 #~ msgstr "לא ניתן לאתחל את מערכת הכניסה"
@@ -1266,9 +1277,6 @@ msgstr "צילום המסך"
 
 #~ msgid "worker exited with status %d"
 #~ msgstr "worker exited with status %d"
-
-#~ msgid "Failed to restart computer"
-#~ msgstr "נכשל בשתחול המחשב"
 
 #~ msgid ""
 #~ "You are not allowed to restart the computer because multiple users are "
