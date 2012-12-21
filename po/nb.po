@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 3.4.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-05 12:57+0200\n"
+"POT-Creation-Date: 2012-09-28 15:41+0200\n"
 "PO-Revision-Date: 2012-09-05 12:57+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
@@ -33,33 +33,6 @@ msgstr "kunne ikke finne bruker «%s» på systemet"
 #, c-format
 msgid "No session available yet"
 msgstr "Ingen økt tilgjengelig ennå"
-
-#: ../daemon/gdm-launch-environment.c:401
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "Bruker %s eksisterer ikke"
-
-#: ../daemon/gdm-launch-environment.c:408
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "Gruppe %s eksisterer ikke"
-
-#: ../daemon/gdm-launch-environment.c:427
-#: ../daemon/gdm-launch-environment.c:447 ../daemon/gdm-server.c:463
-#: ../daemon/gdm-server.c:483
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "Kunne ikke sette gruppe-ID til %d"
-
-#: ../daemon/gdm-launch-environment.c:433 ../daemon/gdm-server.c:469
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "initgroups () feilet for %s"
-
-#: ../daemon/gdm-launch-environment.c:439 ../daemon/gdm-server.c:475
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "Kunne ikke sette bruker-id til %d"
 
 #: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
 #, c-format
@@ -103,6 +76,21 @@ msgstr "%s: kunne ikke koble til opphavsskjerm «%s»"
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Tjeneren skulle startes av bruker %s, men denne brukeren eksisterer ikke"
+
+#: ../daemon/gdm-server.c:463 ../daemon/gdm-server.c:483
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "Kunne ikke sette gruppe-ID til %d"
+
+#: ../daemon/gdm-server.c:469
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "initgroups () feilet for %s"
+
+#: ../daemon/gdm-server.c:475
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "Kunne ikke sette bruker-id til %d"
 
 #: ../daemon/gdm-server.c:522
 #, c-format
@@ -149,75 +137,75 @@ msgstr "Skjerm-enhet"
 msgid "The display device"
 msgstr "Skjermenheten"
 
-#: ../daemon/gdm-session.c:1177
+#: ../daemon/gdm-session.c:1184
 msgid "Could not create authentication helper process"
 msgstr "Kunne ikke lage hjelpeprosess for autentisering"
 
-#: ../daemon/gdm-session-worker.c:1025
+#: ../daemon/gdm-session-worker.c:1029
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "feil i initiering av kommunikasjon med autentiseringssystemet - %s"
 
-#: ../daemon/gdm-session-worker.c:1026
+#: ../daemon/gdm-session-worker.c:1030
 msgid "general failure"
 msgstr "generell feil"
 
-#: ../daemon/gdm-session-worker.c:1027
+#: ../daemon/gdm-session-worker.c:1031
 msgid "out of memory"
 msgstr "ikke mer minne"
 
-#: ../daemon/gdm-session-worker.c:1028
+#: ../daemon/gdm-session-worker.c:1032
 msgid "application programmer error"
 msgstr "feil i programkoden"
 
-#: ../daemon/gdm-session-worker.c:1029
+#: ../daemon/gdm-session-worker.c:1033
 msgid "unknown error"
 msgstr "ukjent feil"
 
-#: ../daemon/gdm-session-worker.c:1036
+#: ../daemon/gdm-session-worker.c:1040
 msgid "Username:"
 msgstr "Brukernavn:"
 
-#: ../daemon/gdm-session-worker.c:1042
+#: ../daemon/gdm-session-worker.c:1046
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om spørring etter "
 "foretrukket brukernavn: %s"
 
-#: ../daemon/gdm-session-worker.c:1056
+#: ../daemon/gdm-session-worker.c:1060
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om brukers vertsnavn: %s"
 
-#: ../daemon/gdm-session-worker.c:1073
+#: ../daemon/gdm-session-worker.c:1077
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "feil ved informasjon til autentiseringssystemet om brukers konsoll: %s"
 
-#: ../daemon/gdm-session-worker.c:1097
+#: ../daemon/gdm-session-worker.c:1101
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "feil ved informasjon til autentiseringssystemet om skjermstrengen: %s"
 
-#: ../daemon/gdm-session-worker.c:1112
+#: ../daemon/gdm-session-worker.c:1116
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr ""
 "feil ved informasjon til autentiseringssystemet om xauth-"
 "påloggingsinformasjon for skjermen: %s"
 
-#: ../daemon/gdm-session-worker.c:1442 ../daemon/gdm-session-worker.c:1459
+#: ../daemon/gdm-session-worker.c:1446 ../daemon/gdm-session-worker.c:1463
 #, c-format
 msgid "no user account available"
 msgstr "ingen brukerkonto tilgjengelig"
 
-#: ../daemon/gdm-session-worker.c:1486
+#: ../daemon/gdm-session-worker.c:1490
 msgid "Unable to change to user"
 msgstr "Kan ikke bytte til denne brukeren"
 
-#: ../daemon/gdm-simple-slave.c:1372
+#: ../daemon/gdm-simple-slave.c:1374
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -229,17 +217,17 @@ msgstr ""
 "å finne ut hva som er feil. I mellomtiden vil denne skjermen deaktiveres. "
 "Vennligst start GDM på nytt når problemet er rettet."
 
-#: ../daemon/gdm-simple-slave.c:1413
+#: ../daemon/gdm-simple-slave.c:1415
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Kan kun kalles før bruker er logget inn"
 
-#: ../daemon/gdm-simple-slave.c:1423
+#: ../daemon/gdm-simple-slave.c:1425
 #, c-format
 msgid "Caller not GDM"
 msgstr "Kaller er ikke GDM"
 
-#: ../daemon/gdm-simple-slave.c:1476
+#: ../daemon/gdm-simple-slave.c:1478
 msgid "User not logged in"
 msgstr "Bruker er ikke logget inn"
 
@@ -370,14 +358,6 @@ msgstr "Tastatur på skjermen for GNOME"
 msgid "Use an on-screen keyboard"
 msgstr "Bruk tastatur på skjermen"
 
-#: ../data/applications/orca-screen-reader.desktop.in.h:1
-msgid "Orca Screen Reader"
-msgstr "Orca skjermleser"
-
-#: ../data/applications/orca-screen-reader.desktop.in.h:2
-msgid "Present on-screen information as speech or braille"
-msgstr "Presenter informasjon på skjermen som tale eller blindeskrift"
-
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
 msgstr "Om fingeravtrykkleser skal tillates for innlogging"
@@ -472,7 +452,9 @@ msgstr "Antall tillatte autentiseringsfeil"
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
-msgstr "Antall ganger en bruker tillates å forsøke autentisering før man gir opp og går tilbake til valg av bruker."
+msgstr ""
+"Antall ganger en bruker tillates å forsøke autentisering før man gir opp og "
+"går tilbake til valg av bruker."
 
 #: ../gui/libgdm/gdm-user-switching.c:72
 msgid "Unable to create transient display: "
@@ -484,7 +466,7 @@ msgid "Unable to activate session: "
 msgstr "Kan ikke aktivere økt: "
 
 #: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:483
+#: ../gui/libgdm/gdm-user-switching.c:512
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Kunne ikke identifisere aktiv økt."
@@ -494,12 +476,12 @@ msgstr "Kunne ikke identifisere aktiv økt."
 msgid "User unable to switch sessions."
 msgstr "Bruker kan ikke bytte økter."
 
-#: ../gui/libgdm/gdm-user-switching.c:492
+#: ../gui/libgdm/gdm-user-switching.c:521
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "Kunne ikke identifisere aktiv sete."
 
-#: ../gui/libgdm/gdm-user-switching.c:502
+#: ../gui/libgdm/gdm-user-switching.c:531
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -508,7 +490,7 @@ msgstr ""
 "Systemet kan ikke bestemme om det skal bytte til en eksisterende "
 "påloggingsskjerm eller starte en ny."
 
-#: ../gui/libgdm/gdm-user-switching.c:510
+#: ../gui/libgdm/gdm-user-switching.c:539
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Systemet kan ikke starte en ny påloggingsskjerm."
@@ -880,3 +862,15 @@ msgstr "Skjermdump ferdig"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Ta bilde av skjermen"
+
+#~ msgid "User %s doesn't exist"
+#~ msgstr "Bruker %s eksisterer ikke"
+
+#~ msgid "Group %s doesn't exist"
+#~ msgstr "Gruppe %s eksisterer ikke"
+
+#~ msgid "Orca Screen Reader"
+#~ msgstr "Orca skjermleser"
+
+#~ msgid "Present on-screen information as speech or braille"
+#~ msgstr "Presenter informasjon på skjermen som tale eller blindeskrift"
