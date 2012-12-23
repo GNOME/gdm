@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-10-16 15:45+0000\n"
-"PO-Revision-Date: 2012-10-21 19:59+0100\n"
+"POT-Creation-Date: 2012-12-21 15:15+0000\n"
+"PO-Revision-Date: 2012-12-23 13:53+0100\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -33,7 +33,7 @@ msgstr "/dev/urandom nie je znakové zariadenie"
 msgid "could not find user \"%s\" on system"
 msgstr "používateľ „%s“ sa v systéme nenašiel"
 
-#: ../daemon/gdm-display.c:1315 ../daemon/gdm-display.c:1349
+#: ../daemon/gdm-display.c:1320 ../daemon/gdm-display.c:1354
 #, c-format
 msgid "No session available yet"
 msgstr "Zatiaľ nie je dostupná žiadna relácia"
@@ -217,7 +217,7 @@ msgstr "nie je k dispozícií žiaden používateľský účet"
 msgid "Unable to change to user"
 msgstr "Nepodarilo sa zmeniť na používateľa"
 
-#: ../daemon/gdm-simple-slave.c:1430
+#: ../daemon/gdm-simple-slave.c:1330
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -229,21 +229,21 @@ msgstr ""
 "súbor so systémovým záznamom. Zatiaľ bude tento displej zakázaný. Po oprave "
 "problému reštartujte GDM."
 
-#: ../daemon/gdm-simple-slave.c:1471
+#: ../daemon/gdm-simple-slave.c:1371
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Môže byť volaný iba pred prihlásením používateľa"
 
-#: ../daemon/gdm-simple-slave.c:1481
+#: ../daemon/gdm-simple-slave.c:1381
 #, c-format
 msgid "Caller not GDM"
 msgstr ""
 
-#: ../daemon/gdm-simple-slave.c:1534
+#: ../daemon/gdm-simple-slave.c:1434
 msgid "User not logged in"
 msgstr "Používateľ nie je prihlásený"
 
-#: ../daemon/gdm-xdmcp-chooser-slave.c:370
+#: ../daemon/gdm-xdmcp-chooser-slave.c:368
 #, c-format
 msgid "Currently, only one client can be connected at once"
 msgstr "Teraz môže byť naraz prihlásený iba jeden klient"
@@ -305,19 +305,19 @@ msgid "Print GDM version"
 msgstr "Vypíše verziu GDM"
 
 # PŠ: je to názov toho programu - Správca prihlásenia. Vždy sa tak volal...
-#: ../daemon/main.c:377
+#: ../daemon/main.c:375
 msgid "GNOME Display Manager"
 msgstr "Správca prihlásenia GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:425
+#: ../daemon/main.c:423
 msgid "Only the root user can run GDM"
 msgstr "Len používateľ root môže spúšťať GDM"
 
 # PM: to znie šialene, čo takto Správca relácií pre...
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:150
+#: ../daemon/session-worker-main.c:148
 msgid "GNOME Display Manager Session Worker"
 msgstr "Správca relácií pre Správcu prihlásenia GNOME"
 
@@ -331,7 +331,7 @@ msgstr "Identifikátor displeja"
 msgid "ID"
 msgstr "IDENTIFIKÁTOR"
 
-#: ../daemon/simple-slave-main.c:187 ../daemon/xdmcp-chooser-slave-main.c:188
+#: ../daemon/simple-slave-main.c:185 ../daemon/xdmcp-chooser-slave-main.c:186
 msgid "GNOME Display Manager Slave"
 msgstr "Klient Správcu prihlásenia GNOME"
 
@@ -340,14 +340,6 @@ msgstr "Klient Správcu prihlásenia GNOME"
 msgid "Login Window"
 msgstr "Prihlasovacie okno"
 
-#: ../data/applications/gnome-mag.desktop.in.h:1
-msgid "GNOME Screen Magnifier"
-msgstr "Lupa obrazovky GNOME"
-
-#: ../data/applications/gnome-mag.desktop.in.h:2
-msgid "Magnify parts of the screen"
-msgstr "Zväčšiť časti obrazovky"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME Shell"
@@ -355,14 +347,6 @@ msgstr "GNOME Shell"
 #: ../data/applications/gnome-shell.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "Správa a kompozícia okien"
-
-#: ../data/applications/gok.desktop.in.h:1
-msgid "GNOME On-Screen Keyboard"
-msgstr "Klávesnica na obrazovke GNOME"
-
-#: ../data/applications/gok.desktop.in.h:2
-msgid "Use an on-screen keyboard"
-msgstr "Použiť klávesnicu na obrazovke"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -477,7 +461,7 @@ msgid "Unable to activate session: "
 msgstr "Nepodarilo sa aktivovať reláciu: "
 
 #: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:512 ../utils/gdmflexiserver.c:446
+#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:446
 #: ../utils/gdmflexiserver.c:613
 #, c-format
 msgid "Could not identify the current session."
@@ -488,12 +472,12 @@ msgstr "Nepodarilo sa identifikovať aktuálnu reláciu."
 msgid "User unable to switch sessions."
 msgstr "Používateľovi sa nepodarilo prepnúť relácie."
 
-#: ../gui/libgdm/gdm-user-switching.c:521 ../utils/gdmflexiserver.c:622
+#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:622
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "Nepodarilo sa rozpoznať aktuálne sedenie."
 
-#: ../gui/libgdm/gdm-user-switching.c:531 ../utils/gdmflexiserver.c:632
+#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:632
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -502,7 +486,7 @@ msgstr ""
 "Systém nie je schopný zistiť, či má prepnúť na existujúcu prihlasovaciu "
 "obrazovku alebo spustiť novú prihlasovaciu obrazovku."
 
-#: ../gui/libgdm/gdm-user-switching.c:539 ../utils/gdmflexiserver.c:640
+#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:640
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Systém nie je schopný spustiť novú prihlasovaciu obrazovku."
@@ -521,12 +505,12 @@ msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: Nepodarilo sa prečítať hlavičku XDMCP!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XMDCP: Incorrect XDMCP version!"
+msgid "XDMCP: Incorrect XDMCP version!"
 msgstr "XDMCP: Nesprávna verzia XDMCP!"
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XMDCP: Unable to parse address"
-msgstr "XMDCP: Analýza adresy zlyhala"
+msgid "XDMCP: Unable to parse address"
+msgstr "XDMCP: Nepodarilo sa analyzovať adresu"
 
 #: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
 msgid "Fingerprint Authentication"
@@ -546,7 +530,7 @@ msgstr "Prihlásiť do relácie pomocou používateľského mena a hesla"
 
 # DK: hlavicka nad pouzivatelmi v prihlasovacom okne
 #: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
 msgid "Log In"
 msgstr "Prihlásenie"
@@ -569,7 +553,6 @@ msgstr "Séria v slote"
 msgid "per-slot card identifier"
 msgstr ""
 
-# PK: mal by to byt nazov podla zdrojaku, ale prever
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:169
 #: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard.c:170
 msgid "name"
@@ -599,33 +582,33 @@ msgstr "Cesta modulu"
 msgid "path to smartcard PKCS #11 driver"
 msgstr "cesta k ovládaču čipovej karty smartcard PKCS #11"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
 msgid "received error or hang up from event source"
 msgstr "prijatá chyba alebo ukončenie zo zdrojovej udalosti"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:656
 #, c-format
 msgid "NSS security system could not be initialized"
 msgstr "nepodarilo sa spustiť bezpečnostný systém NSS"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:784
 #, c-format
 msgid "no suitable smartcard driver could be found"
 msgstr "nepodarilo sa nájsť vhodný ovládač pre čipovú kartu smartcard"
 
 # PK: pouzivaj spravne uvodzovky
 # DK: ja ine na klavesnici nemam :-P
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:798
 #, c-format
 msgid "smartcard driver '%s' could not be loaded"
 msgstr "nepodarilo sa načítať ovládač „%s“ pre čipovú kartu smartcard"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:870
 #, c-format
 msgid "could not watch for incoming card events - %s"
 msgstr "nepodarilo sa sledovať prichádzajúce udalosti z karty - %s"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1237
 #, c-format
 msgid "encountered unexpected error while waiting for smartcard events"
 msgstr ""
@@ -911,3 +894,15 @@ msgstr "Obrazovka zosnímaná"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Vytvorí snímku obrazovky"
+
+#~ msgid "GNOME Screen Magnifier"
+#~ msgstr "Lupa obrazovky GNOME"
+
+#~ msgid "Magnify parts of the screen"
+#~ msgstr "Zväčšiť časti obrazovky"
+
+#~ msgid "GNOME On-Screen Keyboard"
+#~ msgstr "Klávesnica na obrazovke GNOME"
+
+#~ msgid "Use an on-screen keyboard"
+#~ msgstr "Použiť klávesnicu na obrazovke"
