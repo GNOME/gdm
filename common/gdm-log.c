@@ -37,7 +37,7 @@
 #include "gdm-log.h"
 
 static gboolean initialized = FALSE;
-static int      syslog_levels = (G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING);
+static int      syslog_levels = G_LOG_LEVEL_MASK & ~G_LOG_LEVEL_DEBUG;
 
 static void
 log_level_to_priority_and_prefix (GLogLevelFlags log_level,
