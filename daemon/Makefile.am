@@ -27,6 +27,7 @@ AM_CPPFLAGS = \
 	$(WARN_CFLAGS)					\
 	$(DEBUG_CFLAGS)					\
 	$(SYSTEMD_CFLAGS)				\
+	$(JOURNALD_CFLAGS)				\
 	$(LIBSELINUX_CFLAGS)	 			\
 	-DLANG_CONFIG_FILE=\"$(LANG_CONFIG_FILE)\"	\
 	$(NULL)
@@ -198,6 +199,7 @@ gdm_simple_slave_LDADD = 			\
 	$(DAEMON_LIBS)				\
 	$(EXTRA_DAEMON_LIBS)                    \
 	$(SYSTEMD_LIBS) 			\
+	$(JOURNALD_LIBS) 			\
 	$(NULL)
 
 gdm_xdmcp_chooser_slave_SOURCES = 		\
@@ -242,6 +244,7 @@ gdm_xdmcp_chooser_slave_LDADD = 		\
 	$(DAEMON_LIBS)				\
 	$(EXTRA_DAEMON_LIBS)                    \
 	$(SYSTEMD_LIBS) 			\
+	$(JOURNALD_LIBS) 			\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(NULL)
 
@@ -292,6 +295,7 @@ gdm_session_worker_LDADD = 			\
 	$(top_builddir)/common/libgdmcommon.la	\
 	$(DAEMON_LIBS)				\
 	$(SYSTEMD_LIBS) 			\
+	$(JOURNALD_LIBS) 			\
 	$(LIBSELINUX_LIBS) 			\
 	$(NULL)
 
@@ -383,6 +387,7 @@ gdm_binary_LDADD = \
 	$(XDMCP_LIBS)                           \
 	$(LIBWRAP_LIBS)                         \
 	$(SYSTEMD_LIBS)				\
+	$(JOURNALD_LIBS)				\
 	$(NULL)
 
 if WITH_CONSOLE_KIT

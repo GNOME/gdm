@@ -283,6 +283,10 @@ AC_ARG_WITH([systemdsystemunitdir],
             AS_HELP_STRING([--with-systemdsystemunitdir=DIR],
                            [Directory for systemd service files]),
                 [with_systemdsystemunitdir=$withval], [with_systemdsystemunitdir=$($PKG_CONFIG --variable=systemdsystemunitdir systemd)])
+AC_ARG_ENABLE(systemd-journal,
+            AS_HELP_STRING([--enable-systemd-journal],
+                           [Add journald support @<:@default=auto@:>@]),
+            [enable_systemd_journal=$enableval], [enable_systemd_journal=auto])
 AC_ARG_WITH(plymouth,
             AS_HELP_STRING([--with-plymouth],
                            [Add plymouth support @<:@default=auto@:>@]),
@@ -944,6 +948,30 @@ if test "x$use_systemd" != "xno" ; then
 fi
 AC_SUBST(SYSTEMD_CFLAGS)
 AC_SUBST(SYSTEMD_LIBS)
+
+PKG_CHECK_MODULES(JOURNALD,
+                  [libsystemd-journal],
+                  [have_journald=yes], [have_journald=no])
+
+if test "x$enable_systemd_journal" = "xauto" ; then
+        if test x$have_journald = xno ; then
+                use_journald=no
+        else
+                use_journald=yes
+        fi
+else
+        use_journald="$enable_systemd_journal"
+fi
+
+if test "x$use_journald" != "xno" ; then
+        if test "x$have_journald" = "xno"; then
+                AC_MSG_ERROR([journald support explicitly required, but journald not found])
+        fi
+
+        AC_DEFINE(ENABLE_SYSTEMD_JOURNAL, 1, [Define to enable systemd journal support])
+fi
+AC_SUBST(JOURNALD_CFLAGS)
+AC_SUBST(JOURNALD_LIBS)
 
 AC_PATH_PROG(SYSTEMD_X_SERVER, systemd-multi-seat-x, [/lib/systemd/systemd-multi-seat-x], [/lib/systemd:/usr/lib/systemd:$PATH])
 AC_SUBST(SYSTEMD_X_SERVER)

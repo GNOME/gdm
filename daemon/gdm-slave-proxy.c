@@ -30,6 +30,14 @@
 #include <errno.h>
 #include <signal.h>
 
+#ifdef WITH_SYSTEMD
+#include <systemd/sd-daemon.h>
+#endif
+
+#ifdef ENABLE_SYSTEMD_JOURNAL
+#include <systemd/sd-journal.h>
+#endif
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -126,12 +134,33 @@ rotate_logs (const char *path,
 }
 
 typedef struct {
+        const char *identifier;
         const char *log_file;
 } SpawnChildData;
 
 static void
 spawn_child_setup (SpawnChildData *data)
 {
+#ifdef ENABLE_SYSTEMD_JOURNAL
+        if (sd_booted () > 0) {
+                int stdout_fd, stderr_fd;
+
+                stdout_fd = sd_journal_stream_fd (data->identifier, LOG_INFO, FALSE);
+                stderr_fd = sd_journal_stream_fd (data->identifier, LOG_WARNING, FALSE);
+
+                gdm_clear_close_on_exec_flag (stdout_fd);
+                gdm_clear_close_on_exec_flag (stderr_fd);
+
+                if (stdout_fd != -1) {
+                        VE_IGNORE_EINTR (dup2 (stdout_fd, STDOUT_FILENO));
+                }
+
+                if (stderr_fd != -1) {
+                        VE_IGNORE_EINTR (dup2 (stderr_fd, STDERR_FILENO));
+                }
+                return;
+        }
+#endif
 
         if (data->log_file != NULL) {
                 int logfd;
@@ -161,6 +190,7 @@ spawn_command_line_async (const char *command_line,
         gboolean         ret;
         gboolean         res;
         SpawnChildData   data;
+        gboolean         has_journald = FALSE;
 
         ret = FALSE;
 
@@ -172,7 +202,19 @@ spawn_command_line_async (const char *command_line,
                 goto out;
         }
 
-        data.log_file = log_file;
+        data.identifier = argv[0];
+
+#ifdef ENABLE_SYSTEMD_JOURNAL
+        if (sd_booted () > 0) {
+                has_journald = TRUE;
+        }
+#endif
+
+        if (has_journald) {
+                data.log_file = NULL;
+        } else {
+                data.log_file = log_file;
+        }
 
         local_error = NULL;
         res = g_spawn_async (NULL,

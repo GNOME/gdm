@@ -66,6 +66,32 @@ gdm_is_version_unstable (void)
 }
 
 gboolean
+gdm_clear_close_on_exec_flag (int fd)
+{
+        int flags;
+
+        if (fd < 0) {
+                return FALSE;
+        }
+
+        flags = fcntl (fd, F_GETFD, 0);
+
+        if (flags < 0) {
+                return FALSE;
+        }
+
+        if ((flags & FD_CLOEXEC) != 0) {
+                int status;
+
+                status = fcntl (fd, F_SETFD, flags & ~FD_CLOEXEC);
+
+                return status != -1;
+        }
+
+        return TRUE;
+}
+
+gboolean
 gdm_get_pwent_for_name (const char     *name,
                         struct passwd **pwentp)
 {

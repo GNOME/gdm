@@ -50,6 +50,10 @@
 #include <systemd/sd-daemon.h>
 #endif
 
+#ifdef ENABLE_SYSTEMD_JOURNAL
+#include <systemd/sd-journal.h>
+#endif
+
 #ifdef HAVE_SELINUX
 #include <selinux/selinux.h>
 #endif /* HAVE_SELINUX */
@@ -1786,14 +1790,19 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                 const char * const * environment;
                 char  *kerberos_cache;
                 char  *home_dir;
-                int    fd;
+                int    stdin_fd = -1, stdout_fd = -1, stderr_fd = -1;
+                gboolean has_journald = FALSE;
 
-                fd = open ("/dev/null", O_RDWR);
-                dup2 (fd, STDIN_FILENO);
-                close (fd);
+                stdin_fd = open ("/dev/null", O_RDWR);
+                dup2 (stdin_fd, STDIN_FILENO);
+                close (stdin_fd);
 
-                if (worker->priv->is_program_session) {
-                        fd = _open_program_session_log (worker->priv->log_file);
+#ifdef ENABLE_SYSTEMD_JOURNAL
+                has_journald = sd_booted() > 0;
+#endif
+                if (!has_journald && worker->priv->is_program_session) {
+                        stdout_fd = _open_program_session_log (worker->priv->log_file);
+                        stderr_fd = dup (stdout_fd);
                 }
 
 #ifdef HAVE_LOGINCAP
@@ -1846,7 +1855,19 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                         g_chdir ("/");
                 }
 
-                if (!worker->priv->is_program_session) {
+#ifdef ENABLE_SYSTEMD_JOURNAL
+                if (has_journald) {
+                        stdout_fd = sd_journal_stream_fd (worker->priv->arguments[0], LOG_INFO, FALSE);
+                        stderr_fd = sd_journal_stream_fd (worker->priv->arguments[0], LOG_WARNING, FALSE);
+
+                        /* Unset the CLOEXEC flags, because sd_journal_stream_fd
+                         * gives it to us by default.
+                         */
+                        gdm_clear_close_on_exec_flag (stdout_fd);
+                        gdm_clear_close_on_exec_flag (stderr_fd);
+                }
+#endif
+                if (!has_journald && !worker->priv->is_program_session) {
                         if (home_dir != NULL && home_dir[0] != '\0') {
                                 char *cache_dir;
                                 char *log_dir;
@@ -1860,20 +1881,29 @@ gdm_session_worker_start_session (GdmSessionWorker  *worker,
                                 g_free (cache_dir);
 
                                 if (g_mkdir_with_parents (log_dir, S_IRWXU) == 0) {
-                                        fd = _open_user_session_log (log_dir);
+                                        stdout_fd = _open_user_session_log (log_dir);
+                                        stderr_fd = dup (stdout_fd);
                                 } else {
-                                        fd = open ("/dev/null", O_RDWR);
+                                        stdout_fd = open ("/dev/null", O_RDWR);
+                                        stderr_fd = dup (stdout_fd);
                                 }
                                 g_free (log_dir);
                         } else {
-                                fd = open ("/dev/null", O_RDWR);
+                                stdout_fd = open ("/dev/null", O_RDWR);
+                                stderr_fd = dup (stdout_fd);
                         }
                 }
                 g_free (home_dir);
 
-                dup2 (fd, STDOUT_FILENO);
-                dup2 (fd, STDERR_FILENO);
-                close (fd);
+                if (stdout_fd != -1) {
+                        dup2 (stdout_fd, STDOUT_FILENO);
+                        close (stdout_fd);
+                }
+
+                if (stderr_fd != -1) {
+                        dup2 (stderr_fd, STDERR_FILENO);
+                        close (stderr_fd);
+                }
 
                 gdm_log_shutdown ();
 

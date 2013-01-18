@@ -45,6 +45,8 @@ int            gdm_signal_pid            (int pid,
 gboolean       gdm_get_pwent_for_name    (const char     *name,
                                           struct passwd **pwentp);
 
+gboolean       gdm_clear_close_on_exec_flag (int fd);
+
 const char *   gdm_make_temp_dir         (char    *template);
 
 gboolean       gdm_string_hex_encode     (const GString *source,
