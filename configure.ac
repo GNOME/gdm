@@ -38,7 +38,7 @@ AC_HEADER_STDC
 
 AC_SUBST(VERSION)
 
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR([m4])
 
 # Documentation
