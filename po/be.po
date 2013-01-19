@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: gdm.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gdm&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-09-04 19:23+0000\n"
+"POT-Creation-Date: 2012-12-27 20:33+0000\n"
 "PO-Revision-Date: 2012-09-07 19:07+0300\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
@@ -26,37 +26,10 @@ msgstr "/dev/urandom не з'яўляецца сімвальным прыста�
 msgid "could not find user \"%s\" on system"
 msgstr "не ўдалося адшукаць карыстальніка \"%s\" ў сістэме"
 
-#: ../daemon/gdm-display.c:1315 ../daemon/gdm-display.c:1349
+#: ../daemon/gdm-display.c:1320 ../daemon/gdm-display.c:1354
 #, c-format
 msgid "No session available yet"
 msgstr "Сеанс яшчэ недаступны"
-
-#: ../daemon/gdm-launch-environment.c:401
-#, c-format
-msgid "User %s doesn't exist"
-msgstr "Карыстальнік %s не існуе"
-
-#: ../daemon/gdm-launch-environment.c:408
-#, c-format
-msgid "Group %s doesn't exist"
-msgstr "Група %s не існуе"
-
-#: ../daemon/gdm-launch-environment.c:427
-#: ../daemon/gdm-launch-environment.c:447 ../daemon/gdm-server.c:463
-#: ../daemon/gdm-server.c:483
-#, c-format
-msgid "Couldn't set groupid to %d"
-msgstr "Не ўдалося прызначыць ідэнтыфікатар групы %d"
-
-#: ../daemon/gdm-launch-environment.c:433 ../daemon/gdm-server.c:469
-#, c-format
-msgid "initgroups () failed for %s"
-msgstr "няўдача initgroups() для %s"
-
-#: ../daemon/gdm-launch-environment.c:439 ../daemon/gdm-server.c:475
-#, c-format
-msgid "Couldn't set userid to %d"
-msgstr "Не ўдалося прызначыць ідэнтыфікатар карыстальніка %d"
 
 #: ../daemon/gdm-manager.c:277 ../daemon/gdm-manager.c:384
 #, c-format
@@ -90,35 +63,50 @@ msgstr "Карыстальнік не валодае сеансам"
 msgid "No session available"
 msgstr "Сеанс недаступны"
 
-#: ../daemon/gdm-server.c:273
+#: ../daemon/gdm-server.c:272
 #, c-format
 msgid "%s: failed to connect to parent display '%s'"
 msgstr "%s: не ўдалося злучыцца з бацькоўскім дысплеем \"%s\""
 
-#: ../daemon/gdm-server.c:452
+#: ../daemon/gdm-server.c:451
 #, c-format
 msgid "Server was to be spawned by user %s but that user doesn't exist"
 msgstr ""
 "Сервер мусіў запусціцца ад імя карыстальніка %s, але такога карыстальніка не "
 "існуе"
 
-#: ../daemon/gdm-server.c:522
+#: ../daemon/gdm-server.c:462 ../daemon/gdm-server.c:482
+#, c-format
+msgid "Couldn't set groupid to %d"
+msgstr "Не ўдалося прызначыць ідэнтыфікатар групы %d"
+
+#: ../daemon/gdm-server.c:468
+#, c-format
+msgid "initgroups () failed for %s"
+msgstr "няўдача initgroups() для %s"
+
+#: ../daemon/gdm-server.c:474
+#, c-format
+msgid "Couldn't set userid to %d"
+msgstr "Не ўдалося прызначыць ідэнтыфікатар карыстальніка %d"
+
+#: ../daemon/gdm-server.c:521
 #, c-format
 msgid "%s: Could not open log file for display %s!"
 msgstr "%s: не ўдалося адкрыць журнальны файл дысплея %s."
 
-#: ../daemon/gdm-server.c:533 ../daemon/gdm-server.c:539
-#: ../daemon/gdm-server.c:545
+#: ../daemon/gdm-server.c:532 ../daemon/gdm-server.c:538
+#: ../daemon/gdm-server.c:544
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%1$s: памылка настаўлення значэння %3$s для %2$s"
 
-#: ../daemon/gdm-server.c:565
+#: ../daemon/gdm-server.c:564
 #, c-format
 msgid "%s: Server priority couldn't be set to %d: %s"
 msgstr "%s: не ўдалося прызначыць серверу прыярытэт %d: %s"
 
-#: ../daemon/gdm-server.c:718
+#: ../daemon/gdm-server.c:720
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: пусты серверны загад для дысплея %s"
@@ -147,73 +135,73 @@ msgstr "Прыстасаванне дысплея"
 msgid "The display device"
 msgstr "Прыстасаванне дысплея"
 
-#: ../daemon/gdm-session.c:1177
+#: ../daemon/gdm-session.c:1183
 msgid "Could not create authentication helper process"
 msgstr "Не ўдалося стварыць дапаможны працэс ідэнтыфікацыі"
 
-#: ../daemon/gdm-session-worker.c:1025
+#: ../daemon/gdm-session-worker.c:1029
 #, c-format
 msgid "error initiating conversation with authentication system - %s"
 msgstr "памылка ініцыяцыі перамоў з сістэмай ідэнтыфікацыі - %s"
 
-#: ../daemon/gdm-session-worker.c:1026
+#: ../daemon/gdm-session-worker.c:1030
 msgid "general failure"
 msgstr "агульная памылка"
 
-#: ../daemon/gdm-session-worker.c:1027
+#: ../daemon/gdm-session-worker.c:1031
 msgid "out of memory"
 msgstr "скончылася памяць"
 
-#: ../daemon/gdm-session-worker.c:1028
+#: ../daemon/gdm-session-worker.c:1032
 msgid "application programmer error"
 msgstr "памылка ў кодзе праграмы"
 
-#: ../daemon/gdm-session-worker.c:1029
+#: ../daemon/gdm-session-worker.c:1033
 msgid "unknown error"
 msgstr "невядомая памылка"
 
-#: ../daemon/gdm-session-worker.c:1036
+#: ../daemon/gdm-session-worker.c:1040
 msgid "Username:"
 msgstr "Імя карыстальніка:"
 
-#: ../daemon/gdm-session-worker.c:1042
+#: ../daemon/gdm-session-worker.c:1046
 #, c-format
 msgid "error informing authentication system of preferred username prompt: %s"
 msgstr ""
 "памылка апавяшчэння сістэмы ідэнтыфікацыі аб пажаданым спосабе запыту імені "
 "карыстальніка: %s"
 
-#: ../daemon/gdm-session-worker.c:1056
+#: ../daemon/gdm-session-worker.c:1060
 #, c-format
 msgid "error informing authentication system of user's hostname: %s"
 msgstr ""
 "памылка апавяшчэння сістэмы ідэнтыфікацыі аб назве хоста карыстальніка: %s"
 
-#: ../daemon/gdm-session-worker.c:1073
+#: ../daemon/gdm-session-worker.c:1077
 #, c-format
 msgid "error informing authentication system of user's console: %s"
 msgstr "памылка апавяшчэння сістэмы ідэнтыфікацыі аб кансолі карыстальніка: %s"
 
-#: ../daemon/gdm-session-worker.c:1097
+#: ../daemon/gdm-session-worker.c:1101
 #, c-format
 msgid "error informing authentication system of display string: %s"
 msgstr "памылка апавяшчэння сістэмы ідэнтыфікацыі аб назве дысплея: %s"
 
-#: ../daemon/gdm-session-worker.c:1112
+#: ../daemon/gdm-session-worker.c:1116
 #, c-format
 msgid "error informing authentication system of display xauth credentials: %s"
 msgstr "памылка апавяшчэння сістэмы ідэнтыфікацыі аб xauth-мандаце дысплея: %s"
 
-#: ../daemon/gdm-session-worker.c:1442 ../daemon/gdm-session-worker.c:1459
+#: ../daemon/gdm-session-worker.c:1454 ../daemon/gdm-session-worker.c:1471
 #, c-format
 msgid "no user account available"
 msgstr "конт карыстальніка не азначаны"
 
-#: ../daemon/gdm-session-worker.c:1486
+#: ../daemon/gdm-session-worker.c:1498
 msgid "Unable to change to user"
 msgstr "Не ўдалося пераключыць карыстальніка"
 
-#: ../daemon/gdm-simple-slave.c:1356
+#: ../daemon/gdm-simple-slave.c:1330
 msgid ""
 "Could not start the X server (your graphical environment) due to an internal "
 "error. Please contact your system administrator or check your syslog to "
@@ -225,21 +213,21 @@ msgstr ""
 "сістэмны журнал. Тым часам гэты дысплей будзе выключаны. Калі праблема будзе "
 "вырашана, перазапусціце GDM."
 
-#: ../daemon/gdm-simple-slave.c:1397
+#: ../daemon/gdm-simple-slave.c:1371
 #, c-format
 msgid "Can only be called before user is logged in"
 msgstr "Можна запускаць толькі да ўваходу карыстальніка ў сістэму"
 
-#: ../daemon/gdm-simple-slave.c:1407
+#: ../daemon/gdm-simple-slave.c:1381
 #, c-format
 msgid "Caller not GDM"
 msgstr "Запуск не ад GDM"
 
-#: ../daemon/gdm-simple-slave.c:1466
+#: ../daemon/gdm-simple-slave.c:1434
 msgid "User not logged in"
 msgstr "Карыстальнік не ўвайшоў у сістэму"
 
-#: ../daemon/gdm-xdmcp-chooser-slave.c:366
+#: ../daemon/gdm-xdmcp-chooser-slave.c:368
 #, c-format
 msgid "Currently, only one client can be connected at once"
 msgstr "Пакуль толькі адзін кліент можа быць падключаны ў любы момант часу"
@@ -254,81 +242,66 @@ msgid "Cannot write PID file %s: possibly out of disk space: %s"
 msgstr ""
 "Не ўдалося запісаць PID-файл %s: магчыма, не хапае дыскавай прасторы: %s"
 
-#: ../daemon/main.c:160
+#: ../daemon/main.c:189
 #, c-format
-msgid "Logdir %s does not exist or isn't a directory."
-msgstr "Журнальны каталог %s не існуе або не з'яўляецца каталогам."
+msgid "Failed to create ran once marker dir %s: %s"
+msgstr "Не ўдалося стварыць каталог-прымету аднаго запуску %s: %s"
 
-#: ../daemon/main.c:176
+#: ../daemon/main.c:195
 #, c-format
-msgid "Authdir %s does not exist. Aborting."
-msgstr "Каталог ідэнтыфікацыі %s не існуе. Аварыйнае заканчэнне працы."
+msgid "Failed to create AuthDir %s: %s"
+msgstr "Не ўдалося стварыць AuthDir %s: %s"
 
-#: ../daemon/main.c:180
+#: ../daemon/main.c:201
 #, c-format
-msgid "Authdir %s is not a directory. Aborting."
-msgstr ""
-"Каталог ідэнтыфікацыі %s не з'яўляецца каталогам. Аварыйнае заканчэнне працы."
+msgid "Failed to create LogDir %s: %s"
+msgstr "Не ўдалося стварыць LogDir %s: %s"
 
-#: ../daemon/main.c:254
-#, c-format
-msgid "Authdir %s is not owned by user %d, group %d. Aborting."
-msgstr ""
-"Каталог ідэнтыфікацыі %s не належыць карыстальніку %d, групе %d. Аварыйнае "
-"заканчэнне працы."
-
-#: ../daemon/main.c:261
-#, c-format
-msgid "Authdir %s has wrong permissions %o. Should be %o. Aborting."
-msgstr ""
-"Каталог ідэнтыфікацыі %s мае няправільныя дазволы %o, якія мусяць быць %o. "
-"Аварыйнае заканчэнне працы."
-
-#: ../daemon/main.c:298
+#: ../daemon/main.c:236
 #, c-format
 msgid "Can't find the GDM user '%s'. Aborting!"
 msgstr ""
 "Не ўдалося адшукаць карыстальніка GDM \"%s\". Аварыйнае заканчэнне працы."
 
-#: ../daemon/main.c:304
+#: ../daemon/main.c:242
 msgid "The GDM user should not be root. Aborting!"
 msgstr ""
 "Карыстальнік GDM не можа быць root-карыстальнікам. Аварыйнае заканчэнне "
 "працы."
 
-#: ../daemon/main.c:310
+#: ../daemon/main.c:248
 #, c-format
 msgid "Can't find the GDM group '%s'. Aborting!"
 msgstr "Не ўдалося адшукаць групу GDM \"%s\". Аварыйнае заканчэнне працы."
 
-#: ../daemon/main.c:316
+#: ../daemon/main.c:254
 msgid "The GDM group should not be root. Aborting!"
 msgstr "Група GDM не можа быць root-групай. Аварыйнае заканчэнне працы."
 
-#: ../daemon/main.c:427
+#: ../daemon/main.c:362
 msgid "Make all warnings fatal"
 msgstr "Лічыць усе папярэджанні непапраўнымі"
 
-#: ../daemon/main.c:428
+#: ../daemon/main.c:363
 msgid "Exit after a time (for debugging)"
 msgstr "Выйсці праз пэўны час (зручна пры адладцы)"
 
-#: ../daemon/main.c:429
+#: ../daemon/main.c:364
 msgid "Print GDM version"
 msgstr "Вывесці версію GDM"
 
-#: ../daemon/main.c:442
+#: ../daemon/main.c:375
 msgid "GNOME Display Manager"
 msgstr "Кіраўнік дысплеяў GNOME"
 
 #. make sure the pid file doesn't get wiped
-#: ../daemon/main.c:492
+#: ../daemon/main.c:423
 msgid "Only the root user can run GDM"
 msgstr "Толькі root-карыстальнік можа запускаць GDM"
 
 #. Translators: worker is a helper process that does the work
 #. of starting up a session
-#: ../daemon/session-worker-main.c:150
+#: ../daemon/session-worker-main.c:148
 msgid "GNOME Display Manager Session Worker"
 msgstr "Рабочы працэс сеанса кіраўніка дысплеяў GDM"
 
@@ -340,7 +313,7 @@ msgstr "Ідэнтыфікатар дысплея"
 msgid "ID"
 msgstr "ID"
 
-#: ../daemon/simple-slave-main.c:187 ../daemon/xdmcp-chooser-slave-main.c:188
+#: ../daemon/simple-slave-main.c:185 ../daemon/xdmcp-chooser-slave-main.c:186
 msgid "GNOME Display Manager Slave"
 msgstr "Падначалены модуль кіраўніка дысплеяў GNOME"
 
@@ -349,14 +322,6 @@ msgstr "Падначалены модуль кіраўніка дысплеяў 
 msgid "Login Window"
 msgstr "Акно ўваходу"
 
-#: ../data/applications/gnome-mag.desktop.in.h:1
-msgid "GNOME Screen Magnifier"
-msgstr "Экранная лупа GNOME"
-
-#: ../data/applications/gnome-mag.desktop.in.h:2
-msgid "Magnify parts of the screen"
-msgstr "Павелічэнне часткі экрана"
-
 #: ../data/applications/gnome-shell.desktop.in.h:1
 msgid "GNOME Shell"
 msgstr "GNOME Shell"
@@ -364,22 +329,6 @@ msgstr "GNOME Shell"
 #: ../data/applications/gnome-shell.desktop.in.h:2
 msgid "Window management and compositing"
 msgstr "Кіраванне вокнамі і аконная кампазіцыя"
-
-#: ../data/applications/gok.desktop.in.h:1
-msgid "GNOME On-Screen Keyboard"
-msgstr "Экранная клавіятура GNOME"
-
-#: ../data/applications/gok.desktop.in.h:2
-msgid "Use an on-screen keyboard"
-msgstr "Уключыць экранную клавіятуру"
-
-#: ../data/applications/orca-screen-reader.desktop.in.h:1
-msgid "Orca Screen Reader"
-msgstr "Чытач з экрана Orca"
-
-#: ../data/applications/orca-screen-reader.desktop.in.h:2
-msgid "Present on-screen information as speech or braille"
-msgstr "Прадстаўляць інфармацыю на экране з дапамогай голасу ці ўзораў Брэйля"
 
 #: ../data/org.gnome.login-screen.gschema.xml.in.h:1
 msgid "Whether or not to allow fingerprint readers for login"
@@ -475,8 +424,9 @@ msgstr "Колькасць дазволеных няўдалых спроб ід
 msgid ""
 "The number of times a user is allowed to attempt authentication, before "
 "giving up and going back to user selection."
-msgstr "Колькасць няўдалых спроб ідэнтыфікацыі, дазволеных карыстальніку, "
-"да вяртання на экран выбару карыстальніка."
+msgstr ""
+"Колькасць няўдалых спроб ідэнтыфікацыі, дазволеных карыстальніку, да "
+"вяртання на экран выбару карыстальніка."
 
 #: ../gui/libgdm/gdm-user-switching.c:72
 msgid "Unable to create transient display: "
@@ -488,22 +438,23 @@ msgid "Unable to activate session: "
 msgstr "Не ўдалося актываваць сеанс: "
 
 #: ../gui/libgdm/gdm-user-switching.c:344
-#: ../gui/libgdm/gdm-user-switching.c:483
+#: ../gui/libgdm/gdm-user-switching.c:514 ../utils/gdmflexiserver.c:446
+#: ../utils/gdmflexiserver.c:613
 #, c-format
 msgid "Could not identify the current session."
 msgstr "Не ўдалося апазнаць бягучы сеанс."
 
-#: ../gui/libgdm/gdm-user-switching.c:351
+#: ../gui/libgdm/gdm-user-switching.c:351 ../utils/gdmflexiserver.c:453
 #, c-format
 msgid "User unable to switch sessions."
 msgstr "Карыстальнік не здолеў пераключыць сеансы."
 
-#: ../gui/libgdm/gdm-user-switching.c:492
+#: ../gui/libgdm/gdm-user-switching.c:523 ../utils/gdmflexiserver.c:622
 #, c-format
 msgid "Could not identify the current seat."
 msgstr "Не ўдалося апазнаць бягучае працоўнае месца."
 
-#: ../gui/libgdm/gdm-user-switching.c:502
+#: ../gui/libgdm/gdm-user-switching.c:533 ../utils/gdmflexiserver.c:632
 #, c-format
 msgid ""
 "The system is unable to determine whether to switch to an existing login "
@@ -512,7 +463,7 @@ msgstr ""
 "Сістэма не здолела вызначыць, ці трэба пераключыцца на наяўны экран уваходу "
 "або запусціць новы."
 
-#: ../gui/libgdm/gdm-user-switching.c:510
+#: ../gui/libgdm/gdm-user-switching.c:541 ../utils/gdmflexiserver.c:640
 #, c-format
 msgid "The system is unable to start up a new login screen."
 msgstr "Сістэма не здолела запусціць новы экран уваходу."
@@ -530,12 +481,12 @@ msgid "XDMCP: Could not read XDMCP header!"
 msgstr "XDMCP: не ўдалося прачытаць XDMCP-загаловак."
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:227
-msgid "XMDCP: Incorrect XDMCP version!"
-msgstr "XMDCP: хібная версія XDMCP."
+msgid "XDMCP: Incorrect XDMCP version!"
+msgstr "XDMCP: хібная версія XDMCP."
 
 #: ../gui/simple-chooser/gdm-host-chooser-widget.c:233
-msgid "XMDCP: Unable to parse address"
-msgstr "XMDCP: не ўдалося разабраць адрас"
+msgid "XDMCP: Unable to parse address"
+msgstr "XDMCP: не ўдалося разабраць адрас"
 
 #: ../gui/simple-greeter/extensions/fingerprint/gdm-fingerprint-extension.c:287
 msgid "Fingerprint Authentication"
@@ -554,7 +505,7 @@ msgid "Log into session with username and password"
 msgstr "Увайсці ў сеанс з пададзеным імем карыстальніка і паролем"
 
 #: ../gui/simple-greeter/extensions/password/gdm-password-extension.c:408
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:565
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-extension.c:563
 #: ../gui/simple-greeter/extensions/unified/gdm-unified-extension.c:408
 msgid "Log In"
 msgstr "Увайсці"
@@ -604,31 +555,31 @@ msgstr "Сцежка модуля"
 msgid "path to smartcard PKCS #11 driver"
 msgstr "сцежка да драйвера смарт-карты PKCS #11"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:527
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:522
 msgid "received error or hang up from event source"
 msgstr "з крыніцы падзей атрыманая памылка або абрыў сувязі"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:661
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:656
 #, c-format
 msgid "NSS security system could not be initialized"
 msgstr "Не ўдалося ініцыяваць сістэму бяспекі NSS"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:789
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:784
 #, c-format
 msgid "no suitable smartcard driver could be found"
 msgstr "не ўдалося адшукаць прыдатны драйвер смарт-карты"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:803
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:798
 #, c-format
 msgid "smartcard driver '%s' could not be loaded"
 msgstr "не ўдалося загрузіць драйвер смарт-карты \"%s\""
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:875
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:870
 #, c-format
 msgid "could not watch for incoming card events - %s"
 msgstr "не ўдалося адсочваць уваходныя падзеі са смарт-карты: %s"
 
-#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1242
+#: ../gui/simple-greeter/extensions/smartcard/gdm-smartcard-manager.c:1237
 #, c-format
 msgid "encountered unexpected error while waiting for smartcard events"
 msgstr "падчас адсочвання падзей са смарт-карты ўзнікла нечаканая памылка"
@@ -744,23 +695,23 @@ msgstr "Адамкнуць"
 msgid "Login"
 msgstr "Увайсці"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:953
+#: ../gui/simple-greeter/gdm-greeter-panel.c:955
 msgid "Suspend"
 msgstr "Супыніць камп'ютар"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:958
+#: ../gui/simple-greeter/gdm-greeter-panel.c:960
 msgid "Restart"
 msgstr "Перазапусціць камп'ютар"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:962
+#: ../gui/simple-greeter/gdm-greeter-panel.c:964
 msgid "Shut Down"
 msgstr "Выключыць камп'ютар"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1011
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1013
 msgid "Unknown time remaining"
 msgstr "Невядома, колькі засталося часу"
 
-#: ../gui/simple-greeter/gdm-greeter-panel.c:1033
+#: ../gui/simple-greeter/gdm-greeter-panel.c:1035
 msgid "Panel"
 msgstr "Панэль"
 
@@ -870,9 +821,35 @@ msgstr "Аўтаматычна ўвайсці ў сістэму пасля вы�
 msgid "Currently logged in"
 msgstr "Паспяховы ўваход"
 
-#: ../utils/gdm-screenshot.c:43
+#: ../utils/gdmflexiserver.c:64
+msgid "Only the VERSION command is supported"
+msgstr "Падтрымліваецца толькі адзін загад, VERSION"
+
+#: ../utils/gdmflexiserver.c:64
+msgid "COMMAND"
+msgstr "ЗАГАД"
+
+#: ../utils/gdmflexiserver.c:65 ../utils/gdmflexiserver.c:66
+#: ../utils/gdmflexiserver.c:68 ../utils/gdmflexiserver.c:69
+msgid "Ignored — retained for compatibility"
+msgstr "Ігнаруецца - пакінута для сумяшчальнасці з папярэднімі версіямі"
+
+#: ../utils/gdmflexiserver.c:67 ../utils/gdm-screenshot.c:43
 msgid "Debugging output"
 msgstr "Адладачны вывад"
+
+#: ../utils/gdmflexiserver.c:71
+msgid "Version of this application"
+msgstr "Версія гэтай праграмы"
+
+#. Option parsing
+#: ../utils/gdmflexiserver.c:706
+msgid "- New GDM login"
+msgstr "- Новы ўваход у GDM"
+
+#: ../utils/gdmflexiserver.c:762
+msgid "Unable to start new display"
+msgstr "Не ўдалося запусціць новы дысплей"
 
 #: ../utils/gdm-screenshot.c:212
 msgid "Screenshot taken"
@@ -882,3 +859,4 @@ msgstr "Зроблены экранны здымак"
 #: ../utils/gdm-screenshot.c:279
 msgid "Take a picture of the screen"
 msgstr "Зрабіць экранны здымак"
+
