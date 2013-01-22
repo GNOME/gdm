@@ -85,9 +85,11 @@ libgdmcommon_la_CPPFLAGS = 		\
 
 libgdmcommon_la_CFLAGS =		\
 	$(COMMON_CFLAGS)		\
+	$(SYSTEMD_CFLAGS)	        \
 	$(NULL)
 
 libgdmcommon_la_LIBADD =		\
+	$(SYSTEMD_LIBS)	        \
 	$(NULL)
 
 libgdmcommon_la_LDFLAGS = 	\
