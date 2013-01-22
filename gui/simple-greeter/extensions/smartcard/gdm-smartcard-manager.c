@@ -40,6 +40,7 @@
 #include <unistd.h>
 
 #include <glib.h>
+#include <glib-unix.h>
 #include <glib/gi18n.h>
 
 #include <prerror.h>
@@ -132,7 +133,6 @@ static GdmSmartcardManagerWorker * gdm_smartcard_manager_worker_new (GdmSmartcar
                                                                      int                  manager_fd,
                                                                      SECMODModule        *module);
 static void gdm_smartcard_manager_worker_free (GdmSmartcardManagerWorker *worker);
-static gboolean gdm_open_pipe (gint *write_fd, gint *read_fd);
 static gboolean sc_read_bytes (gint fd, gpointer bytes, gsize num_bytes);
 static gboolean sc_write_bytes (gint fd, gconstpointer bytes, gsize num_bytes);
 static GdmSmartcard *sc_read_smartcard (gint fd, SECMODModule *module);
@@ -573,37 +573,6 @@ gdm_smartcard_manager_event_processing_stopped_handler (GdmSmartcardManagerWorke
         worker->event_source = NULL;
 
         stop_worker (worker);
-}
-
-static gboolean
-gdm_open_pipe (gint *write_fd,
-                  gint *read_fd)
-{
-        gint pipe_fds[2] = { -1, -1 };
-
-        g_assert (write_fd != NULL);
-        g_assert (read_fd != NULL);
-
-        if (pipe (pipe_fds) < 0) {
-                return FALSE;
-        }
-
-        if (fcntl (pipe_fds[0], F_SETFD, FD_CLOEXEC) < 0) {
-                close (pipe_fds[0]);
-                close (pipe_fds[1]);
-                return FALSE;
-        }
-
-        if (fcntl (pipe_fds[1], F_SETFD, FD_CLOEXEC) < 0) {
-                close (pipe_fds[0]);
-                close (pipe_fds[1]);
-                return FALSE;
-        }
-
-        *read_fd = pipe_fds[0];
-        *write_fd = pipe_fds[1];
-
-        return TRUE;
 }
 
 static void
@@ -1360,17 +1329,15 @@ gdm_smartcard_manager_create_worker (GdmSmartcardManager  *manager,
                                      SECMODModule         *module)
 {
         GdmSmartcardManagerWorker *worker;
-        gint write_fd, read_fd;
+	gint pipefds[2];
 
-        write_fd = -1;
-        read_fd = -1;
-        if (!gdm_open_pipe (&write_fd, &read_fd)) {
+        if (!g_unix_open_pipe (pipefds, FD_CLOEXEC)) {
                 return FALSE;
         }
 
         worker = gdm_smartcard_manager_worker_new (manager,
-                                                   write_fd,
-                                                   read_fd,
+                                                   pipefds[1],
+                                                   pipefds[0],
                                                    module);
 
         worker->thread = g_thread_new ("smartcard",
