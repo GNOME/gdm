@@ -1331,7 +1331,7 @@ gdm_smartcard_manager_create_worker (GdmSmartcardManager  *manager,
         GdmSmartcardManagerWorker *worker;
 	gint pipefds[2];
 
-        if (!g_unix_open_pipe (pipefds, FD_CLOEXEC)) {
+        if (!g_unix_open_pipe (pipefds, FD_CLOEXEC, NULL)) {
                 return FALSE;
         }
 
