@@ -757,7 +757,6 @@ static void
 create_new_session (GdmSimpleSlave  *slave)
 {
         gboolean       display_is_local;
-        char          *display_id;
         char          *display_name;
         char          *display_hostname;
         char          *display_device;
@@ -776,7 +775,6 @@ create_new_session (GdmSimpleSlave  *slave)
         }
 
         g_object_get (slave,
-                      "display-id", &display_id,
                       "display-name", &display_name,
                       "display-hostname", &display_hostname,
                       "display-is-local", &display_is_local,
@@ -799,7 +797,6 @@ create_new_session (GdmSimpleSlave  *slave)
                                                 display_is_local,
                                                 NULL);
 
-        g_free (display_id);
         g_free (display_name);
         g_free (display_device);
         g_free (display_hostname);
@@ -1064,7 +1061,6 @@ start_launch_environment (GdmSimpleSlave *slave,
                           char           *session_id)
 {
         gboolean       display_is_local;
-        char          *display_id;
         char          *display_name;
         char          *seat_id;
         char          *display_device;
@@ -1075,7 +1071,6 @@ start_launch_environment (GdmSimpleSlave *slave,
         g_debug ("GdmSimpleSlave: Running greeter");
 
         display_is_local = FALSE;
-        display_id = NULL;
         display_name = NULL;
         seat_id = NULL;
         auth_file = NULL;
@@ -1083,7 +1078,6 @@ start_launch_environment (GdmSimpleSlave *slave,
         display_hostname = NULL;
 
         g_object_get (slave,
-                      "display-id", &display_id,
                       "display-is-local", &display_is_local,
                       "display-name", &display_name,
                       "display-seat-id", &seat_id,
@@ -1145,7 +1139,6 @@ start_launch_environment (GdmSimpleSlave *slave,
 
         gdm_launch_environment_start (GDM_LAUNCH_ENVIRONMENT (slave->priv->greeter_environment));
 
-        g_free (display_id);
         g_free (display_name);
         g_free (seat_id);
         g_free (display_device);
