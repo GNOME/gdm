@@ -454,11 +454,12 @@ determine_initial_cursor_position (GdmSlave *slave,
         int i;
 
         /* If this function fails for whatever reason,
-         * put the pointer in the upper left corner of the
-         * first monitor
+         * put the pointer in the lower right corner of the screen.
          */
-        *x = 0;
-        *y = 0;
+        *x = .9 * DisplayWidth (slave->priv->server_display,
+                                DefaultScreen (slave->priv->server_display));
+        *y = .9 * DisplayHeight (slave->priv->server_display,
+                                 DefaultScreen (slave->priv->server_display));
 
         gdm_error_trap_push ();
         resources = XRRGetScreenResources (slave->priv->server_display,
