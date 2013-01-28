@@ -1354,7 +1354,7 @@ AC_ARG_WITH(pid-file,
 if ! test -z "$with_pid_file"; then
    GDM_PID_FILE=$with_pid_file
 else
-   GDM_PID_FILE=/var/run/gdm.pid
+   GDM_PID_FILE=/run/gdm.pid
 fi
 
 AC_SUBST(GDM_PID_FILE)
@@ -1371,7 +1371,7 @@ AC_ARG_WITH(ran-once-marker-directory,
 if ! test -z "$with_ran_once_marker_directory"; then
    GDM_RAN_ONCE_MARKER_DIR=$with_ran_once_marker_directory
 else
-   GDM_RAN_ONCE_MARKER_DIR=${localstatedir}/run/gdm
+   GDM_RAN_ONCE_MARKER_DIR=/run/gdm
 fi
 AC_SUBST(GDM_RAN_ONCE_MARKER_DIR)
 AC_DEFINE_UNQUOTED(GDM_RAN_ONCE_MARKER_DIR, "$GDM_RAN_ONCE_MARKER_DIR", [ran once marker dir])
@@ -1407,7 +1407,7 @@ AC_ARG_WITH(xauth-dir,
 if ! test -z "$with_xauth_dir"; then
    GDM_XAUTH_DIR=$with_xauth_dir
 else
-   GDM_XAUTH_DIR=${localstatedir}/run/gdm
+   GDM_XAUTH_DIR=/run/gdm
 fi
 
 AC_SUBST(GDM_XAUTH_DIR)
@@ -1423,7 +1423,7 @@ AC_ARG_WITH(screenshot-dir,
 if ! test -z "$with_screenshot_dir"; then
    GDM_SCREENSHOT_DIR=$with_screenshot_dir
 else
-   GDM_SCREENSHOT_DIR=${localstatedir}/run/gdm/greeter
+   GDM_SCREENSHOT_DIR=/run/gdm/greeter
 fi
 
 AC_SUBST(GDM_SCREENSHOT_DIR)
