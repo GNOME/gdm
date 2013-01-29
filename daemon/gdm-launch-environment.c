@@ -71,6 +71,7 @@ struct GdmLaunchEnvironmentPrivate
         char           *x11_display_device;
         char           *x11_display_hostname;
         char           *x11_authority_file;
+        char           *dbus_session_bus_address;
         gboolean        x11_display_is_local;
 };
 
@@ -86,6 +87,7 @@ enum {
         PROP_USER_NAME,
         PROP_RUNTIME_DIR,
         PROP_COMMAND,
+        PROP_DBUS_SESSION_BUS_ADDRESS,
 };
 
 enum {
@@ -291,6 +293,10 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
         g_hash_table_insert (hash, g_strdup ("GIO_USE_VFS"), g_strdup ("local"));
         g_hash_table_insert (hash, g_strdup ("GVFS_REMOTE_VOLUME_MONITOR_IGNORE"), g_strdup ("1"));
         g_hash_table_insert (hash, g_strdup ("DCONF_PROFILE"), g_strdup ("gdm"));
+
+        if (launch_environment->priv->dbus_session_bus_address) {
+                g_hash_table_insert (hash, g_strdup ("DBUS_SESSION_BUS_ADDRESS"), g_strdup (launch_environment->priv->dbus_session_bus_address));
+        }
 
         return hash;
 }
@@ -498,7 +504,17 @@ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
                           launch_environment);
 
         gdm_session_start_conversation (launch_environment->priv->session, "gdm-launch-environment");
-        gdm_session_select_program (launch_environment->priv->session, launch_environment->priv->command);
+
+        if (launch_environment->priv->dbus_session_bus_address) {
+                gdm_session_select_program (launch_environment->priv->session, launch_environment->priv->command);
+        } else {
+                /* wrap it in dbus-launch */
+                char *command = g_strdup_printf ("%s %s", DBUS_LAUNCH_COMMAND, launch_environment->priv->command);
+
+                gdm_session_select_program (launch_environment->priv->session, command);
+                g_free (command);
+        }
+
         res = TRUE;
  out:
         if (local_error) {
@@ -610,11 +626,19 @@ _gdm_launch_environment_set_runtime_dir (GdmLaunchEnvironment *launch_environmen
 }
 
 static void
+_gdm_launch_environment_set_dbus_session_bus_address (GdmLaunchEnvironment *launch_environment,
+                                                      const char           *addr)
+{
+        g_free (launch_environment->priv->dbus_session_bus_address);
+        launch_environment->priv->dbus_session_bus_address = g_strdup (addr);
+}
+
+static void
 _gdm_launch_environment_set_command (GdmLaunchEnvironment *launch_environment,
                                      const char           *name)
 {
         g_free (launch_environment->priv->command);
-        launch_environment->priv->command = g_strdup_printf ("%s %s", DBUS_LAUNCH_COMMAND, name);
+        launch_environment->priv->command = g_strdup (name);
 }
 
 static void
@@ -654,6 +678,9 @@ gdm_launch_environment_set_property (GObject      *object,
                 break;
         case PROP_RUNTIME_DIR:
                 _gdm_launch_environment_set_runtime_dir (self, g_value_get_string (value));
+                break;
+        case PROP_DBUS_SESSION_BUS_ADDRESS:
+                _gdm_launch_environment_set_dbus_session_bus_address (self, g_value_get_string (value));
                 break;
         case PROP_COMMAND:
                 _gdm_launch_environment_set_command (self, g_value_get_string (value));
@@ -701,6 +728,9 @@ gdm_launch_environment_get_property (GObject    *object,
                 break;
         case PROP_RUNTIME_DIR:
                 g_value_set_string (value, self->priv->runtime_dir);
+                break;
+        case PROP_DBUS_SESSION_BUS_ADDRESS:
+                g_value_set_string (value, self->priv->dbus_session_bus_address);
                 break;
         case PROP_COMMAND:
                 g_value_set_string (value, self->priv->command);
@@ -793,6 +823,13 @@ gdm_launch_environment_class_init (GdmLaunchEnvironmentClass *klass)
                                                               "command",
                                                               NULL,
                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+        g_object_class_install_property (object_class,
+                                         PROP_DBUS_SESSION_BUS_ADDRESS,
+                                         g_param_spec_string ("dbus-session-bus-address",
+                                                              "D-Bus session bus address",
+                                                              "D-Bus session bus address",
+                                                              NULL,
+                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
         signals [OPENED] =
                 g_signal_new ("opened",
                               G_OBJECT_CLASS_TYPE (object_class),
@@ -878,6 +915,7 @@ gdm_launch_environment_finalize (GObject *object)
         g_free (launch_environment->priv->command);
         g_free (launch_environment->priv->user_name);
         g_free (launch_environment->priv->runtime_dir);
+        g_free (launch_environment->priv->dbus_session_bus_address);
         g_free (launch_environment->priv->x11_display_name);
         g_free (launch_environment->priv->x11_display_seat_id);
         g_free (launch_environment->priv->x11_display_device);
