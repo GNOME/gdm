@@ -288,6 +288,8 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
 
         g_hash_table_insert (hash, g_strdup ("RUNNING_UNDER_GDM"), g_strdup ("true"));
         g_hash_table_insert (hash, g_strdup ("GVFS_DISABLE_FUSE"), g_strdup ("1"));
+        g_hash_table_insert (hash, g_strdup ("GIO_USE_VFS"), g_strdup ("local"));
+        g_hash_table_insert (hash, g_strdup ("GVFS_REMOTE_VOLUME_MONITOR_IGNORE"), g_strdup ("1"));
         g_hash_table_insert (hash, g_strdup ("DCONF_PROFILE"), g_strdup ("gdm"));
 
         return hash;
