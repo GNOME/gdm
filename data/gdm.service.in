@@ -8,6 +8,8 @@ ExecStart=@sbindir@/gdm
 Restart=always
 IgnoreSIGPIPE=no
 BusName=org.gnome.DisplayManager
+StandardOutput=syslog
+StandardError=inherit
 
 [Install]
 Alias=display-manager.service
