@@ -34,10 +34,6 @@
 #include <systemd/sd-daemon.h>
 #endif
 
-#ifdef ENABLE_SYSTEMD_JOURNAL
-#include <systemd/sd-journal.h>
-#endif
-
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -141,23 +137,8 @@ typedef struct {
 static void
 spawn_child_setup (SpawnChildData *data)
 {
-#ifdef ENABLE_SYSTEMD_JOURNAL
+#ifdef WITH_SYSTEMD
         if (sd_booted () > 0) {
-                int stdout_fd, stderr_fd;
-
-                stdout_fd = sd_journal_stream_fd (data->identifier, LOG_INFO, FALSE);
-                stderr_fd = sd_journal_stream_fd (data->identifier, LOG_WARNING, FALSE);
-
-                gdm_clear_close_on_exec_flag (stdout_fd);
-                gdm_clear_close_on_exec_flag (stderr_fd);
-
-                if (stdout_fd != -1) {
-                        VE_IGNORE_EINTR (dup2 (stdout_fd, STDOUT_FILENO));
-                }
-
-                if (stderr_fd != -1) {
-                        VE_IGNORE_EINTR (dup2 (stderr_fd, STDERR_FILENO));
-                }
                 return;
         }
 #endif
@@ -204,7 +185,7 @@ spawn_command_line_async (const char *command_line,
 
         data.identifier = argv[0];
 
-#ifdef ENABLE_SYSTEMD_JOURNAL
+#ifdef WITH_SYSTEMD
         if (sd_booted () > 0) {
                 has_journald = TRUE;
         }
