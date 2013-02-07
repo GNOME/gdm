@@ -16,6 +16,7 @@ AM_CPPFLAGS = \
 	-DLOGDIR=\"$(logdir)\"				\
 	-DSBINDIR=\"$(sbindir)\"			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	-DGDM_RUN_DIR=\"$(GDM_RUN_DIR)\"		\
 	-DGDM_XAUTH_DIR=\"$(GDM_XAUTH_DIR)\"		\
 	-DGDM_SCREENSHOT_DIR=\"$(GDM_SCREENSHOT_DIR)\"		\
 	-DGDM_CACHE_DIR=\""$(localstatedir)/cache/gdm"\"	\
