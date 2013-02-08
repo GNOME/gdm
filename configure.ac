@@ -954,11 +954,16 @@ PKG_CHECK_MODULES(JOURNALD,
                   [have_journald=yes], [have_journald=no])
 
 if test "x$enable_systemd_journal" = "xauto" ; then
-        if test x$have_journald = xno ; then
-                use_journald=no
+        if test x$use_systemd = xyes ; then
+                if test x$have_journald = xno ; then
+                        use_journald=no
+                else
+                        use_journald=yes
+                fi
         else
-                use_journald=yes
+                use_journald=no
         fi
+
 else
         use_journald="$enable_systemd_journal"
 fi
